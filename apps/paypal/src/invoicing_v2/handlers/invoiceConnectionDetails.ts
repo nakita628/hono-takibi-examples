@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const invoiceConnectionDetailsHandler = app.openapi(
   getV2InvoicingAccountingSyncInvoicesIdConnectionsRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

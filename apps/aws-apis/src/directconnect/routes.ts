@@ -18,23 +18,19 @@ const RegionSchema = z.string().openapi('Region')
 
 const AssociatedGatewaySchema = z
   .object({
-    id: GatewayIdentifierSchema.and(
-      z.any().openapi({ description: 'The ID of the associated gateway.' }),
-    ).exactOptional(),
-    type: GatewayTypeSchema.and(
-      z.any().openapi({ description: 'The type of associated gateway.' }),
-    ).exactOptional(),
-    ownerAccount: OwnerAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services account that owns the associated virtual private gateway or transit gateway.',
-        }),
-    ).exactOptional(),
-    region: RegionSchema.and(
-      z.any().openapi({ description: 'The Region where the associated gateway is located.' }),
-    ).exactOptional(),
+    id: GatewayIdentifierSchema.exactOptional().openapi({
+      description: 'The ID of the associated gateway.',
+    }),
+    type: GatewayTypeSchema.exactOptional().openapi({
+      description: 'The type of associated gateway.',
+    }),
+    ownerAccount: OwnerAccountSchema.exactOptional().openapi({
+      description:
+        'The ID of the Amazon Web Services account that owns the associated virtual private gateway or transit gateway.',
+    }),
+    region: RegionSchema.exactOptional().openapi({
+      description: 'The Region where the associated gateway is located.',
+    }),
   })
   .openapi({ description: 'Information about the associated gateway.', required: [] })
   .openapi('AssociatedGateway')
@@ -47,14 +43,10 @@ const CIDRSchema = z.string().openapi('CIDR')
 
 const RouteFilterPrefixSchema = z
   .object({
-    cidr: CIDRSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The CIDR block for the advertised route. Separate multiple routes using commas. An IPv6 CIDR must use /64 or shorter.',
-        }),
-    ).exactOptional(),
+    cidr: CIDRSchema.exactOptional().openapi({
+      description:
+        'The CIDR block for the advertised route. Separate multiple routes using commas. An IPv6 CIDR must use /64 or shorter.',
+    }),
   })
   .openapi({
     description:
@@ -76,67 +68,39 @@ const VirtualGatewayRegionSchema = z
 
 const DirectConnectGatewayAssociationSchema = z
   .object({
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ).exactOptional(),
-    directConnectGatewayOwnerAccount: OwnerAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services account that owns the associated gateway.',
-        }),
-    ).exactOptional(),
-    associationState: DirectConnectGatewayAssociationStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the association. The following are the possible values:</p> <ul> <li> <p> <code>associating</code>: The initial state after calling <a>CreateDirectConnectGatewayAssociation</a>.</p> </li> <li> <p> <code>associated</code>: The Direct Connect gateway and virtual private gateway or transit gateway are successfully associated and ready to pass traffic.</p> </li> <li> <p> <code>disassociating</code>: The initial state after calling <a>DeleteDirectConnectGatewayAssociation</a>.</p> </li> <li> <p> <code>disassociated</code>: The virtual private gateway or transit gateway is disassociated from the Direct Connect gateway. Traffic flow between the Direct Connect gateway and virtual private gateway or transit gateway is stopped.</p> </li> <li> <p> <code>updating</code>: The CIDR blocks for the virtual private gateway or transit gateway are currently being updated. This could be new CIDR blocks added or current CIDR blocks removed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    stateChangeError: StateChangeErrorSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The error message if the state of an object failed to advance.' }),
-    ).exactOptional(),
-    associatedGateway: AssociatedGatewaySchema.and(
-      z.any().openapi({ description: 'Information about the associated gateway.' }),
-    ).exactOptional(),
-    associationId: DirectConnectGatewayAssociationIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway association.' }),
-    ).exactOptional(),
-    allowedPrefixesToDirectConnectGateway: RouteFilterPrefixListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon VPC prefixes to advertise to the Direct Connect gateway.',
-        }),
-    ).exactOptional(),
-    virtualGatewayId: VirtualGatewayIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the virtual private gateway. Applies only to private virtual interfaces.',
-        }),
-    ).exactOptional(),
-    virtualGatewayRegion: VirtualGatewayRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services Region where the virtual private gateway is located.',
-        }),
-    ).exactOptional(),
-    virtualGatewayOwnerAccount: OwnerAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services account that owns the virtual private gateway.',
-        }),
-    ).exactOptional(),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
+    directConnectGatewayOwnerAccount: OwnerAccountSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account that owns the associated gateway.',
+    }),
+    associationState: DirectConnectGatewayAssociationStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the association. The following are the possible values:</p> <ul> <li> <p> <code>associating</code>: The initial state after calling <a>CreateDirectConnectGatewayAssociation</a>.</p> </li> <li> <p> <code>associated</code>: The Direct Connect gateway and virtual private gateway or transit gateway are successfully associated and ready to pass traffic.</p> </li> <li> <p> <code>disassociating</code>: The initial state after calling <a>DeleteDirectConnectGatewayAssociation</a>.</p> </li> <li> <p> <code>disassociated</code>: The virtual private gateway or transit gateway is disassociated from the Direct Connect gateway. Traffic flow between the Direct Connect gateway and virtual private gateway or transit gateway is stopped.</p> </li> <li> <p> <code>updating</code>: The CIDR blocks for the virtual private gateway or transit gateway are currently being updated. This could be new CIDR blocks added or current CIDR blocks removed.</p> </li> </ul>',
+    }),
+    stateChangeError: StateChangeErrorSchema.exactOptional().openapi({
+      description: 'The error message if the state of an object failed to advance.',
+    }),
+    associatedGateway: AssociatedGatewaySchema.exactOptional().openapi({
+      description: 'Information about the associated gateway.',
+    }),
+    associationId: DirectConnectGatewayAssociationIdSchema.exactOptional().openapi({
+      description: 'The ID of the Direct Connect gateway association.',
+    }),
+    allowedPrefixesToDirectConnectGateway: RouteFilterPrefixListSchema.exactOptional().openapi({
+      description: 'The Amazon VPC prefixes to advertise to the Direct Connect gateway.',
+    }),
+    virtualGatewayId: VirtualGatewayIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the virtual private gateway. Applies only to private virtual interfaces.',
+    }),
+    virtualGatewayRegion: VirtualGatewayRegionSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region where the virtual private gateway is located.',
+    }),
+    virtualGatewayOwnerAccount: OwnerAccountSchema.exactOptional().openapi({
+      description:
+        'The ID of the Amazon Web Services account that owns the virtual private gateway.',
+    }),
   })
   .openapi({
     description:
@@ -158,28 +122,21 @@ const DirectConnectGatewayAssociationProposalIdSchema = z
 
 const AcceptDirectConnectGatewayAssociationProposalRequestSchema = z
   .object({
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ),
-    proposalId: DirectConnectGatewayAssociationProposalIdSchema.and(
-      z.any().openapi({ description: 'The ID of the request proposal.' }),
-    ),
-    associatedGatewayOwnerAccount: OwnerAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services account that owns the virtual private gateway or transit gateway.',
-        }),
-    ),
-    overrideAllowedPrefixesToDirectConnectGateway: RouteFilterPrefixListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Overrides the Amazon VPC prefixes advertised to the Direct Connect gateway.</p> <p>For information about how to set the prefixes, see <a href="https://docs.aws.amazon.com/directconnect/latest/UserGuide/multi-account-associate-vgw.html#allowed-prefixes">Allowed Prefixes</a> in the <i>Direct Connect User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
+    proposalId: DirectConnectGatewayAssociationProposalIdSchema.openapi({
+      description: 'The ID of the request proposal.',
+    }),
+    associatedGatewayOwnerAccount: OwnerAccountSchema.openapi({
+      description:
+        'The ID of the Amazon Web Services account that owns the virtual private gateway or transit gateway.',
+    }),
+    overrideAllowedPrefixesToDirectConnectGateway:
+      RouteFilterPrefixListSchema.exactOptional().openapi({
+        description:
+          '<p>Overrides the Amazon VPC prefixes advertised to the Direct Connect gateway.</p> <p>For information about how to set the prefixes, see <a href="https://docs.aws.amazon.com/directconnect/latest/UserGuide/multi-account-associate-vgw.html#allowed-prefixes">Allowed Prefixes</a> in the <i>Direct Connect User Guide</i>.</p>',
+      }),
   })
   .openapi({
     required: ['directConnectGatewayId', 'proposalId', 'associatedGatewayOwnerAccount'],
@@ -247,8 +204,8 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    key: TagKeySchema.and(z.any().openapi({ description: 'The key.' })),
-    value: TagValueSchema.and(z.any().openapi({ description: 'The value.' })).exactOptional(),
+    key: TagKeySchema.openapi({ description: 'The key.' }),
+    value: TagValueSchema.exactOptional().openapi({ description: 'The value.' }),
   })
   .openapi({ required: ['key'], description: 'Information about a tag.' })
   .openapi('Tag')
@@ -273,34 +230,20 @@ const StartOnDateSchema = z.string().openapi('StartOnDate')
 
 const MacSecKeySchema = z
   .object({
-    secretARN: SecretARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the MAC Security (MACsec) secret key.',
-        }),
-    ).exactOptional(),
-    ckn: CknSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Connection Key Name (CKN) for the MAC Security secret key.' }),
-    ).exactOptional(),
-    state: StateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the MAC Security (MACsec) secret key.</p> <p>The possible values are:</p> <ul> <li> <p> <code>associating</code>: The MAC Security (MACsec) secret key is being validated and not yet associated with the connection or LAG.</p> </li> <li> <p> <code>associated</code>: The MAC Security (MACsec) secret key is validated and associated with the connection or LAG.</p> </li> <li> <p> <code>disassociating</code>: The MAC Security (MACsec) secret key is being disassociated from the connection or LAG</p> </li> <li> <p> <code>disassociated</code>: The MAC Security (MACsec) secret key is no longer associated with the connection or LAG.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    startOn: StartOnDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date that the MAC Security (MACsec) secret key takes effect. The value is displayed in UTC format.',
-        }),
-    ).exactOptional(),
+    secretARN: SecretARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the MAC Security (MACsec) secret key.',
+    }),
+    ckn: CknSchema.exactOptional().openapi({
+      description: 'The Connection Key Name (CKN) for the MAC Security secret key.',
+    }),
+    state: StateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the MAC Security (MACsec) secret key.</p> <p>The possible values are:</p> <ul> <li> <p> <code>associating</code>: The MAC Security (MACsec) secret key is being validated and not yet associated with the connection or LAG.</p> </li> <li> <p> <code>associated</code>: The MAC Security (MACsec) secret key is validated and associated with the connection or LAG.</p> </li> <li> <p> <code>disassociating</code>: The MAC Security (MACsec) secret key is being disassociated from the connection or LAG</p> </li> <li> <p> <code>disassociated</code>: The MAC Security (MACsec) secret key is no longer associated with the connection or LAG.</p> </li> </ul>',
+    }),
+    startOn: StartOnDateSchema.exactOptional().openapi({
+      description:
+        'The date that the MAC Security (MACsec) secret key takes effect. The value is displayed in UTC format.',
+    }),
   })
   .openapi({ description: 'Information about the MAC Security (MACsec) secret key.', required: [] })
   .openapi('MacSecKey')
@@ -309,131 +252,74 @@ const MacSecKeyListSchema = z.array(MacSecKeySchema).openapi('MacSecKeyList')
 
 const ConnectionSchema = z
   .object({
-    ownerAccount: OwnerAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Amazon Web Services account that owns the connection.',
-        }),
-    ).exactOptional(),
-    connectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the connection.' }),
-    ).exactOptional(),
-    connectionName: ConnectionNameSchema.and(
-      z.any().openapi({ description: 'The name of the connection.' }),
-    ).exactOptional(),
-    connectionState: ConnectionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the connection. The following are the possible values:</p> <ul> <li> <p> <code>ordering</code>: The initial state of a hosted connection provisioned on an interconnect. The connection stays in the ordering state until the owner of the hosted connection confirms or declines the connection order.</p> </li> <li> <p> <code>requested</code>: The initial state of a standard connection. The connection stays in the requested state until the Letter of Authorization (LOA) is sent to the customer.</p> </li> <li> <p> <code>pending</code>: The connection has been approved and is being initialized.</p> </li> <li> <p> <code>available</code>: The network link is up and the connection is ready for use.</p> </li> <li> <p> <code>down</code>: The network link is down.</p> </li> <li> <p> <code>deleting</code>: The connection is being deleted.</p> </li> <li> <p> <code>deleted</code>: The connection has been deleted.</p> </li> <li> <p> <code>rejected</code>: A hosted connection in the <code>ordering</code> state enters the <code>rejected</code> state if it is deleted by the customer.</p> </li> <li> <p> <code>unknown</code>: The state of the connection is not available.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    region: RegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services Region where the connection is located.',
-        }),
-    ).exactOptional(),
-    location: LocationCodeSchema.and(
-      z.any().openapi({ description: 'The location of the connection.' }),
-    ).exactOptional(),
-    bandwidth: BandwidthSchema.and(
-      z.any().openapi({ description: 'The bandwidth of the connection.' }),
-    ).exactOptional(),
-    vlan: VLANSchema.and(z.any().openapi({ description: 'The ID of the VLAN.' })).exactOptional(),
-    partnerName: PartnerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Direct Connect service provider associated with the connection.',
-        }),
-    ).exactOptional(),
-    loaIssueTime: LoaIssueTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the most recent call to <a>DescribeLoa</a> for this connection.',
-        }),
-    ).exactOptional(),
-    lagId: LagIdSchema.and(z.any().openapi({ description: 'The ID of the LAG.' })).exactOptional(),
-    awsDevice: AwsDeviceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Direct Connect endpoint on which the physical connection terminates.',
-        }),
-    ).exactOptional(),
-    jumboFrameCapable: JumboFrameCapableSchema.and(
-      z.any().openapi({ description: 'Indicates whether jumbo frames (9001 MTU) are supported.' }),
-    ).exactOptional(),
-    awsDeviceV2: AwsDeviceV2Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Direct Connect endpoint that terminates the physical connection.',
-        }),
-    ).exactOptional(),
-    awsLogicalDeviceId: AwsLogicalDeviceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Direct Connect endpoint that terminates the logical connection. This device might be different than the device that terminates the physical connection.',
-        }),
-    ).exactOptional(),
-    hasLogicalRedundancy: HasLogicalRedundancySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the connection supports a secondary BGP peer in the same address family (IPv4/IPv6).',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the connection.' }),
-    ).exactOptional(),
-    providerName: ProviderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service provider associated with the connection.',
-        }),
-    ).exactOptional(),
-    macSecCapable: MacSecCapableSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether the connection supports MAC Security (MACsec).',
-        }),
-    ).exactOptional(),
-    portEncryptionStatus: PortEncryptionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The MAC Security (MACsec) port link status of the connection.</p> <p>The valid values are <code>Encryption Up</code>, which means that there is an active Connection Key Name, or <code>Encryption Down</code>.</p>',
-        }),
-    ).exactOptional(),
-    encryptionMode: EncryptionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The MAC Security (MACsec) connection encryption mode.</p> <p>The valid values are <code>no_encrypt</code>, <code>should_encrypt</code>, and <code>must_encrypt</code>.</p>',
-        }),
-    ).exactOptional(),
-    macSecKeys: MacSecKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The MAC Security (MACsec) security keys associated with the connection.',
-        }),
-    ).exactOptional(),
+    ownerAccount: OwnerAccountSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account that owns the connection.',
+    }),
+    connectionId: ConnectionIdSchema.exactOptional().openapi({
+      description: 'The ID of the connection.',
+    }),
+    connectionName: ConnectionNameSchema.exactOptional().openapi({
+      description: 'The name of the connection.',
+    }),
+    connectionState: ConnectionStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the connection. The following are the possible values:</p> <ul> <li> <p> <code>ordering</code>: The initial state of a hosted connection provisioned on an interconnect. The connection stays in the ordering state until the owner of the hosted connection confirms or declines the connection order.</p> </li> <li> <p> <code>requested</code>: The initial state of a standard connection. The connection stays in the requested state until the Letter of Authorization (LOA) is sent to the customer.</p> </li> <li> <p> <code>pending</code>: The connection has been approved and is being initialized.</p> </li> <li> <p> <code>available</code>: The network link is up and the connection is ready for use.</p> </li> <li> <p> <code>down</code>: The network link is down.</p> </li> <li> <p> <code>deleting</code>: The connection is being deleted.</p> </li> <li> <p> <code>deleted</code>: The connection has been deleted.</p> </li> <li> <p> <code>rejected</code>: A hosted connection in the <code>ordering</code> state enters the <code>rejected</code> state if it is deleted by the customer.</p> </li> <li> <p> <code>unknown</code>: The state of the connection is not available.</p> </li> </ul>',
+    }),
+    region: RegionSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region where the connection is located.',
+    }),
+    location: LocationCodeSchema.exactOptional().openapi({
+      description: 'The location of the connection.',
+    }),
+    bandwidth: BandwidthSchema.exactOptional().openapi({
+      description: 'The bandwidth of the connection.',
+    }),
+    vlan: VLANSchema.exactOptional().openapi({ description: 'The ID of the VLAN.' }),
+    partnerName: PartnerNameSchema.exactOptional().openapi({
+      description:
+        'The name of the Direct Connect service provider associated with the connection.',
+    }),
+    loaIssueTime: LoaIssueTimeSchema.exactOptional().openapi({
+      description: 'The time of the most recent call to <a>DescribeLoa</a> for this connection.',
+    }),
+    lagId: LagIdSchema.exactOptional().openapi({ description: 'The ID of the LAG.' }),
+    awsDevice: AwsDeviceSchema.exactOptional().openapi({
+      description: 'The Direct Connect endpoint on which the physical connection terminates.',
+    }),
+    jumboFrameCapable: JumboFrameCapableSchema.exactOptional().openapi({
+      description: 'Indicates whether jumbo frames (9001 MTU) are supported.',
+    }),
+    awsDeviceV2: AwsDeviceV2Schema.exactOptional().openapi({
+      description: 'The Direct Connect endpoint that terminates the physical connection.',
+    }),
+    awsLogicalDeviceId: AwsLogicalDeviceIdSchema.exactOptional().openapi({
+      description:
+        'The Direct Connect endpoint that terminates the logical connection. This device might be different than the device that terminates the physical connection.',
+    }),
+    hasLogicalRedundancy: HasLogicalRedundancySchema.exactOptional().openapi({
+      description:
+        'Indicates whether the connection supports a secondary BGP peer in the same address family (IPv4/IPv6).',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the connection.',
+    }),
+    providerName: ProviderNameSchema.exactOptional().openapi({
+      description: 'The name of the service provider associated with the connection.',
+    }),
+    macSecCapable: MacSecCapableSchema.exactOptional().openapi({
+      description: 'Indicates whether the connection supports MAC Security (MACsec).',
+    }),
+    portEncryptionStatus: PortEncryptionStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The MAC Security (MACsec) port link status of the connection.</p> <p>The valid values are <code>Encryption Up</code>, which means that there is an active Connection Key Name, or <code>Encryption Down</code>.</p>',
+    }),
+    encryptionMode: EncryptionModeSchema.exactOptional().openapi({
+      description:
+        '<p>The MAC Security (MACsec) connection encryption mode.</p> <p>The valid values are <code>no_encrypt</code>, <code>should_encrypt</code>, and <code>must_encrypt</code>.</p>',
+    }),
+    macSecKeys: MacSecKeyListSchema.exactOptional().openapi({
+      description: 'The MAC Security (MACsec) security keys associated with the connection.',
+    }),
   })
   .openapi({ description: 'Information about an Direct Connect connection.', required: [] })
   .openapi('Connection')
@@ -442,35 +328,21 @@ const InterconnectIdSchema = z.string().openapi('InterconnectId')
 
 const AllocateConnectionOnInterconnectRequestSchema = z
   .object({
-    bandwidth: BandwidthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The bandwidth of the connection. The possible values are 50Mbps, 100Mbps, 200Mbps, 300Mbps, 400Mbps, 500Mbps, 1Gbps, 2Gbps, 5Gbps, and 10Gbps. Note that only those Direct Connect Partners who have met specific requirements are allowed to create a 1Gbps, 2Gbps, 5Gbps or 10Gbps hosted connection.',
-        }),
-    ),
-    connectionName: ConnectionNameSchema.and(
-      z.any().openapi({ description: 'The name of the provisioned connection.' }),
-    ),
-    ownerAccount: OwnerAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services account of the customer for whom the connection will be provisioned.',
-        }),
-    ),
-    interconnectId: InterconnectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the interconnect on which the connection will be provisioned.',
-        }),
-    ),
-    vlan: VLANSchema.and(
-      z.any().openapi({ description: 'The dedicated VLAN provisioned to the connection.' }),
-    ),
+    bandwidth: BandwidthSchema.openapi({
+      description:
+        'The bandwidth of the connection. The possible values are 50Mbps, 100Mbps, 200Mbps, 300Mbps, 400Mbps, 500Mbps, 1Gbps, 2Gbps, 5Gbps, and 10Gbps. Note that only those Direct Connect Partners who have met specific requirements are allowed to create a 1Gbps, 2Gbps, 5Gbps or 10Gbps hosted connection.',
+    }),
+    connectionName: ConnectionNameSchema.openapi({
+      description: 'The name of the provisioned connection.',
+    }),
+    ownerAccount: OwnerAccountSchema.openapi({
+      description:
+        'The ID of the Amazon Web Services account of the customer for whom the connection will be provisioned.',
+    }),
+    interconnectId: InterconnectIdSchema.openapi({
+      description: 'The ID of the interconnect on which the connection will be provisioned.',
+    }),
+    vlan: VLANSchema.openapi({ description: 'The dedicated VLAN provisioned to the connection.' }),
   })
   .openapi({
     required: ['bandwidth', 'connectionName', 'ownerAccount', 'interconnectId', 'vlan'],
@@ -480,34 +352,24 @@ const AllocateConnectionOnInterconnectRequestSchema = z
 
 const AllocateHostedConnectionRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the interconnect or LAG.' }),
-    ),
-    ownerAccount: OwnerAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services account ID of the customer for the connection.',
-        }),
-    ),
-    bandwidth: BandwidthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The bandwidth of the connection. The possible values are 50Mbps, 100Mbps, 200Mbps, 300Mbps, 400Mbps, 500Mbps, 1Gbps, 2Gbps, 5Gbps, and 10Gbps. Note that only those Direct Connect Partners who have met specific requirements are allowed to create a 1Gbps, 2Gbps, 5Gbps or 10Gbps hosted connection. ',
-        }),
-    ),
-    connectionName: ConnectionNameSchema.and(
-      z.any().openapi({ description: 'The name of the hosted connection.' }),
-    ),
-    vlan: VLANSchema.and(
-      z.any().openapi({ description: 'The dedicated VLAN provisioned to the hosted connection.' }),
-    ),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the connection.' }),
-    ).exactOptional(),
+    connectionId: ConnectionIdSchema.openapi({ description: 'The ID of the interconnect or LAG.' }),
+    ownerAccount: OwnerAccountSchema.openapi({
+      description:
+        'The ID of the Amazon Web Services account ID of the customer for the connection.',
+    }),
+    bandwidth: BandwidthSchema.openapi({
+      description:
+        'The bandwidth of the connection. The possible values are 50Mbps, 100Mbps, 200Mbps, 300Mbps, 400Mbps, 500Mbps, 1Gbps, 2Gbps, 5Gbps, and 10Gbps. Note that only those Direct Connect Partners who have met specific requirements are allowed to create a 1Gbps, 2Gbps, 5Gbps or 10Gbps hosted connection. ',
+    }),
+    connectionName: ConnectionNameSchema.openapi({
+      description: 'The name of the hosted connection.',
+    }),
+    vlan: VLANSchema.openapi({
+      description: 'The dedicated VLAN provisioned to the hosted connection.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the connection.',
+    }),
   })
   .openapi({
     required: ['connectionId', 'ownerAccount', 'bandwidth', 'connectionName', 'vlan'],
@@ -565,61 +427,39 @@ const BGPStatusSchema = z.enum(['up', 'down', 'unknown']).openapi('BGPStatus')
 
 const BGPPeerSchema = z
   .object({
-    bgpPeerId: BGPPeerIdSchema.and(
-      z.any().openapi({ description: 'The ID of the BGP peer.' }),
-    ).exactOptional(),
-    asn: ASNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.',
-        }),
-    ).exactOptional(),
-    authKey: BGPAuthKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
-        }),
-    ).exactOptional(),
-    addressFamily: AddressFamilySchema.and(
-      z.any().openapi({ description: 'The address family for the BGP peer.' }),
-    ).exactOptional(),
-    amazonAddress: AmazonAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the Amazon interface.' }),
-    ).exactOptional(),
-    customerAddress: CustomerAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the customer interface.' }),
-    ).exactOptional(),
-    bgpPeerState: BGPPeerStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the BGP peer. The following are the possible values:</p> <ul> <li> <p> <code>verifying</code>: The BGP peering addresses or ASN require validation before the BGP peer can be created. This state applies only to public virtual interfaces.</p> </li> <li> <p> <code>pending</code>: The BGP peer is created, and remains in this state until it is ready to be established.</p> </li> <li> <p> <code>available</code>: The BGP peer is ready to be established.</p> </li> <li> <p> <code>deleting</code>: The BGP peer is being deleted.</p> </li> <li> <p> <code>deleted</code>: The BGP peer is deleted and cannot be established.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    bgpStatus: BGPStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the BGP peer. The following are the possible values:</p> <ul> <li> <p> <code>up</code>: The BGP peer is established. This state does not indicate the state of the routing function. Ensure that you are receiving routes over the BGP session.</p> </li> <li> <p> <code>down</code>: The BGP peer is down.</p> </li> <li> <p> <code>unknown</code>: The BGP peer status is not available.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    awsDeviceV2: AwsDeviceV2Schema.and(
-      z.any().openapi({ description: 'The Direct Connect endpoint that terminates the BGP peer.' }),
-    ).exactOptional(),
-    awsLogicalDeviceId: AwsLogicalDeviceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Direct Connect endpoint that terminates the logical connection. This device might be different than the device that terminates the physical connection.',
-        }),
-    ).exactOptional(),
+    bgpPeerId: BGPPeerIdSchema.exactOptional().openapi({ description: 'The ID of the BGP peer.' }),
+    asn: ASNSchema.exactOptional().openapi({
+      description:
+        'The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.',
+    }),
+    authKey: BGPAuthKeySchema.exactOptional().openapi({
+      description:
+        'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
+    }),
+    addressFamily: AddressFamilySchema.exactOptional().openapi({
+      description: 'The address family for the BGP peer.',
+    }),
+    amazonAddress: AmazonAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the Amazon interface.',
+    }),
+    customerAddress: CustomerAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the customer interface.',
+    }),
+    bgpPeerState: BGPPeerStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the BGP peer. The following are the possible values:</p> <ul> <li> <p> <code>verifying</code>: The BGP peering addresses or ASN require validation before the BGP peer can be created. This state applies only to public virtual interfaces.</p> </li> <li> <p> <code>pending</code>: The BGP peer is created, and remains in this state until it is ready to be established.</p> </li> <li> <p> <code>available</code>: The BGP peer is ready to be established.</p> </li> <li> <p> <code>deleting</code>: The BGP peer is being deleted.</p> </li> <li> <p> <code>deleted</code>: The BGP peer is deleted and cannot be established.</p> </li> </ul>',
+    }),
+    bgpStatus: BGPStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the BGP peer. The following are the possible values:</p> <ul> <li> <p> <code>up</code>: The BGP peer is established. This state does not indicate the state of the routing function. Ensure that you are receiving routes over the BGP session.</p> </li> <li> <p> <code>down</code>: The BGP peer is down.</p> </li> <li> <p> <code>unknown</code>: The BGP peer status is not available.</p> </li> </ul>',
+    }),
+    awsDeviceV2: AwsDeviceV2Schema.exactOptional().openapi({
+      description: 'The Direct Connect endpoint that terminates the BGP peer.',
+    }),
+    awsLogicalDeviceId: AwsLogicalDeviceIdSchema.exactOptional().openapi({
+      description:
+        'The Direct Connect endpoint that terminates the logical connection. This device might be different than the device that terminates the physical connection.',
+    }),
   })
   .openapi({ description: 'Information about a BGP peer.', required: [] })
   .openapi('BGPPeer')
@@ -630,194 +470,126 @@ const SiteLinkEnabledSchema = z.boolean().openapi('SiteLinkEnabled')
 
 const VirtualInterfaceSchema = z
   .object({
-    ownerAccount: OwnerAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Amazon Web Services account that owns the virtual interface.',
-        }),
-    ).exactOptional(),
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual interface.' }),
-    ).exactOptional(),
-    location: LocationCodeSchema.and(
-      z.any().openapi({ description: 'The location of the connection.' }),
-    ).exactOptional(),
-    connectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the connection.' }),
-    ).exactOptional(),
-    virtualInterfaceType: VirtualInterfaceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of virtual interface. The possible values are <code>private</code> and <code>public</code>.',
-        }),
-    ).exactOptional(),
-    virtualInterfaceName: VirtualInterfaceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the virtual interface assigned by the customer network. The name has a maximum of 100 characters. The following are valid characters: a-z, 0-9 and a hyphen (-).',
-        }),
-    ).exactOptional(),
-    vlan: VLANSchema.and(z.any().openapi({ description: 'The ID of the VLAN.' })).exactOptional(),
-    asn: ASNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>',
-        }),
-    ).exactOptional(),
-    amazonSideAsn: LongAsnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The autonomous system number (ASN) for the Amazon side of the connection.',
-        }),
-    ).exactOptional(),
-    authKey: BGPAuthKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
-        }),
-    ).exactOptional(),
-    amazonAddress: AmazonAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the Amazon interface.' }),
-    ).exactOptional(),
-    customerAddress: CustomerAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the customer interface.' }),
-    ).exactOptional(),
-    addressFamily: AddressFamilySchema.and(
-      z.any().openapi({ description: 'The address family for the BGP peer.' }),
-    ).exactOptional(),
-    virtualInterfaceState: VirtualInterfaceStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the virtual interface. The following are the possible values:</p> <ul> <li> <p> <code>confirming</code>: The creation of the virtual interface is pending confirmation from the virtual interface owner. If the owner of the virtual interface is different from the owner of the connection on which it is provisioned, then the virtual interface will remain in this state until it is confirmed by the virtual interface owner.</p> </li> <li> <p> <code>verifying</code>: This state only applies to public virtual interfaces. Each public virtual interface needs validation before the virtual interface can be created.</p> </li> <li> <p> <code>pending</code>: A virtual interface is in this state from the time that it is created until the virtual interface is ready to forward traffic.</p> </li> <li> <p> <code>available</code>: A virtual interface that is able to forward traffic.</p> </li> <li> <p> <code>down</code>: A virtual interface that is BGP down.</p> </li> <li> <p> <code>deleting</code>: A virtual interface is in this state immediately after calling <a>DeleteVirtualInterface</a> until it can no longer forward traffic.</p> </li> <li> <p> <code>deleted</code>: A virtual interface that cannot forward traffic.</p> </li> <li> <p> <code>rejected</code>: The virtual interface owner has declined creation of the virtual interface. If a virtual interface in the <code>Confirming</code> state is deleted by the virtual interface owner, the virtual interface enters the <code>Rejected</code> state.</p> </li> <li> <p> <code>unknown</code>: The state of the virtual interface is not available.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    customerRouterConfig: RouterConfigSchema.and(
-      z.any().openapi({ description: 'The customer router configuration.' }),
-    ).exactOptional(),
-    mtu: MTUSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum transmission unit (MTU), in bytes. The supported values are 1500 and 9001. The default value is 1500.',
-        }),
-    ).exactOptional(),
-    jumboFrameCapable: JumboFrameCapableSchema.and(
-      z.any().openapi({ description: 'Indicates whether jumbo frames (9001 MTU) are supported.' }),
-    ).exactOptional(),
-    virtualGatewayId: VirtualGatewayIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the virtual private gateway. Applies only to private virtual interfaces.',
-        }),
-    ).exactOptional(),
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ).exactOptional(),
-    routeFilterPrefixes: RouteFilterPrefixListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The routes to be advertised to the Amazon Web Services network in this Region. Applies to public virtual interfaces.',
-        }),
-    ).exactOptional(),
-    bgpPeers: BGPPeerListSchema.and(
-      z.any().openapi({ description: 'The BGP peers configured on this virtual interface.' }),
-    ).exactOptional(),
-    region: RegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services Region where the virtual interface is located.',
-        }),
-    ).exactOptional(),
-    awsDeviceV2: AwsDeviceV2Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Direct Connect endpoint that terminates the physical connection.',
-        }),
-    ).exactOptional(),
-    awsLogicalDeviceId: AwsLogicalDeviceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Direct Connect endpoint that terminates the logical connection. This device might be different than the device that terminates the physical connection.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the virtual interface.' }),
-    ).exactOptional(),
-    siteLinkEnabled: SiteLinkEnabledSchema.and(
-      z.any().openapi({ description: 'Indicates whether SiteLink is enabled.' }),
-    ).exactOptional(),
+    ownerAccount: OwnerAccountSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account that owns the virtual interface.',
+    }),
+    virtualInterfaceId: VirtualInterfaceIdSchema.exactOptional().openapi({
+      description: 'The ID of the virtual interface.',
+    }),
+    location: LocationCodeSchema.exactOptional().openapi({
+      description: 'The location of the connection.',
+    }),
+    connectionId: ConnectionIdSchema.exactOptional().openapi({
+      description: 'The ID of the connection.',
+    }),
+    virtualInterfaceType: VirtualInterfaceTypeSchema.exactOptional().openapi({
+      description:
+        'The type of virtual interface. The possible values are <code>private</code> and <code>public</code>.',
+    }),
+    virtualInterfaceName: VirtualInterfaceNameSchema.exactOptional().openapi({
+      description:
+        'The name of the virtual interface assigned by the customer network. The name has a maximum of 100 characters. The following are valid characters: a-z, 0-9 and a hyphen (-).',
+    }),
+    vlan: VLANSchema.exactOptional().openapi({ description: 'The ID of the VLAN.' }),
+    asn: ASNSchema.exactOptional().openapi({
+      description:
+        '<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>',
+    }),
+    amazonSideAsn: LongAsnSchema.exactOptional().openapi({
+      description: 'The autonomous system number (ASN) for the Amazon side of the connection.',
+    }),
+    authKey: BGPAuthKeySchema.exactOptional().openapi({
+      description:
+        'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
+    }),
+    amazonAddress: AmazonAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the Amazon interface.',
+    }),
+    customerAddress: CustomerAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the customer interface.',
+    }),
+    addressFamily: AddressFamilySchema.exactOptional().openapi({
+      description: 'The address family for the BGP peer.',
+    }),
+    virtualInterfaceState: VirtualInterfaceStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the virtual interface. The following are the possible values:</p> <ul> <li> <p> <code>confirming</code>: The creation of the virtual interface is pending confirmation from the virtual interface owner. If the owner of the virtual interface is different from the owner of the connection on which it is provisioned, then the virtual interface will remain in this state until it is confirmed by the virtual interface owner.</p> </li> <li> <p> <code>verifying</code>: This state only applies to public virtual interfaces. Each public virtual interface needs validation before the virtual interface can be created.</p> </li> <li> <p> <code>pending</code>: A virtual interface is in this state from the time that it is created until the virtual interface is ready to forward traffic.</p> </li> <li> <p> <code>available</code>: A virtual interface that is able to forward traffic.</p> </li> <li> <p> <code>down</code>: A virtual interface that is BGP down.</p> </li> <li> <p> <code>deleting</code>: A virtual interface is in this state immediately after calling <a>DeleteVirtualInterface</a> until it can no longer forward traffic.</p> </li> <li> <p> <code>deleted</code>: A virtual interface that cannot forward traffic.</p> </li> <li> <p> <code>rejected</code>: The virtual interface owner has declined creation of the virtual interface. If a virtual interface in the <code>Confirming</code> state is deleted by the virtual interface owner, the virtual interface enters the <code>Rejected</code> state.</p> </li> <li> <p> <code>unknown</code>: The state of the virtual interface is not available.</p> </li> </ul>',
+    }),
+    customerRouterConfig: RouterConfigSchema.exactOptional().openapi({
+      description: 'The customer router configuration.',
+    }),
+    mtu: MTUSchema.exactOptional().openapi({
+      description:
+        'The maximum transmission unit (MTU), in bytes. The supported values are 1500 and 9001. The default value is 1500.',
+    }),
+    jumboFrameCapable: JumboFrameCapableSchema.exactOptional().openapi({
+      description: 'Indicates whether jumbo frames (9001 MTU) are supported.',
+    }),
+    virtualGatewayId: VirtualGatewayIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the virtual private gateway. Applies only to private virtual interfaces.',
+    }),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
+    routeFilterPrefixes: RouteFilterPrefixListSchema.exactOptional().openapi({
+      description:
+        'The routes to be advertised to the Amazon Web Services network in this Region. Applies to public virtual interfaces.',
+    }),
+    bgpPeers: BGPPeerListSchema.exactOptional().openapi({
+      description: 'The BGP peers configured on this virtual interface.',
+    }),
+    region: RegionSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region where the virtual interface is located.',
+    }),
+    awsDeviceV2: AwsDeviceV2Schema.exactOptional().openapi({
+      description: 'The Direct Connect endpoint that terminates the physical connection.',
+    }),
+    awsLogicalDeviceId: AwsLogicalDeviceIdSchema.exactOptional().openapi({
+      description:
+        'The Direct Connect endpoint that terminates the logical connection. This device might be different than the device that terminates the physical connection.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the virtual interface.',
+    }),
+    siteLinkEnabled: SiteLinkEnabledSchema.exactOptional().openapi({
+      description: 'Indicates whether SiteLink is enabled.',
+    }),
   })
   .openapi({ description: 'Information about a virtual interface.', required: [] })
   .openapi('VirtualInterface')
 
 const NewPrivateVirtualInterfaceAllocationSchema = z
   .object({
-    virtualInterfaceName: VirtualInterfaceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the virtual interface assigned by the customer network. The name has a maximum of 100 characters. The following are valid characters: a-z, 0-9 and a hyphen (-).',
-        }),
-    ),
-    vlan: VLANSchema.and(z.any().openapi({ description: 'The ID of the VLAN.' })),
-    asn: ASNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>',
-        }),
-    ),
-    mtu: MTUSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum transmission unit (MTU), in bytes. The supported values are 1500 and 9001. The default value is 1500.',
-        }),
-    ).exactOptional(),
-    authKey: BGPAuthKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
-        }),
-    ).exactOptional(),
-    amazonAddress: AmazonAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the Amazon interface.' }),
-    ).exactOptional(),
-    addressFamily: AddressFamilySchema.and(
-      z.any().openapi({ description: 'The address family for the BGP peer.' }),
-    ).exactOptional(),
-    customerAddress: CustomerAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the customer interface.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the private virtual interface.' }),
-    ).exactOptional(),
+    virtualInterfaceName: VirtualInterfaceNameSchema.openapi({
+      description:
+        'The name of the virtual interface assigned by the customer network. The name has a maximum of 100 characters. The following are valid characters: a-z, 0-9 and a hyphen (-).',
+    }),
+    vlan: VLANSchema.openapi({ description: 'The ID of the VLAN.' }),
+    asn: ASNSchema.openapi({
+      description:
+        '<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>',
+    }),
+    mtu: MTUSchema.exactOptional().openapi({
+      description:
+        'The maximum transmission unit (MTU), in bytes. The supported values are 1500 and 9001. The default value is 1500.',
+    }),
+    authKey: BGPAuthKeySchema.exactOptional().openapi({
+      description:
+        'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
+    }),
+    amazonAddress: AmazonAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the Amazon interface.',
+    }),
+    addressFamily: AddressFamilySchema.exactOptional().openapi({
+      description: 'The address family for the BGP peer.',
+    }),
+    customerAddress: CustomerAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the customer interface.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the private virtual interface.',
+    }),
   })
   .openapi({
     required: ['virtualInterfaceName', 'vlan', 'asn'],
@@ -827,25 +599,17 @@ const NewPrivateVirtualInterfaceAllocationSchema = z
 
 const AllocatePrivateVirtualInterfaceRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the connection on which the private virtual interface is provisioned.',
-        }),
-    ),
-    ownerAccount: OwnerAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services account that owns the virtual private interface.',
-        }),
-    ),
-    newPrivateVirtualInterfaceAllocation: NewPrivateVirtualInterfaceAllocationSchema.and(
-      z.any().openapi({ description: 'Information about the private virtual interface.' }),
-    ),
+    connectionId: ConnectionIdSchema.openapi({
+      description:
+        'The ID of the connection on which the private virtual interface is provisioned.',
+    }),
+    ownerAccount: OwnerAccountSchema.openapi({
+      description:
+        'The ID of the Amazon Web Services account that owns the virtual private interface.',
+    }),
+    newPrivateVirtualInterfaceAllocation: NewPrivateVirtualInterfaceAllocationSchema.openapi({
+      description: 'Information about the private virtual interface.',
+    }),
   })
   .openapi({
     required: ['connectionId', 'ownerAccount', 'newPrivateVirtualInterfaceAllocation'],
@@ -855,51 +619,35 @@ const AllocatePrivateVirtualInterfaceRequestSchema = z
 
 const NewPublicVirtualInterfaceAllocationSchema = z
   .object({
-    virtualInterfaceName: VirtualInterfaceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the virtual interface assigned by the customer network. The name has a maximum of 100 characters. The following are valid characters: a-z, 0-9 and a hyphen (-).',
-        }),
-    ),
-    vlan: VLANSchema.and(z.any().openapi({ description: 'The ID of the VLAN.' })),
-    asn: ASNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>',
-        }),
-    ),
-    authKey: BGPAuthKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
-        }),
-    ).exactOptional(),
-    amazonAddress: AmazonAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the Amazon interface.' }),
-    ).exactOptional(),
-    customerAddress: CustomerAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the customer interface.' }),
-    ).exactOptional(),
-    addressFamily: AddressFamilySchema.and(
-      z.any().openapi({ description: 'The address family for the BGP peer.' }),
-    ).exactOptional(),
-    routeFilterPrefixes: RouteFilterPrefixListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The routes to be advertised to the Amazon Web Services network in this Region. Applies to public virtual interfaces.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the public virtual interface.' }),
-    ).exactOptional(),
+    virtualInterfaceName: VirtualInterfaceNameSchema.openapi({
+      description:
+        'The name of the virtual interface assigned by the customer network. The name has a maximum of 100 characters. The following are valid characters: a-z, 0-9 and a hyphen (-).',
+    }),
+    vlan: VLANSchema.openapi({ description: 'The ID of the VLAN.' }),
+    asn: ASNSchema.openapi({
+      description:
+        '<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>',
+    }),
+    authKey: BGPAuthKeySchema.exactOptional().openapi({
+      description:
+        'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
+    }),
+    amazonAddress: AmazonAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the Amazon interface.',
+    }),
+    customerAddress: CustomerAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the customer interface.',
+    }),
+    addressFamily: AddressFamilySchema.exactOptional().openapi({
+      description: 'The address family for the BGP peer.',
+    }),
+    routeFilterPrefixes: RouteFilterPrefixListSchema.exactOptional().openapi({
+      description:
+        'The routes to be advertised to the Amazon Web Services network in this Region. Applies to public virtual interfaces.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the public virtual interface.',
+    }),
   })
   .openapi({
     required: ['virtualInterfaceName', 'vlan', 'asn'],
@@ -909,25 +657,16 @@ const NewPublicVirtualInterfaceAllocationSchema = z
 
 const AllocatePublicVirtualInterfaceRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the connection on which the public virtual interface is provisioned.',
-        }),
-    ),
-    ownerAccount: OwnerAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services account that owns the public virtual interface.',
-        }),
-    ),
-    newPublicVirtualInterfaceAllocation: NewPublicVirtualInterfaceAllocationSchema.and(
-      z.any().openapi({ description: 'Information about the public virtual interface.' }),
-    ),
+    connectionId: ConnectionIdSchema.openapi({
+      description: 'The ID of the connection on which the public virtual interface is provisioned.',
+    }),
+    ownerAccount: OwnerAccountSchema.openapi({
+      description:
+        'The ID of the Amazon Web Services account that owns the public virtual interface.',
+    }),
+    newPublicVirtualInterfaceAllocation: NewPublicVirtualInterfaceAllocationSchema.openapi({
+      description: 'Information about the public virtual interface.',
+    }),
   })
   .openapi({
     required: ['connectionId', 'ownerAccount', 'newPublicVirtualInterfaceAllocation'],
@@ -942,53 +681,35 @@ const AllocateTransitVirtualInterfaceResultSchema = z
 
 const NewTransitVirtualInterfaceAllocationSchema = z
   .object({
-    virtualInterfaceName: VirtualInterfaceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the virtual interface assigned by the customer network. The name has a maximum of 100 characters. The following are valid characters: a-z, 0-9 and a hyphen (-).',
-        }),
-    ).exactOptional(),
-    vlan: VLANSchema.and(z.any().openapi({ description: 'The ID of the VLAN.' })).exactOptional(),
-    asn: ASNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>',
-        }),
-    ).exactOptional(),
-    mtu: MTUSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum transmission unit (MTU), in bytes. The supported values are 1500 and 9001. The default value is 1500. ',
-        }),
-    ).exactOptional(),
-    authKey: BGPAuthKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
-        }),
-    ).exactOptional(),
-    amazonAddress: AmazonAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the Amazon interface.' }),
-    ).exactOptional(),
-    customerAddress: CustomerAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the customer interface.' }),
-    ).exactOptional(),
-    addressFamily: AddressFamilySchema.and(
-      z.any().openapi({ description: 'The address family for the BGP peer.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tags associated with the transitive virtual interface.' }),
-    ).exactOptional(),
+    virtualInterfaceName: VirtualInterfaceNameSchema.exactOptional().openapi({
+      description:
+        'The name of the virtual interface assigned by the customer network. The name has a maximum of 100 characters. The following are valid characters: a-z, 0-9 and a hyphen (-).',
+    }),
+    vlan: VLANSchema.exactOptional().openapi({ description: 'The ID of the VLAN.' }),
+    asn: ASNSchema.exactOptional().openapi({
+      description:
+        '<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>',
+    }),
+    mtu: MTUSchema.exactOptional().openapi({
+      description:
+        'The maximum transmission unit (MTU), in bytes. The supported values are 1500 and 9001. The default value is 1500. ',
+    }),
+    authKey: BGPAuthKeySchema.exactOptional().openapi({
+      description:
+        'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
+    }),
+    amazonAddress: AmazonAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the Amazon interface.',
+    }),
+    customerAddress: CustomerAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the customer interface.',
+    }),
+    addressFamily: AddressFamilySchema.exactOptional().openapi({
+      description: 'The address family for the BGP peer.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the transitive virtual interface.',
+    }),
   })
   .openapi({
     description: 'Information about a transit virtual interface to be provisioned on a connection.',
@@ -998,25 +719,17 @@ const NewTransitVirtualInterfaceAllocationSchema = z
 
 const AllocateTransitVirtualInterfaceRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the connection on which the transit virtual interface is provisioned.',
-        }),
-    ),
-    ownerAccount: OwnerAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services account that owns the transit virtual interface.',
-        }),
-    ),
-    newTransitVirtualInterfaceAllocation: NewTransitVirtualInterfaceAllocationSchema.and(
-      z.any().openapi({ description: 'Information about the transit virtual interface.' }),
-    ),
+    connectionId: ConnectionIdSchema.openapi({
+      description:
+        'The ID of the connection on which the transit virtual interface is provisioned.',
+    }),
+    ownerAccount: OwnerAccountSchema.openapi({
+      description:
+        'The ID of the Amazon Web Services account that owns the transit virtual interface.',
+    }),
+    newTransitVirtualInterfaceAllocation: NewTransitVirtualInterfaceAllocationSchema.openapi({
+      description: 'Information about the transit virtual interface.',
+    }),
   })
   .openapi({
     required: ['connectionId', 'ownerAccount', 'newTransitVirtualInterfaceAllocation'],
@@ -1026,24 +739,20 @@ const AllocateTransitVirtualInterfaceRequestSchema = z
 
 const AssociateConnectionWithLagRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the connection.' }),
-    ),
-    lagId: LagIdSchema.and(
-      z.any().openapi({ description: 'The ID of the LAG with which to associate the connection.' }),
-    ),
+    connectionId: ConnectionIdSchema.openapi({ description: 'The ID of the connection.' }),
+    lagId: LagIdSchema.openapi({
+      description: 'The ID of the LAG with which to associate the connection.',
+    }),
   })
   .openapi({ required: ['connectionId', 'lagId'], title: 'AssociateConnectionWithLagRequest' })
   .openapi('AssociateConnectionWithLagRequest')
 
 const AssociateHostedConnectionRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the hosted connection.' }),
-    ),
-    parentConnectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the interconnect or the LAG.' }),
-    ),
+    connectionId: ConnectionIdSchema.openapi({ description: 'The ID of the hosted connection.' }),
+    parentConnectionId: ConnectionIdSchema.openapi({
+      description: 'The ID of the interconnect or the LAG.',
+    }),
   })
   .openapi({
     required: ['connectionId', 'parentConnectionId'],
@@ -1053,22 +762,14 @@ const AssociateHostedConnectionRequestSchema = z
 
 const AssociateMacSecKeyResponseSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).',
-        }),
-    ).exactOptional(),
-    macSecKeys: MacSecKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The MAC Security (MACsec) security keys associated with the dedicated connection.',
-        }),
-    ).exactOptional(),
+    connectionId: ConnectionIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).',
+    }),
+    macSecKeys: MacSecKeyListSchema.exactOptional().openapi({
+      description:
+        'The MAC Security (MACsec) security keys associated with the dedicated connection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateMacSecKeyResponse')
@@ -1077,50 +778,32 @@ const CakSchema = z.string().openapi('Cak')
 
 const AssociateMacSecKeyRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).</p> <p>You can use <a>DescribeConnections</a> or <a>DescribeLags</a> to retrieve connection ID.</p>',
-        }),
-    ),
-    secretARN: SecretARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the MAC Security (MACsec) secret key to associate with the dedicated connection.</p> <p>You can use <a>DescribeConnections</a> or <a>DescribeLags</a> to retrieve the MAC Security (MACsec) secret key.</p> <p>If you use this request parameter, you do not use the <code>ckn</code> and <code>cak</code> request parameters.</p>',
-        }),
-    ).exactOptional(),
-    ckn: CknSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The MAC Security (MACsec) CKN to associate with the dedicated connection.</p> <p>You can create the CKN/CAK pair using an industry standard tool.</p> <p> The valid values are 64 hexadecimal characters (0-9, A-E).</p> <p>If you use this request parameter, you must use the <code>cak</code> request parameter and not use the <code>secretARN</code> request parameter.</p>',
-        }),
-    ).exactOptional(),
-    cak: CakSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The MAC Security (MACsec) CAK to associate with the dedicated connection.</p> <p>You can create the CKN/CAK pair using an industry standard tool.</p> <p> The valid values are 64 hexadecimal characters (0-9, A-E).</p> <p>If you use this request parameter, you must use the <code>ckn</code> request parameter and not use the <code>secretARN</code> request parameter.</p>',
-        }),
-    ).exactOptional(),
+    connectionId: ConnectionIdSchema.openapi({
+      description:
+        '<p>The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).</p> <p>You can use <a>DescribeConnections</a> or <a>DescribeLags</a> to retrieve connection ID.</p>',
+    }),
+    secretARN: SecretARNSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the MAC Security (MACsec) secret key to associate with the dedicated connection.</p> <p>You can use <a>DescribeConnections</a> or <a>DescribeLags</a> to retrieve the MAC Security (MACsec) secret key.</p> <p>If you use this request parameter, you do not use the <code>ckn</code> and <code>cak</code> request parameters.</p>',
+    }),
+    ckn: CknSchema.exactOptional().openapi({
+      description:
+        '<p>The MAC Security (MACsec) CKN to associate with the dedicated connection.</p> <p>You can create the CKN/CAK pair using an industry standard tool.</p> <p> The valid values are 64 hexadecimal characters (0-9, A-E).</p> <p>If you use this request parameter, you must use the <code>cak</code> request parameter and not use the <code>secretARN</code> request parameter.</p>',
+    }),
+    cak: CakSchema.exactOptional().openapi({
+      description:
+        '<p>The MAC Security (MACsec) CAK to associate with the dedicated connection.</p> <p>You can create the CKN/CAK pair using an industry standard tool.</p> <p> The valid values are 64 hexadecimal characters (0-9, A-E).</p> <p>If you use this request parameter, you must use the <code>ckn</code> request parameter and not use the <code>secretARN</code> request parameter.</p>',
+    }),
   })
   .openapi({ required: ['connectionId'], title: 'AssociateMacSecKeyRequest' })
   .openapi('AssociateMacSecKeyRequest')
 
 const AssociateVirtualInterfaceRequestSchema = z
   .object({
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual interface.' }),
-    ),
-    connectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the LAG or connection.' }),
-    ),
+    virtualInterfaceId: VirtualInterfaceIdSchema.openapi({
+      description: 'The ID of the virtual interface.',
+    }),
+    connectionId: ConnectionIdSchema.openapi({ description: 'The ID of the LAG or connection.' }),
   })
   .openapi({
     required: ['virtualInterfaceId', 'connectionId'],
@@ -1130,23 +813,17 @@ const AssociateVirtualInterfaceRequestSchema = z
 
 const ConfirmConnectionResponseSchema = z
   .object({
-    connectionState: ConnectionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the connection. The following are the possible values:</p> <ul> <li> <p> <code>ordering</code>: The initial state of a hosted connection provisioned on an interconnect. The connection stays in the ordering state until the owner of the hosted connection confirms or declines the connection order.</p> </li> <li> <p> <code>requested</code>: The initial state of a standard connection. The connection stays in the requested state until the Letter of Authorization (LOA) is sent to the customer.</p> </li> <li> <p> <code>pending</code>: The connection has been approved and is being initialized.</p> </li> <li> <p> <code>available</code>: The network link is up and the connection is ready for use.</p> </li> <li> <p> <code>down</code>: The network link is down.</p> </li> <li> <p> <code>deleting</code>: The connection is being deleted.</p> </li> <li> <p> <code>deleted</code>: The connection has been deleted.</p> </li> <li> <p> <code>rejected</code>: A hosted connection in the <code>ordering</code> state enters the <code>rejected</code> state if it is deleted by the customer.</p> </li> <li> <p> <code>unknown</code>: The state of the connection is not available.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    connectionState: ConnectionStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the connection. The following are the possible values:</p> <ul> <li> <p> <code>ordering</code>: The initial state of a hosted connection provisioned on an interconnect. The connection stays in the ordering state until the owner of the hosted connection confirms or declines the connection order.</p> </li> <li> <p> <code>requested</code>: The initial state of a standard connection. The connection stays in the requested state until the Letter of Authorization (LOA) is sent to the customer.</p> </li> <li> <p> <code>pending</code>: The connection has been approved and is being initialized.</p> </li> <li> <p> <code>available</code>: The network link is up and the connection is ready for use.</p> </li> <li> <p> <code>down</code>: The network link is down.</p> </li> <li> <p> <code>deleting</code>: The connection is being deleted.</p> </li> <li> <p> <code>deleted</code>: The connection has been deleted.</p> </li> <li> <p> <code>rejected</code>: A hosted connection in the <code>ordering</code> state enters the <code>rejected</code> state if it is deleted by the customer.</p> </li> <li> <p> <code>unknown</code>: The state of the connection is not available.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ConfirmConnectionResponse')
 
 const ConfirmConnectionRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the hosted connection.' }),
-    ),
+    connectionId: ConnectionIdSchema.openapi({ description: 'The ID of the hosted connection.' }),
   })
   .openapi({ required: ['connectionId'], title: 'ConfirmConnectionRequest' })
   .openapi('ConfirmConnectionRequest')
@@ -1155,14 +832,10 @@ const StatusSchema = z.string().max(30).openapi('Status')
 
 const ConfirmCustomerAgreementResponseSchema = z
   .object({
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The status of the customer agreement when the connection was created. This will be either <code>signed</code> or <code>unsigned</code>. ',
-        }),
-    ).exactOptional(),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        ' The status of the customer agreement when the connection was created. This will be either <code>signed</code> or <code>unsigned</code>. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ConfirmCustomerAgreementResponse')
@@ -1171,87 +844,75 @@ const AgreementNameSchema = z.string().max(100).openapi('AgreementName')
 
 const ConfirmCustomerAgreementRequestSchema = z
   .object({
-    agreementName: AgreementNameSchema.and(
-      z.any().openapi({ description: ' The name of the customer agreement. ' }),
-    ).exactOptional(),
+    agreementName: AgreementNameSchema.exactOptional().openapi({
+      description: ' The name of the customer agreement. ',
+    }),
   })
   .openapi({ title: 'ConfirmCustomerAgreementRequest', required: [] })
   .openapi('ConfirmCustomerAgreementRequest')
 
 const ConfirmPrivateVirtualInterfaceResponseSchema = z
   .object({
-    virtualInterfaceState: VirtualInterfaceStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the virtual interface. The following are the possible values:</p> <ul> <li> <p> <code>confirming</code>: The creation of the virtual interface is pending confirmation from the virtual interface owner. If the owner of the virtual interface is different from the owner of the connection on which it is provisioned, then the virtual interface will remain in this state until it is confirmed by the virtual interface owner.</p> </li> <li> <p> <code>verifying</code>: This state only applies to public virtual interfaces. Each public virtual interface needs validation before the virtual interface can be created.</p> </li> <li> <p> <code>pending</code>: A virtual interface is in this state from the time that it is created until the virtual interface is ready to forward traffic.</p> </li> <li> <p> <code>available</code>: A virtual interface that is able to forward traffic.</p> </li> <li> <p> <code>down</code>: A virtual interface that is BGP down.</p> </li> <li> <p> <code>deleting</code>: A virtual interface is in this state immediately after calling <a>DeleteVirtualInterface</a> until it can no longer forward traffic.</p> </li> <li> <p> <code>deleted</code>: A virtual interface that cannot forward traffic.</p> </li> <li> <p> <code>rejected</code>: The virtual interface owner has declined creation of the virtual interface. If a virtual interface in the <code>Confirming</code> state is deleted by the virtual interface owner, the virtual interface enters the <code>Rejected</code> state.</p> </li> <li> <p> <code>unknown</code>: The state of the virtual interface is not available.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    virtualInterfaceState: VirtualInterfaceStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the virtual interface. The following are the possible values:</p> <ul> <li> <p> <code>confirming</code>: The creation of the virtual interface is pending confirmation from the virtual interface owner. If the owner of the virtual interface is different from the owner of the connection on which it is provisioned, then the virtual interface will remain in this state until it is confirmed by the virtual interface owner.</p> </li> <li> <p> <code>verifying</code>: This state only applies to public virtual interfaces. Each public virtual interface needs validation before the virtual interface can be created.</p> </li> <li> <p> <code>pending</code>: A virtual interface is in this state from the time that it is created until the virtual interface is ready to forward traffic.</p> </li> <li> <p> <code>available</code>: A virtual interface that is able to forward traffic.</p> </li> <li> <p> <code>down</code>: A virtual interface that is BGP down.</p> </li> <li> <p> <code>deleting</code>: A virtual interface is in this state immediately after calling <a>DeleteVirtualInterface</a> until it can no longer forward traffic.</p> </li> <li> <p> <code>deleted</code>: A virtual interface that cannot forward traffic.</p> </li> <li> <p> <code>rejected</code>: The virtual interface owner has declined creation of the virtual interface. If a virtual interface in the <code>Confirming</code> state is deleted by the virtual interface owner, the virtual interface enters the <code>Rejected</code> state.</p> </li> <li> <p> <code>unknown</code>: The state of the virtual interface is not available.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ConfirmPrivateVirtualInterfaceResponse')
 
 const ConfirmPrivateVirtualInterfaceRequestSchema = z
   .object({
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual interface.' }),
-    ),
-    virtualGatewayId: VirtualGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual private gateway.' }),
-    ).exactOptional(),
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ).exactOptional(),
+    virtualInterfaceId: VirtualInterfaceIdSchema.openapi({
+      description: 'The ID of the virtual interface.',
+    }),
+    virtualGatewayId: VirtualGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the virtual private gateway.',
+    }),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
   })
   .openapi({ required: ['virtualInterfaceId'], title: 'ConfirmPrivateVirtualInterfaceRequest' })
   .openapi('ConfirmPrivateVirtualInterfaceRequest')
 
 const ConfirmPublicVirtualInterfaceResponseSchema = z
   .object({
-    virtualInterfaceState: VirtualInterfaceStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the virtual interface. The following are the possible values:</p> <ul> <li> <p> <code>confirming</code>: The creation of the virtual interface is pending confirmation from the virtual interface owner. If the owner of the virtual interface is different from the owner of the connection on which it is provisioned, then the virtual interface will remain in this state until it is confirmed by the virtual interface owner.</p> </li> <li> <p> <code>verifying</code>: This state only applies to public virtual interfaces. Each public virtual interface needs validation before the virtual interface can be created.</p> </li> <li> <p> <code>pending</code>: A virtual interface is in this state from the time that it is created until the virtual interface is ready to forward traffic.</p> </li> <li> <p> <code>available</code>: A virtual interface that is able to forward traffic.</p> </li> <li> <p> <code>down</code>: A virtual interface that is BGP down.</p> </li> <li> <p> <code>deleting</code>: A virtual interface is in this state immediately after calling <a>DeleteVirtualInterface</a> until it can no longer forward traffic.</p> </li> <li> <p> <code>deleted</code>: A virtual interface that cannot forward traffic.</p> </li> <li> <p> <code>rejected</code>: The virtual interface owner has declined creation of the virtual interface. If a virtual interface in the <code>Confirming</code> state is deleted by the virtual interface owner, the virtual interface enters the <code>Rejected</code> state.</p> </li> <li> <p> <code>unknown</code>: The state of the virtual interface is not available.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    virtualInterfaceState: VirtualInterfaceStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the virtual interface. The following are the possible values:</p> <ul> <li> <p> <code>confirming</code>: The creation of the virtual interface is pending confirmation from the virtual interface owner. If the owner of the virtual interface is different from the owner of the connection on which it is provisioned, then the virtual interface will remain in this state until it is confirmed by the virtual interface owner.</p> </li> <li> <p> <code>verifying</code>: This state only applies to public virtual interfaces. Each public virtual interface needs validation before the virtual interface can be created.</p> </li> <li> <p> <code>pending</code>: A virtual interface is in this state from the time that it is created until the virtual interface is ready to forward traffic.</p> </li> <li> <p> <code>available</code>: A virtual interface that is able to forward traffic.</p> </li> <li> <p> <code>down</code>: A virtual interface that is BGP down.</p> </li> <li> <p> <code>deleting</code>: A virtual interface is in this state immediately after calling <a>DeleteVirtualInterface</a> until it can no longer forward traffic.</p> </li> <li> <p> <code>deleted</code>: A virtual interface that cannot forward traffic.</p> </li> <li> <p> <code>rejected</code>: The virtual interface owner has declined creation of the virtual interface. If a virtual interface in the <code>Confirming</code> state is deleted by the virtual interface owner, the virtual interface enters the <code>Rejected</code> state.</p> </li> <li> <p> <code>unknown</code>: The state of the virtual interface is not available.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ConfirmPublicVirtualInterfaceResponse')
 
 const ConfirmPublicVirtualInterfaceRequestSchema = z
   .object({
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual interface.' }),
-    ),
+    virtualInterfaceId: VirtualInterfaceIdSchema.openapi({
+      description: 'The ID of the virtual interface.',
+    }),
   })
   .openapi({ required: ['virtualInterfaceId'], title: 'ConfirmPublicVirtualInterfaceRequest' })
   .openapi('ConfirmPublicVirtualInterfaceRequest')
 
 const ConfirmTransitVirtualInterfaceResponseSchema = z
   .object({
-    virtualInterfaceState: VirtualInterfaceStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the virtual interface. The following are the possible values:</p> <ul> <li> <p> <code>confirming</code>: The creation of the virtual interface is pending confirmation from the virtual interface owner. If the owner of the virtual interface is different from the owner of the connection on which it is provisioned, then the virtual interface will remain in this state until it is confirmed by the virtual interface owner.</p> </li> <li> <p> <code>verifying</code>: This state only applies to public virtual interfaces. Each public virtual interface needs validation before the virtual interface can be created.</p> </li> <li> <p> <code>pending</code>: A virtual interface is in this state from the time that it is created until the virtual interface is ready to forward traffic.</p> </li> <li> <p> <code>available</code>: A virtual interface that is able to forward traffic.</p> </li> <li> <p> <code>down</code>: A virtual interface that is BGP down.</p> </li> <li> <p> <code>deleting</code>: A virtual interface is in this state immediately after calling <a>DeleteVirtualInterface</a> until it can no longer forward traffic.</p> </li> <li> <p> <code>deleted</code>: A virtual interface that cannot forward traffic.</p> </li> <li> <p> <code>rejected</code>: The virtual interface owner has declined creation of the virtual interface. If a virtual interface in the <code>Confirming</code> state is deleted by the virtual interface owner, the virtual interface enters the <code>Rejected</code> state.</p> </li> <li> <p> <code>unknown</code>: The state of the virtual interface is not available.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    virtualInterfaceState: VirtualInterfaceStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the virtual interface. The following are the possible values:</p> <ul> <li> <p> <code>confirming</code>: The creation of the virtual interface is pending confirmation from the virtual interface owner. If the owner of the virtual interface is different from the owner of the connection on which it is provisioned, then the virtual interface will remain in this state until it is confirmed by the virtual interface owner.</p> </li> <li> <p> <code>verifying</code>: This state only applies to public virtual interfaces. Each public virtual interface needs validation before the virtual interface can be created.</p> </li> <li> <p> <code>pending</code>: A virtual interface is in this state from the time that it is created until the virtual interface is ready to forward traffic.</p> </li> <li> <p> <code>available</code>: A virtual interface that is able to forward traffic.</p> </li> <li> <p> <code>down</code>: A virtual interface that is BGP down.</p> </li> <li> <p> <code>deleting</code>: A virtual interface is in this state immediately after calling <a>DeleteVirtualInterface</a> until it can no longer forward traffic.</p> </li> <li> <p> <code>deleted</code>: A virtual interface that cannot forward traffic.</p> </li> <li> <p> <code>rejected</code>: The virtual interface owner has declined creation of the virtual interface. If a virtual interface in the <code>Confirming</code> state is deleted by the virtual interface owner, the virtual interface enters the <code>Rejected</code> state.</p> </li> <li> <p> <code>unknown</code>: The state of the virtual interface is not available.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ConfirmTransitVirtualInterfaceResponse')
 
 const ConfirmTransitVirtualInterfaceRequestSchema = z
   .object({
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual interface.' }),
-    ),
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ),
+    virtualInterfaceId: VirtualInterfaceIdSchema.openapi({
+      description: 'The ID of the virtual interface.',
+    }),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
   })
   .openapi({
     required: ['virtualInterfaceId', 'directConnectGatewayId'],
@@ -1261,52 +922,44 @@ const ConfirmTransitVirtualInterfaceRequestSchema = z
 
 const CreateBGPPeerResponseSchema = z
   .object({
-    virtualInterface: VirtualInterfaceSchema.and(
-      z.any().openapi({ description: 'The virtual interface.' }),
-    ).exactOptional(),
+    virtualInterface: VirtualInterfaceSchema.exactOptional().openapi({
+      description: 'The virtual interface.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateBGPPeerResponse')
 
 const NewBGPPeerSchema = z
   .object({
-    asn: ASNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.',
-        }),
-    ).exactOptional(),
-    authKey: BGPAuthKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
-        }),
-    ).exactOptional(),
-    addressFamily: AddressFamilySchema.and(
-      z.any().openapi({ description: 'The address family for the BGP peer.' }),
-    ).exactOptional(),
-    amazonAddress: AmazonAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the Amazon interface.' }),
-    ).exactOptional(),
-    customerAddress: CustomerAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the customer interface.' }),
-    ).exactOptional(),
+    asn: ASNSchema.exactOptional().openapi({
+      description:
+        'The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.',
+    }),
+    authKey: BGPAuthKeySchema.exactOptional().openapi({
+      description:
+        'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
+    }),
+    addressFamily: AddressFamilySchema.exactOptional().openapi({
+      description: 'The address family for the BGP peer.',
+    }),
+    amazonAddress: AmazonAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the Amazon interface.',
+    }),
+    customerAddress: CustomerAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the customer interface.',
+    }),
   })
   .openapi({ description: 'Information about a new BGP peer.', required: [] })
   .openapi('NewBGPPeer')
 
 const CreateBGPPeerRequestSchema = z
   .object({
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual interface.' }),
-    ).exactOptional(),
-    newBGPPeer: NewBGPPeerSchema.and(
-      z.any().openapi({ description: 'Information about the BGP peer.' }),
-    ).exactOptional(),
+    virtualInterfaceId: VirtualInterfaceIdSchema.exactOptional().openapi({
+      description: 'The ID of the virtual interface.',
+    }),
+    newBGPPeer: NewBGPPeerSchema.exactOptional().openapi({
+      description: 'Information about the BGP peer.',
+    }),
   })
   .openapi({ title: 'CreateBGPPeerRequest', required: [] })
   .openapi('CreateBGPPeerRequest')
@@ -1315,34 +968,20 @@ const RequestMACSecSchema = z.boolean().openapi('RequestMACSec')
 
 const CreateConnectionRequestSchema = z
   .object({
-    location: LocationCodeSchema.and(
-      z.any().openapi({ description: 'The location of the connection.' }),
-    ),
-    bandwidth: BandwidthSchema.and(
-      z.any().openapi({ description: 'The bandwidth of the connection.' }),
-    ),
-    connectionName: ConnectionNameSchema.and(
-      z.any().openapi({ description: 'The name of the connection.' }),
-    ),
-    lagId: LagIdSchema.and(z.any().openapi({ description: 'The ID of the LAG.' })).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to associate with the lag.' }),
-    ).exactOptional(),
-    providerName: ProviderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service provider associated with the requested connection.',
-        }),
-    ).exactOptional(),
-    requestMACSec: RequestMACSecSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether you want the connection to support MAC Security (MACsec).</p> <p>MAC Security (MACsec) is only available on dedicated connections. For information about MAC Security (MACsec) prerequisties, see <a href="https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-mac-sec-getting-started.html#mac-sec-prerequisites">MACsec prerequisties</a> in the <i>Direct Connect User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    location: LocationCodeSchema.openapi({ description: 'The location of the connection.' }),
+    bandwidth: BandwidthSchema.openapi({ description: 'The bandwidth of the connection.' }),
+    connectionName: ConnectionNameSchema.openapi({ description: 'The name of the connection.' }),
+    lagId: LagIdSchema.exactOptional().openapi({ description: 'The ID of the LAG.' }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to associate with the lag.',
+    }),
+    providerName: ProviderNameSchema.exactOptional().openapi({
+      description: 'The name of the service provider associated with the requested connection.',
+    }),
+    requestMACSec: RequestMACSecSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether you want the connection to support MAC Security (MACsec).</p> <p>MAC Security (MACsec) is only available on dedicated connections. For information about MAC Security (MACsec) prerequisties, see <a href="https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-mac-sec-getting-started.html#mac-sec-prerequisites">MACsec prerequisties</a> in the <i>Direct Connect User Guide</i>.</p>',
+    }),
   })
   .openapi({
     required: ['location', 'bandwidth', 'connectionName'],
@@ -1358,40 +997,26 @@ const DirectConnectGatewayStateSchema = z
 
 const DirectConnectGatewaySchema = z
   .object({
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ).exactOptional(),
-    directConnectGatewayName: DirectConnectGatewayNameSchema.and(
-      z.any().openapi({ description: 'The name of the Direct Connect gateway.' }),
-    ).exactOptional(),
-    amazonSideAsn: LongAsnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The autonomous system number (ASN) for the Amazon side of the connection.',
-        }),
-    ).exactOptional(),
-    ownerAccount: OwnerAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services account that owns the Direct Connect gateway.',
-        }),
-    ).exactOptional(),
-    directConnectGatewayState: DirectConnectGatewayStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the Direct Connect gateway. The following are the possible values:</p> <ul> <li> <p> <code>pending</code>: The initial state after calling <a>CreateDirectConnectGateway</a>.</p> </li> <li> <p> <code>available</code>: The Direct Connect gateway is ready for use.</p> </li> <li> <p> <code>deleting</code>: The initial state after calling <a>DeleteDirectConnectGateway</a>.</p> </li> <li> <p> <code>deleted</code>: The Direct Connect gateway is deleted and cannot pass traffic.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    stateChangeError: StateChangeErrorSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The error message if the state of an object failed to advance.' }),
-    ).exactOptional(),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
+    directConnectGatewayName: DirectConnectGatewayNameSchema.exactOptional().openapi({
+      description: 'The name of the Direct Connect gateway.',
+    }),
+    amazonSideAsn: LongAsnSchema.exactOptional().openapi({
+      description: 'The autonomous system number (ASN) for the Amazon side of the connection.',
+    }),
+    ownerAccount: OwnerAccountSchema.exactOptional().openapi({
+      description:
+        'The ID of the Amazon Web Services account that owns the Direct Connect gateway.',
+    }),
+    directConnectGatewayState: DirectConnectGatewayStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the Direct Connect gateway. The following are the possible values:</p> <ul> <li> <p> <code>pending</code>: The initial state after calling <a>CreateDirectConnectGateway</a>.</p> </li> <li> <p> <code>available</code>: The Direct Connect gateway is ready for use.</p> </li> <li> <p> <code>deleting</code>: The initial state after calling <a>DeleteDirectConnectGateway</a>.</p> </li> <li> <p> <code>deleted</code>: The Direct Connect gateway is deleted and cannot pass traffic.</p> </li> </ul>',
+    }),
+    stateChangeError: StateChangeErrorSchema.exactOptional().openapi({
+      description: 'The error message if the state of an object failed to advance.',
+    }),
   })
   .openapi({
     description:
@@ -1402,35 +1027,31 @@ const DirectConnectGatewaySchema = z
 
 const CreateDirectConnectGatewayResultSchema = z
   .object({
-    directConnectGateway: DirectConnectGatewaySchema.and(
-      z.any().openapi({ description: 'The Direct Connect gateway.' }),
-    ).exactOptional(),
+    directConnectGateway: DirectConnectGatewaySchema.exactOptional().openapi({
+      description: 'The Direct Connect gateway.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDirectConnectGatewayResult')
 
 const CreateDirectConnectGatewayRequestSchema = z
   .object({
-    directConnectGatewayName: DirectConnectGatewayNameSchema.and(
-      z.any().openapi({ description: 'The name of the Direct Connect gateway.' }),
-    ),
-    amazonSideAsn: LongAsnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The autonomous system number (ASN) for Border Gateway Protocol (BGP) to be configured on the Amazon side of the connection. The ASN must be in the private range of 64,512 to 65,534 or 4,200,000,000 to 4,294,967,294. The default is 64512.',
-        }),
-    ).exactOptional(),
+    directConnectGatewayName: DirectConnectGatewayNameSchema.openapi({
+      description: 'The name of the Direct Connect gateway.',
+    }),
+    amazonSideAsn: LongAsnSchema.exactOptional().openapi({
+      description:
+        'The autonomous system number (ASN) for Border Gateway Protocol (BGP) to be configured on the Amazon side of the connection. The ASN must be in the private range of 64,512 to 65,534 or 4,200,000,000 to 4,294,967,294. The default is 64512.',
+    }),
   })
   .openapi({ required: ['directConnectGatewayName'], title: 'CreateDirectConnectGatewayRequest' })
   .openapi('CreateDirectConnectGatewayRequest')
 
 const CreateDirectConnectGatewayAssociationResultSchema = z
   .object({
-    directConnectGatewayAssociation: DirectConnectGatewayAssociationSchema.and(
-      z.any().openapi({ description: 'The association to be created.' }),
-    ).exactOptional(),
+    directConnectGatewayAssociation: DirectConnectGatewayAssociationSchema.exactOptional().openapi({
+      description: 'The association to be created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDirectConnectGatewayAssociationResult')
@@ -1439,23 +1060,19 @@ const GatewayIdToAssociateSchema = z.string().openapi('GatewayIdToAssociate')
 
 const CreateDirectConnectGatewayAssociationRequestSchema = z
   .object({
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ),
-    gatewayId: GatewayIdToAssociateSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual private gateway or transit gateway.' }),
-    ).exactOptional(),
-    addAllowedPrefixesToDirectConnectGateway: RouteFilterPrefixListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon VPC prefixes to advertise to the Direct Connect gateway</p> <p>This parameter is required when you create an association to a transit gateway.</p> <p>For information about how to set the prefixes, see <a href="https://docs.aws.amazon.com/directconnect/latest/UserGuide/multi-account-associate-vgw.html#allowed-prefixes">Allowed Prefixes</a> in the <i>Direct Connect User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    virtualGatewayId: VirtualGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual private gateway.' }),
-    ).exactOptional(),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
+    gatewayId: GatewayIdToAssociateSchema.exactOptional().openapi({
+      description: 'The ID of the virtual private gateway or transit gateway.',
+    }),
+    addAllowedPrefixesToDirectConnectGateway: RouteFilterPrefixListSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon VPC prefixes to advertise to the Direct Connect gateway</p> <p>This parameter is required when you create an association to a transit gateway.</p> <p>For information about how to set the prefixes, see <a href="https://docs.aws.amazon.com/directconnect/latest/UserGuide/multi-account-associate-vgw.html#allowed-prefixes">Allowed Prefixes</a> in the <i>Direct Connect User Guide</i>.</p>',
+    }),
+    virtualGatewayId: VirtualGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the virtual private gateway.',
+    }),
   })
   .openapi({
     required: ['directConnectGatewayId'],
@@ -1469,45 +1086,31 @@ const DirectConnectGatewayAssociationProposalStateSchema = z
 
 const DirectConnectGatewayAssociationProposalSchema = z
   .object({
-    proposalId: DirectConnectGatewayAssociationProposalIdSchema.and(
-      z.any().openapi({ description: 'The ID of the association proposal.' }),
-    ).exactOptional(),
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ).exactOptional(),
-    directConnectGatewayOwnerAccount: OwnerAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services account that owns the Direct Connect gateway.',
-        }),
-    ).exactOptional(),
-    proposalState: DirectConnectGatewayAssociationProposalStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the proposal. The following are possible values:</p> <ul> <li> <p> <code>accepted</code>: The proposal has been accepted. The Direct Connect gateway association is available to use in this state.</p> </li> <li> <p> <code>deleted</code>: The proposal has been deleted by the owner that made the proposal. The Direct Connect gateway association cannot be used in this state.</p> </li> <li> <p> <code>requested</code>: The proposal has been requested. The Direct Connect gateway association cannot be used in this state.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    associatedGateway: AssociatedGatewaySchema.and(
-      z.any().openapi({ description: 'Information about the associated gateway.' }),
-    ).exactOptional(),
-    existingAllowedPrefixesToDirectConnectGateway: RouteFilterPrefixListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The existing Amazon VPC prefixes advertised to the Direct Connect gateway.',
-        }),
-    ).exactOptional(),
-    requestedAllowedPrefixesToDirectConnectGateway: RouteFilterPrefixListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon VPC prefixes to advertise to the Direct Connect gateway.',
-        }),
-    ).exactOptional(),
+    proposalId: DirectConnectGatewayAssociationProposalIdSchema.exactOptional().openapi({
+      description: 'The ID of the association proposal.',
+    }),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
+    directConnectGatewayOwnerAccount: OwnerAccountSchema.exactOptional().openapi({
+      description:
+        'The ID of the Amazon Web Services account that owns the Direct Connect gateway.',
+    }),
+    proposalState: DirectConnectGatewayAssociationProposalStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the proposal. The following are possible values:</p> <ul> <li> <p> <code>accepted</code>: The proposal has been accepted. The Direct Connect gateway association is available to use in this state.</p> </li> <li> <p> <code>deleted</code>: The proposal has been deleted by the owner that made the proposal. The Direct Connect gateway association cannot be used in this state.</p> </li> <li> <p> <code>requested</code>: The proposal has been requested. The Direct Connect gateway association cannot be used in this state.</p> </li> </ul>',
+    }),
+    associatedGateway: AssociatedGatewaySchema.exactOptional().openapi({
+      description: 'Information about the associated gateway.',
+    }),
+    existingAllowedPrefixesToDirectConnectGateway:
+      RouteFilterPrefixListSchema.exactOptional().openapi({
+        description: 'The existing Amazon VPC prefixes advertised to the Direct Connect gateway.',
+      }),
+    requestedAllowedPrefixesToDirectConnectGateway:
+      RouteFilterPrefixListSchema.exactOptional().openapi({
+        description: 'The Amazon VPC prefixes to advertise to the Direct Connect gateway.',
+      }),
   })
   .openapi({
     description:
@@ -1518,44 +1121,34 @@ const DirectConnectGatewayAssociationProposalSchema = z
 
 const CreateDirectConnectGatewayAssociationProposalResultSchema = z
   .object({
-    directConnectGatewayAssociationProposal: DirectConnectGatewayAssociationProposalSchema.and(
-      z.any().openapi({ description: 'Information about the Direct Connect gateway proposal.' }),
-    ).exactOptional(),
+    directConnectGatewayAssociationProposal:
+      DirectConnectGatewayAssociationProposalSchema.exactOptional().openapi({
+        description: 'Information about the Direct Connect gateway proposal.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('CreateDirectConnectGatewayAssociationProposalResult')
 
 const CreateDirectConnectGatewayAssociationProposalRequestSchema = z
   .object({
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ),
-    directConnectGatewayOwnerAccount: OwnerAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services account that owns the Direct Connect gateway.',
-        }),
-    ),
-    gatewayId: GatewayIdToAssociateSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual private gateway or transit gateway.' }),
-    ),
-    addAllowedPrefixesToDirectConnectGateway: RouteFilterPrefixListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon VPC prefixes to advertise to the Direct Connect gateway.',
-        }),
-    ).exactOptional(),
-    removeAllowedPrefixesToDirectConnectGateway: RouteFilterPrefixListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon VPC prefixes to no longer advertise to the Direct Connect gateway.',
-        }),
-    ).exactOptional(),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
+    directConnectGatewayOwnerAccount: OwnerAccountSchema.openapi({
+      description:
+        'The ID of the Amazon Web Services account that owns the Direct Connect gateway.',
+    }),
+    gatewayId: GatewayIdToAssociateSchema.openapi({
+      description: 'The ID of the virtual private gateway or transit gateway.',
+    }),
+    addAllowedPrefixesToDirectConnectGateway: RouteFilterPrefixListSchema.exactOptional().openapi({
+      description: 'The Amazon VPC prefixes to advertise to the Direct Connect gateway.',
+    }),
+    removeAllowedPrefixesToDirectConnectGateway:
+      RouteFilterPrefixListSchema.exactOptional().openapi({
+        description:
+          'The Amazon VPC prefixes to no longer advertise to the Direct Connect gateway.',
+      }),
   })
   .openapi({
     required: ['directConnectGatewayId', 'directConnectGatewayOwnerAccount', 'gatewayId'],
@@ -1571,113 +1164,72 @@ const InterconnectStateSchema = z
 
 const InterconnectSchema = z
   .object({
-    interconnectId: InterconnectIdSchema.and(
-      z.any().openapi({ description: 'The ID of the interconnect.' }),
-    ).exactOptional(),
-    interconnectName: InterconnectNameSchema.and(
-      z.any().openapi({ description: 'The name of the interconnect.' }),
-    ).exactOptional(),
-    interconnectState: InterconnectStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the interconnect. The following are the possible values:</p> <ul> <li> <p> <code>requested</code>: The initial state of an interconnect. The interconnect stays in the requested state until the Letter of Authorization (LOA) is sent to the customer.</p> </li> <li> <p> <code>pending</code>: The interconnect is approved, and is being initialized.</p> </li> <li> <p> <code>available</code>: The network link is up, and the interconnect is ready for use.</p> </li> <li> <p> <code>down</code>: The network link is down.</p> </li> <li> <p> <code>deleting</code>: The interconnect is being deleted.</p> </li> <li> <p> <code>deleted</code>: The interconnect is deleted.</p> </li> <li> <p> <code>unknown</code>: The state of the interconnect is not available.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    region: RegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services Region where the connection is located.',
-        }),
-    ).exactOptional(),
-    location: LocationCodeSchema.and(
-      z.any().openapi({ description: 'The location of the connection.' }),
-    ).exactOptional(),
-    bandwidth: BandwidthSchema.and(
-      z.any().openapi({ description: 'The bandwidth of the connection.' }),
-    ).exactOptional(),
-    loaIssueTime: LoaIssueTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the most recent call to <a>DescribeLoa</a> for this connection.',
-        }),
-    ).exactOptional(),
-    lagId: LagIdSchema.and(z.any().openapi({ description: 'The ID of the LAG.' })).exactOptional(),
-    awsDevice: AwsDeviceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Direct Connect endpoint on which the physical connection terminates.',
-        }),
-    ).exactOptional(),
-    jumboFrameCapable: JumboFrameCapableSchema.and(
-      z.any().openapi({ description: 'Indicates whether jumbo frames (9001 MTU) are supported.' }),
-    ).exactOptional(),
-    awsDeviceV2: AwsDeviceV2Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Direct Connect endpoint that terminates the physical connection.',
-        }),
-    ).exactOptional(),
-    awsLogicalDeviceId: AwsLogicalDeviceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Direct Connect endpoint that terminates the logical connection. This device might be different than the device that terminates the physical connection.',
-        }),
-    ).exactOptional(),
-    hasLogicalRedundancy: HasLogicalRedundancySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the interconnect supports a secondary BGP in the same address family (IPv4/IPv6).',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the interconnect.' }),
-    ).exactOptional(),
-    providerName: ProviderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service provider associated with the interconnect.',
-        }),
-    ).exactOptional(),
+    interconnectId: InterconnectIdSchema.exactOptional().openapi({
+      description: 'The ID of the interconnect.',
+    }),
+    interconnectName: InterconnectNameSchema.exactOptional().openapi({
+      description: 'The name of the interconnect.',
+    }),
+    interconnectState: InterconnectStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the interconnect. The following are the possible values:</p> <ul> <li> <p> <code>requested</code>: The initial state of an interconnect. The interconnect stays in the requested state until the Letter of Authorization (LOA) is sent to the customer.</p> </li> <li> <p> <code>pending</code>: The interconnect is approved, and is being initialized.</p> </li> <li> <p> <code>available</code>: The network link is up, and the interconnect is ready for use.</p> </li> <li> <p> <code>down</code>: The network link is down.</p> </li> <li> <p> <code>deleting</code>: The interconnect is being deleted.</p> </li> <li> <p> <code>deleted</code>: The interconnect is deleted.</p> </li> <li> <p> <code>unknown</code>: The state of the interconnect is not available.</p> </li> </ul>',
+    }),
+    region: RegionSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region where the connection is located.',
+    }),
+    location: LocationCodeSchema.exactOptional().openapi({
+      description: 'The location of the connection.',
+    }),
+    bandwidth: BandwidthSchema.exactOptional().openapi({
+      description: 'The bandwidth of the connection.',
+    }),
+    loaIssueTime: LoaIssueTimeSchema.exactOptional().openapi({
+      description: 'The time of the most recent call to <a>DescribeLoa</a> for this connection.',
+    }),
+    lagId: LagIdSchema.exactOptional().openapi({ description: 'The ID of the LAG.' }),
+    awsDevice: AwsDeviceSchema.exactOptional().openapi({
+      description: 'The Direct Connect endpoint on which the physical connection terminates.',
+    }),
+    jumboFrameCapable: JumboFrameCapableSchema.exactOptional().openapi({
+      description: 'Indicates whether jumbo frames (9001 MTU) are supported.',
+    }),
+    awsDeviceV2: AwsDeviceV2Schema.exactOptional().openapi({
+      description: 'The Direct Connect endpoint that terminates the physical connection.',
+    }),
+    awsLogicalDeviceId: AwsLogicalDeviceIdSchema.exactOptional().openapi({
+      description:
+        'The Direct Connect endpoint that terminates the logical connection. This device might be different than the device that terminates the physical connection.',
+    }),
+    hasLogicalRedundancy: HasLogicalRedundancySchema.exactOptional().openapi({
+      description:
+        'Indicates whether the interconnect supports a secondary BGP in the same address family (IPv4/IPv6).',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the interconnect.',
+    }),
+    providerName: ProviderNameSchema.exactOptional().openapi({
+      description: 'The name of the service provider associated with the interconnect.',
+    }),
   })
   .openapi({ description: 'Information about an interconnect.', required: [] })
   .openapi('Interconnect')
 
 const CreateInterconnectRequestSchema = z
   .object({
-    interconnectName: InterconnectNameSchema.and(
-      z.any().openapi({ description: 'The name of the interconnect.' }),
-    ),
-    bandwidth: BandwidthSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The port bandwidth, in Gbps. The possible values are 1 and 10.' }),
-    ),
-    location: LocationCodeSchema.and(
-      z.any().openapi({ description: 'The location of the interconnect.' }),
-    ),
-    lagId: LagIdSchema.and(z.any().openapi({ description: 'The ID of the LAG.' })).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to associate with the interconnect.' }),
-    ).exactOptional(),
-    providerName: ProviderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the service provider associated with the interconnect.',
-        }),
-    ).exactOptional(),
+    interconnectName: InterconnectNameSchema.openapi({
+      description: 'The name of the interconnect.',
+    }),
+    bandwidth: BandwidthSchema.openapi({
+      description: 'The port bandwidth, in Gbps. The possible values are 1 and 10.',
+    }),
+    location: LocationCodeSchema.openapi({ description: 'The location of the interconnect.' }),
+    lagId: LagIdSchema.exactOptional().openapi({ description: 'The ID of the LAG.' }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to associate with the interconnect.',
+    }),
+    providerName: ProviderNameSchema.exactOptional().openapi({
+      description: 'The name of the service provider associated with the interconnect.',
+    }),
   })
   .openapi({
     required: ['interconnectName', 'bandwidth', 'location'],
@@ -1699,160 +1251,104 @@ const BooleanFlagSchema = z.boolean().openapi('BooleanFlag')
 
 const LagSchema = z
   .object({
-    connectionsBandwidth: BandwidthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The individual bandwidth of the physical connections bundled by the LAG. The possible values are 1Gbps and 10Gbps. ',
-        }),
-    ).exactOptional(),
-    numberOfConnections: CountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of physical dedicated connections bundled by the LAG, up to a maximum of 10.',
-        }),
-    ).exactOptional(),
-    lagId: LagIdSchema.and(z.any().openapi({ description: 'The ID of the LAG.' })).exactOptional(),
-    ownerAccount: OwnerAccountSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the Amazon Web Services account that owns the LAG.' }),
-    ).exactOptional(),
-    lagName: LagNameSchema.and(
-      z.any().openapi({ description: 'The name of the LAG.' }),
-    ).exactOptional(),
-    lagState: LagStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the LAG. The following are the possible values:</p> <ul> <li> <p> <code>requested</code>: The initial state of a LAG. The LAG stays in the requested state until the Letter of Authorization (LOA) is available.</p> </li> <li> <p> <code>pending</code>: The LAG has been approved and is being initialized.</p> </li> <li> <p> <code>available</code>: The network link is established and the LAG is ready for use.</p> </li> <li> <p> <code>down</code>: The network link is down.</p> </li> <li> <p> <code>deleting</code>: The LAG is being deleted.</p> </li> <li> <p> <code>deleted</code>: The LAG is deleted.</p> </li> <li> <p> <code>unknown</code>: The state of the LAG is not available.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    location: LocationCodeSchema.and(
-      z.any().openapi({ description: 'The location of the LAG.' }),
-    ).exactOptional(),
-    region: RegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services Region where the connection is located.',
-        }),
-    ).exactOptional(),
-    minimumLinks: CountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum number of physical dedicated connections that must be operational for the LAG itself to be operational.',
-        }),
-    ).exactOptional(),
-    awsDevice: AwsDeviceSchema.and(
-      z.any().openapi({ description: 'The Direct Connect endpoint that hosts the LAG.' }),
-    ).exactOptional(),
-    awsDeviceV2: AwsDeviceV2Schema.and(
-      z.any().openapi({ description: 'The Direct Connect endpoint that hosts the LAG.' }),
-    ).exactOptional(),
-    awsLogicalDeviceId: AwsLogicalDeviceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Direct Connect endpoint that terminates the logical connection. This device might be different than the device that terminates the physical connection.',
-        }),
-    ).exactOptional(),
-    connections: ConnectionListSchema.and(
-      z.any().openapi({ description: 'The connections bundled by the LAG.' }),
-    ).exactOptional(),
-    allowsHostedConnections: BooleanFlagSchema.and(
-      z.any().openapi({ description: 'Indicates whether the LAG can host other connections.' }),
-    ).exactOptional(),
-    jumboFrameCapable: JumboFrameCapableSchema.and(
-      z.any().openapi({ description: 'Indicates whether jumbo frames (9001 MTU) are supported.' }),
-    ).exactOptional(),
-    hasLogicalRedundancy: HasLogicalRedundancySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the LAG supports a secondary BGP peer in the same address family (IPv4/IPv6).',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the LAG.' }),
-    ).exactOptional(),
-    providerName: ProviderNameSchema.and(
-      z.any().openapi({ description: 'The name of the service provider associated with the LAG.' }),
-    ).exactOptional(),
-    macSecCapable: MacSecCapableSchema.and(
-      z.any().openapi({ description: 'Indicates whether the LAG supports MAC Security (MACsec).' }),
-    ).exactOptional(),
-    encryptionMode: EncryptionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The LAG MAC Security (MACsec) encryption mode.</p> <p>The valid values are <code>no_encrypt</code>, <code>should_encrypt</code>, and <code>must_encrypt</code>.</p>',
-        }),
-    ).exactOptional(),
-    macSecKeys: MacSecKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The MAC Security (MACsec) security keys associated with the LAG.',
-        }),
-    ).exactOptional(),
+    connectionsBandwidth: BandwidthSchema.exactOptional().openapi({
+      description:
+        'The individual bandwidth of the physical connections bundled by the LAG. The possible values are 1Gbps and 10Gbps. ',
+    }),
+    numberOfConnections: CountSchema.exactOptional().openapi({
+      description:
+        'The number of physical dedicated connections bundled by the LAG, up to a maximum of 10.',
+    }),
+    lagId: LagIdSchema.exactOptional().openapi({ description: 'The ID of the LAG.' }),
+    ownerAccount: OwnerAccountSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account that owns the LAG.',
+    }),
+    lagName: LagNameSchema.exactOptional().openapi({ description: 'The name of the LAG.' }),
+    lagState: LagStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the LAG. The following are the possible values:</p> <ul> <li> <p> <code>requested</code>: The initial state of a LAG. The LAG stays in the requested state until the Letter of Authorization (LOA) is available.</p> </li> <li> <p> <code>pending</code>: The LAG has been approved and is being initialized.</p> </li> <li> <p> <code>available</code>: The network link is established and the LAG is ready for use.</p> </li> <li> <p> <code>down</code>: The network link is down.</p> </li> <li> <p> <code>deleting</code>: The LAG is being deleted.</p> </li> <li> <p> <code>deleted</code>: The LAG is deleted.</p> </li> <li> <p> <code>unknown</code>: The state of the LAG is not available.</p> </li> </ul>',
+    }),
+    location: LocationCodeSchema.exactOptional().openapi({
+      description: 'The location of the LAG.',
+    }),
+    region: RegionSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region where the connection is located.',
+    }),
+    minimumLinks: CountSchema.exactOptional().openapi({
+      description:
+        'The minimum number of physical dedicated connections that must be operational for the LAG itself to be operational.',
+    }),
+    awsDevice: AwsDeviceSchema.exactOptional().openapi({
+      description: 'The Direct Connect endpoint that hosts the LAG.',
+    }),
+    awsDeviceV2: AwsDeviceV2Schema.exactOptional().openapi({
+      description: 'The Direct Connect endpoint that hosts the LAG.',
+    }),
+    awsLogicalDeviceId: AwsLogicalDeviceIdSchema.exactOptional().openapi({
+      description:
+        'The Direct Connect endpoint that terminates the logical connection. This device might be different than the device that terminates the physical connection.',
+    }),
+    connections: ConnectionListSchema.exactOptional().openapi({
+      description: 'The connections bundled by the LAG.',
+    }),
+    allowsHostedConnections: BooleanFlagSchema.exactOptional().openapi({
+      description: 'Indicates whether the LAG can host other connections.',
+    }),
+    jumboFrameCapable: JumboFrameCapableSchema.exactOptional().openapi({
+      description: 'Indicates whether jumbo frames (9001 MTU) are supported.',
+    }),
+    hasLogicalRedundancy: HasLogicalRedundancySchema.exactOptional().openapi({
+      description:
+        'Indicates whether the LAG supports a secondary BGP peer in the same address family (IPv4/IPv6).',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the LAG.',
+    }),
+    providerName: ProviderNameSchema.exactOptional().openapi({
+      description: 'The name of the service provider associated with the LAG.',
+    }),
+    macSecCapable: MacSecCapableSchema.exactOptional().openapi({
+      description: 'Indicates whether the LAG supports MAC Security (MACsec).',
+    }),
+    encryptionMode: EncryptionModeSchema.exactOptional().openapi({
+      description:
+        '<p>The LAG MAC Security (MACsec) encryption mode.</p> <p>The valid values are <code>no_encrypt</code>, <code>should_encrypt</code>, and <code>must_encrypt</code>.</p>',
+    }),
+    macSecKeys: MacSecKeyListSchema.exactOptional().openapi({
+      description: 'The MAC Security (MACsec) security keys associated with the LAG.',
+    }),
   })
   .openapi({ description: 'Information about a link aggregation group (LAG).', required: [] })
   .openapi('Lag')
 
 const CreateLagRequestSchema = z
   .object({
-    numberOfConnections: CountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of physical dedicated connections initially provisioned and bundled by the LAG.',
-        }),
-    ),
-    location: LocationCodeSchema.and(z.any().openapi({ description: 'The location for the LAG.' })),
-    connectionsBandwidth: BandwidthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The bandwidth of the individual physical dedicated connections bundled by the LAG. The possible values are 1Gbps and 10Gbps. ',
-        }),
-    ),
-    lagName: LagNameSchema.and(z.any().openapi({ description: 'The name of the LAG.' })),
-    connectionId: ConnectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of an existing dedicated connection to migrate to the LAG.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to associate with the LAG.' }),
-    ).exactOptional(),
-    childConnectionTags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to associate with the automtically created LAGs.' }),
-    ).exactOptional(),
-    providerName: ProviderNameSchema.and(
-      z.any().openapi({ description: 'The name of the service provider associated with the LAG.' }),
-    ).exactOptional(),
-    requestMACSec: RequestMACSecSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the connection will support MAC Security (MACsec).</p> <note> <p>All connections in the LAG must be capable of supporting MAC Security (MACsec). For information about MAC Security (MACsec) prerequisties, see <a href="https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-mac-sec-getting-started.html#mac-sec-prerequisites">MACsec prerequisties</a> in the <i>Direct Connect User Guide</i>.</p> </note>',
-        }),
-    ).exactOptional(),
+    numberOfConnections: CountSchema.openapi({
+      description:
+        'The number of physical dedicated connections initially provisioned and bundled by the LAG.',
+    }),
+    location: LocationCodeSchema.openapi({ description: 'The location for the LAG.' }),
+    connectionsBandwidth: BandwidthSchema.openapi({
+      description:
+        'The bandwidth of the individual physical dedicated connections bundled by the LAG. The possible values are 1Gbps and 10Gbps. ',
+    }),
+    lagName: LagNameSchema.openapi({ description: 'The name of the LAG.' }),
+    connectionId: ConnectionIdSchema.exactOptional().openapi({
+      description: 'The ID of an existing dedicated connection to migrate to the LAG.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to associate with the LAG.',
+    }),
+    childConnectionTags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to associate with the automtically created LAGs.',
+    }),
+    providerName: ProviderNameSchema.exactOptional().openapi({
+      description: 'The name of the service provider associated with the LAG.',
+    }),
+    requestMACSec: RequestMACSecSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether the connection will support MAC Security (MACsec).</p> <note> <p>All connections in the LAG must be capable of supporting MAC Security (MACsec). For information about MAC Security (MACsec) prerequisties, see <a href="https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-mac-sec-getting-started.html#mac-sec-prerequisites">MACsec prerequisties</a> in the <i>Direct Connect User Guide</i>.</p> </note>',
+    }),
   })
   .openapi({
     required: ['numberOfConnections', 'location', 'connectionsBandwidth', 'lagName'],
@@ -1864,60 +1360,44 @@ const EnableSiteLinkSchema = z.boolean().openapi('EnableSiteLink')
 
 const NewPrivateVirtualInterfaceSchema = z
   .object({
-    virtualInterfaceName: VirtualInterfaceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the virtual interface assigned by the customer network. The name has a maximum of 100 characters. The following are valid characters: a-z, 0-9 and a hyphen (-).',
-        }),
-    ),
-    vlan: VLANSchema.and(z.any().openapi({ description: 'The ID of the VLAN.' })),
-    asn: ASNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>',
-        }),
-    ),
-    mtu: MTUSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum transmission unit (MTU), in bytes. The supported values are 1500 and 9001. The default value is 1500.',
-        }),
-    ).exactOptional(),
-    authKey: BGPAuthKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
-        }),
-    ).exactOptional(),
-    amazonAddress: AmazonAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the Amazon interface.' }),
-    ).exactOptional(),
-    customerAddress: CustomerAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the customer interface.' }),
-    ).exactOptional(),
-    addressFamily: AddressFamilySchema.and(
-      z.any().openapi({ description: 'The address family for the BGP peer.' }),
-    ).exactOptional(),
-    virtualGatewayId: VirtualGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual private gateway.' }),
-    ).exactOptional(),
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the private virtual interface.' }),
-    ).exactOptional(),
-    enableSiteLink: EnableSiteLinkSchema.and(
-      z.any().openapi({ description: 'Indicates whether to enable or disable SiteLink.' }),
-    ).exactOptional(),
+    virtualInterfaceName: VirtualInterfaceNameSchema.openapi({
+      description:
+        'The name of the virtual interface assigned by the customer network. The name has a maximum of 100 characters. The following are valid characters: a-z, 0-9 and a hyphen (-).',
+    }),
+    vlan: VLANSchema.openapi({ description: 'The ID of the VLAN.' }),
+    asn: ASNSchema.openapi({
+      description:
+        '<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>',
+    }),
+    mtu: MTUSchema.exactOptional().openapi({
+      description:
+        'The maximum transmission unit (MTU), in bytes. The supported values are 1500 and 9001. The default value is 1500.',
+    }),
+    authKey: BGPAuthKeySchema.exactOptional().openapi({
+      description:
+        'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
+    }),
+    amazonAddress: AmazonAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the Amazon interface.',
+    }),
+    customerAddress: CustomerAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the customer interface.',
+    }),
+    addressFamily: AddressFamilySchema.exactOptional().openapi({
+      description: 'The address family for the BGP peer.',
+    }),
+    virtualGatewayId: VirtualGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the virtual private gateway.',
+    }),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the private virtual interface.',
+    }),
+    enableSiteLink: EnableSiteLinkSchema.exactOptional().openapi({
+      description: 'Indicates whether to enable or disable SiteLink.',
+    }),
   })
   .openapi({
     required: ['virtualInterfaceName', 'vlan', 'asn'],
@@ -1927,12 +1407,10 @@ const NewPrivateVirtualInterfaceSchema = z
 
 const CreatePrivateVirtualInterfaceRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the connection.' }),
-    ),
-    newPrivateVirtualInterface: NewPrivateVirtualInterfaceSchema.and(
-      z.any().openapi({ description: 'Information about the private virtual interface.' }),
-    ),
+    connectionId: ConnectionIdSchema.openapi({ description: 'The ID of the connection.' }),
+    newPrivateVirtualInterface: NewPrivateVirtualInterfaceSchema.openapi({
+      description: 'Information about the private virtual interface.',
+    }),
   })
   .openapi({
     required: ['connectionId', 'newPrivateVirtualInterface'],
@@ -1942,51 +1420,35 @@ const CreatePrivateVirtualInterfaceRequestSchema = z
 
 const NewPublicVirtualInterfaceSchema = z
   .object({
-    virtualInterfaceName: VirtualInterfaceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the virtual interface assigned by the customer network. The name has a maximum of 100 characters. The following are valid characters: a-z, 0-9 and a hyphen (-).',
-        }),
-    ),
-    vlan: VLANSchema.and(z.any().openapi({ description: 'The ID of the VLAN.' })),
-    asn: ASNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>',
-        }),
-    ),
-    authKey: BGPAuthKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
-        }),
-    ).exactOptional(),
-    amazonAddress: AmazonAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the Amazon interface.' }),
-    ).exactOptional(),
-    customerAddress: CustomerAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the customer interface.' }),
-    ).exactOptional(),
-    addressFamily: AddressFamilySchema.and(
-      z.any().openapi({ description: 'The address family for the BGP peer.' }),
-    ).exactOptional(),
-    routeFilterPrefixes: RouteFilterPrefixListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The routes to be advertised to the Amazon Web Services network in this Region. Applies to public virtual interfaces.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the public virtual interface.' }),
-    ).exactOptional(),
+    virtualInterfaceName: VirtualInterfaceNameSchema.openapi({
+      description:
+        'The name of the virtual interface assigned by the customer network. The name has a maximum of 100 characters. The following are valid characters: a-z, 0-9 and a hyphen (-).',
+    }),
+    vlan: VLANSchema.openapi({ description: 'The ID of the VLAN.' }),
+    asn: ASNSchema.openapi({
+      description:
+        '<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>',
+    }),
+    authKey: BGPAuthKeySchema.exactOptional().openapi({
+      description:
+        'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
+    }),
+    amazonAddress: AmazonAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the Amazon interface.',
+    }),
+    customerAddress: CustomerAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the customer interface.',
+    }),
+    addressFamily: AddressFamilySchema.exactOptional().openapi({
+      description: 'The address family for the BGP peer.',
+    }),
+    routeFilterPrefixes: RouteFilterPrefixListSchema.exactOptional().openapi({
+      description:
+        'The routes to be advertised to the Amazon Web Services network in this Region. Applies to public virtual interfaces.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the public virtual interface.',
+    }),
   })
   .openapi({
     required: ['virtualInterfaceName', 'vlan', 'asn'],
@@ -1996,12 +1458,10 @@ const NewPublicVirtualInterfaceSchema = z
 
 const CreatePublicVirtualInterfaceRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the connection.' }),
-    ),
-    newPublicVirtualInterface: NewPublicVirtualInterfaceSchema.and(
-      z.any().openapi({ description: 'Information about the public virtual interface.' }),
-    ),
+    connectionId: ConnectionIdSchema.openapi({ description: 'The ID of the connection.' }),
+    newPublicVirtualInterface: NewPublicVirtualInterfaceSchema.openapi({
+      description: 'Information about the public virtual interface.',
+    }),
   })
   .openapi({
     required: ['connectionId', 'newPublicVirtualInterface'],
@@ -2016,71 +1476,51 @@ const CreateTransitVirtualInterfaceResultSchema = z
 
 const NewTransitVirtualInterfaceSchema = z
   .object({
-    virtualInterfaceName: VirtualInterfaceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the virtual interface assigned by the customer network. The name has a maximum of 100 characters. The following are valid characters: a-z, 0-9 and a hyphen (-).',
-        }),
-    ).exactOptional(),
-    vlan: VLANSchema.and(z.any().openapi({ description: 'The ID of the VLAN.' })).exactOptional(),
-    asn: ASNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>',
-        }),
-    ).exactOptional(),
-    mtu: MTUSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum transmission unit (MTU), in bytes. The supported values are 1500 and 9001. The default value is 1500.',
-        }),
-    ).exactOptional(),
-    authKey: BGPAuthKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
-        }),
-    ).exactOptional(),
-    amazonAddress: AmazonAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the Amazon interface.' }),
-    ).exactOptional(),
-    customerAddress: CustomerAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the customer interface.' }),
-    ).exactOptional(),
-    addressFamily: AddressFamilySchema.and(
-      z.any().openapi({ description: 'The address family for the BGP peer.' }),
-    ).exactOptional(),
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tags associated with the transitive virtual interface.' }),
-    ).exactOptional(),
-    enableSiteLink: EnableSiteLinkSchema.and(
-      z.any().openapi({ description: 'Indicates whether to enable or disable SiteLink.' }),
-    ).exactOptional(),
+    virtualInterfaceName: VirtualInterfaceNameSchema.exactOptional().openapi({
+      description:
+        'The name of the virtual interface assigned by the customer network. The name has a maximum of 100 characters. The following are valid characters: a-z, 0-9 and a hyphen (-).',
+    }),
+    vlan: VLANSchema.exactOptional().openapi({ description: 'The ID of the VLAN.' }),
+    asn: ASNSchema.exactOptional().openapi({
+      description:
+        '<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>',
+    }),
+    mtu: MTUSchema.exactOptional().openapi({
+      description:
+        'The maximum transmission unit (MTU), in bytes. The supported values are 1500 and 9001. The default value is 1500.',
+    }),
+    authKey: BGPAuthKeySchema.exactOptional().openapi({
+      description:
+        'The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximun lenth of 80 characters.',
+    }),
+    amazonAddress: AmazonAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the Amazon interface.',
+    }),
+    customerAddress: CustomerAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the customer interface.',
+    }),
+    addressFamily: AddressFamilySchema.exactOptional().openapi({
+      description: 'The address family for the BGP peer.',
+    }),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the transitive virtual interface.',
+    }),
+    enableSiteLink: EnableSiteLinkSchema.exactOptional().openapi({
+      description: 'Indicates whether to enable or disable SiteLink.',
+    }),
   })
   .openapi({ description: 'Information about a transit virtual interface.', required: [] })
   .openapi('NewTransitVirtualInterface')
 
 const CreateTransitVirtualInterfaceRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the connection.' }),
-    ),
-    newTransitVirtualInterface: NewTransitVirtualInterfaceSchema.and(
-      z.any().openapi({ description: 'Information about the transit virtual interface.' }),
-    ),
+    connectionId: ConnectionIdSchema.openapi({ description: 'The ID of the connection.' }),
+    newTransitVirtualInterface: NewTransitVirtualInterfaceSchema.openapi({
+      description: 'Information about the transit virtual interface.',
+    }),
   })
   .openapi({
     required: ['connectionId', 'newTransitVirtualInterface'],
@@ -2090,101 +1530,94 @@ const CreateTransitVirtualInterfaceRequestSchema = z
 
 const DeleteBGPPeerResponseSchema = z
   .object({
-    virtualInterface: VirtualInterfaceSchema.and(
-      z.any().openapi({ description: 'The virtual interface.' }),
-    ).exactOptional(),
+    virtualInterface: VirtualInterfaceSchema.exactOptional().openapi({
+      description: 'The virtual interface.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteBGPPeerResponse')
 
 const DeleteBGPPeerRequestSchema = z
   .object({
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual interface.' }),
-    ).exactOptional(),
-    asn: ASNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.',
-        }),
-    ).exactOptional(),
-    customerAddress: CustomerAddressSchema.and(
-      z.any().openapi({ description: 'The IP address assigned to the customer interface.' }),
-    ).exactOptional(),
-    bgpPeerId: BGPPeerIdSchema.and(
-      z.any().openapi({ description: 'The ID of the BGP peer.' }),
-    ).exactOptional(),
+    virtualInterfaceId: VirtualInterfaceIdSchema.exactOptional().openapi({
+      description: 'The ID of the virtual interface.',
+    }),
+    asn: ASNSchema.exactOptional().openapi({
+      description:
+        'The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.',
+    }),
+    customerAddress: CustomerAddressSchema.exactOptional().openapi({
+      description: 'The IP address assigned to the customer interface.',
+    }),
+    bgpPeerId: BGPPeerIdSchema.exactOptional().openapi({ description: 'The ID of the BGP peer.' }),
   })
   .openapi({ title: 'DeleteBGPPeerRequest', required: [] })
   .openapi('DeleteBGPPeerRequest')
 
 const DeleteConnectionRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the connection.' }),
-    ),
+    connectionId: ConnectionIdSchema.openapi({ description: 'The ID of the connection.' }),
   })
   .openapi({ required: ['connectionId'], title: 'DeleteConnectionRequest' })
   .openapi('DeleteConnectionRequest')
 
 const DeleteDirectConnectGatewayResultSchema = z
   .object({
-    directConnectGateway: DirectConnectGatewaySchema.and(
-      z.any().openapi({ description: 'The Direct Connect gateway.' }),
-    ).exactOptional(),
+    directConnectGateway: DirectConnectGatewaySchema.exactOptional().openapi({
+      description: 'The Direct Connect gateway.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteDirectConnectGatewayResult')
 
 const DeleteDirectConnectGatewayRequestSchema = z
   .object({
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
   })
   .openapi({ required: ['directConnectGatewayId'], title: 'DeleteDirectConnectGatewayRequest' })
   .openapi('DeleteDirectConnectGatewayRequest')
 
 const DeleteDirectConnectGatewayAssociationResultSchema = z
   .object({
-    directConnectGatewayAssociation: DirectConnectGatewayAssociationSchema.and(
-      z.any().openapi({ description: 'Information about the deleted association.' }),
-    ).exactOptional(),
+    directConnectGatewayAssociation: DirectConnectGatewayAssociationSchema.exactOptional().openapi({
+      description: 'Information about the deleted association.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteDirectConnectGatewayAssociationResult')
 
 const DeleteDirectConnectGatewayAssociationRequestSchema = z
   .object({
-    associationId: DirectConnectGatewayAssociationIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway association.' }),
-    ).exactOptional(),
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ).exactOptional(),
-    virtualGatewayId: VirtualGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual private gateway.' }),
-    ).exactOptional(),
+    associationId: DirectConnectGatewayAssociationIdSchema.exactOptional().openapi({
+      description: 'The ID of the Direct Connect gateway association.',
+    }),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
+    virtualGatewayId: VirtualGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the virtual private gateway.',
+    }),
   })
   .openapi({ title: 'DeleteDirectConnectGatewayAssociationRequest', required: [] })
   .openapi('DeleteDirectConnectGatewayAssociationRequest')
 
 const DeleteDirectConnectGatewayAssociationProposalResultSchema = z
   .object({
-    directConnectGatewayAssociationProposal: DirectConnectGatewayAssociationProposalSchema.and(
-      z.any().openapi({ description: 'The ID of the associated gateway.' }),
-    ).exactOptional(),
+    directConnectGatewayAssociationProposal:
+      DirectConnectGatewayAssociationProposalSchema.exactOptional().openapi({
+        description: 'The ID of the associated gateway.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DeleteDirectConnectGatewayAssociationProposalResult')
 
 const DeleteDirectConnectGatewayAssociationProposalRequestSchema = z
   .object({
-    proposalId: DirectConnectGatewayAssociationProposalIdSchema.and(
-      z.any().openapi({ description: 'The ID of the proposal.' }),
-    ),
+    proposalId: DirectConnectGatewayAssociationProposalIdSchema.openapi({
+      description: 'The ID of the proposal.',
+    }),
   })
   .openapi({
     required: ['proposalId'],
@@ -2194,51 +1627,41 @@ const DeleteDirectConnectGatewayAssociationProposalRequestSchema = z
 
 const DeleteInterconnectResponseSchema = z
   .object({
-    interconnectState: InterconnectStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the interconnect. The following are the possible values:</p> <ul> <li> <p> <code>requested</code>: The initial state of an interconnect. The interconnect stays in the requested state until the Letter of Authorization (LOA) is sent to the customer.</p> </li> <li> <p> <code>pending</code>: The interconnect is approved, and is being initialized.</p> </li> <li> <p> <code>available</code>: The network link is up, and the interconnect is ready for use.</p> </li> <li> <p> <code>down</code>: The network link is down.</p> </li> <li> <p> <code>deleting</code>: The interconnect is being deleted.</p> </li> <li> <p> <code>deleted</code>: The interconnect is deleted.</p> </li> <li> <p> <code>unknown</code>: The state of the interconnect is not available.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    interconnectState: InterconnectStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the interconnect. The following are the possible values:</p> <ul> <li> <p> <code>requested</code>: The initial state of an interconnect. The interconnect stays in the requested state until the Letter of Authorization (LOA) is sent to the customer.</p> </li> <li> <p> <code>pending</code>: The interconnect is approved, and is being initialized.</p> </li> <li> <p> <code>available</code>: The network link is up, and the interconnect is ready for use.</p> </li> <li> <p> <code>down</code>: The network link is down.</p> </li> <li> <p> <code>deleting</code>: The interconnect is being deleted.</p> </li> <li> <p> <code>deleted</code>: The interconnect is deleted.</p> </li> <li> <p> <code>unknown</code>: The state of the interconnect is not available.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteInterconnectResponse')
 
 const DeleteInterconnectRequestSchema = z
   .object({
-    interconnectId: InterconnectIdSchema.and(
-      z.any().openapi({ description: 'The ID of the interconnect.' }),
-    ),
+    interconnectId: InterconnectIdSchema.openapi({ description: 'The ID of the interconnect.' }),
   })
   .openapi({ required: ['interconnectId'], title: 'DeleteInterconnectRequest' })
   .openapi('DeleteInterconnectRequest')
 
 const DeleteLagRequestSchema = z
-  .object({ lagId: LagIdSchema.and(z.any().openapi({ description: 'The ID of the LAG.' })) })
+  .object({ lagId: LagIdSchema.openapi({ description: 'The ID of the LAG.' }) })
   .openapi({ required: ['lagId'], title: 'DeleteLagRequest' })
   .openapi('DeleteLagRequest')
 
 const DeleteVirtualInterfaceResponseSchema = z
   .object({
-    virtualInterfaceState: VirtualInterfaceStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the virtual interface. The following are the possible values:</p> <ul> <li> <p> <code>confirming</code>: The creation of the virtual interface is pending confirmation from the virtual interface owner. If the owner of the virtual interface is different from the owner of the connection on which it is provisioned, then the virtual interface will remain in this state until it is confirmed by the virtual interface owner.</p> </li> <li> <p> <code>verifying</code>: This state only applies to public virtual interfaces. Each public virtual interface needs validation before the virtual interface can be created.</p> </li> <li> <p> <code>pending</code>: A virtual interface is in this state from the time that it is created until the virtual interface is ready to forward traffic.</p> </li> <li> <p> <code>available</code>: A virtual interface that is able to forward traffic.</p> </li> <li> <p> <code>down</code>: A virtual interface that is BGP down.</p> </li> <li> <p> <code>deleting</code>: A virtual interface is in this state immediately after calling <a>DeleteVirtualInterface</a> until it can no longer forward traffic.</p> </li> <li> <p> <code>deleted</code>: A virtual interface that cannot forward traffic.</p> </li> <li> <p> <code>rejected</code>: The virtual interface owner has declined creation of the virtual interface. If a virtual interface in the <code>Confirming</code> state is deleted by the virtual interface owner, the virtual interface enters the <code>Rejected</code> state.</p> </li> <li> <p> <code>unknown</code>: The state of the virtual interface is not available.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    virtualInterfaceState: VirtualInterfaceStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the virtual interface. The following are the possible values:</p> <ul> <li> <p> <code>confirming</code>: The creation of the virtual interface is pending confirmation from the virtual interface owner. If the owner of the virtual interface is different from the owner of the connection on which it is provisioned, then the virtual interface will remain in this state until it is confirmed by the virtual interface owner.</p> </li> <li> <p> <code>verifying</code>: This state only applies to public virtual interfaces. Each public virtual interface needs validation before the virtual interface can be created.</p> </li> <li> <p> <code>pending</code>: A virtual interface is in this state from the time that it is created until the virtual interface is ready to forward traffic.</p> </li> <li> <p> <code>available</code>: A virtual interface that is able to forward traffic.</p> </li> <li> <p> <code>down</code>: A virtual interface that is BGP down.</p> </li> <li> <p> <code>deleting</code>: A virtual interface is in this state immediately after calling <a>DeleteVirtualInterface</a> until it can no longer forward traffic.</p> </li> <li> <p> <code>deleted</code>: A virtual interface that cannot forward traffic.</p> </li> <li> <p> <code>rejected</code>: The virtual interface owner has declined creation of the virtual interface. If a virtual interface in the <code>Confirming</code> state is deleted by the virtual interface owner, the virtual interface enters the <code>Rejected</code> state.</p> </li> <li> <p> <code>unknown</code>: The state of the virtual interface is not available.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteVirtualInterfaceResponse')
 
 const DeleteVirtualInterfaceRequestSchema = z
   .object({
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual interface.' }),
-    ),
+    virtualInterfaceId: VirtualInterfaceIdSchema.openapi({
+      description: 'The ID of the virtual interface.',
+    }),
   })
   .openapi({ required: ['virtualInterfaceId'], title: 'DeleteVirtualInterfaceRequest' })
   .openapi('DeleteVirtualInterfaceRequest')
@@ -2249,17 +1672,13 @@ const LoaContentTypeSchema = z.literal('application/pdf').openapi('LoaContentTyp
 
 const LoaSchema = z
   .object({
-    loaContent: LoaContentSchema.and(
-      z.any().openapi({ description: 'The binary contents of the LOA-CFA document.' }),
-    ).exactOptional(),
-    loaContentType: LoaContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The standard media type for the LOA-CFA document. The only supported value is application/pdf.',
-        }),
-    ).exactOptional(),
+    loaContent: LoaContentSchema.exactOptional().openapi({
+      description: 'The binary contents of the LOA-CFA document.',
+    }),
+    loaContentType: LoaContentTypeSchema.exactOptional().openapi({
+      description:
+        'The standard media type for the LOA-CFA document. The only supported value is application/pdf.',
+    }),
   })
   .openapi({
     description:
@@ -2270,82 +1689,60 @@ const LoaSchema = z
 
 const DescribeConnectionLoaResponseSchema = z
   .object({
-    loa: LoaSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Letter of Authorization - Connecting Facility Assignment (LOA-CFA).',
-        }),
-    ).exactOptional(),
+    loa: LoaSchema.exactOptional().openapi({
+      description: 'The Letter of Authorization - Connecting Facility Assignment (LOA-CFA).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeConnectionLoaResponse')
 
 const DescribeConnectionLoaRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the connection.' }),
-    ),
-    providerName: ProviderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the APN partner or service provider who establishes connectivity on your behalf. If you specify this parameter, the LOA-CFA lists the provider name alongside your company name as the requester of the cross connect.',
-        }),
-    ).exactOptional(),
-    loaContentType: LoaContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The standard media type for the LOA-CFA document. The only supported value is application/pdf.',
-        }),
-    ).exactOptional(),
+    connectionId: ConnectionIdSchema.openapi({ description: 'The ID of the connection.' }),
+    providerName: ProviderNameSchema.exactOptional().openapi({
+      description:
+        'The name of the APN partner or service provider who establishes connectivity on your behalf. If you specify this parameter, the LOA-CFA lists the provider name alongside your company name as the requester of the cross connect.',
+    }),
+    loaContentType: LoaContentTypeSchema.exactOptional().openapi({
+      description:
+        'The standard media type for the LOA-CFA document. The only supported value is application/pdf.',
+    }),
   })
   .openapi({ required: ['connectionId'], title: 'DescribeConnectionLoaRequest' })
   .openapi('DescribeConnectionLoaRequest')
 
 const ConnectionsSchema = z
   .object({
-    connections: ConnectionListSchema.and(
-      z.any().openapi({ description: 'The connections.' }),
-    ).exactOptional(),
+    connections: ConnectionListSchema.exactOptional().openapi({ description: 'The connections.' }),
   })
   .openapi({ required: [] })
   .openapi('Connections')
 
 const DescribeConnectionsRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the connection.' }),
-    ).exactOptional(),
+    connectionId: ConnectionIdSchema.exactOptional().openapi({
+      description: 'The ID of the connection.',
+    }),
   })
   .openapi({ title: 'DescribeConnectionsRequest', required: [] })
   .openapi('DescribeConnectionsRequest')
 
 const DescribeConnectionsOnInterconnectRequestSchema = z
   .object({
-    interconnectId: InterconnectIdSchema.and(
-      z.any().openapi({ description: 'The ID of the interconnect.' }),
-    ),
+    interconnectId: InterconnectIdSchema.openapi({ description: 'The ID of the interconnect.' }),
   })
   .openapi({ required: ['interconnectId'], title: 'DescribeConnectionsOnInterconnectRequest' })
   .openapi('DescribeConnectionsOnInterconnectRequest')
 
 const CustomerAgreementSchema = z
   .object({
-    agreementName: AgreementNameSchema.and(
-      z.any().openapi({ description: 'The name of the agreement.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the customer agreement. This will be either <code>signed</code> or <code>unsigned</code> ',
-        }),
-    ).exactOptional(),
+    agreementName: AgreementNameSchema.exactOptional().openapi({
+      description: 'The name of the agreement.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        'The status of the customer agreement. This will be either <code>signed</code> or <code>unsigned</code> ',
+    }),
   })
   .openapi({ description: 'The name and status of a customer agreement. ', required: [] })
   .openapi('CustomerAgreement')
@@ -2356,17 +1753,13 @@ const NniPartnerTypeSchema = z.enum(['v1', 'v2', 'nonPartner']).openapi('NniPart
 
 const DescribeCustomerMetadataResponseSchema = z
   .object({
-    agreements: AgreementListSchema.and(
-      z.any().openapi({ description: 'The list of customer agreements.' }),
-    ).exactOptional(),
-    nniPartnerType: NniPartnerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of network-to-network interface (NNI) partner. The partner type will be one of the following:</p> <ul> <li> <p>V1: This partner can only allocate 50Mbps, 100Mbps, 200Mbps, 300Mbps, 400Mbps, or 500Mbps subgigabit connections.</p> </li> <li> <p>V2: This partner can only allocate 1GB, 2GB, 5GB, or 10GB hosted connections.</p> </li> <li> <p>nonPartner: The customer is not a partner.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    agreements: AgreementListSchema.exactOptional().openapi({
+      description: 'The list of customer agreements.',
+    }),
+    nniPartnerType: NniPartnerTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of network-to-network interface (NNI) partner. The partner type will be one of the following:</p> <ul> <li> <p>V1: This partner can only allocate 50Mbps, 100Mbps, 200Mbps, 300Mbps, 400Mbps, or 500Mbps subgigabit connections.</p> </li> <li> <p>V2: This partner can only allocate 1GB, 2GB, 5GB, or 10GB hosted connections.</p> </li> <li> <p>nonPartner: The customer is not a partner.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeCustomerMetadataResponse')
@@ -2379,19 +1772,14 @@ const PaginationTokenSchema = z.string().openapi('PaginationToken')
 
 const DescribeDirectConnectGatewayAssociationProposalsResultSchema = z
   .object({
-    directConnectGatewayAssociationProposals: DirectConnectGatewayAssociationProposalListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Describes the Direct Connect gateway association proposals.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    directConnectGatewayAssociationProposals:
+      DirectConnectGatewayAssociationProposalListSchema.exactOptional().openapi({
+        description: 'Describes the Direct Connect gateway association proposals.',
+      }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDirectConnectGatewayAssociationProposalsResult')
@@ -2402,26 +1790,22 @@ const MaxResultSetSizeSchema = z.int().openapi('MaxResultSetSize')
 
 const DescribeDirectConnectGatewayAssociationProposalsRequestSchema = z
   .object({
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ).exactOptional(),
-    proposalId: DirectConnectGatewayAssociationProposalIdSchema.and(
-      z.any().openapi({ description: 'The ID of the proposal.' }),
-    ).exactOptional(),
-    associatedGatewayId: AssociatedGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the associated gateway.' }),
-    ).exactOptional(),
-    maxResults: MaxResultSetSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
+    proposalId: DirectConnectGatewayAssociationProposalIdSchema.exactOptional().openapi({
+      description: 'The ID of the proposal.',
+    }),
+    associatedGatewayId: AssociatedGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the associated gateway.',
+    }),
+    maxResults: MaxResultSetSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ title: 'DescribeDirectConnectGatewayAssociationProposalsRequest', required: [] })
   .openapi('DescribeDirectConnectGatewayAssociationProposalsRequest')
@@ -2432,45 +1816,38 @@ const DirectConnectGatewayAssociationListSchema = z
 
 const DescribeDirectConnectGatewayAssociationsResultSchema = z
   .object({
-    directConnectGatewayAssociations: DirectConnectGatewayAssociationListSchema.and(
-      z.any().openapi({ description: 'Information about the associations.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'The token to retrieve the next page.' }),
-    ).exactOptional(),
+    directConnectGatewayAssociations:
+      DirectConnectGatewayAssociationListSchema.exactOptional().openapi({
+        description: 'Information about the associations.',
+      }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token to retrieve the next page.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDirectConnectGatewayAssociationsResult')
 
 const DescribeDirectConnectGatewayAssociationsRequestSchema = z
   .object({
-    associationId: DirectConnectGatewayAssociationIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway association.' }),
-    ).exactOptional(),
-    associatedGatewayId: AssociatedGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the associated gateway.' }),
-    ).exactOptional(),
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ).exactOptional(),
-    maxResults: MaxResultSetSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token provided in the previous call to retrieve the next page.',
-        }),
-    ).exactOptional(),
-    virtualGatewayId: VirtualGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual private gateway or transit gateway.' }),
-    ).exactOptional(),
+    associationId: DirectConnectGatewayAssociationIdSchema.exactOptional().openapi({
+      description: 'The ID of the Direct Connect gateway association.',
+    }),
+    associatedGatewayId: AssociatedGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the associated gateway.',
+    }),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
+    maxResults: MaxResultSetSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token provided in the previous call to retrieve the next page.',
+    }),
+    virtualGatewayId: VirtualGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the virtual private gateway or transit gateway.',
+    }),
   })
   .openapi({ title: 'DescribeDirectConnectGatewayAssociationsRequest', required: [] })
   .openapi('DescribeDirectConnectGatewayAssociationsRequest')
@@ -2487,42 +1864,28 @@ const DirectConnectGatewayAttachmentTypeSchema = z
 
 const DirectConnectGatewayAttachmentSchema = z
   .object({
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ).exactOptional(),
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual interface.' }),
-    ).exactOptional(),
-    virtualInterfaceRegion: VirtualInterfaceRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services Region where the virtual interface is located.',
-        }),
-    ).exactOptional(),
-    virtualInterfaceOwnerAccount: OwnerAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Amazon Web Services account that owns the virtual interface.',
-        }),
-    ).exactOptional(),
-    attachmentState: DirectConnectGatewayAttachmentStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the attachment. The following are the possible values:</p> <ul> <li> <p> <code>attaching</code>: The initial state after a virtual interface is created using the Direct Connect gateway.</p> </li> <li> <p> <code>attached</code>: The Direct Connect gateway and virtual interface are attached and ready to pass traffic.</p> </li> <li> <p> <code>detaching</code>: The initial state after calling <a>DeleteVirtualInterface</a>.</p> </li> <li> <p> <code>detached</code>: The virtual interface is detached from the Direct Connect gateway. Traffic flow between the Direct Connect gateway and virtual interface is stopped.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    attachmentType: DirectConnectGatewayAttachmentTypeSchema.and(
-      z.any().openapi({ description: 'The type of attachment.' }),
-    ).exactOptional(),
-    stateChangeError: StateChangeErrorSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The error message if the state of an object failed to advance.' }),
-    ).exactOptional(),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
+    virtualInterfaceId: VirtualInterfaceIdSchema.exactOptional().openapi({
+      description: 'The ID of the virtual interface.',
+    }),
+    virtualInterfaceRegion: VirtualInterfaceRegionSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region where the virtual interface is located.',
+    }),
+    virtualInterfaceOwnerAccount: OwnerAccountSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account that owns the virtual interface.',
+    }),
+    attachmentState: DirectConnectGatewayAttachmentStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the attachment. The following are the possible values:</p> <ul> <li> <p> <code>attaching</code>: The initial state after a virtual interface is created using the Direct Connect gateway.</p> </li> <li> <p> <code>attached</code>: The Direct Connect gateway and virtual interface are attached and ready to pass traffic.</p> </li> <li> <p> <code>detaching</code>: The initial state after calling <a>DeleteVirtualInterface</a>.</p> </li> <li> <p> <code>detached</code>: The virtual interface is detached from the Direct Connect gateway. Traffic flow between the Direct Connect gateway and virtual interface is stopped.</p> </li> </ul>',
+    }),
+    attachmentType: DirectConnectGatewayAttachmentTypeSchema.exactOptional().openapi({
+      description: 'The type of attachment.',
+    }),
+    stateChangeError: StateChangeErrorSchema.exactOptional().openapi({
+      description: 'The error message if the state of an object failed to advance.',
+    }),
   })
   .openapi({
     description:
@@ -2537,39 +1900,32 @@ const DirectConnectGatewayAttachmentListSchema = z
 
 const DescribeDirectConnectGatewayAttachmentsResultSchema = z
   .object({
-    directConnectGatewayAttachments: DirectConnectGatewayAttachmentListSchema.and(
-      z.any().openapi({ description: 'The attachments.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'The token to retrieve the next page.' }),
-    ).exactOptional(),
+    directConnectGatewayAttachments:
+      DirectConnectGatewayAttachmentListSchema.exactOptional().openapi({
+        description: 'The attachments.',
+      }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token to retrieve the next page.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDirectConnectGatewayAttachmentsResult')
 
 const DescribeDirectConnectGatewayAttachmentsRequestSchema = z
   .object({
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ).exactOptional(),
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual interface.' }),
-    ).exactOptional(),
-    maxResults: MaxResultSetSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token provided in the previous call to retrieve the next page.',
-        }),
-    ).exactOptional(),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
+    virtualInterfaceId: VirtualInterfaceIdSchema.exactOptional().openapi({
+      description: 'The ID of the virtual interface.',
+    }),
+    maxResults: MaxResultSetSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token provided in the previous call to retrieve the next page.',
+    }),
   })
   .openapi({ title: 'DescribeDirectConnectGatewayAttachmentsRequest', required: [] })
   .openapi('DescribeDirectConnectGatewayAttachmentsRequest')
@@ -2580,83 +1936,59 @@ const DirectConnectGatewayListSchema = z
 
 const DescribeDirectConnectGatewaysResultSchema = z
   .object({
-    directConnectGateways: DirectConnectGatewayListSchema.and(
-      z.any().openapi({ description: 'The Direct Connect gateways.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'The token to retrieve the next page.' }),
-    ).exactOptional(),
+    directConnectGateways: DirectConnectGatewayListSchema.exactOptional().openapi({
+      description: 'The Direct Connect gateways.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token to retrieve the next page.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDirectConnectGatewaysResult')
 
 const DescribeDirectConnectGatewaysRequestSchema = z
   .object({
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway.' }),
-    ).exactOptional(),
-    maxResults: MaxResultSetSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token provided in the previous call to retrieve the next page.',
-        }),
-    ).exactOptional(),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the Direct Connect gateway.',
+    }),
+    maxResults: MaxResultSetSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token provided in the previous call to retrieve the next page.',
+    }),
   })
   .openapi({ title: 'DescribeDirectConnectGatewaysRequest', required: [] })
   .openapi('DescribeDirectConnectGatewaysRequest')
 
 const DescribeHostedConnectionsRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the interconnect or LAG.' }),
-    ),
+    connectionId: ConnectionIdSchema.openapi({ description: 'The ID of the interconnect or LAG.' }),
   })
   .openapi({ required: ['connectionId'], title: 'DescribeHostedConnectionsRequest' })
   .openapi('DescribeHostedConnectionsRequest')
 
 const DescribeInterconnectLoaResponseSchema = z
   .object({
-    loa: LoaSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Letter of Authorization - Connecting Facility Assignment (LOA-CFA).',
-        }),
-    ).exactOptional(),
+    loa: LoaSchema.exactOptional().openapi({
+      description: 'The Letter of Authorization - Connecting Facility Assignment (LOA-CFA).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeInterconnectLoaResponse')
 
 const DescribeInterconnectLoaRequestSchema = z
   .object({
-    interconnectId: InterconnectIdSchema.and(
-      z.any().openapi({ description: 'The ID of the interconnect.' }),
-    ),
-    providerName: ProviderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service provider who establishes connectivity on your behalf. If you supply this parameter, the LOA-CFA lists the provider name alongside your company name as the requester of the cross connect.',
-        }),
-    ).exactOptional(),
-    loaContentType: LoaContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The standard media type for the LOA-CFA document. The only supported value is application/pdf.',
-        }),
-    ).exactOptional(),
+    interconnectId: InterconnectIdSchema.openapi({ description: 'The ID of the interconnect.' }),
+    providerName: ProviderNameSchema.exactOptional().openapi({
+      description:
+        'The name of the service provider who establishes connectivity on your behalf. If you supply this parameter, the LOA-CFA lists the provider name alongside your company name as the requester of the cross connect.',
+    }),
+    loaContentType: LoaContentTypeSchema.exactOptional().openapi({
+      description:
+        'The standard media type for the LOA-CFA document. The only supported value is application/pdf.',
+    }),
   })
   .openapi({ required: ['interconnectId'], title: 'DescribeInterconnectLoaRequest' })
   .openapi('DescribeInterconnectLoaRequest')
@@ -2665,18 +1997,18 @@ const InterconnectListSchema = z.array(InterconnectSchema).openapi('Interconnect
 
 const InterconnectsSchema = z
   .object({
-    interconnects: InterconnectListSchema.and(
-      z.any().openapi({ description: 'The interconnects.' }),
-    ).exactOptional(),
+    interconnects: InterconnectListSchema.exactOptional().openapi({
+      description: 'The interconnects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('Interconnects')
 
 const DescribeInterconnectsRequestSchema = z
   .object({
-    interconnectId: InterconnectIdSchema.and(
-      z.any().openapi({ description: 'The ID of the interconnect.' }),
-    ).exactOptional(),
+    interconnectId: InterconnectIdSchema.exactOptional().openapi({
+      description: 'The ID of the interconnect.',
+    }),
   })
   .openapi({ title: 'DescribeInterconnectsRequest', required: [] })
   .openapi('DescribeInterconnectsRequest')
@@ -2684,40 +2016,28 @@ const DescribeInterconnectsRequestSchema = z
 const LagListSchema = z.array(LagSchema).openapi('LagList')
 
 const LagsSchema = z
-  .object({
-    lags: LagListSchema.and(z.any().openapi({ description: 'The LAGs.' })).exactOptional(),
-  })
+  .object({ lags: LagListSchema.exactOptional().openapi({ description: 'The LAGs.' }) })
   .openapi({ required: [] })
   .openapi('Lags')
 
 const DescribeLagsRequestSchema = z
-  .object({
-    lagId: LagIdSchema.and(z.any().openapi({ description: 'The ID of the LAG.' })).exactOptional(),
-  })
+  .object({ lagId: LagIdSchema.exactOptional().openapi({ description: 'The ID of the LAG.' }) })
   .openapi({ title: 'DescribeLagsRequest', required: [] })
   .openapi('DescribeLagsRequest')
 
 const DescribeLoaRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of a connection, LAG, or interconnect.' }),
-    ),
-    providerName: ProviderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service provider who establishes connectivity on your behalf. If you specify this parameter, the LOA-CFA lists the provider name alongside your company name as the requester of the cross connect.',
-        }),
-    ).exactOptional(),
-    loaContentType: LoaContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The standard media type for the LOA-CFA document. The only supported value is application/pdf.',
-        }),
-    ).exactOptional(),
+    connectionId: ConnectionIdSchema.openapi({
+      description: 'The ID of a connection, LAG, or interconnect.',
+    }),
+    providerName: ProviderNameSchema.exactOptional().openapi({
+      description:
+        'The name of the service provider who establishes connectivity on your behalf. If you specify this parameter, the LOA-CFA lists the provider name alongside your company name as the requester of the cross connect.',
+    }),
+    loaContentType: LoaContentTypeSchema.exactOptional().openapi({
+      description:
+        'The standard media type for the LOA-CFA document. The only supported value is application/pdf.',
+    }),
   })
   .openapi({ required: ['connectionId'], title: 'DescribeLoaRequest' })
   .openapi('DescribeLoaRequest')
@@ -2736,33 +2056,25 @@ const AvailableMacSecPortSpeedsSchema = z
 
 const LocationSchema = z
   .object({
-    locationCode: LocationCodeSchema.and(
-      z.any().openapi({ description: 'The code for the location.' }),
-    ).exactOptional(),
-    locationName: LocationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the location. This includes the name of the colocation partner and the physical site of the building.',
-        }),
-    ).exactOptional(),
-    region: RegionSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services Region for the location.' }),
-    ).exactOptional(),
-    availablePortSpeeds: AvailablePortSpeedsSchema.and(
-      z.any().openapi({ description: 'The available port speeds for the location.' }),
-    ).exactOptional(),
-    availableProviders: ProviderListSchema.and(
-      z.any().openapi({ description: 'The name of the service provider for the location.' }),
-    ).exactOptional(),
-    availableMacSecPortSpeeds: AvailableMacSecPortSpeedsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The available MAC Security (MACsec) port speeds for the location.',
-        }),
-    ).exactOptional(),
+    locationCode: LocationCodeSchema.exactOptional().openapi({
+      description: 'The code for the location.',
+    }),
+    locationName: LocationNameSchema.exactOptional().openapi({
+      description:
+        'The name of the location. This includes the name of the colocation partner and the physical site of the building.',
+    }),
+    region: RegionSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region for the location.',
+    }),
+    availablePortSpeeds: AvailablePortSpeedsSchema.exactOptional().openapi({
+      description: 'The available port speeds for the location.',
+    }),
+    availableProviders: ProviderListSchema.exactOptional().openapi({
+      description: 'The name of the service provider for the location.',
+    }),
+    availableMacSecPortSpeeds: AvailableMacSecPortSpeedsSchema.exactOptional().openapi({
+      description: 'The available MAC Security (MACsec) port speeds for the location.',
+    }),
   })
   .openapi({ description: 'Information about an Direct Connect location.', required: [] })
   .openapi('Location')
@@ -2771,9 +2083,7 @@ const LocationListSchema = z.array(LocationSchema).openapi('LocationList')
 
 const LocationsSchema = z
   .object({
-    locations: LocationListSchema.and(
-      z.any().openapi({ description: 'The locations.' }),
-    ).exactOptional(),
+    locations: LocationListSchema.exactOptional().openapi({ description: 'The locations.' }),
   })
   .openapi({ required: [] })
   .openapi('Locations')
@@ -2792,68 +2102,54 @@ const RouterTypeIdentifierSchema = z.string().openapi('RouterTypeIdentifier')
 
 const RouterTypeSchema = z
   .object({
-    vendor: VendorSchema.and(
-      z.any().openapi({ description: "The vendor for the virtual interface's router." }),
-    ).exactOptional(),
-    platform: PlatformSchema.and(
-      z.any().openapi({ description: 'The virtual interface router platform.' }),
-    ).exactOptional(),
-    software: SoftwareSchema.and(
-      z.any().openapi({ description: 'The router software. ' }),
-    ).exactOptional(),
-    xsltTemplateName: XsltTemplateNameSchema.and(
-      z.any().openapi({ description: "The template for the virtual interface's router." }),
-    ).exactOptional(),
-    xsltTemplateNameForMacSec: XsltTemplateNameForMacSecSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The MAC Security (MACsec) template for the virtual interface's router.",
-        }),
-    ).exactOptional(),
-    routerTypeIdentifier: RouterTypeIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifies the router by a combination of vendor, platform, and software version. For example, <code>CiscoSystemsInc-2900SeriesRouters-IOS124</code>.',
-        }),
-    ).exactOptional(),
+    vendor: VendorSchema.exactOptional().openapi({
+      description: "The vendor for the virtual interface's router.",
+    }),
+    platform: PlatformSchema.exactOptional().openapi({
+      description: 'The virtual interface router platform.',
+    }),
+    software: SoftwareSchema.exactOptional().openapi({ description: 'The router software. ' }),
+    xsltTemplateName: XsltTemplateNameSchema.exactOptional().openapi({
+      description: "The template for the virtual interface's router.",
+    }),
+    xsltTemplateNameForMacSec: XsltTemplateNameForMacSecSchema.exactOptional().openapi({
+      description: "The MAC Security (MACsec) template for the virtual interface's router.",
+    }),
+    routerTypeIdentifier: RouterTypeIdentifierSchema.exactOptional().openapi({
+      description:
+        'Identifies the router by a combination of vendor, platform, and software version. For example, <code>CiscoSystemsInc-2900SeriesRouters-IOS124</code>.',
+    }),
   })
   .openapi({ description: 'Information about the virtual router.', required: [] })
   .openapi('RouterType')
 
 const DescribeRouterConfigurationResponseSchema = z
   .object({
-    customerRouterConfig: RouterConfigSchema.and(
-      z.any().openapi({ description: 'The customer router configuration.' }),
-    ).exactOptional(),
-    router: RouterTypeSchema.and(
-      z.any().openapi({ description: 'The details about the router.' }),
-    ).exactOptional(),
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID assigned to the virtual interface.' }),
-    ).exactOptional(),
-    virtualInterfaceName: VirtualInterfaceNameSchema.and(
-      z.any().openapi({ description: "Provides the details about a virtual interface's router." }),
-    ).exactOptional(),
+    customerRouterConfig: RouterConfigSchema.exactOptional().openapi({
+      description: 'The customer router configuration.',
+    }),
+    router: RouterTypeSchema.exactOptional().openapi({
+      description: 'The details about the router.',
+    }),
+    virtualInterfaceId: VirtualInterfaceIdSchema.exactOptional().openapi({
+      description: 'The ID assigned to the virtual interface.',
+    }),
+    virtualInterfaceName: VirtualInterfaceNameSchema.exactOptional().openapi({
+      description: "Provides the details about a virtual interface's router.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRouterConfigurationResponse')
 
 const DescribeRouterConfigurationRequestSchema = z
   .object({
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual interface.' }),
-    ),
-    routerTypeIdentifier: RouterTypeIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifies the router by a combination of vendor, platform, and software version. For example, <code>CiscoSystemsInc-2900SeriesRouters-IOS124</code>.',
-        }),
-    ).exactOptional(),
+    virtualInterfaceId: VirtualInterfaceIdSchema.openapi({
+      description: 'The ID of the virtual interface.',
+    }),
+    routerTypeIdentifier: RouterTypeIdentifierSchema.exactOptional().openapi({
+      description:
+        'Identifies the router by a combination of vendor, platform, and software version. For example, <code>CiscoSystemsInc-2900SeriesRouters-IOS124</code>.',
+    }),
   })
   .openapi({
     required: ['virtualInterfaceId'],
@@ -2866,10 +2162,10 @@ const ResourceArnSchema = z.string().openapi('ResourceArn')
 
 const ResourceTagSchema = z
   .object({
-    resourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(z.any().openapi({ description: 'The tags.' })).exactOptional(),
+    resourceArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({ description: 'The tags.' }),
   })
   .openapi({
     description: 'Information about a tag associated with an Direct Connect resource.',
@@ -2881,9 +2177,9 @@ const ResourceTagListSchema = z.array(ResourceTagSchema).openapi('ResourceTagLis
 
 const DescribeTagsResponseSchema = z
   .object({
-    resourceTags: ResourceTagListSchema.and(
-      z.any().openapi({ description: 'Information about the tags.' }),
-    ).exactOptional(),
+    resourceTags: ResourceTagListSchema.exactOptional().openapi({
+      description: 'Information about the tags.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeTagsResponse')
@@ -2892,9 +2188,9 @@ const ResourceArnListSchema = z.array(ResourceArnSchema).openapi('ResourceArnLis
 
 const DescribeTagsRequestSchema = z
   .object({
-    resourceArns: ResourceArnListSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Names (ARNs) of the resources.' }),
-    ),
+    resourceArns: ResourceArnListSchema.openapi({
+      description: 'The Amazon Resource Names (ARNs) of the resources.',
+    }),
   })
   .openapi({ required: ['resourceArns'], title: 'DescribeTagsRequest' })
   .openapi('DescribeTagsRequest')
@@ -2903,17 +2199,13 @@ const VirtualGatewayStateSchema = z.string().openapi('VirtualGatewayState')
 
 const VirtualGatewaySchema = z
   .object({
-    virtualGatewayId: VirtualGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual private gateway.' }),
-    ).exactOptional(),
-    virtualGatewayState: VirtualGatewayStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the virtual private gateway. The following are the possible values:</p> <ul> <li> <p> <code>pending</code>: Initial state after creating the virtual private gateway.</p> </li> <li> <p> <code>available</code>: Ready for use by a private virtual interface.</p> </li> <li> <p> <code>deleting</code>: Initial state after deleting the virtual private gateway.</p> </li> <li> <p> <code>deleted</code>: The virtual private gateway is deleted. The private virtual interface is unable to send traffic over this gateway.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    virtualGatewayId: VirtualGatewayIdSchema.exactOptional().openapi({
+      description: 'The ID of the virtual private gateway.',
+    }),
+    virtualGatewayState: VirtualGatewayStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the virtual private gateway. The following are the possible values:</p> <ul> <li> <p> <code>pending</code>: Initial state after creating the virtual private gateway.</p> </li> <li> <p> <code>available</code>: Ready for use by a private virtual interface.</p> </li> <li> <p> <code>deleting</code>: Initial state after deleting the virtual private gateway.</p> </li> <li> <p> <code>deleted</code>: The virtual private gateway is deleted. The private virtual interface is unable to send traffic over this gateway.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description: 'Information about a virtual private gateway for a private virtual interface.',
@@ -2925,9 +2217,9 @@ const VirtualGatewayListSchema = z.array(VirtualGatewaySchema).openapi('VirtualG
 
 const VirtualGatewaysSchema = z
   .object({
-    virtualGateways: VirtualGatewayListSchema.and(
-      z.any().openapi({ description: 'The virtual private gateways.' }),
-    ).exactOptional(),
+    virtualGateways: VirtualGatewayListSchema.exactOptional().openapi({
+      description: 'The virtual private gateways.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('VirtualGateways')
@@ -2936,75 +2228,57 @@ const VirtualInterfaceListSchema = z.array(VirtualInterfaceSchema).openapi('Virt
 
 const VirtualInterfacesSchema = z
   .object({
-    virtualInterfaces: VirtualInterfaceListSchema.and(
-      z.any().openapi({ description: 'The virtual interfaces' }),
-    ).exactOptional(),
+    virtualInterfaces: VirtualInterfaceListSchema.exactOptional().openapi({
+      description: 'The virtual interfaces',
+    }),
   })
   .openapi({ required: [] })
   .openapi('VirtualInterfaces')
 
 const DescribeVirtualInterfacesRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the connection.' }),
-    ).exactOptional(),
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual interface.' }),
-    ).exactOptional(),
+    connectionId: ConnectionIdSchema.exactOptional().openapi({
+      description: 'The ID of the connection.',
+    }),
+    virtualInterfaceId: VirtualInterfaceIdSchema.exactOptional().openapi({
+      description: 'The ID of the virtual interface.',
+    }),
   })
   .openapi({ title: 'DescribeVirtualInterfacesRequest', required: [] })
   .openapi('DescribeVirtualInterfacesRequest')
 
 const DisassociateConnectionFromLagRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the connection.' }),
-    ),
-    lagId: LagIdSchema.and(z.any().openapi({ description: 'The ID of the LAG.' })),
+    connectionId: ConnectionIdSchema.openapi({ description: 'The ID of the connection.' }),
+    lagId: LagIdSchema.openapi({ description: 'The ID of the LAG.' }),
   })
   .openapi({ required: ['connectionId', 'lagId'], title: 'DisassociateConnectionFromLagRequest' })
   .openapi('DisassociateConnectionFromLagRequest')
 
 const DisassociateMacSecKeyResponseSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).',
-        }),
-    ).exactOptional(),
-    macSecKeys: MacSecKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The MAC Security (MACsec) security keys no longer associated with the dedicated connection.',
-        }),
-    ).exactOptional(),
+    connectionId: ConnectionIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).',
+    }),
+    macSecKeys: MacSecKeyListSchema.exactOptional().openapi({
+      description:
+        'The MAC Security (MACsec) security keys no longer associated with the dedicated connection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateMacSecKeyResponse')
 
 const DisassociateMacSecKeyRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).</p> <p>You can use <a>DescribeConnections</a> or <a>DescribeLags</a> to retrieve connection ID.</p>',
-        }),
-    ),
-    secretARN: SecretARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the MAC Security (MACsec) secret key.</p> <p>You can use <a>DescribeConnections</a> to retrieve the ARN of the MAC Security (MACsec) secret key.</p>',
-        }),
-    ),
+    connectionId: ConnectionIdSchema.openapi({
+      description:
+        '<p>The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).</p> <p>You can use <a>DescribeConnections</a> or <a>DescribeLags</a> to retrieve connection ID.</p>',
+    }),
+    secretARN: SecretARNSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the MAC Security (MACsec) secret key.</p> <p>You can use <a>DescribeConnections</a> to retrieve the ARN of the MAC Security (MACsec) secret key.</p>',
+    }),
   })
   .openapi({ required: ['connectionId', 'secretARN'], title: 'DisassociateMacSecKeyRequest' })
   .openapi('DisassociateMacSecKeyRequest')
@@ -3023,45 +2297,31 @@ const EndTimeSchema = z.iso.datetime({ offset: true }).openapi('EndTime')
 
 const VirtualInterfaceTestHistorySchema = z
   .object({
-    testId: TestIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual interface failover test.' }),
-    ).exactOptional(),
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the tested virtual interface.' }),
-    ).exactOptional(),
-    bgpPeers: BGPPeerIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The BGP peers that were put in the DOWN state as part of the virtual interface failover test.',
-        }),
-    ).exactOptional(),
-    status: FailureTestHistoryStatusSchema.and(
-      z.any().openapi({ description: 'The status of the virtual interface failover test.' }),
-    ).exactOptional(),
-    ownerAccount: OwnerAccountSchema.and(
-      z.any().openapi({ description: 'The owner ID of the tested virtual interface.' }),
-    ).exactOptional(),
-    testDurationInMinutes: TestDurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time that the virtual interface failover test ran in minutes.',
-        }),
-    ).exactOptional(),
-    startTime: StartTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time that the virtual interface moves to the DOWN state.' }),
-    ).exactOptional(),
-    endTime: EndTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time that the virtual interface moves out of the DOWN state.',
-        }),
-    ).exactOptional(),
+    testId: TestIdSchema.exactOptional().openapi({
+      description: 'The ID of the virtual interface failover test.',
+    }),
+    virtualInterfaceId: VirtualInterfaceIdSchema.exactOptional().openapi({
+      description: 'The ID of the tested virtual interface.',
+    }),
+    bgpPeers: BGPPeerIdListSchema.exactOptional().openapi({
+      description:
+        'The BGP peers that were put in the DOWN state as part of the virtual interface failover test.',
+    }),
+    status: FailureTestHistoryStatusSchema.exactOptional().openapi({
+      description: 'The status of the virtual interface failover test.',
+    }),
+    ownerAccount: OwnerAccountSchema.exactOptional().openapi({
+      description: 'The owner ID of the tested virtual interface.',
+    }),
+    testDurationInMinutes: TestDurationSchema.exactOptional().openapi({
+      description: 'The time that the virtual interface failover test ran in minutes.',
+    }),
+    startTime: StartTimeSchema.exactOptional().openapi({
+      description: 'The time that the virtual interface moves to the DOWN state.',
+    }),
+    endTime: EndTimeSchema.exactOptional().openapi({
+      description: 'The time that the virtual interface moves out of the DOWN state.',
+    }),
   })
   .openapi({ description: 'Information about the virtual interface failover test.', required: [] })
   .openapi('VirtualInterfaceTestHistory')
@@ -3072,153 +2332,125 @@ const VirtualInterfaceTestHistoryListSchema = z
 
 const ListVirtualInterfaceTestHistoryResponseSchema = z
   .object({
-    virtualInterfaceTestHistory: VirtualInterfaceTestHistoryListSchema.and(
-      z.any().openapi({ description: 'The ID of the tested virtual interface.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    virtualInterfaceTestHistory: VirtualInterfaceTestHistoryListSchema.exactOptional().openapi({
+      description: 'The ID of the tested virtual interface.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListVirtualInterfaceTestHistoryResponse')
 
 const ListVirtualInterfaceTestHistoryRequestSchema = z
   .object({
-    testId: TestIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual interface failover test.' }),
-    ).exactOptional(),
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual interface that was tested.' }),
-    ).exactOptional(),
-    bgpPeers: BGPPeerIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The BGP peers that were placed in the DOWN state during the virtual interface failover test.',
-        }),
-    ).exactOptional(),
-    status: FailureTestHistoryStatusSchema.and(
-      z.any().openapi({ description: 'The status of the virtual interface failover test.' }),
-    ).exactOptional(),
-    maxResults: MaxResultSetSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    testId: TestIdSchema.exactOptional().openapi({
+      description: 'The ID of the virtual interface failover test.',
+    }),
+    virtualInterfaceId: VirtualInterfaceIdSchema.exactOptional().openapi({
+      description: 'The ID of the virtual interface that was tested.',
+    }),
+    bgpPeers: BGPPeerIdListSchema.exactOptional().openapi({
+      description:
+        'The BGP peers that were placed in the DOWN state during the virtual interface failover test.',
+    }),
+    status: FailureTestHistoryStatusSchema.exactOptional().openapi({
+      description: 'The status of the virtual interface failover test.',
+    }),
+    maxResults: MaxResultSetSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ title: 'ListVirtualInterfaceTestHistoryRequest', required: [] })
   .openapi('ListVirtualInterfaceTestHistoryRequest')
 
 const StartBgpFailoverTestResponseSchema = z
   .object({
-    virtualInterfaceTest: VirtualInterfaceTestHistorySchema.and(
-      z.any().openapi({ description: 'Information about the virtual interface failover test.' }),
-    ).exactOptional(),
+    virtualInterfaceTest: VirtualInterfaceTestHistorySchema.exactOptional().openapi({
+      description: 'Information about the virtual interface failover test.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartBgpFailoverTestResponse')
 
 const StartBgpFailoverTestRequestSchema = z
   .object({
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual interface you want to test.' }),
-    ),
-    bgpPeers: BGPPeerIdListSchema.and(
-      z.any().openapi({ description: 'The BGP peers to place in the DOWN state.' }),
-    ).exactOptional(),
-    testDurationInMinutes: TestDurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The time in minutes that the virtual interface failover test will last.</p> <p>Maximum value: 4,320 minutes (72 hours).</p> <p>Default: 180 minutes (3 hours).</p>',
-        }),
-    ).exactOptional(),
+    virtualInterfaceId: VirtualInterfaceIdSchema.openapi({
+      description: 'The ID of the virtual interface you want to test.',
+    }),
+    bgpPeers: BGPPeerIdListSchema.exactOptional().openapi({
+      description: 'The BGP peers to place in the DOWN state.',
+    }),
+    testDurationInMinutes: TestDurationSchema.exactOptional().openapi({
+      description:
+        '<p>The time in minutes that the virtual interface failover test will last.</p> <p>Maximum value: 4,320 minutes (72 hours).</p> <p>Default: 180 minutes (3 hours).</p>',
+    }),
   })
   .openapi({ required: ['virtualInterfaceId'], title: 'StartBgpFailoverTestRequest' })
   .openapi('StartBgpFailoverTestRequest')
 
 const StopBgpFailoverTestResponseSchema = z
   .object({
-    virtualInterfaceTest: VirtualInterfaceTestHistorySchema.and(
-      z.any().openapi({ description: 'Information about the virtual interface failover test.' }),
-    ).exactOptional(),
+    virtualInterfaceTest: VirtualInterfaceTestHistorySchema.exactOptional().openapi({
+      description: 'Information about the virtual interface failover test.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopBgpFailoverTestResponse')
 
 const StopBgpFailoverTestRequestSchema = z
   .object({
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the virtual interface you no longer want to test.' }),
-    ),
+    virtualInterfaceId: VirtualInterfaceIdSchema.openapi({
+      description: 'The ID of the virtual interface you no longer want to test.',
+    }),
   })
   .openapi({ required: ['virtualInterfaceId'], title: 'StopBgpFailoverTestRequest' })
   .openapi('StopBgpFailoverTestRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    resourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource.' }),
-    ),
-    tags: TagListSchema.and(z.any().openapi({ description: 'The tags to add.' })),
+    resourceArn: ResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource.',
+    }),
+    tags: TagListSchema.openapi({ description: 'The tags to add.' }),
   })
   .openapi({ required: ['resourceArn', 'tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    resourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource.' }),
-    ),
-    tagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The tag keys of the tags to remove.' }),
-    ),
+    resourceArn: ResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource.',
+    }),
+    tagKeys: TagKeyListSchema.openapi({ description: 'The tag keys of the tags to remove.' }),
   })
   .openapi({ required: ['resourceArn', 'tagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateConnectionRequestSchema = z
   .object({
-    connectionId: ConnectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the dedicated connection.</p> <p>You can use <a>DescribeConnections</a> to retrieve the connection ID.</p>',
-        }),
-    ),
-    connectionName: ConnectionNameSchema.and(
-      z.any().openapi({ description: 'The name of the connection.' }),
-    ).exactOptional(),
-    encryptionMode: EncryptionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The connection MAC Security (MACsec) encryption mode.</p> <p>The valid values are <code>no_encrypt</code>, <code>should_encrypt</code>, and <code>must_encrypt</code>.</p>',
-        }),
-    ).exactOptional(),
+    connectionId: ConnectionIdSchema.openapi({
+      description:
+        '<p>The ID of the dedicated connection.</p> <p>You can use <a>DescribeConnections</a> to retrieve the connection ID.</p>',
+    }),
+    connectionName: ConnectionNameSchema.exactOptional().openapi({
+      description: 'The name of the connection.',
+    }),
+    encryptionMode: EncryptionModeSchema.exactOptional().openapi({
+      description:
+        '<p>The connection MAC Security (MACsec) encryption mode.</p> <p>The valid values are <code>no_encrypt</code>, <code>should_encrypt</code>, and <code>must_encrypt</code>.</p>',
+    }),
   })
   .openapi({ required: ['connectionId'], title: 'UpdateConnectionRequest' })
   .openapi('UpdateConnectionRequest')
@@ -3230,12 +2462,12 @@ const UpdateDirectConnectGatewayResponseSchema = z
 
 const UpdateDirectConnectGatewayRequestSchema = z
   .object({
-    directConnectGatewayId: DirectConnectGatewayIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway to update.' }),
-    ),
-    newDirectConnectGatewayName: DirectConnectGatewayNameSchema.and(
-      z.any().openapi({ description: 'The new name for the Direct Connect gateway.' }),
-    ),
+    directConnectGatewayId: DirectConnectGatewayIdSchema.openapi({
+      description: 'The ID of the Direct Connect gateway to update.',
+    }),
+    newDirectConnectGatewayName: DirectConnectGatewayNameSchema.openapi({
+      description: 'The new name for the Direct Connect gateway.',
+    }),
   })
   .openapi({
     required: ['directConnectGatewayId', 'newDirectConnectGatewayName'],
@@ -3252,73 +2484,52 @@ const UpdateDirectConnectGatewayAssociationResultSchema = z
 
 const UpdateDirectConnectGatewayAssociationRequestSchema = z
   .object({
-    associationId: DirectConnectGatewayAssociationIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Direct Connect gateway association.' }),
-    ).exactOptional(),
-    addAllowedPrefixesToDirectConnectGateway: RouteFilterPrefixListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon VPC prefixes to advertise to the Direct Connect gateway.',
-        }),
-    ).exactOptional(),
-    removeAllowedPrefixesToDirectConnectGateway: RouteFilterPrefixListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon VPC prefixes to no longer advertise to the Direct Connect gateway.',
-        }),
-    ).exactOptional(),
+    associationId: DirectConnectGatewayAssociationIdSchema.exactOptional().openapi({
+      description: 'The ID of the Direct Connect gateway association.',
+    }),
+    addAllowedPrefixesToDirectConnectGateway: RouteFilterPrefixListSchema.exactOptional().openapi({
+      description: 'The Amazon VPC prefixes to advertise to the Direct Connect gateway.',
+    }),
+    removeAllowedPrefixesToDirectConnectGateway:
+      RouteFilterPrefixListSchema.exactOptional().openapi({
+        description:
+          'The Amazon VPC prefixes to no longer advertise to the Direct Connect gateway.',
+      }),
   })
   .openapi({ title: 'UpdateDirectConnectGatewayAssociationRequest', required: [] })
   .openapi('UpdateDirectConnectGatewayAssociationRequest')
 
 const UpdateLagRequestSchema = z
   .object({
-    lagId: LagIdSchema.and(z.any().openapi({ description: 'The ID of the LAG.' })),
-    lagName: LagNameSchema.and(
-      z.any().openapi({ description: 'The name of the LAG.' }),
-    ).exactOptional(),
-    minimumLinks: CountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum number of physical connections that must be operational for the LAG itself to be operational.',
-        }),
-    ).exactOptional(),
-    encryptionMode: EncryptionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The LAG MAC Security (MACsec) encryption mode.</p> <p>Amazon Web Services applies the value to all connections which are part of the LAG.</p>',
-        }),
-    ).exactOptional(),
+    lagId: LagIdSchema.openapi({ description: 'The ID of the LAG.' }),
+    lagName: LagNameSchema.exactOptional().openapi({ description: 'The name of the LAG.' }),
+    minimumLinks: CountSchema.exactOptional().openapi({
+      description:
+        'The minimum number of physical connections that must be operational for the LAG itself to be operational.',
+    }),
+    encryptionMode: EncryptionModeSchema.exactOptional().openapi({
+      description:
+        '<p>The LAG MAC Security (MACsec) encryption mode.</p> <p>Amazon Web Services applies the value to all connections which are part of the LAG.</p>',
+    }),
   })
   .openapi({ required: ['lagId'], title: 'UpdateLagRequest' })
   .openapi('UpdateLagRequest')
 
 const UpdateVirtualInterfaceAttributesRequestSchema = z
   .object({
-    virtualInterfaceId: VirtualInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the virtual private interface.' }),
-    ),
-    mtu: MTUSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum transmission unit (MTU), in bytes. The supported values are 1500 and 9001. The default value is 1500.',
-        }),
-    ).exactOptional(),
-    enableSiteLink: EnableSiteLinkSchema.and(
-      z.any().openapi({ description: 'Indicates whether to enable or disable SiteLink.' }),
-    ).exactOptional(),
-    virtualInterfaceName: VirtualInterfaceNameSchema.and(
-      z.any().openapi({ description: 'The name of the virtual private interface.' }),
-    ).exactOptional(),
+    virtualInterfaceId: VirtualInterfaceIdSchema.openapi({
+      description: 'The ID of the virtual private interface.',
+    }),
+    mtu: MTUSchema.exactOptional().openapi({
+      description:
+        'The maximum transmission unit (MTU), in bytes. The supported values are 1500 and 9001. The default value is 1500.',
+    }),
+    enableSiteLink: EnableSiteLinkSchema.exactOptional().openapi({
+      description: 'Indicates whether to enable or disable SiteLink.',
+    }),
+    virtualInterfaceName: VirtualInterfaceNameSchema.exactOptional().openapi({
+      description: 'The name of the virtual private interface.',
+    }),
   })
   .openapi({ required: ['virtualInterfaceId'], title: 'UpdateVirtualInterfaceAttributesRequest' })
   .openapi('UpdateVirtualInterfaceAttributesRequest')

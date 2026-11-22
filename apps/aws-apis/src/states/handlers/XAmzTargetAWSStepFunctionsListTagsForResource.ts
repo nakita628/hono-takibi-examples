@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSStepFunctionsListTagsForResourceHandler = app.openapi(
   postXAmzTargetAWSStepFunctionsListTagsForResourceRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

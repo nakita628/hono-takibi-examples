@@ -74,7 +74,7 @@ const ScanDefinitionSchema = z
           .openapi({ required: [] }),
       )
       .exactOptional(),
-    options: z.object({}).exactOptional(),
+    options: z.looseObject({}).exactOptional(),
     scan_id: z.int().exactOptional().openapi({ example: 1 }),
   })
   .openapi({ required: [] })

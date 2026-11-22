@@ -1,5 +1,341 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AddressPartialSchema = z
+  .object({
+    country: z
+      .string()
+      .max(2)
+      .exactOptional()
+      .openapi({ description: 'ISO 3166-1 alpha-2 country code, for example DE', example: 'US' }),
+    locality: z
+      .string()
+      .max(40)
+      .exactOptional()
+      .openapi({
+        description: 'The locality/city. For example, Mountain View.',
+        example: 'Mountain View',
+      }),
+    post_office_box_number: z
+      .string()
+      .max(80)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The post office box number for PO box addresses.',
+        example: '2335232',
+      }),
+    postal_code: z
+      .string()
+      .max(24)
+      .exactOptional()
+      .openapi({ description: 'A postal code. For example, 9404', example: '9409' }),
+    region: z
+      .string()
+      .max(80)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The region. For example, CA', example: 'CA' }),
+    street_address: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({
+        description: 'The street address. For example, 1600 Amphitheatre Pkwy.',
+        example: '1600 Amphitheatre Pkwy.',
+      }),
+  })
+  .openapi({ description: '', title: 'PartialAddress', required: [] })
+  .openapi('AddressPartial')
+
+const AddressSchema = AddressPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: ['country', 'locality', 'postal_code', 'street_address'],
+      title: 'Address',
+    }),
+).openapi('Address')
+
+const BillingInformationPartialSchema = z
+  .object({
+    address: AddressSchema.exactOptional(),
+    name: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({
+        description: 'Name of the organisation receiving invoices.\n',
+        example: 'Moonoc Network Services LLS.',
+      }),
+    vat_number: z
+      .string()
+      .min(2)
+      .max(20)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Value-added tax number, required for\neuropean reverse charge system.\n',
+        example: 'UK2300000042',
+      }),
+  })
+  .openapi({
+    description:
+      'Optional information required for issuing invoices.\nOnly accounts with `billing_information` present can be used\nas a `billing_account`.',
+    title: 'PartialBillingInformation',
+    required: [],
+  })
+  .openapi('BillingInformationPartial')
+
+const BillingInformationSchema = BillingInformationPartialSchema.and(
+  z.looseObject({}).openapi({ required: ['name', 'address'], title: 'BillingInformation' }),
+).openapi('BillingInformation')
+
+const StatusPartialSchema = z
+  .object({
+    attrs: z.looseObject({}).exactOptional(),
+    message: z.string().exactOptional(),
+    severity: z
+      .int32()
+      .min(0)
+      .max(7)
+      .exactOptional()
+      .openapi({
+        description:
+          'We are using syslog severity levels: 0 = Emergency,\n1 = Alert, 2 = Critical, 3 = Error, 4 = Warning,\n5 = Notice, 6 = Informational, 7 = Debug.\n',
+        example: 2,
+      }),
+    tag: z.string().exactOptional(),
+    timestamp: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ description: 'Status Message', title: 'PartialStatus', required: [] })
+  .openapi('StatusPartial')
+
+const StatusSchema = StatusPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({ required: ['severity', 'tag', 'message', 'attrs', 'timestamp'], title: 'Status' }),
+).openapi('Status')
+
+const AccountPartialSchema = z
+  .object({
+    address: AddressSchema.exactOptional(),
+    billing_information: BillingInformationSchema.exactOptional(),
+    discoverable: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'The account will be included for all members of the\nix in the list of accounts.\n\nOnly `id`, `name` and `present_in_metro_area_networks`\nare provided to other members.',
+      }),
+    external_ref: z
+      .string()
+      .max(80)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    id: z.string().max(80).exactOptional(),
+    legal_name: z
+      .string()
+      .max(80)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Legal name of the organisation.\nOnly required when it's different from the account name.\n",
+        example: 'Moon Network Services LLS.',
+      }),
+    managing_account: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of a managing account. Can be used for creating\na customer hierachy.\n',
+        example: 'IX:Account:231',
+      }),
+    metro_area_network_presence: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Informal list of `MetroAreaNetwork` ids, indicating the\npresence to other accounts.\nThe list is maintained by the account and can be empty.\n',
+        example: ['14021', '12939'],
+      }),
+    name: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({
+        description: 'Name of the account, how it gets represented\nin e.g. a "customers list".\n',
+        example: 'Moonpeer Inc.',
+      }),
+    state: z
+      .enum([
+        'requested',
+        'allocated',
+        'testing',
+        'production',
+        'production_change_pending',
+        'decommission_requested',
+        'decommissioned',
+        'archived',
+        'error',
+        'operator',
+        'scheduled',
+      ])
+      .exactOptional(),
+    status: z.array(StatusSchema).exactOptional(),
+  })
+  .openapi({ description: 'Account', title: 'PartialAccount', required: [] })
+  .openapi('AccountPartial')
+
+const AccountSchema = AccountPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: ['state', 'name', 'metro_area_network_presence', 'id'],
+      title: 'Account',
+    }),
+).openapi('Account')
+
+const AccountRequestPartialSchema = z
+  .object({
+    address: AddressSchema.exactOptional(),
+    billing_information: BillingInformationSchema.exactOptional(),
+    discoverable: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'The account will be included for all members of the\nix in the list of accounts.\n\nOnly `id`, `name` and `present_in_metro_area_networks`\nare provided to other members.',
+      }),
+    external_ref: z
+      .string()
+      .max(80)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    legal_name: z
+      .string()
+      .max(80)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Legal name of the organisation.\nOnly required when it's different from the account name.\n",
+        example: 'Moon Network Services LLS.',
+      }),
+    managing_account: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of a managing account. Can be used for creating\na customer hierachy.\n',
+        example: 'IX:Account:231',
+      }),
+    metro_area_network_presence: z
+      .array(z.string())
+      .default([])
+      .exactOptional()
+      .openapi({
+        description:
+          'Informal list of `MetroAreaNetwork` ids, indicating the\npresence to other accounts.\nThe list is maintained by the account and can be empty.\n',
+        example: ['14021', '12939'],
+      }),
+    name: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({
+        description: 'Name of the account, how it gets represented\nin e.g. a "customers list".\n',
+        example: 'Moonpeer Inc.',
+      }),
+  })
+  .openapi({ description: 'Account Request', title: 'PartialAccountRequest', required: [] })
+  .openapi('AccountRequestPartial')
+
+const AccountRequestSchema = AccountRequestPartialSchema.and(
+  z.looseObject({}).openapi({ required: ['name', 'address'], title: 'AccountRequest' }),
+).openapi('AccountRequest')
+
+const AccountUpdatePartialSchema = z
+  .object({
+    address: AddressSchema.exactOptional(),
+    billing_information: BillingInformationSchema.exactOptional(),
+    discoverable: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'The account will be included for all members of the\nix in the list of accounts.\n\nOnly `id`, `name` and `present_in_metro_area_networks`\nare provided to other members.',
+      }),
+    external_ref: z
+      .string()
+      .max(80)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    legal_name: z
+      .string()
+      .max(80)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Legal name of the organisation.\nOnly required when it's different from the account name.\n",
+        example: 'Moon Network Services LLS.',
+      }),
+    managing_account: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of a managing account. Can be used for creating\na customer hierachy.\n',
+        example: 'IX:Account:231',
+      }),
+    metro_area_network_presence: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Informal list of `MetroAreaNetwork` ids, indicating the\npresence to other accounts.\nThe list is maintained by the account and can be empty.\n',
+        example: ['14021', '12939'],
+      }),
+    name: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({
+        description: 'Name of the account, how it gets represented\nin e.g. a "customers list".\n',
+        example: 'Moonpeer Inc.',
+      }),
+  })
+  .openapi({ description: 'Account Update Request', title: 'PartialAccountUpdate', required: [] })
+  .openapi('AccountUpdatePartial')
+
+const AccountUpdateSchema = AccountUpdatePartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: ['name', 'metro_area_network_presence', 'address'],
+      title: 'AccountUpdate',
+    }),
+).openapi('AccountUpdate')
+
 const AllowMemberJoiningRulePartialSchema = z
   .object({
     capacity_max: z
@@ -57,67 +393,12 @@ const AllowMemberJoiningRulePartialSchema = z
 
 const AllowMemberJoiningRuleSchema = AllowMemberJoiningRulePartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: ['managing_account', 'consuming_account', 'id', 'network_service', 'type'],
       title: 'AllowMemberJoiningRule',
     }),
 ).openapi('AllowMemberJoiningRule')
-
-const DenyMemberJoiningRulePartialSchema = z
-  .object({
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account to which access to the\nnetwork service should be granted or denied.\n',
-        example: '2381982',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    id: z.string().exactOptional(),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    network_service: z.string().exactOptional(),
-    type: z.string().openapi({ example: 'deny' }),
-  })
-  .openapi({
-    description: 'A rule for members joining a private vlan',
-    required: ['type'],
-    title: 'PartialDenyMemberJoiningRule',
-  })
-  .openapi('DenyMemberJoiningRulePartial')
-
-const DenyMemberJoiningRuleSchema = DenyMemberJoiningRulePartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: ['managing_account', 'consuming_account', 'id', 'network_service', 'type'],
-      title: 'DenyMemberJoiningRule',
-    }),
-).openapi('DenyMemberJoiningRule')
-
-type MemberJoiningRuleType =
-  | z.infer<typeof AllowMemberJoiningRuleSchema>
-  | z.infer<typeof DenyMemberJoiningRuleSchema>
-
-type MemberJoiningRulePartialType =
-  | z.infer<typeof AllowMemberJoiningRulePartialSchema>
-  | z.infer<typeof DenyMemberJoiningRulePartialSchema>
 
 const AllowMemberJoiningRuleRequestPartialSchema = z
   .object({
@@ -175,66 +456,12 @@ const AllowMemberJoiningRuleRequestPartialSchema = z
 
 const AllowMemberJoiningRuleRequestSchema = AllowMemberJoiningRuleRequestPartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: ['managing_account', 'consuming_account', 'network_service', 'type'],
       title: 'AllowMemberJoiningRuleRequest',
     }),
 ).openapi('AllowMemberJoiningRuleRequest')
-
-const DenyMemberJoiningRuleRequestPartialSchema = z
-  .object({
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account to which access to the\nnetwork service should be granted or denied.\n',
-        example: '2381982',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    network_service: z.string().exactOptional(),
-    type: z.string().openapi({ example: 'deny' }),
-  })
-  .openapi({
-    description: 'A new vlan member joining rule',
-    required: ['type'],
-    title: 'PartialDenyMemberJoiningRuleRequest',
-  })
-  .openapi('DenyMemberJoiningRuleRequestPartial')
-
-const DenyMemberJoiningRuleRequestSchema = DenyMemberJoiningRuleRequestPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: ['managing_account', 'consuming_account', 'network_service', 'type'],
-      title: 'DenyMemberJoiningRuleRequest',
-    }),
-).openapi('DenyMemberJoiningRuleRequest')
-
-type MemberJoiningRuleRequestType =
-  | z.infer<typeof AllowMemberJoiningRuleRequestSchema>
-  | z.infer<typeof DenyMemberJoiningRuleRequestSchema>
-
-type MemberJoiningRuleRequestPartialType =
-  | z.infer<typeof AllowMemberJoiningRuleRequestPartialSchema>
-  | z.infer<typeof DenyMemberJoiningRuleRequestPartialSchema>
 
 const AllowMemberJoiningRuleUpdatePartialSchema = z
   .object({
@@ -291,12 +518,1680 @@ const AllowMemberJoiningRuleUpdatePartialSchema = z
 
 const AllowMemberJoiningRuleUpdateSchema = AllowMemberJoiningRuleUpdatePartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: ['managing_account', 'consuming_account', 'type'],
       title: 'AllowMemberJoiningRuleUpdate',
     }),
 ).openapi('AllowMemberJoiningRuleUpdate')
+
+const AuthTokenPartialSchema = z
+  .object({ access_token: z.string().exactOptional(), refresh_token: z.string().exactOptional() })
+  .openapi({ description: 'AuthToken', title: 'PartialAuthToken', required: [] })
+  .openapi('AuthTokenPartial')
+
+const AuthTokenSchema = AuthTokenPartialSchema.and(
+  z.looseObject({}).openapi({ required: ['access_token', 'refresh_token'], title: 'AuthToken' }),
+).openapi('AuthToken')
+
+const AuthTokenRequestPartialSchema = z
+  .object({
+    api_key: z.string().length(16).exactOptional(),
+    api_secret: z.string().length(86).exactOptional(),
+  })
+  .openapi({ description: 'AuthTokenRequest', title: 'PartialAuthTokenRequest', required: [] })
+  .openapi('AuthTokenRequestPartial')
+
+const AuthTokenRequestSchema = AuthTokenRequestPartialSchema.and(
+  z.looseObject({}).openapi({ required: ['api_key', 'api_secret'], title: 'AuthTokenRequest' }),
+).openapi('AuthTokenRequest')
+
+const CancelablePartialSchema = z
+  .object({
+    charged_until: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'Your obligation to pay for the service will end on this date.\nTypically `≥ decommission_at`.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
+      }),
+    decommission_at: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The service will be decommissioned on this date.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
+      }),
+  })
+  .openapi({
+    description: 'Service or config can be canceled',
+    title: 'PartialCancelable',
+    required: [],
+  })
+  .openapi('CancelablePartial')
+
+const CancelableSchema = CancelablePartialSchema.and(
+  z.looseObject({}).openapi({ title: 'Cancelable' }),
+).openapi('Cancelable')
+
+const CancellationPolicyPartialSchema = z
+  .object({
+    charged_until: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'Your obligation to pay for the service will end on this date.\nTypically `≥ decommission_at`.',
+      }),
+    decommission_at: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description: 'This field denotes the first possible cancellation\ndate of the service.',
+      }),
+  })
+  .openapi({ description: 'Cancellation Policy', title: 'PartialCancellationPolicy', required: [] })
+  .openapi('CancellationPolicyPartial')
+
+const CancellationPolicySchema = CancellationPolicyPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({ required: ['decommission_at', 'charged_until'], title: 'CancellationPolicy' }),
+).openapi('CancellationPolicy')
+
+const CancellationRequestPartialSchema = z
+  .object({
+    decommission_at: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'An optional date for scheduling the cancellation\nand service decommissioning.',
+      }),
+  })
+  .openapi({
+    description: 'Service Cancellation Request',
+    title: 'PartialCancellationRequest',
+    required: [],
+  })
+  .openapi('CancellationRequestPartial')
+
+const CancellationRequestSchema = CancellationRequestPartialSchema.and(
+  z.looseObject({}).openapi({ title: 'CancellationRequest' }),
+).openapi('CancellationRequest')
+
+const CloudNetworkProductOfferingPartialSchema = z
+  .object({
+    bandwidth_max: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'When not `null`, this value enforces a mandatory\nrate limit for all network service configs.',
+      }),
+    bandwidth_min: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'When configuring access to the network service, at least\nthis `capacity` must be provided.',
+      }),
+    delivery_method: z
+      .enum(['dedicated', 'shared'])
+      .exactOptional()
+      .openapi({
+        description: 'The exchange delivers the service over a `shared` or `dedicated` NNI.',
+      }),
+    display_name: z.string().max(256).exactOptional(),
+    diversity: z
+      .int()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'The service can be delivered over multiple handovers from\nthe exchange to the `service_provider`.\nThe `diversity` denotes the number of handovers between the\nexchange and the service provider. A value of two signals a\nredundant service.\n\nOnly one network service configuration for each `handover` and\n`cloud_vlan` can be created.',
+      }),
+    downgrade_allowed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if the service can be migrated to\na lower bandwidth.' }),
+    handover_metro_area: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `MetroArea`. The network service will be\naccessed from this metro area.\n',
+        example: 'met:29381993:NYC',
+      }),
+    handover_metro_area_network: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `MetroAreaNetwork`. The service will be accessed\nthrough the handover metro area network.\n',
+        example: '191239810',
+      }),
+    id: z.string().max(80).exactOptional(),
+    name: z.string().max(160).exactOptional().openapi({ description: 'Name of the product' }),
+    physical_port_speed: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the service is dependent on the speed of\nthe physical port this field denotes the speed.',
+      }),
+    provider_vlans: z
+      .enum(['single', 'multi'])
+      .exactOptional()
+      .openapi({ description: 'The `NetworkService` provides `single` or `multi`ple vlans.' }),
+    resource_type: z
+      .enum(['connection', 'demarc', 'network_service', 'network_service_config'])
+      .exactOptional()
+      .openapi({
+        description: 'The resource type refers to an ix-api resource.\n',
+        example: 'network_service',
+      }),
+    service_metro_area: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Id of the `MetroArea`. The service is delivered\nin this metro area.\n',
+        example: 'met:213913485:LON',
+      }),
+    service_metro_area_network: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `MetroAreaNetwork`.\nThe service is directly provided on the metro area network.\n',
+        example: '9123843',
+      }),
+    service_provider: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the provider providing the service.\n',
+        example: 'AWS',
+      }),
+    service_provider_pop: z
+      .string()
+      .max(16)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The datacenter description of the partner NNI to the\nservice provider.\n',
+        example: 'INX6',
+      }),
+    service_provider_region: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The service provider offers the network service for a\nspecific region.\n',
+        example: 'eu-central-1',
+      }),
+    service_provider_workflow: z
+      .enum(['exchange_first', 'provider_first'])
+      .exactOptional()
+      .openapi({
+        description:
+          'When the workflow is `provider_first` the subscriber creates\na circuit with the cloud provider and provides a `cloud_key` for filtering\nthe product-offerings.\n\nIf the workflow is `exchange_first` the IX will create\nthe cloud circuit on the provider side.\n',
+        example: 'exchange_first',
+      }),
+    type: z.string().openapi({ example: 'cloud_vc' }),
+    upgrade_allowed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if the service can be migrated to\na higher bandwidth.' }),
+  })
+  .openapi({
+    description: 'Cloud Network Product Offering',
+    required: ['type'],
+    title: 'PartialCloudNetworkProductOffering',
+  })
+  .openapi('CloudNetworkProductOfferingPartial')
+
+const CloudNetworkProductOfferingSchema = CloudNetworkProductOfferingPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'id',
+        'name',
+        'display_name',
+        'provider_vlans',
+        'resource_type',
+        'handover_metro_area_network',
+        'handover_metro_area',
+        'service_metro_area_network',
+        'service_metro_area',
+        'bandwidth_min',
+        'bandwidth_max',
+        'physical_port_speed',
+        'service_provider',
+        'downgrade_allowed',
+        'upgrade_allowed',
+        'service_provider_region',
+        'service_provider_pop',
+        'service_provider_workflow',
+        'delivery_method',
+        'diversity',
+        'type',
+      ],
+      title: 'CloudNetworkProductOffering',
+    }),
+).openapi('CloudNetworkProductOffering')
+
+const CloudNetworkServicePartialSchema = z
+  .object({
+    billing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An account requires billing_information to be used as a `billing_account`.',
+      }),
+    capacity: z
+      .int()
+      .min(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The capacity of the service in Mbps. When null,\nthe maximum capacity will be used.',
+      }),
+    charged_until: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'Your obligation to pay for the service will end on this date.\nTypically `≥ decommission_at`.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
+      }),
+    cloud_key: z.string().exactOptional(),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    contract_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
+        example: 'contract:31824',
+      }),
+    decommission_at: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The service will be decommissioned on this date.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
+      }),
+    diversity: z
+      .int()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'Same value as the corresponding `ProductOffering`.\n\nThe service can be delivered over multiple handovers from\nthe exchange to the `service_provider`.\n\nThe `diversity` denotes the number of handovers between the\nexchange and the service provider. A value of two signals a\nredundant service.\n\nOnly one network service configuration for each `handover` and\n`cloud_vlan` can be created.',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    id: z.string().exactOptional(),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    nsc_required_contact_roles: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The configuration will require at least one of each of the\nspecified roles assigned to contacts.\n\nThe `RoleAssignment` is associated through the\n`role_assignments` list property of the network service configuration.',
+        readOnly: true,
+      }),
+    product_offering: z.string().exactOptional(),
+    provider_ref: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'For a cloud network service with the exchange first\nworkflow, the `provider_ref` will be a reference\nto a resource of the cloud provider. (E.g. the UUID of\na virtual circuit.)\n\nThe `provider_ref` is managed by the exchange and its\nmeaning may vary between different cloud services.\n',
+        example: '331050d5-76fb-498b-b72a-248520278fbd',
+      }),
+    purchase_order: z
+      .string()
+      .max(80)
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'Purchase Order ID which will be displayed on the invoice.\n',
+        example: 'Project: DC Moon',
+      }),
+    state: z
+      .enum([
+        'requested',
+        'allocated',
+        'testing',
+        'production',
+        'production_change_pending',
+        'decommission_requested',
+        'decommissioned',
+        'archived',
+        'error',
+        'operator',
+        'scheduled',
+      ])
+      .exactOptional(),
+    status: z.array(StatusSchema).exactOptional(),
+    type: z.string().openapi({ example: 'cloud_vc' }),
+  })
+  .openapi({
+    description: 'Cloud Network Service',
+    required: ['type'],
+    title: 'PartialCloudNetworkService',
+  })
+  .openapi('CloudNetworkServicePartial')
+
+const CloudNetworkServiceSchema = CloudNetworkServicePartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'state',
+        'id',
+        'product_offering',
+        'managing_account',
+        'consuming_account',
+        'billing_account',
+        'cloud_key',
+        'diversity',
+        'provider_ref',
+        'type',
+      ],
+      title: 'CloudNetworkService',
+    }),
+).openapi('CloudNetworkService')
+
+const VLanConfigDot1QPartialSchema = z
+  .object({
+    vlan: z
+      .int32()
+      .min(1)
+      .max(4094)
+      .exactOptional()
+      .openapi({ description: 'A VLAN tag\n', example: 23 }),
+    vlan_ethertype: z
+      .enum(['0x8100', '0x88a8', '0x9100'])
+      .default('0x8100')
+      .exactOptional()
+      .openapi({ description: 'The ethertype of the vlan in hexadecimal notation.' }),
+    vlan_type: z.string().openapi({ example: 'dot1q' }),
+  })
+  .openapi({
+    description: 'A Dot1Q vlan configuration',
+    required: ['vlan_type'],
+    title: 'PartialVLanConfigDot1Q',
+  })
+  .openapi('VLanConfigDot1QPartial')
+
+const VLanConfigDot1QSchema = VLanConfigDot1QPartialSchema.and(
+  z.looseObject({}).openapi({ required: ['vlan', 'vlan_type'], title: 'VLanConfigDot1Q' }),
+).openapi('VLanConfigDot1Q')
+
+const VLanConfigQinQPartialSchema = z
+  .object({
+    inner_vlan: z
+      .int32()
+      .min(1)
+      .max(4094)
+      .exactOptional()
+      .openapi({ description: 'The inner VLAN id.\n', example: 200 }),
+    outer_vlan: z
+      .int32()
+      .min(1)
+      .max(4094)
+      .exactOptional()
+      .openapi({ description: 'The outer VLAN id.\n', example: 200 }),
+    outer_vlan_ethertype: z
+      .enum(['0x8100', '0x88a8', '0x9100'])
+      .default('0x8100')
+      .exactOptional()
+      .openapi({ description: 'The ethertype of the outer tag in hexadecimal notation.' }),
+    vlan_type: z.string().openapi({ example: 'dot1q' }),
+  })
+  .openapi({
+    description: 'A QinQ vlan configuration',
+    required: ['vlan_type'],
+    title: 'PartialVLanConfigQinQ',
+  })
+  .openapi('VLanConfigQinQPartial')
+
+const VLanConfigQinQSchema = VLanConfigQinQPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({ required: ['outer_vlan', 'inner_vlan', 'vlan_type'], title: 'VLanConfigQinQ' }),
+).openapi('VLanConfigQinQ')
+
+const VLanConfigPortPartialSchema = z
+  .object({ vlan_type: z.string().openapi({ example: 'port' }) })
+  .openapi({
+    description: 'A Port vlan configuration',
+    required: ['vlan_type'],
+    title: 'PartialVLanConfigPort',
+  })
+  .openapi('VLanConfigPortPartial')
+
+const VLanConfigPortSchema = VLanConfigPortPartialSchema.and(
+  z.looseObject({}).openapi({ required: ['vlan_type'], title: 'VLanConfigPort' }),
+).openapi('VLanConfigPort')
+
+const VlanConfigSchema = z
+  .xor([VLanConfigDot1QSchema, VLanConfigQinQSchema, VLanConfigPortSchema])
+  .openapi({
+    description:
+      'The vlan configuration defines how the service\nis made available on the connection.',
+    discriminator: {
+      propertyName: 'vlan_type',
+      mapping: {
+        dot1q: '#/components/schemas/VLanConfigDot1Q',
+        port: '#/components/schemas/VLanConfigPort',
+        qinq: '#/components/schemas/VLanConfigQinQ',
+      },
+    },
+    title: 'VlanConfig',
+  })
+  .openapi('VlanConfig')
+
+const CloudNetworkServiceConfigPartialSchema = z
+  .object({
+    billing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An account requires billing_information to be used as a `billing_account`.',
+      }),
+    charged_until: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'Your obligation to pay for the service will end on this date.\nTypically `≥ decommission_at`.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
+      }),
+    cloud_vlan: z
+      .int32()
+      .min(1)
+      .max(4094)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the `provider_vlans` property of the `ProductOffering` is\n`multi`, a numeric value refers to a specific vlan on the service\nprovider side.\n\nOtherwise, if set to `null`, it refers to all unmatched\nvlan ids on the service provider side. (All vlan ids from the\nservice provider side are presented as tags within any vlans specified\nin `vlan_config`.)\n\nIf the `provider_vlans` property of the `ProductOffering` is `single`,\nthe `cloud_vlan` MUST be `null` or MUST NOT be provided.',
+      }),
+    connection: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    contract_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
+        example: 'contract:31824',
+      }),
+    decommission_at: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The service will be decommissioned on this date.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    handover: z
+      .int()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'The handover enumerates the connection and is\nrequired for checking diversity constraints.\n\nIt must be within `1 <= x <= network_service.diversity`.\n',
+        example: 1,
+      }),
+    id: z.string().max(80).exactOptional(),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    network_feature_configs: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
+        example: ['12356', '43829'],
+        readOnly: true,
+      }),
+    network_service: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the configured network service.' }),
+    purchase_order: z
+      .string()
+      .max(80)
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'Purchase Order ID which will be displayed on the invoice.\n',
+        example: 'Project: DC Moon',
+      }),
+    role_assignments: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
+        example: ['c-impl:123', 'c-noc:331'],
+      }),
+    state: z
+      .enum([
+        'requested',
+        'allocated',
+        'testing',
+        'production',
+        'production_change_pending',
+        'decommission_requested',
+        'decommissioned',
+        'archived',
+        'error',
+        'operator',
+        'scheduled',
+      ])
+      .exactOptional(),
+    status: z.array(StatusSchema).exactOptional(),
+    type: z.string().openapi({ example: 'cloud_vc' }),
+    vlan_config: VlanConfigSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Cloud Network Service Config',
+    required: ['type'],
+    title: 'PartialCloudNetworkServiceConfig',
+  })
+  .openapi('CloudNetworkServiceConfigPartial')
+
+const CloudNetworkServiceConfigSchema = CloudNetworkServiceConfigPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'state',
+        'id',
+        'network_service',
+        'managing_account',
+        'consuming_account',
+        'billing_account',
+        'role_assignments',
+        'connection',
+        'vlan_config',
+        'handover',
+        'cloud_vlan',
+        'type',
+      ],
+      title: 'CloudNetworkServiceConfig',
+    }),
+).openapi('CloudNetworkServiceConfig')
+
+const CloudNetworkServiceConfigRequestPartialSchema = z
+  .object({
+    billing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An account requires billing_information to be used as a `billing_account`.',
+      }),
+    cloud_vlan: z
+      .int32()
+      .min(1)
+      .max(4094)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the `provider_vlans` property of the `ProductOffering` is\n`multi`, a numeric value refers to a specific vlan on the service\nprovider side.\n\nOtherwise, if set to `null`, it refers to all unmatched\nvlan ids on the service provider side. (All vlan ids from the\nservice provider side are presented as tags within any vlans specified\nin `vlan_config`.)\n\nIf the `provider_vlans` property of the `ProductOffering` is `single`,\nthe `cloud_vlan` MUST be `null` or MUST NOT be provided.',
+      }),
+    connection: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    contract_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
+        example: 'contract:31824',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    handover: z
+      .int()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'The handover enumerates the connection and is\nrequired for checking diversity constraints.\n\nIt must be within `1 <= x <= network_service.diversity`.\n',
+        example: 1,
+      }),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    network_feature_configs: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
+        example: ['12356', '43829'],
+        readOnly: true,
+      }),
+    network_service: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the `NetworkService` to configure.' }),
+    purchase_order: z
+      .string()
+      .max(80)
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'Purchase Order ID which will be displayed on the invoice.\n',
+        example: 'Project: DC Moon',
+      }),
+    role_assignments: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
+        example: ['c-impl:123', 'c-noc:331'],
+      }),
+    type: z.string().openapi({ example: 'cloud_vc' }),
+    vlan_config: VlanConfigSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Cloud Network Service Config Request',
+    required: ['type'],
+    title: 'PartialCloudNetworkServiceConfigRequest',
+  })
+  .openapi('CloudNetworkServiceConfigRequestPartial')
+
+const CloudNetworkServiceConfigRequestSchema = CloudNetworkServiceConfigRequestPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'managing_account',
+        'consuming_account',
+        'network_service',
+        'billing_account',
+        'role_assignments',
+        'connection',
+        'vlan_config',
+        'handover',
+        'cloud_vlan',
+        'type',
+      ],
+      title: 'CloudNetworkServiceConfigRequest',
+    }),
+).openapi('CloudNetworkServiceConfigRequest')
+
+const CloudNetworkServiceConfigUpdatePartialSchema = z
+  .object({
+    billing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An account requires billing_information to be used as a `billing_account`.',
+      }),
+    cloud_vlan: z
+      .int32()
+      .min(1)
+      .max(4094)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the `provider_vlans` property of the `ProductOffering` is\n`multi`, a numeric value refers to a specific vlan on the service\nprovider side.\n\nOtherwise, if set to `null`, it refers to all unmatched\nvlan ids on the service provider side. (All vlan ids from the\nservice provider side are presented as tags within any vlans specified\nin `vlan_config`.)\n\nIf the `provider_vlans` property of the `ProductOffering` is `single`,\nthe `cloud_vlan` MUST be `null` or MUST NOT be provided.',
+      }),
+    connection: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    contract_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
+        example: 'contract:31824',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    handover: z
+      .int()
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'The handover enumerates the connection and is\nrequired for checking diversity constraints.\n\nIt must be within `1 <= x <= network_service.diversity`.\n',
+        example: 1,
+      }),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    network_feature_configs: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
+        example: ['12356', '43829'],
+        readOnly: true,
+      }),
+    purchase_order: z
+      .string()
+      .max(80)
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'Purchase Order ID which will be displayed on the invoice.\n',
+        example: 'Project: DC Moon',
+      }),
+    role_assignments: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
+        example: ['c-impl:123', 'c-noc:331'],
+      }),
+    type: z.string().openapi({ example: 'cloud_vc' }),
+    vlan_config: VlanConfigSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Cloud Network Service Config Update',
+    required: ['type'],
+    title: 'PartialCloudNetworkServiceConfigUpdate',
+  })
+  .openapi('CloudNetworkServiceConfigUpdatePartial')
+
+const CloudNetworkServiceConfigUpdateSchema = CloudNetworkServiceConfigUpdatePartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'managing_account',
+        'consuming_account',
+        'vlan_config',
+        'billing_account',
+        'role_assignments',
+        'connection',
+        'handover',
+        'cloud_vlan',
+        'type',
+      ],
+      title: 'CloudNetworkServiceConfigUpdate',
+    }),
+).openapi('CloudNetworkServiceConfigUpdate')
+
+const CloudNetworkServiceRequestPartialSchema = z
+  .object({
+    billing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An account requires billing_information to be used as a `billing_account`.',
+      }),
+    capacity: z
+      .int()
+      .min(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The capacity of the service in Mbps. When null,\nthe maximum capacity will be used.',
+      }),
+    cloud_key: z.string().exactOptional(),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    contract_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
+        example: 'contract:31824',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    product_offering: z.string().exactOptional(),
+    purchase_order: z
+      .string()
+      .max(80)
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'Purchase Order ID which will be displayed on the invoice.\n',
+        example: 'Project: DC Moon',
+      }),
+    type: z.string().openapi({ example: 'cloud_vc' }),
+  })
+  .openapi({
+    description: 'Cloud Network Service Request',
+    required: ['type'],
+    title: 'PartialCloudNetworkServiceRequest',
+  })
+  .openapi('CloudNetworkServiceRequestPartial')
+
+const CloudNetworkServiceRequestSchema = CloudNetworkServiceRequestPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'product_offering',
+        'managing_account',
+        'consuming_account',
+        'billing_account',
+        'cloud_key',
+        'type',
+      ],
+      title: 'CloudNetworkServiceRequest',
+    }),
+).openapi('CloudNetworkServiceRequest')
+
+const ConnectionPartialSchema = z
+  .object({
+    billing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An account requires billing_information to be used as a `billing_account`.',
+      }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    contract_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
+        example: 'contract:31824',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    id: z.string().max(80).exactOptional(),
+    lacp_timeout: z
+      .enum(['slow', 'fast'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'This sets the LACP Timeout mode. Both ends of the connections need\nto be configured the same.\n',
+        example: 'slow',
+      }),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    mode: z
+      .enum(['lag_lacp', 'lag_static', 'flex_ethernet', 'standalone'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Sets the mode of the connection. The mode can be:\n\n- `lag_lacp`: connection is build as a LAG with LACP enabled\n- `lag_static`: connection is build as LAG with static configuration\n- `flex_ethernet`: connect is build as a FlexEthernet channel\n- `standalone`: only one port is allowed in this connection without\nany bundling.\n',
+        example: 'lag_lacp',
+      }),
+    name: z.string().max(80).exactOptional(),
+    outer_vlan_ethertypes: z
+      .array(z.enum(['0x8100', '0x88a8', '0x9100']).default('0x8100'))
+      .exactOptional()
+      .openapi({
+        description: 'The ethertype of the outer tag in hexadecimal notation.\n',
+        example: ['0x8100'],
+      }),
+    ports: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'References to the port belonging to this connection. Typically\nall ports within one connection are distributed over the same\ndevice.\n',
+        example: ['ID23', '42', '5'],
+      }),
+    purchase_order: z
+      .string()
+      .max(80)
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'Purchase Order ID which will be displayed on the invoice.\n',
+        example: 'Project: DC Moon',
+      }),
+    role_assignments: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
+        example: ['c-impl:123', 'c-noc:331'],
+      }),
+    speed: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Shows the total bandwidth of the connection in Mbit/s.\n',
+        example: 20000,
+      }),
+    state: z
+      .enum([
+        'requested',
+        'allocated',
+        'testing',
+        'production',
+        'production_change_pending',
+        'decommission_requested',
+        'decommissioned',
+        'archived',
+        'error',
+        'operator',
+        'scheduled',
+      ])
+      .exactOptional(),
+    status: z.array(StatusSchema).exactOptional(),
+    vlan_types: z
+      .array(z.enum(['port', 'dot1q', 'qinq']))
+      .exactOptional()
+      .openapi({
+        description: 'A list of vlan config types you can configure using\nthis connection.',
+      }),
+  })
+  .openapi({ description: 'Connection', title: 'PartialConnection', required: [] })
+  .openapi('ConnectionPartial')
+
+const ConnectionSchema = ConnectionPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'state',
+        'managing_account',
+        'consuming_account',
+        'billing_account',
+        'role_assignments',
+        'mode',
+        'id',
+        'name',
+        'vlan_types',
+        'outer_vlan_ethertypes',
+      ],
+      title: 'Connection',
+    }),
+).openapi('Connection')
+
+const ConnectionRequestPartialSchema = z
+  .object({
+    billing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An account requires billing_information to be used as a `billing_account`.',
+      }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    contract_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
+        example: 'contract:31824',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    lacp_timeout: z
+      .enum(['slow', 'fast'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'This sets the LACP Timeout mode. Both ends of the connections need\nto be configured the same.\n',
+        example: 'slow',
+      }),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    mode: z
+      .enum(['lag_lacp', 'lag_static', 'flex_ethernet', 'standalone'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Sets the mode of the connection. The mode can be:\n\n- `lag_lacp`: connection is build as a LAG with LACP enabled\n- `lag_static`: connection is build as LAG with static configuration\n- `flex_ethernet`: connect is build as a FlexEthernet channel\n- `standalone`: only one port is allowed in this connection without\nany bundling.\n',
+        example: 'lag_lacp',
+      }),
+    purchase_order: z
+      .string()
+      .max(80)
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'Purchase Order ID which will be displayed on the invoice.\n',
+        example: 'Project: DC Moon',
+      }),
+    role_assignments: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
+        example: ['c-impl:123', 'c-noc:331'],
+      }),
+    speed: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Shows the total bandwidth of the connection in Mbit/s.\n',
+        example: 20000,
+      }),
+  })
+  .openapi({ description: 'Connection Request', title: 'PartialConnectionRequest', required: [] })
+  .openapi('ConnectionRequestPartial')
+
+const ConnectionRequestSchema = ConnectionRequestPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'managing_account',
+        'consuming_account',
+        'billing_account',
+        'role_assignments',
+        'mode',
+      ],
+      title: 'ConnectionRequest',
+    }),
+).openapi('ConnectionRequest')
+
+const ConnectionUpdatePartialSchema = z
+  .object({
+    billing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An account requires billing_information to be used as a `billing_account`.',
+      }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    contract_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
+        example: 'contract:31824',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    lacp_timeout: z
+      .enum(['slow', 'fast'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'This sets the LACP Timeout mode. Both ends of the connections need\nto be configured the same.\n',
+        example: 'slow',
+      }),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    mode: z
+      .enum(['lag_lacp', 'lag_static', 'flex_ethernet', 'standalone'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Sets the mode of the connection. The mode can be:\n\n- `lag_lacp`: connection is build as a LAG with LACP enabled\n- `lag_static`: connection is build as LAG with static configuration\n- `flex_ethernet`: connect is build as a FlexEthernet channel\n- `standalone`: only one port is allowed in this connection without\nany bundling.\n',
+        example: 'lag_lacp',
+      }),
+    purchase_order: z
+      .string()
+      .max(80)
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'Purchase Order ID which will be displayed on the invoice.\n',
+        example: 'Project: DC Moon',
+      }),
+    role_assignments: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
+        example: ['c-impl:123', 'c-noc:331'],
+      }),
+    speed: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Shows the total bandwidth of the connection in Mbit/s.\n',
+        example: 20000,
+      }),
+  })
+  .openapi({ description: 'Connection Update', title: 'PartialConnectionUpdate', required: [] })
+  .openapi('ConnectionUpdatePartial')
+
+const ConnectionUpdateSchema = ConnectionUpdatePartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'managing_account',
+        'consuming_account',
+        'billing_account',
+        'role_assignments',
+        'mode',
+      ],
+      title: 'ConnectionUpdate',
+    }),
+).openapi('ConnectionUpdate')
+
+const ConsumablePartialSchema = z
+  .object({
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+  })
+  .openapi({ description: 'Consumable', title: 'PartialConsumable', required: [] })
+  .openapi('ConsumablePartial')
+
+const ConsumableSchema = ConsumablePartialSchema.and(
+  z.looseObject({}).openapi({ required: ['consuming_account'], title: 'Consumable' }),
+).openapi('Consumable')
+
+const ContactPartialSchema = z
+  .object({
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    email: z
+      .string()
+      .max(80)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The email of the legal company entity.\n',
+        example: 'info@moon-peer.net',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    id: z.string().exactOptional(),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    name: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'A name of a person or an organisation', example: 'Some A. Name' }),
+    telephone: z
+      .string()
+      .max(40)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The telephone number in E.164 Phone Number Formatting',
+        example: '+442071838750',
+      }),
+  })
+  .openapi({ description: 'Contact', title: 'PartialContact', required: [] })
+  .openapi('ContactPartial')
+
+const ContactSchema = ContactPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({ required: ['managing_account', 'consuming_account', 'id'], title: 'Contact' }),
+).openapi('Contact')
+
+const ContactRequestPartialSchema = z
+  .object({
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    email: z
+      .string()
+      .max(80)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The email of the legal company entity.\n',
+        example: 'info@moon-peer.net',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    name: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'A name of a person or an organisation', example: 'Some A. Name' }),
+    telephone: z
+      .string()
+      .max(40)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The telephone number in E.164 Phone Number Formatting',
+        example: '+442071838750',
+      }),
+  })
+  .openapi({
+    description: 'A contact creation request',
+    title: 'PartialContactRequest',
+    required: [],
+  })
+  .openapi('ContactRequestPartial')
+
+const ContactRequestSchema = ContactRequestPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({ required: ['managing_account', 'consuming_account'], title: 'ContactRequest' }),
+).openapi('ContactRequest')
+
+const ContactUpdatePartialSchema = z
+  .object({
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    email: z
+      .string()
+      .max(80)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The email of the legal company entity.\n',
+        example: 'info@moon-peer.net',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    name: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'A name of a person or an organisation', example: 'Some A. Name' }),
+    telephone: z
+      .string()
+      .max(40)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The telephone number in E.164 Phone Number Formatting',
+        example: '+442071838750',
+      }),
+  })
+  .openapi({ description: 'A contact update', title: 'PartialContactUpdate', required: [] })
+  .openapi('ContactUpdatePartial')
+
+const ContactUpdateSchema = ContactUpdatePartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({ required: ['managing_account', 'consuming_account'], title: 'ContactUpdate' }),
+).openapi('ContactUpdate')
+
+const ContactablePartialSchema = z
+  .object({
+    role_assignments: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
+        example: ['c-impl:123', 'c-noc:331'],
+      }),
+  })
+  .openapi({ description: 'Contactable', title: 'PartialContactable', required: [] })
+  .openapi('ContactablePartial')
+
+const ContactableSchema = ContactablePartialSchema.and(
+  z.looseObject({}).openapi({ required: ['role_assignments'], title: 'Contactable' }),
+).openapi('Contactable')
+
+const DenyMemberJoiningRulePartialSchema = z
+  .object({
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account to which access to the\nnetwork service should be granted or denied.\n',
+        example: '2381982',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    id: z.string().exactOptional(),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    network_service: z.string().exactOptional(),
+    type: z.string().openapi({ example: 'deny' }),
+  })
+  .openapi({
+    description: 'A rule for members joining a private vlan',
+    required: ['type'],
+    title: 'PartialDenyMemberJoiningRule',
+  })
+  .openapi('DenyMemberJoiningRulePartial')
+
+const DenyMemberJoiningRuleSchema = DenyMemberJoiningRulePartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: ['managing_account', 'consuming_account', 'id', 'network_service', 'type'],
+      title: 'DenyMemberJoiningRule',
+    }),
+).openapi('DenyMemberJoiningRule')
+
+const DenyMemberJoiningRuleRequestPartialSchema = z
+  .object({
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account to which access to the\nnetwork service should be granted or denied.\n',
+        example: '2381982',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    network_service: z.string().exactOptional(),
+    type: z.string().openapi({ example: 'deny' }),
+  })
+  .openapi({
+    description: 'A new vlan member joining rule',
+    required: ['type'],
+    title: 'PartialDenyMemberJoiningRuleRequest',
+  })
+  .openapi('DenyMemberJoiningRuleRequestPartial')
+
+const DenyMemberJoiningRuleRequestSchema = DenyMemberJoiningRuleRequestPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: ['managing_account', 'consuming_account', 'network_service', 'type'],
+      title: 'DenyMemberJoiningRuleRequest',
+    }),
+).openapi('DenyMemberJoiningRuleRequest')
 
 const DenyMemberJoiningRuleUpdatePartialSchema = z
   .object({
@@ -336,20 +2231,1011 @@ const DenyMemberJoiningRuleUpdatePartialSchema = z
 
 const DenyMemberJoiningRuleUpdateSchema = DenyMemberJoiningRuleUpdatePartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: ['managing_account', 'consuming_account', 'type'],
       title: 'DenyMemberJoiningRuleUpdate',
     }),
 ).openapi('DenyMemberJoiningRuleUpdate')
 
-type MemberJoiningRuleUpdateType =
-  | z.infer<typeof AllowMemberJoiningRuleUpdateSchema>
-  | z.infer<typeof DenyMemberJoiningRuleUpdateSchema>
+const DeviceCapabilityPartialSchema = z
+  .object({
+    availability: z
+      .int32()
+      .min(0)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description: 'Count of available ports on device\n',
+        example: 23,
+        readOnly: true,
+      }),
+    max_lag: z
+      .int32()
+      .min(0)
+      .max(32767)
+      .exactOptional()
+      .openapi({
+        description: 'Maximum count of ports which can be bundled to a max_lag',
+        example: 8,
+        readOnly: true,
+      }),
+    media_type: z
+      .string()
+      .max(20)
+      .exactOptional()
+      .openapi({
+        description: 'The media type of the port (e.g. 1000BASE-LX, 10GBASE-LR, ...)\n',
+        example: '1000BASE-LX',
+        readOnly: true,
+      }),
+    speed: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Speed of port in Mbit/s\n', example: 1000, readOnly: true }),
+  })
+  .openapi({ description: 'Device Capability', title: 'PartialDeviceCapability', required: [] })
+  .openapi('DeviceCapabilityPartial')
 
-type MemberJoiningRuleUpdatePartialType =
-  | z.infer<typeof AllowMemberJoiningRuleUpdatePartialSchema>
-  | z.infer<typeof DenyMemberJoiningRuleUpdatePartialSchema>
+const DeviceCapabilitySchema = DeviceCapabilityPartialSchema.and(
+  z.looseObject({}).openapi({ title: 'DeviceCapability' }),
+).openapi('DeviceCapability')
+
+const DevicePartialSchema = z
+  .object({
+    capabilities: z.array(DeviceCapabilitySchema).exactOptional(),
+    facility: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Identifier of the facility where the device\nis physically based.',
+        readOnly: true,
+      }),
+    id: z.string().max(80).exactOptional(),
+    name: z
+      .string()
+      .max(180)
+      .exactOptional()
+      .openapi({ description: 'Name of the device\n', example: 'edge2.moon.space-ix.net' }),
+    pop: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The `PointOfPresence` the device is in.' }),
+  })
+  .openapi({ description: 'Device', title: 'PartialDevice', required: [] })
+  .openapi('DevicePartial')
+
+const DeviceSchema = DevicePartialSchema.and(
+  z.looseObject({}).openapi({ required: ['name', 'pop', 'id'], title: 'Device' }),
+).openapi('Device')
+
+const DeviceConnectionPartialSchema = z
+  .object({
+    capacity_max: z.int32().min(0).max(2147483647).exactOptional(),
+    connected_device: z.string().exactOptional(),
+    device: z.string().exactOptional(),
+    id: z.string().max(80).exactOptional(),
+  })
+  .openapi({ description: 'Device Connection', title: 'PartialDeviceConnection', required: [] })
+  .openapi('DeviceConnectionPartial')
+
+const DeviceConnectionSchema = DeviceConnectionPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: ['capacity_max', 'device', 'connected_device', 'id'],
+      title: 'DeviceConnection',
+    }),
+).openapi('DeviceConnection')
+
+const EventPartialSchema = z
+  .object({
+    account: z.string().exactOptional().openapi({ readOnly: true }),
+    payload: z.looseObject({}).exactOptional(),
+    serial: z.int().exactOptional(),
+    timestamp: z.iso.datetime({ offset: true }).exactOptional(),
+    type: z.string().exactOptional(),
+  })
+  .openapi({ description: 'Event', title: 'PartialEvent', required: [] })
+  .openapi('EventPartial')
+
+const EventSchema = EventPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({ required: ['serial', 'type', 'payload', 'timestamp'], title: 'Event' }),
+).openapi('Event')
+
+const ExchangeLanNetworkProductOfferingPartialSchema = z
+  .object({
+    bandwidth_max: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'When not `null`, this value enforces a mandatory\nrate limit for all network service configs.',
+      }),
+    bandwidth_min: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'When configuring access to the network service, at least\nthis `capacity` must be provided.',
+      }),
+    display_name: z.string().max(256).exactOptional(),
+    downgrade_allowed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if the service can be migrated to\na lower bandwidth.' }),
+    exchange_lan_network_service: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the exchange lan network service.' }),
+    handover_metro_area: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `MetroArea`. The network service will be\naccessed from this metro area.\n',
+        example: 'met:29381993:NYC',
+      }),
+    handover_metro_area_network: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `MetroAreaNetwork`. The service will be accessed\nthrough the handover metro area network.\n',
+        example: '191239810',
+      }),
+    id: z.string().max(80).exactOptional(),
+    name: z.string().max(160).exactOptional().openapi({ description: 'Name of the product' }),
+    physical_port_speed: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the service is dependent on the speed of\nthe physical port this field denotes the speed.',
+      }),
+    provider_vlans: z
+      .enum(['single', 'multi'])
+      .exactOptional()
+      .openapi({ description: 'The `NetworkService` provides `single` or `multi`ple vlans.' }),
+    resource_type: z
+      .enum(['connection', 'demarc', 'network_service', 'network_service_config'])
+      .exactOptional()
+      .openapi({
+        description: 'The resource type refers to an ix-api resource.\n',
+        example: 'network_service',
+      }),
+    service_metro_area: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Id of the `MetroArea`. The service is delivered\nin this metro area.\n',
+        example: 'met:213913485:LON',
+      }),
+    service_metro_area_network: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `MetroAreaNetwork`.\nThe service is directly provided on the metro area network.\n',
+        example: '9123843',
+      }),
+    service_provider: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the provider providing the service.\n',
+        example: 'AWS',
+      }),
+    type: z.string().openapi({ example: 'exchange_lan' }),
+    upgrade_allowed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if the service can be migrated to\na higher bandwidth.' }),
+  })
+  .openapi({
+    description: 'Exchange Lan Network Product Offering',
+    required: ['type'],
+    title: 'PartialExchangeLanNetworkProductOffering',
+  })
+  .openapi('ExchangeLanNetworkProductOfferingPartial')
+
+const ExchangeLanNetworkProductOfferingSchema = ExchangeLanNetworkProductOfferingPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'id',
+        'name',
+        'display_name',
+        'provider_vlans',
+        'resource_type',
+        'handover_metro_area_network',
+        'handover_metro_area',
+        'service_metro_area_network',
+        'service_metro_area',
+        'bandwidth_min',
+        'bandwidth_max',
+        'physical_port_speed',
+        'service_provider',
+        'downgrade_allowed',
+        'upgrade_allowed',
+        'exchange_lan_network_service',
+        'type',
+      ],
+      title: 'ExchangeLanNetworkProductOffering',
+    }),
+).openapi('ExchangeLanNetworkProductOffering')
+
+const ExchangeLanNetworkServicePartialSchema = z
+  .object({
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    id: z.string().exactOptional(),
+    ixfdb_ixid: z.int().nullable().exactOptional().openapi({ description: 'id of ixfdb' }),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    metro_area_network: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `MetroAreaNetwork` where\nthe exchange lan network service is directly provided.\n\nSame as `service_metro_area_network` on the related\n`ProductOffering`.\n',
+        example: 'man:293225:LON2',
+      }),
+    name: z
+      .string()
+      .max(40)
+      .exactOptional()
+      .openapi({ description: 'Exchange-dependent service name, will be shown on the invoice.' }),
+    network_features: z.array(z.string()).exactOptional(),
+    nsc_required_contact_roles: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The configuration will require at least one of each of the\nspecified roles assigned to contacts.\n\nThe `RoleAssignment` is associated through the\n`role_assignments` list property of the network service configuration.',
+        readOnly: true,
+      }),
+    peeringdb_ixid: z.int().nullable().exactOptional().openapi({ description: 'PeeringDB ixid' }),
+    product_offering: z.string().exactOptional().openapi({ description: '*deprecation notice*' }),
+    state: z
+      .enum([
+        'requested',
+        'allocated',
+        'testing',
+        'production',
+        'production_change_pending',
+        'decommission_requested',
+        'decommissioned',
+        'archived',
+        'error',
+        'operator',
+        'scheduled',
+      ])
+      .exactOptional(),
+    status: z.array(StatusSchema).exactOptional(),
+    subnet_v4: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'IPv4 subnet in [dot-decimal notation](https://en.wikipedia.org/wiki/Dot-decimal_notation)\nCIDR notation.\n',
+        example: '23.142.52.0/21',
+      }),
+    subnet_v6: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'IPv6 subnet in hexadecimal colon separated CIDR notation.\n',
+        example: '2001:23:42::/48',
+      }),
+    type: z.string().openapi({ example: 'exchange_lan' }),
+  })
+  .openapi({
+    description: 'Exchange Lan Network Service',
+    required: ['type'],
+    title: 'PartialExchangeLanNetworkService',
+  })
+  .openapi('ExchangeLanNetworkServicePartial')
+
+const ExchangeLanNetworkServiceSchema = ExchangeLanNetworkServicePartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'state',
+        'id',
+        'managing_account',
+        'consuming_account',
+        'name',
+        'metro_area_network',
+        'network_features',
+        'subnet_v4',
+        'subnet_v6',
+        'type',
+      ],
+      title: 'ExchangeLanNetworkService',
+    }),
+).openapi('ExchangeLanNetworkService')
+
+const ExchangeLanNetworkServiceConfigPartialSchema = z
+  .object({
+    asns: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(0n).max(4294967295n),
+          )
+          .openapi({ type: 'integer', format: 'int64', minimum: 0, maximum: 4294967295 }),
+      )
+      .exactOptional(),
+    billing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An account requires billing_information to be used as a `billing_account`.',
+      }),
+    capacity: z
+      .int()
+      .min(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The capacity of the service in Mbps. If set to Null,\nthe maximum capacity will be used, i.e. the virtual circuit is\nnot rate-limited.\n\nAn exchange may choose to constrain the available capacity range\nof a `ProductOffering`.\n\nThat means, the service can consume up to the total bandwidth\nof the `Connection`.\n\nTypically the service is charged based on the capacity.',
+      }),
+    charged_until: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'Your obligation to pay for the service will end on this date.\nTypically `≥ decommission_at`.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
+      }),
+    connection: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    contract_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
+        example: 'contract:31824',
+      }),
+    decommission_at: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The service will be decommissioned on this date.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    id: z.string().max(80).exactOptional(),
+    ips: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of ip-address IDs.\n\nAllocation of IP Addresses might be deferred depending on\nthe IXP implementation. No assumption should be made.',
+        readOnly: true,
+      }),
+    listed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'The customer wants to be featured on the member list' }),
+    macs: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'A list of mac-address IDs.' }),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    network_feature_configs: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
+        example: ['12356', '43829'],
+        readOnly: true,
+      }),
+    network_service: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the configured network service.' }),
+    product_offering: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The product offering must match the type `exchange_lan`\nand must refer to the related network service through\nthe `exchange_lan_network_service` property.',
+      }),
+    purchase_order: z
+      .string()
+      .max(80)
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'Purchase Order ID which will be displayed on the invoice.\n',
+        example: 'Project: DC Moon',
+      }),
+    role_assignments: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
+        example: ['c-impl:123', 'c-noc:331'],
+      }),
+    state: z
+      .enum([
+        'requested',
+        'allocated',
+        'testing',
+        'production',
+        'production_change_pending',
+        'decommission_requested',
+        'decommissioned',
+        'archived',
+        'error',
+        'operator',
+        'scheduled',
+      ])
+      .exactOptional(),
+    status: z.array(StatusSchema).exactOptional(),
+    type: z.string().openapi({ example: 'exchange_lan' }),
+    vlan_config: VlanConfigSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Exchange Lan Network Service Config',
+    required: ['type'],
+    title: 'PartialExchangeLanNetworkServiceConfig',
+  })
+  .openapi('ExchangeLanNetworkServiceConfigPartial')
+
+const ExchangeLanNetworkServiceConfigSchema = ExchangeLanNetworkServiceConfigPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'state',
+        'id',
+        'network_service',
+        'managing_account',
+        'consuming_account',
+        'billing_account',
+        'role_assignments',
+        'connection',
+        'vlan_config',
+        'asns',
+        'listed',
+        'product_offering',
+        'type',
+      ],
+      title: 'ExchangeLanNetworkServiceConfig',
+    }),
+).openapi('ExchangeLanNetworkServiceConfig')
+
+const ExchangeLanNetworkServiceConfigRequestPartialSchema = z
+  .object({
+    asns: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(0n).max(4294967295n),
+          )
+          .openapi({ type: 'integer', format: 'int64', minimum: 0, maximum: 4294967295 }),
+      )
+      .exactOptional(),
+    billing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An account requires billing_information to be used as a `billing_account`.',
+      }),
+    capacity: z
+      .int()
+      .min(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The capacity of the service in Mbps. If set to Null,\nthe maximum capacity will be used, i.e. the virtual circuit is\nnot rate-limited.\n\nAn exchange may choose to constrain the available capacity range\nof a `ProductOffering`.\n\nThat means, the service can consume up to the total bandwidth\nof the `Connection`.\n\nTypically the service is charged based on the capacity.',
+      }),
+    connection: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    contract_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
+        example: 'contract:31824',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    ips: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of ip-address IDs.\n\nAllocation of IP Addresses might be deferred depending on\nthe IXP implementation. No assumption should be made.',
+        readOnly: true,
+      }),
+    listed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'The customer wants to be featured on the member list' }),
+    macs: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'A list of mac-address IDs.' }),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    network_feature_configs: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
+        example: ['12356', '43829'],
+        readOnly: true,
+      }),
+    network_service: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the `NetworkService` to configure.' }),
+    product_offering: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The product offering must match the type `exchange_lan`\nand must refer to the related network service through\nthe `exchange_lan_network_service` property.',
+      }),
+    purchase_order: z
+      .string()
+      .max(80)
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'Purchase Order ID which will be displayed on the invoice.\n',
+        example: 'Project: DC Moon',
+      }),
+    role_assignments: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
+        example: ['c-impl:123', 'c-noc:331'],
+      }),
+    type: z.string().openapi({ example: 'exchange_lan' }),
+    vlan_config: VlanConfigSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Exchange Lan Network Service Config Request',
+    required: ['type'],
+    title: 'PartialExchangeLanNetworkServiceConfigRequest',
+  })
+  .openapi('ExchangeLanNetworkServiceConfigRequestPartial')
+
+const ExchangeLanNetworkServiceConfigRequestSchema =
+  ExchangeLanNetworkServiceConfigRequestPartialSchema.and(
+    z
+      .looseObject({})
+      .openapi({
+        required: [
+          'managing_account',
+          'consuming_account',
+          'network_service',
+          'billing_account',
+          'role_assignments',
+          'connection',
+          'vlan_config',
+          'asns',
+          'listed',
+          'product_offering',
+          'type',
+        ],
+        title: 'ExchangeLanNetworkServiceConfigRequest',
+      }),
+  ).openapi('ExchangeLanNetworkServiceConfigRequest')
+
+const ExchangeLanNetworkServiceConfigUpdatePartialSchema = z
+  .object({
+    asns: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(0n).max(4294967295n),
+          )
+          .openapi({ type: 'integer', format: 'int64', minimum: 0, maximum: 4294967295 }),
+      )
+      .exactOptional(),
+    billing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An account requires billing_information to be used as a `billing_account`.',
+      }),
+    capacity: z
+      .int()
+      .min(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The capacity of the service in Mbps. If set to Null,\nthe maximum capacity will be used, i.e. the virtual circuit is\nnot rate-limited.\n\nAn exchange may choose to constrain the available capacity range\nof a `ProductOffering`.\n\nThat means, the service can consume up to the total bandwidth\nof the `Connection`.\n\nTypically the service is charged based on the capacity.',
+      }),
+    connection: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    contract_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
+        example: 'contract:31824',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    ips: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of ip-address IDs.\n\nAllocation of IP Addresses might be deferred depending on\nthe IXP implementation. No assumption should be made.',
+        readOnly: true,
+      }),
+    listed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'The customer wants to be featured on the member list' }),
+    macs: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'A list of mac-address IDs.' }),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    network_feature_configs: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
+        example: ['12356', '43829'],
+        readOnly: true,
+      }),
+    purchase_order: z
+      .string()
+      .max(80)
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'Purchase Order ID which will be displayed on the invoice.\n',
+        example: 'Project: DC Moon',
+      }),
+    role_assignments: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
+        example: ['c-impl:123', 'c-noc:331'],
+      }),
+    type: z.string().openapi({ example: 'exchange_lan' }),
+    vlan_config: VlanConfigSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Exchange Lan Network Service Config Update',
+    required: ['type'],
+    title: 'PartialExchangeLanNetworkServiceConfigUpdate',
+  })
+  .openapi('ExchangeLanNetworkServiceConfigUpdatePartial')
+
+const ExchangeLanNetworkServiceConfigUpdateSchema =
+  ExchangeLanNetworkServiceConfigUpdatePartialSchema.and(
+    z
+      .looseObject({})
+      .openapi({
+        required: [
+          'managing_account',
+          'consuming_account',
+          'vlan_config',
+          'billing_account',
+          'role_assignments',
+          'connection',
+          'asns',
+          'listed',
+          'type',
+        ],
+        title: 'ExchangeLanNetworkServiceConfigUpdate',
+      }),
+  ).openapi('ExchangeLanNetworkServiceConfigUpdate')
+
+const ExternalReferencePartialSchema = z
+  .object({
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+  })
+  .openapi({ description: 'External Reference', title: 'PartialExternalReference', required: [] })
+  .openapi('ExternalReferencePartial')
+
+const ExternalReferenceSchema = ExternalReferencePartialSchema.and(
+  z.looseObject({}).openapi({ title: 'ExternalReference' }),
+).openapi('ExternalReference')
+
+const FacilityPartialSchema = z
+  .object({
+    address_country: z
+      .string()
+      .max(2)
+      .exactOptional()
+      .openapi({ description: 'ISO 3166-1 alpha-2 country code, for example DE\n', example: 'US' }),
+    address_locality: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({
+        description: 'The locality/city. For example, Mountain View.',
+        example: 'Mountain View',
+      }),
+    address_region: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({ description: 'The region. For example, CA', example: 'CA' }),
+    id: z.string().max(80).exactOptional(),
+    metro_area: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Id of the `MetroArea` the DC is located in.\n',
+        example: 'met:93214980:BER',
+      }),
+    name: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({
+        description: 'Name of the Datacenter as called by the operator\n',
+        example: 'Crater DC Moon 1',
+      }),
+    organisation_name: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({ description: 'Name of Datacenter operator\n', example: 'Moon Datacenters' }),
+    peeringdb_facility_id: z
+      .int32()
+      .min(0)
+      .max(2147483647)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '[PeeringDB](https://www.peeringdb.com) facitlity ID,\ncan be extracted from the url https://www.peeringdb.com/fac/$id\n',
+        example: 103,
+      }),
+    pops: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'List of pops in the `Facility`.' }),
+    postal_code: z
+      .string()
+      .max(18)
+      .exactOptional()
+      .openapi({ description: 'A postal code. For example, 9404', example: '9409' }),
+    street_address: z
+      .string()
+      .max(80)
+      .exactOptional()
+      .openapi({
+        description: 'The street address. For example, 1600 Amphitheatre Pkwy.',
+        example: '1600 Amphitheatre Pkwy.',
+      }),
+  })
+  .openapi({ description: 'Facility', title: 'PartialFacility', required: [] })
+  .openapi('FacilityPartial')
+
+const FacilitySchema = FacilityPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'name',
+        'metro_area',
+        'address_country',
+        'address_locality',
+        'address_region',
+        'postal_code',
+        'street_address',
+        'organisation_name',
+        'pops',
+        'id',
+      ],
+      title: 'Facility',
+    }),
+).openapi('Facility')
+
+const HealthResponsePartialSchema = z
+  .object({
+    checks: z
+      .record(z.string(), z.record(z.string(), z.string()))
+      .exactOptional()
+      .openapi({
+        description:
+          'The "checks" object MAY have a number of unique keys,\none for each logical downstream dependency or sub-component.\n\nSince each sub-component may be backed by several nodes\nwith varying health statuses, these keys point to arrays\nof objects. In case of a single-node sub-component\n(or if presence of nodes is not relevant), a single-element\narray SHOULD be used as the value, for consistency.\n\nPlease see\nhttps://tools.ietf.org/id/draft-inadarei-api-health-check-04.html#the-checks-object\nfor details.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A human-friendly description of the service.' }),
+    links: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Is an object containing link relations and URIs [RFC3986]\nfor external links that MAY contain more information about\nthe health of the endpoint.',
+      }),
+    notes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Array of notes relevant to current state of health.' }),
+    output: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Raw error output, in case of "fail" or "warn" states.' }),
+    releaseId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Release version of the api implementation.\n', example: '1.23.0' }),
+    serviceId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A unique identifier of the service, in the application scope.' }),
+    status: z
+      .enum(['pass', 'fail', 'warn'])
+      .exactOptional()
+      .openapi({
+        description: 'status indicates whether the service status is\nacceptable or not.',
+      }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Public version of the service.\n', example: '1' }),
+  })
+  .openapi({ description: 'Health Status Response', title: 'PartialHealthResponse', required: [] })
+  .openapi('HealthResponsePartial')
+
+const HealthResponseSchema = HealthResponsePartialSchema.and(
+  z.looseObject({}).openapi({ required: ['status'], title: 'HealthResponse' }),
+).openapi('HealthResponse')
 
 const IXPSpecificFeatureFlagPartialSchema = z
   .object({
@@ -375,8 +3261,1327 @@ const IXPSpecificFeatureFlagPartialSchema = z
   .openapi('IXPSpecificFeatureFlagPartial')
 
 const IXPSpecificFeatureFlagSchema = IXPSpecificFeatureFlagPartialSchema.and(
-  z.object({}).openapi({ required: ['name', 'description'], title: 'IXPSpecificFeatureFlag' }),
+  z.looseObject({}).openapi({ required: ['name', 'description'], title: 'IXPSpecificFeatureFlag' }),
 ).openapi('IXPSpecificFeatureFlag')
+
+const ImplementationResponsePartialSchema = z
+  .object({
+    schema_version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Version of the implemented IX-API schema.\n', example: '2.0.0' }),
+    service_version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Version of the API service.\n', example: '1.23.0' }),
+    supported_network_feature_config_types: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Array of supported network feature config types.\n',
+        example: ['route_server'],
+      }),
+    supported_network_feature_types: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Array of supported network feature types.\n',
+        example: ['route_server'],
+      }),
+    supported_network_service_config_types: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Array of supported network service config types.\n',
+        example: ['exchange_lan', 'p2p_vc', 'cloud_vc'],
+      }),
+    supported_network_service_types: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Array of network service types, supported by the IX.\n',
+        example: ['exchange_lan', 'p2p_vc', 'cloud_vc'],
+      }),
+    supported_operations: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Array of implemented operations of the ix-api schema.\n',
+        example: ['connections_list', 'connections_read', 'network_service_configs_create'],
+      }),
+  })
+  .openapi({
+    description: 'API Implementation',
+    title: 'PartialImplementationResponse',
+    required: [],
+  })
+  .openapi('ImplementationResponsePartial')
+
+const ImplementationResponseSchema = ImplementationResponsePartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'schema_version',
+        'supported_network_service_types',
+        'supported_network_service_config_types',
+        'supported_network_feature_types',
+        'supported_network_feature_config_types',
+        'supported_operations',
+      ],
+      title: 'ImplementationResponse',
+    }),
+).openapi('ImplementationResponse')
+
+const InvoiceablePartialSchema = z
+  .object({
+    billing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An account requires billing_information to be used as a `billing_account`.',
+      }),
+    contract_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
+        example: 'contract:31824',
+      }),
+    purchase_order: z
+      .string()
+      .max(80)
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'Purchase Order ID which will be displayed on the invoice.\n',
+        example: 'Project: DC Moon',
+      }),
+  })
+  .openapi({ description: 'Invoiceable', title: 'PartialInvoiceable', required: [] })
+  .openapi('InvoiceablePartial')
+
+const InvoiceableSchema = InvoiceablePartialSchema.and(
+  z.looseObject({}).openapi({ required: ['billing_account'], title: 'Invoiceable' }),
+).openapi('Invoiceable')
+
+const IpAddressPartialSchema = z
+  .object({
+    address: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'IPv4 or IPv6 Address in the following format:\n- IPv4: [dot-decimal notation](https://en.wikipedia.org/wiki/Dot-decimal_notation)\n- IPv6: hexadecimal colon separated notation\n',
+        example: '23.142.52.0',
+      }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    fqdn: z.string().max(100).nullable().exactOptional(),
+    id: z.string().max(80).exactOptional(),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    prefix_length: z
+      .int32()
+      .min(0)
+      .max(128)
+      .exactOptional()
+      .openapi({ description: 'The CIDR ip prefix length\n', example: 23 }),
+    valid_not_after: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    valid_not_before: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    version: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The version of the internet protocol.\n', example: 4 }),
+  })
+  .openapi({ description: 'IP-Address', title: 'PartialIpAddress', required: [] })
+  .openapi('IpAddressPartial')
+
+const IpAddressSchema = IpAddressPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'managing_account',
+        'consuming_account',
+        'version',
+        'address',
+        'prefix_length',
+        'id',
+      ],
+      title: 'IpAddress',
+    }),
+).openapi('IpAddress')
+
+const IpAddressRequestPartialSchema = z
+  .object({
+    address: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'IPv4 or IPv6 Address in the following format:\n- IPv4: [dot-decimal notation](https://en.wikipedia.org/wiki/Dot-decimal_notation)\n- IPv6: hexadecimal colon separated notation\n',
+        example: '23.142.52.0',
+      }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    fqdn: z.string().max(100).nullable().exactOptional(),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    prefix_length: z
+      .int32()
+      .min(0)
+      .max(128)
+      .exactOptional()
+      .openapi({ description: 'The CIDR ip prefix length\n', example: 23 }),
+    valid_not_after: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    valid_not_before: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    version: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The version of the internet protocol.\n', example: 4 }),
+  })
+  .openapi({
+    description: 'IP-Address / Prefix allocation Request',
+    title: 'PartialIpAddressRequest',
+    required: [],
+  })
+  .openapi('IpAddressRequestPartial')
+
+const IpAddressRequestSchema = IpAddressRequestPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: ['managing_account', 'consuming_account', 'version', 'address', 'prefix_length'],
+      title: 'IpAddressRequest',
+    }),
+).openapi('IpAddressRequest')
+
+const IpAddressUpdatePartialSchema = z
+  .object({
+    address: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'IPv4 or IPv6 Address in the following format:\n- IPv4: [dot-decimal notation](https://en.wikipedia.org/wiki/Dot-decimal_notation)\n- IPv6: hexadecimal colon separated notation\n',
+        example: '23.142.52.0',
+      }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    fqdn: z.string().max(100).nullable().exactOptional(),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    prefix_length: z
+      .int32()
+      .min(0)
+      .max(128)
+      .exactOptional()
+      .openapi({ description: 'The CIDR ip prefix length\n', example: 23 }),
+    valid_not_after: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    valid_not_before: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    version: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The version of the internet protocol.\n', example: 4 }),
+  })
+  .openapi({ description: 'IP-Address Update', title: 'PartialIpAddressUpdate', required: [] })
+  .openapi('IpAddressUpdatePartial')
+
+const IpAddressUpdateSchema = IpAddressUpdatePartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: ['managing_account', 'consuming_account', 'version', 'address', 'prefix_length'],
+      title: 'IpAddressUpdate',
+    }),
+).openapi('IpAddressUpdate')
+
+const MP2MPNetworkProductOfferingPartialSchema = z
+  .object({
+    bandwidth_max: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'When not `null`, this value enforces a mandatory\nrate limit for all network service configs.',
+      }),
+    bandwidth_min: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'When configuring access to the network service, at least\nthis `capacity` must be provided.',
+      }),
+    display_name: z.string().max(256).exactOptional(),
+    downgrade_allowed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if the service can be migrated to\na lower bandwidth.' }),
+    handover_metro_area: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `MetroArea`. The network service will be\naccessed from this metro area.\n',
+        example: 'met:29381993:NYC',
+      }),
+    handover_metro_area_network: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `MetroAreaNetwork`. The service will be accessed\nthrough the handover metro area network.\n',
+        example: '191239810',
+      }),
+    id: z.string().max(80).exactOptional(),
+    name: z.string().max(160).exactOptional().openapi({ description: 'Name of the product' }),
+    physical_port_speed: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the service is dependent on the speed of\nthe physical port this field denotes the speed.',
+      }),
+    provider_vlans: z
+      .enum(['single', 'multi'])
+      .exactOptional()
+      .openapi({ description: 'The `NetworkService` provides `single` or `multi`ple vlans.' }),
+    resource_type: z
+      .enum(['connection', 'demarc', 'network_service', 'network_service_config'])
+      .exactOptional()
+      .openapi({
+        description: 'The resource type refers to an ix-api resource.\n',
+        example: 'network_service',
+      }),
+    service_metro_area: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Id of the `MetroArea`. The service is delivered\nin this metro area.\n',
+        example: 'met:213913485:LON',
+      }),
+    service_metro_area_network: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `MetroAreaNetwork`.\nThe service is directly provided on the metro area network.\n',
+        example: '9123843',
+      }),
+    service_provider: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the provider providing the service.\n',
+        example: 'AWS',
+      }),
+    type: z.string().openapi({ example: 'mp2mp_vc' }),
+    upgrade_allowed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if the service can be migrated to\na higher bandwidth.' }),
+  })
+  .openapi({
+    description: 'MP2MP Network Product Offering',
+    required: ['type'],
+    title: 'PartialMP2MPNetworkProductOffering',
+  })
+  .openapi('MP2MPNetworkProductOfferingPartial')
+
+const MP2MPNetworkProductOfferingSchema = MP2MPNetworkProductOfferingPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'id',
+        'name',
+        'display_name',
+        'provider_vlans',
+        'resource_type',
+        'handover_metro_area_network',
+        'handover_metro_area',
+        'service_metro_area_network',
+        'service_metro_area',
+        'bandwidth_min',
+        'bandwidth_max',
+        'physical_port_speed',
+        'service_provider',
+        'downgrade_allowed',
+        'upgrade_allowed',
+        'type',
+      ],
+      title: 'MP2MPNetworkProductOffering',
+    }),
+).openapi('MP2MPNetworkProductOffering')
+
+const MP2MPNetworkServicePartialSchema = z
+  .object({
+    billing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An account requires billing_information to be used as a `billing_account`.',
+      }),
+    charged_until: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'Your obligation to pay for the service will end on this date.\nTypically `≥ decommission_at`.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
+      }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    contract_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
+        example: 'contract:31824',
+      }),
+    decommission_at: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The service will be decommissioned on this date.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    id: z.string().exactOptional(),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    member_joining_rules: z.array(z.string()).exactOptional(),
+    name: z
+      .string()
+      .max(40)
+      .exactOptional()
+      .openapi({ description: 'Name of the multi-point to multi-point\nvirtual circuit.' }),
+    network_features: z.array(z.string()).exactOptional(),
+    nsc_required_contact_roles: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The configuration will require at least one of each of the\nspecified roles assigned to contacts.\n\nThe `RoleAssignment` is associated through the\n`role_assignments` list property of the network service configuration.',
+        readOnly: true,
+      }),
+    product_offering: z.string().exactOptional(),
+    public: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'A public mp2mp network service can be joined\nby everyone on the exchange unless denied by\na member-joining-rule.\n\nPublic network services are visible to other\nmembers of the IXP, however only `name`, `type`,\n`product_offering`, `consuming_account` and\n`managing_account` are made available.\n\nOther required fields are redacted.',
+      }),
+    purchase_order: z
+      .string()
+      .max(80)
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'Purchase Order ID which will be displayed on the invoice.\n',
+        example: 'Project: DC Moon',
+      }),
+    state: z
+      .enum([
+        'requested',
+        'allocated',
+        'testing',
+        'production',
+        'production_change_pending',
+        'decommission_requested',
+        'decommissioned',
+        'archived',
+        'error',
+        'operator',
+        'scheduled',
+      ])
+      .exactOptional(),
+    status: z.array(StatusSchema).exactOptional(),
+    type: z.string().openapi({ example: 'mp2mp_vc' }),
+  })
+  .openapi({
+    description: 'MP2MP Network Service',
+    required: ['type'],
+    title: 'PartialMP2MPNetworkService',
+  })
+  .openapi('MP2MPNetworkServicePartial')
+
+const MP2MPNetworkServiceSchema = MP2MPNetworkServicePartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'state',
+        'id',
+        'product_offering',
+        'managing_account',
+        'consuming_account',
+        'billing_account',
+        'name',
+        'member_joining_rules',
+        'network_features',
+        'type',
+      ],
+      title: 'MP2MPNetworkService',
+    }),
+).openapi('MP2MPNetworkService')
+
+const MP2MPNetworkServiceConfigPartialSchema = z
+  .object({
+    billing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An account requires billing_information to be used as a `billing_account`.',
+      }),
+    capacity: z
+      .int()
+      .min(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The capacity of the service in Mbps. If set to Null,\nthe maximum capacity will be used, i.e. the virtual circuit is\nnot rate-limited.\n\nAn exchange may choose to constrain the available capacity range\nof a `ProductOffering`.\n\nThat means, the service can consume up to the total bandwidth\nof the `Connection`.\n\nTypically the service is charged based on the capacity.',
+      }),
+    charged_until: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'Your obligation to pay for the service will end on this date.\nTypically `≥ decommission_at`.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
+      }),
+    connection: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    contract_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
+        example: 'contract:31824',
+      }),
+    decommission_at: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description:
+          'The service will be decommissioned on this date.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    id: z.string().max(80).exactOptional(),
+    macs: z.array(z.string()).exactOptional(),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    network_feature_configs: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
+        example: ['12356', '43829'],
+        readOnly: true,
+      }),
+    network_service: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the configured network service.' }),
+    purchase_order: z
+      .string()
+      .max(80)
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'Purchase Order ID which will be displayed on the invoice.\n',
+        example: 'Project: DC Moon',
+      }),
+    role_assignments: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
+        example: ['c-impl:123', 'c-noc:331'],
+      }),
+    state: z
+      .enum([
+        'requested',
+        'allocated',
+        'testing',
+        'production',
+        'production_change_pending',
+        'decommission_requested',
+        'decommissioned',
+        'archived',
+        'error',
+        'operator',
+        'scheduled',
+      ])
+      .exactOptional(),
+    status: z.array(StatusSchema).exactOptional(),
+    type: z.string().openapi({ example: 'mp2mp_vc' }),
+    vlan_config: VlanConfigSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'MP2MP Network Service Config',
+    required: ['type'],
+    title: 'PartialMP2MPNetworkServiceConfig',
+  })
+  .openapi('MP2MPNetworkServiceConfigPartial')
+
+const MP2MPNetworkServiceConfigSchema = MP2MPNetworkServiceConfigPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'state',
+        'id',
+        'network_service',
+        'managing_account',
+        'consuming_account',
+        'billing_account',
+        'role_assignments',
+        'connection',
+        'vlan_config',
+        'type',
+      ],
+      title: 'MP2MPNetworkServiceConfig',
+    }),
+).openapi('MP2MPNetworkServiceConfig')
+
+const MP2MPNetworkServiceConfigRequestPartialSchema = z
+  .object({
+    billing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An account requires billing_information to be used as a `billing_account`.',
+      }),
+    capacity: z
+      .int()
+      .min(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The capacity of the service in Mbps. If set to Null,\nthe maximum capacity will be used, i.e. the virtual circuit is\nnot rate-limited.\n\nAn exchange may choose to constrain the available capacity range\nof a `ProductOffering`.\n\nThat means, the service can consume up to the total bandwidth\nof the `Connection`.\n\nTypically the service is charged based on the capacity.',
+      }),
+    connection: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    contract_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
+        example: 'contract:31824',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    macs: z.array(z.string()).exactOptional(),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    network_feature_configs: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
+        example: ['12356', '43829'],
+        readOnly: true,
+      }),
+    network_service: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the `NetworkService` to configure.' }),
+    purchase_order: z
+      .string()
+      .max(80)
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'Purchase Order ID which will be displayed on the invoice.\n',
+        example: 'Project: DC Moon',
+      }),
+    role_assignments: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
+        example: ['c-impl:123', 'c-noc:331'],
+      }),
+    type: z.string().openapi({ example: 'mp2mp_vc' }),
+    vlan_config: VlanConfigSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'MP2MP Network Service Config Request',
+    required: ['type'],
+    title: 'PartialMP2MPNetworkServiceConfigRequest',
+  })
+  .openapi('MP2MPNetworkServiceConfigRequestPartial')
+
+const MP2MPNetworkServiceConfigRequestSchema = MP2MPNetworkServiceConfigRequestPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'managing_account',
+        'consuming_account',
+        'network_service',
+        'billing_account',
+        'role_assignments',
+        'connection',
+        'vlan_config',
+        'type',
+      ],
+      title: 'MP2MPNetworkServiceConfigRequest',
+    }),
+).openapi('MP2MPNetworkServiceConfigRequest')
+
+const MP2MPNetworkServiceConfigUpdatePartialSchema = z
+  .object({
+    billing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An account requires billing_information to be used as a `billing_account`.',
+      }),
+    capacity: z
+      .int()
+      .min(1)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The capacity of the service in Mbps. If set to Null,\nthe maximum capacity will be used, i.e. the virtual circuit is\nnot rate-limited.\n\nAn exchange may choose to constrain the available capacity range\nof a `ProductOffering`.\n\nThat means, the service can consume up to the total bandwidth\nof the `Connection`.\n\nTypically the service is charged based on the capacity.',
+      }),
+    connection: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    contract_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
+        example: 'contract:31824',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    macs: z.array(z.string()).exactOptional(),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    network_feature_configs: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
+        example: ['12356', '43829'],
+        readOnly: true,
+      }),
+    purchase_order: z
+      .string()
+      .max(80)
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'Purchase Order ID which will be displayed on the invoice.\n',
+        example: 'Project: DC Moon',
+      }),
+    role_assignments: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
+        example: ['c-impl:123', 'c-noc:331'],
+      }),
+    type: z.string().openapi({ example: 'mp2mp_vc' }),
+    vlan_config: VlanConfigSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'MP2MP Network Service Config Update',
+    required: ['type'],
+    title: 'PartialMP2MPNetworkServiceConfigUpdate',
+  })
+  .openapi('MP2MPNetworkServiceConfigUpdatePartial')
+
+const MP2MPNetworkServiceConfigUpdateSchema = MP2MPNetworkServiceConfigUpdatePartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'managing_account',
+        'consuming_account',
+        'vlan_config',
+        'billing_account',
+        'role_assignments',
+        'connection',
+        'type',
+      ],
+      title: 'MP2MPNetworkServiceConfigUpdate',
+    }),
+).openapi('MP2MPNetworkServiceConfigUpdate')
+
+const MP2MPNetworkServiceRequestPartialSchema = z
+  .object({
+    billing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An account requires billing_information to be used as a `billing_account`.',
+      }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    contract_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
+        example: 'contract:31824',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    name: z
+      .string()
+      .max(40)
+      .exactOptional()
+      .openapi({ description: 'Name of the multi-point to multi-point\nvirtual circuit.' }),
+    product_offering: z.string().exactOptional(),
+    public: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'A public mp2mp network service can be joined\nby everyone on the exchange unless denied by\na member-joining-rule.\n\nPublic network services are visible to other\nmembers of the IXP, however only `name`, `type`,\n`product_offering`, `consuming_account` and\n`managing_account` are made available.\n\nOther required fields are redacted.',
+      }),
+    purchase_order: z
+      .string()
+      .max(80)
+      .default('')
+      .exactOptional()
+      .openapi({
+        description: 'Purchase Order ID which will be displayed on the invoice.\n',
+        example: 'Project: DC Moon',
+      }),
+    type: z.string().openapi({ example: 'mp2mp_vc' }),
+  })
+  .openapi({
+    description: 'MP2MP Network Service Request',
+    required: ['type'],
+    title: 'PartialMP2MPNetworkServiceRequest',
+  })
+  .openapi('MP2MPNetworkServiceRequestPartial')
+
+const MP2MPNetworkServiceRequestSchema = MP2MPNetworkServiceRequestPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'product_offering',
+        'managing_account',
+        'consuming_account',
+        'billing_account',
+        'name',
+        'type',
+      ],
+      title: 'MP2MPNetworkServiceRequest',
+    }),
+).openapi('MP2MPNetworkServiceRequest')
+
+const MacAddressPartialSchema = z
+  .object({
+    address: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unicast MAC address, formatted hexadecimal values with colons.\n',
+        example: '42:23:bc:8e:b8:b0',
+      }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    id: z.string().max(80).exactOptional(),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    valid_not_after: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    valid_not_before: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+  })
+  .openapi({ description: 'MAC-Address', title: 'PartialMacAddress', required: [] })
+  .openapi('MacAddressPartial')
+
+const MacAddressSchema = MacAddressPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: ['managing_account', 'consuming_account', 'address', 'id'],
+      title: 'MacAddress',
+    }),
+).openapi('MacAddress')
+
+const MacAddressRequestPartialSchema = z
+  .object({
+    address: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Unicast MAC address, formatted hexadecimal values with colons.\n',
+        example: '42:23:bc:8e:b8:b0',
+      }),
+    consuming_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
+        example: '2381982',
+      }),
+    external_ref: z
+      .string()
+      .max(128)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Reference field, free to use for the API user.',
+        example: 'IX:Service:23042',
+      }),
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+    valid_not_after: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    valid_not_before: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+  })
+  .openapi({ description: 'MAC-Address Request', title: 'PartialMacAddressRequest', required: [] })
+  .openapi('MacAddressRequestPartial')
+
+const MacAddressRequestSchema = MacAddressRequestPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: ['managing_account', 'consuming_account', 'address'],
+      title: 'MacAddressRequest',
+    }),
+).openapi('MacAddressRequest')
+
+const ManageablePartialSchema = z
+  .object({
+    managing_account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
+        example: '238189294',
+      }),
+  })
+  .openapi({ description: 'Managed', title: 'PartialManageable', required: [] })
+  .openapi('ManageablePartial')
+
+const ManageableSchema = ManageablePartialSchema.and(
+  z.looseObject({}).openapi({ required: ['managing_account'], title: 'Manageable' }),
+).openapi('Manageable')
+
+const MemberJoiningRuleSchema = z
+  .xor([AllowMemberJoiningRuleSchema, DenyMemberJoiningRuleSchema])
+  .openapi({
+    description: 'Polymorphic Member Joining Rule',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        allow: '#/components/schemas/AllowMemberJoiningRule',
+        deny: '#/components/schemas/DenyMemberJoiningRule',
+      },
+    },
+    title: 'MemberJoiningRule',
+  })
+  .openapi('MemberJoiningRule')
+
+const MemberJoiningRulePartialSchema = z
+  .xor([AllowMemberJoiningRulePartialSchema, DenyMemberJoiningRulePartialSchema])
+  .openapi({
+    description: 'Polymorphic Member Joining Rule',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        allow: '#/components/schemas/AllowMemberJoiningRulePartial',
+        deny: '#/components/schemas/DenyMemberJoiningRulePartial',
+      },
+    },
+    title: 'MemberJoiningRule (partial)',
+  })
+  .openapi('MemberJoiningRulePartial')
+
+const MemberJoiningRuleRequestSchema = z
+  .xor([AllowMemberJoiningRuleRequestSchema, DenyMemberJoiningRuleRequestSchema])
+  .openapi({
+    description: 'Polymorphic Member Joining Rule Request',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        allow: '#/components/schemas/AllowMemberJoiningRuleRequest',
+        deny: '#/components/schemas/DenyMemberJoiningRuleRequest',
+      },
+    },
+    title: 'MemberJoiningRuleRequest',
+  })
+  .openapi('MemberJoiningRuleRequest')
+
+const MemberJoiningRuleRequestPartialSchema = z
+  .xor([AllowMemberJoiningRuleRequestPartialSchema, DenyMemberJoiningRuleRequestPartialSchema])
+  .openapi({
+    description: 'Polymorphic Member Joining Rule Request',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        allow: '#/components/schemas/AllowMemberJoiningRuleRequestPartial',
+        deny: '#/components/schemas/DenyMemberJoiningRuleRequestPartial',
+      },
+    },
+    title: 'MemberJoiningRuleRequest (partial)',
+  })
+  .openapi('MemberJoiningRuleRequestPartial')
+
+const MemberJoiningRuleUpdateSchema = z
+  .xor([AllowMemberJoiningRuleUpdateSchema, DenyMemberJoiningRuleUpdateSchema])
+  .openapi({
+    description: 'Polymorphic Member Joining Rule Update',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        allow: '#/components/schemas/AllowMemberJoiningRuleUpdate',
+        deny: '#/components/schemas/DenyMemberJoiningRuleUpdate',
+      },
+    },
+    title: 'MemberJoiningRuleUpdate',
+  })
+  .openapi('MemberJoiningRuleUpdate')
+
+const MemberJoiningRuleUpdatePartialSchema = z
+  .xor([AllowMemberJoiningRuleUpdatePartialSchema, DenyMemberJoiningRuleUpdatePartialSchema])
+  .openapi({
+    description: 'Polymorphic Member Joining Rule Update',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        allow: '#/components/schemas/AllowMemberJoiningRuleUpdatePartial',
+        deny: '#/components/schemas/DenyMemberJoiningRuleUpdatePartial',
+      },
+    },
+    title: 'MemberJoiningRuleUpdate (partial)',
+  })
+  .openapi('MemberJoiningRuleUpdatePartial')
+
+const MetroAreaPartialSchema = z
+  .object({
+    display_name: z
+      .string()
+      .max(64)
+      .exactOptional()
+      .openapi({
+        description: 'The name of the metro area. Likely the same as the IATA code.\n',
+        example: 'FRA',
+      }),
+    facilities: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'List of facilities the metro area network.' }),
+    iata_code: z
+      .string()
+      .max(3)
+      .exactOptional()
+      .openapi({
+        description: 'The three letter IATA airport code for identiying the\nmetro area.\n',
+        example: 'FRA',
+      }),
+    id: z.string().max(80).exactOptional(),
+    metro_area_networks: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'List of networks in the metro area.' }),
+    un_locode: z
+      .string()
+      .max(6)
+      .exactOptional()
+      .openapi({
+        description: 'The UN/LOCODE for identifying the metro area.\n',
+        example: 'DE FRA',
+      }),
+  })
+  .openapi({ description: 'MetroArea', title: 'PartialMetroArea', required: [] })
+  .openapi('MetroAreaPartial')
+
+const MetroAreaSchema = MetroAreaPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'id',
+        'un_locode',
+        'iata_code',
+        'display_name',
+        'facilities',
+        'metro_area_networks',
+      ],
+      title: 'MetroArea',
+    }),
+).openapi('MetroArea')
+
+const MetroAreaNetworkPartialSchema = z
+  .object({
+    id: z.string().max(80).exactOptional(),
+    metro_area: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the metro area.\n', example: 'met:199399:FRA' }),
+    name: z
+      .string()
+      .max(32)
+      .exactOptional()
+      .openapi({ description: 'The name of the metro area network.\n', example: 'MY-IX-FRA1' }),
+    pops: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'List of pops in the metro area network.' }),
+    service_provider: z
+      .string()
+      .max(128)
+      .exactOptional()
+      .openapi({
+        description: 'The service provider is operating the network.\nUsually the exchange.\n',
+        example: 'MY-IX',
+      }),
+  })
+  .openapi({ description: 'MetroAreaNetwork', title: 'PartialMetroAreaNetwork', required: [] })
+  .openapi('MetroAreaNetworkPartial')
+
+const MetroAreaNetworkSchema = MetroAreaNetworkPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: ['name', 'metro_area', 'service_provider', 'pops', 'id'],
+      title: 'MetroAreaNetwork',
+    }),
+).openapi('MetroAreaNetwork')
 
 const RouteServerNetworkFeaturePartialSchema = z
   .object({
@@ -461,7 +4666,7 @@ const RouteServerNetworkFeaturePartialSchema = z
 
 const RouteServerNetworkFeatureSchema = RouteServerNetworkFeaturePartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: [
         'id',
@@ -482,33 +4687,17 @@ const RouteServerNetworkFeatureSchema = RouteServerNetworkFeaturePartialSchema.a
     }),
 ).openapi('RouteServerNetworkFeature')
 
-type NetworkFeatureType = z.infer<typeof RouteServerNetworkFeatureSchema>
-
-const StatusPartialSchema = z
-  .object({
-    attrs: z.object({}).exactOptional(),
-    message: z.string().exactOptional(),
-    severity: z
-      .int32()
-      .min(0)
-      .max(7)
-      .exactOptional()
-      .openapi({
-        description:
-          'We are using syslog severity levels: 0 = Emergency,\n1 = Alert, 2 = Critical, 3 = Error, 4 = Warning,\n5 = Notice, 6 = Informational, 7 = Debug.\n',
-        example: 2,
-      }),
-    tag: z.string().exactOptional(),
-    timestamp: z.iso.datetime({ offset: true }).exactOptional(),
+const NetworkFeatureSchema = z
+  .xor([RouteServerNetworkFeatureSchema])
+  .openapi({
+    description: 'Polymorphic Network Feature',
+    discriminator: {
+      propertyName: 'type',
+      mapping: { route_server: '#/components/schemas/RouteServerNetworkFeature' },
+    },
+    title: 'NetworkFeature',
   })
-  .openapi({ description: 'Status Message', title: 'PartialStatus', required: [] })
-  .openapi('StatusPartial')
-
-const StatusSchema = StatusPartialSchema.and(
-  z
-    .object({})
-    .openapi({ required: ['severity', 'tag', 'message', 'attrs', 'timestamp'], title: 'Status' }),
-).openapi('Status')
+  .openapi('NetworkFeature')
 
 const RouteServerNetworkFeatureConfigPartialSchema = z
   .object({
@@ -695,7 +4884,7 @@ const RouteServerNetworkFeatureConfigPartialSchema = z
 
 const RouteServerNetworkFeatureConfigSchema = RouteServerNetworkFeatureConfigPartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: [
         'state',
@@ -716,9 +4905,29 @@ const RouteServerNetworkFeatureConfigSchema = RouteServerNetworkFeatureConfigPar
     }),
 ).openapi('RouteServerNetworkFeatureConfig')
 
-type NetworkFeatureConfigType = z.infer<typeof RouteServerNetworkFeatureConfigSchema>
+const NetworkFeatureConfigSchema = z
+  .xor([RouteServerNetworkFeatureConfigSchema])
+  .openapi({
+    description: 'Polymorphic Network Feature Config',
+    discriminator: {
+      propertyName: 'type',
+      mapping: { route_server: '#/components/schemas/RouteServerNetworkFeatureConfig' },
+    },
+    title: 'NetworkFeatureConfig',
+  })
+  .openapi('NetworkFeatureConfig')
 
-type NetworkFeatureConfigPartialType = z.infer<typeof RouteServerNetworkFeatureConfigPartialSchema>
+const NetworkFeatureConfigPartialSchema = z
+  .xor([RouteServerNetworkFeatureConfigPartialSchema])
+  .openapi({
+    description: 'Polymorphic Network Feature Config',
+    discriminator: {
+      propertyName: 'type',
+      mapping: { route_server: '#/components/schemas/RouteServerNetworkFeatureConfigPartial' },
+    },
+    title: 'NetworkFeatureConfig (partial)',
+  })
+  .openapi('NetworkFeatureConfigPartial')
 
 const RouteServerNetworkFeatureConfigRequestPartialSchema = z
   .object({
@@ -889,7 +5098,7 @@ const RouteServerNetworkFeatureConfigRequestPartialSchema = z
 const RouteServerNetworkFeatureConfigRequestSchema =
   RouteServerNetworkFeatureConfigRequestPartialSchema.and(
     z
-      .object({})
+      .looseObject({})
       .openapi({
         required: [
           'managing_account',
@@ -908,11 +5117,31 @@ const RouteServerNetworkFeatureConfigRequestSchema =
       }),
   ).openapi('RouteServerNetworkFeatureConfigRequest')
 
-type NetworkFeatureConfigRequestType = z.infer<typeof RouteServerNetworkFeatureConfigRequestSchema>
+const NetworkFeatureConfigRequestSchema = z
+  .xor([RouteServerNetworkFeatureConfigRequestSchema])
+  .openapi({
+    description: 'Polymorphic Network Feature Config Request',
+    discriminator: {
+      propertyName: 'type',
+      mapping: { route_server: '#/components/schemas/RouteServerNetworkFeatureConfigRequest' },
+    },
+    title: 'NetworkFeatureConfigRequest',
+  })
+  .openapi('NetworkFeatureConfigRequest')
 
-type NetworkFeatureConfigRequestPartialType = z.infer<
-  typeof RouteServerNetworkFeatureConfigRequestPartialSchema
->
+const NetworkFeatureConfigRequestPartialSchema = z
+  .xor([RouteServerNetworkFeatureConfigRequestPartialSchema])
+  .openapi({
+    description: 'Polymorphic Network Feature Config Request',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        route_server: '#/components/schemas/RouteServerNetworkFeatureConfigRequestPartial',
+      },
+    },
+    title: 'NetworkFeatureConfigRequest (partial)',
+  })
+  .openapi('NetworkFeatureConfigRequestPartial')
 
 const RouteServerNetworkFeatureConfigUpdatePartialSchema = z
   .object({
@@ -1048,7 +5277,7 @@ const RouteServerNetworkFeatureConfigUpdatePartialSchema = z
 const RouteServerNetworkFeatureConfigUpdateSchema =
   RouteServerNetworkFeatureConfigUpdatePartialSchema.and(
     z
-      .object({})
+      .looseObject({})
       .openapi({
         required: [
           'managing_account',
@@ -1063,126 +5292,43 @@ const RouteServerNetworkFeatureConfigUpdateSchema =
       }),
   ).openapi('RouteServerNetworkFeatureConfigUpdate')
 
-type NetworkFeatureConfigUpdateType = z.infer<typeof RouteServerNetworkFeatureConfigUpdateSchema>
-
-type NetworkFeatureConfigUpdatePartialType = z.infer<
-  typeof RouteServerNetworkFeatureConfigUpdatePartialSchema
->
-
-type NetworkFeaturePartialType = z.infer<typeof RouteServerNetworkFeaturePartialSchema>
-
-const ExchangeLanNetworkServicePartialSchema = z
-  .object({
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    id: z.string().exactOptional(),
-    ixfdb_ixid: z.int().nullable().exactOptional().openapi({ description: 'id of ixfdb' }),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    metro_area_network: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `MetroAreaNetwork` where\nthe exchange lan network service is directly provided.\n\nSame as `service_metro_area_network` on the related\n`ProductOffering`.\n',
-        example: 'man:293225:LON2',
-      }),
-    name: z
-      .string()
-      .max(40)
-      .exactOptional()
-      .openapi({ description: 'Exchange-dependent service name, will be shown on the invoice.' }),
-    network_features: z.array(z.string()).exactOptional(),
-    nsc_required_contact_roles: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The configuration will require at least one of each of the\nspecified roles assigned to contacts.\n\nThe `RoleAssignment` is associated through the\n`role_assignments` list property of the network service configuration.',
-        readOnly: true,
-      }),
-    peeringdb_ixid: z.int().nullable().exactOptional().openapi({ description: 'PeeringDB ixid' }),
-    product_offering: z.string().exactOptional().openapi({ description: '*deprecation notice*' }),
-    state: z
-      .enum([
-        'requested',
-        'allocated',
-        'testing',
-        'production',
-        'production_change_pending',
-        'decommission_requested',
-        'decommissioned',
-        'archived',
-        'error',
-        'operator',
-        'scheduled',
-      ])
-      .exactOptional(),
-    status: z.array(StatusSchema).exactOptional(),
-    subnet_v4: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'IPv4 subnet in [dot-decimal notation](https://en.wikipedia.org/wiki/Dot-decimal_notation)\nCIDR notation.\n',
-        example: '23.142.52.0/21',
-      }),
-    subnet_v6: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'IPv6 subnet in hexadecimal colon separated CIDR notation.\n',
-        example: '2001:23:42::/48',
-      }),
-    type: z.string().openapi({ example: 'exchange_lan' }),
-  })
+const NetworkFeatureConfigUpdateSchema = z
+  .xor([RouteServerNetworkFeatureConfigUpdateSchema])
   .openapi({
-    description: 'Exchange Lan Network Service',
-    required: ['type'],
-    title: 'PartialExchangeLanNetworkService',
+    description: 'Polymorphic Network Feauture Config Update',
+    discriminator: {
+      propertyName: 'type',
+      mapping: { route_server: '#/components/schemas/RouteServerNetworkFeatureConfigUpdate' },
+    },
+    title: 'NetworkFeatureConfigUpdate',
   })
-  .openapi('ExchangeLanNetworkServicePartial')
+  .openapi('NetworkFeatureConfigUpdate')
 
-const ExchangeLanNetworkServiceSchema = ExchangeLanNetworkServicePartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'state',
-        'id',
-        'managing_account',
-        'consuming_account',
-        'name',
-        'metro_area_network',
-        'network_features',
-        'subnet_v4',
-        'subnet_v6',
-        'type',
-      ],
-      title: 'ExchangeLanNetworkService',
-    }),
-).openapi('ExchangeLanNetworkService')
+const NetworkFeatureConfigUpdatePartialSchema = z
+  .xor([RouteServerNetworkFeatureConfigUpdatePartialSchema])
+  .openapi({
+    description: 'Polymorphic Network Feauture Config Update',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        route_server: '#/components/schemas/RouteServerNetworkFeatureConfigUpdatePartial',
+      },
+    },
+    title: 'NetworkFeatureConfigUpdate (partial)',
+  })
+  .openapi('NetworkFeatureConfigUpdatePartial')
+
+const NetworkFeaturePartialSchema = z
+  .xor([RouteServerNetworkFeaturePartialSchema])
+  .openapi({
+    description: 'Polymorphic Network Feature',
+    discriminator: {
+      propertyName: 'type',
+      mapping: { route_server: '#/components/schemas/RouteServerNetworkFeaturePartial' },
+    },
+    title: 'NetworkFeature (partial)',
+  })
+  .openapi('NetworkFeaturePartial')
 
 const P2PNetworkServicePartialSchema = z
   .object({
@@ -1303,7 +5449,7 @@ const P2PNetworkServicePartialSchema = z
 
 const P2PNetworkServiceSchema = P2PNetworkServicePartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: [
         'state',
@@ -1437,7 +5583,7 @@ const P2MPNetworkServicePartialSchema = z
 
 const P2MPNetworkServiceSchema = P2MPNetworkServicePartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: [
         'state',
@@ -1455,410 +5601,32 @@ const P2MPNetworkServiceSchema = P2MPNetworkServicePartialSchema.and(
     }),
 ).openapi('P2MPNetworkService')
 
-const MP2MPNetworkServicePartialSchema = z
-  .object({
-    billing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An account requires billing_information to be used as a `billing_account`.',
-      }),
-    charged_until: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'Your obligation to pay for the service will end on this date.\nTypically `≥ decommission_at`.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
-      }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    contract_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
-        example: 'contract:31824',
-      }),
-    decommission_at: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'The service will be decommissioned on this date.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    id: z.string().exactOptional(),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    member_joining_rules: z.array(z.string()).exactOptional(),
-    name: z
-      .string()
-      .max(40)
-      .exactOptional()
-      .openapi({ description: 'Name of the multi-point to multi-point\nvirtual circuit.' }),
-    network_features: z.array(z.string()).exactOptional(),
-    nsc_required_contact_roles: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The configuration will require at least one of each of the\nspecified roles assigned to contacts.\n\nThe `RoleAssignment` is associated through the\n`role_assignments` list property of the network service configuration.',
-        readOnly: true,
-      }),
-    product_offering: z.string().exactOptional(),
-    public: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'A public mp2mp network service can be joined\nby everyone on the exchange unless denied by\na member-joining-rule.\n\nPublic network services are visible to other\nmembers of the IXP, however only `name`, `type`,\n`product_offering`, `consuming_account` and\n`managing_account` are made available.\n\nOther required fields are redacted.',
-      }),
-    purchase_order: z
-      .string()
-      .max(80)
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'Purchase Order ID which will be displayed on the invoice.\n',
-        example: 'Project: DC Moon',
-      }),
-    state: z
-      .enum([
-        'requested',
-        'allocated',
-        'testing',
-        'production',
-        'production_change_pending',
-        'decommission_requested',
-        'decommissioned',
-        'archived',
-        'error',
-        'operator',
-        'scheduled',
-      ])
-      .exactOptional(),
-    status: z.array(StatusSchema).exactOptional(),
-    type: z.string().openapi({ example: 'mp2mp_vc' }),
-  })
+const NetworkServiceSchema = z
+  .xor([
+    ExchangeLanNetworkServiceSchema,
+    P2PNetworkServiceSchema,
+    P2MPNetworkServiceSchema,
+    MP2MPNetworkServiceSchema,
+    CloudNetworkServiceSchema,
+  ])
   .openapi({
-    description: 'MP2MP Network Service',
-    required: ['type'],
-    title: 'PartialMP2MPNetworkService',
-  })
-  .openapi('MP2MPNetworkServicePartial')
-
-const MP2MPNetworkServiceSchema = MP2MPNetworkServicePartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'state',
-        'id',
-        'product_offering',
-        'managing_account',
-        'consuming_account',
-        'billing_account',
-        'name',
-        'member_joining_rules',
-        'network_features',
-        'type',
-      ],
-      title: 'MP2MPNetworkService',
-    }),
-).openapi('MP2MPNetworkService')
-
-const CloudNetworkServicePartialSchema = z
-  .object({
-    billing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An account requires billing_information to be used as a `billing_account`.',
-      }),
-    capacity: z
-      .int()
-      .min(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The capacity of the service in Mbps. When null,\nthe maximum capacity will be used.',
-      }),
-    charged_until: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'Your obligation to pay for the service will end on this date.\nTypically `≥ decommission_at`.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
-      }),
-    cloud_key: z.string().exactOptional(),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    contract_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
-        example: 'contract:31824',
-      }),
-    decommission_at: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'The service will be decommissioned on this date.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
-      }),
-    diversity: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Same value as the corresponding `ProductOffering`.\n\nThe service can be delivered over multiple handovers from\nthe exchange to the `service_provider`.\n\nThe `diversity` denotes the number of handovers between the\nexchange and the service provider. A value of two signals a\nredundant service.\n\nOnly one network service configuration for each `handover` and\n`cloud_vlan` can be created.',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    id: z.string().exactOptional(),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    nsc_required_contact_roles: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The configuration will require at least one of each of the\nspecified roles assigned to contacts.\n\nThe `RoleAssignment` is associated through the\n`role_assignments` list property of the network service configuration.',
-        readOnly: true,
-      }),
-    product_offering: z.string().exactOptional(),
-    provider_ref: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'For a cloud network service with the exchange first\nworkflow, the `provider_ref` will be a reference\nto a resource of the cloud provider. (E.g. the UUID of\na virtual circuit.)\n\nThe `provider_ref` is managed by the exchange and its\nmeaning may vary between different cloud services.\n',
-        example: '331050d5-76fb-498b-b72a-248520278fbd',
-      }),
-    purchase_order: z
-      .string()
-      .max(80)
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'Purchase Order ID which will be displayed on the invoice.\n',
-        example: 'Project: DC Moon',
-      }),
-    state: z
-      .enum([
-        'requested',
-        'allocated',
-        'testing',
-        'production',
-        'production_change_pending',
-        'decommission_requested',
-        'decommissioned',
-        'archived',
-        'error',
-        'operator',
-        'scheduled',
-      ])
-      .exactOptional(),
-    status: z.array(StatusSchema).exactOptional(),
-    type: z.string().openapi({ example: 'cloud_vc' }),
-  })
-  .openapi({
-    description: 'Cloud Network Service',
-    required: ['type'],
-    title: 'PartialCloudNetworkService',
-  })
-  .openapi('CloudNetworkServicePartial')
-
-const CloudNetworkServiceSchema = CloudNetworkServicePartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'state',
-        'id',
-        'product_offering',
-        'managing_account',
-        'consuming_account',
-        'billing_account',
-        'cloud_key',
-        'diversity',
-        'provider_ref',
-        'type',
-      ],
-      title: 'CloudNetworkService',
-    }),
-).openapi('CloudNetworkService')
-
-type NetworkServiceType =
-  | z.infer<typeof ExchangeLanNetworkServiceSchema>
-  | z.infer<typeof P2PNetworkServiceSchema>
-  | z.infer<typeof P2MPNetworkServiceSchema>
-  | z.infer<typeof MP2MPNetworkServiceSchema>
-  | z.infer<typeof CloudNetworkServiceSchema>
-
-const VLanConfigDot1QPartialSchema = z
-  .object({
-    vlan: z
-      .int32()
-      .min(1)
-      .max(4094)
-      .exactOptional()
-      .openapi({ description: 'A VLAN tag\n', example: 23 }),
-    vlan_ethertype: z
-      .enum(['0x8100', '0x88a8', '0x9100'])
-      .default('0x8100')
-      .exactOptional()
-      .openapi({ description: 'The ethertype of the vlan in hexadecimal notation.' }),
-    vlan_type: z.string().openapi({ example: 'dot1q' }),
-  })
-  .openapi({
-    description: 'A Dot1Q vlan configuration',
-    required: ['vlan_type'],
-    title: 'PartialVLanConfigDot1Q',
-  })
-  .openapi('VLanConfigDot1QPartial')
-
-const VLanConfigDot1QSchema = VLanConfigDot1QPartialSchema.and(
-  z.object({}).openapi({ required: ['vlan', 'vlan_type'], title: 'VLanConfigDot1Q' }),
-).openapi('VLanConfigDot1Q')
-
-const VLanConfigQinQPartialSchema = z
-  .object({
-    inner_vlan: z
-      .int32()
-      .min(1)
-      .max(4094)
-      .exactOptional()
-      .openapi({ description: 'The inner VLAN id.\n', example: 200 }),
-    outer_vlan: z
-      .int32()
-      .min(1)
-      .max(4094)
-      .exactOptional()
-      .openapi({ description: 'The outer VLAN id.\n', example: 200 }),
-    outer_vlan_ethertype: z
-      .enum(['0x8100', '0x88a8', '0x9100'])
-      .default('0x8100')
-      .exactOptional()
-      .openapi({ description: 'The ethertype of the outer tag in hexadecimal notation.' }),
-    vlan_type: z.string().openapi({ example: 'dot1q' }),
-  })
-  .openapi({
-    description: 'A QinQ vlan configuration',
-    required: ['vlan_type'],
-    title: 'PartialVLanConfigQinQ',
-  })
-  .openapi('VLanConfigQinQPartial')
-
-const VLanConfigQinQSchema = VLanConfigQinQPartialSchema.and(
-  z
-    .object({})
-    .openapi({ required: ['outer_vlan', 'inner_vlan', 'vlan_type'], title: 'VLanConfigQinQ' }),
-).openapi('VLanConfigQinQ')
-
-const VLanConfigPortPartialSchema = z
-  .object({ vlan_type: z.string().openapi({ example: 'port' }) })
-  .openapi({
-    description: 'A Port vlan configuration',
-    required: ['vlan_type'],
-    title: 'PartialVLanConfigPort',
-  })
-  .openapi('VLanConfigPortPartial')
-
-const VLanConfigPortSchema = VLanConfigPortPartialSchema.and(
-  z.object({}).openapi({ required: ['vlan_type'], title: 'VLanConfigPort' }),
-).openapi('VLanConfigPort')
-
-const VlanConfigSchema = z
-  .xor([VLanConfigDot1QSchema, VLanConfigQinQSchema, VLanConfigPortSchema])
-  .openapi({
-    description:
-      'The vlan configuration defines how the service\nis made available on the connection.',
+    description: 'Polymorphic Network Services',
     discriminator: {
+      propertyName: 'type',
       mapping: {
-        dot1q: '#/components/schemas/VLanConfigDot1Q',
-        port: '#/components/schemas/VLanConfigPort',
-        qinq: '#/components/schemas/VLanConfigQinQ',
+        cloud_vc: '#/components/schemas/CloudNetworkService',
+        exchange_lan: '#/components/schemas/ExchangeLanNetworkService',
+        mp2mp_vc: '#/components/schemas/MP2MPNetworkService',
+        p2mp_vc: '#/components/schemas/P2MPNetworkService',
+        p2p_vc: '#/components/schemas/P2PNetworkService',
       },
-      propertyName: 'vlan_type',
     },
-    title: 'VlanConfig',
+    title: 'NetworkService',
   })
-  .openapi('VlanConfig')
+  .openapi('NetworkService')
 
-const ExchangeLanNetworkServiceConfigPartialSchema = z
+const NetworkServiceChangeRequestPartialSchema = z
   .object({
-    asns: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64().min(0n).max(4294967295n),
-          )
-          .openapi({ type: 'integer', format: 'int64', minimum: 0, maximum: 4294967295 }),
-      )
-      .exactOptional(),
-    billing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An account requires billing_information to be used as a `billing_account`.',
-      }),
     capacity: z
       .int()
       .min(1)
@@ -1866,162 +5634,28 @@ const ExchangeLanNetworkServiceConfigPartialSchema = z
       .exactOptional()
       .openapi({
         description:
-          'The capacity of the service in Mbps. If set to Null,\nthe maximum capacity will be used, i.e. the virtual circuit is\nnot rate-limited.\n\nAn exchange may choose to constrain the available capacity range\nof a `ProductOffering`.\n\nThat means, the service can consume up to the total bandwidth\nof the `Connection`.\n\nTypically the service is charged based on the capacity.',
+          'The desired capacity of the service in Mbps.\n\nMust be within the range of `bandwidth_min` and\n`bandwidth_max` of the `ProductOffering`.\n\nWhen `null` the maximum capacity wil be used.',
       }),
-    charged_until: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'Your obligation to pay for the service will end on this date.\nTypically `≥ decommission_at`.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
-      }),
-    connection: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    contract_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
-        example: 'contract:31824',
-      }),
-    decommission_at: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'The service will be decommissioned on this date.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    id: z.string().max(80).exactOptional(),
-    ips: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of ip-address IDs.\n\nAllocation of IP Addresses might be deferred depending on\nthe IXP implementation. No assumption should be made.',
-        readOnly: true,
-      }),
-    listed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'The customer wants to be featured on the member list' }),
-    macs: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'A list of mac-address IDs.' }),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    network_feature_configs: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
-        example: ['12356', '43829'],
-        readOnly: true,
-      }),
-    network_service: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the configured network service.' }),
     product_offering: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The product offering must match the type `exchange_lan`\nand must refer to the related network service through\nthe `exchange_lan_network_service` property.',
+          'Migrate to a diffrent product offering. Please note, that\nthe offering only may differ in bandwidth.',
       }),
-    purchase_order: z
-      .string()
-      .max(80)
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'Purchase Order ID which will be displayed on the invoice.\n',
-        example: 'Project: DC Moon',
-      }),
-    role_assignments: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
-        example: ['c-impl:123', 'c-noc:331'],
-      }),
-    state: z
-      .enum([
-        'requested',
-        'allocated',
-        'testing',
-        'production',
-        'production_change_pending',
-        'decommission_requested',
-        'decommissioned',
-        'archived',
-        'error',
-        'operator',
-        'scheduled',
-      ])
-      .exactOptional(),
-    status: z.array(StatusSchema).exactOptional(),
-    type: z.string().openapi({ example: 'exchange_lan' }),
-    vlan_config: VlanConfigSchema.exactOptional(),
   })
   .openapi({
-    description: 'Exchange Lan Network Service Config',
-    required: ['type'],
-    title: 'PartialExchangeLanNetworkServiceConfig',
+    description: 'NetworkServiceChangeRequest',
+    title: 'PartialNetworkServiceChangeRequest',
+    required: [],
   })
-  .openapi('ExchangeLanNetworkServiceConfigPartial')
+  .openapi('NetworkServiceChangeRequestPartial')
 
-const ExchangeLanNetworkServiceConfigSchema = ExchangeLanNetworkServiceConfigPartialSchema.and(
+const NetworkServiceChangeRequestSchema = NetworkServiceChangeRequestPartialSchema.and(
   z
-    .object({})
-    .openapi({
-      required: [
-        'state',
-        'id',
-        'network_service',
-        'managing_account',
-        'consuming_account',
-        'billing_account',
-        'role_assignments',
-        'connection',
-        'vlan_config',
-        'asns',
-        'listed',
-        'product_offering',
-        'type',
-      ],
-      title: 'ExchangeLanNetworkServiceConfig',
-    }),
-).openapi('ExchangeLanNetworkServiceConfig')
+    .looseObject({})
+    .openapi({ required: ['product_offering'], title: 'NetworkServiceChangeRequest' }),
+).openapi('NetworkServiceChangeRequest')
 
 const P2PNetworkServiceConfigPartialSchema = z
   .object({
@@ -2151,7 +5785,7 @@ const P2PNetworkServiceConfigPartialSchema = z
 
 const P2PNetworkServiceConfigSchema = P2PNetworkServiceConfigPartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: [
         'state',
@@ -2305,7 +5939,7 @@ const P2MPNetworkServiceConfigPartialSchema = z
 
 const P2MPNetworkServiceConfigSchema = P2MPNetworkServiceConfigPartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: [
         'state',
@@ -2323,479 +5957,53 @@ const P2MPNetworkServiceConfigSchema = P2MPNetworkServiceConfigPartialSchema.and
     }),
 ).openapi('P2MPNetworkServiceConfig')
 
-const MP2MPNetworkServiceConfigPartialSchema = z
-  .object({
-    billing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An account requires billing_information to be used as a `billing_account`.',
-      }),
-    capacity: z
-      .int()
-      .min(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The capacity of the service in Mbps. If set to Null,\nthe maximum capacity will be used, i.e. the virtual circuit is\nnot rate-limited.\n\nAn exchange may choose to constrain the available capacity range\nof a `ProductOffering`.\n\nThat means, the service can consume up to the total bandwidth\nof the `Connection`.\n\nTypically the service is charged based on the capacity.',
-      }),
-    charged_until: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'Your obligation to pay for the service will end on this date.\nTypically `≥ decommission_at`.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
-      }),
-    connection: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    contract_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
-        example: 'contract:31824',
-      }),
-    decommission_at: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'The service will be decommissioned on this date.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    id: z.string().max(80).exactOptional(),
-    macs: z.array(z.string()).exactOptional(),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    network_feature_configs: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
-        example: ['12356', '43829'],
-        readOnly: true,
-      }),
-    network_service: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the configured network service.' }),
-    purchase_order: z
-      .string()
-      .max(80)
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'Purchase Order ID which will be displayed on the invoice.\n',
-        example: 'Project: DC Moon',
-      }),
-    role_assignments: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
-        example: ['c-impl:123', 'c-noc:331'],
-      }),
-    state: z
-      .enum([
-        'requested',
-        'allocated',
-        'testing',
-        'production',
-        'production_change_pending',
-        'decommission_requested',
-        'decommissioned',
-        'archived',
-        'error',
-        'operator',
-        'scheduled',
-      ])
-      .exactOptional(),
-    status: z.array(StatusSchema).exactOptional(),
-    type: z.string().openapi({ example: 'mp2mp_vc' }),
-    vlan_config: VlanConfigSchema.exactOptional(),
-  })
+const NetworkServiceConfigSchema = z
+  .xor([
+    ExchangeLanNetworkServiceConfigSchema,
+    P2PNetworkServiceConfigSchema,
+    P2MPNetworkServiceConfigSchema,
+    MP2MPNetworkServiceConfigSchema,
+    CloudNetworkServiceConfigSchema,
+  ])
   .openapi({
-    description: 'MP2MP Network Service Config',
-    required: ['type'],
-    title: 'PartialMP2MPNetworkServiceConfig',
+    description: 'Polymorphic Network Service Config',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        cloud_vc: '#/components/schemas/CloudNetworkServiceConfig',
+        exchange_lan: '#/components/schemas/ExchangeLanNetworkServiceConfig',
+        mp2mp_vc: '#/components/schemas/MP2MPNetworkServiceConfig',
+        p2mp_vc: '#/components/schemas/P2MPNetworkServiceConfig',
+        p2p_vc: '#/components/schemas/P2PNetworkServiceConfig',
+      },
+    },
+    title: 'NetworkServiceConfig',
   })
-  .openapi('MP2MPNetworkServiceConfigPartial')
+  .openapi('NetworkServiceConfig')
 
-const MP2MPNetworkServiceConfigSchema = MP2MPNetworkServiceConfigPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'state',
-        'id',
-        'network_service',
-        'managing_account',
-        'consuming_account',
-        'billing_account',
-        'role_assignments',
-        'connection',
-        'vlan_config',
-        'type',
-      ],
-      title: 'MP2MPNetworkServiceConfig',
-    }),
-).openapi('MP2MPNetworkServiceConfig')
-
-const CloudNetworkServiceConfigPartialSchema = z
-  .object({
-    billing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An account requires billing_information to be used as a `billing_account`.',
-      }),
-    charged_until: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'Your obligation to pay for the service will end on this date.\nTypically `≥ decommission_at`.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
-      }),
-    cloud_vlan: z
-      .int32()
-      .min(1)
-      .max(4094)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the `provider_vlans` property of the `ProductOffering` is\n`multi`, a numeric value refers to a specific vlan on the service\nprovider side.\n\nOtherwise, if set to `null`, it refers to all unmatched\nvlan ids on the service provider side. (All vlan ids from the\nservice provider side are presented as tags within any vlans specified\nin `vlan_config`.)\n\nIf the `provider_vlans` property of the `ProductOffering` is `single`,\nthe `cloud_vlan` MUST be `null` or MUST NOT be provided.',
-      }),
-    connection: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    contract_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
-        example: 'contract:31824',
-      }),
-    decommission_at: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'The service will be decommissioned on this date.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    handover: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'The handover enumerates the connection and is\nrequired for checking diversity constraints.\n\nIt must be within `1 <= x <= network_service.diversity`.\n',
-        example: 1,
-      }),
-    id: z.string().max(80).exactOptional(),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    network_feature_configs: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
-        example: ['12356', '43829'],
-        readOnly: true,
-      }),
-    network_service: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the configured network service.' }),
-    purchase_order: z
-      .string()
-      .max(80)
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'Purchase Order ID which will be displayed on the invoice.\n',
-        example: 'Project: DC Moon',
-      }),
-    role_assignments: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
-        example: ['c-impl:123', 'c-noc:331'],
-      }),
-    state: z
-      .enum([
-        'requested',
-        'allocated',
-        'testing',
-        'production',
-        'production_change_pending',
-        'decommission_requested',
-        'decommissioned',
-        'archived',
-        'error',
-        'operator',
-        'scheduled',
-      ])
-      .exactOptional(),
-    status: z.array(StatusSchema).exactOptional(),
-    type: z.string().openapi({ example: 'cloud_vc' }),
-    vlan_config: VlanConfigSchema.exactOptional(),
-  })
+const NetworkServiceConfigPartialSchema = z
+  .xor([
+    ExchangeLanNetworkServiceConfigPartialSchema,
+    P2PNetworkServiceConfigPartialSchema,
+    P2MPNetworkServiceConfigPartialSchema,
+    MP2MPNetworkServiceConfigPartialSchema,
+    CloudNetworkServiceConfigPartialSchema,
+  ])
   .openapi({
-    description: 'Cloud Network Service Config',
-    required: ['type'],
-    title: 'PartialCloudNetworkServiceConfig',
+    description: 'Polymorphic Network Service Config',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        cloud_vc: '#/components/schemas/CloudNetworkServiceConfigPartial',
+        exchange_lan: '#/components/schemas/ExchangeLanNetworkServiceConfigPartial',
+        mp2mp_vc: '#/components/schemas/MP2MPNetworkServiceConfigPartial',
+        p2mp_vc: '#/components/schemas/P2MPNetworkServiceConfigPartial',
+        p2p_vc: '#/components/schemas/P2PNetworkServiceConfigPartial',
+      },
+    },
+    title: 'NetworkServiceConfig (partial)',
   })
-  .openapi('CloudNetworkServiceConfigPartial')
-
-const CloudNetworkServiceConfigSchema = CloudNetworkServiceConfigPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'state',
-        'id',
-        'network_service',
-        'managing_account',
-        'consuming_account',
-        'billing_account',
-        'role_assignments',
-        'connection',
-        'vlan_config',
-        'handover',
-        'cloud_vlan',
-        'type',
-      ],
-      title: 'CloudNetworkServiceConfig',
-    }),
-).openapi('CloudNetworkServiceConfig')
-
-type NetworkServiceConfigType =
-  | z.infer<typeof ExchangeLanNetworkServiceConfigSchema>
-  | z.infer<typeof P2PNetworkServiceConfigSchema>
-  | z.infer<typeof P2MPNetworkServiceConfigSchema>
-  | z.infer<typeof MP2MPNetworkServiceConfigSchema>
-  | z.infer<typeof CloudNetworkServiceConfigSchema>
-
-type NetworkServiceConfigPartialType =
-  | z.infer<typeof ExchangeLanNetworkServiceConfigPartialSchema>
-  | z.infer<typeof P2PNetworkServiceConfigPartialSchema>
-  | z.infer<typeof P2MPNetworkServiceConfigPartialSchema>
-  | z.infer<typeof MP2MPNetworkServiceConfigPartialSchema>
-  | z.infer<typeof CloudNetworkServiceConfigPartialSchema>
-
-const ExchangeLanNetworkServiceConfigRequestPartialSchema = z
-  .object({
-    asns: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64().min(0n).max(4294967295n),
-          )
-          .openapi({ type: 'integer', format: 'int64', minimum: 0, maximum: 4294967295 }),
-      )
-      .exactOptional(),
-    billing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An account requires billing_information to be used as a `billing_account`.',
-      }),
-    capacity: z
-      .int()
-      .min(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The capacity of the service in Mbps. If set to Null,\nthe maximum capacity will be used, i.e. the virtual circuit is\nnot rate-limited.\n\nAn exchange may choose to constrain the available capacity range\nof a `ProductOffering`.\n\nThat means, the service can consume up to the total bandwidth\nof the `Connection`.\n\nTypically the service is charged based on the capacity.',
-      }),
-    connection: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    contract_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
-        example: 'contract:31824',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    ips: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of ip-address IDs.\n\nAllocation of IP Addresses might be deferred depending on\nthe IXP implementation. No assumption should be made.',
-        readOnly: true,
-      }),
-    listed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'The customer wants to be featured on the member list' }),
-    macs: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'A list of mac-address IDs.' }),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    network_feature_configs: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
-        example: ['12356', '43829'],
-        readOnly: true,
-      }),
-    network_service: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the `NetworkService` to configure.' }),
-    product_offering: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The product offering must match the type `exchange_lan`\nand must refer to the related network service through\nthe `exchange_lan_network_service` property.',
-      }),
-    purchase_order: z
-      .string()
-      .max(80)
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'Purchase Order ID which will be displayed on the invoice.\n',
-        example: 'Project: DC Moon',
-      }),
-    role_assignments: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
-        example: ['c-impl:123', 'c-noc:331'],
-      }),
-    type: z.string().openapi({ example: 'exchange_lan' }),
-    vlan_config: VlanConfigSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Exchange Lan Network Service Config Request',
-    required: ['type'],
-    title: 'PartialExchangeLanNetworkServiceConfigRequest',
-  })
-  .openapi('ExchangeLanNetworkServiceConfigRequestPartial')
-
-const ExchangeLanNetworkServiceConfigRequestSchema =
-  ExchangeLanNetworkServiceConfigRequestPartialSchema.and(
-    z
-      .object({})
-      .openapi({
-        required: [
-          'managing_account',
-          'consuming_account',
-          'network_service',
-          'billing_account',
-          'role_assignments',
-          'connection',
-          'vlan_config',
-          'asns',
-          'listed',
-          'product_offering',
-          'type',
-        ],
-        title: 'ExchangeLanNetworkServiceConfigRequest',
-      }),
-  ).openapi('ExchangeLanNetworkServiceConfigRequest')
+  .openapi('NetworkServiceConfigPartial')
 
 const P2PNetworkServiceConfigRequestPartialSchema = z
   .object({
@@ -2894,7 +6102,7 @@ const P2PNetworkServiceConfigRequestPartialSchema = z
 
 const P2PNetworkServiceConfigRequestSchema = P2PNetworkServiceConfigRequestPartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: [
         'managing_account',
@@ -3015,7 +6223,7 @@ const P2MPNetworkServiceConfigRequestPartialSchema = z
 
 const P2MPNetworkServiceConfigRequestSchema = P2MPNetworkServiceConfigRequestPartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: [
         'managing_account',
@@ -3031,400 +6239,53 @@ const P2MPNetworkServiceConfigRequestSchema = P2MPNetworkServiceConfigRequestPar
     }),
 ).openapi('P2MPNetworkServiceConfigRequest')
 
-const MP2MPNetworkServiceConfigRequestPartialSchema = z
-  .object({
-    billing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An account requires billing_information to be used as a `billing_account`.',
-      }),
-    capacity: z
-      .int()
-      .min(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The capacity of the service in Mbps. If set to Null,\nthe maximum capacity will be used, i.e. the virtual circuit is\nnot rate-limited.\n\nAn exchange may choose to constrain the available capacity range\nof a `ProductOffering`.\n\nThat means, the service can consume up to the total bandwidth\nof the `Connection`.\n\nTypically the service is charged based on the capacity.',
-      }),
-    connection: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    contract_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
-        example: 'contract:31824',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    macs: z.array(z.string()).exactOptional(),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    network_feature_configs: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
-        example: ['12356', '43829'],
-        readOnly: true,
-      }),
-    network_service: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the `NetworkService` to configure.' }),
-    purchase_order: z
-      .string()
-      .max(80)
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'Purchase Order ID which will be displayed on the invoice.\n',
-        example: 'Project: DC Moon',
-      }),
-    role_assignments: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
-        example: ['c-impl:123', 'c-noc:331'],
-      }),
-    type: z.string().openapi({ example: 'mp2mp_vc' }),
-    vlan_config: VlanConfigSchema.exactOptional(),
-  })
+const NetworkServiceConfigRequestSchema = z
+  .xor([
+    ExchangeLanNetworkServiceConfigRequestSchema,
+    P2PNetworkServiceConfigRequestSchema,
+    P2MPNetworkServiceConfigRequestSchema,
+    MP2MPNetworkServiceConfigRequestSchema,
+    CloudNetworkServiceConfigRequestSchema,
+  ])
   .openapi({
-    description: 'MP2MP Network Service Config Request',
-    required: ['type'],
-    title: 'PartialMP2MPNetworkServiceConfigRequest',
+    description: 'Polymorhic Network Service Config Request',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        cloud_vc: '#/components/schemas/CloudNetworkServiceConfigRequest',
+        exchange_lan: '#/components/schemas/ExchangeLanNetworkServiceConfigRequest',
+        mp2mp_vc: '#/components/schemas/MP2MPNetworkServiceConfigRequest',
+        p2mp_vc: '#/components/schemas/P2MPNetworkServiceConfigRequest',
+        p2p_vc: '#/components/schemas/P2PNetworkServiceConfigRequest',
+      },
+    },
+    title: 'NetworkServiceConfigRequest',
   })
-  .openapi('MP2MPNetworkServiceConfigRequestPartial')
+  .openapi('NetworkServiceConfigRequest')
 
-const MP2MPNetworkServiceConfigRequestSchema = MP2MPNetworkServiceConfigRequestPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'managing_account',
-        'consuming_account',
-        'network_service',
-        'billing_account',
-        'role_assignments',
-        'connection',
-        'vlan_config',
-        'type',
-      ],
-      title: 'MP2MPNetworkServiceConfigRequest',
-    }),
-).openapi('MP2MPNetworkServiceConfigRequest')
-
-const CloudNetworkServiceConfigRequestPartialSchema = z
-  .object({
-    billing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An account requires billing_information to be used as a `billing_account`.',
-      }),
-    cloud_vlan: z
-      .int32()
-      .min(1)
-      .max(4094)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the `provider_vlans` property of the `ProductOffering` is\n`multi`, a numeric value refers to a specific vlan on the service\nprovider side.\n\nOtherwise, if set to `null`, it refers to all unmatched\nvlan ids on the service provider side. (All vlan ids from the\nservice provider side are presented as tags within any vlans specified\nin `vlan_config`.)\n\nIf the `provider_vlans` property of the `ProductOffering` is `single`,\nthe `cloud_vlan` MUST be `null` or MUST NOT be provided.',
-      }),
-    connection: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    contract_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
-        example: 'contract:31824',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    handover: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'The handover enumerates the connection and is\nrequired for checking diversity constraints.\n\nIt must be within `1 <= x <= network_service.diversity`.\n',
-        example: 1,
-      }),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    network_feature_configs: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
-        example: ['12356', '43829'],
-        readOnly: true,
-      }),
-    network_service: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the `NetworkService` to configure.' }),
-    purchase_order: z
-      .string()
-      .max(80)
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'Purchase Order ID which will be displayed on the invoice.\n',
-        example: 'Project: DC Moon',
-      }),
-    role_assignments: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
-        example: ['c-impl:123', 'c-noc:331'],
-      }),
-    type: z.string().openapi({ example: 'cloud_vc' }),
-    vlan_config: VlanConfigSchema.exactOptional(),
-  })
+const NetworkServiceConfigRequestPartialSchema = z
+  .xor([
+    ExchangeLanNetworkServiceConfigRequestPartialSchema,
+    P2PNetworkServiceConfigRequestPartialSchema,
+    P2MPNetworkServiceConfigRequestPartialSchema,
+    MP2MPNetworkServiceConfigRequestPartialSchema,
+    CloudNetworkServiceConfigRequestPartialSchema,
+  ])
   .openapi({
-    description: 'Cloud Network Service Config Request',
-    required: ['type'],
-    title: 'PartialCloudNetworkServiceConfigRequest',
+    description: 'Polymorhic Network Service Config Request',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        cloud_vc: '#/components/schemas/CloudNetworkServiceConfigRequestPartial',
+        exchange_lan: '#/components/schemas/ExchangeLanNetworkServiceConfigRequestPartial',
+        mp2mp_vc: '#/components/schemas/MP2MPNetworkServiceConfigRequestPartial',
+        p2mp_vc: '#/components/schemas/P2MPNetworkServiceConfigRequestPartial',
+        p2p_vc: '#/components/schemas/P2PNetworkServiceConfigRequestPartial',
+      },
+    },
+    title: 'NetworkServiceConfigRequest (partial)',
   })
-  .openapi('CloudNetworkServiceConfigRequestPartial')
-
-const CloudNetworkServiceConfigRequestSchema = CloudNetworkServiceConfigRequestPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'managing_account',
-        'consuming_account',
-        'network_service',
-        'billing_account',
-        'role_assignments',
-        'connection',
-        'vlan_config',
-        'handover',
-        'cloud_vlan',
-        'type',
-      ],
-      title: 'CloudNetworkServiceConfigRequest',
-    }),
-).openapi('CloudNetworkServiceConfigRequest')
-
-type NetworkServiceConfigRequestType =
-  | z.infer<typeof ExchangeLanNetworkServiceConfigRequestSchema>
-  | z.infer<typeof P2PNetworkServiceConfigRequestSchema>
-  | z.infer<typeof P2MPNetworkServiceConfigRequestSchema>
-  | z.infer<typeof MP2MPNetworkServiceConfigRequestSchema>
-  | z.infer<typeof CloudNetworkServiceConfigRequestSchema>
-
-type NetworkServiceConfigRequestPartialType =
-  | z.infer<typeof ExchangeLanNetworkServiceConfigRequestPartialSchema>
-  | z.infer<typeof P2PNetworkServiceConfigRequestPartialSchema>
-  | z.infer<typeof P2MPNetworkServiceConfigRequestPartialSchema>
-  | z.infer<typeof MP2MPNetworkServiceConfigRequestPartialSchema>
-  | z.infer<typeof CloudNetworkServiceConfigRequestPartialSchema>
-
-const ExchangeLanNetworkServiceConfigUpdatePartialSchema = z
-  .object({
-    asns: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64().min(0n).max(4294967295n),
-          )
-          .openapi({ type: 'integer', format: 'int64', minimum: 0, maximum: 4294967295 }),
-      )
-      .exactOptional(),
-    billing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An account requires billing_information to be used as a `billing_account`.',
-      }),
-    capacity: z
-      .int()
-      .min(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The capacity of the service in Mbps. If set to Null,\nthe maximum capacity will be used, i.e. the virtual circuit is\nnot rate-limited.\n\nAn exchange may choose to constrain the available capacity range\nof a `ProductOffering`.\n\nThat means, the service can consume up to the total bandwidth\nof the `Connection`.\n\nTypically the service is charged based on the capacity.',
-      }),
-    connection: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    contract_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
-        example: 'contract:31824',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    ips: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of ip-address IDs.\n\nAllocation of IP Addresses might be deferred depending on\nthe IXP implementation. No assumption should be made.',
-        readOnly: true,
-      }),
-    listed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'The customer wants to be featured on the member list' }),
-    macs: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'A list of mac-address IDs.' }),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    network_feature_configs: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
-        example: ['12356', '43829'],
-        readOnly: true,
-      }),
-    purchase_order: z
-      .string()
-      .max(80)
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'Purchase Order ID which will be displayed on the invoice.\n',
-        example: 'Project: DC Moon',
-      }),
-    role_assignments: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
-        example: ['c-impl:123', 'c-noc:331'],
-      }),
-    type: z.string().openapi({ example: 'exchange_lan' }),
-    vlan_config: VlanConfigSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Exchange Lan Network Service Config Update',
-    required: ['type'],
-    title: 'PartialExchangeLanNetworkServiceConfigUpdate',
-  })
-  .openapi('ExchangeLanNetworkServiceConfigUpdatePartial')
-
-const ExchangeLanNetworkServiceConfigUpdateSchema =
-  ExchangeLanNetworkServiceConfigUpdatePartialSchema.and(
-    z
-      .object({})
-      .openapi({
-        required: [
-          'managing_account',
-          'consuming_account',
-          'vlan_config',
-          'billing_account',
-          'role_assignments',
-          'connection',
-          'asns',
-          'listed',
-          'type',
-        ],
-        title: 'ExchangeLanNetworkServiceConfigUpdate',
-      }),
-  ).openapi('ExchangeLanNetworkServiceConfigUpdate')
+  .openapi('NetworkServiceConfigRequestPartial')
 
 const P2PNetworkServiceConfigUpdatePartialSchema = z
   .object({
@@ -3519,7 +6380,7 @@ const P2PNetworkServiceConfigUpdatePartialSchema = z
 
 const P2PNetworkServiceConfigUpdateSchema = P2PNetworkServiceConfigUpdatePartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: [
         'managing_account',
@@ -3534,146 +6395,121 @@ const P2PNetworkServiceConfigUpdateSchema = P2PNetworkServiceConfigUpdatePartial
     }),
 ).openapi('P2PNetworkServiceConfigUpdate')
 
-const CloudNetworkServiceConfigUpdatePartialSchema = z
-  .object({
-    billing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An account requires billing_information to be used as a `billing_account`.',
-      }),
-    cloud_vlan: z
-      .int32()
-      .min(1)
-      .max(4094)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the `provider_vlans` property of the `ProductOffering` is\n`multi`, a numeric value refers to a specific vlan on the service\nprovider side.\n\nOtherwise, if set to `null`, it refers to all unmatched\nvlan ids on the service provider side. (All vlan ids from the\nservice provider side are presented as tags within any vlans specified\nin `vlan_config`.)\n\nIf the `provider_vlans` property of the `ProductOffering` is `single`,\nthe `cloud_vlan` MUST be `null` or MUST NOT be provided.',
-      }),
-    connection: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    contract_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
-        example: 'contract:31824',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    handover: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'The handover enumerates the connection and is\nrequired for checking diversity constraints.\n\nIt must be within `1 <= x <= network_service.diversity`.\n',
-        example: 1,
-      }),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    network_feature_configs: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
-        example: ['12356', '43829'],
-        readOnly: true,
-      }),
-    purchase_order: z
-      .string()
-      .max(80)
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'Purchase Order ID which will be displayed on the invoice.\n',
-        example: 'Project: DC Moon',
-      }),
-    role_assignments: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
-        example: ['c-impl:123', 'c-noc:331'],
-      }),
-    type: z.string().openapi({ example: 'cloud_vc' }),
-    vlan_config: VlanConfigSchema.exactOptional(),
-  })
+const NetworkServiceConfigUpdateSchema = z
+  .xor([
+    ExchangeLanNetworkServiceConfigUpdateSchema,
+    P2PNetworkServiceConfigUpdateSchema,
+    P2MPNetworkServiceConfigRequestSchema,
+    MP2MPNetworkServiceConfigRequestSchema,
+    CloudNetworkServiceConfigUpdateSchema,
+  ])
   .openapi({
-    description: 'Cloud Network Service Config Update',
-    required: ['type'],
-    title: 'PartialCloudNetworkServiceConfigUpdate',
+    description: 'Polymorphic Network Service Config',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        cloud_vc: '#/components/schemas/CloudNetworkServiceConfigUpdate',
+        exchange_lan: '#/components/schemas/ExchangeLanNetworkServiceConfigUpdate',
+        mp2mp_vc: '#/components/schemas/MP2MPNetworkServiceConfigRequest',
+        p2mp_vc: '#/components/schemas/P2MPNetworkServiceConfigRequest',
+        p2p_vc: '#/components/schemas/P2PNetworkServiceConfigUpdate',
+      },
+    },
+    title: 'NetworkServiceConfigUpdate',
   })
-  .openapi('CloudNetworkServiceConfigUpdatePartial')
+  .openapi('NetworkServiceConfigUpdate')
 
-const CloudNetworkServiceConfigUpdateSchema = CloudNetworkServiceConfigUpdatePartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'managing_account',
-        'consuming_account',
-        'vlan_config',
-        'billing_account',
-        'role_assignments',
-        'connection',
-        'handover',
-        'cloud_vlan',
-        'type',
-      ],
-      title: 'CloudNetworkServiceConfigUpdate',
-    }),
-).openapi('CloudNetworkServiceConfigUpdate')
+const NetworkServiceConfigUpdatePartialSchema = z
+  .xor([
+    ExchangeLanNetworkServiceConfigUpdatePartialSchema,
+    P2PNetworkServiceConfigUpdatePartialSchema,
+    P2MPNetworkServiceConfigRequestPartialSchema,
+    MP2MPNetworkServiceConfigRequestPartialSchema,
+    CloudNetworkServiceConfigUpdatePartialSchema,
+  ])
+  .openapi({
+    description: 'Polymorphic Network Service Config',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        cloud_vc: '#/components/schemas/CloudNetworkServiceConfigUpdatePartial',
+        exchange_lan: '#/components/schemas/ExchangeLanNetworkServiceConfigUpdatePartial',
+        mp2mp_vc: '#/components/schemas/MP2MPNetworkServiceConfigRequestPartial',
+        p2mp_vc: '#/components/schemas/P2MPNetworkServiceConfigRequestPartial',
+        p2p_vc: '#/components/schemas/P2PNetworkServiceConfigUpdatePartial',
+      },
+    },
+    title: 'NetworkServiceConfigUpdate (partial)',
+  })
+  .openapi('NetworkServiceConfigUpdatePartial')
 
-type NetworkServiceConfigUpdateType =
-  | z.infer<typeof ExchangeLanNetworkServiceConfigUpdateSchema>
-  | z.infer<typeof P2PNetworkServiceConfigUpdateSchema>
-  | z.infer<typeof P2MPNetworkServiceConfigRequestSchema>
-  | z.infer<typeof MP2MPNetworkServiceConfigRequestSchema>
-  | z.infer<typeof CloudNetworkServiceConfigUpdateSchema>
+const NetworkServiceDeleteResponseSchema = z
+  .xor([
+    P2PNetworkServiceSchema,
+    P2MPNetworkServiceSchema,
+    MP2MPNetworkServiceSchema,
+    CloudNetworkServiceSchema,
+  ])
+  .openapi({
+    description: 'Polymorphic Network Service Request',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        cloud_vc: '#/components/schemas/CloudNetworkService',
+        mp2mp_vc: '#/components/schemas/MP2MPNetworkService',
+        p2mp_vc: '#/components/schemas/P2MPNetworkService',
+        p2p_vc: '#/components/schemas/P2PNetworkService',
+      },
+    },
+    title: 'NetworkServiceDeleteResponse',
+  })
+  .openapi('NetworkServiceDeleteResponse')
 
-type NetworkServiceConfigUpdatePartialType =
-  | z.infer<typeof ExchangeLanNetworkServiceConfigUpdatePartialSchema>
-  | z.infer<typeof P2PNetworkServiceConfigUpdatePartialSchema>
-  | z.infer<typeof P2MPNetworkServiceConfigRequestPartialSchema>
-  | z.infer<typeof MP2MPNetworkServiceConfigRequestPartialSchema>
-  | z.infer<typeof CloudNetworkServiceConfigUpdatePartialSchema>
+const NetworkServiceDeleteResponsePartialSchema = z
+  .xor([
+    P2PNetworkServicePartialSchema,
+    P2MPNetworkServicePartialSchema,
+    MP2MPNetworkServicePartialSchema,
+    CloudNetworkServicePartialSchema,
+  ])
+  .openapi({
+    description: 'Polymorphic Network Service Request',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        cloud_vc: '#/components/schemas/CloudNetworkServicePartial',
+        mp2mp_vc: '#/components/schemas/MP2MPNetworkServicePartial',
+        p2mp_vc: '#/components/schemas/P2MPNetworkServicePartial',
+        p2p_vc: '#/components/schemas/P2PNetworkServicePartial',
+      },
+    },
+    title: 'NetworkServiceDeleteResponse (partial)',
+  })
+  .openapi('NetworkServiceDeleteResponsePartial')
 
-type NetworkServicePartialType =
-  | z.infer<typeof ExchangeLanNetworkServicePartialSchema>
-  | z.infer<typeof P2PNetworkServicePartialSchema>
-  | z.infer<typeof P2MPNetworkServicePartialSchema>
-  | z.infer<typeof MP2MPNetworkServicePartialSchema>
-  | z.infer<typeof CloudNetworkServicePartialSchema>
+const NetworkServicePartialSchema = z
+  .xor([
+    ExchangeLanNetworkServicePartialSchema,
+    P2PNetworkServicePartialSchema,
+    P2MPNetworkServicePartialSchema,
+    MP2MPNetworkServicePartialSchema,
+    CloudNetworkServicePartialSchema,
+  ])
+  .openapi({
+    description: 'Polymorphic Network Services',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        cloud_vc: '#/components/schemas/CloudNetworkServicePartial',
+        exchange_lan: '#/components/schemas/ExchangeLanNetworkServicePartial',
+        mp2mp_vc: '#/components/schemas/MP2MPNetworkServicePartial',
+        p2mp_vc: '#/components/schemas/P2MPNetworkServicePartial',
+        p2p_vc: '#/components/schemas/P2PNetworkServicePartial',
+      },
+    },
+    title: 'NetworkService (partial)',
+  })
+  .openapi('NetworkServicePartial')
 
 const P2PNetworkServiceRequestPartialSchema = z
   .object({
@@ -3746,7 +6582,7 @@ const P2PNetworkServiceRequestPartialSchema = z
 
 const P2PNetworkServiceRequestSchema = P2PNetworkServiceRequestPartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: [
         'product_offering',
@@ -3837,7 +6673,7 @@ const P2MPNetworkServiceRequestPartialSchema = z
 
 const P2MPNetworkServiceRequestSchema = P2MPNetworkServiceRequestPartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: [
         'product_offering',
@@ -3851,14 +6687,52 @@ const P2MPNetworkServiceRequestSchema = P2MPNetworkServiceRequestPartialSchema.a
     }),
 ).openapi('P2MPNetworkServiceRequest')
 
-const MP2MPNetworkServiceRequestPartialSchema = z
+const NetworkServiceRequestSchema = z
+  .xor([
+    P2PNetworkServiceRequestSchema,
+    P2MPNetworkServiceRequestSchema,
+    MP2MPNetworkServiceRequestSchema,
+    CloudNetworkServiceRequestSchema,
+  ])
+  .openapi({
+    description: 'Polymorphic Network Service Request',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        cloud_vc: '#/components/schemas/CloudNetworkServiceRequest',
+        mp2mp_vc: '#/components/schemas/MP2MPNetworkServiceRequest',
+        p2mp_vc: '#/components/schemas/P2MPNetworkServiceRequest',
+        p2p_vc: '#/components/schemas/P2PNetworkServiceRequest',
+      },
+    },
+    title: 'NetworkServiceRequest',
+  })
+  .openapi('NetworkServiceRequest')
+
+const NetworkServiceRequestPartialSchema = z
+  .xor([
+    P2PNetworkServiceRequestPartialSchema,
+    P2MPNetworkServiceRequestPartialSchema,
+    MP2MPNetworkServiceRequestPartialSchema,
+    CloudNetworkServiceRequestPartialSchema,
+  ])
+  .openapi({
+    description: 'Polymorphic Network Service Request',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        cloud_vc: '#/components/schemas/CloudNetworkServiceRequestPartial',
+        mp2mp_vc: '#/components/schemas/MP2MPNetworkServiceRequestPartial',
+        p2mp_vc: '#/components/schemas/P2MPNetworkServiceRequestPartial',
+        p2p_vc: '#/components/schemas/P2PNetworkServiceRequestPartial',
+      },
+    },
+    title: 'NetworkServiceRequest (partial)',
+  })
+  .openapi('NetworkServiceRequestPartial')
+
+const OwnablePartialSchema = z
   .object({
-    billing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An account requires billing_information to be used as a `billing_account`.',
-      }),
     consuming_account: z
       .string()
       .exactOptional()
@@ -3866,16 +6740,6 @@ const MP2MPNetworkServiceRequestPartialSchema = z
         description:
           'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
         example: '2381982',
-      }),
-    contract_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
-        example: 'contract:31824',
       }),
     external_ref: z
       .string()
@@ -3894,530 +6758,15 @@ const MP2MPNetworkServiceRequestPartialSchema = z
           'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
         example: '238189294',
       }),
-    name: z
-      .string()
-      .max(40)
-      .exactOptional()
-      .openapi({ description: 'Name of the multi-point to multi-point\nvirtual circuit.' }),
-    product_offering: z.string().exactOptional(),
-    public: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'A public mp2mp network service can be joined\nby everyone on the exchange unless denied by\na member-joining-rule.\n\nPublic network services are visible to other\nmembers of the IXP, however only `name`, `type`,\n`product_offering`, `consuming_account` and\n`managing_account` are made available.\n\nOther required fields are redacted.',
-      }),
-    purchase_order: z
-      .string()
-      .max(80)
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'Purchase Order ID which will be displayed on the invoice.\n',
-        example: 'Project: DC Moon',
-      }),
-    type: z.string().openapi({ example: 'mp2mp_vc' }),
   })
-  .openapi({
-    description: 'MP2MP Network Service Request',
-    required: ['type'],
-    title: 'PartialMP2MPNetworkServiceRequest',
-  })
-  .openapi('MP2MPNetworkServiceRequestPartial')
+  .openapi({ description: 'Ownable', title: 'PartialOwnable', required: [] })
+  .openapi('OwnablePartial')
 
-const MP2MPNetworkServiceRequestSchema = MP2MPNetworkServiceRequestPartialSchema.and(
+const OwnableSchema = OwnablePartialSchema.and(
   z
-    .object({})
-    .openapi({
-      required: [
-        'product_offering',
-        'managing_account',
-        'consuming_account',
-        'billing_account',
-        'name',
-        'type',
-      ],
-      title: 'MP2MPNetworkServiceRequest',
-    }),
-).openapi('MP2MPNetworkServiceRequest')
-
-const CloudNetworkServiceRequestPartialSchema = z
-  .object({
-    billing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An account requires billing_information to be used as a `billing_account`.',
-      }),
-    capacity: z
-      .int()
-      .min(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The capacity of the service in Mbps. When null,\nthe maximum capacity will be used.',
-      }),
-    cloud_key: z.string().exactOptional(),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    contract_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
-        example: 'contract:31824',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    product_offering: z.string().exactOptional(),
-    purchase_order: z
-      .string()
-      .max(80)
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'Purchase Order ID which will be displayed on the invoice.\n',
-        example: 'Project: DC Moon',
-      }),
-    type: z.string().openapi({ example: 'cloud_vc' }),
-  })
-  .openapi({
-    description: 'Cloud Network Service Request',
-    required: ['type'],
-    title: 'PartialCloudNetworkServiceRequest',
-  })
-  .openapi('CloudNetworkServiceRequestPartial')
-
-const CloudNetworkServiceRequestSchema = CloudNetworkServiceRequestPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'product_offering',
-        'managing_account',
-        'consuming_account',
-        'billing_account',
-        'cloud_key',
-        'type',
-      ],
-      title: 'CloudNetworkServiceRequest',
-    }),
-).openapi('CloudNetworkServiceRequest')
-
-type NetworkServiceRequestType =
-  | z.infer<typeof P2PNetworkServiceRequestSchema>
-  | z.infer<typeof P2MPNetworkServiceRequestSchema>
-  | z.infer<typeof MP2MPNetworkServiceRequestSchema>
-  | z.infer<typeof CloudNetworkServiceRequestSchema>
-
-type NetworkServiceRequestPartialType =
-  | z.infer<typeof P2PNetworkServiceRequestPartialSchema>
-  | z.infer<typeof P2MPNetworkServiceRequestPartialSchema>
-  | z.infer<typeof MP2MPNetworkServiceRequestPartialSchema>
-  | z.infer<typeof CloudNetworkServiceRequestPartialSchema>
-
-const ExchangeLanNetworkProductOfferingPartialSchema = z
-  .object({
-    bandwidth_max: z
-      .int()
-      .min(0)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'When not `null`, this value enforces a mandatory\nrate limit for all network service configs.',
-      }),
-    bandwidth_min: z
-      .int()
-      .min(0)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'When configuring access to the network service, at least\nthis `capacity` must be provided.',
-      }),
-    display_name: z.string().max(256).exactOptional(),
-    downgrade_allowed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates if the service can be migrated to\na lower bandwidth.' }),
-    exchange_lan_network_service: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the exchange lan network service.' }),
-    handover_metro_area: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `MetroArea`. The network service will be\naccessed from this metro area.\n',
-        example: 'met:29381993:NYC',
-      }),
-    handover_metro_area_network: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `MetroAreaNetwork`. The service will be accessed\nthrough the handover metro area network.\n',
-        example: '191239810',
-      }),
-    id: z.string().max(80).exactOptional(),
-    name: z.string().max(160).exactOptional().openapi({ description: 'Name of the product' }),
-    physical_port_speed: z
-      .int()
-      .min(0)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the service is dependent on the speed of\nthe physical port this field denotes the speed.',
-      }),
-    provider_vlans: z
-      .enum(['single', 'multi'])
-      .exactOptional()
-      .openapi({ description: 'The `NetworkService` provides `single` or `multi`ple vlans.' }),
-    resource_type: z
-      .enum(['connection', 'demarc', 'network_service', 'network_service_config'])
-      .exactOptional()
-      .openapi({
-        description: 'The resource type refers to an ix-api resource.\n',
-        example: 'network_service',
-      }),
-    service_metro_area: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Id of the `MetroArea`. The service is delivered\nin this metro area.\n',
-        example: 'met:213913485:LON',
-      }),
-    service_metro_area_network: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `MetroAreaNetwork`.\nThe service is directly provided on the metro area network.\n',
-        example: '9123843',
-      }),
-    service_provider: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the provider providing the service.\n',
-        example: 'AWS',
-      }),
-    type: z.string().openapi({ example: 'exchange_lan' }),
-    upgrade_allowed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates if the service can be migrated to\na higher bandwidth.' }),
-  })
-  .openapi({
-    description: 'Exchange Lan Network Product Offering',
-    required: ['type'],
-    title: 'PartialExchangeLanNetworkProductOffering',
-  })
-  .openapi('ExchangeLanNetworkProductOfferingPartial')
-
-const ExchangeLanNetworkProductOfferingSchema = ExchangeLanNetworkProductOfferingPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'id',
-        'name',
-        'display_name',
-        'provider_vlans',
-        'resource_type',
-        'handover_metro_area_network',
-        'handover_metro_area',
-        'service_metro_area_network',
-        'service_metro_area',
-        'bandwidth_min',
-        'bandwidth_max',
-        'physical_port_speed',
-        'service_provider',
-        'downgrade_allowed',
-        'upgrade_allowed',
-        'exchange_lan_network_service',
-        'type',
-      ],
-      title: 'ExchangeLanNetworkProductOffering',
-    }),
-).openapi('ExchangeLanNetworkProductOffering')
-
-const P2PNetworkProductOfferingPartialSchema = z
-  .object({
-    bandwidth_max: z
-      .int()
-      .min(0)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'When not `null`, this value enforces a mandatory\nrate limit for all network service configs.',
-      }),
-    bandwidth_min: z
-      .int()
-      .min(0)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'When configuring access to the network service, at least\nthis `capacity` must be provided.',
-      }),
-    display_name: z.string().max(256).exactOptional(),
-    downgrade_allowed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates if the service can be migrated to\na lower bandwidth.' }),
-    handover_metro_area: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `MetroArea`. The network service will be\naccessed from this metro area.\n',
-        example: 'met:29381993:NYC',
-      }),
-    handover_metro_area_network: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `MetroAreaNetwork`. The service will be accessed\nthrough the handover metro area network.\n',
-        example: '191239810',
-      }),
-    id: z.string().max(80).exactOptional(),
-    name: z.string().max(160).exactOptional().openapi({ description: 'Name of the product' }),
-    physical_port_speed: z
-      .int()
-      .min(0)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the service is dependent on the speed of\nthe physical port this field denotes the speed.',
-      }),
-    provider_vlans: z
-      .enum(['single', 'multi'])
-      .exactOptional()
-      .openapi({ description: 'The `NetworkService` provides `single` or `multi`ple vlans.' }),
-    resource_type: z
-      .enum(['connection', 'demarc', 'network_service', 'network_service_config'])
-      .exactOptional()
-      .openapi({
-        description: 'The resource type refers to an ix-api resource.\n',
-        example: 'network_service',
-      }),
-    service_metro_area: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Id of the `MetroArea`. The service is delivered\nin this metro area.\n',
-        example: 'met:213913485:LON',
-      }),
-    service_metro_area_network: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `MetroAreaNetwork`.\nThe service is directly provided on the metro area network.\n',
-        example: '9123843',
-      }),
-    service_provider: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the provider providing the service.\n',
-        example: 'AWS',
-      }),
-    type: z.string().openapi({ example: 'p2p_vc' }),
-    upgrade_allowed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates if the service can be migrated to\na higher bandwidth.' }),
-  })
-  .openapi({
-    description: 'P2P Network Product Offering',
-    required: ['type'],
-    title: 'PartialP2PNetworkProductOffering',
-  })
-  .openapi('P2PNetworkProductOfferingPartial')
-
-const P2PNetworkProductOfferingSchema = P2PNetworkProductOfferingPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'id',
-        'name',
-        'display_name',
-        'provider_vlans',
-        'resource_type',
-        'handover_metro_area_network',
-        'handover_metro_area',
-        'service_metro_area_network',
-        'service_metro_area',
-        'bandwidth_min',
-        'bandwidth_max',
-        'physical_port_speed',
-        'service_provider',
-        'downgrade_allowed',
-        'upgrade_allowed',
-        'type',
-      ],
-      title: 'P2PNetworkProductOffering',
-    }),
-).openapi('P2PNetworkProductOffering')
-
-const MP2MPNetworkProductOfferingPartialSchema = z
-  .object({
-    bandwidth_max: z
-      .int()
-      .min(0)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'When not `null`, this value enforces a mandatory\nrate limit for all network service configs.',
-      }),
-    bandwidth_min: z
-      .int()
-      .min(0)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'When configuring access to the network service, at least\nthis `capacity` must be provided.',
-      }),
-    display_name: z.string().max(256).exactOptional(),
-    downgrade_allowed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates if the service can be migrated to\na lower bandwidth.' }),
-    handover_metro_area: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `MetroArea`. The network service will be\naccessed from this metro area.\n',
-        example: 'met:29381993:NYC',
-      }),
-    handover_metro_area_network: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `MetroAreaNetwork`. The service will be accessed\nthrough the handover metro area network.\n',
-        example: '191239810',
-      }),
-    id: z.string().max(80).exactOptional(),
-    name: z.string().max(160).exactOptional().openapi({ description: 'Name of the product' }),
-    physical_port_speed: z
-      .int()
-      .min(0)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the service is dependent on the speed of\nthe physical port this field denotes the speed.',
-      }),
-    provider_vlans: z
-      .enum(['single', 'multi'])
-      .exactOptional()
-      .openapi({ description: 'The `NetworkService` provides `single` or `multi`ple vlans.' }),
-    resource_type: z
-      .enum(['connection', 'demarc', 'network_service', 'network_service_config'])
-      .exactOptional()
-      .openapi({
-        description: 'The resource type refers to an ix-api resource.\n',
-        example: 'network_service',
-      }),
-    service_metro_area: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Id of the `MetroArea`. The service is delivered\nin this metro area.\n',
-        example: 'met:213913485:LON',
-      }),
-    service_metro_area_network: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `MetroAreaNetwork`.\nThe service is directly provided on the metro area network.\n',
-        example: '9123843',
-      }),
-    service_provider: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the provider providing the service.\n',
-        example: 'AWS',
-      }),
-    type: z.string().openapi({ example: 'mp2mp_vc' }),
-    upgrade_allowed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates if the service can be migrated to\na higher bandwidth.' }),
-  })
-  .openapi({
-    description: 'MP2MP Network Product Offering',
-    required: ['type'],
-    title: 'PartialMP2MPNetworkProductOffering',
-  })
-  .openapi('MP2MPNetworkProductOfferingPartial')
-
-const MP2MPNetworkProductOfferingSchema = MP2MPNetworkProductOfferingPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'id',
-        'name',
-        'display_name',
-        'provider_vlans',
-        'resource_type',
-        'handover_metro_area_network',
-        'handover_metro_area',
-        'service_metro_area_network',
-        'service_metro_area',
-        'bandwidth_min',
-        'bandwidth_max',
-        'physical_port_speed',
-        'service_provider',
-        'downgrade_allowed',
-        'upgrade_allowed',
-        'type',
-      ],
-      title: 'MP2MPNetworkProductOffering',
-    }),
-).openapi('MP2MPNetworkProductOffering')
+    .looseObject({})
+    .openapi({ required: ['managing_account', 'consuming_account'], title: 'Ownable' }),
+).openapi('Ownable')
 
 const P2MPNetworkProductOfferingPartialSchema = z
   .object({
@@ -4519,7 +6868,7 @@ const P2MPNetworkProductOfferingPartialSchema = z
 
 const P2MPNetworkProductOfferingSchema = P2MPNetworkProductOfferingPartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: [
         'id',
@@ -4542,2673 +6891,6 @@ const P2MPNetworkProductOfferingSchema = P2MPNetworkProductOfferingPartialSchema
       title: 'P2MPNetworkProductOffering',
     }),
 ).openapi('P2MPNetworkProductOffering')
-
-const CloudNetworkProductOfferingPartialSchema = z
-  .object({
-    bandwidth_max: z
-      .int()
-      .min(0)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'When not `null`, this value enforces a mandatory\nrate limit for all network service configs.',
-      }),
-    bandwidth_min: z
-      .int()
-      .min(0)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'When configuring access to the network service, at least\nthis `capacity` must be provided.',
-      }),
-    delivery_method: z
-      .enum(['dedicated', 'shared'])
-      .exactOptional()
-      .openapi({
-        description: 'The exchange delivers the service over a `shared` or `dedicated` NNI.',
-      }),
-    display_name: z.string().max(256).exactOptional(),
-    diversity: z
-      .int()
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'The service can be delivered over multiple handovers from\nthe exchange to the `service_provider`.\nThe `diversity` denotes the number of handovers between the\nexchange and the service provider. A value of two signals a\nredundant service.\n\nOnly one network service configuration for each `handover` and\n`cloud_vlan` can be created.',
-      }),
-    downgrade_allowed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates if the service can be migrated to\na lower bandwidth.' }),
-    handover_metro_area: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `MetroArea`. The network service will be\naccessed from this metro area.\n',
-        example: 'met:29381993:NYC',
-      }),
-    handover_metro_area_network: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `MetroAreaNetwork`. The service will be accessed\nthrough the handover metro area network.\n',
-        example: '191239810',
-      }),
-    id: z.string().max(80).exactOptional(),
-    name: z.string().max(160).exactOptional().openapi({ description: 'Name of the product' }),
-    physical_port_speed: z
-      .int()
-      .min(0)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the service is dependent on the speed of\nthe physical port this field denotes the speed.',
-      }),
-    provider_vlans: z
-      .enum(['single', 'multi'])
-      .exactOptional()
-      .openapi({ description: 'The `NetworkService` provides `single` or `multi`ple vlans.' }),
-    resource_type: z
-      .enum(['connection', 'demarc', 'network_service', 'network_service_config'])
-      .exactOptional()
-      .openapi({
-        description: 'The resource type refers to an ix-api resource.\n',
-        example: 'network_service',
-      }),
-    service_metro_area: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Id of the `MetroArea`. The service is delivered\nin this metro area.\n',
-        example: 'met:213913485:LON',
-      }),
-    service_metro_area_network: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the `MetroAreaNetwork`.\nThe service is directly provided on the metro area network.\n',
-        example: '9123843',
-      }),
-    service_provider: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the provider providing the service.\n',
-        example: 'AWS',
-      }),
-    service_provider_pop: z
-      .string()
-      .max(16)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The datacenter description of the partner NNI to the\nservice provider.\n',
-        example: 'INX6',
-      }),
-    service_provider_region: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The service provider offers the network service for a\nspecific region.\n',
-        example: 'eu-central-1',
-      }),
-    service_provider_workflow: z
-      .enum(['exchange_first', 'provider_first'])
-      .exactOptional()
-      .openapi({
-        description:
-          'When the workflow is `provider_first` the subscriber creates\na circuit with the cloud provider and provides a `cloud_key` for filtering\nthe product-offerings.\n\nIf the workflow is `exchange_first` the IX will create\nthe cloud circuit on the provider side.\n',
-        example: 'exchange_first',
-      }),
-    type: z.string().openapi({ example: 'cloud_vc' }),
-    upgrade_allowed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates if the service can be migrated to\na higher bandwidth.' }),
-  })
-  .openapi({
-    description: 'Cloud Network Product Offering',
-    required: ['type'],
-    title: 'PartialCloudNetworkProductOffering',
-  })
-  .openapi('CloudNetworkProductOfferingPartial')
-
-const CloudNetworkProductOfferingSchema = CloudNetworkProductOfferingPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'id',
-        'name',
-        'display_name',
-        'provider_vlans',
-        'resource_type',
-        'handover_metro_area_network',
-        'handover_metro_area',
-        'service_metro_area_network',
-        'service_metro_area',
-        'bandwidth_min',
-        'bandwidth_max',
-        'physical_port_speed',
-        'service_provider',
-        'downgrade_allowed',
-        'upgrade_allowed',
-        'service_provider_region',
-        'service_provider_pop',
-        'service_provider_workflow',
-        'delivery_method',
-        'diversity',
-        'type',
-      ],
-      title: 'CloudNetworkProductOffering',
-    }),
-).openapi('CloudNetworkProductOffering')
-
-type ProductOfferingType =
-  | z.infer<typeof ExchangeLanNetworkProductOfferingSchema>
-  | z.infer<typeof P2PNetworkProductOfferingSchema>
-  | z.infer<typeof MP2MPNetworkProductOfferingSchema>
-  | z.infer<typeof P2MPNetworkProductOfferingSchema>
-  | z.infer<typeof CloudNetworkProductOfferingSchema>
-
-type ProductOfferingPartialType =
-  | z.infer<typeof ExchangeLanNetworkProductOfferingPartialSchema>
-  | z.infer<typeof P2PNetworkProductOfferingPartialSchema>
-  | z.infer<typeof MP2MPNetworkProductOfferingPartialSchema>
-  | z.infer<typeof P2MPNetworkProductOfferingPartialSchema>
-  | z.infer<typeof CloudNetworkProductOfferingPartialSchema>
-
-const AddressPartialSchema = z
-  .object({
-    country: z
-      .string()
-      .max(2)
-      .exactOptional()
-      .openapi({ description: 'ISO 3166-1 alpha-2 country code, for example DE', example: 'US' }),
-    locality: z
-      .string()
-      .max(40)
-      .exactOptional()
-      .openapi({
-        description: 'The locality/city. For example, Mountain View.',
-        example: 'Mountain View',
-      }),
-    post_office_box_number: z
-      .string()
-      .max(80)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The post office box number for PO box addresses.',
-        example: '2335232',
-      }),
-    postal_code: z
-      .string()
-      .max(24)
-      .exactOptional()
-      .openapi({ description: 'A postal code. For example, 9404', example: '9409' }),
-    region: z
-      .string()
-      .max(80)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The region. For example, CA', example: 'CA' }),
-    street_address: z
-      .string()
-      .max(80)
-      .exactOptional()
-      .openapi({
-        description: 'The street address. For example, 1600 Amphitheatre Pkwy.',
-        example: '1600 Amphitheatre Pkwy.',
-      }),
-  })
-  .openapi({ description: '', title: 'PartialAddress', required: [] })
-  .openapi('AddressPartial')
-
-const AddressSchema = AddressPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: ['country', 'locality', 'postal_code', 'street_address'],
-      title: 'Address',
-    }),
-).openapi('Address')
-
-const BillingInformationPartialSchema = z
-  .object({
-    address: AddressSchema.exactOptional(),
-    name: z
-      .string()
-      .max(80)
-      .exactOptional()
-      .openapi({
-        description: 'Name of the organisation receiving invoices.\n',
-        example: 'Moonoc Network Services LLS.',
-      }),
-    vat_number: z
-      .string()
-      .min(2)
-      .max(20)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Value-added tax number, required for\neuropean reverse charge system.\n',
-        example: 'UK2300000042',
-      }),
-  })
-  .openapi({
-    description:
-      'Optional information required for issuing invoices.\nOnly accounts with `billing_information` present can be used\nas a `billing_account`.',
-    title: 'PartialBillingInformation',
-    required: [],
-  })
-  .openapi('BillingInformationPartial')
-
-const BillingInformationSchema = BillingInformationPartialSchema.and(
-  z.object({}).openapi({ required: ['name', 'address'], title: 'BillingInformation' }),
-).openapi('BillingInformation')
-
-const AccountPartialSchema = z
-  .object({
-    address: AddressSchema.exactOptional(),
-    billing_information: BillingInformationSchema.exactOptional(),
-    discoverable: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'The account will be included for all members of the\nix in the list of accounts.\n\nOnly `id`, `name` and `present_in_metro_area_networks`\nare provided to other members.',
-      }),
-    external_ref: z
-      .string()
-      .max(80)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    id: z.string().max(80).exactOptional(),
-    legal_name: z
-      .string()
-      .max(80)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "Legal name of the organisation.\nOnly required when it's different from the account name.\n",
-        example: 'Moon Network Services LLS.',
-      }),
-    managing_account: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of a managing account. Can be used for creating\na customer hierachy.\n',
-        example: 'IX:Account:231',
-      }),
-    metro_area_network_presence: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Informal list of `MetroAreaNetwork` ids, indicating the\npresence to other accounts.\nThe list is maintained by the account and can be empty.\n',
-        example: ['14021', '12939'],
-      }),
-    name: z
-      .string()
-      .max(80)
-      .exactOptional()
-      .openapi({
-        description: 'Name of the account, how it gets represented\nin e.g. a "customers list".\n',
-        example: 'Moonpeer Inc.',
-      }),
-    state: z
-      .enum([
-        'requested',
-        'allocated',
-        'testing',
-        'production',
-        'production_change_pending',
-        'decommission_requested',
-        'decommissioned',
-        'archived',
-        'error',
-        'operator',
-        'scheduled',
-      ])
-      .exactOptional(),
-    status: z.array(StatusSchema).exactOptional(),
-  })
-  .openapi({ description: 'Account', title: 'PartialAccount', required: [] })
-  .openapi('AccountPartial')
-
-const AccountSchema = AccountPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: ['state', 'name', 'metro_area_network_presence', 'id'],
-      title: 'Account',
-    }),
-).openapi('Account')
-
-const AccountRequestPartialSchema = z
-  .object({
-    address: AddressSchema.exactOptional(),
-    billing_information: BillingInformationSchema.exactOptional(),
-    discoverable: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'The account will be included for all members of the\nix in the list of accounts.\n\nOnly `id`, `name` and `present_in_metro_area_networks`\nare provided to other members.',
-      }),
-    external_ref: z
-      .string()
-      .max(80)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    legal_name: z
-      .string()
-      .max(80)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "Legal name of the organisation.\nOnly required when it's different from the account name.\n",
-        example: 'Moon Network Services LLS.',
-      }),
-    managing_account: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of a managing account. Can be used for creating\na customer hierachy.\n',
-        example: 'IX:Account:231',
-      }),
-    metro_area_network_presence: z
-      .array(z.string())
-      .default([])
-      .exactOptional()
-      .openapi({
-        description:
-          'Informal list of `MetroAreaNetwork` ids, indicating the\npresence to other accounts.\nThe list is maintained by the account and can be empty.\n',
-        example: ['14021', '12939'],
-      }),
-    name: z
-      .string()
-      .max(80)
-      .exactOptional()
-      .openapi({
-        description: 'Name of the account, how it gets represented\nin e.g. a "customers list".\n',
-        example: 'Moonpeer Inc.',
-      }),
-  })
-  .openapi({ description: 'Account Request', title: 'PartialAccountRequest', required: [] })
-  .openapi('AccountRequestPartial')
-
-const AccountRequestSchema = AccountRequestPartialSchema.and(
-  z.object({}).openapi({ required: ['name', 'address'], title: 'AccountRequest' }),
-).openapi('AccountRequest')
-
-const AccountUpdatePartialSchema = z
-  .object({
-    address: AddressSchema.exactOptional(),
-    billing_information: BillingInformationSchema.exactOptional(),
-    discoverable: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'The account will be included for all members of the\nix in the list of accounts.\n\nOnly `id`, `name` and `present_in_metro_area_networks`\nare provided to other members.',
-      }),
-    external_ref: z
-      .string()
-      .max(80)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    legal_name: z
-      .string()
-      .max(80)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "Legal name of the organisation.\nOnly required when it's different from the account name.\n",
-        example: 'Moon Network Services LLS.',
-      }),
-    managing_account: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of a managing account. Can be used for creating\na customer hierachy.\n',
-        example: 'IX:Account:231',
-      }),
-    metro_area_network_presence: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Informal list of `MetroAreaNetwork` ids, indicating the\npresence to other accounts.\nThe list is maintained by the account and can be empty.\n',
-        example: ['14021', '12939'],
-      }),
-    name: z
-      .string()
-      .max(80)
-      .exactOptional()
-      .openapi({
-        description: 'Name of the account, how it gets represented\nin e.g. a "customers list".\n',
-        example: 'Moonpeer Inc.',
-      }),
-  })
-  .openapi({ description: 'Account Update Request', title: 'PartialAccountUpdate', required: [] })
-  .openapi('AccountUpdatePartial')
-
-const AccountUpdateSchema = AccountUpdatePartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: ['name', 'metro_area_network_presence', 'address'],
-      title: 'AccountUpdate',
-    }),
-).openapi('AccountUpdate')
-
-const AuthTokenPartialSchema = z
-  .object({ access_token: z.string().exactOptional(), refresh_token: z.string().exactOptional() })
-  .openapi({ description: 'AuthToken', title: 'PartialAuthToken', required: [] })
-  .openapi('AuthTokenPartial')
-
-const AuthTokenSchema = AuthTokenPartialSchema.and(
-  z.object({}).openapi({ required: ['access_token', 'refresh_token'], title: 'AuthToken' }),
-).openapi('AuthToken')
-
-const AuthTokenRequestPartialSchema = z
-  .object({
-    api_key: z.string().length(16).exactOptional(),
-    api_secret: z.string().length(86).exactOptional(),
-  })
-  .openapi({ description: 'AuthTokenRequest', title: 'PartialAuthTokenRequest', required: [] })
-  .openapi('AuthTokenRequestPartial')
-
-const AuthTokenRequestSchema = AuthTokenRequestPartialSchema.and(
-  z.object({}).openapi({ required: ['api_key', 'api_secret'], title: 'AuthTokenRequest' }),
-).openapi('AuthTokenRequest')
-
-const CancelablePartialSchema = z
-  .object({
-    charged_until: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'Your obligation to pay for the service will end on this date.\nTypically `≥ decommission_at`.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
-      }),
-    decommission_at: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'The service will be decommissioned on this date.\n\nThis field is only used when\nthe state is `DECOMMISSION_REQUESTED` or\n`DECOMMISSIONED`.',
-      }),
-  })
-  .openapi({
-    description: 'Service or config can be canceled',
-    title: 'PartialCancelable',
-    required: [],
-  })
-  .openapi('CancelablePartial')
-
-const CancelableSchema = CancelablePartialSchema.and(
-  z.object({}).openapi({ title: 'Cancelable' }),
-).openapi('Cancelable')
-
-const CancellationPolicyPartialSchema = z
-  .object({
-    charged_until: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'Your obligation to pay for the service will end on this date.\nTypically `≥ decommission_at`.',
-      }),
-    decommission_at: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description: 'This field denotes the first possible cancellation\ndate of the service.',
-      }),
-  })
-  .openapi({ description: 'Cancellation Policy', title: 'PartialCancellationPolicy', required: [] })
-  .openapi('CancellationPolicyPartial')
-
-const CancellationPolicySchema = CancellationPolicyPartialSchema.and(
-  z
-    .object({})
-    .openapi({ required: ['decommission_at', 'charged_until'], title: 'CancellationPolicy' }),
-).openapi('CancellationPolicy')
-
-const CancellationRequestPartialSchema = z
-  .object({
-    decommission_at: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description:
-          'An optional date for scheduling the cancellation\nand service decommissioning.',
-      }),
-  })
-  .openapi({
-    description: 'Service Cancellation Request',
-    title: 'PartialCancellationRequest',
-    required: [],
-  })
-  .openapi('CancellationRequestPartial')
-
-const CancellationRequestSchema = CancellationRequestPartialSchema.and(
-  z.object({}).openapi({ title: 'CancellationRequest' }),
-).openapi('CancellationRequest')
-
-const ConnectionPartialSchema = z
-  .object({
-    billing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An account requires billing_information to be used as a `billing_account`.',
-      }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    contract_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
-        example: 'contract:31824',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    id: z.string().max(80).exactOptional(),
-    lacp_timeout: z
-      .enum(['slow', 'fast'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'This sets the LACP Timeout mode. Both ends of the connections need\nto be configured the same.\n',
-        example: 'slow',
-      }),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    mode: z
-      .enum(['lag_lacp', 'lag_static', 'flex_ethernet', 'standalone'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Sets the mode of the connection. The mode can be:\n\n- `lag_lacp`: connection is build as a LAG with LACP enabled\n- `lag_static`: connection is build as LAG with static configuration\n- `flex_ethernet`: connect is build as a FlexEthernet channel\n- `standalone`: only one port is allowed in this connection without\nany bundling.\n',
-        example: 'lag_lacp',
-      }),
-    name: z.string().max(80).exactOptional(),
-    outer_vlan_ethertypes: z
-      .array(z.enum(['0x8100', '0x88a8', '0x9100']).default('0x8100'))
-      .exactOptional()
-      .openapi({
-        description: 'The ethertype of the outer tag in hexadecimal notation.\n',
-        example: ['0x8100'],
-      }),
-    ports: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'References to the port belonging to this connection. Typically\nall ports within one connection are distributed over the same\ndevice.\n',
-        example: ['ID23', '42', '5'],
-      }),
-    purchase_order: z
-      .string()
-      .max(80)
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'Purchase Order ID which will be displayed on the invoice.\n',
-        example: 'Project: DC Moon',
-      }),
-    role_assignments: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
-        example: ['c-impl:123', 'c-noc:331'],
-      }),
-    speed: z
-      .int()
-      .min(0)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Shows the total bandwidth of the connection in Mbit/s.\n',
-        example: 20000,
-      }),
-    state: z
-      .enum([
-        'requested',
-        'allocated',
-        'testing',
-        'production',
-        'production_change_pending',
-        'decommission_requested',
-        'decommissioned',
-        'archived',
-        'error',
-        'operator',
-        'scheduled',
-      ])
-      .exactOptional(),
-    status: z.array(StatusSchema).exactOptional(),
-    vlan_types: z
-      .array(z.enum(['port', 'dot1q', 'qinq']))
-      .exactOptional()
-      .openapi({
-        description: 'A list of vlan config types you can configure using\nthis connection.',
-      }),
-  })
-  .openapi({ description: 'Connection', title: 'PartialConnection', required: [] })
-  .openapi('ConnectionPartial')
-
-const ConnectionSchema = ConnectionPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'state',
-        'managing_account',
-        'consuming_account',
-        'billing_account',
-        'role_assignments',
-        'mode',
-        'id',
-        'name',
-        'vlan_types',
-        'outer_vlan_ethertypes',
-      ],
-      title: 'Connection',
-    }),
-).openapi('Connection')
-
-const ConnectionRequestPartialSchema = z
-  .object({
-    billing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An account requires billing_information to be used as a `billing_account`.',
-      }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    contract_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
-        example: 'contract:31824',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    lacp_timeout: z
-      .enum(['slow', 'fast'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'This sets the LACP Timeout mode. Both ends of the connections need\nto be configured the same.\n',
-        example: 'slow',
-      }),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    mode: z
-      .enum(['lag_lacp', 'lag_static', 'flex_ethernet', 'standalone'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Sets the mode of the connection. The mode can be:\n\n- `lag_lacp`: connection is build as a LAG with LACP enabled\n- `lag_static`: connection is build as LAG with static configuration\n- `flex_ethernet`: connect is build as a FlexEthernet channel\n- `standalone`: only one port is allowed in this connection without\nany bundling.\n',
-        example: 'lag_lacp',
-      }),
-    purchase_order: z
-      .string()
-      .max(80)
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'Purchase Order ID which will be displayed on the invoice.\n',
-        example: 'Project: DC Moon',
-      }),
-    role_assignments: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
-        example: ['c-impl:123', 'c-noc:331'],
-      }),
-    speed: z
-      .int()
-      .min(0)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Shows the total bandwidth of the connection in Mbit/s.\n',
-        example: 20000,
-      }),
-  })
-  .openapi({ description: 'Connection Request', title: 'PartialConnectionRequest', required: [] })
-  .openapi('ConnectionRequestPartial')
-
-const ConnectionRequestSchema = ConnectionRequestPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'managing_account',
-        'consuming_account',
-        'billing_account',
-        'role_assignments',
-        'mode',
-      ],
-      title: 'ConnectionRequest',
-    }),
-).openapi('ConnectionRequest')
-
-const ConnectionUpdatePartialSchema = z
-  .object({
-    billing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An account requires billing_information to be used as a `billing_account`.',
-      }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    contract_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
-        example: 'contract:31824',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    lacp_timeout: z
-      .enum(['slow', 'fast'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'This sets the LACP Timeout mode. Both ends of the connections need\nto be configured the same.\n',
-        example: 'slow',
-      }),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    mode: z
-      .enum(['lag_lacp', 'lag_static', 'flex_ethernet', 'standalone'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Sets the mode of the connection. The mode can be:\n\n- `lag_lacp`: connection is build as a LAG with LACP enabled\n- `lag_static`: connection is build as LAG with static configuration\n- `flex_ethernet`: connect is build as a FlexEthernet channel\n- `standalone`: only one port is allowed in this connection without\nany bundling.\n',
-        example: 'lag_lacp',
-      }),
-    purchase_order: z
-      .string()
-      .max(80)
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'Purchase Order ID which will be displayed on the invoice.\n',
-        example: 'Project: DC Moon',
-      }),
-    role_assignments: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
-        example: ['c-impl:123', 'c-noc:331'],
-      }),
-    speed: z
-      .int()
-      .min(0)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Shows the total bandwidth of the connection in Mbit/s.\n',
-        example: 20000,
-      }),
-  })
-  .openapi({ description: 'Connection Update', title: 'PartialConnectionUpdate', required: [] })
-  .openapi('ConnectionUpdatePartial')
-
-const ConnectionUpdateSchema = ConnectionUpdatePartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'managing_account',
-        'consuming_account',
-        'billing_account',
-        'role_assignments',
-        'mode',
-      ],
-      title: 'ConnectionUpdate',
-    }),
-).openapi('ConnectionUpdate')
-
-const ConsumablePartialSchema = z
-  .object({
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-  })
-  .openapi({ description: 'Consumable', title: 'PartialConsumable', required: [] })
-  .openapi('ConsumablePartial')
-
-const ConsumableSchema = ConsumablePartialSchema.and(
-  z.object({}).openapi({ required: ['consuming_account'], title: 'Consumable' }),
-).openapi('Consumable')
-
-const ContactPartialSchema = z
-  .object({
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    email: z
-      .string()
-      .max(80)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The email of the legal company entity.\n',
-        example: 'info@moon-peer.net',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    id: z.string().exactOptional(),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    name: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'A name of a person or an organisation', example: 'Some A. Name' }),
-    telephone: z
-      .string()
-      .max(40)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The telephone number in E.164 Phone Number Formatting',
-        example: '+442071838750',
-      }),
-  })
-  .openapi({ description: 'Contact', title: 'PartialContact', required: [] })
-  .openapi('ContactPartial')
-
-const ContactSchema = ContactPartialSchema.and(
-  z
-    .object({})
-    .openapi({ required: ['managing_account', 'consuming_account', 'id'], title: 'Contact' }),
-).openapi('Contact')
-
-const ContactRequestPartialSchema = z
-  .object({
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    email: z
-      .string()
-      .max(80)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The email of the legal company entity.\n',
-        example: 'info@moon-peer.net',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    name: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'A name of a person or an organisation', example: 'Some A. Name' }),
-    telephone: z
-      .string()
-      .max(40)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The telephone number in E.164 Phone Number Formatting',
-        example: '+442071838750',
-      }),
-  })
-  .openapi({
-    description: 'A contact creation request',
-    title: 'PartialContactRequest',
-    required: [],
-  })
-  .openapi('ContactRequestPartial')
-
-const ContactRequestSchema = ContactRequestPartialSchema.and(
-  z
-    .object({})
-    .openapi({ required: ['managing_account', 'consuming_account'], title: 'ContactRequest' }),
-).openapi('ContactRequest')
-
-const ContactUpdatePartialSchema = z
-  .object({
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    email: z
-      .string()
-      .max(80)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The email of the legal company entity.\n',
-        example: 'info@moon-peer.net',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    name: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'A name of a person or an organisation', example: 'Some A. Name' }),
-    telephone: z
-      .string()
-      .max(40)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The telephone number in E.164 Phone Number Formatting',
-        example: '+442071838750',
-      }),
-  })
-  .openapi({ description: 'A contact update', title: 'PartialContactUpdate', required: [] })
-  .openapi('ContactUpdatePartial')
-
-const ContactUpdateSchema = ContactUpdatePartialSchema.and(
-  z
-    .object({})
-    .openapi({ required: ['managing_account', 'consuming_account'], title: 'ContactUpdate' }),
-).openapi('ContactUpdate')
-
-const ContactablePartialSchema = z
-  .object({
-    role_assignments: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
-        example: ['c-impl:123', 'c-noc:331'],
-      }),
-  })
-  .openapi({ description: 'Contactable', title: 'PartialContactable', required: [] })
-  .openapi('ContactablePartial')
-
-const ContactableSchema = ContactablePartialSchema.and(
-  z.object({}).openapi({ required: ['role_assignments'], title: 'Contactable' }),
-).openapi('Contactable')
-
-const DeviceCapabilityPartialSchema = z
-  .object({
-    availability: z
-      .int32()
-      .min(0)
-      .max(2147483647)
-      .exactOptional()
-      .openapi({
-        description: 'Count of available ports on device\n',
-        example: 23,
-        readOnly: true,
-      }),
-    max_lag: z
-      .int32()
-      .min(0)
-      .max(32767)
-      .exactOptional()
-      .openapi({
-        description: 'Maximum count of ports which can be bundled to a max_lag',
-        example: 8,
-        readOnly: true,
-      }),
-    media_type: z
-      .string()
-      .max(20)
-      .exactOptional()
-      .openapi({
-        description: 'The media type of the port (e.g. 1000BASE-LX, 10GBASE-LR, ...)\n',
-        example: '1000BASE-LX',
-        readOnly: true,
-      }),
-    speed: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Speed of port in Mbit/s\n', example: 1000, readOnly: true }),
-  })
-  .openapi({ description: 'Device Capability', title: 'PartialDeviceCapability', required: [] })
-  .openapi('DeviceCapabilityPartial')
-
-const DeviceCapabilitySchema = DeviceCapabilityPartialSchema.and(
-  z.object({}).openapi({ title: 'DeviceCapability' }),
-).openapi('DeviceCapability')
-
-const DevicePartialSchema = z
-  .object({
-    capabilities: z.array(DeviceCapabilitySchema).exactOptional(),
-    facility: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Identifier of the facility where the device\nis physically based.',
-        readOnly: true,
-      }),
-    id: z.string().max(80).exactOptional(),
-    name: z
-      .string()
-      .max(180)
-      .exactOptional()
-      .openapi({ description: 'Name of the device\n', example: 'edge2.moon.space-ix.net' }),
-    pop: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The `PointOfPresence` the device is in.' }),
-  })
-  .openapi({ description: 'Device', title: 'PartialDevice', required: [] })
-  .openapi('DevicePartial')
-
-const DeviceSchema = DevicePartialSchema.and(
-  z.object({}).openapi({ required: ['name', 'pop', 'id'], title: 'Device' }),
-).openapi('Device')
-
-const DeviceConnectionPartialSchema = z
-  .object({
-    capacity_max: z.int32().min(0).max(2147483647).exactOptional(),
-    connected_device: z.string().exactOptional(),
-    device: z.string().exactOptional(),
-    id: z.string().max(80).exactOptional(),
-  })
-  .openapi({ description: 'Device Connection', title: 'PartialDeviceConnection', required: [] })
-  .openapi('DeviceConnectionPartial')
-
-const DeviceConnectionSchema = DeviceConnectionPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: ['capacity_max', 'device', 'connected_device', 'id'],
-      title: 'DeviceConnection',
-    }),
-).openapi('DeviceConnection')
-
-const EventPartialSchema = z
-  .object({
-    account: z.string().exactOptional().openapi({ readOnly: true }),
-    payload: z.object({}).exactOptional(),
-    serial: z.int().exactOptional(),
-    timestamp: z.iso.datetime({ offset: true }).exactOptional(),
-    type: z.string().exactOptional(),
-  })
-  .openapi({ description: 'Event', title: 'PartialEvent', required: [] })
-  .openapi('EventPartial')
-
-const EventSchema = EventPartialSchema.and(
-  z.object({}).openapi({ required: ['serial', 'type', 'payload', 'timestamp'], title: 'Event' }),
-).openapi('Event')
-
-const ExternalReferencePartialSchema = z
-  .object({
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-  })
-  .openapi({ description: 'External Reference', title: 'PartialExternalReference', required: [] })
-  .openapi('ExternalReferencePartial')
-
-const ExternalReferenceSchema = ExternalReferencePartialSchema.and(
-  z.object({}).openapi({ title: 'ExternalReference' }),
-).openapi('ExternalReference')
-
-const FacilityPartialSchema = z
-  .object({
-    address_country: z
-      .string()
-      .max(2)
-      .exactOptional()
-      .openapi({ description: 'ISO 3166-1 alpha-2 country code, for example DE\n', example: 'US' }),
-    address_locality: z
-      .string()
-      .max(80)
-      .exactOptional()
-      .openapi({
-        description: 'The locality/city. For example, Mountain View.',
-        example: 'Mountain View',
-      }),
-    address_region: z
-      .string()
-      .max(80)
-      .exactOptional()
-      .openapi({ description: 'The region. For example, CA', example: 'CA' }),
-    id: z.string().max(80).exactOptional(),
-    metro_area: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Id of the `MetroArea` the DC is located in.\n',
-        example: 'met:93214980:BER',
-      }),
-    name: z
-      .string()
-      .max(80)
-      .exactOptional()
-      .openapi({
-        description: 'Name of the Datacenter as called by the operator\n',
-        example: 'Crater DC Moon 1',
-      }),
-    organisation_name: z
-      .string()
-      .max(80)
-      .exactOptional()
-      .openapi({ description: 'Name of Datacenter operator\n', example: 'Moon Datacenters' }),
-    peeringdb_facility_id: z
-      .int32()
-      .min(0)
-      .max(2147483647)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          '[PeeringDB](https://www.peeringdb.com) facitlity ID,\ncan be extracted from the url https://www.peeringdb.com/fac/$id\n',
-        example: 103,
-      }),
-    pops: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'List of pops in the `Facility`.' }),
-    postal_code: z
-      .string()
-      .max(18)
-      .exactOptional()
-      .openapi({ description: 'A postal code. For example, 9404', example: '9409' }),
-    street_address: z
-      .string()
-      .max(80)
-      .exactOptional()
-      .openapi({
-        description: 'The street address. For example, 1600 Amphitheatre Pkwy.',
-        example: '1600 Amphitheatre Pkwy.',
-      }),
-  })
-  .openapi({ description: 'Facility', title: 'PartialFacility', required: [] })
-  .openapi('FacilityPartial')
-
-const FacilitySchema = FacilityPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'name',
-        'metro_area',
-        'address_country',
-        'address_locality',
-        'address_region',
-        'postal_code',
-        'street_address',
-        'organisation_name',
-        'pops',
-        'id',
-      ],
-      title: 'Facility',
-    }),
-).openapi('Facility')
-
-const HealthResponsePartialSchema = z
-  .object({
-    checks: z
-      .record(z.string(), z.record(z.string(), z.string()))
-      .exactOptional()
-      .openapi({
-        description:
-          'The "checks" object MAY have a number of unique keys,\none for each logical downstream dependency or sub-component.\n\nSince each sub-component may be backed by several nodes\nwith varying health statuses, these keys point to arrays\nof objects. In case of a single-node sub-component\n(or if presence of nodes is not relevant), a single-element\narray SHOULD be used as the value, for consistency.\n\nPlease see\nhttps://tools.ietf.org/id/draft-inadarei-api-health-check-04.html#the-checks-object\nfor details.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A human-friendly description of the service.' }),
-    links: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Is an object containing link relations and URIs [RFC3986]\nfor external links that MAY contain more information about\nthe health of the endpoint.',
-      }),
-    notes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Array of notes relevant to current state of health.' }),
-    output: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Raw error output, in case of "fail" or "warn" states.' }),
-    releaseId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Release version of the api implementation.\n', example: '1.23.0' }),
-    serviceId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A unique identifier of the service, in the application scope.' }),
-    status: z
-      .enum(['pass', 'fail', 'warn'])
-      .exactOptional()
-      .openapi({
-        description: 'status indicates whether the service status is\nacceptable or not.',
-      }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Public version of the service.\n', example: '1' }),
-  })
-  .openapi({ description: 'Health Status Response', title: 'PartialHealthResponse', required: [] })
-  .openapi('HealthResponsePartial')
-
-const HealthResponseSchema = HealthResponsePartialSchema.and(
-  z.object({}).openapi({ required: ['status'], title: 'HealthResponse' }),
-).openapi('HealthResponse')
-
-const ImplementationResponsePartialSchema = z
-  .object({
-    schema_version: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Version of the implemented IX-API schema.\n', example: '2.0.0' }),
-    service_version: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Version of the API service.\n', example: '1.23.0' }),
-    supported_network_feature_config_types: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Array of supported network feature config types.\n',
-        example: ['route_server'],
-      }),
-    supported_network_feature_types: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Array of supported network feature types.\n',
-        example: ['route_server'],
-      }),
-    supported_network_service_config_types: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Array of supported network service config types.\n',
-        example: ['exchange_lan', 'p2p_vc', 'cloud_vc'],
-      }),
-    supported_network_service_types: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Array of network service types, supported by the IX.\n',
-        example: ['exchange_lan', 'p2p_vc', 'cloud_vc'],
-      }),
-    supported_operations: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Array of implemented operations of the ix-api schema.\n',
-        example: ['connections_list', 'connections_read', 'network_service_configs_create'],
-      }),
-  })
-  .openapi({
-    description: 'API Implementation',
-    title: 'PartialImplementationResponse',
-    required: [],
-  })
-  .openapi('ImplementationResponsePartial')
-
-const ImplementationResponseSchema = ImplementationResponsePartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'schema_version',
-        'supported_network_service_types',
-        'supported_network_service_config_types',
-        'supported_network_feature_types',
-        'supported_network_feature_config_types',
-        'supported_operations',
-      ],
-      title: 'ImplementationResponse',
-    }),
-).openapi('ImplementationResponse')
-
-const InvoiceablePartialSchema = z
-  .object({
-    billing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An account requires billing_information to be used as a `billing_account`.',
-      }),
-    contract_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
-        example: 'contract:31824',
-      }),
-    purchase_order: z
-      .string()
-      .max(80)
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'Purchase Order ID which will be displayed on the invoice.\n',
-        example: 'Project: DC Moon',
-      }),
-  })
-  .openapi({ description: 'Invoiceable', title: 'PartialInvoiceable', required: [] })
-  .openapi('InvoiceablePartial')
-
-const InvoiceableSchema = InvoiceablePartialSchema.and(
-  z.object({}).openapi({ required: ['billing_account'], title: 'Invoiceable' }),
-).openapi('Invoiceable')
-
-const IpAddressPartialSchema = z
-  .object({
-    address: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'IPv4 or IPv6 Address in the following format:\n- IPv4: [dot-decimal notation](https://en.wikipedia.org/wiki/Dot-decimal_notation)\n- IPv6: hexadecimal colon separated notation\n',
-        example: '23.142.52.0',
-      }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    fqdn: z.string().max(100).nullable().exactOptional(),
-    id: z.string().max(80).exactOptional(),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    prefix_length: z
-      .int32()
-      .min(0)
-      .max(128)
-      .exactOptional()
-      .openapi({ description: 'The CIDR ip prefix length\n', example: 23 }),
-    valid_not_after: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    valid_not_before: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    version: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The version of the internet protocol.\n', example: 4 }),
-  })
-  .openapi({ description: 'IP-Address', title: 'PartialIpAddress', required: [] })
-  .openapi('IpAddressPartial')
-
-const IpAddressSchema = IpAddressPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'managing_account',
-        'consuming_account',
-        'version',
-        'address',
-        'prefix_length',
-        'id',
-      ],
-      title: 'IpAddress',
-    }),
-).openapi('IpAddress')
-
-const IpAddressRequestPartialSchema = z
-  .object({
-    address: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'IPv4 or IPv6 Address in the following format:\n- IPv4: [dot-decimal notation](https://en.wikipedia.org/wiki/Dot-decimal_notation)\n- IPv6: hexadecimal colon separated notation\n',
-        example: '23.142.52.0',
-      }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    fqdn: z.string().max(100).nullable().exactOptional(),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    prefix_length: z
-      .int32()
-      .min(0)
-      .max(128)
-      .exactOptional()
-      .openapi({ description: 'The CIDR ip prefix length\n', example: 23 }),
-    valid_not_after: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    valid_not_before: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    version: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The version of the internet protocol.\n', example: 4 }),
-  })
-  .openapi({
-    description: 'IP-Address / Prefix allocation Request',
-    title: 'PartialIpAddressRequest',
-    required: [],
-  })
-  .openapi('IpAddressRequestPartial')
-
-const IpAddressRequestSchema = IpAddressRequestPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: ['managing_account', 'consuming_account', 'version', 'address', 'prefix_length'],
-      title: 'IpAddressRequest',
-    }),
-).openapi('IpAddressRequest')
-
-const IpAddressUpdatePartialSchema = z
-  .object({
-    address: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'IPv4 or IPv6 Address in the following format:\n- IPv4: [dot-decimal notation](https://en.wikipedia.org/wiki/Dot-decimal_notation)\n- IPv6: hexadecimal colon separated notation\n',
-        example: '23.142.52.0',
-      }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    fqdn: z.string().max(100).nullable().exactOptional(),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    prefix_length: z
-      .int32()
-      .min(0)
-      .max(128)
-      .exactOptional()
-      .openapi({ description: 'The CIDR ip prefix length\n', example: 23 }),
-    valid_not_after: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    valid_not_before: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    version: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The version of the internet protocol.\n', example: 4 }),
-  })
-  .openapi({ description: 'IP-Address Update', title: 'PartialIpAddressUpdate', required: [] })
-  .openapi('IpAddressUpdatePartial')
-
-const IpAddressUpdateSchema = IpAddressUpdatePartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: ['managing_account', 'consuming_account', 'version', 'address', 'prefix_length'],
-      title: 'IpAddressUpdate',
-    }),
-).openapi('IpAddressUpdate')
-
-const MP2MPNetworkServiceConfigUpdatePartialSchema = z
-  .object({
-    billing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An account requires billing_information to be used as a `billing_account`.',
-      }),
-    capacity: z
-      .int()
-      .min(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The capacity of the service in Mbps. If set to Null,\nthe maximum capacity will be used, i.e. the virtual circuit is\nnot rate-limited.\n\nAn exchange may choose to constrain the available capacity range\nof a `ProductOffering`.\n\nThat means, the service can consume up to the total bandwidth\nof the `Connection`.\n\nTypically the service is charged based on the capacity.',
-      }),
-    connection: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the connection to use for this `NetworkServiceConfig`.' }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    contract_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'A reference to a contract. If no specific contract is used, a default\nMAY be chosen by the implementer.\n',
-        example: 'contract:31824',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    macs: z.array(z.string()).exactOptional(),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    network_feature_configs: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'A list of ids of `NetworkFeatureConfig`s.\n',
-        example: ['12356', '43829'],
-        readOnly: true,
-      }),
-    purchase_order: z
-      .string()
-      .max(80)
-      .default('')
-      .exactOptional()
-      .openapi({
-        description: 'Purchase Order ID which will be displayed on the invoice.\n',
-        example: 'Project: DC Moon',
-      }),
-    role_assignments: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A set of `RoleAssignment`s. See the documentation\non the specific `required_contact_roles`,\n`nfc_required_contact_roles` or `nsc_required_contact_roles`\non what `RoleAssignment`s to provide.\n',
-        example: ['c-impl:123', 'c-noc:331'],
-      }),
-    type: z.string().openapi({ example: 'mp2mp_vc' }),
-    vlan_config: VlanConfigSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'MP2MP Network Service Config Update',
-    required: ['type'],
-    title: 'PartialMP2MPNetworkServiceConfigUpdate',
-  })
-  .openapi('MP2MPNetworkServiceConfigUpdatePartial')
-
-const MP2MPNetworkServiceConfigUpdateSchema = MP2MPNetworkServiceConfigUpdatePartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'managing_account',
-        'consuming_account',
-        'vlan_config',
-        'billing_account',
-        'role_assignments',
-        'connection',
-        'type',
-      ],
-      title: 'MP2MPNetworkServiceConfigUpdate',
-    }),
-).openapi('MP2MPNetworkServiceConfigUpdate')
-
-const MacAddressPartialSchema = z
-  .object({
-    address: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Unicast MAC address, formatted hexadecimal values with colons.\n',
-        example: '42:23:bc:8e:b8:b0',
-      }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    id: z.string().max(80).exactOptional(),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    valid_not_after: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    valid_not_before: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-  })
-  .openapi({ description: 'MAC-Address', title: 'PartialMacAddress', required: [] })
-  .openapi('MacAddressPartial')
-
-const MacAddressSchema = MacAddressPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: ['managing_account', 'consuming_account', 'address', 'id'],
-      title: 'MacAddress',
-    }),
-).openapi('MacAddress')
-
-const MacAddressRequestPartialSchema = z
-  .object({
-    address: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Unicast MAC address, formatted hexadecimal values with colons.\n',
-        example: '42:23:bc:8e:b8:b0',
-      }),
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-    valid_not_after: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    valid_not_before: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-  })
-  .openapi({ description: 'MAC-Address Request', title: 'PartialMacAddressRequest', required: [] })
-  .openapi('MacAddressRequestPartial')
-
-const MacAddressRequestSchema = MacAddressRequestPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: ['managing_account', 'consuming_account', 'address'],
-      title: 'MacAddressRequest',
-    }),
-).openapi('MacAddressRequest')
-
-const ManageablePartialSchema = z
-  .object({
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-  })
-  .openapi({ description: 'Managed', title: 'PartialManageable', required: [] })
-  .openapi('ManageablePartial')
-
-const ManageableSchema = ManageablePartialSchema.and(
-  z.object({}).openapi({ required: ['managing_account'], title: 'Manageable' }),
-).openapi('Manageable')
-
-const MemberJoiningRuleSchema: z.ZodType<MemberJoiningRuleType> = z
-  .lazy(() =>
-    z
-      .xor([AllowMemberJoiningRuleSchema, DenyMemberJoiningRuleSchema])
-      .openapi({
-        description: 'Polymorphic Member Joining Rule',
-        discriminator: {
-          mapping: {
-            allow: '#/components/schemas/AllowMemberJoiningRule',
-            deny: '#/components/schemas/DenyMemberJoiningRule',
-          },
-          propertyName: 'type',
-        },
-        title: 'MemberJoiningRule',
-      }),
-  )
-  .openapi('MemberJoiningRule')
-
-const MemberJoiningRulePartialSchema: z.ZodType<MemberJoiningRulePartialType> = z
-  .lazy(() =>
-    z
-      .xor([AllowMemberJoiningRulePartialSchema, DenyMemberJoiningRulePartialSchema])
-      .openapi({
-        description: 'Polymorphic Member Joining Rule',
-        discriminator: {
-          mapping: {
-            allow: '#/components/schemas/AllowMemberJoiningRulePartial',
-            deny: '#/components/schemas/DenyMemberJoiningRulePartial',
-          },
-          propertyName: 'type',
-        },
-        title: 'MemberJoiningRule (partial)',
-      }),
-  )
-  .openapi('MemberJoiningRulePartial')
-
-const MemberJoiningRuleRequestSchema: z.ZodType<MemberJoiningRuleRequestType> = z
-  .lazy(() =>
-    z
-      .xor([AllowMemberJoiningRuleRequestSchema, DenyMemberJoiningRuleRequestSchema])
-      .openapi({
-        description: 'Polymorphic Member Joining Rule Request',
-        discriminator: {
-          mapping: {
-            allow: '#/components/schemas/AllowMemberJoiningRuleRequest',
-            deny: '#/components/schemas/DenyMemberJoiningRuleRequest',
-          },
-          propertyName: 'type',
-        },
-        title: 'MemberJoiningRuleRequest',
-      }),
-  )
-  .openapi('MemberJoiningRuleRequest')
-
-const MemberJoiningRuleRequestPartialSchema: z.ZodType<MemberJoiningRuleRequestPartialType> = z
-  .lazy(() =>
-    z
-      .xor([AllowMemberJoiningRuleRequestPartialSchema, DenyMemberJoiningRuleRequestPartialSchema])
-      .openapi({
-        description: 'Polymorphic Member Joining Rule Request',
-        discriminator: {
-          mapping: {
-            allow: '#/components/schemas/AllowMemberJoiningRuleRequestPartial',
-            deny: '#/components/schemas/DenyMemberJoiningRuleRequestPartial',
-          },
-          propertyName: 'type',
-        },
-        title: 'MemberJoiningRuleRequest (partial)',
-      }),
-  )
-  .openapi('MemberJoiningRuleRequestPartial')
-
-const MemberJoiningRuleUpdateSchema: z.ZodType<MemberJoiningRuleUpdateType> = z
-  .lazy(() =>
-    z
-      .xor([AllowMemberJoiningRuleUpdateSchema, DenyMemberJoiningRuleUpdateSchema])
-      .openapi({
-        description: 'Polymorphic Member Joining Rule Update',
-        discriminator: {
-          mapping: {
-            allow: '#/components/schemas/AllowMemberJoiningRuleUpdate',
-            deny: '#/components/schemas/DenyMemberJoiningRuleUpdate',
-          },
-          propertyName: 'type',
-        },
-        title: 'MemberJoiningRuleUpdate',
-      }),
-  )
-  .openapi('MemberJoiningRuleUpdate')
-
-const MemberJoiningRuleUpdatePartialSchema: z.ZodType<MemberJoiningRuleUpdatePartialType> = z
-  .lazy(() =>
-    z
-      .xor([AllowMemberJoiningRuleUpdatePartialSchema, DenyMemberJoiningRuleUpdatePartialSchema])
-      .openapi({
-        description: 'Polymorphic Member Joining Rule Update',
-        discriminator: {
-          mapping: {
-            allow: '#/components/schemas/AllowMemberJoiningRuleUpdatePartial',
-            deny: '#/components/schemas/DenyMemberJoiningRuleUpdatePartial',
-          },
-          propertyName: 'type',
-        },
-        title: 'MemberJoiningRuleUpdate (partial)',
-      }),
-  )
-  .openapi('MemberJoiningRuleUpdatePartial')
-
-const MetroAreaPartialSchema = z
-  .object({
-    display_name: z
-      .string()
-      .max(64)
-      .exactOptional()
-      .openapi({
-        description: 'The name of the metro area. Likely the same as the IATA code.\n',
-        example: 'FRA',
-      }),
-    facilities: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'List of facilities the metro area network.' }),
-    iata_code: z
-      .string()
-      .max(3)
-      .exactOptional()
-      .openapi({
-        description: 'The three letter IATA airport code for identiying the\nmetro area.\n',
-        example: 'FRA',
-      }),
-    id: z.string().max(80).exactOptional(),
-    metro_area_networks: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'List of networks in the metro area.' }),
-    un_locode: z
-      .string()
-      .max(6)
-      .exactOptional()
-      .openapi({
-        description: 'The UN/LOCODE for identifying the metro area.\n',
-        example: 'DE FRA',
-      }),
-  })
-  .openapi({ description: 'MetroArea', title: 'PartialMetroArea', required: [] })
-  .openapi('MetroAreaPartial')
-
-const MetroAreaSchema = MetroAreaPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: [
-        'id',
-        'un_locode',
-        'iata_code',
-        'display_name',
-        'facilities',
-        'metro_area_networks',
-      ],
-      title: 'MetroArea',
-    }),
-).openapi('MetroArea')
-
-const MetroAreaNetworkPartialSchema = z
-  .object({
-    id: z.string().max(80).exactOptional(),
-    metro_area: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the metro area.\n', example: 'met:199399:FRA' }),
-    name: z
-      .string()
-      .max(32)
-      .exactOptional()
-      .openapi({ description: 'The name of the metro area network.\n', example: 'MY-IX-FRA1' }),
-    pops: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'List of pops in the metro area network.' }),
-    service_provider: z
-      .string()
-      .max(128)
-      .exactOptional()
-      .openapi({
-        description: 'The service provider is operating the network.\nUsually the exchange.\n',
-        example: 'MY-IX',
-      }),
-  })
-  .openapi({ description: 'MetroAreaNetwork', title: 'PartialMetroAreaNetwork', required: [] })
-  .openapi('MetroAreaNetworkPartial')
-
-const MetroAreaNetworkSchema = MetroAreaNetworkPartialSchema.and(
-  z
-    .object({})
-    .openapi({
-      required: ['name', 'metro_area', 'service_provider', 'pops', 'id'],
-      title: 'MetroAreaNetwork',
-    }),
-).openapi('MetroAreaNetwork')
-
-const NetworkFeatureSchema: z.ZodType<NetworkFeatureType> = z
-  .lazy(() =>
-    z
-      .xor([RouteServerNetworkFeatureSchema])
-      .openapi({
-        description: 'Polymorphic Network Feature',
-        discriminator: {
-          mapping: { route_server: '#/components/schemas/RouteServerNetworkFeature' },
-          propertyName: 'type',
-        },
-        title: 'NetworkFeature',
-      }),
-  )
-  .openapi('NetworkFeature')
-
-const NetworkFeatureConfigSchema: z.ZodType<NetworkFeatureConfigType> = z
-  .lazy(() =>
-    z
-      .xor([RouteServerNetworkFeatureConfigSchema])
-      .openapi({
-        description: 'Polymorphic Network Feature Config',
-        discriminator: {
-          mapping: { route_server: '#/components/schemas/RouteServerNetworkFeatureConfig' },
-          propertyName: 'type',
-        },
-        title: 'NetworkFeatureConfig',
-      }),
-  )
-  .openapi('NetworkFeatureConfig')
-
-const NetworkFeatureConfigPartialSchema: z.ZodType<NetworkFeatureConfigPartialType> = z
-  .lazy(() =>
-    z
-      .xor([RouteServerNetworkFeatureConfigPartialSchema])
-      .openapi({
-        description: 'Polymorphic Network Feature Config',
-        discriminator: {
-          mapping: { route_server: '#/components/schemas/RouteServerNetworkFeatureConfigPartial' },
-          propertyName: 'type',
-        },
-        title: 'NetworkFeatureConfig (partial)',
-      }),
-  )
-  .openapi('NetworkFeatureConfigPartial')
-
-const NetworkFeatureConfigRequestSchema: z.ZodType<NetworkFeatureConfigRequestType> = z
-  .lazy(() =>
-    z
-      .xor([RouteServerNetworkFeatureConfigRequestSchema])
-      .openapi({
-        description: 'Polymorphic Network Feature Config Request',
-        discriminator: {
-          mapping: { route_server: '#/components/schemas/RouteServerNetworkFeatureConfigRequest' },
-          propertyName: 'type',
-        },
-        title: 'NetworkFeatureConfigRequest',
-      }),
-  )
-  .openapi('NetworkFeatureConfigRequest')
-
-const NetworkFeatureConfigRequestPartialSchema: z.ZodType<NetworkFeatureConfigRequestPartialType> =
-  z
-    .lazy(() =>
-      z
-        .xor([RouteServerNetworkFeatureConfigRequestPartialSchema])
-        .openapi({
-          description: 'Polymorphic Network Feature Config Request',
-          discriminator: {
-            mapping: {
-              route_server: '#/components/schemas/RouteServerNetworkFeatureConfigRequestPartial',
-            },
-            propertyName: 'type',
-          },
-          title: 'NetworkFeatureConfigRequest (partial)',
-        }),
-    )
-    .openapi('NetworkFeatureConfigRequestPartial')
-
-const NetworkFeatureConfigUpdateSchema: z.ZodType<NetworkFeatureConfigUpdateType> = z
-  .lazy(() =>
-    z
-      .xor([RouteServerNetworkFeatureConfigUpdateSchema])
-      .openapi({
-        description: 'Polymorphic Network Feauture Config Update',
-        discriminator: {
-          mapping: { route_server: '#/components/schemas/RouteServerNetworkFeatureConfigUpdate' },
-          propertyName: 'type',
-        },
-        title: 'NetworkFeatureConfigUpdate',
-      }),
-  )
-  .openapi('NetworkFeatureConfigUpdate')
-
-const NetworkFeatureConfigUpdatePartialSchema: z.ZodType<NetworkFeatureConfigUpdatePartialType> = z
-  .lazy(() =>
-    z
-      .xor([RouteServerNetworkFeatureConfigUpdatePartialSchema])
-      .openapi({
-        description: 'Polymorphic Network Feauture Config Update',
-        discriminator: {
-          mapping: {
-            route_server: '#/components/schemas/RouteServerNetworkFeatureConfigUpdatePartial',
-          },
-          propertyName: 'type',
-        },
-        title: 'NetworkFeatureConfigUpdate (partial)',
-      }),
-  )
-  .openapi('NetworkFeatureConfigUpdatePartial')
-
-const NetworkFeaturePartialSchema: z.ZodType<NetworkFeaturePartialType> = z
-  .lazy(() =>
-    z
-      .xor([RouteServerNetworkFeaturePartialSchema])
-      .openapi({
-        description: 'Polymorphic Network Feature',
-        discriminator: {
-          mapping: { route_server: '#/components/schemas/RouteServerNetworkFeaturePartial' },
-          propertyName: 'type',
-        },
-        title: 'NetworkFeature (partial)',
-      }),
-  )
-  .openapi('NetworkFeaturePartial')
-
-const NetworkServiceSchema: z.ZodType<NetworkServiceType> = z
-  .lazy(() =>
-    z
-      .xor([
-        ExchangeLanNetworkServiceSchema,
-        P2PNetworkServiceSchema,
-        P2MPNetworkServiceSchema,
-        MP2MPNetworkServiceSchema,
-        CloudNetworkServiceSchema,
-      ])
-      .openapi({
-        description: 'Polymorphic Network Services',
-        discriminator: {
-          mapping: {
-            cloud_vc: '#/components/schemas/CloudNetworkService',
-            exchange_lan: '#/components/schemas/ExchangeLanNetworkService',
-            mp2mp_vc: '#/components/schemas/MP2MPNetworkService',
-            p2mp_vc: '#/components/schemas/P2MPNetworkService',
-            p2p_vc: '#/components/schemas/P2PNetworkService',
-          },
-          propertyName: 'type',
-        },
-        title: 'NetworkService',
-      }),
-  )
-  .openapi('NetworkService')
-
-const NetworkServiceChangeRequestPartialSchema = z
-  .object({
-    capacity: z
-      .int()
-      .min(1)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The desired capacity of the service in Mbps.\n\nMust be within the range of `bandwidth_min` and\n`bandwidth_max` of the `ProductOffering`.\n\nWhen `null` the maximum capacity wil be used.',
-      }),
-    product_offering: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Migrate to a diffrent product offering. Please note, that\nthe offering only may differ in bandwidth.',
-      }),
-  })
-  .openapi({
-    description: 'NetworkServiceChangeRequest',
-    title: 'PartialNetworkServiceChangeRequest',
-    required: [],
-  })
-  .openapi('NetworkServiceChangeRequestPartial')
-
-const NetworkServiceChangeRequestSchema = NetworkServiceChangeRequestPartialSchema.and(
-  z.object({}).openapi({ required: ['product_offering'], title: 'NetworkServiceChangeRequest' }),
-).openapi('NetworkServiceChangeRequest')
-
-const NetworkServiceConfigSchema: z.ZodType<NetworkServiceConfigType> = z
-  .lazy(() =>
-    z
-      .xor([
-        ExchangeLanNetworkServiceConfigSchema,
-        P2PNetworkServiceConfigSchema,
-        P2MPNetworkServiceConfigSchema,
-        MP2MPNetworkServiceConfigSchema,
-        CloudNetworkServiceConfigSchema,
-      ])
-      .openapi({
-        description: 'Polymorphic Network Service Config',
-        discriminator: {
-          mapping: {
-            cloud_vc: '#/components/schemas/CloudNetworkServiceConfig',
-            exchange_lan: '#/components/schemas/ExchangeLanNetworkServiceConfig',
-            mp2mp_vc: '#/components/schemas/MP2MPNetworkServiceConfig',
-            p2mp_vc: '#/components/schemas/P2MPNetworkServiceConfig',
-            p2p_vc: '#/components/schemas/P2PNetworkServiceConfig',
-          },
-          propertyName: 'type',
-        },
-        title: 'NetworkServiceConfig',
-      }),
-  )
-  .openapi('NetworkServiceConfig')
-
-const NetworkServiceConfigPartialSchema: z.ZodType<NetworkServiceConfigPartialType> = z
-  .lazy(() =>
-    z
-      .xor([
-        ExchangeLanNetworkServiceConfigPartialSchema,
-        P2PNetworkServiceConfigPartialSchema,
-        P2MPNetworkServiceConfigPartialSchema,
-        MP2MPNetworkServiceConfigPartialSchema,
-        CloudNetworkServiceConfigPartialSchema,
-      ])
-      .openapi({
-        description: 'Polymorphic Network Service Config',
-        discriminator: {
-          mapping: {
-            cloud_vc: '#/components/schemas/CloudNetworkServiceConfigPartial',
-            exchange_lan: '#/components/schemas/ExchangeLanNetworkServiceConfigPartial',
-            mp2mp_vc: '#/components/schemas/MP2MPNetworkServiceConfigPartial',
-            p2mp_vc: '#/components/schemas/P2MPNetworkServiceConfigPartial',
-            p2p_vc: '#/components/schemas/P2PNetworkServiceConfigPartial',
-          },
-          propertyName: 'type',
-        },
-        title: 'NetworkServiceConfig (partial)',
-      }),
-  )
-  .openapi('NetworkServiceConfigPartial')
-
-const NetworkServiceConfigRequestSchema: z.ZodType<NetworkServiceConfigRequestType> = z
-  .lazy(() =>
-    z
-      .xor([
-        ExchangeLanNetworkServiceConfigRequestSchema,
-        P2PNetworkServiceConfigRequestSchema,
-        P2MPNetworkServiceConfigRequestSchema,
-        MP2MPNetworkServiceConfigRequestSchema,
-        CloudNetworkServiceConfigRequestSchema,
-      ])
-      .openapi({
-        description: 'Polymorhic Network Service Config Request',
-        discriminator: {
-          mapping: {
-            cloud_vc: '#/components/schemas/CloudNetworkServiceConfigRequest',
-            exchange_lan: '#/components/schemas/ExchangeLanNetworkServiceConfigRequest',
-            mp2mp_vc: '#/components/schemas/MP2MPNetworkServiceConfigRequest',
-            p2mp_vc: '#/components/schemas/P2MPNetworkServiceConfigRequest',
-            p2p_vc: '#/components/schemas/P2PNetworkServiceConfigRequest',
-          },
-          propertyName: 'type',
-        },
-        title: 'NetworkServiceConfigRequest',
-      }),
-  )
-  .openapi('NetworkServiceConfigRequest')
-
-const NetworkServiceConfigRequestPartialSchema: z.ZodType<NetworkServiceConfigRequestPartialType> =
-  z
-    .lazy(() =>
-      z
-        .xor([
-          ExchangeLanNetworkServiceConfigRequestPartialSchema,
-          P2PNetworkServiceConfigRequestPartialSchema,
-          P2MPNetworkServiceConfigRequestPartialSchema,
-          MP2MPNetworkServiceConfigRequestPartialSchema,
-          CloudNetworkServiceConfigRequestPartialSchema,
-        ])
-        .openapi({
-          description: 'Polymorhic Network Service Config Request',
-          discriminator: {
-            mapping: {
-              cloud_vc: '#/components/schemas/CloudNetworkServiceConfigRequestPartial',
-              exchange_lan: '#/components/schemas/ExchangeLanNetworkServiceConfigRequestPartial',
-              mp2mp_vc: '#/components/schemas/MP2MPNetworkServiceConfigRequestPartial',
-              p2mp_vc: '#/components/schemas/P2MPNetworkServiceConfigRequestPartial',
-              p2p_vc: '#/components/schemas/P2PNetworkServiceConfigRequestPartial',
-            },
-            propertyName: 'type',
-          },
-          title: 'NetworkServiceConfigRequest (partial)',
-        }),
-    )
-    .openapi('NetworkServiceConfigRequestPartial')
-
-const NetworkServiceConfigUpdateSchema: z.ZodType<NetworkServiceConfigUpdateType> = z
-  .lazy(() =>
-    z
-      .xor([
-        ExchangeLanNetworkServiceConfigUpdateSchema,
-        P2PNetworkServiceConfigUpdateSchema,
-        P2MPNetworkServiceConfigRequestSchema,
-        MP2MPNetworkServiceConfigRequestSchema,
-        CloudNetworkServiceConfigUpdateSchema,
-      ])
-      .openapi({
-        description: 'Polymorphic Network Service Config',
-        discriminator: {
-          mapping: {
-            cloud_vc: '#/components/schemas/CloudNetworkServiceConfigUpdate',
-            exchange_lan: '#/components/schemas/ExchangeLanNetworkServiceConfigUpdate',
-            mp2mp_vc: '#/components/schemas/MP2MPNetworkServiceConfigRequest',
-            p2mp_vc: '#/components/schemas/P2MPNetworkServiceConfigRequest',
-            p2p_vc: '#/components/schemas/P2PNetworkServiceConfigUpdate',
-          },
-          propertyName: 'type',
-        },
-        title: 'NetworkServiceConfigUpdate',
-      }),
-  )
-  .openapi('NetworkServiceConfigUpdate')
-
-const NetworkServiceConfigUpdatePartialSchema: z.ZodType<NetworkServiceConfigUpdatePartialType> = z
-  .lazy(() =>
-    z
-      .xor([
-        ExchangeLanNetworkServiceConfigUpdatePartialSchema,
-        P2PNetworkServiceConfigUpdatePartialSchema,
-        P2MPNetworkServiceConfigRequestPartialSchema,
-        MP2MPNetworkServiceConfigRequestPartialSchema,
-        CloudNetworkServiceConfigUpdatePartialSchema,
-      ])
-      .openapi({
-        description: 'Polymorphic Network Service Config',
-        discriminator: {
-          mapping: {
-            cloud_vc: '#/components/schemas/CloudNetworkServiceConfigUpdatePartial',
-            exchange_lan: '#/components/schemas/ExchangeLanNetworkServiceConfigUpdatePartial',
-            mp2mp_vc: '#/components/schemas/MP2MPNetworkServiceConfigRequestPartial',
-            p2mp_vc: '#/components/schemas/P2MPNetworkServiceConfigRequestPartial',
-            p2p_vc: '#/components/schemas/P2PNetworkServiceConfigUpdatePartial',
-          },
-          propertyName: 'type',
-        },
-        title: 'NetworkServiceConfigUpdate (partial)',
-      }),
-  )
-  .openapi('NetworkServiceConfigUpdatePartial')
-
-const NetworkServiceDeleteResponseSchema = z
-  .xor([
-    P2PNetworkServiceSchema,
-    P2MPNetworkServiceSchema,
-    MP2MPNetworkServiceSchema,
-    CloudNetworkServiceSchema,
-  ])
-  .openapi({
-    description: 'Polymorphic Network Service Request',
-    discriminator: {
-      mapping: {
-        cloud_vc: '#/components/schemas/CloudNetworkService',
-        mp2mp_vc: '#/components/schemas/MP2MPNetworkService',
-        p2mp_vc: '#/components/schemas/P2MPNetworkService',
-        p2p_vc: '#/components/schemas/P2PNetworkService',
-      },
-      propertyName: 'type',
-    },
-    title: 'NetworkServiceDeleteResponse',
-  })
-  .openapi('NetworkServiceDeleteResponse')
-
-const NetworkServiceDeleteResponsePartialSchema = z
-  .xor([
-    P2PNetworkServicePartialSchema,
-    P2MPNetworkServicePartialSchema,
-    MP2MPNetworkServicePartialSchema,
-    CloudNetworkServicePartialSchema,
-  ])
-  .openapi({
-    description: 'Polymorphic Network Service Request',
-    discriminator: {
-      mapping: {
-        cloud_vc: '#/components/schemas/CloudNetworkServicePartial',
-        mp2mp_vc: '#/components/schemas/MP2MPNetworkServicePartial',
-        p2mp_vc: '#/components/schemas/P2MPNetworkServicePartial',
-        p2p_vc: '#/components/schemas/P2PNetworkServicePartial',
-      },
-      propertyName: 'type',
-    },
-    title: 'NetworkServiceDeleteResponse (partial)',
-  })
-  .openapi('NetworkServiceDeleteResponsePartial')
-
-const NetworkServicePartialSchema: z.ZodType<NetworkServicePartialType> = z
-  .lazy(() =>
-    z
-      .xor([
-        ExchangeLanNetworkServicePartialSchema,
-        P2PNetworkServicePartialSchema,
-        P2MPNetworkServicePartialSchema,
-        MP2MPNetworkServicePartialSchema,
-        CloudNetworkServicePartialSchema,
-      ])
-      .openapi({
-        description: 'Polymorphic Network Services',
-        discriminator: {
-          mapping: {
-            cloud_vc: '#/components/schemas/CloudNetworkServicePartial',
-            exchange_lan: '#/components/schemas/ExchangeLanNetworkServicePartial',
-            mp2mp_vc: '#/components/schemas/MP2MPNetworkServicePartial',
-            p2mp_vc: '#/components/schemas/P2MPNetworkServicePartial',
-            p2p_vc: '#/components/schemas/P2PNetworkServicePartial',
-          },
-          propertyName: 'type',
-        },
-        title: 'NetworkService (partial)',
-      }),
-  )
-  .openapi('NetworkServicePartial')
-
-const NetworkServiceRequestSchema: z.ZodType<NetworkServiceRequestType> = z
-  .lazy(() =>
-    z
-      .xor([
-        P2PNetworkServiceRequestSchema,
-        P2MPNetworkServiceRequestSchema,
-        MP2MPNetworkServiceRequestSchema,
-        CloudNetworkServiceRequestSchema,
-      ])
-      .openapi({
-        description: 'Polymorphic Network Service Request',
-        discriminator: {
-          mapping: {
-            cloud_vc: '#/components/schemas/CloudNetworkServiceRequest',
-            mp2mp_vc: '#/components/schemas/MP2MPNetworkServiceRequest',
-            p2mp_vc: '#/components/schemas/P2MPNetworkServiceRequest',
-            p2p_vc: '#/components/schemas/P2PNetworkServiceRequest',
-          },
-          propertyName: 'type',
-        },
-        title: 'NetworkServiceRequest',
-      }),
-  )
-  .openapi('NetworkServiceRequest')
-
-const NetworkServiceRequestPartialSchema: z.ZodType<NetworkServiceRequestPartialType> = z
-  .lazy(() =>
-    z
-      .xor([
-        P2PNetworkServiceRequestPartialSchema,
-        P2MPNetworkServiceRequestPartialSchema,
-        MP2MPNetworkServiceRequestPartialSchema,
-        CloudNetworkServiceRequestPartialSchema,
-      ])
-      .openapi({
-        description: 'Polymorphic Network Service Request',
-        discriminator: {
-          mapping: {
-            cloud_vc: '#/components/schemas/CloudNetworkServiceRequestPartial',
-            mp2mp_vc: '#/components/schemas/MP2MPNetworkServiceRequestPartial',
-            p2mp_vc: '#/components/schemas/P2MPNetworkServiceRequestPartial',
-            p2p_vc: '#/components/schemas/P2PNetworkServiceRequestPartial',
-          },
-          propertyName: 'type',
-        },
-        title: 'NetworkServiceRequest (partial)',
-      }),
-  )
-  .openapi('NetworkServiceRequestPartial')
-
-const OwnablePartialSchema = z
-  .object({
-    consuming_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account consuming a service.\n\nUsed to be `owning_customer`.\n',
-        example: '2381982',
-      }),
-    external_ref: z
-      .string()
-      .max(128)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Reference field, free to use for the API user.',
-        example: 'IX:Service:23042',
-      }),
-    managing_account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The `id` of the account responsible for managing the service via\nthe API. A manager can read and update the state of entities.\n',
-        example: '238189294',
-      }),
-  })
-  .openapi({ description: 'Ownable', title: 'PartialOwnable', required: [] })
-  .openapi('OwnablePartial')
-
-const OwnableSchema = OwnablePartialSchema.and(
-  z.object({}).openapi({ required: ['managing_account', 'consuming_account'], title: 'Ownable' }),
-).openapi('Ownable')
 
 const P2MPNetworkServiceConfigUpdatePartialSchema = z
   .object({
@@ -7311,7 +6993,7 @@ const P2MPNetworkServiceConfigUpdatePartialSchema = z
 
 const P2MPNetworkServiceConfigUpdateSchema = P2MPNetworkServiceConfigUpdatePartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: [
         'managing_account',
@@ -7326,6 +7008,130 @@ const P2MPNetworkServiceConfigUpdateSchema = P2MPNetworkServiceConfigUpdateParti
     }),
 ).openapi('P2MPNetworkServiceConfigUpdate')
 
+const P2PNetworkProductOfferingPartialSchema = z
+  .object({
+    bandwidth_max: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'When not `null`, this value enforces a mandatory\nrate limit for all network service configs.',
+      }),
+    bandwidth_min: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'When configuring access to the network service, at least\nthis `capacity` must be provided.',
+      }),
+    display_name: z.string().max(256).exactOptional(),
+    downgrade_allowed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if the service can be migrated to\na lower bandwidth.' }),
+    handover_metro_area: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `MetroArea`. The network service will be\naccessed from this metro area.\n',
+        example: 'met:29381993:NYC',
+      }),
+    handover_metro_area_network: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `MetroAreaNetwork`. The service will be accessed\nthrough the handover metro area network.\n',
+        example: '191239810',
+      }),
+    id: z.string().max(80).exactOptional(),
+    name: z.string().max(160).exactOptional().openapi({ description: 'Name of the product' }),
+    physical_port_speed: z
+      .int()
+      .min(0)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the service is dependent on the speed of\nthe physical port this field denotes the speed.',
+      }),
+    provider_vlans: z
+      .enum(['single', 'multi'])
+      .exactOptional()
+      .openapi({ description: 'The `NetworkService` provides `single` or `multi`ple vlans.' }),
+    resource_type: z
+      .enum(['connection', 'demarc', 'network_service', 'network_service_config'])
+      .exactOptional()
+      .openapi({
+        description: 'The resource type refers to an ix-api resource.\n',
+        example: 'network_service',
+      }),
+    service_metro_area: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Id of the `MetroArea`. The service is delivered\nin this metro area.\n',
+        example: 'met:213913485:LON',
+      }),
+    service_metro_area_network: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the `MetroAreaNetwork`.\nThe service is directly provided on the metro area network.\n',
+        example: '9123843',
+      }),
+    service_provider: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the provider providing the service.\n',
+        example: 'AWS',
+      }),
+    type: z.string().openapi({ example: 'p2p_vc' }),
+    upgrade_allowed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if the service can be migrated to\na higher bandwidth.' }),
+  })
+  .openapi({
+    description: 'P2P Network Product Offering',
+    required: ['type'],
+    title: 'PartialP2PNetworkProductOffering',
+  })
+  .openapi('P2PNetworkProductOfferingPartial')
+
+const P2PNetworkProductOfferingSchema = P2PNetworkProductOfferingPartialSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'id',
+        'name',
+        'display_name',
+        'provider_vlans',
+        'resource_type',
+        'handover_metro_area_network',
+        'handover_metro_area',
+        'service_metro_area_network',
+        'service_metro_area',
+        'bandwidth_min',
+        'bandwidth_max',
+        'physical_port_speed',
+        'service_provider',
+        'downgrade_allowed',
+        'upgrade_allowed',
+        'type',
+      ],
+      title: 'P2PNetworkProductOffering',
+    }),
+).openapi('P2PNetworkProductOffering')
+
 const PointOfPresencePartialSchema = z
   .object({
     devices: z.array(z.string()).exactOptional(),
@@ -7339,7 +7145,7 @@ const PointOfPresencePartialSchema = z
 
 const PointOfPresenceSchema = PointOfPresencePartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: ['name', 'facility', 'metro_area_network', 'devices', 'id'],
       title: 'PointOfPresence',
@@ -7454,7 +7260,7 @@ const PortPartialSchema = z
 
 const PortSchema = PortPartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: [
         'state',
@@ -7552,7 +7358,7 @@ const PortRequestPartialSchema = z
 
 const PortRequestSchema = PortRequestPartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: [
         'managing_account',
@@ -7634,7 +7440,7 @@ const PortUpdatePartialSchema = z
 
 const PortUpdateSchema = PortUpdatePartialSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       required: ['managing_account', 'consuming_account', 'billing_account', 'role_assignments'],
       title: 'PortUpdate',
@@ -7689,61 +7495,55 @@ const ProblemResponsePartialSchema = z
   .openapi('ProblemResponsePartial')
 
 const ProblemResponseSchema = ProblemResponsePartialSchema.and(
-  z.object({}).openapi({ required: ['type'], title: 'ProblemResponse' }),
+  z.looseObject({}).openapi({ required: ['type'], title: 'ProblemResponse' }),
 ).openapi('ProblemResponse')
 
-const ProductOfferingSchema: z.ZodType<ProductOfferingType> = z
-  .lazy(() =>
-    z
-      .xor([
-        ExchangeLanNetworkProductOfferingSchema,
-        P2PNetworkProductOfferingSchema,
-        MP2MPNetworkProductOfferingSchema,
-        P2MPNetworkProductOfferingSchema,
-        CloudNetworkProductOfferingSchema,
-      ])
-      .openapi({
-        description: 'Polymorphic Product Offering',
-        discriminator: {
-          mapping: {
-            cloud_vc: '#/components/schemas/CloudNetworkProductOffering',
-            exchange_lan: '#/components/schemas/ExchangeLanNetworkProductOffering',
-            mp2mp_vc: '#/components/schemas/MP2MPNetworkProductOffering',
-            p2mp_vc: '#/components/schemas/P2MPNetworkProductOffering',
-            p2p_vc: '#/components/schemas/P2PNetworkProductOffering',
-          },
-          propertyName: 'type',
-        },
-        title: 'ProductOffering',
-      }),
-  )
+const ProductOfferingSchema = z
+  .xor([
+    ExchangeLanNetworkProductOfferingSchema,
+    P2PNetworkProductOfferingSchema,
+    MP2MPNetworkProductOfferingSchema,
+    P2MPNetworkProductOfferingSchema,
+    CloudNetworkProductOfferingSchema,
+  ])
+  .openapi({
+    description: 'Polymorphic Product Offering',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        cloud_vc: '#/components/schemas/CloudNetworkProductOffering',
+        exchange_lan: '#/components/schemas/ExchangeLanNetworkProductOffering',
+        mp2mp_vc: '#/components/schemas/MP2MPNetworkProductOffering',
+        p2mp_vc: '#/components/schemas/P2MPNetworkProductOffering',
+        p2p_vc: '#/components/schemas/P2PNetworkProductOffering',
+      },
+    },
+    title: 'ProductOffering',
+  })
   .openapi('ProductOffering')
 
-const ProductOfferingPartialSchema: z.ZodType<ProductOfferingPartialType> = z
-  .lazy(() =>
-    z
-      .xor([
-        ExchangeLanNetworkProductOfferingPartialSchema,
-        P2PNetworkProductOfferingPartialSchema,
-        MP2MPNetworkProductOfferingPartialSchema,
-        P2MPNetworkProductOfferingPartialSchema,
-        CloudNetworkProductOfferingPartialSchema,
-      ])
-      .openapi({
-        description: 'Polymorphic Product Offering',
-        discriminator: {
-          mapping: {
-            cloud_vc: '#/components/schemas/CloudNetworkProductOfferingPartial',
-            exchange_lan: '#/components/schemas/ExchangeLanNetworkProductOfferingPartial',
-            mp2mp_vc: '#/components/schemas/MP2MPNetworkProductOfferingPartial',
-            p2mp_vc: '#/components/schemas/P2MPNetworkProductOfferingPartial',
-            p2p_vc: '#/components/schemas/P2PNetworkProductOfferingPartial',
-          },
-          propertyName: 'type',
-        },
-        title: 'ProductOffering (partial)',
-      }),
-  )
+const ProductOfferingPartialSchema = z
+  .xor([
+    ExchangeLanNetworkProductOfferingPartialSchema,
+    P2PNetworkProductOfferingPartialSchema,
+    MP2MPNetworkProductOfferingPartialSchema,
+    P2MPNetworkProductOfferingPartialSchema,
+    CloudNetworkProductOfferingPartialSchema,
+  ])
+  .openapi({
+    description: 'Polymorphic Product Offering',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        cloud_vc: '#/components/schemas/CloudNetworkProductOfferingPartial',
+        exchange_lan: '#/components/schemas/ExchangeLanNetworkProductOfferingPartial',
+        mp2mp_vc: '#/components/schemas/MP2MPNetworkProductOfferingPartial',
+        p2mp_vc: '#/components/schemas/P2MPNetworkProductOfferingPartial',
+        p2p_vc: '#/components/schemas/P2PNetworkProductOfferingPartial',
+      },
+    },
+    title: 'ProductOffering (partial)',
+  })
   .openapi('ProductOfferingPartial')
 
 const RateLimitedNetworkServiceConfigPartialSchema = z
@@ -7766,7 +7566,7 @@ const RateLimitedNetworkServiceConfigPartialSchema = z
   .openapi('RateLimitedNetworkServiceConfigPartial')
 
 const RateLimitedNetworkServiceConfigSchema = RateLimitedNetworkServiceConfigPartialSchema.and(
-  z.object({}).openapi({ title: 'RateLimitedNetworkServiceConfig' }),
+  z.looseObject({}).openapi({ title: 'RateLimitedNetworkServiceConfig' }),
 ).openapi('RateLimitedNetworkServiceConfig')
 
 const RefreshTokenRequestPartialSchema = z
@@ -7779,7 +7579,7 @@ const RefreshTokenRequestPartialSchema = z
   .openapi('RefreshTokenRequestPartial')
 
 const RefreshTokenRequestSchema = RefreshTokenRequestPartialSchema.and(
-  z.object({}).openapi({ required: ['refresh_token'], title: 'RefreshTokenRequest' }),
+  z.looseObject({}).openapi({ required: ['refresh_token'], title: 'RefreshTokenRequest' }),
 ).openapi('RefreshTokenRequest')
 
 const RolePartialSchema = z
@@ -7799,7 +7599,7 @@ const RolePartialSchema = z
   .openapi('RolePartial')
 
 const RoleSchema = RolePartialSchema.and(
-  z.object({}).openapi({ required: ['name', 'required_fields', 'id'], title: 'Role' }),
+  z.looseObject({}).openapi({ required: ['name', 'required_fields', 'id'], title: 'Role' }),
 ).openapi('Role')
 
 const RoleAssignmentPartialSchema = z
@@ -7828,7 +7628,7 @@ const RoleAssignmentPartialSchema = z
   .openapi('RoleAssignmentPartial')
 
 const RoleAssignmentSchema = RoleAssignmentPartialSchema.and(
-  z.object({}).openapi({ required: ['role', 'contact', 'id'], title: 'RoleAssignment' }),
+  z.looseObject({}).openapi({ required: ['role', 'contact', 'id'], title: 'RoleAssignment' }),
 ).openapi('RoleAssignment')
 
 const RoleAssignmentRequestPartialSchema = z
@@ -7856,7 +7656,7 @@ const RoleAssignmentRequestPartialSchema = z
   .openapi('RoleAssignmentRequestPartial')
 
 const RoleAssignmentRequestSchema = RoleAssignmentRequestPartialSchema.and(
-  z.object({}).openapi({ required: ['role', 'contact'], title: 'RoleAssignmentRequest' }),
+  z.looseObject({}).openapi({ required: ['role', 'contact'], title: 'RoleAssignmentRequest' }),
 ).openapi('RoleAssignmentRequest')
 
 const RoleAssignmentUpdatePartialSchema = z
@@ -7884,7 +7684,7 @@ const RoleAssignmentUpdatePartialSchema = z
   .openapi('RoleAssignmentUpdatePartial')
 
 const RoleAssignmentUpdateSchema = RoleAssignmentUpdatePartialSchema.and(
-  z.object({}).openapi({ required: ['role', 'contact'], title: 'RoleAssignmentUpdate' }),
+  z.looseObject({}).openapi({ required: ['role', 'contact'], title: 'RoleAssignmentUpdate' }),
 ).openapi('RoleAssignmentUpdate')
 
 const RoleRequestPartialSchema = z
@@ -7903,7 +7703,7 @@ const RoleRequestPartialSchema = z
   .openapi('RoleRequestPartial')
 
 const RoleRequestSchema = RoleRequestPartialSchema.and(
-  z.object({}).openapi({ required: ['name', 'required_fields'], title: 'RoleRequest' }),
+  z.looseObject({}).openapi({ required: ['name', 'required_fields'], title: 'RoleRequest' }),
 ).openapi('RoleRequest')
 
 const RoleUpdatePartialSchema = z
@@ -7922,7 +7722,7 @@ const RoleUpdatePartialSchema = z
   .openapi('RoleUpdatePartial')
 
 const RoleUpdateSchema = RoleUpdatePartialSchema.and(
-  z.object({}).openapi({ required: ['name', 'required_fields'], title: 'RoleUpdate' }),
+  z.looseObject({}).openapi({ required: ['name', 'required_fields'], title: 'RoleUpdate' }),
 ).openapi('RoleUpdate')
 
 const StatefulPartialSchema = z
@@ -7948,7 +7748,7 @@ const StatefulPartialSchema = z
   .openapi('StatefulPartial')
 
 const StatefulSchema = StatefulPartialSchema.and(
-  z.object({}).openapi({ required: ['state'], title: 'Stateful' }),
+  z.looseObject({}).openapi({ required: ['state'], title: 'Stateful' }),
 ).openapi('Stateful')
 
 const VlanConfigPartialSchema = z
@@ -7957,12 +7757,12 @@ const VlanConfigPartialSchema = z
     description:
       'The vlan configuration defines how the service\nis made available on the connection.',
     discriminator: {
+      propertyName: 'vlan_type',
       mapping: {
         dot1q: '#/components/schemas/VLanConfigDot1QPartial',
         port: '#/components/schemas/VLanConfigPortPartial',
         qinq: '#/components/schemas/VLanConfigQinQPartial',
       },
-      propertyName: 'vlan_type',
     },
     title: 'VlanConfig (partial)',
   })

@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const AddFirebaseRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'The request used to link a Google Cloud Storage bucket to a Firebase project.',
   })
@@ -18,7 +18,7 @@ const BucketSchema = z
   .openapi('Bucket')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -105,7 +105,7 @@ const ListBucketsResponseSchema = z
   .openapi('ListBucketsResponse')
 
 const RemoveFirebaseRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'The request used to unlink a Google Cloud Storage bucket from a Firebase project.',

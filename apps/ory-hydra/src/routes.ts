@@ -2375,6 +2375,7 @@ export const getAdminClientsRoute = createRoute({
             schema: { default: 250, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 250,
         }),
       page_token: z
         .string()
@@ -3348,6 +3349,7 @@ export const getAdminOauth2AuthSessionsConsentRoute = createRoute({
             schema: { default: 250, format: 'int64', maximum: 500, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 250,
         }),
       page_token: z
         .string()
@@ -3625,6 +3627,7 @@ export const getAdminTrustGrantsJwtBearerIssuersRoute = createRoute({
             schema: { default: 250, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 250,
         }),
       page_token: z
         .string()

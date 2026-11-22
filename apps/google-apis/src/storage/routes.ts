@@ -572,6 +572,8 @@ const BucketSchema = z
   .openapi({ description: 'A bucket.', required: [] })
   .openapi('Bucket')
 
+type BucketsType = { items?: z.infer<typeof BucketSchema>[]; kind?: string; nextPageToken?: string }
+
 const BucketAccessControlsSchema = z
   .object({
     items: z
@@ -590,7 +592,7 @@ const BucketAccessControlsSchema = z
   .openapi({ description: 'An access-control list.', required: [] })
   .openapi('BucketAccessControls')
 
-const BucketsSchema = z
+const BucketsSchema: z.ZodType<BucketsType> = z
   .object({
     items: z.array(BucketSchema).exactOptional().openapi({ description: 'The list of items.' }),
     kind: z

@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSEventsDescribeConnectionHandler = app.openapi(
   postXAmzTargetAWSEventsDescribeConnectionRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

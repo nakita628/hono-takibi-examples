@@ -2286,13 +2286,25 @@ type BulkIssueResultsType = {
 
 const JqlQueryClauseSchema: z.ZodType<JqlQueryClauseType> = z
   .lazy(() =>
-    z
-      .union([
+    (() => {
+      const Schema = z.union([
         CompoundClauseSchema,
         FieldValueClauseSchema,
         FieldWasClauseSchema,
         FieldChangedClauseSchema,
       ])
+      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+        ;((ctx) => {
+          const o = ctx.value
+          if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+          for (const k of Object.keys(o)) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        })(ctx)
+        return val
+      }, Schema)
+    })()
+      .openapi({ additionalProperties: false })
       .openapi({ description: 'A JQL query clause.' }),
   )
   .openapi('JqlQueryClause')
@@ -4400,26 +4412,41 @@ const MandatoryFieldValueForADFSchema = z
   .openapi({ description: 'An object notation input', required: ['type', 'value'] })
   .openapi('MandatoryFieldValueForADF')
 
-const Fields2Schema = z
-  .union([MandatoryFieldValueSchema, MandatoryFieldValueForADFSchema])
-  .and(
-    z
-      .object({
-        retain: z
-          .boolean()
-          .nullable()
-          .default(true)
-          .exactOptional()
-          .openapi({
-            description:
-              'If `true`, will try to retain original non-null issue field values on move.',
-            writeOnly: true,
-          }),
-        type: z.enum(['adf', 'raw']).exactOptional(),
-        value: z.looseObject({}).exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
+const Fields2Schema = (() => {
+  const Schema = z
+    .union([MandatoryFieldValueSchema, MandatoryFieldValueForADFSchema])
+    .and(
+      z
+        .object({
+          retain: z
+            .boolean()
+            .nullable()
+            .default(true)
+            .exactOptional()
+            .openapi({
+              description:
+                'If `true`, will try to retain original non-null issue field values on move.',
+              writeOnly: true,
+            }),
+          type: z.enum(['adf', 'raw']).exactOptional(),
+          value: z.looseObject({}).exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['retain', 'type', 'value'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description: 'Can contain multiple field values of following types depending on `type` key',
     discriminator: {
@@ -5672,8 +5699,8 @@ const CustomFieldContextDefaultValueForgeMultiUserFieldSchema = z
   })
   .openapi('CustomFieldContextDefaultValueForgeMultiUserField')
 
-const CustomFieldContextDefaultValueSchema = z
-  .xor([
+const CustomFieldContextDefaultValueSchema = (() => {
+  const Schema = z.xor([
     CustomFieldContextDefaultValueCascadingOptionSchema,
     CustomFieldContextDefaultValueMultipleOptionSchema,
     CustomFieldContextDefaultValueSingleOptionSchema,
@@ -5703,6 +5730,18 @@ const CustomFieldContextDefaultValueSchema = z
     CustomFieldContextDefaultValueForgeUserFieldSchema,
     CustomFieldContextDefaultValueForgeMultiUserFieldSchema,
   ])
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     discriminator: {
       propertyName: 'type',
@@ -6339,8 +6378,20 @@ const WorkflowStatusSchema = z
 
 const WorkflowConditionSchema: z.ZodType<WorkflowConditionType> = z
   .lazy(() =>
-    z
-      .xor([WorkflowSimpleConditionSchema, WorkflowCompoundConditionSchema])
+    (() => {
+      const Schema = z.xor([WorkflowSimpleConditionSchema, WorkflowCompoundConditionSchema])
+      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+        ;((ctx) => {
+          const o = ctx.value
+          if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+          for (const k of Object.keys(o)) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        })(ctx)
+        return val
+      }, Schema)
+    })()
+      .openapi({ additionalProperties: false })
       .openapi({
         description: 'The workflow transition rule conditions tree.',
         discriminator: {
@@ -12408,13 +12459,28 @@ const JsonContextVariableSchema = z
   .openapi({ description: 'A JSON object with custom content.', required: ['type'] })
   .openapi('JsonContextVariable')
 
-const CustomContextVariableSchema = z
-  .xor([UserContextVariableSchema, IssueContextVariableSchema, JsonContextVariableSchema])
-  .and(
-    z
-      .object({ type: z.string().openapi({ description: 'Type of custom context variable.' }) })
-      .openapi({ required: ['type'] }),
-  )
+const CustomContextVariableSchema = (() => {
+  const Schema = z
+    .xor([UserContextVariableSchema, IssueContextVariableSchema, JsonContextVariableSchema])
+    .and(
+      z
+        .object({ type: z.string().openapi({ description: 'Type of custom context variable.' }) })
+        .openapi({ required: ['type'] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     discriminator: {
       propertyName: 'type',
@@ -13729,9 +13795,23 @@ const FieldCreateMetadataSchema = z
   })
   .openapi('FieldCreateMetadata')
 
-const FieldIdIdentifierSchema = FieldIdentifierObjectSchema.and(
-  z.object({ identifier: z.string().exactOptional() }).openapi({ required: [] }),
-).openapi('FieldIdIdentifier')
+const FieldIdIdentifierSchema = (() => {
+  const Schema = FieldIdentifierObjectSchema.and(
+    z.object({ identifier: z.string().exactOptional() }).openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['identifier', 'type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('FieldIdIdentifier')
 
 const FieldProjectAssociationSchema = z
   .strictObject({ projectId: z.string().exactOptional() })
@@ -24605,24 +24685,38 @@ const ProjectFeatureStateSchema = z
   .openapi({ description: 'Details of the feature state.', required: [] })
   .openapi('ProjectFeatureState')
 
-const ProjectIdAssociationContextSchema = AssociationContextObjectSchema.and(
-  z
-    .object({
-      identifier: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
+const ProjectIdAssociationContextSchema = (() => {
+  const Schema = AssociationContextObjectSchema.and(
+    z
+      .object({
+        identifier: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
                 ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .exactOptional()
-        .openapi({ type: 'integer', format: 'int64' }),
-    })
-    .openapi({ required: [] }),
-).openapi('ProjectIdAssociationContext')
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64' }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['identifier', 'type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('ProjectIdAssociationContext')
 
 const ProjectIdentifiersSchema = z
   .strictObject({
@@ -29766,6 +29860,7 @@ export const postRestApi3AppFieldContextConfigurationListRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -30060,6 +30155,7 @@ export const getRestApi3AppFieldFieldIdOrKeyContextConfigurationRoute = createRo
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -31967,6 +32063,7 @@ export const getRestApi3ComponentRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -32367,6 +32464,7 @@ export const getRestApi3ConfigFieldschemesRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -32813,6 +32911,7 @@ export const getRestApi3ConfigFieldschemesProjectsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -33252,6 +33351,7 @@ export const getRestApi3ConfigFieldschemesIdFieldsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -33447,6 +33547,7 @@ export const getRestApi3ConfigFieldschemesIdProjectsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -34181,6 +34282,7 @@ export const getRestApi3DashboardSearchRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -35712,6 +35814,7 @@ export const getRestApi3FieldSearchRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -35956,6 +36059,7 @@ export const getRestApi3FieldSearchTrashedRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -36197,6 +36301,7 @@ export const getRestApi3FieldFieldIdAssociationProjectRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -36347,6 +36452,7 @@ export const getRestApi3FieldFieldIdContextRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -36535,6 +36641,7 @@ export const getRestApi3FieldFieldIdContextDefaultValueRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -36751,6 +36858,7 @@ export const getRestApi3FieldFieldIdContextDefaultValuesRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -36906,6 +37014,7 @@ export const getRestApi3FieldFieldIdContextIssuetypemappingRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -36992,6 +37101,7 @@ export const postRestApi3FieldFieldIdContextMappingRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -37141,6 +37251,7 @@ export const getRestApi3FieldFieldIdContextProjectmappingRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -37556,6 +37667,7 @@ export const getRestApi3FieldFieldIdContextContextIdOptionRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -38206,6 +38318,7 @@ export const getRestApi3FieldFieldIdContextsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -38290,6 +38403,7 @@ export const getRestApi3FieldFieldIdScreensRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -38373,6 +38487,7 @@ export const getRestApi3FieldFieldKeyOptionRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -38533,6 +38648,7 @@ export const getRestApi3FieldFieldKeyOptionSuggestionsEditRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -38636,6 +38752,7 @@ export const getRestApi3FieldFieldKeyOptionSuggestionsSearchRoute = createRoute(
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -39226,6 +39343,7 @@ export const getRestApi3FieldconfigurationRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -39524,6 +39642,7 @@ export const getRestApi3FieldconfigurationIdFieldsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -39664,6 +39783,7 @@ export const getRestApi3FieldconfigurationschemeRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -39823,6 +39943,7 @@ export const getRestApi3FieldconfigurationschemeMappingRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -39942,6 +40063,7 @@ export const getRestApi3FieldconfigurationschemeProjectRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -40743,6 +40865,7 @@ export const getRestApi3FilterSearchRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -41866,6 +41989,7 @@ export const getRestApi3GroupBulkRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -42071,6 +42195,7 @@ export const getRestApi3GroupMemberRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -44675,6 +44800,7 @@ export const getRestApi3IssueIssueIdOrKeyCommentRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -46343,6 +46469,7 @@ export const getRestApi3IssueIssueIdOrKeyWorklogRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -48635,6 +48762,7 @@ export const getRestApi3IssuesecurityschemesIssueSecuritySchemeIdMembersRoute = 
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -49893,6 +50021,7 @@ export const getRestApi3IssuetypeschemeRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -50097,6 +50226,7 @@ export const getRestApi3IssuetypeschemeMappingRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -50210,6 +50340,7 @@ export const getRestApi3IssuetypeschemeProjectRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -50644,6 +50775,7 @@ export const getRestApi3IssuetypescreenschemeRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -50853,6 +50985,7 @@ export const getRestApi3IssuetypescreenschemeMappingRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -50966,6 +51099,7 @@ export const getRestApi3IssuetypescreenschemeProjectRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -51391,6 +51525,7 @@ export const getRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdProjectRoute
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -51658,6 +51793,7 @@ export const getRestApi3JqlFunctionComputationRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -52104,6 +52240,7 @@ export const getRestApi3LabelRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -55246,6 +55383,7 @@ export const getRestApi3PoliciesRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -57596,6 +57734,7 @@ export const getRestApi3ProjectSearchRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -58730,6 +58869,7 @@ export const getRestApi3ProjectProjectIdOrKeyComponentRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -59834,6 +59974,7 @@ export const getRestApi3ProjectProjectIdOrKeyVersionRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -60692,6 +60833,7 @@ export const getRestApi3ProjectsFieldsRoute = createRoute({
             required: false,
           },
           description: 'The index of the first item to return in a page of results (page offset).',
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -62057,6 +62199,7 @@ export const getRestApi3ScreensRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -62388,6 +62531,7 @@ export const getRestApi3ScreensTabsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResult: z
         .preprocess(
@@ -63211,6 +63355,7 @@ export const getRestApi3ScreenschemeRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -64490,6 +64635,7 @@ export const getRestApi3StatusesSearchRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -64940,6 +65086,7 @@ export const getRestApi3UiModificationsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -66284,6 +66431,7 @@ export const getRestApi3UserBulkRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -66408,6 +66556,7 @@ export const getRestApi3UserBulkMigrationRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -67600,6 +67749,7 @@ export const getRestApi3UserSearchQueryRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -67689,6 +67839,7 @@ export const getRestApi3UserSearchQueryKeyRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResult: z
         .preprocess(
@@ -68731,6 +68882,7 @@ export const getRestApi3WebhookRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -69109,6 +69261,7 @@ export const getRestApi3WorkflowRuleConfigRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -69459,6 +69612,7 @@ export const getRestApi3WorkflowSearchRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -70884,6 +71038,7 @@ export const getRestApi3WorkflowschemeRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       maxResults: z
         .preprocess(
@@ -73025,6 +73180,7 @@ export const getRestApi3WorklogDeletedRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
     }),
   },
@@ -73128,6 +73284,7 @@ export const getRestApi3WorklogUpdatedRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       expand: z
         .string()

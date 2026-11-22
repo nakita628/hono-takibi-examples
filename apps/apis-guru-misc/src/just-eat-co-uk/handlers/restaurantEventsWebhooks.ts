@@ -4,5 +4,9 @@ import { putRestaurantOfflineStatusRoute, putRestaurantOnlineStatusRoute } from 
 const app = new OpenAPIHono()
 
 export const restaurantEventsWebhooksHandler = app
-  .openapi(putRestaurantOfflineStatusRoute, (c) => {})
-  .openapi(putRestaurantOnlineStatusRoute, (c) => {})
+  .openapi(putRestaurantOfflineStatusRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putRestaurantOnlineStatusRoute, (c) => {
+    throw new Error('Not implemented')
+  })

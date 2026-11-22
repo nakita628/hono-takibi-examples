@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSStepFunctionsDescribeMapRunHandler = app.openapi(
   postXAmzTargetAWSStepFunctionsDescribeMapRunRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

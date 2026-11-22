@@ -14,36 +14,33 @@ export const conversationsAPIHandler = app
   .openapi(
     postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsRoute,
     (c) => {
-  throw new Error('Not implemented')
-},
+      throw new Error('Not implemented')
+    },
   )
-  .openapi(
-    getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsRoute,
-    (c) => {
-  throw new Error('Not implemented')
-},
-  )
+  .openapi(getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(
     getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdRoute,
     (c) => {
-  throw new Error('Not implemented')
-},
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdToggleStatusRoute,
     (c) => {
-  throw new Error('Not implemented')
-},
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdToggleTypingRoute,
     (c) => {
-  throw new Error('Not implemented')
-},
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdUpdateLastSeenRoute,
     (c) => {
-  throw new Error('Not implemented')
-},
+      throw new Error('Not implemented')
+    },
   )

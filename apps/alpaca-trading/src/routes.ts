@@ -470,7 +470,7 @@ const ActivityV2DetailTRDSchema = z
       .exactOptional()
       .openapi({ description: 'CUSIP of the security involved with the activity' }),
     execution_type: z
-      .enum(['fill', 'trade_correct', 'trade_bust'])
+      .enum(['fill', 'partial_fill', 'trade_correct', 'trade_bust'])
       .openapi({ description: 'The execution type' }),
     leaves_qty: z
       .string()
@@ -1375,27 +1375,78 @@ const OpcaRSPLITActivityV2Schema = CommonOPCAActivityV2Schema.and(CommonSplitAct
   .openapi({ description: 'Options corporate action of reverse-splits' })
   .openapi('OpcaRSPLITActivityV2')
 
-const CommonOptionsActivityV2Schema = z
-  .object({
-    contract_symbol: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The contract symbol of the security involved with the activity' }),
-    cusip: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The CUSIP of the security involved with the activity' }),
-    symbol: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The symbol of the security involved with the activity' }),
-  })
+const OpcaCGDActivityV2Schema = CommonOPCAActivityV2Schema.and(
+  z
+    .object({
+      cusip: z.string().openapi({ description: 'The CUSIP of the underlying security' }),
+      ex_date: z.iso
+        .date()
+        .min(1)
+        .exactOptional()
+        .openapi({ description: 'The ex_date for the underlying capital gains distribution' }),
+      isin: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The ISIN of the underlying security, when applicable' }),
+      long_term_rate: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Long-term capital gains distribution rate per share, when applicable',
+        }),
+      payable_date: z.iso
+        .date()
+        .min(1)
+        .exactOptional()
+        .openapi({ description: 'The payable_date for the underlying capital gains distribution' }),
+      rate: z
+        .string()
+        .openapi({
+          description:
+            'Combined per-share capital-gains rate (LTCG + STCG). By default this is the strike reduction applied to the option contract; the adjusted strike is reflected in `new_contract_symbol`.',
+        }),
+      record_date: z.iso
+        .date()
+        .min(1)
+        .exactOptional()
+        .openapi({ description: 'The record_date for the underlying capital gains distribution' }),
+      short_term_rate: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Short-term capital gains distribution rate per share, when applicable',
+        }),
+      symbol: z.string().openapi({ description: 'The symbol of the underlying security' }),
+    })
+    .openapi({ required: ['cusip', 'symbol', 'rate'] }),
+)
   .openapi({
-    description: 'Shared fields for option-related non-trade activity records.',
-    required: ['group_id'],
+    description:
+      'Options corporate action of capital gains distributions. Used for both Long-Term (`CGD.LTCG`) and Short-Term (`CGD.STCG`) sub-types; `CGD.STCG` is emitted only when the distribution has no long-term leg. `rate` is the combined (LTCG + STCG) per-share rate; `long_term_rate` and `short_term_rate` carry the individual legs when present.',
   })
-  .and(CommonNTAActivityV2Schema)
-  .openapi('CommonOptionsActivityV2')
+  .openapi('OpcaCGDActivityV2')
+
+const CommonOptionsActivityV2Schema = CommonNTAActivityV2Schema.and(
+  z
+    .object({
+      contract_symbol: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The contract symbol of the security involved with the activity' }),
+      cusip: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The CUSIP of the security involved with the activity' }),
+      symbol: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The symbol of the security involved with the activity' }),
+    })
+    .openapi({
+      description: 'Shared fields for option-related non-trade activity records.',
+      required: ['group_id'],
+    }),
+).openapi('CommonOptionsActivityV2')
 
 const OPASNActivityV2Schema = CommonOptionsActivityV2Schema.and(z.looseObject({}))
   .openapi({ description: 'Option assignment' })
@@ -1645,6 +1696,7 @@ const ActivityV2DetailNTASchema = z
     OpcaFSPLITActivityV2Schema,
     OpcaUSPLITActivityV2Schema,
     OpcaRSPLITActivityV2Schema,
+    OpcaCGDActivityV2Schema,
     OPASNActivityV2Schema,
     OPEXCActivityV2Schema,
     OPEXPActivityV2Schema,
@@ -1680,7 +1732,7 @@ const ActivitySubTypeSchema = z
   .string()
   .openapi({
     description:
-      'Represents a more specific classification to the `activity_type`.\nThis field is optional and may not always be populated, depending on the activity type and the available data.\nEach `activity_type` has a set of valid `activity_sub_type` values.\n\nFull mapping of `activity_type` to `activity_sub_type`:\n\n- **CGD**: Capital Gains Distribution activity sub-types:\n  - **LTCG**: Long-Term Capital Gain\n  - **STCG**: Short-Term Capital Gain\n\n- **DIV**: Dividend activity sub-types:\n  - **CDIV**: Cash Dividend\n  - **ROC**: Return of Capital\n  - **SDIV**: Stock Dividend\n  - **SPD**: Substitute Payment In Lieu Of Dividend\n\n- **FEE**: Fee-related activity sub-types:\n  - **REG**: Regulatory Fee\n  - **TAF**: Trading Activity Fee\n  - **LCT**: Local Currency Trading Fee\n  - **ORF**: Options Regulatory Fee\n  - **OCC**: Options Clearing Corporation Fee\n  - **NRC**: Non-Retail Commission Fee\n  - **NRV**: Non-Retail Venue Fee\n  - **COM**: Commission\n  - **CAT**: Consolidated Audit Trail Fee\n\n- **INT**: Interest-related activity sub-types:\n  - **MGN**: Margin Interest\n  - **CDT**: Credit Interest\n  - **SWP**: Sweep Interest\n  - **QII**: Qualified Interest\n  - **FI**: Fixed Income Interest (coupon or accrued)\n\n- **MA**: Merger and Acquisition activity sub-types:\n  - **CMA**: Cash Merger\n  - **SMA**: Stock Merger\n  - **SCMA**: Stock & Cash Merger\n\n- **NC**: Name Change activity sub types\n  - **SNC**: Symbol Name Change\n  - **CNC**: CUSIP Name Change\n  - **SCNC**: Symbol & CUSIP Name Change\n\n- **OPCA**: Option Corporate Action activity sub-types:\n  - **DIV.CDIV**: Cash Dividend\n  - **DIV.ROC**: Return of Capital\n  - **DIV.SDIV**: Stock Dividend\n  - **MA.CMA**: Cash Merger\n  - **MA.SMA**: Stock Merger\n  - **MA.SCMA**: Stock & Cash Merger\n  - **NC.CNC**: CUSIP Name Change\n  - **NC.SNC**: Symbol Name Change\n  - **NC.SCNC**: Symbol & CUSIP Name Change\n  - **SPIN**: Spin-off\n  - **SPLIT.FSPLIT**: Forward Stock Split\n  - **SPLIT.RSPLIT**: Reverse Stock Split\n  - **SPLIT.USPLIT**: Unit Split\n\n- **REO**: Reorganization activity sub-types\n  - **REOS**: Stock only (1 or more stock legs)\n  - **REOC**: Cash only (1 cash leg)\n  - **REOSC**: Stock and cash\n\n- **REORG**: Activity sub-types:\n  - **WRM**: Worthless Removal\n\n- **SPLIT**: Stock Split activity sub-types:\n  - **FSPLIT**: Forward Stock Split\n  - **RSPLIT**: Reverse Stock Split\n  - **USPLIT**: Unit Split\n\n- **VOF**: Voluntary Offering activity sub-types:\n  - **VTND**: Tender Offer\n  - **VWRT**: Warrant Exercise\n  - **VRGT**: Rights Offer\n  - **VEXH**: Exchange Offer\n\n- **WH**: Withholding activity sub-types:\n  - **SWH**: State Withholding\n  - **FWH**: Federal Withholding\n  - **SLWH**: Sales Withholding',
+      'Represents a more specific classification to the `activity_type`.\nThis field is optional and may not always be populated, depending on the activity type and the available data.\nEach `activity_type` has a set of valid `activity_sub_type` values.\n\nThis field is a free-form string rather than a closed enum: sub-type codes\noriginate from several upstream clearing, corporate-action, and international-fee\nsystems, and new codes can appear without a corresponding API change. The mapping\nbelow documents the sub-types known at the time of writing; it is not guaranteed\nto be exhaustive.\n\nFull mapping of `activity_type` to `activity_sub_type`:\n\n- **CGD**: Capital Gains Distribution activity sub-types:\n  - **LTCG**: Long-Term Capital Gain\n  - **STCG**: Short-Term Capital Gain\n\n- **DIV**: Dividend activity sub-types:\n  - **CDIV**: Cash Dividend\n  - **ROC**: Return of Capital\n  - **SDIV**: Stock Dividend\n  - **SPD**: Substitute Payment In Lieu Of Dividend\n\n- **FEE**: Fee-related activity sub-types:\n  - **REG**: Regulatory Fee\n  - **TAF**: Trading Activity Fee\n  - **LCT**: Local Currency Trading Fee\n  - **ORF**: Options Regulatory Fee\n  - **OCC**: Options Clearing Corporation Fee\n  - **NRC**: Non-Retail Commission Fee\n  - **NRV**: Non-Retail Venue Fee\n  - **COM**: Commission\n  - **CAT**: Consolidated Audit Trail Fee\n  - **ICF**: Index Contract Fee\n  - **EPI**: Exchange Proprietary Fee\n\n- **INT**: Interest-related activity sub-types:\n  - **MGN**: Margin Interest\n  - **CDT**: Credit Interest\n  - **SWP**: Sweep Interest\n  - **QII**: Qualified Interest\n  - **FI**: Fixed Income Interest (coupon or accrued)\n\n- **MA**: Merger and Acquisition activity sub-types:\n  - **CMA**: Cash Merger\n  - **SMA**: Stock Merger\n  - **SCMA**: Stock & Cash Merger\n\n- **NC**: Name Change activity sub types\n  - **SNC**: Symbol Name Change\n  - **CNC**: CUSIP Name Change\n  - **SCNC**: Symbol & CUSIP Name Change\n\n- **OPCA**: Option Corporate Action activity sub-types:\n  - **DIV.CDIV**: Cash Dividend\n  - **DIV.ROC**: Return of Capital\n  - **DIV.SDIV**: Stock Dividend\n  - **MA.CMA**: Cash Merger\n  - **MA.SMA**: Stock Merger\n  - **MA.SCMA**: Stock & Cash Merger\n  - **NC.CNC**: CUSIP Name Change\n  - **NC.SNC**: Symbol Name Change\n  - **NC.SCNC**: Symbol & CUSIP Name Change\n  - **SPIN**: Spin-off\n  - **SPLIT.FSPLIT**: Forward Stock Split\n  - **SPLIT.RSPLIT**: Reverse Stock Split\n  - **SPLIT.USPLIT**: Unit Split\n\n- **REO**: Reorganization activity sub-types\n  - **REOS**: Stock only (1 or more stock legs)\n  - **REOC**: Cash only (1 cash leg)\n  - **REOSC**: Stock and cash\n\n- **REORG**: Activity sub-types:\n  - **WRM**: Worthless Removal\n\n- **SPLIT**: Stock Split activity sub-types:\n  - **FSPLIT**: Forward Stock Split\n  - **RSPLIT**: Reverse Stock Split\n  - **USPLIT**: Unit Split\n\n- **VOF**: Voluntary Offering activity sub-types:\n  - **VTND**: Tender Offer\n  - **VWRT**: Warrant Exercise\n  - **VRGT**: Rights Offer\n  - **VEXH**: Exchange Offer\n\n- **WH**: Withholding activity sub-types:\n  - **SWH**: State Withholding\n  - **FWH**: Federal Withholding\n  - **SLWH**: Sales Withholding',
     title: 'ActivitySubType',
   })
   .openapi('ActivitySubType')
@@ -1688,13 +1740,15 @@ const ActivitySubTypeSchema = z
 const ActivityTypeSchema = z
   .enum([
     'FILL',
-    'TRANS',
-    'MISC',
     'ACATC',
     'ACATS',
+    'ALLOC',
     'CFEE',
     'CGD',
+    'CIL',
+    'CORR',
     'CSD',
+    'CSR',
     'CSW',
     'DIV',
     'DIVCGL',
@@ -1705,14 +1759,24 @@ const ActivityTypeSchema = z
     'DIVROC',
     'DIVTW',
     'DIVTXEX',
+    'DIVWH',
+    'DTCS',
+    'DVF',
+    'ECEXP',
+    'EXTRD',
     'FEE',
+    'FIMAT',
+    'FXCNV',
+    'FXTRD',
     'INT',
     'INTNRA',
     'INTTW',
+    'INVPNL',
     'JNL',
     'JNLC',
     'JNLS',
     'MA',
+    'MEM',
     'NC',
     'OPASN',
     'OPCA',
@@ -1724,18 +1788,94 @@ const ActivityTypeSchema = z
     'PTR',
     'REO',
     'REORG',
+    'SC',
+    'SEG',
     'SPIN',
     'SPLIT',
+    'SSO',
+    'SSP',
+    'SUB',
+    'VOF',
+    'WH',
     'FOPT',
     'OCT',
   ])
   .openapi({
     description:
-      '- FILL\n  Order fills (both partial and full fills)\n\n- TRANS\n  Cash transactions (both CSD and CSW)\n\n- MISC\n  Miscellaneous or rarely used activity types (All types except those in TRANS, DIV, or FILL)\n\n- ACATC\n  ACATS IN/OUT (Cash)\n\n- ACATS\n  ACATS IN/OUT (Securities)\n\n- CFEE\n  Crypto fee\n\n- CGD\n  Capital gains distribution\n\n- CSD\n  Cash deposit(+)\n\n- CSW\n  Cash withdrawal(-)\n\n- DIV\n  Dividends\n\n- DIVCGL\n  Dividend (capital gains long term)\n\n- DIVCGS\n  Dividend (capital gains short term)\n\n- DIVFEE\n  Dividend fee\n\n- DIVFT\n  Dividend adjusted (Foreign Tax Withheld)\n\n- DIVNRA\n  Dividend adjusted (NRA Withheld)\n\n- DIVROC\n  Dividend return of capital\n\n- DIVTW\n  Dividend adjusted (Tefra Withheld)\n\n- DIVTXEX\n  Dividend (tax exempt)\n\n- FEE\n  Fee denominated in USD\n\n- INT\n  Interest (credit/margin)\n\n- INTNRA\n  Interest adjusted (NRA Withheld)\n\n- INTTW\n  Interest adjusted (Tefra Withheld)\n\n- JNL\n  Journal entry\n\n- JNLC\n  Journal entry (cash)\n\n- JNLS\n  Journal entry (stock)\n\n- MA\n  Merger/Acquisition\n\n- NC\n  Name change\n\n- OPASN\n  Option assignment\n\n- OPCA\n  Option corporate action\n\n- OPCSH\n  Option cash deliverable for non-standard contracts\n\n- OPEXC\n  Option exercise\n\n- OPEXP\n  Option expiration\n\n- OPTRD\n  Option trade\n\n- PTC\n  Pass Thru Charge\n\n- PTR\n  Pass Thru Rebate\n\n- REO\n  Reorganization\n\n- REORG\n  Worthless removal CA\n\n- SPIN\n  Stock spinoff\n\n- SPLIT\n  Stock split\n\n- FOPT\n  Free of Payment Transfers\n\n- OCT\n  On chain transactions (blockchain deposits/withdrawals)',
+      'Entry type returned on an activity. The listing returns the stored entry type.\nIt omits ECJL, crypto-deposit JNLC, and SWP.\n\nTRANS and MISC are filter aliases. They are not returned as activity_type.\nThis is the known set. A new clearing code can appear without an API change.\n\nTrade activities always have the type FILL.\n\n- FILL\n  Order fills (both partial and full fills)\n\n- ACATC\n  ACATS IN/OUT (Cash)\n\n- ACATS\n  ACATS IN/OUT (Securities)\n\n- ALLOC\n  Allocation\n\n- CFEE\n  Crypto fee\n\n- CGD\n  Capital gains distribution\n\n- CIL\n  Cash in lieu of stock\n\n- CORR\n  Correction\n\n- CSD\n  Cash deposit (+), including returned withdrawals\n\n- CSR\n  Cash receipt (-)\n\n- CSW\n  Cash withdrawal (-), including returned deposits\n\n- DIV\n  Dividends\n\n- DIVCGL\n  Dividend (capital gains long term)\n\n- DIVCGS\n  Dividend (capital gains short term)\n\n- DIVFEE\n  Dividend fee\n\n- DIVFT\n  Dividend adjusted (Foreign Tax Withheld)\n\n- DIVNRA\n  Dividend adjusted (NRA Withheld)\n\n- DIVROC\n  Dividend return of capital\n\n- DIVTW\n  Dividend adjusted (Tefra Withheld)\n\n- DIVTXEX\n  Dividend (tax exempt)\n\n- DIVWH\n  Dividend withholding\n\n- DTCS\n  DTC security settlement\n\n- DVF\n  DVP flip\n\n- ECEXP\n  Event contract expiration\n\n- EXTRD\n  External trade\n\n- FEE\n  Fee denominated in USD. See `activity_sub_type` for the specific fee.\n\n- FIMAT\n  Fixed income maturity\n\n- FXCNV\n  FX conversion\n\n- FXTRD\n  FX trade\n\n- INT\n  Interest (credit/margin)\n\n- INTNRA\n  Interest adjusted (NRA Withheld)\n\n- INTTW\n  Interest adjusted (Tefra Withheld)\n\n- INVPNL\n  Inventory profit and loss\n\n- JNL\n  Journal entry\n\n- JNLC\n  Journal entry (cash)\n\n- JNLS\n  Journal entry (stock)\n\n- MA\n  Merger/Acquisition\n\n- MEM\n  Memopost\n\n- NC\n  Name change\n\n- OPASN\n  Option assignment\n\n- OPCA\n  Option corporate action\n\n- OPCSH\n  Option cash deliverable for non-standard contracts\n\n- OPEXC\n  Option exercise\n\n- OPEXP\n  Option expiration\n\n- OPTRD\n  Option trade\n\n- PTC\n  Pass Thru Charge\n\n- PTR\n  Pass Thru Rebate\n\n- REO\n  Reorganization\n\n- REORG\n  Worthless removal CA\n\n- SC\n  Symbol change\n\n- SEG\n  Segregation\n\n- SPIN\n  Stock spinoff\n\n- SPLIT\n  Stock split\n\n- SSO\n  Former stock spin-off code. Current spin-offs use `SPIN`.\n\n- SSP\n  Former stock split code. Current splits use `SPLIT`.\n\n- SUB\n  Subscription\n\n- VOF\n  Voluntary offering (tender, warrant, rights, or exchange offers)\n\n- WH\n  Withholding\n\n- FOPT\n  Free of Payment Transfers\n\n- OCT\n  On chain transactions (blockchain deposits/withdrawals)',
     examples: ['FILL'],
     title: 'ActivityType',
   })
   .openapi('ActivityType')
+
+const ActivityTypeFilterSchema = z
+  .enum([
+    'ACATC',
+    'ACATS',
+    'ALLOC',
+    'CFEE',
+    'CGD',
+    'CIL',
+    'CSD',
+    'CSR',
+    'CSW',
+    'DIV',
+    'DIVCGL',
+    'DIVCGS',
+    'DIVFEE',
+    'DIVFT',
+    'DIVNRA',
+    'DIVROC',
+    'DIVTW',
+    'DIVTXEX',
+    'DIVWH',
+    'DVF',
+    'ECEXP',
+    'EXTRD',
+    'FEE',
+    'FIMAT',
+    'FXCNV',
+    'FXTRD',
+    'INT',
+    'INTNRA',
+    'INTTW',
+    'INVPNL',
+    'JNL',
+    'JNLC',
+    'JNLS',
+    'MA',
+    'MEM',
+    'NC',
+    'OCT',
+    'OPASN',
+    'OPCA',
+    'OPCSH',
+    'OPEXC',
+    'OPEXP',
+    'OPTRD',
+    'PTC',
+    'PTR',
+    'REO',
+    'REORG',
+    'SC',
+    'SPIN',
+    'SPLIT',
+    'SUB',
+    'SWP',
+    'TRD',
+    'VOF',
+    'WH',
+    'FOPT',
+    'FILL',
+    'MISC',
+    'TRANS',
+  ])
+  .openapi({
+    description:
+      'Activity type used to filter results. These are the values the backend accepts.\n\n`TRANS` and `MISC` are aliases. A response uses the expanded entry type, not the alias.\n\n`SWP` is accepted and then omitted from public results.\n\n- TRANS\n  Cash transactions (CSD, CSR, and CSW). Filter value only; not returned as an activity type.\n\n- MISC\n  A fixed group of less common activity types, such as ACATC, INT, and JNLC. FEE, CFEE, DIV, SPLIT, SPIN, OPCA, VOF, WH, OCT, and a few others are not included, so filter by those types directly. Filter value only; not returned as an activity type.',
+    title: 'ActivityTypeFilter',
+  })
+  .openapi('ActivityTypeFilter')
 
 const AddAssetToWatchlistRequestSchema = z
   .object({
@@ -2008,6 +2148,60 @@ const CanceledOrderResponseSchema = z
     required: [],
   })
   .openapi('CanceledOrderResponse')
+
+const ClosePositionErrorSchema = z
+  .object({
+    available: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Quantity available. On insufficient-quantity rejections, the position quantity available to close.',
+      }),
+    code: z
+      .int()
+      .openapi({
+        description:
+          'Alpaca error code, such as `40310000`. Usually the HTTP status code followed by a five-digit suffix. Several rejections can share the same code, so check `message` and the other fields for the specific reason.',
+      }),
+    existing_qty: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Absolute quantity of the existing position. Present only on insufficient-quantity rejections.',
+      }),
+    held_for_options: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Position quantity held for options. Present only on insufficient-quantity rejections, and only when that hold is positive.',
+      }),
+    held_for_orders: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Position quantity held by open orders. Present only on insufficient-quantity rejections.',
+      }),
+    message: z.string().openapi({ description: 'Human-readable reason for the rejection.' }),
+    symbol: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Symbol the rejection applies to. Set on insufficient-quantity rejections and on some other order rejections, such as admin trading restrictions.',
+      }),
+  })
+  .catchall(z.string())
+  .openapi({
+    description:
+      "The per-position error reported inside a close-all-positions 207 response when a position's `status` is not 200. Other rejection-specific string fields may appear.",
+    required: ['code', 'message'],
+    title: 'Close Position Error',
+  })
+  .openapi('ClosePositionError')
 
 const CorporateActionCaTypeSchema = z
   .enum(['Spinoff', 'Merger', 'Split', 'Reorg', 'Dividend'])
@@ -2524,7 +2718,15 @@ const CryptoWalletSchema = z
   .openapi('CryptoWallet')
 
 const ErrorSchema = z
-  .object({ code: z.number(), message: z.string() })
+  .object({
+    code: z
+      .number()
+      .openapi({
+        description:
+          'Alpaca error code, such as `40310000`. Usually the HTTP status code followed by a five-digit suffix. Several errors can share the same code, so check `message` for the specific reason.',
+      }),
+    message: z.string().openapi({ description: 'Human-readable reason for the rejection.' }),
+  })
   .openapi({ required: ['code', 'message'], title: 'Error' })
   .openapi('Error')
 
@@ -3584,14 +3786,30 @@ const PortfolioHistorySchema = z
   })
   .openapi({
     description: 'Timeseries data for equity and profit loss information of the account.',
+    example: {
+      base_value: 2774.16,
+      base_value_asof: '2023-10-18',
+      equity: [2773.79, 2769.04, 2768.65],
+      profit_loss: [-0.37, -5.12, -5.51],
+      profit_loss_pct: [-0.0001, -0.0018, -0.002],
+      timeframe: '15Min',
+      timestamp: [1697722200, 1697723100, 1697724000],
+    },
     required: ['timestamp', 'equity', 'profit_loss', 'profit_loss_pct', 'base_value', 'timeframe'],
     title: 'PortfolioHistory',
   })
   .openapi('PortfolioHistory')
 
 const PortfolioHistoryErrorSchema = z
-  .object({ code: z.int(), message: z.string() })
-  .openapi({ required: ['code', 'message'], title: 'Portfolio History Error' })
+  .object({
+    code: z.int().openapi({ example: 40010001 }),
+    message: z.string().openapi({ example: 'query: "timeframe": invalid value: "2Min"' }),
+  })
+  .openapi({
+    description: 'Error returned by the portfolio history endpoint.',
+    required: ['code', 'message'],
+    title: 'Portfolio History Error',
+  })
   .openapi('PortfolioHistoryError')
 
 const USDPositionValuesSchema = z
@@ -3794,14 +4012,21 @@ const PositionSchema = z
 
 const PositionClosedResponseSchema = z
   .object({
-    body: OrderSchema.exactOptional(),
+    body: z
+      .xor([OrderSchema, ClosePositionErrorSchema])
+      .exactOptional()
+      .openapi({
+        description:
+          'The Order used to close out the position when `status` is 200; otherwise the error object.',
+      }),
     status: z
       .int()
       .openapi({ description: 'HTTP status code for the attempt to close this position' }),
     symbol: z.string().openapi({ description: 'Symbol name of the asset' }),
   })
   .openapi({
-    description: 'Represents the result of asking the api to close a position. ',
+    description:
+      'Represents the result of asking the api to close a position.\n\nWhen `status` is 200, `body` is the Order used to close out the position. For any other `status`, `body` is the error object describing why the close was rejected.',
     examples: [
       {
         body: {
@@ -3895,7 +4120,7 @@ const SearchVASPsResponseSchema = z
   .openapi('SearchVASPsResponse')
 
 const TokenizationIssuerSchema = z
-  .enum(['binance', 'coinbase', 'ondo', 'st0x', 'xstocks'])
+  .enum(['binance', 'bitget', 'coinbase', 'ondo', 'robinhood', 'st0x', 'xstocks'])
   .openapi({
     description: "The tokenized asset's issuer",
     example: 'xstocks',
@@ -3927,6 +4152,14 @@ const TokenizationNetworkSchema = z
 
 const TokenizationMintRequestSchema = z
   .object({
+    client_request_id: z
+      .string()
+      .max(128)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional label of your choosing for this mint request. It is returned on the mint response and on the tokenization request, and you can retrieve the request by it with the Get Tokenization Request by `client_request_id` endpoint. If multiple requests within the same account share the same `client_request_id`, the endpoint returns the most recent matching request. To prevent duplicate processing, use the `Idempotency-Key` header.\n\nMust be at most 128 printable ASCII characters with no leading or trailing whitespace.',
+      }),
     issuer: TokenizationIssuerSchema,
     network: TokenizationNetworkSchema,
     qty: z
@@ -3957,6 +4190,13 @@ const TokenizationRequestStatusSchema = z
 
 const TokenizationMintResponseSchema = z
   .object({
+    client_request_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The `client_request_id` supplied on the mint request. Omitted when none was supplied.',
+      }),
     created_at: z.iso.datetime({ offset: true }),
     issuer: TokenizationIssuerSchema,
     network: TokenizationNetworkSchema,
@@ -5896,7 +6136,7 @@ export const getV2AccountActivitiesRoute = createRoute({
               : (Array.isArray(val) ? val : [val]).flatMap((item) =>
                   typeof item === 'string' ? item.split(',') : [item],
                 ),
-          z.array(ActivityTypeSchema),
+          z.array(ActivityTypeFilterSchema),
         )
         .exactOptional()
         .openapi({
@@ -5905,7 +6145,7 @@ export const getV2AccountActivitiesRoute = createRoute({
             explode: false,
             in: 'query',
             name: 'activity_types',
-            schema: { items: { $ref: '#/components/schemas/ActivityType' }, type: 'array' },
+            schema: { items: { $ref: '#/components/schemas/ActivityTypeFilter' }, type: 'array' },
             style: 'form',
             required: false,
           },
@@ -6057,18 +6297,16 @@ export const getV2AccountActivitiesActivityTypeRoute = createRoute({
   operationId: 'getAccountActivitiesByActivityType',
   request: {
     params: z.object({
-      activity_type: z
-        .string()
-        .openapi({
-          param: {
-            description:
-              'The activity type you want to view entries for. A list of valid activity types can be found at the bottom of this page.',
-            in: 'path',
-            name: 'activity_type',
-            required: true,
-            schema: { type: 'string' },
-          },
-        }),
+      activity_type: ActivityTypeFilterSchema.openapi({
+        param: {
+          description:
+            'Activity type to filter by. Accepted values are `ActivityTypeFilter`. `TRANS` and `MISC` expand to the entry types named there.',
+          in: 'path',
+          name: 'activity_type',
+          required: true,
+          schema: { $ref: '#/components/schemas/ActivityTypeFilter' },
+        },
+      }),
     }),
     query: z.object({
       order_id: z
@@ -6709,7 +6947,7 @@ export const getV2CalendarRoute = createRoute({
 export const getV2ClockRoute = createRoute({
   method: 'get',
   path: '/v2/clock',
-  tags: ['Clock'],
+  tags: ['Calendar'],
   summary: 'Get US Market Clock',
   description:
     'The clock API serves the current market timestamp, whether or not the market is currently open, as well as the times of the next market open and close.\n',
@@ -7716,7 +7954,7 @@ export const deleteV2PositionsRoute = createRoute({
   tags: ['Positions'],
   summary: 'Close All Positions',
   description:
-    "Closes (liquidates) all of the account's open long and short positions. A response will be provided for each order that is attempted to be cancelled. If an order is no longer cancelable, the server will respond with status 500 and reject the request.",
+    "Closes (liquidates) all of the account's open long and short positions. The 207 response contains one result per position: `body` is the closing Order when `status` is 200, otherwise the error describing why that position was not closed.",
   operationId: 'deleteAllOpenPositions',
   request: {
     query: z.object({
@@ -7738,9 +7976,137 @@ export const deleteV2PositionsRoute = createRoute({
   responses: {
     207: {
       description: 'Multi-Status with body.\n\nan array of PositionClosed responses',
-      content: { 'application/json': { schema: z.array(PositionClosedResponseSchema) } },
+      content: {
+        'application/json': {
+          schema: z.array(PositionClosedResponseSchema),
+          examples: {
+            'All Closed': {
+              value: [
+                {
+                  body: {
+                    asset_class: 'us_equity',
+                    asset_id: 'b0b6dd9d-8b9b-48a9-ba46-b9d54906e415',
+                    canceled_at: null,
+                    client_order_id: '52f8574c-96d5-49b6-94c1-2570a268434e',
+                    created_at: '2022-02-04T16:53:29.53427917Z',
+                    expired_at: null,
+                    extended_hours: false,
+                    failed_at: null,
+                    filled_at: null,
+                    filled_avg_price: null,
+                    filled_qty: '0',
+                    hwm: null,
+                    id: 'f7f25e89-939a-4587-aaf6-414a6b3c341d',
+                    legs: null,
+                    limit_price: null,
+                    notional: null,
+                    order_class: '',
+                    order_type: 'market',
+                    qty: '2',
+                    replaced_at: null,
+                    replaced_by: null,
+                    replaces: null,
+                    side: 'sell',
+                    status: 'accepted',
+                    stop_price: null,
+                    submitted_at: '2022-02-04T16:53:29.533738219Z',
+                    symbol: 'AAPL',
+                    time_in_force: 'day',
+                    trail_percent: null,
+                    trail_price: null,
+                    type: 'market',
+                    updated_at: '2022-02-04T16:53:29.53427917Z',
+                  },
+                  status: 200,
+                  symbol: 'AAPL',
+                },
+              ],
+            },
+            'Partially Closed': {
+              value: [
+                {
+                  body: {
+                    asset_class: 'us_equity',
+                    asset_id: 'b0b6dd9d-8b9b-48a9-ba46-b9d54906e415',
+                    canceled_at: null,
+                    client_order_id: '52f8574c-96d5-49b6-94c1-2570a268434e',
+                    created_at: '2022-02-04T16:53:29.53427917Z',
+                    expired_at: null,
+                    extended_hours: false,
+                    failed_at: null,
+                    filled_at: null,
+                    filled_avg_price: null,
+                    filled_qty: '0',
+                    hwm: null,
+                    id: 'f7f25e89-939a-4587-aaf6-414a6b3c341d',
+                    legs: null,
+                    limit_price: null,
+                    notional: null,
+                    order_class: '',
+                    order_type: 'market',
+                    qty: '2',
+                    replaced_at: null,
+                    replaced_by: null,
+                    replaces: null,
+                    side: 'sell',
+                    status: 'accepted',
+                    stop_price: null,
+                    submitted_at: '2022-02-04T16:53:29.533738219Z',
+                    symbol: 'AAPL',
+                    time_in_force: 'day',
+                    trail_percent: null,
+                    trail_price: null,
+                    type: 'market',
+                    updated_at: '2022-02-04T16:53:29.53427917Z',
+                  },
+                  status: 200,
+                  symbol: 'AAPL',
+                },
+                {
+                  body: {
+                    available: '2',
+                    code: 40310000,
+                    existing_qty: '2',
+                    held_for_orders: '0',
+                    message: 'insufficient qty available for order (requested: 10, available: 2)',
+                    symbol: 'NVDA',
+                  },
+                  status: 403,
+                  symbol: 'NVDA',
+                },
+              ],
+            },
+          },
+        },
+      },
     },
-    500: { description: 'Failed to liquidate' },
+    422: {
+      description: 'Invalid Parameters.\n\nOne or more parameters provided are invalid.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Invalid cancel_orders': {
+              value: { code: 40010001, message: 'cancel_orders must be true or false' },
+            },
+          },
+        },
+      },
+    },
+    500: {
+      description:
+        'Request-level failure; no per-position results are returned. Positions that fail to close are reported in the 207 response.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Internal Server Error': {
+              value: { code: 50010000, message: 'internal server error occurred' },
+            },
+          },
+        },
+      },
+    },
   },
 })
 
@@ -8367,14 +8733,19 @@ export const getV2WalletsRoute = createRoute({
         .exactOptional()
         .openapi({
           param: {
+            deprecated: true,
             description:
-              "Deprecated. Use chain instead. Optional network identifier which is used to request wallets for a specific network when asset is a multi-chain crypto asset. When both 'chain' and 'network' are specified, 'chain' will take precedence and 'network' will be ignored. If 'chain' and 'network' are not specified, the default 'network' (ethereum) will be used.",
+              "**Deprecation notice:**\nUse `chain` instead.\n\nSince: 2026-11-02\nSunset: 2027-02-02\n\n---\n\nDeprecated. Use chain instead. Optional network identifier which is used to request wallets for a specific network when asset is a multi-chain crypto asset. When both 'chain' and 'network' are specified, 'chain' will take precedence and 'network' will be ignored. If 'chain' and 'network' are not specified, the default 'network' (ethereum) will be used.",
             in: 'query',
             name: 'network',
-            schema: { deprecated: true, enum: ['ethereum', 'solana'], type: 'string' },
+            schema: { enum: ['ethereum', 'solana'], type: 'string' },
+            'x-deprecation': {
+              reason: 'Use `chain` instead.',
+              since: '2026-11-02',
+              sunset: '2027-02-02',
+            },
             required: false,
           },
-          deprecated: true,
         }),
     }),
   },
@@ -9148,7 +9519,7 @@ export const getV3CalendarMarketRoute = createRoute({
 export const getV3ClockRoute = createRoute({
   method: 'get',
   path: '/v3/clock',
-  tags: ['Clock'],
+  tags: ['Calendar'],
   summary: 'Get Market Clock',
   description:
     "This API serves information about multiple markets: the current time, if it's a market day, the current phase of the market, etc.\n",

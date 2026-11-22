@@ -14,7 +14,9 @@ export const postV1TransferRouteHandler: RouteHandler<typeof postV1TransferRoute
 
 export const getV1BookTransfersRouteHandler: RouteHandler<typeof getV1BookTransfersRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const postV1BookTransfersRouteHandler: RouteHandler<
   typeof postV1BookTransfersRoute

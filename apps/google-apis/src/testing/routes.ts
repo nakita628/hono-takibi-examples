@@ -1,41 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const TestTargetsForShardSchema = z
-  .object({
-    testTargets: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Group of packages, classes, and/or test methods to be run for each shard. The targets need to be specified in AndroidJUnitRunner argument format. For example, "package com.my.packages" "class com.my.package.MyClass". The number of test_targets must be greater than 0.',
-      }),
-  })
-  .openapi({ description: 'Test targets for a shard.', required: [] })
-  .openapi('TestTargetsForShard')
-
-type ShardType = {
-  numShards?: number
-  shardIndex?: number
-  testTargetsForShard?: z.infer<typeof TestTargetsForShardSchema>
-}
-
-const GoogleAutoSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Enables automatic Google account login. If set, the service automatically generates a Google test account and adds it to the device, before executing the test. Note that test accounts might be reused. Many applications show their full set of functionalities when an account is present on the device. Logging into the device with these generated accounts allows testing more functionalities.',
-  })
-  .openapi('GoogleAuto')
-
-const AccountSchema = z
-  .object({
-    googleAuto: GoogleAutoSchema.exactOptional().openapi({
-      description: 'An automatic google login account.',
-    }),
-  })
-  .openapi({ description: 'Identifies an account and how to log into it.', required: [] })
-  .openapi('Account')
-
 const AndroidDeviceSchema = z
   .object({
     androidModelId: z
@@ -69,6 +33,1090 @@ const AndroidDeviceSchema = z
   })
   .openapi({ description: 'A single Android device.', required: [] })
   .openapi('AndroidDevice')
+
+const IosDeviceSchema = z
+  .object({
+    iosModelId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The id of the iOS device to be used. Use the TestEnvironmentDiscoveryService to get supported options.',
+      }),
+    iosVersionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The id of the iOS major software version to be used. Use the TestEnvironmentDiscoveryService to get supported options.',
+      }),
+    locale: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The locale the test device used for testing. Use the TestEnvironmentDiscoveryService to get supported options.',
+      }),
+    orientation: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. How the device is oriented during the test. Use the TestEnvironmentDiscoveryService to get supported options.',
+      }),
+  })
+  .openapi({ description: 'A single iOS device.', required: [] })
+  .openapi('IosDevice')
+
+const EnvironmentSchema = z
+  .object({
+    androidDevice: AndroidDeviceSchema.exactOptional().openapi({
+      description: 'An Android device which must be used with an Android test.',
+    }),
+    iosDevice: IosDeviceSchema.exactOptional().openapi({
+      description: 'An iOS device which must be used with an iOS test.',
+    }),
+  })
+  .openapi({ description: 'The environment in which the test is run.', required: [] })
+  .openapi('Environment')
+
+const TestTargetsForShardSchema = z
+  .object({
+    testTargets: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Group of packages, classes, and/or test methods to be run for each shard. The targets need to be specified in AndroidJUnitRunner argument format. For example, "package com.my.packages" "class com.my.package.MyClass". The number of test_targets must be greater than 0.',
+      }),
+  })
+  .openapi({ description: 'Test targets for a shard.', required: [] })
+  .openapi('TestTargetsForShard')
+
+const ShardSchema = z
+  .object({
+    numShards: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Output only. The total number of shards.' }),
+    shardIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Output only. The index of the shard among all the shards.' }),
+    testTargetsForShard: TestTargetsForShardSchema.exactOptional().openapi({
+      description: 'Output only. Test targets for each shard. Only set for manual sharding.',
+    }),
+  })
+  .openapi({ description: 'Output only. Details about the shard.', required: [] })
+  .openapi('Shard')
+
+const TestDetailsSchema = z
+  .object({
+    errorMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. If the TestState is ERROR, then this string will contain human-readable details about the error.',
+      }),
+    progressMessages: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Human-readable, detailed descriptions of the test\'s progress. For example: "Provisioning a device", "Starting Test". During the course of execution new data may be appended to the end of progress_messages.',
+      }),
+  })
+  .openapi({
+    description: 'Additional details about the progress of the running test.',
+    required: [],
+  })
+  .openapi('TestDetails')
+
+const FileReferenceSchema = z
+  .object({
+    gcsPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A path to a file in Google Cloud Storage. Example: gs://build-app-1414623860166/app%40debug-unaligned.apk These paths are expected to be url encoded (percent encoding)',
+      }),
+  })
+  .openapi({ description: 'A reference to a file, used for user inputs.', required: [] })
+  .openapi('FileReference')
+
+const AppBundleSchema = z
+  .object({
+    bundleLocation: FileReferenceSchema.exactOptional().openapi({
+      description: '.aab file representing the app bundle under test.',
+    }),
+  })
+  .openapi({
+    description:
+      'An Android App Bundle file format, containing a BundleConfig.pb file, a base module directory, zero or more dynamic feature module directories. See https://developer.android.com/guide/app-bundle/build for guidance on building App Bundles.',
+    required: [],
+  })
+  .openapi('AppBundle')
+
+const ManualShardingSchema = z
+  .object({
+    testTargetsForShard: z
+      .array(TestTargetsForShardSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Group of packages, classes, and/or test methods to be run for each manually-created shard. You must specify at least one shard if this field is present. When you select one or more physical devices, the number of repeated test_targets_for_shard must be <= 50. When you select one or more ARM virtual devices, it must be <= 100. When you select only x86 virtual devices, it must be <= 500.',
+      }),
+  })
+  .openapi({
+    description:
+      'Shards test cases into the specified groups of packages, classes, and/or methods. With manual sharding enabled, specifying test targets via environment_variables or in InstrumentationTest is invalid.',
+    required: [],
+  })
+  .openapi('ManualSharding')
+
+const UniformShardingSchema = z
+  .object({
+    numShards: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The total number of shards to create. This must always be a positive number that is no greater than the total number of test cases. When you select one or more physical devices, the number of shards must be <= 50. When you select one or more ARM virtual devices, it must be <= 100. When you select only x86 virtual devices, it must be <= 500.',
+      }),
+  })
+  .openapi({
+    description:
+      'Uniformly shards test cases given a total number of shards. For instrumentation tests, it will be translated to "-e numShard" and "-e shardIndex" AndroidJUnitRunner arguments. With uniform sharding enabled, specifying either of these sharding arguments via `environment_variables` is invalid. Based on the sharding mechanism AndroidJUnitRunner uses, there is no guarantee that test cases will be distributed uniformly across all shards.',
+    required: [],
+  })
+  .openapi('UniformSharding')
+
+const ShardingOptionSchema = z
+  .object({
+    manualSharding: ManualShardingSchema.exactOptional().openapi({
+      description:
+        'Shards test cases into the specified groups of packages, classes, and/or methods.',
+    }),
+    uniformSharding: UniformShardingSchema.exactOptional().openapi({
+      description: 'Uniformly shards test cases given a total number of shards.',
+    }),
+  })
+  .openapi({ description: 'Options for enabling sharding.', required: [] })
+  .openapi('ShardingOption')
+
+const AndroidInstrumentationTestSchema = z
+  .object({
+    appApk: FileReferenceSchema.exactOptional().openapi({
+      description: 'The APK for the application under test.',
+    }),
+    appBundle: AppBundleSchema.exactOptional().openapi({
+      description: 'A multi-apk app bundle for the application under test.',
+    }),
+    appPackageId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The java package for the application under test. The default value is determined by examining the application's manifest.",
+      }),
+    orchestratorOption: z
+      .enum(['ORCHESTRATOR_OPTION_UNSPECIFIED', 'USE_ORCHESTRATOR', 'DO_NOT_USE_ORCHESTRATOR'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The option of whether running each test within its own invocation of instrumentation with Android Test Orchestrator or not. ** Orchestrator is only compatible with AndroidJUnitRunner version 1.1 or higher! ** Orchestrator offers the following benefits: - No shared state - Crashes are isolated - Logs are scoped per test See for more information about Android Test Orchestrator. If not set, the test will be run without the orchestrator.',
+      }),
+    shardingOption: ShardingOptionSchema.exactOptional().openapi({
+      description: 'The option to run tests in multiple shards in parallel.',
+    }),
+    testApk: FileReferenceSchema.exactOptional().openapi({
+      description: 'Required. The APK containing the test code to be executed.',
+    }),
+    testPackageId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The java package for the test to be executed. The default value is determined by examining the application's manifest.",
+      }),
+    testRunnerClass: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The InstrumentationTestRunner class. The default value is determined by examining the application's manifest.",
+      }),
+    testTargets: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Each target must be fully qualified with the package name or class name, in one of these formats: - "package package_name" - "class package_name.class_name" - "class package_name.class_name#method_name" If empty, all targets in the module will be run.',
+      }),
+  })
+  .openapi({
+    description:
+      'A test of an Android application that can control an Android component independently of its normal lifecycle. Android instrumentation tests run an application APK and test APK inside the same process on a virtual or physical AndroidDevice. They also specify a test runner class, such as com.google.GoogleTestRunner, which can vary on the specific instrumentation framework chosen. See for more information on types of Android tests.',
+    required: [],
+  })
+  .openapi('AndroidInstrumentationTest')
+
+const RoboDirectiveSchema = z
+  .object({
+    actionType: z
+      .enum(['ACTION_TYPE_UNSPECIFIED', 'SINGLE_CLICK', 'ENTER_TEXT', 'IGNORE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The type of action that Robo should perform on the specified element.',
+      }),
+    inputText: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The text that Robo is directed to set. If left empty, the directive will be treated as a CLICK on the element matching the resource_name.',
+      }),
+    resourceName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The android resource name of the target UI element. For example, in Java: R.string.foo in xml: @string/foo Only the "foo" part is needed. Reference doc: https://developer.android.com/guide/topics/resources/accessing-resources.html',
+      }),
+  })
+  .openapi({
+    description:
+      'Directs Robo to interact with a specific UI element if it is encountered during the crawl. Currently, Robo can perform text entry or element click.',
+    required: [],
+  })
+  .openapi('RoboDirective')
+
+const LauncherActivityIntentSchema = z
+  .looseObject({})
+  .openapi({ description: 'Specifies an intent that starts the main launcher activity.' })
+  .openapi('LauncherActivityIntent')
+
+const StartActivityIntentSchema = z
+  .object({
+    action: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Action name. Required for START_ACTIVITY.' }),
+    categories: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Intent categories to set on the intent.' }),
+    uri: z.string().exactOptional().openapi({ description: 'URI for the action.' }),
+  })
+  .openapi({
+    description: 'A starting intent specified by an action, uri, and categories.',
+    required: [],
+  })
+  .openapi('StartActivityIntent')
+
+const RoboStartingIntentSchema = z
+  .object({
+    launcherActivity: LauncherActivityIntentSchema.exactOptional().openapi({
+      description: 'An intent that starts the main launcher activity.',
+    }),
+    startActivity: StartActivityIntentSchema.exactOptional().openapi({
+      description: 'An intent that starts an activity with specific details.',
+    }),
+    timeout: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Timeout in seconds for each intent.' }),
+  })
+  .openapi({ description: 'Message for specifying the start activities to crawl.', required: [] })
+  .openapi('RoboStartingIntent')
+
+const AndroidRoboTestSchema = z
+  .object({
+    appApk: FileReferenceSchema.exactOptional().openapi({
+      description: 'The APK for the application under test.',
+    }),
+    appBundle: AppBundleSchema.exactOptional().openapi({
+      description: 'A multi-apk app bundle for the application under test.',
+    }),
+    appInitialActivity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The initial activity that should be used to start the app.' }),
+    appPackageId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The java package for the application under test. The default value is determined by examining the application's manifest.",
+      }),
+    maxDepth: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The max depth of the traversal stack Robo can explore. Needs to be at least 2 to make Robo explore the app beyond the first activity. Default is 50.',
+      }),
+    maxSteps: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The max number of steps Robo can execute. Default is no limit.' }),
+    roboDirectives: z
+      .array(RoboDirectiveSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A set of directives Robo should apply during the crawl. This allows users to customize the crawl. For example, the username and password for a test account can be provided.',
+      }),
+    roboMode: z
+      .enum(['ROBO_MODE_UNSPECIFIED', 'ROBO_VERSION_1', 'ROBO_VERSION_2'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The mode in which Robo should run. Most clients should allow the server to populate this field automatically.',
+      }),
+    roboScript: FileReferenceSchema.exactOptional().openapi({
+      description:
+        'A JSON file with a sequence of actions Robo should perform as a prologue for the crawl.',
+    }),
+    startingIntents: z
+      .array(RoboStartingIntentSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The intents used to launch the app for the crawl. If none are provided, then the main launcher activity is launched. If some are provided, then only those provided are launched (the main launcher activity must be provided explicitly).',
+      }),
+  })
+  .openapi({
+    description:
+      'A test of an android application that explores the application on a virtual or physical Android Device, finding culprits and crashes as it goes.',
+    required: [],
+  })
+  .openapi('AndroidRoboTest')
+
+const AndroidTestLoopSchema = z
+  .object({
+    appApk: FileReferenceSchema.exactOptional().openapi({
+      description: 'The APK for the application under test.',
+    }),
+    appBundle: AppBundleSchema.exactOptional().openapi({
+      description: 'A multi-apk app bundle for the application under test.',
+    }),
+    appPackageId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The java package for the application under test. The default is determined by examining the application's manifest.",
+      }),
+    scenarioLabels: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "The list of scenario labels that should be run during the test. The scenario labels should map to labels defined in the application's manifest. For example, player_experience and com.google.test.loops.player_experience add all of the loops labeled in the manifest with the com.google.test.loops.player_experience name to the execution. Scenarios can also be specified in the scenarios field.",
+      }),
+    scenarios: z
+      .array(z.int32())
+      .exactOptional()
+      .openapi({
+        description:
+          "The list of scenarios that should be run during the test. The default is all test loops, derived from the application's manifest.",
+      }),
+  })
+  .openapi({
+    description:
+      'A test of an Android Application with a Test Loop. The intent \\ will be implicitly added, since Games is the only user of this api, for the time being.',
+    required: [],
+  })
+  .openapi('AndroidTestLoop')
+
+const IosTestLoopSchema = z
+  .object({
+    appBundleId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The bundle id for the application under test.' }),
+    appIpa: FileReferenceSchema.exactOptional().openapi({
+      description: 'Required. The .ipa of the application to test.',
+    }),
+    scenarios: z
+      .array(z.int32())
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of scenarios that should be run during the test. Defaults to the single scenario 0 if unspecified.',
+      }),
+  })
+  .openapi({
+    description:
+      'A test of an iOS application that implements one or more game loop scenarios. This test type accepts an archived application (.ipa file) and a list of integer scenarios that will be executed on the app sequentially.',
+    required: [],
+  })
+  .openapi('IosTestLoop')
+
+const IosDeviceFileSchema = z
+  .object({
+    bundleId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The bundle id of the app where this file lives. iOS apps sandbox their own filesystem, so app files must specify which app installed on the device.',
+      }),
+    content: FileReferenceSchema.exactOptional().openapi({ description: 'The source file' }),
+    devicePath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "Location of the file on the device, inside the app's sandboxed filesystem",
+      }),
+  })
+  .openapi({
+    description: 'A file or directory to install on the device before the test starts.',
+    required: [],
+  })
+  .openapi('IosDeviceFile')
+
+const IosTestSetupSchema = z
+  .object({
+    additionalIpas: z
+      .array(FileReferenceSchema)
+      .exactOptional()
+      .openapi({ description: 'iOS apps to install in addition to those being directly tested.' }),
+    networkProfile: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The network traffic profile used for running the test. Available network profiles can be queried by using the NETWORK_CONFIGURATION environment type when calling TestEnvironmentDiscoveryService.GetTestEnvironmentCatalog.',
+      }),
+    pullDirectories: z
+      .array(IosDeviceFileSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "List of directories on the device to upload to Cloud Storage at the end of the test. Directories should either be in a shared directory (such as /private/var/mobile/Media) or within an accessible directory inside the app's filesystem (such as /Documents) by specifying the bundle ID.",
+      }),
+    pushFiles: z
+      .array(IosDeviceFileSchema)
+      .exactOptional()
+      .openapi({ description: 'List of files to push to the device before starting the test.' }),
+  })
+  .openapi({
+    description: 'A description of how to set up an iOS device prior to running the test.',
+    required: [],
+  })
+  .openapi('IosTestSetup')
+
+const IosXcTestSchema = z
+  .object({
+    appBundleId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The bundle id for the application under test.' }),
+    testSpecialEntitlements: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'The option to test special app entitlements. Setting this would re-sign the app having special entitlements with an explicit application-identifier. Currently supports testing aps-environment entitlement.',
+      }),
+    testsZip: FileReferenceSchema.exactOptional().openapi({
+      description:
+        'Required. The .zip containing the .xctestrun file and the contents of the DerivedData/Build/Products directory. The .xctestrun file in this zip is ignored if the xctestrun field is specified.',
+    }),
+    xcodeVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Xcode version that should be used for the test. Use the TestEnvironmentDiscoveryService to get supported options. Defaults to the latest Xcode version Firebase Test Lab supports.',
+      }),
+    xctestrun: FileReferenceSchema.exactOptional().openapi({
+      description:
+        'An .xctestrun file that will override the .xctestrun file in the tests zip. Because the .xctestrun file contains environment variables along with test methods to run and/or ignore, this can be useful for sharding tests. Default is taken from the tests zip.',
+    }),
+  })
+  .openapi({
+    description:
+      'A test of an iOS application that uses the XCTest framework. Xcode supports the option to "build for testing", which generates an .xctestrun file that contains a test specification (arguments, test methods, etc). This test type accepts a zip file containing the .xctestrun file and the corresponding contents of the Build/Products directory that contains all the binaries needed to run the tests.',
+    required: [],
+  })
+  .openapi('IosXcTest')
+
+const GoogleAutoSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Enables automatic Google account login. If set, the service automatically generates a Google test account and adds it to the device, before executing the test. Note that test accounts might be reused. Many applications show their full set of functionalities when an account is present on the device. Logging into the device with these generated accounts allows testing more functionalities.',
+  })
+  .openapi('GoogleAuto')
+
+const AccountSchema = z
+  .object({
+    googleAuto: GoogleAutoSchema.exactOptional().openapi({
+      description: 'An automatic google login account.',
+    }),
+  })
+  .openapi({ description: 'Identifies an account and how to log into it.', required: [] })
+  .openapi('Account')
+
+const ApkSchema = z
+  .object({
+    location: FileReferenceSchema.exactOptional().openapi({
+      description: 'The path to an APK to be installed on the device before the test begins.',
+    }),
+    packageName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The java package for the APK to be installed. Value is determined by examining the application's manifest.",
+      }),
+  })
+  .openapi({ description: 'An Android package file to install.', required: [] })
+  .openapi('Apk')
+
+const EnvironmentVariableSchema = z
+  .object({
+    key: z.string().exactOptional().openapi({ description: 'Key for the environment variable.' }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Value for the environment variable.' }),
+  })
+  .openapi({
+    description: 'A key-value pair passed as an environment variable to the test.',
+    required: [],
+  })
+  .openapi('EnvironmentVariable')
+
+const ObbFileSchema = z
+  .object({
+    obb: FileReferenceSchema.exactOptional().openapi({
+      description: 'Required. Opaque Binary Blob (OBB) file(s) to install on the device.',
+    }),
+    obbFileName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. OBB file name which must conform to the format as specified by Android e.g. [main|patch].0300110.com.example.android.obb which will be installed into \\/Android/obb/\\/ on the device.',
+      }),
+  })
+  .openapi({
+    description: 'An opaque binary blob file to install on the device before the test starts.',
+    required: [],
+  })
+  .openapi('ObbFile')
+
+const RegularFileSchema = z
+  .object({
+    content: FileReferenceSchema.exactOptional().openapi({
+      description: 'Required. The source file.',
+    }),
+    devicePath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Where to put the content on the device. Must be an absolute, allowlisted path. If the file exists, it will be replaced. The following device-side directories and any of their subdirectories are allowlisted: ${EXTERNAL_STORAGE}, /sdcard, or /storage ${ANDROID_DATA}/local/tmp, or /data/local/tmp Specifying a path outside of these directory trees is invalid. The paths /sdcard and /data will be made available and treated as implicit path substitutions. E.g. if /sdcard on a particular device does not map to external storage, the system will replace it with the external storage path prefix for that device and copy the file there. It is strongly advised to use the Environment API in app and test code to access files on the device in a portable way.',
+      }),
+  })
+  .openapi({
+    description: 'A file or directory to install on the device before the test starts.',
+    required: [],
+  })
+  .openapi('RegularFile')
+
+const DeviceFileSchema = z
+  .object({
+    obbFile: ObbFileSchema.exactOptional().openapi({
+      description: 'A reference to an opaque binary blob file.',
+    }),
+    regularFile: RegularFileSchema.exactOptional().openapi({
+      description: 'A reference to a regular file.',
+    }),
+  })
+  .openapi({ description: 'A single device file description.', required: [] })
+  .openapi('DeviceFile')
+
+const SystraceSetupSchema = z
+  .object({
+    durationSeconds: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Systrace duration in seconds. Should be between 1 and 30 seconds. 0 disables systrace.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('SystraceSetup')
+
+const TestSetupSchema = z
+  .object({
+    account: AccountSchema.exactOptional().openapi({
+      description: 'The device will be logged in on this account for the duration of the test.',
+    }),
+    additionalApks: z
+      .array(ApkSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'APKs to install in addition to those being directly tested. Currently capped at 100.',
+      }),
+    directoriesToPull: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of directories on the device to upload to GCS at the end of the test; they must be absolute paths under /sdcard, /storage or /data/local/tmp. Path names are restricted to characters a-z A-Z 0-9 _ - . + and / Note: The paths /sdcard and /data will be made available and treated as implicit path substitutions. E.g. if /sdcard on a particular device does not map to external storage, the system will replace it with the external storage path prefix for that device.',
+      }),
+    dontAutograntPermissions: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether to prevent all runtime permissions to be granted at app install',
+      }),
+    environmentVariables: z
+      .array(EnvironmentVariableSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Environment variables to set for the test (only applicable for instrumentation tests).',
+      }),
+    filesToPush: z
+      .array(DeviceFileSchema)
+      .exactOptional()
+      .openapi({ description: 'List of files to push to the device before starting the test.' }),
+    networkProfile: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The network traffic profile used for running the test. Available network profiles can be queried by using the NETWORK_CONFIGURATION environment type when calling TestEnvironmentDiscoveryService.GetTestEnvironmentCatalog.',
+      }),
+    systrace: SystraceSetupSchema.exactOptional().openapi({
+      description:
+        'Systrace configuration for the run. Deprecated: Systrace used Python 2 which was sunsetted on 2020-01-01. Systrace is no longer supported in the Cloud Testing API, and no Systrace file will be provided in the results.',
+    }),
+  })
+  .openapi({
+    description: 'A description of how to set up the Android device prior to running the test.',
+    required: [],
+  })
+  .openapi('TestSetup')
+
+const TestSpecificationSchema = z
+  .object({
+    androidInstrumentationTest: AndroidInstrumentationTestSchema.exactOptional().openapi({
+      description: 'An Android instrumentation test.',
+    }),
+    androidRoboTest: AndroidRoboTestSchema.exactOptional().openapi({
+      description: 'An Android robo test.',
+    }),
+    androidTestLoop: AndroidTestLoopSchema.exactOptional().openapi({
+      description: 'An Android Application with a Test Loop.',
+    }),
+    disablePerformanceMetrics: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Disables performance metrics recording. May reduce test latency.' }),
+    disableVideoRecording: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Disables video recording. May reduce test latency.' }),
+    iosTestLoop: IosTestLoopSchema.exactOptional().openapi({
+      description: 'An iOS application with a test loop.',
+    }),
+    iosTestSetup: IosTestSetupSchema.exactOptional().openapi({
+      description: 'Test setup requirements for iOS.',
+    }),
+    iosXcTest: IosXcTestSchema.exactOptional().openapi({
+      description: 'An iOS XCTest, via an .xctestrun file.',
+    }),
+    testSetup: TestSetupSchema.exactOptional().openapi({
+      description: 'Test setup requirements for Android e.g. files to install, bootstrap scripts.',
+    }),
+    testTimeout: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Max time a test execution is allowed to run before it is automatically cancelled. The default value is 5 min.',
+      }),
+  })
+  .openapi({ description: 'A description of how to run the test.', required: [] })
+  .openapi('TestSpecification')
+
+const ToolResultsStepSchema = z
+  .object({
+    executionId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. A tool results execution ID.' }),
+    historyId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. A tool results history ID.' }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The cloud project that owns the tool results step.' }),
+    stepId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. A tool results step ID.' }),
+  })
+  .openapi({
+    description:
+      'Represents a tool results step resource. This has the results of a TestExecution.',
+    required: [],
+  })
+  .openapi('ToolResultsStep')
+
+type TestExecutionType = {
+  environment?: z.infer<typeof EnvironmentSchema>
+  id?: string
+  matrixId?: string
+  projectId?: string
+  shard?: z.infer<typeof ShardSchema>
+  state?:
+    | 'TEST_STATE_UNSPECIFIED'
+    | 'VALIDATING'
+    | 'PENDING'
+    | 'RUNNING'
+    | 'FINISHED'
+    | 'ERROR'
+    | 'UNSUPPORTED_ENVIRONMENT'
+    | 'INCOMPATIBLE_ENVIRONMENT'
+    | 'INCOMPATIBLE_ARCHITECTURE'
+    | 'CANCELLED'
+    | 'INVALID'
+  testDetails?: z.infer<typeof TestDetailsSchema>
+  testSpecification?: z.infer<typeof TestSpecificationSchema>
+  timestamp?: string
+  toolResultsStep?: z.infer<typeof ToolResultsStepSchema>
+}
+
+const ClientInfoDetailSchema = z
+  .object({
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The key of detailed client information.' }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The value of detailed client information.' }),
+  })
+  .openapi({
+    description:
+      "Key-value pair of detailed information about the client which invoked the test. Examples: {'Version', '1.0'}, {'Release Track', 'BETA'}.",
+    required: [],
+  })
+  .openapi('ClientInfoDetail')
+
+const ClientInfoSchema = z
+  .object({
+    clientInfoDetails: z
+      .array(ClientInfoDetailSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of detailed information about client.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Client name, such as gcloud.' }),
+  })
+  .openapi({ description: 'Information about the client which invoked the test.', required: [] })
+  .openapi('ClientInfo')
+
+const AndroidDeviceListSchema = z
+  .object({
+    androidDevices: z
+      .array(AndroidDeviceSchema)
+      .exactOptional()
+      .openapi({ description: 'Required. A list of Android devices.' }),
+  })
+  .openapi({
+    description: 'A list of Android device configurations in which the test is to be executed.',
+    required: [],
+  })
+  .openapi('AndroidDeviceList')
+
+const AndroidMatrixSchema = z
+  .object({
+    androidModelIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The ids of the set of Android device to be used. Use the TestEnvironmentDiscoveryService to get supported options.',
+      }),
+    androidVersionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The ids of the set of Android OS version to be used. Use the TestEnvironmentDiscoveryService to get supported options.',
+      }),
+    locales: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The set of locales the test device will enable for testing. Use the TestEnvironmentDiscoveryService to get supported options.',
+      }),
+    orientations: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The set of orientations to test with. Use the TestEnvironmentDiscoveryService to get supported options.',
+      }),
+  })
+  .openapi({
+    description:
+      'A set of Android device configuration permutations is defined by the the cross-product of the given axes. Internally, the given AndroidMatrix will be expanded into a set of AndroidDevices. Only supported permutations will be instantiated. Invalid permutations (e.g., incompatible models/versions) are ignored.',
+    required: [],
+  })
+  .openapi('AndroidMatrix')
+
+const IosDeviceListSchema = z
+  .object({
+    iosDevices: z
+      .array(IosDeviceSchema)
+      .exactOptional()
+      .openapi({ description: 'Required. A list of iOS devices.' }),
+  })
+  .openapi({
+    description: 'A list of iOS device configurations in which the test is to be executed.',
+    required: [],
+  })
+  .openapi('IosDeviceList')
+
+const EnvironmentMatrixSchema = z
+  .object({
+    androidDeviceList: AndroidDeviceListSchema.exactOptional().openapi({
+      description: 'A list of Android devices; the test will be run only on the specified devices.',
+    }),
+    androidMatrix: AndroidMatrixSchema.exactOptional().openapi({
+      description: 'A matrix of Android devices.',
+    }),
+    iosDeviceList: IosDeviceListSchema.exactOptional().openapi({
+      description: 'A list of iOS devices.',
+    }),
+  })
+  .openapi({
+    description: 'The matrix of environments in which the test is to be executed.',
+    required: [],
+  })
+  .openapi('EnvironmentMatrix')
+
+const GoogleCloudStorageSchema = z
+  .object({
+    gcsPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The path to a directory in GCS that will eventually contain the results for this test. The requesting user must have write access on the bucket in the supplied path.',
+      }),
+  })
+  .openapi({ description: 'A storage location within Google cloud storage (GCS).', required: [] })
+  .openapi('GoogleCloudStorage')
+
+const ToolResultsExecutionSchema = z
+  .object({
+    executionId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. A tool results execution ID.' }),
+    historyId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. A tool results history ID.' }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The cloud project that owns the tool results execution.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a tool results execution resource. This has the results of a TestMatrix.',
+    required: [],
+  })
+  .openapi('ToolResultsExecution')
+
+const ToolResultsHistorySchema = z
+  .object({
+    historyId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. A tool results history ID.' }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The cloud project that owns the tool results history.' }),
+  })
+  .openapi({ description: 'Represents a tool results history resource.', required: [] })
+  .openapi('ToolResultsHistory')
+
+const ResultStorageSchema = z
+  .object({
+    googleCloudStorage: GoogleCloudStorageSchema.exactOptional().openapi({
+      description: 'Required.',
+    }),
+    resultsUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. URL to the results in the Firebase Web Console.' }),
+    toolResultsExecution: ToolResultsExecutionSchema.exactOptional().openapi({
+      description: 'Output only. The tool results execution that results are written to.',
+    }),
+    toolResultsHistory: ToolResultsHistorySchema.exactOptional().openapi({
+      description:
+        'The tool results history that contains the tool results execution that results are written to. If not provided, the service will choose an appropriate value.',
+    }),
+  })
+  .openapi({
+    description: 'Locations where the results of running the test are stored.',
+    required: [],
+  })
+  .openapi('ResultStorage')
+
+const TestExecutionSchema: z.ZodType<TestExecutionType> = z
+  .object({
+    environment: EnvironmentSchema.exactOptional().openapi({
+      description: 'Output only. How the host machine(s) are configured.',
+    }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Unique id set by the service.' }),
+    matrixId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Id of the containing TestMatrix.' }),
+    projectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The cloud project that owns the test execution.' }),
+    shard: ShardSchema.exactOptional().openapi({
+      description: 'Output only. Details about the shard.',
+    }),
+    state: z
+      .enum([
+        'TEST_STATE_UNSPECIFIED',
+        'VALIDATING',
+        'PENDING',
+        'RUNNING',
+        'FINISHED',
+        'ERROR',
+        'UNSUPPORTED_ENVIRONMENT',
+        'INCOMPATIBLE_ENVIRONMENT',
+        'INCOMPATIBLE_ARCHITECTURE',
+        'CANCELLED',
+        'INVALID',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Indicates the current progress of the test execution (e.g., FINISHED).',
+      }),
+    testDetails: TestDetailsSchema.exactOptional().openapi({
+      description: 'Output only. Additional details about the running test.',
+    }),
+    testSpecification: TestSpecificationSchema.exactOptional().openapi({
+      description: 'Output only. How to run the test.',
+    }),
+    timestamp: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The time this test execution was initially created.' }),
+    toolResultsStep: ToolResultsStepSchema.exactOptional().openapi({
+      description: 'Output only. Where the results for this execution are written.',
+    }),
+  })
+  .openapi({ description: 'A single test executed in a single environment.', required: [] })
+  .openapi('TestExecution')
+
+type TestMatrixType = {
+  clientInfo?: z.infer<typeof ClientInfoSchema>
+  environmentMatrix?: z.infer<typeof EnvironmentMatrixSchema>
+  failFast?: boolean
+  flakyTestAttempts?: number
+  invalidMatrixDetails?:
+    | 'INVALID_MATRIX_DETAILS_UNSPECIFIED'
+    | 'DETAILS_UNAVAILABLE'
+    | 'MALFORMED_APK'
+    | 'MALFORMED_TEST_APK'
+    | 'NO_MANIFEST'
+    | 'NO_PACKAGE_NAME'
+    | 'INVALID_PACKAGE_NAME'
+    | 'TEST_SAME_AS_APP'
+    | 'NO_INSTRUMENTATION'
+    | 'NO_SIGNATURE'
+    | 'INSTRUMENTATION_ORCHESTRATOR_INCOMPATIBLE'
+    | 'NO_TEST_RUNNER_CLASS'
+    | 'NO_LAUNCHER_ACTIVITY'
+    | 'FORBIDDEN_PERMISSIONS'
+    | 'INVALID_ROBO_DIRECTIVES'
+    | 'INVALID_RESOURCE_NAME'
+    | 'INVALID_DIRECTIVE_ACTION'
+    | 'TEST_LOOP_INTENT_FILTER_NOT_FOUND'
+    | 'SCENARIO_LABEL_NOT_DECLARED'
+    | 'SCENARIO_LABEL_MALFORMED'
+    | 'SCENARIO_NOT_DECLARED'
+    | 'DEVICE_ADMIN_RECEIVER'
+    | 'MALFORMED_XC_TEST_ZIP'
+    | 'BUILT_FOR_IOS_SIMULATOR'
+    | 'NO_TESTS_IN_XC_TEST_ZIP'
+    | 'USE_DESTINATION_ARTIFACTS'
+    | 'TEST_NOT_APP_HOSTED'
+    | 'PLIST_CANNOT_BE_PARSED'
+    | 'TEST_ONLY_APK'
+    | 'MALFORMED_IPA'
+    | 'MISSING_URL_SCHEME'
+    | 'MALFORMED_APP_BUNDLE'
+    | 'NO_CODE_APK'
+    | 'INVALID_INPUT_APK'
+    | 'INVALID_APK_PREVIEW_SDK'
+    | 'MATRIX_TOO_LARGE'
+    | 'TEST_QUOTA_EXCEEDED'
+    | 'SERVICE_NOT_ACTIVATED'
+    | 'UNKNOWN_PERMISSION_ERROR'
+  outcomeSummary?:
+    | 'OUTCOME_SUMMARY_UNSPECIFIED'
+    | 'SUCCESS'
+    | 'FAILURE'
+    | 'INCONCLUSIVE'
+    | 'SKIPPED'
+  projectId?: string
+  resultStorage?: z.infer<typeof ResultStorageSchema>
+  state?:
+    | 'TEST_STATE_UNSPECIFIED'
+    | 'VALIDATING'
+    | 'PENDING'
+    | 'RUNNING'
+    | 'FINISHED'
+    | 'ERROR'
+    | 'UNSUPPORTED_ENVIRONMENT'
+    | 'INCOMPATIBLE_ENVIRONMENT'
+    | 'INCOMPATIBLE_ARCHITECTURE'
+    | 'CANCELLED'
+    | 'INVALID'
+  testExecutions?: z.infer<typeof TestExecutionSchema>[]
+  testMatrixId?: string
+  testSpecification?: z.infer<typeof TestSpecificationSchema>
+  timestamp?: string
+}
 
 const PerAndroidVersionInfoSchema = z
   .object({
@@ -349,373 +1397,6 @@ const AndroidDeviceCatalogSchema = z
   .openapi({ description: 'The currently supported Android devices.', required: [] })
   .openapi('AndroidDeviceCatalog')
 
-const AndroidDeviceListSchema = z
-  .object({
-    androidDevices: z
-      .array(AndroidDeviceSchema)
-      .exactOptional()
-      .openapi({ description: 'Required. A list of Android devices.' }),
-  })
-  .openapi({
-    description: 'A list of Android device configurations in which the test is to be executed.',
-    required: [],
-  })
-  .openapi('AndroidDeviceList')
-
-const FileReferenceSchema = z
-  .object({
-    gcsPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A path to a file in Google Cloud Storage. Example: gs://build-app-1414623860166/app%40debug-unaligned.apk These paths are expected to be url encoded (percent encoding)',
-      }),
-  })
-  .openapi({ description: 'A reference to a file, used for user inputs.', required: [] })
-  .openapi('FileReference')
-
-const AppBundleSchema = z
-  .object({
-    bundleLocation: FileReferenceSchema.exactOptional().openapi({
-      description: '.aab file representing the app bundle under test.',
-    }),
-  })
-  .openapi({
-    description:
-      'An Android App Bundle file format, containing a BundleConfig.pb file, a base module directory, zero or more dynamic feature module directories. See https://developer.android.com/guide/app-bundle/build for guidance on building App Bundles.',
-    required: [],
-  })
-  .openapi('AppBundle')
-
-const ManualShardingSchema = z
-  .object({
-    testTargetsForShard: z
-      .array(TestTargetsForShardSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Group of packages, classes, and/or test methods to be run for each manually-created shard. You must specify at least one shard if this field is present. When you select one or more physical devices, the number of repeated test_targets_for_shard must be <= 50. When you select one or more ARM virtual devices, it must be <= 100. When you select only x86 virtual devices, it must be <= 500.',
-      }),
-  })
-  .openapi({
-    description:
-      'Shards test cases into the specified groups of packages, classes, and/or methods. With manual sharding enabled, specifying test targets via environment_variables or in InstrumentationTest is invalid.',
-    required: [],
-  })
-  .openapi('ManualSharding')
-
-const UniformShardingSchema = z
-  .object({
-    numShards: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The total number of shards to create. This must always be a positive number that is no greater than the total number of test cases. When you select one or more physical devices, the number of shards must be <= 50. When you select one or more ARM virtual devices, it must be <= 100. When you select only x86 virtual devices, it must be <= 500.',
-      }),
-  })
-  .openapi({
-    description:
-      'Uniformly shards test cases given a total number of shards. For instrumentation tests, it will be translated to "-e numShard" and "-e shardIndex" AndroidJUnitRunner arguments. With uniform sharding enabled, specifying either of these sharding arguments via `environment_variables` is invalid. Based on the sharding mechanism AndroidJUnitRunner uses, there is no guarantee that test cases will be distributed uniformly across all shards.',
-    required: [],
-  })
-  .openapi('UniformSharding')
-
-const ShardingOptionSchema = z
-  .object({
-    manualSharding: ManualShardingSchema.exactOptional().openapi({
-      description:
-        'Shards test cases into the specified groups of packages, classes, and/or methods.',
-    }),
-    uniformSharding: UniformShardingSchema.exactOptional().openapi({
-      description: 'Uniformly shards test cases given a total number of shards.',
-    }),
-  })
-  .openapi({ description: 'Options for enabling sharding.', required: [] })
-  .openapi('ShardingOption')
-
-const AndroidInstrumentationTestSchema = z
-  .object({
-    appApk: FileReferenceSchema.exactOptional().openapi({
-      description: 'The APK for the application under test.',
-    }),
-    appBundle: AppBundleSchema.exactOptional().openapi({
-      description: 'A multi-apk app bundle for the application under test.',
-    }),
-    appPackageId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The java package for the application under test. The default value is determined by examining the application's manifest.",
-      }),
-    orchestratorOption: z
-      .enum(['ORCHESTRATOR_OPTION_UNSPECIFIED', 'USE_ORCHESTRATOR', 'DO_NOT_USE_ORCHESTRATOR'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The option of whether running each test within its own invocation of instrumentation with Android Test Orchestrator or not. ** Orchestrator is only compatible with AndroidJUnitRunner version 1.1 or higher! ** Orchestrator offers the following benefits: - No shared state - Crashes are isolated - Logs are scoped per test See for more information about Android Test Orchestrator. If not set, the test will be run without the orchestrator.',
-      }),
-    shardingOption: ShardingOptionSchema.exactOptional().openapi({
-      description: 'The option to run tests in multiple shards in parallel.',
-    }),
-    testApk: FileReferenceSchema.exactOptional().openapi({
-      description: 'Required. The APK containing the test code to be executed.',
-    }),
-    testPackageId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The java package for the test to be executed. The default value is determined by examining the application's manifest.",
-      }),
-    testRunnerClass: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The InstrumentationTestRunner class. The default value is determined by examining the application's manifest.",
-      }),
-    testTargets: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Each target must be fully qualified with the package name or class name, in one of these formats: - "package package_name" - "class package_name.class_name" - "class package_name.class_name#method_name" If empty, all targets in the module will be run.',
-      }),
-  })
-  .openapi({
-    description:
-      'A test of an Android application that can control an Android component independently of its normal lifecycle. Android instrumentation tests run an application APK and test APK inside the same process on a virtual or physical AndroidDevice. They also specify a test runner class, such as com.google.GoogleTestRunner, which can vary on the specific instrumentation framework chosen. See for more information on types of Android tests.',
-    required: [],
-  })
-  .openapi('AndroidInstrumentationTest')
-
-const AndroidMatrixSchema = z
-  .object({
-    androidModelIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The ids of the set of Android device to be used. Use the TestEnvironmentDiscoveryService to get supported options.',
-      }),
-    androidVersionIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The ids of the set of Android OS version to be used. Use the TestEnvironmentDiscoveryService to get supported options.',
-      }),
-    locales: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The set of locales the test device will enable for testing. Use the TestEnvironmentDiscoveryService to get supported options.',
-      }),
-    orientations: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The set of orientations to test with. Use the TestEnvironmentDiscoveryService to get supported options.',
-      }),
-  })
-  .openapi({
-    description:
-      'A set of Android device configuration permutations is defined by the the cross-product of the given axes. Internally, the given AndroidMatrix will be expanded into a set of AndroidDevices. Only supported permutations will be instantiated. Invalid permutations (e.g., incompatible models/versions) are ignored.',
-    required: [],
-  })
-  .openapi('AndroidMatrix')
-
-const RoboDirectiveSchema = z
-  .object({
-    actionType: z
-      .enum(['ACTION_TYPE_UNSPECIFIED', 'SINGLE_CLICK', 'ENTER_TEXT', 'IGNORE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The type of action that Robo should perform on the specified element.',
-      }),
-    inputText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The text that Robo is directed to set. If left empty, the directive will be treated as a CLICK on the element matching the resource_name.',
-      }),
-    resourceName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The android resource name of the target UI element. For example, in Java: R.string.foo in xml: @string/foo Only the "foo" part is needed. Reference doc: https://developer.android.com/guide/topics/resources/accessing-resources.html',
-      }),
-  })
-  .openapi({
-    description:
-      'Directs Robo to interact with a specific UI element if it is encountered during the crawl. Currently, Robo can perform text entry or element click.',
-    required: [],
-  })
-  .openapi('RoboDirective')
-
-const LauncherActivityIntentSchema = z
-  .object({})
-  .openapi({ description: 'Specifies an intent that starts the main launcher activity.' })
-  .openapi('LauncherActivityIntent')
-
-const StartActivityIntentSchema = z
-  .object({
-    action: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Action name. Required for START_ACTIVITY.' }),
-    categories: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Intent categories to set on the intent.' }),
-    uri: z.string().exactOptional().openapi({ description: 'URI for the action.' }),
-  })
-  .openapi({
-    description: 'A starting intent specified by an action, uri, and categories.',
-    required: [],
-  })
-  .openapi('StartActivityIntent')
-
-const RoboStartingIntentSchema = z
-  .object({
-    launcherActivity: LauncherActivityIntentSchema.exactOptional().openapi({
-      description: 'An intent that starts the main launcher activity.',
-    }),
-    startActivity: StartActivityIntentSchema.exactOptional().openapi({
-      description: 'An intent that starts an activity with specific details.',
-    }),
-    timeout: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Timeout in seconds for each intent.' }),
-  })
-  .openapi({ description: 'Message for specifying the start activities to crawl.', required: [] })
-  .openapi('RoboStartingIntent')
-
-const AndroidRoboTestSchema = z
-  .object({
-    appApk: FileReferenceSchema.exactOptional().openapi({
-      description: 'The APK for the application under test.',
-    }),
-    appBundle: AppBundleSchema.exactOptional().openapi({
-      description: 'A multi-apk app bundle for the application under test.',
-    }),
-    appInitialActivity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The initial activity that should be used to start the app.' }),
-    appPackageId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The java package for the application under test. The default value is determined by examining the application's manifest.",
-      }),
-    maxDepth: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The max depth of the traversal stack Robo can explore. Needs to be at least 2 to make Robo explore the app beyond the first activity. Default is 50.',
-      }),
-    maxSteps: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The max number of steps Robo can execute. Default is no limit.' }),
-    roboDirectives: z
-      .array(RoboDirectiveSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A set of directives Robo should apply during the crawl. This allows users to customize the crawl. For example, the username and password for a test account can be provided.',
-      }),
-    roboMode: z
-      .enum(['ROBO_MODE_UNSPECIFIED', 'ROBO_VERSION_1', 'ROBO_VERSION_2'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The mode in which Robo should run. Most clients should allow the server to populate this field automatically.',
-      }),
-    roboScript: FileReferenceSchema.exactOptional().openapi({
-      description:
-        'A JSON file with a sequence of actions Robo should perform as a prologue for the crawl.',
-    }),
-    startingIntents: z
-      .array(RoboStartingIntentSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The intents used to launch the app for the crawl. If none are provided, then the main launcher activity is launched. If some are provided, then only those provided are launched (the main launcher activity must be provided explicitly).',
-      }),
-  })
-  .openapi({
-    description:
-      'A test of an android application that explores the application on a virtual or physical Android Device, finding culprits and crashes as it goes.',
-    required: [],
-  })
-  .openapi('AndroidRoboTest')
-
-const AndroidTestLoopSchema = z
-  .object({
-    appApk: FileReferenceSchema.exactOptional().openapi({
-      description: 'The APK for the application under test.',
-    }),
-    appBundle: AppBundleSchema.exactOptional().openapi({
-      description: 'A multi-apk app bundle for the application under test.',
-    }),
-    appPackageId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The java package for the application under test. The default is determined by examining the application's manifest.",
-      }),
-    scenarioLabels: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "The list of scenario labels that should be run during the test. The scenario labels should map to labels defined in the application's manifest. For example, player_experience and com.google.test.loops.player_experience add all of the loops labeled in the manifest with the com.google.test.loops.player_experience name to the execution. Scenarios can also be specified in the scenarios field.",
-      }),
-    scenarios: z
-      .array(z.int32())
-      .exactOptional()
-      .openapi({
-        description:
-          "The list of scenarios that should be run during the test. The default is all test loops, derived from the application's manifest.",
-      }),
-  })
-  .openapi({
-    description:
-      'A test of an Android Application with a Test Loop. The intent \\ will be implicitly added, since Games is the only user of this api, for the time being.',
-    required: [],
-  })
-  .openapi('AndroidTestLoop')
-
-const ApkSchema = z
-  .object({
-    location: FileReferenceSchema.exactOptional().openapi({
-      description: 'The path to an APK to be installed on the device before the test begins.',
-    }),
-    packageName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The java package for the APK to be installed. Value is determined by examining the application's manifest.",
-      }),
-  })
-  .openapi({ description: 'An Android package file to install.', required: [] })
-  .openapi('Apk')
-
 const IntentFilterSchema = z
   .object({
     actionNames: z
@@ -854,88 +1535,6 @@ const CancelTestMatrixResponseSchema = z
   })
   .openapi('CancelTestMatrixResponse')
 
-const ClientInfoDetailSchema = z
-  .object({
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The key of detailed client information.' }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The value of detailed client information.' }),
-  })
-  .openapi({
-    description:
-      "Key-value pair of detailed information about the client which invoked the test. Examples: {'Version', '1.0'}, {'Release Track', 'BETA'}.",
-    required: [],
-  })
-  .openapi('ClientInfoDetail')
-
-const ClientInfoSchema = z
-  .object({
-    clientInfoDetails: z
-      .array(ClientInfoDetailSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of detailed information about client.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Client name, such as gcloud.' }),
-  })
-  .openapi({ description: 'Information about the client which invoked the test.', required: [] })
-  .openapi('ClientInfo')
-
-const ObbFileSchema = z
-  .object({
-    obb: FileReferenceSchema.exactOptional().openapi({
-      description: 'Required. Opaque Binary Blob (OBB) file(s) to install on the device.',
-    }),
-    obbFileName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. OBB file name which must conform to the format as specified by Android e.g. [main|patch].0300110.com.example.android.obb which will be installed into \\/Android/obb/\\/ on the device.',
-      }),
-  })
-  .openapi({
-    description: 'An opaque binary blob file to install on the device before the test starts.',
-    required: [],
-  })
-  .openapi('ObbFile')
-
-const RegularFileSchema = z
-  .object({
-    content: FileReferenceSchema.exactOptional().openapi({
-      description: 'Required. The source file.',
-    }),
-    devicePath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Where to put the content on the device. Must be an absolute, allowlisted path. If the file exists, it will be replaced. The following device-side directories and any of their subdirectories are allowlisted: ${EXTERNAL_STORAGE}, /sdcard, or /storage ${ANDROID_DATA}/local/tmp, or /data/local/tmp Specifying a path outside of these directory trees is invalid. The paths /sdcard and /data will be made available and treated as implicit path substitutions. E.g. if /sdcard on a particular device does not map to external storage, the system will replace it with the external storage path prefix for that device and copy the file there. It is strongly advised to use the Environment API in app and test code to access files on the device in a portable way.',
-      }),
-  })
-  .openapi({
-    description: 'A file or directory to install on the device before the test starts.',
-    required: [],
-  })
-  .openapi('RegularFile')
-
-const DeviceFileSchema = z
-  .object({
-    obbFile: ObbFileSchema.exactOptional().openapi({
-      description: 'A reference to an opaque binary blob file.',
-    }),
-    regularFile: RegularFileSchema.exactOptional().openapi({
-      description: 'A reference to a regular file.',
-    }),
-  })
-  .openapi({ description: 'A single device file description.', required: [] })
-  .openapi('DeviceFile')
-
 const DeviceIpBlockSchema = z
   .object({
     addedDate: DateSchema.exactOptional().openapi({
@@ -963,97 +1562,6 @@ const DeviceIpBlockCatalogSchema = z
   .openapi({ description: 'List of IP blocks used by the Firebase Test Lab', required: [] })
   .openapi('DeviceIpBlockCatalog')
 
-const IosDeviceSchema = z
-  .object({
-    iosModelId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The id of the iOS device to be used. Use the TestEnvironmentDiscoveryService to get supported options.',
-      }),
-    iosVersionId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The id of the iOS major software version to be used. Use the TestEnvironmentDiscoveryService to get supported options.',
-      }),
-    locale: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The locale the test device used for testing. Use the TestEnvironmentDiscoveryService to get supported options.',
-      }),
-    orientation: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. How the device is oriented during the test. Use the TestEnvironmentDiscoveryService to get supported options.',
-      }),
-  })
-  .openapi({ description: 'A single iOS device.', required: [] })
-  .openapi('IosDevice')
-
-const EnvironmentSchema = z
-  .object({
-    androidDevice: AndroidDeviceSchema.exactOptional().openapi({
-      description: 'An Android device which must be used with an Android test.',
-    }),
-    iosDevice: IosDeviceSchema.exactOptional().openapi({
-      description: 'An iOS device which must be used with an iOS test.',
-    }),
-  })
-  .openapi({ description: 'The environment in which the test is run.', required: [] })
-  .openapi('Environment')
-
-const IosDeviceListSchema = z
-  .object({
-    iosDevices: z
-      .array(IosDeviceSchema)
-      .exactOptional()
-      .openapi({ description: 'Required. A list of iOS devices.' }),
-  })
-  .openapi({
-    description: 'A list of iOS device configurations in which the test is to be executed.',
-    required: [],
-  })
-  .openapi('IosDeviceList')
-
-const EnvironmentMatrixSchema = z
-  .object({
-    androidDeviceList: AndroidDeviceListSchema.exactOptional().openapi({
-      description: 'A list of Android devices; the test will be run only on the specified devices.',
-    }),
-    androidMatrix: AndroidMatrixSchema.exactOptional().openapi({
-      description: 'A matrix of Android devices.',
-    }),
-    iosDeviceList: IosDeviceListSchema.exactOptional().openapi({
-      description: 'A list of iOS devices.',
-    }),
-  })
-  .openapi({
-    description: 'The matrix of environments in which the test is to be executed.',
-    required: [],
-  })
-  .openapi('EnvironmentMatrix')
-
-const EnvironmentVariableSchema = z
-  .object({
-    key: z.string().exactOptional().openapi({ description: 'Key for the environment variable.' }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Value for the environment variable.' }),
-  })
-  .openapi({
-    description: 'A key-value pair passed as an environment variable to the test.',
-    required: [],
-  })
-  .openapi('EnvironmentVariable')
-
 const GetApkDetailsResponseSchema = z
   .object({
     apkDetail: ApkDetailSchema.exactOptional().openapi({
@@ -1065,19 +1573,6 @@ const GetApkDetailsResponseSchema = z
     required: [],
   })
   .openapi('GetApkDetailsResponse')
-
-const GoogleCloudStorageSchema = z
-  .object({
-    gcsPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The path to a directory in GCS that will eventually contain the results for this test. The requesting user must have write access on the bucket in the supplied path.',
-      }),
-  })
-  .openapi({ description: 'A storage location within Google cloud storage (GCS).', required: [] })
-  .openapi('GoogleCloudStorage')
 
 const PerIosVersionInfoSchema = z
   .object({
@@ -1240,120 +1735,6 @@ const IosDeviceCatalogSchema = z
   .openapi({ description: 'The currently supported iOS devices.', required: [] })
   .openapi('IosDeviceCatalog')
 
-const IosDeviceFileSchema = z
-  .object({
-    bundleId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The bundle id of the app where this file lives. iOS apps sandbox their own filesystem, so app files must specify which app installed on the device.',
-      }),
-    content: FileReferenceSchema.exactOptional().openapi({ description: 'The source file' }),
-    devicePath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "Location of the file on the device, inside the app's sandboxed filesystem",
-      }),
-  })
-  .openapi({
-    description: 'A file or directory to install on the device before the test starts.',
-    required: [],
-  })
-  .openapi('IosDeviceFile')
-
-const IosTestLoopSchema = z
-  .object({
-    appBundleId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The bundle id for the application under test.' }),
-    appIpa: FileReferenceSchema.exactOptional().openapi({
-      description: 'Required. The .ipa of the application to test.',
-    }),
-    scenarios: z
-      .array(z.int32())
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of scenarios that should be run during the test. Defaults to the single scenario 0 if unspecified.',
-      }),
-  })
-  .openapi({
-    description:
-      'A test of an iOS application that implements one or more game loop scenarios. This test type accepts an archived application (.ipa file) and a list of integer scenarios that will be executed on the app sequentially.',
-    required: [],
-  })
-  .openapi('IosTestLoop')
-
-const IosTestSetupSchema = z
-  .object({
-    additionalIpas: z
-      .array(FileReferenceSchema)
-      .exactOptional()
-      .openapi({ description: 'iOS apps to install in addition to those being directly tested.' }),
-    networkProfile: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The network traffic profile used for running the test. Available network profiles can be queried by using the NETWORK_CONFIGURATION environment type when calling TestEnvironmentDiscoveryService.GetTestEnvironmentCatalog.',
-      }),
-    pullDirectories: z
-      .array(IosDeviceFileSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "List of directories on the device to upload to Cloud Storage at the end of the test. Directories should either be in a shared directory (such as /private/var/mobile/Media) or within an accessible directory inside the app's filesystem (such as /Documents) by specifying the bundle ID.",
-      }),
-    pushFiles: z
-      .array(IosDeviceFileSchema)
-      .exactOptional()
-      .openapi({ description: 'List of files to push to the device before starting the test.' }),
-  })
-  .openapi({
-    description: 'A description of how to set up an iOS device prior to running the test.',
-    required: [],
-  })
-  .openapi('IosTestSetup')
-
-const IosXcTestSchema = z
-  .object({
-    appBundleId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The bundle id for the application under test.' }),
-    testSpecialEntitlements: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'The option to test special app entitlements. Setting this would re-sign the app having special entitlements with an explicit application-identifier. Currently supports testing aps-environment entitlement.',
-      }),
-    testsZip: FileReferenceSchema.exactOptional().openapi({
-      description:
-        'Required. The .zip containing the .xctestrun file and the contents of the DerivedData/Build/Products directory. The .xctestrun file in this zip is ignored if the xctestrun field is specified.',
-    }),
-    xcodeVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Xcode version that should be used for the test. Use the TestEnvironmentDiscoveryService to get supported options. Defaults to the latest Xcode version Firebase Test Lab supports.',
-      }),
-    xctestrun: FileReferenceSchema.exactOptional().openapi({
-      description:
-        'An .xctestrun file that will override the .xctestrun file in the tests zip. Because the .xctestrun file contains environment variables along with test methods to run and/or ignore, this can be useful for sharding tests. Default is taken from the tests zip.',
-    }),
-  })
-  .openapi({
-    description:
-      'A test of an iOS application that uses the XCTest framework. Xcode supports the option to "build for testing", which generates an .xctestrun file that contains a test specification (arguments, test methods, etc). This test type accepts a zip file containing the .xctestrun file and the corresponding contents of the Build/Products directory that contains all the binaries needed to run the tests.',
-    required: [],
-  })
-  .openapi('IosXcTest')
-
 const TrafficRuleSchema = z
   .object({
     bandwidth: z.float32().exactOptional().openapi({ description: 'Bandwidth in kbits/second.' }),
@@ -1415,123 +1796,6 @@ const ProvidedSoftwareCatalogSchema = z
   })
   .openapi('ProvidedSoftwareCatalog')
 
-const ToolResultsExecutionSchema = z
-  .object({
-    executionId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. A tool results execution ID.' }),
-    historyId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. A tool results history ID.' }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The cloud project that owns the tool results execution.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a tool results execution resource. This has the results of a TestMatrix.',
-    required: [],
-  })
-  .openapi('ToolResultsExecution')
-
-const ToolResultsHistorySchema = z
-  .object({
-    historyId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. A tool results history ID.' }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The cloud project that owns the tool results history.' }),
-  })
-  .openapi({ description: 'Represents a tool results history resource.', required: [] })
-  .openapi('ToolResultsHistory')
-
-const ResultStorageSchema = z
-  .object({
-    googleCloudStorage: GoogleCloudStorageSchema.exactOptional().openapi({
-      description: 'Required.',
-    }),
-    resultsUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. URL to the results in the Firebase Web Console.' }),
-    toolResultsExecution: ToolResultsExecutionSchema.exactOptional().openapi({
-      description: 'Output only. The tool results execution that results are written to.',
-    }),
-    toolResultsHistory: ToolResultsHistorySchema.exactOptional().openapi({
-      description:
-        'The tool results history that contains the tool results execution that results are written to. If not provided, the service will choose an appropriate value.',
-    }),
-  })
-  .openapi({
-    description: 'Locations where the results of running the test are stored.',
-    required: [],
-  })
-  .openapi('ResultStorage')
-
-const ShardSchema: z.ZodType<ShardType> = z
-  .lazy(() =>
-    z
-      .object({
-        numShards: z
-          .int32()
-          .exactOptional()
-          .openapi({ description: 'Output only. The total number of shards.' }),
-        shardIndex: z
-          .int32()
-          .exactOptional()
-          .openapi({ description: 'Output only. The index of the shard among all the shards.' }),
-        testTargetsForShard: TestTargetsForShardSchema.exactOptional().openapi({
-          description: 'Output only. Test targets for each shard. Only set for manual sharding.',
-        }),
-      })
-      .openapi({ description: 'Output only. Details about the shard.', required: [] }),
-  )
-  .openapi('Shard')
-
-const SystraceSetupSchema = z
-  .object({
-    durationSeconds: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Systrace duration in seconds. Should be between 1 and 30 seconds. 0 disables systrace.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('SystraceSetup')
-
-const TestDetailsSchema = z
-  .object({
-    errorMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. If the TestState is ERROR, then this string will contain human-readable details about the error.',
-      }),
-    progressMessages: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Human-readable, detailed descriptions of the test\'s progress. For example: "Provisioning a device", "Starting Test". During the course of execution new data may be appended to the end of progress_messages.',
-      }),
-  })
-  .openapi({
-    description: 'Additional details about the progress of the running test.',
-    required: [],
-  })
-  .openapi('TestDetails')
-
 const TestEnvironmentCatalogSchema = z
   .object({
     androidDeviceCatalog: AndroidDeviceCatalogSchema.exactOptional().openapi({
@@ -1553,185 +1817,7 @@ const TestEnvironmentCatalogSchema = z
   .openapi({ description: 'A description of a test environment.', required: [] })
   .openapi('TestEnvironmentCatalog')
 
-const TestSetupSchema = z
-  .object({
-    account: AccountSchema.exactOptional().openapi({
-      description: 'The device will be logged in on this account for the duration of the test.',
-    }),
-    additionalApks: z
-      .array(ApkSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'APKs to install in addition to those being directly tested. Currently capped at 100.',
-      }),
-    directoriesToPull: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'List of directories on the device to upload to GCS at the end of the test; they must be absolute paths under /sdcard, /storage or /data/local/tmp. Path names are restricted to characters a-z A-Z 0-9 _ - . + and / Note: The paths /sdcard and /data will be made available and treated as implicit path substitutions. E.g. if /sdcard on a particular device does not map to external storage, the system will replace it with the external storage path prefix for that device.',
-      }),
-    dontAutograntPermissions: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether to prevent all runtime permissions to be granted at app install',
-      }),
-    environmentVariables: z
-      .array(EnvironmentVariableSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Environment variables to set for the test (only applicable for instrumentation tests).',
-      }),
-    filesToPush: z
-      .array(DeviceFileSchema)
-      .exactOptional()
-      .openapi({ description: 'List of files to push to the device before starting the test.' }),
-    networkProfile: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The network traffic profile used for running the test. Available network profiles can be queried by using the NETWORK_CONFIGURATION environment type when calling TestEnvironmentDiscoveryService.GetTestEnvironmentCatalog.',
-      }),
-    systrace: SystraceSetupSchema.exactOptional().openapi({
-      description:
-        'Systrace configuration for the run. Deprecated: Systrace used Python 2 which was sunsetted on 2020-01-01. Systrace is no longer supported in the Cloud Testing API, and no Systrace file will be provided in the results.',
-    }),
-  })
-  .openapi({
-    description: 'A description of how to set up the Android device prior to running the test.',
-    required: [],
-  })
-  .openapi('TestSetup')
-
-const TestSpecificationSchema = z
-  .object({
-    androidInstrumentationTest: AndroidInstrumentationTestSchema.exactOptional().openapi({
-      description: 'An Android instrumentation test.',
-    }),
-    androidRoboTest: AndroidRoboTestSchema.exactOptional().openapi({
-      description: 'An Android robo test.',
-    }),
-    androidTestLoop: AndroidTestLoopSchema.exactOptional().openapi({
-      description: 'An Android Application with a Test Loop.',
-    }),
-    disablePerformanceMetrics: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Disables performance metrics recording. May reduce test latency.' }),
-    disableVideoRecording: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Disables video recording. May reduce test latency.' }),
-    iosTestLoop: IosTestLoopSchema.exactOptional().openapi({
-      description: 'An iOS application with a test loop.',
-    }),
-    iosTestSetup: IosTestSetupSchema.exactOptional().openapi({
-      description: 'Test setup requirements for iOS.',
-    }),
-    iosXcTest: IosXcTestSchema.exactOptional().openapi({
-      description: 'An iOS XCTest, via an .xctestrun file.',
-    }),
-    testSetup: TestSetupSchema.exactOptional().openapi({
-      description: 'Test setup requirements for Android e.g. files to install, bootstrap scripts.',
-    }),
-    testTimeout: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Max time a test execution is allowed to run before it is automatically cancelled. The default value is 5 min.',
-      }),
-  })
-  .openapi({ description: 'A description of how to run the test.', required: [] })
-  .openapi('TestSpecification')
-
-const ToolResultsStepSchema = z
-  .object({
-    executionId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. A tool results execution ID.' }),
-    historyId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. A tool results history ID.' }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The cloud project that owns the tool results step.' }),
-    stepId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. A tool results step ID.' }),
-  })
-  .openapi({
-    description:
-      'Represents a tool results step resource. This has the results of a TestExecution.',
-    required: [],
-  })
-  .openapi('ToolResultsStep')
-
-const TestExecutionSchema = z
-  .object({
-    environment: EnvironmentSchema.exactOptional().openapi({
-      description: 'Output only. How the host machine(s) are configured.',
-    }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Unique id set by the service.' }),
-    matrixId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Id of the containing TestMatrix.' }),
-    projectId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The cloud project that owns the test execution.' }),
-    shard: ShardSchema.exactOptional().openapi({
-      description: 'Output only. Details about the shard.',
-    }),
-    state: z
-      .enum([
-        'TEST_STATE_UNSPECIFIED',
-        'VALIDATING',
-        'PENDING',
-        'RUNNING',
-        'FINISHED',
-        'ERROR',
-        'UNSUPPORTED_ENVIRONMENT',
-        'INCOMPATIBLE_ENVIRONMENT',
-        'INCOMPATIBLE_ARCHITECTURE',
-        'CANCELLED',
-        'INVALID',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Indicates the current progress of the test execution (e.g., FINISHED).',
-      }),
-    testDetails: TestDetailsSchema.exactOptional().openapi({
-      description: 'Output only. Additional details about the running test.',
-    }),
-    testSpecification: TestSpecificationSchema.exactOptional().openapi({
-      description: 'Output only. How to run the test.',
-    }),
-    timestamp: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The time this test execution was initially created.' }),
-    toolResultsStep: ToolResultsStepSchema.exactOptional().openapi({
-      description: 'Output only. Where the results for this execution are written.',
-    }),
-  })
-  .openapi({ description: 'A single test executed in a single environment.', required: [] })
-  .openapi('TestExecution')
-
-const TestMatrixSchema = z
+const TestMatrixSchema: z.ZodType<TestMatrixType> = z
   .object({
     clientInfo: ClientInfoSchema.exactOptional().openapi({
       description: 'Information about the client which invoked the test.',

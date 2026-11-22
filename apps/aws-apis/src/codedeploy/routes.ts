@@ -1,5 +1,77 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const ApplicationNameSchema = z.string().min(1).max(100).openapi('ApplicationName')
+
+const DeploymentGroupIdSchema = z.string().openapi('DeploymentGroupId')
+
+const DeploymentGroupNameSchema = z.string().min(1).max(100).openapi('DeploymentGroupName')
+
+const DeploymentConfigNameSchema = z.string().min(1).max(100).openapi('DeploymentConfigName')
+
+const KeySchema = z.string().openapi('Key')
+
+const ValueSchema = z.string().openapi('Value')
+
+const EC2TagFilterTypeSchema = z
+  .enum(['KEY_ONLY', 'VALUE_ONLY', 'KEY_AND_VALUE'])
+  .openapi('EC2TagFilterType')
+
+const EC2TagFilterSchema = z
+  .object({
+    Key: KeySchema.exactOptional().openapi({ description: 'The tag filter key.' }),
+    Value: ValueSchema.exactOptional().openapi({ description: 'The tag filter value.' }),
+    Type: EC2TagFilterTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The tag filter type:</p> <ul> <li> <p> <code>KEY_ONLY</code>: Key only.</p> </li> <li> <p> <code>VALUE_ONLY</code>: Value only.</p> </li> <li> <p> <code>KEY_AND_VALUE</code>: Key and value.</p> </li> </ul>',
+    }),
+  })
+  .openapi({ description: 'Information about an EC2 tag filter.', required: [] })
+  .openapi('EC2TagFilter')
+
+const EC2TagFilterListSchema = z.array(EC2TagFilterSchema).openapi('EC2TagFilterList')
+
+const TagFilterTypeSchema = z
+  .enum(['KEY_ONLY', 'VALUE_ONLY', 'KEY_AND_VALUE'])
+  .openapi('TagFilterType')
+
+const TagFilterSchema = z
+  .object({
+    Key: KeySchema.exactOptional().openapi({
+      description: 'The on-premises instance tag filter key.',
+    }),
+    Value: ValueSchema.exactOptional().openapi({
+      description: 'The on-premises instance tag filter value.',
+    }),
+    Type: TagFilterTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The on-premises instance tag filter type:</p> <ul> <li> <p>KEY_ONLY: Key only.</p> </li> <li> <p>VALUE_ONLY: Value only.</p> </li> <li> <p>KEY_AND_VALUE: Key and value.</p> </li> </ul>',
+    }),
+  })
+  .openapi({ description: 'Information about an on-premises instance tag filter.', required: [] })
+  .openapi('TagFilter')
+
+const TagFilterListSchema = z.array(TagFilterSchema).openapi('TagFilterList')
+
+const AutoScalingGroupNameSchema = z.string().openapi('AutoScalingGroupName')
+
+const AutoScalingGroupHookSchema = z.string().openapi('AutoScalingGroupHook')
+
+const AutoScalingGroupSchema = z
+  .object({
+    name: AutoScalingGroupNameSchema.exactOptional().openapi({
+      description: 'The Auto Scaling group name.',
+    }),
+    hook: AutoScalingGroupHookSchema.exactOptional().openapi({
+      description: 'An Auto Scaling lifecycle event hook name.',
+    }),
+  })
+  .openapi({ description: 'Information about an Auto Scaling group.', required: [] })
+  .openapi('AutoScalingGroup')
+
+const AutoScalingGroupListSchema = z.array(AutoScalingGroupSchema).openapi('AutoScalingGroupList')
+
+const RoleSchema = z.string().openapi('Role')
+
 const RevisionLocationTypeSchema = z
   .enum(['S3', 'GitHub', 'String', 'AppSpecContent'])
   .openapi('RevisionLocationType')
@@ -16,45 +88,25 @@ const ETagSchema = z.string().openapi('ETag')
 
 const S3LocationSchema = z
   .object({
-    bucket: S3BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Amazon S3 bucket where the application revision is stored.',
-        }),
-    ).exactOptional(),
-    key: S3KeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon S3 object that represents the bundled artifacts for the application revision.',
-        }),
-    ).exactOptional(),
-    bundleType: BundleTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The file type of the application revision. Must be one of the following:</p> <ul> <li> <p> <code>tar</code>: A tar archive file.</p> </li> <li> <p> <code>tgz</code>: A compressed tar archive file.</p> </li> <li> <p> <code>zip</code>: A zip archive file.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    version: VersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A specific version of the Amazon S3 object that represents the bundled artifacts for the application revision.</p> <p>If the version is not specified, the system uses the most recent version by default.</p>',
-        }),
-    ).exactOptional(),
-    eTag: ETagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ETag of the Amazon S3 object that represents the bundled artifacts for the application revision.</p> <p>If the ETag is not specified as an input parameter, ETag validation of the object is skipped.</p>',
-        }),
-    ).exactOptional(),
+    bucket: S3BucketSchema.exactOptional().openapi({
+      description: 'The name of the Amazon S3 bucket where the application revision is stored.',
+    }),
+    key: S3KeySchema.exactOptional().openapi({
+      description:
+        'The name of the Amazon S3 object that represents the bundled artifacts for the application revision.',
+    }),
+    bundleType: BundleTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The file type of the application revision. Must be one of the following:</p> <ul> <li> <p> <code>tar</code>: A tar archive file.</p> </li> <li> <p> <code>tgz</code>: A compressed tar archive file.</p> </li> <li> <p> <code>zip</code>: A zip archive file.</p> </li> </ul>',
+    }),
+    version: VersionIdSchema.exactOptional().openapi({
+      description:
+        '<p>A specific version of the Amazon S3 object that represents the bundled artifacts for the application revision.</p> <p>If the version is not specified, the system uses the most recent version by default.</p>',
+    }),
+    eTag: ETagSchema.exactOptional().openapi({
+      description:
+        '<p>The ETag of the Amazon S3 object that represents the bundled artifacts for the application revision.</p> <p>If the ETag is not specified as an input parameter, ETag validation of the object is skipped.</p>',
+    }),
   })
   .openapi({
     description: 'Information about the location of application artifacts stored in Amazon S3.',
@@ -68,22 +120,14 @@ const CommitIdSchema = z.string().openapi('CommitId')
 
 const GitHubLocationSchema = z
   .object({
-    repository: RepositorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The GitHub account and repository pair that stores a reference to the commit that represents the bundled artifacts for the application revision. </p> <p>Specified as account/repository.</p>',
-        }),
-    ).exactOptional(),
-    commitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SHA1 commit ID of the GitHub commit that represents the bundled artifacts for the application revision.',
-        }),
-    ).exactOptional(),
+    repository: RepositorySchema.exactOptional().openapi({
+      description:
+        '<p>The GitHub account and repository pair that stores a reference to the commit that represents the bundled artifacts for the application revision. </p> <p>Specified as account/repository.</p>',
+    }),
+    commitId: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The SHA1 commit ID of the GitHub commit that represents the bundled artifacts for the application revision.',
+    }),
   })
   .openapi({
     description: 'Information about the location of application artifacts stored in GitHub.',
@@ -97,17 +141,13 @@ const RawStringSha256Schema = z.string().openapi('RawStringSha256')
 
 const RawStringSchema = z
   .object({
-    content: RawStringContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The YAML-formatted or JSON-formatted revision string. It includes information about which Lambda function to update and optional Lambda functions that validate deployment lifecycle events.',
-        }),
-    ).exactOptional(),
-    sha256: RawStringSha256Schema.and(
-      z.any().openapi({ description: 'The SHA256 hash value of the revision content.' }),
-    ).exactOptional(),
+    content: RawStringContentSchema.exactOptional().openapi({
+      description:
+        'The YAML-formatted or JSON-formatted revision string. It includes information about which Lambda function to update and optional Lambda functions that validate deployment lifecycle events.',
+    }),
+    sha256: RawStringSha256Schema.exactOptional().openapi({
+      description: 'The SHA256 hash value of the revision content.',
+    }),
   })
   .openapi({
     deprecated: true,
@@ -119,17 +159,13 @@ const RawStringSchema = z
 
 const AppSpecContentSchema = z
   .object({
-    content: RawStringContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The YAML-formatted or JSON-formatted revision string. </p> <p> For an Lambda deployment, the content includes a Lambda function name, the alias for its original version, and the alias for its replacement version. The deployment shifts traffic from the original version of the Lambda function to the replacement version. </p> <p> For an Amazon ECS deployment, the content includes the task name, information about the load balancer that serves traffic to the container, and more. </p> <p> For both types of deployments, the content can specify Lambda functions that run at specified hooks, such as <code>BeforeInstall</code>, during a deployment. </p>',
-        }),
-    ).exactOptional(),
-    sha256: RawStringSha256Schema.and(
-      z.any().openapi({ description: ' The SHA256 hash value of the revision content. ' }),
-    ).exactOptional(),
+    content: RawStringContentSchema.exactOptional().openapi({
+      description:
+        '<p> The YAML-formatted or JSON-formatted revision string. </p> <p> For an Lambda deployment, the content includes a Lambda function name, the alias for its original version, and the alias for its replacement version. The deployment shifts traffic from the original version of the Lambda function to the replacement version. </p> <p> For an Amazon ECS deployment, the content includes the task name, information about the load balancer that serves traffic to the container, and more. </p> <p> For both types of deployments, the content can specify Lambda functions that run at specified hooks, such as <code>BeforeInstall</code>, during a deployment. </p>',
+    }),
+    sha256: RawStringSha256Schema.exactOptional().openapi({
+      description: ' The SHA256 hash value of the revision content. ',
+    }),
   })
   .openapi({
     description:
@@ -140,394 +176,30 @@ const AppSpecContentSchema = z
 
 const RevisionLocationSchema = z
   .object({
-    revisionType: RevisionLocationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of application revision:</p> <ul> <li> <p>S3: An application revision stored in Amazon S3.</p> </li> <li> <p>GitHub: An application revision stored in GitHub (EC2/On-premises deployments only).</p> </li> <li> <p>String: A YAML-formatted or JSON-formatted string (Lambda deployments only).</p> </li> <li> <p>AppSpecContent: An <code>AppSpecContent</code> object that contains the contents of an AppSpec file for an Lambda or Amazon ECS deployment. The content is formatted as JSON or YAML stored as a RawString.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    s3Location: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the location of a revision stored in Amazon S3. ',
-        }),
-    ).exactOptional(),
-    gitHubLocation: GitHubLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the location of application artifacts stored in GitHub.',
-        }),
-    ).exactOptional(),
-    string: RawStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the location of an Lambda deployment revision stored as a RawString.',
-        }),
-    ).exactOptional(),
-    appSpecContent: AppSpecContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The content of an AppSpec file for an Lambda or Amazon ECS deployment. The content is formatted as JSON or YAML and stored as a RawString. ',
-        }),
-    ).exactOptional(),
+    revisionType: RevisionLocationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of application revision:</p> <ul> <li> <p>S3: An application revision stored in Amazon S3.</p> </li> <li> <p>GitHub: An application revision stored in GitHub (EC2/On-premises deployments only).</p> </li> <li> <p>String: A YAML-formatted or JSON-formatted string (Lambda deployments only).</p> </li> <li> <p>AppSpecContent: An <code>AppSpecContent</code> object that contains the contents of an AppSpec file for an Lambda or Amazon ECS deployment. The content is formatted as JSON or YAML stored as a RawString.</p> </li> </ul>',
+    }),
+    s3Location: S3LocationSchema.exactOptional().openapi({
+      description: 'Information about the location of a revision stored in Amazon S3. ',
+    }),
+    gitHubLocation: GitHubLocationSchema.exactOptional().openapi({
+      description: 'Information about the location of application artifacts stored in GitHub.',
+    }),
+    string: RawStringSchema.exactOptional().openapi({
+      description:
+        'Information about the location of an Lambda deployment revision stored as a RawString.',
+    }),
+    appSpecContent: AppSpecContentSchema.exactOptional().openapi({
+      description:
+        ' The content of an AppSpec file for an Lambda or Amazon ECS deployment. The content is formatted as JSON or YAML and stored as a RawString. ',
+    }),
   })
   .openapi({
     description: 'Information about the location of an application revision.',
     required: [],
   })
   .openapi('RevisionLocation')
-
-const DescriptionSchema = z.string().openapi('Description')
-
-const DeploymentGroupNameSchema = z.string().min(1).max(100).openapi('DeploymentGroupName')
-
-const DeploymentGroupsListSchema = z
-  .array(DeploymentGroupNameSchema)
-  .openapi('DeploymentGroupsList')
-
-const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
-
-const GenericRevisionInfoSchema = z
-  .object({
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A comment about the revision.' }),
-    ).exactOptional(),
-    deploymentGroups: DeploymentGroupsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The deployment groups for which this is the current target revision.',
-        }),
-    ).exactOptional(),
-    firstUsedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the revision was first used by CodeDeploy.' }),
-    ).exactOptional(),
-    lastUsedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the revision was last used by CodeDeploy.' }),
-    ).exactOptional(),
-    registerTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the revision was registered with CodeDeploy.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about an application revision.', required: [] })
-  .openapi('GenericRevisionInfo')
-
-type RevisionInfoType = {
-  revisionLocation?: z.infer<typeof RevisionLocationSchema> & { [key: string]: unknown }
-  genericRevisionInfo?: z.infer<typeof GenericRevisionInfoSchema> & { [key: string]: unknown }
-}
-
-const KeySchema = z.string().openapi('Key')
-
-const ValueSchema = z.string().openapi('Value')
-
-const TagSchema = z
-  .object({
-    Key: KeySchema.and(z.any().openapi({ description: "The tag's key." })).exactOptional(),
-    Value: ValueSchema.and(z.any().openapi({ description: "The tag's value." })).exactOptional(),
-  })
-  .openapi({ description: 'Information about a tag.', required: [] })
-  .openapi('Tag')
-
-const TagListSchema = z.array(TagSchema).openapi('TagList')
-
-const InstanceNameSchema = z.string().openapi('InstanceName')
-
-const InstanceNameListSchema = z.array(InstanceNameSchema).openapi('InstanceNameList')
-
-const AddTagsToOnPremisesInstancesInputSchema = z
-  .object({
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The tag key-value pairs to add to the on-premises instances.</p> <p>Keys and values are both required. Keys cannot be null or empty strings. Value-only tags are not allowed.</p>',
-        }),
-    ),
-    instanceNames: InstanceNameListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The names of the on-premises instances to which to add tags.' }),
-    ),
-  })
-  .openapi({
-    required: ['tags', 'instanceNames'],
-    title: 'AddTagsToOnPremisesInstancesInput',
-    description: 'Represents the input of, and adds tags to, an on-premises instance operation.',
-  })
-  .openapi('AddTagsToOnPremisesInstancesInput')
-
-const InstanceNameRequiredExceptionSchema = z.any().openapi('InstanceNameRequiredException')
-
-const InvalidInstanceNameExceptionSchema = z.any().openapi('InvalidInstanceNameException')
-
-const TagRequiredExceptionSchema = z.any().openapi('TagRequiredException')
-
-const InvalidTagExceptionSchema = z.any().openapi('InvalidTagException')
-
-const TagLimitExceededExceptionSchema = z.any().openapi('TagLimitExceededException')
-
-const InstanceLimitExceededExceptionSchema = z.any().openapi('InstanceLimitExceededException')
-
-const InstanceNotRegisteredExceptionSchema = z.any().openapi('InstanceNotRegisteredException')
-
-const ApplicationNameSchema = z.string().min(1).max(100).openapi('ApplicationName')
-
-const ErrorMessageSchema = z.string().openapi('ErrorMessage')
-
-const RevisionInfoSchema: z.ZodType<RevisionInfoType> = z
-  .lazy(() =>
-    z
-      .object({
-        revisionLocation: RevisionLocationSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Information about the location and type of an application revision.',
-            }),
-        ).exactOptional(),
-        genericRevisionInfo: GenericRevisionInfoSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Information about an application revision, including usage details and associated deployment groups.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'Information about an application revision.', required: [] }),
-  )
-  .openapi('RevisionInfo')
-
-const RevisionInfoListSchema = z.array(RevisionInfoSchema).openapi('RevisionInfoList')
-
-const BatchGetApplicationRevisionsOutputSchema = z
-  .object({
-    applicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the application that corresponds to the revisions.' }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about errors that might have occurred during the API call.',
-        }),
-    ).exactOptional(),
-    revisions: RevisionInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional information about the revisions, including the type and location.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Represents the output of a <code>BatchGetApplicationRevisions</code> operation.',
-    required: [],
-  })
-  .openapi('BatchGetApplicationRevisionsOutput')
-
-const RevisionLocationListSchema = z.array(RevisionLocationSchema).openapi('RevisionLocationList')
-
-const BatchGetApplicationRevisionsInputSchema = z
-  .object({
-    applicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an CodeDeploy application about which to get revision information.',
-        }),
-    ),
-    revisions: RevisionLocationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>RevisionLocation</code> objects that specify information to get about the application revisions, including type and location. The maximum number of <code>RevisionLocation</code> objects you can specify is 25.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['applicationName', 'revisions'],
-    title: 'BatchGetApplicationRevisionsInput',
-    description: 'Represents the input of a <code>BatchGetApplicationRevisions</code> operation.',
-  })
-  .openapi('BatchGetApplicationRevisionsInput')
-
-const ApplicationDoesNotExistExceptionSchema = z.any().openapi('ApplicationDoesNotExistException')
-
-const ApplicationNameRequiredExceptionSchema = z.any().openapi('ApplicationNameRequiredException')
-
-const InvalidApplicationNameExceptionSchema = z.any().openapi('InvalidApplicationNameException')
-
-const RevisionRequiredExceptionSchema = z.any().openapi('RevisionRequiredException')
-
-const InvalidRevisionExceptionSchema = z.any().openapi('InvalidRevisionException')
-
-const BatchLimitExceededExceptionSchema = z.any().openapi('BatchLimitExceededException')
-
-const ApplicationIdSchema = z.string().openapi('ApplicationId')
-
-const BooleanSchema = z.boolean().openapi('Boolean')
-
-const GitHubAccountTokenNameSchema = z.string().openapi('GitHubAccountTokenName')
-
-const ComputePlatformSchema = z.enum(['Server', 'Lambda', 'ECS']).openapi('ComputePlatform')
-
-const ApplicationInfoSchema = z
-  .object({
-    applicationId: ApplicationIdSchema.and(
-      z.any().openapi({ description: 'The application ID.' }),
-    ).exactOptional(),
-    applicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The application name.' }),
-    ).exactOptional(),
-    createTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the application was created.' }),
-    ).exactOptional(),
-    linkedToGitHub: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if the user has authenticated with GitHub for the specified application. Otherwise, false.',
-        }),
-    ).exactOptional(),
-    gitHubAccountName: GitHubAccountTokenNameSchema.and(
-      z.any().openapi({ description: 'The name for a connection to a GitHub account.' }),
-    ).exactOptional(),
-    computePlatform: ComputePlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The destination platform type for deployment of the application (<code>Lambda</code> or <code>Server</code>).',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about an application.', required: [] })
-  .openapi('ApplicationInfo')
-
-const ApplicationsInfoListSchema = z.array(ApplicationInfoSchema).openapi('ApplicationsInfoList')
-
-const BatchGetApplicationsOutputSchema = z
-  .object({
-    applicationsInfo: ApplicationsInfoListSchema.and(
-      z.any().openapi({ description: 'Information about the applications.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Represents the output of a <code>BatchGetApplications</code> operation.',
-    required: [],
-  })
-  .openapi('BatchGetApplicationsOutput')
-
-const ApplicationsListSchema = z.array(ApplicationNameSchema).openapi('ApplicationsList')
-
-const BatchGetApplicationsInputSchema = z
-  .object({
-    applicationNames: ApplicationsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of application names separated by spaces. The maximum number of application names you can specify is 100.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['applicationNames'],
-    title: 'BatchGetApplicationsInput',
-    description: 'Represents the input of a <code>BatchGetApplications</code> operation.',
-  })
-  .openapi('BatchGetApplicationsInput')
-
-const DeploymentGroupIdSchema = z.string().openapi('DeploymentGroupId')
-
-const DeploymentConfigNameSchema = z.string().min(1).max(100).openapi('DeploymentConfigName')
-
-const EC2TagFilterTypeSchema = z
-  .enum(['KEY_ONLY', 'VALUE_ONLY', 'KEY_AND_VALUE'])
-  .openapi('EC2TagFilterType')
-
-const EC2TagFilterSchema = z
-  .object({
-    Key: KeySchema.and(z.any().openapi({ description: 'The tag filter key.' })).exactOptional(),
-    Value: ValueSchema.and(
-      z.any().openapi({ description: 'The tag filter value.' }),
-    ).exactOptional(),
-    Type: EC2TagFilterTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The tag filter type:</p> <ul> <li> <p> <code>KEY_ONLY</code>: Key only.</p> </li> <li> <p> <code>VALUE_ONLY</code>: Value only.</p> </li> <li> <p> <code>KEY_AND_VALUE</code>: Key and value.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about an EC2 tag filter.', required: [] })
-  .openapi('EC2TagFilter')
-
-const EC2TagFilterListSchema = z.array(EC2TagFilterSchema).openapi('EC2TagFilterList')
-
-const TagFilterTypeSchema = z
-  .enum(['KEY_ONLY', 'VALUE_ONLY', 'KEY_AND_VALUE'])
-  .openapi('TagFilterType')
-
-const TagFilterSchema = z
-  .object({
-    Key: KeySchema.and(
-      z.any().openapi({ description: 'The on-premises instance tag filter key.' }),
-    ).exactOptional(),
-    Value: ValueSchema.and(
-      z.any().openapi({ description: 'The on-premises instance tag filter value.' }),
-    ).exactOptional(),
-    Type: TagFilterTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The on-premises instance tag filter type:</p> <ul> <li> <p>KEY_ONLY: Key only.</p> </li> <li> <p>VALUE_ONLY: Value only.</p> </li> <li> <p>KEY_AND_VALUE: Key and value.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about an on-premises instance tag filter.', required: [] })
-  .openapi('TagFilter')
-
-const TagFilterListSchema = z.array(TagFilterSchema).openapi('TagFilterList')
-
-const AutoScalingGroupNameSchema = z.string().openapi('AutoScalingGroupName')
-
-const AutoScalingGroupHookSchema = z.string().openapi('AutoScalingGroupHook')
-
-const AutoScalingGroupSchema = z
-  .object({
-    name: AutoScalingGroupNameSchema.and(
-      z.any().openapi({ description: 'The Auto Scaling group name.' }),
-    ).exactOptional(),
-    hook: AutoScalingGroupHookSchema.and(
-      z.any().openapi({ description: 'An Auto Scaling lifecycle event hook name.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about an Auto Scaling group.', required: [] })
-  .openapi('AutoScalingGroup')
-
-const AutoScalingGroupListSchema = z.array(AutoScalingGroupSchema).openapi('AutoScalingGroupList')
-
-const RoleSchema = z.string().openapi('Role')
 
 const TriggerNameSchema = z.string().openapi('TriggerName')
 
@@ -552,22 +224,16 @@ const TriggerEventTypeListSchema = z.array(TriggerEventTypeSchema).openapi('Trig
 
 const TriggerConfigSchema = z
   .object({
-    triggerName: TriggerNameSchema.and(
-      z.any().openapi({ description: 'The name of the notification trigger.' }),
-    ).exactOptional(),
-    triggerTargetArn: TriggerTargetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon Simple Notification Service topic through which notifications about deployment or instance events are sent.',
-        }),
-    ).exactOptional(),
-    triggerEvents: TriggerEventTypeListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The event type or types for which notifications are triggered.' }),
-    ).exactOptional(),
+    triggerName: TriggerNameSchema.exactOptional().openapi({
+      description: 'The name of the notification trigger.',
+    }),
+    triggerTargetArn: TriggerTargetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon Simple Notification Service topic through which notifications about deployment or instance events are sent.',
+    }),
+    triggerEvents: TriggerEventTypeListSchema.exactOptional().openapi({
+      description: 'The event type or types for which notifications are triggered.',
+    }),
   })
   .openapi({
     description: 'Information about notification triggers for the deployment group.',
@@ -577,18 +243,16 @@ const TriggerConfigSchema = z
 
 const TriggerConfigListSchema = z.array(TriggerConfigSchema).openapi('TriggerConfigList')
 
+const BooleanSchema = z.boolean().openapi('Boolean')
+
 const AlarmNameSchema = z.string().openapi('AlarmName')
 
 const AlarmSchema = z
   .object({
-    name: AlarmNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the alarm. Maximum length is 255 characters. Each alarm name can be used only once in a list of alarms.',
-        }),
-    ).exactOptional(),
+    name: AlarmNameSchema.exactOptional().openapi({
+      description:
+        'The name of the alarm. Maximum length is 255 characters. Each alarm name can be used only once in a list of alarms.',
+    }),
   })
   .openapi({ description: 'Information about an alarm.', required: [] })
   .openapi('Alarm')
@@ -597,25 +261,17 @@ const AlarmListSchema = z.array(AlarmSchema).openapi('AlarmList')
 
 const AlarmConfigurationSchema = z
   .object({
-    enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether the alarm configuration is enabled.' }),
-    ).exactOptional(),
-    ignorePollAlarmFailure: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates whether a deployment should continue if information about the current state of alarms cannot be retrieved from Amazon CloudWatch. The default value is false.</p> <ul> <li> <p> <code>true</code>: The deployment proceeds even if alarm status information can't be retrieved from Amazon CloudWatch.</p> </li> <li> <p> <code>false</code>: The deployment stops if alarm status information can't be retrieved from Amazon CloudWatch.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    alarms: AlarmListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of alarms configured for the deployment or deployment group. A maximum of 10 alarms can be added.',
-        }),
-    ).exactOptional(),
+    enabled: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether the alarm configuration is enabled.',
+    }),
+    ignorePollAlarmFailure: BooleanSchema.exactOptional().openapi({
+      description:
+        "<p>Indicates whether a deployment should continue if information about the current state of alarms cannot be retrieved from Amazon CloudWatch. The default value is false.</p> <ul> <li> <p> <code>true</code>: The deployment proceeds even if alarm status information can't be retrieved from Amazon CloudWatch.</p> </li> <li> <p> <code>false</code>: The deployment stops if alarm status information can't be retrieved from Amazon CloudWatch.</p> </li> </ul>",
+    }),
+    alarms: AlarmListSchema.exactOptional().openapi({
+      description:
+        'A list of alarms configured for the deployment or deployment group. A maximum of 10 alarms can be added.',
+    }),
   })
   .openapi({
     description: 'Information about alarms associated with a deployment or deployment group.',
@@ -633,17 +289,13 @@ const AutoRollbackEventsListSchema = z
 
 const AutoRollbackConfigurationSchema = z
   .object({
-    enabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether a defined automatic rollback configuration is currently enabled.',
-        }),
-    ).exactOptional(),
-    events: AutoRollbackEventsListSchema.and(
-      z.any().openapi({ description: 'The event type or types that trigger a rollback.' }),
-    ).exactOptional(),
+    enabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether a defined automatic rollback configuration is currently enabled.',
+    }),
+    events: AutoRollbackEventsListSchema.exactOptional().openapi({
+      description: 'The event type or types that trigger a rollback.',
+    }),
   })
   .openapi({
     description:
@@ -660,21 +312,12 @@ const DeploymentOptionSchema = z
 
 const DeploymentStyleSchema = z
   .object({
-    deploymentType: DeploymentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to run an in-place deployment or a blue/green deployment.',
-        }),
-    ).exactOptional(),
-    deploymentOption: DeploymentOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether to route deployment traffic behind a load balancer.',
-        }),
-    ).exactOptional(),
+    deploymentType: DeploymentTypeSchema.exactOptional().openapi({
+      description: 'Indicates whether to run an in-place deployment or a blue/green deployment.',
+    }),
+    deploymentOption: DeploymentOptionSchema.exactOptional().openapi({
+      description: 'Indicates whether to route deployment traffic behind a load balancer.',
+    }),
   })
   .openapi({
     description:
@@ -693,22 +336,14 @@ const DurationSchema = z.int().openapi('Duration')
 
 const BlueInstanceTerminationOptionSchema = z
   .object({
-    action: InstanceActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The action to take on instances in the original environment after a successful blue/green deployment.</p> <ul> <li> <p> <code>TERMINATE</code>: Instances are terminated after a specified wait time.</p> </li> <li> <p> <code>KEEP_ALIVE</code>: Instances are left running after they are deregistered from the load balancer and removed from the deployment group.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    terminationWaitTimeInMinutes: DurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For an Amazon EC2 deployment, the number of minutes to wait after a successful blue/green deployment before terminating instances from the original environment.</p> <p> For an Amazon ECS deployment, the number of minutes before deleting the original (blue) task set. During an Amazon ECS deployment, CodeDeploy shifts traffic from the original (blue) task set to a replacement (green) task set. </p> <p> The maximum setting is 2880 minutes (2 days). </p>',
-        }),
-    ).exactOptional(),
+    action: InstanceActionSchema.exactOptional().openapi({
+      description:
+        '<p>The action to take on instances in the original environment after a successful blue/green deployment.</p> <ul> <li> <p> <code>TERMINATE</code>: Instances are terminated after a specified wait time.</p> </li> <li> <p> <code>KEEP_ALIVE</code>: Instances are left running after they are deregistered from the load balancer and removed from the deployment group.</p> </li> </ul>',
+    }),
+    terminationWaitTimeInMinutes: DurationSchema.exactOptional().openapi({
+      description:
+        '<p>For an Amazon EC2 deployment, the number of minutes to wait after a successful blue/green deployment before terminating instances from the original environment.</p> <p> For an Amazon ECS deployment, the number of minutes before deleting the original (blue) task set. During an Amazon ECS deployment, CodeDeploy shifts traffic from the original (blue) task set to a replacement (green) task set. </p> <p> The maximum setting is 2880 minutes (2 days). </p>',
+    }),
   })
   .openapi({
     description:
@@ -723,22 +358,14 @@ const DeploymentReadyActionSchema = z
 
 const DeploymentReadyOptionSchema = z
   .object({
-    actionOnTimeout: DeploymentReadyActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about when to reroute traffic from an original environment to a replacement environment in a blue/green deployment.</p> <ul> <li> <p>CONTINUE_DEPLOYMENT: Register new instances with the load balancer immediately after the new application revision is installed on the instances in the replacement environment.</p> </li> <li> <p>STOP_DEPLOYMENT: Do not register new instances with a load balancer unless traffic rerouting is started using <a>ContinueDeployment</a>. If traffic rerouting is not started before the end of the specified wait period, the deployment status is changed to Stopped.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    waitTimeInMinutes: DurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of minutes to wait before the status of a blue/green deployment is changed to Stopped if rerouting is not started manually. Applies only to the <code>STOP_DEPLOYMENT</code> option for <code>actionOnTimeout</code>.',
-        }),
-    ).exactOptional(),
+    actionOnTimeout: DeploymentReadyActionSchema.exactOptional().openapi({
+      description:
+        '<p>Information about when to reroute traffic from an original environment to a replacement environment in a blue/green deployment.</p> <ul> <li> <p>CONTINUE_DEPLOYMENT: Register new instances with the load balancer immediately after the new application revision is installed on the instances in the replacement environment.</p> </li> <li> <p>STOP_DEPLOYMENT: Do not register new instances with a load balancer unless traffic rerouting is started using <a>ContinueDeployment</a>. If traffic rerouting is not started before the end of the specified wait period, the deployment status is changed to Stopped.</p> </li> </ul>',
+    }),
+    waitTimeInMinutes: DurationSchema.exactOptional().openapi({
+      description:
+        'The number of minutes to wait before the status of a blue/green deployment is changed to Stopped if rerouting is not started manually. Applies only to the <code>STOP_DEPLOYMENT</code> option for <code>actionOnTimeout</code>.',
+    }),
   })
   .openapi({
     description:
@@ -753,14 +380,10 @@ const GreenFleetProvisioningActionSchema = z
 
 const GreenFleetProvisioningOptionSchema = z
   .object({
-    action: GreenFleetProvisioningActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The method used to add instances to a replacement environment.</p> <ul> <li> <p> <code>DISCOVER_EXISTING</code>: Use instances that already exist or will be created manually.</p> </li> <li> <p> <code>COPY_AUTO_SCALING_GROUP</code>: Use settings from a specified Auto Scaling group to define and create instances in a new Auto Scaling group.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    action: GreenFleetProvisioningActionSchema.exactOptional().openapi({
+      description:
+        '<p>The method used to add instances to a replacement environment.</p> <ul> <li> <p> <code>DISCOVER_EXISTING</code>: Use instances that already exist or will be created manually.</p> </li> <li> <p> <code>COPY_AUTO_SCALING_GROUP</code>: Use settings from a specified Auto Scaling group to define and create instances in a new Auto Scaling group.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -771,30 +394,19 @@ const GreenFleetProvisioningOptionSchema = z
 
 const BlueGreenDeploymentConfigurationSchema = z
   .object({
-    terminateBlueInstancesOnDeploymentSuccess: BlueInstanceTerminationOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about whether to terminate instances in the original fleet during a blue/green deployment.',
-        }),
-    ).exactOptional(),
-    deploymentReadyOption: DeploymentReadyOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the action to take when newly provisioned instances are ready to receive traffic in a blue/green deployment.',
-        }),
-    ).exactOptional(),
-    greenFleetProvisioningOption: GreenFleetProvisioningOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about how instances are provisioned for a replacement environment in a blue/green deployment.',
-        }),
-    ).exactOptional(),
+    terminateBlueInstancesOnDeploymentSuccess:
+      BlueInstanceTerminationOptionSchema.exactOptional().openapi({
+        description:
+          'Information about whether to terminate instances in the original fleet during a blue/green deployment.',
+      }),
+    deploymentReadyOption: DeploymentReadyOptionSchema.exactOptional().openapi({
+      description:
+        'Information about the action to take when newly provisioned instances are ready to receive traffic in a blue/green deployment.',
+    }),
+    greenFleetProvisioningOption: GreenFleetProvisioningOptionSchema.exactOptional().openapi({
+      description:
+        'Information about how instances are provisioned for a replacement environment in a blue/green deployment.',
+    }),
   })
   .openapi({
     description: 'Information about blue/green deployment options for a deployment group.',
@@ -806,14 +418,10 @@ const ELBNameSchema = z.string().openapi('ELBName')
 
 const ELBInfoSchema = z
   .object({
-    name: ELBNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For blue/green deployments, the name of the load balancer that is used to route traffic from original instances to replacement instances in a blue/green deployment. For in-place deployments, the name of the load balancer that instances are deregistered from so they are not serving traffic during a deployment, and then re-registered with after the deployment is complete.',
-        }),
-    ).exactOptional(),
+    name: ELBNameSchema.exactOptional().openapi({
+      description:
+        'For blue/green deployments, the name of the load balancer that is used to route traffic from original instances to replacement instances in a blue/green deployment. For in-place deployments, the name of the load balancer that instances are deregistered from so they are not serving traffic during a deployment, and then re-registered with after the deployment is complete.',
+    }),
   })
   .openapi({
     description:
@@ -828,14 +436,10 @@ const TargetGroupNameSchema = z.string().openapi('TargetGroupName')
 
 const TargetGroupInfoSchema = z
   .object({
-    name: TargetGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For blue/green deployments, the name of the target group that instances in the original environment are deregistered from, and instances in the replacement environment are registered with. For in-place deployments, the name of the target group that instances are deregistered from, so they are not serving traffic during a deployment, and then re-registered with after the deployment is complete. ',
-        }),
-    ).exactOptional(),
+    name: TargetGroupNameSchema.exactOptional().openapi({
+      description:
+        'For blue/green deployments, the name of the target group that instances in the original environment are deregistered from, and instances in the replacement environment are registered with. For in-place deployments, the name of the target group that instances are deregistered from, so they are not serving traffic during a deployment, and then re-registered with after the deployment is complete. ',
+    }),
   })
   .openapi({
     description:
@@ -852,14 +456,10 @@ const ListenerArnListSchema = z.array(ListenerArnSchema).openapi('ListenerArnLis
 
 const TrafficRouteSchema = z
   .object({
-    listenerArns: ListenerArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) of one listener. The listener identifies the route between a target group and a load balancer. This is an array of strings with a maximum size of one. ',
-        }),
-    ).exactOptional(),
+    listenerArns: ListenerArnListSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Resource Name (ARN) of one listener. The listener identifies the route between a target group and a load balancer. This is an array of strings with a maximum size of one. ',
+    }),
   })
   .openapi({
     description:
@@ -870,30 +470,18 @@ const TrafficRouteSchema = z
 
 const TargetGroupPairInfoSchema = z
   .object({
-    targetGroups: TargetGroupInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' One pair of target groups. One is associated with the original task set. The second is associated with the task set that serves traffic after the deployment is complete. ',
-        }),
-    ).exactOptional(),
-    prodTrafficRoute: TrafficRouteSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The path used by a load balancer to route production traffic when an Amazon ECS deployment is complete. ',
-        }),
-    ).exactOptional(),
-    testTrafficRoute: TrafficRouteSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An optional path used by a load balancer to route test traffic after an Amazon ECS deployment. Validation can occur while test traffic is served during a deployment. ',
-        }),
-    ).exactOptional(),
+    targetGroups: TargetGroupInfoListSchema.exactOptional().openapi({
+      description:
+        ' One pair of target groups. One is associated with the original task set. The second is associated with the task set that serves traffic after the deployment is complete. ',
+    }),
+    prodTrafficRoute: TrafficRouteSchema.exactOptional().openapi({
+      description:
+        ' The path used by a load balancer to route production traffic when an Amazon ECS deployment is complete. ',
+    }),
+    testTrafficRoute: TrafficRouteSchema.exactOptional().openapi({
+      description:
+        ' An optional path used by a load balancer to route test traffic after an Amazon ECS deployment. Validation can occur while test traffic is served during a deployment. ',
+    }),
   })
   .openapi({
     description:
@@ -908,30 +496,18 @@ const TargetGroupPairInfoListSchema = z
 
 const LoadBalancerInfoSchema = z
   .object({
-    elbInfoList: ELBInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array that contains information about the load balancer to use for load balancing in a deployment. In Elastic Load Balancing, load balancers are used with Classic Load Balancers.</p> <note> <p> Adding more than one load balancer to the array is not supported. </p> </note>',
-        }),
-    ).exactOptional(),
-    targetGroupInfoList: TargetGroupInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array that contains information about the target group to use for load balancing in a deployment. In Elastic Load Balancing, target groups are used with Application Load Balancers.</p> <note> <p> Adding more than one target group to the array is not supported. </p> </note>',
-        }),
-    ).exactOptional(),
-    targetGroupPairInfoList: TargetGroupPairInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The target group pair information. This is an array of <code>TargeGroupPairInfo</code> objects with a maximum size of one. ',
-        }),
-    ).exactOptional(),
+    elbInfoList: ELBInfoListSchema.exactOptional().openapi({
+      description:
+        '<p>An array that contains information about the load balancer to use for load balancing in a deployment. In Elastic Load Balancing, load balancers are used with Classic Load Balancers.</p> <note> <p> Adding more than one load balancer to the array is not supported. </p> </note>',
+    }),
+    targetGroupInfoList: TargetGroupInfoListSchema.exactOptional().openapi({
+      description:
+        '<p>An array that contains information about the target group to use for load balancing in a deployment. In Elastic Load Balancing, target groups are used with Application Load Balancers.</p> <note> <p> Adding more than one target group to the array is not supported. </p> </note>',
+    }),
+    targetGroupPairInfoList: TargetGroupPairInfoListSchema.exactOptional().openapi({
+      description:
+        ' The target group pair information. This is an array of <code>TargeGroupPairInfo</code> objects with a maximum size of one. ',
+    }),
   })
   .openapi({
     description:
@@ -946,30 +522,24 @@ const DeploymentStatusSchema = z
   .enum(['Created', 'Queued', 'InProgress', 'Baking', 'Succeeded', 'Failed', 'Stopped', 'Ready'])
   .openapi('DeploymentStatus')
 
+const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
+
 const LastDeploymentInfoSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z.any().openapi({ description: ' The unique ID of a deployment. ' }),
-    ).exactOptional(),
-    status: DeploymentStatusSchema.and(
-      z.any().openapi({ description: 'The status of the most recent deployment.' }),
-    ).exactOptional(),
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A timestamp that indicates when the most recent deployment to the deployment group was complete.',
-        }),
-    ).exactOptional(),
-    createTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A timestamp that indicates when the most recent deployment to the deployment group started.',
-        }),
-    ).exactOptional(),
+    deploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description: ' The unique ID of a deployment. ',
+    }),
+    status: DeploymentStatusSchema.exactOptional().openapi({
+      description: 'The status of the most recent deployment.',
+    }),
+    endTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A timestamp that indicates when the most recent deployment to the deployment group was complete.',
+    }),
+    createTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A timestamp that indicates when the most recent deployment to the deployment group started.',
+    }),
   })
   .openapi({
     description:
@@ -982,14 +552,10 @@ const EC2TagSetListSchema = z.array(EC2TagFilterListSchema).openapi('EC2TagSetLi
 
 const EC2TagSetSchema = z
   .object({
-    ec2TagSetList: EC2TagSetListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list that contains other lists of Amazon EC2 instance tag groups. For an instance to be included in the deployment group, it must be identified by all of the tag groups in the list.',
-        }),
-    ).exactOptional(),
+    ec2TagSetList: EC2TagSetListSchema.exactOptional().openapi({
+      description:
+        'A list that contains other lists of Amazon EC2 instance tag groups. For an instance to be included in the deployment group, it must be identified by all of the tag groups in the list.',
+    }),
   })
   .openapi({ description: 'Information about groups of Amazon EC2 instance tags.', required: [] })
   .openapi('EC2TagSet')
@@ -998,17 +564,15 @@ const OnPremisesTagSetListSchema = z.array(TagFilterListSchema).openapi('OnPremi
 
 const OnPremisesTagSetSchema = z
   .object({
-    onPremisesTagSetList: OnPremisesTagSetListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list that contains other lists of on-premises instance tag groups. For an instance to be included in the deployment group, it must be identified by all of the tag groups in the list.',
-        }),
-    ).exactOptional(),
+    onPremisesTagSetList: OnPremisesTagSetListSchema.exactOptional().openapi({
+      description:
+        'A list that contains other lists of on-premises instance tag groups. For an instance to be included in the deployment group, it must be identified by all of the tag groups in the list.',
+    }),
   })
   .openapi({ description: 'Information about groups of on-premises instance tags.', required: [] })
   .openapi('OnPremisesTagSet')
+
+const ComputePlatformSchema = z.enum(['Server', 'Lambda', 'ECS']).openapi('ComputePlatform')
 
 const ECSServiceNameSchema = z.string().openapi('ECSServiceName')
 
@@ -1016,16 +580,12 @@ const ECSClusterNameSchema = z.string().openapi('ECSClusterName')
 
 const ECSServiceSchema = z
   .object({
-    serviceName: ECSServiceNameSchema.and(
-      z.any().openapi({ description: ' The name of the target Amazon ECS service. ' }),
-    ).exactOptional(),
-    clusterName: ECSClusterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The name of the cluster that the Amazon ECS service is associated with. ',
-        }),
-    ).exactOptional(),
+    serviceName: ECSServiceNameSchema.exactOptional().openapi({
+      description: ' The name of the target Amazon ECS service. ',
+    }),
+    clusterName: ECSClusterNameSchema.exactOptional().openapi({
+      description: ' The name of the cluster that the Amazon ECS service is associated with. ',
+    }),
   })
   .openapi({
     description:
@@ -1038,147 +598,86 @@ const ECSServiceListSchema = z.array(ECSServiceSchema).openapi('ECSServiceList')
 
 const DeploymentGroupInfoSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The application name.' }),
-    ).exactOptional(),
-    deploymentGroupId: DeploymentGroupIdSchema.and(
-      z.any().openapi({ description: 'The deployment group ID.' }),
-    ).exactOptional(),
-    deploymentGroupName: DeploymentGroupNameSchema.and(
-      z.any().openapi({ description: 'The deployment group name.' }),
-    ).exactOptional(),
-    deploymentConfigName: DeploymentConfigNameSchema.and(
-      z.any().openapi({ description: 'The deployment configuration name.' }),
-    ).exactOptional(),
-    ec2TagFilters: EC2TagFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon EC2 tags on which to filter. The deployment group includes EC2 instances with any of the specified tags.',
-        }),
-    ).exactOptional(),
-    onPremisesInstanceTagFilters: TagFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The on-premises instance tags on which to filter. The deployment group includes on-premises instances with any of the specified tags.',
-        }),
-    ).exactOptional(),
-    autoScalingGroups: AutoScalingGroupListSchema.and(
-      z.any().openapi({ description: 'A list of associated Auto Scaling groups.' }),
-    ).exactOptional(),
-    serviceRoleArn: RoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A service role Amazon Resource Name (ARN) that grants CodeDeploy permission to make calls to Amazon Web Services services on your behalf. For more information, see <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-service-role.html">Create a Service Role for CodeDeploy</a> in the <i>CodeDeploy User Guide</i>.',
-        }),
-    ).exactOptional(),
-    targetRevision: RevisionLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Information about the deployment group's target revision, including type and location.",
-        }),
-    ).exactOptional(),
-    triggerConfigurations: TriggerConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about triggers associated with the deployment group.',
-        }),
-    ).exactOptional(),
-    alarmConfiguration: AlarmConfigurationSchema.and(
-      z.any().openapi({ description: 'A list of alarms associated with the deployment group.' }),
-    ).exactOptional(),
-    autoRollbackConfiguration: AutoRollbackConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the automatic rollback configuration associated with the deployment group.',
-        }),
-    ).exactOptional(),
-    deploymentStyle: DeploymentStyleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the type of deployment, either in-place or blue/green, you want to run and whether to route deployment traffic behind a load balancer.',
-        }),
-    ).exactOptional(),
-    outdatedInstancesStrategy: OutdatedInstancesStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates what happens when new Amazon EC2 instances are launched mid-deployment and do not receive the deployed application revision.</p> <p>If this option is set to <code>UPDATE</code> or is unspecified, CodeDeploy initiates one or more 'auto-update outdated instances' deployments to apply the deployed application revision to the new Amazon EC2 instances.</p> <p>If this option is set to <code>IGNORE</code>, CodeDeploy does not initiate a deployment to update the new Amazon EC2 instances. This may result in instances having different revisions.</p>",
-        }),
-    ).exactOptional(),
-    blueGreenDeploymentConfiguration: BlueGreenDeploymentConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about blue/green deployment options for a deployment group.',
-        }),
-    ).exactOptional(),
-    loadBalancerInfo: LoadBalancerInfoSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the load balancer to use in a deployment.' }),
-    ).exactOptional(),
-    lastSuccessfulDeployment: LastDeploymentInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the most recent successful deployment to the deployment group.',
-        }),
-    ).exactOptional(),
-    lastAttemptedDeployment: LastDeploymentInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the most recent attempted deployment to the deployment group.',
-        }),
-    ).exactOptional(),
-    ec2TagSet: EC2TagSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about groups of tags applied to an Amazon EC2 instance. The deployment group includes only Amazon EC2 instances identified by all of the tag groups. Cannot be used in the same call as ec2TagFilters.',
-        }),
-    ).exactOptional(),
-    onPremisesTagSet: OnPremisesTagSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about groups of tags applied to an on-premises instance. The deployment group includes only on-premises instances identified by all the tag groups. Cannot be used in the same call as onPremisesInstanceTagFilters.',
-        }),
-    ).exactOptional(),
-    computePlatform: ComputePlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The destination platform type for the deployment (<code>Lambda</code>, <code>Server</code>, or <code>ECS</code>).',
-        }),
-    ).exactOptional(),
-    ecsServices: ECSServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The target Amazon ECS services in the deployment group. This applies only to deployment groups that use the Amazon ECS compute platform. A target Amazon ECS service is specified as an Amazon ECS cluster and service name pair using the format <code>&lt;clustername&gt;:&lt;servicename&gt;</code>. ',
-        }),
-    ).exactOptional(),
+    applicationName: ApplicationNameSchema.exactOptional().openapi({
+      description: 'The application name.',
+    }),
+    deploymentGroupId: DeploymentGroupIdSchema.exactOptional().openapi({
+      description: 'The deployment group ID.',
+    }),
+    deploymentGroupName: DeploymentGroupNameSchema.exactOptional().openapi({
+      description: 'The deployment group name.',
+    }),
+    deploymentConfigName: DeploymentConfigNameSchema.exactOptional().openapi({
+      description: 'The deployment configuration name.',
+    }),
+    ec2TagFilters: EC2TagFilterListSchema.exactOptional().openapi({
+      description:
+        'The Amazon EC2 tags on which to filter. The deployment group includes EC2 instances with any of the specified tags.',
+    }),
+    onPremisesInstanceTagFilters: TagFilterListSchema.exactOptional().openapi({
+      description:
+        'The on-premises instance tags on which to filter. The deployment group includes on-premises instances with any of the specified tags.',
+    }),
+    autoScalingGroups: AutoScalingGroupListSchema.exactOptional().openapi({
+      description: 'A list of associated Auto Scaling groups.',
+    }),
+    serviceRoleArn: RoleSchema.exactOptional().openapi({
+      description:
+        'A service role Amazon Resource Name (ARN) that grants CodeDeploy permission to make calls to Amazon Web Services services on your behalf. For more information, see <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-service-role.html">Create a Service Role for CodeDeploy</a> in the <i>CodeDeploy User Guide</i>.',
+    }),
+    targetRevision: RevisionLocationSchema.exactOptional().openapi({
+      description:
+        "Information about the deployment group's target revision, including type and location.",
+    }),
+    triggerConfigurations: TriggerConfigListSchema.exactOptional().openapi({
+      description: 'Information about triggers associated with the deployment group.',
+    }),
+    alarmConfiguration: AlarmConfigurationSchema.exactOptional().openapi({
+      description: 'A list of alarms associated with the deployment group.',
+    }),
+    autoRollbackConfiguration: AutoRollbackConfigurationSchema.exactOptional().openapi({
+      description:
+        'Information about the automatic rollback configuration associated with the deployment group.',
+    }),
+    deploymentStyle: DeploymentStyleSchema.exactOptional().openapi({
+      description:
+        'Information about the type of deployment, either in-place or blue/green, you want to run and whether to route deployment traffic behind a load balancer.',
+    }),
+    outdatedInstancesStrategy: OutdatedInstancesStrategySchema.exactOptional().openapi({
+      description:
+        "<p>Indicates what happens when new Amazon EC2 instances are launched mid-deployment and do not receive the deployed application revision.</p> <p>If this option is set to <code>UPDATE</code> or is unspecified, CodeDeploy initiates one or more 'auto-update outdated instances' deployments to apply the deployed application revision to the new Amazon EC2 instances.</p> <p>If this option is set to <code>IGNORE</code>, CodeDeploy does not initiate a deployment to update the new Amazon EC2 instances. This may result in instances having different revisions.</p>",
+    }),
+    blueGreenDeploymentConfiguration:
+      BlueGreenDeploymentConfigurationSchema.exactOptional().openapi({
+        description: 'Information about blue/green deployment options for a deployment group.',
+      }),
+    loadBalancerInfo: LoadBalancerInfoSchema.exactOptional().openapi({
+      description: 'Information about the load balancer to use in a deployment.',
+    }),
+    lastSuccessfulDeployment: LastDeploymentInfoSchema.exactOptional().openapi({
+      description:
+        'Information about the most recent successful deployment to the deployment group.',
+    }),
+    lastAttemptedDeployment: LastDeploymentInfoSchema.exactOptional().openapi({
+      description:
+        'Information about the most recent attempted deployment to the deployment group.',
+    }),
+    ec2TagSet: EC2TagSetSchema.exactOptional().openapi({
+      description:
+        'Information about groups of tags applied to an Amazon EC2 instance. The deployment group includes only Amazon EC2 instances identified by all of the tag groups. Cannot be used in the same call as ec2TagFilters.',
+    }),
+    onPremisesTagSet: OnPremisesTagSetSchema.exactOptional().openapi({
+      description:
+        'Information about groups of tags applied to an on-premises instance. The deployment group includes only on-premises instances identified by all the tag groups. Cannot be used in the same call as onPremisesInstanceTagFilters.',
+    }),
+    computePlatform: ComputePlatformSchema.exactOptional().openapi({
+      description:
+        'The destination platform type for the deployment (<code>Lambda</code>, <code>Server</code>, or <code>ECS</code>).',
+    }),
+    ecsServices: ECSServiceListSchema.exactOptional().openapi({
+      description:
+        ' The target Amazon ECS services in the deployment group. This applies only to deployment groups that use the Amazon ECS compute platform. A target Amazon ECS service is specified as an Amazon ECS cluster and service name pair using the format <code>&lt;clustername&gt;:&lt;servicename&gt;</code>. ',
+    }),
   })
   .openapi({ description: 'Information about a deployment group.', required: [] })
   .openapi('DeploymentGroupInfo')
@@ -1187,18 +686,505 @@ const DeploymentGroupInfoListSchema = z
   .array(DeploymentGroupInfoSchema)
   .openapi('DeploymentGroupInfoList')
 
-const BatchGetDeploymentGroupsOutputSchema = z
+const ErrorMessageSchema = z.string().openapi('ErrorMessage')
+
+type BatchGetDeploymentGroupsOutputType = {
+  deploymentGroupsInfo?: z.infer<typeof DeploymentGroupInfoListSchema> & unknown
+  errorMessage?: z.infer<typeof ErrorMessageSchema> & unknown
+}
+
+const ErrorCodeSchema = z
+  .enum([
+    'AGENT_ISSUE',
+    'ALARM_ACTIVE',
+    'APPLICATION_MISSING',
+    'AUTOSCALING_VALIDATION_ERROR',
+    'AUTO_SCALING_CONFIGURATION',
+    'AUTO_SCALING_IAM_ROLE_PERMISSIONS',
+    'CODEDEPLOY_RESOURCE_CANNOT_BE_FOUND',
+    'CUSTOMER_APPLICATION_UNHEALTHY',
+    'DEPLOYMENT_GROUP_MISSING',
+    'ECS_UPDATE_ERROR',
+    'ELASTIC_LOAD_BALANCING_INVALID',
+    'ELB_INVALID_INSTANCE',
+    'HEALTH_CONSTRAINTS',
+    'HEALTH_CONSTRAINTS_INVALID',
+    'HOOK_EXECUTION_FAILURE',
+    'IAM_ROLE_MISSING',
+    'IAM_ROLE_PERMISSIONS',
+    'INTERNAL_ERROR',
+    'INVALID_ECS_SERVICE',
+    'INVALID_LAMBDA_CONFIGURATION',
+    'INVALID_LAMBDA_FUNCTION',
+    'INVALID_REVISION',
+    'MANUAL_STOP',
+    'MISSING_BLUE_GREEN_DEPLOYMENT_CONFIGURATION',
+    'MISSING_ELB_INFORMATION',
+    'MISSING_GITHUB_TOKEN',
+    'NO_EC2_SUBSCRIPTION',
+    'NO_INSTANCES',
+    'OVER_MAX_INSTANCES',
+    'RESOURCE_LIMIT_EXCEEDED',
+    'REVISION_MISSING',
+    'THROTTLED',
+    'TIMEOUT',
+    'CLOUDFORMATION_STACK_FAILURE',
+  ])
+  .openapi('ErrorCode')
+
+const ErrorInformationSchema = z
   .object({
-    deploymentGroupsInfo: DeploymentGroupInfoListSchema.and(
-      z.any().openapi({ description: 'Information about the deployment groups.' }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about errors that might have occurred during the API call.',
-        }),
-    ).exactOptional(),
+    code: ErrorCodeSchema.exactOptional().openapi({
+      description:
+        '<p>For more information, see <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/error-codes.html">Error Codes for CodeDeploy</a> in the <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide">CodeDeploy User Guide</a>.</p> <p>The error code:</p> <ul> <li> <p>APPLICATION_MISSING: The application was missing. This error code is most likely raised if the application is deleted after the deployment is created, but before it is started.</p> </li> <li> <p>DEPLOYMENT_GROUP_MISSING: The deployment group was missing. This error code is most likely raised if the deployment group is deleted after the deployment is created, but before it is started.</p> </li> <li> <p>HEALTH_CONSTRAINTS: The deployment failed on too many instances to be successfully deployed within the instance health constraints specified.</p> </li> <li> <p>HEALTH_CONSTRAINTS_INVALID: The revision cannot be successfully deployed within the instance health constraints specified.</p> </li> <li> <p>IAM_ROLE_MISSING: The service role cannot be accessed.</p> </li> <li> <p>IAM_ROLE_PERMISSIONS: The service role does not have the correct permissions.</p> </li> <li> <p>INTERNAL_ERROR: There was an internal error.</p> </li> <li> <p>NO_EC2_SUBSCRIPTION: The calling account is not subscribed to Amazon EC2.</p> </li> <li> <p>NO_INSTANCES: No instances were specified, or no instances can be found.</p> </li> <li> <p>OVER_MAX_INSTANCES: The maximum number of instances was exceeded.</p> </li> <li> <p>THROTTLED: The operation was throttled because the calling account exceeded the throttling limits of one or more Amazon Web Services services.</p> </li> <li> <p>TIMEOUT: The deployment has timed out.</p> </li> <li> <p>REVISION_MISSING: The revision ID was missing. This error code is most likely raised if the revision is deleted after the deployment is created, but before it is started.</p> </li> </ul>',
+    }),
+    message: ErrorMessageSchema.exactOptional().openapi({
+      description: 'An accompanying error message.',
+    }),
+  })
+  .openapi({ description: 'Information about a deployment error.', required: [] })
+  .openapi('ErrorInformation')
+
+const InstanceCountSchema = z.int().openapi('InstanceCount')
+
+const DeploymentOverviewSchema = z
+  .object({
+    Pending: InstanceCountSchema.exactOptional().openapi({
+      description: 'The number of instances in the deployment in a pending state.',
+    }),
+    InProgress: InstanceCountSchema.exactOptional().openapi({
+      description: 'The number of instances in which the deployment is in progress.',
+    }),
+    Succeeded: InstanceCountSchema.exactOptional().openapi({
+      description:
+        'The number of instances in the deployment to which revisions have been successfully deployed.',
+    }),
+    Failed: InstanceCountSchema.exactOptional().openapi({
+      description: 'The number of instances in the deployment in a failed state.',
+    }),
+    Skipped: InstanceCountSchema.exactOptional().openapi({
+      description: 'The number of instances in the deployment in a skipped state.',
+    }),
+    Ready: InstanceCountSchema.exactOptional().openapi({
+      description:
+        'The number of instances in a replacement environment ready to receive traffic in a blue/green deployment.',
+    }),
+  })
+  .openapi({
+    description: 'Information about the deployment status of the instances in the deployment.',
+    required: [],
+  })
+  .openapi('DeploymentOverview')
+
+const DescriptionSchema = z.string().openapi('Description')
+
+const DeploymentCreatorSchema = z
+  .enum([
+    'user',
+    'autoscaling',
+    'codeDeployRollback',
+    'CodeDeploy',
+    'CodeDeployAutoUpdate',
+    'CloudFormation',
+    'CloudFormationRollback',
+  ])
+  .openapi('DeploymentCreator')
+
+const RollbackInfoSchema = z
+  .object({
+    rollbackDeploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description: 'The ID of the deployment rollback.',
+    }),
+    rollbackTriggeringDeploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description:
+        'The deployment ID of the deployment that was underway and triggered a rollback deployment because it failed or was stopped.',
+    }),
+    rollbackMessage: DescriptionSchema.exactOptional().openapi({
+      description:
+        "Information that describes the status of a deployment rollback (for example, whether the deployment can't be rolled back, is in progress, failed, or succeeded). ",
+    }),
+  })
+  .openapi({ description: 'Information about a deployment rollback.', required: [] })
+  .openapi('RollbackInfo')
+
+const AutoScalingGroupNameListSchema = z
+  .array(AutoScalingGroupNameSchema)
+  .openapi('AutoScalingGroupNameList')
+
+const TargetInstancesSchema = z
+  .object({
+    tagFilters: EC2TagFilterListSchema.exactOptional().openapi({
+      description:
+        'The tag filter key, type, and value used to identify Amazon EC2 instances in a replacement environment for a blue/green deployment. Cannot be used in the same call as <code>ec2TagSet</code>.',
+    }),
+    autoScalingGroups: AutoScalingGroupNameListSchema.exactOptional().openapi({
+      description:
+        'The names of one or more Auto Scaling groups to identify a replacement environment for a blue/green deployment.',
+    }),
+    ec2TagSet: EC2TagSetSchema.exactOptional().openapi({
+      description:
+        'Information about the groups of Amazon EC2 instance tags that an instance must be identified by in order for it to be included in the replacement environment for a blue/green deployment. Cannot be used in the same call as <code>tagFilters</code>.',
+    }),
+  })
+  .openapi({
+    description:
+      'Information about the instances to be used in the replacement environment in a blue/green deployment.',
+    required: [],
+  })
+  .openapi('TargetInstances')
+
+const AdditionalDeploymentStatusInfoSchema = z
+  .string()
+  .openapi({
+    deprecated: true,
+    description:
+      'AdditionalDeploymentStatusInfo is deprecated, use DeploymentStatusMessageList instead.',
+  })
+  .openapi('AdditionalDeploymentStatusInfo')
+
+const FileExistsBehaviorSchema = z
+  .enum(['DISALLOW', 'OVERWRITE', 'RETAIN'])
+  .openapi('FileExistsBehavior')
+
+const DeploymentStatusMessageListSchema = z
+  .array(ErrorMessageSchema)
+  .openapi('DeploymentStatusMessageList')
+
+const ExternalIdSchema = z.string().openapi('ExternalId')
+
+const DeploymentsListSchema = z.array(DeploymentIdSchema).openapi('DeploymentsList')
+
+const RelatedDeploymentsSchema = z
+  .object({
+    autoUpdateOutdatedInstancesRootDeploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description: 'The deployment ID of the root deployment that triggered this deployment.',
+    }),
+    autoUpdateOutdatedInstancesDeploymentIds: DeploymentsListSchema.exactOptional().openapi({
+      description:
+        "The deployment IDs of 'auto-update outdated instances' deployments triggered by this deployment.",
+    }),
+  })
+  .openapi({
+    description: 'Information about deployments related to the specified deployment.',
+    required: [],
+  })
+  .openapi('RelatedDeployments')
+
+const DeploymentInfoSchema = z
+  .object({
+    applicationName: ApplicationNameSchema.exactOptional().openapi({
+      description: 'The application name.',
+    }),
+    deploymentGroupName: DeploymentGroupNameSchema.exactOptional().openapi({
+      description: ' The deployment group name. ',
+    }),
+    deploymentConfigName: DeploymentConfigNameSchema.exactOptional().openapi({
+      description: ' The deployment configuration name. ',
+    }),
+    deploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description: ' The unique ID of a deployment. ',
+    }),
+    previousRevision: RevisionLocationSchema.exactOptional().openapi({
+      description:
+        'Information about the application revision that was deployed to the deployment group before the most recent successful deployment.',
+    }),
+    revision: RevisionLocationSchema.exactOptional().openapi({
+      description:
+        'Information about the location of stored application artifacts and the service from which to retrieve them.',
+    }),
+    status: DeploymentStatusSchema.exactOptional().openapi({
+      description: 'The current state of the deployment as a whole.',
+    }),
+    errorInformation: ErrorInformationSchema.exactOptional().openapi({
+      description: 'Information about any error associated with this deployment.',
+    }),
+    createTime: TimestampSchema.exactOptional().openapi({
+      description: 'A timestamp that indicates when the deployment was created.',
+    }),
+    startTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>A timestamp that indicates when the deployment was deployed to the deployment group.</p> <p>In some cases, the reported value of the start time might be later than the complete time. This is due to differences in the clock settings of backend servers that participate in the deployment process.</p>',
+    }),
+    completeTime: TimestampSchema.exactOptional().openapi({
+      description: 'A timestamp that indicates when the deployment was complete.',
+    }),
+    deploymentOverview: DeploymentOverviewSchema.exactOptional().openapi({
+      description: 'A summary of the deployment status of the instances in the deployment.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A comment about the deployment.',
+    }),
+    creator: DeploymentCreatorSchema.exactOptional().openapi({
+      description:
+        '<p>The means by which the deployment was created:</p> <ul> <li> <p> <code>user</code>: A user created the deployment.</p> </li> <li> <p> <code>autoscaling</code>: Amazon EC2 Auto Scaling created the deployment.</p> </li> <li> <p> <code>codeDeployRollback</code>: A rollback process created the deployment.</p> </li> <li> <p> <code>CodeDeployAutoUpdate</code>: An auto-update process created the deployment when it detected outdated Amazon EC2 instances.</p> </li> </ul>',
+    }),
+    ignoreApplicationStopFailures: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p> If true, then if an <code>ApplicationStop</code>, <code>BeforeBlockTraffic</code>, or <code>AfterBlockTraffic</code> deployment lifecycle event to an instance fails, then the deployment continues to the next deployment lifecycle event. For example, if <code>ApplicationStop</code> fails, the deployment continues with DownloadBundle. If <code>BeforeBlockTraffic</code> fails, the deployment continues with <code>BlockTraffic</code>. If <code>AfterBlockTraffic</code> fails, the deployment continues with <code>ApplicationStop</code>. </p> <p> If false or not specified, then if a lifecycle event fails during a deployment to an instance, that deployment fails. If deployment to that instance is part of an overall deployment and the number of healthy hosts is not less than the minimum number of healthy hosts, then a deployment to the next instance is attempted. </p> <p> During a deployment, the CodeDeploy agent runs the scripts specified for <code>ApplicationStop</code>, <code>BeforeBlockTraffic</code>, and <code>AfterBlockTraffic</code> in the AppSpec file from the previous successful deployment. (All other scripts are run from the AppSpec file in the current deployment.) If one of these scripts contains an error and does not run successfully, the deployment can fail. </p> <p> If the cause of the failure is a script from the last successful deployment that will never run successfully, create a new deployment and use <code>ignoreApplicationStopFailures</code> to specify that the <code>ApplicationStop</code>, <code>BeforeBlockTraffic</code>, and <code>AfterBlockTraffic</code> failures should be ignored. </p>',
+    }),
+    autoRollbackConfiguration: AutoRollbackConfigurationSchema.exactOptional().openapi({
+      description:
+        'Information about the automatic rollback configuration associated with the deployment.',
+    }),
+    updateOutdatedInstancesOnly: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether only instances that are not running the latest application revision are to be deployed to.',
+    }),
+    rollbackInfo: RollbackInfoSchema.exactOptional().openapi({
+      description: 'Information about a deployment rollback.',
+    }),
+    deploymentStyle: DeploymentStyleSchema.exactOptional().openapi({
+      description:
+        'Information about the type of deployment, either in-place or blue/green, you want to run and whether to route deployment traffic behind a load balancer.',
+    }),
+    targetInstances: TargetInstancesSchema.exactOptional().openapi({
+      description:
+        'Information about the instances that belong to the replacement environment in a blue/green deployment.',
+    }),
+    instanceTerminationWaitTimeStarted: BooleanSchema.exactOptional().openapi({
+      description:
+        "Indicates whether the wait period set for the termination of instances in the original environment has started. Status is 'false' if the KEEP_ALIVE option is specified. Otherwise, 'true' as soon as the termination wait period starts.",
+    }),
+    blueGreenDeploymentConfiguration:
+      BlueGreenDeploymentConfigurationSchema.exactOptional().openapi({
+        description: 'Information about blue/green deployment options for this deployment.',
+      }),
+    loadBalancerInfo: LoadBalancerInfoSchema.exactOptional().openapi({
+      description: 'Information about the load balancer used in the deployment.',
+    }),
+    additionalDeploymentStatusInfo: AdditionalDeploymentStatusInfoSchema.exactOptional().openapi({
+      description:
+        'Provides information about the results of a deployment, such as whether instances in the original environment in a blue/green deployment were not terminated.',
+    }),
+    fileExistsBehavior: FileExistsBehaviorSchema.exactOptional().openapi({
+      description:
+        "<p>Information about how CodeDeploy handles files that already exist in a deployment target location but weren't part of the previous successful deployment.</p> <ul> <li> <p> <code>DISALLOW</code>: The deployment fails. This is also the default behavior if no option is specified.</p> </li> <li> <p> <code>OVERWRITE</code>: The version of the file from the application revision currently being deployed replaces the version already on the instance.</p> </li> <li> <p> <code>RETAIN</code>: The version of the file already on the instance is kept and used as part of the new deployment.</p> </li> </ul>",
+    }),
+    deploymentStatusMessages: DeploymentStatusMessageListSchema.exactOptional().openapi({
+      description: 'Messages that contain information about the status of a deployment.',
+    }),
+    computePlatform: ComputePlatformSchema.exactOptional().openapi({
+      description:
+        'The destination platform type for the deployment (<code>Lambda</code>, <code>Server</code>, or <code>ECS</code>).',
+    }),
+    externalId: ExternalIdSchema.exactOptional().openapi({
+      description:
+        'The unique ID for an external resource (for example, a CloudFormation stack ID) that is linked to this deployment.',
+    }),
+    relatedDeployments: RelatedDeploymentsSchema.exactOptional(),
+    overrideAlarmConfiguration: AlarmConfigurationSchema.exactOptional(),
+  })
+  .openapi({ description: 'Information about a deployment.', required: [] })
+  .openapi('DeploymentInfo')
+
+const DeploymentsInfoListSchema = z.array(DeploymentInfoSchema).openapi('DeploymentsInfoList')
+
+type BatchGetDeploymentsOutputType = {
+  deploymentsInfo?: z.infer<typeof DeploymentsInfoListSchema> & unknown
+}
+
+const TagSchema = z
+  .object({
+    Key: KeySchema.exactOptional().openapi({ description: "The tag's key." }),
+    Value: ValueSchema.exactOptional().openapi({ description: "The tag's value." }),
+  })
+  .openapi({ description: 'Information about a tag.', required: [] })
+  .openapi('Tag')
+
+const TagListSchema = z.array(TagSchema).openapi('TagList')
+
+const InstanceNameSchema = z.string().openapi('InstanceName')
+
+const InstanceNameListSchema = z.array(InstanceNameSchema).openapi('InstanceNameList')
+
+const AddTagsToOnPremisesInstancesInputSchema = z
+  .object({
+    tags: TagListSchema.openapi({
+      description:
+        '<p>The tag key-value pairs to add to the on-premises instances.</p> <p>Keys and values are both required. Keys cannot be null or empty strings. Value-only tags are not allowed.</p>',
+    }),
+    instanceNames: InstanceNameListSchema.openapi({
+      description: 'The names of the on-premises instances to which to add tags.',
+    }),
+  })
+  .openapi({
+    required: ['tags', 'instanceNames'],
+    title: 'AddTagsToOnPremisesInstancesInput',
+    description: 'Represents the input of, and adds tags to, an on-premises instance operation.',
+  })
+  .openapi('AddTagsToOnPremisesInstancesInput')
+
+const InstanceNameRequiredExceptionSchema = z.any().openapi('InstanceNameRequiredException')
+
+const InvalidInstanceNameExceptionSchema = z.any().openapi('InvalidInstanceNameException')
+
+const TagRequiredExceptionSchema = z.any().openapi('TagRequiredException')
+
+const InvalidTagExceptionSchema = z.any().openapi('InvalidTagException')
+
+const TagLimitExceededExceptionSchema = z.any().openapi('TagLimitExceededException')
+
+const InstanceLimitExceededExceptionSchema = z.any().openapi('InstanceLimitExceededException')
+
+const InstanceNotRegisteredExceptionSchema = z.any().openapi('InstanceNotRegisteredException')
+
+const DeploymentGroupsListSchema = z
+  .array(DeploymentGroupNameSchema)
+  .openapi('DeploymentGroupsList')
+
+const GenericRevisionInfoSchema = z
+  .object({
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A comment about the revision.',
+    }),
+    deploymentGroups: DeploymentGroupsListSchema.exactOptional().openapi({
+      description: 'The deployment groups for which this is the current target revision.',
+    }),
+    firstUsedTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the revision was first used by CodeDeploy.',
+    }),
+    lastUsedTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the revision was last used by CodeDeploy.',
+    }),
+    registerTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the revision was registered with CodeDeploy.',
+    }),
+  })
+  .openapi({ description: 'Information about an application revision.', required: [] })
+  .openapi('GenericRevisionInfo')
+
+const RevisionInfoSchema = z
+  .object({
+    revisionLocation: RevisionLocationSchema.exactOptional().openapi({
+      description: 'Information about the location and type of an application revision.',
+    }),
+    genericRevisionInfo: GenericRevisionInfoSchema.exactOptional().openapi({
+      description:
+        'Information about an application revision, including usage details and associated deployment groups.',
+    }),
+  })
+  .openapi({ description: 'Information about an application revision.', required: [] })
+  .openapi('RevisionInfo')
+
+const RevisionInfoListSchema = z.array(RevisionInfoSchema).openapi('RevisionInfoList')
+
+const BatchGetApplicationRevisionsOutputSchema = z
+  .object({
+    applicationName: ApplicationNameSchema.exactOptional().openapi({
+      description: 'The name of the application that corresponds to the revisions.',
+    }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'Information about errors that might have occurred during the API call.',
+    }),
+    revisions: RevisionInfoListSchema.exactOptional().openapi({
+      description: 'Additional information about the revisions, including the type and location.',
+    }),
+  })
+  .openapi({
+    description: 'Represents the output of a <code>BatchGetApplicationRevisions</code> operation.',
+    required: [],
+  })
+  .openapi('BatchGetApplicationRevisionsOutput')
+
+const RevisionLocationListSchema = z.array(RevisionLocationSchema).openapi('RevisionLocationList')
+
+const BatchGetApplicationRevisionsInputSchema = z
+  .object({
+    applicationName: ApplicationNameSchema.openapi({
+      description: 'The name of an CodeDeploy application about which to get revision information.',
+    }),
+    revisions: RevisionLocationListSchema.openapi({
+      description:
+        'An array of <code>RevisionLocation</code> objects that specify information to get about the application revisions, including type and location. The maximum number of <code>RevisionLocation</code> objects you can specify is 25.',
+    }),
+  })
+  .openapi({
+    required: ['applicationName', 'revisions'],
+    title: 'BatchGetApplicationRevisionsInput',
+    description: 'Represents the input of a <code>BatchGetApplicationRevisions</code> operation.',
+  })
+  .openapi('BatchGetApplicationRevisionsInput')
+
+const ApplicationDoesNotExistExceptionSchema = z.any().openapi('ApplicationDoesNotExistException')
+
+const ApplicationNameRequiredExceptionSchema = z.any().openapi('ApplicationNameRequiredException')
+
+const InvalidApplicationNameExceptionSchema = z.any().openapi('InvalidApplicationNameException')
+
+const RevisionRequiredExceptionSchema = z.any().openapi('RevisionRequiredException')
+
+const InvalidRevisionExceptionSchema = z.any().openapi('InvalidRevisionException')
+
+const BatchLimitExceededExceptionSchema = z.any().openapi('BatchLimitExceededException')
+
+const ApplicationIdSchema = z.string().openapi('ApplicationId')
+
+const GitHubAccountTokenNameSchema = z.string().openapi('GitHubAccountTokenName')
+
+const ApplicationInfoSchema = z
+  .object({
+    applicationId: ApplicationIdSchema.exactOptional().openapi({
+      description: 'The application ID.',
+    }),
+    applicationName: ApplicationNameSchema.exactOptional().openapi({
+      description: 'The application name.',
+    }),
+    createTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the application was created.',
+    }),
+    linkedToGitHub: BooleanSchema.exactOptional().openapi({
+      description:
+        'True if the user has authenticated with GitHub for the specified application. Otherwise, false.',
+    }),
+    gitHubAccountName: GitHubAccountTokenNameSchema.exactOptional().openapi({
+      description: 'The name for a connection to a GitHub account.',
+    }),
+    computePlatform: ComputePlatformSchema.exactOptional().openapi({
+      description:
+        'The destination platform type for deployment of the application (<code>Lambda</code> or <code>Server</code>).',
+    }),
+  })
+  .openapi({ description: 'Information about an application.', required: [] })
+  .openapi('ApplicationInfo')
+
+const ApplicationsInfoListSchema = z.array(ApplicationInfoSchema).openapi('ApplicationsInfoList')
+
+const BatchGetApplicationsOutputSchema = z
+  .object({
+    applicationsInfo: ApplicationsInfoListSchema.exactOptional().openapi({
+      description: 'Information about the applications.',
+    }),
+  })
+  .openapi({
+    description: 'Represents the output of a <code>BatchGetApplications</code> operation.',
+    required: [],
+  })
+  .openapi('BatchGetApplicationsOutput')
+
+const ApplicationsListSchema = z.array(ApplicationNameSchema).openapi('ApplicationsList')
+
+const BatchGetApplicationsInputSchema = z
+  .object({
+    applicationNames: ApplicationsListSchema.openapi({
+      description:
+        'A list of application names separated by spaces. The maximum number of application names you can specify is 100.',
+    }),
+  })
+  .openapi({
+    required: ['applicationNames'],
+    title: 'BatchGetApplicationsInput',
+    description: 'Represents the input of a <code>BatchGetApplications</code> operation.',
+  })
+  .openapi('BatchGetApplicationsInput')
+
+const BatchGetDeploymentGroupsOutputSchema: z.ZodType<BatchGetDeploymentGroupsOutputType> = z
+  .object({
+    deploymentGroupsInfo: DeploymentGroupInfoListSchema.exactOptional().openapi({
+      description: 'Information about the deployment groups.',
+    }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'Information about errors that might have occurred during the API call.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>BatchGetDeploymentGroups</code> operation.',
@@ -1208,17 +1194,13 @@ const BatchGetDeploymentGroupsOutputSchema = z
 
 const BatchGetDeploymentGroupsInputSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an CodeDeploy application associated with the applicable IAM or Amazon Web Services account.',
-        }),
-    ),
-    deploymentGroupNames: DeploymentGroupsListSchema.and(
-      z.any().openapi({ description: 'The names of the deployment groups.' }),
-    ),
+    applicationName: ApplicationNameSchema.openapi({
+      description:
+        'The name of an CodeDeploy application associated with the applicable IAM or Amazon Web Services account.',
+    }),
+    deploymentGroupNames: DeploymentGroupsListSchema.openapi({
+      description: 'The names of the deployment groups.',
+    }),
   })
   .openapi({
     required: ['applicationName', 'deploymentGroupNames'],
@@ -1270,28 +1252,20 @@ const LogTailSchema = z.string().openapi('LogTail')
 
 const DiagnosticsSchema = z
   .object({
-    errorCode: LifecycleErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The associated error code:</p> <ul> <li> <p>Success: The specified script ran.</p> </li> <li> <p>ScriptMissing: The specified script was not found in the specified location.</p> </li> <li> <p>ScriptNotExecutable: The specified script is not a recognized executable file type.</p> </li> <li> <p>ScriptTimedOut: The specified script did not finish running in the specified time period.</p> </li> <li> <p>ScriptFailed: The specified script failed to run as expected.</p> </li> <li> <p>UnknownError: The specified script did not run for an unknown reason.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    scriptName: ScriptNameSchema.and(
-      z.any().openapi({ description: 'The name of the script.' }),
-    ).exactOptional(),
-    message: LifecycleMessageSchema.and(
-      z.any().openapi({ description: 'The message associated with the error.' }),
-    ).exactOptional(),
-    logTail: LogTailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last portion of the diagnostic log.</p> <p>If available, CodeDeploy returns up to the last 4 KB of the diagnostic log.</p>',
-        }),
-    ).exactOptional(),
+    errorCode: LifecycleErrorCodeSchema.exactOptional().openapi({
+      description:
+        '<p>The associated error code:</p> <ul> <li> <p>Success: The specified script ran.</p> </li> <li> <p>ScriptMissing: The specified script was not found in the specified location.</p> </li> <li> <p>ScriptNotExecutable: The specified script is not a recognized executable file type.</p> </li> <li> <p>ScriptTimedOut: The specified script did not finish running in the specified time period.</p> </li> <li> <p>ScriptFailed: The specified script failed to run as expected.</p> </li> <li> <p>UnknownError: The specified script did not run for an unknown reason.</p> </li> </ul>',
+    }),
+    scriptName: ScriptNameSchema.exactOptional().openapi({
+      description: 'The name of the script.',
+    }),
+    message: LifecycleMessageSchema.exactOptional().openapi({
+      description: 'The message associated with the error.',
+    }),
+    logTail: LogTailSchema.exactOptional().openapi({
+      description:
+        '<p>The last portion of the diagnostic log.</p> <p>If available, CodeDeploy returns up to the last 4 KB of the diagnostic log.</p>',
+    }),
   })
   .openapi({
     description: 'Diagnostic information about executable scripts that are part of a deployment.',
@@ -1305,41 +1279,23 @@ const LifecycleEventStatusSchema = z
 
 const LifecycleEventSchema = z
   .object({
-    lifecycleEventName: LifecycleEventNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The deployment lifecycle event name, such as <code>ApplicationStop</code>, <code>BeforeInstall</code>, <code>AfterInstall</code>, <code>ApplicationStart</code>, or <code>ValidateService</code>.',
-        }),
-    ).exactOptional(),
-    diagnostics: DiagnosticsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Diagnostic information about the deployment lifecycle event.' }),
-    ).exactOptional(),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A timestamp that indicates when the deployment lifecycle event started.',
-        }),
-    ).exactOptional(),
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A timestamp that indicates when the deployment lifecycle event ended.',
-        }),
-    ).exactOptional(),
-    status: LifecycleEventStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The deployment lifecycle event status:</p> <ul> <li> <p>Pending: The deployment lifecycle event is pending.</p> </li> <li> <p>InProgress: The deployment lifecycle event is in progress.</p> </li> <li> <p>Succeeded: The deployment lifecycle event ran successfully.</p> </li> <li> <p>Failed: The deployment lifecycle event has failed.</p> </li> <li> <p>Skipped: The deployment lifecycle event has been skipped.</p> </li> <li> <p>Unknown: The deployment lifecycle event is unknown.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    lifecycleEventName: LifecycleEventNameSchema.exactOptional().openapi({
+      description:
+        'The deployment lifecycle event name, such as <code>ApplicationStop</code>, <code>BeforeInstall</code>, <code>AfterInstall</code>, <code>ApplicationStart</code>, or <code>ValidateService</code>.',
+    }),
+    diagnostics: DiagnosticsSchema.exactOptional().openapi({
+      description: 'Diagnostic information about the deployment lifecycle event.',
+    }),
+    startTime: TimestampSchema.exactOptional().openapi({
+      description: 'A timestamp that indicates when the deployment lifecycle event started.',
+    }),
+    endTime: TimestampSchema.exactOptional().openapi({
+      description: 'A timestamp that indicates when the deployment lifecycle event ended.',
+    }),
+    status: LifecycleEventStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The deployment lifecycle event status:</p> <ul> <li> <p>Pending: The deployment lifecycle event is pending.</p> </li> <li> <p>InProgress: The deployment lifecycle event is in progress.</p> </li> <li> <p>Succeeded: The deployment lifecycle event ran successfully.</p> </li> <li> <p>Failed: The deployment lifecycle event has failed.</p> </li> <li> <p>Skipped: The deployment lifecycle event has been skipped.</p> </li> <li> <p>Unknown: The deployment lifecycle event is unknown.</p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'Information about a deployment lifecycle event.', required: [] })
   .openapi('LifecycleEvent')
@@ -1350,38 +1306,24 @@ const InstanceTypeSchema = z.enum(['Blue', 'Green']).openapi('InstanceType')
 
 const InstanceSummarySchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z.any().openapi({ description: ' The unique ID of a deployment. ' }),
-    ).exactOptional(),
-    instanceId: InstanceIdSchema.and(
-      z.any().openapi({ description: 'The instance ID.' }),
-    ).exactOptional(),
-    status: InstanceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The deployment status for this instance:</p> <ul> <li> <p> <code>Pending</code>: The deployment is pending for this instance.</p> </li> <li> <p> <code>In Progress</code>: The deployment is in progress for this instance.</p> </li> <li> <p> <code>Succeeded</code>: The deployment has succeeded for this instance.</p> </li> <li> <p> <code>Failed</code>: The deployment has failed for this instance.</p> </li> <li> <p> <code>Skipped</code>: The deployment has been skipped for this instance.</p> </li> <li> <p> <code>Unknown</code>: The deployment status is unknown for this instance.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    lastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A timestamp that indicates when the instance information was last updated.',
-        }),
-    ).exactOptional(),
-    lifecycleEvents: LifecycleEventListSchema.and(
-      z.any().openapi({ description: 'A list of lifecycle events for this instance.' }),
-    ).exactOptional(),
-    instanceType: InstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about which environment an instance belongs to in a blue/green deployment.</p> <ul> <li> <p>BLUE: The instance is part of the original environment.</p> </li> <li> <p>GREEN: The instance is part of the replacement environment.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    deploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description: ' The unique ID of a deployment. ',
+    }),
+    instanceId: InstanceIdSchema.exactOptional().openapi({ description: 'The instance ID.' }),
+    status: InstanceStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The deployment status for this instance:</p> <ul> <li> <p> <code>Pending</code>: The deployment is pending for this instance.</p> </li> <li> <p> <code>In Progress</code>: The deployment is in progress for this instance.</p> </li> <li> <p> <code>Succeeded</code>: The deployment has succeeded for this instance.</p> </li> <li> <p> <code>Failed</code>: The deployment has failed for this instance.</p> </li> <li> <p> <code>Skipped</code>: The deployment has been skipped for this instance.</p> </li> <li> <p> <code>Unknown</code>: The deployment status is unknown for this instance.</p> </li> </ul>',
+    }),
+    lastUpdatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'A timestamp that indicates when the instance information was last updated.',
+    }),
+    lifecycleEvents: LifecycleEventListSchema.exactOptional().openapi({
+      description: 'A list of lifecycle events for this instance.',
+    }),
+    instanceType: InstanceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Information about which environment an instance belongs to in a blue/green deployment.</p> <ul> <li> <p>BLUE: The instance is part of the original environment.</p> </li> <li> <p>GREEN: The instance is part of the replacement environment.</p> </li> </ul>',
+    }),
   })
   .openapi({
     deprecated: true,
@@ -1395,16 +1337,12 @@ const InstanceSummaryListSchema = z.array(InstanceSummarySchema).openapi('Instan
 
 const BatchGetDeploymentInstancesOutputSchema = z
   .object({
-    instancesSummary: InstanceSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the instance.' }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about errors that might have occurred during the API call.',
-        }),
-    ).exactOptional(),
+    instancesSummary: InstanceSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the instance.',
+    }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'Information about errors that might have occurred during the API call.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>BatchGetDeploymentInstances</code> operation.',
@@ -1416,17 +1354,11 @@ const InstancesListSchema = z.array(InstanceIdSchema).openapi('InstancesList')
 
 const BatchGetDeploymentInstancesInputSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z.any().openapi({ description: ' The unique ID of a deployment. ' }),
-    ),
-    instanceIds: InstancesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique IDs of instances used in the deployment. The maximum number of instance IDs you can specify is 25.',
-        }),
-    ),
+    deploymentId: DeploymentIdSchema.openapi({ description: ' The unique ID of a deployment. ' }),
+    instanceIds: InstancesListSchema.openapi({
+      description:
+        'The unique IDs of instances used in the deployment. The maximum number of instance IDs you can specify is 25.',
+    }),
   })
   .openapi({
     required: ['deploymentId', 'instanceIds'],
@@ -1463,47 +1395,29 @@ const TargetLabelSchema = z.enum(['Blue', 'Green']).openapi('TargetLabel')
 
 const InstanceTargetSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z.any().openapi({ description: ' The unique ID of a deployment. ' }),
-    ).exactOptional(),
-    targetId: TargetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The unique ID of a deployment target that has a type of <code>instanceTarget</code>. ',
-        }),
-    ).exactOptional(),
-    targetArn: TargetArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) of the target. ' }),
-    ).exactOptional(),
-    status: TargetStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: " The status an EC2/On-premises deployment's target instance. " }),
-    ).exactOptional(),
-    lastUpdatedAt: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The date and time when the target instance was updated by a deployment. ',
-        }),
-    ).exactOptional(),
-    lifecycleEvents: LifecycleEventListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The lifecycle events of the deployment to this target instance. ',
-        }),
-    ).exactOptional(),
-    instanceLabel: TargetLabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A label that identifies whether the instance is an original target (<code>BLUE</code>) or a replacement target (<code>GREEN</code>). ',
-        }),
-    ).exactOptional(),
+    deploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description: ' The unique ID of a deployment. ',
+    }),
+    targetId: TargetIdSchema.exactOptional().openapi({
+      description:
+        ' The unique ID of a deployment target that has a type of <code>instanceTarget</code>. ',
+    }),
+    targetArn: TargetArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the target. ',
+    }),
+    status: TargetStatusSchema.exactOptional().openapi({
+      description: " The status an EC2/On-premises deployment's target instance. ",
+    }),
+    lastUpdatedAt: TimeSchema.exactOptional().openapi({
+      description: ' The date and time when the target instance was updated by a deployment. ',
+    }),
+    lifecycleEvents: LifecycleEventListSchema.exactOptional().openapi({
+      description: ' The lifecycle events of the deployment to this target instance. ',
+    }),
+    instanceLabel: TargetLabelSchema.exactOptional().openapi({
+      description:
+        ' A label that identifies whether the instance is an original target (<code>BLUE</code>) or a replacement target (<code>GREEN</code>). ',
+    }),
   })
   .openapi({
     description:
@@ -1522,40 +1436,24 @@ const TrafficWeightSchema = z.float64().openapi('TrafficWeight')
 
 const LambdaFunctionInfoSchema = z
   .object({
-    functionName: LambdaFunctionNameSchema.and(
-      z.any().openapi({ description: ' The name of a Lambda function. ' }),
-    ).exactOptional(),
-    functionAlias: LambdaFunctionAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The alias of a Lambda function. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/aliases-intro.html">Lambda Function Aliases</a> in the <i>Lambda Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    currentVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The version of a Lambda function that production traffic points to. ',
-        }),
-    ).exactOptional(),
-    targetVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The version of a Lambda function that production traffic points to after the Lambda function is deployed. ',
-        }),
-    ).exactOptional(),
-    targetVersionWeight: TrafficWeightSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The percentage of production traffic that the target version of a Lambda function receives. ',
-        }),
-    ).exactOptional(),
+    functionName: LambdaFunctionNameSchema.exactOptional().openapi({
+      description: ' The name of a Lambda function. ',
+    }),
+    functionAlias: LambdaFunctionAliasSchema.exactOptional().openapi({
+      description:
+        ' The alias of a Lambda function. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/aliases-intro.html">Lambda Function Aliases</a> in the <i>Lambda Developer Guide</i>.',
+    }),
+    currentVersion: VersionSchema.exactOptional().openapi({
+      description: ' The version of a Lambda function that production traffic points to. ',
+    }),
+    targetVersion: VersionSchema.exactOptional().openapi({
+      description:
+        ' The version of a Lambda function that production traffic points to after the Lambda function is deployed. ',
+    }),
+    targetVersionWeight: TrafficWeightSchema.exactOptional().openapi({
+      description:
+        ' The percentage of production traffic that the target version of a Lambda function receives. ',
+    }),
   })
   .openapi({
     description: ' Information about a Lambda function specified in a deployment. ',
@@ -1565,48 +1463,30 @@ const LambdaFunctionInfoSchema = z
 
 const LambdaTargetSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z.any().openapi({ description: ' The unique ID of a deployment. ' }),
-    ).exactOptional(),
-    targetId: TargetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The unique ID of a deployment target that has a type of <code>lambdaTarget</code>. ',
-        }),
-    ).exactOptional(),
-    targetArn: TargetArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) of the target. ' }),
-    ).exactOptional(),
-    status: TargetStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: " The status an Lambda deployment's target Lambda function. " }),
-    ).exactOptional(),
-    lastUpdatedAt: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The date and time when the target Lambda function was updated by a deployment. ',
-        }),
-    ).exactOptional(),
-    lifecycleEvents: LifecycleEventListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The lifecycle events of the deployment to this target Lambda function. ',
-        }),
-    ).exactOptional(),
-    lambdaFunctionInfo: LambdaFunctionInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>LambdaFunctionInfo</code> object that describes a target Lambda function. ',
-        }),
-    ).exactOptional(),
+    deploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description: ' The unique ID of a deployment. ',
+    }),
+    targetId: TargetIdSchema.exactOptional().openapi({
+      description:
+        ' The unique ID of a deployment target that has a type of <code>lambdaTarget</code>. ',
+    }),
+    targetArn: TargetArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the target. ',
+    }),
+    status: TargetStatusSchema.exactOptional().openapi({
+      description: " The status an Lambda deployment's target Lambda function. ",
+    }),
+    lastUpdatedAt: TimeSchema.exactOptional().openapi({
+      description:
+        ' The date and time when the target Lambda function was updated by a deployment. ',
+    }),
+    lifecycleEvents: LifecycleEventListSchema.exactOptional().openapi({
+      description: ' The lifecycle events of the deployment to this target Lambda function. ',
+    }),
+    lambdaFunctionInfo: LambdaFunctionInfoSchema.exactOptional().openapi({
+      description:
+        ' A <code>LambdaFunctionInfo</code> object that describes a target Lambda function. ',
+    }),
   })
   .openapi({
     description: ' Information about the target Lambda function during an Lambda deployment. ',
@@ -1622,60 +1502,36 @@ const ECSTaskSetStatusSchema = z.string().openapi('ECSTaskSetStatus')
 
 const ECSTaskSetSchema = z
   .object({
-    identifer: ECSTaskSetIdentifierSchema.and(
-      z.any().openapi({ description: ' A unique ID of an <code>ECSTaskSet</code>. ' }),
-    ).exactOptional(),
-    desiredCount: ECSTaskSetCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of tasks in a task set. During a deployment that uses the Amazon ECS compute type, CodeDeploy instructs Amazon ECS to create a new task set and uses this value to determine how many tasks to create. After the updated task set is created, CodeDeploy shifts traffic to the new task set. ',
-        }),
-    ).exactOptional(),
-    pendingCount: ECSTaskSetCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of tasks in the task set that are in the <code>PENDING</code> status during an Amazon ECS deployment. A task in the <code>PENDING</code> state is preparing to enter the <code>RUNNING</code> state. A task set enters the <code>PENDING</code> status when it launches for the first time, or when it is restarted after being in the <code>STOPPED</code> state. ',
-        }),
-    ).exactOptional(),
-    runningCount: ECSTaskSetCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of tasks in the task set that are in the <code>RUNNING</code> status during an Amazon ECS deployment. A task in the <code>RUNNING</code> state is running and ready for use. ',
-        }),
-    ).exactOptional(),
-    status: ECSTaskSetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The status of the task set. There are three valid task set statuses: </p> <ul> <li> <p> <code>PRIMARY</code>: Indicates the task set is serving production traffic. </p> </li> <li> <p> <code>ACTIVE</code>: Indicates the task set is not serving production traffic. </p> </li> <li> <p> <code>DRAINING</code>: Indicates the tasks in the task set are being stopped and their corresponding targets are being deregistered from their target group. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    trafficWeight: TrafficWeightSchema.and(
-      z.any().openapi({ description: ' The percentage of traffic served by this task set. ' }),
-    ).exactOptional(),
-    targetGroup: TargetGroupInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The target group associated with the task set. The target group is used by CodeDeploy to manage traffic to a task set. ',
-        }),
-    ).exactOptional(),
-    taskSetLabel: TargetLabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A label that identifies whether the ECS task set is an original target (<code>BLUE</code>) or a replacement target (<code>GREEN</code>). ',
-        }),
-    ).exactOptional(),
+    identifer: ECSTaskSetIdentifierSchema.exactOptional().openapi({
+      description: ' A unique ID of an <code>ECSTaskSet</code>. ',
+    }),
+    desiredCount: ECSTaskSetCountSchema.exactOptional().openapi({
+      description:
+        ' The number of tasks in a task set. During a deployment that uses the Amazon ECS compute type, CodeDeploy instructs Amazon ECS to create a new task set and uses this value to determine how many tasks to create. After the updated task set is created, CodeDeploy shifts traffic to the new task set. ',
+    }),
+    pendingCount: ECSTaskSetCountSchema.exactOptional().openapi({
+      description:
+        ' The number of tasks in the task set that are in the <code>PENDING</code> status during an Amazon ECS deployment. A task in the <code>PENDING</code> state is preparing to enter the <code>RUNNING</code> state. A task set enters the <code>PENDING</code> status when it launches for the first time, or when it is restarted after being in the <code>STOPPED</code> state. ',
+    }),
+    runningCount: ECSTaskSetCountSchema.exactOptional().openapi({
+      description:
+        ' The number of tasks in the task set that are in the <code>RUNNING</code> status during an Amazon ECS deployment. A task in the <code>RUNNING</code> state is running and ready for use. ',
+    }),
+    status: ECSTaskSetStatusSchema.exactOptional().openapi({
+      description:
+        '<p> The status of the task set. There are three valid task set statuses: </p> <ul> <li> <p> <code>PRIMARY</code>: Indicates the task set is serving production traffic. </p> </li> <li> <p> <code>ACTIVE</code>: Indicates the task set is not serving production traffic. </p> </li> <li> <p> <code>DRAINING</code>: Indicates the tasks in the task set are being stopped and their corresponding targets are being deregistered from their target group. </p> </li> </ul>',
+    }),
+    trafficWeight: TrafficWeightSchema.exactOptional().openapi({
+      description: ' The percentage of traffic served by this task set. ',
+    }),
+    targetGroup: TargetGroupInfoSchema.exactOptional().openapi({
+      description:
+        ' The target group associated with the task set. The target group is used by CodeDeploy to manage traffic to a task set. ',
+    }),
+    taskSetLabel: TargetLabelSchema.exactOptional().openapi({
+      description:
+        ' A label that identifies whether the ECS task set is an original target (<code>BLUE</code>) or a replacement target (<code>GREEN</code>). ',
+    }),
   })
   .openapi({
     description:
@@ -1688,50 +1544,30 @@ const ECSTaskSetListSchema = z.array(ECSTaskSetSchema).openapi('ECSTaskSetList')
 
 const ECSTargetSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z.any().openapi({ description: ' The unique ID of a deployment. ' }),
-    ).exactOptional(),
-    targetId: TargetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The unique ID of a deployment target that has a type of <code>ecsTarget</code>. ',
-        }),
-    ).exactOptional(),
-    targetArn: TargetArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) of the target. ' }),
-    ).exactOptional(),
-    lastUpdatedAt: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The date and time when the target Amazon ECS application was updated by a deployment. ',
-        }),
-    ).exactOptional(),
-    lifecycleEvents: LifecycleEventListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The lifecycle events of the deployment to this target Amazon ECS application. ',
-        }),
-    ).exactOptional(),
-    status: TargetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The status an Amazon ECS deployment's target ECS application. ",
-        }),
-    ).exactOptional(),
-    taskSetsInfo: ECSTaskSetListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The <code>ECSTaskSet</code> objects associated with the ECS target. ',
-        }),
-    ).exactOptional(),
+    deploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description: ' The unique ID of a deployment. ',
+    }),
+    targetId: TargetIdSchema.exactOptional().openapi({
+      description:
+        ' The unique ID of a deployment target that has a type of <code>ecsTarget</code>. ',
+    }),
+    targetArn: TargetArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the target. ',
+    }),
+    lastUpdatedAt: TimeSchema.exactOptional().openapi({
+      description:
+        ' The date and time when the target Amazon ECS application was updated by a deployment. ',
+    }),
+    lifecycleEvents: LifecycleEventListSchema.exactOptional().openapi({
+      description:
+        ' The lifecycle events of the deployment to this target Amazon ECS application. ',
+    }),
+    status: TargetStatusSchema.exactOptional().openapi({
+      description: " The status an Amazon ECS deployment's target ECS application. ",
+    }),
+    taskSetsInfo: ECSTaskSetListSchema.exactOptional().openapi({
+      description: ' The <code>ECSTaskSet</code> objects associated with the ECS target. ',
+    }),
   })
   .openapi({
     description: ' Information about the target of an Amazon ECS deployment. ',
@@ -1743,56 +1579,31 @@ const CloudFormationResourceTypeSchema = z.string().openapi('CloudFormationResou
 
 const CloudFormationTargetSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of an CloudFormation blue/green deployment.' }),
-    ).exactOptional(),
-    targetId: TargetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The unique ID of a deployment target that has a type of <code>CloudFormationTarget</code>. ',
-        }),
-    ).exactOptional(),
-    lastUpdatedAt: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The date and time when the target application was updated by an CloudFormation blue/green deployment. ',
-        }),
-    ).exactOptional(),
-    lifecycleEvents: LifecycleEventListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The lifecycle events of the CloudFormation blue/green deployment to this target application. ',
-        }),
-    ).exactOptional(),
-    status: TargetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The status of an CloudFormation blue/green deployment's target application. ",
-        }),
-    ).exactOptional(),
-    resourceType: CloudFormationResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The resource type for the CloudFormation blue/green deployment.',
-        }),
-    ).exactOptional(),
-    targetVersionWeight: TrafficWeightSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of production traffic that the target version of an CloudFormation blue/green deployment receives.',
-        }),
-    ).exactOptional(),
+    deploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description: 'The unique ID of an CloudFormation blue/green deployment.',
+    }),
+    targetId: TargetIdSchema.exactOptional().openapi({
+      description:
+        ' The unique ID of a deployment target that has a type of <code>CloudFormationTarget</code>. ',
+    }),
+    lastUpdatedAt: TimeSchema.exactOptional().openapi({
+      description:
+        ' The date and time when the target application was updated by an CloudFormation blue/green deployment. ',
+    }),
+    lifecycleEvents: LifecycleEventListSchema.exactOptional().openapi({
+      description:
+        ' The lifecycle events of the CloudFormation blue/green deployment to this target application. ',
+    }),
+    status: TargetStatusSchema.exactOptional().openapi({
+      description: " The status of an CloudFormation blue/green deployment's target application. ",
+    }),
+    resourceType: CloudFormationResourceTypeSchema.exactOptional().openapi({
+      description: 'The resource type for the CloudFormation blue/green deployment.',
+    }),
+    targetVersionWeight: TrafficWeightSchema.exactOptional().openapi({
+      description:
+        'The percentage of production traffic that the target version of an CloudFormation blue/green deployment receives.',
+    }),
   })
   .openapi({
     description:
@@ -1803,38 +1614,22 @@ const CloudFormationTargetSchema = z
 
 const DeploymentTargetSchema = z
   .object({
-    deploymentTargetType: DeploymentTargetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The deployment type that is specific to the deployment's compute platform or deployments initiated by a CloudFormation stack update.",
-        }),
-    ).exactOptional(),
-    instanceTarget: InstanceTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Information about the target for a deployment that uses the EC2/On-premises compute platform. ',
-        }),
-    ).exactOptional(),
-    lambdaTarget: LambdaTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Information about the target for a deployment that uses the Lambda compute platform. ',
-        }),
-    ).exactOptional(),
-    ecsTarget: ECSTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Information about the target for a deployment that uses the Amazon ECS compute platform. ',
-        }),
-    ).exactOptional(),
+    deploymentTargetType: DeploymentTargetTypeSchema.exactOptional().openapi({
+      description:
+        "The deployment type that is specific to the deployment's compute platform or deployments initiated by a CloudFormation stack update.",
+    }),
+    instanceTarget: InstanceTargetSchema.exactOptional().openapi({
+      description:
+        ' Information about the target for a deployment that uses the EC2/On-premises compute platform. ',
+    }),
+    lambdaTarget: LambdaTargetSchema.exactOptional().openapi({
+      description:
+        ' Information about the target for a deployment that uses the Lambda compute platform. ',
+    }),
+    ecsTarget: ECSTargetSchema.exactOptional().openapi({
+      description:
+        ' Information about the target for a deployment that uses the Amazon ECS compute platform. ',
+    }),
     cloudFormationTarget: CloudFormationTargetSchema.exactOptional(),
   })
   .openapi({ description: ' Information about the deployment target. ', required: [] })
@@ -1844,14 +1639,10 @@ const DeploymentTargetListSchema = z.array(DeploymentTargetSchema).openapi('Depl
 
 const BatchGetDeploymentTargetsOutputSchema = z
   .object({
-    deploymentTargets: DeploymentTargetListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> A list of target objects for a deployment. Each target object contains details about the target, such as its status and lifecycle events. The type of the target objects depends on the deployment' compute platform. </p> <ul> <li> <p> <b>EC2/On-premises</b>: Each target object is an Amazon EC2 or on-premises instance. </p> </li> <li> <p> <b>Lambda</b>: The target object is a specific version of an Lambda function. </p> </li> <li> <p> <b>Amazon ECS</b>: The target object is an Amazon ECS service. </p> </li> <li> <p> <b>CloudFormation</b>: The target object is an CloudFormation blue/green deployment. </p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    deploymentTargets: DeploymentTargetListSchema.exactOptional().openapi({
+      description:
+        "<p> A list of target objects for a deployment. Each target object contains details about the target, such as its status and lifecycle events. The type of the target objects depends on the deployment' compute platform. </p> <ul> <li> <p> <b>EC2/On-premises</b>: Each target object is an Amazon EC2 or on-premises instance. </p> </li> <li> <p> <b>Lambda</b>: The target object is a specific version of an Lambda function. </p> </li> <li> <p> <b>Amazon ECS</b>: The target object is an Amazon ECS service. </p> </li> <li> <p> <b>CloudFormation</b>: The target object is an CloudFormation blue/green deployment. </p> </li> </ul>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchGetDeploymentTargetsOutput')
@@ -1860,17 +1651,13 @@ const TargetIdListSchema = z.array(TargetIdSchema).openapi('TargetIdList')
 
 const BatchGetDeploymentTargetsInputSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z.any().openapi({ description: ' The unique ID of a deployment. ' }),
-    ).exactOptional(),
-    targetIds: TargetIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The unique IDs of the deployment targets. The compute platform of the deployment determines the type of the targets and their formats. The maximum number of deployment target IDs you can specify is 25.</p> <ul> <li> <p> For deployments that use the EC2/On-premises compute platform, the target IDs are Amazon EC2 or on-premises instances IDs, and their target type is <code>instanceTarget</code>. </p> </li> <li> <p> For deployments that use the Lambda compute platform, the target IDs are the names of Lambda functions, and their target type is <code>instanceTarget</code>. </p> </li> <li> <p> For deployments that use the Amazon ECS compute platform, the target IDs are pairs of Amazon ECS clusters and services specified using the format <code>&lt;clustername&gt;:&lt;servicename&gt;</code>. Their target type is <code>ecsTarget</code>. </p> </li> <li> <p> For deployments that are deployed with CloudFormation, the target IDs are CloudFormation stack IDs. Their target type is <code>cloudFormationTarget</code>. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    deploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description: ' The unique ID of a deployment. ',
+    }),
+    targetIds: TargetIdListSchema.exactOptional().openapi({
+      description:
+        '<p> The unique IDs of the deployment targets. The compute platform of the deployment determines the type of the targets and their formats. The maximum number of deployment target IDs you can specify is 25.</p> <ul> <li> <p> For deployments that use the EC2/On-premises compute platform, the target IDs are Amazon EC2 or on-premises instances IDs, and their target type is <code>instanceTarget</code>. </p> </li> <li> <p> For deployments that use the Lambda compute platform, the target IDs are the names of Lambda functions, and their target type is <code>instanceTarget</code>. </p> </li> <li> <p> For deployments that use the Amazon ECS compute platform, the target IDs are pairs of Amazon ECS clusters and services specified using the format <code>&lt;clustername&gt;:&lt;servicename&gt;</code>. Their target type is <code>ecsTarget</code>. </p> </li> <li> <p> For deployments that are deployed with CloudFormation, the target IDs are CloudFormation stack IDs. Their target type is <code>cloudFormationTarget</code>. </p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'BatchGetDeploymentTargetsInput', required: [] })
   .openapi('BatchGetDeploymentTargetsInput')
@@ -1895,420 +1682,11 @@ const DeploymentTargetListSizeExceededExceptionSchema = z
 
 const InstanceDoesNotExistExceptionSchema = z.any().openapi('InstanceDoesNotExistException')
 
-const ErrorCodeSchema = z
-  .enum([
-    'AGENT_ISSUE',
-    'ALARM_ACTIVE',
-    'APPLICATION_MISSING',
-    'AUTOSCALING_VALIDATION_ERROR',
-    'AUTO_SCALING_CONFIGURATION',
-    'AUTO_SCALING_IAM_ROLE_PERMISSIONS',
-    'CODEDEPLOY_RESOURCE_CANNOT_BE_FOUND',
-    'CUSTOMER_APPLICATION_UNHEALTHY',
-    'DEPLOYMENT_GROUP_MISSING',
-    'ECS_UPDATE_ERROR',
-    'ELASTIC_LOAD_BALANCING_INVALID',
-    'ELB_INVALID_INSTANCE',
-    'HEALTH_CONSTRAINTS',
-    'HEALTH_CONSTRAINTS_INVALID',
-    'HOOK_EXECUTION_FAILURE',
-    'IAM_ROLE_MISSING',
-    'IAM_ROLE_PERMISSIONS',
-    'INTERNAL_ERROR',
-    'INVALID_ECS_SERVICE',
-    'INVALID_LAMBDA_CONFIGURATION',
-    'INVALID_LAMBDA_FUNCTION',
-    'INVALID_REVISION',
-    'MANUAL_STOP',
-    'MISSING_BLUE_GREEN_DEPLOYMENT_CONFIGURATION',
-    'MISSING_ELB_INFORMATION',
-    'MISSING_GITHUB_TOKEN',
-    'NO_EC2_SUBSCRIPTION',
-    'NO_INSTANCES',
-    'OVER_MAX_INSTANCES',
-    'RESOURCE_LIMIT_EXCEEDED',
-    'REVISION_MISSING',
-    'THROTTLED',
-    'TIMEOUT',
-    'CLOUDFORMATION_STACK_FAILURE',
-  ])
-  .openapi('ErrorCode')
-
-const ErrorInformationSchema = z
+const BatchGetDeploymentsOutputSchema: z.ZodType<BatchGetDeploymentsOutputType> = z
   .object({
-    code: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For more information, see <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/error-codes.html">Error Codes for CodeDeploy</a> in the <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide">CodeDeploy User Guide</a>.</p> <p>The error code:</p> <ul> <li> <p>APPLICATION_MISSING: The application was missing. This error code is most likely raised if the application is deleted after the deployment is created, but before it is started.</p> </li> <li> <p>DEPLOYMENT_GROUP_MISSING: The deployment group was missing. This error code is most likely raised if the deployment group is deleted after the deployment is created, but before it is started.</p> </li> <li> <p>HEALTH_CONSTRAINTS: The deployment failed on too many instances to be successfully deployed within the instance health constraints specified.</p> </li> <li> <p>HEALTH_CONSTRAINTS_INVALID: The revision cannot be successfully deployed within the instance health constraints specified.</p> </li> <li> <p>IAM_ROLE_MISSING: The service role cannot be accessed.</p> </li> <li> <p>IAM_ROLE_PERMISSIONS: The service role does not have the correct permissions.</p> </li> <li> <p>INTERNAL_ERROR: There was an internal error.</p> </li> <li> <p>NO_EC2_SUBSCRIPTION: The calling account is not subscribed to Amazon EC2.</p> </li> <li> <p>NO_INSTANCES: No instances were specified, or no instances can be found.</p> </li> <li> <p>OVER_MAX_INSTANCES: The maximum number of instances was exceeded.</p> </li> <li> <p>THROTTLED: The operation was throttled because the calling account exceeded the throttling limits of one or more Amazon Web Services services.</p> </li> <li> <p>TIMEOUT: The deployment has timed out.</p> </li> <li> <p>REVISION_MISSING: The revision ID was missing. This error code is most likely raised if the revision is deleted after the deployment is created, but before it is started.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    message: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'An accompanying error message.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about a deployment error.', required: [] })
-  .openapi('ErrorInformation')
-
-const InstanceCountSchema = z.int().openapi('InstanceCount')
-
-const DeploymentOverviewSchema = z
-  .object({
-    Pending: InstanceCountSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of instances in the deployment in a pending state.' }),
-    ).exactOptional(),
-    InProgress: InstanceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of instances in which the deployment is in progress.',
-        }),
-    ).exactOptional(),
-    Succeeded: InstanceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of instances in the deployment to which revisions have been successfully deployed.',
-        }),
-    ).exactOptional(),
-    Failed: InstanceCountSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of instances in the deployment in a failed state.' }),
-    ).exactOptional(),
-    Skipped: InstanceCountSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of instances in the deployment in a skipped state.' }),
-    ).exactOptional(),
-    Ready: InstanceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of instances in a replacement environment ready to receive traffic in a blue/green deployment.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Information about the deployment status of the instances in the deployment.',
-    required: [],
-  })
-  .openapi('DeploymentOverview')
-
-const DeploymentCreatorSchema = z
-  .enum([
-    'user',
-    'autoscaling',
-    'codeDeployRollback',
-    'CodeDeploy',
-    'CodeDeployAutoUpdate',
-    'CloudFormation',
-    'CloudFormationRollback',
-  ])
-  .openapi('DeploymentCreator')
-
-const RollbackInfoSchema = z
-  .object({
-    rollbackDeploymentId: DeploymentIdSchema.and(
-      z.any().openapi({ description: 'The ID of the deployment rollback.' }),
-    ).exactOptional(),
-    rollbackTriggeringDeploymentId: DeploymentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The deployment ID of the deployment that was underway and triggered a rollback deployment because it failed or was stopped.',
-        }),
-    ).exactOptional(),
-    rollbackMessage: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Information that describes the status of a deployment rollback (for example, whether the deployment can't be rolled back, is in progress, failed, or succeeded). ",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about a deployment rollback.', required: [] })
-  .openapi('RollbackInfo')
-
-const AutoScalingGroupNameListSchema = z
-  .array(AutoScalingGroupNameSchema)
-  .openapi('AutoScalingGroupNameList')
-
-const TargetInstancesSchema = z
-  .object({
-    tagFilters: EC2TagFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag filter key, type, and value used to identify Amazon EC2 instances in a replacement environment for a blue/green deployment. Cannot be used in the same call as <code>ec2TagSet</code>.',
-        }),
-    ).exactOptional(),
-    autoScalingGroups: AutoScalingGroupNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of one or more Auto Scaling groups to identify a replacement environment for a blue/green deployment.',
-        }),
-    ).exactOptional(),
-    ec2TagSet: EC2TagSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the groups of Amazon EC2 instance tags that an instance must be identified by in order for it to be included in the replacement environment for a blue/green deployment. Cannot be used in the same call as <code>tagFilters</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Information about the instances to be used in the replacement environment in a blue/green deployment.',
-    required: [],
-  })
-  .openapi('TargetInstances')
-
-const AdditionalDeploymentStatusInfoSchema = z
-  .string()
-  .openapi({
-    deprecated: true,
-    description:
-      'AdditionalDeploymentStatusInfo is deprecated, use DeploymentStatusMessageList instead.',
-  })
-  .openapi('AdditionalDeploymentStatusInfo')
-
-const FileExistsBehaviorSchema = z
-  .enum(['DISALLOW', 'OVERWRITE', 'RETAIN'])
-  .openapi('FileExistsBehavior')
-
-const DeploymentStatusMessageListSchema = z
-  .array(ErrorMessageSchema)
-  .openapi('DeploymentStatusMessageList')
-
-const ExternalIdSchema = z.string().openapi('ExternalId')
-
-const DeploymentsListSchema = z.array(DeploymentIdSchema).openapi('DeploymentsList')
-
-const RelatedDeploymentsSchema = z
-  .object({
-    autoUpdateOutdatedInstancesRootDeploymentId: DeploymentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The deployment ID of the root deployment that triggered this deployment.',
-        }),
-    ).exactOptional(),
-    autoUpdateOutdatedInstancesDeploymentIds: DeploymentsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The deployment IDs of 'auto-update outdated instances' deployments triggered by this deployment.",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Information about deployments related to the specified deployment.',
-    required: [],
-  })
-  .openapi('RelatedDeployments')
-
-const DeploymentInfoSchema = z
-  .object({
-    applicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The application name.' }),
-    ).exactOptional(),
-    deploymentGroupName: DeploymentGroupNameSchema.and(
-      z.any().openapi({ description: ' The deployment group name. ' }),
-    ).exactOptional(),
-    deploymentConfigName: DeploymentConfigNameSchema.and(
-      z.any().openapi({ description: ' The deployment configuration name. ' }),
-    ).exactOptional(),
-    deploymentId: DeploymentIdSchema.and(
-      z.any().openapi({ description: ' The unique ID of a deployment. ' }),
-    ).exactOptional(),
-    previousRevision: RevisionLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the application revision that was deployed to the deployment group before the most recent successful deployment.',
-        }),
-    ).exactOptional(),
-    revision: RevisionLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the location of stored application artifacts and the service from which to retrieve them.',
-        }),
-    ).exactOptional(),
-    status: DeploymentStatusSchema.and(
-      z.any().openapi({ description: 'The current state of the deployment as a whole.' }),
-    ).exactOptional(),
-    errorInformation: ErrorInformationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about any error associated with this deployment.' }),
-    ).exactOptional(),
-    createTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A timestamp that indicates when the deployment was created.' }),
-    ).exactOptional(),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A timestamp that indicates when the deployment was deployed to the deployment group.</p> <p>In some cases, the reported value of the start time might be later than the complete time. This is due to differences in the clock settings of backend servers that participate in the deployment process.</p>',
-        }),
-    ).exactOptional(),
-    completeTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A timestamp that indicates when the deployment was complete.' }),
-    ).exactOptional(),
-    deploymentOverview: DeploymentOverviewSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A summary of the deployment status of the instances in the deployment.',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A comment about the deployment.' }),
-    ).exactOptional(),
-    creator: DeploymentCreatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The means by which the deployment was created:</p> <ul> <li> <p> <code>user</code>: A user created the deployment.</p> </li> <li> <p> <code>autoscaling</code>: Amazon EC2 Auto Scaling created the deployment.</p> </li> <li> <p> <code>codeDeployRollback</code>: A rollback process created the deployment.</p> </li> <li> <p> <code>CodeDeployAutoUpdate</code>: An auto-update process created the deployment when it detected outdated Amazon EC2 instances.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ignoreApplicationStopFailures: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> If true, then if an <code>ApplicationStop</code>, <code>BeforeBlockTraffic</code>, or <code>AfterBlockTraffic</code> deployment lifecycle event to an instance fails, then the deployment continues to the next deployment lifecycle event. For example, if <code>ApplicationStop</code> fails, the deployment continues with DownloadBundle. If <code>BeforeBlockTraffic</code> fails, the deployment continues with <code>BlockTraffic</code>. If <code>AfterBlockTraffic</code> fails, the deployment continues with <code>ApplicationStop</code>. </p> <p> If false or not specified, then if a lifecycle event fails during a deployment to an instance, that deployment fails. If deployment to that instance is part of an overall deployment and the number of healthy hosts is not less than the minimum number of healthy hosts, then a deployment to the next instance is attempted. </p> <p> During a deployment, the CodeDeploy agent runs the scripts specified for <code>ApplicationStop</code>, <code>BeforeBlockTraffic</code>, and <code>AfterBlockTraffic</code> in the AppSpec file from the previous successful deployment. (All other scripts are run from the AppSpec file in the current deployment.) If one of these scripts contains an error and does not run successfully, the deployment can fail. </p> <p> If the cause of the failure is a script from the last successful deployment that will never run successfully, create a new deployment and use <code>ignoreApplicationStopFailures</code> to specify that the <code>ApplicationStop</code>, <code>BeforeBlockTraffic</code>, and <code>AfterBlockTraffic</code> failures should be ignored. </p>',
-        }),
-    ).exactOptional(),
-    autoRollbackConfiguration: AutoRollbackConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the automatic rollback configuration associated with the deployment.',
-        }),
-    ).exactOptional(),
-    updateOutdatedInstancesOnly: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether only instances that are not running the latest application revision are to be deployed to.',
-        }),
-    ).exactOptional(),
-    rollbackInfo: RollbackInfoSchema.and(
-      z.any().openapi({ description: 'Information about a deployment rollback.' }),
-    ).exactOptional(),
-    deploymentStyle: DeploymentStyleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the type of deployment, either in-place or blue/green, you want to run and whether to route deployment traffic behind a load balancer.',
-        }),
-    ).exactOptional(),
-    targetInstances: TargetInstancesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the instances that belong to the replacement environment in a blue/green deployment.',
-        }),
-    ).exactOptional(),
-    instanceTerminationWaitTimeStarted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Indicates whether the wait period set for the termination of instances in the original environment has started. Status is 'false' if the KEEP_ALIVE option is specified. Otherwise, 'true' as soon as the termination wait period starts.",
-        }),
-    ).exactOptional(),
-    blueGreenDeploymentConfiguration: BlueGreenDeploymentConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about blue/green deployment options for this deployment.',
-        }),
-    ).exactOptional(),
-    loadBalancerInfo: LoadBalancerInfoSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the load balancer used in the deployment.' }),
-    ).exactOptional(),
-    additionalDeploymentStatusInfo: AdditionalDeploymentStatusInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides information about the results of a deployment, such as whether instances in the original environment in a blue/green deployment were not terminated.',
-        }),
-    ).exactOptional(),
-    fileExistsBehavior: FileExistsBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Information about how CodeDeploy handles files that already exist in a deployment target location but weren't part of the previous successful deployment.</p> <ul> <li> <p> <code>DISALLOW</code>: The deployment fails. This is also the default behavior if no option is specified.</p> </li> <li> <p> <code>OVERWRITE</code>: The version of the file from the application revision currently being deployed replaces the version already on the instance.</p> </li> <li> <p> <code>RETAIN</code>: The version of the file already on the instance is kept and used as part of the new deployment.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    deploymentStatusMessages: DeploymentStatusMessageListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Messages that contain information about the status of a deployment.',
-        }),
-    ).exactOptional(),
-    computePlatform: ComputePlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The destination platform type for the deployment (<code>Lambda</code>, <code>Server</code>, or <code>ECS</code>).',
-        }),
-    ).exactOptional(),
-    externalId: ExternalIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique ID for an external resource (for example, a CloudFormation stack ID) that is linked to this deployment.',
-        }),
-    ).exactOptional(),
-    relatedDeployments: RelatedDeploymentsSchema.exactOptional(),
-    overrideAlarmConfiguration: AlarmConfigurationSchema.exactOptional(),
-  })
-  .openapi({ description: 'Information about a deployment.', required: [] })
-  .openapi('DeploymentInfo')
-
-const DeploymentsInfoListSchema = z.array(DeploymentInfoSchema).openapi('DeploymentsInfoList')
-
-const BatchGetDeploymentsOutputSchema = z
-  .object({
-    deploymentsInfo: DeploymentsInfoListSchema.and(
-      z.any().openapi({ description: ' Information about the deployments. ' }),
-    ).exactOptional(),
+    deploymentsInfo: DeploymentsInfoListSchema.exactOptional().openapi({
+      description: ' Information about the deployments. ',
+    }),
   })
   .openapi({
     description: ' Represents the output of a <code>BatchGetDeployments</code> operation. ',
@@ -2318,14 +1696,10 @@ const BatchGetDeploymentsOutputSchema = z
 
 const BatchGetDeploymentsInputSchema = z
   .object({
-    deploymentIds: DeploymentsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of deployment IDs, separated by spaces. The maximum number of deployment IDs you can specify is 25.',
-        }),
-    ),
+    deploymentIds: DeploymentsListSchema.openapi({
+      description:
+        ' A list of deployment IDs, separated by spaces. The maximum number of deployment IDs you can specify is 25.',
+    }),
   })
   .openapi({
     required: ['deploymentIds'],
@@ -2342,42 +1716,28 @@ const InstanceArnSchema = z.string().openapi('InstanceArn')
 
 const InstanceInfoSchema = z
   .object({
-    instanceName: InstanceNameSchema.and(
-      z.any().openapi({ description: 'The name of the on-premises instance.' }),
-    ).exactOptional(),
-    iamSessionArn: IamSessionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the IAM session associated with the on-premises instance.',
-        }),
-    ).exactOptional(),
-    iamUserArn: IamUserArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The IAM user ARN associated with the on-premises instance.' }),
-    ).exactOptional(),
-    instanceArn: InstanceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the on-premises instance.' }),
-    ).exactOptional(),
-    registerTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time at which the on-premises instance was registered.' }),
-    ).exactOptional(),
-    deregisterTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the on-premises instance was deregistered, the time at which the on-premises instance was deregistered.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tags currently associated with the on-premises instance.' }),
-    ).exactOptional(),
+    instanceName: InstanceNameSchema.exactOptional().openapi({
+      description: 'The name of the on-premises instance.',
+    }),
+    iamSessionArn: IamSessionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the IAM session associated with the on-premises instance.',
+    }),
+    iamUserArn: IamUserArnSchema.exactOptional().openapi({
+      description: 'The IAM user ARN associated with the on-premises instance.',
+    }),
+    instanceArn: InstanceArnSchema.exactOptional().openapi({
+      description: 'The ARN of the on-premises instance.',
+    }),
+    registerTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the on-premises instance was registered.',
+    }),
+    deregisterTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'If the on-premises instance was deregistered, the time at which the on-premises instance was deregistered.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags currently associated with the on-premises instance.',
+    }),
   })
   .openapi({ description: 'Information about an on-premises instance.', required: [] })
   .openapi('InstanceInfo')
@@ -2386,9 +1746,9 @@ const InstanceInfoListSchema = z.array(InstanceInfoSchema).openapi('InstanceInfo
 
 const BatchGetOnPremisesInstancesOutputSchema = z
   .object({
-    instanceInfos: InstanceInfoListSchema.and(
-      z.any().openapi({ description: 'Information about the on-premises instances.' }),
-    ).exactOptional(),
+    instanceInfos: InstanceInfoListSchema.exactOptional().openapi({
+      description: 'Information about the on-premises instances.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>BatchGetOnPremisesInstances</code> operation.',
@@ -2398,14 +1758,10 @@ const BatchGetOnPremisesInstancesOutputSchema = z
 
 const BatchGetOnPremisesInstancesInputSchema = z
   .object({
-    instanceNames: InstanceNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of the on-premises instances about which to get information. The maximum number of instance names you can specify is 25.',
-        }),
-    ),
+    instanceNames: InstanceNameListSchema.openapi({
+      description:
+        'The names of the on-premises instances about which to get information. The maximum number of instance names you can specify is 25.',
+    }),
   })
   .openapi({
     required: ['instanceNames'],
@@ -2420,22 +1776,14 @@ const DeploymentWaitTypeSchema = z
 
 const ContinueDeploymentInputSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The unique ID of a blue/green deployment for which you want to start rerouting traffic to the replacement environment. ',
-        }),
-    ).exactOptional(),
-    deploymentWaitType: DeploymentWaitTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The status of the deployment's waiting period. <code>READY_WAIT</code> indicates that the deployment is ready to start shifting traffic. <code>TERMINATION_WAIT</code> indicates that the traffic is shifted, but the original target is not terminated. ",
-        }),
-    ).exactOptional(),
+    deploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description:
+        ' The unique ID of a blue/green deployment for which you want to start rerouting traffic to the replacement environment. ',
+    }),
+    deploymentWaitType: DeploymentWaitTypeSchema.exactOptional().openapi({
+      description:
+        " The status of the deployment's waiting period. <code>READY_WAIT</code> indicates that the deployment is ready to start shifting traffic. <code>TERMINATION_WAIT</code> indicates that the traffic is shifted, but the original target is not terminated. ",
+    }),
   })
   .openapi({ title: 'ContinueDeploymentInput', required: [] })
   .openapi('ContinueDeploymentInput')
@@ -2460,9 +1808,9 @@ const InvalidDeploymentStatusExceptionSchema = z.any().openapi('InvalidDeploymen
 
 const CreateApplicationOutputSchema = z
   .object({
-    applicationId: ApplicationIdSchema.and(
-      z.any().openapi({ description: 'A unique application ID.' }),
-    ).exactOptional(),
+    applicationId: ApplicationIdSchema.exactOptional().openapi({
+      description: 'A unique application ID.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>CreateApplication</code> operation.',
@@ -2472,30 +1820,18 @@ const CreateApplicationOutputSchema = z
 
 const CreateApplicationInputSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the application. This name must be unique with the applicable IAM or Amazon Web Services account.',
-        }),
-    ),
-    computePlatform: ComputePlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The destination platform type for the deployment (<code>Lambda</code>, <code>Server</code>, or <code>ECS</code>).',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The metadata that you apply to CodeDeploy applications to help you organize and categorize them. Each tag consists of a key and an optional value, both of which you define. ',
-        }),
-    ).exactOptional(),
+    applicationName: ApplicationNameSchema.openapi({
+      description:
+        'The name of the application. This name must be unique with the applicable IAM or Amazon Web Services account.',
+    }),
+    computePlatform: ComputePlatformSchema.exactOptional().openapi({
+      description:
+        ' The destination platform type for the deployment (<code>Lambda</code>, <code>Server</code>, or <code>ECS</code>).',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        ' The metadata that you apply to CodeDeploy applications to help you organize and categorize them. Each tag consists of a key and an optional value, both of which you define. ',
+    }),
   })
   .openapi({
     required: ['applicationName'],
@@ -2512,9 +1848,9 @@ const InvalidTagsToAddExceptionSchema = z.any().openapi('InvalidTagsToAddExcepti
 
 const CreateDeploymentOutputSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z.any().openapi({ description: ' The unique ID of a deployment. ' }),
-    ).exactOptional(),
+    deploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description: ' The unique ID of a deployment. ',
+    }),
   })
   .openapi({
     description: ' Represents the output of a <code>CreateDeployment</code> operation. ',
@@ -2524,79 +1860,47 @@ const CreateDeploymentOutputSchema = z
 
 const CreateDeploymentInputSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.',
-        }),
-    ),
-    deploymentGroupName: DeploymentGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the deployment group.' }),
-    ).exactOptional(),
-    revision: RevisionLocationSchema.and(
-      z.any().openapi({ description: ' The type and location of the revision to deploy. ' }),
-    ).exactOptional(),
-    deploymentConfigName: DeploymentConfigNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a deployment configuration associated with the IAM user or Amazon Web Services account.</p> <p>If not specified, the value configured in the deployment group is used as the default. If the deployment group does not have a deployment configuration associated with it, <code>CodeDeployDefault</code>.<code>OneAtATime</code> is used by default.</p>',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A comment about the deployment.' }),
-    ).exactOptional(),
-    ignoreApplicationStopFailures: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> If true, then if an <code>ApplicationStop</code>, <code>BeforeBlockTraffic</code>, or <code>AfterBlockTraffic</code> deployment lifecycle event to an instance fails, then the deployment continues to the next deployment lifecycle event. For example, if <code>ApplicationStop</code> fails, the deployment continues with <code>DownloadBundle</code>. If <code>BeforeBlockTraffic</code> fails, the deployment continues with <code>BlockTraffic</code>. If <code>AfterBlockTraffic</code> fails, the deployment continues with <code>ApplicationStop</code>. </p> <p> If false or not specified, then if a lifecycle event fails during a deployment to an instance, that deployment fails. If deployment to that instance is part of an overall deployment and the number of healthy hosts is not less than the minimum number of healthy hosts, then a deployment to the next instance is attempted. </p> <p> During a deployment, the CodeDeploy agent runs the scripts specified for <code>ApplicationStop</code>, <code>BeforeBlockTraffic</code>, and <code>AfterBlockTraffic</code> in the AppSpec file from the previous successful deployment. (All other scripts are run from the AppSpec file in the current deployment.) If one of these scripts contains an error and does not run successfully, the deployment can fail. </p> <p> If the cause of the failure is a script from the last successful deployment that will never run successfully, create a new deployment and use <code>ignoreApplicationStopFailures</code> to specify that the <code>ApplicationStop</code>, <code>BeforeBlockTraffic</code>, and <code>AfterBlockTraffic</code> failures should be ignored. </p>',
-        }),
-    ).exactOptional(),
-    targetInstances: TargetInstancesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Information about the instances that belong to the replacement environment in a blue/green deployment. ',
-        }),
-    ).exactOptional(),
-    autoRollbackConfiguration: AutoRollbackConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration information for an automatic rollback that is added when a deployment is created.',
-        }),
-    ).exactOptional(),
-    updateOutdatedInstancesOnly: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates whether to deploy to all instances or only to instances that are not running the latest application revision. ',
-        }),
-    ).exactOptional(),
-    fileExistsBehavior: FileExistsBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Information about how CodeDeploy handles files that already exist in a deployment target location but weren't part of the previous successful deployment.</p> <p>The <code>fileExistsBehavior</code> parameter takes any of the following values:</p> <ul> <li> <p>DISALLOW: The deployment fails. This is also the default behavior if no option is specified.</p> </li> <li> <p>OVERWRITE: The version of the file from the application revision currently being deployed replaces the version already on the instance.</p> </li> <li> <p>RETAIN: The version of the file already on the instance is kept and used as part of the new deployment.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    overrideAlarmConfiguration: AlarmConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Allows you to specify information about alarms associated with a deployment. The alarm configuration that you specify here will override the alarm configuration at the deployment group level. Consider overriding the alarm configuration if you have set up alarms at the deployment group level that are causing deployment failures. In this case, you would call <code>CreateDeployment</code> to create a new deployment that uses a previous application revision that is known to work, and set its alarm configuration to turn off alarm polling. Turning off alarm polling ensures that the new deployment proceeds without being blocked by the alarm that was generated by the previous, failed, deployment.</p> <note> <p>If you specify an <code>overrideAlarmConfiguration</code>, you need the <code>UpdateDeploymentGroup</code> IAM permission when calling <code>CreateDeployment</code>.</p> </note>',
-        }),
-    ).exactOptional(),
+    applicationName: ApplicationNameSchema.openapi({
+      description:
+        'The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.',
+    }),
+    deploymentGroupName: DeploymentGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the deployment group.',
+    }),
+    revision: RevisionLocationSchema.exactOptional().openapi({
+      description: ' The type and location of the revision to deploy. ',
+    }),
+    deploymentConfigName: DeploymentConfigNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of a deployment configuration associated with the IAM user or Amazon Web Services account.</p> <p>If not specified, the value configured in the deployment group is used as the default. If the deployment group does not have a deployment configuration associated with it, <code>CodeDeployDefault</code>.<code>OneAtATime</code> is used by default.</p>',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A comment about the deployment.',
+    }),
+    ignoreApplicationStopFailures: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p> If true, then if an <code>ApplicationStop</code>, <code>BeforeBlockTraffic</code>, or <code>AfterBlockTraffic</code> deployment lifecycle event to an instance fails, then the deployment continues to the next deployment lifecycle event. For example, if <code>ApplicationStop</code> fails, the deployment continues with <code>DownloadBundle</code>. If <code>BeforeBlockTraffic</code> fails, the deployment continues with <code>BlockTraffic</code>. If <code>AfterBlockTraffic</code> fails, the deployment continues with <code>ApplicationStop</code>. </p> <p> If false or not specified, then if a lifecycle event fails during a deployment to an instance, that deployment fails. If deployment to that instance is part of an overall deployment and the number of healthy hosts is not less than the minimum number of healthy hosts, then a deployment to the next instance is attempted. </p> <p> During a deployment, the CodeDeploy agent runs the scripts specified for <code>ApplicationStop</code>, <code>BeforeBlockTraffic</code>, and <code>AfterBlockTraffic</code> in the AppSpec file from the previous successful deployment. (All other scripts are run from the AppSpec file in the current deployment.) If one of these scripts contains an error and does not run successfully, the deployment can fail. </p> <p> If the cause of the failure is a script from the last successful deployment that will never run successfully, create a new deployment and use <code>ignoreApplicationStopFailures</code> to specify that the <code>ApplicationStop</code>, <code>BeforeBlockTraffic</code>, and <code>AfterBlockTraffic</code> failures should be ignored. </p>',
+    }),
+    targetInstances: TargetInstancesSchema.exactOptional().openapi({
+      description:
+        ' Information about the instances that belong to the replacement environment in a blue/green deployment. ',
+    }),
+    autoRollbackConfiguration: AutoRollbackConfigurationSchema.exactOptional().openapi({
+      description:
+        'Configuration information for an automatic rollback that is added when a deployment is created.',
+    }),
+    updateOutdatedInstancesOnly: BooleanSchema.exactOptional().openapi({
+      description:
+        ' Indicates whether to deploy to all instances or only to instances that are not running the latest application revision. ',
+    }),
+    fileExistsBehavior: FileExistsBehaviorSchema.exactOptional().openapi({
+      description:
+        "<p>Information about how CodeDeploy handles files that already exist in a deployment target location but weren't part of the previous successful deployment.</p> <p>The <code>fileExistsBehavior</code> parameter takes any of the following values:</p> <ul> <li> <p>DISALLOW: The deployment fails. This is also the default behavior if no option is specified.</p> </li> <li> <p>OVERWRITE: The version of the file from the application revision currently being deployed replaces the version already on the instance.</p> </li> <li> <p>RETAIN: The version of the file already on the instance is kept and used as part of the new deployment.</p> </li> </ul>",
+    }),
+    overrideAlarmConfiguration: AlarmConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>Allows you to specify information about alarms associated with a deployment. The alarm configuration that you specify here will override the alarm configuration at the deployment group level. Consider overriding the alarm configuration if you have set up alarms at the deployment group level that are causing deployment failures. In this case, you would call <code>CreateDeployment</code> to create a new deployment that uses a previous application revision that is known to work, and set its alarm configuration to turn off alarm polling. Turning off alarm polling ensures that the new deployment proceeds without being blocked by the alarm that was generated by the previous, failed, deployment.</p> <note> <p>If you specify an <code>overrideAlarmConfiguration</code>, you need the <code>UpdateDeploymentGroup</code> IAM permission when calling <code>CreateDeployment</code>.</p> </note>',
+    }),
   })
   .openapi({
     required: ['applicationName'],
@@ -2661,9 +1965,9 @@ const DeploymentConfigIdSchema = z.string().openapi('DeploymentConfigId')
 
 const CreateDeploymentConfigOutputSchema = z
   .object({
-    deploymentConfigId: DeploymentConfigIdSchema.and(
-      z.any().openapi({ description: 'A unique deployment configuration ID.' }),
-    ).exactOptional(),
+    deploymentConfigId: DeploymentConfigIdSchema.exactOptional().openapi({
+      description: 'A unique deployment configuration ID.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>CreateDeploymentConfig</code> operation.',
@@ -2679,17 +1983,13 @@ const MinimumHealthyHostsValueSchema = z.int().openapi('MinimumHealthyHostsValue
 
 const MinimumHealthyHostsSchema = z
   .object({
-    type: MinimumHealthyHostsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The minimum healthy instance type:</p> <ul> <li> <p> <code>HOST_COUNT</code>: The minimum number of healthy instances as an absolute value.</p> </li> <li> <p> <code>FLEET_PERCENT</code>: The minimum number of healthy instances as a percentage of the total number of instances in the deployment.</p> </li> </ul> <p>In an example of nine instances, if a HOST_COUNT of six is specified, deploy to up to three instances at a time. The deployment is successful if six or more instances are deployed to successfully. Otherwise, the deployment fails. If a FLEET_PERCENT of 40 is specified, deploy to up to five instances at a time. The deployment is successful if four or more instances are deployed to successfully. Otherwise, the deployment fails.</p> <note> <p>In a call to the <code>GetDeploymentConfig</code>, CodeDeployDefault.OneAtATime returns a minimum healthy instance type of MOST_CONCURRENCY and a value of 1. This means a deployment to only one instance at a time. (You cannot set the type to MOST_CONCURRENCY, only to HOST_COUNT or FLEET_PERCENT.) In addition, with CodeDeployDefault.OneAtATime, CodeDeploy attempts to ensure that all instances but one are kept in a healthy state during the deployment. Although this allows one instance at a time to be taken offline for a new deployment, it also means that if the deployment to the last instance fails, the overall deployment is still successful.</p> </note> <p>For more information, see <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/instances-health.html">CodeDeploy Instance Health</a> in the <i>CodeDeploy User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    value: MinimumHealthyHostsValueSchema.and(
-      z.any().openapi({ description: 'The minimum healthy instance value.' }),
-    ).exactOptional(),
+    type: MinimumHealthyHostsTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The minimum healthy instance type:</p> <ul> <li> <p> <code>HOST_COUNT</code>: The minimum number of healthy instances as an absolute value.</p> </li> <li> <p> <code>FLEET_PERCENT</code>: The minimum number of healthy instances as a percentage of the total number of instances in the deployment.</p> </li> </ul> <p>In an example of nine instances, if a HOST_COUNT of six is specified, deploy to up to three instances at a time. The deployment is successful if six or more instances are deployed to successfully. Otherwise, the deployment fails. If a FLEET_PERCENT of 40 is specified, deploy to up to five instances at a time. The deployment is successful if four or more instances are deployed to successfully. Otherwise, the deployment fails.</p> <note> <p>In a call to the <code>GetDeploymentConfig</code>, CodeDeployDefault.OneAtATime returns a minimum healthy instance type of MOST_CONCURRENCY and a value of 1. This means a deployment to only one instance at a time. (You cannot set the type to MOST_CONCURRENCY, only to HOST_COUNT or FLEET_PERCENT.) In addition, with CodeDeployDefault.OneAtATime, CodeDeploy attempts to ensure that all instances but one are kept in a healthy state during the deployment. Although this allows one instance at a time to be taken offline for a new deployment, it also means that if the deployment to the last instance fails, the overall deployment is still successful.</p> </note> <p>For more information, see <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/instances-health.html">CodeDeploy Instance Health</a> in the <i>CodeDeploy User Guide</i>.</p>',
+    }),
+    value: MinimumHealthyHostsValueSchema.exactOptional().openapi({
+      description: 'The minimum healthy instance value.',
+    }),
   })
   .openapi({ description: 'Information about minimum healthy instance.', required: [] })
   .openapi('MinimumHealthyHosts')
@@ -2704,22 +2004,14 @@ const WaitTimeInMinsSchema = z.int().openapi('WaitTimeInMins')
 
 const TimeBasedCanarySchema = z
   .object({
-    canaryPercentage: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of traffic to shift in the first increment of a <code>TimeBasedCanary</code> deployment.',
-        }),
-    ).exactOptional(),
-    canaryInterval: WaitTimeInMinsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of minutes between the first and second traffic shifts of a <code>TimeBasedCanary</code> deployment.',
-        }),
-    ).exactOptional(),
+    canaryPercentage: PercentageSchema.exactOptional().openapi({
+      description:
+        'The percentage of traffic to shift in the first increment of a <code>TimeBasedCanary</code> deployment.',
+    }),
+    canaryInterval: WaitTimeInMinsSchema.exactOptional().openapi({
+      description:
+        'The number of minutes between the first and second traffic shifts of a <code>TimeBasedCanary</code> deployment.',
+    }),
   })
   .openapi({
     description:
@@ -2730,22 +2022,14 @@ const TimeBasedCanarySchema = z
 
 const TimeBasedLinearSchema = z
   .object({
-    linearPercentage: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of traffic that is shifted at the start of each increment of a <code>TimeBasedLinear</code> deployment.',
-        }),
-    ).exactOptional(),
-    linearInterval: WaitTimeInMinsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of minutes between each incremental traffic shift of a <code>TimeBasedLinear</code> deployment.',
-        }),
-    ).exactOptional(),
+    linearPercentage: PercentageSchema.exactOptional().openapi({
+      description:
+        'The percentage of traffic that is shifted at the start of each increment of a <code>TimeBasedLinear</code> deployment.',
+    }),
+    linearInterval: WaitTimeInMinsSchema.exactOptional().openapi({
+      description:
+        'The number of minutes between each incremental traffic shift of a <code>TimeBasedLinear</code> deployment.',
+    }),
   })
   .openapi({
     description:
@@ -2756,30 +2040,18 @@ const TimeBasedLinearSchema = z
 
 const TrafficRoutingConfigSchema = z
   .object({
-    type: TrafficRoutingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of traffic shifting (<code>TimeBasedCanary</code> or <code>TimeBasedLinear</code>) used by a deployment configuration.',
-        }),
-    ).exactOptional(),
-    timeBasedCanary: TimeBasedCanarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A configuration that shifts traffic from one version of a Lambda function or ECS task set to another in two increments. The original and target Lambda function versions or ECS task sets are specified in the deployment's AppSpec file.",
-        }),
-    ).exactOptional(),
-    timeBasedLinear: TimeBasedLinearSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A configuration that shifts traffic from one version of a Lambda function or Amazon ECS task set to another in equal increments, with an equal number of minutes between each increment. The original and target Lambda function versions or Amazon ECS task sets are specified in the deployment's AppSpec file.",
-        }),
-    ).exactOptional(),
+    type: TrafficRoutingTypeSchema.exactOptional().openapi({
+      description:
+        'The type of traffic shifting (<code>TimeBasedCanary</code> or <code>TimeBasedLinear</code>) used by a deployment configuration.',
+    }),
+    timeBasedCanary: TimeBasedCanarySchema.exactOptional().openapi({
+      description:
+        "A configuration that shifts traffic from one version of a Lambda function or ECS task set to another in two increments. The original and target Lambda function versions or ECS task sets are specified in the deployment's AppSpec file.",
+    }),
+    timeBasedLinear: TimeBasedLinearSchema.exactOptional().openapi({
+      description:
+        "A configuration that shifts traffic from one version of a Lambda function or Amazon ECS task set to another in equal increments, with an equal number of minutes between each increment. The original and target Lambda function versions or Amazon ECS task sets are specified in the deployment's AppSpec file.",
+    }),
   })
   .openapi({
     description:
@@ -2790,32 +2062,20 @@ const TrafficRoutingConfigSchema = z
 
 const CreateDeploymentConfigInputSchema = z
   .object({
-    deploymentConfigName: DeploymentConfigNameSchema.and(
-      z.any().openapi({ description: 'The name of the deployment configuration to create.' }),
-    ),
-    minimumHealthyHosts: MinimumHealthyHostsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The minimum number of healthy instances that should be available at any time during the deployment. There are two parameters expected in the input: type and value.</p> <p>The type parameter takes either of the following values:</p> <ul> <li> <p>HOST_COUNT: The value parameter represents the minimum number of healthy instances as an absolute value.</p> </li> <li> <p>FLEET_PERCENT: The value parameter represents the minimum number of healthy instances as a percentage of the total number of instances in the deployment. If you specify FLEET_PERCENT, at the start of the deployment, CodeDeploy converts the percentage to the equivalent number of instances and rounds up fractional instances.</p> </li> </ul> <p>The value parameter takes an integer.</p> <p>For example, to set a minimum of 95% healthy instance, specify a type of FLEET_PERCENT and a value of 95.</p>',
-        }),
-    ).exactOptional(),
-    trafficRoutingConfig: TrafficRoutingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration that specifies how the deployment traffic is routed.',
-        }),
-    ).exactOptional(),
-    computePlatform: ComputePlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The destination platform type for the deployment (<code>Lambda</code>, <code>Server</code>, or <code>ECS</code>).',
-        }),
-    ).exactOptional(),
+    deploymentConfigName: DeploymentConfigNameSchema.openapi({
+      description: 'The name of the deployment configuration to create.',
+    }),
+    minimumHealthyHosts: MinimumHealthyHostsSchema.exactOptional().openapi({
+      description:
+        '<p>The minimum number of healthy instances that should be available at any time during the deployment. There are two parameters expected in the input: type and value.</p> <p>The type parameter takes either of the following values:</p> <ul> <li> <p>HOST_COUNT: The value parameter represents the minimum number of healthy instances as an absolute value.</p> </li> <li> <p>FLEET_PERCENT: The value parameter represents the minimum number of healthy instances as a percentage of the total number of instances in the deployment. If you specify FLEET_PERCENT, at the start of the deployment, CodeDeploy converts the percentage to the equivalent number of instances and rounds up fractional instances.</p> </li> </ul> <p>The value parameter takes an integer.</p> <p>For example, to set a minimum of 95% healthy instance, specify a type of FLEET_PERCENT and a value of 95.</p>',
+    }),
+    trafficRoutingConfig: TrafficRoutingConfigSchema.exactOptional().openapi({
+      description: 'The configuration that specifies how the deployment traffic is routed.',
+    }),
+    computePlatform: ComputePlatformSchema.exactOptional().openapi({
+      description:
+        'The destination platform type for the deployment (<code>Lambda</code>, <code>Server</code>, or <code>ECS</code>).',
+    }),
   })
   .openapi({
     required: ['deploymentConfigName'],
@@ -2842,9 +2102,9 @@ const DeploymentConfigLimitExceededExceptionSchema = z
 
 const CreateDeploymentGroupOutputSchema = z
   .object({
-    deploymentGroupId: DeploymentGroupIdSchema.and(
-      z.any().openapi({ description: 'A unique deployment group ID.' }),
-    ).exactOptional(),
+    deploymentGroupId: DeploymentGroupIdSchema.exactOptional().openapi({
+      description: 'A unique deployment group ID.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>CreateDeploymentGroup</code> operation.',
@@ -2854,138 +2114,75 @@ const CreateDeploymentGroupOutputSchema = z
 
 const CreateDeploymentGroupInputSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.',
-        }),
-    ),
-    deploymentGroupName: DeploymentGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of a new deployment group for the specified application.',
-        }),
-    ),
-    deploymentConfigName: DeploymentConfigNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, the deployment configuration name can be either one of the predefined configurations provided with CodeDeploy or a custom deployment configuration that you create by calling the create deployment configuration operation.</p> <p> <code>CodeDeployDefault.OneAtATime</code> is the default deployment configuration. It is used if a configuration isn\'t specified for the deployment or deployment group.</p> <p>For more information about the predefined deployment configurations in CodeDeploy, see <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations.html">Working with Deployment Configurations in CodeDeploy</a> in the <i>CodeDeploy User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    ec2TagFilters: EC2TagFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon EC2 tags on which to filter. The deployment group includes Amazon EC2 instances with any of the specified tags. Cannot be used in the same call as ec2TagSet.',
-        }),
-    ).exactOptional(),
-    onPremisesInstanceTagFilters: TagFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The on-premises instance tags on which to filter. The deployment group includes on-premises instances with any of the specified tags. Cannot be used in the same call as <code>OnPremisesTagSet</code>.',
-        }),
-    ).exactOptional(),
-    autoScalingGroups: AutoScalingGroupNameListSchema.and(
-      z.any().openapi({ description: 'A list of associated Amazon EC2 Auto Scaling groups.' }),
-    ).exactOptional(),
-    serviceRoleArn: RoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A service role Amazon Resource Name (ARN) that allows CodeDeploy to act on the user's behalf when interacting with Amazon Web Services services.",
-        }),
-    ),
-    triggerConfigurations: TriggerConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about triggers to create when the deployment group is created. For examples, see <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/how-to-notify-sns.html">Create a Trigger for an CodeDeploy Event</a> in the <i>CodeDeploy User Guide</i>.',
-        }),
-    ).exactOptional(),
-    alarmConfiguration: AlarmConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information to add about Amazon CloudWatch alarms when the deployment group is created.',
-        }),
-    ).exactOptional(),
-    autoRollbackConfiguration: AutoRollbackConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration information for an automatic rollback that is added when a deployment group is created.',
-        }),
-    ).exactOptional(),
-    outdatedInstancesStrategy: OutdatedInstancesStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates what happens when new Amazon EC2 instances are launched mid-deployment and do not receive the deployed application revision.</p> <p>If this option is set to <code>UPDATE</code> or is unspecified, CodeDeploy initiates one or more 'auto-update outdated instances' deployments to apply the deployed application revision to the new Amazon EC2 instances.</p> <p>If this option is set to <code>IGNORE</code>, CodeDeploy does not initiate a deployment to update the new Amazon EC2 instances. This may result in instances having different revisions.</p>",
-        }),
-    ).exactOptional(),
-    deploymentStyle: DeploymentStyleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the type of deployment, in-place or blue/green, that you want to run and whether to route deployment traffic behind a load balancer.',
-        }),
-    ).exactOptional(),
-    blueGreenDeploymentConfiguration: BlueGreenDeploymentConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about blue/green deployment options for a deployment group.',
-        }),
-    ).exactOptional(),
-    loadBalancerInfo: LoadBalancerInfoSchema.and(
-      z.any().openapi({ description: 'Information about the load balancer used in a deployment.' }),
-    ).exactOptional(),
-    ec2TagSet: EC2TagSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about groups of tags applied to Amazon EC2 instances. The deployment group includes only Amazon EC2 instances identified by all the tag groups. Cannot be used in the same call as <code>ec2TagFilters</code>.',
-        }),
-    ).exactOptional(),
-    ecsServices: ECSServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The target Amazon ECS services in the deployment group. This applies only to deployment groups that use the Amazon ECS compute platform. A target Amazon ECS service is specified as an Amazon ECS cluster and service name pair using the format <code>&lt;clustername&gt;:&lt;servicename&gt;</code>. ',
-        }),
-    ).exactOptional(),
-    onPremisesTagSet: OnPremisesTagSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about groups of tags applied to on-premises instances. The deployment group includes only on-premises instances identified by all of the tag groups. Cannot be used in the same call as <code>onPremisesInstanceTagFilters</code>.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The metadata that you apply to CodeDeploy deployment groups to help you organize and categorize them. Each tag consists of a key and an optional value, both of which you define. ',
-        }),
-    ).exactOptional(),
+    applicationName: ApplicationNameSchema.openapi({
+      description:
+        'The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.',
+    }),
+    deploymentGroupName: DeploymentGroupNameSchema.openapi({
+      description: 'The name of a new deployment group for the specified application.',
+    }),
+    deploymentConfigName: DeploymentConfigNameSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, the deployment configuration name can be either one of the predefined configurations provided with CodeDeploy or a custom deployment configuration that you create by calling the create deployment configuration operation.</p> <p> <code>CodeDeployDefault.OneAtATime</code> is the default deployment configuration. It is used if a configuration isn\'t specified for the deployment or deployment group.</p> <p>For more information about the predefined deployment configurations in CodeDeploy, see <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations.html">Working with Deployment Configurations in CodeDeploy</a> in the <i>CodeDeploy User Guide</i>.</p>',
+    }),
+    ec2TagFilters: EC2TagFilterListSchema.exactOptional().openapi({
+      description:
+        'The Amazon EC2 tags on which to filter. The deployment group includes Amazon EC2 instances with any of the specified tags. Cannot be used in the same call as ec2TagSet.',
+    }),
+    onPremisesInstanceTagFilters: TagFilterListSchema.exactOptional().openapi({
+      description:
+        'The on-premises instance tags on which to filter. The deployment group includes on-premises instances with any of the specified tags. Cannot be used in the same call as <code>OnPremisesTagSet</code>.',
+    }),
+    autoScalingGroups: AutoScalingGroupNameListSchema.exactOptional().openapi({
+      description: 'A list of associated Amazon EC2 Auto Scaling groups.',
+    }),
+    serviceRoleArn: RoleSchema.openapi({
+      description:
+        "A service role Amazon Resource Name (ARN) that allows CodeDeploy to act on the user's behalf when interacting with Amazon Web Services services.",
+    }),
+    triggerConfigurations: TriggerConfigListSchema.exactOptional().openapi({
+      description:
+        'Information about triggers to create when the deployment group is created. For examples, see <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/how-to-notify-sns.html">Create a Trigger for an CodeDeploy Event</a> in the <i>CodeDeploy User Guide</i>.',
+    }),
+    alarmConfiguration: AlarmConfigurationSchema.exactOptional().openapi({
+      description:
+        'Information to add about Amazon CloudWatch alarms when the deployment group is created.',
+    }),
+    autoRollbackConfiguration: AutoRollbackConfigurationSchema.exactOptional().openapi({
+      description:
+        'Configuration information for an automatic rollback that is added when a deployment group is created.',
+    }),
+    outdatedInstancesStrategy: OutdatedInstancesStrategySchema.exactOptional().openapi({
+      description:
+        "<p>Indicates what happens when new Amazon EC2 instances are launched mid-deployment and do not receive the deployed application revision.</p> <p>If this option is set to <code>UPDATE</code> or is unspecified, CodeDeploy initiates one or more 'auto-update outdated instances' deployments to apply the deployed application revision to the new Amazon EC2 instances.</p> <p>If this option is set to <code>IGNORE</code>, CodeDeploy does not initiate a deployment to update the new Amazon EC2 instances. This may result in instances having different revisions.</p>",
+    }),
+    deploymentStyle: DeploymentStyleSchema.exactOptional().openapi({
+      description:
+        'Information about the type of deployment, in-place or blue/green, that you want to run and whether to route deployment traffic behind a load balancer.',
+    }),
+    blueGreenDeploymentConfiguration:
+      BlueGreenDeploymentConfigurationSchema.exactOptional().openapi({
+        description: 'Information about blue/green deployment options for a deployment group.',
+      }),
+    loadBalancerInfo: LoadBalancerInfoSchema.exactOptional().openapi({
+      description: 'Information about the load balancer used in a deployment.',
+    }),
+    ec2TagSet: EC2TagSetSchema.exactOptional().openapi({
+      description:
+        'Information about groups of tags applied to Amazon EC2 instances. The deployment group includes only Amazon EC2 instances identified by all the tag groups. Cannot be used in the same call as <code>ec2TagFilters</code>.',
+    }),
+    ecsServices: ECSServiceListSchema.exactOptional().openapi({
+      description:
+        ' The target Amazon ECS services in the deployment group. This applies only to deployment groups that use the Amazon ECS compute platform. A target Amazon ECS service is specified as an Amazon ECS cluster and service name pair using the format <code>&lt;clustername&gt;:&lt;servicename&gt;</code>. ',
+    }),
+    onPremisesTagSet: OnPremisesTagSetSchema.exactOptional().openapi({
+      description:
+        'Information about groups of tags applied to on-premises instances. The deployment group includes only on-premises instances identified by all of the tag groups. Cannot be used in the same call as <code>onPremisesInstanceTagFilters</code>.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        ' The metadata that you apply to CodeDeploy deployment groups to help you organize and categorize them. Each tag consists of a key and an optional value, both of which you define. ',
+    }),
   })
   .openapi({
     required: ['applicationName', 'deploymentGroupName', 'serviceRoleArn'],
@@ -3042,14 +2239,10 @@ const ECSServiceMappingLimitExceededExceptionSchema = z
 
 const DeleteApplicationInputSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.',
-        }),
-    ),
+    applicationName: ApplicationNameSchema.openapi({
+      description:
+        'The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.',
+    }),
   })
   .openapi({
     required: ['applicationName'],
@@ -3060,14 +2253,10 @@ const DeleteApplicationInputSchema = z
 
 const DeleteDeploymentConfigInputSchema = z
   .object({
-    deploymentConfigName: DeploymentConfigNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a deployment configuration associated with the IAM user or Amazon Web Services account.',
-        }),
-    ),
+    deploymentConfigName: DeploymentConfigNameSchema.openapi({
+      description:
+        'The name of a deployment configuration associated with the IAM user or Amazon Web Services account.',
+    }),
   })
   .openapi({
     required: ['deploymentConfigName'],
@@ -3082,14 +2271,10 @@ const InvalidOperationExceptionSchema = z.any().openapi('InvalidOperationExcepti
 
 const DeleteDeploymentGroupOutputSchema = z
   .object({
-    hooksNotCleanedUp: AutoScalingGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the output contains no data, and the corresponding deployment group contained at least one Auto Scaling group, CodeDeploy successfully removed all corresponding Auto Scaling lifecycle event hooks from the Amazon EC2 instances in the Auto Scaling group. If the output contains data, CodeDeploy could not remove some Auto Scaling lifecycle event hooks from the Amazon EC2 instances in the Auto Scaling group.',
-        }),
-    ).exactOptional(),
+    hooksNotCleanedUp: AutoScalingGroupListSchema.exactOptional().openapi({
+      description:
+        'If the output contains no data, and the corresponding deployment group contained at least one Auto Scaling group, CodeDeploy successfully removed all corresponding Auto Scaling lifecycle event hooks from the Amazon EC2 instances in the Auto Scaling group. If the output contains data, CodeDeploy could not remove some Auto Scaling lifecycle event hooks from the Amazon EC2 instances in the Auto Scaling group.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>DeleteDeploymentGroup</code> operation.',
@@ -3099,19 +2284,13 @@ const DeleteDeploymentGroupOutputSchema = z
 
 const DeleteDeploymentGroupInputSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.',
-        }),
-    ),
-    deploymentGroupName: DeploymentGroupNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of a deployment group for the specified application.' }),
-    ),
+    applicationName: ApplicationNameSchema.openapi({
+      description:
+        'The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.',
+    }),
+    deploymentGroupName: DeploymentGroupNameSchema.openapi({
+      description: 'The name of a deployment group for the specified application.',
+    }),
   })
   .openapi({
     required: ['applicationName', 'deploymentGroupName'],
@@ -3122,11 +2301,9 @@ const DeleteDeploymentGroupInputSchema = z
 
 const DeleteGitHubAccountTokenOutputSchema = z
   .object({
-    tokenName: GitHubAccountTokenNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the GitHub account connection that was deleted.' }),
-    ).exactOptional(),
+    tokenName: GitHubAccountTokenNameSchema.exactOptional().openapi({
+      description: 'The name of the GitHub account connection that was deleted.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>DeleteGitHubAccountToken</code> operation.',
@@ -3136,9 +2313,9 @@ const DeleteGitHubAccountTokenOutputSchema = z
 
 const DeleteGitHubAccountTokenInputSchema = z
   .object({
-    tokenName: GitHubAccountTokenNameSchema.and(
-      z.any().openapi({ description: 'The name of the GitHub account connection to delete.' }),
-    ).exactOptional(),
+    tokenName: GitHubAccountTokenNameSchema.exactOptional().openapi({
+      description: 'The name of the GitHub account connection to delete.',
+    }),
   })
   .openapi({
     title: 'DeleteGitHubAccountTokenInput',
@@ -3164,28 +2341,24 @@ const ResourceValidationExceptionSchema = z.any().openapi('ResourceValidationExc
 const OperationNotSupportedExceptionSchema = z.any().openapi('OperationNotSupportedException')
 
 const DeleteResourcesByExternalIdOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteResourcesByExternalIdOutput')
 
 const DeleteResourcesByExternalIdInputSchema = z
   .object({
-    externalId: ExternalIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique ID of an external resource (for example, a CloudFormation stack ID) that is linked to one or more CodeDeploy resources.',
-        }),
-    ).exactOptional(),
+    externalId: ExternalIdSchema.exactOptional().openapi({
+      description:
+        'The unique ID of an external resource (for example, a CloudFormation stack ID) that is linked to one or more CodeDeploy resources.',
+    }),
   })
   .openapi({ title: 'DeleteResourcesByExternalIdInput', required: [] })
   .openapi('DeleteResourcesByExternalIdInput')
 
 const DeregisterOnPremisesInstanceInputSchema = z
   .object({
-    instanceName: InstanceNameSchema.and(
-      z.any().openapi({ description: 'The name of the on-premises instance to deregister.' }),
-    ),
+    instanceName: InstanceNameSchema.openapi({
+      description: 'The name of the on-premises instance to deregister.',
+    }),
   })
   .openapi({
     required: ['instanceName'],
@@ -3196,9 +2369,9 @@ const DeregisterOnPremisesInstanceInputSchema = z
 
 const GetApplicationOutputSchema = z
   .object({
-    application: ApplicationInfoSchema.and(
-      z.any().openapi({ description: 'Information about the application.' }),
-    ).exactOptional(),
+    application: ApplicationInfoSchema.exactOptional().openapi({
+      description: 'Information about the application.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>GetApplication</code> operation.',
@@ -3208,14 +2381,10 @@ const GetApplicationOutputSchema = z
 
 const GetApplicationInputSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.',
-        }),
-    ),
+    applicationName: ApplicationNameSchema.openapi({
+      description:
+        'The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.',
+    }),
   })
   .openapi({
     required: ['applicationName'],
@@ -3226,21 +2395,15 @@ const GetApplicationInputSchema = z
 
 const GetApplicationRevisionOutputSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the application that corresponds to the revision.' }),
-    ).exactOptional(),
-    revision: RevisionLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Additional information about the revision, including type and location.',
-        }),
-    ).exactOptional(),
-    revisionInfo: GenericRevisionInfoSchema.and(
-      z.any().openapi({ description: 'General information about the revision.' }),
-    ).exactOptional(),
+    applicationName: ApplicationNameSchema.exactOptional().openapi({
+      description: 'The name of the application that corresponds to the revision.',
+    }),
+    revision: RevisionLocationSchema.exactOptional().openapi({
+      description: 'Additional information about the revision, including type and location.',
+    }),
+    revisionInfo: GenericRevisionInfoSchema.exactOptional().openapi({
+      description: 'General information about the revision.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>GetApplicationRevision</code> operation.',
@@ -3250,19 +2413,13 @@ const GetApplicationRevisionOutputSchema = z
 
 const GetApplicationRevisionInputSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the application that corresponds to the revision.' }),
-    ),
-    revision: RevisionLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the application revision to get, including type and location.',
-        }),
-    ),
+    applicationName: ApplicationNameSchema.openapi({
+      description: 'The name of the application that corresponds to the revision.',
+    }),
+    revision: RevisionLocationSchema.openapi({
+      description:
+        'Information about the application revision to get, including type and location.',
+    }),
   })
   .openapi({
     required: ['applicationName', 'revision'],
@@ -3273,9 +2430,9 @@ const GetApplicationRevisionInputSchema = z
 
 const GetDeploymentOutputSchema = z
   .object({
-    deploymentInfo: DeploymentInfoSchema.and(
-      z.any().openapi({ description: 'Information about the deployment.' }),
-    ).exactOptional(),
+    deploymentInfo: DeploymentInfoSchema.exactOptional().openapi({
+      description: 'Information about the deployment.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>GetDeployment</code> operation.',
@@ -3285,14 +2442,10 @@ const GetDeploymentOutputSchema = z
 
 const GetDeploymentInputSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The unique ID of a deployment associated with the IAM user or Amazon Web Services account. ',
-        }),
-    ),
+    deploymentId: DeploymentIdSchema.openapi({
+      description:
+        ' The unique ID of a deployment associated with the IAM user or Amazon Web Services account. ',
+    }),
   })
   .openapi({
     required: ['deploymentId'],
@@ -3303,49 +2456,35 @@ const GetDeploymentInputSchema = z
 
 const DeploymentConfigInfoSchema = z
   .object({
-    deploymentConfigId: DeploymentConfigIdSchema.and(
-      z.any().openapi({ description: 'The deployment configuration ID.' }),
-    ).exactOptional(),
-    deploymentConfigName: DeploymentConfigNameSchema.and(
-      z.any().openapi({ description: 'The deployment configuration name.' }),
-    ).exactOptional(),
-    minimumHealthyHosts: MinimumHealthyHostsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the number or percentage of minimum healthy instance.',
-        }),
-    ).exactOptional(),
-    createTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time at which the deployment configuration was created.' }),
-    ).exactOptional(),
-    computePlatform: ComputePlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The destination platform type for the deployment (<code>Lambda</code>, <code>Server</code>, or <code>ECS</code>).',
-        }),
-    ).exactOptional(),
-    trafficRoutingConfig: TrafficRoutingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration that specifies how the deployment traffic is routed. Used for deployments with a Lambda or Amazon ECS compute platform only.',
-        }),
-    ).exactOptional(),
+    deploymentConfigId: DeploymentConfigIdSchema.exactOptional().openapi({
+      description: 'The deployment configuration ID.',
+    }),
+    deploymentConfigName: DeploymentConfigNameSchema.exactOptional().openapi({
+      description: 'The deployment configuration name.',
+    }),
+    minimumHealthyHosts: MinimumHealthyHostsSchema.exactOptional().openapi({
+      description: 'Information about the number or percentage of minimum healthy instance.',
+    }),
+    createTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the deployment configuration was created.',
+    }),
+    computePlatform: ComputePlatformSchema.exactOptional().openapi({
+      description:
+        'The destination platform type for the deployment (<code>Lambda</code>, <code>Server</code>, or <code>ECS</code>).',
+    }),
+    trafficRoutingConfig: TrafficRoutingConfigSchema.exactOptional().openapi({
+      description:
+        'The configuration that specifies how the deployment traffic is routed. Used for deployments with a Lambda or Amazon ECS compute platform only.',
+    }),
   })
   .openapi({ description: 'Information about a deployment configuration.', required: [] })
   .openapi('DeploymentConfigInfo')
 
 const GetDeploymentConfigOutputSchema = z
   .object({
-    deploymentConfigInfo: DeploymentConfigInfoSchema.and(
-      z.any().openapi({ description: 'Information about the deployment configuration.' }),
-    ).exactOptional(),
+    deploymentConfigInfo: DeploymentConfigInfoSchema.exactOptional().openapi({
+      description: 'Information about the deployment configuration.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>GetDeploymentConfig</code> operation.',
@@ -3355,14 +2494,10 @@ const GetDeploymentConfigOutputSchema = z
 
 const GetDeploymentConfigInputSchema = z
   .object({
-    deploymentConfigName: DeploymentConfigNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a deployment configuration associated with the IAM user or Amazon Web Services account.',
-        }),
-    ),
+    deploymentConfigName: DeploymentConfigNameSchema.openapi({
+      description:
+        'The name of a deployment configuration associated with the IAM user or Amazon Web Services account.',
+    }),
   })
   .openapi({
     required: ['deploymentConfigName'],
@@ -3373,9 +2508,9 @@ const GetDeploymentConfigInputSchema = z
 
 const GetDeploymentGroupOutputSchema = z
   .object({
-    deploymentGroupInfo: DeploymentGroupInfoSchema.and(
-      z.any().openapi({ description: 'Information about the deployment group.' }),
-    ).exactOptional(),
+    deploymentGroupInfo: DeploymentGroupInfoSchema.exactOptional().openapi({
+      description: 'Information about the deployment group.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>GetDeploymentGroup</code> operation.',
@@ -3385,19 +2520,13 @@ const GetDeploymentGroupOutputSchema = z
 
 const GetDeploymentGroupInputSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.',
-        }),
-    ),
-    deploymentGroupName: DeploymentGroupNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of a deployment group for the specified application.' }),
-    ),
+    applicationName: ApplicationNameSchema.openapi({
+      description:
+        'The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.',
+    }),
+    deploymentGroupName: DeploymentGroupNameSchema.openapi({
+      description: 'The name of a deployment group for the specified application.',
+    }),
   })
   .openapi({
     required: ['applicationName', 'deploymentGroupName'],
@@ -3408,9 +2537,9 @@ const GetDeploymentGroupInputSchema = z
 
 const GetDeploymentInstanceOutputSchema = z
   .object({
-    instanceSummary: InstanceSummarySchema.and(
-      z.any().openapi({ description: ' Information about the instance. ' }),
-    ).exactOptional(),
+    instanceSummary: InstanceSummarySchema.exactOptional().openapi({
+      description: ' Information about the instance. ',
+    }),
   })
   .openapi({
     description: ' Represents the output of a <code>GetDeploymentInstance</code> operation. ',
@@ -3420,12 +2549,10 @@ const GetDeploymentInstanceOutputSchema = z
 
 const GetDeploymentInstanceInputSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z.any().openapi({ description: ' The unique ID of a deployment. ' }),
-    ),
-    instanceId: InstanceIdSchema.and(
-      z.any().openapi({ description: ' The unique ID of an instance in the deployment group. ' }),
-    ),
+    deploymentId: DeploymentIdSchema.openapi({ description: ' The unique ID of a deployment. ' }),
+    instanceId: InstanceIdSchema.openapi({
+      description: ' The unique ID of an instance in the deployment group. ',
+    }),
   })
   .openapi({
     required: ['deploymentId', 'instanceId'],
@@ -3436,35 +2563,31 @@ const GetDeploymentInstanceInputSchema = z
 
 const GetDeploymentTargetOutputSchema = z
   .object({
-    deploymentTarget: DeploymentTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " A deployment target that contains information about a deployment such as its status, lifecycle events, and when it was last updated. It also contains metadata about the deployment target. The deployment target metadata depends on the deployment target's type (<code>instanceTarget</code>, <code>lambdaTarget</code>, or <code>ecsTarget</code>). ",
-        }),
-    ).exactOptional(),
+    deploymentTarget: DeploymentTargetSchema.exactOptional().openapi({
+      description:
+        " A deployment target that contains information about a deployment such as its status, lifecycle events, and when it was last updated. It also contains metadata about the deployment target. The deployment target metadata depends on the deployment target's type (<code>instanceTarget</code>, <code>lambdaTarget</code>, or <code>ecsTarget</code>). ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDeploymentTargetOutput')
 
 const GetDeploymentTargetInputSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z.any().openapi({ description: ' The unique ID of a deployment. ' }),
-    ).exactOptional(),
-    targetId: TargetIdSchema.and(
-      z.any().openapi({ description: ' The unique ID of a deployment target. ' }),
-    ).exactOptional(),
+    deploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description: ' The unique ID of a deployment. ',
+    }),
+    targetId: TargetIdSchema.exactOptional().openapi({
+      description: ' The unique ID of a deployment target. ',
+    }),
   })
   .openapi({ title: 'GetDeploymentTargetInput', required: [] })
   .openapi('GetDeploymentTargetInput')
 
 const GetOnPremisesInstanceOutputSchema = z
   .object({
-    instanceInfo: InstanceInfoSchema.and(
-      z.any().openapi({ description: ' Information about the on-premises instance. ' }),
-    ).exactOptional(),
+    instanceInfo: InstanceInfoSchema.exactOptional().openapi({
+      description: ' Information about the on-premises instance. ',
+    }),
   })
   .openapi({
     description: ' Represents the output of a <code>GetOnPremisesInstance</code> operation. ',
@@ -3474,13 +2597,9 @@ const GetOnPremisesInstanceOutputSchema = z
 
 const GetOnPremisesInstanceInputSchema = z
   .object({
-    instanceName: InstanceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The name of the on-premises instance about which to get information. ',
-        }),
-    ),
+    instanceName: InstanceNameSchema.openapi({
+      description: ' The name of the on-premises instance about which to get information. ',
+    }),
   })
   .openapi({
     required: ['instanceName'],
@@ -3493,17 +2612,13 @@ const NextTokenSchema = z.string().openapi('NextToken')
 
 const ListApplicationRevisionsOutputSchema = z
   .object({
-    revisions: RevisionLocationListSchema.and(
-      z.any().openapi({ description: 'A list of locations that contain the matching revisions.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list application revisions call to return the next set of application revisions in the list.',
-        }),
-    ).exactOptional(),
+    revisions: RevisionLocationListSchema.exactOptional().openapi({
+      description: 'A list of locations that contain the matching revisions.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list application revisions call to return the next set of application revisions in the list.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>ListApplicationRevisions</code> operation.',
@@ -3523,62 +2638,34 @@ const ListStateFilterActionSchema = z
 
 const ListApplicationRevisionsInputSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account. ',
-        }),
-    ),
-    sortBy: ApplicationRevisionSortBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The column name to use to sort the list results:</p> <ul> <li> <p> <code>registerTime</code>: Sort by the time the revisions were registered with CodeDeploy.</p> </li> <li> <p> <code>firstUsedTime</code>: Sort by the time the revisions were first used in a deployment.</p> </li> <li> <p> <code>lastUsedTime</code>: Sort by the time the revisions were last used in a deployment.</p> </li> </ul> <p> If not specified or set to null, the results are returned in an arbitrary order. </p>',
-        }),
-    ).exactOptional(),
-    sortOrder: SortOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The order in which to sort the list results: </p> <ul> <li> <p> <code>ascending</code>: ascending order.</p> </li> <li> <p> <code>descending</code>: descending order.</p> </li> </ul> <p>If not specified, the results are sorted in ascending order.</p> <p>If set to null, the results are sorted in an arbitrary order.</p>',
-        }),
-    ).exactOptional(),
-    s3Bucket: S3BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> An Amazon S3 bucket name to limit the search for revisions. </p> <p> If set to null, all of the user's buckets are searched. </p>",
-        }),
-    ).exactOptional(),
-    s3KeyPrefix: S3KeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A key prefix for the set of Amazon S3 objects to limit the search for revisions. ',
-        }),
-    ).exactOptional(),
-    deployed: ListStateFilterActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Whether to list revisions based on whether the revision is the target revision of a deployment group: </p> <ul> <li> <p> <code>include</code>: List revisions that are target revisions of a deployment group.</p> </li> <li> <p> <code>exclude</code>: Do not list revisions that are target revisions of a deployment group.</p> </li> <li> <p> <code>ignore</code>: List all revisions.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier returned from the previous <code>ListApplicationRevisions</code> call. It can be used to return the next set of applications in the list.',
-        }),
-    ).exactOptional(),
+    applicationName: ApplicationNameSchema.openapi({
+      description:
+        ' The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account. ',
+    }),
+    sortBy: ApplicationRevisionSortBySchema.exactOptional().openapi({
+      description:
+        '<p>The column name to use to sort the list results:</p> <ul> <li> <p> <code>registerTime</code>: Sort by the time the revisions were registered with CodeDeploy.</p> </li> <li> <p> <code>firstUsedTime</code>: Sort by the time the revisions were first used in a deployment.</p> </li> <li> <p> <code>lastUsedTime</code>: Sort by the time the revisions were last used in a deployment.</p> </li> </ul> <p> If not specified or set to null, the results are returned in an arbitrary order. </p>',
+    }),
+    sortOrder: SortOrderSchema.exactOptional().openapi({
+      description:
+        '<p> The order in which to sort the list results: </p> <ul> <li> <p> <code>ascending</code>: ascending order.</p> </li> <li> <p> <code>descending</code>: descending order.</p> </li> </ul> <p>If not specified, the results are sorted in ascending order.</p> <p>If set to null, the results are sorted in an arbitrary order.</p>',
+    }),
+    s3Bucket: S3BucketSchema.exactOptional().openapi({
+      description:
+        "<p> An Amazon S3 bucket name to limit the search for revisions. </p> <p> If set to null, all of the user's buckets are searched. </p>",
+    }),
+    s3KeyPrefix: S3KeySchema.exactOptional().openapi({
+      description:
+        ' A key prefix for the set of Amazon S3 objects to limit the search for revisions. ',
+    }),
+    deployed: ListStateFilterActionSchema.exactOptional().openapi({
+      description:
+        '<p> Whether to list revisions based on whether the revision is the target revision of a deployment group: </p> <ul> <li> <p> <code>include</code>: List revisions that are target revisions of a deployment group.</p> </li> <li> <p> <code>exclude</code>: Do not list revisions that are target revisions of a deployment group.</p> </li> <li> <p> <code>ignore</code>: List all revisions.</p> </li> </ul>',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier returned from the previous <code>ListApplicationRevisions</code> call. It can be used to return the next set of applications in the list.',
+    }),
   })
   .openapi({
     required: ['applicationName'],
@@ -3605,31 +2692,23 @@ const InvalidNextTokenExceptionSchema = z.any().openapi('InvalidNextTokenExcepti
 
 const ListApplicationsOutputSchema = z
   .object({
-    applications: ApplicationsListSchema.and(
-      z.any().openapi({ description: 'A list of application names.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list applications call to return the next set of applications in the list.',
-        }),
-    ).exactOptional(),
+    applications: ApplicationsListSchema.exactOptional().openapi({
+      description: 'A list of application names.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list applications call to return the next set of applications in the list.',
+    }),
   })
   .openapi({ description: 'Represents the output of a ListApplications operation.', required: [] })
   .openapi('ListApplicationsOutput')
 
 const ListApplicationsInputSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier returned from the previous list applications call. It can be used to return the next set of applications in the list.',
-        }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier returned from the previous list applications call. It can be used to return the next set of applications in the list.',
+    }),
   })
   .openapi({
     title: 'ListApplicationsInput',
@@ -3644,22 +2723,14 @@ const DeploymentConfigsListSchema = z
 
 const ListDeploymentConfigsOutputSchema = z
   .object({
-    deploymentConfigsList: DeploymentConfigsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of deployment configurations, including built-in configurations such as <code>CodeDeployDefault.OneAtATime</code>.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list deployment configurations call to return the next set of deployment configurations in the list.',
-        }),
-    ).exactOptional(),
+    deploymentConfigsList: DeploymentConfigsListSchema.exactOptional().openapi({
+      description:
+        'A list of deployment configurations, including built-in configurations such as <code>CodeDeployDefault.OneAtATime</code>.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list deployment configurations call to return the next set of deployment configurations in the list.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>ListDeploymentConfigs</code> operation.',
@@ -3669,14 +2740,10 @@ const ListDeploymentConfigsOutputSchema = z
 
 const ListDeploymentConfigsInputSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier returned from the previous <code>ListDeploymentConfigs</code> call. It can be used to return the next set of deployment configurations in the list. ',
-        }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier returned from the previous <code>ListDeploymentConfigs</code> call. It can be used to return the next set of deployment configurations in the list. ',
+    }),
   })
   .openapi({
     title: 'ListDeploymentConfigsInput',
@@ -3687,20 +2754,16 @@ const ListDeploymentConfigsInputSchema = z
 
 const ListDeploymentGroupsOutputSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The application name.' }),
-    ).exactOptional(),
-    deploymentGroups: DeploymentGroupsListSchema.and(
-      z.any().openapi({ description: 'A list of deployment group names.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list deployment groups call to return the next set of deployment groups in the list.',
-        }),
-    ).exactOptional(),
+    applicationName: ApplicationNameSchema.exactOptional().openapi({
+      description: 'The application name.',
+    }),
+    deploymentGroups: DeploymentGroupsListSchema.exactOptional().openapi({
+      description: 'A list of deployment group names.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list deployment groups call to return the next set of deployment groups in the list.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>ListDeploymentGroups</code> operation.',
@@ -3710,22 +2773,14 @@ const ListDeploymentGroupsOutputSchema = z
 
 const ListDeploymentGroupsInputSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier returned from the previous list deployment groups call. It can be used to return the next set of deployment groups in the list.',
-        }),
-    ).exactOptional(),
+    applicationName: ApplicationNameSchema.openapi({
+      description:
+        'The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier returned from the previous list deployment groups call. It can be used to return the next set of deployment groups in the list.',
+    }),
   })
   .openapi({
     required: ['applicationName'],
@@ -3736,17 +2791,13 @@ const ListDeploymentGroupsInputSchema = z
 
 const ListDeploymentInstancesOutputSchema = z
   .object({
-    instancesList: InstancesListSchema.and(
-      z.any().openapi({ description: 'A list of instance IDs.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list deployment instances call to return the next set of deployment instances in the list.',
-        }),
-    ).exactOptional(),
+    instancesList: InstancesListSchema.exactOptional().openapi({
+      description: 'A list of instance IDs.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list deployment instances call to return the next set of deployment instances in the list.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>ListDeploymentInstances</code> operation.',
@@ -3760,33 +2811,19 @@ const InstanceTypeListSchema = z.array(InstanceTypeSchema).openapi('InstanceType
 
 const ListDeploymentInstancesInputSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z.any().openapi({ description: ' The unique ID of a deployment. ' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier returned from the previous list deployment instances call. It can be used to return the next set of deployment instances in the list.',
-        }),
-    ).exactOptional(),
-    instanceStatusFilter: InstanceStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A subset of instances to list by status:</p> <ul> <li> <p> <code>Pending</code>: Include those instances with pending deployments.</p> </li> <li> <p> <code>InProgress</code>: Include those instances where deployments are still in progress.</p> </li> <li> <p> <code>Succeeded</code>: Include those instances with successful deployments.</p> </li> <li> <p> <code>Failed</code>: Include those instances with failed deployments.</p> </li> <li> <p> <code>Skipped</code>: Include those instances with skipped deployments.</p> </li> <li> <p> <code>Unknown</code>: Include those instances with deployments in an unknown state.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    instanceTypeFilter: InstanceTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The set of instances in a blue/green deployment, either those in the original environment ("BLUE") or those in the replacement environment ("GREEN"), for which you want to view instance information.',
-        }),
-    ).exactOptional(),
+    deploymentId: DeploymentIdSchema.openapi({ description: ' The unique ID of a deployment. ' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier returned from the previous list deployment instances call. It can be used to return the next set of deployment instances in the list.',
+    }),
+    instanceStatusFilter: InstanceStatusListSchema.exactOptional().openapi({
+      description:
+        '<p>A subset of instances to list by status:</p> <ul> <li> <p> <code>Pending</code>: Include those instances with pending deployments.</p> </li> <li> <p> <code>InProgress</code>: Include those instances where deployments are still in progress.</p> </li> <li> <p> <code>Succeeded</code>: Include those instances with successful deployments.</p> </li> <li> <p> <code>Failed</code>: Include those instances with failed deployments.</p> </li> <li> <p> <code>Skipped</code>: Include those instances with skipped deployments.</p> </li> <li> <p> <code>Unknown</code>: Include those instances with deployments in an unknown state.</p> </li> </ul>',
+    }),
+    instanceTypeFilter: InstanceTypeListSchema.exactOptional().openapi({
+      description:
+        'The set of instances in a blue/green deployment, either those in the original environment ("BLUE") or those in the replacement environment ("GREEN"), for which you want to view instance information.',
+    }),
   })
   .openapi({
     required: ['deploymentId'],
@@ -3807,17 +2844,13 @@ const InvalidTargetFilterNameExceptionSchema = z.any().openapi('InvalidTargetFil
 
 const ListDeploymentTargetsOutputSchema = z
   .object({
-    targetIds: TargetIdListSchema.and(
-      z.any().openapi({ description: ' The unique IDs of deployment targets. ' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If a large amount of information is returned, a token identifier is also returned. It can be used in a subsequent <code>ListDeploymentTargets</code> call to return the next set of deployment targets in the list. ',
-        }),
-    ).exactOptional(),
+    targetIds: TargetIdListSchema.exactOptional().openapi({
+      description: ' The unique IDs of deployment targets. ',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' If a large amount of information is returned, a token identifier is also returned. It can be used in a subsequent <code>ListDeploymentTargets</code> call to return the next set of deployment targets in the list. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDeploymentTargetsOutput')
@@ -3830,42 +2863,30 @@ const TargetFiltersSchema = z.record(z.string(), FilterValueListSchema).openapi(
 
 const ListDeploymentTargetsInputSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z.any().openapi({ description: ' The unique ID of a deployment. ' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A token identifier returned from the previous <code>ListDeploymentTargets</code> call. It can be used to return the next set of deployment targets in the list. ',
-        }),
-    ).exactOptional(),
-    targetFilters: TargetFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> A key used to filter the returned targets. The two valid values are:</p> <ul> <li> <p> <code>TargetStatus</code> - A <code>TargetStatus</code> filter string can be <code>Failed</code>, <code>InProgress</code>, <code>Pending</code>, <code>Ready</code>, <code>Skipped</code>, <code>Succeeded</code>, or <code>Unknown</code>. </p> </li> <li> <p> <code>ServerInstanceLabel</code> - A <code>ServerInstanceLabel</code> filter string can be <code>Blue</code> or <code>Green</code>. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    deploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description: ' The unique ID of a deployment. ',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A token identifier returned from the previous <code>ListDeploymentTargets</code> call. It can be used to return the next set of deployment targets in the list. ',
+    }),
+    targetFilters: TargetFiltersSchema.exactOptional().openapi({
+      description:
+        '<p> A key used to filter the returned targets. The two valid values are:</p> <ul> <li> <p> <code>TargetStatus</code> - A <code>TargetStatus</code> filter string can be <code>Failed</code>, <code>InProgress</code>, <code>Pending</code>, <code>Ready</code>, <code>Skipped</code>, <code>Succeeded</code>, or <code>Unknown</code>. </p> </li> <li> <p> <code>ServerInstanceLabel</code> - A <code>ServerInstanceLabel</code> filter string can be <code>Blue</code> or <code>Green</code>. </p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'ListDeploymentTargetsInput', required: [] })
   .openapi('ListDeploymentTargetsInput')
 
 const ListDeploymentsOutputSchema = z
   .object({
-    deployments: DeploymentsListSchema.and(
-      z.any().openapi({ description: 'A list of deployment IDs.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list deployments call to return the next set of deployments in the list.',
-        }),
-    ).exactOptional(),
+    deployments: DeploymentsListSchema.exactOptional().openapi({
+      description: 'A list of deployment IDs.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list deployments call to return the next set of deployments in the list.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>ListDeployments</code> operation.',
@@ -3877,76 +2898,44 @@ const DeploymentStatusListSchema = z.array(DeploymentStatusSchema).openapi('Depl
 
 const TimeRangeSchema = z
   .object({
-    start: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The start time of the time range.</p> <note> <p>Specify null to leave the start time open-ended.</p> </note>',
-        }),
-    ).exactOptional(),
-    end: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The end time of the time range.</p> <note> <p>Specify null to leave the end time open-ended.</p> </note>',
-        }),
-    ).exactOptional(),
+    start: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The start time of the time range.</p> <note> <p>Specify null to leave the start time open-ended.</p> </note>',
+    }),
+    end: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The end time of the time range.</p> <note> <p>Specify null to leave the end time open-ended.</p> </note>',
+    }),
   })
   .openapi({ description: 'Information about a time range.', required: [] })
   .openapi('TimeRange')
 
 const ListDeploymentsInputSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.</p> <note> <p>If <code>applicationName</code> is specified, then <code>deploymentGroupName</code> must be specified. If it is not specified, then <code>deploymentGroupName</code> must not be specified. </p> </note>',
-        }),
-    ).exactOptional(),
-    deploymentGroupName: DeploymentGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a deployment group for the specified application.</p> <note> <p>If <code>deploymentGroupName</code> is specified, then <code>applicationName</code> must be specified. If it is not specified, then <code>applicationName</code> must not be specified. </p> </note>',
-        }),
-    ).exactOptional(),
-    externalId: ExternalIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique ID of an external resource for returning deployments linked to the external resource.',
-        }),
-    ).exactOptional(),
-    includeOnlyStatuses: DeploymentStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A subset of deployments to list by status:</p> <ul> <li> <p> <code>Created</code>: Include created deployments in the resulting list.</p> </li> <li> <p> <code>Queued</code>: Include queued deployments in the resulting list.</p> </li> <li> <p> <code>In Progress</code>: Include in-progress deployments in the resulting list.</p> </li> <li> <p> <code>Succeeded</code>: Include successful deployments in the resulting list.</p> </li> <li> <p> <code>Failed</code>: Include failed deployments in the resulting list.</p> </li> <li> <p> <code>Stopped</code>: Include stopped deployments in the resulting list.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    createTimeRange: TimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time range (start and end) for returning a subset of the list of deployments.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier returned from the previous list deployments call. It can be used to return the next set of deployments in the list.',
-        }),
-    ).exactOptional(),
+    applicationName: ApplicationNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.</p> <note> <p>If <code>applicationName</code> is specified, then <code>deploymentGroupName</code> must be specified. If it is not specified, then <code>deploymentGroupName</code> must not be specified. </p> </note>',
+    }),
+    deploymentGroupName: DeploymentGroupNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of a deployment group for the specified application.</p> <note> <p>If <code>deploymentGroupName</code> is specified, then <code>applicationName</code> must be specified. If it is not specified, then <code>applicationName</code> must not be specified. </p> </note>',
+    }),
+    externalId: ExternalIdSchema.exactOptional().openapi({
+      description:
+        'The unique ID of an external resource for returning deployments linked to the external resource.',
+    }),
+    includeOnlyStatuses: DeploymentStatusListSchema.exactOptional().openapi({
+      description:
+        '<p>A subset of deployments to list by status:</p> <ul> <li> <p> <code>Created</code>: Include created deployments in the resulting list.</p> </li> <li> <p> <code>Queued</code>: Include queued deployments in the resulting list.</p> </li> <li> <p> <code>In Progress</code>: Include in-progress deployments in the resulting list.</p> </li> <li> <p> <code>Succeeded</code>: Include successful deployments in the resulting list.</p> </li> <li> <p> <code>Failed</code>: Include failed deployments in the resulting list.</p> </li> <li> <p> <code>Stopped</code>: Include stopped deployments in the resulting list.</p> </li> </ul>',
+    }),
+    createTimeRange: TimeRangeSchema.exactOptional().openapi({
+      description:
+        'A time range (start and end) for returning a subset of the list of deployments.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier returned from the previous list deployments call. It can be used to return the next set of deployments in the list.',
+    }),
   })
   .openapi({
     title: 'ListDeploymentsInput',
@@ -3965,17 +2954,13 @@ const GitHubAccountTokenNameListSchema = z
 
 const ListGitHubAccountTokenNamesOutputSchema = z
   .object({
-    tokenNameList: GitHubAccountTokenNameListSchema.and(
-      z.any().openapi({ description: 'A list of names of connections to GitHub accounts.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent <code>ListGitHubAccountTokenNames</code> call to return the next set of names in the list. ',
-        }),
-    ).exactOptional(),
+    tokenNameList: GitHubAccountTokenNameListSchema.exactOptional().openapi({
+      description: 'A list of names of connections to GitHub accounts.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent <code>ListGitHubAccountTokenNames</code> call to return the next set of names in the list. ',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>ListGitHubAccountTokenNames</code> operation.',
@@ -3985,14 +2970,10 @@ const ListGitHubAccountTokenNamesOutputSchema = z
 
 const ListGitHubAccountTokenNamesInputSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier returned from the previous <code>ListGitHubAccountTokenNames</code> call. It can be used to return the next set of names in the list. ',
-        }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier returned from the previous <code>ListGitHubAccountTokenNames</code> call. It can be used to return the next set of names in the list. ',
+    }),
   })
   .openapi({
     title: 'ListGitHubAccountTokenNamesInput',
@@ -4003,17 +2984,13 @@ const ListGitHubAccountTokenNamesInputSchema = z
 
 const ListOnPremisesInstancesOutputSchema = z
   .object({
-    instanceNames: InstanceNameListSchema.and(
-      z.any().openapi({ description: 'The list of matching on-premises instance names.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list on-premises instances call to return the next set of on-premises instances in the list.',
-        }),
-    ).exactOptional(),
+    instanceNames: InstanceNameListSchema.exactOptional().openapi({
+      description: 'The list of matching on-premises instance names.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list on-premises instances call to return the next set of on-premises instances in the list.',
+    }),
   })
   .openapi({
     description: 'Represents the output of the list on-premises instances operation.',
@@ -4027,30 +3004,18 @@ const RegistrationStatusSchema = z
 
 const ListOnPremisesInstancesInputSchema = z
   .object({
-    registrationStatus: RegistrationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The registration status of the on-premises instances:</p> <ul> <li> <p> <code>Deregistered</code>: Include deregistered on-premises instances in the resulting list.</p> </li> <li> <p> <code>Registered</code>: Include registered on-premises instances in the resulting list.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    tagFilters: TagFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The on-premises instance tags that are used to restrict the on-premises instance names returned.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier returned from the previous list on-premises instances call. It can be used to return the next set of on-premises instances in the list.',
-        }),
-    ).exactOptional(),
+    registrationStatus: RegistrationStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The registration status of the on-premises instances:</p> <ul> <li> <p> <code>Deregistered</code>: Include deregistered on-premises instances in the resulting list.</p> </li> <li> <p> <code>Registered</code>: Include registered on-premises instances in the resulting list.</p> </li> </ul>',
+    }),
+    tagFilters: TagFilterListSchema.exactOptional().openapi({
+      description:
+        'The on-premises instance tags that are used to restrict the on-premises instance names returned.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier returned from the previous list on-premises instances call. It can be used to return the next set of on-premises instances in the list.',
+    }),
   })
   .openapi({
     title: 'ListOnPremisesInstancesInput',
@@ -4067,22 +3032,14 @@ const InvalidTagFilterExceptionSchema = z.any().openapi('InvalidTagFilterExcepti
 
 const ListTagsForResourceOutputSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of tags returned by <code>ListTagsForResource</code>. The tags are associated with the resource identified by the input <code>ResourceArn</code> parameter. ',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list application revisions call to return the next set of application revisions in the list.',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        ' A list of tags returned by <code>ListTagsForResource</code>. The tags are associated with the resource identified by the input <code>ResourceArn</code> parameter. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If a large amount of information is returned, an identifier is also returned. It can be used in a subsequent list application revisions call to return the next set of application revisions in the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceOutput')
@@ -4091,22 +3048,14 @@ const ArnSchema = z.string().min(1).max(1011).openapi('Arn')
 
 const ListTagsForResourceInputSchema = z
   .object({
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ARN of a CodeDeploy resource. <code>ListTagsForResource</code> returns all the tags associated with the resource that is identified by the <code>ResourceArn</code>. ',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier returned from the previous <code>ListTagsForResource</code> call. It can be used to return the next set of applications in the list.',
-        }),
-    ).exactOptional(),
+    ResourceArn: ArnSchema.openapi({
+      description:
+        ' The ARN of a CodeDeploy resource. <code>ListTagsForResource</code> returns all the tags associated with the resource that is identified by the <code>ResourceArn</code>. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An identifier returned from the previous <code>ListTagsForResource</code> call. It can be used to return the next set of applications in the list.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceInput' })
   .openapi('ListTagsForResourceInput')
@@ -4121,44 +3070,28 @@ const LifecycleEventHookExecutionIdSchema = z.string().openapi('LifecycleEventHo
 
 const PutLifecycleEventHookExecutionStatusOutputSchema = z
   .object({
-    lifecycleEventHookExecutionId: LifecycleEventHookExecutionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The execution ID of the lifecycle event hook. A hook is specified in the <code>hooks</code> section of the deployment's AppSpec file.",
-        }),
-    ).exactOptional(),
+    lifecycleEventHookExecutionId: LifecycleEventHookExecutionIdSchema.exactOptional().openapi({
+      description:
+        "The execution ID of the lifecycle event hook. A hook is specified in the <code>hooks</code> section of the deployment's AppSpec file.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutLifecycleEventHookExecutionStatusOutput')
 
 const PutLifecycleEventHookExecutionStatusInputSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The unique ID of a deployment. Pass this ID to a Lambda function that validates a deployment lifecycle event. ',
-        }),
-    ).exactOptional(),
-    lifecycleEventHookExecutionId: LifecycleEventHookExecutionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The execution ID of a deployment's lifecycle hook. A deployment lifecycle hook is specified in the <code>hooks</code> section of the AppSpec file. ",
-        }),
-    ).exactOptional(),
-    status: LifecycleEventStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The result of a Lambda function that validates a deployment lifecycle event. The values listed in <b>Valid Values</b> are valid for lifecycle statuses in general; however, only <code>Succeeded</code> and <code>Failed</code> can be passed successfully in your API call.',
-        }),
-    ).exactOptional(),
+    deploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description:
+        ' The unique ID of a deployment. Pass this ID to a Lambda function that validates a deployment lifecycle event. ',
+    }),
+    lifecycleEventHookExecutionId: LifecycleEventHookExecutionIdSchema.exactOptional().openapi({
+      description:
+        " The execution ID of a deployment's lifecycle hook. A deployment lifecycle hook is specified in the <code>hooks</code> section of the AppSpec file. ",
+    }),
+    status: LifecycleEventStatusSchema.exactOptional().openapi({
+      description:
+        'The result of a Lambda function that validates a deployment lifecycle event. The values listed in <b>Valid Values</b> are valid for lifecycle statuses in general; however, only <code>Succeeded</code> and <code>Failed</code> can be passed successfully in your API call.',
+    }),
   })
   .openapi({ title: 'PutLifecycleEventHookExecutionStatusInput', required: [] })
   .openapi('PutLifecycleEventHookExecutionStatusInput')
@@ -4177,25 +3110,17 @@ const LifecycleEventAlreadyCompletedExceptionSchema = z
 
 const RegisterApplicationRevisionInputSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.',
-        }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A comment about the revision.' }),
-    ).exactOptional(),
-    revision: RevisionLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the application revision to register, including type and location.',
-        }),
-    ),
+    applicationName: ApplicationNameSchema.openapi({
+      description:
+        'The name of an CodeDeploy application associated with the IAM user or Amazon Web Services account.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A comment about the revision.',
+    }),
+    revision: RevisionLocationSchema.openapi({
+      description:
+        'Information about the application revision to register, including type and location.',
+    }),
   })
   .openapi({
     required: ['applicationName', 'revision'],
@@ -4206,23 +3131,15 @@ const RegisterApplicationRevisionInputSchema = z
 
 const RegisterOnPremisesInstanceInputSchema = z
   .object({
-    instanceName: InstanceNameSchema.and(
-      z.any().openapi({ description: 'The name of the on-premises instance to register.' }),
-    ),
-    iamSessionArn: IamSessionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the IAM session to associate with the on-premises instance.',
-        }),
-    ).exactOptional(),
-    iamUserArn: IamUserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the IAM user to associate with the on-premises instance.',
-        }),
-    ).exactOptional(),
+    instanceName: InstanceNameSchema.openapi({
+      description: 'The name of the on-premises instance to register.',
+    }),
+    iamSessionArn: IamSessionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the IAM session to associate with the on-premises instance.',
+    }),
+    iamUserArn: IamUserArnSchema.exactOptional().openapi({
+      description: 'The ARN of the IAM user to associate with the on-premises instance.',
+    }),
   })
   .openapi({
     required: ['instanceName'],
@@ -4255,20 +3172,12 @@ const MultipleIamArnsProvidedExceptionSchema = z.any().openapi('MultipleIamArnsP
 
 const RemoveTagsFromOnPremisesInstancesInputSchema = z
   .object({
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tag key-value pairs to remove from the on-premises instances.',
-        }),
-    ),
-    instanceNames: InstanceNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The names of the on-premises instances from which to remove tags.',
-        }),
-    ),
+    tags: TagListSchema.openapi({
+      description: 'The tag key-value pairs to remove from the on-premises instances.',
+    }),
+    instanceNames: InstanceNameListSchema.openapi({
+      description: 'The names of the on-premises instances from which to remove tags.',
+    }),
   })
   .openapi({
     required: ['tags', 'instanceNames'],
@@ -4280,14 +3189,10 @@ const RemoveTagsFromOnPremisesInstancesInputSchema = z
 
 const SkipWaitTimeForInstanceTerminationInputSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The unique ID of a blue/green deployment for which you want to skip the instance termination wait time. ',
-        }),
-    ).exactOptional(),
+    deploymentId: DeploymentIdSchema.exactOptional().openapi({
+      description:
+        ' The unique ID of a blue/green deployment for which you want to skip the instance termination wait time. ',
+    }),
   })
   .openapi({ title: 'SkipWaitTimeForInstanceTerminationInput', required: [] })
   .openapi('SkipWaitTimeForInstanceTerminationInput')
@@ -4298,17 +3203,13 @@ const MessageSchema = z.string().openapi('Message')
 
 const StopDeploymentOutputSchema = z
   .object({
-    status: StopStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the stop deployment operation:</p> <ul> <li> <p>Pending: The stop operation is pending.</p> </li> <li> <p>Succeeded: The stop operation was successful.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    statusMessage: MessageSchema.and(
-      z.any().openapi({ description: 'An accompanying status message.' }),
-    ).exactOptional(),
+    status: StopStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the stop deployment operation:</p> <ul> <li> <p>Pending: The stop operation is pending.</p> </li> <li> <p>Succeeded: The stop operation was successful.</p> </li> </ul>',
+    }),
+    statusMessage: MessageSchema.exactOptional().openapi({
+      description: 'An accompanying status message.',
+    }),
   })
   .openapi({
     description: ' Represents the output of a <code>StopDeployment</code> operation. ',
@@ -4320,17 +3221,11 @@ const NullableBooleanSchema = z.boolean().openapi('NullableBoolean')
 
 const StopDeploymentInputSchema = z
   .object({
-    deploymentId: DeploymentIdSchema.and(
-      z.any().openapi({ description: ' The unique ID of a deployment. ' }),
-    ),
-    autoRollbackEnabled: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates, when a deployment is stopped, whether instances that have been updated should be rolled back to the previous version of the application revision. ',
-        }),
-    ).exactOptional(),
+    deploymentId: DeploymentIdSchema.openapi({ description: ' The unique ID of a deployment. ' }),
+    autoRollbackEnabled: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        ' Indicates, when a deployment is stopped, whether instances that have been updated should be rolled back to the previous version of the application revision. ',
+    }),
   })
   .openapi({
     required: ['deploymentId'],
@@ -4339,64 +3234,47 @@ const StopDeploymentInputSchema = z
   })
   .openapi('StopDeploymentInput')
 
-const TagResourceOutputSchema = z.object({}).openapi('TagResourceOutput')
+const TagResourceOutputSchema = z.looseObject({}).openapi('TagResourceOutput')
 
 const TagResourceInputSchema = z
   .object({
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ARN of a resource, such as a CodeDeploy application or deployment group. ',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of tags that <code>TagResource</code> associates with a resource. The resource is identified by the <code>ResourceArn</code> input parameter. ',
-        }),
-    ),
+    ResourceArn: ArnSchema.openapi({
+      description: ' The ARN of a resource, such as a CodeDeploy application or deployment group. ',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        ' A list of tags that <code>TagResource</code> associates with a resource. The resource is identified by the <code>ResourceArn</code> input parameter. ',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceInput' })
   .openapi('TagResourceInput')
 
-const UntagResourceOutputSchema = z.object({}).openapi('UntagResourceOutput')
+const UntagResourceOutputSchema = z.looseObject({}).openapi('UntagResourceOutput')
 
 const TagKeyListSchema = z.array(KeySchema).openapi('TagKeyList')
 
 const UntagResourceInputSchema = z
   .object({
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) that specifies from which resource to disassociate the tags with the keys in the <code>TagKeys</code> input parameter. ',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of keys of <code>Tag</code> objects. The <code>Tag</code> objects identified by the keys are disassociated from the resource specified by the <code>ResourceArn</code> input parameter. ',
-        }),
-    ),
+    ResourceArn: ArnSchema.openapi({
+      description:
+        ' The Amazon Resource Name (ARN) that specifies from which resource to disassociate the tags with the keys in the <code>TagKeys</code> input parameter. ',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description:
+        ' A list of keys of <code>Tag</code> objects. The <code>Tag</code> objects identified by the keys are disassociated from the resource specified by the <code>ResourceArn</code> input parameter. ',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceInput' })
   .openapi('UntagResourceInput')
 
 const UpdateApplicationInputSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The current name of the application you want to change.' }),
-    ).exactOptional(),
-    newApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The new name to give the application.' }),
-    ).exactOptional(),
+    applicationName: ApplicationNameSchema.exactOptional().openapi({
+      description: 'The current name of the application you want to change.',
+    }),
+    newApplicationName: ApplicationNameSchema.exactOptional().openapi({
+      description: 'The new name to give the application.',
+    }),
   })
   .openapi({
     title: 'UpdateApplicationInput',
@@ -4407,14 +3285,10 @@ const UpdateApplicationInputSchema = z
 
 const UpdateDeploymentGroupOutputSchema = z
   .object({
-    hooksNotCleanedUp: AutoScalingGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the output contains no data, and the corresponding deployment group contained at least one Auto Scaling group, CodeDeploy successfully removed all corresponding Auto Scaling lifecycle event hooks from the Amazon Web Services account. If the output contains data, CodeDeploy could not remove some Auto Scaling lifecycle event hooks from the Amazon Web Services account.',
-        }),
-    ).exactOptional(),
+    hooksNotCleanedUp: AutoScalingGroupListSchema.exactOptional().openapi({
+      description:
+        'If the output contains no data, and the corresponding deployment group contained at least one Auto Scaling group, CodeDeploy successfully removed all corresponding Auto Scaling lifecycle event hooks from the Amazon Web Services account. If the output contains data, CodeDeploy could not remove some Auto Scaling lifecycle event hooks from the Amazon Web Services account.',
+    }),
   })
   .openapi({
     description: 'Represents the output of an <code>UpdateDeploymentGroup</code> operation.',
@@ -4424,136 +3298,73 @@ const UpdateDeploymentGroupOutputSchema = z
 
 const UpdateDeploymentGroupInputSchema = z
   .object({
-    applicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The application name that corresponds to the deployment group to update.',
-        }),
-    ),
-    currentDeploymentGroupName: DeploymentGroupNameSchema.and(
-      z.any().openapi({ description: 'The current name of the deployment group.' }),
-    ),
-    newDeploymentGroupName: DeploymentGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The new name of the deployment group, if you want to change it.',
-        }),
-    ).exactOptional(),
-    deploymentConfigName: DeploymentConfigNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The replacement deployment configuration name to use, if you want to change it.',
-        }),
-    ).exactOptional(),
-    ec2TagFilters: EC2TagFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The replacement set of Amazon EC2 tags on which to filter, if you want to change them. To keep the existing tags, enter their names. To remove tags, do not enter any tag names.',
-        }),
-    ).exactOptional(),
-    onPremisesInstanceTagFilters: TagFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The replacement set of on-premises instance tags on which to filter, if you want to change them. To keep the existing tags, enter their names. To remove tags, do not enter any tag names.',
-        }),
-    ).exactOptional(),
-    autoScalingGroups: AutoScalingGroupNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The replacement list of Auto Scaling groups to be included in the deployment group, if you want to change them.</p> <ul> <li> <p>To keep the Auto Scaling groups, enter their names or do not specify this parameter. </p> </li> <li> <p>To remove Auto Scaling groups, specify a non-null empty list of Auto Scaling group names to detach all CodeDeploy-managed Auto Scaling lifecycle hooks. For examples, see <a href="https://docs.aws.amazon.com/https:/docs.aws.amazon.com/codedeploy/latest/userguide/troubleshooting-auto-scaling.html#troubleshooting-auto-scaling-heartbeat">Amazon EC2 instances in an Amazon EC2 Auto Scaling group fail to launch and receive the error "Heartbeat Timeout"</a> in the <i>CodeDeploy User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    serviceRoleArn: RoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A replacement ARN for the service role, if you want to change it.',
-        }),
-    ).exactOptional(),
-    triggerConfigurations: TriggerConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about triggers to change when the deployment group is updated. For examples, see <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/how-to-notify-edit.html">Edit a Trigger in a CodeDeploy Deployment Group</a> in the <i>CodeDeploy User Guide</i>.',
-        }),
-    ).exactOptional(),
-    alarmConfiguration: AlarmConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information to add or change about Amazon CloudWatch alarms when the deployment group is updated.',
-        }),
-    ).exactOptional(),
-    autoRollbackConfiguration: AutoRollbackConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information for an automatic rollback configuration that is added or changed when a deployment group is updated.',
-        }),
-    ).exactOptional(),
-    outdatedInstancesStrategy: OutdatedInstancesStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates what happens when new Amazon EC2 instances are launched mid-deployment and do not receive the deployed application revision.</p> <p>If this option is set to <code>UPDATE</code> or is unspecified, CodeDeploy initiates one or more 'auto-update outdated instances' deployments to apply the deployed application revision to the new Amazon EC2 instances.</p> <p>If this option is set to <code>IGNORE</code>, CodeDeploy does not initiate a deployment to update the new Amazon EC2 instances. This may result in instances having different revisions.</p>",
-        }),
-    ).exactOptional(),
-    deploymentStyle: DeploymentStyleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the type of deployment, either in-place or blue/green, you want to run and whether to route deployment traffic behind a load balancer.',
-        }),
-    ).exactOptional(),
-    blueGreenDeploymentConfiguration: BlueGreenDeploymentConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about blue/green deployment options for a deployment group.',
-        }),
-    ).exactOptional(),
-    loadBalancerInfo: LoadBalancerInfoSchema.and(
-      z.any().openapi({ description: 'Information about the load balancer used in a deployment.' }),
-    ).exactOptional(),
-    ec2TagSet: EC2TagSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about groups of tags applied to on-premises instances. The deployment group includes only Amazon EC2 instances identified by all the tag groups.',
-        }),
-    ).exactOptional(),
-    ecsServices: ECSServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The target Amazon ECS services in the deployment group. This applies only to deployment groups that use the Amazon ECS compute platform. A target Amazon ECS service is specified as an Amazon ECS cluster and service name pair using the format <code>&lt;clustername&gt;:&lt;servicename&gt;</code>. ',
-        }),
-    ).exactOptional(),
-    onPremisesTagSet: OnPremisesTagSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about an on-premises instance tag set. The deployment group includes only on-premises instances identified by all the tag groups.',
-        }),
-    ).exactOptional(),
+    applicationName: ApplicationNameSchema.openapi({
+      description: 'The application name that corresponds to the deployment group to update.',
+    }),
+    currentDeploymentGroupName: DeploymentGroupNameSchema.openapi({
+      description: 'The current name of the deployment group.',
+    }),
+    newDeploymentGroupName: DeploymentGroupNameSchema.exactOptional().openapi({
+      description: 'The new name of the deployment group, if you want to change it.',
+    }),
+    deploymentConfigName: DeploymentConfigNameSchema.exactOptional().openapi({
+      description:
+        'The replacement deployment configuration name to use, if you want to change it.',
+    }),
+    ec2TagFilters: EC2TagFilterListSchema.exactOptional().openapi({
+      description:
+        'The replacement set of Amazon EC2 tags on which to filter, if you want to change them. To keep the existing tags, enter their names. To remove tags, do not enter any tag names.',
+    }),
+    onPremisesInstanceTagFilters: TagFilterListSchema.exactOptional().openapi({
+      description:
+        'The replacement set of on-premises instance tags on which to filter, if you want to change them. To keep the existing tags, enter their names. To remove tags, do not enter any tag names.',
+    }),
+    autoScalingGroups: AutoScalingGroupNameListSchema.exactOptional().openapi({
+      description:
+        '<p>The replacement list of Auto Scaling groups to be included in the deployment group, if you want to change them.</p> <ul> <li> <p>To keep the Auto Scaling groups, enter their names or do not specify this parameter. </p> </li> <li> <p>To remove Auto Scaling groups, specify a non-null empty list of Auto Scaling group names to detach all CodeDeploy-managed Auto Scaling lifecycle hooks. For examples, see <a href="https://docs.aws.amazon.com/https:/docs.aws.amazon.com/codedeploy/latest/userguide/troubleshooting-auto-scaling.html#troubleshooting-auto-scaling-heartbeat">Amazon EC2 instances in an Amazon EC2 Auto Scaling group fail to launch and receive the error "Heartbeat Timeout"</a> in the <i>CodeDeploy User Guide</i>.</p> </li> </ul>',
+    }),
+    serviceRoleArn: RoleSchema.exactOptional().openapi({
+      description: 'A replacement ARN for the service role, if you want to change it.',
+    }),
+    triggerConfigurations: TriggerConfigListSchema.exactOptional().openapi({
+      description:
+        'Information about triggers to change when the deployment group is updated. For examples, see <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/how-to-notify-edit.html">Edit a Trigger in a CodeDeploy Deployment Group</a> in the <i>CodeDeploy User Guide</i>.',
+    }),
+    alarmConfiguration: AlarmConfigurationSchema.exactOptional().openapi({
+      description:
+        'Information to add or change about Amazon CloudWatch alarms when the deployment group is updated.',
+    }),
+    autoRollbackConfiguration: AutoRollbackConfigurationSchema.exactOptional().openapi({
+      description:
+        'Information for an automatic rollback configuration that is added or changed when a deployment group is updated.',
+    }),
+    outdatedInstancesStrategy: OutdatedInstancesStrategySchema.exactOptional().openapi({
+      description:
+        "<p>Indicates what happens when new Amazon EC2 instances are launched mid-deployment and do not receive the deployed application revision.</p> <p>If this option is set to <code>UPDATE</code> or is unspecified, CodeDeploy initiates one or more 'auto-update outdated instances' deployments to apply the deployed application revision to the new Amazon EC2 instances.</p> <p>If this option is set to <code>IGNORE</code>, CodeDeploy does not initiate a deployment to update the new Amazon EC2 instances. This may result in instances having different revisions.</p>",
+    }),
+    deploymentStyle: DeploymentStyleSchema.exactOptional().openapi({
+      description:
+        'Information about the type of deployment, either in-place or blue/green, you want to run and whether to route deployment traffic behind a load balancer.',
+    }),
+    blueGreenDeploymentConfiguration:
+      BlueGreenDeploymentConfigurationSchema.exactOptional().openapi({
+        description: 'Information about blue/green deployment options for a deployment group.',
+      }),
+    loadBalancerInfo: LoadBalancerInfoSchema.exactOptional().openapi({
+      description: 'Information about the load balancer used in a deployment.',
+    }),
+    ec2TagSet: EC2TagSetSchema.exactOptional().openapi({
+      description:
+        'Information about groups of tags applied to on-premises instances. The deployment group includes only Amazon EC2 instances identified by all the tag groups.',
+    }),
+    ecsServices: ECSServiceListSchema.exactOptional().openapi({
+      description:
+        ' The target Amazon ECS services in the deployment group. This applies only to deployment groups that use the Amazon ECS compute platform. A target Amazon ECS service is specified as an Amazon ECS cluster and service name pair using the format <code>&lt;clustername&gt;:&lt;servicename&gt;</code>. ',
+    }),
+    onPremisesTagSet: OnPremisesTagSetSchema.exactOptional().openapi({
+      description:
+        'Information about an on-premises instance tag set. The deployment group includes only on-premises instances identified by all the tag groups.',
+    }),
   })
   .openapi({
     required: ['applicationName', 'currentDeploymentGroupName'],

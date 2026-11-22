@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodeBuild20161006StartBuildBatchHandler = app.openapi(
   postXAmzTargetCodeBuild20161006StartBuildBatchRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

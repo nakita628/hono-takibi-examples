@@ -1,0 +1,11 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetAWSServerMigrationServiceV20161024UpdateReplicationJobRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const XAmzTargetAWSServerMigrationServiceV20161024UpdateReplicationJobHandler = app.openapi(
+  postXAmzTargetAWSServerMigrationServiceV20161024UpdateReplicationJobRoute,
+  (c) => {
+    throw new Error('Not implemented')
+  },
+)

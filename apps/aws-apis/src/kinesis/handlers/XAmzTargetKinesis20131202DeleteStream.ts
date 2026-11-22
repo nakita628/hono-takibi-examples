@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetKinesis20131202DeleteStreamHandler = app.openapi(
   postXAmzTargetKinesis20131202DeleteStreamRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

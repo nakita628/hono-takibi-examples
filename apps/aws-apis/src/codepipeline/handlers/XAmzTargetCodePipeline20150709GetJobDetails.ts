@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodePipeline20150709GetJobDetailsHandler = app.openapi(
   postXAmzTargetCodePipeline20150709GetJobDetailsRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

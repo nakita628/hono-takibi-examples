@@ -6649,6 +6649,7 @@ export const getSearchMetricNamesRoute = createRoute({
             schema: { type: 'integer', minimum: 1, format: 'int64', default: 100 },
             examples: { example: { value: 20 } },
           },
+          default: 100,
         }),
       batch_size: z
         .preprocess((val) => {
@@ -6671,6 +6672,7 @@ export const getSearchMetricNamesRoute = createRoute({
             schema: { type: 'integer', minimum: 1, format: 'int64', default: 100 },
             examples: { example: { value: 20 } },
           },
+          default: 100,
         }),
     }),
   },
@@ -7192,6 +7194,7 @@ export const getSearchLabelNamesRoute = createRoute({
             schema: { type: 'integer', minimum: 1, format: 'int64', default: 100 },
             examples: { example: { value: 20 } },
           },
+          default: 100,
         }),
       batch_size: z
         .preprocess((val) => {
@@ -7214,6 +7217,7 @@ export const getSearchLabelNamesRoute = createRoute({
             schema: { type: 'integer', minimum: 1, format: 'int64', default: 100 },
             examples: { example: { value: 20 } },
           },
+          default: 100,
         }),
     }),
   },
@@ -7738,6 +7742,7 @@ export const getSearchLabelValuesRoute = createRoute({
             schema: { type: 'integer', minimum: 1, format: 'int64', default: 100 },
             examples: { example: { value: 10 } },
           },
+          default: 100,
         }),
       batch_size: z
         .preprocess((val) => {
@@ -7760,6 +7765,7 @@ export const getSearchLabelValuesRoute = createRoute({
             schema: { type: 'integer', minimum: 1, format: 'int64', default: 100 },
             examples: { example: { value: 10 } },
           },
+          default: 100,
         }),
     }),
   },

@@ -179,43 +179,55 @@ const ContextListSchema = z
 const ContextCreatedSchema = z
   .strictObject({
     name: z.string().openapi({ description: 'The user defined name of the context.' }),
-    owner: z.xor([
-      z
-        .strictObject({
-          id: z
-            .uuid()
-            .openapi({
-              description:
-                'The unique ID of the owner of the context. This is the organization ID. Specify either owner/organization ID or the owner/organization slug. Find the organization ID and slug in the CircleCI web app (Organization Settings > Overview). Owner/organization slug is not supported for CircleCI server.',
-            }),
-          type: z
-            .enum(['account', 'organization'])
-            .exactOptional()
-            .openapi({
-              description:
-                'The type of the owner. Defaults to "organization". Use "account" if you are using CircleCI server.',
-              example: 'organization',
-            }),
-        })
-        .openapi({ required: ['id'] }),
-      z
-        .strictObject({
-          slug: z
-            .string()
-            .openapi({
-              description:
-                'A string that represents an organization. This is the organization slug. Specify either this or organization/owner ID. Find the organization ID and slug in the CircleCI web app (Organization Settings > Overview). Owner/organization slug is not supported for CircleCI server.',
-            }),
-          type: z
-            .literal('organization')
-            .exactOptional()
-            .openapi({
-              description:
-                'The type of owner. Defaults to "organization". Accounts are only used as context owners in server and must be specified by an id instead of a slug.',
-            }),
-        })
-        .openapi({ required: ['slug'] }),
-    ]),
+    owner: (() => {
+      const Schema = z.xor([
+        z
+          .strictObject({
+            id: z
+              .uuid()
+              .openapi({
+                description:
+                  'The unique ID of the owner of the context. This is the organization ID. Specify either owner/organization ID or the owner/organization slug. Find the organization ID and slug in the CircleCI web app (Organization Settings > Overview). Owner/organization slug is not supported for CircleCI server.',
+              }),
+            type: z
+              .enum(['account', 'organization'])
+              .exactOptional()
+              .openapi({
+                description:
+                  'The type of the owner. Defaults to "organization". Use "account" if you are using CircleCI server.',
+                example: 'organization',
+              }),
+          })
+          .openapi({ required: ['id'] }),
+        z
+          .strictObject({
+            slug: z
+              .string()
+              .openapi({
+                description:
+                  'A string that represents an organization. This is the organization slug. Specify either this or organization/owner ID. Find the organization ID and slug in the CircleCI web app (Organization Settings > Overview). Owner/organization slug is not supported for CircleCI server.',
+              }),
+            type: z
+              .literal('organization')
+              .exactOptional()
+              .openapi({
+                description:
+                  'The type of owner. Defaults to "organization". Accounts are only used as context owners in server and must be specified by an id instead of a slug.',
+              }),
+          })
+          .openapi({ required: ['slug'] }),
+      ])
+      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+        ;((ctx) => {
+          const o = ctx.value
+          if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+          for (const k of Object.keys(o)) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        })(ctx)
+        return val
+      }, Schema)
+    })().openapi({ additionalProperties: false }),
   })
   .openapi({ required: ['name', 'owner'] })
   .openapi('ContextCreated')
@@ -326,8 +338,8 @@ const DeleteEnvVarSchema = z
   .openapi({ required: ['message'], description: 'message response', title: 'MessageResponse' })
   .openapi('DeleteEnvVar')
 
-const UpdateEnvVarSchema = z
-  .union([
+const UpdateEnvVarSchema = (() => {
+  const Schema = z.union([
     z
       .strictObject({
         variable: z
@@ -359,6 +371,18 @@ const UpdateEnvVarSchema = z
         title: 'MessageResponse',
       }),
   ])
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi('UpdateEnvVar')
 
 const ProjectSettingsSchema = z
@@ -2263,6 +2287,29 @@ const _400UnexpectedRequestBodyResponse = {
   },
 }
 
+const _400ImproperPayloadResponse = {
+  description: 'JSON passed in the request does not adhere to the expected schema.',
+  content: {
+    'application/json': {
+      schema: z.strictObject({ message: z.string().exactOptional() }).openapi({ required: [] }),
+      examples: {
+        incorrect_type: {
+          summary: 'A field was passed with an incorrect type.',
+          value: { message: "JSON field 'field_name' is of incorrect type." },
+        },
+        missing_field: {
+          summary: 'A required field was not present.',
+          value: { message: 'Missing one or more JSON fields.' },
+        },
+        unexpected_field: {
+          summary: 'An unexpected JSON field was present.',
+          value: { message: "Unexpected JSON field 'field_name'." },
+        },
+      },
+    },
+  },
+}
+
 const _403PermissionDeniedResponse = {
   description: 'None or insufficient credentials provided.',
   content: {
@@ -2355,29 +2402,6 @@ const _409EntityConflictResponse = {
       schema: z
         .strictObject({ message: z.string().default('Conflict creating entity.').exactOptional() })
         .openapi({ required: [] }),
-    },
-  },
-}
-
-const _400ImproperPayloadResponse = {
-  description: 'JSON passed in the request does not adhere to the expected schema.',
-  content: {
-    'application/json': {
-      schema: z.strictObject({ message: z.string().exactOptional() }).openapi({ required: [] }),
-      examples: {
-        incorrect_type: {
-          summary: 'A field was passed with an incorrect type.',
-          value: { message: "JSON field 'field_name' is of incorrect type." },
-        },
-        missing_field: {
-          summary: 'A required field was not present.',
-          value: { message: 'Missing one or more JSON fields.' },
-        },
-        unexpected_field: {
-          summary: 'An unexpected JSON field was present.',
-          value: { message: "Unexpected JSON field 'field_name'." },
-        },
-      },
     },
   },
 }
@@ -2551,7 +2575,7 @@ const JobIdParamsSchema = z
     },
   })
 
-const ProviderNoGitlabParamsSchema = z
+const ProviderParamsSchema = z
   .enum(['github', 'gh', 'bitbucket', 'bb', 'circleci'])
   .openapi({
     param: {
@@ -2560,8 +2584,8 @@ const ProviderNoGitlabParamsSchema = z
         'The first segment of the slash-separated project slug, as shown in Project Settings > Overview.',
       example: 'gh',
       in: 'path',
-      schema: { type: 'string', enum: ['github', 'gh', 'bitbucket', 'bb', 'circleci'] },
       required: true,
+      schema: { type: 'string', enum: ['github', 'gh', 'bitbucket', 'bb', 'circleci'] },
     },
   })
 
@@ -2590,6 +2614,38 @@ const ProjectParamsSchema = z
       in: 'path',
       required: true,
       schema: { type: 'string' },
+    },
+  })
+
+const JobNumberParamsSchema = z
+  .preprocess((val) => {
+    if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val)) return val
+    if (/^-?\d+$/.test(val)) return BigInt(val)
+    const num = Number(val)
+    return Number.isSafeInteger(num) ? BigInt(num) : val
+  }, z.int64())
+  .openapi({
+    param: {
+      name: 'job_number',
+      description: 'The number of the job within the project, as shown in the job URL.',
+      example: 123,
+      in: 'path',
+      required: true,
+      schema: { type: 'integer', format: 'int64' },
+    },
+  })
+
+const ProviderNoGitlabParamsSchema = z
+  .enum(['github', 'gh', 'bitbucket', 'bb', 'circleci'])
+  .openapi({
+    param: {
+      name: 'provider',
+      description:
+        'The first segment of the slash-separated project slug, as shown in Project Settings > Overview.',
+      example: 'gh',
+      in: 'path',
+      schema: { type: 'string', enum: ['github', 'gh', 'bitbucket', 'bb', 'circleci'] },
+      required: true,
     },
   })
 
@@ -2697,20 +2753,6 @@ const LimitParamsSchema = z
       description: 'The number of repositories to return per page (maximum 100).',
       schema: { type: 'integer' },
       required: false,
-    },
-  })
-
-const ProviderParamsSchema = z
-  .enum(['github', 'gh', 'bitbucket', 'bb', 'circleci'])
-  .openapi({
-    param: {
-      name: 'provider',
-      description:
-        'The first segment of the slash-separated project slug, as shown in Project Settings > Overview.',
-      example: 'gh',
-      in: 'path',
-      required: true,
-      schema: { type: 'string', enum: ['github', 'gh', 'bitbucket', 'bb', 'circleci'] },
     },
   })
 
@@ -3112,7 +3154,7 @@ export const getInsightsPagesProjectSlugSummaryRoute = createRoute({
           },
         }),
       branches: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -3126,7 +3168,7 @@ export const getInsightsPagesProjectSlugSummaryRoute = createRoute({
           },
         }),
       'workflow-names': z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -3140,6 +3182,446 @@ export const getInsightsPagesProjectSlugSummaryRoute = createRoute({
           },
         }),
     }),
+  },
+  responses: {
+    200: {
+      description: 'Aggregated summary metrics and trends by workflow and branches',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              org_id: z
+                .any()
+                .exactOptional()
+                .openapi({ description: 'The unique ID of the organization' }),
+              project_id: z
+                .any()
+                .exactOptional()
+                .openapi({ description: 'The unique ID of the project' }),
+              project_data: z
+                .object({
+                  metrics: z
+                    .object({
+                      total_runs: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64().min(0n),
+                        )
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          minimum: 0,
+                          description:
+                            'The total number of runs, including runs that are still on-hold or running.',
+                        }),
+                      total_duration_secs: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64().min(0n),
+                        )
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          minimum: 0,
+                          description: 'Total duration, in seconds.',
+                        }),
+                      total_credits_used: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64().min(0n),
+                        )
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          minimum: 0,
+                          description:
+                            'The total credits consumed over the current timeseries interval.',
+                        }),
+                      success_rate: z.float32(),
+                      throughput: z
+                        .float32()
+                        .openapi({ description: 'The average number of runs per day.' }),
+                    })
+                    .openapi({
+                      required: [
+                        'total_runs',
+                        'total_duration_secs',
+                        'total_credits_used',
+                        'success_rate',
+                        'throughput',
+                      ],
+                      description:
+                        'Metrics aggregated across all workflows and branches for a project.',
+                    }),
+                  trends: z
+                    .object({
+                      total_runs: z
+                        .float32()
+                        .openapi({ description: 'The trend value for total number of runs.' }),
+                      total_duration_secs: z
+                        .float32()
+                        .openapi({ description: 'Trend value for total duration.' }),
+                      total_credits_used: z
+                        .float32()
+                        .openapi({ description: 'The trend value for total credits consumed.' }),
+                      success_rate: z
+                        .float32()
+                        .openapi({ description: 'The trend value for the success rate.' }),
+                      throughput: z
+                        .float32()
+                        .openapi({
+                          description: 'Trend value for the average number of runs per day.',
+                        }),
+                    })
+                    .openapi({
+                      required: [
+                        'total_runs',
+                        'total_duration_secs',
+                        'total_credits_used',
+                        'success_rate',
+                        'throughput',
+                      ],
+                      description:
+                        'Metric trends aggregated across all workflows and branches for a project.',
+                    }),
+                })
+                .exactOptional()
+                .openapi({
+                  required: ['metrics', 'trends'],
+                  description: 'Metrics and trends data aggregated for a given project.',
+                }),
+              project_workflow_data: z
+                .array(
+                  z
+                    .object({
+                      workflow_name: z
+                        .string()
+                        .openapi({
+                          description: 'The name of the workflow.',
+                          example: 'build-and-test',
+                        }),
+                      metrics: z
+                        .object({
+                          total_credits_used: z
+                            .preprocess(
+                              (val) =>
+                                typeof val === 'number' && Number.isSafeInteger(val)
+                                  ? BigInt(val)
+                                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                                    ? BigInt(val)
+                                    : val,
+                              z.int64().min(0n),
+                            )
+                            .openapi({
+                              type: 'integer',
+                              format: 'int64',
+                              minimum: 0,
+                              description:
+                                'The total credits consumed over the current timeseries interval.',
+                            }),
+                          p95_duration_secs: z
+                            .float32()
+                            .openapi({
+                              description:
+                                'The 95th percentile duration among a group of workflow runs.',
+                            }),
+                          total_runs: z
+                            .preprocess(
+                              (val) =>
+                                typeof val === 'number' && Number.isSafeInteger(val)
+                                  ? BigInt(val)
+                                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                                    ? BigInt(val)
+                                    : val,
+                              z.int64().min(0n),
+                            )
+                            .openapi({
+                              type: 'integer',
+                              format: 'int64',
+                              minimum: 0,
+                              description:
+                                'The total number of runs, including runs that are still on-hold or running.',
+                            }),
+                          success_rate: z.float32(),
+                        })
+                        .openapi({
+                          required: [
+                            'total_credits_used',
+                            'p95_duration_secs',
+                            'total_runs',
+                            'success_rate',
+                          ],
+                          description:
+                            'Metrics aggregated across a workflow or branchfor a project.',
+                        }),
+                      trends: z
+                        .object({
+                          total_credits_used: z
+                            .float32()
+                            .openapi({
+                              description: 'The trend value for total credits consumed.',
+                            }),
+                          p95_duration_secs: z
+                            .float32()
+                            .openapi({
+                              description:
+                                'The 95th percentile duration among a group of workflow runs.',
+                            }),
+                          total_runs: z
+                            .float32()
+                            .openapi({ description: 'The trend value for total number of runs.' }),
+                          success_rate: z
+                            .float32()
+                            .openapi({ description: 'The trend value for the success rate.' }),
+                        })
+                        .openapi({
+                          required: [
+                            'total_credits_used',
+                            'p95_duration_secs',
+                            'total_runs',
+                            'success_rate',
+                          ],
+                          description:
+                            'Trends aggregated across a workflow or branch for a project.',
+                        }),
+                    })
+                    .openapi({ required: ['workflow_name', 'metrics', 'trends'] }),
+                )
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A list of metrics and trends data for workflows for a given project.',
+                }),
+              project_workflow_branch_data: z
+                .array(
+                  z
+                    .object({
+                      workflow_name: z
+                        .string()
+                        .openapi({
+                          description: 'The name of the workflow.',
+                          example: 'build-and-test',
+                        }),
+                      branch: z
+                        .string()
+                        .openapi({
+                          description: "The VCS branch of a workflow's trigger.",
+                          example: 'main',
+                        }),
+                      metrics: z
+                        .object({
+                          total_credits_used: z
+                            .preprocess(
+                              (val) =>
+                                typeof val === 'number' && Number.isSafeInteger(val)
+                                  ? BigInt(val)
+                                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                                    ? BigInt(val)
+                                    : val,
+                              z.int64().min(0n),
+                            )
+                            .openapi({
+                              type: 'integer',
+                              format: 'int64',
+                              minimum: 0,
+                              description:
+                                'The total credits consumed over the current timeseries interval.',
+                            }),
+                          p95_duration_secs: z
+                            .float32()
+                            .openapi({
+                              description:
+                                'The 95th percentile duration among a group of workflow runs.',
+                            }),
+                          total_runs: z
+                            .preprocess(
+                              (val) =>
+                                typeof val === 'number' && Number.isSafeInteger(val)
+                                  ? BigInt(val)
+                                  : typeof val === 'string' && /^-?\d+$/.test(val)
+                                    ? BigInt(val)
+                                    : val,
+                              z.int64().min(0n),
+                            )
+                            .openapi({
+                              type: 'integer',
+                              format: 'int64',
+                              minimum: 0,
+                              description:
+                                'The total number of runs, including runs that are still on-hold or running.',
+                            }),
+                          success_rate: z.float32(),
+                        })
+                        .openapi({
+                          required: [
+                            'total_credits_used',
+                            'p95_duration_secs',
+                            'total_runs',
+                            'success_rate',
+                          ],
+                          description:
+                            'Metrics aggregated across a workflow or branchfor a project.',
+                        }),
+                      trends: z
+                        .object({
+                          total_credits_used: z
+                            .float32()
+                            .openapi({
+                              description: 'The trend value for total credits consumed.',
+                            }),
+                          p95_duration_secs: z
+                            .float32()
+                            .openapi({
+                              description:
+                                'The 95th percentile duration among a group of workflow runs.',
+                            }),
+                          total_runs: z
+                            .float32()
+                            .openapi({ description: 'The trend value for total number of runs.' }),
+                          success_rate: z
+                            .float32()
+                            .openapi({ description: 'The trend value for the success rate.' }),
+                        })
+                        .openapi({
+                          required: [
+                            'total_credits_used',
+                            'p95_duration_secs',
+                            'total_runs',
+                            'success_rate',
+                          ],
+                          description:
+                            'Trends aggregated across a workflow or branch for a project.',
+                        }),
+                    })
+                    .openapi({ required: ['workflow_name', 'branch', 'metrics', 'trends'] }),
+                )
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A list of metrics and trends data for branches for a given project.',
+                }),
+              all_branches: z
+                .array(
+                  z
+                    .string()
+                    .openapi({
+                      description: "The VCS branch of a workflow's trigger.",
+                      example: 'main',
+                    }),
+                )
+                .exactOptional()
+                .openapi({ description: 'A list of all the branches for a given project.' }),
+              all_workflows: z
+                .array(
+                  z
+                    .string()
+                    .openapi({
+                      description: 'The name of the workflow.',
+                      example: 'build-and-test',
+                    }),
+                )
+                .exactOptional()
+                .openapi({ description: 'A list of all the workflows for a given project.' }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+    default: {
+      description: 'Error response.',
+      content: {
+        'application/json': {
+          schema: z.object({ message: z.string().exactOptional() }).openapi({ required: [] }),
+        },
+      },
+    },
+  },
+})
+
+export const postInsightsPagesProjectSlugSummaryRoute = createRoute({
+  method: 'post',
+  path: '/insights/pages/{project-slug}/summary',
+  tags: ['Insights'],
+  summary:
+    'Get summary metrics and trends for a project across its workflows and branches, with the filters in the request body',
+  description:
+    'Same as getProjectWorkflowsPageData, but takes reporting-window, branches and workflow-names in a JSON request body instead of the query string.\n             Workflow runs going back at most 90 days are included in the aggregation window.\n             Trends are only supported upto last 30 days.\n             Please note that Insights is not a financial reporting tool and should not be used for precise credit reporting.  Credit reporting from Insights does not use the same source of truth as the billing information that is found in the Plan Overview page in the CircleCI UI, nor does the underlying data have the same data accuracy guarantees as the billing information in the CircleCI UI.  This may lead to discrepancies between credits reported from Insights and the billing information in the Plan Overview page of the CircleCI UI.  For precise credit reporting, always use the Plan Overview page in the CircleCI UI.',
+  operationId: 'getProjectWorkflowsPageDataByFilters',
+  request: {
+    params: z.object({
+      'project-slug': z
+        .string()
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'project-slug',
+            description:
+              'Project slug in the form `vcs-slug/org-name/repo-name`. The `/` characters may be URL-escaped. For projects that use GitLab or GitHub App, use `circleci` as the `vcs-slug`, replace `org-name` with the organization ID (found in Organization Settings), and replace `repo-name` with the project ID (found in Project Settings).',
+            schema: { type: 'string' },
+            required: true,
+            example: 'gh/CircleCI-Public/api-preview-docs',
+            allowReserved: true,
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              'reporting-window': z
+                .enum([
+                  'last-7-days',
+                  'last-90-days',
+                  'last-24-hours',
+                  'last-30-days',
+                  'last-60-days',
+                ])
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The time window used to calculate summary metrics. If not provided, defaults to last-90-days',
+                  example: 'last-90-days',
+                }),
+              branches: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The names of VCS branches to include in branch-level workflow metrics. If empty or not provided, defaults to the project's default branch.",
+                  example: ['main', 'feature'],
+                }),
+              'workflow-names': z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The names of workflows to include in workflow-level metrics. If empty or not provided, includes all workflows.',
+                  example: ['build', 'test-and-deploy'],
+                }),
+            })
+            .openapi({
+              description: 'Filters for the project summary metrics and trends.',
+              required: [],
+            }),
+        },
+      },
+    },
   },
   responses: {
     200: {
@@ -3919,7 +4401,7 @@ export const getInsightsOrgSlugSummaryRoute = createRoute({
           },
         }),
       'project-names': z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           param: {
@@ -7131,7 +7613,7 @@ export const getPipelineRoute = createRoute({
                             )
                             .openapi({ type: 'integer', format: 'int64' }),
                           z.boolean(),
-                          z.object({}),
+                          z.looseObject({}),
                         ]),
                       )
                       .exactOptional(),
@@ -7506,7 +7988,7 @@ export const getPipelinePipelineIdRoute = createRoute({
                       )
                       .openapi({ type: 'integer', format: 'int64' }),
                     z.boolean(),
-                    z.object({}),
+                    z.looseObject({}),
                   ]),
                 )
                 .exactOptional(),
@@ -9035,7 +9517,7 @@ export const getProjectProjectSlugPipelineRoute = createRoute({
                             )
                             .openapi({ type: 'integer', format: 'int64' }),
                           z.boolean(),
-                          z.object({}),
+                          z.looseObject({}),
                         ]),
                       )
                       .exactOptional(),
@@ -9490,7 +9972,7 @@ export const getProjectProjectSlugPipelineMineRoute = createRoute({
                             )
                             .openapi({ type: 'integer', format: 'int64' }),
                           z.boolean(),
-                          z.object({}),
+                          z.looseObject({}),
                         ]),
                       )
                       .exactOptional(),
@@ -9819,7 +10301,7 @@ export const getProjectProjectSlugPipelinePipelineNumberRoute = createRoute({
                       )
                       .openapi({ type: 'integer', format: 'int64' }),
                     z.boolean(),
-                    z.object({}),
+                    z.looseObject({}),
                   ]),
                 )
                 .exactOptional(),
@@ -11651,6 +12133,7 @@ export const postWorkflowIdRerunRoute = createRoute({
               'x-nullable': true,
               description: 'The information you can supply when rerunning a workflow.',
               title: 'RerunWorkflowParameters',
+              example: { enable_ssh: true, jobs: ['c65b68ef-e73b-4bf2-be9a-7a322a9df150'] },
               required: [],
             }),
         },
@@ -11946,7 +12429,7 @@ export const postOwnerOwnerIDContextContextDecisionRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ input: z.string(), metadata: z.object({}).exactOptional() })
+            .object({ input: z.string(), metadata: z.looseObject({}).exactOptional() })
             .openapi({ required: ['input'] }),
         },
       },
@@ -12970,7 +13453,7 @@ export const postProjectProviderOrganizationProjectPipelineRunRoute = createRout
   tags: ['Pipeline'],
   summary: '[Recommended] Trigger a new pipeline',
   description:
-    'Trigger a pipeline given a pipeline definition ID. Currently only supported for pipeline definitions where `config_source.provider` is `github_app`, `github_server`, `github_oauth`, `bitbucket_dc`, or `bitbucket_oauth`.\n\nThe slash-separated project slug is shown in Project Settings > Overview.\n\nDepending on the organization type, the project slug may have a human-readable format (`vcs_type/org_name/project_name`)\nor be an opaque string (e.g. `circleci/43G3lM5RtfFE7v5sa4nWAU/44n9wujWcTnVZ2b5S8Fnat`).',
+    'Trigger a pipeline given a pipeline definition ID. Currently only supported for pipeline definitions where `config_source.provider` is `github_app`, `github_server`, `github_oauth`, or `bitbucket_oauth`.\n\nThe slash-separated project slug is shown in Project Settings > Overview.\n\nDepending on the organization type, the project slug may have a human-readable format (`vcs_type/org_name/project_name`)\nor be an opaque string (e.g. `circleci/43G3lM5RtfFE7v5sa4nWAU/44n9wujWcTnVZ2b5S8Fnat`).',
   operationId: 'triggerPipelineRun',
   request: {
     params: z.object({
@@ -13046,7 +13529,7 @@ export const getProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdRoute = 
   tags: ['Pipeline Definition'],
   summary: 'Get pipeline definition',
   description:
-    'Get details for a pipeline definition. Currently only supported for pipeline definitions where `config_source.provider` is `github_app`, `github_server`, `github_oauth`, `bitbucket_dc`, `bitbucket_oauth` or `gitlab`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.',
+    'Get details for a pipeline definition. Currently only supported for pipeline definitions where `config_source.provider` is `github_app`, `github_server`, `github_oauth`, `bitbucket_oauth` or `gitlab`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.',
   operationId: 'getPipelineDefinition',
   request: {
     params: z.object({
@@ -13072,7 +13555,7 @@ export const deleteProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdRoute
   tags: ['Pipeline Definition'],
   summary: 'Delete pipeline definition',
   description:
-    'Delete pipeline definition. Currently only supported for pipeline definitions where `config_source.provider` is `github_app`, `github_server`, or `bitbucket_dc`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.',
+    'Delete pipeline definition. Currently only supported for pipeline definitions where `config_source.provider` is `github_app` or `github_server`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.',
   operationId: 'deletePipelineDefinition',
   request: {
     params: z.object({
@@ -13098,7 +13581,7 @@ export const patchProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdRoute 
   tags: ['Pipeline Definition'],
   summary: 'Update pipeline definition',
   description:
-    'Update pipeline definition. Currently only supported for pipeline definitions where `config_source.provider` is `github_app`, `github_server`, or `bitbucket_dc`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.',
+    'Update pipeline definition. Currently only supported for pipeline definitions where `config_source.provider` is `github_app` or `github_server`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.',
   operationId: 'updatePipelineDefinition',
   request: {
     params: z.object({
@@ -13126,7 +13609,7 @@ export const getProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdTriggers
     tags: ['Trigger'],
     summary: 'List pipeline definition triggers',
     description:
-      'List all triggers for a given pipeline definition. Currently only supported for pipeline definitions where `config_source.provider` is `github_oauth`, `github_app`, `github_server`, `bitbucket_dc`, or `schedule`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.',
+      'List all triggers for a given pipeline definition. Currently only supported for pipeline definitions where `config_source.provider` is `github_oauth`, `github_app`, `github_server`, or `schedule`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.',
     operationId: 'listPipelineDefinitionTriggers',
     request: {
       params: z.object({
@@ -13326,7 +13809,7 @@ export const getProjectsProjectIdTriggersTriggerIdRoute = createRoute({
   tags: ['Trigger'],
   summary: 'Get trigger',
   description:
-    'Get details for a trigger. Currently only supported for triggers where `event_source.provider` is `github_oauth`, `github_app`, `github_server`, `bitbucket_dc`, `webhook`, or `schedule`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.',
+    'Get details for a trigger. Currently only supported for triggers where `event_source.provider` is `github_oauth`, `github_app`, `github_server`, `webhook`, or `schedule`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.',
   operationId: 'getTrigger',
   request: {
     params: z.object({ project_id: ProjectIdParamsSchema, trigger_id: TriggerIdParamsSchema }),
@@ -13349,7 +13832,7 @@ export const deleteProjectsProjectIdTriggersTriggerIdRoute = createRoute({
   tags: ['Trigger'],
   summary: 'Delete trigger',
   description:
-    'Delete a trigger. Currently only supported for triggers where `event_source.provider` is `github_oauth`, `github_app`, `github_server`, `bitbucket_dc`, `webhook`, or `schedule`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.',
+    'Delete a trigger. Currently only supported for triggers where `event_source.provider` is `github_oauth`, `github_app`, `github_server`, `webhook`, or `schedule`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.',
   operationId: 'deleteTrigger',
   request: {
     params: z.object({ project_id: ProjectIdParamsSchema, trigger_id: TriggerIdParamsSchema }),
@@ -13372,7 +13855,7 @@ export const patchProjectsProjectIdTriggersTriggerIdRoute = createRoute({
   tags: ['Trigger'],
   summary: 'Update trigger',
   description:
-    'Update a trigger. Currently only supported for triggers where `event_source.provider` is `github_oauth`, `github_app`, `github_server`, `bitbucket_dc`, `webhook`, or `schedule`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.',
+    'Update a trigger. Currently only supported for triggers where `event_source.provider` is `github_oauth`, `github_app`, `github_server`, `webhook`, or `schedule`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.',
   operationId: 'updateTrigger',
   request: {
     params: z.object({ project_id: ProjectIdParamsSchema, trigger_id: TriggerIdParamsSchema }),

@@ -1,0 +1,11 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetWorkspacesServiceAssociateIpGroupsRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const XAmzTargetWorkspacesServiceAssociateIpGroupsHandler = app.openapi(
+  postXAmzTargetWorkspacesServiceAssociateIpGroupsRoute,
+  (c) => {
+    throw new Error('Not implemented')
+  },
+)

@@ -1,348 +1,9 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ScanProfileSchema = z
-  .enum(['safe', 'normal', 'full', 'lightning'])
-  .default('normal')
-  .openapi({
-    description:
-      "* lightning - fast simple scan\n* normal - default profile\n* full - does everything the default profile does and adds boolean based\nSQL injection tests\n* safe - doesn't use any content changing methods (no POST, DELETE, etc)\nand tries fewer payloads for SQL injection tests\n",
-    example: 'normal',
-  })
-  .openapi('ScanProfile')
-
-const ChangedSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description: 'Date time of the last change',
-    example: '2018-01-31T16:32:17.238553Z',
-    readOnly: true,
-  })
-  .openapi('Changed')
-
-const UserEmailSchema = z
-  .string()
-  .openapi({
-    description:
-      "User's email (changing this resets the user's password and revokes existing tokens)",
-    example: 'example@probely.com',
-  })
-  .openapi('UserEmail')
-
-const UserIdSchema = z
-  .string()
-  .openapi({ description: "User's id", example: 'jMXUw-BE_2vd' })
-  .openapi('UserId')
-
-const UserNameSchema = z
-  .string()
-  .openapi({ description: "User's name", example: 'Henrique Cimento' })
-  .openapi('UserName')
-
-const ChangedBySchema = z
-  .object({
-    email: UserEmailSchema.exactOptional(),
-    id: UserIdSchema.exactOptional(),
-    name: UserNameSchema.exactOptional(),
-  })
-  .openapi({ description: 'User that last modified the object', readOnly: true, required: [] })
-  .openapi('ChangedBy')
-
-const CookiesSchema = z
-  .array(
-    z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Cookie name.', example: 'cookie_1' }),
-        value: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Cookie value.', example: 'cookie_value' }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi({ description: 'Custom cookies name/value pairs' })
-  .openapi('Cookies')
-
-const DescSchema = z
-  .string()
-  .default('')
-  .openapi({ description: 'Custom description for the resource', example: 'Object description' })
-  .openapi('Desc')
-
-const HeadersSchema = z
-  .array(
-    z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Header name.', example: 'X-Custom-Header' }),
-        value: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Header value.', example: 'XXXXX' }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi({ description: 'Custom headers name value pairs' })
-  .openapi('Headers')
-
-const HostSchema = z.string().openapi({ description: 'Fully qualified hostname' }).openapi('Host')
-
 const IdSchema = z
   .string()
   .openapi({ description: 'Object id.', example: 'jMXUw-BE_2vd', readOnly: true })
   .openapi('Id')
-
-const IncludeSchema = z
-  .boolean()
-  .openapi({ description: 'Use this asset in scans.' })
-  .openapi('Include')
-
-const NameSchema = z
-  .string()
-  .default('')
-  .openapi({ description: 'Custom name for the resource', example: 'Object name' })
-  .openapi('Name')
-
-const FrameworkNamesSchema = z
-  .string()
-  .openapi({ description: 'Framework/Software name.', example: 'nginx' })
-  .openapi('FrameworkNames')
-
-const StackSchema = z
-  .array(FrameworkNamesSchema)
-  .openapi({ description: 'List of frameworks detected on this resource', readOnly: true })
-  .openapi('Stack')
-
-const VerificationDateSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description: 'Verification date time',
-    example: '2018-01-31T16:32:52.226652Z',
-    readOnly: true,
-  })
-  .openapi('VerificationDate')
-
-const VerificationLastErrorSchema = z
-  .string()
-  .openapi({ description: 'Reason for last verification failure.', readOnly: true })
-  .openapi('VerificationLastError')
-
-const VerificationMethodSchema = z
-  .enum(['dns', 'file'])
-  .openapi({
-    description:
-      'Type of verification:\n* dns - we look or a TXT record on the host you registered containing\n`Probely=<verification_token>`\n* file - on the root of the path you registered we look for a file\nnamed `<verification token>` containing `Probely`.\n',
-    readOnly: true,
-  })
-  .openapi('VerificationMethod')
-
-const VerificationTokenSchema = z
-  .string()
-  .openapi({
-    description: 'Token used to verify',
-    example: 'a38351cb-ede8-4dc8-9366-80d3a7042d9a',
-    readOnly: true,
-  })
-  .openapi('VerificationToken')
-
-const VerifiedSchema = z
-  .boolean()
-  .default(false)
-  .openapi({ description: 'Has resource ownership been verified', readOnly: true })
-  .openapi('Verified')
-
-const AssetSchema = z
-  .object({
-    changed: ChangedSchema.exactOptional(),
-    changed_by: ChangedBySchema.exactOptional(),
-    cookies: CookiesSchema.exactOptional(),
-    desc: DescSchema.exactOptional(),
-    headers: HeadersSchema.exactOptional(),
-    host: HostSchema.exactOptional(),
-    id: IdSchema.exactOptional(),
-    include: IncludeSchema.exactOptional(),
-    name: NameSchema.exactOptional(),
-    stack: StackSchema.exactOptional(),
-    verification_date: VerificationDateSchema.exactOptional(),
-    verification_last_error: VerificationLastErrorSchema.exactOptional(),
-    verification_method: VerificationMethodSchema.exactOptional(),
-    verification_token: VerificationTokenSchema.exactOptional(),
-    verified: VerifiedSchema.exactOptional(),
-  })
-  .openapi({ description: 'Secondary domain of a target', required: [] })
-  .openapi('Asset')
-
-const ConnectedTargetSchema = z
-  .string()
-  .openapi({ description: 'Id of the connected target in a multi-environment targets.\n' })
-  .openapi('ConnectedTarget')
-
-const EnabledSchema = z
-  .boolean()
-  .openapi({
-    description:
-      "Certain operations (e.g. changing a target's `type`) may require going through billing. Until the change is reverted or the billing is settled.\n",
-    readOnly: true,
-  })
-  .openapi('Enabled')
-
-const EnvironmentSchema = z
-  .enum(['testing', 'production'])
-  .default('testing')
-  .openapi({
-    description: 'Multi-environment targets can identify environments using this property.\n',
-  })
-  .openapi('Environment')
-
-const ReportTypeSchema = z
-  .enum(['default', 'owasp', 'pci'])
-  .openapi({
-    description:
-      '* default - default report, no extra information added\n* owasp - adds table on OWASP Top 10 most critical web application risks\n* pci - adds table on PCI requirements\n',
-  })
-  .openapi('ReportType')
-
-const PasswordSchema = z.string().openapi({ example: 'dolphins' }).openapi('Password')
-
-const BasicAuthUsernameSchema = z
-  .string()
-  .openapi({ description: 'Username', example: 'probely' })
-  .openapi('BasicAuthUsername')
-
-const BasicAuthSchema = z
-  .object({
-    password: PasswordSchema.exactOptional(),
-    username: BasicAuthUsernameSchema.exactOptional(),
-  })
-  .openapi({ description: 'Basic authentication credentials', required: [] })
-  .openapi('BasicAuth')
-
-const FormLoginSchema = z
-  .array(
-    z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Field name/id', example: 'username' }),
-        value: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Field input', example: 'probely' }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi({ description: 'Form login field name, field input pairs' })
-  .openapi('FormLogin')
-
-const FormLoginCheckPatternSchema = z
-  .string()
-  .default('')
-  .openapi({ description: 'Pattern to check successful authentication (not used)' })
-  .openapi('FormLoginCheckPattern')
-
-const FormLoginUrlSchema = z
-  .string()
-  .default('')
-  .openapi({ description: 'URL for the form login', example: 'https://app.probely.com/' })
-  .openapi('FormLoginUrl')
-
-const HasBasicAuthSchema = z
-  .boolean()
-  .default(false)
-  .openapi({ description: 'Use basic authentication in scan', example: true })
-  .openapi('HasBasicAuth')
-
-const HasFormLoginSchema = z
-  .boolean()
-  .default(false)
-  .openapi({ description: 'Does the resource use form login', example: true })
-  .openapi('HasFormLogin')
-
-const SiteHostSchema = z
-  .string()
-  .default('')
-  .openapi({ description: 'Site host', example: 'app.probely.com', readOnly: true })
-  .openapi('SiteHost')
-
-const SiteUrlSchema = z
-  .string()
-  .default('')
-  .openapi({
-    description:
-      'Site URL, it should include the path if the site is not located at the root. This URL can only be set once.\n',
-    example: 'https://app.probely.com',
-  })
-  .openapi('SiteUrl')
-
-const WhitelistSchema = z
-  .array(
-    z
-      .string()
-      .openapi({
-        description: 'Paths that the spider should visit that are not directly accessible\n',
-        example: '/private/path/',
-      }),
-  )
-  .openapi('Whitelist')
-
-const SiteSchema = z
-  .object({
-    basic_auth: BasicAuthSchema.exactOptional(),
-    changed: ChangedSchema.exactOptional(),
-    changed_by: ChangedBySchema.exactOptional(),
-    cookies: CookiesSchema.exactOptional(),
-    desc: DescSchema.exactOptional(),
-    form_login: FormLoginSchema.exactOptional(),
-    form_login_check_pattern: FormLoginCheckPatternSchema.exactOptional(),
-    form_login_url: FormLoginUrlSchema.exactOptional(),
-    has_basic_auth: HasBasicAuthSchema.exactOptional(),
-    has_form_login: HasFormLoginSchema.exactOptional(),
-    headers: HeadersSchema.exactOptional(),
-    host: SiteHostSchema.exactOptional(),
-    id: IdSchema.exactOptional(),
-    name: NameSchema.exactOptional(),
-    stack: StackSchema.exactOptional(),
-    url: SiteUrlSchema.exactOptional(),
-    verification_date: VerificationDateSchema.exactOptional(),
-    verification_last_error: VerificationLastErrorSchema.exactOptional(),
-    verification_method: VerificationMethodSchema.exactOptional(),
-    verification_token: VerificationTokenSchema.exactOptional(),
-    verified: VerifiedSchema.exactOptional(),
-    whitelist: WhitelistSchema.exactOptional(),
-  })
-  .openapi({ description: 'Main resource associated with a target', required: [] })
-  .openapi('Site')
-
-const TargetTypeSchema = z
-  .enum(['free', 'single', 'multi'])
-  .default('single')
-  .openapi({
-    description:
-      'The type of a target determines what the limitations imposed on a\ntarget.\n* free - Every account is allowed to have 5 free targets, these targets\ndo not need to be verified but can only perform lightning\nscans.\n* single - Single environment targets need to be verified but are\nallowed to run any type of scan allowed by the plan.\n* multi - Multi environment targets are used when you want\nto scan the same application in different environments.\n',
-  })
-  .openapi('TargetType')
-
-type TargetType = {
-  allowed_scan_profiles?: { id?: z.infer<typeof ScanProfileSchema>; name?: string }[]
-  assets?: z.infer<typeof AssetSchema>[]
-  changed?: z.infer<typeof ChangedSchema>
-  changed_by?: z.infer<typeof ChangedBySchema>
-  connected_target?: z.infer<typeof ConnectedTargetSchema>
-  enabled?: z.infer<typeof EnabledSchema>
-  environment?: z.infer<typeof EnvironmentSchema>
-  id?: z.infer<typeof IdSchema>
-  labels?: string[]
-  name?: z.infer<typeof NameSchema>
-  report_type?: z.infer<typeof ReportTypeSchema>
-  scan_profile?: z.infer<typeof ScanProfileSchema>
-  site?: z.infer<typeof SiteSchema>
-  type?: z.infer<typeof TargetTypeSchema>
-}
 
 const TokenSchema = z
   .string()
@@ -353,6 +14,12 @@ const TokenSchema = z
     readOnly: true,
   })
   .openapi('Token')
+
+const NameSchema = z
+  .string()
+  .default('')
+  .openapi({ description: 'Custom name for the resource', example: 'Object name' })
+  .openapi('Name')
 
 const APIKeySchema = z
   .object({
@@ -415,6 +82,12 @@ const PlanChargeModelSchema = z
     readOnly: true,
   })
   .openapi('PlanChargeModel')
+
+const DescSchema = z
+  .string()
+  .default('')
+  .openapi({ description: 'Custom description for the resource', example: 'Object description' })
+  .openapi('Desc')
 
 const PlanIsTrialSchema = z
   .boolean()
@@ -537,6 +210,43 @@ const ActionsSchema = z
   )
   .openapi('Actions')
 
+const ChangedSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description: 'Date time of the last change',
+    example: '2018-01-31T16:32:17.238553Z',
+    readOnly: true,
+  })
+  .openapi('Changed')
+
+const UserEmailSchema = z
+  .string()
+  .openapi({
+    description:
+      "User's email (changing this resets the user's password and revokes existing tokens)",
+    example: 'example@probely.com',
+  })
+  .openapi('UserEmail')
+
+const UserIdSchema = z
+  .string()
+  .openapi({ description: "User's id", example: 'jMXUw-BE_2vd' })
+  .openapi('UserId')
+
+const UserNameSchema = z
+  .string()
+  .openapi({ description: "User's name", example: 'Henrique Cimento' })
+  .openapi('UserName')
+
+const ChangedBySchema = z
+  .object({
+    email: UserEmailSchema.exactOptional(),
+    id: UserIdSchema.exactOptional(),
+    name: UserNameSchema.exactOptional(),
+  })
+  .openapi({ description: 'User that last modified the object', readOnly: true, required: [] })
+  .openapi('ChangedBy')
+
 const ActivitySchema = z
   .object({
     change: z
@@ -555,6 +265,118 @@ const ActivitySchema = z
   .openapi({ required: [] })
   .openapi('Activity')
 
+const CookiesSchema = z
+  .array(
+    z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Cookie name.', example: 'cookie_1' }),
+        value: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Cookie value.', example: 'cookie_value' }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({ description: 'Custom cookies name/value pairs' })
+  .openapi('Cookies')
+
+const HeadersSchema = z
+  .array(
+    z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Header name.', example: 'X-Custom-Header' }),
+        value: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Header value.', example: 'XXXXX' }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({ description: 'Custom headers name value pairs' })
+  .openapi('Headers')
+
+const HostSchema = z.string().openapi({ description: 'Fully qualified hostname' }).openapi('Host')
+
+const IncludeSchema = z
+  .boolean()
+  .openapi({ description: 'Use this asset in scans.' })
+  .openapi('Include')
+
+const FrameworkNamesSchema = z
+  .string()
+  .openapi({ description: 'Framework/Software name.', example: 'nginx' })
+  .openapi('FrameworkNames')
+
+const StackSchema = z
+  .array(FrameworkNamesSchema)
+  .openapi({ description: 'List of frameworks detected on this resource', readOnly: true })
+  .openapi('Stack')
+
+const VerificationDateSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description: 'Verification date time',
+    example: '2018-01-31T16:32:52.226652Z',
+    readOnly: true,
+  })
+  .openapi('VerificationDate')
+
+const VerificationLastErrorSchema = z
+  .string()
+  .openapi({ description: 'Reason for last verification failure.', readOnly: true })
+  .openapi('VerificationLastError')
+
+const VerificationMethodSchema = z
+  .enum(['dns', 'file'])
+  .openapi({
+    description:
+      'Type of verification:\n* dns - we look or a TXT record on the host you registered containing\n`Probely=<verification_token>`\n* file - on the root of the path you registered we look for a file\nnamed `<verification token>` containing `Probely`.\n',
+    readOnly: true,
+  })
+  .openapi('VerificationMethod')
+
+const VerificationTokenSchema = z
+  .string()
+  .openapi({
+    description: 'Token used to verify',
+    example: 'a38351cb-ede8-4dc8-9366-80d3a7042d9a',
+    readOnly: true,
+  })
+  .openapi('VerificationToken')
+
+const VerifiedSchema = z
+  .boolean()
+  .default(false)
+  .openapi({ description: 'Has resource ownership been verified', readOnly: true })
+  .openapi('Verified')
+
+const AssetSchema = z
+  .object({
+    changed: ChangedSchema.exactOptional(),
+    changed_by: ChangedBySchema.exactOptional(),
+    cookies: CookiesSchema.exactOptional(),
+    desc: DescSchema.exactOptional(),
+    headers: HeadersSchema.exactOptional(),
+    host: HostSchema.exactOptional(),
+    id: IdSchema.exactOptional(),
+    include: IncludeSchema.exactOptional(),
+    name: NameSchema.exactOptional(),
+    stack: StackSchema.exactOptional(),
+    verification_date: VerificationDateSchema.exactOptional(),
+    verification_last_error: VerificationLastErrorSchema.exactOptional(),
+    verification_method: VerificationMethodSchema.exactOptional(),
+    verification_token: VerificationTokenSchema.exactOptional(),
+    verified: VerifiedSchema.exactOptional(),
+  })
+  .openapi({ description: 'Secondary domain of a target', required: [] })
+  .openapi('Asset')
+
 const AssigneeSchema = z
   .object({
     email: UserEmailSchema.exactOptional(),
@@ -563,6 +385,21 @@ const AssigneeSchema = z
   })
   .openapi({ description: 'Assigned user', required: [] })
   .openapi('Assignee')
+
+const PasswordSchema = z.string().openapi({ example: 'dolphins' }).openapi('Password')
+
+const BasicAuthUsernameSchema = z
+  .string()
+  .openapi({ description: 'Username', example: 'probely' })
+  .openapi('BasicAuthUsername')
+
+const BasicAuthSchema = z
+  .object({
+    password: PasswordSchema.exactOptional(),
+    username: BasicAuthUsernameSchema.exactOptional(),
+  })
+  .openapi({ description: 'Basic authentication credentials', required: [] })
+  .openapi('BasicAuth')
 
 const AddressSchema = z.string().openapi({ description: 'Address' }).openapi('Address')
 
@@ -673,49 +510,189 @@ const UserSchema = z
   .openapi({ required: [] })
   .openapi('User')
 
-const TargetSchema: z.ZodType<TargetType> = z
-  .lazy(() =>
+const ScanProfileSchema = z
+  .enum(['safe', 'normal', 'full', 'lightning'])
+  .default('normal')
+  .openapi({
+    description:
+      "* lightning - fast simple scan\n* normal - default profile\n* full - does everything the default profile does and adds boolean based\nSQL injection tests\n* safe - doesn't use any content changing methods (no POST, DELETE, etc)\nand tries fewer payloads for SQL injection tests\n",
+    example: 'normal',
+  })
+  .openapi('ScanProfile')
+
+const ConnectedTargetSchema = z
+  .string()
+  .openapi({ description: 'Id of the connected target in a multi-environment targets.\n' })
+  .openapi('ConnectedTarget')
+
+const EnabledSchema = z
+  .boolean()
+  .openapi({
+    description:
+      "Certain operations (e.g. changing a target's `type`) may require going through billing. Until the change is reverted or the billing is settled.\n",
+    readOnly: true,
+  })
+  .openapi('Enabled')
+
+const EnvironmentSchema = z
+  .enum(['testing', 'production'])
+  .default('testing')
+  .openapi({
+    description: 'Multi-environment targets can identify environments using this property.\n',
+  })
+  .openapi('Environment')
+
+const ReportTypeSchema = z
+  .enum(['default', 'owasp', 'pci'])
+  .openapi({
+    description:
+      '* default - default report, no extra information added\n* owasp - adds table on OWASP Top 10 most critical web application risks\n* pci - adds table on PCI requirements\n',
+  })
+  .openapi('ReportType')
+
+const FormLoginSchema = z
+  .array(
     z
       .object({
-        allowed_scan_profiles: z
-          .array(
-            z
-              .object({
-                id: ScanProfileSchema.exactOptional(),
-                name: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Name of the scan profile.' }),
-              })
-              .openapi({ required: [] }),
-          )
+        name: z
+          .string()
           .exactOptional()
-          .openapi({ description: 'Valid scan profiles for the target.', readOnly: true }),
-        assets: z
-          .array(AssetSchema)
+          .openapi({ description: 'Field name/id', example: 'username' }),
+        value: z
+          .string()
           .exactOptional()
-          .openapi({ description: 'Secondary domains that should be scanned', readOnly: true }),
-        changed: ChangedSchema.exactOptional(),
-        changed_by: ChangedBySchema.exactOptional(),
-        connected_target: ConnectedTargetSchema.exactOptional(),
-        enabled: EnabledSchema.exactOptional(),
-        environment: EnvironmentSchema.exactOptional(),
-        id: IdSchema.exactOptional(),
-        labels: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'User labels for the scope. (This feature is currently only available for certain accounts,\nplease contact our support if you are interested in using it)\n',
-          }),
-        name: NameSchema.exactOptional(),
-        report_type: ReportTypeSchema.exactOptional(),
-        scan_profile: ScanProfileSchema.exactOptional(),
-        site: SiteSchema.exactOptional(),
-        type: TargetTypeSchema.exactOptional(),
+          .openapi({ description: 'Field input', example: 'probely' }),
       })
       .openapi({ required: [] }),
   )
+  .openapi({ description: 'Form login field name, field input pairs' })
+  .openapi('FormLogin')
+
+const FormLoginCheckPatternSchema = z
+  .string()
+  .default('')
+  .openapi({ description: 'Pattern to check successful authentication (not used)' })
+  .openapi('FormLoginCheckPattern')
+
+const FormLoginUrlSchema = z
+  .string()
+  .default('')
+  .openapi({ description: 'URL for the form login', example: 'https://app.probely.com/' })
+  .openapi('FormLoginUrl')
+
+const HasBasicAuthSchema = z
+  .boolean()
+  .default(false)
+  .openapi({ description: 'Use basic authentication in scan', example: true })
+  .openapi('HasBasicAuth')
+
+const HasFormLoginSchema = z
+  .boolean()
+  .default(false)
+  .openapi({ description: 'Does the resource use form login', example: true })
+  .openapi('HasFormLogin')
+
+const SiteHostSchema = z
+  .string()
+  .default('')
+  .openapi({ description: 'Site host', example: 'app.probely.com', readOnly: true })
+  .openapi('SiteHost')
+
+const SiteUrlSchema = z
+  .string()
+  .default('')
+  .openapi({
+    description:
+      'Site URL, it should include the path if the site is not located at the root. This URL can only be set once.\n',
+    example: 'https://app.probely.com',
+  })
+  .openapi('SiteUrl')
+
+const WhitelistSchema = z
+  .array(
+    z
+      .string()
+      .openapi({
+        description: 'Paths that the spider should visit that are not directly accessible\n',
+        example: '/private/path/',
+      }),
+  )
+  .openapi('Whitelist')
+
+const SiteSchema = z
+  .object({
+    basic_auth: BasicAuthSchema.exactOptional(),
+    changed: ChangedSchema.exactOptional(),
+    changed_by: ChangedBySchema.exactOptional(),
+    cookies: CookiesSchema.exactOptional(),
+    desc: DescSchema.exactOptional(),
+    form_login: FormLoginSchema.exactOptional(),
+    form_login_check_pattern: FormLoginCheckPatternSchema.exactOptional(),
+    form_login_url: FormLoginUrlSchema.exactOptional(),
+    has_basic_auth: HasBasicAuthSchema.exactOptional(),
+    has_form_login: HasFormLoginSchema.exactOptional(),
+    headers: HeadersSchema.exactOptional(),
+    host: SiteHostSchema.exactOptional(),
+    id: IdSchema.exactOptional(),
+    name: NameSchema.exactOptional(),
+    stack: StackSchema.exactOptional(),
+    url: SiteUrlSchema.exactOptional(),
+    verification_date: VerificationDateSchema.exactOptional(),
+    verification_last_error: VerificationLastErrorSchema.exactOptional(),
+    verification_method: VerificationMethodSchema.exactOptional(),
+    verification_token: VerificationTokenSchema.exactOptional(),
+    verified: VerifiedSchema.exactOptional(),
+    whitelist: WhitelistSchema.exactOptional(),
+  })
+  .openapi({ description: 'Main resource associated with a target', required: [] })
+  .openapi('Site')
+
+const TargetTypeSchema = z
+  .enum(['free', 'single', 'multi'])
+  .default('single')
+  .openapi({
+    description:
+      'The type of a target determines what the limitations imposed on a\ntarget.\n* free - Every account is allowed to have 5 free targets, these targets\ndo not need to be verified but can only perform lightning\nscans.\n* single - Single environment targets need to be verified but are\nallowed to run any type of scan allowed by the plan.\n* multi - Multi environment targets are used when you want\nto scan the same application in different environments.\n',
+  })
+  .openapi('TargetType')
+
+const TargetSchema = z
+  .object({
+    allowed_scan_profiles: z
+      .array(
+        z
+          .object({
+            id: ScanProfileSchema.exactOptional(),
+            name: z.string().exactOptional().openapi({ description: 'Name of the scan profile.' }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Valid scan profiles for the target.', readOnly: true }),
+    assets: z
+      .array(AssetSchema)
+      .exactOptional()
+      .openapi({ description: 'Secondary domains that should be scanned', readOnly: true }),
+    changed: ChangedSchema.exactOptional(),
+    changed_by: ChangedBySchema.exactOptional(),
+    connected_target: ConnectedTargetSchema.exactOptional(),
+    enabled: EnabledSchema.exactOptional(),
+    environment: EnvironmentSchema.exactOptional(),
+    id: IdSchema.exactOptional(),
+    labels: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'User labels for the scope. (This feature is currently only available for certain accounts,\nplease contact our support if you are interested in using it)\n',
+      }),
+    name: NameSchema.exactOptional(),
+    report_type: ReportTypeSchema.exactOptional(),
+    scan_profile: ScanProfileSchema.exactOptional(),
+    site: SiteSchema.exactOptional(),
+    type: TargetTypeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
   .openapi('Target')
 
 const ScanCompletedSchema = z.iso
@@ -2680,15 +2657,9 @@ const PasswordChangeRequestBody = {
     'application/json': {
       schema: z
         .object({
-          confpassword: z
-            .any()
-            .openapi({ description: 'New user password (confirmation)' })
-            .and(PasswordSchema),
-          current_password: z
-            .any()
-            .openapi({ description: 'Current user password' })
-            .and(PasswordSchema),
-          password: z.any().openapi({ description: 'New user password' }).and(PasswordSchema),
+          confpassword: PasswordSchema.openapi({ description: 'New user password (confirmation)' }),
+          current_password: PasswordSchema.openapi({ description: 'Current user password' }),
+          password: PasswordSchema.openapi({ description: 'New user password' }),
         })
         .openapi({ required: ['current_password', 'password', 'confpassword'] }),
     },
@@ -2701,11 +2672,8 @@ const PasswordSetRequestBody = {
     'application/json': {
       schema: z
         .object({
-          confpassword: z
-            .any()
-            .openapi({ description: 'New user password (confirmation)' })
-            .and(PasswordSchema),
-          password: z.any().openapi({ description: 'New user password' }).and(PasswordSchema),
+          confpassword: PasswordSchema.openapi({ description: 'New user password (confirmation)' }),
+          password: PasswordSchema.openapi({ description: 'New user password' }),
           token: EmailTokenSchema,
         })
         .openapi({ required: ['token', 'password', 'confpassword'] }),

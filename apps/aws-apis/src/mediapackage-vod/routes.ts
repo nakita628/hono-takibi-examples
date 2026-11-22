@@ -4,24 +4,16 @@ const StringSchema = z.string().openapi('String')
 
 const AuthorizationSchema = z
   .object({
-    CdnIdentifierSecret: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'cdnIdentifierSecret' },
-          description:
-            'The Amazon Resource Name (ARN) for the secret in AWS Secrets Manager that is used for CDN authorization.',
-        }),
-    ),
-    SecretsRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'secretsRoleArn' },
-          description:
-            'The Amazon Resource Name (ARN) for the IAM role that allows MediaPackage to communicate with AWS Secrets Manager.',
-        }),
-    ),
+    CdnIdentifierSecret: StringSchema.openapi({
+      xml: { name: 'cdnIdentifierSecret' },
+      description:
+        'The Amazon Resource Name (ARN) for the secret in AWS Secrets Manager that is used for CDN authorization.',
+    }),
+    SecretsRoleArn: StringSchema.openapi({
+      xml: { name: 'secretsRoleArn' },
+      description:
+        'The Amazon Resource Name (ARN) for the IAM role that allows MediaPackage to communicate with AWS Secrets Manager.',
+    }),
   })
   .openapi({
     required: ['SecretsRoleArn', 'CdnIdentifierSecret'],
@@ -31,11 +23,10 @@ const AuthorizationSchema = z
 
 const EgressAccessLogsSchema = z
   .object({
-    LogGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'logGroupName' }, description: 'Customize the log group name.' }),
-    ).exactOptional(),
+    LogGroupName: StringSchema.exactOptional().openapi({
+      xml: { name: 'logGroupName' },
+      description: 'Customize the log group name.',
+    }),
   })
   .openapi({ description: 'Configure egress access logging.', required: [] })
   .openapi('EgressAccessLogs')
@@ -47,35 +38,27 @@ const TagsSchema = z
 
 const ConfigureLogsResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ xml: { name: 'arn' }, description: 'The ARN of the PackagingGroup.' }),
-    ).exactOptional(),
-    Authorization: AuthorizationSchema.and(
-      z.any().openapi({ xml: { name: 'authorization' } }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The time the PackagingGroup was created.',
-        }),
-    ).exactOptional(),
-    DomainName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainName' },
-          description: 'The fully qualified domain name for Assets in the PackagingGroup.',
-        }),
-    ).exactOptional(),
-    EgressAccessLogs: EgressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'egressAccessLogs' } }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the PackagingGroup.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The ARN of the PackagingGroup.',
+    }),
+    Authorization: AuthorizationSchema.exactOptional().openapi({ xml: { name: 'authorization' } }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The time the PackagingGroup was created.',
+    }),
+    DomainName: StringSchema.exactOptional().openapi({
+      xml: { name: 'domainName' },
+      description: 'The fully qualified domain name for Assets in the PackagingGroup.',
+    }),
+    EgressAccessLogs: EgressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'egressAccessLogs' },
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the PackagingGroup.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ required: [] })
   .openapi('ConfigureLogsResponse')
@@ -94,31 +77,19 @@ const TooManyRequestsExceptionSchema = z.any().openapi('TooManyRequestsException
 
 const EgressEndpointSchema = z
   .object({
-    PackagingConfigurationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'packagingConfigurationId' },
-          description: 'The ID of the PackagingConfiguration being applied to the Asset.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description:
-            "The current processing status of the asset used for the packaging configuration. The status can be either QUEUED, PROCESSING, PLAYABLE, or FAILED. Status information won't be available for most assets ingested before 2021-09-30.",
-        }),
-    ).exactOptional(),
-    Url: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'url' },
-          description: 'The URL of the parent manifest for the repackaged Asset.',
-        }),
-    ).exactOptional(),
+    PackagingConfigurationId: StringSchema.exactOptional().openapi({
+      xml: { name: 'packagingConfigurationId' },
+      description: 'The ID of the PackagingConfiguration being applied to the Asset.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description:
+        "The current processing status of the asset used for the packaging configuration. The status can be either QUEUED, PROCESSING, PLAYABLE, or FAILED. Status information won't be available for most assets ingested before 2021-09-30.",
+    }),
+    Url: StringSchema.exactOptional().openapi({
+      xml: { name: 'url' },
+      description: 'The URL of the parent manifest for the repackaged Asset.',
+    }),
   })
   .openapi({
     description: 'The endpoint URL used to access an Asset using one PackagingConfiguration.',
@@ -130,58 +101,39 @@ const ListOfEgressEndpointSchema = z.array(EgressEndpointSchema).openapi('ListOf
 
 const CreateAssetResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ xml: { name: 'arn' }, description: 'The ARN of the Asset.' }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The time the Asset was initially submitted for Ingest.',
-        }),
-    ).exactOptional(),
-    EgressEndpoints: ListOfEgressEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'egressEndpoints' },
-          description: 'The list of egress endpoints available for the Asset.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The unique identifier for the Asset.' }),
-    ).exactOptional(),
-    PackagingGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'packagingGroupId' },
-          description: 'The ID of the PackagingGroup for the Asset.',
-        }),
-    ).exactOptional(),
-    ResourceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceId' },
-          description: 'The resource ID to include in SPEKE key requests.',
-        }),
-    ).exactOptional(),
-    SourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'sourceArn' }, description: 'ARN of the source object in S3.' }),
-    ).exactOptional(),
-    SourceRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceRoleArn' },
-          description: 'The IAM role_arn used to access the source S3 bucket.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The ARN of the Asset.',
+    }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The time the Asset was initially submitted for Ingest.',
+    }),
+    EgressEndpoints: ListOfEgressEndpointSchema.exactOptional().openapi({
+      xml: { name: 'egressEndpoints' },
+      description: 'The list of egress endpoints available for the Asset.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The unique identifier for the Asset.',
+    }),
+    PackagingGroupId: StringSchema.exactOptional().openapi({
+      xml: { name: 'packagingGroupId' },
+      description: 'The ID of the PackagingGroup for the Asset.',
+    }),
+    ResourceId: StringSchema.exactOptional().openapi({
+      xml: { name: 'resourceId' },
+      description: 'The resource ID to include in SPEKE key requests.',
+    }),
+    SourceArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceArn' },
+      description: 'ARN of the source object in S3.',
+    }),
+    SourceRoleArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceRoleArn' },
+      description: 'The IAM role_arn used to access the source S3 bucket.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ required: [] })
   .openapi('CreateAssetResponse')
@@ -207,22 +159,14 @@ const PresetSpeke20VideoSchema = z
 
 const EncryptionContractConfigurationSchema = z
   .object({
-    PresetSpeke20Audio: PresetSpeke20AudioSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'presetSpeke20Audio' },
-          description: 'A collection of audio encryption presets.',
-        }),
-    ),
-    PresetSpeke20Video: PresetSpeke20VideoSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'presetSpeke20Video' },
-          description: 'A collection of video encryption presets.',
-        }),
-    ),
+    PresetSpeke20Audio: PresetSpeke20AudioSchema.openapi({
+      xml: { name: 'presetSpeke20Audio' },
+      description: 'A collection of audio encryption presets.',
+    }),
+    PresetSpeke20Video: PresetSpeke20VideoSchema.openapi({
+      xml: { name: 'presetSpeke20Video' },
+      description: 'A collection of video encryption presets.',
+    }),
   })
   .openapi({
     required: ['PresetSpeke20Audio', 'PresetSpeke20Video'],
@@ -235,34 +179,22 @@ const ListOfStringSchema = z.array(StringSchema).openapi('ListOfString')
 
 const SpekeKeyProviderSchema = z
   .object({
-    EncryptionContractConfiguration: EncryptionContractConfigurationSchema.and(
-      z.any().openapi({ xml: { name: 'encryptionContractConfiguration' } }),
-    ).exactOptional(),
-    RoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'roleArn' },
-          description:
-            'An Amazon Resource Name (ARN) of an IAM role that AWS Elemental\nMediaPackage will assume when accessing the key provider service.\n',
-        }),
-    ),
-    SystemIds: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'systemIds' },
-          description: 'The system IDs to include in key requests.',
-        }),
-    ),
-    Url: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'url' },
-          description: 'The URL of the external key provider service.',
-        }),
-    ),
+    EncryptionContractConfiguration: EncryptionContractConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'encryptionContractConfiguration' },
+    }),
+    RoleArn: StringSchema.openapi({
+      xml: { name: 'roleArn' },
+      description:
+        'An Amazon Resource Name (ARN) of an IAM role that AWS Elemental\nMediaPackage will assume when accessing the key provider service.\n',
+    }),
+    SystemIds: ListOfStringSchema.openapi({
+      xml: { name: 'systemIds' },
+      description: 'The system IDs to include in key requests.',
+    }),
+    Url: StringSchema.openapi({
+      xml: { name: 'url' },
+      description: 'The URL of the external key provider service.',
+    }),
   })
   .openapi({
     required: ['SystemIds', 'Url', 'RoleArn'],
@@ -273,18 +205,12 @@ const SpekeKeyProviderSchema = z
 
 const CmafEncryptionSchema = z
   .object({
-    ConstantInitializationVector: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'constantInitializationVector' },
-          description:
-            "An optional 128-bit, 16-byte hex value represented by a 32-character string, used in conjunction with the key for encrypting blocks. If you don't specify a value, then MediaPackage creates the constant initialization vector (IV).",
-        }),
-    ).exactOptional(),
-    SpekeKeyProvider: SpekeKeyProviderSchema.and(
-      z.any().openapi({ xml: { name: 'spekeKeyProvider' } }),
-    ),
+    ConstantInitializationVector: StringSchema.exactOptional().openapi({
+      xml: { name: 'constantInitializationVector' },
+      description:
+        "An optional 128-bit, 16-byte hex value represented by a 32-character string, used in conjunction with the key for encrypting blocks. If you don't specify a value, then MediaPackage creates the constant initialization vector (IV).",
+    }),
+    SpekeKeyProvider: SpekeKeyProviderSchema.openapi({ xml: { name: 'spekeKeyProvider' } }),
   })
   .openapi({ required: ['SpekeKeyProvider'], description: 'A CMAF encryption configuration.' })
   .openapi('CmafEncryption')
@@ -301,81 +227,49 @@ const StreamOrderSchema = z
 
 const StreamSelectionSchema = z
   .object({
-    MaxVideoBitsPerSecond: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxVideoBitsPerSecond' },
-          description: 'The maximum video bitrate (bps) to include in output.',
-        }),
-    ).exactOptional(),
-    MinVideoBitsPerSecond: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'minVideoBitsPerSecond' },
-          description: 'The minimum video bitrate (bps) to include in output.',
-        }),
-    ).exactOptional(),
-    StreamOrder: StreamOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'streamOrder' },
-          description: 'A directive that determines the order of streams in the output.',
-        }),
-    ).exactOptional(),
+    MaxVideoBitsPerSecond: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxVideoBitsPerSecond' },
+      description: 'The maximum video bitrate (bps) to include in output.',
+    }),
+    MinVideoBitsPerSecond: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'minVideoBitsPerSecond' },
+      description: 'The minimum video bitrate (bps) to include in output.',
+    }),
+    StreamOrder: StreamOrderSchema.exactOptional().openapi({
+      xml: { name: 'streamOrder' },
+      description: 'A directive that determines the order of streams in the output.',
+    }),
   })
   .openapi({ description: 'A StreamSelection configuration.', required: [] })
   .openapi('StreamSelection')
 
 const HlsManifestSchema = z
   .object({
-    AdMarkers: AdMarkersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'adMarkers' },
-          description:
-            'This setting controls how ad markers are included in the packaged OriginEndpoint.\n"NONE" will omit all SCTE-35 ad markers from the output.\n"PASSTHROUGH" causes the manifest to contain a copy of the SCTE-35 ad\nmarkers (comments) taken directly from the input HTTP Live Streaming (HLS) manifest.\n"SCTE35_ENHANCED" generates ad markers and blackout tags based on SCTE-35\nmessages in the input source.\n',
-        }),
-    ).exactOptional(),
-    IncludeIframeOnlyStream: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'includeIframeOnlyStream' },
-          description: 'When enabled, an I-Frame only stream will be included in the output.',
-        }),
-    ).exactOptional(),
-    ManifestName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'manifestName' },
-          description: 'An optional string to include in the name of the manifest.',
-        }),
-    ).exactOptional(),
-    ProgramDateTimeIntervalSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'programDateTimeIntervalSeconds' },
-          description:
-            'The interval (in seconds) between each EXT-X-PROGRAM-DATE-TIME tag\ninserted into manifests. Additionally, when an interval is specified\nID3Timed Metadata messages will be generated every 5 seconds using the\ningest time of the content.\nIf the interval is not specified, or set to 0, then\nno EXT-X-PROGRAM-DATE-TIME tags will be inserted into manifests and no\nID3Timed Metadata messages will be generated. Note that irrespective\nof this parameter, if any ID3 Timed Metadata is found in HTTP Live Streaming (HLS) input,\nit will be passed through to HLS output.\n',
-        }),
-    ).exactOptional(),
-    RepeatExtXKey: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'repeatExtXKey' },
-          description: 'When enabled, the EXT-X-KEY tag will be repeated in output manifests.',
-        }),
-    ).exactOptional(),
-    StreamSelection: StreamSelectionSchema.and(
-      z.any().openapi({ xml: { name: 'streamSelection' } }),
-    ).exactOptional(),
+    AdMarkers: AdMarkersSchema.exactOptional().openapi({
+      xml: { name: 'adMarkers' },
+      description:
+        'This setting controls how ad markers are included in the packaged OriginEndpoint.\n"NONE" will omit all SCTE-35 ad markers from the output.\n"PASSTHROUGH" causes the manifest to contain a copy of the SCTE-35 ad\nmarkers (comments) taken directly from the input HTTP Live Streaming (HLS) manifest.\n"SCTE35_ENHANCED" generates ad markers and blackout tags based on SCTE-35\nmessages in the input source.\n',
+    }),
+    IncludeIframeOnlyStream: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'includeIframeOnlyStream' },
+      description: 'When enabled, an I-Frame only stream will be included in the output.',
+    }),
+    ManifestName: StringSchema.exactOptional().openapi({
+      xml: { name: 'manifestName' },
+      description: 'An optional string to include in the name of the manifest.',
+    }),
+    ProgramDateTimeIntervalSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'programDateTimeIntervalSeconds' },
+      description:
+        'The interval (in seconds) between each EXT-X-PROGRAM-DATE-TIME tag\ninserted into manifests. Additionally, when an interval is specified\nID3Timed Metadata messages will be generated every 5 seconds using the\ningest time of the content.\nIf the interval is not specified, or set to 0, then\nno EXT-X-PROGRAM-DATE-TIME tags will be inserted into manifests and no\nID3Timed Metadata messages will be generated. Note that irrespective\nof this parameter, if any ID3 Timed Metadata is found in HTTP Live Streaming (HLS) input,\nit will be passed through to HLS output.\n',
+    }),
+    RepeatExtXKey: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'repeatExtXKey' },
+      description: 'When enabled, the EXT-X-KEY tag will be repeated in output manifests.',
+    }),
+    StreamSelection: StreamSelectionSchema.exactOptional().openapi({
+      xml: { name: 'streamSelection' },
+    }),
   })
   .openapi({ description: 'An HTTP Live Streaming (HLS) manifest configuration.', required: [] })
   .openapi('HlsManifest')
@@ -384,35 +278,21 @@ const ListOfHlsManifestSchema = z.array(HlsManifestSchema).openapi('ListOfHlsMan
 
 const CmafPackageSchema = z
   .object({
-    Encryption: CmafEncryptionSchema.and(
-      z.any().openapi({ xml: { name: 'encryption' } }),
-    ).exactOptional(),
-    HlsManifests: ListOfHlsManifestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'hlsManifests' },
-          description: 'A list of HLS manifest configurations.',
-        }),
-    ),
-    IncludeEncoderConfigurationInSegments: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'includeEncoderConfigurationInSegments' },
-          description:
-            "When includeEncoderConfigurationInSegments is set to true, MediaPackage places your encoder's Sequence Parameter Set (SPS), Picture Parameter Set (PPS), and Video Parameter Set (VPS) metadata in every video segment instead of in the init fragment. This lets you use different SPS/PPS/VPS settings for your assets during content playback.\n",
-        }),
-    ).exactOptional(),
-    SegmentDurationSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'segmentDurationSeconds' },
-          description:
-            'Duration (in seconds) of each fragment. Actual fragments will be\nrounded to the nearest multiple of the source fragment duration.\n',
-        }),
-    ).exactOptional(),
+    Encryption: CmafEncryptionSchema.exactOptional().openapi({ xml: { name: 'encryption' } }),
+    HlsManifests: ListOfHlsManifestSchema.openapi({
+      xml: { name: 'hlsManifests' },
+      description: 'A list of HLS manifest configurations.',
+    }),
+    IncludeEncoderConfigurationInSegments: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'includeEncoderConfigurationInSegments' },
+      description:
+        "When includeEncoderConfigurationInSegments is set to true, MediaPackage places your encoder's Sequence Parameter Set (SPS), Picture Parameter Set (PPS), and Video Parameter Set (VPS) metadata in every video segment instead of in the init fragment. This lets you use different SPS/PPS/VPS settings for your assets during content playback.\n",
+    }),
+    SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'segmentDurationSeconds' },
+      description:
+        'Duration (in seconds) of each fragment. Actual fragments will be\nrounded to the nearest multiple of the source fragment duration.\n',
+    }),
   })
   .openapi({ required: ['HlsManifests'], description: 'A CMAF packaging configuration.' })
   .openapi('CmafPackage')
@@ -425,53 +305,33 @@ const ScteMarkersSourceSchema = z.enum(['SEGMENTS', 'MANIFEST']).openapi('ScteMa
 
 const DashManifestSchema = z
   .object({
-    ManifestLayout: ManifestLayoutSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'manifestLayout' },
-          description:
-            'Determines the position of some tags in the Media Presentation Description (MPD).  When set to FULL, elements like SegmentTemplate and ContentProtection are included in each Representation.  When set to COMPACT, duplicate elements are combined and presented at the AdaptationSet level.',
-        }),
-    ).exactOptional(),
-    ManifestName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'manifestName' },
-          description: 'An optional string to include in the name of the manifest.',
-        }),
-    ).exactOptional(),
-    MinBufferTimeSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'minBufferTimeSeconds' },
-          description:
-            'Minimum duration (in seconds) that a player will buffer media before starting the presentation.',
-        }),
-    ).exactOptional(),
-    Profile: ProfileSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'profile' },
-          description:
-            'The Dynamic Adaptive Streaming over HTTP (DASH) profile type.  When set to "HBBTV_1_5", HbbTV 1.5 compliant output is enabled.',
-        }),
-    ).exactOptional(),
-    ScteMarkersSource: ScteMarkersSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'scteMarkersSource' },
-          description:
-            'The source of scte markers used. When set to SEGMENTS, the scte markers are sourced from the segments of the ingested content. When set to MANIFEST, the scte markers are sourced from the manifest of the ingested content.',
-        }),
-    ).exactOptional(),
-    StreamSelection: StreamSelectionSchema.and(
-      z.any().openapi({ xml: { name: 'streamSelection' } }),
-    ).exactOptional(),
+    ManifestLayout: ManifestLayoutSchema.exactOptional().openapi({
+      xml: { name: 'manifestLayout' },
+      description:
+        'Determines the position of some tags in the Media Presentation Description (MPD).  When set to FULL, elements like SegmentTemplate and ContentProtection are included in each Representation.  When set to COMPACT, duplicate elements are combined and presented at the AdaptationSet level.',
+    }),
+    ManifestName: StringSchema.exactOptional().openapi({
+      xml: { name: 'manifestName' },
+      description: 'An optional string to include in the name of the manifest.',
+    }),
+    MinBufferTimeSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'minBufferTimeSeconds' },
+      description:
+        'Minimum duration (in seconds) that a player will buffer media before starting the presentation.',
+    }),
+    Profile: ProfileSchema.exactOptional().openapi({
+      xml: { name: 'profile' },
+      description:
+        'The Dynamic Adaptive Streaming over HTTP (DASH) profile type.  When set to "HBBTV_1_5", HbbTV 1.5 compliant output is enabled.',
+    }),
+    ScteMarkersSource: ScteMarkersSourceSchema.exactOptional().openapi({
+      xml: { name: 'scteMarkersSource' },
+      description:
+        'The source of scte markers used. When set to SEGMENTS, the scte markers are sourced from the segments of the ingested content. When set to MANIFEST, the scte markers are sourced from the manifest of the ingested content.',
+    }),
+    StreamSelection: StreamSelectionSchema.exactOptional().openapi({
+      xml: { name: 'streamSelection' },
+    }),
   })
   .openapi({ description: 'A DASH manifest configuration.', required: [] })
   .openapi('DashManifest')
@@ -480,9 +340,7 @@ const ListOfDashManifestSchema = z.array(DashManifestSchema).openapi('ListOfDash
 
 const DashEncryptionSchema = z
   .object({
-    SpekeKeyProvider: SpekeKeyProviderSchema.and(
-      z.any().openapi({ xml: { name: 'spekeKeyProvider' } }),
-    ),
+    SpekeKeyProvider: SpekeKeyProviderSchema.openapi({ xml: { name: 'spekeKeyProvider' } }),
   })
   .openapi({
     required: ['SpekeKeyProvider'],
@@ -502,61 +360,35 @@ const SegmentTemplateFormatSchema = z
 
 const DashPackageSchema = z
   .object({
-    DashManifests: ListOfDashManifestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dashManifests' },
-          description: 'A list of DASH manifest configurations.',
-        }),
-    ),
-    Encryption: DashEncryptionSchema.and(
-      z.any().openapi({ xml: { name: 'encryption' } }),
-    ).exactOptional(),
-    IncludeEncoderConfigurationInSegments: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'includeEncoderConfigurationInSegments' },
-          description:
-            "When includeEncoderConfigurationInSegments is set to true, MediaPackage places your encoder's Sequence Parameter Set (SPS), Picture Parameter Set (PPS), and Video Parameter Set (VPS) metadata in every video segment instead of in the init fragment. This lets you use different SPS/PPS/VPS settings for your assets during content playback.\n",
-        }),
-    ).exactOptional(),
-    IncludeIframeOnlyStream: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'includeIframeOnlyStream' },
-          description: 'When enabled, an I-Frame only stream will be included in the output.',
-        }),
-    ).exactOptional(),
-    PeriodTriggers: ListOfPeriodTriggersElementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'periodTriggers' },
-          description:
-            'A list of triggers that controls when the outgoing Dynamic Adaptive Streaming over HTTP (DASH)\nMedia Presentation Description (MPD) will be partitioned into multiple periods. If empty, the content will not\nbe partitioned into more than one period. If the list contains "ADS", new periods will be created where\nthe Asset contains SCTE-35 ad markers.\n',
-        }),
-    ).exactOptional(),
-    SegmentDurationSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'segmentDurationSeconds' },
-          description:
-            'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
-        }),
-    ).exactOptional(),
-    SegmentTemplateFormat: SegmentTemplateFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'segmentTemplateFormat' },
-          description:
-            'Determines the type of SegmentTemplate included in the Media Presentation Description (MPD).  When set to NUMBER_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Number$ media URLs.  When set to TIME_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Time$ media URLs. When set to NUMBER_WITH_DURATION, only a duration is included in each SegmentTemplate, with $Number$ media URLs.',
-        }),
-    ).exactOptional(),
+    DashManifests: ListOfDashManifestSchema.openapi({
+      xml: { name: 'dashManifests' },
+      description: 'A list of DASH manifest configurations.',
+    }),
+    Encryption: DashEncryptionSchema.exactOptional().openapi({ xml: { name: 'encryption' } }),
+    IncludeEncoderConfigurationInSegments: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'includeEncoderConfigurationInSegments' },
+      description:
+        "When includeEncoderConfigurationInSegments is set to true, MediaPackage places your encoder's Sequence Parameter Set (SPS), Picture Parameter Set (PPS), and Video Parameter Set (VPS) metadata in every video segment instead of in the init fragment. This lets you use different SPS/PPS/VPS settings for your assets during content playback.\n",
+    }),
+    IncludeIframeOnlyStream: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'includeIframeOnlyStream' },
+      description: 'When enabled, an I-Frame only stream will be included in the output.',
+    }),
+    PeriodTriggers: ListOfPeriodTriggersElementSchema.exactOptional().openapi({
+      xml: { name: 'periodTriggers' },
+      description:
+        'A list of triggers that controls when the outgoing Dynamic Adaptive Streaming over HTTP (DASH)\nMedia Presentation Description (MPD) will be partitioned into multiple periods. If empty, the content will not\nbe partitioned into more than one period. If the list contains "ADS", new periods will be created where\nthe Asset contains SCTE-35 ad markers.\n',
+    }),
+    SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'segmentDurationSeconds' },
+      description:
+        'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
+    }),
+    SegmentTemplateFormat: SegmentTemplateFormatSchema.exactOptional().openapi({
+      xml: { name: 'segmentTemplateFormat' },
+      description:
+        'Determines the type of SegmentTemplate included in the Media Presentation Description (MPD).  When set to NUMBER_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Number$ media URLs.  When set to TIME_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Time$ media URLs. When set to NUMBER_WITH_DURATION, only a duration is included in each SegmentTemplate, with $Number$ media URLs.',
+    }),
   })
   .openapi({
     required: ['DashManifests'],
@@ -568,26 +400,16 @@ const EncryptionMethodSchema = z.enum(['AES_128', 'SAMPLE_AES']).openapi('Encryp
 
 const HlsEncryptionSchema = z
   .object({
-    ConstantInitializationVector: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'constantInitializationVector' },
-          description:
-            'A constant initialization vector for encryption (optional).\nWhen not specified the initialization vector will be periodically rotated.\n',
-        }),
-    ).exactOptional(),
-    EncryptionMethod: EncryptionMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encryptionMethod' },
-          description: 'The encryption method to use.',
-        }),
-    ).exactOptional(),
-    SpekeKeyProvider: SpekeKeyProviderSchema.and(
-      z.any().openapi({ xml: { name: 'spekeKeyProvider' } }),
-    ),
+    ConstantInitializationVector: StringSchema.exactOptional().openapi({
+      xml: { name: 'constantInitializationVector' },
+      description:
+        'A constant initialization vector for encryption (optional).\nWhen not specified the initialization vector will be periodically rotated.\n',
+    }),
+    EncryptionMethod: EncryptionMethodSchema.exactOptional().openapi({
+      xml: { name: 'encryptionMethod' },
+      description: 'The encryption method to use.',
+    }),
+    SpekeKeyProvider: SpekeKeyProviderSchema.openapi({ xml: { name: 'spekeKeyProvider' } }),
   })
   .openapi({
     required: ['SpekeKeyProvider'],
@@ -597,44 +419,25 @@ const HlsEncryptionSchema = z
 
 const HlsPackageSchema = z
   .object({
-    Encryption: HlsEncryptionSchema.and(
-      z.any().openapi({ xml: { name: 'encryption' } }),
-    ).exactOptional(),
-    HlsManifests: ListOfHlsManifestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'hlsManifests' },
-          description: 'A list of HLS manifest configurations.',
-        }),
-    ),
-    IncludeDvbSubtitles: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'includeDvbSubtitles' },
-          description:
-            'When enabled, MediaPackage passes through digital video broadcasting (DVB) subtitles into the output.',
-        }),
-    ).exactOptional(),
-    SegmentDurationSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'segmentDurationSeconds' },
-          description:
-            'Duration (in seconds) of each fragment. Actual fragments will be\nrounded to the nearest multiple of the source fragment duration.\n',
-        }),
-    ).exactOptional(),
-    UseAudioRenditionGroup: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'useAudioRenditionGroup' },
-          description:
-            'When enabled, audio streams will be placed in rendition groups in the output.',
-        }),
-    ).exactOptional(),
+    Encryption: HlsEncryptionSchema.exactOptional().openapi({ xml: { name: 'encryption' } }),
+    HlsManifests: ListOfHlsManifestSchema.openapi({
+      xml: { name: 'hlsManifests' },
+      description: 'A list of HLS manifest configurations.',
+    }),
+    IncludeDvbSubtitles: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'includeDvbSubtitles' },
+      description:
+        'When enabled, MediaPackage passes through digital video broadcasting (DVB) subtitles into the output.',
+    }),
+    SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'segmentDurationSeconds' },
+      description:
+        'Duration (in seconds) of each fragment. Actual fragments will be\nrounded to the nearest multiple of the source fragment duration.\n',
+    }),
+    UseAudioRenditionGroup: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'useAudioRenditionGroup' },
+      description: 'When enabled, audio streams will be placed in rendition groups in the output.',
+    }),
   })
   .openapi({
     required: ['HlsManifests'],
@@ -644,9 +447,7 @@ const HlsPackageSchema = z
 
 const MssEncryptionSchema = z
   .object({
-    SpekeKeyProvider: SpekeKeyProviderSchema.and(
-      z.any().openapi({ xml: { name: 'spekeKeyProvider' } }),
-    ),
+    SpekeKeyProvider: SpekeKeyProviderSchema.openapi({ xml: { name: 'spekeKeyProvider' } }),
   })
   .openapi({
     required: ['SpekeKeyProvider'],
@@ -656,17 +457,13 @@ const MssEncryptionSchema = z
 
 const MssManifestSchema = z
   .object({
-    ManifestName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'manifestName' },
-          description: 'An optional string to include in the name of the manifest.',
-        }),
-    ).exactOptional(),
-    StreamSelection: StreamSelectionSchema.and(
-      z.any().openapi({ xml: { name: 'streamSelection' } }),
-    ).exactOptional(),
+    ManifestName: StringSchema.exactOptional().openapi({
+      xml: { name: 'manifestName' },
+      description: 'An optional string to include in the name of the manifest.',
+    }),
+    StreamSelection: StreamSelectionSchema.exactOptional().openapi({
+      xml: { name: 'streamSelection' },
+    }),
   })
   .openapi({
     description: 'A Microsoft Smooth Streaming (MSS) manifest configuration.',
@@ -678,25 +475,15 @@ const ListOfMssManifestSchema = z.array(MssManifestSchema).openapi('ListOfMssMan
 
 const MssPackageSchema = z
   .object({
-    Encryption: MssEncryptionSchema.and(
-      z.any().openapi({ xml: { name: 'encryption' } }),
-    ).exactOptional(),
-    MssManifests: ListOfMssManifestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mssManifests' },
-          description: 'A list of MSS manifest configurations.',
-        }),
-    ),
-    SegmentDurationSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'segmentDurationSeconds' },
-          description: 'The duration (in seconds) of each segment.',
-        }),
-    ).exactOptional(),
+    Encryption: MssEncryptionSchema.exactOptional().openapi({ xml: { name: 'encryption' } }),
+    MssManifests: ListOfMssManifestSchema.openapi({
+      xml: { name: 'mssManifests' },
+      description: 'A list of MSS manifest configurations.',
+    }),
+    SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'segmentDurationSeconds' },
+      description: 'The duration (in seconds) of each segment.',
+    }),
   })
   .openapi({
     required: ['MssManifests'],
@@ -706,278 +493,194 @@ const MssPackageSchema = z
 
 const CreatePackagingConfigurationResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'arn' }, description: 'The ARN of the PackagingConfiguration.' }),
-    ).exactOptional(),
-    CmafPackage: CmafPackageSchema.and(
-      z.any().openapi({ xml: { name: 'cmafPackage' } }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The time the PackagingConfiguration was created.',
-        }),
-    ).exactOptional(),
-    DashPackage: DashPackageSchema.and(
-      z.any().openapi({ xml: { name: 'dashPackage' } }),
-    ).exactOptional(),
-    HlsPackage: HlsPackageSchema.and(
-      z.any().openapi({ xml: { name: 'hlsPackage' } }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'id' }, description: 'The ID of the PackagingConfiguration.' }),
-    ).exactOptional(),
-    MssPackage: MssPackageSchema.and(
-      z.any().openapi({ xml: { name: 'mssPackage' } }),
-    ).exactOptional(),
-    PackagingGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'packagingGroupId' }, description: 'The ID of a PackagingGroup.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The ARN of the PackagingConfiguration.',
+    }),
+    CmafPackage: CmafPackageSchema.exactOptional().openapi({ xml: { name: 'cmafPackage' } }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The time the PackagingConfiguration was created.',
+    }),
+    DashPackage: DashPackageSchema.exactOptional().openapi({ xml: { name: 'dashPackage' } }),
+    HlsPackage: HlsPackageSchema.exactOptional().openapi({ xml: { name: 'hlsPackage' } }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the PackagingConfiguration.',
+    }),
+    MssPackage: MssPackageSchema.exactOptional().openapi({ xml: { name: 'mssPackage' } }),
+    PackagingGroupId: StringSchema.exactOptional().openapi({
+      xml: { name: 'packagingGroupId' },
+      description: 'The ID of a PackagingGroup.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ required: [] })
   .openapi('CreatePackagingConfigurationResponse')
 
 const CreatePackagingGroupResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ xml: { name: 'arn' }, description: 'The ARN of the PackagingGroup.' }),
-    ).exactOptional(),
-    Authorization: AuthorizationSchema.and(
-      z.any().openapi({ xml: { name: 'authorization' } }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The time the PackagingGroup was created.',
-        }),
-    ).exactOptional(),
-    DomainName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainName' },
-          description: 'The fully qualified domain name for Assets in the PackagingGroup.',
-        }),
-    ).exactOptional(),
-    EgressAccessLogs: EgressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'egressAccessLogs' } }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the PackagingGroup.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The ARN of the PackagingGroup.',
+    }),
+    Authorization: AuthorizationSchema.exactOptional().openapi({ xml: { name: 'authorization' } }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The time the PackagingGroup was created.',
+    }),
+    DomainName: StringSchema.exactOptional().openapi({
+      xml: { name: 'domainName' },
+      description: 'The fully qualified domain name for Assets in the PackagingGroup.',
+    }),
+    EgressAccessLogs: EgressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'egressAccessLogs' },
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the PackagingGroup.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ required: [] })
   .openapi('CreatePackagingGroupResponse')
 
-const DeleteAssetResponseSchema = z.object({}).openapi('DeleteAssetResponse')
+const DeleteAssetResponseSchema = z.looseObject({}).openapi('DeleteAssetResponse')
 
 const DeletePackagingConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeletePackagingConfigurationResponse')
 
-const DeletePackagingGroupResponseSchema = z.object({}).openapi('DeletePackagingGroupResponse')
+const DeletePackagingGroupResponseSchema = z.looseObject({}).openapi('DeletePackagingGroupResponse')
 
 const DescribeAssetResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ xml: { name: 'arn' }, description: 'The ARN of the Asset.' }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The time the Asset was initially submitted for Ingest.',
-        }),
-    ).exactOptional(),
-    EgressEndpoints: ListOfEgressEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'egressEndpoints' },
-          description: 'The list of egress endpoints available for the Asset.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The unique identifier for the Asset.' }),
-    ).exactOptional(),
-    PackagingGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'packagingGroupId' },
-          description: 'The ID of the PackagingGroup for the Asset.',
-        }),
-    ).exactOptional(),
-    ResourceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceId' },
-          description: 'The resource ID to include in SPEKE key requests.',
-        }),
-    ).exactOptional(),
-    SourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'sourceArn' }, description: 'ARN of the source object in S3.' }),
-    ).exactOptional(),
-    SourceRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceRoleArn' },
-          description: 'The IAM role_arn used to access the source S3 bucket.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The ARN of the Asset.',
+    }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The time the Asset was initially submitted for Ingest.',
+    }),
+    EgressEndpoints: ListOfEgressEndpointSchema.exactOptional().openapi({
+      xml: { name: 'egressEndpoints' },
+      description: 'The list of egress endpoints available for the Asset.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The unique identifier for the Asset.',
+    }),
+    PackagingGroupId: StringSchema.exactOptional().openapi({
+      xml: { name: 'packagingGroupId' },
+      description: 'The ID of the PackagingGroup for the Asset.',
+    }),
+    ResourceId: StringSchema.exactOptional().openapi({
+      xml: { name: 'resourceId' },
+      description: 'The resource ID to include in SPEKE key requests.',
+    }),
+    SourceArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceArn' },
+      description: 'ARN of the source object in S3.',
+    }),
+    SourceRoleArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceRoleArn' },
+      description: 'The IAM role_arn used to access the source S3 bucket.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAssetResponse')
 
 const DescribePackagingConfigurationResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'arn' }, description: 'The ARN of the PackagingConfiguration.' }),
-    ).exactOptional(),
-    CmafPackage: CmafPackageSchema.and(
-      z.any().openapi({ xml: { name: 'cmafPackage' } }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The time the PackagingConfiguration was created.',
-        }),
-    ).exactOptional(),
-    DashPackage: DashPackageSchema.and(
-      z.any().openapi({ xml: { name: 'dashPackage' } }),
-    ).exactOptional(),
-    HlsPackage: HlsPackageSchema.and(
-      z.any().openapi({ xml: { name: 'hlsPackage' } }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'id' }, description: 'The ID of the PackagingConfiguration.' }),
-    ).exactOptional(),
-    MssPackage: MssPackageSchema.and(
-      z.any().openapi({ xml: { name: 'mssPackage' } }),
-    ).exactOptional(),
-    PackagingGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'packagingGroupId' }, description: 'The ID of a PackagingGroup.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The ARN of the PackagingConfiguration.',
+    }),
+    CmafPackage: CmafPackageSchema.exactOptional().openapi({ xml: { name: 'cmafPackage' } }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The time the PackagingConfiguration was created.',
+    }),
+    DashPackage: DashPackageSchema.exactOptional().openapi({ xml: { name: 'dashPackage' } }),
+    HlsPackage: HlsPackageSchema.exactOptional().openapi({ xml: { name: 'hlsPackage' } }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the PackagingConfiguration.',
+    }),
+    MssPackage: MssPackageSchema.exactOptional().openapi({ xml: { name: 'mssPackage' } }),
+    PackagingGroupId: StringSchema.exactOptional().openapi({
+      xml: { name: 'packagingGroupId' },
+      description: 'The ID of a PackagingGroup.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ required: [] })
   .openapi('DescribePackagingConfigurationResponse')
 
 const DescribePackagingGroupResponseSchema = z
   .object({
-    ApproximateAssetCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'approximateAssetCount' },
-          description: 'The approximate asset count of the PackagingGroup.',
-        }),
-    ).exactOptional(),
-    Arn: StringSchema.and(
-      z.any().openapi({ xml: { name: 'arn' }, description: 'The ARN of the PackagingGroup.' }),
-    ).exactOptional(),
-    Authorization: AuthorizationSchema.and(
-      z.any().openapi({ xml: { name: 'authorization' } }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The time the PackagingGroup was created.',
-        }),
-    ).exactOptional(),
-    DomainName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainName' },
-          description: 'The fully qualified domain name for Assets in the PackagingGroup.',
-        }),
-    ).exactOptional(),
-    EgressAccessLogs: EgressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'egressAccessLogs' } }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the PackagingGroup.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    ApproximateAssetCount: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'approximateAssetCount' },
+      description: 'The approximate asset count of the PackagingGroup.',
+    }),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The ARN of the PackagingGroup.',
+    }),
+    Authorization: AuthorizationSchema.exactOptional().openapi({ xml: { name: 'authorization' } }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The time the PackagingGroup was created.',
+    }),
+    DomainName: StringSchema.exactOptional().openapi({
+      xml: { name: 'domainName' },
+      description: 'The fully qualified domain name for Assets in the PackagingGroup.',
+    }),
+    EgressAccessLogs: EgressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'egressAccessLogs' },
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the PackagingGroup.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ required: [] })
   .openapi('DescribePackagingGroupResponse')
 
 const AssetShallowSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ xml: { name: 'arn' }, description: 'The ARN of the Asset.' }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The time the Asset was initially submitted for Ingest.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The unique identifier for the Asset.' }),
-    ).exactOptional(),
-    PackagingGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'packagingGroupId' },
-          description: 'The ID of the PackagingGroup for the Asset.',
-        }),
-    ).exactOptional(),
-    ResourceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceId' },
-          description: 'The resource ID to include in SPEKE key requests.',
-        }),
-    ).exactOptional(),
-    SourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'sourceArn' }, description: 'ARN of the source object in S3.' }),
-    ).exactOptional(),
-    SourceRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceRoleArn' },
-          description: 'The IAM role ARN used to access the source S3 bucket.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The ARN of the Asset.',
+    }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The time the Asset was initially submitted for Ingest.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The unique identifier for the Asset.',
+    }),
+    PackagingGroupId: StringSchema.exactOptional().openapi({
+      xml: { name: 'packagingGroupId' },
+      description: 'The ID of the PackagingGroup for the Asset.',
+    }),
+    ResourceId: StringSchema.exactOptional().openapi({
+      xml: { name: 'resourceId' },
+      description: 'The resource ID to include in SPEKE key requests.',
+    }),
+    SourceArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceArn' },
+      description: 'ARN of the source object in S3.',
+    }),
+    SourceRoleArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceRoleArn' },
+      description: 'The IAM role ARN used to access the source S3 bucket.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ description: 'A MediaPackage VOD Asset resource.', required: [] })
   .openapi('AssetShallow')
@@ -986,65 +689,41 @@ const ListOfAssetShallowSchema = z.array(AssetShallowSchema).openapi('ListOfAsse
 
 const ListAssetsResponseSchema = z
   .object({
-    Assets: ListOfAssetShallowSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'assets' },
-          description: 'A list of MediaPackage VOD Asset resources.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'A token that can be used to resume pagination from the end of the collection.',
-        }),
-    ).exactOptional(),
+    Assets: ListOfAssetShallowSchema.exactOptional().openapi({
+      xml: { name: 'assets' },
+      description: 'A list of MediaPackage VOD Asset resources.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description: 'A token that can be used to resume pagination from the end of the collection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAssetsResponse')
 
 const PackagingConfigurationSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'arn' }, description: 'The ARN of the PackagingConfiguration.' }),
-    ).exactOptional(),
-    CmafPackage: CmafPackageSchema.and(
-      z.any().openapi({ xml: { name: 'cmafPackage' } }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The time the PackagingConfiguration was created.',
-        }),
-    ).exactOptional(),
-    DashPackage: DashPackageSchema.and(
-      z.any().openapi({ xml: { name: 'dashPackage' } }),
-    ).exactOptional(),
-    HlsPackage: HlsPackageSchema.and(
-      z.any().openapi({ xml: { name: 'hlsPackage' } }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'id' }, description: 'The ID of the PackagingConfiguration.' }),
-    ).exactOptional(),
-    MssPackage: MssPackageSchema.and(
-      z.any().openapi({ xml: { name: 'mssPackage' } }),
-    ).exactOptional(),
-    PackagingGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'packagingGroupId' }, description: 'The ID of a PackagingGroup.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The ARN of the PackagingConfiguration.',
+    }),
+    CmafPackage: CmafPackageSchema.exactOptional().openapi({ xml: { name: 'cmafPackage' } }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The time the PackagingConfiguration was created.',
+    }),
+    DashPackage: DashPackageSchema.exactOptional().openapi({ xml: { name: 'dashPackage' } }),
+    HlsPackage: HlsPackageSchema.exactOptional().openapi({ xml: { name: 'hlsPackage' } }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the PackagingConfiguration.',
+    }),
+    MssPackage: MssPackageSchema.exactOptional().openapi({ xml: { name: 'mssPackage' } }),
+    PackagingGroupId: StringSchema.exactOptional().openapi({
+      xml: { name: 'packagingGroupId' },
+      description: 'The ID of a PackagingGroup.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ description: 'A MediaPackage VOD PackagingConfiguration resource.', required: [] })
   .openapi('PackagingConfiguration')
@@ -1055,66 +734,45 @@ const ListOfPackagingConfigurationSchema = z
 
 const ListPackagingConfigurationsResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'A token that can be used to resume pagination from the end of the collection.',
-        }),
-    ).exactOptional(),
-    PackagingConfigurations: ListOfPackagingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'packagingConfigurations' },
-          description: 'A list of MediaPackage VOD PackagingConfiguration resources.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description: 'A token that can be used to resume pagination from the end of the collection.',
+    }),
+    PackagingConfigurations: ListOfPackagingConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'packagingConfigurations' },
+      description: 'A list of MediaPackage VOD PackagingConfiguration resources.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPackagingConfigurationsResponse')
 
 const PackagingGroupSchema = z
   .object({
-    ApproximateAssetCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'approximateAssetCount' },
-          description: 'The approximate asset count of the PackagingGroup.',
-        }),
-    ).exactOptional(),
-    Arn: StringSchema.and(
-      z.any().openapi({ xml: { name: 'arn' }, description: 'The ARN of the PackagingGroup.' }),
-    ).exactOptional(),
-    Authorization: AuthorizationSchema.and(
-      z.any().openapi({ xml: { name: 'authorization' } }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The time the PackagingGroup was created.',
-        }),
-    ).exactOptional(),
-    DomainName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainName' },
-          description: 'The fully qualified domain name for Assets in the PackagingGroup.',
-        }),
-    ).exactOptional(),
-    EgressAccessLogs: EgressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'egressAccessLogs' } }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the PackagingGroup.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    ApproximateAssetCount: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'approximateAssetCount' },
+      description: 'The approximate asset count of the PackagingGroup.',
+    }),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The ARN of the PackagingGroup.',
+    }),
+    Authorization: AuthorizationSchema.exactOptional().openapi({ xml: { name: 'authorization' } }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The time the PackagingGroup was created.',
+    }),
+    DomainName: StringSchema.exactOptional().openapi({
+      xml: { name: 'domainName' },
+      description: 'The fully qualified domain name for Assets in the PackagingGroup.',
+    }),
+    EgressAccessLogs: EgressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'egressAccessLogs' },
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the PackagingGroup.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ description: 'A MediaPackage VOD PackagingGroup resource.', required: [] })
   .openapi('PackagingGroup')
@@ -1123,23 +781,14 @@ const ListOfPackagingGroupSchema = z.array(PackagingGroupSchema).openapi('ListOf
 
 const ListPackagingGroupsResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'A token that can be used to resume pagination from the end of the collection.',
-        }),
-    ).exactOptional(),
-    PackagingGroups: ListOfPackagingGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'packagingGroups' },
-          description: 'A list of MediaPackage VOD PackagingGroup resources.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description: 'A token that can be used to resume pagination from the end of the collection.',
+    }),
+    PackagingGroups: ListOfPackagingGroupSchema.exactOptional().openapi({
+      xml: { name: 'packagingGroups' },
+      description: 'A list of MediaPackage VOD PackagingGroup resources.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPackagingGroupsResponse')
@@ -1148,66 +797,50 @@ const MapOfStringSchema = z.record(z.string(), StringSchema).openapi('MapOfStrin
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'A collection of tags associated with a resource',
-        }),
-    ).exactOptional(),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'A collection of tags associated with a resource',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const UpdatePackagingGroupResponseSchema = z
   .object({
-    ApproximateAssetCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'approximateAssetCount' },
-          description: 'The approximate asset count of the PackagingGroup.',
-        }),
-    ).exactOptional(),
-    Arn: StringSchema.and(
-      z.any().openapi({ xml: { name: 'arn' }, description: 'The ARN of the PackagingGroup.' }),
-    ).exactOptional(),
-    Authorization: AuthorizationSchema.and(
-      z.any().openapi({ xml: { name: 'authorization' } }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The time the PackagingGroup was created.',
-        }),
-    ).exactOptional(),
-    DomainName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainName' },
-          description: 'The fully qualified domain name for Assets in the PackagingGroup.',
-        }),
-    ).exactOptional(),
-    EgressAccessLogs: EgressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'egressAccessLogs' } }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the PackagingGroup.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    ApproximateAssetCount: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'approximateAssetCount' },
+      description: 'The approximate asset count of the PackagingGroup.',
+    }),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The ARN of the PackagingGroup.',
+    }),
+    Authorization: AuthorizationSchema.exactOptional().openapi({ xml: { name: 'authorization' } }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The time the PackagingGroup was created.',
+    }),
+    DomainName: StringSchema.exactOptional().openapi({
+      xml: { name: 'domainName' },
+      description: 'The fully qualified domain name for Assets in the PackagingGroup.',
+    }),
+    EgressAccessLogs: EgressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'egressAccessLogs' },
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the PackagingGroup.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ required: [] })
   .openapi('UpdatePackagingGroupResponse')
 
 const ConfigureLogsRequestSchema = z
   .object({
-    EgressAccessLogs: EgressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'egressAccessLogs' } }),
-    ).exactOptional(),
+    EgressAccessLogs: EgressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'egressAccessLogs' },
+    }),
   })
   .openapi({
     title: 'ConfigureLogsRequest',
@@ -1218,39 +851,27 @@ const ConfigureLogsRequestSchema = z
 
 const CreateAssetRequestSchema = z
   .object({
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The unique identifier for the Asset.' }),
-    ),
-    PackagingGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'packagingGroupId' },
-          description: 'The ID of the PackagingGroup for the Asset.',
-        }),
-    ),
-    ResourceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceId' },
-          description: 'The resource ID to include in SPEKE key requests.',
-        }),
-    ).exactOptional(),
-    SourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'sourceArn' }, description: 'ARN of the source object in S3.' }),
-    ),
-    SourceRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceRoleArn' },
-          description: 'The IAM role ARN used to access the source S3 bucket.',
-        }),
-    ),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Id: StringSchema.openapi({
+      xml: { name: 'id' },
+      description: 'The unique identifier for the Asset.',
+    }),
+    PackagingGroupId: StringSchema.openapi({
+      xml: { name: 'packagingGroupId' },
+      description: 'The ID of the PackagingGroup for the Asset.',
+    }),
+    ResourceId: StringSchema.exactOptional().openapi({
+      xml: { name: 'resourceId' },
+      description: 'The resource ID to include in SPEKE key requests.',
+    }),
+    SourceArn: StringSchema.openapi({
+      xml: { name: 'sourceArn' },
+      description: 'ARN of the source object in S3.',
+    }),
+    SourceRoleArn: StringSchema.openapi({
+      xml: { name: 'sourceRoleArn' },
+      description: 'The IAM role ARN used to access the source S3 bucket.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({
     required: ['SourceArn', 'Id', 'PackagingGroupId', 'SourceRoleArn'],
@@ -1261,29 +882,19 @@ const CreateAssetRequestSchema = z
 
 const CreatePackagingConfigurationRequestSchema = z
   .object({
-    CmafPackage: CmafPackageSchema.and(
-      z.any().openapi({ xml: { name: 'cmafPackage' } }),
-    ).exactOptional(),
-    DashPackage: DashPackageSchema.and(
-      z.any().openapi({ xml: { name: 'dashPackage' } }),
-    ).exactOptional(),
-    HlsPackage: HlsPackageSchema.and(
-      z.any().openapi({ xml: { name: 'hlsPackage' } }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'id' }, description: 'The ID of the PackagingConfiguration.' }),
-    ),
-    MssPackage: MssPackageSchema.and(
-      z.any().openapi({ xml: { name: 'mssPackage' } }),
-    ).exactOptional(),
-    PackagingGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'packagingGroupId' }, description: 'The ID of a PackagingGroup.' }),
-    ),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    CmafPackage: CmafPackageSchema.exactOptional().openapi({ xml: { name: 'cmafPackage' } }),
+    DashPackage: DashPackageSchema.exactOptional().openapi({ xml: { name: 'dashPackage' } }),
+    HlsPackage: HlsPackageSchema.exactOptional().openapi({ xml: { name: 'hlsPackage' } }),
+    Id: StringSchema.openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the PackagingConfiguration.',
+    }),
+    MssPackage: MssPackageSchema.exactOptional().openapi({ xml: { name: 'mssPackage' } }),
+    PackagingGroupId: StringSchema.openapi({
+      xml: { name: 'packagingGroupId' },
+      description: 'The ID of a PackagingGroup.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({
     required: ['Id', 'PackagingGroupId'],
@@ -1294,16 +905,12 @@ const CreatePackagingConfigurationRequestSchema = z
 
 const CreatePackagingGroupRequestSchema = z
   .object({
-    Authorization: AuthorizationSchema.and(
-      z.any().openapi({ xml: { name: 'authorization' } }),
-    ).exactOptional(),
-    EgressAccessLogs: EgressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'egressAccessLogs' } }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the PackagingGroup.' }),
-    ),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Authorization: AuthorizationSchema.exactOptional().openapi({ xml: { name: 'authorization' } }),
+    EgressAccessLogs: EgressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'egressAccessLogs' },
+    }),
+    Id: StringSchema.openapi({ xml: { name: 'id' }, description: 'The ID of the PackagingGroup.' }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({
     required: ['Id'],
@@ -1313,81 +920,75 @@ const CreatePackagingGroupRequestSchema = z
   .openapi('CreatePackagingGroupRequest')
 
 const DeleteAssetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAssetRequest' })
   .openapi('DeleteAssetRequest')
 
 const DeletePackagingConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeletePackagingConfigurationRequest' })
   .openapi('DeletePackagingConfigurationRequest')
 
 const DeletePackagingGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeletePackagingGroupRequest' })
   .openapi('DeletePackagingGroupRequest')
 
 const DescribeAssetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAssetRequest' })
   .openapi('DescribeAssetRequest')
 
 const DescribePackagingConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribePackagingConfigurationRequest' })
   .openapi('DescribePackagingConfigurationRequest')
 
 const DescribePackagingGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribePackagingGroupRequest' })
   .openapi('DescribePackagingGroupRequest')
 
 const MaxResultsSchema = z.int().min(1).max(1000).openapi('MaxResults')
 
 const ListAssetsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAssetsRequest' })
   .openapi('ListAssetsRequest')
 
 const ListPackagingConfigurationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPackagingConfigurationsRequest' })
   .openapi('ListPackagingConfigurationsRequest')
 
 const ListPackagingGroupsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPackagingGroupsRequest' })
   .openapi('ListPackagingGroupsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'A collection of tags associated with a resource',
-        }),
-    ),
+    Tags: MapOfStringSchema.openapi({
+      xml: { name: 'tags' },
+      description: 'A collection of tags associated with a resource',
+    }),
   })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdatePackagingGroupRequestSchema = z
   .object({
-    Authorization: AuthorizationSchema.and(
-      z.any().openapi({ xml: { name: 'authorization' } }),
-    ).exactOptional(),
+    Authorization: AuthorizationSchema.exactOptional().openapi({ xml: { name: 'authorization' } }),
   })
   .openapi({
     title: 'UpdatePackagingGroupRequest',
@@ -1503,14 +1104,10 @@ export const putPackagingGroupsIdConfigureLogsRoute = createRoute({
             .object({
               egressAccessLogs: z
                 .object({
-                  LogGroupName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'logGroupName' },
-                        description: 'Customize the log group name.',
-                      }),
-                  ).exactOptional(),
+                  LogGroupName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'logGroupName' },
+                    description: 'Customize the log group name.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Configure egress access logging.', required: [] }),
@@ -1887,96 +1484,60 @@ export const postPackagingConfigurationsRoute = createRoute({
             .object({
               cmafPackage: z
                 .object({
-                  Encryption: CmafEncryptionSchema.and(
-                    z.any().openapi({ xml: { name: 'encryption' } }),
-                  ).exactOptional(),
-                  HlsManifests: ListOfHlsManifestSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'hlsManifests' },
-                        description: 'A list of HLS manifest configurations.',
-                      }),
-                  ).exactOptional(),
-                  IncludeEncoderConfigurationInSegments: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'includeEncoderConfigurationInSegments' },
-                        description:
-                          "When includeEncoderConfigurationInSegments is set to true, MediaPackage places your encoder's Sequence Parameter Set (SPS), Picture Parameter Set (PPS), and Video Parameter Set (VPS) metadata in every video segment instead of in the init fragment. This lets you use different SPS/PPS/VPS settings for your assets during content playback.\n",
-                      }),
-                  ).exactOptional(),
-                  SegmentDurationSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'segmentDurationSeconds' },
-                        description:
-                          'Duration (in seconds) of each fragment. Actual fragments will be\nrounded to the nearest multiple of the source fragment duration.\n',
-                      }),
-                  ).exactOptional(),
+                  Encryption: CmafEncryptionSchema.exactOptional().openapi({
+                    xml: { name: 'encryption' },
+                  }),
+                  HlsManifests: ListOfHlsManifestSchema.exactOptional().openapi({
+                    xml: { name: 'hlsManifests' },
+                    description: 'A list of HLS manifest configurations.',
+                  }),
+                  IncludeEncoderConfigurationInSegments: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'includeEncoderConfigurationInSegments' },
+                    description:
+                      "When includeEncoderConfigurationInSegments is set to true, MediaPackage places your encoder's Sequence Parameter Set (SPS), Picture Parameter Set (PPS), and Video Parameter Set (VPS) metadata in every video segment instead of in the init fragment. This lets you use different SPS/PPS/VPS settings for your assets during content playback.\n",
+                  }),
+                  SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'segmentDurationSeconds' },
+                    description:
+                      'Duration (in seconds) of each fragment. Actual fragments will be\nrounded to the nearest multiple of the source fragment duration.\n',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'A CMAF packaging configuration.', required: [] }),
               dashPackage: z
                 .object({
-                  DashManifests: ListOfDashManifestSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'dashManifests' },
-                        description: 'A list of DASH manifest configurations.',
-                      }),
-                  ).exactOptional(),
-                  Encryption: DashEncryptionSchema.and(
-                    z.any().openapi({ xml: { name: 'encryption' } }),
-                  ).exactOptional(),
-                  IncludeEncoderConfigurationInSegments: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'includeEncoderConfigurationInSegments' },
-                        description:
-                          "When includeEncoderConfigurationInSegments is set to true, MediaPackage places your encoder's Sequence Parameter Set (SPS), Picture Parameter Set (PPS), and Video Parameter Set (VPS) metadata in every video segment instead of in the init fragment. This lets you use different SPS/PPS/VPS settings for your assets during content playback.\n",
-                      }),
-                  ).exactOptional(),
-                  IncludeIframeOnlyStream: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'includeIframeOnlyStream' },
-                        description:
-                          'When enabled, an I-Frame only stream will be included in the output.',
-                      }),
-                  ).exactOptional(),
-                  PeriodTriggers: ListOfPeriodTriggersElementSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'periodTriggers' },
-                        description:
-                          'A list of triggers that controls when the outgoing Dynamic Adaptive Streaming over HTTP (DASH)\nMedia Presentation Description (MPD) will be partitioned into multiple periods. If empty, the content will not\nbe partitioned into more than one period. If the list contains "ADS", new periods will be created where\nthe Asset contains SCTE-35 ad markers.\n',
-                      }),
-                  ).exactOptional(),
-                  SegmentDurationSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'segmentDurationSeconds' },
-                        description:
-                          'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
-                      }),
-                  ).exactOptional(),
-                  SegmentTemplateFormat: SegmentTemplateFormatSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'segmentTemplateFormat' },
-                        description:
-                          'Determines the type of SegmentTemplate included in the Media Presentation Description (MPD).  When set to NUMBER_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Number$ media URLs.  When set to TIME_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Time$ media URLs. When set to NUMBER_WITH_DURATION, only a duration is included in each SegmentTemplate, with $Number$ media URLs.',
-                      }),
-                  ).exactOptional(),
+                  DashManifests: ListOfDashManifestSchema.exactOptional().openapi({
+                    xml: { name: 'dashManifests' },
+                    description: 'A list of DASH manifest configurations.',
+                  }),
+                  Encryption: DashEncryptionSchema.exactOptional().openapi({
+                    xml: { name: 'encryption' },
+                  }),
+                  IncludeEncoderConfigurationInSegments: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'includeEncoderConfigurationInSegments' },
+                    description:
+                      "When includeEncoderConfigurationInSegments is set to true, MediaPackage places your encoder's Sequence Parameter Set (SPS), Picture Parameter Set (PPS), and Video Parameter Set (VPS) metadata in every video segment instead of in the init fragment. This lets you use different SPS/PPS/VPS settings for your assets during content playback.\n",
+                  }),
+                  IncludeIframeOnlyStream: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'includeIframeOnlyStream' },
+                    description:
+                      'When enabled, an I-Frame only stream will be included in the output.',
+                  }),
+                  PeriodTriggers: ListOfPeriodTriggersElementSchema.exactOptional().openapi({
+                    xml: { name: 'periodTriggers' },
+                    description:
+                      'A list of triggers that controls when the outgoing Dynamic Adaptive Streaming over HTTP (DASH)\nMedia Presentation Description (MPD) will be partitioned into multiple periods. If empty, the content will not\nbe partitioned into more than one period. If the list contains "ADS", new periods will be created where\nthe Asset contains SCTE-35 ad markers.\n',
+                  }),
+                  SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'segmentDurationSeconds' },
+                    description:
+                      'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
+                  }),
+                  SegmentTemplateFormat: SegmentTemplateFormatSchema.exactOptional().openapi({
+                    xml: { name: 'segmentTemplateFormat' },
+                    description:
+                      'Determines the type of SegmentTemplate included in the Media Presentation Description (MPD).  When set to NUMBER_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Number$ media URLs.  When set to TIME_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Time$ media URLs. When set to NUMBER_WITH_DURATION, only a duration is included in each SegmentTemplate, with $Number$ media URLs.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -1986,44 +1547,28 @@ export const postPackagingConfigurationsRoute = createRoute({
                 }),
               hlsPackage: z
                 .object({
-                  Encryption: HlsEncryptionSchema.and(
-                    z.any().openapi({ xml: { name: 'encryption' } }),
-                  ).exactOptional(),
-                  HlsManifests: ListOfHlsManifestSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'hlsManifests' },
-                        description: 'A list of HLS manifest configurations.',
-                      }),
-                  ).exactOptional(),
-                  IncludeDvbSubtitles: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'includeDvbSubtitles' },
-                        description:
-                          'When enabled, MediaPackage passes through digital video broadcasting (DVB) subtitles into the output.',
-                      }),
-                  ).exactOptional(),
-                  SegmentDurationSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'segmentDurationSeconds' },
-                        description:
-                          'Duration (in seconds) of each fragment. Actual fragments will be\nrounded to the nearest multiple of the source fragment duration.\n',
-                      }),
-                  ).exactOptional(),
-                  UseAudioRenditionGroup: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'useAudioRenditionGroup' },
-                        description:
-                          'When enabled, audio streams will be placed in rendition groups in the output.',
-                      }),
-                  ).exactOptional(),
+                  Encryption: HlsEncryptionSchema.exactOptional().openapi({
+                    xml: { name: 'encryption' },
+                  }),
+                  HlsManifests: ListOfHlsManifestSchema.exactOptional().openapi({
+                    xml: { name: 'hlsManifests' },
+                    description: 'A list of HLS manifest configurations.',
+                  }),
+                  IncludeDvbSubtitles: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'includeDvbSubtitles' },
+                    description:
+                      'When enabled, MediaPackage passes through digital video broadcasting (DVB) subtitles into the output.',
+                  }),
+                  SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'segmentDurationSeconds' },
+                    description:
+                      'Duration (in seconds) of each fragment. Actual fragments will be\nrounded to the nearest multiple of the source fragment duration.\n',
+                  }),
+                  UseAudioRenditionGroup: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'useAudioRenditionGroup' },
+                    description:
+                      'When enabled, audio streams will be placed in rendition groups in the output.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2033,25 +1578,17 @@ export const postPackagingConfigurationsRoute = createRoute({
               id: z.string().openapi({ description: 'The ID of the PackagingConfiguration.' }),
               mssPackage: z
                 .object({
-                  Encryption: MssEncryptionSchema.and(
-                    z.any().openapi({ xml: { name: 'encryption' } }),
-                  ).exactOptional(),
-                  MssManifests: ListOfMssManifestSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'mssManifests' },
-                        description: 'A list of MSS manifest configurations.',
-                      }),
-                  ).exactOptional(),
-                  SegmentDurationSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'segmentDurationSeconds' },
-                        description: 'The duration (in seconds) of each segment.',
-                      }),
-                  ).exactOptional(),
+                  Encryption: MssEncryptionSchema.exactOptional().openapi({
+                    xml: { name: 'encryption' },
+                  }),
+                  MssManifests: ListOfMssManifestSchema.exactOptional().openapi({
+                    xml: { name: 'mssManifests' },
+                    description: 'A list of MSS manifest configurations.',
+                  }),
+                  SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'segmentDurationSeconds' },
+                    description: 'The duration (in seconds) of each segment.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2230,37 +1767,25 @@ export const postPackagingGroupsRoute = createRoute({
             .object({
               authorization: z
                 .object({
-                  CdnIdentifierSecret: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'cdnIdentifierSecret' },
-                        description:
-                          'The Amazon Resource Name (ARN) for the secret in AWS Secrets Manager that is used for CDN authorization.',
-                      }),
-                  ).exactOptional(),
-                  SecretsRoleArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'secretsRoleArn' },
-                        description:
-                          'The Amazon Resource Name (ARN) for the IAM role that allows MediaPackage to communicate with AWS Secrets Manager.',
-                      }),
-                  ).exactOptional(),
+                  CdnIdentifierSecret: StringSchema.exactOptional().openapi({
+                    xml: { name: 'cdnIdentifierSecret' },
+                    description:
+                      'The Amazon Resource Name (ARN) for the secret in AWS Secrets Manager that is used for CDN authorization.',
+                  }),
+                  SecretsRoleArn: StringSchema.exactOptional().openapi({
+                    xml: { name: 'secretsRoleArn' },
+                    description:
+                      'The Amazon Resource Name (ARN) for the IAM role that allows MediaPackage to communicate with AWS Secrets Manager.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'CDN Authorization credentials', required: [] }),
               egressAccessLogs: z
                 .object({
-                  LogGroupName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'logGroupName' },
-                        description: 'Customize the log group name.',
-                      }),
-                  ).exactOptional(),
+                  LogGroupName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'logGroupName' },
+                    description: 'Customize the log group name.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Configure egress access logging.', required: [] }),
@@ -2650,24 +2175,16 @@ export const putPackagingGroupsIdRoute = createRoute({
             .object({
               authorization: z
                 .object({
-                  CdnIdentifierSecret: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'cdnIdentifierSecret' },
-                        description:
-                          'The Amazon Resource Name (ARN) for the secret in AWS Secrets Manager that is used for CDN authorization.',
-                      }),
-                  ).exactOptional(),
-                  SecretsRoleArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'secretsRoleArn' },
-                        description:
-                          'The Amazon Resource Name (ARN) for the IAM role that allows MediaPackage to communicate with AWS Secrets Manager.',
-                      }),
-                  ).exactOptional(),
+                  CdnIdentifierSecret: StringSchema.exactOptional().openapi({
+                    xml: { name: 'cdnIdentifierSecret' },
+                    description:
+                      'The Amazon Resource Name (ARN) for the secret in AWS Secrets Manager that is used for CDN authorization.',
+                  }),
+                  SecretsRoleArn: StringSchema.exactOptional().openapi({
+                    xml: { name: 'secretsRoleArn' },
+                    description:
+                      'The Amazon Resource Name (ARN) for the IAM role that allows MediaPackage to communicate with AWS Secrets Manager.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'CDN Authorization credentials', required: [] }),

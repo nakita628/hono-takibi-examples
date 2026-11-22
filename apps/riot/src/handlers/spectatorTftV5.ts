@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const spectatorTftV5Handler = app.openapi(
   getLolSpectatorTftV5ActiveGamesByPuuidEncryptedPUUIDRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

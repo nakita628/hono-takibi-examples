@@ -5764,43 +5764,88 @@ const PaginatedPullrequestCommentsSchema: z.ZodType<PaginatedPullrequestComments
   })
   .openapi('PaginatedPullrequestComments')
 
-const PullrequestTaskSchema = TaskSchema.and(
-  z
-    .strictObject({
-      links: z
-        .strictObject({
-          self: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-          html: z
-            .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
-            .exactOptional()
-            .openapi({
-              title: 'Link',
-              description: 'A link to a resource related to this object.',
-              required: [],
-            }),
-        })
-        .exactOptional()
-        .openapi({ required: [] }),
-    })
-    .openapi({ title: 'Pull Request Task', description: 'A pull request task.', required: [] }),
-).openapi('PullrequestTask')
+const PullrequestTaskSchema = (() => {
+  const Schema = TaskSchema.and(
+    z
+      .strictObject({
+        links: z
+          .strictObject({
+            self: z
+              .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({
+                title: 'Link',
+                description: 'A link to a resource related to this object.',
+                required: [],
+              }),
+            html: z
+              .strictObject({ href: z.url().exactOptional(), name: z.string().exactOptional() })
+              .exactOptional()
+              .openapi({
+                title: 'Link',
+                description: 'A link to a resource related to this object.',
+                required: [],
+              }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .openapi({ title: 'Pull Request Task', description: 'A pull request task.', required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'id',
+            'created_on',
+            'updated_on',
+            'state',
+            'content',
+            'creator',
+            'pending',
+            'resolved_on',
+            'resolved_by',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['links'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('PullrequestTask')
 
-const PullrequestCommentTaskSchema = PullrequestTaskSchema.and(
-  z
-    .strictObject({ comment: CommentSchema.exactOptional() })
-    .openapi({
-      title: 'Pull Request Comment Task',
-      description: 'A pullrequest comment task',
-      required: [],
-    }),
-).openapi('PullrequestCommentTask')
+const PullrequestCommentTaskSchema = (() => {
+  const Schema = PullrequestTaskSchema.and(
+    z
+      .strictObject({ comment: CommentSchema.exactOptional() })
+      .openapi({
+        title: 'Pull Request Comment Task',
+        description: 'A pullrequest comment task',
+        required: [],
+      }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['comment'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('PullrequestCommentTask')
 
 const PaginatedTasksSchema = z
   .strictObject({

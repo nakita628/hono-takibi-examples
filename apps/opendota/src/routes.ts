@@ -463,7 +463,7 @@ const MatchResponseSchema = z
       .openapi({
         description: 'Number of negative votes the replay received in the in-game client',
       }),
-    objectives: z.array(z.object({})).exactOptional().openapi({ description: 'objectives' }),
+    objectives: z.array(z.looseObject({})).exactOptional().openapi({ description: 'objectives' }),
     picks_bans: z
       .array(
         z
@@ -523,7 +523,7 @@ const MatchResponseSchema = z
       .exactOptional()
       .openapi({ description: 'The Unix timestamp at which the game started' }),
     teamfights: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .nullable()
       .exactOptional()
       .openapi({ description: 'teamfights' }),
@@ -548,9 +548,9 @@ const MatchResponseSchema = z
     replay_salt: z.int().exactOptional().openapi({ description: 'replay_salt' }),
     series_id: z.int().exactOptional().openapi({ description: 'series_id' }),
     series_type: z.int().exactOptional().openapi({ description: 'series_type' }),
-    radiant_team: z.object({}).exactOptional().openapi({ description: 'radiant_team' }),
-    dire_team: z.object({}).exactOptional().openapi({ description: 'dire_team' }),
-    league: z.object({}).exactOptional().openapi({ description: 'league' }),
+    radiant_team: z.looseObject({}).exactOptional().openapi({ description: 'radiant_team' }),
+    dire_team: z.looseObject({}).exactOptional().openapi({ description: 'dire_team' }),
+    league: z.looseObject({}).exactOptional().openapi({ description: 'league' }),
     skill: z
       .int()
       .nullable()
@@ -579,21 +579,21 @@ const MatchResponseSchema = z
               .exactOptional()
               .openapi({ description: 'An array describing how abilities were upgraded' }),
             ability_uses: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
                   'Object containing information on how many times the played used their abilities',
               }),
             ability_targets: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
                   'Object containing information on who the player used their abilities on',
               }),
             damage_targets: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
@@ -601,14 +601,14 @@ const MatchResponseSchema = z
               }),
             account_id: z.int().exactOptional().openapi({ description: 'The player account ID' }),
             actions: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
                   'Object containing information on how many and what type of actions the player issued to their hero',
               }),
             additional_units: z
-              .array(z.object({}))
+              .array(z.looseObject({}))
               .nullable()
               .exactOptional()
               .openapi({
@@ -688,28 +688,28 @@ const MatchResponseSchema = z
               .exactOptional()
               .openapi({ description: 'Number of creeps stacked' }),
             damage: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
                   'Object containing information about damage dealt by the player to different units',
               }),
             damage_inflictor: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
                   "Object containing information about about the sources of this player's damage to heroes",
               }),
             damage_inflictor_received: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
                   'Object containing information about the sources of damage received by this player from heroes',
               }),
             damage_taken: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description: 'Object containing information about from whom the player took damage',
@@ -728,7 +728,7 @@ const MatchResponseSchema = z
               .exactOptional()
               .openapi({ description: 'Gold Per Minute obtained by this player' }),
             gold_reasons: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
@@ -768,7 +768,7 @@ const MatchResponseSchema = z
                   "Array containing cumulative damage dealt to towers at each minute of the match, taken from the game's own tower damage counter, the one tower_damage comes from, so the final value matches tower_damage up to the last minute boundary. Empty for replays without that counter",
               }),
             hero_hits: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
@@ -803,26 +803,26 @@ const MatchResponseSchema = z
               .exactOptional()
               .openapi({ description: "Item in the player's sixth slot" }),
             item_uses: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
                   'Object containing information about how many times a player used items',
               }),
             kill_streaks: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description: "Object containing information about the player's killstreaks",
               }),
             killed: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description: 'Object containing information about what units the player killed',
               }),
             killed_by: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description: 'Object containing information about who killed the player',
@@ -844,6 +844,38 @@ const MatchResponseSchema = z
               .openapi({
                 description:
                   'Array containing information on which hero the player killed at what time',
+              }),
+            assists_log: z
+              .array(
+                z
+                  .object({
+                    time: z
+                      .int()
+                      .exactOptional()
+                      .openapi({
+                        description: 'Time in seconds of the death the player was credited for',
+                      }),
+                    key: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          "Hero that died. Usually an enemy; the game also credits some assists on a death on the player's own side",
+                      }),
+                    ambiguous: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          "Present and true when two heroes died on the same tick and the replay doesn't tell which of them the assist was for, so the hero named in key is one of them rather than a certainty. Only seen on old replays that predate the combat log assist list",
+                      }),
+                  })
+                  .openapi({ required: [] }),
+              )
+              .exactOptional()
+              .openapi({
+                description:
+                  'Array containing information on which hero the player assisted in killing at what time. Only present for matches parsed after the field was added',
               }),
             deaths_log: z
               .array(
@@ -894,7 +926,7 @@ const MatchResponseSchema = z
                   "Array containing information on the player's deaths: when they died, to whom, the gold lost, the gold the enemy collected and the time spent dead. Only present for matches parsed after the field was added",
               }),
             lane_pos: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'Object containing information on lane position' }),
             last_hits: z.int().exactOptional().openapi({ description: 'Number of last hits' }),
@@ -910,34 +942,34 @@ const MatchResponseSchema = z
               .array(z.int())
               .exactOptional()
               .openapi({ description: 'Array describing last hits at each minute in the game' }),
-            life_state: z.object({}).exactOptional().openapi({ description: 'life_state' }),
+            life_state: z.looseObject({}).exactOptional().openapi({ description: 'life_state' }),
             max_hero_hit: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
                   'Object with information on the highest damage instance the player inflicted',
               }),
             multi_kills: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
                   'Object with information on the number of the number of multikills the player had',
               }),
             obs: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
                   'Object with information on where the player placed observer wards. The location takes the form (outer number, inner number) and are from ~64-192.',
               }),
             obs_left_log: z
-              .array(z.object({}))
+              .array(z.looseObject({}))
               .exactOptional()
               .openapi({ description: 'obs_left_log' }),
             obs_log: z
-              .array(z.object({}))
+              .array(z.looseObject({}))
               .exactOptional()
               .openapi({
                 description:
@@ -949,7 +981,7 @@ const MatchResponseSchema = z
               .openapi({ description: 'Total number of observer wards placed' }),
             party_id: z.int().exactOptional().openapi({ description: 'party_id' }),
             permanent_buffs: z
-              .array(z.object({}))
+              .array(z.looseObject({}))
               .exactOptional()
               .openapi({
                 description:
@@ -964,7 +996,7 @@ const MatchResponseSchema = z
               }),
             pings: z.int().exactOptional().openapi({ description: 'Total number of pings' }),
             purchase: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description: 'Object containing information on the items the player purchased',
@@ -1014,21 +1046,21 @@ const MatchResponseSchema = z
               .exactOptional()
               .openapi({ description: 'Array with information on when runes were picked up' }),
             sen: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
                   'Object with information on where sentries were placed. The location takes the form (outer number, inner number) and are from ~64-192.',
               }),
             sen_left_log: z
-              .array(z.object({}))
+              .array(z.looseObject({}))
               .exactOptional()
               .openapi({
                 description:
                   'Array containing information on when and where the player placed sentries',
               }),
             sen_log: z
-              .array(z.object({}))
+              .array(z.looseObject({}))
               .exactOptional()
               .openapi({
                 description:
@@ -1058,7 +1090,7 @@ const MatchResponseSchema = z
               .exactOptional()
               .openapi({ description: 'Experience Per Minute obtained by the player' }),
             xp_reasons: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
@@ -1223,23 +1255,23 @@ const MatchResponseSchema = z
                   'Estimated position (1-5) of the player within their team, from early farm priority and lane data. Only present on parsed matches',
               }),
             purchase_time: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description: 'Object with information on when the player last purchased an item',
               }),
             first_purchase_time: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description: 'Object with information on when the player first puchased an item',
               }),
             item_win: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'Object with information on whether or not the item won' }),
             item_usage: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
@@ -1279,7 +1311,7 @@ const MatchResponseSchema = z
               .exactOptional()
               .openapi({ description: 'cosmetics' }),
             benchmarks: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
@@ -1334,11 +1366,11 @@ const MatchResponseSchema = z
       .exactOptional()
       .openapi({ description: 'Integer corresponding to the region the game was played on' }),
     all_word_counts: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: "Word counts of the all chat messages in the player's games" }),
     my_word_counts: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: "Word counts of the player's all chat messages" }),
     throw: z
@@ -1388,7 +1420,9 @@ const MatchResponseSchema = z
   .openapi('MatchResponse')
 
 const MetadataResponseSchema = z
-  .object({ banner: z.object({}).nullable().exactOptional().openapi({ description: 'banner' }) })
+  .object({
+    banner: z.looseObject({}).nullable().exactOptional().openapi({ description: 'banner' }),
+  })
   .openapi({ title: 'MetadataResponse', required: [] })
   .openapi('MetadataResponse')
 
@@ -1408,32 +1442,35 @@ const ParsedMatchesResponseSchema = z
 const PlayerCountsResponseSchema = z
   .object({
     leaver_status: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
           "Integer describing whether or not the player left the game. 0: didn't leave. 1: left safely. 2+: Abandoned",
       }),
     game_mode: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
           'Integer corresponding to game mode played. List of constants can be found here: https://github.com/odota/dotaconstants/blob/master/json/game_mode.json',
       }),
     lobby_type: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
           'Integer corresponding to lobby type of match. List of constants can be found here: https://github.com/odota/dotaconstants/blob/master/json/lobby_type.json',
       }),
-    lane_role: z.object({}).exactOptional().openapi({ description: 'lane_role' }),
+    lane_role: z.looseObject({}).exactOptional().openapi({ description: 'lane_role' }),
     region: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Integer corresponding to the region the game was played on' }),
-    patch: z.object({}).exactOptional().openapi({ description: 'Patch ID, from dotaconstants' }),
+    patch: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Patch ID, from dotaconstants' }),
   })
   .openapi({ title: 'PlayerCountsResponse', required: [] })
   .openapi('PlayerCountsResponse')
@@ -1946,8 +1983,8 @@ const PlayerTotalsResponseSchema = z
 
 const PlayerWardMapResponseSchema = z
   .object({
-    obs: z.object({}).exactOptional().openapi({ description: 'obs' }),
-    sen: z.object({}).exactOptional().openapi({ description: 'sen' }),
+    obs: z.looseObject({}).exactOptional().openapi({ description: 'obs' }),
+    sen: z.looseObject({}).exactOptional().openapi({ description: 'sen' }),
   })
   .openapi({ title: 'PlayerWardMapResponse', required: [] })
   .openapi('PlayerWardMapResponse')
@@ -1962,8 +1999,8 @@ const PlayerWinLossResponseSchema = z
 
 const PlayerWordCloudResponseSchema = z
   .object({
-    my_word_counts: z.object({}).exactOptional().openapi({ description: 'my_word_counts' }),
-    all_word_counts: z.object({}).exactOptional().openapi({ description: 'all_word_counts' }),
+    my_word_counts: z.looseObject({}).exactOptional().openapi({ description: 'my_word_counts' }),
+    all_word_counts: z.looseObject({}).exactOptional().openapi({ description: 'all_word_counts' }),
   })
   .openapi({ title: 'PlayerWordCloudResponse', required: [] })
   .openapi('PlayerWordCloudResponse')
@@ -2923,7 +2960,7 @@ export const getPlayersAccountIdRecentMatchesRoute = createRoute({
   responses: {
     200: {
       description: 'Success',
-      content: { 'application/json; charset=utf-8': { schema: z.array(z.object({})) } },
+      content: { 'application/json; charset=utf-8': { schema: z.array(z.looseObject({})) } },
     },
   },
 })
@@ -3200,7 +3237,7 @@ export const getPlayersAccountIdHistogramsFieldRoute = createRoute({
       description: 'Success',
       content: {
         'application/json; charset=utf-8': {
-          schema: z.array(z.object({}).openapi({ title: 'PlayerHistogramsResponse' })),
+          schema: z.array(z.looseObject({}).openapi({ title: 'PlayerHistogramsResponse' })),
         },
       },
     },
@@ -3481,7 +3518,7 @@ export const getExplorerRoute = createRoute({
       description: 'Success',
       content: {
         'application/json; charset=utf-8': {
-          schema: z.object({}).openapi({ title: 'ExplorerResponse' }),
+          schema: z.looseObject({}).openapi({ title: 'ExplorerResponse' }),
         },
       },
     },
@@ -3654,7 +3691,7 @@ export const getHealthRoute = createRoute({
       description: 'Success',
       content: {
         'application/json; charset=utf-8': {
-          schema: z.object({}).openapi({ title: 'HealthResponse' }),
+          schema: z.looseObject({}).openapi({ title: 'HealthResponse' }),
         },
       },
     },
@@ -3688,7 +3725,7 @@ export const getRequestJobIdRoute = createRoute({
       description: 'Success',
       content: {
         'application/json; charset=utf-8': {
-          schema: z.object({}).openapi({ title: 'RequestJobResponse' }),
+          schema: z.looseObject({}).openapi({ title: 'RequestJobResponse' }),
         },
       },
     },
@@ -3709,7 +3746,7 @@ export const postRequestMatchIdRoute = createRoute({
       description: 'Success',
       content: {
         'application/json; charset=utf-8': {
-          schema: z.object({}).openapi({ title: 'RequestMatchResponse' }),
+          schema: z.looseObject({}).openapi({ title: 'RequestMatchResponse' }),
         },
       },
     },
@@ -3796,7 +3833,7 @@ export const getFindMatchesRoute = createRoute({
       description: 'Success',
       content: {
         'application/json; charset=utf-8': {
-          schema: z.array(z.object({})).openapi({ title: 'FindMatchesResponse' }),
+          schema: z.array(z.looseObject({})).openapi({ title: 'FindMatchesResponse' }),
         },
       },
     },
@@ -4150,7 +4187,7 @@ export const getLiveRoute = createRoute({
       description: 'Success',
       content: {
         'application/json; charset=utf-8': {
-          schema: z.array(z.object({}).openapi({ title: 'LiveResponse' })),
+          schema: z.array(z.looseObject({}).openapi({ title: 'LiveResponse' })),
         },
       },
     },

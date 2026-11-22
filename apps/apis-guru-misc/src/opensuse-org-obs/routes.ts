@@ -4397,17 +4397,7 @@ export const putBuildProjectNameRepositoryNameArchitectureNamePackageNameFileNam
             },
           }),
       }),
-      body: {
-        content: {
-          'plain/text': {
-            schema: z
-              .object({
-                file: z.file().exactOptional().openapi({ type: 'string', format: 'binary' }),
-              })
-              .openapi({ required: [] }),
-          },
-        },
-      },
+      body: { content: { 'plain/text': { schema: z.string() } } },
     },
     responses: {
       200: {
@@ -9742,21 +9732,11 @@ export const getPublishedProjectNameRepositoryNameArchitectureNameBinaryFilename
                 xmlns: z
                   .string()
                   .exactOptional()
-                  .openapi({
-                    xml: {
-                      attribute: true,
-                      example: 'http://opensuse.org/Standards/One_Click_Install',
-                    },
-                  }),
+                  .openapi({ xml: { attribute: true } }),
                 'xmlns:os': z
                   .string()
                   .exactOptional()
-                  .openapi({
-                    xml: {
-                      attribute: true,
-                      example: 'http://opensuse.org/Standards/One_Click_Install',
-                    },
-                  }),
+                  .openapi({ xml: { attribute: true } }),
               })
               .openapi({ xml: { name: 'metapackage' }, required: [] }),
             example: {

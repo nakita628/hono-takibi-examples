@@ -4,9 +4,9 @@ const SavingsPlanIdSchema = z.string().openapi('SavingsPlanId')
 
 const CreateSavingsPlanResponseSchema = z
   .object({
-    savingsPlanId: SavingsPlanIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Savings Plan.' }),
-    ).exactOptional(),
+    savingsPlanId: SavingsPlanIdSchema.exactOptional().openapi({
+      description: 'The ID of the Savings Plan.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateSavingsPlanResponse')
@@ -22,7 +22,7 @@ const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
 const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceededException')
 
 const DeleteQueuedSavingsPlanResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteQueuedSavingsPlanResponse')
 
 const AmountSchema = z.string().openapi('Amount')
@@ -55,29 +55,21 @@ const SavingsPlanRateOperationSchema = z
 
 const SavingsPlanRateSchema = z
   .object({
-    rate: AmountSchema.and(z.any().openapi({ description: 'The rate.' })).exactOptional(),
-    currency: CurrencyCodeSchema.and(
-      z.any().openapi({ description: 'The currency.' }),
-    ).exactOptional(),
-    unit: SavingsPlanRateUnitSchema.and(
-      z.any().openapi({ description: 'The unit.' }),
-    ).exactOptional(),
-    productType: SavingsPlanProductTypeSchema.and(
-      z.any().openapi({ description: 'The product type.' }),
-    ).exactOptional(),
-    serviceCode: SavingsPlanRateServiceCodeSchema.and(
-      z.any().openapi({ description: 'The service.' }),
-    ).exactOptional(),
-    usageType: SavingsPlanRateUsageTypeSchema.and(
-      z.any().openapi({ description: 'The usage details of the line item in the billing report.' }),
-    ).exactOptional(),
-    operation: SavingsPlanRateOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The specific AWS operation for the line item in the billing report.',
-        }),
-    ).exactOptional(),
+    rate: AmountSchema.exactOptional().openapi({ description: 'The rate.' }),
+    currency: CurrencyCodeSchema.exactOptional().openapi({ description: 'The currency.' }),
+    unit: SavingsPlanRateUnitSchema.exactOptional().openapi({ description: 'The unit.' }),
+    productType: SavingsPlanProductTypeSchema.exactOptional().openapi({
+      description: 'The product type.',
+    }),
+    serviceCode: SavingsPlanRateServiceCodeSchema.exactOptional().openapi({
+      description: 'The service.',
+    }),
+    usageType: SavingsPlanRateUsageTypeSchema.exactOptional().openapi({
+      description: 'The usage details of the line item in the billing report.',
+    }),
+    operation: SavingsPlanRateOperationSchema.exactOptional().openapi({
+      description: 'The specific AWS operation for the line item in the billing report.',
+    }),
     properties: z.any().exactOptional().openapi({ description: 'The properties.' }),
   })
   .openapi({ description: 'Information about a Savings Plan rate.', required: [] })
@@ -93,20 +85,16 @@ const PaginationTokenSchema = z
 
 const DescribeSavingsPlanRatesResponseSchema = z
   .object({
-    savingsPlanId: SavingsPlanIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Savings Plan.' }),
-    ).exactOptional(),
-    searchResults: SavingsPlanRateListSchema.and(
-      z.any().openapi({ description: 'Information about the Savings Plans rates.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    savingsPlanId: SavingsPlanIdSchema.exactOptional().openapi({
+      description: 'The ID of the Savings Plan.',
+    }),
+    searchResults: SavingsPlanRateListSchema.exactOptional().openapi({
+      description: 'Information about the Savings Plans rates.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSavingsPlanRatesResponse')
@@ -130,12 +118,10 @@ const ListOfStringsSchema = z.array(StringSchema).openapi('ListOfStrings')
 
 const SavingsPlanRateFilterSchema = z
   .object({
-    name: SavingsPlanRateFilterNameSchema.and(
-      z.any().openapi({ description: 'The filter name.' }),
-    ).exactOptional(),
-    values: ListOfStringsSchema.and(
-      z.any().openapi({ description: 'The filter values.' }),
-    ).exactOptional(),
+    name: SavingsPlanRateFilterNameSchema.exactOptional().openapi({
+      description: 'The filter name.',
+    }),
+    values: ListOfStringsSchema.exactOptional().openapi({ description: 'The filter values.' }),
   })
   .openapi({ description: 'Information about a filter.', required: [] })
   .openapi('SavingsPlanRateFilter')
@@ -175,52 +161,46 @@ const TagMapSchema = z.record(z.string(), TagValueSchema).openapi('TagMap')
 
 const SavingsPlanSchema = z
   .object({
-    offeringId: SavingsPlanOfferingIdSchema.and(
-      z.any().openapi({ description: 'The ID of the offering.' }),
-    ).exactOptional(),
-    savingsPlanId: SavingsPlanIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Savings Plan.' }),
-    ).exactOptional(),
-    savingsPlanArn: SavingsPlanArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the Savings Plan.' }),
-    ).exactOptional(),
-    description: StringSchema.and(
-      z.any().openapi({ description: 'The description.' }),
-    ).exactOptional(),
-    start: StringSchema.and(z.any().openapi({ description: 'The start time.' })).exactOptional(),
-    end: StringSchema.and(z.any().openapi({ description: 'The end time.' })).exactOptional(),
-    state: SavingsPlanStateSchema.and(
-      z.any().openapi({ description: 'The state.' }),
-    ).exactOptional(),
-    region: RegionSchema.and(z.any().openapi({ description: 'The AWS Region.' })).exactOptional(),
-    ec2InstanceFamily: EC2InstanceFamilySchema.and(
-      z.any().openapi({ description: 'The EC2 instance family.' }),
-    ).exactOptional(),
-    savingsPlanType: SavingsPlanTypeSchema.and(
-      z.any().openapi({ description: 'The plan type.' }),
-    ).exactOptional(),
-    paymentOption: SavingsPlanPaymentOptionSchema.and(
-      z.any().openapi({ description: 'The payment option.' }),
-    ).exactOptional(),
-    productTypes: SavingsPlanProductTypeListSchema.and(
-      z.any().openapi({ description: 'The product types.' }),
-    ).exactOptional(),
-    currency: CurrencyCodeSchema.and(
-      z.any().openapi({ description: 'The currency.' }),
-    ).exactOptional(),
-    commitment: AmountSchema.and(
-      z.any().openapi({ description: 'The hourly commitment, in USD.' }),
-    ).exactOptional(),
-    upfrontPaymentAmount: AmountSchema.and(
-      z.any().openapi({ description: 'The up-front payment amount.' }),
-    ).exactOptional(),
-    recurringPaymentAmount: AmountSchema.and(
-      z.any().openapi({ description: 'The recurring payment amount.' }),
-    ).exactOptional(),
-    termDurationInSeconds: TermDurationInSecondsSchema.and(
-      z.any().openapi({ description: 'The duration of the term, in seconds.' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(z.any().openapi({ description: 'One or more tags.' })).exactOptional(),
+    offeringId: SavingsPlanOfferingIdSchema.exactOptional().openapi({
+      description: 'The ID of the offering.',
+    }),
+    savingsPlanId: SavingsPlanIdSchema.exactOptional().openapi({
+      description: 'The ID of the Savings Plan.',
+    }),
+    savingsPlanArn: SavingsPlanArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the Savings Plan.',
+    }),
+    description: StringSchema.exactOptional().openapi({ description: 'The description.' }),
+    start: StringSchema.exactOptional().openapi({ description: 'The start time.' }),
+    end: StringSchema.exactOptional().openapi({ description: 'The end time.' }),
+    state: SavingsPlanStateSchema.exactOptional().openapi({ description: 'The state.' }),
+    region: RegionSchema.exactOptional().openapi({ description: 'The AWS Region.' }),
+    ec2InstanceFamily: EC2InstanceFamilySchema.exactOptional().openapi({
+      description: 'The EC2 instance family.',
+    }),
+    savingsPlanType: SavingsPlanTypeSchema.exactOptional().openapi({
+      description: 'The plan type.',
+    }),
+    paymentOption: SavingsPlanPaymentOptionSchema.exactOptional().openapi({
+      description: 'The payment option.',
+    }),
+    productTypes: SavingsPlanProductTypeListSchema.exactOptional().openapi({
+      description: 'The product types.',
+    }),
+    currency: CurrencyCodeSchema.exactOptional().openapi({ description: 'The currency.' }),
+    commitment: AmountSchema.exactOptional().openapi({
+      description: 'The hourly commitment, in USD.',
+    }),
+    upfrontPaymentAmount: AmountSchema.exactOptional().openapi({
+      description: 'The up-front payment amount.',
+    }),
+    recurringPaymentAmount: AmountSchema.exactOptional().openapi({
+      description: 'The recurring payment amount.',
+    }),
+    termDurationInSeconds: TermDurationInSecondsSchema.exactOptional().openapi({
+      description: 'The duration of the term, in seconds.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({ description: 'One or more tags.' }),
   })
   .openapi({ description: 'Information about a Savings Plan.', required: [] })
   .openapi('SavingsPlan')
@@ -229,17 +209,13 @@ const SavingsPlanListSchema = z.array(SavingsPlanSchema).openapi('SavingsPlanLis
 
 const DescribeSavingsPlansResponseSchema = z
   .object({
-    savingsPlans: SavingsPlanListSchema.and(
-      z.any().openapi({ description: 'Information about the Savings Plans.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    savingsPlans: SavingsPlanListSchema.exactOptional().openapi({
+      description: 'Information about the Savings Plans.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSavingsPlansResponse')
@@ -260,12 +236,8 @@ const SavingsPlansFilterNameSchema = z
 
 const SavingsPlanFilterSchema = z
   .object({
-    name: SavingsPlansFilterNameSchema.and(
-      z.any().openapi({ description: 'The filter name.' }),
-    ).exactOptional(),
-    values: ListOfStringsSchema.and(
-      z.any().openapi({ description: 'The filter value.' }),
-    ).exactOptional(),
+    name: SavingsPlansFilterNameSchema.exactOptional().openapi({ description: 'The filter name.' }),
+    values: ListOfStringsSchema.exactOptional().openapi({ description: 'The filter value.' }),
   })
   .openapi({ description: 'Information about a filter.', required: [] })
   .openapi('SavingsPlanFilter')
@@ -284,24 +256,18 @@ const SavingsPlanDescriptionSchema = z
 
 const ParentSavingsPlanOfferingSchema = z
   .object({
-    offeringId: UUIDSchema.and(
-      z.any().openapi({ description: 'The ID of the offering.' }),
-    ).exactOptional(),
-    paymentOption: SavingsPlanPaymentOptionSchema.and(
-      z.any().openapi({ description: 'The payment option.' }),
-    ).exactOptional(),
-    planType: SavingsPlanTypeSchema.and(
-      z.any().openapi({ description: 'The plan type.' }),
-    ).exactOptional(),
-    durationSeconds: SavingsPlansDurationSchema.and(
-      z.any().openapi({ description: 'The duration, in seconds.' }),
-    ).exactOptional(),
-    currency: CurrencyCodeSchema.and(
-      z.any().openapi({ description: 'The currency.' }),
-    ).exactOptional(),
-    planDescription: SavingsPlanDescriptionSchema.and(
-      z.any().openapi({ description: 'The description.' }),
-    ).exactOptional(),
+    offeringId: UUIDSchema.exactOptional().openapi({ description: 'The ID of the offering.' }),
+    paymentOption: SavingsPlanPaymentOptionSchema.exactOptional().openapi({
+      description: 'The payment option.',
+    }),
+    planType: SavingsPlanTypeSchema.exactOptional().openapi({ description: 'The plan type.' }),
+    durationSeconds: SavingsPlansDurationSchema.exactOptional().openapi({
+      description: 'The duration, in seconds.',
+    }),
+    currency: CurrencyCodeSchema.exactOptional().openapi({ description: 'The currency.' }),
+    planDescription: SavingsPlanDescriptionSchema.exactOptional().openapi({
+      description: 'The description.',
+    }),
   })
   .openapi({ description: 'Information about a Savings Plan offering.', required: [] })
   .openapi('ParentSavingsPlanOffering')
@@ -310,31 +276,25 @@ const SavingsPlanRatePricePerUnitSchema = z.string().openapi('SavingsPlanRatePri
 
 const SavingsPlanOfferingRateSchema = z
   .object({
-    savingsPlanOffering: ParentSavingsPlanOfferingSchema.and(
-      z.any().openapi({ description: 'The Savings Plan offering.' }),
-    ).exactOptional(),
-    rate: SavingsPlanRatePricePerUnitSchema.and(
-      z.any().openapi({ description: 'The Savings Plan rate.' }),
-    ).exactOptional(),
-    unit: SavingsPlanRateUnitSchema.and(
-      z.any().openapi({ description: 'The unit.' }),
-    ).exactOptional(),
-    productType: SavingsPlanProductTypeSchema.and(
-      z.any().openapi({ description: 'The product type.' }),
-    ).exactOptional(),
-    serviceCode: SavingsPlanRateServiceCodeSchema.and(
-      z.any().openapi({ description: 'The service.' }),
-    ).exactOptional(),
-    usageType: SavingsPlanRateUsageTypeSchema.and(
-      z.any().openapi({ description: 'The usage details of the line item in the billing report.' }),
-    ).exactOptional(),
-    operation: SavingsPlanRateOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The specific AWS operation for the line item in the billing report.',
-        }),
-    ).exactOptional(),
+    savingsPlanOffering: ParentSavingsPlanOfferingSchema.exactOptional().openapi({
+      description: 'The Savings Plan offering.',
+    }),
+    rate: SavingsPlanRatePricePerUnitSchema.exactOptional().openapi({
+      description: 'The Savings Plan rate.',
+    }),
+    unit: SavingsPlanRateUnitSchema.exactOptional().openapi({ description: 'The unit.' }),
+    productType: SavingsPlanProductTypeSchema.exactOptional().openapi({
+      description: 'The product type.',
+    }),
+    serviceCode: SavingsPlanRateServiceCodeSchema.exactOptional().openapi({
+      description: 'The service.',
+    }),
+    usageType: SavingsPlanRateUsageTypeSchema.exactOptional().openapi({
+      description: 'The usage details of the line item in the billing report.',
+    }),
+    operation: SavingsPlanRateOperationSchema.exactOptional().openapi({
+      description: 'The specific AWS operation for the line item in the billing report.',
+    }),
     properties: z.any().exactOptional().openapi({ description: 'The properties.' }),
   })
   .openapi({ description: 'Information about a Savings Plan offering rate.', required: [] })
@@ -346,17 +306,13 @@ const SavingsPlanOfferingRatesListSchema = z
 
 const DescribeSavingsPlansOfferingRatesResponseSchema = z
   .object({
-    searchResults: SavingsPlanOfferingRatesListSchema.and(
-      z.any().openapi({ description: 'Information about the Savings Plans offering rates.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    searchResults: SavingsPlanOfferingRatesListSchema.exactOptional().openapi({
+      description: 'Information about the Savings Plans offering rates.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSavingsPlansOfferingRatesResponse')
@@ -374,12 +330,10 @@ const FilterValuesListSchema = z.array(JsonSafeFilterValueStringSchema).openapi(
 
 const SavingsPlanOfferingRateFilterElementSchema = z
   .object({
-    name: SavingsPlanRateFilterAttributeSchema.and(
-      z.any().openapi({ description: 'The filter name.' }),
-    ).exactOptional(),
-    values: FilterValuesListSchema.and(
-      z.any().openapi({ description: 'The filter values.' }),
-    ).exactOptional(),
+    name: SavingsPlanRateFilterAttributeSchema.exactOptional().openapi({
+      description: 'The filter name.',
+    }),
+    values: FilterValuesListSchema.exactOptional().openapi({ description: 'The filter values.' }),
   })
   .openapi({ description: 'Information about a filter.', required: [] })
   .openapi('SavingsPlanOfferingRateFilterElement')
@@ -404,40 +358,30 @@ const SavingsPlanOperationSchema = z
 
 const SavingsPlanOfferingSchema = z
   .object({
-    offeringId: UUIDSchema.and(
-      z.any().openapi({ description: 'The ID of the offering.' }),
-    ).exactOptional(),
-    productTypes: SavingsPlanProductTypeListSchema.and(
-      z.any().openapi({ description: 'The product type.' }),
-    ).exactOptional(),
-    planType: SavingsPlanTypeSchema.and(
-      z.any().openapi({ description: 'The plan type.' }),
-    ).exactOptional(),
-    description: SavingsPlanDescriptionSchema.and(
-      z.any().openapi({ description: 'The description.' }),
-    ).exactOptional(),
-    paymentOption: SavingsPlanPaymentOptionSchema.and(
-      z.any().openapi({ description: 'The payment option.' }),
-    ).exactOptional(),
-    durationSeconds: SavingsPlansDurationSchema.and(
-      z.any().openapi({ description: 'The duration, in seconds.' }),
-    ).exactOptional(),
-    currency: CurrencyCodeSchema.and(
-      z.any().openapi({ description: 'The currency.' }),
-    ).exactOptional(),
-    serviceCode: SavingsPlanServiceCodeSchema.and(
-      z.any().openapi({ description: 'The service.' }),
-    ).exactOptional(),
-    usageType: SavingsPlanUsageTypeSchema.and(
-      z.any().openapi({ description: 'The usage details of the line item in the billing report.' }),
-    ).exactOptional(),
-    operation: SavingsPlanOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The specific AWS operation for the line item in the billing report.',
-        }),
-    ).exactOptional(),
+    offeringId: UUIDSchema.exactOptional().openapi({ description: 'The ID of the offering.' }),
+    productTypes: SavingsPlanProductTypeListSchema.exactOptional().openapi({
+      description: 'The product type.',
+    }),
+    planType: SavingsPlanTypeSchema.exactOptional().openapi({ description: 'The plan type.' }),
+    description: SavingsPlanDescriptionSchema.exactOptional().openapi({
+      description: 'The description.',
+    }),
+    paymentOption: SavingsPlanPaymentOptionSchema.exactOptional().openapi({
+      description: 'The payment option.',
+    }),
+    durationSeconds: SavingsPlansDurationSchema.exactOptional().openapi({
+      description: 'The duration, in seconds.',
+    }),
+    currency: CurrencyCodeSchema.exactOptional().openapi({ description: 'The currency.' }),
+    serviceCode: SavingsPlanServiceCodeSchema.exactOptional().openapi({
+      description: 'The service.',
+    }),
+    usageType: SavingsPlanUsageTypeSchema.exactOptional().openapi({
+      description: 'The usage details of the line item in the billing report.',
+    }),
+    operation: SavingsPlanOperationSchema.exactOptional().openapi({
+      description: 'The specific AWS operation for the line item in the billing report.',
+    }),
     properties: z.any().exactOptional().openapi({ description: 'The properties.' }),
   })
   .openapi({ description: 'Information about a Savings Plan offering.', required: [] })
@@ -449,17 +393,13 @@ const SavingsPlanOfferingsListSchema = z
 
 const DescribeSavingsPlansOfferingsResponseSchema = z
   .object({
-    searchResults: SavingsPlanOfferingsListSchema.and(
-      z.any().openapi({ description: 'Information about the Savings Plans offerings.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    searchResults: SavingsPlanOfferingsListSchema.exactOptional().openapi({
+      description: 'Information about the Savings Plans offerings.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSavingsPlansOfferingsResponse')
@@ -470,28 +410,24 @@ const SavingsPlanOfferingFilterAttributeSchema = z
 
 const SavingsPlanOfferingFilterElementSchema = z
   .object({
-    name: SavingsPlanOfferingFilterAttributeSchema.and(
-      z.any().openapi({ description: 'The filter name.' }),
-    ).exactOptional(),
-    values: FilterValuesListSchema.and(
-      z.any().openapi({ description: 'The filter values.' }),
-    ).exactOptional(),
+    name: SavingsPlanOfferingFilterAttributeSchema.exactOptional().openapi({
+      description: 'The filter name.',
+    }),
+    values: FilterValuesListSchema.exactOptional().openapi({ description: 'The filter values.' }),
   })
   .openapi({ description: 'Information about a filter.', required: [] })
   .openapi('SavingsPlanOfferingFilterElement')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Information about the tags.' }),
-    ).exactOptional(),
+    tags: TagMapSchema.exactOptional().openapi({ description: 'Information about the tags.' }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z.string().openapi('TagKey')
 
@@ -501,42 +437,26 @@ const DateTimeSchema = z.iso.datetime({ offset: true }).openapi('DateTime')
 
 const CreateSavingsPlanRequestSchema = z
   .object({
-    savingsPlanOfferingId: SavingsPlanOfferingIdSchema.and(
-      z.any().openapi({ description: 'The ID of the offering.' }),
-    ),
-    commitment: AmountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The hourly commitment, in USD. This is a value between 0.001 and 1 million. You cannot specify more than five digits after the decimal point.',
-        }),
-    ),
-    upfrontPaymentAmount: AmountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The up-front payment amount. This is a whole number between 50 and 99 percent of the total value of the Savings Plan. This parameter is supported only if the payment option is <code>Partial Upfront</code>.',
-        }),
-    ).exactOptional(),
-    purchaseTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time at which to purchase the Savings Plan, in UTC format (YYYY-MM-DDTHH:MM:SSZ).',
-        }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(z.any().openapi({ description: 'One or more tags.' })).exactOptional(),
+    savingsPlanOfferingId: SavingsPlanOfferingIdSchema.openapi({
+      description: 'The ID of the offering.',
+    }),
+    commitment: AmountSchema.openapi({
+      description:
+        'The hourly commitment, in USD. This is a value between 0.001 and 1 million. You cannot specify more than five digits after the decimal point.',
+    }),
+    upfrontPaymentAmount: AmountSchema.exactOptional().openapi({
+      description:
+        'The up-front payment amount. This is a whole number between 50 and 99 percent of the total value of the Savings Plan. This parameter is supported only if the payment option is <code>Partial Upfront</code>.',
+    }),
+    purchaseTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The time at which to purchase the Savings Plan, in UTC format (YYYY-MM-DDTHH:MM:SSZ).',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({ description: 'One or more tags.' }),
   })
   .openapi({ required: ['savingsPlanOfferingId', 'commitment'], title: 'CreateSavingsPlanRequest' })
   .openapi('CreateSavingsPlanRequest')
@@ -545,9 +465,7 @@ const CurrencyListSchema = z.array(CurrencyCodeSchema).openapi('CurrencyList')
 
 const DeleteQueuedSavingsPlanRequestSchema = z
   .object({
-    savingsPlanId: SavingsPlanIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Savings Plan.' }),
-    ),
+    savingsPlanId: SavingsPlanIdSchema.openapi({ description: 'The ID of the Savings Plan.' }),
   })
   .openapi({ required: ['savingsPlanId'], title: 'DeleteQueuedSavingsPlanRequest' })
   .openapi('DeleteQueuedSavingsPlanRequest')
@@ -560,23 +478,17 @@ const MaxResultsSchema = z.int().min(1).max(1000).openapi('MaxResults')
 
 const DescribeSavingsPlanRatesRequestSchema = z
   .object({
-    savingsPlanId: SavingsPlanIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Savings Plan.' }),
-    ),
-    filters: SavingsPlanRateFilterListSchema.and(
-      z.any().openapi({ description: 'The filters.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve additional results, make another call with the returned token value.',
-        }),
-    ).exactOptional(),
+    savingsPlanId: SavingsPlanIdSchema.openapi({ description: 'The ID of the Savings Plan.' }),
+    filters: SavingsPlanRateFilterListSchema.exactOptional().openapi({
+      description: 'The filters.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve additional results, make another call with the returned token value.',
+    }),
   })
   .openapi({ required: ['savingsPlanId'], title: 'DescribeSavingsPlanRatesRequest' })
   .openapi('DescribeSavingsPlanRatesRequest')
@@ -609,45 +521,37 @@ const PageSizeSchema = z.int().min(0).max(1000).openapi('PageSize')
 
 const DescribeSavingsPlansOfferingRatesRequestSchema = z
   .object({
-    savingsPlanOfferingIds: UUIDsSchema.and(
-      z.any().openapi({ description: 'The IDs of the offerings.' }),
-    ).exactOptional(),
-    savingsPlanPaymentOptions: SavingsPlanPaymentOptionListSchema.and(
-      z.any().openapi({ description: 'The payment options.' }),
-    ).exactOptional(),
-    savingsPlanTypes: SavingsPlanTypeListSchema.and(
-      z.any().openapi({ description: 'The plan types.' }),
-    ).exactOptional(),
-    products: SavingsPlanProductTypeListSchema.and(
-      z.any().openapi({ description: 'The AWS products.' }),
-    ).exactOptional(),
-    serviceCodes: SavingsPlanRateServiceCodeListSchema.and(
-      z.any().openapi({ description: 'The services.' }),
-    ).exactOptional(),
-    usageTypes: SavingsPlanRateUsageTypeListSchema.and(
-      z.any().openapi({ description: 'The usage details of the line item in the billing report.' }),
-    ).exactOptional(),
-    operations: SavingsPlanRateOperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The specific AWS operation for the line item in the billing report.',
-        }),
-    ).exactOptional(),
-    filters: SavingsPlanOfferingRateFiltersListSchema.and(
-      z.any().openapi({ description: 'The filters.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
-    maxResults: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve additional results, make another call with the returned token value.',
-        }),
-    ).exactOptional(),
+    savingsPlanOfferingIds: UUIDsSchema.exactOptional().openapi({
+      description: 'The IDs of the offerings.',
+    }),
+    savingsPlanPaymentOptions: SavingsPlanPaymentOptionListSchema.exactOptional().openapi({
+      description: 'The payment options.',
+    }),
+    savingsPlanTypes: SavingsPlanTypeListSchema.exactOptional().openapi({
+      description: 'The plan types.',
+    }),
+    products: SavingsPlanProductTypeListSchema.exactOptional().openapi({
+      description: 'The AWS products.',
+    }),
+    serviceCodes: SavingsPlanRateServiceCodeListSchema.exactOptional().openapi({
+      description: 'The services.',
+    }),
+    usageTypes: SavingsPlanRateUsageTypeListSchema.exactOptional().openapi({
+      description: 'The usage details of the line item in the billing report.',
+    }),
+    operations: SavingsPlanRateOperationListSchema.exactOptional().openapi({
+      description: 'The specific AWS operation for the line item in the billing report.',
+    }),
+    filters: SavingsPlanOfferingRateFiltersListSchema.exactOptional().openapi({
+      description: 'The filters.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
+    maxResults: PageSizeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve additional results, make another call with the returned token value.',
+    }),
   })
   .openapi({ title: 'DescribeSavingsPlansOfferingRatesRequest', required: [] })
   .openapi('DescribeSavingsPlansOfferingRatesRequest')
@@ -676,54 +580,40 @@ const SavingsPlanOfferingFiltersListSchema = z
 
 const DescribeSavingsPlansOfferingsRequestSchema = z
   .object({
-    offeringIds: UUIDsSchema.and(
-      z.any().openapi({ description: 'The IDs of the offerings.' }),
-    ).exactOptional(),
-    paymentOptions: SavingsPlanPaymentOptionListSchema.and(
-      z.any().openapi({ description: 'The payment options.' }),
-    ).exactOptional(),
-    productType: SavingsPlanProductTypeSchema.and(
-      z.any().openapi({ description: 'The product type.' }),
-    ).exactOptional(),
-    planTypes: SavingsPlanTypeListSchema.and(
-      z.any().openapi({ description: 'The plan type.' }),
-    ).exactOptional(),
-    durations: DurationsListSchema.and(
-      z.any().openapi({ description: 'The durations, in seconds.' }),
-    ).exactOptional(),
-    currencies: CurrencyListSchema.and(
-      z.any().openapi({ description: 'The currencies.' }),
-    ).exactOptional(),
-    descriptions: SavingsPlanDescriptionsListSchema.and(
-      z.any().openapi({ description: 'The descriptions.' }),
-    ).exactOptional(),
-    serviceCodes: SavingsPlanServiceCodeListSchema.and(
-      z.any().openapi({ description: 'The services.' }),
-    ).exactOptional(),
-    usageTypes: SavingsPlanUsageTypeListSchema.and(
-      z.any().openapi({ description: 'The usage details of the line item in the billing report.' }),
-    ).exactOptional(),
-    operations: SavingsPlanOperationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The specific AWS operation for the line item in the billing report.',
-        }),
-    ).exactOptional(),
-    filters: SavingsPlanOfferingFiltersListSchema.and(
-      z.any().openapi({ description: 'The filters.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
-    maxResults: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve additional results, make another call with the returned token value.',
-        }),
-    ).exactOptional(),
+    offeringIds: UUIDsSchema.exactOptional().openapi({ description: 'The IDs of the offerings.' }),
+    paymentOptions: SavingsPlanPaymentOptionListSchema.exactOptional().openapi({
+      description: 'The payment options.',
+    }),
+    productType: SavingsPlanProductTypeSchema.exactOptional().openapi({
+      description: 'The product type.',
+    }),
+    planTypes: SavingsPlanTypeListSchema.exactOptional().openapi({ description: 'The plan type.' }),
+    durations: DurationsListSchema.exactOptional().openapi({
+      description: 'The durations, in seconds.',
+    }),
+    currencies: CurrencyListSchema.exactOptional().openapi({ description: 'The currencies.' }),
+    descriptions: SavingsPlanDescriptionsListSchema.exactOptional().openapi({
+      description: 'The descriptions.',
+    }),
+    serviceCodes: SavingsPlanServiceCodeListSchema.exactOptional().openapi({
+      description: 'The services.',
+    }),
+    usageTypes: SavingsPlanUsageTypeListSchema.exactOptional().openapi({
+      description: 'The usage details of the line item in the billing report.',
+    }),
+    operations: SavingsPlanOperationListSchema.exactOptional().openapi({
+      description: 'The specific AWS operation for the line item in the billing report.',
+    }),
+    filters: SavingsPlanOfferingFiltersListSchema.exactOptional().openapi({
+      description: 'The filters.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
+    maxResults: PageSizeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve additional results, make another call with the returned token value.',
+    }),
   })
   .openapi({ title: 'DescribeSavingsPlansOfferingsRequest', required: [] })
   .openapi('DescribeSavingsPlansOfferingsRequest')
@@ -743,38 +633,30 @@ const SavingsPlanFilterListSchema = z
 
 const DescribeSavingsPlansRequestSchema = z
   .object({
-    savingsPlanArns: SavingsPlanArnListSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Names (ARN) of the Savings Plans.' }),
-    ).exactOptional(),
-    savingsPlanIds: SavingsPlanIdListSchema.and(
-      z.any().openapi({ description: 'The IDs of the Savings Plans.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve additional results, make another call with the returned token value.',
-        }),
-    ).exactOptional(),
-    states: SavingsPlanStateListSchema.and(
-      z.any().openapi({ description: 'The states.' }),
-    ).exactOptional(),
-    filters: SavingsPlanFilterListSchema.and(
-      z.any().openapi({ description: 'The filters.' }),
-    ).exactOptional(),
+    savingsPlanArns: SavingsPlanArnListSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Names (ARN) of the Savings Plans.',
+    }),
+    savingsPlanIds: SavingsPlanIdListSchema.exactOptional().openapi({
+      description: 'The IDs of the Savings Plans.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve additional results, make another call with the returned token value.',
+    }),
+    states: SavingsPlanStateListSchema.exactOptional().openapi({ description: 'The states.' }),
+    filters: SavingsPlanFilterListSchema.exactOptional().openapi({ description: 'The filters.' }),
   })
   .openapi({ title: 'DescribeSavingsPlansRequest', required: [] })
   .openapi('DescribeSavingsPlansRequest')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    resourceArn: SavingsPlanArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource.' }),
-    ),
+    resourceArn: SavingsPlanArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource.',
+    }),
   })
   .openapi({ required: ['resourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
@@ -785,12 +667,12 @@ const SavingsPlanOfferingPropertyKeySchema = z
 
 const SavingsPlanOfferingPropertySchema = z
   .object({
-    name: SavingsPlanOfferingPropertyKeySchema.and(
-      z.any().openapi({ description: 'The property name.' }),
-    ).exactOptional(),
-    value: JsonSafeFilterValueStringSchema.and(
-      z.any().openapi({ description: 'The property value.' }),
-    ).exactOptional(),
+    name: SavingsPlanOfferingPropertyKeySchema.exactOptional().openapi({
+      description: 'The property name.',
+    }),
+    value: JsonSafeFilterValueStringSchema.exactOptional().openapi({
+      description: 'The property value.',
+    }),
   })
   .openapi({ description: 'Information about a property.', required: [] })
   .openapi('SavingsPlanOfferingProperty')
@@ -801,12 +683,12 @@ const SavingsPlanOfferingPropertyListSchema = z
 
 const SavingsPlanOfferingRatePropertySchema = z
   .object({
-    name: JsonSafeFilterValueStringSchema.and(
-      z.any().openapi({ description: 'The property name.' }),
-    ).exactOptional(),
-    value: JsonSafeFilterValueStringSchema.and(
-      z.any().openapi({ description: 'The property value.' }),
-    ).exactOptional(),
+    name: JsonSafeFilterValueStringSchema.exactOptional().openapi({
+      description: 'The property name.',
+    }),
+    value: JsonSafeFilterValueStringSchema.exactOptional().openapi({
+      description: 'The property value.',
+    }),
   })
   .openapi({ description: 'Information about a property.', required: [] })
   .openapi('SavingsPlanOfferingRateProperty')
@@ -821,12 +703,12 @@ const SavingsPlanRatePropertyKeySchema = z
 
 const SavingsPlanRatePropertySchema = z
   .object({
-    name: SavingsPlanRatePropertyKeySchema.and(
-      z.any().openapi({ description: 'The property name.' }),
-    ).exactOptional(),
-    value: JsonSafeFilterValueStringSchema.and(
-      z.any().openapi({ description: 'The property value.' }),
-    ).exactOptional(),
+    name: SavingsPlanRatePropertyKeySchema.exactOptional().openapi({
+      description: 'The property name.',
+    }),
+    value: JsonSafeFilterValueStringSchema.exactOptional().openapi({
+      description: 'The property value.',
+    }),
   })
   .openapi({ description: 'Information about a property.', required: [] })
   .openapi('SavingsPlanRateProperty')
@@ -839,27 +721,22 @@ const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const TagResourceRequestSchema = z
   .object({
-    resourceArn: SavingsPlanArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource.' }),
-    ),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more tags. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ),
+    resourceArn: SavingsPlanArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource.',
+    }),
+    tags: TagMapSchema.openapi({
+      description: 'One or more tags. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ required: ['resourceArn', 'tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
   .object({
-    resourceArn: SavingsPlanArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource.' }),
-    ),
-    tagKeys: TagKeyListSchema.and(z.any().openapi({ description: 'The tag keys.' })),
+    resourceArn: SavingsPlanArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource.',
+    }),
+    tagKeys: TagKeyListSchema.openapi({ description: 'The tag keys.' }),
   })
   .openapi({ required: ['resourceArn', 'tagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')

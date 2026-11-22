@@ -79,9 +79,9 @@ export const postPaymentsPaymentIdExtendAuthorizationRouteHandler: RouteHandler<
   throw new Error('Not implemented')
 }
 
-export const getPaymentsListRouteHandler: RouteHandler<typeof getPaymentsListRoute> = async (
-  c,
-) => {}
+export const getPaymentsListRouteHandler: RouteHandler<typeof getPaymentsListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
 export const postPaymentsPaymentIdIncrementalAuthorizationRouteHandler: RouteHandler<
   typeof postPaymentsPaymentIdIncrementalAuthorizationRoute

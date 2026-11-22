@@ -1,24 +1,507 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const GraphQLExtensionSchema = z
+const PanelSchema: z.ZodType<PanelType> = z
+  .lazy(() =>
+    z
+      .object({
+        alert: AlertSchema.exactOptional(),
+        aliasColors: z.looseObject({}).exactOptional().openapi({ 'x-go-name': 'AliasColors' }),
+        bars: z.boolean().exactOptional().openapi({ 'x-go-name': 'Bars' }),
+        cards: z
+          .object({
+            cardPadding: z.float64().exactOptional().openapi({ 'x-go-name': 'CardPadding' }),
+            cardRound: z.float64().exactOptional().openapi({ 'x-go-name': 'CardRound' }),
+          })
+          .exactOptional()
+          .openapi({ 'x-go-name': 'Cards', required: [] }),
+        collapsed: z.boolean().exactOptional().openapi({ 'x-go-name': 'Collapsed' }),
+        color: z
+          .object({
+            cardColor: z.string().exactOptional().openapi({ 'x-go-name': 'CardColor' }),
+            colorScale: z.string().exactOptional().openapi({ 'x-go-name': 'ColorScale' }),
+            colorScheme: z.string().exactOptional().openapi({ 'x-go-name': 'ColorScheme' }),
+            exponent: z.float64().exactOptional().openapi({ 'x-go-name': 'Exponent' }),
+            max: z.float64().exactOptional().openapi({ 'x-go-name': 'Max' }),
+            min: z.float64().exactOptional().openapi({ 'x-go-name': 'Min' }),
+            mode: z.string().exactOptional().openapi({ 'x-go-name': 'Mode' }),
+          })
+          .exactOptional()
+          .openapi({ 'x-go-name': 'Color', required: [] }),
+        colorBackground: z.boolean().exactOptional().openapi({ 'x-go-name': 'ColorBackground' }),
+        colorValue: z.boolean().exactOptional().openapi({ 'x-go-name': 'ColorValue' }),
+        colors: z.array(z.string()).exactOptional().openapi({ 'x-go-name': 'Colors' }),
+        columns: z.array(ColumnSchema).exactOptional().openapi({ 'x-go-name': 'Columns' }),
+        content: z.string().exactOptional().openapi({ 'x-go-name': 'Content' }),
+        dashLength: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.uint64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'uint64', 'x-go-name': 'DashLength' }),
+        dashboardTags: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({ 'x-go-name': 'DashboardTags' }),
+        dashes: z.boolean().exactOptional().openapi({ 'x-go-name': 'Dashes' }),
+        dataFormat: z.string().exactOptional().openapi({ 'x-go-name': 'DataFormat' }),
+        datasource: z.string().exactOptional().openapi({ 'x-go-name': 'Datasource' }),
+        decimals: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'Decimals' }),
+        description: z.string().exactOptional().openapi({ 'x-go-name': 'Description' }),
+        editable: z.boolean().exactOptional().openapi({ 'x-go-name': 'Editable' }),
+        error: z.boolean().exactOptional().openapi({ 'x-go-name': 'Error' }),
+        fieldConfig: FieldConfigSchema.exactOptional(),
+        fill: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'Fill' }),
+        folderId: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'FolderID' }),
+        format: z.string().exactOptional().openapi({ 'x-go-name': 'Format' }),
+        gauge: GaugeSchema.exactOptional(),
+        gridPos: z
+          .object({
+            h: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .exactOptional()
+              .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'H' }),
+            w: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .exactOptional()
+              .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'W' }),
+            x: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .exactOptional()
+              .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'X' }),
+            y: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .exactOptional()
+              .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'Y' }),
+          })
+          .exactOptional()
+          .openapi({ 'x-go-name': 'GridPos', required: [] }),
+        headings: z.boolean().exactOptional().openapi({ 'x-go-name': 'Headings' }),
+        height: z.looseObject({}).exactOptional().openapi({ 'x-go-name': 'Height' }),
+        hideTimeOverride: z.boolean().exactOptional().openapi({ 'x-go-name': 'HideTimeOverride' }),
+        hideZeroBuckets: z.boolean().exactOptional().openapi({ 'x-go-name': 'HideZeroBuckets' }),
+        highlightCards: z.boolean().exactOptional().openapi({ 'x-go-name': 'HighlightCards' }),
+        id: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.uint64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'uint64', 'x-go-name': 'ID' }),
+        isNew: z.boolean().exactOptional().openapi({ 'x-go-name': 'IsNew' }),
+        leftYAxisLabel: z.string().exactOptional().openapi({ 'x-go-name': 'LeftYAxisLabel' }),
+        legend: LegendSchema.exactOptional(),
+        limit: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'Limit' }),
+        lines: z.boolean().exactOptional().openapi({ 'x-go-name': 'Lines' }),
+        linewidth: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.uint64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'uint64', 'x-go-name': 'Linewidth' }),
+        links: z.array(LinkSchema).exactOptional().openapi({ 'x-go-name': 'Links' }),
+        mappingType: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.uint64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'uint64', 'x-go-name': 'MappingType' }),
+        mappingTypes: z
+          .array(MapTypeSchema)
+          .exactOptional()
+          .openapi({ 'x-go-name': 'MappingTypes' }),
+        maxDataPoints: IntStringSchema.exactOptional(),
+        minSpan: z.float32().exactOptional().openapi({ 'x-go-name': 'MinSpan' }),
+        mode: z.string().exactOptional().openapi({ 'x-go-name': 'Mode' }),
+        nameFilter: z.string().exactOptional().openapi({ 'x-go-name': 'NameFilter' }),
+        nullPointMode: z.string().exactOptional().openapi({ 'x-go-name': 'NullPointMode' }),
+        onlyAlertsOnDashboard: z
+          .boolean()
+          .exactOptional()
+          .openapi({ 'x-go-name': 'OnlyAlertsOnDashboard' }),
+        options: OptionsSchema.exactOptional(),
+        pageSize: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.uint64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'uint64', 'x-go-name': 'PageSize' }),
+        panels: z.array(PanelSchema).exactOptional().openapi({ 'x-go-name': 'Panels' }),
+        percentage: z.boolean().exactOptional().openapi({ 'x-go-name': 'Percentage' }),
+        pointradius: z.float32().exactOptional().openapi({ 'x-go-name': 'Pointradius' }),
+        points: z.boolean().exactOptional().openapi({ 'x-go-name': 'Points' }),
+        postfix: z.string().exactOptional().openapi({ 'x-go-name': 'Postfix' }),
+        postfixFontSize: z.string().exactOptional().openapi({ 'x-go-name': 'PostfixFontSize' }),
+        prefix: z.string().exactOptional().openapi({ 'x-go-name': 'Prefix' }),
+        prefixFontSize: z.string().exactOptional().openapi({ 'x-go-name': 'PrefixFontSize' }),
+        query: z.string().exactOptional().openapi({ 'x-go-name': 'Query' }),
+        rangeMaps: z.array(RangeMapSchema).exactOptional().openapi({ 'x-go-name': 'RangeMaps' }),
+        recent: z.boolean().exactOptional().openapi({ 'x-go-name': 'Recent' }),
+        renderer: z.string().exactOptional().openapi({ 'x-go-name': 'Renderer' }),
+        repeat: z.string().exactOptional().openapi({ 'x-go-name': 'Repeat' }),
+        repeatPanelId: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.uint64(),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'uint64',
+            description: 'RepeatIteration *int64   `json:"repeatIteration,omitempty"`',
+            'x-go-name': 'RepeatPanelID',
+          }),
+        reverseYBuckets: z.boolean().exactOptional().openapi({ 'x-go-name': 'ReverseYBuckets' }),
+        rightYAxisLabel: z.string().exactOptional().openapi({ 'x-go-name': 'RightYAxisLabel' }),
+        scopedVars: z
+          .record(
+            z.string(),
+            z
+              .object({
+                selected: z.boolean().exactOptional().openapi({ 'x-go-name': 'Selected' }),
+                text: z.string().exactOptional().openapi({ 'x-go-name': 'Text' }),
+                value: z.string().exactOptional().openapi({ 'x-go-name': 'Value' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional()
+          .openapi({ 'x-go-name': 'ScopedVars' }),
+        scroll: z.boolean().exactOptional().openapi({ 'x-go-name': 'Scroll' }),
+        search: z.boolean().exactOptional().openapi({ 'x-go-name': 'Search' }),
+        seriesOverrides: z
+          .array(SeriesOverrideSchema)
+          .exactOptional()
+          .openapi({ 'x-go-name': 'SeriesOverrides' }),
+        show: z.string().exactOptional().openapi({ 'x-go-name': 'Show' }),
+        showHeader: z.boolean().exactOptional().openapi({ 'x-go-name': 'ShowHeader' }),
+        sort: SortSchema.exactOptional(),
+        sortOrder: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'SortOrder' }),
+        spaceLength: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.uint64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'uint64', 'x-go-name': 'SpaceLength' }),
+        span: z.float32().exactOptional().openapi({ 'x-go-name': 'Span' }),
+        sparkline: SparkLineSchema.exactOptional(),
+        stack: z.boolean().exactOptional().openapi({ 'x-go-name': 'Stack' }),
+        starred: z.boolean().exactOptional().openapi({ 'x-go-name': 'Starred' }),
+        stateFilter: z.array(z.string()).exactOptional().openapi({ 'x-go-name': 'StateFilter' }),
+        steppedLine: z.boolean().exactOptional().openapi({ 'x-go-name': 'SteppedLine' }),
+        styles: z.array(ColumnStyleSchema).exactOptional().openapi({ 'x-go-name': 'Styles' }),
+        tags: z.array(z.string()).exactOptional().openapi({ 'x-go-name': 'Tags' }),
+        targets: z.array(TargetSchema).exactOptional().openapi({ 'x-go-name': 'Targets' }),
+        thresholds: z.string().exactOptional().openapi({ 'x-go-name': 'Thresholds' }),
+        timeFrom: z.string().exactOptional().openapi({ 'x-go-name': 'TimeFrom' }),
+        timeShift: z.string().exactOptional().openapi({ 'x-go-name': 'TimeShift' }),
+        title: z.string().exactOptional().openapi({ 'x-go-name': 'Title' }),
+        tooltip: TooltipSchema.exactOptional(),
+        tooltipDecimals: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'TooltipDecimals' }),
+        transform: z.string().exactOptional().openapi({ 'x-go-name': 'Transform' }),
+        transparent: z.boolean().exactOptional().openapi({ 'x-go-name': 'Transparent' }),
+        type: z.string().exactOptional().openapi({ 'x-go-name': 'Type' }),
+        valueFontSize: z.string().exactOptional().openapi({ 'x-go-name': 'ValueFontSize' }),
+        valueMaps: z.array(ValueMapSchema).exactOptional().openapi({ 'x-go-name': 'ValueMaps' }),
+        valueName: z.string().exactOptional().openapi({ 'x-go-name': 'ValueName' }),
+        'x-axis': z.boolean().exactOptional().openapi({ 'x-go-name': 'XAxis' }),
+        xAxis: z
+          .object({ show: z.boolean().exactOptional().openapi({ 'x-go-name': 'Show' }) })
+          .exactOptional()
+          .openapi({ 'x-go-name': 'XAxis', required: [] }),
+        xBucketNumber: z.float64().exactOptional().openapi({ 'x-go-name': 'XBucketNumber' }),
+        xBucketSize: z.string().exactOptional().openapi({ 'x-go-name': 'XBucketSize' }),
+        xaxis: AxisSchema.exactOptional(),
+        'y-axis': z.boolean().exactOptional().openapi({ 'x-go-name': 'YAxis' }),
+        yAxis: z
+          .object({
+            decimals: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .exactOptional()
+              .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'Decimals' }),
+            format: z.string().exactOptional().openapi({ 'x-go-name': 'Format' }),
+            logBase: z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .exactOptional()
+              .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'LogBase' }),
+            max: z.string().exactOptional().openapi({ 'x-go-name': 'Max' }),
+            min: z.string().exactOptional().openapi({ 'x-go-name': 'Min' }),
+            show: z.boolean().exactOptional().openapi({ 'x-go-name': 'Show' }),
+            splitFactor: z.float64().exactOptional().openapi({ 'x-go-name': 'SplitFactor' }),
+          })
+          .exactOptional()
+          .openapi({ 'x-go-name': 'YAxis', required: [] }),
+        yBucketBound: z.string().exactOptional().openapi({ 'x-go-name': 'YBucketBound' }),
+        yBucketNumber: z.float64().exactOptional().openapi({ 'x-go-name': 'YBucketNumber' }),
+        yBucketSize: z.float64().exactOptional().openapi({ 'x-go-name': 'YBucketSize' }),
+        y_formats: z.array(z.string()).exactOptional().openapi({ 'x-go-name': 'YFormats' }),
+        yaxes: z.array(AxisSchema).exactOptional().openapi({ 'x-go-name': 'Yaxes' }),
+      })
+      .openapi({ 'x-go-package': 'github.com/grafana-tools/sdk', required: [] }),
+  )
+  .openapi('Panel')
+
+const GrafanaDataSourceSchema = z
   .object({
-    component: z.string().exactOptional().openapi({ 'x-go-name': 'Component' }),
-    path: z.string().exactOptional().openapi({ 'x-go-name': 'Path' }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.uint64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'uint64', 'x-go-name': 'ID' }),
+    name: z.string().exactOptional().openapi({ 'x-go-name': 'Name' }),
   })
   .openapi({
-    description: 'GraphQLExtension describes the graphql server extension point in the backend',
+    description: 'GrafanaDataSource represents a Grafana datasource like Prometheus',
     'x-go-package': 'github.com/layer5io/meshery/models',
     required: [],
   })
-  .openapi('GraphQLExtension')
+  .openapi('GrafanaDataSource')
 
-const GraphQLExtensionsSchema = z
-  .array(GraphQLExtensionSchema)
-  .openapi({
-    description: 'GraphQLExtensions is a collection of GraphQLExtension endpoints',
-    'x-go-package': 'github.com/layer5io/meshery/models',
+const GrafanaTemplateVarsSchema = z
+  .object({
+    datasource: GrafanaDataSourceSchema.exactOptional(),
+    hide: z.int().exactOptional().openapi({ 'x-go-name': 'Hide' }),
+    name: z.string().exactOptional().openapi({ 'x-go-name': 'Name' }),
+    query: z.string().exactOptional().openapi({ 'x-go-name': 'Query' }),
+    value: z.looseObject({}).exactOptional().openapi({ 'x-go-name': 'Value' }),
   })
-  .openapi('GraphQLExtensions')
+  .openapi({
+    description: 'GrafanaTemplateVars represents template variables in a bboard',
+    'x-go-package': 'github.com/layer5io/meshery/models',
+    required: [],
+  })
+  .openapi('GrafanaTemplateVars')
+
+type GrafanaBoardType = {
+  org_id?: bigint
+  panels?: z.infer<typeof PanelSchema>[]
+  slug?: string
+  template_vars?: z.infer<typeof GrafanaTemplateVarsSchema>[]
+  title?: string
+  uid?: string
+  uri?: string
+}
+
+const GrafanaBoardSchema: z.ZodType<GrafanaBoardType> = z
+  .object({
+    org_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.uint64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'uint64', 'x-go-name': 'OrgID' }),
+    panels: z.array(PanelSchema).exactOptional().openapi({ 'x-go-name': 'Panels' }),
+    slug: z.string().exactOptional().openapi({ 'x-go-name': 'Slug' }),
+    template_vars: z
+      .array(GrafanaTemplateVarsSchema)
+      .exactOptional()
+      .openapi({ 'x-go-name': 'TemplateVars' }),
+    title: z.string().exactOptional().openapi({ 'x-go-name': 'Title' }),
+    uid: z.string().exactOptional().openapi({ 'x-go-name': 'UID' }),
+    uri: z.string().exactOptional().openapi({ 'x-go-name': 'URI' }),
+  })
+  .openapi({
+    description: 'GrafanaBoard represents a Grafana board',
+    'x-go-package': 'github.com/layer5io/meshery/models',
+    required: [],
+  })
+  .openapi('GrafanaBoard')
+
+type SelectedGrafanaConfigType = {
+  board?: z.infer<typeof GrafanaBoardSchema>
+  panels?: z.infer<typeof PanelSchema>[]
+  templateVars?: string[]
+}
+
+const SelectedGrafanaConfigSchema: z.ZodType<SelectedGrafanaConfigType> = z
+  .object({
+    board: GrafanaBoardSchema.exactOptional(),
+    panels: z.array(PanelSchema).exactOptional().openapi({ 'x-go-name': 'GrafanaPanels' }),
+    templateVars: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ 'x-go-name': 'SelectedTemplateVars' }),
+  })
+  .openapi({
+    description:
+      'SelectedGrafanaConfig represents the selected boards, panels, and template variables',
+    'x-go-package': 'github.com/layer5io/meshery/models',
+    required: [],
+  })
+  .openapi('SelectedGrafanaConfig')
+
+type GrafanaType = {
+  grafanaAPIKey?: string
+  grafanaURL?: string
+  selectedBoardsConfigs?: z.infer<typeof SelectedGrafanaConfigSchema>[]
+}
+
+type HrefType = { external?: boolean; uri?: string }
 
 const NavigatorExtensionsSchema: z.ZodType<NavigatorExtensionsType> = z
   .lazy(() =>
@@ -30,31 +513,6 @@ const NavigatorExtensionsSchema: z.ZodType<NavigatorExtensionsType> = z
       }),
   )
   .openapi('NavigatorExtensions')
-
-const UserPrefsExtensionSchema = z
-  .object({ component: z.string().exactOptional().openapi({ 'x-go-name': 'Component' }) })
-  .openapi({
-    description: 'UserPrefsExtension describes the user preference extension point in the UI',
-    'x-go-package': 'github.com/layer5io/meshery/models',
-    required: [],
-  })
-  .openapi('UserPrefsExtension')
-
-const UserPrefsExtensionsSchema = z
-  .array(UserPrefsExtensionSchema)
-  .openapi({
-    description: 'UserPrefsExtensions is a collection of UserPrefsExtension',
-    'x-go-package': 'github.com/layer5io/meshery/models',
-  })
-  .openapi('UserPrefsExtensions')
-
-type ExtensionsType = {
-  graphql?: z.infer<typeof GraphQLExtensionsSchema>
-  navigator?: z.infer<typeof NavigatorExtensionsSchema>
-  user_prefs?: z.infer<typeof UserPrefsExtensionsSchema>
-}
-
-type HrefType = { external?: boolean; uri?: string }
 
 const HrefSchema: z.ZodType<HrefType> = z
   .object({
@@ -159,7 +617,7 @@ const AlertNotificationSchema = z
     isDefault: z.boolean().exactOptional().openapi({ 'x-go-name': 'IsDefault' }),
     name: z.string().exactOptional().openapi({ 'x-go-name': 'Name' }),
     sendReminder: z.boolean().exactOptional().openapi({ 'x-go-name': 'SendReminder' }),
-    settings: z.object({}).exactOptional().openapi({ 'x-go-name': 'Settings' }),
+    settings: z.looseObject({}).exactOptional().openapi({ 'x-go-name': 'Settings' }),
     type: z.string().exactOptional().openapi({ 'x-go-name': 'Type' }),
     uid: z.string().exactOptional().openapi({ 'x-go-name': 'UID' }),
   })
@@ -612,7 +1070,10 @@ const TargetSchema = z
             settings: z
               .object({
                 interval: z.string().exactOptional().openapi({ 'x-go-name': 'Interval' }),
-                min_doc_count: z.object({}).exactOptional().openapi({ 'x-go-name': 'MinDocCount' }),
+                min_doc_count: z
+                  .looseObject({})
+                  .exactOptional()
+                  .openapi({ 'x-go-name': 'MinDocCount' }),
                 order: z.string().exactOptional().openapi({ 'x-go-name': 'Order' }),
                 orderBy: z.string().exactOptional().openapi({ 'x-go-name': 'OrderBy' }),
                 size: z.string().exactOptional().openapi({ 'x-go-name': 'Size' }),
@@ -962,6 +1423,104 @@ type PanelType = {
   yaxes?: z.infer<typeof AxisSchema>[]
 }
 
+const GrafanaSchema: z.ZodType<GrafanaType> = z
+  .object({
+    grafanaAPIKey: z.string().exactOptional().openapi({ 'x-go-name': 'GrafanaAPIKey' }),
+    grafanaURL: z.string().exactOptional().openapi({ 'x-go-name': 'GrafanaURL' }),
+    selectedBoardsConfigs: z
+      .array(SelectedGrafanaConfigSchema)
+      .exactOptional()
+      .openapi({
+        description: 'GrafanaBoardSearch string          `json:"grafanaBoardSearch,omitempty"`',
+        'x-go-name': 'GrafanaBoards',
+      }),
+  })
+  .openapi({
+    description: 'Grafana represents the Grafana session config',
+    'x-go-package': 'github.com/layer5io/meshery/models',
+    required: [],
+  })
+  .openapi('Grafana')
+
+const K8SNodeSchema = z
+  .object({
+    allocatable_cpu: z.string().exactOptional().openapi({ 'x-go-name': 'AllocatableCPU' }),
+    allocatable_memory: z.string().exactOptional().openapi({ 'x-go-name': 'AllocatableMemory' }),
+    architecture: z.string().exactOptional().openapi({ 'x-go-name': 'Architecture' }),
+    capacity_cpu: z.string().exactOptional().openapi({ 'x-go-name': 'CapacityCPU' }),
+    capacity_memory: z.string().exactOptional().openapi({ 'x-go-name': 'CapacityMemory' }),
+    container_runtime_version: z
+      .string()
+      .exactOptional()
+      .openapi({ 'x-go-name': 'ContainerRuntimeVersion' }),
+    hostname: z.string().exactOptional().openapi({ 'x-go-name': 'HostName' }),
+    internal_ip: z.string().exactOptional().openapi({ 'x-go-name': 'InternalIP' }),
+    kubelet_version: z.string().exactOptional().openapi({ 'x-go-name': 'KubeletVersion' }),
+    kubeproxy_version: z.string().exactOptional().openapi({ 'x-go-name': 'KubeProxyVersion' }),
+    operating_system: z.string().exactOptional().openapi({ 'x-go-name': 'OperatingSystem' }),
+    os_image: z.string().exactOptional().openapi({ 'x-go-name': 'OSImage' }),
+  })
+  .openapi({
+    description: 'K8SNode - represents a kubernetes node',
+    'x-go-package': 'github.com/layer5io/meshery/models',
+    required: [],
+  })
+  .openapi('K8SNode')
+
+const K8SConfigSchema = z
+  .object({
+    clusterConfigured: z.boolean().exactOptional().openapi({ 'x-go-name': 'ClusterConfigured' }),
+    config: z.array(z.int()).exactOptional().openapi({ 'x-go-name': 'Config' }),
+    configuredServer: z.string().exactOptional().openapi({ 'x-go-name': 'Server' }),
+    contextName: z.string().exactOptional().openapi({ 'x-go-name': 'ContextName' }),
+    inClusterConfig: z.boolean().exactOptional().openapi({ 'x-go-name': 'InClusterConfig' }),
+    k8sfile: z.string().exactOptional().openapi({ 'x-go-name': 'K8Sfile' }),
+    nodes: z.array(K8SNodeSchema).exactOptional().openapi({ 'x-go-name': 'Nodes' }),
+    server_version: z.string().exactOptional().openapi({ 'x-go-name': 'ServerVersion' }),
+  })
+  .openapi({
+    description: 'K8SConfig represents all the k8s session config',
+    'x-go-package': 'github.com/layer5io/meshery/models',
+    required: [],
+  })
+  .openapi('K8SConfig')
+
+const LoadTestPreferencesSchema = z
+  .object({
+    c: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'ConcurrentRequests' }),
+    gen: z.string().exactOptional().openapi({ 'x-go-name': 'LoadGenerator' }),
+    qps: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'QueriesPerSecond' }),
+    t: z.string().exactOptional().openapi({ 'x-go-name': 'Duration' }),
+  })
+  .openapi({
+    description: 'LoadTestPreferences represents the load test preferences',
+    'x-go-package': 'github.com/layer5io/meshery/models',
+    required: [],
+  })
+  .openapi('LoadTestPreferences')
+
 const OpCategorySchema = z
   .int32()
   .openapi({ 'x-go-package': 'github.com/layer5io/meshery/meshes' })
@@ -991,6 +1550,37 @@ const AdapterSchema = z
   })
   .openapi('Adapter')
 
+type PrometheusType = {
+  prometheusURL?: string
+  selectedPrometheusBoardsConfigs?: z.infer<typeof SelectedGrafanaConfigSchema>[]
+}
+
+const PrometheusSchema: z.ZodType<PrometheusType> = z
+  .object({
+    prometheusURL: z.string().exactOptional().openapi({ 'x-go-name': 'PrometheusURL' }),
+    selectedPrometheusBoardsConfigs: z
+      .array(SelectedGrafanaConfigSchema)
+      .exactOptional()
+      .openapi({ 'x-go-name': 'SelectedPrometheusBoardsConfigs' }),
+  })
+  .openapi({
+    description: 'Prometheus represents the prometheus session config',
+    'x-go-package': 'github.com/layer5io/meshery/models',
+    required: [],
+  })
+  .openapi('Prometheus')
+
+type PreferenceType = {
+  anonymousPerfResults?: boolean
+  anonymousUsageStats?: boolean
+  grafana?: z.infer<typeof GrafanaSchema>
+  k8sConfig?: z.infer<typeof K8SConfigSchema>
+  loadTestPrefs?: z.infer<typeof LoadTestPreferencesSchema>
+  meshAdapters?: z.infer<typeof AdapterSchema>[]
+  prometheus?: z.infer<typeof PrometheusSchema>
+  updated_at?: string
+}
+
 const UUIDSchema = z
   .array(z.int())
   .openapi({
@@ -1000,7 +1590,7 @@ const UUIDSchema = z
   .openapi('UUID')
 
 const MapSchema = z
-  .record(z.string(), z.object({}))
+  .record(z.string(), z.looseObject({}))
   .openapi({
     description:
       'It implements native SQL driver interfaces and hence can\nbe used for SQL json or jsonb types as a drop in replacement\nof golang native maps',
@@ -1247,24 +1837,58 @@ const ErrorResponseSchema = z
   })
   .openapi('ErrorResponse')
 
-const ExtensionsSchema: z.ZodType<ExtensionsType> = z
-  .lazy(() =>
-    z
-      .object({
-        graphql: GraphQLExtensionsSchema.exactOptional(),
-        navigator: NavigatorExtensionsSchema.exactOptional(),
-        user_prefs: UserPrefsExtensionsSchema.exactOptional(),
-      })
-      .openapi({
-        description: 'Extensions defines the UI extension points',
-        'x-go-package': 'github.com/layer5io/meshery/models',
-        required: [],
-      }),
-  )
+const GraphQLExtensionSchema = z
+  .object({
+    component: z.string().exactOptional().openapi({ 'x-go-name': 'Component' }),
+    path: z.string().exactOptional().openapi({ 'x-go-name': 'Path' }),
+  })
+  .openapi({
+    description: 'GraphQLExtension describes the graphql server extension point in the backend',
+    'x-go-package': 'github.com/layer5io/meshery/models',
+    required: [],
+  })
+  .openapi('GraphQLExtension')
+
+const GraphQLExtensionsSchema = z
+  .array(GraphQLExtensionSchema)
+  .openapi({
+    description: 'GraphQLExtensions is a collection of GraphQLExtension endpoints',
+    'x-go-package': 'github.com/layer5io/meshery/models',
+  })
+  .openapi('GraphQLExtensions')
+
+const UserPrefsExtensionSchema = z
+  .object({ component: z.string().exactOptional().openapi({ 'x-go-name': 'Component' }) })
+  .openapi({
+    description: 'UserPrefsExtension describes the user preference extension point in the UI',
+    'x-go-package': 'github.com/layer5io/meshery/models',
+    required: [],
+  })
+  .openapi('UserPrefsExtension')
+
+const UserPrefsExtensionsSchema = z
+  .array(UserPrefsExtensionSchema)
+  .openapi({
+    description: 'UserPrefsExtensions is a collection of UserPrefsExtension',
+    'x-go-package': 'github.com/layer5io/meshery/models',
+  })
+  .openapi('UserPrefsExtensions')
+
+const ExtensionsSchema = z
+  .object({
+    graphql: GraphQLExtensionsSchema.exactOptional(),
+    navigator: NavigatorExtensionsSchema.exactOptional(),
+    user_prefs: UserPrefsExtensionsSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Extensions defines the UI extension points',
+    'x-go-package': 'github.com/layer5io/meshery/models',
+    required: [],
+  })
   .openapi('Extensions')
 
 const FieldsV1Schema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "Each key is either a '.' representing the field itself, and will always map to an empty set,\nor a string representing a sub-field or item. The string will follow one of these four formats:\n'f:<name>', where <name> is the name of a field in a struct, or key in a map\n'v:<value>', where <value> is the exact json formatted value of a list item\n'i:<index>', where <index> is position of a item in a list\n'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values\nIf a key maps to an empty Fields value, the field that key represents is part of the set.\n\nThe exact format is defined in sigs.k8s.io/structured-merge-diff",
@@ -1349,504 +1973,6 @@ const FiltersAPIResponseSchema = z
     required: [],
   })
   .openapi('FiltersAPIResponse')
-
-const PanelSchema: z.ZodType<PanelType> = z
-  .lazy(() =>
-    z
-      .object({
-        alert: AlertSchema.exactOptional(),
-        aliasColors: z.object({}).exactOptional().openapi({ 'x-go-name': 'AliasColors' }),
-        bars: z.boolean().exactOptional().openapi({ 'x-go-name': 'Bars' }),
-        cards: z
-          .object({
-            cardPadding: z.float64().exactOptional().openapi({ 'x-go-name': 'CardPadding' }),
-            cardRound: z.float64().exactOptional().openapi({ 'x-go-name': 'CardRound' }),
-          })
-          .exactOptional()
-          .openapi({ 'x-go-name': 'Cards', required: [] }),
-        collapsed: z.boolean().exactOptional().openapi({ 'x-go-name': 'Collapsed' }),
-        color: z
-          .object({
-            cardColor: z.string().exactOptional().openapi({ 'x-go-name': 'CardColor' }),
-            colorScale: z.string().exactOptional().openapi({ 'x-go-name': 'ColorScale' }),
-            colorScheme: z.string().exactOptional().openapi({ 'x-go-name': 'ColorScheme' }),
-            exponent: z.float64().exactOptional().openapi({ 'x-go-name': 'Exponent' }),
-            max: z.float64().exactOptional().openapi({ 'x-go-name': 'Max' }),
-            min: z.float64().exactOptional().openapi({ 'x-go-name': 'Min' }),
-            mode: z.string().exactOptional().openapi({ 'x-go-name': 'Mode' }),
-          })
-          .exactOptional()
-          .openapi({ 'x-go-name': 'Color', required: [] }),
-        colorBackground: z.boolean().exactOptional().openapi({ 'x-go-name': 'ColorBackground' }),
-        colorValue: z.boolean().exactOptional().openapi({ 'x-go-name': 'ColorValue' }),
-        colors: z.array(z.string()).exactOptional().openapi({ 'x-go-name': 'Colors' }),
-        columns: z.array(ColumnSchema).exactOptional().openapi({ 'x-go-name': 'Columns' }),
-        content: z.string().exactOptional().openapi({ 'x-go-name': 'Content' }),
-        dashLength: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.uint64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'uint64', 'x-go-name': 'DashLength' }),
-        dashboardTags: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ 'x-go-name': 'DashboardTags' }),
-        dashes: z.boolean().exactOptional().openapi({ 'x-go-name': 'Dashes' }),
-        dataFormat: z.string().exactOptional().openapi({ 'x-go-name': 'DataFormat' }),
-        datasource: z.string().exactOptional().openapi({ 'x-go-name': 'Datasource' }),
-        decimals: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'Decimals' }),
-        description: z.string().exactOptional().openapi({ 'x-go-name': 'Description' }),
-        editable: z.boolean().exactOptional().openapi({ 'x-go-name': 'Editable' }),
-        error: z.boolean().exactOptional().openapi({ 'x-go-name': 'Error' }),
-        fieldConfig: FieldConfigSchema.exactOptional(),
-        fill: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'Fill' }),
-        folderId: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'FolderID' }),
-        format: z.string().exactOptional().openapi({ 'x-go-name': 'Format' }),
-        gauge: GaugeSchema.exactOptional(),
-        gridPos: z
-          .object({
-            h: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .exactOptional()
-              .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'H' }),
-            w: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .exactOptional()
-              .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'W' }),
-            x: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .exactOptional()
-              .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'X' }),
-            y: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .exactOptional()
-              .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'Y' }),
-          })
-          .exactOptional()
-          .openapi({ 'x-go-name': 'GridPos', required: [] }),
-        headings: z.boolean().exactOptional().openapi({ 'x-go-name': 'Headings' }),
-        height: z.object({}).exactOptional().openapi({ 'x-go-name': 'Height' }),
-        hideTimeOverride: z.boolean().exactOptional().openapi({ 'x-go-name': 'HideTimeOverride' }),
-        hideZeroBuckets: z.boolean().exactOptional().openapi({ 'x-go-name': 'HideZeroBuckets' }),
-        highlightCards: z.boolean().exactOptional().openapi({ 'x-go-name': 'HighlightCards' }),
-        id: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.uint64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'uint64', 'x-go-name': 'ID' }),
-        isNew: z.boolean().exactOptional().openapi({ 'x-go-name': 'IsNew' }),
-        leftYAxisLabel: z.string().exactOptional().openapi({ 'x-go-name': 'LeftYAxisLabel' }),
-        legend: LegendSchema.exactOptional(),
-        limit: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'Limit' }),
-        lines: z.boolean().exactOptional().openapi({ 'x-go-name': 'Lines' }),
-        linewidth: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.uint64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'uint64', 'x-go-name': 'Linewidth' }),
-        links: z.array(LinkSchema).exactOptional().openapi({ 'x-go-name': 'Links' }),
-        mappingType: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.uint64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'uint64', 'x-go-name': 'MappingType' }),
-        mappingTypes: z
-          .array(MapTypeSchema)
-          .exactOptional()
-          .openapi({ 'x-go-name': 'MappingTypes' }),
-        maxDataPoints: IntStringSchema.exactOptional(),
-        minSpan: z.float32().exactOptional().openapi({ 'x-go-name': 'MinSpan' }),
-        mode: z.string().exactOptional().openapi({ 'x-go-name': 'Mode' }),
-        nameFilter: z.string().exactOptional().openapi({ 'x-go-name': 'NameFilter' }),
-        nullPointMode: z.string().exactOptional().openapi({ 'x-go-name': 'NullPointMode' }),
-        onlyAlertsOnDashboard: z
-          .boolean()
-          .exactOptional()
-          .openapi({ 'x-go-name': 'OnlyAlertsOnDashboard' }),
-        options: OptionsSchema.exactOptional(),
-        pageSize: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.uint64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'uint64', 'x-go-name': 'PageSize' }),
-        panels: z.array(PanelSchema).exactOptional().openapi({ 'x-go-name': 'Panels' }),
-        percentage: z.boolean().exactOptional().openapi({ 'x-go-name': 'Percentage' }),
-        pointradius: z.float32().exactOptional().openapi({ 'x-go-name': 'Pointradius' }),
-        points: z.boolean().exactOptional().openapi({ 'x-go-name': 'Points' }),
-        postfix: z.string().exactOptional().openapi({ 'x-go-name': 'Postfix' }),
-        postfixFontSize: z.string().exactOptional().openapi({ 'x-go-name': 'PostfixFontSize' }),
-        prefix: z.string().exactOptional().openapi({ 'x-go-name': 'Prefix' }),
-        prefixFontSize: z.string().exactOptional().openapi({ 'x-go-name': 'PrefixFontSize' }),
-        query: z.string().exactOptional().openapi({ 'x-go-name': 'Query' }),
-        rangeMaps: z.array(RangeMapSchema).exactOptional().openapi({ 'x-go-name': 'RangeMaps' }),
-        recent: z.boolean().exactOptional().openapi({ 'x-go-name': 'Recent' }),
-        renderer: z.string().exactOptional().openapi({ 'x-go-name': 'Renderer' }),
-        repeat: z.string().exactOptional().openapi({ 'x-go-name': 'Repeat' }),
-        repeatPanelId: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.uint64(),
-          )
-          .exactOptional()
-          .openapi({
-            type: 'integer',
-            format: 'uint64',
-            description: 'RepeatIteration *int64   `json:"repeatIteration,omitempty"`',
-            'x-go-name': 'RepeatPanelID',
-          }),
-        reverseYBuckets: z.boolean().exactOptional().openapi({ 'x-go-name': 'ReverseYBuckets' }),
-        rightYAxisLabel: z.string().exactOptional().openapi({ 'x-go-name': 'RightYAxisLabel' }),
-        scopedVars: z
-          .record(
-            z.string(),
-            z
-              .object({
-                selected: z.boolean().exactOptional().openapi({ 'x-go-name': 'Selected' }),
-                text: z.string().exactOptional().openapi({ 'x-go-name': 'Text' }),
-                value: z.string().exactOptional().openapi({ 'x-go-name': 'Value' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({ 'x-go-name': 'ScopedVars' }),
-        scroll: z.boolean().exactOptional().openapi({ 'x-go-name': 'Scroll' }),
-        search: z.boolean().exactOptional().openapi({ 'x-go-name': 'Search' }),
-        seriesOverrides: z
-          .array(SeriesOverrideSchema)
-          .exactOptional()
-          .openapi({ 'x-go-name': 'SeriesOverrides' }),
-        show: z.string().exactOptional().openapi({ 'x-go-name': 'Show' }),
-        showHeader: z.boolean().exactOptional().openapi({ 'x-go-name': 'ShowHeader' }),
-        sort: SortSchema.exactOptional(),
-        sortOrder: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'SortOrder' }),
-        spaceLength: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.uint64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'uint64', 'x-go-name': 'SpaceLength' }),
-        span: z.float32().exactOptional().openapi({ 'x-go-name': 'Span' }),
-        sparkline: SparkLineSchema.exactOptional(),
-        stack: z.boolean().exactOptional().openapi({ 'x-go-name': 'Stack' }),
-        starred: z.boolean().exactOptional().openapi({ 'x-go-name': 'Starred' }),
-        stateFilter: z.array(z.string()).exactOptional().openapi({ 'x-go-name': 'StateFilter' }),
-        steppedLine: z.boolean().exactOptional().openapi({ 'x-go-name': 'SteppedLine' }),
-        styles: z.array(ColumnStyleSchema).exactOptional().openapi({ 'x-go-name': 'Styles' }),
-        tags: z.array(z.string()).exactOptional().openapi({ 'x-go-name': 'Tags' }),
-        targets: z.array(TargetSchema).exactOptional().openapi({ 'x-go-name': 'Targets' }),
-        thresholds: z.string().exactOptional().openapi({ 'x-go-name': 'Thresholds' }),
-        timeFrom: z.string().exactOptional().openapi({ 'x-go-name': 'TimeFrom' }),
-        timeShift: z.string().exactOptional().openapi({ 'x-go-name': 'TimeShift' }),
-        title: z.string().exactOptional().openapi({ 'x-go-name': 'Title' }),
-        tooltip: TooltipSchema.exactOptional(),
-        tooltipDecimals: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'TooltipDecimals' }),
-        transform: z.string().exactOptional().openapi({ 'x-go-name': 'Transform' }),
-        transparent: z.boolean().exactOptional().openapi({ 'x-go-name': 'Transparent' }),
-        type: z.string().exactOptional().openapi({ 'x-go-name': 'Type' }),
-        valueFontSize: z.string().exactOptional().openapi({ 'x-go-name': 'ValueFontSize' }),
-        valueMaps: z.array(ValueMapSchema).exactOptional().openapi({ 'x-go-name': 'ValueMaps' }),
-        valueName: z.string().exactOptional().openapi({ 'x-go-name': 'ValueName' }),
-        'x-axis': z.boolean().exactOptional().openapi({ 'x-go-name': 'XAxis' }),
-        xAxis: z
-          .object({ show: z.boolean().exactOptional().openapi({ 'x-go-name': 'Show' }) })
-          .exactOptional()
-          .openapi({ 'x-go-name': 'XAxis', required: [] }),
-        xBucketNumber: z.float64().exactOptional().openapi({ 'x-go-name': 'XBucketNumber' }),
-        xBucketSize: z.string().exactOptional().openapi({ 'x-go-name': 'XBucketSize' }),
-        xaxis: AxisSchema.exactOptional(),
-        'y-axis': z.boolean().exactOptional().openapi({ 'x-go-name': 'YAxis' }),
-        yAxis: z
-          .object({
-            decimals: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .exactOptional()
-              .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'Decimals' }),
-            format: z.string().exactOptional().openapi({ 'x-go-name': 'Format' }),
-            logBase: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .exactOptional()
-              .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'LogBase' }),
-            max: z.string().exactOptional().openapi({ 'x-go-name': 'Max' }),
-            min: z.string().exactOptional().openapi({ 'x-go-name': 'Min' }),
-            show: z.boolean().exactOptional().openapi({ 'x-go-name': 'Show' }),
-            splitFactor: z.float64().exactOptional().openapi({ 'x-go-name': 'SplitFactor' }),
-          })
-          .exactOptional()
-          .openapi({ 'x-go-name': 'YAxis', required: [] }),
-        yBucketBound: z.string().exactOptional().openapi({ 'x-go-name': 'YBucketBound' }),
-        yBucketNumber: z.float64().exactOptional().openapi({ 'x-go-name': 'YBucketNumber' }),
-        yBucketSize: z.float64().exactOptional().openapi({ 'x-go-name': 'YBucketSize' }),
-        y_formats: z.array(z.string()).exactOptional().openapi({ 'x-go-name': 'YFormats' }),
-        yaxes: z.array(AxisSchema).exactOptional().openapi({ 'x-go-name': 'Yaxes' }),
-      })
-      .openapi({ 'x-go-package': 'github.com/grafana-tools/sdk', required: [] }),
-  )
-  .openapi('Panel')
-
-const GrafanaDataSourceSchema = z
-  .object({
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.uint64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'uint64', 'x-go-name': 'ID' }),
-    name: z.string().exactOptional().openapi({ 'x-go-name': 'Name' }),
-  })
-  .openapi({
-    description: 'GrafanaDataSource represents a Grafana datasource like Prometheus',
-    'x-go-package': 'github.com/layer5io/meshery/models',
-    required: [],
-  })
-  .openapi('GrafanaDataSource')
-
-const GrafanaTemplateVarsSchema = z
-  .object({
-    datasource: GrafanaDataSourceSchema.exactOptional(),
-    hide: z.int().exactOptional().openapi({ 'x-go-name': 'Hide' }),
-    name: z.string().exactOptional().openapi({ 'x-go-name': 'Name' }),
-    query: z.string().exactOptional().openapi({ 'x-go-name': 'Query' }),
-    value: z.object({}).exactOptional().openapi({ 'x-go-name': 'Value' }),
-  })
-  .openapi({
-    description: 'GrafanaTemplateVars represents template variables in a bboard',
-    'x-go-package': 'github.com/layer5io/meshery/models',
-    required: [],
-  })
-  .openapi('GrafanaTemplateVars')
-
-const GrafanaBoardSchema = z
-  .object({
-    org_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.uint64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'uint64', 'x-go-name': 'OrgID' }),
-    panels: z.array(PanelSchema).exactOptional().openapi({ 'x-go-name': 'Panels' }),
-    slug: z.string().exactOptional().openapi({ 'x-go-name': 'Slug' }),
-    template_vars: z
-      .array(GrafanaTemplateVarsSchema)
-      .exactOptional()
-      .openapi({ 'x-go-name': 'TemplateVars' }),
-    title: z.string().exactOptional().openapi({ 'x-go-name': 'Title' }),
-    uid: z.string().exactOptional().openapi({ 'x-go-name': 'UID' }),
-    uri: z.string().exactOptional().openapi({ 'x-go-name': 'URI' }),
-  })
-  .openapi({
-    description: 'GrafanaBoard represents a Grafana board',
-    'x-go-package': 'github.com/layer5io/meshery/models',
-    required: [],
-  })
-  .openapi('GrafanaBoard')
-
-const SelectedGrafanaConfigSchema = z
-  .object({
-    board: GrafanaBoardSchema.exactOptional(),
-    panels: z.array(PanelSchema).exactOptional().openapi({ 'x-go-name': 'GrafanaPanels' }),
-    templateVars: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ 'x-go-name': 'SelectedTemplateVars' }),
-  })
-  .openapi({
-    description:
-      'SelectedGrafanaConfig represents the selected boards, panels, and template variables',
-    'x-go-package': 'github.com/layer5io/meshery/models',
-    required: [],
-  })
-  .openapi('SelectedGrafanaConfig')
-
-const GrafanaSchema = z
-  .object({
-    grafanaAPIKey: z.string().exactOptional().openapi({ 'x-go-name': 'GrafanaAPIKey' }),
-    grafanaURL: z.string().exactOptional().openapi({ 'x-go-name': 'GrafanaURL' }),
-    selectedBoardsConfigs: z
-      .array(SelectedGrafanaConfigSchema)
-      .exactOptional()
-      .openapi({
-        description: 'GrafanaBoardSearch string          `json:"grafanaBoardSearch,omitempty"`',
-        'x-go-name': 'GrafanaBoards',
-      }),
-  })
-  .openapi({
-    description: 'Grafana represents the Grafana session config',
-    'x-go-package': 'github.com/layer5io/meshery/models',
-    required: [],
-  })
-  .openapi('Grafana')
 
 const GrafanaConfigParamsSchema = z
   .object({
@@ -2065,49 +2191,6 @@ const IntOrStringSchema = z
   })
   .openapi('IntOrString')
 
-const K8SNodeSchema = z
-  .object({
-    allocatable_cpu: z.string().exactOptional().openapi({ 'x-go-name': 'AllocatableCPU' }),
-    allocatable_memory: z.string().exactOptional().openapi({ 'x-go-name': 'AllocatableMemory' }),
-    architecture: z.string().exactOptional().openapi({ 'x-go-name': 'Architecture' }),
-    capacity_cpu: z.string().exactOptional().openapi({ 'x-go-name': 'CapacityCPU' }),
-    capacity_memory: z.string().exactOptional().openapi({ 'x-go-name': 'CapacityMemory' }),
-    container_runtime_version: z
-      .string()
-      .exactOptional()
-      .openapi({ 'x-go-name': 'ContainerRuntimeVersion' }),
-    hostname: z.string().exactOptional().openapi({ 'x-go-name': 'HostName' }),
-    internal_ip: z.string().exactOptional().openapi({ 'x-go-name': 'InternalIP' }),
-    kubelet_version: z.string().exactOptional().openapi({ 'x-go-name': 'KubeletVersion' }),
-    kubeproxy_version: z.string().exactOptional().openapi({ 'x-go-name': 'KubeProxyVersion' }),
-    operating_system: z.string().exactOptional().openapi({ 'x-go-name': 'OperatingSystem' }),
-    os_image: z.string().exactOptional().openapi({ 'x-go-name': 'OSImage' }),
-  })
-  .openapi({
-    description: 'K8SNode - represents a kubernetes node',
-    'x-go-package': 'github.com/layer5io/meshery/models',
-    required: [],
-  })
-  .openapi('K8SNode')
-
-const K8SConfigSchema = z
-  .object({
-    clusterConfigured: z.boolean().exactOptional().openapi({ 'x-go-name': 'ClusterConfigured' }),
-    config: z.array(z.int()).exactOptional().openapi({ 'x-go-name': 'Config' }),
-    configuredServer: z.string().exactOptional().openapi({ 'x-go-name': 'Server' }),
-    contextName: z.string().exactOptional().openapi({ 'x-go-name': 'ContextName' }),
-    inClusterConfig: z.boolean().exactOptional().openapi({ 'x-go-name': 'InClusterConfig' }),
-    k8sfile: z.string().exactOptional().openapi({ 'x-go-name': 'K8Sfile' }),
-    nodes: z.array(K8SNodeSchema).exactOptional().openapi({ 'x-go-name': 'Nodes' }),
-    server_version: z.string().exactOptional().openapi({ 'x-go-name': 'ServerVersion' }),
-  })
-  .openapi({
-    description: 'K8SConfig represents all the k8s session config',
-    'x-go-package': 'github.com/layer5io/meshery/models',
-    required: [],
-  })
-  .openapi('K8SConfig')
-
 const K8SContextSchema = z
   .object({
     clusterName: z.string().exactOptional().openapi({ 'x-go-name': 'ClusterName' }),
@@ -2188,42 +2271,6 @@ const LoadBalancerStatusSchema = z
   })
   .openapi('LoadBalancerStatus')
 
-const LoadTestPreferencesSchema = z
-  .object({
-    c: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'ConcurrentRequests' }),
-    gen: z.string().exactOptional().openapi({ 'x-go-name': 'LoadGenerator' }),
-    qps: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', 'x-go-name': 'QueriesPerSecond' }),
-    t: z.string().exactOptional().openapi({ 'x-go-name': 'Duration' }),
-  })
-  .openapi({
-    description: 'LoadTestPreferences represents the load test preferences',
-    'x-go-package': 'github.com/layer5io/meshery/models',
-    required: [],
-  })
-  .openapi('LoadTestPreferences')
-
 const ManagedFieldsOperationTypeSchema = z
   .string()
   .openapi({
@@ -2234,7 +2281,7 @@ const ManagedFieldsOperationTypeSchema = z
   .openapi('ManagedFieldsOperationType')
 
 const TimeSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       '+protobuf.options.marshal=false\n+protobuf.as=Timestamp\n+protobuf.options.(gogoproto.goproto_stringer)=false',
@@ -2645,8 +2692,11 @@ const PerformanceResultSchema = z
     name: z.string().exactOptional().openapi({ 'x-go-name': 'Name' }),
     performance_profile: UUIDSchema.exactOptional(),
     runner_results: RunnerResultsSchema.exactOptional(),
-    server_board_config: z.object({}).exactOptional().openapi({ 'x-go-name': 'ServerBoardConfig' }),
-    server_metrics: z.object({}).exactOptional().openapi({ 'x-go-name': 'ServerMatrics' }),
+    server_board_config: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ 'x-go-name': 'ServerBoardConfig' }),
+    server_metrics: z.looseObject({}).exactOptional().openapi({ 'x-go-name': 'ServerMatrics' }),
     test_start_time: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -3104,22 +3154,7 @@ const PortSchema = z
   })
   .openapi('Port')
 
-const PrometheusSchema = z
-  .object({
-    prometheusURL: z.string().exactOptional().openapi({ 'x-go-name': 'PrometheusURL' }),
-    selectedPrometheusBoardsConfigs: z
-      .array(SelectedGrafanaConfigSchema)
-      .exactOptional()
-      .openapi({ 'x-go-name': 'SelectedPrometheusBoardsConfigs' }),
-  })
-  .openapi({
-    description: 'Prometheus represents the prometheus session config',
-    'x-go-package': 'github.com/layer5io/meshery/models',
-    required: [],
-  })
-  .openapi('Prometheus')
-
-const PreferenceSchema = z
+const PreferenceSchema: z.ZodType<PreferenceType> = z
   .object({
     anonymousPerfResults: z
       .boolean()
@@ -3732,7 +3767,7 @@ const VolumeSchema = z
           'The level at which the volume exists. Either `global` for cluster-wide, or `local` for machine level.',
       }),
     Status: z
-      .record(z.string(), z.object({}))
+      .record(z.string(), z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -4944,7 +4979,7 @@ export const postApiTelemetryMetricsBoardsRoute = createRoute({
                                                 .exactOptional()
                                                 .openapi({ 'x-go-name': 'SendReminder' }),
                                               settings: z
-                                                .object({})
+                                                .looseObject({})
                                                 .exactOptional()
                                                 .openapi({ 'x-go-name': 'Settings' }),
                                               type: z
@@ -4973,7 +5008,7 @@ export const postApiTelemetryMetricsBoardsRoute = createRoute({
                                     required: [],
                                   }),
                                 aliasColors: z
-                                  .object({})
+                                  .looseObject({})
                                   .exactOptional()
                                   .openapi({ 'x-go-name': 'AliasColors' }),
                                 bars: z
@@ -5399,7 +5434,7 @@ export const postApiTelemetryMetricsBoardsRoute = createRoute({
                                   .exactOptional()
                                   .openapi({ 'x-go-name': 'Headings' }),
                                 height: z
-                                  .object({})
+                                  .looseObject({})
                                   .exactOptional()
                                   .openapi({ 'x-go-name': 'Height' }),
                                 hideTimeOverride: z
@@ -6691,7 +6726,7 @@ export const postApiTelemetryMetricsBoardsRoute = createRoute({
                                                           .exactOptional()
                                                           .openapi({ 'x-go-name': 'Interval' }),
                                                         min_doc_count: z
-                                                          .object({})
+                                                          .looseObject({})
                                                           .exactOptional()
                                                           .openapi({ 'x-go-name': 'MinDocCount' }),
                                                         order: z
@@ -7668,7 +7703,7 @@ export const postApiTelemetryMetricsBoardsRoute = createRoute({
                                 name: z.string().exactOptional().openapi({ 'x-go-name': 'Name' }),
                                 query: z.string().exactOptional().openapi({ 'x-go-name': 'Query' }),
                                 value: z
-                                  .object({})
+                                  .looseObject({})
                                   .exactOptional()
                                   .openapi({ 'x-go-name': 'Value' }),
                               })
@@ -7860,7 +7895,7 @@ export const postApiTelemetryMetricsBoardsRoute = createRoute({
                                             .exactOptional()
                                             .openapi({ 'x-go-name': 'SendReminder' }),
                                           settings: z
-                                            .object({})
+                                            .looseObject({})
                                             .exactOptional()
                                             .openapi({ 'x-go-name': 'Settings' }),
                                           type: z
@@ -7889,7 +7924,7 @@ export const postApiTelemetryMetricsBoardsRoute = createRoute({
                                 required: [],
                               }),
                             aliasColors: z
-                              .object({})
+                              .looseObject({})
                               .exactOptional()
                               .openapi({ 'x-go-name': 'AliasColors' }),
                             bars: z
@@ -8275,7 +8310,10 @@ export const postApiTelemetryMetricsBoardsRoute = createRoute({
                               )
                               .exactOptional()
                               .openapi({ 'x-go-name': 'Headings' }),
-                            height: z.object({}).exactOptional().openapi({ 'x-go-name': 'Height' }),
+                            height: z
+                              .looseObject({})
+                              .exactOptional()
+                              .openapi({ 'x-go-name': 'Height' }),
                             hideTimeOverride: z
                               .preprocess(
                                 ((read) => (val: unknown) => {
@@ -9522,7 +9560,7 @@ export const postApiTelemetryMetricsBoardsRoute = createRoute({
                                                       .exactOptional()
                                                       .openapi({ 'x-go-name': 'Interval' }),
                                                     min_doc_count: z
-                                                      .object({})
+                                                      .looseObject({})
                                                       .exactOptional()
                                                       .openapi({ 'x-go-name': 'MinDocCount' }),
                                                     order: z

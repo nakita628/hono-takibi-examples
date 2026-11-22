@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodeBuild20161006BatchGetReportGroupsHandler = app.openapi(
   postXAmzTargetCodeBuild20161006BatchGetReportGroupsRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

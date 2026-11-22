@@ -13,7 +13,7 @@ Copyright <a href='https://amentum.space'>Amentum Pty Ltd</a> 2021.
 
 Base URLs:
 
-* <a href="https://api.apis.guru/wmm">https://api.apis.guru/wmm</a>
+* <a href="/wmm">/wmm</a>
 
 <h1 id="geomag-api-default">Default</h1>
 

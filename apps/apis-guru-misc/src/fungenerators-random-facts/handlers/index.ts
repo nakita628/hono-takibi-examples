@@ -1,0 +1,5 @@
+export * from './privateFacts'
+export * from './randomFacts'
+export * from './factOfTheDay'
+export * from './numberFacts'
+export * from './onThisDay'

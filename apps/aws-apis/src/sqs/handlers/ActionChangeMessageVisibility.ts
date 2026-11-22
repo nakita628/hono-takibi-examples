@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const ActionChangeMessageVisibilityHandler = app.openapi(
   postActionChangeMessageVisibilityRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

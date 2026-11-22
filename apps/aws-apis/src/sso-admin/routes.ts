@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const AttachCustomerManagedPolicyReferenceToPermissionSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AttachCustomerManagedPolicyReferenceToPermissionSetResponse')
 
 const InstanceArnSchema = z
@@ -38,22 +38,14 @@ const ManagedPolicyPathSchema = z
 
 const CustomerManagedPolicyReferenceSchema = z
   .object({
-    Name: ManagedPolicyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the IAM policy that you have configured in each account where you want to deploy your permission set.',
-        }),
-    ),
-    Path: ManagedPolicyPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to the IAM policy that you have configured in each account where you want to deploy your permission set. The default is <code>/</code>. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-friendly-names">Friendly names and paths</a> in the <i>IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
+    Name: ManagedPolicyNameSchema.openapi({
+      description:
+        'The name of the IAM policy that you have configured in each account where you want to deploy your permission set.',
+    }),
+    Path: ManagedPolicyPathSchema.exactOptional().openapi({
+      description:
+        'The path to the IAM policy that you have configured in each account where you want to deploy your permission set. The default is <code>/</code>. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-friendly-names">Friendly names and paths</a> in the <i>IAM User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -64,25 +56,17 @@ const CustomerManagedPolicyReferenceSchema = z
 
 const AttachCustomerManagedPolicyReferenceToPermissionSetRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. ',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the <code>PermissionSet</code>.' }),
-    ),
-    CustomerManagedPolicyReference: CustomerManagedPolicyReferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the name and path of a customer managed policy. You must have an IAM policy that matches the name and path in each AWS account where you want to deploy your permission set.',
-        }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. ',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description: 'The ARN of the <code>PermissionSet</code>.',
+    }),
+    CustomerManagedPolicyReference: CustomerManagedPolicyReferenceSchema.openapi({
+      description:
+        'Specifies the name and path of a customer managed policy. You must have an IAM policy that matches the name and path in each AWS account where you want to deploy your permission set.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'PermissionSetArn', 'CustomerManagedPolicyReference'],
@@ -105,7 +89,7 @@ const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
 const ConflictExceptionSchema = z.any().openapi('ConflictException')
 
 const AttachManagedPolicyToPermissionSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AttachManagedPolicyToPermissionSetResponse')
 
 const ManagedPolicyArnSchema = z
@@ -119,27 +103,17 @@ const ManagedPolicyArnSchema = z
 
 const AttachManagedPolicyToPermissionSetRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the <a>PermissionSet</a> that the managed policy should be attached to.',
-        }),
-    ),
-    ManagedPolicyArn: ManagedPolicyArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The AWS managed policy ARN to be attached to a permission set.' }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description:
+        'The ARN of the <a>PermissionSet</a> that the managed policy should be attached to.',
+    }),
+    ManagedPolicyArn: ManagedPolicyArnSchema.openapi({
+      description: 'The AWS managed policy ARN to be attached to a permission set.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'PermissionSetArn', 'ManagedPolicyArn'],
@@ -183,58 +157,38 @@ const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
 
 const AccountAssignmentOperationStatusSchema = z
   .object({
-    Status: StatusValuesSchema.and(
-      z.any().openapi({ description: 'The status of the permission set provisioning process.' }),
-    ).exactOptional(),
-    RequestId: UUIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for tracking the request operation that is generated by the universally unique identifier (UUID) workflow.',
-        }),
-    ).exactOptional(),
-    FailureReason: ReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The message that contains an error or exception in case of an operation failure.',
-        }),
-    ).exactOptional(),
-    TargetId: TargetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'TargetID is an AWS account identifier, typically a 10-12 digit string (For example, 123456789012).',
-        }),
-    ).exactOptional(),
-    TargetType: TargetTypeSchema.and(
-      z.any().openapi({ description: 'The entity type for which the assignment will be created.' }),
-    ).exactOptional(),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the permission set. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ).exactOptional(),
-    PrincipalType: PrincipalTypeSchema.and(
-      z.any().openapi({ description: 'The entity type for which the assignment will be created.' }),
-    ).exactOptional(),
-    PrincipalId: PrincipalIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href="/singlesignon/latest/IdentityStoreAPIReference/welcome.html">IAM Identity Center Identity Store API Reference</a>.',
-        }),
-    ).exactOptional(),
-    CreatedDate: DateSchema.and(
-      z.any().openapi({ description: 'The date that the permission set was created.' }),
-    ).exactOptional(),
+    Status: StatusValuesSchema.exactOptional().openapi({
+      description: 'The status of the permission set provisioning process.',
+    }),
+    RequestId: UUIdSchema.exactOptional().openapi({
+      description:
+        'The identifier for tracking the request operation that is generated by the universally unique identifier (UUID) workflow.',
+    }),
+    FailureReason: ReasonSchema.exactOptional().openapi({
+      description:
+        'The message that contains an error or exception in case of an operation failure.',
+    }),
+    TargetId: TargetIdSchema.exactOptional().openapi({
+      description:
+        'TargetID is an AWS account identifier, typically a 10-12 digit string (For example, 123456789012).',
+    }),
+    TargetType: TargetTypeSchema.exactOptional().openapi({
+      description: 'The entity type for which the assignment will be created.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the permission set. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    PrincipalType: PrincipalTypeSchema.exactOptional().openapi({
+      description: 'The entity type for which the assignment will be created.',
+    }),
+    PrincipalId: PrincipalIdSchema.exactOptional().openapi({
+      description:
+        'An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href="/singlesignon/latest/IdentityStoreAPIReference/welcome.html">IAM Identity Center Identity Store API Reference</a>.',
+    }),
+    CreatedDate: DateSchema.exactOptional().openapi({
+      description: 'The date that the permission set was created.',
+    }),
   })
   .openapi({
     description:
@@ -245,57 +199,37 @@ const AccountAssignmentOperationStatusSchema = z
 
 const CreateAccountAssignmentResponseSchema = z
   .object({
-    AccountAssignmentCreationStatus: AccountAssignmentOperationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status object for the account assignment creation operation.',
-        }),
-    ).exactOptional(),
+    AccountAssignmentCreationStatus: AccountAssignmentOperationStatusSchema.exactOptional().openapi(
+      { description: 'The status object for the account assignment creation operation.' },
+    ),
   })
   .openapi({ required: [] })
   .openapi('CreateAccountAssignmentResponse')
 
 const CreateAccountAssignmentRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    TargetId: TargetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'TargetID is an AWS account identifier, typically a 10-12 digit string (For example, 123456789012).',
-        }),
-    ),
-    TargetType: TargetTypeSchema.and(
-      z.any().openapi({ description: 'The entity type for which the assignment will be created.' }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the permission set that the admin wants to grant the principal access to.',
-        }),
-    ),
-    PrincipalType: PrincipalTypeSchema.and(
-      z.any().openapi({ description: 'The entity type for which the assignment will be created.' }),
-    ),
-    PrincipalId: PrincipalIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href="/singlesignon/latest/IdentityStoreAPIReference/welcome.html">IAM Identity Center Identity Store API Reference</a>.',
-        }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    TargetId: TargetIdSchema.openapi({
+      description:
+        'TargetID is an AWS account identifier, typically a 10-12 digit string (For example, 123456789012).',
+    }),
+    TargetType: TargetTypeSchema.openapi({
+      description: 'The entity type for which the assignment will be created.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description:
+        'The ARN of the permission set that the admin wants to grant the principal access to.',
+    }),
+    PrincipalType: PrincipalTypeSchema.openapi({
+      description: 'The entity type for which the assignment will be created.',
+    }),
+    PrincipalId: PrincipalIdSchema.openapi({
+      description:
+        'An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href="/singlesignon/latest/IdentityStoreAPIReference/welcome.html">IAM Identity Center Identity Store API Reference</a>.',
+    }),
   })
   .openapi({
     required: [
@@ -311,7 +245,7 @@ const CreateAccountAssignmentRequestSchema = z
   .openapi('CreateAccountAssignmentRequest')
 
 const CreateInstanceAccessControlAttributeConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('CreateInstanceAccessControlAttributeConfigurationResponse')
 
 const AccessControlAttributeKeySchema = z
@@ -335,14 +269,10 @@ const AccessControlAttributeValueSourceListSchema = z
 
 const AccessControlAttributeValueSchema = z
   .object({
-    Source: AccessControlAttributeValueSourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identity source to use when mapping a specified attribute to IAM Identity Center.',
-        }),
-    ),
+    Source: AccessControlAttributeValueSourceListSchema.openapi({
+      description:
+        'The identity source to use when mapping a specified attribute to IAM Identity Center.',
+    }),
   })
   .openapi({
     required: ['Source'],
@@ -353,21 +283,13 @@ const AccessControlAttributeValueSchema = z
 
 const AccessControlAttributeSchema = z
   .object({
-    Key: AccessControlAttributeKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the attribute associated with your identities in your identity source. This is used to map a specified attribute in your identity source with an attribute in IAM Identity Center.',
-        }),
-    ),
-    Value: AccessControlAttributeValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value used for mapping a specified attribute to an identity source.',
-        }),
-    ),
+    Key: AccessControlAttributeKeySchema.openapi({
+      description:
+        'The name of the attribute associated with your identities in your identity source. This is used to map a specified attribute in your identity source with an attribute in IAM Identity Center.',
+    }),
+    Value: AccessControlAttributeValueSchema.openapi({
+      description: 'The value used for mapping a specified attribute to an identity source.',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -384,14 +306,10 @@ const AccessControlAttributeListSchema = z
 
 const InstanceAccessControlAttributeConfigurationSchema = z
   .object({
-    AccessControlAttributes: AccessControlAttributeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists the attributes that are configured for ABAC in the specified IAM Identity Center instance.',
-        }),
-    ),
+    AccessControlAttributes: AccessControlAttributeListSchema.openapi({
+      description:
+        'Lists the attributes that are configured for ABAC in the specified IAM Identity Center instance.',
+    }),
   })
   .openapi({
     required: ['AccessControlAttributes'],
@@ -402,23 +320,15 @@ const InstanceAccessControlAttributeConfigurationSchema = z
 
 const CreateInstanceAccessControlAttributeConfigurationRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed.',
-        }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed.',
+    }),
     InstanceAccessControlAttributeConfiguration:
-      InstanceAccessControlAttributeConfigurationSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'Specifies the IAM Identity Center identity store attributes to add to your ABAC configuration. When using an external identity provider as an identity source, you can pass attributes through the SAML assertion. Doing so provides an alternative to configuring attributes from the IAM Identity Center identity store. If a SAML assertion passes any of these attributes, IAM Identity Center will replace the attribute value with the value from the IAM Identity Center identity store.',
-          }),
-      ),
+      InstanceAccessControlAttributeConfigurationSchema.openapi({
+        description:
+          'Specifies the IAM Identity Center identity store attributes to add to your ABAC configuration. When using an external identity provider as an identity source, you can pass attributes through the SAML assertion. Doing so provides an alternative to configuring attributes from the IAM Identity Center identity store. If a SAML assertion passes any of these attributes, IAM Identity Center will replace the attribute value with the value from the IAM Identity Center identity store.',
+      }),
   })
   .openapi({
     required: ['InstanceArn', 'InstanceAccessControlAttributeConfiguration'],
@@ -458,48 +368,36 @@ const RelayStateSchema = z
 
 const PermissionSetSchema = z
   .object({
-    Name: PermissionSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the permission set.' }),
-    ).exactOptional(),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the permission set. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ).exactOptional(),
-    Description: PermissionSetDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the <a>PermissionSet</a>.' }),
-    ).exactOptional(),
-    CreatedDate: DateSchema.and(
-      z.any().openapi({ description: 'The date that the permission set was created.' }),
-    ).exactOptional(),
-    SessionDuration: DurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The length of time that the application user sessions are valid for in the ISO-8601 standard.',
-        }),
-    ).exactOptional(),
-    RelayState: RelayStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used to redirect users within the application during the federation authentication process.',
-        }),
-    ).exactOptional(),
+    Name: PermissionSetNameSchema.exactOptional().openapi({
+      description: 'The name of the permission set.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the permission set. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    Description: PermissionSetDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the <a>PermissionSet</a>.',
+    }),
+    CreatedDate: DateSchema.exactOptional().openapi({
+      description: 'The date that the permission set was created.',
+    }),
+    SessionDuration: DurationSchema.exactOptional().openapi({
+      description:
+        'The length of time that the application user sessions are valid for in the ISO-8601 standard.',
+    }),
+    RelayState: RelayStateSchema.exactOptional().openapi({
+      description:
+        'Used to redirect users within the application during the federation authentication process.',
+    }),
   })
   .openapi({ description: 'An entity that contains IAM policies.', required: [] })
   .openapi('PermissionSet')
 
 const CreatePermissionSetResponseSchema = z
   .object({
-    PermissionSet: PermissionSetSchema.and(
-      z.any().openapi({ description: 'Defines the level of access on an AWS account.' }),
-    ).exactOptional(),
+    PermissionSet: PermissionSetSchema.exactOptional().openapi({
+      description: 'Defines the level of access on an AWS account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreatePermissionSetResponse')
@@ -520,8 +418,8 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: 'The key for the tag.' })),
-    Value: TagValueSchema.and(z.any().openapi({ description: 'The value of the tag.' })),
+    Key: TagKeySchema.openapi({ description: 'The key for the tag.' }),
+    Value: TagValueSchema.openapi({ description: 'The value of the tag.' }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -534,95 +432,61 @@ const TagListSchema = z.array(TagSchema).min(0).max(50).openapi('TagList')
 
 const CreatePermissionSetRequestSchema = z
   .object({
-    Name: PermissionSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the <a>PermissionSet</a>.' }),
-    ),
-    Description: PermissionSetDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the <a>PermissionSet</a>.' }),
-    ).exactOptional(),
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    SessionDuration: DurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The length of time that the application user sessions are valid in the ISO-8601 standard.',
-        }),
-    ).exactOptional(),
-    RelayState: RelayStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used to redirect users within the application during the federation authentication process.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to attach to the new <a>PermissionSet</a>.' }),
-    ).exactOptional(),
+    Name: PermissionSetNameSchema.openapi({ description: 'The name of the <a>PermissionSet</a>.' }),
+    Description: PermissionSetDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the <a>PermissionSet</a>.',
+    }),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    SessionDuration: DurationSchema.exactOptional().openapi({
+      description:
+        'The length of time that the application user sessions are valid in the ISO-8601 standard.',
+    }),
+    RelayState: RelayStateSchema.exactOptional().openapi({
+      description:
+        'Used to redirect users within the application during the federation authentication process.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to attach to the new <a>PermissionSet</a>.',
+    }),
   })
   .openapi({ required: ['Name', 'InstanceArn'], title: 'CreatePermissionSetRequest' })
   .openapi('CreatePermissionSetRequest')
 
 const DeleteAccountAssignmentResponseSchema = z
   .object({
-    AccountAssignmentDeletionStatus: AccountAssignmentOperationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status object for the account assignment deletion operation.',
-        }),
-    ).exactOptional(),
+    AccountAssignmentDeletionStatus: AccountAssignmentOperationStatusSchema.exactOptional().openapi(
+      { description: 'The status object for the account assignment deletion operation.' },
+    ),
   })
   .openapi({ required: [] })
   .openapi('DeleteAccountAssignmentResponse')
 
 const DeleteAccountAssignmentRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    TargetId: TargetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'TargetID is an AWS account identifier, typically a 10-12 digit string (For example, 123456789012).',
-        }),
-    ),
-    TargetType: TargetTypeSchema.and(
-      z.any().openapi({ description: 'The entity type for which the assignment will be deleted.' }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the permission set that will be used to remove access.',
-        }),
-    ),
-    PrincipalType: PrincipalTypeSchema.and(
-      z.any().openapi({ description: 'The entity type for which the assignment will be deleted.' }),
-    ),
-    PrincipalId: PrincipalIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href="/singlesignon/latest/IdentityStoreAPIReference/welcome.html">IAM Identity Center Identity Store API Reference</a>.',
-        }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    TargetId: TargetIdSchema.openapi({
+      description:
+        'TargetID is an AWS account identifier, typically a 10-12 digit string (For example, 123456789012).',
+    }),
+    TargetType: TargetTypeSchema.openapi({
+      description: 'The entity type for which the assignment will be deleted.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description: 'The ARN of the permission set that will be used to remove access.',
+    }),
+    PrincipalType: PrincipalTypeSchema.openapi({
+      description: 'The entity type for which the assignment will be deleted.',
+    }),
+    PrincipalId: PrincipalIdSchema.openapi({
+      description:
+        'An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href="/singlesignon/latest/IdentityStoreAPIReference/welcome.html">IAM Identity Center Identity Store API Reference</a>.',
+    }),
   })
   .openapi({
     required: [
@@ -638,26 +502,18 @@ const DeleteAccountAssignmentRequestSchema = z
   .openapi('DeleteAccountAssignmentRequest')
 
 const DeleteInlinePolicyFromPermissionSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteInlinePolicyFromPermissionSetResponse')
 
 const DeleteInlinePolicyFromPermissionSetRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the permission set that will be used to remove access.',
-        }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description: 'The ARN of the permission set that will be used to remove access.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'PermissionSetArn'],
@@ -666,19 +522,15 @@ const DeleteInlinePolicyFromPermissionSetRequestSchema = z
   .openapi('DeleteInlinePolicyFromPermissionSetRequest')
 
 const DeleteInstanceAccessControlAttributeConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteInstanceAccessControlAttributeConfigurationResponse')
 
 const DeleteInstanceAccessControlAttributeConfigurationRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed.',
-        }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed.',
+    }),
   })
   .openapi({
     required: ['InstanceArn'],
@@ -686,42 +538,34 @@ const DeleteInstanceAccessControlAttributeConfigurationRequestSchema = z
   })
   .openapi('DeleteInstanceAccessControlAttributeConfigurationRequest')
 
-const DeletePermissionSetResponseSchema = z.object({}).openapi('DeletePermissionSetResponse')
+const DeletePermissionSetResponseSchema = z.looseObject({}).openapi('DeletePermissionSetResponse')
 
 const DeletePermissionSetRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the permission set that should be deleted.' }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description: 'The ARN of the permission set that should be deleted.',
+    }),
   })
   .openapi({ required: ['InstanceArn', 'PermissionSetArn'], title: 'DeletePermissionSetRequest' })
   .openapi('DeletePermissionSetRequest')
 
 const DeletePermissionsBoundaryFromPermissionSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeletePermissionsBoundaryFromPermissionSetResponse')
 
 const DeletePermissionsBoundaryFromPermissionSetRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. ',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the <code>PermissionSet</code>.' }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. ',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description: 'The ARN of the <code>PermissionSet</code>.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'PermissionSetArn'],
@@ -731,34 +575,22 @@ const DeletePermissionsBoundaryFromPermissionSetRequestSchema = z
 
 const DescribeAccountAssignmentCreationStatusResponseSchema = z
   .object({
-    AccountAssignmentCreationStatus: AccountAssignmentOperationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status object for the account assignment creation operation.',
-        }),
-    ).exactOptional(),
+    AccountAssignmentCreationStatus: AccountAssignmentOperationStatusSchema.exactOptional().openapi(
+      { description: 'The status object for the account assignment creation operation.' },
+    ),
   })
   .openapi({ required: [] })
   .openapi('DescribeAccountAssignmentCreationStatusResponse')
 
 const DescribeAccountAssignmentCreationStatusRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    AccountAssignmentCreationRequestId: UUIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier that is used to track the request operation progress.',
-        }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    AccountAssignmentCreationRequestId: UUIdSchema.openapi({
+      description: 'The identifier that is used to track the request operation progress.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'AccountAssignmentCreationRequestId'],
@@ -768,34 +600,22 @@ const DescribeAccountAssignmentCreationStatusRequestSchema = z
 
 const DescribeAccountAssignmentDeletionStatusResponseSchema = z
   .object({
-    AccountAssignmentDeletionStatus: AccountAssignmentOperationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status object for the account assignment deletion operation.',
-        }),
-    ).exactOptional(),
+    AccountAssignmentDeletionStatus: AccountAssignmentOperationStatusSchema.exactOptional().openapi(
+      { description: 'The status object for the account assignment deletion operation.' },
+    ),
   })
   .openapi({ required: [] })
   .openapi('DescribeAccountAssignmentDeletionStatusResponse')
 
 const DescribeAccountAssignmentDeletionStatusRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    AccountAssignmentDeletionRequestId: UUIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier that is used to track the request operation progress.',
-        }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    AccountAssignmentDeletionRequestId: UUIdSchema.openapi({
+      description: 'The identifier that is used to track the request operation progress.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'AccountAssignmentDeletionRequestId'],
@@ -813,39 +633,28 @@ const InstanceAccessControlAttributeConfigurationStatusReasonSchema = z
 
 const DescribeInstanceAccessControlAttributeConfigurationResponseSchema = z
   .object({
-    Status: InstanceAccessControlAttributeConfigurationStatusSchema.and(
-      z.any().openapi({ description: 'The status of the attribute configuration process.' }),
-    ).exactOptional(),
-    StatusReason: InstanceAccessControlAttributeConfigurationStatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides more details about the current status of the specified attribute.',
-        }),
-    ).exactOptional(),
+    Status: InstanceAccessControlAttributeConfigurationStatusSchema.exactOptional().openapi({
+      description: 'The status of the attribute configuration process.',
+    }),
+    StatusReason:
+      InstanceAccessControlAttributeConfigurationStatusReasonSchema.exactOptional().openapi({
+        description: 'Provides more details about the current status of the specified attribute.',
+      }),
     InstanceAccessControlAttributeConfiguration:
-      InstanceAccessControlAttributeConfigurationSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'Gets the list of IAM Identity Center identity store attributes that have been added to your ABAC configuration.',
-          }),
-      ).exactOptional(),
+      InstanceAccessControlAttributeConfigurationSchema.exactOptional().openapi({
+        description:
+          'Gets the list of IAM Identity Center identity store attributes that have been added to your ABAC configuration.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DescribeInstanceAccessControlAttributeConfigurationResponse')
 
 const DescribeInstanceAccessControlAttributeConfigurationRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed.',
-        }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed.',
+    }),
   })
   .openapi({
     required: ['InstanceArn'],
@@ -855,26 +664,22 @@ const DescribeInstanceAccessControlAttributeConfigurationRequestSchema = z
 
 const DescribePermissionSetResponseSchema = z
   .object({
-    PermissionSet: PermissionSetSchema.and(
-      z.any().openapi({ description: 'Describes the level of access on an AWS account.' }),
-    ).exactOptional(),
+    PermissionSet: PermissionSetSchema.exactOptional().openapi({
+      description: 'Describes the level of access on an AWS account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribePermissionSetResponse')
 
 const DescribePermissionSetRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the permission set. ' }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description: 'The ARN of the permission set. ',
+    }),
   })
   .openapi({ required: ['InstanceArn', 'PermissionSetArn'], title: 'DescribePermissionSetRequest' })
   .openapi('DescribePermissionSetRequest')
@@ -887,43 +692,27 @@ const AccountIdSchema = z
 
 const PermissionSetProvisioningStatusSchema = z
   .object({
-    Status: StatusValuesSchema.and(
-      z.any().openapi({ description: 'The status of the permission set provisioning process.' }),
-    ).exactOptional(),
-    RequestId: UUIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for tracking the request operation that is generated by the universally unique identifier (UUID) workflow.',
-        }),
-    ).exactOptional(),
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the AWS account from which to list the assignments.',
-        }),
-    ).exactOptional(),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the permission set that is being provisioned. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ).exactOptional(),
-    FailureReason: ReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The message that contains an error or exception in case of an operation failure.',
-        }),
-    ).exactOptional(),
-    CreatedDate: DateSchema.and(
-      z.any().openapi({ description: 'The date that the permission set was created.' }),
-    ).exactOptional(),
+    Status: StatusValuesSchema.exactOptional().openapi({
+      description: 'The status of the permission set provisioning process.',
+    }),
+    RequestId: UUIdSchema.exactOptional().openapi({
+      description:
+        'The identifier for tracking the request operation that is generated by the universally unique identifier (UUID) workflow.',
+    }),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The identifier of the AWS account from which to list the assignments.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the permission set that is being provisioned. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    FailureReason: ReasonSchema.exactOptional().openapi({
+      description:
+        'The message that contains an error or exception in case of an operation failure.',
+    }),
+    CreatedDate: DateSchema.exactOptional().openapi({
+      description: 'The date that the permission set was created.',
+    }),
   })
   .openapi({
     description:
@@ -934,35 +723,23 @@ const PermissionSetProvisioningStatusSchema = z
 
 const DescribePermissionSetProvisioningStatusResponseSchema = z
   .object({
-    PermissionSetProvisioningStatus: PermissionSetProvisioningStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status object for the permission set provisioning operation.',
-        }),
-    ).exactOptional(),
+    PermissionSetProvisioningStatus: PermissionSetProvisioningStatusSchema.exactOptional().openapi({
+      description: 'The status object for the permission set provisioning operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribePermissionSetProvisioningStatusResponse')
 
 const DescribePermissionSetProvisioningStatusRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    ProvisionPermissionSetRequestId: UUIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier that is provided by the <a>ProvisionPermissionSet</a> call to retrieve the current status of the provisioning workflow.',
-        }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    ProvisionPermissionSetRequestId: UUIdSchema.openapi({
+      description:
+        'The identifier that is provided by the <a>ProvisionPermissionSet</a> call to retrieve the current status of the provisioning workflow.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'ProvisionPermissionSetRequestId'],
@@ -971,30 +748,22 @@ const DescribePermissionSetProvisioningStatusRequestSchema = z
   .openapi('DescribePermissionSetProvisioningStatusRequest')
 
 const DetachCustomerManagedPolicyReferenceFromPermissionSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DetachCustomerManagedPolicyReferenceFromPermissionSetResponse')
 
 const DetachCustomerManagedPolicyReferenceFromPermissionSetRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. ',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the <code>PermissionSet</code>.' }),
-    ),
-    CustomerManagedPolicyReference: CustomerManagedPolicyReferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the name and path of a customer managed policy. You must have an IAM policy that matches the name and path in each AWS account where you want to deploy your permission set.',
-        }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. ',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description: 'The ARN of the <code>PermissionSet</code>.',
+    }),
+    CustomerManagedPolicyReference: CustomerManagedPolicyReferenceSchema.openapi({
+      description:
+        'Specifies the name and path of a customer managed policy. You must have an IAM policy that matches the name and path in each AWS account where you want to deploy your permission set.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'PermissionSetArn', 'CustomerManagedPolicyReference'],
@@ -1003,34 +772,21 @@ const DetachCustomerManagedPolicyReferenceFromPermissionSetRequestSchema = z
   .openapi('DetachCustomerManagedPolicyReferenceFromPermissionSetRequest')
 
 const DetachManagedPolicyFromPermissionSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DetachManagedPolicyFromPermissionSetResponse')
 
 const DetachManagedPolicyFromPermissionSetRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the <a>PermissionSet</a> from which the policy should be detached.',
-        }),
-    ),
-    ManagedPolicyArn: ManagedPolicyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The AWS managed policy ARN to be detached from a permission set.',
-        }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description: 'The ARN of the <a>PermissionSet</a> from which the policy should be detached.',
+    }),
+    ManagedPolicyArn: ManagedPolicyArnSchema.openapi({
+      description: 'The AWS managed policy ARN to be detached from a permission set.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'PermissionSetArn', 'ManagedPolicyArn'],
@@ -1047,26 +803,22 @@ const PermissionSetPolicyDocumentSchema = z
 
 const GetInlinePolicyForPermissionSetResponseSchema = z
   .object({
-    InlinePolicy: PermissionSetPolicyDocumentSchema.and(
-      z.any().openapi({ description: 'The inline policy that is attached to the permission set.' }),
-    ).exactOptional(),
+    InlinePolicy: PermissionSetPolicyDocumentSchema.exactOptional().openapi({
+      description: 'The inline policy that is attached to the permission set.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInlinePolicyForPermissionSetResponse')
 
 const GetInlinePolicyForPermissionSetRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the permission set.' }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description: 'The ARN of the permission set.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'PermissionSetArn'],
@@ -1076,22 +828,14 @@ const GetInlinePolicyForPermissionSetRequestSchema = z
 
 const PermissionsBoundarySchema = z
   .object({
-    CustomerManagedPolicyReference: CustomerManagedPolicyReferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the name and path of a customer managed policy. You must have an IAM policy that matches the name and path in each AWS account where you want to deploy your permission set.',
-        }),
-    ).exactOptional(),
-    ManagedPolicyArn: ManagedPolicyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS managed policy ARN that you want to attach to a permission set as a permissions boundary.',
-        }),
-    ).exactOptional(),
+    CustomerManagedPolicyReference: CustomerManagedPolicyReferenceSchema.exactOptional().openapi({
+      description:
+        'Specifies the name and path of a customer managed policy. You must have an IAM policy that matches the name and path in each AWS account where you want to deploy your permission set.',
+    }),
+    ManagedPolicyArn: ManagedPolicyArnSchema.exactOptional().openapi({
+      description:
+        'The AWS managed policy ARN that you want to attach to a permission set as a permissions boundary.',
+    }),
   })
   .openapi({
     description:
@@ -1102,30 +846,22 @@ const PermissionsBoundarySchema = z
 
 const GetPermissionsBoundaryForPermissionSetResponseSchema = z
   .object({
-    PermissionsBoundary: PermissionsBoundarySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The permissions boundary attached to the specified permission set.',
-        }),
-    ).exactOptional(),
+    PermissionsBoundary: PermissionsBoundarySchema.exactOptional().openapi({
+      description: 'The permissions boundary attached to the specified permission set.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPermissionsBoundaryForPermissionSetResponse')
 
 const GetPermissionsBoundaryForPermissionSetRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. ',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the <code>PermissionSet</code>.' }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. ',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description: 'The ARN of the <code>PermissionSet</code>.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'PermissionSetArn'],
@@ -1135,20 +871,16 @@ const GetPermissionsBoundaryForPermissionSetRequestSchema = z
 
 const AccountAssignmentOperationStatusMetadataSchema = z
   .object({
-    Status: StatusValuesSchema.and(
-      z.any().openapi({ description: 'The status of the permission set provisioning process.' }),
-    ).exactOptional(),
-    RequestId: UUIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for tracking the request operation that is generated by the universally unique identifier (UUID) workflow.',
-        }),
-    ).exactOptional(),
-    CreatedDate: DateSchema.and(
-      z.any().openapi({ description: 'The date that the permission set was created.' }),
-    ).exactOptional(),
+    Status: StatusValuesSchema.exactOptional().openapi({
+      description: 'The status of the permission set provisioning process.',
+    }),
+    RequestId: UUIdSchema.exactOptional().openapi({
+      description:
+        'The identifier for tracking the request operation that is generated by the universally unique identifier (UUID) workflow.',
+    }),
+    CreatedDate: DateSchema.exactOptional().openapi({
+      description: 'The date that the permission set was created.',
+    }),
   })
   .openapi({
     description: 'Provides information about the <a>AccountAssignment</a> creation request.',
@@ -1168,21 +900,14 @@ const TokenSchema = z
 
 const ListAccountAssignmentCreationStatusResponseSchema = z
   .object({
-    AccountAssignmentsCreationStatus: AccountAssignmentOperationStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status object for the account assignment creation operation.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
+    AccountAssignmentsCreationStatus:
+      AccountAssignmentOperationStatusListSchema.exactOptional().openapi({
+        description: 'The status object for the account assignment creation operation.',
+      }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAccountAssignmentCreationStatusResponse')
@@ -1191,13 +916,9 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const OperationStatusFilterSchema = z
   .object({
-    Status: StatusValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Filters the list operations result based on the status attribute.',
-        }),
-    ).exactOptional(),
+    Status: StatusValuesSchema.exactOptional().openapi({
+      description: 'Filters the list operations result based on the status attribute.',
+    }),
   })
   .openapi({
     description: 'Filters he operation status list based on the passed attribute value.',
@@ -1207,109 +928,74 @@ const OperationStatusFilterSchema = z
 
 const ListAccountAssignmentCreationStatusRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of results to display for the assignment.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
-    Filter: OperationStatusFilterSchema.and(
-      z.any().openapi({ description: 'Filters results based on the passed attribute value.' }),
-    ).exactOptional(),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to display for the assignment.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
+    Filter: OperationStatusFilterSchema.exactOptional().openapi({
+      description: 'Filters results based on the passed attribute value.',
+    }),
   })
   .openapi({ required: ['InstanceArn'], title: 'ListAccountAssignmentCreationStatusRequest' })
   .openapi('ListAccountAssignmentCreationStatusRequest')
 
 const ListAccountAssignmentDeletionStatusResponseSchema = z
   .object({
-    AccountAssignmentsDeletionStatus: AccountAssignmentOperationStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status object for the account assignment deletion operation.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
+    AccountAssignmentsDeletionStatus:
+      AccountAssignmentOperationStatusListSchema.exactOptional().openapi({
+        description: 'The status object for the account assignment deletion operation.',
+      }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAccountAssignmentDeletionStatusResponse')
 
 const ListAccountAssignmentDeletionStatusRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of results to display for the assignment.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
-    Filter: OperationStatusFilterSchema.and(
-      z.any().openapi({ description: 'Filters results based on the passed attribute value.' }),
-    ).exactOptional(),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to display for the assignment.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
+    Filter: OperationStatusFilterSchema.exactOptional().openapi({
+      description: 'Filters results based on the passed attribute value.',
+    }),
   })
   .openapi({ required: ['InstanceArn'], title: 'ListAccountAssignmentDeletionStatusRequest' })
   .openapi('ListAccountAssignmentDeletionStatusRequest')
 
 const AccountAssignmentSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the AWS account.' }),
-    ).exactOptional(),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the permission set. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ).exactOptional(),
-    PrincipalType: PrincipalTypeSchema.and(
-      z.any().openapi({ description: 'The entity type for which the assignment will be created.' }),
-    ).exactOptional(),
-    PrincipalId: PrincipalIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href="/singlesignon/latest/IdentityStoreAPIReference/welcome.html">IAM Identity Center Identity Store API Reference</a>.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The identifier of the AWS account.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the permission set. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    PrincipalType: PrincipalTypeSchema.exactOptional().openapi({
+      description: 'The entity type for which the assignment will be created.',
+    }),
+    PrincipalId: PrincipalIdSchema.exactOptional().openapi({
+      description:
+        'An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href="/singlesignon/latest/IdentityStoreAPIReference/welcome.html">IAM Identity Center Identity Store API Reference</a>.',
+    }),
   })
   .openapi({
     description:
@@ -1324,61 +1010,36 @@ const AccountAssignmentListSchema = z
 
 const ListAccountAssignmentsResponseSchema = z
   .object({
-    AccountAssignments: AccountAssignmentListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of assignments that match the input AWS account and permission set.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
+    AccountAssignments: AccountAssignmentListSchema.exactOptional().openapi({
+      description: 'The list of assignments that match the input AWS account and permission set.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAccountAssignmentsResponse')
 
 const ListAccountAssignmentsRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    AccountId: TargetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the AWS account from which to list the assignments.',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the permission set from which to list assignments.' }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of results to display for the assignment.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    AccountId: TargetIdSchema.openapi({
+      description: 'The identifier of the AWS account from which to list the assignments.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description: 'The ARN of the permission set from which to list assignments.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to display for the assignment.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'AccountId', 'PermissionSetArn'],
@@ -1390,17 +1051,13 @@ const AccountListSchema = z.array(AccountIdSchema).openapi('AccountList')
 
 const ListAccountsForProvisionedPermissionSetResponseSchema = z
   .object({
-    AccountIds: AccountListSchema.and(
-      z.any().openapi({ description: 'The list of AWS <code>AccountIds</code>.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
+    AccountIds: AccountListSchema.exactOptional().openapi({
+      description: 'The list of AWS <code>AccountIds</code>.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAccountsForProvisionedPermissionSetResponse')
@@ -1411,42 +1068,24 @@ const ProvisioningStatusSchema = z
 
 const ListAccountsForProvisionedPermissionSetRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the <a>PermissionSet</a> from which the associated AWS accounts will be listed.',
-        }),
-    ),
-    ProvisioningStatus: ProvisioningStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The permission set provisioning status for an AWS account.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to display for the <a>PermissionSet</a>.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description:
+        'The ARN of the <a>PermissionSet</a> from which the associated AWS accounts will be listed.',
+    }),
+    ProvisioningStatus: ProvisioningStatusSchema.exactOptional().openapi({
+      description: 'The permission set provisioning status for an AWS account.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to display for the <a>PermissionSet</a>.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'PermissionSetArn'],
@@ -1460,52 +1099,35 @@ const CustomerManagedPolicyReferenceListSchema = z
 
 const ListCustomerManagedPolicyReferencesInPermissionSetResponseSchema = z
   .object({
-    CustomerManagedPolicyReferences: CustomerManagedPolicyReferenceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the names and paths of the customer managed policies that you have attached to your permission set.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
+    CustomerManagedPolicyReferences:
+      CustomerManagedPolicyReferenceListSchema.exactOptional().openapi({
+        description:
+          'Specifies the names and paths of the customer managed policies that you have attached to your permission set.',
+      }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCustomerManagedPolicyReferencesInPermissionSetResponse')
 
 const ListCustomerManagedPolicyReferencesInPermissionSetRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. ',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the <code>PermissionSet</code>. ' }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of results to display for the list call.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. ',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description: 'The ARN of the <code>PermissionSet</code>. ',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to display for the list call.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'PermissionSetArn'],
@@ -1522,22 +1144,14 @@ const IdSchema = z
 
 const InstanceMetadataSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ).exactOptional(),
-    IdentityStoreId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the identity store that is connected to the IAM Identity Center instance.',
-        }),
-    ).exactOptional(),
+    InstanceArn: InstanceArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    IdentityStoreId: IdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the identity store that is connected to the IAM Identity Center instance.',
+    }),
   })
   .openapi({
     description: 'Provides information about the IAM Identity Center instance.',
@@ -1549,40 +1163,26 @@ const InstanceListSchema = z.array(InstanceMetadataSchema).openapi('InstanceList
 
 const ListInstancesResponseSchema = z
   .object({
-    Instances: InstanceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Lists the IAM Identity Center instances that the caller has access to.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
+    Instances: InstanceListSchema.exactOptional().openapi({
+      description: 'Lists the IAM Identity Center instances that the caller has access to.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListInstancesResponse')
 
 const ListInstancesRequestSchema = z
   .object({
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of results to display for the instance.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to display for the instance.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
   })
   .openapi({ title: 'ListInstancesRequest', required: [] })
   .openapi('ListInstancesRequest')
@@ -1591,17 +1191,13 @@ const NameSchema = z.string().min(1).max(100).openapi('Name')
 
 const AttachedManagedPolicySchema = z
   .object({
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the AWS managed policy.' }),
-    ).exactOptional(),
-    Arn: ManagedPolicyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the AWS managed policy. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.exactOptional().openapi({
+      description: 'The name of the AWS managed policy.',
+    }),
+    Arn: ManagedPolicyArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the AWS managed policy. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
   })
   .openapi({
     description: 'A structure that stores the details of the AWS managed policy.',
@@ -1615,55 +1211,33 @@ const AttachedManagedPolicyListSchema = z
 
 const ListManagedPoliciesInPermissionSetResponseSchema = z
   .object({
-    AttachedManagedPolicies: AttachedManagedPolicyListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of the <a>AttachedManagedPolicy</a> data type object.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
+    AttachedManagedPolicies: AttachedManagedPolicyListSchema.exactOptional().openapi({
+      description: 'An array of the <a>AttachedManagedPolicy</a> data type object.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListManagedPoliciesInPermissionSetResponse')
 
 const ListManagedPoliciesInPermissionSetRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the <a>PermissionSet</a> whose managed policies will be listed.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to display for the <a>PermissionSet</a>.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description: 'The ARN of the <a>PermissionSet</a> whose managed policies will be listed.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to display for the <a>PermissionSet</a>.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'PermissionSetArn'],
@@ -1673,20 +1247,16 @@ const ListManagedPoliciesInPermissionSetRequestSchema = z
 
 const PermissionSetProvisioningStatusMetadataSchema = z
   .object({
-    Status: StatusValuesSchema.and(
-      z.any().openapi({ description: 'The status of the permission set provisioning process.' }),
-    ).exactOptional(),
-    RequestId: UUIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for tracking the request operation that is generated by the universally unique identifier (UUID) workflow.',
-        }),
-    ).exactOptional(),
-    CreatedDate: DateSchema.and(
-      z.any().openapi({ description: 'The date that the permission set was created.' }),
-    ).exactOptional(),
+    Status: StatusValuesSchema.exactOptional().openapi({
+      description: 'The status of the permission set provisioning process.',
+    }),
+    RequestId: UUIdSchema.exactOptional().openapi({
+      description:
+        'The identifier for tracking the request operation that is generated by the universally unique identifier (UUID) workflow.',
+    }),
+    CreatedDate: DateSchema.exactOptional().openapi({
+      description: 'The date that the permission set was created.',
+    }),
   })
   .openapi({
     description: 'Provides information about the permission set provisioning status.',
@@ -1700,51 +1270,34 @@ const PermissionSetProvisioningStatusListSchema = z
 
 const ListPermissionSetProvisioningStatusResponseSchema = z
   .object({
-    PermissionSetsProvisioningStatus: PermissionSetProvisioningStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status object for the permission set provisioning operation.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
+    PermissionSetsProvisioningStatus:
+      PermissionSetProvisioningStatusListSchema.exactOptional().openapi({
+        description: 'The status object for the permission set provisioning operation.',
+      }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPermissionSetProvisioningStatusResponse')
 
 const ListPermissionSetProvisioningStatusRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of results to display for the assignment.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
-    Filter: OperationStatusFilterSchema.and(
-      z.any().openapi({ description: 'Filters results based on the passed attribute value.' }),
-    ).exactOptional(),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to display for the assignment.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
+    Filter: OperationStatusFilterSchema.exactOptional().openapi({
+      description: 'Filters results based on the passed attribute value.',
+    }),
   })
   .openapi({ required: ['InstanceArn'], title: 'ListPermissionSetProvisioningStatusRequest' })
   .openapi('ListPermissionSetProvisioningStatusRequest')
@@ -1753,102 +1306,66 @@ const PermissionSetListSchema = z.array(PermissionSetArnSchema).openapi('Permiss
 
 const ListPermissionSetsResponseSchema = z
   .object({
-    PermissionSets: PermissionSetListSchema.and(
-      z.any().openapi({ description: 'Defines the level of access on an AWS account.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
+    PermissionSets: PermissionSetListSchema.exactOptional().openapi({
+      description: 'Defines the level of access on an AWS account.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPermissionSetsResponse')
 
 const ListPermissionSetsRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of results to display for the assignment.' }),
-    ).exactOptional(),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to display for the assignment.',
+    }),
   })
   .openapi({ required: ['InstanceArn'], title: 'ListPermissionSetsRequest' })
   .openapi('ListPermissionSetsRequest')
 
 const ListPermissionSetsProvisionedToAccountResponseSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
-    PermissionSets: PermissionSetListSchema.and(
-      z.any().openapi({ description: 'Defines the level of access that an AWS account has.' }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
+    PermissionSets: PermissionSetListSchema.exactOptional().openapi({
+      description: 'Defines the level of access that an AWS account has.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPermissionSetsProvisionedToAccountResponse')
 
 const ListPermissionSetsProvisionedToAccountRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the AWS account from which to list the assignments.',
-        }),
-    ),
-    ProvisioningStatus: ProvisioningStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status object for the permission set provisioning operation.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of results to display for the assignment.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    AccountId: AccountIdSchema.openapi({
+      description: 'The identifier of the AWS account from which to list the assignments.',
+    }),
+    ProvisioningStatus: ProvisioningStatusSchema.exactOptional().openapi({
+      description: 'The status object for the permission set provisioning operation.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to display for the assignment.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'AccountId'],
@@ -1858,19 +1375,13 @@ const ListPermissionSetsProvisionedToAccountRequestSchema = z
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A set of key-value pairs that are used to manage the resource.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'A set of key-value pairs that are used to manage the resource.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -1886,38 +1397,26 @@ const TaggableResourceArnSchema = z
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    ResourceArn: TaggableResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource with the tags to be listed.' }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
-        }),
-    ).exactOptional(),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    ResourceArn: TaggableResourceArnSchema.openapi({
+      description: 'The ARN of the resource with the tags to be listed.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.',
+    }),
   })
   .openapi({ required: ['InstanceArn', 'ResourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const ProvisionPermissionSetResponseSchema = z
   .object({
-    PermissionSetProvisioningStatus: PermissionSetProvisioningStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status object for the permission set provisioning operation.',
-        }),
-    ).exactOptional(),
+    PermissionSetProvisioningStatus: PermissionSetProvisioningStatusSchema.exactOptional().openapi({
+      description: 'The status object for the permission set provisioning operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ProvisionPermissionSetResponse')
@@ -1928,28 +1427,20 @@ const ProvisionTargetTypeSchema = z
 
 const ProvisionPermissionSetRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the permission set.' }),
-    ),
-    TargetId: TargetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'TargetID is an AWS account identifier, typically a 10-12 digit string (For example, 123456789012).',
-        }),
-    ).exactOptional(),
-    TargetType: ProvisionTargetTypeSchema.and(
-      z.any().openapi({ description: 'The entity type for which the assignment will be created.' }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description: 'The ARN of the permission set.',
+    }),
+    TargetId: TargetIdSchema.exactOptional().openapi({
+      description:
+        'TargetID is an AWS account identifier, typically a 10-12 digit string (For example, 123456789012).',
+    }),
+    TargetType: ProvisionTargetTypeSchema.openapi({
+      description: 'The entity type for which the assignment will be created.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'PermissionSetArn', 'TargetType'],
@@ -1958,25 +1449,21 @@ const ProvisionPermissionSetRequestSchema = z
   .openapi('ProvisionPermissionSetRequest')
 
 const PutInlinePolicyToPermissionSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('PutInlinePolicyToPermissionSetResponse')
 
 const PutInlinePolicyToPermissionSetRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the permission set.' }),
-    ),
-    InlinePolicy: PermissionSetPolicyDocumentSchema.and(
-      z.any().openapi({ description: 'The inline policy to attach to a <a>PermissionSet</a>.' }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description: 'The ARN of the permission set.',
+    }),
+    InlinePolicy: PermissionSetPolicyDocumentSchema.openapi({
+      description: 'The inline policy to attach to a <a>PermissionSet</a>.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'PermissionSetArn', 'InlinePolicy'],
@@ -1985,30 +1472,22 @@ const PutInlinePolicyToPermissionSetRequestSchema = z
   .openapi('PutInlinePolicyToPermissionSetRequest')
 
 const PutPermissionsBoundaryToPermissionSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('PutPermissionsBoundaryToPermissionSetResponse')
 
 const PutPermissionsBoundaryToPermissionSetRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. ',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the <code>PermissionSet</code>.' }),
-    ),
-    PermissionsBoundary: PermissionsBoundarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The permissions boundary that you want to attach to a <code>PermissionSet</code>.',
-        }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. ',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description: 'The ARN of the <code>PermissionSet</code>.',
+    }),
+    PermissionsBoundary: PermissionsBoundarySchema.openapi({
+      description:
+        'The permissions boundary that you want to attach to a <code>PermissionSet</code>.',
+    }),
   })
   .openapi({
     required: ['InstanceArn', 'PermissionSetArn', 'PermissionsBoundary'],
@@ -2016,72 +1495,58 @@ const PutPermissionsBoundaryToPermissionSetRequestSchema = z
   })
   .openapi('PutPermissionsBoundaryToPermissionSetRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    ResourceArn: TaggableResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource with the tags to be listed.' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A set of key-value pairs that are used to manage the resource.' }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    ResourceArn: TaggableResourceArnSchema.openapi({
+      description: 'The ARN of the resource with the tags to be listed.',
+    }),
+    Tags: TagListSchema.openapi({
+      description: 'A set of key-value pairs that are used to manage the resource.',
+    }),
   })
   .openapi({ required: ['InstanceArn', 'ResourceArn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    ResourceArn: TaggableResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource with the tags to be listed.' }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The keys of tags that are attached to the resource.' }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    ResourceArn: TaggableResourceArnSchema.openapi({
+      description: 'The ARN of the resource with the tags to be listed.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: 'The keys of tags that are attached to the resource.',
+    }),
   })
   .openapi({ required: ['InstanceArn', 'ResourceArn', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateInstanceAccessControlAttributeConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateInstanceAccessControlAttributeConfigurationResponse')
 
 const UpdateInstanceAccessControlAttributeConfigurationRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed.',
-        }),
-    ),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed.',
+    }),
     InstanceAccessControlAttributeConfiguration:
-      InstanceAccessControlAttributeConfigurationSchema.and(
-        z.any().openapi({ description: 'Updates the attributes for your ABAC configuration.' }),
-      ),
+      InstanceAccessControlAttributeConfigurationSchema.openapi({
+        description: 'Updates the attributes for your ABAC configuration.',
+      }),
   })
   .openapi({
     required: ['InstanceArn', 'InstanceAccessControlAttributeConfiguration'],
@@ -2089,40 +1554,28 @@ const UpdateInstanceAccessControlAttributeConfigurationRequestSchema = z
   })
   .openapi('UpdateInstanceAccessControlAttributeConfigurationRequest')
 
-const UpdatePermissionSetResponseSchema = z.object({}).openapi('UpdatePermissionSetResponse')
+const UpdatePermissionSetResponseSchema = z.looseObject({}).openapi('UpdatePermissionSetResponse')
 
 const UpdatePermissionSetRequestSchema = z
   .object({
-    InstanceArn: InstanceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
-        }),
-    ),
-    PermissionSetArn: PermissionSetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the permission set.' }),
-    ),
-    Description: PermissionSetDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the <a>PermissionSet</a>.' }),
-    ).exactOptional(),
-    SessionDuration: DurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The length of time that the application user sessions are valid for in the ISO-8601 standard.',
-        }),
-    ).exactOptional(),
-    RelayState: RelayStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used to redirect users within the application during the federation authentication process.',
-        }),
-    ).exactOptional(),
+    InstanceArn: InstanceArnSchema.openapi({
+      description:
+        'The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href="/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and AWS Service Namespaces</a> in the <i>AWS General Reference</i>.',
+    }),
+    PermissionSetArn: PermissionSetArnSchema.openapi({
+      description: 'The ARN of the permission set.',
+    }),
+    Description: PermissionSetDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the <a>PermissionSet</a>.',
+    }),
+    SessionDuration: DurationSchema.exactOptional().openapi({
+      description:
+        'The length of time that the application user sessions are valid for in the ISO-8601 standard.',
+    }),
+    RelayState: RelayStateSchema.exactOptional().openapi({
+      description:
+        'Used to redirect users within the application during the federation authentication process.',
+    }),
   })
   .openapi({ required: ['InstanceArn', 'PermissionSetArn'], title: 'UpdatePermissionSetRequest' })
   .openapi('UpdatePermissionSetRequest')

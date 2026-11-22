@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetFirehose20150804ListTagsForDeliveryStreamHandler = app.openapi(
   postXAmzTargetFirehose20150804ListTagsForDeliveryStreamRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

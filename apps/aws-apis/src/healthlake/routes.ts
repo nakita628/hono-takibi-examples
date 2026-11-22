@@ -27,38 +27,22 @@ const BoundedLengthStringSchema = z
 
 const CreateFHIRDatastoreResponseSchema = z
   .object({
-    DatastoreId: DatastoreIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS-generated Data Store id. This id is in the output from the initial Data Store creation call.',
-        }),
-    ),
-    DatastoreArn: DatastoreArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The datastore ARN is generated during the creation of the Data Store and can be found in the output from the initial Data Store creation call.',
-        }),
-    ),
-    DatastoreStatus: DatastoreStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the FHIR Data Store. Possible statuses are ‘CREATING’, ‘ACTIVE’, ‘DELETING’, ‘DELETED’.',
-        }),
-    ),
-    DatastoreEndpoint: BoundedLengthStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS endpoint for the created Data Store. For preview, only US-east-1 endpoints are supported.',
-        }),
-    ),
+    DatastoreId: DatastoreIdSchema.openapi({
+      description:
+        'The AWS-generated Data Store id. This id is in the output from the initial Data Store creation call.',
+    }),
+    DatastoreArn: DatastoreArnSchema.openapi({
+      description:
+        'The datastore ARN is generated during the creation of the Data Store and can be found in the output from the initial Data Store creation call.',
+    }),
+    DatastoreStatus: DatastoreStatusSchema.openapi({
+      description:
+        'The status of the FHIR Data Store. Possible statuses are ‘CREATING’, ‘ACTIVE’, ‘DELETING’, ‘DELETED’.',
+    }),
+    DatastoreEndpoint: BoundedLengthStringSchema.openapi({
+      description:
+        'The AWS endpoint for the created Data Store. For preview, only US-east-1 endpoints are supported.',
+    }),
   })
   .openapi({ required: ['DatastoreId', 'DatastoreArn', 'DatastoreStatus', 'DatastoreEndpoint'] })
   .openapi('CreateFHIRDatastoreResponse')
@@ -85,22 +69,14 @@ const EncryptionKeyIDSchema = z
 
 const KmsEncryptionConfigSchema = z
   .object({
-    CmkType: CmkTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The type of customer-managed-key(CMK) used for encyrption. The two types of supported CMKs are customer owned CMKs and AWS owned CMKs. ',
-        }),
-    ),
-    KmsKeyId: EncryptionKeyIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The KMS encryption key id/alias used to encrypt the Data Store contents at rest. ',
-        }),
-    ).exactOptional(),
+    CmkType: CmkTypeSchema.openapi({
+      description:
+        ' The type of customer-managed-key(CMK) used for encyrption. The two types of supported CMKs are customer owned CMKs and AWS owned CMKs. ',
+    }),
+    KmsKeyId: EncryptionKeyIDSchema.exactOptional().openapi({
+      description:
+        ' The KMS encryption key id/alias used to encrypt the Data Store contents at rest. ',
+    }),
   })
   .openapi({
     required: ['CmkType'],
@@ -111,14 +87,10 @@ const KmsEncryptionConfigSchema = z
 
 const SseConfigurationSchema = z
   .object({
-    KmsEncryptionConfig: KmsEncryptionConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The KMS encryption configuration used to provide details for data encryption. ',
-        }),
-    ),
+    KmsEncryptionConfig: KmsEncryptionConfigSchema.openapi({
+      description:
+        ' The KMS encryption configuration used to provide details for data encryption. ',
+    }),
   })
   .openapi({
     required: ['KmsEncryptionConfig'],
@@ -131,13 +103,9 @@ const PreloadDataTypeSchema = z.literal('SYNTHEA').openapi('PreloadDataType')
 
 const PreloadDataConfigSchema = z
   .object({
-    PreloadDataType: PreloadDataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of preloaded data. Only Synthea preloaded data is supported.',
-        }),
-    ),
+    PreloadDataType: PreloadDataTypeSchema.openapi({
+      description: 'The type of preloaded data. Only Synthea preloaded data is supported.',
+    }),
   })
   .openapi({
     required: ['PreloadDataType'],
@@ -169,14 +137,12 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z.any().openapi({ description: ' The key portion of a tag. Tag keys are case sensitive. ' }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The value portion of tag. Tag values are case sensitive. ' }),
-    ),
+    Key: TagKeySchema.openapi({
+      description: ' The key portion of a tag. Tag keys are case sensitive. ',
+    }),
+    Value: TagValueSchema.openapi({
+      description: ' The value portion of tag. Tag values are case sensitive. ',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -189,44 +155,26 @@ const TagListSchema = z.array(TagSchema).min(0).max(200).openapi('TagList')
 
 const CreateFHIRDatastoreRequestSchema = z
   .object({
-    DatastoreName: DatastoreNameSchema.and(
-      z.any().openapi({ description: 'The user generated name for the Data Store.' }),
-    ).exactOptional(),
-    DatastoreTypeVersion: FHIRVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The FHIR version of the Data Store. The only supported version is R4.',
-        }),
-    ),
-    SseConfiguration: SseConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The server-side encryption key configuration for a customer provided encryption key specified for creating a Data Store. ',
-        }),
-    ).exactOptional(),
-    PreloadDataConfig: PreloadDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional parameter to preload data upon creation of the Data Store. Currently, the only supported preloaded data is synthetic data generated from Synthea.',
-        }),
-    ).exactOptional(),
-    ClientToken: ClientTokenStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Optional user provided token used for ensuring idempotency.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Resource tags that are applied to a Data Store when it is created. ',
-        }),
-    ).exactOptional(),
+    DatastoreName: DatastoreNameSchema.exactOptional().openapi({
+      description: 'The user generated name for the Data Store.',
+    }),
+    DatastoreTypeVersion: FHIRVersionSchema.openapi({
+      description: 'The FHIR version of the Data Store. The only supported version is R4.',
+    }),
+    SseConfiguration: SseConfigurationSchema.exactOptional().openapi({
+      description:
+        ' The server-side encryption key configuration for a customer provided encryption key specified for creating a Data Store. ',
+    }),
+    PreloadDataConfig: PreloadDataConfigSchema.exactOptional().openapi({
+      description:
+        'Optional parameter to preload data upon creation of the Data Store. Currently, the only supported preloaded data is synthetic data generated from Synthea.',
+    }),
+    ClientToken: ClientTokenStringSchema.exactOptional().openapi({
+      description: 'Optional user provided token used for ensuring idempotency.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: ' Resource tags that are applied to a Data Store when it is created. ',
+    }),
   })
   .openapi({ required: ['DatastoreTypeVersion'], title: 'CreateFHIRDatastoreRequest' })
   .openapi('CreateFHIRDatastoreRequest')
@@ -241,40 +189,27 @@ const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
 
 const DeleteFHIRDatastoreResponseSchema = z
   .object({
-    DatastoreId: DatastoreIdSchema.and(
-      z.any().openapi({ description: 'The AWS-generated ID for the Data Store to be deleted.' }),
-    ),
-    DatastoreArn: DatastoreArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that gives Amazon HealthLake access permission.',
-        }),
-    ),
-    DatastoreStatus: DatastoreStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status of the Data Store that the user has requested to be deleted. ',
-        }),
-    ),
-    DatastoreEndpoint: BoundedLengthStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The AWS endpoint for the Data Store the user has requested to be deleted.',
-        }),
-    ),
+    DatastoreId: DatastoreIdSchema.openapi({
+      description: 'The AWS-generated ID for the Data Store to be deleted.',
+    }),
+    DatastoreArn: DatastoreArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) that gives Amazon HealthLake access permission.',
+    }),
+    DatastoreStatus: DatastoreStatusSchema.openapi({
+      description: 'The status of the Data Store that the user has requested to be deleted. ',
+    }),
+    DatastoreEndpoint: BoundedLengthStringSchema.openapi({
+      description: 'The AWS endpoint for the Data Store the user has requested to be deleted.',
+    }),
   })
   .openapi({ required: ['DatastoreId', 'DatastoreArn', 'DatastoreStatus', 'DatastoreEndpoint'] })
   .openapi('DeleteFHIRDatastoreResponse')
 
 const DeleteFHIRDatastoreRequestSchema = z
   .object({
-    DatastoreId: DatastoreIdSchema.and(
-      z.any().openapi({ description: ' The AWS-generated ID for the Data Store to be deleted.' }),
-    ).exactOptional(),
+    DatastoreId: DatastoreIdSchema.exactOptional().openapi({
+      description: ' The AWS-generated ID for the Data Store to be deleted.',
+    }),
   })
   .openapi({ title: 'DeleteFHIRDatastoreRequest', required: [] })
   .openapi('DeleteFHIRDatastoreRequest')
@@ -293,57 +228,37 @@ const StringSchema = z
 
 const DatastorePropertiesSchema = z
   .object({
-    DatastoreId: DatastoreIdSchema.and(
-      z.any().openapi({ description: 'The AWS-generated ID number for the Data Store.' }),
-    ),
-    DatastoreArn: DatastoreArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name used in the creation of the Data Store.',
-        }),
-    ),
-    DatastoreName: DatastoreNameSchema.and(
-      z.any().openapi({ description: 'The user-generated name for the Data Store.' }),
-    ).exactOptional(),
-    DatastoreStatus: DatastoreStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The status of the Data Store. Possible statuses are 'CREATING', 'ACTIVE', 'DELETING', or 'DELETED'.",
-        }),
-    ),
-    CreatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that a Data Store was created. ' }),
-    ).exactOptional(),
-    DatastoreTypeVersion: FHIRVersionSchema.and(
-      z.any().openapi({ description: 'The FHIR version. Only R4 version data is supported.' }),
-    ),
-    DatastoreEndpoint: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The AWS endpoint for the Data Store. Each Data Store will have it's own endpoint with Data Store ID in the endpoint URL.",
-        }),
-    ),
-    SseConfiguration: SseConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The server-side encryption key configuration for a customer provided encryption key (CMK). ',
-        }),
-    ).exactOptional(),
-    PreloadDataConfig: PreloadDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The preloaded data configuration for the Data Store. Only data preloaded from Synthea is supported.',
-        }),
-    ).exactOptional(),
+    DatastoreId: DatastoreIdSchema.openapi({
+      description: 'The AWS-generated ID number for the Data Store.',
+    }),
+    DatastoreArn: DatastoreArnSchema.openapi({
+      description: 'The Amazon Resource Name used in the creation of the Data Store.',
+    }),
+    DatastoreName: DatastoreNameSchema.exactOptional().openapi({
+      description: 'The user-generated name for the Data Store.',
+    }),
+    DatastoreStatus: DatastoreStatusSchema.openapi({
+      description:
+        "The status of the Data Store. Possible statuses are 'CREATING', 'ACTIVE', 'DELETING', or 'DELETED'.",
+    }),
+    CreatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The time that a Data Store was created. ',
+    }),
+    DatastoreTypeVersion: FHIRVersionSchema.openapi({
+      description: 'The FHIR version. Only R4 version data is supported.',
+    }),
+    DatastoreEndpoint: StringSchema.openapi({
+      description:
+        "The AWS endpoint for the Data Store. Each Data Store will have it's own endpoint with Data Store ID in the endpoint URL.",
+    }),
+    SseConfiguration: SseConfigurationSchema.exactOptional().openapi({
+      description:
+        ' The server-side encryption key configuration for a customer provided encryption key (CMK). ',
+    }),
+    PreloadDataConfig: PreloadDataConfigSchema.exactOptional().openapi({
+      description:
+        'The preloaded data configuration for the Data Store. Only data preloaded from Synthea is supported.',
+    }),
   })
   .openapi({
     required: [
@@ -360,28 +275,20 @@ const DatastorePropertiesSchema = z
 
 const DescribeFHIRDatastoreResponseSchema = z
   .object({
-    DatastoreProperties: DatastorePropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'All properties associated with a Data Store, including the Data Store ID, Data Store ARN, Data Store name, Data Store status, created at, Data Store type version, and Data Store endpoint.',
-        }),
-    ),
+    DatastoreProperties: DatastorePropertiesSchema.openapi({
+      description:
+        'All properties associated with a Data Store, including the Data Store ID, Data Store ARN, Data Store name, Data Store status, created at, Data Store type version, and Data Store endpoint.',
+    }),
   })
   .openapi({ required: ['DatastoreProperties'] })
   .openapi('DescribeFHIRDatastoreResponse')
 
 const DescribeFHIRDatastoreRequestSchema = z
   .object({
-    DatastoreId: DatastoreIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS-generated Data Store id. This is part of the ‘CreateFHIRDatastore’ output.',
-        }),
-    ).exactOptional(),
+    DatastoreId: DatastoreIdSchema.exactOptional().openapi({
+      description:
+        'The AWS-generated Data Store id. This is part of the ‘CreateFHIRDatastore’ output.',
+    }),
   })
   .openapi({ title: 'DescribeFHIRDatastoreRequest', required: [] })
   .openapi('DescribeFHIRDatastoreRequest')
@@ -412,17 +319,13 @@ const S3UriSchema = z
 
 const S3ConfigurationSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The S3Uri is the user specified S3 location of the FHIR data to be imported into Amazon HealthLake. ',
-        }),
-    ),
-    KmsKeyId: EncryptionKeyIDSchema.and(
-      z.any().openapi({ description: ' The KMS key ID used to access the S3 bucket. ' }),
-    ),
+    S3Uri: S3UriSchema.openapi({
+      description:
+        ' The S3Uri is the user specified S3 location of the FHIR data to be imported into Amazon HealthLake. ',
+    }),
+    KmsKeyId: EncryptionKeyIDSchema.openapi({
+      description: ' The KMS key ID used to access the S3 bucket. ',
+    }),
   })
   .openapi({
     required: ['S3Uri', 'KmsKeyId'],
@@ -433,14 +336,10 @@ const S3ConfigurationSchema = z
 
 const OutputDataConfigSchema = z
   .object({
-    S3Configuration: S3ConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The output data configuration that was supplied when the export job was created. ',
-        }),
-    ).exactOptional(),
+    S3Configuration: S3ConfigurationSchema.exactOptional().openapi({
+      description:
+        ' The output data configuration that was supplied when the export job was created. ',
+    }),
   })
   .openapi({
     description: 'The output data configuration that was supplied when the export job was created.',
@@ -464,56 +363,32 @@ const MessageSchema = z
 
 const ExportJobPropertiesSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The AWS generated ID for an export job.' }),
-    ),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The user generated name for an export job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of a FHIR export job. Possible statuses are SUBMITTED, IN_PROGRESS, COMPLETED, or FAILED.',
-        }),
-    ),
-    SubmitTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time an export job was initiated.' }),
-    ),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time an export job completed.' }),
-    ).exactOptional(),
-    DatastoreId: DatastoreIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS generated ID for the Data Store from which files are being exported for an export job.',
-        }),
-    ),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output data configuration that was supplied when the export job was created.',
-        }),
-    ),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name used during the initiation of the job.',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An explanation of any errors that may have occurred during the export job.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.openapi({ description: 'The AWS generated ID for an export job.' }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The user generated name for an export job.',
+    }),
+    JobStatus: JobStatusSchema.openapi({
+      description:
+        'The status of a FHIR export job. Possible statuses are SUBMITTED, IN_PROGRESS, COMPLETED, or FAILED.',
+    }),
+    SubmitTime: TimestampSchema.openapi({ description: 'The time an export job was initiated.' }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time an export job completed.',
+    }),
+    DatastoreId: DatastoreIdSchema.openapi({
+      description:
+        'The AWS generated ID for the Data Store from which files are being exported for an export job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.openapi({
+      description:
+        'The output data configuration that was supplied when the export job was created.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name used during the initiation of the job.',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description: 'An explanation of any errors that may have occurred during the export job.',
+    }),
   })
   .openapi({
     required: ['JobId', 'JobStatus', 'SubmitTime', 'DatastoreId', 'OutputDataConfig'],
@@ -524,101 +399,67 @@ const ExportJobPropertiesSchema = z
 
 const DescribeFHIRExportJobResponseSchema = z
   .object({
-    ExportJobProperties: ExportJobPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Displays the properties of the export job, including the ID, Arn, Name, and the status of the job. ',
-        }),
-    ),
+    ExportJobProperties: ExportJobPropertiesSchema.openapi({
+      description:
+        'Displays the properties of the export job, including the ID, Arn, Name, and the status of the job. ',
+    }),
   })
   .openapi({ required: ['ExportJobProperties'] })
   .openapi('DescribeFHIRExportJobResponse')
 
 const DescribeFHIRExportJobRequestSchema = z
   .object({
-    DatastoreId: DatastoreIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS generated ID for the Data Store from which files are being exported from for an export job.',
-        }),
-    ),
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The AWS generated ID for an export job.' }),
-    ),
+    DatastoreId: DatastoreIdSchema.openapi({
+      description:
+        'The AWS generated ID for the Data Store from which files are being exported from for an export job.',
+    }),
+    JobId: JobIdSchema.openapi({ description: 'The AWS generated ID for an export job.' }),
   })
   .openapi({ required: ['DatastoreId', 'JobId'], title: 'DescribeFHIRExportJobRequest' })
   .openapi('DescribeFHIRExportJobRequest')
 
 const InputDataConfigSchema = z
   .object({
-    S3Uri: S3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3Uri is the user specified S3 location of the FHIR data to be imported into Amazon HealthLake. ',
-        }),
-    ).exactOptional(),
+    S3Uri: S3UriSchema.exactOptional().openapi({
+      description:
+        'The S3Uri is the user specified S3 location of the FHIR data to be imported into Amazon HealthLake. ',
+    }),
   })
   .openapi({ description: ' The input properties for an import job.', required: [] })
   .openapi('InputDataConfig')
 
 const ImportJobPropertiesSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The AWS-generated id number for the Import job.' }),
-    ),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The user-generated name for an Import job.' }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The job status for an Import job. Possible statuses are SUBMITTED, IN_PROGRESS, COMPLETED, FAILED.',
-        }),
-    ),
-    SubmitTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time that the Import job was submitted for processing.' }),
-    ),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the Import job was completed.' }),
-    ).exactOptional(),
-    DatastoreId: DatastoreIdSchema.and(
-      z.any().openapi({ description: 'The datastore id used when the Import job was created. ' }),
-    ),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input data configuration that was supplied when the Import job was created.',
-        }),
-    ),
+    JobId: JobIdSchema.openapi({ description: 'The AWS-generated id number for the Import job.' }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The user-generated name for an Import job.',
+    }),
+    JobStatus: JobStatusSchema.openapi({
+      description:
+        'The job status for an Import job. Possible statuses are SUBMITTED, IN_PROGRESS, COMPLETED, FAILED.',
+    }),
+    SubmitTime: TimestampSchema.openapi({
+      description: 'The time that the Import job was submitted for processing.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the Import job was completed.',
+    }),
+    DatastoreId: DatastoreIdSchema.openapi({
+      description: 'The datastore id used when the Import job was created. ',
+    }),
+    InputDataConfig: InputDataConfigSchema.openapi({
+      description:
+        'The input data configuration that was supplied when the Import job was created.',
+    }),
     JobOutputDataConfig: OutputDataConfigSchema.exactOptional(),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that gives Amazon HealthLake access to your input data.',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An explanation of any errors that may have occurred during the FHIR import job. ',
-        }),
-    ).exactOptional(),
+    DataAccessRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that gives Amazon HealthLake access to your input data.',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description:
+        'An explanation of any errors that may have occurred during the FHIR import job. ',
+    }),
   })
   .openapi({
     required: ['JobId', 'JobStatus', 'SubmitTime', 'DatastoreId', 'InputDataConfig'],
@@ -629,24 +470,20 @@ const ImportJobPropertiesSchema = z
 
 const DescribeFHIRImportJobResponseSchema = z
   .object({
-    ImportJobProperties: ImportJobPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The properties of the Import job request, including the ID, ARN, name, and the status of the job.',
-        }),
-    ),
+    ImportJobProperties: ImportJobPropertiesSchema.openapi({
+      description:
+        'The properties of the Import job request, including the ID, ARN, name, and the status of the job.',
+    }),
   })
   .openapi({ required: ['ImportJobProperties'] })
   .openapi('DescribeFHIRImportJobResponse')
 
 const DescribeFHIRImportJobRequestSchema = z
   .object({
-    DatastoreId: DatastoreIdSchema.and(
-      z.any().openapi({ description: 'The AWS-generated ID of the Data Store.' }),
-    ),
-    JobId: JobIdSchema.and(z.any().openapi({ description: 'The AWS-generated job ID.' })),
+    DatastoreId: DatastoreIdSchema.openapi({
+      description: 'The AWS-generated ID of the Data Store.',
+    }),
+    JobId: JobIdSchema.openapi({ description: 'The AWS-generated job ID.' }),
   })
   .openapi({ required: ['DatastoreId', 'JobId'], title: 'DescribeFHIRImportJobRequest' })
   .openapi('DescribeFHIRImportJobRequest')
@@ -663,44 +500,32 @@ const NextTokenSchema = z
 
 const ListFHIRDatastoresResponseSchema = z
   .object({
-    DatastorePropertiesList: DatastorePropertiesListSchema.and(
-      z.any().openapi({ description: 'All properties associated with the listed Data Stores.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Pagination token that can be used to retrieve the next page of results.',
-        }),
-    ).exactOptional(),
+    DatastorePropertiesList: DatastorePropertiesListSchema.openapi({
+      description: 'All properties associated with the listed Data Stores.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'Pagination token that can be used to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: ['DatastorePropertiesList'] })
   .openapi('ListFHIRDatastoresResponse')
 
 const DatastoreFilterSchema = z
   .object({
-    DatastoreName: DatastoreNameSchema.and(
-      z.any().openapi({ description: 'Allows the user to filter Data Store results by name.' }),
-    ).exactOptional(),
-    DatastoreStatus: DatastoreStatusSchema.and(
-      z.any().openapi({ description: 'Allows the user to filter Data Store results by status.' }),
-    ).exactOptional(),
-    CreatedBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A filter that allows the user to set cutoff dates for records. All Data Stores created before the specified date will be included in the results. ',
-        }),
-    ).exactOptional(),
-    CreatedAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A filter that allows the user to set cutoff dates for records. All Data Stores created after the specified date will be included in the results.',
-        }),
-    ).exactOptional(),
+    DatastoreName: DatastoreNameSchema.exactOptional().openapi({
+      description: 'Allows the user to filter Data Store results by name.',
+    }),
+    DatastoreStatus: DatastoreStatusSchema.exactOptional().openapi({
+      description: 'Allows the user to filter Data Store results by status.',
+    }),
+    CreatedBefore: TimestampSchema.exactOptional().openapi({
+      description:
+        'A filter that allows the user to set cutoff dates for records. All Data Stores created before the specified date will be included in the results. ',
+    }),
+    CreatedAfter: TimestampSchema.exactOptional().openapi({
+      description:
+        'A filter that allows the user to set cutoff dates for records. All Data Stores created after the specified date will be included in the results.',
+    }),
   })
   .openapi({ description: 'The filters applied to Data Store query.', required: [] })
   .openapi('DatastoreFilter')
@@ -709,26 +534,16 @@ const MaxResultsIntegerSchema = z.int().min(1).max(500).openapi('MaxResultsInteg
 
 const ListFHIRDatastoresRequestSchema = z
   .object({
-    Filter: DatastoreFilterSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Lists all filters associated with a FHIR Data Store request.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Fetches the next page of Data Stores when results are paginated.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of Data Stores returned in a single page of a ListFHIRDatastoresRequest call.',
-        }),
-    ).exactOptional(),
+    Filter: DatastoreFilterSchema.exactOptional().openapi({
+      description: 'Lists all filters associated with a FHIR Data Store request.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'Fetches the next page of Data Stores when results are paginated.',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of Data Stores returned in a single page of a ListFHIRDatastoresRequest call.',
+    }),
   })
   .openapi({ title: 'ListFHIRDatastoresRequest', required: [] })
   .openapi('ListFHIRDatastoresRequest')
@@ -739,84 +554,48 @@ const ExportJobPropertiesListSchema = z
 
 const ListFHIRExportJobsResponseSchema = z
   .object({
-    ExportJobPropertiesList: ExportJobPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The properties of listed FHIR export jobs, including the ID, ARN, name, and the status of the job. ',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A pagination token used to identify the next page of results to return for a ListFHIRExportJobs query. ',
-        }),
-    ).exactOptional(),
+    ExportJobPropertiesList: ExportJobPropertiesListSchema.openapi({
+      description:
+        ' The properties of listed FHIR export jobs, including the ID, ARN, name, and the status of the job. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A pagination token used to identify the next page of results to return for a ListFHIRExportJobs query. ',
+    }),
   })
   .openapi({ required: ['ExportJobPropertiesList'] })
   .openapi('ListFHIRExportJobsResponse')
 
 const ListFHIRExportJobsRequestSchema = z
   .object({
-    DatastoreId: DatastoreIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This parameter limits the response to the export job with the specified Data Store ID. ',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A pagination token used to identify the next page of results to return for a ListFHIRExportJobs query. ',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This parameter limits the number of results returned for a ListFHIRExportJobs to a maximum quantity specified by the user. ',
-        }),
-    ).exactOptional(),
-    JobName: JobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This parameter limits the response to the export job with the specified job name. ',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This parameter limits the response to the export jobs with the specified job status. ',
-        }),
-    ).exactOptional(),
-    SubmittedBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This parameter limits the response to FHIR export jobs submitted before a user specified date. ',
-        }),
-    ).exactOptional(),
-    SubmittedAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This parameter limits the response to FHIR export jobs submitted after a user specified date. ',
-        }),
-    ).exactOptional(),
+    DatastoreId: DatastoreIdSchema.openapi({
+      description:
+        ' This parameter limits the response to the export job with the specified Data Store ID. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A pagination token used to identify the next page of results to return for a ListFHIRExportJobs query. ',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description:
+        ' This parameter limits the number of results returned for a ListFHIRExportJobs to a maximum quantity specified by the user. ',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description:
+        ' This parameter limits the response to the export job with the specified job name. ',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        ' This parameter limits the response to the export jobs with the specified job status. ',
+    }),
+    SubmittedBefore: TimestampSchema.exactOptional().openapi({
+      description:
+        ' This parameter limits the response to FHIR export jobs submitted before a user specified date. ',
+    }),
+    SubmittedAfter: TimestampSchema.exactOptional().openapi({
+      description:
+        ' This parameter limits the response to FHIR export jobs submitted after a user specified date. ',
+    }),
   })
   .openapi({ required: ['DatastoreId'], title: 'ListFHIRExportJobsRequest' })
   .openapi('ListFHIRExportJobsRequest')
@@ -827,93 +606,57 @@ const ImportJobPropertiesListSchema = z
 
 const ListFHIRImportJobsResponseSchema = z
   .object({
-    ImportJobPropertiesList: ImportJobPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The properties of a listed FHIR import jobs, including the ID, ARN, name, and the status of the job. ',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A pagination token used to identify the next page of results to return for a ListFHIRImportJobs query. ',
-        }),
-    ).exactOptional(),
+    ImportJobPropertiesList: ImportJobPropertiesListSchema.openapi({
+      description:
+        ' The properties of a listed FHIR import jobs, including the ID, ARN, name, and the status of the job. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A pagination token used to identify the next page of results to return for a ListFHIRImportJobs query. ',
+    }),
   })
   .openapi({ required: ['ImportJobPropertiesList'] })
   .openapi('ListFHIRImportJobsResponse')
 
 const ListFHIRImportJobsRequestSchema = z
   .object({
-    DatastoreId: DatastoreIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This parameter limits the response to the import job with the specified Data Store ID. ',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A pagination token used to identify the next page of results to return for a ListFHIRImportJobs query. ',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This parameter limits the number of results returned for a ListFHIRImportJobs to a maximum quantity specified by the user. ',
-        }),
-    ).exactOptional(),
-    JobName: JobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This parameter limits the response to the import job with the specified job name. ',
-        }),
-    ).exactOptional(),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This parameter limits the response to the import job with the specified job status. ',
-        }),
-    ).exactOptional(),
-    SubmittedBefore: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This parameter limits the response to FHIR import jobs submitted before a user specified date. ',
-        }),
-    ).exactOptional(),
-    SubmittedAfter: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This parameter limits the response to FHIR import jobs submitted after a user specified date. ',
-        }),
-    ).exactOptional(),
+    DatastoreId: DatastoreIdSchema.openapi({
+      description:
+        ' This parameter limits the response to the import job with the specified Data Store ID. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A pagination token used to identify the next page of results to return for a ListFHIRImportJobs query. ',
+    }),
+    MaxResults: MaxResultsIntegerSchema.exactOptional().openapi({
+      description:
+        ' This parameter limits the number of results returned for a ListFHIRImportJobs to a maximum quantity specified by the user. ',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description:
+        ' This parameter limits the response to the import job with the specified job name. ',
+    }),
+    JobStatus: JobStatusSchema.exactOptional().openapi({
+      description:
+        ' This parameter limits the response to the import job with the specified job status. ',
+    }),
+    SubmittedBefore: TimestampSchema.exactOptional().openapi({
+      description:
+        ' This parameter limits the response to FHIR import jobs submitted before a user specified date. ',
+    }),
+    SubmittedAfter: TimestampSchema.exactOptional().openapi({
+      description:
+        ' This parameter limits the response to FHIR import jobs submitted after a user specified date. ',
+    }),
   })
   .openapi({ required: ['DatastoreId'], title: 'ListFHIRImportJobsRequest' })
   .openapi('ListFHIRImportJobsRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: ' Returns a list of tags associated with a Data Store. ' }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: ' Returns a list of tags associated with a Data Store. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -929,76 +672,48 @@ const AmazonResourceNameSchema = z
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name(ARN) of the Data Store for which tags are being added. ',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        ' The Amazon Resource Name(ARN) of the Data Store for which tags are being added. ',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const StartFHIRExportJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The AWS generated ID for an export job.' }),
-    ),
-    JobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of a FHIR export job. Possible statuses are SUBMITTED, IN_PROGRESS, COMPLETED, or FAILED.',
-        }),
-    ),
-    DatastoreId: DatastoreIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS generated ID for the Data Store from which files are being exported for an export job.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.openapi({ description: 'The AWS generated ID for an export job.' }),
+    JobStatus: JobStatusSchema.openapi({
+      description:
+        'The status of a FHIR export job. Possible statuses are SUBMITTED, IN_PROGRESS, COMPLETED, or FAILED.',
+    }),
+    DatastoreId: DatastoreIdSchema.exactOptional().openapi({
+      description:
+        'The AWS generated ID for the Data Store from which files are being exported for an export job.',
+    }),
   })
   .openapi({ required: ['JobId', 'JobStatus'] })
   .openapi('StartFHIRExportJobResponse')
 
 const StartFHIRExportJobRequestSchema = z
   .object({
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The user generated name for an export job.' }),
-    ).exactOptional(),
-    OutputDataConfig: OutputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output data configuration that was supplied when the export job was created.',
-        }),
-    ),
-    DatastoreId: DatastoreIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS generated ID for the Data Store from which files are being exported for an export job.',
-        }),
-    ),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name used during the initiation of the job.',
-        }),
-    ),
-    ClientToken: ClientTokenStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An optional user provided token used for ensuring idempotency.' }),
-    ),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The user generated name for an export job.',
+    }),
+    OutputDataConfig: OutputDataConfigSchema.openapi({
+      description:
+        'The output data configuration that was supplied when the export job was created.',
+    }),
+    DatastoreId: DatastoreIdSchema.openapi({
+      description:
+        'The AWS generated ID for the Data Store from which files are being exported for an export job.',
+    }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description: 'The Amazon Resource Name used during the initiation of the job.',
+    }),
+    ClientToken: ClientTokenStringSchema.openapi({
+      description: 'An optional user provided token used for ensuring idempotency.',
+    }),
   })
   .openapi({
     required: ['OutputDataConfig', 'DatastoreId', 'DataAccessRoleArn', 'ClientToken'],
@@ -1008,51 +723,32 @@ const StartFHIRExportJobRequestSchema = z
 
 const StartFHIRImportJobResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(z.any().openapi({ description: 'The AWS-generated job ID.' })),
-    JobStatus: JobStatusSchema.and(
-      z.any().openapi({ description: 'The status of an import job.' }),
-    ),
-    DatastoreId: DatastoreIdSchema.and(
-      z.any().openapi({ description: 'The AWS-generated Data Store ID.' }),
-    ).exactOptional(),
+    JobId: JobIdSchema.openapi({ description: 'The AWS-generated job ID.' }),
+    JobStatus: JobStatusSchema.openapi({ description: 'The status of an import job.' }),
+    DatastoreId: DatastoreIdSchema.exactOptional().openapi({
+      description: 'The AWS-generated Data Store ID.',
+    }),
   })
   .openapi({ required: ['JobId', 'JobStatus'] })
   .openapi('StartFHIRImportJobResponse')
 
 const StartFHIRImportJobRequestSchema = z
   .object({
-    JobName: JobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the FHIR Import job in the StartFHIRImport job request.',
-        }),
-    ).exactOptional(),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input properties of the FHIR Import job in the StartFHIRImport job request.',
-        }),
-    ),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The name of the FHIR Import job in the StartFHIRImport job request.',
+    }),
+    InputDataConfig: InputDataConfigSchema.openapi({
+      description:
+        'The input properties of the FHIR Import job in the StartFHIRImport job request.',
+    }),
     JobOutputDataConfig: OutputDataConfigSchema,
-    DatastoreId: DatastoreIdSchema.and(
-      z.any().openapi({ description: 'The AWS-generated Data Store ID.' }),
-    ),
-    DataAccessRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that gives Amazon HealthLake access permission.',
-        }),
-    ),
-    ClientToken: ClientTokenStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Optional user provided token used for ensuring idempotency.' }),
-    ),
+    DatastoreId: DatastoreIdSchema.openapi({ description: 'The AWS-generated Data Store ID.' }),
+    DataAccessRoleArn: IamRoleArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) that gives Amazon HealthLake access permission.',
+    }),
+    ClientToken: ClientTokenStringSchema.openapi({
+      description: 'Optional user provided token used for ensuring idempotency.',
+    }),
   })
   .openapi({
     required: [
@@ -1066,50 +762,34 @@ const StartFHIRImportJobRequestSchema = z
   })
   .openapi('StartFHIRImportJobRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name(ARN)that gives Amazon HealthLake access to the Data Store which tags are being added to. ',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The user specified key and value pair tags being added to a Data Store. ',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        ' The Amazon Resource Name(ARN)that gives Amazon HealthLake access to the Data Store which tags are being added to. ',
+    }),
+    Tags: TagListSchema.openapi({
+      description: ' The user specified key and value pair tags being added to a Data Store. ',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' "The Amazon Resource Name(ARN) of the Data Store for which tags are being removed ',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The keys for the tags to be removed from the Healthlake Data Store. ',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        ' "The Amazon Resource Name(ARN) of the Data Store for which tags are being removed ',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: ' The keys for the tags to be removed from the Healthlake Data Store. ',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')

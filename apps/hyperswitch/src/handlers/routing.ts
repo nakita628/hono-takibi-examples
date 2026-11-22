@@ -45,15 +45,21 @@ export const postRoutingDeactivateRouteHandler: RouteHandler<
 
 export const postRoutingDefaultRouteHandler: RouteHandler<typeof postRoutingDefaultRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const getRoutingDefaultRouteHandler: RouteHandler<typeof getRoutingDefaultRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const getRoutingActiveRouteHandler: RouteHandler<typeof getRoutingActiveRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const getRoutingDefaultProfileRouteHandler: RouteHandler<
   typeof getRoutingDefaultProfileRoute

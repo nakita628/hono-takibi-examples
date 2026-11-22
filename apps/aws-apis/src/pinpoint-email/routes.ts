@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const CreateConfigurationSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -42,22 +42,14 @@ const TagValueSchema = z.string().openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that defines a tag. The maximum length of a tag key is 128 characters. The minimum length is 1 character.',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional part of a key-value pair that defines a tag. The maximum length of a tag value is 256 characters. The minimum length is 0 characters. If you don’t want a resource to have a specific tag value, don’t specify a value for this parameter. Amazon Pinpoint will set the value to an empty string.',
-        }),
-    ),
+    Key: TagKeySchema.openapi({
+      description:
+        'One part of a key-value pair that defines a tag. The maximum length of a tag key is 128 characters. The minimum length is 1 character.',
+    }),
+    Value: TagValueSchema.openapi({
+      description:
+        'The optional part of a key-value pair that defines a tag. The maximum length of a tag value is 256 characters. The minimum length is 0 characters. If you don’t want a resource to have a specific tag value, don’t specify a value for this parameter. Amazon Pinpoint will set the value to an empty string.',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -79,7 +71,7 @@ const BadRequestExceptionSchema = z.any().openapi('BadRequestException')
 const ConcurrentModificationExceptionSchema = z.any().openapi('ConcurrentModificationException')
 
 const CreateConfigurationSetEventDestinationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -100,22 +92,14 @@ const AmazonResourceNameSchema = z.string().openapi('AmazonResourceName')
 
 const KinesisFirehoseDestinationSchema = z
   .object({
-    IamRoleArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role that Amazon Pinpoint uses when sending email events to the Amazon Kinesis Data Firehose stream.',
-        }),
-    ),
-    DeliveryStreamArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon Kinesis Data Firehose stream that Amazon Pinpoint sends email events to.',
-        }),
-    ),
+    IamRoleArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role that Amazon Pinpoint uses when sending email events to the Amazon Kinesis Data Firehose stream.',
+    }),
+    DeliveryStreamArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon Kinesis Data Firehose stream that Amazon Pinpoint sends email events to.',
+    }),
   })
   .openapi({
     required: ['IamRoleArn', 'DeliveryStreamArn'],
@@ -150,30 +134,18 @@ const DefaultDimensionValueSchema = z
 
 const CloudWatchDimensionConfigurationSchema = z
   .object({
-    DimensionName: DimensionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of an Amazon CloudWatch dimension associated with an email sending metric. The name has to meet the following criteria:</p> <ul> <li> <p>It can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>It can contain no more than 256 characters.</p> </li> </ul>',
-        }),
-    ),
-    DimensionValueSource: DimensionValueSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location where Amazon Pinpoint finds the value of a dimension to publish to Amazon CloudWatch. If you want Amazon Pinpoint to use the message tags that you specify using an X-SES-MESSAGE-TAGS header or a parameter to the SendEmail/SendRawEmail API, choose <code>messageTag</code>. If you want Amazon Pinpoint to use your own email headers, choose <code>emailHeader</code>. If you want Amazon Pinpoint to use link tags, choose <code>linkTags</code>.',
-        }),
-    ),
-    DefaultDimensionValue: DefaultDimensionValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The default value of the dimension that is published to Amazon CloudWatch if you don't provide the value of the dimension when you send an email. This value has to meet the following criteria:</p> <ul> <li> <p>It can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>It can contain no more than 256 characters.</p> </li> </ul>",
-        }),
-    ),
+    DimensionName: DimensionNameSchema.openapi({
+      description:
+        '<p>The name of an Amazon CloudWatch dimension associated with an email sending metric. The name has to meet the following criteria:</p> <ul> <li> <p>It can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>It can contain no more than 256 characters.</p> </li> </ul>',
+    }),
+    DimensionValueSource: DimensionValueSourceSchema.openapi({
+      description:
+        'The location where Amazon Pinpoint finds the value of a dimension to publish to Amazon CloudWatch. If you want Amazon Pinpoint to use the message tags that you specify using an X-SES-MESSAGE-TAGS header or a parameter to the SendEmail/SendRawEmail API, choose <code>messageTag</code>. If you want Amazon Pinpoint to use your own email headers, choose <code>emailHeader</code>. If you want Amazon Pinpoint to use link tags, choose <code>linkTags</code>.',
+    }),
+    DefaultDimensionValue: DefaultDimensionValueSchema.openapi({
+      description:
+        "<p>The default value of the dimension that is published to Amazon CloudWatch if you don't provide the value of the dimension when you send an email. This value has to meet the following criteria:</p> <ul> <li> <p>It can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>It can contain no more than 256 characters.</p> </li> </ul>",
+    }),
   })
   .openapi({
     required: ['DimensionName', 'DimensionValueSource', 'DefaultDimensionValue'],
@@ -188,14 +160,10 @@ const CloudWatchDimensionConfigurationsSchema = z
 
 const CloudWatchDestinationSchema = z
   .object({
-    DimensionConfigurations: CloudWatchDimensionConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that define the dimensions to use when you send email events to Amazon CloudWatch.',
-        }),
-    ),
+    DimensionConfigurations: CloudWatchDimensionConfigurationsSchema.openapi({
+      description:
+        'An array of objects that define the dimensions to use when you send email events to Amazon CloudWatch.',
+    }),
   })
   .openapi({
     required: ['DimensionConfigurations'],
@@ -206,14 +174,10 @@ const CloudWatchDestinationSchema = z
 
 const SnsDestinationSchema = z
   .object({
-    TopicArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon SNS topic that you want to publish email events to. For more information about Amazon SNS topics, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/CreateTopic.html">Amazon SNS Developer Guide</a>.',
-        }),
-    ),
+    TopicArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon SNS topic that you want to publish email events to. For more information about Amazon SNS topics, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/CreateTopic.html">Amazon SNS Developer Guide</a>.',
+    }),
   })
   .openapi({
     required: ['TopicArn'],
@@ -224,14 +188,10 @@ const SnsDestinationSchema = z
 
 const PinpointDestinationSchema = z
   .object({
-    ApplicationArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon Pinpoint project that you want to send email events to.',
-        }),
-    ).exactOptional(),
+    ApplicationArn: AmazonResourceNameSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon Pinpoint project that you want to send email events to.',
+    }),
   })
   .openapi({
     description:
@@ -241,7 +201,7 @@ const PinpointDestinationSchema = z
   .openapi('PinpointDestination')
 
 const CreateDedicatedIpPoolResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -263,21 +223,13 @@ const DeliverabilityTestStatusSchema = z
 
 const CreateDeliverabilityTestReportResponseSchema = z
   .object({
-    ReportId: ReportIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique string that identifies the predictive inbox placement test.',
-        }),
-    ),
-    DeliverabilityTestStatus: DeliverabilityTestStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the predictive inbox placement test. If the status is <code>IN_PROGRESS</code>, then the predictive inbox placement test is currently running. Predictive inbox placement tests are usually complete within 24 hours of creating the test. If the status is <code>COMPLETE</code>, then the test is finished, and you can use the <code>GetDeliverabilityTestReport</code> to view the results of the test.',
-        }),
-    ),
+    ReportId: ReportIdSchema.openapi({
+      description: 'A unique string that identifies the predictive inbox placement test.',
+    }),
+    DeliverabilityTestStatus: DeliverabilityTestStatusSchema.openapi({
+      description:
+        'The status of the predictive inbox placement test. If the status is <code>IN_PROGRESS</code>, then the predictive inbox placement test is currently running. Predictive inbox placement tests are usually complete within 24 hours of creating the test. If the status is <code>COMPLETE</code>, then the test is finished, and you can use the <code>GetDeliverabilityTestReport</code> to view the results of the test.',
+    }),
   })
   .openapi({
     required: ['ReportId', 'DeliverabilityTestStatus'],
@@ -291,17 +243,11 @@ const CharsetSchema = z.string().openapi('Charset')
 
 const ContentSchema = z
   .object({
-    Data: MessageDataSchema.and(
-      z.any().openapi({ description: 'The content of the message itself.' }),
-    ),
-    Charset: CharsetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The character set for the content. Because of the constraints of the SMTP protocol, Amazon Pinpoint uses 7-bit ASCII by default. If the text includes characters outside of the ASCII range, you have to specify a character set. For example, you could specify <code>UTF-8</code>, <code>ISO-8859-1</code>, or <code>Shift_JIS</code>.',
-        }),
-    ).exactOptional(),
+    Data: MessageDataSchema.openapi({ description: 'The content of the message itself.' }),
+    Charset: CharsetSchema.exactOptional().openapi({
+      description:
+        'The character set for the content. Because of the constraints of the SMTP protocol, Amazon Pinpoint uses 7-bit ASCII by default. If the text includes characters outside of the ASCII range, you have to specify a character set. For example, you could specify <code>UTF-8</code>, <code>ISO-8859-1</code>, or <code>Shift_JIS</code>.',
+    }),
   })
   .openapi({
     required: ['Data'],
@@ -312,44 +258,28 @@ const ContentSchema = z
 
 const BodySchema = z
   .object({
-    Text: ContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An object that represents the version of the message that is displayed in email clients that don't support HTML, or clients where the recipient has disabled HTML rendering.",
-        }),
-    ).exactOptional(),
-    Html: ContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that represents the version of the message that is displayed in email clients that support HTML. HTML messages can include formatted text, hyperlinks, images, and more. ',
-        }),
-    ).exactOptional(),
+    Text: ContentSchema.exactOptional().openapi({
+      description:
+        "An object that represents the version of the message that is displayed in email clients that don't support HTML, or clients where the recipient has disabled HTML rendering.",
+    }),
+    Html: ContentSchema.exactOptional().openapi({
+      description:
+        'An object that represents the version of the message that is displayed in email clients that support HTML. HTML messages can include formatted text, hyperlinks, images, and more. ',
+    }),
   })
   .openapi({ description: 'Represents the body of the email message.', required: [] })
   .openapi('Body')
 
 const MessageSchema = z
   .object({
-    Subject: ContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The subject line of the email. The subject line can only contain 7-bit ASCII characters. However, you can specify non-ASCII characters in the subject line by using encoded-word syntax, as described in <a href="https://tools.ietf.org/html/rfc2047">RFC 2047</a>.',
-        }),
-    ),
-    Body: BodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The body of the message. You can specify an HTML version of the message, a text-only version of the message, or both.',
-        }),
-    ),
+    Subject: ContentSchema.openapi({
+      description:
+        'The subject line of the email. The subject line can only contain 7-bit ASCII characters. However, you can specify non-ASCII characters in the subject line by using encoded-word syntax, as described in <a href="https://tools.ietf.org/html/rfc2047">RFC 2047</a>.',
+    }),
+    Body: BodySchema.openapi({
+      description:
+        'The body of the message. You can specify an HTML version of the message, a text-only version of the message, or both.',
+    }),
   })
   .openapi({
     required: ['Subject', 'Body'],
@@ -368,14 +298,10 @@ const RawMessageDataSchema = z
 
 const RawMessageSchema = z
   .object({
-    Data: RawMessageDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The raw email message. The message has to meet the following criteria:</p> <ul> <li> <p>The message has to contain a header and a body, separated by one blank line.</p> </li> <li> <p>All of the required header fields must be present in the message.</p> </li> <li> <p>Each part of a multipart MIME message must be formatted properly.</p> </li> <li> <p>Attachments must be in a file format that Amazon Pinpoint supports. </p> </li> <li> <p>The entire message must be Base64 encoded.</p> </li> <li> <p>If any of the MIME parts in your message contain content that is outside of the 7-bit ASCII character range, you should encode that content to ensure that recipients\' email clients render the message properly.</p> </li> <li> <p>The length of any single line of text in the message can\'t exceed 1,000 characters. This restriction is defined in <a href="https://tools.ietf.org/html/rfc5321">RFC 5321</a>.</p> </li> </ul>',
-        }),
-    ),
+    Data: RawMessageDataSchema.openapi({
+      description:
+        '<p>The raw email message. The message has to meet the following criteria:</p> <ul> <li> <p>The message has to contain a header and a body, separated by one blank line.</p> </li> <li> <p>All of the required header fields must be present in the message.</p> </li> <li> <p>Each part of a multipart MIME message must be formatted properly.</p> </li> <li> <p>Attachments must be in a file format that Amazon Pinpoint supports. </p> </li> <li> <p>The entire message must be Base64 encoded.</p> </li> <li> <p>If any of the MIME parts in your message contain content that is outside of the 7-bit ASCII character range, you should encode that content to ensure that recipients\' email clients render the message properly.</p> </li> <li> <p>The length of any single line of text in the message can\'t exceed 1,000 characters. This restriction is defined in <a href="https://tools.ietf.org/html/rfc5321">RFC 5321</a>.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['Data'], description: 'The raw email message.' })
   .openapi('RawMessage')
@@ -386,17 +312,13 @@ const TemplateDataSchema = z.string().max(262144).openapi('TemplateData')
 
 const TemplateSchema = z
   .object({
-    TemplateArn: TemplateArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the template.' }),
-    ).exactOptional(),
-    TemplateData: TemplateDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines the values to use for message variables in the template. This object is a set of key-value pairs. Each key defines a message variable in the template. The corresponding value defines the value to use for that variable.',
-        }),
-    ).exactOptional(),
+    TemplateArn: TemplateArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the template.',
+    }),
+    TemplateData: TemplateDataSchema.exactOptional().openapi({
+      description:
+        'An object that defines the values to use for message variables in the template. This object is a set of key-value pairs. Each key defines a message variable in the template. The corresponding value defines the value to use for that variable.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('Template')
@@ -433,30 +355,18 @@ const DnsTokenListSchema = z.array(DnsTokenSchema).openapi('DnsTokenList')
 
 const DkimAttributesSchema = z
   .object({
-    SigningEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the value is <code>true</code>, then the messages that Amazon Pinpoint sends from the identity are DKIM-signed. If the value is <code>false</code>, then the messages that Amazon Pinpoint sends from the identity aren't DKIM-signed.",
-        }),
-    ).exactOptional(),
-    Status: DkimStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Describes whether or not Amazon Pinpoint has successfully located the DKIM records in the DNS records for the domain. The status can be one of the following:</p> <ul> <li> <p> <code>PENDING</code> – Amazon Pinpoint hasn't yet located the DKIM records in the DNS configuration for the domain, but will continue to attempt to locate them.</p> </li> <li> <p> <code>SUCCESS</code> – Amazon Pinpoint located the DKIM records in the DNS configuration for the domain and determined that they're correct. Amazon Pinpoint can now send DKIM-signed email from the identity.</p> </li> <li> <p> <code>FAILED</code> – Amazon Pinpoint was unable to locate the DKIM records in the DNS settings for the domain, and won't continue to search for them.</p> </li> <li> <p> <code>TEMPORARY_FAILURE</code> – A temporary issue occurred, which prevented Amazon Pinpoint from determining the DKIM status for the domain.</p> </li> <li> <p> <code>NOT_STARTED</code> – Amazon Pinpoint hasn't yet started searching for the DKIM records in the DKIM records for the domain.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    Tokens: DnsTokenListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of unique strings that you use to create a set of CNAME records that you add to the DNS configuration for your domain. When Amazon Pinpoint detects these records in the DNS configuration for your domain, the DKIM authentication process is complete. Amazon Pinpoint usually detects these records within about 72 hours of adding them to the DNS configuration for your domain.',
-        }),
-    ).exactOptional(),
+    SigningEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        "If the value is <code>true</code>, then the messages that Amazon Pinpoint sends from the identity are DKIM-signed. If the value is <code>false</code>, then the messages that Amazon Pinpoint sends from the identity aren't DKIM-signed.",
+    }),
+    Status: DkimStatusSchema.exactOptional().openapi({
+      description:
+        "<p>Describes whether or not Amazon Pinpoint has successfully located the DKIM records in the DNS records for the domain. The status can be one of the following:</p> <ul> <li> <p> <code>PENDING</code> – Amazon Pinpoint hasn't yet located the DKIM records in the DNS configuration for the domain, but will continue to attempt to locate them.</p> </li> <li> <p> <code>SUCCESS</code> – Amazon Pinpoint located the DKIM records in the DNS configuration for the domain and determined that they're correct. Amazon Pinpoint can now send DKIM-signed email from the identity.</p> </li> <li> <p> <code>FAILED</code> – Amazon Pinpoint was unable to locate the DKIM records in the DNS settings for the domain, and won't continue to search for them.</p> </li> <li> <p> <code>TEMPORARY_FAILURE</code> – A temporary issue occurred, which prevented Amazon Pinpoint from determining the DKIM status for the domain.</p> </li> <li> <p> <code>NOT_STARTED</code> – Amazon Pinpoint hasn't yet started searching for the DKIM records in the DKIM records for the domain.</p> </li> </ul>",
+    }),
+    Tokens: DnsTokenListSchema.exactOptional().openapi({
+      description:
+        'A set of unique strings that you use to create a set of CNAME records that you add to the DNS configuration for your domain. When Amazon Pinpoint detects these records in the DNS configuration for your domain, the DKIM authentication process is complete. Amazon Pinpoint usually detects these records within about 72 hours of adding them to the DNS configuration for your domain.',
+    }),
   })
   .openapi({
     description:
@@ -467,25 +377,17 @@ const DkimAttributesSchema = z
 
 const CreateEmailIdentityResponseSchema = z
   .object({
-    IdentityType: IdentityTypeSchema.and(
-      z.any().openapi({ description: 'The email identity type.' }),
-    ).exactOptional(),
-    VerifiedForSendingStatus: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether or not the identity is verified. In Amazon Pinpoint, you can only send email from verified email addresses or domains. For more information about verifying identities, see the <a href="https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-email-manage-verify.html">Amazon Pinpoint User Guide</a>.',
-        }),
-    ).exactOptional(),
-    DkimAttributes: DkimAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains information about the DKIM attributes for the identity. This object includes the tokens that you use to create the CNAME records that are required to complete the DKIM verification process.',
-        }),
-    ).exactOptional(),
+    IdentityType: IdentityTypeSchema.exactOptional().openapi({
+      description: 'The email identity type.',
+    }),
+    VerifiedForSendingStatus: EnabledSchema.exactOptional().openapi({
+      description:
+        'Specifies whether or not the identity is verified. In Amazon Pinpoint, you can only send email from verified email addresses or domains. For more information about verifying identities, see the <a href="https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-email-manage-verify.html">Amazon Pinpoint User Guide</a>.',
+    }),
+    DkimAttributes: DkimAttributesSchema.exactOptional().openapi({
+      description:
+        'An object that contains information about the DKIM attributes for the identity. This object includes the tokens that you use to create the CNAME records that are required to complete the DKIM verification process.',
+    }),
   })
   .openapi({
     description:
@@ -495,7 +397,7 @@ const CreateEmailIdentityResponseSchema = z
   .openapi('CreateEmailIdentityResponse')
 
 const DeleteConfigurationSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -503,7 +405,7 @@ const DeleteConfigurationSetResponseSchema = z
   .openapi('DeleteConfigurationSetResponse')
 
 const DeleteConfigurationSetEventDestinationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -511,7 +413,7 @@ const DeleteConfigurationSetEventDestinationResponseSchema = z
   .openapi('DeleteConfigurationSetEventDestinationResponse')
 
 const DeleteDedicatedIpPoolResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -519,7 +421,7 @@ const DeleteDedicatedIpPoolResponseSchema = z
   .openapi('DeleteDedicatedIpPoolResponse')
 
 const DeleteEmailIdentityResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -534,30 +436,18 @@ const SentLast24HoursSchema = z.float64().openapi('SentLast24Hours')
 
 const SendQuotaSchema = z
   .object({
-    Max24HourSend: Max24HourSendSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of emails that you can send in the current AWS Region over a 24-hour period. This value is also called your <i>sending quota</i>.',
-        }),
-    ).exactOptional(),
-    MaxSendRate: MaxSendRateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of emails that you can send per second in the current AWS Region. This value is also called your <i>maximum sending rate</i> or your <i>maximum TPS (transactions per second) rate</i>.',
-        }),
-    ).exactOptional(),
-    SentLast24Hours: SentLast24HoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of emails sent from your Amazon Pinpoint account in the current AWS Region over the past 24 hours.',
-        }),
-    ).exactOptional(),
+    Max24HourSend: Max24HourSendSchema.exactOptional().openapi({
+      description:
+        'The maximum number of emails that you can send in the current AWS Region over a 24-hour period. This value is also called your <i>sending quota</i>.',
+    }),
+    MaxSendRate: MaxSendRateSchema.exactOptional().openapi({
+      description:
+        'The maximum number of emails that you can send per second in the current AWS Region. This value is also called your <i>maximum sending rate</i> or your <i>maximum TPS (transactions per second) rate</i>.',
+    }),
+    SentLast24Hours: SentLast24HoursSchema.exactOptional().openapi({
+      description:
+        'The number of emails sent from your Amazon Pinpoint account in the current AWS Region over the past 24 hours.',
+    }),
   })
   .openapi({
     description:
@@ -570,46 +460,26 @@ const GeneralEnforcementStatusSchema = z.string().openapi('GeneralEnforcementSta
 
 const GetAccountResponseSchema = z
   .object({
-    SendQuota: SendQuotaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains information about the per-day and per-second sending limits for your Amazon Pinpoint account in the current AWS Region.',
-        }),
-    ).exactOptional(),
-    SendingEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether or not email sending is enabled for your Amazon Pinpoint account in the current AWS Region.',
-        }),
-    ).exactOptional(),
-    DedicatedIpAutoWarmupEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether or not the automatic warm-up feature is enabled for dedicated IP addresses that are associated with your account.',
-        }),
-    ).exactOptional(),
-    EnforcementStatus: GeneralEnforcementStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The reputation status of your Amazon Pinpoint account. The status can be one of the following:</p> <ul> <li> <p> <code>HEALTHY</code> – There are no reputation-related issues that currently impact your account.</p> </li> <li> <p> <code>PROBATION</code> – We've identified some issues with your Amazon Pinpoint account. We're placing your account under review while you work on correcting these issues.</p> </li> <li> <p> <code>SHUTDOWN</code> – Your account's ability to send email is currently paused because of an issue with the email sent from your account. When you correct the issue, you can contact us and request that your account's ability to send email is resumed.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    ProductionAccessEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether or not your account has production access in the current AWS Region.</p> <p>If the value is <code>false</code>, then your account is in the <i>sandbox</i>. When your account is in the sandbox, you can only send email to verified identities. Additionally, the maximum number of emails you can send in a 24-hour period (your sending quota) is 200, and the maximum number of emails you can send per second (your maximum sending rate) is 1.</p> <p>If the value is <code>true</code>, then your account has production access. When your account has production access, you can send email to any address. The sending quota and maximum sending rate for your account vary based on your specific use case.</p>',
-        }),
-    ).exactOptional(),
+    SendQuota: SendQuotaSchema.exactOptional().openapi({
+      description:
+        'An object that contains information about the per-day and per-second sending limits for your Amazon Pinpoint account in the current AWS Region.',
+    }),
+    SendingEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        'Indicates whether or not email sending is enabled for your Amazon Pinpoint account in the current AWS Region.',
+    }),
+    DedicatedIpAutoWarmupEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        'Indicates whether or not the automatic warm-up feature is enabled for dedicated IP addresses that are associated with your account.',
+    }),
+    EnforcementStatus: GeneralEnforcementStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The reputation status of your Amazon Pinpoint account. The status can be one of the following:</p> <ul> <li> <p> <code>HEALTHY</code> – There are no reputation-related issues that currently impact your account.</p> </li> <li> <p> <code>PROBATION</code> – We've identified some issues with your Amazon Pinpoint account. We're placing your account under review while you work on correcting these issues.</p> </li> <li> <p> <code>SHUTDOWN</code> – Your account's ability to send email is currently paused because of an issue with the email sent from your account. When you correct the issue, you can contact us and request that your account's ability to send email is resumed.</p> </li> </ul>",
+    }),
+    ProductionAccessEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether or not your account has production access in the current AWS Region.</p> <p>If the value is <code>false</code>, then your account is in the <i>sandbox</i>. When your account is in the sandbox, you can only send email to verified identities. Additionally, the maximum number of emails you can send in a 24-hour period (your sending quota) is 200, and the maximum number of emails you can send per second (your maximum sending rate) is 1.</p> <p>If the value is <code>true</code>, then your account has production access. When your account has production access, you can send email to any address. The sending quota and maximum sending rate for your account vary based on your specific use case.</p>',
+    }),
   })
   .openapi({
     description:
@@ -632,24 +502,16 @@ const BlacklistingDescriptionSchema = z
 
 const BlacklistEntrySchema = z
   .object({
-    RblName: RblNameSchema.and(
-      z.any().openapi({ description: 'The name of the blacklist that the IP address appears on.' }),
-    ).exactOptional(),
-    ListingTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the blacklisting event occurred, shown in Unix time format.',
-        }),
-    ).exactOptional(),
-    Description: BlacklistingDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional information about the blacklisting event, as provided by the blacklist maintainer.',
-        }),
-    ).exactOptional(),
+    RblName: RblNameSchema.exactOptional().openapi({
+      description: 'The name of the blacklist that the IP address appears on.',
+    }),
+    ListingTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the blacklisting event occurred, shown in Unix time format.',
+    }),
+    Description: BlacklistingDescriptionSchema.exactOptional().openapi({
+      description:
+        'Additional information about the blacklisting event, as provided by the blacklist maintainer.',
+    }),
   })
   .openapi({
     description:
@@ -666,14 +528,10 @@ const BlacklistReportSchema = z
 
 const GetBlacklistReportsResponseSchema = z
   .object({
-    BlacklistReport: BlacklistReportSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains information about a blacklist that one of your dedicated IP addresses appears on.',
-        }),
-    ),
+    BlacklistReport: BlacklistReportSchema.openapi({
+      description:
+        'An object that contains information about a blacklist that one of your dedicated IP addresses appears on.',
+    }),
   })
   .openapi({
     required: ['BlacklistReport'],
@@ -696,13 +554,9 @@ const ConfigurationSetNameSchema = z
 
 const TrackingOptionsSchema = z
   .object({
-    CustomRedirectDomain: CustomRedirectDomainSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The domain that you want to use for tracking open and click events.',
-        }),
-    ),
+    CustomRedirectDomain: CustomRedirectDomainSchema.openapi({
+      description: 'The domain that you want to use for tracking open and click events.',
+    }),
   })
   .openapi({
     required: ['CustomRedirectDomain'],
@@ -713,22 +567,14 @@ const TrackingOptionsSchema = z
 
 const DeliveryOptionsSchema = z
   .object({
-    TlsPolicy: TlsPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is <code>Require</code>, messages are only delivered if a TLS connection can be established. If the value is <code>Optional</code>, messages can be delivered in plain text if a TLS connection can't be established.",
-        }),
-    ).exactOptional(),
-    SendingPoolName: PoolNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the dedicated IP pool that you want to associate with the configuration set.',
-        }),
-    ).exactOptional(),
+    TlsPolicy: TlsPolicySchema.exactOptional().openapi({
+      description:
+        "Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is <code>Require</code>, messages are only delivered if a TLS connection can be established. If the value is <code>Optional</code>, messages can be delivered in plain text if a TLS connection can't be established.",
+    }),
+    SendingPoolName: PoolNameSchema.exactOptional().openapi({
+      description:
+        'The name of the dedicated IP pool that you want to associate with the configuration set.',
+    }),
   })
   .openapi({
     description: 'Used to associate a configuration set with a dedicated IP pool.',
@@ -738,22 +584,14 @@ const DeliveryOptionsSchema = z
 
 const ReputationOptionsSchema = z
   .object({
-    ReputationMetricsEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>true</code>, tracking of reputation metrics is enabled for the configuration set. If <code>false</code>, tracking of reputation metrics is disabled for the configuration set.',
-        }),
-    ).exactOptional(),
-    LastFreshStart: LastFreshStartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time (in Unix time) when the reputation metrics were last given a fresh start. When your account is given a fresh start, your reputation metrics are calculated starting from the date of the fresh start.',
-        }),
-    ).exactOptional(),
+    ReputationMetricsEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        'If <code>true</code>, tracking of reputation metrics is enabled for the configuration set. If <code>false</code>, tracking of reputation metrics is disabled for the configuration set.',
+    }),
+    LastFreshStart: LastFreshStartSchema.exactOptional().openapi({
+      description:
+        'The date and time (in Unix time) when the reputation metrics were last given a fresh start. When your account is given a fresh start, your reputation metrics are calculated starting from the date of the fresh start.',
+    }),
   })
   .openapi({
     description:
@@ -764,14 +602,10 @@ const ReputationOptionsSchema = z
 
 const SendingOptionsSchema = z
   .object({
-    SendingEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>true</code>, email sending is enabled for the configuration set. If <code>false</code>, email sending is disabled for the configuration set.',
-        }),
-    ).exactOptional(),
+    SendingEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        'If <code>true</code>, email sending is enabled for the configuration set. If <code>false</code>, email sending is disabled for the configuration set.',
+    }),
   })
   .openapi({
     description:
@@ -784,49 +618,29 @@ const TagListSchema = z.array(TagSchema).openapi('TagList')
 
 const GetConfigurationSetResponseSchema = z
   .object({
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration set.' }),
-    ).exactOptional(),
-    TrackingOptions: TrackingOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines the open and click tracking options for emails that you send using the configuration set.',
-        }),
-    ).exactOptional(),
-    DeliveryOptions: DeliveryOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines the dedicated IP pool that is used to send emails that you send using the configuration set.',
-        }),
-    ).exactOptional(),
-    ReputationOptions: ReputationOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines whether or not Amazon Pinpoint collects reputation metrics for the emails that you send that use the configuration set.',
-        }),
-    ).exactOptional(),
-    SendingOptions: SendingOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines whether or not Amazon Pinpoint can send email that you send using the configuration set.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that define the tags (keys and values) that are associated with the configuration set.',
-        }),
-    ).exactOptional(),
+    ConfigurationSetName: ConfigurationSetNameSchema.exactOptional().openapi({
+      description: 'The name of the configuration set.',
+    }),
+    TrackingOptions: TrackingOptionsSchema.exactOptional().openapi({
+      description:
+        'An object that defines the open and click tracking options for emails that you send using the configuration set.',
+    }),
+    DeliveryOptions: DeliveryOptionsSchema.exactOptional().openapi({
+      description:
+        'An object that defines the dedicated IP pool that is used to send emails that you send using the configuration set.',
+    }),
+    ReputationOptions: ReputationOptionsSchema.exactOptional().openapi({
+      description:
+        'An object that defines whether or not Amazon Pinpoint collects reputation metrics for the emails that you send that use the configuration set.',
+    }),
+    SendingOptions: SendingOptionsSchema.exactOptional().openapi({
+      description:
+        'An object that defines whether or not Amazon Pinpoint can send email that you send using the configuration set.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that define the tags (keys and values) that are associated with the configuration set.',
+    }),
   })
   .openapi({ description: 'Information about a configuration set.', required: [] })
   .openapi('GetConfigurationSetResponse')
@@ -841,57 +655,33 @@ const EventDestinationNameSchema = z
 
 const EventDestinationSchema = z
   .object({
-    Name: EventDestinationNameSchema.and(
-      z.any().openapi({ description: 'A name that identifies the event destination.' }),
-    ),
-    Enabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>If <code>true</code>, the event destination is enabled. When the event destination is enabled, the specified event types are sent to the destinations in this <code>EventDestinationDefinition</code>.</p> <p>If <code>false</code>, the event destination is disabled. When the event destination is disabled, events aren't sent to the specified destinations.</p>",
-        }),
-    ).exactOptional(),
-    MatchingEventTypes: EventTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The types of events that Amazon Pinpoint sends to the specified event destinations.',
-        }),
-    ),
-    KinesisFirehoseDestination: KinesisFirehoseDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines an Amazon Kinesis Data Firehose destination for email events. You can use Amazon Kinesis Data Firehose to stream data to other services, such as Amazon S3 and Amazon Redshift.',
-        }),
-    ).exactOptional(),
-    CloudWatchDestination: CloudWatchDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines an Amazon CloudWatch destination for email events. You can use Amazon CloudWatch to monitor and gain insights on your email sending metrics.',
-        }),
-    ).exactOptional(),
-    SnsDestination: SnsDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines an Amazon SNS destination for email events. You can use Amazon SNS to send notification when certain email events occur.',
-        }),
-    ).exactOptional(),
-    PinpointDestination: PinpointDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines a Amazon Pinpoint destination for email events. You can use Amazon Pinpoint events to create attributes in Amazon Pinpoint projects. You can use these attributes to create segments for your campaigns.',
-        }),
-    ).exactOptional(),
+    Name: EventDestinationNameSchema.openapi({
+      description: 'A name that identifies the event destination.',
+    }),
+    Enabled: EnabledSchema.exactOptional().openapi({
+      description:
+        "<p>If <code>true</code>, the event destination is enabled. When the event destination is enabled, the specified event types are sent to the destinations in this <code>EventDestinationDefinition</code>.</p> <p>If <code>false</code>, the event destination is disabled. When the event destination is disabled, events aren't sent to the specified destinations.</p>",
+    }),
+    MatchingEventTypes: EventTypesSchema.openapi({
+      description:
+        'The types of events that Amazon Pinpoint sends to the specified event destinations.',
+    }),
+    KinesisFirehoseDestination: KinesisFirehoseDestinationSchema.exactOptional().openapi({
+      description:
+        'An object that defines an Amazon Kinesis Data Firehose destination for email events. You can use Amazon Kinesis Data Firehose to stream data to other services, such as Amazon S3 and Amazon Redshift.',
+    }),
+    CloudWatchDestination: CloudWatchDestinationSchema.exactOptional().openapi({
+      description:
+        'An object that defines an Amazon CloudWatch destination for email events. You can use Amazon CloudWatch to monitor and gain insights on your email sending metrics.',
+    }),
+    SnsDestination: SnsDestinationSchema.exactOptional().openapi({
+      description:
+        'An object that defines an Amazon SNS destination for email events. You can use Amazon SNS to send notification when certain email events occur.',
+    }),
+    PinpointDestination: PinpointDestinationSchema.exactOptional().openapi({
+      description:
+        'An object that defines a Amazon Pinpoint destination for email events. You can use Amazon Pinpoint events to create attributes in Amazon Pinpoint projects. You can use these attributes to create segments for your campaigns.',
+    }),
   })
   .openapi({
     required: ['Name', 'MatchingEventTypes'],
@@ -904,14 +694,10 @@ const EventDestinationsSchema = z.array(EventDestinationSchema).openapi('EventDe
 
 const GetConfigurationSetEventDestinationsResponseSchema = z
   .object({
-    EventDestinations: EventDestinationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that includes all of the events destinations that have been configured for the configuration set.',
-        }),
-    ).exactOptional(),
+    EventDestinations: EventDestinationsSchema.exactOptional().openapi({
+      description:
+        'An array that includes all of the events destinations that have been configured for the configuration set.',
+    }),
   })
   .openapi({
     description: 'Information about an event destination for a configuration set.',
@@ -935,36 +721,20 @@ const Percentage100WrapperSchema = z.int().openapi('Percentage100Wrapper')
 
 const DedicatedIpSchema = z
   .object({
-    Ip: IpSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An IP address that is reserved for use by your Amazon Pinpoint account.',
-        }),
-    ),
-    WarmupStatus: WarmupStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The warm-up status of a dedicated IP address. The status can have one of the following values:</p> <ul> <li> <p> <code>IN_PROGRESS</code> – The IP address isn't ready to use because the dedicated IP warm-up process is ongoing.</p> </li> <li> <p> <code>DONE</code> – The dedicated IP warm-up process is complete, and the IP address is ready to use.</p> </li> </ul>",
-        }),
-    ),
-    WarmupPercentage: Percentage100WrapperSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates how complete the dedicated IP warm-up process is. When this value equals 1, the address has completed the warm-up process and is ready for use.',
-        }),
-    ),
-    PoolName: PoolNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the dedicated IP pool that the IP address is associated with.',
-        }),
-    ).exactOptional(),
+    Ip: IpSchema.openapi({
+      description: 'An IP address that is reserved for use by your Amazon Pinpoint account.',
+    }),
+    WarmupStatus: WarmupStatusSchema.openapi({
+      description:
+        "<p>The warm-up status of a dedicated IP address. The status can have one of the following values:</p> <ul> <li> <p> <code>IN_PROGRESS</code> – The IP address isn't ready to use because the dedicated IP warm-up process is ongoing.</p> </li> <li> <p> <code>DONE</code> – The dedicated IP warm-up process is complete, and the IP address is ready to use.</p> </li> </ul>",
+    }),
+    WarmupPercentage: Percentage100WrapperSchema.openapi({
+      description:
+        'Indicates how complete the dedicated IP warm-up process is. When this value equals 1, the address has completed the warm-up process and is ready for use.',
+    }),
+    PoolName: PoolNameSchema.exactOptional().openapi({
+      description: 'The name of the dedicated IP pool that the IP address is associated with.',
+    }),
   })
   .openapi({
     required: ['Ip', 'WarmupStatus', 'WarmupPercentage'],
@@ -975,13 +745,9 @@ const DedicatedIpSchema = z
 
 const GetDedicatedIpResponseSchema = z
   .object({
-    DedicatedIp: DedicatedIpSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains information about a dedicated IP address.',
-        }),
-    ).exactOptional(),
+    DedicatedIp: DedicatedIpSchema.exactOptional().openapi({
+      description: 'An object that contains information about a dedicated IP address.',
+    }),
   })
   .openapi({ description: 'Information about a dedicated IP address.', required: [] })
   .openapi('GetDedicatedIpResponse')
@@ -998,22 +764,14 @@ const NextTokenSchema = z.string().openapi('NextToken')
 
 const GetDedicatedIpsResponseSchema = z
   .object({
-    DedicatedIps: DedicatedIpListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of dedicated IP addresses that are reserved for use by your Amazon Pinpoint account.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there are additional dedicated IP addresses to list. To view additional addresses, issue another request to <code>GetDedicatedIps</code>, passing this token in the <code>NextToken</code> parameter.',
-        }),
-    ).exactOptional(),
+    DedicatedIps: DedicatedIpListSchema.exactOptional().openapi({
+      description:
+        'A list of dedicated IP addresses that are reserved for use by your Amazon Pinpoint account.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there are additional dedicated IP addresses to list. To view additional addresses, issue another request to <code>GetDedicatedIps</code>, passing this token in the <code>NextToken</code> parameter.',
+    }),
   })
   .openapi({
     description:
@@ -1041,21 +799,13 @@ const IspNameListSchema = z.array(IspNameSchema).openapi('IspNameList')
 
 const InboxPlacementTrackingOptionSchema = z
   .object({
-    Global: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether inbox placement data is being tracked for the domain.',
-        }),
-    ).exactOptional(),
-    TrackedIsps: IspNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of strings, one for each major email provider that the inbox placement data applies to.',
-        }),
-    ).exactOptional(),
+    Global: EnabledSchema.exactOptional().openapi({
+      description: 'Specifies whether inbox placement data is being tracked for the domain.',
+    }),
+    TrackedIsps: IspNameListSchema.exactOptional().openapi({
+      description:
+        'An array of strings, one for each major email provider that the inbox placement data applies to.',
+    }),
   })
   .openapi({
     description:
@@ -1066,30 +816,18 @@ const InboxPlacementTrackingOptionSchema = z
 
 const DomainDeliverabilityTrackingOptionSchema = z
   .object({
-    Domain: DomainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A verified domain that’s associated with your AWS account and currently has an active Deliverability dashboard subscription.',
-        }),
-    ).exactOptional(),
-    SubscriptionStartDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date, in Unix time format, when you enabled the Deliverability dashboard for the domain.',
-        }),
-    ).exactOptional(),
-    InboxPlacementTrackingOption: InboxPlacementTrackingOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains information about the inbox placement data settings for the domain.',
-        }),
-    ).exactOptional(),
+    Domain: DomainSchema.exactOptional().openapi({
+      description:
+        'A verified domain that’s associated with your AWS account and currently has an active Deliverability dashboard subscription.',
+    }),
+    SubscriptionStartDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date, in Unix time format, when you enabled the Deliverability dashboard for the domain.',
+    }),
+    InboxPlacementTrackingOption: InboxPlacementTrackingOptionSchema.exactOptional().openapi({
+      description:
+        'An object that contains information about the inbox placement data settings for the domain.',
+    }),
   })
   .openapi({
     description:
@@ -1108,46 +846,27 @@ const DomainDeliverabilityTrackingOptionsSchema = z
 
 const GetDeliverabilityDashboardOptionsResponseSchema = z
   .object({
-    DashboardEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the Deliverability dashboard is enabled for your Amazon Pinpoint account. If this value is <code>true</code>, the dashboard is enabled.',
-        }),
-    ),
-    SubscriptionExpiryDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date, in Unix time format, when your current subscription to the Deliverability dashboard is scheduled to expire, if your subscription is scheduled to expire at the end of the current calendar month. This value is null if you have an active subscription that isn’t due to expire at the end of the month.',
-        }),
-    ).exactOptional(),
-    AccountStatus: DeliverabilityDashboardAccountStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of your Deliverability dashboard subscription. If this value is <code>PENDING_EXPIRATION</code>, your subscription is scheduled to expire at the end of the current calendar month.',
-        }),
-    ).exactOptional(),
-    ActiveSubscribedDomains: DomainDeliverabilityTrackingOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects, one for each verified domain that you use to send email and currently has an active Deliverability dashboard subscription that isn’t scheduled to expire at the end of the current calendar month.',
-        }),
-    ).exactOptional(),
-    PendingExpirationSubscribedDomains: DomainDeliverabilityTrackingOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of objects, one for each verified domain that you use to send email and currently has an active Deliverability dashboard subscription that's scheduled to expire at the end of the current calendar month.",
-        }),
-    ).exactOptional(),
+    DashboardEnabled: EnabledSchema.openapi({
+      description:
+        'Specifies whether the Deliverability dashboard is enabled for your Amazon Pinpoint account. If this value is <code>true</code>, the dashboard is enabled.',
+    }),
+    SubscriptionExpiryDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date, in Unix time format, when your current subscription to the Deliverability dashboard is scheduled to expire, if your subscription is scheduled to expire at the end of the current calendar month. This value is null if you have an active subscription that isn’t due to expire at the end of the month.',
+    }),
+    AccountStatus: DeliverabilityDashboardAccountStatusSchema.exactOptional().openapi({
+      description:
+        'The current status of your Deliverability dashboard subscription. If this value is <code>PENDING_EXPIRATION</code>, your subscription is scheduled to expire at the end of the current calendar month.',
+    }),
+    ActiveSubscribedDomains: DomainDeliverabilityTrackingOptionsSchema.exactOptional().openapi({
+      description:
+        'An array of objects, one for each verified domain that you use to send email and currently has an active Deliverability dashboard subscription that isn’t scheduled to expire at the end of the current calendar month.',
+    }),
+    PendingExpirationSubscribedDomains:
+      DomainDeliverabilityTrackingOptionsSchema.exactOptional().openapi({
+        description:
+          "An array of objects, one for each verified domain that you use to send email and currently has an active Deliverability dashboard subscription that's scheduled to expire at the end of the current calendar month.",
+      }),
   })
   .openapi({
     required: ['DashboardEnabled'],
@@ -1176,52 +895,27 @@ const EmailAddressSchema = z.string().openapi('EmailAddress')
 
 const DeliverabilityTestReportSchema = z
   .object({
-    ReportId: ReportIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique string that identifies the predictive inbox placement test.',
-        }),
-    ).exactOptional(),
-    ReportName: ReportNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A name that helps you identify a predictive inbox placement test report.',
-        }),
-    ).exactOptional(),
-    Subject: DeliverabilityTestSubjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The subject line for an email that you submitted in a predictive inbox placement test.',
-        }),
-    ).exactOptional(),
-    FromEmailAddress: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sender address that you specified for the predictive inbox placement test.',
-        }),
-    ).exactOptional(),
-    CreateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the predictive inbox placement test was created, in Unix time format.',
-        }),
-    ).exactOptional(),
-    DeliverabilityTestStatus: DeliverabilityTestStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the predictive inbox placement test. If the status is <code>IN_PROGRESS</code>, then the predictive inbox placement test is currently running. Predictive inbox placement tests are usually complete within 24 hours of creating the test. If the status is <code>COMPLETE</code>, then the test is finished, and you can use the <code>GetDeliverabilityTestReport</code> to view the results of the test.',
-        }),
-    ).exactOptional(),
+    ReportId: ReportIdSchema.exactOptional().openapi({
+      description: 'A unique string that identifies the predictive inbox placement test.',
+    }),
+    ReportName: ReportNameSchema.exactOptional().openapi({
+      description: 'A name that helps you identify a predictive inbox placement test report.',
+    }),
+    Subject: DeliverabilityTestSubjectSchema.exactOptional().openapi({
+      description:
+        'The subject line for an email that you submitted in a predictive inbox placement test.',
+    }),
+    FromEmailAddress: EmailAddressSchema.exactOptional().openapi({
+      description: 'The sender address that you specified for the predictive inbox placement test.',
+    }),
+    CreateDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time when the predictive inbox placement test was created, in Unix time format.',
+    }),
+    DeliverabilityTestStatus: DeliverabilityTestStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the predictive inbox placement test. If the status is <code>IN_PROGRESS</code>, then the predictive inbox placement test is currently running. Predictive inbox placement tests are usually complete within 24 hours of creating the test. If the status is <code>COMPLETE</code>, then the test is finished, and you can use the <code>GetDeliverabilityTestReport</code> to view the results of the test.',
+    }),
   })
   .openapi({
     description: 'An object that contains metadata related to a predictive inbox placement test.',
@@ -1238,46 +932,26 @@ const PercentageSchema = z
 
 const PlacementStatisticsSchema = z
   .object({
-    InboxPercentage: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The percentage of emails that arrived in recipients' inboxes during the predictive inbox placement test.",
-        }),
-    ).exactOptional(),
-    SpamPercentage: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The percentage of emails that arrived in recipients' spam or junk mail folders during the predictive inbox placement test.",
-        }),
-    ).exactOptional(),
-    MissingPercentage: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The percentage of emails that didn't arrive in recipients' inboxes at all during the predictive inbox placement test.",
-        }),
-    ).exactOptional(),
-    SpfPercentage: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of emails that were authenticated by using Sender Policy Framework (SPF) during the predictive inbox placement test.',
-        }),
-    ).exactOptional(),
-    DkimPercentage: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of emails that were authenticated by using DomainKeys Identified Mail (DKIM) during the predictive inbox placement test.',
-        }),
-    ).exactOptional(),
+    InboxPercentage: PercentageSchema.exactOptional().openapi({
+      description:
+        "The percentage of emails that arrived in recipients' inboxes during the predictive inbox placement test.",
+    }),
+    SpamPercentage: PercentageSchema.exactOptional().openapi({
+      description:
+        "The percentage of emails that arrived in recipients' spam or junk mail folders during the predictive inbox placement test.",
+    }),
+    MissingPercentage: PercentageSchema.exactOptional().openapi({
+      description:
+        "The percentage of emails that didn't arrive in recipients' inboxes at all during the predictive inbox placement test.",
+    }),
+    SpfPercentage: PercentageSchema.exactOptional().openapi({
+      description:
+        'The percentage of emails that were authenticated by using Sender Policy Framework (SPF) during the predictive inbox placement test.',
+    }),
+    DkimPercentage: PercentageSchema.exactOptional().openapi({
+      description:
+        'The percentage of emails that were authenticated by using DomainKeys Identified Mail (DKIM) during the predictive inbox placement test.',
+    }),
   })
   .openapi({
     description: 'An object that contains inbox placement data for an email provider.',
@@ -1287,21 +961,12 @@ const PlacementStatisticsSchema = z
 
 const IspPlacementSchema = z
   .object({
-    IspName: IspNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the email provider that the inbox placement data applies to.',
-        }),
-    ).exactOptional(),
-    PlacementStatistics: PlacementStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains inbox placement metrics for a specific email provider.',
-        }),
-    ).exactOptional(),
+    IspName: IspNameSchema.exactOptional().openapi({
+      description: 'The name of the email provider that the inbox placement data applies to.',
+    }),
+    PlacementStatistics: PlacementStatisticsSchema.exactOptional().openapi({
+      description: 'An object that contains inbox placement metrics for a specific email provider.',
+    }),
   })
   .openapi({
     description:
@@ -1319,46 +984,25 @@ const MessageContentSchema = z
 
 const GetDeliverabilityTestReportResponseSchema = z
   .object({
-    DeliverabilityTestReport: DeliverabilityTestReportSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the results of the predictive inbox placement test.',
-        }),
-    ),
-    OverallPlacement: PlacementStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An object that specifies how many test messages that were sent during the predictive inbox placement test were delivered to recipients' inboxes, how many were sent to recipients' spam folders, and how many weren't delivered.",
-        }),
-    ),
-    IspPlacements: IspPlacementsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes how the test email was handled by several email providers, including Gmail, Hotmail, Yahoo, AOL, and others.',
-        }),
-    ),
-    Message: MessageContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the message that you sent when you performed this predictive inbox placement test.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that define the tags (keys and values) that are associated with the predictive inbox placement test.',
-        }),
-    ).exactOptional(),
+    DeliverabilityTestReport: DeliverabilityTestReportSchema.openapi({
+      description: 'An object that contains the results of the predictive inbox placement test.',
+    }),
+    OverallPlacement: PlacementStatisticsSchema.openapi({
+      description:
+        "An object that specifies how many test messages that were sent during the predictive inbox placement test were delivered to recipients' inboxes, how many were sent to recipients' spam folders, and how many weren't delivered.",
+    }),
+    IspPlacements: IspPlacementsSchema.openapi({
+      description:
+        'An object that describes how the test email was handled by several email providers, including Gmail, Hotmail, Yahoo, AOL, and others.',
+    }),
+    Message: MessageContentSchema.exactOptional().openapi({
+      description:
+        'An object that contains the message that you sent when you performed this predictive inbox placement test.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that define the tags (keys and values) that are associated with the predictive inbox placement test.',
+    }),
   })
   .openapi({
     required: ['DeliverabilityTestReport', 'OverallPlacement', 'IspPlacements'],
@@ -1387,102 +1031,56 @@ const EspsSchema = z.array(EspSchema).openapi('Esps')
 
 const DomainDeliverabilityCampaignSchema = z
   .object({
-    CampaignId: CampaignIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the campaign. Amazon Pinpoint automatically generates and assigns this identifier to a campaign. This value is not the same as the campaign identifier that Amazon Pinpoint assigns to campaigns that you create and manage by using the Amazon Pinpoint API or the Amazon Pinpoint console.',
-        }),
-    ).exactOptional(),
-    ImageUrl: ImageUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL of an image that contains a snapshot of the email message that was sent.',
-        }),
-    ).exactOptional(),
-    Subject: SubjectSchema.and(
-      z.any().openapi({ description: 'The subject line, or title, of the email message.' }),
-    ).exactOptional(),
-    FromAddress: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The verified email address that the email message was sent from.',
-        }),
-    ).exactOptional(),
-    SendingIps: IpListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The IP addresses that were used to send the email message.' }),
-    ).exactOptional(),
-    FirstSeenDateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The first time, in Unix time format, when the email message was delivered to any recipient's inbox. This value can help you determine how long it took for a campaign to deliver an email message.",
-        }),
-    ).exactOptional(),
-    LastSeenDateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The last time, in Unix time format, when the email message was delivered to any recipient's inbox. This value can help you determine how long it took for a campaign to deliver an email message.",
-        }),
-    ).exactOptional(),
-    InboxCount: VolumeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of email messages that were delivered to recipients’ inboxes.',
-        }),
-    ).exactOptional(),
-    SpamCount: VolumeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The number of email messages that were delivered to recipients' spam or junk mail folders.",
-        }),
-    ).exactOptional(),
-    ReadRate: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of email messages that were opened by recipients. Due to technical limitations, this value only includes recipients who opened the message by using an email client that supports images.',
-        }),
-    ).exactOptional(),
-    DeleteRate: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of email messages that were deleted by recipients, without being opened first. Due to technical limitations, this value only includes recipients who opened the message by using an email client that supports images.',
-        }),
-    ).exactOptional(),
-    ReadDeleteRate: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of email messages that were opened and then deleted by recipients. Due to technical limitations, this value only includes recipients who opened the message by using an email client that supports images.',
-        }),
-    ).exactOptional(),
-    ProjectedVolume: VolumeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The projected number of recipients that the email message was sent to.',
-        }),
-    ).exactOptional(),
-    Esps: EspsSchema.and(
-      z.any().openapi({ description: 'The major email providers who handled the email message.' }),
-    ).exactOptional(),
+    CampaignId: CampaignIdSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for the campaign. Amazon Pinpoint automatically generates and assigns this identifier to a campaign. This value is not the same as the campaign identifier that Amazon Pinpoint assigns to campaigns that you create and manage by using the Amazon Pinpoint API or the Amazon Pinpoint console.',
+    }),
+    ImageUrl: ImageUrlSchema.exactOptional().openapi({
+      description:
+        'The URL of an image that contains a snapshot of the email message that was sent.',
+    }),
+    Subject: SubjectSchema.exactOptional().openapi({
+      description: 'The subject line, or title, of the email message.',
+    }),
+    FromAddress: IdentitySchema.exactOptional().openapi({
+      description: 'The verified email address that the email message was sent from.',
+    }),
+    SendingIps: IpListSchema.exactOptional().openapi({
+      description: 'The IP addresses that were used to send the email message.',
+    }),
+    FirstSeenDateTime: TimestampSchema.exactOptional().openapi({
+      description:
+        "The first time, in Unix time format, when the email message was delivered to any recipient's inbox. This value can help you determine how long it took for a campaign to deliver an email message.",
+    }),
+    LastSeenDateTime: TimestampSchema.exactOptional().openapi({
+      description:
+        "The last time, in Unix time format, when the email message was delivered to any recipient's inbox. This value can help you determine how long it took for a campaign to deliver an email message.",
+    }),
+    InboxCount: VolumeSchema.exactOptional().openapi({
+      description: 'The number of email messages that were delivered to recipients’ inboxes.',
+    }),
+    SpamCount: VolumeSchema.exactOptional().openapi({
+      description:
+        "The number of email messages that were delivered to recipients' spam or junk mail folders.",
+    }),
+    ReadRate: PercentageSchema.exactOptional().openapi({
+      description:
+        'The percentage of email messages that were opened by recipients. Due to technical limitations, this value only includes recipients who opened the message by using an email client that supports images.',
+    }),
+    DeleteRate: PercentageSchema.exactOptional().openapi({
+      description:
+        'The percentage of email messages that were deleted by recipients, without being opened first. Due to technical limitations, this value only includes recipients who opened the message by using an email client that supports images.',
+    }),
+    ReadDeleteRate: PercentageSchema.exactOptional().openapi({
+      description:
+        'The percentage of email messages that were opened and then deleted by recipients. Due to technical limitations, this value only includes recipients who opened the message by using an email client that supports images.',
+    }),
+    ProjectedVolume: VolumeSchema.exactOptional().openapi({
+      description: 'The projected number of recipients that the email message was sent to.',
+    }),
+    Esps: EspsSchema.exactOptional().openapi({
+      description: 'The major email providers who handled the email message.',
+    }),
   })
   .openapi({
     description:
@@ -1493,13 +1091,9 @@ const DomainDeliverabilityCampaignSchema = z
 
 const GetDomainDeliverabilityCampaignResponseSchema = z
   .object({
-    DomainDeliverabilityCampaign: DomainDeliverabilityCampaignSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains the deliverability data for the campaign.',
-        }),
-    ),
+    DomainDeliverabilityCampaign: DomainDeliverabilityCampaignSchema.openapi({
+      description: 'An object that contains the deliverability data for the campaign.',
+    }),
   })
   .openapi({
     required: ['DomainDeliverabilityCampaign'],
@@ -1510,37 +1104,21 @@ const GetDomainDeliverabilityCampaignResponseSchema = z
 
 const VolumeStatisticsSchema = z
   .object({
-    InboxRawCount: VolumeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The total number of emails that arrived in recipients' inboxes.",
-        }),
-    ).exactOptional(),
-    SpamRawCount: VolumeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The total number of emails that arrived in recipients' spam or junk mail folders.",
-        }),
-    ).exactOptional(),
-    ProjectedInbox: VolumeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An estimate of the percentage of emails sent from the current domain that will arrive in recipients' inboxes.",
-        }),
-    ).exactOptional(),
-    ProjectedSpam: VolumeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An estimate of the percentage of emails sent from the current domain that will arrive in recipients' spam or junk mail folders.",
-        }),
-    ).exactOptional(),
+    InboxRawCount: VolumeSchema.exactOptional().openapi({
+      description: "The total number of emails that arrived in recipients' inboxes.",
+    }),
+    SpamRawCount: VolumeSchema.exactOptional().openapi({
+      description:
+        "The total number of emails that arrived in recipients' spam or junk mail folders.",
+    }),
+    ProjectedInbox: VolumeSchema.exactOptional().openapi({
+      description:
+        "An estimate of the percentage of emails sent from the current domain that will arrive in recipients' inboxes.",
+    }),
+    ProjectedSpam: VolumeSchema.exactOptional().openapi({
+      description:
+        "An estimate of the percentage of emails sent from the current domain that will arrive in recipients' spam or junk mail folders.",
+    }),
   })
   .openapi({
     description:
@@ -1551,45 +1129,25 @@ const VolumeStatisticsSchema = z
 
 const DomainIspPlacementSchema = z
   .object({
-    IspName: IspNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the email provider that the inbox placement data applies to.',
-        }),
-    ).exactOptional(),
-    InboxRawCount: VolumeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The total number of messages that were sent from the selected domain to the specified email provider that arrived in recipients' inboxes.",
-        }),
-    ).exactOptional(),
-    SpamRawCount: VolumeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The total number of messages that were sent from the selected domain to the specified email provider that arrived in recipients' spam or junk mail folders.",
-        }),
-    ).exactOptional(),
-    InboxPercentage: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The percentage of messages that were sent from the selected domain to the specified email provider that arrived in recipients' inboxes.",
-        }),
-    ).exactOptional(),
-    SpamPercentage: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The percentage of messages that were sent from the selected domain to the specified email provider that arrived in recipients' spam or junk mail folders.",
-        }),
-    ).exactOptional(),
+    IspName: IspNameSchema.exactOptional().openapi({
+      description: 'The name of the email provider that the inbox placement data applies to.',
+    }),
+    InboxRawCount: VolumeSchema.exactOptional().openapi({
+      description:
+        "The total number of messages that were sent from the selected domain to the specified email provider that arrived in recipients' inboxes.",
+    }),
+    SpamRawCount: VolumeSchema.exactOptional().openapi({
+      description:
+        "The total number of messages that were sent from the selected domain to the specified email provider that arrived in recipients' spam or junk mail folders.",
+    }),
+    InboxPercentage: PercentageSchema.exactOptional().openapi({
+      description:
+        "The percentage of messages that were sent from the selected domain to the specified email provider that arrived in recipients' inboxes.",
+    }),
+    SpamPercentage: PercentageSchema.exactOptional().openapi({
+      description:
+        "The percentage of messages that were sent from the selected domain to the specified email provider that arrived in recipients' spam or junk mail folders.",
+    }),
   })
   .openapi({
     description:
@@ -1602,30 +1160,18 @@ const DomainIspPlacementsSchema = z.array(DomainIspPlacementSchema).openapi('Dom
 
 const OverallVolumeSchema = z
   .object({
-    VolumeStatistics: VolumeStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An object that contains information about the numbers of messages that arrived in recipients' inboxes and junk mail folders.",
-        }),
-    ).exactOptional(),
-    ReadRatePercent: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of emails that were sent from the domain that were read by their recipients.',
-        }),
-    ).exactOptional(),
-    DomainIspPlacements: DomainIspPlacementsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains inbox and junk mail placement metrics for individual email providers.',
-        }),
-    ).exactOptional(),
+    VolumeStatistics: VolumeStatisticsSchema.exactOptional().openapi({
+      description:
+        "An object that contains information about the numbers of messages that arrived in recipients' inboxes and junk mail folders.",
+    }),
+    ReadRatePercent: PercentageSchema.exactOptional().openapi({
+      description:
+        'The percentage of emails that were sent from the domain that were read by their recipients.',
+    }),
+    DomainIspPlacements: DomainIspPlacementsSchema.exactOptional().openapi({
+      description:
+        'An object that contains inbox and junk mail placement metrics for individual email providers.',
+    }),
   })
   .openapi({
     description:
@@ -1636,27 +1182,17 @@ const OverallVolumeSchema = z
 
 const DailyVolumeSchema = z
   .object({
-    StartDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date that the DailyVolume metrics apply to, in Unix time.' }),
-    ).exactOptional(),
-    VolumeStatistics: VolumeStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains inbox placement metrics for a specific day in the analysis period.',
-        }),
-    ).exactOptional(),
-    DomainIspPlacements: DomainIspPlacementsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An object that contains inbox placement metrics for a specified day in the analysis period, broken out by the recipient's email provider.",
-        }),
-    ).exactOptional(),
+    StartDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date that the DailyVolume metrics apply to, in Unix time.',
+    }),
+    VolumeStatistics: VolumeStatisticsSchema.exactOptional().openapi({
+      description:
+        'An object that contains inbox placement metrics for a specific day in the analysis period.',
+    }),
+    DomainIspPlacements: DomainIspPlacementsSchema.exactOptional().openapi({
+      description:
+        "An object that contains inbox placement metrics for a specified day in the analysis period, broken out by the recipient's email provider.",
+    }),
   })
   .openapi({
     description:
@@ -1669,22 +1205,14 @@ const DailyVolumesSchema = z.array(DailyVolumeSchema).openapi('DailyVolumes')
 
 const GetDomainStatisticsReportResponseSchema = z
   .object({
-    OverallVolume: OverallVolumeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains deliverability metrics for the domain that you specified. The data in this object is a summary of all of the data that was collected from the <code>StartDate</code> to the <code>EndDate</code>.',
-        }),
-    ),
-    DailyVolumes: DailyVolumesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains deliverability metrics for the domain that you specified. This object contains data for each day, starting on the <code>StartDate</code> and ending on the <code>EndDate</code>.',
-        }),
-    ),
+    OverallVolume: OverallVolumeSchema.openapi({
+      description:
+        'An object that contains deliverability metrics for the domain that you specified. The data in this object is a summary of all of the data that was collected from the <code>StartDate</code> to the <code>EndDate</code>.',
+    }),
+    DailyVolumes: DailyVolumesSchema.openapi({
+      description:
+        'An object that contains deliverability metrics for the domain that you specified. This object contains data for each day, starting on the <code>StartDate</code> and ending on the <code>EndDate</code>.',
+    }),
   })
   .openapi({
     required: ['OverallVolume', 'DailyVolumes'],
@@ -1716,30 +1244,17 @@ const BehaviorOnMxFailureSchema = z
 
 const MailFromAttributesSchema = z
   .object({
-    MailFromDomain: MailFromDomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a domain that an email identity uses as a custom MAIL FROM domain.',
-        }),
-    ),
-    MailFromDomainStatus: MailFromDomainStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the MAIL FROM domain. This status can have the following values:</p> <ul> <li> <p> <code>PENDING</code> – Amazon Pinpoint hasn't started searching for the MX record yet.</p> </li> <li> <p> <code>SUCCESS</code> – Amazon Pinpoint detected the required MX record for the MAIL FROM domain.</p> </li> <li> <p> <code>FAILED</code> – Amazon Pinpoint can't find the required MX record, or the record no longer exists.</p> </li> <li> <p> <code>TEMPORARY_FAILURE</code> – A temporary issue occurred, which prevented Amazon Pinpoint from determining the status of the MAIL FROM domain.</p> </li> </ul>",
-        }),
-    ),
-    BehaviorOnMxFailure: BehaviorOnMxFailureSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The action that Amazon Pinpoint to takes if it can't read the required MX record for a custom MAIL FROM domain. When you set this value to <code>UseDefaultValue</code>, Amazon Pinpoint uses <i>amazonses.com</i> as the MAIL FROM domain. When you set this value to <code>RejectMessage</code>, Amazon Pinpoint returns a <code>MailFromDomainNotVerified</code> error, and doesn't attempt to deliver the email.</p> <p>These behaviors are taken when the custom MAIL FROM domain configuration is in the <code>Pending</code>, <code>Failed</code>, and <code>TemporaryFailure</code> states.</p>",
-        }),
-    ),
+    MailFromDomain: MailFromDomainNameSchema.openapi({
+      description: 'The name of a domain that an email identity uses as a custom MAIL FROM domain.',
+    }),
+    MailFromDomainStatus: MailFromDomainStatusSchema.openapi({
+      description:
+        "<p>The status of the MAIL FROM domain. This status can have the following values:</p> <ul> <li> <p> <code>PENDING</code> – Amazon Pinpoint hasn't started searching for the MX record yet.</p> </li> <li> <p> <code>SUCCESS</code> – Amazon Pinpoint detected the required MX record for the MAIL FROM domain.</p> </li> <li> <p> <code>FAILED</code> – Amazon Pinpoint can't find the required MX record, or the record no longer exists.</p> </li> <li> <p> <code>TEMPORARY_FAILURE</code> – A temporary issue occurred, which prevented Amazon Pinpoint from determining the status of the MAIL FROM domain.</p> </li> </ul>",
+    }),
+    BehaviorOnMxFailure: BehaviorOnMxFailureSchema.openapi({
+      description:
+        "<p>The action that Amazon Pinpoint to takes if it can't read the required MX record for a custom MAIL FROM domain. When you set this value to <code>UseDefaultValue</code>, Amazon Pinpoint uses <i>amazonses.com</i> as the MAIL FROM domain. When you set this value to <code>RejectMessage</code>, Amazon Pinpoint returns a <code>MailFromDomainNotVerified</code> error, and doesn't attempt to deliver the email.</p> <p>These behaviors are taken when the custom MAIL FROM domain configuration is in the <code>Pending</code>, <code>Failed</code>, and <code>TemporaryFailure</code> states.</p>",
+    }),
   })
   .openapi({
     required: ['MailFromDomain', 'MailFromDomainStatus', 'BehaviorOnMxFailure'],
@@ -1749,49 +1264,29 @@ const MailFromAttributesSchema = z
 
 const GetEmailIdentityResponseSchema = z
   .object({
-    IdentityType: IdentityTypeSchema.and(
-      z.any().openapi({ description: 'The email identity type.' }),
-    ).exactOptional(),
-    FeedbackForwardingStatus: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The feedback forwarding configuration for the identity.</p> <p>If the value is <code>true</code>, Amazon Pinpoint sends you email notifications when bounce or complaint events occur. Amazon Pinpoint sends this notification to the address that you specified in the Return-Path header of the original email.</p> <p>When you set this value to <code>false</code>, Amazon Pinpoint sends notifications through other mechanisms, such as by notifying an Amazon SNS topic or another event destination. You're required to have a method of tracking bounces and complaints. If you haven't set up another mechanism for receiving bounce or complaint notifications, Amazon Pinpoint sends an email notification when these events occur (even if this setting is disabled).</p>",
-        }),
-    ).exactOptional(),
-    VerifiedForSendingStatus: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether or not the identity is verified. In Amazon Pinpoint, you can only send email from verified email addresses or domains. For more information about verifying identities, see the <a href="https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-email-manage-verify.html">Amazon Pinpoint User Guide</a>.',
-        }),
-    ).exactOptional(),
-    DkimAttributes: DkimAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains information about the DKIM attributes for the identity. This object includes the tokens that you use to create the CNAME records that are required to complete the DKIM verification process.',
-        }),
-    ).exactOptional(),
-    MailFromAttributes: MailFromAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains information about the Mail-From attributes for the email identity.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that define the tags (keys and values) that are associated with the email identity.',
-        }),
-    ).exactOptional(),
+    IdentityType: IdentityTypeSchema.exactOptional().openapi({
+      description: 'The email identity type.',
+    }),
+    FeedbackForwardingStatus: EnabledSchema.exactOptional().openapi({
+      description:
+        "<p>The feedback forwarding configuration for the identity.</p> <p>If the value is <code>true</code>, Amazon Pinpoint sends you email notifications when bounce or complaint events occur. Amazon Pinpoint sends this notification to the address that you specified in the Return-Path header of the original email.</p> <p>When you set this value to <code>false</code>, Amazon Pinpoint sends notifications through other mechanisms, such as by notifying an Amazon SNS topic or another event destination. You're required to have a method of tracking bounces and complaints. If you haven't set up another mechanism for receiving bounce or complaint notifications, Amazon Pinpoint sends an email notification when these events occur (even if this setting is disabled).</p>",
+    }),
+    VerifiedForSendingStatus: EnabledSchema.exactOptional().openapi({
+      description:
+        'Specifies whether or not the identity is verified. In Amazon Pinpoint, you can only send email from verified email addresses or domains. For more information about verifying identities, see the <a href="https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-email-manage-verify.html">Amazon Pinpoint User Guide</a>.',
+    }),
+    DkimAttributes: DkimAttributesSchema.exactOptional().openapi({
+      description:
+        'An object that contains information about the DKIM attributes for the identity. This object includes the tokens that you use to create the CNAME records that are required to complete the DKIM verification process.',
+    }),
+    MailFromAttributes: MailFromAttributesSchema.exactOptional().openapi({
+      description:
+        'An object that contains information about the Mail-From attributes for the email identity.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that define the tags (keys and values) that are associated with the email identity.',
+    }),
   })
   .openapi({ description: 'Details about an email identity.', required: [] })
   .openapi('GetEmailIdentityResponse')
@@ -1802,22 +1297,14 @@ const ConfigurationSetNameListSchema = z
 
 const ListConfigurationSetsResponseSchema = z
   .object({
-    ConfigurationSets: ConfigurationSetNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that contains all of the configuration sets in your Amazon Pinpoint account in the current AWS Region.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there are additional configuration sets to list. To view additional configuration sets, issue another request to <code>ListConfigurationSets</code>, and pass this token in the <code>NextToken</code> parameter.',
-        }),
-    ).exactOptional(),
+    ConfigurationSets: ConfigurationSetNameListSchema.exactOptional().openapi({
+      description:
+        'An array that contains all of the configuration sets in your Amazon Pinpoint account in the current AWS Region.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there are additional configuration sets to list. To view additional configuration sets, issue another request to <code>ListConfigurationSets</code>, and pass this token in the <code>NextToken</code> parameter.',
+    }),
   })
   .openapi({
     description:
@@ -1836,22 +1323,14 @@ const ListOfDedicatedIpPoolsSchema = z
 
 const ListDedicatedIpPoolsResponseSchema = z
   .object({
-    DedicatedIpPools: ListOfDedicatedIpPoolsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of all of the dedicated IP pools that are associated with your Amazon Pinpoint account.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there are additional IP pools to list. To view additional IP pools, issue another request to <code>ListDedicatedIpPools</code>, passing this token in the <code>NextToken</code> parameter.',
-        }),
-    ).exactOptional(),
+    DedicatedIpPools: ListOfDedicatedIpPoolsSchema.exactOptional().openapi({
+      description:
+        'A list of all of the dedicated IP pools that are associated with your Amazon Pinpoint account.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there are additional IP pools to list. To view additional IP pools, issue another request to <code>ListDedicatedIpPools</code>, passing this token in the <code>NextToken</code> parameter.',
+    }),
   })
   .openapi({ description: 'A list of dedicated IP pools.', required: [] })
   .openapi('ListDedicatedIpPoolsResponse')
@@ -1862,22 +1341,14 @@ const DeliverabilityTestReportsSchema = z
 
 const ListDeliverabilityTestReportsResponseSchema = z
   .object({
-    DeliverabilityTestReports: DeliverabilityTestReportsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An object that contains a lists of predictive inbox placement tests that you've performed.",
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there are additional predictive inbox placement tests to list. To view additional predictive inbox placement tests, issue another request to <code>ListDeliverabilityTestReports</code>, and pass this token in the <code>NextToken</code> parameter.',
-        }),
-    ).exactOptional(),
+    DeliverabilityTestReports: DeliverabilityTestReportsSchema.openapi({
+      description:
+        "An object that contains a lists of predictive inbox placement tests that you've performed.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there are additional predictive inbox placement tests to list. To view additional predictive inbox placement tests, issue another request to <code>ListDeliverabilityTestReports</code>, and pass this token in the <code>NextToken</code> parameter.',
+    }),
   })
   .openapi({
     required: ['DeliverabilityTestReports'],
@@ -1893,22 +1364,14 @@ const DomainDeliverabilityCampaignListSchema = z
 
 const ListDomainDeliverabilityCampaignsResponseSchema = z
   .object({
-    DomainDeliverabilityCampaigns: DomainDeliverabilityCampaignListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of responses, one for each campaign that used the domain to send email during the specified time range.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that’s returned from a previous call to the <code>ListDomainDeliverabilityCampaigns</code> operation. This token indicates the position of the campaign in the list of campaigns.',
-        }),
-    ).exactOptional(),
+    DomainDeliverabilityCampaigns: DomainDeliverabilityCampaignListSchema.openapi({
+      description:
+        'An array of responses, one for each campaign that used the domain to send email during the specified time range.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that’s returned from a previous call to the <code>ListDomainDeliverabilityCampaigns</code> operation. This token indicates the position of the campaign in the list of campaigns.',
+    }),
   })
   .openapi({
     required: ['DomainDeliverabilityCampaigns'],
@@ -1919,25 +1382,17 @@ const ListDomainDeliverabilityCampaignsResponseSchema = z
 
 const IdentityInfoSchema = z
   .object({
-    IdentityType: IdentityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The email identity type. The identity type can be one of the following:</p> <ul> <li> <p> <code>EMAIL_ADDRESS</code> – The identity is an email address.</p> </li> <li> <p> <code>DOMAIN</code> – The identity is a domain.</p> </li> <li> <p> <code>MANAGED_DOMAIN</code> – The identity is a domain that is managed by AWS.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    IdentityName: IdentitySchema.and(
-      z.any().openapi({ description: 'The address or domain of the identity.' }),
-    ).exactOptional(),
-    SendingEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether or not you can send email from the identity.</p> <p>In Amazon Pinpoint, an identity is an email address or domain that you send email from. Before you can send email from an identity, you have to demostrate that you own the identity, and that you authorize Amazon Pinpoint to send email from that identity.</p>',
-        }),
-    ).exactOptional(),
+    IdentityType: IdentityTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The email identity type. The identity type can be one of the following:</p> <ul> <li> <p> <code>EMAIL_ADDRESS</code> – The identity is an email address.</p> </li> <li> <p> <code>DOMAIN</code> – The identity is a domain.</p> </li> <li> <p> <code>MANAGED_DOMAIN</code> – The identity is a domain that is managed by AWS.</p> </li> </ul>',
+    }),
+    IdentityName: IdentitySchema.exactOptional().openapi({
+      description: 'The address or domain of the identity.',
+    }),
+    SendingEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether or not you can send email from the identity.</p> <p>In Amazon Pinpoint, an identity is an email address or domain that you send email from. Before you can send email from an identity, you have to demostrate that you own the identity, and that you authorize Amazon Pinpoint to send email from that identity.</p>',
+    }),
   })
   .openapi({ description: 'Information about an email identity.', required: [] })
   .openapi('IdentityInfo')
@@ -1946,22 +1401,14 @@ const IdentityInfoListSchema = z.array(IdentityInfoSchema).openapi('IdentityInfo
 
 const ListEmailIdentitiesResponseSchema = z
   .object({
-    EmailIdentities: IdentityInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that includes all of the identities associated with your Amazon Pinpoint account.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates that there are additional configuration sets to list. To view additional configuration sets, issue another request to <code>ListEmailIdentities</code>, and pass this token in the <code>NextToken</code> parameter.',
-        }),
-    ).exactOptional(),
+    EmailIdentities: IdentityInfoListSchema.exactOptional().openapi({
+      description:
+        'An array that includes all of the identities associated with your Amazon Pinpoint account.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that indicates that there are additional configuration sets to list. To view additional configuration sets, issue another request to <code>ListEmailIdentities</code>, and pass this token in the <code>NextToken</code> parameter.',
+    }),
   })
   .openapi({
     description:
@@ -1972,20 +1419,16 @@ const ListEmailIdentitiesResponseSchema = z
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that lists all the tags that are associated with the resource. Each tag consists of a required tag key (<code>Key</code>) and an associated tag value (<code>Value</code>)',
-        }),
-    ),
+    Tags: TagListSchema.openapi({
+      description:
+        'An array that lists all the tags that are associated with the resource. Each tag consists of a required tag key (<code>Key</code>) and an associated tag value (<code>Value</code>)',
+    }),
   })
   .openapi({ required: ['Tags'] })
   .openapi('ListTagsForResourceResponse')
 
 const PutAccountDedicatedIpWarmupAttributesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -1993,7 +1436,7 @@ const PutAccountDedicatedIpWarmupAttributesResponseSchema = z
   .openapi('PutAccountDedicatedIpWarmupAttributesResponse')
 
 const PutAccountSendingAttributesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -2001,7 +1444,7 @@ const PutAccountSendingAttributesResponseSchema = z
   .openapi('PutAccountSendingAttributesResponse')
 
 const PutConfigurationSetDeliveryOptionsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -2009,7 +1452,7 @@ const PutConfigurationSetDeliveryOptionsResponseSchema = z
   .openapi('PutConfigurationSetDeliveryOptionsResponse')
 
 const PutConfigurationSetReputationOptionsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -2017,7 +1460,7 @@ const PutConfigurationSetReputationOptionsResponseSchema = z
   .openapi('PutConfigurationSetReputationOptionsResponse')
 
 const PutConfigurationSetSendingOptionsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -2025,7 +1468,7 @@ const PutConfigurationSetSendingOptionsResponseSchema = z
   .openapi('PutConfigurationSetSendingOptionsResponse')
 
 const PutConfigurationSetTrackingOptionsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -2033,7 +1476,7 @@ const PutConfigurationSetTrackingOptionsResponseSchema = z
   .openapi('PutConfigurationSetTrackingOptionsResponse')
 
 const PutDedicatedIpInPoolResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -2041,7 +1484,7 @@ const PutDedicatedIpInPoolResponseSchema = z
   .openapi('PutDedicatedIpInPoolResponse')
 
 const PutDedicatedIpWarmupAttributesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -2049,7 +1492,7 @@ const PutDedicatedIpWarmupAttributesResponseSchema = z
   .openapi('PutDedicatedIpWarmupAttributesResponse')
 
 const PutDeliverabilityDashboardOptionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A response that indicates whether the Deliverability dashboard is enabled for your Amazon Pinpoint account.',
@@ -2057,7 +1500,7 @@ const PutDeliverabilityDashboardOptionResponseSchema = z
   .openapi('PutDeliverabilityDashboardOptionResponse')
 
 const PutEmailIdentityDkimAttributesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -2065,7 +1508,7 @@ const PutEmailIdentityDkimAttributesResponseSchema = z
   .openapi('PutEmailIdentityDkimAttributesResponse')
 
 const PutEmailIdentityFeedbackAttributesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -2073,7 +1516,7 @@ const PutEmailIdentityFeedbackAttributesResponseSchema = z
   .openapi('PutEmailIdentityFeedbackAttributesResponse')
 
 const PutEmailIdentityMailFromAttributesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -2084,14 +1527,10 @@ const OutboundMessageIdSchema = z.string().openapi('OutboundMessageId')
 
 const SendEmailResponseSchema = z
   .object({
-    MessageId: OutboundMessageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A unique identifier for the message that is generated when Amazon Pinpoint accepts the message.</p> <note> <p>It is possible for Amazon Pinpoint to accept a message without sending it. This can happen when the message you're trying to send has an attachment doesn't pass a virus check, or when you send a templated email that contains invalid personalization content, for example.</p> </note>",
-        }),
-    ).exactOptional(),
+    MessageId: OutboundMessageIdSchema.exactOptional().openapi({
+      description:
+        "<p>A unique identifier for the message that is generated when Amazon Pinpoint accepts the message.</p> <note> <p>It is possible for Amazon Pinpoint to accept a message without sending it. This can happen when the message you're trying to send has an attachment doesn't pass a virus check, or when you send a templated email that contains invalid personalization content, for example.</p> </note>",
+    }),
   })
   .openapi({
     description:
@@ -2120,22 +1559,14 @@ const MessageTagValueSchema = z
 
 const MessageTagSchema = z
   .object({
-    Name: MessageTagNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the message tag. The message tag name has to meet the following criteria:</p> <ul> <li> <p>It can only contain ASCII letters (a–z, A–Z), numbers (0–9), underscores (_), or dashes (-).</p> </li> <li> <p>It can contain no more than 256 characters.</p> </li> </ul>',
-        }),
-    ),
-    Value: MessageTagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The value of the message tag. The message tag value has to meet the following criteria:</p> <ul> <li> <p>It can only contain ASCII letters (a–z, A–Z), numbers (0–9), underscores (_), or dashes (-).</p> </li> <li> <p>It can contain no more than 256 characters.</p> </li> </ul>',
-        }),
-    ),
+    Name: MessageTagNameSchema.openapi({
+      description:
+        '<p>The name of the message tag. The message tag name has to meet the following criteria:</p> <ul> <li> <p>It can only contain ASCII letters (a–z, A–Z), numbers (0–9), underscores (_), or dashes (-).</p> </li> <li> <p>It can contain no more than 256 characters.</p> </li> </ul>',
+    }),
+    Value: MessageTagValueSchema.openapi({
+      description:
+        '<p>The value of the message tag. The message tag value has to meet the following criteria:</p> <ul> <li> <p>It can only contain ASCII letters (a–z, A–Z), numbers (0–9), underscores (_), or dashes (-).</p> </li> <li> <p>It can contain no more than 256 characters.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Name', 'Value'],
@@ -2144,12 +1575,12 @@ const MessageTagSchema = z
   })
   .openapi('MessageTag')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const UpdateConfigurationSetEventDestinationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An HTTP 200 response if the request succeeds, or an error message if the request fails.',
@@ -2160,54 +1591,30 @@ const BlacklistItemNamesSchema = z.array(BlacklistItemNameSchema).openapi('Black
 
 const EventDestinationDefinitionSchema = z
   .object({
-    Enabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>If <code>true</code>, the event destination is enabled. When the event destination is enabled, the specified event types are sent to the destinations in this <code>EventDestinationDefinition</code>.</p> <p>If <code>false</code>, the event destination is disabled. When the event destination is disabled, events aren't sent to the specified destinations.</p>",
-        }),
-    ).exactOptional(),
-    MatchingEventTypes: EventTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that specifies which events Amazon Pinpoint should send to the destinations in this <code>EventDestinationDefinition</code>.',
-        }),
-    ).exactOptional(),
-    KinesisFirehoseDestination: KinesisFirehoseDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines an Amazon Kinesis Data Firehose destination for email events. You can use Amazon Kinesis Data Firehose to stream data to other services, such as Amazon S3 and Amazon Redshift.',
-        }),
-    ).exactOptional(),
-    CloudWatchDestination: CloudWatchDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines an Amazon CloudWatch destination for email events. You can use Amazon CloudWatch to monitor and gain insights on your email sending metrics.',
-        }),
-    ).exactOptional(),
-    SnsDestination: SnsDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines an Amazon SNS destination for email events. You can use Amazon SNS to send notification when certain email events occur.',
-        }),
-    ).exactOptional(),
-    PinpointDestination: PinpointDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines a Amazon Pinpoint destination for email events. You can use Amazon Pinpoint events to create attributes in Amazon Pinpoint projects. You can use these attributes to create segments for your campaigns.',
-        }),
-    ).exactOptional(),
+    Enabled: EnabledSchema.exactOptional().openapi({
+      description:
+        "<p>If <code>true</code>, the event destination is enabled. When the event destination is enabled, the specified event types are sent to the destinations in this <code>EventDestinationDefinition</code>.</p> <p>If <code>false</code>, the event destination is disabled. When the event destination is disabled, events aren't sent to the specified destinations.</p>",
+    }),
+    MatchingEventTypes: EventTypesSchema.exactOptional().openapi({
+      description:
+        'An array that specifies which events Amazon Pinpoint should send to the destinations in this <code>EventDestinationDefinition</code>.',
+    }),
+    KinesisFirehoseDestination: KinesisFirehoseDestinationSchema.exactOptional().openapi({
+      description:
+        'An object that defines an Amazon Kinesis Data Firehose destination for email events. You can use Amazon Kinesis Data Firehose to stream data to other services, such as Amazon S3 and Amazon Redshift.',
+    }),
+    CloudWatchDestination: CloudWatchDestinationSchema.exactOptional().openapi({
+      description:
+        'An object that defines an Amazon CloudWatch destination for email events. You can use Amazon CloudWatch to monitor and gain insights on your email sending metrics.',
+    }),
+    SnsDestination: SnsDestinationSchema.exactOptional().openapi({
+      description:
+        'An object that defines an Amazon SNS destination for email events. You can use Amazon SNS to send notification when certain email events occur.',
+    }),
+    PinpointDestination: PinpointDestinationSchema.exactOptional().openapi({
+      description:
+        'An object that defines a Amazon Pinpoint destination for email events. You can use Amazon Pinpoint events to create attributes in Amazon Pinpoint projects. You can use these attributes to create segments for your campaigns.',
+    }),
   })
   .openapi({
     description:
@@ -2218,16 +1625,12 @@ const EventDestinationDefinitionSchema = z
 
 const CreateConfigurationSetEventDestinationRequestSchema = z
   .object({
-    EventDestinationName: EventDestinationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A name that identifies the event destination within the configuration set.',
-        }),
-    ),
-    EventDestination: EventDestinationDefinitionSchema.and(
-      z.any().openapi({ description: 'An object that defines the event destination.' }),
-    ),
+    EventDestinationName: EventDestinationNameSchema.openapi({
+      description: 'A name that identifies the event destination within the configuration set.',
+    }),
+    EventDestination: EventDestinationDefinitionSchema.openapi({
+      description: 'An object that defines the event destination.',
+    }),
   })
   .openapi({
     required: ['EventDestinationName', 'EventDestination'],
@@ -2238,49 +1641,29 @@ const CreateConfigurationSetEventDestinationRequestSchema = z
 
 const CreateConfigurationSetRequestSchema = z
   .object({
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration set.' }),
-    ),
-    TrackingOptions: TrackingOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines the open and click tracking options for emails that you send using the configuration set.',
-        }),
-    ).exactOptional(),
-    DeliveryOptions: DeliveryOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines the dedicated IP pool that is used to send emails that you send using the configuration set.',
-        }),
-    ).exactOptional(),
-    ReputationOptions: ReputationOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines whether or not Amazon Pinpoint collects reputation metrics for the emails that you send that use the configuration set.',
-        }),
-    ).exactOptional(),
-    SendingOptions: SendingOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines whether or not Amazon Pinpoint can send email that you send using the configuration set.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that define the tags (keys and values) that you want to associate with the configuration set.',
-        }),
-    ).exactOptional(),
+    ConfigurationSetName: ConfigurationSetNameSchema.openapi({
+      description: 'The name of the configuration set.',
+    }),
+    TrackingOptions: TrackingOptionsSchema.exactOptional().openapi({
+      description:
+        'An object that defines the open and click tracking options for emails that you send using the configuration set.',
+    }),
+    DeliveryOptions: DeliveryOptionsSchema.exactOptional().openapi({
+      description:
+        'An object that defines the dedicated IP pool that is used to send emails that you send using the configuration set.',
+    }),
+    ReputationOptions: ReputationOptionsSchema.exactOptional().openapi({
+      description:
+        'An object that defines whether or not Amazon Pinpoint collects reputation metrics for the emails that you send that use the configuration set.',
+    }),
+    SendingOptions: SendingOptionsSchema.exactOptional().openapi({
+      description:
+        'An object that defines whether or not Amazon Pinpoint can send email that you send using the configuration set.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that define the tags (keys and values) that you want to associate with the configuration set.',
+    }),
   })
   .openapi({
     required: ['ConfigurationSetName'],
@@ -2291,17 +1674,11 @@ const CreateConfigurationSetRequestSchema = z
 
 const CreateDedicatedIpPoolRequestSchema = z
   .object({
-    PoolName: PoolNameSchema.and(
-      z.any().openapi({ description: 'The name of the dedicated IP pool.' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that defines the tags (keys and values) that you want to associate with the pool.',
-        }),
-    ).exactOptional(),
+    PoolName: PoolNameSchema.openapi({ description: 'The name of the dedicated IP pool.' }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'An object that defines the tags (keys and values) that you want to associate with the pool.',
+    }),
   })
   .openapi({
     required: ['PoolName'],
@@ -2312,25 +1689,17 @@ const CreateDedicatedIpPoolRequestSchema = z
 
 const EmailContentSchema = z
   .object({
-    Simple: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The simple email message. The message consists of a subject and a message body.',
-        }),
-    ).exactOptional(),
-    Raw: RawMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The raw email message. The message has to meet the following criteria:</p> <ul> <li> <p>The message has to contain a header and a body, separated by one blank line.</p> </li> <li> <p>All of the required header fields must be present in the message.</p> </li> <li> <p>Each part of a multipart MIME message must be formatted properly.</p> </li> <li> <p>If you include attachments, they must be in a file format that Amazon Pinpoint supports. </p> </li> <li> <p>The entire message must be Base64 encoded.</p> </li> <li> <p>If any of the MIME parts in your message contain content that is outside of the 7-bit ASCII character range, you should encode that content to ensure that recipients\' email clients render the message properly.</p> </li> <li> <p>The length of any single line of text in the message can\'t exceed 1,000 characters. This restriction is defined in <a href="https://tools.ietf.org/html/rfc5321">RFC 5321</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Template: TemplateSchema.and(
-      z.any().openapi({ description: 'The template to use for the email message.' }),
-    ).exactOptional(),
+    Simple: MessageSchema.exactOptional().openapi({
+      description:
+        'The simple email message. The message consists of a subject and a message body.',
+    }),
+    Raw: RawMessageSchema.exactOptional().openapi({
+      description:
+        '<p>The raw email message. The message has to meet the following criteria:</p> <ul> <li> <p>The message has to contain a header and a body, separated by one blank line.</p> </li> <li> <p>All of the required header fields must be present in the message.</p> </li> <li> <p>Each part of a multipart MIME message must be formatted properly.</p> </li> <li> <p>If you include attachments, they must be in a file format that Amazon Pinpoint supports. </p> </li> <li> <p>The entire message must be Base64 encoded.</p> </li> <li> <p>If any of the MIME parts in your message contain content that is outside of the 7-bit ASCII character range, you should encode that content to ensure that recipients\' email clients render the message properly.</p> </li> <li> <p>The length of any single line of text in the message can\'t exceed 1,000 characters. This restriction is defined in <a href="https://tools.ietf.org/html/rfc5321">RFC 5321</a>.</p> </li> </ul>',
+    }),
+    Template: TemplateSchema.exactOptional().openapi({
+      description: 'The template to use for the email message.',
+    }),
   })
   .openapi({
     description:
@@ -2341,38 +1710,22 @@ const EmailContentSchema = z
 
 const CreateDeliverabilityTestReportRequestSchema = z
   .object({
-    ReportName: ReportNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique name that helps you to identify the predictive inbox placement test when you retrieve the results.',
-        }),
-    ).exactOptional(),
-    FromEmailAddress: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address that the predictive inbox placement test email was sent from.',
-        }),
-    ),
-    Content: EmailContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HTML body of the message that you sent when you performed the predictive inbox placement test.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that define the tags (keys and values) that you want to associate with the predictive inbox placement test.',
-        }),
-    ).exactOptional(),
+    ReportName: ReportNameSchema.exactOptional().openapi({
+      description:
+        'A unique name that helps you to identify the predictive inbox placement test when you retrieve the results.',
+    }),
+    FromEmailAddress: EmailAddressSchema.openapi({
+      description:
+        'The email address that the predictive inbox placement test email was sent from.',
+    }),
+    Content: EmailContentSchema.openapi({
+      description:
+        'The HTML body of the message that you sent when you performed the predictive inbox placement test.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that define the tags (keys and values) that you want to associate with the predictive inbox placement test.',
+    }),
   })
   .openapi({
     required: ['FromEmailAddress', 'Content'],
@@ -2384,17 +1737,13 @@ const CreateDeliverabilityTestReportRequestSchema = z
 
 const CreateEmailIdentityRequestSchema = z
   .object({
-    EmailIdentity: IdentitySchema.and(
-      z.any().openapi({ description: 'The email address or domain that you want to verify.' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that define the tags (keys and values) that you want to associate with the email identity.',
-        }),
-    ).exactOptional(),
+    EmailIdentity: IdentitySchema.openapi({
+      description: 'The email address or domain that you want to verify.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that define the tags (keys and values) that you want to associate with the email identity.',
+    }),
   })
   .openapi({
     required: ['EmailIdentity'],
@@ -2405,7 +1754,7 @@ const CreateEmailIdentityRequestSchema = z
   .openapi('CreateEmailIdentityRequest')
 
 const DeleteConfigurationSetEventDestinationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteConfigurationSetEventDestinationRequest',
     description: 'A request to delete an event destination from a configuration set.',
@@ -2413,7 +1762,7 @@ const DeleteConfigurationSetEventDestinationRequestSchema = z
   .openapi('DeleteConfigurationSetEventDestinationRequest')
 
 const DeleteConfigurationSetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteConfigurationSetRequest',
     description: 'A request to delete a configuration set.',
@@ -2421,7 +1770,7 @@ const DeleteConfigurationSetRequestSchema = z
   .openapi('DeleteConfigurationSetRequest')
 
 const DeleteDedicatedIpPoolRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteDedicatedIpPoolRequest',
     description: 'A request to delete a dedicated IP pool.',
@@ -2429,7 +1778,7 @@ const DeleteDedicatedIpPoolRequestSchema = z
   .openapi('DeleteDedicatedIpPoolRequest')
 
 const DeleteEmailIdentityRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteEmailIdentityRequest',
     description:
@@ -2439,36 +1788,24 @@ const DeleteEmailIdentityRequestSchema = z
 
 const DestinationSchema = z
   .object({
-    ToAddresses: EmailAddressListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that contains the email addresses of the "To" recipients for the email.',
-        }),
-    ).exactOptional(),
-    CcAddresses: EmailAddressListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that contains the email addresses of the "CC" (carbon copy) recipients for the email.',
-        }),
-    ).exactOptional(),
-    BccAddresses: EmailAddressListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that contains the email addresses of the "BCC" (blind carbon copy) recipients for the email.',
-        }),
-    ).exactOptional(),
+    ToAddresses: EmailAddressListSchema.exactOptional().openapi({
+      description:
+        'An array that contains the email addresses of the "To" recipients for the email.',
+    }),
+    CcAddresses: EmailAddressListSchema.exactOptional().openapi({
+      description:
+        'An array that contains the email addresses of the "CC" (carbon copy) recipients for the email.',
+    }),
+    BccAddresses: EmailAddressListSchema.exactOptional().openapi({
+      description:
+        'An array that contains the email addresses of the "BCC" (blind carbon copy) recipients for the email.',
+    }),
   })
   .openapi({ description: 'An object that describes the recipients for an email.', required: [] })
   .openapi('Destination')
 
 const GetAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetAccountRequest',
     description:
@@ -2477,7 +1814,7 @@ const GetAccountRequestSchema = z
   .openapi('GetAccountRequest')
 
 const GetBlacklistReportsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetBlacklistReportsRequest',
     description:
@@ -2486,7 +1823,7 @@ const GetBlacklistReportsRequestSchema = z
   .openapi('GetBlacklistReportsRequest')
 
 const GetConfigurationSetEventDestinationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetConfigurationSetEventDestinationsRequest',
     description:
@@ -2495,7 +1832,7 @@ const GetConfigurationSetEventDestinationsRequestSchema = z
   .openapi('GetConfigurationSetEventDestinationsRequest')
 
 const GetConfigurationSetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetConfigurationSetRequest',
     description: 'A request to obtain information about a configuration set.',
@@ -2503,7 +1840,7 @@ const GetConfigurationSetRequestSchema = z
   .openapi('GetConfigurationSetRequest')
 
 const GetDedicatedIpRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDedicatedIpRequest',
     description: 'A request to obtain more information about a dedicated IP address.',
@@ -2513,7 +1850,7 @@ const GetDedicatedIpRequestSchema = z
 const MaxItemsSchema = z.int().openapi('MaxItems')
 
 const GetDedicatedIpsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDedicatedIpsRequest',
     description: 'A request to obtain more information about dedicated IP pools.',
@@ -2521,7 +1858,7 @@ const GetDedicatedIpsRequestSchema = z
   .openapi('GetDedicatedIpsRequest')
 
 const GetDeliverabilityDashboardOptionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDeliverabilityDashboardOptionsRequest',
     description:
@@ -2530,7 +1867,7 @@ const GetDeliverabilityDashboardOptionsRequestSchema = z
   .openapi('GetDeliverabilityDashboardOptionsRequest')
 
 const GetDeliverabilityTestReportRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDeliverabilityTestReportRequest',
     description: 'A request to retrieve the results of a predictive inbox placement test.',
@@ -2538,7 +1875,7 @@ const GetDeliverabilityTestReportRequestSchema = z
   .openapi('GetDeliverabilityTestReportRequest')
 
 const GetDomainDeliverabilityCampaignRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDomainDeliverabilityCampaignRequest',
     description:
@@ -2547,7 +1884,7 @@ const GetDomainDeliverabilityCampaignRequestSchema = z
   .openapi('GetDomainDeliverabilityCampaignRequest')
 
 const GetDomainStatisticsReportRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDomainStatisticsReportRequest',
     description: 'A request to obtain deliverability metrics for a domain.',
@@ -2555,7 +1892,7 @@ const GetDomainStatisticsReportRequestSchema = z
   .openapi('GetDomainStatisticsReportRequest')
 
 const GetEmailIdentityRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetEmailIdentityRequest',
     description: 'A request to return details about an email identity.',
@@ -2563,7 +1900,7 @@ const GetEmailIdentityRequestSchema = z
   .openapi('GetEmailIdentityRequest')
 
 const ListConfigurationSetsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListConfigurationSetsRequest',
     description:
@@ -2572,7 +1909,7 @@ const ListConfigurationSetsRequestSchema = z
   .openapi('ListConfigurationSetsRequest')
 
 const ListDedicatedIpPoolsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListDedicatedIpPoolsRequest',
     description: 'A request to obtain a list of dedicated IP pools.',
@@ -2580,7 +1917,7 @@ const ListDedicatedIpPoolsRequestSchema = z
   .openapi('ListDedicatedIpPoolsRequest')
 
 const ListDeliverabilityTestReportsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListDeliverabilityTestReportsRequest',
     description:
@@ -2589,7 +1926,7 @@ const ListDeliverabilityTestReportsRequestSchema = z
   .openapi('ListDeliverabilityTestReportsRequest')
 
 const ListDomainDeliverabilityCampaignsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListDomainDeliverabilityCampaignsRequest',
     description:
@@ -2598,7 +1935,7 @@ const ListDomainDeliverabilityCampaignsRequestSchema = z
   .openapi('ListDomainDeliverabilityCampaignsRequest')
 
 const ListEmailIdentitiesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListEmailIdentitiesRequest',
     description:
@@ -2607,7 +1944,7 @@ const ListEmailIdentitiesRequestSchema = z
   .openapi('ListEmailIdentitiesRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -2618,14 +1955,10 @@ const MessageTagListSchema = z
 
 const PutAccountDedicatedIpWarmupAttributesRequestSchema = z
   .object({
-    AutoWarmupEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enables or disables the automatic warm-up feature for dedicated IP addresses that are associated with your Amazon Pinpoint account in the current AWS Region. Set to <code>true</code> to enable the automatic warm-up feature, or set to <code>false</code> to disable it.',
-        }),
-    ).exactOptional(),
+    AutoWarmupEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        'Enables or disables the automatic warm-up feature for dedicated IP addresses that are associated with your Amazon Pinpoint account in the current AWS Region. Set to <code>true</code> to enable the automatic warm-up feature, or set to <code>false</code> to disable it.',
+    }),
   })
   .openapi({
     title: 'PutAccountDedicatedIpWarmupAttributesRequest',
@@ -2636,14 +1969,10 @@ const PutAccountDedicatedIpWarmupAttributesRequestSchema = z
 
 const PutAccountSendingAttributesRequestSchema = z
   .object({
-    SendingEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Enables or disables your account's ability to send email. Set to <code>true</code> to enable email sending, or set to <code>false</code> to disable email sending.</p> <note> <p>If AWS paused your account's ability to send email, you can't use this operation to resume your account's ability to send email.</p> </note>",
-        }),
-    ).exactOptional(),
+    SendingEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        "<p>Enables or disables your account's ability to send email. Set to <code>true</code> to enable email sending, or set to <code>false</code> to disable email sending.</p> <note> <p>If AWS paused your account's ability to send email, you can't use this operation to resume your account's ability to send email.</p> </note>",
+    }),
   })
   .openapi({
     title: 'PutAccountSendingAttributesRequest',
@@ -2662,22 +1991,14 @@ const SendingPoolNameSchema = z
 
 const PutConfigurationSetDeliveryOptionsRequestSchema = z
   .object({
-    TlsPolicy: TlsPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is <code>Require</code>, messages are only delivered if a TLS connection can be established. If the value is <code>Optional</code>, messages can be delivered in plain text if a TLS connection can't be established.",
-        }),
-    ).exactOptional(),
-    SendingPoolName: SendingPoolNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the dedicated IP pool that you want to associate with the configuration set.',
-        }),
-    ).exactOptional(),
+    TlsPolicy: TlsPolicySchema.exactOptional().openapi({
+      description:
+        "Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is <code>Require</code>, messages are only delivered if a TLS connection can be established. If the value is <code>Optional</code>, messages can be delivered in plain text if a TLS connection can't be established.",
+    }),
+    SendingPoolName: SendingPoolNameSchema.exactOptional().openapi({
+      description:
+        'The name of the dedicated IP pool that you want to associate with the configuration set.',
+    }),
   })
   .openapi({
     title: 'PutConfigurationSetDeliveryOptionsRequest',
@@ -2688,14 +2009,10 @@ const PutConfigurationSetDeliveryOptionsRequestSchema = z
 
 const PutConfigurationSetReputationOptionsRequestSchema = z
   .object({
-    ReputationMetricsEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>true</code>, tracking of reputation metrics is enabled for the configuration set. If <code>false</code>, tracking of reputation metrics is disabled for the configuration set.',
-        }),
-    ).exactOptional(),
+    ReputationMetricsEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        'If <code>true</code>, tracking of reputation metrics is enabled for the configuration set. If <code>false</code>, tracking of reputation metrics is disabled for the configuration set.',
+    }),
   })
   .openapi({
     title: 'PutConfigurationSetReputationOptionsRequest',
@@ -2707,14 +2024,10 @@ const PutConfigurationSetReputationOptionsRequestSchema = z
 
 const PutConfigurationSetSendingOptionsRequestSchema = z
   .object({
-    SendingEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>true</code>, email sending is enabled for the configuration set. If <code>false</code>, email sending is disabled for the configuration set.',
-        }),
-    ).exactOptional(),
+    SendingEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        'If <code>true</code>, email sending is enabled for the configuration set. If <code>false</code>, email sending is disabled for the configuration set.',
+    }),
   })
   .openapi({
     title: 'PutConfigurationSetSendingOptionsRequest',
@@ -2726,13 +2039,9 @@ const PutConfigurationSetSendingOptionsRequestSchema = z
 
 const PutConfigurationSetTrackingOptionsRequestSchema = z
   .object({
-    CustomRedirectDomain: CustomRedirectDomainSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The domain that you want to use to track open and click events.',
-        }),
-    ).exactOptional(),
+    CustomRedirectDomain: CustomRedirectDomainSchema.exactOptional().openapi({
+      description: 'The domain that you want to use to track open and click events.',
+    }),
   })
   .openapi({
     title: 'PutConfigurationSetTrackingOptionsRequest',
@@ -2744,14 +2053,10 @@ const PutConfigurationSetTrackingOptionsRequestSchema = z
 
 const PutDedicatedIpInPoolRequestSchema = z
   .object({
-    DestinationPoolName: PoolNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the IP pool that you want to add the dedicated IP address to. You have to specify an IP pool that already exists.',
-        }),
-    ),
+    DestinationPoolName: PoolNameSchema.openapi({
+      description:
+        'The name of the IP pool that you want to add the dedicated IP address to. You have to specify an IP pool that already exists.',
+    }),
   })
   .openapi({
     required: ['DestinationPoolName'],
@@ -2762,14 +2067,10 @@ const PutDedicatedIpInPoolRequestSchema = z
 
 const PutDedicatedIpWarmupAttributesRequestSchema = z
   .object({
-    WarmupPercentage: Percentage100WrapperSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The warm-up percentage that you want to associate with the dedicated IP address.',
-        }),
-    ),
+    WarmupPercentage: Percentage100WrapperSchema.openapi({
+      description:
+        'The warm-up percentage that you want to associate with the dedicated IP address.',
+    }),
   })
   .openapi({
     required: ['WarmupPercentage'],
@@ -2781,22 +2082,14 @@ const PutDedicatedIpWarmupAttributesRequestSchema = z
 
 const PutDeliverabilityDashboardOptionRequestSchema = z
   .object({
-    DashboardEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether to enable the Deliverability dashboard for your Amazon Pinpoint account. To enable the dashboard, set this value to <code>true</code>.',
-        }),
-    ),
-    SubscribedDomains: DomainDeliverabilityTrackingOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects, one for each verified domain that you use to send email and enabled the Deliverability dashboard for.',
-        }),
-    ).exactOptional(),
+    DashboardEnabled: EnabledSchema.openapi({
+      description:
+        'Specifies whether to enable the Deliverability dashboard for your Amazon Pinpoint account. To enable the dashboard, set this value to <code>true</code>.',
+    }),
+    SubscribedDomains: DomainDeliverabilityTrackingOptionsSchema.exactOptional().openapi({
+      description:
+        'An array of objects, one for each verified domain that you use to send email and enabled the Deliverability dashboard for.',
+    }),
   })
   .openapi({
     required: ['DashboardEnabled'],
@@ -2808,14 +2101,10 @@ const PutDeliverabilityDashboardOptionRequestSchema = z
 
 const PutEmailIdentityDkimAttributesRequestSchema = z
   .object({
-    SigningEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Sets the DKIM signing configuration for the identity.</p> <p>When you set this value <code>true</code>, then the messages that Amazon Pinpoint sends from the identity are DKIM-signed. When you set this value to <code>false</code>, then the messages that Amazon Pinpoint sends from the identity aren't DKIM-signed.</p>",
-        }),
-    ).exactOptional(),
+    SigningEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        "<p>Sets the DKIM signing configuration for the identity.</p> <p>When you set this value <code>true</code>, then the messages that Amazon Pinpoint sends from the identity are DKIM-signed. When you set this value to <code>false</code>, then the messages that Amazon Pinpoint sends from the identity aren't DKIM-signed.</p>",
+    }),
   })
   .openapi({
     title: 'PutEmailIdentityDkimAttributesRequest',
@@ -2827,14 +2116,10 @@ const PutEmailIdentityDkimAttributesRequestSchema = z
 
 const PutEmailIdentityFeedbackAttributesRequestSchema = z
   .object({
-    EmailForwardingEnabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Sets the feedback forwarding configuration for the identity.</p> <p>If the value is <code>true</code>, Amazon Pinpoint sends you email notifications when bounce or complaint events occur. Amazon Pinpoint sends this notification to the address that you specified in the Return-Path header of the original email.</p> <p>When you set this value to <code>false</code>, Amazon Pinpoint sends notifications through other mechanisms, such as by notifying an Amazon SNS topic or another event destination. You're required to have a method of tracking bounces and complaints. If you haven't set up another mechanism for receiving bounce or complaint notifications, Amazon Pinpoint sends an email notification when these events occur (even if this setting is disabled).</p>",
-        }),
-    ).exactOptional(),
+    EmailForwardingEnabled: EnabledSchema.exactOptional().openapi({
+      description:
+        "<p>Sets the feedback forwarding configuration for the identity.</p> <p>If the value is <code>true</code>, Amazon Pinpoint sends you email notifications when bounce or complaint events occur. Amazon Pinpoint sends this notification to the address that you specified in the Return-Path header of the original email.</p> <p>When you set this value to <code>false</code>, Amazon Pinpoint sends notifications through other mechanisms, such as by notifying an Amazon SNS topic or another event destination. You're required to have a method of tracking bounces and complaints. If you haven't set up another mechanism for receiving bounce or complaint notifications, Amazon Pinpoint sends an email notification when these events occur (even if this setting is disabled).</p>",
+    }),
   })
   .openapi({
     title: 'PutEmailIdentityFeedbackAttributesRequest',
@@ -2846,22 +2131,14 @@ const PutEmailIdentityFeedbackAttributesRequestSchema = z
 
 const PutEmailIdentityMailFromAttributesRequestSchema = z
   .object({
-    MailFromDomain: MailFromDomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The custom MAIL FROM domain that you want the verified identity to use. The MAIL FROM domain must meet the following criteria:</p> <ul> <li> <p>It has to be a subdomain of the verified identity.</p> </li> <li> <p>It can\'t be used to receive email.</p> </li> <li> <p>It can\'t be used in a "From" address if the MAIL FROM domain is a destination for feedback forwarding emails.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    BehaviorOnMxFailure: BehaviorOnMxFailureSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The action that you want Amazon Pinpoint to take if it can't read the required MX record when you send an email. When you set this value to <code>UseDefaultValue</code>, Amazon Pinpoint uses <i>amazonses.com</i> as the MAIL FROM domain. When you set this value to <code>RejectMessage</code>, Amazon Pinpoint returns a <code>MailFromDomainNotVerified</code> error, and doesn't attempt to deliver the email.</p> <p>These behaviors are taken when the custom MAIL FROM domain configuration is in the <code>Pending</code>, <code>Failed</code>, and <code>TemporaryFailure</code> states.</p>",
-        }),
-    ).exactOptional(),
+    MailFromDomain: MailFromDomainNameSchema.exactOptional().openapi({
+      description:
+        '<p> The custom MAIL FROM domain that you want the verified identity to use. The MAIL FROM domain must meet the following criteria:</p> <ul> <li> <p>It has to be a subdomain of the verified identity.</p> </li> <li> <p>It can\'t be used to receive email.</p> </li> <li> <p>It can\'t be used in a "From" address if the MAIL FROM domain is a destination for feedback forwarding emails.</p> </li> </ul>',
+    }),
+    BehaviorOnMxFailure: BehaviorOnMxFailureSchema.exactOptional().openapi({
+      description:
+        "<p>The action that you want Amazon Pinpoint to take if it can't read the required MX record when you send an email. When you set this value to <code>UseDefaultValue</code>, Amazon Pinpoint uses <i>amazonses.com</i> as the MAIL FROM domain. When you set this value to <code>RejectMessage</code>, Amazon Pinpoint returns a <code>MailFromDomainNotVerified</code> error, and doesn't attempt to deliver the email.</p> <p>These behaviors are taken when the custom MAIL FROM domain configuration is in the <code>Pending</code>, <code>Failed</code>, and <code>TemporaryFailure</code> states.</p>",
+    }),
   })
   .openapi({
     title: 'PutEmailIdentityMailFromAttributesRequest',
@@ -2872,59 +2149,32 @@ const PutEmailIdentityMailFromAttributesRequestSchema = z
 
 const SendEmailRequestSchema = z
   .object({
-    FromEmailAddress: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address that you want to use as the "From" address for the email. The address that you specify has to be verified. ',
-        }),
-    ).exactOptional(),
-    Destination: DestinationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that contains the recipients of the email message.' }),
-    ),
-    ReplyToAddresses: EmailAddressListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The "Reply-to" email addresses for the message. When the recipient replies to the message, each Reply-to address receives the reply.',
-        }),
-    ).exactOptional(),
-    FeedbackForwardingEmailAddress: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The address that Amazon Pinpoint should send bounce and complaint notifications to.',
-        }),
-    ).exactOptional(),
-    Content: EmailContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the body of the message. You can send either a Simple message or a Raw message.',
-        }),
-    ),
-    EmailTags: MessageTagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags, in the form of name/value pairs, to apply to an email that you send using the <code>SendEmail</code> operation. Tags correspond to characteristics of the email that you define, so that you can publish email sending events. ',
-        }),
-    ).exactOptional(),
-    ConfigurationSetName: ConfigurationSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the configuration set that you want to use when sending the email.',
-        }),
-    ).exactOptional(),
+    FromEmailAddress: EmailAddressSchema.exactOptional().openapi({
+      description:
+        'The email address that you want to use as the "From" address for the email. The address that you specify has to be verified. ',
+    }),
+    Destination: DestinationSchema.openapi({
+      description: 'An object that contains the recipients of the email message.',
+    }),
+    ReplyToAddresses: EmailAddressListSchema.exactOptional().openapi({
+      description:
+        'The "Reply-to" email addresses for the message. When the recipient replies to the message, each Reply-to address receives the reply.',
+    }),
+    FeedbackForwardingEmailAddress: EmailAddressSchema.exactOptional().openapi({
+      description:
+        'The address that Amazon Pinpoint should send bounce and complaint notifications to.',
+    }),
+    Content: EmailContentSchema.openapi({
+      description:
+        'An object that contains the body of the message. You can send either a Simple message or a Raw message.',
+    }),
+    EmailTags: MessageTagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags, in the form of name/value pairs, to apply to an email that you send using the <code>SendEmail</code> operation. Tags correspond to characteristics of the email that you define, so that you can publish email sending events. ',
+    }),
+    ConfigurationSetName: ConfigurationSetNameSchema.exactOptional().openapi({
+      description: 'The name of the configuration set that you want to use when sending the email.',
+    }),
   })
   .openapi({
     required: ['Destination', 'Content'],
@@ -2937,36 +2187,28 @@ const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource that you want to add one or more tags to.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the tags that you want to add to the resource. A tag consists of a required tag key (<code>Key</code>) and an associated tag value (<code>Value</code>). The maximum length of a tag key is 128 characters. The maximum length of a tag value is 256 characters.',
-        }),
-    ),
+    ResourceArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource that you want to add one or more tags to.',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        'A list of the tags that you want to add to the resource. A tag consists of a required tag key (<code>Key</code>) and an associated tag value (<code>Value</code>). The maximum length of a tag key is 128 characters. The maximum length of a tag value is 256 characters.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateConfigurationSetEventDestinationRequestSchema = z
   .object({
-    EventDestination: EventDestinationDefinitionSchema.and(
-      z.any().openapi({ description: 'An object that defines the event destination.' }),
-    ),
+    EventDestination: EventDestinationDefinitionSchema.openapi({
+      description: 'An object that defines the event destination.',
+    }),
   })
   .openapi({
     required: ['EventDestination'],
@@ -3146,14 +2388,10 @@ export const postV1EmailConfigurationSetsRoute = createRoute({
                 }),
               TrackingOptions: z
                 .object({
-                  CustomRedirectDomain: CustomRedirectDomainSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The domain that you want to use for tracking open and click events.',
-                      }),
-                  ).exactOptional(),
+                  CustomRedirectDomain: CustomRedirectDomainSchema.exactOptional().openapi({
+                    description:
+                      'The domain that you want to use for tracking open and click events.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3163,22 +2401,14 @@ export const postV1EmailConfigurationSetsRoute = createRoute({
                 }),
               DeliveryOptions: z
                 .object({
-                  TlsPolicy: TlsPolicySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is <code>Require</code>, messages are only delivered if a TLS connection can be established. If the value is <code>Optional</code>, messages can be delivered in plain text if a TLS connection can't be established.",
-                      }),
-                  ).exactOptional(),
-                  SendingPoolName: PoolNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The name of the dedicated IP pool that you want to associate with the configuration set.',
-                      }),
-                  ).exactOptional(),
+                  TlsPolicy: TlsPolicySchema.exactOptional().openapi({
+                    description:
+                      "Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is <code>Require</code>, messages are only delivered if a TLS connection can be established. If the value is <code>Optional</code>, messages can be delivered in plain text if a TLS connection can't be established.",
+                  }),
+                  SendingPoolName: PoolNameSchema.exactOptional().openapi({
+                    description:
+                      'The name of the dedicated IP pool that you want to associate with the configuration set.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3187,22 +2417,14 @@ export const postV1EmailConfigurationSetsRoute = createRoute({
                 }),
               ReputationOptions: z
                 .object({
-                  ReputationMetricsEnabled: EnabledSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'If <code>true</code>, tracking of reputation metrics is enabled for the configuration set. If <code>false</code>, tracking of reputation metrics is disabled for the configuration set.',
-                      }),
-                  ).exactOptional(),
-                  LastFreshStart: LastFreshStartSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The date and time (in Unix time) when the reputation metrics were last given a fresh start. When your account is given a fresh start, your reputation metrics are calculated starting from the date of the fresh start.',
-                      }),
-                  ).exactOptional(),
+                  ReputationMetricsEnabled: EnabledSchema.exactOptional().openapi({
+                    description:
+                      'If <code>true</code>, tracking of reputation metrics is enabled for the configuration set. If <code>false</code>, tracking of reputation metrics is disabled for the configuration set.',
+                  }),
+                  LastFreshStart: LastFreshStartSchema.exactOptional().openapi({
+                    description:
+                      'The date and time (in Unix time) when the reputation metrics were last given a fresh start. When your account is given a fresh start, your reputation metrics are calculated starting from the date of the fresh start.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3212,14 +2434,10 @@ export const postV1EmailConfigurationSetsRoute = createRoute({
                 }),
               SendingOptions: z
                 .object({
-                  SendingEnabled: EnabledSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'If <code>true</code>, email sending is enabled for the configuration set. If <code>false</code>, email sending is disabled for the configuration set.',
-                      }),
-                  ).exactOptional(),
+                  SendingEnabled: EnabledSchema.exactOptional().openapi({
+                    description:
+                      'If <code>true</code>, email sending is enabled for the configuration set. If <code>false</code>, email sending is disabled for the configuration set.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3380,54 +2598,31 @@ export const postV1EmailConfigurationSetsConfigurationSetNameEventDestinationsRo
                 }),
               EventDestination: z
                 .object({
-                  Enabled: EnabledSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>If <code>true</code>, the event destination is enabled. When the event destination is enabled, the specified event types are sent to the destinations in this <code>EventDestinationDefinition</code>.</p> <p>If <code>false</code>, the event destination is disabled. When the event destination is disabled, events aren't sent to the specified destinations.</p>",
-                      }),
-                  ).exactOptional(),
-                  MatchingEventTypes: EventTypesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'An array that specifies which events Amazon Pinpoint should send to the destinations in this <code>EventDestinationDefinition</code>.',
-                      }),
-                  ).exactOptional(),
-                  KinesisFirehoseDestination: KinesisFirehoseDestinationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'An object that defines an Amazon Kinesis Data Firehose destination for email events. You can use Amazon Kinesis Data Firehose to stream data to other services, such as Amazon S3 and Amazon Redshift.',
-                      }),
-                  ).exactOptional(),
-                  CloudWatchDestination: CloudWatchDestinationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'An object that defines an Amazon CloudWatch destination for email events. You can use Amazon CloudWatch to monitor and gain insights on your email sending metrics.',
-                      }),
-                  ).exactOptional(),
-                  SnsDestination: SnsDestinationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'An object that defines an Amazon SNS destination for email events. You can use Amazon SNS to send notification when certain email events occur.',
-                      }),
-                  ).exactOptional(),
-                  PinpointDestination: PinpointDestinationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'An object that defines a Amazon Pinpoint destination for email events. You can use Amazon Pinpoint events to create attributes in Amazon Pinpoint projects. You can use these attributes to create segments for your campaigns.',
-                      }),
-                  ).exactOptional(),
+                  Enabled: EnabledSchema.exactOptional().openapi({
+                    description:
+                      "<p>If <code>true</code>, the event destination is enabled. When the event destination is enabled, the specified event types are sent to the destinations in this <code>EventDestinationDefinition</code>.</p> <p>If <code>false</code>, the event destination is disabled. When the event destination is disabled, events aren't sent to the specified destinations.</p>",
+                  }),
+                  MatchingEventTypes: EventTypesSchema.exactOptional().openapi({
+                    description:
+                      'An array that specifies which events Amazon Pinpoint should send to the destinations in this <code>EventDestinationDefinition</code>.',
+                  }),
+                  KinesisFirehoseDestination:
+                    KinesisFirehoseDestinationSchema.exactOptional().openapi({
+                      description:
+                        'An object that defines an Amazon Kinesis Data Firehose destination for email events. You can use Amazon Kinesis Data Firehose to stream data to other services, such as Amazon S3 and Amazon Redshift.',
+                    }),
+                  CloudWatchDestination: CloudWatchDestinationSchema.exactOptional().openapi({
+                    description:
+                      'An object that defines an Amazon CloudWatch destination for email events. You can use Amazon CloudWatch to monitor and gain insights on your email sending metrics.',
+                  }),
+                  SnsDestination: SnsDestinationSchema.exactOptional().openapi({
+                    description:
+                      'An object that defines an Amazon SNS destination for email events. You can use Amazon SNS to send notification when certain email events occur.',
+                  }),
+                  PinpointDestination: PinpointDestinationSchema.exactOptional().openapi({
+                    description:
+                      'An object that defines a Amazon Pinpoint destination for email events. You can use Amazon Pinpoint events to create attributes in Amazon Pinpoint projects. You can use these attributes to create segments for your campaigns.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -3640,25 +2835,17 @@ export const postV1EmailDeliverabilityDashboardTestRoute = createRoute({
                 }),
               Content: z
                 .object({
-                  Simple: MessageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The simple email message. The message consists of a subject and a message body.',
-                      }),
-                  ).exactOptional(),
-                  Raw: RawMessageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The raw email message. The message has to meet the following criteria:</p> <ul> <li> <p>The message has to contain a header and a body, separated by one blank line.</p> </li> <li> <p>All of the required header fields must be present in the message.</p> </li> <li> <p>Each part of a multipart MIME message must be formatted properly.</p> </li> <li> <p>If you include attachments, they must be in a file format that Amazon Pinpoint supports. </p> </li> <li> <p>The entire message must be Base64 encoded.</p> </li> <li> <p>If any of the MIME parts in your message contain content that is outside of the 7-bit ASCII character range, you should encode that content to ensure that recipients\' email clients render the message properly.</p> </li> <li> <p>The length of any single line of text in the message can\'t exceed 1,000 characters. This restriction is defined in <a href="https://tools.ietf.org/html/rfc5321">RFC 5321</a>.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  Template: TemplateSchema.and(
-                    z.any().openapi({ description: 'The template to use for the email message.' }),
-                  ).exactOptional(),
+                  Simple: MessageSchema.exactOptional().openapi({
+                    description:
+                      'The simple email message. The message consists of a subject and a message body.',
+                  }),
+                  Raw: RawMessageSchema.exactOptional().openapi({
+                    description:
+                      '<p>The raw email message. The message has to meet the following criteria:</p> <ul> <li> <p>The message has to contain a header and a body, separated by one blank line.</p> </li> <li> <p>All of the required header fields must be present in the message.</p> </li> <li> <p>Each part of a multipart MIME message must be formatted properly.</p> </li> <li> <p>If you include attachments, they must be in a file format that Amazon Pinpoint supports. </p> </li> <li> <p>The entire message must be Base64 encoded.</p> </li> <li> <p>If any of the MIME parts in your message contain content that is outside of the 7-bit ASCII character range, you should encode that content to ensure that recipients\' email clients render the message properly.</p> </li> <li> <p>The length of any single line of text in the message can\'t exceed 1,000 characters. This restriction is defined in <a href="https://tools.ietf.org/html/rfc5321">RFC 5321</a>.</p> </li> </ul>',
+                  }),
+                  Template: TemplateSchema.exactOptional().openapi({
+                    description: 'The template to use for the email message.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -4032,54 +3219,31 @@ export const putV1EmailConfigurationSetsConfigurationSetNameEventDestinationsEve
               .object({
                 EventDestination: z
                   .object({
-                    Enabled: EnabledSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            "<p>If <code>true</code>, the event destination is enabled. When the event destination is enabled, the specified event types are sent to the destinations in this <code>EventDestinationDefinition</code>.</p> <p>If <code>false</code>, the event destination is disabled. When the event destination is disabled, events aren't sent to the specified destinations.</p>",
-                        }),
-                    ).exactOptional(),
-                    MatchingEventTypes: EventTypesSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'An array that specifies which events Amazon Pinpoint should send to the destinations in this <code>EventDestinationDefinition</code>.',
-                        }),
-                    ).exactOptional(),
-                    KinesisFirehoseDestination: KinesisFirehoseDestinationSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'An object that defines an Amazon Kinesis Data Firehose destination for email events. You can use Amazon Kinesis Data Firehose to stream data to other services, such as Amazon S3 and Amazon Redshift.',
-                        }),
-                    ).exactOptional(),
-                    CloudWatchDestination: CloudWatchDestinationSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'An object that defines an Amazon CloudWatch destination for email events. You can use Amazon CloudWatch to monitor and gain insights on your email sending metrics.',
-                        }),
-                    ).exactOptional(),
-                    SnsDestination: SnsDestinationSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'An object that defines an Amazon SNS destination for email events. You can use Amazon SNS to send notification when certain email events occur.',
-                        }),
-                    ).exactOptional(),
-                    PinpointDestination: PinpointDestinationSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'An object that defines a Amazon Pinpoint destination for email events. You can use Amazon Pinpoint events to create attributes in Amazon Pinpoint projects. You can use these attributes to create segments for your campaigns.',
-                        }),
-                    ).exactOptional(),
+                    Enabled: EnabledSchema.exactOptional().openapi({
+                      description:
+                        "<p>If <code>true</code>, the event destination is enabled. When the event destination is enabled, the specified event types are sent to the destinations in this <code>EventDestinationDefinition</code>.</p> <p>If <code>false</code>, the event destination is disabled. When the event destination is disabled, events aren't sent to the specified destinations.</p>",
+                    }),
+                    MatchingEventTypes: EventTypesSchema.exactOptional().openapi({
+                      description:
+                        'An array that specifies which events Amazon Pinpoint should send to the destinations in this <code>EventDestinationDefinition</code>.',
+                    }),
+                    KinesisFirehoseDestination:
+                      KinesisFirehoseDestinationSchema.exactOptional().openapi({
+                        description:
+                          'An object that defines an Amazon Kinesis Data Firehose destination for email events. You can use Amazon Kinesis Data Firehose to stream data to other services, such as Amazon S3 and Amazon Redshift.',
+                      }),
+                    CloudWatchDestination: CloudWatchDestinationSchema.exactOptional().openapi({
+                      description:
+                        'An object that defines an Amazon CloudWatch destination for email events. You can use Amazon CloudWatch to monitor and gain insights on your email sending metrics.',
+                    }),
+                    SnsDestination: SnsDestinationSchema.exactOptional().openapi({
+                      description:
+                        'An object that defines an Amazon SNS destination for email events. You can use Amazon SNS to send notification when certain email events occur.',
+                    }),
+                    PinpointDestination: PinpointDestinationSchema.exactOptional().openapi({
+                      description:
+                        'An object that defines a Amazon Pinpoint destination for email events. You can use Amazon Pinpoint events to create attributes in Amazon Pinpoint projects. You can use these attributes to create segments for your campaigns.',
+                    }),
                   })
                   .openapi({
                     description:
@@ -5899,30 +5063,18 @@ export const postV1EmailOutboundEmailsRoute = createRoute({
                 }),
               Destination: z
                 .object({
-                  ToAddresses: EmailAddressListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'An array that contains the email addresses of the "To" recipients for the email.',
-                      }),
-                  ).exactOptional(),
-                  CcAddresses: EmailAddressListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'An array that contains the email addresses of the "CC" (carbon copy) recipients for the email.',
-                      }),
-                  ).exactOptional(),
-                  BccAddresses: EmailAddressListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'An array that contains the email addresses of the "BCC" (blind carbon copy) recipients for the email.',
-                      }),
-                  ).exactOptional(),
+                  ToAddresses: EmailAddressListSchema.exactOptional().openapi({
+                    description:
+                      'An array that contains the email addresses of the "To" recipients for the email.',
+                  }),
+                  CcAddresses: EmailAddressListSchema.exactOptional().openapi({
+                    description:
+                      'An array that contains the email addresses of the "CC" (carbon copy) recipients for the email.',
+                  }),
+                  BccAddresses: EmailAddressListSchema.exactOptional().openapi({
+                    description:
+                      'An array that contains the email addresses of the "BCC" (blind carbon copy) recipients for the email.',
+                  }),
                 })
                 .openapi({
                   description: 'An object that describes the recipients for an email.',
@@ -5944,25 +5096,17 @@ export const postV1EmailOutboundEmailsRoute = createRoute({
                 }),
               Content: z
                 .object({
-                  Simple: MessageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The simple email message. The message consists of a subject and a message body.',
-                      }),
-                  ).exactOptional(),
-                  Raw: RawMessageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The raw email message. The message has to meet the following criteria:</p> <ul> <li> <p>The message has to contain a header and a body, separated by one blank line.</p> </li> <li> <p>All of the required header fields must be present in the message.</p> </li> <li> <p>Each part of a multipart MIME message must be formatted properly.</p> </li> <li> <p>If you include attachments, they must be in a file format that Amazon Pinpoint supports. </p> </li> <li> <p>The entire message must be Base64 encoded.</p> </li> <li> <p>If any of the MIME parts in your message contain content that is outside of the 7-bit ASCII character range, you should encode that content to ensure that recipients\' email clients render the message properly.</p> </li> <li> <p>The length of any single line of text in the message can\'t exceed 1,000 characters. This restriction is defined in <a href="https://tools.ietf.org/html/rfc5321">RFC 5321</a>.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  Template: TemplateSchema.and(
-                    z.any().openapi({ description: 'The template to use for the email message.' }),
-                  ).exactOptional(),
+                  Simple: MessageSchema.exactOptional().openapi({
+                    description:
+                      'The simple email message. The message consists of a subject and a message body.',
+                  }),
+                  Raw: RawMessageSchema.exactOptional().openapi({
+                    description:
+                      '<p>The raw email message. The message has to meet the following criteria:</p> <ul> <li> <p>The message has to contain a header and a body, separated by one blank line.</p> </li> <li> <p>All of the required header fields must be present in the message.</p> </li> <li> <p>Each part of a multipart MIME message must be formatted properly.</p> </li> <li> <p>If you include attachments, they must be in a file format that Amazon Pinpoint supports. </p> </li> <li> <p>The entire message must be Base64 encoded.</p> </li> <li> <p>If any of the MIME parts in your message contain content that is outside of the 7-bit ASCII character range, you should encode that content to ensure that recipients\' email clients render the message properly.</p> </li> <li> <p>The length of any single line of text in the message can\'t exceed 1,000 characters. This restriction is defined in <a href="https://tools.ietf.org/html/rfc5321">RFC 5321</a>.</p> </li> </ul>',
+                  }),
+                  Template: TemplateSchema.exactOptional().openapi({
+                    description: 'The template to use for the email message.',
+                  }),
                 })
                 .openapi({
                   description:

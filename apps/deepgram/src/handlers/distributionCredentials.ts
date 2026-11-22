@@ -17,9 +17,13 @@ export const distributionCredentialsHandler = app
   })
   .openapi(
     getV1ProjectsProjectIdSelfHostedDistributionCredentialsDistributionCredentialsIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     deleteV1ProjectsProjectIdSelfHostedDistributionCredentialsDistributionCredentialsIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

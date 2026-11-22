@@ -22,21 +22,17 @@ const EulaIdSchema = z
 
 const EulaAcceptanceSchema = z
   .object({
-    acceptedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ISO timestamp in seconds for when the EULA was accepted.' }),
-    ).exactOptional(),
-    acceptedBy: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the person who accepted the EULA.' }),
-    ).exactOptional(),
-    accepteeId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the acceptee.' }),
-    ).exactOptional(),
-    eulaAcceptanceId: EulaAcceptanceIdSchema.and(
-      z.any().openapi({ description: 'The EULA acceptance ID.' }),
-    ).exactOptional(),
-    eulaId: EulaIdSchema.and(z.any().openapi({ description: 'The EULA ID.' })).exactOptional(),
+    acceptedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The ISO timestamp in seconds for when the EULA was accepted.',
+    }),
+    acceptedBy: StringSchema.exactOptional().openapi({
+      description: 'The ID of the person who accepted the EULA.',
+    }),
+    accepteeId: StringSchema.exactOptional().openapi({ description: 'The ID of the acceptee.' }),
+    eulaAcceptanceId: EulaAcceptanceIdSchema.exactOptional().openapi({
+      description: 'The EULA acceptance ID.',
+    }),
+    eulaId: EulaIdSchema.exactOptional().openapi({ description: 'The EULA ID.' }),
   })
   .openapi({
     description: 'The acceptance of a EULA, required to use Amazon-provided streaming images.',
@@ -48,9 +44,9 @@ const EulaAcceptanceListSchema = z.array(EulaAcceptanceSchema).openapi('EulaAcce
 
 const AcceptEulasResponseSchema = z
   .object({
-    eulaAcceptances: EulaAcceptanceListSchema.and(
-      z.any().openapi({ description: 'A collection of EULA acceptances.' }),
-    ).exactOptional(),
+    eulaAcceptances: EulaAcceptanceListSchema.exactOptional().openapi({
+      description: 'A collection of EULA acceptances.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AcceptEulasResponse')
@@ -195,22 +191,14 @@ const SessionBackupModeSchema = z.enum(['AUTOMATIC', 'DEACTIVATED']).openapi('Se
 
 const StreamConfigurationSessionBackupSchema = z
   .object({
-    maxBackupsToRetain: StreamConfigurationMaxBackupsToRetainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of backups that each streaming session created from this launch profile can have.',
-        }),
-    ).exactOptional(),
-    mode: SessionBackupModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies how artists sessions are backed up.</p> <p>Configures backups for streaming sessions launched with this launch profile. The default value is <code>DEACTIVATED</code>, which means that backups are deactivated. To allow backups, set this value to <code>AUTOMATIC</code>.</p>',
-        }),
-    ).exactOptional(),
+    maxBackupsToRetain: StreamConfigurationMaxBackupsToRetainSchema.exactOptional().openapi({
+      description:
+        'The maximum number of backups that each streaming session created from this launch profile can have.',
+    }),
+    mode: SessionBackupModeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies how artists sessions are backed up.</p> <p>Configures backups for streaming sessions launched with this launch profile. The default value is <code>DEACTIVATED</code>, which means that backups are deactivated. To allow backups, set this value to <code>AUTOMATIC</code>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -246,20 +234,12 @@ const StreamingSessionStorageRootPathWindowsSchema = z
 
 const StreamingSessionStorageRootSchema = z
   .object({
-    linux: StreamingSessionStorageRootPathLinuxSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The folder path in Linux workstations where files are uploaded.',
-        }),
-    ).exactOptional(),
-    windows: StreamingSessionStorageRootPathWindowsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The folder path in Windows workstations where files are uploaded.',
-        }),
-    ).exactOptional(),
+    linux: StreamingSessionStorageRootPathLinuxSchema.exactOptional().openapi({
+      description: 'The folder path in Linux workstations where files are uploaded.',
+    }),
+    windows: StreamingSessionStorageRootPathWindowsSchema.exactOptional().openapi({
+      description: 'The folder path in Windows workstations where files are uploaded.',
+    }),
   })
   .openapi({
     description:
@@ -270,21 +250,13 @@ const StreamingSessionStorageRootSchema = z
 
 const StreamConfigurationSessionStorageSchema = z
   .object({
-    mode: StreamingSessionStorageModeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Allows artists to upload files to their workstations. The only valid option is <code>UPLOAD</code>.',
-        }),
-    ),
-    root: StreamingSessionStorageRootSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration for the upload storage root of the streaming session.',
-        }),
-    ).exactOptional(),
+    mode: StreamingSessionStorageModeListSchema.openapi({
+      description:
+        'Allows artists to upload files to their workstations. The only valid option is <code>UPLOAD</code>.',
+    }),
+    root: StreamingSessionStorageRootSchema.exactOptional().openapi({
+      description: 'The configuration for the upload storage root of the streaming session.',
+    }),
   })
   .openapi({
     required: ['mode'],
@@ -317,30 +289,18 @@ const VolumeThroughputInMiBsSchema = z.int().min(125).max(1000).openapi('VolumeT
 
 const VolumeConfigurationSchema = z
   .object({
-    iops: VolumeIopsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of I/O operations per second for the root volume that is attached to streaming session.',
-        }),
-    ).exactOptional(),
-    size: VolumeSizeInGiBSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size of the root volume that is attached to the streaming session. The root volume size is measured in GiBs.',
-        }),
-    ).exactOptional(),
-    throughput: VolumeThroughputInMiBsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The throughput to provision for the root volume that is attached to the streaming session. The throughput is measured in MiB/s.',
-        }),
-    ).exactOptional(),
+    iops: VolumeIopsSchema.exactOptional().openapi({
+      description:
+        'The number of I/O operations per second for the root volume that is attached to streaming session.',
+    }),
+    size: VolumeSizeInGiBSchema.exactOptional().openapi({
+      description:
+        'The size of the root volume that is attached to the streaming session. The root volume size is measured in GiBs.',
+    }),
+    throughput: VolumeThroughputInMiBsSchema.exactOptional().openapi({
+      description:
+        'The throughput to provision for the root volume that is attached to the streaming session. The throughput is measured in MiB/s.',
+    }),
   })
   .openapi({
     description:
@@ -351,76 +311,46 @@ const VolumeConfigurationSchema = z
 
 const StreamConfigurationSchema = z
   .object({
-    automaticTerminationMode: AutomaticTerminationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates if a streaming session created from this launch profile should be terminated automatically or retained without termination after being in a <code>STOPPED</code> state.</p> <ul> <li> <p>When <code>ACTIVATED</code>, the streaming session is scheduled for termination after being in the <code>STOPPED</code> state for the time specified in <code>maxStoppedSessionLengthInMinutes</code>.</p> </li> <li> <p>When <code>DEACTIVATED</code>, the streaming session can remain in the <code>STOPPED</code> state indefinitely.</p> </li> </ul> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>. When allowed, the default value for this parameter is <code>DEACTIVATED</code>.</p>',
-        }),
-    ).exactOptional(),
-    clipboardMode: StreamingClipboardModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Allows or deactivates the use of the system clipboard to copy and paste between the streaming session and streaming client.',
-        }),
-    ),
-    ec2InstanceTypes: StreamingInstanceTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The EC2 instance types that users can select from when launching a streaming session with this launch profile.',
-        }),
-    ),
-    maxSessionLengthInMinutes: StreamConfigurationMaxSessionLengthInMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The length of time, in minutes, that a streaming session can be active before it is stopped or terminated. After this point, Nimble Studio automatically terminates or stops the session. The default length of time is 690 minutes, and the maximum length of time is 30 days.',
-        }),
-    ).exactOptional(),
-    maxStoppedSessionLengthInMinutes: StreamConfigurationMaxStoppedSessionLengthInMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Integer that determines if you can start and stop your sessions and how long a session can stay in the <code>STOPPED</code> state. The default value is 0. The maximum value is 5760.</p> <p>This field is allowed only when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code> and <code>automaticTerminationMode</code> is <code>ACTIVATED</code>.</p> <p>If the value is set to 0, your sessions can’t be <code>STOPPED</code>. If you then call <code>StopStreamingSession</code>, the session fails. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be terminated (instead of <code>STOPPED</code>).</p> <p>If the value is set to a positive number, the session can be stopped. You can call <code>StopStreamingSession</code> to stop sessions in the <code>READY</code> state. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be stopped (instead of terminated).</p>',
-        }),
-    ).exactOptional(),
-    sessionBackup: StreamConfigurationSessionBackupSchema.and(
-      z.any().openapi({ description: 'Information about the streaming session backup.' }),
-    ).exactOptional(),
-    sessionPersistenceMode: SessionPersistenceModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determine if a streaming session created from this launch profile can configure persistent storage. This means that <code>volumeConfiguration</code> and <code>automaticTerminationMode</code> are configured.',
-        }),
-    ).exactOptional(),
-    sessionStorage: StreamConfigurationSessionStorageSchema.and(
-      z.any().openapi({ description: 'The upload storage for a streaming session.' }),
-    ).exactOptional(),
-    streamingImageIds: StreamingImageIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The streaming images that users can select from when launching a streaming session with this launch profile.',
-        }),
-    ),
-    volumeConfiguration: VolumeConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Custom volume configuration for the root volumes that are attached to streaming sessions.</p> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>.</p>',
-        }),
-    ).exactOptional(),
+    automaticTerminationMode: AutomaticTerminationModeSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates if a streaming session created from this launch profile should be terminated automatically or retained without termination after being in a <code>STOPPED</code> state.</p> <ul> <li> <p>When <code>ACTIVATED</code>, the streaming session is scheduled for termination after being in the <code>STOPPED</code> state for the time specified in <code>maxStoppedSessionLengthInMinutes</code>.</p> </li> <li> <p>When <code>DEACTIVATED</code>, the streaming session can remain in the <code>STOPPED</code> state indefinitely.</p> </li> </ul> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>. When allowed, the default value for this parameter is <code>DEACTIVATED</code>.</p>',
+    }),
+    clipboardMode: StreamingClipboardModeSchema.openapi({
+      description:
+        'Allows or deactivates the use of the system clipboard to copy and paste between the streaming session and streaming client.',
+    }),
+    ec2InstanceTypes: StreamingInstanceTypeListSchema.openapi({
+      description:
+        'The EC2 instance types that users can select from when launching a streaming session with this launch profile.',
+    }),
+    maxSessionLengthInMinutes:
+      StreamConfigurationMaxSessionLengthInMinutesSchema.exactOptional().openapi({
+        description:
+          'The length of time, in minutes, that a streaming session can be active before it is stopped or terminated. After this point, Nimble Studio automatically terminates or stops the session. The default length of time is 690 minutes, and the maximum length of time is 30 days.',
+      }),
+    maxStoppedSessionLengthInMinutes:
+      StreamConfigurationMaxStoppedSessionLengthInMinutesSchema.exactOptional().openapi({
+        description:
+          '<p>Integer that determines if you can start and stop your sessions and how long a session can stay in the <code>STOPPED</code> state. The default value is 0. The maximum value is 5760.</p> <p>This field is allowed only when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code> and <code>automaticTerminationMode</code> is <code>ACTIVATED</code>.</p> <p>If the value is set to 0, your sessions can’t be <code>STOPPED</code>. If you then call <code>StopStreamingSession</code>, the session fails. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be terminated (instead of <code>STOPPED</code>).</p> <p>If the value is set to a positive number, the session can be stopped. You can call <code>StopStreamingSession</code> to stop sessions in the <code>READY</code> state. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be stopped (instead of terminated).</p>',
+      }),
+    sessionBackup: StreamConfigurationSessionBackupSchema.exactOptional().openapi({
+      description: 'Information about the streaming session backup.',
+    }),
+    sessionPersistenceMode: SessionPersistenceModeSchema.exactOptional().openapi({
+      description:
+        'Determine if a streaming session created from this launch profile can configure persistent storage. This means that <code>volumeConfiguration</code> and <code>automaticTerminationMode</code> are configured.',
+    }),
+    sessionStorage: StreamConfigurationSessionStorageSchema.exactOptional().openapi({
+      description: 'The upload storage for a streaming session.',
+    }),
+    streamingImageIds: StreamingImageIdListSchema.openapi({
+      description:
+        'The streaming images that users can select from when launching a streaming session with this launch profile.',
+    }),
+    volumeConfiguration: VolumeConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>Custom volume configuration for the root volumes that are attached to streaming sessions.</p> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>.</p>',
+    }),
   })
   .openapi({
     required: ['clipboardMode', 'ec2InstanceTypes', 'streamingImageIds'],
@@ -475,23 +405,17 @@ const LaunchProfileValidationTypeSchema = z
 
 const ValidationResultSchema = z
   .object({
-    state: LaunchProfileValidationStateSchema.and(
-      z.any().openapi({ description: 'The current state.' }),
-    ),
-    statusCode: LaunchProfileValidationStatusCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status code. This will contain the failure reason if the state is <code>VALIDATION_FAILED</code>.',
-        }),
-    ),
-    statusMessage: LaunchProfileValidationStatusMessageSchema.and(
-      z.any().openapi({ description: 'The status message for the validation result.' }),
-    ),
-    type: LaunchProfileValidationTypeSchema.and(
-      z.any().openapi({ description: 'The type of the validation result.' }),
-    ),
+    state: LaunchProfileValidationStateSchema.openapi({ description: 'The current state.' }),
+    statusCode: LaunchProfileValidationStatusCodeSchema.openapi({
+      description:
+        'The status code. This will contain the failure reason if the state is <code>VALIDATION_FAILED</code>.',
+    }),
+    statusMessage: LaunchProfileValidationStatusMessageSchema.openapi({
+      description: 'The status message for the validation result.',
+    }),
+    type: LaunchProfileValidationTypeSchema.openapi({
+      description: 'The type of the validation result.',
+    }),
   })
   .openapi({
     required: ['state', 'statusCode', 'statusMessage', 'type'],
@@ -503,94 +427,60 @@ const ValidationResultsSchema = z.array(ValidationResultSchema).openapi('Validat
 
 const LaunchProfileSchema = z
   .object({
-    arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that is assigned to a studio resource and uniquely identifies it. ARNs are unique across all Regions.',
-        }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ISO timestamp in seconds for when the resource was created.',
-        }),
-    ).exactOptional(),
-    createdBy: StringSchema.and(
-      z.any().openapi({ description: 'The user ID of the user that created the launch profile.' }),
-    ).exactOptional(),
-    description: LaunchProfileDescriptionSchema.and(
-      z.any().openapi({ description: 'A human-readable description of the launch profile.' }),
-    ).exactOptional(),
-    ec2SubnetIds: EC2SubnetIdListSchema.and(
-      z.any().openapi({ description: 'Unique identifiers for a collection of EC2 subnets.' }),
-    ).exactOptional(),
-    launchProfileId: LaunchProfileIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the launch profile used to control access from the streaming session.',
-        }),
-    ).exactOptional(),
-    launchProfileProtocolVersions: LaunchProfileProtocolVersionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version number of the protocol that is used by the launch profile. The only valid version is "2021-03-31".',
-        }),
-    ).exactOptional(),
-    name: LaunchProfileNameSchema.and(
-      z.any().openapi({ description: 'A friendly name for the launch profile.' }),
-    ).exactOptional(),
-    state: LaunchProfileStateSchema.and(
-      z.any().openapi({ description: 'The current state.' }),
-    ).exactOptional(),
-    statusCode: LaunchProfileStatusCodeSchema.and(
-      z.any().openapi({ description: 'The status code.' }),
-    ).exactOptional(),
-    statusMessage: StringSchema.and(
-      z.any().openapi({ description: 'The status message for the launch profile.' }),
-    ).exactOptional(),
-    streamConfiguration: StreamConfigurationSchema.and(
-      z.any().openapi({ description: 'A configuration for a streaming session.' }),
-    ).exactOptional(),
-    studioComponentIds: LaunchProfileStudioComponentIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifiers for a collection of studio components that can be used with this launch profile.',
-        }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of labels, in the form of key-value pairs, that apply to this resource.',
-        }),
-    ).exactOptional(),
-    updatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ISO timestamp in seconds for when the resource was updated.',
-        }),
-    ).exactOptional(),
-    updatedBy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user ID of the user that most recently updated the resource.',
-        }),
-    ).exactOptional(),
-    validationResults: ValidationResultsSchema.and(
-      z.any().openapi({ description: 'The list of the latest validation results.' }),
-    ).exactOptional(),
+    arn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that is assigned to a studio resource and uniquely identifies it. ARNs are unique across all Regions.',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'The ISO timestamp in seconds for when the resource was created.',
+    }),
+    createdBy: StringSchema.exactOptional().openapi({
+      description: 'The user ID of the user that created the launch profile.',
+    }),
+    description: LaunchProfileDescriptionSchema.exactOptional().openapi({
+      description: 'A human-readable description of the launch profile.',
+    }),
+    ec2SubnetIds: EC2SubnetIdListSchema.exactOptional().openapi({
+      description: 'Unique identifiers for a collection of EC2 subnets.',
+    }),
+    launchProfileId: LaunchProfileIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the launch profile used to control access from the streaming session.',
+    }),
+    launchProfileProtocolVersions: LaunchProfileProtocolVersionListSchema.exactOptional().openapi({
+      description:
+        'The version number of the protocol that is used by the launch profile. The only valid version is "2021-03-31".',
+    }),
+    name: LaunchProfileNameSchema.exactOptional().openapi({
+      description: 'A friendly name for the launch profile.',
+    }),
+    state: LaunchProfileStateSchema.exactOptional().openapi({ description: 'The current state.' }),
+    statusCode: LaunchProfileStatusCodeSchema.exactOptional().openapi({
+      description: 'The status code.',
+    }),
+    statusMessage: StringSchema.exactOptional().openapi({
+      description: 'The status message for the launch profile.',
+    }),
+    streamConfiguration: StreamConfigurationSchema.exactOptional().openapi({
+      description: 'A configuration for a streaming session.',
+    }),
+    studioComponentIds: LaunchProfileStudioComponentIdListSchema.exactOptional().openapi({
+      description:
+        'Unique identifiers for a collection of studio components that can be used with this launch profile.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A collection of labels, in the form of key-value pairs, that apply to this resource.',
+    }),
+    updatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The ISO timestamp in seconds for when the resource was updated.',
+    }),
+    updatedBy: StringSchema.exactOptional().openapi({
+      description: 'The user ID of the user that most recently updated the resource.',
+    }),
+    validationResults: ValidationResultsSchema.exactOptional().openapi({
+      description: 'The list of the latest validation results.',
+    }),
   })
   .openapi({
     description:
@@ -601,9 +491,9 @@ const LaunchProfileSchema = z
 
 const CreateLaunchProfileResponseSchema = z
   .object({
-    launchProfile: LaunchProfileSchema.and(
-      z.any().openapi({ description: 'The launch profile.' }),
-    ).exactOptional(),
+    launchProfile: LaunchProfileSchema.exactOptional().openapi({
+      description: 'The launch profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateLaunchProfileResponse')
@@ -632,14 +522,12 @@ const StreamingImageEncryptionConfigurationKeyTypeSchema = z
 
 const StreamingImageEncryptionConfigurationSchema = z
   .object({
-    keyArn: StreamingImageEncryptionConfigurationKeyArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN for a KMS key that is used to encrypt studio data.' }),
-    ).exactOptional(),
-    keyType: StreamingImageEncryptionConfigurationKeyTypeSchema.and(
-      z.any().openapi({ description: 'The type of KMS key that is used to encrypt studio data.' }),
-    ),
+    keyArn: StreamingImageEncryptionConfigurationKeyArnSchema.exactOptional().openapi({
+      description: 'The ARN for a KMS key that is used to encrypt studio data.',
+    }),
+    keyType: StreamingImageEncryptionConfigurationKeyTypeSchema.openapi({
+      description: 'The type of KMS key that is used to encrypt studio data.',
+    }),
   })
   .openapi({ required: ['keyType'], description: 'Specifies how a streaming image is encrypted.' })
   .openapi('StreamingImageEncryptionConfiguration')
@@ -695,71 +583,47 @@ const StreamingImageStatusCodeSchema = z
 
 const StreamingImageSchema = z
   .object({
-    arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that is assigned to a studio resource and uniquely identifies it. ARNs are unique across all Regions.',
-        }),
-    ).exactOptional(),
-    description: StreamingImageDescriptionSchema.and(
-      z.any().openapi({ description: 'A human-readable description of the streaming image.' }),
-    ).exactOptional(),
-    ec2ImageId: EC2ImageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of an EC2 machine image with which to create the streaming image.',
-        }),
-    ).exactOptional(),
-    encryptionConfiguration: StreamingImageEncryptionConfigurationSchema.and(
-      z.any().openapi({ description: 'The encryption configuration.' }),
-    ).exactOptional(),
-    eulaIds: EulaIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of EULAs that must be accepted before a Streaming Session can be started using this streaming image.',
-        }),
-    ).exactOptional(),
-    name: StreamingImageNameSchema.and(
-      z.any().openapi({ description: 'A friendly name for a streaming image resource.' }),
-    ).exactOptional(),
-    owner: StreamingImageOwnerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The owner of the streaming image, either the <code>studioId</code> that contains the streaming image, or <code>amazon</code> for images that are provided by Amazon Nimble Studio.',
-        }),
-    ).exactOptional(),
-    platform: StreamingImagePlatformSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The platform of the streaming image, either Windows or Linux.' }),
-    ).exactOptional(),
-    state: StreamingImageStateSchema.and(
-      z.any().openapi({ description: 'The current state.' }),
-    ).exactOptional(),
-    statusCode: StreamingImageStatusCodeSchema.and(
-      z.any().openapi({ description: 'The status code.' }),
-    ).exactOptional(),
-    statusMessage: StringSchema.and(
-      z.any().openapi({ description: 'The status message for the streaming image.' }),
-    ).exactOptional(),
-    streamingImageId: StreamingImageIdSchema.and(
-      z.any().openapi({ description: 'The ID of the streaming image.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of labels, in the form of key-value pairs, that apply to this resource.',
-        }),
-    ).exactOptional(),
+    arn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that is assigned to a studio resource and uniquely identifies it. ARNs are unique across all Regions.',
+    }),
+    description: StreamingImageDescriptionSchema.exactOptional().openapi({
+      description: 'A human-readable description of the streaming image.',
+    }),
+    ec2ImageId: EC2ImageIdSchema.exactOptional().openapi({
+      description: 'The ID of an EC2 machine image with which to create the streaming image.',
+    }),
+    encryptionConfiguration: StreamingImageEncryptionConfigurationSchema.exactOptional().openapi({
+      description: 'The encryption configuration.',
+    }),
+    eulaIds: EulaIdListSchema.exactOptional().openapi({
+      description:
+        'The list of EULAs that must be accepted before a Streaming Session can be started using this streaming image.',
+    }),
+    name: StreamingImageNameSchema.exactOptional().openapi({
+      description: 'A friendly name for a streaming image resource.',
+    }),
+    owner: StreamingImageOwnerSchema.exactOptional().openapi({
+      description:
+        'The owner of the streaming image, either the <code>studioId</code> that contains the streaming image, or <code>amazon</code> for images that are provided by Amazon Nimble Studio.',
+    }),
+    platform: StreamingImagePlatformSchema.exactOptional().openapi({
+      description: 'The platform of the streaming image, either Windows or Linux.',
+    }),
+    state: StreamingImageStateSchema.exactOptional().openapi({ description: 'The current state.' }),
+    statusCode: StreamingImageStatusCodeSchema.exactOptional().openapi({
+      description: 'The status code.',
+    }),
+    statusMessage: StringSchema.exactOptional().openapi({
+      description: 'The status message for the streaming image.',
+    }),
+    streamingImageId: StreamingImageIdSchema.exactOptional().openapi({
+      description: 'The ID of the streaming image.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A collection of labels, in the form of key-value pairs, that apply to this resource.',
+    }),
   })
   .openapi({
     description:
@@ -770,9 +634,9 @@ const StreamingImageSchema = z
 
 const CreateStreamingImageResponseSchema = z
   .object({
-    streamingImage: StreamingImageSchema.and(
-      z.any().openapi({ description: 'The streaming image.' }),
-    ).exactOptional(),
+    streamingImage: StreamingImageSchema.exactOptional().openapi({
+      description: 'The streaming image.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateStreamingImageResponse')
@@ -821,168 +685,96 @@ const VolumeRetentionModeSchema = z.enum(['RETAIN', 'DELETE']).openapi('VolumeRe
 
 const StreamingSessionSchema = z
   .object({
-    arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that is assigned to a studio resource and uniquely identifies it. ARNs are unique across all Regions.',
-        }),
-    ).exactOptional(),
-    automaticTerminationMode: AutomaticTerminationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates if a streaming session created from this launch profile should be terminated automatically or retained without termination after being in a <code>STOPPED</code> state.</p> <ul> <li> <p>When <code>ACTIVATED</code>, the streaming session is scheduled for termination after being in the <code>STOPPED</code> state for the time specified in <code>maxStoppedSessionLengthInMinutes</code>.</p> </li> <li> <p>When <code>DEACTIVATED</code>, the streaming session can remain in the <code>STOPPED</code> state indefinitely.</p> </li> </ul> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>. When allowed, the default value for this parameter is <code>DEACTIVATED</code>.</p>',
-        }),
-    ).exactOptional(),
-    backupMode: SessionBackupModeSchema.and(
-      z.any().openapi({ description: 'Shows the current backup setting of the session.' }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ISO timestamp in seconds for when the resource was created.',
-        }),
-    ).exactOptional(),
-    createdBy: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The user ID of the user that created the streaming session.' }),
-    ).exactOptional(),
-    ec2InstanceType: StringSchema.and(
-      z.any().openapi({ description: 'The EC2 Instance type used for the streaming session.' }),
-    ).exactOptional(),
-    launchProfileId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the launch profile used to control access from the streaming session.',
-        }),
-    ).exactOptional(),
-    maxBackupsToRetain: StreamConfigurationMaxBackupsToRetainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of backups of a streaming session that you can have. When the maximum number of backups is reached, the oldest backup is deleted.',
-        }),
-    ).exactOptional(),
-    ownedBy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user ID of the user that owns the streaming session. The user that owns the session will be logging into the session and interacting with the virtual workstation.',
-        }),
-    ).exactOptional(),
-    sessionId: StreamingSessionIdSchema.and(
-      z.any().openapi({ description: 'The session ID.' }),
-    ).exactOptional(),
-    sessionPersistenceMode: SessionPersistenceModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determine if a streaming session created from this launch profile can configure persistent storage. This means that <code>volumeConfiguration</code> and <code>automaticTerminationMode</code> are configured.',
-        }),
-    ).exactOptional(),
-    startedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time the session entered <code>START_IN_PROGRESS</code> state.',
-        }),
-    ).exactOptional(),
-    startedBy: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The user ID of the user that started the streaming session.' }),
-    ).exactOptional(),
-    startedFromBackupId: StringSchema.and(
-      z.any().openapi({ description: 'The backup ID used to restore a streaming session.' }),
-    ).exactOptional(),
-    state: StreamingSessionStateSchema.and(
-      z.any().openapi({ description: 'The current state.' }),
-    ).exactOptional(),
-    statusCode: StreamingSessionStatusCodeSchema.and(
-      z.any().openapi({ description: 'The status code.' }),
-    ).exactOptional(),
-    statusMessage: StringSchema.and(
-      z.any().openapi({ description: 'The status message for the streaming session.' }),
-    ).exactOptional(),
-    stopAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time the streaming session will automatically be stopped if the user doesn’t stop the session themselves. ',
-        }),
-    ).exactOptional(),
-    stoppedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time the session entered <code>STOP_IN_PROGRESS</code> state.',
-        }),
-    ).exactOptional(),
-    stoppedBy: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The user ID of the user that stopped the streaming session.' }),
-    ).exactOptional(),
-    streamingImageId: StreamingImageIdSchema.and(
-      z.any().openapi({ description: 'The ID of the streaming image.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of labels, in the form of key-value pairs, that apply to this resource.',
-        }),
-    ).exactOptional(),
-    terminateAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time the streaming session will automatically terminate if not terminated by the user.',
-        }),
-    ).exactOptional(),
-    updatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ISO timestamp in seconds for when the resource was updated.',
-        }),
-    ).exactOptional(),
-    updatedBy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user ID of the user that most recently updated the resource.',
-        }),
-    ).exactOptional(),
-    volumeConfiguration: VolumeConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Custom volume configuration for the root volumes that are attached to streaming sessions.</p> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>.</p>',
-        }),
-    ).exactOptional(),
-    volumeRetentionMode: VolumeRetentionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determine if an EBS volume created from this streaming session will be backed up.',
-        }),
-    ).exactOptional(),
+    arn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that is assigned to a studio resource and uniquely identifies it. ARNs are unique across all Regions.',
+    }),
+    automaticTerminationMode: AutomaticTerminationModeSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates if a streaming session created from this launch profile should be terminated automatically or retained without termination after being in a <code>STOPPED</code> state.</p> <ul> <li> <p>When <code>ACTIVATED</code>, the streaming session is scheduled for termination after being in the <code>STOPPED</code> state for the time specified in <code>maxStoppedSessionLengthInMinutes</code>.</p> </li> <li> <p>When <code>DEACTIVATED</code>, the streaming session can remain in the <code>STOPPED</code> state indefinitely.</p> </li> </ul> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>. When allowed, the default value for this parameter is <code>DEACTIVATED</code>.</p>',
+    }),
+    backupMode: SessionBackupModeSchema.exactOptional().openapi({
+      description: 'Shows the current backup setting of the session.',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'The ISO timestamp in seconds for when the resource was created.',
+    }),
+    createdBy: StringSchema.exactOptional().openapi({
+      description: 'The user ID of the user that created the streaming session.',
+    }),
+    ec2InstanceType: StringSchema.exactOptional().openapi({
+      description: 'The EC2 Instance type used for the streaming session.',
+    }),
+    launchProfileId: StringSchema.exactOptional().openapi({
+      description:
+        'The ID of the launch profile used to control access from the streaming session.',
+    }),
+    maxBackupsToRetain: StreamConfigurationMaxBackupsToRetainSchema.exactOptional().openapi({
+      description:
+        'The maximum number of backups of a streaming session that you can have. When the maximum number of backups is reached, the oldest backup is deleted.',
+    }),
+    ownedBy: StringSchema.exactOptional().openapi({
+      description:
+        'The user ID of the user that owns the streaming session. The user that owns the session will be logging into the session and interacting with the virtual workstation.',
+    }),
+    sessionId: StreamingSessionIdSchema.exactOptional().openapi({ description: 'The session ID.' }),
+    sessionPersistenceMode: SessionPersistenceModeSchema.exactOptional().openapi({
+      description:
+        'Determine if a streaming session created from this launch profile can configure persistent storage. This means that <code>volumeConfiguration</code> and <code>automaticTerminationMode</code> are configured.',
+    }),
+    startedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The time the session entered <code>START_IN_PROGRESS</code> state.',
+    }),
+    startedBy: StringSchema.exactOptional().openapi({
+      description: 'The user ID of the user that started the streaming session.',
+    }),
+    startedFromBackupId: StringSchema.exactOptional().openapi({
+      description: 'The backup ID used to restore a streaming session.',
+    }),
+    state: StreamingSessionStateSchema.exactOptional().openapi({
+      description: 'The current state.',
+    }),
+    statusCode: StreamingSessionStatusCodeSchema.exactOptional().openapi({
+      description: 'The status code.',
+    }),
+    statusMessage: StringSchema.exactOptional().openapi({
+      description: 'The status message for the streaming session.',
+    }),
+    stopAt: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time the streaming session will automatically be stopped if the user doesn’t stop the session themselves. ',
+    }),
+    stoppedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The time the session entered <code>STOP_IN_PROGRESS</code> state.',
+    }),
+    stoppedBy: StringSchema.exactOptional().openapi({
+      description: 'The user ID of the user that stopped the streaming session.',
+    }),
+    streamingImageId: StreamingImageIdSchema.exactOptional().openapi({
+      description: 'The ID of the streaming image.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A collection of labels, in the form of key-value pairs, that apply to this resource.',
+    }),
+    terminateAt: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time the streaming session will automatically terminate if not terminated by the user.',
+    }),
+    updatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The ISO timestamp in seconds for when the resource was updated.',
+    }),
+    updatedBy: StringSchema.exactOptional().openapi({
+      description: 'The user ID of the user that most recently updated the resource.',
+    }),
+    volumeConfiguration: VolumeConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>Custom volume configuration for the root volumes that are attached to streaming sessions.</p> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>.</p>',
+    }),
+    volumeRetentionMode: VolumeRetentionModeSchema.exactOptional().openapi({
+      description:
+        'Determine if an EBS volume created from this streaming session will be backed up.',
+    }),
   })
   .openapi({
     description:
@@ -993,9 +785,7 @@ const StreamingSessionSchema = z
 
 const CreateStreamingSessionResponseSchema = z
   .object({
-    session: StreamingSessionSchema.and(
-      z.any().openapi({ description: 'The session.' }),
-    ).exactOptional(),
+    session: StreamingSessionSchema.exactOptional().openapi({ description: 'The session.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateStreamingSessionResponse')
@@ -1026,43 +816,29 @@ const SensitiveStringSchema = z.string().openapi('SensitiveString')
 
 const StreamingSessionStreamSchema = z
   .object({
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ISO timestamp in seconds for when the resource was created.',
-        }),
-    ).exactOptional(),
-    createdBy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user ID of the user that created the streaming session stream.',
-        }),
-    ).exactOptional(),
-    expiresAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ISO timestamp in seconds for when the resource expires.' }),
-    ).exactOptional(),
-    ownedBy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user ID of the user that owns the streaming session. The user that owns the session will be logging into the session and interacting with the virtual workstation.',
-        }),
-    ).exactOptional(),
-    state: StreamingSessionStreamStateSchema.and(
-      z.any().openapi({ description: 'The current state.' }),
-    ).exactOptional(),
-    statusCode: StreamingSessionStreamStatusCodeSchema.and(
-      z.any().openapi({ description: 'The streaming session stream status code.' }),
-    ).exactOptional(),
-    streamId: StringSchema.and(z.any().openapi({ description: 'The stream ID.' })).exactOptional(),
-    url: SensitiveStringSchema.and(
-      z.any().openapi({ description: 'The URL to connect to this stream using the DCV client.' }),
-    ).exactOptional(),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'The ISO timestamp in seconds for when the resource was created.',
+    }),
+    createdBy: StringSchema.exactOptional().openapi({
+      description: 'The user ID of the user that created the streaming session stream.',
+    }),
+    expiresAt: TimestampSchema.exactOptional().openapi({
+      description: 'The ISO timestamp in seconds for when the resource expires.',
+    }),
+    ownedBy: StringSchema.exactOptional().openapi({
+      description:
+        'The user ID of the user that owns the streaming session. The user that owns the session will be logging into the session and interacting with the virtual workstation.',
+    }),
+    state: StreamingSessionStreamStateSchema.exactOptional().openapi({
+      description: 'The current state.',
+    }),
+    statusCode: StreamingSessionStreamStatusCodeSchema.exactOptional().openapi({
+      description: 'The streaming session stream status code.',
+    }),
+    streamId: StringSchema.exactOptional().openapi({ description: 'The stream ID.' }),
+    url: SensitiveStringSchema.exactOptional().openapi({
+      description: 'The URL to connect to this stream using the DCV client.',
+    }),
   })
   .openapi({
     description:
@@ -1073,9 +849,7 @@ const StreamingSessionStreamSchema = z
 
 const CreateStreamingSessionStreamResponseSchema = z
   .object({
-    stream: StreamingSessionStreamSchema.and(
-      z.any().openapi({ description: 'The stream.' }),
-    ).exactOptional(),
+    stream: StreamingSessionStreamSchema.exactOptional().openapi({ description: 'The stream.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateStreamingSessionStreamResponse')
@@ -1146,14 +920,12 @@ const StudioEncryptionConfigurationKeyTypeSchema = z
 
 const StudioEncryptionConfigurationSchema = z
   .object({
-    keyArn: StudioEncryptionConfigurationKeyArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN for a KMS key that is used to encrypt studio data.' }),
-    ).exactOptional(),
-    keyType: StudioEncryptionConfigurationKeyTypeSchema.and(
-      z.any().openapi({ description: 'The type of KMS key that is used to encrypt studio data.' }),
-    ),
+    keyArn: StudioEncryptionConfigurationKeyArnSchema.exactOptional().openapi({
+      description: 'The ARN for a KMS key that is used to encrypt studio data.',
+    }),
+    keyType: StudioEncryptionConfigurationKeyTypeSchema.openapi({
+      description: 'The type of KMS key that is used to encrypt studio data.',
+    }),
   })
   .openapi({
     required: ['keyType'],
@@ -1170,109 +942,61 @@ const StudioNameSchema = z
 
 const StudioSchema = z
   .object({
-    adminRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role that studio admins assume when logging in to the Nimble Studio portal.',
-        }),
-    ).exactOptional(),
-    arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that is assigned to a studio resource and uniquely identifies it. ARNs are unique across all Regions.',
-        }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ISO timestamp in seconds for when the resource was created.',
-        }),
-    ).exactOptional(),
-    displayName: StudioDisplayNameSchema.and(
-      z.any().openapi({ description: 'A friendly name for the studio.' }),
-    ).exactOptional(),
-    homeRegion: RegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services Region where the studio resource is located.',
-        }),
-    ).exactOptional(),
-    ssoClientId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM Identity Center application client ID used to integrate with IAM Identity Center. This ID allows IAM Identity Center users to log in to Nimble Studio portal.',
-        }),
-    ).exactOptional(),
-    state: StudioStateSchema.and(
-      z.any().openapi({ description: 'The current state of the studio resource.' }),
-    ).exactOptional(),
-    statusCode: StudioStatusCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Status codes that provide additional detail on the studio state.',
-        }),
-    ).exactOptional(),
-    statusMessage: StringSchema.and(
-      z.any().openapi({ description: 'Additional detail on the studio state.' }),
-    ).exactOptional(),
-    studioEncryptionConfiguration: StudioEncryptionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configuration of the encryption method that is used for the studio.',
-        }),
-    ).exactOptional(),
-    studioId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for a studio resource. In Nimble Studio, all other resources are contained in a studio resource.',
-        }),
-    ).exactOptional(),
-    studioName: StudioNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the studio, as included in the URL when accessing it in the Nimble Studio portal.',
-        }),
-    ).exactOptional(),
-    studioUrl: StringSchema.and(
-      z.any().openapi({ description: 'The address of the web page for the studio.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of labels, in the form of key-value pairs, that apply to this resource.',
-        }),
-    ).exactOptional(),
-    updatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ISO timestamp in seconds for when the resource was updated.',
-        }),
-    ).exactOptional(),
-    userRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role that studio users assume when logging in to the Nimble Studio portal.',
-        }),
-    ).exactOptional(),
+    adminRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The IAM role that studio admins assume when logging in to the Nimble Studio portal.',
+    }),
+    arn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that is assigned to a studio resource and uniquely identifies it. ARNs are unique across all Regions.',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'The ISO timestamp in seconds for when the resource was created.',
+    }),
+    displayName: StudioDisplayNameSchema.exactOptional().openapi({
+      description: 'A friendly name for the studio.',
+    }),
+    homeRegion: RegionSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region where the studio resource is located.',
+    }),
+    ssoClientId: StringSchema.exactOptional().openapi({
+      description:
+        'The IAM Identity Center application client ID used to integrate with IAM Identity Center. This ID allows IAM Identity Center users to log in to Nimble Studio portal.',
+    }),
+    state: StudioStateSchema.exactOptional().openapi({
+      description: 'The current state of the studio resource.',
+    }),
+    statusCode: StudioStatusCodeSchema.exactOptional().openapi({
+      description: 'Status codes that provide additional detail on the studio state.',
+    }),
+    statusMessage: StringSchema.exactOptional().openapi({
+      description: 'Additional detail on the studio state.',
+    }),
+    studioEncryptionConfiguration: StudioEncryptionConfigurationSchema.exactOptional().openapi({
+      description: 'Configuration of the encryption method that is used for the studio.',
+    }),
+    studioId: StringSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for a studio resource. In Nimble Studio, all other resources are contained in a studio resource.',
+    }),
+    studioName: StudioNameSchema.exactOptional().openapi({
+      description:
+        'The name of the studio, as included in the URL when accessing it in the Nimble Studio portal.',
+    }),
+    studioUrl: StringSchema.exactOptional().openapi({
+      description: 'The address of the web page for the studio.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A collection of labels, in the form of key-value pairs, that apply to this resource.',
+    }),
+    updatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The ISO timestamp in seconds for when the resource was updated.',
+    }),
+    userRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The IAM role that studio users assume when logging in to the Nimble Studio portal.',
+    }),
   })
   .openapi({
     description:
@@ -1283,9 +1007,7 @@ const StudioSchema = z
 
 const CreateStudioResponseSchema = z
   .object({
-    studio: StudioSchema.and(
-      z.any().openapi({ description: 'Information about a studio.' }),
-    ).exactOptional(),
+    studio: StudioSchema.exactOptional().openapi({ description: 'Information about a studio.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateStudioResponse')
@@ -1306,12 +1028,12 @@ const ActiveDirectoryComputerAttributeValueSchema = z
 
 const ActiveDirectoryComputerAttributeSchema = z
   .object({
-    name: ActiveDirectoryComputerAttributeNameSchema.and(
-      z.any().openapi({ description: 'The name for the LDAP attribute.' }),
-    ).exactOptional(),
-    value: ActiveDirectoryComputerAttributeValueSchema.and(
-      z.any().openapi({ description: 'The value for the LDAP attribute.' }),
-    ).exactOptional(),
+    name: ActiveDirectoryComputerAttributeNameSchema.exactOptional().openapi({
+      description: 'The name for the LDAP attribute.',
+    }),
+    value: ActiveDirectoryComputerAttributeValueSchema.exactOptional().openapi({
+      description: 'The value for the LDAP attribute.',
+    }),
   })
   .openapi({
     description:
@@ -1344,30 +1066,18 @@ const ActiveDirectoryOrganizationalUnitDistinguishedNameSchema = z
 
 const ActiveDirectoryConfigurationSchema = z
   .object({
-    computerAttributes: ActiveDirectoryComputerAttributeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A collection of custom attributes for an Active Directory computer.',
-        }),
-    ).exactOptional(),
-    directoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The directory ID of the Directory Service for Microsoft Active Directory to access using this studio component.',
-        }),
-    ).exactOptional(),
+    computerAttributes: ActiveDirectoryComputerAttributeListSchema.exactOptional().openapi({
+      description: 'A collection of custom attributes for an Active Directory computer.',
+    }),
+    directoryId: DirectoryIdSchema.exactOptional().openapi({
+      description:
+        'The directory ID of the Directory Service for Microsoft Active Directory to access using this studio component.',
+    }),
     organizationalUnitDistinguishedName:
-      ActiveDirectoryOrganizationalUnitDistinguishedNameSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The distinguished name (DN) and organizational unit (OU) of an Active Directory computer.',
-          }),
-      ).exactOptional(),
+      ActiveDirectoryOrganizationalUnitDistinguishedNameSchema.exactOptional().openapi({
+        description:
+          'The distinguished name (DN) and organizational unit (OU) of an Active Directory computer.',
+      }),
   })
   .openapi({
     description:
@@ -1378,22 +1088,14 @@ const ActiveDirectoryConfigurationSchema = z
 
 const ComputeFarmConfigurationSchema = z
   .object({
-    activeDirectoryUser: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an Active Directory user that is used on ComputeFarm worker instances.',
-        }),
-    ).exactOptional(),
-    endpoint: SensitiveStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The endpoint of the ComputeFarm that is accessed by the studio component resource.',
-        }),
-    ).exactOptional(),
+    activeDirectoryUser: StringSchema.exactOptional().openapi({
+      description:
+        'The name of an Active Directory user that is used on ComputeFarm worker instances.',
+    }),
+    endpoint: SensitiveStringSchema.exactOptional().openapi({
+      description:
+        'The endpoint of the ComputeFarm that is accessed by the studio component resource.',
+    }),
   })
   .openapi({
     description: 'The configuration for a render farm that is associated with a studio resource.',
@@ -1403,14 +1105,10 @@ const ComputeFarmConfigurationSchema = z
 
 const LicenseServiceConfigurationSchema = z
   .object({
-    endpoint: SensitiveStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The endpoint of the license service that is accessed by the studio component resource.',
-        }),
-    ).exactOptional(),
+    endpoint: SensitiveStringSchema.exactOptional().openapi({
+      description:
+        'The endpoint of the license service that is accessed by the studio component resource.',
+    }),
   })
   .openapi({
     description:
@@ -1433,36 +1131,22 @@ const WindowsMountDriveSchema = z
 
 const SharedFileSystemConfigurationSchema = z
   .object({
-    endpoint: SensitiveStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The endpoint of the shared file system that is accessed by the studio component resource.',
-        }),
-    ).exactOptional(),
-    fileSystemId: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier for a file system.' }),
-    ).exactOptional(),
-    linuxMountPoint: LinuxMountPointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The mount location for a shared file system on a Linux virtual workstation.',
-        }),
-    ).exactOptional(),
-    shareName: SensitiveStringSchema.and(
-      z.any().openapi({ description: 'The name of the file share.' }),
-    ).exactOptional(),
-    windowsMountDrive: WindowsMountDriveSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The mount location for a shared file system on a Windows virtual workstation.',
-        }),
-    ).exactOptional(),
+    endpoint: SensitiveStringSchema.exactOptional().openapi({
+      description:
+        'The endpoint of the shared file system that is accessed by the studio component resource.',
+    }),
+    fileSystemId: StringSchema.exactOptional().openapi({
+      description: 'The unique identifier for a file system.',
+    }),
+    linuxMountPoint: LinuxMountPointSchema.exactOptional().openapi({
+      description: 'The mount location for a shared file system on a Linux virtual workstation.',
+    }),
+    shareName: SensitiveStringSchema.exactOptional().openapi({
+      description: 'The name of the file share.',
+    }),
+    windowsMountDrive: WindowsMountDriveSchema.exactOptional().openapi({
+      description: 'The mount location for a shared file system on a Windows virtual workstation.',
+    }),
   })
   .openapi({
     description:
@@ -1473,38 +1157,21 @@ const SharedFileSystemConfigurationSchema = z
 
 const StudioComponentConfigurationSchema = z
   .object({
-    activeDirectoryConfiguration: ActiveDirectoryConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for a Directory Service for Microsoft Active Directory studio resource.',
-        }),
-    ).exactOptional(),
-    computeFarmConfiguration: ComputeFarmConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for a render farm that is associated with a studio resource.',
-        }),
-    ).exactOptional(),
-    licenseServiceConfiguration: LicenseServiceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for a license service that is associated with a studio resource.',
-        }),
-    ).exactOptional(),
-    sharedFileSystemConfiguration: SharedFileSystemConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for a shared file storage system that is associated with a studio resource.',
-        }),
-    ).exactOptional(),
+    activeDirectoryConfiguration: ActiveDirectoryConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration for a Directory Service for Microsoft Active Directory studio resource.',
+    }),
+    computeFarmConfiguration: ComputeFarmConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for a render farm that is associated with a studio resource.',
+    }),
+    licenseServiceConfiguration: LicenseServiceConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration for a license service that is associated with a studio resource.',
+    }),
+    sharedFileSystemConfiguration: SharedFileSystemConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration for a shared file storage system that is associated with a studio resource.',
+    }),
   })
   .openapi({
     description: 'The configuration of the studio component, based on component type.',
@@ -1540,27 +1207,19 @@ const StudioComponentInitializationScriptContentSchema = z
 
 const StudioComponentInitializationScriptSchema = z
   .object({
-    launchProfileProtocolVersion: LaunchProfileProtocolVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version number of the protocol that is used by the launch profile. The only valid version is "2021-03-31".',
-        }),
-    ).exactOptional(),
-    platform: LaunchProfilePlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The platform of the initialization script, either Windows or Linux.',
-        }),
-    ).exactOptional(),
-    runContext: StudioComponentInitializationScriptRunContextSchema.and(
-      z.any().openapi({ description: 'The method to use when running the initialization script.' }),
-    ).exactOptional(),
-    script: StudioComponentInitializationScriptContentSchema.and(
-      z.any().openapi({ description: 'The initialization script.' }),
-    ).exactOptional(),
+    launchProfileProtocolVersion: LaunchProfileProtocolVersionSchema.exactOptional().openapi({
+      description:
+        'The version number of the protocol that is used by the launch profile. The only valid version is "2021-03-31".',
+    }),
+    platform: LaunchProfilePlatformSchema.exactOptional().openapi({
+      description: 'The platform of the initialization script, either Windows or Linux.',
+    }),
+    runContext: StudioComponentInitializationScriptRunContextSchema.exactOptional().openapi({
+      description: 'The method to use when running the initialization script.',
+    }),
+    script: StudioComponentInitializationScriptContentSchema.exactOptional().openapi({
+      description: 'The initialization script.',
+    }),
   })
   .openapi({ description: 'Initialization scripts for studio components.', required: [] })
   .openapi('StudioComponentInitializationScript')
@@ -1588,12 +1247,12 @@ const ScriptParameterValueSchema = z
 
 const ScriptParameterKeyValueSchema = z
   .object({
-    key: ScriptParameterKeySchema.and(
-      z.any().openapi({ description: 'A script parameter key.' }),
-    ).exactOptional(),
-    value: ScriptParameterValueSchema.and(
-      z.any().openapi({ description: 'A script parameter value.' }),
-    ).exactOptional(),
+    key: ScriptParameterKeySchema.exactOptional().openapi({
+      description: 'A script parameter key.',
+    }),
+    value: ScriptParameterValueSchema.exactOptional().openapi({
+      description: 'A script parameter value.',
+    }),
   })
   .openapi({
     description: 'A parameter for a studio component script, in the form of a key-value pair.',
@@ -1660,112 +1319,70 @@ const StudioComponentTypeSchema = z
 
 const StudioComponentSchema = z
   .object({
-    arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that is assigned to a studio resource and uniquely identifies it. ARNs are unique across all Regions.',
-        }),
-    ).exactOptional(),
-    configuration: StudioComponentConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration of the studio component, based on component type.',
-        }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ISO timestamp in seconds for when the resource was created.',
-        }),
-    ).exactOptional(),
-    createdBy: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The user ID of the user that created the studio component.' }),
-    ).exactOptional(),
-    description: StudioComponentDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A human-readable description for the studio component resource.',
-        }),
-    ).exactOptional(),
-    ec2SecurityGroupIds: StudioComponentSecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The EC2 security groups that control access to the studio component.',
-        }),
-    ).exactOptional(),
-    initializationScripts: StudioComponentInitializationScriptListSchema.and(
-      z.any().openapi({ description: 'Initialization scripts for studio components.' }),
-    ).exactOptional(),
-    name: StudioComponentNameSchema.and(
-      z.any().openapi({ description: 'A friendly name for the studio component resource.' }),
-    ).exactOptional(),
-    runtimeRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An IAM role attached to a Studio Component that gives the studio component access to Amazon Web Services resources at anytime while the instance is running. ',
-        }),
-    ).exactOptional(),
-    scriptParameters: StudioComponentScriptParameterKeyValueListSchema.and(
-      z.any().openapi({ description: 'Parameters for the studio component scripts.' }),
-    ).exactOptional(),
-    secureInitializationRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An IAM role attached to Studio Component when the system initialization script runs which give the studio component access to Amazon Web Services resources when the system initialization script runs.',
-        }),
-    ).exactOptional(),
-    state: StudioComponentStateSchema.and(
-      z.any().openapi({ description: 'The current state.' }),
-    ).exactOptional(),
-    statusCode: StudioComponentStatusCodeSchema.and(
-      z.any().openapi({ description: 'The status code.' }),
-    ).exactOptional(),
-    statusMessage: StringSchema.and(
-      z.any().openapi({ description: 'The status message for the studio component.' }),
-    ).exactOptional(),
-    studioComponentId: StudioComponentIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for a studio component resource.' }),
-    ).exactOptional(),
-    subtype: StudioComponentSubtypeSchema.and(
-      z.any().openapi({ description: 'The specific subtype of a studio component.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of labels, in the form of key-value pairs, that apply to this resource.',
-        }),
-    ).exactOptional(),
-    type: StudioComponentTypeSchema.and(
-      z.any().openapi({ description: 'The type of the studio component.' }),
-    ).exactOptional(),
-    updatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ISO timestamp in seconds for when the resource was updated.',
-        }),
-    ).exactOptional(),
-    updatedBy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user ID of the user that most recently updated the resource.',
-        }),
-    ).exactOptional(),
+    arn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that is assigned to a studio resource and uniquely identifies it. ARNs are unique across all Regions.',
+    }),
+    configuration: StudioComponentConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration of the studio component, based on component type.',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'The ISO timestamp in seconds for when the resource was created.',
+    }),
+    createdBy: StringSchema.exactOptional().openapi({
+      description: 'The user ID of the user that created the studio component.',
+    }),
+    description: StudioComponentDescriptionSchema.exactOptional().openapi({
+      description: 'A human-readable description for the studio component resource.',
+    }),
+    ec2SecurityGroupIds: StudioComponentSecurityGroupIdListSchema.exactOptional().openapi({
+      description: 'The EC2 security groups that control access to the studio component.',
+    }),
+    initializationScripts: StudioComponentInitializationScriptListSchema.exactOptional().openapi({
+      description: 'Initialization scripts for studio components.',
+    }),
+    name: StudioComponentNameSchema.exactOptional().openapi({
+      description: 'A friendly name for the studio component resource.',
+    }),
+    runtimeRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'An IAM role attached to a Studio Component that gives the studio component access to Amazon Web Services resources at anytime while the instance is running. ',
+    }),
+    scriptParameters: StudioComponentScriptParameterKeyValueListSchema.exactOptional().openapi({
+      description: 'Parameters for the studio component scripts.',
+    }),
+    secureInitializationRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'An IAM role attached to Studio Component when the system initialization script runs which give the studio component access to Amazon Web Services resources when the system initialization script runs.',
+    }),
+    state: StudioComponentStateSchema.exactOptional().openapi({
+      description: 'The current state.',
+    }),
+    statusCode: StudioComponentStatusCodeSchema.exactOptional().openapi({
+      description: 'The status code.',
+    }),
+    statusMessage: StringSchema.exactOptional().openapi({
+      description: 'The status message for the studio component.',
+    }),
+    studioComponentId: StudioComponentIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for a studio component resource.',
+    }),
+    subtype: StudioComponentSubtypeSchema.exactOptional().openapi({
+      description: 'The specific subtype of a studio component.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A collection of labels, in the form of key-value pairs, that apply to this resource.',
+    }),
+    type: StudioComponentTypeSchema.exactOptional().openapi({
+      description: 'The type of the studio component.',
+    }),
+    updatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The ISO timestamp in seconds for when the resource was updated.',
+    }),
+    updatedBy: StringSchema.exactOptional().openapi({
+      description: 'The user ID of the user that most recently updated the resource.',
+    }),
   })
   .openapi({
     description:
@@ -1776,101 +1393,85 @@ const StudioComponentSchema = z
 
 const CreateStudioComponentResponseSchema = z
   .object({
-    studioComponent: StudioComponentSchema.and(
-      z.any().openapi({ description: 'Information about the studio component.' }),
-    ).exactOptional(),
+    studioComponent: StudioComponentSchema.exactOptional().openapi({
+      description: 'Information about the studio component.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateStudioComponentResponse')
 
 const DeleteLaunchProfileResponseSchema = z
   .object({
-    launchProfile: LaunchProfileSchema.and(
-      z.any().openapi({ description: 'The launch profile.' }),
-    ).exactOptional(),
+    launchProfile: LaunchProfileSchema.exactOptional().openapi({
+      description: 'The launch profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteLaunchProfileResponse')
 
 const DeleteLaunchProfileMemberResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteLaunchProfileMemberResponse')
 
 const DeleteStreamingImageResponseSchema = z
   .object({
-    streamingImage: StreamingImageSchema.and(
-      z.any().openapi({ description: 'The streaming image.' }),
-    ).exactOptional(),
+    streamingImage: StreamingImageSchema.exactOptional().openapi({
+      description: 'The streaming image.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteStreamingImageResponse')
 
 const DeleteStreamingSessionResponseSchema = z
   .object({
-    session: StreamingSessionSchema.and(
-      z.any().openapi({ description: 'The session.' }),
-    ).exactOptional(),
+    session: StreamingSessionSchema.exactOptional().openapi({ description: 'The session.' }),
   })
   .openapi({ required: [] })
   .openapi('DeleteStreamingSessionResponse')
 
 const DeleteStudioResponseSchema = z
-  .object({
-    studio: StudioSchema.and(z.any().openapi({ description: 'Information about a studio.' })),
-  })
+  .object({ studio: StudioSchema.openapi({ description: 'Information about a studio.' }) })
   .openapi({ required: ['studio'] })
   .openapi('DeleteStudioResponse')
 
 const DeleteStudioComponentResponseSchema = z
   .object({
-    studioComponent: StudioComponentSchema.and(
-      z.any().openapi({ description: 'Information about the studio component.' }),
-    ).exactOptional(),
+    studioComponent: StudioComponentSchema.exactOptional().openapi({
+      description: 'Information about the studio component.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteStudioComponentResponse')
 
-const DeleteStudioMemberResponseSchema = z.object({}).openapi('DeleteStudioMemberResponse')
+const DeleteStudioMemberResponseSchema = z.looseObject({}).openapi('DeleteStudioMemberResponse')
 
 const EulaNameSchema = z.string().min(0).max(64).openapi('EulaName')
 
 const EulaSchema = z
   .object({
-    content: StringSchema.and(
-      z.any().openapi({ description: 'The EULA content.' }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ISO timestamp in seconds for when the resource was created.',
-        }),
-    ).exactOptional(),
-    eulaId: EulaIdSchema.and(z.any().openapi({ description: 'The EULA ID.' })).exactOptional(),
-    name: EulaNameSchema.and(
-      z.any().openapi({ description: 'The name for the EULA.' }),
-    ).exactOptional(),
-    updatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ISO timestamp in seconds for when the resource was updated.',
-        }),
-    ).exactOptional(),
+    content: StringSchema.exactOptional().openapi({ description: 'The EULA content.' }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'The ISO timestamp in seconds for when the resource was created.',
+    }),
+    eulaId: EulaIdSchema.exactOptional().openapi({ description: 'The EULA ID.' }),
+    name: EulaNameSchema.exactOptional().openapi({ description: 'The name for the EULA.' }),
+    updatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The ISO timestamp in seconds for when the resource was updated.',
+    }),
   })
   .openapi({ description: 'Represents a EULA resource.', required: [] })
   .openapi('Eula')
 
 const GetEulaResponseSchema = z
-  .object({ eula: EulaSchema.and(z.any().openapi({ description: 'The EULA.' })).exactOptional() })
+  .object({ eula: EulaSchema.exactOptional().openapi({ description: 'The EULA.' }) })
   .openapi({ required: [] })
   .openapi('GetEulaResponse')
 
 const GetLaunchProfileResponseSchema = z
   .object({
-    launchProfile: LaunchProfileSchema.and(
-      z.any().openapi({ description: 'The launch profile.' }),
-    ).exactOptional(),
+    launchProfile: LaunchProfileSchema.exactOptional().openapi({
+      description: 'The launch profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLaunchProfileResponse')
@@ -1879,47 +1480,33 @@ const StreamingImageListSchema = z.array(StreamingImageSchema).openapi('Streamin
 
 const StudioComponentSummarySchema = z
   .object({
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ISO timestamp in seconds for when the resource was created.',
-        }),
-    ).exactOptional(),
-    createdBy: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The user ID of the user that created the studio component.' }),
-    ).exactOptional(),
-    description: StudioComponentDescriptionSchema.and(
-      z.any().openapi({ description: 'The description.' }),
-    ).exactOptional(),
-    name: StudioComponentNameSchema.and(
-      z.any().openapi({ description: 'The name for the studio component.' }),
-    ).exactOptional(),
-    studioComponentId: StudioComponentIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for a studio component resource.' }),
-    ).exactOptional(),
-    subtype: StudioComponentSubtypeSchema.and(
-      z.any().openapi({ description: 'The specific subtype of a studio component.' }),
-    ).exactOptional(),
-    type: StudioComponentTypeSchema.and(
-      z.any().openapi({ description: 'The type of the studio component.' }),
-    ).exactOptional(),
-    updatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ISO timestamp in seconds for when the resource was updated.',
-        }),
-    ).exactOptional(),
-    updatedBy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user ID of the user that most recently updated the resource.',
-        }),
-    ).exactOptional(),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'The ISO timestamp in seconds for when the resource was created.',
+    }),
+    createdBy: StringSchema.exactOptional().openapi({
+      description: 'The user ID of the user that created the studio component.',
+    }),
+    description: StudioComponentDescriptionSchema.exactOptional().openapi({
+      description: 'The description.',
+    }),
+    name: StudioComponentNameSchema.exactOptional().openapi({
+      description: 'The name for the studio component.',
+    }),
+    studioComponentId: StudioComponentIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for a studio component resource.',
+    }),
+    subtype: StudioComponentSubtypeSchema.exactOptional().openapi({
+      description: 'The specific subtype of a studio component.',
+    }),
+    type: StudioComponentTypeSchema.exactOptional().openapi({
+      description: 'The type of the studio component.',
+    }),
+    updatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The ISO timestamp in seconds for when the resource was updated.',
+    }),
+    updatedBy: StringSchema.exactOptional().openapi({
+      description: 'The user ID of the user that most recently updated the resource.',
+    }),
   })
   .openapi({ description: "The studio component's summary.", required: [] })
   .openapi('StudioComponentSummary')
@@ -1930,15 +1517,15 @@ const StudioComponentSummaryListSchema = z
 
 const GetLaunchProfileDetailsResponseSchema = z
   .object({
-    launchProfile: LaunchProfileSchema.and(
-      z.any().openapi({ description: 'The launch profile.' }),
-    ).exactOptional(),
-    streamingImages: StreamingImageListSchema.and(
-      z.any().openapi({ description: 'A collection of streaming images.' }),
-    ).exactOptional(),
-    studioComponentSummaries: StudioComponentSummaryListSchema.and(
-      z.any().openapi({ description: 'A collection of studio component summaries.' }),
-    ).exactOptional(),
+    launchProfile: LaunchProfileSchema.exactOptional().openapi({
+      description: 'The launch profile.',
+    }),
+    streamingImages: StreamingImageListSchema.exactOptional().openapi({
+      description: 'A collection of streaming images.',
+    }),
+    studioComponentSummaries: StudioComponentSummaryListSchema.exactOptional().openapi({
+      description: 'A collection of studio component summaries.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLaunchProfileDetailsResponse')
@@ -1953,39 +1540,27 @@ const ActiveDirectoryDnsIpAddressListSchema = z
 
 const LaunchProfileInitializationActiveDirectorySchema = z
   .object({
-    computerAttributes: ActiveDirectoryComputerAttributeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A collection of custom attributes for an Active Directory computer.',
-        }),
-    ).exactOptional(),
-    directoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The directory ID of the Directory Service for Microsoft Active Directory to access using this launch profile.',
-        }),
-    ).exactOptional(),
-    directoryName: StringSchema.and(
-      z.any().openapi({ description: 'The directory name.' }),
-    ).exactOptional(),
-    dnsIpAddresses: ActiveDirectoryDnsIpAddressListSchema.and(
-      z.any().openapi({ description: 'The DNS IP address.' }),
-    ).exactOptional(),
+    computerAttributes: ActiveDirectoryComputerAttributeListSchema.exactOptional().openapi({
+      description: 'A collection of custom attributes for an Active Directory computer.',
+    }),
+    directoryId: DirectoryIdSchema.exactOptional().openapi({
+      description:
+        'The directory ID of the Directory Service for Microsoft Active Directory to access using this launch profile.',
+    }),
+    directoryName: StringSchema.exactOptional().openapi({ description: 'The directory name.' }),
+    dnsIpAddresses: ActiveDirectoryDnsIpAddressListSchema.exactOptional().openapi({
+      description: 'The DNS IP address.',
+    }),
     organizationalUnitDistinguishedName:
-      ActiveDirectoryOrganizationalUnitDistinguishedNameSchema.and(
-        z
-          .any()
-          .openapi({ description: 'The name for the organizational unit distinguished name.' }),
-      ).exactOptional(),
-    studioComponentId: StudioComponentIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for a studio component resource.' }),
-    ).exactOptional(),
-    studioComponentName: StudioComponentNameSchema.and(
-      z.any().openapi({ description: 'The name for the studio component.' }),
-    ).exactOptional(),
+      ActiveDirectoryOrganizationalUnitDistinguishedNameSchema.exactOptional().openapi({
+        description: 'The name for the organizational unit distinguished name.',
+      }),
+    studioComponentId: StudioComponentIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for a studio component resource.',
+    }),
+    studioComponentName: StudioComponentNameSchema.exactOptional().openapi({
+      description: 'The name for the studio component.',
+    }),
   })
   .openapi({
     description:
@@ -2009,31 +1584,23 @@ const LaunchPurposeSchema = z
 
 const LaunchProfileInitializationScriptSchema = z
   .object({
-    runtimeRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An IAM role attached to a Studio Component that gives the studio component access to Amazon Web Services resources at anytime while the instance is running. ',
-        }),
-    ).exactOptional(),
-    script: StudioComponentInitializationScriptContentSchema.and(
-      z.any().openapi({ description: 'The initialization script.' }),
-    ).exactOptional(),
-    secureInitializationRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An IAM role attached to Studio Component when the system initialization script runs which give the studio component access to Amazon Web Services resources when the system initialization script runs.',
-        }),
-    ).exactOptional(),
-    studioComponentId: StudioComponentIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for a studio component resource.' }),
-    ).exactOptional(),
-    studioComponentName: StudioComponentNameSchema.and(
-      z.any().openapi({ description: 'The name for the studio component.' }),
-    ).exactOptional(),
+    runtimeRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'An IAM role attached to a Studio Component that gives the studio component access to Amazon Web Services resources at anytime while the instance is running. ',
+    }),
+    script: StudioComponentInitializationScriptContentSchema.exactOptional().openapi({
+      description: 'The initialization script.',
+    }),
+    secureInitializationRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'An IAM role attached to Studio Component when the system initialization script runs which give the studio component access to Amazon Web Services resources when the system initialization script runs.',
+    }),
+    studioComponentId: StudioComponentIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for a studio component resource.',
+    }),
+    studioComponentName: StudioComponentNameSchema.exactOptional().openapi({
+      description: 'The name for the studio component.',
+    }),
   })
   .openapi({
     description:
@@ -2048,53 +1615,36 @@ const LaunchProfileInitializationScriptListSchema = z
 
 const LaunchProfileInitializationSchema = z
   .object({
-    activeDirectory: LaunchProfileInitializationActiveDirectorySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A <code>LaunchProfileInitializationActiveDirectory</code> resource.',
-        }),
-    ).exactOptional(),
-    ec2SecurityGroupIds: LaunchProfileSecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The EC2 security groups that control access to the studio component.',
-        }),
-    ).exactOptional(),
-    launchProfileId: LaunchProfileIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the launch profile used to control access from the streaming session.',
-        }),
-    ).exactOptional(),
-    launchProfileProtocolVersion: LaunchProfileProtocolVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version number of the protocol that is used by the launch profile. The only valid version is "2021-03-31".',
-        }),
-    ).exactOptional(),
-    launchPurpose: LaunchPurposeSchema.and(
-      z.any().openapi({ description: 'The launch purpose.' }),
-    ).exactOptional(),
-    name: LaunchProfileNameSchema.and(
-      z.any().openapi({ description: 'The name for the launch profile.' }),
-    ).exactOptional(),
-    platform: LaunchProfilePlatformSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The platform of the launch platform, either Windows or Linux.' }),
-    ).exactOptional(),
-    systemInitializationScripts: LaunchProfileInitializationScriptListSchema.and(
-      z.any().openapi({ description: 'The system initializtion scripts.' }),
-    ).exactOptional(),
-    userInitializationScripts: LaunchProfileInitializationScriptListSchema.and(
-      z.any().openapi({ description: 'The user initializtion scripts.' }),
-    ).exactOptional(),
+    activeDirectory: LaunchProfileInitializationActiveDirectorySchema.exactOptional().openapi({
+      description: 'A <code>LaunchProfileInitializationActiveDirectory</code> resource.',
+    }),
+    ec2SecurityGroupIds: LaunchProfileSecurityGroupIdListSchema.exactOptional().openapi({
+      description: 'The EC2 security groups that control access to the studio component.',
+    }),
+    launchProfileId: LaunchProfileIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the launch profile used to control access from the streaming session.',
+    }),
+    launchProfileProtocolVersion: LaunchProfileProtocolVersionSchema.exactOptional().openapi({
+      description:
+        'The version number of the protocol that is used by the launch profile. The only valid version is "2021-03-31".',
+    }),
+    launchPurpose: LaunchPurposeSchema.exactOptional().openapi({
+      description: 'The launch purpose.',
+    }),
+    name: LaunchProfileNameSchema.exactOptional().openapi({
+      description: 'The name for the launch profile.',
+    }),
+    platform: LaunchProfilePlatformSchema.exactOptional().openapi({
+      description: 'The platform of the launch platform, either Windows or Linux.',
+    }),
+    systemInitializationScripts:
+      LaunchProfileInitializationScriptListSchema.exactOptional().openapi({
+        description: 'The system initializtion scripts.',
+      }),
+    userInitializationScripts: LaunchProfileInitializationScriptListSchema.exactOptional().openapi({
+      description: 'The user initializtion scripts.',
+    }),
   })
   .openapi({
     description:
@@ -2105,9 +1655,9 @@ const LaunchProfileInitializationSchema = z
 
 const GetLaunchProfileInitializationResponseSchema = z
   .object({
-    launchProfileInitialization: LaunchProfileInitializationSchema.and(
-      z.any().openapi({ description: 'The launch profile initialization.' }),
-    ).exactOptional(),
+    launchProfileInitialization: LaunchProfileInitializationSchema.exactOptional().openapi({
+      description: 'The launch profile initialization.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLaunchProfileInitializationResponse')
@@ -2116,22 +1666,14 @@ const LaunchProfilePersonaSchema = z.literal('USER').openapi('LaunchProfilePerso
 
 const LaunchProfileMembershipSchema = z
   .object({
-    identityStoreId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the identity store.' }),
-    ).exactOptional(),
-    persona: LaunchProfilePersonaSchema.and(
-      z.any().openapi({ description: 'The persona.' }),
-    ).exactOptional(),
-    principalId: StringSchema.and(
-      z.any().openapi({ description: 'The principal ID.' }),
-    ).exactOptional(),
-    sid: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Active Directory Security Identifier for this user, if available.',
-        }),
-    ).exactOptional(),
+    identityStoreId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the identity store.',
+    }),
+    persona: LaunchProfilePersonaSchema.exactOptional().openapi({ description: 'The persona.' }),
+    principalId: StringSchema.exactOptional().openapi({ description: 'The principal ID.' }),
+    sid: StringSchema.exactOptional().openapi({
+      description: 'The Active Directory Security Identifier for this user, if available.',
+    }),
   })
   .openapi({
     description:
@@ -2142,114 +1684,88 @@ const LaunchProfileMembershipSchema = z
 
 const GetLaunchProfileMemberResponseSchema = z
   .object({
-    member: LaunchProfileMembershipSchema.and(
-      z.any().openapi({ description: 'The member.' }),
-    ).exactOptional(),
+    member: LaunchProfileMembershipSchema.exactOptional().openapi({ description: 'The member.' }),
   })
   .openapi({ required: [] })
   .openapi('GetLaunchProfileMemberResponse')
 
 const GetStreamingImageResponseSchema = z
   .object({
-    streamingImage: StreamingImageSchema.and(
-      z.any().openapi({ description: 'The streaming image.' }),
-    ).exactOptional(),
+    streamingImage: StreamingImageSchema.exactOptional().openapi({
+      description: 'The streaming image.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetStreamingImageResponse')
 
 const GetStreamingSessionResponseSchema = z
   .object({
-    session: StreamingSessionSchema.and(
-      z.any().openapi({ description: 'The session.' }),
-    ).exactOptional(),
+    session: StreamingSessionSchema.exactOptional().openapi({ description: 'The session.' }),
   })
   .openapi({ required: [] })
   .openapi('GetStreamingSessionResponse')
 
 const StreamingSessionBackupSchema = z
   .object({
-    arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that is assigned to a studio resource and uniquely identifies it. ARNs are unique across all Regions.',
-        }),
-    ).exactOptional(),
-    backupId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the backup.' }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The ISO timestamp in for when the resource was created.' }),
-    ).exactOptional(),
-    launchProfileId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the launch profile which allowed the backups for the streaming session.',
-        }),
-    ).exactOptional(),
-    ownedBy: StringSchema.and(
-      z.any().openapi({ description: 'The user ID of the user that owns the streaming session.' }),
-    ).exactOptional(),
-    sessionId: StreamingSessionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The streaming session ID for the <code>StreamingSessionBackup</code>.',
-        }),
-    ).exactOptional(),
+    arn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that is assigned to a studio resource and uniquely identifies it. ARNs are unique across all Regions.',
+    }),
+    backupId: StringSchema.exactOptional().openapi({ description: 'The ID of the backup.' }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'The ISO timestamp in for when the resource was created.',
+    }),
+    launchProfileId: StringSchema.exactOptional().openapi({
+      description:
+        'The ID of the launch profile which allowed the backups for the streaming session.',
+    }),
+    ownedBy: StringSchema.exactOptional().openapi({
+      description: 'The user ID of the user that owns the streaming session.',
+    }),
+    sessionId: StreamingSessionIdSchema.exactOptional().openapi({
+      description: 'The streaming session ID for the <code>StreamingSessionBackup</code>.',
+    }),
     state: StreamingSessionStateSchema.exactOptional(),
-    statusCode: StreamingSessionStatusCodeSchema.and(
-      z.any().openapi({ description: 'The status code.' }),
-    ).exactOptional(),
-    statusMessage: StringSchema.and(
-      z.any().openapi({ description: 'The status message for the streaming session backup.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of labels, in the form of key-value pairs, that apply to this resource.',
-        }),
-    ).exactOptional(),
+    statusCode: StreamingSessionStatusCodeSchema.exactOptional().openapi({
+      description: 'The status code.',
+    }),
+    statusMessage: StringSchema.exactOptional().openapi({
+      description: 'The status message for the streaming session backup.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A collection of labels, in the form of key-value pairs, that apply to this resource.',
+    }),
   })
   .openapi({ description: 'Information about the streaming session backup.', required: [] })
   .openapi('StreamingSessionBackup')
 
 const GetStreamingSessionBackupResponseSchema = z
   .object({
-    streamingSessionBackup: StreamingSessionBackupSchema.and(
-      z.any().openapi({ description: 'Information about the streaming session backup.' }),
-    ).exactOptional(),
+    streamingSessionBackup: StreamingSessionBackupSchema.exactOptional().openapi({
+      description: 'Information about the streaming session backup.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetStreamingSessionBackupResponse')
 
 const GetStreamingSessionStreamResponseSchema = z
   .object({
-    stream: StreamingSessionStreamSchema.and(
-      z.any().openapi({ description: 'The stream.' }),
-    ).exactOptional(),
+    stream: StreamingSessionStreamSchema.exactOptional().openapi({ description: 'The stream.' }),
   })
   .openapi({ required: [] })
   .openapi('GetStreamingSessionStreamResponse')
 
 const GetStudioResponseSchema = z
-  .object({
-    studio: StudioSchema.and(z.any().openapi({ description: 'Information about a studio.' })),
-  })
+  .object({ studio: StudioSchema.openapi({ description: 'Information about a studio.' }) })
   .openapi({ required: ['studio'] })
   .openapi('GetStudioResponse')
 
 const GetStudioComponentResponseSchema = z
   .object({
-    studioComponent: StudioComponentSchema.and(
-      z.any().openapi({ description: 'Information about the studio component.' }),
-    ).exactOptional(),
+    studioComponent: StudioComponentSchema.exactOptional().openapi({
+      description: 'Information about the studio component.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetStudioComponentResponse')
@@ -2258,22 +1774,14 @@ const StudioPersonaSchema = z.literal('ADMINISTRATOR').openapi('StudioPersona')
 
 const StudioMembershipSchema = z
   .object({
-    identityStoreId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the identity store.' }),
-    ).exactOptional(),
-    persona: StudioPersonaSchema.and(
-      z.any().openapi({ description: 'The persona.' }),
-    ).exactOptional(),
-    principalId: StringSchema.and(
-      z.any().openapi({ description: 'The principal ID.' }),
-    ).exactOptional(),
-    sid: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Active Directory Security Identifier for this user, if available.',
-        }),
-    ).exactOptional(),
+    identityStoreId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the identity store.',
+    }),
+    persona: StudioPersonaSchema.exactOptional().openapi({ description: 'The persona.' }),
+    principalId: StringSchema.exactOptional().openapi({ description: 'The principal ID.' }),
+    sid: StringSchema.exactOptional().openapi({
+      description: 'The Active Directory Security Identifier for this user, if available.',
+    }),
   })
   .openapi({
     description:
@@ -2284,26 +1792,19 @@ const StudioMembershipSchema = z
 
 const GetStudioMemberResponseSchema = z
   .object({
-    member: StudioMembershipSchema.and(
-      z.any().openapi({ description: 'The member.' }),
-    ).exactOptional(),
+    member: StudioMembershipSchema.exactOptional().openapi({ description: 'The member.' }),
   })
   .openapi({ required: [] })
   .openapi('GetStudioMemberResponse')
 
 const ListEulaAcceptancesResponseSchema = z
   .object({
-    eulaAcceptances: EulaAcceptanceListSchema.and(
-      z.any().openapi({ description: 'A collection of EULA acceptances.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no more results.',
-        }),
-    ).exactOptional(),
+    eulaAcceptances: EulaAcceptanceListSchema.exactOptional().openapi({
+      description: 'A collection of EULA acceptances.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The token for the next set of results, or null if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEulaAcceptancesResponse')
@@ -2312,17 +1813,12 @@ const EulaListSchema = z.array(EulaSchema).openapi('EulaList')
 
 const ListEulasResponseSchema = z
   .object({
-    eulas: EulaListSchema.and(
-      z.any().openapi({ description: 'A collection of EULA resources.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no more results.',
-        }),
-    ).exactOptional(),
+    eulas: EulaListSchema.exactOptional().openapi({
+      description: 'A collection of EULA resources.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The token for the next set of results, or null if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEulasResponse')
@@ -2335,17 +1831,12 @@ const LaunchProfileMembershipListSchema = z
 
 const ListLaunchProfileMembersResponseSchema = z
   .object({
-    members: LaunchProfileMembershipListSchema.and(
-      z.any().openapi({ description: 'A list of members.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no more results.',
-        }),
-    ).exactOptional(),
+    members: LaunchProfileMembershipListSchema.exactOptional().openapi({
+      description: 'A list of members.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The token for the next set of results, or null if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLaunchProfileMembersResponse')
@@ -2354,34 +1845,24 @@ const LaunchProfileListSchema = z.array(LaunchProfileSchema).openapi('LaunchProf
 
 const ListLaunchProfilesResponseSchema = z
   .object({
-    launchProfiles: LaunchProfileListSchema.and(
-      z.any().openapi({ description: 'A collection of launch profiles.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no more results.',
-        }),
-    ).exactOptional(),
+    launchProfiles: LaunchProfileListSchema.exactOptional().openapi({
+      description: 'A collection of launch profiles.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The token for the next set of results, or null if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLaunchProfilesResponse')
 
 const ListStreamingImagesResponseSchema = z
   .object({
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no more results.',
-        }),
-    ).exactOptional(),
-    streamingImages: StreamingImageListSchema.and(
-      z.any().openapi({ description: 'A collection of streaming images.' }),
-    ).exactOptional(),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The token for the next set of results, or null if there are no more results.',
+    }),
+    streamingImages: StreamingImageListSchema.exactOptional().openapi({
+      description: 'A collection of streaming images.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStreamingImagesResponse')
@@ -2392,17 +1873,12 @@ const StreamingSessionBackupListSchema = z
 
 const ListStreamingSessionBackupsResponseSchema = z
   .object({
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no more results.',
-        }),
-    ).exactOptional(),
-    streamingSessionBackups: StreamingSessionBackupListSchema.and(
-      z.any().openapi({ description: 'Information about the streaming session backups.' }),
-    ).exactOptional(),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The token for the next set of results, or null if there are no more results.',
+    }),
+    streamingSessionBackups: StreamingSessionBackupListSchema.exactOptional().openapi({
+      description: 'Information about the streaming session backups.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStreamingSessionBackupsResponse')
@@ -2411,17 +1887,12 @@ const StreamingSessionListSchema = z.array(StreamingSessionSchema).openapi('Stre
 
 const ListStreamingSessionsResponseSchema = z
   .object({
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no more results.',
-        }),
-    ).exactOptional(),
-    sessions: StreamingSessionListSchema.and(
-      z.any().openapi({ description: 'A collection of streaming sessions.' }),
-    ).exactOptional(),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The token for the next set of results, or null if there are no more results.',
+    }),
+    sessions: StreamingSessionListSchema.exactOptional().openapi({
+      description: 'A collection of streaming sessions.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStreamingSessionsResponse')
@@ -2434,17 +1905,12 @@ const StudioComponentListSchema = z
 
 const ListStudioComponentsResponseSchema = z
   .object({
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no more results.',
-        }),
-    ).exactOptional(),
-    studioComponents: StudioComponentListSchema.and(
-      z.any().openapi({ description: 'A collection of studio components.' }),
-    ).exactOptional(),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The token for the next set of results, or null if there are no more results.',
+    }),
+    studioComponents: StudioComponentListSchema.exactOptional().openapi({
+      description: 'A collection of studio components.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStudioComponentsResponse')
@@ -2457,17 +1923,12 @@ const StudioMembershipListSchema = z
 
 const ListStudioMembersResponseSchema = z
   .object({
-    members: StudioMembershipListSchema.and(
-      z.any().openapi({ description: 'A list of admin members.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no more results.',
-        }),
-    ).exactOptional(),
+    members: StudioMembershipListSchema.exactOptional().openapi({
+      description: 'A list of admin members.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The token for the next set of results, or null if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStudioMembersResponse')
@@ -2476,41 +1937,32 @@ const StudioListSchema = z.array(StudioSchema).openapi('StudioList')
 
 const ListStudiosResponseSchema = z
   .object({
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no more results.',
-        }),
-    ).exactOptional(),
-    studios: StudioListSchema.and(z.any().openapi({ description: 'A collection of studios.' })),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'The token for the next set of results, or null if there are no more results.',
+    }),
+    studios: StudioListSchema.openapi({ description: 'A collection of studios.' }),
   })
   .openapi({ required: ['studios'] })
   .openapi('ListStudiosResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of labels, in the form of key-value pairs, that apply to this resource.',
-        }),
-    ).exactOptional(),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A collection of labels, in the form of key-value pairs, that apply to this resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const PutLaunchProfileMembersResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('PutLaunchProfileMembersResponse')
 
 const NewLaunchProfileMemberSchema = z
   .object({
-    persona: LaunchProfilePersonaSchema.and(z.any().openapi({ description: 'The persona.' })),
-    principalId: StringSchema.and(z.any().openapi({ description: 'The principal ID.' })),
+    persona: LaunchProfilePersonaSchema.openapi({ description: 'The persona.' }),
+    principalId: StringSchema.openapi({ description: 'The principal ID.' }),
   })
   .openapi({
     required: ['persona', 'principalId'],
@@ -2518,12 +1970,12 @@ const NewLaunchProfileMemberSchema = z
   })
   .openapi('NewLaunchProfileMember')
 
-const PutStudioMembersResponseSchema = z.object({}).openapi('PutStudioMembersResponse')
+const PutStudioMembersResponseSchema = z.looseObject({}).openapi('PutStudioMembersResponse')
 
 const NewStudioMemberSchema = z
   .object({
-    persona: StudioPersonaSchema.and(z.any().openapi({ description: 'The persona.' })),
-    principalId: StringSchema.and(z.any().openapi({ description: 'The principal ID.' })),
+    persona: StudioPersonaSchema.openapi({ description: 'The persona.' }),
+    principalId: StringSchema.openapi({ description: 'The principal ID.' }),
   })
   .openapi({ required: ['persona', 'principalId'], description: "A new studio user's membership." })
   .openapi('NewStudioMember')
@@ -2534,9 +1986,7 @@ const StartStreamingSessionResponseSchema = z
   .openapi('StartStreamingSessionResponse')
 
 const StartStudioSSOConfigurationRepairResponseSchema = z
-  .object({
-    studio: StudioSchema.and(z.any().openapi({ description: 'Information about a studio.' })),
-  })
+  .object({ studio: StudioSchema.openapi({ description: 'Information about a studio.' }) })
   .openapi({ required: ['studio'] })
   .openapi('StartStudioSSOConfigurationRepairResponse')
 
@@ -2545,24 +1995,24 @@ const StopStreamingSessionResponseSchema = z
   .openapi({ required: [] })
   .openapi('StopStreamingSessionResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const UpdateLaunchProfileResponseSchema = z
   .object({
-    launchProfile: LaunchProfileSchema.and(
-      z.any().openapi({ description: 'The launch profile.' }),
-    ).exactOptional(),
+    launchProfile: LaunchProfileSchema.exactOptional().openapi({
+      description: 'The launch profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateLaunchProfileResponse')
 
 const UpdateLaunchProfileMemberResponseSchema = z
   .object({
-    member: LaunchProfileMembershipSchema.and(
-      z.any().openapi({ description: 'The updated member. ' }),
-    ).exactOptional(),
+    member: LaunchProfileMembershipSchema.exactOptional().openapi({
+      description: 'The updated member. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateLaunchProfileMemberResponse')
@@ -2573,17 +2023,15 @@ const UpdateStreamingImageResponseSchema = z
   .openapi('UpdateStreamingImageResponse')
 
 const UpdateStudioResponseSchema = z
-  .object({
-    studio: StudioSchema.and(z.any().openapi({ description: 'Information about a studio.' })),
-  })
+  .object({ studio: StudioSchema.openapi({ description: 'Information about a studio.' }) })
   .openapi({ required: ['studio'] })
   .openapi('UpdateStudioResponse')
 
 const UpdateStudioComponentResponseSchema = z
   .object({
-    studioComponent: StudioComponentSchema.and(
-      z.any().openapi({ description: 'Information about the studio component.' }),
-    ).exactOptional(),
+    studioComponent: StudioComponentSchema.exactOptional().openapi({
+      description: 'Information about the studio component.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateStudioComponentResponse')
@@ -2591,94 +2039,54 @@ const UpdateStudioComponentResponseSchema = z
 const ClientTokenSchema = z.string().min(1).max(64).openapi('ClientToken')
 
 const AcceptEulasRequestSchema = z
-  .object({
-    eulaIds: EulaIdListSchema.and(z.any().openapi({ description: 'The EULA ID.' })).exactOptional(),
-  })
+  .object({ eulaIds: EulaIdListSchema.exactOptional().openapi({ description: 'The EULA ID.' }) })
   .openapi({ title: 'AcceptEulasRequest', required: [] })
   .openapi('AcceptEulasRequest')
 
 const StreamConfigurationCreateSchema = z
   .object({
-    automaticTerminationMode: AutomaticTerminationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates if a streaming session created from this launch profile should be terminated automatically or retained without termination after being in a <code>STOPPED</code> state.</p> <ul> <li> <p>When <code>ACTIVATED</code>, the streaming session is scheduled for termination after being in the <code>STOPPED</code> state for the time specified in <code>maxStoppedSessionLengthInMinutes</code>.</p> </li> <li> <p>When <code>DEACTIVATED</code>, the streaming session can remain in the <code>STOPPED</code> state indefinitely.</p> </li> </ul> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>. When allowed, the default value for this parameter is <code>DEACTIVATED</code>.</p>',
-        }),
-    ).exactOptional(),
-    clipboardMode: StreamingClipboardModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Allows or deactivates the use of the system clipboard to copy and paste between the streaming session and streaming client.',
-        }),
-    ),
-    ec2InstanceTypes: StreamingInstanceTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The EC2 instance types that users can select from when launching a streaming session with this launch profile.',
-        }),
-    ),
-    maxSessionLengthInMinutes: StreamConfigurationMaxSessionLengthInMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The length of time, in minutes, that a streaming session can be active before it is stopped or terminated. After this point, Nimble Studio automatically terminates or stops the session. The default length of time is 690 minutes, and the maximum length of time is 30 days.',
-        }),
-    ).exactOptional(),
-    maxStoppedSessionLengthInMinutes: StreamConfigurationMaxStoppedSessionLengthInMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Integer that determines if you can start and stop your sessions and how long a session can stay in the <code>STOPPED</code> state. The default value is 0. The maximum value is 5760.</p> <p>This field is allowed only when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code> and <code>automaticTerminationMode</code> is <code>ACTIVATED</code>.</p> <p>If the value is set to 0, your sessions can’t be <code>STOPPED</code>. If you then call <code>StopStreamingSession</code>, the session fails. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be terminated (instead of <code>STOPPED</code>).</p> <p>If the value is set to a positive number, the session can be stopped. You can call <code>StopStreamingSession</code> to stop sessions in the <code>READY</code> state. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be stopped (instead of terminated).</p>',
-        }),
-    ).exactOptional(),
-    sessionBackup: StreamConfigurationSessionBackupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configures how streaming sessions are backed up when launched from this launch profile.',
-        }),
-    ).exactOptional(),
-    sessionPersistenceMode: SessionPersistenceModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determine if a streaming session created from this launch profile can configure persistent storage. This means that <code>volumeConfiguration</code> and <code>automaticTerminationMode</code> are configured.',
-        }),
-    ).exactOptional(),
-    sessionStorage: StreamConfigurationSessionStorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The upload storage for a streaming workstation that is created using this launch profile.',
-        }),
-    ).exactOptional(),
-    streamingImageIds: StreamingImageIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The streaming images that users can select from when launching a streaming session with this launch profile.',
-        }),
-    ),
-    volumeConfiguration: VolumeConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Custom volume configuration for the root volumes that are attached to streaming sessions.</p> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>.</p>',
-        }),
-    ).exactOptional(),
+    automaticTerminationMode: AutomaticTerminationModeSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates if a streaming session created from this launch profile should be terminated automatically or retained without termination after being in a <code>STOPPED</code> state.</p> <ul> <li> <p>When <code>ACTIVATED</code>, the streaming session is scheduled for termination after being in the <code>STOPPED</code> state for the time specified in <code>maxStoppedSessionLengthInMinutes</code>.</p> </li> <li> <p>When <code>DEACTIVATED</code>, the streaming session can remain in the <code>STOPPED</code> state indefinitely.</p> </li> </ul> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>. When allowed, the default value for this parameter is <code>DEACTIVATED</code>.</p>',
+    }),
+    clipboardMode: StreamingClipboardModeSchema.openapi({
+      description:
+        'Allows or deactivates the use of the system clipboard to copy and paste between the streaming session and streaming client.',
+    }),
+    ec2InstanceTypes: StreamingInstanceTypeListSchema.openapi({
+      description:
+        'The EC2 instance types that users can select from when launching a streaming session with this launch profile.',
+    }),
+    maxSessionLengthInMinutes:
+      StreamConfigurationMaxSessionLengthInMinutesSchema.exactOptional().openapi({
+        description:
+          'The length of time, in minutes, that a streaming session can be active before it is stopped or terminated. After this point, Nimble Studio automatically terminates or stops the session. The default length of time is 690 minutes, and the maximum length of time is 30 days.',
+      }),
+    maxStoppedSessionLengthInMinutes:
+      StreamConfigurationMaxStoppedSessionLengthInMinutesSchema.exactOptional().openapi({
+        description:
+          '<p>Integer that determines if you can start and stop your sessions and how long a session can stay in the <code>STOPPED</code> state. The default value is 0. The maximum value is 5760.</p> <p>This field is allowed only when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code> and <code>automaticTerminationMode</code> is <code>ACTIVATED</code>.</p> <p>If the value is set to 0, your sessions can’t be <code>STOPPED</code>. If you then call <code>StopStreamingSession</code>, the session fails. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be terminated (instead of <code>STOPPED</code>).</p> <p>If the value is set to a positive number, the session can be stopped. You can call <code>StopStreamingSession</code> to stop sessions in the <code>READY</code> state. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be stopped (instead of terminated).</p>',
+      }),
+    sessionBackup: StreamConfigurationSessionBackupSchema.exactOptional().openapi({
+      description:
+        'Configures how streaming sessions are backed up when launched from this launch profile.',
+    }),
+    sessionPersistenceMode: SessionPersistenceModeSchema.exactOptional().openapi({
+      description:
+        'Determine if a streaming session created from this launch profile can configure persistent storage. This means that <code>volumeConfiguration</code> and <code>automaticTerminationMode</code> are configured.',
+    }),
+    sessionStorage: StreamConfigurationSessionStorageSchema.exactOptional().openapi({
+      description:
+        'The upload storage for a streaming workstation that is created using this launch profile.',
+    }),
+    streamingImageIds: StreamingImageIdListSchema.openapi({
+      description:
+        'The streaming images that users can select from when launching a streaming session with this launch profile.',
+    }),
+    volumeConfiguration: VolumeConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>Custom volume configuration for the root volumes that are attached to streaming sessions.</p> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>.</p>',
+    }),
   })
   .openapi({
     required: ['clipboardMode', 'ec2InstanceTypes', 'streamingImageIds'],
@@ -2688,47 +2096,29 @@ const StreamConfigurationCreateSchema = z
 
 const CreateLaunchProfileRequestSchema = z
   .object({
-    description: LaunchProfileDescriptionSchema.and(
-      z.any().openapi({ description: 'The description.' }),
-    ).exactOptional(),
-    ec2SubnetIds: EC2SubnetIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the IDs of the EC2 subnets where streaming sessions will be accessible from. These subnets must support the specified instance types. ',
-        }),
-    ),
-    launchProfileProtocolVersions: LaunchProfileProtocolVersionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version number of the protocol that is used by the launch profile. The only valid version is "2021-03-31".',
-        }),
-    ),
-    name: LaunchProfileNameSchema.and(
-      z.any().openapi({ description: 'The name for the launch profile.' }),
-    ),
-    streamConfiguration: StreamConfigurationCreateSchema.and(
-      z.any().openapi({ description: 'A configuration for a streaming session.' }),
-    ),
-    studioComponentIds: LaunchProfileStudioComponentIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifiers for a collection of studio components that can be used with this launch profile.',
-        }),
-    ),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of labels, in the form of key-value pairs, that apply to this resource.',
-        }),
-    ).exactOptional(),
+    description: LaunchProfileDescriptionSchema.exactOptional().openapi({
+      description: 'The description.',
+    }),
+    ec2SubnetIds: EC2SubnetIdListSchema.openapi({
+      description:
+        'Specifies the IDs of the EC2 subnets where streaming sessions will be accessible from. These subnets must support the specified instance types. ',
+    }),
+    launchProfileProtocolVersions: LaunchProfileProtocolVersionListSchema.openapi({
+      description:
+        'The version number of the protocol that is used by the launch profile. The only valid version is "2021-03-31".',
+    }),
+    name: LaunchProfileNameSchema.openapi({ description: 'The name for the launch profile.' }),
+    streamConfiguration: StreamConfigurationCreateSchema.openapi({
+      description: 'A configuration for a streaming session.',
+    }),
+    studioComponentIds: LaunchProfileStudioComponentIdListSchema.openapi({
+      description:
+        'Unique identifiers for a collection of studio components that can be used with this launch profile.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A collection of labels, in the form of key-value pairs, that apply to this resource.',
+    }),
   })
   .openapi({
     required: [
@@ -2744,63 +2134,43 @@ const CreateLaunchProfileRequestSchema = z
 
 const CreateStreamingImageRequestSchema = z
   .object({
-    description: StreamingImageDescriptionSchema.and(
-      z.any().openapi({ description: 'A human-readable description of the streaming image.' }),
-    ).exactOptional(),
-    ec2ImageId: EC2ImageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of an EC2 machine image with which to create this streaming image.',
-        }),
-    ),
-    name: StreamingImageNameSchema.and(
-      z.any().openapi({ description: 'A friendly name for a streaming image resource.' }),
-    ),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of labels, in the form of key-value pairs, that apply to this resource.',
-        }),
-    ).exactOptional(),
+    description: StreamingImageDescriptionSchema.exactOptional().openapi({
+      description: 'A human-readable description of the streaming image.',
+    }),
+    ec2ImageId: EC2ImageIdSchema.openapi({
+      description: 'The ID of an EC2 machine image with which to create this streaming image.',
+    }),
+    name: StreamingImageNameSchema.openapi({
+      description: 'A friendly name for a streaming image resource.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A collection of labels, in the form of key-value pairs, that apply to this resource.',
+    }),
   })
   .openapi({ required: ['ec2ImageId', 'name'], title: 'CreateStreamingImageRequest' })
   .openapi('CreateStreamingImageRequest')
 
 const CreateStreamingSessionRequestSchema = z
   .object({
-    ec2InstanceType: StreamingInstanceTypeSchema.and(
-      z.any().openapi({ description: 'The EC2 Instance type used for the streaming session.' }),
-    ).exactOptional(),
-    launchProfileId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the launch profile used to control access from the streaming session.',
-        }),
-    ),
-    ownedBy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user ID of the user that owns the streaming session. The user that owns the session will be logging into the session and interacting with the virtual workstation.',
-        }),
-    ).exactOptional(),
-    streamingImageId: StreamingImageIdSchema.and(
-      z.any().openapi({ description: 'The ID of the streaming image.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of labels, in the form of key-value pairs, that apply to this resource.',
-        }),
-    ).exactOptional(),
+    ec2InstanceType: StreamingInstanceTypeSchema.exactOptional().openapi({
+      description: 'The EC2 Instance type used for the streaming session.',
+    }),
+    launchProfileId: StringSchema.openapi({
+      description:
+        'The ID of the launch profile used to control access from the streaming session.',
+    }),
+    ownedBy: StringSchema.exactOptional().openapi({
+      description:
+        'The user ID of the user that owns the streaming session. The user that owns the session will be logging into the session and interacting with the virtual workstation.',
+    }),
+    streamingImageId: StreamingImageIdSchema.exactOptional().openapi({
+      description: 'The ID of the streaming image.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A collection of labels, in the form of key-value pairs, that apply to this resource.',
+    }),
   })
   .openapi({ required: ['launchProfileId'], title: 'CreateStreamingSessionRequest' })
   .openapi('CreateStreamingSessionRequest')
@@ -2813,115 +2183,75 @@ const StreamingSessionStreamExpirationInSecondsSchema = z
 
 const CreateStreamingSessionStreamRequestSchema = z
   .object({
-    expirationInSeconds: StreamingSessionStreamExpirationInSecondsSchema.and(
-      z.any().openapi({ description: 'The expiration time in seconds.' }),
-    ).exactOptional(),
+    expirationInSeconds: StreamingSessionStreamExpirationInSecondsSchema.exactOptional().openapi({
+      description: 'The expiration time in seconds.',
+    }),
   })
   .openapi({ title: 'CreateStreamingSessionStreamRequest', required: [] })
   .openapi('CreateStreamingSessionStreamRequest')
 
 const CreateStudioComponentRequestSchema = z
   .object({
-    configuration: StudioComponentConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration of the studio component, based on component type.',
-        }),
-    ).exactOptional(),
-    description: StudioComponentDescriptionSchema.and(
-      z.any().openapi({ description: 'The description.' }),
-    ).exactOptional(),
-    ec2SecurityGroupIds: StudioComponentSecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The EC2 security groups that control access to the studio component.',
-        }),
-    ).exactOptional(),
-    initializationScripts: StudioComponentInitializationScriptListSchema.and(
-      z.any().openapi({ description: 'Initialization scripts for studio components.' }),
-    ).exactOptional(),
-    name: StudioComponentNameSchema.and(
-      z.any().openapi({ description: 'The name for the studio component.' }),
-    ),
-    runtimeRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An IAM role attached to a Studio Component that gives the studio component access to Amazon Web Services resources at anytime while the instance is running. ',
-        }),
-    ).exactOptional(),
-    scriptParameters: StudioComponentScriptParameterKeyValueListSchema.and(
-      z.any().openapi({ description: 'Parameters for the studio component scripts.' }),
-    ).exactOptional(),
-    secureInitializationRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An IAM role attached to Studio Component when the system initialization script runs which give the studio component access to Amazon Web Services resources when the system initialization script runs.',
-        }),
-    ).exactOptional(),
-    subtype: StudioComponentSubtypeSchema.and(
-      z.any().openapi({ description: 'The specific subtype of a studio component.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of labels, in the form of key-value pairs, that apply to this resource.',
-        }),
-    ).exactOptional(),
-    type: StudioComponentTypeSchema.and(
-      z.any().openapi({ description: 'The type of the studio component.' }),
-    ),
+    configuration: StudioComponentConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration of the studio component, based on component type.',
+    }),
+    description: StudioComponentDescriptionSchema.exactOptional().openapi({
+      description: 'The description.',
+    }),
+    ec2SecurityGroupIds: StudioComponentSecurityGroupIdListSchema.exactOptional().openapi({
+      description: 'The EC2 security groups that control access to the studio component.',
+    }),
+    initializationScripts: StudioComponentInitializationScriptListSchema.exactOptional().openapi({
+      description: 'Initialization scripts for studio components.',
+    }),
+    name: StudioComponentNameSchema.openapi({ description: 'The name for the studio component.' }),
+    runtimeRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'An IAM role attached to a Studio Component that gives the studio component access to Amazon Web Services resources at anytime while the instance is running. ',
+    }),
+    scriptParameters: StudioComponentScriptParameterKeyValueListSchema.exactOptional().openapi({
+      description: 'Parameters for the studio component scripts.',
+    }),
+    secureInitializationRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'An IAM role attached to Studio Component when the system initialization script runs which give the studio component access to Amazon Web Services resources when the system initialization script runs.',
+    }),
+    subtype: StudioComponentSubtypeSchema.exactOptional().openapi({
+      description: 'The specific subtype of a studio component.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A collection of labels, in the form of key-value pairs, that apply to this resource.',
+    }),
+    type: StudioComponentTypeSchema.openapi({ description: 'The type of the studio component.' }),
   })
   .openapi({ required: ['name', 'type'], title: 'CreateStudioComponentRequest' })
   .openapi('CreateStudioComponentRequest')
 
 const CreateStudioRequestSchema = z
   .object({
-    adminRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role that studio admins will assume when logging in to the Nimble Studio portal.',
-        }),
-    ),
-    displayName: StudioDisplayNameSchema.and(
-      z.any().openapi({ description: 'A friendly name for the studio.' }),
-    ),
-    studioEncryptionConfiguration: StudioEncryptionConfigurationSchema.and(
-      z.any().openapi({ description: 'The studio encryption configuration.' }),
-    ).exactOptional(),
-    studioName: StudioNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The studio name that is used in the URL of the Nimble Studio portal when accessed by Nimble Studio users.',
-        }),
-    ),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of labels, in the form of key-value pairs, that apply to this resource.',
-        }),
-    ).exactOptional(),
-    userRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role that studio users will assume when logging in to the Nimble Studio portal.',
-        }),
-    ),
+    adminRoleArn: RoleArnSchema.openapi({
+      description:
+        'The IAM role that studio admins will assume when logging in to the Nimble Studio portal.',
+    }),
+    displayName: StudioDisplayNameSchema.openapi({
+      description: 'A friendly name for the studio.',
+    }),
+    studioEncryptionConfiguration: StudioEncryptionConfigurationSchema.exactOptional().openapi({
+      description: 'The studio encryption configuration.',
+    }),
+    studioName: StudioNameSchema.openapi({
+      description:
+        'The studio name that is used in the URL of the Nimble Studio portal when accessed by Nimble Studio users.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A collection of labels, in the form of key-value pairs, that apply to this resource.',
+    }),
+    userRoleArn: RoleArnSchema.openapi({
+      description:
+        'The IAM role that studio users will assume when logging in to the Nimble Studio portal.',
+    }),
   })
   .openapi({
     required: ['adminRoleArn', 'displayName', 'studioName', 'userRoleArn'],
@@ -2930,99 +2260,99 @@ const CreateStudioRequestSchema = z
   .openapi('CreateStudioRequest')
 
 const DeleteLaunchProfileMemberRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteLaunchProfileMemberRequest' })
   .openapi('DeleteLaunchProfileMemberRequest')
 
 const DeleteLaunchProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteLaunchProfileRequest' })
   .openapi('DeleteLaunchProfileRequest')
 
 const DeleteStreamingImageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteStreamingImageRequest' })
   .openapi('DeleteStreamingImageRequest')
 
 const DeleteStreamingSessionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteStreamingSessionRequest' })
   .openapi('DeleteStreamingSessionRequest')
 
 const DeleteStudioComponentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteStudioComponentRequest' })
   .openapi('DeleteStudioComponentRequest')
 
 const DeleteStudioMemberRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteStudioMemberRequest' })
   .openapi('DeleteStudioMemberRequest')
 
 const DeleteStudioRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteStudioRequest' })
   .openapi('DeleteStudioRequest')
 
 const GetEulaRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetEulaRequest' })
   .openapi('GetEulaRequest')
 
 const GetLaunchProfileDetailsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetLaunchProfileDetailsRequest' })
   .openapi('GetLaunchProfileDetailsRequest')
 
 const StringListSchema = z.array(StringSchema).openapi('StringList')
 
 const GetLaunchProfileInitializationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetLaunchProfileInitializationRequest' })
   .openapi('GetLaunchProfileInitializationRequest')
 
 const GetLaunchProfileMemberRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetLaunchProfileMemberRequest' })
   .openapi('GetLaunchProfileMemberRequest')
 
 const GetLaunchProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetLaunchProfileRequest' })
   .openapi('GetLaunchProfileRequest')
 
 const GetStreamingImageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetStreamingImageRequest' })
   .openapi('GetStreamingImageRequest')
 
 const GetStreamingSessionBackupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetStreamingSessionBackupRequest' })
   .openapi('GetStreamingSessionBackupRequest')
 
 const GetStreamingSessionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetStreamingSessionRequest' })
   .openapi('GetStreamingSessionRequest')
 
 const GetStreamingSessionStreamRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetStreamingSessionStreamRequest' })
   .openapi('GetStreamingSessionStreamRequest')
 
 const GetStudioComponentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetStudioComponentRequest' })
   .openapi('GetStudioComponentRequest')
 
 const GetStudioMemberRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetStudioMemberRequest' })
   .openapi('GetStudioMemberRequest')
 
 const GetStudioRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetStudioRequest' })
   .openapi('GetStudioRequest')
 
@@ -3031,39 +2361,39 @@ const LaunchProfileStateListSchema = z
   .openapi('LaunchProfileStateList')
 
 const ListEulaAcceptancesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListEulaAcceptancesRequest' })
   .openapi('ListEulaAcceptancesRequest')
 
 const ListEulasRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListEulasRequest' })
   .openapi('ListEulasRequest')
 
 const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListLaunchProfileMembersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListLaunchProfileMembersRequest' })
   .openapi('ListLaunchProfileMembersRequest')
 
 const ListLaunchProfilesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListLaunchProfilesRequest' })
   .openapi('ListLaunchProfilesRequest')
 
 const ListStreamingImagesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListStreamingImagesRequest' })
   .openapi('ListStreamingImagesRequest')
 
 const ListStreamingSessionBackupsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListStreamingSessionBackupsRequest' })
   .openapi('ListStreamingSessionBackupsRequest')
 
 const ListStreamingSessionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListStreamingSessionsRequest' })
   .openapi('ListStreamingSessionsRequest')
 
@@ -3076,22 +2406,22 @@ const StudioComponentTypeListSchema = z
   .openapi('StudioComponentTypeList')
 
 const ListStudioComponentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListStudioComponentsRequest' })
   .openapi('ListStudioComponentsRequest')
 
 const ListStudioMembersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListStudioMembersRequest' })
   .openapi('ListStudioMembersRequest')
 
 const ListStudiosRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListStudiosRequest' })
   .openapi('ListStudiosRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -3109,198 +2439,148 @@ const NewStudioMemberListSchema = z
 
 const PutLaunchProfileMembersRequestSchema = z
   .object({
-    identityStoreId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the identity store.' }),
-    ),
-    members: NewLaunchProfileMemberListSchema.and(
-      z.any().openapi({ description: 'A list of members.' }),
-    ),
+    identityStoreId: StringSchema.openapi({ description: 'The ID of the identity store.' }),
+    members: NewLaunchProfileMemberListSchema.openapi({ description: 'A list of members.' }),
   })
   .openapi({ required: ['identityStoreId', 'members'], title: 'PutLaunchProfileMembersRequest' })
   .openapi('PutLaunchProfileMembersRequest')
 
 const PutStudioMembersRequestSchema = z
   .object({
-    identityStoreId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the identity store.' }),
-    ),
-    members: NewStudioMemberListSchema.and(z.any().openapi({ description: 'A list of members.' })),
+    identityStoreId: StringSchema.openapi({ description: 'The ID of the identity store.' }),
+    members: NewStudioMemberListSchema.openapi({ description: 'A list of members.' }),
   })
   .openapi({ required: ['identityStoreId', 'members'], title: 'PutStudioMembersRequest' })
   .openapi('PutStudioMembersRequest')
 
 const StartStreamingSessionRequestSchema = z
   .object({
-    backupId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the backup.' }),
-    ).exactOptional(),
+    backupId: StringSchema.exactOptional().openapi({ description: 'The ID of the backup.' }),
   })
   .openapi({ title: 'StartStreamingSessionRequest', required: [] })
   .openapi('StartStreamingSessionRequest')
 
 const StartStudioSSOConfigurationRepairRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StartStudioSSOConfigurationRepairRequest' })
   .openapi('StartStudioSSOConfigurationRepairRequest')
 
 const StopStreamingSessionRequestSchema = z
   .object({
-    volumeRetentionMode: VolumeRetentionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Adds additional instructions to a streaming session stop action to either retain the EBS volumes or delete the EBS volumes.',
-        }),
-    ).exactOptional(),
+    volumeRetentionMode: VolumeRetentionModeSchema.exactOptional().openapi({
+      description:
+        'Adds additional instructions to a streaming session stop action to either retain the EBS volumes or delete the EBS volumes.',
+    }),
   })
   .openapi({ title: 'StopStreamingSessionRequest', required: [] })
   .openapi('StopStreamingSessionRequest')
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of labels, in the form of key-value pairs, that apply to this resource.',
-        }),
-    ).exactOptional(),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A collection of labels, in the form of key-value pairs, that apply to this resource.',
+    }),
   })
   .openapi({ title: 'TagResourceRequest', required: [] })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateLaunchProfileMemberRequestSchema = z
-  .object({
-    persona: LaunchProfilePersonaSchema.and(z.any().openapi({ description: 'The persona.' })),
-  })
+  .object({ persona: LaunchProfilePersonaSchema.openapi({ description: 'The persona.' }) })
   .openapi({ required: ['persona'], title: 'UpdateLaunchProfileMemberRequest' })
   .openapi('UpdateLaunchProfileMemberRequest')
 
 const UpdateLaunchProfileRequestSchema = z
   .object({
-    description: LaunchProfileDescriptionSchema.and(
-      z.any().openapi({ description: 'The description.' }),
-    ).exactOptional(),
-    launchProfileProtocolVersions: LaunchProfileProtocolVersionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version number of the protocol that is used by the launch profile. The only valid version is "2021-03-31".',
-        }),
-    ).exactOptional(),
-    name: LaunchProfileNameSchema.and(
-      z.any().openapi({ description: 'The name for the launch profile.' }),
-    ).exactOptional(),
-    streamConfiguration: StreamConfigurationCreateSchema.and(
-      z.any().openapi({ description: 'A configuration for a streaming session.' }),
-    ).exactOptional(),
-    studioComponentIds: LaunchProfileStudioComponentIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifiers for a collection of studio components that can be used with this launch profile.',
-        }),
-    ).exactOptional(),
+    description: LaunchProfileDescriptionSchema.exactOptional().openapi({
+      description: 'The description.',
+    }),
+    launchProfileProtocolVersions: LaunchProfileProtocolVersionListSchema.exactOptional().openapi({
+      description:
+        'The version number of the protocol that is used by the launch profile. The only valid version is "2021-03-31".',
+    }),
+    name: LaunchProfileNameSchema.exactOptional().openapi({
+      description: 'The name for the launch profile.',
+    }),
+    streamConfiguration: StreamConfigurationCreateSchema.exactOptional().openapi({
+      description: 'A configuration for a streaming session.',
+    }),
+    studioComponentIds: LaunchProfileStudioComponentIdListSchema.exactOptional().openapi({
+      description:
+        'Unique identifiers for a collection of studio components that can be used with this launch profile.',
+    }),
   })
   .openapi({ title: 'UpdateLaunchProfileRequest', required: [] })
   .openapi('UpdateLaunchProfileRequest')
 
 const UpdateStreamingImageRequestSchema = z
   .object({
-    description: StreamingImageDescriptionSchema.and(
-      z.any().openapi({ description: 'The description.' }),
-    ).exactOptional(),
-    name: StreamingImageNameSchema.and(
-      z.any().openapi({ description: 'The name for the streaming image.' }),
-    ).exactOptional(),
+    description: StreamingImageDescriptionSchema.exactOptional().openapi({
+      description: 'The description.',
+    }),
+    name: StreamingImageNameSchema.exactOptional().openapi({
+      description: 'The name for the streaming image.',
+    }),
   })
   .openapi({ title: 'UpdateStreamingImageRequest', required: [] })
   .openapi('UpdateStreamingImageRequest')
 
 const UpdateStudioComponentRequestSchema = z
   .object({
-    configuration: StudioComponentConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration of the studio component, based on component type.',
-        }),
-    ).exactOptional(),
-    description: StudioComponentDescriptionSchema.and(
-      z.any().openapi({ description: 'The description.' }),
-    ).exactOptional(),
-    ec2SecurityGroupIds: StudioComponentSecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The EC2 security groups that control access to the studio component.',
-        }),
-    ).exactOptional(),
-    initializationScripts: StudioComponentInitializationScriptListSchema.and(
-      z.any().openapi({ description: 'Initialization scripts for studio components.' }),
-    ).exactOptional(),
-    name: StudioComponentNameSchema.and(
-      z.any().openapi({ description: 'The name for the studio component.' }),
-    ).exactOptional(),
-    runtimeRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An IAM role attached to a Studio Component that gives the studio component access to Amazon Web Services resources at anytime while the instance is running. ',
-        }),
-    ).exactOptional(),
-    scriptParameters: StudioComponentScriptParameterKeyValueListSchema.and(
-      z.any().openapi({ description: 'Parameters for the studio component scripts.' }),
-    ).exactOptional(),
-    secureInitializationRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An IAM role attached to Studio Component when the system initialization script runs which give the studio component access to Amazon Web Services resources when the system initialization script runs.',
-        }),
-    ).exactOptional(),
-    subtype: StudioComponentSubtypeSchema.and(
-      z.any().openapi({ description: 'The specific subtype of a studio component.' }),
-    ).exactOptional(),
-    type: StudioComponentTypeSchema.and(
-      z.any().openapi({ description: 'The type of the studio component.' }),
-    ).exactOptional(),
+    configuration: StudioComponentConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration of the studio component, based on component type.',
+    }),
+    description: StudioComponentDescriptionSchema.exactOptional().openapi({
+      description: 'The description.',
+    }),
+    ec2SecurityGroupIds: StudioComponentSecurityGroupIdListSchema.exactOptional().openapi({
+      description: 'The EC2 security groups that control access to the studio component.',
+    }),
+    initializationScripts: StudioComponentInitializationScriptListSchema.exactOptional().openapi({
+      description: 'Initialization scripts for studio components.',
+    }),
+    name: StudioComponentNameSchema.exactOptional().openapi({
+      description: 'The name for the studio component.',
+    }),
+    runtimeRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'An IAM role attached to a Studio Component that gives the studio component access to Amazon Web Services resources at anytime while the instance is running. ',
+    }),
+    scriptParameters: StudioComponentScriptParameterKeyValueListSchema.exactOptional().openapi({
+      description: 'Parameters for the studio component scripts.',
+    }),
+    secureInitializationRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'An IAM role attached to Studio Component when the system initialization script runs which give the studio component access to Amazon Web Services resources when the system initialization script runs.',
+    }),
+    subtype: StudioComponentSubtypeSchema.exactOptional().openapi({
+      description: 'The specific subtype of a studio component.',
+    }),
+    type: StudioComponentTypeSchema.exactOptional().openapi({
+      description: 'The type of the studio component.',
+    }),
   })
   .openapi({ title: 'UpdateStudioComponentRequest', required: [] })
   .openapi('UpdateStudioComponentRequest')
 
 const UpdateStudioRequestSchema = z
   .object({
-    adminRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role that Studio Admins will assume when logging in to the Nimble Studio portal.',
-        }),
-    ).exactOptional(),
-    displayName: StudioDisplayNameSchema.and(
-      z.any().openapi({ description: 'A friendly name for the studio.' }),
-    ).exactOptional(),
-    userRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role that Studio Users will assume when logging in to the Nimble Studio portal.',
-        }),
-    ).exactOptional(),
+    adminRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The IAM role that Studio Admins will assume when logging in to the Nimble Studio portal.',
+    }),
+    displayName: StudioDisplayNameSchema.exactOptional().openapi({
+      description: 'A friendly name for the studio.',
+    }),
+    userRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The IAM role that Studio Users will assume when logging in to the Nimble Studio portal.',
+    }),
   })
   .openapi({ title: 'UpdateStudioRequest', required: [] })
   .openapi('UpdateStudioRequest')
@@ -3769,87 +3049,50 @@ export const post20200801StudiosStudioIdLaunchProfilesRoute = createRoute({
                 .openapi({ description: 'The name for the launch profile.' }),
               streamConfiguration: z
                 .object({
-                  automaticTerminationMode: AutomaticTerminationModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Indicates if a streaming session created from this launch profile should be terminated automatically or retained without termination after being in a <code>STOPPED</code> state.</p> <ul> <li> <p>When <code>ACTIVATED</code>, the streaming session is scheduled for termination after being in the <code>STOPPED</code> state for the time specified in <code>maxStoppedSessionLengthInMinutes</code>.</p> </li> <li> <p>When <code>DEACTIVATED</code>, the streaming session can remain in the <code>STOPPED</code> state indefinitely.</p> </li> </ul> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>. When allowed, the default value for this parameter is <code>DEACTIVATED</code>.</p>',
-                      }),
-                  ).exactOptional(),
-                  clipboardMode: StreamingClipboardModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Allows or deactivates the use of the system clipboard to copy and paste between the streaming session and streaming client.',
-                      }),
-                  ).exactOptional(),
-                  ec2InstanceTypes: StreamingInstanceTypeListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The EC2 instance types that users can select from when launching a streaming session with this launch profile.',
-                      }),
-                  ).exactOptional(),
-                  maxSessionLengthInMinutes: StreamConfigurationMaxSessionLengthInMinutesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The length of time, in minutes, that a streaming session can be active before it is stopped or terminated. After this point, Nimble Studio automatically terminates or stops the session. The default length of time is 690 minutes, and the maximum length of time is 30 days.',
-                      }),
-                  ).exactOptional(),
+                  automaticTerminationMode: AutomaticTerminationModeSchema.exactOptional().openapi({
+                    description:
+                      '<p>Indicates if a streaming session created from this launch profile should be terminated automatically or retained without termination after being in a <code>STOPPED</code> state.</p> <ul> <li> <p>When <code>ACTIVATED</code>, the streaming session is scheduled for termination after being in the <code>STOPPED</code> state for the time specified in <code>maxStoppedSessionLengthInMinutes</code>.</p> </li> <li> <p>When <code>DEACTIVATED</code>, the streaming session can remain in the <code>STOPPED</code> state indefinitely.</p> </li> </ul> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>. When allowed, the default value for this parameter is <code>DEACTIVATED</code>.</p>',
+                  }),
+                  clipboardMode: StreamingClipboardModeSchema.exactOptional().openapi({
+                    description:
+                      'Allows or deactivates the use of the system clipboard to copy and paste between the streaming session and streaming client.',
+                  }),
+                  ec2InstanceTypes: StreamingInstanceTypeListSchema.exactOptional().openapi({
+                    description:
+                      'The EC2 instance types that users can select from when launching a streaming session with this launch profile.',
+                  }),
+                  maxSessionLengthInMinutes:
+                    StreamConfigurationMaxSessionLengthInMinutesSchema.exactOptional().openapi({
+                      description:
+                        'The length of time, in minutes, that a streaming session can be active before it is stopped or terminated. After this point, Nimble Studio automatically terminates or stops the session. The default length of time is 690 minutes, and the maximum length of time is 30 days.',
+                    }),
                   maxStoppedSessionLengthInMinutes:
-                    StreamConfigurationMaxStoppedSessionLengthInMinutesSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            '<p>Integer that determines if you can start and stop your sessions and how long a session can stay in the <code>STOPPED</code> state. The default value is 0. The maximum value is 5760.</p> <p>This field is allowed only when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code> and <code>automaticTerminationMode</code> is <code>ACTIVATED</code>.</p> <p>If the value is set to 0, your sessions can’t be <code>STOPPED</code>. If you then call <code>StopStreamingSession</code>, the session fails. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be terminated (instead of <code>STOPPED</code>).</p> <p>If the value is set to a positive number, the session can be stopped. You can call <code>StopStreamingSession</code> to stop sessions in the <code>READY</code> state. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be stopped (instead of terminated).</p>',
-                        }),
-                    ).exactOptional(),
-                  sessionBackup: StreamConfigurationSessionBackupSchema.and(
-                    z
-                      .any()
-                      .openapi({
+                    StreamConfigurationMaxStoppedSessionLengthInMinutesSchema.exactOptional().openapi(
+                      {
                         description:
-                          'Configures how streaming sessions are backed up when launched from this launch profile.',
-                      }),
-                  ).exactOptional(),
-                  sessionPersistenceMode: SessionPersistenceModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Determine if a streaming session created from this launch profile can configure persistent storage. This means that <code>volumeConfiguration</code> and <code>automaticTerminationMode</code> are configured.',
-                      }),
-                  ).exactOptional(),
-                  sessionStorage: StreamConfigurationSessionStorageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The upload storage for a streaming workstation that is created using this launch profile.',
-                      }),
-                  ).exactOptional(),
-                  streamingImageIds: StreamingImageIdListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The streaming images that users can select from when launching a streaming session with this launch profile.',
-                      }),
-                  ).exactOptional(),
-                  volumeConfiguration: VolumeConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Custom volume configuration for the root volumes that are attached to streaming sessions.</p> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>.</p>',
-                      }),
-                  ).exactOptional(),
+                          '<p>Integer that determines if you can start and stop your sessions and how long a session can stay in the <code>STOPPED</code> state. The default value is 0. The maximum value is 5760.</p> <p>This field is allowed only when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code> and <code>automaticTerminationMode</code> is <code>ACTIVATED</code>.</p> <p>If the value is set to 0, your sessions can’t be <code>STOPPED</code>. If you then call <code>StopStreamingSession</code>, the session fails. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be terminated (instead of <code>STOPPED</code>).</p> <p>If the value is set to a positive number, the session can be stopped. You can call <code>StopStreamingSession</code> to stop sessions in the <code>READY</code> state. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be stopped (instead of terminated).</p>',
+                      },
+                    ),
+                  sessionBackup: StreamConfigurationSessionBackupSchema.exactOptional().openapi({
+                    description:
+                      'Configures how streaming sessions are backed up when launched from this launch profile.',
+                  }),
+                  sessionPersistenceMode: SessionPersistenceModeSchema.exactOptional().openapi({
+                    description:
+                      'Determine if a streaming session created from this launch profile can configure persistent storage. This means that <code>volumeConfiguration</code> and <code>automaticTerminationMode</code> are configured.',
+                  }),
+                  sessionStorage: StreamConfigurationSessionStorageSchema.exactOptional().openapi({
+                    description:
+                      'The upload storage for a streaming workstation that is created using this launch profile.',
+                  }),
+                  streamingImageIds: StreamingImageIdListSchema.exactOptional().openapi({
+                    description:
+                      'The streaming images that users can select from when launching a streaming session with this launch profile.',
+                  }),
+                  volumeConfiguration: VolumeConfigurationSchema.exactOptional().openapi({
+                    description:
+                      '<p>Custom volume configuration for the root volumes that are attached to streaming sessions.</p> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>.</p>',
+                  }),
                 })
                 .openapi({
                   description:
@@ -4612,20 +3855,12 @@ export const post20200801StudiosRoute = createRoute({
                 .openapi({ description: 'A friendly name for the studio.' }),
               studioEncryptionConfiguration: z
                 .object({
-                  keyArn: StudioEncryptionConfigurationKeyArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ARN for a KMS key that is used to encrypt studio data.',
-                      }),
-                  ).exactOptional(),
-                  keyType: StudioEncryptionConfigurationKeyTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The type of KMS key that is used to encrypt studio data.',
-                      }),
-                  ).exactOptional(),
+                  keyArn: StudioEncryptionConfigurationKeyArnSchema.exactOptional().openapi({
+                    description: 'The ARN for a KMS key that is used to encrypt studio data.',
+                  }),
+                  keyType: StudioEncryptionConfigurationKeyTypeSchema.exactOptional().openapi({
+                    description: 'The type of KMS key that is used to encrypt studio data.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4882,38 +4117,25 @@ export const post20200801StudiosStudioIdStudioComponentsRoute = createRoute({
             .object({
               configuration: z
                 .object({
-                  activeDirectoryConfiguration: ActiveDirectoryConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The configuration for a Directory Service for Microsoft Active Directory studio resource.',
-                      }),
-                  ).exactOptional(),
-                  computeFarmConfiguration: ComputeFarmConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The configuration for a render farm that is associated with a studio resource.',
-                      }),
-                  ).exactOptional(),
-                  licenseServiceConfiguration: LicenseServiceConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The configuration for a license service that is associated with a studio resource.',
-                      }),
-                  ).exactOptional(),
-                  sharedFileSystemConfiguration: SharedFileSystemConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The configuration for a shared file storage system that is associated with a studio resource.',
-                      }),
-                  ).exactOptional(),
+                  activeDirectoryConfiguration:
+                    ActiveDirectoryConfigurationSchema.exactOptional().openapi({
+                      description:
+                        'The configuration for a Directory Service for Microsoft Active Directory studio resource.',
+                    }),
+                  computeFarmConfiguration: ComputeFarmConfigurationSchema.exactOptional().openapi({
+                    description:
+                      'The configuration for a render farm that is associated with a studio resource.',
+                  }),
+                  licenseServiceConfiguration:
+                    LicenseServiceConfigurationSchema.exactOptional().openapi({
+                      description:
+                        'The configuration for a license service that is associated with a studio resource.',
+                    }),
+                  sharedFileSystemConfiguration:
+                    SharedFileSystemConfigurationSchema.exactOptional().openapi({
+                      description:
+                        'The configuration for a shared file storage system that is associated with a studio resource.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5287,87 +4509,50 @@ export const patch20200801StudiosStudioIdLaunchProfilesLaunchProfileIdRoute = cr
                 .openapi({ description: 'The name for the launch profile.' }),
               streamConfiguration: z
                 .object({
-                  automaticTerminationMode: AutomaticTerminationModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Indicates if a streaming session created from this launch profile should be terminated automatically or retained without termination after being in a <code>STOPPED</code> state.</p> <ul> <li> <p>When <code>ACTIVATED</code>, the streaming session is scheduled for termination after being in the <code>STOPPED</code> state for the time specified in <code>maxStoppedSessionLengthInMinutes</code>.</p> </li> <li> <p>When <code>DEACTIVATED</code>, the streaming session can remain in the <code>STOPPED</code> state indefinitely.</p> </li> </ul> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>. When allowed, the default value for this parameter is <code>DEACTIVATED</code>.</p>',
-                      }),
-                  ).exactOptional(),
-                  clipboardMode: StreamingClipboardModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Allows or deactivates the use of the system clipboard to copy and paste between the streaming session and streaming client.',
-                      }),
-                  ).exactOptional(),
-                  ec2InstanceTypes: StreamingInstanceTypeListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The EC2 instance types that users can select from when launching a streaming session with this launch profile.',
-                      }),
-                  ).exactOptional(),
-                  maxSessionLengthInMinutes: StreamConfigurationMaxSessionLengthInMinutesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The length of time, in minutes, that a streaming session can be active before it is stopped or terminated. After this point, Nimble Studio automatically terminates or stops the session. The default length of time is 690 minutes, and the maximum length of time is 30 days.',
-                      }),
-                  ).exactOptional(),
+                  automaticTerminationMode: AutomaticTerminationModeSchema.exactOptional().openapi({
+                    description:
+                      '<p>Indicates if a streaming session created from this launch profile should be terminated automatically or retained without termination after being in a <code>STOPPED</code> state.</p> <ul> <li> <p>When <code>ACTIVATED</code>, the streaming session is scheduled for termination after being in the <code>STOPPED</code> state for the time specified in <code>maxStoppedSessionLengthInMinutes</code>.</p> </li> <li> <p>When <code>DEACTIVATED</code>, the streaming session can remain in the <code>STOPPED</code> state indefinitely.</p> </li> </ul> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>. When allowed, the default value for this parameter is <code>DEACTIVATED</code>.</p>',
+                  }),
+                  clipboardMode: StreamingClipboardModeSchema.exactOptional().openapi({
+                    description:
+                      'Allows or deactivates the use of the system clipboard to copy and paste between the streaming session and streaming client.',
+                  }),
+                  ec2InstanceTypes: StreamingInstanceTypeListSchema.exactOptional().openapi({
+                    description:
+                      'The EC2 instance types that users can select from when launching a streaming session with this launch profile.',
+                  }),
+                  maxSessionLengthInMinutes:
+                    StreamConfigurationMaxSessionLengthInMinutesSchema.exactOptional().openapi({
+                      description:
+                        'The length of time, in minutes, that a streaming session can be active before it is stopped or terminated. After this point, Nimble Studio automatically terminates or stops the session. The default length of time is 690 minutes, and the maximum length of time is 30 days.',
+                    }),
                   maxStoppedSessionLengthInMinutes:
-                    StreamConfigurationMaxStoppedSessionLengthInMinutesSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            '<p>Integer that determines if you can start and stop your sessions and how long a session can stay in the <code>STOPPED</code> state. The default value is 0. The maximum value is 5760.</p> <p>This field is allowed only when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code> and <code>automaticTerminationMode</code> is <code>ACTIVATED</code>.</p> <p>If the value is set to 0, your sessions can’t be <code>STOPPED</code>. If you then call <code>StopStreamingSession</code>, the session fails. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be terminated (instead of <code>STOPPED</code>).</p> <p>If the value is set to a positive number, the session can be stopped. You can call <code>StopStreamingSession</code> to stop sessions in the <code>READY</code> state. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be stopped (instead of terminated).</p>',
-                        }),
-                    ).exactOptional(),
-                  sessionBackup: StreamConfigurationSessionBackupSchema.and(
-                    z
-                      .any()
-                      .openapi({
+                    StreamConfigurationMaxStoppedSessionLengthInMinutesSchema.exactOptional().openapi(
+                      {
                         description:
-                          'Configures how streaming sessions are backed up when launched from this launch profile.',
-                      }),
-                  ).exactOptional(),
-                  sessionPersistenceMode: SessionPersistenceModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Determine if a streaming session created from this launch profile can configure persistent storage. This means that <code>volumeConfiguration</code> and <code>automaticTerminationMode</code> are configured.',
-                      }),
-                  ).exactOptional(),
-                  sessionStorage: StreamConfigurationSessionStorageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The upload storage for a streaming workstation that is created using this launch profile.',
-                      }),
-                  ).exactOptional(),
-                  streamingImageIds: StreamingImageIdListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The streaming images that users can select from when launching a streaming session with this launch profile.',
-                      }),
-                  ).exactOptional(),
-                  volumeConfiguration: VolumeConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Custom volume configuration for the root volumes that are attached to streaming sessions.</p> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>.</p>',
-                      }),
-                  ).exactOptional(),
+                          '<p>Integer that determines if you can start and stop your sessions and how long a session can stay in the <code>STOPPED</code> state. The default value is 0. The maximum value is 5760.</p> <p>This field is allowed only when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code> and <code>automaticTerminationMode</code> is <code>ACTIVATED</code>.</p> <p>If the value is set to 0, your sessions can’t be <code>STOPPED</code>. If you then call <code>StopStreamingSession</code>, the session fails. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be terminated (instead of <code>STOPPED</code>).</p> <p>If the value is set to a positive number, the session can be stopped. You can call <code>StopStreamingSession</code> to stop sessions in the <code>READY</code> state. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be stopped (instead of terminated).</p>',
+                      },
+                    ),
+                  sessionBackup: StreamConfigurationSessionBackupSchema.exactOptional().openapi({
+                    description:
+                      'Configures how streaming sessions are backed up when launched from this launch profile.',
+                  }),
+                  sessionPersistenceMode: SessionPersistenceModeSchema.exactOptional().openapi({
+                    description:
+                      'Determine if a streaming session created from this launch profile can configure persistent storage. This means that <code>volumeConfiguration</code> and <code>automaticTerminationMode</code> are configured.',
+                  }),
+                  sessionStorage: StreamConfigurationSessionStorageSchema.exactOptional().openapi({
+                    description:
+                      'The upload storage for a streaming workstation that is created using this launch profile.',
+                  }),
+                  streamingImageIds: StreamingImageIdListSchema.exactOptional().openapi({
+                    description:
+                      'The streaming images that users can select from when launching a streaming session with this launch profile.',
+                  }),
+                  volumeConfiguration: VolumeConfigurationSchema.exactOptional().openapi({
+                    description:
+                      '<p>Custom volume configuration for the root volumes that are attached to streaming sessions.</p> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>.</p>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6676,38 +5861,25 @@ export const patch20200801StudiosStudioIdStudioComponentsStudioComponentIdRoute 
             .object({
               configuration: z
                 .object({
-                  activeDirectoryConfiguration: ActiveDirectoryConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The configuration for a Directory Service for Microsoft Active Directory studio resource.',
-                      }),
-                  ).exactOptional(),
-                  computeFarmConfiguration: ComputeFarmConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The configuration for a render farm that is associated with a studio resource.',
-                      }),
-                  ).exactOptional(),
-                  licenseServiceConfiguration: LicenseServiceConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The configuration for a license service that is associated with a studio resource.',
-                      }),
-                  ).exactOptional(),
-                  sharedFileSystemConfiguration: SharedFileSystemConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The configuration for a shared file storage system that is associated with a studio resource.',
-                      }),
-                  ).exactOptional(),
+                  activeDirectoryConfiguration:
+                    ActiveDirectoryConfigurationSchema.exactOptional().openapi({
+                      description:
+                        'The configuration for a Directory Service for Microsoft Active Directory studio resource.',
+                    }),
+                  computeFarmConfiguration: ComputeFarmConfigurationSchema.exactOptional().openapi({
+                    description:
+                      'The configuration for a render farm that is associated with a studio resource.',
+                  }),
+                  licenseServiceConfiguration:
+                    LicenseServiceConfigurationSchema.exactOptional().openapi({
+                      description:
+                        'The configuration for a license service that is associated with a studio resource.',
+                    }),
+                  sharedFileSystemConfiguration:
+                    SharedFileSystemConfigurationSchema.exactOptional().openapi({
+                      description:
+                        'The configuration for a shared file storage system that is associated with a studio resource.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({

@@ -1047,6 +1047,7 @@ export const getIndexPhpAppsFilesSharingPublicpreviewTokenRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 32 },
             required: false,
           },
+          default: 32,
         }),
       y: z
         .preprocess((val) => {
@@ -1066,6 +1067,7 @@ export const getIndexPhpAppsFilesSharingPublicpreviewTokenRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 32 },
             required: false,
           },
+          default: 32,
         }),
       a: z
         .stringbool()
@@ -2490,6 +2492,7 @@ export const getOcsV2PhpAppsFilesSharingApiV1ShareesRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1 },
             required: false,
           },
+          default: 1,
         }),
       perPage: z
         .preprocess((val) => {
@@ -2509,6 +2512,7 @@ export const getOcsV2PhpAppsFilesSharingApiV1ShareesRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 200 },
             required: false,
           },
+          default: 200,
         }),
       shareType: z
         .xor([

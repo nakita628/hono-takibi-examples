@@ -549,7 +549,7 @@ const PatchableNotDeliveredInfoSchema = z
         'The type of product that you expected to receive.\n\nPossible values: **goods**, **services**.',
     }),
     whoCancelled: z
-      .xor([CancellingEntitySchema, z.null().nullable()])
+      .xor([z.looseObject({}).and(CancellingEntitySchema), z.null().nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -612,7 +612,7 @@ const PatchableDisputeRequestSchema = z
           'Additional information for raising a dispute of `type` **other**. Required for disputes of `type` **other**.\n\n**Note:** The **other** dispute `type` is currently in beta testing. Do not create or submit any disputes for this dispute `type` at this time.',
       }),
     status: z
-      .xor([DisputeStatusSchema, z.null().nullable()])
+      .xor([z.looseObject({}).and(DisputeStatusSchema), z.null().nullable()])
       .exactOptional()
       .openapi({
         description:

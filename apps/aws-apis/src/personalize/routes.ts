@@ -1,5 +1,71 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const NameSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9][a-zA-Z0-9\-_]*/)
+  .min(1)
+  .max(63)
+  .openapi('Name')
+
+const ArnSchema = z
+  .string()
+  .regex(/arn:([a-z\d-]+):personalize:.*:.*:.+/)
+  .max(256)
+  .openapi('Arn')
+
+const PerformHPOSchema = z.boolean().openapi('PerformHPO')
+
+const PerformAutoMLSchema = z.boolean().openapi('PerformAutoML')
+
+const EventTypeSchema = z.string().max(256).openapi('EventType')
+
+const EventValueThresholdSchema = z.string().max(256).openapi('EventValueThreshold')
+
+const HPOObjectiveTypeSchema = z.string().max(256).openapi('HPOObjectiveType')
+
+const MetricNameSchema = z.string().max(256).openapi('MetricName')
+
+const MetricRegexSchema = z.string().max(256).openapi('MetricRegex')
+
+const HPOObjectiveSchema = z
+  .object({
+    type: HPOObjectiveTypeSchema.exactOptional().openapi({
+      description:
+        'The type of the metric. Valid values are <code>Maximize</code> and <code>Minimize</code>.',
+    }),
+    metricName: MetricNameSchema.exactOptional().openapi({
+      description: 'The name of the metric.',
+    }),
+    metricRegex: MetricRegexSchema.exactOptional().openapi({
+      description: 'A regular expression for finding the metric in the training job logs.',
+    }),
+  })
+  .openapi({
+    description:
+      "<p>The metric to optimize during hyperparameter optimization (HPO).</p> <note> <p>Amazon Personalize doesn't support configuring the <code>hpoObjective</code> at this time.</p> </note>",
+    required: [],
+  })
+  .openapi('HPOObjective')
+
+const HPOResourceSchema = z.string().max(256).openapi('HPOResource')
+
+const HPOResourceConfigSchema = z
+  .object({
+    maxNumberOfTrainingJobs: HPOResourceSchema.exactOptional().openapi({
+      description:
+        'The maximum number of training jobs when you create a solution version. The maximum value for <code>maxNumberOfTrainingJobs</code> is <code>40</code>.',
+    }),
+    maxParallelTrainingJobs: HPOResourceSchema.exactOptional().openapi({
+      description:
+        'The maximum number of parallel training jobs when you create a solution version. The maximum value for <code>maxParallelTrainingJobs</code> is <code>10</code>.',
+    }),
+  })
+  .openapi({
+    description: 'Describes the resource configuration for hyperparameter optimization (HPO).',
+    required: [],
+  })
+  .openapi('HPOResourceConfig')
+
 const ParameterNameSchema = z.string().max(256).openapi('ParameterName')
 
 const IntegerMinValueSchema = z.int().min(-1000000).openapi('IntegerMinValue')
@@ -8,15 +74,15 @@ const IntegerMaxValueSchema = z.int().max(1000000).openapi('IntegerMaxValue')
 
 const IntegerHyperParameterRangeSchema = z
   .object({
-    name: ParameterNameSchema.and(
-      z.any().openapi({ description: 'The name of the hyperparameter.' }),
-    ).exactOptional(),
-    minValue: IntegerMinValueSchema.and(
-      z.any().openapi({ description: 'The minimum allowable value for the hyperparameter.' }),
-    ).exactOptional(),
-    maxValue: IntegerMaxValueSchema.and(
-      z.any().openapi({ description: 'The maximum allowable value for the hyperparameter.' }),
-    ).exactOptional(),
+    name: ParameterNameSchema.exactOptional().openapi({
+      description: 'The name of the hyperparameter.',
+    }),
+    minValue: IntegerMinValueSchema.exactOptional().openapi({
+      description: 'The minimum allowable value for the hyperparameter.',
+    }),
+    maxValue: IntegerMaxValueSchema.exactOptional().openapi({
+      description: 'The maximum allowable value for the hyperparameter.',
+    }),
   })
   .openapi({
     description: 'Provides the name and range of an integer-valued hyperparameter.',
@@ -35,15 +101,15 @@ const ContinuousMaxValueSchema = z.float64().min(-1000000).openapi('ContinuousMa
 
 const ContinuousHyperParameterRangeSchema = z
   .object({
-    name: ParameterNameSchema.and(
-      z.any().openapi({ description: 'The name of the hyperparameter.' }),
-    ).exactOptional(),
-    minValue: ContinuousMinValueSchema.and(
-      z.any().openapi({ description: 'The minimum allowable value for the hyperparameter.' }),
-    ).exactOptional(),
-    maxValue: ContinuousMaxValueSchema.and(
-      z.any().openapi({ description: 'The maximum allowable value for the hyperparameter.' }),
-    ).exactOptional(),
+    name: ParameterNameSchema.exactOptional().openapi({
+      description: 'The name of the hyperparameter.',
+    }),
+    minValue: ContinuousMinValueSchema.exactOptional().openapi({
+      description: 'The minimum allowable value for the hyperparameter.',
+    }),
+    maxValue: ContinuousMaxValueSchema.exactOptional().openapi({
+      description: 'The maximum allowable value for the hyperparameter.',
+    }),
   })
   .openapi({
     description: 'Provides the name and range of a continuous hyperparameter.',
@@ -65,12 +131,12 @@ const CategoricalValuesSchema = z
 
 const CategoricalHyperParameterRangeSchema = z
   .object({
-    name: ParameterNameSchema.and(
-      z.any().openapi({ description: 'The name of the hyperparameter.' }),
-    ).exactOptional(),
-    values: CategoricalValuesSchema.and(
-      z.any().openapi({ description: 'A list of the categories for the hyperparameter.' }),
-    ).exactOptional(),
+    name: ParameterNameSchema.exactOptional().openapi({
+      description: 'The name of the hyperparameter.',
+    }),
+    values: CategoricalValuesSchema.exactOptional().openapi({
+      description: 'A list of the categories for the hyperparameter.',
+    }),
   })
   .openapi({
     description: 'Provides the name and range of a categorical hyperparameter.',
@@ -83,39 +149,318 @@ const CategoricalHyperParameterRangesSchema = z
   .max(100)
   .openapi('CategoricalHyperParameterRanges')
 
-type HyperParameterRangesType = {
-  integerHyperParameterRanges?: z.infer<typeof IntegerHyperParameterRangesSchema> & {
-    [key: string]: unknown
-  }
-  continuousHyperParameterRanges?: z.infer<typeof ContinuousHyperParameterRangesSchema> & {
-    [key: string]: unknown
-  }
-  categoricalHyperParameterRanges?: z.infer<typeof CategoricalHyperParameterRangesSchema> & {
-    [key: string]: unknown
-  }
-}
+const HyperParameterRangesSchema = z
+  .object({
+    integerHyperParameterRanges: IntegerHyperParameterRangesSchema.exactOptional().openapi({
+      description: 'The integer-valued hyperparameters and their ranges.',
+    }),
+    continuousHyperParameterRanges: ContinuousHyperParameterRangesSchema.exactOptional().openapi({
+      description: 'The continuous hyperparameters and their ranges.',
+    }),
+    categoricalHyperParameterRanges: CategoricalHyperParameterRangesSchema.exactOptional().openapi({
+      description: 'The categorical hyperparameters and their ranges.',
+    }),
+  })
+  .openapi({
+    description:
+      'Specifies the hyperparameters and their ranges. Hyperparameters can be categorical, continuous, or integer-valued.',
+    required: [],
+  })
+  .openapi('HyperParameterRanges')
 
-const ArnSchema = z
-  .string()
-  .regex(/arn:([a-z\d-]+):personalize:.*:.*:.+/)
-  .max(256)
-  .openapi('Arn')
+const HPOConfigSchema = z
+  .object({
+    hpoObjective: HPOObjectiveSchema.exactOptional().openapi({
+      description:
+        "<p>The metric to optimize during HPO.</p> <note> <p>Amazon Personalize doesn't support configuring the <code>hpoObjective</code> at this time.</p> </note>",
+    }),
+    hpoResourceConfig: HPOResourceConfigSchema.exactOptional().openapi({
+      description: 'Describes the resource configuration for HPO.',
+    }),
+    algorithmHyperParameterRanges: HyperParameterRangesSchema.exactOptional().openapi({
+      description: 'The hyperparameters and their allowable ranges.',
+    }),
+  })
+  .openapi({
+    description: 'Describes the properties for hyperparameter optimization (HPO).',
+    required: [],
+  })
+  .openapi('HPOConfig')
+
+const ParameterValueSchema = z.string().max(1000).openapi('ParameterValue')
+
+const HyperParametersSchema = z
+  .record(z.string(), ParameterValueSchema)
+  .refine((val) => Object.keys(val).length <= 100)
+  .openapi('HyperParameters')
+
+const FeatureTransformationParametersSchema = z
+  .record(z.string(), ParameterValueSchema)
+  .refine((val) => Object.keys(val).length <= 100)
+  .openapi('FeatureTransformationParameters')
+
+const ArnListSchema = z.array(ArnSchema).max(100).openapi('ArnList')
+
+const AutoMLConfigSchema = z
+  .object({
+    metricName: MetricNameSchema.exactOptional().openapi({
+      description: 'The metric to optimize.',
+    }),
+    recipeList: ArnListSchema.exactOptional().openapi({
+      description: 'The list of candidate recipes.',
+    }),
+  })
+  .openapi({
+    description:
+      'When the solution performs AutoML (<code>performAutoML</code> is true in <a href="https://docs.aws.amazon.com/personalize/latest/dg/API_CreateSolution.html">CreateSolution</a>), Amazon Personalize determines which recipe, from the specified list, optimizes the given metric. Amazon Personalize then uses that recipe for the solution.',
+    required: [],
+  })
+  .openapi('AutoMLConfig')
+
+const ItemAttributeSchema = z.string().min(1).max(150).openapi('ItemAttribute')
+
+const ObjectiveSensitivitySchema = z
+  .enum(['LOW', 'MEDIUM', 'HIGH', 'OFF'])
+  .openapi('ObjectiveSensitivity')
+
+const OptimizationObjectiveSchema = z
+  .object({
+    itemAttribute: ItemAttributeSchema.exactOptional().openapi({
+      description:
+        'The numerical metadata column in an Items dataset related to the optimization objective. For example, VIDEO_LENGTH (to maximize streaming minutes), or PRICE (to maximize revenue).',
+    }),
+    objectiveSensitivity: ObjectiveSensitivitySchema.exactOptional().openapi({
+      description:
+        'Specifies how Amazon Personalize balances the importance of your optimization objective versus relevance.',
+    }),
+  })
+  .openapi({
+    description:
+      'Describes the additional objective for the solution, such as maximizing streaming minutes or increasing revenue. For more information see <a href="https://docs.aws.amazon.com/personalize/latest/dg/optimizing-solution-for-objective.html">Optimizing a solution</a>.',
+    required: [],
+  })
+  .openapi('OptimizationObjective')
+
+const SolutionConfigSchema = z
+  .object({
+    eventValueThreshold: EventValueThresholdSchema.exactOptional().openapi({
+      description:
+        'Only events with a value greater than or equal to this threshold are used for training a model.',
+    }),
+    hpoConfig: HPOConfigSchema.exactOptional().openapi({
+      description: 'Describes the properties for hyperparameter optimization (HPO).',
+    }),
+    algorithmHyperParameters: HyperParametersSchema.exactOptional().openapi({
+      description: 'Lists the hyperparameter names and ranges.',
+    }),
+    featureTransformationParameters: FeatureTransformationParametersSchema.exactOptional().openapi({
+      description: 'Lists the feature transformation parameters.',
+    }),
+    autoMLConfig: AutoMLConfigSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/personalize/latest/dg/API_AutoMLConfig.html">AutoMLConfig</a> object containing a list of recipes to search when AutoML is performed.',
+    }),
+    optimizationObjective: OptimizationObjectiveSchema.exactOptional().openapi({
+      description:
+        'Describes the additional objective for the solution, such as maximizing streaming minutes or increasing revenue. For more information see <a href="https://docs.aws.amazon.com/personalize/latest/dg/optimizing-solution-for-objective.html">Optimizing a solution</a>.',
+    }),
+  })
+  .openapi({
+    description: 'Describes the configuration properties for the solution.',
+    required: [],
+  })
+  .openapi('SolutionConfig')
+
+const AutoMLResultSchema = z
+  .object({
+    bestRecipeArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the best recipe.',
+    }),
+  })
+  .openapi({
+    description:
+      'When the solution performs AutoML (<code>performAutoML</code> is true in <a href="https://docs.aws.amazon.com/personalize/latest/dg/API_CreateSolution.html">CreateSolution</a>), specifies the recipe that best optimized the specified metric.',
+    required: [],
+  })
+  .openapi('AutoMLResult')
+
+const StatusSchema = z.string().max(256).openapi('Status')
+
+const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
+
+const FailureReasonSchema = z.string().openapi('FailureReason')
+
+const SolutionVersionSummarySchema = z
+  .object({
+    solutionVersionArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the solution version.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the solution version.</p> <p>A solution version can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> </ul>',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that this version of a solution was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the solution version was last updated.',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If a solution version fails, the reason behind the failure.',
+    }),
+  })
+  .openapi({
+    description:
+      'Provides a summary of the properties of a solution version. For a complete listing, call the <a href="https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeSolutionVersion.html">DescribeSolutionVersion</a> API.',
+    required: [],
+  })
+  .openapi('SolutionVersionSummary')
+
+const SolutionSchema = z
+  .object({
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the solution.' }),
+    solutionArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the solution.' }),
+    performHPO: PerformHPOSchema.exactOptional().openapi({
+      description:
+        'Whether to perform hyperparameter optimization (HPO) on the chosen recipe. The default is <code>false</code>.',
+    }),
+    performAutoML: PerformAutoMLSchema.exactOptional().openapi({
+      description:
+        'When true, Amazon Personalize performs a search for the best USER_PERSONALIZATION recipe from the list specified in the solution configuration (<code>recipeArn</code> must not be specified). When false (the default), Amazon Personalize uses <code>recipeArn</code> for training.',
+    }),
+    recipeArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the recipe used to create the solution.',
+    }),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the dataset group that provides the training data.',
+    }),
+    eventType: EventTypeSchema.exactOptional().openapi({
+      description:
+        "The event type (for example, 'click' or 'like') that is used for training the model. If no <code>eventType</code> is provided, Amazon Personalize uses all interactions for training with equal weight regardless of type.",
+    }),
+    solutionConfig: SolutionConfigSchema.exactOptional().openapi({
+      description: 'Describes the configuration properties for the solution.',
+    }),
+    autoMLResult: AutoMLResultSchema.exactOptional().openapi({
+      description: 'When <code>performAutoML</code> is true, specifies the best recipe found.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the solution.</p> <p>A solution can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The creation date and time (in Unix time) of the solution.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the solution was last updated.',
+    }),
+    latestSolutionVersion: SolutionVersionSummarySchema.exactOptional().openapi({
+      description:
+        'Describes the latest version of the solution, including the status and the ARN.',
+    }),
+  })
+  .openapi({
+    description:
+      'An object that provides information about a solution. A solution is a trained model that can be deployed as a campaign.',
+    required: [],
+  })
+  .openapi('Solution')
+
+type DescribeSolutionResponseType = { solution?: z.infer<typeof SolutionSchema> & unknown }
+
+const TrainingHoursSchema = z.float64().min(0).openapi('TrainingHours')
+
+const TrainingModeSchema = z.enum(['FULL', 'UPDATE']).openapi('TrainingMode')
+
+const TunedHPOParamsSchema = z
+  .object({
+    algorithmHyperParameters: HyperParametersSchema.exactOptional().openapi({
+      description: 'A list of the hyperparameter values of the best performing model.',
+    }),
+  })
+  .openapi({
+    description:
+      'If hyperparameter optimization (HPO) was performed, contains the hyperparameter values of the best performing model.',
+    required: [],
+  })
+  .openapi('TunedHPOParams')
+
+const SolutionVersionSchema = z
+  .object({
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the solution version.' }),
+    solutionVersionArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the solution version.',
+    }),
+    solutionArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the solution.' }),
+    performHPO: PerformHPOSchema.exactOptional().openapi({
+      description:
+        'Whether to perform hyperparameter optimization (HPO) on the chosen recipe. The default is <code>false</code>.',
+    }),
+    performAutoML: PerformAutoMLSchema.exactOptional().openapi({
+      description:
+        'When true, Amazon Personalize searches for the most optimal recipe according to the solution configuration. When false (the default), Amazon Personalize uses <code>recipeArn</code>.',
+    }),
+    recipeArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the recipe used in the solution.',
+    }),
+    eventType: EventTypeSchema.exactOptional().openapi({
+      description:
+        "The event type (for example, 'click' or 'like') that is used for training the model.",
+    }),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the dataset group providing the training data.',
+    }),
+    solutionConfig: SolutionConfigSchema.exactOptional().openapi({
+      description: 'Describes the configuration properties for the solution.',
+    }),
+    trainingHours: TrainingHoursSchema.exactOptional().openapi({
+      description:
+        'The time used to train the model. You are billed for the time it takes to train a model. This field is visible only after Amazon Personalize successfully trains a model.',
+    }),
+    trainingMode: TrainingModeSchema.exactOptional().openapi({
+      description:
+        '<p>The scope of training to be performed when creating the solution version. The <code>FULL</code> option trains the solution version based on the entirety of the input solution\'s training data, while the <code>UPDATE</code> option processes only the data that has changed in comparison to the input solution. Choose <code>UPDATE</code> when you want to incrementally update your solution version instead of creating an entirely new one.</p> <important> <p>The <code>UPDATE</code> option can only be used when you already have an active solution version created from the input solution using the <code>FULL</code> option and the input solution was trained with the <a href="https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-new-item-USER_PERSONALIZATION.html">User-Personalization</a> recipe or the <a href="https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-hrnn-coldstart.html">HRNN-Coldstart</a> recipe.</p> </important>',
+    }),
+    tunedHPOParams: TunedHPOParamsSchema.exactOptional().openapi({
+      description:
+        'If hyperparameter optimization was performed, contains the hyperparameter values of the best performing model.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the solution version.</p> <p>A solution version can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING</p> </li> <li> <p>CREATE IN_PROGRESS</p> </li> <li> <p>ACTIVE</p> </li> <li> <p>CREATE FAILED</p> </li> <li> <p>CREATE STOPPING</p> </li> <li> <p>CREATE STOPPED</p> </li> </ul>',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If training a solution version fails, the reason for the failure.',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description:
+        'The date and time (in Unix time) that this version of the solution was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the solution was last updated.',
+    }),
+  })
+  .openapi({
+    description:
+      'An object that provides information about a specific version of a <a href="https://docs.aws.amazon.com/personalize/latest/dg/API_Solution.html">Solution</a> in a Custom dataset group.',
+    required: [],
+  })
+  .openapi('SolutionVersion')
+
+type DescribeSolutionVersionResponseType = {
+  solutionVersion?: z.infer<typeof SolutionVersionSchema> & unknown
+}
 
 const CreateBatchInferenceJobResponseSchema = z
   .object({
-    batchInferenceJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the batch inference job.' }),
-    ).exactOptional(),
+    batchInferenceJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the batch inference job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateBatchInferenceJobResponse')
-
-const NameSchema = z
-  .string()
-  .regex(/^[a-zA-Z0-9][a-zA-Z0-9\-_]*/)
-  .min(1)
-  .max(63)
-  .openapi('Name')
 
 const NumBatchResultsSchema = z.int().openapi('NumBatchResults')
 
@@ -133,17 +478,11 @@ const KmsKeyArnSchema = z
 
 const S3DataConfigSchema = z
   .object({
-    path: S3LocationSchema.and(
-      z.any().openapi({ description: 'The file path of the Amazon S3 bucket.' }),
-    ),
-    kmsKeyArn: KmsKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Key Management Service (KMS) key that Amazon Personalize uses to encrypt or decrypt the input and output files.',
-        }),
-    ).exactOptional(),
+    path: S3LocationSchema.openapi({ description: 'The file path of the Amazon S3 bucket.' }),
+    kmsKeyArn: KmsKeyArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Key Management Service (KMS) key that Amazon Personalize uses to encrypt or decrypt the input and output files.',
+    }),
   })
   .openapi({
     required: ['path'],
@@ -153,14 +492,10 @@ const S3DataConfigSchema = z
 
 const BatchInferenceJobInputSchema = z
   .object({
-    s3DataSource: S3DataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URI of the Amazon S3 location that contains your input data. The Amazon S3 bucket must be in the same region as the API endpoint you are calling.',
-        }),
-    ),
+    s3DataSource: S3DataConfigSchema.openapi({
+      description:
+        'The URI of the Amazon S3 location that contains your input data. The Amazon S3 bucket must be in the same region as the API endpoint you are calling.',
+    }),
   })
   .openapi({
     required: ['s3DataSource'],
@@ -170,14 +505,10 @@ const BatchInferenceJobInputSchema = z
 
 const BatchInferenceJobOutputSchema = z
   .object({
-    s3DataDestination: S3DataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Information on the Amazon S3 bucket in which the batch inference job's output is stored.",
-        }),
-    ),
+    s3DataDestination: S3DataConfigSchema.openapi({
+      description:
+        "Information on the Amazon S3 bucket in which the batch inference job's output is stored.",
+    }),
   })
   .openapi({
     required: ['s3DataDestination'],
@@ -191,23 +522,12 @@ const RoleArnSchema = z
   .max(256)
   .openapi('RoleArn')
 
-const ParameterValueSchema = z.string().max(1000).openapi('ParameterValue')
-
-const HyperParametersSchema = z
-  .record(z.string(), ParameterValueSchema)
-  .refine((val) => Object.keys(val).length <= 100)
-  .openapi('HyperParameters')
-
 const BatchInferenceJobConfigSchema = z
   .object({
-    itemExplorationConfig: HyperParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string to string map specifying the exploration configuration hyperparameters, including <code>explorationWeight</code> and <code>explorationItemAgeCutOff</code>, you want to use to configure the amount of item exploration Amazon Personalize uses when recommending items. See <a href="https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-new-item-USER_PERSONALIZATION.html">User-Personalization</a>.',
-        }),
-    ).exactOptional(),
+    itemExplorationConfig: HyperParametersSchema.exactOptional().openapi({
+      description:
+        'A string to string map specifying the exploration configuration hyperparameters, including <code>explorationWeight</code> and <code>explorationItemAgeCutOff</code>, you want to use to configure the amount of item exploration Amazon Personalize uses when recommending items. See <a href="https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-new-item-USER_PERSONALIZATION.html">User-Personalization</a>.',
+    }),
   })
   .openapi({ description: 'The configuration details of a batch inference job.', required: [] })
   .openapi('BatchInferenceJobConfig')
@@ -228,22 +548,14 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    tagKey: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that makes up a tag. A key is a general label that acts like a category for more specific tag values.',
-        }),
-    ),
-    tagValue: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional part of a key-value pair that makes up a tag. A value acts as a descriptor within a tag category (key).',
-        }),
-    ),
+    tagKey: TagKeySchema.openapi({
+      description:
+        'One part of a key-value pair that makes up a tag. A key is a general label that acts like a category for more specific tag values.',
+    }),
+    tagValue: TagValueSchema.openapi({
+      description:
+        'The optional part of a key-value pair that makes up a tag. A value acts as a descriptor within a tag category (key).',
+    }),
   })
   .openapi({
     required: ['tagKey', 'tagValue'],
@@ -256,62 +568,36 @@ const TagsSchema = z.array(TagSchema).min(0).max(200).openapi('Tags')
 
 const CreateBatchInferenceJobRequestSchema = z
   .object({
-    jobName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the batch inference job to create.' }),
-    ),
-    solutionVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the solution version that will be used to generate the batch inference recommendations.',
-        }),
-    ),
-    filterArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the filter to apply to the batch inference job. For more information on using filters, see <a href="https://docs.aws.amazon.com/personalize/latest/dg/filter-batch.html">Filtering batch recommendations</a>.',
-        }),
-    ).exactOptional(),
-    numResults: NumBatchResultsSchema.and(
-      z.any().openapi({ description: 'The number of recommendations to retrieve.' }),
-    ).exactOptional(),
-    jobInput: BatchInferenceJobInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 path that leads to the input file to base your recommendations on. The input material must be in JSON format.',
-        }),
-    ),
-    jobOutput: BatchInferenceJobOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The path to the Amazon S3 bucket where the job's output will be stored.",
-        }),
-    ),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Amazon Identity and Access Management role that has permissions to read and write to your input and output Amazon S3 buckets respectively.',
-        }),
-    ),
-    batchInferenceJobConfig: BatchInferenceJobConfigSchema.and(
-      z.any().openapi({ description: 'The configuration details of a batch inference job.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the batch inference job.',
-        }),
-    ).exactOptional(),
+    jobName: NameSchema.openapi({ description: 'The name of the batch inference job to create.' }),
+    solutionVersionArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the solution version that will be used to generate the batch inference recommendations.',
+    }),
+    filterArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the filter to apply to the batch inference job. For more information on using filters, see <a href="https://docs.aws.amazon.com/personalize/latest/dg/filter-batch.html">Filtering batch recommendations</a>.',
+    }),
+    numResults: NumBatchResultsSchema.exactOptional().openapi({
+      description: 'The number of recommendations to retrieve.',
+    }),
+    jobInput: BatchInferenceJobInputSchema.openapi({
+      description:
+        'The Amazon S3 path that leads to the input file to base your recommendations on. The input material must be in JSON format.',
+    }),
+    jobOutput: BatchInferenceJobOutputSchema.openapi({
+      description: "The path to the Amazon S3 bucket where the job's output will be stored.",
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description:
+        'The ARN of the Amazon Identity and Access Management role that has permissions to read and write to your input and output Amazon S3 buckets respectively.',
+    }),
+    batchInferenceJobConfig: BatchInferenceJobConfigSchema.exactOptional().openapi({
+      description: 'The configuration details of a batch inference job.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the batch inference job.',
+    }),
   })
   .openapi({
     required: ['jobName', 'solutionVersionArn', 'jobInput', 'jobOutput', 'roleArn'],
@@ -333,9 +619,9 @@ const TooManyTagsExceptionSchema = z.any().openapi('TooManyTagsException')
 
 const CreateBatchSegmentJobResponseSchema = z
   .object({
-    batchSegmentJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the batch segment job.' }),
-    ).exactOptional(),
+    batchSegmentJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the batch segment job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateBatchSegmentJobResponse')
@@ -358,64 +644,33 @@ const BatchSegmentJobOutputSchema = z
 
 const CreateBatchSegmentJobRequestSchema = z
   .object({
-    jobName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the batch segment job to create.' }),
-    ),
-    solutionVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the solution version you want the batch segment job to use to generate batch segments.',
-        }),
-    ),
-    filterArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the filter to apply to the batch segment job. For more information on using filters, see <a href="https://docs.aws.amazon.com/personalize/latest/dg/filter-batch.html">Filtering batch recommendations</a>.',
-        }),
-    ).exactOptional(),
-    numResults: NumBatchResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of predicted users generated by the batch segment job for each line of input data.',
-        }),
-    ).exactOptional(),
-    jobInput: BatchSegmentJobInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 path for the input data used to generate the batch segment job.',
-        }),
-    ),
-    jobOutput: BatchSegmentJobOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The Amazon S3 path for the bucket where the job's output will be stored.",
-        }),
-    ),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Amazon Identity and Access Management role that has permissions to read and write to your input and output Amazon S3 buckets respectively.',
-        }),
-    ),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the batch segment job.',
-        }),
-    ).exactOptional(),
+    jobName: NameSchema.openapi({ description: 'The name of the batch segment job to create.' }),
+    solutionVersionArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the solution version you want the batch segment job to use to generate batch segments.',
+    }),
+    filterArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the filter to apply to the batch segment job. For more information on using filters, see <a href="https://docs.aws.amazon.com/personalize/latest/dg/filter-batch.html">Filtering batch recommendations</a>.',
+    }),
+    numResults: NumBatchResultsSchema.exactOptional().openapi({
+      description:
+        'The number of predicted users generated by the batch segment job for each line of input data.',
+    }),
+    jobInput: BatchSegmentJobInputSchema.openapi({
+      description: 'The Amazon S3 path for the input data used to generate the batch segment job.',
+    }),
+    jobOutput: BatchSegmentJobOutputSchema.openapi({
+      description: "The Amazon S3 path for the bucket where the job's output will be stored.",
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description:
+        'The ARN of the Amazon Identity and Access Management role that has permissions to read and write to your input and output Amazon S3 buckets respectively.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the batch segment job.',
+    }),
   })
   .openapi({
     required: ['jobName', 'solutionVersionArn', 'jobInput', 'jobOutput', 'roleArn'],
@@ -425,9 +680,9 @@ const CreateBatchSegmentJobRequestSchema = z
 
 const CreateCampaignResponseSchema = z
   .object({
-    campaignArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the campaign.' }),
-    ).exactOptional(),
+    campaignArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the campaign.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateCampaignResponse')
@@ -436,63 +691,41 @@ const TransactionsPerSecondSchema = z.int().min(1).openapi('TransactionsPerSecon
 
 const CampaignConfigSchema = z
   .object({
-    itemExplorationConfig: HyperParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the exploration configuration hyperparameters, including <code>explorationWeight</code> and <code>explorationItemAgeCutOff</code>, you want to use to configure the amount of item exploration Amazon Personalize uses when recommending items. Provide <code>itemExplorationConfig</code> data only if your solution uses the <a href="https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-new-item-USER_PERSONALIZATION.html">User-Personalization</a> recipe.',
-        }),
-    ).exactOptional(),
+    itemExplorationConfig: HyperParametersSchema.exactOptional().openapi({
+      description:
+        'Specifies the exploration configuration hyperparameters, including <code>explorationWeight</code> and <code>explorationItemAgeCutOff</code>, you want to use to configure the amount of item exploration Amazon Personalize uses when recommending items. Provide <code>itemExplorationConfig</code> data only if your solution uses the <a href="https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-new-item-USER_PERSONALIZATION.html">User-Personalization</a> recipe.',
+    }),
   })
   .openapi({ description: 'The configuration details of a campaign.', required: [] })
   .openapi('CampaignConfig')
 
 const CreateCampaignRequestSchema = z
   .object({
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name for the new campaign. The campaign name must be unique within your account.',
-        }),
-    ),
-    solutionVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the solution version to deploy.',
-        }),
-    ),
-    minProvisionedTPS: TransactionsPerSecondSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the requested minimum provisioned transactions (recommendations) per second that Amazon Personalize will support.',
-        }),
-    ).exactOptional(),
-    campaignConfig: CampaignConfigSchema.and(
-      z.any().openapi({ description: 'The configuration details of a campaign.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the campaign.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.openapi({
+      description:
+        'A name for the new campaign. The campaign name must be unique within your account.',
+    }),
+    solutionVersionArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the solution version to deploy.',
+    }),
+    minProvisionedTPS: TransactionsPerSecondSchema.exactOptional().openapi({
+      description:
+        'Specifies the requested minimum provisioned transactions (recommendations) per second that Amazon Personalize will support.',
+    }),
+    campaignConfig: CampaignConfigSchema.exactOptional().openapi({
+      description: 'The configuration details of a campaign.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the campaign.',
+    }),
   })
   .openapi({ required: ['name', 'solutionVersionArn'], title: 'CreateCampaignRequest' })
   .openapi('CreateCampaignRequest')
 
 const CreateDatasetResponseSchema = z
   .object({
-    datasetArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the dataset.' }),
-    ).exactOptional(),
+    datasetArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the dataset.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateDatasetResponse')
@@ -501,38 +734,22 @@ const DatasetTypeSchema = z.string().max(256).openapi('DatasetType')
 
 const CreateDatasetRequestSchema = z
   .object({
-    name: NameSchema.and(z.any().openapi({ description: 'The name for the dataset.' })),
-    schemaArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the schema to associate with the dataset. The schema defines the dataset fields.',
-        }),
-    ),
-    datasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the dataset group to add the dataset to.',
-        }),
-    ),
-    datasetType: DatasetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of dataset.</p> <p>One of the following (case insensitive) values:</p> <ul> <li> <p>Interactions</p> </li> <li> <p>Items</p> </li> <li> <p>Users</p> </li> </ul>',
-        }),
-    ),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the dataset.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.openapi({ description: 'The name for the dataset.' }),
+    schemaArn: ArnSchema.openapi({
+      description:
+        'The ARN of the schema to associate with the dataset. The schema defines the dataset fields.',
+    }),
+    datasetGroupArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset group to add the dataset to.',
+    }),
+    datasetType: DatasetTypeSchema.openapi({
+      description:
+        '<p>The type of dataset.</p> <p>One of the following (case insensitive) values:</p> <ul> <li> <p>Interactions</p> </li> <li> <p>Items</p> </li> <li> <p>Users</p> </li> </ul>',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the dataset.',
+    }),
   })
   .openapi({
     required: ['name', 'schemaArn', 'datasetGroupArn', 'datasetType'],
@@ -542,9 +759,9 @@ const CreateDatasetRequestSchema = z
 
 const CreateDatasetExportJobResponseSchema = z
   .object({
-    datasetExportJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset export job.' }),
-    ).exactOptional(),
+    datasetExportJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset export job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDatasetExportJobResponse')
@@ -561,48 +778,26 @@ const DatasetExportJobOutputSchema = z
 
 const CreateDatasetExportJobRequestSchema = z
   .object({
-    jobName: NameSchema.and(
-      z.any().openapi({ description: 'The name for the dataset export job.' }),
-    ),
-    datasetArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the dataset that contains the data to export.',
-        }),
-    ),
-    ingestionMode: IngestionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data to export, based on how you imported the data. You can choose to export only <code>BULK</code> data that you imported using a dataset import job, only <code>PUT</code> data that you imported incrementally (using the console, PutEvents, PutUsers and PutItems operations), or <code>ALL</code> for both types. The default value is <code>PUT</code>. ',
-        }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM service role that has permissions to add data to your output Amazon S3 bucket.',
-        }),
-    ),
-    jobOutput: DatasetExportJobOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The path to the Amazon S3 bucket where the job's output is stored.",
-        }),
-    ),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the dataset export job.',
-        }),
-    ).exactOptional(),
+    jobName: NameSchema.openapi({ description: 'The name for the dataset export job.' }),
+    datasetArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the dataset that contains the data to export.',
+    }),
+    ingestionMode: IngestionModeSchema.exactOptional().openapi({
+      description:
+        'The data to export, based on how you imported the data. You can choose to export only <code>BULK</code> data that you imported using a dataset import job, only <code>PUT</code> data that you imported incrementally (using the console, PutEvents, PutUsers and PutItems operations), or <code>ALL</code> for both types. The default value is <code>PUT</code>. ',
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM service role that has permissions to add data to your output Amazon S3 bucket.',
+    }),
+    jobOutput: DatasetExportJobOutputSchema.openapi({
+      description: "The path to the Amazon S3 bucket where the job's output is stored.",
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the dataset export job.',
+    }),
   })
   .openapi({
     required: ['jobName', 'datasetArn', 'roleArn', 'jobOutput'],
@@ -614,74 +809,54 @@ const DomainSchema = z.enum(['ECOMMERCE', 'VIDEO_ON_DEMAND']).openapi('Domain')
 
 const CreateDatasetGroupResponseSchema = z
   .object({
-    datasetGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the new dataset group.' }),
-    ).exactOptional(),
-    domain: DomainSchema.and(
-      z.any().openapi({ description: 'The domain for the new Domain dataset group.' }),
-    ).exactOptional(),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the new dataset group.',
+    }),
+    domain: DomainSchema.exactOptional().openapi({
+      description: 'The domain for the new Domain dataset group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDatasetGroupResponse')
 
 const CreateDatasetGroupRequestSchema = z
   .object({
-    name: NameSchema.and(z.any().openapi({ description: 'The name for the new dataset group.' })),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Identity and Access Management (IAM) role that has permissions to access the Key Management Service (KMS) key. Supplying an IAM role is only valid when also specifying a KMS key.',
-        }),
-    ).exactOptional(),
-    kmsKeyArn: KmsKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of a Key Management Service (KMS) key used to encrypt the datasets.',
-        }),
-    ).exactOptional(),
-    domain: DomainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The domain of the dataset group. Specify a domain to create a Domain dataset group. The domain you specify determines the default schemas for datasets and the use cases available for recommenders. If you don't specify a domain, you create a Custom dataset group with solution versions that you deploy with a campaign. ",
-        }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the dataset group.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.openapi({ description: 'The name for the new dataset group.' }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Identity and Access Management (IAM) role that has permissions to access the Key Management Service (KMS) key. Supplying an IAM role is only valid when also specifying a KMS key.',
+    }),
+    kmsKeyArn: KmsKeyArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of a Key Management Service (KMS) key used to encrypt the datasets.',
+    }),
+    domain: DomainSchema.exactOptional().openapi({
+      description:
+        "The domain of the dataset group. Specify a domain to create a Domain dataset group. The domain you specify determines the default schemas for datasets and the use cases available for recommenders. If you don't specify a domain, you create a Custom dataset group with solution versions that you deploy with a campaign. ",
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the dataset group.',
+    }),
   })
   .openapi({ required: ['name'], title: 'CreateDatasetGroupRequest' })
   .openapi('CreateDatasetGroupRequest')
 
 const CreateDatasetImportJobResponseSchema = z
   .object({
-    datasetImportJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the dataset import job.' }),
-    ).exactOptional(),
+    datasetImportJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the dataset import job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDatasetImportJobResponse')
 
 const DataSourceSchema = z
   .object({
-    dataLocation: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The path to the Amazon S3 bucket where the data that you want to upload to your dataset is stored. For example: </p> <p> <code>s3://bucket-name/folder-name/</code> </p>',
-        }),
-    ).exactOptional(),
+    dataLocation: S3LocationSchema.exactOptional().openapi({
+      description:
+        '<p>The path to the Amazon S3 bucket where the data that you want to upload to your dataset is stored. For example: </p> <p> <code>s3://bucket-name/folder-name/</code> </p>',
+    }),
   })
   .openapi({
     description: 'Describes the data source that contains the data to upload to a dataset.',
@@ -695,51 +870,29 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const CreateDatasetImportJobRequestSchema = z
   .object({
-    jobName: NameSchema.and(
-      z.any().openapi({ description: 'The name for the dataset import job.' }),
-    ),
-    datasetArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the dataset that receives the imported data.' }),
-    ),
-    dataSource: DataSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon S3 bucket that contains the training data to import.',
-        }),
-    ),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM role that has permissions to read from the Amazon S3 data source.',
-        }),
-    ),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the dataset import job.',
-        }),
-    ).exactOptional(),
-    importMode: ImportModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specify how to add the new records to an existing dataset. The default import mode is <code>FULL</code>. If you haven't imported bulk records into the dataset previously, you can only specify <code>FULL</code>.</p> <ul> <li> <p>Specify <code>FULL</code> to overwrite all existing bulk data in your dataset. Data you imported individually is not replaced.</p> </li> <li> <p>Specify <code>INCREMENTAL</code> to append the new records to the existing data in your dataset. Amazon Personalize replaces any record with the same ID with the new one.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    publishAttributionMetricsToS3: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you created a metric attribution, specify whether to publish metrics for this import job to Amazon S3',
-        }),
-    ).exactOptional(),
+    jobName: NameSchema.openapi({ description: 'The name for the dataset import job.' }),
+    datasetArn: ArnSchema.openapi({
+      description: 'The ARN of the dataset that receives the imported data.',
+    }),
+    dataSource: DataSourceSchema.openapi({
+      description: 'The Amazon S3 bucket that contains the training data to import.',
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description:
+        'The ARN of the IAM role that has permissions to read from the Amazon S3 data source.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the dataset import job.',
+    }),
+    importMode: ImportModeSchema.exactOptional().openapi({
+      description:
+        "<p>Specify how to add the new records to an existing dataset. The default import mode is <code>FULL</code>. If you haven't imported bulk records into the dataset previously, you can only specify <code>FULL</code>.</p> <ul> <li> <p>Specify <code>FULL</code> to overwrite all existing bulk data in your dataset. Data you imported individually is not replaced.</p> </li> <li> <p>Specify <code>INCREMENTAL</code> to append the new records to the existing data in your dataset. Amazon Personalize replaces any record with the same ID with the new one.</p> </li> </ul>",
+    }),
+    publishAttributionMetricsToS3: BooleanSchema.exactOptional().openapi({
+      description:
+        'If you created a metric attribution, specify whether to publish metrics for this import job to Amazon S3',
+    }),
   })
   .openapi({
     required: ['jobName', 'datasetArn', 'dataSource', 'roleArn'],
@@ -751,49 +904,35 @@ const TrackingIdSchema = z.string().max(256).openapi('TrackingId')
 
 const CreateEventTrackerResponseSchema = z
   .object({
-    eventTrackerArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the event tracker.' }),
-    ).exactOptional(),
-    trackingId: TrackingIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the event tracker. Include this ID in requests to the <a href="https://docs.aws.amazon.com/personalize/latest/dg/API_UBS_PutEvents.html">PutEvents</a> API.',
-        }),
-    ).exactOptional(),
+    eventTrackerArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the event tracker.',
+    }),
+    trackingId: TrackingIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the event tracker. Include this ID in requests to the <a href="https://docs.aws.amazon.com/personalize/latest/dg/API_UBS_PutEvents.html">PutEvents</a> API.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateEventTrackerResponse')
 
 const CreateEventTrackerRequestSchema = z
   .object({
-    name: NameSchema.and(z.any().openapi({ description: 'The name for the event tracker.' })),
-    datasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the dataset group that receives the event data.',
-        }),
-    ),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the event tracker.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.openapi({ description: 'The name for the event tracker.' }),
+    datasetGroupArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the dataset group that receives the event data.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the event tracker.',
+    }),
   })
   .openapi({ required: ['name', 'datasetGroupArn'], title: 'CreateEventTrackerRequest' })
   .openapi('CreateEventTrackerRequest')
 
 const CreateFilterResponseSchema = z
   .object({
-    filterArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the new filter.' }),
-    ).exactOptional(),
+    filterArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the new filter.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateFilterResponse')
@@ -802,28 +941,18 @@ const FilterExpressionSchema = z.string().min(1).max(2500).openapi('FilterExpres
 
 const CreateFilterRequestSchema = z
   .object({
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the filter to create.' })),
-    datasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the dataset group that the filter will belong to.' }),
-    ),
-    filterExpression: FilterExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filter expression defines which items are included or excluded from recommendations. Filter expression must follow specific format rules. For information about filter expression structure and syntax, see <a href="https://docs.aws.amazon.com/personalize/latest/dg/filter-expressions.html">Filter expressions</a>.',
-        }),
-    ),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the filter.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.openapi({ description: 'The name of the filter to create.' }),
+    datasetGroupArn: ArnSchema.openapi({
+      description: 'The ARN of the dataset group that the filter will belong to.',
+    }),
+    filterExpression: FilterExpressionSchema.openapi({
+      description:
+        'The filter expression defines which items are included or excluded from recommendations. Filter expression must follow specific format rules. For information about filter expression structure and syntax, see <a href="https://docs.aws.amazon.com/personalize/latest/dg/filter-expressions.html">Filter expressions</a>.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the filter.',
+    }),
   })
   .openapi({
     required: ['name', 'datasetGroupArn', 'filterExpression'],
@@ -833,40 +962,26 @@ const CreateFilterRequestSchema = z
 
 const CreateMetricAttributionResponseSchema = z
   .object({
-    metricAttributionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) for the new metric attribution.' }),
-    ).exactOptional(),
+    metricAttributionArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the new metric attribution.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateMetricAttributionResponse')
-
-const EventTypeSchema = z.string().max(256).openapi('EventType')
-
-const MetricNameSchema = z.string().max(256).openapi('MetricName')
 
 const MetricExpressionSchema = z.string().max(256).openapi('MetricExpression')
 
 const MetricAttributeSchema = z
   .object({
-    eventType: EventTypeSchema.and(z.any().openapi({ description: "The metric's event type." })),
-    metricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The metric's name. The name helps you identify the metric in Amazon CloudWatch or Amazon S3.",
-        }),
-    ),
-    expression: MetricExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The attribute's expression. Available functions are <code>SUM()</code> or <code>SAMPLECOUNT()</code>. For SUM() functions, provide the dataset type (either Interactions or Items) and column to sum as a parameter. For example SUM(Items.PRICE).",
-        }),
-    ),
+    eventType: EventTypeSchema.openapi({ description: "The metric's event type." }),
+    metricName: MetricNameSchema.openapi({
+      description:
+        "The metric's name. The name helps you identify the metric in Amazon CloudWatch or Amazon S3.",
+    }),
+    expression: MetricExpressionSchema.openapi({
+      description:
+        "The attribute's expression. Available functions are <code>SUM()</code> or <code>SAMPLECOUNT()</code>. For SUM() functions, provide the dataset type (either Interactions or Items) and column to sum as a parameter. For example SUM(Items.PRICE).",
+    }),
   })
   .openapi({
     required: ['eventType', 'metricName', 'expression'],
@@ -880,14 +995,10 @@ const MetricAttributesSchema = z.array(MetricAttributeSchema).max(10).openapi('M
 const MetricAttributionOutputSchema = z
   .object({
     s3DataDestination: S3DataConfigSchema.exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM service role that has permissions to add data to your output Amazon S3 bucket and add metrics to Amazon CloudWatch. For more information, see <a href="https://docs.aws.amazon.com/personalize/latest/dg/measuring-recommendation-impact.html">Measuring impact of recommendations</a>.',
-        }),
-    ),
+    roleArn: RoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM service role that has permissions to add data to your output Amazon S3 bucket and add metrics to Amazon CloudWatch. For more information, see <a href="https://docs.aws.amazon.com/personalize/latest/dg/measuring-recommendation-impact.html">Measuring impact of recommendations</a>.',
+    }),
   })
   .openapi({
     required: ['roleArn'],
@@ -897,28 +1008,18 @@ const MetricAttributionOutputSchema = z
 
 const CreateMetricAttributionRequestSchema = z
   .object({
-    name: NameSchema.and(z.any().openapi({ description: 'A name for the metric attribution.' })),
-    datasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the destination dataset group for the metric attribution.',
-        }),
-    ),
-    metrics: MetricAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of metric attributes for the metric attribution. Each metric attribute specifies an event type to track and a function. Available functions are <code>SUM()</code> or <code>SAMPLECOUNT()</code>. For SUM() functions, provide the dataset type (either Interactions or Items) and column to sum as a parameter. For example SUM(Items.PRICE).',
-        }),
-    ),
-    metricsOutputConfig: MetricAttributionOutputSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The output configuration details for the metric attribution.' }),
-    ),
+    name: NameSchema.openapi({ description: 'A name for the metric attribution.' }),
+    datasetGroupArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the destination dataset group for the metric attribution.',
+    }),
+    metrics: MetricAttributesSchema.openapi({
+      description:
+        'A list of metric attributes for the metric attribution. Each metric attribute specifies an event type to track and a function. Available functions are <code>SUM()</code> or <code>SAMPLECOUNT()</code>. For SUM() functions, provide the dataset type (either Interactions or Items) and column to sum as a parameter. For example SUM(Items.PRICE).',
+    }),
+    metricsOutputConfig: MetricAttributionOutputSchema.openapi({
+      description: 'The output configuration details for the metric attribution.',
+    }),
   })
   .openapi({
     required: ['name', 'datasetGroupArn', 'metrics', 'metricsOutputConfig'],
@@ -928,65 +1029,45 @@ const CreateMetricAttributionRequestSchema = z
 
 const CreateRecommenderResponseSchema = z
   .object({
-    recommenderArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the recommender.' }),
-    ).exactOptional(),
+    recommenderArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the recommender.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRecommenderResponse')
 
 const RecommenderConfigSchema = z
   .object({
-    itemExplorationConfig: HyperParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the exploration configuration hyperparameters, including <code>explorationWeight</code> and <code>explorationItemAgeCutOff</code>, you want to use to configure the amount of item exploration Amazon Personalize uses when recommending items. Provide <code>itemExplorationConfig</code> data only if your recommenders generate personalized recommendations for a user (not popular items or similar items).',
-        }),
-    ).exactOptional(),
-    minRecommendationRequestsPerSecond: TransactionsPerSecondSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the requested minimum provisioned recommendation requests per second that Amazon Personalize will support.',
-        }),
-    ).exactOptional(),
+    itemExplorationConfig: HyperParametersSchema.exactOptional().openapi({
+      description:
+        'Specifies the exploration configuration hyperparameters, including <code>explorationWeight</code> and <code>explorationItemAgeCutOff</code>, you want to use to configure the amount of item exploration Amazon Personalize uses when recommending items. Provide <code>itemExplorationConfig</code> data only if your recommenders generate personalized recommendations for a user (not popular items or similar items).',
+    }),
+    minRecommendationRequestsPerSecond: TransactionsPerSecondSchema.exactOptional().openapi({
+      description:
+        'Specifies the requested minimum provisioned recommendation requests per second that Amazon Personalize will support.',
+    }),
   })
   .openapi({ description: 'The configuration details of the recommender.', required: [] })
   .openapi('RecommenderConfig')
 
 const CreateRecommenderRequestSchema = z
   .object({
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the recommender.' })),
-    datasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the destination domain dataset group for the recommender.',
-        }),
-    ),
-    recipeArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the recipe that the recommender will use. For a recommender, a recipe is a Domain dataset group use case. Only Domain dataset group use cases can be used to create a recommender. For information about use cases see <a href="https://docs.aws.amazon.com/personalize/latest/dg/domain-use-cases.html">Choosing recommender use cases</a>. ',
-        }),
-    ),
-    recommenderConfig: RecommenderConfigSchema.and(
-      z.any().openapi({ description: 'The configuration details of the recommender.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the recommender.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.openapi({ description: 'The name of the recommender.' }),
+    datasetGroupArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the destination domain dataset group for the recommender.',
+    }),
+    recipeArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the recipe that the recommender will use. For a recommender, a recipe is a Domain dataset group use case. Only Domain dataset group use cases can be used to create a recommender. For information about use cases see <a href="https://docs.aws.amazon.com/personalize/latest/dg/domain-use-cases.html">Choosing recommender use cases</a>. ',
+    }),
+    recommenderConfig: RecommenderConfigSchema.exactOptional().openapi({
+      description: 'The configuration details of the recommender.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the recommender.',
+    }),
   })
   .openapi({
     required: ['name', 'datasetGroupArn', 'recipeArn'],
@@ -996,9 +1077,9 @@ const CreateRecommenderRequestSchema = z
 
 const CreateSchemaResponseSchema = z
   .object({
-    schemaArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the created schema.' }),
-    ).exactOptional(),
+    schemaArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the created schema.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateSchemaResponse')
@@ -1007,425 +1088,154 @@ const AvroSchemaSchema = z.string().max(10000).openapi('AvroSchema')
 
 const CreateSchemaRequestSchema = z
   .object({
-    name: NameSchema.and(z.any().openapi({ description: 'The name for the schema.' })),
-    schema: AvroSchemaSchema.and(z.any().openapi({ description: 'A schema in Avro JSON format.' })),
-    domain: DomainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain for the schema. If you are creating a schema for a dataset in a Domain dataset group, specify the domain you chose when you created the Domain dataset group.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.openapi({ description: 'The name for the schema.' }),
+    schema: AvroSchemaSchema.openapi({ description: 'A schema in Avro JSON format.' }),
+    domain: DomainSchema.exactOptional().openapi({
+      description:
+        'The domain for the schema. If you are creating a schema for a dataset in a Domain dataset group, specify the domain you chose when you created the Domain dataset group.',
+    }),
   })
   .openapi({ required: ['name', 'schema'], title: 'CreateSchemaRequest' })
   .openapi('CreateSchemaRequest')
 
 const CreateSolutionResponseSchema = z
   .object({
-    solutionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the solution.' }),
-    ).exactOptional(),
+    solutionArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the solution.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateSolutionResponse')
 
-const PerformAutoMLSchema = z.boolean().openapi('PerformAutoML')
-
-const EventValueThresholdSchema = z.string().max(256).openapi('EventValueThreshold')
-
-const HPOObjectiveTypeSchema = z.string().max(256).openapi('HPOObjectiveType')
-
-const MetricRegexSchema = z.string().max(256).openapi('MetricRegex')
-
-const HPOObjectiveSchema = z
-  .object({
-    type: HPOObjectiveTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the metric. Valid values are <code>Maximize</code> and <code>Minimize</code>.',
-        }),
-    ).exactOptional(),
-    metricName: MetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric.' }),
-    ).exactOptional(),
-    metricRegex: MetricRegexSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A regular expression for finding the metric in the training job logs.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "<p>The metric to optimize during hyperparameter optimization (HPO).</p> <note> <p>Amazon Personalize doesn't support configuring the <code>hpoObjective</code> at this time.</p> </note>",
-    required: [],
-  })
-  .openapi('HPOObjective')
-
-const HPOResourceSchema = z.string().max(256).openapi('HPOResource')
-
-const HPOResourceConfigSchema = z
-  .object({
-    maxNumberOfTrainingJobs: HPOResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of training jobs when you create a solution version. The maximum value for <code>maxNumberOfTrainingJobs</code> is <code>40</code>.',
-        }),
-    ).exactOptional(),
-    maxParallelTrainingJobs: HPOResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of parallel training jobs when you create a solution version. The maximum value for <code>maxParallelTrainingJobs</code> is <code>10</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Describes the resource configuration for hyperparameter optimization (HPO).',
-    required: [],
-  })
-  .openapi('HPOResourceConfig')
-
-const HyperParameterRangesSchema: z.ZodType<HyperParameterRangesType> = z
-  .lazy(() =>
-    z
-      .object({
-        integerHyperParameterRanges: IntegerHyperParameterRangesSchema.and(
-          z.any().openapi({ description: 'The integer-valued hyperparameters and their ranges.' }),
-        ).exactOptional(),
-        continuousHyperParameterRanges: ContinuousHyperParameterRangesSchema.and(
-          z.any().openapi({ description: 'The continuous hyperparameters and their ranges.' }),
-        ).exactOptional(),
-        categoricalHyperParameterRanges: CategoricalHyperParameterRangesSchema.and(
-          z.any().openapi({ description: 'The categorical hyperparameters and their ranges.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'Specifies the hyperparameters and their ranges. Hyperparameters can be categorical, continuous, or integer-valued.',
-        required: [],
-      }),
-  )
-  .openapi('HyperParameterRanges')
-
-const HPOConfigSchema = z
-  .object({
-    hpoObjective: HPOObjectiveSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The metric to optimize during HPO.</p> <note> <p>Amazon Personalize doesn't support configuring the <code>hpoObjective</code> at this time.</p> </note>",
-        }),
-    ).exactOptional(),
-    hpoResourceConfig: HPOResourceConfigSchema.and(
-      z.any().openapi({ description: 'Describes the resource configuration for HPO.' }),
-    ).exactOptional(),
-    algorithmHyperParameterRanges: HyperParameterRangesSchema.and(
-      z.any().openapi({ description: 'The hyperparameters and their allowable ranges.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Describes the properties for hyperparameter optimization (HPO).',
-    required: [],
-  })
-  .openapi('HPOConfig')
-
-const FeatureTransformationParametersSchema = z
-  .record(z.string(), ParameterValueSchema)
-  .refine((val) => Object.keys(val).length <= 100)
-  .openapi('FeatureTransformationParameters')
-
-const ArnListSchema = z.array(ArnSchema).max(100).openapi('ArnList')
-
-const AutoMLConfigSchema = z
-  .object({
-    metricName: MetricNameSchema.and(
-      z.any().openapi({ description: 'The metric to optimize.' }),
-    ).exactOptional(),
-    recipeList: ArnListSchema.and(
-      z.any().openapi({ description: 'The list of candidate recipes.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'When the solution performs AutoML (<code>performAutoML</code> is true in <a href="https://docs.aws.amazon.com/personalize/latest/dg/API_CreateSolution.html">CreateSolution</a>), Amazon Personalize determines which recipe, from the specified list, optimizes the given metric. Amazon Personalize then uses that recipe for the solution.',
-    required: [],
-  })
-  .openapi('AutoMLConfig')
-
-const ItemAttributeSchema = z.string().min(1).max(150).openapi('ItemAttribute')
-
-const ObjectiveSensitivitySchema = z
-  .enum(['LOW', 'MEDIUM', 'HIGH', 'OFF'])
-  .openapi('ObjectiveSensitivity')
-
-const OptimizationObjectiveSchema = z
-  .object({
-    itemAttribute: ItemAttributeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The numerical metadata column in an Items dataset related to the optimization objective. For example, VIDEO_LENGTH (to maximize streaming minutes), or PRICE (to maximize revenue).',
-        }),
-    ).exactOptional(),
-    objectiveSensitivity: ObjectiveSensitivitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies how Amazon Personalize balances the importance of your optimization objective versus relevance.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Describes the additional objective for the solution, such as maximizing streaming minutes or increasing revenue. For more information see <a href="https://docs.aws.amazon.com/personalize/latest/dg/optimizing-solution-for-objective.html">Optimizing a solution</a>.',
-    required: [],
-  })
-  .openapi('OptimizationObjective')
-
-const SolutionConfigSchema = z
-  .object({
-    eventValueThreshold: EventValueThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Only events with a value greater than or equal to this threshold are used for training a model.',
-        }),
-    ).exactOptional(),
-    hpoConfig: HPOConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes the properties for hyperparameter optimization (HPO).',
-        }),
-    ).exactOptional(),
-    algorithmHyperParameters: HyperParametersSchema.and(
-      z.any().openapi({ description: 'Lists the hyperparameter names and ranges.' }),
-    ).exactOptional(),
-    featureTransformationParameters: FeatureTransformationParametersSchema.and(
-      z.any().openapi({ description: 'Lists the feature transformation parameters.' }),
-    ).exactOptional(),
-    autoMLConfig: AutoMLConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/personalize/latest/dg/API_AutoMLConfig.html">AutoMLConfig</a> object containing a list of recipes to search when AutoML is performed.',
-        }),
-    ).exactOptional(),
-    optimizationObjective: OptimizationObjectiveSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the additional objective for the solution, such as maximizing streaming minutes or increasing revenue. For more information see <a href="https://docs.aws.amazon.com/personalize/latest/dg/optimizing-solution-for-objective.html">Optimizing a solution</a>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Describes the configuration properties for the solution.',
-    required: [],
-  })
-  .openapi('SolutionConfig')
-
 const CreateSolutionRequestSchema = z
   .object({
-    name: NameSchema.and(z.any().openapi({ description: 'The name for the solution.' })),
-    performHPO: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to perform hyperparameter optimization (HPO) on the specified or selected recipe. The default is <code>false</code>.</p> <p>When performing AutoML, this parameter is always <code>true</code> and you should not set it to <code>false</code>.</p>',
-        }),
-    ).exactOptional(),
-    performAutoML: PerformAutoMLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to perform automated machine learning (AutoML). The default is <code>false</code>. For this case, you must specify <code>recipeArn</code>.</p> <p>When set to <code>true</code>, Amazon Personalize analyzes your training data and selects the optimal USER_PERSONALIZATION recipe and hyperparameters. In this case, you must omit <code>recipeArn</code>. Amazon Personalize determines the optimal recipe by running tests with different values for the hyperparameters. AutoML lengthens the training process as compared to selecting a specific recipe.</p>',
-        }),
-    ).exactOptional(),
-    recipeArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the recipe to use for model training. Only specified when <code>performAutoML</code> is false.',
-        }),
-    ).exactOptional(),
-    datasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the dataset group that provides the training data.',
-        }),
-    ),
-    eventType: EventTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>When your have multiple event types (using an <code>EVENT_TYPE</code> schema field), this parameter specifies which event type (for example, 'click' or 'like') is used for training the model.</p> <p>If you do not provide an <code>eventType</code>, Amazon Personalize will use all interactions for training with equal weight regardless of type.</p>",
-        }),
-    ).exactOptional(),
-    solutionConfig: SolutionConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The configuration to use with the solution. When <code>performAutoML</code> is set to true, Amazon Personalize only evaluates the <code>autoMLConfig</code> section of the solution configuration.</p> <note> <p>Amazon Personalize doesn't support configuring the <code>hpoObjective</code> at this time.</p> </note>",
-        }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the solution.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.openapi({ description: 'The name for the solution.' }),
+    performHPO: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to perform hyperparameter optimization (HPO) on the specified or selected recipe. The default is <code>false</code>.</p> <p>When performing AutoML, this parameter is always <code>true</code> and you should not set it to <code>false</code>.</p>',
+    }),
+    performAutoML: PerformAutoMLSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to perform automated machine learning (AutoML). The default is <code>false</code>. For this case, you must specify <code>recipeArn</code>.</p> <p>When set to <code>true</code>, Amazon Personalize analyzes your training data and selects the optimal USER_PERSONALIZATION recipe and hyperparameters. In this case, you must omit <code>recipeArn</code>. Amazon Personalize determines the optimal recipe by running tests with different values for the hyperparameters. AutoML lengthens the training process as compared to selecting a specific recipe.</p>',
+    }),
+    recipeArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the recipe to use for model training. Only specified when <code>performAutoML</code> is false.',
+    }),
+    datasetGroupArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the dataset group that provides the training data.',
+    }),
+    eventType: EventTypeSchema.exactOptional().openapi({
+      description:
+        "<p>When your have multiple event types (using an <code>EVENT_TYPE</code> schema field), this parameter specifies which event type (for example, 'click' or 'like') is used for training the model.</p> <p>If you do not provide an <code>eventType</code>, Amazon Personalize will use all interactions for training with equal weight regardless of type.</p>",
+    }),
+    solutionConfig: SolutionConfigSchema.exactOptional().openapi({
+      description:
+        "<p>The configuration to use with the solution. When <code>performAutoML</code> is set to true, Amazon Personalize only evaluates the <code>autoMLConfig</code> section of the solution configuration.</p> <note> <p>Amazon Personalize doesn't support configuring the <code>hpoObjective</code> at this time.</p> </note>",
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the solution.',
+    }),
   })
   .openapi({ required: ['name', 'datasetGroupArn'], title: 'CreateSolutionRequest' })
   .openapi('CreateSolutionRequest')
 
 const CreateSolutionVersionResponseSchema = z
   .object({
-    solutionVersionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the new solution version.' }),
-    ).exactOptional(),
+    solutionVersionArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the new solution version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateSolutionVersionResponse')
 
-const TrainingModeSchema = z.enum(['FULL', 'UPDATE']).openapi('TrainingMode')
-
 const CreateSolutionVersionRequestSchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the solution version.' }),
-    ).exactOptional(),
-    solutionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the solution containing the training configuration information.',
-        }),
-    ),
-    trainingMode: TrainingModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The scope of training to be performed when creating the solution version. The <code>FULL</code> option trains the solution version based on the entirety of the input solution\'s training data, while the <code>UPDATE</code> option processes only the data that has changed in comparison to the input solution. Choose <code>UPDATE</code> when you want to incrementally update your solution version instead of creating an entirely new one.</p> <important> <p>The <code>UPDATE</code> option can only be used when you already have an active solution version created from the input solution using the <code>FULL</code> option and the input solution was trained with the <a href="https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-new-item-USER_PERSONALIZATION.html">User-Personalization</a> recipe or the <a href="https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-hrnn-coldstart.html">HRNN-Coldstart</a> recipe.</p> </important>',
-        }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the solution version.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the solution version.' }),
+    solutionArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the solution containing the training configuration information.',
+    }),
+    trainingMode: TrainingModeSchema.exactOptional().openapi({
+      description:
+        '<p>The scope of training to be performed when creating the solution version. The <code>FULL</code> option trains the solution version based on the entirety of the input solution\'s training data, while the <code>UPDATE</code> option processes only the data that has changed in comparison to the input solution. Choose <code>UPDATE</code> when you want to incrementally update your solution version instead of creating an entirely new one.</p> <important> <p>The <code>UPDATE</code> option can only be used when you already have an active solution version created from the input solution using the <code>FULL</code> option and the input solution was trained with the <a href="https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-new-item-USER_PERSONALIZATION.html">User-Personalization</a> recipe or the <a href="https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-hrnn-coldstart.html">HRNN-Coldstart</a> recipe.</p> </important>',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">tags</a> to apply to the solution version.',
+    }),
   })
   .openapi({ required: ['solutionArn'], title: 'CreateSolutionVersionRequest' })
   .openapi('CreateSolutionVersionRequest')
 
 const DeleteCampaignRequestSchema = z
   .object({
-    campaignArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the campaign to delete.' }),
-    ),
+    campaignArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the campaign to delete.',
+    }),
   })
   .openapi({ required: ['campaignArn'], title: 'DeleteCampaignRequest' })
   .openapi('DeleteCampaignRequest')
 
 const DeleteDatasetRequestSchema = z
   .object({
-    datasetArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset to delete.' }),
-    ),
+    datasetArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset to delete.',
+    }),
   })
   .openapi({ required: ['datasetArn'], title: 'DeleteDatasetRequest' })
   .openapi('DeleteDatasetRequest')
 
 const DeleteDatasetGroupRequestSchema = z
   .object({
-    datasetGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the dataset group to delete.' }),
-    ),
+    datasetGroupArn: ArnSchema.openapi({ description: 'The ARN of the dataset group to delete.' }),
   })
   .openapi({ required: ['datasetGroupArn'], title: 'DeleteDatasetGroupRequest' })
   .openapi('DeleteDatasetGroupRequest')
 
 const DeleteEventTrackerRequestSchema = z
   .object({
-    eventTrackerArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the event tracker to delete.' }),
-    ),
+    eventTrackerArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the event tracker to delete.',
+    }),
   })
   .openapi({ required: ['eventTrackerArn'], title: 'DeleteEventTrackerRequest' })
   .openapi('DeleteEventTrackerRequest')
 
 const DeleteFilterRequestSchema = z
-  .object({
-    filterArn: ArnSchema.and(z.any().openapi({ description: 'The ARN of the filter to delete.' })),
-  })
+  .object({ filterArn: ArnSchema.openapi({ description: 'The ARN of the filter to delete.' }) })
   .openapi({ required: ['filterArn'], title: 'DeleteFilterRequest' })
   .openapi('DeleteFilterRequest')
 
 const DeleteMetricAttributionRequestSchema = z
   .object({
-    metricAttributionArn: ArnSchema.and(
-      z.any().openapi({ description: "The metric attribution's Amazon Resource Name (ARN)." }),
-    ),
+    metricAttributionArn: ArnSchema.openapi({
+      description: "The metric attribution's Amazon Resource Name (ARN).",
+    }),
   })
   .openapi({ required: ['metricAttributionArn'], title: 'DeleteMetricAttributionRequest' })
   .openapi('DeleteMetricAttributionRequest')
 
 const DeleteRecommenderRequestSchema = z
   .object({
-    recommenderArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the recommender to delete.' }),
-    ),
+    recommenderArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the recommender to delete.',
+    }),
   })
   .openapi({ required: ['recommenderArn'], title: 'DeleteRecommenderRequest' })
   .openapi('DeleteRecommenderRequest')
 
 const DeleteSchemaRequestSchema = z
   .object({
-    schemaArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the schema to delete.' }),
-    ),
+    schemaArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the schema to delete.',
+    }),
   })
   .openapi({ required: ['schemaArn'], title: 'DeleteSchemaRequest' })
   .openapi('DeleteSchemaRequest')
 
 const DeleteSolutionRequestSchema = z
-  .object({
-    solutionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the solution to delete.' }),
-    ),
-  })
+  .object({ solutionArn: ArnSchema.openapi({ description: 'The ARN of the solution to delete.' }) })
   .openapi({ required: ['solutionArn'], title: 'DeleteSolutionRequest' })
   .openapi('DeleteSolutionRequest')
 
@@ -1433,12 +1243,10 @@ const DockerURISchema = z.string().max(256).openapi('DockerURI')
 
 const AlgorithmImageSchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the algorithm image.' }),
-    ).exactOptional(),
-    dockerURI: DockerURISchema.and(
-      z.any().openapi({ description: 'The URI of the Docker container for the algorithm image.' }),
-    ),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the algorithm image.' }),
+    dockerURI: DockerURISchema.openapi({
+      description: 'The URI of the Docker container for the algorithm image.',
+    }),
   })
   .openapi({ required: ['dockerURI'], description: 'Describes an algorithm image.' })
   .openapi('AlgorithmImage')
@@ -1447,18 +1255,18 @@ const TunableSchema = z.boolean().openapi('Tunable')
 
 const DefaultIntegerHyperParameterRangeSchema = z
   .object({
-    name: ParameterNameSchema.and(
-      z.any().openapi({ description: 'The name of the hyperparameter.' }),
-    ).exactOptional(),
-    minValue: IntegerMinValueSchema.and(
-      z.any().openapi({ description: 'The minimum allowable value for the hyperparameter.' }),
-    ).exactOptional(),
-    maxValue: IntegerMaxValueSchema.and(
-      z.any().openapi({ description: 'The maximum allowable value for the hyperparameter.' }),
-    ).exactOptional(),
-    isTunable: TunableSchema.and(
-      z.any().openapi({ description: 'Indicates whether the hyperparameter is tunable.' }),
-    ).exactOptional(),
+    name: ParameterNameSchema.exactOptional().openapi({
+      description: 'The name of the hyperparameter.',
+    }),
+    minValue: IntegerMinValueSchema.exactOptional().openapi({
+      description: 'The minimum allowable value for the hyperparameter.',
+    }),
+    maxValue: IntegerMaxValueSchema.exactOptional().openapi({
+      description: 'The maximum allowable value for the hyperparameter.',
+    }),
+    isTunable: TunableSchema.exactOptional().openapi({
+      description: 'Indicates whether the hyperparameter is tunable.',
+    }),
   })
   .openapi({
     description:
@@ -1474,18 +1282,18 @@ const DefaultIntegerHyperParameterRangesSchema = z
 
 const DefaultContinuousHyperParameterRangeSchema = z
   .object({
-    name: ParameterNameSchema.and(
-      z.any().openapi({ description: 'The name of the hyperparameter.' }),
-    ).exactOptional(),
-    minValue: ContinuousMinValueSchema.and(
-      z.any().openapi({ description: 'The minimum allowable value for the hyperparameter.' }),
-    ).exactOptional(),
-    maxValue: ContinuousMaxValueSchema.and(
-      z.any().openapi({ description: 'The maximum allowable value for the hyperparameter.' }),
-    ).exactOptional(),
-    isTunable: TunableSchema.and(
-      z.any().openapi({ description: 'Whether the hyperparameter is tunable.' }),
-    ).exactOptional(),
+    name: ParameterNameSchema.exactOptional().openapi({
+      description: 'The name of the hyperparameter.',
+    }),
+    minValue: ContinuousMinValueSchema.exactOptional().openapi({
+      description: 'The minimum allowable value for the hyperparameter.',
+    }),
+    maxValue: ContinuousMaxValueSchema.exactOptional().openapi({
+      description: 'The maximum allowable value for the hyperparameter.',
+    }),
+    isTunable: TunableSchema.exactOptional().openapi({
+      description: 'Whether the hyperparameter is tunable.',
+    }),
   })
   .openapi({
     description:
@@ -1501,15 +1309,15 @@ const DefaultContinuousHyperParameterRangesSchema = z
 
 const DefaultCategoricalHyperParameterRangeSchema = z
   .object({
-    name: ParameterNameSchema.and(
-      z.any().openapi({ description: 'The name of the hyperparameter.' }),
-    ).exactOptional(),
-    values: CategoricalValuesSchema.and(
-      z.any().openapi({ description: 'A list of the categories for the hyperparameter.' }),
-    ).exactOptional(),
-    isTunable: TunableSchema.and(
-      z.any().openapi({ description: 'Whether the hyperparameter is tunable.' }),
-    ).exactOptional(),
+    name: ParameterNameSchema.exactOptional().openapi({
+      description: 'The name of the hyperparameter.',
+    }),
+    values: CategoricalValuesSchema.exactOptional().openapi({
+      description: 'A list of the categories for the hyperparameter.',
+    }),
+    isTunable: TunableSchema.exactOptional().openapi({
+      description: 'Whether the hyperparameter is tunable.',
+    }),
   })
   .openapi({
     description:
@@ -1525,17 +1333,17 @@ const DefaultCategoricalHyperParameterRangesSchema = z
 
 const DefaultHyperParameterRangesSchema = z
   .object({
-    integerHyperParameterRanges: DefaultIntegerHyperParameterRangesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The integer-valued hyperparameters and their default ranges.' }),
-    ).exactOptional(),
-    continuousHyperParameterRanges: DefaultContinuousHyperParameterRangesSchema.and(
-      z.any().openapi({ description: 'The continuous hyperparameters and their default ranges.' }),
-    ).exactOptional(),
-    categoricalHyperParameterRanges: DefaultCategoricalHyperParameterRangesSchema.and(
-      z.any().openapi({ description: 'The categorical hyperparameters and their default ranges.' }),
-    ).exactOptional(),
+    integerHyperParameterRanges: DefaultIntegerHyperParameterRangesSchema.exactOptional().openapi({
+      description: 'The integer-valued hyperparameters and their default ranges.',
+    }),
+    continuousHyperParameterRanges:
+      DefaultContinuousHyperParameterRangesSchema.exactOptional().openapi({
+        description: 'The continuous hyperparameters and their default ranges.',
+      }),
+    categoricalHyperParameterRanges:
+      DefaultCategoricalHyperParameterRangesSchema.exactOptional().openapi({
+        description: 'The categorical hyperparameters and their default ranges.',
+      }),
   })
   .openapi({
     description:
@@ -1551,328 +1359,218 @@ const ResourceConfigSchema = z
 
 const TrainingInputModeSchema = z.string().max(256).openapi('TrainingInputMode')
 
-const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
-
 const AlgorithmSchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the algorithm.' }),
-    ).exactOptional(),
-    algorithmArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the algorithm.' }),
-    ).exactOptional(),
-    algorithmImage: AlgorithmImageSchema.and(
-      z.any().openapi({ description: 'The URI of the Docker container for the algorithm image.' }),
-    ).exactOptional(),
-    defaultHyperParameters: HyperParametersSchema.and(
-      z.any().openapi({ description: 'Specifies the default hyperparameters.' }),
-    ).exactOptional(),
-    defaultHyperParameterRanges: DefaultHyperParameterRangesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the default hyperparameters, their ranges, and whether they are tunable. A tunable hyperparameter can have its value determined during hyperparameter optimization (HPO).',
-        }),
-    ).exactOptional(),
-    defaultResourceConfig: ResourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the default maximum number of training jobs and parallel training jobs.',
-        }),
-    ).exactOptional(),
-    trainingInputMode: TrainingInputModeSchema.and(
-      z.any().openapi({ description: 'The training input mode.' }),
-    ).exactOptional(),
-    roleArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the role.' }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the algorithm was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the algorithm was last updated.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the algorithm.' }),
+    algorithmArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the algorithm.',
+    }),
+    algorithmImage: AlgorithmImageSchema.exactOptional().openapi({
+      description: 'The URI of the Docker container for the algorithm image.',
+    }),
+    defaultHyperParameters: HyperParametersSchema.exactOptional().openapi({
+      description: 'Specifies the default hyperparameters.',
+    }),
+    defaultHyperParameterRanges: DefaultHyperParameterRangesSchema.exactOptional().openapi({
+      description:
+        'Specifies the default hyperparameters, their ranges, and whether they are tunable. A tunable hyperparameter can have its value determined during hyperparameter optimization (HPO).',
+    }),
+    defaultResourceConfig: ResourceConfigSchema.exactOptional().openapi({
+      description:
+        'Specifies the default maximum number of training jobs and parallel training jobs.',
+    }),
+    trainingInputMode: TrainingInputModeSchema.exactOptional().openapi({
+      description: 'The training input mode.',
+    }),
+    roleArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the role.',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the algorithm was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the algorithm was last updated.',
+    }),
   })
   .openapi({ description: 'Describes a custom algorithm.', required: [] })
   .openapi('Algorithm')
 
 const DescribeAlgorithmResponseSchema = z
   .object({
-    algorithm: AlgorithmSchema.and(
-      z.any().openapi({ description: 'A listing of the properties of the algorithm.' }),
-    ).exactOptional(),
+    algorithm: AlgorithmSchema.exactOptional().openapi({
+      description: 'A listing of the properties of the algorithm.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAlgorithmResponse')
 
 const DescribeAlgorithmRequestSchema = z
   .object({
-    algorithmArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the algorithm to describe.' }),
-    ),
+    algorithmArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the algorithm to describe.',
+    }),
   })
   .openapi({ required: ['algorithmArn'], title: 'DescribeAlgorithmRequest' })
   .openapi('DescribeAlgorithmRequest')
 
-const FailureReasonSchema = z.string().openapi('FailureReason')
-
-const StatusSchema = z.string().max(256).openapi('Status')
-
 const BatchInferenceJobSchema = z
   .object({
-    jobName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the batch inference job.' }),
-    ).exactOptional(),
-    batchInferenceJobArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the batch inference job.' }),
-    ).exactOptional(),
-    filterArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the filter used on the batch inference job.' }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: 'If the batch inference job failed, the reason for the failure.' }),
-    ).exactOptional(),
-    solutionVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the solution version from which the batch inference job was created.',
-        }),
-    ).exactOptional(),
-    numResults: NumBatchResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of recommendations generated by the batch inference job. This number includes the error messages generated for failed input records.',
-        }),
-    ).exactOptional(),
-    jobInput: BatchInferenceJobInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 path that leads to the input data used to generate the batch inference job.',
-        }),
-    ).exactOptional(),
-    jobOutput: BatchInferenceJobOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 bucket that contains the output data generated by the batch inference job.',
-        }),
-    ).exactOptional(),
-    batchInferenceJobConfig: BatchInferenceJobConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string to string map of the configuration details of a batch inference job.',
-        }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Amazon Identity and Access Management (IAM) role that requested the batch inference job.',
-        }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the batch inference job. The status is one of the following values:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>IN PROGRESS</p> </li> <li> <p>ACTIVE</p> </li> <li> <p>CREATE FAILED</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The time at which the batch inference job was created.' }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time at which the batch inference job was last updated.' }),
-    ).exactOptional(),
+    jobName: NameSchema.exactOptional().openapi({
+      description: 'The name of the batch inference job.',
+    }),
+    batchInferenceJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the batch inference job.',
+    }),
+    filterArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the filter used on the batch inference job.',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If the batch inference job failed, the reason for the failure.',
+    }),
+    solutionVersionArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the solution version from which the batch inference job was created.',
+    }),
+    numResults: NumBatchResultsSchema.exactOptional().openapi({
+      description:
+        'The number of recommendations generated by the batch inference job. This number includes the error messages generated for failed input records.',
+    }),
+    jobInput: BatchInferenceJobInputSchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 path that leads to the input data used to generate the batch inference job.',
+    }),
+    jobOutput: BatchInferenceJobOutputSchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 bucket that contains the output data generated by the batch inference job.',
+    }),
+    batchInferenceJobConfig: BatchInferenceJobConfigSchema.exactOptional().openapi({
+      description: 'A string to string map of the configuration details of a batch inference job.',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Amazon Identity and Access Management (IAM) role that requested the batch inference job.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the batch inference job. The status is one of the following values:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>IN PROGRESS</p> </li> <li> <p>ACTIVE</p> </li> <li> <p>CREATE FAILED</p> </li> </ul>',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The time at which the batch inference job was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The time at which the batch inference job was last updated.',
+    }),
   })
   .openapi({ description: 'Contains information on a batch inference job.', required: [] })
   .openapi('BatchInferenceJob')
 
 const DescribeBatchInferenceJobResponseSchema = z
   .object({
-    batchInferenceJob: BatchInferenceJobSchema.and(
-      z.any().openapi({ description: 'Information on the specified batch inference job.' }),
-    ).exactOptional(),
+    batchInferenceJob: BatchInferenceJobSchema.exactOptional().openapi({
+      description: 'Information on the specified batch inference job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeBatchInferenceJobResponse')
 
 const DescribeBatchInferenceJobRequestSchema = z
   .object({
-    batchInferenceJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the batch inference job to describe.' }),
-    ),
+    batchInferenceJobArn: ArnSchema.openapi({
+      description: 'The ARN of the batch inference job to describe.',
+    }),
   })
   .openapi({ required: ['batchInferenceJobArn'], title: 'DescribeBatchInferenceJobRequest' })
   .openapi('DescribeBatchInferenceJobRequest')
 
 const BatchSegmentJobSchema = z
   .object({
-    jobName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the batch segment job.' }),
-    ).exactOptional(),
-    batchSegmentJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the batch segment job.' }),
-    ).exactOptional(),
-    filterArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the filter used on the batch segment job.' }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: 'If the batch segment job failed, the reason for the failure.' }),
-    ).exactOptional(),
-    solutionVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the solution version used by the batch segment job to generate batch segments.',
-        }),
-    ).exactOptional(),
-    numResults: NumBatchResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of predicted users generated by the batch segment job for each line of input data.',
-        }),
-    ).exactOptional(),
-    jobInput: BatchSegmentJobInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 path that leads to the input data used to generate the batch segment job.',
-        }),
-    ).exactOptional(),
-    jobOutput: BatchSegmentJobOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 bucket that contains the output data generated by the batch segment job.',
-        }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Amazon Identity and Access Management (IAM) role that requested the batch segment job.',
-        }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the batch segment job. The status is one of the following values:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>IN PROGRESS</p> </li> <li> <p>ACTIVE</p> </li> <li> <p>CREATE FAILED</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The time at which the batch segment job was created.' }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The time at which the batch segment job last updated.' }),
-    ).exactOptional(),
+    jobName: NameSchema.exactOptional().openapi({
+      description: 'The name of the batch segment job.',
+    }),
+    batchSegmentJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the batch segment job.',
+    }),
+    filterArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the filter used on the batch segment job.',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If the batch segment job failed, the reason for the failure.',
+    }),
+    solutionVersionArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the solution version used by the batch segment job to generate batch segments.',
+    }),
+    numResults: NumBatchResultsSchema.exactOptional().openapi({
+      description:
+        'The number of predicted users generated by the batch segment job for each line of input data.',
+    }),
+    jobInput: BatchSegmentJobInputSchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 path that leads to the input data used to generate the batch segment job.',
+    }),
+    jobOutput: BatchSegmentJobOutputSchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 bucket that contains the output data generated by the batch segment job.',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Amazon Identity and Access Management (IAM) role that requested the batch segment job.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the batch segment job. The status is one of the following values:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>IN PROGRESS</p> </li> <li> <p>ACTIVE</p> </li> <li> <p>CREATE FAILED</p> </li> </ul>',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The time at which the batch segment job was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The time at which the batch segment job last updated.',
+    }),
   })
   .openapi({ description: 'Contains information on a batch segment job.', required: [] })
   .openapi('BatchSegmentJob')
 
 const DescribeBatchSegmentJobResponseSchema = z
   .object({
-    batchSegmentJob: BatchSegmentJobSchema.and(
-      z.any().openapi({ description: 'Information on the specified batch segment job.' }),
-    ).exactOptional(),
+    batchSegmentJob: BatchSegmentJobSchema.exactOptional().openapi({
+      description: 'Information on the specified batch segment job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeBatchSegmentJobResponse')
 
 const DescribeBatchSegmentJobRequestSchema = z
   .object({
-    batchSegmentJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the batch segment job to describe.' }),
-    ),
+    batchSegmentJobArn: ArnSchema.openapi({
+      description: 'The ARN of the batch segment job to describe.',
+    }),
   })
   .openapi({ required: ['batchSegmentJobArn'], title: 'DescribeBatchSegmentJobRequest' })
   .openapi('DescribeBatchSegmentJobRequest')
 
 const CampaignUpdateSummarySchema = z
   .object({
-    solutionVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the deployed solution version.',
-        }),
-    ).exactOptional(),
-    minProvisionedTPS: TransactionsPerSecondSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the requested minimum provisioned transactions (recommendations) per second that Amazon Personalize will support.',
-        }),
-    ).exactOptional(),
+    solutionVersionArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the deployed solution version.',
+    }),
+    minProvisionedTPS: TransactionsPerSecondSchema.exactOptional().openapi({
+      description:
+        'Specifies the requested minimum provisioned transactions (recommendations) per second that Amazon Personalize will support.',
+    }),
     campaignConfig: CampaignConfigSchema.exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the campaign update.</p> <p>A campaign update can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: 'If a campaign update fails, the reason behind the failure.' }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the campaign update was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time (in Unix time) that the campaign update was last updated.',
-        }),
-    ).exactOptional(),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the campaign update.</p> <p>A campaign update can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If a campaign update fails, the reason behind the failure.',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the campaign update was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the campaign update was last updated.',
+    }),
   })
   .openapi({
     description:
@@ -1883,55 +1581,33 @@ const CampaignUpdateSummarySchema = z
 
 const CampaignSchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the campaign.' }),
-    ).exactOptional(),
-    campaignArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the campaign. ' }),
-    ).exactOptional(),
-    solutionVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of a specific version of the solution.',
-        }),
-    ).exactOptional(),
-    minProvisionedTPS: TransactionsPerSecondSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the requested minimum provisioned transactions (recommendations) per second.',
-        }),
-    ).exactOptional(),
-    campaignConfig: CampaignConfigSchema.and(
-      z.any().openapi({ description: 'The configuration details of a campaign.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the campaign.</p> <p>A campaign can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z.any().openapi({ description: 'If a campaign fails, the reason behind the failure.' }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix format) that the campaign was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix format) that the campaign was last updated.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the campaign.' }),
+    campaignArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the campaign. ',
+    }),
+    solutionVersionArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of a specific version of the solution.',
+    }),
+    minProvisionedTPS: TransactionsPerSecondSchema.exactOptional().openapi({
+      description:
+        'Specifies the requested minimum provisioned transactions (recommendations) per second.',
+    }),
+    campaignConfig: CampaignConfigSchema.exactOptional().openapi({
+      description: 'The configuration details of a campaign.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the campaign.</p> <p>A campaign can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If a campaign fails, the reason behind the failure.',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix format) that the campaign was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix format) that the campaign was last updated.',
+    }),
     latestCampaignUpdate: CampaignUpdateSummarySchema.exactOptional(),
   })
   .openapi({
@@ -1943,147 +1619,105 @@ const CampaignSchema = z
 
 const DescribeCampaignResponseSchema = z
   .object({
-    campaign: CampaignSchema.and(
-      z.any().openapi({ description: 'The properties of the campaign.' }),
-    ).exactOptional(),
+    campaign: CampaignSchema.exactOptional().openapi({
+      description: 'The properties of the campaign.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeCampaignResponse')
 
 const DescribeCampaignRequestSchema = z
   .object({
-    campaignArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the campaign.' }),
-    ),
+    campaignArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the campaign.',
+    }),
   })
   .openapi({ required: ['campaignArn'], title: 'DescribeCampaignRequest' })
   .openapi('DescribeCampaignRequest')
 
 const DatasetSchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset.' }),
-    ).exactOptional(),
-    datasetArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the dataset that you want metadata for.',
-        }),
-    ).exactOptional(),
-    datasetGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset group.' }),
-    ).exactOptional(),
-    datasetType: DatasetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One of the following values:</p> <ul> <li> <p>Interactions</p> </li> <li> <p>Items</p> </li> <li> <p>Users</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    schemaArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the associated schema.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the dataset.</p> <p>A dataset can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The creation date and time (in Unix time) of the dataset.' }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z.any().openapi({ description: 'A time stamp that shows when the dataset was updated.' }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the dataset.' }),
+    datasetArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset that you want metadata for.',
+    }),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset group.',
+    }),
+    datasetType: DatasetTypeSchema.exactOptional().openapi({
+      description:
+        '<p>One of the following values:</p> <ul> <li> <p>Interactions</p> </li> <li> <p>Items</p> </li> <li> <p>Users</p> </li> </ul>',
+    }),
+    schemaArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the associated schema.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the dataset.</p> <p>A dataset can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The creation date and time (in Unix time) of the dataset.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'A time stamp that shows when the dataset was updated.',
+    }),
   })
   .openapi({ description: 'Provides metadata for a dataset.', required: [] })
   .openapi('Dataset')
 
 const DescribeDatasetResponseSchema = z
   .object({
-    dataset: DatasetSchema.and(
-      z.any().openapi({ description: "A listing of the dataset's properties." }),
-    ).exactOptional(),
+    dataset: DatasetSchema.exactOptional().openapi({
+      description: "A listing of the dataset's properties.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDatasetResponse')
 
 const DescribeDatasetRequestSchema = z
   .object({
-    datasetArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the dataset to describe.' }),
-    ),
+    datasetArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset to describe.',
+    }),
   })
   .openapi({ required: ['datasetArn'], title: 'DescribeDatasetRequest' })
   .openapi('DescribeDatasetRequest')
 
 const DatasetExportJobSchema = z
   .object({
-    jobName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the export job.' }),
-    ).exactOptional(),
-    datasetExportJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset export job.' }),
-    ).exactOptional(),
-    datasetArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset to export.' }),
-    ).exactOptional(),
-    ingestionMode: IngestionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data to export, based on how you imported the data. You can choose to export <code>BULK</code> data that you imported using a dataset import job, <code>PUT</code> data that you imported incrementally (using the console, PutEvents, PutUsers and PutItems operations), or <code>ALL</code> for both types. The default value is <code>PUT</code>. ',
-        }),
-    ).exactOptional(),
-    roleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM service role that has permissions to add data to your output Amazon S3 bucket.',
-        }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the dataset export job.</p> <p>A dataset export job can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    jobOutput: DatasetExportJobOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The path to the Amazon S3 bucket where the job's output is stored. For example:</p> <p> <code>s3://bucket-name/folder-name/</code> </p>",
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The creation date and time (in Unix time) of the dataset export job.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time (in Unix time) the status of the dataset export job was last updated.',
-        }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z.any().openapi({ description: 'If a dataset export job fails, provides the reason why.' }),
-    ).exactOptional(),
+    jobName: NameSchema.exactOptional().openapi({ description: 'The name of the export job.' }),
+    datasetExportJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset export job.',
+    }),
+    datasetArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset to export.',
+    }),
+    ingestionMode: IngestionModeSchema.exactOptional().openapi({
+      description:
+        'The data to export, based on how you imported the data. You can choose to export <code>BULK</code> data that you imported using a dataset import job, <code>PUT</code> data that you imported incrementally (using the console, PutEvents, PutUsers and PutItems operations), or <code>ALL</code> for both types. The default value is <code>PUT</code>. ',
+    }),
+    roleArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM service role that has permissions to add data to your output Amazon S3 bucket.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the dataset export job.</p> <p>A dataset export job can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> </ul>',
+    }),
+    jobOutput: DatasetExportJobOutputSchema.exactOptional().openapi({
+      description:
+        "<p>The path to the Amazon S3 bucket where the job's output is stored. For example:</p> <p> <code>s3://bucket-name/folder-name/</code> </p>",
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The creation date and time (in Unix time) of the dataset export job.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description:
+        'The date and time (in Unix time) the status of the dataset export job was last updated.',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If a dataset export job fails, provides the reason why.',
+    }),
   })
   .openapi({
     description:
@@ -2094,84 +1728,52 @@ const DatasetExportJobSchema = z
 
 const DescribeDatasetExportJobResponseSchema = z
   .object({
-    datasetExportJob: DatasetExportJobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the dataset export job, including the status.</p> <p>The status is one of the following values:</p> <ul> <li> <p>CREATE PENDING</p> </li> <li> <p>CREATE IN_PROGRESS</p> </li> <li> <p>ACTIVE</p> </li> <li> <p>CREATE FAILED</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    datasetExportJob: DatasetExportJobSchema.exactOptional().openapi({
+      description:
+        '<p>Information about the dataset export job, including the status.</p> <p>The status is one of the following values:</p> <ul> <li> <p>CREATE PENDING</p> </li> <li> <p>CREATE IN_PROGRESS</p> </li> <li> <p>ACTIVE</p> </li> <li> <p>CREATE FAILED</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDatasetExportJobResponse')
 
 const DescribeDatasetExportJobRequestSchema = z
   .object({
-    datasetExportJobArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the dataset export job to describe.',
-        }),
-    ),
+    datasetExportJobArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset export job to describe.',
+    }),
   })
   .openapi({ required: ['datasetExportJobArn'], title: 'DescribeDatasetExportJobRequest' })
   .openapi('DescribeDatasetExportJobRequest')
 
 const DatasetGroupSchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset group.' }),
-    ).exactOptional(),
-    datasetGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset group.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current status of the dataset group.</p> <p>A dataset group can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the IAM role that has permissions to create the dataset group.',
-        }),
-    ).exactOptional(),
-    kmsKeyArn: KmsKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Key Management Service (KMS) key used to encrypt the datasets.',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The creation date and time (in Unix time) of the dataset group.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The last update date and time (in Unix time) of the dataset group.',
-        }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: 'If creating a dataset group fails, provides the reason why.' }),
-    ).exactOptional(),
-    domain: DomainSchema.and(
-      z.any().openapi({ description: 'The domain of a Domain dataset group.' }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the dataset group.' }),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset group.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The current status of the dataset group.</p> <p>A dataset group can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING</p> </li> </ul>',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the IAM role that has permissions to create the dataset group.',
+    }),
+    kmsKeyArn: KmsKeyArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Key Management Service (KMS) key used to encrypt the datasets.',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The creation date and time (in Unix time) of the dataset group.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The last update date and time (in Unix time) of the dataset group.',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If creating a dataset group fails, provides the reason why.',
+    }),
+    domain: DomainSchema.exactOptional().openapi({
+      description: 'The domain of a Domain dataset group.',
+    }),
   })
   .openapi({
     description:
@@ -2182,94 +1784,57 @@ const DatasetGroupSchema = z
 
 const DescribeDatasetGroupResponseSchema = z
   .object({
-    datasetGroup: DatasetGroupSchema.and(
-      z.any().openapi({ description: "A listing of the dataset group's properties." }),
-    ).exactOptional(),
+    datasetGroup: DatasetGroupSchema.exactOptional().openapi({
+      description: "A listing of the dataset group's properties.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDatasetGroupResponse')
 
 const DescribeDatasetGroupRequestSchema = z
   .object({
-    datasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the dataset group to describe.',
-        }),
-    ),
+    datasetGroupArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset group to describe.',
+    }),
   })
   .openapi({ required: ['datasetGroupArn'], title: 'DescribeDatasetGroupRequest' })
   .openapi('DescribeDatasetGroupRequest')
 
 const DatasetImportJobSchema = z
   .object({
-    jobName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the import job.' }),
-    ).exactOptional(),
-    datasetImportJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the dataset import job.' }),
-    ).exactOptional(),
-    datasetArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the dataset that receives the imported data.',
-        }),
-    ).exactOptional(),
-    dataSource: DataSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon S3 bucket that contains the training data to import.',
-        }),
-    ).exactOptional(),
-    roleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM role that has permissions to read from the Amazon S3 data source.',
-        }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the dataset import job.</p> <p>A dataset import job can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The creation date and time (in Unix time) of the dataset import job.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time (in Unix time) the dataset was last updated.' }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z.any().openapi({ description: 'If a dataset import job fails, provides the reason why.' }),
-    ).exactOptional(),
-    importMode: ImportModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The import mode used by the dataset import job to import new records.',
-        }),
-    ).exactOptional(),
-    publishAttributionMetricsToS3: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the job publishes metrics to Amazon S3 for a metric attribution.',
-        }),
-    ).exactOptional(),
+    jobName: NameSchema.exactOptional().openapi({ description: 'The name of the import job.' }),
+    datasetImportJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the dataset import job.',
+    }),
+    datasetArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset that receives the imported data.',
+    }),
+    dataSource: DataSourceSchema.exactOptional().openapi({
+      description: 'The Amazon S3 bucket that contains the training data to import.',
+    }),
+    roleArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the IAM role that has permissions to read from the Amazon S3 data source.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the dataset import job.</p> <p>A dataset import job can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> </ul>',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The creation date and time (in Unix time) of the dataset import job.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) the dataset was last updated.',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If a dataset import job fails, provides the reason why.',
+    }),
+    importMode: ImportModeSchema.exactOptional().openapi({
+      description: 'The import mode used by the dataset import job to import new records.',
+    }),
+    publishAttributionMetricsToS3: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the job publishes metrics to Amazon S3 for a metric attribution.',
+    }),
   })
   .openapi({
     description:
@@ -2280,27 +1845,19 @@ const DatasetImportJobSchema = z
 
 const DescribeDatasetImportJobResponseSchema = z
   .object({
-    datasetImportJob: DatasetImportJobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the dataset import job, including the status.</p> <p>The status is one of the following values:</p> <ul> <li> <p>CREATE PENDING</p> </li> <li> <p>CREATE IN_PROGRESS</p> </li> <li> <p>ACTIVE</p> </li> <li> <p>CREATE FAILED</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    datasetImportJob: DatasetImportJobSchema.exactOptional().openapi({
+      description:
+        '<p>Information about the dataset import job, including the status.</p> <p>The status is one of the following values:</p> <ul> <li> <p>CREATE PENDING</p> </li> <li> <p>CREATE IN_PROGRESS</p> </li> <li> <p>ACTIVE</p> </li> <li> <p>CREATE FAILED</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDatasetImportJobResponse')
 
 const DescribeDatasetImportJobRequestSchema = z
   .object({
-    datasetImportJobArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the dataset import job to describe.',
-        }),
-    ),
+    datasetImportJobArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset import job to describe.',
+    }),
   })
   .openapi({ required: ['datasetImportJobArn'], title: 'DescribeDatasetImportJobRequest' })
   .openapi('DescribeDatasetImportJobRequest')
@@ -2309,77 +1866,49 @@ const AccountIdSchema = z.string().max(256).openapi('AccountId')
 
 const EventTrackerSchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the event tracker.' }),
-    ).exactOptional(),
-    eventTrackerArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the event tracker.' }),
-    ).exactOptional(),
-    accountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Web Services account that owns the event tracker.' }),
-    ).exactOptional(),
-    trackingId: TrackingIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the event tracker. Include this ID in requests to the <a href="https://docs.aws.amazon.com/personalize/latest/dg/API_UBS_PutEvents.html">PutEvents</a> API.',
-        }),
-    ).exactOptional(),
-    datasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the dataset group that receives the event data.',
-        }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the event tracker.</p> <p>An event tracker can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix format) that the event tracker was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the event tracker was last updated.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the event tracker.' }),
+    eventTrackerArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the event tracker.',
+    }),
+    accountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account that owns the event tracker.',
+    }),
+    trackingId: TrackingIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the event tracker. Include this ID in requests to the <a href="https://docs.aws.amazon.com/personalize/latest/dg/API_UBS_PutEvents.html">PutEvents</a> API.',
+    }),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the dataset group that receives the event data.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the event tracker.</p> <p>An event tracker can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix format) that the event tracker was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the event tracker was last updated.',
+    }),
   })
   .openapi({ description: 'Provides information about an event tracker.', required: [] })
   .openapi('EventTracker')
 
 const DescribeEventTrackerResponseSchema = z
   .object({
-    eventTracker: EventTrackerSchema.and(
-      z.any().openapi({ description: 'An object that describes the event tracker.' }),
-    ).exactOptional(),
+    eventTracker: EventTrackerSchema.exactOptional().openapi({
+      description: 'An object that describes the event tracker.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEventTrackerResponse')
 
 const DescribeEventTrackerRequestSchema = z
   .object({
-    eventTrackerArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the event tracker to describe.',
-        }),
-    ),
+    eventTrackerArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the event tracker to describe.',
+    }),
   })
   .openapi({ required: ['eventTrackerArn'], title: 'DescribeEventTrackerRequest' })
   .openapi('DescribeEventTrackerRequest')
@@ -2391,44 +1920,25 @@ const FeaturizationParametersSchema = z
 
 const FeatureTransformationSchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the feature transformation.' }),
-    ).exactOptional(),
-    featureTransformationArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the FeatureTransformation object.',
-        }),
-    ).exactOptional(),
-    defaultParameters: FeaturizationParametersSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Provides the default parameters for feature transformation.' }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The creation date and time (in Unix time) of the feature transformation.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The last update date and time (in Unix time) of the feature transformation.',
-        }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the feature transformation.</p> <p>A feature transformation can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({
+      description: 'The name of the feature transformation.',
+    }),
+    featureTransformationArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the FeatureTransformation object.',
+    }),
+    defaultParameters: FeaturizationParametersSchema.exactOptional().openapi({
+      description: 'Provides the default parameters for feature transformation.',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The creation date and time (in Unix time) of the feature transformation.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The last update date and time (in Unix time) of the feature transformation.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the feature transformation.</p> <p>A feature transformation can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -2439,22 +1949,18 @@ const FeatureTransformationSchema = z
 
 const DescribeFeatureTransformationResponseSchema = z
   .object({
-    featureTransformation: FeatureTransformationSchema.and(
-      z.any().openapi({ description: 'A listing of the FeatureTransformation properties.' }),
-    ).exactOptional(),
+    featureTransformation: FeatureTransformationSchema.exactOptional().openapi({
+      description: 'A listing of the FeatureTransformation properties.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFeatureTransformationResponse')
 
 const DescribeFeatureTransformationRequestSchema = z
   .object({
-    featureTransformationArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the feature transformation to describe.',
-        }),
-    ),
+    featureTransformationArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the feature transformation to describe.',
+    }),
   })
   .openapi({
     required: ['featureTransformationArn'],
@@ -2464,35 +1970,25 @@ const DescribeFeatureTransformationRequestSchema = z
 
 const FilterSchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the filter.' }),
-    ).exactOptional(),
-    filterArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the filter.' }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The time at which the filter was created.' }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The time at which the filter was last updated.' }),
-    ).exactOptional(),
-    datasetGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the dataset group to which the filter belongs.' }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z.any().openapi({ description: 'If the filter failed, the reason for its failure.' }),
-    ).exactOptional(),
-    filterExpression: FilterExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the type of item interactions to filter out of recommendation results. The filter expression must follow specific format rules. For information about filter expression structure and syntax, see <a href="https://docs.aws.amazon.com/personalize/latest/dg/filter-expressions.html">Filter expressions</a>.',
-        }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the filter.' }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the filter.' }),
+    filterArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the filter.' }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The time at which the filter was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The time at which the filter was last updated.',
+    }),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the dataset group to which the filter belongs.',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If the filter failed, the reason for its failure.',
+    }),
+    filterExpression: FilterExpressionSchema.exactOptional().openapi({
+      description:
+        'Specifies the type of item interactions to filter out of recommendation results. The filter expression must follow specific format rules. For information about filter expression structure and syntax, see <a href="https://docs.aws.amazon.com/personalize/latest/dg/filter-expressions.html">Filter expressions</a>.',
+    }),
+    status: StatusSchema.exactOptional().openapi({ description: 'The status of the filter.' }),
   })
   .openapi({
     description:
@@ -2503,52 +1999,40 @@ const FilterSchema = z
 
 const DescribeFilterResponseSchema = z
   .object({
-    filter: FilterSchema.and(
-      z.any().openapi({ description: "The filter's details." }),
-    ).exactOptional(),
+    filter: FilterSchema.exactOptional().openapi({ description: "The filter's details." }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFilterResponse')
 
 const DescribeFilterRequestSchema = z
-  .object({
-    filterArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the filter to describe.' }),
-    ),
-  })
+  .object({ filterArn: ArnSchema.openapi({ description: 'The ARN of the filter to describe.' }) })
   .openapi({ required: ['filterArn'], title: 'DescribeFilterRequest' })
   .openapi('DescribeFilterRequest')
 
 const MetricAttributionSchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: "The metric attribution's name." }),
-    ).exactOptional(),
-    metricAttributionArn: ArnSchema.and(
-      z.any().openapi({ description: "The metric attribution's Amazon Resource Name (ARN)." }),
-    ).exactOptional(),
-    datasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The metric attribution's dataset group Amazon Resource Name (ARN).",
-        }),
-    ).exactOptional(),
-    metricsOutputConfig: MetricAttributionOutputSchema.and(
-      z.any().openapi({ description: "The metric attribution's output configuration." }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z.any().openapi({ description: "The metric attribution's status." }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z.any().openapi({ description: "The metric attribution's creation date time." }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z.any().openapi({ description: "The metric attribution's last updated date time." }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z.any().openapi({ description: "The metric attribution's failure reason." }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: "The metric attribution's name." }),
+    metricAttributionArn: ArnSchema.exactOptional().openapi({
+      description: "The metric attribution's Amazon Resource Name (ARN).",
+    }),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description: "The metric attribution's dataset group Amazon Resource Name (ARN).",
+    }),
+    metricsOutputConfig: MetricAttributionOutputSchema.exactOptional().openapi({
+      description: "The metric attribution's output configuration.",
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description: "The metric attribution's status.",
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: "The metric attribution's creation date time.",
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: "The metric attribution's last updated date time.",
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: "The metric attribution's failure reason.",
+    }),
   })
   .openapi({
     description:
@@ -2559,18 +2043,18 @@ const MetricAttributionSchema = z
 
 const DescribeMetricAttributionResponseSchema = z
   .object({
-    metricAttribution: MetricAttributionSchema.and(
-      z.any().openapi({ description: 'The details of the metric attribution.' }),
-    ).exactOptional(),
+    metricAttribution: MetricAttributionSchema.exactOptional().openapi({
+      description: 'The details of the metric attribution.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeMetricAttributionResponse')
 
 const DescribeMetricAttributionRequestSchema = z
   .object({
-    metricAttributionArn: ArnSchema.and(
-      z.any().openapi({ description: "The metric attribution's Amazon Resource Name (ARN)." }),
-    ),
+    metricAttributionArn: ArnSchema.openapi({
+      description: "The metric attribution's Amazon Resource Name (ARN).",
+    }),
   })
   .openapi({ required: ['metricAttributionArn'], title: 'DescribeMetricAttributionRequest' })
   .openapi('DescribeMetricAttributionRequest')
@@ -2581,51 +2065,31 @@ const RecipeTypeSchema = z.string().max(256).openapi('RecipeType')
 
 const RecipeSchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the recipe.' }),
-    ).exactOptional(),
-    recipeArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the recipe.' }),
-    ).exactOptional(),
-    algorithmArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the algorithm that Amazon Personalize uses to train the model.',
-        }),
-    ).exactOptional(),
-    featureTransformationArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the FeatureTransformation object.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the recipe.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the recipe.' }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix format) that the recipe was created.',
-        }),
-    ).exactOptional(),
-    recipeType: RecipeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One of the following values:</p> <ul> <li> <p>PERSONALIZED_RANKING</p> </li> <li> <p>RELATED_ITEMS</p> </li> <li> <p>USER_PERSONALIZATION</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix format) that the recipe was last updated.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the recipe.' }),
+    recipeArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the recipe.',
+    }),
+    algorithmArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the algorithm that Amazon Personalize uses to train the model.',
+    }),
+    featureTransformationArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the FeatureTransformation object.',
+    }),
+    status: StatusSchema.exactOptional().openapi({ description: 'The status of the recipe.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the recipe.',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix format) that the recipe was created.',
+    }),
+    recipeType: RecipeTypeSchema.exactOptional().openapi({
+      description:
+        '<p>One of the following values:</p> <ul> <li> <p>PERSONALIZED_RANKING</p> </li> <li> <p>RELATED_ITEMS</p> </li> <li> <p>USER_PERSONALIZATION</p> </li> </ul>',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix format) that the recipe was last updated.',
+    }),
   })
   .openapi({
     description:
@@ -2636,56 +2100,40 @@ const RecipeSchema = z
 
 const DescribeRecipeResponseSchema = z
   .object({
-    recipe: RecipeSchema.and(
-      z.any().openapi({ description: 'An object that describes the recipe.' }),
-    ).exactOptional(),
+    recipe: RecipeSchema.exactOptional().openapi({
+      description: 'An object that describes the recipe.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRecipeResponse')
 
 const DescribeRecipeRequestSchema = z
   .object({
-    recipeArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the recipe to describe.' }),
-    ),
+    recipeArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the recipe to describe.',
+    }),
   })
   .openapi({ required: ['recipeArn'], title: 'DescribeRecipeRequest' })
   .openapi('DescribeRecipeRequest')
 
 const RecommenderUpdateSummarySchema = z
   .object({
-    recommenderConfig: RecommenderConfigSchema.and(
-      z.any().openapi({ description: 'The configuration details of the recommender update.' }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time (in Unix format) that the recommender update was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time (in Unix time) that the recommender update was last updated.',
-        }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the recommender update.</p> <p>A recommender can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>STOP PENDING &gt; STOP IN_PROGRESS &gt; INACTIVE &gt; START PENDING &gt; START IN_PROGRESS &gt; ACTIVE</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: 'If a recommender update fails, the reason behind the failure.' }),
-    ).exactOptional(),
+    recommenderConfig: RecommenderConfigSchema.exactOptional().openapi({
+      description: 'The configuration details of the recommender update.',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix format) that the recommender update was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the recommender update was last updated.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the recommender update.</p> <p>A recommender can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>STOP PENDING &gt; STOP IN_PROGRESS &gt; INACTIVE &gt; START PENDING &gt; START IN_PROGRESS &gt; ACTIVE</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If a recommender update fails, the reason behind the failure.',
+    }),
   })
   .openapi({
     description:
@@ -2703,69 +2151,41 @@ const MetricsSchema = z
 
 const RecommenderSchema = z
   .object({
-    recommenderArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the recommender.' }),
-    ).exactOptional(),
-    datasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Domain dataset group that contains the recommender.',
-        }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the recommender.' }),
-    ).exactOptional(),
-    recipeArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the recipe (Domain dataset group use case) that the recommender was created for. ',
-        }),
-    ).exactOptional(),
-    recommenderConfig: RecommenderConfigSchema.and(
-      z.any().openapi({ description: 'The configuration details of the recommender.' }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix format) that the recommender was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix format) that the recommender was last updated.',
-        }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the recommender.</p> <p>A recommender can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>STOP PENDING &gt; STOP IN_PROGRESS &gt; INACTIVE &gt; START PENDING &gt; START IN_PROGRESS &gt; ACTIVE</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z.any().openapi({ description: 'If a recommender fails, the reason behind the failure.' }),
-    ).exactOptional(),
-    latestRecommenderUpdate: RecommenderUpdateSummarySchema.and(
-      z
-        .any()
-        .openapi({ description: 'Provides a summary of the latest updates to the recommender. ' }),
-    ).exactOptional(),
-    modelMetrics: MetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides evaluation metrics that help you determine the performance of a recommender. For more information, see <a href="https://docs.aws.amazon.com/personalize/latest/dg/evaluating-recommenders.html"> Evaluating a recommender</a>.',
-        }),
-    ).exactOptional(),
+    recommenderArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the recommender.',
+    }),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Domain dataset group that contains the recommender.',
+    }),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the recommender.' }),
+    recipeArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the recipe (Domain dataset group use case) that the recommender was created for. ',
+    }),
+    recommenderConfig: RecommenderConfigSchema.exactOptional().openapi({
+      description: 'The configuration details of the recommender.',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix format) that the recommender was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix format) that the recommender was last updated.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the recommender.</p> <p>A recommender can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>STOP PENDING &gt; STOP IN_PROGRESS &gt; INACTIVE &gt; START PENDING &gt; START IN_PROGRESS &gt; ACTIVE</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If a recommender fails, the reason behind the failure.',
+    }),
+    latestRecommenderUpdate: RecommenderUpdateSummarySchema.exactOptional().openapi({
+      description: 'Provides a summary of the latest updates to the recommender. ',
+    }),
+    modelMetrics: MetricsSchema.exactOptional().openapi({
+      description:
+        'Provides evaluation metrics that help you determine the performance of a recommender. For more information, see <a href="https://docs.aws.amazon.com/personalize/latest/dg/evaluating-recommenders.html"> Evaluating a recommender</a>.',
+    }),
   })
   .openapi({
     description:
@@ -2776,53 +2196,39 @@ const RecommenderSchema = z
 
 const DescribeRecommenderResponseSchema = z
   .object({
-    recommender: RecommenderSchema.and(
-      z.any().openapi({ description: 'The properties of the recommender.' }),
-    ).exactOptional(),
+    recommender: RecommenderSchema.exactOptional().openapi({
+      description: 'The properties of the recommender.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRecommenderResponse')
 
 const DescribeRecommenderRequestSchema = z
   .object({
-    recommenderArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the recommender to describe.' }),
-    ),
+    recommenderArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the recommender to describe.',
+    }),
   })
   .openapi({ required: ['recommenderArn'], title: 'DescribeRecommenderRequest' })
   .openapi('DescribeRecommenderRequest')
 
 const DatasetSchemaSchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the schema.' }),
-    ).exactOptional(),
-    schemaArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the schema.' }),
-    ).exactOptional(),
-    schema: AvroSchemaSchema.and(z.any().openapi({ description: 'The schema.' })).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time (in Unix time) that the schema was created.' }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the schema was last updated.',
-        }),
-    ).exactOptional(),
-    domain: DomainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain of a schema that you created for a dataset in a Domain dataset group.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the schema.' }),
+    schemaArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the schema.',
+    }),
+    schema: AvroSchemaSchema.exactOptional().openapi({ description: 'The schema.' }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the schema was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the schema was last updated.',
+    }),
+    domain: DomainSchema.exactOptional().openapi({
+      description:
+        'The domain of a schema that you created for a dataset in a Domain dataset group.',
+    }),
   })
   .openapi({
     description:
@@ -2833,407 +2239,103 @@ const DatasetSchemaSchema = z
 
 const DescribeSchemaResponseSchema = z
   .object({
-    schema: DatasetSchemaSchema.and(
-      z.any().openapi({ description: 'The requested schema.' }),
-    ).exactOptional(),
+    schema: DatasetSchemaSchema.exactOptional().openapi({ description: 'The requested schema.' }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSchemaResponse')
 
 const DescribeSchemaRequestSchema = z
   .object({
-    schemaArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the schema to retrieve.' }),
-    ),
+    schemaArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the schema to retrieve.',
+    }),
   })
   .openapi({ required: ['schemaArn'], title: 'DescribeSchemaRequest' })
   .openapi('DescribeSchemaRequest')
 
-const PerformHPOSchema = z.boolean().openapi('PerformHPO')
-
-const AutoMLResultSchema = z
+const DescribeSolutionResponseSchema: z.ZodType<DescribeSolutionResponseType> = z
   .object({
-    bestRecipeArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the best recipe.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'When the solution performs AutoML (<code>performAutoML</code> is true in <a href="https://docs.aws.amazon.com/personalize/latest/dg/API_CreateSolution.html">CreateSolution</a>), specifies the recipe that best optimized the specified metric.',
-    required: [],
-  })
-  .openapi('AutoMLResult')
-
-const SolutionVersionSummarySchema = z
-  .object({
-    solutionVersionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the solution version.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the solution version.</p> <p>A solution version can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time (in Unix time) that this version of a solution was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time (in Unix time) that the solution version was last updated.',
-        }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: 'If a solution version fails, the reason behind the failure.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Provides a summary of the properties of a solution version. For a complete listing, call the <a href="https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeSolutionVersion.html">DescribeSolutionVersion</a> API.',
-    required: [],
-  })
-  .openapi('SolutionVersionSummary')
-
-const SolutionSchema = z
-  .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the solution.' }),
-    ).exactOptional(),
-    solutionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the solution.' }),
-    ).exactOptional(),
-    performHPO: PerformHPOSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to perform hyperparameter optimization (HPO) on the chosen recipe. The default is <code>false</code>.',
-        }),
-    ).exactOptional(),
-    performAutoML: PerformAutoMLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When true, Amazon Personalize performs a search for the best USER_PERSONALIZATION recipe from the list specified in the solution configuration (<code>recipeArn</code> must not be specified). When false (the default), Amazon Personalize uses <code>recipeArn</code> for training.',
-        }),
-    ).exactOptional(),
-    recipeArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the recipe used to create the solution.' }),
-    ).exactOptional(),
-    datasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the dataset group that provides the training data.',
-        }),
-    ).exactOptional(),
-    eventType: EventTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The event type (for example, 'click' or 'like') that is used for training the model. If no <code>eventType</code> is provided, Amazon Personalize uses all interactions for training with equal weight regardless of type.",
-        }),
-    ).exactOptional(),
-    solutionConfig: SolutionConfigSchema.and(
-      z.any().openapi({ description: 'Describes the configuration properties for the solution.' }),
-    ).exactOptional(),
-    autoMLResult: AutoMLResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'When <code>performAutoML</code> is true, specifies the best recipe found.',
-        }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the solution.</p> <p>A solution can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The creation date and time (in Unix time) of the solution.' }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the solution was last updated.',
-        }),
-    ).exactOptional(),
-    latestSolutionVersion: SolutionVersionSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the latest version of the solution, including the status and the ARN.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'An object that provides information about a solution. A solution is a trained model that can be deployed as a campaign.',
-    required: [],
-  })
-  .openapi('Solution')
-
-const DescribeSolutionResponseSchema = z
-  .object({
-    solution: SolutionSchema.and(
-      z.any().openapi({ description: 'An object that describes the solution.' }),
-    ).exactOptional(),
+    solution: SolutionSchema.exactOptional().openapi({
+      description: 'An object that describes the solution.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSolutionResponse')
 
 const DescribeSolutionRequestSchema = z
   .object({
-    solutionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the solution to describe.' }),
-    ),
+    solutionArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the solution to describe.',
+    }),
   })
   .openapi({ required: ['solutionArn'], title: 'DescribeSolutionRequest' })
   .openapi('DescribeSolutionRequest')
 
-const TrainingHoursSchema = z.float64().min(0).openapi('TrainingHours')
-
-const TunedHPOParamsSchema = z
+const DescribeSolutionVersionResponseSchema: z.ZodType<DescribeSolutionVersionResponseType> = z
   .object({
-    algorithmHyperParameters: HyperParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of the hyperparameter values of the best performing model.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'If hyperparameter optimization (HPO) was performed, contains the hyperparameter values of the best performing model.',
-    required: [],
-  })
-  .openapi('TunedHPOParams')
-
-const SolutionVersionSchema = z
-  .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the solution version.' }),
-    ).exactOptional(),
-    solutionVersionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the solution version.' }),
-    ).exactOptional(),
-    solutionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the solution.' }),
-    ).exactOptional(),
-    performHPO: PerformHPOSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to perform hyperparameter optimization (HPO) on the chosen recipe. The default is <code>false</code>.',
-        }),
-    ).exactOptional(),
-    performAutoML: PerformAutoMLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When true, Amazon Personalize searches for the most optimal recipe according to the solution configuration. When false (the default), Amazon Personalize uses <code>recipeArn</code>.',
-        }),
-    ).exactOptional(),
-    recipeArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the recipe used in the solution.' }),
-    ).exactOptional(),
-    eventType: EventTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The event type (for example, 'click' or 'like') that is used for training the model.",
-        }),
-    ).exactOptional(),
-    datasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the dataset group providing the training data.',
-        }),
-    ).exactOptional(),
-    solutionConfig: SolutionConfigSchema.and(
-      z.any().openapi({ description: 'Describes the configuration properties for the solution.' }),
-    ).exactOptional(),
-    trainingHours: TrainingHoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time used to train the model. You are billed for the time it takes to train a model. This field is visible only after Amazon Personalize successfully trains a model.',
-        }),
-    ).exactOptional(),
-    trainingMode: TrainingModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The scope of training to be performed when creating the solution version. The <code>FULL</code> option trains the solution version based on the entirety of the input solution\'s training data, while the <code>UPDATE</code> option processes only the data that has changed in comparison to the input solution. Choose <code>UPDATE</code> when you want to incrementally update your solution version instead of creating an entirely new one.</p> <important> <p>The <code>UPDATE</code> option can only be used when you already have an active solution version created from the input solution using the <code>FULL</code> option and the input solution was trained with the <a href="https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-new-item-USER_PERSONALIZATION.html">User-Personalization</a> recipe or the <a href="https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-hrnn-coldstart.html">HRNN-Coldstart</a> recipe.</p> </important>',
-        }),
-    ).exactOptional(),
-    tunedHPOParams: TunedHPOParamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If hyperparameter optimization was performed, contains the hyperparameter values of the best performing model.',
-        }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the solution version.</p> <p>A solution version can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING</p> </li> <li> <p>CREATE IN_PROGRESS</p> </li> <li> <p>ACTIVE</p> </li> <li> <p>CREATE FAILED</p> </li> <li> <p>CREATE STOPPING</p> </li> <li> <p>CREATE STOPPED</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If training a solution version fails, the reason for the failure.',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time (in Unix time) that this version of the solution was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the solution was last updated.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'An object that provides information about a specific version of a <a href="https://docs.aws.amazon.com/personalize/latest/dg/API_Solution.html">Solution</a> in a Custom dataset group.',
-    required: [],
-  })
-  .openapi('SolutionVersion')
-
-const DescribeSolutionVersionResponseSchema = z
-  .object({
-    solutionVersion: SolutionVersionSchema.and(
-      z.any().openapi({ description: 'The solution version.' }),
-    ).exactOptional(),
+    solutionVersion: SolutionVersionSchema.exactOptional().openapi({
+      description: 'The solution version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSolutionVersionResponse')
 
 const DescribeSolutionVersionRequestSchema = z
   .object({
-    solutionVersionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the solution version.' }),
-    ),
+    solutionVersionArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the solution version.',
+    }),
   })
   .openapi({ required: ['solutionVersionArn'], title: 'DescribeSolutionVersionRequest' })
   .openapi('DescribeSolutionVersionRequest')
 
 const GetSolutionMetricsResponseSchema = z
   .object({
-    solutionVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The same solution version ARN as specified in the request.' }),
-    ).exactOptional(),
-    metrics: MetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metrics for the solution version. For more information, see <a href="https://docs.aws.amazon.com/personalize/latest/dg/working-with-training-metrics.html"> Evaluating a solution version with metrics </a>.',
-        }),
-    ).exactOptional(),
+    solutionVersionArn: ArnSchema.exactOptional().openapi({
+      description: 'The same solution version ARN as specified in the request.',
+    }),
+    metrics: MetricsSchema.exactOptional().openapi({
+      description:
+        'The metrics for the solution version. For more information, see <a href="https://docs.aws.amazon.com/personalize/latest/dg/working-with-training-metrics.html"> Evaluating a solution version with metrics </a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSolutionMetricsResponse')
 
 const GetSolutionMetricsRequestSchema = z
   .object({
-    solutionVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the solution version for which to get metrics.',
-        }),
-    ),
+    solutionVersionArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the solution version for which to get metrics.',
+    }),
   })
   .openapi({ required: ['solutionVersionArn'], title: 'GetSolutionMetricsRequest' })
   .openapi('GetSolutionMetricsRequest')
 
 const BatchInferenceJobSummarySchema = z
   .object({
-    batchInferenceJobArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the batch inference job.' }),
-    ).exactOptional(),
-    jobName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the batch inference job.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the batch inference job. The status is one of the following values:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>IN PROGRESS</p> </li> <li> <p>ACTIVE</p> </li> <li> <p>CREATE FAILED</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The time at which the batch inference job was created.' }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time at which the batch inference job was last updated.' }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: 'If the batch inference job failed, the reason for the failure.' }),
-    ).exactOptional(),
-    solutionVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the solution version used by the batch inference job.',
-        }),
-    ).exactOptional(),
+    batchInferenceJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the batch inference job.',
+    }),
+    jobName: NameSchema.exactOptional().openapi({
+      description: 'The name of the batch inference job.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the batch inference job. The status is one of the following values:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>IN PROGRESS</p> </li> <li> <p>ACTIVE</p> </li> <li> <p>CREATE FAILED</p> </li> </ul>',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The time at which the batch inference job was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The time at which the batch inference job was last updated.',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If the batch inference job failed, the reason for the failure.',
+    }),
+    solutionVersionArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the solution version used by the batch inference job.',
+    }),
   })
   .openapi({
     description:
@@ -3251,19 +2353,13 @@ const NextTokenSchema = z.string().max(1500).openapi('NextToken')
 
 const ListBatchInferenceJobsResponseSchema = z
   .object({
-    batchInferenceJobs: BatchInferenceJobsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list containing information on each job that is returned.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    batchInferenceJobs: BatchInferenceJobsSchema.exactOptional().openapi({
+      description: 'A list containing information on each job that is returned.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The value is <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBatchInferenceJobsResponse')
@@ -3272,25 +2368,17 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListBatchInferenceJobsRequestSchema = z
   .object({
-    solutionVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the solution version from which the batch inference jobs were created.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token to request the next page of results.' }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of batch inference job results to return in each page. The default value is 100.',
-        }),
-    ).exactOptional(),
+    solutionVersionArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the solution version from which the batch inference jobs were created.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to request the next page of results.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of batch inference job results to return in each page. The default value is 100.',
+    }),
   })
   .openapi({ title: 'ListBatchInferenceJobsRequest', required: [] })
   .openapi('ListBatchInferenceJobsRequest')
@@ -3299,39 +2387,29 @@ const InvalidNextTokenExceptionSchema = z.any().openapi('InvalidNextTokenExcepti
 
 const BatchSegmentJobSummarySchema = z
   .object({
-    batchSegmentJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the batch segment job.' }),
-    ).exactOptional(),
-    jobName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the batch segment job.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the batch segment job. The status is one of the following values:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>IN PROGRESS</p> </li> <li> <p>ACTIVE</p> </li> <li> <p>CREATE FAILED</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The time at which the batch segment job was created.' }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The time at which the batch segment job was last updated.' }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: 'If the batch segment job failed, the reason for the failure.' }),
-    ).exactOptional(),
-    solutionVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the solution version used by the batch segment job to generate batch segments.',
-        }),
-    ).exactOptional(),
+    batchSegmentJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the batch segment job.',
+    }),
+    jobName: NameSchema.exactOptional().openapi({
+      description: 'The name of the batch segment job.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the batch segment job. The status is one of the following values:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>IN PROGRESS</p> </li> <li> <p>ACTIVE</p> </li> <li> <p>CREATE FAILED</p> </li> </ul>',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The time at which the batch segment job was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The time at which the batch segment job was last updated.',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If the batch segment job failed, the reason for the failure.',
+    }),
+    solutionVersionArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the solution version used by the batch segment job to generate batch segments.',
+    }),
   })
   .openapi({
     description:
@@ -3347,81 +2425,53 @@ const BatchSegmentJobsSchema = z
 
 const ListBatchSegmentJobsResponseSchema = z
   .object({
-    batchSegmentJobs: BatchSegmentJobsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list containing information on each job that is returned.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. The value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    batchSegmentJobs: BatchSegmentJobsSchema.exactOptional().openapi({
+      description: 'A list containing information on each job that is returned.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. The value is <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBatchSegmentJobsResponse')
 
 const ListBatchSegmentJobsRequestSchema = z
   .object({
-    solutionVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the solution version that the batch segment jobs used to generate batch segments.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token to request the next page of results.' }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of batch segment job results to return in each page. The default value is 100.',
-        }),
-    ).exactOptional(),
+    solutionVersionArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the solution version that the batch segment jobs used to generate batch segments.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to request the next page of results.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of batch segment job results to return in each page. The default value is 100.',
+    }),
   })
   .openapi({ title: 'ListBatchSegmentJobsRequest', required: [] })
   .openapi('ListBatchSegmentJobsRequest')
 
 const CampaignSummarySchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the campaign.' }),
-    ).exactOptional(),
-    campaignArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the campaign.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the campaign.</p> <p>A campaign can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the campaign was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the campaign was last updated.',
-        }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z.any().openapi({ description: 'If a campaign fails, the reason behind the failure.' }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the campaign.' }),
+    campaignArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the campaign.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the campaign.</p> <p>A campaign can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the campaign was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the campaign was last updated.',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If a campaign fails, the reason behind the failure.',
+    }),
   })
   .openapi({
     description:
@@ -3434,79 +2484,53 @@ const CampaignsSchema = z.array(CampaignSummarySchema).max(100).openapi('Campaig
 
 const ListCampaignsResponseSchema = z
   .object({
-    campaigns: CampaignsSchema.and(
-      z.any().openapi({ description: 'A list of the campaigns.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A token for getting the next set of campaigns (if they exist).' }),
-    ).exactOptional(),
+    campaigns: CampaignsSchema.exactOptional().openapi({ description: 'A list of the campaigns.' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token for getting the next set of campaigns (if they exist).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCampaignsResponse')
 
 const ListCampaignsRequestSchema = z
   .object({
-    solutionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the solution to list the campaigns for. When a solution is not specified, all the campaigns associated with the account are listed.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token returned from the previous call to <a href="https://docs.aws.amazon.com/personalize/latest/dg/API_ListCampaigns.html">ListCampaigns</a> for getting the next set of campaigns (if they exist).',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of campaigns to return.' }),
-    ).exactOptional(),
+    solutionArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the solution to list the campaigns for. When a solution is not specified, all the campaigns associated with the account are listed.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token returned from the previous call to <a href="https://docs.aws.amazon.com/personalize/latest/dg/API_ListCampaigns.html">ListCampaigns</a> for getting the next set of campaigns (if they exist).',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of campaigns to return.',
+    }),
   })
   .openapi({ title: 'ListCampaignsRequest', required: [] })
   .openapi('ListCampaignsRequest')
 
 const DatasetExportJobSummarySchema = z
   .object({
-    datasetExportJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset export job.' }),
-    ).exactOptional(),
-    jobName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset export job.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the dataset export job.</p> <p>A dataset export job can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the dataset export job was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time (in Unix time) that the dataset export job status was last updated.',
-        }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: 'If a dataset export job fails, the reason behind the failure.' }),
-    ).exactOptional(),
+    datasetExportJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset export job.',
+    }),
+    jobName: NameSchema.exactOptional().openapi({
+      description: 'The name of the dataset export job.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the dataset export job.</p> <p>A dataset export job can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> </ul>',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the dataset export job was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description:
+        'The date and time (in Unix time) that the dataset export job status was last updated.',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If a dataset export job fails, the reason behind the failure.',
+    }),
   })
   .openapi({
     description:
@@ -3522,85 +2546,55 @@ const DatasetExportJobsSchema = z
 
 const ListDatasetExportJobsResponseSchema = z
   .object({
-    datasetExportJobs: DatasetExportJobsSchema.and(
-      z.any().openapi({ description: 'The list of dataset export jobs.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token for getting the next set of dataset export jobs (if they exist).',
-        }),
-    ).exactOptional(),
+    datasetExportJobs: DatasetExportJobsSchema.exactOptional().openapi({
+      description: 'The list of dataset export jobs.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token for getting the next set of dataset export jobs (if they exist).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDatasetExportJobsResponse')
 
 const ListDatasetExportJobsRequestSchema = z
   .object({
-    datasetArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the dataset to list the dataset export jobs for.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token returned from the previous call to <code>ListDatasetExportJobs</code> for getting the next set of dataset export jobs (if they exist).',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of dataset export jobs to return.' }),
-    ).exactOptional(),
+    datasetArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the dataset to list the dataset export jobs for.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token returned from the previous call to <code>ListDatasetExportJobs</code> for getting the next set of dataset export jobs (if they exist).',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of dataset export jobs to return.',
+    }),
   })
   .openapi({ title: 'ListDatasetExportJobsRequest', required: [] })
   .openapi('ListDatasetExportJobsRequest')
 
 const DatasetGroupSummarySchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset group.' }),
-    ).exactOptional(),
-    datasetGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset group.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the dataset group.</p> <p>A dataset group can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the dataset group was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the dataset group was last updated.',
-        }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If creating a dataset group fails, the reason behind the failure.',
-        }),
-    ).exactOptional(),
-    domain: DomainSchema.and(
-      z.any().openapi({ description: 'The domain of a Domain dataset group.' }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the dataset group.' }),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset group.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the dataset group.</p> <p>A dataset group can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING</p> </li> </ul>',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the dataset group was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the dataset group was last updated.',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If creating a dataset group fails, the reason behind the failure.',
+    }),
+    domain: DomainSchema.exactOptional().openapi({
+      description: 'The domain of a Domain dataset group.',
+    }),
   })
   .openapi({
     description:
@@ -3613,81 +2607,55 @@ const DatasetGroupsSchema = z.array(DatasetGroupSummarySchema).max(100).openapi(
 
 const ListDatasetGroupsResponseSchema = z
   .object({
-    datasetGroups: DatasetGroupsSchema.and(
-      z.any().openapi({ description: 'The list of your dataset groups.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token for getting the next set of dataset groups (if they exist).',
-        }),
-    ).exactOptional(),
+    datasetGroups: DatasetGroupsSchema.exactOptional().openapi({
+      description: 'The list of your dataset groups.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token for getting the next set of dataset groups (if they exist).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDatasetGroupsResponse')
 
 const ListDatasetGroupsRequestSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token returned from the previous call to <code>ListDatasetGroups</code> for getting the next set of dataset groups (if they exist).',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of dataset groups to return.' }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token returned from the previous call to <code>ListDatasetGroups</code> for getting the next set of dataset groups (if they exist).',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of dataset groups to return.',
+    }),
   })
   .openapi({ title: 'ListDatasetGroupsRequest', required: [] })
   .openapi('ListDatasetGroupsRequest')
 
 const DatasetImportJobSummarySchema = z
   .object({
-    datasetImportJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset import job.' }),
-    ).exactOptional(),
-    jobName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset import job.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the dataset import job.</p> <p>A dataset import job can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the dataset import job was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time (in Unix time) that the dataset import job status was last updated.',
-        }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: 'If a dataset import job fails, the reason behind the failure.' }),
-    ).exactOptional(),
-    importMode: ImportModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The import mode the dataset import job used to update the data in the dataset. For more information see <a href="https://docs.aws.amazon.com/personalize/latest/dg/updating-existing-bulk-data.html">Updating existing bulk data</a>. ',
-        }),
-    ).exactOptional(),
+    datasetImportJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset import job.',
+    }),
+    jobName: NameSchema.exactOptional().openapi({
+      description: 'The name of the dataset import job.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the dataset import job.</p> <p>A dataset import job can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> </ul>',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the dataset import job was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description:
+        'The date and time (in Unix time) that the dataset import job status was last updated.',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If a dataset import job fails, the reason behind the failure.',
+    }),
+    importMode: ImportModeSchema.exactOptional().openapi({
+      description:
+        'The import mode the dataset import job used to update the data in the dataset. For more information see <a href="https://docs.aws.amazon.com/personalize/latest/dg/updating-existing-bulk-data.html">Updating existing bulk data</a>. ',
+    }),
   })
   .openapi({
     description:
@@ -3703,81 +2671,53 @@ const DatasetImportJobsSchema = z
 
 const ListDatasetImportJobsResponseSchema = z
   .object({
-    datasetImportJobs: DatasetImportJobsSchema.and(
-      z.any().openapi({ description: 'The list of dataset import jobs.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token for getting the next set of dataset import jobs (if they exist).',
-        }),
-    ).exactOptional(),
+    datasetImportJobs: DatasetImportJobsSchema.exactOptional().openapi({
+      description: 'The list of dataset import jobs.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token for getting the next set of dataset import jobs (if they exist).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDatasetImportJobsResponse')
 
 const ListDatasetImportJobsRequestSchema = z
   .object({
-    datasetArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the dataset to list the dataset import jobs for.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token returned from the previous call to <code>ListDatasetImportJobs</code> for getting the next set of dataset import jobs (if they exist).',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of dataset import jobs to return.' }),
-    ).exactOptional(),
+    datasetArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the dataset to list the dataset import jobs for.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token returned from the previous call to <code>ListDatasetImportJobs</code> for getting the next set of dataset import jobs (if they exist).',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of dataset import jobs to return.',
+    }),
   })
   .openapi({ title: 'ListDatasetImportJobsRequest', required: [] })
   .openapi('ListDatasetImportJobsRequest')
 
 const DatasetSummarySchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset.' }),
-    ).exactOptional(),
-    datasetArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset.' }),
-    ).exactOptional(),
-    datasetType: DatasetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The dataset type. One of the following values:</p> <ul> <li> <p>Interactions</p> </li> <li> <p>Items</p> </li> <li> <p>Users</p> </li> <li> <p>Event-Interactions</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the dataset.</p> <p>A dataset can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time (in Unix time) that the dataset was created.' }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the dataset was last updated.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the dataset.' }),
+    datasetArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset.',
+    }),
+    datasetType: DatasetTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The dataset type. One of the following values:</p> <ul> <li> <p>Interactions</p> </li> <li> <p>Items</p> </li> <li> <p>Users</p> </li> <li> <p>Event-Interactions</p> </li> </ul>',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the dataset.</p> <p>A dataset can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the dataset was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the dataset was last updated.',
+    }),
   })
   .openapi({
     description:
@@ -3790,78 +2730,50 @@ const DatasetsSchema = z.array(DatasetSummarySchema).max(100).openapi('Datasets'
 
 const ListDatasetsResponseSchema = z
   .object({
-    datasets: DatasetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>Dataset</code> objects. Each object provides metadata information.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A token for getting the next set of datasets (if they exist).' }),
-    ).exactOptional(),
+    datasets: DatasetsSchema.exactOptional().openapi({
+      description:
+        'An array of <code>Dataset</code> objects. Each object provides metadata information.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token for getting the next set of datasets (if they exist).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDatasetsResponse')
 
 const ListDatasetsRequestSchema = z
   .object({
-    datasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the dataset group that contains the datasets to list.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token returned from the previous call to <code>ListDatasetImportJobs</code> for getting the next set of dataset import jobs (if they exist).',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of datasets to return.' }),
-    ).exactOptional(),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the dataset group that contains the datasets to list.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token returned from the previous call to <code>ListDatasetImportJobs</code> for getting the next set of dataset import jobs (if they exist).',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of datasets to return.',
+    }),
   })
   .openapi({ title: 'ListDatasetsRequest', required: [] })
   .openapi('ListDatasetsRequest')
 
 const EventTrackerSummarySchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the event tracker.' }),
-    ).exactOptional(),
-    eventTrackerArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the event tracker.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the event tracker.</p> <p>An event tracker can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the event tracker was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the event tracker was last updated.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the event tracker.' }),
+    eventTrackerArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the event tracker.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the event tracker.</p> <p>An event tracker can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the event tracker was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the event tracker was last updated.',
+    }),
   })
   .openapi({
     description:
@@ -3874,63 +2786,49 @@ const EventTrackersSchema = z.array(EventTrackerSummarySchema).max(100).openapi(
 
 const ListEventTrackersResponseSchema = z
   .object({
-    eventTrackers: EventTrackersSchema.and(
-      z.any().openapi({ description: 'A list of event trackers.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token for getting the next set of event trackers (if they exist).',
-        }),
-    ).exactOptional(),
+    eventTrackers: EventTrackersSchema.exactOptional().openapi({
+      description: 'A list of event trackers.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token for getting the next set of event trackers (if they exist).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEventTrackersResponse')
 
 const ListEventTrackersRequestSchema = z
   .object({
-    datasetGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of a dataset group used to filter the response.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token returned from the previous call to <code>ListEventTrackers</code> for getting the next set of event trackers (if they exist).',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of event trackers to return.' }),
-    ).exactOptional(),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of a dataset group used to filter the response.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token returned from the previous call to <code>ListEventTrackers</code> for getting the next set of event trackers (if they exist).',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of event trackers to return.',
+    }),
   })
   .openapi({ title: 'ListEventTrackersRequest', required: [] })
   .openapi('ListEventTrackersRequest')
 
 const FilterSummarySchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the filter.' }),
-    ).exactOptional(),
-    filterArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the filter.' }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The time at which the filter was created.' }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z.any().openapi({ description: 'The time at which the filter was last updated.' }),
-    ).exactOptional(),
-    datasetGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the dataset group to which the filter belongs.' }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z.any().openapi({ description: 'If the filter failed, the reason for the failure.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the filter.' }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the filter.' }),
+    filterArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the filter.' }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The time at which the filter was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The time at which the filter was last updated.',
+    }),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the dataset group to which the filter belongs.',
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'If the filter failed, the reason for the failure.',
+    }),
+    status: StatusSchema.exactOptional().openapi({ description: 'The status of the filter.' }),
   })
   .openapi({ description: "A short summary of a filter's attributes.", required: [] })
   .openapi('FilterSummary')
@@ -3939,104 +2837,80 @@ const FiltersSchema = z.array(FilterSummarySchema).max(100).openapi('Filters')
 
 const ListFiltersResponseSchema = z
   .object({
-    Filters: FiltersSchema.and(
-      z.any().openapi({ description: 'A list of returned filters.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A token for getting the next set of filters (if they exist).' }),
-    ).exactOptional(),
+    Filters: FiltersSchema.exactOptional().openapi({ description: 'A list of returned filters.' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token for getting the next set of filters (if they exist).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFiltersResponse')
 
 const ListFiltersRequestSchema = z
   .object({
-    datasetGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the dataset group that contains the filters.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token returned from the previous call to <code>ListFilters</code> for getting the next set of filters (if they exist).',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of filters to return.' }),
-    ).exactOptional(),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the dataset group that contains the filters.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token returned from the previous call to <code>ListFilters</code> for getting the next set of filters (if they exist).',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of filters to return.',
+    }),
   })
   .openapi({ title: 'ListFiltersRequest', required: [] })
   .openapi('ListFiltersRequest')
 
 const ListMetricAttributionMetricsResponseSchema = z
   .object({
-    metrics: MetricAttributesSchema.and(
-      z.any().openapi({ description: 'The metrics for the specified metric attribution.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the pagination token from a previous <code>ListMetricAttributionMetricsResponse</code> request to retrieve the next page of results.',
-        }),
-    ).exactOptional(),
+    metrics: MetricAttributesSchema.exactOptional().openapi({
+      description: 'The metrics for the specified metric attribution.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Specify the pagination token from a previous <code>ListMetricAttributionMetricsResponse</code> request to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMetricAttributionMetricsResponse')
 
 const ListMetricAttributionMetricsRequestSchema = z
   .object({
-    metricAttributionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the metric attribution to retrieve attributes for.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the pagination token from a previous request to retrieve the next page of results.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of metrics to return in one page of results.',
-        }),
-    ).exactOptional(),
+    metricAttributionArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the metric attribution to retrieve attributes for.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Specify the pagination token from a previous request to retrieve the next page of results.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of metrics to return in one page of results.',
+    }),
   })
   .openapi({ title: 'ListMetricAttributionMetricsRequest', required: [] })
   .openapi('ListMetricAttributionMetricsRequest')
 
 const MetricAttributionSummarySchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the metric attribution.' }),
-    ).exactOptional(),
-    metricAttributionArn: ArnSchema.and(
-      z.any().openapi({ description: "The metric attribution's Amazon Resource Name (ARN)." }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z.any().openapi({ description: "The metric attribution's status." }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z.any().openapi({ description: "The metric attribution's creation date time." }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z.any().openapi({ description: "The metric attribution's last updated date time." }),
-    ).exactOptional(),
-    failureReason: FailureReasonSchema.and(
-      z.any().openapi({ description: "The metric attribution's failure reason." }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({
+      description: 'The name of the metric attribution.',
+    }),
+    metricAttributionArn: ArnSchema.exactOptional().openapi({
+      description: "The metric attribution's Amazon Resource Name (ARN).",
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description: "The metric attribution's status.",
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: "The metric attribution's creation date time.",
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: "The metric attribution's last updated date time.",
+    }),
+    failureReason: FailureReasonSchema.exactOptional().openapi({
+      description: "The metric attribution's failure reason.",
+    }),
   })
   .openapi({
     description:
@@ -4052,81 +2926,49 @@ const MetricAttributionsSchema = z
 
 const ListMetricAttributionsResponseSchema = z
   .object({
-    metricAttributions: MetricAttributionsSchema.and(
-      z.any().openapi({ description: 'The list of metric attributions.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the pagination token from a previous request to retrieve the next page of results.',
-        }),
-    ).exactOptional(),
+    metricAttributions: MetricAttributionsSchema.exactOptional().openapi({
+      description: 'The list of metric attributions.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Specify the pagination token from a previous request to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMetricAttributionsResponse')
 
 const ListMetricAttributionsRequestSchema = z
   .object({
-    datasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The metric attributions' dataset group Amazon Resource Name (ARN).",
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the pagination token from a previous request to retrieve the next page of results.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of metric attributions to return in one page of results.',
-        }),
-    ).exactOptional(),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description: "The metric attributions' dataset group Amazon Resource Name (ARN).",
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Specify the pagination token from a previous request to retrieve the next page of results.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of metric attributions to return in one page of results.',
+    }),
   })
   .openapi({ title: 'ListMetricAttributionsRequest', required: [] })
   .openapi('ListMetricAttributionsRequest')
 
 const RecipeSummarySchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the recipe.' }),
-    ).exactOptional(),
-    recipeArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the recipe.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the recipe.' }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time (in Unix time) that the recipe was created.' }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the recipe was last updated.',
-        }),
-    ).exactOptional(),
-    domain: DomainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain of the recipe (if the recipe is a Domain dataset group use case).',
-        }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the recipe.' }),
+    recipeArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the recipe.',
+    }),
+    status: StatusSchema.exactOptional().openapi({ description: 'The status of the recipe.' }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the recipe was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the recipe was last updated.',
+    }),
+    domain: DomainSchema.exactOptional().openapi({
+      description: 'The domain of the recipe (if the recipe is a Domain dataset group use case).',
+    }),
   })
   .openapi({
     description:
@@ -4139,12 +2981,12 @@ const RecipesSchema = z.array(RecipeSummarySchema).max(100).openapi('Recipes')
 
 const ListRecipesResponseSchema = z
   .object({
-    recipes: RecipesSchema.and(
-      z.any().openapi({ description: 'The list of available recipes.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'A token for getting the next set of recipes.' }),
-    ).exactOptional(),
+    recipes: RecipesSchema.exactOptional().openapi({
+      description: 'The list of available recipes.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token for getting the next set of recipes.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRecipesResponse')
@@ -4153,81 +2995,51 @@ const RecipeProviderSchema = z.literal('SERVICE').openapi('RecipeProvider')
 
 const ListRecipesRequestSchema = z
   .object({
-    recipeProvider: RecipeProviderSchema.and(
-      z.any().openapi({ description: 'The default is <code>SERVICE</code>.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token returned from the previous call to <code>ListRecipes</code> for getting the next set of recipes (if they exist).',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of recipes to return.' }),
-    ).exactOptional(),
-    domain: DomainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Filters returned recipes by domain for a Domain dataset group. Only recipes (Domain dataset group use cases) for this domain are included in the response. If you don't specify a domain, all recipes are returned. ",
-        }),
-    ).exactOptional(),
+    recipeProvider: RecipeProviderSchema.exactOptional().openapi({
+      description: 'The default is <code>SERVICE</code>.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token returned from the previous call to <code>ListRecipes</code> for getting the next set of recipes (if they exist).',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of recipes to return.',
+    }),
+    domain: DomainSchema.exactOptional().openapi({
+      description:
+        " Filters returned recipes by domain for a Domain dataset group. Only recipes (Domain dataset group use cases) for this domain are included in the response. If you don't specify a domain, all recipes are returned. ",
+    }),
   })
   .openapi({ title: 'ListRecipesRequest', required: [] })
   .openapi('ListRecipesRequest')
 
 const RecommenderSummarySchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the recommender.' }),
-    ).exactOptional(),
-    recommenderArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the recommender.' }),
-    ).exactOptional(),
-    datasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Domain dataset group that contains the recommender.',
-        }),
-    ).exactOptional(),
-    recipeArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the recipe (Domain dataset group use case) that the recommender was created for.',
-        }),
-    ).exactOptional(),
-    recommenderConfig: RecommenderConfigSchema.and(
-      z.any().openapi({ description: 'The configuration details of the recommender.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the recommender. A recommender can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>STOP PENDING &gt; STOP IN_PROGRESS &gt; INACTIVE &gt; START PENDING &gt; START IN_PROGRESS &gt; ACTIVE</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix format) that the recommender was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix format) that the recommender was last updated.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the recommender.' }),
+    recommenderArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the recommender.',
+    }),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Domain dataset group that contains the recommender.',
+    }),
+    recipeArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the recipe (Domain dataset group use case) that the recommender was created for.',
+    }),
+    recommenderConfig: RecommenderConfigSchema.exactOptional().openapi({
+      description: 'The configuration details of the recommender.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the recommender. A recommender can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>STOP PENDING &gt; STOP IN_PROGRESS &gt; INACTIVE &gt; START PENDING &gt; START IN_PROGRESS &gt; ACTIVE</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix format) that the recommender was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix format) that the recommender was last updated.',
+    }),
   })
   .openapi({
     description: 'Provides a summary of the properties of the recommender.',
@@ -4239,73 +3051,49 @@ const RecommendersSchema = z.array(RecommenderSummarySchema).max(100).openapi('R
 
 const ListRecommendersResponseSchema = z
   .object({
-    recommenders: RecommendersSchema.and(
-      z.any().openapi({ description: 'A list of the recommenders.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token for getting the next set of recommenders (if they exist).',
-        }),
-    ).exactOptional(),
+    recommenders: RecommendersSchema.exactOptional().openapi({
+      description: 'A list of the recommenders.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token for getting the next set of recommenders (if they exist).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRecommendersResponse')
 
 const ListRecommendersRequestSchema = z
   .object({
-    datasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Domain dataset group to list the recommenders for. When a Domain dataset group is not specified, all the recommenders associated with the account are listed.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token returned from the previous call to <code>ListRecommenders</code> for getting the next set of recommenders (if they exist).',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of recommenders to return.' }),
-    ).exactOptional(),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Domain dataset group to list the recommenders for. When a Domain dataset group is not specified, all the recommenders associated with the account are listed.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token returned from the previous call to <code>ListRecommenders</code> for getting the next set of recommenders (if they exist).',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of recommenders to return.',
+    }),
   })
   .openapi({ title: 'ListRecommendersRequest', required: [] })
   .openapi('ListRecommendersRequest')
 
 const DatasetSchemaSummarySchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the schema.' }),
-    ).exactOptional(),
-    schemaArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the schema.' }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time (in Unix time) that the schema was created.' }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the schema was last updated.',
-        }),
-    ).exactOptional(),
-    domain: DomainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain of a schema that you created for a dataset in a Domain dataset group.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the schema.' }),
+    schemaArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the schema.',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the schema was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the schema was last updated.',
+    }),
+    domain: DomainSchema.exactOptional().openapi({
+      description:
+        'The domain of a schema that you created for a dataset in a Domain dataset group.',
+    }),
   })
   .openapi({
     description:
@@ -4318,31 +3106,23 @@ const SchemasSchema = z.array(DatasetSchemaSummarySchema).max(100).openapi('Sche
 
 const ListSchemasResponseSchema = z
   .object({
-    schemas: SchemasSchema.and(
-      z.any().openapi({ description: 'A list of schemas.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A token used to get the next set of schemas (if they exist).' }),
-    ).exactOptional(),
+    schemas: SchemasSchema.exactOptional().openapi({ description: 'A list of schemas.' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token used to get the next set of schemas (if they exist).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSchemasResponse')
 
 const ListSchemasRequestSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token returned from the previous call to <code>ListSchemas</code> for getting the next set of schemas (if they exist).',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of schemas to return.' }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token returned from the previous call to <code>ListSchemas</code> for getting the next set of schemas (if they exist).',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of schemas to return.',
+    }),
   })
   .openapi({ title: 'ListSchemasRequest', required: [] })
   .openapi('ListSchemasRequest')
@@ -4354,79 +3134,51 @@ const SolutionVersionsSchema = z
 
 const ListSolutionVersionsResponseSchema = z
   .object({
-    solutionVersions: SolutionVersionsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of solution versions describing the version properties.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token for getting the next set of solution versions (if they exist).',
-        }),
-    ).exactOptional(),
+    solutionVersions: SolutionVersionsSchema.exactOptional().openapi({
+      description: 'A list of solution versions describing the version properties.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token for getting the next set of solution versions (if they exist).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSolutionVersionsResponse')
 
 const ListSolutionVersionsRequestSchema = z
   .object({
-    solutionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the solution.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token returned from the previous call to <code>ListSolutionVersions</code> for getting the next set of solution versions (if they exist).',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of solution versions to return.' }),
-    ).exactOptional(),
+    solutionArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the solution.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token returned from the previous call to <code>ListSolutionVersions</code> for getting the next set of solution versions (if they exist).',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of solution versions to return.',
+    }),
   })
   .openapi({ title: 'ListSolutionVersionsRequest', required: [] })
   .openapi('ListSolutionVersionsRequest')
 
 const SolutionSummarySchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the solution.' }),
-    ).exactOptional(),
-    solutionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the solution.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the solution.</p> <p>A solution can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    creationDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the solution was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedDateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time (in Unix time) that the solution was last updated.',
-        }),
-    ).exactOptional(),
-    recipeArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the recipe used by the solution.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the solution.' }),
+    solutionArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the solution.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the solution.</p> <p>A solution can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul>',
+    }),
+    creationDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the solution was created.',
+    }),
+    lastUpdatedDateTime: DateSchema.exactOptional().openapi({
+      description: 'The date and time (in Unix time) that the solution was last updated.',
+    }),
+    recipeArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the recipe used by the solution.',
+    }),
   })
   .openapi({
     description:
@@ -4439,143 +3191,111 @@ const SolutionsSchema = z.array(SolutionSummarySchema).max(100).openapi('Solutio
 
 const ListSolutionsResponseSchema = z
   .object({
-    solutions: SolutionsSchema.and(
-      z.any().openapi({ description: 'A list of the current solutions.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A token for getting the next set of solutions (if they exist).' }),
-    ).exactOptional(),
+    solutions: SolutionsSchema.exactOptional().openapi({
+      description: 'A list of the current solutions.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token for getting the next set of solutions (if they exist).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSolutionsResponse')
 
 const ListSolutionsRequestSchema = z
   .object({
-    datasetGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset group.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token returned from the previous call to <code>ListSolutions</code> for getting the next set of solutions (if they exist).',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of solutions to return.' }),
-    ).exactOptional(),
+    datasetGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset group.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token returned from the previous call to <code>ListSolutions</code> for getting the next set of solutions (if they exist).',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of solutions to return.',
+    }),
   })
   .openapi({ title: 'ListSolutionsRequest', required: [] })
   .openapi('ListSolutionsRequest')
 
 const ListTagsForResourceResponseSchema = z
-  .object({
-    tags: TagsSchema.and(z.any().openapi({ description: "The resource's tags." })).exactOptional(),
-  })
+  .object({ tags: TagsSchema.exactOptional().openapi({ description: "The resource's tags." }) })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z.any().openapi({ description: "The resource's Amazon Resource Name." }),
-    ),
+    resourceArn: ArnSchema.openapi({ description: "The resource's Amazon Resource Name." }),
   })
   .openapi({ required: ['resourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const StartRecommenderResponseSchema = z
   .object({
-    recommenderArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the recommender you started.' }),
-    ).exactOptional(),
+    recommenderArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the recommender you started.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartRecommenderResponse')
 
 const StartRecommenderRequestSchema = z
   .object({
-    recommenderArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the recommender to start.' }),
-    ),
+    recommenderArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the recommender to start.',
+    }),
   })
   .openapi({ required: ['recommenderArn'], title: 'StartRecommenderRequest' })
   .openapi('StartRecommenderRequest')
 
 const StopRecommenderResponseSchema = z
   .object({
-    recommenderArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the recommender you stopped.' }),
-    ).exactOptional(),
+    recommenderArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the recommender you stopped.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopRecommenderResponse')
 
 const StopRecommenderRequestSchema = z
   .object({
-    recommenderArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the recommender to stop.' }),
-    ),
+    recommenderArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the recommender to stop.',
+    }),
   })
   .openapi({ required: ['recommenderArn'], title: 'StopRecommenderRequest' })
   .openapi('StopRecommenderRequest')
 
 const StopSolutionVersionCreationRequestSchema = z
   .object({
-    solutionVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the solution version you want to stop creating.',
-        }),
-    ),
+    solutionVersionArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the solution version you want to stop creating.',
+    }),
   })
   .openapi({ required: ['solutionVersionArn'], title: 'StopSolutionVersionCreationRequest' })
   .openapi('StopSolutionVersionCreationRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z.any().openapi({ description: "The resource's Amazon Resource Name (ARN)." }),
-    ),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to apply to the resource. For more information see <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">Tagging Personalize resources</a>.',
-        }),
-    ),
+    resourceArn: ArnSchema.openapi({ description: "The resource's Amazon Resource Name (ARN)." }),
+    tags: TagsSchema.openapi({
+      description:
+        'Tags to apply to the resource. For more information see <a href="https://docs.aws.amazon.com/personalize/latest/dev/tagging-resources.html">Tagging Personalize resources</a>.',
+    }),
   })
   .openapi({ required: ['resourceArn', 'tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeysSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeys')
 
 const UntagResourceRequestSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z.any().openapi({ description: "The resource's Amazon Resource Name (ARN)." }),
-    ),
-    tagKeys: TagKeysSchema.and(
-      z.any().openapi({ description: "Keys to remove from the resource's tags." }),
-    ),
+    resourceArn: ArnSchema.openapi({ description: "The resource's Amazon Resource Name (ARN)." }),
+    tagKeys: TagKeysSchema.openapi({ description: "Keys to remove from the resource's tags." }),
   })
   .openapi({ required: ['resourceArn', 'tagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
@@ -4584,46 +3304,37 @@ const TooManyTagKeysExceptionSchema = z.any().openapi('TooManyTagKeysException')
 
 const UpdateCampaignResponseSchema = z
   .object({
-    campaignArn: ArnSchema.and(
-      z.any().openapi({ description: 'The same campaign ARN as given in the request.' }),
-    ).exactOptional(),
+    campaignArn: ArnSchema.exactOptional().openapi({
+      description: 'The same campaign ARN as given in the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateCampaignResponse')
 
 const UpdateCampaignRequestSchema = z
   .object({
-    campaignArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the campaign.' }),
-    ),
-    solutionVersionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of a new solution version to deploy.' }),
-    ).exactOptional(),
-    minProvisionedTPS: TransactionsPerSecondSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the requested minimum provisioned transactions (recommendations) per second that Amazon Personalize will support.',
-        }),
-    ).exactOptional(),
-    campaignConfig: CampaignConfigSchema.and(
-      z.any().openapi({ description: 'The configuration details of a campaign.' }),
-    ).exactOptional(),
+    campaignArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the campaign.',
+    }),
+    solutionVersionArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of a new solution version to deploy.',
+    }),
+    minProvisionedTPS: TransactionsPerSecondSchema.exactOptional().openapi({
+      description:
+        'Specifies the requested minimum provisioned transactions (recommendations) per second that Amazon Personalize will support.',
+    }),
+    campaignConfig: CampaignConfigSchema.exactOptional().openapi({
+      description: 'The configuration details of a campaign.',
+    }),
   })
   .openapi({ required: ['campaignArn'], title: 'UpdateCampaignRequest' })
   .openapi('UpdateCampaignRequest')
 
 const UpdateMetricAttributionResponseSchema = z
   .object({
-    metricAttributionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the metric attribution that you updated.',
-        }),
-    ).exactOptional(),
+    metricAttributionArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the metric attribution that you updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateMetricAttributionResponse')
@@ -4635,49 +3346,39 @@ const MetricAttributesNamesListSchema = z
 
 const UpdateMetricAttributionRequestSchema = z
   .object({
-    addMetrics: MetricAttributesSchema.and(
-      z.any().openapi({ description: 'Add new metric attributes to the metric attribution.' }),
-    ).exactOptional(),
-    removeMetrics: MetricAttributesNamesListSchema.and(
-      z.any().openapi({ description: 'Remove metric attributes from the metric attribution.' }),
-    ).exactOptional(),
-    metricsOutputConfig: MetricAttributionOutputSchema.and(
-      z.any().openapi({ description: 'An output config for the metric attribution.' }),
-    ).exactOptional(),
-    metricAttributionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) for the metric attribution to update.',
-        }),
-    ).exactOptional(),
+    addMetrics: MetricAttributesSchema.exactOptional().openapi({
+      description: 'Add new metric attributes to the metric attribution.',
+    }),
+    removeMetrics: MetricAttributesNamesListSchema.exactOptional().openapi({
+      description: 'Remove metric attributes from the metric attribution.',
+    }),
+    metricsOutputConfig: MetricAttributionOutputSchema.exactOptional().openapi({
+      description: 'An output config for the metric attribution.',
+    }),
+    metricAttributionArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the metric attribution to update.',
+    }),
   })
   .openapi({ title: 'UpdateMetricAttributionRequest', required: [] })
   .openapi('UpdateMetricAttributionRequest')
 
 const UpdateRecommenderResponseSchema = z
   .object({
-    recommenderArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The same recommender Amazon Resource Name (ARN) as given in the request.',
-        }),
-    ).exactOptional(),
+    recommenderArn: ArnSchema.exactOptional().openapi({
+      description: 'The same recommender Amazon Resource Name (ARN) as given in the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRecommenderResponse')
 
 const UpdateRecommenderRequestSchema = z
   .object({
-    recommenderArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the recommender to modify.' }),
-    ),
-    recommenderConfig: RecommenderConfigSchema.and(
-      z.any().openapi({ description: 'The configuration details of the recommender.' }),
-    ),
+    recommenderArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the recommender to modify.',
+    }),
+    recommenderConfig: RecommenderConfigSchema.openapi({
+      description: 'The configuration details of the recommender.',
+    }),
   })
   .openapi({ required: ['recommenderArn', 'recommenderConfig'], title: 'UpdateRecommenderRequest' })
   .openapi('UpdateRecommenderRequest')

@@ -2,123 +2,103 @@ import { createRoute, z } from '@hono/zod-openapi'
 
 const StringSchema = z.string().openapi('String')
 
-const TimestampUnixSchema = z.iso.datetime({ offset: true }).openapi('TimestampUnix')
-
-const SlateSourceSchema = z
-  .object({
-    SourceLocationName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the source location where the slate VOD source is stored.',
-        }),
-    ).exactOptional(),
-    VodSourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The slate VOD source name. The VOD source must already exist in a source location before it can be used for slate.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Slate VOD source configuration.', required: [] })
-  .openapi('SlateSource')
-
 const LogTypeSchema = z.literal('AS_RUN').openapi('LogType')
 
 const LogTypesSchema = z.array(LogTypeSchema).openapi('LogTypes')
 
-const LogConfigurationForChannelSchema = z
+const ConfigureLogsForChannelResponseSchema = z
   .object({
-    LogTypes: LogTypesSchema.and(
-      z.any().openapi({ description: 'The log types.' }),
-    ).exactOptional(),
+    ChannelName: StringSchema.exactOptional().openapi({ description: 'The name of the channel.' }),
+    LogTypes: LogTypesSchema.exactOptional().openapi({
+      description: 'The types of logs collected.',
+    }),
   })
-  .openapi({ description: 'The log configuration for the channel.', required: [] })
-  .openapi('LogConfigurationForChannel')
+  .openapi({ required: [] })
+  .openapi('ConfigureLogsForChannelResponse')
 
 const IntegerSchema = z.int().openapi('Integer')
 
+const ConfigureLogsForPlaybackConfigurationResponseSchema = z
+  .object({
+    PercentEnabled: IntegerSchema.openapi({
+      description:
+        'The percentage of session logs that MediaTailor sends to your Cloudwatch Logs account.',
+    }),
+    PlaybackConfigurationName: StringSchema.exactOptional().openapi({
+      description: 'The name of the playback configuration.',
+    }),
+  })
+  .openapi({ required: ['PercentEnabled'] })
+  .openapi('ConfigureLogsForPlaybackConfigurationResponse')
+
+const ChannelStateSchema = z.enum(['RUNNING', 'STOPPED']).openapi('ChannelState')
+
+const TimestampUnixSchema = z.iso.datetime({ offset: true }).openapi('TimestampUnix')
+
+const SlateSourceSchema = z
+  .object({
+    SourceLocationName: StringSchema.exactOptional().openapi({
+      description: 'The name of the source location where the slate VOD source is stored.',
+    }),
+    VodSourceName: StringSchema.exactOptional().openapi({
+      description:
+        'The slate VOD source name. The VOD source must already exist in a source location before it can be used for slate.',
+    }),
+  })
+  .openapi({ description: 'Slate VOD source configuration.', required: [] })
+  .openapi('SlateSource')
+
 const DashPlaylistSettingsSchema = z
   .object({
-    ManifestWindowSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total duration (in seconds) of each manifest. Minimum value: <code>30</code> seconds. Maximum value: <code>3600</code> seconds.',
-        }),
-    ).exactOptional(),
-    MinBufferTimeSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Minimum amount of content (measured in seconds) that a player must keep available in the buffer. Minimum value: <code>2</code> seconds. Maximum value: <code>60</code> seconds.',
-        }),
-    ).exactOptional(),
-    MinUpdatePeriodSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Minimum amount of time (in seconds) that the player should wait before requesting updates to the manifest. Minimum value: <code>2</code> seconds. Maximum value: <code>60</code> seconds.',
-        }),
-    ).exactOptional(),
-    SuggestedPresentationDelaySeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amount of time (in seconds) that the player should be from the live point at the end of the manifest. Minimum value: <code>2</code> seconds. Maximum value: <code>60</code> seconds.',
-        }),
-    ).exactOptional(),
+    ManifestWindowSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        'The total duration (in seconds) of each manifest. Minimum value: <code>30</code> seconds. Maximum value: <code>3600</code> seconds.',
+    }),
+    MinBufferTimeSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        'Minimum amount of content (measured in seconds) that a player must keep available in the buffer. Minimum value: <code>2</code> seconds. Maximum value: <code>60</code> seconds.',
+    }),
+    MinUpdatePeriodSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        'Minimum amount of time (in seconds) that the player should wait before requesting updates to the manifest. Minimum value: <code>2</code> seconds. Maximum value: <code>60</code> seconds.',
+    }),
+    SuggestedPresentationDelaySeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        'Amount of time (in seconds) that the player should be from the live point at the end of the manifest. Minimum value: <code>2</code> seconds. Maximum value: <code>60</code> seconds.',
+    }),
   })
   .openapi({ description: 'Dash manifest configuration parameters.', required: [] })
   .openapi('DashPlaylistSettings')
 
 const HlsPlaylistSettingsSchema = z
   .object({
-    ManifestWindowSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total duration (in seconds) of each manifest. Minimum value: <code>30</code> seconds. Maximum value: <code>3600</code> seconds.',
-        }),
-    ).exactOptional(),
+    ManifestWindowSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        'The total duration (in seconds) of each manifest. Minimum value: <code>30</code> seconds. Maximum value: <code>3600</code> seconds.',
+    }),
   })
   .openapi({ description: 'HLS playlist configuration parameters.', required: [] })
   .openapi('HlsPlaylistSettings')
 
 const ResponseOutputItemSchema = z
   .object({
-    DashPlaylistSettings: DashPlaylistSettingsSchema.and(
-      z.any().openapi({ description: 'DASH manifest configuration settings.' }),
-    ).exactOptional(),
-    HlsPlaylistSettings: HlsPlaylistSettingsSchema.and(
-      z.any().openapi({ description: 'HLS manifest configuration settings.' }),
-    ).exactOptional(),
-    ManifestName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the manifest for the channel that will appear in the channel output's playback URL.",
-        }),
-    ),
-    PlaybackUrl: StringSchema.and(
-      z.any().openapi({ description: 'The URL used for playback by content players.' }),
-    ),
-    SourceGroup: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string used to associate a package configuration source group with a channel output.',
-        }),
-    ),
+    DashPlaylistSettings: DashPlaylistSettingsSchema.exactOptional().openapi({
+      description: 'DASH manifest configuration settings.',
+    }),
+    HlsPlaylistSettings: HlsPlaylistSettingsSchema.exactOptional().openapi({
+      description: 'HLS manifest configuration settings.',
+    }),
+    ManifestName: StringSchema.openapi({
+      description:
+        "The name of the manifest for the channel that will appear in the channel output's playback URL.",
+    }),
+    PlaybackUrl: StringSchema.openapi({
+      description: 'The URL used for playback by content players.',
+    }),
+    SourceGroup: StringSchema.openapi({
+      description:
+        'A string used to associate a package configuration source group with a channel output.',
+    }),
   })
   .openapi({
     required: ['ManifestName', 'PlaybackUrl', 'SourceGroup'],
@@ -130,124 +110,59 @@ const ResponseOutputsSchema = z.array(ResponseOutputItemSchema).openapi('Respons
 
 const MapOfStringSchema = z.record(z.string(), StringSchema).openapi('MapOfString')
 
-type ChannelType = {
-  Arn: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  ChannelName: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  ChannelState: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  CreationTime?: z.infer<typeof TimestampUnixSchema> & { [key: string]: unknown }
-  FillerSlate?: z.infer<typeof SlateSourceSchema> & { [key: string]: unknown }
-  LastModifiedTime?: z.infer<typeof TimestampUnixSchema> & { [key: string]: unknown }
-  LogConfiguration: z.infer<typeof LogConfigurationForChannelSchema> & { [key: string]: unknown }
-  Outputs: z.infer<typeof ResponseOutputsSchema> & { [key: string]: unknown }
-  PlaybackMode: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  Tags?: z.infer<typeof MapOfStringSchema> & { [key: string]: unknown }
-  Tier: z.infer<typeof StringSchema> & { [key: string]: unknown }
-}
-
-const ConfigureLogsForChannelResponseSchema = z
-  .object({
-    ChannelName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the channel.' }),
-    ).exactOptional(),
-    LogTypes: LogTypesSchema.and(
-      z.any().openapi({ description: 'The types of logs collected.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ConfigureLogsForChannelResponse')
-
-const ConfigureLogsForPlaybackConfigurationResponseSchema = z
-  .object({
-    PercentEnabled: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of session logs that MediaTailor sends to your Cloudwatch Logs account.',
-        }),
-    ),
-    PlaybackConfigurationName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the playback configuration.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['PercentEnabled'] })
-  .openapi('ConfigureLogsForPlaybackConfigurationResponse')
-
-const ChannelStateSchema = z.enum(['RUNNING', 'STOPPED']).openapi('ChannelState')
-
 const CreateChannelResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) to assign to the channel.' }),
-    ).exactOptional(),
-    ChannelName: StringSchema.and(
-      z.any().openapi({ description: 'The name to assign to the channel.' }),
-    ).exactOptional(),
-    ChannelState: ChannelStateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether the channel is in a running state or not.' }),
-    ).exactOptional(),
-    CreationTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the channel was created.' }),
-    ).exactOptional(),
-    FillerSlate: SlateSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the slate used to fill gaps between programs in the schedule.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the channel was last modified.' }),
-    ).exactOptional(),
-    Outputs: ResponseOutputsSchema.and(
-      z.any().openapi({ description: 'The output properties to assign to the channel.' }),
-    ).exactOptional(),
-    PlaybackMode: StringSchema.and(
-      z.any().openapi({ description: 'The playback mode to assign to the channel.' }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags to assign to the channel. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
-    Tier: StringSchema.and(
-      z.any().openapi({ description: 'The tier of the channel.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) to assign to the channel.',
+    }),
+    ChannelName: StringSchema.exactOptional().openapi({
+      description: 'The name to assign to the channel.',
+    }),
+    ChannelState: ChannelStateSchema.exactOptional().openapi({
+      description: 'Indicates whether the channel is in a running state or not.',
+    }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp of when the channel was created.',
+    }),
+    FillerSlate: SlateSourceSchema.exactOptional().openapi({
+      description:
+        'Contains information about the slate used to fill gaps between programs in the schedule.',
+    }),
+    LastModifiedTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp of when the channel was last modified.',
+    }),
+    Outputs: ResponseOutputsSchema.exactOptional().openapi({
+      description: 'The output properties to assign to the channel.',
+    }),
+    PlaybackMode: StringSchema.exactOptional().openapi({
+      description: 'The playback mode to assign to the channel.',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags to assign to the channel. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
+    Tier: StringSchema.exactOptional().openapi({ description: 'The tier of the channel.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateChannelResponse')
 
 const RequestOutputItemSchema = z
   .object({
-    DashPlaylistSettings: DashPlaylistSettingsSchema.and(
-      z.any().openapi({ description: 'DASH manifest configuration parameters.' }),
-    ).exactOptional(),
-    HlsPlaylistSettings: HlsPlaylistSettingsSchema.and(
-      z.any().openapi({ description: 'HLS playlist configuration parameters.' }),
-    ).exactOptional(),
-    ManifestName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the manifest for the channel. The name appears in the <code>PlaybackUrl</code>.',
-        }),
-    ),
-    SourceGroup: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string used to match which <code>HttpPackageConfiguration</code> is used for each <code>VodSource</code>.',
-        }),
-    ),
+    DashPlaylistSettings: DashPlaylistSettingsSchema.exactOptional().openapi({
+      description: 'DASH manifest configuration parameters.',
+    }),
+    HlsPlaylistSettings: HlsPlaylistSettingsSchema.exactOptional().openapi({
+      description: 'HLS playlist configuration parameters.',
+    }),
+    ManifestName: StringSchema.openapi({
+      description:
+        'The name of the manifest for the channel. The name appears in the <code>PlaybackUrl</code>.',
+    }),
+    SourceGroup: StringSchema.openapi({
+      description:
+        'A string used to match which <code>HttpPackageConfiguration</code> is used for each <code>VodSource</code>.',
+    }),
   })
   .openapi({
     required: ['ManifestName', 'SourceGroup'],
@@ -259,30 +174,18 @@ const TypeSchema = z.enum(['DASH', 'HLS']).openapi('Type')
 
 const HttpPackageConfigurationSchema = z
   .object({
-    Path: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The relative path to the URL for this VOD source. This is combined with <code>SourceLocation::HttpConfiguration::BaseUrl</code> to form a valid URL.',
-        }),
-    ),
-    SourceGroup: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the source group. This has to match one of the <code>Channel::Outputs::SourceGroup</code>.',
-        }),
-    ),
-    Type: TypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The streaming protocol for this package configuration. Supported values are <code>HLS</code> and <code>DASH</code>.',
-        }),
-    ),
+    Path: StringSchema.openapi({
+      description:
+        'The relative path to the URL for this VOD source. This is combined with <code>SourceLocation::HttpConfiguration::BaseUrl</code> to form a valid URL.',
+    }),
+    SourceGroup: StringSchema.openapi({
+      description:
+        'The name of the source group. This has to match one of the <code>Channel::Outputs::SourceGroup</code>.',
+    }),
+    Type: TypeSchema.openapi({
+      description:
+        'The streaming protocol for this package configuration. Supported values are <code>HLS</code> and <code>DASH</code>.',
+    }),
   })
   .openapi({
     required: ['Path', 'SourceGroup', 'Type'],
@@ -297,39 +200,29 @@ const HttpPackageConfigurationsSchema = z
 
 const CreateLiveSourceResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN to assign to the live source.' }),
-    ).exactOptional(),
-    CreationTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The time the live source was created.' }),
-    ).exactOptional(),
-    HttpPackageConfigurations: HttpPackageConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of HTTP package configuration parameters for this live source.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The time the live source was last modified.' }),
-    ).exactOptional(),
-    LiveSourceName: StringSchema.and(
-      z.any().openapi({ description: 'The name to assign to the live source.' }),
-    ).exactOptional(),
-    SourceLocationName: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name to assign to the source location of the live source.' }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags to assign to the live source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The ARN to assign to the live source.',
+    }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The time the live source was created.',
+    }),
+    HttpPackageConfigurations: HttpPackageConfigurationsSchema.exactOptional().openapi({
+      description: 'A list of HTTP package configuration parameters for this live source.',
+    }),
+    LastModifiedTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The time the live source was last modified.',
+    }),
+    LiveSourceName: StringSchema.exactOptional().openapi({
+      description: 'The name to assign to the live source.',
+    }),
+    SourceLocationName: StringSchema.exactOptional().openapi({
+      description: 'The name to assign to the source location of the live source.',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags to assign to the live source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateLiveSourceResponse')
@@ -338,22 +231,14 @@ const OperatorSchema = z.literal('EQUALS').openapi('Operator')
 
 const AvailMatchingCriteriaSchema = z
   .object({
-    DynamicVariable: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The dynamic variable(s) that MediaTailor should use as avail matching criteria. MediaTailor only places the prefetched ads into the avail if the avail matches the criteria defined by the dynamic variable. For information about dynamic variables, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/variables.html">Using dynamic ad variables</a> in the <i>MediaTailor User Guide</i>.</p> <p>You can include up to 100 dynamic variables.</p>',
-        }),
-    ),
-    Operator: OperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For the <code>DynamicVariable</code> specified in <code>AvailMatchingCriteria</code>, the Operator that is used for the comparison.',
-        }),
-    ),
+    DynamicVariable: StringSchema.openapi({
+      description:
+        '<p>The dynamic variable(s) that MediaTailor should use as avail matching criteria. MediaTailor only places the prefetched ads into the avail if the avail matches the criteria defined by the dynamic variable. For information about dynamic variables, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/variables.html">Using dynamic ad variables</a> in the <i>MediaTailor User Guide</i>.</p> <p>You can include up to 100 dynamic variables.</p>',
+    }),
+    Operator: OperatorSchema.openapi({
+      description:
+        'For the <code>DynamicVariable</code> specified in <code>AvailMatchingCriteria</code>, the Operator that is used for the comparison.',
+    }),
   })
   .openapi({
     required: ['DynamicVariable', 'Operator'],
@@ -368,30 +253,18 @@ const ListOfAvailMatchingCriteriaSchema = z
 
 const PrefetchConsumptionSchema = z
   .object({
-    AvailMatchingCriteria: ListOfAvailMatchingCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you only want MediaTailor to insert prefetched ads into avails (ad breaks) that match specific dynamic variables, such as <code>scte.event_id</code>, set the avail matching criteria.',
-        }),
-    ).exactOptional(),
-    EndTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time when MediaTailor no longer considers the prefetched ads for use in an ad break. MediaTailor automatically deletes prefetch schedules no less than seven days after the end time. If you'd like to manually delete the prefetch schedule, you can call <code>DeletePrefetchSchedule</code>.",
-        }),
-    ),
-    StartTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time when prefetched ads are considered for use in an ad break. If you don't specify <code>StartTime</code>, the prefetched ads are available after MediaTailor retrives them from the ad decision server.",
-        }),
-    ).exactOptional(),
+    AvailMatchingCriteria: ListOfAvailMatchingCriteriaSchema.exactOptional().openapi({
+      description:
+        'If you only want MediaTailor to insert prefetched ads into avails (ad breaks) that match specific dynamic variables, such as <code>scte.event_id</code>, set the avail matching criteria.',
+    }),
+    EndTime: TimestampUnixSchema.openapi({
+      description:
+        "The time when MediaTailor no longer considers the prefetched ads for use in an ad break. MediaTailor automatically deletes prefetch schedules no less than seven days after the end time. If you'd like to manually delete the prefetch schedule, you can call <code>DeletePrefetchSchedule</code>.",
+    }),
+    StartTime: TimestampUnixSchema.exactOptional().openapi({
+      description:
+        "The time when prefetched ads are considered for use in an ad break. If you don't specify <code>StartTime</code>, the prefetched ads are available after MediaTailor retrives them from the ad decision server.",
+    }),
   })
   .openapi({
     required: ['EndTime'],
@@ -402,30 +275,18 @@ const PrefetchConsumptionSchema = z
 
 const PrefetchRetrievalSchema = z
   .object({
-    DynamicVariables: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The dynamic variables to use for substitution during prefetch requests to the ad decision server (ADS).</p> <p>You initially configure <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/variables.html">dynamic variables</a> for the ADS URL when you set up your playback configuration. When you specify <code>DynamicVariables</code> for prefetch retrieval, MediaTailor includes the dynamic variables in the request to the ADS.</p>',
-        }),
-    ).exactOptional(),
-    EndTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time when prefetch retrieval ends for the ad break. Prefetching will be attempted for manifest requests that occur at or before this time.',
-        }),
-    ),
-    StartTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time when prefetch retrievals can start for this break. Ad prefetching will be attempted for manifest requests that occur at or after this time. Defaults to the current time. If not specified, the prefetch retrieval starts as soon as possible.',
-        }),
-    ).exactOptional(),
+    DynamicVariables: MapOfStringSchema.exactOptional().openapi({
+      description:
+        '<p>The dynamic variables to use for substitution during prefetch requests to the ad decision server (ADS).</p> <p>You initially configure <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/variables.html">dynamic variables</a> for the ADS URL when you set up your playback configuration. When you specify <code>DynamicVariables</code> for prefetch retrieval, MediaTailor includes the dynamic variables in the request to the ADS.</p>',
+    }),
+    EndTime: TimestampUnixSchema.openapi({
+      description:
+        'The time when prefetch retrieval ends for the ad break. Prefetching will be attempted for manifest requests that occur at or before this time.',
+    }),
+    StartTime: TimestampUnixSchema.exactOptional().openapi({
+      description:
+        'The time when prefetch retrievals can start for this break. Ad prefetching will be attempted for manifest requests that occur at or after this time. Defaults to the current time. If not specified, the prefetch retrieval starts as soon as possible.',
+    }),
   })
   .openapi({
     required: ['EndTime'],
@@ -436,39 +297,27 @@ const PrefetchRetrievalSchema = z
 
 const CreatePrefetchScheduleResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN to assign to the prefetch schedule.' }),
-    ).exactOptional(),
-    Consumption: PrefetchConsumptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The configuration settings for MediaTailor's <i>consumption</i> of the prefetched ads from the ad decision server. Each consumption configuration contains an end time and an optional start time that define the <i>consumption window</i>. Prefetch schedules automatically expire no earlier than seven days after the end time.",
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name to assign to the prefetch schedule.' }),
-    ).exactOptional(),
-    PlaybackConfigurationName: StringSchema.and(
-      z.any().openapi({ description: 'The name to assign to the playback configuration.' }),
-    ).exactOptional(),
-    Retrieval: PrefetchRetrievalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration settings for retrieval of prefetched ads from the ad decision server. Only one set of prefetched ads will be retrieved and subsequently consumed for each ad break.',
-        }),
-    ).exactOptional(),
-    StreamId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional stream identifier that MediaTailor uses to prefetch ads for multiple streams that use the same playback configuration. If <code>StreamId</code> is specified, MediaTailor returns all of the prefetch schedules with an exact match on <code>StreamId</code>. If not specified, MediaTailor returns all of the prefetch schedules for the playback configuration, regardless of <code>StreamId</code>.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The ARN to assign to the prefetch schedule.',
+    }),
+    Consumption: PrefetchConsumptionSchema.exactOptional().openapi({
+      description:
+        "The configuration settings for MediaTailor's <i>consumption</i> of the prefetched ads from the ad decision server. Each consumption configuration contains an end time and an optional start time that define the <i>consumption window</i>. Prefetch schedules automatically expire no earlier than seven days after the end time.",
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name to assign to the prefetch schedule.',
+    }),
+    PlaybackConfigurationName: StringSchema.exactOptional().openapi({
+      description: 'The name to assign to the playback configuration.',
+    }),
+    Retrieval: PrefetchRetrievalSchema.exactOptional().openapi({
+      description:
+        'The configuration settings for retrieval of prefetched ads from the ad decision server. Only one set of prefetched ads will be retrieved and subsequently consumed for each ad break.',
+    }),
+    StreamId: StringSchema.exactOptional().openapi({
+      description:
+        'An optional stream identifier that MediaTailor uses to prefetch ads for multiple streams that use the same playback configuration. If <code>StreamId</code> is specified, MediaTailor returns all of the prefetch schedules with an exact match on <code>StreamId</code>. If not specified, MediaTailor returns all of the prefetch schedules for the playback configuration, regardless of <code>StreamId</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreatePrefetchScheduleResponse')
@@ -479,38 +328,22 @@ const LongSchema = z.int().openapi('Long')
 
 const SpliceInsertMessageSchema = z
   .object({
-    AvailNum: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is written to <code>splice_insert.avail_num</code>, as defined in section 9.7.3.1 of the SCTE-35 specification. The default value is <code>0</code>. Values must be between <code>0</code> and <code>256</code>, inclusive.',
-        }),
-    ).exactOptional(),
-    AvailsExpected: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is written to <code>splice_insert.avails_expected</code>, as defined in section 9.7.3.1 of the SCTE-35 specification. The default value is <code>0</code>. Values must be between <code>0</code> and <code>256</code>, inclusive.',
-        }),
-    ).exactOptional(),
-    SpliceEventId: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is written to <code>splice_insert.splice_event_id</code>, as defined in section 9.7.3.1 of the SCTE-35 specification. The default value is <code>1</code>.',
-        }),
-    ).exactOptional(),
-    UniqueProgramId: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is written to <code>splice_insert.unique_program_id</code>, as defined in section 9.7.3.1 of the SCTE-35 specification. The default value is <code>0</code>. Values must be between <code>0</code> and <code>256</code>, inclusive.',
-        }),
-    ).exactOptional(),
+    AvailNum: IntegerSchema.exactOptional().openapi({
+      description:
+        'This is written to <code>splice_insert.avail_num</code>, as defined in section 9.7.3.1 of the SCTE-35 specification. The default value is <code>0</code>. Values must be between <code>0</code> and <code>256</code>, inclusive.',
+    }),
+    AvailsExpected: IntegerSchema.exactOptional().openapi({
+      description:
+        'This is written to <code>splice_insert.avails_expected</code>, as defined in section 9.7.3.1 of the SCTE-35 specification. The default value is <code>0</code>. Values must be between <code>0</code> and <code>256</code>, inclusive.',
+    }),
+    SpliceEventId: IntegerSchema.exactOptional().openapi({
+      description:
+        'This is written to <code>splice_insert.splice_event_id</code>, as defined in section 9.7.3.1 of the SCTE-35 specification. The default value is <code>1</code>.',
+    }),
+    UniqueProgramId: IntegerSchema.exactOptional().openapi({
+      description:
+        'This is written to <code>splice_insert.unique_program_id</code>, as defined in section 9.7.3.1 of the SCTE-35 specification. The default value is <code>0</code>. Values must be between <code>0</code> and <code>256</code>, inclusive.',
+    }),
   })
   .openapi({ description: 'Splice insert message configuration.', required: [] })
   .openapi('SpliceInsertMessage')
@@ -521,70 +354,38 @@ const String2Schema = z.string().openapi('String2')
 
 const SegmentationDescriptorSchema = z
   .object({
-    SegmentNum: Integer2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The segment number to assign to the <code>segmentation_descriptor.segment_num</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification Values must be between 0 and 256, inclusive. The default value is 0.',
-        }),
-    ).exactOptional(),
-    SegmentationEventId: Integer2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Event Identifier to assign to the <code>segmentation_descriptor.segmentation_event_id</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. The default value is 1.',
-        }),
-    ).exactOptional(),
-    SegmentationTypeId: Integer2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Type Identifier to assign to the <code>segmentation_descriptor.segmentation_type_id</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. Values must be between 0 and 256, inclusive. The default value is 48.',
-        }),
-    ).exactOptional(),
-    SegmentationUpid: String2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Upid to assign to the <code>segmentation_descriptor.segmentation_upid</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. The value must be a hexadecimal string containing only the characters 0 though 9 and A through F. The default value is "" (an empty string).',
-        }),
-    ).exactOptional(),
-    SegmentationUpidType: Integer2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Upid Type to assign to the <code>segmentation_descriptor.segmentation_upid_type</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. Values must be between 0 and 256, inclusive. The default value is 14.',
-        }),
-    ).exactOptional(),
-    SegmentsExpected: Integer2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of segments expected, which is assigned to the <code>segmentation_descriptor.segments_expectedS</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification Values must be between 0 and 256, inclusive. The default value is 0.',
-        }),
-    ).exactOptional(),
-    SubSegmentNum: Integer2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sub-segment number to assign to the <code>segmentation_descriptor.sub_segment_num</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. Values must be between 0 and 256, inclusive. The defualt value is null.',
-        }),
-    ).exactOptional(),
-    SubSegmentsExpected: Integer2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of sub-segments expected, which is assigned to the <code>segmentation_descriptor.sub_segments_expected</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. Values must be between 0 and 256, inclusive. The default value is null.',
-        }),
-    ).exactOptional(),
+    SegmentNum: Integer2Schema.exactOptional().openapi({
+      description:
+        'The segment number to assign to the <code>segmentation_descriptor.segment_num</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification Values must be between 0 and 256, inclusive. The default value is 0.',
+    }),
+    SegmentationEventId: Integer2Schema.exactOptional().openapi({
+      description:
+        'The Event Identifier to assign to the <code>segmentation_descriptor.segmentation_event_id</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. The default value is 1.',
+    }),
+    SegmentationTypeId: Integer2Schema.exactOptional().openapi({
+      description:
+        'The Type Identifier to assign to the <code>segmentation_descriptor.segmentation_type_id</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. Values must be between 0 and 256, inclusive. The default value is 48.',
+    }),
+    SegmentationUpid: String2Schema.exactOptional().openapi({
+      description:
+        'The Upid to assign to the <code>segmentation_descriptor.segmentation_upid</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. The value must be a hexadecimal string containing only the characters 0 though 9 and A through F. The default value is "" (an empty string).',
+    }),
+    SegmentationUpidType: Integer2Schema.exactOptional().openapi({
+      description:
+        'The Upid Type to assign to the <code>segmentation_descriptor.segmentation_upid_type</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. Values must be between 0 and 256, inclusive. The default value is 14.',
+    }),
+    SegmentsExpected: Integer2Schema.exactOptional().openapi({
+      description:
+        'The number of segments expected, which is assigned to the <code>segmentation_descriptor.segments_expectedS</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification Values must be between 0 and 256, inclusive. The default value is 0.',
+    }),
+    SubSegmentNum: Integer2Schema.exactOptional().openapi({
+      description:
+        'The sub-segment number to assign to the <code>segmentation_descriptor.sub_segment_num</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. Values must be between 0 and 256, inclusive. The defualt value is null.',
+    }),
+    SubSegmentsExpected: Integer2Schema.exactOptional().openapi({
+      description:
+        'The number of sub-segments expected, which is assigned to the <code>segmentation_descriptor.sub_segments_expected</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. Values must be between 0 and 256, inclusive. The default value is null.',
+    }),
   })
   .openapi({
     description:
@@ -599,14 +400,10 @@ const SegmentationDescriptorListSchema = z
 
 const TimeSignalMessageSchema = z
   .object({
-    SegmentationDescriptors: SegmentationDescriptorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configurations for the SCTE-35 <code>segmentation_descriptor</code> message(s) sent with the <code>time_signal</code> message.',
-        }),
-    ).exactOptional(),
+    SegmentationDescriptors: SegmentationDescriptorListSchema.exactOptional().openapi({
+      description:
+        'The configurations for the SCTE-35 <code>segmentation_descriptor</code> message(s) sent with the <code>time_signal</code> message.',
+    }),
   })
   .openapi({
     description:
@@ -617,41 +414,25 @@ const TimeSignalMessageSchema = z
 
 const AdBreakSchema = z
   .object({
-    MessageType: MessageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SCTE-35 ad insertion type. Accepted value: <code>SPLICE_INSERT</code>, <code>TIME_SIGNAL</code>.',
-        }),
-    ).exactOptional(),
-    OffsetMillis: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'How long (in milliseconds) after the beginning of the program that an ad starts. This value must fall within 100ms of a segment boundary, otherwise the ad break will be skipped.',
-        }),
-    ).exactOptional(),
-    Slate: SlateSourceSchema.and(
-      z.any().openapi({ description: 'Ad break slate configuration.' }),
-    ).exactOptional(),
-    SpliceInsertMessage: SpliceInsertMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This defines the SCTE-35 <code>splice_insert()</code> message inserted around the ad. For information about using <code>splice_insert()</code>, see the SCTE-35 specficiaiton, section 9.7.3.1.',
-        }),
-    ).exactOptional(),
-    TimeSignalMessage: TimeSignalMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Defines the SCTE-35 <code>time_signal</code> message inserted around the ad.</p> <p>Programs on a channel's schedule can be configured with one or more ad breaks. You can attach a <code>splice_insert</code> SCTE-35 message to the ad break. This message provides basic metadata about the ad break.</p> <p>See section 9.7.4 of the 2022 SCTE-35 specification for more information.</p>",
-        }),
-    ).exactOptional(),
+    MessageType: MessageTypeSchema.exactOptional().openapi({
+      description:
+        'The SCTE-35 ad insertion type. Accepted value: <code>SPLICE_INSERT</code>, <code>TIME_SIGNAL</code>.',
+    }),
+    OffsetMillis: LongSchema.exactOptional().openapi({
+      description:
+        'How long (in milliseconds) after the beginning of the program that an ad starts. This value must fall within 100ms of a segment boundary, otherwise the ad break will be skipped.',
+    }),
+    Slate: SlateSourceSchema.exactOptional().openapi({
+      description: 'Ad break slate configuration.',
+    }),
+    SpliceInsertMessage: SpliceInsertMessageSchema.exactOptional().openapi({
+      description:
+        'This defines the SCTE-35 <code>splice_insert()</code> message inserted around the ad. For information about using <code>splice_insert()</code>, see the SCTE-35 specficiaiton, section 9.7.3.1.',
+    }),
+    TimeSignalMessage: TimeSignalMessageSchema.exactOptional().openapi({
+      description:
+        "<p>Defines the SCTE-35 <code>time_signal</code> message inserted around the ad.</p> <p>Programs on a channel's schedule can be configured with one or more ad breaks. You can attach a <code>splice_insert</code> SCTE-35 message to the ad break. This message provides basic metadata about the ad break.</p> <p>See section 9.7.4 of the 2022 SCTE-35 specification for more information.</p>",
+    }),
   })
   .openapi({ description: 'Ad break configuration parameters.', required: [] })
   .openapi('AdBreak')
@@ -660,14 +441,10 @@ const ListOfAdBreakSchema = z.array(AdBreakSchema).openapi('ListOfAdBreak')
 
 const ClipRangeSchema = z
   .object({
-    EndOffsetMillis: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end offset of the clip range, in milliseconds, starting from the beginning of the VOD source associated with the program.',
-        }),
-    ),
+    EndOffsetMillis: LongSchema.openapi({
+      description:
+        'The end offset of the clip range, in milliseconds, starting from the beginning of the VOD source associated with the program.',
+    }),
   })
   .openapi({
     required: ['EndOffsetMillis'],
@@ -677,41 +454,37 @@ const ClipRangeSchema = z
 
 const CreateProgramResponseSchema = z
   .object({
-    AdBreaks: ListOfAdBreakSchema.and(
-      z.any().openapi({ description: 'The ad break configuration settings.' }),
-    ).exactOptional(),
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN to assign to the program.' }),
-    ).exactOptional(),
-    ChannelName: StringSchema.and(
-      z.any().openapi({ description: 'The name to assign to the channel for this program.' }),
-    ).exactOptional(),
-    ClipRange: ClipRangeSchema.and(
-      z.any().openapi({ description: 'The clip range configuration settings.' }),
-    ).exactOptional(),
-    CreationTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The time the program was created.' }),
-    ).exactOptional(),
-    DurationMillis: LongSchema.and(
-      z.any().openapi({ description: 'The duration of the live program in milliseconds.' }),
-    ).exactOptional(),
-    LiveSourceName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the LiveSource for this Program.' }),
-    ).exactOptional(),
-    ProgramName: StringSchema.and(
-      z.any().openapi({ description: 'The name to assign to this program.' }),
-    ).exactOptional(),
-    ScheduledStartTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The scheduled start time for this Program.' }),
-    ).exactOptional(),
-    SourceLocationName: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name to assign to the source location for this program.' }),
-    ).exactOptional(),
-    VodSourceName: StringSchema.and(
-      z.any().openapi({ description: "The name that's used to refer to a VOD source." }),
-    ).exactOptional(),
+    AdBreaks: ListOfAdBreakSchema.exactOptional().openapi({
+      description: 'The ad break configuration settings.',
+    }),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN to assign to the program.' }),
+    ChannelName: StringSchema.exactOptional().openapi({
+      description: 'The name to assign to the channel for this program.',
+    }),
+    ClipRange: ClipRangeSchema.exactOptional().openapi({
+      description: 'The clip range configuration settings.',
+    }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The time the program was created.',
+    }),
+    DurationMillis: LongSchema.exactOptional().openapi({
+      description: 'The duration of the live program in milliseconds.',
+    }),
+    LiveSourceName: StringSchema.exactOptional().openapi({
+      description: 'The name of the LiveSource for this Program.',
+    }),
+    ProgramName: StringSchema.exactOptional().openapi({
+      description: 'The name to assign to this program.',
+    }),
+    ScheduledStartTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The scheduled start time for this Program.',
+    }),
+    SourceLocationName: StringSchema.exactOptional().openapi({
+      description: 'The name to assign to the source location for this program.',
+    }),
+    VodSourceName: StringSchema.exactOptional().openapi({
+      description: "The name that's used to refer to a VOD source.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateProgramResponse')
@@ -722,41 +495,25 @@ const RelativePositionSchema = z
 
 const TransitionSchema = z
   .object({
-    DurationMillis: LongSchema.and(
-      z.any().openapi({ description: 'The duration of the live program in seconds.' }),
-    ).exactOptional(),
-    RelativePosition: RelativePositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The position where this program will be inserted relative to the <code>RelativePosition</code>.',
-        }),
-    ),
-    RelativeProgram: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the program that this program will be inserted next to, as defined by <code>RelativePosition</code>.',
-        }),
-    ).exactOptional(),
-    ScheduledStartTimeMillis: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the program is scheduled to start, in epoch milliseconds.',
-        }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Defines when the program plays in the schedule. You can set the value to <code>ABSOLUTE</code> or <code>RELATIVE</code>.</p> <p> <code>ABSOLUTE</code> - The program plays at a specific wall clock time. This setting can only be used for channels using the <code>LINEAR</code> <code>PlaybackMode</code>.</p> <p>Note the following considerations when using <code>ABSOLUTE</code> transitions:</p> <p>If the preceding program in the schedule has a duration that extends past the wall clock time, MediaTailor truncates the preceding program on a common segment boundary.</p> <p>If there are gaps in playback, MediaTailor plays the <code>FillerSlate</code> you configured for your linear channel.</p> <p> <code>RELATIVE</code> - The program is inserted into the schedule either before or after a program that you specify via <code>RelativePosition</code>.</p>',
-        }),
-    ),
+    DurationMillis: LongSchema.exactOptional().openapi({
+      description: 'The duration of the live program in seconds.',
+    }),
+    RelativePosition: RelativePositionSchema.openapi({
+      description:
+        'The position where this program will be inserted relative to the <code>RelativePosition</code>.',
+    }),
+    RelativeProgram: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the program that this program will be inserted next to, as defined by <code>RelativePosition</code>.',
+    }),
+    ScheduledStartTimeMillis: LongSchema.exactOptional().openapi({
+      description:
+        'The date and time that the program is scheduled to start, in epoch milliseconds.',
+    }),
+    Type: StringSchema.openapi({
+      description:
+        '<p>Defines when the program plays in the schedule. You can set the value to <code>ABSOLUTE</code> or <code>RELATIVE</code>.</p> <p> <code>ABSOLUTE</code> - The program plays at a specific wall clock time. This setting can only be used for channels using the <code>LINEAR</code> <code>PlaybackMode</code>.</p> <p>Note the following considerations when using <code>ABSOLUTE</code> transitions:</p> <p>If the preceding program in the schedule has a duration that extends past the wall clock time, MediaTailor truncates the preceding program on a common segment boundary.</p> <p>If there are gaps in playback, MediaTailor plays the <code>FillerSlate</code> you configured for your linear channel.</p> <p> <code>RELATIVE</code> - The program is inserted into the schedule either before or after a program that you specify via <code>RelativePosition</code>.</p>',
+    }),
   })
   .openapi({
     required: ['RelativePosition', 'Type'],
@@ -768,30 +525,18 @@ const AccessTypeSchema = z.enum(['S3_SIGV4', 'SECRETS_MANAGER_ACCESS_TOKEN']).op
 
 const SecretsManagerAccessTokenConfigurationSchema = z
   .object({
-    HeaderName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the HTTP header used to supply the access token in requests to the source location.',
-        }),
-    ).exactOptional(),
-    SecretArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the AWS Secrets Manager secret that contains the access token.',
-        }),
-    ).exactOptional(),
-    SecretStringKey: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS Secrets Manager <a href="https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_CreateSecret.html#SecretsManager-CreateSecret-request-SecretString.html">SecretString</a> key associated with the access token. MediaTailor uses the key to look up SecretString key and value pair containing the access token.',
-        }),
-    ).exactOptional(),
+    HeaderName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the HTTP header used to supply the access token in requests to the source location.',
+    }),
+    SecretArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the AWS Secrets Manager secret that contains the access token.',
+    }),
+    SecretStringKey: StringSchema.exactOptional().openapi({
+      description:
+        'The AWS Secrets Manager <a href="https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_CreateSecret.html#SecretsManager-CreateSecret-request-SecretString.html">SecretString</a> key associated with the access token. MediaTailor uses the key to look up SecretString key and value pair containing the access token.',
+    }),
   })
   .openapi({
     description:
@@ -802,33 +547,24 @@ const SecretsManagerAccessTokenConfigurationSchema = z
 
 const AccessConfigurationSchema = z
   .object({
-    AccessType: AccessTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of authentication used to access content from <code>HttpConfiguration::BaseUrl</code> on your source location. Accepted value: <code>S3_SIGV4</code>.</p> <p> <code>S3_SIGV4</code> - AWS Signature Version 4 authentication for Amazon S3 hosted virtual-style access. If your source location base URL is an Amazon S3 bucket, MediaTailor can use AWS Signature Version 4 (SigV4) authentication to access the bucket where your source content is stored. Your MediaTailor source location baseURL must follow the S3 virtual hosted-style request URL format. For example, https://bucket-name.s3.Region.amazonaws.com/key-name.</p> <p>Before you can use <code>S3_SIGV4</code>, you must meet these requirements:</p> <p>• You must allow MediaTailor to access your S3 bucket by granting mediatailor.amazonaws.com principal access in IAM. For information about configuring access in IAM, see Access management in the IAM User Guide.</p> <p>• The mediatailor.amazonaws.com service principal must have permissions to read all top level manifests referenced by the VodSource packaging configurations.</p> <p>• The caller of the API must have s3:GetObject IAM permissions to read all top level manifests referenced by your MediaTailor VodSource packaging configurations.</p>',
-        }),
-    ).exactOptional(),
-    SecretsManagerAccessTokenConfiguration: SecretsManagerAccessTokenConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'AWS Secrets Manager access token configuration parameters.' }),
-    ).exactOptional(),
+    AccessType: AccessTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of authentication used to access content from <code>HttpConfiguration::BaseUrl</code> on your source location. Accepted value: <code>S3_SIGV4</code>.</p> <p> <code>S3_SIGV4</code> - AWS Signature Version 4 authentication for Amazon S3 hosted virtual-style access. If your source location base URL is an Amazon S3 bucket, MediaTailor can use AWS Signature Version 4 (SigV4) authentication to access the bucket where your source content is stored. Your MediaTailor source location baseURL must follow the S3 virtual hosted-style request URL format. For example, https://bucket-name.s3.Region.amazonaws.com/key-name.</p> <p>Before you can use <code>S3_SIGV4</code>, you must meet these requirements:</p> <p>• You must allow MediaTailor to access your S3 bucket by granting mediatailor.amazonaws.com principal access in IAM. For information about configuring access in IAM, see Access management in the IAM User Guide.</p> <p>• The mediatailor.amazonaws.com service principal must have permissions to read all top level manifests referenced by the VodSource packaging configurations.</p> <p>• The caller of the API must have s3:GetObject IAM permissions to read all top level manifests referenced by your MediaTailor VodSource packaging configurations.</p>',
+    }),
+    SecretsManagerAccessTokenConfiguration:
+      SecretsManagerAccessTokenConfigurationSchema.exactOptional().openapi({
+        description: 'AWS Secrets Manager access token configuration parameters.',
+      }),
   })
   .openapi({ description: 'Access configuration parameters.', required: [] })
   .openapi('AccessConfiguration')
 
 const DefaultSegmentDeliveryConfigurationSchema = z
   .object({
-    BaseUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The hostname of the server that will be used to serve segments. This string must include the protocol, such as <b>https://</b>.',
-        }),
-    ).exactOptional(),
+    BaseUrl: StringSchema.exactOptional().openapi({
+      description:
+        'The hostname of the server that will be used to serve segments. This string must include the protocol, such as <b>https://</b>.',
+    }),
   })
   .openapi({
     description:
@@ -839,14 +575,10 @@ const DefaultSegmentDeliveryConfigurationSchema = z
 
 const HttpConfigurationSchema = z
   .object({
-    BaseUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base URL for the source location host server. This string must include the protocol, such as <b>https://</b>.',
-        }),
-    ),
+    BaseUrl: StringSchema.openapi({
+      description:
+        'The base URL for the source location host server. This string must include the protocol, such as <b>https://</b>.',
+    }),
   })
   .openapi({
     required: ['BaseUrl'],
@@ -856,22 +588,14 @@ const HttpConfigurationSchema = z
 
 const SegmentDeliveryConfigurationSchema = z
   .object({
-    BaseUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The base URL of the host or path of the segment delivery server that you're using to serve segments. This is typically a content delivery network (CDN). The URL can be absolute or relative. To use an absolute URL include the protocol, such as <code>https://example.com/some/path</code>. To use a relative URL specify the relative path, such as <code>/some/path*</code>.",
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier used to distinguish between multiple segment delivery configurations in a source location.',
-        }),
-    ).exactOptional(),
+    BaseUrl: StringSchema.exactOptional().openapi({
+      description:
+        "The base URL of the host or path of the segment delivery server that you're using to serve segments. This is typically a content delivery network (CDN). The URL can be absolute or relative. To use an absolute URL include the protocol, such as <code>https://example.com/some/path</code>. To use a relative URL specify the relative path, such as <code>/some/path*</code>.",
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier used to distinguish between multiple segment delivery configurations in a source location.',
+    }),
   })
   .openapi({ description: 'The segment delivery configuration settings.', required: [] })
   .openapi('SegmentDeliveryConfiguration')
@@ -882,203 +606,157 @@ const ListOfSegmentDeliveryConfigurationSchema = z
 
 const CreateSourceLocationResponseSchema = z
   .object({
-    AccessConfiguration: AccessConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Access configuration parameters. Configures the type of authentication used to access content from your source location.',
-        }),
-    ).exactOptional(),
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN to assign to the source location.' }),
-    ).exactOptional(),
-    CreationTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The time the source location was created.' }),
-    ).exactOptional(),
-    DefaultSegmentDeliveryConfiguration: DefaultSegmentDeliveryConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The optional configuration for the server that serves segments.',
-        }),
-    ).exactOptional(),
-    HttpConfiguration: HttpConfigurationSchema.and(
-      z.any().openapi({ description: "The source's HTTP package configurations." }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The time the source location was last modified.' }),
-    ).exactOptional(),
-    SegmentDeliveryConfigurations: ListOfSegmentDeliveryConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The segment delivery configurations for the source location. For information about MediaTailor configurations, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/configurations.html">Working with configurations in AWS Elemental MediaTailor</a>.',
-        }),
-    ).exactOptional(),
-    SourceLocationName: StringSchema.and(
-      z.any().openapi({ description: 'The name to assign to the source location.' }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags to assign to the source location. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
+    AccessConfiguration: AccessConfigurationSchema.exactOptional().openapi({
+      description:
+        'Access configuration parameters. Configures the type of authentication used to access content from your source location.',
+    }),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The ARN to assign to the source location.',
+    }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The time the source location was created.',
+    }),
+    DefaultSegmentDeliveryConfiguration:
+      DefaultSegmentDeliveryConfigurationSchema.exactOptional().openapi({
+        description: 'The optional configuration for the server that serves segments.',
+      }),
+    HttpConfiguration: HttpConfigurationSchema.exactOptional().openapi({
+      description: "The source's HTTP package configurations.",
+    }),
+    LastModifiedTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The time the source location was last modified.',
+    }),
+    SegmentDeliveryConfigurations: ListOfSegmentDeliveryConfigurationSchema.exactOptional().openapi(
+      {
+        description:
+          'The segment delivery configurations for the source location. For information about MediaTailor configurations, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/configurations.html">Working with configurations in AWS Elemental MediaTailor</a>.',
+      },
+    ),
+    SourceLocationName: StringSchema.exactOptional().openapi({
+      description: 'The name to assign to the source location.',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags to assign to the source location. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateSourceLocationResponse')
 
 const CreateVodSourceResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN to assign to this VOD source.' }),
-    ).exactOptional(),
-    CreationTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The time the VOD source was created.' }),
-    ).exactOptional(),
-    HttpPackageConfigurations: HttpPackageConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of HTTP package configuration parameters for this VOD source.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The time the VOD source was last modified.' }),
-    ).exactOptional(),
-    SourceLocationName: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name to assign to the source location for this VOD source.' }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags to assign to the VOD source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
-    VodSourceName: StringSchema.and(
-      z.any().openapi({ description: 'The name to assign to the VOD source.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The ARN to assign to this VOD source.',
+    }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The time the VOD source was created.',
+    }),
+    HttpPackageConfigurations: HttpPackageConfigurationsSchema.exactOptional().openapi({
+      description: 'A list of HTTP package configuration parameters for this VOD source.',
+    }),
+    LastModifiedTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The time the VOD source was last modified.',
+    }),
+    SourceLocationName: StringSchema.exactOptional().openapi({
+      description: 'The name to assign to the source location for this VOD source.',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags to assign to the VOD source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
+    VodSourceName: StringSchema.exactOptional().openapi({
+      description: 'The name to assign to the VOD source.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateVodSourceResponse')
 
-const DeleteChannelResponseSchema = z.object({}).openapi('DeleteChannelResponse')
+const DeleteChannelResponseSchema = z.looseObject({}).openapi('DeleteChannelResponse')
 
-const DeleteChannelPolicyResponseSchema = z.object({}).openapi('DeleteChannelPolicyResponse')
+const DeleteChannelPolicyResponseSchema = z.looseObject({}).openapi('DeleteChannelPolicyResponse')
 
-const DeleteLiveSourceResponseSchema = z.object({}).openapi('DeleteLiveSourceResponse')
+const DeleteLiveSourceResponseSchema = z.looseObject({}).openapi('DeleteLiveSourceResponse')
 
 const DeletePlaybackConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeletePlaybackConfigurationResponse')
 
-const DeletePrefetchScheduleResponseSchema = z.object({}).openapi('DeletePrefetchScheduleResponse')
+const DeletePrefetchScheduleResponseSchema = z
+  .looseObject({})
+  .openapi('DeletePrefetchScheduleResponse')
 
-const DeleteProgramResponseSchema = z.object({}).openapi('DeleteProgramResponse')
+const DeleteProgramResponseSchema = z.looseObject({}).openapi('DeleteProgramResponse')
 
-const DeleteSourceLocationResponseSchema = z.object({}).openapi('DeleteSourceLocationResponse')
+const DeleteSourceLocationResponseSchema = z.looseObject({}).openapi('DeleteSourceLocationResponse')
 
-const DeleteVodSourceResponseSchema = z.object({}).openapi('DeleteVodSourceResponse')
+const DeleteVodSourceResponseSchema = z.looseObject({}).openapi('DeleteVodSourceResponse')
+
+const LogConfigurationForChannelSchema = z
+  .object({ LogTypes: LogTypesSchema.exactOptional().openapi({ description: 'The log types.' }) })
+  .openapi({ description: 'The log configuration for the channel.', required: [] })
+  .openapi('LogConfigurationForChannel')
 
 const DescribeChannelResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel.' }),
-    ).exactOptional(),
-    ChannelName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the channel.' }),
-    ).exactOptional(),
-    ChannelState: ChannelStateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether the channel is in a running state or not.' }),
-    ).exactOptional(),
-    CreationTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the channel was created.' }),
-    ).exactOptional(),
-    FillerSlate: SlateSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the slate used to fill gaps between programs in the schedule.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the channel was last modified.' }),
-    ).exactOptional(),
-    LogConfiguration: LogConfigurationForChannelSchema.and(
-      z.any().openapi({ description: 'The log configuration for the channel.' }),
-    ),
-    Outputs: ResponseOutputsSchema.and(
-      z.any().openapi({ description: "The channel's output properties." }),
-    ).exactOptional(),
-    PlaybackMode: StringSchema.and(
-      z.any().openapi({ description: "The channel's playback mode." }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags assigned to the channel. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
-    Tier: StringSchema.and(z.any().openapi({ description: "The channel's tier." })).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the channel.' }),
+    ChannelName: StringSchema.exactOptional().openapi({ description: 'The name of the channel.' }),
+    ChannelState: ChannelStateSchema.exactOptional().openapi({
+      description: 'Indicates whether the channel is in a running state or not.',
+    }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp of when the channel was created.',
+    }),
+    FillerSlate: SlateSourceSchema.exactOptional().openapi({
+      description:
+        'Contains information about the slate used to fill gaps between programs in the schedule.',
+    }),
+    LastModifiedTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp of when the channel was last modified.',
+    }),
+    LogConfiguration: LogConfigurationForChannelSchema.openapi({
+      description: 'The log configuration for the channel.',
+    }),
+    Outputs: ResponseOutputsSchema.exactOptional().openapi({
+      description: "The channel's output properties.",
+    }),
+    PlaybackMode: StringSchema.exactOptional().openapi({
+      description: "The channel's playback mode.",
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags assigned to the channel. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
+    Tier: StringSchema.exactOptional().openapi({ description: "The channel's tier." }),
   })
   .openapi({ required: ['LogConfiguration'] })
   .openapi('DescribeChannelResponse')
 
 const DescribeLiveSourceResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the live source.' }),
-    ).exactOptional(),
-    CreationTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp that indicates when the live source was created.' }),
-    ).exactOptional(),
-    HttpPackageConfigurations: HttpPackageConfigurationsSchema.and(
-      z.any().openapi({ description: 'The HTTP package configurations.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp that indicates when the live source was modified.',
-        }),
-    ).exactOptional(),
-    LiveSourceName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the live source.' }),
-    ).exactOptional(),
-    SourceLocationName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the source location associated with the live source.',
-        }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags assigned to the live source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the live source.' }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the live source was created.',
+    }),
+    HttpPackageConfigurations: HttpPackageConfigurationsSchema.exactOptional().openapi({
+      description: 'The HTTP package configurations.',
+    }),
+    LastModifiedTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the live source was modified.',
+    }),
+    LiveSourceName: StringSchema.exactOptional().openapi({
+      description: 'The name of the live source.',
+    }),
+    SourceLocationName: StringSchema.exactOptional().openapi({
+      description: 'The name of the source location associated with the live source.',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags assigned to the live source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeLiveSourceResponse')
@@ -1087,176 +765,128 @@ const Long2Schema = z.int().openapi('Long2')
 
 const DescribeProgramResponseSchema = z
   .object({
-    AdBreaks: ListOfAdBreakSchema.and(
-      z.any().openapi({ description: 'The ad break configuration settings.' }),
-    ).exactOptional(),
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the program.' }),
-    ).exactOptional(),
-    ChannelName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the channel that the program belongs to.' }),
-    ).exactOptional(),
-    ClipRange: ClipRangeSchema.and(
-      z.any().openapi({ description: 'The clip range configuration settings.' }),
-    ).exactOptional(),
-    CreationTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the program was created.' }),
-    ).exactOptional(),
-    DurationMillis: Long2Schema.and(
-      z.any().openapi({ description: 'The duration of the live program in milliseconds.' }),
-    ).exactOptional(),
-    LiveSourceName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the LiveSource for this Program.' }),
-    ).exactOptional(),
-    ProgramName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the program.' }),
-    ).exactOptional(),
-    ScheduledStartTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the program is scheduled to start in ISO 8601 format and Coordinated Universal Time (UTC). For example, the value 2021-03-27T17:48:16.751Z represents March 27, 2021 at 17:48:16.751 UTC.',
-        }),
-    ).exactOptional(),
-    SourceLocationName: StringSchema.and(
-      z.any().openapi({ description: 'The source location name.' }),
-    ).exactOptional(),
-    VodSourceName: StringSchema.and(
-      z.any().openapi({ description: "The name that's used to refer to a VOD source." }),
-    ).exactOptional(),
+    AdBreaks: ListOfAdBreakSchema.exactOptional().openapi({
+      description: 'The ad break configuration settings.',
+    }),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the program.' }),
+    ChannelName: StringSchema.exactOptional().openapi({
+      description: 'The name of the channel that the program belongs to.',
+    }),
+    ClipRange: ClipRangeSchema.exactOptional().openapi({
+      description: 'The clip range configuration settings.',
+    }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp of when the program was created.',
+    }),
+    DurationMillis: Long2Schema.exactOptional().openapi({
+      description: 'The duration of the live program in milliseconds.',
+    }),
+    LiveSourceName: StringSchema.exactOptional().openapi({
+      description: 'The name of the LiveSource for this Program.',
+    }),
+    ProgramName: StringSchema.exactOptional().openapi({ description: 'The name of the program.' }),
+    ScheduledStartTime: TimestampUnixSchema.exactOptional().openapi({
+      description:
+        'The date and time that the program is scheduled to start in ISO 8601 format and Coordinated Universal Time (UTC). For example, the value 2021-03-27T17:48:16.751Z represents March 27, 2021 at 17:48:16.751 UTC.',
+    }),
+    SourceLocationName: StringSchema.exactOptional().openapi({
+      description: 'The source location name.',
+    }),
+    VodSourceName: StringSchema.exactOptional().openapi({
+      description: "The name that's used to refer to a VOD source.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeProgramResponse')
 
 const DescribeSourceLocationResponseSchema = z
   .object({
-    AccessConfiguration: AccessConfigurationSchema.and(
-      z.any().openapi({ description: 'The access configuration for the source location.' }),
-    ).exactOptional(),
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the source location.' }),
-    ).exactOptional(),
-    CreationTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp that indicates when the source location was created.',
-        }),
-    ).exactOptional(),
-    DefaultSegmentDeliveryConfiguration: DefaultSegmentDeliveryConfigurationSchema.and(
-      z.any().openapi({ description: 'The default segment delivery configuration settings.' }),
-    ).exactOptional(),
-    HttpConfiguration: HttpConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The HTTP package configuration settings for the source location.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp that indicates when the source location was last modified.',
-        }),
-    ).exactOptional(),
-    SegmentDeliveryConfigurations: ListOfSegmentDeliveryConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the segment delivery configurations associated with this resource.',
-        }),
-    ).exactOptional(),
-    SourceLocationName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the source location.' }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags assigned to the source location. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
+    AccessConfiguration: AccessConfigurationSchema.exactOptional().openapi({
+      description: 'The access configuration for the source location.',
+    }),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the source location.' }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the source location was created.',
+    }),
+    DefaultSegmentDeliveryConfiguration:
+      DefaultSegmentDeliveryConfigurationSchema.exactOptional().openapi({
+        description: 'The default segment delivery configuration settings.',
+      }),
+    HttpConfiguration: HttpConfigurationSchema.exactOptional().openapi({
+      description: 'The HTTP package configuration settings for the source location.',
+    }),
+    LastModifiedTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the source location was last modified.',
+    }),
+    SegmentDeliveryConfigurations: ListOfSegmentDeliveryConfigurationSchema.exactOptional().openapi(
+      {
+        description: 'A list of the segment delivery configurations associated with this resource.',
+      },
+    ),
+    SourceLocationName: StringSchema.exactOptional().openapi({
+      description: 'The name of the source location.',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags assigned to the source location. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSourceLocationResponse')
 
 const DescribeVodSourceResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the VOD source.' }),
-    ).exactOptional(),
-    CreationTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp that indicates when the VOD source was created.' }),
-    ).exactOptional(),
-    HttpPackageConfigurations: HttpPackageConfigurationsSchema.and(
-      z.any().openapi({ description: 'The HTTP package configurations.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The last modified time of the VOD source.' }),
-    ).exactOptional(),
-    SourceLocationName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the source location associated with the VOD source.',
-        }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags assigned to the VOD source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
-    VodSourceName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the VOD source.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the VOD source.' }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the VOD source was created.',
+    }),
+    HttpPackageConfigurations: HttpPackageConfigurationsSchema.exactOptional().openapi({
+      description: 'The HTTP package configurations.',
+    }),
+    LastModifiedTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The last modified time of the VOD source.',
+    }),
+    SourceLocationName: StringSchema.exactOptional().openapi({
+      description: 'The name of the source location associated with the VOD source.',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags assigned to the VOD source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
+    VodSourceName: StringSchema.exactOptional().openapi({
+      description: 'The name of the VOD source.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeVodSourceResponse')
 
 const GetChannelPolicyResponseSchema = z
   .object({
-    Policy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM policy for the channel. IAM policies are used to control access to your channel.',
-        }),
-    ).exactOptional(),
+    Policy: StringSchema.exactOptional().openapi({
+      description:
+        'The IAM policy for the channel. IAM policies are used to control access to your channel.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetChannelPolicyResponse')
 
 const ScheduleAdBreakSchema = z
   .object({
-    ApproximateDurationSeconds: LongSchema.and(
-      z.any().openapi({ description: 'The approximate duration of the ad break, in seconds.' }),
-    ).exactOptional(),
-    ApproximateStartTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The approximate time that the ad will start playing.' }),
-    ).exactOptional(),
-    SourceLocationName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the source location containing the VOD source used for the ad break.',
-        }),
-    ).exactOptional(),
-    VodSourceName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the VOD source used for the ad break.' }),
-    ).exactOptional(),
+    ApproximateDurationSeconds: LongSchema.exactOptional().openapi({
+      description: 'The approximate duration of the ad break, in seconds.',
+    }),
+    ApproximateStartTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The approximate time that the ad will start playing.',
+    }),
+    SourceLocationName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the source location containing the VOD source used for the ad break.',
+    }),
+    VodSourceName: StringSchema.exactOptional().openapi({
+      description: 'The name of the VOD source used for the ad break.',
+    }),
   })
   .openapi({ description: "The schedule's ad break properties.", required: [] })
   .openapi('ScheduleAdBreak')
@@ -1267,32 +897,30 @@ const ScheduleEntryTypeSchema = z.enum(['PROGRAM', 'FILLER_SLATE']).openapi('Sch
 
 const ScheduleEntrySchema = z
   .object({
-    ApproximateDurationSeconds: LongSchema.and(
-      z.any().openapi({ description: 'The approximate duration of this program, in seconds.' }),
-    ).exactOptional(),
-    ApproximateStartTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The approximate time that the program will start playing.' }),
-    ).exactOptional(),
-    Arn: StringSchema.and(z.any().openapi({ description: 'The ARN of the program.' })),
-    ChannelName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the channel that uses this schedule.' }),
-    ),
-    LiveSourceName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the live source used for the program.' }),
-    ).exactOptional(),
-    ProgramName: StringSchema.and(z.any().openapi({ description: 'The name of the program.' })),
-    ScheduleAdBreaks: ListOfScheduleAdBreakSchema.and(
-      z.any().openapi({ description: "The schedule's ad break properties." }),
-    ).exactOptional(),
-    ScheduleEntryType: ScheduleEntryTypeSchema.and(
-      z.any().openapi({ description: 'The type of schedule entry.' }),
-    ).exactOptional(),
-    SourceLocationName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the source location.' }),
-    ),
-    VodSourceName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the VOD source.' }),
-    ).exactOptional(),
+    ApproximateDurationSeconds: LongSchema.exactOptional().openapi({
+      description: 'The approximate duration of this program, in seconds.',
+    }),
+    ApproximateStartTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The approximate time that the program will start playing.',
+    }),
+    Arn: StringSchema.openapi({ description: 'The ARN of the program.' }),
+    ChannelName: StringSchema.openapi({
+      description: 'The name of the channel that uses this schedule.',
+    }),
+    LiveSourceName: StringSchema.exactOptional().openapi({
+      description: 'The name of the live source used for the program.',
+    }),
+    ProgramName: StringSchema.openapi({ description: 'The name of the program.' }),
+    ScheduleAdBreaks: ListOfScheduleAdBreakSchema.exactOptional().openapi({
+      description: "The schedule's ad break properties.",
+    }),
+    ScheduleEntryType: ScheduleEntryTypeSchema.exactOptional().openapi({
+      description: 'The type of schedule entry.',
+    }),
+    SourceLocationName: StringSchema.openapi({ description: 'The name of the source location.' }),
+    VodSourceName: StringSchema.exactOptional().openapi({
+      description: 'The name of the VOD source.',
+    }),
   })
   .openapi({
     required: ['Arn', 'ChannelName', 'ProgramName', 'SourceLocationName'],
@@ -1304,17 +932,13 @@ const ListOfScheduleEntrySchema = z.array(ScheduleEntrySchema).openapi('ListOfSc
 
 const GetChannelScheduleResponseSchema = z
   .object({
-    Items: ListOfScheduleEntrySchema.and(
-      z.any().openapi({ description: 'A list of schedule entries for the channel.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.',
-        }),
-    ).exactOptional(),
+    Items: ListOfScheduleEntrySchema.exactOptional().openapi({
+      description: 'A list of schedule entries for the channel.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetChannelScheduleResponse')
@@ -1323,22 +947,14 @@ const ModeSchema = z.enum(['OFF', 'BEHIND_LIVE_EDGE']).openapi('Mode')
 
 const AvailSuppressionSchema = z
   .object({
-    Mode: ModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Sets the ad suppression mode. By default, ad suppression is off and all ad breaks are filled with ads or slate. When Mode is set to <code>BEHIND_LIVE_EDGE</code>, ad suppression is active and MediaTailor won't fill ad breaks on or behind the ad suppression Value time in the manifest lookback window.",
-        }),
-    ).exactOptional(),
-    Value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A live edge offset time in HH:MM:SS. MediaTailor won't fill ad breaks on or behind this time in the manifest lookback window. If Value is set to 00:00:00, it is in sync with the live edge, and MediaTailor won't fill any ad breaks on or behind the live edge. If you set a Value time, MediaTailor won't fill any ad breaks on or behind this time in the manifest lookback window. For example, if you set 00:45:00, then MediaTailor will fill ad breaks that occur within 45 minutes behind the live edge, but won't fill ad breaks on or behind 45 minutes behind the live edge.",
-        }),
-    ).exactOptional(),
+    Mode: ModeSchema.exactOptional().openapi({
+      description:
+        "Sets the ad suppression mode. By default, ad suppression is off and all ad breaks are filled with ads or slate. When Mode is set to <code>BEHIND_LIVE_EDGE</code>, ad suppression is active and MediaTailor won't fill ad breaks on or behind the ad suppression Value time in the manifest lookback window.",
+    }),
+    Value: StringSchema.exactOptional().openapi({
+      description:
+        "A live edge offset time in HH:MM:SS. MediaTailor won't fill ad breaks on or behind this time in the manifest lookback window. If Value is set to 00:00:00, it is in sync with the live edge, and MediaTailor won't fill any ad breaks on or behind the live edge. If you set a Value time, MediaTailor won't fill any ad breaks on or behind this time in the manifest lookback window. For example, if you set 00:45:00, then MediaTailor will fill ad breaks that occur within 45 minutes behind the live edge, but won't fill ad breaks on or behind 45 minutes behind the live edge.",
+    }),
   })
   .openapi({
     description:
@@ -1349,12 +965,12 @@ const AvailSuppressionSchema = z
 
 const BumperSchema = z
   .object({
-    EndUrl: StringSchema.and(
-      z.any().openapi({ description: 'The URL for the end bumper asset.' }),
-    ).exactOptional(),
-    StartUrl: StringSchema.and(
-      z.any().openapi({ description: 'The URL for the start bumper asset.' }),
-    ).exactOptional(),
+    EndUrl: StringSchema.exactOptional().openapi({
+      description: 'The URL for the end bumper asset.',
+    }),
+    StartUrl: StringSchema.exactOptional().openapi({
+      description: 'The URL for the start bumper asset.',
+    }),
   })
   .openapi({
     description:
@@ -1365,22 +981,14 @@ const BumperSchema = z
 
 const CdnConfigurationSchema = z
   .object({
-    AdSegmentUrlPrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A non-default content delivery network (CDN) to serve ad segments. By default, AWS Elemental MediaTailor uses Amazon CloudFront with default cache settings as its CDN for ad segments. To set up an alternate CDN, create a rule in your CDN for the origin ads.mediatailor.<i>&lt;region&gt;</i>.amazonaws.com. Then specify the rule's name in this <code>AdSegmentUrlPrefix</code>. When AWS Elemental MediaTailor serves a manifest, it reports your CDN as the source for ad segments.",
-        }),
-    ).exactOptional(),
-    ContentSegmentUrlPrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A content delivery network (CDN) to cache content segments, so that content requests don’t always have to go to the origin server. First, create a rule in your CDN for the content segment origin server. Then specify the rule's name in this <code>ContentSegmentUrlPrefix</code>. When AWS Elemental MediaTailor serves a manifest, it reports your CDN as the source for content segments.",
-        }),
-    ).exactOptional(),
+    AdSegmentUrlPrefix: StringSchema.exactOptional().openapi({
+      description:
+        "A non-default content delivery network (CDN) to serve ad segments. By default, AWS Elemental MediaTailor uses Amazon CloudFront with default cache settings as its CDN for ad segments. To set up an alternate CDN, create a rule in your CDN for the origin ads.mediatailor.<i>&lt;region&gt;</i>.amazonaws.com. Then specify the rule's name in this <code>AdSegmentUrlPrefix</code>. When AWS Elemental MediaTailor serves a manifest, it reports your CDN as the source for ad segments.",
+    }),
+    ContentSegmentUrlPrefix: StringSchema.exactOptional().openapi({
+      description:
+        "A content delivery network (CDN) to cache content segments, so that content requests don’t always have to go to the origin server. First, create a rule in your CDN for the content segment origin server. Then specify the rule's name in this <code>ContentSegmentUrlPrefix</code>. When AWS Elemental MediaTailor serves a manifest, it reports your CDN as the source for content segments.",
+    }),
   })
   .openapi({
     description:
@@ -1400,80 +1008,52 @@ const OriginManifestTypeSchema = z
 
 const DashConfigurationSchema = z
   .object({
-    ManifestEndpointPrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL generated by MediaTailor to initiate a playback session. The session uses server-side reporting. This setting is ignored in PUT operations.',
-        }),
-    ).exactOptional(),
-    MpdLocation: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The setting that controls whether MediaTailor includes the Location tag in DASH manifests. MediaTailor populates the Location tag with the URL for manifest update requests, to be used by players that don't support sticky redirects. Disable this if you have CDN routing rules set up for accessing MediaTailor manifests, and you are either using client-side reporting or your players support sticky HTTP redirects. Valid values are <code>DISABLED</code> and <code>EMT_DEFAULT</code>. The <code>EMT_DEFAULT</code> setting enables the inclusion of the tag and is the default value.",
-        }),
-    ).exactOptional(),
-    OriginManifestType: OriginManifestTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The setting that controls whether MediaTailor handles manifests from the origin server as multi-period manifests or single-period manifests. If your origin server produces single-period manifests, set this to <code>SINGLE_PERIOD</code>. The default setting is <code>MULTI_PERIOD</code>. For multi-period manifests, omit this setting or set it to <code>MULTI_PERIOD</code>.',
-        }),
-    ).exactOptional(),
+    ManifestEndpointPrefix: StringSchema.exactOptional().openapi({
+      description:
+        'The URL generated by MediaTailor to initiate a playback session. The session uses server-side reporting. This setting is ignored in PUT operations.',
+    }),
+    MpdLocation: StringSchema.exactOptional().openapi({
+      description:
+        "The setting that controls whether MediaTailor includes the Location tag in DASH manifests. MediaTailor populates the Location tag with the URL for manifest update requests, to be used by players that don't support sticky redirects. Disable this if you have CDN routing rules set up for accessing MediaTailor manifests, and you are either using client-side reporting or your players support sticky HTTP redirects. Valid values are <code>DISABLED</code> and <code>EMT_DEFAULT</code>. The <code>EMT_DEFAULT</code> setting enables the inclusion of the tag and is the default value.",
+    }),
+    OriginManifestType: OriginManifestTypeSchema.exactOptional().openapi({
+      description:
+        'The setting that controls whether MediaTailor handles manifests from the origin server as multi-period manifests or single-period manifests. If your origin server produces single-period manifests, set this to <code>SINGLE_PERIOD</code>. The default setting is <code>MULTI_PERIOD</code>. For multi-period manifests, omit this setting or set it to <code>MULTI_PERIOD</code>.',
+    }),
   })
   .openapi({ description: 'The configuration for DASH content.', required: [] })
   .openapi('DashConfiguration')
 
 const HlsConfigurationSchema = z
   .object({
-    ManifestEndpointPrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL that is used to initiate a playback session for devices that support Apple HLS. The session uses server-side reporting.',
-        }),
-    ).exactOptional(),
+    ManifestEndpointPrefix: StringSchema.exactOptional().openapi({
+      description:
+        'The URL that is used to initiate a playback session for devices that support Apple HLS. The session uses server-side reporting.',
+    }),
   })
   .openapi({ description: 'The configuration for HLS content.', required: [] })
   .openapi('HlsConfiguration')
 
 const LivePreRollConfigurationSchema = z
   .object({
-    AdDecisionServerUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL for the ad decision server (ADS) for pre-roll ads. This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing, you can provide a static VAST URL. The maximum length is 25,000 characters.',
-        }),
-    ).exactOptional(),
-    MaxDurationSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum allowed duration for the pre-roll ad avail. AWS Elemental MediaTailor won't play pre-roll ads to exceed this duration, regardless of the total duration of ads that the ADS returns.",
-        }),
-    ).exactOptional(),
+    AdDecisionServerUrl: StringSchema.exactOptional().openapi({
+      description:
+        'The URL for the ad decision server (ADS) for pre-roll ads. This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing, you can provide a static VAST URL. The maximum length is 25,000 characters.',
+    }),
+    MaxDurationSeconds: IntegerSchema.exactOptional().openapi({
+      description:
+        "The maximum allowed duration for the pre-roll ad avail. AWS Elemental MediaTailor won't play pre-roll ads to exceed this duration, regardless of the total duration of ads that the ADS returns.",
+    }),
   })
   .openapi({ description: 'The configuration for pre-roll ad insertion.', required: [] })
   .openapi('LivePreRollConfiguration')
 
 const LogConfigurationSchema = z
   .object({
-    PercentEnabled: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The percentage of session logs that MediaTailor sends to your Cloudwatch Logs account. For example, if your playback configuration has 1000 sessions and <code>percentEnabled</code> is set to <code>60</code>, MediaTailor sends logs for 600 of the sessions to CloudWatch Logs. MediaTailor decides at random which of the playback configuration sessions to send logs for. If you want to view logs for a specific session, you can use the <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/debug-log-mode.html">debug log mode</a>.</p> <p>Valid values: <code>0</code> - <code>100</code> </p>',
-        }),
-    ),
+    PercentEnabled: IntegerSchema.openapi({
+      description:
+        '<p>The percentage of session logs that MediaTailor sends to your Cloudwatch Logs account. For example, if your playback configuration has 1000 sessions and <code>percentEnabled</code> is set to <code>60</code>, MediaTailor sends logs for 600 of the sessions to CloudWatch Logs. MediaTailor decides at random which of the playback configuration sessions to send logs for. If you want to view logs for a specific session, you can use the <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/debug-log-mode.html">debug log mode</a>.</p> <p>Valid values: <code>0</code> - <code>100</code> </p>',
+    }),
   })
   .openapi({
     required: ['PercentEnabled'],
@@ -1485,9 +1065,9 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const AdMarkerPassthroughSchema = z
   .object({
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Enables ad marker passthrough for your configuration.' }),
-    ).exactOptional(),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description: 'Enables ad marker passthrough for your configuration.',
+    }),
   })
   .openapi({
     description:
@@ -1498,14 +1078,10 @@ const AdMarkerPassthroughSchema = z
 
 const ManifestProcessingRulesSchema = z
   .object({
-    AdMarkerPassthrough: AdMarkerPassthroughSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For HLS, when set to <code>true</code>, MediaTailor passes through <code>EXT-X-CUE-IN</code>, <code>EXT-X-CUE-OUT</code>, and <code>EXT-X-SPLICEPOINT-SCTE35</code> ad markers from the origin manifest to the MediaTailor personalized manifest.</p> <p>No logic is applied to these ad markers. For example, if <code>EXT-X-CUE-OUT</code> has a value of <code>60</code>, but no ads are filled for that ad break, MediaTailor will not set the value to <code>0</code>.</p>',
-        }),
-    ).exactOptional(),
+    AdMarkerPassthrough: AdMarkerPassthroughSchema.exactOptional().openapi({
+      description:
+        '<p>For HLS, when set to <code>true</code>, MediaTailor passes through <code>EXT-X-CUE-IN</code>, <code>EXT-X-CUE-OUT</code>, and <code>EXT-X-SPLICEPOINT-SCTE35</code> ad markers from the origin manifest to the MediaTailor personalized manifest.</p> <p>No logic is applied to these ad markers. For example, if <code>EXT-X-CUE-OUT</code> has a value of <code>60</code>, but no ads are filled for that ad break, MediaTailor will not set the value to <code>0</code>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -1518,184 +1094,105 @@ const IntegerMin1Schema = z.int().min(1).openapi('IntegerMin1')
 
 const GetPlaybackConfigurationResponseSchema = z
   .object({
-    AdDecisionServerUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL for the ad decision server (ADS). This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing, you can provide a static VAST URL. The maximum length is 25,000 characters.',
-        }),
-    ).exactOptional(),
-    AvailSuppression: AvailSuppressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html">Ad Suppression</a>.',
-        }),
-    ).exactOptional(),
-    Bumper: BumperSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for bumpers. Bumpers are short audio or video clips that play at the start or before the end of an ad break. To learn more about bumpers, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/bumpers.html">Bumpers</a>.',
-        }),
-    ).exactOptional(),
-    CdnConfiguration: CdnConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for using a content delivery network (CDN), like Amazon CloudFront, for content and ad segment management.',
-        }),
-    ).exactOptional(),
-    ConfigurationAliases: ConfigurationAliasesResponseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html">Domain Variables</a>.',
-        }),
-    ).exactOptional(),
-    DashConfiguration: DashConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration for DASH content.' }),
-    ).exactOptional(),
-    HlsConfiguration: HlsConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration for HLS content.' }),
-    ).exactOptional(),
-    LivePreRollConfiguration: LivePreRollConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration for pre-roll ad insertion.' }),
-    ).exactOptional(),
-    LogConfiguration: LogConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon CloudWatch log settings for a playback configuration.',
-        }),
-    ).exactOptional(),
-    ManifestProcessingRules: ManifestProcessingRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for manifest processing rules. Manifest processing rules enable customization of the personalized manifests created by MediaTailor.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The identifier for the playback configuration.' }),
-    ).exactOptional(),
-    PersonalizationThresholdSeconds: IntegerMin1Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines the maximum duration of underfilled ad time (in seconds) allowed in an ad break. If the duration of underfilled ad time exceeds the personalization threshold, then the personalization of the ad break is abandoned and the underlying content is shown. This feature applies to <i>ad replacement</i> in live and VOD streams, rather than ad insertion, because it relies on an underlying content stream. For more information about ad break behavior, including ad replacement and insertion, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html">Ad Behavior in AWS Elemental MediaTailor</a>.',
-        }),
-    ).exactOptional(),
-    PlaybackConfigurationArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) for the playback configuration.' }),
-    ).exactOptional(),
-    PlaybackEndpointPrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL that the player accesses to get a manifest from AWS Elemental MediaTailor. This session will use server-side reporting.',
-        }),
-    ).exactOptional(),
-    SessionInitializationEndpointPrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL that the player uses to initialize a session that uses client-side reporting.',
-        }),
-    ).exactOptional(),
-    SlateAdUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The URL for a high-quality video asset to transcode and use to fill in time that's not used by ads. AWS Elemental MediaTailor shows the slate to fill in gaps in media content. Configuring the slate is optional for non-VPAID playback configurations. For VPAID, the slate is required because MediaTailor provides it in the slots designated for dynamic ad content. The slate must be a high-quality asset that contains both audio and video.",
-        }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags assigned to the playback configuration. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
-    TranscodeProfileName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name that is used to associate this playback configuration with a custom transcode profile. This overrides the dynamic transcoding defaults of MediaTailor. Use this only if you have already set up custom profiles with the help of AWS Support.',
-        }),
-    ).exactOptional(),
-    VideoContentSourceUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL prefix for the parent manifest for the stream, minus the asset ID. The maximum length is 512 characters.',
-        }),
-    ).exactOptional(),
+    AdDecisionServerUrl: StringSchema.exactOptional().openapi({
+      description:
+        'The URL for the ad decision server (ADS). This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing, you can provide a static VAST URL. The maximum length is 25,000 characters.',
+    }),
+    AvailSuppression: AvailSuppressionSchema.exactOptional().openapi({
+      description:
+        'The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html">Ad Suppression</a>.',
+    }),
+    Bumper: BumperSchema.exactOptional().openapi({
+      description:
+        'The configuration for bumpers. Bumpers are short audio or video clips that play at the start or before the end of an ad break. To learn more about bumpers, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/bumpers.html">Bumpers</a>.',
+    }),
+    CdnConfiguration: CdnConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration for using a content delivery network (CDN), like Amazon CloudFront, for content and ad segment management.',
+    }),
+    ConfigurationAliases: ConfigurationAliasesResponseSchema.exactOptional().openapi({
+      description:
+        'The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html">Domain Variables</a>.',
+    }),
+    DashConfiguration: DashConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for DASH content.',
+    }),
+    HlsConfiguration: HlsConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for HLS content.',
+    }),
+    LivePreRollConfiguration: LivePreRollConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for pre-roll ad insertion.',
+    }),
+    LogConfiguration: LogConfigurationSchema.exactOptional().openapi({
+      description: 'The Amazon CloudWatch log settings for a playback configuration.',
+    }),
+    ManifestProcessingRules: ManifestProcessingRulesSchema.exactOptional().openapi({
+      description:
+        'The configuration for manifest processing rules. Manifest processing rules enable customization of the personalized manifests created by MediaTailor.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The identifier for the playback configuration.',
+    }),
+    PersonalizationThresholdSeconds: IntegerMin1Schema.exactOptional().openapi({
+      description:
+        'Defines the maximum duration of underfilled ad time (in seconds) allowed in an ad break. If the duration of underfilled ad time exceeds the personalization threshold, then the personalization of the ad break is abandoned and the underlying content is shown. This feature applies to <i>ad replacement</i> in live and VOD streams, rather than ad insertion, because it relies on an underlying content stream. For more information about ad break behavior, including ad replacement and insertion, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html">Ad Behavior in AWS Elemental MediaTailor</a>.',
+    }),
+    PlaybackConfigurationArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the playback configuration.',
+    }),
+    PlaybackEndpointPrefix: StringSchema.exactOptional().openapi({
+      description:
+        'The URL that the player accesses to get a manifest from AWS Elemental MediaTailor. This session will use server-side reporting.',
+    }),
+    SessionInitializationEndpointPrefix: StringSchema.exactOptional().openapi({
+      description:
+        'The URL that the player uses to initialize a session that uses client-side reporting.',
+    }),
+    SlateAdUrl: StringSchema.exactOptional().openapi({
+      description:
+        "The URL for a high-quality video asset to transcode and use to fill in time that's not used by ads. AWS Elemental MediaTailor shows the slate to fill in gaps in media content. Configuring the slate is optional for non-VPAID playback configurations. For VPAID, the slate is required because MediaTailor provides it in the slots designated for dynamic ad content. The slate must be a high-quality asset that contains both audio and video.",
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags assigned to the playback configuration. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
+    TranscodeProfileName: StringSchema.exactOptional().openapi({
+      description:
+        'The name that is used to associate this playback configuration with a custom transcode profile. This overrides the dynamic transcoding defaults of MediaTailor. Use this only if you have already set up custom profiles with the help of AWS Support.',
+    }),
+    VideoContentSourceUrl: StringSchema.exactOptional().openapi({
+      description:
+        'The URL prefix for the parent manifest for the stream, minus the asset ID. The maximum length is 512 characters.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPlaybackConfigurationResponse')
 
 const GetPrefetchScheduleResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the prefetch schedule.' }),
-    ).exactOptional(),
-    Consumption: PrefetchConsumptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Consumption settings determine how, and when, MediaTailor places the prefetched ads into ad breaks. Ad consumption occurs within a span of time that you define, called a <i>consumption window</i>. You can designate which ad breaks that MediaTailor fills with prefetch ads by setting avail matching criteria.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the prefetch schedule. The name must be unique among all prefetch schedules that are associated with the specified playback configuration.',
-        }),
-    ).exactOptional(),
-    PlaybackConfigurationName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the playback configuration to create the prefetch schedule for.',
-        }),
-    ).exactOptional(),
-    Retrieval: PrefetchRetrievalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A complex type that contains settings for prefetch retrieval from the ad decision server (ADS).',
-        }),
-    ).exactOptional(),
-    StreamId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional stream identifier that you can specify in order to prefetch for multiple streams that use the same playback configuration.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the prefetch schedule.',
+    }),
+    Consumption: PrefetchConsumptionSchema.exactOptional().openapi({
+      description:
+        'Consumption settings determine how, and when, MediaTailor places the prefetched ads into ad breaks. Ad consumption occurs within a span of time that you define, called a <i>consumption window</i>. You can designate which ad breaks that MediaTailor fills with prefetch ads by setting avail matching criteria.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the prefetch schedule. The name must be unique among all prefetch schedules that are associated with the specified playback configuration.',
+    }),
+    PlaybackConfigurationName: StringSchema.exactOptional().openapi({
+      description: 'The name of the playback configuration to create the prefetch schedule for.',
+    }),
+    Retrieval: PrefetchRetrievalSchema.exactOptional().openapi({
+      description:
+        'A complex type that contains settings for prefetch retrieval from the ad decision server (ADS).',
+    }),
+    StreamId: StringSchema.exactOptional().openapi({
+      description:
+        'An optional stream identifier that you can specify in order to prefetch for multiple streams that use the same playback configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPrefetchScheduleResponse')
@@ -1704,30 +1201,22 @@ const ListOfStringSchema = z.array(StringSchema).openapi('ListOfString')
 
 const AlertSchema = z
   .object({
-    AlertCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The code for the alert. For example, <code>NOT_PROCESSED</code>.',
-        }),
-    ),
-    AlertMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If an alert is generated for a resource, an explanation of the reason for the alert.',
-        }),
-    ),
-    LastModifiedTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The timestamp when the alert was last modified.' }),
-    ),
-    RelatedResourceArns: ListOfStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Names (ARNs) related to this alert.' }),
-    ),
-    ResourceArn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource.' }),
-    ),
+    AlertCode: StringSchema.openapi({
+      description: 'The code for the alert. For example, <code>NOT_PROCESSED</code>.',
+    }),
+    AlertMessage: StringSchema.openapi({
+      description:
+        'If an alert is generated for a resource, an explanation of the reason for the alert.',
+    }),
+    LastModifiedTime: TimestampUnixSchema.openapi({
+      description: 'The timestamp when the alert was last modified.',
+    }),
+    RelatedResourceArns: ListOfStringSchema.openapi({
+      description: 'The Amazon Resource Names (ARNs) related to this alert.',
+    }),
+    ResourceArn: StringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource.',
+    }),
   })
   .openapi({
     required: [
@@ -1745,146 +1234,102 @@ const ListOfAlertSchema = z.array(AlertSchema).openapi('ListOfAlert')
 
 const ListAlertsResponseSchema = z
   .object({
-    Items: ListOfAlertSchema.and(
-      z.any().openapi({ description: 'A list of alerts that are associated with this resource.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.',
-        }),
-    ).exactOptional(),
+    Items: ListOfAlertSchema.exactOptional().openapi({
+      description: 'A list of alerts that are associated with this resource.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAlertsResponse')
 
-const ChannelSchema: z.ZodType<ChannelType> = z
-  .lazy(() =>
-    z
-      .object({
-        Arn: StringSchema.and(z.any().openapi({ description: 'The ARN of the channel.' })),
-        ChannelName: StringSchema.and(z.any().openapi({ description: 'The name of the channel.' })),
-        ChannelState: StringSchema.and(
-          z
-            .any()
-            .openapi({ description: 'Returns the state whether the channel is running or not.' }),
-        ),
-        CreationTime: TimestampUnixSchema.and(
-          z.any().openapi({ description: 'The timestamp of when the channel was created.' }),
-        ).exactOptional(),
-        FillerSlate: SlateSourceSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                "The slate used to fill gaps between programs in the schedule. You must configure filler slate if your channel uses the <code>LINEAR</code> <code>PlaybackMode</code>. MediaTailor doesn't support filler slate for channels using the <code>LOOP</code> <code>PlaybackMode</code>.",
-            }),
-        ).exactOptional(),
-        LastModifiedTime: TimestampUnixSchema.and(
-          z.any().openapi({ description: 'The timestamp of when the channel was last modified.' }),
-        ).exactOptional(),
-        LogConfiguration: LogConfigurationForChannelSchema.and(
-          z.any().openapi({ description: 'The log configuration.' }),
-        ),
-        Outputs: ResponseOutputsSchema.and(
-          z.any().openapi({ description: "The channel's output properties." }),
-        ),
-        PlaybackMode: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>The type of playback mode for this channel.</p> <p> <code>LINEAR</code> - Programs play back-to-back only once.</p> <p> <code>LOOP</code> - Programs play back-to-back in an endless loop. When the last program in the schedule plays, playback loops back to the first program in the schedule.</p>',
-            }),
-        ),
-        Tags: MapOfStringSchema.and(
-          z
-            .any()
-            .openapi({
-              xml: { name: 'tags' },
-              description:
-                'The tags to assign to the channel. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-            }),
-        ).exactOptional(),
-        Tier: StringSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The tier for this channel. STANDARD tier channels can contain live programs.',
-            }),
-        ),
-      })
-      .openapi({
-        required: [
-          'Arn',
-          'ChannelName',
-          'ChannelState',
-          'LogConfiguration',
-          'Outputs',
-          'PlaybackMode',
-          'Tier',
-        ],
-        description:
-          'The configuration parameters for a channel. For information about MediaTailor channels, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/channel-assembly-channels.html">Working with channels</a> in the <i>MediaTailor User Guide</i>.',
-      }),
-  )
+const ChannelSchema = z
+  .object({
+    Arn: StringSchema.openapi({ description: 'The ARN of the channel.' }),
+    ChannelName: StringSchema.openapi({ description: 'The name of the channel.' }),
+    ChannelState: StringSchema.openapi({
+      description: 'Returns the state whether the channel is running or not.',
+    }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp of when the channel was created.',
+    }),
+    FillerSlate: SlateSourceSchema.exactOptional().openapi({
+      description:
+        "The slate used to fill gaps between programs in the schedule. You must configure filler slate if your channel uses the <code>LINEAR</code> <code>PlaybackMode</code>. MediaTailor doesn't support filler slate for channels using the <code>LOOP</code> <code>PlaybackMode</code>.",
+    }),
+    LastModifiedTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp of when the channel was last modified.',
+    }),
+    LogConfiguration: LogConfigurationForChannelSchema.openapi({
+      description: 'The log configuration.',
+    }),
+    Outputs: ResponseOutputsSchema.openapi({ description: "The channel's output properties." }),
+    PlaybackMode: StringSchema.openapi({
+      description:
+        '<p>The type of playback mode for this channel.</p> <p> <code>LINEAR</code> - Programs play back-to-back only once.</p> <p> <code>LOOP</code> - Programs play back-to-back in an endless loop. When the last program in the schedule plays, playback loops back to the first program in the schedule.</p>',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags to assign to the channel. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
+    Tier: StringSchema.openapi({
+      description: 'The tier for this channel. STANDARD tier channels can contain live programs.',
+    }),
+  })
+  .openapi({
+    required: [
+      'Arn',
+      'ChannelName',
+      'ChannelState',
+      'LogConfiguration',
+      'Outputs',
+      'PlaybackMode',
+      'Tier',
+    ],
+    description:
+      'The configuration parameters for a channel. For information about MediaTailor channels, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/channel-assembly-channels.html">Working with channels</a> in the <i>MediaTailor User Guide</i>.',
+  })
   .openapi('Channel')
 
 const ListOfChannelSchema = z.array(ChannelSchema).openapi('ListOfChannel')
 
 const ListChannelsResponseSchema = z
   .object({
-    Items: ListOfChannelSchema.and(
-      z.any().openapi({ description: 'A list of channels that are associated with this account.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.',
-        }),
-    ).exactOptional(),
+    Items: ListOfChannelSchema.exactOptional().openapi({
+      description: 'A list of channels that are associated with this account.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListChannelsResponse')
 
 const LiveSourceSchema = z
   .object({
-    Arn: StringSchema.and(z.any().openapi({ description: 'The ARN for the live source.' })),
-    CreationTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp that indicates when the live source was created.' }),
-    ).exactOptional(),
-    HttpPackageConfigurations: HttpPackageConfigurationsSchema.and(
-      z.any().openapi({ description: 'The HTTP package configurations for the live source.' }),
-    ),
-    LastModifiedTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp that indicates when the live source was last modified.',
-        }),
-    ).exactOptional(),
-    LiveSourceName: StringSchema.and(
-      z.any().openapi({ description: "The name that's used to refer to a live source." }),
-    ),
-    SourceLocationName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the source location.' }),
-    ),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags assigned to the live source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.openapi({ description: 'The ARN for the live source.' }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the live source was created.',
+    }),
+    HttpPackageConfigurations: HttpPackageConfigurationsSchema.openapi({
+      description: 'The HTTP package configurations for the live source.',
+    }),
+    LastModifiedTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the live source was last modified.',
+    }),
+    LiveSourceName: StringSchema.openapi({
+      description: "The name that's used to refer to a live source.",
+    }),
+    SourceLocationName: StringSchema.openapi({ description: 'The name of the source location.' }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags assigned to the live source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
   })
   .openapi({
     required: ['Arn', 'HttpPackageConfigurations', 'LiveSourceName', 'SourceLocationName'],
@@ -1896,152 +1341,90 @@ const ListOfLiveSourceSchema = z.array(LiveSourceSchema).openapi('ListOfLiveSour
 
 const ListLiveSourcesResponseSchema = z
   .object({
-    Items: ListOfLiveSourceSchema.and(
-      z.any().openapi({ description: 'Lists the live sources.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.',
-        }),
-    ).exactOptional(),
+    Items: ListOfLiveSourceSchema.exactOptional().openapi({
+      description: 'Lists the live sources.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLiveSourcesResponse')
 
 const PlaybackConfigurationSchema = z
   .object({
-    AdDecisionServerUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL for the ad decision server (ADS). This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing you can provide a static VAST URL. The maximum length is 25,000 characters.',
-        }),
-    ).exactOptional(),
-    AvailSuppression: AvailSuppressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html">Ad Suppression</a>.',
-        }),
-    ).exactOptional(),
-    Bumper: BumperSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for bumpers. Bumpers are short audio or video clips that play at the start or before the end of an ad break. To learn more about bumpers, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/bumpers.html">Bumpers</a>.',
-        }),
-    ).exactOptional(),
-    CdnConfiguration: CdnConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for using a content delivery network (CDN), like Amazon CloudFront, for content and ad segment management.',
-        }),
-    ).exactOptional(),
-    ConfigurationAliases: ConfigurationAliasesResponseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html">Domain Variables</a>.',
-        }),
-    ).exactOptional(),
-    DashConfiguration: DashConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration for a DASH source.' }),
-    ).exactOptional(),
-    HlsConfiguration: HlsConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration for HLS content.' }),
-    ).exactOptional(),
-    LivePreRollConfiguration: LivePreRollConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration for pre-roll ad insertion.' }),
-    ).exactOptional(),
-    LogConfiguration: LogConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon CloudWatch log settings for a playback configuration.',
-        }),
-    ).exactOptional(),
-    ManifestProcessingRules: ManifestProcessingRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for manifest processing rules. Manifest processing rules enable customization of the personalized manifests created by MediaTailor.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The identifier for the playback configuration.' }),
-    ).exactOptional(),
-    PersonalizationThresholdSeconds: IntegerMin1Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines the maximum duration of underfilled ad time (in seconds) allowed in an ad break. If the duration of underfilled ad time exceeds the personalization threshold, then the personalization of the ad break is abandoned and the underlying content is shown. This feature applies to <i>ad replacement</i> in live and VOD streams, rather than ad insertion, because it relies on an underlying content stream. For more information about ad break behavior, including ad replacement and insertion, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html">Ad Behavior in AWS Elemental MediaTailor</a>.',
-        }),
-    ).exactOptional(),
-    PlaybackConfigurationArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) for the playback configuration.' }),
-    ).exactOptional(),
-    PlaybackEndpointPrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL that the player accesses to get a manifest from AWS Elemental MediaTailor.',
-        }),
-    ).exactOptional(),
-    SessionInitializationEndpointPrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL that the player uses to initialize a session that uses client-side reporting.',
-        }),
-    ).exactOptional(),
-    SlateAdUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The URL for a video asset to transcode and use to fill in time that's not used by ads. AWS Elemental MediaTailor shows the slate to fill in gaps in media content. Configuring the slate is optional for non-VPAID playback configurations. For VPAID, the slate is required because MediaTailor provides it in the slots designated for dynamic ad content. The slate must be a high-quality asset that contains both audio and video.",
-        }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags to assign to the playback configuration. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
-    TranscodeProfileName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name that is used to associate this playback configuration with a custom transcode profile. This overrides the dynamic transcoding defaults of MediaTailor. Use this only if you have already set up custom profiles with the help of AWS Support.',
-        }),
-    ).exactOptional(),
-    VideoContentSourceUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL prefix for the parent manifest for the stream, minus the asset ID. The maximum length is 512 characters.',
-        }),
-    ).exactOptional(),
+    AdDecisionServerUrl: StringSchema.exactOptional().openapi({
+      description:
+        'The URL for the ad decision server (ADS). This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing you can provide a static VAST URL. The maximum length is 25,000 characters.',
+    }),
+    AvailSuppression: AvailSuppressionSchema.exactOptional().openapi({
+      description:
+        'The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html">Ad Suppression</a>.',
+    }),
+    Bumper: BumperSchema.exactOptional().openapi({
+      description:
+        'The configuration for bumpers. Bumpers are short audio or video clips that play at the start or before the end of an ad break. To learn more about bumpers, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/bumpers.html">Bumpers</a>.',
+    }),
+    CdnConfiguration: CdnConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration for using a content delivery network (CDN), like Amazon CloudFront, for content and ad segment management.',
+    }),
+    ConfigurationAliases: ConfigurationAliasesResponseSchema.exactOptional().openapi({
+      description:
+        'The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html">Domain Variables</a>.',
+    }),
+    DashConfiguration: DashConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for a DASH source.',
+    }),
+    HlsConfiguration: HlsConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for HLS content.',
+    }),
+    LivePreRollConfiguration: LivePreRollConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for pre-roll ad insertion.',
+    }),
+    LogConfiguration: LogConfigurationSchema.exactOptional().openapi({
+      description: 'The Amazon CloudWatch log settings for a playback configuration.',
+    }),
+    ManifestProcessingRules: ManifestProcessingRulesSchema.exactOptional().openapi({
+      description:
+        'The configuration for manifest processing rules. Manifest processing rules enable customization of the personalized manifests created by MediaTailor.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The identifier for the playback configuration.',
+    }),
+    PersonalizationThresholdSeconds: IntegerMin1Schema.exactOptional().openapi({
+      description:
+        'Defines the maximum duration of underfilled ad time (in seconds) allowed in an ad break. If the duration of underfilled ad time exceeds the personalization threshold, then the personalization of the ad break is abandoned and the underlying content is shown. This feature applies to <i>ad replacement</i> in live and VOD streams, rather than ad insertion, because it relies on an underlying content stream. For more information about ad break behavior, including ad replacement and insertion, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html">Ad Behavior in AWS Elemental MediaTailor</a>.',
+    }),
+    PlaybackConfigurationArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the playback configuration.',
+    }),
+    PlaybackEndpointPrefix: StringSchema.exactOptional().openapi({
+      description:
+        'The URL that the player accesses to get a manifest from AWS Elemental MediaTailor.',
+    }),
+    SessionInitializationEndpointPrefix: StringSchema.exactOptional().openapi({
+      description:
+        'The URL that the player uses to initialize a session that uses client-side reporting.',
+    }),
+    SlateAdUrl: StringSchema.exactOptional().openapi({
+      description:
+        "The URL for a video asset to transcode and use to fill in time that's not used by ads. AWS Elemental MediaTailor shows the slate to fill in gaps in media content. Configuring the slate is optional for non-VPAID playback configurations. For VPAID, the slate is required because MediaTailor provides it in the slots designated for dynamic ad content. The slate must be a high-quality asset that contains both audio and video.",
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags to assign to the playback configuration. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
+    TranscodeProfileName: StringSchema.exactOptional().openapi({
+      description:
+        'The name that is used to associate this playback configuration with a custom transcode profile. This overrides the dynamic transcoding defaults of MediaTailor. Use this only if you have already set up custom profiles with the help of AWS Support.',
+    }),
+    VideoContentSourceUrl: StringSchema.exactOptional().openapi({
+      description:
+        'The URL prefix for the parent manifest for the stream, minus the asset ID. The maximum length is 512 characters.',
+    }),
   })
   .openapi({
     description:
@@ -2056,71 +1439,42 @@ const ListOfPlaybackConfigurationSchema = z
 
 const ListPlaybackConfigurationsResponseSchema = z
   .object({
-    Items: ListOfPlaybackConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Array of playback configurations. This might be all the available configurations or a subset, depending on the settings that you provide and the total number of configurations stored.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Pagination token returned by the GET list request when results exceed the maximum allowed. Use the token to fetch the next page of results.',
-        }),
-    ).exactOptional(),
+    Items: ListOfPlaybackConfigurationSchema.exactOptional().openapi({
+      description:
+        'Array of playback configurations. This might be all the available configurations or a subset, depending on the settings that you provide and the total number of configurations stored.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Pagination token returned by the GET list request when results exceed the maximum allowed. Use the token to fetch the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPlaybackConfigurationsResponse')
 
 const PrefetchScheduleSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the prefetch schedule.' }),
-    ),
-    Consumption: PrefetchConsumptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Consumption settings determine how, and when, MediaTailor places the prefetched ads into ad breaks. Ad consumption occurs within a span of time that you define, called a <i>consumption window</i>. You can designate which ad breaks that MediaTailor fills with prefetch ads by setting avail matching criteria.',
-        }),
-    ),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the prefetch schedule. The name must be unique among all prefetch schedules that are associated with the specified playback configuration.',
-        }),
-    ),
-    PlaybackConfigurationName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the playback configuration to create the prefetch schedule for.',
-        }),
-    ),
-    Retrieval: PrefetchRetrievalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A complex type that contains settings for prefetch retrieval from the ad decision server (ADS).',
-        }),
-    ),
-    StreamId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional stream identifier that you can specify in order to prefetch for multiple streams that use the same playback configuration.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the prefetch schedule.',
+    }),
+    Consumption: PrefetchConsumptionSchema.openapi({
+      description:
+        'Consumption settings determine how, and when, MediaTailor places the prefetched ads into ad breaks. Ad consumption occurs within a span of time that you define, called a <i>consumption window</i>. You can designate which ad breaks that MediaTailor fills with prefetch ads by setting avail matching criteria.',
+    }),
+    Name: StringSchema.openapi({
+      description:
+        'The name of the prefetch schedule. The name must be unique among all prefetch schedules that are associated with the specified playback configuration.',
+    }),
+    PlaybackConfigurationName: StringSchema.openapi({
+      description: 'The name of the playback configuration to create the prefetch schedule for.',
+    }),
+    Retrieval: PrefetchRetrievalSchema.openapi({
+      description:
+        'A complex type that contains settings for prefetch retrieval from the ad decision server (ADS).',
+    }),
+    StreamId: StringSchema.exactOptional().openapi({
+      description:
+        'An optional stream identifier that you can specify in order to prefetch for multiple streams that use the same playback configuration.',
+    }),
   })
   .openapi({
     required: ['Arn', 'Consumption', 'Name', 'PlaybackConfigurationName', 'Retrieval'],
@@ -2135,69 +1489,46 @@ const ListOfPrefetchScheduleSchema = z
 
 const ListPrefetchSchedulesResponseSchema = z
   .object({
-    Items: ListOfPrefetchScheduleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Lists the prefetch schedules. An empty <code>Items</code> list doesn't mean there aren't more items to fetch, just that that page was empty.",
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.',
-        }),
-    ).exactOptional(),
+    Items: ListOfPrefetchScheduleSchema.exactOptional().openapi({
+      description:
+        "Lists the prefetch schedules. An empty <code>Items</code> list doesn't mean there aren't more items to fetch, just that that page was empty.",
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPrefetchSchedulesResponse')
 
 const SourceLocationSchema = z
   .object({
-    AccessConfiguration: AccessConfigurationSchema.and(
-      z.any().openapi({ description: 'The access configuration for the source location.' }),
-    ).exactOptional(),
-    Arn: StringSchema.and(z.any().openapi({ description: 'The ARN of the SourceLocation.' })),
-    CreationTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp that indicates when the source location was created.',
-        }),
-    ).exactOptional(),
-    DefaultSegmentDeliveryConfiguration: DefaultSegmentDeliveryConfigurationSchema.and(
-      z.any().openapi({ description: 'The default segment delivery configuration.' }),
-    ).exactOptional(),
-    HttpConfiguration: HttpConfigurationSchema.and(
-      z.any().openapi({ description: 'The HTTP configuration for the source location.' }),
+    AccessConfiguration: AccessConfigurationSchema.exactOptional().openapi({
+      description: 'The access configuration for the source location.',
+    }),
+    Arn: StringSchema.openapi({ description: 'The ARN of the SourceLocation.' }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the source location was created.',
+    }),
+    DefaultSegmentDeliveryConfiguration:
+      DefaultSegmentDeliveryConfigurationSchema.exactOptional().openapi({
+        description: 'The default segment delivery configuration.',
+      }),
+    HttpConfiguration: HttpConfigurationSchema.openapi({
+      description: 'The HTTP configuration for the source location.',
+    }),
+    LastModifiedTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the source location was last modified.',
+    }),
+    SegmentDeliveryConfigurations: ListOfSegmentDeliveryConfigurationSchema.exactOptional().openapi(
+      { description: 'The segment delivery configurations for the source location.' },
     ),
-    LastModifiedTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp that indicates when the source location was last modified.',
-        }),
-    ).exactOptional(),
-    SegmentDeliveryConfigurations: ListOfSegmentDeliveryConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The segment delivery configurations for the source location.' }),
-    ).exactOptional(),
-    SourceLocationName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the source location.' }),
-    ),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags assigned to the source location. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
+    SourceLocationName: StringSchema.openapi({ description: 'The name of the source location.' }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags assigned to the source location. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
   })
   .openapi({
     required: ['Arn', 'HttpConfiguration', 'SourceLocationName'],
@@ -2210,32 +1541,24 @@ const ListOfSourceLocationSchema = z.array(SourceLocationSchema).openapi('ListOf
 
 const ListSourceLocationsResponseSchema = z
   .object({
-    Items: ListOfSourceLocationSchema.and(
-      z.any().openapi({ description: 'A list of source locations.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.',
-        }),
-    ).exactOptional(),
+    Items: ListOfSourceLocationSchema.exactOptional().openapi({
+      description: 'A list of source locations.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSourceLocationsResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags associated with this resource. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags associated with this resource. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -2244,41 +1567,25 @@ const BadRequestExceptionSchema = z.any().openapi('BadRequestException')
 
 const VodSourceSchema = z
   .object({
-    Arn: StringSchema.and(z.any().openapi({ description: 'The ARN for the VOD source.' })),
-    CreationTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp that indicates when the VOD source was created.' }),
-    ).exactOptional(),
-    HttpPackageConfigurations: HttpPackageConfigurationsSchema.and(
-      z.any().openapi({ description: 'The HTTP package configurations for the VOD source.' }),
-    ),
-    LastModifiedTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp that indicates when the VOD source was last modified.',
-        }),
-    ).exactOptional(),
-    SourceLocationName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the source location that the VOD source is associated with.',
-        }),
-    ),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags assigned to the VOD source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
-    VodSourceName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the VOD source.' }),
-    ),
+    Arn: StringSchema.openapi({ description: 'The ARN for the VOD source.' }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the VOD source was created.',
+    }),
+    HttpPackageConfigurations: HttpPackageConfigurationsSchema.openapi({
+      description: 'The HTTP package configurations for the VOD source.',
+    }),
+    LastModifiedTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the VOD source was last modified.',
+    }),
+    SourceLocationName: StringSchema.openapi({
+      description: 'The name of the source location that the VOD source is associated with.',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags assigned to the VOD source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
+    VodSourceName: StringSchema.openapi({ description: 'The name of the VOD source.' }),
   })
   .openapi({
     required: ['Arn', 'HttpPackageConfigurations', 'SourceLocationName', 'VodSourceName'],
@@ -2290,440 +1597,279 @@ const ListOfVodSourceSchema = z.array(VodSourceSchema).openapi('ListOfVodSource'
 
 const ListVodSourcesResponseSchema = z
   .object({
-    Items: ListOfVodSourceSchema.and(
-      z.any().openapi({ description: 'Lists the VOD sources.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.',
-        }),
-    ).exactOptional(),
+    Items: ListOfVodSourceSchema.exactOptional().openapi({ description: 'Lists the VOD sources.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Pagination token returned by the list request when results exceed the maximum allowed. Use the token to fetch the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListVodSourcesResponse')
 
-const PutChannelPolicyResponseSchema = z.object({}).openapi('PutChannelPolicyResponse')
+const PutChannelPolicyResponseSchema = z.looseObject({}).openapi('PutChannelPolicyResponse')
 
 const PutPlaybackConfigurationResponseSchema = z
   .object({
-    AdDecisionServerUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL for the ad decision server (ADS). This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing you can provide a static VAST URL. The maximum length is 25,000 characters.',
-        }),
-    ).exactOptional(),
-    AvailSuppression: AvailSuppressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html">Ad Suppression</a>.',
-        }),
-    ).exactOptional(),
-    Bumper: BumperSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for bumpers. Bumpers are short audio or video clips that play at the start or before the end of an ad break. To learn more about bumpers, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/bumpers.html">Bumpers</a>.',
-        }),
-    ).exactOptional(),
-    CdnConfiguration: CdnConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for using a content delivery network (CDN), like Amazon CloudFront, for content and ad segment management.',
-        }),
-    ).exactOptional(),
-    ConfigurationAliases: ConfigurationAliasesResponseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html">Domain Variables</a>.',
-        }),
-    ).exactOptional(),
-    DashConfiguration: DashConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration for DASH content.' }),
-    ).exactOptional(),
-    HlsConfiguration: HlsConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration for HLS content.' }),
-    ).exactOptional(),
-    LivePreRollConfiguration: LivePreRollConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration for pre-roll ad insertion.' }),
-    ).exactOptional(),
-    LogConfiguration: LogConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon CloudWatch log settings for a playback configuration.',
-        }),
-    ).exactOptional(),
-    ManifestProcessingRules: ManifestProcessingRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for manifest processing rules. Manifest processing rules enable customization of the personalized manifests created by MediaTailor.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The identifier for the playback configuration.' }),
-    ).exactOptional(),
-    PersonalizationThresholdSeconds: IntegerMin1Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines the maximum duration of underfilled ad time (in seconds) allowed in an ad break. If the duration of underfilled ad time exceeds the personalization threshold, then the personalization of the ad break is abandoned and the underlying content is shown. This feature applies to <i>ad replacement</i> in live and VOD streams, rather than ad insertion, because it relies on an underlying content stream. For more information about ad break behavior, including ad replacement and insertion, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html">Ad Behavior in AWS Elemental MediaTailor</a>.',
-        }),
-    ).exactOptional(),
-    PlaybackConfigurationArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) associated with the playback configuration.',
-        }),
-    ).exactOptional(),
-    PlaybackEndpointPrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The playback endpoint prefix associated with the playback configuration.',
-        }),
-    ).exactOptional(),
-    SessionInitializationEndpointPrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The session initialization endpoint prefix associated with the playback configuration.',
-        }),
-    ).exactOptional(),
-    SlateAdUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The URL for a high-quality video asset to transcode and use to fill in time that's not used by ads. AWS Elemental MediaTailor shows the slate to fill in gaps in media content. Configuring the slate is optional for non-VPAID configurations. For VPAID, the slate is required because MediaTailor provides it in the slots that are designated for dynamic ad content. The slate must be a high-quality asset that contains both audio and video.",
-        }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags to assign to the playback configuration. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
-    TranscodeProfileName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name that is used to associate this playback configuration with a custom transcode profile. This overrides the dynamic transcoding defaults of MediaTailor. Use this only if you have already set up custom profiles with the help of AWS Support.',
-        }),
-    ).exactOptional(),
-    VideoContentSourceUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL prefix for the parent manifest for the stream, minus the asset ID. The maximum length is 512 characters.',
-        }),
-    ).exactOptional(),
+    AdDecisionServerUrl: StringSchema.exactOptional().openapi({
+      description:
+        'The URL for the ad decision server (ADS). This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing you can provide a static VAST URL. The maximum length is 25,000 characters.',
+    }),
+    AvailSuppression: AvailSuppressionSchema.exactOptional().openapi({
+      description:
+        'The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html">Ad Suppression</a>.',
+    }),
+    Bumper: BumperSchema.exactOptional().openapi({
+      description:
+        'The configuration for bumpers. Bumpers are short audio or video clips that play at the start or before the end of an ad break. To learn more about bumpers, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/bumpers.html">Bumpers</a>.',
+    }),
+    CdnConfiguration: CdnConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration for using a content delivery network (CDN), like Amazon CloudFront, for content and ad segment management.',
+    }),
+    ConfigurationAliases: ConfigurationAliasesResponseSchema.exactOptional().openapi({
+      description:
+        'The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html">Domain Variables</a>.',
+    }),
+    DashConfiguration: DashConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for DASH content.',
+    }),
+    HlsConfiguration: HlsConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for HLS content.',
+    }),
+    LivePreRollConfiguration: LivePreRollConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for pre-roll ad insertion.',
+    }),
+    LogConfiguration: LogConfigurationSchema.exactOptional().openapi({
+      description: 'The Amazon CloudWatch log settings for a playback configuration.',
+    }),
+    ManifestProcessingRules: ManifestProcessingRulesSchema.exactOptional().openapi({
+      description:
+        'The configuration for manifest processing rules. Manifest processing rules enable customization of the personalized manifests created by MediaTailor.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The identifier for the playback configuration.',
+    }),
+    PersonalizationThresholdSeconds: IntegerMin1Schema.exactOptional().openapi({
+      description:
+        'Defines the maximum duration of underfilled ad time (in seconds) allowed in an ad break. If the duration of underfilled ad time exceeds the personalization threshold, then the personalization of the ad break is abandoned and the underlying content is shown. This feature applies to <i>ad replacement</i> in live and VOD streams, rather than ad insertion, because it relies on an underlying content stream. For more information about ad break behavior, including ad replacement and insertion, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html">Ad Behavior in AWS Elemental MediaTailor</a>.',
+    }),
+    PlaybackConfigurationArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) associated with the playback configuration.',
+    }),
+    PlaybackEndpointPrefix: StringSchema.exactOptional().openapi({
+      description: 'The playback endpoint prefix associated with the playback configuration.',
+    }),
+    SessionInitializationEndpointPrefix: StringSchema.exactOptional().openapi({
+      description:
+        'The session initialization endpoint prefix associated with the playback configuration.',
+    }),
+    SlateAdUrl: StringSchema.exactOptional().openapi({
+      description:
+        "The URL for a high-quality video asset to transcode and use to fill in time that's not used by ads. AWS Elemental MediaTailor shows the slate to fill in gaps in media content. Configuring the slate is optional for non-VPAID configurations. For VPAID, the slate is required because MediaTailor provides it in the slots that are designated for dynamic ad content. The slate must be a high-quality asset that contains both audio and video.",
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags to assign to the playback configuration. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
+    TranscodeProfileName: StringSchema.exactOptional().openapi({
+      description:
+        'The name that is used to associate this playback configuration with a custom transcode profile. This overrides the dynamic transcoding defaults of MediaTailor. Use this only if you have already set up custom profiles with the help of AWS Support.',
+    }),
+    VideoContentSourceUrl: StringSchema.exactOptional().openapi({
+      description:
+        'The URL prefix for the parent manifest for the stream, minus the asset ID. The maximum length is 512 characters.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutPlaybackConfigurationResponse')
 
-const StartChannelResponseSchema = z.object({}).openapi('StartChannelResponse')
+const StartChannelResponseSchema = z.looseObject({}).openapi('StartChannelResponse')
 
-const StopChannelResponseSchema = z.object({}).openapi('StopChannelResponse')
+const StopChannelResponseSchema = z.looseObject({}).openapi('StopChannelResponse')
 
 const UpdateChannelResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) associated with the channel.' }),
-    ).exactOptional(),
-    ChannelName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the channel.' }),
-    ).exactOptional(),
-    ChannelState: ChannelStateSchema.and(
-      z.any().openapi({ description: 'Returns the state whether the channel is running or not.' }),
-    ).exactOptional(),
-    CreationTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the channel was created.' }),
-    ).exactOptional(),
-    FillerSlate: SlateSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The slate used to fill gaps between programs in the schedule. You must configure filler slate if your channel uses the <code>LINEAR</code> <code>PlaybackMode</code>. MediaTailor doesn't support filler slate for channels using the <code>LOOP</code> <code>PlaybackMode</code>.",
-        }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp that indicates when the channel was last modified.',
-        }),
-    ).exactOptional(),
-    Outputs: ResponseOutputsSchema.and(
-      z.any().openapi({ description: "The channel's output properties." }),
-    ).exactOptional(),
-    PlaybackMode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of playback mode for this channel.</p> <p> <code>LINEAR</code> - Programs play back-to-back only once.</p> <p> <code>LOOP</code> - Programs play back-to-back in an endless loop. When the last program in the schedule plays, playback loops back to the first program in the schedule.</p>',
-        }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags to assign to the channel. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
-    Tier: StringSchema.and(
-      z.any().openapi({ description: 'The tier associated with this Channel.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) associated with the channel.',
+    }),
+    ChannelName: StringSchema.exactOptional().openapi({ description: 'The name of the channel.' }),
+    ChannelState: ChannelStateSchema.exactOptional().openapi({
+      description: 'Returns the state whether the channel is running or not.',
+    }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp of when the channel was created.',
+    }),
+    FillerSlate: SlateSourceSchema.exactOptional().openapi({
+      description:
+        "The slate used to fill gaps between programs in the schedule. You must configure filler slate if your channel uses the <code>LINEAR</code> <code>PlaybackMode</code>. MediaTailor doesn't support filler slate for channels using the <code>LOOP</code> <code>PlaybackMode</code>.",
+    }),
+    LastModifiedTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the channel was last modified.',
+    }),
+    Outputs: ResponseOutputsSchema.exactOptional().openapi({
+      description: "The channel's output properties.",
+    }),
+    PlaybackMode: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The type of playback mode for this channel.</p> <p> <code>LINEAR</code> - Programs play back-to-back only once.</p> <p> <code>LOOP</code> - Programs play back-to-back in an endless loop. When the last program in the schedule plays, playback loops back to the first program in the schedule.</p>',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags to assign to the channel. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
+    Tier: StringSchema.exactOptional().openapi({
+      description: 'The tier associated with this Channel.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateChannelResponse')
 
 const UpdateLiveSourceResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) associated with this live source.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp that indicates when the live source was created.' }),
-    ).exactOptional(),
-    HttpPackageConfigurations: HttpPackageConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of HTTP package configurations for the live source on this account.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp that indicates when the live source was last modified.',
-        }),
-    ).exactOptional(),
-    LiveSourceName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the live source.' }),
-    ).exactOptional(),
-    SourceLocationName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the source location associated with the live source.',
-        }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags to assign to the live source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) associated with this live source.',
+    }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the live source was created.',
+    }),
+    HttpPackageConfigurations: HttpPackageConfigurationsSchema.exactOptional().openapi({
+      description: 'A list of HTTP package configurations for the live source on this account.',
+    }),
+    LastModifiedTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the live source was last modified.',
+    }),
+    LiveSourceName: StringSchema.exactOptional().openapi({
+      description: 'The name of the live source.',
+    }),
+    SourceLocationName: StringSchema.exactOptional().openapi({
+      description: 'The name of the source location associated with the live source.',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags to assign to the live source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateLiveSourceResponse')
 
 const UpdateProgramResponseSchema = z
   .object({
-    AdBreaks: ListOfAdBreakSchema.and(
-      z.any().openapi({ description: 'The ad break configuration settings.' }),
-    ).exactOptional(),
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN to assign to the program.' }),
-    ).exactOptional(),
-    ChannelName: StringSchema.and(
-      z.any().openapi({ description: 'The name to assign to the channel for this program.' }),
-    ).exactOptional(),
-    ClipRange: ClipRangeSchema.and(
-      z.any().openapi({ description: 'The clip range configuration settings.' }),
-    ).exactOptional(),
-    CreationTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The time the program was created.' }),
-    ).exactOptional(),
-    DurationMillis: LongSchema.and(
-      z.any().openapi({ description: 'The duration of the live program in milliseconds.' }),
-    ).exactOptional(),
-    LiveSourceName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the LiveSource for this Program.' }),
-    ).exactOptional(),
-    ProgramName: StringSchema.and(
-      z.any().openapi({ description: 'The name to assign to this program.' }),
-    ).exactOptional(),
-    ScheduledStartTime: TimestampUnixSchema.and(
-      z.any().openapi({ description: 'The scheduled start time for this Program.' }),
-    ).exactOptional(),
-    SourceLocationName: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name to assign to the source location for this program.' }),
-    ).exactOptional(),
-    VodSourceName: StringSchema.and(
-      z.any().openapi({ description: "The name that's used to refer to a VOD source." }),
-    ).exactOptional(),
+    AdBreaks: ListOfAdBreakSchema.exactOptional().openapi({
+      description: 'The ad break configuration settings.',
+    }),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN to assign to the program.' }),
+    ChannelName: StringSchema.exactOptional().openapi({
+      description: 'The name to assign to the channel for this program.',
+    }),
+    ClipRange: ClipRangeSchema.exactOptional().openapi({
+      description: 'The clip range configuration settings.',
+    }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The time the program was created.',
+    }),
+    DurationMillis: LongSchema.exactOptional().openapi({
+      description: 'The duration of the live program in milliseconds.',
+    }),
+    LiveSourceName: StringSchema.exactOptional().openapi({
+      description: 'The name of the LiveSource for this Program.',
+    }),
+    ProgramName: StringSchema.exactOptional().openapi({
+      description: 'The name to assign to this program.',
+    }),
+    ScheduledStartTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The scheduled start time for this Program.',
+    }),
+    SourceLocationName: StringSchema.exactOptional().openapi({
+      description: 'The name to assign to the source location for this program.',
+    }),
+    VodSourceName: StringSchema.exactOptional().openapi({
+      description: "The name that's used to refer to a VOD source.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateProgramResponse')
 
 const UpdateProgramTransitionSchema = z
   .object({
-    DurationMillis: LongSchema.and(
-      z.any().openapi({ description: 'The duration of the live program in seconds.' }),
-    ).exactOptional(),
-    ScheduledStartTimeMillis: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the program is scheduled to start, in epoch milliseconds.',
-        }),
-    ).exactOptional(),
+    DurationMillis: LongSchema.exactOptional().openapi({
+      description: 'The duration of the live program in seconds.',
+    }),
+    ScheduledStartTimeMillis: LongSchema.exactOptional().openapi({
+      description:
+        'The date and time that the program is scheduled to start, in epoch milliseconds.',
+    }),
   })
   .openapi({ description: 'Program transition configuration.', required: [] })
   .openapi('UpdateProgramTransition')
 
 const UpdateSourceLocationResponseSchema = z
   .object({
-    AccessConfiguration: AccessConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Access configuration parameters. Configures the type of authentication used to access content from your source location.',
-        }),
-    ).exactOptional(),
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) associated with the source location.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp that indicates when the source location was created.',
-        }),
-    ).exactOptional(),
-    DefaultSegmentDeliveryConfiguration: DefaultSegmentDeliveryConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The optional configuration for the host server that serves segments.',
-        }),
-    ).exactOptional(),
-    HttpConfiguration: HttpConfigurationSchema.and(
-      z.any().openapi({ description: 'The HTTP configuration for the source location.' }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp that indicates when the source location was last modified.',
-        }),
-    ).exactOptional(),
-    SegmentDeliveryConfigurations: ListOfSegmentDeliveryConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The segment delivery configurations for the source location. For information about MediaTailor configurations, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/configurations.html">Working with configurations in AWS Elemental MediaTailor</a>.',
-        }),
-    ).exactOptional(),
-    SourceLocationName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the source location.' }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags to assign to the source location. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
+    AccessConfiguration: AccessConfigurationSchema.exactOptional().openapi({
+      description:
+        'Access configuration parameters. Configures the type of authentication used to access content from your source location.',
+    }),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) associated with the source location.',
+    }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the source location was created.',
+    }),
+    DefaultSegmentDeliveryConfiguration:
+      DefaultSegmentDeliveryConfigurationSchema.exactOptional().openapi({
+        description: 'The optional configuration for the host server that serves segments.',
+      }),
+    HttpConfiguration: HttpConfigurationSchema.exactOptional().openapi({
+      description: 'The HTTP configuration for the source location.',
+    }),
+    LastModifiedTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the source location was last modified.',
+    }),
+    SegmentDeliveryConfigurations: ListOfSegmentDeliveryConfigurationSchema.exactOptional().openapi(
+      {
+        description:
+          'The segment delivery configurations for the source location. For information about MediaTailor configurations, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/configurations.html">Working with configurations in AWS Elemental MediaTailor</a>.',
+      },
+    ),
+    SourceLocationName: StringSchema.exactOptional().openapi({
+      description: 'The name of the source location.',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags to assign to the source location. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateSourceLocationResponse')
 
 const UpdateVodSourceResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) associated with the VOD source.' }),
-    ).exactOptional(),
-    CreationTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp that indicates when the VOD source was created.' }),
-    ).exactOptional(),
-    HttpPackageConfigurations: HttpPackageConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of HTTP package configurations for the VOD source on this account.',
-        }),
-    ).exactOptional(),
-    LastModifiedTime: TimestampUnixSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp that indicates when the VOD source was last modified.',
-        }),
-    ).exactOptional(),
-    SourceLocationName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the source location associated with the VOD source.',
-        }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags to assign to the VOD source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
-    VodSourceName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the VOD source.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) associated with the VOD source.',
+    }),
+    CreationTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the VOD source was created.',
+    }),
+    HttpPackageConfigurations: HttpPackageConfigurationsSchema.exactOptional().openapi({
+      description: 'A list of HTTP package configurations for the VOD source on this account.',
+    }),
+    LastModifiedTime: TimestampUnixSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the VOD source was last modified.',
+    }),
+    SourceLocationName: StringSchema.exactOptional().openapi({
+      description: 'The name of the source location associated with the VOD source.',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags to assign to the VOD source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
+    VodSourceName: StringSchema.exactOptional().openapi({
+      description: 'The name of the VOD source.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateVodSourceResponse')
@@ -2735,25 +1881,21 @@ const ConfigurationAliasesRequestSchema = z
 
 const ConfigureLogsForChannelRequestSchema = z
   .object({
-    ChannelName: StringSchema.and(z.any().openapi({ description: 'The name of the channel.' })),
-    LogTypes: LogTypesSchema.and(z.any().openapi({ description: 'The types of logs to collect.' })),
+    ChannelName: StringSchema.openapi({ description: 'The name of the channel.' }),
+    LogTypes: LogTypesSchema.openapi({ description: 'The types of logs to collect.' }),
   })
   .openapi({ required: ['ChannelName', 'LogTypes'], title: 'ConfigureLogsForChannelRequest' })
   .openapi('ConfigureLogsForChannelRequest')
 
 const ConfigureLogsForPlaybackConfigurationRequestSchema = z
   .object({
-    PercentEnabled: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The percentage of session logs that MediaTailor sends to your Cloudwatch Logs account. For example, if your playback configuration has 1000 sessions and percentEnabled is set to <code>60</code>, MediaTailor sends logs for 600 of the sessions to CloudWatch Logs. MediaTailor decides at random which of the playback configuration sessions to send logs for. If you want to view logs for a specific session, you can use the <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/debug-log-mode.html">debug log mode</a>.</p> <p>Valid values: <code>0</code> - <code>100</code> </p>',
-        }),
-    ),
-    PlaybackConfigurationName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the playback configuration.' }),
-    ),
+    PercentEnabled: IntegerSchema.openapi({
+      description:
+        '<p>The percentage of session logs that MediaTailor sends to your Cloudwatch Logs account. For example, if your playback configuration has 1000 sessions and percentEnabled is set to <code>60</code>, MediaTailor sends logs for 600 of the sessions to CloudWatch Logs. MediaTailor decides at random which of the playback configuration sessions to send logs for. If you want to view logs for a specific session, you can use the <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/debug-log-mode.html">debug log mode</a>.</p> <p>Valid values: <code>0</code> - <code>100</code> </p>',
+    }),
+    PlaybackConfigurationName: StringSchema.openapi({
+      description: 'The name of the playback configuration.',
+    }),
   })
   .openapi({
     required: ['PercentEnabled', 'PlaybackConfigurationName'],
@@ -2773,101 +1915,63 @@ const TierSchema = z.enum(['BASIC', 'STANDARD']).openapi('Tier')
 
 const CreateChannelRequestSchema = z
   .object({
-    FillerSlate: SlateSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The slate used to fill gaps between programs in the schedule. You must configure filler slate if your channel uses the <code>LINEAR</code> <code>PlaybackMode</code>. MediaTailor doesn't support filler slate for channels using the <code>LOOP</code> <code>PlaybackMode</code>.",
-        }),
-    ).exactOptional(),
-    Outputs: RequestOutputsSchema.and(
-      z.any().openapi({ description: "The channel's output properties." }),
-    ),
-    PlaybackMode: PlaybackModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of playback mode to use for this channel.</p> <p> <code>LINEAR</code> - The programs in the schedule play once back-to-back in the schedule.</p> <p> <code>LOOP</code> - The programs in the schedule play back-to-back in an endless loop. When the last program in the schedule stops playing, playback loops back to the first program in the schedule.</p>',
-        }),
-    ),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags to assign to the channel. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
-    Tier: TierSchema.and(
-      z.any().openapi({ description: 'The tier of the channel.' }),
-    ).exactOptional(),
+    FillerSlate: SlateSourceSchema.exactOptional().openapi({
+      description:
+        "The slate used to fill gaps between programs in the schedule. You must configure filler slate if your channel uses the <code>LINEAR</code> <code>PlaybackMode</code>. MediaTailor doesn't support filler slate for channels using the <code>LOOP</code> <code>PlaybackMode</code>.",
+    }),
+    Outputs: RequestOutputsSchema.openapi({ description: "The channel's output properties." }),
+    PlaybackMode: PlaybackModeSchema.openapi({
+      description:
+        '<p>The type of playback mode to use for this channel.</p> <p> <code>LINEAR</code> - The programs in the schedule play once back-to-back in the schedule.</p> <p> <code>LOOP</code> - The programs in the schedule play back-to-back in an endless loop. When the last program in the schedule stops playing, playback loops back to the first program in the schedule.</p>',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags to assign to the channel. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
+    Tier: TierSchema.exactOptional().openapi({ description: 'The tier of the channel.' }),
   })
   .openapi({ required: ['Outputs', 'PlaybackMode'], title: 'CreateChannelRequest' })
   .openapi('CreateChannelRequest')
 
 const CreateLiveSourceRequestSchema = z
   .object({
-    HttpPackageConfigurations: HttpPackageConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of HTTP package configuration parameters for this live source.',
-        }),
-    ),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags to assign to the live source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
+    HttpPackageConfigurations: HttpPackageConfigurationsSchema.openapi({
+      description: 'A list of HTTP package configuration parameters for this live source.',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags to assign to the live source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
   })
   .openapi({ required: ['HttpPackageConfigurations'], title: 'CreateLiveSourceRequest' })
   .openapi('CreateLiveSourceRequest')
 
 const CreatePrefetchScheduleRequestSchema = z
   .object({
-    Consumption: PrefetchConsumptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The configuration settings for MediaTailor's <i>consumption</i> of the prefetched ads from the ad decision server. Each consumption configuration contains an end time and an optional start time that define the <i>consumption window</i>. Prefetch schedules automatically expire no earlier than seven days after the end time.",
-        }),
-    ),
-    Retrieval: PrefetchRetrievalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration settings for retrieval of prefetched ads from the ad decision server. Only one set of prefetched ads will be retrieved and subsequently consumed for each ad break.',
-        }),
-    ),
-    StreamId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional stream identifier that MediaTailor uses to prefetch ads for multiple streams that use the same playback configuration. If <code>StreamId</code> is specified, MediaTailor returns all of the prefetch schedules with an exact match on <code>StreamId</code>. If not specified, MediaTailor returns all of the prefetch schedules for the playback configuration, regardless of <code>StreamId</code>.',
-        }),
-    ).exactOptional(),
+    Consumption: PrefetchConsumptionSchema.openapi({
+      description:
+        "The configuration settings for MediaTailor's <i>consumption</i> of the prefetched ads from the ad decision server. Each consumption configuration contains an end time and an optional start time that define the <i>consumption window</i>. Prefetch schedules automatically expire no earlier than seven days after the end time.",
+    }),
+    Retrieval: PrefetchRetrievalSchema.openapi({
+      description:
+        'The configuration settings for retrieval of prefetched ads from the ad decision server. Only one set of prefetched ads will be retrieved and subsequently consumed for each ad break.',
+    }),
+    StreamId: StringSchema.exactOptional().openapi({
+      description:
+        'An optional stream identifier that MediaTailor uses to prefetch ads for multiple streams that use the same playback configuration. If <code>StreamId</code> is specified, MediaTailor returns all of the prefetch schedules with an exact match on <code>StreamId</code>. If not specified, MediaTailor returns all of the prefetch schedules for the playback configuration, regardless of <code>StreamId</code>.',
+    }),
   })
   .openapi({ required: ['Consumption', 'Retrieval'], title: 'CreatePrefetchScheduleRequest' })
   .openapi('CreatePrefetchScheduleRequest')
 
 const ScheduleConfigurationSchema = z
   .object({
-    ClipRange: ClipRangeSchema.and(
-      z.any().openapi({ description: 'Program clip range configuration.' }),
-    ).exactOptional(),
-    Transition: TransitionSchema.and(
-      z.any().openapi({ description: 'Program transition configurations.' }),
-    ),
+    ClipRange: ClipRangeSchema.exactOptional().openapi({
+      description: 'Program clip range configuration.',
+    }),
+    Transition: TransitionSchema.openapi({ description: 'Program transition configurations.' }),
   })
   .openapi({
     required: ['Transition'],
@@ -2878,21 +1982,19 @@ const ScheduleConfigurationSchema = z
 
 const CreateProgramRequestSchema = z
   .object({
-    AdBreaks: ListOfAdBreakSchema.and(
-      z.any().openapi({ description: 'The ad break configuration settings.' }),
-    ).exactOptional(),
-    LiveSourceName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the LiveSource for this Program.' }),
-    ).exactOptional(),
-    ScheduleConfiguration: ScheduleConfigurationSchema.and(
-      z.any().openapi({ description: 'The schedule configuration settings.' }),
-    ),
-    SourceLocationName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the source location.' }),
-    ),
-    VodSourceName: StringSchema.and(
-      z.any().openapi({ description: "The name that's used to refer to a VOD source." }),
-    ).exactOptional(),
+    AdBreaks: ListOfAdBreakSchema.exactOptional().openapi({
+      description: 'The ad break configuration settings.',
+    }),
+    LiveSourceName: StringSchema.exactOptional().openapi({
+      description: 'The name of the LiveSource for this Program.',
+    }),
+    ScheduleConfiguration: ScheduleConfigurationSchema.openapi({
+      description: 'The schedule configuration settings.',
+    }),
+    SourceLocationName: StringSchema.openapi({ description: 'The name of the source location.' }),
+    VodSourceName: StringSchema.exactOptional().openapi({
+      description: "The name that's used to refer to a VOD source.",
+    }),
   })
   .openapi({
     required: ['ScheduleConfiguration', 'SourceLocationName'],
@@ -2902,193 +2004,163 @@ const CreateProgramRequestSchema = z
 
 const CreateSourceLocationRequestSchema = z
   .object({
-    AccessConfiguration: AccessConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Access configuration parameters. Configures the type of authentication used to access content from your source location.',
-        }),
-    ).exactOptional(),
-    DefaultSegmentDeliveryConfiguration: DefaultSegmentDeliveryConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The optional configuration for the server that serves segments.',
-        }),
-    ).exactOptional(),
-    HttpConfiguration: HttpConfigurationSchema.and(
-      z.any().openapi({ description: "The source's HTTP package configurations." }),
+    AccessConfiguration: AccessConfigurationSchema.exactOptional().openapi({
+      description:
+        'Access configuration parameters. Configures the type of authentication used to access content from your source location.',
+    }),
+    DefaultSegmentDeliveryConfiguration:
+      DefaultSegmentDeliveryConfigurationSchema.exactOptional().openapi({
+        description: 'The optional configuration for the server that serves segments.',
+      }),
+    HttpConfiguration: HttpConfigurationSchema.openapi({
+      description: "The source's HTTP package configurations.",
+    }),
+    SegmentDeliveryConfigurations: ListOfSegmentDeliveryConfigurationSchema.exactOptional().openapi(
+      {
+        description: 'A list of the segment delivery configurations associated with this resource.',
+      },
     ),
-    SegmentDeliveryConfigurations: ListOfSegmentDeliveryConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the segment delivery configurations associated with this resource.',
-        }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags to assign to the source location. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags to assign to the source location. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
   })
   .openapi({ required: ['HttpConfiguration'], title: 'CreateSourceLocationRequest' })
   .openapi('CreateSourceLocationRequest')
 
 const CreateVodSourceRequestSchema = z
   .object({
-    HttpPackageConfigurations: HttpPackageConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of HTTP package configuration parameters for this VOD source.',
-        }),
-    ),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags to assign to the VOD source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
+    HttpPackageConfigurations: HttpPackageConfigurationsSchema.openapi({
+      description: 'A list of HTTP package configuration parameters for this VOD source.',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags to assign to the VOD source. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
   })
   .openapi({ required: ['HttpPackageConfigurations'], title: 'CreateVodSourceRequest' })
   .openapi('CreateVodSourceRequest')
 
 const DashConfigurationForPutSchema = z
   .object({
-    MpdLocation: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The setting that controls whether MediaTailor includes the Location tag in DASH manifests. MediaTailor populates the Location tag with the URL for manifest update requests, to be used by players that don't support sticky redirects. Disable this if you have CDN routing rules set up for accessing MediaTailor manifests, and you are either using client-side reporting or your players support sticky HTTP redirects. Valid values are <code>DISABLED</code> and <code>EMT_DEFAULT</code>. The <code>EMT_DEFAULT</code> setting enables the inclusion of the tag and is the default value.",
-        }),
-    ).exactOptional(),
-    OriginManifestType: OriginManifestTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The setting that controls whether MediaTailor handles manifests from the origin server as multi-period manifests or single-period manifests. If your origin server produces single-period manifests, set this to <code>SINGLE_PERIOD</code>. The default setting is <code>MULTI_PERIOD</code>. For multi-period manifests, omit this setting or set it to <code>MULTI_PERIOD</code>.',
-        }),
-    ).exactOptional(),
+    MpdLocation: StringSchema.exactOptional().openapi({
+      description:
+        "The setting that controls whether MediaTailor includes the Location tag in DASH manifests. MediaTailor populates the Location tag with the URL for manifest update requests, to be used by players that don't support sticky redirects. Disable this if you have CDN routing rules set up for accessing MediaTailor manifests, and you are either using client-side reporting or your players support sticky HTTP redirects. Valid values are <code>DISABLED</code> and <code>EMT_DEFAULT</code>. The <code>EMT_DEFAULT</code> setting enables the inclusion of the tag and is the default value.",
+    }),
+    OriginManifestType: OriginManifestTypeSchema.exactOptional().openapi({
+      description:
+        'The setting that controls whether MediaTailor handles manifests from the origin server as multi-period manifests or single-period manifests. If your origin server produces single-period manifests, set this to <code>SINGLE_PERIOD</code>. The default setting is <code>MULTI_PERIOD</code>. For multi-period manifests, omit this setting or set it to <code>MULTI_PERIOD</code>.',
+    }),
   })
   .openapi({ description: 'The configuration for DASH PUT operations.', required: [] })
   .openapi('DashConfigurationForPut')
 
 const DeleteChannelPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteChannelPolicyRequest' })
   .openapi('DeleteChannelPolicyRequest')
 
 const DeleteChannelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteChannelRequest' })
   .openapi('DeleteChannelRequest')
 
 const DeleteLiveSourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteLiveSourceRequest' })
   .openapi('DeleteLiveSourceRequest')
 
 const DeletePlaybackConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeletePlaybackConfigurationRequest' })
   .openapi('DeletePlaybackConfigurationRequest')
 
 const DeletePrefetchScheduleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeletePrefetchScheduleRequest' })
   .openapi('DeletePrefetchScheduleRequest')
 
 const DeleteProgramRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteProgramRequest' })
   .openapi('DeleteProgramRequest')
 
 const DeleteSourceLocationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteSourceLocationRequest' })
   .openapi('DeleteSourceLocationRequest')
 
 const DeleteVodSourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteVodSourceRequest' })
   .openapi('DeleteVodSourceRequest')
 
 const DescribeChannelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeChannelRequest' })
   .openapi('DescribeChannelRequest')
 
 const DescribeLiveSourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeLiveSourceRequest' })
   .openapi('DescribeLiveSourceRequest')
 
 const DescribeProgramRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeProgramRequest' })
   .openapi('DescribeProgramRequest')
 
 const DescribeSourceLocationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeSourceLocationRequest' })
   .openapi('DescribeSourceLocationRequest')
 
 const DescribeVodSourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeVodSourceRequest' })
   .openapi('DescribeVodSourceRequest')
 
 const GetChannelPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetChannelPolicyRequest' })
   .openapi('GetChannelPolicyRequest')
 
 const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const GetChannelScheduleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetChannelScheduleRequest' })
   .openapi('GetChannelScheduleRequest')
 
 const GetPlaybackConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetPlaybackConfigurationRequest' })
   .openapi('GetPlaybackConfigurationRequest')
 
 const GetPrefetchScheduleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetPrefetchScheduleRequest' })
   .openapi('GetPrefetchScheduleRequest')
 
 const ListAlertsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAlertsRequest' })
   .openapi('ListAlertsRequest')
 
 const ListChannelsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListChannelsRequest' })
   .openapi('ListChannelsRequest')
 
 const ListLiveSourcesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListLiveSourcesRequest' })
   .openapi('ListLiveSourcesRequest')
 
 const ListPlaybackConfigurationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPlaybackConfigurationsRequest' })
   .openapi('ListPlaybackConfigurationsRequest')
 
@@ -3096,291 +2168,201 @@ const IntegerMin1Max100Schema = z.int().min(1).max(100).openapi('IntegerMin1Max1
 
 const ListPrefetchSchedulesRequestSchema = z
   .object({
-    MaxResults: IntegerMin1Max100Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of prefetch schedules that you want MediaTailor to return in response to the current request. If there are more than <code>MaxResults</code> prefetch schedules, use the value of <code>NextToken</code> in the response to get the next page of results.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>(Optional) If the playback configuration has more than <code>MaxResults</code> prefetch schedules, use <code>NextToken</code> to get the second and subsequent pages of results.</p> <p> For the first <code>ListPrefetchSchedulesRequest</code> request, omit this value.</p> <p> For the second and subsequent requests, get the value of <code>NextToken</code> from the previous response and specify that value for <code>NextToken</code> in the request.</p> <p> If the previous response didn't include a <code>NextToken</code> element, there are no more prefetch schedules to get.</p>",
-        }),
-    ).exactOptional(),
-    StreamId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional filtering parameter whereby MediaTailor filters the prefetch schedules to include only specific streams.',
-        }),
-    ).exactOptional(),
+    MaxResults: IntegerMin1Max100Schema.exactOptional().openapi({
+      description:
+        'The maximum number of prefetch schedules that you want MediaTailor to return in response to the current request. If there are more than <code>MaxResults</code> prefetch schedules, use the value of <code>NextToken</code> in the response to get the next page of results.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "<p>(Optional) If the playback configuration has more than <code>MaxResults</code> prefetch schedules, use <code>NextToken</code> to get the second and subsequent pages of results.</p> <p> For the first <code>ListPrefetchSchedulesRequest</code> request, omit this value.</p> <p> For the second and subsequent requests, get the value of <code>NextToken</code> from the previous response and specify that value for <code>NextToken</code> in the request.</p> <p> If the previous response didn't include a <code>NextToken</code> element, there are no more prefetch schedules to get.</p>",
+    }),
+    StreamId: StringSchema.exactOptional().openapi({
+      description:
+        'An optional filtering parameter whereby MediaTailor filters the prefetch schedules to include only specific streams.',
+    }),
   })
   .openapi({ title: 'ListPrefetchSchedulesRequest', required: [] })
   .openapi('ListPrefetchSchedulesRequest')
 
 const ListSourceLocationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSourceLocationsRequest' })
   .openapi('ListSourceLocationsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const ListVodSourcesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListVodSourcesRequest' })
   .openapi('ListVodSourcesRequest')
 
 const PutChannelPolicyRequestSchema = z
   .object({
-    Policy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Adds an IAM role that determines the permissions of your channel.',
-        }),
-    ),
+    Policy: StringSchema.openapi({
+      description: 'Adds an IAM role that determines the permissions of your channel.',
+    }),
   })
   .openapi({ required: ['Policy'], title: 'PutChannelPolicyRequest' })
   .openapi('PutChannelPolicyRequest')
 
 const PutPlaybackConfigurationRequestSchema = z
   .object({
-    AdDecisionServerUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL for the ad decision server (ADS). This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing you can provide a static VAST URL. The maximum length is 25,000 characters.',
-        }),
-    ).exactOptional(),
-    AvailSuppression: AvailSuppressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html">Ad Suppression</a>.',
-        }),
-    ).exactOptional(),
-    Bumper: BumperSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for bumpers. Bumpers are short audio or video clips that play at the start or before the end of an ad break. To learn more about bumpers, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/bumpers.html">Bumpers</a>.',
-        }),
-    ).exactOptional(),
-    CdnConfiguration: CdnConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for using a content delivery network (CDN), like Amazon CloudFront, for content and ad segment management.',
-        }),
-    ).exactOptional(),
-    ConfigurationAliases: ConfigurationAliasesRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html">Domain Variables</a>.',
-        }),
-    ).exactOptional(),
-    DashConfiguration: DashConfigurationForPutSchema.and(
-      z.any().openapi({ description: 'The configuration for DASH content.' }),
-    ).exactOptional(),
-    LivePreRollConfiguration: LivePreRollConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration for pre-roll ad insertion.' }),
-    ).exactOptional(),
-    ManifestProcessingRules: ManifestProcessingRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for manifest processing rules. Manifest processing rules enable customization of the personalized manifests created by MediaTailor.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The identifier for the playback configuration.' }),
-    ),
-    PersonalizationThresholdSeconds: IntegerMin1Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines the maximum duration of underfilled ad time (in seconds) allowed in an ad break. If the duration of underfilled ad time exceeds the personalization threshold, then the personalization of the ad break is abandoned and the underlying content is shown. This feature applies to <i>ad replacement</i> in live and VOD streams, rather than ad insertion, because it relies on an underlying content stream. For more information about ad break behavior, including ad replacement and insertion, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html">Ad Behavior in AWS Elemental MediaTailor</a>.',
-        }),
-    ).exactOptional(),
-    SlateAdUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The URL for a high-quality video asset to transcode and use to fill in time that's not used by ads. AWS Elemental MediaTailor shows the slate to fill in gaps in media content. Configuring the slate is optional for non-VPAID configurations. For VPAID, the slate is required because MediaTailor provides it in the slots that are designated for dynamic ad content. The slate must be a high-quality asset that contains both audio and video.",
-        }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags to assign to the playback configuration. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ).exactOptional(),
-    TranscodeProfileName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name that is used to associate this playback configuration with a custom transcode profile. This overrides the dynamic transcoding defaults of MediaTailor. Use this only if you have already set up custom profiles with the help of AWS Support.',
-        }),
-    ).exactOptional(),
-    VideoContentSourceUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL prefix for the parent manifest for the stream, minus the asset ID. The maximum length is 512 characters.',
-        }),
-    ).exactOptional(),
+    AdDecisionServerUrl: StringSchema.exactOptional().openapi({
+      description:
+        'The URL for the ad decision server (ADS). This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing you can provide a static VAST URL. The maximum length is 25,000 characters.',
+    }),
+    AvailSuppression: AvailSuppressionSchema.exactOptional().openapi({
+      description:
+        'The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html">Ad Suppression</a>.',
+    }),
+    Bumper: BumperSchema.exactOptional().openapi({
+      description:
+        'The configuration for bumpers. Bumpers are short audio or video clips that play at the start or before the end of an ad break. To learn more about bumpers, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/bumpers.html">Bumpers</a>.',
+    }),
+    CdnConfiguration: CdnConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration for using a content delivery network (CDN), like Amazon CloudFront, for content and ad segment management.',
+    }),
+    ConfigurationAliases: ConfigurationAliasesRequestSchema.exactOptional().openapi({
+      description:
+        'The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html">Domain Variables</a>.',
+    }),
+    DashConfiguration: DashConfigurationForPutSchema.exactOptional().openapi({
+      description: 'The configuration for DASH content.',
+    }),
+    LivePreRollConfiguration: LivePreRollConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for pre-roll ad insertion.',
+    }),
+    ManifestProcessingRules: ManifestProcessingRulesSchema.exactOptional().openapi({
+      description:
+        'The configuration for manifest processing rules. Manifest processing rules enable customization of the personalized manifests created by MediaTailor.',
+    }),
+    Name: StringSchema.openapi({ description: 'The identifier for the playback configuration.' }),
+    PersonalizationThresholdSeconds: IntegerMin1Schema.exactOptional().openapi({
+      description:
+        'Defines the maximum duration of underfilled ad time (in seconds) allowed in an ad break. If the duration of underfilled ad time exceeds the personalization threshold, then the personalization of the ad break is abandoned and the underlying content is shown. This feature applies to <i>ad replacement</i> in live and VOD streams, rather than ad insertion, because it relies on an underlying content stream. For more information about ad break behavior, including ad replacement and insertion, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html">Ad Behavior in AWS Elemental MediaTailor</a>.',
+    }),
+    SlateAdUrl: StringSchema.exactOptional().openapi({
+      description:
+        "The URL for a high-quality video asset to transcode and use to fill in time that's not used by ads. AWS Elemental MediaTailor shows the slate to fill in gaps in media content. Configuring the slate is optional for non-VPAID configurations. For VPAID, the slate is required because MediaTailor provides it in the slots that are designated for dynamic ad content. The slate must be a high-quality asset that contains both audio and video.",
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags to assign to the playback configuration. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
+    TranscodeProfileName: StringSchema.exactOptional().openapi({
+      description:
+        'The name that is used to associate this playback configuration with a custom transcode profile. This overrides the dynamic transcoding defaults of MediaTailor. Use this only if you have already set up custom profiles with the help of AWS Support.',
+    }),
+    VideoContentSourceUrl: StringSchema.exactOptional().openapi({
+      description:
+        'The URL prefix for the parent manifest for the stream, minus the asset ID. The maximum length is 512 characters.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'PutPlaybackConfigurationRequest' })
   .openapi('PutPlaybackConfigurationRequest')
 
 const StartChannelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StartChannelRequest' })
   .openapi('StartChannelRequest')
 
 const StopChannelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StopChannelRequest' })
   .openapi('StopChannelRequest')
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The tags to assign to the resource. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
-        }),
-    ),
+    Tags: MapOfStringSchema.openapi({
+      xml: { name: 'tags' },
+      description:
+        'The tags to assign to the resource. Tags are key-value pairs that you can associate with Amazon resources to help with organization, access control, and cost tracking. For more information, see <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html">Tagging AWS Elemental MediaTailor Resources</a>.',
+    }),
   })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateChannelRequestSchema = z
   .object({
-    FillerSlate: SlateSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The slate used to fill gaps between programs in the schedule. You must configure filler slate if your channel uses the <code>LINEAR</code> <code>PlaybackMode</code>. MediaTailor doesn't support filler slate for channels using the <code>LOOP</code> <code>PlaybackMode</code>.",
-        }),
-    ).exactOptional(),
-    Outputs: RequestOutputsSchema.and(
-      z.any().openapi({ description: "The channel's output properties." }),
-    ),
+    FillerSlate: SlateSourceSchema.exactOptional().openapi({
+      description:
+        "The slate used to fill gaps between programs in the schedule. You must configure filler slate if your channel uses the <code>LINEAR</code> <code>PlaybackMode</code>. MediaTailor doesn't support filler slate for channels using the <code>LOOP</code> <code>PlaybackMode</code>.",
+    }),
+    Outputs: RequestOutputsSchema.openapi({ description: "The channel's output properties." }),
   })
   .openapi({ required: ['Outputs'], title: 'UpdateChannelRequest' })
   .openapi('UpdateChannelRequest')
 
 const UpdateLiveSourceRequestSchema = z
   .object({
-    HttpPackageConfigurations: HttpPackageConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of HTTP package configurations for the live source on this account.',
-        }),
-    ),
+    HttpPackageConfigurations: HttpPackageConfigurationsSchema.openapi({
+      description: 'A list of HTTP package configurations for the live source on this account.',
+    }),
   })
   .openapi({ required: ['HttpPackageConfigurations'], title: 'UpdateLiveSourceRequest' })
   .openapi('UpdateLiveSourceRequest')
 
 const UpdateProgramScheduleConfigurationSchema = z
   .object({
-    ClipRange: ClipRangeSchema.and(
-      z.any().openapi({ description: 'Program clip range configuration.' }),
-    ).exactOptional(),
-    Transition: UpdateProgramTransitionSchema.and(
-      z.any().openapi({ description: 'Program transition configuration.' }),
-    ).exactOptional(),
+    ClipRange: ClipRangeSchema.exactOptional().openapi({
+      description: 'Program clip range configuration.',
+    }),
+    Transition: UpdateProgramTransitionSchema.exactOptional().openapi({
+      description: 'Program transition configuration.',
+    }),
   })
   .openapi({ description: 'Schedule configuration parameters.', required: [] })
   .openapi('UpdateProgramScheduleConfiguration')
 
 const UpdateProgramRequestSchema = z
   .object({
-    AdBreaks: ListOfAdBreakSchema.and(
-      z.any().openapi({ description: 'The ad break configuration settings.' }),
-    ).exactOptional(),
-    ScheduleConfiguration: UpdateProgramScheduleConfigurationSchema.and(
-      z.any().openapi({ description: 'The schedule configuration settings.' }),
-    ),
+    AdBreaks: ListOfAdBreakSchema.exactOptional().openapi({
+      description: 'The ad break configuration settings.',
+    }),
+    ScheduleConfiguration: UpdateProgramScheduleConfigurationSchema.openapi({
+      description: 'The schedule configuration settings.',
+    }),
   })
   .openapi({ required: ['ScheduleConfiguration'], title: 'UpdateProgramRequest' })
   .openapi('UpdateProgramRequest')
 
 const UpdateSourceLocationRequestSchema = z
   .object({
-    AccessConfiguration: AccessConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Access configuration parameters. Configures the type of authentication used to access content from your source location.',
-        }),
-    ).exactOptional(),
-    DefaultSegmentDeliveryConfiguration: DefaultSegmentDeliveryConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The optional configuration for the host server that serves segments.',
-        }),
-    ).exactOptional(),
-    HttpConfiguration: HttpConfigurationSchema.and(
-      z.any().openapi({ description: 'The HTTP configuration for the source location.' }),
+    AccessConfiguration: AccessConfigurationSchema.exactOptional().openapi({
+      description:
+        'Access configuration parameters. Configures the type of authentication used to access content from your source location.',
+    }),
+    DefaultSegmentDeliveryConfiguration:
+      DefaultSegmentDeliveryConfigurationSchema.exactOptional().openapi({
+        description: 'The optional configuration for the host server that serves segments.',
+      }),
+    HttpConfiguration: HttpConfigurationSchema.openapi({
+      description: 'The HTTP configuration for the source location.',
+    }),
+    SegmentDeliveryConfigurations: ListOfSegmentDeliveryConfigurationSchema.exactOptional().openapi(
+      {
+        description: 'A list of the segment delivery configurations associated with this resource.',
+      },
     ),
-    SegmentDeliveryConfigurations: ListOfSegmentDeliveryConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the segment delivery configurations associated with this resource.',
-        }),
-    ).exactOptional(),
   })
   .openapi({ required: ['HttpConfiguration'], title: 'UpdateSourceLocationRequest' })
   .openapi('UpdateSourceLocationRequest')
 
 const UpdateVodSourceRequestSchema = z
   .object({
-    HttpPackageConfigurations: HttpPackageConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of HTTP package configurations for the VOD source on this account.',
-        }),
-    ),
+    HttpPackageConfigurations: HttpPackageConfigurationsSchema.openapi({
+      description: 'A list of HTTP package configurations for the VOD source on this account.',
+    }),
   })
   .openapi({ required: ['HttpPackageConfigurations'], title: 'UpdateVodSourceRequest' })
   .openapi('UpdateVodSourceRequest')
@@ -3616,22 +2598,14 @@ export const putChannelChannelNameRoute = createRoute({
             .object({
               FillerSlate: z
                 .object({
-                  SourceLocationName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The name of the source location where the slate VOD source is stored.',
-                      }),
-                  ).exactOptional(),
-                  VodSourceName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The slate VOD source name. The VOD source must already exist in a source location before it can be used for slate.',
-                      }),
-                  ).exactOptional(),
+                  SourceLocationName: StringSchema.exactOptional().openapi({
+                    description:
+                      'The name of the source location where the slate VOD source is stored.',
+                  }),
+                  VodSourceName: StringSchema.exactOptional().openapi({
+                    description:
+                      'The slate VOD source name. The VOD source must already exist in a source location before it can be used for slate.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Slate VOD source configuration.', required: [] }),
@@ -3691,22 +2665,14 @@ export const postChannelChannelNameRoute = createRoute({
             .object({
               FillerSlate: z
                 .object({
-                  SourceLocationName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The name of the source location where the slate VOD source is stored.',
-                      }),
-                  ).exactOptional(),
-                  VodSourceName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The slate VOD source name. The VOD source must already exist in a source location before it can be used for slate.',
-                      }),
-                  ).exactOptional(),
+                  SourceLocationName: StringSchema.exactOptional().openapi({
+                    description:
+                      'The name of the source location where the slate VOD source is stored.',
+                  }),
+                  VodSourceName: StringSchema.exactOptional().openapi({
+                    description:
+                      'The slate VOD source name. The VOD source must already exist in a source location before it can be used for slate.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Slate VOD source configuration.', required: [] }),
@@ -4110,30 +3076,18 @@ export const postPrefetchSchedulePlaybackConfigurationNameNameRoute = createRout
             .object({
               Consumption: z
                 .object({
-                  AvailMatchingCriteria: ListOfAvailMatchingCriteriaSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'If you only want MediaTailor to insert prefetched ads into avails (ad breaks) that match specific dynamic variables, such as <code>scte.event_id</code>, set the avail matching criteria.',
-                      }),
-                  ).exactOptional(),
-                  EndTime: TimestampUnixSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The time when MediaTailor no longer considers the prefetched ads for use in an ad break. MediaTailor automatically deletes prefetch schedules no less than seven days after the end time. If you'd like to manually delete the prefetch schedule, you can call <code>DeletePrefetchSchedule</code>.",
-                      }),
-                  ).exactOptional(),
-                  StartTime: TimestampUnixSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The time when prefetched ads are considered for use in an ad break. If you don't specify <code>StartTime</code>, the prefetched ads are available after MediaTailor retrives them from the ad decision server.",
-                      }),
-                  ).exactOptional(),
+                  AvailMatchingCriteria: ListOfAvailMatchingCriteriaSchema.exactOptional().openapi({
+                    description:
+                      'If you only want MediaTailor to insert prefetched ads into avails (ad breaks) that match specific dynamic variables, such as <code>scte.event_id</code>, set the avail matching criteria.',
+                  }),
+                  EndTime: TimestampUnixSchema.exactOptional().openapi({
+                    description:
+                      "The time when MediaTailor no longer considers the prefetched ads for use in an ad break. MediaTailor automatically deletes prefetch schedules no less than seven days after the end time. If you'd like to manually delete the prefetch schedule, you can call <code>DeletePrefetchSchedule</code>.",
+                  }),
+                  StartTime: TimestampUnixSchema.exactOptional().openapi({
+                    description:
+                      "The time when prefetched ads are considered for use in an ad break. If you don't specify <code>StartTime</code>, the prefetched ads are available after MediaTailor retrives them from the ad decision server.",
+                  }),
                 })
                 .openapi({
                   description:
@@ -4142,30 +3096,18 @@ export const postPrefetchSchedulePlaybackConfigurationNameNameRoute = createRout
                 }),
               Retrieval: z
                 .object({
-                  DynamicVariables: MapOfStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The dynamic variables to use for substitution during prefetch requests to the ad decision server (ADS).</p> <p>You initially configure <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/variables.html">dynamic variables</a> for the ADS URL when you set up your playback configuration. When you specify <code>DynamicVariables</code> for prefetch retrieval, MediaTailor includes the dynamic variables in the request to the ADS.</p>',
-                      }),
-                  ).exactOptional(),
-                  EndTime: TimestampUnixSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The time when prefetch retrieval ends for the ad break. Prefetching will be attempted for manifest requests that occur at or before this time.',
-                      }),
-                  ).exactOptional(),
-                  StartTime: TimestampUnixSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The time when prefetch retrievals can start for this break. Ad prefetching will be attempted for manifest requests that occur at or after this time. Defaults to the current time. If not specified, the prefetch retrieval starts as soon as possible.',
-                      }),
-                  ).exactOptional(),
+                  DynamicVariables: MapOfStringSchema.exactOptional().openapi({
+                    description:
+                      '<p>The dynamic variables to use for substitution during prefetch requests to the ad decision server (ADS).</p> <p>You initially configure <a href="https://docs.aws.amazon.com/mediatailor/latest/ug/variables.html">dynamic variables</a> for the ADS URL when you set up your playback configuration. When you specify <code>DynamicVariables</code> for prefetch retrieval, MediaTailor includes the dynamic variables in the request to the ADS.</p>',
+                  }),
+                  EndTime: TimestampUnixSchema.exactOptional().openapi({
+                    description:
+                      'The time when prefetch retrieval ends for the ad break. Prefetching will be attempted for manifest requests that occur at or before this time.',
+                  }),
+                  StartTime: TimestampUnixSchema.exactOptional().openapi({
+                    description:
+                      'The time when prefetch retrievals can start for this break. Ad prefetching will be attempted for manifest requests that occur at or after this time. Defaults to the current time. If not specified, the prefetch retrieval starts as soon as possible.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -4343,12 +3285,12 @@ export const putChannelChannelNameProgramProgramNameRoute = createRoute({
                 .openapi({ description: 'The ad break configuration settings.' }),
               ScheduleConfiguration: z
                 .object({
-                  ClipRange: ClipRangeSchema.and(
-                    z.any().openapi({ description: 'Program clip range configuration.' }),
-                  ).exactOptional(),
-                  Transition: UpdateProgramTransitionSchema.and(
-                    z.any().openapi({ description: 'Program transition configuration.' }),
-                  ).exactOptional(),
+                  ClipRange: ClipRangeSchema.exactOptional().openapi({
+                    description: 'Program clip range configuration.',
+                  }),
+                  Transition: UpdateProgramTransitionSchema.exactOptional().openapi({
+                    description: 'Program transition configuration.',
+                  }),
                 })
                 .openapi({ description: 'Schedule configuration parameters.', required: [] }),
             })
@@ -4421,12 +3363,12 @@ export const postChannelChannelNameProgramProgramNameRoute = createRoute({
                 .openapi({ description: 'The name of the LiveSource for this Program.' }),
               ScheduleConfiguration: z
                 .object({
-                  ClipRange: ClipRangeSchema.and(
-                    z.any().openapi({ description: 'Program clip range configuration.' }),
-                  ).exactOptional(),
-                  Transition: TransitionSchema.and(
-                    z.any().openapi({ description: 'Program transition configurations.' }),
-                  ).exactOptional(),
+                  ClipRange: ClipRangeSchema.exactOptional().openapi({
+                    description: 'Program clip range configuration.',
+                  }),
+                  Transition: TransitionSchema.exactOptional().openapi({
+                    description: 'Program transition configurations.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -4578,35 +3520,23 @@ export const putSourceLocationSourceLocationNameRoute = createRoute({
             .object({
               AccessConfiguration: z
                 .object({
-                  AccessType: AccessTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The type of authentication used to access content from <code>HttpConfiguration::BaseUrl</code> on your source location. Accepted value: <code>S3_SIGV4</code>.</p> <p> <code>S3_SIGV4</code> - AWS Signature Version 4 authentication for Amazon S3 hosted virtual-style access. If your source location base URL is an Amazon S3 bucket, MediaTailor can use AWS Signature Version 4 (SigV4) authentication to access the bucket where your source content is stored. Your MediaTailor source location baseURL must follow the S3 virtual hosted-style request URL format. For example, https://bucket-name.s3.Region.amazonaws.com/key-name.</p> <p>Before you can use <code>S3_SIGV4</code>, you must meet these requirements:</p> <p>• You must allow MediaTailor to access your S3 bucket by granting mediatailor.amazonaws.com principal access in IAM. For information about configuring access in IAM, see Access management in the IAM User Guide.</p> <p>• The mediatailor.amazonaws.com service principal must have permissions to read all top level manifests referenced by the VodSource packaging configurations.</p> <p>• The caller of the API must have s3:GetObject IAM permissions to read all top level manifests referenced by your MediaTailor VodSource packaging configurations.</p>',
-                      }),
-                  ).exactOptional(),
+                  AccessType: AccessTypeSchema.exactOptional().openapi({
+                    description:
+                      '<p>The type of authentication used to access content from <code>HttpConfiguration::BaseUrl</code> on your source location. Accepted value: <code>S3_SIGV4</code>.</p> <p> <code>S3_SIGV4</code> - AWS Signature Version 4 authentication for Amazon S3 hosted virtual-style access. If your source location base URL is an Amazon S3 bucket, MediaTailor can use AWS Signature Version 4 (SigV4) authentication to access the bucket where your source content is stored. Your MediaTailor source location baseURL must follow the S3 virtual hosted-style request URL format. For example, https://bucket-name.s3.Region.amazonaws.com/key-name.</p> <p>Before you can use <code>S3_SIGV4</code>, you must meet these requirements:</p> <p>• You must allow MediaTailor to access your S3 bucket by granting mediatailor.amazonaws.com principal access in IAM. For information about configuring access in IAM, see Access management in the IAM User Guide.</p> <p>• The mediatailor.amazonaws.com service principal must have permissions to read all top level manifests referenced by the VodSource packaging configurations.</p> <p>• The caller of the API must have s3:GetObject IAM permissions to read all top level manifests referenced by your MediaTailor VodSource packaging configurations.</p>',
+                  }),
                   SecretsManagerAccessTokenConfiguration:
-                    SecretsManagerAccessTokenConfigurationSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'AWS Secrets Manager access token configuration parameters.',
-                        }),
-                    ).exactOptional(),
+                    SecretsManagerAccessTokenConfigurationSchema.exactOptional().openapi({
+                      description: 'AWS Secrets Manager access token configuration parameters.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Access configuration parameters.', required: [] }),
               DefaultSegmentDeliveryConfiguration: z
                 .object({
-                  BaseUrl: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The hostname of the server that will be used to serve segments. This string must include the protocol, such as <b>https://</b>.',
-                      }),
-                  ).exactOptional(),
+                  BaseUrl: StringSchema.exactOptional().openapi({
+                    description:
+                      'The hostname of the server that will be used to serve segments. This string must include the protocol, such as <b>https://</b>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4616,14 +3546,10 @@ export const putSourceLocationSourceLocationNameRoute = createRoute({
                 }),
               HttpConfiguration: z
                 .object({
-                  BaseUrl: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The base URL for the source location host server. This string must include the protocol, such as <b>https://</b>.',
-                      }),
-                  ).exactOptional(),
+                  BaseUrl: StringSchema.exactOptional().openapi({
+                    description:
+                      'The base URL for the source location host server. This string must include the protocol, such as <b>https://</b>.',
+                  }),
                 })
                 .openapi({
                   description: 'The HTTP configuration for the source location.',
@@ -4687,35 +3613,23 @@ export const postSourceLocationSourceLocationNameRoute = createRoute({
             .object({
               AccessConfiguration: z
                 .object({
-                  AccessType: AccessTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The type of authentication used to access content from <code>HttpConfiguration::BaseUrl</code> on your source location. Accepted value: <code>S3_SIGV4</code>.</p> <p> <code>S3_SIGV4</code> - AWS Signature Version 4 authentication for Amazon S3 hosted virtual-style access. If your source location base URL is an Amazon S3 bucket, MediaTailor can use AWS Signature Version 4 (SigV4) authentication to access the bucket where your source content is stored. Your MediaTailor source location baseURL must follow the S3 virtual hosted-style request URL format. For example, https://bucket-name.s3.Region.amazonaws.com/key-name.</p> <p>Before you can use <code>S3_SIGV4</code>, you must meet these requirements:</p> <p>• You must allow MediaTailor to access your S3 bucket by granting mediatailor.amazonaws.com principal access in IAM. For information about configuring access in IAM, see Access management in the IAM User Guide.</p> <p>• The mediatailor.amazonaws.com service principal must have permissions to read all top level manifests referenced by the VodSource packaging configurations.</p> <p>• The caller of the API must have s3:GetObject IAM permissions to read all top level manifests referenced by your MediaTailor VodSource packaging configurations.</p>',
-                      }),
-                  ).exactOptional(),
+                  AccessType: AccessTypeSchema.exactOptional().openapi({
+                    description:
+                      '<p>The type of authentication used to access content from <code>HttpConfiguration::BaseUrl</code> on your source location. Accepted value: <code>S3_SIGV4</code>.</p> <p> <code>S3_SIGV4</code> - AWS Signature Version 4 authentication for Amazon S3 hosted virtual-style access. If your source location base URL is an Amazon S3 bucket, MediaTailor can use AWS Signature Version 4 (SigV4) authentication to access the bucket where your source content is stored. Your MediaTailor source location baseURL must follow the S3 virtual hosted-style request URL format. For example, https://bucket-name.s3.Region.amazonaws.com/key-name.</p> <p>Before you can use <code>S3_SIGV4</code>, you must meet these requirements:</p> <p>• You must allow MediaTailor to access your S3 bucket by granting mediatailor.amazonaws.com principal access in IAM. For information about configuring access in IAM, see Access management in the IAM User Guide.</p> <p>• The mediatailor.amazonaws.com service principal must have permissions to read all top level manifests referenced by the VodSource packaging configurations.</p> <p>• The caller of the API must have s3:GetObject IAM permissions to read all top level manifests referenced by your MediaTailor VodSource packaging configurations.</p>',
+                  }),
                   SecretsManagerAccessTokenConfiguration:
-                    SecretsManagerAccessTokenConfigurationSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'AWS Secrets Manager access token configuration parameters.',
-                        }),
-                    ).exactOptional(),
+                    SecretsManagerAccessTokenConfigurationSchema.exactOptional().openapi({
+                      description: 'AWS Secrets Manager access token configuration parameters.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Access configuration parameters.', required: [] }),
               DefaultSegmentDeliveryConfiguration: z
                 .object({
-                  BaseUrl: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The hostname of the server that will be used to serve segments. This string must include the protocol, such as <b>https://</b>.',
-                      }),
-                  ).exactOptional(),
+                  BaseUrl: StringSchema.exactOptional().openapi({
+                    description:
+                      'The hostname of the server that will be used to serve segments. This string must include the protocol, such as <b>https://</b>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4725,14 +3639,10 @@ export const postSourceLocationSourceLocationNameRoute = createRoute({
                 }),
               HttpConfiguration: z
                 .object({
-                  BaseUrl: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The base URL for the source location host server. This string must include the protocol, such as <b>https://</b>.',
-                      }),
-                  ).exactOptional(),
+                  BaseUrl: StringSchema.exactOptional().openapi({
+                    description:
+                      'The base URL for the source location host server. This string must include the protocol, such as <b>https://</b>.',
+                  }),
                 })
                 .openapi({
                   description: 'The HTTP configuration for the source location.',
@@ -6095,22 +5005,14 @@ export const putPlaybackConfigurationRoute = createRoute({
                 }),
               AvailSuppression: z
                 .object({
-                  Mode: ModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Sets the ad suppression mode. By default, ad suppression is off and all ad breaks are filled with ads or slate. When Mode is set to <code>BEHIND_LIVE_EDGE</code>, ad suppression is active and MediaTailor won't fill ad breaks on or behind the ad suppression Value time in the manifest lookback window.",
-                      }),
-                  ).exactOptional(),
-                  Value: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A live edge offset time in HH:MM:SS. MediaTailor won't fill ad breaks on or behind this time in the manifest lookback window. If Value is set to 00:00:00, it is in sync with the live edge, and MediaTailor won't fill any ad breaks on or behind the live edge. If you set a Value time, MediaTailor won't fill any ad breaks on or behind this time in the manifest lookback window. For example, if you set 00:45:00, then MediaTailor will fill ad breaks that occur within 45 minutes behind the live edge, but won't fill ad breaks on or behind 45 minutes behind the live edge.",
-                      }),
-                  ).exactOptional(),
+                  Mode: ModeSchema.exactOptional().openapi({
+                    description:
+                      "Sets the ad suppression mode. By default, ad suppression is off and all ad breaks are filled with ads or slate. When Mode is set to <code>BEHIND_LIVE_EDGE</code>, ad suppression is active and MediaTailor won't fill ad breaks on or behind the ad suppression Value time in the manifest lookback window.",
+                  }),
+                  Value: StringSchema.exactOptional().openapi({
+                    description:
+                      "A live edge offset time in HH:MM:SS. MediaTailor won't fill ad breaks on or behind this time in the manifest lookback window. If Value is set to 00:00:00, it is in sync with the live edge, and MediaTailor won't fill any ad breaks on or behind the live edge. If you set a Value time, MediaTailor won't fill any ad breaks on or behind this time in the manifest lookback window. For example, if you set 00:45:00, then MediaTailor will fill ad breaks that occur within 45 minutes behind the live edge, but won't fill ad breaks on or behind 45 minutes behind the live edge.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6120,12 +5022,12 @@ export const putPlaybackConfigurationRoute = createRoute({
                 }),
               Bumper: z
                 .object({
-                  EndUrl: StringSchema.and(
-                    z.any().openapi({ description: 'The URL for the end bumper asset.' }),
-                  ).exactOptional(),
-                  StartUrl: StringSchema.and(
-                    z.any().openapi({ description: 'The URL for the start bumper asset.' }),
-                  ).exactOptional(),
+                  EndUrl: StringSchema.exactOptional().openapi({
+                    description: 'The URL for the end bumper asset.',
+                  }),
+                  StartUrl: StringSchema.exactOptional().openapi({
+                    description: 'The URL for the start bumper asset.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6135,22 +5037,14 @@ export const putPlaybackConfigurationRoute = createRoute({
                 }),
               CdnConfiguration: z
                 .object({
-                  AdSegmentUrlPrefix: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A non-default content delivery network (CDN) to serve ad segments. By default, AWS Elemental MediaTailor uses Amazon CloudFront with default cache settings as its CDN for ad segments. To set up an alternate CDN, create a rule in your CDN for the origin ads.mediatailor.<i>&lt;region&gt;</i>.amazonaws.com. Then specify the rule's name in this <code>AdSegmentUrlPrefix</code>. When AWS Elemental MediaTailor serves a manifest, it reports your CDN as the source for ad segments.",
-                      }),
-                  ).exactOptional(),
-                  ContentSegmentUrlPrefix: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A content delivery network (CDN) to cache content segments, so that content requests don’t always have to go to the origin server. First, create a rule in your CDN for the content segment origin server. Then specify the rule's name in this <code>ContentSegmentUrlPrefix</code>. When AWS Elemental MediaTailor serves a manifest, it reports your CDN as the source for content segments.",
-                      }),
-                  ).exactOptional(),
+                  AdSegmentUrlPrefix: StringSchema.exactOptional().openapi({
+                    description:
+                      "A non-default content delivery network (CDN) to serve ad segments. By default, AWS Elemental MediaTailor uses Amazon CloudFront with default cache settings as its CDN for ad segments. To set up an alternate CDN, create a rule in your CDN for the origin ads.mediatailor.<i>&lt;region&gt;</i>.amazonaws.com. Then specify the rule's name in this <code>AdSegmentUrlPrefix</code>. When AWS Elemental MediaTailor serves a manifest, it reports your CDN as the source for ad segments.",
+                  }),
+                  ContentSegmentUrlPrefix: StringSchema.exactOptional().openapi({
+                    description:
+                      "A content delivery network (CDN) to cache content segments, so that content requests don’t always have to go to the origin server. First, create a rule in your CDN for the content segment origin server. Then specify the rule's name in this <code>ContentSegmentUrlPrefix</code>. When AWS Elemental MediaTailor serves a manifest, it reports your CDN as the source for content segments.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6164,22 +5058,14 @@ export const putPlaybackConfigurationRoute = createRoute({
                 .openapi({ description: 'The predefined aliases for dynamic variables.' }),
               DashConfiguration: z
                 .object({
-                  MpdLocation: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The setting that controls whether MediaTailor includes the Location tag in DASH manifests. MediaTailor populates the Location tag with the URL for manifest update requests, to be used by players that don't support sticky redirects. Disable this if you have CDN routing rules set up for accessing MediaTailor manifests, and you are either using client-side reporting or your players support sticky HTTP redirects. Valid values are <code>DISABLED</code> and <code>EMT_DEFAULT</code>. The <code>EMT_DEFAULT</code> setting enables the inclusion of the tag and is the default value.",
-                      }),
-                  ).exactOptional(),
-                  OriginManifestType: OriginManifestTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The setting that controls whether MediaTailor handles manifests from the origin server as multi-period manifests or single-period manifests. If your origin server produces single-period manifests, set this to <code>SINGLE_PERIOD</code>. The default setting is <code>MULTI_PERIOD</code>. For multi-period manifests, omit this setting or set it to <code>MULTI_PERIOD</code>.',
-                      }),
-                  ).exactOptional(),
+                  MpdLocation: StringSchema.exactOptional().openapi({
+                    description:
+                      "The setting that controls whether MediaTailor includes the Location tag in DASH manifests. MediaTailor populates the Location tag with the URL for manifest update requests, to be used by players that don't support sticky redirects. Disable this if you have CDN routing rules set up for accessing MediaTailor manifests, and you are either using client-side reporting or your players support sticky HTTP redirects. Valid values are <code>DISABLED</code> and <code>EMT_DEFAULT</code>. The <code>EMT_DEFAULT</code> setting enables the inclusion of the tag and is the default value.",
+                  }),
+                  OriginManifestType: OriginManifestTypeSchema.exactOptional().openapi({
+                    description:
+                      'The setting that controls whether MediaTailor handles manifests from the origin server as multi-period manifests or single-period manifests. If your origin server produces single-period manifests, set this to <code>SINGLE_PERIOD</code>. The default setting is <code>MULTI_PERIOD</code>. For multi-period manifests, omit this setting or set it to <code>MULTI_PERIOD</code>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6188,22 +5074,14 @@ export const putPlaybackConfigurationRoute = createRoute({
                 }),
               LivePreRollConfiguration: z
                 .object({
-                  AdDecisionServerUrl: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The URL for the ad decision server (ADS) for pre-roll ads. This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing, you can provide a static VAST URL. The maximum length is 25,000 characters.',
-                      }),
-                  ).exactOptional(),
-                  MaxDurationSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The maximum allowed duration for the pre-roll ad avail. AWS Elemental MediaTailor won't play pre-roll ads to exceed this duration, regardless of the total duration of ads that the ADS returns.",
-                      }),
-                  ).exactOptional(),
+                  AdDecisionServerUrl: StringSchema.exactOptional().openapi({
+                    description:
+                      'The URL for the ad decision server (ADS) for pre-roll ads. This includes the specification of static parameters and placeholders for dynamic parameters. AWS Elemental MediaTailor substitutes player-specific and session-specific parameters as needed when calling the ADS. Alternately, for testing, you can provide a static VAST URL. The maximum length is 25,000 characters.',
+                  }),
+                  MaxDurationSeconds: IntegerSchema.exactOptional().openapi({
+                    description:
+                      "The maximum allowed duration for the pre-roll ad avail. AWS Elemental MediaTailor won't play pre-roll ads to exceed this duration, regardless of the total duration of ads that the ADS returns.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6212,14 +5090,10 @@ export const putPlaybackConfigurationRoute = createRoute({
                 }),
               ManifestProcessingRules: z
                 .object({
-                  AdMarkerPassthrough: AdMarkerPassthroughSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>For HLS, when set to <code>true</code>, MediaTailor passes through <code>EXT-X-CUE-IN</code>, <code>EXT-X-CUE-OUT</code>, and <code>EXT-X-SPLICEPOINT-SCTE35</code> ad markers from the origin manifest to the MediaTailor personalized manifest.</p> <p>No logic is applied to these ad markers. For example, if <code>EXT-X-CUE-OUT</code> has a value of <code>60</code>, but no ads are filled for that ad break, MediaTailor will not set the value to <code>0</code>.</p>',
-                      }),
-                  ).exactOptional(),
+                  AdMarkerPassthrough: AdMarkerPassthroughSchema.exactOptional().openapi({
+                    description:
+                      '<p>For HLS, when set to <code>true</code>, MediaTailor passes through <code>EXT-X-CUE-IN</code>, <code>EXT-X-CUE-OUT</code>, and <code>EXT-X-SPLICEPOINT-SCTE35</code> ad markers from the origin manifest to the MediaTailor personalized manifest.</p> <p>No logic is applied to these ad markers. For example, if <code>EXT-X-CUE-OUT</code> has a value of <code>60</code>, but no ads are filled for that ad break, MediaTailor will not set the value to <code>0</code>.</p>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

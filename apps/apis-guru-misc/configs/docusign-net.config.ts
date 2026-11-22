@@ -14,9 +14,5 @@ export default defineConfig({
   'vue-query': { output: './src/docusign-net/hooks/vue-query.ts' },
   'svelte-query': { output: './src/docusign-net/hooks/svelte-query.ts' },
   'angular-query': { output: './src/docusign-net/hooks/angular-query.ts' },
-  docs: {
-    output: './src/docusign-net/api.md',
-    curl: true,
-    baseUrl: 'https://example.com',
-  },
+  // No docs: api.md would exceed V8's maximum string length, and the run crashes (nakita628/hono-takibi#409).
 })

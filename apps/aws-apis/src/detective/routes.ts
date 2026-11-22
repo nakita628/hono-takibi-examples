@@ -25,14 +25,10 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const TimestampForCollectionSchema = z
   .object({
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data and time when data collection began for a source package. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.',
-        }),
-    ).exactOptional(),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The data and time when data collection began for a source package. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.',
+    }),
   })
   .openapi({
     description: 'Details on when data collection began for a source package.',
@@ -50,21 +46,15 @@ const DatasourcePackageIngestHistorySchema = z
 
 const MembershipDatasourcesSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The account identifier of the Amazon Web Services account.' }),
-    ).exactOptional(),
-    GraphArn: GraphArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the organization behavior graph.' }),
-    ).exactOptional(),
-    DatasourcePackageIngestHistory: DatasourcePackageIngestHistorySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details on when a data source package was added to a behavior graph.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The account identifier of the Amazon Web Services account.',
+    }),
+    GraphArn: GraphArnSchema.exactOptional().openapi({
+      description: 'The ARN of the organization behavior graph.',
+    }),
+    DatasourcePackageIngestHistory: DatasourcePackageIngestHistorySchema.exactOptional().openapi({
+      description: 'Details on when a data source package was added to a behavior graph.',
+    }),
   })
   .openapi({
     description: 'Details on data source packages for members of the behavior graph.',
@@ -80,21 +70,13 @@ const UnprocessedReasonSchema = z.string().openapi('UnprocessedReason')
 
 const UnprocessedAccountSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account identifier of the member account that was not processed.',
-        }),
-    ).exactOptional(),
-    Reason: UnprocessedReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason that the member account request could not be processed.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account identifier of the member account that was not processed.',
+    }),
+    Reason: UnprocessedReasonSchema.exactOptional().openapi({
+      description: 'The reason that the member account request could not be processed.',
+    }),
   })
   .openapi({
     description:
@@ -109,38 +91,26 @@ const UnprocessedAccountListSchema = z
 
 const BatchGetGraphMemberDatasourcesResponseSchema = z
   .object({
-    MemberDatasources: MembershipDatasourcesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details on the status of data source packages for members of the behavior graph.',
-        }),
-    ).exactOptional(),
-    UnprocessedAccounts: UnprocessedAccountListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Accounts that data source package information could not be retrieved for.',
-        }),
-    ).exactOptional(),
+    MemberDatasources: MembershipDatasourcesListSchema.exactOptional().openapi({
+      description:
+        'Details on the status of data source packages for members of the behavior graph.',
+    }),
+    UnprocessedAccounts: UnprocessedAccountListSchema.exactOptional().openapi({
+      description: 'Accounts that data source package information could not be retrieved for.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchGetGraphMemberDatasourcesResponse')
 
 const UnprocessedGraphSchema = z
   .object({
-    GraphArn: GraphArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the organization behavior graph.' }),
-    ).exactOptional(),
-    Reason: UnprocessedReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason data source package information could not be processed for a behavior graph.',
-        }),
-    ).exactOptional(),
+    GraphArn: GraphArnSchema.exactOptional().openapi({
+      description: 'The ARN of the organization behavior graph.',
+    }),
+    Reason: UnprocessedReasonSchema.exactOptional().openapi({
+      description:
+        'The reason data source package information could not be processed for a behavior graph.',
+    }),
   })
   .openapi({
     description: 'Behavior graphs that could not be processed in the request.',
@@ -152,30 +122,22 @@ const UnprocessedGraphListSchema = z.array(UnprocessedGraphSchema).openapi('Unpr
 
 const BatchGetMembershipDatasourcesResponseSchema = z
   .object({
-    MembershipDatasources: MembershipDatasourcesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details on the data source package history for an member of the behavior graph.',
-        }),
-    ).exactOptional(),
-    UnprocessedGraphs: UnprocessedGraphListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Graphs that data source package information could not be retrieved for.',
-        }),
-    ).exactOptional(),
+    MembershipDatasources: MembershipDatasourcesListSchema.exactOptional().openapi({
+      description:
+        'Details on the data source package history for an member of the behavior graph.',
+    }),
+    UnprocessedGraphs: UnprocessedGraphListSchema.exactOptional().openapi({
+      description: 'Graphs that data source package information could not be retrieved for.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchGetMembershipDatasourcesResponse')
 
 const CreateGraphResponseSchema = z
   .object({
-    GraphArn: GraphArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the new behavior graph.' }),
-    ).exactOptional(),
+    GraphArn: GraphArnSchema.exactOptional().openapi({
+      description: 'The ARN of the new behavior graph.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateGraphResponse')
@@ -213,22 +175,14 @@ const InvitationTypeSchema = z.enum(['INVITATION', 'ORGANIZATION']).openapi('Inv
 
 const DatasourcePackageUsageInfoSchema = z
   .object({
-    VolumeUsageInBytes: ByteValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Total volume of data in bytes per day ingested for a given data source package.',
-        }),
-    ).exactOptional(),
-    VolumeUsageUpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data and time when the member account data volume was last updated. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.',
-        }),
-    ).exactOptional(),
+    VolumeUsageInBytes: ByteValueSchema.exactOptional().openapi({
+      description:
+        'Total volume of data in bytes per day ingested for a given data source package.',
+    }),
+    VolumeUsageUpdateTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The data and time when the member account data volume was last updated. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.',
+    }),
   })
   .openapi({
     description: 'Information on the usage of a data source package in the behavior graph.',
@@ -250,130 +204,72 @@ const DatasourcePackageIngestStatesSchema = z
 
 const MemberDetailSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services account identifier for the member account.',
-        }),
-    ).exactOptional(),
-    EmailAddress: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account root user email address for the member account.',
-        }),
-    ).exactOptional(),
-    GraphArn: GraphArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the behavior graph.' }),
-    ).exactOptional(),
-    MasterId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'The Amazon Web Services account identifier of the administrator account for the behavior graph.This property is deprecated. Use AdministratorId instead.',
-        }),
-    ).exactOptional(),
-    AdministratorId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account identifier of the administrator account for the behavior graph.',
-        }),
-    ).exactOptional(),
-    Status: MemberStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The current membership status of the member account. The status can have one of the following values:</p> <ul> <li> <p> <code>INVITED</code> - For invited accounts only. Indicates that the member was sent an invitation but has not yet responded.</p> </li> <li> <p> <code>VERIFICATION_IN_PROGRESS</code> - For invited accounts only, indicates that Detective is verifying that the account identifier and email address provided for the member account match. If they do match, then Detective sends the invitation. If the email address and account identifier don't match, then the member cannot be added to the behavior graph.</p> <p>For organization accounts in the organization behavior graph, indicates that Detective is verifying that the account belongs to the organization.</p> </li> <li> <p> <code>VERIFICATION_FAILED</code> - For invited accounts only. Indicates that the account and email address provided for the member account do not match, and Detective did not send an invitation to the account.</p> </li> <li> <p> <code>ENABLED</code> - Indicates that the member account currently contributes data to the behavior graph. For invited accounts, the member account accepted the invitation. For organization accounts in the organization behavior graph, the Detective administrator account enabled the organization account as a member account.</p> </li> <li> <p> <code>ACCEPTED_BUT_DISABLED</code> - The account accepted the invitation, or was enabled by the Detective administrator account, but is prevented from contributing data to the behavior graph. <code>DisabledReason</code> provides the reason why the member account is not enabled.</p> </li> </ul> <p>Invited accounts that declined an invitation or that were removed from the behavior graph are not included. In the organization behavior graph, organization accounts that the Detective administrator account did not enable are not included.</p>",
-        }),
-    ).exactOptional(),
-    DisabledReason: MemberDisabledReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For member accounts with a status of <code>ACCEPTED_BUT_DISABLED</code>, the reason that the member account is not enabled.</p> <p>The reason can have one of the following values:</p> <ul> <li> <p> <code>VOLUME_TOO_HIGH</code> - Indicates that adding the member account would cause the data volume for the behavior graph to be too high.</p> </li> <li> <p> <code>VOLUME_UNKNOWN</code> - Indicates that Detective is unable to verify the data volume for the member account. This is usually because the member account is not enrolled in Amazon GuardDuty. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    InvitedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For invited accounts, the date and time that Detective sent the invitation to the account. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.',
-        }),
-    ).exactOptional(),
-    UpdatedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the member account was last updated. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.',
-        }),
-    ).exactOptional(),
-    VolumeUsageInBytes: ByteValueSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'The data volume in bytes per day for the member account.This property is deprecated. Use VolumeUsageByDatasourcePackage instead.',
-        }),
-    ).exactOptional(),
-    VolumeUsageUpdatedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'The data and time when the member account data volume was last updated. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.This property is deprecated. Use VolumeUsageByDatasourcePackage instead.',
-        }),
-    ).exactOptional(),
-    PercentOfGraphUtilization: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            '<p>The member account data volume as a percentage of the maximum allowed data volume. 0 indicates 0 percent, and 100 indicates 100 percent.</p> <p>Note that this is not the percentage of the behavior graph data volume.</p> <p>For example, the data volume for the behavior graph is 80 GB per day. The maximum data volume is 160 GB per day. If the data volume for the member account is 40 GB per day, then <code>PercentOfGraphUtilization</code> is 25. It represents 25% of the maximum allowed data volume. </p>This property is deprecated. Use VolumeUsageByDatasourcePackage instead.',
-        }),
-    ).exactOptional(),
-    PercentOfGraphUtilizationUpdatedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'The date and time when the graph utilization percentage was last updated. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.This property is deprecated. Use VolumeUsageByDatasourcePackage instead.',
-        }),
-    ).exactOptional(),
-    InvitationType: InvitationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of behavior graph membership.</p> <p>For an organization account in the organization behavior graph, the type is <code>ORGANIZATION</code>.</p> <p>For an account that was invited to a behavior graph, the type is <code>INVITATION</code>. </p>',
-        }),
-    ).exactOptional(),
-    VolumeUsageByDatasourcePackage: VolumeUsageByDatasourcePackageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details on the volume of usage for each data source package in a behavior graph.',
-        }),
-    ).exactOptional(),
-    DatasourcePackageIngestStates: DatasourcePackageIngestStatesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The state of a data source package for the behavior graph.' }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account identifier for the member account.',
+    }),
+    EmailAddress: EmailAddressSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account root user email address for the member account.',
+    }),
+    GraphArn: GraphArnSchema.exactOptional().openapi({
+      description: 'The ARN of the behavior graph.',
+    }),
+    MasterId: AccountIdSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The Amazon Web Services account identifier of the administrator account for the behavior graph.This property is deprecated. Use AdministratorId instead.',
+    }),
+    AdministratorId: AccountIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account identifier of the administrator account for the behavior graph.',
+    }),
+    Status: MemberStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The current membership status of the member account. The status can have one of the following values:</p> <ul> <li> <p> <code>INVITED</code> - For invited accounts only. Indicates that the member was sent an invitation but has not yet responded.</p> </li> <li> <p> <code>VERIFICATION_IN_PROGRESS</code> - For invited accounts only, indicates that Detective is verifying that the account identifier and email address provided for the member account match. If they do match, then Detective sends the invitation. If the email address and account identifier don't match, then the member cannot be added to the behavior graph.</p> <p>For organization accounts in the organization behavior graph, indicates that Detective is verifying that the account belongs to the organization.</p> </li> <li> <p> <code>VERIFICATION_FAILED</code> - For invited accounts only. Indicates that the account and email address provided for the member account do not match, and Detective did not send an invitation to the account.</p> </li> <li> <p> <code>ENABLED</code> - Indicates that the member account currently contributes data to the behavior graph. For invited accounts, the member account accepted the invitation. For organization accounts in the organization behavior graph, the Detective administrator account enabled the organization account as a member account.</p> </li> <li> <p> <code>ACCEPTED_BUT_DISABLED</code> - The account accepted the invitation, or was enabled by the Detective administrator account, but is prevented from contributing data to the behavior graph. <code>DisabledReason</code> provides the reason why the member account is not enabled.</p> </li> </ul> <p>Invited accounts that declined an invitation or that were removed from the behavior graph are not included. In the organization behavior graph, organization accounts that the Detective administrator account did not enable are not included.</p>",
+    }),
+    DisabledReason: MemberDisabledReasonSchema.exactOptional().openapi({
+      description:
+        '<p>For member accounts with a status of <code>ACCEPTED_BUT_DISABLED</code>, the reason that the member account is not enabled.</p> <p>The reason can have one of the following values:</p> <ul> <li> <p> <code>VOLUME_TOO_HIGH</code> - Indicates that adding the member account would cause the data volume for the behavior graph to be too high.</p> </li> <li> <p> <code>VOLUME_UNKNOWN</code> - Indicates that Detective is unable to verify the data volume for the member account. This is usually because the member account is not enrolled in Amazon GuardDuty. </p> </li> </ul>',
+    }),
+    InvitedTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'For invited accounts, the date and time that Detective sent the invitation to the account. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.',
+    }),
+    UpdatedTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that the member account was last updated. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.',
+    }),
+    VolumeUsageInBytes: ByteValueSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The data volume in bytes per day for the member account.This property is deprecated. Use VolumeUsageByDatasourcePackage instead.',
+    }),
+    VolumeUsageUpdatedTime: TimestampSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The data and time when the member account data volume was last updated. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.This property is deprecated. Use VolumeUsageByDatasourcePackage instead.',
+    }),
+    PercentOfGraphUtilization: PercentageSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        '<p>The member account data volume as a percentage of the maximum allowed data volume. 0 indicates 0 percent, and 100 indicates 100 percent.</p> <p>Note that this is not the percentage of the behavior graph data volume.</p> <p>For example, the data volume for the behavior graph is 80 GB per day. The maximum data volume is 160 GB per day. If the data volume for the member account is 40 GB per day, then <code>PercentOfGraphUtilization</code> is 25. It represents 25% of the maximum allowed data volume. </p>This property is deprecated. Use VolumeUsageByDatasourcePackage instead.',
+    }),
+    PercentOfGraphUtilizationUpdatedTime: TimestampSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The date and time when the graph utilization percentage was last updated. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.This property is deprecated. Use VolumeUsageByDatasourcePackage instead.',
+    }),
+    InvitationType: InvitationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of behavior graph membership.</p> <p>For an organization account in the organization behavior graph, the type is <code>ORGANIZATION</code>.</p> <p>For an account that was invited to a behavior graph, the type is <code>INVITATION</code>. </p>',
+    }),
+    VolumeUsageByDatasourcePackage: VolumeUsageByDatasourcePackageSchema.exactOptional().openapi({
+      description:
+        'Details on the volume of usage for each data source package in a behavior graph.',
+    }),
+    DatasourcePackageIngestStates: DatasourcePackageIngestStatesSchema.exactOptional().openapi({
+      description: 'The state of a data source package for the behavior graph.',
+    }),
   })
   .openapi({ description: 'Details about a member account in a behavior graph.', required: [] })
   .openapi('MemberDetail')
@@ -382,41 +278,27 @@ const MemberDetailListSchema = z.array(MemberDetailSchema).openapi('MemberDetail
 
 const CreateMembersResponseSchema = z
   .object({
-    Members: MemberDetailListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The set of member account invitation or enablement requests that Detective was able to process. This includes accounts that are being verified, that failed verification, and that passed verification and are being sent an invitation or are being enabled.',
-        }),
-    ).exactOptional(),
-    UnprocessedAccounts: UnprocessedAccountListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of accounts for which Detective was unable to process the invitation or enablement request. For each account, the list provides the reason why the request could not be processed. The list includes accounts that are already member accounts in the behavior graph.',
-        }),
-    ).exactOptional(),
+    Members: MemberDetailListSchema.exactOptional().openapi({
+      description:
+        'The set of member account invitation or enablement requests that Detective was able to process. This includes accounts that are being verified, that failed verification, and that passed verification and are being sent an invitation or are being enabled.',
+    }),
+    UnprocessedAccounts: UnprocessedAccountListSchema.exactOptional().openapi({
+      description:
+        'The list of accounts for which Detective was unable to process the invitation or enablement request. For each account, the list provides the reason why the request could not be processed. The list includes accounts that are already member accounts in the behavior graph.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateMembersResponse')
 
 const AccountSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The account identifier of the Amazon Web Services account.' }),
-    ),
-    EmailAddress: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account root user email address for the Amazon Web Services account.',
-        }),
-    ),
+    AccountId: AccountIdSchema.openapi({
+      description: 'The account identifier of the Amazon Web Services account.',
+    }),
+    EmailAddress: EmailAddressSchema.openapi({
+      description:
+        'The Amazon Web Services account root user email address for the Amazon Web Services account.',
+    }),
   })
   .openapi({
     required: ['AccountId', 'EmailAddress'],
@@ -429,22 +311,14 @@ const AccountIdListSchema = z.array(AccountIdSchema).min(1).max(50).openapi('Acc
 
 const DeleteMembersResponseSchema = z
   .object({
-    AccountIds: AccountIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of Amazon Web Services account identifiers for the member accounts that Detective successfully removed from the behavior graph.',
-        }),
-    ).exactOptional(),
-    UnprocessedAccounts: UnprocessedAccountListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of member accounts that Detective was not able to remove from the behavior graph. For each member account, provides the reason that the deletion could not be processed.',
-        }),
-    ).exactOptional(),
+    AccountIds: AccountIdListSchema.exactOptional().openapi({
+      description:
+        'The list of Amazon Web Services account identifiers for the member accounts that Detective successfully removed from the behavior graph.',
+    }),
+    UnprocessedAccounts: UnprocessedAccountListSchema.exactOptional().openapi({
+      description:
+        'The list of member accounts that Detective was not able to remove from the behavior graph. For each member account, provides the reason that the deletion could not be processed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteMembersResponse')
@@ -453,14 +327,10 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const DescribeOrganizationConfigurationResponseSchema = z
   .object({
-    AutoEnable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to automatically enable new organization accounts as member accounts in the organization behavior graph.',
-        }),
-    ).exactOptional(),
+    AutoEnable: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to automatically enable new organization accounts as member accounts in the organization behavior graph.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeOrganizationConfigurationResponse')
@@ -469,40 +339,26 @@ const TooManyRequestsExceptionSchema = z.any().openapi('TooManyRequestsException
 
 const GetMembersResponseSchema = z
   .object({
-    MemberDetails: MemberDetailListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The member account details that Detective is returning in response to the request.',
-        }),
-    ).exactOptional(),
-    UnprocessedAccounts: UnprocessedAccountListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The requested member accounts for which Detective was unable to return member details.</p> <p>For each account, provides the reason why the request could not be processed.</p>',
-        }),
-    ).exactOptional(),
+    MemberDetails: MemberDetailListSchema.exactOptional().openapi({
+      description:
+        'The member account details that Detective is returning in response to the request.',
+    }),
+    UnprocessedAccounts: UnprocessedAccountListSchema.exactOptional().openapi({
+      description:
+        '<p>The requested member accounts for which Detective was unable to return member details.</p> <p>For each account, provides the reason why the request could not be processed.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMembersResponse')
 
 const DatasourcePackageIngestDetailSchema = z
   .object({
-    DatasourcePackageIngestState: DatasourcePackageIngestStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details on which data source packages are ingested for a member account.',
-        }),
-    ).exactOptional(),
-    LastIngestStateChange: LastIngestStateChangeDatesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date a data source package was enabled for this account' }),
-    ).exactOptional(),
+    DatasourcePackageIngestState: DatasourcePackageIngestStateSchema.exactOptional().openapi({
+      description: 'Details on which data source packages are ingested for a member account.',
+    }),
+    LastIngestStateChange: LastIngestStateChangeDatesSchema.exactOptional().openapi({
+      description: 'The date a data source package was enabled for this account',
+    }),
   })
   .openapi({
     description: 'Details about the data source packages ingested by your behavior graph.',
@@ -518,38 +374,24 @@ const PaginationTokenSchema = z.string().min(1).max(1024).openapi('PaginationTok
 
 const ListDatasourcePackagesResponseSchema = z
   .object({
-    DatasourcePackages: DatasourcePackageIngestDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details on the data source packages active in the behavior graph.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For requests to get the next page of results, the pagination token that was returned with the previous set of results. The initial request does not include a pagination token.',
-        }),
-    ).exactOptional(),
+    DatasourcePackages: DatasourcePackageIngestDetailsSchema.exactOptional().openapi({
+      description: 'Details on the data source packages active in the behavior graph.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'For requests to get the next page of results, the pagination token that was returned with the previous set of results. The initial request does not include a pagination token.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDatasourcePackagesResponse')
 
 const GraphSchema = z
   .object({
-    Arn: GraphArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the behavior graph.' }),
-    ).exactOptional(),
-    CreatedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the behavior graph was created. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.',
-        }),
-    ).exactOptional(),
+    Arn: GraphArnSchema.exactOptional().openapi({ description: 'The ARN of the behavior graph.' }),
+    CreatedTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that the behavior graph was created. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.',
+    }),
   })
   .openapi({ description: 'A behavior graph in Detective.', required: [] })
   .openapi('Graph')
@@ -558,91 +400,58 @@ const GraphListSchema = z.array(GraphSchema).openapi('GraphList')
 
 const ListGraphsResponseSchema = z
   .object({
-    GraphList: GraphListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of behavior graphs that the account is an administrator account for.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are more behavior graphs remaining in the results, then this is the pagination token to use to request the next page of behavior graphs.',
-        }),
-    ).exactOptional(),
+    GraphList: GraphListSchema.exactOptional().openapi({
+      description: 'A list of behavior graphs that the account is an administrator account for.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If there are more behavior graphs remaining in the results, then this is the pagination token to use to request the next page of behavior graphs.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListGraphsResponse')
 
 const ListInvitationsResponseSchema = z
   .object({
-    Invitations: MemberDetailListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of behavior graphs for which the member account has open or accepted invitations.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are more behavior graphs remaining in the results, then this is the pagination token to use to request the next page of behavior graphs.',
-        }),
-    ).exactOptional(),
+    Invitations: MemberDetailListSchema.exactOptional().openapi({
+      description:
+        'The list of behavior graphs for which the member account has open or accepted invitations.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If there are more behavior graphs remaining in the results, then this is the pagination token to use to request the next page of behavior graphs.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListInvitationsResponse')
 
 const ListMembersResponseSchema = z
   .object({
-    MemberDetails: MemberDetailListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of member accounts in the behavior graph.</p> <p>For invited accounts, the results include member accounts that did not pass verification and member accounts that have not yet accepted the invitation to the behavior graph. The results do not include member accounts that were removed from the behavior graph.</p> <p>For the organization behavior graph, the results do not include organization accounts that the Detective administrator account has not enabled as member accounts.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are more member accounts remaining in the results, then use this pagination token to request the next page of member accounts.',
-        }),
-    ).exactOptional(),
+    MemberDetails: MemberDetailListSchema.exactOptional().openapi({
+      description:
+        '<p>The list of member accounts in the behavior graph.</p> <p>For invited accounts, the results include member accounts that did not pass verification and member accounts that have not yet accepted the invitation to the behavior graph. The results do not include member accounts that were removed from the behavior graph.</p> <p>For the organization behavior graph, the results do not include organization accounts that the Detective administrator account has not enabled as member accounts.</p>',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If there are more member accounts remaining in the results, then use this pagination token to request the next page of member accounts.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMembersResponse')
 
 const AdministratorSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account identifier of the Detective administrator account for the organization.',
-        }),
-    ).exactOptional(),
-    GraphArn: GraphArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the organization behavior graph.' }),
-    ).exactOptional(),
-    DelegationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the Detective administrator account was enabled. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account identifier of the Detective administrator account for the organization.',
+    }),
+    GraphArn: GraphArnSchema.exactOptional().openapi({
+      description: 'The ARN of the organization behavior graph.',
+    }),
+    DelegationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time when the Detective administrator account was enabled. The value is an ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.',
+    }),
   })
   .openapi({
     description: 'Information about the Detective administrator account for an organization.',
@@ -654,17 +463,13 @@ const AdministratorListSchema = z.array(AdministratorSchema).openapi('Administra
 
 const ListOrganizationAdminAccountsResponseSchema = z
   .object({
-    Administrators: AdministratorListSchema.and(
-      z.any().openapi({ description: 'The list of Detective administrator accounts.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are more accounts remaining in the results, then this is the pagination token to use to request the next page of accounts.',
-        }),
-    ).exactOptional(),
+    Administrators: AdministratorListSchema.exactOptional().openapi({
+      description: 'The list of Detective administrator accounts.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If there are more accounts remaining in the results, then this is the pagination token to use to request the next page of accounts.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListOrganizationAdminAccountsResponse')
@@ -677,21 +482,17 @@ const TagMapSchema = z
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag values that are assigned to the behavior graph. The request returns up to 50 tag values.',
-        }),
-    ).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tag values that are assigned to the behavior graph. The request returns up to 50 tag values.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z
   .string()
@@ -704,14 +505,10 @@ const DatasourcePackageSchema = z.enum(['DETECTIVE_CORE', 'EKS_AUDIT']).openapi(
 
 const AcceptInvitationRequestSchema = z
   .object({
-    GraphArn: GraphArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the behavior graph that the member account is accepting the invitation for.</p> <p>The member account status in the behavior graph must be <code>INVITED</code>.</p>',
-        }),
-    ),
+    GraphArn: GraphArnSchema.openapi({
+      description:
+        '<p>The ARN of the behavior graph that the member account is accepting the invitation for.</p> <p>The member account status in the behavior graph must be <code>INVITED</code>.</p>',
+    }),
   })
   .openapi({ required: ['GraphArn'], title: 'AcceptInvitationRequest' })
   .openapi('AcceptInvitationRequest')
@@ -726,17 +523,11 @@ const AccountListSchema = z.array(AccountSchema).min(1).max(50).openapi('Account
 
 const BatchGetGraphMemberDatasourcesRequestSchema = z
   .object({
-    GraphArn: GraphArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the behavior graph.' }),
-    ),
-    AccountIds: AccountIdExtendedListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of Amazon Web Services accounts to get data source package information on.',
-        }),
-    ),
+    GraphArn: GraphArnSchema.openapi({ description: 'The ARN of the behavior graph.' }),
+    AccountIds: AccountIdExtendedListSchema.openapi({
+      description:
+        'The list of Amazon Web Services accounts to get data source package information on.',
+    }),
   })
   .openapi({ required: ['GraphArn', 'AccountIds'], title: 'BatchGetGraphMemberDatasourcesRequest' })
   .openapi('BatchGetGraphMemberDatasourcesRequest')
@@ -745,23 +536,17 @@ const GraphArnListSchema = z.array(GraphArnSchema).min(1).max(50).openapi('Graph
 
 const BatchGetMembershipDatasourcesRequestSchema = z
   .object({
-    GraphArns: GraphArnListSchema.and(
-      z.any().openapi({ description: 'The ARN of the behavior graph.' }),
-    ),
+    GraphArns: GraphArnListSchema.openapi({ description: 'The ARN of the behavior graph.' }),
   })
   .openapi({ required: ['GraphArns'], title: 'BatchGetMembershipDatasourcesRequest' })
   .openapi('BatchGetMembershipDatasourcesRequest')
 
 const CreateGraphRequestSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to assign to the new behavior graph. You can add up to 50 tags. For each tag, you provide the tag key and the tag value. Each tag key can contain up to 128 characters. Each tag value can contain up to 256 characters.',
-        }),
-    ).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags to assign to the new behavior graph. You can add up to 50 tags. For each tag, you provide the tag key and the tag value. Each tag key can contain up to 128 characters. Each tag value can contain up to 256 characters.',
+    }),
   })
   .openapi({ title: 'CreateGraphRequest', required: [] })
   .openapi('CreateGraphRequest')
@@ -770,33 +555,19 @@ const EmailMessageSchema = z.string().min(1).max(1000).openapi('EmailMessage')
 
 const CreateMembersRequestSchema = z
   .object({
-    GraphArn: GraphArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the behavior graph.' }),
-    ),
-    Message: EmailMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Customized message text to include in the invitation email message to the invited member accounts.',
-        }),
-    ).exactOptional(),
-    DisableEmailNotification: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>if set to <code>true</code>, then the invited accounts do not receive email notifications. By default, this is set to <code>false</code>, and the invited accounts receive email notifications.</p> <p>Organization accounts in the organization behavior graph do not receive email notifications.</p>',
-        }),
-    ).exactOptional(),
-    Accounts: AccountListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of Amazon Web Services accounts to invite or to enable. You can invite or enable up to 50 accounts at a time. For each invited account, the account list contains the account identifier and the Amazon Web Services account root user email address. For organization accounts in the organization behavior graph, the email address is not required.',
-        }),
-    ),
+    GraphArn: GraphArnSchema.openapi({ description: 'The ARN of the behavior graph.' }),
+    Message: EmailMessageSchema.exactOptional().openapi({
+      description:
+        'Customized message text to include in the invitation email message to the invited member accounts.',
+    }),
+    DisableEmailNotification: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>if set to <code>true</code>, then the invited accounts do not receive email notifications. By default, this is set to <code>false</code>, and the invited accounts receive email notifications.</p> <p>Organization accounts in the organization behavior graph do not receive email notifications.</p>',
+    }),
+    Accounts: AccountListSchema.openapi({
+      description:
+        'The list of Amazon Web Services accounts to invite or to enable. You can invite or enable up to 50 accounts at a time. For each invited account, the account list contains the account identifier and the Amazon Web Services account root user email address. For organization accounts in the organization behavior graph, the email address is not required.',
+    }),
   })
   .openapi({ required: ['GraphArn', 'Accounts'], title: 'CreateMembersRequest' })
   .openapi('CreateMembersRequest')
@@ -809,84 +580,62 @@ const DatasourcePackageListSchema = z
 
 const DeleteGraphRequestSchema = z
   .object({
-    GraphArn: GraphArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the behavior graph to disable.' }),
-    ),
+    GraphArn: GraphArnSchema.openapi({ description: 'The ARN of the behavior graph to disable.' }),
   })
   .openapi({ required: ['GraphArn'], title: 'DeleteGraphRequest' })
   .openapi('DeleteGraphRequest')
 
 const DeleteMembersRequestSchema = z
   .object({
-    GraphArn: GraphArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the behavior graph to remove members from.' }),
-    ),
-    AccountIds: AccountIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of Amazon Web Services account identifiers for the member accounts to remove from the behavior graph. You can remove up to 50 member accounts at a time.',
-        }),
-    ),
+    GraphArn: GraphArnSchema.openapi({
+      description: 'The ARN of the behavior graph to remove members from.',
+    }),
+    AccountIds: AccountIdListSchema.openapi({
+      description:
+        'The list of Amazon Web Services account identifiers for the member accounts to remove from the behavior graph. You can remove up to 50 member accounts at a time.',
+    }),
   })
   .openapi({ required: ['GraphArn', 'AccountIds'], title: 'DeleteMembersRequest' })
   .openapi('DeleteMembersRequest')
 
 const DescribeOrganizationConfigurationRequestSchema = z
   .object({
-    GraphArn: GraphArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the organization behavior graph.' }),
-    ),
+    GraphArn: GraphArnSchema.openapi({
+      description: 'The ARN of the organization behavior graph.',
+    }),
   })
   .openapi({ required: ['GraphArn'], title: 'DescribeOrganizationConfigurationRequest' })
   .openapi('DescribeOrganizationConfigurationRequest')
 
 const DisassociateMembershipRequestSchema = z
   .object({
-    GraphArn: GraphArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ARN of the behavior graph to remove the member account from.</p> <p>The member account's member status in the behavior graph must be <code>ENABLED</code>.</p>",
-        }),
-    ),
+    GraphArn: GraphArnSchema.openapi({
+      description:
+        "<p>The ARN of the behavior graph to remove the member account from.</p> <p>The member account's member status in the behavior graph must be <code>ENABLED</code>.</p>",
+    }),
   })
   .openapi({ required: ['GraphArn'], title: 'DisassociateMembershipRequest' })
   .openapi('DisassociateMembershipRequest')
 
 const EnableOrganizationAdminAccountRequestSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account identifier of the account to designate as the Detective administrator account for the organization.',
-        }),
-    ),
+    AccountId: AccountIdSchema.openapi({
+      description:
+        'The Amazon Web Services account identifier of the account to designate as the Detective administrator account for the organization.',
+    }),
   })
   .openapi({ required: ['AccountId'], title: 'EnableOrganizationAdminAccountRequest' })
   .openapi('EnableOrganizationAdminAccountRequest')
 
 const GetMembersRequestSchema = z
   .object({
-    GraphArn: GraphArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the behavior graph for which to request the member details.',
-        }),
-    ),
-    AccountIds: AccountIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of Amazon Web Services account identifiers for the member account for which to return member details. You can request details for up to 50 member accounts at a time.</p> <p>You cannot use <code>GetMembers</code> to retrieve information about member accounts that were removed from the behavior graph.</p>',
-        }),
-    ),
+    GraphArn: GraphArnSchema.openapi({
+      description: 'The ARN of the behavior graph for which to request the member details.',
+    }),
+    AccountIds: AccountIdListSchema.openapi({
+      description:
+        '<p>The list of Amazon Web Services account identifiers for the member account for which to return member details. You can request details for up to 50 member accounts at a time.</p> <p>You cannot use <code>GetMembers</code> to retrieve information about member accounts that were removed from the behavior graph.</p>',
+    }),
   })
   .openapi({ required: ['GraphArn', 'AccountIds'], title: 'GetMembersRequest' })
   .openapi('GetMembersRequest')
@@ -895,147 +644,99 @@ const MemberResultsLimitSchema = z.int().min(1).max(200).openapi('MemberResultsL
 
 const ListDatasourcePackagesRequestSchema = z
   .object({
-    GraphArn: GraphArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the behavior graph.' }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For requests to get the next page of results, the pagination token that was returned with the previous set of results. The initial request does not include a pagination token.',
-        }),
-    ).exactOptional(),
-    MaxResults: MemberResultsLimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return.' }),
-    ).exactOptional(),
+    GraphArn: GraphArnSchema.openapi({ description: 'The ARN of the behavior graph.' }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'For requests to get the next page of results, the pagination token that was returned with the previous set of results. The initial request does not include a pagination token.',
+    }),
+    MaxResults: MemberResultsLimitSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return.',
+    }),
   })
   .openapi({ required: ['GraphArn'], title: 'ListDatasourcePackagesRequest' })
   .openapi('ListDatasourcePackagesRequest')
 
 const ListGraphsRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For requests to get the next page of results, the pagination token that was returned with the previous set of results. The initial request does not include a pagination token.',
-        }),
-    ).exactOptional(),
-    MaxResults: MemberResultsLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of graphs to return at a time. The total must be less than the overall limit on the number of results to return, which is currently 200.',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'For requests to get the next page of results, the pagination token that was returned with the previous set of results. The initial request does not include a pagination token.',
+    }),
+    MaxResults: MemberResultsLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of graphs to return at a time. The total must be less than the overall limit on the number of results to return, which is currently 200.',
+    }),
   })
   .openapi({ title: 'ListGraphsRequest', required: [] })
   .openapi('ListGraphsRequest')
 
 const ListInvitationsRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For requests to retrieve the next page of results, the pagination token that was returned with the previous page of results. The initial request does not include a pagination token.',
-        }),
-    ).exactOptional(),
-    MaxResults: MemberResultsLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of behavior graph invitations to return in the response. The total must be less than the overall limit on the number of results to return, which is currently 200.',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'For requests to retrieve the next page of results, the pagination token that was returned with the previous page of results. The initial request does not include a pagination token.',
+    }),
+    MaxResults: MemberResultsLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of behavior graph invitations to return in the response. The total must be less than the overall limit on the number of results to return, which is currently 200.',
+    }),
   })
   .openapi({ title: 'ListInvitationsRequest', required: [] })
   .openapi('ListInvitationsRequest')
 
 const ListMembersRequestSchema = z
   .object({
-    GraphArn: GraphArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the behavior graph for which to retrieve the list of member accounts.',
-        }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For requests to retrieve the next page of member account results, the pagination token that was returned with the previous page of results. The initial request does not include a pagination token.',
-        }),
-    ).exactOptional(),
-    MaxResults: MemberResultsLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of member accounts to include in the response. The total must be less than the overall limit on the number of results to return, which is currently 200.',
-        }),
-    ).exactOptional(),
+    GraphArn: GraphArnSchema.openapi({
+      description:
+        'The ARN of the behavior graph for which to retrieve the list of member accounts.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'For requests to retrieve the next page of member account results, the pagination token that was returned with the previous page of results. The initial request does not include a pagination token.',
+    }),
+    MaxResults: MemberResultsLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of member accounts to include in the response. The total must be less than the overall limit on the number of results to return, which is currently 200.',
+    }),
   })
   .openapi({ required: ['GraphArn'], title: 'ListMembersRequest' })
   .openapi('ListMembersRequest')
 
 const ListOrganizationAdminAccountsRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For requests to get the next page of results, the pagination token that was returned with the previous set of results. The initial request does not include a pagination token.',
-        }),
-    ).exactOptional(),
-    MaxResults: MemberResultsLimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return.' }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'For requests to get the next page of results, the pagination token that was returned with the previous set of results. The initial request does not include a pagination token.',
+    }),
+    MaxResults: MemberResultsLimitSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return.',
+    }),
   })
   .openapi({ title: 'ListOrganizationAdminAccountsRequest', required: [] })
   .openapi('ListOrganizationAdminAccountsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const RejectInvitationRequestSchema = z
   .object({
-    GraphArn: GraphArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ARN of the behavior graph to reject the invitation to.</p> <p>The member account's current member status in the behavior graph must be <code>INVITED</code>.</p>",
-        }),
-    ),
+    GraphArn: GraphArnSchema.openapi({
+      description:
+        "<p>The ARN of the behavior graph to reject the invitation to.</p> <p>The member account's current member status in the behavior graph must be <code>INVITED</code>.</p>",
+    }),
   })
   .openapi({ required: ['GraphArn'], title: 'RejectInvitationRequest' })
   .openapi('RejectInvitationRequest')
 
 const StartMonitoringMemberRequestSchema = z
   .object({
-    GraphArn: GraphArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the behavior graph.' }),
-    ),
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The account ID of the member account to try to enable.</p> <p>The account must be an invited member account with a status of <code>ACCEPTED_BUT_DISABLED</code>. </p>',
-        }),
-    ),
+    GraphArn: GraphArnSchema.openapi({ description: 'The ARN of the behavior graph.' }),
+    AccountId: AccountIdSchema.openapi({
+      description:
+        '<p>The account ID of the member account to try to enable.</p> <p>The account must be an invited member account with a status of <code>ACCEPTED_BUT_DISABLED</code>. </p>',
+    }),
   })
   .openapi({ required: ['GraphArn', 'AccountId'], title: 'StartMonitoringMemberRequest' })
   .openapi('StartMonitoringMemberRequest')
@@ -1044,31 +745,25 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyLis
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to assign to the behavior graph. You can add up to 50 tags. For each tag, you provide the tag key and the tag value. Each tag key can contain up to 128 characters. Each tag value can contain up to 256 characters.',
-        }),
-    ),
+    Tags: TagMapSchema.openapi({
+      description:
+        'The tags to assign to the behavior graph. You can add up to 50 tags. For each tag, you provide the tag key and the tag value. Each tag key can contain up to 128 characters. Each tag value can contain up to 256 characters.',
+    }),
   })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateDatasourcePackagesRequestSchema = z
   .object({
-    GraphArn: GraphArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the behavior graph.' }),
-    ),
-    DatasourcePackages: DatasourcePackageListSchema.and(
-      z.any().openapi({ description: 'The data source package start for the behavior graph.' }),
-    ),
+    GraphArn: GraphArnSchema.openapi({ description: 'The ARN of the behavior graph.' }),
+    DatasourcePackages: DatasourcePackageListSchema.openapi({
+      description: 'The data source package start for the behavior graph.',
+    }),
   })
   .openapi({
     required: ['GraphArn', 'DatasourcePackages'],
@@ -1078,17 +773,13 @@ const UpdateDatasourcePackagesRequestSchema = z
 
 const UpdateOrganizationConfigurationRequestSchema = z
   .object({
-    GraphArn: GraphArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the organization behavior graph.' }),
-    ),
-    AutoEnable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to automatically enable new organization accounts as member accounts in the organization behavior graph.',
-        }),
-    ).exactOptional(),
+    GraphArn: GraphArnSchema.openapi({
+      description: 'The ARN of the organization behavior graph.',
+    }),
+    AutoEnable: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to automatically enable new organization accounts as member accounts in the organization behavior graph.',
+    }),
   })
   .openapi({ required: ['GraphArn'], title: 'UpdateOrganizationConfigurationRequest' })
   .openapi('UpdateOrganizationConfigurationRequest')

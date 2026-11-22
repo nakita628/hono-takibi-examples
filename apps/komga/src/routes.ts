@@ -32,32 +32,33 @@ const SearchOperatorIsNotSchema = z
   .openapi({ required: ['value'] })
   .openapi('SearchOperatorIsNot')
 
-const SearchOperatorNumericNullableIntegerSchema = z
-  .unknown()
-  .check((ctx) => {
-    const val = ctx.value
-    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-      if (!Object.hasOwn(val, 'operator')) {
-        ctx.issues.push({ ...{ code: 'custom' }, input: val })
-      }
-      if (Object.hasOwn(val, 'operator')) {
-        const Schema = z.string()
-        if (!Schema.safeParse(Reflect.get(val, 'operator')).success) {
+const SearchOperatorNumericNullableIntegerSchema = (() => {
+  const Schema = z.xor([
+    SearchOperatorGreaterThanSchema,
+    SearchOperatorLessThanSchema,
+    SearchOperatorIsNullTSchema,
+    SearchOperatorIsNotNullTSchema,
+    SearchOperatorIsSchema,
+    SearchOperatorIsNotSchema,
+  ])
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const val = ctx.value
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'operator')) {
           ctx.issues.push({ ...{ code: 'custom' }, input: val })
         }
+        if (Object.hasOwn(val, 'operator')) {
+          const Schema = z.string()
+          if (!Schema.safeParse(Reflect.get(val, 'operator')).success) {
+            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+          }
+        }
       }
-    }
-  })
-  .pipe(
-    z.xor([
-      SearchOperatorGreaterThanSchema,
-      SearchOperatorLessThanSchema,
-      SearchOperatorIsNullTSchema,
-      SearchOperatorIsNotNullTSchema,
-      SearchOperatorIsSchema,
-      SearchOperatorIsNotSchema,
-    ]),
-  )
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     discriminator: {
       propertyName: 'operator',
@@ -216,23 +217,26 @@ const SearchOperatorIsFalseSchema = z
   .openapi({ required: ['operator'] })
   .openapi('SearchOperatorIsFalse')
 
-const SearchOperatorBooleanSchema = z
-  .unknown()
-  .check((ctx) => {
-    const val = ctx.value
-    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-      if (!Object.hasOwn(val, 'operator')) {
-        ctx.issues.push({ ...{ code: 'custom' }, input: val })
-      }
-      if (Object.hasOwn(val, 'operator')) {
-        const Schema = z.string()
-        if (!Schema.safeParse(Reflect.get(val, 'operator')).success) {
+const SearchOperatorBooleanSchema = (() => {
+  const Schema = z.xor([SearchOperatorIsTrueSchema, SearchOperatorIsFalseSchema])
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const val = ctx.value
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'operator')) {
           ctx.issues.push({ ...{ code: 'custom' }, input: val })
         }
+        if (Object.hasOwn(val, 'operator')) {
+          const Schema = z.string()
+          if (!Schema.safeParse(Reflect.get(val, 'operator')).success) {
+            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+          }
+        }
       }
-    }
-  })
-  .pipe(z.xor([SearchOperatorIsTrueSchema, SearchOperatorIsFalseSchema]))
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     discriminator: {
       propertyName: 'operator',
@@ -356,32 +360,33 @@ const SearchOperatorIsNotNullSchema = z
   .openapi({ required: ['operator'] })
   .openapi('SearchOperatorIsNotNull')
 
-const SearchOperatorDateSchema = z
-  .unknown()
-  .check((ctx) => {
-    const val = ctx.value
-    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-      if (!Object.hasOwn(val, 'operator')) {
-        ctx.issues.push({ ...{ code: 'custom' }, input: val })
-      }
-      if (Object.hasOwn(val, 'operator')) {
-        const Schema = z.string()
-        if (!Schema.safeParse(Reflect.get(val, 'operator')).success) {
+const SearchOperatorDateSchema = (() => {
+  const Schema = z.xor([
+    SearchOperatorBeforeSchema,
+    SearchOperatorAfterSchema,
+    SearchOperatorIsInTheLastSchema,
+    SearchOperatorIsNotInTheLastSchema,
+    SearchOperatorIsNullSchema,
+    SearchOperatorIsNotNullSchema,
+  ])
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const val = ctx.value
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'operator')) {
           ctx.issues.push({ ...{ code: 'custom' }, input: val })
         }
+        if (Object.hasOwn(val, 'operator')) {
+          const Schema = z.string()
+          if (!Schema.safeParse(Reflect.get(val, 'operator')).success) {
+            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+          }
+        }
       }
-    }
-  })
-  .pipe(
-    z.xor([
-      SearchOperatorBeforeSchema,
-      SearchOperatorAfterSchema,
-      SearchOperatorIsInTheLastSchema,
-      SearchOperatorIsNotInTheLastSchema,
-      SearchOperatorIsNullSchema,
-      SearchOperatorIsNotNullSchema,
-    ]),
-  )
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     discriminator: {
       propertyName: 'operator',
@@ -405,30 +410,31 @@ const SearchConditionReleaseDateSchema: z.ZodType<SearchConditionReleaseDateType
   .openapi({ required: ['releaseDate'] })
   .openapi('SearchConditionReleaseDate')
 
-const SearchOperatorEqualityNullableStringSchema = z
-  .unknown()
-  .check((ctx) => {
-    const val = ctx.value
-    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-      if (!Object.hasOwn(val, 'operator')) {
-        ctx.issues.push({ ...{ code: 'custom' }, input: val })
-      }
-      if (Object.hasOwn(val, 'operator')) {
-        const Schema = z.string()
-        if (!Schema.safeParse(Reflect.get(val, 'operator')).success) {
+const SearchOperatorEqualityNullableStringSchema = (() => {
+  const Schema = z.xor([
+    SearchOperatorIsSchema,
+    SearchOperatorIsNotSchema,
+    SearchOperatorIsNullTSchema,
+    SearchOperatorIsNotNullTSchema,
+  ])
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const val = ctx.value
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'operator')) {
           ctx.issues.push({ ...{ code: 'custom' }, input: val })
         }
+        if (Object.hasOwn(val, 'operator')) {
+          const Schema = z.string()
+          if (!Schema.safeParse(Reflect.get(val, 'operator')).success) {
+            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+          }
+        }
       }
-    }
-  })
-  .pipe(
-    z.xor([
-      SearchOperatorIsSchema,
-      SearchOperatorIsNotSchema,
-      SearchOperatorIsNullTSchema,
-      SearchOperatorIsNotNullTSchema,
-    ]),
-  )
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     discriminator: {
       propertyName: 'operator',

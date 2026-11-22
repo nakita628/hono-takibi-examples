@@ -583,7 +583,7 @@ export const getSensesRoute = createRoute({
                       z
                         .object({
                           Key: z.number().exactOptional().openapi({ example: 51804 }),
-                          Value: z.object({}).exactOptional(),
+                          Value: z.looseObject({}).exactOptional(),
                           definition: z
                             .string()
                             .exactOptional()

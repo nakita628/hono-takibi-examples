@@ -1,85 +1,20 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const FirstPartyMobileApplicationTargetingSchema = z
+const PrivateDataSchema = z
   .object({
-    excludedAppIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'A list of application IDs to be excluded.' }),
-    targetedAppIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'A list of application IDs to be included.' }),
-  })
-  .openapi({
-    description:
-      'Represents a list of targeted and excluded mobile application IDs that publishers own. Mobile application IDs are from App Store and Google Play Store. Android App ID, for example, com.google.android.apps.maps, can be found in Google Play Store URL. iOS App ID (which is a number) can be found at the end of iTunes store URL. First party mobile applications is either included or excluded.',
-    required: [],
-  })
-  .openapi('FirstPartyMobileApplicationTargeting')
-
-type MobileApplicationTargetingType = {
-  firstPartyTargeting?: z.infer<typeof FirstPartyMobileApplicationTargetingSchema>
-}
-
-const DateSchema = z
-  .object({
-    day: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-      }),
-    month: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
-      }),
-    year: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
-    required: [],
-  })
-  .openapi('Date')
-
-const AbsoluteDateRangeSchema = z
-  .object({
-    endDate: DateSchema.exactOptional().openapi({
-      description:
-        'The end date of the range (inclusive). Must be within the 30 days leading up to current date, and must be equal to or after start_date.',
-    }),
-    startDate: DateSchema.exactOptional().openapi({
-      description:
-        'The start date of the range (inclusive). Must be within the 30 days leading up to current date, and must be equal to or before end_date.',
-    }),
-  })
-  .openapi({
-    description:
-      'An absolute date range, specified by its start date and end date. The supported range of dates begins 30 days before today and ends today. Validity checked upon filter set creation. If a filter set with an absolute date range is run at a later date more than 30 days after start_date, it will fail.',
-    required: [],
-  })
-  .openapi('AbsoluteDateRange')
-
-const AcceptProposalRequestSchema = z
-  .object({
-    proposalRevision: z
+    referenceId: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The last known client revision number of the proposal.' }),
+      .openapi({
+        description:
+          'A buyer or seller specified reference ID. This can be queried in the list operations (max-length: 1024 unicode code units).',
+      }),
   })
-  .openapi({ description: 'Request to accept a proposal.', required: [] })
-  .openapi('AcceptProposalRequest')
+  .openapi({
+    description: 'Buyers are allowed to store certain types of private data in a proposal/deal.',
+    required: [],
+  })
+  .openapi('PrivateData')
 
 const AdSizeSchema = z
   .object({
@@ -105,6 +40,772 @@ const AdSizeSchema = z
   .openapi({ description: 'Represents size of a single ad slot, or a creative.', required: [] })
   .openapi('AdSize')
 
+const CreativeSpecificationSchema = z
+  .object({
+    creativeCompanionSizes: z
+      .array(AdSizeSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Companion sizes may be filled in only when this is a video creative.',
+      }),
+    creativeSize: AdSizeSchema.exactOptional().openapi({
+      description: 'The size of the creative.',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents information for a creative that is associated with a Programmatic Guaranteed/Preferred Deal in Ad Manager.',
+    required: [],
+  })
+  .openapi('CreativeSpecification')
+
+const CreativeRestrictionsSchema = z
+  .object({
+    creativeFormat: z
+      .enum(['CREATIVE_FORMAT_UNSPECIFIED', 'DISPLAY', 'VIDEO'])
+      .exactOptional()
+      .openapi({
+        description: 'The format of the environment that the creatives will be displayed in.',
+      }),
+    creativeSpecifications: z.array(CreativeSpecificationSchema).exactOptional(),
+    skippableAdType: z
+      .enum(['SKIPPABLE_AD_TYPE_UNSPECIFIED', 'SKIPPABLE', 'INSTREAM_SELECT', 'NOT_SKIPPABLE'])
+      .exactOptional()
+      .openapi({ description: 'Skippable video ads allow viewers to skip ads after 5 seconds.' }),
+  })
+  .openapi({
+    description:
+      "Represents creative restrictions associated to Programmatic Guaranteed/ Preferred Deal in Ad Manager. This doesn't apply to Private Auction and AdX Preferred Deals.",
+    required: [],
+  })
+  .openapi('CreativeRestrictions')
+
+const DealPauseStatusSchema = z
+  .object({
+    buyerPauseReason: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The buyer's reason for pausing, if the buyer paused the deal." }),
+    firstPausedBy: z
+      .enum(['BUYER_SELLER_ROLE_UNSPECIFIED', 'BUYER', 'SELLER'])
+      .exactOptional()
+      .openapi({ description: 'The role of the person who first paused this deal.' }),
+    hasBuyerPaused: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True, if the buyer has paused the deal unilaterally.' }),
+    hasSellerPaused: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True, if the seller has paused the deal unilaterally.' }),
+    sellerPauseReason: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The seller's reason for pausing, if the seller paused the deal." }),
+  })
+  .openapi({
+    description:
+      'Tracks which parties (if any) have paused a deal. The deal is considered paused if either hasBuyerPaused or hasSellPaused is true.',
+    required: [],
+  })
+  .openapi('DealPauseStatus')
+
+const DealServingMetadataSchema = z
+  .object({
+    dealPauseStatus: DealPauseStatusSchema.exactOptional().openapi({
+      description: 'Output only. Tracks which parties (if any) have paused a deal.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    description: 'Message captures metadata about the serving status of a deal.',
+    required: [],
+  })
+  .openapi('DealServingMetadata')
+
+const MoneySchema = z
+  .object({
+    currencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The three-letter currency code defined in ISO 4217.' }),
+    nanos: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.',
+      }),
+    units: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
+      }),
+  })
+  .openapi({ description: 'Represents an amount of money with its currency type.', required: [] })
+  .openapi('Money')
+
+const PriceSchema = z
+  .object({
+    amount: MoneySchema.exactOptional().openapi({
+      description: 'The actual price with currency specified.',
+    }),
+    pricingType: z
+      .enum(['PRICING_TYPE_UNSPECIFIED', 'COST_PER_MILLE', 'COST_PER_DAY'])
+      .exactOptional()
+      .openapi({ description: 'The pricing type for the deal/product. (default: CPM)' }),
+  })
+  .openapi({
+    description: 'Represents a price and a pricing type for a product / deal.',
+    required: [],
+  })
+  .openapi('Price')
+
+const BuyerSchema = z
+  .object({
+    accountId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Authorized Buyers account ID of the buyer.' }),
+  })
+  .openapi({
+    description:
+      'Represents a buyer of inventory. Each buyer is identified by a unique Authorized Buyers account ID.',
+    required: [],
+  })
+  .openapi('Buyer')
+
+const PricePerBuyerSchema = z
+  .object({
+    advertiserIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of advertisers for this price when associated with this buyer. If empty, all advertisers with this buyer pay this price.',
+      }),
+    buyer: BuyerSchema.exactOptional().openapi({
+      description:
+        "The buyer who will pay this price. If unset, all buyers can pay this price (if the advertisers match, and there's no more specific rule matching the buyer).",
+    }),
+    price: PriceSchema.exactOptional().openapi({ description: 'The specified price.' }),
+  })
+  .openapi({
+    description:
+      'Used to specify pricing rules for buyers/advertisers. Each PricePerBuyer in a product can become 0 or 1 deals. To check if there is a PricePerBuyer for a particular buyer or buyer/advertiser pair, we look for the most specific matching rule - we first look for a rule matching the buyer and advertiser, next a rule with the buyer but an empty advertiser list, and otherwise look for a matching rule where no buyer is set.',
+    required: [],
+  })
+  .openapi('PricePerBuyer')
+
+const GuaranteedFixedPriceTermsSchema = z
+  .object({
+    fixedPrices: z
+      .array(PricePerBuyerSchema)
+      .exactOptional()
+      .openapi({ description: 'Fixed price for the specified buyer.' }),
+    guaranteedImpressions: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Guaranteed impressions as a percentage. This is the percentage of guaranteed looks that the buyer is guaranteeing to buy.',
+      }),
+    guaranteedLooks: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Count of guaranteed looks. Required for deal, optional for product.',
+      }),
+    impressionCap: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The lifetime impression cap for CPM sponsorship deals. The deal will stop serving when the cap is reached.',
+      }),
+    minimumDailyLooks: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Daily minimum looks for CPD deal types.' }),
+    percentShareOfVoice: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "For sponsorship deals, this is the percentage of the seller's eligible impressions that the deal will serve until the cap is reached.",
+      }),
+    reservationType: z
+      .enum(['RESERVATION_TYPE_UNSPECIFIED', 'STANDARD', 'SPONSORSHIP'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The reservation type for a Programmatic Guaranteed deal. This indicates whether the number of impressions is fixed, or a percent of available impressions. If not specified, the default reservation type is STANDARD.',
+      }),
+  })
+  .openapi({ description: 'Terms for Programmatic Guaranteed Deals.', required: [] })
+  .openapi('GuaranteedFixedPriceTerms')
+
+const NonGuaranteedAuctionTermsSchema = z
+  .object({
+    autoOptimizePrivateAuction: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if open auction buyers are allowed to compete with invited buyers in this private auction.',
+      }),
+    reservePricesPerBuyer: z
+      .array(PricePerBuyerSchema)
+      .exactOptional()
+      .openapi({ description: 'Reserve price for the specified buyer.' }),
+  })
+  .openapi({
+    description:
+      'Terms for Private Auctions. Note that Private Auctions can be created only by the seller, but they can be returned in a get or list request.',
+    required: [],
+  })
+  .openapi('NonGuaranteedAuctionTerms')
+
+const NonGuaranteedFixedPriceTermsSchema = z
+  .object({
+    fixedPrices: z
+      .array(PricePerBuyerSchema)
+      .exactOptional()
+      .openapi({ description: 'Fixed price for the specified buyer.' }),
+  })
+  .openapi({ description: 'Terms for Preferred Deals.', required: [] })
+  .openapi('NonGuaranteedFixedPriceTerms')
+
+const DealTermsSchema = z
+  .object({
+    brandingType: z
+      .enum(['BRANDING_TYPE_UNSPECIFIED', 'BRANDED', 'SEMI_TRANSPARENT'])
+      .exactOptional()
+      .openapi({ description: 'Visibility of the URL in bid requests. (default: BRANDED)' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Publisher provided description for the terms.' }),
+    estimatedGrossSpend: PriceSchema.exactOptional().openapi({
+      description:
+        'Non-binding estimate of the estimated gross spend for this deal. Can be set by buyer or seller.',
+    }),
+    estimatedImpressionsPerDay: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Non-binding estimate of the impressions served per day. Can be set by buyer or seller.',
+      }),
+    guaranteedFixedPriceTerms: GuaranteedFixedPriceTermsSchema.exactOptional().openapi({
+      description: 'The terms for guaranteed fixed price deals.',
+    }),
+    nonGuaranteedAuctionTerms: NonGuaranteedAuctionTermsSchema.exactOptional().openapi({
+      description: 'The terms for non-guaranteed auction deals.',
+    }),
+    nonGuaranteedFixedPriceTerms: NonGuaranteedFixedPriceTermsSchema.exactOptional().openapi({
+      description: 'The terms for non-guaranteed fixed price deals.',
+    }),
+    sellerTimeZone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time zone name. For deals with Cost Per Day billing, defines the time zone used to mark the boundaries of a day. It should be an IANA TZ name, such as "America/Los_Angeles". For more information, see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.',
+      }),
+  })
+  .openapi({
+    description:
+      'The deal terms specify the details of a Product/deal. They specify things like price per buyer, the type of pricing model (for example, fixed price, auction) and expected impressions from the publisher.',
+    required: [],
+  })
+  .openapi('DealTerms')
+
+const FrequencyCapSchema = z
+  .object({
+    maxImpressions: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of impressions that can be served to a user within the specified time period.',
+      }),
+    numTimeUnits: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The amount of time, in the units specified by time_unit_type. Defines the amount of time over which impressions per user are counted and capped.',
+      }),
+    timeUnitType: z
+      .enum([
+        'TIME_UNIT_TYPE_UNSPECIFIED',
+        'MINUTE',
+        'HOUR',
+        'DAY',
+        'WEEK',
+        'MONTH',
+        'LIFETIME',
+        'POD',
+        'STREAM',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The time unit. Along with num_time_units defines the amount of time over which impressions per user are counted and capped.',
+      }),
+  })
+  .openapi({ description: 'Frequency cap.', required: [] })
+  .openapi('FrequencyCap')
+
+const DeliveryControlSchema = z
+  .object({
+    creativeBlockingLevel: z
+      .enum([
+        'CREATIVE_BLOCKING_LEVEL_UNSPECIFIED',
+        'PUBLISHER_BLOCKING_RULES',
+        'ADX_POLICY_BLOCKING_ONLY',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Specified the creative blocking levels to be applied.',
+        readOnly: true,
+      }),
+    deliveryRateType: z
+      .enum(['DELIVERY_RATE_TYPE_UNSPECIFIED', 'EVENLY', 'FRONT_LOADED', 'AS_FAST_AS_POSSIBLE'])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Specifies how the impression delivery will be paced.',
+        readOnly: true,
+      }),
+    frequencyCaps: z
+      .array(FrequencyCapSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. Specifies any frequency caps.', readOnly: true }),
+  })
+  .openapi({
+    description: 'Message contains details about how the deals will be paced.',
+    required: [],
+  })
+  .openapi('DeliveryControl')
+
+const ContactInformationSchema = z
+  .object({
+    email: z.string().exactOptional().openapi({ description: 'Email address for the contact.' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the contact.' }),
+  })
+  .openapi({
+    description: 'Contains information on how a buyer or seller can be reached.',
+    required: [],
+  })
+  .openapi('ContactInformation')
+
+const CriteriaTargetingSchema = z
+  .object({
+    excludedCriteriaIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'A list of numeric IDs to be excluded.' }),
+    targetedCriteriaIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'A list of numeric IDs to be included.' }),
+  })
+  .openapi({
+    description:
+      'Generic targeting used for targeting dimensions that contains a list of included and excluded numeric IDs.',
+    required: [],
+  })
+  .openapi('CriteriaTargeting')
+
+const InventorySizeTargetingSchema = z
+  .object({
+    excludedInventorySizes: z
+      .array(AdSizeSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of inventory sizes to be excluded.' }),
+    targetedInventorySizes: z
+      .array(AdSizeSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of inventory sizes to be included.' }),
+  })
+  .openapi({
+    description:
+      'Represents the size of an ad unit that can be targeted on an ad request. It only applies to Private Auction, AdX Preferred Deals and Auction Packages. This targeting does not apply to Programmatic Guaranteed and Preferred Deals in Ad Manager.',
+    required: [],
+  })
+  .openapi('InventorySizeTargeting')
+
+const FirstPartyMobileApplicationTargetingSchema = z
+  .object({
+    excludedAppIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'A list of application IDs to be excluded.' }),
+    targetedAppIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'A list of application IDs to be included.' }),
+  })
+  .openapi({
+    description:
+      'Represents a list of targeted and excluded mobile application IDs that publishers own. Mobile application IDs are from App Store and Google Play Store. Android App ID, for example, com.google.android.apps.maps, can be found in Google Play Store URL. iOS App ID (which is a number) can be found at the end of iTunes store URL. First party mobile applications is either included or excluded.',
+    required: [],
+  })
+  .openapi('FirstPartyMobileApplicationTargeting')
+
+const MobileApplicationTargetingSchema = z
+  .object({
+    firstPartyTargeting: FirstPartyMobileApplicationTargetingSchema.exactOptional().openapi({
+      description:
+        'Publisher owned apps to be targeted or excluded by the publisher to display the ads in.',
+    }),
+  })
+  .openapi({ description: 'Mobile application targeting settings.', required: [] })
+  .openapi('MobileApplicationTargeting')
+
+const UrlTargetingSchema = z
+  .object({
+    excludedUrls: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'A list of URLs to be excluded.' }),
+    targetedUrls: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'A list of URLs to be included.' }),
+  })
+  .openapi({
+    description:
+      "Represents a list of targeted and excluded URLs (for example, google.com). For Private Auction and AdX Preferred Deals, URLs are either included or excluded. For Programmatic Guaranteed and Preferred Deals, this doesn't apply.",
+    required: [],
+  })
+  .openapi('UrlTargeting')
+
+const PlacementTargetingSchema = z
+  .object({
+    mobileApplicationTargeting: MobileApplicationTargetingSchema.exactOptional().openapi({
+      description:
+        "Mobile application targeting information in a deal. This doesn't apply to Auction Packages.",
+    }),
+    urlTargeting: UrlTargetingSchema.exactOptional().openapi({
+      description: 'URLs to be included/excluded.',
+    }),
+  })
+  .openapi({
+    description:
+      "Represents targeting about where the ads can appear, for example, certain sites or mobile applications. Different placement targeting types will be logically OR'ed.",
+    required: [],
+  })
+  .openapi('PlacementTargeting')
+
+const OperatingSystemTargetingSchema = z
+  .object({
+    operatingSystemCriteria: CriteriaTargetingSchema.exactOptional().openapi({
+      description: 'IDs of operating systems to be included/excluded.',
+    }),
+    operatingSystemVersionCriteria: CriteriaTargetingSchema.exactOptional().openapi({
+      description: 'IDs of operating system versions to be included/excluded.',
+    }),
+  })
+  .openapi({ description: 'Represents targeting information for operating systems.', required: [] })
+  .openapi('OperatingSystemTargeting')
+
+const TechnologyTargetingSchema = z
+  .object({
+    deviceCapabilityTargeting: CriteriaTargetingSchema.exactOptional().openapi({
+      description: 'IDs of device capabilities to be included/excluded.',
+    }),
+    deviceCategoryTargeting: CriteriaTargetingSchema.exactOptional().openapi({
+      description: 'IDs of device categories to be included/excluded.',
+    }),
+    operatingSystemTargeting: OperatingSystemTargetingSchema.exactOptional().openapi({
+      description: 'Operating system related targeting information.',
+    }),
+  })
+  .openapi({ description: 'Represents targeting about various types of technology.', required: [] })
+  .openapi('TechnologyTargeting')
+
+const VideoTargetingSchema = z
+  .object({
+    excludedPositionTypes: z
+      .array(z.enum(['POSITION_TYPE_UNSPECIFIED', 'PREROLL', 'MIDROLL', 'POSTROLL']))
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of video positions to be excluded. Position types can either be included or excluded (XOR).',
+      }),
+    targetedPositionTypes: z
+      .array(z.enum(['POSITION_TYPE_UNSPECIFIED', 'PREROLL', 'MIDROLL', 'POSTROLL']))
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of video positions to be included. When the included list is present, the excluded list must be empty. When the excluded list is present, the included list must be empty.',
+      }),
+  })
+  .openapi({ description: 'Represents targeting information about video.', required: [] })
+  .openapi('VideoTargeting')
+
+const MarketplaceTargetingSchema = z
+  .object({
+    geoTargeting: CriteriaTargetingSchema.exactOptional().openapi({
+      description: 'Geo criteria IDs to be included/excluded.',
+    }),
+    inventorySizeTargeting: InventorySizeTargetingSchema.exactOptional().openapi({
+      description: 'Inventory sizes to be included/excluded.',
+    }),
+    placementTargeting: PlacementTargetingSchema.exactOptional().openapi({
+      description: 'Placement targeting information, for example, URL, mobile applications.',
+    }),
+    technologyTargeting: TechnologyTargetingSchema.exactOptional().openapi({
+      description:
+        'Technology targeting information, for example, operating system, device category.',
+    }),
+    videoTargeting: VideoTargetingSchema.exactOptional().openapi({
+      description: 'Video targeting information.',
+    }),
+  })
+  .openapi({
+    description:
+      'Targeting represents different criteria that can be used by advertisers to target ad inventory. For example, they can choose to target ad requests only if the user is in the US. Multiple types of targeting are always applied as a logical AND, unless noted otherwise.',
+    required: [],
+  })
+  .openapi('MarketplaceTargeting')
+
+const SizeSchema = z
+  .object({
+    height: z.int32().exactOptional().openapi({ description: 'The height of the creative.' }),
+    width: z.int32().exactOptional().openapi({ description: 'The width of the creative' }),
+  })
+  .openapi({
+    description:
+      'Message depicting the size of the creative. The units of width and height depend on the type of the targeting.',
+    required: [],
+  })
+  .openapi('Size')
+
+const CreativeSizeSchema = z
+  .object({
+    allowedFormats: z
+      .array(z.enum(['UNKNOWN', 'AUDIO']))
+      .exactOptional()
+      .openapi({
+        description:
+          'What formats are allowed by the publisher. If this repeated field is empty then all formats are allowed. For example, if this field contains AllowedFormatType.AUDIO then the publisher only allows an audio ad (without any video).',
+      }),
+    companionSizes: z
+      .array(SizeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'For video creatives specifies the sizes of companion ads (if present). Companion sizes may be filled in only when creative_size_type = VIDEO',
+      }),
+    creativeSizeType: z
+      .enum(['CREATIVE_SIZE_TYPE_UNSPECIFIED', 'REGULAR', 'INTERSTITIAL', 'VIDEO', 'NATIVE'])
+      .exactOptional()
+      .openapi({ description: 'The creative size type.' }),
+    nativeTemplate: z
+      .enum([
+        'UNKNOWN_NATIVE_TEMPLATE',
+        'NATIVE_CONTENT_AD',
+        'NATIVE_APP_INSTALL_AD',
+        'NATIVE_VIDEO_CONTENT_AD',
+        'NATIVE_VIDEO_APP_INSTALL_AD',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The native template for this creative. It will have a value only if creative_size_type = CreativeSizeType.NATIVE.',
+      }),
+    size: SizeSchema.exactOptional().openapi({
+      description: 'For regular or video creative size type, specifies the size of the creative',
+    }),
+    skippableAdType: z
+      .enum(['SKIPPABLE_AD_TYPE_UNSPECIFIED', 'GENERIC', 'INSTREAM_SELECT', 'NOT_SKIPPABLE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of skippable ad for this creative. It will have a value only if creative_size_type = CreativeSizeType.VIDEO.',
+      }),
+  })
+  .openapi({ description: 'Specifies the size of the creative.', required: [] })
+  .openapi('CreativeSize')
+
+const TimeOfDaySchema = z
+  .object({
+    hours: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
+      }),
+    minutes: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Minutes of hour of day. Must be from 0 to 59.' }),
+    nanos: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.',
+      }),
+    seconds: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.',
+    required: [],
+  })
+  .openapi('TimeOfDay')
+
+const DayPartSchema = z
+  .object({
+    dayOfWeek: z
+      .enum([
+        'DAY_OF_WEEK_UNSPECIFIED',
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'SUNDAY',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'The day of the week to target. If unspecified, applicable to all days.',
+      }),
+    endTime: TimeOfDaySchema.exactOptional().openapi({
+      description:
+        'The ending time of the day for the ad to show (minute level granularity). The end time is exclusive. This field is not available for filtering in PQL queries.',
+    }),
+    startTime: TimeOfDaySchema.exactOptional().openapi({
+      description:
+        'The starting time of day for the ad to show (minute level granularity). The start time is inclusive. This field is not available for filtering in PQL queries.',
+    }),
+  })
+  .openapi({
+    description:
+      'Daypart targeting message that specifies if the ad can be shown only during certain parts of a day/week.',
+    required: [],
+  })
+  .openapi('DayPart')
+
+const DayPartTargetingSchema = z
+  .object({
+    dayParts: z
+      .array(DayPartSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of day part targeting criterion.' }),
+    timeZoneType: z
+      .enum(['TIME_ZONE_SOURCE_UNSPECIFIED', 'PUBLISHER', 'USER'])
+      .exactOptional()
+      .openapi({ description: 'The timezone to use for interpreting the day part targeting.' }),
+  })
+  .openapi({ description: 'Specifies the day part targeting criteria.', required: [] })
+  .openapi('DayPartTargeting')
+
+const TargetingValueSchema = z
+  .object({
+    creativeSizeValue: CreativeSizeSchema.exactOptional().openapi({
+      description:
+        'The creative size value to include/exclude. Filled in when key = GOOG_CREATIVE_SIZE',
+    }),
+    dayPartTargetingValue: DayPartTargetingSchema.exactOptional().openapi({
+      description:
+        'The daypart targeting to include / exclude. Filled in when the key is GOOG_DAYPART_TARGETING. The definition of this targeting is derived from the structure used by Ad Manager.',
+    }),
+    longValue: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The long value to include/exclude.' }),
+    stringValue: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The string value to include/exclude.' }),
+  })
+  .openapi({
+    description: 'A polymorphic targeting value used as part of Shared Targeting.',
+    required: [],
+  })
+  .openapi('TargetingValue')
+
+const TargetingCriteriaSchema = z
+  .object({
+    exclusions: z
+      .array(TargetingValueSchema)
+      .exactOptional()
+      .openapi({
+        description: "The list of values to exclude from targeting. Each value is AND'd together.",
+      }),
+    inclusions: z
+      .array(TargetingValueSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "The list of value to include as part of the targeting. Each value is OR'd together.",
+      }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The key representing the shared targeting criterion. Targeting criteria defined by Google ad servers will begin with GOOG_. Third parties may define their own keys. A list of permissible keys along with the acceptable values will be provided as part of the external documentation.',
+      }),
+  })
+  .openapi({
+    description:
+      'Advertisers can target different attributes of an ad slot. For example, they can choose to show ads only if the user is in the U.S. Such targeting criteria can be specified as part of Shared Targeting.',
+    required: [],
+  })
+  .openapi('TargetingCriteria')
+
+type DealType = {
+  availableEndTime?: string
+  availableStartTime?: string
+  buyerPrivateData?: z.infer<typeof PrivateDataSchema>
+  createProductId?: string
+  createProductRevision?: string
+  createTime?: string
+  creativePreApprovalPolicy?:
+    | 'CREATIVE_PRE_APPROVAL_POLICY_UNSPECIFIED'
+    | 'SELLER_PRE_APPROVAL_REQUIRED'
+    | 'SELLER_PRE_APPROVAL_NOT_REQUIRED'
+  creativeRestrictions?: z.infer<typeof CreativeRestrictionsSchema>
+  creativeSafeFrameCompatibility?:
+    | 'CREATIVE_SAFE_FRAME_COMPATIBILITY_UNSPECIFIED'
+    | 'COMPATIBLE'
+    | 'INCOMPATIBLE'
+  dealId?: string
+  dealServingMetadata?: z.infer<typeof DealServingMetadataSchema>
+  dealTerms?: z.infer<typeof DealTermsSchema>
+  deliveryControl?: z.infer<typeof DeliveryControlSchema>
+  description?: string
+  displayName?: string
+  externalDealId?: string
+  isSetupComplete?: boolean
+  programmaticCreativeSource?:
+    | 'PROGRAMMATIC_CREATIVE_SOURCE_UNSPECIFIED'
+    | 'ADVERTISER'
+    | 'PUBLISHER'
+  proposalId?: string
+  sellerContacts?: z.infer<typeof ContactInformationSchema>[]
+  syndicationProduct?: 'SYNDICATION_PRODUCT_UNSPECIFIED' | 'CONTENT' | 'MOBILE' | 'VIDEO' | 'GAMES'
+  targeting?: z.infer<typeof MarketplaceTargetingSchema>
+  targetingCriterion?: z.infer<typeof TargetingCriteriaSchema>[]
+  updateTime?: string
+  webPropertyCode?: string
+}
+
 const AdTechnologyProvidersSchema = z
   .object({
     detectedProviderIds: z
@@ -124,78 +825,6 @@ const AdTechnologyProvidersSchema = z
   })
   .openapi({ description: 'Detected ad technology provider information.', required: [] })
   .openapi('AdTechnologyProviders')
-
-const CreativeDealAssociationSchema = z
-  .object({
-    accountId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The account the creative belongs to.' }),
-    creativeId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the creative associated with the deal.' }),
-    dealsId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The externalDealId for the deal associated with the creative.' }),
-  })
-  .openapi({ description: 'The association between a creative and a deal.', required: [] })
-  .openapi('CreativeDealAssociation')
-
-const AddDealAssociationRequestSchema = z
-  .object({
-    association: CreativeDealAssociationSchema.exactOptional().openapi({
-      description: 'The association between a creative and a deal that should be added.',
-    }),
-  })
-  .openapi({ description: 'A request for associating a deal and a creative.', required: [] })
-  .openapi('AddDealAssociationRequest')
-
-const NoteSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp for when this note was created.',
-        readOnly: true,
-      }),
-    creatorRole: z
-      .enum(['BUYER_SELLER_ROLE_UNSPECIFIED', 'BUYER', 'SELLER'])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The role of the person (buyer/seller) creating the note.',
-        readOnly: true,
-      }),
-    note: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The actual note to attach. (max-length: 1024 unicode code units) Note: This field may be set only when creating the resource. Modifying this field while updating the resource will result in an error.',
-      }),
-    noteId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The unique ID for the note.', readOnly: true }),
-    proposalRevision: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The revision number of the proposal when the note is created.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'A proposal may be associated to several notes.', required: [] })
-  .openapi('Note')
-
-const AddNoteRequestSchema = z
-  .object({
-    note: NoteSchema.exactOptional().openapi({ description: 'Details of the note to add.' }),
-  })
-  .openapi({ description: 'Request message for adding a note to a given proposal.', required: [] })
-  .openapi('AddNoteRequest')
 
 const AppContextSchema = z
   .object({
@@ -222,336 +851,6 @@ const AuctionContextSchema = z
     required: [],
   })
   .openapi('AuctionContext')
-
-const MetricValueSchema = z
-  .object({
-    value: z.string().exactOptional().openapi({ description: 'The expected value of the metric.' }),
-    variance: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The variance (for example, square of the standard deviation) of the metric value. If value is exact, variance is 0. Can be used to calculate margin of error as a percentage of value, using the following formula, where Z is the standard constant that depends on the preferred size of the confidence interval (for example, for 90% confidence interval, use Z = 1.645): marginOfError = 100 * Z * sqrt(variance) / value',
-      }),
-  })
-  .openapi({
-    description:
-      'A metric value, with an expected value and a variance; represents a count that may be either exact or estimated (for example, when sampled).',
-    required: [],
-  })
-  .openapi('MetricValue')
-
-const TimeIntervalSchema = z
-  .object({
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The timestamp marking the end of the range (exclusive) for which data is included.',
-      }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The timestamp marking the start of the range (inclusive) for which data is included.',
-      }),
-  })
-  .openapi({ description: 'An interval of time, with an absolute start and end.', required: [] })
-  .openapi('TimeInterval')
-
-const RowDimensionsSchema = z
-  .object({
-    publisherIdentifier: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The publisher identifier for this row, if a breakdown by [BreakdownDimension.PUBLISHER_IDENTIFIER](https://developers.google.com/authorized-buyers/apis/reference/rest/v2beta1/bidders.accounts.filterSets#FilterSet.BreakdownDimension) was requested.',
-      }),
-    timeInterval: TimeIntervalSchema.exactOptional().openapi({
-      description: 'The time interval that this row represents.',
-    }),
-  })
-  .openapi({
-    description:
-      'A response may include multiple rows, breaking down along various dimensions. Encapsulates the values of all dimensions for a given row.',
-    required: [],
-  })
-  .openapi('RowDimensions')
-
-const BidMetricsRowSchema = z
-  .object({
-    bids: MetricValueSchema.exactOptional().openapi({
-      description: 'The number of bids that Ad Exchange received from the buyer.',
-    }),
-    bidsInAuction: MetricValueSchema.exactOptional().openapi({
-      description: 'The number of bids that were permitted to compete in the auction.',
-    }),
-    billedImpressions: MetricValueSchema.exactOptional().openapi({
-      description:
-        'The number of bids for which the buyer was billed. Also called valid impressions as invalid impressions are not billed.',
-    }),
-    impressionsWon: MetricValueSchema.exactOptional().openapi({
-      description: 'The number of bids that won the auction.',
-    }),
-    measurableImpressions: MetricValueSchema.exactOptional().openapi({
-      description:
-        'The number of bids for which the corresponding impression was measurable for viewability (as defined by Active View).',
-    }),
-    reachedQueries: MetricValueSchema.exactOptional().openapi({
-      description:
-        'The number of bids that won the auction and also won the mediation waterfall (if any).',
-    }),
-    rowDimensions: RowDimensionsSchema.exactOptional().openapi({
-      description: 'The values of all dimensions associated with metric values in this row.',
-    }),
-    viewableImpressions: MetricValueSchema.exactOptional().openapi({
-      description:
-        'The number of bids for which the corresponding impression was viewable (as defined by Active View).',
-    }),
-  })
-  .openapi({
-    description:
-      'The set of metrics that are measured in numbers of bids, representing how many bids with the specified dimension values were considered eligible at each stage of the bidding funnel;',
-    required: [],
-  })
-  .openapi('BidMetricsRow')
-
-const BidResponseWithoutBidsStatusRowSchema = z
-  .object({
-    impressionCount: MetricValueSchema.exactOptional().openapi({
-      description:
-        'The number of impressions for which there was a bid response with the specified status.',
-    }),
-    rowDimensions: RowDimensionsSchema.exactOptional().openapi({
-      description: 'The values of all dimensions associated with metric values in this row.',
-    }),
-    status: z
-      .enum([
-        'STATUS_UNSPECIFIED',
-        'RESPONSES_WITHOUT_BIDS',
-        'RESPONSES_WITHOUT_BIDS_FOR_ACCOUNT',
-        'RESPONSES_WITHOUT_BIDS_FOR_DEAL',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The status specifying why the bid responses were considered to have no applicable bids.',
-      }),
-  })
-  .openapi({
-    description:
-      'The number of impressions with the specified dimension values that were considered to have no applicable bids, as described by the specified status.',
-    required: [],
-  })
-  .openapi('BidResponseWithoutBidsStatusRow')
-
-const BuyerSchema = z
-  .object({
-    accountId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Authorized Buyers account ID of the buyer.' }),
-  })
-  .openapi({
-    description:
-      'Represents a buyer of inventory. Each buyer is identified by a unique Authorized Buyers account ID.',
-    required: [],
-  })
-  .openapi('Buyer')
-
-const CalloutStatusRowSchema = z
-  .object({
-    calloutStatusId: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the callout status. See [callout-status-codes](https://developers.google.com/authorized-buyers/rtb/downloads/callout-status-codes).',
-      }),
-    impressionCount: MetricValueSchema.exactOptional().openapi({
-      description:
-        'The number of impressions for which there was a bid request or bid response with the specified callout status.',
-    }),
-    rowDimensions: RowDimensionsSchema.exactOptional().openapi({
-      description: 'The values of all dimensions associated with metric values in this row.',
-    }),
-  })
-  .openapi({
-    description:
-      'The number of impressions with the specified dimension values where the corresponding bid request or bid response was not successful, as described by the specified callout status.',
-    required: [],
-  })
-  .openapi('CalloutStatusRow')
-
-const CancelNegotiationRequestSchema = z
-  .object({})
-  .openapi({ description: 'Request to cancel an ongoing negotiation.' })
-  .openapi('CancelNegotiationRequest')
-
-const ClientSchema = z
-  .object({
-    clientAccountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The globally-unique numerical ID of the client. The value of this field is ignored in create and update operations.',
-      }),
-    clientName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name used to represent this client to publishers. You may have multiple clients that map to the same entity, but for each client the combination of `clientName` and entity must be unique. You can specify this field as empty. Maximum length of 255 characters is allowed.',
-      }),
-    entityId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Numerical identifier of the client entity. The entity can be an advertiser, a brand, or an agency. This identifier is unique among all the entities with the same type. The value of this field is ignored if the entity type is not provided. A list of all known advertisers with their identifiers is available in the [advertisers.txt](https://storage.googleapis.com/adx-rtb-dictionaries/advertisers.txt) file. A list of all known brands with their identifiers is available in the [brands.txt](https://storage.googleapis.com/adx-rtb-dictionaries/brands.txt) file. A list of all known agencies with their identifiers is available in the [agencies.txt](https://storage.googleapis.com/adx-rtb-dictionaries/agencies.txt) file.',
-      }),
-    entityName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the entity. This field is automatically fetched based on the type and ID. The value of this field is ignored in create and update operations.',
-      }),
-    entityType: z
-      .enum([
-        'ENTITY_TYPE_UNSPECIFIED',
-        'ADVERTISER',
-        'BRAND',
-        'AGENCY',
-        'ENTITY_TYPE_UNCLASSIFIED',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'An optional field for specifying the type of the client entity: `ADVERTISER`, `BRAND`, or `AGENCY`.',
-      }),
-    partnerClientId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional arbitrary unique identifier of this client buyer from the standpoint of its Ad Exchange sponsor buyer. This field can be used to associate a client buyer with the identifier in the namespace of its sponsor buyer, lookup client buyers by that identifier and verify whether an Ad Exchange counterpart of a given client buyer already exists. If present, must be unique among all the client buyers for its Ad Exchange sponsor buyer.',
-      }),
-    role: z
-      .enum([
-        'CLIENT_ROLE_UNSPECIFIED',
-        'CLIENT_DEAL_VIEWER',
-        'CLIENT_DEAL_NEGOTIATOR',
-        'CLIENT_DEAL_APPROVER',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The role which is assigned to the client buyer. Each role implies a set of permissions granted to the client. Must be one of `CLIENT_DEAL_VIEWER`, `CLIENT_DEAL_NEGOTIATOR` or `CLIENT_DEAL_APPROVER`.',
-      }),
-    status: z
-      .enum(['CLIENT_STATUS_UNSPECIFIED', 'DISABLED', 'ACTIVE'])
-      .exactOptional()
-      .openapi({ description: 'The status of the client buyer.' }),
-    visibleToSeller: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the client buyer will be visible to sellers.' }),
-  })
-  .openapi({
-    description:
-      'A client resource represents a client buyer—an agency, a brand, or an advertiser customer of the sponsor buyer. Users associated with the client buyer have restricted access to the Marketplace and certain other sections of the Authorized Buyers UI based on the role granted to the client buyer. All fields are required unless otherwise specified.',
-    required: [],
-  })
-  .openapi('Client')
-
-const ClientUserSchema = z
-  .object({
-    clientAccountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Numerical account ID of the client buyer with which the user is associated; the buyer must be a client of the current sponsor buyer. The value of this field is ignored in an update operation.',
-      }),
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "User's email address. The value of this field is ignored in an update operation.",
-      }),
-    status: z
-      .enum(['USER_STATUS_UNSPECIFIED', 'PENDING', 'ACTIVE', 'DISABLED'])
-      .exactOptional()
-      .openapi({ description: 'The status of the client user.' }),
-    userId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique numerical ID of the client user that has accepted an invitation. The value of this field is ignored in an update operation.',
-      }),
-  })
-  .openapi({
-    description:
-      'A client user is created under a client buyer and has restricted access to the Marketplace and certain other sections of the Authorized Buyers UI based on the role granted to the associated client buyer. The only way a new client user can be created is through accepting an email invitation (see the accounts.clients.invitations.create method). All fields are required unless otherwise specified.',
-    required: [],
-  })
-  .openapi('ClientUser')
-
-const ClientUserInvitationSchema = z
-  .object({
-    clientAccountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Numerical account ID of the client buyer that the invited user is associated with. The value of this field is ignored in create operations.',
-      }),
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The email address to which the invitation is sent. Email addresses should be unique among all client users under each sponsor buyer.',
-      }),
-    invitationId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique numerical ID of the invitation that is sent to the user. The value of this field is ignored in create operations.',
-      }),
-  })
-  .openapi({
-    description:
-      'An invitation for a new client user to get access to the Authorized Buyers UI. All fields are required unless otherwise specified.',
-    required: [],
-  })
-  .openapi('ClientUserInvitation')
-
-const CompleteSetupRequestSchema = z
-  .object({})
-  .openapi({
-    description: "Request message for indicating that the proposal's setup step is complete.",
-  })
-  .openapi('CompleteSetupRequest')
-
-const ContactInformationSchema = z
-  .object({
-    email: z.string().exactOptional().openapi({ description: 'Email address for the contact.' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the contact.' }),
-  })
-  .openapi({
-    description: 'Contains information on how a buyer or seller can be reached.',
-    required: [],
-  })
-  .openapi('ContactInformation')
 
 const LocationContextSchema = z
   .object({
@@ -1091,735 +1390,141 @@ const CreativeSchema = z
   .openapi({ description: 'A creative and its classification data.', required: [] })
   .openapi('Creative')
 
-const CreativeSpecificationSchema = z
-  .object({
-    creativeCompanionSizes: z
-      .array(AdSizeSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Companion sizes may be filled in only when this is a video creative.',
-      }),
-    creativeSize: AdSizeSchema.exactOptional().openapi({
-      description: 'The size of the creative.',
-    }),
-  })
-  .openapi({
-    description:
-      'Represents information for a creative that is associated with a Programmatic Guaranteed/Preferred Deal in Ad Manager.',
-    required: [],
-  })
-  .openapi('CreativeSpecification')
+type ListCreativesResponseType = {
+  creatives?: z.infer<typeof CreativeSchema>[]
+  nextPageToken?: string
+}
 
-const CreativeRestrictionsSchema = z
+const SellerSchema = z
   .object({
-    creativeFormat: z
-      .enum(['CREATIVE_FORMAT_UNSPECIFIED', 'DISPLAY', 'VIDEO'])
-      .exactOptional()
-      .openapi({
-        description: 'The format of the environment that the creatives will be displayed in.',
-      }),
-    creativeSpecifications: z.array(CreativeSpecificationSchema).exactOptional(),
-    skippableAdType: z
-      .enum(['SKIPPABLE_AD_TYPE_UNSPECIFIED', 'SKIPPABLE', 'INSTREAM_SELECT', 'NOT_SKIPPABLE'])
-      .exactOptional()
-      .openapi({ description: 'Skippable video ads allow viewers to skip ads after 5 seconds.' }),
-  })
-  .openapi({
-    description:
-      "Represents creative restrictions associated to Programmatic Guaranteed/ Preferred Deal in Ad Manager. This doesn't apply to Private Auction and AdX Preferred Deals.",
-    required: [],
-  })
-  .openapi('CreativeRestrictions')
-
-const SizeSchema = z
-  .object({
-    height: z.int32().exactOptional().openapi({ description: 'The height of the creative.' }),
-    width: z.int32().exactOptional().openapi({ description: 'The width of the creative' }),
-  })
-  .openapi({
-    description:
-      'Message depicting the size of the creative. The units of width and height depend on the type of the targeting.',
-    required: [],
-  })
-  .openapi('Size')
-
-const CreativeSizeSchema = z
-  .object({
-    allowedFormats: z
-      .array(z.enum(['UNKNOWN', 'AUDIO']))
-      .exactOptional()
-      .openapi({
-        description:
-          'What formats are allowed by the publisher. If this repeated field is empty then all formats are allowed. For example, if this field contains AllowedFormatType.AUDIO then the publisher only allows an audio ad (without any video).',
-      }),
-    companionSizes: z
-      .array(SizeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'For video creatives specifies the sizes of companion ads (if present). Companion sizes may be filled in only when creative_size_type = VIDEO',
-      }),
-    creativeSizeType: z
-      .enum(['CREATIVE_SIZE_TYPE_UNSPECIFIED', 'REGULAR', 'INTERSTITIAL', 'VIDEO', 'NATIVE'])
-      .exactOptional()
-      .openapi({ description: 'The creative size type.' }),
-    nativeTemplate: z
-      .enum([
-        'UNKNOWN_NATIVE_TEMPLATE',
-        'NATIVE_CONTENT_AD',
-        'NATIVE_APP_INSTALL_AD',
-        'NATIVE_VIDEO_CONTENT_AD',
-        'NATIVE_VIDEO_APP_INSTALL_AD',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The native template for this creative. It will have a value only if creative_size_type = CreativeSizeType.NATIVE.',
-      }),
-    size: SizeSchema.exactOptional().openapi({
-      description: 'For regular or video creative size type, specifies the size of the creative',
-    }),
-    skippableAdType: z
-      .enum(['SKIPPABLE_AD_TYPE_UNSPECIFIED', 'GENERIC', 'INSTREAM_SELECT', 'NOT_SKIPPABLE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of skippable ad for this creative. It will have a value only if creative_size_type = CreativeSizeType.VIDEO.',
-      }),
-  })
-  .openapi({ description: 'Specifies the size of the creative.', required: [] })
-  .openapi('CreativeSize')
-
-const CreativeStatusRowSchema = z
-  .object({
-    bidCount: MetricValueSchema.exactOptional().openapi({
-      description: 'The number of bids with the specified status.',
-    }),
-    creativeStatusId: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the creative status. See [creative-status-codes](https://developers.google.com/authorized-buyers/rtb/downloads/creative-status-codes).',
-      }),
-    rowDimensions: RowDimensionsSchema.exactOptional().openapi({
-      description: 'The values of all dimensions associated with metric values in this row.',
-    }),
-  })
-  .openapi({
-    description:
-      'The number of bids with the specified dimension values that did not win the auction (either were filtered pre-auction or lost the auction), as described by the specified creative status.',
-    required: [],
-  })
-  .openapi('CreativeStatusRow')
-
-const CriteriaTargetingSchema = z
-  .object({
-    excludedCriteriaIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'A list of numeric IDs to be excluded.' }),
-    targetedCriteriaIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'A list of numeric IDs to be included.' }),
-  })
-  .openapi({
-    description:
-      'Generic targeting used for targeting dimensions that contains a list of included and excluded numeric IDs.',
-    required: [],
-  })
-  .openapi('CriteriaTargeting')
-
-const TimeOfDaySchema = z
-  .object({
-    hours: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-      }),
-    minutes: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Minutes of hour of day. Must be from 0 to 59.' }),
-    nanos: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.',
-      }),
-    seconds: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.',
-    required: [],
-  })
-  .openapi('TimeOfDay')
-
-const DayPartSchema = z
-  .object({
-    dayOfWeek: z
-      .enum([
-        'DAY_OF_WEEK_UNSPECIFIED',
-        'MONDAY',
-        'TUESDAY',
-        'WEDNESDAY',
-        'THURSDAY',
-        'FRIDAY',
-        'SATURDAY',
-        'SUNDAY',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'The day of the week to target. If unspecified, applicable to all days.',
-      }),
-    endTime: TimeOfDaySchema.exactOptional().openapi({
-      description:
-        'The ending time of the day for the ad to show (minute level granularity). The end time is exclusive. This field is not available for filtering in PQL queries.',
-    }),
-    startTime: TimeOfDaySchema.exactOptional().openapi({
-      description:
-        'The starting time of day for the ad to show (minute level granularity). The start time is inclusive. This field is not available for filtering in PQL queries.',
-    }),
-  })
-  .openapi({
-    description:
-      'Daypart targeting message that specifies if the ad can be shown only during certain parts of a day/week.',
-    required: [],
-  })
-  .openapi('DayPart')
-
-const DayPartTargetingSchema = z
-  .object({
-    dayParts: z
-      .array(DayPartSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of day part targeting criterion.' }),
-    timeZoneType: z
-      .enum(['TIME_ZONE_SOURCE_UNSPECIFIED', 'PUBLISHER', 'USER'])
-      .exactOptional()
-      .openapi({ description: 'The timezone to use for interpreting the day part targeting.' }),
-  })
-  .openapi({ description: 'Specifies the day part targeting criteria.', required: [] })
-  .openapi('DayPartTargeting')
-
-const PrivateDataSchema = z
-  .object({
-    referenceId: z
+    accountId: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'A buyer or seller specified reference ID. This can be queried in the list operations (max-length: 1024 unicode code units).',
+          'The unique ID for the seller. The seller fills in this field. The seller account ID is then available to buyer in the product.',
       }),
-  })
-  .openapi({
-    description: 'Buyers are allowed to store certain types of private data in a proposal/deal.',
-    required: [],
-  })
-  .openapi('PrivateData')
-
-const DealPauseStatusSchema = z
-  .object({
-    buyerPauseReason: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The buyer's reason for pausing, if the buyer paused the deal." }),
-    firstPausedBy: z
-      .enum(['BUYER_SELLER_ROLE_UNSPECIFIED', 'BUYER', 'SELLER'])
-      .exactOptional()
-      .openapi({ description: 'The role of the person who first paused this deal.' }),
-    hasBuyerPaused: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True, if the buyer has paused the deal unilaterally.' }),
-    hasSellerPaused: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True, if the seller has paused the deal unilaterally.' }),
-    sellerPauseReason: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The seller's reason for pausing, if the seller paused the deal." }),
-  })
-  .openapi({
-    description:
-      'Tracks which parties (if any) have paused a deal. The deal is considered paused if either hasBuyerPaused or hasSellPaused is true.',
-    required: [],
-  })
-  .openapi('DealPauseStatus')
-
-const DealServingMetadataSchema = z
-  .object({
-    dealPauseStatus: DealPauseStatusSchema.exactOptional().openapi({
-      description: 'Output only. Tracks which parties (if any) have paused a deal.',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    description: 'Message captures metadata about the serving status of a deal.',
-    required: [],
-  })
-  .openapi('DealServingMetadata')
-
-const MoneySchema = z
-  .object({
-    currencyCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The three-letter currency code defined in ISO 4217.' }),
-    nanos: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.',
-      }),
-    units: z
+    subAccountId: z
       .string()
       .exactOptional()
       .openapi({
-        description:
-          'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
-      }),
-  })
-  .openapi({ description: 'Represents an amount of money with its currency type.', required: [] })
-  .openapi('Money')
-
-const PriceSchema = z
-  .object({
-    amount: MoneySchema.exactOptional().openapi({
-      description: 'The actual price with currency specified.',
-    }),
-    pricingType: z
-      .enum(['PRICING_TYPE_UNSPECIFIED', 'COST_PER_MILLE', 'COST_PER_DAY'])
-      .exactOptional()
-      .openapi({ description: 'The pricing type for the deal/product. (default: CPM)' }),
-  })
-  .openapi({
-    description: 'Represents a price and a pricing type for a product / deal.',
-    required: [],
-  })
-  .openapi('Price')
-
-const PricePerBuyerSchema = z
-  .object({
-    advertiserIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of advertisers for this price when associated with this buyer. If empty, all advertisers with this buyer pay this price.',
-      }),
-    buyer: BuyerSchema.exactOptional().openapi({
-      description:
-        "The buyer who will pay this price. If unset, all buyers can pay this price (if the advertisers match, and there's no more specific rule matching the buyer).",
-    }),
-    price: PriceSchema.exactOptional().openapi({ description: 'The specified price.' }),
-  })
-  .openapi({
-    description:
-      'Used to specify pricing rules for buyers/advertisers. Each PricePerBuyer in a product can become 0 or 1 deals. To check if there is a PricePerBuyer for a particular buyer or buyer/advertiser pair, we look for the most specific matching rule - we first look for a rule matching the buyer and advertiser, next a rule with the buyer but an empty advertiser list, and otherwise look for a matching rule where no buyer is set.',
-    required: [],
-  })
-  .openapi('PricePerBuyer')
-
-const GuaranteedFixedPriceTermsSchema = z
-  .object({
-    fixedPrices: z
-      .array(PricePerBuyerSchema)
-      .exactOptional()
-      .openapi({ description: 'Fixed price for the specified buyer.' }),
-    guaranteedImpressions: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Guaranteed impressions as a percentage. This is the percentage of guaranteed looks that the buyer is guaranteeing to buy.',
-      }),
-    guaranteedLooks: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Count of guaranteed looks. Required for deal, optional for product.',
-      }),
-    impressionCap: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The lifetime impression cap for CPM sponsorship deals. The deal will stop serving when the cap is reached.',
-      }),
-    minimumDailyLooks: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Daily minimum looks for CPD deal types.' }),
-    percentShareOfVoice: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "For sponsorship deals, this is the percentage of the seller's eligible impressions that the deal will serve until the cap is reached.",
-      }),
-    reservationType: z
-      .enum(['RESERVATION_TYPE_UNSPECIFIED', 'STANDARD', 'SPONSORSHIP'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The reservation type for a Programmatic Guaranteed deal. This indicates whether the number of impressions is fixed, or a percent of available impressions. If not specified, the default reservation type is STANDARD.',
-      }),
-  })
-  .openapi({ description: 'Terms for Programmatic Guaranteed Deals.', required: [] })
-  .openapi('GuaranteedFixedPriceTerms')
-
-const NonGuaranteedAuctionTermsSchema = z
-  .object({
-    autoOptimizePrivateAuction: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if open auction buyers are allowed to compete with invited buyers in this private auction.',
-      }),
-    reservePricesPerBuyer: z
-      .array(PricePerBuyerSchema)
-      .exactOptional()
-      .openapi({ description: 'Reserve price for the specified buyer.' }),
-  })
-  .openapi({
-    description:
-      'Terms for Private Auctions. Note that Private Auctions can be created only by the seller, but they can be returned in a get or list request.',
-    required: [],
-  })
-  .openapi('NonGuaranteedAuctionTerms')
-
-const NonGuaranteedFixedPriceTermsSchema = z
-  .object({
-    fixedPrices: z
-      .array(PricePerBuyerSchema)
-      .exactOptional()
-      .openapi({ description: 'Fixed price for the specified buyer.' }),
-  })
-  .openapi({ description: 'Terms for Preferred Deals.', required: [] })
-  .openapi('NonGuaranteedFixedPriceTerms')
-
-const DealTermsSchema = z
-  .object({
-    brandingType: z
-      .enum(['BRANDING_TYPE_UNSPECIFIED', 'BRANDED', 'SEMI_TRANSPARENT'])
-      .exactOptional()
-      .openapi({ description: 'Visibility of the URL in bid requests. (default: BRANDED)' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Publisher provided description for the terms.' }),
-    estimatedGrossSpend: PriceSchema.exactOptional().openapi({
-      description:
-        'Non-binding estimate of the estimated gross spend for this deal. Can be set by buyer or seller.',
-    }),
-    estimatedImpressionsPerDay: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Non-binding estimate of the impressions served per day. Can be set by buyer or seller.',
-      }),
-    guaranteedFixedPriceTerms: GuaranteedFixedPriceTermsSchema.exactOptional().openapi({
-      description: 'The terms for guaranteed fixed price deals.',
-    }),
-    nonGuaranteedAuctionTerms: NonGuaranteedAuctionTermsSchema.exactOptional().openapi({
-      description: 'The terms for non-guaranteed auction deals.',
-    }),
-    nonGuaranteedFixedPriceTerms: NonGuaranteedFixedPriceTermsSchema.exactOptional().openapi({
-      description: 'The terms for non-guaranteed fixed price deals.',
-    }),
-    sellerTimeZone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The time zone name. For deals with Cost Per Day billing, defines the time zone used to mark the boundaries of a day. It should be an IANA TZ name, such as "America/Los_Angeles". For more information, see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.',
-      }),
-  })
-  .openapi({
-    description:
-      'The deal terms specify the details of a Product/deal. They specify things like price per buyer, the type of pricing model (for example, fixed price, auction) and expected impressions from the publisher.',
-    required: [],
-  })
-  .openapi('DealTerms')
-
-const FrequencyCapSchema = z
-  .object({
-    maxImpressions: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of impressions that can be served to a user within the specified time period.',
-      }),
-    numTimeUnits: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The amount of time, in the units specified by time_unit_type. Defines the amount of time over which impressions per user are counted and capped.',
-      }),
-    timeUnitType: z
-      .enum([
-        'TIME_UNIT_TYPE_UNSPECIFIED',
-        'MINUTE',
-        'HOUR',
-        'DAY',
-        'WEEK',
-        'MONTH',
-        'LIFETIME',
-        'POD',
-        'STREAM',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The time unit. Along with num_time_units defines the amount of time over which impressions per user are counted and capped.',
-      }),
-  })
-  .openapi({ description: 'Frequency cap.', required: [] })
-  .openapi('FrequencyCap')
-
-const DeliveryControlSchema = z
-  .object({
-    creativeBlockingLevel: z
-      .enum([
-        'CREATIVE_BLOCKING_LEVEL_UNSPECIFIED',
-        'PUBLISHER_BLOCKING_RULES',
-        'ADX_POLICY_BLOCKING_ONLY',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Specified the creative blocking levels to be applied.',
+        description: 'Output only. Ad manager network code for the seller.',
         readOnly: true,
       }),
-    deliveryRateType: z
-      .enum(['DELIVERY_RATE_TYPE_UNSPECIFIED', 'EVENLY', 'FRONT_LOADED', 'AS_FAST_AS_POSSIBLE'])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Specifies how the impression delivery will be paced.',
-        readOnly: true,
-      }),
-    frequencyCaps: z
-      .array(FrequencyCapSchema)
-      .exactOptional()
-      .openapi({ description: 'Output only. Specifies any frequency caps.', readOnly: true }),
-  })
-  .openapi({
-    description: 'Message contains details about how the deals will be paced.',
-    required: [],
-  })
-  .openapi('DeliveryControl')
-
-const InventorySizeTargetingSchema = z
-  .object({
-    excludedInventorySizes: z
-      .array(AdSizeSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of inventory sizes to be excluded.' }),
-    targetedInventorySizes: z
-      .array(AdSizeSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of inventory sizes to be included.' }),
   })
   .openapi({
     description:
-      'Represents the size of an ad unit that can be targeted on an ad request. It only applies to Private Auction, AdX Preferred Deals and Auction Packages. This targeting does not apply to Programmatic Guaranteed and Preferred Deals in Ad Manager.',
+      'Represents a seller of inventory. Each seller is identified by a unique Ad Manager account ID.',
     required: [],
   })
-  .openapi('InventorySizeTargeting')
+  .openapi('Seller')
 
-const MobileApplicationTargetingSchema: z.ZodType<MobileApplicationTargetingType> = z
-  .lazy(() =>
-    z
-      .object({
-        firstPartyTargeting: FirstPartyMobileApplicationTargetingSchema.exactOptional().openapi({
-          description:
-            'Publisher owned apps to be targeted or excluded by the publisher to display the ads in.',
-        }),
-      })
-      .openapi({ description: 'Mobile application targeting settings.', required: [] }),
-  )
-  .openapi('MobileApplicationTargeting')
+type ProductType = {
+  availableEndTime?: string
+  availableStartTime?: string
+  createTime?: string
+  creatorContacts?: z.infer<typeof ContactInformationSchema>[]
+  displayName?: string
+  hasCreatorSignedOff?: boolean
+  productId?: string
+  productRevision?: string
+  publisherProfileId?: string
+  seller?: z.infer<typeof SellerSchema>
+  syndicationProduct?: 'SYNDICATION_PRODUCT_UNSPECIFIED' | 'CONTENT' | 'MOBILE' | 'VIDEO' | 'GAMES'
+  targetingCriterion?: z.infer<typeof TargetingCriteriaSchema>[]
+  terms?: z.infer<typeof DealTermsSchema>
+  updateTime?: string
+  webPropertyCode?: string
+}
 
-const UrlTargetingSchema = z
+const ProductSchema: z.ZodType<ProductType> = z
   .object({
-    excludedUrls: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'A list of URLs to be excluded.' }),
-    targetedUrls: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'A list of URLs to be included.' }),
-  })
-  .openapi({
-    description:
-      "Represents a list of targeted and excluded URLs (for example, google.com). For Private Auction and AdX Preferred Deals, URLs are either included or excluded. For Programmatic Guaranteed and Preferred Deals, this doesn't apply.",
-    required: [],
-  })
-  .openapi('UrlTargeting')
-
-const PlacementTargetingSchema = z
-  .object({
-    mobileApplicationTargeting: MobileApplicationTargetingSchema.exactOptional().openapi({
-      description:
-        "Mobile application targeting information in a deal. This doesn't apply to Auction Packages.",
-    }),
-    urlTargeting: UrlTargetingSchema.exactOptional().openapi({
-      description: 'URLs to be included/excluded.',
-    }),
-  })
-  .openapi({
-    description:
-      "Represents targeting about where the ads can appear, for example, certain sites or mobile applications. Different placement targeting types will be logically OR'ed.",
-    required: [],
-  })
-  .openapi('PlacementTargeting')
-
-const OperatingSystemTargetingSchema = z
-  .object({
-    operatingSystemCriteria: CriteriaTargetingSchema.exactOptional().openapi({
-      description: 'IDs of operating systems to be included/excluded.',
-    }),
-    operatingSystemVersionCriteria: CriteriaTargetingSchema.exactOptional().openapi({
-      description: 'IDs of operating system versions to be included/excluded.',
-    }),
-  })
-  .openapi({ description: 'Represents targeting information for operating systems.', required: [] })
-  .openapi('OperatingSystemTargeting')
-
-const TechnologyTargetingSchema = z
-  .object({
-    deviceCapabilityTargeting: CriteriaTargetingSchema.exactOptional().openapi({
-      description: 'IDs of device capabilities to be included/excluded.',
-    }),
-    deviceCategoryTargeting: CriteriaTargetingSchema.exactOptional().openapi({
-      description: 'IDs of device categories to be included/excluded.',
-    }),
-    operatingSystemTargeting: OperatingSystemTargetingSchema.exactOptional().openapi({
-      description: 'Operating system related targeting information.',
-    }),
-  })
-  .openapi({ description: 'Represents targeting about various types of technology.', required: [] })
-  .openapi('TechnologyTargeting')
-
-const VideoTargetingSchema = z
-  .object({
-    excludedPositionTypes: z
-      .array(z.enum(['POSITION_TYPE_UNSPECIFIED', 'PREROLL', 'MIDROLL', 'POSTROLL']))
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of video positions to be excluded. Position types can either be included or excluded (XOR).',
-      }),
-    targetedPositionTypes: z
-      .array(z.enum(['POSITION_TYPE_UNSPECIFIED', 'PREROLL', 'MIDROLL', 'POSTROLL']))
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of video positions to be included. When the included list is present, the excluded list must be empty. When the excluded list is present, the included list must be empty.',
-      }),
-  })
-  .openapi({ description: 'Represents targeting information about video.', required: [] })
-  .openapi('VideoTargeting')
-
-const MarketplaceTargetingSchema = z
-  .object({
-    geoTargeting: CriteriaTargetingSchema.exactOptional().openapi({
-      description: 'Geo criteria IDs to be included/excluded.',
-    }),
-    inventorySizeTargeting: InventorySizeTargetingSchema.exactOptional().openapi({
-      description: 'Inventory sizes to be included/excluded.',
-    }),
-    placementTargeting: PlacementTargetingSchema.exactOptional().openapi({
-      description: 'Placement targeting information, for example, URL, mobile applications.',
-    }),
-    technologyTargeting: TechnologyTargetingSchema.exactOptional().openapi({
-      description:
-        'Technology targeting information, for example, operating system, device category.',
-    }),
-    videoTargeting: VideoTargetingSchema.exactOptional().openapi({
-      description: 'Video targeting information.',
-    }),
-  })
-  .openapi({
-    description:
-      'Targeting represents different criteria that can be used by advertisers to target ad inventory. For example, they can choose to target ad requests only if the user is in the US. Multiple types of targeting are always applied as a logical AND, unless noted otherwise.',
-    required: [],
-  })
-  .openapi('MarketplaceTargeting')
-
-const TargetingValueSchema = z
-  .object({
-    creativeSizeValue: CreativeSizeSchema.exactOptional().openapi({
-      description:
-        'The creative size value to include/exclude. Filled in when key = GOOG_CREATIVE_SIZE',
-    }),
-    dayPartTargetingValue: DayPartTargetingSchema.exactOptional().openapi({
-      description:
-        'The daypart targeting to include / exclude. Filled in when the key is GOOG_DAYPART_TARGETING. The definition of this targeting is derived from the structure used by Ad Manager.',
-    }),
-    longValue: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The long value to include/exclude.' }),
-    stringValue: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The string value to include/exclude.' }),
-  })
-  .openapi({
-    description: 'A polymorphic targeting value used as part of Shared Targeting.',
-    required: [],
-  })
-  .openapi('TargetingValue')
-
-const TargetingCriteriaSchema = z
-  .object({
-    exclusions: z
-      .array(TargetingValueSchema)
-      .exactOptional()
-      .openapi({
-        description: "The list of values to exclude from targeting. Each value is AND'd together.",
-      }),
-    inclusions: z
-      .array(TargetingValueSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "The list of value to include as part of the targeting. Each value is OR'd together.",
-      }),
-    key: z
+    availableEndTime: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The key representing the shared targeting criterion. Targeting criteria defined by Google ad servers will begin with GOOG_. Third parties may define their own keys. A list of permissible keys along with the acceptable values will be provided as part of the external documentation.',
+          'The proposed end time for the deal. The field will be truncated to the order of seconds during serving.',
+      }),
+    availableStartTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Inventory availability dates. The start time will be truncated to seconds during serving. Thus, a field specified as 3:23:34.456 (HH:mm:ss.SSS) will be truncated to 3:23:34 when serving.',
+      }),
+    createTime: z.string().exactOptional().openapi({ description: 'Creation time.' }),
+    creatorContacts: z
+      .array(ContactInformationSchema)
+      .exactOptional()
+      .openapi({ description: 'Optional contact information for the creator of this product.' }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The display name for this product as set by the seller.' }),
+    hasCreatorSignedOff: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the creator has already signed off on the product, then the buyer can finalize the deal by accepting the product as is. When copying to a proposal, if any of the terms are changed, then auto_finalize is automatically set to false.',
+      }),
+    productId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique ID for the product.' }),
+    productRevision: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The revision number of the product (auto-assigned by Marketplace).',
+      }),
+    publisherProfileId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An ID which can be used by the Publisher Profile API to get more information about the seller that created this product.',
+      }),
+    seller: SellerSchema.exactOptional().openapi({
+      description: 'Information about the seller that created this product.',
+    }),
+    syndicationProduct: z
+      .enum(['SYNDICATION_PRODUCT_UNSPECIFIED', 'CONTENT', 'MOBILE', 'VIDEO', 'GAMES'])
+      .exactOptional()
+      .openapi({ description: 'The syndication product associated with the deal.' }),
+    targetingCriterion: z
+      .array(TargetingCriteriaSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Targeting that is shared between the buyer and the seller. Each targeting criterion has a specified key and for each key there is a list of inclusion value or exclusion values.',
+      }),
+    terms: DealTermsSchema.exactOptional().openapi({
+      description: 'The negotiable terms of the deal.',
+    }),
+    updateTime: z.string().exactOptional().openapi({ description: 'Time of last update.' }),
+    webPropertyCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The web-property code for the seller. This needs to be copied as is when adding a new deal to a proposal.',
       }),
   })
   .openapi({
     description:
-      'Advertisers can target different attributes of an ad slot. For example, they can choose to show ads only if the user is in the U.S. Such targeting criteria can be specified as part of Shared Targeting.',
+      'A product is a segment of inventory that a seller wants to sell. It is associated with certain terms and targeting information which helps the buyer know more about the inventory.',
     required: [],
   })
-  .openapi('TargetingCriteria')
+  .openapi('Product')
 
-const DealSchema = z
+type ListProductsResponseType = {
+  nextPageToken?: string
+  products?: z.infer<typeof ProductSchema>[]
+}
+
+const DealSchema: z.ZodType<DealType> = z
   .object({
     availableEndTime: z
       .string()
@@ -1978,8 +1683,624 @@ const DealSchema = z
   })
   .openapi('Deal')
 
+const NoteSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp for when this note was created.',
+        readOnly: true,
+      }),
+    creatorRole: z
+      .enum(['BUYER_SELLER_ROLE_UNSPECIFIED', 'BUYER', 'SELLER'])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The role of the person (buyer/seller) creating the note.',
+        readOnly: true,
+      }),
+    note: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The actual note to attach. (max-length: 1024 unicode code units) Note: This field may be set only when creating the resource. Modifying this field while updating the resource will result in an error.',
+      }),
+    noteId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The unique ID for the note.', readOnly: true }),
+    proposalRevision: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The revision number of the proposal when the note is created.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'A proposal may be associated to several notes.', required: [] })
+  .openapi('Note')
+
+type ProposalType = {
+  billedBuyer?: z.infer<typeof BuyerSchema>
+  buyer?: z.infer<typeof BuyerSchema>
+  buyerContacts?: z.infer<typeof ContactInformationSchema>[]
+  buyerPrivateData?: z.infer<typeof PrivateDataSchema>
+  deals?: z.infer<typeof DealSchema>[]
+  displayName?: string
+  isRenegotiating?: boolean
+  isSetupComplete?: boolean
+  lastUpdaterOrCommentorRole?: 'BUYER_SELLER_ROLE_UNSPECIFIED' | 'BUYER' | 'SELLER'
+  notes?: z.infer<typeof NoteSchema>[]
+  originatorRole?: 'BUYER_SELLER_ROLE_UNSPECIFIED' | 'BUYER' | 'SELLER'
+  privateAuctionId?: string
+  proposalId?: string
+  proposalRevision?: string
+  proposalState?:
+    | 'PROPOSAL_STATE_UNSPECIFIED'
+    | 'PROPOSED'
+    | 'BUYER_ACCEPTED'
+    | 'SELLER_ACCEPTED'
+    | 'CANCELED'
+    | 'FINALIZED'
+  seller?: z.infer<typeof SellerSchema>
+  sellerContacts?: z.infer<typeof ContactInformationSchema>[]
+  termsAndConditions?: string
+  updateTime?: string
+}
+
+const ProposalSchema: z.ZodType<ProposalType> = z
+  .object({
+    billedBuyer: BuyerSchema.exactOptional().openapi({
+      description: 'Output only. Reference to the buyer that will get billed for this proposal.',
+      readOnly: true,
+    }),
+    buyer: BuyerSchema.exactOptional().openapi({
+      description:
+        'Reference to the buyer on the proposal. Note: This field may be set only when creating the resource. Modifying this field while updating the resource will result in an error.',
+    }),
+    buyerContacts: z
+      .array(ContactInformationSchema)
+      .exactOptional()
+      .openapi({ description: 'Contact information for the buyer.' }),
+    buyerPrivateData: PrivateDataSchema.exactOptional().openapi({
+      description: 'Private data for buyer. (hidden from seller).',
+    }),
+    deals: z
+      .array(DealSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The deals associated with this proposal. For Private Auction proposals (whose deals have NonGuaranteedAuctionTerms), there will only be one deal.',
+      }),
+    displayName: z.string().exactOptional().openapi({ description: 'The name for the proposal.' }),
+    isRenegotiating: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. True if the proposal is being renegotiated.',
+        readOnly: true,
+      }),
+    isSetupComplete: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. True, if the buyside inventory setup is complete for this proposal.',
+        readOnly: true,
+      }),
+    lastUpdaterOrCommentorRole: z
+      .enum(['BUYER_SELLER_ROLE_UNSPECIFIED', 'BUYER', 'SELLER'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The role of the last user that either updated the proposal or left a comment.',
+        readOnly: true,
+      }),
+    notes: z
+      .array(NoteSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The notes associated with this proposal.',
+        readOnly: true,
+      }),
+    originatorRole: z
+      .enum(['BUYER_SELLER_ROLE_UNSPECIFIED', 'BUYER', 'SELLER'])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Indicates whether the buyer/seller created the proposal.',
+        readOnly: true,
+      }),
+    privateAuctionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Private auction ID if this proposal is a private auction proposal.',
+        readOnly: true,
+      }),
+    proposalId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The unique ID of the proposal.', readOnly: true }),
+    proposalRevision: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The revision number for the proposal. Each update to the proposal or the deal causes the proposal revision number to auto-increment. The buyer keeps track of the last revision number they know of and pass it in when making an update. If the head revision number on the server has since incremented, then an ABORTED error is returned during the update operation to let the buyer know that a subsequent update was made.',
+        readOnly: true,
+      }),
+    proposalState: z
+      .enum([
+        'PROPOSAL_STATE_UNSPECIFIED',
+        'PROPOSED',
+        'BUYER_ACCEPTED',
+        'SELLER_ACCEPTED',
+        'CANCELED',
+        'FINALIZED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Output only. The current state of the proposal.', readOnly: true }),
+    seller: SellerSchema.exactOptional().openapi({
+      description:
+        'Reference to the seller on the proposal. Note: This field may be set only when creating the resource. Modifying this field while updating the resource will result in an error.',
+    }),
+    sellerContacts: z
+      .array(ContactInformationSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. Contact information for the seller.', readOnly: true }),
+    termsAndConditions: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The terms and conditions set by the publisher for this proposal.',
+        readOnly: true,
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time when the proposal was last revised.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      "Represents a proposal in the Marketplace. A proposal is the unit of negotiation between a seller and a buyer and contains deals which are served. Note: You can't update, create, or otherwise modify Private Auction deals through the API. Fields are updatable unless noted otherwise.",
+    required: [],
+  })
+  .openapi('Proposal')
+
+type ListProposalsResponseType = {
+  nextPageToken?: string
+  proposals?: z.infer<typeof ProposalSchema>[]
+}
+
+const DateSchema = z
+  .object({
+    day: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+      }),
+    month: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
+      }),
+    year: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
+    required: [],
+  })
+  .openapi('Date')
+
+const AbsoluteDateRangeSchema = z
+  .object({
+    endDate: DateSchema.exactOptional().openapi({
+      description:
+        'The end date of the range (inclusive). Must be within the 30 days leading up to current date, and must be equal to or after start_date.',
+    }),
+    startDate: DateSchema.exactOptional().openapi({
+      description:
+        'The start date of the range (inclusive). Must be within the 30 days leading up to current date, and must be equal to or before end_date.',
+    }),
+  })
+  .openapi({
+    description:
+      'An absolute date range, specified by its start date and end date. The supported range of dates begins 30 days before today and ends today. Validity checked upon filter set creation. If a filter set with an absolute date range is run at a later date more than 30 days after start_date, it will fail.',
+    required: [],
+  })
+  .openapi('AbsoluteDateRange')
+
+const AcceptProposalRequestSchema = z
+  .object({
+    proposalRevision: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The last known client revision number of the proposal.' }),
+  })
+  .openapi({ description: 'Request to accept a proposal.', required: [] })
+  .openapi('AcceptProposalRequest')
+
+const CreativeDealAssociationSchema = z
+  .object({
+    accountId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The account the creative belongs to.' }),
+    creativeId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the creative associated with the deal.' }),
+    dealsId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The externalDealId for the deal associated with the creative.' }),
+  })
+  .openapi({ description: 'The association between a creative and a deal.', required: [] })
+  .openapi('CreativeDealAssociation')
+
+const AddDealAssociationRequestSchema = z
+  .object({
+    association: CreativeDealAssociationSchema.exactOptional().openapi({
+      description: 'The association between a creative and a deal that should be added.',
+    }),
+  })
+  .openapi({ description: 'A request for associating a deal and a creative.', required: [] })
+  .openapi('AddDealAssociationRequest')
+
+const AddNoteRequestSchema = z
+  .object({
+    note: NoteSchema.exactOptional().openapi({ description: 'Details of the note to add.' }),
+  })
+  .openapi({ description: 'Request message for adding a note to a given proposal.', required: [] })
+  .openapi('AddNoteRequest')
+
+const MetricValueSchema = z
+  .object({
+    value: z.string().exactOptional().openapi({ description: 'The expected value of the metric.' }),
+    variance: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The variance (for example, square of the standard deviation) of the metric value. If value is exact, variance is 0. Can be used to calculate margin of error as a percentage of value, using the following formula, where Z is the standard constant that depends on the preferred size of the confidence interval (for example, for 90% confidence interval, use Z = 1.645): marginOfError = 100 * Z * sqrt(variance) / value',
+      }),
+  })
+  .openapi({
+    description:
+      'A metric value, with an expected value and a variance; represents a count that may be either exact or estimated (for example, when sampled).',
+    required: [],
+  })
+  .openapi('MetricValue')
+
+const TimeIntervalSchema = z
+  .object({
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The timestamp marking the end of the range (exclusive) for which data is included.',
+      }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The timestamp marking the start of the range (inclusive) for which data is included.',
+      }),
+  })
+  .openapi({ description: 'An interval of time, with an absolute start and end.', required: [] })
+  .openapi('TimeInterval')
+
+const RowDimensionsSchema = z
+  .object({
+    publisherIdentifier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The publisher identifier for this row, if a breakdown by [BreakdownDimension.PUBLISHER_IDENTIFIER](https://developers.google.com/authorized-buyers/apis/reference/rest/v2beta1/bidders.accounts.filterSets#FilterSet.BreakdownDimension) was requested.',
+      }),
+    timeInterval: TimeIntervalSchema.exactOptional().openapi({
+      description: 'The time interval that this row represents.',
+    }),
+  })
+  .openapi({
+    description:
+      'A response may include multiple rows, breaking down along various dimensions. Encapsulates the values of all dimensions for a given row.',
+    required: [],
+  })
+  .openapi('RowDimensions')
+
+const BidMetricsRowSchema = z
+  .object({
+    bids: MetricValueSchema.exactOptional().openapi({
+      description: 'The number of bids that Ad Exchange received from the buyer.',
+    }),
+    bidsInAuction: MetricValueSchema.exactOptional().openapi({
+      description: 'The number of bids that were permitted to compete in the auction.',
+    }),
+    billedImpressions: MetricValueSchema.exactOptional().openapi({
+      description:
+        'The number of bids for which the buyer was billed. Also called valid impressions as invalid impressions are not billed.',
+    }),
+    impressionsWon: MetricValueSchema.exactOptional().openapi({
+      description: 'The number of bids that won the auction.',
+    }),
+    measurableImpressions: MetricValueSchema.exactOptional().openapi({
+      description:
+        'The number of bids for which the corresponding impression was measurable for viewability (as defined by Active View).',
+    }),
+    reachedQueries: MetricValueSchema.exactOptional().openapi({
+      description:
+        'The number of bids that won the auction and also won the mediation waterfall (if any).',
+    }),
+    rowDimensions: RowDimensionsSchema.exactOptional().openapi({
+      description: 'The values of all dimensions associated with metric values in this row.',
+    }),
+    viewableImpressions: MetricValueSchema.exactOptional().openapi({
+      description:
+        'The number of bids for which the corresponding impression was viewable (as defined by Active View).',
+    }),
+  })
+  .openapi({
+    description:
+      'The set of metrics that are measured in numbers of bids, representing how many bids with the specified dimension values were considered eligible at each stage of the bidding funnel;',
+    required: [],
+  })
+  .openapi('BidMetricsRow')
+
+const BidResponseWithoutBidsStatusRowSchema = z
+  .object({
+    impressionCount: MetricValueSchema.exactOptional().openapi({
+      description:
+        'The number of impressions for which there was a bid response with the specified status.',
+    }),
+    rowDimensions: RowDimensionsSchema.exactOptional().openapi({
+      description: 'The values of all dimensions associated with metric values in this row.',
+    }),
+    status: z
+      .enum([
+        'STATUS_UNSPECIFIED',
+        'RESPONSES_WITHOUT_BIDS',
+        'RESPONSES_WITHOUT_BIDS_FOR_ACCOUNT',
+        'RESPONSES_WITHOUT_BIDS_FOR_DEAL',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The status specifying why the bid responses were considered to have no applicable bids.',
+      }),
+  })
+  .openapi({
+    description:
+      'The number of impressions with the specified dimension values that were considered to have no applicable bids, as described by the specified status.',
+    required: [],
+  })
+  .openapi('BidResponseWithoutBidsStatusRow')
+
+const CalloutStatusRowSchema = z
+  .object({
+    calloutStatusId: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the callout status. See [callout-status-codes](https://developers.google.com/authorized-buyers/rtb/downloads/callout-status-codes).',
+      }),
+    impressionCount: MetricValueSchema.exactOptional().openapi({
+      description:
+        'The number of impressions for which there was a bid request or bid response with the specified callout status.',
+    }),
+    rowDimensions: RowDimensionsSchema.exactOptional().openapi({
+      description: 'The values of all dimensions associated with metric values in this row.',
+    }),
+  })
+  .openapi({
+    description:
+      'The number of impressions with the specified dimension values where the corresponding bid request or bid response was not successful, as described by the specified callout status.',
+    required: [],
+  })
+  .openapi('CalloutStatusRow')
+
+const CancelNegotiationRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'Request to cancel an ongoing negotiation.' })
+  .openapi('CancelNegotiationRequest')
+
+const ClientSchema = z
+  .object({
+    clientAccountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The globally-unique numerical ID of the client. The value of this field is ignored in create and update operations.',
+      }),
+    clientName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name used to represent this client to publishers. You may have multiple clients that map to the same entity, but for each client the combination of `clientName` and entity must be unique. You can specify this field as empty. Maximum length of 255 characters is allowed.',
+      }),
+    entityId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Numerical identifier of the client entity. The entity can be an advertiser, a brand, or an agency. This identifier is unique among all the entities with the same type. The value of this field is ignored if the entity type is not provided. A list of all known advertisers with their identifiers is available in the [advertisers.txt](https://storage.googleapis.com/adx-rtb-dictionaries/advertisers.txt) file. A list of all known brands with their identifiers is available in the [brands.txt](https://storage.googleapis.com/adx-rtb-dictionaries/brands.txt) file. A list of all known agencies with their identifiers is available in the [agencies.txt](https://storage.googleapis.com/adx-rtb-dictionaries/agencies.txt) file.',
+      }),
+    entityName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the entity. This field is automatically fetched based on the type and ID. The value of this field is ignored in create and update operations.',
+      }),
+    entityType: z
+      .enum([
+        'ENTITY_TYPE_UNSPECIFIED',
+        'ADVERTISER',
+        'BRAND',
+        'AGENCY',
+        'ENTITY_TYPE_UNCLASSIFIED',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'An optional field for specifying the type of the client entity: `ADVERTISER`, `BRAND`, or `AGENCY`.',
+      }),
+    partnerClientId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional arbitrary unique identifier of this client buyer from the standpoint of its Ad Exchange sponsor buyer. This field can be used to associate a client buyer with the identifier in the namespace of its sponsor buyer, lookup client buyers by that identifier and verify whether an Ad Exchange counterpart of a given client buyer already exists. If present, must be unique among all the client buyers for its Ad Exchange sponsor buyer.',
+      }),
+    role: z
+      .enum([
+        'CLIENT_ROLE_UNSPECIFIED',
+        'CLIENT_DEAL_VIEWER',
+        'CLIENT_DEAL_NEGOTIATOR',
+        'CLIENT_DEAL_APPROVER',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The role which is assigned to the client buyer. Each role implies a set of permissions granted to the client. Must be one of `CLIENT_DEAL_VIEWER`, `CLIENT_DEAL_NEGOTIATOR` or `CLIENT_DEAL_APPROVER`.',
+      }),
+    status: z
+      .enum(['CLIENT_STATUS_UNSPECIFIED', 'DISABLED', 'ACTIVE'])
+      .exactOptional()
+      .openapi({ description: 'The status of the client buyer.' }),
+    visibleToSeller: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the client buyer will be visible to sellers.' }),
+  })
+  .openapi({
+    description:
+      'A client resource represents a client buyer—an agency, a brand, or an advertiser customer of the sponsor buyer. Users associated with the client buyer have restricted access to the Marketplace and certain other sections of the Authorized Buyers UI based on the role granted to the client buyer. All fields are required unless otherwise specified.',
+    required: [],
+  })
+  .openapi('Client')
+
+const ClientUserSchema = z
+  .object({
+    clientAccountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Numerical account ID of the client buyer with which the user is associated; the buyer must be a client of the current sponsor buyer. The value of this field is ignored in an update operation.',
+      }),
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "User's email address. The value of this field is ignored in an update operation.",
+      }),
+    status: z
+      .enum(['USER_STATUS_UNSPECIFIED', 'PENDING', 'ACTIVE', 'DISABLED'])
+      .exactOptional()
+      .openapi({ description: 'The status of the client user.' }),
+    userId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique numerical ID of the client user that has accepted an invitation. The value of this field is ignored in an update operation.',
+      }),
+  })
+  .openapi({
+    description:
+      'A client user is created under a client buyer and has restricted access to the Marketplace and certain other sections of the Authorized Buyers UI based on the role granted to the associated client buyer. The only way a new client user can be created is through accepting an email invitation (see the accounts.clients.invitations.create method). All fields are required unless otherwise specified.',
+    required: [],
+  })
+  .openapi('ClientUser')
+
+const ClientUserInvitationSchema = z
+  .object({
+    clientAccountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Numerical account ID of the client buyer that the invited user is associated with. The value of this field is ignored in create operations.',
+      }),
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The email address to which the invitation is sent. Email addresses should be unique among all client users under each sponsor buyer.',
+      }),
+    invitationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique numerical ID of the invitation that is sent to the user. The value of this field is ignored in create operations.',
+      }),
+  })
+  .openapi({
+    description:
+      'An invitation for a new client user to get access to the Authorized Buyers UI. All fields are required unless otherwise specified.',
+    required: [],
+  })
+  .openapi('ClientUserInvitation')
+
+const CompleteSetupRequestSchema = z
+  .looseObject({})
+  .openapi({
+    description: "Request message for indicating that the proposal's setup step is complete.",
+  })
+  .openapi('CompleteSetupRequest')
+
+const CreativeStatusRowSchema = z
+  .object({
+    bidCount: MetricValueSchema.exactOptional().openapi({
+      description: 'The number of bids with the specified status.',
+    }),
+    creativeStatusId: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the creative status. See [creative-status-codes](https://developers.google.com/authorized-buyers/rtb/downloads/creative-status-codes).',
+      }),
+    rowDimensions: RowDimensionsSchema.exactOptional().openapi({
+      description: 'The values of all dimensions associated with metric values in this row.',
+    }),
+  })
+  .openapi({
+    description:
+      'The number of bids with the specified dimension values that did not win the auction (either were filtered pre-auction or lost the auction), as described by the specified creative status.',
+    required: [],
+  })
+  .openapi('CreativeStatusRow')
+
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -2389,7 +2710,7 @@ const ListCreativeStatusBreakdownByDetailResponseSchema = z
   })
   .openapi('ListCreativeStatusBreakdownByDetailResponse')
 
-const ListCreativesResponseSchema = z
+const ListCreativesResponseSchema: z.ZodType<ListCreativesResponseType> = z
   .object({
     creatives: z
       .array(CreativeSchema)
@@ -2581,113 +2902,7 @@ const ListNonBillableWinningBidsResponseSchema = z
   })
   .openapi('ListNonBillableWinningBidsResponse')
 
-const SellerSchema = z
-  .object({
-    accountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique ID for the seller. The seller fills in this field. The seller account ID is then available to buyer in the product.',
-      }),
-    subAccountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Ad manager network code for the seller.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a seller of inventory. Each seller is identified by a unique Ad Manager account ID.',
-    required: [],
-  })
-  .openapi('Seller')
-
-const ProductSchema = z
-  .object({
-    availableEndTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The proposed end time for the deal. The field will be truncated to the order of seconds during serving.',
-      }),
-    availableStartTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Inventory availability dates. The start time will be truncated to seconds during serving. Thus, a field specified as 3:23:34.456 (HH:mm:ss.SSS) will be truncated to 3:23:34 when serving.',
-      }),
-    createTime: z.string().exactOptional().openapi({ description: 'Creation time.' }),
-    creatorContacts: z
-      .array(ContactInformationSchema)
-      .exactOptional()
-      .openapi({ description: 'Optional contact information for the creator of this product.' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The display name for this product as set by the seller.' }),
-    hasCreatorSignedOff: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the creator has already signed off on the product, then the buyer can finalize the deal by accepting the product as is. When copying to a proposal, if any of the terms are changed, then auto_finalize is automatically set to false.',
-      }),
-    productId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique ID for the product.' }),
-    productRevision: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The revision number of the product (auto-assigned by Marketplace).',
-      }),
-    publisherProfileId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An ID which can be used by the Publisher Profile API to get more information about the seller that created this product.',
-      }),
-    seller: SellerSchema.exactOptional().openapi({
-      description: 'Information about the seller that created this product.',
-    }),
-    syndicationProduct: z
-      .enum(['SYNDICATION_PRODUCT_UNSPECIFIED', 'CONTENT', 'MOBILE', 'VIDEO', 'GAMES'])
-      .exactOptional()
-      .openapi({ description: 'The syndication product associated with the deal.' }),
-    targetingCriterion: z
-      .array(TargetingCriteriaSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Targeting that is shared between the buyer and the seller. Each targeting criterion has a specified key and for each key there is a list of inclusion value or exclusion values.',
-      }),
-    terms: DealTermsSchema.exactOptional().openapi({
-      description: 'The negotiable terms of the deal.',
-    }),
-    updateTime: z.string().exactOptional().openapi({ description: 'Time of last update.' }),
-    webPropertyCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The web-property code for the seller. This needs to be copied as is when adding a new deal to a proposal.',
-      }),
-  })
-  .openapi({
-    description:
-      'A product is a segment of inventory that a seller wants to sell. It is associated with certain terms and targeting information which helps the buyer know more about the inventory.',
-    required: [],
-  })
-  .openapi('Product')
-
-const ListProductsResponseSchema = z
+const ListProductsResponseSchema: z.ZodType<ListProductsResponseType> = z
   .object({
     nextPageToken: z.string().exactOptional().openapi({ description: 'List pagination support.' }),
     products: z
@@ -2701,131 +2916,7 @@ const ListProductsResponseSchema = z
   })
   .openapi('ListProductsResponse')
 
-const ProposalSchema = z
-  .object({
-    billedBuyer: BuyerSchema.exactOptional().openapi({
-      description: 'Output only. Reference to the buyer that will get billed for this proposal.',
-      readOnly: true,
-    }),
-    buyer: BuyerSchema.exactOptional().openapi({
-      description:
-        'Reference to the buyer on the proposal. Note: This field may be set only when creating the resource. Modifying this field while updating the resource will result in an error.',
-    }),
-    buyerContacts: z
-      .array(ContactInformationSchema)
-      .exactOptional()
-      .openapi({ description: 'Contact information for the buyer.' }),
-    buyerPrivateData: PrivateDataSchema.exactOptional().openapi({
-      description: 'Private data for buyer. (hidden from seller).',
-    }),
-    deals: z
-      .array(DealSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The deals associated with this proposal. For Private Auction proposals (whose deals have NonGuaranteedAuctionTerms), there will only be one deal.',
-      }),
-    displayName: z.string().exactOptional().openapi({ description: 'The name for the proposal.' }),
-    isRenegotiating: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. True if the proposal is being renegotiated.',
-        readOnly: true,
-      }),
-    isSetupComplete: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. True, if the buyside inventory setup is complete for this proposal.',
-        readOnly: true,
-      }),
-    lastUpdaterOrCommentorRole: z
-      .enum(['BUYER_SELLER_ROLE_UNSPECIFIED', 'BUYER', 'SELLER'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The role of the last user that either updated the proposal or left a comment.',
-        readOnly: true,
-      }),
-    notes: z
-      .array(NoteSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The notes associated with this proposal.',
-        readOnly: true,
-      }),
-    originatorRole: z
-      .enum(['BUYER_SELLER_ROLE_UNSPECIFIED', 'BUYER', 'SELLER'])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Indicates whether the buyer/seller created the proposal.',
-        readOnly: true,
-      }),
-    privateAuctionId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Private auction ID if this proposal is a private auction proposal.',
-        readOnly: true,
-      }),
-    proposalId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The unique ID of the proposal.', readOnly: true }),
-    proposalRevision: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The revision number for the proposal. Each update to the proposal or the deal causes the proposal revision number to auto-increment. The buyer keeps track of the last revision number they know of and pass it in when making an update. If the head revision number on the server has since incremented, then an ABORTED error is returned during the update operation to let the buyer know that a subsequent update was made.',
-        readOnly: true,
-      }),
-    proposalState: z
-      .enum([
-        'PROPOSAL_STATE_UNSPECIFIED',
-        'PROPOSED',
-        'BUYER_ACCEPTED',
-        'SELLER_ACCEPTED',
-        'CANCELED',
-        'FINALIZED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Output only. The current state of the proposal.', readOnly: true }),
-    seller: SellerSchema.exactOptional().openapi({
-      description:
-        'Reference to the seller on the proposal. Note: This field may be set only when creating the resource. Modifying this field while updating the resource will result in an error.',
-    }),
-    sellerContacts: z
-      .array(ContactInformationSchema)
-      .exactOptional()
-      .openapi({ description: 'Output only. Contact information for the seller.', readOnly: true }),
-    termsAndConditions: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The terms and conditions set by the publisher for this proposal.',
-        readOnly: true,
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The time when the proposal was last revised.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      "Represents a proposal in the Marketplace. A proposal is the unit of negotiation between a seller and a buyer and contains deals which are served. Note: You can't update, create, or otherwise modify Private Auction deals through the API. Fields are updatable unless noted otherwise.",
-    required: [],
-  })
-  .openapi('Proposal')
-
-const ListProposalsResponseSchema = z
+const ListProposalsResponseSchema: z.ZodType<ListProposalsResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -3045,14 +3136,14 @@ const ResumeProposalDealsRequestSchema = z
   .openapi('ResumeProposalDealsRequest')
 
 const ResumeProposalRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Request message to resume (unpause) serving for an already-finalized proposal.',
   })
   .openapi('ResumeProposalRequest')
 
 const StopWatchingCreativeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A request for stopping notifications for changes to creative Status.' })
   .openapi('StopWatchingCreativeRequest')
 

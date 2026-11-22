@@ -10,7 +10,9 @@ import type {
 
 export const get20UsersUsernameRouteHandler: RouteHandler<typeof get20UsersUsernameRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const get20RepositoriesUsernameRouteHandler: RouteHandler<
   typeof get20RepositoriesUsernameRoute

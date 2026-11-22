@@ -7,9 +7,9 @@ const EnvironmentIdSchema = z
 
 const CreateEnvironmentEC2ResultSchema = z
   .object({
-    environmentId: EnvironmentIdSchema.and(
-      z.any().openapi({ description: 'The ID of the environment that was created.' }),
-    ).exactOptional(),
+    environmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description: 'The ID of the environment that was created.',
+    }),
   })
   .openapi({ example: { environmentId: '8d9967e2f0624182b74e7690ad69ebEX' }, required: [] })
   .openapi('CreateEnvironmentEC2Result')
@@ -54,8 +54,8 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: 'The <b>name</b> part of a tag.' })),
-    Value: TagValueSchema.and(z.any().openapi({ description: 'The <b>value</b> part of a tag.' })),
+    Key: TagKeySchema.openapi({ description: 'The <b>name</b> part of a tag.' }),
+    Value: TagValueSchema.openapi({ description: 'The <b>value</b> part of a tag.' }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -72,89 +72,49 @@ const NullableBooleanSchema = z.boolean().openapi('NullableBoolean')
 
 const CreateEnvironmentEC2RequestSchema = z
   .object({
-    name: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the environment to create.</p> <p>This name is visible to other IAM users in the same Amazon Web Services account.</p>',
-        }),
-    ),
-    description: EnvironmentDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the environment to create.' }),
-    ).exactOptional(),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique, case-sensitive string that helps Cloud9 to ensure this operation completes no more than one time.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html">Client Tokens</a> in the <i>Amazon EC2 API Reference</i>.</p>',
-        }),
-    ).exactOptional(),
-    instanceType: InstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of instance to connect to the environment (for example, <code>t2.micro</code>).',
-        }),
-    ),
-    subnetId: SubnetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the subnet in Amazon VPC that Cloud9 will use to communicate with the Amazon EC2 instance.',
-        }),
-    ).exactOptional(),
-    imageId: ImageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The identifier for the Amazon Machine Image (AMI) that's used to create the EC2 instance. To choose an AMI for the instance, you must specify a valid AMI alias or a valid Amazon EC2 Systems Manager (SSM) path.</p> <p>The default Amazon Linux AMI is currently used if the parameter isn't explicitly assigned a value in the request. </p> <p>In the future the parameter for Amazon Linux will no longer be available when you specify an AMI for your instance. Amazon Linux 2 will then become the default AMI, which is used to launch your instance if no parameter is explicitly defined.</p> <p> <b>AMI aliases </b> </p> <ul> <li> <p> <b>Amazon Linux (default): <code>amazonlinux-1-x86_64</code> </b> </p> </li> <li> <p>Amazon Linux 2: <code>amazonlinux-2-x86_64</code> </p> </li> <li> <p>Ubuntu 18.04: <code>ubuntu-18.04-x86_64</code> </p> </li> </ul> <p> <b>SSM paths</b> </p> <ul> <li> <p> <b>Amazon Linux (default): <code>resolve:ssm:/aws/service/cloud9/amis/amazonlinux-1-x86_64</code> </b> </p> </li> <li> <p>Amazon Linux 2: <code>resolve:ssm:/aws/service/cloud9/amis/amazonlinux-2-x86_64</code> </p> </li> <li> <p>Ubuntu 18.04: <code>resolve:ssm:/aws/service/cloud9/amis/ubuntu-18.04-x86_64</code> </p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    automaticStopTimeMinutes: AutomaticStopTimeMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of minutes until the running instance is shut down after the environment has last been used.',
-        }),
-    ).exactOptional(),
-    ownerArn: UserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of the environment owner. This ARN can be the ARN of any IAM principal. If this value is not specified, the ARN defaults to this environment's creator.",
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of key-value pairs that will be associated with the new Cloud9 development environment.',
-        }),
-    ).exactOptional(),
-    connectionType: ConnectionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The connection type used for connecting to an Amazon EC2 environment. Valid values are <code>CONNECT_SSH</code> (default) and <code>CONNECT_SSM</code> (connected through Amazon EC2 Systems Manager).</p> <p>For more information, see <a href="https://docs.aws.amazon.com/cloud9/latest/user-guide/ec2-ssm.html">Accessing no-ingress EC2 instances with Amazon EC2 Systems Manager</a> in the <i>Cloud9 User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    dryRun: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.',
-        }),
-    ).exactOptional(),
+    name: EnvironmentNameSchema.openapi({
+      description:
+        '<p>The name of the environment to create.</p> <p>This name is visible to other IAM users in the same Amazon Web Services account.</p>',
+    }),
+    description: EnvironmentDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the environment to create.',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        '<p>A unique, case-sensitive string that helps Cloud9 to ensure this operation completes no more than one time.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html">Client Tokens</a> in the <i>Amazon EC2 API Reference</i>.</p>',
+    }),
+    instanceType: InstanceTypeSchema.openapi({
+      description:
+        'The type of instance to connect to the environment (for example, <code>t2.micro</code>).',
+    }),
+    subnetId: SubnetIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the subnet in Amazon VPC that Cloud9 will use to communicate with the Amazon EC2 instance.',
+    }),
+    imageId: ImageIdSchema.exactOptional().openapi({
+      description:
+        "<p>The identifier for the Amazon Machine Image (AMI) that's used to create the EC2 instance. To choose an AMI for the instance, you must specify a valid AMI alias or a valid Amazon EC2 Systems Manager (SSM) path.</p> <p>The default Amazon Linux AMI is currently used if the parameter isn't explicitly assigned a value in the request. </p> <p>In the future the parameter for Amazon Linux will no longer be available when you specify an AMI for your instance. Amazon Linux 2 will then become the default AMI, which is used to launch your instance if no parameter is explicitly defined.</p> <p> <b>AMI aliases </b> </p> <ul> <li> <p> <b>Amazon Linux (default): <code>amazonlinux-1-x86_64</code> </b> </p> </li> <li> <p>Amazon Linux 2: <code>amazonlinux-2-x86_64</code> </p> </li> <li> <p>Ubuntu 18.04: <code>ubuntu-18.04-x86_64</code> </p> </li> </ul> <p> <b>SSM paths</b> </p> <ul> <li> <p> <b>Amazon Linux (default): <code>resolve:ssm:/aws/service/cloud9/amis/amazonlinux-1-x86_64</code> </b> </p> </li> <li> <p>Amazon Linux 2: <code>resolve:ssm:/aws/service/cloud9/amis/amazonlinux-2-x86_64</code> </p> </li> <li> <p>Ubuntu 18.04: <code>resolve:ssm:/aws/service/cloud9/amis/ubuntu-18.04-x86_64</code> </p> </li> </ul>",
+    }),
+    automaticStopTimeMinutes: AutomaticStopTimeMinutesSchema.exactOptional().openapi({
+      description:
+        'The number of minutes until the running instance is shut down after the environment has last been used.',
+    }),
+    ownerArn: UserArnSchema.exactOptional().openapi({
+      description:
+        "The Amazon Resource Name (ARN) of the environment owner. This ARN can be the ARN of any IAM principal. If this value is not specified, the ARN defaults to this environment's creator.",
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'An array of key-value pairs that will be associated with the new Cloud9 development environment.',
+    }),
+    connectionType: ConnectionTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The connection type used for connecting to an Amazon EC2 environment. Valid values are <code>CONNECT_SSH</code> (default) and <code>CONNECT_SSM</code> (connected through Amazon EC2 Systems Manager).</p> <p>For more information, see <a href="https://docs.aws.amazon.com/cloud9/latest/user-guide/ec2-ssm.html">Accessing no-ingress EC2 instances with Amazon EC2 Systems Manager</a> in the <i>Cloud9 User Guide</i>.</p>',
+    }),
+    dryRun: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        'Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.',
+    }),
   })
   .openapi({ required: ['name', 'instanceType'], title: 'CreateEnvironmentEC2Request' })
   .openapi('CreateEnvironmentEC2Request')
@@ -181,36 +141,23 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const EnvironmentMemberSchema = z
   .object({
-    permissions: PermissionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of environment member permissions associated with this environment member. Available values include:</p> <ul> <li> <p> <code>owner</code>: Owns the environment.</p> </li> <li> <p> <code>read-only</code>: Has read-only access to the environment.</p> </li> <li> <p> <code>read-write</code>: Has read-write access to the environment.</p> </li> </ul>',
-        }),
-    ),
-    userId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user ID in Identity and Access Management (IAM) of the environment member.',
-        }),
-    ),
-    userArn: UserArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the environment member.' }),
-    ),
-    environmentId: EnvironmentIdSchema.and(
-      z.any().openapi({ description: 'The ID of the environment for the environment member.' }),
-    ),
-    lastAccess: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, expressed in epoch time format, when the environment member last opened the environment.',
-        }),
-    ).exactOptional(),
+    permissions: PermissionsSchema.openapi({
+      description:
+        '<p>The type of environment member permissions associated with this environment member. Available values include:</p> <ul> <li> <p> <code>owner</code>: Owns the environment.</p> </li> <li> <p> <code>read-only</code>: Has read-only access to the environment.</p> </li> <li> <p> <code>read-write</code>: Has read-write access to the environment.</p> </li> </ul>',
+    }),
+    userId: StringSchema.openapi({
+      description: 'The user ID in Identity and Access Management (IAM) of the environment member.',
+    }),
+    userArn: UserArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the environment member.',
+    }),
+    environmentId: EnvironmentIdSchema.openapi({
+      description: 'The ID of the environment for the environment member.',
+    }),
+    lastAccess: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time, expressed in epoch time format, when the environment member last opened the environment.',
+    }),
   })
   .openapi({
     required: ['permissions', 'userId', 'userArn', 'environmentId'],
@@ -220,9 +167,9 @@ const EnvironmentMemberSchema = z
 
 const CreateEnvironmentMembershipResultSchema = z
   .object({
-    membership: EnvironmentMemberSchema.and(
-      z.any().openapi({ description: 'Information about the environment member that was added.' }),
-    ),
+    membership: EnvironmentMemberSchema.openapi({
+      description: 'Information about the environment member that was added.',
+    }),
   })
   .openapi({
     required: ['membership'],
@@ -241,29 +188,17 @@ const MemberPermissionsSchema = z.enum(['read-write', 'read-only']).openapi('Mem
 
 const CreateEnvironmentMembershipRequestSchema = z
   .object({
-    environmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the environment that contains the environment member you want to add.',
-        }),
-    ),
-    userArn: UserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the environment member you want to add.',
-        }),
-    ),
-    permissions: MemberPermissionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of environment member permissions you want to associate with this environment member. Available values include:</p> <ul> <li> <p> <code>read-only</code>: Has read-only access to the environment.</p> </li> <li> <p> <code>read-write</code>: Has read-write access to the environment.</p> </li> </ul>',
-        }),
-    ),
+    environmentId: EnvironmentIdSchema.openapi({
+      description:
+        'The ID of the environment that contains the environment member you want to add.',
+    }),
+    userArn: UserArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the environment member you want to add.',
+    }),
+    permissions: MemberPermissionsSchema.openapi({
+      description:
+        '<p>The type of environment member permissions you want to associate with this environment member. Available values include:</p> <ul> <li> <p> <code>read-only</code>: Has read-only access to the environment.</p> </li> <li> <p> <code>read-write</code>: Has read-write access to the environment.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['environmentId', 'userArn', 'permissions'],
@@ -272,41 +207,33 @@ const CreateEnvironmentMembershipRequestSchema = z
   .openapi('CreateEnvironmentMembershipRequest')
 
 const DeleteEnvironmentResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: {} })
   .openapi('DeleteEnvironmentResult')
 
 const DeleteEnvironmentRequestSchema = z
   .object({
-    environmentId: EnvironmentIdSchema.and(
-      z.any().openapi({ description: 'The ID of the environment to delete.' }),
-    ),
+    environmentId: EnvironmentIdSchema.openapi({
+      description: 'The ID of the environment to delete.',
+    }),
   })
   .openapi({ required: ['environmentId'], title: 'DeleteEnvironmentRequest' })
   .openapi('DeleteEnvironmentRequest')
 
 const DeleteEnvironmentMembershipResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: {} })
   .openapi('DeleteEnvironmentMembershipResult')
 
 const DeleteEnvironmentMembershipRequestSchema = z
   .object({
-    environmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the environment to delete the environment member from.',
-        }),
-    ),
-    userArn: UserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the environment member to delete from the environment.',
-        }),
-    ),
+    environmentId: EnvironmentIdSchema.openapi({
+      description: 'The ID of the environment to delete the environment member from.',
+    }),
+    userArn: UserArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the environment member to delete from the environment.',
+    }),
   })
   .openapi({ required: ['environmentId', 'userArn'], title: 'DeleteEnvironmentMembershipRequest' })
   .openapi('DeleteEnvironmentMembershipRequest')
@@ -317,19 +244,13 @@ const EnvironmentMembersListSchema = z
 
 const DescribeEnvironmentMembershipsResultSchema = z
   .object({
-    memberships: EnvironmentMembersListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the environment members for the environment.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are more than 25 items in the list, only the first 25 items are returned, along with a unique string called a <i>next token</i>. To get the next batch of items in the list, call this operation again, adding the next token to the call.',
-        }),
-    ).exactOptional(),
+    memberships: EnvironmentMembersListSchema.exactOptional().openapi({
+      description: 'Information about the environment members for the environment.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'If there are more than 25 items in the list, only the first 25 items are returned, along with a unique string called a <i>next token</i>. To get the next batch of items in the list, call this operation again, adding the next token to the call.',
+    }),
   })
   .openapi({
     example: {
@@ -360,44 +281,24 @@ const MaxResultsSchema = z.int().min(0).max(25).openapi('MaxResults')
 
 const DescribeEnvironmentMembershipsRequestSchema = z
   .object({
-    userArn: UserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an individual environment member to get information about. If no value is specified, information about all environment members are returned.',
-        }),
-    ).exactOptional(),
-    environmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the environment to get environment member information about.',
-        }),
-    ).exactOptional(),
-    permissions: PermissionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of environment member permissions to get information about. Available values include:</p> <ul> <li> <p> <code>owner</code>: Owns the environment.</p> </li> <li> <p> <code>read-only</code>: Has read-only access to the environment.</p> </li> <li> <p> <code>read-write</code>: Has read-write access to the environment.</p> </li> </ul> <p>If no value is specified, information about all environment members are returned.</p>',
-        }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'During a previous call, if there are more than 25 items in the list, only the first 25 items are returned, along with a unique string called a <i>next token</i>. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of environment members to get information about.',
-        }),
-    ).exactOptional(),
+    userArn: UserArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an individual environment member to get information about. If no value is specified, information about all environment members are returned.',
+    }),
+    environmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description: 'The ID of the environment to get environment member information about.',
+    }),
+    permissions: PermissionsListSchema.exactOptional().openapi({
+      description:
+        '<p>The type of environment member permissions to get information about. Available values include:</p> <ul> <li> <p> <code>owner</code>: Owns the environment.</p> </li> <li> <p> <code>read-only</code>: Has read-only access to the environment.</p> </li> <li> <p> <code>read-write</code>: Has read-write access to the environment.</p> </li> </ul> <p>If no value is specified, information about all environment members are returned.</p>',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'During a previous call, if there are more than 25 items in the list, only the first 25 items are returned, along with a unique string called a <i>next token</i>. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of environment members to get information about.',
+    }),
   })
   .openapi({ title: 'DescribeEnvironmentMembershipsRequest', required: [] })
   .openapi('DescribeEnvironmentMembershipsRequest')
@@ -408,19 +309,13 @@ const EnvironmentStatusSchema = z
 
 const DescribeEnvironmentStatusResultSchema = z
   .object({
-    status: EnvironmentStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the environment. Available values include:</p> <ul> <li> <p> <code>connecting</code>: The environment is connecting.</p> </li> <li> <p> <code>creating</code>: The environment is being created.</p> </li> <li> <p> <code>deleting</code>: The environment is being deleted.</p> </li> <li> <p> <code>error</code>: The environment is in an error state.</p> </li> <li> <p> <code>ready</code>: The environment is ready.</p> </li> <li> <p> <code>stopped</code>: The environment is stopped.</p> </li> <li> <p> <code>stopping</code>: The environment is stopping.</p> </li> </ul>',
-        }),
-    ),
-    message: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Any informational message about the status of the environment.' }),
-    ),
+    status: EnvironmentStatusSchema.openapi({
+      description:
+        '<p>The status of the environment. Available values include:</p> <ul> <li> <p> <code>connecting</code>: The environment is connecting.</p> </li> <li> <p> <code>creating</code>: The environment is being created.</p> </li> <li> <p> <code>deleting</code>: The environment is being deleted.</p> </li> <li> <p> <code>error</code>: The environment is in an error state.</p> </li> <li> <p> <code>ready</code>: The environment is ready.</p> </li> <li> <p> <code>stopped</code>: The environment is stopped.</p> </li> <li> <p> <code>stopping</code>: The environment is stopping.</p> </li> </ul>',
+    }),
+    message: StringSchema.openapi({
+      description: 'Any informational message about the status of the environment.',
+    }),
   })
   .openapi({
     required: ['status', 'message'],
@@ -430,11 +325,9 @@ const DescribeEnvironmentStatusResultSchema = z
 
 const DescribeEnvironmentStatusRequestSchema = z
   .object({
-    environmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the environment to get status information about.' }),
-    ),
+    environmentId: EnvironmentIdSchema.openapi({
+      description: 'The ID of the environment to get status information about.',
+    }),
   })
   .openapi({ required: ['environmentId'], title: 'DescribeEnvironmentStatusRequest' })
   .openapi('DescribeEnvironmentStatusRequest')
@@ -447,29 +340,17 @@ const EnvironmentLifecycleStatusSchema = z
 
 const EnvironmentLifecycleSchema = z
   .object({
-    status: EnvironmentLifecycleStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current creation or deletion lifecycle state of the environment.</p> <ul> <li> <p> <code>CREATING</code>: The environment is in the process of being created.</p> </li> <li> <p> <code>CREATED</code>: The environment was successfully created.</p> </li> <li> <p> <code>CREATE_FAILED</code>: The environment failed to be created.</p> </li> <li> <p> <code>DELETING</code>: The environment is in the process of being deleted.</p> </li> <li> <p> <code>DELETE_FAILED</code>: The environment failed to delete.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    reason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Any informational message about the lifecycle state of the environment.',
-        }),
-    ).exactOptional(),
-    failureResource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the environment failed to delete, the Amazon Resource Name (ARN) of the related Amazon Web Services resource.',
-        }),
-    ).exactOptional(),
+    status: EnvironmentLifecycleStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The current creation or deletion lifecycle state of the environment.</p> <ul> <li> <p> <code>CREATING</code>: The environment is in the process of being created.</p> </li> <li> <p> <code>CREATED</code>: The environment was successfully created.</p> </li> <li> <p> <code>CREATE_FAILED</code>: The environment failed to be created.</p> </li> <li> <p> <code>DELETING</code>: The environment is in the process of being deleted.</p> </li> <li> <p> <code>DELETE_FAILED</code>: The environment failed to delete.</p> </li> </ul>',
+    }),
+    reason: StringSchema.exactOptional().openapi({
+      description: 'Any informational message about the lifecycle state of the environment.',
+    }),
+    failureResource: StringSchema.exactOptional().openapi({
+      description:
+        'If the environment failed to delete, the Amazon Resource Name (ARN) of the related Amazon Web Services resource.',
+    }),
   })
   .openapi({
     description:
@@ -496,52 +377,34 @@ const ManagedCredentialsStatusSchema = z
 
 const EnvironmentSchema = z
   .object({
-    id: EnvironmentIdSchema.and(
-      z.any().openapi({ description: 'The ID of the environment.' }),
-    ).exactOptional(),
-    name: EnvironmentNameSchema.and(
-      z.any().openapi({ description: 'The name of the environment.' }),
-    ).exactOptional(),
-    description: EnvironmentDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for the environment.' }),
-    ).exactOptional(),
-    type: EnvironmentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of environment. Valid values include the following:</p> <ul> <li> <p> <code>ec2</code>: An Amazon Elastic Compute Cloud (Amazon EC2) instance connects to the environment.</p> </li> <li> <p> <code>ssh</code>: Your own server connects to the environment.</p> </li> </ul>',
-        }),
-    ),
-    connectionType: ConnectionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The connection type used for connecting to an Amazon EC2 environment. <code>CONNECT_SSH</code> is selected by default.',
-        }),
-    ).exactOptional(),
-    arn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the environment.' }),
-    ),
-    ownerArn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the environment owner.' }),
-    ),
-    lifecycle: EnvironmentLifecycleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The state of the environment in its creation or deletion lifecycle.',
-        }),
-    ).exactOptional(),
-    managedCredentialsStatus: ManagedCredentialsStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the status of Amazon Web Services managed temporary credentials for the Cloud9 environment. Available values are:</p> <ul> <li> <p> <code>ENABLED_ON_CREATE</code> </p> </li> <li> <p> <code>ENABLED_BY_OWNER</code> </p> </li> <li> <p> <code>DISABLED_BY_DEFAULT</code> </p> </li> <li> <p> <code>DISABLED_BY_OWNER</code> </p> </li> <li> <p> <code>DISABLED_BY_COLLABORATOR</code> </p> </li> <li> <p> <code>PENDING_REMOVAL_BY_COLLABORATOR</code> </p> </li> <li> <p> <code>PENDING_REMOVAL_BY_OWNER</code> </p> </li> <li> <p> <code>FAILED_REMOVAL_BY_COLLABORATOR</code> </p> </li> <li> <p> <code>ENABLED_BY_OWNER</code> </p> </li> <li> <p> <code>DISABLED_BY_DEFAULT</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    id: EnvironmentIdSchema.exactOptional().openapi({ description: 'The ID of the environment.' }),
+    name: EnvironmentNameSchema.exactOptional().openapi({
+      description: 'The name of the environment.',
+    }),
+    description: EnvironmentDescriptionSchema.exactOptional().openapi({
+      description: 'The description for the environment.',
+    }),
+    type: EnvironmentTypeSchema.openapi({
+      description:
+        '<p>The type of environment. Valid values include the following:</p> <ul> <li> <p> <code>ec2</code>: An Amazon Elastic Compute Cloud (Amazon EC2) instance connects to the environment.</p> </li> <li> <p> <code>ssh</code>: Your own server connects to the environment.</p> </li> </ul>',
+    }),
+    connectionType: ConnectionTypeSchema.exactOptional().openapi({
+      description:
+        'The connection type used for connecting to an Amazon EC2 environment. <code>CONNECT_SSH</code> is selected by default.',
+    }),
+    arn: StringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the environment.',
+    }),
+    ownerArn: StringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the environment owner.',
+    }),
+    lifecycle: EnvironmentLifecycleSchema.exactOptional().openapi({
+      description: 'The state of the environment in its creation or deletion lifecycle.',
+    }),
+    managedCredentialsStatus: ManagedCredentialsStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Describes the status of Amazon Web Services managed temporary credentials for the Cloud9 environment. Available values are:</p> <ul> <li> <p> <code>ENABLED_ON_CREATE</code> </p> </li> <li> <p> <code>ENABLED_BY_OWNER</code> </p> </li> <li> <p> <code>DISABLED_BY_DEFAULT</code> </p> </li> <li> <p> <code>DISABLED_BY_OWNER</code> </p> </li> <li> <p> <code>DISABLED_BY_COLLABORATOR</code> </p> </li> <li> <p> <code>PENDING_REMOVAL_BY_COLLABORATOR</code> </p> </li> <li> <p> <code>PENDING_REMOVAL_BY_OWNER</code> </p> </li> <li> <p> <code>FAILED_REMOVAL_BY_COLLABORATOR</code> </p> </li> <li> <p> <code>ENABLED_BY_OWNER</code> </p> </li> <li> <p> <code>DISABLED_BY_DEFAULT</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['type', 'arn', 'ownerArn'],
@@ -553,9 +416,9 @@ const EnvironmentListSchema = z.array(EnvironmentSchema).openapi('EnvironmentLis
 
 const DescribeEnvironmentsResultSchema = z
   .object({
-    environments: EnvironmentListSchema.and(
-      z.any().openapi({ description: 'Information about the environments that are returned.' }),
-    ).exactOptional(),
+    environments: EnvironmentListSchema.exactOptional().openapi({
+      description: 'Information about the environments that are returned.',
+    }),
   })
   .openapi({
     example: {
@@ -592,11 +455,9 @@ const BoundedEnvironmentIdListSchema = z
 
 const DescribeEnvironmentsRequestSchema = z
   .object({
-    environmentIds: BoundedEnvironmentIdListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The IDs of individual environments to get information about.' }),
-    ),
+    environmentIds: BoundedEnvironmentIdListSchema.openapi({
+      description: 'The IDs of individual environments to get information about.',
+    }),
   })
   .openapi({ required: ['environmentIds'], title: 'DescribeEnvironmentsRequest' })
   .openapi('DescribeEnvironmentsRequest')
@@ -605,17 +466,13 @@ const EnvironmentIdListSchema = z.array(EnvironmentIdSchema).openapi('Environmen
 
 const ListEnvironmentsResultSchema = z
   .object({
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are more than 25 items in the list, only the first 25 items are returned, along with a unique string called a <i>next token</i>. To get the next batch of items in the list, call this operation again, adding the next token to the call.',
-        }),
-    ).exactOptional(),
-    environmentIds: EnvironmentIdListSchema.and(
-      z.any().openapi({ description: 'The list of environment identifiers.' }),
-    ).exactOptional(),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'If there are more than 25 items in the list, only the first 25 items are returned, along with a unique string called a <i>next token</i>. To get the next batch of items in the list, call this operation again, adding the next token to the call.',
+    }),
+    environmentIds: EnvironmentIdListSchema.exactOptional().openapi({
+      description: 'The list of environment identifiers.',
+    }),
   })
   .openapi({
     example: {
@@ -627,32 +484,22 @@ const ListEnvironmentsResultSchema = z
 
 const ListEnvironmentsRequestSchema = z
   .object({
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'During a previous call, if there are more than 25 items in the list, only the first 25 items are returned, along with a unique string called a <i>next token</i>. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of environments to get identifiers for.' }),
-    ).exactOptional(),
+    nextToken: StringSchema.exactOptional().openapi({
+      description:
+        'During a previous call, if there are more than 25 items in the list, only the first 25 items are returned, along with a unique string called a <i>next token</i>. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of environments to get identifiers for.',
+    }),
   })
   .openapi({ title: 'ListEnvironmentsRequest', required: [] })
   .openapi('ListEnvironmentsRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of tags associated with the Cloud9 development environment.',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of tags associated with the Cloud9 development environment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -666,71 +513,51 @@ const EnvironmentArnSchema = z
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceARN: EnvironmentArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Cloud9 development environment to get the tags for.',
-        }),
-    ),
+    ResourceARN: EnvironmentArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Cloud9 development environment to get the tags for.',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: EnvironmentArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Cloud9 development environment to add tags to.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of tags to add to the given Cloud9 development environment.',
-        }),
-    ),
+    ResourceARN: EnvironmentArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Cloud9 development environment to add tags to.',
+    }),
+    Tags: TagListSchema.openapi({
+      description: 'The list of tags to add to the given Cloud9 development environment.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const ConcurrentAccessExceptionSchema = z.any().openapi('ConcurrentAccessException')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: EnvironmentArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Cloud9 development environment to remove tags from.',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag names of the tags to remove from the given Cloud9 development environment.',
-        }),
-    ),
+    ResourceARN: EnvironmentArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Cloud9 development environment to remove tags from.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description:
+        'The tag names of the tags to remove from the given Cloud9 development environment.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateEnvironmentResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: {} })
   .openapi('UpdateEnvironmentResult')
 
@@ -740,36 +567,28 @@ const ManagedCredentialsActionSchema = z
 
 const UpdateEnvironmentRequestSchema = z
   .object({
-    environmentId: EnvironmentIdSchema.and(
-      z.any().openapi({ description: 'The ID of the environment to change settings.' }),
-    ),
-    name: EnvironmentNameSchema.and(
-      z.any().openapi({ description: 'A replacement name for the environment.' }),
-    ).exactOptional(),
-    description: EnvironmentDescriptionSchema.and(
-      z.any().openapi({ description: 'Any new or replacement description for the environment.' }),
-    ).exactOptional(),
-    managedCredentialsAction: ManagedCredentialsActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Allows the environment owner to turn on or turn off the Amazon Web Services managed temporary credentials for an Cloud9 environment by using one of the following values:</p> <ul> <li> <p> <code>ENABLE</code> </p> </li> <li> <p> <code>DISABLE</code> </p> </li> </ul> <note> <p>Only the environment owner can change the status of managed temporary credentials. An <code>AccessDeniedException</code> is thrown if an attempt to turn on or turn off managed temporary credentials is made by an account that's not the environment owner.</p> </note>",
-        }),
-    ).exactOptional(),
+    environmentId: EnvironmentIdSchema.openapi({
+      description: 'The ID of the environment to change settings.',
+    }),
+    name: EnvironmentNameSchema.exactOptional().openapi({
+      description: 'A replacement name for the environment.',
+    }),
+    description: EnvironmentDescriptionSchema.exactOptional().openapi({
+      description: 'Any new or replacement description for the environment.',
+    }),
+    managedCredentialsAction: ManagedCredentialsActionSchema.exactOptional().openapi({
+      description:
+        "<p>Allows the environment owner to turn on or turn off the Amazon Web Services managed temporary credentials for an Cloud9 environment by using one of the following values:</p> <ul> <li> <p> <code>ENABLE</code> </p> </li> <li> <p> <code>DISABLE</code> </p> </li> </ul> <note> <p>Only the environment owner can change the status of managed temporary credentials. An <code>AccessDeniedException</code> is thrown if an attempt to turn on or turn off managed temporary credentials is made by an account that's not the environment owner.</p> </note>",
+    }),
   })
   .openapi({ required: ['environmentId'], title: 'UpdateEnvironmentRequest' })
   .openapi('UpdateEnvironmentRequest')
 
 const UpdateEnvironmentMembershipResultSchema = z
   .object({
-    membership: EnvironmentMemberSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the environment member whose settings were changed.',
-        }),
-    ).exactOptional(),
+    membership: EnvironmentMemberSchema.exactOptional().openapi({
+      description: 'Information about the environment member whose settings were changed.',
+    }),
   })
   .openapi({
     example: {
@@ -786,30 +605,18 @@ const UpdateEnvironmentMembershipResultSchema = z
 
 const UpdateEnvironmentMembershipRequestSchema = z
   .object({
-    environmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the environment for the environment member whose settings you want to change.',
-        }),
-    ),
-    userArn: UserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the environment member whose settings you want to change.',
-        }),
-    ),
-    permissions: MemberPermissionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The replacement type of environment member permissions you want to associate with this environment member. Available values include:</p> <ul> <li> <p> <code>read-only</code>: Has read-only access to the environment.</p> </li> <li> <p> <code>read-write</code>: Has read-write access to the environment.</p> </li> </ul>',
-        }),
-    ),
+    environmentId: EnvironmentIdSchema.openapi({
+      description:
+        'The ID of the environment for the environment member whose settings you want to change.',
+    }),
+    userArn: UserArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the environment member whose settings you want to change.',
+    }),
+    permissions: MemberPermissionsSchema.openapi({
+      description:
+        '<p>The replacement type of environment member permissions you want to associate with this environment member. Available values include:</p> <ul> <li> <p> <code>read-only</code>: Has read-only access to the environment.</p> </li> <li> <p> <code>read-write</code>: Has read-write access to the environment.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['environmentId', 'userArn', 'permissions'],

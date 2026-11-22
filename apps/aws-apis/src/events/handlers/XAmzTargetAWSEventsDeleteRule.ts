@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSEventsDeleteRuleHandler = app.openapi(
   postXAmzTargetAWSEventsDeleteRuleRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

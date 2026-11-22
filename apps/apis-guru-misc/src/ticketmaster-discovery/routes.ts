@@ -1,76 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const LocationSchema = z
-  .object({
-    latitude: z.number().exactOptional().openapi({ description: 'Latitude' }),
-    longitude: z.number().exactOptional().openapi({ description: 'Longitude' }),
-  })
-  .openapi({ description: 'Location', required: [] })
-  .openapi('Location')
-
-const GeometrySchema = z
-  .object({ location: LocationSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('Geometry')
-
-const GeocodeExtensionSchema = z
-  .object({
-    city: z.string().exactOptional(),
-    country: z.string().exactOptional(),
-    county: z.string().exactOptional(),
-    formattedAddress: z.string().exactOptional(),
-    geometry: GeometrySchema.exactOptional(),
-    postalCode: z.string().exactOptional(),
-    route: z.string().exactOptional(),
-    state: z.string().exactOptional(),
-    streetNumber: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GeocodeExtension')
-
-const GeolocationVenueExtensionsSchema = z
-  .object({ geocode: GeocodeExtensionSchema.exactOptional() })
-  .openapi({ description: "Venue's geocode extension", required: [] })
-  .openapi('GeolocationVenueExtensions')
-
-type VenueExtensionsType = { geolocation?: z.infer<typeof GeolocationVenueExtensionsSchema> }
-
-const AccessDatesSchema = z
-  .object({
-    endApproximate: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'Boolean flag to indicate whether or not the access end date is approximated',
-        example: 'yyyy-MM-ddThh-mm-ssZ',
-        'x-position': 3,
-      }),
-    endDateTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: "Event's end access time",
-        example: 'yyyy-MM-ddThh-mm-ssZ',
-        'x-position': 2,
-      }),
-    startApproximate: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Boolean flag to indicate whether or not the access start date is approximated',
-        'x-position': 1,
-      }),
-    startDateTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: "Event's start access time", example: 'yyyy-MM-ddThh-mm-ssZ' }),
-  })
-  .openapi({ description: "Event's Access Date", required: [] })
-  .openapi('AccessDates')
-
 const AccessibilitySchema = z
   .object({
     info: z
@@ -83,31 +12,6 @@ const AccessibilitySchema = z
     required: [],
   })
   .openapi('Accessibility')
-
-const AddressSchema = z
-  .object({
-    line1: z.string().exactOptional().openapi({ description: 'Address first line' }),
-    line2: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Address second line', 'x-position': 3 }),
-    line3: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Address third line', 'x-position': 3 }),
-  })
-  .openapi({ description: 'Address', required: [] })
-  .openapi('Address')
-
-const AreaSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the entity', 'x-position': 10 }),
-  })
-  .openapi({ description: 'Area', required: [] })
-  .openapi('Area')
 
 const LevelSchema = z
   .object({
@@ -147,149 +51,41 @@ const ClassificationSchema = z
   .openapi({ description: 'Classification', required: [] })
   .openapi('Classification')
 
-const ExternalLinkSchema = z
+const AccessDatesSchema = z
   .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An external link id is the unique identifier of a resource on a different domain or api',
-        'x-position': 2,
-      }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'An external link url is a url that goes to a different domain or api',
-        'x-position': 2,
-      }),
-  })
-  .openapi({ description: 'ExternalLink', required: [] })
-  .openapi('ExternalLink')
-
-const ImageSchema = z
-  .object({
-    attribution: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Attribution of the image', 'x-position': 8 }),
-    fallback: z
+    endApproximate: z
       .boolean()
       .default(false)
       .exactOptional()
       .openapi({
-        description: "true if the image is not the event's image but a fallbak image",
-        'x-position': 6,
+        description: 'Boolean flag to indicate whether or not the access end date is approximated',
+        example: 'yyyy-MM-ddThh-mm-ssZ',
+        'x-position': 3,
       }),
-    height: z
-      .int32()
+    endDateTime: z.iso
+      .datetime({ offset: true })
       .exactOptional()
-      .openapi({ description: 'Height of the image', 'x-position': 5 }),
-    ratio: z
-      .enum(['16_9', '3_2', '4_3'])
-      .exactOptional()
-      .openapi({ description: 'Aspect ratio of the image', 'x-position': 3 }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Public URL of the image', 'x-position': 2 }),
-    width: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Width of the image', 'x-position': 4 }),
-  })
-  .openapi({ description: 'Image', required: [] })
-  .openapi('Image')
-
-const AttractionSchema = z
-  .object({
-    additionalInfo: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Additional information of the entity', 'x-position': 22 }),
-    classifications: z
-      .array(ClassificationSchema)
-      .exactOptional()
-      .openapi({ description: "Attraction's classifications", 'x-position': 30 }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Description's of the entity", 'x-position': 20 }),
-    externalLinks: z
-      .record(z.string(), z.array(ExternalLinkSchema))
-      .exactOptional()
-      .openapi({ description: 'List of external links', 'x-position': 79 }),
-    id: z
-      .string()
-      .openapi({ description: 'Unique id of the entity in the discovery API', 'x-position': 1 }),
-    images: z
-      .array(ImageSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({ description: 'Images of the entity', 'x-position': 29 }),
-    locale: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Locale in which the content is returned', 'x-position': 3 }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the entity', 'x-position': 10 }),
-    test: z
+      .openapi({
+        description: "Event's end access time",
+        example: 'yyyy-MM-ddThh-mm-ssZ',
+        'x-position': 2,
+      }),
+    startApproximate: z
       .boolean()
       .default(false)
       .exactOptional()
       .openapi({
         description:
-          "Indicate if this is a test entity, by default test entities won't appear in discovery API",
-        'x-position': 96,
+          'Boolean flag to indicate whether or not the access start date is approximated',
+        'x-position': 1,
       }),
-    type: z.enum(['event', 'venue', 'attraction']).openapi({ description: 'Type of the entity' }),
-    upcomingEvents: z
-      .record(z.string(), z.int32())
+    startDateTime: z.iso
+      .datetime({ offset: true })
       .exactOptional()
-      .openapi({ description: 'number of upcoming events', 'x-position': 110 }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'URL of a web site detail page of the entity', 'x-position': 24 }),
+      .openapi({ description: "Event's start access time", example: 'yyyy-MM-ddThh-mm-ssZ' }),
   })
-  .openapi({ description: 'Attraction', required: ['id', 'type'] })
-  .openapi('Attraction')
-
-const AttractionExtensionsSchema = z
-  .object({})
-  .openapi({ description: "All Attraction's extensions" })
-  .openapi('AttractionExtensions')
-
-const AttributionSchema = z
-  .object({
-    licenceName: z.string().exactOptional().openapi({ description: 'LicenceName' }),
-    licenceUrl: z.string().exactOptional().openapi({ description: 'LicenceUrl' }),
-    sourceName: z.string().exactOptional().openapi({ description: 'SourceName' }),
-    sourceUrl: z.string().exactOptional().openapi({ description: 'SourceUrl' }),
-  })
-  .openapi({ description: 'Attribution', required: [] })
-  .openapi('Attribution')
-
-const AttributionsSchema = z
-  .object({
-    description: AttributionSchema.exactOptional(),
-    descriptions: z
-      .record(z.string(), AttributionSchema)
-      .exactOptional()
-      .openapi({ description: 'Attribution descriptions - multi-lingual fields' }),
-  })
-  .openapi({ description: 'Attributions', required: [] })
-  .openapi('Attributions')
+  .openapi({ description: "Event's Access Date", required: [] })
+  .openapi('AccessDates')
 
 const DateTimeZoneSchema = z
   .object({ fixed: z.boolean().default(false).exactOptional(), id: z.string().exactOptional() })
@@ -301,31 +97,19 @@ const ChronologySchema = z
   .openapi({ required: [] })
   .openapi('Chronology')
 
-const CitySchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the entity', 'x-position': 10 }),
-  })
-  .openapi({ description: 'City', required: [] })
-  .openapi('City')
-
-const CountrySchema = z
-  .object({
-    countryCode: z.string().exactOptional().openapi({ description: 'Country code (ISO 3166)' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the entity', 'x-position': 10 }),
-  })
-  .openapi({ description: 'Country', required: [] })
-  .openapi('Country')
-
 const DurationFieldTypeSchema = z
   .object({ name: z.string().exactOptional() })
   .openapi({ required: [] })
   .openapi('DurationFieldType')
+
+const DateTimeFieldTypeSchema = z
+  .object({
+    durationType: DurationFieldTypeSchema.exactOptional(),
+    name: z.string().exactOptional(),
+    rangeDurationType: DurationFieldTypeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DateTimeFieldType')
 
 const DurationFieldSchema = z
   .object({
@@ -349,15 +133,6 @@ const DurationFieldSchema = z
   .openapi({ required: [] })
   .openapi('DurationField')
 
-const DateTimeFieldTypeSchema = z
-  .object({
-    durationType: DurationFieldTypeSchema.exactOptional(),
-    name: z.string().exactOptional(),
-    rangeDurationType: DurationFieldTypeSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DateTimeFieldType')
-
 const DateTimeFieldSchema = z
   .object({
     durationField: DurationFieldSchema.exactOptional(),
@@ -372,22 +147,6 @@ const DateTimeFieldSchema = z
   })
   .openapi({ required: [] })
   .openapi('DateTimeField')
-
-const DisplaySettingExtensionSchema = z
-  .object({
-    softLanding: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: "True the landing is Soft otherwise it's Comingled" }),
-  })
-  .openapi({ description: "Event's display settings extension", required: [] })
-  .openapi('DisplaySettingExtension')
-
-const DmaSchema = z
-  .object({ id: z.int32().exactOptional().openapi({ description: "DMS's id" }) })
-  .openapi({ description: 'DMA (Designated Market Area)', required: [] })
-  .openapi('Dma')
 
 const LocalTimeSchema = z
   .object({
@@ -439,24 +198,6 @@ const EndDatesSchema = z
   })
   .openapi({ description: "Event's End Dates", required: [] })
   .openapi('EndDates')
-
-const EntityChangesSchema = z
-  .object({
-    changes: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    newlyCreated: z.boolean().default(false).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('EntityChanges')
 
 const StartDatesSchema = z
   .object({
@@ -539,6 +280,69 @@ const EventDatesSchema = z
   .openapi({ description: "Event's Dates", required: [] })
   .openapi('EventDates')
 
+const ExternalLinkSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An external link id is the unique identifier of a resource on a different domain or api',
+        'x-position': 2,
+      }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An external link url is a url that goes to a different domain or api',
+        'x-position': 2,
+      }),
+  })
+  .openapi({ description: 'ExternalLink', required: [] })
+  .openapi('ExternalLink')
+
+const ImageSchema = z
+  .object({
+    attribution: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Attribution of the image', 'x-position': 8 }),
+    fallback: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description: "true if the image is not the event's image but a fallbak image",
+        'x-position': 6,
+      }),
+    height: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Height of the image', 'x-position': 5 }),
+    ratio: z
+      .enum(['16_9', '3_2', '4_3'])
+      .exactOptional()
+      .openapi({ description: 'Aspect ratio of the image', 'x-position': 3 }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Public URL of the image', 'x-position': 2 }),
+    width: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Width of the image', 'x-position': 4 }),
+  })
+  .openapi({ description: 'Image', required: [] })
+  .openapi('Image')
+
+const LocationSchema = z
+  .object({
+    latitude: z.number().exactOptional().openapi({ description: 'Latitude' }),
+    longitude: z.number().exactOptional().openapi({ description: 'Longitude' }),
+  })
+  .openapi({ description: 'Location', required: [] })
+  .openapi('Location')
+
 const OutletSchema = z
   .object({
     type: z.string().exactOptional().openapi({ description: "Outlet's type", 'x-position': 2 }),
@@ -546,6 +350,52 @@ const OutletSchema = z
   })
   .openapi({ description: 'A selling point for tickets.', required: [] })
   .openapi('Outlet')
+
+const AddressSchema = z
+  .object({
+    line1: z.string().exactOptional().openapi({ description: 'Address first line' }),
+    line2: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Address second line', 'x-position': 3 }),
+    line3: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Address third line', 'x-position': 3 }),
+  })
+  .openapi({ description: 'Address', required: [] })
+  .openapi('Address')
+
+const AreaSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the entity', 'x-position': 10 }),
+  })
+  .openapi({ description: 'Area', required: [] })
+  .openapi('Area')
+
+const CitySchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the entity', 'x-position': 10 }),
+  })
+  .openapi({ description: 'City', required: [] })
+  .openapi('City')
+
+const CountrySchema = z
+  .object({
+    countryCode: z.string().exactOptional().openapi({ description: 'Country code (ISO 3166)' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the entity', 'x-position': 10 }),
+  })
+  .openapi({ description: 'Country', required: [] })
+  .openapi('Country')
 
 const StateSchema = z
   .object({
@@ -693,7 +543,159 @@ const SeatMapSchema = z
   .openapi({ description: 'Seatmap', required: [] })
   .openapi('SeatMap')
 
-const EventSchema = z
+type EventType = {
+  accessibility?: z.infer<typeof AccessibilitySchema>
+  additionalInfo?: string
+  classifications?: z.infer<typeof ClassificationSchema>[]
+  dates?: z.infer<typeof EventDatesSchema>
+  description?: string
+  distance?: number
+  externalLinks?: { [key: string]: z.infer<typeof ExternalLinkSchema>[] }
+  id: string
+  images?: z.infer<typeof ImageSchema>[]
+  info?: string
+  locale?: string
+  location?: z.infer<typeof LocationSchema>
+  name?: string
+  outlets?: z.infer<typeof OutletSchema>[]
+  place?: z.infer<typeof PlaceSchema>
+  pleaseNote?: string
+  priceRanges?: z.infer<typeof PriceRangeSchema>[]
+  products?: z.infer<typeof ProductSchema>[]
+  promoter?: z.infer<typeof PromoterSchema>
+  promoters?: z.infer<typeof PromoterSchema>[]
+  sales?: z.infer<typeof EventSalesDatesSchema>
+  seatmap?: z.infer<typeof SeatMapSchema>
+  test?: boolean
+  type: 'event' | 'venue' | 'attraction'
+  units?: string
+  url?: string
+}
+
+const AttractionSchema = z
+  .object({
+    additionalInfo: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Additional information of the entity', 'x-position': 22 }),
+    classifications: z
+      .array(ClassificationSchema)
+      .exactOptional()
+      .openapi({ description: "Attraction's classifications", 'x-position': 30 }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Description's of the entity", 'x-position': 20 }),
+    externalLinks: z
+      .record(z.string(), z.array(ExternalLinkSchema))
+      .exactOptional()
+      .openapi({ description: 'List of external links', 'x-position': 79 }),
+    id: z
+      .string()
+      .openapi({ description: 'Unique id of the entity in the discovery API', 'x-position': 1 }),
+    images: z
+      .array(ImageSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional()
+      .openapi({ description: 'Images of the entity', 'x-position': 29 }),
+    locale: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Locale in which the content is returned', 'x-position': 3 }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the entity', 'x-position': 10 }),
+    test: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          "Indicate if this is a test entity, by default test entities won't appear in discovery API",
+        'x-position': 96,
+      }),
+    type: z.enum(['event', 'venue', 'attraction']).openapi({ description: 'Type of the entity' }),
+    upcomingEvents: z
+      .record(z.string(), z.int32())
+      .exactOptional()
+      .openapi({ description: 'number of upcoming events', 'x-position': 110 }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'URL of a web site detail page of the entity', 'x-position': 24 }),
+  })
+  .openapi({ description: 'Attraction', required: ['id', 'type'] })
+  .openapi('Attraction')
+
+const AttractionExtensionsSchema = z
+  .looseObject({})
+  .openapi({ description: "All Attraction's extensions" })
+  .openapi('AttractionExtensions')
+
+const AttributionSchema = z
+  .object({
+    licenceName: z.string().exactOptional().openapi({ description: 'LicenceName' }),
+    licenceUrl: z.string().exactOptional().openapi({ description: 'LicenceUrl' }),
+    sourceName: z.string().exactOptional().openapi({ description: 'SourceName' }),
+    sourceUrl: z.string().exactOptional().openapi({ description: 'SourceUrl' }),
+  })
+  .openapi({ description: 'Attribution', required: [] })
+  .openapi('Attribution')
+
+const AttributionsSchema = z
+  .object({
+    description: AttributionSchema.exactOptional(),
+    descriptions: z
+      .record(z.string(), AttributionSchema)
+      .exactOptional()
+      .openapi({ description: 'Attribution descriptions - multi-lingual fields' }),
+  })
+  .openapi({ description: 'Attributions', required: [] })
+  .openapi('Attributions')
+
+const DisplaySettingExtensionSchema = z
+  .object({
+    softLanding: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: "True the landing is Soft otherwise it's Comingled" }),
+  })
+  .openapi({ description: "Event's display settings extension", required: [] })
+  .openapi('DisplaySettingExtension')
+
+const DmaSchema = z
+  .object({ id: z.int32().exactOptional().openapi({ description: "DMS's id" }) })
+  .openapi({ description: 'DMA (Designated Market Area)', required: [] })
+  .openapi('Dma')
+
+const EntityChangesSchema = z
+  .object({
+    changes: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    newlyCreated: z.boolean().default(false).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('EntityChanges')
+
+const EventSchema: z.ZodType<EventType> = z
   .object({
     accessibility: AccessibilitySchema.exactOptional(),
     additionalInfo: z
@@ -794,7 +796,7 @@ const EventSchema = z
   .openapi('Event')
 
 const EventExtensionsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "All Event's extensions" })
   .openapi('EventExtensions')
 
@@ -823,7 +825,7 @@ const EventImagesSchema = z
   })
   .openapi('EventImages')
 
-const ExtensionSchema = z.object({}).openapi('Extension')
+const ExtensionSchema = z.looseObject({}).openapi('Extension')
 
 const GenreSchema = z
   .object({
@@ -836,8 +838,33 @@ const GenreSchema = z
   .openapi({ description: 'Secondary Genre', required: [] })
   .openapi('Genre')
 
+const GeometrySchema = z
+  .object({ location: LocationSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('Geometry')
+
+const GeocodeExtensionSchema = z
+  .object({
+    city: z.string().exactOptional(),
+    country: z.string().exactOptional(),
+    county: z.string().exactOptional(),
+    formattedAddress: z.string().exactOptional(),
+    geometry: GeometrySchema.exactOptional(),
+    postalCode: z.string().exactOptional(),
+    route: z.string().exactOptional(),
+    state: z.string().exactOptional(),
+    streetNumber: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GeocodeExtension')
+
+const GeolocationVenueExtensionsSchema = z
+  .object({ geocode: GeocodeExtensionSchema.exactOptional() })
+  .openapi({ description: "Venue's geocode extension", required: [] })
+  .openapi('GeolocationVenueExtensions')
+
 const HostExtensionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Event's Host extension" })
   .openapi('HostExtension')
 
@@ -911,7 +938,7 @@ const ParkingSchema = z
   .openapi('Parking')
 
 const PublicVisibilitySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'The class defines the public visibility period on the Discovery/Publish API.',
   })
@@ -967,15 +994,15 @@ const SocialSchema = z
   .openapi({ description: 'Social networks data', required: [] })
   .openapi('Social')
 
-const SourceSchema = z.object({}).openapi({ description: 'Source' }).openapi('Source')
+const SourceSchema = z.looseObject({}).openapi({ description: 'Source' }).openapi('Source')
 
 const TatExtensionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The Attraction Tool (TAT) extension' })
   .openapi('TatExtension')
 
 const TicketmasterAttractionExtensionsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Attraction's extension (ticketmaster source)" })
   .openapi('TicketmasterAttractionExtensions')
 
@@ -985,7 +1012,7 @@ const TicketmasterEventExtensionsSchema = z
   .openapi('TicketmasterEventExtensions')
 
 const TicketmasterVenueExtensionsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Venue's extension (ticketmaster source)" })
   .openapi('TicketmasterVenueExtensions')
 
@@ -1128,12 +1155,9 @@ const VenueSchema = z
   .openapi({ description: 'Venue', required: ['id', 'type'] })
   .openapi('Venue')
 
-const VenueExtensionsSchema: z.ZodType<VenueExtensionsType> = z
-  .lazy(() =>
-    z
-      .object({ geolocation: GeolocationVenueExtensionsSchema.exactOptional() })
-      .openapi({ description: "All Venue's extensions", required: [] }),
-  )
+const VenueExtensionsSchema = z
+  .object({ geolocation: GeolocationVenueExtensionsSchema.exactOptional() })
+  .openapi({ description: "All Venue's extensions", required: [] })
   .openapi('VenueExtensions')
 
 export const getDiscoveryV2AttractionsRoute = createRoute({

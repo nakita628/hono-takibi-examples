@@ -836,10 +836,23 @@ const TransactionMetadataSchema = z
   })
   .openapi('TransactionMetadata')
 
-const TransactionMetadataListSchema = z
-  .object({ results: z.array(TransactionMetadataSchema).exactOptional() })
-  .openapi({ required: [] })
-  .and(PagingInfoSchema)
+const TransactionMetadataListSchema = (() => {
+  const Schema = z
+    .object({ results: z.array(TransactionMetadataSchema).exactOptional() })
+    .openapi({ required: [] })
+    .and(PagingInfoSchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     'x-examples': {
       'Example 1': {

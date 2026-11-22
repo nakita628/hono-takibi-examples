@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const advancedHandler = app.openapi(
   postCrmPipelinesRules202609ObjectTypeIdPipelineIdApprovalsStartRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

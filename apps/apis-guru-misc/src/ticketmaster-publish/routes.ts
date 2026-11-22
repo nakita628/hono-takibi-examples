@@ -1,85 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AccessDatesSchema = z
-  .object({
-    endApproximate: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description: 'Boolean flag to indicate whether or not the access end date is approximated',
-        example: 'yyyy-MM-ddThh-mm-ssZ',
-        'x-position': 3,
-      }),
-    endDateTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: "Event's end access time",
-        example: 'yyyy-MM-ddThh-mm-ssZ',
-        'x-position': 2,
-      }),
-    startApproximate: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Boolean flag to indicate whether or not the access start date is approximated',
-        'x-position': 1,
-      }),
-    startDateTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: "Event's start access time", example: 'yyyy-MM-ddThh-mm-ssZ' }),
-  })
-  .openapi({ description: "Event's Access Date", required: [] })
-  .openapi('AccessDates')
-
-const AddressSchema = z
-  .object({
-    line1s: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Aaddress first line - multi-lingual fields',
-        example: 'en-us: line1',
-        'x-position': 1,
-      }),
-    line2s: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Address second line - multi-lingual fields',
-        example: 'en-us:line2',
-        'x-position': 4,
-      }),
-    line3s: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Address third line - multi-lingual fields',
-        example: 'en-us:line3',
-        'x-position': 4,
-      }),
-  })
-  .openapi({ description: 'Address', required: [] })
-  .openapi('Address')
-
-const AreaSchema = z
-  .object({
-    names: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Names of the entity - multi-lingual fields',
-        example: 'en-us: name',
-        'x-position': 11,
-      }),
-  })
-  .openapi({ description: 'Area', required: [] })
-  .openapi('Area')
-
 const LevelSchema = z
   .object({
     id: z.string().exactOptional().openapi({ description: "The ID of the classification's level" }),
@@ -167,7 +87,7 @@ const ImageSchema = z
   .openapi('Image')
 
 const RelationshipSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Relationship' })
   .openapi('Relationship')
 
@@ -300,92 +220,41 @@ const AttractionSchema = z
   .openapi({ description: 'Attraction', required: ['type'] })
   .openapi('Attraction')
 
-const AttractionExtensionsSchema = z
-  .object({})
-  .openapi({ description: "All Attraction's extensions" })
-  .openapi('AttractionExtensions')
-
-const ChangeSchema = z
+const AccessDatesSchema = z
   .object({
-    from: z
-      .string()
+    endApproximate: z
+      .boolean()
+      .default(false)
       .exactOptional()
       .openapi({
-        description: 'Json path of the source entity when using the move operation.',
-        'x-position': 1,
-      }),
-    op: z
-      .enum(['add', 'remove', 'replace', 'move', 'copy', 'test'])
-      .openapi({ description: 'Operation to apply on the entity.' }),
-    path: z
-      .string()
-      .openapi({
-        description:
-          'Json path from the root of the document to the place where the change should be applied.',
-        'x-position': 2,
-      }),
-    value: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'Data to change. MUST be a valid json object.', 'x-position': 3 }),
-  })
-  .openapi({
-    description: 'This class defines the Changes on the Publish API',
-    required: ['op', 'path'],
-  })
-  .openapi('Change')
-
-const AugmentationDataSchema = z
-  .object({
-    changes: z
-      .array(ChangeSchema)
-      .openapi({ description: 'List of changes to apply to the related entity', 'x-position': 5 }),
-    relatedEntityId: z
-      .string()
-      .openapi({
-        description: 'Id of the entity to apply the augmentation data.',
-        'x-position': 1,
-      }),
-    relatedEntityType: z
-      .enum(['event', 'attraction', 'venue'])
-      .openapi({ description: 'The type of the entity to apply the augmentation data.' }),
-    score: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The confidence (%) level of the accuracy of this augmention data. 100 is the better',
-        'x-position': 4,
-      }),
-    source: z
-      .string()
-      .openapi({
-        description: 'The source where the augementation data came from',
-        'x-position': 2,
-      }),
-    versionNumber: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Vesion of this augmentation data. This field is to avoid updating entity with old data. ',
+        description: 'Boolean flag to indicate whether or not the access end date is approximated',
+        example: 'yyyy-MM-ddThh-mm-ssZ',
         'x-position': 3,
       }),
+    endDateTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: "Event's end access time",
+        example: 'yyyy-MM-ddThh-mm-ssZ',
+        'x-position': 2,
+      }),
+    startApproximate: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Boolean flag to indicate whether or not the access start date is approximated',
+        'x-position': 1,
+      }),
+    startDateTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: "Event's start access time", example: 'yyyy-MM-ddThh-mm-ssZ' }),
   })
-  .openapi({
-    description: 'This class defines the Augmentation Data on the Publish API',
-    required: ['changes', 'relatedEntityId', 'relatedEntityType', 'source', 'versionNumber'],
-  })
-  .openapi('AugmentationData')
+  .openapi({ description: "Event's Access Date", required: [] })
+  .openapi('AccessDates')
 
 const DateTimeZoneSchema = z
   .object({ fixed: z.boolean().default(false).exactOptional(), id: z.string().exactOptional() })
@@ -397,39 +266,19 @@ const ChronologySchema = z
   .openapi({ required: [] })
   .openapi('Chronology')
 
-const CitySchema = z
-  .object({
-    names: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Names of the entity - multi-lingual fields',
-        example: 'en-us: name',
-        'x-position': 11,
-      }),
-  })
-  .openapi({ description: 'City', required: [] })
-  .openapi('City')
-
-const CountrySchema = z
-  .object({
-    countryCode: z.string().exactOptional().openapi({ description: 'Country code (ISO 3166)' }),
-    names: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Names of the entity - multi-lingual fields',
-        example: 'en-us: name',
-        'x-position': 11,
-      }),
-  })
-  .openapi({ description: 'Country', required: [] })
-  .openapi('Country')
-
 const DurationFieldTypeSchema = z
   .object({ name: z.string().exactOptional() })
   .openapi({ required: [] })
   .openapi('DurationFieldType')
+
+const DateTimeFieldTypeSchema = z
+  .object({
+    durationType: DurationFieldTypeSchema.exactOptional(),
+    name: z.string().exactOptional(),
+    rangeDurationType: DurationFieldTypeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DateTimeFieldType')
 
 const DurationFieldSchema = z
   .object({
@@ -453,15 +302,6 @@ const DurationFieldSchema = z
   .openapi({ required: [] })
   .openapi('DurationField')
 
-const DateTimeFieldTypeSchema = z
-  .object({
-    durationType: DurationFieldTypeSchema.exactOptional(),
-    name: z.string().exactOptional(),
-    rangeDurationType: DurationFieldTypeSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DateTimeFieldType')
-
 const DateTimeFieldSchema = z
   .object({
     durationField: DurationFieldSchema.exactOptional(),
@@ -476,16 +316,6 @@ const DateTimeFieldSchema = z
   })
   .openapi({ required: [] })
   .openapi('DateTimeField')
-
-const DisplaySettingExtensionSchema = z
-  .object({})
-  .openapi({ description: "Event's display settings extension" })
-  .openapi('DisplaySettingExtension')
-
-const DmaSchema = z
-  .object({ id: z.int32().exactOptional().openapi({ description: "DMS's id" }) })
-  .openapi({ description: 'DMA (Designated Market Area)', required: [] })
-  .openapi('Dma')
 
 const LocalTimeSchema = z
   .object({
@@ -524,75 +354,6 @@ const EndDatesSchema = z
   })
   .openapi({ description: "Event's End Dates", required: [] })
   .openapi('EndDates')
-
-const EntitlementSchema = z
-  .object({
-    data: z
-      .object({})
-      .openapi({
-        description: 'The actual entitlements information to add to the entity',
-        'x-position': 6,
-      }),
-    relatedEntityId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Id of the entity to add this extionsion to. If the relatedEntityId is Null, a relatedEntitySource MUST be provided',
-        'x-position': 1,
-      }),
-    relatedEntitySource: SourceSchema.exactOptional(),
-    relatedEntityType: z
-      .enum(['event', 'venue', 'attraction'])
-      .openapi({
-        description: 'The type of the entity to add this entitlement to',
-        'x-position': 2,
-      }),
-    source: z
-      .literal('ticketmaster')
-      .openapi({ description: 'Source of the extension, where it came from' }),
-    versionNumber: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Version of the entitlements. Version is to prevent to override an entitlements with an older one',
-        'x-position': 5,
-      }),
-  })
-  .openapi({
-    description: 'This class defines an entitlement data on the Publish API',
-    required: ['data', 'relatedEntityType', 'source'],
-  })
-  .openapi('Entitlement')
-
-const EntityChangesSchema = z
-  .object({
-    changes: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    newlyCreated: z.boolean().default(false).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('EntityChanges')
 
 const StartDatesSchema = z
   .object({
@@ -676,6 +437,79 @@ const LocationSchema = z
   })
   .openapi({ description: 'Location', required: [] })
   .openapi('Location')
+
+const AddressSchema = z
+  .object({
+    line1s: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Aaddress first line - multi-lingual fields',
+        example: 'en-us: line1',
+        'x-position': 1,
+      }),
+    line2s: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Address second line - multi-lingual fields',
+        example: 'en-us:line2',
+        'x-position': 4,
+      }),
+    line3s: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Address third line - multi-lingual fields',
+        example: 'en-us:line3',
+        'x-position': 4,
+      }),
+  })
+  .openapi({ description: 'Address', required: [] })
+  .openapi('Address')
+
+const AreaSchema = z
+  .object({
+    names: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Names of the entity - multi-lingual fields',
+        example: 'en-us: name',
+        'x-position': 11,
+      }),
+  })
+  .openapi({ description: 'Area', required: [] })
+  .openapi('Area')
+
+const CitySchema = z
+  .object({
+    names: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Names of the entity - multi-lingual fields',
+        example: 'en-us: name',
+        'x-position': 11,
+      }),
+  })
+  .openapi({ description: 'City', required: [] })
+  .openapi('City')
+
+const CountrySchema = z
+  .object({
+    countryCode: z.string().exactOptional().openapi({ description: 'Country code (ISO 3166)' }),
+    names: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Names of the entity - multi-lingual fields',
+        example: 'en-us: name',
+        'x-position': 11,
+      }),
+  })
+  .openapi({ description: 'Country', required: [] })
+  .openapi('Country')
 
 const StateSchema = z
   .object({
@@ -892,6 +726,11 @@ const VenueBoxOfficeInfoSchema = z
   .openapi({ description: 'Venue box office information', required: [] })
   .openapi('VenueBoxOfficeInfo')
 
+const DmaSchema = z
+  .object({ id: z.int32().exactOptional().openapi({ description: "DMS's id" }) })
+  .openapi({ description: 'DMA (Designated Market Area)', required: [] })
+  .openapi('Dma')
+
 const VenueGeneralInfoSchema = z
   .object({
     childRules: z
@@ -1102,7 +941,198 @@ const VenueSchema = z
   .openapi({ description: 'Venue', required: ['type'] })
   .openapi('Venue')
 
-const EventSchema = z
+type EventType = {
+  active?: boolean
+  additionalInfos?: { [key: string]: string }
+  attractions?: z.infer<typeof AttractionSchema>[]
+  classifications?: z.infer<typeof ClassificationSchema>[]
+  dates?: z.infer<typeof EventDatesSchema>
+  descriptions?: { [key: string]: string }
+  discoverable?: boolean
+  distance?: number
+  images?: z.infer<typeof ImageSchema>[]
+  infos?: { [key: string]: string }
+  location?: z.infer<typeof LocationSchema>
+  names?: { [key: string]: string }
+  place?: z.infer<typeof PlaceSchema>
+  pleaseNotes?: { [key: string]: string }
+  priceRanges?: z.infer<typeof PriceRangeSchema>[]
+  promoter?: z.infer<typeof PromoterSchema>
+  publicVisibility?: z.infer<typeof PublicVisibilitySchema>
+  references?: { [key: string]: string }
+  relationships?: z.infer<typeof RelationshipSchema>[]
+  sales?: z.infer<typeof EventSalesDatesSchema>
+  source?: z.infer<typeof SourceSchema>
+  test?: boolean
+  type: 'event' | 'venue' | 'attraction'
+  units?: string
+  url?: string
+  venue?: z.infer<typeof VenueSchema>
+  version?: bigint
+}
+
+const AttractionExtensionsSchema = z
+  .looseObject({})
+  .openapi({ description: "All Attraction's extensions" })
+  .openapi('AttractionExtensions')
+
+const ChangeSchema = z
+  .object({
+    from: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Json path of the source entity when using the move operation.',
+        'x-position': 1,
+      }),
+    op: z
+      .enum(['add', 'remove', 'replace', 'move', 'copy', 'test'])
+      .openapi({ description: 'Operation to apply on the entity.' }),
+    path: z
+      .string()
+      .openapi({
+        description:
+          'Json path from the root of the document to the place where the change should be applied.',
+        'x-position': 2,
+      }),
+    value: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Data to change. MUST be a valid json object.', 'x-position': 3 }),
+  })
+  .openapi({
+    description: 'This class defines the Changes on the Publish API',
+    required: ['op', 'path'],
+  })
+  .openapi('Change')
+
+const AugmentationDataSchema = z
+  .object({
+    changes: z
+      .array(ChangeSchema)
+      .openapi({ description: 'List of changes to apply to the related entity', 'x-position': 5 }),
+    relatedEntityId: z
+      .string()
+      .openapi({
+        description: 'Id of the entity to apply the augmentation data.',
+        'x-position': 1,
+      }),
+    relatedEntityType: z
+      .enum(['event', 'attraction', 'venue'])
+      .openapi({ description: 'The type of the entity to apply the augmentation data.' }),
+    score: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The confidence (%) level of the accuracy of this augmention data. 100 is the better',
+        'x-position': 4,
+      }),
+    source: z
+      .string()
+      .openapi({
+        description: 'The source where the augementation data came from',
+        'x-position': 2,
+      }),
+    versionNumber: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Vesion of this augmentation data. This field is to avoid updating entity with old data. ',
+        'x-position': 3,
+      }),
+  })
+  .openapi({
+    description: 'This class defines the Augmentation Data on the Publish API',
+    required: ['changes', 'relatedEntityId', 'relatedEntityType', 'source', 'versionNumber'],
+  })
+  .openapi('AugmentationData')
+
+const DisplaySettingExtensionSchema = z
+  .looseObject({})
+  .openapi({ description: "Event's display settings extension" })
+  .openapi('DisplaySettingExtension')
+
+const EntitlementSchema = z
+  .object({
+    data: z
+      .looseObject({})
+      .openapi({
+        description: 'The actual entitlements information to add to the entity',
+        'x-position': 6,
+      }),
+    relatedEntityId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of the entity to add this extionsion to. If the relatedEntityId is Null, a relatedEntitySource MUST be provided',
+        'x-position': 1,
+      }),
+    relatedEntitySource: SourceSchema.exactOptional(),
+    relatedEntityType: z
+      .enum(['event', 'venue', 'attraction'])
+      .openapi({
+        description: 'The type of the entity to add this entitlement to',
+        'x-position': 2,
+      }),
+    source: z
+      .literal('ticketmaster')
+      .openapi({ description: 'Source of the extension, where it came from' }),
+    versionNumber: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Version of the entitlements. Version is to prevent to override an entitlements with an older one',
+        'x-position': 5,
+      }),
+  })
+  .openapi({
+    description: 'This class defines an entitlement data on the Publish API',
+    required: ['data', 'relatedEntityType', 'source'],
+  })
+  .openapi('Entitlement')
+
+const EntityChangesSchema = z
+  .object({
+    changes: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    newlyCreated: z.boolean().default(false).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('EntityChanges')
+
+const EventSchema: z.ZodType<EventType> = z
   .object({
     active: z
       .boolean()
@@ -1257,16 +1287,16 @@ const EventSchema = z
   .openapi('Event')
 
 const EventExtensionsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "All Event's extensions" })
   .openapi('EventExtensions')
 
-const ExtensionSchema = z.object({}).openapi('Extension')
+const ExtensionSchema = z.looseObject({}).openapi('Extension')
 
 const ExtensionDataSchema = z
   .object({
     data: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'The actual information to add to the entity', 'x-position': 6 }),
     relatedEntityId: z
       .string()
@@ -1336,12 +1366,12 @@ const GeocodeExtensionSchema = z
   .openapi('GeocodeExtension')
 
 const GeolocationVenueExtensionsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Venue's geocode extension" })
   .openapi('GeolocationVenueExtensions')
 
 const HostExtensionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Venue's Host extension" })
   .openapi('HostExtension')
 
@@ -1352,22 +1382,22 @@ const IngestionResultSchema = z
       .exactOptional()
       .openapi({ description: 'Id of the entity ingested in the discovery api' }),
     ignoredProperties: z
-      .record(z.string(), z.object({}))
+      .record(z.string(), z.looseObject({}))
       .exactOptional()
       .openapi({
         description: 'List properties that are ignored in the validation',
         'x-position': 5,
       }),
     invalidProperties: z
-      .record(z.string(), z.object({}))
+      .record(z.string(), z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'List of invalid properties', 'x-position': 5 }),
     invalidValues: z
-      .record(z.string(), z.object({}))
+      .record(z.string(), z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'List of invalid values', 'x-position': 5 }),
     missingProperties: z
-      .record(z.string(), z.object({}))
+      .record(z.string(), z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -1378,7 +1408,7 @@ const IngestionResultSchema = z
       .enum(['Error', 'SuccessWarning', 'Success'])
       .openapi({ description: 'Status of the result', 'x-position': 1 }),
     unknownProperties: z
-      .record(z.string(), z.object({}))
+      .record(z.string(), z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'List of unknown properties that will be dropped', 'x-position': 5 }),
   })
@@ -1481,27 +1511,27 @@ const ParkingSchema = z
   .openapi('Parking')
 
 const TatExtensionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The Attraction Tool (TAT) extension' })
   .openapi('TatExtension')
 
 const TicketmasterAttractionExtensionsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Attraction's extension (ticketmaster source)" })
   .openapi('TicketmasterAttractionExtensions')
 
 const TicketmasterEventExtensionsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Event's extension (ticketmaster source)" })
   .openapi('TicketmasterEventExtensions')
 
 const TicketmasterVenueExtensionsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Venue's extension (ticketmaster source)" })
   .openapi('TicketmasterVenueExtensions')
 
 const VenueExtensionsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "All Venue's extensions" })
   .openapi('VenueExtensions')
 

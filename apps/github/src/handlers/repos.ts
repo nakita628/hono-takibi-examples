@@ -499,15 +499,21 @@ export const reposHandler = app
   })
   .openapi(
     getReposOwnerRepoEnvironmentsEnvironmentNameDeploymentBranchPoliciesBranchPolicyIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     putReposOwnerRepoEnvironmentsEnvironmentNameDeploymentBranchPoliciesBranchPolicyIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     deleteReposOwnerRepoEnvironmentsEnvironmentNameDeploymentBranchPoliciesBranchPolicyIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(getReposOwnerRepoEnvironmentsEnvironmentNameDeploymentProtectionRulesRoute, (c) => {
     throw new Error('Not implemented')
@@ -515,17 +521,20 @@ export const reposHandler = app
   .openapi(postReposOwnerRepoEnvironmentsEnvironmentNameDeploymentProtectionRulesRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    getReposOwnerRepoEnvironmentsEnvironmentNameDeploymentProtectionRulesAppsRoute,
-    (c) => {},
-  )
+  .openapi(getReposOwnerRepoEnvironmentsEnvironmentNameDeploymentProtectionRulesAppsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(
     getReposOwnerRepoEnvironmentsEnvironmentNameDeploymentProtectionRulesProtectionRuleIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     deleteReposOwnerRepoEnvironmentsEnvironmentNameDeploymentProtectionRulesProtectionRuleIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(getReposOwnerRepoForksRoute, (c) => {
     throw new Error('Not implemented')

@@ -1,5 +1,10 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const ErrorSchema = z
+  .object({ Message: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('Error')
+
 const SubIndustrySchema = z
   .object({
     Caption: z.string().exactOptional().openapi({ description: 'The name of the SubIndustries.' }),
@@ -8,27 +13,13 @@ const SubIndustrySchema = z
   .openapi({ required: [] })
   .openapi('SubIndustry')
 
-type IndustryType = {
-  Caption?: string
-  ID?: number
-  SubIndustries?: z.infer<typeof SubIndustrySchema>[]
-}
-
-const ErrorSchema = z
-  .object({ Message: z.string().exactOptional() })
+const IndustrySchema = z
+  .object({
+    Caption: z.string().exactOptional().openapi({ description: 'The name of the Industries.' }),
+    ID: z.int().exactOptional().openapi({ description: 'Industry ID.' }),
+    SubIndustries: z.array(SubIndustrySchema).exactOptional(),
+  })
   .openapi({ required: [] })
-  .openapi('Error')
-
-const IndustrySchema: z.ZodType<IndustryType> = z
-  .lazy(() =>
-    z
-      .object({
-        Caption: z.string().exactOptional().openapi({ description: 'The name of the Industries.' }),
-        ID: z.int().exactOptional().openapi({ description: 'Industry ID.' }),
-        SubIndustries: z.array(SubIndustrySchema).exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
   .openapi('Industry')
 
 const JobTypeIDSchema = z

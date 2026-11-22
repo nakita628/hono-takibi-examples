@@ -5,6 +5,6 @@ export const postRelayRouteHandler: RouteHandler<typeof postRelayRoute> = async 
   throw new Error('Not implemented')
 }
 
-export const getRelayRelayIdRouteHandler: RouteHandler<typeof getRelayRelayIdRoute> = async (
-  c,
-) => {}
+export const getRelayRelayIdRouteHandler: RouteHandler<typeof getRelayRelayIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

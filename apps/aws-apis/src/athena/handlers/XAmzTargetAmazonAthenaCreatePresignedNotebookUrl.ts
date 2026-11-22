@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAmazonAthenaCreatePresignedNotebookUrlHandler = app.openapi(
   postXAmzTargetAmazonAthenaCreatePresignedNotebookUrlRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

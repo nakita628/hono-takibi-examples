@@ -20,9 +20,9 @@ export const getDisputesDisputeIdRouteHandler: RouteHandler<
   throw new Error('Not implemented')
 }
 
-export const getDisputesListRouteHandler: RouteHandler<typeof getDisputesListRoute> = async (
-  c,
-) => {}
+export const getDisputesListRouteHandler: RouteHandler<typeof getDisputesListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
 export const getDisputesProfileListRouteHandler: RouteHandler<
   typeof getDisputesProfileListRoute
@@ -32,7 +32,9 @@ export const getDisputesProfileListRouteHandler: RouteHandler<
 
 export const getDisputesFilterRouteHandler: RouteHandler<typeof getDisputesFilterRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const getDisputesProfileFilterRouteHandler: RouteHandler<
   typeof getDisputesProfileFilterRoute

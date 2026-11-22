@@ -1142,20 +1142,23 @@ const CaptureRequestSchema = SupplementaryPurchaseDataSchema.and(
             'Indicates whether you can make additional captures against the authorized payment. Set to `true` if you do not intend to capture additional payments against the authorization. Set to `false` if you intend to capture additional payments against the authorization.',
         }),
       payment_instruction: PaymentInstructionSchema.and(
-        z.any().refine(
-          (val) =>
-            !z
-              .unknown()
-              .superRefine((val, ctx) => {
-                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                  if (!Object.hasOwn(val, 'payee_pricing_tier_id')) {
-                    ctx.addIssue({ code: 'custom' })
+        z
+          .any()
+          .refine(
+            (val) =>
+              !z
+                .unknown()
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                    if (!Object.hasOwn(val, 'payee_pricing_tier_id')) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
                   }
-                }
-              })
-              .openapi({ required: ['payee_pricing_tier_id'] })
-              .safeParse(val).success,
-        ),
+                })
+                .openapi({ required: ['payee_pricing_tier_id'] })
+                .safeParse(val).success,
+          )
+          .openapi({ not: { required: ['payee_pricing_tier_id'] } }),
       ).exactOptional(),
       note_to_payer: z
         .string()
@@ -1669,7 +1672,7 @@ const PaymentInstruction_2Schema = z
                   .openapi({ required: ['payee'] })
                   .safeParse(val).success,
             )
-            .openapi({ title: 'platform_fee' }),
+            .openapi({ title: 'platform_fee', not: { required: ['payee'] } }),
         ),
       )
       .min(0)
@@ -2001,20 +2004,23 @@ const FindEligibleMethodsRequestCustomerSchema = z
       }),
     email: EmailAddressSchema.exactOptional(),
     phone: Phone_2Schema.and(
-      z.any().refine(
-        (val) =>
-          !z
-            .unknown()
-            .superRefine((val, ctx) => {
-              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                if (!Object.hasOwn(val, 'extension_number')) {
-                  ctx.addIssue({ code: 'custom' })
+      z
+        .any()
+        .refine(
+          (val) =>
+            !z
+              .unknown()
+              .superRefine((val, ctx) => {
+                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                  if (!Object.hasOwn(val, 'extension_number')) {
+                    ctx.addIssue({ code: 'custom' })
+                  }
                 }
-              }
-            })
-            .openapi({ required: ['extension_number'] })
-            .safeParse(val).success,
-      ),
+              })
+              .openapi({ required: ['extension_number'] })
+              .safeParse(val).success,
+        )
+        .openapi({ not: { required: ['extension_number'] } }),
     ).exactOptional(),
   })
   .openapi({
@@ -2276,20 +2282,23 @@ const PaymentTokenSchema = z
     payment_source: z
       .object({
         paypal: PayerBaseSchema.and(
-          z.any().refine(
-            (val) =>
-              !z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'payer_id')) {
-                      ctx.addIssue({ code: 'custom' })
+          z
+            .any()
+            .refine(
+              (val) =>
+                !z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'payer_id')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['payer_id'] })
-                .safeParse(val).success,
-          ),
+                  })
+                  .openapi({ required: ['payer_id'] })
+                  .safeParse(val).success,
+            )
+            .openapi({ not: { required: ['payer_id'] } }),
         ).exactOptional(),
         venmo: VenmoPaymentTokenInfoSchema.exactOptional(),
       })

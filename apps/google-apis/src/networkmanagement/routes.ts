@@ -36,404 +36,109 @@ const CloudRunRevisionEndpointSchema = z
   .openapi({ description: 'Wrapper for Cloud Run revision attributes.', required: [] })
   .openapi('CloudRunRevisionEndpoint')
 
-type EndpointType = {
-  appEngineVersion?: z.infer<typeof AppEngineVersionEndpointSchema>
-  cloudFunction?: z.infer<typeof CloudFunctionEndpointSchema>
-  cloudRunRevision?: z.infer<typeof CloudRunRevisionEndpointSchema>
-  cloudSqlInstance?: string
-  forwardingRule?: string
-  forwardingRuleTarget?:
-    | 'FORWARDING_RULE_TARGET_UNSPECIFIED'
-    | 'INSTANCE'
-    | 'LOAD_BALANCER'
-    | 'VPN_GATEWAY'
-    | 'PSC'
-  gkeMasterCluster?: string
-  instance?: string
-  ipAddress?: string
-  loadBalancerId?: string
-  loadBalancerType?:
-    | 'LOAD_BALANCER_TYPE_UNSPECIFIED'
-    | 'HTTPS_ADVANCED_LOAD_BALANCER'
-    | 'HTTPS_LOAD_BALANCER'
-    | 'REGIONAL_HTTPS_LOAD_BALANCER'
-    | 'INTERNAL_HTTPS_LOAD_BALANCER'
-    | 'SSL_PROXY_LOAD_BALANCER'
-    | 'TCP_PROXY_LOAD_BALANCER'
-    | 'INTERNAL_TCP_PROXY_LOAD_BALANCER'
-    | 'NETWORK_LOAD_BALANCER'
-    | 'LEGACY_NETWORK_LOAD_BALANCER'
-    | 'TCP_UDP_INTERNAL_LOAD_BALANCER'
-  network?: string
-  networkType?: 'NETWORK_TYPE_UNSPECIFIED' | 'GCP_NETWORK' | 'NON_GCP_NETWORK'
-  port?: number
-  projectId?: string
-}
-
-const AbortInfoSchema = z
+const EndpointSchema = z
   .object({
-    cause: z
+    appEngineVersion: AppEngineVersionEndpointSchema.exactOptional().openapi({
+      description:
+        'An [App Engine](https://cloud.google.com/appengine) [service version](https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services.versions).',
+    }),
+    cloudFunction: CloudFunctionEndpointSchema.exactOptional().openapi({
+      description: 'A [Cloud Function](https://cloud.google.com/functions).',
+    }),
+    cloudRunRevision: CloudRunRevisionEndpointSchema.exactOptional().openapi({
+      description:
+        'A [Cloud Run](https://cloud.google.com/run) [revision](https://cloud.google.com/run/docs/reference/rest/v1/namespaces.revisions/get)',
+    }),
+    cloudSqlInstance: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A [Cloud SQL](https://cloud.google.com/sql) instance URI.' }),
+    forwardingRule: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Forwarding rule URI. Forwarding rules are frontends for load balancers, PSC endpoints and Protocol Forwarding. Format: projects/{project}/global/forwardingRules/{id} or projects/{project}/regions/{region}/forwardingRules/{id}',
+      }),
+    forwardingRuleTarget: z
       .enum([
-        'CAUSE_UNSPECIFIED',
-        'UNKNOWN_NETWORK',
-        'UNKNOWN_IP',
-        'UNKNOWN_PROJECT',
-        'PERMISSION_DENIED',
-        'NO_SOURCE_LOCATION',
-        'INVALID_ARGUMENT',
-        'NO_EXTERNAL_IP',
-        'UNINTENDED_DESTINATION',
-        'TRACE_TOO_LONG',
-        'INTERNAL_ERROR',
-        'SOURCE_ENDPOINT_NOT_FOUND',
-        'MISMATCHED_SOURCE_NETWORK',
-        'DESTINATION_ENDPOINT_NOT_FOUND',
-        'MISMATCHED_DESTINATION_NETWORK',
-        'UNSUPPORTED',
-        'MISMATCHED_IP_VERSION',
-        'GKE_KONNECTIVITY_PROXY_UNSUPPORTED',
+        'FORWARDING_RULE_TARGET_UNSPECIFIED',
+        'INSTANCE',
+        'LOAD_BALANCER',
+        'VPN_GATEWAY',
+        'PSC',
       ])
       .exactOptional()
-      .openapi({ description: 'Causes that the analysis is aborted.' }),
-    projectsMissingPermission: z
-      .array(z.string())
-      .exactOptional()
       .openapi({
-        description:
-          'List of project IDs that the user has specified in the request but does not have permission to access network configs. Analysis is aborted in this case with the PERMISSION_DENIED cause.',
+        description: 'Output only. Specifies the type of the target of the forwarding rule.',
+        readOnly: true,
       }),
-    resourceUri: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'URI of the resource that caused the abort.' }),
-  })
-  .openapi({
-    description: 'Details of the final state "abort" and associated resource.',
-    required: [],
-  })
-  .openapi('AbortInfo')
-
-const AppEngineVersionInfoSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of an App Engine version.' }),
-    environment: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'App Engine execution environment for a version.' }),
-    runtime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Runtime of the App Engine version.' }),
-    uri: z.string().exactOptional().openapi({ description: 'URI of an App Engine version.' }),
-  })
-  .openapi({
-    description: 'For display only. Metadata associated with an App Engine version.',
-    required: [],
-  })
-  .openapi('AppEngineVersionInfo')
-
-const AuditLogConfigSchema = z
-  .object({
-    exemptedMembers: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
-      }),
-    logType: z
-      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
-      .exactOptional()
-      .openapi({ description: 'The log type that this config enables.' }),
-  })
-  .openapi({
-    description:
-      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
-    required: [],
-  })
-  .openapi('AuditLogConfig')
-
-const AuditConfigSchema = z
-  .object({
-    auditLogConfigs: z
-      .array(AuditLogConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'The configuration for logging of each type of permission.' }),
-    service: z
+    gkeMasterCluster: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Specifies a service that will be enabled for audit logging. For example, `storage.googleapis.com`, `cloudsql.googleapis.com`. `allServices` is a special value that covers all services.',
+          'A cluster URI for [Google Kubernetes Engine master](https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-architecture).',
       }),
-  })
-  .openapi({
-    description:
-      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.',
-    required: [],
-  })
-  .openapi('AuditConfig')
-
-const ExprSchema = z
-  .object({
-    description: z
+    instance: z.string().exactOptional().openapi({ description: 'A Compute Engine instance URI.' }),
+    ipAddress: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
+          "The IP address of the endpoint, which can be an external or internal IP. An IPv6 address is only allowed when the test's destination is a [global load balancer VIP](https://cloud.google.com/load-balancing/docs/load-balancing-overview).",
       }),
-    expression: z
+    loadBalancerId: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Textual representation of an expression in Common Expression Language syntax.',
+          'Output only. ID of the load balancer the forwarding rule points to. Empty for forwarding rules not related to load balancers.',
+        readOnly: true,
       }),
-    location: z
+    loadBalancerType: z
+      .enum([
+        'LOAD_BALANCER_TYPE_UNSPECIFIED',
+        'HTTPS_ADVANCED_LOAD_BALANCER',
+        'HTTPS_LOAD_BALANCER',
+        'REGIONAL_HTTPS_LOAD_BALANCER',
+        'INTERNAL_HTTPS_LOAD_BALANCER',
+        'SSL_PROXY_LOAD_BALANCER',
+        'TCP_PROXY_LOAD_BALANCER',
+        'INTERNAL_TCP_PROXY_LOAD_BALANCER',
+        'NETWORK_LOAD_BALANCER',
+        'LEGACY_NETWORK_LOAD_BALANCER',
+        'TCP_UDP_INTERNAL_LOAD_BALANCER',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Type of the load balancer the forwarding rule points to.',
+        readOnly: true,
+      }),
+    network: z.string().exactOptional().openapi({ description: 'A Compute Engine network URI.' }),
+    networkType: z
+      .enum(['NETWORK_TYPE_UNSPECIFIED', 'GCP_NETWORK', 'NON_GCP_NETWORK'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Type of the network where the endpoint is located. Applicable only to source endpoint, as destination network type can be inferred from the source.',
+      }),
+    port: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The IP protocol port of the endpoint. Only applicable when protocol is TCP or UDP.',
+      }),
+    projectId: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
+          'Project ID where the endpoint is located. The Project ID can be derived from the URI if you provide a VM instance or network URI. The following are two cases where you must provide the project ID: 1. Only the IP address is specified, and the IP address is within a GCP project. 2. When you are using Shared VPC and the IP address that you provide is from the service project. In this case, the network that the IP address resides in is defined in the host project.',
       }),
   })
-  .openapi({
-    description:
-      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-    required: [],
-  })
-  .openapi('Expr')
-
-const BindingSchema = z
-  .object({
-    condition: ExprSchema.exactOptional().openapi({
-      description:
-        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
-    }),
-    members: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
-      }),
-    role: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
-      }),
-  })
-  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
-  .openapi('Binding')
-
-const CancelOperationRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request message for Operations.CancelOperation.' })
-  .openapi('CancelOperationRequest')
-
-const CloudFunctionInfoSchema = z
-  .object({
-    displayName: z.string().exactOptional().openapi({ description: 'Name of a Cloud Function.' }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Location in which the Cloud Function is deployed.' }),
-    uri: z.string().exactOptional().openapi({ description: 'URI of a Cloud Function.' }),
-    versionId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Latest successfully deployed version id of the Cloud Function.' }),
-  })
-  .openapi({
-    description: 'For display only. Metadata associated with a Cloud Function.',
-    required: [],
-  })
-  .openapi('CloudFunctionInfo')
-
-const CloudRunRevisionInfoSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of a Cloud Run revision.' }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Location in which this revision is deployed.' }),
-    serviceName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ID of Cloud Run Service this revision belongs to.' }),
-    serviceUri: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'URI of Cloud Run service this revision belongs to.' }),
-    uri: z.string().exactOptional().openapi({ description: 'URI of a Cloud Run revision.' }),
-  })
-  .openapi({
-    description: 'For display only. Metadata associated with a Cloud Run revision.',
-    required: [],
-  })
-  .openapi('CloudRunRevisionInfo')
-
-const CloudSQLInstanceInfoSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of a Cloud SQL instance.' }),
-    externalIp: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'External IP address of a Cloud SQL instance.' }),
-    internalIp: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Internal IP address of a Cloud SQL instance.' }),
-    networkUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'URI of a Cloud SQL instance network or empty string if the instance does not have one.',
-      }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Region in which the Cloud SQL instance is running.' }),
-    uri: z.string().exactOptional().openapi({ description: 'URI of a Cloud SQL instance.' }),
-  })
-  .openapi({
-    description: 'For display only. Metadata associated with a Cloud SQL instance.',
-    required: [],
-  })
-  .openapi('CloudSQLInstanceInfo')
-
-const EndpointSchema: z.ZodType<EndpointType> = z
-  .lazy(() =>
-    z
-      .object({
-        appEngineVersion: AppEngineVersionEndpointSchema.exactOptional().openapi({
-          description:
-            'An [App Engine](https://cloud.google.com/appengine) [service version](https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services.versions).',
-        }),
-        cloudFunction: CloudFunctionEndpointSchema.exactOptional().openapi({
-          description: 'A [Cloud Function](https://cloud.google.com/functions).',
-        }),
-        cloudRunRevision: CloudRunRevisionEndpointSchema.exactOptional().openapi({
-          description:
-            'A [Cloud Run](https://cloud.google.com/run) [revision](https://cloud.google.com/run/docs/reference/rest/v1/namespaces.revisions/get)',
-        }),
-        cloudSqlInstance: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A [Cloud SQL](https://cloud.google.com/sql) instance URI.' }),
-        forwardingRule: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Forwarding rule URI. Forwarding rules are frontends for load balancers, PSC endpoints and Protocol Forwarding. Format: projects/{project}/global/forwardingRules/{id} or projects/{project}/regions/{region}/forwardingRules/{id}',
-          }),
-        forwardingRuleTarget: z
-          .enum([
-            'FORWARDING_RULE_TARGET_UNSPECIFIED',
-            'INSTANCE',
-            'LOAD_BALANCER',
-            'VPN_GATEWAY',
-            'PSC',
-          ])
-          .exactOptional()
-          .openapi({
-            description: 'Output only. Specifies the type of the target of the forwarding rule.',
-            readOnly: true,
-          }),
-        gkeMasterCluster: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'A cluster URI for [Google Kubernetes Engine master](https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-architecture).',
-          }),
-        instance: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A Compute Engine instance URI.' }),
-        ipAddress: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "The IP address of the endpoint, which can be an external or internal IP. An IPv6 address is only allowed when the test's destination is a [global load balancer VIP](https://cloud.google.com/load-balancing/docs/load-balancing-overview).",
-          }),
-        loadBalancerId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. ID of the load balancer the forwarding rule points to. Empty for forwarding rules not related to load balancers.',
-            readOnly: true,
-          }),
-        loadBalancerType: z
-          .enum([
-            'LOAD_BALANCER_TYPE_UNSPECIFIED',
-            'HTTPS_ADVANCED_LOAD_BALANCER',
-            'HTTPS_LOAD_BALANCER',
-            'REGIONAL_HTTPS_LOAD_BALANCER',
-            'INTERNAL_HTTPS_LOAD_BALANCER',
-            'SSL_PROXY_LOAD_BALANCER',
-            'TCP_PROXY_LOAD_BALANCER',
-            'INTERNAL_TCP_PROXY_LOAD_BALANCER',
-            'NETWORK_LOAD_BALANCER',
-            'LEGACY_NETWORK_LOAD_BALANCER',
-            'TCP_UDP_INTERNAL_LOAD_BALANCER',
-          ])
-          .exactOptional()
-          .openapi({
-            description: 'Output only. Type of the load balancer the forwarding rule points to.',
-            readOnly: true,
-          }),
-        network: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A Compute Engine network URI.' }),
-        networkType: z
-          .enum(['NETWORK_TYPE_UNSPECIFIED', 'GCP_NETWORK', 'NON_GCP_NETWORK'])
-          .exactOptional()
-          .openapi({
-            description:
-              'Type of the network where the endpoint is located. Applicable only to source endpoint, as destination network type can be inferred from the source.',
-          }),
-        port: z
-          .int32()
-          .exactOptional()
-          .openapi({
-            description:
-              'The IP protocol port of the endpoint. Only applicable when protocol is TCP or UDP.',
-          }),
-        projectId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Project ID where the endpoint is located. The Project ID can be derived from the URI if you provide a VM instance or network URI. The following are two cases where you must provide the project ID: 1. Only the IP address is specified, and the IP address is within a GCP project. 2. When you are using Shared VPC and the IP address that you provide is from the service project. In this case, the network that the IP address resides in is defined in the host project.',
-          }),
-      })
-      .openapi({ description: 'Source or destination of the Connectivity Test.', required: [] }),
-  )
+  .openapi({ description: 'Source or destination of the Connectivity Test.', required: [] })
   .openapi('Endpoint')
 
 const EdgeLocationSchema = z
@@ -598,6 +303,149 @@ const ProbingDetailsSchema = z
     required: [],
   })
   .openapi('ProbingDetails')
+
+const AbortInfoSchema = z
+  .object({
+    cause: z
+      .enum([
+        'CAUSE_UNSPECIFIED',
+        'UNKNOWN_NETWORK',
+        'UNKNOWN_IP',
+        'UNKNOWN_PROJECT',
+        'PERMISSION_DENIED',
+        'NO_SOURCE_LOCATION',
+        'INVALID_ARGUMENT',
+        'NO_EXTERNAL_IP',
+        'UNINTENDED_DESTINATION',
+        'TRACE_TOO_LONG',
+        'INTERNAL_ERROR',
+        'SOURCE_ENDPOINT_NOT_FOUND',
+        'MISMATCHED_SOURCE_NETWORK',
+        'DESTINATION_ENDPOINT_NOT_FOUND',
+        'MISMATCHED_DESTINATION_NETWORK',
+        'UNSUPPORTED',
+        'MISMATCHED_IP_VERSION',
+        'GKE_KONNECTIVITY_PROXY_UNSUPPORTED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Causes that the analysis is aborted.' }),
+    projectsMissingPermission: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of project IDs that the user has specified in the request but does not have permission to access network configs. Analysis is aborted in this case with the PERMISSION_DENIED cause.',
+      }),
+    resourceUri: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'URI of the resource that caused the abort.' }),
+  })
+  .openapi({
+    description: 'Details of the final state "abort" and associated resource.',
+    required: [],
+  })
+  .openapi('AbortInfo')
+
+const AppEngineVersionInfoSchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of an App Engine version.' }),
+    environment: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'App Engine execution environment for a version.' }),
+    runtime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Runtime of the App Engine version.' }),
+    uri: z.string().exactOptional().openapi({ description: 'URI of an App Engine version.' }),
+  })
+  .openapi({
+    description: 'For display only. Metadata associated with an App Engine version.',
+    required: [],
+  })
+  .openapi('AppEngineVersionInfo')
+
+const CloudFunctionInfoSchema = z
+  .object({
+    displayName: z.string().exactOptional().openapi({ description: 'Name of a Cloud Function.' }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Location in which the Cloud Function is deployed.' }),
+    uri: z.string().exactOptional().openapi({ description: 'URI of a Cloud Function.' }),
+    versionId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Latest successfully deployed version id of the Cloud Function.' }),
+  })
+  .openapi({
+    description: 'For display only. Metadata associated with a Cloud Function.',
+    required: [],
+  })
+  .openapi('CloudFunctionInfo')
+
+const CloudRunRevisionInfoSchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of a Cloud Run revision.' }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Location in which this revision is deployed.' }),
+    serviceName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID of Cloud Run Service this revision belongs to.' }),
+    serviceUri: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'URI of Cloud Run service this revision belongs to.' }),
+    uri: z.string().exactOptional().openapi({ description: 'URI of a Cloud Run revision.' }),
+  })
+  .openapi({
+    description: 'For display only. Metadata associated with a Cloud Run revision.',
+    required: [],
+  })
+  .openapi('CloudRunRevisionInfo')
+
+const CloudSQLInstanceInfoSchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of a Cloud SQL instance.' }),
+    externalIp: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'External IP address of a Cloud SQL instance.' }),
+    internalIp: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Internal IP address of a Cloud SQL instance.' }),
+    networkUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'URI of a Cloud SQL instance network or empty string if the instance does not have one.',
+      }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Region in which the Cloud SQL instance is running.' }),
+    uri: z.string().exactOptional().openapi({ description: 'URI of a Cloud SQL instance.' }),
+  })
+  .openapi({
+    description: 'For display only. Metadata associated with a Cloud SQL instance.',
+    required: [],
+  })
+  .openapi('CloudSQLInstanceInfo')
 
 const DeliverInfoSchema = z
   .object({
@@ -1266,7 +1114,14 @@ const TraceSchema = z
   })
   .openapi('Trace')
 
-const ReachabilityDetailsSchema = z
+type ReachabilityDetailsType = {
+  error?: z.infer<typeof StatusSchema>
+  result?: 'RESULT_UNSPECIFIED' | 'REACHABLE' | 'UNREACHABLE' | 'AMBIGUOUS' | 'UNDETERMINED'
+  traces?: z.infer<typeof TraceSchema>[]
+  verifyTime?: string
+}
+
+const ReachabilityDetailsSchema: z.ZodType<ReachabilityDetailsType> = z
   .object({
     error: StatusSchema.exactOptional().openapi({
       description: 'The details of a failure or a cancellation of reachability analysis.',
@@ -1293,7 +1148,22 @@ const ReachabilityDetailsSchema = z
   })
   .openapi('ReachabilityDetails')
 
-const ConnectivityTestSchema = z
+type ConnectivityTestType = {
+  createTime?: string
+  description?: string
+  destination?: z.infer<typeof EndpointSchema>
+  displayName?: string
+  labels?: { [key: string]: string }
+  name?: string
+  probingDetails?: z.infer<typeof ProbingDetailsSchema>
+  protocol?: string
+  reachabilityDetails?: z.infer<typeof ReachabilityDetailsSchema>
+  relatedProjects?: string[]
+  source?: z.infer<typeof EndpointSchema>
+  updateTime?: string
+}
+
+const ConnectivityTestSchema: z.ZodType<ConnectivityTestType> = z
   .object({
     createTime: z
       .string()
@@ -1367,15 +1237,130 @@ const ConnectivityTestSchema = z
   })
   .openapi('ConnectivityTest')
 
+type ListConnectivityTestsResponseType = {
+  nextPageToken?: string
+  resources?: z.infer<typeof ConnectivityTestSchema>[]
+  unreachable?: string[]
+}
+
+const AuditLogConfigSchema = z
+  .object({
+    exemptedMembers: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
+      }),
+    logType: z
+      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
+      .exactOptional()
+      .openapi({ description: 'The log type that this config enables.' }),
+  })
+  .openapi({
+    description:
+      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
+    required: [],
+  })
+  .openapi('AuditLogConfig')
+
+const AuditConfigSchema = z
+  .object({
+    auditLogConfigs: z
+      .array(AuditLogConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'The configuration for logging of each type of permission.' }),
+    service: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies a service that will be enabled for audit logging. For example, `storage.googleapis.com`, `cloudsql.googleapis.com`. `allServices` is a special value that covers all services.',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.',
+    required: [],
+  })
+  .openapi('AuditConfig')
+
+const ExprSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
+      }),
+    expression: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Textual representation of an expression in Common Expression Language syntax.',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
+    required: [],
+  })
+  .openapi('Expr')
+
+const BindingSchema = z
+  .object({
+    condition: ExprSchema.exactOptional().openapi({
+      description:
+        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+    }),
+    members: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
+      }),
+    role: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
+      }),
+  })
+  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
+  .openapi('Binding')
+
+const CancelOperationRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request message for Operations.CancelOperation.' })
+  .openapi('CancelOperationRequest')
+
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
   })
   .openapi('Empty')
 
-const ListConnectivityTestsResponseSchema = z
+const ListConnectivityTestsResponseSchema: z.ZodType<ListConnectivityTestsResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -1600,7 +1585,7 @@ const PolicySchema = z
   .openapi('Policy')
 
 const RerunConnectivityTestRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for the `RerunConnectivityTest` method.' })
   .openapi('RerunConnectivityTestRequest')
 

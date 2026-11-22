@@ -4942,6 +4942,7 @@ export const getAdminCourierMessagesRoute = createRoute({
             schema: { default: 250, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 250,
         }),
       page_token: z
         .string()
@@ -5060,6 +5061,7 @@ export const getAdminIdentitiesRoute = createRoute({
             schema: { default: 250, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 250,
         }),
       page: z
         .preprocess((val) => {
@@ -5099,6 +5101,7 @@ export const getAdminIdentitiesRoute = createRoute({
             schema: { default: 250, format: 'int64', maximum: 500, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 250,
         }),
       page_token: z
         .string()
@@ -5707,6 +5710,7 @@ export const getAdminIdentitiesIdSessionsRoute = createRoute({
             schema: { default: 250, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 250,
         }),
       page: z
         .preprocess((val) => {
@@ -5746,6 +5750,7 @@ export const getAdminIdentitiesIdSessionsRoute = createRoute({
             schema: { default: 250, format: 'int64', maximum: 500, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 250,
         }),
       page_token: z
         .string()
@@ -5951,6 +5956,7 @@ export const getAdminSessionsRoute = createRoute({
             schema: { default: 250, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 250,
         }),
       page_token: z
         .string()
@@ -6301,6 +6307,7 @@ export const getSchemasRoute = createRoute({
             schema: { default: 250, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 250,
         }),
       page: z
         .preprocess((val) => {
@@ -6340,6 +6347,7 @@ export const getSchemasRoute = createRoute({
             schema: { default: 250, format: 'int64', maximum: 500, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 250,
         }),
       page_token: z
         .string()
@@ -8312,6 +8320,7 @@ export const getSessionsRoute = createRoute({
             schema: { default: 250, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 250,
         }),
       page: z
         .preprocess((val) => {
@@ -8351,6 +8360,7 @@ export const getSessionsRoute = createRoute({
             schema: { default: 250, format: 'int64', maximum: 500, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 250,
         }),
       page_token: z
         .string()

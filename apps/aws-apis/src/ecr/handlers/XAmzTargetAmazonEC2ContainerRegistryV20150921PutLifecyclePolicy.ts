@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAmazonEC2ContainerRegistryV20150921PutLifecyclePolicyHandler = app.openapi(
   postXAmzTargetAmazonEC2ContainerRegistryV20150921PutLifecyclePolicyRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

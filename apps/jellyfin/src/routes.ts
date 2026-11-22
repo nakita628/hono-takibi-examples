@@ -46515,6 +46515,7 @@ export const getVideosRouteItemIdRouteMediaSourceIdSubtitlesRouteIndexStreamRout
               schema: { type: 'integer', format: 'int64', default: 0 },
               required: false,
             },
+            default: 0,
           }),
       }),
     },

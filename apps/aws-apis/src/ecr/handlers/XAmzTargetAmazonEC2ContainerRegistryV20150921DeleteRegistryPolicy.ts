@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAmazonEC2ContainerRegistryV20150921DeleteRegistryPolicyHandler = app.openapi(
   postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteRegistryPolicyRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

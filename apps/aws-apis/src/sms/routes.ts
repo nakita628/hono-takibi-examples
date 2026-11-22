@@ -1,5 +1,15 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AppIdSchema = z.string().openapi('AppId')
+
+const RoleNameSchema = z.string().openapi('RoleName')
+
+const AutoLaunchSchema = z.boolean().openapi('AutoLaunch')
+
+const ServerGroupIdSchema = z.string().openapi('ServerGroupId')
+
+const LaunchOrderSchema = z.int().openapi('LaunchOrder')
+
 const ServerIdSchema = z.string().openapi('ServerId')
 
 const ServerTypeSchema = z.literal('VIRTUAL_MACHINE').openapi('ServerType')
@@ -10,10 +20,10 @@ const VmIdSchema = z.string().openapi('VmId')
 
 const VmServerAddressSchema = z
   .object({
-    vmManagerId: VmManagerIdSchema.and(
-      z.any().openapi({ description: 'The ID of the VM manager.' }),
-    ).exactOptional(),
-    vmId: VmIdSchema.and(z.any().openapi({ description: 'The ID of the VM.' })).exactOptional(),
+    vmManagerId: VmManagerIdSchema.exactOptional().openapi({
+      description: 'The ID of the VM manager.',
+    }),
+    vmId: VmIdSchema.exactOptional().openapi({ description: 'The ID of the VM.' }),
   })
   .openapi({ description: 'Represents a VM server location.', required: [] })
   .openapi('VmServerAddress')
@@ -28,25 +38,19 @@ const VmPathSchema = z.string().openapi('VmPath')
 
 const VmServerSchema = z
   .object({
-    vmServerAddress: VmServerAddressSchema.and(
-      z.any().openapi({ description: 'The VM server location.' }),
-    ).exactOptional(),
-    vmName: VmNameSchema.and(
-      z.any().openapi({ description: 'The name of the VM.' }),
-    ).exactOptional(),
-    vmManagerName: VmManagerNameSchema.and(
-      z.any().openapi({ description: 'The name of the VM manager.' }),
-    ).exactOptional(),
-    vmManagerType: VmManagerTypeSchema.and(
-      z.any().openapi({ description: 'The type of VM management product.' }),
-    ).exactOptional(),
-    vmPath: VmPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The VM folder path in the vCenter Server virtual machine inventory tree.',
-        }),
-    ).exactOptional(),
+    vmServerAddress: VmServerAddressSchema.exactOptional().openapi({
+      description: 'The VM server location.',
+    }),
+    vmName: VmNameSchema.exactOptional().openapi({ description: 'The name of the VM.' }),
+    vmManagerName: VmManagerNameSchema.exactOptional().openapi({
+      description: 'The name of the VM manager.',
+    }),
+    vmManagerType: VmManagerTypeSchema.exactOptional().openapi({
+      description: 'The type of VM management product.',
+    }),
+    vmPath: VmPathSchema.exactOptional().openapi({
+      description: 'The VM folder path in the vCenter Server virtual machine inventory tree.',
+    }),
   })
   .openapi({ description: 'Represents a VM server.', required: [] })
   .openapi('VmServer')
@@ -55,14 +59,219 @@ const ReplicationJobIdSchema = z.string().openapi('ReplicationJobId')
 
 const ReplicationJobTerminatedSchema = z.boolean().openapi('ReplicationJobTerminated')
 
-type ServerType = {
-  serverId?: z.infer<typeof ServerIdSchema> & { [key: string]: unknown }
-  serverType?: z.infer<typeof ServerTypeSchema> & { [key: string]: unknown }
-  vmServer?: z.infer<typeof VmServerSchema> & { [key: string]: unknown }
-  replicationJobId?: z.infer<typeof ReplicationJobIdSchema> & { [key: string]: unknown }
-  replicationJobTerminated?: z.infer<typeof ReplicationJobTerminatedSchema> & {
-    [key: string]: unknown
-  }
+const ServerSchema = z
+  .object({
+    serverId: ServerIdSchema.exactOptional().openapi({ description: 'The ID of the server.' }),
+    serverType: ServerTypeSchema.exactOptional().openapi({ description: 'The type of server.' }),
+    vmServer: VmServerSchema.exactOptional().openapi({
+      description: 'Information about the VM server.',
+    }),
+    replicationJobId: ReplicationJobIdSchema.exactOptional().openapi({
+      description: 'The ID of the replication job.',
+    }),
+    replicationJobTerminated: ReplicationJobTerminatedSchema.exactOptional().openapi({
+      description: 'Indicates whether the replication job is deleted or failed.',
+    }),
+  })
+  .openapi({ description: 'Represents a server.', required: [] })
+  .openapi('Server')
+
+const LogicalIdSchema = z.string().openapi('LogicalId')
+
+const VPCSchema = z.string().openapi('VPC')
+
+const SubnetSchema = z.string().openapi('Subnet')
+
+const SecurityGroupSchema = z.string().openapi('SecurityGroup')
+
+const EC2KeyNameSchema = z.string().openapi('EC2KeyName')
+
+const S3BucketNameSchema = z.string().min(3).max(63).openapi('S3BucketName')
+
+const S3KeyNameSchema = z.string().max(1024).openapi('S3KeyName')
+
+const S3LocationSchema = z
+  .object({
+    bucket: S3BucketNameSchema.exactOptional().openapi({
+      description: 'The Amazon S3 bucket name.',
+    }),
+    key: S3KeyNameSchema.exactOptional().openapi({ description: 'The Amazon S3 bucket key.' }),
+  })
+  .openapi({ description: 'Location of an Amazon S3 object.', required: [] })
+  .openapi('S3Location')
+
+const UserDataSchema = z
+  .object({
+    s3Location: S3LocationSchema.exactOptional().openapi({
+      description: 'Amazon S3 location of the user-data script.',
+    }),
+  })
+  .openapi({
+    description:
+      'A script that runs on first launch of an Amazon EC2 instance. Used for configuring the server during launch.',
+    required: [],
+  })
+  .openapi('UserData')
+
+const InstanceTypeSchema = z.string().openapi('InstanceType')
+
+const AssociatePublicIpAddressSchema = z.boolean().openapi('AssociatePublicIpAddress')
+
+const ScriptTypeSchema = z.enum(['SHELL_SCRIPT', 'POWERSHELL_SCRIPT']).openapi('ScriptType')
+
+const ServerLaunchConfigurationSchema = z
+  .object({
+    server: ServerSchema.exactOptional().openapi({
+      description: 'The ID of the server with which the launch configuration is associated.',
+    }),
+    logicalId: LogicalIdSchema.exactOptional().openapi({
+      description: 'The logical ID of the server in the CloudFormation template.',
+    }),
+    vpc: VPCSchema.exactOptional().openapi({
+      description: 'The ID of the VPC into which the server should be launched.',
+    }),
+    subnet: SubnetSchema.exactOptional().openapi({
+      description: 'The ID of the subnet the server should be launched into.',
+    }),
+    securityGroup: SecurityGroupSchema.exactOptional().openapi({
+      description: 'The ID of the security group that applies to the launched server.',
+    }),
+    ec2KeyName: EC2KeyNameSchema.exactOptional().openapi({
+      description:
+        'The name of the Amazon EC2 SSH key to be used for connecting to the launched server.',
+    }),
+    userData: UserDataSchema.exactOptional().openapi({
+      description: 'Location of the user-data script to be executed when launching the server.',
+    }),
+    instanceType: InstanceTypeSchema.exactOptional().openapi({
+      description: 'The instance type to use when launching the server.',
+    }),
+    associatePublicIpAddress: AssociatePublicIpAddressSchema.exactOptional().openapi({
+      description:
+        'Indicates whether a publicly accessible IP address is created when launching the server.',
+    }),
+    iamInstanceProfileName: RoleNameSchema.exactOptional().openapi({
+      description: 'The name of the IAM instance profile.',
+    }),
+    configureScript: S3LocationSchema.exactOptional(),
+    configureScriptType: ScriptTypeSchema.exactOptional().openapi({
+      description: 'The type of configuration script.',
+    }),
+  })
+  .openapi({ description: 'Launch configuration for a server.', required: [] })
+  .openapi('ServerLaunchConfiguration')
+
+const ServerLaunchConfigurationsSchema = z
+  .array(ServerLaunchConfigurationSchema)
+  .openapi('ServerLaunchConfigurations')
+
+const ServerGroupLaunchConfigurationSchema = z
+  .object({
+    serverGroupId: ServerGroupIdSchema.exactOptional().openapi({
+      description: 'The ID of the server group with which the launch configuration is associated.',
+    }),
+    launchOrder: LaunchOrderSchema.exactOptional().openapi({
+      description: 'The launch order of servers in the server group.',
+    }),
+    serverLaunchConfigurations: ServerLaunchConfigurationsSchema.exactOptional().openapi({
+      description: 'The launch configuration for servers in the server group.',
+    }),
+  })
+  .openapi({ description: 'Launch configuration for a server group.', required: [] })
+  .openapi('ServerGroupLaunchConfiguration')
+
+const ServerGroupLaunchConfigurationsSchema = z
+  .array(ServerGroupLaunchConfigurationSchema)
+  .openapi('ServerGroupLaunchConfigurations')
+
+type GetAppLaunchConfigurationResponseType = {
+  appId?: z.infer<typeof AppIdSchema> & unknown
+  roleName?: z.infer<typeof RoleNameSchema> & unknown
+  autoLaunch?: z.infer<typeof AutoLaunchSchema> & unknown
+  serverGroupLaunchConfigurations?: z.infer<typeof ServerGroupLaunchConfigurationsSchema> & unknown
+}
+
+const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
+
+const FrequencySchema = z.int().openapi('Frequency')
+
+const RunOnceSchema = z.boolean().openapi('RunOnce')
+
+const LicenseTypeSchema = z.enum(['AWS', 'BYOL']).openapi('LicenseType')
+
+const NumberOfRecentAmisToKeepSchema = z.int().openapi('NumberOfRecentAmisToKeep')
+
+const EncryptedSchema = z.boolean().openapi('Encrypted')
+
+const KmsKeyIdSchema = z.string().openapi('KmsKeyId')
+
+const ServerReplicationParametersSchema = z
+  .object({
+    seedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The seed time for creating a replication job for the server.',
+    }),
+    frequency: FrequencySchema.exactOptional().openapi({
+      description: 'The frequency of creating replication jobs for the server.',
+    }),
+    runOnce: RunOnceSchema.exactOptional().openapi({
+      description: 'Indicates whether to run the replication job one time.',
+    }),
+    licenseType: LicenseTypeSchema.exactOptional().openapi({
+      description: 'The license type for creating a replication job for the server.',
+    }),
+    numberOfRecentAmisToKeep: NumberOfRecentAmisToKeepSchema.exactOptional().openapi({
+      description:
+        'The number of recent AMIs to keep when creating a replication job for this server.',
+    }),
+    encrypted: EncryptedSchema.exactOptional().openapi({
+      description: 'Indicates whether the replication job produces encrypted AMIs.',
+    }),
+    kmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        "<p>The ID of the KMS key for replication jobs that produce encrypted AMIs. This value can be any of the following:</p> <ul> <li> <p>KMS key ID</p> </li> <li> <p>KMS key alias</p> </li> <li> <p>ARN referring to the KMS key ID</p> </li> <li> <p>ARN referring to the KMS key alias</p> </li> </ul> <p>If encrypted is enabled but a KMS key ID is not specified, the customer's default KMS key for Amazon EBS is used.</p>",
+    }),
+  })
+  .openapi({ description: 'The replication parameters for replicating a server.', required: [] })
+  .openapi('ServerReplicationParameters')
+
+const ServerReplicationConfigurationSchema = z
+  .object({
+    server: ServerSchema.exactOptional().openapi({
+      description: 'The ID of the server with which this replication configuration is associated.',
+    }),
+    serverReplicationParameters: ServerReplicationParametersSchema.exactOptional().openapi({
+      description: 'The parameters for replicating the server.',
+    }),
+  })
+  .openapi({ description: 'Replication configuration of a server.', required: [] })
+  .openapi('ServerReplicationConfiguration')
+
+const ServerReplicationConfigurationsSchema = z
+  .array(ServerReplicationConfigurationSchema)
+  .openapi('ServerReplicationConfigurations')
+
+const ServerGroupReplicationConfigurationSchema = z
+  .object({
+    serverGroupId: ServerGroupIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the server group with which this replication configuration is associated.',
+    }),
+    serverReplicationConfigurations: ServerReplicationConfigurationsSchema.exactOptional().openapi({
+      description: 'The replication configuration for servers in the server group.',
+    }),
+  })
+  .openapi({ description: 'Replication configuration for a server group.', required: [] })
+  .openapi('ServerGroupReplicationConfiguration')
+
+const ServerGroupReplicationConfigurationsSchema = z
+  .array(ServerGroupReplicationConfigurationSchema)
+  .openapi('ServerGroupReplicationConfigurations')
+
+type GetAppReplicationConfigurationResponseType = {
+  serverGroupReplicationConfigurations?: z.infer<
+    typeof ServerGroupReplicationConfigurationsSchema
+  > &
+    unknown
 }
 
 const ValidationIdSchema = z
@@ -77,88 +286,156 @@ const NonEmptyStringWithMaxLen255Schema = z
   .max(255)
   .openapi('NonEmptyStringWithMaxLen255')
 
-const ValidationStatusSchema = z
-  .enum(['READY_FOR_VALIDATION', 'PENDING', 'IN_PROGRESS', 'SUCCEEDED', 'FAILED'])
-  .openapi('ValidationStatus')
+const AppValidationStrategySchema = z.literal('SSM').openapi('AppValidationStrategy')
 
-const ValidationStatusMessageSchema = z.string().max(2500).openapi('ValidationStatusMessage')
-
-const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
-
-const S3BucketNameSchema = z.string().min(3).max(63).openapi('S3BucketName')
-
-const S3KeyNameSchema = z.string().max(1024).openapi('S3KeyName')
-
-const S3LocationSchema = z
-  .object({
-    bucket: S3BucketNameSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 bucket name.' }),
-    ).exactOptional(),
-    key: S3KeyNameSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 bucket key.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Location of an Amazon S3 object.', required: [] })
-  .openapi('S3Location')
-
-const SSMOutputSchema = z
+const SourceSchema = z
   .object({ s3Location: S3LocationSchema.exactOptional() })
-  .openapi({ description: 'Contains the location of validation output.', required: [] })
-  .openapi('SSMOutput')
+  .openapi({ description: 'Contains the location of a validation script.', required: [] })
+  .openapi('Source')
 
-const AppValidationOutputSchema = z
+const InstanceIdSchema = z
+  .string()
+  .regex(/(^i-(\w{8}|\w{17})$)|(^mi-\w{17}$)/)
+  .openapi('InstanceId')
+
+const CommandSchema = z.string().min(1).max(64000).openapi('Command')
+
+const ExecutionTimeoutSecondsSchema = z.int().min(60).max(28800).openapi('ExecutionTimeoutSeconds')
+
+const BucketNameSchema = z.string().openapi('BucketName')
+
+const SSMValidationParametersSchema = z
   .object({
-    ssmOutput: SSMOutputSchema.and(
-      z.any().openapi({ description: 'Output from using SSM to validate the application.' }),
-    ).exactOptional(),
+    source: SourceSchema.exactOptional().openapi({
+      description: 'The location of the validation script.',
+    }),
+    instanceId: InstanceIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the instance. The instance must have the following tag: UserForSMSApplicationValidation=true.',
+    }),
+    scriptType: ScriptTypeSchema.exactOptional().openapi({
+      description: 'The type of validation script.',
+    }),
+    command: CommandSchema.exactOptional().openapi({
+      description: 'The command to run the validation script.',
+    }),
+    executionTimeoutSeconds: ExecutionTimeoutSecondsSchema.exactOptional().openapi({
+      description: 'The timeout interval, in seconds.',
+    }),
+    outputS3BucketName: BucketNameSchema.exactOptional().openapi({
+      description: 'The name of the S3 bucket for output.',
+    }),
   })
-  .openapi({ description: 'Output from validating an application.', required: [] })
-  .openapi('AppValidationOutput')
+  .openapi({ description: 'Contains validation parameters.', required: [] })
+  .openapi('SSMValidationParameters')
 
-const ServerSchema: z.ZodType<ServerType> = z
-  .lazy(() =>
-    z
-      .object({
-        serverId: ServerIdSchema.and(
-          z.any().openapi({ description: 'The ID of the server.' }),
-        ).exactOptional(),
-        serverType: ServerTypeSchema.and(
-          z.any().openapi({ description: 'The type of server.' }),
-        ).exactOptional(),
-        vmServer: VmServerSchema.and(
-          z.any().openapi({ description: 'Information about the VM server.' }),
-        ).exactOptional(),
-        replicationJobId: ReplicationJobIdSchema.and(
-          z.any().openapi({ description: 'The ID of the replication job.' }),
-        ).exactOptional(),
-        replicationJobTerminated: ReplicationJobTerminatedSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Indicates whether the replication job is deleted or failed.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'Represents a server.', required: [] }),
-  )
-  .openapi('Server')
+const AppValidationConfigurationSchema = z
+  .object({
+    validationId: ValidationIdSchema.exactOptional().openapi({
+      description: 'The ID of the validation.',
+    }),
+    name: NonEmptyStringWithMaxLen255Schema.exactOptional().openapi({
+      description: 'The name of the configuration.',
+    }),
+    appValidationStrategy: AppValidationStrategySchema.exactOptional().openapi({
+      description: 'The validation strategy.',
+    }),
+    ssmValidationParameters: SSMValidationParametersSchema.exactOptional().openapi({
+      description: 'The validation parameters.',
+    }),
+  })
+  .openapi({ description: 'Configuration for validating an application.', required: [] })
+  .openapi('AppValidationConfiguration')
 
-const ServerValidationOutputSchema = z
-  .object({ server: ServerSchema.exactOptional() })
-  .openapi({ description: 'Contains output from validating an instance.', required: [] })
-  .openapi('ServerValidationOutput')
+const AppValidationConfigurationsSchema = z
+  .array(AppValidationConfigurationSchema)
+  .openapi('AppValidationConfigurations')
 
-type ValidationOutputType = {
-  validationId?: z.infer<typeof ValidationIdSchema> & { [key: string]: unknown }
-  name?: z.infer<typeof NonEmptyStringWithMaxLen255Schema> & { [key: string]: unknown }
-  status?: z.infer<typeof ValidationStatusSchema> & { [key: string]: unknown }
-  statusMessage?: z.infer<typeof ValidationStatusMessageSchema> & { [key: string]: unknown }
-  latestValidationTime?: z.infer<typeof TimestampSchema> & { [key: string]: unknown }
-  appValidationOutput?: z.infer<typeof AppValidationOutputSchema> & { [key: string]: unknown }
-  serverValidationOutput?: z.infer<typeof ServerValidationOutputSchema> & { [key: string]: unknown }
+const ServerValidationStrategySchema = z.literal('USERDATA').openapi('ServerValidationStrategy')
+
+const UserDataValidationParametersSchema = z
+  .object({
+    source: SourceSchema.exactOptional().openapi({
+      description: 'The location of the validation script.',
+    }),
+    scriptType: ScriptTypeSchema.exactOptional().openapi({
+      description: 'The type of validation script.',
+    }),
+  })
+  .openapi({ description: 'Contains validation parameters.', required: [] })
+  .openapi('UserDataValidationParameters')
+
+const ServerValidationConfigurationSchema = z
+  .object({
+    server: ServerSchema.exactOptional(),
+    validationId: ValidationIdSchema.exactOptional().openapi({
+      description: 'The ID of the validation.',
+    }),
+    name: NonEmptyStringWithMaxLen255Schema.exactOptional().openapi({
+      description: 'The name of the configuration.',
+    }),
+    serverValidationStrategy: ServerValidationStrategySchema.exactOptional().openapi({
+      description: 'The validation strategy.',
+    }),
+    userDataValidationParameters: UserDataValidationParametersSchema.exactOptional().openapi({
+      description: 'The validation parameters.',
+    }),
+  })
+  .openapi({ description: 'Configuration for validating an instance.', required: [] })
+  .openapi('ServerValidationConfiguration')
+
+const ServerValidationConfigurationsSchema = z
+  .array(ServerValidationConfigurationSchema)
+  .openapi('ServerValidationConfigurations')
+
+const ServerGroupValidationConfigurationSchema = z
+  .object({
+    serverGroupId: ServerGroupIdSchema.exactOptional().openapi({
+      description: 'The ID of the server group.',
+    }),
+    serverValidationConfigurations: ServerValidationConfigurationsSchema.exactOptional().openapi({
+      description: 'The validation configuration.',
+    }),
+  })
+  .openapi({ description: 'Configuration for validating an instance.', required: [] })
+  .openapi('ServerGroupValidationConfiguration')
+
+const ServerGroupValidationConfigurationsSchema = z
+  .array(ServerGroupValidationConfigurationSchema)
+  .openapi('ServerGroupValidationConfigurations')
+
+type GetAppValidationConfigurationResponseType = {
+  appValidationConfigurations?: z.infer<typeof AppValidationConfigurationsSchema> & unknown
+  serverGroupValidationConfigurations?: z.infer<typeof ServerGroupValidationConfigurationsSchema> &
+    unknown
 }
 
-const AppIdSchema = z.string().openapi('AppId')
+type PutAppLaunchConfigurationRequestType = {
+  appId?: z.infer<typeof AppIdSchema> & unknown
+  roleName?: z.infer<typeof RoleNameSchema> & unknown
+  autoLaunch?: z.infer<typeof AutoLaunchSchema> & unknown
+  serverGroupLaunchConfigurations?: z.infer<typeof ServerGroupLaunchConfigurationsSchema> & unknown
+}
+
+type PutAppReplicationConfigurationRequestType = {
+  appId?: z.infer<typeof AppIdSchema> & unknown
+  serverGroupReplicationConfigurations?: z.infer<
+    typeof ServerGroupReplicationConfigurationsSchema
+  > &
+    unknown
+}
+
+const AppIdWithValidationSchema = z
+  .string()
+  .regex(/^app-[0-9a-f]{17}$/)
+  .openapi('AppIdWithValidation')
+
+type PutAppValidationConfigurationRequestType = {
+  appId: z.infer<typeof AppIdWithValidationSchema> & unknown
+  appValidationConfigurations?: z.infer<typeof AppValidationConfigurationsSchema> & unknown
+  serverGroupValidationConfigurations?: z.infer<typeof ServerGroupValidationConfigurationsSchema> &
+    unknown
+}
 
 const ImportedAppIdSchema = z.string().openapi('ImportedAppId')
 
@@ -231,26 +508,18 @@ const StackIdSchema = z.string().openapi('StackId')
 
 const LaunchDetailsSchema = z
   .object({
-    latestLaunchTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The latest time that this application was launched successfully.',
-        }),
-    ).exactOptional(),
-    stackName: StackNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the latest stack launched for this application.' }),
-    ).exactOptional(),
-    stackId: StackIdSchema.and(
-      z.any().openapi({ description: 'The ID of the latest stack launched for this application.' }),
-    ).exactOptional(),
+    latestLaunchTime: TimestampSchema.exactOptional().openapi({
+      description: 'The latest time that this application was launched successfully.',
+    }),
+    stackName: StackNameSchema.exactOptional().openapi({
+      description: 'The name of the latest stack launched for this application.',
+    }),
+    stackId: StackIdSchema.exactOptional().openapi({
+      description: 'The ID of the latest stack launched for this application.',
+    }),
   })
   .openapi({ description: 'Details about the latest launch of an application.', required: [] })
   .openapi('LaunchDetails')
-
-const RoleNameSchema = z.string().openapi('RoleName')
 
 const TotalServerGroupsSchema = z.int().openapi('TotalServerGroups')
 
@@ -258,83 +527,63 @@ const TotalServersSchema = z.int().openapi('TotalServers')
 
 const AppSummarySchema = z
   .object({
-    appId: AppIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the application.' }),
-    ).exactOptional(),
-    importedAppId: ImportedAppIdSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ).exactOptional(),
-    name: AppNameSchema.and(
-      z.any().openapi({ description: 'The name of the application.' }),
-    ).exactOptional(),
-    description: AppDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the application.' }),
-    ).exactOptional(),
-    status: AppStatusSchema.and(
-      z.any().openapi({ description: 'Status of the application.' }),
-    ).exactOptional(),
-    statusMessage: AppStatusMessageSchema.and(
-      z.any().openapi({ description: 'A message related to the status of the application' }),
-    ).exactOptional(),
-    replicationConfigurationStatus: AppReplicationConfigurationStatusSchema.and(
-      z.any().openapi({ description: 'Status of the replication configuration.' }),
-    ).exactOptional(),
-    replicationStatus: AppReplicationStatusSchema.and(
-      z.any().openapi({ description: 'The replication status of the application.' }),
-    ).exactOptional(),
-    replicationStatusMessage: AppReplicationStatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A message related to the replication status of the application.',
-        }),
-    ).exactOptional(),
-    latestReplicationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The timestamp of the application's most recent successful replication.",
-        }),
-    ).exactOptional(),
-    launchConfigurationStatus: AppLaunchConfigurationStatusSchema.and(
-      z.any().openapi({ description: 'Status of the launch configuration.' }),
-    ).exactOptional(),
-    launchStatus: AppLaunchStatusSchema.and(
-      z.any().openapi({ description: 'The launch status of the application.' }),
-    ).exactOptional(),
-    launchStatusMessage: AppLaunchStatusMessageSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A message related to the launch status of the application.' }),
-    ).exactOptional(),
-    launchDetails: LaunchDetailsSchema.and(
-      z.any().openapi({ description: 'Details about the latest launch of the application.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The creation time of the application.' }),
-    ).exactOptional(),
-    lastModified: TimestampSchema.and(
-      z.any().openapi({ description: 'The last modified time of the application.' }),
-    ).exactOptional(),
-    roleName: RoleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the service role in the customer's account used by Server Migration Service.",
-        }),
-    ).exactOptional(),
-    totalServerGroups: TotalServerGroupsSchema.and(
-      z.any().openapi({ description: 'The number of server groups present in the application.' }),
-    ).exactOptional(),
-    totalServers: TotalServersSchema.and(
-      z.any().openapi({ description: 'The number of servers present in the application.' }),
-    ).exactOptional(),
+    appId: AppIdSchema.exactOptional().openapi({
+      description: 'The unique ID of the application.',
+    }),
+    importedAppId: ImportedAppIdSchema.exactOptional().openapi({
+      description: 'The ID of the application.',
+    }),
+    name: AppNameSchema.exactOptional().openapi({ description: 'The name of the application.' }),
+    description: AppDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the application.',
+    }),
+    status: AppStatusSchema.exactOptional().openapi({ description: 'Status of the application.' }),
+    statusMessage: AppStatusMessageSchema.exactOptional().openapi({
+      description: 'A message related to the status of the application',
+    }),
+    replicationConfigurationStatus: AppReplicationConfigurationStatusSchema.exactOptional().openapi(
+      { description: 'Status of the replication configuration.' },
+    ),
+    replicationStatus: AppReplicationStatusSchema.exactOptional().openapi({
+      description: 'The replication status of the application.',
+    }),
+    replicationStatusMessage: AppReplicationStatusMessageSchema.exactOptional().openapi({
+      description: 'A message related to the replication status of the application.',
+    }),
+    latestReplicationTime: TimestampSchema.exactOptional().openapi({
+      description: "The timestamp of the application's most recent successful replication.",
+    }),
+    launchConfigurationStatus: AppLaunchConfigurationStatusSchema.exactOptional().openapi({
+      description: 'Status of the launch configuration.',
+    }),
+    launchStatus: AppLaunchStatusSchema.exactOptional().openapi({
+      description: 'The launch status of the application.',
+    }),
+    launchStatusMessage: AppLaunchStatusMessageSchema.exactOptional().openapi({
+      description: 'A message related to the launch status of the application.',
+    }),
+    launchDetails: LaunchDetailsSchema.exactOptional().openapi({
+      description: 'Details about the latest launch of the application.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The creation time of the application.',
+    }),
+    lastModified: TimestampSchema.exactOptional().openapi({
+      description: 'The last modified time of the application.',
+    }),
+    roleName: RoleNameSchema.exactOptional().openapi({
+      description:
+        "The name of the service role in the customer's account used by Server Migration Service.",
+    }),
+    totalServerGroups: TotalServerGroupsSchema.exactOptional().openapi({
+      description: 'The number of server groups present in the application.',
+    }),
+    totalServers: TotalServersSchema.exactOptional().openapi({
+      description: 'The number of servers present in the application.',
+    }),
   })
   .openapi({ description: 'Information about the application.', required: [] })
   .openapi('AppSummary')
-
-const ServerGroupIdSchema = z.string().openapi('ServerGroupId')
 
 const ServerGroupNameSchema = z.string().openapi('ServerGroupName')
 
@@ -342,15 +591,15 @@ const ServerListSchema = z.array(ServerSchema).openapi('ServerList')
 
 const ServerGroupSchema = z
   .object({
-    serverGroupId: ServerGroupIdSchema.and(
-      z.any().openapi({ description: 'The ID of a server group.' }),
-    ).exactOptional(),
-    name: ServerGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of a server group.' }),
-    ).exactOptional(),
-    serverList: ServerListSchema.and(
-      z.any().openapi({ description: 'The servers that belong to a server group.' }),
-    ).exactOptional(),
+    serverGroupId: ServerGroupIdSchema.exactOptional().openapi({
+      description: 'The ID of a server group.',
+    }),
+    name: ServerGroupNameSchema.exactOptional().openapi({
+      description: 'The name of a server group.',
+    }),
+    serverList: ServerListSchema.exactOptional().openapi({
+      description: 'The servers that belong to a server group.',
+    }),
   })
   .openapi({ description: 'Logical grouping of servers.', required: [] })
   .openapi('ServerGroup')
@@ -363,8 +612,8 @@ const TagValueSchema = z.string().openapi('TagValue')
 
 const TagSchema = z
   .object({
-    key: TagKeySchema.and(z.any().openapi({ description: 'The tag key.' })).exactOptional(),
-    value: TagValueSchema.and(z.any().openapi({ description: 'The tag value.' })).exactOptional(),
+    key: TagKeySchema.exactOptional().openapi({ description: 'The tag key.' }),
+    value: TagValueSchema.exactOptional().openapi({ description: 'The tag value.' }),
   })
   .openapi({ description: 'Key/value pair that can be assigned to an application.', required: [] })
   .openapi('Tag')
@@ -373,15 +622,15 @@ const TagsSchema = z.array(TagSchema).openapi('Tags')
 
 const CreateAppResponseSchema = z
   .object({
-    appSummary: AppSummarySchema.and(
-      z.any().openapi({ description: 'A summary description of the application.' }),
-    ).exactOptional(),
-    serverGroups: ServerGroupsSchema.and(
-      z.any().openapi({ description: 'The server groups included in the application.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags associated with the application.' }),
-    ).exactOptional(),
+    appSummary: AppSummarySchema.exactOptional().openapi({
+      description: 'A summary description of the application.',
+    }),
+    serverGroups: ServerGroupsSchema.exactOptional().openapi({
+      description: 'The server groups included in the application.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags associated with the application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateAppResponse')
@@ -390,34 +639,26 @@ const ClientTokenSchema = z.string().openapi('ClientToken')
 
 const CreateAppRequestSchema = z
   .object({
-    name: AppNameSchema.and(
-      z.any().openapi({ description: 'The name of the new application.' }),
-    ).exactOptional(),
-    description: AppDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the new application' }),
-    ).exactOptional(),
-    roleName: RoleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the service role in the customer's account to be used by Server Migration Service.",
-        }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of application creation.',
-        }),
-    ).exactOptional(),
-    serverGroups: ServerGroupsSchema.and(
-      z.any().openapi({ description: 'The server groups to include in the application.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags to be associated with the application.' }),
-    ).exactOptional(),
+    name: AppNameSchema.exactOptional().openapi({
+      description: 'The name of the new application.',
+    }),
+    description: AppDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the new application',
+    }),
+    roleName: RoleNameSchema.exactOptional().openapi({
+      description:
+        "The name of the service role in the customer's account to be used by Server Migration Service.",
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of application creation.',
+    }),
+    serverGroups: ServerGroupsSchema.exactOptional().openapi({
+      description: 'The server groups to include in the application.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags to be associated with the application.',
+    }),
   })
   .openapi({ title: 'CreateAppRequest', required: [] })
   .openapi('CreateAppRequest')
@@ -434,78 +675,46 @@ const OperationNotPermittedExceptionSchema = z.any().openapi('OperationNotPermit
 
 const CreateReplicationJobResponseSchema = z
   .object({
-    replicationJobId: ReplicationJobIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the replication job.' }),
-    ).exactOptional(),
+    replicationJobId: ReplicationJobIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the replication job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateReplicationJobResponse')
 
-const FrequencySchema = z.int().openapi('Frequency')
-
-const RunOnceSchema = z.boolean().openapi('RunOnce')
-
-const LicenseTypeSchema = z.enum(['AWS', 'BYOL']).openapi('LicenseType')
-
 const DescriptionSchema = z.string().openapi('Description')
-
-const NumberOfRecentAmisToKeepSchema = z.int().openapi('NumberOfRecentAmisToKeep')
-
-const EncryptedSchema = z.boolean().openapi('Encrypted')
-
-const KmsKeyIdSchema = z.string().openapi('KmsKeyId')
 
 const CreateReplicationJobRequestSchema = z
   .object({
-    serverId: ServerIdSchema.and(z.any().openapi({ description: 'The ID of the server.' })),
-    seedReplicationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The seed replication time.' }),
-    ),
-    frequency: FrequencySchema.and(
-      z.any().openapi({ description: 'The time between consecutive replication runs, in hours.' }),
-    ).exactOptional(),
-    runOnce: RunOnceSchema.and(
-      z.any().openapi({ description: 'Indicates whether to run the replication job one time.' }),
-    ).exactOptional(),
-    licenseType: LicenseTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The license type to be used for the AMI created by a successful replication run.',
-        }),
-    ).exactOptional(),
-    roleName: RoleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the IAM role to be used by the Server Migration Service.',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the replication job.' }),
-    ).exactOptional(),
-    numberOfRecentAmisToKeep: NumberOfRecentAmisToKeepSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of SMS-created AMIs to retain. The oldest is deleted after the maximum number is reached and a new AMI is created.',
-        }),
-    ).exactOptional(),
-    encrypted: EncryptedSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether the replication job produces encrypted AMIs.' }),
-    ).exactOptional(),
-    kmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ID of the KMS key for replication jobs that produce encrypted AMIs. This value can be any of the following:</p> <ul> <li> <p>KMS key ID</p> </li> <li> <p>KMS key alias</p> </li> <li> <p>ARN referring to the KMS key ID</p> </li> <li> <p>ARN referring to the KMS key alias</p> </li> </ul> <p> If encrypted is <i>true</i> but a KMS key ID is not specified, the customer's default KMS key for Amazon EBS is used. </p>",
-        }),
-    ).exactOptional(),
+    serverId: ServerIdSchema.openapi({ description: 'The ID of the server.' }),
+    seedReplicationTime: TimestampSchema.openapi({ description: 'The seed replication time.' }),
+    frequency: FrequencySchema.exactOptional().openapi({
+      description: 'The time between consecutive replication runs, in hours.',
+    }),
+    runOnce: RunOnceSchema.exactOptional().openapi({
+      description: 'Indicates whether to run the replication job one time.',
+    }),
+    licenseType: LicenseTypeSchema.exactOptional().openapi({
+      description:
+        'The license type to be used for the AMI created by a successful replication run.',
+    }),
+    roleName: RoleNameSchema.exactOptional().openapi({
+      description: 'The name of the IAM role to be used by the Server Migration Service.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the replication job.',
+    }),
+    numberOfRecentAmisToKeep: NumberOfRecentAmisToKeepSchema.exactOptional().openapi({
+      description:
+        'The maximum number of SMS-created AMIs to retain. The oldest is deleted after the maximum number is reached and a new AMI is created.',
+    }),
+    encrypted: EncryptedSchema.exactOptional().openapi({
+      description: 'Indicates whether the replication job produces encrypted AMIs.',
+    }),
+    kmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        "<p>The ID of the KMS key for replication jobs that produce encrypted AMIs. This value can be any of the following:</p> <ul> <li> <p>KMS key ID</p> </li> <li> <p>KMS key alias</p> </li> <li> <p>ARN referring to the KMS key ID</p> </li> <li> <p>ARN referring to the KMS key alias</p> </li> </ul> <p> If encrypted is <i>true</i> but a KMS key ID is not specified, the customer's default KMS key for Amazon EBS is used. </p>",
+    }),
   })
   .openapi({ required: ['serverId', 'seedReplicationTime'], title: 'CreateReplicationJobRequest' })
   .openapi('CreateReplicationJobRequest')
@@ -520,7 +729,7 @@ const NoConnectorsAvailableExceptionSchema = z.any().openapi('NoConnectorsAvaila
 
 const TemporarilyUnavailableExceptionSchema = z.any().openapi('TemporarilyUnavailableException')
 
-const DeleteAppResponseSchema = z.object({}).openapi('DeleteAppResponse')
+const DeleteAppResponseSchema = z.looseObject({}).openapi('DeleteAppResponse')
 
 const ForceStopAppReplicationSchema = z.boolean().openapi('ForceStopAppReplication')
 
@@ -528,111 +737,88 @@ const ForceTerminateAppSchema = z.boolean().openapi('ForceTerminateApp')
 
 const DeleteAppRequestSchema = z
   .object({
-    appId: AppIdSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ).exactOptional(),
-    forceStopAppReplication: ForceStopAppReplicationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to stop all replication jobs corresponding to the servers in the application while deleting the application.',
-        }),
-    ).exactOptional(),
-    forceTerminateApp: ForceTerminateAppSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to terminate the stack corresponding to the application while deleting the application.',
-        }),
-    ).exactOptional(),
+    appId: AppIdSchema.exactOptional().openapi({ description: 'The ID of the application.' }),
+    forceStopAppReplication: ForceStopAppReplicationSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to stop all replication jobs corresponding to the servers in the application while deleting the application.',
+    }),
+    forceTerminateApp: ForceTerminateAppSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to terminate the stack corresponding to the application while deleting the application.',
+    }),
   })
   .openapi({ title: 'DeleteAppRequest', required: [] })
   .openapi('DeleteAppRequest')
 
 const DeleteAppLaunchConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteAppLaunchConfigurationResponse')
 
 const DeleteAppLaunchConfigurationRequestSchema = z
   .object({
-    appId: AppIdSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ).exactOptional(),
+    appId: AppIdSchema.exactOptional().openapi({ description: 'The ID of the application.' }),
   })
   .openapi({ title: 'DeleteAppLaunchConfigurationRequest', required: [] })
   .openapi('DeleteAppLaunchConfigurationRequest')
 
 const DeleteAppReplicationConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteAppReplicationConfigurationResponse')
 
 const DeleteAppReplicationConfigurationRequestSchema = z
   .object({
-    appId: AppIdSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ).exactOptional(),
+    appId: AppIdSchema.exactOptional().openapi({ description: 'The ID of the application.' }),
   })
   .openapi({ title: 'DeleteAppReplicationConfigurationRequest', required: [] })
   .openapi('DeleteAppReplicationConfigurationRequest')
 
 const DeleteAppValidationConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteAppValidationConfigurationResponse')
-
-const AppIdWithValidationSchema = z
-  .string()
-  .regex(/^app-[0-9a-f]{17}$/)
-  .openapi('AppIdWithValidation')
 
 const DeleteAppValidationConfigurationRequestSchema = z
   .object({
-    appId: AppIdWithValidationSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ),
+    appId: AppIdWithValidationSchema.openapi({ description: 'The ID of the application.' }),
   })
   .openapi({ required: ['appId'], title: 'DeleteAppValidationConfigurationRequest' })
   .openapi('DeleteAppValidationConfigurationRequest')
 
-const DeleteReplicationJobResponseSchema = z.object({}).openapi('DeleteReplicationJobResponse')
+const DeleteReplicationJobResponseSchema = z.looseObject({}).openapi('DeleteReplicationJobResponse')
 
 const DeleteReplicationJobRequestSchema = z
   .object({
-    replicationJobId: ReplicationJobIdSchema.and(
-      z.any().openapi({ description: 'The ID of the replication job.' }),
-    ),
+    replicationJobId: ReplicationJobIdSchema.openapi({
+      description: 'The ID of the replication job.',
+    }),
   })
   .openapi({ required: ['replicationJobId'], title: 'DeleteReplicationJobRequest' })
   .openapi('DeleteReplicationJobRequest')
 
 const ReplicationJobNotFoundExceptionSchema = z.any().openapi('ReplicationJobNotFoundException')
 
-const DeleteServerCatalogResponseSchema = z.object({}).openapi('DeleteServerCatalogResponse')
+const DeleteServerCatalogResponseSchema = z.looseObject({}).openapi('DeleteServerCatalogResponse')
 
 const DeleteServerCatalogRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteServerCatalogRequest' })
   .openapi('DeleteServerCatalogRequest')
 
-const DisassociateConnectorResponseSchema = z.object({}).openapi('DisassociateConnectorResponse')
+const DisassociateConnectorResponseSchema = z
+  .looseObject({})
+  .openapi('DisassociateConnectorResponse')
 
 const ConnectorIdSchema = z.string().openapi('ConnectorId')
 
 const DisassociateConnectorRequestSchema = z
-  .object({
-    connectorId: ConnectorIdSchema.and(
-      z.any().openapi({ description: 'The ID of the connector.' }),
-    ),
-  })
+  .object({ connectorId: ConnectorIdSchema.openapi({ description: 'The ID of the connector.' }) })
   .openapi({ required: ['connectorId'], title: 'DisassociateConnectorRequest' })
   .openapi('DisassociateConnectorRequest')
 
 const GenerateChangeSetResponseSchema = z
   .object({
-    s3Location: S3LocationSchema.and(
-      z.any().openapi({ description: 'The location of the Amazon S3 object.' }),
-    ).exactOptional(),
+    s3Location: S3LocationSchema.exactOptional().openapi({
+      description: 'The location of the Amazon S3 object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GenerateChangeSetResponse')
@@ -641,536 +827,190 @@ const OutputFormatSchema = z.enum(['JSON', 'YAML']).openapi('OutputFormat')
 
 const GenerateChangeSetRequestSchema = z
   .object({
-    appId: AppIdSchema.and(
-      z.any().openapi({ description: 'The ID of the application associated with the change set.' }),
-    ).exactOptional(),
-    changesetFormat: OutputFormatSchema.and(
-      z.any().openapi({ description: 'The format for the change set.' }),
-    ).exactOptional(),
+    appId: AppIdSchema.exactOptional().openapi({
+      description: 'The ID of the application associated with the change set.',
+    }),
+    changesetFormat: OutputFormatSchema.exactOptional().openapi({
+      description: 'The format for the change set.',
+    }),
   })
   .openapi({ title: 'GenerateChangeSetRequest', required: [] })
   .openapi('GenerateChangeSetRequest')
 
 const GenerateTemplateResponseSchema = z
   .object({
-    s3Location: S3LocationSchema.and(
-      z.any().openapi({ description: 'The location of the Amazon S3 object.' }),
-    ).exactOptional(),
+    s3Location: S3LocationSchema.exactOptional().openapi({
+      description: 'The location of the Amazon S3 object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GenerateTemplateResponse')
 
 const GenerateTemplateRequestSchema = z
   .object({
-    appId: AppIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the application associated with the CloudFormation template.',
-        }),
-    ).exactOptional(),
-    templateFormat: OutputFormatSchema.and(
-      z.any().openapi({ description: 'The format for generating the CloudFormation template.' }),
-    ).exactOptional(),
+    appId: AppIdSchema.exactOptional().openapi({
+      description: 'The ID of the application associated with the CloudFormation template.',
+    }),
+    templateFormat: OutputFormatSchema.exactOptional().openapi({
+      description: 'The format for generating the CloudFormation template.',
+    }),
   })
   .openapi({ title: 'GenerateTemplateRequest', required: [] })
   .openapi('GenerateTemplateRequest')
 
 const GetAppResponseSchema = z
   .object({
-    appSummary: AppSummarySchema.and(
-      z.any().openapi({ description: 'Information about the application.' }),
-    ).exactOptional(),
-    serverGroups: ServerGroupsSchema.and(
-      z.any().openapi({ description: 'The server groups that belong to the application.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags associated with the application.' }),
-    ).exactOptional(),
+    appSummary: AppSummarySchema.exactOptional().openapi({
+      description: 'Information about the application.',
+    }),
+    serverGroups: ServerGroupsSchema.exactOptional().openapi({
+      description: 'The server groups that belong to the application.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags associated with the application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAppResponse')
 
 const GetAppRequestSchema = z
   .object({
-    appId: AppIdSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ).exactOptional(),
+    appId: AppIdSchema.exactOptional().openapi({ description: 'The ID of the application.' }),
   })
   .openapi({ title: 'GetAppRequest', required: [] })
   .openapi('GetAppRequest')
 
-const AutoLaunchSchema = z.boolean().openapi('AutoLaunch')
-
-const LaunchOrderSchema = z.int().openapi('LaunchOrder')
-
-const LogicalIdSchema = z.string().openapi('LogicalId')
-
-const VPCSchema = z.string().openapi('VPC')
-
-const SubnetSchema = z.string().openapi('Subnet')
-
-const SecurityGroupSchema = z.string().openapi('SecurityGroup')
-
-const EC2KeyNameSchema = z.string().openapi('EC2KeyName')
-
-const UserDataSchema = z
+const GetAppLaunchConfigurationResponseSchema: z.ZodType<GetAppLaunchConfigurationResponseType> = z
   .object({
-    s3Location: S3LocationSchema.and(
-      z.any().openapi({ description: 'Amazon S3 location of the user-data script.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'A script that runs on first launch of an Amazon EC2 instance. Used for configuring the server during launch.',
-    required: [],
-  })
-  .openapi('UserData')
-
-const InstanceTypeSchema = z.string().openapi('InstanceType')
-
-const AssociatePublicIpAddressSchema = z.boolean().openapi('AssociatePublicIpAddress')
-
-const ScriptTypeSchema = z.enum(['SHELL_SCRIPT', 'POWERSHELL_SCRIPT']).openapi('ScriptType')
-
-const ServerLaunchConfigurationSchema = z
-  .object({
-    server: ServerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the server with which the launch configuration is associated.',
-        }),
-    ).exactOptional(),
-    logicalId: LogicalIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The logical ID of the server in the CloudFormation template.' }),
-    ).exactOptional(),
-    vpc: VPCSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the VPC into which the server should be launched.' }),
-    ).exactOptional(),
-    subnet: SubnetSchema.and(
-      z.any().openapi({ description: 'The ID of the subnet the server should be launched into.' }),
-    ).exactOptional(),
-    securityGroup: SecurityGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the security group that applies to the launched server.',
-        }),
-    ).exactOptional(),
-    ec2KeyName: EC2KeyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon EC2 SSH key to be used for connecting to the launched server.',
-        }),
-    ).exactOptional(),
-    userData: UserDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Location of the user-data script to be executed when launching the server.',
-        }),
-    ).exactOptional(),
-    instanceType: InstanceTypeSchema.and(
-      z.any().openapi({ description: 'The instance type to use when launching the server.' }),
-    ).exactOptional(),
-    associatePublicIpAddress: AssociatePublicIpAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether a publicly accessible IP address is created when launching the server.',
-        }),
-    ).exactOptional(),
-    iamInstanceProfileName: RoleNameSchema.and(
-      z.any().openapi({ description: 'The name of the IAM instance profile.' }),
-    ).exactOptional(),
-    configureScript: S3LocationSchema.exactOptional(),
-    configureScriptType: ScriptTypeSchema.and(
-      z.any().openapi({ description: 'The type of configuration script.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Launch configuration for a server.', required: [] })
-  .openapi('ServerLaunchConfiguration')
-
-const ServerLaunchConfigurationsSchema = z
-  .array(ServerLaunchConfigurationSchema)
-  .openapi('ServerLaunchConfigurations')
-
-const ServerGroupLaunchConfigurationSchema = z
-  .object({
-    serverGroupId: ServerGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the server group with which the launch configuration is associated.',
-        }),
-    ).exactOptional(),
-    launchOrder: LaunchOrderSchema.and(
-      z.any().openapi({ description: 'The launch order of servers in the server group.' }),
-    ).exactOptional(),
-    serverLaunchConfigurations: ServerLaunchConfigurationsSchema.and(
-      z.any().openapi({ description: 'The launch configuration for servers in the server group.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Launch configuration for a server group.', required: [] })
-  .openapi('ServerGroupLaunchConfiguration')
-
-const ServerGroupLaunchConfigurationsSchema = z
-  .array(ServerGroupLaunchConfigurationSchema)
-  .openapi('ServerGroupLaunchConfigurations')
-
-const GetAppLaunchConfigurationResponseSchema = z
-  .object({
-    appId: AppIdSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ).exactOptional(),
-    roleName: RoleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the service role in the customer's account that CloudFormation uses to launch the application.",
-        }),
-    ).exactOptional(),
-    autoLaunch: AutoLaunchSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the application is configured to launch automatically after replication is complete.',
-        }),
-    ).exactOptional(),
-    serverGroupLaunchConfigurations: ServerGroupLaunchConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The launch configurations for server groups in this application.',
-        }),
-    ).exactOptional(),
+    appId: AppIdSchema.exactOptional().openapi({ description: 'The ID of the application.' }),
+    roleName: RoleNameSchema.exactOptional().openapi({
+      description:
+        "The name of the service role in the customer's account that CloudFormation uses to launch the application.",
+    }),
+    autoLaunch: AutoLaunchSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the application is configured to launch automatically after replication is complete.',
+    }),
+    serverGroupLaunchConfigurations: ServerGroupLaunchConfigurationsSchema.exactOptional().openapi({
+      description: 'The launch configurations for server groups in this application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAppLaunchConfigurationResponse')
 
 const GetAppLaunchConfigurationRequestSchema = z
   .object({
-    appId: AppIdSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ).exactOptional(),
+    appId: AppIdSchema.exactOptional().openapi({ description: 'The ID of the application.' }),
   })
   .openapi({ title: 'GetAppLaunchConfigurationRequest', required: [] })
   .openapi('GetAppLaunchConfigurationRequest')
 
-const ServerReplicationParametersSchema = z
-  .object({
-    seedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The seed time for creating a replication job for the server.' }),
-    ).exactOptional(),
-    frequency: FrequencySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The frequency of creating replication jobs for the server.' }),
-    ).exactOptional(),
-    runOnce: RunOnceSchema.and(
-      z.any().openapi({ description: 'Indicates whether to run the replication job one time.' }),
-    ).exactOptional(),
-    licenseType: LicenseTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The license type for creating a replication job for the server.',
-        }),
-    ).exactOptional(),
-    numberOfRecentAmisToKeep: NumberOfRecentAmisToKeepSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of recent AMIs to keep when creating a replication job for this server.',
-        }),
-    ).exactOptional(),
-    encrypted: EncryptedSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether the replication job produces encrypted AMIs.' }),
-    ).exactOptional(),
-    kmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ID of the KMS key for replication jobs that produce encrypted AMIs. This value can be any of the following:</p> <ul> <li> <p>KMS key ID</p> </li> <li> <p>KMS key alias</p> </li> <li> <p>ARN referring to the KMS key ID</p> </li> <li> <p>ARN referring to the KMS key alias</p> </li> </ul> <p>If encrypted is enabled but a KMS key ID is not specified, the customer's default KMS key for Amazon EBS is used.</p>",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The replication parameters for replicating a server.', required: [] })
-  .openapi('ServerReplicationParameters')
-
-const ServerReplicationConfigurationSchema = z
-  .object({
-    server: ServerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the server with which this replication configuration is associated.',
-        }),
-    ).exactOptional(),
-    serverReplicationParameters: ServerReplicationParametersSchema.and(
-      z.any().openapi({ description: 'The parameters for replicating the server.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Replication configuration of a server.', required: [] })
-  .openapi('ServerReplicationConfiguration')
-
-const ServerReplicationConfigurationsSchema = z
-  .array(ServerReplicationConfigurationSchema)
-  .openapi('ServerReplicationConfigurations')
-
-const ServerGroupReplicationConfigurationSchema = z
-  .object({
-    serverGroupId: ServerGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the server group with which this replication configuration is associated.',
-        }),
-    ).exactOptional(),
-    serverReplicationConfigurations: ServerReplicationConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The replication configuration for servers in the server group.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Replication configuration for a server group.', required: [] })
-  .openapi('ServerGroupReplicationConfiguration')
-
-const ServerGroupReplicationConfigurationsSchema = z
-  .array(ServerGroupReplicationConfigurationSchema)
-  .openapi('ServerGroupReplicationConfigurations')
-
-const GetAppReplicationConfigurationResponseSchema = z
-  .object({
-    serverGroupReplicationConfigurations: ServerGroupReplicationConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
+const GetAppReplicationConfigurationResponseSchema: z.ZodType<GetAppReplicationConfigurationResponseType> =
+  z
+    .object({
+      serverGroupReplicationConfigurations:
+        ServerGroupReplicationConfigurationsSchema.exactOptional().openapi({
           description:
             'The replication configurations associated with server groups in this application.',
         }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GetAppReplicationConfigurationResponse')
+    })
+    .openapi({ required: [] })
+    .openapi('GetAppReplicationConfigurationResponse')
 
 const GetAppReplicationConfigurationRequestSchema = z
   .object({
-    appId: AppIdSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ).exactOptional(),
+    appId: AppIdSchema.exactOptional().openapi({ description: 'The ID of the application.' }),
   })
   .openapi({ title: 'GetAppReplicationConfigurationRequest', required: [] })
   .openapi('GetAppReplicationConfigurationRequest')
 
-const AppValidationStrategySchema = z.literal('SSM').openapi('AppValidationStrategy')
-
-const SourceSchema = z
-  .object({ s3Location: S3LocationSchema.exactOptional() })
-  .openapi({ description: 'Contains the location of a validation script.', required: [] })
-  .openapi('Source')
-
-const InstanceIdSchema = z
-  .string()
-  .regex(/(^i-(\w{8}|\w{17})$)|(^mi-\w{17}$)/)
-  .openapi('InstanceId')
-
-const CommandSchema = z.string().min(1).max(64000).openapi('Command')
-
-const ExecutionTimeoutSecondsSchema = z.int().min(60).max(28800).openapi('ExecutionTimeoutSeconds')
-
-const BucketNameSchema = z.string().openapi('BucketName')
-
-const SSMValidationParametersSchema = z
-  .object({
-    source: SourceSchema.and(
-      z.any().openapi({ description: 'The location of the validation script.' }),
-    ).exactOptional(),
-    instanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the instance. The instance must have the following tag: UserForSMSApplicationValidation=true.',
+const GetAppValidationConfigurationResponseSchema: z.ZodType<GetAppValidationConfigurationResponseType> =
+  z
+    .object({
+      appValidationConfigurations: AppValidationConfigurationsSchema.exactOptional().openapi({
+        description: 'The configuration for application validation.',
+      }),
+      serverGroupValidationConfigurations:
+        ServerGroupValidationConfigurationsSchema.exactOptional().openapi({
+          description: 'The configuration for instance validation.',
         }),
-    ).exactOptional(),
-    scriptType: ScriptTypeSchema.and(
-      z.any().openapi({ description: 'The type of validation script.' }),
-    ).exactOptional(),
-    command: CommandSchema.and(
-      z.any().openapi({ description: 'The command to run the validation script.' }),
-    ).exactOptional(),
-    executionTimeoutSeconds: ExecutionTimeoutSecondsSchema.and(
-      z.any().openapi({ description: 'The timeout interval, in seconds.' }),
-    ).exactOptional(),
-    outputS3BucketName: BucketNameSchema.and(
-      z.any().openapi({ description: 'The name of the S3 bucket for output.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains validation parameters.', required: [] })
-  .openapi('SSMValidationParameters')
-
-const AppValidationConfigurationSchema = z
-  .object({
-    validationId: ValidationIdSchema.and(
-      z.any().openapi({ description: 'The ID of the validation.' }),
-    ).exactOptional(),
-    name: NonEmptyStringWithMaxLen255Schema.and(
-      z.any().openapi({ description: 'The name of the configuration.' }),
-    ).exactOptional(),
-    appValidationStrategy: AppValidationStrategySchema.and(
-      z.any().openapi({ description: 'The validation strategy.' }),
-    ).exactOptional(),
-    ssmValidationParameters: SSMValidationParametersSchema.and(
-      z.any().openapi({ description: 'The validation parameters.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Configuration for validating an application.', required: [] })
-  .openapi('AppValidationConfiguration')
-
-const AppValidationConfigurationsSchema = z
-  .array(AppValidationConfigurationSchema)
-  .openapi('AppValidationConfigurations')
-
-const ServerValidationStrategySchema = z.literal('USERDATA').openapi('ServerValidationStrategy')
-
-const UserDataValidationParametersSchema = z
-  .object({
-    source: SourceSchema.and(
-      z.any().openapi({ description: 'The location of the validation script.' }),
-    ).exactOptional(),
-    scriptType: ScriptTypeSchema.and(
-      z.any().openapi({ description: 'The type of validation script.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains validation parameters.', required: [] })
-  .openapi('UserDataValidationParameters')
-
-const ServerValidationConfigurationSchema = z
-  .object({
-    server: ServerSchema.exactOptional(),
-    validationId: ValidationIdSchema.and(
-      z.any().openapi({ description: 'The ID of the validation.' }),
-    ).exactOptional(),
-    name: NonEmptyStringWithMaxLen255Schema.and(
-      z.any().openapi({ description: 'The name of the configuration.' }),
-    ).exactOptional(),
-    serverValidationStrategy: ServerValidationStrategySchema.and(
-      z.any().openapi({ description: 'The validation strategy.' }),
-    ).exactOptional(),
-    userDataValidationParameters: UserDataValidationParametersSchema.and(
-      z.any().openapi({ description: 'The validation parameters.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Configuration for validating an instance.', required: [] })
-  .openapi('ServerValidationConfiguration')
-
-const ServerValidationConfigurationsSchema = z
-  .array(ServerValidationConfigurationSchema)
-  .openapi('ServerValidationConfigurations')
-
-const ServerGroupValidationConfigurationSchema = z
-  .object({
-    serverGroupId: ServerGroupIdSchema.and(
-      z.any().openapi({ description: 'The ID of the server group.' }),
-    ).exactOptional(),
-    serverValidationConfigurations: ServerValidationConfigurationsSchema.and(
-      z.any().openapi({ description: 'The validation configuration.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Configuration for validating an instance.', required: [] })
-  .openapi('ServerGroupValidationConfiguration')
-
-const ServerGroupValidationConfigurationsSchema = z
-  .array(ServerGroupValidationConfigurationSchema)
-  .openapi('ServerGroupValidationConfigurations')
-
-const GetAppValidationConfigurationResponseSchema = z
-  .object({
-    appValidationConfigurations: AppValidationConfigurationsSchema.and(
-      z.any().openapi({ description: 'The configuration for application validation.' }),
-    ).exactOptional(),
-    serverGroupValidationConfigurations: ServerGroupValidationConfigurationsSchema.and(
-      z.any().openapi({ description: 'The configuration for instance validation.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GetAppValidationConfigurationResponse')
+    })
+    .openapi({ required: [] })
+    .openapi('GetAppValidationConfigurationResponse')
 
 const GetAppValidationConfigurationRequestSchema = z
   .object({
-    appId: AppIdWithValidationSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ),
+    appId: AppIdWithValidationSchema.openapi({ description: 'The ID of the application.' }),
   })
   .openapi({ required: ['appId'], title: 'GetAppValidationConfigurationRequest' })
   .openapi('GetAppValidationConfigurationRequest')
 
-const ValidationOutputSchema: z.ZodType<ValidationOutputType> = z
-  .lazy(() =>
-    z
-      .object({
-        validationId: ValidationIdSchema.and(
-          z.any().openapi({ description: 'The ID of the validation.' }),
-        ).exactOptional(),
-        name: NonEmptyStringWithMaxLen255Schema.and(
-          z.any().openapi({ description: 'The name of the validation.' }),
-        ).exactOptional(),
-        status: ValidationStatusSchema.and(
-          z.any().openapi({ description: 'The status of the validation.' }),
-        ).exactOptional(),
-        statusMessage: ValidationStatusMessageSchema.and(
-          z.any().openapi({ description: 'The status message.' }),
-        ).exactOptional(),
-        latestValidationTime: TimestampSchema.and(
-          z.any().openapi({ description: 'The latest time that the validation was performed.' }),
-        ).exactOptional(),
-        appValidationOutput: AppValidationOutputSchema.and(
-          z.any().openapi({ description: 'The output from validating an application.' }),
-        ).exactOptional(),
-        serverValidationOutput: ServerValidationOutputSchema.and(
-          z.any().openapi({ description: 'The output from validation an instance.' }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'Contains validation output.', required: [] }),
-  )
+const ValidationStatusSchema = z
+  .enum(['READY_FOR_VALIDATION', 'PENDING', 'IN_PROGRESS', 'SUCCEEDED', 'FAILED'])
+  .openapi('ValidationStatus')
+
+const ValidationStatusMessageSchema = z.string().max(2500).openapi('ValidationStatusMessage')
+
+const SSMOutputSchema = z
+  .object({ s3Location: S3LocationSchema.exactOptional() })
+  .openapi({ description: 'Contains the location of validation output.', required: [] })
+  .openapi('SSMOutput')
+
+const AppValidationOutputSchema = z
+  .object({
+    ssmOutput: SSMOutputSchema.exactOptional().openapi({
+      description: 'Output from using SSM to validate the application.',
+    }),
+  })
+  .openapi({ description: 'Output from validating an application.', required: [] })
+  .openapi('AppValidationOutput')
+
+const ServerValidationOutputSchema = z
+  .object({ server: ServerSchema.exactOptional() })
+  .openapi({ description: 'Contains output from validating an instance.', required: [] })
+  .openapi('ServerValidationOutput')
+
+const ValidationOutputSchema = z
+  .object({
+    validationId: ValidationIdSchema.exactOptional().openapi({
+      description: 'The ID of the validation.',
+    }),
+    name: NonEmptyStringWithMaxLen255Schema.exactOptional().openapi({
+      description: 'The name of the validation.',
+    }),
+    status: ValidationStatusSchema.exactOptional().openapi({
+      description: 'The status of the validation.',
+    }),
+    statusMessage: ValidationStatusMessageSchema.exactOptional().openapi({
+      description: 'The status message.',
+    }),
+    latestValidationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The latest time that the validation was performed.',
+    }),
+    appValidationOutput: AppValidationOutputSchema.exactOptional().openapi({
+      description: 'The output from validating an application.',
+    }),
+    serverValidationOutput: ServerValidationOutputSchema.exactOptional().openapi({
+      description: 'The output from validation an instance.',
+    }),
+  })
+  .openapi({ description: 'Contains validation output.', required: [] })
   .openapi('ValidationOutput')
 
 const ValidationOutputListSchema = z.array(ValidationOutputSchema).openapi('ValidationOutputList')
 
 const GetAppValidationOutputResponseSchema = z
   .object({
-    validationOutputList: ValidationOutputListSchema.and(
-      z.any().openapi({ description: 'The validation output.' }),
-    ).exactOptional(),
+    validationOutputList: ValidationOutputListSchema.exactOptional().openapi({
+      description: 'The validation output.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAppValidationOutputResponse')
 
 const GetAppValidationOutputRequestSchema = z
   .object({
-    appId: AppIdWithValidationSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ),
+    appId: AppIdWithValidationSchema.openapi({ description: 'The ID of the application.' }),
   })
   .openapi({ required: ['appId'], title: 'GetAppValidationOutputRequest' })
   .openapi('GetAppValidationOutputRequest')
@@ -1193,36 +1033,36 @@ const MacAddressSchema = z.string().openapi('MacAddress')
 
 const ConnectorSchema = z
   .object({
-    connectorId: ConnectorIdSchema.and(
-      z.any().openapi({ description: 'The ID of the connector.' }),
-    ).exactOptional(),
-    version: ConnectorVersionSchema.and(
-      z.any().openapi({ description: 'The connector version.' }),
-    ).exactOptional(),
-    status: ConnectorStatusSchema.and(
-      z.any().openapi({ description: 'The status of the connector.' }),
-    ).exactOptional(),
-    capabilityList: ConnectorCapabilityListSchema.and(
-      z.any().openapi({ description: 'The capabilities of the connector.' }),
-    ).exactOptional(),
-    vmManagerName: VmManagerNameSchema.and(
-      z.any().openapi({ description: 'The name of the VM manager.' }),
-    ).exactOptional(),
-    vmManagerType: VmManagerTypeSchema.and(
-      z.any().openapi({ description: 'The VM management product.' }),
-    ).exactOptional(),
-    vmManagerId: VmManagerIdSchema.and(
-      z.any().openapi({ description: 'The ID of the VM manager.' }),
-    ).exactOptional(),
-    ipAddress: IpAddressSchema.and(
-      z.any().openapi({ description: 'The IP address of the connector.' }),
-    ).exactOptional(),
-    macAddress: MacAddressSchema.and(
-      z.any().openapi({ description: 'The MAC address of the connector.' }),
-    ).exactOptional(),
-    associatedOn: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the connector was associated.' }),
-    ).exactOptional(),
+    connectorId: ConnectorIdSchema.exactOptional().openapi({
+      description: 'The ID of the connector.',
+    }),
+    version: ConnectorVersionSchema.exactOptional().openapi({
+      description: 'The connector version.',
+    }),
+    status: ConnectorStatusSchema.exactOptional().openapi({
+      description: 'The status of the connector.',
+    }),
+    capabilityList: ConnectorCapabilityListSchema.exactOptional().openapi({
+      description: 'The capabilities of the connector.',
+    }),
+    vmManagerName: VmManagerNameSchema.exactOptional().openapi({
+      description: 'The name of the VM manager.',
+    }),
+    vmManagerType: VmManagerTypeSchema.exactOptional().openapi({
+      description: 'The VM management product.',
+    }),
+    vmManagerId: VmManagerIdSchema.exactOptional().openapi({
+      description: 'The ID of the VM manager.',
+    }),
+    ipAddress: IpAddressSchema.exactOptional().openapi({
+      description: 'The IP address of the connector.',
+    }),
+    macAddress: MacAddressSchema.exactOptional().openapi({
+      description: 'The MAC address of the connector.',
+    }),
+    associatedOn: TimestampSchema.exactOptional().openapi({
+      description: 'The time the connector was associated.',
+    }),
   })
   .openapi({ description: 'Represents a connector.', required: [] })
   .openapi('Connector')
@@ -1233,17 +1073,13 @@ const NextTokenSchema = z.string().openapi('NextToken')
 
 const GetConnectorsResponseSchema = z
   .object({
-    connectorList: ConnectorListSchema.and(
-      z.any().openapi({ description: 'Information about the registered connectors.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token required to retrieve the next set of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    connectorList: ConnectorListSchema.exactOptional().openapi({
+      description: 'Information about the registered connectors.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token required to retrieve the next set of results. This value is null when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetConnectorsResponse')
@@ -1252,17 +1088,13 @@ const MaxResultsSchema = z.int().openapi('MaxResults')
 
 const GetConnectorsRequestSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next set of results.' }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return in a single call. The default value is 50. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
-        }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next set of results.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return in a single call. The default value is 50. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
+    }),
   })
   .openapi({ title: 'GetConnectorsRequest', required: [] })
   .openapi('GetConnectorsRequest')
@@ -1298,12 +1130,12 @@ const ReplicationRunStageProgressSchema = z.string().openapi('ReplicationRunStag
 
 const ReplicationRunStageDetailsSchema = z
   .object({
-    stage: ReplicationRunStageSchema.and(
-      z.any().openapi({ description: 'The current stage of a replication run.' }),
-    ).exactOptional(),
-    stageProgress: ReplicationRunStageProgressSchema.and(
-      z.any().openapi({ description: 'The progress of the current stage of a replication run.' }),
-    ).exactOptional(),
+    stage: ReplicationRunStageSchema.exactOptional().openapi({
+      description: 'The current stage of a replication run.',
+    }),
+    stageProgress: ReplicationRunStageProgressSchema.exactOptional().openapi({
+      description: 'The progress of the current stage of a replication run.',
+    }),
   })
   .openapi({ description: 'Details of the current stage of a replication run.', required: [] })
   .openapi('ReplicationRunStageDetails')
@@ -1312,54 +1144,40 @@ const ReplicationRunStatusMessageSchema = z.string().openapi('ReplicationRunStat
 
 const ReplicationRunSchema = z
   .object({
-    replicationRunId: ReplicationRunIdSchema.and(
-      z.any().openapi({ description: 'The ID of the replication run.' }),
-    ).exactOptional(),
-    state: ReplicationRunStateSchema.and(
-      z.any().openapi({ description: 'The state of the replication run.' }),
-    ).exactOptional(),
-    type: ReplicationRunTypeSchema.and(
-      z.any().openapi({ description: 'The type of replication run.' }),
-    ).exactOptional(),
-    stageDetails: ReplicationRunStageDetailsSchema.and(
-      z.any().openapi({ description: 'Details about the current stage of the replication run.' }),
-    ).exactOptional(),
-    statusMessage: ReplicationRunStatusMessageSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The description of the current status of the replication job.' }),
-    ).exactOptional(),
-    amiId: AmiIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Amazon Machine Image (AMI) from the replication run.',
-        }),
-    ).exactOptional(),
-    scheduledStartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The start time of the next replication run.' }),
-    ).exactOptional(),
-    completedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The completion time of the last replication run.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the replication run.' }),
-    ).exactOptional(),
-    encrypted: EncryptedSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether the replication run should produce an encrypted AMI.',
-        }),
-    ).exactOptional(),
-    kmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ID of the KMS key for replication jobs that produce encrypted AMIs. This value can be any of the following:</p> <ul> <li> <p>KMS key ID</p> </li> <li> <p>KMS key alias</p> </li> <li> <p>ARN referring to the KMS key ID</p> </li> <li> <p>ARN referring to the KMS key alias</p> </li> </ul> <p> If encrypted is <i>true</i> but a KMS key ID is not specified, the customer's default KMS key for Amazon EBS is used. </p>",
-        }),
-    ).exactOptional(),
+    replicationRunId: ReplicationRunIdSchema.exactOptional().openapi({
+      description: 'The ID of the replication run.',
+    }),
+    state: ReplicationRunStateSchema.exactOptional().openapi({
+      description: 'The state of the replication run.',
+    }),
+    type: ReplicationRunTypeSchema.exactOptional().openapi({
+      description: 'The type of replication run.',
+    }),
+    stageDetails: ReplicationRunStageDetailsSchema.exactOptional().openapi({
+      description: 'Details about the current stage of the replication run.',
+    }),
+    statusMessage: ReplicationRunStatusMessageSchema.exactOptional().openapi({
+      description: 'The description of the current status of the replication job.',
+    }),
+    amiId: AmiIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Machine Image (AMI) from the replication run.',
+    }),
+    scheduledStartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The start time of the next replication run.',
+    }),
+    completedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The completion time of the last replication run.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the replication run.',
+    }),
+    encrypted: EncryptedSchema.exactOptional().openapi({
+      description: 'Indicates whether the replication run should produce an encrypted AMI.',
+    }),
+    kmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        "<p>The ID of the KMS key for replication jobs that produce encrypted AMIs. This value can be any of the following:</p> <ul> <li> <p>KMS key ID</p> </li> <li> <p>KMS key alias</p> </li> <li> <p>ARN referring to the KMS key ID</p> </li> <li> <p>ARN referring to the KMS key alias</p> </li> </ul> <p> If encrypted is <i>true</i> but a KMS key ID is not specified, the customer's default KMS key for Amazon EBS is used. </p>",
+    }),
   })
   .openapi({ description: 'Represents a replication run.', required: [] })
   .openapi('ReplicationRun')
@@ -1368,85 +1186,59 @@ const ReplicationRunListSchema = z.array(ReplicationRunSchema).openapi('Replicat
 
 const ReplicationJobSchema = z
   .object({
-    replicationJobId: ReplicationJobIdSchema.and(
-      z.any().openapi({ description: 'The ID of the replication job.' }),
-    ).exactOptional(),
-    serverId: ServerIdSchema.and(
-      z.any().openapi({ description: 'The ID of the server.' }),
-    ).exactOptional(),
-    serverType: ServerTypeSchema.and(
-      z.any().openapi({ description: 'The type of server.' }),
-    ).exactOptional(),
-    vmServer: VmServerSchema.and(
-      z.any().openapi({ description: 'Information about the VM server.' }),
-    ).exactOptional(),
-    seedReplicationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The seed replication time.' }),
-    ).exactOptional(),
-    frequency: FrequencySchema.and(
-      z.any().openapi({ description: 'The time between consecutive replication runs, in hours.' }),
-    ).exactOptional(),
-    runOnce: RunOnceSchema.and(
-      z.any().openapi({ description: 'Indicates whether to run the replication job one time.' }),
-    ).exactOptional(),
-    nextReplicationRunStartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The start time of the next replication run.' }),
-    ).exactOptional(),
-    licenseType: LicenseTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The license type to be used for the AMI created by a successful replication run.',
-        }),
-    ).exactOptional(),
-    roleName: RoleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the IAM role to be used by Server Migration Service.',
-        }),
-    ).exactOptional(),
-    latestAmiId: AmiIdSchema.and(
-      z.any().openapi({ description: 'The ID of the latest Amazon Machine Image (AMI).' }),
-    ).exactOptional(),
-    state: ReplicationJobStateSchema.and(
-      z.any().openapi({ description: 'The state of the replication job.' }),
-    ).exactOptional(),
-    statusMessage: ReplicationJobStatusMessageSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The description of the current status of the replication job.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the replication job.' }),
-    ).exactOptional(),
-    numberOfRecentAmisToKeep: NumberOfRecentAmisToKeepSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The number of recent AMIs to keep in the customer's account for a replication job. By default, the value is set to zero, meaning that all AMIs are kept.",
-        }),
-    ).exactOptional(),
-    encrypted: EncryptedSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether the replication job should produce encrypted AMIs.',
-        }),
-    ).exactOptional(),
-    kmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ID of the KMS key for replication jobs that produce encrypted AMIs. This value can be any of the following: </p> <ul> <li> <p>KMS key ID</p> </li> <li> <p>KMS key alias</p> </li> <li> <p>ARN referring to the KMS key ID</p> </li> <li> <p>ARN referring to the KMS key alias</p> </li> </ul> <p>If encrypted is enabled but a KMS key ID is not specified, the customer's default KMS key for Amazon EBS is used.</p>",
-        }),
-    ).exactOptional(),
-    replicationRunList: ReplicationRunListSchema.and(
-      z.any().openapi({ description: 'Information about the replication runs.' }),
-    ).exactOptional(),
+    replicationJobId: ReplicationJobIdSchema.exactOptional().openapi({
+      description: 'The ID of the replication job.',
+    }),
+    serverId: ServerIdSchema.exactOptional().openapi({ description: 'The ID of the server.' }),
+    serverType: ServerTypeSchema.exactOptional().openapi({ description: 'The type of server.' }),
+    vmServer: VmServerSchema.exactOptional().openapi({
+      description: 'Information about the VM server.',
+    }),
+    seedReplicationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The seed replication time.',
+    }),
+    frequency: FrequencySchema.exactOptional().openapi({
+      description: 'The time between consecutive replication runs, in hours.',
+    }),
+    runOnce: RunOnceSchema.exactOptional().openapi({
+      description: 'Indicates whether to run the replication job one time.',
+    }),
+    nextReplicationRunStartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The start time of the next replication run.',
+    }),
+    licenseType: LicenseTypeSchema.exactOptional().openapi({
+      description:
+        'The license type to be used for the AMI created by a successful replication run.',
+    }),
+    roleName: RoleNameSchema.exactOptional().openapi({
+      description: 'The name of the IAM role to be used by Server Migration Service.',
+    }),
+    latestAmiId: AmiIdSchema.exactOptional().openapi({
+      description: 'The ID of the latest Amazon Machine Image (AMI).',
+    }),
+    state: ReplicationJobStateSchema.exactOptional().openapi({
+      description: 'The state of the replication job.',
+    }),
+    statusMessage: ReplicationJobStatusMessageSchema.exactOptional().openapi({
+      description: 'The description of the current status of the replication job.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the replication job.',
+    }),
+    numberOfRecentAmisToKeep: NumberOfRecentAmisToKeepSchema.exactOptional().openapi({
+      description:
+        "The number of recent AMIs to keep in the customer's account for a replication job. By default, the value is set to zero, meaning that all AMIs are kept.",
+    }),
+    encrypted: EncryptedSchema.exactOptional().openapi({
+      description: 'Indicates whether the replication job should produce encrypted AMIs.',
+    }),
+    kmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        "<p>The ID of the KMS key for replication jobs that produce encrypted AMIs. This value can be any of the following: </p> <ul> <li> <p>KMS key ID</p> </li> <li> <p>KMS key alias</p> </li> <li> <p>ARN referring to the KMS key ID</p> </li> <li> <p>ARN referring to the KMS key alias</p> </li> </ul> <p>If encrypted is enabled but a KMS key ID is not specified, the customer's default KMS key for Amazon EBS is used.</p>",
+    }),
+    replicationRunList: ReplicationRunListSchema.exactOptional().openapi({
+      description: 'Information about the replication runs.',
+    }),
   })
   .openapi({ description: 'Represents a replication job.', required: [] })
   .openapi('ReplicationJob')
@@ -1455,77 +1247,61 @@ const ReplicationJobListSchema = z.array(ReplicationJobSchema).openapi('Replicat
 
 const GetReplicationJobsResponseSchema = z
   .object({
-    replicationJobList: ReplicationJobListSchema.and(
-      z.any().openapi({ description: 'Information about the replication jobs.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token required to retrieve the next set of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    replicationJobList: ReplicationJobListSchema.exactOptional().openapi({
+      description: 'Information about the replication jobs.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token required to retrieve the next set of results. This value is null when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetReplicationJobsResponse')
 
 const GetReplicationJobsRequestSchema = z
   .object({
-    replicationJobId: ReplicationJobIdSchema.and(
-      z.any().openapi({ description: 'The ID of the replication job.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next set of results.' }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return in a single call. The default value is 50. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
-        }),
-    ).exactOptional(),
+    replicationJobId: ReplicationJobIdSchema.exactOptional().openapi({
+      description: 'The ID of the replication job.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next set of results.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return in a single call. The default value is 50. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
+    }),
   })
   .openapi({ title: 'GetReplicationJobsRequest', required: [] })
   .openapi('GetReplicationJobsRequest')
 
 const GetReplicationRunsResponseSchema = z
   .object({
-    replicationJob: ReplicationJobSchema.and(
-      z.any().openapi({ description: 'Information about the replication job.' }),
-    ).exactOptional(),
-    replicationRunList: ReplicationRunListSchema.and(
-      z.any().openapi({ description: 'Information about the replication runs.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token required to retrieve the next set of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    replicationJob: ReplicationJobSchema.exactOptional().openapi({
+      description: 'Information about the replication job.',
+    }),
+    replicationRunList: ReplicationRunListSchema.exactOptional().openapi({
+      description: 'Information about the replication runs.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token required to retrieve the next set of results. This value is null when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetReplicationRunsResponse')
 
 const GetReplicationRunsRequestSchema = z
   .object({
-    replicationJobId: ReplicationJobIdSchema.and(
-      z.any().openapi({ description: 'The ID of the replication job.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next set of results.' }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return in a single call. The default value is 50. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
-        }),
-    ).exactOptional(),
+    replicationJobId: ReplicationJobIdSchema.openapi({
+      description: 'The ID of the replication job.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next set of results.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return in a single call. The default value is 50. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
+    }),
   })
   .openapi({ required: ['replicationJobId'], title: 'GetReplicationRunsRequest' })
   .openapi('GetReplicationRunsRequest')
@@ -1536,23 +1312,19 @@ const ServerCatalogStatusSchema = z
 
 const GetServersResponseSchema = z
   .object({
-    lastModifiedOn: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the server was last modified.' }),
-    ).exactOptional(),
-    serverCatalogStatus: ServerCatalogStatusSchema.and(
-      z.any().openapi({ description: 'The status of the server catalog.' }),
-    ).exactOptional(),
-    serverList: ServerListSchema.and(
-      z.any().openapi({ description: 'Information about the servers.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token required to retrieve the next set of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    lastModifiedOn: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the server was last modified.',
+    }),
+    serverCatalogStatus: ServerCatalogStatusSchema.exactOptional().openapi({
+      description: 'The status of the server catalog.',
+    }),
+    serverList: ServerListSchema.exactOptional().openapi({
+      description: 'Information about the servers.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token required to retrieve the next set of results. This value is null when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetServersResponse')
@@ -1561,54 +1333,44 @@ const VmServerAddressListSchema = z.array(VmServerAddressSchema).openapi('VmServ
 
 const GetServersRequestSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next set of results.' }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return in a single call. The default value is 50. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
-        }),
-    ).exactOptional(),
-    vmServerAddressList: VmServerAddressListSchema.and(
-      z.any().openapi({ description: 'The server addresses.' }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next set of results.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return in a single call. The default value is 50. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.',
+    }),
+    vmServerAddressList: VmServerAddressListSchema.exactOptional().openapi({
+      description: 'The server addresses.',
+    }),
   })
   .openapi({ title: 'GetServersRequest', required: [] })
   .openapi('GetServersRequest')
 
-const ImportAppCatalogResponseSchema = z.object({}).openapi('ImportAppCatalogResponse')
+const ImportAppCatalogResponseSchema = z.looseObject({}).openapi('ImportAppCatalogResponse')
 
 const ImportAppCatalogRequestSchema = z
   .object({
-    roleName: RoleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service role. If you omit this parameter, we create a service-linked role for Migration Hub in your account. Otherwise, the role that you provide must have the <a href="https://docs.aws.amazon.com/migrationhub/latest/ug/new-customer-setup.html#sms-managed">policy and trust policy</a> described in the <i>Migration Hub User Guide</i>.',
-        }),
-    ).exactOptional(),
+    roleName: RoleNameSchema.exactOptional().openapi({
+      description:
+        'The name of the service role. If you omit this parameter, we create a service-linked role for Migration Hub in your account. Otherwise, the role that you provide must have the <a href="https://docs.aws.amazon.com/migrationhub/latest/ug/new-customer-setup.html#sms-managed">policy and trust policy</a> described in the <i>Migration Hub User Guide</i>.',
+    }),
   })
   .openapi({ title: 'ImportAppCatalogRequest', required: [] })
   .openapi('ImportAppCatalogRequest')
 
-const ImportServerCatalogResponseSchema = z.object({}).openapi('ImportServerCatalogResponse')
+const ImportServerCatalogResponseSchema = z.looseObject({}).openapi('ImportServerCatalogResponse')
 
 const ImportServerCatalogRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ImportServerCatalogRequest' })
   .openapi('ImportServerCatalogRequest')
 
-const LaunchAppResponseSchema = z.object({}).openapi('LaunchAppResponse')
+const LaunchAppResponseSchema = z.looseObject({}).openapi('LaunchAppResponse')
 
 const LaunchAppRequestSchema = z
   .object({
-    appId: AppIdSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ).exactOptional(),
+    appId: AppIdSchema.exactOptional().openapi({ description: 'The ID of the application.' }),
   })
   .openapi({ title: 'LaunchAppRequest', required: [] })
   .openapi('LaunchAppRequest')
@@ -1617,17 +1379,11 @@ const AppsSchema = z.array(AppSummarySchema).openapi('Apps')
 
 const ListAppsResponseSchema = z
   .object({
-    apps: AppsSchema.and(
-      z.any().openapi({ description: 'The application summaries.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token required to retrieve the next set of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    apps: AppsSchema.exactOptional().openapi({ description: 'The application summaries.' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token required to retrieve the next set of results. This value is null when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAppsResponse')
@@ -1636,174 +1392,146 @@ const AppIdsSchema = z.array(AppIdSchema).openapi('AppIds')
 
 const ListAppsRequestSchema = z
   .object({
-    appIds: AppIdsSchema.and(
-      z.any().openapi({ description: 'The unique application IDs.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next set of results.' }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return in a single call. The default value is 100. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value. ',
-        }),
-    ).exactOptional(),
+    appIds: AppIdsSchema.exactOptional().openapi({ description: 'The unique application IDs.' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next set of results.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return in a single call. The default value is 100. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value. ',
+    }),
   })
   .openapi({ title: 'ListAppsRequest', required: [] })
   .openapi('ListAppsRequest')
 
 const NotifyAppValidationOutputResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NotifyAppValidationOutputResponse')
 
 const NotificationContextSchema = z
   .object({
-    validationId: ValidationIdSchema.and(
-      z.any().openapi({ description: 'The ID of the validation.' }),
-    ).exactOptional(),
-    status: ValidationStatusSchema.and(
-      z.any().openapi({ description: 'The status of the validation.' }),
-    ).exactOptional(),
-    statusMessage: ValidationStatusMessageSchema.and(
-      z.any().openapi({ description: 'The status message.' }),
-    ).exactOptional(),
+    validationId: ValidationIdSchema.exactOptional().openapi({
+      description: 'The ID of the validation.',
+    }),
+    status: ValidationStatusSchema.exactOptional().openapi({
+      description: 'The status of the validation.',
+    }),
+    statusMessage: ValidationStatusMessageSchema.exactOptional().openapi({
+      description: 'The status message.',
+    }),
   })
   .openapi({ description: 'Contains the status of validating an application.', required: [] })
   .openapi('NotificationContext')
 
 const NotifyAppValidationOutputRequestSchema = z
   .object({
-    appId: AppIdWithValidationSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ),
-    notificationContext: NotificationContextSchema.and(
-      z.any().openapi({ description: 'The notification information.' }),
-    ).exactOptional(),
+    appId: AppIdWithValidationSchema.openapi({ description: 'The ID of the application.' }),
+    notificationContext: NotificationContextSchema.exactOptional().openapi({
+      description: 'The notification information.',
+    }),
   })
   .openapi({ required: ['appId'], title: 'NotifyAppValidationOutputRequest' })
   .openapi('NotifyAppValidationOutputRequest')
 
 const PutAppLaunchConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('PutAppLaunchConfigurationResponse')
 
-const PutAppLaunchConfigurationRequestSchema = z
+const PutAppLaunchConfigurationRequestSchema: z.ZodType<PutAppLaunchConfigurationRequestType> = z
   .object({
-    appId: AppIdSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ).exactOptional(),
-    roleName: RoleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of service role in the customer's account that CloudFormation uses to launch the application.",
-        }),
-    ).exactOptional(),
-    autoLaunch: AutoLaunchSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the application is configured to launch automatically after replication is complete.',
-        }),
-    ).exactOptional(),
-    serverGroupLaunchConfigurations: ServerGroupLaunchConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the launch configurations for server groups in the application.',
-        }),
-    ).exactOptional(),
+    appId: AppIdSchema.exactOptional().openapi({ description: 'The ID of the application.' }),
+    roleName: RoleNameSchema.exactOptional().openapi({
+      description:
+        "The name of service role in the customer's account that CloudFormation uses to launch the application.",
+    }),
+    autoLaunch: AutoLaunchSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the application is configured to launch automatically after replication is complete.',
+    }),
+    serverGroupLaunchConfigurations: ServerGroupLaunchConfigurationsSchema.exactOptional().openapi({
+      description:
+        'Information about the launch configurations for server groups in the application.',
+    }),
   })
   .openapi({ title: 'PutAppLaunchConfigurationRequest', required: [] })
   .openapi('PutAppLaunchConfigurationRequest')
 
 const PutAppReplicationConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('PutAppReplicationConfigurationResponse')
 
-const PutAppReplicationConfigurationRequestSchema = z
-  .object({
-    appId: AppIdSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ).exactOptional(),
-    serverGroupReplicationConfigurations: ServerGroupReplicationConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
+const PutAppReplicationConfigurationRequestSchema: z.ZodType<PutAppReplicationConfigurationRequestType> =
+  z
+    .object({
+      appId: AppIdSchema.exactOptional().openapi({ description: 'The ID of the application.' }),
+      serverGroupReplicationConfigurations:
+        ServerGroupReplicationConfigurationsSchema.exactOptional().openapi({
           description:
             'Information about the replication configurations for server groups in the application.',
         }),
-    ).exactOptional(),
-  })
-  .openapi({ title: 'PutAppReplicationConfigurationRequest', required: [] })
-  .openapi('PutAppReplicationConfigurationRequest')
+    })
+    .openapi({ title: 'PutAppReplicationConfigurationRequest', required: [] })
+    .openapi('PutAppReplicationConfigurationRequest')
 
 const PutAppValidationConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('PutAppValidationConfigurationResponse')
 
-const PutAppValidationConfigurationRequestSchema = z
-  .object({
-    appId: AppIdWithValidationSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ),
-    appValidationConfigurations: AppValidationConfigurationsSchema.and(
-      z.any().openapi({ description: 'The configuration for application validation.' }),
-    ).exactOptional(),
-    serverGroupValidationConfigurations: ServerGroupValidationConfigurationsSchema.and(
-      z.any().openapi({ description: 'The configuration for instance validation.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['appId'], title: 'PutAppValidationConfigurationRequest' })
-  .openapi('PutAppValidationConfigurationRequest')
+const PutAppValidationConfigurationRequestSchema: z.ZodType<PutAppValidationConfigurationRequestType> =
+  z
+    .object({
+      appId: AppIdWithValidationSchema.openapi({ description: 'The ID of the application.' }),
+      appValidationConfigurations: AppValidationConfigurationsSchema.exactOptional().openapi({
+        description: 'The configuration for application validation.',
+      }),
+      serverGroupValidationConfigurations:
+        ServerGroupValidationConfigurationsSchema.exactOptional().openapi({
+          description: 'The configuration for instance validation.',
+        }),
+    })
+    .openapi({ required: ['appId'], title: 'PutAppValidationConfigurationRequest' })
+    .openapi('PutAppValidationConfigurationRequest')
 
-const StartAppReplicationResponseSchema = z.object({}).openapi('StartAppReplicationResponse')
+const StartAppReplicationResponseSchema = z.looseObject({}).openapi('StartAppReplicationResponse')
 
 const StartAppReplicationRequestSchema = z
   .object({
-    appId: AppIdSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ).exactOptional(),
+    appId: AppIdSchema.exactOptional().openapi({ description: 'The ID of the application.' }),
   })
   .openapi({ title: 'StartAppReplicationRequest', required: [] })
   .openapi('StartAppReplicationRequest')
 
 const StartOnDemandAppReplicationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('StartOnDemandAppReplicationResponse')
 
 const StartOnDemandAppReplicationRequestSchema = z
   .object({
-    appId: AppIdSchema.and(z.any().openapi({ description: 'The ID of the application.' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the replication run.' }),
-    ).exactOptional(),
+    appId: AppIdSchema.openapi({ description: 'The ID of the application.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the replication run.',
+    }),
   })
   .openapi({ required: ['appId'], title: 'StartOnDemandAppReplicationRequest' })
   .openapi('StartOnDemandAppReplicationRequest')
 
 const StartOnDemandReplicationRunResponseSchema = z
   .object({
-    replicationRunId: ReplicationRunIdSchema.and(
-      z.any().openapi({ description: 'The ID of the replication run.' }),
-    ).exactOptional(),
+    replicationRunId: ReplicationRunIdSchema.exactOptional().openapi({
+      description: 'The ID of the replication run.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartOnDemandReplicationRunResponse')
 
 const StartOnDemandReplicationRunRequestSchema = z
   .object({
-    replicationJobId: ReplicationJobIdSchema.and(
-      z.any().openapi({ description: 'The ID of the replication job.' }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the replication run.' }),
-    ).exactOptional(),
+    replicationJobId: ReplicationJobIdSchema.openapi({
+      description: 'The ID of the replication job.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the replication run.',
+    }),
   })
   .openapi({ required: ['replicationJobId'], title: 'StartOnDemandReplicationRunRequest' })
   .openapi('StartOnDemandReplicationRunRequest')
@@ -1814,127 +1542,97 @@ const ReplicationRunLimitExceededExceptionSchema = z
 
 const DryRunOperationExceptionSchema = z.any().openapi('DryRunOperationException')
 
-const StopAppReplicationResponseSchema = z.object({}).openapi('StopAppReplicationResponse')
+const StopAppReplicationResponseSchema = z.looseObject({}).openapi('StopAppReplicationResponse')
 
 const StopAppReplicationRequestSchema = z
   .object({
-    appId: AppIdSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ).exactOptional(),
+    appId: AppIdSchema.exactOptional().openapi({ description: 'The ID of the application.' }),
   })
   .openapi({ title: 'StopAppReplicationRequest', required: [] })
   .openapi('StopAppReplicationRequest')
 
-const TerminateAppResponseSchema = z.object({}).openapi('TerminateAppResponse')
+const TerminateAppResponseSchema = z.looseObject({}).openapi('TerminateAppResponse')
 
 const TerminateAppRequestSchema = z
   .object({
-    appId: AppIdSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ).exactOptional(),
+    appId: AppIdSchema.exactOptional().openapi({ description: 'The ID of the application.' }),
   })
   .openapi({ title: 'TerminateAppRequest', required: [] })
   .openapi('TerminateAppRequest')
 
 const UpdateAppResponseSchema = z
   .object({
-    appSummary: AppSummarySchema.and(
-      z.any().openapi({ description: 'A summary description of the application.' }),
-    ).exactOptional(),
-    serverGroups: ServerGroupsSchema.and(
-      z.any().openapi({ description: 'The updated server groups in the application.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags associated with the application.' }),
-    ).exactOptional(),
+    appSummary: AppSummarySchema.exactOptional().openapi({
+      description: 'A summary description of the application.',
+    }),
+    serverGroups: ServerGroupsSchema.exactOptional().openapi({
+      description: 'The updated server groups in the application.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags associated with the application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAppResponse')
 
 const UpdateAppRequestSchema = z
   .object({
-    appId: AppIdSchema.and(
-      z.any().openapi({ description: 'The ID of the application.' }),
-    ).exactOptional(),
-    name: AppNameSchema.and(
-      z.any().openapi({ description: 'The new name of the application.' }),
-    ).exactOptional(),
-    description: AppDescriptionSchema.and(
-      z.any().openapi({ description: 'The new description of the application.' }),
-    ).exactOptional(),
-    roleName: RoleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the service role in the customer's account used by Server Migration Service.",
-        }),
-    ).exactOptional(),
-    serverGroups: ServerGroupsSchema.and(
-      z.any().openapi({ description: 'The server groups in the application to update.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags to associate with the application.' }),
-    ).exactOptional(),
+    appId: AppIdSchema.exactOptional().openapi({ description: 'The ID of the application.' }),
+    name: AppNameSchema.exactOptional().openapi({
+      description: 'The new name of the application.',
+    }),
+    description: AppDescriptionSchema.exactOptional().openapi({
+      description: 'The new description of the application.',
+    }),
+    roleName: RoleNameSchema.exactOptional().openapi({
+      description:
+        "The name of the service role in the customer's account used by Server Migration Service.",
+    }),
+    serverGroups: ServerGroupsSchema.exactOptional().openapi({
+      description: 'The server groups in the application to update.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags to associate with the application.',
+    }),
   })
   .openapi({ title: 'UpdateAppRequest', required: [] })
   .openapi('UpdateAppRequest')
 
-const UpdateReplicationJobResponseSchema = z.object({}).openapi('UpdateReplicationJobResponse')
+const UpdateReplicationJobResponseSchema = z.looseObject({}).openapi('UpdateReplicationJobResponse')
 
 const UpdateReplicationJobRequestSchema = z
   .object({
-    replicationJobId: ReplicationJobIdSchema.and(
-      z.any().openapi({ description: 'The ID of the replication job.' }),
-    ),
-    frequency: FrequencySchema.and(
-      z.any().openapi({ description: 'The time between consecutive replication runs, in hours.' }),
-    ).exactOptional(),
-    nextReplicationRunStartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The start time of the next replication run.' }),
-    ).exactOptional(),
-    licenseType: LicenseTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The license type to be used for the AMI created by a successful replication run.',
-        }),
-    ).exactOptional(),
-    roleName: RoleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the IAM role to be used by Server Migration Service.',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the replication job.' }),
-    ).exactOptional(),
-    numberOfRecentAmisToKeep: NumberOfRecentAmisToKeepSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of SMS-created AMIs to retain. The oldest is deleted after the maximum number is reached and a new AMI is created.',
-        }),
-    ).exactOptional(),
-    encrypted: EncryptedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When true, the replication job produces encrypted AMIs. For more information, <code>KmsKeyId</code>.',
-        }),
-    ).exactOptional(),
-    kmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ID of the KMS key for replication jobs that produce encrypted AMIs. This value can be any of the following:</p> <ul> <li> <p>KMS key ID</p> </li> <li> <p>KMS key alias</p> </li> <li> <p>ARN referring to the KMS key ID</p> </li> <li> <p>ARN referring to the KMS key alias</p> </li> </ul> <p>If encrypted is enabled but a KMS key ID is not specified, the customer's default KMS key for Amazon EBS is used.</p>",
-        }),
-    ).exactOptional(),
+    replicationJobId: ReplicationJobIdSchema.openapi({
+      description: 'The ID of the replication job.',
+    }),
+    frequency: FrequencySchema.exactOptional().openapi({
+      description: 'The time between consecutive replication runs, in hours.',
+    }),
+    nextReplicationRunStartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The start time of the next replication run.',
+    }),
+    licenseType: LicenseTypeSchema.exactOptional().openapi({
+      description:
+        'The license type to be used for the AMI created by a successful replication run.',
+    }),
+    roleName: RoleNameSchema.exactOptional().openapi({
+      description: 'The name of the IAM role to be used by Server Migration Service.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the replication job.',
+    }),
+    numberOfRecentAmisToKeep: NumberOfRecentAmisToKeepSchema.exactOptional().openapi({
+      description:
+        'The maximum number of SMS-created AMIs to retain. The oldest is deleted after the maximum number is reached and a new AMI is created.',
+    }),
+    encrypted: EncryptedSchema.exactOptional().openapi({
+      description:
+        'When true, the replication job produces encrypted AMIs. For more information, <code>KmsKeyId</code>.',
+    }),
+    kmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        "<p>The ID of the KMS key for replication jobs that produce encrypted AMIs. This value can be any of the following:</p> <ul> <li> <p>KMS key ID</p> </li> <li> <p>KMS key alias</p> </li> <li> <p>ARN referring to the KMS key ID</p> </li> <li> <p>ARN referring to the KMS key alias</p> </li> </ul> <p>If encrypted is enabled but a KMS key ID is not specified, the customer's default KMS key for Amazon EBS is used.</p>",
+    }),
   })
   .openapi({ required: ['replicationJobId'], title: 'UpdateReplicationJobRequest' })
   .openapi('UpdateReplicationJobRequest')

@@ -8,6 +8,85 @@ const BoundingBoxSchema = z
   })
   .openapi('BoundingBox')
 
+const WordSchema = z
+  .object({
+    boundingBox: BoundingBoxSchema,
+    confidence: z
+      .enum(['High', 'Low'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Qualitative confidence measure.',
+        'x-ms-enum': { modelAsString: false, name: 'TextRecognitionResultConfidenceClass' },
+      }),
+    text: z.string().openapi({ description: 'The text content of the word.' }),
+  })
+  .openapi({
+    description: 'An object representing a recognized word.',
+    required: ['boundingBox', 'text'],
+  })
+  .openapi('Word')
+
+const LineSchema = z
+  .object({
+    boundingBox: BoundingBoxSchema.exactOptional(),
+    text: z.string().exactOptional().openapi({ description: 'The text content of the line.' }),
+    words: z
+      .array(WordSchema)
+      .exactOptional()
+      .openapi({ description: 'List of words in the text line.' }),
+  })
+  .openapi({ description: 'An object representing a recognized text line.', required: [] })
+  .openapi('Line')
+
+const TextRecognitionResultSchema = z
+  .object({
+    clockwiseOrientation: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The orientation of the image in degrees in the clockwise direction. Range between [0, 360).',
+      }),
+    height: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The height of the image in pixels or the PDF in inches.' }),
+    lines: z.array(LineSchema).openapi({ description: 'A list of recognized text lines.' }),
+    page: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The 1-based page number of the recognition result.' }),
+    unit: z
+      .enum(['pixel', 'inch'])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The unit used in the Width, Height and BoundingBox. For images, the unit is 'pixel'. For PDF, the unit is 'inch'.",
+        'x-ms-enum': { modelAsString: false, name: 'TextRecognitionResultDimensionUnit' },
+      }),
+    width: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The width of the image in pixels or the PDF in inches.' }),
+  })
+  .openapi({ description: 'An object representing a recognized text region', required: ['lines'] })
+  .openapi('TextRecognitionResult')
+
+const OperationStatusSchema = z
+  .enum(['NotStarted', 'Running', 'Failed', 'Succeeded'])
+  .openapi({
+    description: 'Status code of the text operation.',
+    'x-ms-enum': { modelAsString: false, name: 'TextOperationStatusCodes' },
+  })
+  .openapi('OperationStatus')
+
+type ReadOperationResultType = {
+  recognitionResults?: z.infer<typeof TextRecognitionResultSchema>[]
+  status?: z.infer<typeof OperationStatusSchema>
+}
+
 const ComputerVisionErrorSchema = z
   .object({
     code: z
@@ -49,81 +128,7 @@ const ImageUrlSchema = z
   .openapi({ required: ['url'] })
   .openapi('ImageUrl')
 
-const WordSchema = z
-  .object({
-    boundingBox: BoundingBoxSchema,
-    confidence: z
-      .enum(['High', 'Low'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Qualitative confidence measure.',
-        'x-ms-enum': { modelAsString: false, name: 'TextRecognitionResultConfidenceClass' },
-      }),
-    text: z.string().openapi({ description: 'The text content of the word.' }),
-  })
-  .openapi({
-    description: 'An object representing a recognized word.',
-    required: ['boundingBox', 'text'],
-  })
-  .openapi('Word')
-
-const LineSchema = z
-  .object({
-    boundingBox: BoundingBoxSchema.exactOptional(),
-    text: z.string().exactOptional().openapi({ description: 'The text content of the line.' }),
-    words: z
-      .array(WordSchema)
-      .exactOptional()
-      .openapi({ description: 'List of words in the text line.' }),
-  })
-  .openapi({ description: 'An object representing a recognized text line.', required: [] })
-  .openapi('Line')
-
-const OperationStatusSchema = z
-  .enum(['NotStarted', 'Running', 'Failed', 'Succeeded'])
-  .openapi({
-    description: 'Status code of the text operation.',
-    'x-ms-enum': { modelAsString: false, name: 'TextOperationStatusCodes' },
-  })
-  .openapi('OperationStatus')
-
-const TextRecognitionResultSchema = z
-  .object({
-    clockwiseOrientation: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'The orientation of the image in degrees in the clockwise direction. Range between [0, 360).',
-      }),
-    height: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The height of the image in pixels or the PDF in inches.' }),
-    lines: z.array(LineSchema).openapi({ description: 'A list of recognized text lines.' }),
-    page: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The 1-based page number of the recognition result.' }),
-    unit: z
-      .enum(['pixel', 'inch'])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The unit used in the Width, Height and BoundingBox. For images, the unit is 'pixel'. For PDF, the unit is 'inch'.",
-        'x-ms-enum': { modelAsString: false, name: 'TextRecognitionResultDimensionUnit' },
-      }),
-    width: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The width of the image in pixels or the PDF in inches.' }),
-  })
-  .openapi({ description: 'An object representing a recognized text region', required: ['lines'] })
-  .openapi('TextRecognitionResult')
-
-const ReadOperationResultSchema = z
+const ReadOperationResultSchema: z.ZodType<ReadOperationResultType> = z
   .object({
     recognitionResults: z
       .array(TextRecognitionResultSchema)
@@ -287,7 +292,7 @@ const ImageUrlRequestBody = {
 
 const RecognizeTextInStreamImageRequestBody = {
   description: 'An image stream.',
-  content: { 'application/octet-stream': { schema: z.object({}) } },
+  content: { 'application/octet-stream': { schema: z.looseObject({}) } },
   required: true,
 }
 
@@ -304,18 +309,14 @@ export const postReadCoreAsyncBatchAnalyzeRoute = createRoute({
     202: {
       description: 'The service has accepted the request and will start processing later.',
       headers: z.object({
-        'Operation-Location': {
-          description:
-            'URL to query for status of the operation. The operation ID will expire in 48 hours. ',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'URL to query for status of the operation. The operation ID will expire in 48 hours. ',
-              param: { required: false },
-            }),
-        },
+        'Operation-Location': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'URL to query for status of the operation. The operation ID will expire in 48 hours. ',
+            param: { required: false },
+          }),
       }),
     },
     default: {
@@ -387,18 +388,14 @@ export const postRecognizeTextRoute = createRoute({
       description:
         "The service has accepted the request and will start processing later. It will return Accepted immediately and include an 'Operation-Location' header. Client side should further query the operation status using the URL specified in this header. The operation ID will expire in 48 hours.",
       headers: z.object({
-        'Operation-Location': {
-          description:
-            'URL to query for status of the operation. The operation ID will expire in 48 hours. ',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'URL to query for status of the operation. The operation ID will expire in 48 hours. ',
-              param: { required: false },
-            }),
-        },
+        'Operation-Location': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'URL to query for status of the operation. The operation ID will expire in 48 hours. ',
+            param: { required: false },
+          }),
       }),
     },
     default: {

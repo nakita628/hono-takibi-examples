@@ -141,7 +141,7 @@ export const getDevicesSerialCameraAnalyticsLiveRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: { value: { ts: '2018-08-15T18:32:38.123Z', zones: { '0': { person: 0 } } } },
           },
@@ -234,7 +234,7 @@ export const getDevicesSerialCameraAnalyticsOverviewRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -290,7 +290,7 @@ export const getDevicesSerialCameraAnalyticsRecentRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -331,7 +331,7 @@ export const getDevicesSerialCameraAnalyticsZonesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -459,7 +459,7 @@ export const getDevicesSerialCameraAnalyticsZonesZoneIdHistoryRoute = createRout
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -499,7 +499,7 @@ export const getDevicesSerialCameraQualityAndRetentionSettingsRoute = createRout
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -610,7 +610,7 @@ export const putDevicesSerialCameraQualityAndRetentionSettingsRoute = createRout
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -651,7 +651,7 @@ export const getDevicesSerialCameraVideoSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: { externalRtspEnabled: true, rtspUrl: 'rtsp://10.0.0.1:9000/live' },
@@ -698,7 +698,7 @@ export const putDevicesSerialCameraVideoSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: { externalRtspEnabled: true, rtspUrl: 'rtsp://10.0.0.1:9000/live' },
@@ -731,7 +731,7 @@ export const getDevicesSerialCellularGatewaySettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -846,7 +846,7 @@ export const putDevicesSerialCellularGatewaySettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -890,7 +890,7 @@ export const getDevicesSerialCellularGatewaySettingsPortForwardingRulesRoute = c
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -1027,7 +1027,7 @@ export const putDevicesSerialCellularGatewaySettingsPortForwardingRulesRoute = c
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -1119,7 +1119,7 @@ export const getDevicesSerialClientsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -1187,7 +1187,7 @@ export const postDevicesSerialSwitchPortsCycleRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -1258,7 +1258,7 @@ export const getDevicesSerialSwitchPortStatusesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -1380,7 +1380,7 @@ export const getDevicesSerialSwitchPortStatusesPacketsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -1538,7 +1538,7 @@ export const getNetworksNetworkIdRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -1634,7 +1634,7 @@ export const putNetworksNetworkIdRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -1696,7 +1696,7 @@ export const getNetworksNetworkIdAccessPoliciesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -1776,7 +1776,7 @@ export const getNetworksNetworkIdAirMarshalRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -1826,7 +1826,7 @@ export const getNetworksNetworkIdAlertSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -1925,7 +1925,7 @@ export const putNetworksNetworkIdAlertSettingsRoute = createRoute({
                           description: 'A boolean depicting if the alert is turned on or off',
                         }),
                       filters: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -2003,7 +2003,7 @@ export const putNetworksNetworkIdAlertSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -2056,7 +2056,7 @@ export const getNetworksNetworkIdApplianceFirewallInboundFirewallRulesRoute = cr
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -2104,7 +2104,7 @@ export const putNetworksNetworkIdApplianceFirewallInboundFirewallRulesRoute = cr
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -2151,7 +2151,7 @@ export const getNetworksNetworkIdAppliancePortsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -2203,7 +2203,7 @@ export const getNetworksNetworkIdAppliancePortsAppliancePortIdRoute = createRout
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -2308,7 +2308,7 @@ export const putNetworksNetworkIdAppliancePortsAppliancePortIdRoute = createRout
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -2488,7 +2488,7 @@ export const getNetworksNetworkIdBluetoothClientsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -2511,18 +2511,14 @@ export const getNetworksNetworkIdBluetoothClientsRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -2595,7 +2591,7 @@ export const getNetworksNetworkIdBluetoothClientsBluetoothClientIdRoute = create
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -2848,7 +2844,7 @@ export const getNetworksNetworkIdCameraQualityRetentionProfilesRoute = createRou
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -3213,7 +3209,7 @@ export const postNetworksNetworkIdCameraQualityRetentionProfilesRoute = createRo
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -3274,7 +3270,7 @@ export const getNetworksNetworkIdCameraQualityRetentionProfilesQualityRetentionP
         description: 'Successful operation',
         content: {
           'application/json': {
-            schema: z.object({}),
+            schema: z.looseObject({}),
             examples: {
               response: {
                 value: {
@@ -3645,7 +3641,7 @@ export const putNetworksNetworkIdCameraQualityRetentionProfilesQualityRetentionP
         description: 'Successful operation',
         content: {
           'application/json': {
-            schema: z.object({}),
+            schema: z.looseObject({}),
             examples: {
               response: {
                 value: {
@@ -3725,7 +3721,7 @@ export const getNetworksNetworkIdCameraSchedulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -3795,7 +3791,7 @@ export const postNetworksNetworkIdCamerasSerialSnapshotRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -3852,7 +3848,7 @@ export const getNetworksNetworkIdCamerasSerialVideoLinkRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -3887,7 +3883,7 @@ export const getNetworksNetworkIdCellularFirewallRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -4017,7 +4013,7 @@ export const putNetworksNetworkIdCellularFirewallRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -4274,18 +4270,14 @@ export const getNetworksNetworkIdClientsRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -4426,7 +4418,7 @@ export const getNetworksNetworkIdClientsConnectionStatsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -4599,7 +4591,7 @@ export const getNetworksNetworkIdClientsLatencyStatsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -5098,7 +5090,7 @@ export const postNetworksNetworkIdClientsProvisionRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -5143,7 +5135,7 @@ export const getNetworksNetworkIdClientsClientIdRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -5326,7 +5318,7 @@ export const getNetworksNetworkIdClientsClientIdConnectionStatsRoute = createRou
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -5417,7 +5409,7 @@ export const getNetworksNetworkIdClientsClientIdEventsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -5433,18 +5425,14 @@ export const getNetworksNetworkIdClientsClientIdEventsRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -5547,7 +5535,7 @@ export const getNetworksNetworkIdClientsClientIdLatencyHistoryRoute = createRout
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -5780,7 +5768,7 @@ export const getNetworksNetworkIdClientsClientIdLatencyStatsRoute = createRoute(
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -5844,7 +5832,7 @@ export const getNetworksNetworkIdClientsClientIdPolicyRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: { groupPolicyId: '101', mac: '00:11:22:33:44:55', type: 'Group policy' },
@@ -5910,7 +5898,7 @@ export const putNetworksNetworkIdClientsClientIdPolicyRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: { groupPolicyId: '101', mac: '00:11:22:33:44:55', type: 'Group policy' },
@@ -5950,7 +5938,7 @@ export const getNetworksNetworkIdClientsClientIdSplashAuthorizationStatusRoute =
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -6185,7 +6173,7 @@ export const putNetworksNetworkIdClientsClientIdSplashAuthorizationStatusRoute =
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -6233,7 +6221,7 @@ export const getNetworksNetworkIdClientsClientIdUsageHistoryRoute = createRoute(
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: { response: { value: [{ received: 680, sent: 500, ts: 1518365681 }] } },
         },
       },
@@ -6376,7 +6364,7 @@ export const getNetworksNetworkIdConnectionStatsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { response: { value: { assoc: 1, auth: 5, dhcp: 0, dns: 0, success: 51 } } },
         },
       },
@@ -6405,7 +6393,7 @@ export const getNetworksNetworkIdContentFilteringRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -6485,7 +6473,7 @@ export const putNetworksNetworkIdContentFilteringRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -6526,7 +6514,7 @@ export const getNetworksNetworkIdContentFilteringCategoriesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -6566,7 +6554,7 @@ export const getNetworksNetworkIdDevicesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -6776,7 +6764,7 @@ export const getNetworksNetworkIdDevicesConnectionStatsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -6945,7 +6933,7 @@ export const getNetworksNetworkIdDevicesLatencyStatsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -7036,7 +7024,7 @@ export const getNetworksNetworkIdDevicesSerialRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -7151,7 +7139,7 @@ export const putNetworksNetworkIdDevicesSerialRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -7322,7 +7310,7 @@ export const getNetworksNetworkIdDevicesSerialConnectionStatsRoute = createRoute
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -7490,7 +7478,7 @@ export const getNetworksNetworkIdDevicesSerialLatencyStatsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -7648,7 +7636,7 @@ export const getNetworksNetworkIdDevicesSerialLossAndLatencyHistoryRoute = creat
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -7706,7 +7694,7 @@ export const getNetworksNetworkIdDevicesSerialPerformanceRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { response: { value: { perfScore: 10 } } },
         },
       },
@@ -7740,7 +7728,7 @@ export const postNetworksNetworkIdDevicesSerialRebootRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { response: { value: { success: true } } },
         },
       },
@@ -7798,7 +7786,7 @@ export const getNetworksNetworkIdDevicesSerialUplinkRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -7846,7 +7834,7 @@ export const getNetworksNetworkIdDevicesSerialWirelessStatusRoute = createRoute(
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -8130,7 +8118,7 @@ export const getNetworksNetworkIdEventsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -8167,18 +8155,14 @@ export const getNetworksNetworkIdEventsRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -8205,7 +8189,7 @@ export const getNetworksNetworkIdEventsEventTypesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -8378,7 +8362,7 @@ export const getNetworksNetworkIdFailedConnectionsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -8466,7 +8450,7 @@ export const getNetworksNetworkIdFirewalledServicesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [{ access: 'restricted', allowedIps: ['123.123.123.1'], service: 'web' }],
@@ -8504,7 +8488,7 @@ export const getNetworksNetworkIdFirewalledServicesServiceRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: { access: 'restricted', allowedIps: ['123.123.123.1'], service: 'web' },
@@ -8570,7 +8554,7 @@ export const putNetworksNetworkIdFirewalledServicesServiceRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: { access: 'restricted', allowedIps: ['123.123.123.1'], service: 'web' },
@@ -8603,7 +8587,7 @@ export const getNetworksNetworkIdFloorPlansRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -8747,7 +8731,7 @@ export const postNetworksNetworkIdFloorPlansRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -8821,7 +8805,7 @@ export const getNetworksNetworkIdFloorPlansFloorPlanIdRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -8971,7 +8955,7 @@ export const putNetworksNetworkIdFloorPlansFloorPlanIdRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -9064,7 +9048,7 @@ export const getNetworksNetworkIdL3FirewallRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -9109,7 +9093,7 @@ export const putNetworksNetworkIdL3FirewallRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -9153,7 +9137,7 @@ export const getNetworksNetworkIdL7FirewallRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -9240,7 +9224,7 @@ export const putNetworksNetworkIdL7FirewallRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -9282,7 +9266,7 @@ export const getNetworksNetworkIdL7FirewallRulesApplicationCategoriesRoute = cre
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -9454,7 +9438,7 @@ export const getNetworksNetworkIdLatencyStatsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -9510,7 +9494,7 @@ export const getNetworksNetworkIdMerakiAuthUsersRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -9569,7 +9553,7 @@ export const getNetworksNetworkIdMerakiAuthUsersMerakiAuthUserIdRoute = createRo
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -9616,7 +9600,7 @@ export const getNetworksNetworkIdOneToManyNatRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -9777,7 +9761,7 @@ export const putNetworksNetworkIdOneToManyNatRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -9835,7 +9819,7 @@ export const getNetworksNetworkIdOneToOneNatRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -9989,7 +9973,7 @@ export const putNetworksNetworkIdOneToOneNatRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -10119,7 +10103,7 @@ export const getNetworksNetworkIdPiiPiiKeysRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -10162,7 +10146,7 @@ export const getNetworksNetworkIdPiiRequestsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -10267,7 +10251,7 @@ export const postNetworksNetworkIdPiiRequestsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -10316,7 +10300,7 @@ export const getNetworksNetworkIdPiiRequestsRequestIdRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -10460,7 +10444,7 @@ export const getNetworksNetworkIdPiiSmDevicesForKeyRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { response: { value: { N_1234: ['1099541095293', '8348382288234'] } } },
         },
       },
@@ -10565,7 +10549,7 @@ export const getNetworksNetworkIdPiiSmOwnersForKeyRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { response: { value: { N_1234: ['1099541095293'] } } },
         },
       },
@@ -10594,7 +10578,7 @@ export const getNetworksNetworkIdPortForwardingRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -10711,7 +10695,7 @@ export const putNetworksNetworkIdPortForwardingRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -10756,7 +10740,7 @@ export const getNetworksNetworkIdSecurityIntrusionSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -10862,7 +10846,7 @@ export const putNetworksNetworkIdSecurityIntrusionSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -10903,7 +10887,7 @@ export const getNetworksNetworkIdSecurityMalwareSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -11012,7 +10996,7 @@ export const putNetworksNetworkIdSecurityMalwareSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -11153,7 +11137,7 @@ export const getNetworksNetworkIdSecurityEventsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -11193,18 +11177,14 @@ export const getNetworksNetworkIdSecurityEventsRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11231,7 +11211,7 @@ export const getNetworksNetworkIdSiteToSiteVpnRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -11344,7 +11324,7 @@ export const putNetworksNetworkIdSiteToSiteVpnRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -11404,7 +11384,7 @@ export const postNetworksNetworkIdSmBypassActivationLockAttemptsRoute = createRo
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { response: { value: { data: {}, id: '1234', status: 'pending' } } },
         },
       },
@@ -11438,7 +11418,7 @@ export const getNetworksNetworkIdSmBypassActivationLockAttemptsAttemptIdRoute = 
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -11526,7 +11506,7 @@ export const putNetworksNetworkIdSmDeviceFieldsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -11598,7 +11578,7 @@ export const putNetworksNetworkIdSmDeviceWipeRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { response: { value: { success: true } } },
         },
       },
@@ -11752,7 +11732,7 @@ export const getNetworksNetworkIdSmDevicesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -11830,7 +11810,7 @@ export const putNetworksNetworkIdSmDevicesCheckinRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { response: { value: { success: true } } },
         },
       },
@@ -11901,7 +11881,7 @@ export const putNetworksNetworkIdSmDevicesTagsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -11948,7 +11928,7 @@ export const postNetworksNetworkIdSmDevicesDeviceIdUnenrollRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { response: { value: { success: true } } },
         },
       },
@@ -11977,7 +11957,7 @@ export const getNetworksNetworkIdSmProfilesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -12038,7 +12018,7 @@ export const getNetworksNetworkIdSmTargetGroupsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [{ name: 'My target group', scope: 'none', tags: '[]', type: 'devices' }],
@@ -12072,7 +12052,7 @@ export const postNetworksNetworkIdSmTargetGroupsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: { name: 'My target group', scope: 'none', tags: '[]', type: 'devices' },
@@ -12125,7 +12105,7 @@ export const getNetworksNetworkIdSmTargetGroupsTargetGroupIdRoute = createRoute(
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: { name: 'My target group', scope: 'none', tags: '[]', type: 'devices' },
@@ -12164,7 +12144,7 @@ export const putNetworksNetworkIdSmTargetGroupsTargetGroupIdRoute = createRoute(
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: { name: 'My target group', scope: 'none', tags: '[]', type: 'devices' },
@@ -12226,7 +12206,7 @@ export const getNetworksNetworkIdSmUserUserIdDeviceProfilesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -12275,7 +12255,7 @@ export const getNetworksNetworkIdSmUserUserIdSoftwaresRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -12388,7 +12368,7 @@ export const getNetworksNetworkIdSmUsersRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -12443,7 +12423,7 @@ export const getNetworksNetworkIdSmDeviceIdCellularUsageHistoryRoute = createRou
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: { response: { value: [{ received: 61, sent: 138, ts: 1526087474 }] } },
         },
       },
@@ -12477,7 +12457,7 @@ export const getNetworksNetworkIdSmDeviceIdCertsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -12526,7 +12506,7 @@ export const getNetworksNetworkIdSmDeviceIdDeviceProfilesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -12575,7 +12555,7 @@ export const getNetworksNetworkIdSmDeviceIdNetworkAdaptersRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -12624,7 +12604,7 @@ export const getNetworksNetworkIdSmDeviceIdRestrictionsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -12664,7 +12644,7 @@ export const getNetworksNetworkIdSmDeviceIdSecurityCentersRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -12715,7 +12695,7 @@ export const getNetworksNetworkIdSmDeviceIdSoftwaresRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -12779,7 +12759,7 @@ export const getNetworksNetworkIdSmDeviceIdWlanListsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -12818,7 +12798,7 @@ export const getNetworksNetworkIdSnmpSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -12925,7 +12905,7 @@ export const getNetworksNetworkIdSplashLoginAttemptsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -12969,7 +12949,7 @@ export const postNetworksNetworkIdSplitRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -13028,7 +13008,7 @@ export const getNetworksNetworkIdSsidsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -13095,7 +13075,7 @@ export const getNetworksNetworkIdSsidsNumberRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -13487,7 +13467,7 @@ export const putNetworksNetworkIdSsidsNumberRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -13552,7 +13532,7 @@ export const getNetworksNetworkIdSsidsNumberL3FirewallRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -13668,7 +13648,7 @@ export const putNetworksNetworkIdSsidsNumberL3FirewallRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -13714,7 +13694,7 @@ export const getNetworksNetworkIdSsidsNumberSplashSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -13784,7 +13764,7 @@ export const putNetworksNetworkIdSsidsNumberSplashSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -13822,7 +13802,7 @@ export const getNetworksNetworkIdStaticRoutesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -13890,7 +13870,7 @@ export const postNetworksNetworkIdStaticRoutesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -13938,7 +13918,7 @@ export const getNetworksNetworkIdStaticRoutesStaticRouteIdRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -13994,7 +13974,7 @@ export const putNetworksNetworkIdStaticRoutesStaticRouteIdRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'The enabled state of the static route' }),
               fixedIpAssignments: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -14051,7 +14031,7 @@ export const putNetworksNetworkIdStaticRoutesStaticRouteIdRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -14122,7 +14102,7 @@ export const postNetworksNetworkIdSwapWarmSpareRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { response: { value: { success: true } } },
         },
       },
@@ -14151,7 +14131,7 @@ export const getNetworksNetworkIdSwitchLinkAggregationsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -14260,7 +14240,7 @@ export const postNetworksNetworkIdSwitchLinkAggregationsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -14378,7 +14358,7 @@ export const putNetworksNetworkIdSwitchLinkAggregationsLinkAggregationIdRoute = 
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -14452,7 +14432,7 @@ export const getNetworksNetworkIdSwitchPortSchedulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -14719,7 +14699,7 @@ export const postNetworksNetworkIdSwitchPortSchedulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -14989,7 +14969,7 @@ export const putNetworksNetworkIdSwitchPortSchedulesPortScheduleIdRoute = create
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -15059,7 +15039,7 @@ export const getNetworksNetworkIdSwitchSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -15147,7 +15127,7 @@ export const putNetworksNetworkIdSwitchSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -15189,7 +15169,7 @@ export const getNetworksNetworkIdSwitchSettingsMtuRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -15288,7 +15268,7 @@ export const putNetworksNetworkIdSwitchSettingsMtuRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -15330,7 +15310,7 @@ export const getNetworksNetworkIdSwitchSettingsMulticastRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -15473,7 +15453,7 @@ export const putNetworksNetworkIdSwitchSettingsMulticastRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -15523,7 +15503,7 @@ export const getNetworksNetworkIdSwitchSettingsQosRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -15636,7 +15616,7 @@ export const postNetworksNetworkIdSwitchSettingsQosRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -15680,7 +15660,7 @@ export const getNetworksNetworkIdSwitchSettingsQosRulesOrderRoute = createRoute(
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { response: { value: { ruleIds: ['1284392014819', '2983092129865'] } } },
         },
       },
@@ -15729,7 +15709,7 @@ export const putNetworksNetworkIdSwitchSettingsQosRulesOrderRoute = createRoute(
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { response: { value: { ruleIds: ['1284392014819', '2983092129865'] } } },
         },
       },
@@ -15763,7 +15743,7 @@ export const getNetworksNetworkIdSwitchSettingsQosRulesQosRuleIdRoute = createRo
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -15879,7 +15859,7 @@ export const putNetworksNetworkIdSwitchSettingsQosRulesQosRuleIdRoute = createRo
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -15945,7 +15925,7 @@ export const getNetworksNetworkIdSwitchSettingsStormControlRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -16020,7 +16000,7 @@ export const putNetworksNetworkIdSwitchSettingsStormControlRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -16057,7 +16037,7 @@ export const getNetworksNetworkIdSwitchStacksRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -16112,7 +16092,7 @@ export const postNetworksNetworkIdSwitchStacksRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -16154,7 +16134,7 @@ export const getNetworksNetworkIdSwitchStacksSwitchStackIdRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -16232,7 +16212,7 @@ export const postNetworksNetworkIdSwitchStacksSwitchStackIdAddRoute = createRout
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -16286,7 +16266,7 @@ export const postNetworksNetworkIdSwitchStacksSwitchStackIdRemoveRoute = createR
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: { value: { id: '8473', name: 'A cool stack', serials: ['QBAB-CDEF-GHIJ'] } },
           },
@@ -16317,7 +16297,7 @@ export const getNetworksNetworkIdSyslogServersRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [{ host: '1.2.3.4', port: 443, roles: ['Wireless event log', 'URLs'] }],
@@ -16384,7 +16364,7 @@ export const putNetworksNetworkIdSyslogServersRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [{ host: '1.2.3.4', port: 443, roles: ['Wireless event log', 'URLs'] }],
@@ -16467,7 +16447,7 @@ export const getNetworksNetworkIdTrafficRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -16531,7 +16511,7 @@ export const getNetworksNetworkIdUplinkSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -16664,7 +16644,7 @@ export const putNetworksNetworkIdUplinkSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -16703,7 +16683,7 @@ export const getNetworksNetworkIdVlansRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -16811,7 +16791,7 @@ export const postNetworksNetworkIdVlansRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -16880,7 +16860,7 @@ export const getNetworksNetworkIdVlansVlanIdRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -17031,7 +17011,7 @@ export const putNetworksNetworkIdVlansVlanIdRoute = createRoute({
                     'The DNS nameservers used for DHCP responses, either "upstream_dns", "google_dns", "opendns", or a newline seperated string of IP addresses or domain names',
                 }),
               fixedIpAssignments: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -17117,7 +17097,7 @@ export const putNetworksNetworkIdVlansVlanIdRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -17211,7 +17191,7 @@ export const getNetworksNetworkIdVlansEnabledStateRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { response: { value: { enabled: true, networkId: 'N_24329156' } } },
         },
       },
@@ -17257,7 +17237,7 @@ export const putNetworksNetworkIdVlansEnabledStateRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { response: { value: { enabled: true, networkId: 'N_24329156' } } },
         },
       },
@@ -17286,7 +17266,7 @@ export const getNetworksNetworkIdWarmSpareSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -17363,7 +17343,7 @@ export const putNetworksNetworkIdWarmSpareSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -17418,7 +17398,7 @@ export const getNetworksNetworkIdWirelessRfProfilesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -17726,7 +17706,7 @@ export const postNetworksNetworkIdWirelessRfProfilesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -17885,7 +17865,7 @@ export const getNetworksNetworkIdWirelessRfProfilesRfProfileIdRoute = createRout
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -18185,7 +18165,7 @@ export const putNetworksNetworkIdWirelessRfProfilesRfProfileIdRoute = createRout
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -18363,7 +18343,7 @@ export const getNetworksNetworkIdWirelessSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -18453,7 +18433,7 @@ export const putNetworksNetworkIdWirelessSettingsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -18528,7 +18508,7 @@ export const putNetworksNetworkIdSmDevicesLockRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { response: { value: { success: true } } },
         },
       },
@@ -18611,23 +18591,19 @@ export const getNetworksNetworkIdSmIdConnectivityRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: { response: { value: [{ firstSeenAt: 1518365681, lastSeenAt: 1526087474 }] } },
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18708,7 +18684,7 @@ export const getNetworksNetworkIdSmIdDesktopLogsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -18738,18 +18714,14 @@ export const getNetworksNetworkIdSmIdDesktopLogsRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18829,7 +18801,7 @@ export const getNetworksNetworkIdSmIdDeviceCommandLogsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -18846,18 +18818,14 @@ export const getNetworksNetworkIdSmIdDeviceCommandLogsRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18938,7 +18906,7 @@ export const getNetworksNetworkIdSmIdPerformanceHistoryRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -18960,18 +18928,14 @@ export const getNetworksNetworkIdSmIdPerformanceHistoryRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -18989,7 +18953,7 @@ export const getOrganizationsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -19028,7 +18992,7 @@ export const getOrganizationsOrganizationIdRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -19080,7 +19044,7 @@ export const getOrganizationsOrganizationIdActionBatchesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -19137,7 +19101,7 @@ export const postOrganizationsOrganizationIdActionBatchesRoute = createRoute({
                   z
                     .object({
                       body: z
-                        .object({})
+                        .looseObject({})
                         .default({})
                         .exactOptional()
                         .openapi({ description: 'The body of the action' }),
@@ -19193,7 +19157,7 @@ export const postOrganizationsOrganizationIdActionBatchesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -19273,7 +19237,7 @@ export const putOrganizationsOrganizationIdActionBatchesActionBatchIdRoute = cre
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -19343,7 +19307,7 @@ export const getOrganizationsOrganizationIdAdminsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -19466,7 +19430,7 @@ export const postOrganizationsOrganizationIdAdminsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -19581,7 +19545,7 @@ export const putOrganizationsOrganizationIdAdminsAdminIdRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -19815,7 +19779,7 @@ export const getOrganizationsOrganizationIdApiRequestsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -19836,18 +19800,14 @@ export const getOrganizationsOrganizationIdApiRequestsRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -19923,7 +19883,7 @@ export const getOrganizationsOrganizationIdApiRequestsOverviewRoute = createRout
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -20008,7 +19968,7 @@ export const postOrganizationsOrganizationIdClaimRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -20057,7 +20017,7 @@ export const postOrganizationsOrganizationIdCloneRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -20094,7 +20054,7 @@ export const getOrganizationsOrganizationIdConfigTemplatesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -20179,7 +20139,7 @@ export const getOrganizationsOrganizationIdConfigTemplatesConfigTemplateIdSwitch
         description: 'Successful operation',
         content: {
           'application/json': {
-            schema: z.array(z.object({})),
+            schema: z.array(z.looseObject({})),
             examples: {
               response: {
                 value: [
@@ -20334,7 +20294,7 @@ export const getOrganizationsOrganizationIdConfigurationChangesRoute = createRou
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -20356,18 +20316,14 @@ export const getOrganizationsOrganizationIdConfigurationChangesRoute = createRou
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -20394,7 +20350,7 @@ export const getOrganizationsOrganizationIdDeviceStatusesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -20499,7 +20455,7 @@ export const getOrganizationsOrganizationIdDevicesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -20523,18 +20479,14 @@ export const getOrganizationsOrganizationIdDevicesRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -20562,7 +20514,7 @@ export const getOrganizationsOrganizationIdInsightMonitoredMediaServersRoute = c
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -20619,7 +20571,7 @@ export const postOrganizationsOrganizationIdInsightMonitoredMediaServersRoute = 
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -20673,7 +20625,7 @@ export const getOrganizationsOrganizationIdInsightMonitoredMediaServersMonitored
         description: 'Successful operation',
         content: {
           'application/json': {
-            schema: z.object({}),
+            schema: z.looseObject({}),
             examples: {
               response: {
                 value: {
@@ -20751,7 +20703,7 @@ export const putOrganizationsOrganizationIdInsightMonitoredMediaServersMonitored
         description: 'Successful operation',
         content: {
           'application/json': {
-            schema: z.object({}),
+            schema: z.looseObject({}),
             examples: {
               response: {
                 value: {
@@ -20839,7 +20791,7 @@ export const getOrganizationsOrganizationIdInventoryRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -20882,7 +20834,7 @@ export const getOrganizationsOrganizationIdLicenseStateRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -21008,7 +20960,7 @@ export const getOrganizationsOrganizationIdLicensesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -21043,18 +20995,14 @@ export const getOrganizationsOrganizationIdLicensesRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -21108,7 +21056,7 @@ export const postOrganizationsOrganizationIdLicensesAssignSeatsRoute = createRou
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -21187,7 +21135,7 @@ export const postOrganizationsOrganizationIdLicensesMoveSeatsRoute = createRoute
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: { destOrganizationId: '2930418', licenseId: '1234', seatCount: 20 },
@@ -21247,7 +21195,7 @@ export const postOrganizationsOrganizationIdLicensesRenewSeatsRoute = createRout
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -21305,7 +21253,7 @@ export const getOrganizationsOrganizationIdLicensesLicenseIdRoute = createRoute(
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -21377,7 +21325,7 @@ export const getOrganizationsOrganizationIdNetworksRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -21483,7 +21431,7 @@ export const postOrganizationsOrganizationIdNetworksRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -21554,7 +21502,7 @@ export const postOrganizationsOrganizationIdNetworksCombineRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -21600,7 +21548,7 @@ export const getOrganizationsOrganizationIdOpenapiSpecRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -21657,7 +21605,7 @@ export const getOrganizationsOrganizationIdSamlRolesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -21757,7 +21705,7 @@ export const postOrganizationsOrganizationIdSamlRolesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -21801,7 +21749,7 @@ export const getOrganizationsOrganizationIdSamlRolesSamlRoleIdRoute = createRout
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -21906,7 +21854,7 @@ export const putOrganizationsOrganizationIdSamlRolesSamlRoleIdRoute = createRout
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -21945,7 +21893,7 @@ export const getOrganizationsOrganizationIdSecurityIntrusionSettingsRoute = crea
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -22037,7 +21985,7 @@ export const putOrganizationsOrganizationIdSecurityIntrusionSettingsRoute = crea
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -22178,7 +22126,7 @@ export const getOrganizationsOrganizationIdSecurityEventsRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -22218,18 +22166,14 @@ export const getOrganizationsOrganizationIdSecurityEventsRoute = createRoute({
         },
       },
       headers: z.object({
-        Link: {
-          description:
-            'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A comma-separated list of first, last, prev, and next relative links used for subsequent paginated requests.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -22256,7 +22200,7 @@ export const getOrganizationsOrganizationIdSnmpRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value: {
@@ -22297,7 +22241,7 @@ export const getOrganizationsOrganizationIdThirdPartyVPNPeersRoute = createRoute
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -22521,7 +22465,7 @@ export const putOrganizationsOrganizationIdThirdPartyVPNPeersRoute = createRoute
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -22661,7 +22605,7 @@ export const getOrganizationsOrganizationIdUplinksLossAndLatencyRoute = createRo
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -22702,7 +22646,7 @@ export const getOrganizationsOrganizationIdVpnFirewallRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [
@@ -22839,7 +22783,7 @@ export const putOrganizationsOrganizationIdVpnFirewallRulesRoute = createRoute({
       description: 'Successful operation',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           examples: {
             response: {
               value: [

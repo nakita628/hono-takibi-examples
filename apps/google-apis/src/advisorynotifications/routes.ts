@@ -109,61 +109,84 @@ const GoogleCloudAdvisorynotificationsV1SubjectSchema = z
   .openapi({ description: 'A subject line of a notification.', required: [] })
   .openapi('GoogleCloudAdvisorynotificationsV1Subject')
 
-const GoogleCloudAdvisorynotificationsV1NotificationSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Time the notification was created.', readOnly: true }),
-    messages: z
-      .array(GoogleCloudAdvisorynotificationsV1MessageSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of messages in the notification.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the notification. Format: organizations/{organization}/locations/{location}/notifications/{notification}.',
-      }),
-    notificationType: z
-      .enum([
-        'NOTIFICATION_TYPE_UNSPECIFIED',
-        'NOTIFICATION_TYPE_SECURITY_PRIVACY_ADVISORY',
-        'NOTIFICATION_TYPE_SENSITIVE_ACTIONS',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Type of notification' }),
-    subject: GoogleCloudAdvisorynotificationsV1SubjectSchema.exactOptional().openapi({
-      description: 'The subject line of the notification.',
-    }),
-  })
-  .openapi({
-    description: 'A notification object for notifying customers about security and privacy issues.',
-    required: [],
-  })
-  .openapi('GoogleCloudAdvisorynotificationsV1Notification')
+type GoogleCloudAdvisorynotificationsV1NotificationType = {
+  createTime?: string
+  messages?: z.infer<typeof GoogleCloudAdvisorynotificationsV1MessageSchema>[]
+  name?: string
+  notificationType?:
+    | 'NOTIFICATION_TYPE_UNSPECIFIED'
+    | 'NOTIFICATION_TYPE_SECURITY_PRIVACY_ADVISORY'
+    | 'NOTIFICATION_TYPE_SENSITIVE_ACTIONS'
+  subject?: z.infer<typeof GoogleCloudAdvisorynotificationsV1SubjectSchema>
+}
 
-const GoogleCloudAdvisorynotificationsV1ListNotificationsResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages.',
+const GoogleCloudAdvisorynotificationsV1NotificationSchema: z.ZodType<GoogleCloudAdvisorynotificationsV1NotificationType> =
+  z
+    .object({
+      createTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Output only. Time the notification was created.',
+          readOnly: true,
+        }),
+      messages: z
+        .array(GoogleCloudAdvisorynotificationsV1MessageSchema)
+        .exactOptional()
+        .openapi({ description: 'A list of messages in the notification.' }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The resource name of the notification. Format: organizations/{organization}/locations/{location}/notifications/{notification}.',
+        }),
+      notificationType: z
+        .enum([
+          'NOTIFICATION_TYPE_UNSPECIFIED',
+          'NOTIFICATION_TYPE_SECURITY_PRIVACY_ADVISORY',
+          'NOTIFICATION_TYPE_SENSITIVE_ACTIONS',
+        ])
+        .exactOptional()
+        .openapi({ description: 'Type of notification' }),
+      subject: GoogleCloudAdvisorynotificationsV1SubjectSchema.exactOptional().openapi({
+        description: 'The subject line of the notification.',
       }),
-    notifications: z
-      .array(GoogleCloudAdvisorynotificationsV1NotificationSchema)
-      .exactOptional()
-      .openapi({ description: 'List of notifications under a given parent.' }),
-    totalSize: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Estimation of a total number of notifications.' }),
-  })
-  .openapi({ description: 'Response of ListNotifications endpoint.', required: [] })
-  .openapi('GoogleCloudAdvisorynotificationsV1ListNotificationsResponse')
+    })
+    .openapi({
+      description:
+        'A notification object for notifying customers about security and privacy issues.',
+      required: [],
+    })
+    .openapi('GoogleCloudAdvisorynotificationsV1Notification')
+
+type GoogleCloudAdvisorynotificationsV1ListNotificationsResponseType = {
+  nextPageToken?: string
+  notifications?: z.infer<typeof GoogleCloudAdvisorynotificationsV1NotificationSchema>[]
+  totalSize?: number
+}
+
+const GoogleCloudAdvisorynotificationsV1ListNotificationsResponseSchema: z.ZodType<GoogleCloudAdvisorynotificationsV1ListNotificationsResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages.',
+        }),
+      notifications: z
+        .array(GoogleCloudAdvisorynotificationsV1NotificationSchema)
+        .exactOptional()
+        .openapi({ description: 'List of notifications under a given parent.' }),
+      totalSize: z
+        .int32()
+        .exactOptional()
+        .openapi({ description: 'Estimation of a total number of notifications.' }),
+    })
+    .openapi({ description: 'Response of ListNotifications endpoint.', required: [] })
+    .openapi('GoogleCloudAdvisorynotificationsV1ListNotificationsResponse')
 
 const XgafvParamsSchema = z
   .enum(['1', '2'])

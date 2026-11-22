@@ -1,7 +1,7 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  getRestaurantsTenantRestaurantIdCustomerclaimsRoute,
   getRestaurantsTenantRestaurantIdCustomerclaimsIdRoute,
+  getRestaurantsTenantRestaurantIdCustomerclaimsRoute,
   postRestaurantsTenantRestaurantIdCustomerclaimsIdRestaurantresponseRoute,
   putRestaurantsTenantRestaurantIdCustomerclaimsIdRestaurantresponseJustificationRoute,
 } from '../routes'
@@ -9,10 +9,18 @@ import {
 const app = new OpenAPIHono()
 
 export const restaurantClaimsHandler = app
-  .openapi(getRestaurantsTenantRestaurantIdCustomerclaimsRoute, (c) => {})
-  .openapi(getRestaurantsTenantRestaurantIdCustomerclaimsIdRoute, (c) => {})
-  .openapi(postRestaurantsTenantRestaurantIdCustomerclaimsIdRestaurantresponseRoute, (c) => {})
+  .openapi(getRestaurantsTenantRestaurantIdCustomerclaimsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getRestaurantsTenantRestaurantIdCustomerclaimsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postRestaurantsTenantRestaurantIdCustomerclaimsIdRestaurantresponseRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(
     putRestaurantsTenantRestaurantIdCustomerclaimsIdRestaurantresponseJustificationRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

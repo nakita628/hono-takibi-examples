@@ -4,5 +4,9 @@ import { postMenuIngestionCompleteRoute, postOrderTimeUpdatedRoute } from '../ro
 const app = new OpenAPIHono()
 
 export const restaurantWebhooksHandler = app
-  .openapi(postMenuIngestionCompleteRoute, (c) => {})
-  .openapi(postOrderTimeUpdatedRoute, (c) => {})
+  .openapi(postMenuIngestionCompleteRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrderTimeUpdatedRoute, (c) => {
+    throw new Error('Not implemented')
+  })

@@ -1,0 +1,188 @@
+import { injectMutation, mutationOptions } from '@tanstack/angular-query-experimental'
+import type {
+  CreateMutationOptions,
+  DefaultError,
+  InjectQueryOptions,
+  InjectInfiniteQueryOptions,
+  InjectMutationOptions,
+} from '@tanstack/angular-query-experimental'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getCripcKey() {
+  return ['cripc'] as const
+}
+
+export function getHlipcKey() {
+  return ['hlipc'] as const
+}
+
+export function getTwipcKey() {
+  return ['twipc'] as const
+}
+
+export function getPostCripcCertificateMutationKey() {
+  return ['cripc', '/cripc/certificate', 'POST'] as const
+}
+
+export function getPostCripcCertificateMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.cripc.certificate.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.cripc.certificate.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostCripcCertificateMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.cripc.certificate.$post>) {
+      return parseResponse(client.cripc.certificate.$post(args, options))
+    },
+  })
+}
+
+export function injectPostCripcCertificate<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<typeof client.cripc.certificate.$post>>>
+          >
+        >,
+        TError,
+        InferRequestType<typeof client.cripc.certificate.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  injectOptions?: InjectMutationOptions,
+) {
+  return injectMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostCripcCertificateMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, injectOptions)
+}
+
+export function getPostHlipcCertificateMutationKey() {
+  return ['hlipc', '/hlipc/certificate', 'POST'] as const
+}
+
+export function getPostHlipcCertificateMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.hlipc.certificate.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.hlipc.certificate.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostHlipcCertificateMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.hlipc.certificate.$post>) {
+      return parseResponse(client.hlipc.certificate.$post(args, options))
+    },
+  })
+}
+
+export function injectPostHlipcCertificate<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<typeof client.hlipc.certificate.$post>>>
+          >
+        >,
+        TError,
+        InferRequestType<typeof client.hlipc.certificate.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  injectOptions?: InjectMutationOptions,
+) {
+  return injectMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostHlipcCertificateMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, injectOptions)
+}
+
+export function getPostTwipcCertificateMutationKey() {
+  return ['twipc', '/twipc/certificate', 'POST'] as const
+}
+
+export function getPostTwipcCertificateMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.twipc.certificate.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.twipc.certificate.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostTwipcCertificateMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.twipc.certificate.$post>) {
+      return parseResponse(client.twipc.certificate.$post(args, options))
+    },
+  })
+}
+
+export function injectPostTwipcCertificate<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<typeof client.twipc.certificate.$post>>>
+          >
+        >,
+        TError,
+        InferRequestType<typeof client.twipc.certificate.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  injectOptions?: InjectMutationOptions,
+) {
+  return injectMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostTwipcCertificateMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, injectOptions)
+}

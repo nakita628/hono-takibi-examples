@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodeBuild20161006DescribeTestCasesHandler = app.openapi(
   postXAmzTargetCodeBuild20161006DescribeTestCasesRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

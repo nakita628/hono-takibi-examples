@@ -1,59 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AccessKeyCredentialsSchema = z
-  .object({
-    accessKeyId: z.string().exactOptional().openapi({ description: 'AWS access key ID.' }),
-    secretAccessKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Input only. AWS secret access key.' }),
-    sessionToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Input only. AWS session token. Used only when AWS security token service (STS) is responsible for creating the temporary credentials.',
-      }),
-  })
-  .openapi({
-    description: 'Message describing AWS Credentials using access key id and secret.',
-    required: [],
-  })
-  .openapi('AccessKeyCredentials')
-
-const AdaptingOSStepSchema = z
-  .object({})
-  .openapi({ description: 'AdaptingOSStep contains specific step details.' })
-  .openapi('AdaptingOSStep')
-
-const AddGroupMigrationRequestSchema = z
-  .object({
-    migratingVm: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The full path name of the MigratingVm to add.' }),
-  })
-  .openapi({ description: "Request message for 'AddGroupMigration' request.", required: [] })
-  .openapi('AddGroupMigrationRequest')
-
-const ApplianceVersionSchema = z
-  .object({
-    critical: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: "Determine whether it's critical to upgrade the appliance to this version.",
-      }),
-    releaseNotesUri: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Link to a page that contains the version release notes.' }),
-    uri: z.string().exactOptional().openapi({ description: 'A link for downloading the version.' }),
-    version: z.string().exactOptional().openapi({ description: 'The appliance version.' }),
-  })
-  .openapi({ description: 'Describes an appliance version.', required: [] })
-  .openapi('ApplianceVersion')
-
 const AppliedLicenseSchema = z
   .object({
     osLicense: z
@@ -70,245 +16,6 @@ const AppliedLicenseSchema = z
     required: [],
   })
   .openapi('AppliedLicense')
-
-const AvailableUpdatesSchema = z
-  .object({
-    inPlaceUpdate: ApplianceVersionSchema.exactOptional().openapi({
-      description:
-        'The latest version for in place update. The current appliance can be updated to this version using the API or m4c CLI.',
-    }),
-    newDeployableAppliance: ApplianceVersionSchema.exactOptional().openapi({
-      description:
-        "The newest deployable version of the appliance. The current appliance can't be updated into this version, and the owner must manually deploy this OVA to a new appliance.",
-    }),
-  })
-  .openapi({
-    description: 'Holds informatiom about the available versions for upgrade.',
-    required: [],
-  })
-  .openapi('AvailableUpdates')
-
-const AwsSecurityGroupSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'The AWS security group id.' }),
-    name: z.string().exactOptional().openapi({ description: 'The AWS security group name.' }),
-  })
-  .openapi({
-    description: 'AwsSecurityGroup describes a security group of an AWS VM.',
-    required: [],
-  })
-  .openapi('AwsSecurityGroup')
-
-const StatusSchema = z
-  .object({
-    code: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The status code, which should be an enum value of google.rpc.Code.',
-      }),
-    details: z
-      .array(
-        z.record(
-          z.string(),
-          z
-            .any()
-            .openapi({
-              description: 'Properties of the object. Contains field @type with type URL.',
-            }),
-        ),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
-      }),
-  })
-  .openapi({
-    description:
-      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
-    required: [],
-  })
-  .openapi('Status')
-
-const TagSchema = z
-  .object({
-    key: z.string().exactOptional().openapi({ description: 'Key of tag.' }),
-    value: z.string().exactOptional().openapi({ description: 'Value of tag.' }),
-  })
-  .openapi({ description: 'Tag is an AWS tag representation.', required: [] })
-  .openapi('Tag')
-
-const AwsSourceDetailsSchema = z
-  .object({
-    accessKeyCreds: AccessKeyCredentialsSchema.exactOptional().openapi({
-      description: 'AWS Credentials using access key id and secret.',
-    }),
-    awsRegion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Immutable. The AWS region that the source VMs will be migrated from.',
-      }),
-    error: StatusSchema.exactOptional().openapi({
-      description: 'Output only. Provides details on the state of the Source in case of an error.',
-      readOnly: true,
-    }),
-    inventorySecurityGroupNames: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'AWS security group names to limit the scope of the source inventory.',
-      }),
-    inventoryTagList: z
-      .array(TagSchema)
-      .exactOptional()
-      .openapi({ description: 'AWS resource tags to limit the scope of the source inventory.' }),
-    migrationResourcesUserTags: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'User specified tags to add to every M2VM generated resource in AWS. These tags will be set in addition to the default tags that are set as part of the migration process. The tags must not begin with the reserved prefix `m2vm`.',
-      }),
-    publicIp: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. The source's public IP. All communication initiated by this source will originate from this IP.",
-        readOnly: true,
-      }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'PENDING', 'FAILED', 'ACTIVE'])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. State of the source as determined by the health check.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'AwsSourceDetails message describes a specific source details for the AWS source type.',
-    required: [],
-  })
-  .openapi('AwsSourceDetails')
-
-const AwsSourceVmDetailsSchema = z
-  .object({
-    committedStorageBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The total size of the disks being migrated in bytes.' }),
-    firmware: z
-      .enum(['FIRMWARE_UNSPECIFIED', 'EFI', 'BIOS'])
-      .exactOptional()
-      .openapi({ description: 'The firmware type of the source VM.' }),
-  })
-  .openapi({ description: 'Represent the source AWS VM details.', required: [] })
-  .openapi('AwsSourceVmDetails')
-
-const AwsVmDetailsSchema = z
-  .object({
-    architecture: z
-      .enum(['VM_ARCHITECTURE_UNSPECIFIED', 'I386', 'X86_64', 'ARM64', 'X86_64_MAC'])
-      .exactOptional()
-      .openapi({ description: 'The CPU architecture.' }),
-    bootOption: z
-      .enum(['BOOT_OPTION_UNSPECIFIED', 'EFI', 'BIOS'])
-      .exactOptional()
-      .openapi({ description: 'The VM Boot Option.' }),
-    committedStorageMb: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The total size of the storage allocated to the VM in MB.' }),
-    cpuCount: z.int32().exactOptional().openapi({ description: 'The number of cpus the VM has.' }),
-    diskCount: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The number of disks the VM has.' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The display name of the VM. Note that this value is not necessarily unique.',
-      }),
-    instanceType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The instance type of the VM.' }),
-    memoryMb: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The memory size of the VM in MB.' }),
-    osDescription: z.string().exactOptional().openapi({ description: "The VM's OS." }),
-    powerState: z
-      .enum(['POWER_STATE_UNSPECIFIED', 'ON', 'OFF', 'SUSPENDED', 'PENDING'])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The power state of the VM at the moment list was taken.',
-        readOnly: true,
-      }),
-    securityGroups: z
-      .array(AwsSecurityGroupSchema)
-      .exactOptional()
-      .openapi({ description: 'The security groups the VM belongs to.' }),
-    sourceDescription: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The descriptive name of the AWS's source this VM is connected to.",
-      }),
-    sourceId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The id of the AWS's source this VM is connected to." }),
-    tags: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'The tags of the VM.' }),
-    virtualizationType: z
-      .enum(['VM_VIRTUALIZATION_TYPE_UNSPECIFIED', 'HVM', 'PARAVIRTUAL'])
-      .exactOptional()
-      .openapi({ description: 'The virtualization type.' }),
-    vmId: z.string().exactOptional().openapi({ description: 'The VM ID in AWS.' }),
-    vpcId: z.string().exactOptional().openapi({ description: 'The VPC ID the VM belongs to.' }),
-    zone: z.string().exactOptional().openapi({ description: 'The AWS zone of the VM.' }),
-  })
-  .openapi({ description: 'AwsVmDetails describes a VM in AWS.', required: [] })
-  .openapi('AwsVmDetails')
-
-const AwsVmsDetailsSchema = z
-  .object({
-    details: z
-      .array(AwsVmDetailsSchema)
-      .exactOptional()
-      .openapi({ description: 'The details of the AWS VMs.' }),
-  })
-  .openapi({ description: 'AWSVmsDetails describes VMs in AWS.', required: [] })
-  .openapi('AwsVmsDetails')
-
-const CancelCloneJobRequestSchema = z
-  .object({})
-  .openapi({ description: "Request message for 'CancelCloneJob' request." })
-  .openapi('CancelCloneJobRequest')
-
-const CancelCutoverJobRequestSchema = z
-  .object({})
-  .openapi({ description: "Request message for 'CancelCutoverJob' request." })
-  .openapi('CancelCutoverJobRequest')
-
-const CancelOperationRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request message for Operations.CancelOperation.' })
-  .openapi('CancelOperationRequest')
 
 const SchedulingNodeAffinitySchema = z
   .object({
@@ -597,232 +304,52 @@ const TargetVMDetailsSchema = z
   })
   .openapi('TargetVMDetails')
 
-const InstantiatingMigratedVMStepSchema = z
-  .object({})
-  .openapi({ description: 'InstantiatingMigratedVMStep contains specific step details.' })
-  .openapi('InstantiatingMigratedVMStep')
-
-const PreparingVMDisksStepSchema = z
-  .object({})
-  .openapi({ description: 'PreparingVMDisksStep contains specific step details.' })
-  .openapi('PreparingVMDisksStep')
-
-const CloneStepSchema = z
+const StatusSchema = z
   .object({
-    adaptingOs: AdaptingOSStepSchema.exactOptional().openapi({ description: 'Adapting OS step.' }),
-    endTime: z.string().exactOptional().openapi({ description: 'The time the step has ended.' }),
-    instantiatingMigratedVm: InstantiatingMigratedVMStepSchema.exactOptional().openapi({
-      description: 'Instantiating migrated VM step.',
-    }),
-    preparingVmDisks: PreparingVMDisksStepSchema.exactOptional().openapi({
-      description: 'Preparing VM disks step.',
-    }),
-    startTime: z
-      .string()
+    code: z
+      .int32()
       .exactOptional()
-      .openapi({ description: 'The time the step has started.' }),
-  })
-  .openapi({
-    description: 'CloneStep holds information about the clone step progress.',
-    required: [],
-  })
-  .openapi('CloneStep')
-
-const CloneJobSchema = z
-  .object({
-    computeEngineTargetDetails: ComputeEngineTargetDetailsSchema.exactOptional().openapi({
-      description: 'Output only. Details of the target VM in Compute Engine.',
-      readOnly: true,
-    }),
-    computeEngineVmDetails: TargetVMDetailsSchema.exactOptional().openapi({
-      description:
-        'Output only. Details of the VM in Compute Engine. Deprecated: Use compute_engine_target_details instead.',
-      readOnly: true,
-    }),
-    createTime: z
+      .openapi({
+        description: 'The status code, which should be an enum value of google.rpc.Code.',
+      }),
+    details: z
+      .array(
+        z.record(
+          z.string(),
+          z
+            .any()
+            .openapi({
+              description: 'Properties of the object. Contains field @type with type URL.',
+            }),
+        ),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
+      }),
+    message: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Output only. The time the clone job was created (as an API call, not when it was actually created in the target).',
-        readOnly: true,
+          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
       }),
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The time the clone job was ended.', readOnly: true }),
-    error: StatusSchema.exactOptional().openapi({
-      description:
-        "Output only. Provides details for the errors that led to the Clone Job's state.",
-      readOnly: true,
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The name of the clone.', readOnly: true }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'PENDING',
-        'ACTIVE',
-        'FAILED',
-        'SUCCEEDED',
-        'CANCELLED',
-        'CANCELLING',
-        'ADAPTING_OS',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Output only. State of the clone job.', readOnly: true }),
-    stateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The time the state was last updated.',
-        readOnly: true,
-      }),
-    steps: z
-      .array(CloneStepSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The clone steps list representing its progress.',
-        readOnly: true,
-      }),
-    targetDetails: TargetVMDetailsSchema.exactOptional().openapi({
-      description:
-        'Output only. Details of the VM to create as the target of this clone job. Deprecated: Use compute_engine_target_details instead.',
-      readOnly: true,
-    }),
   })
   .openapi({
     description:
-      'CloneJob describes the process of creating a clone of a MigratingVM to the requested target based on the latest successful uploaded snapshots. While the migration cycles of a MigratingVm take place, it is possible to verify the uploaded VM can be started in the cloud, by creating a clone. The clone can be created without any downtime, and it is created using the latest snapshots which are already in the cloud. The cloneJob is only responsible for its work, not its products, which means once it is finished, it will never touch the instance it created. It will only delete it in case of the CloneJob being cancelled or upon failure to clone.',
+      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
     required: [],
   })
-  .openapi('CloneJob')
-
-const ComputeEngineTargetDefaultsSchema = z
-  .object({
-    additionalLicenses: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Additional licenses to assign to the VM.' }),
-    appliedLicense: AppliedLicenseSchema.exactOptional().openapi({
-      description: 'Output only. The OS license returned from the adaptation module report.',
-      readOnly: true,
-    }),
-    bootOption: z
-      .enum([
-        'COMPUTE_ENGINE_BOOT_OPTION_UNSPECIFIED',
-        'COMPUTE_ENGINE_BOOT_OPTION_EFI',
-        'COMPUTE_ENGINE_BOOT_OPTION_BIOS',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The VM Boot Option, as set in the source vm.',
-        readOnly: true,
-      }),
-    computeScheduling: ComputeSchedulingSchema.exactOptional().openapi({
-      description: 'Compute instance scheduling information (if empty default is used).',
-    }),
-    diskType: z
-      .enum([
-        'COMPUTE_ENGINE_DISK_TYPE_UNSPECIFIED',
-        'COMPUTE_ENGINE_DISK_TYPE_STANDARD',
-        'COMPUTE_ENGINE_DISK_TYPE_SSD',
-        'COMPUTE_ENGINE_DISK_TYPE_BALANCED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The disk type to use in the VM.' }),
-    hostname: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The hostname to assign to the VM.' }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'A map of labels to associate with the VM.' }),
-    licenseType: z
-      .enum([
-        'COMPUTE_ENGINE_LICENSE_TYPE_DEFAULT',
-        'COMPUTE_ENGINE_LICENSE_TYPE_PAYG',
-        'COMPUTE_ENGINE_LICENSE_TYPE_BYOL',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The license type to use in OS adaptation.' }),
-    machineType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The machine type to create the VM with.' }),
-    machineTypeSeries: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The machine type series to create the VM with.' }),
-    metadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'The metadata key/value pairs to assign to the VM.' }),
-    networkInterfaces: z
-      .array(NetworkInterfaceSchema)
-      .exactOptional()
-      .openapi({ description: 'List of NICs connected to this VM.' }),
-    networkTags: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'A map of network tags to associate with the VM.' }),
-    secureBoot: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Defines whether the instance has Secure Boot enabled. This can be set to true only if the vm boot option is EFI.',
-      }),
-    serviceAccount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The service account to associate the VM with.' }),
-    targetProject: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The full path of the resource of type TargetProject which represents the Compute Engine project in which to create this VM.',
-      }),
-    vmName: z.string().exactOptional().openapi({ description: 'The name of the VM to create.' }),
-    zone: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The zone in which to create the VM.' }),
-  })
-  .openapi({
-    description:
-      'ComputeEngineTargetDefaults is a collection of details for creating a VM in a target Compute Engine project.',
-    required: [],
-  })
-  .openapi('ComputeEngineTargetDefaults')
-
-const CutoverForecastSchema = z
-  .object({
-    estimatedCutoverJobDuration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Estimation of the CutoverJob duration.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'CutoverForecast holds information about future CutoverJobs of a MigratingVm.',
-    required: [],
-  })
-  .openapi('CutoverForecast')
+  .openapi('Status')
 
 const InitializingReplicationStepSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'InitializingReplicationStep contains specific step details.' })
   .openapi('InitializingReplicationStep')
 
 const PostProcessingStepSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'PostProcessingStep contains specific step details.' })
   .openapi('PostProcessingStep')
 
@@ -995,8 +522,18 @@ const ReplicationCycleSchema = z
   })
   .openapi('ReplicationCycle')
 
+const InstantiatingMigratedVMStepSchema = z
+  .looseObject({})
+  .openapi({ description: 'InstantiatingMigratedVMStep contains specific step details.' })
+  .openapi('InstantiatingMigratedVMStep')
+
+const PreparingVMDisksStepSchema = z
+  .looseObject({})
+  .openapi({ description: 'PreparingVMDisksStep contains specific step details.' })
+  .openapi('PreparingVMDisksStep')
+
 const ShuttingDownSourceVMStepSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'ShuttingDownSourceVMStep contains specific step details.' })
   .openapi('ShuttingDownSourceVMStep')
 
@@ -1027,7 +564,135 @@ const CutoverStepSchema = z
   })
   .openapi('CutoverStep')
 
-const CutoverJobSchema = z
+type CutoverJobType = {
+  computeEngineTargetDetails?: z.infer<typeof ComputeEngineTargetDetailsSchema>
+  computeEngineVmDetails?: z.infer<typeof TargetVMDetailsSchema>
+  createTime?: string
+  endTime?: string
+  error?: z.infer<typeof StatusSchema>
+  name?: string
+  progress?: number
+  progressPercent?: number
+  state?:
+    | 'STATE_UNSPECIFIED'
+    | 'PENDING'
+    | 'FAILED'
+    | 'SUCCEEDED'
+    | 'CANCELLED'
+    | 'CANCELLING'
+    | 'ACTIVE'
+    | 'ADAPTING_OS'
+  stateMessage?: string
+  stateTime?: string
+  steps?: z.infer<typeof CutoverStepSchema>[]
+  targetDetails?: z.infer<typeof TargetVMDetailsSchema>
+}
+
+const AdaptingOSStepSchema = z
+  .looseObject({})
+  .openapi({ description: 'AdaptingOSStep contains specific step details.' })
+  .openapi('AdaptingOSStep')
+
+const CloneStepSchema = z
+  .object({
+    adaptingOs: AdaptingOSStepSchema.exactOptional().openapi({ description: 'Adapting OS step.' }),
+    endTime: z.string().exactOptional().openapi({ description: 'The time the step has ended.' }),
+    instantiatingMigratedVm: InstantiatingMigratedVMStepSchema.exactOptional().openapi({
+      description: 'Instantiating migrated VM step.',
+    }),
+    preparingVmDisks: PreparingVMDisksStepSchema.exactOptional().openapi({
+      description: 'Preparing VM disks step.',
+    }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time the step has started.' }),
+  })
+  .openapi({
+    description: 'CloneStep holds information about the clone step progress.',
+    required: [],
+  })
+  .openapi('CloneStep')
+
+const CloneJobSchema = z
+  .object({
+    computeEngineTargetDetails: ComputeEngineTargetDetailsSchema.exactOptional().openapi({
+      description: 'Output only. Details of the target VM in Compute Engine.',
+      readOnly: true,
+    }),
+    computeEngineVmDetails: TargetVMDetailsSchema.exactOptional().openapi({
+      description:
+        'Output only. Details of the VM in Compute Engine. Deprecated: Use compute_engine_target_details instead.',
+      readOnly: true,
+    }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The time the clone job was created (as an API call, not when it was actually created in the target).',
+        readOnly: true,
+      }),
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The time the clone job was ended.', readOnly: true }),
+    error: StatusSchema.exactOptional().openapi({
+      description:
+        "Output only. Provides details for the errors that led to the Clone Job's state.",
+      readOnly: true,
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The name of the clone.', readOnly: true }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'PENDING',
+        'ACTIVE',
+        'FAILED',
+        'SUCCEEDED',
+        'CANCELLED',
+        'CANCELLING',
+        'ADAPTING_OS',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Output only. State of the clone job.', readOnly: true }),
+    stateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time the state was last updated.',
+        readOnly: true,
+      }),
+    steps: z
+      .array(CloneStepSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The clone steps list representing its progress.',
+        readOnly: true,
+      }),
+    targetDetails: TargetVMDetailsSchema.exactOptional().openapi({
+      description:
+        'Output only. Details of the VM to create as the target of this clone job. Deprecated: Use compute_engine_target_details instead.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    description:
+      'CloneJob describes the process of creating a clone of a MigratingVM to the requested target based on the latest successful uploaded snapshots. While the migration cycles of a MigratingVm take place, it is possible to verify the uploaded VM can be started in the cloud, by creating a clone. The clone can be created without any downtime, and it is created using the latest snapshots which are already in the cloud. The cloneJob is only responsible for its work, not its products, which means once it is finished, it will never touch the instance it created. It will only delete it in case of the CloneJob being cancelled or upon failure to clone.',
+    required: [],
+  })
+  .openapi('CloneJob')
+
+type ListCloneJobsResponseType = {
+  cloneJobs?: z.infer<typeof CloneJobSchema>[]
+  nextPageToken?: string
+  unreachable?: string[]
+}
+
+const CutoverJobSchema: z.ZodType<CutoverJobType> = z
   .object({
     computeEngineTargetDetails: ComputeEngineTargetDetailsSchema.exactOptional().openapi({
       description: 'Output only. Details of the target VM in Compute Engine.',
@@ -1123,6 +788,591 @@ const CutoverJobSchema = z
     required: [],
   })
   .openapi('CutoverJob')
+
+type ListCutoverJobsResponseType = {
+  cutoverJobs?: z.infer<typeof CutoverJobSchema>[]
+  nextPageToken?: string
+  unreachable?: string[]
+}
+
+const AwsSourceVmDetailsSchema = z
+  .object({
+    committedStorageBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The total size of the disks being migrated in bytes.' }),
+    firmware: z
+      .enum(['FIRMWARE_UNSPECIFIED', 'EFI', 'BIOS'])
+      .exactOptional()
+      .openapi({ description: 'The firmware type of the source VM.' }),
+  })
+  .openapi({ description: 'Represent the source AWS VM details.', required: [] })
+  .openapi('AwsSourceVmDetails')
+
+const ComputeEngineTargetDefaultsSchema = z
+  .object({
+    additionalLicenses: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Additional licenses to assign to the VM.' }),
+    appliedLicense: AppliedLicenseSchema.exactOptional().openapi({
+      description: 'Output only. The OS license returned from the adaptation module report.',
+      readOnly: true,
+    }),
+    bootOption: z
+      .enum([
+        'COMPUTE_ENGINE_BOOT_OPTION_UNSPECIFIED',
+        'COMPUTE_ENGINE_BOOT_OPTION_EFI',
+        'COMPUTE_ENGINE_BOOT_OPTION_BIOS',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The VM Boot Option, as set in the source vm.',
+        readOnly: true,
+      }),
+    computeScheduling: ComputeSchedulingSchema.exactOptional().openapi({
+      description: 'Compute instance scheduling information (if empty default is used).',
+    }),
+    diskType: z
+      .enum([
+        'COMPUTE_ENGINE_DISK_TYPE_UNSPECIFIED',
+        'COMPUTE_ENGINE_DISK_TYPE_STANDARD',
+        'COMPUTE_ENGINE_DISK_TYPE_SSD',
+        'COMPUTE_ENGINE_DISK_TYPE_BALANCED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The disk type to use in the VM.' }),
+    hostname: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The hostname to assign to the VM.' }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'A map of labels to associate with the VM.' }),
+    licenseType: z
+      .enum([
+        'COMPUTE_ENGINE_LICENSE_TYPE_DEFAULT',
+        'COMPUTE_ENGINE_LICENSE_TYPE_PAYG',
+        'COMPUTE_ENGINE_LICENSE_TYPE_BYOL',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The license type to use in OS adaptation.' }),
+    machineType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The machine type to create the VM with.' }),
+    machineTypeSeries: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The machine type series to create the VM with.' }),
+    metadata: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'The metadata key/value pairs to assign to the VM.' }),
+    networkInterfaces: z
+      .array(NetworkInterfaceSchema)
+      .exactOptional()
+      .openapi({ description: 'List of NICs connected to this VM.' }),
+    networkTags: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'A map of network tags to associate with the VM.' }),
+    secureBoot: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines whether the instance has Secure Boot enabled. This can be set to true only if the vm boot option is EFI.',
+      }),
+    serviceAccount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The service account to associate the VM with.' }),
+    targetProject: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The full path of the resource of type TargetProject which represents the Compute Engine project in which to create this VM.',
+      }),
+    vmName: z.string().exactOptional().openapi({ description: 'The name of the VM to create.' }),
+    zone: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The zone in which to create the VM.' }),
+  })
+  .openapi({
+    description:
+      'ComputeEngineTargetDefaults is a collection of details for creating a VM in a target Compute Engine project.',
+    required: [],
+  })
+  .openapi('ComputeEngineTargetDefaults')
+
+const CutoverForecastSchema = z
+  .object({
+    estimatedCutoverJobDuration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Estimation of the CutoverJob duration.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'CutoverForecast holds information about future CutoverJobs of a MigratingVm.',
+    required: [],
+  })
+  .openapi('CutoverForecast')
+
+const ReplicationSyncSchema = z
+  .object({
+    lastSyncTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The most updated snapshot created time in the source that finished replication.',
+      }),
+  })
+  .openapi({
+    description: 'ReplicationSync contain information about the last replica sync to the cloud.',
+    required: [],
+  })
+  .openapi('ReplicationSync')
+
+const SchedulePolicySchema = z
+  .object({
+    idleDuration: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The idle duration between replication stages.' }),
+    skipOsAdaptation: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "A flag to indicate whether to skip OS adaptation during the replication sync. OS adaptation is a process where the VM's operating system undergoes changes and adaptations to fully function on Compute Engine.",
+      }),
+  })
+  .openapi({ description: 'A policy for scheduling replications.', required: [] })
+  .openapi('SchedulePolicy')
+
+type MigratingVmType = {
+  awsSourceVmDetails?: z.infer<typeof AwsSourceVmDetailsSchema>
+  computeEngineTargetDefaults?: z.infer<typeof ComputeEngineTargetDefaultsSchema>
+  computeEngineVmDefaults?: z.infer<typeof TargetVMDetailsSchema>
+  createTime?: string
+  currentSyncInfo?: z.infer<typeof ReplicationCycleSchema>
+  cutoverForecast?: z.infer<typeof CutoverForecastSchema>
+  description?: string
+  displayName?: string
+  error?: z.infer<typeof StatusSchema>
+  group?: string
+  labels?: { [key: string]: string }
+  lastReplicationCycle?: z.infer<typeof ReplicationCycleSchema>
+  lastSync?: z.infer<typeof ReplicationSyncSchema>
+  name?: string
+  policy?: z.infer<typeof SchedulePolicySchema>
+  recentCloneJobs?: z.infer<typeof CloneJobSchema>[]
+  recentCutoverJobs?: z.infer<typeof CutoverJobSchema>[]
+  sourceVmId?: string
+  state?:
+    | 'STATE_UNSPECIFIED'
+    | 'PENDING'
+    | 'READY'
+    | 'FIRST_SYNC'
+    | 'ACTIVE'
+    | 'CUTTING_OVER'
+    | 'CUTOVER'
+    | 'FINAL_SYNC'
+    | 'PAUSED'
+    | 'FINALIZING'
+    | 'FINALIZED'
+    | 'ERROR'
+  stateTime?: string
+  targetDefaults?: z.infer<typeof TargetVMDetailsSchema>
+  updateTime?: string
+}
+
+const MigratingVmSchema: z.ZodType<MigratingVmType> = z
+  .object({
+    awsSourceVmDetails: AwsSourceVmDetailsSchema.exactOptional().openapi({
+      description: 'Output only. Details of the VM from an AWS source.',
+      readOnly: true,
+    }),
+    computeEngineTargetDefaults: ComputeEngineTargetDefaultsSchema.exactOptional().openapi({
+      description: 'Details of the target VM in Compute Engine.',
+    }),
+    computeEngineVmDefaults: TargetVMDetailsSchema.exactOptional().openapi({
+      description:
+        'Details of the VM in Compute Engine. Deprecated: Use compute_engine_target_defaults instead.',
+    }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The time the migrating VM was created (this refers to this resource and not to the time it was installed in the source).',
+        readOnly: true,
+      }),
+    currentSyncInfo: ReplicationCycleSchema.exactOptional().openapi({
+      description: 'Output only. Details of the current running replication cycle.',
+      readOnly: true,
+    }),
+    cutoverForecast: CutoverForecastSchema.exactOptional().openapi({
+      description:
+        'Output only. Provides details of future CutoverJobs of a MigratingVm. Set to empty when cutover forecast is unavailable.',
+      readOnly: true,
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description attached to the migrating VM by the user.' }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The display name attached to the MigratingVm by the user.' }),
+    error: StatusSchema.exactOptional().openapi({
+      description:
+        'Output only. Provides details on the state of the Migrating VM in case of an error in replication.',
+      readOnly: true,
+    }),
+    group: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The group this migrating vm is included in, if any. The group is represented by the full path of the appropriate Group resource.',
+        readOnly: true,
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'The labels of the migrating VM.' }),
+    lastReplicationCycle: ReplicationCycleSchema.exactOptional().openapi({
+      description:
+        'Output only. Details of the last replication cycle. This will be updated whenever a replication cycle is finished and is not to be confused with last_sync which is only updated on successful replication cycles.',
+      readOnly: true,
+    }),
+    lastSync: ReplicationSyncSchema.exactOptional().openapi({
+      description:
+        'Output only. The most updated snapshot created time in the source that finished replication.',
+      readOnly: true,
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The identifier of the MigratingVm.', readOnly: true }),
+    policy: SchedulePolicySchema.exactOptional().openapi({
+      description: 'The replication schedule policy.',
+    }),
+    recentCloneJobs: z
+      .array(CloneJobSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The recent clone jobs performed on the migrating VM. This field holds the vm\'s last completed clone job and the vm\'s running clone job, if one exists. Note: To have this field populated you need to explicitly request it via the "view" parameter of the Get/List request.',
+        readOnly: true,
+      }),
+    recentCutoverJobs: z
+      .array(CutoverJobSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The recent cutover jobs performed on the migrating VM. This field holds the vm\'s last completed cutover job and the vm\'s running cutover job, if one exists. Note: To have this field populated you need to explicitly request it via the "view" parameter of the Get/List request.',
+        readOnly: true,
+      }),
+    sourceVmId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The unique ID of the VM in the source. The VM's name in vSphere can be changed, so this is not the VM's name but rather its moRef id. This id is of the form vm-.",
+      }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'PENDING',
+        'READY',
+        'FIRST_SYNC',
+        'ACTIVE',
+        'CUTTING_OVER',
+        'CUTOVER',
+        'FINAL_SYNC',
+        'PAUSED',
+        'FINALIZING',
+        'FINALIZED',
+        'ERROR',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Output only. State of the MigratingVm.', readOnly: true }),
+    stateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The last time the migrating VM state was updated.',
+        readOnly: true,
+      }),
+    targetDefaults: TargetVMDetailsSchema.exactOptional().openapi({
+      description:
+        'The default configuration of the target VM that will be created in Google Cloud as a result of the migration. Deprecated: Use compute_engine_target_defaults instead.',
+    }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The last time the migrating VM resource was updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'MigratingVm describes the VM that will be migrated from a Source environment and its replication state.',
+    required: [],
+  })
+  .openapi('MigratingVm')
+
+type ListMigratingVmsResponseType = {
+  migratingVms?: z.infer<typeof MigratingVmSchema>[]
+  nextPageToken?: string
+  unreachable?: string[]
+}
+
+const AccessKeyCredentialsSchema = z
+  .object({
+    accessKeyId: z.string().exactOptional().openapi({ description: 'AWS access key ID.' }),
+    secretAccessKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Input only. AWS secret access key.' }),
+    sessionToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Input only. AWS session token. Used only when AWS security token service (STS) is responsible for creating the temporary credentials.',
+      }),
+  })
+  .openapi({
+    description: 'Message describing AWS Credentials using access key id and secret.',
+    required: [],
+  })
+  .openapi('AccessKeyCredentials')
+
+const AddGroupMigrationRequestSchema = z
+  .object({
+    migratingVm: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The full path name of the MigratingVm to add.' }),
+  })
+  .openapi({ description: "Request message for 'AddGroupMigration' request.", required: [] })
+  .openapi('AddGroupMigrationRequest')
+
+const ApplianceVersionSchema = z
+  .object({
+    critical: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: "Determine whether it's critical to upgrade the appliance to this version.",
+      }),
+    releaseNotesUri: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Link to a page that contains the version release notes.' }),
+    uri: z.string().exactOptional().openapi({ description: 'A link for downloading the version.' }),
+    version: z.string().exactOptional().openapi({ description: 'The appliance version.' }),
+  })
+  .openapi({ description: 'Describes an appliance version.', required: [] })
+  .openapi('ApplianceVersion')
+
+const AvailableUpdatesSchema = z
+  .object({
+    inPlaceUpdate: ApplianceVersionSchema.exactOptional().openapi({
+      description:
+        'The latest version for in place update. The current appliance can be updated to this version using the API or m4c CLI.',
+    }),
+    newDeployableAppliance: ApplianceVersionSchema.exactOptional().openapi({
+      description:
+        "The newest deployable version of the appliance. The current appliance can't be updated into this version, and the owner must manually deploy this OVA to a new appliance.",
+    }),
+  })
+  .openapi({
+    description: 'Holds informatiom about the available versions for upgrade.',
+    required: [],
+  })
+  .openapi('AvailableUpdates')
+
+const AwsSecurityGroupSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'The AWS security group id.' }),
+    name: z.string().exactOptional().openapi({ description: 'The AWS security group name.' }),
+  })
+  .openapi({
+    description: 'AwsSecurityGroup describes a security group of an AWS VM.',
+    required: [],
+  })
+  .openapi('AwsSecurityGroup')
+
+const TagSchema = z
+  .object({
+    key: z.string().exactOptional().openapi({ description: 'Key of tag.' }),
+    value: z.string().exactOptional().openapi({ description: 'Value of tag.' }),
+  })
+  .openapi({ description: 'Tag is an AWS tag representation.', required: [] })
+  .openapi('Tag')
+
+const AwsSourceDetailsSchema = z
+  .object({
+    accessKeyCreds: AccessKeyCredentialsSchema.exactOptional().openapi({
+      description: 'AWS Credentials using access key id and secret.',
+    }),
+    awsRegion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Immutable. The AWS region that the source VMs will be migrated from.',
+      }),
+    error: StatusSchema.exactOptional().openapi({
+      description: 'Output only. Provides details on the state of the Source in case of an error.',
+      readOnly: true,
+    }),
+    inventorySecurityGroupNames: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'AWS security group names to limit the scope of the source inventory.',
+      }),
+    inventoryTagList: z
+      .array(TagSchema)
+      .exactOptional()
+      .openapi({ description: 'AWS resource tags to limit the scope of the source inventory.' }),
+    migrationResourcesUserTags: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'User specified tags to add to every M2VM generated resource in AWS. These tags will be set in addition to the default tags that are set as part of the migration process. The tags must not begin with the reserved prefix `m2vm`.',
+      }),
+    publicIp: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The source's public IP. All communication initiated by this source will originate from this IP.",
+        readOnly: true,
+      }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'PENDING', 'FAILED', 'ACTIVE'])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. State of the source as determined by the health check.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'AwsSourceDetails message describes a specific source details for the AWS source type.',
+    required: [],
+  })
+  .openapi('AwsSourceDetails')
+
+const AwsVmDetailsSchema = z
+  .object({
+    architecture: z
+      .enum(['VM_ARCHITECTURE_UNSPECIFIED', 'I386', 'X86_64', 'ARM64', 'X86_64_MAC'])
+      .exactOptional()
+      .openapi({ description: 'The CPU architecture.' }),
+    bootOption: z
+      .enum(['BOOT_OPTION_UNSPECIFIED', 'EFI', 'BIOS'])
+      .exactOptional()
+      .openapi({ description: 'The VM Boot Option.' }),
+    committedStorageMb: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The total size of the storage allocated to the VM in MB.' }),
+    cpuCount: z.int32().exactOptional().openapi({ description: 'The number of cpus the VM has.' }),
+    diskCount: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The number of disks the VM has.' }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The display name of the VM. Note that this value is not necessarily unique.',
+      }),
+    instanceType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The instance type of the VM.' }),
+    memoryMb: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The memory size of the VM in MB.' }),
+    osDescription: z.string().exactOptional().openapi({ description: "The VM's OS." }),
+    powerState: z
+      .enum(['POWER_STATE_UNSPECIFIED', 'ON', 'OFF', 'SUSPENDED', 'PENDING'])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The power state of the VM at the moment list was taken.',
+        readOnly: true,
+      }),
+    securityGroups: z
+      .array(AwsSecurityGroupSchema)
+      .exactOptional()
+      .openapi({ description: 'The security groups the VM belongs to.' }),
+    sourceDescription: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The descriptive name of the AWS's source this VM is connected to.",
+      }),
+    sourceId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The id of the AWS's source this VM is connected to." }),
+    tags: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'The tags of the VM.' }),
+    virtualizationType: z
+      .enum(['VM_VIRTUALIZATION_TYPE_UNSPECIFIED', 'HVM', 'PARAVIRTUAL'])
+      .exactOptional()
+      .openapi({ description: 'The virtualization type.' }),
+    vmId: z.string().exactOptional().openapi({ description: 'The VM ID in AWS.' }),
+    vpcId: z.string().exactOptional().openapi({ description: 'The VPC ID the VM belongs to.' }),
+    zone: z.string().exactOptional().openapi({ description: 'The AWS zone of the VM.' }),
+  })
+  .openapi({ description: 'AwsVmDetails describes a VM in AWS.', required: [] })
+  .openapi('AwsVmDetails')
+
+const AwsVmsDetailsSchema = z
+  .object({
+    details: z
+      .array(AwsVmDetailsSchema)
+      .exactOptional()
+      .openapi({ description: 'The details of the AWS VMs.' }),
+  })
+  .openapi({ description: 'AWSVmsDetails describes VMs in AWS.', required: [] })
+  .openapi('AwsVmsDetails')
+
+const CancelCloneJobRequestSchema = z
+  .looseObject({})
+  .openapi({ description: "Request message for 'CancelCloneJob' request." })
+  .openapi('CancelCloneJobRequest')
+
+const CancelCutoverJobRequestSchema = z
+  .looseObject({})
+  .openapi({ description: "Request message for 'CancelCutoverJob' request." })
+  .openapi('CancelCutoverJobRequest')
+
+const CancelOperationRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request message for Operations.CancelOperation.' })
+  .openapi('CancelOperationRequest')
 
 const UpgradeStatusSchema = z
   .object({
@@ -1249,7 +1499,7 @@ const DatacenterConnectorSchema = z
   .openapi('DatacenterConnector')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -1360,7 +1610,7 @@ const FetchInventoryResponseSchema = z
   .openapi('FetchInventoryResponse')
 
 const FinalizeMigrationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Request message for 'FinalizeMigration' request." })
   .openapi('FinalizeMigrationRequest')
 
@@ -1396,7 +1646,7 @@ const GroupSchema = z
   })
   .openapi('Group')
 
-const ListCloneJobsResponseSchema = z
+const ListCloneJobsResponseSchema: z.ZodType<ListCloneJobsResponseType> = z
   .object({
     cloneJobs: z
       .array(CloneJobSchema)
@@ -1421,7 +1671,7 @@ const ListCloneJobsResponseSchema = z
   .openapi({ description: "Response message for 'ListCloneJobs' request.", required: [] })
   .openapi('ListCloneJobsResponse')
 
-const ListCutoverJobsResponseSchema = z
+const ListCutoverJobsResponseSchema: z.ZodType<ListCutoverJobsResponseType> = z
   .object({
     cutoverJobs: z
       .array(CutoverJobSchema)
@@ -1563,178 +1813,7 @@ const ListLocationsResponseSchema = z
   .openapi({ description: 'The response message for Locations.ListLocations.', required: [] })
   .openapi('ListLocationsResponse')
 
-const ReplicationSyncSchema = z
-  .object({
-    lastSyncTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The most updated snapshot created time in the source that finished replication.',
-      }),
-  })
-  .openapi({
-    description: 'ReplicationSync contain information about the last replica sync to the cloud.',
-    required: [],
-  })
-  .openapi('ReplicationSync')
-
-const SchedulePolicySchema = z
-  .object({
-    idleDuration: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The idle duration between replication stages.' }),
-    skipOsAdaptation: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "A flag to indicate whether to skip OS adaptation during the replication sync. OS adaptation is a process where the VM's operating system undergoes changes and adaptations to fully function on Compute Engine.",
-      }),
-  })
-  .openapi({ description: 'A policy for scheduling replications.', required: [] })
-  .openapi('SchedulePolicy')
-
-const MigratingVmSchema = z
-  .object({
-    awsSourceVmDetails: AwsSourceVmDetailsSchema.exactOptional().openapi({
-      description: 'Output only. Details of the VM from an AWS source.',
-      readOnly: true,
-    }),
-    computeEngineTargetDefaults: ComputeEngineTargetDefaultsSchema.exactOptional().openapi({
-      description: 'Details of the target VM in Compute Engine.',
-    }),
-    computeEngineVmDefaults: TargetVMDetailsSchema.exactOptional().openapi({
-      description:
-        'Details of the VM in Compute Engine. Deprecated: Use compute_engine_target_defaults instead.',
-    }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The time the migrating VM was created (this refers to this resource and not to the time it was installed in the source).',
-        readOnly: true,
-      }),
-    currentSyncInfo: ReplicationCycleSchema.exactOptional().openapi({
-      description: 'Output only. Details of the current running replication cycle.',
-      readOnly: true,
-    }),
-    cutoverForecast: CutoverForecastSchema.exactOptional().openapi({
-      description:
-        'Output only. Provides details of future CutoverJobs of a MigratingVm. Set to empty when cutover forecast is unavailable.',
-      readOnly: true,
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description attached to the migrating VM by the user.' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The display name attached to the MigratingVm by the user.' }),
-    error: StatusSchema.exactOptional().openapi({
-      description:
-        'Output only. Provides details on the state of the Migrating VM in case of an error in replication.',
-      readOnly: true,
-    }),
-    group: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The group this migrating vm is included in, if any. The group is represented by the full path of the appropriate Group resource.',
-        readOnly: true,
-      }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'The labels of the migrating VM.' }),
-    lastReplicationCycle: ReplicationCycleSchema.exactOptional().openapi({
-      description:
-        'Output only. Details of the last replication cycle. This will be updated whenever a replication cycle is finished and is not to be confused with last_sync which is only updated on successful replication cycles.',
-      readOnly: true,
-    }),
-    lastSync: ReplicationSyncSchema.exactOptional().openapi({
-      description:
-        'Output only. The most updated snapshot created time in the source that finished replication.',
-      readOnly: true,
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The identifier of the MigratingVm.', readOnly: true }),
-    policy: SchedulePolicySchema.exactOptional().openapi({
-      description: 'The replication schedule policy.',
-    }),
-    recentCloneJobs: z
-      .array(CloneJobSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The recent clone jobs performed on the migrating VM. This field holds the vm\'s last completed clone job and the vm\'s running clone job, if one exists. Note: To have this field populated you need to explicitly request it via the "view" parameter of the Get/List request.',
-        readOnly: true,
-      }),
-    recentCutoverJobs: z
-      .array(CutoverJobSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The recent cutover jobs performed on the migrating VM. This field holds the vm\'s last completed cutover job and the vm\'s running cutover job, if one exists. Note: To have this field populated you need to explicitly request it via the "view" parameter of the Get/List request.',
-        readOnly: true,
-      }),
-    sourceVmId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The unique ID of the VM in the source. The VM's name in vSphere can be changed, so this is not the VM's name but rather its moRef id. This id is of the form vm-.",
-      }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'PENDING',
-        'READY',
-        'FIRST_SYNC',
-        'ACTIVE',
-        'CUTTING_OVER',
-        'CUTOVER',
-        'FINAL_SYNC',
-        'PAUSED',
-        'FINALIZING',
-        'FINALIZED',
-        'ERROR',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Output only. State of the MigratingVm.', readOnly: true }),
-    stateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The last time the migrating VM state was updated.',
-        readOnly: true,
-      }),
-    targetDefaults: TargetVMDetailsSchema.exactOptional().openapi({
-      description:
-        'The default configuration of the target VM that will be created in Google Cloud as a result of the migration. Deprecated: Use compute_engine_target_defaults instead.',
-    }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The last time the migrating VM resource was updated.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'MigratingVm describes the VM that will be migrated from a Source environment and its replication state.',
-    required: [],
-  })
-  .openapi('MigratingVm')
-
-const ListMigratingVmsResponseSchema = z
+const ListMigratingVmsResponseSchema: z.ZodType<ListMigratingVmsResponseType> = z
   .object({
     migratingVms: z
       .array(MigratingVmSchema)
@@ -2289,7 +2368,7 @@ const OperationMetadataSchema = z
   .openapi('OperationMetadata')
 
 const PauseMigrationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Request message for 'PauseMigration' request." })
   .openapi('PauseMigrationRequest')
 
@@ -2301,12 +2380,12 @@ const RemoveGroupMigrationRequestSchema = z
   .openapi('RemoveGroupMigrationRequest')
 
 const ResumeMigrationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Request message for 'ResumeMigration' request." })
   .openapi('ResumeMigrationRequest')
 
 const StartMigrationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Request message for 'StartMigrationRequest' request." })
   .openapi('StartMigrationRequest')
 

@@ -13,7 +13,9 @@ const app = new OpenAPIHono()
 export const batchHandler = app
   .openapi(
     putCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(postCrmObjects202609ObjectTypeBatchArchiveRoute, (c) => {
     throw new Error('Not implemented')

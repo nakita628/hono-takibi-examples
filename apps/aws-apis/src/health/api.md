@@ -2456,7 +2456,7 @@ Detailed information about an event. A combination of an <a href="https://docs.a
 |---|---|---|---|---|
 |awsAccountId|object|false|none|none|
 |event|[Event](#schemaevent)|false|none|<p>Summary information about an Health event.</p> <p>Health events can be public or account-specific:</p> <ul> <li> <p> <i>Public events</i> might be service events that are not specific to an Amazon Web Services account. For example, if there is an issue with an Amazon Web Services Region, Health provides information about the event, even if you don't use services or resources in that Region.</p> </li> <li> <p> <i>Account-specific</i> events are specific to either your Amazon Web Services account or an account in your organization. For example, if there's an issue with Amazon Elastic Compute Cloud in a Region that you use, Health provides information about the event and the affected resources in the account.</p> </li> </ul> <p>You can determine if an event is public or account-specific by using the <code>eventScopeCode</code> parameter. For more information, see <a href="https://docs.aws.amazon.com/health/latest/APIReference/API_Event.html#AWSHealth-Type-Event-eventScopeCode">eventScopeCode</a>.</p>|
-|eventDescription|[EventDescription](#schemaeventdescription-1)|false|none|The detailed description of the event. Included in the information returned by the <a href="https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventDetails.html">DescribeEventDetails</a> operation.|
+|eventDescription|[EventDescription2](#schemaeventdescription2)|false|none|The detailed description of the event. Included in the information returned by the <a href="https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventDetails.html">DescribeEventDetails</a> operation.|
 |eventMetadata|object|false|none|none|
 
 <h2 id="tocS_eventArnList">eventArnList</h2>
@@ -2980,12 +2980,12 @@ The number of events of each issue type. Returned by the <a href="https://docs.a
 "string"
 ```
 
-<h2 id="tocS_EventDescription">EventDescription</h2>
+<h2 id="tocS_EventDescription2">EventDescription2</h2>
 <!-- backwards compatibility -->
-<a id="schemaeventdescription-1"></a>
-<a id="schema_EventDescription"></a>
-<a id="tocSeventdescription-1"></a>
-<a id="tocseventdescription-1"></a>
+<a id="schemaeventdescription2"></a>
+<a id="schema_EventDescription2"></a>
+<a id="tocSeventdescription2"></a>
+<a id="tocseventdescription2"></a>
 
 ```json
 {
@@ -3032,12 +3032,12 @@ The detailed description of the event. Included in the information returned by t
 "string"
 ```
 
-<h2 id="tocS_eventTypeList">eventTypeList</h2>
+<h2 id="tocS_eventTypeList2">eventTypeList2</h2>
 <!-- backwards compatibility -->
-<a id="schemaeventtypelist-1"></a>
-<a id="schema_eventTypeList"></a>
-<a id="tocSeventtypelist-1"></a>
-<a id="tocseventtypelist-1"></a>
+<a id="schemaeventtypelist2"></a>
+<a id="schema_eventTypeList2"></a>
+<a id="tocSeventtypelist2"></a>
+<a id="tocseventtypelist2"></a>
 
 ```json
 [
@@ -3135,12 +3135,12 @@ The detailed description of the event. Included in the information returned by t
 |code|object|false|none|none|
 |category|object|false|none|none|
 
-<h2 id="tocS_EventTypeCategoryList">EventTypeCategoryList</h2>
+<h2 id="tocS_EventTypeCategoryList2">EventTypeCategoryList2</h2>
 <!-- backwards compatibility -->
-<a id="schemaeventtypecategorylist-1"></a>
-<a id="schema_EventTypeCategoryList"></a>
-<a id="tocSeventtypecategorylist-1"></a>
-<a id="tocseventtypecategorylist-1"></a>
+<a id="schemaeventtypecategorylist2"></a>
+<a id="schema_EventTypeCategoryList2"></a>
+<a id="tocSeventtypecategorylist2"></a>
+<a id="tocseventtypecategorylist2"></a>
 
 ```json
 [
@@ -3224,12 +3224,12 @@ Summary information about an event, returned by the <a href="https://docs.aws.am
 "string"
 ```
 
-<h2 id="tocS_eventType">eventType</h2>
+<h2 id="tocS_eventType2">eventType2</h2>
 <!-- backwards compatibility -->
-<a id="schemaeventtype-1"></a>
-<a id="schema_eventType"></a>
-<a id="tocSeventtype-1"></a>
-<a id="tocseventtype-1"></a>
+<a id="schemaeventtype2"></a>
+<a id="schema_eventType2"></a>
+<a id="tocSeventtype2"></a>
+<a id="tocseventtype2"></a>
 
 ```json
 "string"

@@ -635,7 +635,7 @@ const GoogleFirebaseAppdistroV1DistributeReleaseRequestSchema = z
   .openapi('GoogleFirebaseAppdistroV1DistributeReleaseRequest')
 
 const GoogleFirebaseAppdistroV1DistributeReleaseResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The response message for `DistributeRelease`.' })
   .openapi('GoogleFirebaseAppdistroV1DistributeReleaseResponse')
 
@@ -863,7 +863,7 @@ const GoogleFirebaseAppdistroV1ListTestersResponseSchema = z
   .openapi('GoogleFirebaseAppdistroV1ListTestersResponse')
 
 const GoogleFirebaseAppdistroV1UploadReleaseMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Operation metadata for `UploadRelease`.' })
   .openapi('GoogleFirebaseAppdistroV1UploadReleaseMetadata')
 
@@ -891,7 +891,7 @@ const GoogleFirebaseAppdistroV1UploadReleaseResponseSchema = z
   .openapi('GoogleFirebaseAppdistroV1UploadReleaseResponse')
 
 const GoogleLongrunningCancelOperationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request message for Operations.CancelOperation.' })
   .openapi('GoogleLongrunningCancelOperationRequest')
 
@@ -1019,7 +1019,7 @@ const GoogleLongrunningWaitOperationRequestSchema = z
   .openapi('GoogleLongrunningWaitOperationRequest')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

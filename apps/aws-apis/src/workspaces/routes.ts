@@ -1,14 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ClientLoginMessageSchema = z
-  .string()
-  .regex(/^.*$/)
-  .min(0)
-  .max(2000)
-  .openapi('ClientLoginMessage')
-
-type LoginMessageType = { [key: string]: z.infer<typeof ClientLoginMessageSchema> }
-
 const ConnectionIdentifierSchema = z
   .string()
   .regex(/^[a-zA-Z0-9]+$/)
@@ -18,14 +9,10 @@ const ConnectionIdentifierSchema = z
 
 const AssociateConnectionAliasResultSchema = z
   .object({
-    ConnectionIdentifier: ConnectionIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The identifier of the connection alias association. You use the connection identifier in the DNS TXT record when you're configuring your DNS routing policies. ",
-        }),
-    ).exactOptional(),
+    ConnectionIdentifier: ConnectionIdentifierSchema.exactOptional().openapi({
+      description:
+        "The identifier of the connection alias association. You use the connection identifier in the DNS TXT record when you're configuring your DNS routing policies. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateConnectionAliasResult')
@@ -41,16 +28,12 @@ const NonEmptyStringSchema = z.string().min(1).openapi('NonEmptyString')
 
 const AssociateConnectionAliasRequestSchema = z
   .object({
-    AliasId: ConnectionAliasIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the connection alias.' }),
-    ),
-    ResourceId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the directory to associate the connection alias with.',
-        }),
-    ),
+    AliasId: ConnectionAliasIdSchema.openapi({
+      description: 'The identifier of the connection alias.',
+    }),
+    ResourceId: NonEmptyStringSchema.openapi({
+      description: 'The identifier of the directory to associate the connection alias with.',
+    }),
   })
   .openapi({ required: ['AliasId', 'ResourceId'], title: 'AssociateConnectionAliasRequest' })
   .openapi('AssociateConnectionAliasRequest')
@@ -67,7 +50,7 @@ const InvalidResourceStateExceptionSchema = z.any().openapi('InvalidResourceStat
 
 const OperationNotSupportedExceptionSchema = z.any().openapi('OperationNotSupportedException')
 
-const AssociateIpGroupsResultSchema = z.object({}).openapi('AssociateIpGroupsResult')
+const AssociateIpGroupsResultSchema = z.looseObject({}).openapi('AssociateIpGroupsResult')
 
 const DirectoryIdSchema = z
   .string()
@@ -85,19 +68,17 @@ const IpGroupIdListSchema = z.array(IpGroupIdSchema).openapi('IpGroupIdList')
 
 const AssociateIpGroupsRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory.' }),
-    ),
-    GroupIds: IpGroupIdListSchema.and(
-      z.any().openapi({ description: 'The identifiers of one or more IP access control groups.' }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({ description: 'The identifier of the directory.' }),
+    GroupIds: IpGroupIdListSchema.openapi({
+      description: 'The identifiers of one or more IP access control groups.',
+    }),
   })
   .openapi({ required: ['DirectoryId', 'GroupIds'], title: 'AssociateIpGroupsRequest' })
   .openapi('AssociateIpGroupsRequest')
 
 const ResourceLimitExceededExceptionSchema = z.any().openapi('ResourceLimitExceededException')
 
-const AuthorizeIpRulesResultSchema = z.object({}).openapi('AuthorizeIpRulesResult')
+const AuthorizeIpRulesResultSchema = z.looseObject({}).openapi('AuthorizeIpRulesResult')
 
 const IpRuleSchema = z.string().openapi('IpRule')
 
@@ -105,12 +86,10 @@ const IpRuleDescSchema = z.string().openapi('IpRuleDesc')
 
 const IpRuleItemSchema = z
   .object({
-    ipRule: IpRuleSchema.and(
-      z.any().openapi({ description: 'The IP address range, in CIDR notation.' }),
-    ).exactOptional(),
-    ruleDesc: IpRuleDescSchema.and(
-      z.any().openapi({ description: 'The description.' }),
-    ).exactOptional(),
+    ipRule: IpRuleSchema.exactOptional().openapi({
+      description: 'The IP address range, in CIDR notation.',
+    }),
+    ruleDesc: IpRuleDescSchema.exactOptional().openapi({ description: 'The description.' }),
   })
   .openapi({ description: 'Describes a rule for an IP access control group.', required: [] })
   .openapi('IpRuleItem')
@@ -119,10 +98,8 @@ const IpRuleListSchema = z.array(IpRuleItemSchema).openapi('IpRuleList')
 
 const AuthorizeIpRulesRequestSchema = z
   .object({
-    GroupId: IpGroupIdSchema.and(z.any().openapi({ description: 'The identifier of the group.' })),
-    UserRules: IpRuleListSchema.and(
-      z.any().openapi({ description: 'The rules to add to the group.' }),
-    ),
+    GroupId: IpGroupIdSchema.openapi({ description: 'The identifier of the group.' }),
+    UserRules: IpRuleListSchema.openapi({ description: 'The rules to add to the group.' }),
   })
   .openapi({ required: ['GroupId', 'UserRules'], title: 'AuthorizeIpRulesRequest' })
   .openapi('AuthorizeIpRulesRequest')
@@ -134,9 +111,9 @@ const WorkspaceImageIdSchema = z
 
 const CopyWorkspaceImageResultSchema = z
   .object({
-    ImageId: WorkspaceImageIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the image.' }),
-    ).exactOptional(),
+    ImageId: WorkspaceImageIdSchema.exactOptional().openapi({
+      description: 'The identifier of the image.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CopyWorkspaceImageResult')
@@ -168,10 +145,8 @@ const TagValueSchema = z.string().max(255).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: 'The key of the tag.' })),
-    Value: TagValueSchema.and(
-      z.any().openapi({ description: 'The value of the tag.' }),
-    ).exactOptional(),
+    Key: TagKeySchema.openapi({ description: 'The key of the tag.' }),
+    Value: TagValueSchema.exactOptional().openapi({ description: 'The value of the tag.' }),
   })
   .openapi({ required: ['Key'], description: 'Describes a tag.' })
   .openapi('Tag')
@@ -180,19 +155,15 @@ const TagListSchema = z.array(TagSchema).openapi('TagList')
 
 const CopyWorkspaceImageRequestSchema = z
   .object({
-    Name: WorkspaceImageNameSchema.and(z.any().openapi({ description: 'The name of the image.' })),
-    Description: WorkspaceImageDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the image.' }),
-    ).exactOptional(),
-    SourceImageId: WorkspaceImageIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the source image.' }),
-    ),
-    SourceRegion: RegionSchema.and(
-      z.any().openapi({ description: 'The identifier of the source Region.' }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags for the image.' }),
-    ).exactOptional(),
+    Name: WorkspaceImageNameSchema.openapi({ description: 'The name of the image.' }),
+    Description: WorkspaceImageDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the image.',
+    }),
+    SourceImageId: WorkspaceImageIdSchema.openapi({
+      description: 'The identifier of the source image.',
+    }),
+    SourceRegion: RegionSchema.openapi({ description: 'The identifier of the source Region.' }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'The tags for the image.' }),
   })
   .openapi({
     required: ['Name', 'SourceImageId', 'SourceRegion'],
@@ -212,9 +183,9 @@ const AmazonUuidSchema = z
 
 const CreateConnectClientAddInResultSchema = z
   .object({
-    AddInId: AmazonUuidSchema.and(
-      z.any().openapi({ description: 'The client add-in identifier.' }),
-    ).exactOptional(),
+    AddInId: AmazonUuidSchema.exactOptional().openapi({
+      description: 'The client add-in identifier.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateConnectClientAddInResult')
@@ -230,17 +201,13 @@ const AddInUrlSchema = z
 
 const CreateConnectClientAddInRequestSchema = z
   .object({
-    ResourceId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The directory identifier for which to configure the client add-in.',
-        }),
-    ),
-    Name: AddInNameSchema.and(z.any().openapi({ description: 'The name of the client add-in.' })),
-    URL: AddInUrlSchema.and(
-      z.any().openapi({ description: 'The endpoint URL of the Amazon Connect client add-in.' }),
-    ),
+    ResourceId: DirectoryIdSchema.openapi({
+      description: 'The directory identifier for which to configure the client add-in.',
+    }),
+    Name: AddInNameSchema.openapi({ description: 'The name of the client add-in.' }),
+    URL: AddInUrlSchema.openapi({
+      description: 'The endpoint URL of the Amazon Connect client add-in.',
+    }),
   })
   .openapi({ required: ['ResourceId', 'Name', 'URL'], title: 'CreateConnectClientAddInRequest' })
   .openapi('CreateConnectClientAddInRequest')
@@ -249,9 +216,9 @@ const ResourceCreationFailedExceptionSchema = z.any().openapi('ResourceCreationF
 
 const CreateConnectionAliasResultSchema = z
   .object({
-    AliasId: ConnectionAliasIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the connection alias.' }),
-    ).exactOptional(),
+    AliasId: ConnectionAliasIdSchema.exactOptional().openapi({
+      description: 'The identifier of the connection alias.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateConnectionAliasResult')
@@ -265,26 +232,22 @@ const ConnectionStringSchema = z
 
 const CreateConnectionAliasRequestSchema = z
   .object({
-    ConnectionString: ConnectionStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A connection string in the form of a fully qualified domain name (FQDN), such as <code>www.example.com</code>.</p> <important> <p>After you create a connection string, it is always associated to your Amazon Web Services account. You cannot recreate the same connection string with a different account, even if you delete all instances of it from the original account. The connection string is globally reserved for your account.</p> </important>',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to associate with the connection alias.' }),
-    ).exactOptional(),
+    ConnectionString: ConnectionStringSchema.openapi({
+      description:
+        '<p>A connection string in the form of a fully qualified domain name (FQDN), such as <code>www.example.com</code>.</p> <important> <p>After you create a connection string, it is always associated to your Amazon Web Services account. You cannot recreate the same connection string with a different account, even if you delete all instances of it from the original account. The connection string is globally reserved for your account.</p> </important>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to associate with the connection alias.',
+    }),
   })
   .openapi({ required: ['ConnectionString'], title: 'CreateConnectionAliasRequest' })
   .openapi('CreateConnectionAliasRequest')
 
 const CreateIpGroupResultSchema = z
   .object({
-    GroupId: IpGroupIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the group.' }),
-    ).exactOptional(),
+    GroupId: IpGroupIdSchema.exactOptional().openapi({
+      description: 'The identifier of the group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateIpGroupResult')
@@ -295,20 +258,16 @@ const IpGroupDescSchema = z.string().openapi('IpGroupDesc')
 
 const CreateIpGroupRequestSchema = z
   .object({
-    GroupName: IpGroupNameSchema.and(z.any().openapi({ description: 'The name of the group.' })),
-    GroupDesc: IpGroupDescSchema.and(
-      z.any().openapi({ description: 'The description of the group.' }),
-    ).exactOptional(),
-    UserRules: IpRuleListSchema.and(
-      z.any().openapi({ description: 'The rules to add to the group.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags. Each WorkSpaces resource can have a maximum of 50 tags.',
-        }),
-    ).exactOptional(),
+    GroupName: IpGroupNameSchema.openapi({ description: 'The name of the group.' }),
+    GroupDesc: IpGroupDescSchema.exactOptional().openapi({
+      description: 'The description of the group.',
+    }),
+    UserRules: IpRuleListSchema.exactOptional().openapi({
+      description: 'The rules to add to the group.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags. Each WorkSpaces resource can have a maximum of 50 tags.',
+    }),
   })
   .openapi({ required: ['GroupName'], title: 'CreateIpGroupRequest' })
   .openapi('CreateIpGroupRequest')
@@ -322,20 +281,18 @@ const VolumeEncryptionKeySchema = z.string().openapi('VolumeEncryptionKey')
 
 const StandbyWorkspaceSchema = z
   .object({
-    PrimaryWorkspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the standby WorkSpace.' }),
-    ),
-    VolumeEncryptionKey: VolumeEncryptionKeySchema.and(
-      z.any().openapi({ description: 'The volume encryption key of the standby WorkSpace.' }),
-    ).exactOptional(),
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the directory for the standby WorkSpace.' }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the standby WorkSpace.' }),
-    ).exactOptional(),
+    PrimaryWorkspaceId: WorkspaceIdSchema.openapi({
+      description: 'The identifier of the standby WorkSpace.',
+    }),
+    VolumeEncryptionKey: VolumeEncryptionKeySchema.exactOptional().openapi({
+      description: 'The volume encryption key of the standby WorkSpace.',
+    }),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description: 'The identifier of the directory for the standby WorkSpace.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the standby WorkSpace.',
+    }),
   })
   .openapi({
     required: ['PrimaryWorkspaceId', 'DirectoryId'],
@@ -349,29 +306,16 @@ const DescriptionSchema = z.string().openapi('Description')
 
 const FailedCreateStandbyWorkspacesRequestSchema = z
   .object({
-    StandbyWorkspaceRequest: StandbyWorkspaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the standby WorkSpace that could not be created.',
-        }),
-    ).exactOptional(),
-    ErrorCode: WorkspaceErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error code that is returned if the standby WorkSpace could not be created.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The text of the error message that is returned if the standby WorkSpace could not be created.',
-        }),
-    ).exactOptional(),
+    StandbyWorkspaceRequest: StandbyWorkspaceSchema.exactOptional().openapi({
+      description: 'Information about the standby WorkSpace that could not be created.',
+    }),
+    ErrorCode: WorkspaceErrorCodeSchema.exactOptional().openapi({
+      description: 'The error code that is returned if the standby WorkSpace could not be created.',
+    }),
+    ErrorMessage: DescriptionSchema.exactOptional().openapi({
+      description:
+        'The text of the error message that is returned if the standby WorkSpace could not be created.',
+    }),
   })
   .openapi({
     description: 'Describes the standby WorkSpace that could not be created.',
@@ -409,25 +353,19 @@ const WorkspaceStateSchema = z
 
 const PendingCreateStandbyWorkspacesRequestSchema = z
   .object({
-    UserName: UserNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the standby WorkSpace that was created.</p> <p>Because this operation is asynchronous, the identifier returned is not immediately available for use with other operations. For example, if you call <a href="https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaces.html"> DescribeWorkspaces</a> before the WorkSpace is created, the information returned can be incomplete. </p>',
-        }),
-    ).exactOptional(),
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the directory for the standby WorkSpace.' }),
-    ).exactOptional(),
-    State: WorkspaceStateSchema.and(
-      z.any().openapi({ description: 'The operational state of the standby WorkSpace.' }),
-    ).exactOptional(),
-    WorkspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the standby WorkSpace.' }),
-    ).exactOptional(),
+    UserName: UserNameSchema.exactOptional().openapi({
+      description:
+        '<p>Describes the standby WorkSpace that was created.</p> <p>Because this operation is asynchronous, the identifier returned is not immediately available for use with other operations. For example, if you call <a href="https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaces.html"> DescribeWorkspaces</a> before the WorkSpace is created, the information returned can be incomplete. </p>',
+    }),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The identifier of the directory for the standby WorkSpace.',
+    }),
+    State: WorkspaceStateSchema.exactOptional().openapi({
+      description: 'The operational state of the standby WorkSpace.',
+    }),
+    WorkspaceId: WorkspaceIdSchema.exactOptional().openapi({
+      description: 'The identifier of the standby WorkSpace.',
+    }),
   })
   .openapi({ description: 'Information about the standby WorkSpace.', required: [] })
   .openapi('PendingCreateStandbyWorkspacesRequest')
@@ -438,16 +376,12 @@ const PendingCreateStandbyWorkspacesRequestListSchema = z
 
 const CreateStandbyWorkspacesResultSchema = z
   .object({
-    FailedStandbyRequests: FailedCreateStandbyWorkspacesRequestListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the standby WorkSpace that could not be created. ',
-        }),
-    ).exactOptional(),
-    PendingStandbyRequests: PendingCreateStandbyWorkspacesRequestListSchema.and(
-      z.any().openapi({ description: 'Information about the standby WorkSpace that was created.' }),
-    ).exactOptional(),
+    FailedStandbyRequests: FailedCreateStandbyWorkspacesRequestListSchema.exactOptional().openapi({
+      description: 'Information about the standby WorkSpace that could not be created. ',
+    }),
+    PendingStandbyRequests: PendingCreateStandbyWorkspacesRequestListSchema.exactOptional().openapi(
+      { description: 'Information about the standby WorkSpace that was created.' },
+    ),
   })
   .openapi({ required: [] })
   .openapi('CreateStandbyWorkspacesResult')
@@ -456,12 +390,10 @@ const StandbyWorkspacesListSchema = z.array(StandbyWorkspaceSchema).openapi('Sta
 
 const CreateStandbyWorkspacesRequestSchema = z
   .object({
-    PrimaryRegion: RegionSchema.and(
-      z.any().openapi({ description: 'The Region of the primary WorkSpace.' }),
-    ),
-    StandbyWorkspaces: StandbyWorkspacesListSchema.and(
-      z.any().openapi({ description: 'Information about the standby WorkSpace to be created.' }),
-    ),
+    PrimaryRegion: RegionSchema.openapi({ description: 'The Region of the primary WorkSpace.' }),
+    StandbyWorkspaces: StandbyWorkspacesListSchema.openapi({
+      description: 'Information about the standby WorkSpace to be created.',
+    }),
   })
   .openapi({
     required: ['PrimaryRegion', 'StandbyWorkspaces'],
@@ -469,61 +401,45 @@ const CreateStandbyWorkspacesRequestSchema = z
   })
   .openapi('CreateStandbyWorkspacesRequest')
 
-const CreateTagsResultSchema = z.object({}).openapi('CreateTagsResult')
+const CreateTagsResultSchema = z.looseObject({}).openapi('CreateTagsResult')
 
 const CreateTagsRequestSchema = z
   .object({
-    ResourceId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the WorkSpaces resource. The supported resource types are WorkSpaces, registered directories, images, custom bundles, IP access control groups, and connection aliases.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags. Each WorkSpaces resource can have a maximum of 50 tags.',
-        }),
-    ),
+    ResourceId: NonEmptyStringSchema.openapi({
+      description:
+        'The identifier of the WorkSpaces resource. The supported resource types are WorkSpaces, registered directories, images, custom bundles, IP access control groups, and connection aliases.',
+    }),
+    Tags: TagListSchema.openapi({
+      description: 'The tags. Each WorkSpaces resource can have a maximum of 50 tags.',
+    }),
   })
   .openapi({ required: ['ResourceId', 'Tags'], title: 'CreateTagsRequest' })
   .openapi('CreateTagsRequest')
 
 const CreateUpdatedWorkspaceImageResultSchema = z
   .object({
-    ImageId: WorkspaceImageIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the new updated WorkSpace image.' }),
-    ).exactOptional(),
+    ImageId: WorkspaceImageIdSchema.exactOptional().openapi({
+      description: 'The identifier of the new updated WorkSpace image.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateUpdatedWorkspaceImageResult')
 
 const CreateUpdatedWorkspaceImageRequestSchema = z
   .object({
-    Name: WorkspaceImageNameSchema.and(
-      z.any().openapi({ description: 'The name of the new updated WorkSpace image.' }),
-    ),
-    Description: WorkspaceImageDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A description of whether updates for the WorkSpace image are available.',
-        }),
-    ),
-    SourceImageId: WorkspaceImageIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the source WorkSpace image.' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tags that you want to add to the new updated WorkSpace image.</p> <note> <p>To add tags at the same time when you're creating the updated image, you must create an IAM policy that grants your IAM user permissions to use <code>workspaces:CreateTags</code>. </p> </note>",
-        }),
-    ).exactOptional(),
+    Name: WorkspaceImageNameSchema.openapi({
+      description: 'The name of the new updated WorkSpace image.',
+    }),
+    Description: WorkspaceImageDescriptionSchema.openapi({
+      description: 'A description of whether updates for the WorkSpace image are available.',
+    }),
+    SourceImageId: WorkspaceImageIdSchema.openapi({
+      description: 'The identifier of the source WorkSpace image.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>The tags that you want to add to the new updated WorkSpace image.</p> <note> <p>To add tags at the same time when you're creating the updated image, you must create an IAM policy that grants your IAM user permissions to use <code>workspaces:CreateTags</code>. </p> </note>",
+    }),
   })
   .openapi({
     required: ['Name', 'Description', 'SourceImageId'],
@@ -540,18 +456,18 @@ const BundleOwnerSchema = z.string().openapi('BundleOwner')
 
 const RootStorageSchema = z
   .object({
-    Capacity: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The size of the root volume.' }),
-    ).exactOptional(),
+    Capacity: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The size of the root volume.',
+    }),
   })
   .openapi({ description: 'Describes the root volume for a WorkSpace bundle.', required: [] })
   .openapi('RootStorage')
 
 const UserStorageSchema = z
   .object({
-    Capacity: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The size of the user volume.' }),
-    ).exactOptional(),
+    Capacity: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The size of the user volume.',
+    }),
   })
   .openapi({ description: 'Describes the user volume for a WorkSpace bundle.', required: [] })
   .openapi('UserStorage')
@@ -571,9 +487,7 @@ const ComputeSchema = z
   .openapi('Compute')
 
 const ComputeTypeSchema = z
-  .object({
-    Name: ComputeSchema.and(z.any().openapi({ description: 'The compute type.' })).exactOptional(),
-  })
+  .object({ Name: ComputeSchema.exactOptional().openapi({ description: 'The compute type.' }) })
   .openapi({ description: 'Describes the compute type of the bundle.', required: [] })
   .openapi('ComputeType')
 
@@ -587,56 +501,42 @@ const BundleTypeSchema = z.enum(['REGULAR', 'STANDBY']).openapi('BundleType')
 
 const WorkspaceBundleSchema = z
   .object({
-    BundleId: BundleIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the bundle.' }),
-    ).exactOptional(),
-    Name: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The name of the bundle.' }),
-    ).exactOptional(),
-    Owner: BundleOwnerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The owner of the bundle. This is the account identifier of the owner, or <code>AMAZON</code> if the bundle is provided by Amazon Web Services.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the bundle.' }),
-    ).exactOptional(),
-    ImageId: WorkspaceImageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the image that was used to create the bundle.',
-        }),
-    ).exactOptional(),
-    RootStorage: RootStorageSchema.and(
-      z.any().openapi({ description: 'The size of the root volume.' }),
-    ).exactOptional(),
-    UserStorage: UserStorageSchema.and(
-      z.any().openapi({ description: 'The size of the user volume.' }),
-    ).exactOptional(),
-    ComputeType: ComputeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The compute type of the bundle. For more information, see <a href="http://aws.amazon.com/workspaces/details/#Amazon_WorkSpaces_Bundles">Amazon WorkSpaces Bundles</a>.',
-        }),
-    ).exactOptional(),
-    LastUpdatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The last time that the bundle was updated.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the bundle was created.' }),
-    ).exactOptional(),
-    State: WorkspaceBundleStateSchema.and(
-      z.any().openapi({ description: 'The state of the WorkSpace bundle.' }),
-    ).exactOptional(),
-    BundleType: BundleTypeSchema.and(
-      z.any().openapi({ description: 'The type of WorkSpace bundle.' }),
-    ).exactOptional(),
+    BundleId: BundleIdSchema.exactOptional().openapi({
+      description: 'The identifier of the bundle.',
+    }),
+    Name: NonEmptyStringSchema.exactOptional().openapi({ description: 'The name of the bundle.' }),
+    Owner: BundleOwnerSchema.exactOptional().openapi({
+      description:
+        'The owner of the bundle. This is the account identifier of the owner, or <code>AMAZON</code> if the bundle is provided by Amazon Web Services.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the bundle.',
+    }),
+    ImageId: WorkspaceImageIdSchema.exactOptional().openapi({
+      description: 'The identifier of the image that was used to create the bundle.',
+    }),
+    RootStorage: RootStorageSchema.exactOptional().openapi({
+      description: 'The size of the root volume.',
+    }),
+    UserStorage: UserStorageSchema.exactOptional().openapi({
+      description: 'The size of the user volume.',
+    }),
+    ComputeType: ComputeTypeSchema.exactOptional().openapi({
+      description:
+        'The compute type of the bundle. For more information, see <a href="http://aws.amazon.com/workspaces/details/#Amazon_WorkSpaces_Bundles">Amazon WorkSpaces Bundles</a>.',
+    }),
+    LastUpdatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The last time that the bundle was updated.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the bundle was created.',
+    }),
+    State: WorkspaceBundleStateSchema.exactOptional().openapi({
+      description: 'The state of the WorkSpace bundle.',
+    }),
+    BundleType: BundleTypeSchema.exactOptional().openapi({
+      description: 'The type of WorkSpace bundle.',
+    }),
   })
   .openapi({ description: 'Describes a WorkSpace bundle.', required: [] })
   .openapi('WorkspaceBundle')
@@ -662,28 +562,20 @@ const WorkspaceBundleDescriptionSchema = z
 
 const CreateWorkspaceBundleRequestSchema = z
   .object({
-    BundleName: WorkspaceBundleNameSchema.and(
-      z.any().openapi({ description: 'The name of the bundle.' }),
-    ),
-    BundleDescription: WorkspaceBundleDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the bundle.' }),
-    ),
-    ImageId: WorkspaceImageIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the image that is used to create the bundle.' }),
-    ),
+    BundleName: WorkspaceBundleNameSchema.openapi({ description: 'The name of the bundle.' }),
+    BundleDescription: WorkspaceBundleDescriptionSchema.openapi({
+      description: 'The description of the bundle.',
+    }),
+    ImageId: WorkspaceImageIdSchema.openapi({
+      description: 'The identifier of the image that is used to create the bundle.',
+    }),
     ComputeType: ComputeTypeSchema,
     UserStorage: UserStorageSchema,
     RootStorage: RootStorageSchema.exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The tags associated with the bundle.</p> <note> <p>To add tags at the same time when you're creating the bundle, you must create an IAM policy that grants your IAM user permissions to use <code>workspaces:CreateTags</code>. </p> </note>",
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>The tags associated with the bundle.</p> <note> <p>To add tags at the same time when you're creating the bundle, you must create an IAM policy that grants your IAM user permissions to use <code>workspaces:CreateTags</code>. </p> </note>",
+    }),
   })
   .openapi({
     required: ['BundleName', 'BundleDescription', 'ImageId', 'ComputeType', 'UserStorage'],
@@ -695,9 +587,9 @@ const OperatingSystemTypeSchema = z.enum(['WINDOWS', 'LINUX']).openapi('Operatin
 
 const OperatingSystemSchema = z
   .object({
-    Type: OperatingSystemTypeSchema.and(
-      z.any().openapi({ description: 'The operating system.' }),
-    ).exactOptional(),
+    Type: OperatingSystemTypeSchema.exactOptional().openapi({
+      description: 'The operating system.',
+    }),
   })
   .openapi({ description: 'The operating system that the image is running.', required: [] })
   .openapi('OperatingSystem')
@@ -717,62 +609,48 @@ const AwsAccountSchema = z
 
 const CreateWorkspaceImageResultSchema = z
   .object({
-    ImageId: WorkspaceImageIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the new WorkSpace image.' }),
-    ).exactOptional(),
-    Name: WorkspaceImageNameSchema.and(
-      z.any().openapi({ description: 'The name of the image.' }),
-    ).exactOptional(),
-    Description: WorkspaceImageDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the image.' }),
-    ).exactOptional(),
-    OperatingSystem: OperatingSystemSchema.and(
-      z.any().openapi({ description: 'The operating system that the image is running.' }),
-    ).exactOptional(),
-    State: WorkspaceImageStateSchema.and(
-      z.any().openapi({ description: 'The availability status of the image.' }),
-    ).exactOptional(),
-    RequiredTenancy: WorkspaceImageRequiredTenancySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the image is running on dedicated hardware. When Bring Your Own License (BYOL) is enabled, this value is set to DEDICATED. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.htm"> Bring Your Own Windows Desktop Images.</a>.',
-        }),
-    ).exactOptional(),
-    Created: TimestampSchema.and(
-      z.any().openapi({ description: 'The date when the image was created.' }),
-    ).exactOptional(),
-    OwnerAccountId: AwsAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the Amazon Web Services account that owns the image.',
-        }),
-    ).exactOptional(),
+    ImageId: WorkspaceImageIdSchema.exactOptional().openapi({
+      description: 'The identifier of the new WorkSpace image.',
+    }),
+    Name: WorkspaceImageNameSchema.exactOptional().openapi({
+      description: 'The name of the image.',
+    }),
+    Description: WorkspaceImageDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the image.',
+    }),
+    OperatingSystem: OperatingSystemSchema.exactOptional().openapi({
+      description: 'The operating system that the image is running.',
+    }),
+    State: WorkspaceImageStateSchema.exactOptional().openapi({
+      description: 'The availability status of the image.',
+    }),
+    RequiredTenancy: WorkspaceImageRequiredTenancySchema.exactOptional().openapi({
+      description:
+        'Specifies whether the image is running on dedicated hardware. When Bring Your Own License (BYOL) is enabled, this value is set to DEDICATED. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.htm"> Bring Your Own Windows Desktop Images.</a>.',
+    }),
+    Created: TimestampSchema.exactOptional().openapi({
+      description: 'The date when the image was created.',
+    }),
+    OwnerAccountId: AwsAccountSchema.exactOptional().openapi({
+      description: 'The identifier of the Amazon Web Services account that owns the image.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateWorkspaceImageResult')
 
 const CreateWorkspaceImageRequestSchema = z
   .object({
-    Name: WorkspaceImageNameSchema.and(
-      z.any().openapi({ description: 'The name of the new WorkSpace image.' }),
-    ),
-    Description: WorkspaceImageDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the new WorkSpace image.' }),
-    ),
-    WorkspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the source WorkSpace' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The tags that you want to add to the new WorkSpace image. To add tags when you're creating the image, you must create an IAM policy that grants your IAM user permission to use <code>workspaces:CreateTags</code>.",
-        }),
-    ).exactOptional(),
+    Name: WorkspaceImageNameSchema.openapi({ description: 'The name of the new WorkSpace image.' }),
+    Description: WorkspaceImageDescriptionSchema.openapi({
+      description: 'The description of the new WorkSpace image.',
+    }),
+    WorkspaceId: WorkspaceIdSchema.openapi({
+      description: 'The identifier of the source WorkSpace',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        "The tags that you want to add to the new WorkSpace image. To add tags when you're creating the image, you must create an IAM policy that grants your IAM user permission to use <code>workspaces:CreateTags</code>.",
+    }),
   })
   .openapi({
     required: ['Name', 'Description', 'WorkspaceId'],
@@ -798,112 +676,63 @@ const ProtocolListSchema = z.array(ProtocolSchema).openapi('ProtocolList')
 
 const WorkspacePropertiesSchema = z
   .object({
-    RunningMode: RunningModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The running mode. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/running-mode.html">Manage the WorkSpace Running Mode</a>.</p> <note> <p>The <code>MANUAL</code> value is only supported by Amazon WorkSpaces Core. Contact your account team to be allow-listed to use this value. For more information, see <a href="http://aws.amazon.com/workspaces/core/">Amazon WorkSpaces Core</a>.</p> </note>',
-        }),
-    ).exactOptional(),
-    RunningModeAutoStopTimeoutInMinutes: RunningModeAutoStopTimeoutInMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time after a user logs off when WorkSpaces are automatically stopped. Configured in 60-minute intervals.',
-        }),
-    ).exactOptional(),
-    RootVolumeSizeGib: RootVolumeSizeGibSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size of the root volume. For important information about how to modify the size of the root and user volumes, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/modify-workspaces.html">Modify a WorkSpace</a>.',
-        }),
-    ).exactOptional(),
-    UserVolumeSizeGib: UserVolumeSizeGibSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size of the user storage. For important information about how to modify the size of the root and user volumes, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/modify-workspaces.html">Modify a WorkSpace</a>.',
-        }),
-    ).exactOptional(),
-    ComputeTypeName: ComputeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The compute type. For more information, see <a href="http://aws.amazon.com/workspaces/details/#Amazon_WorkSpaces_Bundles">Amazon WorkSpaces Bundles</a>.',
-        }),
-    ).exactOptional(),
-    Protocols: ProtocolListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The protocol. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/amazon-workspaces-protocols.html"> Protocols for Amazon WorkSpaces</a>.</p> <note> <ul> <li> <p>Only available for WorkSpaces created with PCoIP bundles.</p> </li> <li> <p>The <code>Protocols</code> property is case sensitive. Ensure you use <code>PCOIP</code> or <code>WSP</code>.</p> </li> <li> <p>Unavailable for Windows 7 WorkSpaces and WorkSpaces using GPU-based bundles (Graphics, GraphicsPro, Graphics.g4dn, and GraphicsPro.g4dn).</p> </li> </ul> </note>',
-        }),
-    ).exactOptional(),
+    RunningMode: RunningModeSchema.exactOptional().openapi({
+      description:
+        '<p>The running mode. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/running-mode.html">Manage the WorkSpace Running Mode</a>.</p> <note> <p>The <code>MANUAL</code> value is only supported by Amazon WorkSpaces Core. Contact your account team to be allow-listed to use this value. For more information, see <a href="http://aws.amazon.com/workspaces/core/">Amazon WorkSpaces Core</a>.</p> </note>',
+    }),
+    RunningModeAutoStopTimeoutInMinutes:
+      RunningModeAutoStopTimeoutInMinutesSchema.exactOptional().openapi({
+        description:
+          'The time after a user logs off when WorkSpaces are automatically stopped. Configured in 60-minute intervals.',
+      }),
+    RootVolumeSizeGib: RootVolumeSizeGibSchema.exactOptional().openapi({
+      description:
+        'The size of the root volume. For important information about how to modify the size of the root and user volumes, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/modify-workspaces.html">Modify a WorkSpace</a>.',
+    }),
+    UserVolumeSizeGib: UserVolumeSizeGibSchema.exactOptional().openapi({
+      description:
+        'The size of the user storage. For important information about how to modify the size of the root and user volumes, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/modify-workspaces.html">Modify a WorkSpace</a>.',
+    }),
+    ComputeTypeName: ComputeSchema.exactOptional().openapi({
+      description:
+        'The compute type. For more information, see <a href="http://aws.amazon.com/workspaces/details/#Amazon_WorkSpaces_Bundles">Amazon WorkSpaces Bundles</a>.',
+    }),
+    Protocols: ProtocolListSchema.exactOptional().openapi({
+      description:
+        '<p>The protocol. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/amazon-workspaces-protocols.html"> Protocols for Amazon WorkSpaces</a>.</p> <note> <ul> <li> <p>Only available for WorkSpaces created with PCoIP bundles.</p> </li> <li> <p>The <code>Protocols</code> property is case sensitive. Ensure you use <code>PCOIP</code> or <code>WSP</code>.</p> </li> <li> <p>Unavailable for Windows 7 WorkSpaces and WorkSpaces using GPU-based bundles (Graphics, GraphicsPro, Graphics.g4dn, and GraphicsPro.g4dn).</p> </li> </ul> </note>',
+    }),
   })
   .openapi({ description: 'Describes a WorkSpace.', required: [] })
   .openapi('WorkspaceProperties')
 
 const WorkspaceRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Directory Service directory for the WorkSpace. You can use <a>DescribeWorkspaceDirectories</a> to list the available directories.',
-        }),
-    ),
-    UserName: UserNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user name of the user for the WorkSpace. This user name must exist in the Directory Service directory for the WorkSpace.',
-        }),
-    ),
-    BundleId: BundleIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the bundle for the WorkSpace. You can use <a>DescribeWorkspaceBundles</a> to list the available bundles.',
-        }),
-    ),
-    VolumeEncryptionKey: VolumeEncryptionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The symmetric KMS key used to encrypt data stored on your WorkSpace. Amazon WorkSpaces does not support asymmetric KMS keys.',
-        }),
-    ).exactOptional(),
-    UserVolumeEncryptionEnabled: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether the data stored on the user volume is encrypted.',
-        }),
-    ).exactOptional(),
-    RootVolumeEncryptionEnabled: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether the data stored on the root volume is encrypted.',
-        }),
-    ).exactOptional(),
-    WorkspaceProperties: WorkspacePropertiesSchema.and(
-      z.any().openapi({ description: 'The WorkSpace properties.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags for the WorkSpace.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'The identifier of the Directory Service directory for the WorkSpace. You can use <a>DescribeWorkspaceDirectories</a> to list the available directories.',
+    }),
+    UserName: UserNameSchema.openapi({
+      description:
+        'The user name of the user for the WorkSpace. This user name must exist in the Directory Service directory for the WorkSpace.',
+    }),
+    BundleId: BundleIdSchema.openapi({
+      description:
+        'The identifier of the bundle for the WorkSpace. You can use <a>DescribeWorkspaceBundles</a> to list the available bundles.',
+    }),
+    VolumeEncryptionKey: VolumeEncryptionKeySchema.exactOptional().openapi({
+      description:
+        'The symmetric KMS key used to encrypt data stored on your WorkSpace. Amazon WorkSpaces does not support asymmetric KMS keys.',
+    }),
+    UserVolumeEncryptionEnabled: BooleanObjectSchema.exactOptional().openapi({
+      description: 'Indicates whether the data stored on the user volume is encrypted.',
+    }),
+    RootVolumeEncryptionEnabled: BooleanObjectSchema.exactOptional().openapi({
+      description: 'Indicates whether the data stored on the root volume is encrypted.',
+    }),
+    WorkspaceProperties: WorkspacePropertiesSchema.exactOptional().openapi({
+      description: 'The WorkSpace properties.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'The tags for the WorkSpace.' }),
   })
   .openapi({
     required: ['DirectoryId', 'UserName', 'BundleId'],
@@ -915,24 +744,16 @@ const ErrorTypeSchema = z.string().openapi('ErrorType')
 
 const FailedCreateWorkspaceRequestSchema = z
   .object({
-    WorkspaceRequest: WorkspaceRequestSchema.and(
-      z.any().openapi({ description: 'Information about the WorkSpace.' }),
-    ).exactOptional(),
-    ErrorCode: ErrorTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The error code that is returned if the WorkSpace cannot be created.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The text of the error message that is returned if the WorkSpace cannot be created.',
-        }),
-    ).exactOptional(),
+    WorkspaceRequest: WorkspaceRequestSchema.exactOptional().openapi({
+      description: 'Information about the WorkSpace.',
+    }),
+    ErrorCode: ErrorTypeSchema.exactOptional().openapi({
+      description: 'The error code that is returned if the WorkSpace cannot be created.',
+    }),
+    ErrorMessage: DescriptionSchema.exactOptional().openapi({
+      description:
+        'The text of the error message that is returned if the WorkSpace cannot be created.',
+    }),
   })
   .openapi({ description: 'Describes a WorkSpace that cannot be created.', required: [] })
   .openapi('FailedCreateWorkspaceRequest')
@@ -962,12 +783,12 @@ const ModificationStateEnumSchema = z
 
 const ModificationStateSchema = z
   .object({
-    Resource: ModificationResourceEnumSchema.and(
-      z.any().openapi({ description: 'The resource.' }),
-    ).exactOptional(),
-    State: ModificationStateEnumSchema.and(
-      z.any().openapi({ description: 'The modification state.' }),
-    ).exactOptional(),
+    Resource: ModificationResourceEnumSchema.exactOptional().openapi({
+      description: 'The resource.',
+    }),
+    State: ModificationStateEnumSchema.exactOptional().openapi({
+      description: 'The modification state.',
+    }),
   })
   .openapi({ description: 'Describes a WorkSpace modification.', required: [] })
   .openapi('ModificationState')
@@ -982,18 +803,18 @@ const StandbyWorkspaceRelationshipTypeSchema = z
 
 const RelatedWorkspacePropertiesSchema = z
   .object({
-    WorkspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the related WorkSpace.' }),
-    ).exactOptional(),
-    Region: RegionSchema.and(
-      z.any().openapi({ description: 'The Region of the related WorkSpace.' }),
-    ).exactOptional(),
-    State: WorkspaceStateSchema.and(
-      z.any().openapi({ description: 'Indicates the state of the WorkSpace.' }),
-    ).exactOptional(),
-    Type: StandbyWorkspaceRelationshipTypeSchema.and(
-      z.any().openapi({ description: 'Indicates the type of WorkSpace.' }),
-    ).exactOptional(),
+    WorkspaceId: WorkspaceIdSchema.exactOptional().openapi({
+      description: 'The identifier of the related WorkSpace.',
+    }),
+    Region: RegionSchema.exactOptional().openapi({
+      description: 'The Region of the related WorkSpace.',
+    }),
+    State: WorkspaceStateSchema.exactOptional().openapi({
+      description: 'Indicates the state of the WorkSpace.',
+    }),
+    Type: StandbyWorkspaceRelationshipTypeSchema.exactOptional().openapi({
+      description: 'Indicates the type of WorkSpace.',
+    }),
   })
   .openapi({
     description:
@@ -1008,97 +829,58 @@ const RelatedWorkspacesSchema = z
 
 const WorkspaceSchema = z
   .object({
-    WorkspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the WorkSpace.' }),
-    ).exactOptional(),
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the Directory Service directory for the WorkSpace.',
-        }),
-    ).exactOptional(),
-    UserName: UserNameSchema.and(
-      z.any().openapi({ description: 'The user for the WorkSpace.' }),
-    ).exactOptional(),
-    IpAddress: IpAddressSchema.and(
-      z.any().openapi({ description: 'The IP address of the WorkSpace.' }),
-    ).exactOptional(),
-    State: WorkspaceStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The operational state of the WorkSpace.</p> <note> <p>After a WorkSpace is terminated, the <code>TERMINATED</code> state is returned only briefly before the WorkSpace directory metadata is cleaned up, so this state is rarely returned. To confirm that a WorkSpace is terminated, check for the WorkSpace ID by using <a href="https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaces.html"> DescribeWorkSpaces</a>. If the WorkSpace ID isn\'t returned, then the WorkSpace has been successfully terminated.</p> </note>',
-        }),
-    ).exactOptional(),
-    BundleId: BundleIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the bundle used to create the WorkSpace.' }),
-    ).exactOptional(),
-    SubnetId: SubnetIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the subnet for the WorkSpace.' }),
-    ).exactOptional(),
-    ErrorMessage: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The text of the error message that is returned if the WorkSpace cannot be created.',
-        }),
-    ).exactOptional(),
-    ErrorCode: WorkspaceErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The error code that is returned if the WorkSpace cannot be created.',
-        }),
-    ).exactOptional(),
-    ComputerName: ComputerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the WorkSpace, as seen by the operating system. The format of this name varies. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/launch-workspaces-tutorials.html"> Launch a WorkSpace</a>. ',
-        }),
-    ).exactOptional(),
-    VolumeEncryptionKey: VolumeEncryptionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The symmetric KMS key used to encrypt data stored on your WorkSpace. Amazon WorkSpaces does not support asymmetric KMS keys.',
-        }),
-    ).exactOptional(),
-    UserVolumeEncryptionEnabled: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether the data stored on the user volume is encrypted.',
-        }),
-    ).exactOptional(),
-    RootVolumeEncryptionEnabled: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether the data stored on the root volume is encrypted.',
-        }),
-    ).exactOptional(),
-    WorkspaceProperties: WorkspacePropertiesSchema.and(
-      z.any().openapi({ description: 'The properties of the WorkSpace.' }),
-    ).exactOptional(),
-    ModificationStates: ModificationStateListSchema.and(
-      z.any().openapi({ description: 'The modification states of the WorkSpace.' }),
-    ).exactOptional(),
-    RelatedWorkspaces: RelatedWorkspacesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The standby WorkSpace or primary WorkSpace related to the specified WorkSpace.',
-        }),
-    ).exactOptional(),
+    WorkspaceId: WorkspaceIdSchema.exactOptional().openapi({
+      description: 'The identifier of the WorkSpace.',
+    }),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The identifier of the Directory Service directory for the WorkSpace.',
+    }),
+    UserName: UserNameSchema.exactOptional().openapi({
+      description: 'The user for the WorkSpace.',
+    }),
+    IpAddress: IpAddressSchema.exactOptional().openapi({
+      description: 'The IP address of the WorkSpace.',
+    }),
+    State: WorkspaceStateSchema.exactOptional().openapi({
+      description:
+        '<p>The operational state of the WorkSpace.</p> <note> <p>After a WorkSpace is terminated, the <code>TERMINATED</code> state is returned only briefly before the WorkSpace directory metadata is cleaned up, so this state is rarely returned. To confirm that a WorkSpace is terminated, check for the WorkSpace ID by using <a href="https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaces.html"> DescribeWorkSpaces</a>. If the WorkSpace ID isn\'t returned, then the WorkSpace has been successfully terminated.</p> </note>',
+    }),
+    BundleId: BundleIdSchema.exactOptional().openapi({
+      description: 'The identifier of the bundle used to create the WorkSpace.',
+    }),
+    SubnetId: SubnetIdSchema.exactOptional().openapi({
+      description: 'The identifier of the subnet for the WorkSpace.',
+    }),
+    ErrorMessage: DescriptionSchema.exactOptional().openapi({
+      description:
+        'The text of the error message that is returned if the WorkSpace cannot be created.',
+    }),
+    ErrorCode: WorkspaceErrorCodeSchema.exactOptional().openapi({
+      description: 'The error code that is returned if the WorkSpace cannot be created.',
+    }),
+    ComputerName: ComputerNameSchema.exactOptional().openapi({
+      description:
+        'The name of the WorkSpace, as seen by the operating system. The format of this name varies. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/launch-workspaces-tutorials.html"> Launch a WorkSpace</a>. ',
+    }),
+    VolumeEncryptionKey: VolumeEncryptionKeySchema.exactOptional().openapi({
+      description:
+        'The symmetric KMS key used to encrypt data stored on your WorkSpace. Amazon WorkSpaces does not support asymmetric KMS keys.',
+    }),
+    UserVolumeEncryptionEnabled: BooleanObjectSchema.exactOptional().openapi({
+      description: 'Indicates whether the data stored on the user volume is encrypted.',
+    }),
+    RootVolumeEncryptionEnabled: BooleanObjectSchema.exactOptional().openapi({
+      description: 'Indicates whether the data stored on the root volume is encrypted.',
+    }),
+    WorkspaceProperties: WorkspacePropertiesSchema.exactOptional().openapi({
+      description: 'The properties of the WorkSpace.',
+    }),
+    ModificationStates: ModificationStateListSchema.exactOptional().openapi({
+      description: 'The modification states of the WorkSpace.',
+    }),
+    RelatedWorkspaces: RelatedWorkspacesSchema.exactOptional().openapi({
+      description: 'The standby WorkSpace or primary WorkSpace related to the specified WorkSpace.',
+    }),
   })
   .openapi({ description: 'Describes a WorkSpace.', required: [] })
   .openapi('Workspace')
@@ -1107,19 +889,13 @@ const WorkspaceListSchema = z.array(WorkspaceSchema).openapi('WorkspaceList')
 
 const CreateWorkspacesResultSchema = z
   .object({
-    FailedRequests: FailedCreateWorkspaceRequestsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the WorkSpaces that could not be created.' }),
-    ).exactOptional(),
-    PendingRequests: WorkspaceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the WorkSpaces that were created.</p> <p>Because this operation is asynchronous, the identifier returned is not immediately available for use with other operations. For example, if you call <a>DescribeWorkspaces</a> before the WorkSpace is created, the information returned can be incomplete.</p>',
-        }),
-    ).exactOptional(),
+    FailedRequests: FailedCreateWorkspaceRequestsSchema.exactOptional().openapi({
+      description: 'Information about the WorkSpaces that could not be created.',
+    }),
+    PendingRequests: WorkspaceListSchema.exactOptional().openapi({
+      description:
+        '<p>Information about the WorkSpaces that were created.</p> <p>Because this operation is asynchronous, the identifier returned is not immediately available for use with other operations. For example, if you call <a>DescribeWorkspaces</a> before the WorkSpace is created, the information returned can be incomplete.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateWorkspacesResult')
@@ -1132,16 +908,14 @@ const WorkspaceRequestListSchema = z
 
 const CreateWorkspacesRequestSchema = z
   .object({
-    Workspaces: WorkspaceRequestListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The WorkSpaces to create. You can specify up to 25 WorkSpaces.' }),
-    ),
+    Workspaces: WorkspaceRequestListSchema.openapi({
+      description: 'The WorkSpaces to create. You can specify up to 25 WorkSpaces.',
+    }),
   })
   .openapi({ required: ['Workspaces'], title: 'CreateWorkspacesRequest' })
   .openapi('CreateWorkspacesRequest')
 
-const DeleteClientBrandingResultSchema = z.object({}).openapi('DeleteClientBrandingResult')
+const DeleteClientBrandingResultSchema = z.looseObject({}).openapi('DeleteClientBrandingResult')
 
 const ClientDeviceTypeSchema = z
   .enum([
@@ -1162,118 +936,100 @@ const ClientDeviceTypeListSchema = z
 
 const DeleteClientBrandingRequestSchema = z
   .object({
-    ResourceId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The directory identifier of the WorkSpace for which you want to delete client branding.',
-        }),
-    ),
-    Platforms: ClientDeviceTypeListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The device type for which you want to delete client branding.' }),
-    ),
+    ResourceId: DirectoryIdSchema.openapi({
+      description:
+        'The directory identifier of the WorkSpace for which you want to delete client branding.',
+    }),
+    Platforms: ClientDeviceTypeListSchema.openapi({
+      description: 'The device type for which you want to delete client branding.',
+    }),
   })
   .openapi({ required: ['ResourceId', 'Platforms'], title: 'DeleteClientBrandingRequest' })
   .openapi('DeleteClientBrandingRequest')
 
-const DeleteConnectClientAddInResultSchema = z.object({}).openapi('DeleteConnectClientAddInResult')
+const DeleteConnectClientAddInResultSchema = z
+  .looseObject({})
+  .openapi('DeleteConnectClientAddInResult')
 
 const DeleteConnectClientAddInRequestSchema = z
   .object({
-    AddInId: AmazonUuidSchema.and(
-      z.any().openapi({ description: 'The identifier of the client add-in to delete.' }),
-    ),
-    ResourceId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The directory identifier for which the client add-in is configured.',
-        }),
-    ),
+    AddInId: AmazonUuidSchema.openapi({
+      description: 'The identifier of the client add-in to delete.',
+    }),
+    ResourceId: DirectoryIdSchema.openapi({
+      description: 'The directory identifier for which the client add-in is configured.',
+    }),
   })
   .openapi({ required: ['AddInId', 'ResourceId'], title: 'DeleteConnectClientAddInRequest' })
   .openapi('DeleteConnectClientAddInRequest')
 
-const DeleteConnectionAliasResultSchema = z.object({}).openapi('DeleteConnectionAliasResult')
+const DeleteConnectionAliasResultSchema = z.looseObject({}).openapi('DeleteConnectionAliasResult')
 
 const DeleteConnectionAliasRequestSchema = z
   .object({
-    AliasId: ConnectionAliasIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the connection alias to delete.' }),
-    ),
+    AliasId: ConnectionAliasIdSchema.openapi({
+      description: 'The identifier of the connection alias to delete.',
+    }),
   })
   .openapi({ required: ['AliasId'], title: 'DeleteConnectionAliasRequest' })
   .openapi('DeleteConnectionAliasRequest')
 
-const DeleteIpGroupResultSchema = z.object({}).openapi('DeleteIpGroupResult')
+const DeleteIpGroupResultSchema = z.looseObject({}).openapi('DeleteIpGroupResult')
 
 const DeleteIpGroupRequestSchema = z
   .object({
-    GroupId: IpGroupIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the IP access control group.' }),
-    ),
+    GroupId: IpGroupIdSchema.openapi({
+      description: 'The identifier of the IP access control group.',
+    }),
   })
   .openapi({ required: ['GroupId'], title: 'DeleteIpGroupRequest' })
   .openapi('DeleteIpGroupRequest')
 
-const DeleteTagsResultSchema = z.object({}).openapi('DeleteTagsResult')
+const DeleteTagsResultSchema = z.looseObject({}).openapi('DeleteTagsResult')
 
 const TagKeyListSchema = z.array(NonEmptyStringSchema).openapi('TagKeyList')
 
 const DeleteTagsRequestSchema = z
   .object({
-    ResourceId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the WorkSpaces resource. The supported resource types are WorkSpaces, registered directories, images, custom bundles, IP access control groups, and connection aliases.',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(z.any().openapi({ description: 'The tag keys.' })),
+    ResourceId: NonEmptyStringSchema.openapi({
+      description:
+        'The identifier of the WorkSpaces resource. The supported resource types are WorkSpaces, registered directories, images, custom bundles, IP access control groups, and connection aliases.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({ description: 'The tag keys.' }),
   })
   .openapi({ required: ['ResourceId', 'TagKeys'], title: 'DeleteTagsRequest' })
   .openapi('DeleteTagsRequest')
 
-const DeleteWorkspaceBundleResultSchema = z.object({}).openapi('DeleteWorkspaceBundleResult')
+const DeleteWorkspaceBundleResultSchema = z.looseObject({}).openapi('DeleteWorkspaceBundleResult')
 
 const DeleteWorkspaceBundleRequestSchema = z
   .object({
-    BundleId: BundleIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the bundle.' }),
-    ).exactOptional(),
+    BundleId: BundleIdSchema.exactOptional().openapi({
+      description: 'The identifier of the bundle.',
+    }),
   })
   .openapi({ title: 'DeleteWorkspaceBundleRequest', required: [] })
   .openapi('DeleteWorkspaceBundleRequest')
 
-const DeleteWorkspaceImageResultSchema = z.object({}).openapi('DeleteWorkspaceImageResult')
+const DeleteWorkspaceImageResultSchema = z.looseObject({}).openapi('DeleteWorkspaceImageResult')
 
 const DeleteWorkspaceImageRequestSchema = z
   .object({
-    ImageId: WorkspaceImageIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the image.' }),
-    ),
+    ImageId: WorkspaceImageIdSchema.openapi({ description: 'The identifier of the image.' }),
   })
   .openapi({ required: ['ImageId'], title: 'DeleteWorkspaceImageRequest' })
   .openapi('DeleteWorkspaceImageRequest')
 
 const DeregisterWorkspaceDirectoryResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeregisterWorkspaceDirectoryResult')
 
 const DeregisterWorkspaceDirectoryRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the directory. If any WorkSpaces are registered to this directory, you must remove them before you deregister the directory, or you will receive an OperationNotSupportedException error.',
-        }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'The identifier of the directory. If any WorkSpaces are registered to this directory, you must remove them before you deregister the directory, or you will receive an OperationNotSupportedException error.',
+    }),
   })
   .openapi({ required: ['DirectoryId'], title: 'DeregisterWorkspaceDirectoryRequest' })
   .openapi('DeregisterWorkspaceDirectoryRequest')
@@ -1291,23 +1047,20 @@ const DedicatedTenancyManagementCidrRangeSchema = z
 
 const DescribeAccountResultSchema = z
   .object({
-    DedicatedTenancySupport: DedicatedTenancySupportResultEnumSchema.and(
-      z.any().openapi({ description: 'The status of BYOL (whether BYOL is enabled or disabled).' }),
-    ).exactOptional(),
-    DedicatedTenancyManagementCidrRange: DedicatedTenancyManagementCidrRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IP address range, specified as an IPv4 CIDR block, used for the management network interface.</p> <p>The management network interface is connected to a secure Amazon WorkSpaces management network. It is used for interactive streaming of the WorkSpace desktop to Amazon WorkSpaces clients, and to allow Amazon WorkSpaces to manage the WorkSpace.</p>',
-        }),
-    ).exactOptional(),
+    DedicatedTenancySupport: DedicatedTenancySupportResultEnumSchema.exactOptional().openapi({
+      description: 'The status of BYOL (whether BYOL is enabled or disabled).',
+    }),
+    DedicatedTenancyManagementCidrRange:
+      DedicatedTenancyManagementCidrRangeSchema.exactOptional().openapi({
+        description:
+          '<p>The IP address range, specified as an IPv4 CIDR block, used for the management network interface.</p> <p>The management network interface is connected to a secure Amazon WorkSpaces management network. It is used for interactive streaming of the WorkSpace desktop to Amazon WorkSpaces clients, and to allow Amazon WorkSpaces to manage the WorkSpace.</p>',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAccountResult')
 
 const DescribeAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAccountRequest' })
   .openapi('DescribeAccountRequest')
 
@@ -1317,49 +1070,28 @@ const DedicatedTenancyModificationStateEnumSchema = z
 
 const AccountModificationSchema = z
   .object({
-    ModificationState: DedicatedTenancyModificationStateEnumSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The state of the modification to the configuration of BYOL.' }),
-    ).exactOptional(),
-    DedicatedTenancySupport: DedicatedTenancySupportResultEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status of BYOL (whether BYOL is being enabled or disabled).',
-        }),
-    ).exactOptional(),
-    DedicatedTenancyManagementCidrRange: DedicatedTenancyManagementCidrRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address range, specified as an IPv4 CIDR block, for the management network interface used for the account.',
-        }),
-    ).exactOptional(),
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp when the modification of the BYOL configuration was started.',
-        }),
-    ).exactOptional(),
-    ErrorCode: WorkspaceErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error code that is returned if the configuration of BYOL cannot be modified.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The text of the error message that is returned if the configuration of BYOL cannot be modified.',
-        }),
-    ).exactOptional(),
+    ModificationState: DedicatedTenancyModificationStateEnumSchema.exactOptional().openapi({
+      description: 'The state of the modification to the configuration of BYOL.',
+    }),
+    DedicatedTenancySupport: DedicatedTenancySupportResultEnumSchema.exactOptional().openapi({
+      description: 'The status of BYOL (whether BYOL is being enabled or disabled).',
+    }),
+    DedicatedTenancyManagementCidrRange:
+      DedicatedTenancyManagementCidrRangeSchema.exactOptional().openapi({
+        description:
+          'The IP address range, specified as an IPv4 CIDR block, for the management network interface used for the account.',
+      }),
+    StartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp when the modification of the BYOL configuration was started.',
+    }),
+    ErrorCode: WorkspaceErrorCodeSchema.exactOptional().openapi({
+      description:
+        'The error code that is returned if the configuration of BYOL cannot be modified.',
+    }),
+    ErrorMessage: DescriptionSchema.exactOptional().openapi({
+      description:
+        'The text of the error message that is returned if the configuration of BYOL cannot be modified.',
+    }),
   })
   .openapi({
     description:
@@ -1376,31 +1108,23 @@ const PaginationTokenSchema = z.string().min(1).max(2048).openapi('PaginationTok
 
 const DescribeAccountModificationsResultSchema = z
   .object({
-    AccountModifications: AccountModificationListSchema.and(
-      z.any().openapi({ description: 'The list of modifications to the configuration of BYOL.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
-        }),
-    ).exactOptional(),
+    AccountModifications: AccountModificationListSchema.exactOptional().openapi({
+      description: 'The list of modifications to the configuration of BYOL.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAccountModificationsResult')
 
 const DescribeAccountModificationsRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
+    }),
   })
   .openapi({ title: 'DescribeAccountModificationsRequest', required: [] })
   .openapi('DescribeAccountModificationsRequest')
@@ -1419,52 +1143,37 @@ const ClientEmailSchema = z
   .max(64)
   .openapi('ClientEmail')
 
-const LoginMessageSchema: z.ZodType<LoginMessageType> = z
-  .lazy(() => z.record(z.string(), ClientLoginMessageSchema))
-  .openapi('LoginMessage')
+const ClientLoginMessageSchema = z
+  .string()
+  .regex(/^.*$/)
+  .min(0)
+  .max(2000)
+  .openapi('ClientLoginMessage')
+
+const LoginMessageSchema = z.record(z.string(), ClientLoginMessageSchema).openapi('LoginMessage')
 
 const DefaultClientBrandingAttributesSchema = z
   .object({
-    LogoUrl: ClientUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The logo. The only image format accepted is a binary data object that is converted from a <code>.png</code> file.',
-        }),
-    ).exactOptional(),
-    SupportEmail: ClientEmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The support email. The company's customer support email address.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default email is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
-    SupportLink: ClientUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The support link. The link for the company's customer support page for their WorkSpace.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive.You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default support link is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
-    ForgotPasswordLink: ClientUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The forgotten password link. This is the web address that users can go to if they forget the password for their WorkSpace.',
-        }),
-    ).exactOptional(),
-    LoginMessage: LoginMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. The HTML tags supported include the following: <code>a, b, blockquote, br, cite, code, dd, dl, dt, div, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul</code>.',
-        }),
-    ).exactOptional(),
+    LogoUrl: ClientUrlSchema.exactOptional().openapi({
+      description:
+        'The logo. The only image format accepted is a binary data object that is converted from a <code>.png</code> file.',
+    }),
+    SupportEmail: ClientEmailSchema.exactOptional().openapi({
+      description:
+        "<p>The support email. The company's customer support email address.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default email is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>",
+    }),
+    SupportLink: ClientUrlSchema.exactOptional().openapi({
+      description:
+        "<p>The support link. The link for the company's customer support page for their WorkSpace.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive.You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default support link is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>",
+    }),
+    ForgotPasswordLink: ClientUrlSchema.exactOptional().openapi({
+      description:
+        'The forgotten password link. This is the web address that users can go to if they forget the password for their WorkSpace.',
+    }),
+    LoginMessage: LoginMessageSchema.exactOptional().openapi({
+      description:
+        'The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. The HTML tags supported include the following: <code>a, b, blockquote, br, cite, code, dd, dl, dt, div, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul</code>.',
+    }),
   })
   .openapi({
     description:
@@ -1475,62 +1184,34 @@ const DefaultClientBrandingAttributesSchema = z
 
 const IosClientBrandingAttributesSchema = z
   .object({
-    LogoUrl: ClientUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The logo. This is the standard-resolution display that has a 1:1 pixel density (or @1x), where one pixel is equal to one point. The only image format accepted is a binary data object that is converted from a <code>.png</code> file.',
-        }),
-    ).exactOptional(),
-    Logo2xUrl: ClientUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The @2x version of the logo. This is the higher resolution display that offers a scale factor of 2.0 (or @2x). The only image format accepted is a binary data object that is converted from a <code>.png</code> file.</p> <note> <p> For more information about iOS image size and resolution, see <a href="https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/">Image Size and Resolution </a> in the <i>Apple Human Interface Guidelines</i>.</p> </note>',
-        }),
-    ).exactOptional(),
-    Logo3xUrl: ClientUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The @3x version of the logo. This is the higher resolution display that offers a scale factor of 3.0 (or @3x).The only image format accepted is a binary data object that is converted from a <code>.png</code> file.</p> <note> <p> For more information about iOS image size and resolution, see <a href="https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/">Image Size and Resolution </a> in the <i>Apple Human Interface Guidelines</i>.</p> </note>',
-        }),
-    ).exactOptional(),
-    SupportEmail: ClientEmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The support email. The company's customer support email address.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default email is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
-    SupportLink: ClientUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The support link. The link for the company's customer support page for their WorkSpace.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default support link is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
-    ForgotPasswordLink: ClientUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The forgotten password link. This is the web address that users can go to if they forget the password for their WorkSpace.',
-        }),
-    ).exactOptional(),
-    LoginMessage: LoginMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. The HTML tags supported include the following: <code>a, b, blockquote, br, cite, code, dd, dl, dt, div, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul</code>.',
-        }),
-    ).exactOptional(),
+    LogoUrl: ClientUrlSchema.exactOptional().openapi({
+      description:
+        'The logo. This is the standard-resolution display that has a 1:1 pixel density (or @1x), where one pixel is equal to one point. The only image format accepted is a binary data object that is converted from a <code>.png</code> file.',
+    }),
+    Logo2xUrl: ClientUrlSchema.exactOptional().openapi({
+      description:
+        '<p>The @2x version of the logo. This is the higher resolution display that offers a scale factor of 2.0 (or @2x). The only image format accepted is a binary data object that is converted from a <code>.png</code> file.</p> <note> <p> For more information about iOS image size and resolution, see <a href="https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/">Image Size and Resolution </a> in the <i>Apple Human Interface Guidelines</i>.</p> </note>',
+    }),
+    Logo3xUrl: ClientUrlSchema.exactOptional().openapi({
+      description:
+        '<p>The @3x version of the logo. This is the higher resolution display that offers a scale factor of 3.0 (or @3x).The only image format accepted is a binary data object that is converted from a <code>.png</code> file.</p> <note> <p> For more information about iOS image size and resolution, see <a href="https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/">Image Size and Resolution </a> in the <i>Apple Human Interface Guidelines</i>.</p> </note>',
+    }),
+    SupportEmail: ClientEmailSchema.exactOptional().openapi({
+      description:
+        "<p>The support email. The company's customer support email address.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default email is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>",
+    }),
+    SupportLink: ClientUrlSchema.exactOptional().openapi({
+      description:
+        "<p>The support link. The link for the company's customer support page for their WorkSpace.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default support link is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>",
+    }),
+    ForgotPasswordLink: ClientUrlSchema.exactOptional().openapi({
+      description:
+        'The forgotten password link. This is the web address that users can go to if they forget the password for their WorkSpace.',
+    }),
+    LoginMessage: LoginMessageSchema.exactOptional().openapi({
+      description:
+        'The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. The HTML tags supported include the following: <code>a, b, blockquote, br, cite, code, dd, dl, dt, div, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul</code>.',
+    }),
   })
   .openapi({
     description:
@@ -1541,38 +1222,34 @@ const IosClientBrandingAttributesSchema = z
 
 const DescribeClientBrandingResultSchema = z
   .object({
-    DeviceTypeWindows: DefaultClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information for Windows devices.' }),
-    ).exactOptional(),
-    DeviceTypeOsx: DefaultClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information for macOS devices.' }),
-    ).exactOptional(),
-    DeviceTypeAndroid: DefaultClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information for Android devices.' }),
-    ).exactOptional(),
-    DeviceTypeIos: IosClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information for iOS devices.' }),
-    ).exactOptional(),
-    DeviceTypeLinux: DefaultClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information for Linux devices.' }),
-    ).exactOptional(),
-    DeviceTypeWeb: DefaultClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information for Web access.' }),
-    ).exactOptional(),
+    DeviceTypeWindows: DefaultClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information for Windows devices.',
+    }),
+    DeviceTypeOsx: DefaultClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information for macOS devices.',
+    }),
+    DeviceTypeAndroid: DefaultClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information for Android devices.',
+    }),
+    DeviceTypeIos: IosClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information for iOS devices.',
+    }),
+    DeviceTypeLinux: DefaultClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information for Linux devices.',
+    }),
+    DeviceTypeWeb: DefaultClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information for Web access.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeClientBrandingResult')
 
 const DescribeClientBrandingRequestSchema = z
   .object({
-    ResourceId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The directory identifier of the WorkSpace for which you want to view client branding information.',
-        }),
-    ),
+    ResourceId: DirectoryIdSchema.openapi({
+      description:
+        'The directory identifier of the WorkSpace for which you want to view client branding information.',
+    }),
   })
   .openapi({ required: ['ResourceId'], title: 'DescribeClientBrandingRequest' })
   .openapi('DescribeClientBrandingRequest')
@@ -1583,34 +1260,26 @@ const LogUploadEnumSchema = z.enum(['ENABLED', 'DISABLED']).openapi('LogUploadEn
 
 const ClientPropertiesSchema = z
   .object({
-    ReconnectEnabled: ReconnectEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether users can cache their credentials on the Amazon WorkSpaces client. When enabled, users can choose to reconnect to their WorkSpaces without re-entering their credentials. ',
-        }),
-    ).exactOptional(),
-    LogUploadEnabled: LogUploadEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether users can upload diagnostic log files of Amazon WorkSpaces client directly to WorkSpaces to troubleshoot issues when using the WorkSpaces client. When enabled, the log files will be sent to WorkSpaces automatically and will be applied to all users in the specified directory.',
-        }),
-    ).exactOptional(),
+    ReconnectEnabled: ReconnectEnumSchema.exactOptional().openapi({
+      description:
+        'Specifies whether users can cache their credentials on the Amazon WorkSpaces client. When enabled, users can choose to reconnect to their WorkSpaces without re-entering their credentials. ',
+    }),
+    LogUploadEnabled: LogUploadEnumSchema.exactOptional().openapi({
+      description:
+        'Specifies whether users can upload diagnostic log files of Amazon WorkSpaces client directly to WorkSpaces to troubleshoot issues when using the WorkSpaces client. When enabled, the log files will be sent to WorkSpaces automatically and will be applied to all users in the specified directory.',
+    }),
   })
   .openapi({ description: 'Describes an Amazon WorkSpaces client.', required: [] })
   .openapi('ClientProperties')
 
 const ClientPropertiesResultSchema = z
   .object({
-    ResourceId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The resource identifier, in the form of a directory ID.' }),
-    ).exactOptional(),
-    ClientProperties: ClientPropertiesSchema.and(
-      z.any().openapi({ description: 'Information about the Amazon WorkSpaces client.' }),
-    ).exactOptional(),
+    ResourceId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The resource identifier, in the form of a directory ID.',
+    }),
+    ClientProperties: ClientPropertiesSchema.exactOptional().openapi({
+      description: 'Information about the Amazon WorkSpaces client.',
+    }),
   })
   .openapi({ description: 'Information about the Amazon WorkSpaces client.', required: [] })
   .openapi('ClientPropertiesResult')
@@ -1621,11 +1290,9 @@ const ClientPropertiesListSchema = z
 
 const DescribeClientPropertiesResultSchema = z
   .object({
-    ClientPropertiesList: ClientPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the specified Amazon WorkSpaces clients.' }),
-    ).exactOptional(),
+    ClientPropertiesList: ClientPropertiesListSchema.exactOptional().openapi({
+      description: 'Information about the specified Amazon WorkSpaces clients.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeClientPropertiesResult')
@@ -1634,31 +1301,27 @@ const ResourceIdListSchema = z.array(NonEmptyStringSchema).min(1).max(25).openap
 
 const DescribeClientPropertiesRequestSchema = z
   .object({
-    ResourceIds: ResourceIdListSchema.and(
-      z.any().openapi({ description: 'The resource identifier, in the form of directory IDs.' }),
-    ),
+    ResourceIds: ResourceIdListSchema.openapi({
+      description: 'The resource identifier, in the form of directory IDs.',
+    }),
   })
   .openapi({ required: ['ResourceIds'], title: 'DescribeClientPropertiesRequest' })
   .openapi('DescribeClientPropertiesRequest')
 
 const ConnectClientAddInSchema = z
   .object({
-    AddInId: AmazonUuidSchema.and(
-      z.any().openapi({ description: 'The client add-in identifier.' }),
-    ).exactOptional(),
-    ResourceId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The directory identifier for which the client add-in is configured.',
-        }),
-    ).exactOptional(),
-    Name: AddInNameSchema.and(
-      z.any().openapi({ description: 'The name of the client add in.' }),
-    ).exactOptional(),
-    URL: AddInUrlSchema.and(
-      z.any().openapi({ description: 'The endpoint URL of the client add-in.' }),
-    ).exactOptional(),
+    AddInId: AmazonUuidSchema.exactOptional().openapi({
+      description: 'The client add-in identifier.',
+    }),
+    ResourceId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The directory identifier for which the client add-in is configured.',
+    }),
+    Name: AddInNameSchema.exactOptional().openapi({
+      description: 'The name of the client add in.',
+    }),
+    URL: AddInUrlSchema.exactOptional().openapi({
+      description: 'The endpoint URL of the client add-in.',
+    }),
   })
   .openapi({ description: 'Describes an Amazon Connect client add-in.', required: [] })
   .openapi('ConnectClientAddIn')
@@ -1669,17 +1332,13 @@ const ConnectClientAddInListSchema = z
 
 const DescribeConnectClientAddInsResultSchema = z
   .object({
-    AddIns: ConnectClientAddInListSchema.and(
-      z.any().openapi({ description: 'Information about client add-ins.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
-        }),
-    ).exactOptional(),
+    AddIns: ConnectClientAddInListSchema.exactOptional().openapi({
+      description: 'Information about client add-ins.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeConnectClientAddInsResult')
@@ -1688,46 +1347,30 @@ const LimitSchema = z.int().min(1).max(25).openapi('Limit')
 
 const DescribeConnectClientAddInsRequestSchema = z
   .object({
-    ResourceId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The directory identifier for which the client add-in is configured.',
-        }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: LimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return.' }),
-    ).exactOptional(),
+    ResourceId: DirectoryIdSchema.openapi({
+      description: 'The directory identifier for which the client add-in is configured.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
+    }),
+    MaxResults: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return.',
+    }),
   })
   .openapi({ required: ['ResourceId'], title: 'DescribeConnectClientAddInsRequest' })
   .openapi('DescribeConnectClientAddInsRequest')
 
 const ConnectionAliasPermissionSchema = z
   .object({
-    SharedAccountId: AwsAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Web Services account that the connection alias is shared with.',
-        }),
-    ),
-    AllowAssociation: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the specified Amazon Web Services account is allowed to associate the connection alias with a directory.',
-        }),
-    ),
+    SharedAccountId: AwsAccountSchema.openapi({
+      description:
+        'The identifier of the Amazon Web Services account that the connection alias is shared with.',
+    }),
+    AllowAssociation: BooleanObjectSchema.openapi({
+      description:
+        'Indicates whether the specified Amazon Web Services account is allowed to associate the connection alias with a directory.',
+    }),
   })
   .openapi({
     required: ['SharedAccountId', 'AllowAssociation'],
@@ -1744,40 +1387,32 @@ const ConnectionAliasPermissionsSchema = z
 
 const DescribeConnectionAliasPermissionsResultSchema = z
   .object({
-    AliasId: ConnectionAliasIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the connection alias.' }),
-    ).exactOptional(),
-    ConnectionAliasPermissions: ConnectionAliasPermissionsSchema.and(
-      z.any().openapi({ description: 'The permissions associated with a connection alias.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
-        }),
-    ).exactOptional(),
+    AliasId: ConnectionAliasIdSchema.exactOptional().openapi({
+      description: 'The identifier of the connection alias.',
+    }),
+    ConnectionAliasPermissions: ConnectionAliasPermissionsSchema.exactOptional().openapi({
+      description: 'The permissions associated with a connection alias.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeConnectionAliasPermissionsResult')
 
 const DescribeConnectionAliasPermissionsRequestSchema = z
   .object({
-    AliasId: ConnectionAliasIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the connection alias.' }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results. ',
-        }),
-    ).exactOptional(),
-    MaxResults: LimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return.' }),
-    ).exactOptional(),
+    AliasId: ConnectionAliasIdSchema.openapi({
+      description: 'The identifier of the connection alias.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results. ',
+    }),
+    MaxResults: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return.',
+    }),
   })
   .openapi({ required: ['AliasId'], title: 'DescribeConnectionAliasPermissionsRequest' })
   .openapi('DescribeConnectionAliasPermissionsRequest')
@@ -1798,32 +1433,20 @@ const AssociationStatusSchema = z
 
 const ConnectionAliasAssociationSchema = z
   .object({
-    AssociationStatus: AssociationStatusSchema.and(
-      z.any().openapi({ description: 'The association status of the connection alias.' }),
-    ).exactOptional(),
-    AssociatedAccountId: AwsAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Web Services account that associated the connection alias with a directory.',
-        }),
-    ).exactOptional(),
-    ResourceId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the directory associated with a connection alias.',
-        }),
-    ).exactOptional(),
-    ConnectionIdentifier: ConnectionIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The identifier of the connection alias association. You use the connection identifier in the DNS TXT record when you're configuring your DNS routing policies.",
-        }),
-    ).exactOptional(),
+    AssociationStatus: AssociationStatusSchema.exactOptional().openapi({
+      description: 'The association status of the connection alias.',
+    }),
+    AssociatedAccountId: AwsAccountSchema.exactOptional().openapi({
+      description:
+        'The identifier of the Amazon Web Services account that associated the connection alias with a directory.',
+    }),
+    ResourceId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The identifier of the directory associated with a connection alias.',
+    }),
+    ConnectionIdentifier: ConnectionIdentifierSchema.exactOptional().openapi({
+      description:
+        "The identifier of the connection alias association. You use the connection identifier in the DNS TXT record when you're configuring your DNS routing policies.",
+    }),
   })
   .openapi({
     description:
@@ -1840,31 +1463,23 @@ const ConnectionAliasAssociationListSchema = z
 
 const ConnectionAliasSchema = z
   .object({
-    ConnectionString: ConnectionStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The connection string specified for the connection alias. The connection string must be in the form of a fully qualified domain name (FQDN), such as <code>www.example.com</code>.',
-        }),
-    ).exactOptional(),
-    AliasId: ConnectionAliasIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the connection alias.' }),
-    ).exactOptional(),
-    State: ConnectionAliasStateSchema.and(
-      z.any().openapi({ description: 'The current state of the connection alias.' }),
-    ).exactOptional(),
-    OwnerAccountId: AwsAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Web Services account that owns the connection alias.',
-        }),
-    ).exactOptional(),
-    Associations: ConnectionAliasAssociationListSchema.and(
-      z.any().openapi({ description: 'The association status of the connection alias.' }),
-    ).exactOptional(),
+    ConnectionString: ConnectionStringSchema.exactOptional().openapi({
+      description:
+        'The connection string specified for the connection alias. The connection string must be in the form of a fully qualified domain name (FQDN), such as <code>www.example.com</code>.',
+    }),
+    AliasId: ConnectionAliasIdSchema.exactOptional().openapi({
+      description: 'The identifier of the connection alias.',
+    }),
+    State: ConnectionAliasStateSchema.exactOptional().openapi({
+      description: 'The current state of the connection alias.',
+    }),
+    OwnerAccountId: AwsAccountSchema.exactOptional().openapi({
+      description:
+        'The identifier of the Amazon Web Services account that owns the connection alias.',
+    }),
+    Associations: ConnectionAliasAssociationListSchema.exactOptional().openapi({
+      description: 'The association status of the connection alias.',
+    }),
   })
   .openapi({
     description:
@@ -1881,17 +1496,13 @@ const ConnectionAliasListSchema = z
 
 const DescribeConnectionAliasesResultSchema = z
   .object({
-    ConnectionAliases: ConnectionAliasListSchema.and(
-      z.any().openapi({ description: 'Information about the specified connection aliases.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
-        }),
-    ).exactOptional(),
+    ConnectionAliases: ConnectionAliasListSchema.exactOptional().openapi({
+      description: 'Information about the specified connection aliases.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeConnectionAliasesResult')
@@ -1904,43 +1515,33 @@ const ConnectionAliasIdListSchema = z
 
 const DescribeConnectionAliasesRequestSchema = z
   .object({
-    AliasIds: ConnectionAliasIdListSchema.and(
-      z.any().openapi({ description: 'The identifiers of the connection aliases to describe.' }),
-    ).exactOptional(),
-    ResourceId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the directory associated with the connection alias.',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of connection aliases to return.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results. ',
-        }),
-    ).exactOptional(),
+    AliasIds: ConnectionAliasIdListSchema.exactOptional().openapi({
+      description: 'The identifiers of the connection aliases to describe.',
+    }),
+    ResourceId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The identifier of the directory associated with the connection alias.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of connection aliases to return.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results. ',
+    }),
   })
   .openapi({ title: 'DescribeConnectionAliasesRequest', required: [] })
   .openapi('DescribeConnectionAliasesRequest')
 
 const WorkspacesIpGroupSchema = z
   .object({
-    groupId: IpGroupIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the group.' }),
-    ).exactOptional(),
-    groupName: IpGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the group.' }),
-    ).exactOptional(),
-    groupDesc: IpGroupDescSchema.and(
-      z.any().openapi({ description: 'The description of the group.' }),
-    ).exactOptional(),
-    userRules: IpRuleListSchema.and(z.any().openapi({ description: 'The rules.' })).exactOptional(),
+    groupId: IpGroupIdSchema.exactOptional().openapi({
+      description: 'The identifier of the group.',
+    }),
+    groupName: IpGroupNameSchema.exactOptional().openapi({ description: 'The name of the group.' }),
+    groupDesc: IpGroupDescSchema.exactOptional().openapi({
+      description: 'The description of the group.',
+    }),
+    userRules: IpRuleListSchema.exactOptional().openapi({ description: 'The rules.' }),
   })
   .openapi({ description: 'Describes an IP access control group.', required: [] })
   .openapi('WorkspacesIpGroup')
@@ -1951,58 +1552,44 @@ const WorkspacesIpGroupsListSchema = z
 
 const DescribeIpGroupsResultSchema = z
   .object({
-    Result: WorkspacesIpGroupsListSchema.and(
-      z.any().openapi({ description: 'Information about the IP access control groups.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
-        }),
-    ).exactOptional(),
+    Result: WorkspacesIpGroupsListSchema.exactOptional().openapi({
+      description: 'Information about the IP access control groups.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeIpGroupsResult')
 
 const DescribeIpGroupsRequestSchema = z
   .object({
-    GroupIds: IpGroupIdListSchema.and(
-      z.any().openapi({ description: 'The identifiers of one or more IP access control groups.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: LimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return.' }),
-    ).exactOptional(),
+    GroupIds: IpGroupIdListSchema.exactOptional().openapi({
+      description: 'The identifiers of one or more IP access control groups.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
+    }),
+    MaxResults: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return.',
+    }),
   })
   .openapi({ title: 'DescribeIpGroupsRequest', required: [] })
   .openapi('DescribeIpGroupsRequest')
 
 const DescribeTagsResultSchema = z
-  .object({
-    TagList: TagListSchema.and(z.any().openapi({ description: 'The tags.' })).exactOptional(),
-  })
+  .object({ TagList: TagListSchema.exactOptional().openapi({ description: 'The tags.' }) })
   .openapi({ required: [] })
   .openapi('DescribeTagsResult')
 
 const DescribeTagsRequestSchema = z
   .object({
-    ResourceId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the WorkSpaces resource. The supported resource types are WorkSpaces, registered directories, images, custom bundles, IP access control groups, and connection aliases.',
-        }),
-    ),
+    ResourceId: NonEmptyStringSchema.openapi({
+      description:
+        'The identifier of the WorkSpaces resource. The supported resource types are WorkSpaces, registered directories, images, custom bundles, IP access control groups, and connection aliases.',
+    }),
   })
   .openapi({ required: ['ResourceId'], title: 'DescribeTagsRequest' })
   .openapi('DescribeTagsRequest')
@@ -2011,17 +1598,13 @@ const BundleListSchema = z.array(WorkspaceBundleSchema).openapi('BundleList')
 
 const DescribeWorkspaceBundlesResultSchema = z
   .object({
-    Bundles: BundleListSchema.and(
-      z.any().openapi({ description: 'Information about the bundles.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return. This token is valid for one day and must be used within that time frame.',
-        }),
-    ).exactOptional(),
+    Bundles: BundleListSchema.exactOptional().openapi({
+      description: 'Information about the bundles.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return. This token is valid for one day and must be used within that time frame.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeWorkspaceBundlesResult')
@@ -2030,30 +1613,18 @@ const BundleIdListSchema = z.array(BundleIdSchema).min(1).max(25).openapi('Bundl
 
 const DescribeWorkspaceBundlesRequestSchema = z
   .object({
-    BundleIds: BundleIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifiers of the bundles. You cannot combine this parameter with any other filter.',
-        }),
-    ).exactOptional(),
-    Owner: BundleOwnerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The owner of the bundles. You cannot combine this parameter with any other filter.</p> <p>To describe the bundles provided by Amazon Web Services, specify <code>AMAZON</code>. To describe the bundles that belong to your account, don't specify a value.</p>",
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. (You received this token from a previous call.)',
-        }),
-    ).exactOptional(),
+    BundleIds: BundleIdListSchema.exactOptional().openapi({
+      description:
+        'The identifiers of the bundles. You cannot combine this parameter with any other filter.',
+    }),
+    Owner: BundleOwnerSchema.exactOptional().openapi({
+      description:
+        "<p>The owner of the bundles. You cannot combine this parameter with any other filter.</p> <p>To describe the bundles provided by Amazon Web Services, specify <code>AMAZON</code>. To describe the bundles that belong to your account, don't specify a value.</p>",
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. (You received this token from a previous call.)',
+    }),
   })
   .openapi({ title: 'DescribeWorkspaceBundlesRequest', required: [] })
   .openapi('DescribeWorkspaceBundlesRequest')
@@ -2094,53 +1665,29 @@ const DefaultOuSchema = z.string().openapi('DefaultOu')
 
 const DefaultWorkspaceCreationPropertiesSchema = z
   .object({
-    EnableWorkDocs: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether the directory is enabled for Amazon WorkDocs.',
-        }),
-    ).exactOptional(),
-    EnableInternetAccess: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether to automatically assign an Elastic public IP address to WorkSpaces in this directory by default. If enabled, the Elastic public IP address allows outbound internet access from your WorkSpaces when you’re using an internet gateway in the Amazon VPC in which your WorkSpaces are located. If you\'re using a Network Address Translation (NAT) gateway for outbound internet access from your VPC, or if your WorkSpaces are in public subnets and you manually assign them Elastic IP addresses, you should disable this setting. This setting applies to new WorkSpaces that you launch or to existing WorkSpaces that you rebuild. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/amazon-workspaces-vpc.html"> Configure a VPC for Amazon WorkSpaces</a>.',
-        }),
-    ).exactOptional(),
-    DefaultOu: DefaultOuSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The organizational unit (OU) in the directory for the WorkSpace machine accounts.',
-        }),
-    ).exactOptional(),
-    CustomSecurityGroupId: SecurityGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the default security group to apply to WorkSpaces when they are created. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/amazon-workspaces-security-groups.html"> Security Groups for Your WorkSpaces</a>.',
-        }),
-    ).exactOptional(),
-    UserEnabledAsLocalAdministrator: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether WorkSpace users are local administrators on their WorkSpaces.',
-        }),
-    ).exactOptional(),
-    EnableMaintenanceMode: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether maintenance mode is enabled for WorkSpaces. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/workspace-maintenance.html">WorkSpace Maintenance</a>.',
-        }),
-    ).exactOptional(),
+    EnableWorkDocs: BooleanObjectSchema.exactOptional().openapi({
+      description: 'Specifies whether the directory is enabled for Amazon WorkDocs.',
+    }),
+    EnableInternetAccess: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        'Specifies whether to automatically assign an Elastic public IP address to WorkSpaces in this directory by default. If enabled, the Elastic public IP address allows outbound internet access from your WorkSpaces when you’re using an internet gateway in the Amazon VPC in which your WorkSpaces are located. If you\'re using a Network Address Translation (NAT) gateway for outbound internet access from your VPC, or if your WorkSpaces are in public subnets and you manually assign them Elastic IP addresses, you should disable this setting. This setting applies to new WorkSpaces that you launch or to existing WorkSpaces that you rebuild. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/amazon-workspaces-vpc.html"> Configure a VPC for Amazon WorkSpaces</a>.',
+    }),
+    DefaultOu: DefaultOuSchema.exactOptional().openapi({
+      description:
+        'The organizational unit (OU) in the directory for the WorkSpace machine accounts.',
+    }),
+    CustomSecurityGroupId: SecurityGroupIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the default security group to apply to WorkSpaces when they are created. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/amazon-workspaces-security-groups.html"> Security Groups for Your WorkSpaces</a>.',
+    }),
+    UserEnabledAsLocalAdministrator: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        'Specifies whether WorkSpace users are local administrators on their WorkSpaces.',
+    }),
+    EnableMaintenanceMode: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        'Specifies whether maintenance mode is enabled for WorkSpaces. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/workspace-maintenance.html">WorkSpace Maintenance</a>.',
+    }),
   })
   .openapi({
     description:
@@ -2153,65 +1700,32 @@ const AccessPropertyValueSchema = z.enum(['ALLOW', 'DENY']).openapi('AccessPrope
 
 const WorkspaceAccessPropertiesSchema = z
   .object({
-    DeviceTypeWindows: AccessPropertyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether users can use Windows clients to access their WorkSpaces.',
-        }),
-    ).exactOptional(),
-    DeviceTypeOsx: AccessPropertyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether users can use macOS clients to access their WorkSpaces.',
-        }),
-    ).exactOptional(),
-    DeviceTypeWeb: AccessPropertyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether users can access their WorkSpaces through a web browser.',
-        }),
-    ).exactOptional(),
-    DeviceTypeIos: AccessPropertyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether users can use iOS devices to access their WorkSpaces.',
-        }),
-    ).exactOptional(),
-    DeviceTypeAndroid: AccessPropertyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether users can use Android and Android-compatible Chrome OS devices to access their WorkSpaces.',
-        }),
-    ).exactOptional(),
-    DeviceTypeChromeOs: AccessPropertyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether users can use Chromebooks to access their WorkSpaces.',
-        }),
-    ).exactOptional(),
-    DeviceTypeZeroClient: AccessPropertyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether users can use zero client devices to access their WorkSpaces.',
-        }),
-    ).exactOptional(),
-    DeviceTypeLinux: AccessPropertyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether users can use Linux clients to access their WorkSpaces.',
-        }),
-    ).exactOptional(),
+    DeviceTypeWindows: AccessPropertyValueSchema.exactOptional().openapi({
+      description: 'Indicates whether users can use Windows clients to access their WorkSpaces.',
+    }),
+    DeviceTypeOsx: AccessPropertyValueSchema.exactOptional().openapi({
+      description: 'Indicates whether users can use macOS clients to access their WorkSpaces.',
+    }),
+    DeviceTypeWeb: AccessPropertyValueSchema.exactOptional().openapi({
+      description: 'Indicates whether users can access their WorkSpaces through a web browser.',
+    }),
+    DeviceTypeIos: AccessPropertyValueSchema.exactOptional().openapi({
+      description: 'Indicates whether users can use iOS devices to access their WorkSpaces.',
+    }),
+    DeviceTypeAndroid: AccessPropertyValueSchema.exactOptional().openapi({
+      description:
+        'Indicates whether users can use Android and Android-compatible Chrome OS devices to access their WorkSpaces.',
+    }),
+    DeviceTypeChromeOs: AccessPropertyValueSchema.exactOptional().openapi({
+      description: 'Indicates whether users can use Chromebooks to access their WorkSpaces.',
+    }),
+    DeviceTypeZeroClient: AccessPropertyValueSchema.exactOptional().openapi({
+      description:
+        'Indicates whether users can use zero client devices to access their WorkSpaces.',
+    }),
+    DeviceTypeLinux: AccessPropertyValueSchema.exactOptional().openapi({
+      description: 'Indicates whether users can use Linux clients to access their WorkSpaces.',
+    }),
   })
   .openapi({
     description:
@@ -2224,40 +1738,24 @@ const TenancySchema = z.enum(['DEDICATED', 'SHARED']).openapi('Tenancy')
 
 const SelfservicePermissionsSchema = z
   .object({
-    RestartWorkspace: ReconnectEnumSchema.and(
-      z.any().openapi({ description: 'Specifies whether users can restart their WorkSpace.' }),
-    ).exactOptional(),
-    IncreaseVolumeSize: ReconnectEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether users can increase the volume size of the drives on their WorkSpace.',
-        }),
-    ).exactOptional(),
-    ChangeComputeType: ReconnectEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether users can change the compute type (bundle) for their WorkSpace.',
-        }),
-    ).exactOptional(),
-    SwitchRunningMode: ReconnectEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether users can switch the running mode of their WorkSpace.',
-        }),
-    ).exactOptional(),
-    RebuildWorkspace: ReconnectEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether users can rebuild the operating system of a WorkSpace to its original state.',
-        }),
-    ).exactOptional(),
+    RestartWorkspace: ReconnectEnumSchema.exactOptional().openapi({
+      description: 'Specifies whether users can restart their WorkSpace.',
+    }),
+    IncreaseVolumeSize: ReconnectEnumSchema.exactOptional().openapi({
+      description:
+        'Specifies whether users can increase the volume size of the drives on their WorkSpace.',
+    }),
+    ChangeComputeType: ReconnectEnumSchema.exactOptional().openapi({
+      description:
+        'Specifies whether users can change the compute type (bundle) for their WorkSpace.',
+    }),
+    SwitchRunningMode: ReconnectEnumSchema.exactOptional().openapi({
+      description: 'Specifies whether users can switch the running mode of their WorkSpace.',
+    }),
+    RebuildWorkspace: ReconnectEnumSchema.exactOptional().openapi({
+      description:
+        'Specifies whether users can rebuild the operating system of a WorkSpace to its original state.',
+    }),
   })
   .openapi({
     description:
@@ -2279,30 +1777,18 @@ const SamlUserAccessUrlSchema = z
 
 const SamlPropertiesSchema = z
   .object({
-    Status: SamlStatusEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates the status of SAML 2.0 authentication. These statuses include the following.</p> <ul> <li> <p>If the setting is <code>DISABLED</code>, end users will be directed to login with their directory credentials.</p> </li> <li> <p>If the setting is <code>ENABLED</code>, end users will be directed to login via the user access URL. Users attempting to connect to WorkSpaces from a client application that does not support SAML 2.0 authentication will not be able to connect.</p> </li> <li> <p>If the setting is <code>ENABLED_WITH_DIRECTORY_LOGIN_FALLBACK</code>, end users will be directed to login via the user access URL on supported client applications, but will not prevent clients that do not support SAML 2.0 authentication from connecting as if SAML 2.0 authentication was disabled.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    UserAccessUrl: SamlUserAccessUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SAML 2.0 identity provider (IdP) user access URL is the URL a user would navigate to in their web browser in order to federate from the IdP and directly access the application, without any SAML 2.0 service provider (SP) bindings.',
-        }),
-    ).exactOptional(),
-    RelayStateParameterName: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The relay state parameter name supported by the SAML 2.0 identity provider (IdP). When the end user is redirected to the user access URL from the WorkSpaces client application, this relay state parameter name is appended as a query parameter to the URL along with the relay state endpoint to return the user to the client application session.</p> <p>To use SAML 2.0 authentication with WorkSpaces, the IdP must support IdP-initiated deep linking for the relay state URL. Consult your IdP documentation for more information.</p>',
-        }),
-    ).exactOptional(),
+    Status: SamlStatusEnumSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates the status of SAML 2.0 authentication. These statuses include the following.</p> <ul> <li> <p>If the setting is <code>DISABLED</code>, end users will be directed to login with their directory credentials.</p> </li> <li> <p>If the setting is <code>ENABLED</code>, end users will be directed to login via the user access URL. Users attempting to connect to WorkSpaces from a client application that does not support SAML 2.0 authentication will not be able to connect.</p> </li> <li> <p>If the setting is <code>ENABLED_WITH_DIRECTORY_LOGIN_FALLBACK</code>, end users will be directed to login via the user access URL on supported client applications, but will not prevent clients that do not support SAML 2.0 authentication from connecting as if SAML 2.0 authentication was disabled.</p> </li> </ul>',
+    }),
+    UserAccessUrl: SamlUserAccessUrlSchema.exactOptional().openapi({
+      description:
+        'The SAML 2.0 identity provider (IdP) user access URL is the URL a user would navigate to in their web browser in order to federate from the IdP and directly access the application, without any SAML 2.0 service provider (SP) bindings.',
+    }),
+    RelayStateParameterName: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        '<p>The relay state parameter name supported by the SAML 2.0 identity provider (IdP). When the end user is redirected to the user access URL from the WorkSpaces client application, this relay state parameter name is appended as a query parameter to the URL along with the relay state endpoint to return the user to the client application session.</p> <p>To use SAML 2.0 authentication with WorkSpaces, the IdP must support IdP-initiated deep linking for the relay state URL. Consult your IdP documentation for more information.</p>',
+    }),
   })
   .openapi({
     description:
@@ -2324,19 +1810,13 @@ const CertificateAuthorityArnSchema = z
 
 const CertificateBasedAuthPropertiesSchema = z
   .object({
-    Status: CertificateBasedAuthStatusEnumSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The status of the certificate-based authentication properties.' }),
-    ).exactOptional(),
-    CertificateAuthorityArn: CertificateAuthorityArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon Web Services Certificate Manager Private CA resource.',
-        }),
-    ).exactOptional(),
+    Status: CertificateBasedAuthStatusEnumSchema.exactOptional().openapi({
+      description: 'The status of the certificate-based authentication properties.',
+    }),
+    CertificateAuthorityArn: CertificateAuthorityArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon Web Services Certificate Manager Private CA resource.',
+    }),
   })
   .openapi({
     description:
@@ -2347,111 +1827,64 @@ const CertificateBasedAuthPropertiesSchema = z
 
 const WorkspaceDirectorySchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The directory identifier.' }),
-    ).exactOptional(),
-    Alias: AliasSchema.and(
-      z.any().openapi({ description: 'The directory alias.' }),
-    ).exactOptional(),
-    DirectoryName: DirectoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the directory.' }),
-    ).exactOptional(),
-    RegistrationCode: RegistrationCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The registration code for the directory. This is the code that users enter in their Amazon WorkSpaces client application to connect to the directory.',
-        }),
-    ).exactOptional(),
-    SubnetIds: SubnetIdsSchema.and(
-      z.any().openapi({ description: 'The identifiers of the subnets used with the directory.' }),
-    ).exactOptional(),
-    DnsIpAddresses: DnsIpAddressesSchema.and(
-      z.any().openapi({ description: 'The IP addresses of the DNS servers for the directory.' }),
-    ).exactOptional(),
-    CustomerUserName: UserNameSchema.and(
-      z.any().openapi({ description: 'The user name for the service account.' }),
-    ).exactOptional(),
-    IamRoleId: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the IAM role. This is the role that allows Amazon WorkSpaces to make calls to other services, such as Amazon EC2, on your behalf.',
-        }),
-    ).exactOptional(),
-    DirectoryType: WorkspaceDirectoryTypeSchema.and(
-      z.any().openapi({ description: 'The directory type.' }),
-    ).exactOptional(),
-    WorkspaceSecurityGroupId: SecurityGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the security group that is assigned to new WorkSpaces.',
-        }),
-    ).exactOptional(),
-    State: WorkspaceDirectoryStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state of the directory\'s registration with Amazon WorkSpaces. After a directory is deregistered, the <code>DEREGISTERED</code> state is returned very briefly before the directory metadata is cleaned up, so this state is rarely returned. To confirm that a directory is deregistered, check for the directory ID by using <a href="https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaceDirectories.html"> DescribeWorkspaceDirectories</a>. If the directory ID isn\'t returned, then the directory has been successfully deregistered.',
-        }),
-    ).exactOptional(),
-    WorkspaceCreationProperties: DefaultWorkspaceCreationPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The default creation properties for all WorkSpaces in the directory.',
-        }),
-    ).exactOptional(),
-    ipGroupIds: IpGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifiers of the IP access control groups associated with the directory.',
-        }),
-    ).exactOptional(),
-    WorkspaceAccessProperties: WorkspaceAccessPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The devices and operating systems that users can use to access WorkSpaces.',
-        }),
-    ).exactOptional(),
-    Tenancy: TenancySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the directory is dedicated or shared. To use Bring Your Own License (BYOL), this value must be set to <code>DEDICATED</code>. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.html">Bring Your Own Windows Desktop Images</a>.',
-        }),
-    ).exactOptional(),
-    SelfservicePermissions: SelfservicePermissionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The default self-service permissions for WorkSpaces in the directory.',
-        }),
-    ).exactOptional(),
-    SamlProperties: SamlPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the enablement status, user access URL, and relay state parameter name that are used for configuring federation with an SAML 2.0 identity provider.',
-        }),
-    ).exactOptional(),
-    CertificateBasedAuthProperties: CertificateBasedAuthPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The certificate-based authentication properties used to authenticate SAML 2.0 Identity Provider (IdP) user identities to Active Directory for WorkSpaces login.',
-        }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description: 'The directory identifier.',
+    }),
+    Alias: AliasSchema.exactOptional().openapi({ description: 'The directory alias.' }),
+    DirectoryName: DirectoryNameSchema.exactOptional().openapi({
+      description: 'The name of the directory.',
+    }),
+    RegistrationCode: RegistrationCodeSchema.exactOptional().openapi({
+      description:
+        'The registration code for the directory. This is the code that users enter in their Amazon WorkSpaces client application to connect to the directory.',
+    }),
+    SubnetIds: SubnetIdsSchema.exactOptional().openapi({
+      description: 'The identifiers of the subnets used with the directory.',
+    }),
+    DnsIpAddresses: DnsIpAddressesSchema.exactOptional().openapi({
+      description: 'The IP addresses of the DNS servers for the directory.',
+    }),
+    CustomerUserName: UserNameSchema.exactOptional().openapi({
+      description: 'The user name for the service account.',
+    }),
+    IamRoleId: ARNSchema.exactOptional().openapi({
+      description:
+        'The identifier of the IAM role. This is the role that allows Amazon WorkSpaces to make calls to other services, such as Amazon EC2, on your behalf.',
+    }),
+    DirectoryType: WorkspaceDirectoryTypeSchema.exactOptional().openapi({
+      description: 'The directory type.',
+    }),
+    WorkspaceSecurityGroupId: SecurityGroupIdSchema.exactOptional().openapi({
+      description: 'The identifier of the security group that is assigned to new WorkSpaces.',
+    }),
+    State: WorkspaceDirectoryStateSchema.exactOptional().openapi({
+      description:
+        'The state of the directory\'s registration with Amazon WorkSpaces. After a directory is deregistered, the <code>DEREGISTERED</code> state is returned very briefly before the directory metadata is cleaned up, so this state is rarely returned. To confirm that a directory is deregistered, check for the directory ID by using <a href="https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaceDirectories.html"> DescribeWorkspaceDirectories</a>. If the directory ID isn\'t returned, then the directory has been successfully deregistered.',
+    }),
+    WorkspaceCreationProperties: DefaultWorkspaceCreationPropertiesSchema.exactOptional().openapi({
+      description: 'The default creation properties for all WorkSpaces in the directory.',
+    }),
+    ipGroupIds: IpGroupIdListSchema.exactOptional().openapi({
+      description: 'The identifiers of the IP access control groups associated with the directory.',
+    }),
+    WorkspaceAccessProperties: WorkspaceAccessPropertiesSchema.exactOptional().openapi({
+      description: 'The devices and operating systems that users can use to access WorkSpaces.',
+    }),
+    Tenancy: TenancySchema.exactOptional().openapi({
+      description:
+        'Specifies whether the directory is dedicated or shared. To use Bring Your Own License (BYOL), this value must be set to <code>DEDICATED</code>. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.html">Bring Your Own Windows Desktop Images</a>.',
+    }),
+    SelfservicePermissions: SelfservicePermissionsSchema.exactOptional().openapi({
+      description: 'The default self-service permissions for WorkSpaces in the directory.',
+    }),
+    SamlProperties: SamlPropertiesSchema.exactOptional().openapi({
+      description:
+        'Describes the enablement status, user access URL, and relay state parameter name that are used for configuring federation with an SAML 2.0 identity provider.',
+    }),
+    CertificateBasedAuthProperties: CertificateBasedAuthPropertiesSchema.exactOptional().openapi({
+      description:
+        'The certificate-based authentication properties used to authenticate SAML 2.0 Identity Provider (IdP) user identities to Active Directory for WorkSpaces login.',
+    }),
   })
   .openapi({
     description: 'Describes a directory that is used with Amazon WorkSpaces.',
@@ -2463,17 +1896,13 @@ const DirectoryListSchema = z.array(WorkspaceDirectorySchema).openapi('Directory
 
 const DescribeWorkspaceDirectoriesResultSchema = z
   .object({
-    Directories: DirectoryListSchema.and(
-      z.any().openapi({ description: 'Information about the directories.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
-        }),
-    ).exactOptional(),
+    Directories: DirectoryListSchema.exactOptional().openapi({
+      description: 'Information about the directories.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeWorkspaceDirectoriesResult')
@@ -2482,39 +1911,27 @@ const DirectoryIdListSchema = z.array(DirectoryIdSchema).min(1).max(25).openapi(
 
 const DescribeWorkspaceDirectoriesRequestSchema = z
   .object({
-    DirectoryIds: DirectoryIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifiers of the directories. If the value is null, all directories are retrieved.',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of directories to return.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
-        }),
-    ).exactOptional(),
+    DirectoryIds: DirectoryIdListSchema.exactOptional().openapi({
+      description:
+        'The identifiers of the directories. If the value is null, all directories are retrieved.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of directories to return.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
+    }),
   })
   .openapi({ title: 'DescribeWorkspaceDirectoriesRequest', required: [] })
   .openapi('DescribeWorkspaceDirectoriesRequest')
 
 const ImagePermissionSchema = z
   .object({
-    SharedAccountId: AwsAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the Amazon Web Services account that an image has been shared with.',
-        }),
-    ).exactOptional(),
+    SharedAccountId: AwsAccountSchema.exactOptional().openapi({
+      description:
+        'The identifier of the Amazon Web Services account that an image has been shared with.',
+    }),
   })
   .openapi({
     description:
@@ -2527,45 +1944,31 @@ const ImagePermissionsSchema = z.array(ImagePermissionSchema).openapi('ImagePerm
 
 const DescribeWorkspaceImagePermissionsResultSchema = z
   .object({
-    ImageId: WorkspaceImageIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the image.' }),
-    ).exactOptional(),
-    ImagePermissions: ImagePermissionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifiers of the Amazon Web Services accounts that the image has been shared with.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
-        }),
-    ).exactOptional(),
+    ImageId: WorkspaceImageIdSchema.exactOptional().openapi({
+      description: 'The identifier of the image.',
+    }),
+    ImagePermissions: ImagePermissionsSchema.exactOptional().openapi({
+      description:
+        'The identifiers of the Amazon Web Services accounts that the image has been shared with.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeWorkspaceImagePermissionsResult')
 
 const DescribeWorkspaceImagePermissionsRequestSchema = z
   .object({
-    ImageId: WorkspaceImageIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the image.' }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: LimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return.' }),
-    ).exactOptional(),
+    ImageId: WorkspaceImageIdSchema.openapi({ description: 'The identifier of the image.' }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
+    }),
+    MaxResults: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return.',
+    }),
   })
   .openapi({ required: ['ImageId'], title: 'DescribeWorkspaceImagePermissionsRequest' })
   .openapi('DescribeWorkspaceImagePermissionsRequest')
@@ -2581,22 +1984,14 @@ const UpdateDescriptionSchema = z
 
 const UpdateResultSchema = z
   .object({
-    UpdateAvailable: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether updated drivers or other components are available for the specified WorkSpace image.',
-        }),
-    ).exactOptional(),
-    Description: UpdateDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of whether updates for the WorkSpace image are pending or available.',
-        }),
-    ).exactOptional(),
+    UpdateAvailable: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        'Indicates whether updated drivers or other components are available for the specified WorkSpace image.',
+    }),
+    Description: UpdateDescriptionSchema.exactOptional().openapi({
+      description:
+        'A description of whether updates for the WorkSpace image are pending or available.',
+    }),
   })
   .openapi({
     description:
@@ -2607,59 +2002,41 @@ const UpdateResultSchema = z
 
 const WorkspaceImageSchema = z
   .object({
-    ImageId: WorkspaceImageIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the image.' }),
-    ).exactOptional(),
-    Name: WorkspaceImageNameSchema.and(
-      z.any().openapi({ description: 'The name of the image.' }),
-    ).exactOptional(),
-    Description: WorkspaceImageDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the image.' }),
-    ).exactOptional(),
-    OperatingSystem: OperatingSystemSchema.and(
-      z.any().openapi({ description: 'The operating system that the image is running. ' }),
-    ).exactOptional(),
-    State: WorkspaceImageStateSchema.and(
-      z.any().openapi({ description: 'The status of the image.' }),
-    ).exactOptional(),
-    RequiredTenancy: WorkspaceImageRequiredTenancySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the image is running on dedicated hardware. When Bring Your Own License (BYOL) is enabled, this value is set to <code>DEDICATED</code>. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.html">Bring Your Own Windows Desktop Images</a>.',
-        }),
-    ).exactOptional(),
-    ErrorCode: WorkspaceImageErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code that is returned for the image.' }),
-    ).exactOptional(),
-    ErrorMessage: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The text of the error message that is returned for the image.' }),
-    ).exactOptional(),
-    Created: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date when the image was created. If the image has been shared, the Amazon Web Services account that the image has been shared with sees the original creation date of the image.',
-        }),
-    ).exactOptional(),
-    OwnerAccountId: AwsAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the Amazon Web Services account that owns the image.',
-        }),
-    ).exactOptional(),
-    Updates: UpdateResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The updates (if any) that are available for the specified image.',
-        }),
-    ).exactOptional(),
+    ImageId: WorkspaceImageIdSchema.exactOptional().openapi({
+      description: 'The identifier of the image.',
+    }),
+    Name: WorkspaceImageNameSchema.exactOptional().openapi({
+      description: 'The name of the image.',
+    }),
+    Description: WorkspaceImageDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the image.',
+    }),
+    OperatingSystem: OperatingSystemSchema.exactOptional().openapi({
+      description: 'The operating system that the image is running. ',
+    }),
+    State: WorkspaceImageStateSchema.exactOptional().openapi({
+      description: 'The status of the image.',
+    }),
+    RequiredTenancy: WorkspaceImageRequiredTenancySchema.exactOptional().openapi({
+      description:
+        'Specifies whether the image is running on dedicated hardware. When Bring Your Own License (BYOL) is enabled, this value is set to <code>DEDICATED</code>. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.html">Bring Your Own Windows Desktop Images</a>.',
+    }),
+    ErrorCode: WorkspaceImageErrorCodeSchema.exactOptional().openapi({
+      description: 'The error code that is returned for the image.',
+    }),
+    ErrorMessage: DescriptionSchema.exactOptional().openapi({
+      description: 'The text of the error message that is returned for the image.',
+    }),
+    Created: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date when the image was created. If the image has been shared, the Amazon Web Services account that the image has been shared with sees the original creation date of the image.',
+    }),
+    OwnerAccountId: AwsAccountSchema.exactOptional().openapi({
+      description: 'The identifier of the Amazon Web Services account that owns the image.',
+    }),
+    Updates: UpdateResultSchema.exactOptional().openapi({
+      description: 'The updates (if any) that are available for the specified image.',
+    }),
   })
   .openapi({ description: 'Describes a WorkSpace image.', required: [] })
   .openapi('WorkspaceImage')
@@ -2668,17 +2045,13 @@ const WorkspaceImageListSchema = z.array(WorkspaceImageSchema).openapi('Workspac
 
 const DescribeWorkspaceImagesResultSchema = z
   .object({
-    Images: WorkspaceImageListSchema.and(
-      z.any().openapi({ description: 'Information about the images.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
-        }),
-    ).exactOptional(),
+    Images: WorkspaceImageListSchema.exactOptional().openapi({
+      description: 'Information about the images.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeWorkspaceImagesResult')
@@ -2693,32 +2066,28 @@ const ImageTypeSchema = z.enum(['OWNED', 'SHARED']).openapi('ImageType')
 
 const DescribeWorkspaceImagesRequestSchema = z
   .object({
-    ImageIds: WorkspaceImageIdListSchema.and(
-      z.any().openapi({ description: 'The identifier of the image.' }),
-    ).exactOptional(),
-    ImageType: ImageTypeSchema.and(
-      z.any().openapi({ description: 'The type (owned or shared) of the image.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: LimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return.' }),
-    ).exactOptional(),
+    ImageIds: WorkspaceImageIdListSchema.exactOptional().openapi({
+      description: 'The identifier of the image.',
+    }),
+    ImageType: ImageTypeSchema.exactOptional().openapi({
+      description: 'The type (owned or shared) of the image.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
+    }),
+    MaxResults: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return.',
+    }),
   })
   .openapi({ title: 'DescribeWorkspaceImagesRequest', required: [] })
   .openapi('DescribeWorkspaceImagesRequest')
 
 const SnapshotSchema = z
   .object({
-    SnapshotTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the snapshot was created.' }),
-    ).exactOptional(),
+    SnapshotTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the snapshot was created.',
+    }),
   })
   .openapi({ description: 'Describes a snapshot.', required: [] })
   .openapi('Snapshot')
@@ -2727,53 +2096,35 @@ const SnapshotListSchema = z.array(SnapshotSchema).openapi('SnapshotList')
 
 const DescribeWorkspaceSnapshotsResultSchema = z
   .object({
-    RebuildSnapshots: SnapshotListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the snapshots that can be used to rebuild a WorkSpace. These snapshots include the user volume.',
-        }),
-    ).exactOptional(),
-    RestoreSnapshots: SnapshotListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the snapshots that can be used to restore a WorkSpace. These snapshots include both the root volume and the user volume.',
-        }),
-    ).exactOptional(),
+    RebuildSnapshots: SnapshotListSchema.exactOptional().openapi({
+      description:
+        'Information about the snapshots that can be used to rebuild a WorkSpace. These snapshots include the user volume.',
+    }),
+    RestoreSnapshots: SnapshotListSchema.exactOptional().openapi({
+      description:
+        'Information about the snapshots that can be used to restore a WorkSpace. These snapshots include both the root volume and the user volume.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeWorkspaceSnapshotsResult')
 
 const DescribeWorkspaceSnapshotsRequestSchema = z
   .object({
-    WorkspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the WorkSpace.' }),
-    ),
+    WorkspaceId: WorkspaceIdSchema.openapi({ description: 'The identifier of the WorkSpace.' }),
   })
   .openapi({ required: ['WorkspaceId'], title: 'DescribeWorkspaceSnapshotsRequest' })
   .openapi('DescribeWorkspaceSnapshotsRequest')
 
 const DescribeWorkspacesResultSchema = z
   .object({
-    Workspaces: WorkspaceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the WorkSpaces.</p> <p>Because <a>CreateWorkspaces</a> is an asynchronous operation, some of the returned information could be incomplete.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
-        }),
-    ).exactOptional(),
+    Workspaces: WorkspaceListSchema.exactOptional().openapi({
+      description:
+        '<p>Information about the WorkSpaces.</p> <p>Because <a>CreateWorkspaces</a> is an asynchronous operation, some of the returned information could be incomplete.</p>',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeWorkspacesResult')
@@ -2782,49 +2133,29 @@ const WorkspaceIdListSchema = z.array(WorkspaceIdSchema).min(1).max(25).openapi(
 
 const DescribeWorkspacesRequestSchema = z
   .object({
-    WorkspaceIds: WorkspaceIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifiers of the WorkSpaces. You cannot combine this parameter with any other filter.</p> <p>Because the <a>CreateWorkspaces</a> operation is asynchronous, the identifier it returns is not immediately available. If you immediately call <a>DescribeWorkspaces</a> with this identifier, no information is returned.</p>',
-        }),
-    ).exactOptional(),
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the directory. In addition, you can optionally specify a specific directory user (see <code>UserName</code>). You cannot combine this parameter with any other filter.',
-        }),
-    ).exactOptional(),
-    UserName: UserNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the directory user. You must specify this parameter with <code>DirectoryId</code>.',
-        }),
-    ).exactOptional(),
-    BundleId: BundleIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the bundle. All WorkSpaces that are created from this bundle are retrieved. You cannot combine this parameter with any other filter.',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
-        }),
-    ).exactOptional(),
+    WorkspaceIds: WorkspaceIdListSchema.exactOptional().openapi({
+      description:
+        '<p>The identifiers of the WorkSpaces. You cannot combine this parameter with any other filter.</p> <p>Because the <a>CreateWorkspaces</a> operation is asynchronous, the identifier it returns is not immediately available. If you immediately call <a>DescribeWorkspaces</a> with this identifier, no information is returned.</p>',
+    }),
+    DirectoryId: DirectoryIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the directory. In addition, you can optionally specify a specific directory user (see <code>UserName</code>). You cannot combine this parameter with any other filter.',
+    }),
+    UserName: UserNameSchema.exactOptional().openapi({
+      description:
+        'The name of the directory user. You must specify this parameter with <code>DirectoryId</code>.',
+    }),
+    BundleId: BundleIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the bundle. All WorkSpaces that are created from this bundle are retrieved. You cannot combine this parameter with any other filter.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
+    }),
   })
   .openapi({ title: 'DescribeWorkspacesRequest', required: [] })
   .openapi('DescribeWorkspacesRequest')
@@ -2835,23 +2166,19 @@ const ConnectionStateSchema = z
 
 const WorkspaceConnectionStatusSchema = z
   .object({
-    WorkspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the WorkSpace.' }),
-    ).exactOptional(),
-    ConnectionState: ConnectionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The connection state of the WorkSpace. The connection state is unknown if the WorkSpace is stopped.',
-        }),
-    ).exactOptional(),
-    ConnectionStateCheckTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of the connection status check.' }),
-    ).exactOptional(),
-    LastKnownUserConnectionTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of the last known user connection.' }),
-    ).exactOptional(),
+    WorkspaceId: WorkspaceIdSchema.exactOptional().openapi({
+      description: 'The identifier of the WorkSpace.',
+    }),
+    ConnectionState: ConnectionStateSchema.exactOptional().openapi({
+      description:
+        'The connection state of the WorkSpace. The connection state is unknown if the WorkSpace is stopped.',
+    }),
+    ConnectionStateCheckTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of the connection status check.',
+    }),
+    LastKnownUserConnectionTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of the last known user connection.',
+    }),
   })
   .openapi({ description: 'Describes the connection status of a WorkSpace.', required: [] })
   .openapi('WorkspaceConnectionStatus')
@@ -2862,89 +2189,75 @@ const WorkspaceConnectionStatusListSchema = z
 
 const DescribeWorkspacesConnectionStatusResultSchema = z
   .object({
-    WorkspacesConnectionStatus: WorkspaceConnectionStatusListSchema.and(
-      z.any().openapi({ description: 'Information about the connection status of the WorkSpace.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
-        }),
-    ).exactOptional(),
+    WorkspacesConnectionStatus: WorkspaceConnectionStatusListSchema.exactOptional().openapi({
+      description: 'Information about the connection status of the WorkSpace.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeWorkspacesConnectionStatusResult')
 
 const DescribeWorkspacesConnectionStatusRequestSchema = z
   .object({
-    WorkspaceIds: WorkspaceIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifiers of the WorkSpaces. You can specify up to 25 WorkSpaces.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
-        }),
-    ).exactOptional(),
+    WorkspaceIds: WorkspaceIdListSchema.exactOptional().openapi({
+      description: 'The identifiers of the WorkSpaces. You can specify up to 25 WorkSpaces.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
+    }),
   })
   .openapi({ title: 'DescribeWorkspacesConnectionStatusRequest', required: [] })
   .openapi('DescribeWorkspacesConnectionStatusRequest')
 
 const DisassociateConnectionAliasResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateConnectionAliasResult')
 
 const DisassociateConnectionAliasRequestSchema = z
   .object({
-    AliasId: ConnectionAliasIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the connection alias to disassociate.' }),
-    ),
+    AliasId: ConnectionAliasIdSchema.openapi({
+      description: 'The identifier of the connection alias to disassociate.',
+    }),
   })
   .openapi({ required: ['AliasId'], title: 'DisassociateConnectionAliasRequest' })
   .openapi('DisassociateConnectionAliasRequest')
 
-const DisassociateIpGroupsResultSchema = z.object({}).openapi('DisassociateIpGroupsResult')
+const DisassociateIpGroupsResultSchema = z.looseObject({}).openapi('DisassociateIpGroupsResult')
 
 const DisassociateIpGroupsRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory.' }),
-    ),
-    GroupIds: IpGroupIdListSchema.and(
-      z.any().openapi({ description: 'The identifiers of one or more IP access control groups.' }),
-    ),
+    DirectoryId: DirectoryIdSchema.openapi({ description: 'The identifier of the directory.' }),
+    GroupIds: IpGroupIdListSchema.openapi({
+      description: 'The identifiers of one or more IP access control groups.',
+    }),
   })
   .openapi({ required: ['DirectoryId', 'GroupIds'], title: 'DisassociateIpGroupsRequest' })
   .openapi('DisassociateIpGroupsRequest')
 
 const ImportClientBrandingResultSchema = z
   .object({
-    DeviceTypeWindows: DefaultClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information configured for Windows devices.' }),
-    ).exactOptional(),
-    DeviceTypeOsx: DefaultClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information configured for macOS devices.' }),
-    ).exactOptional(),
-    DeviceTypeAndroid: DefaultClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information configured for Android devices.' }),
-    ).exactOptional(),
-    DeviceTypeIos: IosClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information configured for iOS devices.' }),
-    ).exactOptional(),
-    DeviceTypeLinux: DefaultClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information configured for Linux devices.' }),
-    ).exactOptional(),
-    DeviceTypeWeb: DefaultClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information configured for web access.' }),
-    ).exactOptional(),
+    DeviceTypeWindows: DefaultClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information configured for Windows devices.',
+    }),
+    DeviceTypeOsx: DefaultClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information configured for macOS devices.',
+    }),
+    DeviceTypeAndroid: DefaultClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information configured for Android devices.',
+    }),
+    DeviceTypeIos: IosClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information configured for iOS devices.',
+    }),
+    DeviceTypeLinux: DefaultClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information configured for Linux devices.',
+    }),
+    DeviceTypeWeb: DefaultClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information configured for web access.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ImportClientBrandingResult')
@@ -2953,46 +2266,26 @@ const DefaultLogoSchema = z.string().min(1).max(1500000).openapi('DefaultLogo')
 
 const DefaultImportClientBrandingAttributesSchema = z
   .object({
-    Logo: DefaultLogoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The logo. The only image format accepted is a binary data object that is converted from a <code>.png</code> file.',
-        }),
-    ).exactOptional(),
-    SupportEmail: ClientEmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The support email. The company's customer support email address.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default email is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
-    SupportLink: ClientUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The support link. The link for the company's customer support page for their WorkSpace.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default support link is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
-    ForgotPasswordLink: ClientUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The forgotten password link. This is the web address that users can go to if they forget the password for their WorkSpace.',
-        }),
-    ).exactOptional(),
-    LoginMessage: LoginMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. The HTML tags supported include the following: <code>a, b, blockquote, br, cite, code, dd, dl, dt, div, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul</code>.',
-        }),
-    ).exactOptional(),
+    Logo: DefaultLogoSchema.exactOptional().openapi({
+      description:
+        'The logo. The only image format accepted is a binary data object that is converted from a <code>.png</code> file.',
+    }),
+    SupportEmail: ClientEmailSchema.exactOptional().openapi({
+      description:
+        "<p>The support email. The company's customer support email address.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default email is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>",
+    }),
+    SupportLink: ClientUrlSchema.exactOptional().openapi({
+      description:
+        "<p>The support link. The link for the company's customer support page for their WorkSpace.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default support link is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>",
+    }),
+    ForgotPasswordLink: ClientUrlSchema.exactOptional().openapi({
+      description:
+        'The forgotten password link. This is the web address that users can go to if they forget the password for their WorkSpace.',
+    }),
+    LoginMessage: LoginMessageSchema.exactOptional().openapi({
+      description:
+        'The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. The HTML tags supported include the following: <code>a, b, blockquote, br, cite, code, dd, dl, dt, div, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul</code>.',
+    }),
   })
   .openapi({
     description:
@@ -3009,62 +2302,34 @@ const Ios3XLogoSchema = z.string().min(1).max(1770000).openapi('Ios3XLogo')
 
 const IosImportClientBrandingAttributesSchema = z
   .object({
-    Logo: IosLogoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The logo. This is the standard-resolution display that has a 1:1 pixel density (or @1x), where one pixel is equal to one point. The only image format accepted is a binary data object that is converted from a <code>.png</code> file.',
-        }),
-    ).exactOptional(),
-    Logo2x: Ios2XLogoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The @2x version of the logo. This is the higher resolution display that offers a scale factor of 2.0 (or @2x). The only image format accepted is a binary data object that is converted from a <code>.png</code> file.</p> <note> <p> For more information about iOS image size and resolution, see <a href="https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/">Image Size and Resolution </a> in the <i>Apple Human Interface Guidelines</i>.</p> </note>',
-        }),
-    ).exactOptional(),
-    Logo3x: Ios3XLogoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The @3x version of the logo. This is the higher resolution display that offers a scale factor of 3.0 (or @3x). The only image format accepted is a binary data object that is converted from a <code>.png</code> file.</p> <note> <p> For more information about iOS image size and resolution, see <a href="https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/">Image Size and Resolution </a> in the <i>Apple Human Interface Guidelines</i>.</p> </note>',
-        }),
-    ).exactOptional(),
-    SupportEmail: ClientEmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The support email. The company's customer support email address.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default email is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
-    SupportLink: ClientUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The support link. The link for the company's customer support page for their WorkSpace.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default support link is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
-    ForgotPasswordLink: ClientUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The forgotten password link. This is the web address that users can go to if they forget the password for their WorkSpace.',
-        }),
-    ).exactOptional(),
-    LoginMessage: LoginMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. The HTML tags supported include the following: <code>a, b, blockquote, br, cite, code, dd, dl, dt, div, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul</code>.',
-        }),
-    ).exactOptional(),
+    Logo: IosLogoSchema.exactOptional().openapi({
+      description:
+        'The logo. This is the standard-resolution display that has a 1:1 pixel density (or @1x), where one pixel is equal to one point. The only image format accepted is a binary data object that is converted from a <code>.png</code> file.',
+    }),
+    Logo2x: Ios2XLogoSchema.exactOptional().openapi({
+      description:
+        '<p>The @2x version of the logo. This is the higher resolution display that offers a scale factor of 2.0 (or @2x). The only image format accepted is a binary data object that is converted from a <code>.png</code> file.</p> <note> <p> For more information about iOS image size and resolution, see <a href="https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/">Image Size and Resolution </a> in the <i>Apple Human Interface Guidelines</i>.</p> </note>',
+    }),
+    Logo3x: Ios3XLogoSchema.exactOptional().openapi({
+      description:
+        '<p>The @3x version of the logo. This is the higher resolution display that offers a scale factor of 3.0 (or @3x). The only image format accepted is a binary data object that is converted from a <code>.png</code> file.</p> <note> <p> For more information about iOS image size and resolution, see <a href="https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/">Image Size and Resolution </a> in the <i>Apple Human Interface Guidelines</i>.</p> </note>',
+    }),
+    SupportEmail: ClientEmailSchema.exactOptional().openapi({
+      description:
+        "<p>The support email. The company's customer support email address.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default email is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>",
+    }),
+    SupportLink: ClientUrlSchema.exactOptional().openapi({
+      description:
+        "<p>The support link. The link for the company's customer support page for their WorkSpace.</p> <note> <ul> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify one parameter for each platform type, but not both.</p> </li> <li> <p>The default support link is <code>workspaces-feedback@amazon.com</code>.</p> </li> </ul> </note>",
+    }),
+    ForgotPasswordLink: ClientUrlSchema.exactOptional().openapi({
+      description:
+        'The forgotten password link. This is the web address that users can go to if they forget the password for their WorkSpace.',
+    }),
+    LoginMessage: LoginMessageSchema.exactOptional().openapi({
+      description:
+        'The login message. Specified as a key value pair, in which the key is a locale and the value is the localized message for that locale. The only key supported is <code>en_US</code>. The HTML tags supported include the following: <code>a, b, blockquote, br, cite, code, dd, dl, dt, div, em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul</code>.',
+    }),
   })
   .openapi({
     description:
@@ -3075,41 +2340,37 @@ const IosImportClientBrandingAttributesSchema = z
 
 const ImportClientBrandingRequestSchema = z
   .object({
-    ResourceId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The directory identifier of the WorkSpace for which you want to import client branding.',
-        }),
-    ),
-    DeviceTypeWindows: DefaultImportClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information to import for Windows devices.' }),
-    ).exactOptional(),
-    DeviceTypeOsx: DefaultImportClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information to import for macOS devices.' }),
-    ).exactOptional(),
-    DeviceTypeAndroid: DefaultImportClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information to import for Android devices.' }),
-    ).exactOptional(),
-    DeviceTypeIos: IosImportClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information to import for iOS devices.' }),
-    ).exactOptional(),
-    DeviceTypeLinux: DefaultImportClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information to import for Linux devices.' }),
-    ).exactOptional(),
-    DeviceTypeWeb: DefaultImportClientBrandingAttributesSchema.and(
-      z.any().openapi({ description: 'The branding information to import for web access.' }),
-    ).exactOptional(),
+    ResourceId: DirectoryIdSchema.openapi({
+      description:
+        'The directory identifier of the WorkSpace for which you want to import client branding.',
+    }),
+    DeviceTypeWindows: DefaultImportClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information to import for Windows devices.',
+    }),
+    DeviceTypeOsx: DefaultImportClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information to import for macOS devices.',
+    }),
+    DeviceTypeAndroid: DefaultImportClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information to import for Android devices.',
+    }),
+    DeviceTypeIos: IosImportClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information to import for iOS devices.',
+    }),
+    DeviceTypeLinux: DefaultImportClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information to import for Linux devices.',
+    }),
+    DeviceTypeWeb: DefaultImportClientBrandingAttributesSchema.exactOptional().openapi({
+      description: 'The branding information to import for web access.',
+    }),
   })
   .openapi({ required: ['ResourceId'], title: 'ImportClientBrandingRequest' })
   .openapi('ImportClientBrandingRequest')
 
 const ImportWorkspaceImageResultSchema = z
   .object({
-    ImageId: WorkspaceImageIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the WorkSpace image.' }),
-    ).exactOptional(),
+    ImageId: WorkspaceImageIdSchema.exactOptional().openapi({
+      description: 'The identifier of the WorkSpace image.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ImportWorkspaceImageResult')
@@ -3139,38 +2400,24 @@ const ApplicationListSchema = z.array(ApplicationSchema).min(1).max(5).openapi('
 
 const ImportWorkspaceImageRequestSchema = z
   .object({
-    Ec2ImageId: Ec2ImageIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the EC2 image.' }),
-    ),
-    IngestionProcess: WorkspaceImageIngestionProcessSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ingestion process to be used when importing the image, depending on which protocol you want to use for your BYOL Workspace image, either PCoIP, WorkSpaces Streaming Protocol (WSP), or bring your own protocol (BYOP). To use WSP, specify a value that ends in <code>_WSP</code>. To use PCoIP, specify a value that does not end in <code>_WSP</code>. To use BYOP, specify a value that ends in <code>_BYOP</code>.</p> <p>For non-GPU-enabled bundles (bundles other than Graphics or GraphicsPro), specify <code>BYOL_REGULAR</code>, <code>BYOL_REGULAR_WSP</code>, or <code>BYOL_REGULAR_BYOP</code>, depending on the protocol.</p> <note> <p>The <code>BYOL_REGULAR_BYOP</code> and <code>BYOL_GRAPHICS_G4DN_BYOP</code> values are only supported by Amazon WorkSpaces Core. Contact your account team to be allow-listed to use these values. For more information, see <a href="http://aws.amazon.com/workspaces/core/">Amazon WorkSpaces Core</a>.</p> </note>',
-        }),
-    ),
-    ImageName: WorkspaceImageNameSchema.and(
-      z.any().openapi({ description: 'The name of the WorkSpace image.' }),
-    ),
-    ImageDescription: WorkspaceImageDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the WorkSpace image.' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags. Each WorkSpaces resource can have a maximum of 50 tags.',
-        }),
-    ).exactOptional(),
-    Applications: ApplicationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, the version of Microsoft Office to subscribe to. Valid only for Windows 10 BYOL images. For more information about subscribing to Office for BYOL images, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.html"> Bring Your Own Windows Desktop Licenses</a>.</p> <note> <p>Although this parameter is an array, only one item is allowed at this time.</p> </note>',
-        }),
-    ).exactOptional(),
+    Ec2ImageId: Ec2ImageIdSchema.openapi({ description: 'The identifier of the EC2 image.' }),
+    IngestionProcess: WorkspaceImageIngestionProcessSchema.openapi({
+      description:
+        '<p>The ingestion process to be used when importing the image, depending on which protocol you want to use for your BYOL Workspace image, either PCoIP, WorkSpaces Streaming Protocol (WSP), or bring your own protocol (BYOP). To use WSP, specify a value that ends in <code>_WSP</code>. To use PCoIP, specify a value that does not end in <code>_WSP</code>. To use BYOP, specify a value that ends in <code>_BYOP</code>.</p> <p>For non-GPU-enabled bundles (bundles other than Graphics or GraphicsPro), specify <code>BYOL_REGULAR</code>, <code>BYOL_REGULAR_WSP</code>, or <code>BYOL_REGULAR_BYOP</code>, depending on the protocol.</p> <note> <p>The <code>BYOL_REGULAR_BYOP</code> and <code>BYOL_GRAPHICS_G4DN_BYOP</code> values are only supported by Amazon WorkSpaces Core. Contact your account team to be allow-listed to use these values. For more information, see <a href="http://aws.amazon.com/workspaces/core/">Amazon WorkSpaces Core</a>.</p> </note>',
+    }),
+    ImageName: WorkspaceImageNameSchema.openapi({
+      description: 'The name of the WorkSpace image.',
+    }),
+    ImageDescription: WorkspaceImageDescriptionSchema.openapi({
+      description: 'The description of the WorkSpace image.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags. Each WorkSpaces resource can have a maximum of 50 tags.',
+    }),
+    Applications: ApplicationListSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, the version of Microsoft Office to subscribe to. Valid only for Windows 10 BYOL images. For more information about subscribing to Office for BYOL images, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.html"> Bring Your Own Windows Desktop Licenses</a>.</p> <note> <p>Although this parameter is an array, only one item is allowed at this time.</p> </note>',
+    }),
   })
   .openapi({
     required: ['Ec2ImageId', 'IngestionProcess', 'ImageName', 'ImageDescription'],
@@ -3184,21 +2431,13 @@ const DedicatedTenancyCidrRangeListSchema = z
 
 const ListAvailableManagementCidrRangesResultSchema = z
   .object({
-    ManagementCidrRanges: DedicatedTenancyCidrRangeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of available IP address ranges, specified as IPv4 CIDR blocks.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
-        }),
-    ).exactOptional(),
+    ManagementCidrRanges: DedicatedTenancyCidrRangeListSchema.exactOptional().openapi({
+      description: 'The list of available IP address ranges, specified as IPv4 CIDR blocks.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAvailableManagementCidrRangesResult')
@@ -3218,25 +2457,17 @@ const ManagementCidrRangeMaxResultsSchema = z
 
 const ListAvailableManagementCidrRangesRequestSchema = z
   .object({
-    ManagementCidrRangeConstraint: ManagementCidrRangeConstraintSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address range to search. Specify an IP address range that is compatible with your network and in CIDR notation (that is, specify the range as an IPv4 CIDR block).',
-        }),
-    ),
-    MaxResults: ManagementCidrRangeMaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
-        }),
-    ).exactOptional(),
+    ManagementCidrRangeConstraint: ManagementCidrRangeConstraintSchema.openapi({
+      description:
+        'The IP address range to search. Specify an IP address range that is compatible with your network and in CIDR notation (that is, specify the range as an IPv4 CIDR block).',
+    }),
+    MaxResults: ManagementCidrRangeMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.',
+    }),
   })
   .openapi({
     required: ['ManagementCidrRangeConstraint'],
@@ -3246,44 +2477,32 @@ const ListAvailableManagementCidrRangesRequestSchema = z
 
 const MigrateWorkspaceResultSchema = z
   .object({
-    SourceWorkspaceId: WorkspaceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The original identifier of the WorkSpace that is being migrated.',
-        }),
-    ).exactOptional(),
-    TargetWorkspaceId: WorkspaceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new identifier of the WorkSpace that is being migrated. If the migration does not succeed, the target WorkSpace ID will not be used, and the WorkSpace will still have the original WorkSpace ID.',
-        }),
-    ).exactOptional(),
+    SourceWorkspaceId: WorkspaceIdSchema.exactOptional().openapi({
+      description: 'The original identifier of the WorkSpace that is being migrated.',
+    }),
+    TargetWorkspaceId: WorkspaceIdSchema.exactOptional().openapi({
+      description:
+        'The new identifier of the WorkSpace that is being migrated. If the migration does not succeed, the target WorkSpace ID will not be used, and the WorkSpace will still have the original WorkSpace ID.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('MigrateWorkspaceResult')
 
 const MigrateWorkspaceRequestSchema = z
   .object({
-    SourceWorkspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the WorkSpace to migrate from.' }),
-    ),
-    BundleId: BundleIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the target bundle type to migrate the WorkSpace to.',
-        }),
-    ),
+    SourceWorkspaceId: WorkspaceIdSchema.openapi({
+      description: 'The identifier of the WorkSpace to migrate from.',
+    }),
+    BundleId: BundleIdSchema.openapi({
+      description: 'The identifier of the target bundle type to migrate the WorkSpace to.',
+    }),
   })
   .openapi({ required: ['SourceWorkspaceId', 'BundleId'], title: 'MigrateWorkspaceRequest' })
   .openapi('MigrateWorkspaceRequest')
 
 const OperationInProgressExceptionSchema = z.any().openapi('OperationInProgressException')
 
-const ModifyAccountResultSchema = z.object({}).openapi('ModifyAccountResult')
+const ModifyAccountResultSchema = z.looseObject({}).openapi('ModifyAccountResult')
 
 const DedicatedTenancySupportEnumSchema = z
   .literal('ENABLED')
@@ -3291,23 +2510,20 @@ const DedicatedTenancySupportEnumSchema = z
 
 const ModifyAccountRequestSchema = z
   .object({
-    DedicatedTenancySupport: DedicatedTenancySupportEnumSchema.and(
-      z.any().openapi({ description: 'The status of BYOL.' }),
-    ).exactOptional(),
-    DedicatedTenancyManagementCidrRange: DedicatedTenancyManagementCidrRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address range, specified as an IPv4 CIDR block, for the management network interface. Specify an IP address range that is compatible with your network and in CIDR notation (that is, specify the range as an IPv4 CIDR block). The CIDR block size must be /16 (for example, 203.0.113.25/16). It must also be specified as available by the <code>ListAvailableManagementCidrRanges</code> operation.',
-        }),
-    ).exactOptional(),
+    DedicatedTenancySupport: DedicatedTenancySupportEnumSchema.exactOptional().openapi({
+      description: 'The status of BYOL.',
+    }),
+    DedicatedTenancyManagementCidrRange:
+      DedicatedTenancyManagementCidrRangeSchema.exactOptional().openapi({
+        description:
+          'The IP address range, specified as an IPv4 CIDR block, for the management network interface. Specify an IP address range that is compatible with your network and in CIDR notation (that is, specify the range as an IPv4 CIDR block). The CIDR block size must be /16 (for example, 203.0.113.25/16). It must also be specified as available by the <code>ListAvailableManagementCidrRanges</code> operation.',
+      }),
   })
   .openapi({ title: 'ModifyAccountRequest', required: [] })
   .openapi('ModifyAccountRequest')
 
 const ModifyCertificateBasedAuthPropertiesResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ModifyCertificateBasedAuthPropertiesResult')
 
 const DeletableCertificateBasedAuthPropertySchema = z
@@ -3320,38 +2536,34 @@ const DeletableCertificateBasedAuthPropertiesListSchema = z
 
 const ModifyCertificateBasedAuthPropertiesRequestSchema = z
   .object({
-    ResourceId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The resource identifiers, in the form of directory IDs.' }),
-    ),
-    CertificateBasedAuthProperties: CertificateBasedAuthPropertiesSchema.and(
-      z.any().openapi({ description: 'The properties of the certificate-based authentication.' }),
-    ).exactOptional(),
-    PropertiesToDelete: DeletableCertificateBasedAuthPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The properties of the certificate-based authentication you want to delete.',
-        }),
-    ).exactOptional(),
+    ResourceId: DirectoryIdSchema.openapi({
+      description: 'The resource identifiers, in the form of directory IDs.',
+    }),
+    CertificateBasedAuthProperties: CertificateBasedAuthPropertiesSchema.exactOptional().openapi({
+      description: 'The properties of the certificate-based authentication.',
+    }),
+    PropertiesToDelete: DeletableCertificateBasedAuthPropertiesListSchema.exactOptional().openapi({
+      description: 'The properties of the certificate-based authentication you want to delete.',
+    }),
   })
   .openapi({ required: ['ResourceId'], title: 'ModifyCertificateBasedAuthPropertiesRequest' })
   .openapi('ModifyCertificateBasedAuthPropertiesRequest')
 
-const ModifyClientPropertiesResultSchema = z.object({}).openapi('ModifyClientPropertiesResult')
+const ModifyClientPropertiesResultSchema = z.looseObject({}).openapi('ModifyClientPropertiesResult')
 
 const ModifyClientPropertiesRequestSchema = z
   .object({
-    ResourceId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The resource identifiers, in the form of directory IDs.' }),
-    ),
-    ClientProperties: ClientPropertiesSchema.and(
-      z.any().openapi({ description: 'Information about the Amazon WorkSpaces client.' }),
-    ),
+    ResourceId: NonEmptyStringSchema.openapi({
+      description: 'The resource identifiers, in the form of directory IDs.',
+    }),
+    ClientProperties: ClientPropertiesSchema.openapi({
+      description: 'Information about the Amazon WorkSpaces client.',
+    }),
   })
   .openapi({ required: ['ResourceId', 'ClientProperties'], title: 'ModifyClientPropertiesRequest' })
   .openapi('ModifyClientPropertiesRequest')
 
-const ModifySamlPropertiesResultSchema = z.object({}).openapi('ModifySamlPropertiesResult')
+const ModifySamlPropertiesResultSchema = z.looseObject({}).openapi('ModifySamlPropertiesResult')
 
 const DeletableSamlPropertySchema = z
   .enum(['SAML_PROPERTIES_USER_ACCESS_URL', 'SAML_PROPERTIES_RELAY_STATE_PARAMETER_NAME'])
@@ -3363,44 +2575,30 @@ const DeletableSamlPropertiesListSchema = z
 
 const ModifySamlPropertiesRequestSchema = z
   .object({
-    ResourceId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The directory identifier for which you want to configure SAML properties.',
-        }),
-    ),
-    SamlProperties: SamlPropertiesSchema.and(
-      z.any().openapi({ description: 'The properties for configuring SAML 2.0 authentication.' }),
-    ).exactOptional(),
-    PropertiesToDelete: DeletableSamlPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The SAML properties to delete as part of your request.</p> <p>Specify one of the following options:</p> <ul> <li> <p> <code>SAML_PROPERTIES_USER_ACCESS_URL</code> to delete the user access URL.</p> </li> <li> <p> <code>SAML_PROPERTIES_RELAY_STATE_PARAMETER_NAME</code> to delete the relay state parameter name.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ResourceId: DirectoryIdSchema.openapi({
+      description: 'The directory identifier for which you want to configure SAML properties.',
+    }),
+    SamlProperties: SamlPropertiesSchema.exactOptional().openapi({
+      description: 'The properties for configuring SAML 2.0 authentication.',
+    }),
+    PropertiesToDelete: DeletableSamlPropertiesListSchema.exactOptional().openapi({
+      description:
+        '<p>The SAML properties to delete as part of your request.</p> <p>Specify one of the following options:</p> <ul> <li> <p> <code>SAML_PROPERTIES_USER_ACCESS_URL</code> to delete the user access URL.</p> </li> <li> <p> <code>SAML_PROPERTIES_RELAY_STATE_PARAMETER_NAME</code> to delete the relay state parameter name.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['ResourceId'], title: 'ModifySamlPropertiesRequest' })
   .openapi('ModifySamlPropertiesRequest')
 
 const ModifySelfservicePermissionsResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ModifySelfservicePermissionsResult')
 
 const ModifySelfservicePermissionsRequestSchema = z
   .object({
-    ResourceId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory.' }),
-    ),
-    SelfservicePermissions: SelfservicePermissionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The permissions to enable or disable self-service capabilities.',
-        }),
-    ),
+    ResourceId: DirectoryIdSchema.openapi({ description: 'The identifier of the directory.' }),
+    SelfservicePermissions: SelfservicePermissionsSchema.openapi({
+      description: 'The permissions to enable or disable self-service capabilities.',
+    }),
   })
   .openapi({
     required: ['ResourceId', 'SelfservicePermissions'],
@@ -3409,21 +2607,15 @@ const ModifySelfservicePermissionsRequestSchema = z
   .openapi('ModifySelfservicePermissionsRequest')
 
 const ModifyWorkspaceAccessPropertiesResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ModifyWorkspaceAccessPropertiesResult')
 
 const ModifyWorkspaceAccessPropertiesRequestSchema = z
   .object({
-    ResourceId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory.' }),
-    ),
-    WorkspaceAccessProperties: WorkspaceAccessPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The device types and operating systems to enable or disable for access.',
-        }),
-    ),
+    ResourceId: DirectoryIdSchema.openapi({ description: 'The identifier of the directory.' }),
+    WorkspaceAccessProperties: WorkspaceAccessPropertiesSchema.openapi({
+      description: 'The device types and operating systems to enable or disable for access.',
+    }),
   })
   .openapi({
     required: ['ResourceId', 'WorkspaceAccessProperties'],
@@ -3432,52 +2624,32 @@ const ModifyWorkspaceAccessPropertiesRequestSchema = z
   .openapi('ModifyWorkspaceAccessPropertiesRequest')
 
 const ModifyWorkspaceCreationPropertiesResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ModifyWorkspaceCreationPropertiesResult')
 
 const WorkspaceCreationPropertiesSchema = z
   .object({
-    EnableWorkDocs: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether Amazon WorkDocs is enabled for your WorkSpaces.</p> <note> <p>If WorkDocs is already enabled for a WorkSpaces directory and you disable it, new WorkSpaces launched in the directory will not have WorkDocs enabled. However, WorkDocs remains enabled for any existing WorkSpaces, unless you either disable users\' access to WorkDocs or you delete the WorkDocs site. To disable users\' access to WorkDocs, see <a href="https://docs.aws.amazon.com/workdocs/latest/adminguide/inactive-user.html">Disabling Users</a> in the <i>Amazon WorkDocs Administration Guide</i>. To delete a WorkDocs site, see <a href="https://docs.aws.amazon.com/workdocs/latest/adminguide/manage-sites.html">Deleting a Site</a> in the <i>Amazon WorkDocs Administration Guide</i>.</p> <p>If you enable WorkDocs on a directory that already has existing WorkSpaces, the existing WorkSpaces and any new WorkSpaces that are launched in the directory will have WorkDocs enabled.</p> </note>',
-        }),
-    ).exactOptional(),
-    EnableInternetAccess: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether internet access is enabled for your WorkSpaces.',
-        }),
-    ).exactOptional(),
-    DefaultOu: DefaultOuSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The default organizational unit (OU) for your WorkSpaces directories. This string must be the full Lightweight Directory Access Protocol (LDAP) distinguished name for the target domain and OU. It must be in the form <code>"OU=<i>value</i>,DC=<i>value</i>,DC=<i>value</i>"</code>, where <i>value</i> is any string of characters, and the number of domain components (DCs) is two or more. For example, <code>OU=WorkSpaces_machines,DC=machines,DC=example,DC=com</code>. </p> <important> <ul> <li> <p>To avoid errors, certain characters in the distinguished name must be escaped. For more information, see <a href="https://docs.microsoft.com/previous-versions/windows/desktop/ldap/distinguished-names"> Distinguished Names</a> in the Microsoft documentation.</p> </li> <li> <p>The API doesn\'t validate whether the OU exists.</p> </li> </ul> </important>',
-        }),
-    ).exactOptional(),
-    CustomSecurityGroupId: SecurityGroupIdSchema.and(
-      z.any().openapi({ description: 'The identifier of your custom security group.' }),
-    ).exactOptional(),
-    UserEnabledAsLocalAdministrator: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether users are local administrators of their WorkSpaces.',
-        }),
-    ).exactOptional(),
-    EnableMaintenanceMode: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether maintenance mode is enabled for your WorkSpaces. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/workspace-maintenance.html">WorkSpace Maintenance</a>. ',
-        }),
-    ).exactOptional(),
+    EnableWorkDocs: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether Amazon WorkDocs is enabled for your WorkSpaces.</p> <note> <p>If WorkDocs is already enabled for a WorkSpaces directory and you disable it, new WorkSpaces launched in the directory will not have WorkDocs enabled. However, WorkDocs remains enabled for any existing WorkSpaces, unless you either disable users\' access to WorkDocs or you delete the WorkDocs site. To disable users\' access to WorkDocs, see <a href="https://docs.aws.amazon.com/workdocs/latest/adminguide/inactive-user.html">Disabling Users</a> in the <i>Amazon WorkDocs Administration Guide</i>. To delete a WorkDocs site, see <a href="https://docs.aws.amazon.com/workdocs/latest/adminguide/manage-sites.html">Deleting a Site</a> in the <i>Amazon WorkDocs Administration Guide</i>.</p> <p>If you enable WorkDocs on a directory that already has existing WorkSpaces, the existing WorkSpaces and any new WorkSpaces that are launched in the directory will have WorkDocs enabled.</p> </note>',
+    }),
+    EnableInternetAccess: BooleanObjectSchema.exactOptional().openapi({
+      description: 'Indicates whether internet access is enabled for your WorkSpaces.',
+    }),
+    DefaultOu: DefaultOuSchema.exactOptional().openapi({
+      description:
+        '<p>The default organizational unit (OU) for your WorkSpaces directories. This string must be the full Lightweight Directory Access Protocol (LDAP) distinguished name for the target domain and OU. It must be in the form <code>"OU=<i>value</i>,DC=<i>value</i>,DC=<i>value</i>"</code>, where <i>value</i> is any string of characters, and the number of domain components (DCs) is two or more. For example, <code>OU=WorkSpaces_machines,DC=machines,DC=example,DC=com</code>. </p> <important> <ul> <li> <p>To avoid errors, certain characters in the distinguished name must be escaped. For more information, see <a href="https://docs.microsoft.com/previous-versions/windows/desktop/ldap/distinguished-names"> Distinguished Names</a> in the Microsoft documentation.</p> </li> <li> <p>The API doesn\'t validate whether the OU exists.</p> </li> </ul> </important>',
+    }),
+    CustomSecurityGroupId: SecurityGroupIdSchema.exactOptional().openapi({
+      description: 'The identifier of your custom security group.',
+    }),
+    UserEnabledAsLocalAdministrator: BooleanObjectSchema.exactOptional().openapi({
+      description: 'Indicates whether users are local administrators of their WorkSpaces.',
+    }),
+    EnableMaintenanceMode: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        'Indicates whether maintenance mode is enabled for your WorkSpaces. For more information, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/workspace-maintenance.html">WorkSpace Maintenance</a>. ',
+    }),
   })
   .openapi({
     description:
@@ -3488,12 +2660,10 @@ const WorkspaceCreationPropertiesSchema = z
 
 const ModifyWorkspaceCreationPropertiesRequestSchema = z
   .object({
-    ResourceId: DirectoryIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the directory.' }),
-    ),
-    WorkspaceCreationProperties: WorkspaceCreationPropertiesSchema.and(
-      z.any().openapi({ description: 'The default properties for creating WorkSpaces.' }),
-    ),
+    ResourceId: DirectoryIdSchema.openapi({ description: 'The identifier of the directory.' }),
+    WorkspaceCreationProperties: WorkspaceCreationPropertiesSchema.openapi({
+      description: 'The default properties for creating WorkSpaces.',
+    }),
   })
   .openapi({
     required: ['ResourceId', 'WorkspaceCreationProperties'],
@@ -3502,17 +2672,15 @@ const ModifyWorkspaceCreationPropertiesRequestSchema = z
   .openapi('ModifyWorkspaceCreationPropertiesRequest')
 
 const ModifyWorkspacePropertiesResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ModifyWorkspacePropertiesResult')
 
 const ModifyWorkspacePropertiesRequestSchema = z
   .object({
-    WorkspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the WorkSpace.' }),
-    ),
-    WorkspaceProperties: WorkspacePropertiesSchema.and(
-      z.any().openapi({ description: 'The properties of the WorkSpace.' }),
-    ),
+    WorkspaceId: WorkspaceIdSchema.openapi({ description: 'The identifier of the WorkSpace.' }),
+    WorkspaceProperties: WorkspacePropertiesSchema.openapi({
+      description: 'The properties of the WorkSpace.',
+    }),
   })
   .openapi({
     required: ['WorkspaceId', 'WorkspaceProperties'],
@@ -3524,7 +2692,7 @@ const UnsupportedWorkspaceConfigurationExceptionSchema = z
   .any()
   .openapi('UnsupportedWorkspaceConfigurationException')
 
-const ModifyWorkspaceStateResultSchema = z.object({}).openapi('ModifyWorkspaceStateResult')
+const ModifyWorkspaceStateResultSchema = z.looseObject({}).openapi('ModifyWorkspaceStateResult')
 
 const TargetWorkspaceStateSchema = z
   .enum(['AVAILABLE', 'ADMIN_MAINTENANCE'])
@@ -3532,36 +2700,24 @@ const TargetWorkspaceStateSchema = z
 
 const ModifyWorkspaceStateRequestSchema = z
   .object({
-    WorkspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the WorkSpace.' }),
-    ),
-    WorkspaceState: TargetWorkspaceStateSchema.and(
-      z.any().openapi({ description: 'The WorkSpace state.' }),
-    ),
+    WorkspaceId: WorkspaceIdSchema.openapi({ description: 'The identifier of the WorkSpace.' }),
+    WorkspaceState: TargetWorkspaceStateSchema.openapi({ description: 'The WorkSpace state.' }),
   })
   .openapi({ required: ['WorkspaceId', 'WorkspaceState'], title: 'ModifyWorkspaceStateRequest' })
   .openapi('ModifyWorkspaceStateRequest')
 
 const FailedWorkspaceChangeRequestSchema = z
   .object({
-    WorkspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the WorkSpace.' }),
-    ).exactOptional(),
-    ErrorCode: ErrorTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The error code that is returned if the WorkSpace cannot be rebooted.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The text of the error message that is returned if the WorkSpace cannot be rebooted.',
-        }),
-    ).exactOptional(),
+    WorkspaceId: WorkspaceIdSchema.exactOptional().openapi({
+      description: 'The identifier of the WorkSpace.',
+    }),
+    ErrorCode: ErrorTypeSchema.exactOptional().openapi({
+      description: 'The error code that is returned if the WorkSpace cannot be rebooted.',
+    }),
+    ErrorMessage: DescriptionSchema.exactOptional().openapi({
+      description:
+        'The text of the error message that is returned if the WorkSpace cannot be rebooted.',
+    }),
   })
   .openapi({
     description:
@@ -3576,20 +2732,16 @@ const FailedRebootWorkspaceRequestsSchema = z
 
 const RebootWorkspacesResultSchema = z
   .object({
-    FailedRequests: FailedRebootWorkspaceRequestsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the WorkSpaces that could not be rebooted.' }),
-    ).exactOptional(),
+    FailedRequests: FailedRebootWorkspaceRequestsSchema.exactOptional().openapi({
+      description: 'Information about the WorkSpaces that could not be rebooted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RebootWorkspacesResult')
 
 const RebootRequestSchema = z
   .object({
-    WorkspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the WorkSpace.' }),
-    ),
+    WorkspaceId: WorkspaceIdSchema.openapi({ description: 'The identifier of the WorkSpace.' }),
   })
   .openapi({
     required: ['WorkspaceId'],
@@ -3605,11 +2757,9 @@ const RebootWorkspaceRequestsSchema = z
 
 const RebootWorkspacesRequestSchema = z
   .object({
-    RebootWorkspaceRequests: RebootWorkspaceRequestsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The WorkSpaces to reboot. You can specify up to 25 WorkSpaces.' }),
-    ),
+    RebootWorkspaceRequests: RebootWorkspaceRequestsSchema.openapi({
+      description: 'The WorkSpaces to reboot. You can specify up to 25 WorkSpaces.',
+    }),
   })
   .openapi({ required: ['RebootWorkspaceRequests'], title: 'RebootWorkspacesRequest' })
   .openapi('RebootWorkspacesRequest')
@@ -3620,20 +2770,16 @@ const FailedRebuildWorkspaceRequestsSchema = z
 
 const RebuildWorkspacesResultSchema = z
   .object({
-    FailedRequests: FailedRebuildWorkspaceRequestsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the WorkSpace that could not be rebuilt.' }),
-    ).exactOptional(),
+    FailedRequests: FailedRebuildWorkspaceRequestsSchema.exactOptional().openapi({
+      description: 'Information about the WorkSpace that could not be rebuilt.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RebuildWorkspacesResult')
 
 const RebuildRequestSchema = z
   .object({
-    WorkspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the WorkSpace.' }),
-    ),
+    WorkspaceId: WorkspaceIdSchema.openapi({ description: 'The identifier of the WorkSpace.' }),
   })
   .openapi({
     required: ['WorkspaceId'],
@@ -3648,63 +2794,41 @@ const RebuildWorkspaceRequestsSchema = z
 
 const RebuildWorkspacesRequestSchema = z
   .object({
-    RebuildWorkspaceRequests: RebuildWorkspaceRequestsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The WorkSpace to rebuild. You can specify a single WorkSpace.' }),
-    ),
+    RebuildWorkspaceRequests: RebuildWorkspaceRequestsSchema.openapi({
+      description: 'The WorkSpace to rebuild. You can specify a single WorkSpace.',
+    }),
   })
   .openapi({ required: ['RebuildWorkspaceRequests'], title: 'RebuildWorkspacesRequest' })
   .openapi('RebuildWorkspacesRequest')
 
 const RegisterWorkspaceDirectoryResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('RegisterWorkspaceDirectoryResult')
 
 const RegisterWorkspaceDirectoryRequestSchema = z
   .object({
-    DirectoryId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the directory. You cannot register a directory if it does not have a status of Active. If the directory does not have a status of Active, you will receive an InvalidResourceStateException error. If you have already registered the maximum number of directories that you can register with Amazon WorkSpaces, you will receive a ResourceLimitExceededException error. Deregister directories that you are not using for WorkSpaces, and try again.',
-        }),
-    ),
-    SubnetIds: SubnetIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifiers of the subnets for your virtual private cloud (VPC). Make sure that the subnets are in supported Availability Zones. The subnets must also be in separate Availability Zones. If these conditions are not met, you will receive an OperationNotSupportedException error.',
-        }),
-    ).exactOptional(),
-    EnableWorkDocs: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether Amazon WorkDocs is enabled or disabled. If you have enabled this parameter and WorkDocs is not available in the Region, you will receive an OperationNotSupportedException error. Set <code>EnableWorkDocs</code> to disabled, and try again.',
-        }),
-    ),
-    EnableSelfService: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether self-service capabilities are enabled or disabled.',
-        }),
-    ).exactOptional(),
-    Tenancy: TenancySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether your WorkSpace directory is dedicated or shared. To use Bring Your Own License (BYOL) images, this value must be set to <code>DEDICATED</code> and your Amazon Web Services account must be enabled for BYOL. If your account has not been enabled for BYOL, you will receive an InvalidParameterValuesException error. For more information about BYOL images, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.html">Bring Your Own Windows Desktop Images</a>.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the directory.' }),
-    ).exactOptional(),
+    DirectoryId: DirectoryIdSchema.openapi({
+      description:
+        'The identifier of the directory. You cannot register a directory if it does not have a status of Active. If the directory does not have a status of Active, you will receive an InvalidResourceStateException error. If you have already registered the maximum number of directories that you can register with Amazon WorkSpaces, you will receive a ResourceLimitExceededException error. Deregister directories that you are not using for WorkSpaces, and try again.',
+    }),
+    SubnetIds: SubnetIdsSchema.exactOptional().openapi({
+      description:
+        'The identifiers of the subnets for your virtual private cloud (VPC). Make sure that the subnets are in supported Availability Zones. The subnets must also be in separate Availability Zones. If these conditions are not met, you will receive an OperationNotSupportedException error.',
+    }),
+    EnableWorkDocs: BooleanObjectSchema.openapi({
+      description:
+        'Indicates whether Amazon WorkDocs is enabled or disabled. If you have enabled this parameter and WorkDocs is not available in the Region, you will receive an OperationNotSupportedException error. Set <code>EnableWorkDocs</code> to disabled, and try again.',
+    }),
+    EnableSelfService: BooleanObjectSchema.exactOptional().openapi({
+      description: 'Indicates whether self-service capabilities are enabled or disabled.',
+    }),
+    Tenancy: TenancySchema.exactOptional().openapi({
+      description:
+        'Indicates whether your WorkSpace directory is dedicated or shared. To use Bring Your Own License (BYOL) images, this value must be set to <code>DEDICATED</code> and your Amazon Web Services account must be enabled for BYOL. If your account has not been enabled for BYOL, you will receive an InvalidParameterValuesException error. For more information about BYOL images, see <a href="https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.html">Bring Your Own Windows Desktop Images</a>.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the directory.',
+    }),
   })
   .openapi({
     required: ['DirectoryId', 'EnableWorkDocs'],
@@ -3720,27 +2844,25 @@ const UnsupportedNetworkConfigurationExceptionSchema = z
   .any()
   .openapi('UnsupportedNetworkConfigurationException')
 
-const RestoreWorkspaceResultSchema = z.object({}).openapi('RestoreWorkspaceResult')
+const RestoreWorkspaceResultSchema = z.looseObject({}).openapi('RestoreWorkspaceResult')
 
 const RestoreWorkspaceRequestSchema = z
   .object({
-    WorkspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the WorkSpace.' }),
-    ),
+    WorkspaceId: WorkspaceIdSchema.openapi({ description: 'The identifier of the WorkSpace.' }),
   })
   .openapi({ required: ['WorkspaceId'], title: 'RestoreWorkspaceRequest' })
   .openapi('RestoreWorkspaceRequest')
 
-const RevokeIpRulesResultSchema = z.object({}).openapi('RevokeIpRulesResult')
+const RevokeIpRulesResultSchema = z.looseObject({}).openapi('RevokeIpRulesResult')
 
 const IpRevokedRuleListSchema = z.array(IpRuleSchema).openapi('IpRevokedRuleList')
 
 const RevokeIpRulesRequestSchema = z
   .object({
-    GroupId: IpGroupIdSchema.and(z.any().openapi({ description: 'The identifier of the group.' })),
-    UserRules: IpRevokedRuleListSchema.and(
-      z.any().openapi({ description: 'The rules to remove from the group.' }),
-    ),
+    GroupId: IpGroupIdSchema.openapi({ description: 'The identifier of the group.' }),
+    UserRules: IpRevokedRuleListSchema.openapi({
+      description: 'The rules to remove from the group.',
+    }),
   })
   .openapi({ required: ['GroupId', 'UserRules'], title: 'RevokeIpRulesRequest' })
   .openapi('RevokeIpRulesRequest')
@@ -3751,20 +2873,18 @@ const FailedStartWorkspaceRequestsSchema = z
 
 const StartWorkspacesResultSchema = z
   .object({
-    FailedRequests: FailedStartWorkspaceRequestsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the WorkSpaces that could not be started.' }),
-    ).exactOptional(),
+    FailedRequests: FailedStartWorkspaceRequestsSchema.exactOptional().openapi({
+      description: 'Information about the WorkSpaces that could not be started.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartWorkspacesResult')
 
 const StartRequestSchema = z
   .object({
-    WorkspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the WorkSpace.' }),
-    ).exactOptional(),
+    WorkspaceId: WorkspaceIdSchema.exactOptional().openapi({
+      description: 'The identifier of the WorkSpace.',
+    }),
   })
   .openapi({ description: 'Information used to start a WorkSpace.', required: [] })
   .openapi('StartRequest')
@@ -3777,11 +2897,9 @@ const StartWorkspaceRequestsSchema = z
 
 const StartWorkspacesRequestSchema = z
   .object({
-    StartWorkspaceRequests: StartWorkspaceRequestsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The WorkSpaces to start. You can specify up to 25 WorkSpaces.' }),
-    ),
+    StartWorkspaceRequests: StartWorkspaceRequestsSchema.openapi({
+      description: 'The WorkSpaces to start. You can specify up to 25 WorkSpaces.',
+    }),
   })
   .openapi({ required: ['StartWorkspaceRequests'], title: 'StartWorkspacesRequest' })
   .openapi('StartWorkspacesRequest')
@@ -3792,20 +2910,18 @@ const FailedStopWorkspaceRequestsSchema = z
 
 const StopWorkspacesResultSchema = z
   .object({
-    FailedRequests: FailedStopWorkspaceRequestsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the WorkSpaces that could not be stopped.' }),
-    ).exactOptional(),
+    FailedRequests: FailedStopWorkspaceRequestsSchema.exactOptional().openapi({
+      description: 'Information about the WorkSpaces that could not be stopped.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopWorkspacesResult')
 
 const StopRequestSchema = z
   .object({
-    WorkspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the WorkSpace.' }),
-    ).exactOptional(),
+    WorkspaceId: WorkspaceIdSchema.exactOptional().openapi({
+      description: 'The identifier of the WorkSpace.',
+    }),
   })
   .openapi({ description: 'Describes the information used to stop a WorkSpace.', required: [] })
   .openapi('StopRequest')
@@ -3818,11 +2934,9 @@ const StopWorkspaceRequestsSchema = z
 
 const StopWorkspacesRequestSchema = z
   .object({
-    StopWorkspaceRequests: StopWorkspaceRequestsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The WorkSpaces to stop. You can specify up to 25 WorkSpaces.' }),
-    ),
+    StopWorkspaceRequests: StopWorkspaceRequestsSchema.openapi({
+      description: 'The WorkSpaces to stop. You can specify up to 25 WorkSpaces.',
+    }),
   })
   .openapi({ required: ['StopWorkspaceRequests'], title: 'StopWorkspacesRequest' })
   .openapi('StopWorkspacesRequest')
@@ -3833,20 +2947,16 @@ const FailedTerminateWorkspaceRequestsSchema = z
 
 const TerminateWorkspacesResultSchema = z
   .object({
-    FailedRequests: FailedTerminateWorkspaceRequestsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the WorkSpaces that could not be terminated.' }),
-    ).exactOptional(),
+    FailedRequests: FailedTerminateWorkspaceRequestsSchema.exactOptional().openapi({
+      description: 'Information about the WorkSpaces that could not be terminated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TerminateWorkspacesResult')
 
 const TerminateRequestSchema = z
   .object({
-    WorkspaceId: WorkspaceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the WorkSpace.' }),
-    ),
+    WorkspaceId: WorkspaceIdSchema.openapi({ description: 'The identifier of the WorkSpace.' }),
   })
   .openapi({
     required: ['WorkspaceId'],
@@ -3862,63 +2972,49 @@ const TerminateWorkspaceRequestsSchema = z
 
 const TerminateWorkspacesRequestSchema = z
   .object({
-    TerminateWorkspaceRequests: TerminateWorkspaceRequestsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The WorkSpaces to terminate. You can specify up to 25 WorkSpaces.',
-        }),
-    ),
+    TerminateWorkspaceRequests: TerminateWorkspaceRequestsSchema.openapi({
+      description: 'The WorkSpaces to terminate. You can specify up to 25 WorkSpaces.',
+    }),
   })
   .openapi({ required: ['TerminateWorkspaceRequests'], title: 'TerminateWorkspacesRequest' })
   .openapi('TerminateWorkspacesRequest')
 
-const UpdateConnectClientAddInResultSchema = z.object({}).openapi('UpdateConnectClientAddInResult')
+const UpdateConnectClientAddInResultSchema = z
+  .looseObject({})
+  .openapi('UpdateConnectClientAddInResult')
 
 const UpdateConnectClientAddInRequestSchema = z
   .object({
-    AddInId: AmazonUuidSchema.and(
-      z.any().openapi({ description: 'The identifier of the client add-in to update.' }),
-    ),
-    ResourceId: DirectoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The directory identifier for which the client add-in is configured.',
-        }),
-    ),
-    Name: AddInNameSchema.and(
-      z.any().openapi({ description: 'The name of the client add-in.' }),
-    ).exactOptional(),
-    URL: AddInUrlSchema.and(
-      z.any().openapi({ description: 'The endpoint URL of the Amazon Connect client add-in.' }),
-    ).exactOptional(),
+    AddInId: AmazonUuidSchema.openapi({
+      description: 'The identifier of the client add-in to update.',
+    }),
+    ResourceId: DirectoryIdSchema.openapi({
+      description: 'The directory identifier for which the client add-in is configured.',
+    }),
+    Name: AddInNameSchema.exactOptional().openapi({
+      description: 'The name of the client add-in.',
+    }),
+    URL: AddInUrlSchema.exactOptional().openapi({
+      description: 'The endpoint URL of the Amazon Connect client add-in.',
+    }),
   })
   .openapi({ required: ['AddInId', 'ResourceId'], title: 'UpdateConnectClientAddInRequest' })
   .openapi('UpdateConnectClientAddInRequest')
 
 const UpdateConnectionAliasPermissionResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateConnectionAliasPermissionResult')
 
 const UpdateConnectionAliasPermissionRequestSchema = z
   .object({
-    AliasId: ConnectionAliasIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the connection alias that you want to update permissions for.',
-        }),
-    ),
-    ConnectionAliasPermission: ConnectionAliasPermissionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to share or unshare the connection alias with the specified Amazon Web Services account.',
-        }),
-    ),
+    AliasId: ConnectionAliasIdSchema.openapi({
+      description:
+        'The identifier of the connection alias that you want to update permissions for.',
+    }),
+    ConnectionAliasPermission: ConnectionAliasPermissionSchema.openapi({
+      description:
+        'Indicates whether to share or unshare the connection alias with the specified Amazon Web Services account.',
+    }),
   })
   .openapi({
     required: ['AliasId', 'ConnectionAliasPermission'],
@@ -3926,55 +3022,45 @@ const UpdateConnectionAliasPermissionRequestSchema = z
   })
   .openapi('UpdateConnectionAliasPermissionRequest')
 
-const UpdateRulesOfIpGroupResultSchema = z.object({}).openapi('UpdateRulesOfIpGroupResult')
+const UpdateRulesOfIpGroupResultSchema = z.looseObject({}).openapi('UpdateRulesOfIpGroupResult')
 
 const UpdateRulesOfIpGroupRequestSchema = z
   .object({
-    GroupId: IpGroupIdSchema.and(z.any().openapi({ description: 'The identifier of the group.' })),
-    UserRules: IpRuleListSchema.and(z.any().openapi({ description: 'One or more rules.' })),
+    GroupId: IpGroupIdSchema.openapi({ description: 'The identifier of the group.' }),
+    UserRules: IpRuleListSchema.openapi({ description: 'One or more rules.' }),
   })
   .openapi({ required: ['GroupId', 'UserRules'], title: 'UpdateRulesOfIpGroupRequest' })
   .openapi('UpdateRulesOfIpGroupRequest')
 
-const UpdateWorkspaceBundleResultSchema = z.object({}).openapi('UpdateWorkspaceBundleResult')
+const UpdateWorkspaceBundleResultSchema = z.looseObject({}).openapi('UpdateWorkspaceBundleResult')
 
 const UpdateWorkspaceBundleRequestSchema = z
   .object({
-    BundleId: BundleIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the bundle.' }),
-    ).exactOptional(),
-    ImageId: WorkspaceImageIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the image.' }),
-    ).exactOptional(),
+    BundleId: BundleIdSchema.exactOptional().openapi({
+      description: 'The identifier of the bundle.',
+    }),
+    ImageId: WorkspaceImageIdSchema.exactOptional().openapi({
+      description: 'The identifier of the image.',
+    }),
   })
   .openapi({ title: 'UpdateWorkspaceBundleRequest', required: [] })
   .openapi('UpdateWorkspaceBundleRequest')
 
 const UpdateWorkspaceImagePermissionResultSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateWorkspaceImagePermissionResult')
 
 const UpdateWorkspaceImagePermissionRequestSchema = z
   .object({
-    ImageId: WorkspaceImageIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the image.' }),
-    ),
-    AllowCopyImage: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The permission to copy the image. This permission can be revoked only after an image has been shared.',
-        }),
-    ),
-    SharedAccountId: AwsAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the Amazon Web Services account to share or unshare the image with.</p> <important> <p>Before sharing the image, confirm that you are sharing to the correct Amazon Web Services account ID.</p> </important>',
-        }),
-    ),
+    ImageId: WorkspaceImageIdSchema.openapi({ description: 'The identifier of the image.' }),
+    AllowCopyImage: BooleanObjectSchema.openapi({
+      description:
+        'The permission to copy the image. This permission can be revoked only after an image has been shared.',
+    }),
+    SharedAccountId: AwsAccountSchema.openapi({
+      description:
+        '<p>The identifier of the Amazon Web Services account to share or unshare the image with.</p> <important> <p>Before sharing the image, confirm that you are sharing to the correct Amazon Web Services account ID.</p> </important>',
+    }),
   })
   .openapi({
     required: ['ImageId', 'AllowCopyImage', 'SharedAccountId'],

@@ -101,7 +101,9 @@ export const coursesHandler = app
   })
   .openapi(
     postV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdModifyAttachmentsRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(postV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdReclaimRoute, (c) => {
     throw new Error('Not implemented')

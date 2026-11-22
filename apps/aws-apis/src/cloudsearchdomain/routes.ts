@@ -1,86 +1,17 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const StringSchema = z.string().openapi('String')
-
 const LongSchema = z.int().openapi('Long')
 
-const DoubleSchema = z.float64().openapi('Double')
-
-const FieldStatsSchema = z
-  .object({
-    min: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The minimum value found in the specified field in the result set.</p> <p>If the field is numeric (<code>int</code>, <code>int-array</code>, <code>double</code>, or <code>double-array</code>), <code>min</code> is the string representation of a double-precision 64-bit floating point value. If the field is <code>date</code> or <code>date-array</code>, <code>min</code> is the string representation of a date with the format specified in <a href="http://tools.ietf.org/html/rfc3339">IETF RFC3339</a>: yyyy-mm-ddTHH:mm:ss.SSSZ.</p>',
-        }),
-    ).exactOptional(),
-    max: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum value found in the specified field in the result set.</p> <p>If the field is numeric (<code>int</code>, <code>int-array</code>, <code>double</code>, or <code>double-array</code>), <code>max</code> is the string representation of a double-precision 64-bit floating point value. If the field is <code>date</code> or <code>date-array</code>, <code>max</code> is the string representation of a date with the format specified in <a href="http://tools.ietf.org/html/rfc3339">IETF RFC3339</a>: yyyy-mm-ddTHH:mm:ss.SSSZ.</p>',
-        }),
-    ).exactOptional(),
-    count: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of documents that contain a value in the specified field in the result set.',
-        }),
-    ).exactOptional(),
-    missing: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of documents that do not contain a value in the specified field in the result set.',
-        }),
-    ).exactOptional(),
-    sum: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sum of the field values across the documents in the result set. <code>null</code> for date fields.',
-        }),
-    ).exactOptional(),
-    sumOfSquares: DoubleSchema.and(
-      z.any().openapi({ description: 'The sum of all field values in the result set squared.' }),
-    ).exactOptional(),
-    mean: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The average of the values found in the specified field in the result set.</p> <p>If the field is numeric (<code>int</code>, <code>int-array</code>, <code>double</code>, or <code>double-array</code>), <code>mean</code> is the string representation of a double-precision 64-bit floating point value. If the field is <code>date</code> or <code>date-array</code>, <code>mean</code> is the string representation of a date with the format specified in <a href="http://tools.ietf.org/html/rfc3339">IETF RFC3339</a>: yyyy-mm-ddTHH:mm:ss.SSSZ.</p>',
-        }),
-    ).exactOptional(),
-    stddev: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The standard deviation of the values in the specified field in the result set.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The statistics for a field calculated in the request.', required: [] })
-  .openapi('FieldStats')
-
-type StatsType = { [key: string]: z.infer<typeof FieldStatsSchema> }
+const StringSchema = z.string().openapi('String')
 
 const SearchStatusSchema = z
   .object({
-    timems: LongSchema.and(
-      z.any().openapi({ description: 'How long it took to process the request, in milliseconds.' }),
-    ).exactOptional(),
-    rid: StringSchema.and(
-      z.any().openapi({ description: 'The encrypted resource ID for the request.' }),
-    ).exactOptional(),
+    timems: LongSchema.exactOptional().openapi({
+      description: 'How long it took to process the request, in milliseconds.',
+    }),
+    rid: StringSchema.exactOptional().openapi({
+      description: 'The encrypted resource ID for the request.',
+    }),
   })
   .openapi({
     description:
@@ -99,32 +30,18 @@ const HighlightsSchema = z.record(z.string(), StringSchema).openapi('Highlights'
 
 const HitSchema = z
   .object({
-    id: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The document ID of a document that matches the search request.' }),
-    ).exactOptional(),
-    fields: FieldsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The fields returned from a document that matches the search request.',
-        }),
-    ).exactOptional(),
-    exprs: ExprsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The expressions returned from a document that matches the search request.',
-        }),
-    ).exactOptional(),
-    highlights: HighlightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The highlights returned from a document that matches the search request.',
-        }),
-    ).exactOptional(),
+    id: StringSchema.exactOptional().openapi({
+      description: 'The document ID of a document that matches the search request.',
+    }),
+    fields: FieldsSchema.exactOptional().openapi({
+      description: 'The fields returned from a document that matches the search request.',
+    }),
+    exprs: ExprsSchema.exactOptional().openapi({
+      description: 'The expressions returned from a document that matches the search request.',
+    }),
+    highlights: HighlightsSchema.exactOptional().openapi({
+      description: 'The highlights returned from a document that matches the search request.',
+    }),
   })
   .openapi({
     description: 'Information about a document that matches the search request.',
@@ -136,25 +53,19 @@ const HitListSchema = z.array(HitSchema).openapi('HitList')
 
 const HitsSchema = z
   .object({
-    found: LongSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The total number of documents that match the search request.' }),
-    ).exactOptional(),
-    start: LongSchema.and(
-      z.any().openapi({ description: 'The index of the first matching document.' }),
-    ).exactOptional(),
-    cursor: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A cursor that can be used to retrieve the next set of matching documents when you want to page through a large result set.',
-        }),
-    ).exactOptional(),
-    hit: HitListSchema.and(
-      z.any().openapi({ description: 'A document that matches the search request.' }),
-    ).exactOptional(),
+    found: LongSchema.exactOptional().openapi({
+      description: 'The total number of documents that match the search request.',
+    }),
+    start: LongSchema.exactOptional().openapi({
+      description: 'The index of the first matching document.',
+    }),
+    cursor: StringSchema.exactOptional().openapi({
+      description:
+        'A cursor that can be used to retrieve the next set of matching documents when you want to page through a large result set.',
+    }),
+    hit: HitListSchema.exactOptional().openapi({
+      description: 'A document that matches the search request.',
+    }),
   })
   .openapi({
     description: 'The collection of documents that match the search request.',
@@ -164,17 +75,10 @@ const HitsSchema = z
 
 const BucketSchema = z
   .object({
-    value: StringSchema.and(
-      z.any().openapi({ description: 'The facet value being counted.' }),
-    ).exactOptional(),
-    count: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of hits that contain the facet value in the specified facet field.',
-        }),
-    ).exactOptional(),
+    value: StringSchema.exactOptional().openapi({ description: 'The facet value being counted.' }),
+    count: LongSchema.exactOptional().openapi({
+      description: 'The number of hits that contain the facet value in the specified facet field.',
+    }),
   })
   .openapi({ description: 'A container for facet information. ', required: [] })
   .openapi('Bucket')
@@ -183,37 +87,72 @@ const BucketListSchema = z.array(BucketSchema).openapi('BucketList')
 
 const BucketInfoSchema = z
   .object({
-    buckets: BucketListSchema.and(
-      z.any().openapi({ description: 'A list of the calculated facet values and counts.' }),
-    ).exactOptional(),
+    buckets: BucketListSchema.exactOptional().openapi({
+      description: 'A list of the calculated facet values and counts.',
+    }),
   })
   .openapi({ description: 'A container for the calculated facet values and counts.', required: [] })
   .openapi('BucketInfo')
 
 const FacetsSchema = z.record(z.string(), BucketInfoSchema).openapi('Facets')
 
-const StatsSchema: z.ZodType<StatsType> = z
-  .lazy(() =>
-    z
-      .record(z.string(), FieldStatsSchema)
-      .openapi({ description: 'The statistics calculated in the request.' }),
-  )
+const DoubleSchema = z.float64().openapi('Double')
+
+const FieldStatsSchema = z
+  .object({
+    min: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The minimum value found in the specified field in the result set.</p> <p>If the field is numeric (<code>int</code>, <code>int-array</code>, <code>double</code>, or <code>double-array</code>), <code>min</code> is the string representation of a double-precision 64-bit floating point value. If the field is <code>date</code> or <code>date-array</code>, <code>min</code> is the string representation of a date with the format specified in <a href="http://tools.ietf.org/html/rfc3339">IETF RFC3339</a>: yyyy-mm-ddTHH:mm:ss.SSSZ.</p>',
+    }),
+    max: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum value found in the specified field in the result set.</p> <p>If the field is numeric (<code>int</code>, <code>int-array</code>, <code>double</code>, or <code>double-array</code>), <code>max</code> is the string representation of a double-precision 64-bit floating point value. If the field is <code>date</code> or <code>date-array</code>, <code>max</code> is the string representation of a date with the format specified in <a href="http://tools.ietf.org/html/rfc3339">IETF RFC3339</a>: yyyy-mm-ddTHH:mm:ss.SSSZ.</p>',
+    }),
+    count: LongSchema.exactOptional().openapi({
+      description:
+        'The number of documents that contain a value in the specified field in the result set.',
+    }),
+    missing: LongSchema.exactOptional().openapi({
+      description:
+        'The number of documents that do not contain a value in the specified field in the result set.',
+    }),
+    sum: DoubleSchema.exactOptional().openapi({
+      description:
+        'The sum of the field values across the documents in the result set. <code>null</code> for date fields.',
+    }),
+    sumOfSquares: DoubleSchema.exactOptional().openapi({
+      description: 'The sum of all field values in the result set squared.',
+    }),
+    mean: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The average of the values found in the specified field in the result set.</p> <p>If the field is numeric (<code>int</code>, <code>int-array</code>, <code>double</code>, or <code>double-array</code>), <code>mean</code> is the string representation of a double-precision 64-bit floating point value. If the field is <code>date</code> or <code>date-array</code>, <code>mean</code> is the string representation of a date with the format specified in <a href="http://tools.ietf.org/html/rfc3339">IETF RFC3339</a>: yyyy-mm-ddTHH:mm:ss.SSSZ.</p>',
+    }),
+    stddev: DoubleSchema.exactOptional().openapi({
+      description: 'The standard deviation of the values in the specified field in the result set.',
+    }),
+  })
+  .openapi({ description: 'The statistics for a field calculated in the request.', required: [] })
+  .openapi('FieldStats')
+
+const StatsSchema = z
+  .record(z.string(), FieldStatsSchema)
+  .openapi({ description: 'The statistics calculated in the request.' })
   .openapi('Stats')
 
 const SearchResponseSchema = z
   .object({
-    status: SearchStatusSchema.and(
-      z.any().openapi({ description: 'The status information returned for the search request.' }),
-    ).exactOptional(),
-    hits: HitsSchema.and(
-      z.any().openapi({ description: 'The documents that match the search criteria.' }),
-    ).exactOptional(),
-    facets: FacetsSchema.and(
-      z.any().openapi({ description: 'The requested facet information.' }),
-    ).exactOptional(),
-    stats: StatsSchema.and(
-      z.any().openapi({ description: 'The requested field statistics information.' }),
-    ).exactOptional(),
+    status: SearchStatusSchema.exactOptional().openapi({
+      description: 'The status information returned for the search request.',
+    }),
+    hits: HitsSchema.exactOptional().openapi({
+      description: 'The documents that match the search criteria.',
+    }),
+    facets: FacetsSchema.exactOptional().openapi({
+      description: 'The requested facet information.',
+    }),
+    stats: StatsSchema.exactOptional().openapi({
+      description: 'The requested field statistics information.',
+    }),
   })
   .openapi({
     description:
@@ -224,11 +163,9 @@ const SearchResponseSchema = z
 
 const SearchExceptionSchema = z
   .object({
-    message: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A description of the error returned by the search service.' }),
-    ).exactOptional(),
+    message: StringSchema.exactOptional().openapi({
+      description: 'A description of the error returned by the search service.',
+    }),
   })
   .openapi({
     description: 'Information about any problems encountered while processing a search request.',
@@ -238,12 +175,12 @@ const SearchExceptionSchema = z
 
 const SuggestStatusSchema = z
   .object({
-    timems: LongSchema.and(
-      z.any().openapi({ description: 'How long it took to process the request, in milliseconds.' }),
-    ).exactOptional(),
-    rid: StringSchema.and(
-      z.any().openapi({ description: 'The encrypted resource ID for the request.' }),
-    ).exactOptional(),
+    timems: LongSchema.exactOptional().openapi({
+      description: 'How long it took to process the request, in milliseconds.',
+    }),
+    rid: StringSchema.exactOptional().openapi({
+      description: 'The encrypted resource ID for the request.',
+    }),
   })
   .openapi({
     description:
@@ -254,20 +191,16 @@ const SuggestStatusSchema = z
 
 const SuggestionMatchSchema = z
   .object({
-    suggestion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string that matches the query string specified in the <code>SuggestRequest</code>. ',
-        }),
-    ).exactOptional(),
-    score: LongSchema.and(
-      z.any().openapi({ description: 'The relevance score of a suggested match.' }),
-    ).exactOptional(),
-    id: StringSchema.and(
-      z.any().openapi({ description: 'The document ID of the suggested document.' }),
-    ).exactOptional(),
+    suggestion: StringSchema.exactOptional().openapi({
+      description:
+        'The string that matches the query string specified in the <code>SuggestRequest</code>. ',
+    }),
+    score: LongSchema.exactOptional().openapi({
+      description: 'The relevance score of a suggested match.',
+    }),
+    id: StringSchema.exactOptional().openapi({
+      description: 'The document ID of the suggested document.',
+    }),
   })
   .openapi({
     description:
@@ -280,19 +213,15 @@ const SuggestionsSchema = z.array(SuggestionMatchSchema).openapi('Suggestions')
 
 const SuggestModelSchema = z
   .object({
-    query: StringSchema.and(
-      z.any().openapi({ description: 'The query string specified in the suggest request.' }),
-    ).exactOptional(),
-    found: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of documents that were found to match the query string.',
-        }),
-    ).exactOptional(),
-    suggestions: SuggestionsSchema.and(
-      z.any().openapi({ description: 'The documents that match the query string.' }),
-    ).exactOptional(),
+    query: StringSchema.exactOptional().openapi({
+      description: 'The query string specified in the suggest request.',
+    }),
+    found: LongSchema.exactOptional().openapi({
+      description: 'The number of documents that were found to match the query string.',
+    }),
+    suggestions: SuggestionsSchema.exactOptional().openapi({
+      description: 'The documents that match the query string.',
+    }),
   })
   .openapi({
     description:
@@ -303,17 +232,13 @@ const SuggestModelSchema = z
 
 const SuggestResponseSchema = z
   .object({
-    status: SuggestStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of a <code>SuggestRequest</code>. Contains the resource ID (<code>rid</code>) and how long it took to process the request (<code>timems</code>).',
-        }),
-    ).exactOptional(),
-    suggest: SuggestModelSchema.and(
-      z.any().openapi({ description: 'Container for the matching search suggestion information.' }),
-    ).exactOptional(),
+    status: SuggestStatusSchema.exactOptional().openapi({
+      description:
+        'The status of a <code>SuggestRequest</code>. Contains the resource ID (<code>rid</code>) and how long it took to process the request (<code>timems</code>).',
+    }),
+    suggest: SuggestModelSchema.exactOptional().openapi({
+      description: 'Container for the matching search suggestion information.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>Suggest</code> request.',
@@ -327,13 +252,9 @@ const DeletesSchema = z.int().openapi('Deletes')
 
 const DocumentServiceWarningSchema = z
   .object({
-    message: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The description for a warning returned by the document service.',
-        }),
-    ).exactOptional(),
+    message: StringSchema.exactOptional().openapi({
+      description: 'The description for a warning returned by the document service.',
+    }),
   })
   .openapi({
     description:
@@ -348,29 +269,19 @@ const DocumentServiceWarningsSchema = z
 
 const UploadDocumentsResponseSchema = z
   .object({
-    status: StringSchema.and(
-      z.any().openapi({ description: 'The status of an <code>UploadDocumentsRequest</code>.' }),
-    ).exactOptional(),
-    adds: AddsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of documents that were added to the search domain.' }),
-    ).exactOptional(),
-    deletes: DeletesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of documents that were deleted from the search domain.',
-        }),
-    ).exactOptional(),
-    warnings: DocumentServiceWarningsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Any warnings returned by the document service about the documents being uploaded.',
-        }),
-    ).exactOptional(),
+    status: StringSchema.exactOptional().openapi({
+      description: 'The status of an <code>UploadDocumentsRequest</code>.',
+    }),
+    adds: AddsSchema.exactOptional().openapi({
+      description: 'The number of documents that were added to the search domain.',
+    }),
+    deletes: DeletesSchema.exactOptional().openapi({
+      description: 'The number of documents that were deleted from the search domain.',
+    }),
+    warnings: DocumentServiceWarningsSchema.exactOptional().openapi({
+      description:
+        'Any warnings returned by the document service about the documents being uploaded.',
+    }),
   })
   .openapi({
     description: 'Contains the response to an <code>UploadDocuments</code> request.',
@@ -380,21 +291,13 @@ const UploadDocumentsResponseSchema = z
 
 const DocumentServiceExceptionSchema = z
   .object({
-    status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The return status of a document upload request, <code>error</code> or <code>success</code>.',
-        }),
-    ).exactOptional(),
-    message: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The description of the errors returned by the document service.',
-        }),
-    ).exactOptional(),
+    status: StringSchema.exactOptional().openapi({
+      description:
+        'The return status of a document upload request, <code>error</code> or <code>success</code>.',
+    }),
+    message: StringSchema.exactOptional().openapi({
+      description: 'The description of the errors returned by the document service.',
+    }),
   })
   .openapi({
     description: 'Information about any problems encountered while processing an upload request.',
@@ -437,7 +340,7 @@ const StartSchema = z.int().openapi('Start')
 const StatSchema = z.string().openapi('Stat')
 
 const SearchRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'SearchRequest',
     description: 'Container for the parameters to the <code>Search</code> request.',
@@ -449,7 +352,7 @@ const SuggesterSchema = z.string().openapi('Suggester')
 const SuggestionsSizeSchema = z.int().openapi('SuggestionsSize')
 
 const SuggestRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'SuggestRequest',
     description: 'Container for the parameters to the <code>Suggest</code> request.',
@@ -458,9 +361,9 @@ const SuggestRequestSchema = z
 
 const UploadDocumentsRequestSchema = z
   .object({
-    documents: BlobSchema.and(
-      z.any().openapi({ description: 'A batch of documents formatted in JSON or HTML.' }),
-    ),
+    documents: BlobSchema.openapi({
+      description: 'A batch of documents formatted in JSON or HTML.',
+    }),
   })
   .openapi({
     required: ['documents'],

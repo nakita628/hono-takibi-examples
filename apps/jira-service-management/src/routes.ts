@@ -1,48 +1,34 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const SimpleLinkSchema = z
+const PagedLinkDTOSchema = z
   .strictObject({
-    href: z.string().exactOptional(),
-    iconClass: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    label: z.string().exactOptional(),
-    styleClass: z.string().exactOptional(),
-    title: z.string().exactOptional(),
-    weight: z.int32().exactOptional(),
-  })
-  .openapi({
-    description: 'Details about the operations available in this version.',
-    xml: { name: 'link' },
-    required: [],
-  })
-  .openapi('SimpleLink')
-
-type LinkGroupType = {
-  groups?: LinkGroupType[]
-  header?: z.infer<typeof SimpleLinkSchema>
-  id?: string
-  links?: z.infer<typeof SimpleLinkSchema>[]
-  styleClass?: string
-  weight?: number
-}
-
-type RequestTypeFieldValueDTOType = {
-  children?: RequestTypeFieldValueDTOType[]
-  label?: string
-  value?: string
-}
-
-const AdditionalCommentDTOSchema = z
-  .strictObject({
-    body: z.string().exactOptional().openapi({ description: 'Content of the comment.' }),
+    base: z.url().exactOptional().openapi({ description: 'Base URL for the REST API calls.' }),
+    context: z.string().exactOptional(),
+    next: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'REST API URL for the next page, if there is one.' }),
+    prev: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'REST API URL for the previous page, if there is one.' }),
+    self: z.url().exactOptional().openapi({ description: 'REST API URL for the current page.' }),
   })
   .openapi({ required: [] })
-  .openapi('AdditionalCommentDTO')
+  .openapi('PagedLinkDTO')
 
-const SelfLinkDTOSchema = z
-  .strictObject({ self: z.url().exactOptional() })
+const AttachmentLinkDTOSchema = z
+  .strictObject({
+    content: z.url().exactOptional().openapi({ description: 'URL for the attachment.' }),
+    jiraRest: z.url().exactOptional().openapi({ description: 'REST API URL for the attachment' }),
+    self: z.url().exactOptional(),
+    thumbnail: z
+      .url()
+      .exactOptional()
+      .openapi({ description: "URL for the attachment's thumbnail image." }),
+  })
   .openapi({ required: [] })
-  .openapi('SelfLinkDTO')
+  .openapi('AttachmentLinkDTO')
 
 const UserLinkDTOSchema = z
   .strictObject({
@@ -114,19 +100,6 @@ const UserDTOSchema = z
   .openapi({ required: [] })
   .openapi('UserDTO')
 
-const ApproverDTOSchema = z
-  .strictObject({
-    approver: UserDTOSchema.exactOptional().openapi({
-      description: 'Details of the User who is providing approval.',
-    }),
-    approverDecision: z
-      .enum(['approved', 'declined', 'pending'])
-      .exactOptional()
-      .openapi({ description: 'Decision made by the approver.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ApproverDTO')
-
 const DateDTOSchema = z
   .strictObject({
     epochMillis: z
@@ -161,155 +134,6 @@ const DateDTOSchema = z
   })
   .openapi({ required: [] })
   .openapi('DateDTO')
-
-const ApprovalDTOSchema = z
-  .strictObject({
-    _links: SelfLinkDTOSchema.exactOptional().openapi({
-      description: 'The REST API URL of the approval.',
-    }),
-    approvers: z
-      .array(ApproverDTOSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Detailed list of the users who must provide a response to the approval.',
-      }),
-    canAnswerApproval: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the user making the request is one of the approvers and can respond to the approval (true) or not (false).',
-      }),
-    completedDate: DateDTOSchema.exactOptional().openapi({
-      description: 'Date the approval was completed.',
-    }),
-    createdDate: DateDTOSchema.exactOptional().openapi({
-      description: 'Date the approval was created.',
-    }),
-    finalDecision: z
-      .enum(['approved', 'declined', 'pending'])
-      .exactOptional()
-      .openapi({
-        description: 'Outcome of the approval, based on the approvals provided by all approvers.',
-      }),
-    id: z.string().exactOptional().openapi({ description: 'ID of the approval.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description of the approval being sought or provided.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ApprovalDTO')
-
-const ApprovalDecisionRequestDTOSchema = z
-  .strictObject({
-    decision: z
-      .enum(['approve', 'decline'])
-      .exactOptional()
-      .openapi({ description: 'Response to the approval request.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ApprovalDecisionRequestDTO')
-
-const ContentDTOSchema = z
-  .strictObject({
-    iframeSrc: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Url containing the body of the article (without title), suitable for rendering in an iframe',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ContentDTO')
-
-const SourceDTOSchema = z
-  .looseObject({
-    type: z
-      .literal('confluence')
-      .exactOptional()
-      .openapi({ description: 'Type of the knowledge base source' }),
-  })
-  .openapi({ required: [] })
-  .openapi('SourceDTO')
-
-const ArticleDTOSchema = z
-  .strictObject({
-    content: ContentDTOSchema.exactOptional(),
-    excerpt: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Excerpt of the article which matches the given query string.' }),
-    source: SourceDTOSchema.exactOptional().openapi({ description: 'Source of the article.' }),
-    title: z.string().exactOptional().openapi({ description: 'Title of the article.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ArticleDTO')
-
-const AssetsWorkspaceDTOSchema = z
-  .strictObject({
-    workspaceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The workspace ID used as the identifier to access the Assets REST API.',
-      }),
-  })
-  .openapi({ description: 'Details of an Assets workspace ID.', required: [] })
-  .openapi('AssetsWorkspaceDTO')
-
-const AttachmentCreateDTOSchema = z
-  .strictObject({
-    additionalComment: AdditionalCommentDTOSchema.exactOptional().openapi({
-      description: 'Additional content of the comment',
-    }),
-    public: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Controls whether the comment and its attachments are visible to customers',
-      }),
-    temporaryAttachmentIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'List of IDs for the temporary attachments to be added to the customer request.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AttachmentCreateDTO')
-
-const PagedLinkDTOSchema = z
-  .strictObject({
-    base: z.url().exactOptional().openapi({ description: 'Base URL for the REST API calls.' }),
-    context: z.string().exactOptional(),
-    next: z
-      .url()
-      .exactOptional()
-      .openapi({ description: 'REST API URL for the next page, if there is one.' }),
-    prev: z
-      .url()
-      .exactOptional()
-      .openapi({ description: 'REST API URL for the previous page, if there is one.' }),
-    self: z.url().exactOptional().openapi({ description: 'REST API URL for the current page.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PagedLinkDTO')
-
-const AttachmentLinkDTOSchema = z
-  .strictObject({
-    content: z.url().exactOptional().openapi({ description: 'URL for the attachment.' }),
-    jiraRest: z.url().exactOptional().openapi({ description: 'REST API URL for the attachment' }),
-    self: z.url().exactOptional(),
-    thumbnail: z
-      .url()
-      .exactOptional()
-      .openapi({ description: "URL for the attachment's thumbnail image." }),
-  })
-  .openapi({ required: [] })
-  .openapi('AttachmentLinkDTO')
 
 const AttachmentDTOSchema = z
   .strictObject({
@@ -379,6 +203,11 @@ const PagedDTOAttachmentDTOSchema = z
   .openapi({ required: [] })
   .openapi('PagedDTOAttachmentDTO')
 
+const SelfLinkDTOSchema = z
+  .strictObject({ self: z.url().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('SelfLinkDTO')
+
 const RenderedValueDTOSchema = z
   .strictObject({ html: z.string().exactOptional() })
   .openapi({ required: [] })
@@ -420,321 +249,20 @@ const CommentDTOSchema = z
   .openapi({ required: [] })
   .openapi('CommentDTO')
 
-const AttachmentCreateResultDTOSchema = z
+type AttachmentCreateResultDTOType = {
+  attachments?: z.infer<typeof PagedDTOAttachmentDTOSchema>
+  comment?: z.infer<typeof CommentDTOSchema>
+}
+
+const CustomerRequestLinkDTOSchema = z
   .strictObject({
-    attachments: PagedDTOAttachmentDTOSchema.exactOptional().openapi({
-      description: 'List of the attachments added.',
-    }),
-    comment: CommentDTOSchema.exactOptional().openapi({
-      description: 'Details of the comment included with the attachments.',
-    }),
+    agent: z.url().exactOptional().openapi({ description: 'Jira agent view URL for the request.' }),
+    jiraRest: z.url().exactOptional().openapi({ description: 'REST API URL for the request.' }),
+    self: z.url().exactOptional(),
+    web: z.url().exactOptional().openapi({ description: 'Web URL for the request.' }),
   })
   .openapi({ required: [] })
-  .openapi('AttachmentCreateResultDTO')
-
-const AvatarUrlsBeanSchema = z
-  .strictObject({
-    '16x16': z
-      .url()
-      .exactOptional()
-      .openapi({ description: "The URL of the item's 16x16 pixel avatar." }),
-    '24x24': z
-      .url()
-      .exactOptional()
-      .openapi({ description: "The URL of the item's 24x24 pixel avatar." }),
-    '32x32': z
-      .url()
-      .exactOptional()
-      .openapi({ description: "The URL of the item's 32x32 pixel avatar." }),
-    '48x48': z
-      .url()
-      .exactOptional()
-      .openapi({ description: "The URL of the item's 48x48 pixel avatar." }),
-  })
-  .openapi({ required: [] })
-  .openapi('AvatarUrlsBean')
-
-const CSATFeedbackFullDTOSchema = z
-  .strictObject({
-    comment: AdditionalCommentDTOSchema.exactOptional().openapi({
-      description: '(Optional) The comment provided with this feedback.',
-    }),
-    rating: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'A numeric representation of the rating, this must be an integer value between 1 and 5.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Indicates the type of feedback, supported values: `csat`.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('CSATFeedbackFullDTO')
-
-const ChangeDetailsSchema = z
-  .strictObject({
-    field: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the field changed.', readOnly: true }),
-    fieldId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the field changed.', readOnly: true }),
-    fieldtype: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of the field changed.', readOnly: true }),
-    from: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The details of the original value.', readOnly: true }),
-    fromString: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The details of the original value as a string.', readOnly: true }),
-    to: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The details of the new value.', readOnly: true }),
-    toString: z
-      .preprocess(
-        (val) => (typeof val === 'function' || val === Object.prototype ? undefined : val),
-        z.string().optional(),
-      )
-      .exactOptional()
-      .openapi({ description: 'The details of the new value as a string.', readOnly: true }),
-  })
-  .openapi({ description: 'A change item.', required: [] })
-  .openapi('ChangeDetails')
-
-const UserDetailsSchema = z
-  .strictObject({
-    accountId: z
-      .string()
-      .max(128)
-      .exactOptional()
-      .openapi({
-        description:
-          'The account ID of the user, which uniquely identifies the user across all Atlassian products. For example, *5b10ac8d82e05b22cc7d4ef5*.',
-      }),
-    accountType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The type of account represented by this user. This will be one of 'atlassian' (normal users), 'app' (application user) or 'customer' (Jira Service Desk customer user)",
-        readOnly: true,
-      }),
-    active: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the user is active.', readOnly: true }),
-    avatarUrls: AvatarUrlsBeanSchema.exactOptional().openapi({
-      description: 'The avatars of the user.',
-      readOnly: true,
-    }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The display name of the user. Depending on the user’s privacy settings, this may return an alternative value.',
-        readOnly: true,
-      }),
-    emailAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The email address of the user. Depending on the user’s privacy settings, this may be returned as null.',
-        readOnly: true,
-      }),
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This property is no longer available and will be removed from the documentation soon. See the [deprecation notice](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This property is no longer available and will be removed from the documentation soon. See the [deprecation notice](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.',
-        readOnly: true,
-      }),
-    self: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL of the user.', readOnly: true }),
-    timeZone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The time zone specified in the user's profile. Depending on the user’s privacy settings, this may be returned as null.",
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      "User details permitted by the user's Atlassian Account privacy settings. However, be aware of these exceptions:\n\n *  User record deleted from Atlassian: This occurs as the result of a right to be forgotten request. In this case, `displayName` provides an indication and other parameters have default values or are blank (for example, email is blank).\n *  User record corrupted: This occurs as a results of events such as a server import and can only happen to deleted users. In this case, `accountId` returns *unknown* and all other parameters have fallback values.\n *  User record unavailable: This usually occurs due to an internal service outage. In this case, all parameters have fallback values.",
-    required: [],
-  })
-  .openapi('UserDetails')
-
-const HistoryMetadataParticipantSchema = z
-  .looseObject({
-    avatarUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URL to an avatar for the user or system associated with a history record.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The display name of the user or system associated with a history record.',
-      }),
-    displayNameKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The key of the display name of the user or system associated with a history record.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the user or system associated with a history record.' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of the user or system associated with a history record.' }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL of the user or system associated with a history record.' }),
-  })
-  .openapi({
-    description: 'Details of user or system associated with a issue history metadata item.',
-    required: [],
-  })
-  .openapi('HistoryMetadataParticipant')
-
-const HistoryMetadataSchema = z
-  .looseObject({
-    activityDescription: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The activity described in the history record.' }),
-    activityDescriptionKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The key of the activity described in the history record.' }),
-    actor: HistoryMetadataParticipantSchema.exactOptional().openapi({
-      description: 'Details of the user whose action created the history record.',
-    }),
-    cause: HistoryMetadataParticipantSchema.exactOptional().openapi({
-      description: 'Details of the cause that triggered the creation the history record.',
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the history record.' }),
-    descriptionKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description key of the history record.' }),
-    emailDescription: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The description of the email address associated the history record.',
-      }),
-    emailDescriptionKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The description key of the email address associated the history record.',
-      }),
-    extraData: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Additional arbitrary information about the history record.' }),
-    generator: HistoryMetadataParticipantSchema.exactOptional().openapi({
-      description: 'Details of the system that generated the history record.',
-    }),
-    type: z.string().exactOptional().openapi({ description: 'The type of the history record.' }),
-  })
-  .openapi({ description: 'Details of issue history metadata.', required: [] })
-  .openapi('HistoryMetadata')
-
-const ChangelogSchema = z
-  .strictObject({
-    author: UserDetailsSchema.exactOptional().openapi({
-      description: 'The user who made the change.',
-      readOnly: true,
-    }),
-    created: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date on which the change took place.', readOnly: true }),
-    historyMetadata: HistoryMetadataSchema.exactOptional().openapi({
-      description: 'The history metadata associated with the changed.',
-      readOnly: true,
-    }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the changelog.', readOnly: true }),
-    items: z
-      .array(ChangeDetailsSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of items changed.', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'A log of changes made to issue fields. Changelogs related to workflow associations are currently being deprecated.',
-    required: [],
-  })
-  .openapi('Changelog')
-
-const CommentCreateDTOSchema = z
-  .strictObject({
-    body: z.string().exactOptional().openapi({ description: 'Content of the comment.' }),
-    public: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates whether the comment is public (true) or private/internal (false).',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CommentCreateDTO')
-
-const CustomerCreateDTOSchema = z
-  .strictObject({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Customer's name for display in the UI." }),
-    email: z.string().exactOptional().openapi({ description: "Customer's email address." }),
-    fullName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Deprecated, please use 'displayName'." }),
-  })
-  .openapi({ required: [] })
-  .openapi('CustomerCreateDTO')
+  .openapi('CustomerRequestLinkDTO')
 
 const CustomerRequestActionDTOSchema = z
   .strictObject({
@@ -765,6 +293,113 @@ const CustomerRequestActionsDTOSchema = z
   })
   .openapi({ required: [] })
   .openapi('CustomerRequestActionsDTO')
+
+type PagedDTOCommentDTOType = {
+  _expands?: string[]
+  _links?: z.infer<typeof PagedLinkDTOSchema>
+  isLastPage?: boolean
+  limit?: number
+  size?: number
+  start?: number
+  values?: z.infer<typeof CommentDTOSchema>[]
+}
+
+const PagedDTOCommentDTOSchema: z.ZodType<PagedDTOCommentDTOType> = z
+  .strictObject({
+    _expands: z.array(z.string()).exactOptional(),
+    _links: PagedLinkDTOSchema.exactOptional().openapi({
+      description: 'List of the links relating to the page.',
+    }),
+    isLastPage: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if this is the last page of records (true) or not (false).',
+      }),
+    limit: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of items to be returned per page, up to the maximum set for these objects in the current implementation.',
+      }),
+    size: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of items returned in the page.' }),
+    start: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Index of the first item returned in the page.' }),
+    values: z
+      .array(CommentDTOSchema)
+      .exactOptional()
+      .openapi({ description: 'Details of the items included in the page.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PagedDTOCommentDTO')
+
+const CustomerRequestStatusDTOSchema = z
+  .strictObject({
+    status: z.string().exactOptional().openapi({ description: 'Name of the status condition.' }),
+    statusCategory: z
+      .enum(['UNDEFINED', 'NEW', 'INDETERMINATE', 'DONE'])
+      .exactOptional()
+      .openapi({ description: 'Status category the status belongs to.' }),
+    statusDate: DateDTOSchema.exactOptional().openapi({
+      description: 'Date on which the status was attained.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CustomerRequestStatusDTO')
+
+const PagedDTOUserDTOSchema = z
+  .strictObject({
+    _expands: z.array(z.string()).exactOptional(),
+    _links: PagedLinkDTOSchema.exactOptional().openapi({
+      description: 'List of the links relating to the page.',
+    }),
+    isLastPage: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates if this is the last page of records (true) or not (false).',
+      }),
+    limit: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of items to be returned per page, up to the maximum set for these objects in the current implementation.',
+      }),
+    size: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of items returned in the page.' }),
+    start: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Index of the first item returned in the page.' }),
+    values: z
+      .array(UserDTOSchema)
+      .exactOptional()
+      .openapi({ description: 'Details of the items included in the page.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PagedDTOUserDTO')
+
+const CustomerRequestFieldValueDTOSchema = z
+  .strictObject({
+    fieldId: z.string().exactOptional().openapi({ description: 'ID of the field.' }),
+    label: z.string().exactOptional().openapi({ description: 'Text label for the field.' }),
+    renderedValue: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Value of the field rendered in the UI.' }),
+    value: z.any().exactOptional().openapi({ description: 'Value of the field.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CustomerRequestFieldValueDTO')
 
 const RequestTypeFieldValueDTOSchema: z.ZodType<RequestTypeFieldValueDTOType> = z
   .lazy(() =>
@@ -885,113 +520,6 @@ const CustomerRequestCreateMetaDTOSchema = z
   })
   .openapi({ required: [] })
   .openapi('CustomerRequestCreateMetaDTO')
-
-const CustomerRequestLinkDTOSchema = z
-  .strictObject({
-    agent: z.url().exactOptional().openapi({ description: 'Jira agent view URL for the request.' }),
-    jiraRest: z.url().exactOptional().openapi({ description: 'REST API URL for the request.' }),
-    self: z.url().exactOptional(),
-    web: z.url().exactOptional().openapi({ description: 'Web URL for the request.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('CustomerRequestLinkDTO')
-
-const PagedDTOCommentDTOSchema = z
-  .strictObject({
-    _expands: z.array(z.string()).exactOptional(),
-    _links: PagedLinkDTOSchema.exactOptional().openapi({
-      description: 'List of the links relating to the page.',
-    }),
-    isLastPage: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates if this is the last page of records (true) or not (false).',
-      }),
-    limit: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of items to be returned per page, up to the maximum set for these objects in the current implementation.',
-      }),
-    size: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of items returned in the page.' }),
-    start: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Index of the first item returned in the page.' }),
-    values: z
-      .array(CommentDTOSchema)
-      .exactOptional()
-      .openapi({ description: 'Details of the items included in the page.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PagedDTOCommentDTO')
-
-const CustomerRequestStatusDTOSchema = z
-  .strictObject({
-    status: z.string().exactOptional().openapi({ description: 'Name of the status condition.' }),
-    statusCategory: z
-      .enum(['UNDEFINED', 'NEW', 'INDETERMINATE', 'DONE'])
-      .exactOptional()
-      .openapi({ description: 'Status category the status belongs to.' }),
-    statusDate: DateDTOSchema.exactOptional().openapi({
-      description: 'Date on which the status was attained.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('CustomerRequestStatusDTO')
-
-const PagedDTOUserDTOSchema = z
-  .strictObject({
-    _expands: z.array(z.string()).exactOptional(),
-    _links: PagedLinkDTOSchema.exactOptional().openapi({
-      description: 'List of the links relating to the page.',
-    }),
-    isLastPage: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates if this is the last page of records (true) or not (false).',
-      }),
-    limit: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of items to be returned per page, up to the maximum set for these objects in the current implementation.',
-      }),
-    size: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of items returned in the page.' }),
-    start: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Index of the first item returned in the page.' }),
-    values: z
-      .array(UserDTOSchema)
-      .exactOptional()
-      .openapi({ description: 'Details of the items included in the page.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PagedDTOUserDTO')
-
-const CustomerRequestFieldValueDTOSchema = z
-  .strictObject({
-    fieldId: z.string().exactOptional().openapi({ description: 'ID of the field.' }),
-    label: z.string().exactOptional().openapi({ description: 'Text label for the field.' }),
-    renderedValue: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'Value of the field rendered in the UI.' }),
-    value: z.any().exactOptional().openapi({ description: 'Value of the field.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('CustomerRequestFieldValueDTO')
 
 const RequestTypeIconLinkDTOSchema = z
   .strictObject({
@@ -1282,7 +810,117 @@ const PagedDTOCustomerRequestStatusDTOSchema = z
   .openapi({ required: [] })
   .openapi('PagedDTOCustomerRequestStatusDTO')
 
-const CustomerRequestDTOSchema = z
+type CustomerRequestDTOType = {
+  _expands?: string[]
+  _links?: z.infer<typeof CustomerRequestLinkDTOSchema>
+  actions?: z.infer<typeof CustomerRequestActionsDTOSchema>
+  attachments?: z.infer<typeof PagedDTOAttachmentDTOSchema>
+  comments?: z.infer<typeof PagedDTOCommentDTOSchema>
+  createdDate?: z.infer<typeof DateDTOSchema>
+  currentStatus?: z.infer<typeof CustomerRequestStatusDTOSchema>
+  issueId?: string
+  issueKey?: string
+  participants?: z.infer<typeof PagedDTOUserDTOSchema>
+  reporter?: z.infer<typeof UserDTOSchema>
+  requestFieldValues?: z.infer<typeof CustomerRequestFieldValueDTOSchema>[]
+  requestType?: z.infer<typeof RequestTypeDTOSchema>
+  requestTypeId?: string
+  serviceDesk?: z.infer<typeof ServiceDeskDTOSchema>
+  serviceDeskId?: string
+  sla?: z.infer<typeof PagedDTOSlaInformationDTOSchema>
+  status?: z.infer<typeof PagedDTOCustomerRequestStatusDTOSchema>
+  summary?: string
+}
+
+const SimpleLinkSchema = z
+  .strictObject({
+    href: z.string().exactOptional(),
+    iconClass: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    label: z.string().exactOptional(),
+    styleClass: z.string().exactOptional(),
+    title: z.string().exactOptional(),
+    weight: z.int32().exactOptional(),
+  })
+  .openapi({
+    description: 'Details about the operations available in this version.',
+    xml: { name: 'link' },
+    required: [],
+  })
+  .openapi('SimpleLink')
+
+type LinkGroupType = {
+  groups?: LinkGroupType[]
+  header?: z.infer<typeof SimpleLinkSchema>
+  id?: string
+  links?: z.infer<typeof SimpleLinkSchema>[]
+  styleClass?: string
+  weight?: number
+}
+
+const ApproverDTOSchema = z
+  .strictObject({
+    approver: UserDTOSchema.exactOptional().openapi({
+      description: 'Details of the User who is providing approval.',
+    }),
+    approverDecision: z
+      .enum(['approved', 'declined', 'pending'])
+      .exactOptional()
+      .openapi({ description: 'Decision made by the approver.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ApproverDTO')
+
+const ApprovalDTOSchema = z
+  .strictObject({
+    _links: SelfLinkDTOSchema.exactOptional().openapi({
+      description: 'The REST API URL of the approval.',
+    }),
+    approvers: z
+      .array(ApproverDTOSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Detailed list of the users who must provide a response to the approval.',
+      }),
+    canAnswerApproval: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the user making the request is one of the approvers and can respond to the approval (true) or not (false).',
+      }),
+    completedDate: DateDTOSchema.exactOptional().openapi({
+      description: 'Date the approval was completed.',
+    }),
+    createdDate: DateDTOSchema.exactOptional().openapi({
+      description: 'Date the approval was created.',
+    }),
+    finalDecision: z
+      .enum(['approved', 'declined', 'pending'])
+      .exactOptional()
+      .openapi({
+        description: 'Outcome of the approval, based on the approvals provided by all approvers.',
+      }),
+    id: z.string().exactOptional().openapi({ description: 'ID of the approval.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description of the approval being sought or provided.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ApprovalDTO')
+
+type PagedDTOApprovalDTOType = {
+  _expands?: string[]
+  _links?: z.infer<typeof PagedLinkDTOSchema>
+  isLastPage?: boolean
+  limit?: number
+  size?: number
+  start?: number
+  values?: z.infer<typeof ApprovalDTOSchema>[]
+}
+
+const CustomerRequestDTOSchema: z.ZodType<CustomerRequestDTOType> = z
   .strictObject({
     _expands: z
       .array(z.string())
@@ -1355,65 +993,299 @@ const CustomerRequestDTOSchema = z
   .openapi({ required: [] })
   .openapi('CustomerRequestDTO')
 
-const CustomerTransitionDTOSchema = z
+type PagedDTOCustomerRequestDTOType = {
+  _expands?: string[]
+  _links?: z.infer<typeof PagedLinkDTOSchema>
+  isLastPage?: boolean
+  limit?: number
+  size?: number
+  start?: number
+  values?: z.infer<typeof CustomerRequestDTOSchema>[]
+}
+
+const AvatarUrlsBeanSchema = z
   .strictObject({
-    id: z.string().exactOptional().openapi({ description: 'ID of the transition.' }),
-    name: z.string().exactOptional().openapi({ description: 'Name of the transition.' }),
+    '16x16': z
+      .url()
+      .exactOptional()
+      .openapi({ description: "The URL of the item's 16x16 pixel avatar." }),
+    '24x24': z
+      .url()
+      .exactOptional()
+      .openapi({ description: "The URL of the item's 24x24 pixel avatar." }),
+    '32x32': z
+      .url()
+      .exactOptional()
+      .openapi({ description: "The URL of the item's 32x32 pixel avatar." }),
+    '48x48': z
+      .url()
+      .exactOptional()
+      .openapi({ description: "The URL of the item's 48x48 pixel avatar." }),
   })
   .openapi({ required: [] })
-  .openapi('CustomerTransitionDTO')
+  .openapi('AvatarUrlsBean')
 
-const CustomerTransitionExecutionDTOSchema = z
+const UserDetailsSchema = z
   .strictObject({
-    additionalComment: AdditionalCommentDTOSchema.exactOptional().openapi({
-      description: 'Comment explaining the reason for the transition.',
+    accountId: z
+      .string()
+      .max(128)
+      .exactOptional()
+      .openapi({
+        description:
+          'The account ID of the user, which uniquely identifies the user across all Atlassian products. For example, *5b10ac8d82e05b22cc7d4ef5*.',
+      }),
+    accountType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The type of account represented by this user. This will be one of 'atlassian' (normal users), 'app' (application user) or 'customer' (Jira Service Desk customer user)",
+        readOnly: true,
+      }),
+    active: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the user is active.', readOnly: true }),
+    avatarUrls: AvatarUrlsBeanSchema.exactOptional().openapi({
+      description: 'The avatars of the user.',
+      readOnly: true,
+    }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The display name of the user. Depending on the user’s privacy settings, this may return an alternative value.',
+        readOnly: true,
+      }),
+    emailAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The email address of the user. Depending on the user’s privacy settings, this may be returned as null.',
+        readOnly: true,
+      }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This property is no longer available and will be removed from the documentation soon. See the [deprecation notice](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This property is no longer available and will be removed from the documentation soon. See the [deprecation notice](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.',
+        readOnly: true,
+      }),
+    self: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL of the user.', readOnly: true }),
+    timeZone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The time zone specified in the user's profile. Depending on the user’s privacy settings, this may be returned as null.",
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      "User details permitted by the user's Atlassian Account privacy settings. However, be aware of these exceptions:\n\n *  User record deleted from Atlassian: This occurs as the result of a right to be forgotten request. In this case, `displayName` provides an indication and other parameters have default values or are blank (for example, email is blank).\n *  User record corrupted: This occurs as a results of events such as a server import and can only happen to deleted users. In this case, `accountId` returns *unknown* and all other parameters have fallback values.\n *  User record unavailable: This usually occurs due to an internal service outage. In this case, all parameters have fallback values.",
+    required: [],
+  })
+  .openapi('UserDetails')
+
+const HistoryMetadataParticipantSchema = z
+  .looseObject({
+    avatarUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URL to an avatar for the user or system associated with a history record.',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The display name of the user or system associated with a history record.',
+      }),
+    displayNameKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The key of the display name of the user or system associated with a history record.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the user or system associated with a history record.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the user or system associated with a history record.' }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL of the user or system associated with a history record.' }),
+  })
+  .openapi({
+    description: 'Details of user or system associated with a issue history metadata item.',
+    required: [],
+  })
+  .openapi('HistoryMetadataParticipant')
+
+const HistoryMetadataSchema = z
+  .looseObject({
+    activityDescription: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The activity described in the history record.' }),
+    activityDescriptionKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The key of the activity described in the history record.' }),
+    actor: HistoryMetadataParticipantSchema.exactOptional().openapi({
+      description: 'Details of the user whose action created the history record.',
+    }),
+    cause: HistoryMetadataParticipantSchema.exactOptional().openapi({
+      description: 'Details of the cause that triggered the creation the history record.',
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the history record.' }),
+    descriptionKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description key of the history record.' }),
+    emailDescription: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The description of the email address associated the history record.',
+      }),
+    emailDescriptionKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The description key of the email address associated the history record.',
+      }),
+    extraData: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Additional arbitrary information about the history record.' }),
+    generator: HistoryMetadataParticipantSchema.exactOptional().openapi({
+      description: 'Details of the system that generated the history record.',
+    }),
+    type: z.string().exactOptional().openapi({ description: 'The type of the history record.' }),
+  })
+  .openapi({ description: 'Details of issue history metadata.', required: [] })
+  .openapi('HistoryMetadata')
+
+const ChangeDetailsSchema = z
+  .strictObject({
+    field: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the field changed.', readOnly: true }),
+    fieldId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the field changed.', readOnly: true }),
+    fieldtype: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the field changed.', readOnly: true }),
+    from: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The details of the original value.', readOnly: true }),
+    fromString: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The details of the original value as a string.', readOnly: true }),
+    to: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The details of the new value.', readOnly: true }),
+    toString: z
+      .preprocess(
+        (val) => (typeof val === 'function' || val === Object.prototype ? undefined : val),
+        z.string().optional(),
+      )
+      .exactOptional()
+      .openapi({ description: 'The details of the new value as a string.', readOnly: true }),
+  })
+  .openapi({ description: 'A change item.', required: [] })
+  .openapi('ChangeDetails')
+
+const ChangelogSchema = z
+  .strictObject({
+    author: UserDetailsSchema.exactOptional().openapi({
+      description: 'The user who made the change.',
+      readOnly: true,
+    }),
+    created: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The date on which the change took place.', readOnly: true }),
+    historyMetadata: HistoryMetadataSchema.exactOptional().openapi({
+      description: 'The history metadata associated with the changed.',
+      readOnly: true,
     }),
     id: z
       .string()
       .exactOptional()
-      .openapi({ description: 'ID of the transition to be performed.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('CustomerTransitionExecutionDTO')
-
-const EntityPropertySchema = z
-  .strictObject({
-    key: z
-      .string()
+      .openapi({ description: 'The ID of the changelog.', readOnly: true }),
+    items: z
+      .array(ChangeDetailsSchema)
       .exactOptional()
-      .openapi({ description: 'The key of the property. Required on create and update.' }),
-    value: z
-      .any()
-      .exactOptional()
-      .openapi({ description: 'The value of the property. Required on create and update.' }),
+      .openapi({ description: 'The list of items changed.', readOnly: true }),
   })
   .openapi({
     description:
-      'An entity property, for more information see [Entity properties](https://developer.atlassian.com/cloud/jira/platform/jira-entity-properties/).',
+      'A log of changes made to issue fields. Changelogs related to workflow associations are currently being deprecated.',
     required: [],
   })
-  .openapi('EntityProperty')
+  .openapi('Changelog')
 
-const I18nErrorMessageSchema = z
+const PageOfChangelogsSchema = z
   .strictObject({
-    i18nKey: z.string().exactOptional(),
-    parameters: z.array(z.string()).exactOptional(),
+    histories: z
+      .array(ChangelogSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of changelogs.', readOnly: true }),
+    maxResults: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The maximum number of results that could be on the page.',
+        readOnly: true,
+      }),
+    startAt: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The index of the first item returned on the page.',
+        readOnly: true,
+      }),
+    total: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The number of results on the page.', readOnly: true }),
   })
-  .openapi({ required: [] })
-  .openapi('I18nErrorMessage')
-
-const ErrorResponseSchema = z
-  .strictObject({
-    errorMessage: z.string().exactOptional(),
-    i18nErrorMessage: I18nErrorMessageSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ErrorResponse')
-
-const ExpandableSchema = z
-  .strictObject({ _expands: z.array(z.string()).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('Expandable')
+  .openapi({ description: 'A page of changelogs.', required: [] })
+  .openapi('PageOfChangelogs')
 
 const FieldMetadataSchema = z
   .strictObject({
@@ -1463,173 +1335,12 @@ const FieldMetadataSchema = z
   })
   .openapi('FieldMetadata')
 
-const JsonNodeSchema = z
-  .strictObject({
-    array: z.boolean().exactOptional(),
-    bigDecimal: z.boolean().exactOptional(),
-    bigInteger: z.boolean().exactOptional(),
-    bigIntegerValue: z.int().exactOptional(),
-    binary: z.boolean().exactOptional(),
-    binaryValue: z.array(z.string()).exactOptional(),
-    boolean: z.boolean().exactOptional(),
-    booleanValue: z.boolean().exactOptional(),
-    containerNode: z.boolean().exactOptional(),
-    decimalValue: z.number().exactOptional(),
-    double: z.boolean().exactOptional(),
-    doubleValue: z.float64().exactOptional(),
-    elements: z.object({}).exactOptional(),
-    fieldNames: z.object({}).exactOptional(),
-    fields: z.object({}).exactOptional(),
-    floatingPointNumber: z.boolean().exactOptional(),
-    int: z.boolean().exactOptional(),
-    intValue: z.int32().exactOptional(),
-    integralNumber: z.boolean().exactOptional(),
-    long: z.boolean().exactOptional(),
-    longValue: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    missingNode: z.boolean().exactOptional(),
-    null: z.boolean().exactOptional(),
-    number: z.boolean().exactOptional(),
-    numberType: z
-      .enum(['INT', 'LONG', 'BIG_INTEGER', 'FLOAT', 'DOUBLE', 'BIG_DECIMAL'])
-      .exactOptional(),
-    numberValue: z.number().exactOptional(),
-    object: z.boolean().exactOptional(),
-    pojo: z.boolean().exactOptional(),
-    textValue: z.string().exactOptional(),
-    textual: z.boolean().exactOptional(),
-    valueAsBoolean: z.boolean().exactOptional(),
-    valueAsDouble: z.float64().exactOptional(),
-    valueAsInt: z.int32().exactOptional(),
-    valueAsLong: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    valueAsText: z.string().exactOptional(),
-    valueNode: z.boolean().exactOptional(),
+const IssueUpdateMetadataSchema = z
+  .object({
+    fields: z.record(z.string(), FieldMetadataSchema).exactOptional().openapi({ readOnly: true }),
   })
-  .openapi({ required: [] })
-  .openapi('JsonNode')
-
-const FormAnswerSchema = z
-  .strictObject({
-    adf: JsonNodeSchema.exactOptional().openapi({
-      description: 'Answer in Atlassian Document Format (ADF)',
-    }),
-    choices: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'IDs of selected choices' }),
-    date: z.string().exactOptional().openapi({ description: 'Answer in date format (yyyy-MM-dd)' }),
-    files: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The IDs of files to be attached to the form that are obtained by calling the ‘attach temporary file’ endpoint on the corresponding service desk.',
-      }),
-    text: z.string().exactOptional().openapi({ description: 'Answer in free text format' }),
-    time: z.string().exactOptional().openapi({ description: 'Answer in timestamp format (HH:mm)' }),
-    users: z.array(z.string()).exactOptional().openapi({ description: 'IDs of selected users' }),
-  })
-  .openapi({ required: [] })
-  .openapi('FormAnswer')
-
-const FormSchema = z
-  .looseObject({
-    answers: z
-      .record(z.string(), FormAnswerSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'JSON mapping of form field answers containing form field IDs and corresponding values.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Form')
-
-const FormValidationErrorContextDTOSchema = z
-  .strictObject({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ID of the form entity related to the validation error.' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Type of form entity related to the validation error.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('FormValidationErrorContextDTO')
-
-const FormValidationErrorDTOSchema = z
-  .strictObject({
-    code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Machine-readable validation error code.' }),
-    context: z
-      .array(FormValidationErrorContextDTOSchema)
-      .exactOptional()
-      .openapi({ description: 'Identifies the form entity that caused the validation error.' }),
-    detail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Detailed validation error message.' }),
-    status: z.int32().exactOptional().openapi({ description: 'The HTTP status code.' }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Short summary of the validation error.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('FormValidationErrorDTO')
-
-const I18nErrorMessageDTOSchema = z
-  .strictObject({
-    i18nKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Internationalization key for the error message.' }),
-    parameters: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Parameters used to render the internationalized error message.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('I18nErrorMessageDTO')
-
-const FormValidationErrorResponseDTOSchema = z
-  .strictObject({
-    errorMessage: z.string().exactOptional().openapi({ description: 'Description of the error.' }),
-    errors: z
-      .array(FormValidationErrorDTOSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of validation errors.' }),
-    i18nErrorMessage: I18nErrorMessageDTOSchema.exactOptional().openapi({
-      description: 'Internationalized error message details.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('FormValidationErrorResponseDTO')
+  .openapi({ description: 'A list of editable field details.', required: [] })
+  .openapi('IssueUpdateMetadata')
 
 const IncludedFieldsSchema = z
   .strictObject({
@@ -1669,58 +1380,6 @@ const IncludedFieldsSchema = z
   })
   .openapi({ required: [] })
   .openapi('IncludedFields')
-
-const InputStreamSourceSchema = z
-  .strictObject({ inputStream: z.object({}).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('InputStreamSource')
-
-const InsightWorkspaceDTOSchema = z
-  .strictObject({
-    workspaceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The workspace ID used as the identifier to access the Insight REST API.',
-      }),
-  })
-  .openapi({ description: 'Details of an insight workspace ID.', required: [] })
-  .openapi('InsightWorkspaceDTO')
-
-const PageOfChangelogsSchema = z
-  .strictObject({
-    histories: z
-      .array(ChangelogSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of changelogs.', readOnly: true }),
-    maxResults: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The maximum number of results that could be on the page.',
-        readOnly: true,
-      }),
-    startAt: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The index of the first item returned on the page.',
-        readOnly: true,
-      }),
-    total: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The number of results on the page.', readOnly: true }),
-  })
-  .openapi({ description: 'A page of changelogs.', required: [] })
-  .openapi('PageOfChangelogs')
-
-const IssueUpdateMetadataSchema = z
-  .object({
-    fields: z.record(z.string(), FieldMetadataSchema).exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ description: 'A list of editable field details.', required: [] })
-  .openapi('IssueUpdateMetadata')
 
 const LinkGroupSchema: z.ZodType<LinkGroupType> = z
   .lazy(() =>
@@ -2067,6 +1726,424 @@ const IssueBeanSchema = z
   .openapi({ description: 'Details about an issue.', xml: { name: 'issue' }, required: [] })
   .openapi('IssueBean')
 
+type PagedDTOIssueBeanType = {
+  _expands?: string[]
+  _links?: z.infer<typeof PagedLinkDTOSchema>
+  isLastPage?: boolean
+  limit?: number
+  size?: number
+  start?: number
+  values?: z.infer<typeof IssueBeanSchema>[]
+}
+
+type PagedDTORequestTypeDTOType = {
+  _expands?: string[]
+  _links?: z.infer<typeof PagedLinkDTOSchema>
+  isLastPage?: boolean
+  limit?: number
+  size?: number
+  start?: number
+  values?: z.infer<typeof RequestTypeDTOSchema>[]
+}
+
+type RequestTypeFieldValueDTOType = {
+  children?: RequestTypeFieldValueDTOType[]
+  label?: string
+  value?: string
+}
+
+const AdditionalCommentDTOSchema = z
+  .strictObject({
+    body: z.string().exactOptional().openapi({ description: 'Content of the comment.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AdditionalCommentDTO')
+
+const ApprovalDecisionRequestDTOSchema = z
+  .strictObject({
+    decision: z
+      .enum(['approve', 'decline'])
+      .exactOptional()
+      .openapi({ description: 'Response to the approval request.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ApprovalDecisionRequestDTO')
+
+const ContentDTOSchema = z
+  .strictObject({
+    iframeSrc: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Url containing the body of the article (without title), suitable for rendering in an iframe',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ContentDTO')
+
+const SourceDTOSchema = z
+  .looseObject({
+    type: z
+      .literal('confluence')
+      .exactOptional()
+      .openapi({ description: 'Type of the knowledge base source' }),
+  })
+  .openapi({ required: [] })
+  .openapi('SourceDTO')
+
+const ArticleDTOSchema = z
+  .strictObject({
+    content: ContentDTOSchema.exactOptional(),
+    excerpt: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Excerpt of the article which matches the given query string.' }),
+    source: SourceDTOSchema.exactOptional().openapi({ description: 'Source of the article.' }),
+    title: z.string().exactOptional().openapi({ description: 'Title of the article.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ArticleDTO')
+
+const AssetsWorkspaceDTOSchema = z
+  .strictObject({
+    workspaceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The workspace ID used as the identifier to access the Assets REST API.',
+      }),
+  })
+  .openapi({ description: 'Details of an Assets workspace ID.', required: [] })
+  .openapi('AssetsWorkspaceDTO')
+
+const AttachmentCreateDTOSchema = z
+  .strictObject({
+    additionalComment: AdditionalCommentDTOSchema.exactOptional().openapi({
+      description: 'Additional content of the comment',
+    }),
+    public: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Controls whether the comment and its attachments are visible to customers',
+      }),
+    temporaryAttachmentIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of IDs for the temporary attachments to be added to the customer request.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AttachmentCreateDTO')
+
+const AttachmentCreateResultDTOSchema: z.ZodType<AttachmentCreateResultDTOType> = z
+  .strictObject({
+    attachments: PagedDTOAttachmentDTOSchema.exactOptional().openapi({
+      description: 'List of the attachments added.',
+    }),
+    comment: CommentDTOSchema.exactOptional().openapi({
+      description: 'Details of the comment included with the attachments.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AttachmentCreateResultDTO')
+
+const CSATFeedbackFullDTOSchema = z
+  .strictObject({
+    comment: AdditionalCommentDTOSchema.exactOptional().openapi({
+      description: '(Optional) The comment provided with this feedback.',
+    }),
+    rating: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'A numeric representation of the rating, this must be an integer value between 1 and 5.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Indicates the type of feedback, supported values: `csat`.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CSATFeedbackFullDTO')
+
+const CommentCreateDTOSchema = z
+  .strictObject({
+    body: z.string().exactOptional().openapi({ description: 'Content of the comment.' }),
+    public: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates whether the comment is public (true) or private/internal (false).',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CommentCreateDTO')
+
+const CustomerCreateDTOSchema = z
+  .strictObject({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Customer's name for display in the UI." }),
+    email: z.string().exactOptional().openapi({ description: "Customer's email address." }),
+    fullName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Deprecated, please use 'displayName'." }),
+  })
+  .openapi({ required: [] })
+  .openapi('CustomerCreateDTO')
+
+const CustomerTransitionDTOSchema = z
+  .strictObject({
+    id: z.string().exactOptional().openapi({ description: 'ID of the transition.' }),
+    name: z.string().exactOptional().openapi({ description: 'Name of the transition.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CustomerTransitionDTO')
+
+const CustomerTransitionExecutionDTOSchema = z
+  .strictObject({
+    additionalComment: AdditionalCommentDTOSchema.exactOptional().openapi({
+      description: 'Comment explaining the reason for the transition.',
+    }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID of the transition to be performed.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CustomerTransitionExecutionDTO')
+
+const EntityPropertySchema = z
+  .strictObject({
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The key of the property. Required on create and update.' }),
+    value: z
+      .any()
+      .exactOptional()
+      .openapi({ description: 'The value of the property. Required on create and update.' }),
+  })
+  .openapi({
+    description:
+      'An entity property, for more information see [Entity properties](https://developer.atlassian.com/cloud/jira/platform/jira-entity-properties/).',
+    required: [],
+  })
+  .openapi('EntityProperty')
+
+const I18nErrorMessageSchema = z
+  .strictObject({
+    i18nKey: z.string().exactOptional(),
+    parameters: z.array(z.string()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('I18nErrorMessage')
+
+const ErrorResponseSchema = z
+  .strictObject({
+    errorMessage: z.string().exactOptional(),
+    i18nErrorMessage: I18nErrorMessageSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ErrorResponse')
+
+const ExpandableSchema = z
+  .strictObject({ _expands: z.array(z.string()).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('Expandable')
+
+const JsonNodeSchema = z
+  .strictObject({
+    array: z.boolean().exactOptional(),
+    bigDecimal: z.boolean().exactOptional(),
+    bigInteger: z.boolean().exactOptional(),
+    bigIntegerValue: z.int().exactOptional(),
+    binary: z.boolean().exactOptional(),
+    binaryValue: z.array(z.string()).exactOptional(),
+    boolean: z.boolean().exactOptional(),
+    booleanValue: z.boolean().exactOptional(),
+    containerNode: z.boolean().exactOptional(),
+    decimalValue: z.number().exactOptional(),
+    double: z.boolean().exactOptional(),
+    doubleValue: z.float64().exactOptional(),
+    elements: z.looseObject({}).exactOptional(),
+    fieldNames: z.looseObject({}).exactOptional(),
+    fields: z.looseObject({}).exactOptional(),
+    floatingPointNumber: z.boolean().exactOptional(),
+    int: z.boolean().exactOptional(),
+    intValue: z.int32().exactOptional(),
+    integralNumber: z.boolean().exactOptional(),
+    long: z.boolean().exactOptional(),
+    longValue: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    missingNode: z.boolean().exactOptional(),
+    null: z.boolean().exactOptional(),
+    number: z.boolean().exactOptional(),
+    numberType: z
+      .enum(['INT', 'LONG', 'BIG_INTEGER', 'FLOAT', 'DOUBLE', 'BIG_DECIMAL'])
+      .exactOptional(),
+    numberValue: z.number().exactOptional(),
+    object: z.boolean().exactOptional(),
+    pojo: z.boolean().exactOptional(),
+    textValue: z.string().exactOptional(),
+    textual: z.boolean().exactOptional(),
+    valueAsBoolean: z.boolean().exactOptional(),
+    valueAsDouble: z.float64().exactOptional(),
+    valueAsInt: z.int32().exactOptional(),
+    valueAsLong: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    valueAsText: z.string().exactOptional(),
+    valueNode: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('JsonNode')
+
+const FormAnswerSchema = z
+  .strictObject({
+    adf: JsonNodeSchema.exactOptional().openapi({
+      description: 'Answer in Atlassian Document Format (ADF)',
+    }),
+    choices: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'IDs of selected choices' }),
+    date: z.string().exactOptional().openapi({ description: 'Answer in date format (yyyy-MM-dd)' }),
+    files: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The IDs of files to be attached to the form that are obtained by calling the ‘attach temporary file’ endpoint on the corresponding service desk.',
+      }),
+    text: z.string().exactOptional().openapi({ description: 'Answer in free text format' }),
+    time: z.string().exactOptional().openapi({ description: 'Answer in timestamp format (HH:mm)' }),
+    users: z.array(z.string()).exactOptional().openapi({ description: 'IDs of selected users' }),
+  })
+  .openapi({ required: [] })
+  .openapi('FormAnswer')
+
+const FormSchema = z
+  .looseObject({
+    answers: z
+      .record(z.string(), FormAnswerSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'JSON mapping of form field answers containing form field IDs and corresponding values.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Form')
+
+const FormValidationErrorContextDTOSchema = z
+  .strictObject({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID of the form entity related to the validation error.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Type of form entity related to the validation error.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('FormValidationErrorContextDTO')
+
+const FormValidationErrorDTOSchema = z
+  .strictObject({
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Machine-readable validation error code.' }),
+    context: z
+      .array(FormValidationErrorContextDTOSchema)
+      .exactOptional()
+      .openapi({ description: 'Identifies the form entity that caused the validation error.' }),
+    detail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Detailed validation error message.' }),
+    status: z.int32().exactOptional().openapi({ description: 'The HTTP status code.' }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Short summary of the validation error.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('FormValidationErrorDTO')
+
+const I18nErrorMessageDTOSchema = z
+  .strictObject({
+    i18nKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Internationalization key for the error message.' }),
+    parameters: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Parameters used to render the internationalized error message.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('I18nErrorMessageDTO')
+
+const FormValidationErrorResponseDTOSchema = z
+  .strictObject({
+    errorMessage: z.string().exactOptional().openapi({ description: 'Description of the error.' }),
+    errors: z
+      .array(FormValidationErrorDTOSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of validation errors.' }),
+    i18nErrorMessage: I18nErrorMessageDTOSchema.exactOptional().openapi({
+      description: 'Internationalized error message details.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('FormValidationErrorResponseDTO')
+
+const InputStreamSourceSchema = z
+  .strictObject({ inputStream: z.looseObject({}).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('InputStreamSource')
+
+const InsightWorkspaceDTOSchema = z
+  .strictObject({
+    workspaceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The workspace ID used as the identifier to access the Insight REST API.',
+      }),
+  })
+  .openapi({ description: 'Details of an insight workspace ID.', required: [] })
+  .openapi('InsightWorkspaceDTO')
+
 const LinkableSchema = z
   .strictObject({ _links: SelfLinkDTOSchema.exactOptional() })
   .openapi({ required: [] })
@@ -2093,7 +2170,7 @@ const ResourceSchema = z
     description: z.string().exactOptional(),
     file: z.file().exactOptional().openapi({ type: 'string', format: 'binary' }),
     filename: z.string().exactOptional(),
-    inputStream: z.object({}).exactOptional(),
+    inputStream: z.looseObject({}).exactOptional(),
     open: z.boolean().exactOptional(),
     readable: z.boolean().exactOptional(),
     uri: z.url().exactOptional(),
@@ -2107,7 +2184,7 @@ const MultipartFileSchema = z
     bytes: z.array(z.string()).exactOptional(),
     contentType: z.string().exactOptional(),
     empty: z.boolean().exactOptional(),
-    inputStream: z.object({}).exactOptional(),
+    inputStream: z.looseObject({}).exactOptional(),
     name: z.string().exactOptional(),
     originalFilename: z.string().exactOptional(),
     resource: ResourceSchema.exactOptional(),
@@ -2184,7 +2261,7 @@ const OrganizationServiceDeskUpdateDTOSchema = z
   .openapi({ required: ['organizationId'] })
   .openapi('OrganizationServiceDeskUpdateDTO')
 
-const PagedDTOApprovalDTOSchema = z
+const PagedDTOApprovalDTOSchema: z.ZodType<PagedDTOApprovalDTOType> = z
   .strictObject({
     _expands: z.array(z.string()).exactOptional(),
     _links: PagedLinkDTOSchema.exactOptional().openapi({
@@ -2289,7 +2366,7 @@ const PagedDTOAssetsWorkspaceDTOSchema = z
   .openapi({ required: [] })
   .openapi('PagedDTOAssetsWorkspaceDTO')
 
-const PagedDTOCustomerRequestDTOSchema = z
+const PagedDTOCustomerRequestDTOSchema: z.ZodType<PagedDTOCustomerRequestDTOType> = z
   .strictObject({
     _expands: z.array(z.string()).exactOptional(),
     _links: PagedLinkDTOSchema.exactOptional().openapi({
@@ -2394,7 +2471,7 @@ const PagedDTOInsightWorkspaceDTOSchema = z
   .openapi({ required: [] })
   .openapi('PagedDTOInsightWorkspaceDTO')
 
-const PagedDTOIssueBeanSchema = z
+const PagedDTOIssueBeanSchema: z.ZodType<PagedDTOIssueBeanType> = z
   .strictObject({
     _expands: z.array(z.string()).exactOptional(),
     _links: PagedLinkDTOSchema.exactOptional().openapi({
@@ -2534,7 +2611,7 @@ const PagedDTOQueueDTOSchema = z
   .openapi({ required: [] })
   .openapi('PagedDTOQueueDTO')
 
-const PagedDTORequestTypeDTOSchema = z
+const PagedDTORequestTypeDTOSchema: z.ZodType<PagedDTORequestTypeDTOType> = z
   .strictObject({
     _expands: z.array(z.string()).exactOptional(),
     _links: PagedLinkDTOSchema.exactOptional().openapi({
@@ -7177,7 +7254,7 @@ export const postRestServicedeskapiServicedeskServiceDeskIdAttachTemporaryFileRo
                       z.boolean(),
                     )
                     .exactOptional(),
-                  inputStream: z.object({}).exactOptional(),
+                  inputStream: z.looseObject({}).exactOptional(),
                   name: z.string().exactOptional(),
                   originalFilename: z.string().exactOptional(),
                   resource: z
@@ -7191,7 +7268,7 @@ export const postRestServicedeskapiServicedeskServiceDeskIdAttachTemporaryFileRo
                       description: z.string().exactOptional(),
                       file: z.file().exactOptional().openapi({ type: 'string', format: 'binary' }),
                       filename: z.string().exactOptional(),
-                      inputStream: z.object({}).exactOptional(),
+                      inputStream: z.looseObject({}).exactOptional(),
                       open: z
                         .preprocess(
                           ((read) => (val: unknown) => {

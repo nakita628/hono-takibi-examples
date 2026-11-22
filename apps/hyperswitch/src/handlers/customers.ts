@@ -38,4 +38,6 @@ export const getV1CustomersReferenceMerchantReferenceIdRouteHandler: RouteHandle
 
 export const getCustomersListRouteHandler: RouteHandler<typeof getCustomersListRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}

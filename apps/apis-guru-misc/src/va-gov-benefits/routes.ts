@@ -1,5 +1,120 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const PdfDimensionAttributesSchema = z
+  .object({
+    height: z.int().openapi({ description: 'The document height', example: '11.0' }),
+    oversized_pdf: z
+      .boolean()
+      .openapi({
+        description: 'Indicates if this is an oversized PDF (greater than 21x21)',
+        example: 'false',
+      }),
+    width: z.int().openapi({ description: 'The document width', example: '8.5' }),
+  })
+  .openapi({ required: ['height', 'width', 'oversized_pdf'] })
+  .openapi('PdfDimensionAttributes')
+
+const PdfUploadAttributesSchema = z
+  .object({
+    content: z
+      .object({
+        attachments: z
+          .array(
+            z
+              .object({
+                dimensions: PdfDimensionAttributesSchema.exactOptional(),
+                page_count: z
+                  .int()
+                  .exactOptional()
+                  .openapi({ description: 'The number of pages in this attachment', example: '2' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .exactOptional(),
+        dimensions: PdfDimensionAttributesSchema.exactOptional(),
+        page_count: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The total number of pages solely in this PDF document',
+            example: '1',
+          }),
+      })
+      .openapi({ required: [] }),
+    total_documents: z
+      .int()
+      .openapi({
+        description: 'The total number of documents contained in this upload',
+        example: '2',
+      }),
+    total_pages: z
+      .int()
+      .openapi({ description: 'The total number of pages contained in this upload', example: '3' }),
+  })
+  .openapi({ required: ['total_documents', 'total_pages', 'content', 'dimensions', 'attachments'] })
+  .openapi('PdfUploadAttributes')
+
+const DocumentUploadStatusAttributesSchema = z
+  .object({
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unambiguous status code. Only present if status = "error"\n\n* `DOC101` - Invalid multipart payload provided - not a multipart, or missing one or more required parts.\n* `DOC102` - Invalid metadata - not parseable as JSON, incorrect fields, etc.\n* `DOC103` - Invalid content - not parseable as PDF. Detail field will indicate which document or attachment part was affected.\n* `DOC104` - Upload rejected by upstream system. Processing failed and upload must be resubmitted. Detail field will indicate nature of rejection.\n* `DOC105` - Invalid or unknown id\n* `DOC106` - File size limit exceeded. Each document may be a maximum of 100MB.\n* `DOC107` - Empty payload.\n* `DOC108` - Maximum dimensions exceeded. Height and width must be less than 21 in x 21 in.\n* `DOC201` - Upload server error.\n* `DOC202` - Error during processing by upstream system. Processing failed and upload must be resubmitted. Detail field will provide additional details where available.\n',
+      }),
+    detail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Human readable error detail. Only present if status = "error"' }),
+    guid: z
+      .uuid()
+      .openapi({
+        description: 'The document upload identifier',
+        example: '6d8433c1-cd55-4c24-affd-f592287a7572',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Human readable error description. Only present if status = "error"',
+      }),
+    status: z
+      .enum(['pending', 'uploaded', 'received', 'processing', 'success', 'vbms', 'error'])
+      .openapi({ description: 'Document upload status.\n', example: 'received' }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The last time the submission was updated',
+        example: '2018-07-30T17:31:15.958Z',
+      }),
+    uploaded_pdf: PdfUploadAttributesSchema.exactOptional(),
+  })
+  .openapi({ required: ['guid', 'status'] })
+  .openapi('DocumentUploadStatusAttributes')
+
+const DocumentUploadStatusSchema = z
+  .object({
+    attributes: DocumentUploadStatusAttributesSchema,
+    id: z
+      .uuid()
+      .openapi({
+        description: 'JSON API identifier',
+        example: '6d8433c1-cd55-4c24-affd-f592287a7572',
+      }),
+    type: z
+      .string()
+      .openapi({ description: 'JSON API type specification', example: 'document_upload' }),
+  })
+  .openapi({
+    description: 'Status record for a previously initiated document submission.',
+    required: ['id', 'type', 'attributes'],
+  })
+  .openapi('DocumentUploadStatus')
+
+type DocumentUploadStatusReportType = z.infer<typeof DocumentUploadStatusSchema>[]
+
 const DocumentUploadAttributesSchema = z
   .object({
     code: z
@@ -142,119 +257,6 @@ const DocumentUploadPathSchema = z
   })
   .openapi('DocumentUploadPath')
 
-const PdfDimensionAttributesSchema = z
-  .object({
-    height: z.int().openapi({ description: 'The document height', example: '11.0' }),
-    oversized_pdf: z
-      .boolean()
-      .openapi({
-        description: 'Indicates if this is an oversized PDF (greater than 21x21)',
-        example: 'false',
-      }),
-    width: z.int().openapi({ description: 'The document width', example: '8.5' }),
-  })
-  .openapi({ required: ['height', 'width', 'oversized_pdf'] })
-  .openapi('PdfDimensionAttributes')
-
-const PdfUploadAttributesSchema = z
-  .object({
-    content: z
-      .object({
-        attachments: z
-          .array(
-            z
-              .object({
-                dimensions: PdfDimensionAttributesSchema.exactOptional(),
-                page_count: z
-                  .int()
-                  .exactOptional()
-                  .openapi({ description: 'The number of pages in this attachment', example: '2' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional(),
-        dimensions: PdfDimensionAttributesSchema.exactOptional(),
-        page_count: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description: 'The total number of pages solely in this PDF document',
-            example: '1',
-          }),
-      })
-      .openapi({ required: [] }),
-    total_documents: z
-      .int()
-      .openapi({
-        description: 'The total number of documents contained in this upload',
-        example: '2',
-      }),
-    total_pages: z
-      .int()
-      .openapi({ description: 'The total number of pages contained in this upload', example: '3' }),
-  })
-  .openapi({ required: ['total_documents', 'total_pages', 'content', 'dimensions', 'attachments'] })
-  .openapi('PdfUploadAttributes')
-
-const DocumentUploadStatusAttributesSchema = z
-  .object({
-    code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unambiguous status code. Only present if status = "error"\n\n* `DOC101` - Invalid multipart payload provided - not a multipart, or missing one or more required parts.\n* `DOC102` - Invalid metadata - not parseable as JSON, incorrect fields, etc.\n* `DOC103` - Invalid content - not parseable as PDF. Detail field will indicate which document or attachment part was affected.\n* `DOC104` - Upload rejected by upstream system. Processing failed and upload must be resubmitted. Detail field will indicate nature of rejection.\n* `DOC105` - Invalid or unknown id\n* `DOC106` - File size limit exceeded. Each document may be a maximum of 100MB.\n* `DOC107` - Empty payload.\n* `DOC108` - Maximum dimensions exceeded. Height and width must be less than 21 in x 21 in.\n* `DOC201` - Upload server error.\n* `DOC202` - Error during processing by upstream system. Processing failed and upload must be resubmitted. Detail field will provide additional details where available.\n',
-      }),
-    detail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Human readable error detail. Only present if status = "error"' }),
-    guid: z
-      .uuid()
-      .openapi({
-        description: 'The document upload identifier',
-        example: '6d8433c1-cd55-4c24-affd-f592287a7572',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Human readable error description. Only present if status = "error"',
-      }),
-    status: z
-      .enum(['pending', 'uploaded', 'received', 'processing', 'success', 'vbms', 'error'])
-      .openapi({ description: 'Document upload status.\n', example: 'received' }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The last time the submission was updated',
-        example: '2018-07-30T17:31:15.958Z',
-      }),
-    uploaded_pdf: PdfUploadAttributesSchema.exactOptional(),
-  })
-  .openapi({ required: ['guid', 'status'] })
-  .openapi('DocumentUploadStatusAttributes')
-
-const DocumentUploadStatusSchema = z
-  .object({
-    attributes: DocumentUploadStatusAttributesSchema,
-    id: z
-      .uuid()
-      .openapi({
-        description: 'JSON API identifier',
-        example: '6d8433c1-cd55-4c24-affd-f592287a7572',
-      }),
-    type: z
-      .string()
-      .openapi({ description: 'JSON API type specification', example: 'document_upload' }),
-  })
-  .openapi({
-    description: 'Status record for a previously initiated document submission.',
-    required: ['id', 'type', 'attributes'],
-  })
-  .openapi('DocumentUploadStatus')
-
 const DocumentUploadStatusGuidListSchema = z
   .object({
     ids: z
@@ -266,12 +268,12 @@ const DocumentUploadStatusGuidListSchema = z
   .openapi({ required: ['ids'] })
   .openapi('DocumentUploadStatusGuidList')
 
-const DocumentUploadStatusReportSchema = z
+const DocumentUploadStatusReportSchema: z.ZodType<DocumentUploadStatusReportType> = z
   .array(DocumentUploadStatusSchema)
   .openapi('DocumentUploadStatusReport')
 
 const DocumentUploadSubmissionAttributesSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ required: ['location'] })
   .and(DocumentUploadStatusAttributesSchema)
   .openapi('DocumentUploadSubmissionAttributes')

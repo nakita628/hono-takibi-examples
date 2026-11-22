@@ -10,12 +10,139 @@ const Dota2GameIDSchema = z.int().min(1).openapi('Dota2GameID')
 
 const PUBGGameIDSchema = z.int().min(1).openapi('PUBGGameID')
 
-type GameIDType =
-  | z.infer<typeof LoLGameIDSchema>
-  | z.infer<typeof CSGOGameIDSchema>
-  | z.infer<typeof OwGameIDSchema>
-  | z.infer<typeof Dota2GameIDSchema>
-  | z.infer<typeof PUBGGameIDSchema>
+const GameIDSchema = z
+  .union([LoLGameIDSchema, CSGOGameIDSchema, OwGameIDSchema, Dota2GameIDSchema, PUBGGameIDSchema])
+  .openapi({ description: 'A game ID' })
+  .openapi('GameID')
+
+const MarketIDSchema = z
+  .string()
+  .regex(/^[a-z0-9_-]+$/)
+  .min(1)
+  .openapi('MarketID')
+
+const MarketLineSchema = z.string().openapi('MarketLine')
+
+const MarketMarginSchema = z.number().min(0).openapi('MarketMargin')
+
+const MarketNameSchema = z.string().openapi('MarketName')
+
+const PlayerIDSchema = z.int().min(1).openapi('PlayerID')
+
+const TeamIDSchema = z.int().min(1).openapi('TeamID')
+
+const OpponentIDSchema = z.union([PlayerIDSchema, TeamIDSchema]).openapi('OpponentID')
+
+const OpponentTypeSchema = z.enum(['Player', 'Team']).openapi('OpponentType')
+
+const SelectionLineSchema = z.string().openapi('SelectionLine')
+
+const SelectionNameSchema = z.string().openapi('SelectionName')
+
+const SelectionPositionSchema = z.int().min(0).openapi('SelectionPosition')
+
+const SelectionProbabilitySchema = z.number().min(0).max(1).openapi('SelectionProbability')
+
+const SelectionProbabilityWithMarginSchema = z
+  .number()
+  .min(0)
+  .max(1)
+  .openapi('SelectionProbabilityWithMargin')
+
+const SelectionResultSchema = z.enum(['lose', 'void', 'win']).openapi('SelectionResult')
+
+const SelectionTemplateSchema = z.string().openapi('SelectionTemplate')
+
+const MarketSelectionSchema = z
+  .strictObject({
+    line: SelectionLineSchema.nullable().openapi({ deprecated: false, title: 'SelectionLine' }),
+    name: SelectionNameSchema,
+    participant_id: OpponentIDSchema.nullable().openapi({ deprecated: false, title: 'OpponentID' }),
+    participant_type: OpponentTypeSchema.nullable().openapi({
+      deprecated: false,
+      title: 'OpponentType',
+    }),
+    position: SelectionPositionSchema,
+    probability: SelectionProbabilitySchema,
+    probability_with_margin: SelectionProbabilityWithMarginSchema,
+    result: SelectionResultSchema.nullable().openapi({
+      deprecated: false,
+      title: 'SelectionResult',
+    }),
+    template: SelectionTemplateSchema,
+  })
+  .openapi({
+    deprecated: false,
+    required: [
+      'line',
+      'name',
+      'participant_id',
+      'participant_type',
+      'position',
+      'probability',
+      'probability_with_margin',
+      'result',
+      'template',
+    ],
+  })
+  .openapi('MarketSelection')
+
+const MarketSelectionsSchema = z.array(MarketSelectionSchema).openapi('MarketSelections')
+
+const MarketStatusSchema = z
+  .enum(['deactivated', 'new', 'settled', 'suspended'])
+  .openapi('MarketStatus')
+
+const MarketTemplateSchema = z.string().openapi('MarketTemplate')
+
+const MarketSchema = z
+  .strictObject({
+    id: MarketIDSchema,
+    line: MarketLineSchema.nullable().openapi({ deprecated: false, title: 'MarketLine' }),
+    margin: MarketMarginSchema,
+    name: MarketNameSchema,
+    participant_id: OpponentIDSchema.nullable().openapi({ deprecated: false, title: 'OpponentID' }),
+    participant_type: OpponentTypeSchema.nullable().openapi({
+      deprecated: false,
+      title: 'OpponentType',
+    }),
+    selections: MarketSelectionsSchema,
+    status: MarketStatusSchema,
+    template: MarketTemplateSchema,
+  })
+  .openapi({
+    deprecated: false,
+    required: [
+      'id',
+      'line',
+      'margin',
+      'name',
+      'participant_id',
+      'participant_type',
+      'selections',
+      'status',
+      'template',
+    ],
+  })
+  .openapi('Market')
+
+const MarketsSchema = z.array(MarketSchema).openapi('Markets')
+
+const MatchMarketGameSchema = z
+  .strictObject({ id: GameIDSchema, markets: MarketsSchema })
+  .openapi({ deprecated: false, required: ['id', 'markets'] })
+  .openapi('MatchMarketGame')
+
+const MatchMarketGamesSchema = z.array(MatchMarketGameSchema).openapi('MatchMarketGames')
+
+const MatchIDSchema = z.int().min(1).openapi('MatchID')
+
+const MatchMarketsSchema = z
+  .strictObject({ games: MatchMarketGamesSchema, id: MatchIDSchema, markets: MarketsSchema })
+  .openapi({ deprecated: false, required: ['games', 'id', 'markets'] })
+  .openapi('MatchMarkets')
+
+type BettingMatchesMarketsType = z.infer<typeof MatchMarketsSchema>[]
 
 const IncidentChangeTypeSchema = z
   .enum(['creation', 'deletion', 'update'])
@@ -23,13 +150,7 @@ const IncidentChangeTypeSchema = z
 
 const LeagueIDSchema = z.int().min(1).openapi('LeagueID')
 
-const MatchIDSchema = z.int().min(1).openapi('MatchID')
-
-const PlayerIDSchema = z.int().min(1).openapi('PlayerID')
-
 const SerieIDSchema = z.int().min(1).openapi('SerieID')
-
-const TeamIDSchema = z.int().min(1).openapi('TeamID')
 
 const TournamentIDSchema = z.int().min(1).openapi('TournamentID')
 
@@ -77,10 +198,6 @@ const SerieSlugSchema = z
   .openapi('SerieSlug')
 
 const SerieTierSchema = z.string().openapi('SerieTier')
-
-const OpponentIDSchema = z.union([PlayerIDSchema, TeamIDSchema]).openapi('OpponentID')
-
-const OpponentTypeSchema = z.enum(['Player', 'Team']).openapi('OpponentType')
 
 const SerieYearSchema = z.int().min(2012).openapi('SerieYear')
 
@@ -366,20 +483,6 @@ const GameIsForfeitSchema = z
   .openapi({ description: 'Whether game is forfeit' })
   .openapi('GameIsForfeit')
 
-const GameIDSchema: z.ZodType<GameIDType> = z
-  .lazy(() =>
-    z
-      .union([
-        LoLGameIDSchema,
-        CSGOGameIDSchema,
-        OwGameIDSchema,
-        Dota2GameIDSchema,
-        PUBGGameIDSchema,
-      ])
-      .openapi({ description: 'A game ID' }),
-  )
-  .openapi('GameID')
-
 const GameLengthSchema = z.int().min(0).openapi('GameLength')
 
 const GamePositionSchema = z.int().min(1).openapi('GamePosition')
@@ -502,12 +605,130 @@ const MatchOfficialStreamURLSchema = z
   .openapi({ description: 'Use `.streams.official.raw_url` instead' })
   .openapi('MatchOfficialStreamURL')
 
-const OpponentSchema: z.ZodType<OpponentType> = z
-  .lazy(() =>
-    z
-      .strictObject({ opponent: BaseOpponentSchema, type: OpponentTypeSchema })
-      .openapi({ deprecated: false, required: ['opponent', 'type'] }),
-  )
+const PlayerBirthYearSchema = z
+  .number()
+  .min(0)
+  .openapi({ description: 'Not present if the client did not subscribe to the appropriate plan.' })
+  .openapi('PlayerBirthYear')
+
+const PlayerBirthdaySchema = z
+  .string()
+  .openapi({ description: 'Not present if the client did not subscribe to the appropriate plan.' })
+  .openapi('PlayerBirthday')
+
+const PlayerFirstNameSchema = z.string().openapi('PlayerFirstName')
+
+const PlayerHometownSchema = z.string().openapi('PlayerHometown')
+
+const PlayerImageURLSchema = z.url().openapi('PlayerImageURL')
+
+const PlayerLastNameSchema = z.string().openapi('PlayerLastName')
+
+const PlayerNameSchema = z.string().openapi('PlayerName')
+
+const PlayerNationalitySchema = z.string().openapi('PlayerNationality')
+
+const PlayerRoleSlugSchema = z.string().openapi('PlayerRoleSlug')
+
+const PlayerSlugSchema = z
+  .string()
+  .regex(/^[a-z0-9_-]+$/)
+  .min(1)
+  .openapi('PlayerSlug')
+
+const BasePlayerSchema = z
+  .strictObject({
+    birth_year: PlayerBirthYearSchema.nullable().openapi({
+      deprecated: false,
+      title: 'PlayerBirthYear',
+    }),
+    birthday: PlayerBirthdaySchema.nullable().openapi({
+      deprecated: false,
+      title: 'PlayerBirthday',
+    }),
+    first_name: PlayerFirstNameSchema.nullable().openapi({
+      deprecated: false,
+      title: 'PlayerFirstName',
+    }),
+    hometown: PlayerHometownSchema.nullable().openapi({
+      deprecated: false,
+      title: 'PlayerHometown',
+    }),
+    id: PlayerIDSchema,
+    image_url: PlayerImageURLSchema.nullable().openapi({
+      deprecated: false,
+      title: 'PlayerImageURL',
+    }),
+    last_name: PlayerLastNameSchema.nullable().openapi({
+      deprecated: false,
+      title: 'PlayerLastName',
+    }),
+    name: PlayerNameSchema,
+    nationality: PlayerNationalitySchema.nullable().openapi({
+      deprecated: false,
+      title: 'PlayerNationality',
+    }),
+    role: PlayerRoleSlugSchema.nullable().openapi({ deprecated: false, title: 'PlayerRoleSlug' }),
+    slug: PlayerSlugSchema.nullable().openapi({ deprecated: false, title: 'PlayerSlug' }),
+  })
+  .openapi({
+    deprecated: false,
+    required: [
+      'birth_year',
+      'birthday',
+      'first_name',
+      'hometown',
+      'id',
+      'image_url',
+      'last_name',
+      'name',
+      'nationality',
+      'role',
+      'slug',
+    ],
+  })
+  .openapi('BasePlayer')
+
+const TeamAcronymSchema = z.string().openapi('TeamAcronym')
+
+const TeamImageURLSchema = z.url().openapi('TeamImageURL')
+
+const TeamLocationSchema = z
+  .string()
+  .openapi({ description: "The team's organization location" })
+  .openapi('TeamLocation')
+
+const TeamModifiedAtSchema = z.iso.datetime({ offset: true }).min(1).openapi('TeamModifiedAt')
+
+const TeamNameSchema = z.string().openapi('TeamName')
+
+const TeamSlugSchema = z
+  .string()
+  .regex(/^[a-z0-9_-]+$/)
+  .min(1)
+  .openapi('TeamSlug')
+
+const BaseTeamSchema = z
+  .strictObject({
+    acronym: TeamAcronymSchema.nullable().openapi({ deprecated: false, title: 'TeamAcronym' }),
+    id: TeamIDSchema,
+    image_url: TeamImageURLSchema.nullable().openapi({ deprecated: false, title: 'TeamImageURL' }),
+    location: TeamLocationSchema.nullable().openapi({ deprecated: false, title: 'TeamLocation' }),
+    modified_at: TeamModifiedAtSchema,
+    name: TeamNameSchema,
+    slug: TeamSlugSchema.nullable().openapi({ deprecated: false, title: 'TeamSlug' }),
+  })
+  .openapi({
+    deprecated: false,
+    required: ['acronym', 'id', 'image_url', 'location', 'modified_at', 'name', 'slug'],
+  })
+  .openapi('BaseTeam')
+
+const BaseOpponentSchema = z.xor([BasePlayerSchema, BaseTeamSchema]).openapi('BaseOpponent')
+
+const OpponentSchema = z
+  .strictObject({ opponent: BaseOpponentSchema, type: OpponentTypeSchema })
+  .openapi({ deprecated: false, required: ['opponent', 'type'] })
   .openapi('Opponent')
 
 const OpponentsSchema = z.array(OpponentSchema).openapi('Opponents')
@@ -902,127 +1123,6 @@ const ShortVideogameVersionSchema = z
   .strictObject({ current: VideogameVersionIsCurrentSchema, name: VideogameVersionSchema })
   .openapi({ deprecated: false, required: ['current', 'name'] })
   .openapi('ShortVideogameVersion')
-
-const PlayerBirthYearSchema = z
-  .number()
-  .min(0)
-  .openapi({ description: 'Not present if the client did not subscribe to the appropriate plan.' })
-  .openapi('PlayerBirthYear')
-
-const PlayerBirthdaySchema = z
-  .string()
-  .openapi({ description: 'Not present if the client did not subscribe to the appropriate plan.' })
-  .openapi('PlayerBirthday')
-
-const PlayerFirstNameSchema = z.string().openapi('PlayerFirstName')
-
-const PlayerHometownSchema = z.string().openapi('PlayerHometown')
-
-const PlayerImageURLSchema = z.url().openapi('PlayerImageURL')
-
-const PlayerLastNameSchema = z.string().openapi('PlayerLastName')
-
-const PlayerNameSchema = z.string().openapi('PlayerName')
-
-const PlayerNationalitySchema = z.string().openapi('PlayerNationality')
-
-const PlayerRoleSlugSchema = z.string().openapi('PlayerRoleSlug')
-
-const PlayerSlugSchema = z
-  .string()
-  .regex(/^[a-z0-9_-]+$/)
-  .min(1)
-  .openapi('PlayerSlug')
-
-const BasePlayerSchema = z
-  .strictObject({
-    birth_year: PlayerBirthYearSchema.nullable().openapi({
-      deprecated: false,
-      title: 'PlayerBirthYear',
-    }),
-    birthday: PlayerBirthdaySchema.nullable().openapi({
-      deprecated: false,
-      title: 'PlayerBirthday',
-    }),
-    first_name: PlayerFirstNameSchema.nullable().openapi({
-      deprecated: false,
-      title: 'PlayerFirstName',
-    }),
-    hometown: PlayerHometownSchema.nullable().openapi({
-      deprecated: false,
-      title: 'PlayerHometown',
-    }),
-    id: PlayerIDSchema,
-    image_url: PlayerImageURLSchema.nullable().openapi({
-      deprecated: false,
-      title: 'PlayerImageURL',
-    }),
-    last_name: PlayerLastNameSchema.nullable().openapi({
-      deprecated: false,
-      title: 'PlayerLastName',
-    }),
-    name: PlayerNameSchema,
-    nationality: PlayerNationalitySchema.nullable().openapi({
-      deprecated: false,
-      title: 'PlayerNationality',
-    }),
-    role: PlayerRoleSlugSchema.nullable().openapi({ deprecated: false, title: 'PlayerRoleSlug' }),
-    slug: PlayerSlugSchema.nullable().openapi({ deprecated: false, title: 'PlayerSlug' }),
-  })
-  .openapi({
-    deprecated: false,
-    required: [
-      'birth_year',
-      'birthday',
-      'first_name',
-      'hometown',
-      'id',
-      'image_url',
-      'last_name',
-      'name',
-      'nationality',
-      'role',
-      'slug',
-    ],
-  })
-  .openapi('BasePlayer')
-
-const TeamAcronymSchema = z.string().openapi('TeamAcronym')
-
-const TeamImageURLSchema = z.url().openapi('TeamImageURL')
-
-const TeamLocationSchema = z
-  .string()
-  .openapi({ description: "The team's organization location" })
-  .openapi('TeamLocation')
-
-const TeamModifiedAtSchema = z.iso.datetime({ offset: true }).min(1).openapi('TeamModifiedAt')
-
-const TeamNameSchema = z.string().openapi('TeamName')
-
-const TeamSlugSchema = z
-  .string()
-  .regex(/^[a-z0-9_-]+$/)
-  .min(1)
-  .openapi('TeamSlug')
-
-const BaseTeamSchema = z
-  .strictObject({
-    acronym: TeamAcronymSchema.nullable().openapi({ deprecated: false, title: 'TeamAcronym' }),
-    id: TeamIDSchema,
-    image_url: TeamImageURLSchema.nullable().openapi({ deprecated: false, title: 'TeamImageURL' }),
-    location: TeamLocationSchema.nullable().openapi({ deprecated: false, title: 'TeamLocation' }),
-    modified_at: TeamModifiedAtSchema,
-    name: TeamNameSchema,
-    slug: TeamSlugSchema.nullable().openapi({ deprecated: false, title: 'TeamSlug' }),
-  })
-  .openapi({
-    deprecated: false,
-    required: ['acronym', 'id', 'image_url', 'location', 'modified_at', 'name', 'slug'],
-  })
-  .openapi('BaseTeam')
-
-const BaseOpponentSchema = z.xor([BasePlayerSchema, BaseTeamSchema]).openapi('BaseOpponent')
 
 const MatchSchema = z
   .strictObject({
@@ -1512,104 +1612,6 @@ const IncidentOfTypeTournamentSchema = z
     required: ['change_type', 'id', 'modified_at', 'object', 'type'],
   })
   .openapi('IncidentOfTypeTournament')
-
-const DeletionIncidentChangeTypeSchema = z.literal('deletion').openapi('DeletionIncidentChangeType')
-
-const IncidentDeletedAtSchema = z.iso.datetime({ offset: true }).min(1).openapi('IncidentDeletedAt')
-
-const IncidentDeletionReasonReplacedSchema = z
-  .string()
-  .regex(/^Replaced by (serie|tournament) [0-9]+$/)
-  .openapi({ description: 'The entity has been replaced with another one of another type.' })
-  .openapi('IncidentDeletionReasonReplaced')
-
-const IncidentDeletionReasonMergedSchema = z
-  .string()
-  .regex(/^Merged with [0-9]+$/)
-  .openapi({ description: 'The entity has been merged with another one of the same type.' })
-  .openapi('IncidentDeletionReasonMerged')
-
-const IncidentDeletionReasonDeletedSchema = z
-  .literal('Model deleted')
-  .openapi({ description: 'The entity no longer exists.' })
-  .openapi('IncidentDeletionReasonDeleted')
-
-const IncidentDeletionReasonSchema = z
-  .xor([
-    IncidentDeletionReasonReplacedSchema,
-    IncidentDeletionReasonMergedSchema,
-    IncidentDeletionReasonDeletedSchema,
-  ])
-  .openapi('IncidentDeletionReason')
-
-const DeletionObjectSchema = z
-  .strictObject({
-    deleted_at: IncidentDeletedAtSchema,
-    reason: IncidentDeletionReasonSchema,
-    videogame_id: VideogameIDSchema,
-  })
-  .openapi({ deprecated: false, required: ['deleted_at', 'reason', 'videogame_id'] })
-  .openapi('DeletionObject')
-
-const IncidentTypeSchema = z
-  .enum(['league', 'match', 'player', 'serie', 'team', 'tournament'])
-  .openapi('IncidentType')
-
-const DeletionIncidentSchema = z
-  .strictObject({
-    change_type: DeletionIncidentChangeTypeSchema,
-    id: IncidentIDSchema,
-    modified_at: IncidentModifiedAtSchema,
-    object: DeletionObjectSchema,
-    type: IncidentTypeSchema,
-  })
-  .openapi({ deprecated: false, required: ['change_type', 'id', 'modified_at', 'object', 'type'] })
-  .openapi('DeletionIncident')
-
-type IncidentType =
-  | z.infer<typeof IncidentOfTypeLeagueSchema>
-  | z.infer<typeof IncidentOfTypeMatchSchema>
-  | z.infer<typeof IncidentOfTypePlayerSchema>
-  | z.infer<typeof IncidentOfTypeSerieSchema>
-  | z.infer<typeof IncidentOfTypeTeamSchema>
-  | z.infer<typeof IncidentOfTypeTournamentSchema>
-  | z.infer<typeof DeletionIncidentSchema>
-
-type OpponentType = {
-  opponent: z.infer<typeof BaseOpponentSchema>
-  type: z.infer<typeof OpponentTypeSchema>
-}
-
-const StandingRankSchema = z.int().min(0).openapi('StandingRank')
-
-const BracketStandingSchema = z
-  .strictObject({ last_match: BaseMatchSchema, rank: StandingRankSchema, team: BaseTeamSchema })
-  .openapi({ deprecated: false, required: ['last_match', 'rank', 'team'] })
-  .openapi('BracketStanding')
-
-const StandingLossesSchema = z.int().min(0).openapi('StandingLosses')
-
-const StandingTiesSchema = z
-  .int()
-  .min(1)
-  .openapi({ description: 'Only present if ties occured during the tournament' })
-  .openapi('StandingTies')
-
-const MatchCountSchema = z.int().min(0).openapi('MatchCount')
-
-const GroupStandingSchema = z
-  .strictObject({
-    losses: StandingLossesSchema,
-    rank: StandingRankSchema,
-    team: BaseTeamSchema,
-    ties: StandingTiesSchema.exactOptional(),
-    total: MatchCountSchema,
-    wins: MatchCountSchema,
-  })
-  .openapi({ deprecated: false, required: ['losses', 'rank', 'team', 'total', 'wins'] })
-  .openapi('GroupStanding')
-
-type StandingType = z.infer<typeof BracketStandingSchema> | z.infer<typeof GroupStandingSchema>
 
 const NonDeletionIncidentSchema = z
   .xor([
@@ -2383,124 +2385,9 @@ const BettingMatchSchema = z
 
 const BettingMatchesSchema = z.array(BettingMatchSchema).openapi('BettingMatches')
 
-const MarketIDSchema = z
-  .string()
-  .regex(/^[a-z0-9_-]+$/)
-  .min(1)
-  .openapi('MarketID')
-
-const MarketLineSchema = z.string().openapi('MarketLine')
-
-const MarketMarginSchema = z.number().min(0).openapi('MarketMargin')
-
-const MarketNameSchema = z.string().openapi('MarketName')
-
-const SelectionLineSchema = z.string().openapi('SelectionLine')
-
-const SelectionNameSchema = z.string().openapi('SelectionName')
-
-const SelectionPositionSchema = z.int().min(0).openapi('SelectionPosition')
-
-const SelectionProbabilitySchema = z.number().min(0).max(1).openapi('SelectionProbability')
-
-const SelectionProbabilityWithMarginSchema = z
-  .number()
-  .min(0)
-  .max(1)
-  .openapi('SelectionProbabilityWithMargin')
-
-const SelectionResultSchema = z.enum(['lose', 'void', 'win']).openapi('SelectionResult')
-
-const SelectionTemplateSchema = z.string().openapi('SelectionTemplate')
-
-const MarketSelectionSchema = z
-  .strictObject({
-    line: SelectionLineSchema.nullable().openapi({ deprecated: false, title: 'SelectionLine' }),
-    name: SelectionNameSchema,
-    participant_id: OpponentIDSchema.nullable().openapi({ deprecated: false, title: 'OpponentID' }),
-    participant_type: OpponentTypeSchema.nullable().openapi({
-      deprecated: false,
-      title: 'OpponentType',
-    }),
-    position: SelectionPositionSchema,
-    probability: SelectionProbabilitySchema,
-    probability_with_margin: SelectionProbabilityWithMarginSchema,
-    result: SelectionResultSchema.nullable().openapi({
-      deprecated: false,
-      title: 'SelectionResult',
-    }),
-    template: SelectionTemplateSchema,
-  })
-  .openapi({
-    deprecated: false,
-    required: [
-      'line',
-      'name',
-      'participant_id',
-      'participant_type',
-      'position',
-      'probability',
-      'probability_with_margin',
-      'result',
-      'template',
-    ],
-  })
-  .openapi('MarketSelection')
-
-const MarketSelectionsSchema = z.array(MarketSelectionSchema).openapi('MarketSelections')
-
-const MarketStatusSchema = z
-  .enum(['deactivated', 'new', 'settled', 'suspended'])
-  .openapi('MarketStatus')
-
-const MarketTemplateSchema = z.string().openapi('MarketTemplate')
-
-const MarketSchema = z
-  .strictObject({
-    id: MarketIDSchema,
-    line: MarketLineSchema.nullable().openapi({ deprecated: false, title: 'MarketLine' }),
-    margin: MarketMarginSchema,
-    name: MarketNameSchema,
-    participant_id: OpponentIDSchema.nullable().openapi({ deprecated: false, title: 'OpponentID' }),
-    participant_type: OpponentTypeSchema.nullable().openapi({
-      deprecated: false,
-      title: 'OpponentType',
-    }),
-    selections: MarketSelectionsSchema,
-    status: MarketStatusSchema,
-    template: MarketTemplateSchema,
-  })
-  .openapi({
-    deprecated: false,
-    required: [
-      'id',
-      'line',
-      'margin',
-      'name',
-      'participant_id',
-      'participant_type',
-      'selections',
-      'status',
-      'template',
-    ],
-  })
-  .openapi('Market')
-
-const MarketsSchema = z.array(MarketSchema).openapi('Markets')
-
-const MatchMarketGameSchema = z
-  .strictObject({ id: GameIDSchema, markets: MarketsSchema })
-  .openapi({ deprecated: false, required: ['id', 'markets'] })
-  .openapi('MatchMarketGame')
-
-const MatchMarketGamesSchema = z.array(MatchMarketGameSchema).openapi('MatchMarketGames')
-
-const MatchMarketsSchema = z
-  .strictObject({ games: MatchMarketGamesSchema, id: MatchIDSchema, markets: MarketsSchema })
-  .openapi({ deprecated: false, required: ['games', 'id', 'markets'] })
-  .openapi('MatchMarkets')
-
-const BettingMatchesMarketsSchema = z.array(MatchMarketsSchema).openapi('BettingMatchesMarkets')
+const BettingMatchesMarketsSchema: z.ZodType<BettingMatchesMarketsType> = z
+  .array(MatchMarketsSchema)
+  .openapi('BettingMatchesMarkets')
 
 const BettingSeriesSchema = z.array(BettingSerieSchema).openapi('BettingSeries')
 
@@ -2633,6 +2520,13 @@ const BracketSchema = z
   })
   .openapi('Bracket')
 
+const StandingRankSchema = z.int().min(0).openapi('StandingRank')
+
+const BracketStandingSchema = z
+  .strictObject({ last_match: BaseMatchSchema, rank: StandingRankSchema, team: BaseTeamSchema })
+  .openapi({ deprecated: false, required: ['last_match', 'rank', 'team'] })
+  .openapi('BracketStanding')
+
 const BracketsSchema = z.array(BracketSchema).openapi('Brackets')
 
 const CSGOWeaponIDSchema = z.int().min(1).openapi('CSGOWeaponID')
@@ -2648,18 +2542,69 @@ const CSGOWeaponIDOrSlugSchema = z
   .openapi({ description: 'For Counter Strike: Global Offensive: a weapon ID or slug' })
   .openapi('CSGOWeaponIDOrSlug')
 
-const IncidentSchema: z.ZodType<IncidentType> = z
-  .lazy(() =>
-    z.xor([
-      IncidentOfTypeLeagueSchema,
-      IncidentOfTypeMatchSchema,
-      IncidentOfTypePlayerSchema,
-      IncidentOfTypeSerieSchema,
-      IncidentOfTypeTeamSchema,
-      IncidentOfTypeTournamentSchema,
-      DeletionIncidentSchema,
-    ]),
-  )
+const DeletionIncidentChangeTypeSchema = z.literal('deletion').openapi('DeletionIncidentChangeType')
+
+const IncidentDeletedAtSchema = z.iso.datetime({ offset: true }).min(1).openapi('IncidentDeletedAt')
+
+const IncidentDeletionReasonReplacedSchema = z
+  .string()
+  .regex(/^Replaced by (serie|tournament) [0-9]+$/)
+  .openapi({ description: 'The entity has been replaced with another one of another type.' })
+  .openapi('IncidentDeletionReasonReplaced')
+
+const IncidentDeletionReasonMergedSchema = z
+  .string()
+  .regex(/^Merged with [0-9]+$/)
+  .openapi({ description: 'The entity has been merged with another one of the same type.' })
+  .openapi('IncidentDeletionReasonMerged')
+
+const IncidentDeletionReasonDeletedSchema = z
+  .literal('Model deleted')
+  .openapi({ description: 'The entity no longer exists.' })
+  .openapi('IncidentDeletionReasonDeleted')
+
+const IncidentDeletionReasonSchema = z
+  .xor([
+    IncidentDeletionReasonReplacedSchema,
+    IncidentDeletionReasonMergedSchema,
+    IncidentDeletionReasonDeletedSchema,
+  ])
+  .openapi('IncidentDeletionReason')
+
+const DeletionObjectSchema = z
+  .strictObject({
+    deleted_at: IncidentDeletedAtSchema,
+    reason: IncidentDeletionReasonSchema,
+    videogame_id: VideogameIDSchema,
+  })
+  .openapi({ deprecated: false, required: ['deleted_at', 'reason', 'videogame_id'] })
+  .openapi('DeletionObject')
+
+const IncidentTypeSchema = z
+  .enum(['league', 'match', 'player', 'serie', 'team', 'tournament'])
+  .openapi('IncidentType')
+
+const DeletionIncidentSchema = z
+  .strictObject({
+    change_type: DeletionIncidentChangeTypeSchema,
+    id: IncidentIDSchema,
+    modified_at: IncidentModifiedAtSchema,
+    object: DeletionObjectSchema,
+    type: IncidentTypeSchema,
+  })
+  .openapi({ deprecated: false, required: ['change_type', 'id', 'modified_at', 'object', 'type'] })
+  .openapi('DeletionIncident')
+
+const IncidentSchema = z
+  .xor([
+    IncidentOfTypeLeagueSchema,
+    IncidentOfTypeMatchSchema,
+    IncidentOfTypePlayerSchema,
+    IncidentOfTypeSerieSchema,
+    IncidentOfTypeTeamSchema,
+    IncidentOfTypeTournamentSchema,
+    DeletionIncidentSchema,
+  ])
   .openapi('Incident')
 
 const ChangeIncidentsSchema = z.array(IncidentSchema).openapi('ChangeIncidents')
@@ -2889,6 +2834,28 @@ const EventIsActiveSchema = z
   .openapi('EventIsActive')
 
 const EventStreamURLSchema = z.url().openapi('EventStreamURL')
+
+const StandingLossesSchema = z.int().min(0).openapi('StandingLosses')
+
+const StandingTiesSchema = z
+  .int()
+  .min(1)
+  .openapi({ description: 'Only present if ties occured during the tournament' })
+  .openapi('StandingTies')
+
+const MatchCountSchema = z.int().min(0).openapi('MatchCount')
+
+const GroupStandingSchema = z
+  .strictObject({
+    losses: StandingLossesSchema,
+    rank: StandingRankSchema,
+    team: BaseTeamSchema,
+    ties: StandingTiesSchema.exactOptional(),
+    total: MatchCountSchema,
+    wins: MatchCountSchema,
+  })
+  .openapi({ deprecated: false, required: ['losses', 'rank', 'team', 'total', 'wins'] })
+  .openapi('GroupStanding')
 
 const IncidentsSchema = z.array(IncidentSchema).openapi('Incidents')
 
@@ -3195,9 +3162,7 @@ const ShortVideogameVersionsSchema = z
   .array(ShortVideogameVersionSchema)
   .openapi('ShortVideogameVersions')
 
-const StandingSchema: z.ZodType<StandingType> = z
-  .lazy(() => z.xor([BracketStandingSchema, GroupStandingSchema]))
-  .openapi('Standing')
+const StandingSchema = z.xor([BracketStandingSchema, GroupStandingSchema]).openapi('Standing')
 
 const StandingsSchema = z.array(StandingSchema).openapi('Standings')
 

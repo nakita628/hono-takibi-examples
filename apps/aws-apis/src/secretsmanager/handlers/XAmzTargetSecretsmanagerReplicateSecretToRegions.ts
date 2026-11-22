@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetSecretsmanagerReplicateSecretToRegionsHandler = app.openapi(
   postXAmzTargetSecretsmanagerReplicateSecretToRegionsRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

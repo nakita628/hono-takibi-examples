@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const searchHandler = app.openapi(
   postCrmObjects202609FeedbackSubmissionsSearchRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

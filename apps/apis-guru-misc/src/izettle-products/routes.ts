@@ -380,7 +380,104 @@ const FullProductUpdateRequestSchema = z
   .openapi({ required: ['name', 'uuid'] })
   .openapi('FullProductUpdateRequest')
 
-const BulkImportRequestSchema = z
+type BulkImportRequestType = { products: z.infer<typeof FullProductUpdateRequestSchema>[] }
+
+const DiscountResponseSchema = z
+  .object({
+    amount: PriceSchema.exactOptional(),
+    created: z.iso.datetime({ offset: true }),
+    description: z.string().exactOptional(),
+    etag: z.string(),
+    externalReference: z.string().exactOptional(),
+    imageLookupKeys: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    name: z.string(),
+    percentage: z.number().exactOptional(),
+    updated: z.iso.datetime({ offset: true }),
+    updatedBy: z.uuid().exactOptional(),
+    uuid: z.uuid(),
+  })
+  .openapi({ required: ['created', 'etag', 'name', 'updated', 'uuid'] })
+  .openapi('DiscountResponse')
+
+const ProductResponseSchema = z
+  .object({
+    categories: z
+      .array(z.string())
+      .min(0)
+      .max(1)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    category: CategoryDTOSchema.exactOptional(),
+    created: z.iso.datetime({ offset: true }),
+    description: z.string().exactOptional(),
+    etag: z.string(),
+    externalReference: z.string().exactOptional(),
+    imageLookupKeys: z
+      .array(z.string())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    metadata: MetadataDTOSchema.exactOptional(),
+    name: z.string(),
+    online: OnlinePropertiesSchema.exactOptional(),
+    presentation: PresentationDTOSchema.exactOptional(),
+    taxCode: z.string().exactOptional(),
+    taxExempt: z.boolean().exactOptional(),
+    taxRates: z
+      .array(z.uuid())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .exactOptional(),
+    unitName: z.string().exactOptional(),
+    updated: z.iso.datetime({ offset: true }),
+    updatedBy: z.uuid().exactOptional(),
+    uuid: z.uuid(),
+    variantOptionDefinitions: VariantOptionDefinitionsSchema.exactOptional(),
+    variants: z.array(VariantDTOSchema).min(1).max(99),
+    vatPercentage: z.number().exactOptional(),
+  })
+  .openapi({ required: ['created', 'etag', 'name', 'updated', 'uuid', 'variants'] })
+  .openapi('ProductResponse')
+
+type LibraryResponseType = {
+  deletedDiscounts?: string[]
+  deletedProducts?: string[]
+  discounts?: z.infer<typeof DiscountResponseSchema>[]
+  fromEventLogUuid?: string
+  products?: z.infer<typeof ProductResponseSchema>[]
+  untilEventLogUuid?: string
+}
+
+const BulkImportRequestSchema: z.ZodType<BulkImportRequestType> = z
   .object({ products: z.array(FullProductUpdateRequestSchema) })
   .openapi({ required: ['products'] })
   .openapi('BulkImportRequest')
@@ -454,33 +551,6 @@ const DiscountRequestSchema = z
   .openapi({ required: ['uuid'] })
   .openapi('DiscountRequest')
 
-const DiscountResponseSchema = z
-  .object({
-    amount: PriceSchema.exactOptional(),
-    created: z.iso.datetime({ offset: true }),
-    description: z.string().exactOptional(),
-    etag: z.string(),
-    externalReference: z.string().exactOptional(),
-    imageLookupKeys: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    name: z.string(),
-    percentage: z.number().exactOptional(),
-    updated: z.iso.datetime({ offset: true }),
-    updatedBy: z.uuid().exactOptional(),
-    uuid: z.uuid(),
-  })
-  .openapi({ required: ['created', 'etag', 'name', 'updated', 'uuid'] })
-  .openapi('DiscountResponse')
-
 const ErrorResponseSchema = z
   .object({
     developerMessage: z.string().exactOptional(),
@@ -528,66 +598,7 @@ const LibraryImagesResponseSchema = z
   .openapi({ required: [] })
   .openapi('LibraryImagesResponse')
 
-const ProductResponseSchema = z
-  .object({
-    categories: z
-      .array(z.string())
-      .min(0)
-      .max(1)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    category: CategoryDTOSchema.exactOptional(),
-    created: z.iso.datetime({ offset: true }),
-    description: z.string().exactOptional(),
-    etag: z.string(),
-    externalReference: z.string().exactOptional(),
-    imageLookupKeys: z
-      .array(z.string())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    metadata: MetadataDTOSchema.exactOptional(),
-    name: z.string(),
-    online: OnlinePropertiesSchema.exactOptional(),
-    presentation: PresentationDTOSchema.exactOptional(),
-    taxCode: z.string().exactOptional(),
-    taxExempt: z.boolean().exactOptional(),
-    taxRates: z
-      .array(z.uuid())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional(),
-    unitName: z.string().exactOptional(),
-    updated: z.iso.datetime({ offset: true }),
-    updatedBy: z.uuid().exactOptional(),
-    uuid: z.uuid(),
-    variantOptionDefinitions: VariantOptionDefinitionsSchema.exactOptional(),
-    variants: z.array(VariantDTOSchema).min(1).max(99),
-    vatPercentage: z.number().exactOptional(),
-  })
-  .openapi({ required: ['created', 'etag', 'name', 'updated', 'uuid', 'variants'] })
-  .openapi('ProductResponse')
-
-const LibraryResponseSchema = z
+const LibraryResponseSchema: z.ZodType<LibraryResponseType> = z
   .object({
     deletedDiscounts: z
       .array(z.uuid())
@@ -989,25 +1000,17 @@ export const postOrganizationsOrganizationUuidDiscountsRoute = createRoute({
     201: {
       description: 'Discount created',
       headers: z.object({
-        ETag: {
-          description: 'ETag value',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'ETag value', param: { required: false } }),
-        },
-        Location: {
-          description: 'Location of newly created Discount',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Location of newly created Discount',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'ETag value', param: { required: false } }),
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Location of newly created Discount',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -1068,14 +1071,10 @@ export const getOrganizationsOrganizationUuidDiscountsDiscountUuidRoute = create
       description: 'Discount',
       content: { 'application/json': { schema: DiscountResponseSchema } },
       headers: z.object({
-        ETag: {
-          description: 'ETag value',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'ETag value', param: { required: false } }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'ETag value', param: { required: false } }),
       }),
     },
     304: { description: 'Not modified' },
@@ -1129,22 +1128,14 @@ export const putOrganizationsOrganizationUuidDiscountsDiscountUuidRoute = create
     204: {
       description: 'Discount updated',
       headers: z.object({
-        ETag: {
-          description: 'ETag value',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'ETag value', param: { required: false } }),
-        },
-        Location: {
-          description: 'Location of updated Discount',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of updated Discount', param: { required: false } }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'ETag value', param: { required: false } }),
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of updated Discount', param: { required: false } }),
       }),
     },
     400: {
@@ -1400,19 +1391,14 @@ export const getOrganizationsOrganizationUuidLibraryRoute = createRoute({
       description: 'List of library items',
       content: { 'application/json': { schema: LibraryResponseSchema } },
       headers: z.object({
-        Link: {
-          description:
-            'If the response is paginated this header will contain the URI for the next page. See more at: https://tools.ietf.org/html/rfc5988',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'If the response is paginated this header will contain the URI for the next page. See more at: https://tools.ietf.org/html/rfc5988',
-              param: { required: false },
-            }),
-        },
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'If the response is paginated this header will contain the URI for the next page. See more at: https://tools.ietf.org/html/rfc5988',
+            param: { required: false },
+          }),
       }),
     },
     412: {
@@ -1496,25 +1482,17 @@ export const postOrganizationsOrganizationUuidProductsRoute = createRoute({
         "Product created. It will include the Product in the response only if 'returnEntity' is true",
       content: { 'application/json': { schema: ProductResponseSchema } },
       headers: z.object({
-        ETag: {
-          description: 'ETag value',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'ETag value', param: { required: false } }),
-        },
-        Location: {
-          description: 'Location of newly created Product',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Location of newly created Product',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'ETag value', param: { required: false } }),
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Location of newly created Product',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -1742,22 +1720,14 @@ export const putOrganizationsOrganizationUuidProductsV2ProductUuidRoute = create
     204: {
       description: 'Product updated',
       headers: z.object({
-        ETag: {
-          description: 'ETag value',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'ETag value', param: { required: false } }),
-        },
-        Location: {
-          description: 'Location of updated product',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of updated product', param: { required: false } }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'ETag value', param: { required: false } }),
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of updated product', param: { required: false } }),
       }),
     },
     400: {
@@ -1819,14 +1789,10 @@ export const getOrganizationsOrganizationUuidProductsProductUuidRoute = createRo
       description: 'Product',
       content: { 'application/json': { schema: ProductResponseSchema } },
       headers: z.object({
-        ETag: {
-          description: 'ETag value',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'ETag value', param: { required: false } }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'ETag value', param: { required: false } }),
       }),
     },
     304: { description: 'Not modified' },

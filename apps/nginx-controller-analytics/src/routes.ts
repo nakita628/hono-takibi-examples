@@ -106,6 +106,7 @@ const ResourceMetaSchema = z
         example: 'resource-name',
         description:
           'Resource name is a unique identifier for a resource within the context of a namespace.\nResource names must conform to [RFC 1738 Section 2.2](https://www.ietf.org/rfc/rfc1738.txt) and have a valid syntax for email addresses. The following rules are enforced:\n\n- do not utilize URL encoding;\n- do not include spaces;\n- do not use uppercase characters, for example, \'A-Z\'; extended character sets are supported;\n- do not use the following characters: `"`, `*`, `:`, `;`, `/`, `\\`, `%`, `?`, `hash`, `=`, `&`, `|`, `~`, `^`, `{`, `}`, `[`, `]`, `<`, `>`;\n- cannot start or end with an `@` sign;\n- cannot be only `.` or `..`\n\nFor example: For a collection resource located at\n\n`https://controller.example.com/api/v1/services/apps/shopping_@1`\n\nthe resource name is "shopping_@1".\n',
+        not: { type: 'string', enum: ['.', '..'] },
       }),
     displayName: z
       .string()

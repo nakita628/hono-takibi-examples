@@ -9,14 +9,10 @@ const IdentityPoolIdSchema = z
 
 const BulkPublishResponseSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.',
-        }),
-    ).exactOptional(),
+    IdentityPoolId: IdentityPoolIdSchema.exactOptional().openapi({
+      description:
+        'A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.',
+    }),
   })
   .openapi({ description: 'The output for the BulkPublish operation.', required: [] })
   .openapi('BulkPublishResponse')
@@ -55,37 +51,29 @@ const LongSchema = z.int().openapi('Long')
 
 const DatasetSchema = z
   .object({
-    IdentityId: IdentityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.',
-        }),
-    ).exactOptional(),
-    DatasetName: DatasetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A string of up to 128 characters. Allowed characters are a-z, A-Z, 0-9, '_' (underscore), '-' (dash), and '.' (dot).",
-        }),
-    ).exactOptional(),
-    CreationDate: DateSchema.and(
-      z.any().openapi({ description: 'Date on which the dataset was created.' }),
-    ).exactOptional(),
-    LastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'Date when the dataset was last modified.' }),
-    ).exactOptional(),
-    LastModifiedBy: StringSchema.and(
-      z.any().openapi({ description: 'The device that made the last change to this dataset.' }),
-    ).exactOptional(),
-    DataStorage: LongSchema.and(
-      z.any().openapi({ description: 'Total size in bytes of the records in this dataset.' }),
-    ).exactOptional(),
-    NumRecords: LongSchema.and(
-      z.any().openapi({ description: 'Number of records in this dataset.' }),
-    ).exactOptional(),
+    IdentityId: IdentityIdSchema.exactOptional().openapi({
+      description:
+        'A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.',
+    }),
+    DatasetName: DatasetNameSchema.exactOptional().openapi({
+      description:
+        "A string of up to 128 characters. Allowed characters are a-z, A-Z, 0-9, '_' (underscore), '-' (dash), and '.' (dot).",
+    }),
+    CreationDate: DateSchema.exactOptional().openapi({
+      description: 'Date on which the dataset was created.',
+    }),
+    LastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'Date when the dataset was last modified.',
+    }),
+    LastModifiedBy: StringSchema.exactOptional().openapi({
+      description: 'The device that made the last change to this dataset.',
+    }),
+    DataStorage: LongSchema.exactOptional().openapi({
+      description: 'Total size in bytes of the records in this dataset.',
+    }),
+    NumRecords: LongSchema.exactOptional().openapi({
+      description: 'Number of records in this dataset.',
+    }),
   })
   .openapi({
     description:
@@ -96,14 +84,10 @@ const DatasetSchema = z
 
 const DeleteDatasetResponseSchema = z
   .object({
-    Dataset: DatasetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A collection of data for an identity pool. An identity pool can have multiple datasets. A dataset is per identity and can be general or associated with a particular entity in an application (like a saved game). Datasets are automatically created if they don't exist. Data is synced by dataset, and a dataset can hold up to 1MB of key-value pairs.",
-        }),
-    ).exactOptional(),
+    Dataset: DatasetSchema.exactOptional().openapi({
+      description:
+        "A collection of data for an identity pool. An identity pool can have multiple datasets. A dataset is per identity and can be general or associated with a particular entity in an application (like a saved game). Datasets are automatically created if they don't exist. Data is synced by dataset, and a dataset can hold up to 1MB of key-value pairs.",
+    }),
   })
   .openapi({ description: 'Response to a successful DeleteDataset request.', required: [] })
   .openapi('DeleteDatasetResponse')
@@ -114,46 +98,38 @@ const ResourceConflictExceptionSchema = z.any().openapi('ResourceConflictExcepti
 
 const DescribeDatasetResponseSchema = z
   .object({
-    Dataset: DatasetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Meta data for a collection of data for an identity. An identity can have multiple datasets. A dataset can be general or associated with a particular entity in an application (like a saved game). Datasets are automatically created if they don't exist. Data is synced by dataset, and a dataset can hold up to 1MB of key-value pairs.",
-        }),
-    ).exactOptional(),
+    Dataset: DatasetSchema.exactOptional().openapi({
+      description:
+        "Meta data for a collection of data for an identity. An identity can have multiple datasets. A dataset can be general or associated with a particular entity in an application (like a saved game). Datasets are automatically created if they don't exist. Data is synced by dataset, and a dataset can hold up to 1MB of key-value pairs.",
+    }),
   })
   .openapi({ description: 'Response to a successful DescribeDataset request.', required: [] })
   .openapi('DescribeDatasetResponse')
 
 const IdentityPoolUsageSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.',
-        }),
-    ).exactOptional(),
-    SyncSessionsCount: LongSchema.and(
-      z.any().openapi({ description: 'Number of sync sessions for the identity pool.' }),
-    ).exactOptional(),
-    DataStorage: LongSchema.and(
-      z.any().openapi({ description: 'Data storage information for the identity pool.' }),
-    ).exactOptional(),
-    LastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'Date on which the identity pool was last modified.' }),
-    ).exactOptional(),
+    IdentityPoolId: IdentityPoolIdSchema.exactOptional().openapi({
+      description:
+        'A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.',
+    }),
+    SyncSessionsCount: LongSchema.exactOptional().openapi({
+      description: 'Number of sync sessions for the identity pool.',
+    }),
+    DataStorage: LongSchema.exactOptional().openapi({
+      description: 'Data storage information for the identity pool.',
+    }),
+    LastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'Date on which the identity pool was last modified.',
+    }),
   })
   .openapi({ description: 'Usage information for the identity pool.', required: [] })
   .openapi('IdentityPoolUsage')
 
 const DescribeIdentityPoolUsageResponseSchema = z
   .object({
-    IdentityPoolUsage: IdentityPoolUsageSchema.and(
-      z.any().openapi({ description: 'Information about the usage of the identity pool.' }),
-    ).exactOptional(),
+    IdentityPoolUsage: IdentityPoolUsageSchema.exactOptional().openapi({
+      description: 'Information about the usage of the identity pool.',
+    }),
   })
   .openapi({
     description: 'Response to a successful DescribeIdentityPoolUsage request.',
@@ -165,40 +141,32 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const IdentityUsageSchema = z
   .object({
-    IdentityId: IdentityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.',
-        }),
-    ).exactOptional(),
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.',
-        }),
-    ).exactOptional(),
-    LastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'Date on which the identity was last modified.' }),
-    ).exactOptional(),
-    DatasetCount: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of datasets for the identity.' }),
-    ).exactOptional(),
-    DataStorage: LongSchema.and(
-      z.any().openapi({ description: 'Total data storage for this identity.' }),
-    ).exactOptional(),
+    IdentityId: IdentityIdSchema.exactOptional().openapi({
+      description:
+        'A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.',
+    }),
+    IdentityPoolId: IdentityPoolIdSchema.exactOptional().openapi({
+      description:
+        'A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.',
+    }),
+    LastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'Date on which the identity was last modified.',
+    }),
+    DatasetCount: IntegerSchema.exactOptional().openapi({
+      description: 'Number of datasets for the identity.',
+    }),
+    DataStorage: LongSchema.exactOptional().openapi({
+      description: 'Total data storage for this identity.',
+    }),
   })
   .openapi({ description: 'Usage information for the identity.', required: [] })
   .openapi('IdentityUsage')
 
 const DescribeIdentityUsageResponseSchema = z
   .object({
-    IdentityUsage: IdentityUsageSchema.and(
-      z.any().openapi({ description: 'Usage information for the identity.' }),
-    ).exactOptional(),
+    IdentityUsage: IdentityUsageSchema.exactOptional().openapi({
+      description: 'Usage information for the identity.',
+    }),
   })
   .openapi({
     description: 'The response to a successful DescribeIdentityUsage request.',
@@ -212,43 +180,25 @@ const BulkPublishStatusSchema = z
 
 const GetBulkPublishDetailsResponseSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.',
-        }),
-    ).exactOptional(),
-    BulkPublishStartTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date/time at which the last bulk publish was initiated.' }),
-    ).exactOptional(),
-    BulkPublishCompleteTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If BulkPublishStatus is SUCCEEDED, the time the last bulk publish operation completed.',
-        }),
-    ).exactOptional(),
-    BulkPublishStatus: BulkPublishStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Status of the last bulk publish operation, valid values are: <p>NOT_STARTED - No bulk publish has been requested for this identity pool</p> <p>IN_PROGRESS - Data is being published to the configured stream</p> <p>SUCCEEDED - All data for the identity pool has been published to the configured stream</p> <p>FAILED - Some portion of the data has failed to publish, check FailureMessage for the cause.</p>',
-        }),
-    ).exactOptional(),
-    FailureMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If BulkPublishStatus is FAILED this field will contain the error message that caused the bulk publish to fail.',
-        }),
-    ).exactOptional(),
+    IdentityPoolId: IdentityPoolIdSchema.exactOptional().openapi({
+      description:
+        'A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito. GUID generation is unique within a region.',
+    }),
+    BulkPublishStartTime: DateSchema.exactOptional().openapi({
+      description: 'The date/time at which the last bulk publish was initiated.',
+    }),
+    BulkPublishCompleteTime: DateSchema.exactOptional().openapi({
+      description:
+        'If BulkPublishStatus is SUCCEEDED, the time the last bulk publish operation completed.',
+    }),
+    BulkPublishStatus: BulkPublishStatusSchema.exactOptional().openapi({
+      description:
+        'Status of the last bulk publish operation, valid values are: <p>NOT_STARTED - No bulk publish has been requested for this identity pool</p> <p>IN_PROGRESS - Data is being published to the configured stream</p> <p>SUCCEEDED - All data for the identity pool has been published to the configured stream</p> <p>FAILED - Some portion of the data has failed to publish, check FailureMessage for the cause.</p>',
+    }),
+    FailureMessage: StringSchema.exactOptional().openapi({
+      description:
+        'If BulkPublishStatus is FAILED this field will contain the error message that caused the bulk publish to fail.',
+    }),
   })
   .openapi({ description: 'The output for the GetBulkPublishDetails operation.', required: [] })
   .openapi('GetBulkPublishDetailsResponse')
@@ -262,11 +212,9 @@ const EventsSchema = z
 
 const GetCognitoEventsResponseSchema = z
   .object({
-    Events: EventsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Cognito Events returned from the GetCognitoEvents request' }),
-    ).exactOptional(),
+    Events: EventsSchema.exactOptional().openapi({
+      description: 'The Cognito Events returned from the GetCognitoEvents request',
+    }),
   })
   .openapi({ description: 'The response from the GetCognitoEvents request', required: [] })
   .openapi('GetCognitoEventsResponse')
@@ -287,20 +235,12 @@ const AssumeRoleArnSchema = z
 
 const PushSyncSchema = z
   .object({
-    ApplicationArns: ApplicationArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List of SNS platform application ARNs that could be used by clients.',
-        }),
-    ).exactOptional(),
-    RoleArn: AssumeRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A role configured to allow Cognito to call SNS on behalf of the developer.',
-        }),
-    ).exactOptional(),
+    ApplicationArns: ApplicationArnListSchema.exactOptional().openapi({
+      description: 'List of SNS platform application ARNs that could be used by clients.',
+    }),
+    RoleArn: AssumeRoleArnSchema.exactOptional().openapi({
+      description: 'A role configured to allow Cognito to call SNS on behalf of the developer.',
+    }),
   })
   .openapi({
     description: 'Configuration options to be applied to the identity pool.',
@@ -314,58 +254,34 @@ const StreamingStatusSchema = z.enum(['ENABLED', 'DISABLED']).openapi('Streaming
 
 const CognitoStreamsSchema = z
   .object({
-    StreamName: StreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Cognito stream to receive updates. This stream must be in the developers account and in the same region as the identity pool.',
-        }),
-    ).exactOptional(),
-    RoleArn: AssumeRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role Amazon Cognito can assume in order to publish to the stream. This role must grant access to Amazon Cognito (cognito-sync) to invoke PutRecord on your Cognito stream.',
-        }),
-    ).exactOptional(),
-    StreamingStatus: StreamingStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Status of the Cognito streams. Valid values are: <p>ENABLED - Streaming of updates to identity pool is enabled.</p> <p>DISABLED - Streaming of updates to identity pool is disabled. Bulk publish will also fail if StreamingStatus is DISABLED.</p>',
-        }),
-    ).exactOptional(),
+    StreamName: StreamNameSchema.exactOptional().openapi({
+      description:
+        'The name of the Cognito stream to receive updates. This stream must be in the developers account and in the same region as the identity pool.',
+    }),
+    RoleArn: AssumeRoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the role Amazon Cognito can assume in order to publish to the stream. This role must grant access to Amazon Cognito (cognito-sync) to invoke PutRecord on your Cognito stream.',
+    }),
+    StreamingStatus: StreamingStatusSchema.exactOptional().openapi({
+      description:
+        'Status of the Cognito streams. Valid values are: <p>ENABLED - Streaming of updates to identity pool is enabled.</p> <p>DISABLED - Streaming of updates to identity pool is disabled. Bulk publish will also fail if StreamingStatus is DISABLED.</p>',
+    }),
   })
   .openapi({ description: 'Configuration options for configure Cognito streams.', required: [] })
   .openapi('CognitoStreams')
 
 const GetIdentityPoolConfigurationResponseSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito.',
-        }),
-    ).exactOptional(),
-    PushSync: PushSyncSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Options to apply to this identity pool for push synchronization.',
-        }),
-    ).exactOptional(),
-    CognitoStreams: CognitoStreamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Options to apply to this identity pool for Amazon Cognito streams.',
-        }),
-    ).exactOptional(),
+    IdentityPoolId: IdentityPoolIdSchema.exactOptional().openapi({
+      description:
+        'A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito.',
+    }),
+    PushSync: PushSyncSchema.exactOptional().openapi({
+      description: 'Options to apply to this identity pool for push synchronization.',
+    }),
+    CognitoStreams: CognitoStreamsSchema.exactOptional().openapi({
+      description: 'Options to apply to this identity pool for Amazon Cognito streams.',
+    }),
   })
   .openapi({
     description: 'The output for the GetIdentityPoolConfiguration operation.',
@@ -377,17 +293,11 @@ const DatasetListSchema = z.array(DatasetSchema).openapi('DatasetList')
 
 const ListDatasetsResponseSchema = z
   .object({
-    Datasets: DatasetListSchema.and(
-      z.any().openapi({ description: 'A set of datasets.' }),
-    ).exactOptional(),
-    Count: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of datasets returned.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A pagination token for obtaining the next page of results.' }),
-    ).exactOptional(),
+    Datasets: DatasetListSchema.exactOptional().openapi({ description: 'A set of datasets.' }),
+    Count: IntegerSchema.exactOptional().openapi({ description: 'Number of datasets returned.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'A pagination token for obtaining the next page of results.',
+    }),
   })
   .openapi({ description: 'Returned for a successful ListDatasets request.', required: [] })
   .openapi('ListDatasetsResponse')
@@ -398,20 +308,18 @@ const IdentityPoolUsageListSchema = z
 
 const ListIdentityPoolUsageResponseSchema = z
   .object({
-    IdentityPoolUsages: IdentityPoolUsageListSchema.and(
-      z.any().openapi({ description: 'Usage information for the identity pools.' }),
-    ).exactOptional(),
-    MaxResults: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to be returned.' }),
-    ).exactOptional(),
-    Count: IntegerSchema.and(
-      z.any().openapi({ description: 'Total number of identities for the identity pool.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A pagination token for obtaining the next page of results.' }),
-    ).exactOptional(),
+    IdentityPoolUsages: IdentityPoolUsageListSchema.exactOptional().openapi({
+      description: 'Usage information for the identity pools.',
+    }),
+    MaxResults: IntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to be returned.',
+    }),
+    Count: IntegerSchema.exactOptional().openapi({
+      description: 'Total number of identities for the identity pool.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'A pagination token for obtaining the next page of results.',
+    }),
   })
   .openapi({
     description: 'Returned for a successful ListIdentityPoolUsage request.',
@@ -425,24 +333,20 @@ const RecordValueSchema = z.string().max(1048575).openapi('RecordValue')
 
 const RecordSchema = z
   .object({
-    Key: RecordKeySchema.and(
-      z.any().openapi({ description: 'The key for the record.' }),
-    ).exactOptional(),
-    Value: RecordValueSchema.and(
-      z.any().openapi({ description: 'The value for the record.' }),
-    ).exactOptional(),
-    SyncCount: LongSchema.and(
-      z.any().openapi({ description: 'The server sync count for this record.' }),
-    ).exactOptional(),
-    LastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'The date on which the record was last modified.' }),
-    ).exactOptional(),
-    LastModifiedBy: StringSchema.and(
-      z.any().openapi({ description: 'The user/device that made the last change to this record.' }),
-    ).exactOptional(),
-    DeviceLastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'The last modified date of the client device.' }),
-    ).exactOptional(),
+    Key: RecordKeySchema.exactOptional().openapi({ description: 'The key for the record.' }),
+    Value: RecordValueSchema.exactOptional().openapi({ description: 'The value for the record.' }),
+    SyncCount: LongSchema.exactOptional().openapi({
+      description: 'The server sync count for this record.',
+    }),
+    LastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'The date on which the record was last modified.',
+    }),
+    LastModifiedBy: StringSchema.exactOptional().openapi({
+      description: 'The user/device that made the last change to this record.',
+    }),
+    DeviceLastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'The last modified date of the client device.',
+    }),
   })
   .openapi({ description: 'The basic data structure of a dataset.', required: [] })
   .openapi('Record')
@@ -455,41 +359,29 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const ListRecordsResponseSchema = z
   .object({
-    Records: RecordListSchema.and(
-      z.any().openapi({ description: 'A list of all records.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A pagination token for obtaining the next page of results.' }),
-    ).exactOptional(),
-    Count: IntegerSchema.and(
-      z.any().openapi({ description: 'Total number of records.' }),
-    ).exactOptional(),
-    DatasetSyncCount: LongSchema.and(
-      z.any().openapi({ description: 'Server sync count for this dataset.' }),
-    ).exactOptional(),
-    LastModifiedBy: StringSchema.and(
-      z.any().openapi({ description: 'The user/device that made the last change to this record.' }),
-    ).exactOptional(),
-    MergedDatasetNames: MergedDatasetNameListSchema.and(
-      z.any().openapi({ description: 'Names of merged datasets.' }),
-    ).exactOptional(),
-    DatasetExists: BooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether the dataset exists.' }),
-    ).exactOptional(),
-    DatasetDeletedAfterRequestedSyncCount: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A boolean value specifying whether to delete the dataset locally.',
-        }),
-    ).exactOptional(),
-    SyncSessionToken: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A token containing a session ID, identity ID, and expiration.' }),
-    ).exactOptional(),
+    Records: RecordListSchema.exactOptional().openapi({ description: 'A list of all records.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'A pagination token for obtaining the next page of results.',
+    }),
+    Count: IntegerSchema.exactOptional().openapi({ description: 'Total number of records.' }),
+    DatasetSyncCount: LongSchema.exactOptional().openapi({
+      description: 'Server sync count for this dataset.',
+    }),
+    LastModifiedBy: StringSchema.exactOptional().openapi({
+      description: 'The user/device that made the last change to this record.',
+    }),
+    MergedDatasetNames: MergedDatasetNameListSchema.exactOptional().openapi({
+      description: 'Names of merged datasets.',
+    }),
+    DatasetExists: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether the dataset exists.',
+    }),
+    DatasetDeletedAfterRequestedSyncCount: BooleanSchema.exactOptional().openapi({
+      description: 'A boolean value specifying whether to delete the dataset locally.',
+    }),
+    SyncSessionToken: StringSchema.exactOptional().openapi({
+      description: 'A token containing a session ID, identity ID, and expiration.',
+    }),
   })
   .openapi({ description: 'Returned for a successful ListRecordsRequest.', required: [] })
   .openapi('ListRecordsResponse')
@@ -498,9 +390,9 @@ const DeviceIdSchema = z.string().min(1).max(256).openapi('DeviceId')
 
 const RegisterDeviceResponseSchema = z
   .object({
-    DeviceId: DeviceIdSchema.and(
-      z.any().openapi({ description: 'The unique ID generated for this device by Cognito.' }),
-    ).exactOptional(),
+    DeviceId: DeviceIdSchema.exactOptional().openapi({
+      description: 'The unique ID generated for this device by Cognito.',
+    }),
   })
   .openapi({ description: 'Response to a RegisterDevice request.', required: [] })
   .openapi('RegisterDeviceResponse')
@@ -509,28 +401,16 @@ const InvalidConfigurationExceptionSchema = z.any().openapi('InvalidConfiguratio
 
 const SetIdentityPoolConfigurationResponseSchema = z
   .object({
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito.',
-        }),
-    ).exactOptional(),
-    PushSync: PushSyncSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Options to apply to this identity pool for push synchronization.',
-        }),
-    ).exactOptional(),
-    CognitoStreams: CognitoStreamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Options to apply to this identity pool for Amazon Cognito streams.',
-        }),
-    ).exactOptional(),
+    IdentityPoolId: IdentityPoolIdSchema.exactOptional().openapi({
+      description:
+        'A name-spaced GUID (for example, us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon Cognito.',
+    }),
+    PushSync: PushSyncSchema.exactOptional().openapi({
+      description: 'Options to apply to this identity pool for push synchronization.',
+    }),
+    CognitoStreams: CognitoStreamsSchema.exactOptional().openapi({
+      description: 'Options to apply to this identity pool for Amazon Cognito streams.',
+    }),
   })
   .openapi({
     description: 'The output for the SetIdentityPoolConfiguration operation',
@@ -541,20 +421,20 @@ const SetIdentityPoolConfigurationResponseSchema = z
 const ConcurrentModificationExceptionSchema = z.any().openapi('ConcurrentModificationException')
 
 const SubscribeToDatasetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response to a SubscribeToDataset request.' })
   .openapi('SubscribeToDatasetResponse')
 
 const UnsubscribeFromDatasetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response to an UnsubscribeFromDataset request.' })
   .openapi('UnsubscribeFromDatasetResponse')
 
 const UpdateRecordsResponseSchema = z
   .object({
-    Records: RecordListSchema.and(
-      z.any().openapi({ description: 'A list of records that have been updated.' }),
-    ).exactOptional(),
+    Records: RecordListSchema.exactOptional().openapi({
+      description: 'A list of records that have been updated.',
+    }),
   })
   .openapi({ description: 'Returned for a successful UpdateRecordsRequest.', required: [] })
   .openapi('UpdateRecordsResponse')
@@ -563,25 +443,17 @@ const OperationSchema = z.enum(['replace', 'remove']).openapi('Operation')
 
 const RecordPatchSchema = z
   .object({
-    Op: OperationSchema.and(
-      z.any().openapi({ description: 'An operation, either replace or remove.' }),
-    ),
-    Key: RecordKeySchema.and(
-      z.any().openapi({ description: 'The key associated with the record patch.' }),
-    ),
-    Value: RecordValueSchema.and(
-      z.any().openapi({ description: 'The value associated with the record patch.' }),
-    ).exactOptional(),
-    SyncCount: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Last known server sync count for this record. Set to 0 if unknown.',
-        }),
-    ),
-    DeviceLastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'The last modified date of the client device.' }),
-    ).exactOptional(),
+    Op: OperationSchema.openapi({ description: 'An operation, either replace or remove.' }),
+    Key: RecordKeySchema.openapi({ description: 'The key associated with the record patch.' }),
+    Value: RecordValueSchema.exactOptional().openapi({
+      description: 'The value associated with the record patch.',
+    }),
+    SyncCount: LongSchema.openapi({
+      description: 'Last known server sync count for this record. Set to 0 if unknown.',
+    }),
+    DeviceLastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'The last modified date of the client device.',
+    }),
   })
   .openapi({
     required: ['Op', 'Key', 'SyncCount'],
@@ -598,7 +470,7 @@ const InvalidLambdaFunctionOutputExceptionSchema = z
 const LambdaThrottledExceptionSchema = z.any().openapi('LambdaThrottledException')
 
 const BulkPublishRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'BulkPublishRequest', description: 'The input for the BulkPublish operation.' })
   .openapi('BulkPublishRequest')
 
@@ -607,7 +479,7 @@ const ClientContextSchema = z.string().openapi('ClientContext')
 const CognitoEventTypeSchema = z.string().openapi('CognitoEventType')
 
 const DeleteDatasetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteDatasetRequest',
     description: 'A request to delete the specific dataset.',
@@ -615,7 +487,7 @@ const DeleteDatasetRequestSchema = z
   .openapi('DeleteDatasetRequest')
 
 const DescribeDatasetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeDatasetRequest',
     description:
@@ -624,7 +496,7 @@ const DescribeDatasetRequestSchema = z
   .openapi('DescribeDatasetRequest')
 
 const DescribeIdentityPoolUsageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeIdentityPoolUsageRequest',
     description: 'A request for usage information about the identity pool.',
@@ -632,7 +504,7 @@ const DescribeIdentityPoolUsageRequestSchema = z
   .openapi('DescribeIdentityPoolUsageRequest')
 
 const DescribeIdentityUsageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeIdentityUsageRequest',
     description: 'A request for information about the usage of an identity pool.',
@@ -640,7 +512,7 @@ const DescribeIdentityUsageRequestSchema = z
   .openapi('DescribeIdentityUsageRequest')
 
 const GetBulkPublishDetailsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetBulkPublishDetailsRequest',
     description: 'The input for the GetBulkPublishDetails operation.',
@@ -648,7 +520,7 @@ const GetBulkPublishDetailsRequestSchema = z
   .openapi('GetBulkPublishDetailsRequest')
 
 const GetCognitoEventsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetCognitoEventsRequest',
     description: 'A request for a list of the configured Cognito Events',
@@ -656,7 +528,7 @@ const GetCognitoEventsRequestSchema = z
   .openapi('GetCognitoEventsRequest')
 
 const GetIdentityPoolConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetIdentityPoolConfigurationRequest',
     description: 'The input for the GetIdentityPoolConfiguration operation.',
@@ -666,7 +538,7 @@ const GetIdentityPoolConfigurationRequestSchema = z
 const IntegerStringSchema = z.int().openapi('IntegerString')
 
 const ListDatasetsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListDatasetsRequest',
     description: 'Request for a list of datasets for an identity.',
@@ -674,7 +546,7 @@ const ListDatasetsRequestSchema = z
   .openapi('ListDatasetsRequest')
 
 const ListIdentityPoolUsageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListIdentityPoolUsageRequest',
     description: 'A request for usage information on an identity pool.',
@@ -684,7 +556,7 @@ const ListIdentityPoolUsageRequestSchema = z
 const SyncSessionTokenSchema = z.string().openapi('SyncSessionToken')
 
 const ListRecordsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRecordsRequest', description: 'A request for a list of records.' })
   .openapi('ListRecordsRequest')
 
@@ -696,12 +568,10 @@ const RecordPatchListSchema = z.array(RecordPatchSchema).openapi('RecordPatchLis
 
 const RegisterDeviceRequestSchema = z
   .object({
-    Platform: PlatformSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The SNS platform type (e.g. GCM, SDM, APNS, APNS_SANDBOX).' }),
-    ),
-    Token: PushTokenSchema.and(z.any().openapi({ description: 'The push token.' })),
+    Platform: PlatformSchema.openapi({
+      description: 'The SNS platform type (e.g. GCM, SDM, APNS, APNS_SANDBOX).',
+    }),
+    Token: PushTokenSchema.openapi({ description: 'The push token.' }),
   })
   .openapi({
     required: ['Platform', 'Token'],
@@ -711,7 +581,7 @@ const RegisterDeviceRequestSchema = z
   .openapi('RegisterDeviceRequest')
 
 const SetCognitoEventsRequestSchema = z
-  .object({ Events: EventsSchema.and(z.any().openapi({ description: 'The events to configure' })) })
+  .object({ Events: EventsSchema.openapi({ description: 'The events to configure' }) })
   .openapi({
     required: ['Events'],
     title: 'SetCognitoEventsRequest',
@@ -721,20 +591,12 @@ const SetCognitoEventsRequestSchema = z
 
 const SetIdentityPoolConfigurationRequestSchema = z
   .object({
-    PushSync: PushSyncSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Options to apply to this identity pool for push synchronization.',
-        }),
-    ).exactOptional(),
-    CognitoStreams: CognitoStreamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Options to apply to this identity pool for Amazon Cognito streams.',
-        }),
-    ).exactOptional(),
+    PushSync: PushSyncSchema.exactOptional().openapi({
+      description: 'Options to apply to this identity pool for push synchronization.',
+    }),
+    CognitoStreams: CognitoStreamsSchema.exactOptional().openapi({
+      description: 'Options to apply to this identity pool for Amazon Cognito streams.',
+    }),
   })
   .openapi({
     title: 'SetIdentityPoolConfigurationRequest',
@@ -744,7 +606,7 @@ const SetIdentityPoolConfigurationRequestSchema = z
   .openapi('SetIdentityPoolConfigurationRequest')
 
 const SubscribeToDatasetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'SubscribeToDatasetRequest',
     description: 'A request to SubscribeToDatasetRequest.',
@@ -752,7 +614,7 @@ const SubscribeToDatasetRequestSchema = z
   .openapi('SubscribeToDatasetRequest')
 
 const UnsubscribeFromDatasetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'UnsubscribeFromDatasetRequest',
     description: 'A request to UnsubscribeFromDataset.',
@@ -761,20 +623,16 @@ const UnsubscribeFromDatasetRequestSchema = z
 
 const UpdateRecordsRequestSchema = z
   .object({
-    DeviceId: DeviceIdSchema.and(
-      z.any().openapi({ description: 'The unique ID generated for this device by Cognito.' }),
-    ).exactOptional(),
-    RecordPatches: RecordPatchListSchema.and(
-      z.any().openapi({ description: 'A list of patch operations.' }),
-    ).exactOptional(),
-    SyncSessionToken: SyncSessionTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SyncSessionToken returned by a previous call to ListRecords for this dataset and identity.',
-        }),
-    ),
+    DeviceId: DeviceIdSchema.exactOptional().openapi({
+      description: 'The unique ID generated for this device by Cognito.',
+    }),
+    RecordPatches: RecordPatchListSchema.exactOptional().openapi({
+      description: 'A list of patch operations.',
+    }),
+    SyncSessionToken: SyncSessionTokenSchema.openapi({
+      description:
+        'The SyncSessionToken returned by a previous call to ListRecords for this dataset and identity.',
+    }),
   })
   .openapi({
     required: ['SyncSessionToken'],
@@ -1724,22 +1582,14 @@ export const postIdentitypoolsIdentityPoolIdConfigurationRoute = createRoute({
             .object({
               PushSync: z
                 .object({
-                  ApplicationArns: ApplicationArnListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'List of SNS platform application ARNs that could be used by clients.',
-                      }),
-                  ).exactOptional(),
-                  RoleArn: AssumeRoleArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A role configured to allow Cognito to call SNS on behalf of the developer.',
-                      }),
-                  ).exactOptional(),
+                  ApplicationArns: ApplicationArnListSchema.exactOptional().openapi({
+                    description:
+                      'List of SNS platform application ARNs that could be used by clients.',
+                  }),
+                  RoleArn: AssumeRoleArnSchema.exactOptional().openapi({
+                    description:
+                      'A role configured to allow Cognito to call SNS on behalf of the developer.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -1748,30 +1598,18 @@ export const postIdentitypoolsIdentityPoolIdConfigurationRoute = createRoute({
                 }),
               CognitoStreams: z
                 .object({
-                  StreamName: StreamNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The name of the Cognito stream to receive updates. This stream must be in the developers account and in the same region as the identity pool.',
-                      }),
-                  ).exactOptional(),
-                  RoleArn: AssumeRoleArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ARN of the role Amazon Cognito can assume in order to publish to the stream. This role must grant access to Amazon Cognito (cognito-sync) to invoke PutRecord on your Cognito stream.',
-                      }),
-                  ).exactOptional(),
-                  StreamingStatus: StreamingStatusSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Status of the Cognito streams. Valid values are: <p>ENABLED - Streaming of updates to identity pool is enabled.</p> <p>DISABLED - Streaming of updates to identity pool is disabled. Bulk publish will also fail if StreamingStatus is DISABLED.</p>',
-                      }),
-                  ).exactOptional(),
+                  StreamName: StreamNameSchema.exactOptional().openapi({
+                    description:
+                      'The name of the Cognito stream to receive updates. This stream must be in the developers account and in the same region as the identity pool.',
+                  }),
+                  RoleArn: AssumeRoleArnSchema.exactOptional().openapi({
+                    description:
+                      'The ARN of the role Amazon Cognito can assume in order to publish to the stream. This role must grant access to Amazon Cognito (cognito-sync) to invoke PutRecord on your Cognito stream.',
+                  }),
+                  StreamingStatus: StreamingStatusSchema.exactOptional().openapi({
+                    description:
+                      'Status of the Cognito streams. Valid values are: <p>ENABLED - Streaming of updates to identity pool is enabled.</p> <p>DISABLED - Streaming of updates to identity pool is disabled. Bulk publish will also fail if StreamingStatus is DISABLED.</p>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

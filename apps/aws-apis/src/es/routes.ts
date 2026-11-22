@@ -1,72 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AutoTuneDateSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description: 'Specifies timestamp for the Auto-Tune action scheduled for the domain. ',
-  })
-  .openapi('AutoTuneDate')
-
-const ScheduledAutoTuneActionTypeSchema = z
-  .enum(['JVM_HEAP_SIZE_TUNING', 'JVM_YOUNG_GEN_TUNING'])
-  .openapi({
-    description:
-      'Specifies Auto-Tune action type. Valid values are JVM_HEAP_SIZE_TUNING and JVM_YOUNG_GEN_TUNING. ',
-  })
-  .openapi('ScheduledAutoTuneActionType')
-
-const ScheduledAutoTuneDescriptionSchema = z
-  .string()
-  .openapi({ description: 'Specifies Auto-Tune action description. ' })
-  .openapi('ScheduledAutoTuneDescription')
-
-const ScheduledAutoTuneSeverityTypeSchema = z
-  .enum(['LOW', 'MEDIUM', 'HIGH'])
-  .openapi({
-    description: 'Specifies Auto-Tune action severity. Valid values are LOW, MEDIUM and HIGH. ',
-  })
-  .openapi('ScheduledAutoTuneSeverityType')
-
-const ScheduledAutoTuneDetailsSchema = z
-  .object({
-    Date: AutoTuneDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies timestamp for the Auto-Tune action scheduled for the domain. ',
-        }),
-    ).exactOptional(),
-    ActionType: ScheduledAutoTuneActionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies Auto-Tune action type. Valid values are JVM_HEAP_SIZE_TUNING and JVM_YOUNG_GEN_TUNING. ',
-        }),
-    ).exactOptional(),
-    Action: ScheduledAutoTuneDescriptionSchema.and(
-      z.any().openapi({ description: 'Specifies Auto-Tune action description. ' }),
-    ).exactOptional(),
-    Severity: ScheduledAutoTuneSeverityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies Auto-Tune action severity. Valid values are LOW, MEDIUM and HIGH. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Specifies details of the scheduled Auto-Tune action. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information. ',
-    required: [],
-  })
-  .openapi('ScheduledAutoTuneDetails')
-
-type AutoTuneDetailsType = {
-  ScheduledAutoTuneDetails?: z.infer<typeof ScheduledAutoTuneDetailsSchema>
-}
-
 const StorageTypeNameSchema = z
   .string()
   .openapi({
@@ -91,21 +24,13 @@ const LimitValueListSchema = z.array(LimitValueSchema).openapi('LimitValueList')
 
 const StorageTypeLimitSchema = z
   .object({
-    LimitName: LimitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Name of storage limits that are applicable for given storage type. If <code> <a>StorageType</a> </code> is ebs, following storage options are applicable <ol> <li>MinimumVolumeSize</li> Minimum amount of volume size that is applicable for given storage type.It can be empty if it is not applicable. <li>MaximumVolumeSize</li> Maximum amount of volume size that is applicable for given storage type.It can be empty if it is not applicable. <li>MaximumIops</li> Maximum amount of Iops that is applicable for given storage type.It can be empty if it is not applicable. <li>MinimumIops</li> Minimum amount of Iops that is applicable for given storage type.It can be empty if it is not applicable. <li>MaximumThroughput</li> Maximum amount of Throughput that is applicable for given storage type.It can be empty if it is not applicable. <li>MinimumThroughput</li> Minimum amount of Throughput that is applicable for given storage type.It can be empty if it is not applicable. </ol> ',
-        }),
-    ).exactOptional(),
-    LimitValues: LimitValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Values for the <code> <a>StorageTypeLimit$LimitName</a> </code> . ',
-        }),
-    ).exactOptional(),
+    LimitName: LimitNameSchema.exactOptional().openapi({
+      description:
+        ' Name of storage limits that are applicable for given storage type. If <code> <a>StorageType</a> </code> is ebs, following storage options are applicable <ol> <li>MinimumVolumeSize</li> Minimum amount of volume size that is applicable for given storage type.It can be empty if it is not applicable. <li>MaximumVolumeSize</li> Maximum amount of volume size that is applicable for given storage type.It can be empty if it is not applicable. <li>MaximumIops</li> Maximum amount of Iops that is applicable for given storage type.It can be empty if it is not applicable. <li>MinimumIops</li> Minimum amount of Iops that is applicable for given storage type.It can be empty if it is not applicable. <li>MaximumThroughput</li> Maximum amount of Throughput that is applicable for given storage type.It can be empty if it is not applicable. <li>MinimumThroughput</li> Minimum amount of Throughput that is applicable for given storage type.It can be empty if it is not applicable. </ol> ',
+    }),
+    LimitValues: LimitValueListSchema.exactOptional().openapi({
+      description: ' Values for the <code> <a>StorageTypeLimit$LimitName</a> </code> . ',
+    }),
   })
   .openapi({ description: 'Limits that are applicable for given storage type. ', required: [] })
   .openapi('StorageTypeLimit')
@@ -116,11 +41,9 @@ const StorageTypeSchema = z
   .object({
     StorageTypeName: StorageTypeNameSchema.exactOptional(),
     StorageSubTypeName: StorageSubTypeNameSchema.exactOptional(),
-    StorageTypeLimits: StorageTypeLimitListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'List of limits that are applicable for given storage type. ' }),
-    ).exactOptional(),
+    StorageTypeLimits: StorageTypeLimitListSchema.exactOptional().openapi({
+      description: 'List of limits that are applicable for given storage type. ',
+    }),
   })
   .openapi({
     description:
@@ -168,21 +91,13 @@ const InstanceLimitsSchema = z
 
 const AdditionalLimitSchema = z
   .object({
-    LimitName: LimitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Name of Additional Limit is specific to a given InstanceType and for each of it's <code> <a>InstanceRole</a> </code> etc. <br/> Attributes and their details: <br/> <ul> <li>MaximumNumberOfDataNodesSupported</li> This attribute will be present in Master node only to specify how much data nodes upto which given <code> <a>ESPartitionInstanceType</a> </code> can support as master node. <li>MaximumNumberOfDataNodesWithoutMasterNode</li> This attribute will be present in Data node only to specify how much data nodes of given <code> <a>ESPartitionInstanceType</a> </code> upto which you don't need any master nodes to govern them. </ul> ",
-        }),
-    ).exactOptional(),
-    LimitValues: LimitValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Value for given <code> <a>AdditionalLimit$LimitName</a> </code> . ',
-        }),
-    ).exactOptional(),
+    LimitName: LimitNameSchema.exactOptional().openapi({
+      description:
+        " Name of Additional Limit is specific to a given InstanceType and for each of it's <code> <a>InstanceRole</a> </code> etc. <br/> Attributes and their details: <br/> <ul> <li>MaximumNumberOfDataNodesSupported</li> This attribute will be present in Master node only to specify how much data nodes upto which given <code> <a>ESPartitionInstanceType</a> </code> can support as master node. <li>MaximumNumberOfDataNodesWithoutMasterNode</li> This attribute will be present in Data node only to specify how much data nodes of given <code> <a>ESPartitionInstanceType</a> </code> upto which you don't need any master nodes to govern them. </ul> ",
+    }),
+    LimitValues: LimitValueListSchema.exactOptional().openapi({
+      description: ' Value for given <code> <a>AdditionalLimit$LimitName</a> </code> . ',
+    }),
   })
   .openapi({
     description:
@@ -193,10 +108,35 @@ const AdditionalLimitSchema = z
 
 const AdditionalLimitListSchema = z.array(AdditionalLimitSchema).openapi('AdditionalLimitList')
 
-type LimitsType = {
-  StorageTypes?: z.infer<typeof StorageTypeListSchema> & { [key: string]: unknown }
-  InstanceLimits?: z.infer<typeof InstanceLimitsSchema>
-  AdditionalLimits?: z.infer<typeof AdditionalLimitListSchema> & { [key: string]: unknown }
+const LimitsSchema = z
+  .object({
+    StorageTypes: StorageTypeListSchema.exactOptional().openapi({
+      description:
+        'StorageType represents the list of storage related types and attributes that are available for given InstanceType. ',
+    }),
+    InstanceLimits: InstanceLimitsSchema.exactOptional(),
+    AdditionalLimits: AdditionalLimitListSchema.exactOptional().openapi({
+      description:
+        " List of additional limits that are specific to a given InstanceType and for each of it's <code> <a>InstanceRole</a> </code> . ",
+    }),
+  })
+  .openapi({
+    description:
+      " Limits for given InstanceType and for each of it's role. <br/> Limits contains following <code> <a>StorageTypes,</a> </code> <code> <a>InstanceLimits</a> </code> and <code> <a>AdditionalLimits</a> </code> ",
+    required: [],
+  })
+  .openapi('Limits')
+
+const LimitsByRoleSchema = z
+  .record(z.string(), LimitsSchema)
+  .openapi({
+    description:
+      ' Map of Role of the Instance and Limits that are applicable. Role performed by given Instance in Elasticsearch can be one of the following: <ul> <li>data: If the given InstanceType is used as data node</li> <li>master: If the given InstanceType is used as master node</li> <li>ultra_warm: If the given InstanceType is used as warm node</li> </ul> ',
+  })
+  .openapi('LimitsByRole')
+
+type DescribeElasticsearchInstanceTypeLimitsResponseType = {
+  LimitsByRole?: z.infer<typeof LimitsByRoleSchema>
 }
 
 const OwnerIdSchema = z.string().length(12).openapi('OwnerId')
@@ -235,21 +175,13 @@ const CrossClusterSearchConnectionStatusMessageSchema = z
 
 const InboundCrossClusterSearchConnectionStatusSchema = z
   .object({
-    StatusCode: InboundCrossClusterSearchConnectionStatusCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state code for inbound connection. This can be one of the following:</p> <ul> <li>PENDING_ACCEPTANCE: Inbound connection is not yet accepted by destination domain owner.</li> <li>APPROVED: Inbound connection is pending acceptance by destination domain owner.</li> <li>REJECTING: Inbound connection rejection is in process.</li> <li>REJECTED: Inbound connection is rejected.</li> <li>DELETING: Inbound connection deletion is in progress.</li> <li>DELETED: Inbound connection is deleted and cannot be used further.</li> </ul>',
-        }),
-    ).exactOptional(),
-    Message: CrossClusterSearchConnectionStatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies verbose information for the inbound connection status.',
-        }),
-    ).exactOptional(),
+    StatusCode: InboundCrossClusterSearchConnectionStatusCodeSchema.exactOptional().openapi({
+      description:
+        '<p>The state code for inbound connection. This can be one of the following:</p> <ul> <li>PENDING_ACCEPTANCE: Inbound connection is not yet accepted by destination domain owner.</li> <li>APPROVED: Inbound connection is pending acceptance by destination domain owner.</li> <li>REJECTING: Inbound connection rejection is in process.</li> <li>REJECTED: Inbound connection is rejected.</li> <li>DELETING: Inbound connection deletion is in progress.</li> <li>DELETED: Inbound connection is deleted and cannot be used further.</li> </ul>',
+    }),
+    Message: CrossClusterSearchConnectionStatusMessageSchema.exactOptional().openapi({
+      description: 'Specifies verbose information for the inbound connection status.',
+    }),
   })
   .openapi({
     description: 'Specifies the coonection status of an inbound cross-cluster search connection.',
@@ -259,52 +191,33 @@ const InboundCrossClusterSearchConnectionStatusSchema = z
 
 const InboundCrossClusterSearchConnectionSchema = z
   .object({
-    SourceDomainInfo: DomainInformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code><a>DomainInformation</a></code> for the source Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    DestinationDomainInfo: DomainInformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code><a>DomainInformation</a></code> for the destination Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    CrossClusterSearchConnectionId: CrossClusterSearchConnectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the connection id for the inbound cross-cluster search connection.',
-        }),
-    ).exactOptional(),
-    ConnectionStatus: InboundCrossClusterSearchConnectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code><a>InboundCrossClusterSearchConnectionStatus</a></code> for the outbound connection.',
-        }),
-    ).exactOptional(),
+    SourceDomainInfo: DomainInformationSchema.exactOptional().openapi({
+      description:
+        'Specifies the <code><a>DomainInformation</a></code> for the source Elasticsearch domain.',
+    }),
+    DestinationDomainInfo: DomainInformationSchema.exactOptional().openapi({
+      description:
+        'Specifies the <code><a>DomainInformation</a></code> for the destination Elasticsearch domain.',
+    }),
+    CrossClusterSearchConnectionId: CrossClusterSearchConnectionIdSchema.exactOptional().openapi({
+      description: 'Specifies the connection id for the inbound cross-cluster search connection.',
+    }),
+    ConnectionStatus: InboundCrossClusterSearchConnectionStatusSchema.exactOptional().openapi({
+      description:
+        'Specifies the <code><a>InboundCrossClusterSearchConnectionStatus</a></code> for the outbound connection.',
+    }),
   })
   .openapi({ description: 'Specifies details of an inbound connection.', required: [] })
   .openapi('InboundCrossClusterSearchConnection')
 
 const AcceptInboundCrossClusterSearchConnectionResponseSchema = z
   .object({
-    CrossClusterSearchConnection: InboundCrossClusterSearchConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code><a>InboundCrossClusterSearchConnection</a></code> of accepted inbound connection. ',
-        }),
-    ).exactOptional(),
+    CrossClusterSearchConnection: InboundCrossClusterSearchConnectionSchema.exactOptional().openapi(
+      {
+        description:
+          'Specifies the <code><a>InboundCrossClusterSearchConnection</a></code> of accepted inbound connection. ',
+      },
+    ),
   })
   .openapi({
     description:
@@ -341,22 +254,14 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code>TagKey</code>, the name of the tag. Tag keys must be unique for the Elasticsearch domain to which they are attached.',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code>TagValue</code>, the value assigned to the corresponding tag key. Tag values can be null and do not have to be unique in a tag set. For example, you can have a key value pair in a tag set of <code>project : Trinity</code> and <code>cost-center : Trinity</code>',
-        }),
-    ),
+    Key: TagKeySchema.openapi({
+      description:
+        'Specifies the <code>TagKey</code>, the name of the tag. Tag keys must be unique for the Elasticsearch domain to which they are attached.',
+    }),
+    Value: TagValueSchema.openapi({
+      description:
+        'Specifies the <code>TagValue</code>, the value assigned to the corresponding tag key. Tag values can be null and do not have to be unique in a tag set. For example, you can have a key value pair in a tag set of <code>project : Trinity</code> and <code>cost-center : Trinity</code>',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -405,48 +310,33 @@ const ErrorDetailsSchema = z
 
 const DomainPackageDetailsSchema = z
   .object({
-    PackageID: PackageIDSchema.and(
-      z.any().openapi({ description: 'Internal ID of the package.' }),
-    ).exactOptional(),
-    PackageName: PackageNameSchema.and(
-      z.any().openapi({ description: 'User specified name of the package.' }),
-    ).exactOptional(),
-    PackageType: PackageTypeSchema.and(
-      z.any().openapi({ description: 'Currently supports only TXT-DICTIONARY.' }),
-    ).exactOptional(),
-    LastUpdated: LastUpdatedSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Timestamp of the most-recent update to the association status.' }),
-    ).exactOptional(),
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: "Name of the domain you've associated a package with." }),
-    ).exactOptional(),
-    DomainPackageStatus: DomainPackageStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'State of the association. Values are ASSOCIATING/ASSOCIATION_FAILED/ACTIVE/DISSOCIATING/DISSOCIATION_FAILED.',
-        }),
-    ).exactOptional(),
+    PackageID: PackageIDSchema.exactOptional().openapi({
+      description: 'Internal ID of the package.',
+    }),
+    PackageName: PackageNameSchema.exactOptional().openapi({
+      description: 'User specified name of the package.',
+    }),
+    PackageType: PackageTypeSchema.exactOptional().openapi({
+      description: 'Currently supports only TXT-DICTIONARY.',
+    }),
+    LastUpdated: LastUpdatedSchema.exactOptional().openapi({
+      description: 'Timestamp of the most-recent update to the association status.',
+    }),
+    DomainName: DomainNameSchema.exactOptional().openapi({
+      description: "Name of the domain you've associated a package with.",
+    }),
+    DomainPackageStatus: DomainPackageStatusSchema.exactOptional().openapi({
+      description:
+        'State of the association. Values are ASSOCIATING/ASSOCIATION_FAILED/ACTIVE/DISSOCIATING/DISSOCIATION_FAILED.',
+    }),
     PackageVersion: PackageVersionSchema.exactOptional(),
-    ReferencePath: ReferencePathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The relative path on Amazon ES nodes, which can be used as synonym_path when the package is synonym file.',
-        }),
-    ).exactOptional(),
-    ErrorDetails: ErrorDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional information if the package is in an error state. Null otherwise.',
-        }),
-    ).exactOptional(),
+    ReferencePath: ReferencePathSchema.exactOptional().openapi({
+      description:
+        'The relative path on Amazon ES nodes, which can be used as synonym_path when the package is synonym file.',
+    }),
+    ErrorDetails: ErrorDetailsSchema.exactOptional().openapi({
+      description: 'Additional information if the package is in an error state. Null otherwise.',
+    }),
   })
   .openapi({
     description: 'Information on a package that is associated with a domain.',
@@ -456,9 +346,9 @@ const DomainPackageDetailsSchema = z
 
 const AssociatePackageResponseSchema = z
   .object({
-    DomainPackageDetails: DomainPackageDetailsSchema.and(
-      z.any().openapi({ description: '<code>DomainPackageDetails</code>' }),
-    ).exactOptional(),
+    DomainPackageDetails: DomainPackageDetailsSchema.exactOptional().openapi({
+      description: '<code>DomainPackageDetails</code>',
+    }),
   })
   .openapi({
     description:
@@ -483,12 +373,12 @@ const StringSchema = z.string().openapi('String')
 
 const AuthorizedPrincipalSchema = z
   .object({
-    PrincipalType: PrincipalTypeSchema.and(
-      z.any().openapi({ description: 'The type of principal.' }),
-    ).exactOptional(),
-    Principal: StringSchema.and(
-      z.any().openapi({ description: 'The IAM principal that is allowed access to the domain.' }),
-    ).exactOptional(),
+    PrincipalType: PrincipalTypeSchema.exactOptional().openapi({
+      description: 'The type of principal.',
+    }),
+    Principal: StringSchema.exactOptional().openapi({
+      description: 'The IAM principal that is allowed access to the domain.',
+    }),
   })
   .openapi({
     description:
@@ -499,14 +389,10 @@ const AuthorizedPrincipalSchema = z
 
 const AuthorizeVpcEndpointAccessResponseSchema = z
   .object({
-    AuthorizedPrincipal: AuthorizedPrincipalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the account or service that was provided access to the domain.',
-        }),
-    ),
+    AuthorizedPrincipal: AuthorizedPrincipalSchema.openapi({
+      description:
+        'Information about the account or service that was provided access to the domain.',
+    }),
   })
   .openapi({
     required: ['AuthorizedPrincipal'],
@@ -527,59 +413,35 @@ const DeploymentCloseDateTimeStampSchema = z.iso
 
 const ServiceSoftwareOptionsSchema = z
   .object({
-    CurrentVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The current service software version that is present on the domain.',
-        }),
-    ).exactOptional(),
-    NewVersion: StringSchema.and(
-      z.any().openapi({ description: 'The new service software version if one is available.' }),
-    ).exactOptional(),
-    UpdateAvailable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<code>True</code> if you are able to update you service software version. <code>False</code> if you are not able to update your service software version. ',
-        }),
-    ).exactOptional(),
-    Cancellable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<code>True</code> if you are able to cancel your service software version update. <code>False</code> if you are not able to cancel your service software version. ',
-        }),
-    ).exactOptional(),
-    UpdateStatus: DeploymentStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of your service software update. This field can take the following values: <code>ELIGIBLE</code>, <code>PENDING_UPDATE</code>, <code>IN_PROGRESS</code>, <code>COMPLETED</code>, and <code>NOT_ELIGIBLE</code>.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the <code>UpdateStatus</code>.' }),
-    ).exactOptional(),
-    AutomatedUpdateDate: DeploymentCloseDateTimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Timestamp, in Epoch time, until which you can manually request a service software update. After this date, we automatically update your service software.',
-        }),
-    ).exactOptional(),
-    OptionalDeployment: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<code>True</code> if a service software is never automatically updated. <code>False</code> if a service software is automatically updated after <code>AutomatedUpdateDate</code>. ',
-        }),
-    ).exactOptional(),
+    CurrentVersion: StringSchema.exactOptional().openapi({
+      description: 'The current service software version that is present on the domain.',
+    }),
+    NewVersion: StringSchema.exactOptional().openapi({
+      description: 'The new service software version if one is available.',
+    }),
+    UpdateAvailable: BooleanSchema.exactOptional().openapi({
+      description:
+        '<code>True</code> if you are able to update you service software version. <code>False</code> if you are not able to update your service software version. ',
+    }),
+    Cancellable: BooleanSchema.exactOptional().openapi({
+      description:
+        '<code>True</code> if you are able to cancel your service software version update. <code>False</code> if you are not able to cancel your service software version. ',
+    }),
+    UpdateStatus: DeploymentStatusSchema.exactOptional().openapi({
+      description:
+        'The status of your service software update. This field can take the following values: <code>ELIGIBLE</code>, <code>PENDING_UPDATE</code>, <code>IN_PROGRESS</code>, <code>COMPLETED</code>, and <code>NOT_ELIGIBLE</code>.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the <code>UpdateStatus</code>.',
+    }),
+    AutomatedUpdateDate: DeploymentCloseDateTimeStampSchema.exactOptional().openapi({
+      description:
+        'Timestamp, in Epoch time, until which you can manually request a service software update. After this date, we automatically update your service software.',
+    }),
+    OptionalDeployment: BooleanSchema.exactOptional().openapi({
+      description:
+        '<code>True</code> if a service software is never automatically updated. <code>False</code> if a service software is automatically updated after <code>AutomatedUpdateDate</code>. ',
+    }),
   })
   .openapi({
     description: 'The current options of an Elasticsearch domain service software options.',
@@ -589,13 +451,9 @@ const ServiceSoftwareOptionsSchema = z
 
 const CancelElasticsearchServiceSoftwareUpdateResponseSchema = z
   .object({
-    ServiceSoftwareOptions: ServiceSoftwareOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The current status of the Elasticsearch service software update.',
-        }),
-    ).exactOptional(),
+    ServiceSoftwareOptions: ServiceSoftwareOptionsSchema.exactOptional().openapi({
+      description: 'The current status of the Elasticsearch service software update.',
+    }),
   })
   .openapi({
     description:
@@ -701,14 +559,10 @@ const IntegerClassSchema = z.int().openapi('IntegerClass')
 
 const ZoneAwarenessConfigSchema = z
   .object({
-    AvailabilityZoneCount: IntegerClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer value to indicate the number of availability zones for a domain when zone awareness is enabled. This should be equal to number of subnets if VPC endpoints is enabled',
-        }),
-    ).exactOptional(),
+    AvailabilityZoneCount: IntegerClassSchema.exactOptional().openapi({
+      description:
+        'An integer value to indicate the number of availability zones for a domain when zone awareness is enabled. This should be equal to number of subnets if VPC endpoints is enabled',
+    }),
   })
   .openapi({
     description:
@@ -723,9 +577,9 @@ const ESWarmPartitionInstanceTypeSchema = z
 
 const ColdStorageOptionsSchema = z
   .object({
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Enable cold storage option. Accepted values true or false' }),
-    ),
+    Enabled: BooleanSchema.openapi({
+      description: 'Enable cold storage option. Accepted values true or false',
+    }),
   })
   .openapi({
     required: ['Enabled'],
@@ -735,71 +589,44 @@ const ColdStorageOptionsSchema = z
 
 const ElasticsearchClusterConfigSchema = z
   .object({
-    InstanceType: ESPartitionInstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance type for an Elasticsearch cluster. UltraWarm instance types are not supported for data instances.',
-        }),
-    ).exactOptional(),
-    InstanceCount: IntegerClassSchema.and(
-      z.any().openapi({ description: 'The number of instances in the specified domain cluster.' }),
-    ).exactOptional(),
-    DedicatedMasterEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean value to indicate whether a dedicated master node is enabled. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-managedomains.html#es-managedomains-dedicatedmasternodes" target="_blank">About Dedicated Master Nodes</a> for more information.',
-        }),
-    ).exactOptional(),
-    ZoneAwarenessEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean value to indicate whether zone awareness is enabled. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-managedomains.html#es-managedomains-zoneawareness" target="_blank">About Zone Awareness</a> for more information.',
-        }),
-    ).exactOptional(),
-    ZoneAwarenessConfig: ZoneAwarenessConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the zone awareness configuration for a domain when zone awareness is enabled.',
-        }),
-    ).exactOptional(),
-    DedicatedMasterType: ESPartitionInstanceTypeSchema.and(
-      z.any().openapi({ description: 'The instance type for a dedicated master node.' }),
-    ).exactOptional(),
-    DedicatedMasterCount: IntegerClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Total number of dedicated master nodes, active and on standby, for the cluster.',
-        }),
-    ).exactOptional(),
-    WarmEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'True to enable warm storage.' }),
-    ).exactOptional(),
-    WarmType: ESWarmPartitionInstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: "The instance type for the Elasticsearch cluster's warm nodes." }),
-    ).exactOptional(),
-    WarmCount: IntegerClassSchema.and(
-      z.any().openapi({ description: 'The number of warm nodes in the cluster.' }),
-    ).exactOptional(),
-    ColdStorageOptions: ColdStorageOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code>ColdStorageOptions</code> config for Elasticsearch Domain',
-        }),
-    ).exactOptional(),
+    InstanceType: ESPartitionInstanceTypeSchema.exactOptional().openapi({
+      description:
+        'The instance type for an Elasticsearch cluster. UltraWarm instance types are not supported for data instances.',
+    }),
+    InstanceCount: IntegerClassSchema.exactOptional().openapi({
+      description: 'The number of instances in the specified domain cluster.',
+    }),
+    DedicatedMasterEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'A boolean value to indicate whether a dedicated master node is enabled. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-managedomains.html#es-managedomains-dedicatedmasternodes" target="_blank">About Dedicated Master Nodes</a> for more information.',
+    }),
+    ZoneAwarenessEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'A boolean value to indicate whether zone awareness is enabled. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-managedomains.html#es-managedomains-zoneawareness" target="_blank">About Zone Awareness</a> for more information.',
+    }),
+    ZoneAwarenessConfig: ZoneAwarenessConfigSchema.exactOptional().openapi({
+      description:
+        'Specifies the zone awareness configuration for a domain when zone awareness is enabled.',
+    }),
+    DedicatedMasterType: ESPartitionInstanceTypeSchema.exactOptional().openapi({
+      description: 'The instance type for a dedicated master node.',
+    }),
+    DedicatedMasterCount: IntegerClassSchema.exactOptional().openapi({
+      description:
+        'Total number of dedicated master nodes, active and on standby, for the cluster.',
+    }),
+    WarmEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'True to enable warm storage.',
+    }),
+    WarmType: ESWarmPartitionInstanceTypeSchema.exactOptional().openapi({
+      description: "The instance type for the Elasticsearch cluster's warm nodes.",
+    }),
+    WarmCount: IntegerClassSchema.exactOptional().openapi({
+      description: 'The number of warm nodes in the cluster.',
+    }),
+    ColdStorageOptions: ColdStorageOptionsSchema.exactOptional().openapi({
+      description: 'Specifies the <code>ColdStorageOptions</code> config for Elasticsearch Domain',
+    }),
   })
   .openapi({
     description:
@@ -818,25 +645,21 @@ const VolumeTypeSchema = z
 
 const EBSOptionsSchema = z
   .object({
-    EBSEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Specifies whether EBS-based storage is enabled.' }),
-    ).exactOptional(),
-    VolumeType: VolumeTypeSchema.and(
-      z.any().openapi({ description: ' Specifies the volume type for EBS-based storage.' }),
-    ).exactOptional(),
-    VolumeSize: IntegerClassSchema.and(
-      z.any().openapi({ description: ' Integer to specify the size of an EBS volume.' }),
-    ).exactOptional(),
-    Iops: IntegerClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the IOPS for Provisioned IOPS And GP3 EBS volume (SSD).',
-        }),
-    ).exactOptional(),
-    Throughput: IntegerClassSchema.and(
-      z.any().openapi({ description: 'Specifies the Throughput for GP3 EBS volume (SSD).' }),
-    ).exactOptional(),
+    EBSEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether EBS-based storage is enabled.',
+    }),
+    VolumeType: VolumeTypeSchema.exactOptional().openapi({
+      description: ' Specifies the volume type for EBS-based storage.',
+    }),
+    VolumeSize: IntegerClassSchema.exactOptional().openapi({
+      description: ' Integer to specify the size of an EBS volume.',
+    }),
+    Iops: IntegerClassSchema.exactOptional().openapi({
+      description: 'Specifies the IOPS for Provisioned IOPS And GP3 EBS volume (SSD).',
+    }),
+    Throughput: IntegerClassSchema.exactOptional().openapi({
+      description: 'Specifies the Throughput for GP3 EBS volume (SSD).',
+    }),
   })
   .openapi({
     description:
@@ -855,14 +678,10 @@ const PolicyDocumentSchema = z
 
 const SnapshotOptionsSchema = z
   .object({
-    AutomatedSnapshotStartHour: IntegerClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the time, in UTC format, when the service takes a daily automated snapshot of the specified Elasticsearch domain. Default value is <code>0</code> hours.',
-        }),
-    ).exactOptional(),
+    AutomatedSnapshotStartHour: IntegerClassSchema.exactOptional().openapi({
+      description:
+        'Specifies the time, in UTC format, when the service takes a daily automated snapshot of the specified Elasticsearch domain. Default value is <code>0</code> hours.',
+    }),
   })
   .openapi({
     description:
@@ -875,28 +694,20 @@ const StringListSchema = z.array(StringSchema).openapi('StringList')
 
 const VPCDerivedInfoSchema = z
   .object({
-    VPCId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The VPC Id for the Elasticsearch domain. Exists only if the domain was created with VPCOptions.',
-        }),
-    ).exactOptional(),
-    SubnetIds: StringListSchema.and(
-      z.any().openapi({ description: 'Specifies the subnets for VPC endpoint.' }),
-    ).exactOptional(),
-    AvailabilityZones: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The availability zones for the Elasticsearch domain. Exists only if the domain was created with VPCOptions.',
-        }),
-    ).exactOptional(),
-    SecurityGroupIds: StringListSchema.and(
-      z.any().openapi({ description: 'Specifies the security groups for VPC endpoint.' }),
-    ).exactOptional(),
+    VPCId: StringSchema.exactOptional().openapi({
+      description:
+        'The VPC Id for the Elasticsearch domain. Exists only if the domain was created with VPCOptions.',
+    }),
+    SubnetIds: StringListSchema.exactOptional().openapi({
+      description: 'Specifies the subnets for VPC endpoint.',
+    }),
+    AvailabilityZones: StringListSchema.exactOptional().openapi({
+      description:
+        'The availability zones for the Elasticsearch domain. Exists only if the domain was created with VPCOptions.',
+    }),
+    SecurityGroupIds: StringListSchema.exactOptional().openapi({
+      description: 'Specifies the security groups for VPC endpoint.',
+    }),
   })
   .openapi({
     description:
@@ -923,33 +734,19 @@ const RoleArnSchema = z.string().min(20).max(2048).openapi('RoleArn')
 
 const CognitoOptionsSchema = z
   .object({
-    Enabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the option to enable Cognito for Kibana authentication.',
-        }),
-    ).exactOptional(),
-    UserPoolId: UserPoolIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the Cognito user pool ID for Kibana authentication.' }),
-    ).exactOptional(),
-    IdentityPoolId: IdentityPoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the Cognito identity pool ID for Kibana authentication.',
-        }),
-    ).exactOptional(),
-    RoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the role ARN that provides Elasticsearch permissions for accessing Cognito resources.',
-        }),
-    ).exactOptional(),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies the option to enable Cognito for Kibana authentication.',
+    }),
+    UserPoolId: UserPoolIdSchema.exactOptional().openapi({
+      description: 'Specifies the Cognito user pool ID for Kibana authentication.',
+    }),
+    IdentityPoolId: IdentityPoolIdSchema.exactOptional().openapi({
+      description: 'Specifies the Cognito identity pool ID for Kibana authentication.',
+    }),
+    RoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'Specifies the role ARN that provides Elasticsearch permissions for accessing Cognito resources.',
+    }),
   })
   .openapi({
     description:
@@ -962,21 +759,21 @@ const KmsKeyIdSchema = z.string().min(1).max(500).openapi('KmsKeyId')
 
 const EncryptionAtRestOptionsSchema = z
   .object({
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Specifies the option to enable Encryption At Rest.' }),
-    ).exactOptional(),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z.any().openapi({ description: ' Specifies the KMS Key ID for Encryption At Rest options.' }),
-    ).exactOptional(),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies the option to enable Encryption At Rest.',
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description: ' Specifies the KMS Key ID for Encryption At Rest options.',
+    }),
   })
   .openapi({ description: 'Specifies the Encryption At Rest Options.', required: [] })
   .openapi('EncryptionAtRestOptions')
 
 const NodeToNodeEncryptionOptionsSchema = z
   .object({
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Specify true to enable node-to-node encryption.' }),
-    ).exactOptional(),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description: 'Specify true to enable node-to-node encryption.',
+    }),
   })
   .openapi({ description: 'Specifies the node-to-node encryption options.', required: [] })
   .openapi('NodeToNodeEncryptionOptions')
@@ -997,13 +794,9 @@ const CloudWatchLogsLogGroupArnSchema = z
 const LogPublishingOptionSchema = z
   .object({
     CloudWatchLogsLogGroupArn: CloudWatchLogsLogGroupArnSchema.exactOptional(),
-    Enabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Specifies whether given log publishing option is enabled or not.',
-        }),
-    ).exactOptional(),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description: ' Specifies whether given log publishing option is enabled or not.',
+    }),
   })
   .openapi({
     description:
@@ -1029,37 +822,22 @@ const DomainNameFqdnSchema = z
 
 const DomainEndpointOptionsSchema = z
   .object({
-    EnforceHTTPS: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify if only HTTPS endpoint should be enabled for the Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    TLSSecurityPolicy: TLSSecurityPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the TLS security policy that needs to be applied to the HTTPS endpoint of Elasticsearch domain. <br/> It can be one of the following values: <ul> <li><b>Policy-Min-TLS-1-0-2019-07: </b> TLS security policy which supports TLSv1.0 and higher.</li> <li><b>Policy-Min-TLS-1-2-2019-07: </b> TLS security policy which supports only TLSv1.2</li> </ul> ',
-        }),
-    ).exactOptional(),
-    CustomEndpointEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specify if custom endpoint should be enabled for the Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    CustomEndpoint: DomainNameFqdnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specify the fully qualified domain for your custom endpoint.' }),
-    ).exactOptional(),
-    CustomEndpointCertificateArn: ARNSchema.and(
-      z.any().openapi({ description: 'Specify ACM certificate ARN for your custom endpoint.' }),
-    ).exactOptional(),
+    EnforceHTTPS: BooleanSchema.exactOptional().openapi({
+      description: 'Specify if only HTTPS endpoint should be enabled for the Elasticsearch domain.',
+    }),
+    TLSSecurityPolicy: TLSSecurityPolicySchema.exactOptional().openapi({
+      description:
+        'Specify the TLS security policy that needs to be applied to the HTTPS endpoint of Elasticsearch domain. <br/> It can be one of the following values: <ul> <li><b>Policy-Min-TLS-1-0-2019-07: </b> TLS security policy which supports TLSv1.0 and higher.</li> <li><b>Policy-Min-TLS-1-2-2019-07: </b> TLS security policy which supports only TLSv1.2</li> </ul> ',
+    }),
+    CustomEndpointEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Specify if custom endpoint should be enabled for the Elasticsearch domain.',
+    }),
+    CustomEndpoint: DomainNameFqdnSchema.exactOptional().openapi({
+      description: 'Specify the fully qualified domain for your custom endpoint.',
+    }),
+    CustomEndpointCertificateArn: ARNSchema.exactOptional().openapi({
+      description: 'Specify ACM certificate ARN for your custom endpoint.',
+    }),
   })
   .openapi({
     description: 'Options to configure endpoint for the Elasticsearch domain.',
@@ -1073,16 +851,12 @@ const SAMLEntityIdSchema = z.string().min(8).max(512).openapi('SAMLEntityId')
 
 const SAMLIdpSchema = z
   .object({
-    MetadataContent: SAMLMetadataSchema.and(
-      z.any().openapi({ description: 'The Metadata of the SAML application in xml format.' }),
-    ),
-    EntityId: SAMLEntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique Entity ID of the application in SAML Identity Provider.',
-        }),
-    ),
+    MetadataContent: SAMLMetadataSchema.openapi({
+      description: 'The Metadata of the SAML application in xml format.',
+    }),
+    EntityId: SAMLEntityIdSchema.openapi({
+      description: 'The unique Entity ID of the application in SAML Identity Provider.',
+    }),
   })
   .openapi({
     required: ['MetadataContent', 'EntityId'],
@@ -1092,25 +866,19 @@ const SAMLIdpSchema = z
 
 const SAMLOptionsOutputSchema = z
   .object({
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'True if SAML is enabled.' }),
-    ).exactOptional(),
-    Idp: SAMLIdpSchema.and(
-      z.any().openapi({ description: "Describes the SAML Identity Provider's information." }),
-    ).exactOptional(),
-    SubjectKey: StringSchema.and(
-      z.any().openapi({ description: 'The key used for matching the SAML Subject attribute.' }),
-    ).exactOptional(),
-    RolesKey: StringSchema.and(
-      z.any().openapi({ description: 'The key used for matching the SAML Roles attribute.' }),
-    ).exactOptional(),
-    SessionTimeoutMinutes: IntegerClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The duration, in minutes, after which a user session becomes inactive.',
-        }),
-    ).exactOptional(),
+    Enabled: BooleanSchema.exactOptional().openapi({ description: 'True if SAML is enabled.' }),
+    Idp: SAMLIdpSchema.exactOptional().openapi({
+      description: "Describes the SAML Identity Provider's information.",
+    }),
+    SubjectKey: StringSchema.exactOptional().openapi({
+      description: 'The key used for matching the SAML Subject attribute.',
+    }),
+    RolesKey: StringSchema.exactOptional().openapi({
+      description: 'The key used for matching the SAML Roles attribute.',
+    }),
+    SessionTimeoutMinutes: IntegerClassSchema.exactOptional().openapi({
+      description: 'The duration, in minutes, after which a user session becomes inactive.',
+    }),
   })
   .openapi({
     description: 'Describes the SAML application configured for the domain.',
@@ -1122,30 +890,22 @@ const DisableTimestampSchema = z.iso.datetime({ offset: true }).openapi('Disable
 
 const AdvancedSecurityOptionsSchema = z
   .object({
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'True if advanced security is enabled.' }),
-    ).exactOptional(),
-    InternalUserDatabaseEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'True if the internal user database is enabled.' }),
-    ).exactOptional(),
-    SAMLOptions: SAMLOptionsOutputSchema.and(
-      z.any().openapi({ description: 'Describes the SAML application configured for a domain.' }),
-    ).exactOptional(),
-    AnonymousAuthDisableDate: DisableTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the Anonymous Auth Disable Date when Anonymous Auth is enabled.',
-        }),
-    ).exactOptional(),
-    AnonymousAuthEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if Anonymous auth is enabled. Anonymous auth can be enabled only when AdvancedSecurity is enabled on existing domains.',
-        }),
-    ).exactOptional(),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description: 'True if advanced security is enabled.',
+    }),
+    InternalUserDatabaseEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'True if the internal user database is enabled.',
+    }),
+    SAMLOptions: SAMLOptionsOutputSchema.exactOptional().openapi({
+      description: 'Describes the SAML application configured for a domain.',
+    }),
+    AnonymousAuthDisableDate: DisableTimestampSchema.exactOptional().openapi({
+      description: 'Specifies the Anonymous Auth Disable Date when Anonymous Auth is enabled.',
+    }),
+    AnonymousAuthEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'True if Anonymous auth is enabled. Anonymous auth can be enabled only when AdvancedSecurity is enabled on existing domains.',
+    }),
   })
   .openapi({
     description:
@@ -1174,20 +934,12 @@ const AutoTuneStateSchema = z
 
 const AutoTuneOptionsOutputSchema = z
   .object({
-    State: AutoTuneStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the <code>AutoTuneState</code> for the Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the error message while enabling or disabling the Auto-Tune.',
-        }),
-    ).exactOptional(),
+    State: AutoTuneStateSchema.exactOptional().openapi({
+      description: 'Specifies the <code>AutoTuneState</code> for the Elasticsearch domain.',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description: 'Specifies the error message while enabling or disabling the Auto-Tune.',
+    }),
   })
   .openapi({
     description:
@@ -1207,22 +959,13 @@ const MessageSchema = z.string().min(0).max(1024).openapi('Message')
 
 const ChangeProgressDetailsSchema = z
   .object({
-    ChangeId: GUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique change identifier associated with a specific domain configuration change.',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains an optional message associated with the domain configuration change.',
-        }),
-    ).exactOptional(),
+    ChangeId: GUIDSchema.exactOptional().openapi({
+      description:
+        'The unique change identifier associated with a specific domain configuration change.',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description: 'Contains an optional message associated with the domain configuration change.',
+    }),
   })
   .openapi({
     description: 'Specifies change details of the domain configuration change.',
@@ -1232,163 +975,90 @@ const ChangeProgressDetailsSchema = z
 
 const ElasticsearchDomainStatusSchema = z
   .object({
-    DomainId: DomainIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique identifier for the specified Elasticsearch domain.' }),
-    ),
-    DomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an Elasticsearch domain. Domain names are unique across the domains owned by an account within an AWS region. Domain names start with a letter or number and can contain the following characters: a-z (lowercase), 0-9, and - (hyphen).',
-        }),
-    ),
-    ARN: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon resource name (ARN) of an Elasticsearch domain. See <a href="http://docs.aws.amazon.com/IAM/latest/UserGuide/index.html?Using_Identifiers.html" target="_blank">Identifiers for IAM Entities</a> in <i>Using AWS Identity and Access Management</i> for more information.',
-        }),
-    ),
-    Created: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain creation status. <code>True</code> if the creation of an Elasticsearch domain is complete. <code>False</code> if domain creation is still in progress.',
-        }),
-    ).exactOptional(),
-    Deleted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain deletion status. <code>True</code> if a delete request has been received for the domain but resource cleanup is still in progress. <code>False</code> if the domain has not been deleted. Once domain deletion is complete, the status of the domain is no longer returned.',
-        }),
-    ).exactOptional(),
-    Endpoint: ServiceUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Elasticsearch domain endpoint that you use to submit index and search requests.',
-        }),
-    ).exactOptional(),
-    Endpoints: EndpointsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Map containing the Elasticsearch domain endpoints used to submit index and search requests. Example <code>key, value</code>: <code>'vpc','vpc-endpoint-h2dsd34efgyghrtguk5gt6j2foh4.us-east-1.es.amazonaws.com'</code>.",
-        }),
-    ).exactOptional(),
-    Processing: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the Elasticsearch domain configuration. <code>True</code> if Amazon Elasticsearch Service is processing configuration changes. <code>False</code> if the configuration is active.',
-        }),
-    ).exactOptional(),
-    UpgradeProcessing: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of an Elasticsearch domain version upgrade. <code>True</code> if Amazon Elasticsearch Service is undergoing a version upgrade. <code>False</code> if the configuration is active.',
-        }),
-    ).exactOptional(),
+    DomainId: DomainIdSchema.openapi({
+      description: 'The unique identifier for the specified Elasticsearch domain.',
+    }),
+    DomainName: DomainNameSchema.openapi({
+      description:
+        'The name of an Elasticsearch domain. Domain names are unique across the domains owned by an account within an AWS region. Domain names start with a letter or number and can contain the following characters: a-z (lowercase), 0-9, and - (hyphen).',
+    }),
+    ARN: ARNSchema.openapi({
+      description:
+        'The Amazon resource name (ARN) of an Elasticsearch domain. See <a href="http://docs.aws.amazon.com/IAM/latest/UserGuide/index.html?Using_Identifiers.html" target="_blank">Identifiers for IAM Entities</a> in <i>Using AWS Identity and Access Management</i> for more information.',
+    }),
+    Created: BooleanSchema.exactOptional().openapi({
+      description:
+        'The domain creation status. <code>True</code> if the creation of an Elasticsearch domain is complete. <code>False</code> if domain creation is still in progress.',
+    }),
+    Deleted: BooleanSchema.exactOptional().openapi({
+      description:
+        'The domain deletion status. <code>True</code> if a delete request has been received for the domain but resource cleanup is still in progress. <code>False</code> if the domain has not been deleted. Once domain deletion is complete, the status of the domain is no longer returned.',
+    }),
+    Endpoint: ServiceUrlSchema.exactOptional().openapi({
+      description:
+        'The Elasticsearch domain endpoint that you use to submit index and search requests.',
+    }),
+    Endpoints: EndpointsMapSchema.exactOptional().openapi({
+      description:
+        "Map containing the Elasticsearch domain endpoints used to submit index and search requests. Example <code>key, value</code>: <code>'vpc','vpc-endpoint-h2dsd34efgyghrtguk5gt6j2foh4.us-east-1.es.amazonaws.com'</code>.",
+    }),
+    Processing: BooleanSchema.exactOptional().openapi({
+      description:
+        'The status of the Elasticsearch domain configuration. <code>True</code> if Amazon Elasticsearch Service is processing configuration changes. <code>False</code> if the configuration is active.',
+    }),
+    UpgradeProcessing: BooleanSchema.exactOptional().openapi({
+      description:
+        'The status of an Elasticsearch domain version upgrade. <code>True</code> if Amazon Elasticsearch Service is undergoing a version upgrade. <code>False</code> if the configuration is active.',
+    }),
     ElasticsearchVersion: ElasticsearchVersionStringSchema.exactOptional(),
-    ElasticsearchClusterConfig: ElasticsearchClusterConfigSchema.and(
-      z.any().openapi({ description: 'The type and number of instances in the domain cluster.' }),
-    ),
-    EBSOptions: EBSOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>EBSOptions</code> for the specified domain. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-ebs" target="_blank">Configuring EBS-based Storage</a> for more information.',
-        }),
-    ).exactOptional(),
-    AccessPolicies: PolicyDocumentSchema.and(
-      z.any().openapi({ description: ' IAM access policy as a JSON-formatted string.' }),
-    ).exactOptional(),
-    SnapshotOptions: SnapshotOptionsSchema.and(
-      z.any().openapi({ description: 'Specifies the status of the <code>SnapshotOptions</code>' }),
-    ).exactOptional(),
-    VPCOptions: VPCDerivedInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>VPCOptions</code> for the specified domain. For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-vpc.html" target="_blank">VPC Endpoints for Amazon Elasticsearch Service Domains</a>.',
-        }),
-    ).exactOptional(),
-    CognitoOptions: CognitoOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>CognitoOptions</code> for the specified domain. For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-cognito-auth.html" target="_blank">Amazon Cognito Authentication for Kibana</a>.',
-        }),
-    ).exactOptional(),
-    EncryptionAtRestOptions: EncryptionAtRestOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Specifies the status of the <code>EncryptionAtRestOptions</code>.',
-        }),
-    ).exactOptional(),
-    NodeToNodeEncryptionOptions: NodeToNodeEncryptionOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the status of the <code>NodeToNodeEncryptionOptions</code>.',
-        }),
-    ).exactOptional(),
-    AdvancedOptions: AdvancedOptionsSchema.and(
-      z.any().openapi({ description: 'Specifies the status of the <code>AdvancedOptions</code>' }),
-    ).exactOptional(),
-    LogPublishingOptions: LogPublishingOptionsSchema.and(
-      z.any().openapi({ description: 'Log publishing options for the given domain.' }),
-    ).exactOptional(),
-    ServiceSoftwareOptions: ServiceSoftwareOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The current status of the Elasticsearch domain's service software.",
-        }),
-    ).exactOptional(),
-    DomainEndpointOptions: DomainEndpointOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The current status of the Elasticsearch domain's endpoint options.",
-        }),
-    ).exactOptional(),
-    AdvancedSecurityOptions: AdvancedSecurityOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The current status of the Elasticsearch domain's advanced security options.",
-        }),
-    ).exactOptional(),
-    AutoTuneOptions: AutoTuneOptionsOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The current status of the Elasticsearch domain's Auto-Tune options.",
-        }),
-    ).exactOptional(),
-    ChangeProgressDetails: ChangeProgressDetailsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies change details of the domain configuration change.' }),
-    ).exactOptional(),
+    ElasticsearchClusterConfig: ElasticsearchClusterConfigSchema.openapi({
+      description: 'The type and number of instances in the domain cluster.',
+    }),
+    EBSOptions: EBSOptionsSchema.exactOptional().openapi({
+      description:
+        'The <code>EBSOptions</code> for the specified domain. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-ebs" target="_blank">Configuring EBS-based Storage</a> for more information.',
+    }),
+    AccessPolicies: PolicyDocumentSchema.exactOptional().openapi({
+      description: ' IAM access policy as a JSON-formatted string.',
+    }),
+    SnapshotOptions: SnapshotOptionsSchema.exactOptional().openapi({
+      description: 'Specifies the status of the <code>SnapshotOptions</code>',
+    }),
+    VPCOptions: VPCDerivedInfoSchema.exactOptional().openapi({
+      description:
+        'The <code>VPCOptions</code> for the specified domain. For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-vpc.html" target="_blank">VPC Endpoints for Amazon Elasticsearch Service Domains</a>.',
+    }),
+    CognitoOptions: CognitoOptionsSchema.exactOptional().openapi({
+      description:
+        'The <code>CognitoOptions</code> for the specified domain. For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-cognito-auth.html" target="_blank">Amazon Cognito Authentication for Kibana</a>.',
+    }),
+    EncryptionAtRestOptions: EncryptionAtRestOptionsSchema.exactOptional().openapi({
+      description: ' Specifies the status of the <code>EncryptionAtRestOptions</code>.',
+    }),
+    NodeToNodeEncryptionOptions: NodeToNodeEncryptionOptionsSchema.exactOptional().openapi({
+      description: 'Specifies the status of the <code>NodeToNodeEncryptionOptions</code>.',
+    }),
+    AdvancedOptions: AdvancedOptionsSchema.exactOptional().openapi({
+      description: 'Specifies the status of the <code>AdvancedOptions</code>',
+    }),
+    LogPublishingOptions: LogPublishingOptionsSchema.exactOptional().openapi({
+      description: 'Log publishing options for the given domain.',
+    }),
+    ServiceSoftwareOptions: ServiceSoftwareOptionsSchema.exactOptional().openapi({
+      description: "The current status of the Elasticsearch domain's service software.",
+    }),
+    DomainEndpointOptions: DomainEndpointOptionsSchema.exactOptional().openapi({
+      description: "The current status of the Elasticsearch domain's endpoint options.",
+    }),
+    AdvancedSecurityOptions: AdvancedSecurityOptionsSchema.exactOptional().openapi({
+      description: "The current status of the Elasticsearch domain's advanced security options.",
+    }),
+    AutoTuneOptions: AutoTuneOptionsOutputSchema.exactOptional().openapi({
+      description: "The current status of the Elasticsearch domain's Auto-Tune options.",
+    }),
+    ChangeProgressDetails: ChangeProgressDetailsSchema.exactOptional().openapi({
+      description: 'Specifies change details of the domain configuration change.',
+    }),
   })
   .openapi({
     required: ['DomainId', 'DomainName', 'ARN', 'ElasticsearchClusterConfig'],
@@ -1398,9 +1068,9 @@ const ElasticsearchDomainStatusSchema = z
 
 const CreateElasticsearchDomainResponseSchema = z
   .object({
-    DomainStatus: ElasticsearchDomainStatusSchema.and(
-      z.any().openapi({ description: 'The status of the newly created Elasticsearch domain. ' }),
-    ).exactOptional(),
+    DomainStatus: ElasticsearchDomainStatusSchema.exactOptional().openapi({
+      description: 'The status of the newly created Elasticsearch domain. ',
+    }),
   })
   .openapi({
     description:
@@ -1415,25 +1085,17 @@ const PasswordSchema = z.string().min(8).openapi('Password')
 
 const MasterUserOptionsSchema = z
   .object({
-    MasterUserARN: ARNSchema.and(
-      z.any().openapi({ description: 'ARN for the master user (if IAM is enabled).' }),
-    ).exactOptional(),
-    MasterUserName: UsernameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The master user's username, which is stored in the Amazon Elasticsearch Service domain's internal database.",
-        }),
-    ).exactOptional(),
-    MasterUserPassword: PasswordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The master user's password, which is stored in the Amazon Elasticsearch Service domain's internal database.",
-        }),
-    ).exactOptional(),
+    MasterUserARN: ARNSchema.exactOptional().openapi({
+      description: 'ARN for the master user (if IAM is enabled).',
+    }),
+    MasterUserName: UsernameSchema.exactOptional().openapi({
+      description:
+        "The master user's username, which is stored in the Amazon Elasticsearch Service domain's internal database.",
+    }),
+    MasterUserPassword: PasswordSchema.exactOptional().openapi({
+      description:
+        "The master user's password, which is stored in the Amazon Elasticsearch Service domain's internal database.",
+    }),
   })
   .openapi({
     description: 'Credentials for the master user: username and password, ARN, or both.',
@@ -1445,39 +1107,27 @@ const BackendRoleSchema = z.string().min(1).max(256).openapi('BackendRole')
 
 const SAMLOptionsInputSchema = z
   .object({
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'True if SAML is enabled.' }),
-    ).exactOptional(),
-    Idp: SAMLIdpSchema.and(
-      z.any().openapi({ description: "Specifies the SAML Identity Provider's information." }),
-    ).exactOptional(),
-    MasterUserName: UsernameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The SAML master username, which is stored in the Amazon Elasticsearch Service domain's internal database.",
-        }),
-    ).exactOptional(),
-    MasterBackendRole: BackendRoleSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The backend role to which the SAML master user is mapped to.' }),
-    ).exactOptional(),
-    SubjectKey: StringSchema.and(
-      z.any().openapi({ description: 'The key to use for matching the SAML Subject attribute.' }),
-    ).exactOptional(),
-    RolesKey: StringSchema.and(
-      z.any().openapi({ description: 'The key to use for matching the SAML Roles attribute.' }),
-    ).exactOptional(),
-    SessionTimeoutMinutes: IntegerClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The duration, in minutes, after which a user session becomes inactive. Acceptable values are between 1 and 1440, and the default value is 60.',
-        }),
-    ).exactOptional(),
+    Enabled: BooleanSchema.exactOptional().openapi({ description: 'True if SAML is enabled.' }),
+    Idp: SAMLIdpSchema.exactOptional().openapi({
+      description: "Specifies the SAML Identity Provider's information.",
+    }),
+    MasterUserName: UsernameSchema.exactOptional().openapi({
+      description:
+        "The SAML master username, which is stored in the Amazon Elasticsearch Service domain's internal database.",
+    }),
+    MasterBackendRole: BackendRoleSchema.exactOptional().openapi({
+      description: 'The backend role to which the SAML master user is mapped to.',
+    }),
+    SubjectKey: StringSchema.exactOptional().openapi({
+      description: 'The key to use for matching the SAML Subject attribute.',
+    }),
+    RolesKey: StringSchema.exactOptional().openapi({
+      description: 'The key to use for matching the SAML Roles attribute.',
+    }),
+    SessionTimeoutMinutes: IntegerClassSchema.exactOptional().openapi({
+      description:
+        'The duration, in minutes, after which a user session becomes inactive. Acceptable values are between 1 and 1440, and the default value is 60.',
+    }),
   })
   .openapi({
     description: 'Specifies the SAML application configuration for the domain.',
@@ -1514,22 +1164,14 @@ const TimeUnitSchema = z
 
 const DurationSchema = z
   .object({
-    Value: DurationValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Integer to specify the value of a maintenance schedule duration. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
-        }),
-    ).exactOptional(),
-    Unit: TimeUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the unit of a maintenance schedule duration. Valid value is HOURS. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
-        }),
-    ).exactOptional(),
+    Value: DurationValueSchema.exactOptional().openapi({
+      description:
+        ' Integer to specify the value of a maintenance schedule duration. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
+    }),
+    Unit: TimeUnitSchema.exactOptional().openapi({
+      description:
+        'Specifies the unit of a maintenance schedule duration. Valid value is HOURS. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
+    }),
   })
   .openapi({
     description:
@@ -1540,29 +1182,17 @@ const DurationSchema = z
 
 const AutoTuneMaintenanceScheduleSchema = z
   .object({
-    StartAt: StartAtSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies timestamp at which Auto-Tune maintenance schedule start. ',
-        }),
-    ).exactOptional(),
-    Duration: DurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies maintenance schedule duration: duration value and duration unit. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
-        }),
-    ).exactOptional(),
-    CronExpressionForRecurrence: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies cron expression for a recurring maintenance schedule. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
-        }),
-    ).exactOptional(),
+    StartAt: StartAtSchema.exactOptional().openapi({
+      description: 'Specifies timestamp at which Auto-Tune maintenance schedule start. ',
+    }),
+    Duration: DurationSchema.exactOptional().openapi({
+      description:
+        'Specifies maintenance schedule duration: duration value and duration unit. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
+    }),
+    CronExpressionForRecurrence: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies cron expression for a recurring maintenance schedule. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
+    }),
   })
   .openapi({
     description:
@@ -1597,21 +1227,13 @@ const OutboundCrossClusterSearchConnectionStatusCodeSchema = z
 
 const OutboundCrossClusterSearchConnectionStatusSchema = z
   .object({
-    StatusCode: OutboundCrossClusterSearchConnectionStatusCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state code for outbound connection. This can be one of the following:</p> <ul> <li>VALIDATING: The outbound connection request is being validated.</li> <li>VALIDATION_FAILED: Validation failed for the connection request.</li> <li>PENDING_ACCEPTANCE: Outbound connection request is validated and is not yet accepted by destination domain owner.</li> <li>PROVISIONING: Outbound connection request is in process.</li> <li>ACTIVE: Outbound connection is active and ready to use.</li> <li>REJECTED: Outbound connection request is rejected by destination domain owner.</li> <li>DELETING: Outbound connection deletion is in progress.</li> <li>DELETED: Outbound connection is deleted and cannot be used further.</li> </ul>',
-        }),
-    ).exactOptional(),
-    Message: CrossClusterSearchConnectionStatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies verbose information for the outbound connection status.',
-        }),
-    ).exactOptional(),
+    StatusCode: OutboundCrossClusterSearchConnectionStatusCodeSchema.exactOptional().openapi({
+      description:
+        '<p>The state code for outbound connection. This can be one of the following:</p> <ul> <li>VALIDATING: The outbound connection request is being validated.</li> <li>VALIDATION_FAILED: Validation failed for the connection request.</li> <li>PENDING_ACCEPTANCE: Outbound connection request is validated and is not yet accepted by destination domain owner.</li> <li>PROVISIONING: Outbound connection request is in process.</li> <li>ACTIVE: Outbound connection is active and ready to use.</li> <li>REJECTED: Outbound connection request is rejected by destination domain owner.</li> <li>DELETING: Outbound connection deletion is in progress.</li> <li>DELETED: Outbound connection is deleted and cannot be used further.</li> </ul>',
+    }),
+    Message: CrossClusterSearchConnectionStatusMessageSchema.exactOptional().openapi({
+      description: 'Specifies verbose information for the outbound connection status.',
+    }),
   })
   .openapi({
     description: 'Specifies the connection status of an outbound cross-cluster search connection.',
@@ -1621,46 +1243,25 @@ const OutboundCrossClusterSearchConnectionStatusSchema = z
 
 const CreateOutboundCrossClusterSearchConnectionResponseSchema = z
   .object({
-    SourceDomainInfo: DomainInformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code><a>DomainInformation</a></code> for the source Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    DestinationDomainInfo: DomainInformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code><a>DomainInformation</a></code> for the destination Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    ConnectionAlias: ConnectionAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the connection alias provided during the create connection request.',
-        }),
-    ).exactOptional(),
-    ConnectionStatus: OutboundCrossClusterSearchConnectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code><a>OutboundCrossClusterSearchConnectionStatus</a></code> for the newly created connection.',
-        }),
-    ).exactOptional(),
-    CrossClusterSearchConnectionId: CrossClusterSearchConnectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique id for the created outbound connection, which is used for subsequent operations on connection.',
-        }),
-    ).exactOptional(),
+    SourceDomainInfo: DomainInformationSchema.exactOptional().openapi({
+      description:
+        'Specifies the <code><a>DomainInformation</a></code> for the source Elasticsearch domain.',
+    }),
+    DestinationDomainInfo: DomainInformationSchema.exactOptional().openapi({
+      description:
+        'Specifies the <code><a>DomainInformation</a></code> for the destination Elasticsearch domain.',
+    }),
+    ConnectionAlias: ConnectionAliasSchema.exactOptional().openapi({
+      description: 'Specifies the connection alias provided during the create connection request.',
+    }),
+    ConnectionStatus: OutboundCrossClusterSearchConnectionStatusSchema.exactOptional().openapi({
+      description:
+        'Specifies the <code><a>OutboundCrossClusterSearchConnectionStatus</a></code> for the newly created connection.',
+    }),
+    CrossClusterSearchConnectionId: CrossClusterSearchConnectionIdSchema.exactOptional().openapi({
+      description:
+        'Unique id for the created outbound connection, which is used for subsequent operations on connection.',
+    }),
   })
   .openapi({
     description:
@@ -1688,50 +1289,39 @@ const CreatedAtSchema = z.iso.datetime({ offset: true }).openapi('CreatedAt')
 
 const PackageDetailsSchema = z
   .object({
-    PackageID: PackageIDSchema.and(
-      z.any().openapi({ description: 'Internal ID of the package.' }),
-    ).exactOptional(),
-    PackageName: PackageNameSchema.and(
-      z.any().openapi({ description: 'User specified name of the package.' }),
-    ).exactOptional(),
-    PackageType: PackageTypeSchema.and(
-      z.any().openapi({ description: 'Currently supports only TXT-DICTIONARY.' }),
-    ).exactOptional(),
-    PackageDescription: PackageDescriptionSchema.and(
-      z.any().openapi({ description: 'User-specified description of the package.' }),
-    ).exactOptional(),
-    PackageStatus: PackageStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Current state of the package. Values are COPYING/COPY_FAILED/AVAILABLE/DELETING/DELETE_FAILED',
-        }),
-    ).exactOptional(),
-    CreatedAt: CreatedAtSchema.and(
-      z.any().openapi({ description: 'Timestamp which tells creation date of the package.' }),
-    ).exactOptional(),
+    PackageID: PackageIDSchema.exactOptional().openapi({
+      description: 'Internal ID of the package.',
+    }),
+    PackageName: PackageNameSchema.exactOptional().openapi({
+      description: 'User specified name of the package.',
+    }),
+    PackageType: PackageTypeSchema.exactOptional().openapi({
+      description: 'Currently supports only TXT-DICTIONARY.',
+    }),
+    PackageDescription: PackageDescriptionSchema.exactOptional().openapi({
+      description: 'User-specified description of the package.',
+    }),
+    PackageStatus: PackageStatusSchema.exactOptional().openapi({
+      description:
+        'Current state of the package. Values are COPYING/COPY_FAILED/AVAILABLE/DELETING/DELETE_FAILED',
+    }),
+    CreatedAt: CreatedAtSchema.exactOptional().openapi({
+      description: 'Timestamp which tells creation date of the package.',
+    }),
     LastUpdatedAt: LastUpdatedSchema.exactOptional(),
     AvailablePackageVersion: PackageVersionSchema.exactOptional(),
-    ErrorDetails: ErrorDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional information if the package is in an error state. Null otherwise.',
-        }),
-    ).exactOptional(),
+    ErrorDetails: ErrorDetailsSchema.exactOptional().openapi({
+      description: 'Additional information if the package is in an error state. Null otherwise.',
+    }),
   })
   .openapi({ description: 'Basic information about a package.', required: [] })
   .openapi('PackageDetails')
 
 const CreatePackageResponseSchema = z
   .object({
-    PackageDetails: PackageDetailsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the package <code>PackageDetails</code>.' }),
-    ).exactOptional(),
+    PackageDetails: PackageDetailsSchema.exactOptional().openapi({
+      description: 'Information about the package <code>PackageDetails</code>.',
+    }),
   })
   .openapi({
     description:
@@ -1786,33 +1376,25 @@ const EndpointSchema = z
 
 const VpcEndpointSchema = z
   .object({
-    VpcEndpointId: VpcEndpointIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the endpoint.' }),
-    ).exactOptional(),
-    VpcEndpointOwner: AWSAccountSchema.and(
-      z.any().openapi({ description: 'The creator of the endpoint.' }),
-    ).exactOptional(),
-    DomainArn: DomainArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the domain associated with the endpoint.',
-        }),
-    ).exactOptional(),
-    VpcOptions: VPCDerivedInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Options to specify the subnets and security groups for an Amazon OpenSearch Service VPC endpoint.',
-        }),
-    ).exactOptional(),
-    Status: VpcEndpointStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the endpoint.' }),
-    ).exactOptional(),
-    Endpoint: EndpointSchema.and(
-      z.any().openapi({ description: 'The connection endpoint ID for connecting to the domain.' }),
-    ).exactOptional(),
+    VpcEndpointId: VpcEndpointIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the endpoint.',
+    }),
+    VpcEndpointOwner: AWSAccountSchema.exactOptional().openapi({
+      description: 'The creator of the endpoint.',
+    }),
+    DomainArn: DomainArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the domain associated with the endpoint.',
+    }),
+    VpcOptions: VPCDerivedInfoSchema.exactOptional().openapi({
+      description:
+        'Options to specify the subnets and security groups for an Amazon OpenSearch Service VPC endpoint.',
+    }),
+    Status: VpcEndpointStatusSchema.exactOptional().openapi({
+      description: 'The current status of the endpoint.',
+    }),
+    Endpoint: EndpointSchema.exactOptional().openapi({
+      description: 'The connection endpoint ID for connecting to the domain.',
+    }),
   })
   .openapi({
     description:
@@ -1823,9 +1405,9 @@ const VpcEndpointSchema = z
 
 const CreateVpcEndpointResponseSchema = z
   .object({
-    VpcEndpoint: VpcEndpointSchema.and(
-      z.any().openapi({ description: 'Information about the newly created VPC endpoint.' }),
-    ),
+    VpcEndpoint: VpcEndpointSchema.openapi({
+      description: 'Information about the newly created VPC endpoint.',
+    }),
   })
   .openapi({
     required: ['VpcEndpoint'],
@@ -1836,9 +1418,9 @@ const CreateVpcEndpointResponseSchema = z
 
 const DeleteElasticsearchDomainResponseSchema = z
   .object({
-    DomainStatus: ElasticsearchDomainStatusSchema.and(
-      z.any().openapi({ description: 'The status of the Elasticsearch domain being deleted.' }),
-    ).exactOptional(),
+    DomainStatus: ElasticsearchDomainStatusSchema.exactOptional().openapi({
+      description: 'The status of the Elasticsearch domain being deleted.',
+    }),
   })
   .openapi({
     description:
@@ -1849,14 +1431,12 @@ const DeleteElasticsearchDomainResponseSchema = z
 
 const DeleteInboundCrossClusterSearchConnectionResponseSchema = z
   .object({
-    CrossClusterSearchConnection: InboundCrossClusterSearchConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code><a>InboundCrossClusterSearchConnection</a></code> of deleted inbound connection. ',
-        }),
-    ).exactOptional(),
+    CrossClusterSearchConnection: InboundCrossClusterSearchConnectionSchema.exactOptional().openapi(
+      {
+        description:
+          'Specifies the <code><a>InboundCrossClusterSearchConnection</a></code> of deleted inbound connection. ',
+      },
+    ),
   })
   .openapi({
     description:
@@ -1867,60 +1447,36 @@ const DeleteInboundCrossClusterSearchConnectionResponseSchema = z
 
 const OutboundCrossClusterSearchConnectionSchema = z
   .object({
-    SourceDomainInfo: DomainInformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code><a>DomainInformation</a></code> for the source Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    DestinationDomainInfo: DomainInformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code><a>DomainInformation</a></code> for the destination Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    CrossClusterSearchConnectionId: CrossClusterSearchConnectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the connection id for the outbound cross-cluster search connection.',
-        }),
-    ).exactOptional(),
-    ConnectionAlias: ConnectionAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the connection alias for the outbound cross-cluster search connection.',
-        }),
-    ).exactOptional(),
-    ConnectionStatus: OutboundCrossClusterSearchConnectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code><a>OutboundCrossClusterSearchConnectionStatus</a></code> for the outbound connection.',
-        }),
-    ).exactOptional(),
+    SourceDomainInfo: DomainInformationSchema.exactOptional().openapi({
+      description:
+        'Specifies the <code><a>DomainInformation</a></code> for the source Elasticsearch domain.',
+    }),
+    DestinationDomainInfo: DomainInformationSchema.exactOptional().openapi({
+      description:
+        'Specifies the <code><a>DomainInformation</a></code> for the destination Elasticsearch domain.',
+    }),
+    CrossClusterSearchConnectionId: CrossClusterSearchConnectionIdSchema.exactOptional().openapi({
+      description: 'Specifies the connection id for the outbound cross-cluster search connection.',
+    }),
+    ConnectionAlias: ConnectionAliasSchema.exactOptional().openapi({
+      description:
+        'Specifies the connection alias for the outbound cross-cluster search connection.',
+    }),
+    ConnectionStatus: OutboundCrossClusterSearchConnectionStatusSchema.exactOptional().openapi({
+      description:
+        'Specifies the <code><a>OutboundCrossClusterSearchConnectionStatus</a></code> for the outbound connection.',
+    }),
   })
   .openapi({ description: 'Specifies details of an outbound connection.', required: [] })
   .openapi('OutboundCrossClusterSearchConnection')
 
 const DeleteOutboundCrossClusterSearchConnectionResponseSchema = z
   .object({
-    CrossClusterSearchConnection: OutboundCrossClusterSearchConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code><a>OutboundCrossClusterSearchConnection</a></code> of deleted outbound connection. ',
-        }),
-    ).exactOptional(),
+    CrossClusterSearchConnection:
+      OutboundCrossClusterSearchConnectionSchema.exactOptional().openapi({
+        description:
+          'Specifies the <code><a>OutboundCrossClusterSearchConnection</a></code> of deleted outbound connection. ',
+      }),
   })
   .openapi({
     description:
@@ -1931,9 +1487,9 @@ const DeleteOutboundCrossClusterSearchConnectionResponseSchema = z
 
 const DeletePackageResponseSchema = z
   .object({
-    PackageDetails: PackageDetailsSchema.and(
-      z.any().openapi({ description: '<code>PackageDetails</code>' }),
-    ).exactOptional(),
+    PackageDetails: PackageDetailsSchema.exactOptional().openapi({
+      description: '<code>PackageDetails</code>',
+    }),
   })
   .openapi({
     description:
@@ -1944,22 +1500,18 @@ const DeletePackageResponseSchema = z
 
 const VpcEndpointSummarySchema = z
   .object({
-    VpcEndpointId: VpcEndpointIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the endpoint.' }),
-    ).exactOptional(),
-    VpcEndpointOwner: StringSchema.and(
-      z.any().openapi({ description: 'The creator of the endpoint.' }),
-    ).exactOptional(),
-    DomainArn: DomainArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the domain associated with the endpoint.',
-        }),
-    ).exactOptional(),
-    Status: VpcEndpointStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the endpoint.' }),
-    ).exactOptional(),
+    VpcEndpointId: VpcEndpointIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the endpoint.',
+    }),
+    VpcEndpointOwner: StringSchema.exactOptional().openapi({
+      description: 'The creator of the endpoint.',
+    }),
+    DomainArn: DomainArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the domain associated with the endpoint.',
+    }),
+    Status: VpcEndpointStatusSchema.exactOptional().openapi({
+      description: 'The current status of the endpoint.',
+    }),
   })
   .openapi({
     description: 'Summary information for an Amazon OpenSearch Service-managed VPC endpoint.',
@@ -1969,14 +1521,10 @@ const VpcEndpointSummarySchema = z
 
 const DeleteVpcEndpointResponseSchema = z
   .object({
-    VpcEndpointSummary: VpcEndpointSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the deleted endpoint, including its current status (<code>DELETING</code> or <code>DELETE_FAILED</code>).',
-        }),
-    ),
+    VpcEndpointSummary: VpcEndpointSummarySchema.openapi({
+      description:
+        'Information about the deleted endpoint, including its current status (<code>DELETING</code> or <code>DELETE_FAILED</code>).',
+    }),
   })
   .openapi({
     required: ['VpcEndpointSummary'],
@@ -1990,33 +1538,74 @@ const AutoTuneTypeSchema = z
   .openapi({ description: 'Specifies Auto-Tune type. Valid value is SCHEDULED_ACTION. ' })
   .openapi('AutoTuneType')
 
-const AutoTuneDetailsSchema: z.ZodType<AutoTuneDetailsType> = z
-  .lazy(() =>
-    z
-      .object({ ScheduledAutoTuneDetails: ScheduledAutoTuneDetailsSchema.exactOptional() })
-      .openapi({
-        description:
-          'Specifies details of the Auto-Tune action. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information. ',
-        required: [],
-      }),
-  )
+const AutoTuneDateSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description: 'Specifies timestamp for the Auto-Tune action scheduled for the domain. ',
+  })
+  .openapi('AutoTuneDate')
+
+const ScheduledAutoTuneActionTypeSchema = z
+  .enum(['JVM_HEAP_SIZE_TUNING', 'JVM_YOUNG_GEN_TUNING'])
+  .openapi({
+    description:
+      'Specifies Auto-Tune action type. Valid values are JVM_HEAP_SIZE_TUNING and JVM_YOUNG_GEN_TUNING. ',
+  })
+  .openapi('ScheduledAutoTuneActionType')
+
+const ScheduledAutoTuneDescriptionSchema = z
+  .string()
+  .openapi({ description: 'Specifies Auto-Tune action description. ' })
+  .openapi('ScheduledAutoTuneDescription')
+
+const ScheduledAutoTuneSeverityTypeSchema = z
+  .enum(['LOW', 'MEDIUM', 'HIGH'])
+  .openapi({
+    description: 'Specifies Auto-Tune action severity. Valid values are LOW, MEDIUM and HIGH. ',
+  })
+  .openapi('ScheduledAutoTuneSeverityType')
+
+const ScheduledAutoTuneDetailsSchema = z
+  .object({
+    Date: AutoTuneDateSchema.exactOptional().openapi({
+      description: 'Specifies timestamp for the Auto-Tune action scheduled for the domain. ',
+    }),
+    ActionType: ScheduledAutoTuneActionTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies Auto-Tune action type. Valid values are JVM_HEAP_SIZE_TUNING and JVM_YOUNG_GEN_TUNING. ',
+    }),
+    Action: ScheduledAutoTuneDescriptionSchema.exactOptional().openapi({
+      description: 'Specifies Auto-Tune action description. ',
+    }),
+    Severity: ScheduledAutoTuneSeverityTypeSchema.exactOptional().openapi({
+      description: 'Specifies Auto-Tune action severity. Valid values are LOW, MEDIUM and HIGH. ',
+    }),
+  })
+  .openapi({
+    description:
+      'Specifies details of the scheduled Auto-Tune action. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information. ',
+    required: [],
+  })
+  .openapi('ScheduledAutoTuneDetails')
+
+const AutoTuneDetailsSchema = z
+  .object({ ScheduledAutoTuneDetails: ScheduledAutoTuneDetailsSchema.exactOptional() })
+  .openapi({
+    description:
+      'Specifies details of the Auto-Tune action. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information. ',
+    required: [],
+  })
   .openapi('AutoTuneDetails')
 
 const AutoTuneSchema = z
   .object({
-    AutoTuneType: AutoTuneTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies Auto-Tune type. Valid value is SCHEDULED_ACTION. ' }),
-    ).exactOptional(),
-    AutoTuneDetails: AutoTuneDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies details of the Auto-Tune action. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information. ',
-        }),
-    ).exactOptional(),
+    AutoTuneType: AutoTuneTypeSchema.exactOptional().openapi({
+      description: 'Specifies Auto-Tune type. Valid value is SCHEDULED_ACTION. ',
+    }),
+    AutoTuneDetails: AutoTuneDetailsSchema.exactOptional().openapi({
+      description:
+        'Specifies details of the Auto-Tune action. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information. ',
+    }),
   })
   .openapi({ description: 'Specifies Auto-Tune type and Auto-Tune action details. ', required: [] })
   .openapi('AutoTune')
@@ -2033,21 +1622,13 @@ const NextTokenSchema = z
 
 const DescribeDomainAutoTunesResponseSchema = z
   .object({
-    AutoTunes: AutoTuneListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the list of setting adjustments that Auto-Tune has made to the domain. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies an identifier to allow retrieval of paginated results.',
-        }),
-    ).exactOptional(),
+    AutoTunes: AutoTuneListSchema.exactOptional().openapi({
+      description:
+        'Specifies the list of setting adjustments that Auto-Tune has made to the domain. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'Specifies an identifier to allow retrieval of paginated results.',
+    }),
   })
   .openapi({
     description:
@@ -2077,18 +1658,18 @@ const DescriptionSchema = z.string().openapi('Description')
 
 const ChangeProgressStageSchema = z
   .object({
-    Name: ChangeProgressStageNameSchema.and(
-      z.any().openapi({ description: 'The name of the specific progress stage.' }),
-    ).exactOptional(),
-    Status: ChangeProgressStageStatusSchema.and(
-      z.any().openapi({ description: 'The overall status of a specific progress stage.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the progress stage.' }),
-    ).exactOptional(),
-    LastUpdated: LastUpdatedSchema.and(
-      z.any().openapi({ description: 'The last updated timestamp of the progress stage.' }),
-    ).exactOptional(),
+    Name: ChangeProgressStageNameSchema.exactOptional().openapi({
+      description: 'The name of the specific progress stage.',
+    }),
+    Status: ChangeProgressStageStatusSchema.exactOptional().openapi({
+      description: 'The overall status of a specific progress stage.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the progress stage.',
+    }),
+    LastUpdated: LastUpdatedSchema.exactOptional().openapi({
+      description: 'The last updated timestamp of the progress stage.',
+    }),
   })
   .openapi({
     description: 'A progress stage details of a specific domain configuration change.',
@@ -2105,60 +1686,32 @@ const ChangeProgressStageListSchema = z
 
 const ChangeProgressStatusDetailsSchema = z
   .object({
-    ChangeId: GUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique change identifier associated with a specific domain configuration change.',
-        }),
-    ).exactOptional(),
-    StartTime: UpdateTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time at which the configuration change is made on the domain.',
-        }),
-    ).exactOptional(),
-    Status: OverallChangeStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The overall status of the domain configuration change. This field can take the following values: <code>PENDING</code>, <code>PROCESSING</code>, <code>COMPLETED</code> and <code>FAILED</code>',
-        }),
-    ).exactOptional(),
-    PendingProperties: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of properties involved in the domain configuration change that are still in pending.',
-        }),
-    ).exactOptional(),
-    CompletedProperties: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of properties involved in the domain configuration change that are completed.',
-        }),
-    ).exactOptional(),
-    TotalNumberOfStages: TotalNumberOfStagesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The total number of stages required for the configuration change.',
-        }),
-    ).exactOptional(),
-    ChangeProgressStages: ChangeProgressStageListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The specific stages that the domain is going through to perform the configuration change.',
-        }),
-    ).exactOptional(),
+    ChangeId: GUIDSchema.exactOptional().openapi({
+      description:
+        'The unique change identifier associated with a specific domain configuration change.',
+    }),
+    StartTime: UpdateTimestampSchema.exactOptional().openapi({
+      description: 'The time at which the configuration change is made on the domain.',
+    }),
+    Status: OverallChangeStatusSchema.exactOptional().openapi({
+      description:
+        'The overall status of the domain configuration change. This field can take the following values: <code>PENDING</code>, <code>PROCESSING</code>, <code>COMPLETED</code> and <code>FAILED</code>',
+    }),
+    PendingProperties: StringListSchema.exactOptional().openapi({
+      description:
+        'The list of properties involved in the domain configuration change that are still in pending.',
+    }),
+    CompletedProperties: StringListSchema.exactOptional().openapi({
+      description:
+        'The list of properties involved in the domain configuration change that are completed.',
+    }),
+    TotalNumberOfStages: TotalNumberOfStagesSchema.exactOptional().openapi({
+      description: 'The total number of stages required for the configuration change.',
+    }),
+    ChangeProgressStages: ChangeProgressStageListSchema.exactOptional().openapi({
+      description:
+        'The specific stages that the domain is going through to perform the configuration change.',
+    }),
   })
   .openapi({
     description: 'The progress details of a specific domain configuration change.',
@@ -2168,14 +1721,10 @@ const ChangeProgressStatusDetailsSchema = z
 
 const DescribeDomainChangeProgressResponseSchema = z
   .object({
-    ChangeProgressStatus: ChangeProgressStatusDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Progress information for the configuration change that is requested in the <code>DescribeDomainChangeProgress</code> request. ',
-        }),
-    ).exactOptional(),
+    ChangeProgressStatus: ChangeProgressStatusDetailsSchema.exactOptional().openapi({
+      description:
+        'Progress information for the configuration change that is requested in the <code>DescribeDomainChangeProgress</code> request. ',
+    }),
   })
   .openapi({
     description:
@@ -2186,9 +1735,9 @@ const DescribeDomainChangeProgressResponseSchema = z
 
 const DescribeElasticsearchDomainResponseSchema = z
   .object({
-    DomainStatus: ElasticsearchDomainStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the Elasticsearch domain.' }),
-    ),
+    DomainStatus: ElasticsearchDomainStatusSchema.openapi({
+      description: 'The current status of the Elasticsearch domain.',
+    }),
   })
   .openapi({
     required: ['DomainStatus'],
@@ -2209,29 +1758,21 @@ const OptionStateSchema = z
 
 const OptionStatusSchema = z
   .object({
-    CreationDate: UpdateTimestampSchema.and(
-      z.any().openapi({ description: 'Timestamp which tells the creation date for the entity.' }),
-    ),
-    UpdateDate: UpdateTimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Timestamp which tells the last updated time for the entity.' }),
-    ),
-    UpdateVersion: UIntValueSchema.and(
-      z.any().openapi({ description: 'Specifies the latest version for the entity.' }),
-    ).exactOptional(),
-    State: OptionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides the <code>OptionState</code> for the Elasticsearch domain.',
-        }),
-    ),
-    PendingDeletion: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether the Elasticsearch domain is being deleted.' }),
-    ).exactOptional(),
+    CreationDate: UpdateTimestampSchema.openapi({
+      description: 'Timestamp which tells the creation date for the entity.',
+    }),
+    UpdateDate: UpdateTimestampSchema.openapi({
+      description: 'Timestamp which tells the last updated time for the entity.',
+    }),
+    UpdateVersion: UIntValueSchema.exactOptional().openapi({
+      description: 'Specifies the latest version for the entity.',
+    }),
+    State: OptionStateSchema.openapi({
+      description: 'Provides the <code>OptionState</code> for the Elasticsearch domain.',
+    }),
+    PendingDeletion: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether the Elasticsearch domain is being deleted.',
+    }),
   })
   .openapi({
     required: ['CreationDate', 'UpdateDate', 'State'],
@@ -2241,22 +1782,13 @@ const OptionStatusSchema = z
 
 const ElasticsearchVersionStatusSchema = z
   .object({
-    Options: ElasticsearchVersionStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the Elasticsearch version for the specified Elasticsearch domain.',
-        }),
-    ),
-    Status: OptionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the status of the Elasticsearch version options for the specified Elasticsearch domain.',
-        }),
-    ),
+    Options: ElasticsearchVersionStringSchema.openapi({
+      description: ' Specifies the Elasticsearch version for the specified Elasticsearch domain.',
+    }),
+    Status: OptionStatusSchema.openapi({
+      description:
+        ' Specifies the status of the Elasticsearch version options for the specified Elasticsearch domain.',
+    }),
   })
   .openapi({
     required: ['Options', 'Status'],
@@ -2267,22 +1799,13 @@ const ElasticsearchVersionStatusSchema = z
 
 const ElasticsearchClusterConfigStatusSchema = z
   .object({
-    Options: ElasticsearchClusterConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the cluster configuration for the specified Elasticsearch domain.',
-        }),
-    ),
-    Status: OptionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the status of the configuration for the specified Elasticsearch domain.',
-        }),
-    ),
+    Options: ElasticsearchClusterConfigSchema.openapi({
+      description: ' Specifies the cluster configuration for the specified Elasticsearch domain.',
+    }),
+    Status: OptionStatusSchema.openapi({
+      description:
+        ' Specifies the status of the configuration for the specified Elasticsearch domain.',
+    }),
   })
   .openapi({
     required: ['Options', 'Status'],
@@ -2292,21 +1815,13 @@ const ElasticsearchClusterConfigStatusSchema = z
 
 const EBSOptionsStatusSchema = z
   .object({
-    Options: EBSOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Specifies the EBS options for the specified Elasticsearch domain.',
-        }),
-    ),
-    Status: OptionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the status of the EBS options for the specified Elasticsearch domain.',
-        }),
-    ),
+    Options: EBSOptionsSchema.openapi({
+      description: ' Specifies the EBS options for the specified Elasticsearch domain.',
+    }),
+    Status: OptionStatusSchema.openapi({
+      description:
+        ' Specifies the status of the EBS options for the specified Elasticsearch domain.',
+    }),
   })
   .openapi({
     required: ['Options', 'Status'],
@@ -2316,22 +1831,14 @@ const EBSOptionsStatusSchema = z
 
 const AccessPoliciesStatusSchema = z
   .object({
-    Options: PolicyDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The access policy configured for the Elasticsearch domain. Access policies may be resource-based, IP-based, or IAM-based. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-access-policies" target="_blank"> Configuring Access Policies</a>for more information.',
-        }),
-    ),
-    Status: OptionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The status of the access policy for the Elasticsearch domain. See <code>OptionStatus</code> for the status information that's included. ",
-        }),
-    ),
+    Options: PolicyDocumentSchema.openapi({
+      description:
+        'The access policy configured for the Elasticsearch domain. Access policies may be resource-based, IP-based, or IAM-based. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-access-policies" target="_blank"> Configuring Access Policies</a>for more information.',
+    }),
+    Status: OptionStatusSchema.openapi({
+      description:
+        "The status of the access policy for the Elasticsearch domain. See <code>OptionStatus</code> for the status information that's included. ",
+    }),
   })
   .openapi({
     required: ['Options', 'Status'],
@@ -2342,17 +1849,12 @@ const AccessPoliciesStatusSchema = z
 
 const SnapshotOptionsStatusSchema = z
   .object({
-    Options: SnapshotOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the daily snapshot options specified for the Elasticsearch domain.',
-        }),
-    ),
-    Status: OptionStatusSchema.and(
-      z.any().openapi({ description: 'Specifies the status of a daily automated snapshot.' }),
-    ),
+    Options: SnapshotOptionsSchema.openapi({
+      description: 'Specifies the daily snapshot options specified for the Elasticsearch domain.',
+    }),
+    Status: OptionStatusSchema.openapi({
+      description: 'Specifies the status of a daily automated snapshot.',
+    }),
   })
   .openapi({
     required: ['Options', 'Status'],
@@ -2362,21 +1864,13 @@ const SnapshotOptionsStatusSchema = z
 
 const VPCDerivedInfoStatusSchema = z
   .object({
-    Options: VPCDerivedInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Specifies the VPC options for the specified Elasticsearch domain.',
-        }),
-    ),
-    Status: OptionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the status of the VPC options for the specified Elasticsearch domain.',
-        }),
-    ),
+    Options: VPCDerivedInfoSchema.openapi({
+      description: ' Specifies the VPC options for the specified Elasticsearch domain.',
+    }),
+    Status: OptionStatusSchema.openapi({
+      description:
+        ' Specifies the status of the VPC options for the specified Elasticsearch domain.',
+    }),
   })
   .openapi({
     required: ['Options', 'Status'],
@@ -2386,21 +1880,13 @@ const VPCDerivedInfoStatusSchema = z
 
 const CognitoOptionsStatusSchema = z
   .object({
-    Options: CognitoOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the Cognito options for the specified Elasticsearch domain.',
-        }),
-    ),
-    Status: OptionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the status of the Cognito options for the specified Elasticsearch domain.',
-        }),
-    ),
+    Options: CognitoOptionsSchema.openapi({
+      description: 'Specifies the Cognito options for the specified Elasticsearch domain.',
+    }),
+    Status: OptionStatusSchema.openapi({
+      description:
+        'Specifies the status of the Cognito options for the specified Elasticsearch domain.',
+    }),
   })
   .openapi({
     required: ['Options', 'Status'],
@@ -2410,22 +1896,14 @@ const CognitoOptionsStatusSchema = z
 
 const EncryptionAtRestOptionsStatusSchema = z
   .object({
-    Options: EncryptionAtRestOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the Encryption At Rest options for the specified Elasticsearch domain.',
-        }),
-    ),
-    Status: OptionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the status of the Encryption At Rest options for the specified Elasticsearch domain.',
-        }),
-    ),
+    Options: EncryptionAtRestOptionsSchema.openapi({
+      description:
+        ' Specifies the Encryption At Rest options for the specified Elasticsearch domain.',
+    }),
+    Status: OptionStatusSchema.openapi({
+      description:
+        ' Specifies the status of the Encryption At Rest options for the specified Elasticsearch domain.',
+    }),
   })
   .openapi({
     required: ['Options', 'Status'],
@@ -2436,22 +1914,14 @@ const EncryptionAtRestOptionsStatusSchema = z
 
 const NodeToNodeEncryptionOptionsStatusSchema = z
   .object({
-    Options: NodeToNodeEncryptionOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the node-to-node encryption options for the specified Elasticsearch domain.',
-        }),
-    ),
-    Status: OptionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the status of the node-to-node encryption options for the specified Elasticsearch domain.',
-        }),
-    ),
+    Options: NodeToNodeEncryptionOptionsSchema.openapi({
+      description:
+        'Specifies the node-to-node encryption options for the specified Elasticsearch domain.',
+    }),
+    Status: OptionStatusSchema.openapi({
+      description:
+        'Specifies the status of the node-to-node encryption options for the specified Elasticsearch domain.',
+    }),
   })
   .openapi({
     required: ['Options', 'Status'],
@@ -2462,22 +1932,14 @@ const NodeToNodeEncryptionOptionsStatusSchema = z
 
 const AdvancedOptionsStatusSchema = z
   .object({
-    Options: AdvancedOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the status of advanced options for the specified Elasticsearch domain.',
-        }),
-    ),
-    Status: OptionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the status of <code>OptionStatus</code> for advanced options for the specified Elasticsearch domain.',
-        }),
-    ),
+    Options: AdvancedOptionsSchema.openapi({
+      description:
+        ' Specifies the status of advanced options for the specified Elasticsearch domain.',
+    }),
+    Status: OptionStatusSchema.openapi({
+      description:
+        ' Specifies the status of <code>OptionStatus</code> for advanced options for the specified Elasticsearch domain.',
+    }),
   })
   .openapi({
     required: ['Options', 'Status'],
@@ -2488,21 +1950,13 @@ const AdvancedOptionsStatusSchema = z
 
 const LogPublishingOptionsStatusSchema = z
   .object({
-    Options: LogPublishingOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The log publishing options configured for the Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    Status: OptionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The status of the log publishing options for the Elasticsearch domain. See <code>OptionStatus</code> for the status information that's included. ",
-        }),
-    ).exactOptional(),
+    Options: LogPublishingOptionsSchema.exactOptional().openapi({
+      description: 'The log publishing options configured for the Elasticsearch domain.',
+    }),
+    Status: OptionStatusSchema.exactOptional().openapi({
+      description:
+        "The status of the log publishing options for the Elasticsearch domain. See <code>OptionStatus</code> for the status information that's included. ",
+    }),
   })
   .openapi({
     description: 'The configured log publishing options for the domain and their current status.',
@@ -2512,19 +1966,13 @@ const LogPublishingOptionsStatusSchema = z
 
 const DomainEndpointOptionsStatusSchema = z
   .object({
-    Options: DomainEndpointOptionsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Options to configure endpoint for the Elasticsearch domain.' }),
-    ),
-    Status: OptionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The status of the endpoint options for the Elasticsearch domain. See <code>OptionStatus</code> for the status information that's included. ",
-        }),
-    ),
+    Options: DomainEndpointOptionsSchema.openapi({
+      description: 'Options to configure endpoint for the Elasticsearch domain.',
+    }),
+    Status: OptionStatusSchema.openapi({
+      description:
+        "The status of the endpoint options for the Elasticsearch domain. See <code>OptionStatus</code> for the status information that's included. ",
+    }),
   })
   .openapi({
     required: ['Options', 'Status'],
@@ -2534,22 +1982,13 @@ const DomainEndpointOptionsStatusSchema = z
 
 const AdvancedSecurityOptionsStatusSchema = z
   .object({
-    Options: AdvancedSecurityOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies advanced security options for the specified Elasticsearch domain.',
-        }),
-    ),
-    Status: OptionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Status of the advanced security options for the specified Elasticsearch domain.',
-        }),
-    ),
+    Options: AdvancedSecurityOptionsSchema.openapi({
+      description: ' Specifies advanced security options for the specified Elasticsearch domain.',
+    }),
+    Status: OptionStatusSchema.openapi({
+      description:
+        ' Status of the advanced security options for the specified Elasticsearch domain.',
+    }),
   })
   .openapi({
     required: ['Options', 'Status'],
@@ -2568,30 +2007,17 @@ const RollbackOnDisableSchema = z
 
 const AutoTuneOptionsSchema = z
   .object({
-    DesiredState: AutoTuneDesiredStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the Auto-Tune desired state. Valid values are ENABLED, DISABLED. ',
-        }),
-    ).exactOptional(),
-    RollbackOnDisable: RollbackOnDisableSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the rollback state while disabling Auto-Tune for the domain. Valid values are NO_ROLLBACK, DEFAULT_ROLLBACK. ',
-        }),
-    ).exactOptional(),
-    MaintenanceSchedules: AutoTuneMaintenanceScheduleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies list of maitenance schedules. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
-        }),
-    ).exactOptional(),
+    DesiredState: AutoTuneDesiredStateSchema.exactOptional().openapi({
+      description: 'Specifies the Auto-Tune desired state. Valid values are ENABLED, DISABLED. ',
+    }),
+    RollbackOnDisable: RollbackOnDisableSchema.exactOptional().openapi({
+      description:
+        'Specifies the rollback state while disabling Auto-Tune for the domain. Valid values are NO_ROLLBACK, DEFAULT_ROLLBACK. ',
+    }),
+    MaintenanceSchedules: AutoTuneMaintenanceScheduleListSchema.exactOptional().openapi({
+      description:
+        'Specifies list of maitenance schedules. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
+    }),
   })
   .openapi({
     description:
@@ -2602,37 +2028,24 @@ const AutoTuneOptionsSchema = z
 
 const AutoTuneStatusSchema = z
   .object({
-    CreationDate: UpdateTimestampSchema.and(
-      z.any().openapi({ description: 'Timestamp which tells Auto-Tune options creation date .' }),
-    ),
-    UpdateDate: UpdateTimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Timestamp which tells Auto-Tune options last updated time.' }),
-    ),
-    UpdateVersion: UIntValueSchema.and(
-      z.any().openapi({ description: 'Specifies the Auto-Tune options latest version.' }),
-    ).exactOptional(),
-    State: AutoTuneStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the <code>AutoTuneState</code> for the Elasticsearch domain.',
-        }),
-    ),
-    ErrorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the error message while enabling or disabling the Auto-Tune options.',
-        }),
-    ).exactOptional(),
-    PendingDeletion: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether the Elasticsearch domain is being deleted.' }),
-    ).exactOptional(),
+    CreationDate: UpdateTimestampSchema.openapi({
+      description: 'Timestamp which tells Auto-Tune options creation date .',
+    }),
+    UpdateDate: UpdateTimestampSchema.openapi({
+      description: 'Timestamp which tells Auto-Tune options last updated time.',
+    }),
+    UpdateVersion: UIntValueSchema.exactOptional().openapi({
+      description: 'Specifies the Auto-Tune options latest version.',
+    }),
+    State: AutoTuneStateSchema.openapi({
+      description: 'Specifies the <code>AutoTuneState</code> for the Elasticsearch domain.',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description: 'Specifies the error message while enabling or disabling the Auto-Tune options.',
+    }),
+    PendingDeletion: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether the Elasticsearch domain is being deleted.',
+    }),
   })
   .openapi({
     required: ['CreationDate', 'UpdateDate', 'State'],
@@ -2642,21 +2055,13 @@ const AutoTuneStatusSchema = z
 
 const AutoTuneOptionsStatusSchema = z
   .object({
-    Options: AutoTuneOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Specifies Auto-Tune options for the specified Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    Status: AutoTuneStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies Status of the Auto-Tune options for the specified Elasticsearch domain.',
-        }),
-    ).exactOptional(),
+    Options: AutoTuneOptionsSchema.exactOptional().openapi({
+      description: ' Specifies Auto-Tune options for the specified Elasticsearch domain.',
+    }),
+    Status: AutoTuneStatusSchema.exactOptional().openapi({
+      description:
+        ' Specifies Status of the Auto-Tune options for the specified Elasticsearch domain.',
+    }),
   })
   .openapi({
     description:
@@ -2667,118 +2072,67 @@ const AutoTuneOptionsStatusSchema = z
 
 const ElasticsearchDomainConfigSchema = z
   .object({
-    ElasticsearchVersion: ElasticsearchVersionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'String of format X.Y to specify version for the Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    ElasticsearchClusterConfig: ElasticsearchClusterConfigStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code>ElasticsearchClusterConfig</code> for the Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    EBSOptions: EBSOptionsStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the <code>EBSOptions</code> for the Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    AccessPolicies: AccessPoliciesStatusSchema.and(
-      z.any().openapi({ description: 'IAM access policy as a JSON-formatted string.' }),
-    ).exactOptional(),
-    SnapshotOptions: SnapshotOptionsStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the <code>SnapshotOptions</code> for the Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    VPCOptions: VPCDerivedInfoStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>VPCOptions</code> for the specified domain. For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-vpc.html" target="_blank">VPC Endpoints for Amazon Elasticsearch Service Domains</a>.',
-        }),
-    ).exactOptional(),
-    CognitoOptions: CognitoOptionsStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>CognitoOptions</code> for the specified domain. For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-cognito-auth.html" target="_blank">Amazon Cognito Authentication for Kibana</a>.',
-        }),
-    ).exactOptional(),
-    EncryptionAtRestOptions: EncryptionAtRestOptionsStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code>EncryptionAtRestOptions</code> for the Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    NodeToNodeEncryptionOptions: NodeToNodeEncryptionOptionsStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code>NodeToNodeEncryptionOptions</code> for the Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    AdvancedOptions: AdvancedOptionsStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code>AdvancedOptions</code> for the domain. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-advanced-options" target="_blank">Configuring Advanced Options</a> for more information.',
-        }),
-    ).exactOptional(),
-    LogPublishingOptions: LogPublishingOptionsStatusSchema.and(
-      z.any().openapi({ description: 'Log publishing options for the given domain.' }),
-    ).exactOptional(),
-    DomainEndpointOptions: DomainEndpointOptionsStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code>DomainEndpointOptions</code> for the Elasticsearch domain.',
-        }),
-    ).exactOptional(),
-    AdvancedSecurityOptions: AdvancedSecurityOptionsStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies <code>AdvancedSecurityOptions</code> for the domain. ',
-        }),
-    ).exactOptional(),
-    AutoTuneOptions: AutoTuneOptionsStatusSchema.and(
-      z.any().openapi({ description: 'Specifies <code>AutoTuneOptions</code> for the domain. ' }),
-    ).exactOptional(),
-    ChangeProgressDetails: ChangeProgressDetailsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies change details of the domain configuration change.' }),
-    ).exactOptional(),
+    ElasticsearchVersion: ElasticsearchVersionStatusSchema.exactOptional().openapi({
+      description: 'String of format X.Y to specify version for the Elasticsearch domain.',
+    }),
+    ElasticsearchClusterConfig: ElasticsearchClusterConfigStatusSchema.exactOptional().openapi({
+      description:
+        'Specifies the <code>ElasticsearchClusterConfig</code> for the Elasticsearch domain.',
+    }),
+    EBSOptions: EBSOptionsStatusSchema.exactOptional().openapi({
+      description: 'Specifies the <code>EBSOptions</code> for the Elasticsearch domain.',
+    }),
+    AccessPolicies: AccessPoliciesStatusSchema.exactOptional().openapi({
+      description: 'IAM access policy as a JSON-formatted string.',
+    }),
+    SnapshotOptions: SnapshotOptionsStatusSchema.exactOptional().openapi({
+      description: 'Specifies the <code>SnapshotOptions</code> for the Elasticsearch domain.',
+    }),
+    VPCOptions: VPCDerivedInfoStatusSchema.exactOptional().openapi({
+      description:
+        'The <code>VPCOptions</code> for the specified domain. For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-vpc.html" target="_blank">VPC Endpoints for Amazon Elasticsearch Service Domains</a>.',
+    }),
+    CognitoOptions: CognitoOptionsStatusSchema.exactOptional().openapi({
+      description:
+        'The <code>CognitoOptions</code> for the specified domain. For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-cognito-auth.html" target="_blank">Amazon Cognito Authentication for Kibana</a>.',
+    }),
+    EncryptionAtRestOptions: EncryptionAtRestOptionsStatusSchema.exactOptional().openapi({
+      description:
+        'Specifies the <code>EncryptionAtRestOptions</code> for the Elasticsearch domain.',
+    }),
+    NodeToNodeEncryptionOptions: NodeToNodeEncryptionOptionsStatusSchema.exactOptional().openapi({
+      description:
+        'Specifies the <code>NodeToNodeEncryptionOptions</code> for the Elasticsearch domain.',
+    }),
+    AdvancedOptions: AdvancedOptionsStatusSchema.exactOptional().openapi({
+      description:
+        'Specifies the <code>AdvancedOptions</code> for the domain. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-advanced-options" target="_blank">Configuring Advanced Options</a> for more information.',
+    }),
+    LogPublishingOptions: LogPublishingOptionsStatusSchema.exactOptional().openapi({
+      description: 'Log publishing options for the given domain.',
+    }),
+    DomainEndpointOptions: DomainEndpointOptionsStatusSchema.exactOptional().openapi({
+      description: 'Specifies the <code>DomainEndpointOptions</code> for the Elasticsearch domain.',
+    }),
+    AdvancedSecurityOptions: AdvancedSecurityOptionsStatusSchema.exactOptional().openapi({
+      description: 'Specifies <code>AdvancedSecurityOptions</code> for the domain. ',
+    }),
+    AutoTuneOptions: AutoTuneOptionsStatusSchema.exactOptional().openapi({
+      description: 'Specifies <code>AutoTuneOptions</code> for the domain. ',
+    }),
+    ChangeProgressDetails: ChangeProgressDetailsSchema.exactOptional().openapi({
+      description: 'Specifies change details of the domain configuration change.',
+    }),
   })
   .openapi({ description: 'The configuration of an Elasticsearch domain.', required: [] })
   .openapi('ElasticsearchDomainConfig')
 
 const DescribeElasticsearchDomainConfigResponseSchema = z
   .object({
-    DomainConfig: ElasticsearchDomainConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration information of the domain requested in the <code>DescribeElasticsearchDomainConfig</code> request.',
-        }),
-    ),
+    DomainConfig: ElasticsearchDomainConfigSchema.openapi({
+      description:
+        'The configuration information of the domain requested in the <code>DescribeElasticsearchDomainConfig</code> request.',
+    }),
   })
   .openapi({
     required: ['DomainConfig'],
@@ -2796,14 +2150,10 @@ const ElasticsearchDomainStatusListSchema = z
 
 const DescribeElasticsearchDomainsResponseSchema = z
   .object({
-    DomainStatusList: ElasticsearchDomainStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the domains requested in the <code>DescribeElasticsearchDomains</code> request.',
-        }),
-    ),
+    DomainStatusList: ElasticsearchDomainStatusListSchema.openapi({
+      description:
+        'The status of the domains requested in the <code>DescribeElasticsearchDomains</code> request.',
+    }),
   })
   .openapi({
     required: ['DomainStatusList'],
@@ -2812,52 +2162,15 @@ const DescribeElasticsearchDomainsResponseSchema = z
   })
   .openapi('DescribeElasticsearchDomainsResponse')
 
-const LimitsSchema: z.ZodType<LimitsType> = z
-  .lazy(() =>
-    z
-      .object({
-        StorageTypes: StorageTypeListSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'StorageType represents the list of storage related types and attributes that are available for given InstanceType. ',
-            }),
-        ).exactOptional(),
-        InstanceLimits: InstanceLimitsSchema.exactOptional(),
-        AdditionalLimits: AdditionalLimitListSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                " List of additional limits that are specific to a given InstanceType and for each of it's <code> <a>InstanceRole</a> </code> . ",
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          " Limits for given InstanceType and for each of it's role. <br/> Limits contains following <code> <a>StorageTypes,</a> </code> <code> <a>InstanceLimits</a> </code> and <code> <a>AdditionalLimits</a> </code> ",
-        required: [],
-      }),
-  )
-  .openapi('Limits')
-
-const LimitsByRoleSchema = z
-  .record(z.string(), LimitsSchema)
-  .openapi({
-    description:
-      ' Map of Role of the Instance and Limits that are applicable. Role performed by given Instance in Elasticsearch can be one of the following: <ul> <li>data: If the given InstanceType is used as data node</li> <li>master: If the given InstanceType is used as master node</li> <li>ultra_warm: If the given InstanceType is used as warm node</li> </ul> ',
-  })
-  .openapi('LimitsByRole')
-
-const DescribeElasticsearchInstanceTypeLimitsResponseSchema = z
-  .object({ LimitsByRole: LimitsByRoleSchema.exactOptional() })
-  .openapi({
-    description:
-      ' Container for the parameters received from <code> <a>DescribeElasticsearchInstanceTypeLimits</a> </code> operation. ',
-    required: [],
-  })
-  .openapi('DescribeElasticsearchInstanceTypeLimitsResponse')
+const DescribeElasticsearchInstanceTypeLimitsResponseSchema: z.ZodType<DescribeElasticsearchInstanceTypeLimitsResponseType> =
+  z
+    .object({ LimitsByRole: LimitsByRoleSchema.exactOptional() })
+    .openapi({
+      description:
+        ' Container for the parameters received from <code> <a>DescribeElasticsearchInstanceTypeLimits</a> </code> operation. ',
+      required: [],
+    })
+    .openapi('DescribeElasticsearchInstanceTypeLimitsResponse')
 
 const InboundCrossClusterSearchConnectionsSchema = z
   .array(InboundCrossClusterSearchConnectionSchema)
@@ -2865,22 +2178,15 @@ const InboundCrossClusterSearchConnectionsSchema = z
 
 const DescribeInboundCrossClusterSearchConnectionsResponseSchema = z
   .object({
-    CrossClusterSearchConnections: InboundCrossClusterSearchConnectionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Consists of list of <code><a>InboundCrossClusterSearchConnection</a></code> matching the specified filter criteria.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If more results are available and NextToken is present, make the next request to the same API with the received NextToken to paginate the remaining results. ',
-        }),
-    ).exactOptional(),
+    CrossClusterSearchConnections:
+      InboundCrossClusterSearchConnectionsSchema.exactOptional().openapi({
+        description:
+          'Consists of list of <code><a>InboundCrossClusterSearchConnection</a></code> matching the specified filter criteria.',
+      }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If more results are available and NextToken is present, make the next request to the same API with the received NextToken to paginate the remaining results. ',
+    }),
   })
   .openapi({
     description:
@@ -2895,12 +2201,12 @@ const ValueStringListSchema = z.array(NonEmptyStringSchema).min(1).openapi('Valu
 
 const FilterSchema = z
   .object({
-    Name: NonEmptyStringSchema.and(
-      z.any().openapi({ description: ' Specifies the name of the filter. ' }),
-    ).exactOptional(),
-    Values: ValueStringListSchema.and(
-      z.any().openapi({ description: ' Contains one or more values for the filter. ' }),
-    ).exactOptional(),
+    Name: NonEmptyStringSchema.exactOptional().openapi({
+      description: ' Specifies the name of the filter. ',
+    }),
+    Values: ValueStringListSchema.exactOptional().openapi({
+      description: ' Contains one or more values for the filter. ',
+    }),
   })
   .openapi({
     description:
@@ -2917,22 +2223,15 @@ const OutboundCrossClusterSearchConnectionsSchema = z
 
 const DescribeOutboundCrossClusterSearchConnectionsResponseSchema = z
   .object({
-    CrossClusterSearchConnections: OutboundCrossClusterSearchConnectionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Consists of list of <code><a>OutboundCrossClusterSearchConnection</a></code> matching the specified filter criteria.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If more results are available and NextToken is present, make the next request to the same API with the received NextToken to paginate the remaining results. ',
-        }),
-    ).exactOptional(),
+    CrossClusterSearchConnections:
+      OutboundCrossClusterSearchConnectionsSchema.exactOptional().openapi({
+        description:
+          'Consists of list of <code><a>OutboundCrossClusterSearchConnection</a></code> matching the specified filter criteria.',
+      }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If more results are available and NextToken is present, make the next request to the same API with the received NextToken to paginate the remaining results. ',
+    }),
   })
   .openapi({
     description:
@@ -2945,9 +2244,9 @@ const PackageDetailsListSchema = z.array(PackageDetailsSchema).openapi('PackageD
 
 const DescribePackagesResponseSchema = z
   .object({
-    PackageDetailsList: PackageDetailsListSchema.and(
-      z.any().openapi({ description: 'List of <code>PackageDetails</code> objects.' }),
-    ).exactOptional(),
+    PackageDetailsList: PackageDetailsListSchema.exactOptional().openapi({
+      description: 'List of <code>PackageDetails</code> objects.',
+    }),
     NextToken: StringSchema.exactOptional(),
   })
   .openapi({
@@ -2972,12 +2271,12 @@ const DescribePackagesFilterValuesSchema = z
 
 const DescribePackagesFilterSchema = z
   .object({
-    Name: DescribePackagesFilterNameSchema.and(
-      z.any().openapi({ description: 'Any field from <code>PackageDetails</code>.' }),
-    ).exactOptional(),
-    Value: DescribePackagesFilterValuesSchema.and(
-      z.any().openapi({ description: 'A list of values for the specified field.' }),
-    ).exactOptional(),
+    Name: DescribePackagesFilterNameSchema.exactOptional().openapi({
+      description: 'Any field from <code>PackageDetails</code>.',
+    }),
+    Value: DescribePackagesFilterValuesSchema.exactOptional().openapi({
+      description: 'A list of values for the specified field.',
+    }),
   })
   .openapi({
     description: 'Filter to apply in <code>DescribePackage</code> response.',
@@ -2995,12 +2294,12 @@ const ReservedElasticsearchInstancePaymentOptionSchema = z
 
 const RecurringChargeSchema = z
   .object({
-    RecurringChargeAmount: DoubleSchema.and(
-      z.any().openapi({ description: 'The monetary amount of the recurring charge.' }),
-    ).exactOptional(),
-    RecurringChargeFrequency: StringSchema.and(
-      z.any().openapi({ description: 'The frequency of the recurring charge.' }),
-    ).exactOptional(),
+    RecurringChargeAmount: DoubleSchema.exactOptional().openapi({
+      description: 'The monetary amount of the recurring charge.',
+    }),
+    RecurringChargeFrequency: StringSchema.exactOptional().openapi({
+      description: 'The frequency of the recurring charge.',
+    }),
   })
   .openapi({
     description:
@@ -3013,62 +2312,34 @@ const RecurringChargeListSchema = z.array(RecurringChargeSchema).openapi('Recurr
 
 const ReservedElasticsearchInstanceOfferingSchema = z
   .object({
-    ReservedElasticsearchInstanceOfferingId: GUIDSchema.and(
-      z.any().openapi({ description: 'The Elasticsearch reserved instance offering identifier.' }),
-    ).exactOptional(),
-    ElasticsearchInstanceType: ESPartitionInstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Elasticsearch instance type offered by the reserved instance offering.',
-        }),
-    ).exactOptional(),
-    Duration: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The duration, in seconds, for which the offering will reserve the Elasticsearch instance.',
-        }),
-    ).exactOptional(),
-    FixedPrice: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The upfront fixed charge you will pay to purchase the specific reserved Elasticsearch instance offering. ',
-        }),
-    ).exactOptional(),
-    UsagePrice: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The rate you are charged for each hour the domain that is using the offering is running.',
-        }),
-    ).exactOptional(),
-    CurrencyCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The currency code for the reserved Elasticsearch instance offering.',
-        }),
-    ).exactOptional(),
-    PaymentOption: ReservedElasticsearchInstancePaymentOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Payment option for the reserved Elasticsearch instance offering',
-        }),
-    ).exactOptional(),
-    RecurringCharges: RecurringChargeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The charge to your account regardless of whether you are creating any domains using the instance offering.',
-        }),
-    ).exactOptional(),
+    ReservedElasticsearchInstanceOfferingId: GUIDSchema.exactOptional().openapi({
+      description: 'The Elasticsearch reserved instance offering identifier.',
+    }),
+    ElasticsearchInstanceType: ESPartitionInstanceTypeSchema.exactOptional().openapi({
+      description: 'The Elasticsearch instance type offered by the reserved instance offering.',
+    }),
+    Duration: IntegerSchema.exactOptional().openapi({
+      description:
+        'The duration, in seconds, for which the offering will reserve the Elasticsearch instance.',
+    }),
+    FixedPrice: DoubleSchema.exactOptional().openapi({
+      description:
+        'The upfront fixed charge you will pay to purchase the specific reserved Elasticsearch instance offering. ',
+    }),
+    UsagePrice: DoubleSchema.exactOptional().openapi({
+      description:
+        'The rate you are charged for each hour the domain that is using the offering is running.',
+    }),
+    CurrencyCode: StringSchema.exactOptional().openapi({
+      description: 'The currency code for the reserved Elasticsearch instance offering.',
+    }),
+    PaymentOption: ReservedElasticsearchInstancePaymentOptionSchema.exactOptional().openapi({
+      description: 'Payment option for the reserved Elasticsearch instance offering',
+    }),
+    RecurringCharges: RecurringChargeListSchema.exactOptional().openapi({
+      description:
+        'The charge to your account regardless of whether you are creating any domains using the instance offering.',
+    }),
   })
   .openapi({ description: 'Details of a reserved Elasticsearch instance offering.', required: [] })
   .openapi('ReservedElasticsearchInstanceOffering')
@@ -3079,16 +2350,13 @@ const ReservedElasticsearchInstanceOfferingListSchema = z
 
 const DescribeReservedElasticsearchInstanceOfferingsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides an identifier to allow retrieval of paginated results.',
-        }),
-    ).exactOptional(),
-    ReservedElasticsearchInstanceOfferings: ReservedElasticsearchInstanceOfferingListSchema.and(
-      z.any().openapi({ description: 'List of reserved Elasticsearch instance offerings' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'Provides an identifier to allow retrieval of paginated results.',
+    }),
+    ReservedElasticsearchInstanceOfferings:
+      ReservedElasticsearchInstanceOfferingListSchema.exactOptional().openapi({
+        description: 'List of reserved Elasticsearch instance offerings',
+      }),
   })
   .openapi({
     description:
@@ -3101,82 +2369,48 @@ const ReservationTokenSchema = z.string().min(5).max(64).openapi('ReservationTok
 
 const ReservedElasticsearchInstanceSchema = z
   .object({
-    ReservationName: ReservationTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The customer-specified identifier to track this reservation.' }),
-    ).exactOptional(),
-    ReservedElasticsearchInstanceId: GUIDSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the reservation.' }),
-    ).exactOptional(),
-    ReservedElasticsearchInstanceOfferingId: StringSchema.and(
-      z.any().openapi({ description: 'The offering identifier.' }),
-    ).exactOptional(),
-    ElasticsearchInstanceType: ESPartitionInstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Elasticsearch instance type offered by the reserved instance offering.',
-        }),
-    ).exactOptional(),
-    StartTime: UpdateTimestampSchema.and(
-      z.any().openapi({ description: 'The time the reservation started.' }),
-    ).exactOptional(),
-    Duration: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The duration, in seconds, for which the Elasticsearch instance is reserved.',
-        }),
-    ).exactOptional(),
-    FixedPrice: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The upfront fixed charge you will paid to purchase the specific reserved Elasticsearch instance offering. ',
-        }),
-    ).exactOptional(),
-    UsagePrice: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The rate you are charged for each hour for the domain that is using this reserved instance.',
-        }),
-    ).exactOptional(),
-    CurrencyCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The currency code for the reserved Elasticsearch instance offering.',
-        }),
-    ).exactOptional(),
-    ElasticsearchInstanceCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of Elasticsearch instances that have been reserved.' }),
-    ).exactOptional(),
-    State: StringSchema.and(
-      z.any().openapi({ description: 'The state of the reserved Elasticsearch instance.' }),
-    ).exactOptional(),
-    PaymentOption: ReservedElasticsearchInstancePaymentOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The payment option as defined in the reserved Elasticsearch instance offering.',
-        }),
-    ).exactOptional(),
-    RecurringCharges: RecurringChargeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The charge to your account regardless of whether you are creating any domains using the instance offering.',
-        }),
-    ).exactOptional(),
+    ReservationName: ReservationTokenSchema.exactOptional().openapi({
+      description: 'The customer-specified identifier to track this reservation.',
+    }),
+    ReservedElasticsearchInstanceId: GUIDSchema.exactOptional().openapi({
+      description: 'The unique identifier for the reservation.',
+    }),
+    ReservedElasticsearchInstanceOfferingId: StringSchema.exactOptional().openapi({
+      description: 'The offering identifier.',
+    }),
+    ElasticsearchInstanceType: ESPartitionInstanceTypeSchema.exactOptional().openapi({
+      description: 'The Elasticsearch instance type offered by the reserved instance offering.',
+    }),
+    StartTime: UpdateTimestampSchema.exactOptional().openapi({
+      description: 'The time the reservation started.',
+    }),
+    Duration: IntegerSchema.exactOptional().openapi({
+      description: 'The duration, in seconds, for which the Elasticsearch instance is reserved.',
+    }),
+    FixedPrice: DoubleSchema.exactOptional().openapi({
+      description:
+        'The upfront fixed charge you will paid to purchase the specific reserved Elasticsearch instance offering. ',
+    }),
+    UsagePrice: DoubleSchema.exactOptional().openapi({
+      description:
+        'The rate you are charged for each hour for the domain that is using this reserved instance.',
+    }),
+    CurrencyCode: StringSchema.exactOptional().openapi({
+      description: 'The currency code for the reserved Elasticsearch instance offering.',
+    }),
+    ElasticsearchInstanceCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of Elasticsearch instances that have been reserved.',
+    }),
+    State: StringSchema.exactOptional().openapi({
+      description: 'The state of the reserved Elasticsearch instance.',
+    }),
+    PaymentOption: ReservedElasticsearchInstancePaymentOptionSchema.exactOptional().openapi({
+      description: 'The payment option as defined in the reserved Elasticsearch instance offering.',
+    }),
+    RecurringCharges: RecurringChargeListSchema.exactOptional().openapi({
+      description:
+        'The charge to your account regardless of whether you are creating any domains using the instance offering.',
+    }),
   })
   .openapi({ description: 'Details of a reserved Elasticsearch instance.', required: [] })
   .openapi('ReservedElasticsearchInstance')
@@ -3187,16 +2421,12 @@ const ReservedElasticsearchInstanceListSchema = z
 
 const DescribeReservedElasticsearchInstancesResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides an identifier to allow retrieval of paginated results.',
-        }),
-    ).exactOptional(),
-    ReservedElasticsearchInstances: ReservedElasticsearchInstanceListSchema.and(
-      z.any().openapi({ description: 'List of reserved Elasticsearch instances.' }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Provides an identifier to allow retrieval of paginated results.',
+    }),
+    ReservedElasticsearchInstances: ReservedElasticsearchInstanceListSchema.exactOptional().openapi(
+      { description: 'List of reserved Elasticsearch instances.' },
+    ),
   })
   .openapi({
     description: 'Container for results from <code>DescribeReservedElasticsearchInstances</code>',
@@ -3216,15 +2446,15 @@ const VpcEndpointErrorCodeSchema = z
 
 const VpcEndpointErrorSchema = z
   .object({
-    VpcEndpointId: VpcEndpointIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the endpoint. ' }),
-    ).exactOptional(),
-    ErrorCode: VpcEndpointErrorCodeSchema.and(
-      z.any().openapi({ description: 'The code associated with the error.' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'A message describing the error.' }),
-    ).exactOptional(),
+    VpcEndpointId: VpcEndpointIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the endpoint. ',
+    }),
+    ErrorCode: VpcEndpointErrorCodeSchema.exactOptional().openapi({
+      description: 'The code associated with the error.',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description: 'A message describing the error.',
+    }),
   })
   .openapi({
     description:
@@ -3237,12 +2467,12 @@ const VpcEndpointErrorListSchema = z.array(VpcEndpointErrorSchema).openapi('VpcE
 
 const DescribeVpcEndpointsResponseSchema = z
   .object({
-    VpcEndpoints: VpcEndpointsSchema.and(
-      z.any().openapi({ description: 'Information about each requested VPC endpoint.' }),
-    ),
-    VpcEndpointErrors: VpcEndpointErrorListSchema.and(
-      z.any().openapi({ description: 'Any errors associated with the request.' }),
-    ),
+    VpcEndpoints: VpcEndpointsSchema.openapi({
+      description: 'Information about each requested VPC endpoint.',
+    }),
+    VpcEndpointErrors: VpcEndpointErrorListSchema.openapi({
+      description: 'Any errors associated with the request.',
+    }),
   })
   .openapi({
     required: ['VpcEndpoints', 'VpcEndpointErrors'],
@@ -3253,9 +2483,9 @@ const DescribeVpcEndpointsResponseSchema = z
 
 const DissociatePackageResponseSchema = z
   .object({
-    DomainPackageDetails: DomainPackageDetailsSchema.and(
-      z.any().openapi({ description: '<code>DomainPackageDetails</code>' }),
-    ).exactOptional(),
+    DomainPackageDetails: DomainPackageDetailsSchema.exactOptional().openapi({
+      description: '<code>DomainPackageDetails</code>',
+    }),
   })
   .openapi({
     description:
@@ -3271,11 +2501,9 @@ const ElasticsearchVersionListSchema = z
 
 const CompatibleVersionsMapSchema = z
   .object({
-    SourceVersion: ElasticsearchVersionStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The current version of Elasticsearch on which a domain is.' }),
-    ).exactOptional(),
+    SourceVersion: ElasticsearchVersionStringSchema.exactOptional().openapi({
+      description: 'The current version of Elasticsearch on which a domain is.',
+    }),
     TargetVersions: ElasticsearchVersionListSchema.exactOptional(),
   })
   .openapi({
@@ -3291,14 +2519,11 @@ const CompatibleElasticsearchVersionsListSchema = z
 
 const GetCompatibleElasticsearchVersionsResponseSchema = z
   .object({
-    CompatibleElasticsearchVersions: CompatibleElasticsearchVersionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A map of compatible Elasticsearch versions returned as part of the <code> <a>GetCompatibleElasticsearchVersions</a> </code> operation. ',
-        }),
-    ).exactOptional(),
+    CompatibleElasticsearchVersions:
+      CompatibleElasticsearchVersionsListSchema.exactOptional().openapi({
+        description:
+          ' A map of compatible Elasticsearch versions returned as part of the <code> <a>GetCompatibleElasticsearchVersions</a> </code> operation. ',
+      }),
   })
   .openapi({
     description:
@@ -3311,17 +2536,15 @@ const CommitMessageSchema = z.string().max(160).openapi('CommitMessage')
 
 const PackageVersionHistorySchema = z
   .object({
-    PackageVersion: PackageVersionSchema.and(
-      z.any().openapi({ description: 'Version of the package.' }),
-    ).exactOptional(),
-    CommitMessage: CommitMessageSchema.and(
-      z.any().openapi({ description: 'A message associated with the version.' }),
-    ).exactOptional(),
-    CreatedAt: CreatedAtSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Timestamp which tells creation time of the package version.' }),
-    ).exactOptional(),
+    PackageVersion: PackageVersionSchema.exactOptional().openapi({
+      description: 'Version of the package.',
+    }),
+    CommitMessage: CommitMessageSchema.exactOptional().openapi({
+      description: 'A message associated with the version.',
+    }),
+    CreatedAt: CreatedAtSchema.exactOptional().openapi({
+      description: 'Timestamp which tells creation time of the package version.',
+    }),
   })
   .openapi({ description: 'Details of a package version.', required: [] })
   .openapi('PackageVersionHistory')
@@ -3333,9 +2556,9 @@ const PackageVersionHistoryListSchema = z
 const GetPackageVersionHistoryResponseSchema = z
   .object({
     PackageID: PackageIDSchema.exactOptional(),
-    PackageVersionHistoryList: PackageVersionHistoryListSchema.and(
-      z.any().openapi({ description: 'List of <code>PackageVersionHistory</code> objects.' }),
-    ).exactOptional(),
+    PackageVersionHistoryList: PackageVersionHistoryListSchema.exactOptional().openapi({
+      description: 'List of <code>PackageVersionHistory</code> objects.',
+    }),
     NextToken: StringSchema.exactOptional(),
   })
   .openapi({
@@ -3363,38 +2586,22 @@ const IssuesSchema = z.array(IssueSchema).openapi('Issues')
 
 const UpgradeStepItemSchema = z
   .object({
-    UpgradeStep: UpgradeStepSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Represents one of 3 steps that an Upgrade or Upgrade Eligibility Check does through: <ul> <li>PreUpgradeCheck</li> <li>Snapshot</li> <li>Upgrade</li> </ul> ',
-        }),
-    ).exactOptional(),
-    UpgradeStepStatus: UpgradeStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The status of a particular step during an upgrade. The status can take one of the following values: <ul> <li>In Progress</li> <li>Succeeded</li> <li>Succeeded with Issues</li> <li>Failed</li> </ul> ',
-        }),
-    ).exactOptional(),
-    Issues: IssuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of strings containing detailed information about the errors encountered in a particular step.',
-        }),
-    ).exactOptional(),
-    ProgressPercent: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Floating point value representing progress percentage of a particular step.',
-        }),
-    ).exactOptional(),
+    UpgradeStep: UpgradeStepSchema.exactOptional().openapi({
+      description:
+        ' Represents one of 3 steps that an Upgrade or Upgrade Eligibility Check does through: <ul> <li>PreUpgradeCheck</li> <li>Snapshot</li> <li>Upgrade</li> </ul> ',
+    }),
+    UpgradeStepStatus: UpgradeStatusSchema.exactOptional().openapi({
+      description:
+        ' The status of a particular step during an upgrade. The status can take one of the following values: <ul> <li>In Progress</li> <li>Succeeded</li> <li>Succeeded with Issues</li> <li>Failed</li> </ul> ',
+    }),
+    Issues: IssuesSchema.exactOptional().openapi({
+      description:
+        'A list of strings containing detailed information about the errors encountered in a particular step.',
+    }),
+    ProgressPercent: DoubleSchema.exactOptional().openapi({
+      description:
+        'The Floating point value representing progress percentage of a particular step.',
+    }),
   })
   .openapi({
     description: 'Represents a single step of the Upgrade or Upgrade Eligibility Check workflow.',
@@ -3406,33 +2613,21 @@ const UpgradeStepsListSchema = z.array(UpgradeStepItemSchema).openapi('UpgradeSt
 
 const UpgradeHistorySchema = z
   .object({
-    UpgradeName: UpgradeNameSchema.and(
-      z.any().openapi({ description: 'A string that describes the update briefly' }),
-    ).exactOptional(),
-    StartTimestamp: StartTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'UTC Timestamp at which the Upgrade API call was made in "yyyy-MM-ddTHH:mm:ssZ" format.',
-        }),
-    ).exactOptional(),
-    UpgradeStatus: UpgradeStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The overall status of the update. The status can take one of the following values: <ul> <li>In Progress</li> <li>Succeeded</li> <li>Succeeded with Issues</li> <li>Failed</li> </ul> ',
-        }),
-    ).exactOptional(),
-    StepsList: UpgradeStepsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of <code> <a>UpgradeStepItem</a> </code> s representing information about each step performed as pard of a specific Upgrade or Upgrade Eligibility Check. ',
-        }),
-    ).exactOptional(),
+    UpgradeName: UpgradeNameSchema.exactOptional().openapi({
+      description: 'A string that describes the update briefly',
+    }),
+    StartTimestamp: StartTimestampSchema.exactOptional().openapi({
+      description:
+        'UTC Timestamp at which the Upgrade API call was made in "yyyy-MM-ddTHH:mm:ssZ" format.',
+    }),
+    UpgradeStatus: UpgradeStatusSchema.exactOptional().openapi({
+      description:
+        ' The overall status of the update. The status can take one of the following values: <ul> <li>In Progress</li> <li>Succeeded</li> <li>Succeeded with Issues</li> <li>Failed</li> </ul> ',
+    }),
+    StepsList: UpgradeStepsListSchema.exactOptional().openapi({
+      description:
+        ' A list of <code> <a>UpgradeStepItem</a> </code> s representing information about each step performed as pard of a specific Upgrade or Upgrade Eligibility Check. ',
+    }),
   })
   .openapi({
     description: 'History of the last 10 Upgrades and Upgrade Eligibility Checks.',
@@ -3444,22 +2639,14 @@ const UpgradeHistoryListSchema = z.array(UpgradeHistorySchema).openapi('UpgradeH
 
 const GetUpgradeHistoryResponseSchema = z
   .object({
-    UpgradeHistories: UpgradeHistoryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of <code> <a>UpgradeHistory</a> </code> objects corresponding to each Upgrade or Upgrade Eligibility Check performed on a domain returned as part of <code> <a>GetUpgradeHistoryResponse</a> </code> object. ',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Pagination token that needs to be supplied to the next call to get the next page of results',
-        }),
-    ).exactOptional(),
+    UpgradeHistories: UpgradeHistoryListSchema.exactOptional().openapi({
+      description:
+        ' A list of <code> <a>UpgradeHistory</a> </code> objects corresponding to each Upgrade or Upgrade Eligibility Check performed on a domain returned as part of <code> <a>GetUpgradeHistoryResponse</a> </code> object. ',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Pagination token that needs to be supplied to the next call to get the next page of results',
+    }),
   })
   .openapi({
     description:
@@ -3470,25 +2657,17 @@ const GetUpgradeHistoryResponseSchema = z
 
 const GetUpgradeStatusResponseSchema = z
   .object({
-    UpgradeStep: UpgradeStepSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Represents one of 3 steps that an Upgrade or Upgrade Eligibility Check does through: <ul> <li>PreUpgradeCheck</li> <li>Snapshot</li> <li>Upgrade</li> </ul> ',
-        }),
-    ).exactOptional(),
-    StepStatus: UpgradeStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' One of 4 statuses that a step can go through returned as part of the <code> <a>GetUpgradeStatusResponse</a> </code> object. The status can take one of the following values: <ul> <li>In Progress</li> <li>Succeeded</li> <li>Succeeded with Issues</li> <li>Failed</li> </ul> ',
-        }),
-    ).exactOptional(),
-    UpgradeName: UpgradeNameSchema.and(
-      z.any().openapi({ description: 'A string that describes the update briefly' }),
-    ).exactOptional(),
+    UpgradeStep: UpgradeStepSchema.exactOptional().openapi({
+      description:
+        ' Represents one of 3 steps that an Upgrade or Upgrade Eligibility Check does through: <ul> <li>PreUpgradeCheck</li> <li>Snapshot</li> <li>Upgrade</li> </ul> ',
+    }),
+    StepStatus: UpgradeStatusSchema.exactOptional().openapi({
+      description:
+        ' One of 4 statuses that a step can go through returned as part of the <code> <a>GetUpgradeStatusResponse</a> </code> object. The status can take one of the following values: <ul> <li>In Progress</li> <li>Succeeded</li> <li>Succeeded with Issues</li> <li>Failed</li> </ul> ',
+    }),
+    UpgradeName: UpgradeNameSchema.exactOptional().openapi({
+      description: 'A string that describes the update briefly',
+    }),
   })
   .openapi({
     description:
@@ -3501,12 +2680,12 @@ const EngineTypeSchema = z.enum(['OpenSearch', 'Elasticsearch']).openapi('Engine
 
 const DomainInfoSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: ' Specifies the <code>DomainName</code>.' }),
-    ).exactOptional(),
-    EngineType: EngineTypeSchema.and(
-      z.any().openapi({ description: ' Specifies the <code>EngineType</code> of the domain.' }),
-    ).exactOptional(),
+    DomainName: DomainNameSchema.exactOptional().openapi({
+      description: ' Specifies the <code>DomainName</code>.',
+    }),
+    EngineType: EngineTypeSchema.exactOptional().openapi({
+      description: ' Specifies the <code>EngineType</code> of the domain.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DomainInfo')
@@ -3518,9 +2697,9 @@ const DomainInfoListSchema = z
 
 const ListDomainNamesResponseSchema = z
   .object({
-    DomainNames: DomainInfoListSchema.and(
-      z.any().openapi({ description: 'List of domain names and respective engine types.' }),
-    ).exactOptional(),
+    DomainNames: DomainInfoListSchema.exactOptional().openapi({
+      description: 'List of domain names and respective engine types.',
+    }),
   })
   .openapi({
     description:
@@ -3535,9 +2714,9 @@ const DomainPackageDetailsListSchema = z
 
 const ListDomainsForPackageResponseSchema = z
   .object({
-    DomainPackageDetailsList: DomainPackageDetailsListSchema.and(
-      z.any().openapi({ description: 'List of <code>DomainPackageDetails</code> objects.' }),
-    ).exactOptional(),
+    DomainPackageDetailsList: DomainPackageDetailsListSchema.exactOptional().openapi({
+      description: 'List of <code>DomainPackageDetails</code> objects.',
+    }),
     NextToken: StringSchema.exactOptional(),
   })
   .openapi({
@@ -3554,22 +2733,14 @@ const ElasticsearchInstanceTypeListSchema = z
 
 const ListElasticsearchInstanceTypesResponseSchema = z
   .object({
-    ElasticsearchInstanceTypes: ElasticsearchInstanceTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' List of instance types supported by Amazon Elasticsearch service for given <code> <a>ElasticsearchVersion</a> </code> ',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'In case if there are more results available NextToken would be present, make further request to the same API with received NextToken to paginate remaining results. ',
-        }),
-    ).exactOptional(),
+    ElasticsearchInstanceTypes: ElasticsearchInstanceTypeListSchema.exactOptional().openapi({
+      description:
+        ' List of instance types supported by Amazon Elasticsearch service for given <code> <a>ElasticsearchVersion</a> </code> ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'In case if there are more results available NextToken would be present, make further request to the same API with received NextToken to paginate remaining results. ',
+    }),
   })
   .openapi({
     description:
@@ -3592,17 +2763,13 @@ const ListElasticsearchVersionsResponseSchema = z
 
 const ListPackagesForDomainResponseSchema = z
   .object({
-    DomainPackageDetailsList: DomainPackageDetailsListSchema.and(
-      z.any().openapi({ description: 'List of <code>DomainPackageDetails</code> objects.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Pagination token that needs to be supplied to the next call to get the next page of results.',
-        }),
-    ).exactOptional(),
+    DomainPackageDetailsList: DomainPackageDetailsListSchema.exactOptional().openapi({
+      description: 'List of <code>DomainPackageDetails</code> objects.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'Pagination token that needs to be supplied to the next call to get the next page of results.',
+    }),
   })
   .openapi({
     description:
@@ -3618,13 +2785,9 @@ const TagListSchema = z
 
 const ListTagsResponseSchema = z
   .object({
-    TagList: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' List of <code>Tag</code> for the requested Elasticsearch domain.',
-        }),
-    ).exactOptional(),
+    TagList: TagListSchema.exactOptional().openapi({
+      description: ' List of <code>Tag</code> for the requested Elasticsearch domain.',
+    }),
   })
   .openapi({
     description:
@@ -3639,21 +2802,13 @@ const AuthorizedPrincipalListSchema = z
 
 const ListVpcEndpointAccessResponseSchema = z
   .object({
-    AuthorizedPrincipalList: AuthorizedPrincipalListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of <code>AuthorizedPrincipal</code> describing the details of the permissions to manage VPC endpoints against the specified domain.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides an identifier to allow retrieval of paginated results.',
-        }),
-    ),
+    AuthorizedPrincipalList: AuthorizedPrincipalListSchema.openapi({
+      description:
+        'List of <code>AuthorizedPrincipal</code> describing the details of the permissions to manage VPC endpoints against the specified domain.',
+    }),
+    NextToken: NextTokenSchema.openapi({
+      description: 'Provides an identifier to allow retrieval of paginated results.',
+    }),
   })
   .openapi({
     required: ['AuthorizedPrincipalList', 'NextToken'],
@@ -3668,16 +2823,12 @@ const VpcEndpointSummaryListSchema = z
 
 const ListVpcEndpointsResponseSchema = z
   .object({
-    VpcEndpointSummaryList: VpcEndpointSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about each endpoint.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides an identifier to allow retrieval of paginated results.',
-        }),
-    ),
+    VpcEndpointSummaryList: VpcEndpointSummaryListSchema.openapi({
+      description: 'Information about each endpoint.',
+    }),
+    NextToken: NextTokenSchema.openapi({
+      description: 'Provides an identifier to allow retrieval of paginated results.',
+    }),
   })
   .openapi({
     required: ['VpcEndpointSummaryList', 'NextToken'],
@@ -3688,19 +2839,13 @@ const ListVpcEndpointsResponseSchema = z
 
 const ListVpcEndpointsForDomainResponseSchema = z
   .object({
-    VpcEndpointSummaryList: VpcEndpointSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides list of <code>VpcEndpointSummary</code> summarizing details of the VPC endpoints.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about each endpoint associated with the domain.' }),
-    ),
+    VpcEndpointSummaryList: VpcEndpointSummaryListSchema.openapi({
+      description:
+        'Provides list of <code>VpcEndpointSummary</code> summarizing details of the VPC endpoints.',
+    }),
+    NextToken: NextTokenSchema.openapi({
+      description: 'Information about each endpoint associated with the domain.',
+    }),
   })
   .openapi({
     required: ['VpcEndpointSummaryList', 'NextToken'],
@@ -3711,20 +2856,12 @@ const ListVpcEndpointsForDomainResponseSchema = z
 
 const PurchaseReservedElasticsearchInstanceOfferingResponseSchema = z
   .object({
-    ReservedElasticsearchInstanceId: GUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details of the reserved Elasticsearch instance which was purchased.',
-        }),
-    ).exactOptional(),
-    ReservationName: ReservationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The customer-specified identifier used to track this reservation.',
-        }),
-    ).exactOptional(),
+    ReservedElasticsearchInstanceId: GUIDSchema.exactOptional().openapi({
+      description: 'Details of the reserved Elasticsearch instance which was purchased.',
+    }),
+    ReservationName: ReservationTokenSchema.exactOptional().openapi({
+      description: 'The customer-specified identifier used to track this reservation.',
+    }),
   })
   .openapi({
     description:
@@ -3735,14 +2872,12 @@ const PurchaseReservedElasticsearchInstanceOfferingResponseSchema = z
 
 const RejectInboundCrossClusterSearchConnectionResponseSchema = z
   .object({
-    CrossClusterSearchConnection: InboundCrossClusterSearchConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code><a>InboundCrossClusterSearchConnection</a></code> of rejected inbound connection. ',
-        }),
-    ).exactOptional(),
+    CrossClusterSearchConnection: InboundCrossClusterSearchConnectionSchema.exactOptional().openapi(
+      {
+        description:
+          'Specifies the <code><a>InboundCrossClusterSearchConnection</a></code> of rejected inbound connection. ',
+      },
+    ),
   })
   .openapi({
     description:
@@ -3752,7 +2887,7 @@ const RejectInboundCrossClusterSearchConnectionResponseSchema = z
   .openapi('RejectInboundCrossClusterSearchConnectionResponse')
 
 const RevokeVpcEndpointAccessResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Container for response parameters to the <code><a>RevokeVpcEndpointAccess</a></code> operation. The response body for this operation is empty.',
@@ -3761,13 +2896,9 @@ const RevokeVpcEndpointAccessResponseSchema = z
 
 const StartElasticsearchServiceSoftwareUpdateResponseSchema = z
   .object({
-    ServiceSoftwareOptions: ServiceSoftwareOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The current status of the Elasticsearch service software update.',
-        }),
-    ).exactOptional(),
+    ServiceSoftwareOptions: ServiceSoftwareOptionsSchema.exactOptional().openapi({
+      description: 'The current status of the Elasticsearch service software update.',
+    }),
   })
   .openapi({
     description:
@@ -3780,33 +2911,25 @@ const DeploymentTypeSchema = z.string().min(2).max(128).openapi('DeploymentType'
 
 const DryRunResultsSchema = z
   .object({
-    DeploymentType: DeploymentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the deployment mechanism through which the update shall be applied on the domain. Possible responses are <code>Blue/Green</code> (The update will require a blue/green deployment.) <code>DynamicUpdate</code> (The update can be applied in-place without a Blue/Green deployment required.) <code>Undetermined</code> (The domain is undergoing an update which needs to complete before the deployment type can be predicted.) <code>None</code> (The configuration change matches the current configuration and will not result in any update.) ',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains an optional message associated with the DryRunResults.',
-        }),
-    ).exactOptional(),
+    DeploymentType: DeploymentTypeSchema.exactOptional().openapi({
+      description:
+        ' Specifies the deployment mechanism through which the update shall be applied on the domain. Possible responses are <code>Blue/Green</code> (The update will require a blue/green deployment.) <code>DynamicUpdate</code> (The update can be applied in-place without a Blue/Green deployment required.) <code>Undetermined</code> (The domain is undergoing an update which needs to complete before the deployment type can be predicted.) <code>None</code> (The configuration change matches the current configuration and will not result in any update.) ',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description: 'Contains an optional message associated with the DryRunResults.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DryRunResults')
 
 const UpdateElasticsearchDomainConfigResponseSchema = z
   .object({
-    DomainConfig: ElasticsearchDomainConfigSchema.and(
-      z.any().openapi({ description: 'The status of the updated Elasticsearch domain. ' }),
-    ),
-    DryRunResults: DryRunResultsSchema.and(
-      z.any().openapi({ description: 'Contains result of DryRun. ' }),
-    ).exactOptional(),
+    DomainConfig: ElasticsearchDomainConfigSchema.openapi({
+      description: 'The status of the updated Elasticsearch domain. ',
+    }),
+    DryRunResults: DryRunResultsSchema.exactOptional().openapi({
+      description: 'Contains result of DryRun. ',
+    }),
   })
   .openapi({
     required: ['DomainConfig'],
@@ -3817,11 +2940,9 @@ const UpdateElasticsearchDomainConfigResponseSchema = z
 
 const UpdatePackageResponseSchema = z
   .object({
-    PackageDetails: PackageDetailsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the package <code>PackageDetails</code>.' }),
-    ).exactOptional(),
+    PackageDetails: PackageDetailsSchema.exactOptional().openapi({
+      description: 'Information about the package <code>PackageDetails</code>.',
+    }),
   })
   .openapi({
     description:
@@ -3832,9 +2953,7 @@ const UpdatePackageResponseSchema = z
 
 const UpdateVpcEndpointResponseSchema = z
   .object({
-    VpcEndpoint: VpcEndpointSchema.and(
-      z.any().openapi({ description: 'The endpoint to be updated.' }),
-    ),
+    VpcEndpoint: VpcEndpointSchema.openapi({ description: 'The endpoint to be updated.' }),
   })
   .openapi({
     required: ['VpcEndpoint'],
@@ -3845,21 +2964,13 @@ const UpdateVpcEndpointResponseSchema = z
 const UpgradeElasticsearchDomainResponseSchema = z
   .object({
     DomainName: DomainNameSchema.exactOptional(),
-    TargetVersion: ElasticsearchVersionStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version of Elasticsearch that you intend to upgrade the domain to.',
-        }),
-    ).exactOptional(),
-    PerformCheckOnly: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This flag, when set to True, indicates that an Upgrade Eligibility Check needs to be performed. This will not actually perform the Upgrade. ',
-        }),
-    ).exactOptional(),
+    TargetVersion: ElasticsearchVersionStringSchema.exactOptional().openapi({
+      description: 'The version of Elasticsearch that you intend to upgrade the domain to.',
+    }),
+    PerformCheckOnly: BooleanSchema.exactOptional().openapi({
+      description:
+        ' This flag, when set to True, indicates that an Upgrade Eligibility Check needs to be performed. This will not actually perform the Upgrade. ',
+    }),
     ChangeProgressDetails: ChangeProgressDetailsSchema.exactOptional(),
   })
   .openapi({
@@ -3870,7 +2981,7 @@ const UpgradeElasticsearchDomainResponseSchema = z
   .openapi('UpgradeElasticsearchDomainResponse')
 
 const AcceptInboundCrossClusterSearchConnectionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'AcceptInboundCrossClusterSearchConnectionRequest',
     description:
@@ -3880,21 +2991,12 @@ const AcceptInboundCrossClusterSearchConnectionRequestSchema = z
 
 const AddTagsRequestSchema = z
   .object({
-    ARN: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Specify the <code>ARN</code> for which you want to add the tags.',
-        }),
-    ),
-    TagList: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' List of <code>Tag</code> that need to be added for the Elasticsearch domain. ',
-        }),
-    ),
+    ARN: ARNSchema.openapi({
+      description: ' Specify the <code>ARN</code> for which you want to add the tags.',
+    }),
+    TagList: TagListSchema.openapi({
+      description: ' List of <code>Tag</code> that need to be added for the Elasticsearch domain. ',
+    }),
   })
   .openapi({
     required: ['ARN', 'TagList'],
@@ -3906,32 +3008,22 @@ const AddTagsRequestSchema = z
 
 const AdvancedSecurityOptionsInputSchema = z
   .object({
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'True if advanced security is enabled.' }),
-    ).exactOptional(),
-    InternalUserDatabaseEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'True if the internal user database is enabled.' }),
-    ).exactOptional(),
-    MasterUserOptions: MasterUserOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Credentials for the master user: username and password, ARN, or both.',
-        }),
-    ).exactOptional(),
-    SAMLOptions: SAMLOptionsInputSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the SAML application configuration for the domain.' }),
-    ).exactOptional(),
-    AnonymousAuthEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if Anonymous auth is enabled. Anonymous auth can be enabled only when AdvancedSecurity is enabled on existing domains.',
-        }),
-    ).exactOptional(),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description: 'True if advanced security is enabled.',
+    }),
+    InternalUserDatabaseEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'True if the internal user database is enabled.',
+    }),
+    MasterUserOptions: MasterUserOptionsSchema.exactOptional().openapi({
+      description: 'Credentials for the master user: username and password, ARN, or both.',
+    }),
+    SAMLOptions: SAMLOptionsInputSchema.exactOptional().openapi({
+      description: 'Specifies the SAML application configuration for the domain.',
+    }),
+    AnonymousAuthEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'True if Anonymous auth is enabled. Anonymous auth can be enabled only when AdvancedSecurity is enabled on existing domains.',
+    }),
   })
   .openapi({
     description:
@@ -3941,7 +3033,7 @@ const AdvancedSecurityOptionsInputSchema = z
   .openapi('AdvancedSecurityOptionsInput')
 
 const AssociatePackageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'AssociatePackageRequest',
     description:
@@ -3951,9 +3043,7 @@ const AssociatePackageRequestSchema = z
 
 const AuthorizeVpcEndpointAccessRequestSchema = z
   .object({
-    Account: AWSAccountSchema.and(
-      z.any().openapi({ description: 'The account ID to grant access to.' }),
-    ),
+    Account: AWSAccountSchema.openapi({ description: 'The account ID to grant access to.' }),
   })
   .openapi({
     required: ['Account'],
@@ -3965,22 +3055,13 @@ const AuthorizeVpcEndpointAccessRequestSchema = z
 
 const AutoTuneOptionsInputSchema = z
   .object({
-    DesiredState: AutoTuneDesiredStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the Auto-Tune desired state. Valid values are ENABLED, DISABLED. ',
-        }),
-    ).exactOptional(),
-    MaintenanceSchedules: AutoTuneMaintenanceScheduleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies list of maitenance schedules. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
-        }),
-    ).exactOptional(),
+    DesiredState: AutoTuneDesiredStateSchema.exactOptional().openapi({
+      description: 'Specifies the Auto-Tune desired state. Valid values are ENABLED, DISABLED. ',
+    }),
+    MaintenanceSchedules: AutoTuneMaintenanceScheduleListSchema.exactOptional().openapi({
+      description:
+        'Specifies list of maitenance schedules. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
+    }),
   })
   .openapi({
     description:
@@ -3991,14 +3072,10 @@ const AutoTuneOptionsInputSchema = z
 
 const CancelElasticsearchServiceSoftwareUpdateRequestSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the domain that you want to stop the latest service software update on.',
-        }),
-    ),
+    DomainName: DomainNameSchema.openapi({
+      description:
+        'The name of the domain that you want to stop the latest service software update on.',
+    }),
   })
   .openapi({
     required: ['DomainName'],
@@ -4012,12 +3089,12 @@ const ClientTokenSchema = z.string().min(1).max(64).openapi('ClientToken')
 
 const VPCOptionsSchema = z
   .object({
-    SubnetIds: StringListSchema.and(
-      z.any().openapi({ description: 'Specifies the subnets for VPC endpoint.' }),
-    ).exactOptional(),
-    SecurityGroupIds: StringListSchema.and(
-      z.any().openapi({ description: 'Specifies the security groups for VPC endpoint.' }),
-    ).exactOptional(),
+    SubnetIds: StringListSchema.exactOptional().openapi({
+      description: 'Specifies the subnets for VPC endpoint.',
+    }),
+    SecurityGroupIds: StringListSchema.exactOptional().openapi({
+      description: 'Specifies the security groups for VPC endpoint.',
+    }),
   })
   .openapi({
     description:
@@ -4028,134 +3105,81 @@ const VPCOptionsSchema = z
 
 const CreateElasticsearchDomainRequestSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Elasticsearch domain that you are creating. Domain names are unique across the domains owned by an account within an AWS region. Domain names must start with a lowercase letter and can contain the following characters: a-z (lowercase), 0-9, and - (hyphen).',
-        }),
-    ),
-    ElasticsearchVersion: ElasticsearchVersionStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'String of format X.Y to specify version for the Elasticsearch domain eg. "1.5" or "2.3". For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomains" target="_blank">Creating Elasticsearch Domains</a> in the <i>Amazon Elasticsearch Service Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    ElasticsearchClusterConfig: ElasticsearchClusterConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration options for an Elasticsearch domain. Specifies the instance type and number of instances in the domain cluster. ',
-        }),
-    ).exactOptional(),
-    EBSOptions: EBSOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Options to enable, disable and specify the type and size of EBS storage volumes. ',
-        }),
-    ).exactOptional(),
-    AccessPolicies: PolicyDocumentSchema.and(
-      z.any().openapi({ description: ' IAM access policy as a JSON-formatted string.' }),
-    ).exactOptional(),
-    SnapshotOptions: SnapshotOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Option to set time, in UTC format, of the daily automated snapshot. Default value is 0 hours. ',
-        }),
-    ).exactOptional(),
-    VPCOptions: VPCOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Options to specify the subnets and security groups for VPC endpoint. For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-vpc.html#es-creating-vpc" target="_blank">Creating a VPC</a> in <i>VPC Endpoints for Amazon Elasticsearch Service Domains</i>',
-        }),
-    ).exactOptional(),
-    CognitoOptions: CognitoOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Options to specify the Cognito user and identity pools for Kibana authentication. For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-cognito-auth.html" target="_blank">Amazon Cognito Authentication for Kibana</a>.',
-        }),
-    ).exactOptional(),
-    EncryptionAtRestOptions: EncryptionAtRestOptionsSchema.and(
-      z.any().openapi({ description: 'Specifies the Encryption At Rest Options.' }),
-    ).exactOptional(),
-    NodeToNodeEncryptionOptions: NodeToNodeEncryptionOptionsSchema.and(
-      z.any().openapi({ description: 'Specifies the NodeToNodeEncryptionOptions.' }),
-    ).exactOptional(),
-    AdvancedOptions: AdvancedOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Option to allow references to indices in an HTTP request body. Must be <code>false</code> when configuring access to individual sub-resources. By default, the value is <code>true</code>. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-advanced-options" target="_blank">Configuration Advanced Options</a> for more information.',
-        }),
-    ).exactOptional(),
-    LogPublishingOptions: LogPublishingOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Map of <code>LogType</code> and <code>LogPublishingOption</code>, each containing options to publish a given type of Elasticsearch log.',
-        }),
-    ).exactOptional(),
-    DomainEndpointOptions: DomainEndpointOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Options to specify configuration that will be applied to the domain endpoint.',
-        }),
-    ).exactOptional(),
-    AdvancedSecurityOptions: AdvancedSecurityOptionsInputSchema.and(
-      z.any().openapi({ description: 'Specifies advanced security options.' }),
-    ).exactOptional(),
-    AutoTuneOptions: AutoTuneOptionsInputSchema.and(
-      z.any().openapi({ description: 'Specifies Auto-Tune options.' }),
-    ).exactOptional(),
-    TagList: TagListSchema.and(
-      z.any().openapi({ description: 'A list of <code>Tag</code> added during domain creation.' }),
-    ).exactOptional(),
+    DomainName: DomainNameSchema.openapi({
+      description:
+        'The name of the Elasticsearch domain that you are creating. Domain names are unique across the domains owned by an account within an AWS region. Domain names must start with a lowercase letter and can contain the following characters: a-z (lowercase), 0-9, and - (hyphen).',
+    }),
+    ElasticsearchVersion: ElasticsearchVersionStringSchema.exactOptional().openapi({
+      description:
+        'String of format X.Y to specify version for the Elasticsearch domain eg. "1.5" or "2.3". For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomains" target="_blank">Creating Elasticsearch Domains</a> in the <i>Amazon Elasticsearch Service Developer Guide</i>.',
+    }),
+    ElasticsearchClusterConfig: ElasticsearchClusterConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration options for an Elasticsearch domain. Specifies the instance type and number of instances in the domain cluster. ',
+    }),
+    EBSOptions: EBSOptionsSchema.exactOptional().openapi({
+      description:
+        'Options to enable, disable and specify the type and size of EBS storage volumes. ',
+    }),
+    AccessPolicies: PolicyDocumentSchema.exactOptional().openapi({
+      description: ' IAM access policy as a JSON-formatted string.',
+    }),
+    SnapshotOptions: SnapshotOptionsSchema.exactOptional().openapi({
+      description:
+        'Option to set time, in UTC format, of the daily automated snapshot. Default value is 0 hours. ',
+    }),
+    VPCOptions: VPCOptionsSchema.exactOptional().openapi({
+      description:
+        'Options to specify the subnets and security groups for VPC endpoint. For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-vpc.html#es-creating-vpc" target="_blank">Creating a VPC</a> in <i>VPC Endpoints for Amazon Elasticsearch Service Domains</i>',
+    }),
+    CognitoOptions: CognitoOptionsSchema.exactOptional().openapi({
+      description:
+        'Options to specify the Cognito user and identity pools for Kibana authentication. For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-cognito-auth.html" target="_blank">Amazon Cognito Authentication for Kibana</a>.',
+    }),
+    EncryptionAtRestOptions: EncryptionAtRestOptionsSchema.exactOptional().openapi({
+      description: 'Specifies the Encryption At Rest Options.',
+    }),
+    NodeToNodeEncryptionOptions: NodeToNodeEncryptionOptionsSchema.exactOptional().openapi({
+      description: 'Specifies the NodeToNodeEncryptionOptions.',
+    }),
+    AdvancedOptions: AdvancedOptionsSchema.exactOptional().openapi({
+      description:
+        ' Option to allow references to indices in an HTTP request body. Must be <code>false</code> when configuring access to individual sub-resources. By default, the value is <code>true</code>. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-advanced-options" target="_blank">Configuration Advanced Options</a> for more information.',
+    }),
+    LogPublishingOptions: LogPublishingOptionsSchema.exactOptional().openapi({
+      description:
+        'Map of <code>LogType</code> and <code>LogPublishingOption</code>, each containing options to publish a given type of Elasticsearch log.',
+    }),
+    DomainEndpointOptions: DomainEndpointOptionsSchema.exactOptional().openapi({
+      description: 'Options to specify configuration that will be applied to the domain endpoint.',
+    }),
+    AdvancedSecurityOptions: AdvancedSecurityOptionsInputSchema.exactOptional().openapi({
+      description: 'Specifies advanced security options.',
+    }),
+    AutoTuneOptions: AutoTuneOptionsInputSchema.exactOptional().openapi({
+      description: 'Specifies Auto-Tune options.',
+    }),
+    TagList: TagListSchema.exactOptional().openapi({
+      description: 'A list of <code>Tag</code> added during domain creation.',
+    }),
   })
   .openapi({ required: ['DomainName'], title: 'CreateElasticsearchDomainRequest' })
   .openapi('CreateElasticsearchDomainRequest')
 
 const CreateOutboundCrossClusterSearchConnectionRequestSchema = z
   .object({
-    SourceDomainInfo: DomainInformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code><a>DomainInformation</a></code> for the source Elasticsearch domain.',
-        }),
-    ),
-    DestinationDomainInfo: DomainInformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code><a>DomainInformation</a></code> for the destination Elasticsearch domain.',
-        }),
-    ),
-    ConnectionAlias: ConnectionAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the connection alias that will be used by the customer for this connection.',
-        }),
-    ),
+    SourceDomainInfo: DomainInformationSchema.openapi({
+      description:
+        'Specifies the <code><a>DomainInformation</a></code> for the source Elasticsearch domain.',
+    }),
+    DestinationDomainInfo: DomainInformationSchema.openapi({
+      description:
+        'Specifies the <code><a>DomainInformation</a></code> for the destination Elasticsearch domain.',
+    }),
+    ConnectionAlias: ConnectionAliasSchema.openapi({
+      description:
+        'Specifies the connection alias that will be used by the customer for this connection.',
+    }),
   })
   .openapi({
     required: ['SourceDomainInfo', 'DestinationDomainInfo', 'ConnectionAlias'],
@@ -4167,12 +3191,10 @@ const CreateOutboundCrossClusterSearchConnectionRequestSchema = z
 
 const PackageSourceSchema = z
   .object({
-    S3BucketName: S3BucketNameSchema.and(
-      z.any().openapi({ description: 'Name of the bucket containing the package.' }),
-    ).exactOptional(),
-    S3Key: S3KeySchema.and(
-      z.any().openapi({ description: 'Key (file name) of the package.' }),
-    ).exactOptional(),
+    S3BucketName: S3BucketNameSchema.exactOptional().openapi({
+      description: 'Name of the bucket containing the package.',
+    }),
+    S3Key: S3KeySchema.exactOptional().openapi({ description: 'Key (file name) of the package.' }),
   })
   .openapi({
     description:
@@ -4183,23 +3205,16 @@ const PackageSourceSchema = z
 
 const CreatePackageRequestSchema = z
   .object({
-    PackageName: PackageNameSchema.and(
-      z.any().openapi({ description: 'Unique identifier for the package.' }),
-    ),
-    PackageType: PackageTypeSchema.and(
-      z.any().openapi({ description: 'Type of package. Currently supports only TXT-DICTIONARY.' }),
-    ),
-    PackageDescription: PackageDescriptionSchema.and(
-      z.any().openapi({ description: 'Description of the package.' }),
-    ).exactOptional(),
-    PackageSource: PackageSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The customer S3 location <code>PackageSource</code> for importing the package.',
-        }),
-    ),
+    PackageName: PackageNameSchema.openapi({ description: 'Unique identifier for the package.' }),
+    PackageType: PackageTypeSchema.openapi({
+      description: 'Type of package. Currently supports only TXT-DICTIONARY.',
+    }),
+    PackageDescription: PackageDescriptionSchema.exactOptional().openapi({
+      description: 'Description of the package.',
+    }),
+    PackageSource: PackageSourceSchema.openapi({
+      description: 'The customer S3 location <code>PackageSource</code> for importing the package.',
+    }),
   })
   .openapi({
     required: ['PackageName', 'PackageType', 'PackageSource'],
@@ -4211,27 +3226,15 @@ const CreatePackageRequestSchema = z
 
 const CreateVpcEndpointRequestSchema = z
   .object({
-    DomainArn: DomainArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the domain to grant access to.',
-        }),
-    ),
-    VpcOptions: VPCOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Options to specify the subnets and security groups for the endpoint.',
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Unique, case-sensitive identifier to ensure idempotency of the request.',
-        }),
-    ).exactOptional(),
+    DomainArn: DomainArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the domain to grant access to.',
+    }),
+    VpcOptions: VPCOptionsSchema.openapi({
+      description: 'Options to specify the subnets and security groups for the endpoint.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'Unique, case-sensitive identifier to ensure idempotency of the request.',
+    }),
   })
   .openapi({
     required: ['DomainArn', 'VpcOptions'],
@@ -4242,7 +3245,7 @@ const CreateVpcEndpointRequestSchema = z
   .openapi('CreateVpcEndpointRequest')
 
 const DeleteElasticsearchDomainRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteElasticsearchDomainRequest',
     description:
@@ -4251,7 +3254,7 @@ const DeleteElasticsearchDomainRequestSchema = z
   .openapi('DeleteElasticsearchDomainRequest')
 
 const DeleteInboundCrossClusterSearchConnectionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteInboundCrossClusterSearchConnectionRequest',
     description:
@@ -4260,7 +3263,7 @@ const DeleteInboundCrossClusterSearchConnectionRequestSchema = z
   .openapi('DeleteInboundCrossClusterSearchConnectionRequest')
 
 const DeleteOutboundCrossClusterSearchConnectionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteOutboundCrossClusterSearchConnectionRequest',
     description:
@@ -4269,7 +3272,7 @@ const DeleteOutboundCrossClusterSearchConnectionRequestSchema = z
   .openapi('DeleteOutboundCrossClusterSearchConnectionRequest')
 
 const DeletePackageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeletePackageRequest',
     description:
@@ -4278,7 +3281,7 @@ const DeletePackageRequestSchema = z
   .openapi('DeletePackageRequest')
 
 const DeleteVpcEndpointRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteVpcEndpointRequest',
     description: 'Deletes an Amazon OpenSearch Service-managed interface VPC endpoint.',
@@ -4293,22 +3296,14 @@ const MaxResultsSchema = z
 
 const DescribeDomainAutoTunesRequestSchema = z
   .object({
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set this value to limit the number of results returned. If not specified, defaults to 100.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'NextToken is sent in case the earlier API call results contain the NextToken. It is used for pagination.',
-        }),
-    ).exactOptional(),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'Set this value to limit the number of results returned. If not specified, defaults to 100.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'NextToken is sent in case the earlier API call results contain the NextToken. It is used for pagination.',
+    }),
   })
   .openapi({
     title: 'DescribeDomainAutoTunesRequest',
@@ -4319,7 +3314,7 @@ const DescribeDomainAutoTunesRequestSchema = z
   .openapi('DescribeDomainAutoTunesRequest')
 
 const DescribeDomainChangeProgressRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeDomainChangeProgressRequest',
     description:
@@ -4328,7 +3323,7 @@ const DescribeDomainChangeProgressRequestSchema = z
   .openapi('DescribeDomainChangeProgressRequest')
 
 const DescribeElasticsearchDomainConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeElasticsearchDomainConfigRequest',
     description:
@@ -4337,7 +3332,7 @@ const DescribeElasticsearchDomainConfigRequestSchema = z
   .openapi('DescribeElasticsearchDomainConfigRequest')
 
 const DescribeElasticsearchDomainRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeElasticsearchDomainRequest',
     description:
@@ -4352,9 +3347,9 @@ const DomainNameListSchema = z
 
 const DescribeElasticsearchDomainsRequestSchema = z
   .object({
-    DomainNames: DomainNameListSchema.and(
-      z.any().openapi({ description: 'The Elasticsearch domains for which you want information.' }),
-    ),
+    DomainNames: DomainNameListSchema.openapi({
+      description: 'The Elasticsearch domains for which you want information.',
+    }),
   })
   .openapi({
     required: ['DomainNames'],
@@ -4365,7 +3360,7 @@ const DescribeElasticsearchDomainsRequestSchema = z
   .openapi('DescribeElasticsearchDomainsRequest')
 
 const DescribeElasticsearchInstanceTypeLimitsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeElasticsearchInstanceTypeLimitsRequest',
     description:
@@ -4377,30 +3372,18 @@ const FilterListSchema = z.array(FilterSchema).openapi('FilterList')
 
 const DescribeInboundCrossClusterSearchConnectionsRequestSchema = z
   .object({
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of filters used to match properties for inbound cross-cluster search connection. Available <code><a>Filter</a></code> names for this operation are: <ul> <li>cross-cluster-search-connection-id</li> <li>source-domain-info.domain-name</li> <li>source-domain-info.owner-id</li> <li>source-domain-info.region</li> <li>destination-domain-info.domain-name</li> </ul> ',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set this value to limit the number of results returned. If not specified, defaults to 100.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' NextToken is sent in case the earlier API call results contain the NextToken. It is used for pagination.',
-        }),
-    ).exactOptional(),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        ' A list of filters used to match properties for inbound cross-cluster search connection. Available <code><a>Filter</a></code> names for this operation are: <ul> <li>cross-cluster-search-connection-id</li> <li>source-domain-info.domain-name</li> <li>source-domain-info.owner-id</li> <li>source-domain-info.region</li> <li>destination-domain-info.domain-name</li> </ul> ',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'Set this value to limit the number of results returned. If not specified, defaults to 100.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' NextToken is sent in case the earlier API call results contain the NextToken. It is used for pagination.',
+    }),
   })
   .openapi({
     title: 'DescribeInboundCrossClusterSearchConnectionsRequest',
@@ -4412,30 +3395,18 @@ const DescribeInboundCrossClusterSearchConnectionsRequestSchema = z
 
 const DescribeOutboundCrossClusterSearchConnectionsRequestSchema = z
   .object({
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of filters used to match properties for outbound cross-cluster search connection. Available <code><a>Filter</a></code> names for this operation are: <ul> <li>cross-cluster-search-connection-id</li> <li>destination-domain-info.domain-name</li> <li>destination-domain-info.owner-id</li> <li>destination-domain-info.region</li> <li>source-domain-info.domain-name</li> </ul> ',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set this value to limit the number of results returned. If not specified, defaults to 100.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' NextToken is sent in case the earlier API call results contain the NextToken. It is used for pagination.',
-        }),
-    ).exactOptional(),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        ' A list of filters used to match properties for outbound cross-cluster search connection. Available <code><a>Filter</a></code> names for this operation are: <ul> <li>cross-cluster-search-connection-id</li> <li>destination-domain-info.domain-name</li> <li>destination-domain-info.owner-id</li> <li>destination-domain-info.region</li> <li>source-domain-info.domain-name</li> </ul> ',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'Set this value to limit the number of results returned. If not specified, defaults to 100.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' NextToken is sent in case the earlier API call results contain the NextToken. It is used for pagination.',
+    }),
   })
   .openapi({
     title: 'DescribeOutboundCrossClusterSearchConnectionsRequest',
@@ -4455,25 +3426,17 @@ const DescribePackagesFilterListSchema = z
 
 const DescribePackagesRequestSchema = z
   .object({
-    Filters: DescribePackagesFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Only returns packages that match the <code>DescribePackagesFilterList</code> values.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'Limits results to a maximum number of packages.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used for pagination. Only necessary if a previous API call includes a non-null NextToken value. If provided, returns results for the next page.',
-        }),
-    ).exactOptional(),
+    Filters: DescribePackagesFilterListSchema.exactOptional().openapi({
+      description:
+        'Only returns packages that match the <code>DescribePackagesFilterList</code> values.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'Limits results to a maximum number of packages.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Used for pagination. Only necessary if a previous API call includes a non-null NextToken value. If provided, returns results for the next page.',
+    }),
   })
   .openapi({
     title: 'DescribePackagesRequest',
@@ -4484,7 +3447,7 @@ const DescribePackagesRequestSchema = z
   .openapi('DescribePackagesRequest')
 
 const DescribeReservedElasticsearchInstanceOfferingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeReservedElasticsearchInstanceOfferingsRequest',
     description:
@@ -4493,7 +3456,7 @@ const DescribeReservedElasticsearchInstanceOfferingsRequestSchema = z
   .openapi('DescribeReservedElasticsearchInstanceOfferingsRequest')
 
 const DescribeReservedElasticsearchInstancesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeReservedElasticsearchInstancesRequest',
     description: 'Container for parameters to <code>DescribeReservedElasticsearchInstances</code>',
@@ -4504,13 +3467,9 @@ const VpcEndpointIdListSchema = z.array(VpcEndpointIdSchema).openapi('VpcEndpoin
 
 const DescribeVpcEndpointsRequestSchema = z
   .object({
-    VpcEndpointIds: VpcEndpointIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifiers of the endpoints to get information about.',
-        }),
-    ),
+    VpcEndpointIds: VpcEndpointIdListSchema.openapi({
+      description: 'The unique identifiers of the endpoints to get information about.',
+    }),
   })
   .openapi({
     required: ['VpcEndpointIds'],
@@ -4521,7 +3480,7 @@ const DescribeVpcEndpointsRequestSchema = z
   .openapi('DescribeVpcEndpointsRequest')
 
 const DissociatePackageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DissociatePackageRequest',
     description:
@@ -4532,7 +3491,7 @@ const DissociatePackageRequestSchema = z
 const DryRunSchema = z.boolean().openapi('DryRun')
 
 const GetCompatibleElasticsearchVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetCompatibleElasticsearchVersionsRequest',
     description:
@@ -4541,7 +3500,7 @@ const GetCompatibleElasticsearchVersionsRequestSchema = z
   .openapi('GetCompatibleElasticsearchVersionsRequest')
 
 const GetPackageVersionHistoryRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetPackageVersionHistoryRequest',
     description:
@@ -4550,7 +3509,7 @@ const GetPackageVersionHistoryRequestSchema = z
   .openapi('GetPackageVersionHistoryRequest')
 
 const GetUpgradeHistoryRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetUpgradeHistoryRequest',
     description:
@@ -4559,7 +3518,7 @@ const GetUpgradeHistoryRequestSchema = z
   .openapi('GetUpgradeHistoryRequest')
 
 const GetUpgradeStatusRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetUpgradeStatusRequest',
     description:
@@ -4576,7 +3535,7 @@ const InstanceCountSchema = z
 const InstanceRoleSchema = z.string().openapi('InstanceRole')
 
 const ListDomainNamesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListDomainNamesRequest',
     description:
@@ -4585,7 +3544,7 @@ const ListDomainNamesRequestSchema = z
   .openapi('ListDomainNamesRequest')
 
 const ListDomainsForPackageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListDomainsForPackageRequest',
     description:
@@ -4594,7 +3553,7 @@ const ListDomainsForPackageRequestSchema = z
   .openapi('ListDomainsForPackageRequest')
 
 const ListElasticsearchInstanceTypesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListElasticsearchInstanceTypesRequest',
     description:
@@ -4603,7 +3562,7 @@ const ListElasticsearchInstanceTypesRequestSchema = z
   .openapi('ListElasticsearchInstanceTypesRequest')
 
 const ListElasticsearchVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListElasticsearchVersionsRequest',
     description:
@@ -4612,7 +3571,7 @@ const ListElasticsearchVersionsRequestSchema = z
   .openapi('ListElasticsearchVersionsRequest')
 
 const ListPackagesForDomainRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListPackagesForDomainRequest',
     description:
@@ -4621,7 +3580,7 @@ const ListPackagesForDomainRequestSchema = z
   .openapi('ListPackagesForDomainRequest')
 
 const ListTagsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListTagsRequest',
     description:
@@ -4630,7 +3589,7 @@ const ListTagsRequestSchema = z
   .openapi('ListTagsRequest')
 
 const ListVpcEndpointAccessRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListVpcEndpointAccessRequest',
     description:
@@ -4639,7 +3598,7 @@ const ListVpcEndpointAccessRequestSchema = z
   .openapi('ListVpcEndpointAccessRequest')
 
 const ListVpcEndpointsForDomainRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListVpcEndpointsForDomainRequest',
     description:
@@ -4648,7 +3607,7 @@ const ListVpcEndpointsForDomainRequestSchema = z
   .openapi('ListVpcEndpointsForDomainRequest')
 
 const ListVpcEndpointsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListVpcEndpointsRequest',
     description:
@@ -4666,21 +3625,15 @@ const LogTypeSchema = z
 
 const PurchaseReservedElasticsearchInstanceOfferingRequestSchema = z
   .object({
-    ReservedElasticsearchInstanceOfferingId: GUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the reserved Elasticsearch instance offering to purchase.',
-        }),
-    ),
-    ReservationName: ReservationTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A customer-specified identifier to track this reservation.' }),
-    ),
-    InstanceCount: InstanceCountSchema.and(
-      z.any().openapi({ description: 'The number of Elasticsearch instances to reserve.' }),
-    ).exactOptional(),
+    ReservedElasticsearchInstanceOfferingId: GUIDSchema.openapi({
+      description: 'The ID of the reserved Elasticsearch instance offering to purchase.',
+    }),
+    ReservationName: ReservationTokenSchema.openapi({
+      description: 'A customer-specified identifier to track this reservation.',
+    }),
+    InstanceCount: InstanceCountSchema.exactOptional().openapi({
+      description: 'The number of Elasticsearch instances to reserve.',
+    }),
   })
   .openapi({
     required: ['ReservedElasticsearchInstanceOfferingId', 'ReservationName'],
@@ -4691,7 +3644,7 @@ const PurchaseReservedElasticsearchInstanceOfferingRequestSchema = z
   .openapi('PurchaseReservedElasticsearchInstanceOfferingRequest')
 
 const RejectInboundCrossClusterSearchConnectionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'RejectInboundCrossClusterSearchConnectionRequest',
     description:
@@ -4701,22 +3654,14 @@ const RejectInboundCrossClusterSearchConnectionRequestSchema = z
 
 const RemoveTagsRequestSchema = z
   .object({
-    ARN: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code>ARN</code> for the Elasticsearch domain from which you want to delete the specified tags.',
-        }),
-    ),
-    TagKeys: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code>TagKey</code> list which you want to remove from the Elasticsearch domain.',
-        }),
-    ),
+    ARN: ARNSchema.openapi({
+      description:
+        'Specifies the <code>ARN</code> for the Elasticsearch domain from which you want to delete the specified tags.',
+    }),
+    TagKeys: StringListSchema.openapi({
+      description:
+        'Specifies the <code>TagKey</code> list which you want to remove from the Elasticsearch domain.',
+    }),
   })
   .openapi({
     required: ['ARN', 'TagKeys'],
@@ -4728,9 +3673,7 @@ const RemoveTagsRequestSchema = z
 
 const RevokeVpcEndpointAccessRequestSchema = z
   .object({
-    Account: AWSAccountSchema.and(
-      z.any().openapi({ description: 'The account ID to revoke access from.' }),
-    ),
+    Account: AWSAccountSchema.openapi({ description: 'The account ID to revoke access from.' }),
   })
   .openapi({
     required: ['Account'],
@@ -4742,14 +3685,9 @@ const RevokeVpcEndpointAccessRequestSchema = z
 
 const StartElasticsearchServiceSoftwareUpdateRequestSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the domain that you want to update to the latest service software.',
-        }),
-    ),
+    DomainName: DomainNameSchema.openapi({
+      description: 'The name of the domain that you want to update to the latest service software.',
+    }),
   })
   .openapi({
     required: ['DomainName'],
@@ -4761,91 +3699,54 @@ const StartElasticsearchServiceSoftwareUpdateRequestSchema = z
 
 const UpdateElasticsearchDomainConfigRequestSchema = z
   .object({
-    ElasticsearchClusterConfig: ElasticsearchClusterConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type and number of instances to instantiate for the domain cluster.',
-        }),
-    ).exactOptional(),
-    EBSOptions: EBSOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specify the type and size of the EBS volume that you want to use. ',
-        }),
-    ).exactOptional(),
-    SnapshotOptions: SnapshotOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Option to set the time, in UTC format, for the daily automated snapshot. Default value is <code>0</code> hours. ',
-        }),
-    ).exactOptional(),
-    VPCOptions: VPCOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Options to specify the subnets and security groups for VPC endpoint. For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-vpc.html#es-creating-vpc" target="_blank">Creating a VPC</a> in <i>VPC Endpoints for Amazon Elasticsearch Service Domains</i>',
-        }),
-    ).exactOptional(),
-    CognitoOptions: CognitoOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Options to specify the Cognito user and identity pools for Kibana authentication. For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-cognito-auth.html" target="_blank">Amazon Cognito Authentication for Kibana</a>.',
-        }),
-    ).exactOptional(),
-    AdvancedOptions: AdvancedOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Modifies the advanced option to allow references to indices in an HTTP request body. Must be <code>false</code> when configuring access to individual sub-resources. By default, the value is <code>true</code>. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-advanced-options" target="_blank">Configuration Advanced Options</a> for more information.',
-        }),
-    ).exactOptional(),
-    AccessPolicies: PolicyDocumentSchema.and(
-      z.any().openapi({ description: 'IAM access policy as a JSON-formatted string.' }),
-    ).exactOptional(),
-    LogPublishingOptions: LogPublishingOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Map of <code>LogType</code> and <code>LogPublishingOption</code>, each containing options to publish a given type of Elasticsearch log.',
-        }),
-    ).exactOptional(),
-    DomainEndpointOptions: DomainEndpointOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Options to specify configuration that will be applied to the domain endpoint.',
-        }),
-    ).exactOptional(),
-    AdvancedSecurityOptions: AdvancedSecurityOptionsInputSchema.and(
-      z.any().openapi({ description: 'Specifies advanced security options.' }),
-    ).exactOptional(),
-    NodeToNodeEncryptionOptions: NodeToNodeEncryptionOptionsSchema.and(
-      z.any().openapi({ description: 'Specifies the NodeToNodeEncryptionOptions.' }),
-    ).exactOptional(),
-    EncryptionAtRestOptions: EncryptionAtRestOptionsSchema.and(
-      z.any().openapi({ description: 'Specifies the Encryption At Rest Options.' }),
-    ).exactOptional(),
-    AutoTuneOptions: AutoTuneOptionsSchema.and(
-      z.any().openapi({ description: 'Specifies Auto-Tune options.' }),
-    ).exactOptional(),
-    DryRun: DryRunSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This flag, when set to True, specifies whether the <code>UpdateElasticsearchDomain</code> request should return the results of validation checks without actually applying the change. This flag, when set to True, specifies the deployment mechanism through which the update shall be applied on the domain. This will not actually perform the Update. ',
-        }),
-    ).exactOptional(),
+    ElasticsearchClusterConfig: ElasticsearchClusterConfigSchema.exactOptional().openapi({
+      description: 'The type and number of instances to instantiate for the domain cluster.',
+    }),
+    EBSOptions: EBSOptionsSchema.exactOptional().openapi({
+      description: 'Specify the type and size of the EBS volume that you want to use. ',
+    }),
+    SnapshotOptions: SnapshotOptionsSchema.exactOptional().openapi({
+      description:
+        'Option to set the time, in UTC format, for the daily automated snapshot. Default value is <code>0</code> hours. ',
+    }),
+    VPCOptions: VPCOptionsSchema.exactOptional().openapi({
+      description:
+        'Options to specify the subnets and security groups for VPC endpoint. For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-vpc.html#es-creating-vpc" target="_blank">Creating a VPC</a> in <i>VPC Endpoints for Amazon Elasticsearch Service Domains</i>',
+    }),
+    CognitoOptions: CognitoOptionsSchema.exactOptional().openapi({
+      description:
+        'Options to specify the Cognito user and identity pools for Kibana authentication. For more information, see <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-cognito-auth.html" target="_blank">Amazon Cognito Authentication for Kibana</a>.',
+    }),
+    AdvancedOptions: AdvancedOptionsSchema.exactOptional().openapi({
+      description:
+        'Modifies the advanced option to allow references to indices in an HTTP request body. Must be <code>false</code> when configuring access to individual sub-resources. By default, the value is <code>true</code>. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createupdatedomains.html#es-createdomain-configure-advanced-options" target="_blank">Configuration Advanced Options</a> for more information.',
+    }),
+    AccessPolicies: PolicyDocumentSchema.exactOptional().openapi({
+      description: 'IAM access policy as a JSON-formatted string.',
+    }),
+    LogPublishingOptions: LogPublishingOptionsSchema.exactOptional().openapi({
+      description:
+        'Map of <code>LogType</code> and <code>LogPublishingOption</code>, each containing options to publish a given type of Elasticsearch log.',
+    }),
+    DomainEndpointOptions: DomainEndpointOptionsSchema.exactOptional().openapi({
+      description: 'Options to specify configuration that will be applied to the domain endpoint.',
+    }),
+    AdvancedSecurityOptions: AdvancedSecurityOptionsInputSchema.exactOptional().openapi({
+      description: 'Specifies advanced security options.',
+    }),
+    NodeToNodeEncryptionOptions: NodeToNodeEncryptionOptionsSchema.exactOptional().openapi({
+      description: 'Specifies the NodeToNodeEncryptionOptions.',
+    }),
+    EncryptionAtRestOptions: EncryptionAtRestOptionsSchema.exactOptional().openapi({
+      description: 'Specifies the Encryption At Rest Options.',
+    }),
+    AutoTuneOptions: AutoTuneOptionsSchema.exactOptional().openapi({
+      description: 'Specifies Auto-Tune options.',
+    }),
+    DryRun: DryRunSchema.exactOptional().openapi({
+      description:
+        ' This flag, when set to True, specifies whether the <code>UpdateElasticsearchDomain</code> request should return the results of validation checks without actually applying the change. This flag, when set to True, specifies the deployment mechanism through which the update shall be applied on the domain. This will not actually perform the Update. ',
+    }),
   })
   .openapi({
     title: 'UpdateElasticsearchDomainConfigRequest',
@@ -4857,21 +3758,15 @@ const UpdateElasticsearchDomainConfigRequestSchema = z
 
 const UpdatePackageRequestSchema = z
   .object({
-    PackageID: PackageIDSchema.and(
-      z.any().openapi({ description: 'Unique identifier for the package.' }),
-    ),
+    PackageID: PackageIDSchema.openapi({ description: 'Unique identifier for the package.' }),
     PackageSource: PackageSourceSchema,
-    PackageDescription: PackageDescriptionSchema.and(
-      z.any().openapi({ description: 'New description of the package.' }),
-    ).exactOptional(),
-    CommitMessage: CommitMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An info message for the new version which will be shown as part of <code>GetPackageVersionHistoryResponse</code>.',
-        }),
-    ).exactOptional(),
+    PackageDescription: PackageDescriptionSchema.exactOptional().openapi({
+      description: 'New description of the package.',
+    }),
+    CommitMessage: CommitMessageSchema.exactOptional().openapi({
+      description:
+        'An info message for the new version which will be shown as part of <code>GetPackageVersionHistoryResponse</code>.',
+    }),
   })
   .openapi({
     required: ['PackageID', 'PackageSource'],
@@ -4883,14 +3778,12 @@ const UpdatePackageRequestSchema = z
 
 const UpdateVpcEndpointRequestSchema = z
   .object({
-    VpcEndpointId: VpcEndpointIdSchema.and(
-      z.any().openapi({ description: 'Unique identifier of the VPC endpoint to be updated.' }),
-    ),
-    VpcOptions: VPCOptionsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The security groups and/or subnets to add, remove, or modify.' }),
-    ),
+    VpcEndpointId: VpcEndpointIdSchema.openapi({
+      description: 'Unique identifier of the VPC endpoint to be updated.',
+    }),
+    VpcOptions: VPCOptionsSchema.openapi({
+      description: 'The security groups and/or subnets to add, remove, or modify.',
+    }),
   })
   .openapi({
     required: ['VpcEndpointId', 'VpcOptions'],
@@ -4902,21 +3795,13 @@ const UpdateVpcEndpointRequestSchema = z
 const UpgradeElasticsearchDomainRequestSchema = z
   .object({
     DomainName: DomainNameSchema,
-    TargetVersion: ElasticsearchVersionStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version of Elasticsearch that you intend to upgrade the domain to.',
-        }),
-    ),
-    PerformCheckOnly: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' This flag, when set to True, indicates that an Upgrade Eligibility Check needs to be performed. This will not actually perform the Upgrade. ',
-        }),
-    ).exactOptional(),
+    TargetVersion: ElasticsearchVersionStringSchema.openapi({
+      description: 'The version of Elasticsearch that you intend to upgrade the domain to.',
+    }),
+    PerformCheckOnly: BooleanSchema.exactOptional().openapi({
+      description:
+        ' This flag, when set to True, indicates that an Upgrade Eligibility Check needs to be performed. This will not actually perform the Upgrade. ',
+    }),
   })
   .openapi({
     required: ['DomainName', 'TargetVersion'],
@@ -5383,80 +4268,45 @@ export const post20150101EsDomainRoute = createRoute({
                 }),
               ElasticsearchClusterConfig: z
                 .object({
-                  InstanceType: ESPartitionInstanceTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The instance type for an Elasticsearch cluster. UltraWarm instance types are not supported for data instances.',
-                      }),
-                  ).exactOptional(),
-                  InstanceCount: IntegerClassSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The number of instances in the specified domain cluster.',
-                      }),
-                  ).exactOptional(),
-                  DedicatedMasterEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A boolean value to indicate whether a dedicated master node is enabled. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-managedomains.html#es-managedomains-dedicatedmasternodes" target="_blank">About Dedicated Master Nodes</a> for more information.',
-                      }),
-                  ).exactOptional(),
-                  ZoneAwarenessEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A boolean value to indicate whether zone awareness is enabled. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-managedomains.html#es-managedomains-zoneawareness" target="_blank">About Zone Awareness</a> for more information.',
-                      }),
-                  ).exactOptional(),
-                  ZoneAwarenessConfig: ZoneAwarenessConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the zone awareness configuration for a domain when zone awareness is enabled.',
-                      }),
-                  ).exactOptional(),
-                  DedicatedMasterType: ESPartitionInstanceTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The instance type for a dedicated master node.' }),
-                  ).exactOptional(),
-                  DedicatedMasterCount: IntegerClassSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Total number of dedicated master nodes, active and on standby, for the cluster.',
-                      }),
-                  ).exactOptional(),
-                  WarmEnabled: BooleanSchema.and(
-                    z.any().openapi({ description: 'True to enable warm storage.' }),
-                  ).exactOptional(),
-                  WarmType: ESWarmPartitionInstanceTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The instance type for the Elasticsearch cluster's warm nodes.",
-                      }),
-                  ).exactOptional(),
-                  WarmCount: IntegerClassSchema.and(
-                    z.any().openapi({ description: 'The number of warm nodes in the cluster.' }),
-                  ).exactOptional(),
-                  ColdStorageOptions: ColdStorageOptionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the <code>ColdStorageOptions</code> config for Elasticsearch Domain',
-                      }),
-                  ).exactOptional(),
+                  InstanceType: ESPartitionInstanceTypeSchema.exactOptional().openapi({
+                    description:
+                      'The instance type for an Elasticsearch cluster. UltraWarm instance types are not supported for data instances.',
+                  }),
+                  InstanceCount: IntegerClassSchema.exactOptional().openapi({
+                    description: 'The number of instances in the specified domain cluster.',
+                  }),
+                  DedicatedMasterEnabled: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'A boolean value to indicate whether a dedicated master node is enabled. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-managedomains.html#es-managedomains-dedicatedmasternodes" target="_blank">About Dedicated Master Nodes</a> for more information.',
+                  }),
+                  ZoneAwarenessEnabled: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'A boolean value to indicate whether zone awareness is enabled. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-managedomains.html#es-managedomains-zoneawareness" target="_blank">About Zone Awareness</a> for more information.',
+                  }),
+                  ZoneAwarenessConfig: ZoneAwarenessConfigSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the zone awareness configuration for a domain when zone awareness is enabled.',
+                  }),
+                  DedicatedMasterType: ESPartitionInstanceTypeSchema.exactOptional().openapi({
+                    description: 'The instance type for a dedicated master node.',
+                  }),
+                  DedicatedMasterCount: IntegerClassSchema.exactOptional().openapi({
+                    description:
+                      'Total number of dedicated master nodes, active and on standby, for the cluster.',
+                  }),
+                  WarmEnabled: BooleanSchema.exactOptional().openapi({
+                    description: 'True to enable warm storage.',
+                  }),
+                  WarmType: ESWarmPartitionInstanceTypeSchema.exactOptional().openapi({
+                    description: "The instance type for the Elasticsearch cluster's warm nodes.",
+                  }),
+                  WarmCount: IntegerClassSchema.exactOptional().openapi({
+                    description: 'The number of warm nodes in the cluster.',
+                  }),
+                  ColdStorageOptions: ColdStorageOptionsSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the <code>ColdStorageOptions</code> config for Elasticsearch Domain',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5466,38 +4316,22 @@ export const post20150101EsDomainRoute = createRoute({
                 }),
               EBSOptions: z
                 .object({
-                  EBSEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Specifies whether EBS-based storage is enabled.' }),
-                  ).exactOptional(),
-                  VolumeType: VolumeTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' Specifies the volume type for EBS-based storage.',
-                      }),
-                  ).exactOptional(),
-                  VolumeSize: IntegerClassSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: ' Integer to specify the size of an EBS volume.' }),
-                  ).exactOptional(),
-                  Iops: IntegerClassSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the IOPS for Provisioned IOPS And GP3 EBS volume (SSD).',
-                      }),
-                  ).exactOptional(),
-                  Throughput: IntegerClassSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Specifies the Throughput for GP3 EBS volume (SSD).',
-                      }),
-                  ).exactOptional(),
+                  EBSEnabled: BooleanSchema.exactOptional().openapi({
+                    description: 'Specifies whether EBS-based storage is enabled.',
+                  }),
+                  VolumeType: VolumeTypeSchema.exactOptional().openapi({
+                    description: ' Specifies the volume type for EBS-based storage.',
+                  }),
+                  VolumeSize: IntegerClassSchema.exactOptional().openapi({
+                    description: ' Integer to specify the size of an EBS volume.',
+                  }),
+                  Iops: IntegerClassSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the IOPS for Provisioned IOPS And GP3 EBS volume (SSD).',
+                  }),
+                  Throughput: IntegerClassSchema.exactOptional().openapi({
+                    description: 'Specifies the Throughput for GP3 EBS volume (SSD).',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5514,14 +4348,10 @@ export const post20150101EsDomainRoute = createRoute({
                 }),
               SnapshotOptions: z
                 .object({
-                  AutomatedSnapshotStartHour: IntegerClassSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the time, in UTC format, when the service takes a daily automated snapshot of the specified Elasticsearch domain. Default value is <code>0</code> hours.',
-                      }),
-                  ).exactOptional(),
+                  AutomatedSnapshotStartHour: IntegerClassSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the time, in UTC format, when the service takes a daily automated snapshot of the specified Elasticsearch domain. Default value is <code>0</code> hours.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5531,14 +4361,12 @@ export const post20150101EsDomainRoute = createRoute({
                 }),
               VPCOptions: z
                 .object({
-                  SubnetIds: StringListSchema.and(
-                    z.any().openapi({ description: 'Specifies the subnets for VPC endpoint.' }),
-                  ).exactOptional(),
-                  SecurityGroupIds: StringListSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Specifies the security groups for VPC endpoint.' }),
-                  ).exactOptional(),
+                  SubnetIds: StringListSchema.exactOptional().openapi({
+                    description: 'Specifies the subnets for VPC endpoint.',
+                  }),
+                  SecurityGroupIds: StringListSchema.exactOptional().openapi({
+                    description: 'Specifies the security groups for VPC endpoint.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5548,38 +4376,21 @@ export const post20150101EsDomainRoute = createRoute({
                 }),
               CognitoOptions: z
                 .object({
-                  Enabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the option to enable Cognito for Kibana authentication.',
-                      }),
-                  ).exactOptional(),
-                  UserPoolId: UserPoolIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the Cognito user pool ID for Kibana authentication.',
-                      }),
-                  ).exactOptional(),
-                  IdentityPoolId: IdentityPoolIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the Cognito identity pool ID for Kibana authentication.',
-                      }),
-                  ).exactOptional(),
-                  RoleArn: RoleArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the role ARN that provides Elasticsearch permissions for accessing Cognito resources.',
-                      }),
-                  ).exactOptional(),
+                  Enabled: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the option to enable Cognito for Kibana authentication.',
+                  }),
+                  UserPoolId: UserPoolIdSchema.exactOptional().openapi({
+                    description: 'Specifies the Cognito user pool ID for Kibana authentication.',
+                  }),
+                  IdentityPoolId: IdentityPoolIdSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the Cognito identity pool ID for Kibana authentication.',
+                  }),
+                  RoleArn: RoleArnSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the role ARN that provides Elasticsearch permissions for accessing Cognito resources.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5589,20 +4400,12 @@ export const post20150101EsDomainRoute = createRoute({
                 }),
               EncryptionAtRestOptions: z
                 .object({
-                  Enabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Specifies the option to enable Encryption At Rest.',
-                      }),
-                  ).exactOptional(),
-                  KmsKeyId: KmsKeyIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' Specifies the KMS Key ID for Encryption At Rest options.',
-                      }),
-                  ).exactOptional(),
+                  Enabled: BooleanSchema.exactOptional().openapi({
+                    description: 'Specifies the option to enable Encryption At Rest.',
+                  }),
+                  KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+                    description: ' Specifies the KMS Key ID for Encryption At Rest options.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5611,11 +4414,9 @@ export const post20150101EsDomainRoute = createRoute({
                 }),
               NodeToNodeEncryptionOptions: z
                 .object({
-                  Enabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Specify true to enable node-to-node encryption.' }),
-                  ).exactOptional(),
+                  Enabled: BooleanSchema.exactOptional().openapi({
+                    description: 'Specify true to enable node-to-node encryption.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5638,44 +4439,24 @@ export const post20150101EsDomainRoute = createRoute({
                 }),
               DomainEndpointOptions: z
                 .object({
-                  EnforceHTTPS: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specify if only HTTPS endpoint should be enabled for the Elasticsearch domain.',
-                      }),
-                  ).exactOptional(),
-                  TLSSecurityPolicy: TLSSecurityPolicySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specify the TLS security policy that needs to be applied to the HTTPS endpoint of Elasticsearch domain. <br/> It can be one of the following values: <ul> <li><b>Policy-Min-TLS-1-0-2019-07: </b> TLS security policy which supports TLSv1.0 and higher.</li> <li><b>Policy-Min-TLS-1-2-2019-07: </b> TLS security policy which supports only TLSv1.2</li> </ul> ',
-                      }),
-                  ).exactOptional(),
-                  CustomEndpointEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specify if custom endpoint should be enabled for the Elasticsearch domain.',
-                      }),
-                  ).exactOptional(),
-                  CustomEndpoint: DomainNameFqdnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Specify the fully qualified domain for your custom endpoint.',
-                      }),
-                  ).exactOptional(),
-                  CustomEndpointCertificateArn: ARNSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Specify ACM certificate ARN for your custom endpoint.',
-                      }),
-                  ).exactOptional(),
+                  EnforceHTTPS: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'Specify if only HTTPS endpoint should be enabled for the Elasticsearch domain.',
+                  }),
+                  TLSSecurityPolicy: TLSSecurityPolicySchema.exactOptional().openapi({
+                    description:
+                      'Specify the TLS security policy that needs to be applied to the HTTPS endpoint of Elasticsearch domain. <br/> It can be one of the following values: <ul> <li><b>Policy-Min-TLS-1-0-2019-07: </b> TLS security policy which supports TLSv1.0 and higher.</li> <li><b>Policy-Min-TLS-1-2-2019-07: </b> TLS security policy which supports only TLSv1.2</li> </ul> ',
+                  }),
+                  CustomEndpointEnabled: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'Specify if custom endpoint should be enabled for the Elasticsearch domain.',
+                  }),
+                  CustomEndpoint: DomainNameFqdnSchema.exactOptional().openapi({
+                    description: 'Specify the fully qualified domain for your custom endpoint.',
+                  }),
+                  CustomEndpointCertificateArn: ARNSchema.exactOptional().openapi({
+                    description: 'Specify ACM certificate ARN for your custom endpoint.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5684,37 +4465,23 @@ export const post20150101EsDomainRoute = createRoute({
                 }),
               AdvancedSecurityOptions: z
                 .object({
-                  Enabled: BooleanSchema.and(
-                    z.any().openapi({ description: 'True if advanced security is enabled.' }),
-                  ).exactOptional(),
-                  InternalUserDatabaseEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'True if the internal user database is enabled.' }),
-                  ).exactOptional(),
-                  MasterUserOptions: MasterUserOptionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Credentials for the master user: username and password, ARN, or both.',
-                      }),
-                  ).exactOptional(),
-                  SAMLOptions: SAMLOptionsInputSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Specifies the SAML application configuration for the domain.',
-                      }),
-                  ).exactOptional(),
-                  AnonymousAuthEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'True if Anonymous auth is enabled. Anonymous auth can be enabled only when AdvancedSecurity is enabled on existing domains.',
-                      }),
-                  ).exactOptional(),
+                  Enabled: BooleanSchema.exactOptional().openapi({
+                    description: 'True if advanced security is enabled.',
+                  }),
+                  InternalUserDatabaseEnabled: BooleanSchema.exactOptional().openapi({
+                    description: 'True if the internal user database is enabled.',
+                  }),
+                  MasterUserOptions: MasterUserOptionsSchema.exactOptional().openapi({
+                    description:
+                      'Credentials for the master user: username and password, ARN, or both.',
+                  }),
+                  SAMLOptions: SAMLOptionsInputSchema.exactOptional().openapi({
+                    description: 'Specifies the SAML application configuration for the domain.',
+                  }),
+                  AnonymousAuthEnabled: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'True if Anonymous auth is enabled. Anonymous auth can be enabled only when AdvancedSecurity is enabled on existing domains.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5724,22 +4491,15 @@ export const post20150101EsDomainRoute = createRoute({
                 }),
               AutoTuneOptions: z
                 .object({
-                  DesiredState: AutoTuneDesiredStateSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the Auto-Tune desired state. Valid values are ENABLED, DISABLED. ',
-                      }),
-                  ).exactOptional(),
-                  MaintenanceSchedules: AutoTuneMaintenanceScheduleListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies list of maitenance schedules. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
-                      }),
-                  ).exactOptional(),
+                  DesiredState: AutoTuneDesiredStateSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the Auto-Tune desired state. Valid values are ENABLED, DISABLED. ',
+                  }),
+                  MaintenanceSchedules:
+                    AutoTuneMaintenanceScheduleListSchema.exactOptional().openapi({
+                      description:
+                        'Specifies list of maitenance schedules. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5917,12 +4677,12 @@ export const post20150101PackagesRoute = createRoute({
                 .openapi({ description: 'Description of the package.' }),
               PackageSource: z
                 .object({
-                  S3BucketName: S3BucketNameSchema.and(
-                    z.any().openapi({ description: 'Name of the bucket containing the package.' }),
-                  ).exactOptional(),
-                  S3Key: S3KeySchema.and(
-                    z.any().openapi({ description: 'Key (file name) of the package.' }),
-                  ).exactOptional(),
+                  S3BucketName: S3BucketNameSchema.exactOptional().openapi({
+                    description: 'Name of the bucket containing the package.',
+                  }),
+                  S3Key: S3KeySchema.exactOptional().openapi({
+                    description: 'Key (file name) of the package.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -6059,14 +4819,12 @@ export const post20150101EsVpcEndpointsRoute = createRoute({
                 }),
               VpcOptions: z
                 .object({
-                  SubnetIds: StringListSchema.and(
-                    z.any().openapi({ description: 'Specifies the subnets for VPC endpoint.' }),
-                  ).exactOptional(),
-                  SecurityGroupIds: StringListSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Specifies the security groups for VPC endpoint.' }),
-                  ).exactOptional(),
+                  SubnetIds: StringListSchema.exactOptional().openapi({
+                    description: 'Specifies the subnets for VPC endpoint.',
+                  }),
+                  SecurityGroupIds: StringListSchema.exactOptional().openapi({
+                    description: 'Specifies the security groups for VPC endpoint.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -6819,80 +5577,45 @@ export const post20150101EsDomainDomainNameConfigRoute = createRoute({
             .object({
               ElasticsearchClusterConfig: z
                 .object({
-                  InstanceType: ESPartitionInstanceTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The instance type for an Elasticsearch cluster. UltraWarm instance types are not supported for data instances.',
-                      }),
-                  ).exactOptional(),
-                  InstanceCount: IntegerClassSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The number of instances in the specified domain cluster.',
-                      }),
-                  ).exactOptional(),
-                  DedicatedMasterEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A boolean value to indicate whether a dedicated master node is enabled. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-managedomains.html#es-managedomains-dedicatedmasternodes" target="_blank">About Dedicated Master Nodes</a> for more information.',
-                      }),
-                  ).exactOptional(),
-                  ZoneAwarenessEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A boolean value to indicate whether zone awareness is enabled. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-managedomains.html#es-managedomains-zoneawareness" target="_blank">About Zone Awareness</a> for more information.',
-                      }),
-                  ).exactOptional(),
-                  ZoneAwarenessConfig: ZoneAwarenessConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the zone awareness configuration for a domain when zone awareness is enabled.',
-                      }),
-                  ).exactOptional(),
-                  DedicatedMasterType: ESPartitionInstanceTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The instance type for a dedicated master node.' }),
-                  ).exactOptional(),
-                  DedicatedMasterCount: IntegerClassSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Total number of dedicated master nodes, active and on standby, for the cluster.',
-                      }),
-                  ).exactOptional(),
-                  WarmEnabled: BooleanSchema.and(
-                    z.any().openapi({ description: 'True to enable warm storage.' }),
-                  ).exactOptional(),
-                  WarmType: ESWarmPartitionInstanceTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The instance type for the Elasticsearch cluster's warm nodes.",
-                      }),
-                  ).exactOptional(),
-                  WarmCount: IntegerClassSchema.and(
-                    z.any().openapi({ description: 'The number of warm nodes in the cluster.' }),
-                  ).exactOptional(),
-                  ColdStorageOptions: ColdStorageOptionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the <code>ColdStorageOptions</code> config for Elasticsearch Domain',
-                      }),
-                  ).exactOptional(),
+                  InstanceType: ESPartitionInstanceTypeSchema.exactOptional().openapi({
+                    description:
+                      'The instance type for an Elasticsearch cluster. UltraWarm instance types are not supported for data instances.',
+                  }),
+                  InstanceCount: IntegerClassSchema.exactOptional().openapi({
+                    description: 'The number of instances in the specified domain cluster.',
+                  }),
+                  DedicatedMasterEnabled: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'A boolean value to indicate whether a dedicated master node is enabled. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-managedomains.html#es-managedomains-dedicatedmasternodes" target="_blank">About Dedicated Master Nodes</a> for more information.',
+                  }),
+                  ZoneAwarenessEnabled: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'A boolean value to indicate whether zone awareness is enabled. See <a href="http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-managedomains.html#es-managedomains-zoneawareness" target="_blank">About Zone Awareness</a> for more information.',
+                  }),
+                  ZoneAwarenessConfig: ZoneAwarenessConfigSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the zone awareness configuration for a domain when zone awareness is enabled.',
+                  }),
+                  DedicatedMasterType: ESPartitionInstanceTypeSchema.exactOptional().openapi({
+                    description: 'The instance type for a dedicated master node.',
+                  }),
+                  DedicatedMasterCount: IntegerClassSchema.exactOptional().openapi({
+                    description:
+                      'Total number of dedicated master nodes, active and on standby, for the cluster.',
+                  }),
+                  WarmEnabled: BooleanSchema.exactOptional().openapi({
+                    description: 'True to enable warm storage.',
+                  }),
+                  WarmType: ESWarmPartitionInstanceTypeSchema.exactOptional().openapi({
+                    description: "The instance type for the Elasticsearch cluster's warm nodes.",
+                  }),
+                  WarmCount: IntegerClassSchema.exactOptional().openapi({
+                    description: 'The number of warm nodes in the cluster.',
+                  }),
+                  ColdStorageOptions: ColdStorageOptionsSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the <code>ColdStorageOptions</code> config for Elasticsearch Domain',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6902,38 +5625,22 @@ export const post20150101EsDomainDomainNameConfigRoute = createRoute({
                 }),
               EBSOptions: z
                 .object({
-                  EBSEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Specifies whether EBS-based storage is enabled.' }),
-                  ).exactOptional(),
-                  VolumeType: VolumeTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' Specifies the volume type for EBS-based storage.',
-                      }),
-                  ).exactOptional(),
-                  VolumeSize: IntegerClassSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: ' Integer to specify the size of an EBS volume.' }),
-                  ).exactOptional(),
-                  Iops: IntegerClassSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the IOPS for Provisioned IOPS And GP3 EBS volume (SSD).',
-                      }),
-                  ).exactOptional(),
-                  Throughput: IntegerClassSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Specifies the Throughput for GP3 EBS volume (SSD).',
-                      }),
-                  ).exactOptional(),
+                  EBSEnabled: BooleanSchema.exactOptional().openapi({
+                    description: 'Specifies whether EBS-based storage is enabled.',
+                  }),
+                  VolumeType: VolumeTypeSchema.exactOptional().openapi({
+                    description: ' Specifies the volume type for EBS-based storage.',
+                  }),
+                  VolumeSize: IntegerClassSchema.exactOptional().openapi({
+                    description: ' Integer to specify the size of an EBS volume.',
+                  }),
+                  Iops: IntegerClassSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the IOPS for Provisioned IOPS And GP3 EBS volume (SSD).',
+                  }),
+                  Throughput: IntegerClassSchema.exactOptional().openapi({
+                    description: 'Specifies the Throughput for GP3 EBS volume (SSD).',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6943,14 +5650,10 @@ export const post20150101EsDomainDomainNameConfigRoute = createRoute({
                 }),
               SnapshotOptions: z
                 .object({
-                  AutomatedSnapshotStartHour: IntegerClassSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the time, in UTC format, when the service takes a daily automated snapshot of the specified Elasticsearch domain. Default value is <code>0</code> hours.',
-                      }),
-                  ).exactOptional(),
+                  AutomatedSnapshotStartHour: IntegerClassSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the time, in UTC format, when the service takes a daily automated snapshot of the specified Elasticsearch domain. Default value is <code>0</code> hours.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6960,14 +5663,12 @@ export const post20150101EsDomainDomainNameConfigRoute = createRoute({
                 }),
               VPCOptions: z
                 .object({
-                  SubnetIds: StringListSchema.and(
-                    z.any().openapi({ description: 'Specifies the subnets for VPC endpoint.' }),
-                  ).exactOptional(),
-                  SecurityGroupIds: StringListSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Specifies the security groups for VPC endpoint.' }),
-                  ).exactOptional(),
+                  SubnetIds: StringListSchema.exactOptional().openapi({
+                    description: 'Specifies the subnets for VPC endpoint.',
+                  }),
+                  SecurityGroupIds: StringListSchema.exactOptional().openapi({
+                    description: 'Specifies the security groups for VPC endpoint.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6977,38 +5678,21 @@ export const post20150101EsDomainDomainNameConfigRoute = createRoute({
                 }),
               CognitoOptions: z
                 .object({
-                  Enabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the option to enable Cognito for Kibana authentication.',
-                      }),
-                  ).exactOptional(),
-                  UserPoolId: UserPoolIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the Cognito user pool ID for Kibana authentication.',
-                      }),
-                  ).exactOptional(),
-                  IdentityPoolId: IdentityPoolIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the Cognito identity pool ID for Kibana authentication.',
-                      }),
-                  ).exactOptional(),
-                  RoleArn: RoleArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the role ARN that provides Elasticsearch permissions for accessing Cognito resources.',
-                      }),
-                  ).exactOptional(),
+                  Enabled: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the option to enable Cognito for Kibana authentication.',
+                  }),
+                  UserPoolId: UserPoolIdSchema.exactOptional().openapi({
+                    description: 'Specifies the Cognito user pool ID for Kibana authentication.',
+                  }),
+                  IdentityPoolId: IdentityPoolIdSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the Cognito identity pool ID for Kibana authentication.',
+                  }),
+                  RoleArn: RoleArnSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the role ARN that provides Elasticsearch permissions for accessing Cognito resources.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7039,44 +5723,24 @@ export const post20150101EsDomainDomainNameConfigRoute = createRoute({
                 }),
               DomainEndpointOptions: z
                 .object({
-                  EnforceHTTPS: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specify if only HTTPS endpoint should be enabled for the Elasticsearch domain.',
-                      }),
-                  ).exactOptional(),
-                  TLSSecurityPolicy: TLSSecurityPolicySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specify the TLS security policy that needs to be applied to the HTTPS endpoint of Elasticsearch domain. <br/> It can be one of the following values: <ul> <li><b>Policy-Min-TLS-1-0-2019-07: </b> TLS security policy which supports TLSv1.0 and higher.</li> <li><b>Policy-Min-TLS-1-2-2019-07: </b> TLS security policy which supports only TLSv1.2</li> </ul> ',
-                      }),
-                  ).exactOptional(),
-                  CustomEndpointEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specify if custom endpoint should be enabled for the Elasticsearch domain.',
-                      }),
-                  ).exactOptional(),
-                  CustomEndpoint: DomainNameFqdnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Specify the fully qualified domain for your custom endpoint.',
-                      }),
-                  ).exactOptional(),
-                  CustomEndpointCertificateArn: ARNSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Specify ACM certificate ARN for your custom endpoint.',
-                      }),
-                  ).exactOptional(),
+                  EnforceHTTPS: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'Specify if only HTTPS endpoint should be enabled for the Elasticsearch domain.',
+                  }),
+                  TLSSecurityPolicy: TLSSecurityPolicySchema.exactOptional().openapi({
+                    description:
+                      'Specify the TLS security policy that needs to be applied to the HTTPS endpoint of Elasticsearch domain. <br/> It can be one of the following values: <ul> <li><b>Policy-Min-TLS-1-0-2019-07: </b> TLS security policy which supports TLSv1.0 and higher.</li> <li><b>Policy-Min-TLS-1-2-2019-07: </b> TLS security policy which supports only TLSv1.2</li> </ul> ',
+                  }),
+                  CustomEndpointEnabled: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'Specify if custom endpoint should be enabled for the Elasticsearch domain.',
+                  }),
+                  CustomEndpoint: DomainNameFqdnSchema.exactOptional().openapi({
+                    description: 'Specify the fully qualified domain for your custom endpoint.',
+                  }),
+                  CustomEndpointCertificateArn: ARNSchema.exactOptional().openapi({
+                    description: 'Specify ACM certificate ARN for your custom endpoint.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7085,37 +5749,23 @@ export const post20150101EsDomainDomainNameConfigRoute = createRoute({
                 }),
               AdvancedSecurityOptions: z
                 .object({
-                  Enabled: BooleanSchema.and(
-                    z.any().openapi({ description: 'True if advanced security is enabled.' }),
-                  ).exactOptional(),
-                  InternalUserDatabaseEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'True if the internal user database is enabled.' }),
-                  ).exactOptional(),
-                  MasterUserOptions: MasterUserOptionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Credentials for the master user: username and password, ARN, or both.',
-                      }),
-                  ).exactOptional(),
-                  SAMLOptions: SAMLOptionsInputSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Specifies the SAML application configuration for the domain.',
-                      }),
-                  ).exactOptional(),
-                  AnonymousAuthEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'True if Anonymous auth is enabled. Anonymous auth can be enabled only when AdvancedSecurity is enabled on existing domains.',
-                      }),
-                  ).exactOptional(),
+                  Enabled: BooleanSchema.exactOptional().openapi({
+                    description: 'True if advanced security is enabled.',
+                  }),
+                  InternalUserDatabaseEnabled: BooleanSchema.exactOptional().openapi({
+                    description: 'True if the internal user database is enabled.',
+                  }),
+                  MasterUserOptions: MasterUserOptionsSchema.exactOptional().openapi({
+                    description:
+                      'Credentials for the master user: username and password, ARN, or both.',
+                  }),
+                  SAMLOptions: SAMLOptionsInputSchema.exactOptional().openapi({
+                    description: 'Specifies the SAML application configuration for the domain.',
+                  }),
+                  AnonymousAuthEnabled: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'True if Anonymous auth is enabled. Anonymous auth can be enabled only when AdvancedSecurity is enabled on existing domains.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7125,11 +5775,9 @@ export const post20150101EsDomainDomainNameConfigRoute = createRoute({
                 }),
               NodeToNodeEncryptionOptions: z
                 .object({
-                  Enabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Specify true to enable node-to-node encryption.' }),
-                  ).exactOptional(),
+                  Enabled: BooleanSchema.exactOptional().openapi({
+                    description: 'Specify true to enable node-to-node encryption.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7138,20 +5786,12 @@ export const post20150101EsDomainDomainNameConfigRoute = createRoute({
                 }),
               EncryptionAtRestOptions: z
                 .object({
-                  Enabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Specifies the option to enable Encryption At Rest.',
-                      }),
-                  ).exactOptional(),
-                  KmsKeyId: KmsKeyIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' Specifies the KMS Key ID for Encryption At Rest options.',
-                      }),
-                  ).exactOptional(),
+                  Enabled: BooleanSchema.exactOptional().openapi({
+                    description: 'Specifies the option to enable Encryption At Rest.',
+                  }),
+                  KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+                    description: ' Specifies the KMS Key ID for Encryption At Rest options.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7160,30 +5800,19 @@ export const post20150101EsDomainDomainNameConfigRoute = createRoute({
                 }),
               AutoTuneOptions: z
                 .object({
-                  DesiredState: AutoTuneDesiredStateSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the Auto-Tune desired state. Valid values are ENABLED, DISABLED. ',
-                      }),
-                  ).exactOptional(),
-                  RollbackOnDisable: RollbackOnDisableSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the rollback state while disabling Auto-Tune for the domain. Valid values are NO_ROLLBACK, DEFAULT_ROLLBACK. ',
-                      }),
-                  ).exactOptional(),
-                  MaintenanceSchedules: AutoTuneMaintenanceScheduleListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies list of maitenance schedules. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
-                      }),
-                  ).exactOptional(),
+                  DesiredState: AutoTuneDesiredStateSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the Auto-Tune desired state. Valid values are ENABLED, DISABLED. ',
+                  }),
+                  RollbackOnDisable: RollbackOnDisableSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the rollback state while disabling Auto-Tune for the domain. Valid values are NO_ROLLBACK, DEFAULT_ROLLBACK. ',
+                  }),
+                  MaintenanceSchedules:
+                    AutoTuneMaintenanceScheduleListSchema.exactOptional().openapi({
+                      description:
+                        'Specifies list of maitenance schedules. See the <a href="https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/auto-tune.html" target="_blank">Developer Guide</a> for more information.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9786,12 +8415,12 @@ export const post20150101PackagesUpdateRoute = createRoute({
               PackageID: z.string().openapi({ description: 'Unique identifier for the package.' }),
               PackageSource: z
                 .object({
-                  S3BucketName: S3BucketNameSchema.and(
-                    z.any().openapi({ description: 'Name of the bucket containing the package.' }),
-                  ).exactOptional(),
-                  S3Key: S3KeySchema.and(
-                    z.any().openapi({ description: 'Key (file name) of the package.' }),
-                  ).exactOptional(),
+                  S3BucketName: S3BucketNameSchema.exactOptional().openapi({
+                    description: 'Name of the bucket containing the package.',
+                  }),
+                  S3Key: S3KeySchema.exactOptional().openapi({
+                    description: 'Key (file name) of the package.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -9878,14 +8507,12 @@ export const post20150101EsVpcEndpointsUpdateRoute = createRoute({
                 .openapi({ description: 'Unique identifier of the VPC endpoint to be updated.' }),
               VpcOptions: z
                 .object({
-                  SubnetIds: StringListSchema.and(
-                    z.any().openapi({ description: 'Specifies the subnets for VPC endpoint.' }),
-                  ).exactOptional(),
-                  SecurityGroupIds: StringListSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Specifies the security groups for VPC endpoint.' }),
-                  ).exactOptional(),
+                  SubnetIds: StringListSchema.exactOptional().openapi({
+                    description: 'Specifies the subnets for VPC endpoint.',
+                  }),
+                  SecurityGroupIds: StringListSchema.exactOptional().openapi({
+                    description: 'Specifies the security groups for VPC endpoint.',
+                  }),
                 })
                 .openapi({
                   description:

@@ -1,246 +1,358 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const CutoffTimeSchema = z
+const AccountStatusAccountLevelIssueSchema = z
   .object({
-    hour: z
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Country for which this issue is reported.' }),
+    destination: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The destination the issue applies to. If this field is empty then the issue applies to all available destinations.',
+      }),
+    detail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Additional details about the issue.' }),
+    documentation: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL of a web page to help resolving this issue.' }),
+    id: z.string().exactOptional().openapi({ description: 'Issue identifier.' }),
+    severity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Severity of the issue. Acceptable values are: - "`critical`" - "`error`" - "`suggestion`" ',
+      }),
+    title: z.string().exactOptional().openapi({ description: 'Short description of the issue.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AccountStatusAccountLevelIssue')
+
+const AccountStatusExampleItemSchema = z
+  .object({
+    itemId: z.string().exactOptional(),
+    link: z.string().exactOptional(),
+    submittedValue: z.string().exactOptional(),
+    title: z.string().exactOptional(),
+    valueOnLandingPage: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AccountStatusExampleItem')
+
+const AccountStatusDataQualityIssueSchema = z
+  .object({
+    country: z.string().exactOptional(),
+    destination: z.string().exactOptional(),
+    detail: z.string().exactOptional(),
+    displayedValue: z.string().exactOptional(),
+    exampleItems: z.array(AccountStatusExampleItemSchema).exactOptional(),
+    id: z.string().exactOptional(),
+    lastChecked: z.string().exactOptional(),
+    location: z.string().exactOptional(),
+    numItems: z.uint32().exactOptional(),
+    severity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: ' Acceptable values are: - "`critical`" - "`error`" - "`suggestion`" ',
+      }),
+    submittedValue: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AccountStatusDataQualityIssue')
+
+const AccountStatusItemLevelIssueSchema = z
+  .object({
+    attributeName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The attribute's name, if the issue is caused by a single attribute.",
+      }),
+    code: z.string().exactOptional().openapi({ description: 'The error code of the issue.' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A short issue description in English.' }),
+    detail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A detailed issue description in English.' }),
+    documentation: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL of a web page to help with resolving this issue.' }),
+    numItems: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Number of items with this issue.' }),
+    resolution: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Whether the issue can be resolved by the merchant.' }),
+    servability: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'How this issue affects serving of the offer.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AccountStatusItemLevelIssue')
+
+const AccountStatusStatisticsSchema = z
+  .object({
+    active: z.string().exactOptional().openapi({ description: 'Number of active offers.' }),
+    disapproved: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Number of disapproved offers.' }),
+    expiring: z.string().exactOptional().openapi({ description: 'Number of expiring offers.' }),
+    pending: z.string().exactOptional().openapi({ description: 'Number of pending offers.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AccountStatusStatistics')
+
+const AccountStatusProductsSchema = z
+  .object({
+    channel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The channel the data applies to. Acceptable values are: - "`local`" - "`online`" ',
+      }),
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The country the data applies to.' }),
+    destination: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The destination the data applies to.' }),
+    itemLevelIssues: z
+      .array(AccountStatusItemLevelIssueSchema)
+      .exactOptional()
+      .openapi({ description: 'List of item-level issues.' }),
+    statistics: AccountStatusStatisticsSchema.exactOptional().openapi({
+      description: 'Aggregated product statistics.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AccountStatusProducts')
+
+const AccountStatusSchema = z
+  .object({
+    accountId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the account for which the status is reported.' }),
+    accountLevelIssues: z
+      .array(AccountStatusAccountLevelIssueSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of account level issues.' }),
+    dataQualityIssues: z
+      .array(AccountStatusDataQualityIssueSchema)
+      .exactOptional()
+      .openapi({ description: 'DEPRECATED - never populated.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "`content#accountStatus`"',
+      }),
+    products: z
+      .array(AccountStatusProductsSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of product-related data by channel, destination, and country. Data in this field may be delayed by up to 30 minutes.',
+      }),
+    websiteClaimed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: "Whether the account's website is claimed or not." }),
+  })
+  .openapi({
+    description:
+      'The status of an account, i.e., information about its products, which is computed offline and not returned immediately at insertion time.',
+    required: [],
+  })
+  .openapi('AccountStatus')
+
+const ErrorSchema = z
+  .object({
+    domain: z.string().exactOptional().openapi({ description: 'The domain of the error.' }),
+    message: z.string().exactOptional().openapi({ description: 'A description of the error.' }),
+    reason: z.string().exactOptional().openapi({ description: 'The error code.' }),
+  })
+  .openapi({ description: 'An error returned by the API.', required: [] })
+  .openapi('Error')
+
+const ErrorsSchema = z
+  .object({
+    code: z
       .uint32()
       .exactOptional()
-      .openapi({
-        description:
-          'Hour of the cutoff time until which an order has to be placed to be processed in the same day. Required.',
-      }),
-    minute: z
+      .openapi({ description: 'The HTTP status of the first error in `errors`.' }),
+    errors: z.array(ErrorSchema).exactOptional().openapi({ description: 'A list of errors.' }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The message of the first error in `errors`.' }),
+  })
+  .openapi({ description: 'A list of errors returned by a failed batch entry.', required: [] })
+  .openapi('Errors')
+
+const AccountstatusesCustomBatchResponseEntrySchema = z
+  .object({
+    accountStatus: AccountStatusSchema.exactOptional().openapi({
+      description:
+        'The requested account status. Defined if and only if the request was successful.',
+    }),
+    batchId: z
       .uint32()
       .exactOptional()
-      .openapi({
-        description:
-          'Minute of the cutoff time until which an order has to be placed to be processed in the same day. Required.',
-      }),
-    timezone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timezone identifier for the cutoff time. A list of identifiers can be found in the AdWords API documentation. E.g. "Europe/Zurich". Required.',
-      }),
+      .openapi({ description: 'The ID of the request entry this entry responds to.' }),
+    errors: ErrorsSchema.exactOptional().openapi({
+      description: 'A list of errors defined if and only if the request failed.',
+    }),
   })
-  .openapi({ required: [] })
-  .openapi('CutoffTime')
-
-const BusinessDayConfigSchema = z
-  .object({
-    businessDays: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Regular business days, such as \'"monday"\'. May not be empty.' }),
+  .openapi({
+    description: 'A batch entry encoding a single non-batch accountstatuses response.',
+    required: [],
   })
-  .openapi({ required: [] })
-  .openapi('BusinessDayConfig')
+  .openapi('AccountstatusesCustomBatchResponseEntry')
 
-const HolidayCutoffSchema = z
-  .object({
-    deadlineDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Date of the order deadline, in ISO 8601 format. E.g. "2016-11-29" for 29th November 2016. Required.',
-      }),
-    deadlineHour: z
-      .uint32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Hour of the day on the deadline date until which the order has to be placed to qualify for the delivery guarantee. Possible values are: 0 (midnight), 1, ..., 12 (noon), 13, ..., 23. Required.',
-      }),
-    deadlineTimezone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timezone identifier for the deadline hour. A list of identifiers can be found in the AdWords API documentation. E.g. "Europe/Zurich". Required.',
-      }),
-    holidayId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Unique identifier for the holiday. Required.' }),
-    visibleFromDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Date on which the deadline will become visible to consumers in ISO 8601 format. E.g. "2016-10-31" for 31st October 2016. Required.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('HolidayCutoff')
-
-const TransitTableTransitTimeRowTransitTimeValueSchema = z
-  .object({
-    maxTransitTimeInDays: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'Must be greater than or equal to `minTransitTimeInDays`.' }),
-    minTransitTimeInDays: z
-      .uint32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Transit time range (min-max) in business days. 0 means same day delivery, 1 means next day delivery.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TransitTableTransitTimeRowTransitTimeValue')
-
-const TransitTableTransitTimeRowSchema = z
-  .object({ values: z.array(TransitTableTransitTimeRowTransitTimeValueSchema).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('TransitTableTransitTimeRow')
-
-const TransitTableSchema = z
-  .object({
-    postalCodeGroupNames: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of postal group names. The last value can be `"all other locations"`. Example: `["zone 1", "zone 2", "all other locations"]`. The referred postal code groups must match the delivery country of the service.',
-      }),
-    rows: z.array(TransitTableTransitTimeRowSchema).exactOptional(),
-    transitTimeLabels: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of transit time labels. The last value can be `"all other labels"`. Example: `["food", "electronics", "all other labels"]`.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TransitTable')
-
-const WarehouseBasedDeliveryTimeSchema = z
-  .object({
-    carrier: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Carrier, such as `"UPS"` or `"Fedex"`. The list of supported carriers can be retrieved via the `listSupportedCarriers` method.',
-      }),
-    carrierService: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Carrier service, such as `"ground"` or `"2 days"`. The list of supported services for a carrier can be retrieved via the `listSupportedCarriers` method. The name of the service must be in the eddSupportedServices list.',
-      }),
-    originAdministrativeArea: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Shipping origin's state." }),
-    originCity: z.string().exactOptional().openapi({ description: "Shipping origin's city." }),
-    originCountry: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Shipping origin's country represented as a [CLDR territory code](http://www.unicode.org/repos/cldr/tags/latest/common/main/en.xml).",
-      }),
-    originPostalCode: z.string().exactOptional().openapi({ description: 'Shipping origin.' }),
-    originStreetAddress: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Shipping origin's street address" }),
-    warehouseName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the warehouse. Warehouse name need to be matched with name. If warehouseName is set, the below fields will be ignored. The warehouse info will be read from warehouse.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('WarehouseBasedDeliveryTime')
-
-type DeliveryTimeType = {
-  cutoffTime?: z.infer<typeof CutoffTimeSchema>
-  handlingBusinessDayConfig?: z.infer<typeof BusinessDayConfigSchema>
-  holidayCutoffs?: z.infer<typeof HolidayCutoffSchema>[]
-  maxHandlingTimeInDays?: number
-  maxTransitTimeInDays?: number
-  minHandlingTimeInDays?: number
-  minTransitTimeInDays?: number
-  transitBusinessDayConfig?: z.infer<typeof BusinessDayConfigSchema>
-  transitTimeTable?: z.infer<typeof TransitTableSchema>
-  warehouseBasedDeliveryTimes?: z.infer<typeof WarehouseBasedDeliveryTimeSchema>[]
+type AccountstatusesCustomBatchResponseType = {
+  entries?: z.infer<typeof AccountstatusesCustomBatchResponseEntrySchema>[]
+  kind?: string
 }
 
-const DeliveryTimeSchema: z.ZodType<DeliveryTimeType> = z
-  .lazy(() =>
-    z
-      .object({
-        cutoffTime: CutoffTimeSchema.exactOptional().openapi({
-          description:
-            'Business days cutoff time definition. If not configured the cutoff time will be defaulted to 8AM PST.',
-        }),
-        handlingBusinessDayConfig: BusinessDayConfigSchema.exactOptional().openapi({
-          description:
-            'The business days during which orders can be handled. If not provided, Monday to Friday business days will be assumed.',
-        }),
-        holidayCutoffs: z
-          .array(HolidayCutoffSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Holiday cutoff definitions. If configured, they specify order cutoff times for holiday-specific shipping.',
-          }),
-        maxHandlingTimeInDays: z
-          .uint32()
-          .exactOptional()
-          .openapi({
-            description:
-              'Maximum number of business days spent before an order is shipped. 0 means same day shipped, 1 means next day shipped. Must be greater than or equal to `minHandlingTimeInDays`.',
-          }),
-        maxTransitTimeInDays: z
-          .uint32()
-          .exactOptional()
-          .openapi({
-            description:
-              'Maximum number of business days that is spent in transit. 0 means same day delivery, 1 means next day delivery. Must be greater than or equal to `minTransitTimeInDays`.',
-          }),
-        minHandlingTimeInDays: z
-          .uint32()
-          .exactOptional()
-          .openapi({
-            description:
-              'Minimum number of business days spent before an order is shipped. 0 means same day shipped, 1 means next day shipped.',
-          }),
-        minTransitTimeInDays: z
-          .uint32()
-          .exactOptional()
-          .openapi({
-            description:
-              'Minimum number of business days that is spent in transit. 0 means same day delivery, 1 means next day delivery. Either `{min,max}TransitTimeInDays` or `transitTimeTable` must be set, but not both.',
-          }),
-        transitBusinessDayConfig: BusinessDayConfigSchema.exactOptional().openapi({
-          description:
-            'The business days during which orders can be in-transit. If not provided, Monday to Friday business days will be assumed.',
-        }),
-        transitTimeTable: TransitTableSchema.exactOptional().openapi({
-          description:
-            'Transit time table, number of business days spent in transit based on row and column dimensions. Either `{min,max}TransitTimeInDays` or `transitTimeTable` can be set, but not both.',
-        }),
-        warehouseBasedDeliveryTimes: z
-          .array(WarehouseBasedDeliveryTimeSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Indicates that the delivery time should be calculated per warehouse (shipping origin location) based on the settings of the selected carrier. When set, no other transit time related field in DeliveryTime should be set.',
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('DeliveryTime')
+const DatafeedStatusExampleSchema = z
+  .object({
+    itemId: z.string().exactOptional().openapi({ description: 'The ID of the example item.' }),
+    lineNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Line number in the data feed where the example is found.' }),
+    value: z.string().exactOptional().openapi({ description: 'The problematic value.' }),
+  })
+  .openapi({ description: 'An example occurrence for a particular error.', required: [] })
+  .openapi('DatafeedStatusExample')
+
+const DatafeedStatusErrorSchema = z
+  .object({
+    code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The code of the error, e.g., "validation/invalid_value".' }),
+    count: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The number of occurrences of the error in the feed.' }),
+    examples: z
+      .array(DatafeedStatusExampleSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of example occurrences of the error, grouped by product.' }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The error message, e.g., "Invalid price".' }),
+  })
+  .openapi({ description: 'An error occurring in the feed, like "invalid price".', required: [] })
+  .openapi('DatafeedStatusError')
+
+const DatafeedStatusSchema = z
+  .object({
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The country for which the status is reported, represented as a CLDR territory code.',
+      }),
+    datafeedId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the feed for which the status is reported.' }),
+    errors: z
+      .array(DatafeedStatusErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of errors occurring in the feed.' }),
+    itemsTotal: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The number of items in the feed that were processed.' }),
+    itemsValid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The number of items in the feed that were valid.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "`content#datafeedStatus`"',
+      }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The two-letter ISO 639-1 language for which the status is reported.',
+      }),
+    lastUploadDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The last date at which the feed was uploaded.' }),
+    processingStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The processing status of the feed. Acceptable values are: - "`"`failure`": The feed could not be processed or all items had errors.`" - "`in progress`": The feed is being processed. - "`none`": The feed has not yet been processed. For example, a feed that has never been uploaded will have this processing status. - "`success`": The feed was processed successfully, though some items might have had errors. ',
+      }),
+    warnings: z
+      .array(DatafeedStatusErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of errors occurring in the feed.' }),
+  })
+  .openapi({
+    description:
+      'The status of a datafeed, i.e., the result of the last retrieval of the datafeed computed asynchronously when the feed processing is finished.',
+    required: [],
+  })
+  .openapi('DatafeedStatus')
+
+const DatafeedstatusesCustomBatchResponseEntrySchema = z
+  .object({
+    batchId: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'The ID of the request entry this entry responds to.' }),
+    datafeedStatus: DatafeedStatusSchema.exactOptional().openapi({
+      description:
+        'The requested data feed status. Defined if and only if the request was successful.',
+    }),
+    errors: ErrorsSchema.exactOptional().openapi({
+      description: 'A list of errors defined if and only if the request failed.',
+    }),
+  })
+  .openapi({
+    description: 'A batch entry encoding a single non-batch datafeedstatuses response.',
+    required: [],
+  })
+  .openapi('DatafeedstatusesCustomBatchResponseEntry')
+
+type DatafeedstatusesCustomBatchResponseType = {
+  entries?: z.infer<typeof DatafeedstatusesCustomBatchResponseEntrySchema>[]
+  kind?: string
+}
 
 const PriceSchema = z
   .object({
@@ -253,45 +365,2305 @@ const PriceSchema = z
   .openapi({ required: [] })
   .openapi('Price')
 
-const MinimumOrderValueTableStoreCodeSetWithMovSchema = z
+const AmountSchema = z
   .object({
-    storeCodes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'A list of unique store codes or empty for the catch all.' }),
-    value: PriceSchema.exactOptional().openapi({
-      description: 'The minimum order value for the given stores.',
-    }),
-  })
-  .openapi({
-    description:
-      "A list of store code sets sharing the same minimum order value. At least two sets are required and the last one must be empty, which signifies 'MOV for all other stores'. Each store code can only appear once across all the sets. All prices within a service must have the same currency.",
-    required: [],
-  })
-  .openapi('MinimumOrderValueTableStoreCodeSetWithMov')
-
-const MinimumOrderValueTableSchema = z
-  .object({
-    storeCodeSetWithMovs: z.array(MinimumOrderValueTableStoreCodeSetWithMovSchema).exactOptional(),
+    pretax: PriceSchema.exactOptional().openapi({ description: '[required] Value before taxes.' }),
+    tax: PriceSchema.exactOptional().openapi({ description: '[required] Tax value.' }),
   })
   .openapi({ required: [] })
-  .openapi('MinimumOrderValueTable')
+  .openapi('Amount')
 
-const PickupCarrierServiceSchema = z
+const InvoiceSummaryAdditionalChargeSummarySchema = z
   .object({
-    carrierName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the pickup carrier (e.g., `"UPS"`). Required.' }),
-    serviceName: z
+    totalAmount: AmountSchema.exactOptional().openapi({
+      description: '[required] Total additional charge for this type.',
+    }),
+    type: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'The name of the pickup service (e.g., `"Access point"`). Required.',
+        description:
+          '[required] Type of the additional charge. Acceptable values are: - "`shipping`" ',
       }),
   })
   .openapi({ required: [] })
-  .openapi('PickupCarrierService')
+  .openapi('InvoiceSummaryAdditionalChargeSummary')
+
+const PromotionSchema = z
+  .object({
+    promotionAmount: AmountSchema.exactOptional().openapi({
+      description:
+        '[required] Amount of the promotion. The values here are the promotion applied to the unit price pretax and to the total of the tax amounts.',
+    }),
+    promotionId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '[required] ID of the promotion.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Promotion')
+
+const InvoiceSummarySchema = z
+  .object({
+    additionalChargeSummaries: z
+      .array(InvoiceSummaryAdditionalChargeSummarySchema)
+      .exactOptional()
+      .openapi({ description: 'Summary of the total amounts of the additional charges.' }),
+    customerBalance: AmountSchema.exactOptional().openapi({ description: 'Deprecated.' }),
+    googleBalance: AmountSchema.exactOptional().openapi({ description: 'Deprecated.' }),
+    merchantBalance: AmountSchema.exactOptional().openapi({ description: 'Deprecated.' }),
+    productTotal: AmountSchema.exactOptional().openapi({
+      description: '[required] Total price for the product.',
+    }),
+    promotionSummaries: z
+      .array(PromotionSchema)
+      .exactOptional()
+      .openapi({ description: 'Deprecated.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('InvoiceSummary')
+
+const UnitInvoiceAdditionalChargeSchema = z
+  .object({
+    additionalChargeAmount: AmountSchema.exactOptional().openapi({
+      description: '[required] Amount of the additional charge.',
+    }),
+    additionalChargePromotions: z
+      .array(PromotionSchema)
+      .exactOptional()
+      .openapi({ description: 'Deprecated.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[required] Type of the additional charge. Acceptable values are: - "`shipping`" ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('UnitInvoiceAdditionalCharge')
+
+const UnitInvoiceTaxLineSchema = z
+  .object({
+    taxAmount: PriceSchema.exactOptional().openapi({
+      description: '[required] Tax amount for the tax type.',
+    }),
+    taxName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional name of the tax type. This should only be provided if `taxType` is `otherFeeTax`.',
+      }),
+    taxType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[required] Type of the tax. Acceptable values are: - "`otherFee`" - "`otherFeeTax`" - "`sales`" ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('UnitInvoiceTaxLine')
+
+const UnitInvoiceSchema = z
+  .object({
+    additionalCharges: z
+      .array(UnitInvoiceAdditionalChargeSchema)
+      .exactOptional()
+      .openapi({ description: 'Additional charges for a unit, e.g. shipping costs.' }),
+    promotions: z.array(PromotionSchema).exactOptional().openapi({ description: 'Deprecated.' }),
+    unitPricePretax: PriceSchema.exactOptional().openapi({
+      description: '[required] Price of the unit, before applying taxes.',
+    }),
+    unitPriceTaxes: z
+      .array(UnitInvoiceTaxLineSchema)
+      .exactOptional()
+      .openapi({ description: 'Tax amounts to apply to the unit price.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('UnitInvoice')
+
+type ShipmentInvoiceLineItemInvoiceType = {
+  lineItemId?: string
+  productId?: string
+  shipmentUnitIds?: string[]
+  unitInvoice?: z.infer<typeof UnitInvoiceSchema>
+}
+
+const ShipmentInvoiceLineItemInvoiceSchema: z.ZodType<ShipmentInvoiceLineItemInvoiceType> = z
+  .object({
+    lineItemId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID of the line item. Either lineItemId or productId must be set.' }),
+    productId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ID of the product. This is the REST ID used in the products service. Either lineItemId or productId must be set.',
+      }),
+    shipmentUnitIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          '[required] The shipment unit ID is assigned by the merchant and defines individual quantities within a line item. The same ID can be assigned to units that are the same while units that differ must be assigned a different ID (for example: free or promotional units).',
+      }),
+    unitInvoice: UnitInvoiceSchema.exactOptional().openapi({
+      description: '[required] Invoice details for a single unit.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('ShipmentInvoiceLineItemInvoice')
+
+type OrderinvoicesCreateChargeInvoiceRequestType = {
+  invoiceId?: string
+  invoiceSummary?: z.infer<typeof InvoiceSummarySchema>
+  lineItemInvoices?: z.infer<typeof ShipmentInvoiceLineItemInvoiceSchema>[]
+  operationId?: string
+  shipmentGroupId?: string
+}
+
+const OrderinvoicesCustomBatchRequestEntryCreateRefundInvoiceRefundOptionSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional description of the refund reason.' }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[required] Reason for the refund. Acceptable values are: - "`adjustment`" - "`autoPostInternal`" - "`autoPostInvalidBillingAddress`" - "`autoPostNoInventory`" - "`autoPostPriceError`" - "`autoPostUndeliverableShippingAddress`" - "`couponAbuse`" - "`courtesyAdjustment`" - "`customerCanceled`" - "`customerDiscretionaryReturn`" - "`customerInitiatedMerchantCancel`" - "`customerSupportRequested`" - "`deliveredLateByCarrier`" - "`deliveredTooLate`" - "`expiredItem`" - "`failToPushOrderGoogleError`" - "`failToPushOrderMerchantError`" - "`failToPushOrderMerchantFulfillmentError`" - "`failToPushOrderToMerchant`" - "`failToPushOrderToMerchantOutOfStock`" - "`feeAdjustment`" - "`invalidCoupon`" - "`lateShipmentCredit`" - "`malformedShippingAddress`" - "`merchantDidNotShipOnTime`" - "`noInventory`" - "`orderTimeout`" - "`other`" - "`paymentAbuse`" - "`paymentDeclined`" - "`priceAdjustment`" - "`priceError`" - "`productArrivedDamaged`" - "`productNotAsDescribed`" - "`promoReallocation`" - "`qualityNotAsExpected`" - "`returnRefundAbuse`" - "`shippingCostAdjustment`" - "`shippingPriceError`" - "`taxAdjustment`" - "`taxError`" - "`undeliverableShippingAddress`" - "`unsupportedPoBoxAddress`" - "`wrongProductShipped`" ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderinvoicesCustomBatchRequestEntryCreateRefundInvoiceRefundOption')
+
+const OrderinvoicesCustomBatchRequestEntryCreateRefundInvoiceReturnOptionSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional description of the return reason.' }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[required] Reason for the return. Acceptable values are: - "`customerDiscretionaryReturn`" - "`customerInitiatedMerchantCancel`" - "`deliveredTooLate`" - "`expiredItem`" - "`invalidCoupon`" - "`malformedShippingAddress`" - "`other`" - "`productArrivedDamaged`" - "`productNotAsDescribed`" - "`qualityNotAsExpected`" - "`undeliverableShippingAddress`" - "`unsupportedPoBoxAddress`" - "`wrongProductShipped`" ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderinvoicesCustomBatchRequestEntryCreateRefundInvoiceReturnOption')
+
+type ShipmentInvoiceType = {
+  invoiceSummary?: z.infer<typeof InvoiceSummarySchema>
+  lineItemInvoices?: z.infer<typeof ShipmentInvoiceLineItemInvoiceSchema>[]
+  shipmentGroupId?: string
+}
+
+const ShipmentInvoiceSchema: z.ZodType<ShipmentInvoiceType> = z
+  .object({
+    invoiceSummary: InvoiceSummarySchema.exactOptional().openapi({
+      description: '[required] Invoice summary.',
+    }),
+    lineItemInvoices: z
+      .array(ShipmentInvoiceLineItemInvoiceSchema)
+      .exactOptional()
+      .openapi({ description: '[required] Invoice details per line item.' }),
+    shipmentGroupId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '[required] ID of the shipment group. It is assigned by the merchant in the `shipLineItems` method and is used to group multiple line items that have the same kind of shipping charges.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ShipmentInvoice')
+
+type OrderinvoicesCreateRefundInvoiceRequestType = {
+  invoiceId?: string
+  operationId?: string
+  refundOnlyOption?: z.infer<
+    typeof OrderinvoicesCustomBatchRequestEntryCreateRefundInvoiceRefundOptionSchema
+  >
+  returnOption?: z.infer<
+    typeof OrderinvoicesCustomBatchRequestEntryCreateRefundInvoiceReturnOptionSchema
+  >
+  shipmentInvoices?: z.infer<typeof ShipmentInvoiceSchema>[]
+}
+
+const CustomerReturnReasonSchema = z
+  .object({
+    description: z.string().exactOptional().openapi({ description: 'Description of the reason.' }),
+    reasonCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Code of the return reason. Acceptable values are: - "`betterPriceFound`" - "`changedMind`" - "`damagedOrDefectiveItem`" - "`didNotMatchDescription`" - "`doesNotFit`" - "`expiredItem`" - "`incorrectItemReceived`" - "`noLongerNeeded`" - "`notSpecified`" - "`orderedWrongItem`" - "`other`" - "`qualityNotExpected`" - "`receivedTooLate`" - "`undeliverable`" ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CustomerReturnReason')
+
+const RefundReasonSchema = z
+  .object({
+    description: z.string().exactOptional().openapi({ description: 'Description of the reason.' }),
+    reasonCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Code of the refund reason. Acceptable values are: - "`adjustment`" - "`autoPostInternal`" - "`autoPostInvalidBillingAddress`" - "`autoPostNoInventory`" - "`autoPostPriceError`" - "`autoPostUndeliverableShippingAddress`" - "`couponAbuse`" - "`courtesyAdjustment`" - "`customerCanceled`" - "`customerDiscretionaryReturn`" - "`customerInitiatedMerchantCancel`" - "`customerSupportRequested`" - "`deliveredLateByCarrier`" - "`deliveredTooLate`" - "`expiredItem`" - "`failToPushOrderGoogleError`" - "`failToPushOrderMerchantError`" - "`failToPushOrderMerchantFulfillmentError`" - "`failToPushOrderToMerchant`" - "`failToPushOrderToMerchantOutOfStock`" - "`feeAdjustment`" - "`invalidCoupon`" - "`lateShipmentCredit`" - "`malformedShippingAddress`" - "`merchantDidNotShipOnTime`" - "`noInventory`" - "`orderTimeout`" - "`other`" - "`paymentAbuse`" - "`paymentDeclined`" - "`priceAdjustment`" - "`priceError`" - "`productArrivedDamaged`" - "`productNotAsDescribed`" - "`promoReallocation`" - "`qualityNotAsExpected`" - "`returnRefundAbuse`" - "`shippingCostAdjustment`" - "`shippingPriceError`" - "`taxAdjustment`" - "`taxError`" - "`undeliverableShippingAddress`" - "`unsupportedPoBoxAddress`" - "`wrongProductShipped`" ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('RefundReason')
+
+const OrderLineItemProductFeeSchema = z
+  .object({
+    amount: PriceSchema.exactOptional().openapi({ description: 'Amount of the fee.' }),
+    name: z.string().exactOptional().openapi({ description: 'Name of the fee.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderLineItemProductFee')
+
+const OrderLineItemProductVariantAttributeSchema = z
+  .object({
+    dimension: z.string().exactOptional().openapi({ description: 'The dimension of the variant.' }),
+    value: z.string().exactOptional().openapi({ description: 'The value for the dimension.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderLineItemProductVariantAttribute')
+
+const OrderLineItemProductSchema = z
+  .object({
+    brand: z.string().exactOptional().openapi({ description: 'Brand of the item.' }),
+    channel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The item\'s channel (online or local). Acceptable values are: - "`local`" - "`online`" ',
+      }),
+    condition: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Condition or state of the item. Acceptable values are: - "`new`" - "`refurbished`" - "`used`" ',
+      }),
+    contentLanguage: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The two-letter ISO 639-1 language code for the item.' }),
+    fees: z
+      .array(OrderLineItemProductFeeSchema)
+      .exactOptional()
+      .openapi({ description: 'Associated fees at order creation time.' }),
+    gtin: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Global Trade Item Number (GTIN) of the item.' }),
+    id: z.string().exactOptional().openapi({ description: 'The REST ID of the product.' }),
+    imageLink: z.string().exactOptional().openapi({ description: 'URL of an image of the item.' }),
+    itemGroupId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Shared identifier for all variants of the same product.' }),
+    mpn: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Manufacturer Part Number (MPN) of the item.' }),
+    offerId: z.string().exactOptional().openapi({ description: 'An identifier of the item.' }),
+    price: PriceSchema.exactOptional().openapi({ description: 'Price of the item.' }),
+    shownImage: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'URL to the cached image shown to the user when order was placed.' }),
+    targetCountry: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The CLDR territory // code of the target country of the product.' }),
+    title: z.string().exactOptional().openapi({ description: 'The title of the product.' }),
+    variantAttributes: z
+      .array(OrderLineItemProductVariantAttributeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Variant attributes for the item. These are dimensions of the product, such as color, gender, material, pattern, and size. You can find a comprehensive list of variant attributes here.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderLineItemProduct')
+
+const MerchantOrderReturnItemSchema = z
+  .object({
+    customerReturnReason: CustomerReturnReasonSchema.exactOptional().openapi({
+      description: 'The reason that the customer chooses to return an item.',
+    }),
+    itemId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Product level item ID. If the returned items are of the same product, they will have the same ID.',
+      }),
+    merchantReturnReason: RefundReasonSchema.exactOptional().openapi({
+      description: 'The reason that merchant chooses to accept a return item.',
+    }),
+    product: OrderLineItemProductSchema.exactOptional().openapi({
+      description: 'Product data from the time of the order placement.',
+    }),
+    returnShipmentIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'IDs of the return shipments that this return item belongs to.' }),
+    state: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'State of the item. Acceptable values are: - "`canceled`" - "`new`" - "`received`" - "`refunded`" - "`rejected`" ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('MerchantOrderReturnItem')
+
+const ShipmentTrackingInfoSchema = z
+  .object({
+    carrier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The shipping carrier that handles the package. Acceptable values are: - "`boxtal`" - "`bpost`" - "`chronopost`" - "`colisPrive`" - "`colissimo`" - "`cxt`" - "`deliv`" - "`dhl`" - "`dpd`" - "`dynamex`" - "`eCourier`" - "`easypost`" - "`efw`" - "`fedex`" - "`fedexSmartpost`" - "`geodis`" - "`gls`" - "`googleCourier`" - "`gsx`" - "`jdLogistics`" - "`laPoste`" - "`lasership`" - "`manual`" - "`mpx`" - "`onTrac`" - "`other`" - "`tnt`" - "`uds`" - "`ups`" - "`usps`" ',
+      }),
+    trackingNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The tracking number for the package.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ShipmentTrackingInfo')
+
+const ReturnShipmentSchema = z
+  .object({
+    creationDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The date of creation of the shipment, in ISO 8601 format.' }),
+    deliveryDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The date of delivery of the shipment, in ISO 8601 format.' }),
+    returnMethodType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Type of the return method. Acceptable values are: - "`byMail`" - "`contactCustomerSupport`" - "`returnless`" ',
+      }),
+    shipmentId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Shipment ID generated by Google.' }),
+    shipmentTrackingInfos: z
+      .array(ShipmentTrackingInfoSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Tracking information of the shipment. One return shipment might be handled by several shipping carriers sequentially.',
+      }),
+    shippingDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The date of shipping of the shipment, in ISO 8601 format.' }),
+    state: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'State of the shipment. Acceptable values are: - "`completed`" - "`new`" - "`shipped`" - "`undeliverable`" - "`pending`" ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ReturnShipment')
+
+const MerchantOrderReturnSchema = z
+  .object({
+    creationDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The date of creation of the return, in ISO 8601 format.' }),
+    merchantOrderId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Merchant defined order ID.' }),
+    orderId: z.string().exactOptional().openapi({ description: 'Google order ID.' }),
+    orderReturnId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Order return ID generated by Google.' }),
+    returnItems: z
+      .array(MerchantOrderReturnItemSchema)
+      .exactOptional()
+      .openapi({ description: 'Items of the return.' }),
+    returnShipments: z
+      .array(ReturnShipmentSchema)
+      .exactOptional()
+      .openapi({ description: 'Shipments of the return.' }),
+  })
+  .openapi({
+    description:
+      'Order return. Production access (all methods) requires the order manager role. Sandbox access does not.',
+    required: [],
+  })
+  .openapi('MerchantOrderReturn')
+
+type OrderreturnsListResponseType = {
+  kind?: string
+  nextPageToken?: string
+  resources?: z.infer<typeof MerchantOrderReturnSchema>[]
+}
+
+const TestOrderCustomerMarketingRightsInfoSchema = z
+  .object({
+    explicitMarketingPreference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Last know user use selection regards marketing preferences. In certain cases selection might not be known, so this field would be empty. Acceptable values are: - "`denied`" - "`granted`" ',
+      }),
+    lastUpdatedTimestamp: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Timestamp when last time marketing preference was updated. Could be empty, if user wasn't offered a selection yet.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TestOrderCustomerMarketingRightsInfo')
+
+const TestOrderCustomerSchema = z
+  .object({
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Email address of the customer. Acceptable values are: - "`pog.dwight.schrute@gmail.com`" - "`pog.jim.halpert@gmail.com`" - "`penpog.pam.beesly@gmail.comding`" ',
+      }),
+    explicitMarketingPreference: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Deprecated. Please use marketingRightsInfo instead.' }),
+    fullName: z.string().exactOptional().openapi({ description: 'Full name of the customer.' }),
+    marketingRightsInfo: TestOrderCustomerMarketingRightsInfoSchema.exactOptional().openapi({
+      description: "Customer's marketing preferences.",
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('TestOrderCustomer')
+
+const TestOrderLineItemProductSchema = z
+  .object({
+    brand: z.string().exactOptional().openapi({ description: 'Required. Brand of the item.' }),
+    channel: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Deprecated. Acceptable values are: - "`online`" ' }),
+    condition: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Required. Condition or state of the item. Acceptable values are: - "`new`" ',
+      }),
+    contentLanguage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The two-letter ISO 639-1 language code for the item. Acceptable values are: - "`en`" - "`fr`" ',
+      }),
+    fees: z
+      .array(OrderLineItemProductFeeSchema)
+      .exactOptional()
+      .openapi({ description: 'Fees for the item. Optional.' }),
+    gtin: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Global Trade Item Number (GTIN) of the item. Optional.' }),
+    imageLink: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. URL of an image of the item.' }),
+    itemGroupId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Shared identifier for all variants of the same product. Optional.',
+      }),
+    mpn: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Manufacturer Part Number (MPN) of the item. Optional.' }),
+    offerId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. An identifier of the item.' }),
+    price: PriceSchema.exactOptional().openapi({
+      description:
+        'Required. The price for the product. Tax is automatically calculated for orders where marketplace facilitator tax laws are applicable. Otherwise, tax settings from Merchant Center are applied.',
+    }),
+    targetCountry: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Required. The CLDR territory // code of the target country of the product.',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The title of the product.' }),
+    variantAttributes: z
+      .array(OrderLineItemProductVariantAttributeSchema)
+      .exactOptional()
+      .openapi({ description: 'Variant attributes for the item. Optional.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('TestOrderLineItemProduct')
+
+const OrderLineItemReturnInfoSchema = z
+  .object({
+    daysToReturn: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Required. How many days later the item can be returned.' }),
+    isReturnable: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Required. Whether the item is returnable.' }),
+    policyUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. URL of the item return policy.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderLineItemReturnInfo')
+
+const OrderLineItemShippingDetailsMethodSchema = z
+  .object({
+    carrier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The carrier for the shipping. Optional. See `shipments[].carrier` for a list of acceptable values.',
+      }),
+    maxDaysInTransit: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'Required. Maximum transit time.' }),
+    methodName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The name of the shipping method.' }),
+    minDaysInTransit: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'Required. Minimum transit time.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderLineItemShippingDetailsMethod')
+
+const OrderLineItemShippingDetailsSchema = z
+  .object({
+    deliverByDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The delivery by date, in ISO 8601 format.' }),
+    method: OrderLineItemShippingDetailsMethodSchema.exactOptional().openapi({
+      description: 'Required. Details of the shipping method.',
+    }),
+    shipByDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The ship by date, in ISO 8601 format.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Type of shipment. Indicates whether `deliveryDetails` or `pickupDetails` is applicable for this shipment. Acceptable values are: - "`delivery`" - "`pickup`" ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderLineItemShippingDetails')
+
+const TestOrderLineItemSchema = z
+  .object({
+    product: TestOrderLineItemProductSchema.exactOptional().openapi({
+      description: 'Required. Product data from the time of the order placement.',
+    }),
+    quantityOrdered: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'Required. Number of items ordered.' }),
+    returnInfo: OrderLineItemReturnInfoSchema.exactOptional().openapi({
+      description: 'Required. Details of the return policy for the line item.',
+    }),
+    shippingDetails: OrderLineItemShippingDetailsSchema.exactOptional().openapi({
+      description: 'Required. Details of the requested shipping for the line item.',
+    }),
+    unitTax: PriceSchema.exactOptional().openapi({
+      description: 'Deprecated. Ignored if provided.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('TestOrderLineItem')
+
+const TestOrderPaymentMethodSchema = z
+  .object({
+    expirationMonth: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The card expiration month (January = 1, February = 2 etc.).' }),
+    expirationYear: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The card expiration year (4-digit, e.g. 2015).' }),
+    lastFourDigits: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The last four digits of the card number.' }),
+    predefinedBillingAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The billing address. Acceptable values are: - "`dwight`" - "`jim`" - "`pam`" ',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of instrument. Note that real orders might have different values than the four values accepted by `createTestOrder`. Acceptable values are: - "`AMEX`" - "`DISCOVER`" - "`MASTERCARD`" - "`VISA`" ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TestOrderPaymentMethod')
+
+const OrderLegacyPromotionBenefitSchema = z
+  .object({
+    discount: PriceSchema.exactOptional().openapi({
+      description: 'The discount in the order price when the promotion is applied.',
+    }),
+    offerIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The OfferId(s) that were purchased in this order and map to this specific benefit of the promotion.',
+      }),
+    subType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Further describes the benefit of the promotion. Note that we will expand on this enumeration as we support new promotion sub-types. Acceptable values are: - "`buyMGetMoneyOff`" - "`buyMGetNMoneyOff`" - "`buyMGetNPercentOff`" - "`buyMGetPercentOff`" - "`freeGift`" - "`freeGiftWithItemId`" - "`freeGiftWithValue`" - "`freeOvernightShipping`" - "`freeShipping`" - "`freeTwoDayShipping`" - "`moneyOff`" - "`percentageOff`" - "`rewardPoints`" - "`salePrice`" ',
+      }),
+    taxImpact: PriceSchema.exactOptional().openapi({
+      description: 'The impact on tax when the promotion is applied.',
+    }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Describes whether the promotion applies to products (e.g. 20% off) or to shipping (e.g. Free Shipping). Acceptable values are: - "`product`" - "`shipping`" ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderLegacyPromotionBenefit')
+
+const OrderLegacyPromotionSchema = z
+  .object({
+    benefits: z.array(OrderLegacyPromotionBenefitSchema).exactOptional(),
+    effectiveDates: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time frame when the promotion is active and ready for validation review. Note that the promotion live time may be delayed for a few hours due to the validation review. Start date and end date are separated by a forward slash (/). The start date is specified by the format (YYYY-MM-DD), followed by the letter ?T?, the time of the day when the sale starts (in Greenwich Mean Time, GMT), followed by an expression of the time zone for the sale. The end date is in the same format.',
+      }),
+    genericRedemptionCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The text code that corresponds to the promotion when applied on the retailer?s website.',
+      }),
+    id: z.string().exactOptional().openapi({ description: 'The unique ID of the promotion.' }),
+    longTitle: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The full title of the promotion.' }),
+    productApplicability: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the promotion is applicable to all products or only specific products. Acceptable values are: - "`allProducts`" - "`specificProducts`" ',
+      }),
+    redemptionChannel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates that the promotion is valid online. Acceptable values are: - "`online`" ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderLegacyPromotion')
+
+const TestOrderSchema = z
+  .object({
+    customer: TestOrderCustomerSchema.exactOptional().openapi({
+      description: 'Required. The details of the customer who placed the order.',
+    }),
+    enableOrderinvoices: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the orderinvoices service should support this order.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "`content#testOrder`"',
+      }),
+    lineItems: z
+      .array(TestOrderLineItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Line items that are ordered. At least one line item must be provided.',
+      }),
+    notificationMode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Restricted. Do not use.' }),
+    paymentMethod: TestOrderPaymentMethodSchema.exactOptional().openapi({
+      description: 'The details of the payment method.',
+    }),
+    predefinedDeliveryAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Identifier of one of the predefined delivery addresses for the delivery. Acceptable values are: - "`dwight`" - "`jim`" - "`pam`" ',
+      }),
+    predefinedPickupDetails: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifier of one of the predefined pickup details. Required for orders containing line items with shipping type `pickup`. Acceptable values are: - "`dwight`" - "`jim`" - "`pam`" ',
+      }),
+    promotions: z
+      .array(OrderLegacyPromotionSchema)
+      .exactOptional()
+      .openapi({ description: 'Deprecated. Ignored if provided.' }),
+    shippingCost: PriceSchema.exactOptional().openapi({
+      description:
+        'Required. The price of shipping for all items. Shipping tax is automatically calculated for orders where marketplace facilitator tax laws are applicable. Otherwise, tax settings from Merchant Center are applied. Note that shipping is not taxed in certain states.',
+    }),
+    shippingCostTax: PriceSchema.exactOptional().openapi({
+      description: 'Deprecated. Ignored if provided.',
+    }),
+    shippingOption: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The requested shipping option. Acceptable values are: - "`economy`" - "`expedited`" - "`oneDay`" - "`sameDay`" - "`standard`" - "`twoDay`" ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TestOrder')
+
+type OrdersCreateTestOrderRequestType = {
+  country?: string
+  templateName?: string
+  testOrder?: z.infer<typeof TestOrderSchema>
+}
+
+const OrderCustomerMarketingRightsInfoSchema = z
+  .object({
+    explicitMarketingPreference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Last known customer selection regarding marketing preferences. In certain cases this selection might not be known, so this field would be empty. If a customer selected `granted` in their most recent order, they can be subscribed to marketing emails. Customers who have chosen `denied` must not be subscribed, or must be unsubscribed if already opted-in. Acceptable values are: - "`denied`" - "`granted`" ',
+      }),
+    lastUpdatedTimestamp: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Timestamp when last time marketing preference was updated. Could be empty, if user wasn't offered a selection yet.",
+      }),
+    marketingEmailAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Email address that can be used for marketing purposes. The field may be empty even if `explicitMarketingPreference` is 'granted'. This happens when retrieving an old order from the customer who deleted their account.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderCustomerMarketingRightsInfo')
+
+const OrderCustomerSchema = z
+  .object({
+    email: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
+    explicitMarketingPreference: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Deprecated. Please use marketingRightsInfo instead.' }),
+    fullName: z.string().exactOptional().openapi({ description: 'Full name of the customer.' }),
+    invoiceReceivingEmail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Email address for the merchant to send value-added tax or invoice documentation of the order. Only the last document sent is made available to the customer. For more information, see About automated VAT invoicing for Buy on Google.',
+      }),
+    marketingRightsInfo: OrderCustomerMarketingRightsInfoSchema.exactOptional().openapi({
+      description:
+        "Customer's marketing preferences. Contains the marketing opt-in information that is current at the time that the merchant call. User preference selections can change from one order to the next so preferences must be checked with every order.",
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderCustomer')
+
+const OrderAddressSchema = z
+  .object({
+    country: z.string().exactOptional().openapi({ description: 'CLDR country code (e.g. "US").' }),
+    fullAddress: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Strings representing the lines of the printed label for mailing the order, for example: John Smith 1600 Amphitheatre Parkway Mountain View, CA, 94043 United States ',
+      }),
+    isPostOfficeBox: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the address is a post office box.' }),
+    locality: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'City, town or commune. May also include dependent localities or sublocalities (e.g. neighborhoods or suburbs).',
+      }),
+    postalCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Postal Code or ZIP (e.g. "94043").' }),
+    recipientName: z.string().exactOptional().openapi({ description: 'Name of the recipient.' }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Top-level administrative subdivision of the country. For example, a state like California ("CA") or a province like Quebec ("QC").',
+      }),
+    streetAddress: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Street-level part of the address.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderAddress')
+
+const OrderDeliveryDetailsSchema = z
+  .object({
+    address: OrderAddressSchema.exactOptional().openapi({ description: 'The delivery address' }),
+    phoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The phone number of the person receiving the delivery.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderDeliveryDetails')
+
+const OrderMerchantProvidedAnnotationSchema = z
+  .object({
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Key for additional merchant provided (as key-value pairs) annotation about the line item.',
+      }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Value for additional merchant provided (as key-value pairs) annotation about the line item.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderMerchantProvidedAnnotation')
+
+const OrderCancellationSchema = z
+  .object({
+    actor: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The actor that created the cancellation. Acceptable values are: - "`customer`" - "`googleBot`" - "`googleCustomerService`" - "`googlePayments`" - "`googleSabre`" - "`merchant`" ',
+      }),
+    creationDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Date on which the cancellation has been created, in ISO 8601 format.',
+      }),
+    quantity: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'The quantity that was canceled.' }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason for the cancellation. Orders that are canceled with a noInventory reason will lead to the removal of the product from Buy on Google until you make an update to that product. This will not affect your Shopping ads. Acceptable values are: - "`autoPostInternal`" - "`autoPostInvalidBillingAddress`" - "`autoPostNoInventory`" - "`autoPostPriceError`" - "`autoPostUndeliverableShippingAddress`" - "`couponAbuse`" - "`customerCanceled`" - "`customerInitiatedCancel`" - "`customerSupportRequested`" - "`failToPushOrderGoogleError`" - "`failToPushOrderMerchantError`" - "`failToPushOrderMerchantFulfillmentError`" - "`failToPushOrderToMerchant`" - "`failToPushOrderToMerchantOutOfStock`" - "`invalidCoupon`" - "`malformedShippingAddress`" - "`merchantDidNotShipOnTime`" - "`noInventory`" - "`orderTimeout`" - "`other`" - "`paymentAbuse`" - "`paymentDeclined`" - "`priceError`" - "`returnRefundAbuse`" - "`shippingPriceError`" - "`taxError`" - "`undeliverableShippingAddress`" - "`unsupportedPoBoxAddress`" ',
+      }),
+    reasonText: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The explanation of the reason.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderCancellation')
+
+const OrderReturnSchema = z
+  .object({
+    actor: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The actor that created the refund. Acceptable values are: - "`customer`" - "`googleBot`" - "`googleCustomerService`" - "`googlePayments`" - "`googleSabre`" - "`merchant`" ',
+      }),
+    creationDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Date on which the item has been created, in ISO 8601 format.' }),
+    quantity: z.uint32().exactOptional().openapi({ description: 'Quantity that is returned.' }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason for the return. Acceptable values are: - "`customerDiscretionaryReturn`" - "`customerInitiatedMerchantCancel`" - "`deliveredTooLate`" - "`expiredItem`" - "`invalidCoupon`" - "`malformedShippingAddress`" - "`other`" - "`productArrivedDamaged`" - "`productNotAsDescribed`" - "`qualityNotAsExpected`" - "`undeliverableShippingAddress`" - "`unsupportedPoBoxAddress`" - "`wrongProductShipped`" ',
+      }),
+    reasonText: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The explanation of the reason.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderReturn')
+
+const OrderLineItemSchema = z
+  .object({
+    annotations: z
+      .array(OrderMerchantProvidedAnnotationSchema)
+      .exactOptional()
+      .openapi({ description: 'Annotations that are attached to the line item.' }),
+    cancellations: z
+      .array(OrderCancellationSchema)
+      .exactOptional()
+      .openapi({ description: 'Cancellations of the line item.' }),
+    id: z.string().exactOptional().openapi({ description: 'The ID of the line item.' }),
+    price: PriceSchema.exactOptional().openapi({
+      description:
+        'Total price for the line item. For example, if two items for $10 are purchased, the total price will be $20.',
+    }),
+    product: OrderLineItemProductSchema.exactOptional().openapi({
+      description:
+        'Product data as seen by customer from the time of the order placement. Note that certain attributes values (e.g. title or gtin) might be reformatted and no longer match values submitted via product feed.',
+    }),
+    quantityCanceled: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'Number of items canceled.' }),
+    quantityDelivered: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'Number of items delivered.' }),
+    quantityOrdered: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'Number of items ordered.' }),
+    quantityPending: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'Number of items pending.' }),
+    quantityReadyForPickup: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'Number of items ready for pickup.' }),
+    quantityReturned: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'Number of items returned.' }),
+    quantityShipped: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'Number of items shipped.' }),
+    returnInfo: OrderLineItemReturnInfoSchema.exactOptional().openapi({
+      description: 'Details of the return policy for the line item.',
+    }),
+    returns: z
+      .array(OrderReturnSchema)
+      .exactOptional()
+      .openapi({ description: 'Returns of the line item.' }),
+    shippingDetails: OrderLineItemShippingDetailsSchema.exactOptional().openapi({
+      description: 'Details of the requested shipping for the line item.',
+    }),
+    tax: PriceSchema.exactOptional().openapi({
+      description:
+        'Total tax amount for the line item. For example, if two items are purchased, and each have a cost tax of $2, the total tax amount will be $4.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderLineItem')
+
+const OrderPaymentMethodSchema = z
+  .object({
+    billingAddress: OrderAddressSchema.exactOptional().openapi({
+      description: 'The billing address.',
+    }),
+    expirationMonth: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The card expiration month (January = 1, February = 2 etc.).' }),
+    expirationYear: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The card expiration year (4-digit, e.g. 2015).' }),
+    lastFourDigits: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The last four digits of the card number.' }),
+    phoneNumber: z.string().exactOptional().openapi({ description: 'The billing phone number.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of instrument. Acceptable values are: - "`AMEX`" - "`DISCOVER`" - "`JCB`" - "`MASTERCARD`" - "`UNIONPAY`" - "`VISA`" - "``" ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderPaymentMethod')
+
+const OrderPickupDetailsCollectorSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the person picking up the shipment.' }),
+    phoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Phone number of the person picking up the shipment.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderPickupDetailsCollector')
+
+const OrderPickupDetailsSchema = z
+  .object({
+    address: OrderAddressSchema.exactOptional().openapi({
+      description:
+        'Address of the pickup location where the shipment should be sent. Note that `recipientName` in the address is the name of the business at the pickup location.',
+    }),
+    collectors: z
+      .array(OrderPickupDetailsCollectorSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Collectors authorized to pick up shipment from the pickup location.',
+      }),
+    locationId: z.string().exactOptional().openapi({ description: 'ID of the pickup location.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderPickupDetails')
+
+const OrderRefundSchema = z
+  .object({
+    actor: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The actor that created the refund. Acceptable values are: - "`customer`" - "`googleBot`" - "`googleCustomerService`" - "`googlePayments`" - "`googleSabre`" - "`merchant`" ',
+      }),
+    amount: PriceSchema.exactOptional().openapi({ description: 'The amount that is refunded.' }),
+    creationDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Date on which the item has been created, in ISO 8601 format.' }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The reason for the refund. Acceptable values are: - "`adjustment`" - "`autoPostInternal`" - "`autoPostInvalidBillingAddress`" - "`autoPostNoInventory`" - "`autoPostPriceError`" - "`autoPostUndeliverableShippingAddress`" - "`couponAbuse`" - "`courtesyAdjustment`" - "`customerCanceled`" - "`customerDiscretionaryReturn`" - "`customerInitiatedMerchantCancel`" - "`customerSupportRequested`" - "`deliveredLateByCarrier`" - "`deliveredTooLate`" - "`expiredItem`" - "`failToPushOrderGoogleError`" - "`failToPushOrderMerchantError`" - "`failToPushOrderMerchantFulfillmentError`" - "`failToPushOrderToMerchant`" - "`failToPushOrderToMerchantOutOfStock`" - "`feeAdjustment`" - "`invalidCoupon`" - "`lateShipmentCredit`" - "`malformedShippingAddress`" - "`merchantDidNotShipOnTime`" - "`noInventory`" - "`orderTimeout`" - "`other`" - "`paymentAbuse`" - "`paymentDeclined`" - "`priceAdjustment`" - "`priceError`" - "`productArrivedDamaged`" - "`productNotAsDescribed`" - "`promoReallocation`" - "`qualityNotAsExpected`" - "`returnRefundAbuse`" - "`shippingCostAdjustment`" - "`shippingPriceError`" - "`taxAdjustment`" - "`taxError`" - "`undeliverableShippingAddress`" - "`unsupportedPoBoxAddress`" - "`wrongProductShipped`" ',
+      }),
+    reasonText: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The explanation of the reason.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderRefund')
+
+const OrderShipmentLineItemShipmentSchema = z
+  .object({
+    lineItemId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the line item that is shipped. This value is assigned by Google when an order is created. Either lineItemId or productId is required.',
+      }),
+    productId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the product to ship. This is the REST ID used in the products service. Either lineItemId or productId is required.',
+      }),
+    quantity: z.uint32().exactOptional().openapi({ description: 'The quantity that is shipped.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderShipmentLineItemShipment')
+
+const OrderShipmentScheduledDeliveryDetailsSchema = z
+  .object({
+    carrierPhoneNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The phone number of the carrier fulfilling the delivery. The phone number is formatted as the international notation in ITU-T Recommendation E.123 (e.g., "+41 44 668 1800").',
+      }),
+    scheduledDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The date a shipment is scheduled for delivery, in ISO 8601 format.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderShipmentScheduledDeliveryDetails')
+
+const OrderShipmentSchema = z
+  .object({
+    carrier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The carrier handling the shipment. For supported carriers, Google includes the carrier name and tracking URL in emails to customers. For select supported carriers, Google also automatically updates the shipment status based on the provided shipment ID. *Note:* You can also use unsupported carriers, but emails to customers will not include the carrier name or tracking URL, and there will be no automatic order status updates. Supported carriers for US are: - "`ups`" (United Parcel Service) *automatic status updates* - "`usps`" (United States Postal Service) *automatic status updates* - "`fedex`" (FedEx) *automatic status updates * - "`dhl`" (DHL eCommerce) *automatic status updates* (US only) - "`ontrac`" (OnTrac) *automatic status updates * - "`dhl express`" (DHL Express) - "`deliv`" (Deliv) - "`dynamex`" (TForce) - "`lasership`" (LaserShip) - "`mpx`" (Military Parcel Xpress) - "`uds`" (United Delivery Service) - "`efw`" (Estes Forwarding Worldwide) - "`jd logistics`" (JD Logistics) - "`yunexpress`" (YunExpress) - "`china post`" (China Post) - "`china ems`" (China Post Express Mail Service) - "`singapore post`" (Singapore Post) - "`pos malaysia`" (Pos Malaysia) - "`postnl`" (PostNL) - "`ptt`" (PTT Turkish Post) - "`eub`" (ePacket) - "`chukou1`" (Chukou1 Logistics) - "`bestex`" (Best Express) - "`canada post`" (Canada Post) - "`purolator`" (Purolator) - "`canpar`" (Canpar) - "`india post`" (India Post) - "`blue dart`" (Blue Dart) - "`delhivery`" (Delhivery) - "`dtdc`" (DTDC) - "`tpc india`" (TPC India) Supported carriers for FR are: - "`la poste`" (La Poste) *automatic status updates * - "`colissimo`" (Colissimo by La Poste) *automatic status updates* - "`ups`" (United Parcel Service) *automatic status updates * - "`chronopost`" (Chronopost by La Poste) - "`gls`" (General Logistics Systems France) - "`dpd`" (DPD Group by GeoPost) - "`bpost`" (Belgian Post Group) - "`colis prive`" (Colis Privé) - "`boxtal`" (Boxtal) - "`geodis`" (GEODIS) - "`tnt`" (TNT) - "`db schenker`" (DB Schenker) - "`aramex`" (Aramex) ',
+      }),
+    creationDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Date on which the shipment has been created, in ISO 8601 format.' }),
+    deliveryDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Date on which the shipment has been delivered, in ISO 8601 format. Present only if `status` is `delivered`',
+      }),
+    id: z.string().exactOptional().openapi({ description: 'The ID of the shipment.' }),
+    lineItems: z
+      .array(OrderShipmentLineItemShipmentSchema)
+      .exactOptional()
+      .openapi({ description: 'The line items that are shipped.' }),
+    scheduledDeliveryDetails: OrderShipmentScheduledDeliveryDetailsSchema.exactOptional().openapi({
+      description: 'Delivery details of the shipment if scheduling is needed.',
+    }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of the shipment. Acceptable values are: - "`delivered`" - "`readyForPickup`" - "`shipped`" - "`undeliverable`" ',
+      }),
+    trackingId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The tracking ID for the shipment.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrderShipment')
+
+const OrderSchema = z
+  .object({
+    acknowledged: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the order was acknowledged.' }),
+    channelType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Deprecated. Acceptable values are: - "`googleExpress`" - "`purchasesOnGoogle`" ',
+      }),
+    customer: OrderCustomerSchema.exactOptional().openapi({
+      description: 'The details of the customer who placed the order.',
+    }),
+    deliveryDetails: OrderDeliveryDetailsSchema.exactOptional().openapi({
+      description: 'Delivery details for shipments of type `delivery`.',
+    }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The REST ID of the order. Globally unique.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "`content#order`"',
+      }),
+    lineItems: z
+      .array(OrderLineItemSchema)
+      .exactOptional()
+      .openapi({ description: 'Line items that are ordered.' }),
+    merchantId: z.string().exactOptional(),
+    merchantOrderId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Merchant-provided ID of the order.' }),
+    netAmount: PriceSchema.exactOptional().openapi({
+      description:
+        'The net amount for the order. For example, if an order was originally for a grand total of $100 and a refund was issued for $20, the net amount will be $80.',
+    }),
+    paymentMethod: OrderPaymentMethodSchema.exactOptional().openapi({
+      description: 'The details of the payment method.',
+    }),
+    paymentStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of the payment. Acceptable values are: - "`paymentCaptured`" - "`paymentRejected`" - "`paymentSecured`" - "`pendingAuthorization`" ',
+      }),
+    pickupDetails: OrderPickupDetailsSchema.exactOptional().openapi({
+      description: 'Pickup details for shipments of type `pickup`.',
+    }),
+    placedDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The date when the order was placed, in ISO 8601 format.' }),
+    promotions: z
+      .array(OrderLegacyPromotionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The details of the merchant provided promotions applied to the order. To determine which promotions apply to which products, check the `Promotions[].Benefits[].OfferIds` field against the `LineItems[].Product.OfferId` field for each promotion. If a promotion is applied to more than 1 `offerId`, divide the discount value by the number of affected offers to determine how much discount to apply to each `offerId`. Examples: 1. To calculate the line item level discount for a single specific item: For each promotion, subtract the `Promotions[].Benefits[].Discount.value` amount from the `LineItems[].Price.value`. 2. To calculate the line item level discount for multiple quantity of a specific item: For each promotion, divide the `Promotions[].Benefits[].Discount.value` by the quantity of products and substract it from `LineItems[].Product.Price.value` for each quantity item. Only 1 promotion can be applied to an offerId in a given order. To refund an item which had a promotion applied to it, make sure to refund the amount after first subtracting the promotion discount from the item price. More details about the program are here.',
+      }),
+    refunds: z
+      .array(OrderRefundSchema)
+      .exactOptional()
+      .openapi({ description: 'Refunds for the order.' }),
+    shipments: z
+      .array(OrderShipmentSchema)
+      .exactOptional()
+      .openapi({ description: 'Shipments of the order.' }),
+    shippingCost: PriceSchema.exactOptional().openapi({
+      description: 'The total cost of shipping for all items.',
+    }),
+    shippingCostTax: PriceSchema.exactOptional().openapi({
+      description: 'The tax for the total shipping cost.',
+    }),
+    shippingOption: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Deprecated. Shipping details are provided with line items instead. Acceptable values are: - "`economy`" - "`expedited`" - "`oneDay`" - "`sameDay`" - "`standard`" - "`twoDay`" ',
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of the order. Acceptable values are: - "`canceled`" - "`delivered`" - "`inProgress`" - "`partiallyDelivered`" - "`partiallyReturned`" - "`partiallyShipped`" - "`pendingShipment`" - "`returned`" - "`shipped`" ',
+      }),
+    taxCollector: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The party responsible for collecting and remitting taxes. Acceptable values are: - "`marketplaceFacilitator`" - "`merchant`" ',
+      }),
+  })
+  .openapi({
+    description:
+      'Order. Production access (all methods) requires the order manager role. Sandbox access does not.',
+    required: [],
+  })
+  .openapi('Order')
+
+type OrdersCustomBatchResponseEntryType = {
+  batchId?: number
+  errors?: z.infer<typeof ErrorsSchema>
+  executionStatus?: string
+  kind?: string
+  order?: z.infer<typeof OrderSchema>
+}
+
+const OrdersCustomBatchResponseEntrySchema: z.ZodType<OrdersCustomBatchResponseEntryType> = z
+  .object({
+    batchId: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'The ID of the request entry this entry responds to.' }),
+    errors: ErrorsSchema.exactOptional().openapi({
+      description: 'A list of errors defined if and only if the request failed.',
+    }),
+    executionStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of the execution. Only defined if 1. the request was successful; and 2. the method is not `get`, `getByMerchantOrderId`, or one of the test methods. Acceptable values are: - "`duplicate`" - "`executed`" ',
+      }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "`content#ordersCustomBatchResponseEntry`"',
+      }),
+    order: OrderSchema.exactOptional().openapi({
+      description:
+        'The retrieved order. Only defined if the method is `get` and if the request was successful.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrdersCustomBatchResponseEntry')
+
+type OrdersCustomBatchResponseType = {
+  entries?: z.infer<typeof OrdersCustomBatchResponseEntrySchema>[]
+  kind?: string
+}
+
+type OrdersGetByMerchantOrderIdResponseType = { kind?: string; order?: z.infer<typeof OrderSchema> }
+
+type OrdersGetTestOrderTemplateResponseType = {
+  kind?: string
+  template?: z.infer<typeof TestOrderSchema>
+}
+
+type OrdersListResponseType = {
+  kind?: string
+  nextPageToken?: string
+  resources?: z.infer<typeof OrderSchema>[]
+}
+
+const ProductAspectSchema = z
+  .object({
+    aspectName: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
+    destinationName: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
+    intention: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductAspect')
+
+const CustomAttributeSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the attribute. Underscores will be replaced by spaces upon insertion.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of the attribute. Acceptable values are: - "`boolean`" - "`datetimerange`" - "`float`" - "`group`" - "`int`" - "`price`" - "`text`" - "`time`" - "`url`" ',
+      }),
+    unit: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Free-form unit of the attribute. Unit can only be used for values of type int, float, or price.',
+      }),
+    value: z.string().exactOptional().openapi({ description: 'The value of the attribute.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CustomAttribute')
+
+const CustomGroupSchema = z
+  .object({
+    attributes: z
+      .array(CustomAttributeSchema)
+      .exactOptional()
+      .openapi({ description: 'The sub-attributes.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the group. Underscores will be replaced by spaces upon insertion.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CustomGroup')
+
+const ProductDestinationSchema = z
+  .object({
+    destinationName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the destination.' }),
+    intention: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the destination is required, excluded or should be validated. Acceptable values are: - "`default`" - "`excluded`" - "`optional`" - "`required`" ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductDestination')
+
+const InstallmentSchema = z
+  .object({
+    amount: PriceSchema.exactOptional().openapi({
+      description: 'The amount the buyer has to pay per month.',
+    }),
+    months: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The number of installments the buyer has to pay.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Installment')
+
+const LoyaltyPointsSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of loyalty points program. It is recommended to limit the name to 12 full-width characters or 24 Roman characters.',
+      }),
+    pointsValue: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The retailer's loyalty points in absolute value." }),
+    ratio: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ratio of a point when converted to currency. Google assumes currency based on Merchant Center settings. If ratio is left out, it defaults to 1.0.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('LoyaltyPoints')
+
+const ProductShippingSchema = z
+  .object({
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The CLDR territory code of the country to which an item will ship.',
+      }),
+    locationGroupName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The location where the shipping is applicable, represented by a location group name.',
+      }),
+    locationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The numeric ID of a location that the shipping rate applies to as defined in the AdWords API.',
+      }),
+    postalCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The postal code range that the shipping rate applies to, represented by a postal code, a postal code prefix followed by a * wildcard, a range between two postal codes or two postal code prefixes of equal length.',
+      }),
+    price: PriceSchema.exactOptional().openapi({
+      description: 'Fixed shipping price, represented as a number.',
+    }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The geographic region to which a shipping rate applies.' }),
+    service: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A free-form description of the service class or delivery speed.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductShipping')
+
+const ProductShippingDimensionSchema = z
+  .object({
+    unit: z.string().exactOptional().openapi({ description: 'The unit of value.' }),
+    value: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'The dimension of the product used to calculate the shipping cost of the item.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductShippingDimension')
+
+const ProductShippingWeightSchema = z
+  .object({
+    unit: z.string().exactOptional().openapi({ description: 'The unit of value.' }),
+    value: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'The weight of the product used to calculate the shipping cost of the item.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductShippingWeight')
+
+const ProductTaxSchema = z
+  .object({
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The country within which the item is taxed, specified as a CLDR territory code.',
+      }),
+    locationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The numeric ID of a location that the tax rate applies to as defined in the AdWords API.',
+      }),
+    postalCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The postal code range that the tax rate applies to, represented by a ZIP code, a ZIP code prefix using * wildcard, a range between two ZIP codes or two ZIP code prefixes of equal length. Examples: 94114, 94*, 94002-95460, 94*-95*.',
+      }),
+    rate: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The percentage of tax rate that applies to the item price.' }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The geographic region to which the tax rate applies.' }),
+    taxShip: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Should be set to true if tax is charged on shipping.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductTax')
+
+const ProductUnitPricingBaseMeasureSchema = z
+  .object({
+    unit: z.string().exactOptional().openapi({ description: 'The unit of the denominator.' }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The denominator of the unit price.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductUnitPricingBaseMeasure')
+
+const ProductUnitPricingMeasureSchema = z
+  .object({
+    unit: z.string().exactOptional().openapi({ description: 'The unit of the measure.' }),
+    value: z.float64().exactOptional().openapi({ description: 'The measure of an item.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductUnitPricingMeasure')
+
+const ProductSchema = z
+  .object({
+    additionalImageLinks: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Additional URLs of images of the item.' }),
+    additionalProductTypes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional categories of the item (formatted as in products data specification).',
+      }),
+    adult: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Should be set to true if the item is targeted towards adults.' }),
+    adwordsGrouping: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Used to group items in an arbitrary way. Only for CPA%, discouraged otherwise.',
+      }),
+    adwordsLabels: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Similar to adwords_grouping, but only works on CPC.' }),
+    adwordsRedirect: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Allows advertisers to override the item URL when the product is shown within the context of Product Ads.',
+      }),
+    ageGroup: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Target age group of the item. Acceptable values are: - "`adult`" - "`infant`" - "`kids`" - "`newborn`" - "`toddler`" - "`youngAdult`" ',
+      }),
+    aspects: z
+      .array(ProductAspectSchema)
+      .exactOptional()
+      .openapi({ description: 'Deprecated. Do not use.' }),
+    availability: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Availability status of the item. Acceptable values are: - "`in stock`" - "`out of stock`" - "`preorder`" ',
+      }),
+    availabilityDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The day a pre-ordered product becomes available for delivery, in ISO 8601 format.',
+      }),
+    brand: z.string().exactOptional().openapi({ description: 'Brand of the item.' }),
+    canonicalLink: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "URL for the canonical version of your item's landing page." }),
+    channel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The item\'s channel (online or local). Acceptable values are: - "`local`" - "`online`" ',
+      }),
+    color: z.string().exactOptional().openapi({ description: 'Color of the item.' }),
+    condition: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Condition or state of the item. Acceptable values are: - "`new`" - "`refurbished`" - "`used`" ',
+      }),
+    contentLanguage: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The two-letter ISO 639-1 language code for the item.' }),
+    costOfGoodsSold: PriceSchema.exactOptional().openapi({
+      description: 'Cost of goods sold. Used for gross profit reporting.',
+    }),
+    customAttributes: z
+      .array(CustomAttributeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of custom (merchant-provided) attributes. It can also be used for submitting any attribute of the feed specification in its generic form (e.g., `{ "name": "size type", "value": "regular" }`). This is useful for submitting attributes not explicitly exposed by the API, such as additional attributes used for Buy on Google (formerly known as Shopping Actions).',
+      }),
+    customGroups: z
+      .array(CustomGroupSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of custom (merchant-provided) custom attribute groups.' }),
+    customLabel0: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Custom label 0 for custom grouping of items in a Shopping campaign.',
+      }),
+    customLabel1: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Custom label 1 for custom grouping of items in a Shopping campaign.',
+      }),
+    customLabel2: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Custom label 2 for custom grouping of items in a Shopping campaign.',
+      }),
+    customLabel3: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Custom label 3 for custom grouping of items in a Shopping campaign.',
+      }),
+    customLabel4: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Custom label 4 for custom grouping of items in a Shopping campaign.',
+      }),
+    description: z.string().exactOptional().openapi({ description: 'Description of the item.' }),
+    destinations: z
+      .array(ProductDestinationSchema)
+      .exactOptional()
+      .openapi({ description: 'Specifies the intended destinations for the product.' }),
+    displayAdsId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'An identifier for an item for dynamic remarketing campaigns.' }),
+    displayAdsLink: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "URL directly to your item's landing page for dynamic remarketing campaigns.",
+      }),
+    displayAdsSimilarIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Advertiser-specified recommendations.' }),
+    displayAdsTitle: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Title of an item for dynamic remarketing campaigns.' }),
+    displayAdsValue: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Offer margin for dynamic remarketing campaigns.' }),
+    energyEfficiencyClass: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The energy efficiency class as defined in EU directive 2010/30/EU. Acceptable values are: - "`A`" - "`A+`" - "`A++`" - "`A+++`" - "`B`" - "`C`" - "`D`" - "`E`" - "`F`" - "`G`" ',
+      }),
+    expirationDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Date on which the item should expire, as specified upon insertion, in ISO 8601 format. The actual expiration date in Google Shopping is exposed in `productstatuses` as `googleExpirationDate` and might be earlier if `expirationDate` is too far in the future.',
+      }),
+    gender: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Target gender of the item. Acceptable values are: - "`female`" - "`male`" - "`unisex`" ',
+      }),
+    googleProductCategory: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Google's category of the item (see [Google product taxonomy](https://support.google.com/merchants/answer/1705911)). When querying products, this field will contain the user provided value. There is currently no way to get back the auto assigned google product categories through the API.",
+      }),
+    gtin: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Global Trade Item Number (GTIN) of the item.' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The REST ID of the product. Content API methods that operate on products take this as their `productId` parameter. The REST ID for a product is of the form channel:contentLanguage: targetCountry: offerId.',
+      }),
+    identifierExists: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'False when the item does not have unique product identifiers appropriate to its category, such as GTIN, MPN, and brand. Required according to the Unique Product Identifier Rules for all target countries except for Canada.',
+      }),
+    imageLink: z.string().exactOptional().openapi({ description: 'URL of an image of the item.' }),
+    installment: InstallmentSchema.exactOptional().openapi({
+      description: 'Number and amount of installments to pay for an item.',
+    }),
+    isBundle: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the item is a merchant-defined bundle. A bundle is a custom grouping of different products sold by a merchant for a single price.',
+      }),
+    itemGroupId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Shared identifier for all variants of the same product.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "`content#product`"',
+      }),
+    link: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "URL directly linking to your item's page on your website." }),
+    loyaltyPoints: LoyaltyPointsSchema.exactOptional().openapi({
+      description: 'Loyalty points that users receive after purchasing the item. Japan only.',
+    }),
+    material: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The material of which the item is made.' }),
+    maxEnergyEfficiencyClass: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The energy efficiency class as defined in EU directive 2010/30/EU. Acceptable values are: - "`A`" - "`A+`" - "`A++`" - "`A+++`" - "`B`" - "`C`" - "`D`" - "`E`" - "`F`" - "`G`" ',
+      }),
+    maxHandlingTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Maximal product handling time (in business days).' }),
+    minEnergyEfficiencyClass: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The energy efficiency class as defined in EU directive 2010/30/EU. Acceptable values are: - "`A`" - "`A+`" - "`A++`" - "`A+++`" - "`B`" - "`C`" - "`D`" - "`E`" - "`F`" - "`G`" ',
+      }),
+    minHandlingTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Minimal product handling time (in business days).' }),
+    mobileLink: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "URL for the mobile-optimized version of your item's landing page.",
+      }),
+    mpn: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Manufacturer Part Number (MPN) of the item.' }),
+    multipack: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The number of identical products in a merchant-defined multipack.',
+      }),
+    offerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. A unique identifier for the item. Leading and trailing whitespaces are stripped and multiple whitespaces are replaced by a single whitespace upon submission. Only valid unicode characters are accepted. See the products feed specification for details. *Note:* Content API methods that operate on products take the REST ID of the product, *not* this identifier.',
+      }),
+    onlineOnly: z.boolean().exactOptional().openapi({ description: 'Deprecated.' }),
+    pattern: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The item's pattern (e.g. polka dots)." }),
+    price: PriceSchema.exactOptional().openapi({ description: 'Price of the item.' }),
+    productType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Your category of the item (formatted as in products data specification).',
+      }),
+    promotionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The unique ID of a promotion.' }),
+    salePrice: PriceSchema.exactOptional().openapi({
+      description: 'Advertised sale price of the item.',
+    }),
+    salePriceEffectiveDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Date range during which the item is on sale (see products data specification ).',
+      }),
+    sellOnGoogleQuantity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The quantity of the product that is available for selling on Google. Supported only for online products.',
+      }),
+    shipping: z
+      .array(ProductShippingSchema)
+      .exactOptional()
+      .openapi({ description: 'Shipping rules.' }),
+    shippingHeight: ProductShippingDimensionSchema.exactOptional().openapi({
+      description: 'Height of the item for shipping.',
+    }),
+    shippingLabel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The shipping label of the product, used to group product in account-level shipping rules.',
+      }),
+    shippingLength: ProductShippingDimensionSchema.exactOptional().openapi({
+      description: 'Length of the item for shipping.',
+    }),
+    shippingWeight: ProductShippingWeightSchema.exactOptional().openapi({
+      description: 'Weight of the item for shipping.',
+    }),
+    shippingWidth: ProductShippingDimensionSchema.exactOptional().openapi({
+      description: 'Width of the item for shipping.',
+    }),
+    sizeSystem: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'System in which the size is specified. Recommended for apparel items. Acceptable values are: - "`AU`" - "`BR`" - "`CN`" - "`DE`" - "`EU`" - "`FR`" - "`IT`" - "`JP`" - "`MEX`" - "`UK`" - "`US`" ',
+      }),
+    sizeType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The cut of the item. Recommended for apparel items. Acceptable values are: - "`big and tall`" - "`maternity`" - "`oversize`" - "`petite`" - "`plus`" - "`regular`" ',
+      }),
+    sizes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Size of the item. Only one value is allowed. For variants with different sizes, insert a separate product for each size with the same `itemGroupId` value (see size definition).',
+      }),
+    source: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The source of the offer, i.e., how the offer was created. Acceptable values are: - "`api`" - "`crawl`" - "`feed`" ',
+      }),
+    targetCountry: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The CLDR territory code for the item.' }),
+    taxes: z.array(ProductTaxSchema).exactOptional().openapi({ description: 'Tax information.' }),
+    title: z.string().exactOptional().openapi({ description: 'Title of the item.' }),
+    unitPricingBaseMeasure: ProductUnitPricingBaseMeasureSchema.exactOptional().openapi({
+      description: 'The preference of the denominator of the unit price.',
+    }),
+    unitPricingMeasure: ProductUnitPricingMeasureSchema.exactOptional().openapi({
+      description: 'The measure and dimension of an item.',
+    }),
+    validatedDestinations: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Deprecated. The read-only list of intended destinations which passed validation.',
+      }),
+    warnings: z.array(ErrorSchema).exactOptional().openapi({ description: 'Read-only warnings.' }),
+  })
+  .openapi({
+    description:
+      ' Required product attributes are primarily defined by the products data specification. See the Products Data Specification Help Center article for information. Product data. After inserting, updating, or deleting a product, it may take several minutes before changes take effect.',
+    required: [],
+  })
+  .openapi('Product')
+
+const ProductsCustomBatchRequestEntrySchema = z
+  .object({
+    batchId: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'An entry ID, unique within the batch request.' }),
+    merchantId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the managing account.' }),
+    method: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The method of the batch entry. Acceptable values are: - "`delete`" - "`get`" - "`insert`" ',
+      }),
+    product: ProductSchema.exactOptional().openapi({
+      description: 'The product to insert. Only required if the method is `insert`.',
+    }),
+    productId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the product to get or delete. Only defined if the method is `get` or `delete`.',
+      }),
+  })
+  .openapi({
+    description: 'A batch entry encoding a single non-batch products request.',
+    required: [],
+  })
+  .openapi('ProductsCustomBatchRequestEntry')
+
+type ProductsCustomBatchRequestType = {
+  entries?: z.infer<typeof ProductsCustomBatchRequestEntrySchema>[]
+}
+
+const ProductsCustomBatchResponseEntrySchema = z
+  .object({
+    batchId: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'The ID of the request entry this entry responds to.' }),
+    errors: ErrorsSchema.exactOptional().openapi({
+      description: 'A list of errors defined if and only if the request failed.',
+    }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "`content#productsCustomBatchResponseEntry`"',
+      }),
+    product: ProductSchema.exactOptional().openapi({
+      description:
+        'The inserted product. Only defined if the method is `insert` and if the request was successful.',
+    }),
+  })
+  .openapi({
+    description: 'A batch entry encoding a single non-batch products response.',
+    required: [],
+  })
+  .openapi('ProductsCustomBatchResponseEntry')
+
+type ProductsCustomBatchResponseType = {
+  entries?: z.infer<typeof ProductsCustomBatchResponseEntrySchema>[]
+  kind?: string
+}
+
+const ProductStatusDataQualityIssueSchema = z
+  .object({
+    destination: z.string().exactOptional(),
+    detail: z.string().exactOptional(),
+    fetchStatus: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    location: z.string().exactOptional(),
+    severity: z.string().exactOptional(),
+    timestamp: z.string().exactOptional(),
+    valueOnLandingPage: z.string().exactOptional(),
+    valueProvided: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductStatusDataQualityIssue')
+
+const ProductStatusDestinationStatusSchema = z
+  .object({
+    approvalPending: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the approval status might change due to further processing.',
+      }),
+    approvalStatus: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The destination\'s approval status. Acceptable values are: - "`approved`" - "`disapproved`" ',
+      }),
+    destination: z.string().exactOptional().openapi({ description: 'The name of the destination' }),
+    intention: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Provided for backward compatibility only. Always set to "required". Acceptable values are: - "`default`" - "`excluded`" - "`optional`" - "`required`" ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductStatusDestinationStatus')
+
+const ProductStatusItemLevelIssueSchema = z
+  .object({
+    attributeName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The attribute's name, if the issue is caused by a single attribute.",
+      }),
+    code: z.string().exactOptional().openapi({ description: 'The error code of the issue.' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A short issue description in English.' }),
+    destination: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The destination the issue applies to.' }),
+    detail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A detailed issue description in English.' }),
+    documentation: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL of a web page to help with resolving this issue.' }),
+    resolution: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Whether the issue can be resolved by the merchant.' }),
+    servability: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'How this issue affects serving of the offer.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ProductStatusItemLevelIssue')
+
+const ProductStatusSchema = z
+  .object({
+    creationDate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Date on which the item has been created, in ISO 8601 format.' }),
+    dataQualityIssues: z
+      .array(ProductStatusDataQualityIssueSchema)
+      .exactOptional()
+      .openapi({ description: 'DEPRECATED - never populated' }),
+    destinationStatuses: z
+      .array(ProductStatusDestinationStatusSchema)
+      .exactOptional()
+      .openapi({ description: 'The intended destinations for the product.' }),
+    googleExpirationDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Date on which the item expires in Google Shopping, in ISO 8601 format.',
+      }),
+    itemLevelIssues: z
+      .array(ProductStatusItemLevelIssueSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of all issues associated with the product.' }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "`content#productStatus`"',
+      }),
+    lastUpdateDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Date on which the item has been last updated, in ISO 8601 format.',
+      }),
+    link: z.string().exactOptional().openapi({ description: 'The link to the product.' }),
+    product: ProductSchema.exactOptional().openapi({
+      description: 'Product data after applying all the join inputs.',
+    }),
+    productId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the product for which status is reported.' }),
+    title: z.string().exactOptional().openapi({ description: 'The title of the product.' }),
+  })
+  .openapi({
+    description:
+      'The status of a product, i.e., information about a product computed asynchronously.',
+    required: [],
+  })
+  .openapi('ProductStatus')
+
+const ProductstatusesCustomBatchResponseEntrySchema = z
+  .object({
+    batchId: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'The ID of the request entry this entry responds to.' }),
+    errors: ErrorsSchema.exactOptional().openapi({
+      description: 'A list of errors, if the request failed.',
+    }),
+    kind: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifies what kind of resource this is. Value: the fixed string "`content#productstatusesCustomBatchResponseEntry`"',
+      }),
+    productStatus: ProductStatusSchema.exactOptional().openapi({
+      description: 'The requested product status. Only defined if the request was successful.',
+    }),
+  })
+  .openapi({
+    description: 'A batch entry encoding a single non-batch productstatuses response.',
+    required: [],
+  })
+  .openapi('ProductstatusesCustomBatchResponseEntry')
+
+type ProductstatusesCustomBatchResponseType = {
+  entries?: z.infer<typeof ProductstatusesCustomBatchResponseEntrySchema>[]
+  kind?: string
+}
+
+type ProductstatusesListResponseType = {
+  kind?: string
+  nextPageToken?: string
+  resources?: z.infer<typeof ProductStatusSchema>[]
+}
 
 const CarrierRateSchema = z
   .object({
@@ -491,7 +2863,282 @@ const TableSchema = z
   .openapi({ required: [] })
   .openapi('Table')
 
-const RateGroupSchema = z
+type RateGroupType = {
+  applicableShippingLabels?: string[]
+  carrierRates?: z.infer<typeof CarrierRateSchema>[]
+  mainTable?: z.infer<typeof TableSchema>
+  name?: string
+  singleValue?: z.infer<typeof ValueSchema>
+  subtables?: z.infer<typeof TableSchema>[]
+}
+
+const CutoffTimeSchema = z
+  .object({
+    hour: z
+      .uint32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Hour of the cutoff time until which an order has to be placed to be processed in the same day. Required.',
+      }),
+    minute: z
+      .uint32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Minute of the cutoff time until which an order has to be placed to be processed in the same day. Required.',
+      }),
+    timezone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Timezone identifier for the cutoff time. A list of identifiers can be found in the AdWords API documentation. E.g. "Europe/Zurich". Required.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CutoffTime')
+
+const BusinessDayConfigSchema = z
+  .object({
+    businessDays: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Regular business days, such as \'"monday"\'. May not be empty.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('BusinessDayConfig')
+
+const HolidayCutoffSchema = z
+  .object({
+    deadlineDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Date of the order deadline, in ISO 8601 format. E.g. "2016-11-29" for 29th November 2016. Required.',
+      }),
+    deadlineHour: z
+      .uint32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Hour of the day on the deadline date until which the order has to be placed to qualify for the delivery guarantee. Possible values are: 0 (midnight), 1, ..., 12 (noon), 13, ..., 23. Required.',
+      }),
+    deadlineTimezone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Timezone identifier for the deadline hour. A list of identifiers can be found in the AdWords API documentation. E.g. "Europe/Zurich". Required.',
+      }),
+    holidayId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Unique identifier for the holiday. Required.' }),
+    visibleFromDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Date on which the deadline will become visible to consumers in ISO 8601 format. E.g. "2016-10-31" for 31st October 2016. Required.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('HolidayCutoff')
+
+const TransitTableTransitTimeRowTransitTimeValueSchema = z
+  .object({
+    maxTransitTimeInDays: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'Must be greater than or equal to `minTransitTimeInDays`.' }),
+    minTransitTimeInDays: z
+      .uint32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Transit time range (min-max) in business days. 0 means same day delivery, 1 means next day delivery.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TransitTableTransitTimeRowTransitTimeValue')
+
+const TransitTableTransitTimeRowSchema = z
+  .object({ values: z.array(TransitTableTransitTimeRowTransitTimeValueSchema).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('TransitTableTransitTimeRow')
+
+const TransitTableSchema = z
+  .object({
+    postalCodeGroupNames: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of postal group names. The last value can be `"all other locations"`. Example: `["zone 1", "zone 2", "all other locations"]`. The referred postal code groups must match the delivery country of the service.',
+      }),
+    rows: z.array(TransitTableTransitTimeRowSchema).exactOptional(),
+    transitTimeLabels: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of transit time labels. The last value can be `"all other labels"`. Example: `["food", "electronics", "all other labels"]`.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TransitTable')
+
+const WarehouseBasedDeliveryTimeSchema = z
+  .object({
+    carrier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Carrier, such as `"UPS"` or `"Fedex"`. The list of supported carriers can be retrieved via the `listSupportedCarriers` method.',
+      }),
+    carrierService: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Carrier service, such as `"ground"` or `"2 days"`. The list of supported services for a carrier can be retrieved via the `listSupportedCarriers` method. The name of the service must be in the eddSupportedServices list.',
+      }),
+    originAdministrativeArea: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Shipping origin's state." }),
+    originCity: z.string().exactOptional().openapi({ description: "Shipping origin's city." }),
+    originCountry: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Shipping origin's country represented as a [CLDR territory code](http://www.unicode.org/repos/cldr/tags/latest/common/main/en.xml).",
+      }),
+    originPostalCode: z.string().exactOptional().openapi({ description: 'Shipping origin.' }),
+    originStreetAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Shipping origin's street address" }),
+    warehouseName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the warehouse. Warehouse name need to be matched with name. If warehouseName is set, the below fields will be ignored. The warehouse info will be read from warehouse.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('WarehouseBasedDeliveryTime')
+
+const DeliveryTimeSchema = z
+  .object({
+    cutoffTime: CutoffTimeSchema.exactOptional().openapi({
+      description:
+        'Business days cutoff time definition. If not configured the cutoff time will be defaulted to 8AM PST.',
+    }),
+    handlingBusinessDayConfig: BusinessDayConfigSchema.exactOptional().openapi({
+      description:
+        'The business days during which orders can be handled. If not provided, Monday to Friday business days will be assumed.',
+    }),
+    holidayCutoffs: z
+      .array(HolidayCutoffSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Holiday cutoff definitions. If configured, they specify order cutoff times for holiday-specific shipping.',
+      }),
+    maxHandlingTimeInDays: z
+      .uint32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of business days spent before an order is shipped. 0 means same day shipped, 1 means next day shipped. Must be greater than or equal to `minHandlingTimeInDays`.',
+      }),
+    maxTransitTimeInDays: z
+      .uint32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of business days that is spent in transit. 0 means same day delivery, 1 means next day delivery. Must be greater than or equal to `minTransitTimeInDays`.',
+      }),
+    minHandlingTimeInDays: z
+      .uint32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Minimum number of business days spent before an order is shipped. 0 means same day shipped, 1 means next day shipped.',
+      }),
+    minTransitTimeInDays: z
+      .uint32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Minimum number of business days that is spent in transit. 0 means same day delivery, 1 means next day delivery. Either `{min,max}TransitTimeInDays` or `transitTimeTable` must be set, but not both.',
+      }),
+    transitBusinessDayConfig: BusinessDayConfigSchema.exactOptional().openapi({
+      description:
+        'The business days during which orders can be in-transit. If not provided, Monday to Friday business days will be assumed.',
+    }),
+    transitTimeTable: TransitTableSchema.exactOptional().openapi({
+      description:
+        'Transit time table, number of business days spent in transit based on row and column dimensions. Either `{min,max}TransitTimeInDays` or `transitTimeTable` can be set, but not both.',
+    }),
+    warehouseBasedDeliveryTimes: z
+      .array(WarehouseBasedDeliveryTimeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates that the delivery time should be calculated per warehouse (shipping origin location) based on the settings of the selected carrier. When set, no other transit time related field in DeliveryTime should be set.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('DeliveryTime')
+
+const MinimumOrderValueTableStoreCodeSetWithMovSchema = z
+  .object({
+    storeCodes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'A list of unique store codes or empty for the catch all.' }),
+    value: PriceSchema.exactOptional().openapi({
+      description: 'The minimum order value for the given stores.',
+    }),
+  })
+  .openapi({
+    description:
+      "A list of store code sets sharing the same minimum order value. At least two sets are required and the last one must be empty, which signifies 'MOV for all other stores'. Each store code can only appear once across all the sets. All prices within a service must have the same currency.",
+    required: [],
+  })
+  .openapi('MinimumOrderValueTableStoreCodeSetWithMov')
+
+const MinimumOrderValueTableSchema = z
+  .object({
+    storeCodeSetWithMovs: z.array(MinimumOrderValueTableStoreCodeSetWithMovSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MinimumOrderValueTable')
+
+const PickupCarrierServiceSchema = z
+  .object({
+    carrierName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the pickup carrier (e.g., `"UPS"`). Required.' }),
+    serviceName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the pickup service (e.g., `"Access point"`). Required.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PickupCarrierService')
+
+const RateGroupSchema: z.ZodType<RateGroupType> = z
   .object({
     applicableShippingLabels: z
       .array(z.string())
@@ -545,6 +3192,340 @@ type ServiceType = {
   pickupService?: z.infer<typeof PickupCarrierServiceSchema>
   rateGroups?: z.infer<typeof RateGroupSchema>[]
   shipmentType?: string
+}
+
+const PostalCodeRangeSchema = z
+  .object({
+    postalCodeRangeBegin: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A postal code or a pattern of the form `prefix*` denoting the inclusive lower bound of the range defining the area. Examples values: `"94108"`, `"9410*"`, `"9*"`. Required.',
+      }),
+    postalCodeRangeEnd: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A postal code or a pattern of the form `prefix*` denoting the inclusive upper bound of the range defining the area. It must have the same length as `postalCodeRangeBegin`: if `postalCodeRangeBegin` is a postal code then `postalCodeRangeEnd` must be a postal code too; if `postalCodeRangeBegin` is a pattern then `postalCodeRangeEnd` must be a pattern with the same prefix length. Optional: if not set, then the area is defined as being all the postal codes matching `postalCodeRangeBegin`.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PostalCodeRange')
+
+const PostalCodeGroupSchema = z
+  .object({
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The CLDR territory code of the country the postal code group applies to. Required.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the postal code group, referred to in headers. Required.',
+      }),
+    postalCodeRanges: z
+      .array(PostalCodeRangeSchema)
+      .exactOptional()
+      .openapi({ description: 'A range of postal codes. Required.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('PostalCodeGroup')
+
+const ServiceSchema: z.ZodType<ServiceType> = z
+  .object({
+    active: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'A boolean exposing the active status of the shipping service. Required.',
+      }),
+    currency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The CLDR code of the currency to which this service applies. Must match that of the prices in rate groups.',
+      }),
+    deliveryCountry: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The CLDR territory code of the country to which the service applies. Required.',
+      }),
+    deliveryTime: DeliveryTimeSchema.exactOptional().openapi({
+      description:
+        'Time spent in various aspects from order to the delivery of the product. Required.',
+    }),
+    eligibility: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Eligibility for this service. Acceptable values are: - "`All scenarios`" - "`All scenarios except Shopping Actions`" - "`Shopping Actions`" ',
+      }),
+    minimumOrderValue: PriceSchema.exactOptional().openapi({
+      description:
+        'Minimum order value for this service. If set, indicates that customers will have to spend at least this amount. All prices within a service must have the same currency. Cannot be set together with minimum_order_value_table.',
+    }),
+    minimumOrderValueTable: MinimumOrderValueTableSchema.exactOptional().openapi({
+      description:
+        'Table of per store minimum order values for the pickup fulfillment type. Cannot be set together with minimum_order_value.',
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Free-form name of the service. Must be unique within target account. Required.',
+      }),
+    pickupService: PickupCarrierServiceSchema.exactOptional().openapi({
+      description:
+        'The carrier-service pair delivering items to collection points. The list of supported pickup services can be retrieved via the `getSupportedPickupServices` method. Required if and only if the service delivery type is `pickup`.',
+    }),
+    rateGroups: z
+      .array(RateGroupSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Shipping rate group definitions. Only the last one is allowed to have an empty `applicableShippingLabels`, which means "everything else". The other `applicableShippingLabels` must not overlap.',
+      }),
+    shipmentType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Type of locations this service ships orders to. Acceptable values are: - "`delivery`" - "`pickup`" ',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Service')
+
+const WarehouseCutoffTimeSchema = z
+  .object({
+    hour: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Hour (24-hour clock) of the cutoff time until which an order has to be placed to be processed in the same day by the warehouse. Hour is based on the timezone of warehouse.',
+      }),
+    minute: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Minute of the cutoff time until which an order has to be placed to be processed in the same day by the warehouse. Minute is based on the timezone of warehouse.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('WarehouseCutoffTime')
+
+const AddressSchema = z
+  .object({
+    administrativeArea: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Top-level administrative subdivision of the country. For example, a state like California ("CA") or a province like Quebec ("QC").',
+      }),
+    city: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. City, town or commune. May also include dependent localities or sublocalities (e.g. neighborhoods or suburbs).',
+      }),
+    country: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. [CLDR country code](http://www.unicode.org/repos/cldr/tags/latest/common/main/en.xml)(e.g. "US").',
+      }),
+    postalCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Postal code or ZIP (e.g. "94043"). Required.' }),
+    streetAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Street-level part of the address.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Address')
+
+const WarehouseSchema = z
+  .object({
+    businessDayConfig: BusinessDayConfigSchema.exactOptional().openapi({
+      description:
+        'Business days of the warehouse. If not set, will be Monday to Friday by default.',
+    }),
+    cutoffTime: WarehouseCutoffTimeSchema.exactOptional().openapi({
+      description:
+        'Required. The latest time of day that an order can be accepted and begin processing. Later orders will be processed in the next day. The time is based on the warehouse postal code.',
+    }),
+    handlingDays: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The number of days it takes for this warehouse to pack up and ship an item. This is on the warehouse level, but can be overridden on the offer level based on the attributes of an item.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Required. The name of the warehouse. Must be unique within account.',
+      }),
+    shippingAddress: AddressSchema.exactOptional().openapi({
+      description: 'Required. Shipping address of the warehouse.',
+    }),
+  })
+  .openapi({
+    description: 'A fulfillment warehouse, which stores and handles inventory.',
+    required: [],
+  })
+  .openapi('Warehouse')
+
+type ShippingSettingsType = {
+  accountId?: string
+  postalCodeGroups?: z.infer<typeof PostalCodeGroupSchema>[]
+  services?: z.infer<typeof ServiceSchema>[]
+  warehouses?: z.infer<typeof WarehouseSchema>[]
+}
+
+const ShippingSettingsSchema: z.ZodType<ShippingSettingsType> = z
+  .object({
+    accountId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the account to which these account shipping settings belong. Ignored upon update, always present in get request responses.',
+      }),
+    postalCodeGroups: z
+      .array(PostalCodeGroupSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of postal code groups that can be referred to in `services`. Optional.',
+      }),
+    services: z
+      .array(ServiceSchema)
+      .exactOptional()
+      .openapi({ description: "The target account's list of services. Optional." }),
+    warehouses: z
+      .array(WarehouseSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Optional. A list of warehouses which can be referred to in `services`.',
+      }),
+  })
+  .openapi({
+    description:
+      "The merchant account's shipping settings. All methods except getsupportedcarriers and getsupportedholidays require the admin role.",
+    required: [],
+  })
+  .openapi('ShippingSettings')
+
+type ShippingsettingsCustomBatchRequestEntryType = {
+  accountId?: string
+  batchId?: number
+  merchantId?: string
+  method?: string
+  shippingSettings?: z.infer<typeof ShippingSettingsSchema>
+}
+
+const ShippingsettingsCustomBatchRequestEntrySchema: z.ZodType<ShippingsettingsCustomBatchRequestEntryType> =
+  z
+    .object({
+      accountId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'The ID of the account for which to get/update account shipping settings.',
+        }),
+      batchId: z
+        .uint32()
+        .exactOptional()
+        .openapi({ description: 'An entry ID, unique within the batch request.' }),
+      merchantId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The ID of the managing account.' }),
+      method: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The method of the batch entry. Acceptable values are: - "`get`" - "`update`" ',
+        }),
+      shippingSettings: ShippingSettingsSchema.exactOptional().openapi({
+        description:
+          'The account shipping settings to update. Only defined if the method is `update`.',
+      }),
+    })
+    .openapi({
+      description: 'A batch entry encoding a single non-batch shippingsettings request.',
+      required: [],
+    })
+    .openapi('ShippingsettingsCustomBatchRequestEntry')
+
+type ShippingsettingsCustomBatchRequestType = {
+  entries?: z.infer<typeof ShippingsettingsCustomBatchRequestEntrySchema>[]
+}
+
+type ShippingsettingsCustomBatchResponseEntryType = {
+  batchId?: number
+  errors?: z.infer<typeof ErrorsSchema>
+  kind?: string
+  shippingSettings?: z.infer<typeof ShippingSettingsSchema>
+}
+
+const ShippingsettingsCustomBatchResponseEntrySchema: z.ZodType<ShippingsettingsCustomBatchResponseEntryType> =
+  z
+    .object({
+      batchId: z
+        .uint32()
+        .exactOptional()
+        .openapi({ description: 'The ID of the request entry to which this entry responds.' }),
+      errors: ErrorsSchema.exactOptional().openapi({
+        description: 'A list of errors defined if, and only if, the request failed.',
+      }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Identifies what kind of resource this is. Value: the fixed string "`content#shippingsettingsCustomBatchResponseEntry`"',
+        }),
+      shippingSettings: ShippingSettingsSchema.exactOptional().openapi({
+        description: 'The retrieved or updated account shipping settings.',
+      }),
+    })
+    .openapi({
+      description: 'A batch entry encoding a single non-batch shipping settings response.',
+      required: [],
+    })
+    .openapi('ShippingsettingsCustomBatchResponseEntry')
+
+type ShippingsettingsCustomBatchResponseType = {
+  entries?: z.infer<typeof ShippingsettingsCustomBatchResponseEntrySchema>[]
+  kind?: string
+}
+
+type ShippingsettingsListResponseType = {
+  kind?: string
+  nextPageToken?: string
+  resources?: z.infer<typeof ShippingSettingsSchema>[]
 }
 
 const AccountAdwordsLinkSchema = z
@@ -777,191 +3758,6 @@ const AccountIdentifierSchema = z
   .openapi({ required: [] })
   .openapi('AccountIdentifier')
 
-const AccountStatusAccountLevelIssueSchema = z
-  .object({
-    country: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Country for which this issue is reported.' }),
-    destination: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The destination the issue applies to. If this field is empty then the issue applies to all available destinations.',
-      }),
-    detail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Additional details about the issue.' }),
-    documentation: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL of a web page to help resolving this issue.' }),
-    id: z.string().exactOptional().openapi({ description: 'Issue identifier.' }),
-    severity: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Severity of the issue. Acceptable values are: - "`critical`" - "`error`" - "`suggestion`" ',
-      }),
-    title: z.string().exactOptional().openapi({ description: 'Short description of the issue.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AccountStatusAccountLevelIssue')
-
-const AccountStatusExampleItemSchema = z
-  .object({
-    itemId: z.string().exactOptional(),
-    link: z.string().exactOptional(),
-    submittedValue: z.string().exactOptional(),
-    title: z.string().exactOptional(),
-    valueOnLandingPage: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AccountStatusExampleItem')
-
-const AccountStatusDataQualityIssueSchema = z
-  .object({
-    country: z.string().exactOptional(),
-    destination: z.string().exactOptional(),
-    detail: z.string().exactOptional(),
-    displayedValue: z.string().exactOptional(),
-    exampleItems: z.array(AccountStatusExampleItemSchema).exactOptional(),
-    id: z.string().exactOptional(),
-    lastChecked: z.string().exactOptional(),
-    location: z.string().exactOptional(),
-    numItems: z.uint32().exactOptional(),
-    severity: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: ' Acceptable values are: - "`critical`" - "`error`" - "`suggestion`" ',
-      }),
-    submittedValue: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AccountStatusDataQualityIssue')
-
-const AccountStatusItemLevelIssueSchema = z
-  .object({
-    attributeName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The attribute's name, if the issue is caused by a single attribute.",
-      }),
-    code: z.string().exactOptional().openapi({ description: 'The error code of the issue.' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A short issue description in English.' }),
-    detail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A detailed issue description in English.' }),
-    documentation: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL of a web page to help with resolving this issue.' }),
-    numItems: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Number of items with this issue.' }),
-    resolution: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Whether the issue can be resolved by the merchant.' }),
-    servability: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'How this issue affects serving of the offer.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AccountStatusItemLevelIssue')
-
-const AccountStatusStatisticsSchema = z
-  .object({
-    active: z.string().exactOptional().openapi({ description: 'Number of active offers.' }),
-    disapproved: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Number of disapproved offers.' }),
-    expiring: z.string().exactOptional().openapi({ description: 'Number of expiring offers.' }),
-    pending: z.string().exactOptional().openapi({ description: 'Number of pending offers.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AccountStatusStatistics')
-
-const AccountStatusProductsSchema = z
-  .object({
-    channel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The channel the data applies to. Acceptable values are: - "`local`" - "`online`" ',
-      }),
-    country: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The country the data applies to.' }),
-    destination: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The destination the data applies to.' }),
-    itemLevelIssues: z
-      .array(AccountStatusItemLevelIssueSchema)
-      .exactOptional()
-      .openapi({ description: 'List of item-level issues.' }),
-    statistics: AccountStatusStatisticsSchema.exactOptional().openapi({
-      description: 'Aggregated product statistics.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('AccountStatusProducts')
-
-const AccountStatusSchema = z
-  .object({
-    accountId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the account for which the status is reported.' }),
-    accountLevelIssues: z
-      .array(AccountStatusAccountLevelIssueSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of account level issues.' }),
-    dataQualityIssues: z
-      .array(AccountStatusDataQualityIssueSchema)
-      .exactOptional()
-      .openapi({ description: 'DEPRECATED - never populated.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "`content#accountStatus`"',
-      }),
-    products: z
-      .array(AccountStatusProductsSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of product-related data by channel, destination, and country. Data in this field may be delayed by up to 30 minutes.',
-      }),
-    websiteClaimed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: "Whether the account's website is claimed or not." }),
-  })
-  .openapi({
-    description:
-      'The status of an account, i.e., information about its products, which is computed offline and not returned immediately at insertion time.',
-    required: [],
-  })
-  .openapi('AccountStatus')
-
 const AccountTaxTaxRuleSchema = z
   .object({
     country: z
@@ -1151,30 +3947,6 @@ const AccountsCustomBatchRequestSchema = z
   .openapi({ required: [] })
   .openapi('AccountsCustomBatchRequest')
 
-const ErrorSchema = z
-  .object({
-    domain: z.string().exactOptional().openapi({ description: 'The domain of the error.' }),
-    message: z.string().exactOptional().openapi({ description: 'A description of the error.' }),
-    reason: z.string().exactOptional().openapi({ description: 'The error code.' }),
-  })
-  .openapi({ description: 'An error returned by the API.', required: [] })
-  .openapi('Error')
-
-const ErrorsSchema = z
-  .object({
-    code: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'The HTTP status of the first error in `errors`.' }),
-    errors: z.array(ErrorSchema).exactOptional().openapi({ description: 'A list of errors.' }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The message of the first error in `errors`.' }),
-  })
-  .openapi({ description: 'A list of errors returned by a failed batch entry.', required: [] })
-  .openapi('Errors')
-
 const AccountsCustomBatchResponseEntrySchema = z
   .object({
     account: AccountSchema.exactOptional().openapi({
@@ -1323,42 +4095,23 @@ const AccountstatusesCustomBatchRequestSchema = z
   .openapi({ required: [] })
   .openapi('AccountstatusesCustomBatchRequest')
 
-const AccountstatusesCustomBatchResponseEntrySchema = z
-  .object({
-    accountStatus: AccountStatusSchema.exactOptional().openapi({
-      description:
-        'The requested account status. Defined if and only if the request was successful.',
-    }),
-    batchId: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'The ID of the request entry this entry responds to.' }),
-    errors: ErrorsSchema.exactOptional().openapi({
-      description: 'A list of errors defined if and only if the request failed.',
-    }),
-  })
-  .openapi({
-    description: 'A batch entry encoding a single non-batch accountstatuses response.',
-    required: [],
-  })
-  .openapi('AccountstatusesCustomBatchResponseEntry')
-
-const AccountstatusesCustomBatchResponseSchema = z
-  .object({
-    entries: z
-      .array(AccountstatusesCustomBatchResponseEntrySchema)
-      .exactOptional()
-      .openapi({ description: 'The result of the execution of the batch requests.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "content#accountstatusesCustomBatchResponse".',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('AccountstatusesCustomBatchResponse')
+const AccountstatusesCustomBatchResponseSchema: z.ZodType<AccountstatusesCustomBatchResponseType> =
+  z
+    .object({
+      entries: z
+        .array(AccountstatusesCustomBatchResponseEntrySchema)
+        .exactOptional()
+        .openapi({ description: 'The result of the execution of the batch requests.' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Identifies what kind of resource this is. Value: the fixed string "content#accountstatusesCustomBatchResponse".',
+        }),
+    })
+    .openapi({ required: [] })
+    .openapi('AccountstatusesCustomBatchResponse')
 
 const AccountstatusesListResponseSchema = z
   .object({
@@ -1486,49 +4239,6 @@ const AccounttaxListResponseSchema = z
   .openapi({ required: [] })
   .openapi('AccounttaxListResponse')
 
-const AddressSchema = z
-  .object({
-    administrativeArea: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Top-level administrative subdivision of the country. For example, a state like California ("CA") or a province like Quebec ("QC").',
-      }),
-    city: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. City, town or commune. May also include dependent localities or sublocalities (e.g. neighborhoods or suburbs).',
-      }),
-    country: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. [CLDR country code](http://www.unicode.org/repos/cldr/tags/latest/common/main/en.xml)(e.g. "US").',
-      }),
-    postalCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Postal code or ZIP (e.g. "94043"). Required.' }),
-    streetAddress: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Street-level part of the address.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Address')
-
-const AmountSchema = z
-  .object({
-    pretax: PriceSchema.exactOptional().openapi({ description: '[required] Value before taxes.' }),
-    tax: PriceSchema.exactOptional().openapi({ description: '[required] Tax value.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Amount')
-
 const CarriersCarrierSchema = z
   .object({
     country: z
@@ -1558,65 +4268,6 @@ const CarriersCarrierSchema = z
   })
   .openapi({ required: [] })
   .openapi('CarriersCarrier')
-
-const CustomAttributeSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the attribute. Underscores will be replaced by spaces upon insertion.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of the attribute. Acceptable values are: - "`boolean`" - "`datetimerange`" - "`float`" - "`group`" - "`int`" - "`price`" - "`text`" - "`time`" - "`url`" ',
-      }),
-    unit: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Free-form unit of the attribute. Unit can only be used for values of type int, float, or price.',
-      }),
-    value: z.string().exactOptional().openapi({ description: 'The value of the attribute.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('CustomAttribute')
-
-const CustomGroupSchema = z
-  .object({
-    attributes: z
-      .array(CustomAttributeSchema)
-      .exactOptional()
-      .openapi({ description: 'The sub-attributes.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the group. Underscores will be replaced by spaces upon insertion.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CustomGroup')
-
-const CustomerReturnReasonSchema = z
-  .object({
-    description: z.string().exactOptional().openapi({ description: 'Description of the reason.' }),
-    reasonCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Code of the return reason. Acceptable values are: - "`betterPriceFound`" - "`changedMind`" - "`damagedOrDefectiveItem`" - "`didNotMatchDescription`" - "`doesNotFit`" - "`expiredItem`" - "`incorrectItemReceived`" - "`noLongerNeeded`" - "`notSpecified`" - "`orderedWrongItem`" - "`other`" - "`qualityNotExpected`" - "`receivedTooLate`" - "`undeliverable`" ',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CustomerReturnReason')
 
 const DatafeedFetchScheduleSchema = z
   .object({
@@ -1809,101 +4460,6 @@ const DatafeedSchema = z
   .openapi({ description: 'Datafeed configuration data.', required: [] })
   .openapi('Datafeed')
 
-const DatafeedStatusExampleSchema = z
-  .object({
-    itemId: z.string().exactOptional().openapi({ description: 'The ID of the example item.' }),
-    lineNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Line number in the data feed where the example is found.' }),
-    value: z.string().exactOptional().openapi({ description: 'The problematic value.' }),
-  })
-  .openapi({ description: 'An example occurrence for a particular error.', required: [] })
-  .openapi('DatafeedStatusExample')
-
-const DatafeedStatusErrorSchema = z
-  .object({
-    code: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The code of the error, e.g., "validation/invalid_value".' }),
-    count: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The number of occurrences of the error in the feed.' }),
-    examples: z
-      .array(DatafeedStatusExampleSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of example occurrences of the error, grouped by product.' }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The error message, e.g., "Invalid price".' }),
-  })
-  .openapi({ description: 'An error occurring in the feed, like "invalid price".', required: [] })
-  .openapi('DatafeedStatusError')
-
-const DatafeedStatusSchema = z
-  .object({
-    country: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The country for which the status is reported, represented as a CLDR territory code.',
-      }),
-    datafeedId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the feed for which the status is reported.' }),
-    errors: z
-      .array(DatafeedStatusErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of errors occurring in the feed.' }),
-    itemsTotal: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The number of items in the feed that were processed.' }),
-    itemsValid: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The number of items in the feed that were valid.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "`content#datafeedStatus`"',
-      }),
-    language: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The two-letter ISO 639-1 language for which the status is reported.',
-      }),
-    lastUploadDate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The last date at which the feed was uploaded.' }),
-    processingStatus: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The processing status of the feed. Acceptable values are: - "`"`failure`": The feed could not be processed or all items had errors.`" - "`in progress`": The feed is being processed. - "`none`": The feed has not yet been processed. For example, a feed that has never been uploaded will have this processing status. - "`success`": The feed was processed successfully, though some items might have had errors. ',
-      }),
-    warnings: z
-      .array(DatafeedStatusErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of errors occurring in the feed.' }),
-  })
-  .openapi({
-    description:
-      'The status of a datafeed, i.e., the result of the last retrieval of the datafeed computed asynchronously when the feed processing is finished.',
-    required: [],
-  })
-  .openapi('DatafeedStatus')
-
 const DatafeedsCustomBatchRequestEntrySchema = z
   .object({
     batchId: z
@@ -2059,42 +4615,23 @@ const DatafeedstatusesCustomBatchRequestSchema = z
   .openapi({ required: [] })
   .openapi('DatafeedstatusesCustomBatchRequest')
 
-const DatafeedstatusesCustomBatchResponseEntrySchema = z
-  .object({
-    batchId: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'The ID of the request entry this entry responds to.' }),
-    datafeedStatus: DatafeedStatusSchema.exactOptional().openapi({
-      description:
-        'The requested data feed status. Defined if and only if the request was successful.',
-    }),
-    errors: ErrorsSchema.exactOptional().openapi({
-      description: 'A list of errors defined if and only if the request failed.',
-    }),
-  })
-  .openapi({
-    description: 'A batch entry encoding a single non-batch datafeedstatuses response.',
-    required: [],
-  })
-  .openapi('DatafeedstatusesCustomBatchResponseEntry')
-
-const DatafeedstatusesCustomBatchResponseSchema = z
-  .object({
-    entries: z
-      .array(DatafeedstatusesCustomBatchResponseEntrySchema)
-      .exactOptional()
-      .openapi({ description: 'The result of the execution of the batch requests.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "content#datafeedstatusesCustomBatchResponse".',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('DatafeedstatusesCustomBatchResponse')
+const DatafeedstatusesCustomBatchResponseSchema: z.ZodType<DatafeedstatusesCustomBatchResponseType> =
+  z
+    .object({
+      entries: z
+        .array(DatafeedstatusesCustomBatchResponseEntrySchema)
+        .exactOptional()
+        .openapi({ description: 'The result of the execution of the batch requests.' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Identifies what kind of resource this is. Value: the fixed string "content#datafeedstatusesCustomBatchResponse".',
+        }),
+    })
+    .openapi({ required: [] })
+    .openapi('DatafeedstatusesCustomBatchResponse')
 
 const DatafeedstatusesListResponseSchema = z
   .object({
@@ -2196,69 +4733,6 @@ const HolidaysHolidaySchema = z
   })
   .openapi({ required: [] })
   .openapi('HolidaysHoliday')
-
-const InstallmentSchema = z
-  .object({
-    amount: PriceSchema.exactOptional().openapi({
-      description: 'The amount the buyer has to pay per month.',
-    }),
-    months: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The number of installments the buyer has to pay.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Installment')
-
-const InvoiceSummaryAdditionalChargeSummarySchema = z
-  .object({
-    totalAmount: AmountSchema.exactOptional().openapi({
-      description: '[required] Total additional charge for this type.',
-    }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[required] Type of the additional charge. Acceptable values are: - "`shipping`" ',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('InvoiceSummaryAdditionalChargeSummary')
-
-const PromotionSchema = z
-  .object({
-    promotionAmount: AmountSchema.exactOptional().openapi({
-      description:
-        '[required] Amount of the promotion. The values here are the promotion applied to the unit price pretax and to the total of the tax amounts.',
-    }),
-    promotionId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '[required] ID of the promotion.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Promotion')
-
-const InvoiceSummarySchema = z
-  .object({
-    additionalChargeSummaries: z
-      .array(InvoiceSummaryAdditionalChargeSummarySchema)
-      .exactOptional()
-      .openapi({ description: 'Summary of the total amounts of the additional charges.' }),
-    customerBalance: AmountSchema.exactOptional().openapi({ description: 'Deprecated.' }),
-    googleBalance: AmountSchema.exactOptional().openapi({ description: 'Deprecated.' }),
-    merchantBalance: AmountSchema.exactOptional().openapi({ description: 'Deprecated.' }),
-    productTotal: AmountSchema.exactOptional().openapi({
-      description: '[required] Total price for the product.',
-    }),
-    promotionSummaries: z
-      .array(PromotionSchema)
-      .exactOptional()
-      .openapi({ description: 'Deprecated.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('InvoiceSummary')
 
 const LiaAboutPageSettingsSchema = z
   .object({
@@ -2648,917 +5122,6 @@ const LiasettingsSetPosDataProviderResponseSchema = z
   .openapi({ required: [] })
   .openapi('LiasettingsSetPosDataProviderResponse')
 
-const LoyaltyPointsSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of loyalty points program. It is recommended to limit the name to 12 full-width characters or 24 Roman characters.',
-      }),
-    pointsValue: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The retailer's loyalty points in absolute value." }),
-    ratio: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ratio of a point when converted to currency. Google assumes currency based on Merchant Center settings. If ratio is left out, it defaults to 1.0.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('LoyaltyPoints')
-
-const RefundReasonSchema = z
-  .object({
-    description: z.string().exactOptional().openapi({ description: 'Description of the reason.' }),
-    reasonCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Code of the refund reason. Acceptable values are: - "`adjustment`" - "`autoPostInternal`" - "`autoPostInvalidBillingAddress`" - "`autoPostNoInventory`" - "`autoPostPriceError`" - "`autoPostUndeliverableShippingAddress`" - "`couponAbuse`" - "`courtesyAdjustment`" - "`customerCanceled`" - "`customerDiscretionaryReturn`" - "`customerInitiatedMerchantCancel`" - "`customerSupportRequested`" - "`deliveredLateByCarrier`" - "`deliveredTooLate`" - "`expiredItem`" - "`failToPushOrderGoogleError`" - "`failToPushOrderMerchantError`" - "`failToPushOrderMerchantFulfillmentError`" - "`failToPushOrderToMerchant`" - "`failToPushOrderToMerchantOutOfStock`" - "`feeAdjustment`" - "`invalidCoupon`" - "`lateShipmentCredit`" - "`malformedShippingAddress`" - "`merchantDidNotShipOnTime`" - "`noInventory`" - "`orderTimeout`" - "`other`" - "`paymentAbuse`" - "`paymentDeclined`" - "`priceAdjustment`" - "`priceError`" - "`productArrivedDamaged`" - "`productNotAsDescribed`" - "`promoReallocation`" - "`qualityNotAsExpected`" - "`returnRefundAbuse`" - "`shippingCostAdjustment`" - "`shippingPriceError`" - "`taxAdjustment`" - "`taxError`" - "`undeliverableShippingAddress`" - "`unsupportedPoBoxAddress`" - "`wrongProductShipped`" ',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('RefundReason')
-
-const OrderLineItemProductFeeSchema = z
-  .object({
-    amount: PriceSchema.exactOptional().openapi({ description: 'Amount of the fee.' }),
-    name: z.string().exactOptional().openapi({ description: 'Name of the fee.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderLineItemProductFee')
-
-const OrderLineItemProductVariantAttributeSchema = z
-  .object({
-    dimension: z.string().exactOptional().openapi({ description: 'The dimension of the variant.' }),
-    value: z.string().exactOptional().openapi({ description: 'The value for the dimension.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderLineItemProductVariantAttribute')
-
-const OrderLineItemProductSchema = z
-  .object({
-    brand: z.string().exactOptional().openapi({ description: 'Brand of the item.' }),
-    channel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The item\'s channel (online or local). Acceptable values are: - "`local`" - "`online`" ',
-      }),
-    condition: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Condition or state of the item. Acceptable values are: - "`new`" - "`refurbished`" - "`used`" ',
-      }),
-    contentLanguage: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The two-letter ISO 639-1 language code for the item.' }),
-    fees: z
-      .array(OrderLineItemProductFeeSchema)
-      .exactOptional()
-      .openapi({ description: 'Associated fees at order creation time.' }),
-    gtin: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Global Trade Item Number (GTIN) of the item.' }),
-    id: z.string().exactOptional().openapi({ description: 'The REST ID of the product.' }),
-    imageLink: z.string().exactOptional().openapi({ description: 'URL of an image of the item.' }),
-    itemGroupId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Shared identifier for all variants of the same product.' }),
-    mpn: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Manufacturer Part Number (MPN) of the item.' }),
-    offerId: z.string().exactOptional().openapi({ description: 'An identifier of the item.' }),
-    price: PriceSchema.exactOptional().openapi({ description: 'Price of the item.' }),
-    shownImage: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'URL to the cached image shown to the user when order was placed.' }),
-    targetCountry: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The CLDR territory // code of the target country of the product.' }),
-    title: z.string().exactOptional().openapi({ description: 'The title of the product.' }),
-    variantAttributes: z
-      .array(OrderLineItemProductVariantAttributeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Variant attributes for the item. These are dimensions of the product, such as color, gender, material, pattern, and size. You can find a comprehensive list of variant attributes here.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderLineItemProduct')
-
-const MerchantOrderReturnItemSchema = z
-  .object({
-    customerReturnReason: CustomerReturnReasonSchema.exactOptional().openapi({
-      description: 'The reason that the customer chooses to return an item.',
-    }),
-    itemId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Product level item ID. If the returned items are of the same product, they will have the same ID.',
-      }),
-    merchantReturnReason: RefundReasonSchema.exactOptional().openapi({
-      description: 'The reason that merchant chooses to accept a return item.',
-    }),
-    product: OrderLineItemProductSchema.exactOptional().openapi({
-      description: 'Product data from the time of the order placement.',
-    }),
-    returnShipmentIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'IDs of the return shipments that this return item belongs to.' }),
-    state: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'State of the item. Acceptable values are: - "`canceled`" - "`new`" - "`received`" - "`refunded`" - "`rejected`" ',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('MerchantOrderReturnItem')
-
-const ShipmentTrackingInfoSchema = z
-  .object({
-    carrier: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The shipping carrier that handles the package. Acceptable values are: - "`boxtal`" - "`bpost`" - "`chronopost`" - "`colisPrive`" - "`colissimo`" - "`cxt`" - "`deliv`" - "`dhl`" - "`dpd`" - "`dynamex`" - "`eCourier`" - "`easypost`" - "`efw`" - "`fedex`" - "`fedexSmartpost`" - "`geodis`" - "`gls`" - "`googleCourier`" - "`gsx`" - "`jdLogistics`" - "`laPoste`" - "`lasership`" - "`manual`" - "`mpx`" - "`onTrac`" - "`other`" - "`tnt`" - "`uds`" - "`ups`" - "`usps`" ',
-      }),
-    trackingNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The tracking number for the package.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ShipmentTrackingInfo')
-
-const ReturnShipmentSchema = z
-  .object({
-    creationDate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The date of creation of the shipment, in ISO 8601 format.' }),
-    deliveryDate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The date of delivery of the shipment, in ISO 8601 format.' }),
-    returnMethodType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Type of the return method. Acceptable values are: - "`byMail`" - "`contactCustomerSupport`" - "`returnless`" ',
-      }),
-    shipmentId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Shipment ID generated by Google.' }),
-    shipmentTrackingInfos: z
-      .array(ShipmentTrackingInfoSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Tracking information of the shipment. One return shipment might be handled by several shipping carriers sequentially.',
-      }),
-    shippingDate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The date of shipping of the shipment, in ISO 8601 format.' }),
-    state: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'State of the shipment. Acceptable values are: - "`completed`" - "`new`" - "`shipped`" - "`undeliverable`" - "`pending`" ',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ReturnShipment')
-
-const MerchantOrderReturnSchema = z
-  .object({
-    creationDate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The date of creation of the return, in ISO 8601 format.' }),
-    merchantOrderId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Merchant defined order ID.' }),
-    orderId: z.string().exactOptional().openapi({ description: 'Google order ID.' }),
-    orderReturnId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Order return ID generated by Google.' }),
-    returnItems: z
-      .array(MerchantOrderReturnItemSchema)
-      .exactOptional()
-      .openapi({ description: 'Items of the return.' }),
-    returnShipments: z
-      .array(ReturnShipmentSchema)
-      .exactOptional()
-      .openapi({ description: 'Shipments of the return.' }),
-  })
-  .openapi({
-    description:
-      'Order return. Production access (all methods) requires the order manager role. Sandbox access does not.',
-    required: [],
-  })
-  .openapi('MerchantOrderReturn')
-
-const OrderCustomerMarketingRightsInfoSchema = z
-  .object({
-    explicitMarketingPreference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Last known customer selection regarding marketing preferences. In certain cases this selection might not be known, so this field would be empty. If a customer selected `granted` in their most recent order, they can be subscribed to marketing emails. Customers who have chosen `denied` must not be subscribed, or must be unsubscribed if already opted-in. Acceptable values are: - "`denied`" - "`granted`" ',
-      }),
-    lastUpdatedTimestamp: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Timestamp when last time marketing preference was updated. Could be empty, if user wasn't offered a selection yet.",
-      }),
-    marketingEmailAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Email address that can be used for marketing purposes. The field may be empty even if `explicitMarketingPreference` is 'granted'. This happens when retrieving an old order from the customer who deleted their account.",
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderCustomerMarketingRightsInfo')
-
-const OrderCustomerSchema = z
-  .object({
-    email: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
-    explicitMarketingPreference: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Deprecated. Please use marketingRightsInfo instead.' }),
-    fullName: z.string().exactOptional().openapi({ description: 'Full name of the customer.' }),
-    invoiceReceivingEmail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Email address for the merchant to send value-added tax or invoice documentation of the order. Only the last document sent is made available to the customer. For more information, see About automated VAT invoicing for Buy on Google.',
-      }),
-    marketingRightsInfo: OrderCustomerMarketingRightsInfoSchema.exactOptional().openapi({
-      description:
-        "Customer's marketing preferences. Contains the marketing opt-in information that is current at the time that the merchant call. User preference selections can change from one order to the next so preferences must be checked with every order.",
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderCustomer')
-
-const OrderAddressSchema = z
-  .object({
-    country: z.string().exactOptional().openapi({ description: 'CLDR country code (e.g. "US").' }),
-    fullAddress: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Strings representing the lines of the printed label for mailing the order, for example: John Smith 1600 Amphitheatre Parkway Mountain View, CA, 94043 United States ',
-      }),
-    isPostOfficeBox: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the address is a post office box.' }),
-    locality: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'City, town or commune. May also include dependent localities or sublocalities (e.g. neighborhoods or suburbs).',
-      }),
-    postalCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Postal Code or ZIP (e.g. "94043").' }),
-    recipientName: z.string().exactOptional().openapi({ description: 'Name of the recipient.' }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Top-level administrative subdivision of the country. For example, a state like California ("CA") or a province like Quebec ("QC").',
-      }),
-    streetAddress: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Street-level part of the address.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderAddress')
-
-const OrderDeliveryDetailsSchema = z
-  .object({
-    address: OrderAddressSchema.exactOptional().openapi({ description: 'The delivery address' }),
-    phoneNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The phone number of the person receiving the delivery.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderDeliveryDetails')
-
-const OrderMerchantProvidedAnnotationSchema = z
-  .object({
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Key for additional merchant provided (as key-value pairs) annotation about the line item.',
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Value for additional merchant provided (as key-value pairs) annotation about the line item.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderMerchantProvidedAnnotation')
-
-const OrderCancellationSchema = z
-  .object({
-    actor: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The actor that created the cancellation. Acceptable values are: - "`customer`" - "`googleBot`" - "`googleCustomerService`" - "`googlePayments`" - "`googleSabre`" - "`merchant`" ',
-      }),
-    creationDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Date on which the cancellation has been created, in ISO 8601 format.',
-      }),
-    quantity: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'The quantity that was canceled.' }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The reason for the cancellation. Orders that are canceled with a noInventory reason will lead to the removal of the product from Buy on Google until you make an update to that product. This will not affect your Shopping ads. Acceptable values are: - "`autoPostInternal`" - "`autoPostInvalidBillingAddress`" - "`autoPostNoInventory`" - "`autoPostPriceError`" - "`autoPostUndeliverableShippingAddress`" - "`couponAbuse`" - "`customerCanceled`" - "`customerInitiatedCancel`" - "`customerSupportRequested`" - "`failToPushOrderGoogleError`" - "`failToPushOrderMerchantError`" - "`failToPushOrderMerchantFulfillmentError`" - "`failToPushOrderToMerchant`" - "`failToPushOrderToMerchantOutOfStock`" - "`invalidCoupon`" - "`malformedShippingAddress`" - "`merchantDidNotShipOnTime`" - "`noInventory`" - "`orderTimeout`" - "`other`" - "`paymentAbuse`" - "`paymentDeclined`" - "`priceError`" - "`returnRefundAbuse`" - "`shippingPriceError`" - "`taxError`" - "`undeliverableShippingAddress`" - "`unsupportedPoBoxAddress`" ',
-      }),
-    reasonText: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The explanation of the reason.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderCancellation')
-
-const OrderLineItemReturnInfoSchema = z
-  .object({
-    daysToReturn: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Required. How many days later the item can be returned.' }),
-    isReturnable: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Required. Whether the item is returnable.' }),
-    policyUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. URL of the item return policy.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderLineItemReturnInfo')
-
-const OrderReturnSchema = z
-  .object({
-    actor: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The actor that created the refund. Acceptable values are: - "`customer`" - "`googleBot`" - "`googleCustomerService`" - "`googlePayments`" - "`googleSabre`" - "`merchant`" ',
-      }),
-    creationDate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Date on which the item has been created, in ISO 8601 format.' }),
-    quantity: z.uint32().exactOptional().openapi({ description: 'Quantity that is returned.' }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The reason for the return. Acceptable values are: - "`customerDiscretionaryReturn`" - "`customerInitiatedMerchantCancel`" - "`deliveredTooLate`" - "`expiredItem`" - "`invalidCoupon`" - "`malformedShippingAddress`" - "`other`" - "`productArrivedDamaged`" - "`productNotAsDescribed`" - "`qualityNotAsExpected`" - "`undeliverableShippingAddress`" - "`unsupportedPoBoxAddress`" - "`wrongProductShipped`" ',
-      }),
-    reasonText: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The explanation of the reason.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderReturn')
-
-const OrderLineItemShippingDetailsMethodSchema = z
-  .object({
-    carrier: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The carrier for the shipping. Optional. See `shipments[].carrier` for a list of acceptable values.',
-      }),
-    maxDaysInTransit: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'Required. Maximum transit time.' }),
-    methodName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The name of the shipping method.' }),
-    minDaysInTransit: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'Required. Minimum transit time.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderLineItemShippingDetailsMethod')
-
-const OrderLineItemShippingDetailsSchema = z
-  .object({
-    deliverByDate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The delivery by date, in ISO 8601 format.' }),
-    method: OrderLineItemShippingDetailsMethodSchema.exactOptional().openapi({
-      description: 'Required. Details of the shipping method.',
-    }),
-    shipByDate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The ship by date, in ISO 8601 format.' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Type of shipment. Indicates whether `deliveryDetails` or `pickupDetails` is applicable for this shipment. Acceptable values are: - "`delivery`" - "`pickup`" ',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderLineItemShippingDetails')
-
-const OrderLineItemSchema = z
-  .object({
-    annotations: z
-      .array(OrderMerchantProvidedAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Annotations that are attached to the line item.' }),
-    cancellations: z
-      .array(OrderCancellationSchema)
-      .exactOptional()
-      .openapi({ description: 'Cancellations of the line item.' }),
-    id: z.string().exactOptional().openapi({ description: 'The ID of the line item.' }),
-    price: PriceSchema.exactOptional().openapi({
-      description:
-        'Total price for the line item. For example, if two items for $10 are purchased, the total price will be $20.',
-    }),
-    product: OrderLineItemProductSchema.exactOptional().openapi({
-      description:
-        'Product data as seen by customer from the time of the order placement. Note that certain attributes values (e.g. title or gtin) might be reformatted and no longer match values submitted via product feed.',
-    }),
-    quantityCanceled: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'Number of items canceled.' }),
-    quantityDelivered: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'Number of items delivered.' }),
-    quantityOrdered: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'Number of items ordered.' }),
-    quantityPending: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'Number of items pending.' }),
-    quantityReadyForPickup: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'Number of items ready for pickup.' }),
-    quantityReturned: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'Number of items returned.' }),
-    quantityShipped: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'Number of items shipped.' }),
-    returnInfo: OrderLineItemReturnInfoSchema.exactOptional().openapi({
-      description: 'Details of the return policy for the line item.',
-    }),
-    returns: z
-      .array(OrderReturnSchema)
-      .exactOptional()
-      .openapi({ description: 'Returns of the line item.' }),
-    shippingDetails: OrderLineItemShippingDetailsSchema.exactOptional().openapi({
-      description: 'Details of the requested shipping for the line item.',
-    }),
-    tax: PriceSchema.exactOptional().openapi({
-      description:
-        'Total tax amount for the line item. For example, if two items are purchased, and each have a cost tax of $2, the total tax amount will be $4.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderLineItem')
-
-const OrderPaymentMethodSchema = z
-  .object({
-    billingAddress: OrderAddressSchema.exactOptional().openapi({
-      description: 'The billing address.',
-    }),
-    expirationMonth: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The card expiration month (January = 1, February = 2 etc.).' }),
-    expirationYear: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The card expiration year (4-digit, e.g. 2015).' }),
-    lastFourDigits: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The last four digits of the card number.' }),
-    phoneNumber: z.string().exactOptional().openapi({ description: 'The billing phone number.' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of instrument. Acceptable values are: - "`AMEX`" - "`DISCOVER`" - "`JCB`" - "`MASTERCARD`" - "`UNIONPAY`" - "`VISA`" - "``" ',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderPaymentMethod')
-
-const OrderPickupDetailsCollectorSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Name of the person picking up the shipment.' }),
-    phoneNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Phone number of the person picking up the shipment.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderPickupDetailsCollector')
-
-const OrderPickupDetailsSchema = z
-  .object({
-    address: OrderAddressSchema.exactOptional().openapi({
-      description:
-        'Address of the pickup location where the shipment should be sent. Note that `recipientName` in the address is the name of the business at the pickup location.',
-    }),
-    collectors: z
-      .array(OrderPickupDetailsCollectorSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Collectors authorized to pick up shipment from the pickup location.',
-      }),
-    locationId: z.string().exactOptional().openapi({ description: 'ID of the pickup location.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderPickupDetails')
-
-const OrderLegacyPromotionBenefitSchema = z
-  .object({
-    discount: PriceSchema.exactOptional().openapi({
-      description: 'The discount in the order price when the promotion is applied.',
-    }),
-    offerIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The OfferId(s) that were purchased in this order and map to this specific benefit of the promotion.',
-      }),
-    subType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Further describes the benefit of the promotion. Note that we will expand on this enumeration as we support new promotion sub-types. Acceptable values are: - "`buyMGetMoneyOff`" - "`buyMGetNMoneyOff`" - "`buyMGetNPercentOff`" - "`buyMGetPercentOff`" - "`freeGift`" - "`freeGiftWithItemId`" - "`freeGiftWithValue`" - "`freeOvernightShipping`" - "`freeShipping`" - "`freeTwoDayShipping`" - "`moneyOff`" - "`percentageOff`" - "`rewardPoints`" - "`salePrice`" ',
-      }),
-    taxImpact: PriceSchema.exactOptional().openapi({
-      description: 'The impact on tax when the promotion is applied.',
-    }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Describes whether the promotion applies to products (e.g. 20% off) or to shipping (e.g. Free Shipping). Acceptable values are: - "`product`" - "`shipping`" ',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderLegacyPromotionBenefit')
-
-const OrderLegacyPromotionSchema = z
-  .object({
-    benefits: z.array(OrderLegacyPromotionBenefitSchema).exactOptional(),
-    effectiveDates: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time frame when the promotion is active and ready for validation review. Note that the promotion live time may be delayed for a few hours due to the validation review. Start date and end date are separated by a forward slash (/). The start date is specified by the format (YYYY-MM-DD), followed by the letter ?T?, the time of the day when the sale starts (in Greenwich Mean Time, GMT), followed by an expression of the time zone for the sale. The end date is in the same format.',
-      }),
-    genericRedemptionCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The text code that corresponds to the promotion when applied on the retailer?s website.',
-      }),
-    id: z.string().exactOptional().openapi({ description: 'The unique ID of the promotion.' }),
-    longTitle: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The full title of the promotion.' }),
-    productApplicability: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the promotion is applicable to all products or only specific products. Acceptable values are: - "`allProducts`" - "`specificProducts`" ',
-      }),
-    redemptionChannel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates that the promotion is valid online. Acceptable values are: - "`online`" ',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderLegacyPromotion')
-
-const OrderRefundSchema = z
-  .object({
-    actor: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The actor that created the refund. Acceptable values are: - "`customer`" - "`googleBot`" - "`googleCustomerService`" - "`googlePayments`" - "`googleSabre`" - "`merchant`" ',
-      }),
-    amount: PriceSchema.exactOptional().openapi({ description: 'The amount that is refunded.' }),
-    creationDate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Date on which the item has been created, in ISO 8601 format.' }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The reason for the refund. Acceptable values are: - "`adjustment`" - "`autoPostInternal`" - "`autoPostInvalidBillingAddress`" - "`autoPostNoInventory`" - "`autoPostPriceError`" - "`autoPostUndeliverableShippingAddress`" - "`couponAbuse`" - "`courtesyAdjustment`" - "`customerCanceled`" - "`customerDiscretionaryReturn`" - "`customerInitiatedMerchantCancel`" - "`customerSupportRequested`" - "`deliveredLateByCarrier`" - "`deliveredTooLate`" - "`expiredItem`" - "`failToPushOrderGoogleError`" - "`failToPushOrderMerchantError`" - "`failToPushOrderMerchantFulfillmentError`" - "`failToPushOrderToMerchant`" - "`failToPushOrderToMerchantOutOfStock`" - "`feeAdjustment`" - "`invalidCoupon`" - "`lateShipmentCredit`" - "`malformedShippingAddress`" - "`merchantDidNotShipOnTime`" - "`noInventory`" - "`orderTimeout`" - "`other`" - "`paymentAbuse`" - "`paymentDeclined`" - "`priceAdjustment`" - "`priceError`" - "`productArrivedDamaged`" - "`productNotAsDescribed`" - "`promoReallocation`" - "`qualityNotAsExpected`" - "`returnRefundAbuse`" - "`shippingCostAdjustment`" - "`shippingPriceError`" - "`taxAdjustment`" - "`taxError`" - "`undeliverableShippingAddress`" - "`unsupportedPoBoxAddress`" - "`wrongProductShipped`" ',
-      }),
-    reasonText: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The explanation of the reason.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderRefund')
-
-const OrderShipmentLineItemShipmentSchema = z
-  .object({
-    lineItemId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the line item that is shipped. This value is assigned by Google when an order is created. Either lineItemId or productId is required.',
-      }),
-    productId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the product to ship. This is the REST ID used in the products service. Either lineItemId or productId is required.',
-      }),
-    quantity: z.uint32().exactOptional().openapi({ description: 'The quantity that is shipped.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderShipmentLineItemShipment')
-
-const OrderShipmentScheduledDeliveryDetailsSchema = z
-  .object({
-    carrierPhoneNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The phone number of the carrier fulfilling the delivery. The phone number is formatted as the international notation in ITU-T Recommendation E.123 (e.g., "+41 44 668 1800").',
-      }),
-    scheduledDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The date a shipment is scheduled for delivery, in ISO 8601 format.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderShipmentScheduledDeliveryDetails')
-
-const OrderShipmentSchema = z
-  .object({
-    carrier: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The carrier handling the shipment. For supported carriers, Google includes the carrier name and tracking URL in emails to customers. For select supported carriers, Google also automatically updates the shipment status based on the provided shipment ID. *Note:* You can also use unsupported carriers, but emails to customers will not include the carrier name or tracking URL, and there will be no automatic order status updates. Supported carriers for US are: - "`ups`" (United Parcel Service) *automatic status updates* - "`usps`" (United States Postal Service) *automatic status updates* - "`fedex`" (FedEx) *automatic status updates * - "`dhl`" (DHL eCommerce) *automatic status updates* (US only) - "`ontrac`" (OnTrac) *automatic status updates * - "`dhl express`" (DHL Express) - "`deliv`" (Deliv) - "`dynamex`" (TForce) - "`lasership`" (LaserShip) - "`mpx`" (Military Parcel Xpress) - "`uds`" (United Delivery Service) - "`efw`" (Estes Forwarding Worldwide) - "`jd logistics`" (JD Logistics) - "`yunexpress`" (YunExpress) - "`china post`" (China Post) - "`china ems`" (China Post Express Mail Service) - "`singapore post`" (Singapore Post) - "`pos malaysia`" (Pos Malaysia) - "`postnl`" (PostNL) - "`ptt`" (PTT Turkish Post) - "`eub`" (ePacket) - "`chukou1`" (Chukou1 Logistics) - "`bestex`" (Best Express) - "`canada post`" (Canada Post) - "`purolator`" (Purolator) - "`canpar`" (Canpar) - "`india post`" (India Post) - "`blue dart`" (Blue Dart) - "`delhivery`" (Delhivery) - "`dtdc`" (DTDC) - "`tpc india`" (TPC India) Supported carriers for FR are: - "`la poste`" (La Poste) *automatic status updates * - "`colissimo`" (Colissimo by La Poste) *automatic status updates* - "`ups`" (United Parcel Service) *automatic status updates * - "`chronopost`" (Chronopost by La Poste) - "`gls`" (General Logistics Systems France) - "`dpd`" (DPD Group by GeoPost) - "`bpost`" (Belgian Post Group) - "`colis prive`" (Colis Privé) - "`boxtal`" (Boxtal) - "`geodis`" (GEODIS) - "`tnt`" (TNT) - "`db schenker`" (DB Schenker) - "`aramex`" (Aramex) ',
-      }),
-    creationDate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Date on which the shipment has been created, in ISO 8601 format.' }),
-    deliveryDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Date on which the shipment has been delivered, in ISO 8601 format. Present only if `status` is `delivered`',
-      }),
-    id: z.string().exactOptional().openapi({ description: 'The ID of the shipment.' }),
-    lineItems: z
-      .array(OrderShipmentLineItemShipmentSchema)
-      .exactOptional()
-      .openapi({ description: 'The line items that are shipped.' }),
-    scheduledDeliveryDetails: OrderShipmentScheduledDeliveryDetailsSchema.exactOptional().openapi({
-      description: 'Delivery details of the shipment if scheduling is needed.',
-    }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The status of the shipment. Acceptable values are: - "`delivered`" - "`readyForPickup`" - "`shipped`" - "`undeliverable`" ',
-      }),
-    trackingId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The tracking ID for the shipment.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderShipment')
-
-const OrderSchema = z
-  .object({
-    acknowledged: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the order was acknowledged.' }),
-    channelType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Deprecated. Acceptable values are: - "`googleExpress`" - "`purchasesOnGoogle`" ',
-      }),
-    customer: OrderCustomerSchema.exactOptional().openapi({
-      description: 'The details of the customer who placed the order.',
-    }),
-    deliveryDetails: OrderDeliveryDetailsSchema.exactOptional().openapi({
-      description: 'Delivery details for shipments of type `delivery`.',
-    }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The REST ID of the order. Globally unique.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "`content#order`"',
-      }),
-    lineItems: z
-      .array(OrderLineItemSchema)
-      .exactOptional()
-      .openapi({ description: 'Line items that are ordered.' }),
-    merchantId: z.string().exactOptional(),
-    merchantOrderId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Merchant-provided ID of the order.' }),
-    netAmount: PriceSchema.exactOptional().openapi({
-      description:
-        'The net amount for the order. For example, if an order was originally for a grand total of $100 and a refund was issued for $20, the net amount will be $80.',
-    }),
-    paymentMethod: OrderPaymentMethodSchema.exactOptional().openapi({
-      description: 'The details of the payment method.',
-    }),
-    paymentStatus: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The status of the payment. Acceptable values are: - "`paymentCaptured`" - "`paymentRejected`" - "`paymentSecured`" - "`pendingAuthorization`" ',
-      }),
-    pickupDetails: OrderPickupDetailsSchema.exactOptional().openapi({
-      description: 'Pickup details for shipments of type `pickup`.',
-    }),
-    placedDate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The date when the order was placed, in ISO 8601 format.' }),
-    promotions: z
-      .array(OrderLegacyPromotionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The details of the merchant provided promotions applied to the order. To determine which promotions apply to which products, check the `Promotions[].Benefits[].OfferIds` field against the `LineItems[].Product.OfferId` field for each promotion. If a promotion is applied to more than 1 `offerId`, divide the discount value by the number of affected offers to determine how much discount to apply to each `offerId`. Examples: 1. To calculate the line item level discount for a single specific item: For each promotion, subtract the `Promotions[].Benefits[].Discount.value` amount from the `LineItems[].Price.value`. 2. To calculate the line item level discount for multiple quantity of a specific item: For each promotion, divide the `Promotions[].Benefits[].Discount.value` by the quantity of products and substract it from `LineItems[].Product.Price.value` for each quantity item. Only 1 promotion can be applied to an offerId in a given order. To refund an item which had a promotion applied to it, make sure to refund the amount after first subtracting the promotion discount from the item price. More details about the program are here.',
-      }),
-    refunds: z
-      .array(OrderRefundSchema)
-      .exactOptional()
-      .openapi({ description: 'Refunds for the order.' }),
-    shipments: z
-      .array(OrderShipmentSchema)
-      .exactOptional()
-      .openapi({ description: 'Shipments of the order.' }),
-    shippingCost: PriceSchema.exactOptional().openapi({
-      description: 'The total cost of shipping for all items.',
-    }),
-    shippingCostTax: PriceSchema.exactOptional().openapi({
-      description: 'The tax for the total shipping cost.',
-    }),
-    shippingOption: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Deprecated. Shipping details are provided with line items instead. Acceptable values are: - "`economy`" - "`expedited`" - "`oneDay`" - "`sameDay`" - "`standard`" - "`twoDay`" ',
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The status of the order. Acceptable values are: - "`canceled`" - "`delivered`" - "`inProgress`" - "`partiallyDelivered`" - "`partiallyReturned`" - "`partiallyShipped`" - "`pendingShipment`" - "`returned`" - "`shipped`" ',
-      }),
-    taxCollector: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The party responsible for collecting and remitting taxes. Acceptable values are: - "`marketplaceFacilitator`" - "`merchant`" ',
-      }),
-  })
-  .openapi({
-    description:
-      'Order. Production access (all methods) requires the order manager role. Sandbox access does not.',
-    required: [],
-  })
-  .openapi('Order')
-
 const OrderReportDisbursementSchema = z
   .object({
     disbursementAmount: PriceSchema.exactOptional().openapi({
@@ -3638,124 +5201,37 @@ const OrderReportTransactionSchema = z
   .openapi({ required: [] })
   .openapi('OrderReportTransaction')
 
-const UnitInvoiceAdditionalChargeSchema = z
-  .object({
-    additionalChargeAmount: AmountSchema.exactOptional().openapi({
-      description: '[required] Amount of the additional charge.',
-    }),
-    additionalChargePromotions: z
-      .array(PromotionSchema)
-      .exactOptional()
-      .openapi({ description: 'Deprecated.' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[required] Type of the additional charge. Acceptable values are: - "`shipping`" ',
+const OrderinvoicesCreateChargeInvoiceRequestSchema: z.ZodType<OrderinvoicesCreateChargeInvoiceRequestType> =
+  z
+    .object({
+      invoiceId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: '[required] The ID of the invoice.' }),
+      invoiceSummary: InvoiceSummarySchema.exactOptional().openapi({
+        description: '[required] Invoice summary.',
       }),
-  })
-  .openapi({ required: [] })
-  .openapi('UnitInvoiceAdditionalCharge')
-
-const UnitInvoiceTaxLineSchema = z
-  .object({
-    taxAmount: PriceSchema.exactOptional().openapi({
-      description: '[required] Tax amount for the tax type.',
-    }),
-    taxName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional name of the tax type. This should only be provided if `taxType` is `otherFeeTax`.',
-      }),
-    taxType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[required] Type of the tax. Acceptable values are: - "`otherFee`" - "`otherFeeTax`" - "`sales`" ',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('UnitInvoiceTaxLine')
-
-const UnitInvoiceSchema = z
-  .object({
-    additionalCharges: z
-      .array(UnitInvoiceAdditionalChargeSchema)
-      .exactOptional()
-      .openapi({ description: 'Additional charges for a unit, e.g. shipping costs.' }),
-    promotions: z.array(PromotionSchema).exactOptional().openapi({ description: 'Deprecated.' }),
-    unitPricePretax: PriceSchema.exactOptional().openapi({
-      description: '[required] Price of the unit, before applying taxes.',
-    }),
-    unitPriceTaxes: z
-      .array(UnitInvoiceTaxLineSchema)
-      .exactOptional()
-      .openapi({ description: 'Tax amounts to apply to the unit price.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('UnitInvoice')
-
-const ShipmentInvoiceLineItemInvoiceSchema = z
-  .object({
-    lineItemId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ID of the line item. Either lineItemId or productId must be set.' }),
-    productId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ID of the product. This is the REST ID used in the products service. Either lineItemId or productId must be set.',
-      }),
-    shipmentUnitIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          '[required] The shipment unit ID is assigned by the merchant and defines individual quantities within a line item. The same ID can be assigned to units that are the same while units that differ must be assigned a different ID (for example: free or promotional units).',
-      }),
-    unitInvoice: UnitInvoiceSchema.exactOptional().openapi({
-      description: '[required] Invoice details for a single unit.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('ShipmentInvoiceLineItemInvoice')
-
-const OrderinvoicesCreateChargeInvoiceRequestSchema = z
-  .object({
-    invoiceId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '[required] The ID of the invoice.' }),
-    invoiceSummary: InvoiceSummarySchema.exactOptional().openapi({
-      description: '[required] Invoice summary.',
-    }),
-    lineItemInvoices: z
-      .array(ShipmentInvoiceLineItemInvoiceSchema)
-      .exactOptional()
-      .openapi({ description: '[required] Invoice details per line item.' }),
-    operationId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[required] The ID of the operation, unique across all operations for a given order.',
-      }),
-    shipmentGroupId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[required] ID of the shipment group. It is assigned by the merchant in the `shipLineItems` method and is used to group multiple line items that have the same kind of shipping charges.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderinvoicesCreateChargeInvoiceRequest')
+      lineItemInvoices: z
+        .array(ShipmentInvoiceLineItemInvoiceSchema)
+        .exactOptional()
+        .openapi({ description: '[required] Invoice details per line item.' }),
+      operationId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            '[required] The ID of the operation, unique across all operations for a given order.',
+        }),
+      shipmentGroupId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            '[required] ID of the shipment group. It is assigned by the merchant in the `shipLineItems` method and is used to group multiple line items that have the same kind of shipping charges.',
+        }),
+    })
+    .openapi({ required: [] })
+    .openapi('OrderinvoicesCreateChargeInvoiceRequest')
 
 const OrderinvoicesCreateChargeInvoiceResponseSchema = z
   .object({
@@ -3777,94 +5253,41 @@ const OrderinvoicesCreateChargeInvoiceResponseSchema = z
   .openapi({ required: [] })
   .openapi('OrderinvoicesCreateChargeInvoiceResponse')
 
-const OrderinvoicesCustomBatchRequestEntryCreateRefundInvoiceRefundOptionSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional description of the refund reason.' }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[required] Reason for the refund. Acceptable values are: - "`adjustment`" - "`autoPostInternal`" - "`autoPostInvalidBillingAddress`" - "`autoPostNoInventory`" - "`autoPostPriceError`" - "`autoPostUndeliverableShippingAddress`" - "`couponAbuse`" - "`courtesyAdjustment`" - "`customerCanceled`" - "`customerDiscretionaryReturn`" - "`customerInitiatedMerchantCancel`" - "`customerSupportRequested`" - "`deliveredLateByCarrier`" - "`deliveredTooLate`" - "`expiredItem`" - "`failToPushOrderGoogleError`" - "`failToPushOrderMerchantError`" - "`failToPushOrderMerchantFulfillmentError`" - "`failToPushOrderToMerchant`" - "`failToPushOrderToMerchantOutOfStock`" - "`feeAdjustment`" - "`invalidCoupon`" - "`lateShipmentCredit`" - "`malformedShippingAddress`" - "`merchantDidNotShipOnTime`" - "`noInventory`" - "`orderTimeout`" - "`other`" - "`paymentAbuse`" - "`paymentDeclined`" - "`priceAdjustment`" - "`priceError`" - "`productArrivedDamaged`" - "`productNotAsDescribed`" - "`promoReallocation`" - "`qualityNotAsExpected`" - "`returnRefundAbuse`" - "`shippingCostAdjustment`" - "`shippingPriceError`" - "`taxAdjustment`" - "`taxError`" - "`undeliverableShippingAddress`" - "`unsupportedPoBoxAddress`" - "`wrongProductShipped`" ',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderinvoicesCustomBatchRequestEntryCreateRefundInvoiceRefundOption')
-
-const OrderinvoicesCustomBatchRequestEntryCreateRefundInvoiceReturnOptionSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional description of the return reason.' }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[required] Reason for the return. Acceptable values are: - "`customerDiscretionaryReturn`" - "`customerInitiatedMerchantCancel`" - "`deliveredTooLate`" - "`expiredItem`" - "`invalidCoupon`" - "`malformedShippingAddress`" - "`other`" - "`productArrivedDamaged`" - "`productNotAsDescribed`" - "`qualityNotAsExpected`" - "`undeliverableShippingAddress`" - "`unsupportedPoBoxAddress`" - "`wrongProductShipped`" ',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderinvoicesCustomBatchRequestEntryCreateRefundInvoiceReturnOption')
-
-const ShipmentInvoiceSchema = z
-  .object({
-    invoiceSummary: InvoiceSummarySchema.exactOptional().openapi({
-      description: '[required] Invoice summary.',
-    }),
-    lineItemInvoices: z
-      .array(ShipmentInvoiceLineItemInvoiceSchema)
-      .exactOptional()
-      .openapi({ description: '[required] Invoice details per line item.' }),
-    shipmentGroupId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[required] ID of the shipment group. It is assigned by the merchant in the `shipLineItems` method and is used to group multiple line items that have the same kind of shipping charges.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ShipmentInvoice')
-
-const OrderinvoicesCreateRefundInvoiceRequestSchema = z
-  .object({
-    invoiceId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '[required] The ID of the invoice.' }),
-    operationId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '[required] The ID of the operation, unique across all operations for a given order.',
-      }),
-    refundOnlyOption:
-      OrderinvoicesCustomBatchRequestEntryCreateRefundInvoiceRefundOptionSchema.exactOptional().openapi(
-        {
+const OrderinvoicesCreateRefundInvoiceRequestSchema: z.ZodType<OrderinvoicesCreateRefundInvoiceRequestType> =
+  z
+    .object({
+      invoiceId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: '[required] The ID of the invoice.' }),
+      operationId: z
+        .string()
+        .exactOptional()
+        .openapi({
           description:
-            'Option to create a refund-only invoice. Exactly one of `refundOnlyOption` or `returnOption` must be provided.',
-        },
-      ),
-    returnOption:
-      OrderinvoicesCustomBatchRequestEntryCreateRefundInvoiceReturnOptionSchema.exactOptional().openapi(
-        {
-          description:
-            'Option to create an invoice for a refund and mark all items within the invoice as returned. Exactly one of `refundOnlyOption` or `returnOption` must be provided.',
-        },
-      ),
-    shipmentInvoices: z
-      .array(ShipmentInvoiceSchema)
-      .exactOptional()
-      .openapi({ description: 'Invoice details for different shipment groups.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrderinvoicesCreateRefundInvoiceRequest')
+            '[required] The ID of the operation, unique across all operations for a given order.',
+        }),
+      refundOnlyOption:
+        OrderinvoicesCustomBatchRequestEntryCreateRefundInvoiceRefundOptionSchema.exactOptional().openapi(
+          {
+            description:
+              'Option to create a refund-only invoice. Exactly one of `refundOnlyOption` or `returnOption` must be provided.',
+          },
+        ),
+      returnOption:
+        OrderinvoicesCustomBatchRequestEntryCreateRefundInvoiceReturnOptionSchema.exactOptional().openapi(
+          {
+            description:
+              'Option to create an invoice for a refund and mark all items within the invoice as returned. Exactly one of `refundOnlyOption` or `returnOption` must be provided.',
+          },
+        ),
+      shipmentInvoices: z
+        .array(ShipmentInvoiceSchema)
+        .exactOptional()
+        .openapi({ description: 'Invoice details for different shipment groups.' }),
+    })
+    .openapi({ required: [] })
+    .openapi('OrderinvoicesCreateRefundInvoiceRequest')
 
 const OrderinvoicesCreateRefundInvoiceResponseSchema = z
   .object({
@@ -3928,7 +5351,7 @@ const OrderreportsListTransactionsResponseSchema = z
   .openapi({ required: [] })
   .openapi('OrderreportsListTransactionsResponse')
 
-const OrderreturnsListResponseSchema = z
+const OrderreturnsListResponseSchema: z.ZodType<OrderreturnsListResponseType> = z
   .object({
     kind: z
       .string()
@@ -4129,236 +5552,7 @@ const OrdersCancelTestOrderByCustomerResponseSchema = z
   .openapi({ required: [] })
   .openapi('OrdersCancelTestOrderByCustomerResponse')
 
-const TestOrderCustomerMarketingRightsInfoSchema = z
-  .object({
-    explicitMarketingPreference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Last know user use selection regards marketing preferences. In certain cases selection might not be known, so this field would be empty. Acceptable values are: - "`denied`" - "`granted`" ',
-      }),
-    lastUpdatedTimestamp: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Timestamp when last time marketing preference was updated. Could be empty, if user wasn't offered a selection yet.",
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TestOrderCustomerMarketingRightsInfo')
-
-const TestOrderCustomerSchema = z
-  .object({
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Email address of the customer. Acceptable values are: - "`pog.dwight.schrute@gmail.com`" - "`pog.jim.halpert@gmail.com`" - "`penpog.pam.beesly@gmail.comding`" ',
-      }),
-    explicitMarketingPreference: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Deprecated. Please use marketingRightsInfo instead.' }),
-    fullName: z.string().exactOptional().openapi({ description: 'Full name of the customer.' }),
-    marketingRightsInfo: TestOrderCustomerMarketingRightsInfoSchema.exactOptional().openapi({
-      description: "Customer's marketing preferences.",
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('TestOrderCustomer')
-
-const TestOrderLineItemProductSchema = z
-  .object({
-    brand: z.string().exactOptional().openapi({ description: 'Required. Brand of the item.' }),
-    channel: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Deprecated. Acceptable values are: - "`online`" ' }),
-    condition: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. Condition or state of the item. Acceptable values are: - "`new`" ',
-      }),
-    contentLanguage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The two-letter ISO 639-1 language code for the item. Acceptable values are: - "`en`" - "`fr`" ',
-      }),
-    fees: z
-      .array(OrderLineItemProductFeeSchema)
-      .exactOptional()
-      .openapi({ description: 'Fees for the item. Optional.' }),
-    gtin: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Global Trade Item Number (GTIN) of the item. Optional.' }),
-    imageLink: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. URL of an image of the item.' }),
-    itemGroupId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Shared identifier for all variants of the same product. Optional.',
-      }),
-    mpn: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Manufacturer Part Number (MPN) of the item. Optional.' }),
-    offerId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. An identifier of the item.' }),
-    price: PriceSchema.exactOptional().openapi({
-      description:
-        'Required. The price for the product. Tax is automatically calculated for orders where marketplace facilitator tax laws are applicable. Otherwise, tax settings from Merchant Center are applied.',
-    }),
-    targetCountry: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. The CLDR territory // code of the target country of the product.',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The title of the product.' }),
-    variantAttributes: z
-      .array(OrderLineItemProductVariantAttributeSchema)
-      .exactOptional()
-      .openapi({ description: 'Variant attributes for the item. Optional.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('TestOrderLineItemProduct')
-
-const TestOrderLineItemSchema = z
-  .object({
-    product: TestOrderLineItemProductSchema.exactOptional().openapi({
-      description: 'Required. Product data from the time of the order placement.',
-    }),
-    quantityOrdered: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'Required. Number of items ordered.' }),
-    returnInfo: OrderLineItemReturnInfoSchema.exactOptional().openapi({
-      description: 'Required. Details of the return policy for the line item.',
-    }),
-    shippingDetails: OrderLineItemShippingDetailsSchema.exactOptional().openapi({
-      description: 'Required. Details of the requested shipping for the line item.',
-    }),
-    unitTax: PriceSchema.exactOptional().openapi({
-      description: 'Deprecated. Ignored if provided.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('TestOrderLineItem')
-
-const TestOrderPaymentMethodSchema = z
-  .object({
-    expirationMonth: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The card expiration month (January = 1, February = 2 etc.).' }),
-    expirationYear: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The card expiration year (4-digit, e.g. 2015).' }),
-    lastFourDigits: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The last four digits of the card number.' }),
-    predefinedBillingAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The billing address. Acceptable values are: - "`dwight`" - "`jim`" - "`pam`" ',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of instrument. Note that real orders might have different values than the four values accepted by `createTestOrder`. Acceptable values are: - "`AMEX`" - "`DISCOVER`" - "`MASTERCARD`" - "`VISA`" ',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TestOrderPaymentMethod')
-
-const TestOrderSchema = z
-  .object({
-    customer: TestOrderCustomerSchema.exactOptional().openapi({
-      description: 'Required. The details of the customer who placed the order.',
-    }),
-    enableOrderinvoices: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the orderinvoices service should support this order.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "`content#testOrder`"',
-      }),
-    lineItems: z
-      .array(TestOrderLineItemSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Line items that are ordered. At least one line item must be provided.',
-      }),
-    notificationMode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Restricted. Do not use.' }),
-    paymentMethod: TestOrderPaymentMethodSchema.exactOptional().openapi({
-      description: 'The details of the payment method.',
-    }),
-    predefinedDeliveryAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Identifier of one of the predefined delivery addresses for the delivery. Acceptable values are: - "`dwight`" - "`jim`" - "`pam`" ',
-      }),
-    predefinedPickupDetails: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifier of one of the predefined pickup details. Required for orders containing line items with shipping type `pickup`. Acceptable values are: - "`dwight`" - "`jim`" - "`pam`" ',
-      }),
-    promotions: z
-      .array(OrderLegacyPromotionSchema)
-      .exactOptional()
-      .openapi({ description: 'Deprecated. Ignored if provided.' }),
-    shippingCost: PriceSchema.exactOptional().openapi({
-      description:
-        'Required. The price of shipping for all items. Shipping tax is automatically calculated for orders where marketplace facilitator tax laws are applicable. Otherwise, tax settings from Merchant Center are applied. Note that shipping is not taxed in certain states.',
-    }),
-    shippingCostTax: PriceSchema.exactOptional().openapi({
-      description: 'Deprecated. Ignored if provided.',
-    }),
-    shippingOption: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The requested shipping option. Acceptable values are: - "`economy`" - "`expedited`" - "`oneDay`" - "`sameDay`" - "`standard`" - "`twoDay`" ',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TestOrder')
-
-const OrdersCreateTestOrderRequestSchema = z
+const OrdersCreateTestOrderRequestSchema: z.ZodType<OrdersCreateTestOrderRequestType> = z
   .object({
     country: z
       .string()
@@ -4918,38 +6112,7 @@ const OrdersCustomBatchRequestSchema = z
   .openapi({ required: [] })
   .openapi('OrdersCustomBatchRequest')
 
-const OrdersCustomBatchResponseEntrySchema = z
-  .object({
-    batchId: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'The ID of the request entry this entry responds to.' }),
-    errors: ErrorsSchema.exactOptional().openapi({
-      description: 'A list of errors defined if and only if the request failed.',
-    }),
-    executionStatus: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The status of the execution. Only defined if 1. the request was successful; and 2. the method is not `get`, `getByMerchantOrderId`, or one of the test methods. Acceptable values are: - "`duplicate`" - "`executed`" ',
-      }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "`content#ordersCustomBatchResponseEntry`"',
-      }),
-    order: OrderSchema.exactOptional().openapi({
-      description:
-        'The retrieved order. Only defined if the method is `get` and if the request was successful.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrdersCustomBatchResponseEntry')
-
-const OrdersCustomBatchResponseSchema = z
+const OrdersCustomBatchResponseSchema: z.ZodType<OrdersCustomBatchResponseType> = z
   .object({
     entries: z
       .array(OrdersCustomBatchResponseEntrySchema)
@@ -4966,35 +6129,37 @@ const OrdersCustomBatchResponseSchema = z
   .openapi({ required: [] })
   .openapi('OrdersCustomBatchResponse')
 
-const OrdersGetByMerchantOrderIdResponseSchema = z
-  .object({
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "content#ordersGetByMerchantOrderIdResponse".',
-      }),
-    order: OrderSchema.exactOptional().openapi({ description: 'The requested order.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrdersGetByMerchantOrderIdResponse')
+const OrdersGetByMerchantOrderIdResponseSchema: z.ZodType<OrdersGetByMerchantOrderIdResponseType> =
+  z
+    .object({
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Identifies what kind of resource this is. Value: the fixed string "content#ordersGetByMerchantOrderIdResponse".',
+        }),
+      order: OrderSchema.exactOptional().openapi({ description: 'The requested order.' }),
+    })
+    .openapi({ required: [] })
+    .openapi('OrdersGetByMerchantOrderIdResponse')
 
-const OrdersGetTestOrderTemplateResponseSchema = z
-  .object({
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "content#ordersGetTestOrderTemplateResponse".',
+const OrdersGetTestOrderTemplateResponseSchema: z.ZodType<OrdersGetTestOrderTemplateResponseType> =
+  z
+    .object({
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Identifies what kind of resource this is. Value: the fixed string "content#ordersGetTestOrderTemplateResponse".',
+        }),
+      template: TestOrderSchema.exactOptional().openapi({
+        description: 'The requested test order template.',
       }),
-    template: TestOrderSchema.exactOptional().openapi({
-      description: 'The requested test order template.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('OrdersGetTestOrderTemplateResponse')
+    })
+    .openapi({ required: [] })
+    .openapi('OrdersGetTestOrderTemplateResponse')
 
 const OrdersInStoreRefundLineItemRequestSchema = z
   .object({
@@ -5063,7 +6228,7 @@ const OrdersInStoreRefundLineItemResponseSchema = z
   .openapi({ required: [] })
   .openapi('OrdersInStoreRefundLineItemResponse')
 
-const OrdersListResponseSchema = z
+const OrdersListResponseSchema: z.ZodType<OrdersListResponseType> = z
   .object({
     kind: z
       .string()
@@ -6036,763 +7201,7 @@ const PosSaleResponseSchema = z
   .openapi({ required: [] })
   .openapi('PosSaleResponse')
 
-const PostalCodeRangeSchema = z
-  .object({
-    postalCodeRangeBegin: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A postal code or a pattern of the form `prefix*` denoting the inclusive lower bound of the range defining the area. Examples values: `"94108"`, `"9410*"`, `"9*"`. Required.',
-      }),
-    postalCodeRangeEnd: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A postal code or a pattern of the form `prefix*` denoting the inclusive upper bound of the range defining the area. It must have the same length as `postalCodeRangeBegin`: if `postalCodeRangeBegin` is a postal code then `postalCodeRangeEnd` must be a postal code too; if `postalCodeRangeBegin` is a pattern then `postalCodeRangeEnd` must be a pattern with the same prefix length. Optional: if not set, then the area is defined as being all the postal codes matching `postalCodeRangeBegin`.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('PostalCodeRange')
-
-const PostalCodeGroupSchema = z
-  .object({
-    country: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The CLDR territory code of the country the postal code group applies to. Required.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the postal code group, referred to in headers. Required.',
-      }),
-    postalCodeRanges: z
-      .array(PostalCodeRangeSchema)
-      .exactOptional()
-      .openapi({ description: 'A range of postal codes. Required.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('PostalCodeGroup')
-
-const ProductAspectSchema = z
-  .object({
-    aspectName: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
-    destinationName: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
-    intention: z.string().exactOptional().openapi({ description: 'Deprecated.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductAspect')
-
-const ProductDestinationSchema = z
-  .object({
-    destinationName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the destination.' }),
-    intention: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the destination is required, excluded or should be validated. Acceptable values are: - "`default`" - "`excluded`" - "`optional`" - "`required`" ',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductDestination')
-
-const ProductShippingSchema = z
-  .object({
-    country: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The CLDR territory code of the country to which an item will ship.',
-      }),
-    locationGroupName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The location where the shipping is applicable, represented by a location group name.',
-      }),
-    locationId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The numeric ID of a location that the shipping rate applies to as defined in the AdWords API.',
-      }),
-    postalCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The postal code range that the shipping rate applies to, represented by a postal code, a postal code prefix followed by a * wildcard, a range between two postal codes or two postal code prefixes of equal length.',
-      }),
-    price: PriceSchema.exactOptional().openapi({
-      description: 'Fixed shipping price, represented as a number.',
-    }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The geographic region to which a shipping rate applies.' }),
-    service: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A free-form description of the service class or delivery speed.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductShipping')
-
-const ProductShippingDimensionSchema = z
-  .object({
-    unit: z.string().exactOptional().openapi({ description: 'The unit of value.' }),
-    value: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The dimension of the product used to calculate the shipping cost of the item.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductShippingDimension')
-
-const ProductShippingWeightSchema = z
-  .object({
-    unit: z.string().exactOptional().openapi({ description: 'The unit of value.' }),
-    value: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'The weight of the product used to calculate the shipping cost of the item.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductShippingWeight')
-
-const ProductTaxSchema = z
-  .object({
-    country: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The country within which the item is taxed, specified as a CLDR territory code.',
-      }),
-    locationId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The numeric ID of a location that the tax rate applies to as defined in the AdWords API.',
-      }),
-    postalCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The postal code range that the tax rate applies to, represented by a ZIP code, a ZIP code prefix using * wildcard, a range between two ZIP codes or two ZIP code prefixes of equal length. Examples: 94114, 94*, 94002-95460, 94*-95*.',
-      }),
-    rate: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The percentage of tax rate that applies to the item price.' }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The geographic region to which the tax rate applies.' }),
-    taxShip: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Should be set to true if tax is charged on shipping.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductTax')
-
-const ProductUnitPricingBaseMeasureSchema = z
-  .object({
-    unit: z.string().exactOptional().openapi({ description: 'The unit of the denominator.' }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The denominator of the unit price.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductUnitPricingBaseMeasure')
-
-const ProductUnitPricingMeasureSchema = z
-  .object({
-    unit: z.string().exactOptional().openapi({ description: 'The unit of the measure.' }),
-    value: z.float64().exactOptional().openapi({ description: 'The measure of an item.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductUnitPricingMeasure')
-
-const ProductSchema = z
-  .object({
-    additionalImageLinks: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Additional URLs of images of the item.' }),
-    additionalProductTypes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional categories of the item (formatted as in products data specification).',
-      }),
-    adult: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Should be set to true if the item is targeted towards adults.' }),
-    adwordsGrouping: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Used to group items in an arbitrary way. Only for CPA%, discouraged otherwise.',
-      }),
-    adwordsLabels: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Similar to adwords_grouping, but only works on CPC.' }),
-    adwordsRedirect: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Allows advertisers to override the item URL when the product is shown within the context of Product Ads.',
-      }),
-    ageGroup: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Target age group of the item. Acceptable values are: - "`adult`" - "`infant`" - "`kids`" - "`newborn`" - "`toddler`" - "`youngAdult`" ',
-      }),
-    aspects: z
-      .array(ProductAspectSchema)
-      .exactOptional()
-      .openapi({ description: 'Deprecated. Do not use.' }),
-    availability: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Availability status of the item. Acceptable values are: - "`in stock`" - "`out of stock`" - "`preorder`" ',
-      }),
-    availabilityDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The day a pre-ordered product becomes available for delivery, in ISO 8601 format.',
-      }),
-    brand: z.string().exactOptional().openapi({ description: 'Brand of the item.' }),
-    canonicalLink: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "URL for the canonical version of your item's landing page." }),
-    channel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The item\'s channel (online or local). Acceptable values are: - "`local`" - "`online`" ',
-      }),
-    color: z.string().exactOptional().openapi({ description: 'Color of the item.' }),
-    condition: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Condition or state of the item. Acceptable values are: - "`new`" - "`refurbished`" - "`used`" ',
-      }),
-    contentLanguage: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The two-letter ISO 639-1 language code for the item.' }),
-    costOfGoodsSold: PriceSchema.exactOptional().openapi({
-      description: 'Cost of goods sold. Used for gross profit reporting.',
-    }),
-    customAttributes: z
-      .array(CustomAttributeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of custom (merchant-provided) attributes. It can also be used for submitting any attribute of the feed specification in its generic form (e.g., `{ "name": "size type", "value": "regular" }`). This is useful for submitting attributes not explicitly exposed by the API, such as additional attributes used for Buy on Google (formerly known as Shopping Actions).',
-      }),
-    customGroups: z
-      .array(CustomGroupSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of custom (merchant-provided) custom attribute groups.' }),
-    customLabel0: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Custom label 0 for custom grouping of items in a Shopping campaign.',
-      }),
-    customLabel1: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Custom label 1 for custom grouping of items in a Shopping campaign.',
-      }),
-    customLabel2: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Custom label 2 for custom grouping of items in a Shopping campaign.',
-      }),
-    customLabel3: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Custom label 3 for custom grouping of items in a Shopping campaign.',
-      }),
-    customLabel4: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Custom label 4 for custom grouping of items in a Shopping campaign.',
-      }),
-    description: z.string().exactOptional().openapi({ description: 'Description of the item.' }),
-    destinations: z
-      .array(ProductDestinationSchema)
-      .exactOptional()
-      .openapi({ description: 'Specifies the intended destinations for the product.' }),
-    displayAdsId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'An identifier for an item for dynamic remarketing campaigns.' }),
-    displayAdsLink: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "URL directly to your item's landing page for dynamic remarketing campaigns.",
-      }),
-    displayAdsSimilarIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Advertiser-specified recommendations.' }),
-    displayAdsTitle: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Title of an item for dynamic remarketing campaigns.' }),
-    displayAdsValue: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Offer margin for dynamic remarketing campaigns.' }),
-    energyEfficiencyClass: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The energy efficiency class as defined in EU directive 2010/30/EU. Acceptable values are: - "`A`" - "`A+`" - "`A++`" - "`A+++`" - "`B`" - "`C`" - "`D`" - "`E`" - "`F`" - "`G`" ',
-      }),
-    expirationDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Date on which the item should expire, as specified upon insertion, in ISO 8601 format. The actual expiration date in Google Shopping is exposed in `productstatuses` as `googleExpirationDate` and might be earlier if `expirationDate` is too far in the future.',
-      }),
-    gender: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Target gender of the item. Acceptable values are: - "`female`" - "`male`" - "`unisex`" ',
-      }),
-    googleProductCategory: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Google's category of the item (see [Google product taxonomy](https://support.google.com/merchants/answer/1705911)). When querying products, this field will contain the user provided value. There is currently no way to get back the auto assigned google product categories through the API.",
-      }),
-    gtin: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Global Trade Item Number (GTIN) of the item.' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The REST ID of the product. Content API methods that operate on products take this as their `productId` parameter. The REST ID for a product is of the form channel:contentLanguage: targetCountry: offerId.',
-      }),
-    identifierExists: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'False when the item does not have unique product identifiers appropriate to its category, such as GTIN, MPN, and brand. Required according to the Unique Product Identifier Rules for all target countries except for Canada.',
-      }),
-    imageLink: z.string().exactOptional().openapi({ description: 'URL of an image of the item.' }),
-    installment: InstallmentSchema.exactOptional().openapi({
-      description: 'Number and amount of installments to pay for an item.',
-    }),
-    isBundle: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the item is a merchant-defined bundle. A bundle is a custom grouping of different products sold by a merchant for a single price.',
-      }),
-    itemGroupId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Shared identifier for all variants of the same product.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "`content#product`"',
-      }),
-    link: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "URL directly linking to your item's page on your website." }),
-    loyaltyPoints: LoyaltyPointsSchema.exactOptional().openapi({
-      description: 'Loyalty points that users receive after purchasing the item. Japan only.',
-    }),
-    material: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The material of which the item is made.' }),
-    maxEnergyEfficiencyClass: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The energy efficiency class as defined in EU directive 2010/30/EU. Acceptable values are: - "`A`" - "`A+`" - "`A++`" - "`A+++`" - "`B`" - "`C`" - "`D`" - "`E`" - "`F`" - "`G`" ',
-      }),
-    maxHandlingTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Maximal product handling time (in business days).' }),
-    minEnergyEfficiencyClass: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The energy efficiency class as defined in EU directive 2010/30/EU. Acceptable values are: - "`A`" - "`A+`" - "`A++`" - "`A+++`" - "`B`" - "`C`" - "`D`" - "`E`" - "`F`" - "`G`" ',
-      }),
-    minHandlingTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Minimal product handling time (in business days).' }),
-    mobileLink: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "URL for the mobile-optimized version of your item's landing page.",
-      }),
-    mpn: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Manufacturer Part Number (MPN) of the item.' }),
-    multipack: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The number of identical products in a merchant-defined multipack.',
-      }),
-    offerId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. A unique identifier for the item. Leading and trailing whitespaces are stripped and multiple whitespaces are replaced by a single whitespace upon submission. Only valid unicode characters are accepted. See the products feed specification for details. *Note:* Content API methods that operate on products take the REST ID of the product, *not* this identifier.',
-      }),
-    onlineOnly: z.boolean().exactOptional().openapi({ description: 'Deprecated.' }),
-    pattern: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The item's pattern (e.g. polka dots)." }),
-    price: PriceSchema.exactOptional().openapi({ description: 'Price of the item.' }),
-    productType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Your category of the item (formatted as in products data specification).',
-      }),
-    promotionIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The unique ID of a promotion.' }),
-    salePrice: PriceSchema.exactOptional().openapi({
-      description: 'Advertised sale price of the item.',
-    }),
-    salePriceEffectiveDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Date range during which the item is on sale (see products data specification ).',
-      }),
-    sellOnGoogleQuantity: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The quantity of the product that is available for selling on Google. Supported only for online products.',
-      }),
-    shipping: z
-      .array(ProductShippingSchema)
-      .exactOptional()
-      .openapi({ description: 'Shipping rules.' }),
-    shippingHeight: ProductShippingDimensionSchema.exactOptional().openapi({
-      description: 'Height of the item for shipping.',
-    }),
-    shippingLabel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The shipping label of the product, used to group product in account-level shipping rules.',
-      }),
-    shippingLength: ProductShippingDimensionSchema.exactOptional().openapi({
-      description: 'Length of the item for shipping.',
-    }),
-    shippingWeight: ProductShippingWeightSchema.exactOptional().openapi({
-      description: 'Weight of the item for shipping.',
-    }),
-    shippingWidth: ProductShippingDimensionSchema.exactOptional().openapi({
-      description: 'Width of the item for shipping.',
-    }),
-    sizeSystem: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'System in which the size is specified. Recommended for apparel items. Acceptable values are: - "`AU`" - "`BR`" - "`CN`" - "`DE`" - "`EU`" - "`FR`" - "`IT`" - "`JP`" - "`MEX`" - "`UK`" - "`US`" ',
-      }),
-    sizeType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The cut of the item. Recommended for apparel items. Acceptable values are: - "`big and tall`" - "`maternity`" - "`oversize`" - "`petite`" - "`plus`" - "`regular`" ',
-      }),
-    sizes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Size of the item. Only one value is allowed. For variants with different sizes, insert a separate product for each size with the same `itemGroupId` value (see size definition).',
-      }),
-    source: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The source of the offer, i.e., how the offer was created. Acceptable values are: - "`api`" - "`crawl`" - "`feed`" ',
-      }),
-    targetCountry: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The CLDR territory code for the item.' }),
-    taxes: z.array(ProductTaxSchema).exactOptional().openapi({ description: 'Tax information.' }),
-    title: z.string().exactOptional().openapi({ description: 'Title of the item.' }),
-    unitPricingBaseMeasure: ProductUnitPricingBaseMeasureSchema.exactOptional().openapi({
-      description: 'The preference of the denominator of the unit price.',
-    }),
-    unitPricingMeasure: ProductUnitPricingMeasureSchema.exactOptional().openapi({
-      description: 'The measure and dimension of an item.',
-    }),
-    validatedDestinations: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Deprecated. The read-only list of intended destinations which passed validation.',
-      }),
-    warnings: z.array(ErrorSchema).exactOptional().openapi({ description: 'Read-only warnings.' }),
-  })
-  .openapi({
-    description:
-      ' Required product attributes are primarily defined by the products data specification. See the Products Data Specification Help Center article for information. Product data. After inserting, updating, or deleting a product, it may take several minutes before changes take effect.',
-    required: [],
-  })
-  .openapi('Product')
-
-const ProductStatusDataQualityIssueSchema = z
-  .object({
-    destination: z.string().exactOptional(),
-    detail: z.string().exactOptional(),
-    fetchStatus: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    location: z.string().exactOptional(),
-    severity: z.string().exactOptional(),
-    timestamp: z.string().exactOptional(),
-    valueOnLandingPage: z.string().exactOptional(),
-    valueProvided: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductStatusDataQualityIssue')
-
-const ProductStatusDestinationStatusSchema = z
-  .object({
-    approvalPending: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether the approval status might change due to further processing.',
-      }),
-    approvalStatus: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The destination\'s approval status. Acceptable values are: - "`approved`" - "`disapproved`" ',
-      }),
-    destination: z.string().exactOptional().openapi({ description: 'The name of the destination' }),
-    intention: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Provided for backward compatibility only. Always set to "required". Acceptable values are: - "`default`" - "`excluded`" - "`optional`" - "`required`" ',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductStatusDestinationStatus')
-
-const ProductStatusItemLevelIssueSchema = z
-  .object({
-    attributeName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The attribute's name, if the issue is caused by a single attribute.",
-      }),
-    code: z.string().exactOptional().openapi({ description: 'The error code of the issue.' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A short issue description in English.' }),
-    destination: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The destination the issue applies to.' }),
-    detail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A detailed issue description in English.' }),
-    documentation: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL of a web page to help with resolving this issue.' }),
-    resolution: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Whether the issue can be resolved by the merchant.' }),
-    servability: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'How this issue affects serving of the offer.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductStatusItemLevelIssue')
-
-const ProductStatusSchema = z
-  .object({
-    creationDate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Date on which the item has been created, in ISO 8601 format.' }),
-    dataQualityIssues: z
-      .array(ProductStatusDataQualityIssueSchema)
-      .exactOptional()
-      .openapi({ description: 'DEPRECATED - never populated' }),
-    destinationStatuses: z
-      .array(ProductStatusDestinationStatusSchema)
-      .exactOptional()
-      .openapi({ description: 'The intended destinations for the product.' }),
-    googleExpirationDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Date on which the item expires in Google Shopping, in ISO 8601 format.',
-      }),
-    itemLevelIssues: z
-      .array(ProductStatusItemLevelIssueSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of all issues associated with the product.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "`content#productStatus`"',
-      }),
-    lastUpdateDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Date on which the item has been last updated, in ISO 8601 format.',
-      }),
-    link: z.string().exactOptional().openapi({ description: 'The link to the product.' }),
-    product: ProductSchema.exactOptional().openapi({
-      description: 'Product data after applying all the join inputs.',
-    }),
-    productId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the product for which status is reported.' }),
-    title: z.string().exactOptional().openapi({ description: 'The title of the product.' }),
-  })
-  .openapi({
-    description:
-      'The status of a product, i.e., information about a product computed asynchronously.',
-    required: [],
-  })
-  .openapi('ProductStatus')
-
-const ProductsCustomBatchRequestEntrySchema = z
-  .object({
-    batchId: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'An entry ID, unique within the batch request.' }),
-    merchantId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the managing account.' }),
-    method: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The method of the batch entry. Acceptable values are: - "`delete`" - "`get`" - "`insert`" ',
-      }),
-    product: ProductSchema.exactOptional().openapi({
-      description: 'The product to insert. Only required if the method is `insert`.',
-    }),
-    productId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the product to get or delete. Only defined if the method is `get` or `delete`.',
-      }),
-  })
-  .openapi({
-    description: 'A batch entry encoding a single non-batch products request.',
-    required: [],
-  })
-  .openapi('ProductsCustomBatchRequestEntry')
-
-const ProductsCustomBatchRequestSchema = z
+const ProductsCustomBatchRequestSchema: z.ZodType<ProductsCustomBatchRequestType> = z
   .object({
     entries: z
       .array(ProductsCustomBatchRequestEntrySchema)
@@ -6802,34 +7211,7 @@ const ProductsCustomBatchRequestSchema = z
   .openapi({ required: [] })
   .openapi('ProductsCustomBatchRequest')
 
-const ProductsCustomBatchResponseEntrySchema = z
-  .object({
-    batchId: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'The ID of the request entry this entry responds to.' }),
-    errors: ErrorsSchema.exactOptional().openapi({
-      description: 'A list of errors defined if and only if the request failed.',
-    }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "`content#productsCustomBatchResponseEntry`"',
-      }),
-    product: ProductSchema.exactOptional().openapi({
-      description:
-        'The inserted product. Only defined if the method is `insert` and if the request was successful.',
-    }),
-  })
-  .openapi({
-    description: 'A batch entry encoding a single non-batch products response.',
-    required: [],
-  })
-  .openapi('ProductsCustomBatchResponseEntry')
-
-const ProductsCustomBatchResponseSchema = z
+const ProductsCustomBatchResponseSchema: z.ZodType<ProductsCustomBatchResponseType> = z
   .object({
     entries: z
       .array(ProductsCustomBatchResponseEntrySchema)
@@ -6907,50 +7289,25 @@ const ProductstatusesCustomBatchRequestSchema = z
   .openapi({ required: [] })
   .openapi('ProductstatusesCustomBatchRequest')
 
-const ProductstatusesCustomBatchResponseEntrySchema = z
-  .object({
-    batchId: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'The ID of the request entry this entry responds to.' }),
-    errors: ErrorsSchema.exactOptional().openapi({
-      description: 'A list of errors, if the request failed.',
-    }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "`content#productstatusesCustomBatchResponseEntry`"',
-      }),
-    productStatus: ProductStatusSchema.exactOptional().openapi({
-      description: 'The requested product status. Only defined if the request was successful.',
-    }),
-  })
-  .openapi({
-    description: 'A batch entry encoding a single non-batch productstatuses response.',
-    required: [],
-  })
-  .openapi('ProductstatusesCustomBatchResponseEntry')
+const ProductstatusesCustomBatchResponseSchema: z.ZodType<ProductstatusesCustomBatchResponseType> =
+  z
+    .object({
+      entries: z
+        .array(ProductstatusesCustomBatchResponseEntrySchema)
+        .exactOptional()
+        .openapi({ description: 'The result of the execution of the batch requests.' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Identifies what kind of resource this is. Value: the fixed string "content#productstatusesCustomBatchResponse".',
+        }),
+    })
+    .openapi({ required: [] })
+    .openapi('ProductstatusesCustomBatchResponse')
 
-const ProductstatusesCustomBatchResponseSchema = z
-  .object({
-    entries: z
-      .array(ProductstatusesCustomBatchResponseEntrySchema)
-      .exactOptional()
-      .openapi({ description: 'The result of the execution of the batch requests.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "content#productstatusesCustomBatchResponse".',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ProductstatusesCustomBatchResponse')
-
-const ProductstatusesListResponseSchema = z
+const ProductstatusesListResponseSchema: z.ZodType<ProductstatusesListResponseType> = z
   .object({
     kind: z
       .string()
@@ -6970,252 +7327,34 @@ const ProductstatusesListResponseSchema = z
   .openapi({ required: [] })
   .openapi('ProductstatusesListResponse')
 
-const ServiceSchema: z.ZodType<ServiceType> = z
-  .lazy(() =>
-    z
-      .object({
-        active: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'A boolean exposing the active status of the shipping service. Required.',
-          }),
-        currency: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The CLDR code of the currency to which this service applies. Must match that of the prices in rate groups.',
-          }),
-        deliveryCountry: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The CLDR territory code of the country to which the service applies. Required.',
-          }),
-        deliveryTime: DeliveryTimeSchema.exactOptional().openapi({
+const ShippingsettingsCustomBatchRequestSchema: z.ZodType<ShippingsettingsCustomBatchRequestType> =
+  z
+    .object({
+      entries: z
+        .array(ShippingsettingsCustomBatchRequestEntrySchema)
+        .exactOptional()
+        .openapi({ description: 'The request entries to be processed in the batch.' }),
+    })
+    .openapi({ required: [] })
+    .openapi('ShippingsettingsCustomBatchRequest')
+
+const ShippingsettingsCustomBatchResponseSchema: z.ZodType<ShippingsettingsCustomBatchResponseType> =
+  z
+    .object({
+      entries: z
+        .array(ShippingsettingsCustomBatchResponseEntrySchema)
+        .exactOptional()
+        .openapi({ description: 'The result of the execution of the batch requests.' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
           description:
-            'Time spent in various aspects from order to the delivery of the product. Required.',
+            'Identifies what kind of resource this is. Value: the fixed string "content#shippingsettingsCustomBatchResponse".',
         }),
-        eligibility: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Eligibility for this service. Acceptable values are: - "`All scenarios`" - "`All scenarios except Shopping Actions`" - "`Shopping Actions`" ',
-          }),
-        minimumOrderValue: PriceSchema.exactOptional().openapi({
-          description:
-            'Minimum order value for this service. If set, indicates that customers will have to spend at least this amount. All prices within a service must have the same currency. Cannot be set together with minimum_order_value_table.',
-        }),
-        minimumOrderValueTable: MinimumOrderValueTableSchema.exactOptional().openapi({
-          description:
-            'Table of per store minimum order values for the pickup fulfillment type. Cannot be set together with minimum_order_value.',
-        }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Free-form name of the service. Must be unique within target account. Required.',
-          }),
-        pickupService: PickupCarrierServiceSchema.exactOptional().openapi({
-          description:
-            'The carrier-service pair delivering items to collection points. The list of supported pickup services can be retrieved via the `getSupportedPickupServices` method. Required if and only if the service delivery type is `pickup`.',
-        }),
-        rateGroups: z
-          .array(RateGroupSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Shipping rate group definitions. Only the last one is allowed to have an empty `applicableShippingLabels`, which means "everything else". The other `applicableShippingLabels` must not overlap.',
-          }),
-        shipmentType: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Type of locations this service ships orders to. Acceptable values are: - "`delivery`" - "`pickup`" ',
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('Service')
-
-const WarehouseCutoffTimeSchema = z
-  .object({
-    hour: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Hour (24-hour clock) of the cutoff time until which an order has to be placed to be processed in the same day by the warehouse. Hour is based on the timezone of warehouse.',
-      }),
-    minute: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Minute of the cutoff time until which an order has to be placed to be processed in the same day by the warehouse. Minute is based on the timezone of warehouse.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('WarehouseCutoffTime')
-
-const WarehouseSchema = z
-  .object({
-    businessDayConfig: BusinessDayConfigSchema.exactOptional().openapi({
-      description:
-        'Business days of the warehouse. If not set, will be Monday to Friday by default.',
-    }),
-    cutoffTime: WarehouseCutoffTimeSchema.exactOptional().openapi({
-      description:
-        'Required. The latest time of day that an order can be accepted and begin processing. Later orders will be processed in the next day. The time is based on the warehouse postal code.',
-    }),
-    handlingDays: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The number of days it takes for this warehouse to pack up and ship an item. This is on the warehouse level, but can be overridden on the offer level based on the attributes of an item.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. The name of the warehouse. Must be unique within account.',
-      }),
-    shippingAddress: AddressSchema.exactOptional().openapi({
-      description: 'Required. Shipping address of the warehouse.',
-    }),
-  })
-  .openapi({
-    description: 'A fulfillment warehouse, which stores and handles inventory.',
-    required: [],
-  })
-  .openapi('Warehouse')
-
-const ShippingSettingsSchema = z
-  .object({
-    accountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the account to which these account shipping settings belong. Ignored upon update, always present in get request responses.',
-      }),
-    postalCodeGroups: z
-      .array(PostalCodeGroupSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of postal code groups that can be referred to in `services`. Optional.',
-      }),
-    services: z
-      .array(ServiceSchema)
-      .exactOptional()
-      .openapi({ description: "The target account's list of services. Optional." }),
-    warehouses: z
-      .array(WarehouseSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Optional. A list of warehouses which can be referred to in `services`.',
-      }),
-  })
-  .openapi({
-    description:
-      "The merchant account's shipping settings. All methods except getsupportedcarriers and getsupportedholidays require the admin role.",
-    required: [],
-  })
-  .openapi('ShippingSettings')
-
-const ShippingsettingsCustomBatchRequestEntrySchema = z
-  .object({
-    accountId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The ID of the account for which to get/update account shipping settings.',
-      }),
-    batchId: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'An entry ID, unique within the batch request.' }),
-    merchantId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the managing account.' }),
-    method: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The method of the batch entry. Acceptable values are: - "`get`" - "`update`" ',
-      }),
-    shippingSettings: ShippingSettingsSchema.exactOptional().openapi({
-      description:
-        'The account shipping settings to update. Only defined if the method is `update`.',
-    }),
-  })
-  .openapi({
-    description: 'A batch entry encoding a single non-batch shippingsettings request.',
-    required: [],
-  })
-  .openapi('ShippingsettingsCustomBatchRequestEntry')
-
-const ShippingsettingsCustomBatchRequestSchema = z
-  .object({
-    entries: z
-      .array(ShippingsettingsCustomBatchRequestEntrySchema)
-      .exactOptional()
-      .openapi({ description: 'The request entries to be processed in the batch.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ShippingsettingsCustomBatchRequest')
-
-const ShippingsettingsCustomBatchResponseEntrySchema = z
-  .object({
-    batchId: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'The ID of the request entry to which this entry responds.' }),
-    errors: ErrorsSchema.exactOptional().openapi({
-      description: 'A list of errors defined if, and only if, the request failed.',
-    }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "`content#shippingsettingsCustomBatchResponseEntry`"',
-      }),
-    shippingSettings: ShippingSettingsSchema.exactOptional().openapi({
-      description: 'The retrieved or updated account shipping settings.',
-    }),
-  })
-  .openapi({
-    description: 'A batch entry encoding a single non-batch shipping settings response.',
-    required: [],
-  })
-  .openapi('ShippingsettingsCustomBatchResponseEntry')
-
-const ShippingsettingsCustomBatchResponseSchema = z
-  .object({
-    entries: z
-      .array(ShippingsettingsCustomBatchResponseEntrySchema)
-      .exactOptional()
-      .openapi({ description: 'The result of the execution of the batch requests.' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifies what kind of resource this is. Value: the fixed string "content#shippingsettingsCustomBatchResponse".',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('ShippingsettingsCustomBatchResponse')
+    })
+    .openapi({ required: [] })
+    .openapi('ShippingsettingsCustomBatchResponse')
 
 const ShippingsettingsGetSupportedCarriersResponseSchema = z
   .object({
@@ -7270,7 +7409,7 @@ const ShippingsettingsGetSupportedPickupServicesResponseSchema = z
   .openapi({ required: [] })
   .openapi('ShippingsettingsGetSupportedPickupServicesResponse')
 
-const ShippingsettingsListResponseSchema = z
+const ShippingsettingsListResponseSchema: z.ZodType<ShippingsettingsListResponseType> = z
   .object({
     kind: z
       .string()

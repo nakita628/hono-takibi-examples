@@ -1,56 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const PatientSatisfactionSchema = z
-  .object({
-    primary_care_routine: z
-      .float32()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          '% of Veterans who say they usually or always get an appointment when they need it at a primary care location.',
-        example: 0.85,
-      }),
-    primary_care_urgent: z
-      .float32()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          '% of Veterans who say they usually or always get an appointment when they need care right away at a primary care location.',
-        example: 0.85,
-      }),
-    specialty_care_routine: z
-      .float32()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          '% of Veterans who say they usually or always get an appointment when they need it at a specialty location.',
-        example: 0.85,
-      }),
-    specialty_care_urgent: z
-      .float32()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          '% of Veterans who say they usually or always get an appointment when they need care right away at a specialty location.',
-        example: 0.85,
-      }),
-  })
-  .nullable()
-  .openapi({
-    description: 'Veteran-reported satisfaction scores for health care services',
-    required: [],
-  })
-  .openapi('PatientSatisfaction')
-
-type SatisfactionType = {
-  effective_date?: string | null
-  health?: z.infer<typeof PatientSatisfactionSchema>
-} | null
-
 const AddressSchema = z
   .object({
     address_1: z
@@ -73,21 +22,6 @@ const AddressesSchema = z
   .nullable()
   .openapi({ required: [] })
   .openapi('Addresses')
-
-const ErrorMessageSchema = z
-  .object({
-    code: z.string().exactOptional().openapi({ example: '103' }),
-    detail: z.string().exactOptional().openapi({ example: 'Detailed error message' }),
-    status: z.string().exactOptional().openapi({ example: '400' }),
-    title: z.string().exactOptional().openapi({ example: 'Error title' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ErrorMessage')
-
-const ApiErrorSchema = z
-  .object({ errors: z.array(ErrorMessageSchema) })
-  .openapi({ description: 'API invocation or processing error', required: ['errors'] })
-  .openapi('ApiError')
 
 const AppointmentPhoneNumberSchema = z
   .object({
@@ -261,36 +195,6 @@ const DetailedServiceSchema = z
   .openapi({ description: 'Detailed information of a facility service.', required: [] })
   .openapi('DetailedService')
 
-const DistanceSchema = z
-  .object({ distance: z.number(), id: z.string() })
-  .openapi({ required: ['distance', 'id'] })
-  .openapi('Distance')
-
-const FacilitiesIdsResponseSchema = z
-  .object({
-    data: z
-      .array(z.string().openapi({ example: '["vha_688"]' }))
-      .exactOptional()
-      .openapi({ example: ['vha_688'] }),
-  })
-  .openapi({ required: [] })
-  .openapi('FacilitiesIdsResponse')
-
-const PaginationSchema = z
-  .object({
-    current_page: z.int32().openapi({ example: 1 }),
-    per_page: z.int32().openapi({ example: 10 }),
-    total_entries: z.int32().openapi({ example: 2162 }),
-    total_pages: z.int32().openapi({ example: 217 }),
-  })
-  .openapi({ required: ['current_page', 'per_page', 'total_entries', 'total_pages'] })
-  .openapi('Pagination')
-
-const FacilitiesMetadataSchema = z
-  .object({ distances: z.array(DistanceSchema), pagination: PaginationSchema })
-  .openapi({ required: ['distances', 'pagination'] })
-  .openapi('FacilitiesMetadata')
-
 const HoursSchema = z
   .object({
     friday: z.string().nullable().exactOptional().openapi({ example: '9AM-5PM' }),
@@ -361,16 +265,59 @@ const PhoneSchema = z
   .openapi({ required: [] })
   .openapi('Phone')
 
-const SatisfactionSchema: z.ZodType<SatisfactionType> = z
-  .lazy(() =>
-    z
-      .object({
-        effective_date: z.iso.date().nullable().exactOptional().openapi({ example: '2018-01-01' }),
-        health: PatientSatisfactionSchema.exactOptional(),
-      })
+const PatientSatisfactionSchema = z
+  .object({
+    primary_care_routine: z
+      .float32()
       .nullable()
-      .openapi({ required: [] }),
-  )
+      .exactOptional()
+      .openapi({
+        description:
+          '% of Veterans who say they usually or always get an appointment when they need it at a primary care location.',
+        example: 0.85,
+      }),
+    primary_care_urgent: z
+      .float32()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '% of Veterans who say they usually or always get an appointment when they need care right away at a primary care location.',
+        example: 0.85,
+      }),
+    specialty_care_routine: z
+      .float32()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '% of Veterans who say they usually or always get an appointment when they need it at a specialty location.',
+        example: 0.85,
+      }),
+    specialty_care_urgent: z
+      .float32()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '% of Veterans who say they usually or always get an appointment when they need care right away at a specialty location.',
+        example: 0.85,
+      }),
+  })
+  .nullable()
+  .openapi({
+    description: 'Veteran-reported satisfaction scores for health care services',
+    required: [],
+  })
+  .openapi('PatientSatisfaction')
+
+const SatisfactionSchema = z
+  .object({
+    effective_date: z.iso.date().nullable().exactOptional().openapi({ example: '2018-01-01' }),
+    health: PatientSatisfactionSchema.exactOptional(),
+  })
+  .nullable()
+  .openapi({ required: [] })
   .openapi('Satisfaction')
 
 const ServicesSchema = z
@@ -545,7 +492,13 @@ const FacilityAttributesSchema = z
   .openapi({ required: ['facility_type', 'lat', 'long', 'name', 'operating_status'] })
   .openapi('FacilityAttributes')
 
-const FacilitySchema = z
+type FacilityType = {
+  attributes: z.infer<typeof FacilityAttributesSchema>
+  id: string
+  type: 'va_facilities'
+}
+
+const FacilitySchema: z.ZodType<FacilityType> = z
   .object({
     attributes: FacilityAttributesSchema,
     id: z.string().openapi({ example: 'vha_688' }),
@@ -573,28 +526,33 @@ const PageLinksSchema = z
   .openapi({ required: ['self'] })
   .openapi('PageLinks')
 
-const FacilitiesResponseSchema = z
+const DistanceSchema = z
+  .object({ distance: z.number(), id: z.string() })
+  .openapi({ required: ['distance', 'id'] })
+  .openapi('Distance')
+
+const PaginationSchema = z
   .object({
-    data: z.array(FacilitySchema).exactOptional(),
-    links: PageLinksSchema,
-    meta: FacilitiesMetadataSchema,
+    current_page: z.int32().openapi({ example: 1 }),
+    per_page: z.int32().openapi({ example: 10 }),
+    total_entries: z.int32().openapi({ example: 2162 }),
+    total_pages: z.int32().openapi({ example: 217 }),
   })
-  .openapi({ required: ['links', 'meta'] })
-  .openapi('FacilitiesResponse')
+  .openapi({ required: ['current_page', 'per_page', 'total_entries', 'total_pages'] })
+  .openapi('Pagination')
 
-const FacilityReadResponseSchema = z
-  .object({ data: FacilitySchema })
-  .openapi({ required: ['data'] })
-  .openapi('FacilityReadResponse')
+const FacilitiesMetadataSchema = z
+  .object({ distances: z.array(DistanceSchema), pagination: PaginationSchema })
+  .openapi({ required: ['distances', 'pagination'] })
+  .openapi('FacilitiesMetadata')
 
-const GenericErrorSchema = z
-  .object({ message: z.string().openapi({ example: 'Detailed Error Message' }) })
-  .openapi({
-    description:
-      'A general error json response for things like Authorization Errors or Bad Requests (ex. invalid parameter values).',
-    required: ['message'],
-  })
-  .openapi('GenericError')
+type FacilitiesResponseType = {
+  data?: z.infer<typeof FacilitySchema>[]
+  links: z.infer<typeof PageLinksSchema>
+  meta: z.infer<typeof FacilitiesMetadataSchema>
+}
+
+type FacilityReadResponseType = { data: z.infer<typeof FacilitySchema> }
 
 const GeometrySchema = z
   .object({
@@ -658,7 +616,13 @@ const PropertiesSchema = z
   .openapi({ required: ['facility_type', 'id', 'operating_status'] })
   .openapi('Properties')
 
-const GeoFacilitySchema = z
+type GeoFacilityType = {
+  geometry: z.infer<typeof GeometrySchema>
+  properties: z.infer<typeof PropertiesSchema>
+  type: 'Feature'
+}
+
+const GeoFacilitySchema: z.ZodType<GeoFacilityType> = z
   .object({
     geometry: GeometrySchema,
     properties: PropertiesSchema,
@@ -670,7 +634,66 @@ const GeoFacilitySchema = z
   })
   .openapi('GeoFacility')
 
-const GeoFacilitiesResponseSchema = z
+type GeoFacilitiesResponseType = {
+  features?: z.infer<typeof GeoFacilitySchema>[]
+  type: 'FeatureCollection'
+}
+
+type GeoFacilityReadResponseType = {
+  geometry: z.infer<typeof GeometrySchema>
+  properties: z.infer<typeof PropertiesSchema>
+  type: 'Feature'
+}
+
+const ErrorMessageSchema = z
+  .object({
+    code: z.string().exactOptional().openapi({ example: '103' }),
+    detail: z.string().exactOptional().openapi({ example: 'Detailed error message' }),
+    status: z.string().exactOptional().openapi({ example: '400' }),
+    title: z.string().exactOptional().openapi({ example: 'Error title' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ErrorMessage')
+
+const ApiErrorSchema = z
+  .object({ errors: z.array(ErrorMessageSchema) })
+  .openapi({ description: 'API invocation or processing error', required: ['errors'] })
+  .openapi('ApiError')
+
+const FacilitiesIdsResponseSchema = z
+  .object({
+    data: z
+      .array(z.string().openapi({ example: '["vha_688"]' }))
+      .exactOptional()
+      .openapi({ example: ['vha_688'] }),
+  })
+  .openapi({ required: [] })
+  .openapi('FacilitiesIdsResponse')
+
+const FacilitiesResponseSchema: z.ZodType<FacilitiesResponseType> = z
+  .object({
+    data: z.array(FacilitySchema).exactOptional(),
+    links: PageLinksSchema,
+    meta: FacilitiesMetadataSchema,
+  })
+  .openapi({ required: ['links', 'meta'] })
+  .openapi('FacilitiesResponse')
+
+const FacilityReadResponseSchema: z.ZodType<FacilityReadResponseType> = z
+  .object({ data: FacilitySchema })
+  .openapi({ required: ['data'] })
+  .openapi('FacilityReadResponse')
+
+const GenericErrorSchema = z
+  .object({ message: z.string().openapi({ example: 'Detailed Error Message' }) })
+  .openapi({
+    description:
+      'A general error json response for things like Authorization Errors or Bad Requests (ex. invalid parameter values).',
+    required: ['message'],
+  })
+  .openapi('GenericError')
+
+const GeoFacilitiesResponseSchema: z.ZodType<GeoFacilitiesResponseType> = z
   .object({
     features: z.array(GeoFacilitySchema).exactOptional(),
     type: z.literal('FeatureCollection'),
@@ -678,7 +701,7 @@ const GeoFacilitiesResponseSchema = z
   .openapi({ required: ['type'] })
   .openapi('GeoFacilitiesResponse')
 
-const GeoFacilityReadResponseSchema = z
+const GeoFacilityReadResponseSchema: z.ZodType<GeoFacilityReadResponseType> = z
   .object({ geometry: GeometrySchema, properties: PropertiesSchema, type: z.literal('Feature') })
   .openapi({ required: ['geometry', 'properties', 'type'] })
   .openapi('GeoFacilityReadResponse')
@@ -935,6 +958,7 @@ export const getFacilitiesRoute = createRoute({
             schema: { default: 1, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -954,6 +978,7 @@ export const getFacilitiesRoute = createRoute({
             schema: { default: 10, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 10,
         }),
     }),
   },

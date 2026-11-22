@@ -6,15 +6,11 @@ const StringsSchema = z.array(StringSchema).openapi('Strings')
 
 const AssignInstanceRequestSchema = z
   .object({
-    InstanceId: StringSchema.and(z.any().openapi({ description: 'The instance ID.' })),
-    LayerIds: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The layer ID, which must correspond to a custom layer. You cannot assign a registered instance to a built-in layer.',
-        }),
-    ),
+    InstanceId: StringSchema.openapi({ description: 'The instance ID.' }),
+    LayerIds: StringsSchema.openapi({
+      description:
+        'The layer ID, which must correspond to a custom layer. You cannot assign a registered instance to a built-in layer.',
+    }),
   })
   .openapi({ required: ['InstanceId', 'LayerIds'], title: 'AssignInstanceRequest' })
   .openapi('AssignInstanceRequest')
@@ -25,37 +21,29 @@ const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundExcepti
 
 const AssignVolumeRequestSchema = z
   .object({
-    VolumeId: StringSchema.and(z.any().openapi({ description: 'The volume ID.' })),
-    InstanceId: StringSchema.and(
-      z.any().openapi({ description: 'The instance ID.' }),
-    ).exactOptional(),
+    VolumeId: StringSchema.openapi({ description: 'The volume ID.' }),
+    InstanceId: StringSchema.exactOptional().openapi({ description: 'The instance ID.' }),
   })
   .openapi({ required: ['VolumeId'], title: 'AssignVolumeRequest' })
   .openapi('AssignVolumeRequest')
 
 const AssociateElasticIpRequestSchema = z
   .object({
-    ElasticIp: StringSchema.and(z.any().openapi({ description: 'The Elastic IP address.' })),
-    InstanceId: StringSchema.and(
-      z.any().openapi({ description: 'The instance ID.' }),
-    ).exactOptional(),
+    ElasticIp: StringSchema.openapi({ description: 'The Elastic IP address.' }),
+    InstanceId: StringSchema.exactOptional().openapi({ description: 'The instance ID.' }),
   })
   .openapi({ required: ['ElasticIp'], title: 'AssociateElasticIpRequest' })
   .openapi('AssociateElasticIpRequest')
 
 const AttachElasticLoadBalancerRequestSchema = z
   .object({
-    ElasticLoadBalancerName: StringSchema.and(
-      z.any().openapi({ description: "The Elastic Load Balancing instance's name." }),
-    ),
-    LayerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the layer to which the Elastic Load Balancing instance is to be attached.',
-        }),
-    ),
+    ElasticLoadBalancerName: StringSchema.openapi({
+      description: "The Elastic Load Balancing instance's name.",
+    }),
+    LayerId: StringSchema.openapi({
+      description:
+        'The ID of the layer to which the Elastic Load Balancing instance is to be attached.',
+    }),
   })
   .openapi({
     required: ['ElasticLoadBalancerName', 'LayerId'],
@@ -65,9 +53,7 @@ const AttachElasticLoadBalancerRequestSchema = z
 
 const CloneStackResultSchema = z
   .object({
-    StackId: StringSchema.and(
-      z.any().openapi({ description: 'The cloned stack ID.' }),
-    ).exactOptional(),
+    StackId: StringSchema.exactOptional().openapi({ description: 'The cloned stack ID.' }),
   })
   .openapi({
     description: 'Contains the response to a <code>CloneStack</code> request.',
@@ -79,17 +65,13 @@ const StackAttributesSchema = z.record(z.string(), StringSchema).openapi('StackA
 
 const StackConfigurationManagerSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name. This parameter must be set to "Chef".' }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Chef version. This parameter must be set to 12, 11.10, or 11.4 for Linux stacks, and to 12.2 for Windows stacks. The default value for Linux stacks is 11.4.',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name. This parameter must be set to "Chef".',
+    }),
+    Version: StringSchema.exactOptional().openapi({
+      description:
+        'The Chef version. This parameter must be set to 12, 11.10, or 11.4 for Linux stacks, and to 12.2 for Windows stacks. The default value for Linux stacks is 11.4.',
+    }),
   })
   .openapi({ description: 'Describes the configuration manager.', required: [] })
   .openapi('StackConfigurationManager')
@@ -98,12 +80,12 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const ChefConfigurationSchema = z
   .object({
-    ManageBerkshelf: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether to enable Berkshelf.' }),
-    ).exactOptional(),
-    BerkshelfVersion: StringSchema.and(
-      z.any().openapi({ description: 'The Berkshelf version.' }),
-    ).exactOptional(),
+    ManageBerkshelf: BooleanSchema.exactOptional().openapi({
+      description: 'Whether to enable Berkshelf.',
+    }),
+    BerkshelfVersion: StringSchema.exactOptional().openapi({
+      description: 'The Berkshelf version.',
+    }),
   })
   .openapi({ description: 'Describes the Chef configuration.', required: [] })
   .openapi('ChefConfiguration')
@@ -112,49 +94,27 @@ const SourceTypeSchema = z.enum(['git', 'svn', 'archive', 's3']).openapi('Source
 
 const SourceSchema = z
   .object({
-    Type: SourceTypeSchema.and(
-      z.any().openapi({ description: 'The repository type.' }),
-    ).exactOptional(),
-    Url: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The source URL. The following is an example of an Amazon S3 source URL: <code>https://s3.amazonaws.com/opsworks-demo-bucket/opsworks_cookbook_demo.tar.gz</code>.',
-        }),
-    ).exactOptional(),
-    Username: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This parameter depends on the repository type.</p> <ul> <li> <p>For Amazon S3 bundles, set <code>Username</code> to the appropriate IAM access key ID.</p> </li> <li> <p>For HTTP bundles, Git repositories, and Subversion repositories, set <code>Username</code> to the user name.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Password: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When included in a request, the parameter depends on the repository type.</p> <ul> <li> <p>For Amazon S3 bundles, set <code>Password</code> to the appropriate IAM secret access key.</p> </li> <li> <p>For HTTP bundles and Subversion repositories, set <code>Password</code> to the password.</p> </li> </ul> <p>For more information on how to safely handle IAM credentials, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-access-keys-best-practices.html">https://docs.aws.amazon.com/general/latest/gr/aws-access-keys-best-practices.html</a>.</p> <p>In responses, AWS OpsWorks Stacks returns <code>*****FILTERED*****</code> instead of the actual value.</p>',
-        }),
-    ).exactOptional(),
-    SshKey: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>In requests, the repository's SSH key.</p> <p>In responses, AWS OpsWorks Stacks returns <code>*****FILTERED*****</code> instead of the actual value.</p>",
-        }),
-    ).exactOptional(),
-    Revision: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The application's version. AWS OpsWorks Stacks enables you to easily deploy new versions of an application. One of the simplest approaches is to have branches or revisions in your repository that represent different versions that can potentially be deployed.",
-        }),
-    ).exactOptional(),
+    Type: SourceTypeSchema.exactOptional().openapi({ description: 'The repository type.' }),
+    Url: StringSchema.exactOptional().openapi({
+      description:
+        'The source URL. The following is an example of an Amazon S3 source URL: <code>https://s3.amazonaws.com/opsworks-demo-bucket/opsworks_cookbook_demo.tar.gz</code>.',
+    }),
+    Username: StringSchema.exactOptional().openapi({
+      description:
+        '<p>This parameter depends on the repository type.</p> <ul> <li> <p>For Amazon S3 bundles, set <code>Username</code> to the appropriate IAM access key ID.</p> </li> <li> <p>For HTTP bundles, Git repositories, and Subversion repositories, set <code>Username</code> to the user name.</p> </li> </ul>',
+    }),
+    Password: StringSchema.exactOptional().openapi({
+      description:
+        '<p>When included in a request, the parameter depends on the repository type.</p> <ul> <li> <p>For Amazon S3 bundles, set <code>Password</code> to the appropriate IAM secret access key.</p> </li> <li> <p>For HTTP bundles and Subversion repositories, set <code>Password</code> to the password.</p> </li> </ul> <p>For more information on how to safely handle IAM credentials, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-access-keys-best-practices.html">https://docs.aws.amazon.com/general/latest/gr/aws-access-keys-best-practices.html</a>.</p> <p>In responses, AWS OpsWorks Stacks returns <code>*****FILTERED*****</code> instead of the actual value.</p>',
+    }),
+    SshKey: StringSchema.exactOptional().openapi({
+      description:
+        "<p>In requests, the repository's SSH key.</p> <p>In responses, AWS OpsWorks Stacks returns <code>*****FILTERED*****</code> instead of the actual value.</p>",
+    }),
+    Revision: StringSchema.exactOptional().openapi({
+      description:
+        "The application's version. AWS OpsWorks Stacks enables you to easily deploy new versions of an application. One of the simplest approaches is to have branches or revisions in your repository that represent different versions that can potentially be deployed.",
+    }),
   })
   .openapi({
     description:
@@ -167,167 +127,91 @@ const RootDeviceTypeSchema = z.enum(['ebs', 'instance-store']).openapi('RootDevi
 
 const CloneStackRequestSchema = z
   .object({
-    SourceStackId: StringSchema.and(z.any().openapi({ description: 'The source stack ID.' })),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The cloned stack name.' }),
-    ).exactOptional(),
-    Region: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The cloned stack AWS region, such as "ap-northeast-2". For more information about AWS regions, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
-        }),
-    ).exactOptional(),
-    VpcId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the VPC that the cloned stack is to be launched into. It must be in the specified region. All instances are launched into this VPC, and you cannot change the ID later.</p> <ul> <li> <p>If your account supports EC2 Classic, the default value is no VPC.</p> </li> <li> <p>If your account does not support EC2 Classic, the default value is the default VPC for the specified region.</p> </li> </ul> <p>If the VPC ID corresponds to a default VPC and you have specified either the <code>DefaultAvailabilityZone</code> or the <code>DefaultSubnetId</code> parameter only, AWS OpsWorks Stacks infers the value of the other parameter. If you specify neither parameter, AWS OpsWorks Stacks sets these parameters to the first valid Availability Zone for the specified region and the corresponding default VPC subnet ID, respectively. </p> <p>If you specify a nondefault VPC ID, note the following:</p> <ul> <li> <p>It must belong to a VPC in your account that is in the specified region.</p> </li> <li> <p>You must specify a value for <code>DefaultSubnetId</code>.</p> </li> </ul> <p>For more information about how to use AWS OpsWorks Stacks with a VPC, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-vpc.html">Running a Stack in a VPC</a>. For more information about default VPC and EC2 Classic, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-supported-platforms.html">Supported Platforms</a>. </p>',
-        }),
-    ).exactOptional(),
-    Attributes: StackAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of stack attributes and values as key/value pairs to be added to the cloned stack.',
-        }),
-    ).exactOptional(),
-    ServiceRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The stack AWS Identity and Access Management (IAM) role, which allows AWS OpsWorks Stacks to work with AWS resources on your behalf. You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. If you create a stack by using the AWS OpsWorks Stacks console, it creates the role for you. You can obtain an existing stack\'s IAM ARN programmatically by calling <a>DescribePermissions</a>. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.</p> <note> <p>You must set this parameter to a valid service role ARN or the action will fail; there is no default value. You can specify the source stack\'s service role ARN, if you prefer, but you must do so explicitly.</p> </note>',
-        }),
-    ),
-    DefaultInstanceProfileArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an IAM profile that is the default profile for all of the stack\'s EC2 instances. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
-        }),
-    ).exactOptional(),
-    DefaultOs: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The stack\'s operating system, which must be set to one of the following.</p> <ul> <li> <p>A supported Linux operating system: An Amazon Linux version, such as <code>Amazon Linux 2018.03</code>, <code>Amazon Linux 2017.09</code>, <code>Amazon Linux 2017.03</code>, <code>Amazon Linux 2016.09</code>, <code>Amazon Linux 2016.03</code>, <code>Amazon Linux 2015.09</code>, or <code>Amazon Linux 2015.03</code>.</p> </li> <li> <p>A supported Ubuntu operating system, such as <code>Ubuntu 16.04 LTS</code>, <code>Ubuntu 14.04 LTS</code>, or <code>Ubuntu 12.04 LTS</code>.</p> </li> <li> <p> <code>CentOS Linux 7</code> </p> </li> <li> <p> <code>Red Hat Enterprise Linux 7</code> </p> </li> <li> <p> <code>Microsoft Windows Server 2012 R2 Base</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Express</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Standard</code>, or <code>Microsoft Windows Server 2012 R2 with SQL Server Web</code>.</p> </li> <li> <p>A custom AMI: <code>Custom</code>. You specify the custom AMI you want to use when you create instances. For more information about how to use custom AMIs with OpsWorks, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html">Using Custom AMIs</a>.</p> </li> </ul> <p>The default option is the parent stack\'s operating system. For more information about supported operating systems, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html">AWS OpsWorks Stacks Operating Systems</a>.</p> <note> <p>You can specify a different Linux operating system for the cloned stack, but you cannot change from Linux to Windows or Windows to Linux.</p> </note>',
-        }),
-    ).exactOptional(),
-    HostnameTheme: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The stack's host name theme, with spaces are replaced by underscores. The theme is used to generate host names for the stack's instances. By default, <code>HostnameTheme</code> is set to <code>Layer_Dependent</code>, which creates host names by appending integers to the layer's short name. The other themes are:</p> <ul> <li> <p> <code>Baked_Goods</code> </p> </li> <li> <p> <code>Clouds</code> </p> </li> <li> <p> <code>Europe_Cities</code> </p> </li> <li> <p> <code>Fruits</code> </p> </li> <li> <p> <code>Greek_Deities_and_Titans</code> </p> </li> <li> <p> <code>Legendary_creatures_from_Japan</code> </p> </li> <li> <p> <code>Planets_and_Moons</code> </p> </li> <li> <p> <code>Roman_Deities</code> </p> </li> <li> <p> <code>Scottish_Islands</code> </p> </li> <li> <p> <code>US_Cities</code> </p> </li> <li> <p> <code>Wild_Cats</code> </p> </li> </ul> <p>To obtain a generated host name, call <code>GetHostNameSuggestion</code>, which returns a host name based on the current theme.</p>",
-        }),
-    ).exactOptional(),
-    DefaultAvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The cloned stack\'s default Availability Zone, which must be in the specified region. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>. If you also specify a value for <code>DefaultSubnetId</code>, the subnet must be in the same zone. For more information, see the <code>VpcId</code> parameter description. ',
-        }),
-    ).exactOptional(),
-    DefaultSubnetId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The stack's default VPC subnet ID. This parameter is required if you specify a value for the <code>VpcId</code> parameter. All instances are launched into this subnet unless you specify otherwise when you create the instance. If you also specify a value for <code>DefaultAvailabilityZone</code>, the subnet must be in that zone. For information on default values and when this parameter is required, see the <code>VpcId</code> parameter description. ",
-        }),
-    ).exactOptional(),
-    CustomJson: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values. The string should be in the following format:</p> <p> <code>"{\\"key1\\": \\"value1\\", \\"key2\\": \\"value2\\",...}"</code> </p> <p>For more information about custom JSON, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html">Use Custom JSON to Modify the Stack Configuration Attributes</a> </p>',
-        }),
-    ).exactOptional(),
-    ConfigurationManager: StackConfigurationManagerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration manager. When you clone a stack we recommend that you use the configuration manager to specify the Chef version: 12, 11.10, or 11.4 for Linux stacks, or 12.2 for Windows stacks. The default value for Linux stacks is currently 12.',
-        }),
-    ).exactOptional(),
-    ChefConfiguration: ChefConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>ChefConfiguration</code> object that specifies whether to enable Berkshelf and the Berkshelf version on Chef 11.10 stacks. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html">Create a New Stack</a>.',
-        }),
-    ).exactOptional(),
-    UseCustomCookbooks: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether to use custom cookbooks.' }),
-    ).exactOptional(),
-    UseOpsworksSecurityGroups: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to associate the AWS OpsWorks Stacks built-in security groups with the stack\'s layers.</p> <p>AWS OpsWorks Stacks provides a standard set of built-in security groups, one for each layer, which are associated with layers by default. With <code>UseOpsworksSecurityGroups</code> you can instead provide your own custom security groups. <code>UseOpsworksSecurityGroups</code> has the following settings: </p> <ul> <li> <p>True - AWS OpsWorks Stacks automatically associates the appropriate built-in security group with each layer (default setting). You can associate additional security groups with a layer after you create it but you cannot delete the built-in security group.</p> </li> <li> <p>False - AWS OpsWorks Stacks does not associate built-in security groups with layers. You must create appropriate Amazon Elastic Compute Cloud (Amazon EC2) security groups and associate a security group with each layer that you create. However, you can still manually associate a built-in security group with a layer on creation; custom security groups are required only for those layers that need custom settings.</p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html">Create a New Stack</a>.</p>',
-        }),
-    ).exactOptional(),
-    CustomCookbooksSource: SourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the information required to retrieve an app or cookbook from a repository. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html">Adding Apps</a> or <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook.html">Cookbooks and Recipes</a>.',
-        }),
-    ).exactOptional(),
-    DefaultSshKeyName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A default Amazon EC2 key pair name. The default value is none. If you specify a key pair name, AWS OpsWorks installs the public key on the instance and you can use the private key with an SSH client to log in to the instance. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-ssh.html"> Using SSH to Communicate with an Instance</a> and <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/security-ssh-access.html"> Managing SSH Access</a>. You can override this setting by specifying a different key pair, or no key pair, when you <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-add.html"> create an instance</a>. ',
-        }),
-    ).exactOptional(),
-    ClonePermissions: BooleanSchema.and(
-      z.any().openapi({ description: "Whether to clone the source stack's permissions." }),
-    ).exactOptional(),
-    CloneAppIds: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of source stack app IDs to be included in the cloned stack.',
-        }),
-    ).exactOptional(),
-    DefaultRootDeviceType: RootDeviceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default root device type. This value is used by default for all instances in the cloned stack, but you can override it when you create an instance. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device">Storage for the Root Device</a>.',
-        }),
-    ).exactOptional(),
-    AgentVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The default AWS OpsWorks Stacks agent version. You have the following options:</p> <ul> <li> <p>Auto-update - Set this parameter to <code>LATEST</code>. AWS OpsWorks Stacks automatically installs new agent versions on the stack's instances as soon as they are available.</p> </li> <li> <p>Fixed version - Set this parameter to your preferred agent version. To update the agent version, you must edit the stack configuration and specify a new version. AWS OpsWorks Stacks then automatically installs that version on the stack's instances.</p> </li> </ul> <p>The default setting is <code>LATEST</code>. To specify an agent version, you must use the complete version number, not the abbreviated number shown on the console. For a list of available agent version numbers, call <a>DescribeAgentVersions</a>. AgentVersion cannot be set to Chef 12.2.</p> <note> <p>You can also specify an agent version when you create or update an instance, which overrides the stack's default setting.</p> </note>",
-        }),
-    ).exactOptional(),
+    SourceStackId: StringSchema.openapi({ description: 'The source stack ID.' }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The cloned stack name.' }),
+    Region: StringSchema.exactOptional().openapi({
+      description:
+        'The cloned stack AWS region, such as "ap-northeast-2". For more information about AWS regions, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
+    }),
+    VpcId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the VPC that the cloned stack is to be launched into. It must be in the specified region. All instances are launched into this VPC, and you cannot change the ID later.</p> <ul> <li> <p>If your account supports EC2 Classic, the default value is no VPC.</p> </li> <li> <p>If your account does not support EC2 Classic, the default value is the default VPC for the specified region.</p> </li> </ul> <p>If the VPC ID corresponds to a default VPC and you have specified either the <code>DefaultAvailabilityZone</code> or the <code>DefaultSubnetId</code> parameter only, AWS OpsWorks Stacks infers the value of the other parameter. If you specify neither parameter, AWS OpsWorks Stacks sets these parameters to the first valid Availability Zone for the specified region and the corresponding default VPC subnet ID, respectively. </p> <p>If you specify a nondefault VPC ID, note the following:</p> <ul> <li> <p>It must belong to a VPC in your account that is in the specified region.</p> </li> <li> <p>You must specify a value for <code>DefaultSubnetId</code>.</p> </li> </ul> <p>For more information about how to use AWS OpsWorks Stacks with a VPC, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-vpc.html">Running a Stack in a VPC</a>. For more information about default VPC and EC2 Classic, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-supported-platforms.html">Supported Platforms</a>. </p>',
+    }),
+    Attributes: StackAttributesSchema.exactOptional().openapi({
+      description:
+        'A list of stack attributes and values as key/value pairs to be added to the cloned stack.',
+    }),
+    ServiceRoleArn: StringSchema.openapi({
+      description:
+        '<p>The stack AWS Identity and Access Management (IAM) role, which allows AWS OpsWorks Stacks to work with AWS resources on your behalf. You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. If you create a stack by using the AWS OpsWorks Stacks console, it creates the role for you. You can obtain an existing stack\'s IAM ARN programmatically by calling <a>DescribePermissions</a>. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.</p> <note> <p>You must set this parameter to a valid service role ARN or the action will fail; there is no default value. You can specify the source stack\'s service role ARN, if you prefer, but you must do so explicitly.</p> </note>',
+    }),
+    DefaultInstanceProfileArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an IAM profile that is the default profile for all of the stack\'s EC2 instances. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
+    }),
+    DefaultOs: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The stack\'s operating system, which must be set to one of the following.</p> <ul> <li> <p>A supported Linux operating system: An Amazon Linux version, such as <code>Amazon Linux 2018.03</code>, <code>Amazon Linux 2017.09</code>, <code>Amazon Linux 2017.03</code>, <code>Amazon Linux 2016.09</code>, <code>Amazon Linux 2016.03</code>, <code>Amazon Linux 2015.09</code>, or <code>Amazon Linux 2015.03</code>.</p> </li> <li> <p>A supported Ubuntu operating system, such as <code>Ubuntu 16.04 LTS</code>, <code>Ubuntu 14.04 LTS</code>, or <code>Ubuntu 12.04 LTS</code>.</p> </li> <li> <p> <code>CentOS Linux 7</code> </p> </li> <li> <p> <code>Red Hat Enterprise Linux 7</code> </p> </li> <li> <p> <code>Microsoft Windows Server 2012 R2 Base</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Express</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Standard</code>, or <code>Microsoft Windows Server 2012 R2 with SQL Server Web</code>.</p> </li> <li> <p>A custom AMI: <code>Custom</code>. You specify the custom AMI you want to use when you create instances. For more information about how to use custom AMIs with OpsWorks, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html">Using Custom AMIs</a>.</p> </li> </ul> <p>The default option is the parent stack\'s operating system. For more information about supported operating systems, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html">AWS OpsWorks Stacks Operating Systems</a>.</p> <note> <p>You can specify a different Linux operating system for the cloned stack, but you cannot change from Linux to Windows or Windows to Linux.</p> </note>',
+    }),
+    HostnameTheme: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The stack's host name theme, with spaces are replaced by underscores. The theme is used to generate host names for the stack's instances. By default, <code>HostnameTheme</code> is set to <code>Layer_Dependent</code>, which creates host names by appending integers to the layer's short name. The other themes are:</p> <ul> <li> <p> <code>Baked_Goods</code> </p> </li> <li> <p> <code>Clouds</code> </p> </li> <li> <p> <code>Europe_Cities</code> </p> </li> <li> <p> <code>Fruits</code> </p> </li> <li> <p> <code>Greek_Deities_and_Titans</code> </p> </li> <li> <p> <code>Legendary_creatures_from_Japan</code> </p> </li> <li> <p> <code>Planets_and_Moons</code> </p> </li> <li> <p> <code>Roman_Deities</code> </p> </li> <li> <p> <code>Scottish_Islands</code> </p> </li> <li> <p> <code>US_Cities</code> </p> </li> <li> <p> <code>Wild_Cats</code> </p> </li> </ul> <p>To obtain a generated host name, call <code>GetHostNameSuggestion</code>, which returns a host name based on the current theme.</p>",
+    }),
+    DefaultAvailabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        'The cloned stack\'s default Availability Zone, which must be in the specified region. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>. If you also specify a value for <code>DefaultSubnetId</code>, the subnet must be in the same zone. For more information, see the <code>VpcId</code> parameter description. ',
+    }),
+    DefaultSubnetId: StringSchema.exactOptional().openapi({
+      description:
+        "The stack's default VPC subnet ID. This parameter is required if you specify a value for the <code>VpcId</code> parameter. All instances are launched into this subnet unless you specify otherwise when you create the instance. If you also specify a value for <code>DefaultAvailabilityZone</code>, the subnet must be in that zone. For information on default values and when this parameter is required, see the <code>VpcId</code> parameter description. ",
+    }),
+    CustomJson: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values. The string should be in the following format:</p> <p> <code>"{\\"key1\\": \\"value1\\", \\"key2\\": \\"value2\\",...}"</code> </p> <p>For more information about custom JSON, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html">Use Custom JSON to Modify the Stack Configuration Attributes</a> </p>',
+    }),
+    ConfigurationManager: StackConfigurationManagerSchema.exactOptional().openapi({
+      description:
+        'The configuration manager. When you clone a stack we recommend that you use the configuration manager to specify the Chef version: 12, 11.10, or 11.4 for Linux stacks, or 12.2 for Windows stacks. The default value for Linux stacks is currently 12.',
+    }),
+    ChefConfiguration: ChefConfigurationSchema.exactOptional().openapi({
+      description:
+        'A <code>ChefConfiguration</code> object that specifies whether to enable Berkshelf and the Berkshelf version on Chef 11.10 stacks. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html">Create a New Stack</a>.',
+    }),
+    UseCustomCookbooks: BooleanSchema.exactOptional().openapi({
+      description: 'Whether to use custom cookbooks.',
+    }),
+    UseOpsworksSecurityGroups: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to associate the AWS OpsWorks Stacks built-in security groups with the stack\'s layers.</p> <p>AWS OpsWorks Stacks provides a standard set of built-in security groups, one for each layer, which are associated with layers by default. With <code>UseOpsworksSecurityGroups</code> you can instead provide your own custom security groups. <code>UseOpsworksSecurityGroups</code> has the following settings: </p> <ul> <li> <p>True - AWS OpsWorks Stacks automatically associates the appropriate built-in security group with each layer (default setting). You can associate additional security groups with a layer after you create it but you cannot delete the built-in security group.</p> </li> <li> <p>False - AWS OpsWorks Stacks does not associate built-in security groups with layers. You must create appropriate Amazon Elastic Compute Cloud (Amazon EC2) security groups and associate a security group with each layer that you create. However, you can still manually associate a built-in security group with a layer on creation; custom security groups are required only for those layers that need custom settings.</p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html">Create a New Stack</a>.</p>',
+    }),
+    CustomCookbooksSource: SourceSchema.exactOptional().openapi({
+      description:
+        'Contains the information required to retrieve an app or cookbook from a repository. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html">Adding Apps</a> or <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook.html">Cookbooks and Recipes</a>.',
+    }),
+    DefaultSshKeyName: StringSchema.exactOptional().openapi({
+      description:
+        'A default Amazon EC2 key pair name. The default value is none. If you specify a key pair name, AWS OpsWorks installs the public key on the instance and you can use the private key with an SSH client to log in to the instance. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-ssh.html"> Using SSH to Communicate with an Instance</a> and <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/security-ssh-access.html"> Managing SSH Access</a>. You can override this setting by specifying a different key pair, or no key pair, when you <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-add.html"> create an instance</a>. ',
+    }),
+    ClonePermissions: BooleanSchema.exactOptional().openapi({
+      description: "Whether to clone the source stack's permissions.",
+    }),
+    CloneAppIds: StringsSchema.exactOptional().openapi({
+      description: 'A list of source stack app IDs to be included in the cloned stack.',
+    }),
+    DefaultRootDeviceType: RootDeviceTypeSchema.exactOptional().openapi({
+      description:
+        'The default root device type. This value is used by default for all instances in the cloned stack, but you can override it when you create an instance. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device">Storage for the Root Device</a>.',
+    }),
+    AgentVersion: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The default AWS OpsWorks Stacks agent version. You have the following options:</p> <ul> <li> <p>Auto-update - Set this parameter to <code>LATEST</code>. AWS OpsWorks Stacks automatically installs new agent versions on the stack's instances as soon as they are available.</p> </li> <li> <p>Fixed version - Set this parameter to your preferred agent version. To update the agent version, you must edit the stack configuration and specify a new version. AWS OpsWorks Stacks then automatically installs that version on the stack's instances.</p> </li> </ul> <p>The default setting is <code>LATEST</code>. To specify an agent version, you must use the complete version number, not the abbreviated number shown on the console. For a list of available agent version numbers, call <a>DescribeAgentVersions</a>. AgentVersion cannot be set to Chef 12.2.</p> <note> <p>You can also specify an agent version when you create or update an instance, which overrides the stack's default setting.</p> </note>",
+    }),
   })
   .openapi({ required: ['SourceStackId', 'ServiceRoleArn'], title: 'CloneStackRequest' })
   .openapi('CloneStackRequest')
 
 const CreateAppResultSchema = z
-  .object({
-    AppId: StringSchema.and(z.any().openapi({ description: 'The app ID.' })).exactOptional(),
-  })
+  .object({ AppId: StringSchema.exactOptional().openapi({ description: 'The app ID.' }) })
   .openapi({
     description: 'Contains the response to a <code>CreateApp</code> request.',
     required: [],
@@ -336,20 +220,12 @@ const CreateAppResultSchema = z
 
 const DataSourceSchema = z
   .object({
-    Type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The data source's type, <code>AutoSelectOpsworksMysqlInstance</code>, <code>OpsworksMysqlInstance</code>, <code>RdsDbInstance</code>, or <code>None</code>.",
-        }),
-    ).exactOptional(),
-    Arn: StringSchema.and(
-      z.any().openapi({ description: "The data source's ARN." }),
-    ).exactOptional(),
-    DatabaseName: StringSchema.and(
-      z.any().openapi({ description: 'The database name.' }),
-    ).exactOptional(),
+    Type: StringSchema.exactOptional().openapi({
+      description:
+        "The data source's type, <code>AutoSelectOpsworksMysqlInstance</code>, <code>OpsworksMysqlInstance</code>, <code>RdsDbInstance</code>, or <code>None</code>.",
+    }),
+    Arn: StringSchema.exactOptional().openapi({ description: "The data source's ARN." }),
+    DatabaseName: StringSchema.exactOptional().openapi({ description: 'The database name.' }),
   })
   .openapi({ description: "Describes an app's data source.", required: [] })
   .openapi('DataSource')
@@ -362,24 +238,16 @@ const AppTypeSchema = z
 
 const SslConfigurationSchema = z
   .object({
-    Certificate: StringSchema.and(
-      z.any().openapi({ description: "The contents of the certificate's domain.crt file." }),
-    ),
-    PrivateKey: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The private key; the contents of the certificate's domain.kex file.",
-        }),
-    ),
-    Chain: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. Can be used to specify an intermediate certificate authority key or client authentication.',
-        }),
-    ).exactOptional(),
+    Certificate: StringSchema.openapi({
+      description: "The contents of the certificate's domain.crt file.",
+    }),
+    PrivateKey: StringSchema.openapi({
+      description: "The private key; the contents of the certificate's domain.kex file.",
+    }),
+    Chain: StringSchema.exactOptional().openapi({
+      description:
+        'Optional. Can be used to specify an intermediate certificate authority key or client authentication.',
+    }),
   })
   .openapi({
     required: ['Certificate', 'PrivateKey'],
@@ -391,30 +259,18 @@ const AppAttributesSchema = z.record(z.string(), StringSchema).openapi('AppAttri
 
 const EnvironmentVariableSchema = z
   .object({
-    Key: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "(Required) The environment variable's name, which can consist of up to 64 characters and must be specified. The name can contain upper- and lowercase letters, numbers, and underscores (_), but it must start with a letter or underscore.",
-        }),
-    ),
-    Value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "(Optional) The environment variable's value, which can be left empty. If you specify a value, it can contain up to 256 characters, which must all be printable.",
-        }),
-    ),
-    Secure: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "(Optional) Whether the variable's value will be returned by the <a>DescribeApps</a> action. To conceal an environment variable's value, set <code>Secure</code> to <code>true</code>. <code>DescribeApps</code> then returns <code>*****FILTERED*****</code> instead of the actual value. The default value for <code>Secure</code> is <code>false</code>. ",
-        }),
-    ).exactOptional(),
+    Key: StringSchema.openapi({
+      description:
+        "(Required) The environment variable's name, which can consist of up to 64 characters and must be specified. The name can contain upper- and lowercase letters, numbers, and underscores (_), but it must start with a letter or underscore.",
+    }),
+    Value: StringSchema.openapi({
+      description:
+        "(Optional) The environment variable's value, which can be left empty. If you specify a value, it can contain up to 256 characters, which must all be printable.",
+    }),
+    Secure: BooleanSchema.exactOptional().openapi({
+      description:
+        "(Optional) Whether the variable's value will be returned by the <a>DescribeApps</a> action. To conceal an environment variable's value, set <code>Secure</code> to <code>true</code>. <code>DescribeApps</code> then returns <code>*****FILTERED*****</code> instead of the actual value. The default value for <code>Secure</code> is <code>false</code>. ",
+    }),
   })
   .openapi({ required: ['Key', 'Value'], description: "Represents an app's environment variable." })
   .openapi('EnvironmentVariable')
@@ -425,80 +281,47 @@ const EnvironmentVariablesSchema = z
 
 const CreateAppRequestSchema = z
   .object({
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })),
-    Shortname: StringSchema.and(
-      z.any().openapi({ description: "The app's short name." }),
-    ).exactOptional(),
-    Name: StringSchema.and(z.any().openapi({ description: 'The app name.' })),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'A description of the app.' }),
-    ).exactOptional(),
-    DataSources: DataSourcesSchema.and(
-      z.any().openapi({ description: "The app's data source." }),
-    ).exactOptional(),
-    Type: AppTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The app type. Each supported type is associated with a particular layer. For example, PHP applications are associated with a PHP layer. AWS OpsWorks Stacks deploys an application to those instances that are members of the corresponding layer. If your app isn't one of the standard types, or you prefer to implement your own Deploy recipes, specify <code>other</code>.",
-        }),
-    ),
-    AppSource: SourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A <code>Source</code> object that specifies the app repository.',
-        }),
-    ).exactOptional(),
-    Domains: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The app virtual host settings, with multiple domains separated by commas. For example: <code>'www.example.com, example.com'</code> ",
-        }),
-    ).exactOptional(),
-    EnableSsl: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether to enable SSL for the app.' }),
-    ).exactOptional(),
-    SslConfiguration: SslConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An <code>SslConfiguration</code> object with the SSL configuration.',
-        }),
-    ).exactOptional(),
-    Attributes: AppAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more user-defined key/value pairs to be added to the stack attributes.',
-        }),
-    ).exactOptional(),
-    Environment: EnvironmentVariablesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of <code>EnvironmentVariable</code> objects that specify environment variables to be associated with the app. After you deploy the app, these variables are defined on the associated app server instance. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html#workingapps-creating-environment"> Environment Variables</a>.</p> <p>There is no specific limit on the number of environment variables. However, the size of the associated data structure - which includes the variables\' names, values, and protected flag values - cannot exceed 20 KB. This limit should accommodate most if not all use cases. Exceeding it will cause an exception with the message, "Environment: is too large (maximum is 20KB)."</p> <note> <p>If you have specified one or more environment variables, you cannot modify the stack\'s Chef version.</p> </note>',
-        }),
-    ).exactOptional(),
+    StackId: StringSchema.openapi({ description: 'The stack ID.' }),
+    Shortname: StringSchema.exactOptional().openapi({ description: "The app's short name." }),
+    Name: StringSchema.openapi({ description: 'The app name.' }),
+    Description: StringSchema.exactOptional().openapi({ description: 'A description of the app.' }),
+    DataSources: DataSourcesSchema.exactOptional().openapi({
+      description: "The app's data source.",
+    }),
+    Type: AppTypeSchema.openapi({
+      description:
+        "The app type. Each supported type is associated with a particular layer. For example, PHP applications are associated with a PHP layer. AWS OpsWorks Stacks deploys an application to those instances that are members of the corresponding layer. If your app isn't one of the standard types, or you prefer to implement your own Deploy recipes, specify <code>other</code>.",
+    }),
+    AppSource: SourceSchema.exactOptional().openapi({
+      description: 'A <code>Source</code> object that specifies the app repository.',
+    }),
+    Domains: StringsSchema.exactOptional().openapi({
+      description:
+        "The app virtual host settings, with multiple domains separated by commas. For example: <code>'www.example.com, example.com'</code> ",
+    }),
+    EnableSsl: BooleanSchema.exactOptional().openapi({
+      description: 'Whether to enable SSL for the app.',
+    }),
+    SslConfiguration: SslConfigurationSchema.exactOptional().openapi({
+      description: 'An <code>SslConfiguration</code> object with the SSL configuration.',
+    }),
+    Attributes: AppAttributesSchema.exactOptional().openapi({
+      description: 'One or more user-defined key/value pairs to be added to the stack attributes.',
+    }),
+    Environment: EnvironmentVariablesSchema.exactOptional().openapi({
+      description:
+        '<p>An array of <code>EnvironmentVariable</code> objects that specify environment variables to be associated with the app. After you deploy the app, these variables are defined on the associated app server instance. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html#workingapps-creating-environment"> Environment Variables</a>.</p> <p>There is no specific limit on the number of environment variables. However, the size of the associated data structure - which includes the variables\' names, values, and protected flag values - cannot exceed 20 KB. This limit should accommodate most if not all use cases. Exceeding it will cause an exception with the message, "Environment: is too large (maximum is 20KB)."</p> <note> <p>If you have specified one or more environment variables, you cannot modify the stack\'s Chef version.</p> </note>',
+    }),
   })
   .openapi({ required: ['StackId', 'Name', 'Type'], title: 'CreateAppRequest' })
   .openapi('CreateAppRequest')
 
 const CreateDeploymentResultSchema = z
   .object({
-    DeploymentId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The deployment ID, which can be used with other requests to identify the deployment.',
-        }),
-    ).exactOptional(),
+    DeploymentId: StringSchema.exactOptional().openapi({
+      description:
+        'The deployment ID, which can be used with other requests to identify the deployment.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>CreateDeployment</code> request.',
@@ -529,72 +352,46 @@ const DeploymentCommandArgsSchema = z
 
 const DeploymentCommandSchema = z
   .object({
-    Name: DeploymentCommandNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the operation. You can specify only one command.</p> <p>For stacks, the following commands are available:</p> <ul> <li> <p> <code>execute_recipes</code>: Execute one or more recipes. To specify the recipes, set an <code>Args</code> parameter named <code>recipes</code> to the list of recipes to be executed. For example, to execute <code>phpapp::appsetup</code>, set <code>Args</code> to <code>{"recipes":["phpapp::appsetup"]}</code>.</p> </li> <li> <p> <code>install_dependencies</code>: Install the stack\'s dependencies.</p> </li> <li> <p> <code>update_custom_cookbooks</code>: Update the stack\'s custom cookbooks.</p> </li> <li> <p> <code>update_dependencies</code>: Update the stack\'s dependencies.</p> </li> </ul> <note> <p>The update_dependencies and install_dependencies commands are supported only for Linux instances. You can run the commands successfully on Windows instances, but they do nothing.</p> </note> <p>For apps, the following commands are available:</p> <ul> <li> <p> <code>deploy</code>: Deploy an app. Ruby on Rails apps have an optional <code>Args</code> parameter named <code>migrate</code>. Set <code>Args</code> to {"migrate":["true"]} to migrate the database. The default setting is {"migrate":["false"]}.</p> </li> <li> <p> <code>rollback</code> Roll the app back to the previous version. When you update an app, AWS OpsWorks Stacks stores the previous version, up to a maximum of five versions. You can use this command to roll an app back as many as four versions.</p> </li> <li> <p> <code>start</code>: Start the app\'s web or application server.</p> </li> <li> <p> <code>stop</code>: Stop the app\'s web or application server.</p> </li> <li> <p> <code>restart</code>: Restart the app\'s web or application server.</p> </li> <li> <p> <code>undeploy</code>: Undeploy the app.</p> </li> </ul>',
-        }),
-    ),
-    Args: DeploymentCommandArgsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The arguments of those commands that take arguments. It should be set to a JSON object with the following format:</p> <p> <code>{"arg_name1" : ["value1", "value2", ...], "arg_name2" : ["value1", "value2", ...], ...}</code> </p> <p>The <code>update_dependencies</code> command takes two arguments:</p> <ul> <li> <p> <code>upgrade_os_to</code> - Specifies the desired Amazon Linux version for instances whose OS you want to upgrade, such as <code>Amazon Linux 2016.09</code>. You must also set the <code>allow_reboot</code> argument to true.</p> </li> <li> <p> <code>allow_reboot</code> - Specifies whether to allow AWS OpsWorks Stacks to reboot the instances if necessary, after installing the updates. This argument can be set to either <code>true</code> or <code>false</code>. The default value is <code>false</code>.</p> </li> </ul> <p>For example, to upgrade an instance to Amazon Linux 2016.09, set <code>Args</code> to the following.</p> <p> <code> { "upgrade_os_to":["Amazon Linux 2016.09"], "allow_reboot":["true"] } </code> </p>',
-        }),
-    ).exactOptional(),
+    Name: DeploymentCommandNameSchema.openapi({
+      description:
+        '<p>Specifies the operation. You can specify only one command.</p> <p>For stacks, the following commands are available:</p> <ul> <li> <p> <code>execute_recipes</code>: Execute one or more recipes. To specify the recipes, set an <code>Args</code> parameter named <code>recipes</code> to the list of recipes to be executed. For example, to execute <code>phpapp::appsetup</code>, set <code>Args</code> to <code>{"recipes":["phpapp::appsetup"]}</code>.</p> </li> <li> <p> <code>install_dependencies</code>: Install the stack\'s dependencies.</p> </li> <li> <p> <code>update_custom_cookbooks</code>: Update the stack\'s custom cookbooks.</p> </li> <li> <p> <code>update_dependencies</code>: Update the stack\'s dependencies.</p> </li> </ul> <note> <p>The update_dependencies and install_dependencies commands are supported only for Linux instances. You can run the commands successfully on Windows instances, but they do nothing.</p> </note> <p>For apps, the following commands are available:</p> <ul> <li> <p> <code>deploy</code>: Deploy an app. Ruby on Rails apps have an optional <code>Args</code> parameter named <code>migrate</code>. Set <code>Args</code> to {"migrate":["true"]} to migrate the database. The default setting is {"migrate":["false"]}.</p> </li> <li> <p> <code>rollback</code> Roll the app back to the previous version. When you update an app, AWS OpsWorks Stacks stores the previous version, up to a maximum of five versions. You can use this command to roll an app back as many as four versions.</p> </li> <li> <p> <code>start</code>: Start the app\'s web or application server.</p> </li> <li> <p> <code>stop</code>: Stop the app\'s web or application server.</p> </li> <li> <p> <code>restart</code>: Restart the app\'s web or application server.</p> </li> <li> <p> <code>undeploy</code>: Undeploy the app.</p> </li> </ul>',
+    }),
+    Args: DeploymentCommandArgsSchema.exactOptional().openapi({
+      description:
+        '<p>The arguments of those commands that take arguments. It should be set to a JSON object with the following format:</p> <p> <code>{"arg_name1" : ["value1", "value2", ...], "arg_name2" : ["value1", "value2", ...], ...}</code> </p> <p>The <code>update_dependencies</code> command takes two arguments:</p> <ul> <li> <p> <code>upgrade_os_to</code> - Specifies the desired Amazon Linux version for instances whose OS you want to upgrade, such as <code>Amazon Linux 2016.09</code>. You must also set the <code>allow_reboot</code> argument to true.</p> </li> <li> <p> <code>allow_reboot</code> - Specifies whether to allow AWS OpsWorks Stacks to reboot the instances if necessary, after installing the updates. This argument can be set to either <code>true</code> or <code>false</code>. The default value is <code>false</code>.</p> </li> </ul> <p>For example, to upgrade an instance to Amazon Linux 2016.09, set <code>Args</code> to the following.</p> <p> <code> { "upgrade_os_to":["Amazon Linux 2016.09"], "allow_reboot":["true"] } </code> </p>',
+    }),
   })
   .openapi({ required: ['Name'], description: 'Used to specify a stack or deployment command.' })
   .openapi('DeploymentCommand')
 
 const CreateDeploymentRequestSchema = z
   .object({
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })),
-    AppId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The app ID. This parameter is required for app deployments, but not for other deployment commands.',
-        }),
-    ).exactOptional(),
-    InstanceIds: StringsSchema.and(
-      z.any().openapi({ description: 'The instance IDs for the deployment targets.' }),
-    ).exactOptional(),
-    LayerIds: StringsSchema.and(
-      z.any().openapi({ description: 'The layer IDs for the deployment targets.' }),
-    ).exactOptional(),
-    Command: DeploymentCommandSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>DeploymentCommand</code> object that specifies the deployment command and any associated arguments.',
-        }),
-    ),
-    Comment: StringSchema.and(
-      z.any().openapi({ description: 'A user-defined comment.' }),
-    ).exactOptional(),
-    CustomJson: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A string that contains user-defined, custom JSON. You can use this parameter to override some corresponding default stack configuration JSON values. The string should be in the following format:</p> <p> <code>"{\\"key1\\": \\"value1\\", \\"key2\\": \\"value2\\",...}"</code> </p> <p>For more information about custom JSON, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html">Use Custom JSON to Modify the Stack Configuration Attributes</a> and <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-json-override.html">Overriding Attributes With Custom JSON</a>.</p>',
-        }),
-    ).exactOptional(),
+    StackId: StringSchema.openapi({ description: 'The stack ID.' }),
+    AppId: StringSchema.exactOptional().openapi({
+      description:
+        'The app ID. This parameter is required for app deployments, but not for other deployment commands.',
+    }),
+    InstanceIds: StringsSchema.exactOptional().openapi({
+      description: 'The instance IDs for the deployment targets.',
+    }),
+    LayerIds: StringsSchema.exactOptional().openapi({
+      description: 'The layer IDs for the deployment targets.',
+    }),
+    Command: DeploymentCommandSchema.openapi({
+      description:
+        'A <code>DeploymentCommand</code> object that specifies the deployment command and any associated arguments.',
+    }),
+    Comment: StringSchema.exactOptional().openapi({ description: 'A user-defined comment.' }),
+    CustomJson: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A string that contains user-defined, custom JSON. You can use this parameter to override some corresponding default stack configuration JSON values. The string should be in the following format:</p> <p> <code>"{\\"key1\\": \\"value1\\", \\"key2\\": \\"value2\\",...}"</code> </p> <p>For more information about custom JSON, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html">Use Custom JSON to Modify the Stack Configuration Attributes</a> and <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-json-override.html">Overriding Attributes With Custom JSON</a>.</p>',
+    }),
   })
   .openapi({ required: ['StackId', 'Command'], title: 'CreateDeploymentRequest' })
   .openapi('CreateDeploymentRequest')
 
 const CreateInstanceResultSchema = z
-  .object({
-    InstanceId: StringSchema.and(
-      z.any().openapi({ description: 'The instance ID.' }),
-    ).exactOptional(),
-  })
+  .object({ InstanceId: StringSchema.exactOptional().openapi({ description: 'The instance ID.' }) })
   .openapi({
     description: 'Contains the response to a <code>CreateInstance</code> request.',
     required: [],
@@ -611,36 +408,22 @@ const VolumeTypeSchema = z.enum(['gp2', 'io1', 'standard']).openapi('VolumeType'
 
 const EbsBlockDeviceSchema = z
   .object({
-    SnapshotId: StringSchema.and(
-      z.any().openapi({ description: 'The snapshot ID.' }),
-    ).exactOptional(),
-    Iops: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of I/O operations per second (IOPS) that the volume supports. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_EbsBlockDevice.html">EbsBlockDevice</a>.',
-        }),
-    ).exactOptional(),
-    VolumeSize: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The volume size, in GiB. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_EbsBlockDevice.html">EbsBlockDevice</a>.',
-        }),
-    ).exactOptional(),
-    VolumeType: VolumeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The volume type. <code>gp2</code> for General Purpose (SSD) volumes, <code>io1</code> for Provisioned IOPS (SSD) volumes, <code>st1</code> for Throughput Optimized hard disk drives (HDD), <code>sc1</code> for Cold HDD,and <code>standard</code> for Magnetic volumes.</p> <p>If you specify the <code>io1</code> volume type, you must also specify a value for the <code>Iops</code> attribute. The maximum ratio of provisioned IOPS to requested volume size (in GiB) is 50:1. AWS uses the default volume size (in GiB) specified in the AMI attributes to set IOPS to 50 x (volume size).</p>',
-        }),
-    ).exactOptional(),
-    DeleteOnTermination: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the volume is deleted on instance termination.' }),
-    ).exactOptional(),
+    SnapshotId: StringSchema.exactOptional().openapi({ description: 'The snapshot ID.' }),
+    Iops: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of I/O operations per second (IOPS) that the volume supports. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_EbsBlockDevice.html">EbsBlockDevice</a>.',
+    }),
+    VolumeSize: IntegerSchema.exactOptional().openapi({
+      description:
+        'The volume size, in GiB. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_EbsBlockDevice.html">EbsBlockDevice</a>.',
+    }),
+    VolumeType: VolumeTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The volume type. <code>gp2</code> for General Purpose (SSD) volumes, <code>io1</code> for Provisioned IOPS (SSD) volumes, <code>st1</code> for Throughput Optimized hard disk drives (HDD), <code>sc1</code> for Cold HDD,and <code>standard</code> for Magnetic volumes.</p> <p>If you specify the <code>io1</code> volume type, you must also specify a value for the <code>Iops</code> attribute. The maximum ratio of provisioned IOPS to requested volume size (in GiB) is 50:1. AWS uses the default volume size (in GiB) specified in the AMI attributes to set IOPS to 50 x (volume size).</p>',
+    }),
+    DeleteOnTermination: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the volume is deleted on instance termination.',
+    }),
   })
   .openapi({
     description:
@@ -651,38 +434,21 @@ const EbsBlockDeviceSchema = z
 
 const BlockDeviceMappingSchema = z
   .object({
-    DeviceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The device name that is exposed to the instance, such as <code>/dev/sdh</code>. For the root device, you can use the explicit device name or you can set this parameter to <code>ROOT_DEVICE</code> and AWS OpsWorks Stacks will provide the correct device name.',
-        }),
-    ).exactOptional(),
-    NoDevice: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Suppresses the specified device included in the AMI's block device mapping.",
-        }),
-    ).exactOptional(),
-    VirtualName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The virtual device name. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_BlockDeviceMapping.html">BlockDeviceMapping</a>.',
-        }),
-    ).exactOptional(),
-    Ebs: EbsBlockDeviceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>EBSBlockDevice</code> that defines how to configure an Amazon EBS volume when the instance is launched.',
-        }),
-    ).exactOptional(),
+    DeviceName: StringSchema.exactOptional().openapi({
+      description:
+        'The device name that is exposed to the instance, such as <code>/dev/sdh</code>. For the root device, you can use the explicit device name or you can set this parameter to <code>ROOT_DEVICE</code> and AWS OpsWorks Stacks will provide the correct device name.',
+    }),
+    NoDevice: StringSchema.exactOptional().openapi({
+      description: "Suppresses the specified device included in the AMI's block device mapping.",
+    }),
+    VirtualName: StringSchema.exactOptional().openapi({
+      description:
+        'The virtual device name. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_BlockDeviceMapping.html">BlockDeviceMapping</a>.',
+    }),
+    Ebs: EbsBlockDeviceSchema.exactOptional().openapi({
+      description:
+        'An <code>EBSBlockDevice</code> that defines how to configure an Amazon EBS volume when the instance is launched.',
+    }),
   })
   .openapi({
     description:
@@ -695,131 +461,75 @@ const BlockDeviceMappingsSchema = z.array(BlockDeviceMappingSchema).openapi('Blo
 
 const CreateInstanceRequestSchema = z
   .object({
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })),
-    LayerIds: StringsSchema.and(
-      z.any().openapi({ description: "An array that contains the instance's layer IDs." }),
-    ),
-    InstanceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance type, such as <code>t2.micro</code>. For a list of supported instance types, open the stack in the console, choose <b>Instances</b>, and choose <b>+ Instance</b>. The <b>Size</b> list contains the currently supported types. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html">Instance Families and Types</a>. The parameter values that you use to specify the various types are in the <b>API Name</b> column of the <b>Available Instance Types</b> table.',
-        }),
-    ),
-    AutoScalingType: AutoScalingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For load-based or time-based instances, the type. Windows stacks can use only time-based instances.',
-        }),
-    ).exactOptional(),
-    Hostname: StringSchema.and(
-      z.any().openapi({ description: 'The instance host name.' }),
-    ).exactOptional(),
-    Os: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The instance\'s operating system, which must be set to one of the following.</p> <ul> <li> <p>A supported Linux operating system: An Amazon Linux version, such as <code>Amazon Linux 2018.03</code>, <code>Amazon Linux 2017.09</code>, <code>Amazon Linux 2017.03</code>, <code>Amazon Linux 2016.09</code>, <code>Amazon Linux 2016.03</code>, <code>Amazon Linux 2015.09</code>, or <code>Amazon Linux 2015.03</code>.</p> </li> <li> <p>A supported Ubuntu operating system, such as <code>Ubuntu 16.04 LTS</code>, <code>Ubuntu 14.04 LTS</code>, or <code>Ubuntu 12.04 LTS</code>.</p> </li> <li> <p> <code>CentOS Linux 7</code> </p> </li> <li> <p> <code>Red Hat Enterprise Linux 7</code> </p> </li> <li> <p>A supported Windows operating system, such as <code>Microsoft Windows Server 2012 R2 Base</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Express</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Standard</code>, or <code>Microsoft Windows Server 2012 R2 with SQL Server Web</code>.</p> </li> <li> <p>A custom AMI: <code>Custom</code>.</p> </li> </ul> <p>For more information about the supported operating systems, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html">AWS OpsWorks Stacks Operating Systems</a>.</p> <p>The default option is the current Amazon Linux version. If you set this parameter to <code>Custom</code>, you must use the <a>CreateInstance</a> action\'s AmiId parameter to specify the custom AMI that you want to use. Block device mappings are not supported if the value is <code>Custom</code>. For more information about supported operating systems, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html">Operating Systems</a>For more information about how to use custom AMIs with AWS OpsWorks Stacks, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html">Using Custom AMIs</a>.</p>',
-        }),
-    ).exactOptional(),
-    AmiId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A custom AMI ID to be used to create the instance. The AMI should be based on one of the supported operating systems. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html">Using Custom AMIs</a>.</p> <note> <p>If you specify a custom AMI, you must set <code>Os</code> to <code>Custom</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    SshKeyName: StringSchema.and(
-      z.any().openapi({ description: "The instance's Amazon EC2 key-pair name." }),
-    ).exactOptional(),
-    AvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance Availability Zone. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
-        }),
-    ).exactOptional(),
-    VirtualizationType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The instance's virtualization type, <code>paravirtual</code> or <code>hvm</code>.",
-        }),
-    ).exactOptional(),
-    SubnetId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the instance's subnet. If the stack is running in a VPC, you can use this parameter to override the stack's default subnet ID value and direct AWS OpsWorks Stacks to launch the instance in a different subnet.",
-        }),
-    ).exactOptional(),
-    Architecture: ArchitectureSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance architecture. The default option is <code>x86_64</code>. Instance types do not necessarily support both architectures. For a list of the architectures that are supported by the different instance types, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html">Instance Families and Types</a>.',
-        }),
-    ).exactOptional(),
-    RootDeviceType: RootDeviceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance root device type. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device">Storage for the Root Device</a>.',
-        }),
-    ).exactOptional(),
-    BlockDeviceMappings: BlockDeviceMappingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>BlockDeviceMapping</code> objects that specify the instance\'s block devices. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html">Block Device Mapping</a>. Note that block device mappings are not supported for custom AMIs.',
-        }),
-    ).exactOptional(),
-    InstallUpdatesOnBoot: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>. To control when updates are installed, set this value to <code>false</code>. You must then update your instances manually by using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or by manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances. </p> <note> <p>We strongly recommend using the default value of <code>true</code> to ensure that your instances have the latest security updates.</p> </note>',
-        }),
-    ).exactOptional(),
-    EbsOptimized: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether to create an Amazon EBS-optimized instance.' }),
-    ).exactOptional(),
-    AgentVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The default AWS OpsWorks Stacks agent version. You have the following options:</p> <ul> <li> <p> <code>INHERIT</code> - Use the stack's default agent version setting.</p> </li> <li> <p> <i>version_number</i> - Use the specified agent version. This value overrides the stack's default setting. To update the agent version, edit the instance configuration and specify a new version. AWS OpsWorks Stacks then automatically installs that version on the instance.</p> </li> </ul> <p>The default setting is <code>INHERIT</code>. To specify an agent version, you must use the complete version number, not the abbreviated number shown on the console. For a list of available agent version numbers, call <a>DescribeAgentVersions</a>. AgentVersion cannot be set to Chef 12.2.</p>",
-        }),
-    ).exactOptional(),
-    Tenancy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance\'s tenancy option. The default option is no tenancy, or if the instance is running in a VPC, inherit tenancy settings from the VPC. The following are valid values for this parameter: <code>dedicated</code>, <code>default</code>, or <code>host</code>. Because there are costs associated with changes in tenancy options, we recommend that you research tenancy options before choosing them for your instances. For more information about dedicated hosts, see <a href="http://aws.amazon.com/ec2/dedicated-hosts/">Dedicated Hosts Overview</a> and <a href="http://aws.amazon.com/ec2/dedicated-hosts/">Amazon EC2 Dedicated Hosts</a>. For more information about dedicated instances, see <a href="https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/dedicated-instance.html">Dedicated Instances</a> and <a href="http://aws.amazon.com/ec2/purchasing-options/dedicated-instances/">Amazon EC2 Dedicated Instances</a>.',
-        }),
-    ).exactOptional(),
+    StackId: StringSchema.openapi({ description: 'The stack ID.' }),
+    LayerIds: StringsSchema.openapi({
+      description: "An array that contains the instance's layer IDs.",
+    }),
+    InstanceType: StringSchema.openapi({
+      description:
+        'The instance type, such as <code>t2.micro</code>. For a list of supported instance types, open the stack in the console, choose <b>Instances</b>, and choose <b>+ Instance</b>. The <b>Size</b> list contains the currently supported types. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html">Instance Families and Types</a>. The parameter values that you use to specify the various types are in the <b>API Name</b> column of the <b>Available Instance Types</b> table.',
+    }),
+    AutoScalingType: AutoScalingTypeSchema.exactOptional().openapi({
+      description:
+        'For load-based or time-based instances, the type. Windows stacks can use only time-based instances.',
+    }),
+    Hostname: StringSchema.exactOptional().openapi({ description: 'The instance host name.' }),
+    Os: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The instance\'s operating system, which must be set to one of the following.</p> <ul> <li> <p>A supported Linux operating system: An Amazon Linux version, such as <code>Amazon Linux 2018.03</code>, <code>Amazon Linux 2017.09</code>, <code>Amazon Linux 2017.03</code>, <code>Amazon Linux 2016.09</code>, <code>Amazon Linux 2016.03</code>, <code>Amazon Linux 2015.09</code>, or <code>Amazon Linux 2015.03</code>.</p> </li> <li> <p>A supported Ubuntu operating system, such as <code>Ubuntu 16.04 LTS</code>, <code>Ubuntu 14.04 LTS</code>, or <code>Ubuntu 12.04 LTS</code>.</p> </li> <li> <p> <code>CentOS Linux 7</code> </p> </li> <li> <p> <code>Red Hat Enterprise Linux 7</code> </p> </li> <li> <p>A supported Windows operating system, such as <code>Microsoft Windows Server 2012 R2 Base</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Express</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Standard</code>, or <code>Microsoft Windows Server 2012 R2 with SQL Server Web</code>.</p> </li> <li> <p>A custom AMI: <code>Custom</code>.</p> </li> </ul> <p>For more information about the supported operating systems, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html">AWS OpsWorks Stacks Operating Systems</a>.</p> <p>The default option is the current Amazon Linux version. If you set this parameter to <code>Custom</code>, you must use the <a>CreateInstance</a> action\'s AmiId parameter to specify the custom AMI that you want to use. Block device mappings are not supported if the value is <code>Custom</code>. For more information about supported operating systems, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html">Operating Systems</a>For more information about how to use custom AMIs with AWS OpsWorks Stacks, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html">Using Custom AMIs</a>.</p>',
+    }),
+    AmiId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A custom AMI ID to be used to create the instance. The AMI should be based on one of the supported operating systems. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html">Using Custom AMIs</a>.</p> <note> <p>If you specify a custom AMI, you must set <code>Os</code> to <code>Custom</code>.</p> </note>',
+    }),
+    SshKeyName: StringSchema.exactOptional().openapi({
+      description: "The instance's Amazon EC2 key-pair name.",
+    }),
+    AvailabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        'The instance Availability Zone. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
+    }),
+    VirtualizationType: StringSchema.exactOptional().openapi({
+      description:
+        "The instance's virtualization type, <code>paravirtual</code> or <code>hvm</code>.",
+    }),
+    SubnetId: StringSchema.exactOptional().openapi({
+      description:
+        "The ID of the instance's subnet. If the stack is running in a VPC, you can use this parameter to override the stack's default subnet ID value and direct AWS OpsWorks Stacks to launch the instance in a different subnet.",
+    }),
+    Architecture: ArchitectureSchema.exactOptional().openapi({
+      description:
+        'The instance architecture. The default option is <code>x86_64</code>. Instance types do not necessarily support both architectures. For a list of the architectures that are supported by the different instance types, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html">Instance Families and Types</a>.',
+    }),
+    RootDeviceType: RootDeviceTypeSchema.exactOptional().openapi({
+      description:
+        'The instance root device type. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device">Storage for the Root Device</a>.',
+    }),
+    BlockDeviceMappings: BlockDeviceMappingsSchema.exactOptional().openapi({
+      description:
+        'An array of <code>BlockDeviceMapping</code> objects that specify the instance\'s block devices. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html">Block Device Mapping</a>. Note that block device mappings are not supported for custom AMIs.',
+    }),
+    InstallUpdatesOnBoot: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>. To control when updates are installed, set this value to <code>false</code>. You must then update your instances manually by using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or by manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances. </p> <note> <p>We strongly recommend using the default value of <code>true</code> to ensure that your instances have the latest security updates.</p> </note>',
+    }),
+    EbsOptimized: BooleanSchema.exactOptional().openapi({
+      description: 'Whether to create an Amazon EBS-optimized instance.',
+    }),
+    AgentVersion: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The default AWS OpsWorks Stacks agent version. You have the following options:</p> <ul> <li> <p> <code>INHERIT</code> - Use the stack's default agent version setting.</p> </li> <li> <p> <i>version_number</i> - Use the specified agent version. This value overrides the stack's default setting. To update the agent version, edit the instance configuration and specify a new version. AWS OpsWorks Stacks then automatically installs that version on the instance.</p> </li> </ul> <p>The default setting is <code>INHERIT</code>. To specify an agent version, you must use the complete version number, not the abbreviated number shown on the console. For a list of available agent version numbers, call <a>DescribeAgentVersions</a>. AgentVersion cannot be set to Chef 12.2.</p>",
+    }),
+    Tenancy: StringSchema.exactOptional().openapi({
+      description:
+        'The instance\'s tenancy option. The default option is no tenancy, or if the instance is running in a VPC, inherit tenancy settings from the VPC. The following are valid values for this parameter: <code>dedicated</code>, <code>default</code>, or <code>host</code>. Because there are costs associated with changes in tenancy options, we recommend that you research tenancy options before choosing them for your instances. For more information about dedicated hosts, see <a href="http://aws.amazon.com/ec2/dedicated-hosts/">Dedicated Hosts Overview</a> and <a href="http://aws.amazon.com/ec2/dedicated-hosts/">Amazon EC2 Dedicated Hosts</a>. For more information about dedicated instances, see <a href="https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/dedicated-instance.html">Dedicated Instances</a> and <a href="http://aws.amazon.com/ec2/purchasing-options/dedicated-instances/">Amazon EC2 Dedicated Instances</a>.',
+    }),
   })
   .openapi({ required: ['StackId', 'LayerIds', 'InstanceType'], title: 'CreateInstanceRequest' })
   .openapi('CreateInstanceRequest')
 
 const CreateLayerResultSchema = z
-  .object({
-    LayerId: StringSchema.and(z.any().openapi({ description: 'The layer ID.' })).exactOptional(),
-  })
+  .object({ LayerId: StringSchema.exactOptional().openapi({ description: 'The layer ID.' }) })
   .openapi({
     description: 'Contains the response to a <code>CreateLayer</code> request.',
     required: [],
@@ -964,88 +674,48 @@ const CloudWatchLogsEncodingSchema = z
 
 const CloudWatchLogsLogStreamSchema = z
   .object({
-    LogGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the destination log group. A log group is created automatically if it doesn't already exist. Log group names can be between 1 and 512 characters long. Allowed characters include a-z, A-Z, 0-9, '_' (underscore), '-' (hyphen), '/' (forward slash), and '.' (period).",
-        }),
-    ).exactOptional(),
-    DatetimeFormat: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies how the time stamp is extracted from logs. For more information, see the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AgentReference.html">CloudWatch Logs Agent Reference</a>.',
-        }),
-    ).exactOptional(),
-    TimeZone: CloudWatchLogsTimeZoneSchema.and(
-      z.any().openapi({ description: 'Specifies the time zone of log event time stamps.' }),
-    ).exactOptional(),
-    File: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies log files that you want to push to CloudWatch Logs.</p> <p> <code>File</code> can point to a specific file or multiple files (by using wild card characters such as <code>/var/log/system.log*</code>). Only the latest file is pushed to CloudWatch Logs, based on file modification time. We recommend that you use wild card characters to specify a series of files of the same type, such as <code>access_log.2014-06-01-01</code>, <code>access_log.2014-06-01-02</code>, and so on by using a pattern like <code>access_log.*</code>. Don't use a wildcard to match multiple file types, such as <code>access_log_80</code> and <code>access_log_443</code>. To specify multiple, different file types, add another log stream entry to the configuration file, so that each log file type is stored in a different log group.</p> <p>Zipped files are not supported.</p>",
-        }),
-    ).exactOptional(),
-    FileFingerprintLines: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the range of lines for identifying a file. The valid values are one number, or two dash-delimited numbers, such as '1', '2-5'. The default value is '1', meaning the first line is used to calculate the fingerprint. Fingerprint lines are not sent to CloudWatch Logs unless all specified lines are available.",
-        }),
-    ).exactOptional(),
-    MultiLineStartPattern: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the pattern for identifying the start of a log message.',
-        }),
-    ).exactOptional(),
-    InitialPosition: CloudWatchLogsInitialPositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies where to start to read data (start_of_file or end_of_file). The default is start_of_file. This setting is only used if there is no state persisted for that log stream.',
-        }),
-    ).exactOptional(),
-    Encoding: CloudWatchLogsEncodingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the encoding of the log file so that the file can be read correctly. The default is <code>utf_8</code>. Encodings supported by Python <code>codecs.decode()</code> can be used here.',
-        }),
-    ).exactOptional(),
-    BufferDuration: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the time duration for the batching of log events. The minimum value is 5000ms and default value is 5000ms.',
-        }),
-    ).exactOptional(),
-    BatchCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the max number of log events in a batch, up to 10000. The default value is 1000.',
-        }),
-    ).exactOptional(),
-    BatchSize: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the maximum size of log events in a batch, in bytes, up to 1048576 bytes. The default value is 32768 bytes. This size is calculated as the sum of all event messages in UTF-8, plus 26 bytes for each log event.',
-        }),
-    ).exactOptional(),
+    LogGroupName: StringSchema.exactOptional().openapi({
+      description:
+        "Specifies the destination log group. A log group is created automatically if it doesn't already exist. Log group names can be between 1 and 512 characters long. Allowed characters include a-z, A-Z, 0-9, '_' (underscore), '-' (hyphen), '/' (forward slash), and '.' (period).",
+    }),
+    DatetimeFormat: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies how the time stamp is extracted from logs. For more information, see the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AgentReference.html">CloudWatch Logs Agent Reference</a>.',
+    }),
+    TimeZone: CloudWatchLogsTimeZoneSchema.exactOptional().openapi({
+      description: 'Specifies the time zone of log event time stamps.',
+    }),
+    File: StringSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies log files that you want to push to CloudWatch Logs.</p> <p> <code>File</code> can point to a specific file or multiple files (by using wild card characters such as <code>/var/log/system.log*</code>). Only the latest file is pushed to CloudWatch Logs, based on file modification time. We recommend that you use wild card characters to specify a series of files of the same type, such as <code>access_log.2014-06-01-01</code>, <code>access_log.2014-06-01-02</code>, and so on by using a pattern like <code>access_log.*</code>. Don't use a wildcard to match multiple file types, such as <code>access_log_80</code> and <code>access_log_443</code>. To specify multiple, different file types, add another log stream entry to the configuration file, so that each log file type is stored in a different log group.</p> <p>Zipped files are not supported.</p>",
+    }),
+    FileFingerprintLines: StringSchema.exactOptional().openapi({
+      description:
+        "Specifies the range of lines for identifying a file. The valid values are one number, or two dash-delimited numbers, such as '1', '2-5'. The default value is '1', meaning the first line is used to calculate the fingerprint. Fingerprint lines are not sent to CloudWatch Logs unless all specified lines are available.",
+    }),
+    MultiLineStartPattern: StringSchema.exactOptional().openapi({
+      description: 'Specifies the pattern for identifying the start of a log message.',
+    }),
+    InitialPosition: CloudWatchLogsInitialPositionSchema.exactOptional().openapi({
+      description:
+        'Specifies where to start to read data (start_of_file or end_of_file). The default is start_of_file. This setting is only used if there is no state persisted for that log stream.',
+    }),
+    Encoding: CloudWatchLogsEncodingSchema.exactOptional().openapi({
+      description:
+        'Specifies the encoding of the log file so that the file can be read correctly. The default is <code>utf_8</code>. Encodings supported by Python <code>codecs.decode()</code> can be used here.',
+    }),
+    BufferDuration: IntegerSchema.exactOptional().openapi({
+      description:
+        'Specifies the time duration for the batching of log events. The minimum value is 5000ms and default value is 5000ms.',
+    }),
+    BatchCount: IntegerSchema.exactOptional().openapi({
+      description:
+        'Specifies the max number of log events in a batch, up to 10000. The default value is 1000.',
+    }),
+    BatchSize: IntegerSchema.exactOptional().openapi({
+      description:
+        'Specifies the maximum size of log events in a batch, in bytes, up to 1048576 bytes. The default value is 32768 bytes. This size is calculated as the sum of all event messages in UTF-8, plus 26 bytes for each log event.',
+    }),
   })
   .openapi({
     description:
@@ -1061,12 +731,12 @@ const CloudWatchLogsLogStreamsSchema = z
 
 const CloudWatchLogsConfigurationSchema = z
   .object({
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether CloudWatch Logs is enabled for a layer.' }),
-    ).exactOptional(),
-    LogStreams: CloudWatchLogsLogStreamsSchema.and(
-      z.any().openapi({ description: 'A list of configuration options for CloudWatch Logs.' }),
-    ).exactOptional(),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether CloudWatch Logs is enabled for a layer.',
+    }),
+    LogStreams: CloudWatchLogsLogStreamsSchema.exactOptional().openapi({
+      description: 'A list of configuration options for CloudWatch Logs.',
+    }),
   })
   .openapi({
     description: 'Describes the Amazon CloudWatch logs configuration for a layer.',
@@ -1076,40 +746,26 @@ const CloudWatchLogsConfigurationSchema = z
 
 const VolumeConfigurationSchema = z
   .object({
-    MountPoint: StringSchema.and(
-      z.any().openapi({ description: 'The volume mount point. For example "/dev/sdh".' }),
-    ),
-    RaidLevel: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The volume <a href="http://en.wikipedia.org/wiki/Standard_RAID_levels">RAID level</a>.',
-        }),
-    ).exactOptional(),
-    NumberOfDisks: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of disks in the volume.' }),
-    ),
-    Size: IntegerSchema.and(z.any().openapi({ description: 'The volume size.' })),
-    VolumeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The volume type. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumeTypes.html"> Amazon EBS Volume Types</a>.</p> <ul> <li> <p> <code>standard</code> - Magnetic. Magnetic volumes must have a minimum size of 1 GiB and a maximum size of 1024 GiB.</p> </li> <li> <p> <code>io1</code> - Provisioned IOPS (SSD). PIOPS volumes must have a minimum size of 4 GiB and a maximum size of 16384 GiB.</p> </li> <li> <p> <code>gp2</code> - General Purpose (SSD). General purpose volumes must have a minimum size of 1 GiB and a maximum size of 16384 GiB.</p> </li> <li> <p> <code>st1</code> - Throughput Optimized hard disk drive (HDD). Throughput optimized HDD volumes must have a minimum size of 500 GiB and a maximum size of 16384 GiB.</p> </li> <li> <p> <code>sc1</code> - Cold HDD. Cold HDD volumes must have a minimum size of 500 GiB and a maximum size of 16384 GiB.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Iops: IntegerSchema.and(
-      z.any().openapi({ description: 'For PIOPS volumes, the IOPS per disk.' }),
-    ).exactOptional(),
-    Encrypted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether an Amazon EBS volume is encrypted. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html">Amazon EBS Encryption</a>.',
-        }),
-    ).exactOptional(),
+    MountPoint: StringSchema.openapi({
+      description: 'The volume mount point. For example "/dev/sdh".',
+    }),
+    RaidLevel: IntegerSchema.exactOptional().openapi({
+      description:
+        'The volume <a href="http://en.wikipedia.org/wiki/Standard_RAID_levels">RAID level</a>.',
+    }),
+    NumberOfDisks: IntegerSchema.openapi({ description: 'The number of disks in the volume.' }),
+    Size: IntegerSchema.openapi({ description: 'The volume size.' }),
+    VolumeType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The volume type. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumeTypes.html"> Amazon EBS Volume Types</a>.</p> <ul> <li> <p> <code>standard</code> - Magnetic. Magnetic volumes must have a minimum size of 1 GiB and a maximum size of 1024 GiB.</p> </li> <li> <p> <code>io1</code> - Provisioned IOPS (SSD). PIOPS volumes must have a minimum size of 4 GiB and a maximum size of 16384 GiB.</p> </li> <li> <p> <code>gp2</code> - General Purpose (SSD). General purpose volumes must have a minimum size of 1 GiB and a maximum size of 16384 GiB.</p> </li> <li> <p> <code>st1</code> - Throughput Optimized hard disk drive (HDD). Throughput optimized HDD volumes must have a minimum size of 500 GiB and a maximum size of 16384 GiB.</p> </li> <li> <p> <code>sc1</code> - Cold HDD. Cold HDD volumes must have a minimum size of 500 GiB and a maximum size of 16384 GiB.</p> </li> </ul>',
+    }),
+    Iops: IntegerSchema.exactOptional().openapi({
+      description: 'For PIOPS volumes, the IOPS per disk.',
+    }),
+    Encrypted: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether an Amazon EBS volume is encrypted. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html">Amazon EBS Encryption</a>.',
+    }),
   })
   .openapi({
     required: ['MountPoint', 'NumberOfDisks', 'Size'],
@@ -1123,46 +779,26 @@ const VolumeConfigurationsSchema = z
 
 const RecipesSchema = z
   .object({
-    Setup: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of custom recipe names to be run following a <code>setup</code> event.',
-        }),
-    ).exactOptional(),
-    Configure: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of custom recipe names to be run following a <code>configure</code> event.',
-        }),
-    ).exactOptional(),
-    Deploy: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of custom recipe names to be run following a <code>deploy</code> event.',
-        }),
-    ).exactOptional(),
-    Undeploy: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of custom recipe names to be run following a <code>undeploy</code> event.',
-        }),
-    ).exactOptional(),
-    Shutdown: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of custom recipe names to be run following a <code>shutdown</code> event.',
-        }),
-    ).exactOptional(),
+    Setup: StringsSchema.exactOptional().openapi({
+      description:
+        'An array of custom recipe names to be run following a <code>setup</code> event.',
+    }),
+    Configure: StringsSchema.exactOptional().openapi({
+      description:
+        'An array of custom recipe names to be run following a <code>configure</code> event.',
+    }),
+    Deploy: StringsSchema.exactOptional().openapi({
+      description:
+        'An array of custom recipe names to be run following a <code>deploy</code> event.',
+    }),
+    Undeploy: StringsSchema.exactOptional().openapi({
+      description:
+        'An array of custom recipe names to be run following a <code>undeploy</code> event.',
+    }),
+    Shutdown: StringsSchema.exactOptional().openapi({
+      description:
+        'An array of custom recipe names to be run following a <code>shutdown</code> event.',
+    }),
   })
   .openapi({
     description:
@@ -1173,173 +809,102 @@ const RecipesSchema = z
 
 const ShutdownEventConfigurationSchema = z
   .object({
-    ExecutionTimeout: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in seconds, that AWS OpsWorks Stacks will wait after triggering a Shutdown event before shutting down an instance.',
-        }),
-    ).exactOptional(),
-    DelayUntilElbConnectionsDrained: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to enable Elastic Load Balancing connection draining. For more information, see <a href="https://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/TerminologyandKeyConcepts.html#conn-drain">Connection Draining</a> ',
-        }),
-    ).exactOptional(),
+    ExecutionTimeout: IntegerSchema.exactOptional().openapi({
+      description:
+        'The time, in seconds, that AWS OpsWorks Stacks will wait after triggering a Shutdown event before shutting down an instance.',
+    }),
+    DelayUntilElbConnectionsDrained: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether to enable Elastic Load Balancing connection draining. For more information, see <a href="https://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/TerminologyandKeyConcepts.html#conn-drain">Connection Draining</a> ',
+    }),
   })
   .openapi({ description: 'The Shutdown event configuration.', required: [] })
   .openapi('ShutdownEventConfiguration')
 
 const LifecycleEventConfigurationSchema = z
   .object({
-    Shutdown: ShutdownEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>ShutdownEventConfiguration</code> object that specifies the Shutdown event configuration.',
-        }),
-    ).exactOptional(),
+    Shutdown: ShutdownEventConfigurationSchema.exactOptional().openapi({
+      description:
+        'A <code>ShutdownEventConfiguration</code> object that specifies the Shutdown event configuration.',
+    }),
   })
   .openapi({ description: 'Specifies the lifecycle event configuration', required: [] })
   .openapi('LifecycleEventConfiguration')
 
 const CreateLayerRequestSchema = z
   .object({
-    StackId: StringSchema.and(z.any().openapi({ description: 'The layer stack ID.' })),
-    Type: LayerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The layer type. A stack cannot have more than one built-in layer of the same type. It can have any number of custom layers. Built-in layers are not available in Chef 12 stacks.',
-        }),
-    ),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The layer name, which is used by the console.' }),
-    ),
-    Shortname: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>For custom layers only, use this parameter to specify the layer's short name, which is used internally by AWS OpsWorks Stacks and by Chef recipes. The short name is also used as the name for the directory where your app files are installed. It can have a maximum of 200 characters, which are limited to the alphanumeric characters, '-', '_', and '.'.</p> <p>The built-in layers' short names are defined by AWS OpsWorks Stacks. For more information, see the <a href=\"https://docs.aws.amazon.com/opsworks/latest/userguide/layers.html\">Layer Reference</a>.</p>",
-        }),
-    ),
-    Attributes: LayerAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>One or more user-defined key-value pairs to be added to the stack attributes.</p> <p>To create a cluster layer, set the <code>EcsClusterArn</code> attribute to the cluster's ARN.</p>",
-        }),
-    ).exactOptional(),
-    CloudWatchLogsConfiguration: CloudWatchLogsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies CloudWatch Logs configuration options for the layer. For more information, see <a>CloudWatchLogsLogStream</a>.',
-        }),
-    ).exactOptional(),
-    CustomInstanceProfileArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of an IAM profile to be used for the layer\'s EC2 instances. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
-        }),
-    ).exactOptional(),
-    CustomJson: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON-formatted string containing custom stack configuration and deployment attributes to be installed on the layer\'s instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-json-override.html"> Using Custom JSON</a>. This feature is supported as of version 1.7.42 of the AWS CLI. ',
-        }),
-    ).exactOptional(),
-    CustomSecurityGroupIds: StringsSchema.and(
-      z.any().openapi({ description: 'An array containing the layer custom security group IDs.' }),
-    ).exactOptional(),
-    Packages: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>Package</code> objects that describes the layer packages.',
-        }),
-    ).exactOptional(),
-    VolumeConfigurations: VolumeConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A <code>VolumeConfigurations</code> object that describes the layer's Amazon EBS volumes.",
-        }),
-    ).exactOptional(),
-    EnableAutoHealing: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether to disable auto healing for the layer.' }),
-    ).exactOptional(),
-    AutoAssignElasticIps: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to automatically assign an <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html">Elastic IP address</a> to the layer\'s instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers-basics-edit.html">How to Edit a Layer</a>.',
-        }),
-    ).exactOptional(),
-    AutoAssignPublicIps: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For stacks that are running in a VPC, whether to automatically assign a public IP address to the layer\'s instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers-basics-edit.html">How to Edit a Layer</a>.',
-        }),
-    ).exactOptional(),
-    CustomRecipes: RecipesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>LayerCustomRecipes</code> object that specifies the layer custom recipes.',
-        }),
-    ).exactOptional(),
-    InstallUpdatesOnBoot: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>. To control when updates are installed, set this value to <code>false</code>. You must then update your instances manually by using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or by manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances. </p> <note> <p>To ensure that your instances have the latest security updates, we strongly recommend using the default value of <code>true</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    UseEbsOptimizedInstances: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether to use Amazon EBS-optimized instances.' }),
-    ).exactOptional(),
-    LifecycleEventConfiguration: LifecycleEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>LifeCycleEventConfiguration</code> object that you can use to configure the Shutdown event to specify an execution timeout and enable or disable Elastic Load Balancer connection draining.',
-        }),
-    ).exactOptional(),
+    StackId: StringSchema.openapi({ description: 'The layer stack ID.' }),
+    Type: LayerTypeSchema.openapi({
+      description:
+        'The layer type. A stack cannot have more than one built-in layer of the same type. It can have any number of custom layers. Built-in layers are not available in Chef 12 stacks.',
+    }),
+    Name: StringSchema.openapi({ description: 'The layer name, which is used by the console.' }),
+    Shortname: StringSchema.openapi({
+      description:
+        "<p>For custom layers only, use this parameter to specify the layer's short name, which is used internally by AWS OpsWorks Stacks and by Chef recipes. The short name is also used as the name for the directory where your app files are installed. It can have a maximum of 200 characters, which are limited to the alphanumeric characters, '-', '_', and '.'.</p> <p>The built-in layers' short names are defined by AWS OpsWorks Stacks. For more information, see the <a href=\"https://docs.aws.amazon.com/opsworks/latest/userguide/layers.html\">Layer Reference</a>.</p>",
+    }),
+    Attributes: LayerAttributesSchema.exactOptional().openapi({
+      description:
+        "<p>One or more user-defined key-value pairs to be added to the stack attributes.</p> <p>To create a cluster layer, set the <code>EcsClusterArn</code> attribute to the cluster's ARN.</p>",
+    }),
+    CloudWatchLogsConfiguration: CloudWatchLogsConfigurationSchema.exactOptional().openapi({
+      description:
+        'Specifies CloudWatch Logs configuration options for the layer. For more information, see <a>CloudWatchLogsLogStream</a>.',
+    }),
+    CustomInstanceProfileArn: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN of an IAM profile to be used for the layer\'s EC2 instances. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
+    }),
+    CustomJson: StringSchema.exactOptional().openapi({
+      description:
+        'A JSON-formatted string containing custom stack configuration and deployment attributes to be installed on the layer\'s instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-json-override.html"> Using Custom JSON</a>. This feature is supported as of version 1.7.42 of the AWS CLI. ',
+    }),
+    CustomSecurityGroupIds: StringsSchema.exactOptional().openapi({
+      description: 'An array containing the layer custom security group IDs.',
+    }),
+    Packages: StringsSchema.exactOptional().openapi({
+      description: 'An array of <code>Package</code> objects that describes the layer packages.',
+    }),
+    VolumeConfigurations: VolumeConfigurationsSchema.exactOptional().openapi({
+      description:
+        "A <code>VolumeConfigurations</code> object that describes the layer's Amazon EBS volumes.",
+    }),
+    EnableAutoHealing: BooleanSchema.exactOptional().openapi({
+      description: 'Whether to disable auto healing for the layer.',
+    }),
+    AutoAssignElasticIps: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether to automatically assign an <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html">Elastic IP address</a> to the layer\'s instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers-basics-edit.html">How to Edit a Layer</a>.',
+    }),
+    AutoAssignPublicIps: BooleanSchema.exactOptional().openapi({
+      description:
+        'For stacks that are running in a VPC, whether to automatically assign a public IP address to the layer\'s instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers-basics-edit.html">How to Edit a Layer</a>.',
+    }),
+    CustomRecipes: RecipesSchema.exactOptional().openapi({
+      description:
+        'A <code>LayerCustomRecipes</code> object that specifies the layer custom recipes.',
+    }),
+    InstallUpdatesOnBoot: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>. To control when updates are installed, set this value to <code>false</code>. You must then update your instances manually by using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or by manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances. </p> <note> <p>To ensure that your instances have the latest security updates, we strongly recommend using the default value of <code>true</code>.</p> </note>',
+    }),
+    UseEbsOptimizedInstances: BooleanSchema.exactOptional().openapi({
+      description: 'Whether to use Amazon EBS-optimized instances.',
+    }),
+    LifecycleEventConfiguration: LifecycleEventConfigurationSchema.exactOptional().openapi({
+      description:
+        'A <code>LifeCycleEventConfiguration</code> object that you can use to configure the Shutdown event to specify an execution timeout and enable or disable Elastic Load Balancer connection draining.',
+    }),
   })
   .openapi({ required: ['StackId', 'Type', 'Name', 'Shortname'], title: 'CreateLayerRequest' })
   .openapi('CreateLayerRequest')
 
 const CreateStackResultSchema = z
   .object({
-    StackId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stack ID, which is an opaque string that you use to identify the stack when performing actions such as <code>DescribeStacks</code>.',
-        }),
-    ).exactOptional(),
+    StackId: StringSchema.exactOptional().openapi({
+      description:
+        'The stack ID, which is an opaque string that you use to identify the stack when performing actions such as <code>DescribeStacks</code>.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>CreateStack</code> request.',
@@ -1349,146 +914,77 @@ const CreateStackResultSchema = z
 
 const CreateStackRequestSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'The stack name.' })),
-    Region: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The stack\'s AWS region, such as <code>ap-south-1</code>. For more information about Amazon regions, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.</p> <note> <p>In the AWS CLI, this API maps to the <code>--stack-region</code> parameter. If the <code>--stack-region</code> parameter and the AWS CLI common parameter <code>--region</code> are set to the same value, the stack uses a <i>regional</i> endpoint. If the <code>--stack-region</code> parameter is not set, but the AWS CLI <code>--region</code> parameter is, this also results in a stack with a <i>regional</i> endpoint. However, if the <code>--region</code> parameter is set to <code>us-east-1</code>, and the <code>--stack-region</code> parameter is set to one of the following, then the stack uses a legacy or <i>classic</i> region: <code>us-west-1, us-west-2, sa-east-1, eu-central-1, eu-west-1, ap-northeast-1, ap-southeast-1, ap-southeast-2</code>. In this case, the actual API endpoint of the stack is in <code>us-east-1</code>. Only the preceding regions are supported as classic regions in the <code>us-east-1</code> API endpoint. Because it is a best practice to choose the regional endpoint that is closest to where you manage AWS, we recommend that you use regional endpoints for new stacks. The AWS CLI common <code>--region</code> parameter always specifies a regional API endpoint; it cannot be used to specify a classic AWS OpsWorks Stacks region.</p> </note>',
-        }),
-    ),
-    VpcId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the VPC that the stack is to be launched into. The VPC must be in the stack\'s region. All instances are launched into this VPC. You cannot change the ID later.</p> <ul> <li> <p>If your account supports EC2-Classic, the default value is <code>no VPC</code>.</p> </li> <li> <p>If your account does not support EC2-Classic, the default value is the default VPC for the specified region.</p> </li> </ul> <p>If the VPC ID corresponds to a default VPC and you have specified either the <code>DefaultAvailabilityZone</code> or the <code>DefaultSubnetId</code> parameter only, AWS OpsWorks Stacks infers the value of the other parameter. If you specify neither parameter, AWS OpsWorks Stacks sets these parameters to the first valid Availability Zone for the specified region and the corresponding default VPC subnet ID, respectively.</p> <p>If you specify a nondefault VPC ID, note the following:</p> <ul> <li> <p>It must belong to a VPC in your account that is in the specified region.</p> </li> <li> <p>You must specify a value for <code>DefaultSubnetId</code>.</p> </li> </ul> <p>For more information about how to use AWS OpsWorks Stacks with a VPC, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-vpc.html">Running a Stack in a VPC</a>. For more information about default VPC and EC2-Classic, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-supported-platforms.html">Supported Platforms</a>. </p>',
-        }),
-    ).exactOptional(),
-    Attributes: StackAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more user-defined key-value pairs to be added to the stack attributes.',
-        }),
-    ).exactOptional(),
-    ServiceRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stack\'s AWS Identity and Access Management (IAM) role, which allows AWS OpsWorks Stacks to work with AWS resources on your behalf. You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
-        }),
-    ),
-    DefaultInstanceProfileArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an IAM profile that is the default profile for all of the stack\'s EC2 instances. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
-        }),
-    ),
-    DefaultOs: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The stack\'s default operating system, which is installed on every instance unless you specify a different operating system when you create the instance. You can specify one of the following.</p> <ul> <li> <p>A supported Linux operating system: An Amazon Linux version, such as <code>Amazon Linux 2018.03</code>, <code>Amazon Linux 2017.09</code>, <code>Amazon Linux 2017.03</code>, <code>Amazon Linux 2016.09</code>, <code>Amazon Linux 2016.03</code>, <code>Amazon Linux 2015.09</code>, or <code>Amazon Linux 2015.03</code>.</p> </li> <li> <p>A supported Ubuntu operating system, such as <code>Ubuntu 16.04 LTS</code>, <code>Ubuntu 14.04 LTS</code>, or <code>Ubuntu 12.04 LTS</code>.</p> </li> <li> <p> <code>CentOS Linux 7</code> </p> </li> <li> <p> <code>Red Hat Enterprise Linux 7</code> </p> </li> <li> <p>A supported Windows operating system, such as <code>Microsoft Windows Server 2012 R2 Base</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Express</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Standard</code>, or <code>Microsoft Windows Server 2012 R2 with SQL Server Web</code>.</p> </li> <li> <p>A custom AMI: <code>Custom</code>. You specify the custom AMI you want to use when you create instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html"> Using Custom AMIs</a>.</p> </li> </ul> <p>The default option is the current Amazon Linux version. For more information about supported operating systems, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html">AWS OpsWorks Stacks Operating Systems</a>.</p>',
-        }),
-    ).exactOptional(),
-    HostnameTheme: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The stack's host name theme, with spaces replaced by underscores. The theme is used to generate host names for the stack's instances. By default, <code>HostnameTheme</code> is set to <code>Layer_Dependent</code>, which creates host names by appending integers to the layer's short name. The other themes are:</p> <ul> <li> <p> <code>Baked_Goods</code> </p> </li> <li> <p> <code>Clouds</code> </p> </li> <li> <p> <code>Europe_Cities</code> </p> </li> <li> <p> <code>Fruits</code> </p> </li> <li> <p> <code>Greek_Deities_and_Titans</code> </p> </li> <li> <p> <code>Legendary_creatures_from_Japan</code> </p> </li> <li> <p> <code>Planets_and_Moons</code> </p> </li> <li> <p> <code>Roman_Deities</code> </p> </li> <li> <p> <code>Scottish_Islands</code> </p> </li> <li> <p> <code>US_Cities</code> </p> </li> <li> <p> <code>Wild_Cats</code> </p> </li> </ul> <p>To obtain a generated host name, call <code>GetHostNameSuggestion</code>, which returns a host name based on the current theme.</p>",
-        }),
-    ).exactOptional(),
-    DefaultAvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stack\'s default Availability Zone, which must be in the specified region. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>. If you also specify a value for <code>DefaultSubnetId</code>, the subnet must be in the same zone. For more information, see the <code>VpcId</code> parameter description. ',
-        }),
-    ).exactOptional(),
-    DefaultSubnetId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The stack's default VPC subnet ID. This parameter is required if you specify a value for the <code>VpcId</code> parameter. All instances are launched into this subnet unless you specify otherwise when you create the instance. If you also specify a value for <code>DefaultAvailabilityZone</code>, the subnet must be in that zone. For information on default values and when this parameter is required, see the <code>VpcId</code> parameter description. ",
-        }),
-    ).exactOptional(),
-    CustomJson: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A string that contains user-defined, custom JSON. It can be used to override the corresponding default stack configuration attribute values or to pass data to recipes. The string should be in the following format:</p> <p> <code>"{\\"key1\\": \\"value1\\", \\"key2\\": \\"value2\\",...}"</code> </p> <p>For more information about custom JSON, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html">Use Custom JSON to Modify the Stack Configuration Attributes</a>.</p>',
-        }),
-    ).exactOptional(),
-    ConfigurationManager: StackConfigurationManagerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration manager. When you create a stack we recommend that you use the configuration manager to specify the Chef version: 12, 11.10, or 11.4 for Linux stacks, or 12.2 for Windows stacks. The default value for Linux stacks is currently 12.',
-        }),
-    ).exactOptional(),
-    ChefConfiguration: ChefConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>ChefConfiguration</code> object that specifies whether to enable Berkshelf and the Berkshelf version on Chef 11.10 stacks. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html">Create a New Stack</a>.',
-        }),
-    ).exactOptional(),
-    UseCustomCookbooks: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the stack uses custom cookbooks.' }),
-    ).exactOptional(),
-    UseOpsworksSecurityGroups: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to associate the AWS OpsWorks Stacks built-in security groups with the stack\'s layers.</p> <p>AWS OpsWorks Stacks provides a standard set of built-in security groups, one for each layer, which are associated with layers by default. With <code>UseOpsworksSecurityGroups</code> you can instead provide your own custom security groups. <code>UseOpsworksSecurityGroups</code> has the following settings: </p> <ul> <li> <p>True - AWS OpsWorks Stacks automatically associates the appropriate built-in security group with each layer (default setting). You can associate additional security groups with a layer after you create it, but you cannot delete the built-in security group.</p> </li> <li> <p>False - AWS OpsWorks Stacks does not associate built-in security groups with layers. You must create appropriate EC2 security groups and associate a security group with each layer that you create. However, you can still manually associate a built-in security group with a layer on creation; custom security groups are required only for those layers that need custom settings.</p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html">Create a New Stack</a>.</p>',
-        }),
-    ).exactOptional(),
-    CustomCookbooksSource: SourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the information required to retrieve an app or cookbook from a repository. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html">Adding Apps</a> or <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook.html">Cookbooks and Recipes</a>.',
-        }),
-    ).exactOptional(),
-    DefaultSshKeyName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A default Amazon EC2 key pair name. The default value is none. If you specify a key pair name, AWS OpsWorks installs the public key on the instance and you can use the private key with an SSH client to log in to the instance. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-ssh.html"> Using SSH to Communicate with an Instance</a> and <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/security-ssh-access.html"> Managing SSH Access</a>. You can override this setting by specifying a different key pair, or no key pair, when you <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-add.html"> create an instance</a>. ',
-        }),
-    ).exactOptional(),
-    DefaultRootDeviceType: RootDeviceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default root device type. This value is the default for all instances in the stack, but you can override it when you create an instance. The default option is <code>instance-store</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device">Storage for the Root Device</a>.',
-        }),
-    ).exactOptional(),
-    AgentVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The default AWS OpsWorks Stacks agent version. You have the following options:</p> <ul> <li> <p>Auto-update - Set this parameter to <code>LATEST</code>. AWS OpsWorks Stacks automatically installs new agent versions on the stack's instances as soon as they are available.</p> </li> <li> <p>Fixed version - Set this parameter to your preferred agent version. To update the agent version, you must edit the stack configuration and specify a new version. AWS OpsWorks Stacks then automatically installs that version on the stack's instances.</p> </li> </ul> <p>The default setting is the most recent release of the agent. To specify an agent version, you must use the complete version number, not the abbreviated number shown on the console. For a list of available agent version numbers, call <a>DescribeAgentVersions</a>. AgentVersion cannot be set to Chef 12.2.</p> <note> <p>You can also specify an agent version when you create or update an instance, which overrides the stack's default setting.</p> </note>",
-        }),
-    ).exactOptional(),
+    Name: StringSchema.openapi({ description: 'The stack name.' }),
+    Region: StringSchema.openapi({
+      description:
+        '<p>The stack\'s AWS region, such as <code>ap-south-1</code>. For more information about Amazon regions, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.</p> <note> <p>In the AWS CLI, this API maps to the <code>--stack-region</code> parameter. If the <code>--stack-region</code> parameter and the AWS CLI common parameter <code>--region</code> are set to the same value, the stack uses a <i>regional</i> endpoint. If the <code>--stack-region</code> parameter is not set, but the AWS CLI <code>--region</code> parameter is, this also results in a stack with a <i>regional</i> endpoint. However, if the <code>--region</code> parameter is set to <code>us-east-1</code>, and the <code>--stack-region</code> parameter is set to one of the following, then the stack uses a legacy or <i>classic</i> region: <code>us-west-1, us-west-2, sa-east-1, eu-central-1, eu-west-1, ap-northeast-1, ap-southeast-1, ap-southeast-2</code>. In this case, the actual API endpoint of the stack is in <code>us-east-1</code>. Only the preceding regions are supported as classic regions in the <code>us-east-1</code> API endpoint. Because it is a best practice to choose the regional endpoint that is closest to where you manage AWS, we recommend that you use regional endpoints for new stacks. The AWS CLI common <code>--region</code> parameter always specifies a regional API endpoint; it cannot be used to specify a classic AWS OpsWorks Stacks region.</p> </note>',
+    }),
+    VpcId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the VPC that the stack is to be launched into. The VPC must be in the stack\'s region. All instances are launched into this VPC. You cannot change the ID later.</p> <ul> <li> <p>If your account supports EC2-Classic, the default value is <code>no VPC</code>.</p> </li> <li> <p>If your account does not support EC2-Classic, the default value is the default VPC for the specified region.</p> </li> </ul> <p>If the VPC ID corresponds to a default VPC and you have specified either the <code>DefaultAvailabilityZone</code> or the <code>DefaultSubnetId</code> parameter only, AWS OpsWorks Stacks infers the value of the other parameter. If you specify neither parameter, AWS OpsWorks Stacks sets these parameters to the first valid Availability Zone for the specified region and the corresponding default VPC subnet ID, respectively.</p> <p>If you specify a nondefault VPC ID, note the following:</p> <ul> <li> <p>It must belong to a VPC in your account that is in the specified region.</p> </li> <li> <p>You must specify a value for <code>DefaultSubnetId</code>.</p> </li> </ul> <p>For more information about how to use AWS OpsWorks Stacks with a VPC, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-vpc.html">Running a Stack in a VPC</a>. For more information about default VPC and EC2-Classic, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-supported-platforms.html">Supported Platforms</a>. </p>',
+    }),
+    Attributes: StackAttributesSchema.exactOptional().openapi({
+      description: 'One or more user-defined key-value pairs to be added to the stack attributes.',
+    }),
+    ServiceRoleArn: StringSchema.openapi({
+      description:
+        'The stack\'s AWS Identity and Access Management (IAM) role, which allows AWS OpsWorks Stacks to work with AWS resources on your behalf. You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
+    }),
+    DefaultInstanceProfileArn: StringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an IAM profile that is the default profile for all of the stack\'s EC2 instances. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
+    }),
+    DefaultOs: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The stack\'s default operating system, which is installed on every instance unless you specify a different operating system when you create the instance. You can specify one of the following.</p> <ul> <li> <p>A supported Linux operating system: An Amazon Linux version, such as <code>Amazon Linux 2018.03</code>, <code>Amazon Linux 2017.09</code>, <code>Amazon Linux 2017.03</code>, <code>Amazon Linux 2016.09</code>, <code>Amazon Linux 2016.03</code>, <code>Amazon Linux 2015.09</code>, or <code>Amazon Linux 2015.03</code>.</p> </li> <li> <p>A supported Ubuntu operating system, such as <code>Ubuntu 16.04 LTS</code>, <code>Ubuntu 14.04 LTS</code>, or <code>Ubuntu 12.04 LTS</code>.</p> </li> <li> <p> <code>CentOS Linux 7</code> </p> </li> <li> <p> <code>Red Hat Enterprise Linux 7</code> </p> </li> <li> <p>A supported Windows operating system, such as <code>Microsoft Windows Server 2012 R2 Base</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Express</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Standard</code>, or <code>Microsoft Windows Server 2012 R2 with SQL Server Web</code>.</p> </li> <li> <p>A custom AMI: <code>Custom</code>. You specify the custom AMI you want to use when you create instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html"> Using Custom AMIs</a>.</p> </li> </ul> <p>The default option is the current Amazon Linux version. For more information about supported operating systems, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html">AWS OpsWorks Stacks Operating Systems</a>.</p>',
+    }),
+    HostnameTheme: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The stack's host name theme, with spaces replaced by underscores. The theme is used to generate host names for the stack's instances. By default, <code>HostnameTheme</code> is set to <code>Layer_Dependent</code>, which creates host names by appending integers to the layer's short name. The other themes are:</p> <ul> <li> <p> <code>Baked_Goods</code> </p> </li> <li> <p> <code>Clouds</code> </p> </li> <li> <p> <code>Europe_Cities</code> </p> </li> <li> <p> <code>Fruits</code> </p> </li> <li> <p> <code>Greek_Deities_and_Titans</code> </p> </li> <li> <p> <code>Legendary_creatures_from_Japan</code> </p> </li> <li> <p> <code>Planets_and_Moons</code> </p> </li> <li> <p> <code>Roman_Deities</code> </p> </li> <li> <p> <code>Scottish_Islands</code> </p> </li> <li> <p> <code>US_Cities</code> </p> </li> <li> <p> <code>Wild_Cats</code> </p> </li> </ul> <p>To obtain a generated host name, call <code>GetHostNameSuggestion</code>, which returns a host name based on the current theme.</p>",
+    }),
+    DefaultAvailabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        'The stack\'s default Availability Zone, which must be in the specified region. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>. If you also specify a value for <code>DefaultSubnetId</code>, the subnet must be in the same zone. For more information, see the <code>VpcId</code> parameter description. ',
+    }),
+    DefaultSubnetId: StringSchema.exactOptional().openapi({
+      description:
+        "The stack's default VPC subnet ID. This parameter is required if you specify a value for the <code>VpcId</code> parameter. All instances are launched into this subnet unless you specify otherwise when you create the instance. If you also specify a value for <code>DefaultAvailabilityZone</code>, the subnet must be in that zone. For information on default values and when this parameter is required, see the <code>VpcId</code> parameter description. ",
+    }),
+    CustomJson: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A string that contains user-defined, custom JSON. It can be used to override the corresponding default stack configuration attribute values or to pass data to recipes. The string should be in the following format:</p> <p> <code>"{\\"key1\\": \\"value1\\", \\"key2\\": \\"value2\\",...}"</code> </p> <p>For more information about custom JSON, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html">Use Custom JSON to Modify the Stack Configuration Attributes</a>.</p>',
+    }),
+    ConfigurationManager: StackConfigurationManagerSchema.exactOptional().openapi({
+      description:
+        'The configuration manager. When you create a stack we recommend that you use the configuration manager to specify the Chef version: 12, 11.10, or 11.4 for Linux stacks, or 12.2 for Windows stacks. The default value for Linux stacks is currently 12.',
+    }),
+    ChefConfiguration: ChefConfigurationSchema.exactOptional().openapi({
+      description:
+        'A <code>ChefConfiguration</code> object that specifies whether to enable Berkshelf and the Berkshelf version on Chef 11.10 stacks. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html">Create a New Stack</a>.',
+    }),
+    UseCustomCookbooks: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the stack uses custom cookbooks.',
+    }),
+    UseOpsworksSecurityGroups: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to associate the AWS OpsWorks Stacks built-in security groups with the stack\'s layers.</p> <p>AWS OpsWorks Stacks provides a standard set of built-in security groups, one for each layer, which are associated with layers by default. With <code>UseOpsworksSecurityGroups</code> you can instead provide your own custom security groups. <code>UseOpsworksSecurityGroups</code> has the following settings: </p> <ul> <li> <p>True - AWS OpsWorks Stacks automatically associates the appropriate built-in security group with each layer (default setting). You can associate additional security groups with a layer after you create it, but you cannot delete the built-in security group.</p> </li> <li> <p>False - AWS OpsWorks Stacks does not associate built-in security groups with layers. You must create appropriate EC2 security groups and associate a security group with each layer that you create. However, you can still manually associate a built-in security group with a layer on creation; custom security groups are required only for those layers that need custom settings.</p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html">Create a New Stack</a>.</p>',
+    }),
+    CustomCookbooksSource: SourceSchema.exactOptional().openapi({
+      description:
+        'Contains the information required to retrieve an app or cookbook from a repository. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html">Adding Apps</a> or <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook.html">Cookbooks and Recipes</a>.',
+    }),
+    DefaultSshKeyName: StringSchema.exactOptional().openapi({
+      description:
+        'A default Amazon EC2 key pair name. The default value is none. If you specify a key pair name, AWS OpsWorks installs the public key on the instance and you can use the private key with an SSH client to log in to the instance. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-ssh.html"> Using SSH to Communicate with an Instance</a> and <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/security-ssh-access.html"> Managing SSH Access</a>. You can override this setting by specifying a different key pair, or no key pair, when you <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-add.html"> create an instance</a>. ',
+    }),
+    DefaultRootDeviceType: RootDeviceTypeSchema.exactOptional().openapi({
+      description:
+        'The default root device type. This value is the default for all instances in the stack, but you can override it when you create an instance. The default option is <code>instance-store</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device">Storage for the Root Device</a>.',
+    }),
+    AgentVersion: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The default AWS OpsWorks Stacks agent version. You have the following options:</p> <ul> <li> <p>Auto-update - Set this parameter to <code>LATEST</code>. AWS OpsWorks Stacks automatically installs new agent versions on the stack's instances as soon as they are available.</p> </li> <li> <p>Fixed version - Set this parameter to your preferred agent version. To update the agent version, you must edit the stack configuration and specify a new version. AWS OpsWorks Stacks then automatically installs that version on the stack's instances.</p> </li> </ul> <p>The default setting is the most recent release of the agent. To specify an agent version, you must use the complete version number, not the abbreviated number shown on the console. For a list of available agent version numbers, call <a>DescribeAgentVersions</a>. AgentVersion cannot be set to Chef 12.2.</p> <note> <p>You can also specify an agent version when you create or update an instance, which overrides the stack's default setting.</p> </note>",
+    }),
   })
   .openapi({
     required: ['Name', 'Region', 'ServiceRoleArn', 'DefaultInstanceProfileArn'],
@@ -1498,9 +994,7 @@ const CreateStackRequestSchema = z
 
 const CreateUserProfileResultSchema = z
   .object({
-    IamUserArn: StringSchema.and(
-      z.any().openapi({ description: "The user's IAM ARN." }),
-    ).exactOptional(),
+    IamUserArn: StringSchema.exactOptional().openapi({ description: "The user's IAM ARN." }),
   })
   .openapi({
     description: 'Contains the response to a <code>CreateUserProfile</code> request.',
@@ -1510,125 +1004,103 @@ const CreateUserProfileResultSchema = z
 
 const CreateUserProfileRequestSchema = z
   .object({
-    IamUserArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: "The user's IAM ARN; this can also be a federated user's ARN." }),
-    ),
-    SshUsername: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The user's SSH user name. The allowable characters are [a-z], [A-Z], [0-9], '-', and '_'. If the specified name includes other punctuation marks, AWS OpsWorks Stacks removes them. For example, <code>my.name</code> will be changed to <code>myname</code>. If you do not specify an SSH user name, AWS OpsWorks Stacks generates one from the IAM user name. ",
-        }),
-    ).exactOptional(),
-    SshPublicKey: StringSchema.and(
-      z.any().openapi({ description: "The user's public SSH key." }),
-    ).exactOptional(),
-    AllowSelfManagement: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether users can specify their own SSH public key through the My Settings page. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/security-settingsshkey.html">Setting an IAM User\'s Public SSH Key</a>.',
-        }),
-    ).exactOptional(),
+    IamUserArn: StringSchema.openapi({
+      description: "The user's IAM ARN; this can also be a federated user's ARN.",
+    }),
+    SshUsername: StringSchema.exactOptional().openapi({
+      description:
+        "The user's SSH user name. The allowable characters are [a-z], [A-Z], [0-9], '-', and '_'. If the specified name includes other punctuation marks, AWS OpsWorks Stacks removes them. For example, <code>my.name</code> will be changed to <code>myname</code>. If you do not specify an SSH user name, AWS OpsWorks Stacks generates one from the IAM user name. ",
+    }),
+    SshPublicKey: StringSchema.exactOptional().openapi({
+      description: "The user's public SSH key.",
+    }),
+    AllowSelfManagement: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether users can specify their own SSH public key through the My Settings page. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/security-settingsshkey.html">Setting an IAM User\'s Public SSH Key</a>.',
+    }),
   })
   .openapi({ required: ['IamUserArn'], title: 'CreateUserProfileRequest' })
   .openapi('CreateUserProfileRequest')
 
 const DeleteAppRequestSchema = z
-  .object({ AppId: StringSchema.and(z.any().openapi({ description: 'The app ID.' })) })
+  .object({ AppId: StringSchema.openapi({ description: 'The app ID.' }) })
   .openapi({ required: ['AppId'], title: 'DeleteAppRequest' })
   .openapi('DeleteAppRequest')
 
 const DeleteInstanceRequestSchema = z
   .object({
-    InstanceId: StringSchema.and(z.any().openapi({ description: 'The instance ID.' })),
-    DeleteElasticIp: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether to delete the instance Elastic IP address.' }),
-    ).exactOptional(),
-    DeleteVolumes: BooleanSchema.and(
-      z.any().openapi({ description: "Whether to delete the instance's Amazon EBS volumes." }),
-    ).exactOptional(),
+    InstanceId: StringSchema.openapi({ description: 'The instance ID.' }),
+    DeleteElasticIp: BooleanSchema.exactOptional().openapi({
+      description: 'Whether to delete the instance Elastic IP address.',
+    }),
+    DeleteVolumes: BooleanSchema.exactOptional().openapi({
+      description: "Whether to delete the instance's Amazon EBS volumes.",
+    }),
   })
   .openapi({ required: ['InstanceId'], title: 'DeleteInstanceRequest' })
   .openapi('DeleteInstanceRequest')
 
 const DeleteLayerRequestSchema = z
-  .object({ LayerId: StringSchema.and(z.any().openapi({ description: 'The layer ID.' })) })
+  .object({ LayerId: StringSchema.openapi({ description: 'The layer ID.' }) })
   .openapi({ required: ['LayerId'], title: 'DeleteLayerRequest' })
   .openapi('DeleteLayerRequest')
 
 const DeleteStackRequestSchema = z
-  .object({ StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })) })
+  .object({ StackId: StringSchema.openapi({ description: 'The stack ID.' }) })
   .openapi({ required: ['StackId'], title: 'DeleteStackRequest' })
   .openapi('DeleteStackRequest')
 
 const DeleteUserProfileRequestSchema = z
   .object({
-    IamUserArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: "The user's IAM ARN. This can also be a federated user's ARN." }),
-    ),
+    IamUserArn: StringSchema.openapi({
+      description: "The user's IAM ARN. This can also be a federated user's ARN.",
+    }),
   })
   .openapi({ required: ['IamUserArn'], title: 'DeleteUserProfileRequest' })
   .openapi('DeleteUserProfileRequest')
 
 const DeregisterEcsClusterRequestSchema = z
   .object({
-    EcsClusterArn: StringSchema.and(
-      z.any().openapi({ description: "The cluster's Amazon Resource Number (ARN)." }),
-    ),
+    EcsClusterArn: StringSchema.openapi({
+      description: "The cluster's Amazon Resource Number (ARN).",
+    }),
   })
   .openapi({ required: ['EcsClusterArn'], title: 'DeregisterEcsClusterRequest' })
   .openapi('DeregisterEcsClusterRequest')
 
 const DeregisterElasticIpRequestSchema = z
-  .object({
-    ElasticIp: StringSchema.and(z.any().openapi({ description: 'The Elastic IP address.' })),
-  })
+  .object({ ElasticIp: StringSchema.openapi({ description: 'The Elastic IP address.' }) })
   .openapi({ required: ['ElasticIp'], title: 'DeregisterElasticIpRequest' })
   .openapi('DeregisterElasticIpRequest')
 
 const DeregisterInstanceRequestSchema = z
-  .object({ InstanceId: StringSchema.and(z.any().openapi({ description: 'The instance ID.' })) })
+  .object({ InstanceId: StringSchema.openapi({ description: 'The instance ID.' }) })
   .openapi({ required: ['InstanceId'], title: 'DeregisterInstanceRequest' })
   .openapi('DeregisterInstanceRequest')
 
 const DeregisterRdsDbInstanceRequestSchema = z
   .object({
-    RdsDbInstanceArn: StringSchema.and(
-      z.any().openapi({ description: "The Amazon RDS instance's ARN." }),
-    ),
+    RdsDbInstanceArn: StringSchema.openapi({ description: "The Amazon RDS instance's ARN." }),
   })
   .openapi({ required: ['RdsDbInstanceArn'], title: 'DeregisterRdsDbInstanceRequest' })
   .openapi('DeregisterRdsDbInstanceRequest')
 
 const DeregisterVolumeRequestSchema = z
   .object({
-    VolumeId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS OpsWorks Stacks volume ID, which is the GUID that AWS OpsWorks Stacks assigned to the instance when you registered the volume with the stack, not the Amazon EC2 volume ID.',
-        }),
-    ),
+    VolumeId: StringSchema.openapi({
+      description:
+        'The AWS OpsWorks Stacks volume ID, which is the GUID that AWS OpsWorks Stacks assigned to the instance when you registered the volume with the stack, not the Amazon EC2 volume ID.',
+    }),
   })
   .openapi({ required: ['VolumeId'], title: 'DeregisterVolumeRequest' })
   .openapi('DeregisterVolumeRequest')
 
 const AgentVersionSchema = z
   .object({
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The agent version.' }),
-    ).exactOptional(),
-    ConfigurationManager: StackConfigurationManagerSchema.and(
-      z.any().openapi({ description: 'The configuration manager.' }),
-    ).exactOptional(),
+    Version: StringSchema.exactOptional().openapi({ description: 'The agent version.' }),
+    ConfigurationManager: StackConfigurationManagerSchema.exactOptional().openapi({
+      description: 'The configuration manager.',
+    }),
   })
   .openapi({ description: 'Describes an agent version.', required: [] })
   .openapi('AgentVersion')
@@ -1637,14 +1109,10 @@ const AgentVersionsSchema = z.array(AgentVersionSchema).openapi('AgentVersions')
 
 const DescribeAgentVersionsResultSchema = z
   .object({
-    AgentVersions: AgentVersionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The agent versions for the specified stack or configuration manager. Note that this value is the complete version number, not the abbreviated number used by the console.',
-        }),
-    ).exactOptional(),
+    AgentVersions: AgentVersionsSchema.exactOptional().openapi({
+      description:
+        'The agent versions for the specified stack or configuration manager. Note that this value is the complete version number, not the abbreviated number used by the console.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeAgentVersions</code> request.',
@@ -1654,70 +1122,46 @@ const DescribeAgentVersionsResultSchema = z
 
 const DescribeAgentVersionsRequestSchema = z
   .object({
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })).exactOptional(),
-    ConfigurationManager: StackConfigurationManagerSchema.and(
-      z.any().openapi({ description: 'The configuration manager.' }),
-    ).exactOptional(),
+    StackId: StringSchema.exactOptional().openapi({ description: 'The stack ID.' }),
+    ConfigurationManager: StackConfigurationManagerSchema.exactOptional().openapi({
+      description: 'The configuration manager.',
+    }),
   })
   .openapi({ title: 'DescribeAgentVersionsRequest', required: [] })
   .openapi('DescribeAgentVersionsRequest')
 
 const AppSchema = z
   .object({
-    AppId: StringSchema.and(z.any().openapi({ description: 'The app ID.' })).exactOptional(),
-    StackId: StringSchema.and(
-      z.any().openapi({ description: 'The app stack ID.' }),
-    ).exactOptional(),
-    Shortname: StringSchema.and(
-      z.any().openapi({ description: "The app's short name." }),
-    ).exactOptional(),
-    Name: StringSchema.and(z.any().openapi({ description: 'The app name.' })).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'A description of the app.' }),
-    ).exactOptional(),
-    DataSources: DataSourcesSchema.and(
-      z.any().openapi({ description: "The app's data sources." }),
-    ).exactOptional(),
-    Type: AppTypeSchema.and(z.any().openapi({ description: 'The app type.' })).exactOptional(),
-    AppSource: SourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A <code>Source</code> object that describes the app repository.',
-        }),
-    ).exactOptional(),
-    Domains: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The app vhost settings with multiple domains separated by commas. For example: <code>'www.example.com, example.com'</code> ",
-        }),
-    ).exactOptional(),
-    EnableSsl: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether to enable SSL for the app.' }),
-    ).exactOptional(),
-    SslConfiguration: SslConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An <code>SslConfiguration</code> object with the SSL configuration.',
-        }),
-    ).exactOptional(),
-    Attributes: AppAttributesSchema.and(
-      z.any().openapi({ description: 'The stack attributes.' }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z.any().openapi({ description: 'When the app was created.' }),
-    ).exactOptional(),
-    Environment: EnvironmentVariablesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of <code>EnvironmentVariable</code> objects that specify environment variables to be associated with the app. After you deploy the app, these variables are defined on the associated app server instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html#workingapps-creating-environment"> Environment Variables</a>. </p> <note> <p>There is no specific limit on the number of environment variables. However, the size of the associated data structure - which includes the variable names, values, and protected flag values - cannot exceed 20 KB. This limit should accommodate most if not all use cases, but if you do exceed it, you will cause an exception (API) with an "Environment: is too large (maximum is 20 KB)" message.</p> </note>',
-        }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({ description: 'The app ID.' }),
+    StackId: StringSchema.exactOptional().openapi({ description: 'The app stack ID.' }),
+    Shortname: StringSchema.exactOptional().openapi({ description: "The app's short name." }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The app name.' }),
+    Description: StringSchema.exactOptional().openapi({ description: 'A description of the app.' }),
+    DataSources: DataSourcesSchema.exactOptional().openapi({
+      description: "The app's data sources.",
+    }),
+    Type: AppTypeSchema.exactOptional().openapi({ description: 'The app type.' }),
+    AppSource: SourceSchema.exactOptional().openapi({
+      description: 'A <code>Source</code> object that describes the app repository.',
+    }),
+    Domains: StringsSchema.exactOptional().openapi({
+      description:
+        "The app vhost settings with multiple domains separated by commas. For example: <code>'www.example.com, example.com'</code> ",
+    }),
+    EnableSsl: BooleanSchema.exactOptional().openapi({
+      description: 'Whether to enable SSL for the app.',
+    }),
+    SslConfiguration: SslConfigurationSchema.exactOptional().openapi({
+      description: 'An <code>SslConfiguration</code> object with the SSL configuration.',
+    }),
+    Attributes: AppAttributesSchema.exactOptional().openapi({
+      description: 'The stack attributes.',
+    }),
+    CreatedAt: StringSchema.exactOptional().openapi({ description: 'When the app was created.' }),
+    Environment: EnvironmentVariablesSchema.exactOptional().openapi({
+      description:
+        '<p>An array of <code>EnvironmentVariable</code> objects that specify environment variables to be associated with the app. After you deploy the app, these variables are defined on the associated app server instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html#workingapps-creating-environment"> Environment Variables</a>. </p> <note> <p>There is no specific limit on the number of environment variables. However, the size of the associated data structure - which includes the variable names, values, and protected flag values - cannot exceed 20 KB. This limit should accommodate most if not all use cases, but if you do exceed it, you will cause an exception (API) with an "Environment: is too large (maximum is 20 KB)" message.</p> </note>',
+    }),
   })
   .openapi({ description: 'A description of the app.', required: [] })
   .openapi('App')
@@ -1726,13 +1170,9 @@ const AppsSchema = z.array(AppSchema).openapi('Apps')
 
 const DescribeAppsResultSchema = z
   .object({
-    Apps: AppsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of <code>App</code> objects that describe the specified apps. ',
-        }),
-    ).exactOptional(),
+    Apps: AppsSchema.exactOptional().openapi({
+      description: 'An array of <code>App</code> objects that describe the specified apps. ',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeApps</code> request.',
@@ -1742,22 +1182,14 @@ const DescribeAppsResultSchema = z
 
 const DescribeAppsRequestSchema = z
   .object({
-    StackId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The app stack ID. If you use this parameter, <code>DescribeApps</code> returns a description of the apps in the specified stack.',
-        }),
-    ).exactOptional(),
-    AppIds: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of app IDs for the apps to be described. If you use this parameter, <code>DescribeApps</code> returns a description of the specified apps. Otherwise, it returns a description of every app.',
-        }),
-    ).exactOptional(),
+    StackId: StringSchema.exactOptional().openapi({
+      description:
+        'The app stack ID. If you use this parameter, <code>DescribeApps</code> returns a description of the apps in the specified stack.',
+    }),
+    AppIds: StringsSchema.exactOptional().openapi({
+      description:
+        'An array of app IDs for the apps to be described. If you use this parameter, <code>DescribeApps</code> returns a description of the specified apps. Otherwise, it returns a description of every app.',
+    }),
   })
   .openapi({ title: 'DescribeAppsRequest', required: [] })
   .openapi('DescribeAppsRequest')
@@ -1766,46 +1198,32 @@ const DateTimeSchema = z.string().openapi('DateTime')
 
 const CommandSchema = z
   .object({
-    CommandId: StringSchema.and(
-      z.any().openapi({ description: 'The command ID.' }),
-    ).exactOptional(),
-    InstanceId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the instance where the command was executed.' }),
-    ).exactOptional(),
-    DeploymentId: StringSchema.and(
-      z.any().openapi({ description: 'The command deployment ID.' }),
-    ).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'Date and time when the command was run.' }),
-    ).exactOptional(),
-    AcknowledgedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'Date and time when the command was acknowledged.' }),
-    ).exactOptional(),
-    CompletedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'Date when the command completed.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The command status:</p> <ul> <li> <p>failed</p> </li> <li> <p>successful</p> </li> <li> <p>skipped</p> </li> <li> <p>pending</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ExitCode: IntegerSchema.and(
-      z.any().openapi({ description: 'The command exit code.' }),
-    ).exactOptional(),
-    LogUrl: StringSchema.and(
-      z.any().openapi({ description: 'The URL of the command log.' }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The command type:</p> <ul> <li> <p> <code>configure</code> </p> </li> <li> <p> <code>deploy</code> </p> </li> <li> <p> <code>execute_recipes</code> </p> </li> <li> <p> <code>install_dependencies</code> </p> </li> <li> <p> <code>restart</code> </p> </li> <li> <p> <code>rollback</code> </p> </li> <li> <p> <code>setup</code> </p> </li> <li> <p> <code>start</code> </p> </li> <li> <p> <code>stop</code> </p> </li> <li> <p> <code>undeploy</code> </p> </li> <li> <p> <code>update_custom_cookbooks</code> </p> </li> <li> <p> <code>update_dependencies</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    CommandId: StringSchema.exactOptional().openapi({ description: 'The command ID.' }),
+    InstanceId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the instance where the command was executed.',
+    }),
+    DeploymentId: StringSchema.exactOptional().openapi({
+      description: 'The command deployment ID.',
+    }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'Date and time when the command was run.',
+    }),
+    AcknowledgedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'Date and time when the command was acknowledged.',
+    }),
+    CompletedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'Date when the command completed.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The command status:</p> <ul> <li> <p>failed</p> </li> <li> <p>successful</p> </li> <li> <p>skipped</p> </li> <li> <p>pending</p> </li> </ul>',
+    }),
+    ExitCode: IntegerSchema.exactOptional().openapi({ description: 'The command exit code.' }),
+    LogUrl: StringSchema.exactOptional().openapi({ description: 'The URL of the command log.' }),
+    Type: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The command type:</p> <ul> <li> <p> <code>configure</code> </p> </li> <li> <p> <code>deploy</code> </p> </li> <li> <p> <code>execute_recipes</code> </p> </li> <li> <p> <code>install_dependencies</code> </p> </li> <li> <p> <code>restart</code> </p> </li> <li> <p> <code>rollback</code> </p> </li> <li> <p> <code>setup</code> </p> </li> <li> <p> <code>start</code> </p> </li> <li> <p> <code>stop</code> </p> </li> <li> <p> <code>undeploy</code> </p> </li> <li> <p> <code>update_custom_cookbooks</code> </p> </li> <li> <p> <code>update_dependencies</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'Describes a command.', required: [] })
   .openapi('Command')
@@ -1814,14 +1232,10 @@ const CommandsSchema = z.array(CommandSchema).openapi('Commands')
 
 const DescribeCommandsResultSchema = z
   .object({
-    Commands: CommandsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>Command</code> objects that describe each of the specified commands.',
-        }),
-    ).exactOptional(),
+    Commands: CommandsSchema.exactOptional().openapi({
+      description:
+        'An array of <code>Command</code> objects that describe each of the specified commands.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeCommands</code> request.',
@@ -1831,78 +1245,50 @@ const DescribeCommandsResultSchema = z
 
 const DescribeCommandsRequestSchema = z
   .object({
-    DeploymentId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The deployment ID. If you include this parameter, <code>DescribeCommands</code> returns a description of the commands associated with the specified deployment.',
-        }),
-    ).exactOptional(),
-    InstanceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance ID. If you include this parameter, <code>DescribeCommands</code> returns a description of the commands associated with the specified instance.',
-        }),
-    ).exactOptional(),
-    CommandIds: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of command IDs. If you include this parameter, <code>DescribeCommands</code> returns a description of the specified commands. Otherwise, it returns a description of every command.',
-        }),
-    ).exactOptional(),
+    DeploymentId: StringSchema.exactOptional().openapi({
+      description:
+        'The deployment ID. If you include this parameter, <code>DescribeCommands</code> returns a description of the commands associated with the specified deployment.',
+    }),
+    InstanceId: StringSchema.exactOptional().openapi({
+      description:
+        'The instance ID. If you include this parameter, <code>DescribeCommands</code> returns a description of the commands associated with the specified instance.',
+    }),
+    CommandIds: StringsSchema.exactOptional().openapi({
+      description:
+        'An array of command IDs. If you include this parameter, <code>DescribeCommands</code> returns a description of the specified commands. Otherwise, it returns a description of every command.',
+    }),
   })
   .openapi({ title: 'DescribeCommandsRequest', required: [] })
   .openapi('DescribeCommandsRequest')
 
 const DeploymentSchema = z
   .object({
-    DeploymentId: StringSchema.and(
-      z.any().openapi({ description: 'The deployment ID.' }),
-    ).exactOptional(),
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })).exactOptional(),
-    AppId: StringSchema.and(z.any().openapi({ description: 'The app ID.' })).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'Date when the deployment was created.' }),
-    ).exactOptional(),
-    CompletedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'Date when the deployment completed.' }),
-    ).exactOptional(),
-    Duration: IntegerSchema.and(
-      z.any().openapi({ description: 'The deployment duration.' }),
-    ).exactOptional(),
-    IamUserArn: StringSchema.and(
-      z.any().openapi({ description: "The user's IAM ARN." }),
-    ).exactOptional(),
-    Comment: StringSchema.and(
-      z.any().openapi({ description: 'A user-defined comment.' }),
-    ).exactOptional(),
-    Command: DeploymentCommandSchema.and(
-      z.any().openapi({ description: 'Used to specify a stack or deployment command.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The deployment status:</p> <ul> <li> <p>running</p> </li> <li> <p>successful</p> </li> <li> <p>failed</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CustomJson: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A string that contains user-defined custom JSON. It can be used to override the corresponding default stack configuration attribute values for stack or to pass data to recipes. The string should be in the following format:</p> <p> <code>"{\\"key1\\": \\"value1\\", \\"key2\\": \\"value2\\",...}"</code> </p> <p>For more information on custom JSON, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html">Use Custom JSON to Modify the Stack Configuration Attributes</a>.</p>',
-        }),
-    ).exactOptional(),
-    InstanceIds: StringsSchema.and(
-      z.any().openapi({ description: 'The IDs of the target instances.' }),
-    ).exactOptional(),
+    DeploymentId: StringSchema.exactOptional().openapi({ description: 'The deployment ID.' }),
+    StackId: StringSchema.exactOptional().openapi({ description: 'The stack ID.' }),
+    AppId: StringSchema.exactOptional().openapi({ description: 'The app ID.' }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'Date when the deployment was created.',
+    }),
+    CompletedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'Date when the deployment completed.',
+    }),
+    Duration: IntegerSchema.exactOptional().openapi({ description: 'The deployment duration.' }),
+    IamUserArn: StringSchema.exactOptional().openapi({ description: "The user's IAM ARN." }),
+    Comment: StringSchema.exactOptional().openapi({ description: 'A user-defined comment.' }),
+    Command: DeploymentCommandSchema.exactOptional().openapi({
+      description: 'Used to specify a stack or deployment command.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The deployment status:</p> <ul> <li> <p>running</p> </li> <li> <p>successful</p> </li> <li> <p>failed</p> </li> </ul>',
+    }),
+    CustomJson: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A string that contains user-defined custom JSON. It can be used to override the corresponding default stack configuration attribute values for stack or to pass data to recipes. The string should be in the following format:</p> <p> <code>"{\\"key1\\": \\"value1\\", \\"key2\\": \\"value2\\",...}"</code> </p> <p>For more information on custom JSON, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html">Use Custom JSON to Modify the Stack Configuration Attributes</a>.</p>',
+    }),
+    InstanceIds: StringsSchema.exactOptional().openapi({
+      description: 'The IDs of the target instances.',
+    }),
   })
   .openapi({ description: 'Describes a deployment of a stack or app.', required: [] })
   .openapi('Deployment')
@@ -1911,13 +1297,9 @@ const DeploymentsSchema = z.array(DeploymentSchema).openapi('Deployments')
 
 const DescribeDeploymentsResultSchema = z
   .object({
-    Deployments: DeploymentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of <code>Deployment</code> objects that describe the deployments.',
-        }),
-    ).exactOptional(),
+    Deployments: DeploymentsSchema.exactOptional().openapi({
+      description: 'An array of <code>Deployment</code> objects that describe the deployments.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeDeployments</code> request.',
@@ -1927,50 +1309,30 @@ const DescribeDeploymentsResultSchema = z
 
 const DescribeDeploymentsRequestSchema = z
   .object({
-    StackId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stack ID. If you include this parameter, the command returns a description of the commands associated with the specified stack.',
-        }),
-    ).exactOptional(),
-    AppId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The app ID. If you include this parameter, the command returns a description of the commands associated with the specified app.',
-        }),
-    ).exactOptional(),
-    DeploymentIds: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of deployment IDs to be described. If you include this parameter, the command returns a description of the specified deployments. Otherwise, it returns a description of every deployment.',
-        }),
-    ).exactOptional(),
+    StackId: StringSchema.exactOptional().openapi({
+      description:
+        'The stack ID. If you include this parameter, the command returns a description of the commands associated with the specified stack.',
+    }),
+    AppId: StringSchema.exactOptional().openapi({
+      description:
+        'The app ID. If you include this parameter, the command returns a description of the commands associated with the specified app.',
+    }),
+    DeploymentIds: StringsSchema.exactOptional().openapi({
+      description:
+        'An array of deployment IDs to be described. If you include this parameter, the command returns a description of the specified deployments. Otherwise, it returns a description of every deployment.',
+    }),
   })
   .openapi({ title: 'DescribeDeploymentsRequest', required: [] })
   .openapi('DescribeDeploymentsRequest')
 
 const EcsClusterSchema = z
   .object({
-    EcsClusterArn: StringSchema.and(
-      z.any().openapi({ description: "The cluster's ARN." }),
-    ).exactOptional(),
-    EcsClusterName: StringSchema.and(
-      z.any().openapi({ description: 'The cluster name.' }),
-    ).exactOptional(),
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })).exactOptional(),
-    RegisteredAt: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time and date that the cluster was registered with the stack.',
-        }),
-    ).exactOptional(),
+    EcsClusterArn: StringSchema.exactOptional().openapi({ description: "The cluster's ARN." }),
+    EcsClusterName: StringSchema.exactOptional().openapi({ description: 'The cluster name.' }),
+    StackId: StringSchema.exactOptional().openapi({ description: 'The stack ID.' }),
+    RegisteredAt: DateTimeSchema.exactOptional().openapi({
+      description: 'The time and date that the cluster was registered with the stack.',
+    }),
   })
   .openapi({ description: 'Describes a registered Amazon ECS cluster.', required: [] })
   .openapi('EcsCluster')
@@ -1979,22 +1341,13 @@ const EcsClustersSchema = z.array(EcsClusterSchema).openapi('EcsClusters')
 
 const DescribeEcsClustersResultSchema = z
   .object({
-    EcsClusters: EcsClustersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>EcsCluster</code> objects containing the cluster descriptions.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If a paginated request does not return all of the remaining results, this parameter is set to a token that you can assign to the request object's <code>NextToken</code> parameter to retrieve the next set of results. If the previous paginated request returned all of the remaining results, this parameter is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
+    EcsClusters: EcsClustersSchema.exactOptional().openapi({
+      description: 'A list of <code>EcsCluster</code> objects containing the cluster descriptions.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "If a paginated request does not return all of the remaining results, this parameter is set to a token that you can assign to the request object's <code>NextToken</code> parameter to retrieve the next set of results. If the previous paginated request returned all of the remaining results, this parameter is set to <code>null</code>.",
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeEcsClusters</code> request.',
@@ -2004,53 +1357,37 @@ const DescribeEcsClustersResultSchema = z
 
 const DescribeEcsClustersRequestSchema = z
   .object({
-    EcsClusterArns: StringsSchema.and(
-      z.any().openapi({ description: 'A list of ARNs, one for each cluster to be described.' }),
-    ).exactOptional(),
-    StackId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A stack ID. <code>DescribeEcsClusters</code> returns a description of the cluster that is registered with the stack.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the previous paginated request did not return all of the remaining results, the response object's<code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call <code>DescribeEcsClusters</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
-    MaxResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To receive a paginated response, use this parameter to specify the maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
-        }),
-    ).exactOptional(),
+    EcsClusterArns: StringsSchema.exactOptional().openapi({
+      description: 'A list of ARNs, one for each cluster to be described.',
+    }),
+    StackId: StringSchema.exactOptional().openapi({
+      description:
+        'A stack ID. <code>DescribeEcsClusters</code> returns a description of the cluster that is registered with the stack.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "If the previous paginated request did not return all of the remaining results, the response object's<code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call <code>DescribeEcsClusters</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
+    }),
+    MaxResults: IntegerSchema.exactOptional().openapi({
+      description:
+        'To receive a paginated response, use this parameter to specify the maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
+    }),
   })
   .openapi({ title: 'DescribeEcsClustersRequest', required: [] })
   .openapi('DescribeEcsClustersRequest')
 
 const ElasticIpSchema = z
   .object({
-    Ip: StringSchema.and(z.any().openapi({ description: 'The IP address.' })).exactOptional(),
-    Name: StringSchema.and(z.any().openapi({ description: 'The name.' })).exactOptional(),
-    Domain: StringSchema.and(z.any().openapi({ description: 'The domain.' })).exactOptional(),
-    Region: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS region. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
-        }),
-    ).exactOptional(),
-    InstanceId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the instance that the address is attached to.' }),
-    ).exactOptional(),
+    Ip: StringSchema.exactOptional().openapi({ description: 'The IP address.' }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name.' }),
+    Domain: StringSchema.exactOptional().openapi({ description: 'The domain.' }),
+    Region: StringSchema.exactOptional().openapi({
+      description:
+        'The AWS region. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
+    }),
+    InstanceId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the instance that the address is attached to.',
+    }),
   })
   .openapi({ description: 'Describes an Elastic IP address.', required: [] })
   .openapi('ElasticIp')
@@ -2059,14 +1396,10 @@ const ElasticIpsSchema = z.array(ElasticIpSchema).openapi('ElasticIps')
 
 const DescribeElasticIpsResultSchema = z
   .object({
-    ElasticIps: ElasticIpsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>ElasticIps</code> object that describes the specified Elastic IP addresses.',
-        }),
-    ).exactOptional(),
+    ElasticIps: ElasticIpsSchema.exactOptional().openapi({
+      description:
+        'An <code>ElasticIps</code> object that describes the specified Elastic IP addresses.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeElasticIps</code> request.',
@@ -2076,66 +1409,48 @@ const DescribeElasticIpsResultSchema = z
 
 const DescribeElasticIpsRequestSchema = z
   .object({
-    InstanceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance ID. If you include this parameter, <code>DescribeElasticIps</code> returns a description of the Elastic IP addresses associated with the specified instance.',
-        }),
-    ).exactOptional(),
-    StackId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A stack ID. If you include this parameter, <code>DescribeElasticIps</code> returns a description of the Elastic IP addresses that are registered with the specified stack.',
-        }),
-    ).exactOptional(),
-    Ips: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of Elastic IP addresses to be described. If you include this parameter, <code>DescribeElasticIps</code> returns a description of the specified Elastic IP addresses. Otherwise, it returns a description of every Elastic IP address.',
-        }),
-    ).exactOptional(),
+    InstanceId: StringSchema.exactOptional().openapi({
+      description:
+        'The instance ID. If you include this parameter, <code>DescribeElasticIps</code> returns a description of the Elastic IP addresses associated with the specified instance.',
+    }),
+    StackId: StringSchema.exactOptional().openapi({
+      description:
+        'A stack ID. If you include this parameter, <code>DescribeElasticIps</code> returns a description of the Elastic IP addresses that are registered with the specified stack.',
+    }),
+    Ips: StringsSchema.exactOptional().openapi({
+      description:
+        'An array of Elastic IP addresses to be described. If you include this parameter, <code>DescribeElasticIps</code> returns a description of the specified Elastic IP addresses. Otherwise, it returns a description of every Elastic IP address.',
+    }),
   })
   .openapi({ title: 'DescribeElasticIpsRequest', required: [] })
   .openapi('DescribeElasticIpsRequest')
 
 const ElasticLoadBalancerSchema = z
   .object({
-    ElasticLoadBalancerName: StringSchema.and(
-      z.any().openapi({ description: "The Elastic Load Balancing instance's name." }),
-    ).exactOptional(),
-    Region: StringSchema.and(
-      z.any().openapi({ description: "The instance's AWS region." }),
-    ).exactOptional(),
-    DnsName: StringSchema.and(
-      z.any().openapi({ description: "The instance's public DNS name." }),
-    ).exactOptional(),
-    StackId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the stack that the instance is associated with.' }),
-    ).exactOptional(),
-    LayerId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the layer that the instance is attached to.' }),
-    ).exactOptional(),
-    VpcId: StringSchema.and(z.any().openapi({ description: 'The VPC ID.' })).exactOptional(),
-    AvailabilityZones: StringsSchema.and(
-      z.any().openapi({ description: 'A list of Availability Zones.' }),
-    ).exactOptional(),
-    SubnetIds: StringsSchema.and(
-      z.any().openapi({ description: 'A list of subnet IDs, if the stack is running in a VPC.' }),
-    ).exactOptional(),
-    Ec2InstanceIds: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the EC2 instances that the Elastic Load Balancing instance is managing traffic for.',
-        }),
-    ).exactOptional(),
+    ElasticLoadBalancerName: StringSchema.exactOptional().openapi({
+      description: "The Elastic Load Balancing instance's name.",
+    }),
+    Region: StringSchema.exactOptional().openapi({ description: "The instance's AWS region." }),
+    DnsName: StringSchema.exactOptional().openapi({
+      description: "The instance's public DNS name.",
+    }),
+    StackId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the stack that the instance is associated with.',
+    }),
+    LayerId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the layer that the instance is attached to.',
+    }),
+    VpcId: StringSchema.exactOptional().openapi({ description: 'The VPC ID.' }),
+    AvailabilityZones: StringsSchema.exactOptional().openapi({
+      description: 'A list of Availability Zones.',
+    }),
+    SubnetIds: StringsSchema.exactOptional().openapi({
+      description: 'A list of subnet IDs, if the stack is running in a VPC.',
+    }),
+    Ec2InstanceIds: StringsSchema.exactOptional().openapi({
+      description:
+        'A list of the EC2 instances that the Elastic Load Balancing instance is managing traffic for.',
+    }),
   })
   .openapi({ description: 'Describes an Elastic Load Balancing instance.', required: [] })
   .openapi('ElasticLoadBalancer')
@@ -2146,14 +1461,10 @@ const ElasticLoadBalancersSchema = z
 
 const DescribeElasticLoadBalancersResultSchema = z
   .object({
-    ElasticLoadBalancers: ElasticLoadBalancersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>ElasticLoadBalancer</code> objects that describe the specified Elastic Load Balancing instances.',
-        }),
-    ).exactOptional(),
+    ElasticLoadBalancers: ElasticLoadBalancersSchema.exactOptional().openapi({
+      description:
+        'A list of <code>ElasticLoadBalancer</code> objects that describe the specified Elastic Load Balancing instances.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeElasticLoadBalancers</code> request.',
@@ -2163,37 +1474,22 @@ const DescribeElasticLoadBalancersResultSchema = z
 
 const DescribeElasticLoadBalancersRequestSchema = z
   .object({
-    StackId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A stack ID. The action describes the stack's Elastic Load Balancing instances.",
-        }),
-    ).exactOptional(),
-    LayerIds: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of layer IDs. The action describes the Elastic Load Balancing instances for the specified layers.',
-        }),
-    ).exactOptional(),
+    StackId: StringSchema.exactOptional().openapi({
+      description: "A stack ID. The action describes the stack's Elastic Load Balancing instances.",
+    }),
+    LayerIds: StringsSchema.exactOptional().openapi({
+      description:
+        'A list of layer IDs. The action describes the Elastic Load Balancing instances for the specified layers.',
+    }),
   })
   .openapi({ title: 'DescribeElasticLoadBalancersRequest', required: [] })
   .openapi('DescribeElasticLoadBalancersRequest')
 
 const ReportedOsSchema = z
   .object({
-    Family: StringSchema.and(
-      z.any().openapi({ description: 'The operating system family.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The operating system name.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The operating system version.' }),
-    ).exactOptional(),
+    Family: StringSchema.exactOptional().openapi({ description: 'The operating system family.' }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The operating system name.' }),
+    Version: StringSchema.exactOptional().openapi({ description: 'The operating system version.' }),
   })
   .openapi({ description: "A registered instance's reported operating system.", required: [] })
   .openapi('ReportedOs')
@@ -2202,199 +1498,132 @@ const VirtualizationTypeSchema = z.enum(['paravirtual', 'hvm']).openapi('Virtual
 
 const InstanceSchema = z
   .object({
-    AgentVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The agent version. This parameter is set to <code>INHERIT</code> if the instance inherits the default stack setting or to a a version number for a fixed agent version.',
-        }),
-    ).exactOptional(),
-    AmiId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A custom AMI ID to be used to create the instance. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html">Instances</a> ',
-        }),
-    ).exactOptional(),
-    Architecture: ArchitectureSchema.and(
-      z.any().openapi({ description: 'The instance architecture: "i386" or "x86_64".' }),
-    ).exactOptional(),
-    Arn: StringSchema.and(
-      z.any().openapi({ description: "The instance's Amazon Resource Number (ARN)." }),
-    ).exactOptional(),
-    AutoScalingType: AutoScalingTypeSchema.and(
-      z.any().openapi({ description: 'For load-based or time-based instances, the type.' }),
-    ).exactOptional(),
-    AvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance Availability Zone. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
-        }),
-    ).exactOptional(),
-    BlockDeviceMappings: BlockDeviceMappingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of <code>BlockDeviceMapping</code> objects that specify the instance's block device mappings.",
-        }),
-    ).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time that the instance was created.' }),
-    ).exactOptional(),
-    EbsOptimized: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether this is an Amazon EBS-optimized instance.' }),
-    ).exactOptional(),
-    Ec2InstanceId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the associated Amazon EC2 instance.' }),
-    ).exactOptional(),
-    EcsClusterArn: StringSchema.and(
-      z.any().openapi({ description: "For container instances, the Amazon ECS cluster's ARN." }),
-    ).exactOptional(),
-    EcsContainerInstanceArn: StringSchema.and(
-      z.any().openapi({ description: "For container instances, the instance's ARN." }),
-    ).exactOptional(),
-    ElasticIp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html">Elastic IP address </a>.',
-        }),
-    ).exactOptional(),
-    Hostname: StringSchema.and(
-      z.any().openapi({ description: 'The instance host name.' }),
-    ).exactOptional(),
-    InfrastructureClass: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For registered instances, the infrastructure class: <code>ec2</code> or <code>on-premises</code>.',
-        }),
-    ).exactOptional(),
-    InstallUpdatesOnBoot: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>. If this value is set to <code>false</code>, you must then update your instances manually by using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or by manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances. </p> <note> <p>We strongly recommend using the default value of <code>true</code>, to ensure that your instances have the latest security updates.</p> </note>',
-        }),
-    ).exactOptional(),
-    InstanceId: StringSchema.and(
-      z.any().openapi({ description: 'The instance ID.' }),
-    ).exactOptional(),
-    InstanceProfileArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the instance\'s IAM profile. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
-        }),
-    ).exactOptional(),
-    InstanceType: StringSchema.and(
-      z.any().openapi({ description: 'The instance type, such as <code>t2.micro</code>.' }),
-    ).exactOptional(),
-    LastServiceErrorId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the last service error. For more information, call <a>DescribeServiceErrors</a>.',
-        }),
-    ).exactOptional(),
-    LayerIds: StringsSchema.and(
-      z.any().openapi({ description: 'An array containing the instance layer IDs.' }),
-    ).exactOptional(),
-    Os: StringSchema.and(
-      z.any().openapi({ description: "The instance's operating system." }),
-    ).exactOptional(),
-    Platform: StringSchema.and(
-      z.any().openapi({ description: "The instance's platform." }),
-    ).exactOptional(),
-    PrivateDns: StringSchema.and(
-      z.any().openapi({ description: "The instance's private DNS name." }),
-    ).exactOptional(),
-    PrivateIp: StringSchema.and(
-      z.any().openapi({ description: "The instance's private IP address." }),
-    ).exactOptional(),
-    PublicDns: StringSchema.and(
-      z.any().openapi({ description: 'The instance public DNS name.' }),
-    ).exactOptional(),
-    PublicIp: StringSchema.and(
-      z.any().openapi({ description: 'The instance public IP address.' }),
-    ).exactOptional(),
-    RegisteredBy: StringSchema.and(
-      z.any().openapi({ description: 'For registered instances, who performed the registration.' }),
-    ).exactOptional(),
-    ReportedAgentVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: "The instance's reported AWS OpsWorks Stacks agent version." }),
-    ).exactOptional(),
-    ReportedOs: ReportedOsSchema.and(
-      z.any().openapi({ description: 'For registered instances, the reported operating system.' }),
-    ).exactOptional(),
-    RootDeviceType: RootDeviceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance\'s root device type. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device">Storage for the Root Device</a>.',
-        }),
-    ).exactOptional(),
-    RootDeviceVolumeId: StringSchema.and(
-      z.any().openapi({ description: 'The root device volume ID.' }),
-    ).exactOptional(),
-    SecurityGroupIds: StringsSchema.and(
-      z.any().openapi({ description: 'An array containing the instance security group IDs.' }),
-    ).exactOptional(),
-    SshHostDsaKeyFingerprint: StringSchema.and(
-      z.any().openapi({ description: "The SSH key's Deep Security Agent (DSA) fingerprint." }),
-    ).exactOptional(),
-    SshHostRsaKeyFingerprint: StringSchema.and(
-      z.any().openapi({ description: "The SSH key's RSA fingerprint." }),
-    ).exactOptional(),
-    SshKeyName: StringSchema.and(
-      z.any().openapi({ description: "The instance's Amazon EC2 key-pair name." }),
-    ).exactOptional(),
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The instance status:</p> <ul> <li> <p> <code>booting</code> </p> </li> <li> <p> <code>connection_lost</code> </p> </li> <li> <p> <code>online</code> </p> </li> <li> <p> <code>pending</code> </p> </li> <li> <p> <code>rebooting</code> </p> </li> <li> <p> <code>requested</code> </p> </li> <li> <p> <code>running_setup</code> </p> </li> <li> <p> <code>setup_failed</code> </p> </li> <li> <p> <code>shutting_down</code> </p> </li> <li> <p> <code>start_failed</code> </p> </li> <li> <p> <code>stop_failed</code> </p> </li> <li> <p> <code>stopped</code> </p> </li> <li> <p> <code>stopping</code> </p> </li> <li> <p> <code>terminated</code> </p> </li> <li> <p> <code>terminating</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    SubnetId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The instance's subnet ID; applicable only if the stack is running in a VPC.",
-        }),
-    ).exactOptional(),
-    Tenancy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The instance's tenancy option, such as <code>dedicated</code> or <code>host</code>.",
-        }),
-    ).exactOptional(),
-    VirtualizationType: VirtualizationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The instance's virtualization type: <code>paravirtual</code> or <code>hvm</code>.",
-        }),
-    ).exactOptional(),
+    AgentVersion: StringSchema.exactOptional().openapi({
+      description:
+        'The agent version. This parameter is set to <code>INHERIT</code> if the instance inherits the default stack setting or to a a version number for a fixed agent version.',
+    }),
+    AmiId: StringSchema.exactOptional().openapi({
+      description:
+        'A custom AMI ID to be used to create the instance. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html">Instances</a> ',
+    }),
+    Architecture: ArchitectureSchema.exactOptional().openapi({
+      description: 'The instance architecture: "i386" or "x86_64".',
+    }),
+    Arn: StringSchema.exactOptional().openapi({
+      description: "The instance's Amazon Resource Number (ARN).",
+    }),
+    AutoScalingType: AutoScalingTypeSchema.exactOptional().openapi({
+      description: 'For load-based or time-based instances, the type.',
+    }),
+    AvailabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        'The instance Availability Zone. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
+    }),
+    BlockDeviceMappings: BlockDeviceMappingsSchema.exactOptional().openapi({
+      description:
+        "An array of <code>BlockDeviceMapping</code> objects that specify the instance's block device mappings.",
+    }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that the instance was created.',
+    }),
+    EbsOptimized: BooleanSchema.exactOptional().openapi({
+      description: 'Whether this is an Amazon EBS-optimized instance.',
+    }),
+    Ec2InstanceId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the associated Amazon EC2 instance.',
+    }),
+    EcsClusterArn: StringSchema.exactOptional().openapi({
+      description: "For container instances, the Amazon ECS cluster's ARN.",
+    }),
+    EcsContainerInstanceArn: StringSchema.exactOptional().openapi({
+      description: "For container instances, the instance's ARN.",
+    }),
+    ElasticIp: StringSchema.exactOptional().openapi({
+      description:
+        'The instance <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html">Elastic IP address </a>.',
+    }),
+    Hostname: StringSchema.exactOptional().openapi({ description: 'The instance host name.' }),
+    InfrastructureClass: StringSchema.exactOptional().openapi({
+      description:
+        'For registered instances, the infrastructure class: <code>ec2</code> or <code>on-premises</code>.',
+    }),
+    InstallUpdatesOnBoot: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>. If this value is set to <code>false</code>, you must then update your instances manually by using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or by manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances. </p> <note> <p>We strongly recommend using the default value of <code>true</code>, to ensure that your instances have the latest security updates.</p> </note>',
+    }),
+    InstanceId: StringSchema.exactOptional().openapi({ description: 'The instance ID.' }),
+    InstanceProfileArn: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN of the instance\'s IAM profile. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
+    }),
+    InstanceType: StringSchema.exactOptional().openapi({
+      description: 'The instance type, such as <code>t2.micro</code>.',
+    }),
+    LastServiceErrorId: StringSchema.exactOptional().openapi({
+      description:
+        'The ID of the last service error. For more information, call <a>DescribeServiceErrors</a>.',
+    }),
+    LayerIds: StringsSchema.exactOptional().openapi({
+      description: 'An array containing the instance layer IDs.',
+    }),
+    Os: StringSchema.exactOptional().openapi({ description: "The instance's operating system." }),
+    Platform: StringSchema.exactOptional().openapi({ description: "The instance's platform." }),
+    PrivateDns: StringSchema.exactOptional().openapi({
+      description: "The instance's private DNS name.",
+    }),
+    PrivateIp: StringSchema.exactOptional().openapi({
+      description: "The instance's private IP address.",
+    }),
+    PublicDns: StringSchema.exactOptional().openapi({
+      description: 'The instance public DNS name.',
+    }),
+    PublicIp: StringSchema.exactOptional().openapi({
+      description: 'The instance public IP address.',
+    }),
+    RegisteredBy: StringSchema.exactOptional().openapi({
+      description: 'For registered instances, who performed the registration.',
+    }),
+    ReportedAgentVersion: StringSchema.exactOptional().openapi({
+      description: "The instance's reported AWS OpsWorks Stacks agent version.",
+    }),
+    ReportedOs: ReportedOsSchema.exactOptional().openapi({
+      description: 'For registered instances, the reported operating system.',
+    }),
+    RootDeviceType: RootDeviceTypeSchema.exactOptional().openapi({
+      description:
+        'The instance\'s root device type. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device">Storage for the Root Device</a>.',
+    }),
+    RootDeviceVolumeId: StringSchema.exactOptional().openapi({
+      description: 'The root device volume ID.',
+    }),
+    SecurityGroupIds: StringsSchema.exactOptional().openapi({
+      description: 'An array containing the instance security group IDs.',
+    }),
+    SshHostDsaKeyFingerprint: StringSchema.exactOptional().openapi({
+      description: "The SSH key's Deep Security Agent (DSA) fingerprint.",
+    }),
+    SshHostRsaKeyFingerprint: StringSchema.exactOptional().openapi({
+      description: "The SSH key's RSA fingerprint.",
+    }),
+    SshKeyName: StringSchema.exactOptional().openapi({
+      description: "The instance's Amazon EC2 key-pair name.",
+    }),
+    StackId: StringSchema.exactOptional().openapi({ description: 'The stack ID.' }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The instance status:</p> <ul> <li> <p> <code>booting</code> </p> </li> <li> <p> <code>connection_lost</code> </p> </li> <li> <p> <code>online</code> </p> </li> <li> <p> <code>pending</code> </p> </li> <li> <p> <code>rebooting</code> </p> </li> <li> <p> <code>requested</code> </p> </li> <li> <p> <code>running_setup</code> </p> </li> <li> <p> <code>setup_failed</code> </p> </li> <li> <p> <code>shutting_down</code> </p> </li> <li> <p> <code>start_failed</code> </p> </li> <li> <p> <code>stop_failed</code> </p> </li> <li> <p> <code>stopped</code> </p> </li> <li> <p> <code>stopping</code> </p> </li> <li> <p> <code>terminated</code> </p> </li> <li> <p> <code>terminating</code> </p> </li> </ul>',
+    }),
+    SubnetId: StringSchema.exactOptional().openapi({
+      description: "The instance's subnet ID; applicable only if the stack is running in a VPC.",
+    }),
+    Tenancy: StringSchema.exactOptional().openapi({
+      description:
+        "The instance's tenancy option, such as <code>dedicated</code> or <code>host</code>.",
+    }),
+    VirtualizationType: VirtualizationTypeSchema.exactOptional().openapi({
+      description:
+        "The instance's virtualization type: <code>paravirtual</code> or <code>hvm</code>.",
+    }),
   })
   .openapi({ description: 'Describes an instance.', required: [] })
   .openapi('Instance')
@@ -2403,13 +1632,9 @@ const InstancesSchema = z.array(InstanceSchema).openapi('Instances')
 
 const DescribeInstancesResultSchema = z
   .object({
-    Instances: InstancesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of <code>Instance</code> objects that describe the instances.',
-        }),
-    ).exactOptional(),
+    Instances: InstancesSchema.exactOptional().openapi({
+      description: 'An array of <code>Instance</code> objects that describe the instances.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeInstances</code> request.',
@@ -2419,160 +1644,93 @@ const DescribeInstancesResultSchema = z
 
 const DescribeInstancesRequestSchema = z
   .object({
-    StackId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A stack ID. If you use this parameter, <code>DescribeInstances</code> returns descriptions of the instances associated with the specified stack.',
-        }),
-    ).exactOptional(),
-    LayerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A layer ID. If you use this parameter, <code>DescribeInstances</code> returns descriptions of the instances associated with the specified layer.',
-        }),
-    ).exactOptional(),
-    InstanceIds: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of instance IDs to be described. If you use this parameter, <code>DescribeInstances</code> returns a description of the specified instances. Otherwise, it returns a description of every instance.',
-        }),
-    ).exactOptional(),
+    StackId: StringSchema.exactOptional().openapi({
+      description:
+        'A stack ID. If you use this parameter, <code>DescribeInstances</code> returns descriptions of the instances associated with the specified stack.',
+    }),
+    LayerId: StringSchema.exactOptional().openapi({
+      description:
+        'A layer ID. If you use this parameter, <code>DescribeInstances</code> returns descriptions of the instances associated with the specified layer.',
+    }),
+    InstanceIds: StringsSchema.exactOptional().openapi({
+      description:
+        'An array of instance IDs to be described. If you use this parameter, <code>DescribeInstances</code> returns a description of the specified instances. Otherwise, it returns a description of every instance.',
+    }),
   })
   .openapi({ title: 'DescribeInstancesRequest', required: [] })
   .openapi('DescribeInstancesRequest')
 
 const LayerSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Number (ARN) of a layer.' }),
-    ).exactOptional(),
-    StackId: StringSchema.and(
-      z.any().openapi({ description: 'The layer stack ID.' }),
-    ).exactOptional(),
-    LayerId: StringSchema.and(z.any().openapi({ description: 'The layer ID.' })).exactOptional(),
-    Type: LayerTypeSchema.and(z.any().openapi({ description: 'The layer type.' })).exactOptional(),
-    Name: StringSchema.and(z.any().openapi({ description: 'The layer name.' })).exactOptional(),
-    Shortname: StringSchema.and(
-      z.any().openapi({ description: 'The layer short name.' }),
-    ).exactOptional(),
-    Attributes: LayerAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The layer attributes.</p> <p>For the <code>HaproxyStatsPassword</code>, <code>MysqlRootPassword</code>, and <code>GangliaPassword</code> attributes, AWS OpsWorks Stacks returns <code>*****FILTERED*****</code> instead of the actual value</p> <p>For an ECS Cluster layer, AWS OpsWorks Stacks the <code>EcsClusterArn</code> attribute is set to the cluster's ARN.</p>",
-        }),
-    ).exactOptional(),
-    CloudWatchLogsConfiguration: CloudWatchLogsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon CloudWatch Logs configuration settings for the layer.',
-        }),
-    ).exactOptional(),
-    CustomInstanceProfileArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the default IAM profile to be used for the layer\'s EC2 instances. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
-        }),
-    ).exactOptional(),
-    CustomJson: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A JSON formatted string containing the layer's custom stack configuration and deployment attributes.",
-        }),
-    ).exactOptional(),
-    CustomSecurityGroupIds: StringsSchema.and(
-      z
-        .any()
-        .openapi({ description: "An array containing the layer's custom security group IDs." }),
-    ).exactOptional(),
-    DefaultSecurityGroupNames: StringsSchema.and(
-      z.any().openapi({ description: "An array containing the layer's security group names." }),
-    ).exactOptional(),
-    Packages: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of <code>Package</code> objects that describe the layer's packages.",
-        }),
-    ).exactOptional(),
-    VolumeConfigurations: VolumeConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A <code>VolumeConfigurations</code> object that describes the layer's Amazon EBS volumes.",
-        }),
-    ).exactOptional(),
-    EnableAutoHealing: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether auto healing is disabled for the layer.' }),
-    ).exactOptional(),
-    AutoAssignElasticIps: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to automatically assign an <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html">Elastic IP address</a> to the layer\'s instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers-basics-edit.html">How to Edit a Layer</a>.',
-        }),
-    ).exactOptional(),
-    AutoAssignPublicIps: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For stacks that are running in a VPC, whether to automatically assign a public IP address to the layer\'s instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers-basics-edit.html">How to Edit a Layer</a>.',
-        }),
-    ).exactOptional(),
-    DefaultRecipes: RecipesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>AWS OpsWorks Stacks supports five lifecycle events: <b>setup</b>, <b>configuration</b>, <b>deploy</b>, <b>undeploy</b>, and <b>shutdown</b>. For each layer, AWS OpsWorks Stacks runs a set of standard recipes for each event. You can also provide custom recipes for any or all layers and events. AWS OpsWorks Stacks runs custom event recipes after the standard recipes. <code>LayerCustomRecipes</code> specifies the custom recipes for a particular layer to be run in response to each of the five events.</p> <p>To specify a recipe, use the cookbook's directory name in the repository followed by two colons and the recipe name, which is the recipe's file name without the <code>.rb</code> extension. For example: <code>phpapp2::dbsetup</code> specifies the <code>dbsetup.rb</code> recipe in the repository's <code>phpapp2</code> folder.</p>",
-        }),
-    ).exactOptional(),
-    CustomRecipes: RecipesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A <code>LayerCustomRecipes</code> object that specifies the layer's custom recipes.",
-        }),
-    ).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'Date when the layer was created.' }),
-    ).exactOptional(),
-    InstallUpdatesOnBoot: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>. If this value is set to <code>false</code>, you must then update your instances manually by using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances. </p> <note> <p>We strongly recommend using the default value of <code>true</code>, to ensure that your instances have the latest security updates.</p> </note>',
-        }),
-    ).exactOptional(),
-    UseEbsOptimizedInstances: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the layer uses Amazon EBS-optimized instances.' }),
-    ).exactOptional(),
-    LifecycleEventConfiguration: LifecycleEventConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>LifeCycleEventConfiguration</code> object that specifies the Shutdown event configuration.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of a layer.',
+    }),
+    StackId: StringSchema.exactOptional().openapi({ description: 'The layer stack ID.' }),
+    LayerId: StringSchema.exactOptional().openapi({ description: 'The layer ID.' }),
+    Type: LayerTypeSchema.exactOptional().openapi({ description: 'The layer type.' }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The layer name.' }),
+    Shortname: StringSchema.exactOptional().openapi({ description: 'The layer short name.' }),
+    Attributes: LayerAttributesSchema.exactOptional().openapi({
+      description:
+        "<p>The layer attributes.</p> <p>For the <code>HaproxyStatsPassword</code>, <code>MysqlRootPassword</code>, and <code>GangliaPassword</code> attributes, AWS OpsWorks Stacks returns <code>*****FILTERED*****</code> instead of the actual value</p> <p>For an ECS Cluster layer, AWS OpsWorks Stacks the <code>EcsClusterArn</code> attribute is set to the cluster's ARN.</p>",
+    }),
+    CloudWatchLogsConfiguration: CloudWatchLogsConfigurationSchema.exactOptional().openapi({
+      description: 'The Amazon CloudWatch Logs configuration settings for the layer.',
+    }),
+    CustomInstanceProfileArn: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN of the default IAM profile to be used for the layer\'s EC2 instances. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
+    }),
+    CustomJson: StringSchema.exactOptional().openapi({
+      description:
+        "A JSON formatted string containing the layer's custom stack configuration and deployment attributes.",
+    }),
+    CustomSecurityGroupIds: StringsSchema.exactOptional().openapi({
+      description: "An array containing the layer's custom security group IDs.",
+    }),
+    DefaultSecurityGroupNames: StringsSchema.exactOptional().openapi({
+      description: "An array containing the layer's security group names.",
+    }),
+    Packages: StringsSchema.exactOptional().openapi({
+      description: "An array of <code>Package</code> objects that describe the layer's packages.",
+    }),
+    VolumeConfigurations: VolumeConfigurationsSchema.exactOptional().openapi({
+      description:
+        "A <code>VolumeConfigurations</code> object that describes the layer's Amazon EBS volumes.",
+    }),
+    EnableAutoHealing: BooleanSchema.exactOptional().openapi({
+      description: 'Whether auto healing is disabled for the layer.',
+    }),
+    AutoAssignElasticIps: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether to automatically assign an <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html">Elastic IP address</a> to the layer\'s instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers-basics-edit.html">How to Edit a Layer</a>.',
+    }),
+    AutoAssignPublicIps: BooleanSchema.exactOptional().openapi({
+      description:
+        'For stacks that are running in a VPC, whether to automatically assign a public IP address to the layer\'s instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers-basics-edit.html">How to Edit a Layer</a>.',
+    }),
+    DefaultRecipes: RecipesSchema.exactOptional().openapi({
+      description:
+        "<p>AWS OpsWorks Stacks supports five lifecycle events: <b>setup</b>, <b>configuration</b>, <b>deploy</b>, <b>undeploy</b>, and <b>shutdown</b>. For each layer, AWS OpsWorks Stacks runs a set of standard recipes for each event. You can also provide custom recipes for any or all layers and events. AWS OpsWorks Stacks runs custom event recipes after the standard recipes. <code>LayerCustomRecipes</code> specifies the custom recipes for a particular layer to be run in response to each of the five events.</p> <p>To specify a recipe, use the cookbook's directory name in the repository followed by two colons and the recipe name, which is the recipe's file name without the <code>.rb</code> extension. For example: <code>phpapp2::dbsetup</code> specifies the <code>dbsetup.rb</code> recipe in the repository's <code>phpapp2</code> folder.</p>",
+    }),
+    CustomRecipes: RecipesSchema.exactOptional().openapi({
+      description:
+        "A <code>LayerCustomRecipes</code> object that specifies the layer's custom recipes.",
+    }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'Date when the layer was created.',
+    }),
+    InstallUpdatesOnBoot: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>. If this value is set to <code>false</code>, you must then update your instances manually by using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances. </p> <note> <p>We strongly recommend using the default value of <code>true</code>, to ensure that your instances have the latest security updates.</p> </note>',
+    }),
+    UseEbsOptimizedInstances: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the layer uses Amazon EBS-optimized instances.',
+    }),
+    LifecycleEventConfiguration: LifecycleEventConfigurationSchema.exactOptional().openapi({
+      description:
+        'A <code>LifeCycleEventConfiguration</code> object that specifies the Shutdown event configuration.',
+    }),
   })
   .openapi({ description: 'Describes a layer.', required: [] })
   .openapi('Layer')
@@ -2581,13 +1739,9 @@ const LayersSchema = z.array(LayerSchema).openapi('Layers')
 
 const DescribeLayersResultSchema = z
   .object({
-    Layers: LayersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of <code>Layer</code> objects that describe the layers.',
-        }),
-    ).exactOptional(),
+    Layers: LayersSchema.exactOptional().openapi({
+      description: 'An array of <code>Layer</code> objects that describe the layers.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeLayers</code> request.',
@@ -2597,15 +1751,11 @@ const DescribeLayersResultSchema = z
 
 const DescribeLayersRequestSchema = z
   .object({
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })).exactOptional(),
-    LayerIds: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of layer IDs that specify the layers to be described. If you omit this parameter, <code>DescribeLayers</code> returns a description of every layer in the specified stack.',
-        }),
-    ).exactOptional(),
+    StackId: StringSchema.exactOptional().openapi({ description: 'The stack ID.' }),
+    LayerIds: StringsSchema.exactOptional().openapi({
+      description:
+        'An array of layer IDs that specify the layers to be described. If you omit this parameter, <code>DescribeLayers</code> returns a description of every layer in the specified stack.',
+    }),
   })
   .openapi({ title: 'DescribeLayersRequest', required: [] })
   .openapi('DescribeLayersRequest')
@@ -2616,62 +1766,33 @@ const DoubleSchema = z.float64().openapi('Double')
 
 const AutoScalingThresholdsSchema = z
   .object({
-    InstanceCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of instances to add or remove when the load exceeds a threshold.',
-        }),
-    ).exactOptional(),
-    ThresholdsWaitTime: MinuteSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time, in minutes, that the load must exceed a threshold before more instances are added or removed.',
-        }),
-    ).exactOptional(),
-    IgnoreMetricsTime: MinuteSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The amount of time (in minutes) after a scaling event occurs that AWS OpsWorks Stacks should ignore metrics and suppress additional scaling events. For example, AWS OpsWorks Stacks adds new instances following an upscaling event but the instances won't start reducing the load until they have been booted and configured. There is no point in raising additional scaling events during that operation, which typically takes several minutes. <code>IgnoreMetricsTime</code> allows you to direct AWS OpsWorks Stacks to suppress scaling events long enough to get the new instances online.",
-        }),
-    ).exactOptional(),
-    CpuThreshold: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The CPU utilization threshold, as a percent of the available CPU. A value of -1 disables the threshold.',
-        }),
-    ).exactOptional(),
-    MemoryThreshold: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The memory utilization threshold, as a percent of the available memory. A value of -1 disables the threshold.',
-        }),
-    ).exactOptional(),
-    LoadThreshold: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The load threshold. A value of -1 disables the threshold. For more information about how load is computed, see <a href="http://en.wikipedia.org/wiki/Load_%28computing%29">Load (computing)</a>.',
-        }),
-    ).exactOptional(),
-    Alarms: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Custom Cloudwatch auto scaling alarms, to be used as thresholds. This parameter takes a list of up to five alarm names, which are case sensitive and must be in the same region as the stack.</p> <note> <p>To use custom alarms, you must update your service role to allow <code>cloudwatch:DescribeAlarms</code>. You can either have AWS OpsWorks Stacks update the role for you when you first use this feature or you can edit the role manually. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/opsworks-security-servicerole.html">Allowing AWS OpsWorks Stacks to Act on Your Behalf</a>.</p> </note>',
-        }),
-    ).exactOptional(),
+    InstanceCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances to add or remove when the load exceeds a threshold.',
+    }),
+    ThresholdsWaitTime: MinuteSchema.exactOptional().openapi({
+      description:
+        'The amount of time, in minutes, that the load must exceed a threshold before more instances are added or removed.',
+    }),
+    IgnoreMetricsTime: MinuteSchema.exactOptional().openapi({
+      description:
+        "The amount of time (in minutes) after a scaling event occurs that AWS OpsWorks Stacks should ignore metrics and suppress additional scaling events. For example, AWS OpsWorks Stacks adds new instances following an upscaling event but the instances won't start reducing the load until they have been booted and configured. There is no point in raising additional scaling events during that operation, which typically takes several minutes. <code>IgnoreMetricsTime</code> allows you to direct AWS OpsWorks Stacks to suppress scaling events long enough to get the new instances online.",
+    }),
+    CpuThreshold: DoubleSchema.exactOptional().openapi({
+      description:
+        'The CPU utilization threshold, as a percent of the available CPU. A value of -1 disables the threshold.',
+    }),
+    MemoryThreshold: DoubleSchema.exactOptional().openapi({
+      description:
+        'The memory utilization threshold, as a percent of the available memory. A value of -1 disables the threshold.',
+    }),
+    LoadThreshold: DoubleSchema.exactOptional().openapi({
+      description:
+        'The load threshold. A value of -1 disables the threshold. For more information about how load is computed, see <a href="http://en.wikipedia.org/wiki/Load_%28computing%29">Load (computing)</a>.',
+    }),
+    Alarms: StringsSchema.exactOptional().openapi({
+      description:
+        '<p>Custom Cloudwatch auto scaling alarms, to be used as thresholds. This parameter takes a list of up to five alarm names, which are case sensitive and must be in the same region as the stack.</p> <note> <p>To use custom alarms, you must update your service role to allow <code>cloudwatch:DescribeAlarms</code>. You can either have AWS OpsWorks Stacks update the role for you when you first use this feature or you can edit the role manually. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/opsworks-security-servicerole.html">Allowing AWS OpsWorks Stacks to Act on Your Behalf</a>.</p> </note>',
+    }),
   })
   .openapi({
     description:
@@ -2682,26 +1803,18 @@ const AutoScalingThresholdsSchema = z
 
 const LoadBasedAutoScalingConfigurationSchema = z
   .object({
-    LayerId: StringSchema.and(z.any().openapi({ description: 'The layer ID.' })).exactOptional(),
-    Enable: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether load-based auto scaling is enabled for the layer.' }),
-    ).exactOptional(),
-    UpScaling: AutoScalingThresholdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>AutoScalingThresholds</code> object that describes the upscaling configuration, which defines how and when AWS OpsWorks Stacks increases the number of instances.',
-        }),
-    ).exactOptional(),
-    DownScaling: AutoScalingThresholdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>AutoScalingThresholds</code> object that describes the downscaling configuration, which defines how and when AWS OpsWorks Stacks reduces the number of instances.',
-        }),
-    ).exactOptional(),
+    LayerId: StringSchema.exactOptional().openapi({ description: 'The layer ID.' }),
+    Enable: BooleanSchema.exactOptional().openapi({
+      description: 'Whether load-based auto scaling is enabled for the layer.',
+    }),
+    UpScaling: AutoScalingThresholdsSchema.exactOptional().openapi({
+      description:
+        'An <code>AutoScalingThresholds</code> object that describes the upscaling configuration, which defines how and when AWS OpsWorks Stacks increases the number of instances.',
+    }),
+    DownScaling: AutoScalingThresholdsSchema.exactOptional().openapi({
+      description:
+        'An <code>AutoScalingThresholds</code> object that describes the downscaling configuration, which defines how and when AWS OpsWorks Stacks reduces the number of instances.',
+    }),
   })
   .openapi({
     description: "Describes a layer's load-based auto scaling configuration.",
@@ -2715,14 +1828,11 @@ const LoadBasedAutoScalingConfigurationsSchema = z
 
 const DescribeLoadBasedAutoScalingResultSchema = z
   .object({
-    LoadBasedAutoScalingConfigurations: LoadBasedAutoScalingConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of <code>LoadBasedAutoScalingConfiguration</code> objects that describe each layer's configuration.",
-        }),
-    ).exactOptional(),
+    LoadBasedAutoScalingConfigurations:
+      LoadBasedAutoScalingConfigurationsSchema.exactOptional().openapi({
+        description:
+          "An array of <code>LoadBasedAutoScalingConfiguration</code> objects that describe each layer's configuration.",
+      }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeLoadBasedAutoScaling</code> request.',
@@ -2731,38 +1841,27 @@ const DescribeLoadBasedAutoScalingResultSchema = z
   .openapi('DescribeLoadBasedAutoScalingResult')
 
 const DescribeLoadBasedAutoScalingRequestSchema = z
-  .object({
-    LayerIds: StringsSchema.and(z.any().openapi({ description: 'An array of layer IDs.' })),
-  })
+  .object({ LayerIds: StringsSchema.openapi({ description: 'An array of layer IDs.' }) })
   .openapi({ required: ['LayerIds'], title: 'DescribeLoadBasedAutoScalingRequest' })
   .openapi('DescribeLoadBasedAutoScalingRequest')
 
 const SelfUserProfileSchema = z
   .object({
-    IamUserArn: StringSchema.and(
-      z.any().openapi({ description: "The user's IAM ARN." }),
-    ).exactOptional(),
-    Name: StringSchema.and(z.any().openapi({ description: "The user's name." })).exactOptional(),
-    SshUsername: StringSchema.and(
-      z.any().openapi({ description: "The user's SSH user name." }),
-    ).exactOptional(),
-    SshPublicKey: StringSchema.and(
-      z.any().openapi({ description: "The user's SSH public key." }),
-    ).exactOptional(),
+    IamUserArn: StringSchema.exactOptional().openapi({ description: "The user's IAM ARN." }),
+    Name: StringSchema.exactOptional().openapi({ description: "The user's name." }),
+    SshUsername: StringSchema.exactOptional().openapi({ description: "The user's SSH user name." }),
+    SshPublicKey: StringSchema.exactOptional().openapi({
+      description: "The user's SSH public key.",
+    }),
   })
   .openapi({ description: "Describes a user's SSH information.", required: [] })
   .openapi('SelfUserProfile')
 
 const DescribeMyUserProfileResultSchema = z
   .object({
-    UserProfile: SelfUserProfileSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A <code>UserProfile</code> object that describes the user's SSH information.",
-        }),
-    ).exactOptional(),
+    UserProfile: SelfUserProfileSchema.exactOptional().openapi({
+      description: "A <code>UserProfile</code> object that describes the user's SSH information.",
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeMyUserProfile</code> request.',
@@ -2772,17 +1871,13 @@ const DescribeMyUserProfileResultSchema = z
 
 const OperatingSystemConfigurationManagerSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the configuration manager, which is Chef.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The versions of the configuration manager that are supported by an operating system.',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of the configuration manager, which is Chef.',
+    }),
+    Version: StringSchema.exactOptional().openapi({
+      description:
+        'The versions of the configuration manager that are supported by an operating system.',
+    }),
   })
   .openapi({
     description:
@@ -2797,56 +1892,31 @@ const OperatingSystemConfigurationManagersSchema = z
 
 const OperatingSystemSchema = z
   .object({
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the operating system, such as <code>Amazon Linux 2018.03</code>.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of a supported operating system, such as <code>Amazon Linux 2018.03</code>.',
-        }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of a supported operating system, either <code>Linux</code> or <code>Windows</code>.',
-        }),
-    ).exactOptional(),
-    ConfigurationManagers: OperatingSystemConfigurationManagersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Supported configuration manager name and versions for an AWS OpsWorks Stacks operating system.',
-        }),
-    ).exactOptional(),
-    ReportedName: StringSchema.and(
-      z.any().openapi({ description: 'A short name for the operating system manufacturer.' }),
-    ).exactOptional(),
-    ReportedVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the operating system, including the release and edition, if applicable.',
-        }),
-    ).exactOptional(),
-    Supported: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates that an operating system is not supported for new instances.',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of the operating system, such as <code>Amazon Linux 2018.03</code>.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description:
+        'The ID of a supported operating system, such as <code>Amazon Linux 2018.03</code>.',
+    }),
+    Type: StringSchema.exactOptional().openapi({
+      description:
+        'The type of a supported operating system, either <code>Linux</code> or <code>Windows</code>.',
+    }),
+    ConfigurationManagers: OperatingSystemConfigurationManagersSchema.exactOptional().openapi({
+      description:
+        'Supported configuration manager name and versions for an AWS OpsWorks Stacks operating system.',
+    }),
+    ReportedName: StringSchema.exactOptional().openapi({
+      description: 'A short name for the operating system manufacturer.',
+    }),
+    ReportedVersion: StringSchema.exactOptional().openapi({
+      description:
+        'The version of the operating system, including the release and edition, if applicable.',
+    }),
+    Supported: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates that an operating system is not supported for new instances.',
+    }),
   })
   .openapi({
     description: 'Describes supported operating systems in AWS OpsWorks Stacks.',
@@ -2858,14 +1928,10 @@ const OperatingSystemsSchema = z.array(OperatingSystemSchema).openapi('Operating
 
 const DescribeOperatingSystemsResponseSchema = z
   .object({
-    OperatingSystems: OperatingSystemsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information in response to a <code>DescribeOperatingSystems</code> request.',
-        }),
-    ).exactOptional(),
+    OperatingSystems: OperatingSystemsSchema.exactOptional().openapi({
+      description:
+        'Contains information in response to a <code>DescribeOperatingSystems</code> request.',
+    }),
   })
   .openapi({
     description: 'The response to a <code>DescribeOperatingSystems</code> request.',
@@ -2875,29 +1941,21 @@ const DescribeOperatingSystemsResponseSchema = z
 
 const PermissionSchema = z
   .object({
-    StackId: StringSchema.and(z.any().openapi({ description: 'A stack ID.' })).exactOptional(),
-    IamUserArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for an AWS Identity and Access Management (IAM) role. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
-        }),
-    ).exactOptional(),
-    AllowSsh: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the user can use SSH.' }),
-    ).exactOptional(),
-    AllowSudo: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the user can use <b>sudo</b>.' }),
-    ).exactOptional(),
-    Level: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The user\'s permission level, which must be the following:</p> <ul> <li> <p> <code>deny</code> </p> </li> <li> <p> <code>show</code> </p> </li> <li> <p> <code>deploy</code> </p> </li> <li> <p> <code>manage</code> </p> </li> <li> <p> <code>iam_only</code> </p> </li> </ul> <p>For more information on the permissions associated with these levels, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/opsworks-security-users.html">Managing User Permissions</a> </p>',
-        }),
-    ).exactOptional(),
+    StackId: StringSchema.exactOptional().openapi({ description: 'A stack ID.' }),
+    IamUserArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for an AWS Identity and Access Management (IAM) role. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
+    }),
+    AllowSsh: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the user can use SSH.',
+    }),
+    AllowSudo: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the user can use <b>sudo</b>.',
+    }),
+    Level: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The user\'s permission level, which must be the following:</p> <ul> <li> <p> <code>deny</code> </p> </li> <li> <p> <code>show</code> </p> </li> <li> <p> <code>deploy</code> </p> </li> <li> <p> <code>manage</code> </p> </li> <li> <p> <code>iam_only</code> </p> </li> </ul> <p>For more information on the permissions associated with these levels, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/opsworks-security-users.html">Managing User Permissions</a> </p>',
+    }),
   })
   .openapi({ description: 'Describes stack or user permissions.', required: [] })
   .openapi('Permission')
@@ -2906,14 +1964,10 @@ const PermissionsSchema = z.array(PermissionSchema).openapi('Permissions')
 
 const DescribePermissionsResultSchema = z
   .object({
-    Permissions: PermissionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An array of <code>Permission</code> objects that describe the stack permissions.</p> <ul> <li> <p>If the request object contains only a stack ID, the array contains a <code>Permission</code> object with permissions for each of the stack IAM ARNs.</p> </li> <li> <p>If the request object contains only an IAM ARN, the array contains a <code>Permission</code> object with permissions for each of the user's stack IDs.</p> </li> <li> <p>If the request contains a stack ID and an IAM ARN, the array contains a single <code>Permission</code> object with permissions for the specified stack and IAM ARN.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    Permissions: PermissionsSchema.exactOptional().openapi({
+      description:
+        "<p>An array of <code>Permission</code> objects that describe the stack permissions.</p> <ul> <li> <p>If the request object contains only a stack ID, the array contains a <code>Permission</code> object with permissions for each of the stack IAM ARNs.</p> </li> <li> <p>If the request object contains only an IAM ARN, the array contains a <code>Permission</code> object with permissions for each of the user's stack IDs.</p> </li> <li> <p>If the request contains a stack ID and an IAM ARN, the array contains a single <code>Permission</code> object with permissions for the specified stack and IAM ARN.</p> </li> </ul>",
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribePermissions</code> request.',
@@ -2923,64 +1977,46 @@ const DescribePermissionsResultSchema = z
 
 const DescribePermissionsRequestSchema = z
   .object({
-    IamUserArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user\'s IAM ARN. This can also be a federated user\'s ARN. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
-        }),
-    ).exactOptional(),
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })).exactOptional(),
+    IamUserArn: StringSchema.exactOptional().openapi({
+      description:
+        'The user\'s IAM ARN. This can also be a federated user\'s ARN. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
+    }),
+    StackId: StringSchema.exactOptional().openapi({ description: 'The stack ID.' }),
   })
   .openapi({ title: 'DescribePermissionsRequest', required: [] })
   .openapi('DescribePermissionsRequest')
 
 const RaidArraySchema = z
   .object({
-    RaidArrayId: StringSchema.and(
-      z.any().openapi({ description: 'The array ID.' }),
-    ).exactOptional(),
-    InstanceId: StringSchema.and(
-      z.any().openapi({ description: 'The instance ID.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(z.any().openapi({ description: 'The array name.' })).exactOptional(),
-    RaidLevel: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="http://en.wikipedia.org/wiki/Standard_RAID_levels">RAID level</a>.',
-        }),
-    ).exactOptional(),
-    NumberOfDisks: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of disks in the array.' }),
-    ).exactOptional(),
-    Size: IntegerSchema.and(z.any().openapi({ description: "The array's size." })).exactOptional(),
-    Device: StringSchema.and(
-      z.any().openapi({ description: "The array's Linux device. For example /dev/mdadm0." }),
-    ).exactOptional(),
-    MountPoint: StringSchema.and(
-      z.any().openapi({ description: "The array's mount point." }),
-    ).exactOptional(),
-    AvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array\'s Availability Zone. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
-        }),
-    ).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'When the RAID array was created.' }),
-    ).exactOptional(),
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })).exactOptional(),
-    VolumeType: StringSchema.and(
-      z.any().openapi({ description: 'The volume type, standard or PIOPS.' }),
-    ).exactOptional(),
-    Iops: IntegerSchema.and(
-      z.any().openapi({ description: 'For PIOPS volumes, the IOPS per disk.' }),
-    ).exactOptional(),
+    RaidArrayId: StringSchema.exactOptional().openapi({ description: 'The array ID.' }),
+    InstanceId: StringSchema.exactOptional().openapi({ description: 'The instance ID.' }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The array name.' }),
+    RaidLevel: IntegerSchema.exactOptional().openapi({
+      description:
+        'The <a href="http://en.wikipedia.org/wiki/Standard_RAID_levels">RAID level</a>.',
+    }),
+    NumberOfDisks: IntegerSchema.exactOptional().openapi({
+      description: 'The number of disks in the array.',
+    }),
+    Size: IntegerSchema.exactOptional().openapi({ description: "The array's size." }),
+    Device: StringSchema.exactOptional().openapi({
+      description: "The array's Linux device. For example /dev/mdadm0.",
+    }),
+    MountPoint: StringSchema.exactOptional().openapi({ description: "The array's mount point." }),
+    AvailabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        'The array\'s Availability Zone. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
+    }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'When the RAID array was created.',
+    }),
+    StackId: StringSchema.exactOptional().openapi({ description: 'The stack ID.' }),
+    VolumeType: StringSchema.exactOptional().openapi({
+      description: 'The volume type, standard or PIOPS.',
+    }),
+    Iops: IntegerSchema.exactOptional().openapi({
+      description: 'For PIOPS volumes, the IOPS per disk.',
+    }),
   })
   .openapi({ description: "Describes an instance's RAID array.", required: [] })
   .openapi('RaidArray')
@@ -2989,13 +2025,9 @@ const RaidArraysSchema = z.array(RaidArraySchema).openapi('RaidArrays')
 
 const DescribeRaidArraysResultSchema = z
   .object({
-    RaidArrays: RaidArraysSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A <code>RaidArrays</code> object that describes the specified RAID arrays.',
-        }),
-    ).exactOptional(),
+    RaidArrays: RaidArraysSchema.exactOptional().openapi({
+      description: 'A <code>RaidArrays</code> object that describes the specified RAID arrays.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeRaidArrays</code> request.',
@@ -3005,68 +2037,42 @@ const DescribeRaidArraysResultSchema = z
 
 const DescribeRaidArraysRequestSchema = z
   .object({
-    InstanceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance ID. If you use this parameter, <code>DescribeRaidArrays</code> returns descriptions of the RAID arrays associated with the specified instance. ',
-        }),
-    ).exactOptional(),
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })).exactOptional(),
-    RaidArrayIds: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of RAID array IDs. If you use this parameter, <code>DescribeRaidArrays</code> returns descriptions of the specified arrays. Otherwise, it returns a description of every array.',
-        }),
-    ).exactOptional(),
+    InstanceId: StringSchema.exactOptional().openapi({
+      description:
+        'The instance ID. If you use this parameter, <code>DescribeRaidArrays</code> returns descriptions of the RAID arrays associated with the specified instance. ',
+    }),
+    StackId: StringSchema.exactOptional().openapi({ description: 'The stack ID.' }),
+    RaidArrayIds: StringsSchema.exactOptional().openapi({
+      description:
+        'An array of RAID array IDs. If you use this parameter, <code>DescribeRaidArrays</code> returns descriptions of the specified arrays. Otherwise, it returns a description of every array.',
+    }),
   })
   .openapi({ title: 'DescribeRaidArraysRequest', required: [] })
   .openapi('DescribeRaidArraysRequest')
 
 const RdsDbInstanceSchema = z
   .object({
-    RdsDbInstanceArn: StringSchema.and(
-      z.any().openapi({ description: "The instance's ARN." }),
-    ).exactOptional(),
-    DbInstanceIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The DB instance identifier.' }),
-    ).exactOptional(),
-    DbUser: StringSchema.and(
-      z.any().openapi({ description: 'The master user name.' }),
-    ).exactOptional(),
-    DbPassword: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'AWS OpsWorks Stacks returns <code>*****FILTERED*****</code> instead of the actual value.',
-        }),
-    ).exactOptional(),
-    Region: StringSchema.and(
-      z.any().openapi({ description: "The instance's AWS region." }),
-    ).exactOptional(),
-    Address: StringSchema.and(
-      z.any().openapi({ description: "The instance's address." }),
-    ).exactOptional(),
-    Engine: StringSchema.and(
-      z.any().openapi({ description: "The instance's database engine." }),
-    ).exactOptional(),
-    StackId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the stack with which the instance is registered.' }),
-    ).exactOptional(),
-    MissingOnRds: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to <code>true</code> if AWS OpsWorks Stacks is unable to discover the Amazon RDS instance. AWS OpsWorks Stacks attempts to discover the instance only once. If this value is set to <code>true</code>, you must deregister the instance, and then register it again.',
-        }),
-    ).exactOptional(),
+    RdsDbInstanceArn: StringSchema.exactOptional().openapi({ description: "The instance's ARN." }),
+    DbInstanceIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The DB instance identifier.',
+    }),
+    DbUser: StringSchema.exactOptional().openapi({ description: 'The master user name.' }),
+    DbPassword: StringSchema.exactOptional().openapi({
+      description:
+        'AWS OpsWorks Stacks returns <code>*****FILTERED*****</code> instead of the actual value.',
+    }),
+    Region: StringSchema.exactOptional().openapi({ description: "The instance's AWS region." }),
+    Address: StringSchema.exactOptional().openapi({ description: "The instance's address." }),
+    Engine: StringSchema.exactOptional().openapi({
+      description: "The instance's database engine.",
+    }),
+    StackId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the stack with which the instance is registered.',
+    }),
+    MissingOnRds: BooleanSchema.exactOptional().openapi({
+      description:
+        'Set to <code>true</code> if AWS OpsWorks Stacks is unable to discover the Amazon RDS instance. AWS OpsWorks Stacks attempts to discover the instance only once. If this value is set to <code>true</code>, you must deregister the instance, and then register it again.',
+    }),
   })
   .openapi({ description: 'Describes an Amazon RDS instance.', required: [] })
   .openapi('RdsDbInstance')
@@ -3075,14 +2081,9 @@ const RdsDbInstancesSchema = z.array(RdsDbInstanceSchema).openapi('RdsDbInstance
 
 const DescribeRdsDbInstancesResultSchema = z
   .object({
-    RdsDbInstances: RdsDbInstancesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An a array of <code>RdsDbInstance</code> objects that describe the instances.',
-        }),
-    ).exactOptional(),
+    RdsDbInstances: RdsDbInstancesSchema.exactOptional().openapi({
+      description: 'An a array of <code>RdsDbInstance</code> objects that describe the instances.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeRdsDbInstances</code> request.',
@@ -3092,39 +2093,27 @@ const DescribeRdsDbInstancesResultSchema = z
 
 const DescribeRdsDbInstancesRequestSchema = z
   .object({
-    StackId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the stack with which the instances are registered. The operation returns descriptions of all registered Amazon RDS instances.',
-        }),
-    ),
-    RdsDbInstanceArns: StringsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array containing the ARNs of the instances to be described.' }),
-    ).exactOptional(),
+    StackId: StringSchema.openapi({
+      description:
+        'The ID of the stack with which the instances are registered. The operation returns descriptions of all registered Amazon RDS instances.',
+    }),
+    RdsDbInstanceArns: StringsSchema.exactOptional().openapi({
+      description: 'An array containing the ARNs of the instances to be described.',
+    }),
   })
   .openapi({ required: ['StackId'], title: 'DescribeRdsDbInstancesRequest' })
   .openapi('DescribeRdsDbInstancesRequest')
 
 const ServiceErrorSchema = z
   .object({
-    ServiceErrorId: StringSchema.and(
-      z.any().openapi({ description: 'The error ID.' }),
-    ).exactOptional(),
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })).exactOptional(),
-    InstanceId: StringSchema.and(
-      z.any().openapi({ description: 'The instance ID.' }),
-    ).exactOptional(),
-    Type: StringSchema.and(z.any().openapi({ description: 'The error type.' })).exactOptional(),
-    Message: StringSchema.and(
-      z.any().openapi({ description: 'A message that describes the error.' }),
-    ).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'When the error occurred.' }),
-    ).exactOptional(),
+    ServiceErrorId: StringSchema.exactOptional().openapi({ description: 'The error ID.' }),
+    StackId: StringSchema.exactOptional().openapi({ description: 'The stack ID.' }),
+    InstanceId: StringSchema.exactOptional().openapi({ description: 'The instance ID.' }),
+    Type: StringSchema.exactOptional().openapi({ description: 'The error type.' }),
+    Message: StringSchema.exactOptional().openapi({
+      description: 'A message that describes the error.',
+    }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({ description: 'When the error occurred.' }),
   })
   .openapi({ description: 'Describes an AWS OpsWorks Stacks service error.', required: [] })
   .openapi('ServiceError')
@@ -3133,14 +2122,10 @@ const ServiceErrorsSchema = z.array(ServiceErrorSchema).openapi('ServiceErrors')
 
 const DescribeServiceErrorsResultSchema = z
   .object({
-    ServiceErrors: ServiceErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>ServiceError</code> objects that describe the specified service errors.',
-        }),
-    ).exactOptional(),
+    ServiceErrors: ServiceErrorsSchema.exactOptional().openapi({
+      description:
+        'An array of <code>ServiceError</code> objects that describe the specified service errors.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeServiceErrors</code> request.',
@@ -3150,30 +2135,18 @@ const DescribeServiceErrorsResultSchema = z
 
 const DescribeServiceErrorsRequestSchema = z
   .object({
-    StackId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stack ID. If you use this parameter, <code>DescribeServiceErrors</code> returns descriptions of the errors associated with the specified stack.',
-        }),
-    ).exactOptional(),
-    InstanceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance ID. If you use this parameter, <code>DescribeServiceErrors</code> returns descriptions of the errors associated with the specified instance.',
-        }),
-    ).exactOptional(),
-    ServiceErrorIds: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of service error IDs. If you use this parameter, <code>DescribeServiceErrors</code> returns descriptions of the specified errors. Otherwise, it returns a description of every error.',
-        }),
-    ).exactOptional(),
+    StackId: StringSchema.exactOptional().openapi({
+      description:
+        'The stack ID. If you use this parameter, <code>DescribeServiceErrors</code> returns descriptions of the errors associated with the specified stack.',
+    }),
+    InstanceId: StringSchema.exactOptional().openapi({
+      description:
+        'The instance ID. If you use this parameter, <code>DescribeServiceErrors</code> returns descriptions of the errors associated with the specified instance.',
+    }),
+    ServiceErrorIds: StringsSchema.exactOptional().openapi({
+      description:
+        'An array of service error IDs. If you use this parameter, <code>DescribeServiceErrors</code> returns descriptions of the specified errors. Otherwise, it returns a description of every error.',
+    }),
   })
   .openapi({ title: 'DescribeServiceErrorsRequest', required: [] })
   .openapi('DescribeServiceErrorsRequest')
@@ -3182,14 +2155,12 @@ const ParametersSchema = z.record(z.string(), StringSchema).openapi('Parameters'
 
 const DescribeStackProvisioningParametersResultSchema = z
   .object({
-    AgentInstallerUrl: StringSchema.and(
-      z.any().openapi({ description: "The AWS OpsWorks Stacks agent installer's URL." }),
-    ).exactOptional(),
-    Parameters: ParametersSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An embedded object that contains the provisioning parameters.' }),
-    ).exactOptional(),
+    AgentInstallerUrl: StringSchema.exactOptional().openapi({
+      description: "The AWS OpsWorks Stacks agent installer's URL.",
+    }),
+    Parameters: ParametersSchema.exactOptional().openapi({
+      description: 'An embedded object that contains the provisioning parameters.',
+    }),
   })
   .openapi({
     description:
@@ -3199,100 +2170,72 @@ const DescribeStackProvisioningParametersResultSchema = z
   .openapi('DescribeStackProvisioningParametersResult')
 
 const DescribeStackProvisioningParametersRequestSchema = z
-  .object({ StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })) })
+  .object({ StackId: StringSchema.openapi({ description: 'The stack ID.' }) })
   .openapi({ required: ['StackId'], title: 'DescribeStackProvisioningParametersRequest' })
   .openapi('DescribeStackProvisioningParametersRequest')
 
 const InstancesCountSchema = z
   .object({
-    Assigning: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of instances in the Assigning state.' }),
-    ).exactOptional(),
-    Booting: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of instances with <code>booting</code> status.' }),
-    ).exactOptional(),
-    ConnectionLost: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of instances with <code>connection_lost</code> status.',
-        }),
-    ).exactOptional(),
-    Deregistering: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of instances in the Deregistering state.' }),
-    ).exactOptional(),
-    Online: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of instances with <code>online</code> status.' }),
-    ).exactOptional(),
-    Pending: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of instances with <code>pending</code> status.' }),
-    ).exactOptional(),
-    Rebooting: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of instances with <code>rebooting</code> status.' }),
-    ).exactOptional(),
-    Registered: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of instances in the Registered state.' }),
-    ).exactOptional(),
-    Registering: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of instances in the Registering state.' }),
-    ).exactOptional(),
-    Requested: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of instances with <code>requested</code> status.' }),
-    ).exactOptional(),
-    RunningSetup: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of instances with <code>running_setup</code> status.',
-        }),
-    ).exactOptional(),
-    SetupFailed: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of instances with <code>setup_failed</code> status.' }),
-    ).exactOptional(),
-    ShuttingDown: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of instances with <code>shutting_down</code> status.',
-        }),
-    ).exactOptional(),
-    StartFailed: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of instances with <code>start_failed</code> status.' }),
-    ).exactOptional(),
-    StopFailed: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of instances with <code>stop_failed</code> status.' }),
-    ).exactOptional(),
-    Stopped: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of instances with <code>stopped</code> status.' }),
-    ).exactOptional(),
-    Stopping: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of instances with <code>stopping</code> status.' }),
-    ).exactOptional(),
-    Terminated: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of instances with <code>terminated</code> status.' }),
-    ).exactOptional(),
-    Terminating: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of instances with <code>terminating</code> status.' }),
-    ).exactOptional(),
-    Unassigning: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of instances in the Unassigning state.' }),
-    ).exactOptional(),
+    Assigning: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances in the Assigning state.',
+    }),
+    Booting: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances with <code>booting</code> status.',
+    }),
+    ConnectionLost: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances with <code>connection_lost</code> status.',
+    }),
+    Deregistering: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances in the Deregistering state.',
+    }),
+    Online: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances with <code>online</code> status.',
+    }),
+    Pending: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances with <code>pending</code> status.',
+    }),
+    Rebooting: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances with <code>rebooting</code> status.',
+    }),
+    Registered: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances in the Registered state.',
+    }),
+    Registering: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances in the Registering state.',
+    }),
+    Requested: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances with <code>requested</code> status.',
+    }),
+    RunningSetup: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances with <code>running_setup</code> status.',
+    }),
+    SetupFailed: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances with <code>setup_failed</code> status.',
+    }),
+    ShuttingDown: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances with <code>shutting_down</code> status.',
+    }),
+    StartFailed: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances with <code>start_failed</code> status.',
+    }),
+    StopFailed: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances with <code>stop_failed</code> status.',
+    }),
+    Stopped: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances with <code>stopped</code> status.',
+    }),
+    Stopping: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances with <code>stopping</code> status.',
+    }),
+    Terminated: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances with <code>terminated</code> status.',
+    }),
+    Terminating: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances with <code>terminating</code> status.',
+    }),
+    Unassigning: IntegerSchema.exactOptional().openapi({
+      description: 'The number of instances in the Unassigning state.',
+    }),
   })
   .openapi({
     description: 'Describes how many instances a stack has for each status.',
@@ -3302,23 +2245,15 @@ const InstancesCountSchema = z
 
 const StackSummarySchema = z
   .object({
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })).exactOptional(),
-    Name: StringSchema.and(z.any().openapi({ description: 'The stack name.' })).exactOptional(),
-    Arn: StringSchema.and(z.any().openapi({ description: "The stack's ARN." })).exactOptional(),
-    LayersCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of layers.' }),
-    ).exactOptional(),
-    AppsCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of apps.' }),
-    ).exactOptional(),
-    InstancesCount: InstancesCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>InstancesCount</code> object with the number of instances in each status.',
-        }),
-    ).exactOptional(),
+    StackId: StringSchema.exactOptional().openapi({ description: 'The stack ID.' }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The stack name.' }),
+    Arn: StringSchema.exactOptional().openapi({ description: "The stack's ARN." }),
+    LayersCount: IntegerSchema.exactOptional().openapi({ description: 'The number of layers.' }),
+    AppsCount: IntegerSchema.exactOptional().openapi({ description: 'The number of apps.' }),
+    InstancesCount: InstancesCountSchema.exactOptional().openapi({
+      description:
+        'An <code>InstancesCount</code> object with the number of instances in each status.',
+    }),
   })
   .openapi({
     description: 'Summarizes the number of layers, instances, and apps in a stack.',
@@ -3328,11 +2263,9 @@ const StackSummarySchema = z
 
 const DescribeStackSummaryResultSchema = z
   .object({
-    StackSummary: StackSummarySchema.and(
-      z
-        .any()
-        .openapi({ description: 'A <code>StackSummary</code> object that contains the results.' }),
-    ).exactOptional(),
+    StackSummary: StackSummarySchema.exactOptional().openapi({
+      description: 'A <code>StackSummary</code> object that contains the results.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeStackSummary</code> request.',
@@ -3341,132 +2274,82 @@ const DescribeStackSummaryResultSchema = z
   .openapi('DescribeStackSummaryResult')
 
 const DescribeStackSummaryRequestSchema = z
-  .object({ StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })) })
+  .object({ StackId: StringSchema.openapi({ description: 'The stack ID.' }) })
   .openapi({ required: ['StackId'], title: 'DescribeStackSummaryRequest' })
   .openapi('DescribeStackSummaryRequest')
 
 const StackSchema = z
   .object({
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })).exactOptional(),
-    Name: StringSchema.and(z.any().openapi({ description: 'The stack name.' })).exactOptional(),
-    Arn: StringSchema.and(z.any().openapi({ description: "The stack's ARN." })).exactOptional(),
-    Region: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stack AWS region, such as "ap-northeast-2". For more information about AWS regions, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
-        }),
-    ).exactOptional(),
-    VpcId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The VPC ID; applicable only if the stack is running in a VPC.' }),
-    ).exactOptional(),
-    Attributes: StackAttributesSchema.and(
-      z.any().openapi({ description: "The stack's attributes." }),
-    ).exactOptional(),
-    ServiceRoleArn: StringSchema.and(
-      z.any().openapi({ description: 'The stack AWS Identity and Access Management (IAM) role.' }),
-    ).exactOptional(),
-    DefaultInstanceProfileArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of an IAM profile that is the default profile for all of the stack\'s EC2 instances. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
-        }),
-    ).exactOptional(),
-    DefaultOs: StringSchema.and(
-      z.any().openapi({ description: "The stack's default operating system." }),
-    ).exactOptional(),
-    HostnameTheme: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The stack host name theme, with spaces replaced by underscores.',
-        }),
-    ).exactOptional(),
-    DefaultAvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stack\'s default Availability Zone. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
-        }),
-    ).exactOptional(),
-    DefaultSubnetId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The default subnet ID; applicable only if the stack is running in a VPC.',
-        }),
-    ).exactOptional(),
-    CustomJson: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A JSON object that contains user-defined attributes to be added to the stack configuration and deployment attributes. You can use custom JSON to override the corresponding default stack configuration attribute values or to pass data to recipes. The string should be in the following format:</p> <p> <code>"{\\"key1\\": \\"value1\\", \\"key2\\": \\"value2\\",...}"</code> </p> <p>For more information on custom JSON, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html">Use Custom JSON to Modify the Stack Configuration Attributes</a>.</p>',
-        }),
-    ).exactOptional(),
-    ConfigurationManager: StackConfigurationManagerSchema.and(
-      z.any().openapi({ description: 'The configuration manager.' }),
-    ).exactOptional(),
-    ChefConfiguration: ChefConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>ChefConfiguration</code> object that specifies whether to enable Berkshelf and the Berkshelf version. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html">Create a New Stack</a>.',
-        }),
-    ).exactOptional(),
-    UseCustomCookbooks: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the stack uses custom cookbooks.' }),
-    ).exactOptional(),
-    UseOpsworksSecurityGroups: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Whether the stack automatically associates the AWS OpsWorks Stacks built-in security groups with the stack's layers.",
-        }),
-    ).exactOptional(),
-    CustomCookbooksSource: SourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the information required to retrieve an app or cookbook from a repository. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html">Adding Apps</a> or <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook.html">Cookbooks and Recipes</a>.',
-        }),
-    ).exactOptional(),
-    DefaultSshKeyName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A default Amazon EC2 key pair for the stack's instances. You can override this value when you create or update an instance.",
-        }),
-    ).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date when the stack was created.' }),
-    ).exactOptional(),
-    DefaultRootDeviceType: RootDeviceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default root device type. This value is used by default for all instances in the stack, but you can override it when you create an instance. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device">Storage for the Root Device</a>.',
-        }),
-    ).exactOptional(),
-    AgentVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The agent version. This parameter is set to <code>LATEST</code> for auto-update. or a version number for a fixed agent version.',
-        }),
-    ).exactOptional(),
+    StackId: StringSchema.exactOptional().openapi({ description: 'The stack ID.' }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The stack name.' }),
+    Arn: StringSchema.exactOptional().openapi({ description: "The stack's ARN." }),
+    Region: StringSchema.exactOptional().openapi({
+      description:
+        'The stack AWS region, such as "ap-northeast-2". For more information about AWS regions, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
+    }),
+    VpcId: StringSchema.exactOptional().openapi({
+      description: 'The VPC ID; applicable only if the stack is running in a VPC.',
+    }),
+    Attributes: StackAttributesSchema.exactOptional().openapi({
+      description: "The stack's attributes.",
+    }),
+    ServiceRoleArn: StringSchema.exactOptional().openapi({
+      description: 'The stack AWS Identity and Access Management (IAM) role.',
+    }),
+    DefaultInstanceProfileArn: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN of an IAM profile that is the default profile for all of the stack\'s EC2 instances. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
+    }),
+    DefaultOs: StringSchema.exactOptional().openapi({
+      description: "The stack's default operating system.",
+    }),
+    HostnameTheme: StringSchema.exactOptional().openapi({
+      description: 'The stack host name theme, with spaces replaced by underscores.',
+    }),
+    DefaultAvailabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        'The stack\'s default Availability Zone. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
+    }),
+    DefaultSubnetId: StringSchema.exactOptional().openapi({
+      description: 'The default subnet ID; applicable only if the stack is running in a VPC.',
+    }),
+    CustomJson: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A JSON object that contains user-defined attributes to be added to the stack configuration and deployment attributes. You can use custom JSON to override the corresponding default stack configuration attribute values or to pass data to recipes. The string should be in the following format:</p> <p> <code>"{\\"key1\\": \\"value1\\", \\"key2\\": \\"value2\\",...}"</code> </p> <p>For more information on custom JSON, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html">Use Custom JSON to Modify the Stack Configuration Attributes</a>.</p>',
+    }),
+    ConfigurationManager: StackConfigurationManagerSchema.exactOptional().openapi({
+      description: 'The configuration manager.',
+    }),
+    ChefConfiguration: ChefConfigurationSchema.exactOptional().openapi({
+      description:
+        'A <code>ChefConfiguration</code> object that specifies whether to enable Berkshelf and the Berkshelf version. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html">Create a New Stack</a>.',
+    }),
+    UseCustomCookbooks: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the stack uses custom cookbooks.',
+    }),
+    UseOpsworksSecurityGroups: BooleanSchema.exactOptional().openapi({
+      description:
+        "Whether the stack automatically associates the AWS OpsWorks Stacks built-in security groups with the stack's layers.",
+    }),
+    CustomCookbooksSource: SourceSchema.exactOptional().openapi({
+      description:
+        'Contains the information required to retrieve an app or cookbook from a repository. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html">Adding Apps</a> or <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook.html">Cookbooks and Recipes</a>.',
+    }),
+    DefaultSshKeyName: StringSchema.exactOptional().openapi({
+      description:
+        "A default Amazon EC2 key pair for the stack's instances. You can override this value when you create or update an instance.",
+    }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'The date when the stack was created.',
+    }),
+    DefaultRootDeviceType: RootDeviceTypeSchema.exactOptional().openapi({
+      description:
+        'The default root device type. This value is used by default for all instances in the stack, but you can override it when you create an instance. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device">Storage for the Root Device</a>.',
+    }),
+    AgentVersion: StringSchema.exactOptional().openapi({
+      description:
+        'The agent version. This parameter is set to <code>LATEST</code> for auto-update. or a version number for a fixed agent version.',
+    }),
   })
   .openapi({ description: 'Describes a stack.', required: [] })
   .openapi('Stack')
@@ -3475,13 +2358,9 @@ const StacksSchema = z.array(StackSchema).openapi('Stacks')
 
 const DescribeStacksResultSchema = z
   .object({
-    Stacks: StacksSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of <code>Stack</code> objects that describe the stacks.',
-        }),
-    ).exactOptional(),
+    Stacks: StacksSchema.exactOptional().openapi({
+      description: 'An array of <code>Stack</code> objects that describe the stacks.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeStacks</code> request.',
@@ -3491,14 +2370,10 @@ const DescribeStacksResultSchema = z
 
 const DescribeStacksRequestSchema = z
   .object({
-    StackIds: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of stack IDs that specify the stacks to be described. If you omit this parameter, <code>DescribeStacks</code> returns a description of every stack.',
-        }),
-    ).exactOptional(),
+    StackIds: StringsSchema.exactOptional().openapi({
+      description:
+        'An array of stack IDs that specify the stacks to be described. If you omit this parameter, <code>DescribeStacks</code> returns a description of every stack.',
+    }),
   })
   .openapi({ title: 'DescribeStacksRequest', required: [] })
   .openapi('DescribeStacksRequest')
@@ -3511,27 +2386,27 @@ const DailyAutoScalingScheduleSchema = z
 
 const WeeklyAutoScalingScheduleSchema = z
   .object({
-    Monday: DailyAutoScalingScheduleSchema.and(
-      z.any().openapi({ description: 'The schedule for Monday.' }),
-    ).exactOptional(),
-    Tuesday: DailyAutoScalingScheduleSchema.and(
-      z.any().openapi({ description: 'The schedule for Tuesday.' }),
-    ).exactOptional(),
-    Wednesday: DailyAutoScalingScheduleSchema.and(
-      z.any().openapi({ description: 'The schedule for Wednesday.' }),
-    ).exactOptional(),
-    Thursday: DailyAutoScalingScheduleSchema.and(
-      z.any().openapi({ description: 'The schedule for Thursday.' }),
-    ).exactOptional(),
-    Friday: DailyAutoScalingScheduleSchema.and(
-      z.any().openapi({ description: 'The schedule for Friday.' }),
-    ).exactOptional(),
-    Saturday: DailyAutoScalingScheduleSchema.and(
-      z.any().openapi({ description: 'The schedule for Saturday.' }),
-    ).exactOptional(),
-    Sunday: DailyAutoScalingScheduleSchema.and(
-      z.any().openapi({ description: 'The schedule for Sunday.' }),
-    ).exactOptional(),
+    Monday: DailyAutoScalingScheduleSchema.exactOptional().openapi({
+      description: 'The schedule for Monday.',
+    }),
+    Tuesday: DailyAutoScalingScheduleSchema.exactOptional().openapi({
+      description: 'The schedule for Tuesday.',
+    }),
+    Wednesday: DailyAutoScalingScheduleSchema.exactOptional().openapi({
+      description: 'The schedule for Wednesday.',
+    }),
+    Thursday: DailyAutoScalingScheduleSchema.exactOptional().openapi({
+      description: 'The schedule for Thursday.',
+    }),
+    Friday: DailyAutoScalingScheduleSchema.exactOptional().openapi({
+      description: 'The schedule for Friday.',
+    }),
+    Saturday: DailyAutoScalingScheduleSchema.exactOptional().openapi({
+      description: 'The schedule for Saturday.',
+    }),
+    Sunday: DailyAutoScalingScheduleSchema.exactOptional().openapi({
+      description: 'The schedule for Sunday.',
+    }),
   })
   .openapi({
     description:
@@ -3542,17 +2417,10 @@ const WeeklyAutoScalingScheduleSchema = z
 
 const TimeBasedAutoScalingConfigurationSchema = z
   .object({
-    InstanceId: StringSchema.and(
-      z.any().openapi({ description: 'The instance ID.' }),
-    ).exactOptional(),
-    AutoScalingSchedule: WeeklyAutoScalingScheduleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>WeeklyAutoScalingSchedule</code> object with the instance schedule.',
-        }),
-    ).exactOptional(),
+    InstanceId: StringSchema.exactOptional().openapi({ description: 'The instance ID.' }),
+    AutoScalingSchedule: WeeklyAutoScalingScheduleSchema.exactOptional().openapi({
+      description: 'A <code>WeeklyAutoScalingSchedule</code> object with the instance schedule.',
+    }),
   })
   .openapi({
     description: "Describes an instance's time-based auto scaling configuration.",
@@ -3566,14 +2434,11 @@ const TimeBasedAutoScalingConfigurationsSchema = z
 
 const DescribeTimeBasedAutoScalingResultSchema = z
   .object({
-    TimeBasedAutoScalingConfigurations: TimeBasedAutoScalingConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>TimeBasedAutoScalingConfiguration</code> objects that describe the configuration for the specified instances.',
-        }),
-    ).exactOptional(),
+    TimeBasedAutoScalingConfigurations:
+      TimeBasedAutoScalingConfigurationsSchema.exactOptional().openapi({
+        description:
+          'An array of <code>TimeBasedAutoScalingConfiguration</code> objects that describe the configuration for the specified instances.',
+      }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeTimeBasedAutoScaling</code> request.',
@@ -3582,32 +2447,22 @@ const DescribeTimeBasedAutoScalingResultSchema = z
   .openapi('DescribeTimeBasedAutoScalingResult')
 
 const DescribeTimeBasedAutoScalingRequestSchema = z
-  .object({
-    InstanceIds: StringsSchema.and(z.any().openapi({ description: 'An array of instance IDs.' })),
-  })
+  .object({ InstanceIds: StringsSchema.openapi({ description: 'An array of instance IDs.' }) })
   .openapi({ required: ['InstanceIds'], title: 'DescribeTimeBasedAutoScalingRequest' })
   .openapi('DescribeTimeBasedAutoScalingRequest')
 
 const UserProfileSchema = z
   .object({
-    IamUserArn: StringSchema.and(
-      z.any().openapi({ description: "The user's IAM ARN." }),
-    ).exactOptional(),
-    Name: StringSchema.and(z.any().openapi({ description: "The user's name." })).exactOptional(),
-    SshUsername: StringSchema.and(
-      z.any().openapi({ description: "The user's SSH user name." }),
-    ).exactOptional(),
-    SshPublicKey: StringSchema.and(
-      z.any().openapi({ description: "The user's SSH public key." }),
-    ).exactOptional(),
-    AllowSelfManagement: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether users can specify their own SSH public key through the My Settings page. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/security-settingsshkey.html">Managing User Permissions</a>.',
-        }),
-    ).exactOptional(),
+    IamUserArn: StringSchema.exactOptional().openapi({ description: "The user's IAM ARN." }),
+    Name: StringSchema.exactOptional().openapi({ description: "The user's name." }),
+    SshUsername: StringSchema.exactOptional().openapi({ description: "The user's SSH user name." }),
+    SshPublicKey: StringSchema.exactOptional().openapi({
+      description: "The user's SSH public key.",
+    }),
+    AllowSelfManagement: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether users can specify their own SSH public key through the My Settings page. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/security-settingsshkey.html">Managing User Permissions</a>.',
+    }),
   })
   .openapi({ description: "Describes a user's SSH information.", required: [] })
   .openapi('UserProfile')
@@ -3616,13 +2471,9 @@ const UserProfilesSchema = z.array(UserProfileSchema).openapi('UserProfiles')
 
 const DescribeUserProfilesResultSchema = z
   .object({
-    UserProfiles: UserProfilesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A <code>Users</code> object that describes the specified users.',
-        }),
-    ).exactOptional(),
+    UserProfiles: UserProfilesSchema.exactOptional().openapi({
+      description: 'A <code>Users</code> object that describes the specified users.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeUserProfiles</code> request.',
@@ -3632,79 +2483,49 @@ const DescribeUserProfilesResultSchema = z
 
 const DescribeUserProfilesRequestSchema = z
   .object({
-    IamUserArns: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of IAM or federated user ARNs that identify the users to be described.',
-        }),
-    ).exactOptional(),
+    IamUserArns: StringsSchema.exactOptional().openapi({
+      description:
+        'An array of IAM or federated user ARNs that identify the users to be described.',
+    }),
   })
   .openapi({ title: 'DescribeUserProfilesRequest', required: [] })
   .openapi('DescribeUserProfilesRequest')
 
 const VolumeSchema = z
   .object({
-    VolumeId: StringSchema.and(z.any().openapi({ description: 'The volume ID.' })).exactOptional(),
-    Ec2VolumeId: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon EC2 volume ID.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(z.any().openapi({ description: 'The volume name.' })).exactOptional(),
-    RaidArrayId: StringSchema.and(
-      z.any().openapi({ description: 'The RAID array ID.' }),
-    ).exactOptional(),
-    InstanceId: StringSchema.and(
-      z.any().openapi({ description: 'The instance ID.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value returned by <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeVolumes.html">DescribeVolumes</a>.',
-        }),
-    ).exactOptional(),
-    Size: IntegerSchema.and(z.any().openapi({ description: 'The volume size.' })).exactOptional(),
-    Device: StringSchema.and(z.any().openapi({ description: 'The device name.' })).exactOptional(),
-    MountPoint: StringSchema.and(
-      z.any().openapi({ description: 'The volume mount point. For example, "/mnt/disk1".' }),
-    ).exactOptional(),
-    Region: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS region. For more information about AWS regions, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
-        }),
-    ).exactOptional(),
-    AvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The volume Availability Zone. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
-        }),
-    ).exactOptional(),
-    VolumeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The volume type. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumeTypes.html"> Amazon EBS Volume Types</a>.</p> <ul> <li> <p> <code>standard</code> - Magnetic. Magnetic volumes must have a minimum size of 1 GiB and a maximum size of 1024 GiB.</p> </li> <li> <p> <code>io1</code> - Provisioned IOPS (SSD). PIOPS volumes must have a minimum size of 4 GiB and a maximum size of 16384 GiB.</p> </li> <li> <p> <code>gp2</code> - General Purpose (SSD). General purpose volumes must have a minimum size of 1 GiB and a maximum size of 16384 GiB.</p> </li> <li> <p> <code>st1</code> - Throughput Optimized hard disk drive (HDD). Throughput optimized HDD volumes must have a minimum size of 500 GiB and a maximum size of 16384 GiB.</p> </li> <li> <p> <code>sc1</code> - Cold HDD. Cold HDD volumes must have a minimum size of 500 GiB and a maximum size of 16384 GiB.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Iops: IntegerSchema.and(
-      z.any().openapi({ description: 'For PIOPS volumes, the IOPS per disk.' }),
-    ).exactOptional(),
-    Encrypted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether an Amazon EBS volume is encrypted. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html">Amazon EBS Encryption</a>.',
-        }),
-    ).exactOptional(),
+    VolumeId: StringSchema.exactOptional().openapi({ description: 'The volume ID.' }),
+    Ec2VolumeId: StringSchema.exactOptional().openapi({ description: 'The Amazon EC2 volume ID.' }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The volume name.' }),
+    RaidArrayId: StringSchema.exactOptional().openapi({ description: 'The RAID array ID.' }),
+    InstanceId: StringSchema.exactOptional().openapi({ description: 'The instance ID.' }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        'The value returned by <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeVolumes.html">DescribeVolumes</a>.',
+    }),
+    Size: IntegerSchema.exactOptional().openapi({ description: 'The volume size.' }),
+    Device: StringSchema.exactOptional().openapi({ description: 'The device name.' }),
+    MountPoint: StringSchema.exactOptional().openapi({
+      description: 'The volume mount point. For example, "/mnt/disk1".',
+    }),
+    Region: StringSchema.exactOptional().openapi({
+      description:
+        'The AWS region. For more information about AWS regions, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
+    }),
+    AvailabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        'The volume Availability Zone. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>.',
+    }),
+    VolumeType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The volume type. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumeTypes.html"> Amazon EBS Volume Types</a>.</p> <ul> <li> <p> <code>standard</code> - Magnetic. Magnetic volumes must have a minimum size of 1 GiB and a maximum size of 1024 GiB.</p> </li> <li> <p> <code>io1</code> - Provisioned IOPS (SSD). PIOPS volumes must have a minimum size of 4 GiB and a maximum size of 16384 GiB.</p> </li> <li> <p> <code>gp2</code> - General Purpose (SSD). General purpose volumes must have a minimum size of 1 GiB and a maximum size of 16384 GiB.</p> </li> <li> <p> <code>st1</code> - Throughput Optimized hard disk drive (HDD). Throughput optimized HDD volumes must have a minimum size of 500 GiB and a maximum size of 16384 GiB.</p> </li> <li> <p> <code>sc1</code> - Cold HDD. Cold HDD volumes must have a minimum size of 500 GiB and a maximum size of 16384 GiB.</p> </li> </ul>',
+    }),
+    Iops: IntegerSchema.exactOptional().openapi({
+      description: 'For PIOPS volumes, the IOPS per disk.',
+    }),
+    Encrypted: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether an Amazon EBS volume is encrypted. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html">Amazon EBS Encryption</a>.',
+    }),
   })
   .openapi({ description: "Describes an instance's Amazon EBS volume.", required: [] })
   .openapi('Volume')
@@ -3713,9 +2534,7 @@ const VolumesSchema = z.array(VolumeSchema).openapi('Volumes')
 
 const DescribeVolumesResultSchema = z
   .object({
-    Volumes: VolumesSchema.and(
-      z.any().openapi({ description: 'An array of volume IDs.' }),
-    ).exactOptional(),
+    Volumes: VolumesSchema.exactOptional().openapi({ description: 'An array of volume IDs.' }),
   })
   .openapi({
     description: 'Contains the response to a <code>DescribeVolumes</code> request.',
@@ -3725,55 +2544,33 @@ const DescribeVolumesResultSchema = z
 
 const DescribeVolumesRequestSchema = z
   .object({
-    InstanceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance ID. If you use this parameter, <code>DescribeVolumes</code> returns descriptions of the volumes associated with the specified instance.',
-        }),
-    ).exactOptional(),
-    StackId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A stack ID. The action describes the stack's registered Amazon EBS volumes.",
-        }),
-    ).exactOptional(),
-    RaidArrayId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The RAID array ID. If you use this parameter, <code>DescribeVolumes</code> returns descriptions of the volumes associated with the specified RAID array.',
-        }),
-    ).exactOptional(),
-    VolumeIds: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Am array of volume IDs. If you use this parameter, <code>DescribeVolumes</code> returns descriptions of the specified volumes. Otherwise, it returns a description of every volume.',
-        }),
-    ).exactOptional(),
+    InstanceId: StringSchema.exactOptional().openapi({
+      description:
+        'The instance ID. If you use this parameter, <code>DescribeVolumes</code> returns descriptions of the volumes associated with the specified instance.',
+    }),
+    StackId: StringSchema.exactOptional().openapi({
+      description: "A stack ID. The action describes the stack's registered Amazon EBS volumes.",
+    }),
+    RaidArrayId: StringSchema.exactOptional().openapi({
+      description:
+        'The RAID array ID. If you use this parameter, <code>DescribeVolumes</code> returns descriptions of the volumes associated with the specified RAID array.',
+    }),
+    VolumeIds: StringsSchema.exactOptional().openapi({
+      description:
+        'Am array of volume IDs. If you use this parameter, <code>DescribeVolumes</code> returns descriptions of the specified volumes. Otherwise, it returns a description of every volume.',
+    }),
   })
   .openapi({ title: 'DescribeVolumesRequest', required: [] })
   .openapi('DescribeVolumesRequest')
 
 const DetachElasticLoadBalancerRequestSchema = z
   .object({
-    ElasticLoadBalancerName: StringSchema.and(
-      z.any().openapi({ description: "The Elastic Load Balancing instance's name." }),
-    ),
-    LayerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the layer that the Elastic Load Balancing instance is attached to.',
-        }),
-    ),
+    ElasticLoadBalancerName: StringSchema.openapi({
+      description: "The Elastic Load Balancing instance's name.",
+    }),
+    LayerId: StringSchema.openapi({
+      description: 'The ID of the layer that the Elastic Load Balancing instance is attached to.',
+    }),
   })
   .openapi({
     required: ['ElasticLoadBalancerName', 'LayerId'],
@@ -3782,18 +2579,14 @@ const DetachElasticLoadBalancerRequestSchema = z
   .openapi('DetachElasticLoadBalancerRequest')
 
 const DisassociateElasticIpRequestSchema = z
-  .object({
-    ElasticIp: StringSchema.and(z.any().openapi({ description: 'The Elastic IP address.' })),
-  })
+  .object({ ElasticIp: StringSchema.openapi({ description: 'The Elastic IP address.' }) })
   .openapi({ required: ['ElasticIp'], title: 'DisassociateElasticIpRequest' })
   .openapi('DisassociateElasticIpRequest')
 
 const GetHostnameSuggestionResultSchema = z
   .object({
-    LayerId: StringSchema.and(z.any().openapi({ description: 'The layer ID.' })).exactOptional(),
-    Hostname: StringSchema.and(
-      z.any().openapi({ description: 'The generated host name.' }),
-    ).exactOptional(),
+    LayerId: StringSchema.exactOptional().openapi({ description: 'The layer ID.' }),
+    Hostname: StringSchema.exactOptional().openapi({ description: 'The generated host name.' }),
   })
   .openapi({
     description: 'Contains the response to a <code>GetHostnameSuggestion</code> request.',
@@ -3802,25 +2595,21 @@ const GetHostnameSuggestionResultSchema = z
   .openapi('GetHostnameSuggestionResult')
 
 const GetHostnameSuggestionRequestSchema = z
-  .object({ LayerId: StringSchema.and(z.any().openapi({ description: 'The layer ID.' })) })
+  .object({ LayerId: StringSchema.openapi({ description: 'The layer ID.' }) })
   .openapi({ required: ['LayerId'], title: 'GetHostnameSuggestionRequest' })
   .openapi('GetHostnameSuggestionRequest')
 
 const TemporaryCredentialSchema = z
   .object({
-    Username: StringSchema.and(z.any().openapi({ description: 'The user name.' })).exactOptional(),
-    Password: StringSchema.and(z.any().openapi({ description: 'The password.' })).exactOptional(),
-    ValidForInMinutes: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The length of time (in minutes) that the grant is valid. When the grant expires, at the end of this period, the user will no longer be able to use the credentials to log in. If they are logged in at the time, they will be automatically logged out.',
-        }),
-    ).exactOptional(),
-    InstanceId: StringSchema.and(
-      z.any().openapi({ description: "The instance's AWS OpsWorks Stacks ID." }),
-    ).exactOptional(),
+    Username: StringSchema.exactOptional().openapi({ description: 'The user name.' }),
+    Password: StringSchema.exactOptional().openapi({ description: 'The password.' }),
+    ValidForInMinutes: IntegerSchema.exactOptional().openapi({
+      description:
+        'The length of time (in minutes) that the grant is valid. When the grant expires, at the end of this period, the user will no longer be able to use the credentials to log in. If they are logged in at the time, they will be automatically logged out.',
+    }),
+    InstanceId: StringSchema.exactOptional().openapi({
+      description: "The instance's AWS OpsWorks Stacks ID.",
+    }),
   })
   .openapi({
     description:
@@ -3831,14 +2620,10 @@ const TemporaryCredentialSchema = z
 
 const GrantAccessResultSchema = z
   .object({
-    TemporaryCredential: TemporaryCredentialSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>TemporaryCredential</code> object that contains the data needed to log in to the instance by RDP clients, such as the Microsoft Remote Desktop Connection.',
-        }),
-    ).exactOptional(),
+    TemporaryCredential: TemporaryCredentialSchema.exactOptional().openapi({
+      description:
+        'A <code>TemporaryCredential</code> object that contains the data needed to log in to the instance by RDP clients, such as the Microsoft Remote Desktop Connection.',
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>GrantAccess</code> request.',
@@ -3850,17 +2635,11 @@ const ValidForInMinutesSchema = z.int().min(60).max(1440).openapi('ValidForInMin
 
 const GrantAccessRequestSchema = z
   .object({
-    InstanceId: StringSchema.and(
-      z.any().openapi({ description: "The instance's AWS OpsWorks Stacks ID." }),
-    ),
-    ValidForInMinutes: ValidForInMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The length of time (in minutes) that the grant is valid. When the grant expires at the end of this period, the user will no longer be able to use the credentials to log in. If the user is logged in at the time, he or she automatically will be logged out.',
-        }),
-    ).exactOptional(),
+    InstanceId: StringSchema.openapi({ description: "The instance's AWS OpsWorks Stacks ID." }),
+    ValidForInMinutes: ValidForInMinutesSchema.exactOptional().openapi({
+      description:
+        'The length of time (in minutes) that the grant is valid. When the grant expires at the end of this period, the user will no longer be able to use the credentials to log in. If the user is logged in at the time, he or she automatically will be logged out.',
+    }),
   })
   .openapi({ required: ['InstanceId'], title: 'GrantAccessRequest' })
   .openapi('GrantAccessRequest')
@@ -3873,22 +2652,14 @@ const NextTokenSchema = z.string().openapi('NextToken')
 
 const ListTagsResultSchema = z
   .object({
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of key-value pairs that contain tag keys and tag values that are attached to a stack or layer.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If a paginated request does not return all of the remaining results, this parameter is set to a token that you can assign to the request object's <code>NextToken</code> parameter to get the next set of results. If the previous paginated request returned all of the remaining results, this parameter is set to <code>null</code>. ",
-        }),
-    ).exactOptional(),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A set of key-value pairs that contain tag keys and tag values that are attached to a stack or layer.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If a paginated request does not return all of the remaining results, this parameter is set to a token that you can assign to the request object's <code>NextToken</code> parameter to get the next set of results. If the previous paginated request returned all of the remaining results, this parameter is set to <code>null</code>. ",
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>ListTags</code> request.',
@@ -3902,39 +2673,29 @@ const MaxResultsSchema = z.int().openapi('MaxResults')
 
 const ListTagsRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: "The stack or layer's Amazon Resource Number (ARN)." }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Do not use. A validation exception occurs if you add a <code>MaxResults</code> parameter to a <code>ListTagsRequest</code> call. ',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Do not use. A validation exception occurs if you add a <code>NextToken</code> parameter to a <code>ListTagsRequest</code> call. ',
-        }),
-    ).exactOptional(),
+    ResourceArn: ResourceArnSchema.openapi({
+      description: "The stack or layer's Amazon Resource Number (ARN).",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'Do not use. A validation exception occurs if you add a <code>MaxResults</code> parameter to a <code>ListTagsRequest</code> call. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Do not use. A validation exception occurs if you add a <code>NextToken</code> parameter to a <code>ListTagsRequest</code> call. ',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsRequest' })
   .openapi('ListTagsRequest')
 
 const RebootInstanceRequestSchema = z
-  .object({ InstanceId: StringSchema.and(z.any().openapi({ description: 'The instance ID.' })) })
+  .object({ InstanceId: StringSchema.openapi({ description: 'The instance ID.' }) })
   .openapi({ required: ['InstanceId'], title: 'RebootInstanceRequest' })
   .openapi('RebootInstanceRequest')
 
 const RegisterEcsClusterResultSchema = z
   .object({
-    EcsClusterArn: StringSchema.and(
-      z.any().openapi({ description: "The cluster's ARN." }),
-    ).exactOptional(),
+    EcsClusterArn: StringSchema.exactOptional().openapi({ description: "The cluster's ARN." }),
   })
   .openapi({
     description: 'Contains the response to a <code>RegisterEcsCluster</code> request.',
@@ -3944,17 +2705,15 @@ const RegisterEcsClusterResultSchema = z
 
 const RegisterEcsClusterRequestSchema = z
   .object({
-    EcsClusterArn: StringSchema.and(z.any().openapi({ description: "The cluster's ARN." })),
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })),
+    EcsClusterArn: StringSchema.openapi({ description: "The cluster's ARN." }),
+    StackId: StringSchema.openapi({ description: 'The stack ID.' }),
   })
   .openapi({ required: ['EcsClusterArn', 'StackId'], title: 'RegisterEcsClusterRequest' })
   .openapi('RegisterEcsClusterRequest')
 
 const RegisterElasticIpResultSchema = z
   .object({
-    ElasticIp: StringSchema.and(
-      z.any().openapi({ description: 'The Elastic IP address.' }),
-    ).exactOptional(),
+    ElasticIp: StringSchema.exactOptional().openapi({ description: 'The Elastic IP address.' }),
   })
   .openapi({
     description: 'Contains the response to a <code>RegisterElasticIp</code> request.',
@@ -3964,17 +2723,17 @@ const RegisterElasticIpResultSchema = z
 
 const RegisterElasticIpRequestSchema = z
   .object({
-    ElasticIp: StringSchema.and(z.any().openapi({ description: 'The Elastic IP address.' })),
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })),
+    ElasticIp: StringSchema.openapi({ description: 'The Elastic IP address.' }),
+    StackId: StringSchema.openapi({ description: 'The stack ID.' }),
   })
   .openapi({ required: ['ElasticIp', 'StackId'], title: 'RegisterElasticIpRequest' })
   .openapi('RegisterElasticIpRequest')
 
 const RegisterInstanceResultSchema = z
   .object({
-    InstanceId: StringSchema.and(
-      z.any().openapi({ description: "The registered instance's AWS OpsWorks Stacks ID." }),
-    ).exactOptional(),
+    InstanceId: StringSchema.exactOptional().openapi({
+      description: "The registered instance's AWS OpsWorks Stacks ID.",
+    }),
   })
   .openapi({
     description: 'Contains the response to a <code>RegisterInstanceResult</code> request.',
@@ -3984,17 +2743,13 @@ const RegisterInstanceResultSchema = z
 
 const InstanceIdentitySchema = z
   .object({
-    Document: StringSchema.and(
-      z.any().openapi({ description: 'A JSON document that contains the metadata.' }),
-    ).exactOptional(),
-    Signature: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A signature that can be used to verify the document's accuracy and authenticity.",
-        }),
-    ).exactOptional(),
+    Document: StringSchema.exactOptional().openapi({
+      description: 'A JSON document that contains the metadata.',
+    }),
+    Signature: StringSchema.exactOptional().openapi({
+      description:
+        "A signature that can be used to verify the document's accuracy and authenticity.",
+    }),
   })
   .openapi({
     description:
@@ -4005,52 +2760,36 @@ const InstanceIdentitySchema = z
 
 const RegisterInstanceRequestSchema = z
   .object({
-    StackId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the stack that the instance is to be registered with.',
-        }),
-    ),
-    Hostname: StringSchema.and(
-      z.any().openapi({ description: "The instance's hostname." }),
-    ).exactOptional(),
-    PublicIp: StringSchema.and(
-      z.any().openapi({ description: "The instance's public IP address." }),
-    ).exactOptional(),
-    PrivateIp: StringSchema.and(
-      z.any().openapi({ description: "The instance's private IP address." }),
-    ).exactOptional(),
-    RsaPublicKey: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instances public RSA key. This key is used to encrypt communication between the instance and the service.',
-        }),
-    ).exactOptional(),
-    RsaPublicKeyFingerprint: StringSchema.and(
-      z.any().openapi({ description: 'The instances public RSA key fingerprint.' }),
-    ).exactOptional(),
-    InstanceIdentity: InstanceIdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description: "An InstanceIdentity object that contains the instance's identity.",
-        }),
-    ).exactOptional(),
+    StackId: StringSchema.openapi({
+      description: 'The ID of the stack that the instance is to be registered with.',
+    }),
+    Hostname: StringSchema.exactOptional().openapi({ description: "The instance's hostname." }),
+    PublicIp: StringSchema.exactOptional().openapi({
+      description: "The instance's public IP address.",
+    }),
+    PrivateIp: StringSchema.exactOptional().openapi({
+      description: "The instance's private IP address.",
+    }),
+    RsaPublicKey: StringSchema.exactOptional().openapi({
+      description:
+        'The instances public RSA key. This key is used to encrypt communication between the instance and the service.',
+    }),
+    RsaPublicKeyFingerprint: StringSchema.exactOptional().openapi({
+      description: 'The instances public RSA key fingerprint.',
+    }),
+    InstanceIdentity: InstanceIdentitySchema.exactOptional().openapi({
+      description: "An InstanceIdentity object that contains the instance's identity.",
+    }),
   })
   .openapi({ required: ['StackId'], title: 'RegisterInstanceRequest' })
   .openapi('RegisterInstanceRequest')
 
 const RegisterRdsDbInstanceRequestSchema = z
   .object({
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })),
-    RdsDbInstanceArn: StringSchema.and(
-      z.any().openapi({ description: "The Amazon RDS instance's ARN." }),
-    ),
-    DbUser: StringSchema.and(z.any().openapi({ description: "The database's master user name." })),
-    DbPassword: StringSchema.and(z.any().openapi({ description: 'The database password.' })),
+    StackId: StringSchema.openapi({ description: 'The stack ID.' }),
+    RdsDbInstanceArn: StringSchema.openapi({ description: "The Amazon RDS instance's ARN." }),
+    DbUser: StringSchema.openapi({ description: "The database's master user name." }),
+    DbPassword: StringSchema.openapi({ description: 'The database password.' }),
   })
   .openapi({
     required: ['StackId', 'RdsDbInstanceArn', 'DbUser', 'DbPassword'],
@@ -4059,9 +2798,7 @@ const RegisterRdsDbInstanceRequestSchema = z
   .openapi('RegisterRdsDbInstanceRequest')
 
 const RegisterVolumeResultSchema = z
-  .object({
-    VolumeId: StringSchema.and(z.any().openapi({ description: 'The volume ID.' })).exactOptional(),
-  })
+  .object({ VolumeId: StringSchema.exactOptional().openapi({ description: 'The volume ID.' }) })
   .openapi({
     description: 'Contains the response to a <code>RegisterVolume</code> request.',
     required: [],
@@ -4070,140 +2807,106 @@ const RegisterVolumeResultSchema = z
 
 const RegisterVolumeRequestSchema = z
   .object({
-    Ec2VolumeId: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon EBS volume ID.' }),
-    ).exactOptional(),
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })),
+    Ec2VolumeId: StringSchema.exactOptional().openapi({ description: 'The Amazon EBS volume ID.' }),
+    StackId: StringSchema.openapi({ description: 'The stack ID.' }),
   })
   .openapi({ required: ['StackId'], title: 'RegisterVolumeRequest' })
   .openapi('RegisterVolumeRequest')
 
 const SetLoadBasedAutoScalingRequestSchema = z
   .object({
-    LayerId: StringSchema.and(z.any().openapi({ description: 'The layer ID.' })),
-    Enable: BooleanSchema.and(
-      z.any().openapi({ description: 'Enables load-based auto scaling for the layer.' }),
-    ).exactOptional(),
-    UpScaling: AutoScalingThresholdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>AutoScalingThresholds</code> object with the upscaling threshold configuration. If the load exceeds these thresholds for a specified amount of time, AWS OpsWorks Stacks starts a specified number of instances.',
-        }),
-    ).exactOptional(),
-    DownScaling: AutoScalingThresholdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>AutoScalingThresholds</code> object with the downscaling threshold configuration. If the load falls below these thresholds for a specified amount of time, AWS OpsWorks Stacks stops a specified number of instances.',
-        }),
-    ).exactOptional(),
+    LayerId: StringSchema.openapi({ description: 'The layer ID.' }),
+    Enable: BooleanSchema.exactOptional().openapi({
+      description: 'Enables load-based auto scaling for the layer.',
+    }),
+    UpScaling: AutoScalingThresholdsSchema.exactOptional().openapi({
+      description:
+        'An <code>AutoScalingThresholds</code> object with the upscaling threshold configuration. If the load exceeds these thresholds for a specified amount of time, AWS OpsWorks Stacks starts a specified number of instances.',
+    }),
+    DownScaling: AutoScalingThresholdsSchema.exactOptional().openapi({
+      description:
+        'An <code>AutoScalingThresholds</code> object with the downscaling threshold configuration. If the load falls below these thresholds for a specified amount of time, AWS OpsWorks Stacks stops a specified number of instances.',
+    }),
   })
   .openapi({ required: ['LayerId'], title: 'SetLoadBasedAutoScalingRequest' })
   .openapi('SetLoadBasedAutoScalingRequest')
 
 const SetPermissionRequestSchema = z
   .object({
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })),
-    IamUserArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: "The user's IAM ARN. This can also be a federated user's ARN." }),
-    ),
-    AllowSsh: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user is allowed to use SSH to communicate with the instance.',
-        }),
-    ).exactOptional(),
-    AllowSudo: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The user is allowed to use <b>sudo</b> to elevate privileges.' }),
-    ).exactOptional(),
-    Level: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The user\'s permission level, which must be set to one of the following strings. You cannot set your own permissions level.</p> <ul> <li> <p> <code>deny</code> </p> </li> <li> <p> <code>show</code> </p> </li> <li> <p> <code>deploy</code> </p> </li> <li> <p> <code>manage</code> </p> </li> <li> <p> <code>iam_only</code> </p> </li> </ul> <p>For more information about the permissions associated with these levels, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/opsworks-security-users.html">Managing User Permissions</a>.</p>',
-        }),
-    ).exactOptional(),
+    StackId: StringSchema.openapi({ description: 'The stack ID.' }),
+    IamUserArn: StringSchema.openapi({
+      description: "The user's IAM ARN. This can also be a federated user's ARN.",
+    }),
+    AllowSsh: BooleanSchema.exactOptional().openapi({
+      description: 'The user is allowed to use SSH to communicate with the instance.',
+    }),
+    AllowSudo: BooleanSchema.exactOptional().openapi({
+      description: 'The user is allowed to use <b>sudo</b> to elevate privileges.',
+    }),
+    Level: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The user\'s permission level, which must be set to one of the following strings. You cannot set your own permissions level.</p> <ul> <li> <p> <code>deny</code> </p> </li> <li> <p> <code>show</code> </p> </li> <li> <p> <code>deploy</code> </p> </li> <li> <p> <code>manage</code> </p> </li> <li> <p> <code>iam_only</code> </p> </li> </ul> <p>For more information about the permissions associated with these levels, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/opsworks-security-users.html">Managing User Permissions</a>.</p>',
+    }),
   })
   .openapi({ required: ['StackId', 'IamUserArn'], title: 'SetPermissionRequest' })
   .openapi('SetPermissionRequest')
 
 const SetTimeBasedAutoScalingRequestSchema = z
   .object({
-    InstanceId: StringSchema.and(z.any().openapi({ description: 'The instance ID.' })),
-    AutoScalingSchedule: WeeklyAutoScalingScheduleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An <code>AutoScalingSchedule</code> with the instance schedule.',
-        }),
-    ).exactOptional(),
+    InstanceId: StringSchema.openapi({ description: 'The instance ID.' }),
+    AutoScalingSchedule: WeeklyAutoScalingScheduleSchema.exactOptional().openapi({
+      description: 'An <code>AutoScalingSchedule</code> with the instance schedule.',
+    }),
   })
   .openapi({ required: ['InstanceId'], title: 'SetTimeBasedAutoScalingRequest' })
   .openapi('SetTimeBasedAutoScalingRequest')
 
 const StartInstanceRequestSchema = z
-  .object({ InstanceId: StringSchema.and(z.any().openapi({ description: 'The instance ID.' })) })
+  .object({ InstanceId: StringSchema.openapi({ description: 'The instance ID.' }) })
   .openapi({ required: ['InstanceId'], title: 'StartInstanceRequest' })
   .openapi('StartInstanceRequest')
 
 const StartStackRequestSchema = z
-  .object({ StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })) })
+  .object({ StackId: StringSchema.openapi({ description: 'The stack ID.' }) })
   .openapi({ required: ['StackId'], title: 'StartStackRequest' })
   .openapi('StartStackRequest')
 
 const StopInstanceRequestSchema = z
   .object({
-    InstanceId: StringSchema.and(z.any().openapi({ description: 'The instance ID.' })),
-    Force: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies whether to force an instance to stop. If the instance's root device type is <code>ebs</code>, or EBS-backed, adding the <code>Force</code> parameter to the <code>StopInstances</code> API call disassociates the AWS OpsWorks Stacks instance from EC2, and forces deletion of <i>only</i> the OpsWorks Stacks instance. You must also delete the formerly-associated instance in EC2 after troubleshooting and replacing the AWS OpsWorks Stacks instance with a new one.",
-        }),
-    ).exactOptional(),
+    InstanceId: StringSchema.openapi({ description: 'The instance ID.' }),
+    Force: BooleanSchema.exactOptional().openapi({
+      description:
+        "Specifies whether to force an instance to stop. If the instance's root device type is <code>ebs</code>, or EBS-backed, adding the <code>Force</code> parameter to the <code>StopInstances</code> API call disassociates the AWS OpsWorks Stacks instance from EC2, and forces deletion of <i>only</i> the OpsWorks Stacks instance. You must also delete the formerly-associated instance in EC2 after troubleshooting and replacing the AWS OpsWorks Stacks instance with a new one.",
+    }),
   })
   .openapi({ required: ['InstanceId'], title: 'StopInstanceRequest' })
   .openapi('StopInstanceRequest')
 
 const StopStackRequestSchema = z
-  .object({ StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })) })
+  .object({ StackId: StringSchema.openapi({ description: 'The stack ID.' }) })
   .openapi({ required: ['StackId'], title: 'StopStackRequest' })
   .openapi('StopStackRequest')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: "The stack or layer's Amazon Resource Number (ARN)." }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A map that contains tag keys and tag values that are attached to a stack or layer.</p> <ul> <li> <p>The key cannot be empty.</p> </li> <li> <p>The key can be a maximum of 127 characters, and can contain only Unicode letters, numbers, or separators, or the following special characters: <code>+ - = . _ : /</code> </p> </li> <li> <p>The value can be a maximum 255 characters, and contain only Unicode letters, numbers, or separators, or the following special characters: <code>+ - = . _ : /</code> </p> </li> <li> <p>Leading and trailing white spaces are trimmed from both the key and value.</p> </li> <li> <p>A maximum of 40 tags is allowed for any resource.</p> </li> </ul>',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description: "The stack or layer's Amazon Resource Number (ARN).",
+    }),
+    Tags: TagsSchema.openapi({
+      description:
+        '<p>A map that contains tag keys and tag values that are attached to a stack or layer.</p> <ul> <li> <p>The key cannot be empty.</p> </li> <li> <p>The key can be a maximum of 127 characters, and can contain only Unicode letters, numbers, or separators, or the following special characters: <code>+ - = . _ : /</code> </p> </li> <li> <p>The value can be a maximum 255 characters, and contain only Unicode letters, numbers, or separators, or the following special characters: <code>+ - = . _ : /</code> </p> </li> <li> <p>Leading and trailing white spaces are trimmed from both the key and value.</p> </li> <li> <p>A maximum of 40 tags is allowed for any resource.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UnassignInstanceRequestSchema = z
-  .object({ InstanceId: StringSchema.and(z.any().openapi({ description: 'The instance ID.' })) })
+  .object({ InstanceId: StringSchema.openapi({ description: 'The instance ID.' }) })
   .openapi({ required: ['InstanceId'], title: 'UnassignInstanceRequest' })
   .openapi('UnassignInstanceRequest')
 
 const UnassignVolumeRequestSchema = z
-  .object({ VolumeId: StringSchema.and(z.any().openapi({ description: 'The volume ID.' })) })
+  .object({ VolumeId: StringSchema.openapi({ description: 'The volume ID.' }) })
   .openapi({ required: ['VolumeId'], title: 'UnassignVolumeRequest' })
   .openapi('UnassignVolumeRequest')
 
@@ -4213,466 +2916,278 @@ const TagKeysSchema = z.array(TagKeySchema).openapi('TagKeys')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: "The stack or layer's Amazon Resource Number (ARN)." }),
-    ),
-    TagKeys: TagKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of the keys of tags to be removed from a stack or layer.',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description: "The stack or layer's Amazon Resource Number (ARN).",
+    }),
+    TagKeys: TagKeysSchema.openapi({
+      description: 'A list of the keys of tags to be removed from a stack or layer.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateAppRequestSchema = z
   .object({
-    AppId: StringSchema.and(z.any().openapi({ description: 'The app ID.' })),
-    Name: StringSchema.and(z.any().openapi({ description: 'The app name.' })).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'A description of the app.' }),
-    ).exactOptional(),
-    DataSources: DataSourcesSchema.and(
-      z.any().openapi({ description: "The app's data sources." }),
-    ).exactOptional(),
-    Type: AppTypeSchema.and(z.any().openapi({ description: 'The app type.' })).exactOptional(),
-    AppSource: SourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A <code>Source</code> object that specifies the app repository.',
-        }),
-    ).exactOptional(),
-    Domains: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The app's virtual host settings, with multiple domains separated by commas. For example: <code>'www.example.com, example.com'</code> ",
-        }),
-    ).exactOptional(),
-    EnableSsl: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether SSL is enabled for the app.' }),
-    ).exactOptional(),
-    SslConfiguration: SslConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An <code>SslConfiguration</code> object with the SSL configuration.',
-        }),
-    ).exactOptional(),
-    Attributes: AppAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more user-defined key/value pairs to be added to the stack attributes.',
-        }),
-    ).exactOptional(),
-    Environment: EnvironmentVariablesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of <code>EnvironmentVariable</code> objects that specify environment variables to be associated with the app. After you deploy the app, these variables are defined on the associated app server instances.For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html#workingapps-creating-environment"> Environment Variables</a>.</p> <p>There is no specific limit on the number of environment variables. However, the size of the associated data structure - which includes the variables\' names, values, and protected flag values - cannot exceed 20 KB. This limit should accommodate most if not all use cases. Exceeding it will cause an exception with the message, "Environment: is too large (maximum is 20 KB)."</p> <note> <p>If you have specified one or more environment variables, you cannot modify the stack\'s Chef version.</p> </note>',
-        }),
-    ).exactOptional(),
+    AppId: StringSchema.openapi({ description: 'The app ID.' }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The app name.' }),
+    Description: StringSchema.exactOptional().openapi({ description: 'A description of the app.' }),
+    DataSources: DataSourcesSchema.exactOptional().openapi({
+      description: "The app's data sources.",
+    }),
+    Type: AppTypeSchema.exactOptional().openapi({ description: 'The app type.' }),
+    AppSource: SourceSchema.exactOptional().openapi({
+      description: 'A <code>Source</code> object that specifies the app repository.',
+    }),
+    Domains: StringsSchema.exactOptional().openapi({
+      description:
+        "The app's virtual host settings, with multiple domains separated by commas. For example: <code>'www.example.com, example.com'</code> ",
+    }),
+    EnableSsl: BooleanSchema.exactOptional().openapi({
+      description: 'Whether SSL is enabled for the app.',
+    }),
+    SslConfiguration: SslConfigurationSchema.exactOptional().openapi({
+      description: 'An <code>SslConfiguration</code> object with the SSL configuration.',
+    }),
+    Attributes: AppAttributesSchema.exactOptional().openapi({
+      description: 'One or more user-defined key/value pairs to be added to the stack attributes.',
+    }),
+    Environment: EnvironmentVariablesSchema.exactOptional().openapi({
+      description:
+        '<p>An array of <code>EnvironmentVariable</code> objects that specify environment variables to be associated with the app. After you deploy the app, these variables are defined on the associated app server instances.For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html#workingapps-creating-environment"> Environment Variables</a>.</p> <p>There is no specific limit on the number of environment variables. However, the size of the associated data structure - which includes the variables\' names, values, and protected flag values - cannot exceed 20 KB. This limit should accommodate most if not all use cases. Exceeding it will cause an exception with the message, "Environment: is too large (maximum is 20 KB)."</p> <note> <p>If you have specified one or more environment variables, you cannot modify the stack\'s Chef version.</p> </note>',
+    }),
   })
   .openapi({ required: ['AppId'], title: 'UpdateAppRequest' })
   .openapi('UpdateAppRequest')
 
 const UpdateElasticIpRequestSchema = z
   .object({
-    ElasticIp: StringSchema.and(
-      z.any().openapi({ description: 'The IP address for which you want to update the name.' }),
-    ),
-    Name: StringSchema.and(z.any().openapi({ description: 'The new name.' })).exactOptional(),
+    ElasticIp: StringSchema.openapi({
+      description: 'The IP address for which you want to update the name.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The new name.' }),
   })
   .openapi({ required: ['ElasticIp'], title: 'UpdateElasticIpRequest' })
   .openapi('UpdateElasticIpRequest')
 
 const UpdateInstanceRequestSchema = z
   .object({
-    InstanceId: StringSchema.and(z.any().openapi({ description: 'The instance ID.' })),
-    LayerIds: StringsSchema.and(
-      z.any().openapi({ description: "The instance's layer IDs." }),
-    ).exactOptional(),
-    InstanceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance type, such as <code>t2.micro</code>. For a list of supported instance types, open the stack in the console, choose <b>Instances</b>, and choose <b>+ Instance</b>. The <b>Size</b> list contains the currently supported types. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html">Instance Families and Types</a>. The parameter values that you use to specify the various types are in the <b>API Name</b> column of the <b>Available Instance Types</b> table.',
-        }),
-    ).exactOptional(),
-    AutoScalingType: AutoScalingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For load-based or time-based instances, the type. Windows stacks can use only time-based instances.',
-        }),
-    ).exactOptional(),
-    Hostname: StringSchema.and(
-      z.any().openapi({ description: 'The instance host name.' }),
-    ).exactOptional(),
-    Os: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The instance\'s operating system, which must be set to one of the following. You cannot update an instance that is using a custom AMI.</p> <ul> <li> <p>A supported Linux operating system: An Amazon Linux version, such as <code>Amazon Linux 2018.03</code>, <code>Amazon Linux 2017.09</code>, <code>Amazon Linux 2017.03</code>, <code>Amazon Linux 2016.09</code>, <code>Amazon Linux 2016.03</code>, <code>Amazon Linux 2015.09</code>, or <code>Amazon Linux 2015.03</code>.</p> </li> <li> <p>A supported Ubuntu operating system, such as <code>Ubuntu 16.04 LTS</code>, <code>Ubuntu 14.04 LTS</code>, or <code>Ubuntu 12.04 LTS</code>.</p> </li> <li> <p> <code>CentOS Linux 7</code> </p> </li> <li> <p> <code>Red Hat Enterprise Linux 7</code> </p> </li> <li> <p>A supported Windows operating system, such as <code>Microsoft Windows Server 2012 R2 Base</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Express</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Standard</code>, or <code>Microsoft Windows Server 2012 R2 with SQL Server Web</code>.</p> </li> </ul> <p>For more information about supported operating systems, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html">AWS OpsWorks Stacks Operating Systems</a>.</p> <p>The default option is the current Amazon Linux version. If you set this parameter to <code>Custom</code>, you must use the AmiId parameter to specify the custom AMI that you want to use. For more information about supported operating systems, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html">Operating Systems</a>. For more information about how to use custom AMIs with OpsWorks, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html">Using Custom AMIs</a>.</p> <note> <p>You can specify a different Linux operating system for the updated stack, but you cannot change from Linux to Windows or Windows to Linux.</p> </note>',
-        }),
-    ).exactOptional(),
-    AmiId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the AMI that was used to create the instance. The value of this parameter must be the same AMI ID that the instance is already using. You cannot apply a new AMI to an instance by running UpdateInstance. UpdateInstance does not work on instances that are using custom AMIs. ',
-        }),
-    ).exactOptional(),
-    SshKeyName: StringSchema.and(
-      z.any().openapi({ description: "The instance's Amazon EC2 key name." }),
-    ).exactOptional(),
-    Architecture: ArchitectureSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The instance architecture. Instance types do not necessarily support both architectures. For a list of the architectures that are supported by the different instance types, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html">Instance Families and Types</a>.',
-        }),
-    ).exactOptional(),
-    InstallUpdatesOnBoot: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>. To control when updates are installed, set this value to <code>false</code>. You must then update your instances manually by using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or by manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances. </p> <note> <p>We strongly recommend using the default value of <code>true</code>, to ensure that your instances have the latest security updates.</p> </note>',
-        }),
-    ).exactOptional(),
-    EbsOptimized: BooleanSchema.and(
-      z.any().openapi({ description: 'This property cannot be updated.' }),
-    ).exactOptional(),
-    AgentVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The default AWS OpsWorks Stacks agent version. You have the following options:</p> <ul> <li> <p> <code>INHERIT</code> - Use the stack's default agent version setting.</p> </li> <li> <p> <i>version_number</i> - Use the specified agent version. This value overrides the stack's default setting. To update the agent version, you must edit the instance configuration and specify a new version. AWS OpsWorks Stacks then automatically installs that version on the instance.</p> </li> </ul> <p>The default setting is <code>INHERIT</code>. To specify an agent version, you must use the complete version number, not the abbreviated number shown on the console. For a list of available agent version numbers, call <a>DescribeAgentVersions</a>.</p> <p>AgentVersion cannot be set to Chef 12.2.</p>",
-        }),
-    ).exactOptional(),
+    InstanceId: StringSchema.openapi({ description: 'The instance ID.' }),
+    LayerIds: StringsSchema.exactOptional().openapi({ description: "The instance's layer IDs." }),
+    InstanceType: StringSchema.exactOptional().openapi({
+      description:
+        'The instance type, such as <code>t2.micro</code>. For a list of supported instance types, open the stack in the console, choose <b>Instances</b>, and choose <b>+ Instance</b>. The <b>Size</b> list contains the currently supported types. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html">Instance Families and Types</a>. The parameter values that you use to specify the various types are in the <b>API Name</b> column of the <b>Available Instance Types</b> table.',
+    }),
+    AutoScalingType: AutoScalingTypeSchema.exactOptional().openapi({
+      description:
+        'For load-based or time-based instances, the type. Windows stacks can use only time-based instances.',
+    }),
+    Hostname: StringSchema.exactOptional().openapi({ description: 'The instance host name.' }),
+    Os: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The instance\'s operating system, which must be set to one of the following. You cannot update an instance that is using a custom AMI.</p> <ul> <li> <p>A supported Linux operating system: An Amazon Linux version, such as <code>Amazon Linux 2018.03</code>, <code>Amazon Linux 2017.09</code>, <code>Amazon Linux 2017.03</code>, <code>Amazon Linux 2016.09</code>, <code>Amazon Linux 2016.03</code>, <code>Amazon Linux 2015.09</code>, or <code>Amazon Linux 2015.03</code>.</p> </li> <li> <p>A supported Ubuntu operating system, such as <code>Ubuntu 16.04 LTS</code>, <code>Ubuntu 14.04 LTS</code>, or <code>Ubuntu 12.04 LTS</code>.</p> </li> <li> <p> <code>CentOS Linux 7</code> </p> </li> <li> <p> <code>Red Hat Enterprise Linux 7</code> </p> </li> <li> <p>A supported Windows operating system, such as <code>Microsoft Windows Server 2012 R2 Base</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Express</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Standard</code>, or <code>Microsoft Windows Server 2012 R2 with SQL Server Web</code>.</p> </li> </ul> <p>For more information about supported operating systems, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html">AWS OpsWorks Stacks Operating Systems</a>.</p> <p>The default option is the current Amazon Linux version. If you set this parameter to <code>Custom</code>, you must use the AmiId parameter to specify the custom AMI that you want to use. For more information about supported operating systems, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html">Operating Systems</a>. For more information about how to use custom AMIs with OpsWorks, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html">Using Custom AMIs</a>.</p> <note> <p>You can specify a different Linux operating system for the updated stack, but you cannot change from Linux to Windows or Windows to Linux.</p> </note>',
+    }),
+    AmiId: StringSchema.exactOptional().openapi({
+      description:
+        'The ID of the AMI that was used to create the instance. The value of this parameter must be the same AMI ID that the instance is already using. You cannot apply a new AMI to an instance by running UpdateInstance. UpdateInstance does not work on instances that are using custom AMIs. ',
+    }),
+    SshKeyName: StringSchema.exactOptional().openapi({
+      description: "The instance's Amazon EC2 key name.",
+    }),
+    Architecture: ArchitectureSchema.exactOptional().openapi({
+      description:
+        'The instance architecture. Instance types do not necessarily support both architectures. For a list of the architectures that are supported by the different instance types, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html">Instance Families and Types</a>.',
+    }),
+    InstallUpdatesOnBoot: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>. To control when updates are installed, set this value to <code>false</code>. You must then update your instances manually by using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or by manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances. </p> <note> <p>We strongly recommend using the default value of <code>true</code>, to ensure that your instances have the latest security updates.</p> </note>',
+    }),
+    EbsOptimized: BooleanSchema.exactOptional().openapi({
+      description: 'This property cannot be updated.',
+    }),
+    AgentVersion: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The default AWS OpsWorks Stacks agent version. You have the following options:</p> <ul> <li> <p> <code>INHERIT</code> - Use the stack's default agent version setting.</p> </li> <li> <p> <i>version_number</i> - Use the specified agent version. This value overrides the stack's default setting. To update the agent version, you must edit the instance configuration and specify a new version. AWS OpsWorks Stacks then automatically installs that version on the instance.</p> </li> </ul> <p>The default setting is <code>INHERIT</code>. To specify an agent version, you must use the complete version number, not the abbreviated number shown on the console. For a list of available agent version numbers, call <a>DescribeAgentVersions</a>.</p> <p>AgentVersion cannot be set to Chef 12.2.</p>",
+    }),
   })
   .openapi({ required: ['InstanceId'], title: 'UpdateInstanceRequest' })
   .openapi('UpdateInstanceRequest')
 
 const UpdateLayerRequestSchema = z
   .object({
-    LayerId: StringSchema.and(z.any().openapi({ description: 'The layer ID.' })),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The layer name, which is used by the console.' }),
-    ).exactOptional(),
-    Shortname: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For custom layers only, use this parameter to specify the layer\'s short name, which is used internally by AWS OpsWorks Stacks and by Chef. The short name is also used as the name for the directory where your app files are installed. It can have a maximum of 200 characters and must be in the following format: /\\A[a-z0-9\\-\\_\\.]+\\Z/.</p> <p>The built-in layers\' short names are defined by AWS OpsWorks Stacks. For more information, see the <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/layers.html">Layer Reference</a> </p>',
-        }),
-    ).exactOptional(),
-    Attributes: LayerAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more user-defined key/value pairs to be added to the stack attributes.',
-        }),
-    ).exactOptional(),
-    CloudWatchLogsConfiguration: CloudWatchLogsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies CloudWatch Logs configuration options for the layer. For more information, see <a>CloudWatchLogsLogStream</a>.',
-        }),
-    ).exactOptional(),
-    CustomInstanceProfileArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of an IAM profile to be used for all of the layer\'s EC2 instances. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
-        }),
-    ).exactOptional(),
-    CustomJson: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON-formatted string containing custom stack configuration and deployment attributes to be installed on the layer\'s instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-json-override.html"> Using Custom JSON</a>. ',
-        }),
-    ).exactOptional(),
-    CustomSecurityGroupIds: StringsSchema.and(
-      z
-        .any()
-        .openapi({ description: "An array containing the layer's custom security group IDs." }),
-    ).exactOptional(),
-    Packages: StringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of <code>Package</code> objects that describe the layer's packages.",
-        }),
-    ).exactOptional(),
-    VolumeConfigurations: VolumeConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A <code>VolumeConfigurations</code> object that describes the layer's Amazon EBS volumes.",
-        }),
-    ).exactOptional(),
-    EnableAutoHealing: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether to disable auto healing for the layer.' }),
-    ).exactOptional(),
-    AutoAssignElasticIps: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to automatically assign an <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html">Elastic IP address</a> to the layer\'s instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers-basics-edit.html">How to Edit a Layer</a>.',
-        }),
-    ).exactOptional(),
-    AutoAssignPublicIps: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For stacks that are running in a VPC, whether to automatically assign a public IP address to the layer\'s instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers-basics-edit.html">How to Edit a Layer</a>.',
-        }),
-    ).exactOptional(),
-    CustomRecipes: RecipesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A <code>LayerCustomRecipes</code> object that specifies the layer's custom recipes.",
-        }),
-    ).exactOptional(),
-    InstallUpdatesOnBoot: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>. To control when updates are installed, set this value to <code>false</code>. You must then update your instances manually by using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances. </p> <note> <p>We strongly recommend using the default value of <code>true</code>, to ensure that your instances have the latest security updates.</p> </note>',
-        }),
-    ).exactOptional(),
-    UseEbsOptimizedInstances: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether to use Amazon EBS-optimized instances.' }),
-    ).exactOptional(),
-    LifecycleEventConfiguration: LifecycleEventConfigurationSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    LayerId: StringSchema.openapi({ description: 'The layer ID.' }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The layer name, which is used by the console.',
+    }),
+    Shortname: StringSchema.exactOptional().openapi({
+      description:
+        '<p>For custom layers only, use this parameter to specify the layer\'s short name, which is used internally by AWS OpsWorks Stacks and by Chef. The short name is also used as the name for the directory where your app files are installed. It can have a maximum of 200 characters and must be in the following format: /\\A[a-z0-9\\-\\_\\.]+\\Z/.</p> <p>The built-in layers\' short names are defined by AWS OpsWorks Stacks. For more information, see the <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/layers.html">Layer Reference</a> </p>',
+    }),
+    Attributes: LayerAttributesSchema.exactOptional().openapi({
+      description: 'One or more user-defined key/value pairs to be added to the stack attributes.',
+    }),
+    CloudWatchLogsConfiguration: CloudWatchLogsConfigurationSchema.exactOptional().openapi({
+      description:
+        'Specifies CloudWatch Logs configuration options for the layer. For more information, see <a>CloudWatchLogsLogStream</a>.',
+    }),
+    CustomInstanceProfileArn: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN of an IAM profile to be used for all of the layer\'s EC2 instances. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
+    }),
+    CustomJson: StringSchema.exactOptional().openapi({
+      description:
+        'A JSON-formatted string containing custom stack configuration and deployment attributes to be installed on the layer\'s instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-json-override.html"> Using Custom JSON</a>. ',
+    }),
+    CustomSecurityGroupIds: StringsSchema.exactOptional().openapi({
+      description: "An array containing the layer's custom security group IDs.",
+    }),
+    Packages: StringsSchema.exactOptional().openapi({
+      description: "An array of <code>Package</code> objects that describe the layer's packages.",
+    }),
+    VolumeConfigurations: VolumeConfigurationsSchema.exactOptional().openapi({
+      description:
+        "A <code>VolumeConfigurations</code> object that describes the layer's Amazon EBS volumes.",
+    }),
+    EnableAutoHealing: BooleanSchema.exactOptional().openapi({
+      description: 'Whether to disable auto healing for the layer.',
+    }),
+    AutoAssignElasticIps: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether to automatically assign an <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html">Elastic IP address</a> to the layer\'s instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers-basics-edit.html">How to Edit a Layer</a>.',
+    }),
+    AutoAssignPublicIps: BooleanSchema.exactOptional().openapi({
+      description:
+        'For stacks that are running in a VPC, whether to automatically assign a public IP address to the layer\'s instances. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers-basics-edit.html">How to Edit a Layer</a>.',
+    }),
+    CustomRecipes: RecipesSchema.exactOptional().openapi({
+      description:
+        "A <code>LayerCustomRecipes</code> object that specifies the layer's custom recipes.",
+    }),
+    InstallUpdatesOnBoot: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>. To control when updates are installed, set this value to <code>false</code>. You must then update your instances manually by using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances. </p> <note> <p>We strongly recommend using the default value of <code>true</code>, to ensure that your instances have the latest security updates.</p> </note>',
+    }),
+    UseEbsOptimizedInstances: BooleanSchema.exactOptional().openapi({
+      description: 'Whether to use Amazon EBS-optimized instances.',
+    }),
+    LifecycleEventConfiguration: LifecycleEventConfigurationSchema.exactOptional().openapi({
+      description: '<p/>',
+    }),
   })
   .openapi({ required: ['LayerId'], title: 'UpdateLayerRequest' })
   .openapi('UpdateLayerRequest')
 
 const UpdateMyUserProfileRequestSchema = z
   .object({
-    SshPublicKey: StringSchema.and(
-      z.any().openapi({ description: "The user's SSH public key." }),
-    ).exactOptional(),
+    SshPublicKey: StringSchema.exactOptional().openapi({
+      description: "The user's SSH public key.",
+    }),
   })
   .openapi({ title: 'UpdateMyUserProfileRequest', required: [] })
   .openapi('UpdateMyUserProfileRequest')
 
 const UpdateRdsDbInstanceRequestSchema = z
   .object({
-    RdsDbInstanceArn: StringSchema.and(
-      z.any().openapi({ description: "The Amazon RDS instance's ARN." }),
-    ),
-    DbUser: StringSchema.and(
-      z.any().openapi({ description: 'The master user name.' }),
-    ).exactOptional(),
-    DbPassword: StringSchema.and(
-      z.any().openapi({ description: 'The database password.' }),
-    ).exactOptional(),
+    RdsDbInstanceArn: StringSchema.openapi({ description: "The Amazon RDS instance's ARN." }),
+    DbUser: StringSchema.exactOptional().openapi({ description: 'The master user name.' }),
+    DbPassword: StringSchema.exactOptional().openapi({ description: 'The database password.' }),
   })
   .openapi({ required: ['RdsDbInstanceArn'], title: 'UpdateRdsDbInstanceRequest' })
   .openapi('UpdateRdsDbInstanceRequest')
 
 const UpdateStackRequestSchema = z
   .object({
-    StackId: StringSchema.and(z.any().openapi({ description: 'The stack ID.' })),
-    Name: StringSchema.and(
-      z.any().openapi({ description: "The stack's new name." }),
-    ).exactOptional(),
-    Attributes: StackAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more user-defined key-value pairs to be added to the stack attributes.',
-        }),
-    ).exactOptional(),
-    ServiceRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "Do not use this parameter. You cannot update a stack's service role.",
-        }),
-    ).exactOptional(),
-    DefaultInstanceProfileArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of an IAM profile that is the default profile for all of the stack\'s EC2 instances. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
-        }),
-    ).exactOptional(),
-    DefaultOs: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The stack\'s operating system, which must be set to one of the following:</p> <ul> <li> <p>A supported Linux operating system: An Amazon Linux version, such as <code>Amazon Linux 2018.03</code>, <code>Amazon Linux 2017.09</code>, <code>Amazon Linux 2017.03</code>, <code>Amazon Linux 2016.09</code>, <code>Amazon Linux 2016.03</code>, <code>Amazon Linux 2015.09</code>, or <code>Amazon Linux 2015.03</code>.</p> </li> <li> <p>A supported Ubuntu operating system, such as <code>Ubuntu 16.04 LTS</code>, <code>Ubuntu 14.04 LTS</code>, or <code>Ubuntu 12.04 LTS</code>.</p> </li> <li> <p> <code>CentOS Linux 7</code> </p> </li> <li> <p> <code>Red Hat Enterprise Linux 7</code> </p> </li> <li> <p>A supported Windows operating system, such as <code>Microsoft Windows Server 2012 R2 Base</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Express</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Standard</code>, or <code>Microsoft Windows Server 2012 R2 with SQL Server Web</code>.</p> </li> <li> <p>A custom AMI: <code>Custom</code>. You specify the custom AMI you want to use when you create instances. For more information about how to use custom AMIs with OpsWorks, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html">Using Custom AMIs</a>.</p> </li> </ul> <p>The default option is the stack\'s current operating system. For more information about supported operating systems, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html">AWS OpsWorks Stacks Operating Systems</a>.</p>',
-        }),
-    ).exactOptional(),
-    HostnameTheme: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The stack's new host name theme, with spaces replaced by underscores. The theme is used to generate host names for the stack's instances. By default, <code>HostnameTheme</code> is set to <code>Layer_Dependent</code>, which creates host names by appending integers to the layer's short name. The other themes are:</p> <ul> <li> <p> <code>Baked_Goods</code> </p> </li> <li> <p> <code>Clouds</code> </p> </li> <li> <p> <code>Europe_Cities</code> </p> </li> <li> <p> <code>Fruits</code> </p> </li> <li> <p> <code>Greek_Deities_and_Titans</code> </p> </li> <li> <p> <code>Legendary_creatures_from_Japan</code> </p> </li> <li> <p> <code>Planets_and_Moons</code> </p> </li> <li> <p> <code>Roman_Deities</code> </p> </li> <li> <p> <code>Scottish_Islands</code> </p> </li> <li> <p> <code>US_Cities</code> </p> </li> <li> <p> <code>Wild_Cats</code> </p> </li> </ul> <p>To obtain a generated host name, call <code>GetHostNameSuggestion</code>, which returns a host name based on the current theme.</p>",
-        }),
-    ).exactOptional(),
-    DefaultAvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stack\'s default Availability Zone, which must be in the stack\'s region. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>. If you also specify a value for <code>DefaultSubnetId</code>, the subnet must be in the same zone. For more information, see <a>CreateStack</a>. ',
-        }),
-    ).exactOptional(),
-    DefaultSubnetId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The stack's default VPC subnet ID. This parameter is required if you specify a value for the <code>VpcId</code> parameter. All instances are launched into this subnet unless you specify otherwise when you create the instance. If you also specify a value for <code>DefaultAvailabilityZone</code>, the subnet must be in that zone. For information on default values and when this parameter is required, see the <code>VpcId</code> parameter description. ",
-        }),
-    ).exactOptional(),
-    CustomJson: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A string that contains user-defined, custom JSON. It can be used to override the corresponding default stack configuration JSON values or to pass data to recipes. The string should be in the following format:</p> <p> <code>"{\\"key1\\": \\"value1\\", \\"key2\\": \\"value2\\",...}"</code> </p> <p>For more information about custom JSON, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html">Use Custom JSON to Modify the Stack Configuration Attributes</a>.</p>',
-        }),
-    ).exactOptional(),
-    ConfigurationManager: StackConfigurationManagerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration manager. When you update a stack, we recommend that you use the configuration manager to specify the Chef version: 12, 11.10, or 11.4 for Linux stacks, or 12.2 for Windows stacks. The default value for Linux stacks is currently 12.',
-        }),
-    ).exactOptional(),
-    ChefConfiguration: ChefConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>ChefConfiguration</code> object that specifies whether to enable Berkshelf and the Berkshelf version on Chef 11.10 stacks. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html">Create a New Stack</a>.',
-        }),
-    ).exactOptional(),
-    UseCustomCookbooks: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the stack uses custom cookbooks.' }),
-    ).exactOptional(),
-    CustomCookbooksSource: SourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the information required to retrieve an app or cookbook from a repository. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html">Adding Apps</a> or <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook.html">Cookbooks and Recipes</a>.',
-        }),
-    ).exactOptional(),
-    DefaultSshKeyName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A default Amazon EC2 key-pair name. The default value is <code>none</code>. If you specify a key-pair name, AWS OpsWorks Stacks installs the public key on the instance and you can use the private key with an SSH client to log in to the instance. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-ssh.html"> Using SSH to Communicate with an Instance</a> and <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/security-ssh-access.html"> Managing SSH Access</a>. You can override this setting by specifying a different key pair, or no key pair, when you <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-add.html"> create an instance</a>. ',
-        }),
-    ).exactOptional(),
-    DefaultRootDeviceType: RootDeviceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default root device type. This value is used by default for all instances in the stack, but you can override it when you create an instance. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device">Storage for the Root Device</a>.',
-        }),
-    ).exactOptional(),
-    UseOpsworksSecurityGroups: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to associate the AWS OpsWorks Stacks built-in security groups with the stack\'s layers.</p> <p>AWS OpsWorks Stacks provides a standard set of built-in security groups, one for each layer, which are associated with layers by default. <code>UseOpsworksSecurityGroups</code> allows you to provide your own custom security groups instead of using the built-in groups. <code>UseOpsworksSecurityGroups</code> has the following settings: </p> <ul> <li> <p>True - AWS OpsWorks Stacks automatically associates the appropriate built-in security group with each layer (default setting). You can associate additional security groups with a layer after you create it, but you cannot delete the built-in security group.</p> </li> <li> <p>False - AWS OpsWorks Stacks does not associate built-in security groups with layers. You must create appropriate EC2 security groups and associate a security group with each layer that you create. However, you can still manually associate a built-in security group with a layer on. Custom security groups are required only for those layers that need custom settings.</p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html">Create a New Stack</a>.</p>',
-        }),
-    ).exactOptional(),
-    AgentVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The default AWS OpsWorks Stacks agent version. You have the following options:</p> <ul> <li> <p>Auto-update - Set this parameter to <code>LATEST</code>. AWS OpsWorks Stacks automatically installs new agent versions on the stack's instances as soon as they are available.</p> </li> <li> <p>Fixed version - Set this parameter to your preferred agent version. To update the agent version, you must edit the stack configuration and specify a new version. AWS OpsWorks Stacks then automatically installs that version on the stack's instances.</p> </li> </ul> <p>The default setting is <code>LATEST</code>. To specify an agent version, you must use the complete version number, not the abbreviated number shown on the console. For a list of available agent version numbers, call <a>DescribeAgentVersions</a>. AgentVersion cannot be set to Chef 12.2.</p> <note> <p>You can also specify an agent version when you create or update an instance, which overrides the stack's default setting.</p> </note>",
-        }),
-    ).exactOptional(),
+    StackId: StringSchema.openapi({ description: 'The stack ID.' }),
+    Name: StringSchema.exactOptional().openapi({ description: "The stack's new name." }),
+    Attributes: StackAttributesSchema.exactOptional().openapi({
+      description: 'One or more user-defined key-value pairs to be added to the stack attributes.',
+    }),
+    ServiceRoleArn: StringSchema.exactOptional().openapi({
+      description: "Do not use this parameter. You cannot update a stack's service role.",
+    }),
+    DefaultInstanceProfileArn: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN of an IAM profile that is the default profile for all of the stack\'s EC2 instances. For more information about IAM ARNs, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">Using Identifiers</a>.',
+    }),
+    DefaultOs: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The stack\'s operating system, which must be set to one of the following:</p> <ul> <li> <p>A supported Linux operating system: An Amazon Linux version, such as <code>Amazon Linux 2018.03</code>, <code>Amazon Linux 2017.09</code>, <code>Amazon Linux 2017.03</code>, <code>Amazon Linux 2016.09</code>, <code>Amazon Linux 2016.03</code>, <code>Amazon Linux 2015.09</code>, or <code>Amazon Linux 2015.03</code>.</p> </li> <li> <p>A supported Ubuntu operating system, such as <code>Ubuntu 16.04 LTS</code>, <code>Ubuntu 14.04 LTS</code>, or <code>Ubuntu 12.04 LTS</code>.</p> </li> <li> <p> <code>CentOS Linux 7</code> </p> </li> <li> <p> <code>Red Hat Enterprise Linux 7</code> </p> </li> <li> <p>A supported Windows operating system, such as <code>Microsoft Windows Server 2012 R2 Base</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Express</code>, <code>Microsoft Windows Server 2012 R2 with SQL Server Standard</code>, or <code>Microsoft Windows Server 2012 R2 with SQL Server Web</code>.</p> </li> <li> <p>A custom AMI: <code>Custom</code>. You specify the custom AMI you want to use when you create instances. For more information about how to use custom AMIs with OpsWorks, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html">Using Custom AMIs</a>.</p> </li> </ul> <p>The default option is the stack\'s current operating system. For more information about supported operating systems, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html">AWS OpsWorks Stacks Operating Systems</a>.</p>',
+    }),
+    HostnameTheme: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The stack's new host name theme, with spaces replaced by underscores. The theme is used to generate host names for the stack's instances. By default, <code>HostnameTheme</code> is set to <code>Layer_Dependent</code>, which creates host names by appending integers to the layer's short name. The other themes are:</p> <ul> <li> <p> <code>Baked_Goods</code> </p> </li> <li> <p> <code>Clouds</code> </p> </li> <li> <p> <code>Europe_Cities</code> </p> </li> <li> <p> <code>Fruits</code> </p> </li> <li> <p> <code>Greek_Deities_and_Titans</code> </p> </li> <li> <p> <code>Legendary_creatures_from_Japan</code> </p> </li> <li> <p> <code>Planets_and_Moons</code> </p> </li> <li> <p> <code>Roman_Deities</code> </p> </li> <li> <p> <code>Scottish_Islands</code> </p> </li> <li> <p> <code>US_Cities</code> </p> </li> <li> <p> <code>Wild_Cats</code> </p> </li> </ul> <p>To obtain a generated host name, call <code>GetHostNameSuggestion</code>, which returns a host name based on the current theme.</p>",
+    }),
+    DefaultAvailabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        'The stack\'s default Availability Zone, which must be in the stack\'s region. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regions and Endpoints</a>. If you also specify a value for <code>DefaultSubnetId</code>, the subnet must be in the same zone. For more information, see <a>CreateStack</a>. ',
+    }),
+    DefaultSubnetId: StringSchema.exactOptional().openapi({
+      description:
+        "The stack's default VPC subnet ID. This parameter is required if you specify a value for the <code>VpcId</code> parameter. All instances are launched into this subnet unless you specify otherwise when you create the instance. If you also specify a value for <code>DefaultAvailabilityZone</code>, the subnet must be in that zone. For information on default values and when this parameter is required, see the <code>VpcId</code> parameter description. ",
+    }),
+    CustomJson: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A string that contains user-defined, custom JSON. It can be used to override the corresponding default stack configuration JSON values or to pass data to recipes. The string should be in the following format:</p> <p> <code>"{\\"key1\\": \\"value1\\", \\"key2\\": \\"value2\\",...}"</code> </p> <p>For more information about custom JSON, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html">Use Custom JSON to Modify the Stack Configuration Attributes</a>.</p>',
+    }),
+    ConfigurationManager: StackConfigurationManagerSchema.exactOptional().openapi({
+      description:
+        'The configuration manager. When you update a stack, we recommend that you use the configuration manager to specify the Chef version: 12, 11.10, or 11.4 for Linux stacks, or 12.2 for Windows stacks. The default value for Linux stacks is currently 12.',
+    }),
+    ChefConfiguration: ChefConfigurationSchema.exactOptional().openapi({
+      description:
+        'A <code>ChefConfiguration</code> object that specifies whether to enable Berkshelf and the Berkshelf version on Chef 11.10 stacks. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html">Create a New Stack</a>.',
+    }),
+    UseCustomCookbooks: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the stack uses custom cookbooks.',
+    }),
+    CustomCookbooksSource: SourceSchema.exactOptional().openapi({
+      description:
+        'Contains the information required to retrieve an app or cookbook from a repository. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html">Adding Apps</a> or <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook.html">Cookbooks and Recipes</a>.',
+    }),
+    DefaultSshKeyName: StringSchema.exactOptional().openapi({
+      description:
+        'A default Amazon EC2 key-pair name. The default value is <code>none</code>. If you specify a key-pair name, AWS OpsWorks Stacks installs the public key on the instance and you can use the private key with an SSH client to log in to the instance. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-ssh.html"> Using SSH to Communicate with an Instance</a> and <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/security-ssh-access.html"> Managing SSH Access</a>. You can override this setting by specifying a different key pair, or no key pair, when you <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-add.html"> create an instance</a>. ',
+    }),
+    DefaultRootDeviceType: RootDeviceTypeSchema.exactOptional().openapi({
+      description:
+        'The default root device type. This value is used by default for all instances in the stack, but you can override it when you create an instance. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device">Storage for the Root Device</a>.',
+    }),
+    UseOpsworksSecurityGroups: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to associate the AWS OpsWorks Stacks built-in security groups with the stack\'s layers.</p> <p>AWS OpsWorks Stacks provides a standard set of built-in security groups, one for each layer, which are associated with layers by default. <code>UseOpsworksSecurityGroups</code> allows you to provide your own custom security groups instead of using the built-in groups. <code>UseOpsworksSecurityGroups</code> has the following settings: </p> <ul> <li> <p>True - AWS OpsWorks Stacks automatically associates the appropriate built-in security group with each layer (default setting). You can associate additional security groups with a layer after you create it, but you cannot delete the built-in security group.</p> </li> <li> <p>False - AWS OpsWorks Stacks does not associate built-in security groups with layers. You must create appropriate EC2 security groups and associate a security group with each layer that you create. However, you can still manually associate a built-in security group with a layer on. Custom security groups are required only for those layers that need custom settings.</p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html">Create a New Stack</a>.</p>',
+    }),
+    AgentVersion: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The default AWS OpsWorks Stacks agent version. You have the following options:</p> <ul> <li> <p>Auto-update - Set this parameter to <code>LATEST</code>. AWS OpsWorks Stacks automatically installs new agent versions on the stack's instances as soon as they are available.</p> </li> <li> <p>Fixed version - Set this parameter to your preferred agent version. To update the agent version, you must edit the stack configuration and specify a new version. AWS OpsWorks Stacks then automatically installs that version on the stack's instances.</p> </li> </ul> <p>The default setting is <code>LATEST</code>. To specify an agent version, you must use the complete version number, not the abbreviated number shown on the console. For a list of available agent version numbers, call <a>DescribeAgentVersions</a>. AgentVersion cannot be set to Chef 12.2.</p> <note> <p>You can also specify an agent version when you create or update an instance, which overrides the stack's default setting.</p> </note>",
+    }),
   })
   .openapi({ required: ['StackId'], title: 'UpdateStackRequest' })
   .openapi('UpdateStackRequest')
 
 const UpdateUserProfileRequestSchema = z
   .object({
-    IamUserArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: "The user IAM ARN. This can also be a federated user's ARN." }),
-    ),
-    SshUsername: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The user's SSH user name. The allowable characters are [a-z], [A-Z], [0-9], '-', and '_'. If the specified name includes other punctuation marks, AWS OpsWorks Stacks removes them. For example, <code>my.name</code> will be changed to <code>myname</code>. If you do not specify an SSH user name, AWS OpsWorks Stacks generates one from the IAM user name. ",
-        }),
-    ).exactOptional(),
-    SshPublicKey: StringSchema.and(
-      z.any().openapi({ description: "The user's new SSH public key." }),
-    ).exactOptional(),
-    AllowSelfManagement: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether users can specify their own SSH public key through the My Settings page. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/security-settingsshkey.html">Managing User Permissions</a>.',
-        }),
-    ).exactOptional(),
+    IamUserArn: StringSchema.openapi({
+      description: "The user IAM ARN. This can also be a federated user's ARN.",
+    }),
+    SshUsername: StringSchema.exactOptional().openapi({
+      description:
+        "The user's SSH user name. The allowable characters are [a-z], [A-Z], [0-9], '-', and '_'. If the specified name includes other punctuation marks, AWS OpsWorks Stacks removes them. For example, <code>my.name</code> will be changed to <code>myname</code>. If you do not specify an SSH user name, AWS OpsWorks Stacks generates one from the IAM user name. ",
+    }),
+    SshPublicKey: StringSchema.exactOptional().openapi({
+      description: "The user's new SSH public key.",
+    }),
+    AllowSelfManagement: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether users can specify their own SSH public key through the My Settings page. For more information, see <a href="https://docs.aws.amazon.com/opsworks/latest/userguide/security-settingsshkey.html">Managing User Permissions</a>.',
+    }),
   })
   .openapi({ required: ['IamUserArn'], title: 'UpdateUserProfileRequest' })
   .openapi('UpdateUserProfileRequest')
 
 const UpdateVolumeRequestSchema = z
   .object({
-    VolumeId: StringSchema.and(z.any().openapi({ description: 'The volume ID.' })),
-    Name: StringSchema.and(z.any().openapi({ description: 'The new name.' })).exactOptional(),
-    MountPoint: StringSchema.and(
-      z.any().openapi({ description: 'The new mount point.' }),
-    ).exactOptional(),
+    VolumeId: StringSchema.openapi({ description: 'The volume ID.' }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The new name.' }),
+    MountPoint: StringSchema.exactOptional().openapi({ description: 'The new mount point.' }),
   })
   .openapi({ required: ['VolumeId'], title: 'UpdateVolumeRequest' })
   .openapi('UpdateVolumeRequest')

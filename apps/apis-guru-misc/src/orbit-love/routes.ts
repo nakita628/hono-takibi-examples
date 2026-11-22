@@ -39,7 +39,7 @@ const ActivitySchema = z
       .exactOptional()
       .openapi({ description: 'The date and time the activity occurred; defaults to now' }),
     properties: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Key-value pairs to provide contextual metadata about an activity.',

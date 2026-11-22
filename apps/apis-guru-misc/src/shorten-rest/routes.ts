@@ -189,6 +189,7 @@ const GetAliasModelSchema = z
       .openapi({ type: 'integer', format: 'int64' }),
   })
   .catchall(CreateAliasModelSchema)
+  .openapi({ required: [] })
   .openapi('GetAliasModel')
 
 const GetAliasesModelSchema = z

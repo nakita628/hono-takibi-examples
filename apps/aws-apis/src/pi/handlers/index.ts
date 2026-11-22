@@ -1,0 +1,6 @@
+export * from './XAmzTargetPerformanceInsightsv20180227DescribeDimensionKeys'
+export * from './XAmzTargetPerformanceInsightsv20180227GetDimensionKeyDetails'
+export * from './XAmzTargetPerformanceInsightsv20180227GetResourceMetadata'
+export * from './XAmzTargetPerformanceInsightsv20180227GetResourceMetrics'
+export * from './XAmzTargetPerformanceInsightsv20180227ListAvailableResourceDimensions'
+export * from './XAmzTargetPerformanceInsightsv20180227ListAvailableResourceMetrics'

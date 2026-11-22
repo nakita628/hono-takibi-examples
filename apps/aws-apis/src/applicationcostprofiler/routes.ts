@@ -9,9 +9,9 @@ const ReportIdSchema = z
 
 const DeleteReportDefinitionResultSchema = z
   .object({
-    reportId: ReportIdSchema.and(
-      z.any().openapi({ description: 'ID of the report that was deleted.' }),
-    ).exactOptional(),
+    reportId: ReportIdSchema.exactOptional().openapi({
+      description: 'ID of the report that was deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteReportDefinitionResult')
@@ -53,10 +53,8 @@ const S3PrefixSchema = z
 
 const S3LocationSchema = z
   .object({
-    bucket: S3BucketSchema.and(z.any().openapi({ description: 'Name of the S3 bucket.' })),
-    prefix: S3PrefixSchema.and(
-      z.any().openapi({ description: 'Prefix for the location to write to.' }),
-    ),
+    bucket: S3BucketSchema.openapi({ description: 'Name of the S3 bucket.' }),
+    prefix: S3PrefixSchema.openapi({ description: 'Prefix for the location to write to.' }),
   })
   .openapi({
     required: ['bucket', 'prefix'],
@@ -69,36 +67,24 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const GetReportDefinitionResultSchema = z
   .object({
-    reportId: ReportIdSchema.and(z.any().openapi({ description: 'ID of the report retrieved.' })),
-    reportDescription: ReportDescriptionSchema.and(
-      z.any().openapi({ description: 'Description of the report.' }),
-    ),
-    reportFrequency: ReportFrequencySchema.and(
-      z.any().openapi({ description: 'Cadence used to generate the report.' }),
-    ),
-    format: FormatSchema.and(z.any().openapi({ description: 'Format of the generated report.' })),
-    destinationS3Location: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Simple Storage Service (Amazon S3) location where the report is uploaded.',
-        }),
-    ),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Timestamp (milliseconds) when this report definition was created.',
-        }),
-    ),
-    lastUpdated: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Timestamp (milliseconds) when this report definition was last updated.',
-        }),
-    ),
+    reportId: ReportIdSchema.openapi({ description: 'ID of the report retrieved.' }),
+    reportDescription: ReportDescriptionSchema.openapi({
+      description: 'Description of the report.',
+    }),
+    reportFrequency: ReportFrequencySchema.openapi({
+      description: 'Cadence used to generate the report.',
+    }),
+    format: FormatSchema.openapi({ description: 'Format of the generated report.' }),
+    destinationS3Location: S3LocationSchema.openapi({
+      description:
+        'Amazon Simple Storage Service (Amazon S3) location where the report is uploaded.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'Timestamp (milliseconds) when this report definition was created.',
+    }),
+    lastUpdated: TimestampSchema.openapi({
+      description: 'Timestamp (milliseconds) when this report definition was last updated.',
+    }),
   })
   .openapi({
     required: [
@@ -121,9 +107,7 @@ const ImportIdSchema = z
   .openapi('ImportId')
 
 const ImportApplicationUsageResultSchema = z
-  .object({
-    importId: ImportIdSchema.and(z.any().openapi({ description: 'ID of the import request.' })),
-  })
+  .object({ importId: ImportIdSchema.openapi({ description: 'ID of the import request.' }) })
   .openapi({ required: ['importId'] })
   .openapi('ImportApplicationUsageResult')
 
@@ -140,40 +124,26 @@ const S3BucketRegionSchema = z
 
 const ReportDefinitionSchema = z
   .object({
-    reportId: ReportIdSchema.and(
-      z.any().openapi({ description: 'The ID of the report.' }),
-    ).exactOptional(),
-    reportDescription: ReportDescriptionSchema.and(
-      z.any().openapi({ description: 'Description of the report' }),
-    ).exactOptional(),
-    reportFrequency: ReportFrequencySchema.and(
-      z.any().openapi({ description: 'The cadence at which the report is generated.' }),
-    ).exactOptional(),
-    format: FormatSchema.and(
-      z.any().openapi({ description: 'The format used for the generated reports.' }),
-    ).exactOptional(),
-    destinationS3Location: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location in Amazon Simple Storage Service (Amazon S3) the reports should be saved to.',
-        }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Timestamp (milliseconds) when this report definition was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Timestamp (milliseconds) when this report definition was last updated.',
-        }),
-    ).exactOptional(),
+    reportId: ReportIdSchema.exactOptional().openapi({ description: 'The ID of the report.' }),
+    reportDescription: ReportDescriptionSchema.exactOptional().openapi({
+      description: 'Description of the report',
+    }),
+    reportFrequency: ReportFrequencySchema.exactOptional().openapi({
+      description: 'The cadence at which the report is generated.',
+    }),
+    format: FormatSchema.exactOptional().openapi({
+      description: 'The format used for the generated reports.',
+    }),
+    destinationS3Location: S3LocationSchema.exactOptional().openapi({
+      description:
+        'The location in Amazon Simple Storage Service (Amazon S3) the reports should be saved to.',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'Timestamp (milliseconds) when this report definition was created.',
+    }),
+    lastUpdatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'Timestamp (milliseconds) when this report definition was last updated.',
+    }),
   })
   .openapi({
     description: 'The configuration of a report in AWS Application Cost Profiler.',
@@ -192,26 +162,19 @@ const TokenSchema = z
 
 const ListReportDefinitionsResultSchema = z
   .object({
-    reportDefinitions: ReportDefinitionListSchema.and(
-      z.any().openapi({ description: 'The retrieved reports.' }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the next token, if it exists. Null if there are no more results.',
-        }),
-    ).exactOptional(),
+    reportDefinitions: ReportDefinitionListSchema.exactOptional().openapi({
+      description: 'The retrieved reports.',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: 'The value of the next token, if it exists. Null if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListReportDefinitionsResult')
 
 const PutReportDefinitionResultSchema = z
   .object({
-    reportId: ReportIdSchema.and(
-      z.any().openapi({ description: 'ID of the report.' }),
-    ).exactOptional(),
+    reportId: ReportIdSchema.exactOptional().openapi({ description: 'ID of the report.' }),
   })
   .openapi({ required: [] })
   .openapi('PutReportDefinitionResult')
@@ -220,35 +183,29 @@ const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceede
 
 const UpdateReportDefinitionResultSchema = z
   .object({
-    reportId: ReportIdSchema.and(
-      z.any().openapi({ description: 'ID of the report.' }),
-    ).exactOptional(),
+    reportId: ReportIdSchema.exactOptional().openapi({ description: 'ID of the report.' }),
   })
   .openapi({ required: [] })
   .openapi('UpdateReportDefinitionResult')
 
 const DeleteReportDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteReportDefinitionRequest' })
   .openapi('DeleteReportDefinitionRequest')
 
 const GetReportDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetReportDefinitionRequest' })
   .openapi('GetReportDefinitionRequest')
 
 const SourceS3LocationSchema = z
   .object({
-    bucket: S3BucketSchema.and(z.any().openapi({ description: 'Name of the bucket.' })),
-    key: S3KeySchema.and(z.any().openapi({ description: 'Key of the object.' })),
-    region: S3BucketRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Region of the bucket. Only required for Regions that are disabled by default. For more infomration about Regions that are disabled by default, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande-manage.html#rande-manage-enable"> Enabling a Region</a> in the <i>AWS General Reference guide</i>.',
-        }),
-    ).exactOptional(),
+    bucket: S3BucketSchema.openapi({ description: 'Name of the bucket.' }),
+    key: S3KeySchema.openapi({ description: 'Key of the object.' }),
+    region: S3BucketRegionSchema.exactOptional().openapi({
+      description:
+        'Region of the bucket. Only required for Regions that are disabled by default. For more infomration about Regions that are disabled by default, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande-manage.html#rande-manage-enable"> Enabling a Region</a> in the <i>AWS General Reference guide</i>.',
+    }),
   })
   .openapi({
     required: ['bucket', 'key'],
@@ -259,9 +216,9 @@ const SourceS3LocationSchema = z
 
 const ImportApplicationUsageRequestSchema = z
   .object({
-    sourceS3Location: SourceS3LocationSchema.and(
-      z.any().openapi({ description: 'Amazon S3 location to import application usage data from.' }),
-    ),
+    sourceS3Location: SourceS3LocationSchema.openapi({
+      description: 'Amazon S3 location to import application usage data from.',
+    }),
   })
   .openapi({ required: ['sourceS3Location'], title: 'ImportApplicationUsageRequest' })
   .openapi('ImportApplicationUsageRequest')
@@ -269,37 +226,29 @@ const ImportApplicationUsageRequestSchema = z
 const IntegerSchema = z.int().min(1).max(100).openapi('Integer')
 
 const ListReportDefinitionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListReportDefinitionsRequest' })
   .openapi('ListReportDefinitionsRequest')
 
 const PutReportDefinitionRequestSchema = z
   .object({
-    reportId: ReportIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Required. ID of the report. You can choose any valid string matching the pattern for the ID.',
-        }),
-    ),
-    reportDescription: ReportDescriptionSchema.and(
-      z.any().openapi({ description: 'Required. Description of the report.' }),
-    ),
-    reportFrequency: ReportFrequencySchema.and(
-      z.any().openapi({ description: 'Required. The cadence to generate the report.' }),
-    ),
-    format: FormatSchema.and(
-      z.any().openapi({ description: 'Required. The format to use for the generated report.' }),
-    ),
-    destinationS3Location: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Required. Amazon Simple Storage Service (Amazon S3) location where Application Cost Profiler uploads the report.',
-        }),
-    ),
+    reportId: ReportIdSchema.openapi({
+      description:
+        'Required. ID of the report. You can choose any valid string matching the pattern for the ID.',
+    }),
+    reportDescription: ReportDescriptionSchema.openapi({
+      description: 'Required. Description of the report.',
+    }),
+    reportFrequency: ReportFrequencySchema.openapi({
+      description: 'Required. The cadence to generate the report.',
+    }),
+    format: FormatSchema.openapi({
+      description: 'Required. The format to use for the generated report.',
+    }),
+    destinationS3Location: S3LocationSchema.openapi({
+      description:
+        'Required. Amazon Simple Storage Service (Amazon S3) location where Application Cost Profiler uploads the report.',
+    }),
   })
   .openapi({
     required: [
@@ -315,23 +264,19 @@ const PutReportDefinitionRequestSchema = z
 
 const UpdateReportDefinitionRequestSchema = z
   .object({
-    reportDescription: ReportDescriptionSchema.and(
-      z.any().openapi({ description: 'Required. Description of the report.' }),
-    ),
-    reportFrequency: ReportFrequencySchema.and(
-      z.any().openapi({ description: 'Required. The cadence to generate the report.' }),
-    ),
-    format: FormatSchema.and(
-      z.any().openapi({ description: 'Required. The format to use for the generated report.' }),
-    ),
-    destinationS3Location: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Required. Amazon Simple Storage Service (Amazon S3) location where Application Cost Profiler uploads the report.',
-        }),
-    ),
+    reportDescription: ReportDescriptionSchema.openapi({
+      description: 'Required. Description of the report.',
+    }),
+    reportFrequency: ReportFrequencySchema.openapi({
+      description: 'Required. The cadence to generate the report.',
+    }),
+    format: FormatSchema.openapi({
+      description: 'Required. The format to use for the generated report.',
+    }),
+    destinationS3Location: S3LocationSchema.openapi({
+      description:
+        'Required. Amazon Simple Storage Service (Amazon S3) location where Application Cost Profiler uploads the report.',
+    }),
   })
   .openapi({
     required: ['reportDescription', 'reportFrequency', 'format', 'destinationS3Location'],
@@ -528,12 +473,12 @@ export const putReportDefinitionReportIdRoute = createRoute({
                 .openapi({ description: 'Required. The format to use for the generated report.' }),
               destinationS3Location: z
                 .object({
-                  bucket: S3BucketSchema.and(
-                    z.any().openapi({ description: 'Name of the S3 bucket.' }),
-                  ).exactOptional(),
-                  prefix: S3PrefixSchema.and(
-                    z.any().openapi({ description: 'Prefix for the location to write to.' }),
-                  ).exactOptional(),
+                  bucket: S3BucketSchema.exactOptional().openapi({
+                    description: 'Name of the S3 bucket.',
+                  }),
+                  prefix: S3PrefixSchema.exactOptional().openapi({
+                    description: 'Prefix for the location to write to.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -658,20 +603,14 @@ export const postImportApplicationUsageRoute = createRoute({
             .object({
               sourceS3Location: z
                 .object({
-                  bucket: S3BucketSchema.and(
-                    z.any().openapi({ description: 'Name of the bucket.' }),
-                  ).exactOptional(),
-                  key: S3KeySchema.and(
-                    z.any().openapi({ description: 'Key of the object.' }),
-                  ).exactOptional(),
-                  region: S3BucketRegionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Region of the bucket. Only required for Regions that are disabled by default. For more infomration about Regions that are disabled by default, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande-manage.html#rande-manage-enable"> Enabling a Region</a> in the <i>AWS General Reference guide</i>.',
-                      }),
-                  ).exactOptional(),
+                  bucket: S3BucketSchema.exactOptional().openapi({
+                    description: 'Name of the bucket.',
+                  }),
+                  key: S3KeySchema.exactOptional().openapi({ description: 'Key of the object.' }),
+                  region: S3BucketRegionSchema.exactOptional().openapi({
+                    description:
+                      'Region of the bucket. Only required for Regions that are disabled by default. For more infomration about Regions that are disabled by default, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande-manage.html#rande-manage-enable"> Enabling a Region</a> in the <i>AWS General Reference guide</i>.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -835,12 +774,12 @@ export const postReportDefinitionRoute = createRoute({
                 .openapi({ description: 'Required. The format to use for the generated report.' }),
               destinationS3Location: z
                 .object({
-                  bucket: S3BucketSchema.and(
-                    z.any().openapi({ description: 'Name of the S3 bucket.' }),
-                  ).exactOptional(),
-                  prefix: S3PrefixSchema.and(
-                    z.any().openapi({ description: 'Prefix for the location to write to.' }),
-                  ).exactOptional(),
+                  bucket: S3BucketSchema.exactOptional().openapi({
+                    description: 'Name of the S3 bucket.',
+                  }),
+                  prefix: S3PrefixSchema.exactOptional().openapi({
+                    description: 'Prefix for the location to write to.',
+                  }),
                 })
                 .openapi({
                   description:

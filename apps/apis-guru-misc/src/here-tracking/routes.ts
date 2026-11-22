@@ -1651,85 +1651,121 @@ const CountrySchema = z
   })
   .openapi('Country')
 
-const CreateLocationBodySchema = z
-  .union([
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'location')) {
-            ctx.addIssue({ code: 'custom' })
+const CreateLocationBodySchema = (() => {
+  const Schema = z
+    .union([
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'location')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['location'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'geofenceId')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['location'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'geofenceId')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
+        })
+        .openapi({ required: ['geofenceId'] }),
+    ])
+    .and(
+      z
+        .object({
+          address: z
+            .object({
+              city: z.string().max(100).exactOptional().openapi({ description: 'City' }),
+              country: z.string().max(100).exactOptional().openapi({ description: 'Country' }),
+              postalCode: z
+                .string()
+                .max(10)
+                .exactOptional()
+                .openapi({ description: 'Postal code' }),
+              state: z.string().max(100).exactOptional().openapi({ description: 'State' }),
+              street: z
+                .string()
+                .max(100)
+                .exactOptional()
+                .openapi({ description: 'Street address' }),
+            })
+            .exactOptional()
+            .openapi({ description: 'Location address.', required: [] }),
+          description: z
+            .string()
+            .max(1000)
+            .exactOptional()
+            .openapi({ description: 'Description of the location.' }),
+          externalLocationId: z
+            .string()
+            .min(1)
+            .max(100)
+            .exactOptional()
+            .openapi({ description: 'External location id in external cloud' }),
+          geofenceId: z
+            .uuid()
+            .exactOptional()
+            .openapi({
+              description:
+                'Optional geofence ID associated with the location. A geofence with the specified ID must exist.',
+            }),
+          location: z
+            .object({
+              lat: z
+                .number()
+                .min(-90)
+                .max(90)
+                .openapi({
+                  description:
+                    'Latitude in WGS-84 format, decimal representation ranging from -90 to 90.',
+                }),
+              lng: z
+                .number()
+                .min(-180)
+                .max(180)
+                .openapi({
+                  description:
+                    'Longitude in WGS-84 format, decimal representation ranging from -180 to 180.',
+                }),
+            })
+            .exactOptional()
+            .openapi({ description: 'Location coordinates.', required: ['lat', 'lng'] }),
+          name: z
+            .string()
+            .max(50)
+            .exactOptional()
+            .openapi({ description: 'Name of the location.' }),
+        })
+        .openapi({ required: [] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'address',
+            'description',
+            'externalLocationId',
+            'geofenceId',
+            'location',
+            'name',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
         }
-      })
-      .openapi({ required: ['geofenceId'] }),
-  ])
-  .and(
-    z
-      .object({
-        address: z
-          .object({
-            city: z.string().max(100).exactOptional().openapi({ description: 'City' }),
-            country: z.string().max(100).exactOptional().openapi({ description: 'Country' }),
-            postalCode: z.string().max(10).exactOptional().openapi({ description: 'Postal code' }),
-            state: z.string().max(100).exactOptional().openapi({ description: 'State' }),
-            street: z.string().max(100).exactOptional().openapi({ description: 'Street address' }),
-          })
-          .exactOptional()
-          .openapi({ description: 'Location address.', required: [] }),
-        description: z
-          .string()
-          .max(1000)
-          .exactOptional()
-          .openapi({ description: 'Description of the location.' }),
-        externalLocationId: z
-          .string()
-          .min(1)
-          .max(100)
-          .exactOptional()
-          .openapi({ description: 'External location id in external cloud' }),
-        geofenceId: z
-          .uuid()
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional geofence ID associated with the location. A geofence with the specified ID must exist.',
-          }),
-        location: z
-          .object({
-            lat: z
-              .number()
-              .min(-90)
-              .max(90)
-              .openapi({
-                description:
-                  'Latitude in WGS-84 format, decimal representation ranging from -90 to 90.',
-              }),
-            lng: z
-              .number()
-              .min(-180)
-              .max(180)
-              .openapi({
-                description:
-                  'Longitude in WGS-84 format, decimal representation ranging from -180 to 180.',
-              }),
-          })
-          .exactOptional()
-          .openapi({ description: 'Location coordinates.', required: ['lat', 'lng'] }),
-        name: z.string().max(50).exactOptional().openapi({ description: 'Name of the location.' }),
-      })
-      .openapi({ required: [] }),
-  )
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description: 'Body for creating a location.',
     example: {
@@ -44581,101 +44617,129 @@ export const postLocationsV4Route = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .union([
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'location')) {
-                      ctx.addIssue({ code: 'custom' })
+          schema: (() => {
+            const Schema = z
+              .union([
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'location')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['location'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'geofenceId')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['location'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'geofenceId')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
+                  })
+                  .openapi({ required: ['geofenceId'] }),
+              ])
+              .and(
+                z
+                  .object({
+                    address: z
+                      .object({
+                        city: z.string().max(100).exactOptional().openapi({ description: 'City' }),
+                        country: z
+                          .string()
+                          .max(100)
+                          .exactOptional()
+                          .openapi({ description: 'Country' }),
+                        postalCode: z
+                          .string()
+                          .max(10)
+                          .exactOptional()
+                          .openapi({ description: 'Postal code' }),
+                        state: z
+                          .string()
+                          .max(100)
+                          .exactOptional()
+                          .openapi({ description: 'State' }),
+                        street: z
+                          .string()
+                          .max(100)
+                          .exactOptional()
+                          .openapi({ description: 'Street address' }),
+                      })
+                      .exactOptional()
+                      .openapi({ description: 'Location address.', required: [] }),
+                    description: z
+                      .string()
+                      .max(1000)
+                      .exactOptional()
+                      .openapi({ description: 'Description of the location.' }),
+                    externalLocationId: z
+                      .string()
+                      .min(1)
+                      .max(100)
+                      .exactOptional()
+                      .openapi({ description: 'External location id in external cloud' }),
+                    geofenceId: z
+                      .uuid()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Optional geofence ID associated with the location. A geofence with the specified ID must exist.',
+                      }),
+                    location: z
+                      .object({
+                        lat: z
+                          .number()
+                          .min(-90)
+                          .max(90)
+                          .openapi({
+                            description:
+                              'Latitude in WGS-84 format, decimal representation ranging from -90 to 90.',
+                          }),
+                        lng: z
+                          .number()
+                          .min(-180)
+                          .max(180)
+                          .openapi({
+                            description:
+                              'Longitude in WGS-84 format, decimal representation ranging from -180 to 180.',
+                          }),
+                      })
+                      .exactOptional()
+                      .openapi({ description: 'Location coordinates.', required: ['lat', 'lng'] }),
+                    name: z
+                      .string()
+                      .max(50)
+                      .exactOptional()
+                      .openapi({ description: 'Name of the location.' }),
+                  })
+                  .openapi({ required: [] }),
+              )
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  if (
+                    ![
+                      'address',
+                      'description',
+                      'externalLocationId',
+                      'geofenceId',
+                      'location',
+                      'name',
+                    ].includes(k)
+                  ) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o })
                   }
-                })
-                .openapi({ required: ['geofenceId'] }),
-            ])
-            .and(
-              z
-                .object({
-                  address: z
-                    .object({
-                      city: z.string().max(100).exactOptional().openapi({ description: 'City' }),
-                      country: z
-                        .string()
-                        .max(100)
-                        .exactOptional()
-                        .openapi({ description: 'Country' }),
-                      postalCode: z
-                        .string()
-                        .max(10)
-                        .exactOptional()
-                        .openapi({ description: 'Postal code' }),
-                      state: z.string().max(100).exactOptional().openapi({ description: 'State' }),
-                      street: z
-                        .string()
-                        .max(100)
-                        .exactOptional()
-                        .openapi({ description: 'Street address' }),
-                    })
-                    .exactOptional()
-                    .openapi({ description: 'Location address.', required: [] }),
-                  description: z
-                    .string()
-                    .max(1000)
-                    .exactOptional()
-                    .openapi({ description: 'Description of the location.' }),
-                  externalLocationId: z
-                    .string()
-                    .min(1)
-                    .max(100)
-                    .exactOptional()
-                    .openapi({ description: 'External location id in external cloud' }),
-                  geofenceId: z
-                    .uuid()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'Optional geofence ID associated with the location. A geofence with the specified ID must exist.',
-                    }),
-                  location: z
-                    .object({
-                      lat: z
-                        .number()
-                        .min(-90)
-                        .max(90)
-                        .openapi({
-                          description:
-                            'Latitude in WGS-84 format, decimal representation ranging from -90 to 90.',
-                        }),
-                      lng: z
-                        .number()
-                        .min(-180)
-                        .max(180)
-                        .openapi({
-                          description:
-                            'Longitude in WGS-84 format, decimal representation ranging from -180 to 180.',
-                        }),
-                    })
-                    .exactOptional()
-                    .openapi({ description: 'Location coordinates.', required: ['lat', 'lng'] }),
-                  name: z
-                    .string()
-                    .max(50)
-                    .exactOptional()
-                    .openapi({ description: 'Name of the location.' }),
-                })
-                .openapi({ required: [] }),
-            )
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })()
+            .openapi({ additionalProperties: false })
             .openapi({
               description: 'Body for creating a location.',
               example: {
@@ -45302,101 +45366,129 @@ export const putLocationsV4LocationIdRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .union([
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'location')) {
-                      ctx.addIssue({ code: 'custom' })
+          schema: (() => {
+            const Schema = z
+              .union([
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'location')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['location'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'geofenceId')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['location'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'geofenceId')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
+                  })
+                  .openapi({ required: ['geofenceId'] }),
+              ])
+              .and(
+                z
+                  .object({
+                    address: z
+                      .object({
+                        city: z.string().max(100).exactOptional().openapi({ description: 'City' }),
+                        country: z
+                          .string()
+                          .max(100)
+                          .exactOptional()
+                          .openapi({ description: 'Country' }),
+                        postalCode: z
+                          .string()
+                          .max(10)
+                          .exactOptional()
+                          .openapi({ description: 'Postal code' }),
+                        state: z
+                          .string()
+                          .max(100)
+                          .exactOptional()
+                          .openapi({ description: 'State' }),
+                        street: z
+                          .string()
+                          .max(100)
+                          .exactOptional()
+                          .openapi({ description: 'Street address' }),
+                      })
+                      .exactOptional()
+                      .openapi({ description: 'Location address.', required: [] }),
+                    description: z
+                      .string()
+                      .max(1000)
+                      .exactOptional()
+                      .openapi({ description: 'Description of the location.' }),
+                    externalLocationId: z
+                      .string()
+                      .min(1)
+                      .max(100)
+                      .exactOptional()
+                      .openapi({ description: 'External location id in external cloud' }),
+                    geofenceId: z
+                      .uuid()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Optional geofence ID associated with the location. A geofence with the specified ID must exist.',
+                      }),
+                    location: z
+                      .object({
+                        lat: z
+                          .number()
+                          .min(-90)
+                          .max(90)
+                          .openapi({
+                            description:
+                              'Latitude in WGS-84 format, decimal representation ranging from -90 to 90.',
+                          }),
+                        lng: z
+                          .number()
+                          .min(-180)
+                          .max(180)
+                          .openapi({
+                            description:
+                              'Longitude in WGS-84 format, decimal representation ranging from -180 to 180.',
+                          }),
+                      })
+                      .exactOptional()
+                      .openapi({ description: 'Location coordinates.', required: ['lat', 'lng'] }),
+                    name: z
+                      .string()
+                      .max(50)
+                      .exactOptional()
+                      .openapi({ description: 'Name of the location.' }),
+                  })
+                  .openapi({ required: [] }),
+              )
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  if (
+                    ![
+                      'address',
+                      'description',
+                      'externalLocationId',
+                      'geofenceId',
+                      'location',
+                      'name',
+                    ].includes(k)
+                  ) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o })
                   }
-                })
-                .openapi({ required: ['geofenceId'] }),
-            ])
-            .and(
-              z
-                .object({
-                  address: z
-                    .object({
-                      city: z.string().max(100).exactOptional().openapi({ description: 'City' }),
-                      country: z
-                        .string()
-                        .max(100)
-                        .exactOptional()
-                        .openapi({ description: 'Country' }),
-                      postalCode: z
-                        .string()
-                        .max(10)
-                        .exactOptional()
-                        .openapi({ description: 'Postal code' }),
-                      state: z.string().max(100).exactOptional().openapi({ description: 'State' }),
-                      street: z
-                        .string()
-                        .max(100)
-                        .exactOptional()
-                        .openapi({ description: 'Street address' }),
-                    })
-                    .exactOptional()
-                    .openapi({ description: 'Location address.', required: [] }),
-                  description: z
-                    .string()
-                    .max(1000)
-                    .exactOptional()
-                    .openapi({ description: 'Description of the location.' }),
-                  externalLocationId: z
-                    .string()
-                    .min(1)
-                    .max(100)
-                    .exactOptional()
-                    .openapi({ description: 'External location id in external cloud' }),
-                  geofenceId: z
-                    .uuid()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'Optional geofence ID associated with the location. A geofence with the specified ID must exist.',
-                    }),
-                  location: z
-                    .object({
-                      lat: z
-                        .number()
-                        .min(-90)
-                        .max(90)
-                        .openapi({
-                          description:
-                            'Latitude in WGS-84 format, decimal representation ranging from -90 to 90.',
-                        }),
-                      lng: z
-                        .number()
-                        .min(-180)
-                        .max(180)
-                        .openapi({
-                          description:
-                            'Longitude in WGS-84 format, decimal representation ranging from -180 to 180.',
-                        }),
-                    })
-                    .exactOptional()
-                    .openapi({ description: 'Location coordinates.', required: ['lat', 'lng'] }),
-                  name: z
-                    .string()
-                    .max(50)
-                    .exactOptional()
-                    .openapi({ description: 'Name of the location.' }),
-                })
-                .openapi({ required: [] }),
-            )
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })()
+            .openapi({ additionalProperties: false })
             .openapi({
               description: 'Body for creating a location.',
               example: {

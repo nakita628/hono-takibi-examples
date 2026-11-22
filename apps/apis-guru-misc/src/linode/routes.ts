@@ -1686,7 +1686,7 @@ const DiskRequestSchema = z
         'x-linode-filterable': true,
       }),
     stackscript_data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -8586,7 +8586,7 @@ export const postAccountCreditCardRoute = createRoute({
   responses: {
     200: {
       description: 'Credit Card updated.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -8715,7 +8715,7 @@ export const deleteAccountEntityTransfersTokenRoute = createRoute({
   responses: {
     200: {
       description: 'Entity Transfer cancelled.\n',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -8749,7 +8749,7 @@ export const postAccountEntityTransfersTokenAcceptRoute = createRoute({
   responses: {
     200: {
       description: 'Entity Transfer accepted.\n',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -8858,7 +8858,10 @@ export const postAccountEventsEventIdReadRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Event read.', content: { 'application/json': { schema: z.object({}) } } },
+    200: {
+      description: 'Event read.',
+      content: { 'application/json': { schema: z.looseObject({}) } },
+    },
     default: ErrorResponseResponse,
   },
   security: [{ personalAccessToken: [] }, { oauth: ['events:read_only'] }],
@@ -8895,7 +8898,10 @@ export const postAccountEventsEventIdSeenRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Events seen.', content: { 'application/json': { schema: z.object({}) } } },
+    200: {
+      description: 'Events seen.',
+      content: { 'application/json': { schema: z.looseObject({}) } },
+    },
     default: ErrorResponseResponse,
   },
   security: [{ personalAccessToken: [] }, { oauth: ['events:read_only'] }],
@@ -9195,7 +9201,20 @@ export const postAccountOauthClientsRoute = createRoute({
       description: 'Information about the OAuth Client to create.',
       content: {
         'application/json': {
-          schema: OAuthClientSchema.openapi({ required: ['label', 'redirect_uri'] }),
+          schema: OAuthClientSchema.and(
+            z.looseObject({}).openapi({ required: ['label', 'redirect_uri'] }),
+          )
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'label')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+                if (!Object.hasOwn(val, 'redirect_uri')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .openapi({ required: ['label', 'redirect_uri'] }),
         },
       },
     },
@@ -9305,7 +9324,7 @@ export const deleteAccountOauthClientsClientIdRoute = createRoute({
   responses: {
     200: {
       description: 'Client deleted successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -9408,7 +9427,7 @@ export const putAccountOauthClientsClientIdThumbnailRoute = createRoute({
   responses: {
     200: {
       description: 'Thumbnail updated successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -9482,7 +9501,7 @@ export const postAccountPaymentMethodsRoute = createRoute({
   responses: {
     200: {
       description: 'Payment Method added.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -9565,7 +9584,7 @@ export const deleteAccountPaymentMethodsPaymentMethodIdRoute = createRoute({
   responses: {
     200: {
       description: 'Payment Method deactivated.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -9606,7 +9625,7 @@ export const postAccountPaymentMethodsPaymentMethodIdMakeDefaultRoute = createRo
   responses: {
     200: {
       description: 'Payment Method successfully set as the default method.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -9737,7 +9756,7 @@ export const postAccountPaymentsPaypalExecuteRoute = createRoute({
   responses: {
     200: {
       description: 'PayPal Payment executed.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     202: AcceptedResponseResponse,
     299: DeprecatedResponseResponse,
@@ -9940,7 +9959,7 @@ export const deleteAccountServiceTransfersTokenRoute = createRoute({
   responses: {
     200: {
       description: 'Service Transfer cancelled.\n',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -9973,7 +9992,7 @@ export const postAccountServiceTransfersTokenAcceptRoute = createRoute({
   responses: {
     200: {
       description: 'Service Transfer accepted.\n',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -10034,7 +10053,7 @@ export const postAccountSettingsManagedEnableRoute = createRoute({
   responses: {
     200: {
       description: 'Managed services enabled for account.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -10101,7 +10120,20 @@ export const postAccountUsersRoute = createRoute({
     body: {
       description: 'Information about the User to create.',
       content: {
-        'application/json': { schema: UserSchema.openapi({ required: ['username', 'email'] }) },
+        'application/json': {
+          schema: UserSchema.and(z.looseObject({}).openapi({ required: ['username', 'email'] }))
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'username')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+                if (!Object.hasOwn(val, 'email')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .openapi({ required: ['username', 'email'] }),
+        },
       },
     },
   },
@@ -10211,7 +10243,7 @@ export const deleteAccountUsersUsernameRoute = createRoute({
   responses: {
     200: {
       description: 'User deleted successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -10545,7 +10577,7 @@ export const deleteDatabasesMongodbInstancesInstanceIdRoute = createRoute({
   responses: {
     200: {
       description: 'Managed MongoDB Database successfully deleted.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -10642,7 +10674,7 @@ export const postDatabasesMongodbInstancesInstanceIdBackupsRoute = createRoute({
   responses: {
     200: {
       description: 'Database snapshot backup request successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -10764,7 +10796,7 @@ export const deleteDatabasesMongodbInstancesInstanceIdBackupsBackupIdRoute = cre
   responses: {
     200: {
       description: 'Request to delete Database backup successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -10825,7 +10857,7 @@ export const postDatabasesMongodbInstancesInstanceIdBackupsBackupIdRestoreRoute 
   responses: {
     200: {
       description: 'Request to restore backup successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -10909,7 +10941,7 @@ export const postDatabasesMongodbInstancesInstanceIdCredentialsResetRoute = crea
   responses: {
     200: {
       description: 'Managed Database instance credentials successfully reset.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -10951,7 +10983,7 @@ export const postDatabasesMongodbInstancesInstanceIdPatchRoute = createRoute({
   responses: {
     200: {
       description: 'Managed Database instance patch request successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -11190,7 +11222,7 @@ export const deleteDatabasesMysqlInstancesInstanceIdRoute = createRoute({
   responses: {
     200: {
       description: 'Managed MySQL Database successfully deleted.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -11287,7 +11319,7 @@ export const postDatabasesMysqlInstancesInstanceIdBackupsRoute = createRoute({
   responses: {
     200: {
       description: 'Database snapshot backup request successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -11409,7 +11441,7 @@ export const deleteDatabasesMysqlInstancesInstanceIdBackupsBackupIdRoute = creat
   responses: {
     200: {
       description: 'Request to delete Database backup successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -11470,7 +11502,7 @@ export const postDatabasesMysqlInstancesInstanceIdBackupsBackupIdRestoreRoute = 
   responses: {
     200: {
       description: 'Request to restore backup successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -11554,7 +11586,7 @@ export const postDatabasesMysqlInstancesInstanceIdCredentialsResetRoute = create
   responses: {
     200: {
       description: 'Managed Database instance credentials successfully reset.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -11596,7 +11628,7 @@ export const postDatabasesMysqlInstancesInstanceIdPatchRoute = createRoute({
   responses: {
     200: {
       description: 'Managed Database instance patch request successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -11835,7 +11867,7 @@ export const deleteDatabasesPostgresqlInstancesInstanceIdRoute = createRoute({
   responses: {
     200: {
       description: 'Managed PostgreSQL Database successfully deleted.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -11932,7 +11964,7 @@ export const postDatabasesPostgresqlInstancesInstanceIdBackupsRoute = createRout
   responses: {
     200: {
       description: 'Database snapshot backup request successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -12054,7 +12086,7 @@ export const deleteDatabasesPostgresqlInstancesInstanceIdBackupsBackupIdRoute = 
   responses: {
     200: {
       description: 'Request to delete Database backup successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -12115,7 +12147,7 @@ export const postDatabasesPostgresqlInstancesInstanceIdBackupsBackupIdRestoreRou
   responses: {
     200: {
       description: 'Request to restore backup successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -12199,7 +12231,7 @@ export const postDatabasesPostgresqlInstancesInstanceIdCredentialsResetRoute = c
   responses: {
     200: {
       description: 'Managed Database instance credentials successfully reset.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -12241,7 +12273,7 @@ export const postDatabasesPostgresqlInstancesInstanceIdPatchRoute = createRoute(
   responses: {
     200: {
       description: 'Managed Database instance patch request successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -12394,7 +12426,20 @@ export const postDomainsRoute = createRoute({
     body: {
       description: 'Information about the domain you are registering.',
       content: {
-        'application/json': { schema: DomainSchema.openapi({ required: ['domain', 'type'] }) },
+        'application/json': {
+          schema: DomainSchema.and(z.looseObject({}).openapi({ required: ['domain', 'type'] }))
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'domain')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+                if (!Object.hasOwn(val, 'type')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .openapi({ required: ['domain', 'type'] }),
+        },
       },
       required: true,
     },
@@ -12569,7 +12614,7 @@ export const deleteDomainsDomainIdRoute = createRoute({
   responses: {
     200: {
       description: 'Domain deleted successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -12719,7 +12764,17 @@ export const postDomainsDomainIdRecordsRoute = createRoute({
     body: {
       description: 'Information about the new Record to add.\n',
       content: {
-        'application/json': { schema: DomainRecordSchema.openapi({ required: ['type'] }) },
+        'application/json': {
+          schema: DomainRecordSchema.and(z.looseObject({}).openapi({ required: ['type'] }))
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'type')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .openapi({ required: ['type'] }),
+        },
       },
       required: true,
     },
@@ -12925,7 +12980,7 @@ export const deleteDomainsDomainIdRecordsRecordIdRoute = createRoute({
   responses: {
     200: {
       description: 'Record deleted successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -13227,7 +13282,7 @@ export const deleteImagesImageIdRoute = createRoute({
   responses: {
     200: {
       description: 'Delete successful',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -13277,63 +13332,77 @@ export const postLinodeInstancesRoute = createRoute({
       content: {
         'application/json': {
           schema: LinodeRequestSchema.and(
-            z
-              .object({
-                backup_id: z
-                  .int()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      "A Backup ID from another Linode's available backups. Your User must have\n`read_write` access to that Linode, the Backup must have a `status` of\n`successful`, and the Linode must be deployed to the same `region` as the Backup.\nSee [GET /linode/instances/{linodeId}/backups](/docs/api/linode-instances/#backups-list)\nfor a Linode's available backups.\n\nThis field and the `image` field are mutually exclusive.\n",
-                    example: 1234,
-                  }),
-                backups_enabled: z
-                  .boolean()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'If this field is set to `true`, the created Linode will automatically be\nenrolled in the Linode Backup service. This will incur an additional charge.\nThe cost for the Backup service is dependent on the Type of Linode deployed.\n\nThis option is always treated as `true` if the account-wide `backups_enabled`\nsetting is `true`.  See [account settings](/docs/api/account/#account-settings-view)\nfor more information.\n\nBackup pricing is included in the response from [/linodes/types](/docs/api/linode-types/#types-list)\n',
-                  }),
-                group: z.lazy(() => LinodeSchema).exactOptional(),
-                interfaces: LinodeConfigInterfacesSchema.exactOptional(),
-                label: z.lazy(() => LinodeSchema).exactOptional(),
-                private_ip: z
-                  .boolean()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'If true, the created Linode will have private networking enabled and assigned a private IPv4 address.\n',
-                    example: true,
-                  }),
-                region: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The [Region](/docs/api/regions/#regions-list) where the Linode will be located.\n',
-                    example: 'us-east',
-                  }),
-                swap_size: z
-                  .int()
-                  .default(512)
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'When deploying from an Image, this field is optional, otherwise it is ignored. This is used to set the swap disk size for the newly-created Linode.\n',
-                    example: 512,
-                  }),
-                tags: z.lazy(() => LinodeSchema).exactOptional(),
-                type: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The [Linode Type](/docs/api/linode-types/#types-list) of the Linode you are creating.\n',
-                    example: 'g6-standard-2',
-                  }),
-              })
-              .openapi({ required: [] }),
-          ).openapi({ required: ['type', 'region'] }),
+            z.looseObject({}).openapi({ required: ['type', 'region'] }),
+          )
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'type')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+                if (!Object.hasOwn(val, 'region')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .and(
+              z
+                .object({
+                  backup_id: z
+                    .int()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        "A Backup ID from another Linode's available backups. Your User must have\n`read_write` access to that Linode, the Backup must have a `status` of\n`successful`, and the Linode must be deployed to the same `region` as the Backup.\nSee [GET /linode/instances/{linodeId}/backups](/docs/api/linode-instances/#backups-list)\nfor a Linode's available backups.\n\nThis field and the `image` field are mutually exclusive.\n",
+                      example: 1234,
+                    }),
+                  backups_enabled: z
+                    .boolean()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'If this field is set to `true`, the created Linode will automatically be\nenrolled in the Linode Backup service. This will incur an additional charge.\nThe cost for the Backup service is dependent on the Type of Linode deployed.\n\nThis option is always treated as `true` if the account-wide `backups_enabled`\nsetting is `true`.  See [account settings](/docs/api/account/#account-settings-view)\nfor more information.\n\nBackup pricing is included in the response from [/linodes/types](/docs/api/linode-types/#types-list)\n',
+                    }),
+                  group: z.lazy(() => LinodeSchema).exactOptional(),
+                  interfaces: LinodeConfigInterfacesSchema.exactOptional(),
+                  label: z.lazy(() => LinodeSchema).exactOptional(),
+                  private_ip: z
+                    .boolean()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'If true, the created Linode will have private networking enabled and assigned a private IPv4 address.\n',
+                      example: true,
+                    }),
+                  region: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The [Region](/docs/api/regions/#regions-list) where the Linode will be located.\n',
+                      example: 'us-east',
+                    }),
+                  swap_size: z
+                    .int()
+                    .default(512)
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'When deploying from an Image, this field is optional, otherwise it is ignored. This is used to set the swap disk size for the newly-created Linode.\n',
+                      example: 512,
+                    }),
+                  tags: z.lazy(() => LinodeSchema).exactOptional(),
+                  type: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The [Linode Type](/docs/api/linode-types/#types-list) of the Linode you are creating.\n',
+                      example: 'g6-standard-2',
+                    }),
+                })
+                .openapi({ required: [] }),
+            )
+            .openapi({ required: ['type', 'region'] }),
         },
       },
       required: true,
@@ -13482,7 +13551,7 @@ export const deleteLinodeInstancesLinodeIdRoute = createRoute({
   responses: {
     200: {
       description: 'Delete successful',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -13648,7 +13717,7 @@ export const postLinodeInstancesLinodeIdBackupsCancelRoute = createRoute({
   responses: {
     200: {
       description: 'Backup service was cancelled for the specified Linode.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -13688,7 +13757,7 @@ export const postLinodeInstancesLinodeIdBackupsEnableRoute = createRoute({
   responses: {
     200: {
       description: 'Backup service was enabled.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -13832,7 +13901,7 @@ export const postLinodeInstancesLinodeIdBackupsBackupIdRestoreRoute = createRout
   responses: {
     200: {
       description: 'Restore from Backup was initiated.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -13888,7 +13957,7 @@ export const postLinodeInstancesLinodeIdBootRoute = createRoute({
   responses: {
     200: {
       description: 'Boot started.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -14106,7 +14175,20 @@ export const postLinodeInstancesLinodeIdConfigsRoute = createRoute({
         'The parameters to set when creating the Configuration profile.\nThis determines which kernel, devices, how much memory, etc. a Linode boots with.\n',
       content: {
         'application/json': {
-          schema: LinodeConfigSchema.openapi({ required: ['label', 'devices'] }),
+          schema: LinodeConfigSchema.and(
+            z.looseObject({}).openapi({ required: ['label', 'devices'] }),
+          )
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'label')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+                if (!Object.hasOwn(val, 'devices')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .openapi({ required: ['label', 'devices'] }),
         },
       },
       required: true,
@@ -14297,7 +14379,7 @@ export const deleteLinodeInstancesLinodeIdConfigsConfigIdRoute = createRoute({
   responses: {
     200: {
       description: 'Configuration profile successfully deleted.\n',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -14389,7 +14471,17 @@ export const postLinodeInstancesLinodeIdDisksRoute = createRoute({
     body: {
       description: 'The parameters to set when creating the Disk.\n',
       content: {
-        'application/json': { schema: DiskRequestSchema.openapi({ required: ['size'] }) },
+        'application/json': {
+          schema: DiskRequestSchema.and(z.looseObject({}).openapi({ required: ['size'] }))
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'size')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .openapi({ required: ['size'] }),
+        },
       },
       required: true,
     },
@@ -14577,7 +14669,7 @@ export const deleteLinodeInstancesLinodeIdDisksDiskIdRoute = createRoute({
   responses: {
     200: {
       description: 'Delete successful',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -14715,7 +14807,7 @@ export const postLinodeInstancesLinodeIdDisksDiskIdPasswordRoute = createRoute({
   responses: {
     200: {
       description: 'Returns a single Disk object.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -14791,7 +14883,7 @@ export const postLinodeInstancesLinodeIdDisksDiskIdResizeRoute = createRoute({
   responses: {
     200: {
       description: 'Resize started.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -15183,7 +15275,7 @@ export const deleteLinodeInstancesLinodeIdIpsAddressRoute = createRoute({
   responses: {
     200: {
       description: 'IP address successfully removed.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -15251,7 +15343,7 @@ export const postLinodeInstancesLinodeIdMigrateRoute = createRoute({
   responses: {
     200: {
       description: 'Scheduled migration started',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -15312,7 +15404,7 @@ export const postLinodeInstancesLinodeIdMutateRoute = createRoute({
   responses: {
     200: {
       description: 'Mutate started.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -15422,7 +15514,7 @@ export const postLinodeInstancesLinodeIdPasswordRoute = createRoute({
   responses: {
     200: {
       description: 'Password Reset.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -15482,7 +15574,7 @@ export const postLinodeInstancesLinodeIdRebootRoute = createRoute({
   responses: {
     200: {
       description: 'Reboot started.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -15523,7 +15615,20 @@ export const postLinodeInstancesLinodeIdRebuildRoute = createRoute({
       description: 'The requested state your Linode will be rebuilt into.',
       content: {
         'application/json': {
-          schema: LinodeRequestSchema.openapi({ required: ['image', 'root_pass'] }),
+          schema: LinodeRequestSchema.and(
+            z.looseObject({}).openapi({ required: ['image', 'root_pass'] }),
+          )
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'image')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+                if (!Object.hasOwn(val, 'root_pass')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .openapi({ required: ['image', 'root_pass'] }),
         },
       },
       required: true,
@@ -15583,7 +15688,7 @@ export const postLinodeInstancesLinodeIdRescueRoute = createRoute({
   responses: {
     200: {
       description: 'Rescue started.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -15653,7 +15758,7 @@ export const postLinodeInstancesLinodeIdResizeRoute = createRoute({
   responses: {
     200: {
       description: 'Resize started.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -15694,7 +15799,7 @@ export const postLinodeInstancesLinodeIdShutdownRoute = createRoute({
   responses: {
     200: {
       description: 'Shutdown started.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -16163,7 +16268,23 @@ export const postLinodeStackscriptsRoute = createRoute({
       description: 'The properties to set for the new StackScript.',
       content: {
         'application/json': {
-          schema: StackScriptSchema.openapi({ required: ['script', 'label', 'images'] }),
+          schema: StackScriptSchema.and(
+            z.looseObject({}).openapi({ required: ['script', 'label', 'images'] }),
+          )
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'script')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+                if (!Object.hasOwn(val, 'label')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+                if (!Object.hasOwn(val, 'images')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .openapi({ required: ['script', 'label', 'images'] }),
         },
       },
       required: true,
@@ -16275,7 +16396,7 @@ export const deleteLinodeStackscriptsStackscriptIdRoute = createRoute({
   responses: {
     200: {
       description: 'StackScript was deleted.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -16602,7 +16723,7 @@ export const deleteLkeClustersClusterIdRoute = createRoute({
   responses: {
     200: {
       description: 'Delete successful',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -16822,7 +16943,7 @@ export const deleteLkeClustersClusterIdKubeconfigRoute = createRoute({
   responses: {
     200: {
       description: 'Kubeconfig file deleted and regenerated successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -16957,7 +17078,7 @@ export const deleteLkeClustersClusterIdNodesNodeIdRoute = createRoute({
   responses: {
     200: {
       description: 'Delete successful',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -17009,7 +17130,7 @@ export const postLkeClustersClusterIdNodesNodeIdRecycleRoute = createRoute({
   responses: {
     200: {
       description: 'Recycle request succeeded and is in progress.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -17100,7 +17221,20 @@ export const postLkeClustersClusterIdPoolsRoute = createRoute({
       description: 'Configuration for the Node Pool',
       content: {
         'application/json': {
-          schema: LKENodePoolRequestBodySchema.openapi({ required: ['type', 'count'] }),
+          schema: LKENodePoolRequestBodySchema.and(
+            z.looseObject({}).openapi({ required: ['type', 'count'] }),
+          )
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'type')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+                if (!Object.hasOwn(val, 'count')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .openapi({ required: ['type', 'count'] }),
         },
       },
       required: true,
@@ -17299,7 +17433,7 @@ export const deleteLkeClustersClusterIdPoolsPoolIdRoute = createRoute({
   responses: {
     200: {
       description: 'Delete successful',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -17359,7 +17493,7 @@ export const postLkeClustersClusterIdPoolsPoolIdRecycleRoute = createRoute({
   responses: {
     200: {
       description: 'Recycle request succeeded and is in progress.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -17400,7 +17534,7 @@ export const postLkeClustersClusterIdRecycleRoute = createRoute({
   responses: {
     200: {
       description: 'Recycle request succeeded and is in progress.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -17470,7 +17604,7 @@ export const postLkeClustersClusterIdRegenerateRoute = createRoute({
   responses: {
     200: {
       description: 'Regenerate request successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -17511,7 +17645,7 @@ export const deleteLkeClustersClusterIdServicetokenRoute = createRoute({
   responses: {
     200: {
       description: 'Service token deleted and regenerated successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -17755,7 +17889,7 @@ export const deleteLongviewClientsClientIdRoute = createRoute({
   responses: {
     200: {
       description: 'Longview Client deleted successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -18041,7 +18175,7 @@ export const deleteManagedContactsContactIdRoute = createRoute({
   responses: {
     200: {
       description: 'Contact deleted successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -18092,27 +18226,41 @@ export const postManagedCredentialsRoute = createRoute({
       content: {
         'application/json': {
           schema: ManagedCredentialSchema.and(
-            z
-              .object({
-                password: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'The password to use when accessing the Managed Service.\n',
-                    example: 's3cur3P@ssw0rd',
-                  }),
-                username: z
-                  .string()
-                  .min(0)
-                  .max(5000)
-                  .exactOptional()
-                  .openapi({
-                    description: 'The username to use when accessing the Managed Service.\n',
-                    example: 'johndoe',
-                  }),
-              })
-              .openapi({ required: [] }),
-          ).openapi({ required: ['label', 'password'] }),
+            z.looseObject({}).openapi({ required: ['label', 'password'] }),
+          )
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'label')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+                if (!Object.hasOwn(val, 'password')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .and(
+              z
+                .object({
+                  password: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description: 'The password to use when accessing the Managed Service.\n',
+                      example: 's3cur3P@ssw0rd',
+                    }),
+                  username: z
+                    .string()
+                    .min(0)
+                    .max(5000)
+                    .exactOptional()
+                    .openapi({
+                      description: 'The username to use when accessing the Managed Service.\n',
+                      example: 'johndoe',
+                    }),
+                })
+                .openapi({ required: [] }),
+            )
+            .openapi({ required: ['label', 'password'] }),
         },
       },
     },
@@ -18287,7 +18435,7 @@ export const postManagedCredentialsCredentialIdRevokeRoute = createRoute({
   responses: {
     200: {
       description: 'Credential deleted successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -18354,7 +18502,7 @@ export const postManagedCredentialsCredentialIdUpdateRoute = createRoute({
   responses: {
     200: {
       description: 'Credential username and password updated.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -18591,9 +18739,28 @@ export const postManagedServicesRoute = createRoute({
       description: 'Information about the service to monitor.',
       content: {
         'application/json': {
-          schema: ManagedServiceSchema.openapi({
-            required: ['label', 'service_type', 'address', 'timeout'],
-          }),
+          schema: ManagedServiceSchema.and(
+            z
+              .looseObject({})
+              .openapi({ required: ['label', 'service_type', 'address', 'timeout'] }),
+          )
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'label')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+                if (!Object.hasOwn(val, 'service_type')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+                if (!Object.hasOwn(val, 'address')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+                if (!Object.hasOwn(val, 'timeout')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .openapi({ required: ['label', 'service_type', 'address', 'timeout'] }),
         },
       },
     },
@@ -18729,7 +18896,7 @@ export const deleteManagedServicesServiceIdRoute = createRoute({
   responses: {
     200: {
       description: 'Service deleted successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -18836,7 +19003,13 @@ export const getManagedStatsRoute = createRoute({
               data: z
                 .xor([
                   StatsDataAvailableSchema.openapi({ 'x-linode-ref-name': 'Stats Available' }),
-                  StatsDataUnavailableSchema.openapi({ 'x-linode-ref-name': 'Stats Unavailable' }),
+                  z
+                    .looseObject({})
+                    .and(
+                      StatsDataUnavailableSchema.openapi({
+                        'x-linode-ref-name': 'Stats Unavailable',
+                      }),
+                    ),
                 ])
                 .exactOptional()
                 .openapi({ discriminator: { propertyName: 'x-linode-ref-name' } }),
@@ -19110,7 +19283,7 @@ export const deleteNetworkingFirewallsFirewallIdRoute = createRoute({
   responses: {
     200: {
       description: 'Delete Successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -19205,7 +19378,23 @@ export const postNetworkingFirewallsFirewallIdDevicesRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.lazy(() => FirewallDevicesSchema).openapi({ required: ['id', 'type'] }),
+          schema: (() => {
+            const Schema = z.lazy(() => FirewallDevicesSchema)
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const val = ctx.value
+                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                  if (!Object.hasOwn(val, 'id')) {
+                    ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                  }
+                  if (!Object.hasOwn(val, 'type')) {
+                    ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                  }
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })().openapi({ required: ['id', 'type'] }),
         },
       },
     },
@@ -19335,7 +19524,7 @@ export const deleteNetworkingFirewallsFirewallIdDevicesDeviceIdRoute = createRou
   responses: {
     200: {
       description: 'Delete Successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -19418,48 +19607,59 @@ export const putNetworkingFirewallsFirewallIdRulesRoute = createRoute({
       description: 'The Firewall Rules information to update.',
       content: {
         'application/json': {
-          schema: z
-            .lazy(() => FirewallSchema)
-            .and(
-              z
-                .object({
-                  inbound: z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'action')) {
-                          ctx.addIssue({ code: 'custom' })
+          schema: (() => {
+            const Schema = z.lazy(() => FirewallSchema)
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const val = ctx.value
+                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                  if (Object.hasOwn(val, 'inbound')) {
+                    const Schema = z
+                      .unknown()
+                      .superRefine((val, ctx) => {
+                        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                          if (!Object.hasOwn(val, 'action')) {
+                            ctx.addIssue({ code: 'custom' })
+                          }
+                          if (!Object.hasOwn(val, 'addresses')) {
+                            ctx.addIssue({ code: 'custom' })
+                          }
+                          if (!Object.hasOwn(val, 'protocol')) {
+                            ctx.addIssue({ code: 'custom' })
+                          }
                         }
-                        if (!Object.hasOwn(val, 'addresses')) {
-                          ctx.addIssue({ code: 'custom' })
+                      })
+                      .openapi({ required: ['action', 'addresses', 'protocol'] })
+                    if (!Schema.safeParse(Reflect.get(val, 'inbound')).success) {
+                      ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                    }
+                  }
+                  if (Object.hasOwn(val, 'outbound')) {
+                    const Schema = z
+                      .unknown()
+                      .superRefine((val, ctx) => {
+                        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                          if (!Object.hasOwn(val, 'action')) {
+                            ctx.addIssue({ code: 'custom' })
+                          }
+                          if (!Object.hasOwn(val, 'addresses')) {
+                            ctx.addIssue({ code: 'custom' })
+                          }
+                          if (!Object.hasOwn(val, 'protocol')) {
+                            ctx.addIssue({ code: 'custom' })
+                          }
                         }
-                        if (!Object.hasOwn(val, 'protocol')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .exactOptional()
-                    .openapi({ required: ['action', 'addresses', 'protocol'] }),
-                  outbound: z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'action')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                        if (!Object.hasOwn(val, 'addresses')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                        if (!Object.hasOwn(val, 'protocol')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .exactOptional()
-                    .openapi({ required: ['action', 'addresses', 'protocol'] }),
-                })
-                .openapi({ required: [] }),
-            ),
+                      })
+                      .openapi({ required: ['action', 'addresses', 'protocol'] })
+                    if (!Schema.safeParse(Reflect.get(val, 'outbound')).success) {
+                      ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                    }
+                  }
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })(),
         },
       },
     },
@@ -19575,7 +19775,7 @@ export const postNetworkingIpsAssignRoute = createRoute({
   responses: {
     200: {
       description: 'All assignments completed successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -19600,7 +19800,7 @@ export const postNetworkingIpsShareRoute = createRoute({
   responses: {
     200: {
       description: 'IP Address sharing successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -19712,7 +19912,7 @@ export const postNetworkingIpv4AssignRoute = createRoute({
   responses: {
     200: {
       description: 'All assignments completed successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -19737,7 +19937,7 @@ export const postNetworkingIpv4ShareRoute = createRoute({
   responses: {
     200: {
       description: 'Sharing configured successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -19937,7 +20137,7 @@ export const deleteNetworkingIpv6RangesRangeRoute = createRoute({
   responses: {
     200: {
       description: 'IPv6 Range deleted.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -20201,7 +20401,7 @@ export const deleteNodebalancersNodeBalancerIdRoute = createRoute({
   responses: {
     200: {
       description: 'NodeBalancer deleted successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -20482,7 +20682,7 @@ export const deleteNodebalancersNodeBalancerIdConfigsConfigIdRoute = createRoute
   responses: {
     200: {
       description: 'NodeBalancer Config deleted successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -20614,7 +20814,20 @@ export const postNodebalancersNodeBalancerIdConfigsConfigIdNodesRoute = createRo
       description: 'Information about the Node to create.',
       content: {
         'application/json': {
-          schema: NodeBalancerNodeSchema.openapi({ required: ['label', 'address'] }),
+          schema: NodeBalancerNodeSchema.and(
+            z.looseObject({}).openapi({ required: ['label', 'address'] }),
+          )
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'label')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+                if (!Object.hasOwn(val, 'address')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .openapi({ required: ['label', 'address'] }),
         },
       },
       required: true,
@@ -20865,7 +21078,7 @@ export const deleteNodebalancersNodeBalancerIdConfigsConfigIdNodesNodeIdRoute = 
   responses: {
     200: {
       description: 'Node deleted successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -21232,7 +21445,7 @@ export const deleteObjectStorageBucketsClusterIdBucketRoute = createRoute({
   responses: {
     200: {
       description: 'Bucket deleted successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -21310,7 +21523,7 @@ export const putObjectStorageBucketsClusterIdBucketAccessRoute = createRoute({
   responses: {
     200: {
       description: 'Access controls updated.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -21388,7 +21601,7 @@ export const postObjectStorageBucketsClusterIdBucketAccessRoute = createRoute({
   responses: {
     200: {
       description: 'Access controls updated.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -21922,7 +22135,7 @@ export const deleteObjectStorageBucketsClusterIdBucketSslRoute = createRoute({
     200: {
       description:
         "Deletes this Object Storage bucket's user uploaded TLS/SSL certificate and private key.",
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -21941,7 +22154,7 @@ export const postObjectStorageCancelRoute = createRoute({
   responses: {
     200: {
       description: 'Object Storage cancellation successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -22199,7 +22412,7 @@ export const deleteObjectStorageKeysKeyIdRoute = createRoute({
   responses: {
     200: {
       description: 'Deletion successful',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -22389,7 +22602,7 @@ export const deleteProfileAppsAppIdRoute = createRoute({
   responses: {
     200: {
       description: "App's authorization has been revoked.",
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -22499,7 +22712,7 @@ export const deleteProfileDevicesDeviceIdRoute = createRoute({
   responses: {
     200: {
       description: 'Session revoked successfully',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -22633,7 +22846,7 @@ export const postProfilePhoneNumberRoute = createRoute({
   responses: {
     200: {
       description: 'Phone number verification code request successful.\n',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -22651,7 +22864,7 @@ export const deleteProfilePhoneNumberRoute = createRoute({
   responses: {
     200: {
       description: 'Phone number deletion request successful.\n',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -22689,7 +22902,7 @@ export const postProfilePhoneNumberVerifyRoute = createRoute({
   responses: {
     200: {
       description: 'Phone number verification successful.\n',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -22710,7 +22923,7 @@ export const getProfilePreferencesRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               description: 'A dictionary of user preferences.',
               example: { key1: 'value1', key2: 'value2' },
@@ -22737,7 +22950,7 @@ export const putProfilePreferencesRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               description:
                 'Arbitrary JSON of your choosing. Overwrites any existing preferences for this user.\n\nTotal length cannot exceed 65,535 characters.\n',
@@ -22753,7 +22966,7 @@ export const putProfilePreferencesRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               description: 'An object of user preferences.',
               example: { key1: 'value1', key2: 'value2' },
@@ -22984,7 +23197,7 @@ export const deleteProfileSshkeysSshKeyIdRoute = createRoute({
   responses: {
     200: {
       description: 'SSH Key deleted successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -23002,7 +23215,7 @@ export const postProfileTfaDisableRoute = createRoute({
   responses: {
     200: {
       description: 'TFA disabled.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -23301,7 +23514,7 @@ export const deleteProfileTokensTokenIdRoute = createRoute({
   responses: {
     200: {
       description: 'Token revoked successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -23514,7 +23727,7 @@ export const postSupportTicketsTicketIdAttachmentsRoute = createRoute({
   responses: {
     200: {
       description: 'Attachment created.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -23554,7 +23767,7 @@ export const postSupportTicketsTicketIdCloseRoute = createRoute({
   responses: {
     200: {
       description: 'Support Ticket closed successfully.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -23844,7 +24057,10 @@ export const deleteTagsLabelRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Tag deleted.', content: { 'application/json': { schema: z.object({}) } } },
+    200: {
+      description: 'Tag deleted.',
+      content: { 'application/json': { schema: z.looseObject({}) } },
+    },
     default: ErrorResponseResponse,
   },
   security: [{ personalAccessToken: [] }, { oauth: ['account:read_write'] }],
@@ -24101,7 +24317,7 @@ export const deleteVolumesVolumeIdRoute = createRoute({
   responses: {
     200: {
       description: 'Volume deletion successful.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },
@@ -24263,7 +24479,7 @@ export const postVolumesVolumeIdDetachRoute = createRoute({
   responses: {
     200: {
       description: 'Volume was detached from a Linode.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponseResponse,
   },

@@ -7576,8 +7576,8 @@ export const postUserBadgesJsonRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .union([
+          schema: (() => {
+            const Schema = z.union([
               z
                 .unknown()
                 .superRefine((val, ctx) => {
@@ -7743,6 +7743,29 @@ export const postUserBadgesJsonRoute = createRoute({
                   }
                 }),
             ])
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  if (
+                    ![
+                      'username',
+                      'badge_id',
+                      'badge_name',
+                      'reason',
+                      'post_id',
+                      'suppress_notification',
+                    ].includes(k)
+                  ) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o })
+                  }
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })()
+            .openapi({ additionalProperties: false })
             .openapi({ required: ['username'] }),
         },
       },
@@ -9464,27 +9487,42 @@ export const putUUsernamePreferencesAvatarPickJsonRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .xor([
-              z
-                .object({
-                  type: z.enum(['uploaded', 'custom', 'gravatar', 'current']).exactOptional(),
-                })
-                .openapi({ required: ['upload_id'] }),
-              z
-                .object({ type: z.literal('associated_account').exactOptional() })
-                .openapi({ required: ['associated_account_id'] }),
-              z.object({ type: z.literal('system').exactOptional() }).openapi({ required: [] }),
-            ])
-            .and(
-              z
-                .object({
-                  upload_id: z.int().exactOptional(),
-                  associated_account_id: z.int().exactOptional(),
-                  type: z.string(),
-                })
-                .openapi({ required: ['type'] }),
-            )
+          schema: (() => {
+            const Schema = z
+              .xor([
+                z
+                  .object({
+                    type: z.enum(['uploaded', 'custom', 'gravatar', 'current']).exactOptional(),
+                  })
+                  .openapi({ required: ['upload_id'] }),
+                z
+                  .object({ type: z.literal('associated_account').exactOptional() })
+                  .openapi({ required: ['associated_account_id'] }),
+                z.object({ type: z.literal('system').exactOptional() }).openapi({ required: [] }),
+              ])
+              .and(
+                z
+                  .object({
+                    upload_id: z.int().exactOptional(),
+                    associated_account_id: z.int().exactOptional(),
+                    type: z.string(),
+                  })
+                  .openapi({ required: ['type'] }),
+              )
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  if (!['upload_id', 'associated_account_id', 'type'].includes(k)) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o })
+                  }
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })()
+            .openapi({ additionalProperties: false })
             .openapi({ required: ['type'] }),
         },
       },

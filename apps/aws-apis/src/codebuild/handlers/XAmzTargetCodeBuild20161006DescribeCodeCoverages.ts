@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodeBuild20161006DescribeCodeCoveragesHandler = app.openapi(
   postXAmzTargetCodeBuild20161006DescribeCodeCoveragesRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

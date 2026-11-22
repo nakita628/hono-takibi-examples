@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodePipeline20150709DeleteWebhookHandler = app.openapi(
   postXAmzTargetCodePipeline20150709DeleteWebhookRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

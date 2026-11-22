@@ -2,45 +2,81 @@ import { OpenAPIHono } from '@hono/zod-openapi'
 import {
   getRestaurantsBylatlongRoute,
   getRestaurantsBypostcodePostcodeRoute,
-  putRestaurantsDriverEtaRoute,
-  getRestaurantsTenantRestaurantIdCatalogueRoute,
   getRestaurantsTenantRestaurantIdCatalogueAvailabilitiesRoute,
-  getRestaurantsTenantRestaurantIdCatalogueCategoriesRoute,
   getRestaurantsTenantRestaurantIdCatalogueCategoriesCategoryIdItemsRoute,
-  getRestaurantsTenantRestaurantIdCatalogueItemsRoute,
-  getRestaurantsTenantRestaurantIdCatalogueItemsItemIdDealgroupsRoute,
+  getRestaurantsTenantRestaurantIdCatalogueCategoriesRoute,
   getRestaurantsTenantRestaurantIdCatalogueItemsItemIdDealgroupsDealGroupIdDealitemvariationsRoute,
+  getRestaurantsTenantRestaurantIdCatalogueItemsItemIdDealgroupsRoute,
   getRestaurantsTenantRestaurantIdCatalogueItemsItemIdModifiergroupsRoute,
   getRestaurantsTenantRestaurantIdCatalogueItemsItemIdVariationsRoute,
+  getRestaurantsTenantRestaurantIdCatalogueItemsRoute,
+  getRestaurantsTenantRestaurantIdCatalogueRoute,
   getRestaurantsTenantRestaurantIdFeesRoute,
-  putRestaurantsTenantRestaurantIdFeesRoute,
   getRestaurantsTenantRestaurantIdMenuRoute,
-  putRestaurantsTenantRestaurantIdMenuRoute,
   getRestaurantsTenantRestaurantIdServicetimesRoute,
+  putRestaurantsDriverEtaRoute,
+  putRestaurantsTenantRestaurantIdFeesRoute,
+  putRestaurantsTenantRestaurantIdMenuRoute,
   putRestaurantsTenantRestaurantIdServicetimesRoute,
 } from '../routes'
 
 const app = new OpenAPIHono()
 
 export const restaurantsHandler = app
-  .openapi(getRestaurantsBylatlongRoute, (c) => {})
-  .openapi(getRestaurantsBypostcodePostcodeRoute, (c) => {})
-  .openapi(putRestaurantsDriverEtaRoute, (c) => {})
-  .openapi(getRestaurantsTenantRestaurantIdCatalogueRoute, (c) => {})
-  .openapi(getRestaurantsTenantRestaurantIdCatalogueAvailabilitiesRoute, (c) => {})
-  .openapi(getRestaurantsTenantRestaurantIdCatalogueCategoriesRoute, (c) => {})
-  .openapi(getRestaurantsTenantRestaurantIdCatalogueCategoriesCategoryIdItemsRoute, (c) => {})
-  .openapi(getRestaurantsTenantRestaurantIdCatalogueItemsRoute, (c) => {})
-  .openapi(getRestaurantsTenantRestaurantIdCatalogueItemsItemIdDealgroupsRoute, (c) => {})
+  .openapi(getRestaurantsBylatlongRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getRestaurantsBypostcodePostcodeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putRestaurantsDriverEtaRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getRestaurantsTenantRestaurantIdCatalogueRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getRestaurantsTenantRestaurantIdCatalogueAvailabilitiesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getRestaurantsTenantRestaurantIdCatalogueCategoriesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getRestaurantsTenantRestaurantIdCatalogueCategoriesCategoryIdItemsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getRestaurantsTenantRestaurantIdCatalogueItemsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getRestaurantsTenantRestaurantIdCatalogueItemsItemIdDealgroupsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(
     getRestaurantsTenantRestaurantIdCatalogueItemsItemIdDealgroupsDealGroupIdDealitemvariationsRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
-  .openapi(getRestaurantsTenantRestaurantIdCatalogueItemsItemIdModifiergroupsRoute, (c) => {})
-  .openapi(getRestaurantsTenantRestaurantIdCatalogueItemsItemIdVariationsRoute, (c) => {})
-  .openapi(getRestaurantsTenantRestaurantIdFeesRoute, (c) => {})
-  .openapi(putRestaurantsTenantRestaurantIdFeesRoute, (c) => {})
-  .openapi(getRestaurantsTenantRestaurantIdMenuRoute, (c) => {})
-  .openapi(putRestaurantsTenantRestaurantIdMenuRoute, (c) => {})
-  .openapi(getRestaurantsTenantRestaurantIdServicetimesRoute, (c) => {})
-  .openapi(putRestaurantsTenantRestaurantIdServicetimesRoute, (c) => {})
+  .openapi(getRestaurantsTenantRestaurantIdCatalogueItemsItemIdModifiergroupsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getRestaurantsTenantRestaurantIdCatalogueItemsItemIdVariationsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getRestaurantsTenantRestaurantIdFeesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putRestaurantsTenantRestaurantIdFeesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getRestaurantsTenantRestaurantIdMenuRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putRestaurantsTenantRestaurantIdMenuRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getRestaurantsTenantRestaurantIdServicetimesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putRestaurantsTenantRestaurantIdServicetimesRoute, (c) => {
+    throw new Error('Not implemented')
+  })

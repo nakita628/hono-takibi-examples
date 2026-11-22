@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSEventsDescribeEventBusHandler = app.openapi(
   postXAmzTargetAWSEventsDescribeEventBusRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

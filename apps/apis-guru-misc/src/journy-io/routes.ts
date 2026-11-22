@@ -65,23 +65,17 @@ export const deleteAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -142,23 +136,17 @@ export const deleteAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -187,23 +175,17 @@ export const deleteAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -232,23 +214,17 @@ export const deleteAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -277,23 +253,17 @@ export const deleteAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -322,23 +292,17 @@ export const deleteAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -441,23 +405,17 @@ export const postAccountsUpsertRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -518,23 +476,17 @@ export const postAccountsUpsertRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -563,23 +515,17 @@ export const postAccountsUpsertRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -608,23 +554,17 @@ export const postAccountsUpsertRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -653,23 +593,17 @@ export const postAccountsUpsertRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -698,23 +632,17 @@ export const postAccountsUpsertRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -812,23 +740,17 @@ export const postAccountsUsersAddRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -889,23 +811,17 @@ export const postAccountsUsersAddRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -934,23 +850,17 @@ export const postAccountsUsersAddRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -979,23 +889,17 @@ export const postAccountsUsersAddRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -1024,23 +928,17 @@ export const postAccountsUsersAddRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -1139,23 +1037,17 @@ export const postAccountsUsersRemoveRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -1216,23 +1108,17 @@ export const postAccountsUsersRemoveRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -1261,23 +1147,17 @@ export const postAccountsUsersRemoveRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -1306,23 +1186,17 @@ export const postAccountsUsersRemoveRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -1351,23 +1225,17 @@ export const postAccountsUsersRemoveRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -1420,23 +1288,17 @@ export const getEventsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -1497,23 +1359,17 @@ export const getEventsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -1542,23 +1398,17 @@ export const getEventsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -1587,23 +1437,17 @@ export const getEventsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -1632,23 +1476,17 @@ export const getEventsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -1677,23 +1515,17 @@ export const getEventsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -1810,23 +1642,17 @@ export const postEventsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -1887,23 +1713,17 @@ export const postEventsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -1932,23 +1752,17 @@ export const postEventsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -1977,23 +1791,17 @@ export const postEventsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -2022,23 +1830,17 @@ export const postEventsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -2067,23 +1869,17 @@ export const postEventsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -2158,23 +1954,17 @@ export const postLinkRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -2235,23 +2025,17 @@ export const postLinkRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -2280,23 +2064,17 @@ export const postLinkRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -2325,23 +2103,17 @@ export const postLinkRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -2370,23 +2142,17 @@ export const postLinkRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -2415,23 +2181,17 @@ export const postLinkRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -2488,23 +2248,17 @@ export const getPropertiesAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -2565,23 +2319,17 @@ export const getPropertiesAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -2610,23 +2358,17 @@ export const getPropertiesAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -2655,23 +2397,17 @@ export const getPropertiesAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -2700,23 +2436,17 @@ export const getPropertiesAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -2745,23 +2475,17 @@ export const getPropertiesAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -2818,23 +2542,17 @@ export const getPropertiesUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -2895,23 +2613,17 @@ export const getPropertiesUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -2940,23 +2652,17 @@ export const getPropertiesUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -2985,23 +2691,17 @@ export const getPropertiesUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -3030,23 +2730,17 @@ export const getPropertiesUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -3075,23 +2769,17 @@ export const getPropertiesUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -3134,23 +2822,17 @@ export const getSegmentsAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -3211,23 +2893,17 @@ export const getSegmentsAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -3256,23 +2932,17 @@ export const getSegmentsAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -3301,23 +2971,17 @@ export const getSegmentsAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -3346,23 +3010,17 @@ export const getSegmentsAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -3391,23 +3049,17 @@ export const getSegmentsAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -3450,23 +3102,17 @@ export const getSegmentsUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -3527,23 +3173,17 @@ export const getSegmentsUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -3572,23 +3212,17 @@ export const getSegmentsUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -3617,23 +3251,17 @@ export const getSegmentsUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -3662,23 +3290,17 @@ export const getSegmentsUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -3707,23 +3329,17 @@ export const getSegmentsUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -3839,23 +3455,17 @@ export const postTrackRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -3916,23 +3526,17 @@ export const postTrackRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -3961,23 +3565,17 @@ export const postTrackRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -4006,23 +3604,17 @@ export const postTrackRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -4051,23 +3643,17 @@ export const postTrackRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -4096,23 +3682,17 @@ export const postTrackRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -4168,23 +3748,17 @@ export const getTrackingSnippetRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -4245,23 +3819,17 @@ export const getTrackingSnippetRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -4290,23 +3858,17 @@ export const getTrackingSnippetRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -4335,23 +3897,17 @@ export const getTrackingSnippetRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -4380,23 +3936,17 @@ export const getTrackingSnippetRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -4425,23 +3975,17 @@ export const getTrackingSnippetRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -4470,23 +4014,17 @@ export const getTrackingSnippetRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -4555,23 +4093,17 @@ export const deleteUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -4632,23 +4164,17 @@ export const deleteUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -4677,23 +4203,17 @@ export const deleteUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -4722,23 +4242,17 @@ export const deleteUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -4767,23 +4281,17 @@ export const deleteUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -4812,23 +4320,17 @@ export const deleteUsersRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -4926,23 +4428,17 @@ export const postUsersUpsertRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -5003,23 +4499,17 @@ export const postUsersUpsertRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -5048,23 +4538,17 @@ export const postUsersUpsertRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -5093,23 +4577,17 @@ export const postUsersUpsertRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -5138,23 +4616,17 @@ export const postUsersUpsertRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -5183,23 +4655,17 @@ export const postUsersUpsertRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -5241,23 +4707,17 @@ export const getValidateRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -5286,23 +4746,17 @@ export const getValidateRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     403: {
@@ -5331,23 +4785,17 @@ export const getValidateRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -5376,23 +4824,17 @@ export const getValidateRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -5421,23 +4863,17 @@ export const getValidateRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-RateLimit-Limit': {
-          description: 'Request limit per minute.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Request limit per minute.', param: { required: false } }),
-        },
-        'X-RateLimit-Remaining': {
-          description: 'The number of requests left for the time window.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of requests left for the time window.',
-              param: { required: false },
-            }),
-        },
+        'X-RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Request limit per minute.', param: { required: false } }),
+        'X-RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The number of requests left for the time window.',
+            param: { required: false },
+          }),
       }),
     },
   },

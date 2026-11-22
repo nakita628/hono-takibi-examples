@@ -1,94 +1,665 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const IdentityIdSchema = z.string().regex(/\S+/).min(1).max(256).openapi('IdentityId')
-
-const UserIdentitySchema = z
-  .object({
-    id: IdentityIdSchema.and(
-      z.any().openapi({ description: 'The IAM Identity Center ID of the user.' }),
-    ),
-  })
-  .openapi({
-    required: ['id'],
-    description: 'Contains information for a user identity in an access policy.',
-  })
-  .openapi('UserIdentity')
-
-const GroupIdentitySchema = z
-  .object({
-    id: IdentityIdSchema.and(
-      z.any().openapi({ description: 'The IAM Identity Center ID of the group.' }),
-    ),
-  })
-  .openapi({
-    required: ['id'],
-    description: 'Contains information for a group identity in an access policy.',
-  })
-  .openapi('GroupIdentity')
-
-const ARNSchema = z.string().regex(/.*/).min(1).max(1600).openapi('ARN')
-
-const IAMUserIdentitySchema = z
-  .object({
-    arn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM user. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html">IAM ARNs</a> in the <i>IAM User Guide</i>.</p> <note> <p>If you delete the IAM user, access policies that contain this identity include an empty <code>arn</code>. You can delete the access policy for the IAM user that no longer exists.</p> </note>',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['arn'],
-    description: 'Contains information about an Identity and Access Management user.',
-  })
-  .openapi('IAMUserIdentity')
-
-const IAMRoleIdentitySchema = z
-  .object({
-    arn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM role. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html">IAM ARNs</a> in the <i>IAM User Guide</i>.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['arn'],
-    description:
-      'Contains information about an Identity and Access Management role. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html">IAM roles</a> in the <i>IAM User Guide</i>.',
-  })
-  .openapi('IAMRoleIdentity')
-
-type IdentityType = {
-  user?: z.infer<typeof UserIdentitySchema> & { [key: string]: unknown }
-  group?: z.infer<typeof GroupIdentitySchema> & { [key: string]: unknown }
-  iamUser?: z.infer<typeof IAMUserIdentitySchema> & { [key: string]: unknown }
-  iamRole?: z.infer<typeof IAMRoleIdentitySchema> & { [key: string]: unknown }
-}
-
 const IDSchema = z
   .string()
   .regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
   .length(36)
   .openapi('ID')
 
-const PortalResourceSchema = z
-  .object({ id: IDSchema.and(z.any().openapi({ description: 'The ID of the portal.' })) })
-  .openapi({ required: ['id'], description: 'Identifies an IoT SiteWise Monitor portal.' })
-  .openapi('PortalResource')
+const ARNSchema = z.string().regex(/.*/).min(1).max(1600).openapi('ARN')
 
-const ProjectResourceSchema = z
-  .object({ id: IDSchema.and(z.any().openapi({ description: 'The ID of the project.' })) })
-  .openapi({ required: ['id'], description: 'Identifies a specific IoT SiteWise Monitor project.' })
-  .openapi('ProjectResource')
+const NameSchema = z
+  .string()
+  .regex(/[^\u0000-\u001F\u007F]+/)
+  .min(1)
+  .max(256)
+  .openapi('Name')
 
-type ResourceType = {
-  portal?: z.infer<typeof PortalResourceSchema> & { [key: string]: unknown }
-  project?: z.infer<typeof ProjectResourceSchema> & { [key: string]: unknown }
+const DescriptionSchema = z
+  .string()
+  .regex(/[^\u0000-\u001F\u007F]+/)
+  .min(1)
+  .max(2048)
+  .openapi('Description')
+
+const PropertyDataTypeSchema = z
+  .enum(['STRING', 'INTEGER', 'DOUBLE', 'BOOLEAN', 'STRUCT'])
+  .openapi('PropertyDataType')
+
+const PropertyUnitSchema = z
+  .string()
+  .regex(/[^\u0000-\u001F\u007F]+/)
+  .min(1)
+  .max(256)
+  .openapi('PropertyUnit')
+
+const DefaultValueSchema = z
+  .string()
+  .regex(/[^\u0000-\u001F\u007F]+/)
+  .min(1)
+  .max(1024)
+  .openapi('DefaultValue')
+
+const AttributeSchema = z
+  .object({
+    defaultValue: DefaultValueSchema.exactOptional().openapi({
+      description:
+        'The default value of the asset model property attribute. All assets that you create from the asset model contain this attribute value. You can update an attribute\'s value after you create an asset. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/update-attribute-values.html">Updating attribute values</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains an asset attribute property. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-properties.html#attributes">Attributes</a> in the <i>IoT SiteWise User Guide</i>.',
+    required: [],
+  })
+  .openapi('Attribute')
+
+const ForwardingConfigStateSchema = z.enum(['DISABLED', 'ENABLED']).openapi('ForwardingConfigState')
+
+const ForwardingConfigSchema = z
+  .object({
+    state: ForwardingConfigStateSchema.openapi({
+      description: 'The forwarding state for the given property. ',
+    }),
+  })
+  .openapi({
+    required: ['state'],
+    description: 'The forwarding configuration for a given property.',
+  })
+  .openapi('ForwardingConfig')
+
+const MeasurementProcessingConfigSchema = z
+  .object({
+    forwardingConfig: ForwardingConfigSchema.openapi({
+      description: 'The forwarding configuration for the given measurement property. ',
+    }),
+  })
+  .openapi({
+    required: ['forwardingConfig'],
+    description:
+      'The processing configuration for the given measurement property. You can configure measurements to be kept at the edge or forwarded to the Amazon Web Services Cloud. By default, measurements are forwarded to the cloud.',
+  })
+  .openapi('MeasurementProcessingConfig')
+
+const MeasurementSchema = z
+  .object({
+    processingConfig: MeasurementProcessingConfigSchema.exactOptional().openapi({
+      description:
+        'The processing configuration for the given measurement property. You can configure measurements to be kept at the edge or forwarded to the Amazon Web Services Cloud. By default, measurements are forwarded to the cloud.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains an asset measurement property. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-properties.html#measurements">Measurements</a> in the <i>IoT SiteWise User Guide</i>.',
+    required: [],
+  })
+  .openapi('Measurement')
+
+const ExpressionSchema = z.string().min(1).max(1024).openapi('Expression')
+
+const VariableNameSchema = z
+  .string()
+  .regex(/^[a-z][a-z0-9_]*$/)
+  .min(1)
+  .max(64)
+  .openapi('VariableName')
+
+const MacroSchema = z
+  .string()
+  .regex(/[^\u0000-\u001F\u007F]+/)
+  .min(1)
+  .max(256)
+  .openapi('Macro')
+
+const VariableValueSchema = z
+  .object({
+    propertyId: MacroSchema.openapi({
+      description:
+        "The ID of the property to use as the variable. You can use the property <code>name</code> if it's from the same asset model.",
+    }),
+    hierarchyId: MacroSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the hierarchy to query for the property ID. You can use the hierarchy\'s name instead of the hierarchy\'s ID.</p> <p>You use a hierarchy ID instead of a model ID because you can have several hierarchies using the same model and therefore the same <code>propertyId</code>. For example, you might have separately grouped assets that come from the same asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.</p>',
+    }),
+  })
+  .openapi({
+    required: ['propertyId'],
+    description: 'Identifies a property value used in an expression.',
+  })
+  .openapi('VariableValue')
+
+const ExpressionVariableSchema = z
+  .object({
+    name: VariableNameSchema.openapi({
+      description: 'The friendly name of the variable to be used in the expression.',
+    }),
+    value: VariableValueSchema.openapi({
+      description: 'The variable that identifies an asset property from which to use values.',
+    }),
+  })
+  .openapi({
+    required: ['name', 'value'],
+    description: 'Contains expression variable information.',
+  })
+  .openapi('ExpressionVariable')
+
+const ExpressionVariablesSchema = z.array(ExpressionVariableSchema).openapi('ExpressionVariables')
+
+const ComputeLocationSchema = z.enum(['EDGE', 'CLOUD']).openapi('ComputeLocation')
+
+const TransformProcessingConfigSchema = z
+  .object({
+    computeLocation: ComputeLocationSchema.openapi({
+      description: 'The compute location for the given transform property. ',
+    }),
+    forwardingConfig: ForwardingConfigSchema.exactOptional(),
+  })
+  .openapi({
+    required: ['computeLocation'],
+    description:
+      'The processing configuration for the given transform property. You can configure transforms to be kept at the edge or forwarded to the Amazon Web Services Cloud. You can also configure transforms to be computed at the edge or in the cloud.',
+  })
+  .openapi('TransformProcessingConfig')
+
+const TransformSchema = z
+  .object({
+    expression: ExpressionSchema.openapi({
+      description:
+        '<p>The mathematical expression that defines the transformation function. You can specify up to 10 variables per expression. You can specify up to 10 functions per expression. </p> <p>For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>',
+    }),
+    variables: ExpressionVariablesSchema.openapi({
+      description: 'The list of variables used in the expression.',
+    }),
+    processingConfig: TransformProcessingConfigSchema.exactOptional().openapi({
+      description:
+        'The processing configuration for the given transform property. You can configure transforms to be kept at the edge or forwarded to the Amazon Web Services Cloud. You can also configure transforms to be computed at the edge or in the cloud.',
+    }),
+  })
+  .openapi({
+    required: ['expression', 'variables'],
+    description:
+      '<p>Contains an asset transform property. A transform is a one-to-one mapping of a property\'s data points from one form to another. For example, you can use a transform to convert a Celsius data stream to Fahrenheit by applying the transformation expression to each data point of the Celsius stream. A transform can only have a data type of <code>DOUBLE</code> and consume properties with data types of <code>INTEGER</code> or <code>DOUBLE</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-properties.html#transforms">Transforms</a> in the <i>IoT SiteWise User Guide</i>.</p>',
+  })
+  .openapi('Transform')
+
+const IntervalSchema = z.string().min(2).max(23).openapi('Interval')
+
+const OffsetSchema = z.string().min(2).max(25).openapi('Offset')
+
+const TumblingWindowSchema = z
+  .object({
+    interval: IntervalSchema.openapi({
+      description:
+        '<p>The time interval for the tumbling window. The interval time must be between 1 minute and 1 week.</p> <p>IoT SiteWise computes the <code>1w</code> interval the end of Sunday at midnight each week (UTC), the <code>1d</code> interval at the end of each day at midnight (UTC), the <code>1h</code> interval at the end of each hour, and so on. </p> <p>When IoT SiteWise aggregates data points for metric computations, the start of each interval is exclusive and the end of each interval is inclusive. IoT SiteWise places the computed data point at the end of the interval.</p>',
+    }),
+    offset: OffsetSchema.exactOptional().openapi({
+      description:
+        '<p>The offset for the tumbling window. The <code>offset</code> parameter accepts the following:</p> <ul> <li> <p>The offset time.</p> <p>For example, if you specify <code>18h</code> for <code>offset</code> and <code>1d</code> for <code>interval</code>, IoT SiteWise aggregates data in one of the following ways:</p> <ul> <li> <p>If you create the metric before or at 6 PM (UTC), you get the first aggregation result at 6 PM (UTC) on the day when you create the metric.</p> </li> <li> <p>If you create the metric after 6 PM (UTC), you get the first aggregation result at 6 PM (UTC) the next day.</p> </li> </ul> </li> <li> <p>The ISO 8601 format.</p> <p>For example, if you specify <code>PT18H</code> for <code>offset</code> and <code>1d</code> for <code>interval</code>, IoT SiteWise aggregates data in one of the following ways:</p> <ul> <li> <p>If you create the metric before or at 6 PM (UTC), you get the first aggregation result at 6 PM (UTC) on the day when you create the metric.</p> </li> <li> <p>If you create the metric after 6 PM (UTC), you get the first aggregation result at 6 PM (UTC) the next day.</p> </li> </ul> </li> <li> <p>The 24-hour clock.</p> <p>For example, if you specify <code>00:03:00</code> for <code>offset</code>, <code>5m</code> for <code>interval</code>, and you create the metric at 2 PM (UTC), you get the first aggregation result at 2:03 PM (UTC). You get the second aggregation result at 2:08 PM (UTC). </p> </li> <li> <p>The offset time zone.</p> <p>For example, if you specify <code>2021-07-23T18:00-08</code> for <code>offset</code> and <code>1d</code> for <code>interval</code>, IoT SiteWise aggregates data in one of the following ways:</p> <ul> <li> <p>If you create the metric before or at 6 PM (PST), you get the first aggregation result at 6 PM (PST) on the day when you create the metric.</p> </li> <li> <p>If you create the metric after 6 PM (PST), you get the first aggregation result at 6 PM (PST) the next day.</p> </li> </ul> </li> </ul>',
+    }),
+  })
+  .openapi({
+    required: ['interval'],
+    description:
+      '<p>Contains a tumbling window, which is a repeating fixed-sized, non-overlapping, and contiguous time window. You can use this window in metrics to aggregate data from properties and other assets.</p> <p>You can use <code>m</code>, <code>h</code>, <code>d</code>, and <code>w</code> when you specify an interval or offset. Note that <code>m</code> represents minutes, <code>h</code> represents hours, <code>d</code> represents days, and <code>w</code> represents weeks. You can also use <code>s</code> to represent seconds in <code>offset</code>.</p> <p>The <code>interval</code> and <code>offset</code> parameters support the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601 format</a>. For example, <code>PT5S</code> represents 5 seconds, <code>PT5M</code> represents 5 minutes, and <code>PT5H</code> represents 5 hours.</p>',
+  })
+  .openapi('TumblingWindow')
+
+const MetricWindowSchema = z
+  .object({
+    tumbling: TumblingWindowSchema.exactOptional().openapi({
+      description: 'The tumbling time interval window.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains a time interval window used for data aggregate computations (for example, average, sum, count, and so on).',
+    required: [],
+  })
+  .openapi('MetricWindow')
+
+const MetricProcessingConfigSchema = z
+  .object({
+    computeLocation: ComputeLocationSchema.openapi({
+      description: 'The compute location for the given metric property. ',
+    }),
+  })
+  .openapi({
+    required: ['computeLocation'],
+    description:
+      'The processing configuration for the given metric property. You can configure metrics to be computed at the edge or in the Amazon Web Services Cloud. By default, metrics are forwarded to the cloud.',
+  })
+  .openapi('MetricProcessingConfig')
+
+const MetricSchema = z
+  .object({
+    expression: ExpressionSchema.openapi({
+      description:
+        '<p>The mathematical expression that defines the metric aggregation function. You can specify up to 10 variables per expression. You can specify up to 10 functions per expression. </p> <p>For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>',
+    }),
+    variables: ExpressionVariablesSchema.openapi({
+      description: 'The list of variables used in the expression.',
+    }),
+    window: MetricWindowSchema.openapi({
+      description:
+        "The window (time interval) over which IoT SiteWise computes the metric's aggregation expression. IoT SiteWise computes one data point per <code>window</code>.",
+    }),
+    processingConfig: MetricProcessingConfigSchema.exactOptional().openapi({
+      description:
+        'The processing configuration for the given metric property. You can configure metrics to be computed at the edge or in the Amazon Web Services Cloud. By default, metrics are forwarded to the cloud.',
+    }),
+  })
+  .openapi({
+    required: ['expression', 'variables', 'window'],
+    description:
+      '<p>Contains an asset metric property. With metrics, you can calculate aggregate functions, such as an average, maximum, or minimum, as specified through an expression. A metric maps several values to a single value (such as a sum).</p> <p>The maximum number of dependent/cascading variables used in any one metric calculation is 10. Therefore, a <i>root</i> metric can have up to 10 cascading metrics in its computational dependency tree. Additionally, a metric can only have a data type of <code>DOUBLE</code> and consume properties with data types of <code>INTEGER</code> or <code>DOUBLE</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-properties.html#metrics">Metrics</a> in the <i>IoT SiteWise User Guide</i>.</p>',
+  })
+  .openapi('Metric')
+
+const PropertyTypeSchema = z
+  .object({
+    attribute: AttributeSchema.exactOptional().openapi({
+      description:
+        'Specifies an asset attribute property. An attribute generally contains static information, such as the serial number of an <a href="https://en.wikipedia.org/wiki/Internet_of_things#Industrial_applications">IIoT</a> wind turbine.',
+    }),
+    measurement: MeasurementSchema.exactOptional().openapi({
+      description:
+        "Specifies an asset measurement property. A measurement represents a device's raw sensor data stream, such as timestamped temperature values or timestamped power values.",
+    }),
+    transform: TransformSchema.exactOptional().openapi({
+      description:
+        "Specifies an asset transform property. A transform contains a mathematical expression that maps a property's data points from one form to another, such as a unit conversion from Celsius to Fahrenheit.",
+    }),
+    metric: MetricSchema.exactOptional().openapi({
+      description:
+        'Specifies an asset metric property. A metric contains a mathematical expression that uses aggregate functions to process all input data points over a time interval and output a single data point, such as to calculate the average hourly temperature.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains a property type, which can be one of <code>attribute</code>, <code>measurement</code>, <code>metric</code>, or <code>transform</code>.',
+    required: [],
+  })
+  .openapi('PropertyType')
+
+const AssetModelPropertySchema = z
+  .object({
+    id: IDSchema.exactOptional().openapi({ description: 'The ID of the asset model property.' }),
+    name: NameSchema.openapi({ description: 'The name of the asset model property.' }),
+    dataType: PropertyDataTypeSchema.openapi({
+      description: 'The data type of the asset model property.',
+    }),
+    dataTypeSpec: NameSchema.exactOptional().openapi({
+      description:
+        'The data type of the structure for this property. This parameter exists on properties that have the <code>STRUCT</code> data type.',
+    }),
+    unit: PropertyUnitSchema.exactOptional().openapi({
+      description:
+        'The unit of the asset model property, such as <code>Newtons</code> or <code>RPM</code>.',
+    }),
+    type: PropertyTypeSchema.openapi({
+      description: 'The property type (see <code>PropertyType</code>).',
+    }),
+  })
+  .openapi({
+    required: ['name', 'dataType', 'type'],
+    description: 'Contains information about an asset model property.',
+  })
+  .openapi('AssetModelProperty')
+
+const AssetModelPropertiesSchema = z.array(AssetModelPropertySchema).openapi('AssetModelProperties')
+
+const AssetModelHierarchySchema = z
+  .object({
+    id: IDSchema.exactOptional().openapi({
+      description: 'The ID of the asset model hierarchy. This ID is a <code>hierarchyId</code>.',
+    }),
+    name: NameSchema.openapi({
+      description:
+        'The name of the asset model hierarchy that you specify by using the <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModel.html">CreateAssetModel</a> or <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetModel.html">UpdateAssetModel</a> API operation.',
+    }),
+    childAssetModelId: IDSchema.openapi({
+      description:
+        'The ID of the asset model. All assets in this hierarchy must be instances of the <code>childAssetModelId</code> asset model.',
+    }),
+  })
+  .openapi({
+    required: ['name', 'childAssetModelId'],
+    description:
+      "Describes an asset hierarchy that contains a hierarchy's name, ID, and child asset model ID that specifies the type of asset that can be in this hierarchy.",
+  })
+  .openapi('AssetModelHierarchy')
+
+const AssetModelHierarchiesSchema = z
+  .array(AssetModelHierarchySchema)
+  .openapi('AssetModelHierarchies')
+
+const AssetModelCompositeModelSchema = z
+  .object({
+    name: NameSchema.openapi({ description: 'The name of the composite model.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the composite model.',
+    }),
+    type: NameSchema.openapi({
+      description:
+        'The type of the composite model. For alarm composite models, this type is <code>AWS/ALARM</code>.',
+    }),
+    properties: z
+      .any()
+      .exactOptional()
+      .openapi({ description: 'The asset property definitions for this composite model.' }),
+    id: IDSchema.exactOptional().openapi({
+      description: ' The ID of the asset model composite model. ',
+    }),
+  })
+  .openapi({
+    required: ['name', 'type'],
+    description:
+      'Contains information about a composite model in an asset model. This object contains the asset property definitions that you define in the composite model.',
+  })
+  .openapi('AssetModelCompositeModel')
+
+const AssetModelCompositeModelsSchema = z
+  .array(AssetModelCompositeModelSchema)
+  .openapi('AssetModelCompositeModels')
+
+const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
+
+const AssetModelStateSchema = z
+  .enum(['CREATING', 'ACTIVE', 'UPDATING', 'PROPAGATING', 'DELETING', 'FAILED'])
+  .openapi('AssetModelState')
+
+const ErrorCodeSchema = z.enum(['VALIDATION_ERROR', 'INTERNAL_FAILURE']).openapi('ErrorCode')
+
+const ErrorMessageSchema = z.string().openapi('ErrorMessage')
+
+const DetailedErrorCodeSchema = z
+  .enum(['INCOMPATIBLE_COMPUTE_LOCATION', 'INCOMPATIBLE_FORWARDING_CONFIGURATION'])
+  .openapi('DetailedErrorCode')
+
+const DetailedErrorMessageSchema = z.string().openapi('DetailedErrorMessage')
+
+const DetailedErrorSchema = z
+  .object({
+    code: DetailedErrorCodeSchema.openapi({ description: 'The error code. ' }),
+    message: DetailedErrorMessageSchema.openapi({ description: 'The error message. ' }),
+  })
+  .openapi({ required: ['code', 'message'], description: 'Contains detailed error information. ' })
+  .openapi('DetailedError')
+
+const DetailedErrorsSchema = z.array(DetailedErrorSchema).openapi('DetailedErrors')
+
+const ErrorDetailsSchema = z
+  .object({
+    code: ErrorCodeSchema.openapi({ description: 'The error code.' }),
+    message: ErrorMessageSchema.openapi({ description: 'The error message.' }),
+    details: DetailedErrorsSchema.exactOptional().openapi({
+      description: ' A list of detailed errors. ',
+    }),
+  })
+  .openapi({
+    required: ['code', 'message'],
+    description: 'Contains the details of an IoT SiteWise error.',
+  })
+  .openapi('ErrorDetails')
+
+const AssetModelStatusSchema = z
+  .object({
+    state: AssetModelStateSchema.openapi({ description: 'The current state of the asset model.' }),
+    error: ErrorDetailsSchema.exactOptional().openapi({
+      description: 'Contains associated error information, if any.',
+    }),
+  })
+  .openapi({
+    required: ['state'],
+    description:
+      'Contains current status information for an asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-and-model-states.html">Asset and model states</a> in the <i>IoT SiteWise User Guide</i>.',
+  })
+  .openapi('AssetModelStatus')
+
+type DescribeAssetModelResponseType = {
+  assetModelId: z.infer<typeof IDSchema> & unknown
+  assetModelArn: z.infer<typeof ARNSchema> & unknown
+  assetModelName: z.infer<typeof NameSchema> & unknown
+  assetModelDescription: z.infer<typeof DescriptionSchema> & unknown
+  assetModelProperties: z.infer<typeof AssetModelPropertiesSchema> & unknown
+  assetModelHierarchies: z.infer<typeof AssetModelHierarchiesSchema> & unknown
+  assetModelCompositeModels?: z.infer<typeof AssetModelCompositeModelsSchema> & unknown
+  assetModelCreationDate: z.infer<typeof TimestampSchema> & unknown
+  assetModelLastUpdateDate: z.infer<typeof TimestampSchema> & unknown
+  assetModelStatus: z.infer<typeof AssetModelStatusSchema> & unknown
+}
+
+const PropertyAliasSchema = z
+  .string()
+  .regex(/[^\u0000-\u001F\u007F]+/)
+  .min(1)
+  .openapi('PropertyAlias')
+
+const PropertyNotificationTopicSchema = z.string().openapi('PropertyNotificationTopic')
+
+const PropertyNotificationStateSchema = z
+  .enum(['ENABLED', 'DISABLED'])
+  .openapi('PropertyNotificationState')
+
+const PropertyNotificationSchema = z
+  .object({
+    topic: PropertyNotificationTopicSchema.openapi({
+      description:
+        'The MQTT topic to which IoT SiteWise publishes property value update notifications.',
+    }),
+    state: PropertyNotificationStateSchema.openapi({
+      description: 'The current notification state.',
+    }),
+  })
+  .openapi({
+    required: ['topic', 'state'],
+    description:
+      'Contains asset property value notification information. When the notification state is enabled, IoT SiteWise publishes property value updates to a unique MQTT topic. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/interact-with-other-services.html">Interacting with other services</a> in the <i>IoT SiteWise User Guide</i>.',
+  })
+  .openapi('PropertyNotification')
+
+const PropertySchema = z
+  .object({
+    id: IDSchema.openapi({ description: 'The ID of the asset property.' }),
+    name: NameSchema.openapi({ description: 'The name of the property.' }),
+    alias: PropertyAliasSchema.exactOptional().openapi({
+      description:
+        'The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+    notification: PropertyNotificationSchema.exactOptional().openapi({
+      description:
+        'The asset property\'s notification topic and state. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetProperty.html">UpdateAssetProperty</a>.',
+    }),
+    dataType: PropertyDataTypeSchema.openapi({ description: 'The property data type.' }),
+    unit: PropertyUnitSchema.exactOptional().openapi({
+      description:
+        'The unit (such as <code>Newtons</code> or <code>RPM</code>) of the asset property.',
+    }),
+    type: PropertyTypeSchema.exactOptional().openapi({
+      description:
+        'The property type (see <code>PropertyType</code>). A property contains one type.',
+    }),
+  })
+  .openapi({
+    required: ['id', 'name', 'dataType'],
+    description: 'Contains asset property information.',
+  })
+  .openapi('Property')
+
+const CompositeModelPropertySchema = z
+  .object({
+    name: NameSchema.openapi({ description: 'The name of the property.' }),
+    type: NameSchema.openapi({
+      description: 'The type of the composite model that defines this property.',
+    }),
+    assetProperty: PropertySchema,
+    id: IDSchema.exactOptional().openapi({
+      description: ' The ID of the composite model that contains the property. ',
+    }),
+  })
+  .openapi({
+    required: ['name', 'type', 'assetProperty'],
+    description: 'Contains information about a composite model property on an asset.',
+  })
+  .openapi('CompositeModelProperty')
+
+type DescribeAssetPropertyResponseType = {
+  assetId: z.infer<typeof IDSchema> & unknown
+  assetName: z.infer<typeof NameSchema> & unknown
+  assetModelId: z.infer<typeof IDSchema> & unknown
+  assetProperty?: z.infer<typeof PropertySchema> & unknown
+  compositeModel?: z.infer<typeof CompositeModelPropertySchema> & unknown
+}
+
+const AssetModelPropertySummarySchema = z
+  .object({
+    id: IDSchema.exactOptional().openapi({ description: 'The ID of the property.' }),
+    name: NameSchema.openapi({ description: 'The name of the property.' }),
+    dataType: PropertyDataTypeSchema.openapi({ description: 'The data type of the property.' }),
+    dataTypeSpec: NameSchema.exactOptional().openapi({
+      description:
+        'The data type of the structure for this property. This parameter exists on properties that have the <code>STRUCT</code> data type.',
+    }),
+    unit: PropertyUnitSchema.exactOptional().openapi({
+      description: 'The unit (such as <code>Newtons</code> or <code>RPM</code>) of the property.',
+    }),
+    type: PropertyTypeSchema,
+    assetModelCompositeModelId: IDSchema.exactOptional().openapi({
+      description: ' The ID of the composite model that contains the asset model property. ',
+    }),
+  })
+  .openapi({
+    required: ['name', 'dataType', 'type'],
+    description: 'Contains a summary of a property associated with a model.',
+  })
+  .openapi('AssetModelPropertySummary')
+
+const AssetModelPropertySummariesSchema = z
+  .array(AssetModelPropertySummarySchema)
+  .openapi('AssetModelPropertySummaries')
+
+const NextTokenSchema = z
+  .string()
+  .regex(/[A-Za-z0-9+\/=]+/)
+  .min(1)
+  .max(4096)
+  .openapi('NextToken')
+
+type ListAssetModelPropertiesResponseType = {
+  assetModelPropertySummaries: z.infer<typeof AssetModelPropertySummariesSchema> & unknown
+  nextToken?: z.infer<typeof NextTokenSchema> & unknown
+}
+
+const AssetModelPropertyDefinitionSchema = z
+  .object({
+    name: NameSchema.openapi({ description: 'The name of the property definition.' }),
+    dataType: PropertyDataTypeSchema.openapi({
+      description:
+        '<p>The data type of the property definition.</p> <p>If you specify <code>STRUCT</code>, you must also specify <code>dataTypeSpec</code> to identify the type of the structure for this property.</p>',
+    }),
+    dataTypeSpec: NameSchema.exactOptional().openapi({
+      description:
+        '<p>The data type of the structure for this property. This parameter is required on properties that have the <code>STRUCT</code> data type.</p> <p>The options for this parameter depend on the type of the composite model in which you define this property. Use <code>AWS/ALARM_STATE</code> for alarm state in alarm composite models.</p>',
+    }),
+    unit: PropertyUnitSchema.exactOptional().openapi({
+      description:
+        'The unit of the property definition, such as <code>Newtons</code> or <code>RPM</code>.',
+    }),
+    type: PropertyTypeSchema.openapi({
+      description:
+        'The property definition type (see <code>PropertyType</code>). You can only specify one type in a property definition.',
+    }),
+  })
+  .openapi({
+    required: ['name', 'dataType', 'type'],
+    description:
+      'Contains an asset model property definition. This property definition is applied to all assets created from the asset model.',
+  })
+  .openapi('AssetModelPropertyDefinition')
+
+const AssetModelPropertyDefinitionsSchema = z
+  .array(AssetModelPropertyDefinitionSchema)
+  .openapi('AssetModelPropertyDefinitions')
+
+const AssetModelHierarchyDefinitionSchema = z
+  .object({
+    name: NameSchema.openapi({
+      description:
+        'The name of the asset model hierarchy definition (as specified in the <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModel.html">CreateAssetModel</a> or <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetModel.html">UpdateAssetModel</a> API operation).',
+    }),
+    childAssetModelId: IDSchema.openapi({
+      description: 'The ID of an asset model for this hierarchy.',
+    }),
+  })
+  .openapi({
+    required: ['name', 'childAssetModelId'],
+    description:
+      'Contains an asset model hierarchy used in asset model creation. An asset model hierarchy determines the kind (or type) of asset that can belong to a hierarchy.',
+  })
+  .openapi('AssetModelHierarchyDefinition')
+
+const AssetModelHierarchyDefinitionsSchema = z
+  .array(AssetModelHierarchyDefinitionSchema)
+  .openapi('AssetModelHierarchyDefinitions')
+
+const AssetModelCompositeModelDefinitionSchema = z
+  .object({
+    name: NameSchema.openapi({ description: 'The name of the composite model.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the composite model.',
+    }),
+    type: NameSchema.openapi({
+      description:
+        'The type of the composite model. For alarm composite models, this type is <code>AWS/ALARM</code>.',
+    }),
+    properties: z
+      .any()
+      .exactOptional()
+      .openapi({ description: 'The asset property definitions for this composite model.' }),
+  })
+  .openapi({
+    required: ['name', 'type'],
+    description:
+      'Contains a composite model definition in an asset model. This composite model definition is applied to all assets created from the asset model.',
+  })
+  .openapi('AssetModelCompositeModelDefinition')
+
+const AssetModelCompositeModelDefinitionsSchema = z
+  .array(AssetModelCompositeModelDefinitionSchema)
+  .openapi('AssetModelCompositeModelDefinitions')
+
+const ClientTokenSchema = z
+  .string()
+  .regex(/\S{36,64}/)
+  .min(36)
+  .max(64)
+  .openapi('ClientToken')
+
+const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
+
+const TagMapSchema = z
+  .record(z.string(), TagValueSchema)
+  .refine((val) => Object.keys(val).length >= 1)
+  .refine((val) => Object.keys(val).length <= 50)
+  .openapi('TagMap')
+
+type CreateAssetModelRequestType = {
+  assetModelName: z.infer<typeof NameSchema> & unknown
+  assetModelDescription?: z.infer<typeof DescriptionSchema> & unknown
+  assetModelProperties?: z.infer<typeof AssetModelPropertyDefinitionsSchema> & unknown
+  assetModelHierarchies?: z.infer<typeof AssetModelHierarchyDefinitionsSchema> & unknown
+  assetModelCompositeModels?: z.infer<typeof AssetModelCompositeModelDefinitionsSchema> & unknown
+  clientToken?: z.infer<typeof ClientTokenSchema> & unknown
+  tags?: z.infer<typeof TagMapSchema> & unknown
+}
+
+type UpdateAssetModelRequestType = {
+  assetModelName: z.infer<typeof NameSchema> & unknown
+  assetModelDescription?: z.infer<typeof DescriptionSchema> & unknown
+  assetModelProperties?: z.infer<typeof AssetModelPropertiesSchema> & unknown
+  assetModelHierarchies?: z.infer<typeof AssetModelHierarchiesSchema> & unknown
+  assetModelCompositeModels?: z.infer<typeof AssetModelCompositeModelsSchema> & unknown
+  clientToken?: z.infer<typeof ClientTokenSchema> & unknown
 }
 
 const InvalidRequestExceptionSchema = z.any().openapi('InvalidRequestException')
@@ -111,9 +682,9 @@ const AssetErrorMessageSchema = z.string().openapi('AssetErrorMessage')
 
 const AssetErrorDetailsSchema = z
   .object({
-    assetId: IDSchema.and(z.any().openapi({ description: 'The ID of the asset.' })),
-    code: AssetErrorCodeSchema.and(z.any().openapi({ description: 'The error code.' })),
-    message: AssetErrorMessageSchema.and(z.any().openapi({ description: 'The error message.' })),
+    assetId: IDSchema.openapi({ description: 'The ID of the asset.' }),
+    code: AssetErrorCodeSchema.openapi({ description: 'The error code.' }),
+    message: AssetErrorMessageSchema.openapi({ description: 'The error message.' }),
   })
   .openapi({
     required: ['assetId', 'code', 'message'],
@@ -127,9 +698,9 @@ const BatchAssociateProjectAssetsErrorsSchema = z
 
 const BatchAssociateProjectAssetsResponseSchema = z
   .object({
-    errors: BatchAssociateProjectAssetsErrorsSchema.and(
-      z.any().openapi({ description: 'A list of associated error information, if any.' }),
-    ).exactOptional(),
+    errors: BatchAssociateProjectAssetsErrorsSchema.exactOptional().openapi({
+      description: 'A list of associated error information, if any.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchAssociateProjectAssetsResponse')
@@ -140,9 +711,9 @@ const BatchDisassociateProjectAssetsErrorsSchema = z
 
 const BatchDisassociateProjectAssetsResponseSchema = z
   .object({
-    errors: BatchDisassociateProjectAssetsErrorsSchema.and(
-      z.any().openapi({ description: 'A list of associated error information, if any.' }),
-    ).exactOptional(),
+    errors: BatchDisassociateProjectAssetsErrorsSchema.exactOptional().openapi({
+      description: 'A list of associated error information, if any.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchDisassociateProjectAssetsResponse')
@@ -150,8 +721,6 @@ const BatchDisassociateProjectAssetsResponseSchema = z
 const BatchGetAssetPropertyAggregatesErrorCodeSchema = z
   .enum(['ResourceNotFoundException', 'InvalidRequestException', 'AccessDeniedException'])
   .openapi('BatchGetAssetPropertyAggregatesErrorCode')
-
-const ErrorMessageSchema = z.string().openapi('ErrorMessage')
 
 const EntryIdSchema = z
   .string()
@@ -162,13 +731,11 @@ const EntryIdSchema = z
 
 const BatchGetAssetPropertyAggregatesErrorEntrySchema = z
   .object({
-    errorCode: BatchGetAssetPropertyAggregatesErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ),
-    errorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'The associated error message.' }),
-    ),
-    entryId: EntryIdSchema.and(z.any().openapi({ description: 'The ID of the entry.' })),
+    errorCode: BatchGetAssetPropertyAggregatesErrorCodeSchema.openapi({
+      description: 'The error code.',
+    }),
+    errorMessage: ErrorMessageSchema.openapi({ description: 'The associated error message.' }),
+    entryId: EntryIdSchema.openapi({ description: 'The ID of the entry.' }),
   })
   .openapi({
     required: ['errorCode', 'errorMessage', 'entryId'],
@@ -181,52 +748,30 @@ const BatchGetAssetPropertyAggregatesErrorEntriesSchema = z
   .array(BatchGetAssetPropertyAggregatesErrorEntrySchema)
   .openapi('BatchGetAssetPropertyAggregatesErrorEntries')
 
-const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
-
 const QualitySchema = z.enum(['GOOD', 'BAD', 'UNCERTAIN']).openapi('Quality')
 
 const AggregatedDoubleValueSchema = z.float64().openapi('AggregatedDoubleValue')
 
 const AggregatesSchema = z
   .object({
-    average: AggregatedDoubleValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The average (mean) value of the time series over a time interval window.',
-        }),
-    ).exactOptional(),
-    count: AggregatedDoubleValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The count of data points in the time series over a time interval window.',
-        }),
-    ).exactOptional(),
-    maximum: AggregatedDoubleValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum value of the time series over a time interval window.',
-        }),
-    ).exactOptional(),
-    minimum: AggregatedDoubleValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The minimum value of the time series over a time interval window.',
-        }),
-    ).exactOptional(),
-    sum: AggregatedDoubleValueSchema.and(
-      z.any().openapi({ description: 'The sum of the time series over a time interval window.' }),
-    ).exactOptional(),
-    standardDeviation: AggregatedDoubleValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The standard deviation of the time series over a time interval window.',
-        }),
-    ).exactOptional(),
+    average: AggregatedDoubleValueSchema.exactOptional().openapi({
+      description: 'The average (mean) value of the time series over a time interval window.',
+    }),
+    count: AggregatedDoubleValueSchema.exactOptional().openapi({
+      description: 'The count of data points in the time series over a time interval window.',
+    }),
+    maximum: AggregatedDoubleValueSchema.exactOptional().openapi({
+      description: 'The maximum value of the time series over a time interval window.',
+    }),
+    minimum: AggregatedDoubleValueSchema.exactOptional().openapi({
+      description: 'The minimum value of the time series over a time interval window.',
+    }),
+    sum: AggregatedDoubleValueSchema.exactOptional().openapi({
+      description: 'The sum of the time series over a time interval window.',
+    }),
+    standardDeviation: AggregatedDoubleValueSchema.exactOptional().openapi({
+      description: 'The standard deviation of the time series over a time interval window.',
+    }),
   })
   .openapi({
     description: 'Contains the (pre-calculated) aggregate values for an asset property.',
@@ -236,17 +781,13 @@ const AggregatesSchema = z
 
 const AggregatedValueSchema = z
   .object({
-    timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date the aggregating computations occurred, in Unix epoch time.',
-        }),
-    ),
-    quality: QualitySchema.and(
-      z.any().openapi({ description: 'The quality of the aggregated data.' }),
-    ).exactOptional(),
-    value: AggregatesSchema.and(z.any().openapi({ description: 'The value of the aggregates.' })),
+    timestamp: TimestampSchema.openapi({
+      description: 'The date the aggregating computations occurred, in Unix epoch time.',
+    }),
+    quality: QualitySchema.exactOptional().openapi({
+      description: 'The quality of the aggregated data.',
+    }),
+    value: AggregatesSchema.openapi({ description: 'The value of the aggregates.' }),
   })
   .openapi({
     required: ['timestamp', 'value'],
@@ -259,15 +800,11 @@ const AggregatedValuesSchema = z.array(AggregatedValueSchema).openapi('Aggregate
 
 const BatchGetAssetPropertyAggregatesSuccessEntrySchema = z
   .object({
-    entryId: EntryIdSchema.and(z.any().openapi({ description: 'The ID of the entry.' })),
-    aggregatedValues: AggregatedValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The requested aggregated asset property values (for example, average, minimum, and maximum).',
-        }),
-    ),
+    entryId: EntryIdSchema.openapi({ description: 'The ID of the entry.' }),
+    aggregatedValues: AggregatedValuesSchema.openapi({
+      description:
+        'The requested aggregated asset property values (for example, average, minimum, and maximum).',
+    }),
   })
   .openapi({
     required: ['entryId', 'aggregatedValues'],
@@ -286,12 +823,12 @@ const BatchEntryCompletionStatusSchema = z
 
 const BatchGetAssetPropertyAggregatesErrorInfoSchema = z
   .object({
-    errorCode: BatchGetAssetPropertyAggregatesErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ),
-    errorTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the error occurred, in Unix epoch time.' }),
-    ),
+    errorCode: BatchGetAssetPropertyAggregatesErrorCodeSchema.openapi({
+      description: 'The error code.',
+    }),
+    errorTimestamp: TimestampSchema.openapi({
+      description: 'The date the error occurred, in Unix epoch time.',
+    }),
   })
   .openapi({
     required: ['errorCode', 'errorTimestamp'],
@@ -302,22 +839,14 @@ const BatchGetAssetPropertyAggregatesErrorInfoSchema = z
 
 const BatchGetAssetPropertyAggregatesSkippedEntrySchema = z
   .object({
-    entryId: EntryIdSchema.and(z.any().openapi({ description: 'The ID of the entry.' })),
-    completionStatus: BatchEntryCompletionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The completion status of each entry that is associated with the <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyAggregates.html">BatchGetAssetPropertyAggregates</a> API.',
-        }),
-    ),
-    errorInfo: BatchGetAssetPropertyAggregatesErrorInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The error information, such as the error code and the timestamp.',
-        }),
-    ).exactOptional(),
+    entryId: EntryIdSchema.openapi({ description: 'The ID of the entry.' }),
+    completionStatus: BatchEntryCompletionStatusSchema.openapi({
+      description:
+        'The completion status of each entry that is associated with the <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyAggregates.html">BatchGetAssetPropertyAggregates</a> API.',
+    }),
+    errorInfo: BatchGetAssetPropertyAggregatesErrorInfoSchema.exactOptional().openapi({
+      description: 'The error information, such as the error code and the timestamp.',
+    }),
   })
   .openapi({
     required: ['entryId', 'completionStatus'],
@@ -330,47 +859,24 @@ const BatchGetAssetPropertyAggregatesSkippedEntriesSchema = z
   .array(BatchGetAssetPropertyAggregatesSkippedEntrySchema)
   .openapi('BatchGetAssetPropertyAggregatesSkippedEntries')
 
-const NextTokenSchema = z
-  .string()
-  .regex(/[A-Za-z0-9+\/=]+/)
-  .min(1)
-  .max(4096)
-  .openapi('NextToken')
-
 const BatchGetAssetPropertyAggregatesResponseSchema = z
   .object({
-    errorEntries: BatchGetAssetPropertyAggregatesErrorEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the errors (if any) associated with the batch request. Each error entry contains the <code>entryId</code> of the entry that failed.',
-        }),
-    ),
-    successEntries: BatchGetAssetPropertyAggregatesSuccessEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of entries that were processed successfully by this batch request. Each success entry contains the <code>entryId</code> of the entry that succeeded and the latest query result.',
-        }),
-    ),
-    skippedEntries: BatchGetAssetPropertyAggregatesSkippedEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of entries that were not processed by this batch request. because these entries had been completely processed by previous paginated requests. Each skipped entry contains the <code>entryId</code> of the entry that skipped.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    errorEntries: BatchGetAssetPropertyAggregatesErrorEntriesSchema.openapi({
+      description:
+        'A list of the errors (if any) associated with the batch request. Each error entry contains the <code>entryId</code> of the entry that failed.',
+    }),
+    successEntries: BatchGetAssetPropertyAggregatesSuccessEntriesSchema.openapi({
+      description:
+        'A list of entries that were processed successfully by this batch request. Each success entry contains the <code>entryId</code> of the entry that succeeded and the latest query result.',
+    }),
+    skippedEntries: BatchGetAssetPropertyAggregatesSkippedEntriesSchema.openapi({
+      description:
+        'A list of entries that were not processed by this batch request. because these entries had been completely processed by previous paginated requests. Each skipped entry contains the <code>entryId</code> of the entry that skipped.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['errorEntries', 'successEntries', 'skippedEntries'] })
   .openapi('BatchGetAssetPropertyAggregatesResponse')
@@ -400,56 +906,34 @@ const TimeOrderingSchema = z.enum(['ASCENDING', 'DESCENDING']).openapi('TimeOrde
 
 const BatchGetAssetPropertyAggregatesEntrySchema = z
   .object({
-    entryId: EntryIdSchema.and(z.any().openapi({ description: 'The ID of the entry.' })),
-    assetId: IDSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the asset in which the asset property was created.' }),
-    ).exactOptional(),
-    propertyId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the asset property.' }),
-    ).exactOptional(),
-    propertyAlias: AssetPropertyAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
-    aggregateTypes: AggregateTypesSchema.and(
-      z.any().openapi({ description: 'The data aggregating function.' }),
-    ),
-    resolution: ResolutionSchema.and(
-      z.any().openapi({ description: 'The time interval over which to aggregate data.' }),
-    ),
-    startDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The exclusive start of the range from which to query historical data, expressed in seconds in Unix epoch time.',
-        }),
-    ),
-    endDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The inclusive end of the range from which to query historical data, expressed in seconds in Unix epoch time.',
-        }),
-    ),
-    qualities: QualitiesSchema.and(
-      z.any().openapi({ description: 'The quality by which to filter asset data.' }),
-    ).exactOptional(),
-    timeOrdering: TimeOrderingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The chronological sorting order of the requested information.</p> <p>Default: <code>ASCENDING</code> </p>',
-        }),
-    ).exactOptional(),
+    entryId: EntryIdSchema.openapi({ description: 'The ID of the entry.' }),
+    assetId: IDSchema.exactOptional().openapi({
+      description: 'The ID of the asset in which the asset property was created.',
+    }),
+    propertyId: IDSchema.exactOptional().openapi({ description: 'The ID of the asset property.' }),
+    propertyAlias: AssetPropertyAliasSchema.exactOptional().openapi({
+      description:
+        'The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+    aggregateTypes: AggregateTypesSchema.openapi({ description: 'The data aggregating function.' }),
+    resolution: ResolutionSchema.openapi({
+      description: 'The time interval over which to aggregate data.',
+    }),
+    startDate: TimestampSchema.openapi({
+      description:
+        'The exclusive start of the range from which to query historical data, expressed in seconds in Unix epoch time.',
+    }),
+    endDate: TimestampSchema.openapi({
+      description:
+        'The inclusive end of the range from which to query historical data, expressed in seconds in Unix epoch time.',
+    }),
+    qualities: QualitiesSchema.exactOptional().openapi({
+      description: 'The quality by which to filter asset data.',
+    }),
+    timeOrdering: TimeOrderingSchema.exactOptional().openapi({
+      description:
+        '<p>The chronological sorting order of the requested information.</p> <p>Default: <code>ASCENDING</code> </p>',
+    }),
   })
   .openapi({
     required: ['entryId', 'aggregateTypes', 'resolution', 'startDate', 'endDate'],
@@ -466,13 +950,11 @@ const BatchGetAssetPropertyValueErrorCodeSchema = z
 
 const BatchGetAssetPropertyValueErrorEntrySchema = z
   .object({
-    errorCode: BatchGetAssetPropertyValueErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ),
-    errorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'The associated error message.' }),
-    ),
-    entryId: EntryIdSchema.and(z.any().openapi({ description: 'The ID of the entry.' })),
+    errorCode: BatchGetAssetPropertyValueErrorCodeSchema.openapi({
+      description: 'The error code.',
+    }),
+    errorMessage: ErrorMessageSchema.openapi({ description: 'The associated error message.' }),
+    entryId: EntryIdSchema.openapi({ description: 'The ID of the entry.' }),
   })
   .openapi({
     required: ['errorCode', 'errorMessage', 'entryId'],
@@ -495,22 +977,18 @@ const PropertyValueBooleanValueSchema = z.boolean().openapi('PropertyValueBoolea
 
 const VariantSchema = z
   .object({
-    stringValue: PropertyValueStringValueSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Asset property data of type string (sequence of characters).' }),
-    ).exactOptional(),
-    integerValue: PropertyValueIntegerValueSchema.and(
-      z.any().openapi({ description: 'Asset property data of type integer (whole number).' }),
-    ).exactOptional(),
-    doubleValue: PropertyValueDoubleValueSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Asset property data of type double (floating point number).' }),
-    ).exactOptional(),
-    booleanValue: PropertyValueBooleanValueSchema.and(
-      z.any().openapi({ description: 'Asset property data of type Boolean (true or false).' }),
-    ).exactOptional(),
+    stringValue: PropertyValueStringValueSchema.exactOptional().openapi({
+      description: 'Asset property data of type string (sequence of characters).',
+    }),
+    integerValue: PropertyValueIntegerValueSchema.exactOptional().openapi({
+      description: 'Asset property data of type integer (whole number).',
+    }),
+    doubleValue: PropertyValueDoubleValueSchema.exactOptional().openapi({
+      description: 'Asset property data of type double (floating point number).',
+    }),
+    booleanValue: PropertyValueBooleanValueSchema.exactOptional().openapi({
+      description: 'Asset property data of type Boolean (true or false).',
+    }),
   })
   .openapi({
     description: 'Contains an asset property value (of a single type only).',
@@ -524,17 +1002,13 @@ const OffsetInNanosSchema = z.int().min(0).max(999999999).openapi('OffsetInNanos
 
 const TimeInNanosSchema = z
   .object({
-    timeInSeconds: TimeInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp date, in seconds, in the Unix epoch format. Fractional nanosecond data is provided by <code>offsetInNanos</code>.',
-        }),
-    ),
-    offsetInNanos: OffsetInNanosSchema.and(
-      z.any().openapi({ description: 'The nanosecond offset from <code>timeInSeconds</code>.' }),
-    ).exactOptional(),
+    timeInSeconds: TimeInSecondsSchema.openapi({
+      description:
+        'The timestamp date, in seconds, in the Unix epoch format. Fractional nanosecond data is provided by <code>offsetInNanos</code>.',
+    }),
+    offsetInNanos: OffsetInNanosSchema.exactOptional().openapi({
+      description: 'The nanosecond offset from <code>timeInSeconds</code>.',
+    }),
   })
   .openapi({
     required: ['timeInSeconds'],
@@ -544,17 +1018,15 @@ const TimeInNanosSchema = z
 
 const AssetPropertyValueSchema = z
   .object({
-    value: VariantSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The value of the asset property (see <code>Variant</code>).' }),
-    ),
-    timestamp: TimeInNanosSchema.and(
-      z.any().openapi({ description: 'The timestamp of the asset property value.' }),
-    ),
-    quality: QualitySchema.and(
-      z.any().openapi({ description: 'The quality of the asset property value.' }),
-    ).exactOptional(),
+    value: VariantSchema.openapi({
+      description: 'The value of the asset property (see <code>Variant</code>).',
+    }),
+    timestamp: TimeInNanosSchema.openapi({
+      description: 'The timestamp of the asset property value.',
+    }),
+    quality: QualitySchema.exactOptional().openapi({
+      description: 'The quality of the asset property value.',
+    }),
   })
   .openapi({
     required: ['value', 'timestamp'],
@@ -564,7 +1036,7 @@ const AssetPropertyValueSchema = z
 
 const BatchGetAssetPropertyValueSuccessEntrySchema = z
   .object({
-    entryId: EntryIdSchema.and(z.any().openapi({ description: 'The ID of the entry.' })),
+    entryId: EntryIdSchema.openapi({ description: 'The ID of the entry.' }),
     assetPropertyValue: AssetPropertyValueSchema.exactOptional(),
   })
   .openapi({
@@ -580,12 +1052,12 @@ const BatchGetAssetPropertyValueSuccessEntriesSchema = z
 
 const BatchGetAssetPropertyValueErrorInfoSchema = z
   .object({
-    errorCode: BatchGetAssetPropertyValueErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ),
-    errorTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the error occurred, in Unix epoch time.' }),
-    ),
+    errorCode: BatchGetAssetPropertyValueErrorCodeSchema.openapi({
+      description: 'The error code.',
+    }),
+    errorTimestamp: TimestampSchema.openapi({
+      description: 'The date the error occurred, in Unix epoch time.',
+    }),
   })
   .openapi({
     required: ['errorCode', 'errorTimestamp'],
@@ -595,22 +1067,14 @@ const BatchGetAssetPropertyValueErrorInfoSchema = z
 
 const BatchGetAssetPropertyValueSkippedEntrySchema = z
   .object({
-    entryId: EntryIdSchema.and(z.any().openapi({ description: 'The ID of the entry.' })),
-    completionStatus: BatchEntryCompletionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The completion status of each entry that is associated with the <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyValue.html">BatchGetAssetPropertyValue</a> request.',
-        }),
-    ),
-    errorInfo: BatchGetAssetPropertyValueErrorInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The error information, such as the error code and the timestamp.',
-        }),
-    ).exactOptional(),
+    entryId: EntryIdSchema.openapi({ description: 'The ID of the entry.' }),
+    completionStatus: BatchEntryCompletionStatusSchema.openapi({
+      description:
+        'The completion status of each entry that is associated with the <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyValue.html">BatchGetAssetPropertyValue</a> request.',
+    }),
+    errorInfo: BatchGetAssetPropertyValueErrorInfoSchema.exactOptional().openapi({
+      description: 'The error information, such as the error code and the timestamp.',
+    }),
   })
   .openapi({
     required: ['entryId', 'completionStatus'],
@@ -625,61 +1089,37 @@ const BatchGetAssetPropertyValueSkippedEntriesSchema = z
 
 const BatchGetAssetPropertyValueResponseSchema = z
   .object({
-    errorEntries: BatchGetAssetPropertyValueErrorEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the errors (if any) associated with the batch request. Each error entry contains the <code>entryId</code> of the entry that failed.',
-        }),
-    ),
-    successEntries: BatchGetAssetPropertyValueSuccessEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of entries that were processed successfully by this batch request. Each success entry contains the <code>entryId</code> of the entry that succeeded and the latest query result.',
-        }),
-    ),
-    skippedEntries: BatchGetAssetPropertyValueSkippedEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of entries that were not processed by this batch request. because these entries had been completely processed by previous paginated requests. Each skipped entry contains the <code>entryId</code> of the entry that skipped.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    errorEntries: BatchGetAssetPropertyValueErrorEntriesSchema.openapi({
+      description:
+        'A list of the errors (if any) associated with the batch request. Each error entry contains the <code>entryId</code> of the entry that failed.',
+    }),
+    successEntries: BatchGetAssetPropertyValueSuccessEntriesSchema.openapi({
+      description:
+        'A list of entries that were processed successfully by this batch request. Each success entry contains the <code>entryId</code> of the entry that succeeded and the latest query result.',
+    }),
+    skippedEntries: BatchGetAssetPropertyValueSkippedEntriesSchema.openapi({
+      description:
+        'A list of entries that were not processed by this batch request. because these entries had been completely processed by previous paginated requests. Each skipped entry contains the <code>entryId</code> of the entry that skipped.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['errorEntries', 'successEntries', 'skippedEntries'] })
   .openapi('BatchGetAssetPropertyValueResponse')
 
 const BatchGetAssetPropertyValueEntrySchema = z
   .object({
-    entryId: EntryIdSchema.and(z.any().openapi({ description: 'The ID of the entry.' })),
-    assetId: IDSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the asset in which the asset property was created.' }),
-    ).exactOptional(),
-    propertyId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the asset property.' }),
-    ).exactOptional(),
-    propertyAlias: AssetPropertyAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
+    entryId: EntryIdSchema.openapi({ description: 'The ID of the entry.' }),
+    assetId: IDSchema.exactOptional().openapi({
+      description: 'The ID of the asset in which the asset property was created.',
+    }),
+    propertyId: IDSchema.exactOptional().openapi({ description: 'The ID of the asset property.' }),
+    propertyAlias: AssetPropertyAliasSchema.exactOptional().openapi({
+      description:
+        'The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['entryId'],
@@ -694,13 +1134,11 @@ const BatchGetAssetPropertyValueHistoryErrorCodeSchema = z
 
 const BatchGetAssetPropertyValueHistoryErrorEntrySchema = z
   .object({
-    errorCode: BatchGetAssetPropertyValueHistoryErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ),
-    errorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'The associated error message.' }),
-    ),
-    entryId: EntryIdSchema.and(z.any().openapi({ description: 'The ID of the entry.' })),
+    errorCode: BatchGetAssetPropertyValueHistoryErrorCodeSchema.openapi({
+      description: 'The error code.',
+    }),
+    errorMessage: ErrorMessageSchema.openapi({ description: 'The associated error message.' }),
+    entryId: EntryIdSchema.openapi({ description: 'The ID of the entry.' }),
   })
   .openapi({
     required: ['errorCode', 'errorMessage', 'entryId'],
@@ -719,14 +1157,10 @@ const AssetPropertyValueHistorySchema = z
 
 const BatchGetAssetPropertyValueHistorySuccessEntrySchema = z
   .object({
-    entryId: EntryIdSchema.and(z.any().openapi({ description: 'The ID of the entry.' })),
-    assetPropertyValueHistory: AssetPropertyValueHistorySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The requested historical values for the specified asset property.',
-        }),
-    ),
+    entryId: EntryIdSchema.openapi({ description: 'The ID of the entry.' }),
+    assetPropertyValueHistory: AssetPropertyValueHistorySchema.openapi({
+      description: 'The requested historical values for the specified asset property.',
+    }),
   })
   .openapi({
     required: ['entryId', 'assetPropertyValueHistory'],
@@ -741,12 +1175,12 @@ const BatchGetAssetPropertyValueHistorySuccessEntriesSchema = z
 
 const BatchGetAssetPropertyValueHistoryErrorInfoSchema = z
   .object({
-    errorCode: BatchGetAssetPropertyValueHistoryErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ),
-    errorTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the error occurred, in Unix epoch time.' }),
-    ),
+    errorCode: BatchGetAssetPropertyValueHistoryErrorCodeSchema.openapi({
+      description: 'The error code.',
+    }),
+    errorTimestamp: TimestampSchema.openapi({
+      description: 'The date the error occurred, in Unix epoch time.',
+    }),
   })
   .openapi({
     required: ['errorCode', 'errorTimestamp'],
@@ -756,22 +1190,14 @@ const BatchGetAssetPropertyValueHistoryErrorInfoSchema = z
 
 const BatchGetAssetPropertyValueHistorySkippedEntrySchema = z
   .object({
-    entryId: EntryIdSchema.and(z.any().openapi({ description: 'The ID of the entry.' })),
-    completionStatus: BatchEntryCompletionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The completion status of each entry that is associated with the <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyValueHistory.html">BatchGetAssetPropertyValueHistory</a> API.',
-        }),
-    ),
-    errorInfo: BatchGetAssetPropertyValueHistoryErrorInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The error information, such as the error code and the timestamp.',
-        }),
-    ).exactOptional(),
+    entryId: EntryIdSchema.openapi({ description: 'The ID of the entry.' }),
+    completionStatus: BatchEntryCompletionStatusSchema.openapi({
+      description:
+        'The completion status of each entry that is associated with the <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_BatchGetAssetPropertyValueHistory.html">BatchGetAssetPropertyValueHistory</a> API.',
+    }),
+    errorInfo: BatchGetAssetPropertyValueHistoryErrorInfoSchema.exactOptional().openapi({
+      description: 'The error information, such as the error code and the timestamp.',
+    }),
   })
   .openapi({
     required: ['entryId', 'completionStatus'],
@@ -786,88 +1212,52 @@ const BatchGetAssetPropertyValueHistorySkippedEntriesSchema = z
 
 const BatchGetAssetPropertyValueHistoryResponseSchema = z
   .object({
-    errorEntries: BatchGetAssetPropertyValueHistoryErrorEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the errors (if any) associated with the batch request. Each error entry contains the <code>entryId</code> of the entry that failed.',
-        }),
-    ),
-    successEntries: BatchGetAssetPropertyValueHistorySuccessEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of entries that were processed successfully by this batch request. Each success entry contains the <code>entryId</code> of the entry that succeeded and the latest query result.',
-        }),
-    ),
-    skippedEntries: BatchGetAssetPropertyValueHistorySkippedEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of entries that were not processed by this batch request. because these entries had been completely processed by previous paginated requests. Each skipped entry contains the <code>entryId</code> of the entry that skipped.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    errorEntries: BatchGetAssetPropertyValueHistoryErrorEntriesSchema.openapi({
+      description:
+        'A list of the errors (if any) associated with the batch request. Each error entry contains the <code>entryId</code> of the entry that failed.',
+    }),
+    successEntries: BatchGetAssetPropertyValueHistorySuccessEntriesSchema.openapi({
+      description:
+        'A list of entries that were processed successfully by this batch request. Each success entry contains the <code>entryId</code> of the entry that succeeded and the latest query result.',
+    }),
+    skippedEntries: BatchGetAssetPropertyValueHistorySkippedEntriesSchema.openapi({
+      description:
+        'A list of entries that were not processed by this batch request. because these entries had been completely processed by previous paginated requests. Each skipped entry contains the <code>entryId</code> of the entry that skipped.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['errorEntries', 'successEntries', 'skippedEntries'] })
   .openapi('BatchGetAssetPropertyValueHistoryResponse')
 
 const BatchGetAssetPropertyValueHistoryEntrySchema = z
   .object({
-    entryId: EntryIdSchema.and(z.any().openapi({ description: 'The ID of the entry.' })),
-    assetId: IDSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the asset in which the asset property was created.' }),
-    ).exactOptional(),
-    propertyId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the asset property.' }),
-    ).exactOptional(),
-    propertyAlias: AssetPropertyAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
-    startDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The exclusive start of the range from which to query historical data, expressed in seconds in Unix epoch time.',
-        }),
-    ).exactOptional(),
-    endDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The inclusive end of the range from which to query historical data, expressed in seconds in Unix epoch time.',
-        }),
-    ).exactOptional(),
-    qualities: QualitiesSchema.and(
-      z.any().openapi({ description: 'The quality by which to filter asset data.' }),
-    ).exactOptional(),
-    timeOrdering: TimeOrderingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The chronological sorting order of the requested information.</p> <p>Default: <code>ASCENDING</code> </p>',
-        }),
-    ).exactOptional(),
+    entryId: EntryIdSchema.openapi({ description: 'The ID of the entry.' }),
+    assetId: IDSchema.exactOptional().openapi({
+      description: 'The ID of the asset in which the asset property was created.',
+    }),
+    propertyId: IDSchema.exactOptional().openapi({ description: 'The ID of the asset property.' }),
+    propertyAlias: AssetPropertyAliasSchema.exactOptional().openapi({
+      description:
+        'The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+    startDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The exclusive start of the range from which to query historical data, expressed in seconds in Unix epoch time.',
+    }),
+    endDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The inclusive end of the range from which to query historical data, expressed in seconds in Unix epoch time.',
+    }),
+    qualities: QualitiesSchema.exactOptional().openapi({
+      description: 'The quality by which to filter asset data.',
+    }),
+    timeOrdering: TimeOrderingSchema.exactOptional().openapi({
+      description:
+        '<p>The chronological sorting order of the requested information.</p> <p>Default: <code>ASCENDING</code> </p>',
+    }),
   })
   .openapi({
     required: ['entryId'],
@@ -894,15 +1284,13 @@ const TimestampsSchema = z.array(TimeInNanosSchema).openapi('Timestamps')
 
 const BatchPutAssetPropertyErrorSchema = z
   .object({
-    errorCode: BatchPutAssetPropertyValueErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ),
-    errorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'The associated error message.' }),
-    ),
-    timestamps: TimestampsSchema.and(
-      z.any().openapi({ description: 'A list of timestamps for each error, if any.' }),
-    ),
+    errorCode: BatchPutAssetPropertyValueErrorCodeSchema.openapi({
+      description: 'The error code.',
+    }),
+    errorMessage: ErrorMessageSchema.openapi({ description: 'The associated error message.' }),
+    timestamps: TimestampsSchema.openapi({
+      description: 'A list of timestamps for each error, if any.',
+    }),
   })
   .openapi({
     required: ['errorCode', 'errorMessage', 'timestamps'],
@@ -916,10 +1304,10 @@ const BatchPutAssetPropertyErrorsSchema = z
 
 const BatchPutAssetPropertyErrorEntrySchema = z
   .object({
-    entryId: EntryIdSchema.and(z.any().openapi({ description: 'The ID of the failed entry.' })),
-    errors: BatchPutAssetPropertyErrorsSchema.and(
-      z.any().openapi({ description: 'The list of update property value errors.' }),
-    ),
+    entryId: EntryIdSchema.openapi({ description: 'The ID of the failed entry.' }),
+    errors: BatchPutAssetPropertyErrorsSchema.openapi({
+      description: 'The list of update property value errors.',
+    }),
   })
   .openapi({
     required: ['entryId', 'errors'],
@@ -934,14 +1322,10 @@ const BatchPutAssetPropertyErrorEntriesSchema = z
 
 const BatchPutAssetPropertyValueResponseSchema = z
   .object({
-    errorEntries: BatchPutAssetPropertyErrorEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the errors (if any) associated with the batch put request. Each error entry contains the <code>entryId</code> of the entry that failed.',
-        }),
-    ),
+    errorEntries: BatchPutAssetPropertyErrorEntriesSchema.openapi({
+      description:
+        'A list of the errors (if any) associated with the batch put request. Each error entry contains the <code>entryId</code> of the entry that failed.',
+    }),
   })
   .openapi({ required: ['errorEntries'] })
   .openapi('BatchPutAssetPropertyValueResponse')
@@ -950,36 +1334,22 @@ const AssetPropertyValuesSchema = z.array(AssetPropertyValueSchema).openapi('Ass
 
 const PutAssetPropertyValueEntrySchema = z
   .object({
-    entryId: EntryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user specified ID for the entry. You can use this ID to identify which entries failed.',
-        }),
-    ),
-    assetId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the asset to update.' }),
-    ).exactOptional(),
-    propertyId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the asset property for this entry.' }),
-    ).exactOptional(),
-    propertyAlias: AssetPropertyAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
-    propertyValues: AssetPropertyValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of property values to upload. You can specify up to 10 <code>propertyValues</code> array elements. ',
-        }),
-    ),
+    entryId: EntryIdSchema.openapi({
+      description:
+        'The user specified ID for the entry. You can use this ID to identify which entries failed.',
+    }),
+    assetId: IDSchema.exactOptional().openapi({ description: 'The ID of the asset to update.' }),
+    propertyId: IDSchema.exactOptional().openapi({
+      description: 'The ID of the asset property for this entry.',
+    }),
+    propertyAlias: AssetPropertyAliasSchema.exactOptional().openapi({
+      description:
+        'The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+    propertyValues: AssetPropertyValuesSchema.openapi({
+      description:
+        'The list of property values to upload. You can specify up to 10 <code>propertyValues</code> array elements. ',
+    }),
   })
   .openapi({
     required: ['entryId', 'propertyValues'],
@@ -990,67 +1360,84 @@ const PutAssetPropertyValueEntrySchema = z
 
 const CreateAccessPolicyResponseSchema = z
   .object({
-    accessPolicyId: IDSchema.and(z.any().openapi({ description: 'The ID of the access policy.' })),
-    accessPolicyArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the access policy, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:access-policy/${AccessPolicyId}</code> </p>',
-        }),
-    ),
+    accessPolicyId: IDSchema.openapi({ description: 'The ID of the access policy.' }),
+    accessPolicyArn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the access policy, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:access-policy/${AccessPolicyId}</code> </p>',
+    }),
   })
   .openapi({ required: ['accessPolicyId', 'accessPolicyArn'] })
   .openapi('CreateAccessPolicyResponse')
 
-const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
+const IdentityIdSchema = z.string().regex(/\S+/).min(1).max(256).openapi('IdentityId')
+
+const UserIdentitySchema = z
+  .object({
+    id: IdentityIdSchema.openapi({ description: 'The IAM Identity Center ID of the user.' }),
+  })
+  .openapi({
+    required: ['id'],
+    description: 'Contains information for a user identity in an access policy.',
+  })
+  .openapi('UserIdentity')
+
+const GroupIdentitySchema = z
+  .object({
+    id: IdentityIdSchema.openapi({ description: 'The IAM Identity Center ID of the group.' }),
+  })
+  .openapi({
+    required: ['id'],
+    description: 'Contains information for a group identity in an access policy.',
+  })
+  .openapi('GroupIdentity')
+
+const IAMUserIdentitySchema = z
+  .object({
+    arn: ARNSchema.openapi({
+      description:
+        '<p>The ARN of the IAM user. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html">IAM ARNs</a> in the <i>IAM User Guide</i>.</p> <note> <p>If you delete the IAM user, access policies that contain this identity include an empty <code>arn</code>. You can delete the access policy for the IAM user that no longer exists.</p> </note>',
+    }),
+  })
+  .openapi({
+    required: ['arn'],
+    description: 'Contains information about an Identity and Access Management user.',
+  })
+  .openapi('IAMUserIdentity')
+
+const IAMRoleIdentitySchema = z
+  .object({
+    arn: ARNSchema.openapi({
+      description:
+        'The ARN of the IAM role. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html">IAM ARNs</a> in the <i>IAM User Guide</i>.',
+    }),
+  })
+  .openapi({
+    required: ['arn'],
+    description:
+      'Contains information about an Identity and Access Management role. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html">IAM roles</a> in the <i>IAM User Guide</i>.',
+  })
+  .openapi('IAMRoleIdentity')
+
+const PortalResourceSchema = z
+  .object({ id: IDSchema.openapi({ description: 'The ID of the portal.' }) })
+  .openapi({ required: ['id'], description: 'Identifies an IoT SiteWise Monitor portal.' })
+  .openapi('PortalResource')
+
+const ProjectResourceSchema = z
+  .object({ id: IDSchema.openapi({ description: 'The ID of the project.' }) })
+  .openapi({ required: ['id'], description: 'Identifies a specific IoT SiteWise Monitor project.' })
+  .openapi('ProjectResource')
 
 const AssetStateSchema = z
   .enum(['CREATING', 'ACTIVE', 'UPDATING', 'DELETING', 'FAILED'])
   .openapi('AssetState')
 
-const ErrorCodeSchema = z.enum(['VALIDATION_ERROR', 'INTERNAL_FAILURE']).openapi('ErrorCode')
-
-const DetailedErrorCodeSchema = z
-  .enum(['INCOMPATIBLE_COMPUTE_LOCATION', 'INCOMPATIBLE_FORWARDING_CONFIGURATION'])
-  .openapi('DetailedErrorCode')
-
-const DetailedErrorMessageSchema = z.string().openapi('DetailedErrorMessage')
-
-const DetailedErrorSchema = z
-  .object({
-    code: DetailedErrorCodeSchema.and(z.any().openapi({ description: 'The error code. ' })),
-    message: DetailedErrorMessageSchema.and(
-      z.any().openapi({ description: 'The error message. ' }),
-    ),
-  })
-  .openapi({ required: ['code', 'message'], description: 'Contains detailed error information. ' })
-  .openapi('DetailedError')
-
-const DetailedErrorsSchema = z.array(DetailedErrorSchema).openapi('DetailedErrors')
-
-const ErrorDetailsSchema = z
-  .object({
-    code: ErrorCodeSchema.and(z.any().openapi({ description: 'The error code.' })),
-    message: ErrorMessageSchema.and(z.any().openapi({ description: 'The error message.' })),
-    details: DetailedErrorsSchema.and(
-      z.any().openapi({ description: ' A list of detailed errors. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['code', 'message'],
-    description: 'Contains the details of an IoT SiteWise error.',
-  })
-  .openapi('ErrorDetails')
-
 const AssetStatusSchema = z
   .object({
-    state: AssetStateSchema.and(
-      z.any().openapi({ description: 'The current status of the asset.' }),
-    ),
-    error: ErrorDetailsSchema.and(
-      z.any().openapi({ description: 'Contains associated error information, if any.' }),
-    ).exactOptional(),
+    state: AssetStateSchema.openapi({ description: 'The current status of the asset.' }),
+    error: ErrorDetailsSchema.exactOptional().openapi({
+      description: 'Contains associated error information, if any.',
+    }),
   })
   .openapi({
     required: ['state'],
@@ -1061,518 +1448,39 @@ const AssetStatusSchema = z
 
 const CreateAssetResponseSchema = z
   .object({
-    assetId: IDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the asset. This ID uniquely identifies the asset within IoT SiteWise and can be used with other IoT SiteWise APIs.',
-        }),
-    ),
-    assetArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the asset, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:asset/${AssetId}</code> </p>',
-        }),
-    ),
-    assetStatus: AssetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the asset, which contains a state (<code>CREATING</code> after successfully calling this operation) and any error message.',
-        }),
-    ),
+    assetId: IDSchema.openapi({
+      description:
+        'The ID of the asset. This ID uniquely identifies the asset within IoT SiteWise and can be used with other IoT SiteWise APIs.',
+    }),
+    assetArn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the asset, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:asset/${AssetId}</code> </p>',
+    }),
+    assetStatus: AssetStatusSchema.openapi({
+      description:
+        'The status of the asset, which contains a state (<code>CREATING</code> after successfully calling this operation) and any error message.',
+    }),
   })
   .openapi({ required: ['assetId', 'assetArn', 'assetStatus'] })
   .openapi('CreateAssetResponse')
 
-const AssetModelStateSchema = z
-  .enum(['CREATING', 'ACTIVE', 'UPDATING', 'PROPAGATING', 'DELETING', 'FAILED'])
-  .openapi('AssetModelState')
-
-const AssetModelStatusSchema = z
-  .object({
-    state: AssetModelStateSchema.and(
-      z.any().openapi({ description: 'The current state of the asset model.' }),
-    ),
-    error: ErrorDetailsSchema.and(
-      z.any().openapi({ description: 'Contains associated error information, if any.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['state'],
-    description:
-      'Contains current status information for an asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-and-model-states.html">Asset and model states</a> in the <i>IoT SiteWise User Guide</i>.',
-  })
-  .openapi('AssetModelStatus')
-
 const CreateAssetModelResponseSchema = z
   .object({
-    assetModelId: IDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the asset model. You can use this ID when you call other IoT SiteWise APIs.',
-        }),
-    ),
-    assetModelArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the asset model, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:asset-model/${AssetModelId}</code> </p>',
-        }),
-    ),
-    assetModelStatus: AssetModelStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the asset model, which contains a state (<code>CREATING</code> after successfully calling this operation) and any error message.',
-        }),
-    ),
+    assetModelId: IDSchema.openapi({
+      description:
+        'The ID of the asset model. You can use this ID when you call other IoT SiteWise APIs.',
+    }),
+    assetModelArn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the asset model, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:asset-model/${AssetModelId}</code> </p>',
+    }),
+    assetModelStatus: AssetModelStatusSchema.openapi({
+      description:
+        'The status of the asset model, which contains a state (<code>CREATING</code> after successfully calling this operation) and any error message.',
+    }),
   })
   .openapi({ required: ['assetModelId', 'assetModelArn', 'assetModelStatus'] })
   .openapi('CreateAssetModelResponse')
-
-const NameSchema = z
-  .string()
-  .regex(/[^\u0000-\u001F\u007F]+/)
-  .min(1)
-  .max(256)
-  .openapi('Name')
-
-const PropertyDataTypeSchema = z
-  .enum(['STRING', 'INTEGER', 'DOUBLE', 'BOOLEAN', 'STRUCT'])
-  .openapi('PropertyDataType')
-
-const PropertyUnitSchema = z
-  .string()
-  .regex(/[^\u0000-\u001F\u007F]+/)
-  .min(1)
-  .max(256)
-  .openapi('PropertyUnit')
-
-const DefaultValueSchema = z
-  .string()
-  .regex(/[^\u0000-\u001F\u007F]+/)
-  .min(1)
-  .max(1024)
-  .openapi('DefaultValue')
-
-const AttributeSchema = z
-  .object({
-    defaultValue: DefaultValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default value of the asset model property attribute. All assets that you create from the asset model contain this attribute value. You can update an attribute\'s value after you create an asset. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/update-attribute-values.html">Updating attribute values</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains an asset attribute property. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-properties.html#attributes">Attributes</a> in the <i>IoT SiteWise User Guide</i>.',
-    required: [],
-  })
-  .openapi('Attribute')
-
-const ForwardingConfigStateSchema = z.enum(['DISABLED', 'ENABLED']).openapi('ForwardingConfigState')
-
-const ForwardingConfigSchema = z
-  .object({
-    state: ForwardingConfigStateSchema.and(
-      z.any().openapi({ description: 'The forwarding state for the given property. ' }),
-    ),
-  })
-  .openapi({
-    required: ['state'],
-    description: 'The forwarding configuration for a given property.',
-  })
-  .openapi('ForwardingConfig')
-
-const MeasurementProcessingConfigSchema = z
-  .object({
-    forwardingConfig: ForwardingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The forwarding configuration for the given measurement property. ',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['forwardingConfig'],
-    description:
-      'The processing configuration for the given measurement property. You can configure measurements to be kept at the edge or forwarded to the Amazon Web Services Cloud. By default, measurements are forwarded to the cloud.',
-  })
-  .openapi('MeasurementProcessingConfig')
-
-const MeasurementSchema = z
-  .object({
-    processingConfig: MeasurementProcessingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The processing configuration for the given measurement property. You can configure measurements to be kept at the edge or forwarded to the Amazon Web Services Cloud. By default, measurements are forwarded to the cloud.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains an asset measurement property. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-properties.html#measurements">Measurements</a> in the <i>IoT SiteWise User Guide</i>.',
-    required: [],
-  })
-  .openapi('Measurement')
-
-const ExpressionSchema = z.string().min(1).max(1024).openapi('Expression')
-
-const VariableNameSchema = z
-  .string()
-  .regex(/^[a-z][a-z0-9_]*$/)
-  .min(1)
-  .max(64)
-  .openapi('VariableName')
-
-const MacroSchema = z
-  .string()
-  .regex(/[^\u0000-\u001F\u007F]+/)
-  .min(1)
-  .max(256)
-  .openapi('Macro')
-
-const VariableValueSchema = z
-  .object({
-    propertyId: MacroSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the property to use as the variable. You can use the property <code>name</code> if it's from the same asset model.",
-        }),
-    ),
-    hierarchyId: MacroSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the hierarchy to query for the property ID. You can use the hierarchy\'s name instead of the hierarchy\'s ID.</p> <p>You use a hierarchy ID instead of a model ID because you can have several hierarchies using the same model and therefore the same <code>propertyId</code>. For example, you might have separately grouped assets that come from the same asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['propertyId'],
-    description: 'Identifies a property value used in an expression.',
-  })
-  .openapi('VariableValue')
-
-const ExpressionVariableSchema = z
-  .object({
-    name: VariableNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The friendly name of the variable to be used in the expression.',
-        }),
-    ),
-    value: VariableValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The variable that identifies an asset property from which to use values.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['name', 'value'],
-    description: 'Contains expression variable information.',
-  })
-  .openapi('ExpressionVariable')
-
-const ExpressionVariablesSchema = z.array(ExpressionVariableSchema).openapi('ExpressionVariables')
-
-const ComputeLocationSchema = z.enum(['EDGE', 'CLOUD']).openapi('ComputeLocation')
-
-const TransformProcessingConfigSchema = z
-  .object({
-    computeLocation: ComputeLocationSchema.and(
-      z.any().openapi({ description: 'The compute location for the given transform property. ' }),
-    ),
-    forwardingConfig: ForwardingConfigSchema.exactOptional(),
-  })
-  .openapi({
-    required: ['computeLocation'],
-    description:
-      'The processing configuration for the given transform property. You can configure transforms to be kept at the edge or forwarded to the Amazon Web Services Cloud. You can also configure transforms to be computed at the edge or in the cloud.',
-  })
-  .openapi('TransformProcessingConfig')
-
-const TransformSchema = z
-  .object({
-    expression: ExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The mathematical expression that defines the transformation function. You can specify up to 10 variables per expression. You can specify up to 10 functions per expression. </p> <p>For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>',
-        }),
-    ),
-    variables: ExpressionVariablesSchema.and(
-      z.any().openapi({ description: 'The list of variables used in the expression.' }),
-    ),
-    processingConfig: TransformProcessingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The processing configuration for the given transform property. You can configure transforms to be kept at the edge or forwarded to the Amazon Web Services Cloud. You can also configure transforms to be computed at the edge or in the cloud.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['expression', 'variables'],
-    description:
-      '<p>Contains an asset transform property. A transform is a one-to-one mapping of a property\'s data points from one form to another. For example, you can use a transform to convert a Celsius data stream to Fahrenheit by applying the transformation expression to each data point of the Celsius stream. A transform can only have a data type of <code>DOUBLE</code> and consume properties with data types of <code>INTEGER</code> or <code>DOUBLE</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-properties.html#transforms">Transforms</a> in the <i>IoT SiteWise User Guide</i>.</p>',
-  })
-  .openapi('Transform')
-
-const IntervalSchema = z.string().min(2).max(23).openapi('Interval')
-
-const OffsetSchema = z.string().min(2).max(25).openapi('Offset')
-
-const TumblingWindowSchema = z
-  .object({
-    interval: IntervalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The time interval for the tumbling window. The interval time must be between 1 minute and 1 week.</p> <p>IoT SiteWise computes the <code>1w</code> interval the end of Sunday at midnight each week (UTC), the <code>1d</code> interval at the end of each day at midnight (UTC), the <code>1h</code> interval at the end of each hour, and so on. </p> <p>When IoT SiteWise aggregates data points for metric computations, the start of each interval is exclusive and the end of each interval is inclusive. IoT SiteWise places the computed data point at the end of the interval.</p>',
-        }),
-    ),
-    offset: OffsetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The offset for the tumbling window. The <code>offset</code> parameter accepts the following:</p> <ul> <li> <p>The offset time.</p> <p>For example, if you specify <code>18h</code> for <code>offset</code> and <code>1d</code> for <code>interval</code>, IoT SiteWise aggregates data in one of the following ways:</p> <ul> <li> <p>If you create the metric before or at 6 PM (UTC), you get the first aggregation result at 6 PM (UTC) on the day when you create the metric.</p> </li> <li> <p>If you create the metric after 6 PM (UTC), you get the first aggregation result at 6 PM (UTC) the next day.</p> </li> </ul> </li> <li> <p>The ISO 8601 format.</p> <p>For example, if you specify <code>PT18H</code> for <code>offset</code> and <code>1d</code> for <code>interval</code>, IoT SiteWise aggregates data in one of the following ways:</p> <ul> <li> <p>If you create the metric before or at 6 PM (UTC), you get the first aggregation result at 6 PM (UTC) on the day when you create the metric.</p> </li> <li> <p>If you create the metric after 6 PM (UTC), you get the first aggregation result at 6 PM (UTC) the next day.</p> </li> </ul> </li> <li> <p>The 24-hour clock.</p> <p>For example, if you specify <code>00:03:00</code> for <code>offset</code>, <code>5m</code> for <code>interval</code>, and you create the metric at 2 PM (UTC), you get the first aggregation result at 2:03 PM (UTC). You get the second aggregation result at 2:08 PM (UTC). </p> </li> <li> <p>The offset time zone.</p> <p>For example, if you specify <code>2021-07-23T18:00-08</code> for <code>offset</code> and <code>1d</code> for <code>interval</code>, IoT SiteWise aggregates data in one of the following ways:</p> <ul> <li> <p>If you create the metric before or at 6 PM (PST), you get the first aggregation result at 6 PM (PST) on the day when you create the metric.</p> </li> <li> <p>If you create the metric after 6 PM (PST), you get the first aggregation result at 6 PM (PST) the next day.</p> </li> </ul> </li> </ul>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['interval'],
-    description:
-      '<p>Contains a tumbling window, which is a repeating fixed-sized, non-overlapping, and contiguous time window. You can use this window in metrics to aggregate data from properties and other assets.</p> <p>You can use <code>m</code>, <code>h</code>, <code>d</code>, and <code>w</code> when you specify an interval or offset. Note that <code>m</code> represents minutes, <code>h</code> represents hours, <code>d</code> represents days, and <code>w</code> represents weeks. You can also use <code>s</code> to represent seconds in <code>offset</code>.</p> <p>The <code>interval</code> and <code>offset</code> parameters support the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601 format</a>. For example, <code>PT5S</code> represents 5 seconds, <code>PT5M</code> represents 5 minutes, and <code>PT5H</code> represents 5 hours.</p>',
-  })
-  .openapi('TumblingWindow')
-
-const MetricWindowSchema = z
-  .object({
-    tumbling: TumblingWindowSchema.and(
-      z.any().openapi({ description: 'The tumbling time interval window.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains a time interval window used for data aggregate computations (for example, average, sum, count, and so on).',
-    required: [],
-  })
-  .openapi('MetricWindow')
-
-const MetricProcessingConfigSchema = z
-  .object({
-    computeLocation: ComputeLocationSchema.and(
-      z.any().openapi({ description: 'The compute location for the given metric property. ' }),
-    ),
-  })
-  .openapi({
-    required: ['computeLocation'],
-    description:
-      'The processing configuration for the given metric property. You can configure metrics to be computed at the edge or in the Amazon Web Services Cloud. By default, metrics are forwarded to the cloud.',
-  })
-  .openapi('MetricProcessingConfig')
-
-const MetricSchema = z
-  .object({
-    expression: ExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The mathematical expression that defines the metric aggregation function. You can specify up to 10 variables per expression. You can specify up to 10 functions per expression. </p> <p>For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>',
-        }),
-    ),
-    variables: ExpressionVariablesSchema.and(
-      z.any().openapi({ description: 'The list of variables used in the expression.' }),
-    ),
-    window: MetricWindowSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The window (time interval) over which IoT SiteWise computes the metric's aggregation expression. IoT SiteWise computes one data point per <code>window</code>.",
-        }),
-    ),
-    processingConfig: MetricProcessingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The processing configuration for the given metric property. You can configure metrics to be computed at the edge or in the Amazon Web Services Cloud. By default, metrics are forwarded to the cloud.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['expression', 'variables', 'window'],
-    description:
-      '<p>Contains an asset metric property. With metrics, you can calculate aggregate functions, such as an average, maximum, or minimum, as specified through an expression. A metric maps several values to a single value (such as a sum).</p> <p>The maximum number of dependent/cascading variables used in any one metric calculation is 10. Therefore, a <i>root</i> metric can have up to 10 cascading metrics in its computational dependency tree. Additionally, a metric can only have a data type of <code>DOUBLE</code> and consume properties with data types of <code>INTEGER</code> or <code>DOUBLE</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-properties.html#metrics">Metrics</a> in the <i>IoT SiteWise User Guide</i>.</p>',
-  })
-  .openapi('Metric')
-
-const PropertyTypeSchema = z
-  .object({
-    attribute: AttributeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies an asset attribute property. An attribute generally contains static information, such as the serial number of an <a href="https://en.wikipedia.org/wiki/Internet_of_things#Industrial_applications">IIoT</a> wind turbine.',
-        }),
-    ).exactOptional(),
-    measurement: MeasurementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies an asset measurement property. A measurement represents a device's raw sensor data stream, such as timestamped temperature values or timestamped power values.",
-        }),
-    ).exactOptional(),
-    transform: TransformSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies an asset transform property. A transform contains a mathematical expression that maps a property's data points from one form to another, such as a unit conversion from Celsius to Fahrenheit.",
-        }),
-    ).exactOptional(),
-    metric: MetricSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies an asset metric property. A metric contains a mathematical expression that uses aggregate functions to process all input data points over a time interval and output a single data point, such as to calculate the average hourly temperature.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains a property type, which can be one of <code>attribute</code>, <code>measurement</code>, <code>metric</code>, or <code>transform</code>.',
-    required: [],
-  })
-  .openapi('PropertyType')
-
-const AssetModelPropertyDefinitionSchema = z
-  .object({
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the property definition.' })),
-    dataType: PropertyDataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The data type of the property definition.</p> <p>If you specify <code>STRUCT</code>, you must also specify <code>dataTypeSpec</code> to identify the type of the structure for this property.</p>',
-        }),
-    ),
-    dataTypeSpec: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The data type of the structure for this property. This parameter is required on properties that have the <code>STRUCT</code> data type.</p> <p>The options for this parameter depend on the type of the composite model in which you define this property. Use <code>AWS/ALARM_STATE</code> for alarm state in alarm composite models.</p>',
-        }),
-    ).exactOptional(),
-    unit: PropertyUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unit of the property definition, such as <code>Newtons</code> or <code>RPM</code>.',
-        }),
-    ).exactOptional(),
-    type: PropertyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The property definition type (see <code>PropertyType</code>). You can only specify one type in a property definition.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['name', 'dataType', 'type'],
-    description:
-      'Contains an asset model property definition. This property definition is applied to all assets created from the asset model.',
-  })
-  .openapi('AssetModelPropertyDefinition')
-
-const AssetModelHierarchyDefinitionSchema = z
-  .object({
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the asset model hierarchy definition (as specified in the <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModel.html">CreateAssetModel</a> or <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetModel.html">UpdateAssetModel</a> API operation).',
-        }),
-    ),
-    childAssetModelId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of an asset model for this hierarchy.' }),
-    ),
-  })
-  .openapi({
-    required: ['name', 'childAssetModelId'],
-    description:
-      'Contains an asset model hierarchy used in asset model creation. An asset model hierarchy determines the kind (or type) of asset that can belong to a hierarchy.',
-  })
-  .openapi('AssetModelHierarchyDefinition')
-
-const DescriptionSchema = z
-  .string()
-  .regex(/[^\u0000-\u001F\u007F]+/)
-  .min(1)
-  .max(2048)
-  .openapi('Description')
-
-const AssetModelCompositeModelDefinitionSchema = z
-  .object({
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the composite model.' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the composite model.' }),
-    ).exactOptional(),
-    type: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the composite model. For alarm composite models, this type is <code>AWS/ALARM</code>.',
-        }),
-    ),
-    properties: z
-      .any()
-      .exactOptional()
-      .openapi({ description: 'The asset property definitions for this composite model.' }),
-  })
-  .openapi({
-    required: ['name', 'type'],
-    description:
-      'Contains a composite model definition in an asset model. This composite model definition is applied to all assets created from the asset model.',
-  })
-  .openapi('AssetModelCompositeModelDefinition')
 
 const JobStatusSchema = z
   .enum(['PENDING', 'CANCELLED', 'RUNNING', 'COMPLETED', 'FAILED', 'COMPLETED_WITH_FAILURES'])
@@ -1580,18 +1488,14 @@ const JobStatusSchema = z
 
 const CreateBulkImportJobResponseSchema = z
   .object({
-    jobId: IDSchema.and(z.any().openapi({ description: 'The ID of the job.' })),
-    jobName: NameSchema.and(
-      z.any().openapi({ description: 'The unique name that helps identify the job request.' }),
-    ),
-    jobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the bulk import job can be one of following values.</p> <ul> <li> <p> <code>PENDING</code> – IoT SiteWise is waiting for the current bulk import job to finish.</p> </li> <li> <p> <code>CANCELLED</code> – The bulk import job has been canceled.</p> </li> <li> <p> <code>RUNNING</code> – IoT SiteWise is processing your request to import your data from Amazon S3.</p> </li> <li> <p> <code>COMPLETED</code> – IoT SiteWise successfully completed your request to import data from Amazon S3.</p> </li> <li> <p> <code>FAILED</code> – IoT SiteWise couldn't process your request to import data from Amazon S3. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> <li> <p> <code>COMPLETED_WITH_FAILURES</code> – IoT SiteWise completed your request to import data from Amazon S3 with errors. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> </ul>",
-        }),
-    ),
+    jobId: IDSchema.openapi({ description: 'The ID of the job.' }),
+    jobName: NameSchema.openapi({
+      description: 'The unique name that helps identify the job request.',
+    }),
+    jobStatus: JobStatusSchema.openapi({
+      description:
+        "<p>The status of the bulk import job can be one of following values.</p> <ul> <li> <p> <code>PENDING</code> – IoT SiteWise is waiting for the current bulk import job to finish.</p> </li> <li> <p> <code>CANCELLED</code> – The bulk import job has been canceled.</p> </li> <li> <p> <code>RUNNING</code> – IoT SiteWise is processing your request to import your data from Amazon S3.</p> </li> <li> <p> <code>COMPLETED</code> – IoT SiteWise successfully completed your request to import data from Amazon S3.</p> </li> <li> <p> <code>FAILED</code> – IoT SiteWise couldn't process your request to import data from Amazon S3. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> <li> <p> <code>COMPLETED_WITH_FAILURES</code> – IoT SiteWise completed your request to import data from Amazon S3 with errors. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> </ul>",
+    }),
   })
   .openapi({ required: ['jobId', 'jobName', 'jobStatus'] })
   .openapi('CreateBulkImportJobResponse')
@@ -1602,27 +1506,17 @@ const StringSchema = z.string().openapi('String')
 
 const FileSchema = z
   .object({
-    bucket: BucketSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the Amazon S3 bucket from which data is imported.' }),
-    ),
-    key: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key of the Amazon S3 object that contains your data. Each object has a key that is a unique identifier. Each object has exactly one key.',
-        }),
-    ),
-    versionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version ID to identify a specific version of the Amazon S3 object that contains your data.',
-        }),
-    ).exactOptional(),
+    bucket: BucketSchema.openapi({
+      description: 'The name of the Amazon S3 bucket from which data is imported.',
+    }),
+    key: StringSchema.openapi({
+      description:
+        'The key of the Amazon S3 object that contains your data. Each object has a key that is a unique identifier. Each object has exactly one key.',
+    }),
+    versionId: StringSchema.exactOptional().openapi({
+      description:
+        'The version ID to identify a specific version of the Amazon S3 object that contains your data.',
+    }),
   })
   .openapi({
     required: ['bucket', 'key'],
@@ -1647,67 +1541,49 @@ const ColumnNamesSchema = z.array(ColumnNameSchema).openapi('ColumnNames')
 
 const CsvSchema = z
   .object({
-    columnNames: ColumnNamesSchema.and(
-      z.any().openapi({ description: 'The column names specified in the .csv file.' }),
-    ).exactOptional(),
+    columnNames: ColumnNamesSchema.exactOptional().openapi({
+      description: 'The column names specified in the .csv file.',
+    }),
   })
   .openapi({ description: 'A .csv file.', required: [] })
   .openapi('Csv')
 
 const FileFormatSchema = z
-  .object({
-    csv: CsvSchema.and(z.any().openapi({ description: 'The .csv file format.' })).exactOptional(),
-  })
+  .object({ csv: CsvSchema.exactOptional().openapi({ description: 'The .csv file format.' }) })
   .openapi({ description: 'The file format of the data.', required: [] })
   .openapi('FileFormat')
 
 const CreateDashboardResponseSchema = z
   .object({
-    dashboardId: IDSchema.and(z.any().openapi({ description: 'The ID of the dashboard.' })),
-    dashboardArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the dashboard, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:dashboard/${DashboardId}</code> </p>',
-        }),
-    ),
+    dashboardId: IDSchema.openapi({ description: 'The ID of the dashboard.' }),
+    dashboardArn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the dashboard, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:dashboard/${DashboardId}</code> </p>',
+    }),
   })
   .openapi({ required: ['dashboardId', 'dashboardArn'] })
   .openapi('CreateDashboardResponse')
 
 const CreateGatewayResponseSchema = z
   .object({
-    gatewayId: IDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the gateway device. You can use this ID when you call other IoT SiteWise APIs.',
-        }),
-    ),
-    gatewayArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the gateway, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:gateway/${GatewayId}</code> </p>',
-        }),
-    ),
+    gatewayId: IDSchema.openapi({
+      description:
+        'The ID of the gateway device. You can use this ID when you call other IoT SiteWise APIs.',
+    }),
+    gatewayArn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the gateway, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:gateway/${GatewayId}</code> </p>',
+    }),
   })
   .openapi({ required: ['gatewayId', 'gatewayArn'] })
   .openapi('CreateGatewayResponse')
 
 const GreengrassSchema = z
   .object({
-    groupArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the Greengrass group. For more information about how to find a group\'s ARN, see <a href="https://docs.aws.amazon.com/greengrass/latest/apireference/listgroups-get.html">ListGroups</a> and <a href="https://docs.aws.amazon.com/greengrass/latest/apireference/getgroup-get.html">GetGroup</a> in the <i>IoT Greengrass API Reference</i>.',
-        }),
-    ),
+    groupArn: ARNSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the Greengrass group. For more information about how to find a group\'s ARN, see <a href="https://docs.aws.amazon.com/greengrass/latest/apireference/listgroups-get.html">ListGroups</a> and <a href="https://docs.aws.amazon.com/greengrass/latest/apireference/getgroup-get.html">GetGroup</a> in the <i>IoT Greengrass API Reference</i>.',
+    }),
   })
   .openapi({
     required: ['groupArn'],
@@ -1720,13 +1596,9 @@ const CoreDeviceThingNameSchema = z.string().min(1).max(128).openapi('CoreDevice
 
 const GreengrassV2Schema = z
   .object({
-    coreDeviceThingName: CoreDeviceThingNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the IoT thing for your IoT Greengrass V2 core device.',
-        }),
-    ),
+    coreDeviceThingName: CoreDeviceThingNameSchema.openapi({
+      description: 'The name of the IoT thing for your IoT Greengrass V2 core device.',
+    }),
   })
   .openapi({
     required: ['coreDeviceThingName'],
@@ -1754,24 +1626,20 @@ const MonitorErrorMessageSchema = z.string().openapi('MonitorErrorMessage')
 
 const MonitorErrorDetailsSchema = z
   .object({
-    code: MonitorErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    message: MonitorErrorMessageSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
+    code: MonitorErrorCodeSchema.exactOptional().openapi({ description: 'The error code.' }),
+    message: MonitorErrorMessageSchema.exactOptional().openapi({
+      description: 'The error message.',
+    }),
   })
   .openapi({ description: 'Contains IoT SiteWise Monitor error details.', required: [] })
   .openapi('MonitorErrorDetails')
 
 const PortalStatusSchema = z
   .object({
-    state: PortalStateSchema.and(
-      z.any().openapi({ description: 'The current state of the portal.' }),
-    ),
-    error: MonitorErrorDetailsSchema.and(
-      z.any().openapi({ description: 'Contains associated error information, if any.' }),
-    ).exactOptional(),
+    state: PortalStateSchema.openapi({ description: 'The current state of the portal.' }),
+    error: MonitorErrorDetailsSchema.exactOptional().openapi({
+      description: 'Contains associated error information, if any.',
+    }),
   })
   .openapi({
     required: ['state'],
@@ -1788,39 +1656,23 @@ const SSOApplicationIdSchema = z
 
 const CreatePortalResponseSchema = z
   .object({
-    portalId: IDSchema.and(z.any().openapi({ description: 'The ID of the created portal.' })),
-    portalArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the portal, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:portal/${PortalId}</code> </p>',
-        }),
-    ),
-    portalStartUrl: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL for the IoT SiteWise Monitor portal. You can use this URL to access portals that use IAM Identity Center for authentication. For portals that use IAM for authentication, you must use the IoT SiteWise console to get a URL that you can use to access the portal.',
-        }),
-    ),
-    portalStatus: PortalStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the portal, which contains a state (<code>CREATING</code> after successfully calling this operation) and any error message.',
-        }),
-    ),
-    ssoApplicationId: SSOApplicationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The associated IAM Identity Center application ID, if the portal uses IAM Identity Center.',
-        }),
-    ),
+    portalId: IDSchema.openapi({ description: 'The ID of the created portal.' }),
+    portalArn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the portal, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:portal/${PortalId}</code> </p>',
+    }),
+    portalStartUrl: UrlSchema.openapi({
+      description:
+        'The URL for the IoT SiteWise Monitor portal. You can use this URL to access portals that use IAM Identity Center for authentication. For portals that use IAM for authentication, you must use the IoT SiteWise console to get a URL that you can use to access the portal.',
+    }),
+    portalStatus: PortalStatusSchema.openapi({
+      description:
+        'The status of the portal, which contains a state (<code>CREATING</code> after successfully calling this operation) and any error message.',
+    }),
+    ssoApplicationId: SSOApplicationIdSchema.openapi({
+      description:
+        'The associated IAM Identity Center application ID, if the portal uses IAM Identity Center.',
+    }),
   })
   .openapi({
     required: ['portalId', 'portalArn', 'portalStartUrl', 'portalStatus', 'ssoApplicationId'],
@@ -1833,159 +1685,111 @@ const ImageFileTypeSchema = z.literal('PNG').openapi('ImageFileType')
 
 const CreateProjectResponseSchema = z
   .object({
-    projectId: IDSchema.and(z.any().openapi({ description: 'The ID of the project.' })),
-    projectArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the project, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:project/${ProjectId}</code> </p>',
-        }),
-    ),
+    projectId: IDSchema.openapi({ description: 'The ID of the project.' }),
+    projectArn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the project, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:project/${ProjectId}</code> </p>',
+    }),
   })
   .openapi({ required: ['projectId', 'projectArn'] })
   .openapi('CreateProjectResponse')
 
-const DeleteAccessPolicyResponseSchema = z.object({}).openapi('DeleteAccessPolicyResponse')
+const DeleteAccessPolicyResponseSchema = z.looseObject({}).openapi('DeleteAccessPolicyResponse')
 
 const DeleteAssetResponseSchema = z
   .object({
-    assetStatus: AssetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the asset, which contains a state (<code>DELETING</code> after successfully calling this operation) and any error message.',
-        }),
-    ),
+    assetStatus: AssetStatusSchema.openapi({
+      description:
+        'The status of the asset, which contains a state (<code>DELETING</code> after successfully calling this operation) and any error message.',
+    }),
   })
   .openapi({ required: ['assetStatus'] })
   .openapi('DeleteAssetResponse')
 
 const DeleteAssetModelResponseSchema = z
   .object({
-    assetModelStatus: AssetModelStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the asset model, which contains a state (<code>DELETING</code> after successfully calling this operation) and any error message.',
-        }),
-    ),
+    assetModelStatus: AssetModelStatusSchema.openapi({
+      description:
+        'The status of the asset model, which contains a state (<code>DELETING</code> after successfully calling this operation) and any error message.',
+    }),
   })
   .openapi({ required: ['assetModelStatus'] })
   .openapi('DeleteAssetModelResponse')
 
-const DeleteDashboardResponseSchema = z.object({}).openapi('DeleteDashboardResponse')
+const DeleteDashboardResponseSchema = z.looseObject({}).openapi('DeleteDashboardResponse')
 
 const DeletePortalResponseSchema = z
   .object({
-    portalStatus: PortalStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the portal, which contains a state (<code>DELETING</code> after successfully calling this operation) and any error message.',
-        }),
-    ),
+    portalStatus: PortalStatusSchema.openapi({
+      description:
+        'The status of the portal, which contains a state (<code>DELETING</code> after successfully calling this operation) and any error message.',
+    }),
   })
   .openapi({ required: ['portalStatus'] })
   .openapi('DeletePortalResponse')
 
-const DeleteProjectResponseSchema = z.object({}).openapi('DeleteProjectResponse')
+const DeleteProjectResponseSchema = z.looseObject({}).openapi('DeleteProjectResponse')
 
-const IdentitySchema: z.ZodType<IdentityType> = z
-  .lazy(() =>
-    z
-      .object({
-        user: UserIdentitySchema.and(
-          z.any().openapi({ description: 'An IAM Identity Center user identity.' }),
-        ).exactOptional(),
-        group: GroupIdentitySchema.and(
-          z.any().openapi({ description: 'An IAM Identity Center group identity.' }),
-        ).exactOptional(),
-        iamUser: IAMUserIdentitySchema.and(
-          z.any().openapi({ description: 'An IAM user identity.' }),
-        ).exactOptional(),
-        iamRole: IAMRoleIdentitySchema.and(
-          z.any().openapi({ description: 'An IAM role identity.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          '<p>Contains an identity that can access an IoT SiteWise Monitor resource.</p> <note> <p>Currently, you can\'t use Amazon Web Services APIs to retrieve IAM Identity Center identity IDs. You can find the IAM Identity Center identity IDs in the URL of user and group pages in the <a href="https://console.aws.amazon.com/singlesignon">IAM Identity Center console</a>.</p> </note>',
-        required: [],
-      }),
-  )
+const IdentitySchema = z
+  .object({
+    user: UserIdentitySchema.exactOptional().openapi({
+      description: 'An IAM Identity Center user identity.',
+    }),
+    group: GroupIdentitySchema.exactOptional().openapi({
+      description: 'An IAM Identity Center group identity.',
+    }),
+    iamUser: IAMUserIdentitySchema.exactOptional().openapi({
+      description: 'An IAM user identity.',
+    }),
+    iamRole: IAMRoleIdentitySchema.exactOptional().openapi({
+      description: 'An IAM role identity.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Contains an identity that can access an IoT SiteWise Monitor resource.</p> <note> <p>Currently, you can\'t use Amazon Web Services APIs to retrieve IAM Identity Center identity IDs. You can find the IAM Identity Center identity IDs in the URL of user and group pages in the <a href="https://console.aws.amazon.com/singlesignon">IAM Identity Center console</a>.</p> </note>',
+    required: [],
+  })
   .openapi('Identity')
 
-const ResourceSchema: z.ZodType<ResourceType> = z
-  .lazy(() =>
-    z
-      .object({
-        portal: PortalResourceSchema.and(
-          z.any().openapi({ description: 'A portal resource.' }),
-        ).exactOptional(),
-        project: ProjectResourceSchema.and(
-          z.any().openapi({ description: 'A project resource.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description: 'Contains an IoT SiteWise Monitor resource ID for a portal or project.',
-        required: [],
-      }),
-  )
+const ResourceSchema = z
+  .object({
+    portal: PortalResourceSchema.exactOptional().openapi({ description: 'A portal resource.' }),
+    project: ProjectResourceSchema.exactOptional().openapi({ description: 'A project resource.' }),
+  })
+  .openapi({
+    description: 'Contains an IoT SiteWise Monitor resource ID for a portal or project.',
+    required: [],
+  })
   .openapi('Resource')
 
 const PermissionSchema = z.enum(['ADMINISTRATOR', 'VIEWER']).openapi('Permission')
 
 const DescribeAccessPolicyResponseSchema = z
   .object({
-    accessPolicyId: IDSchema.and(z.any().openapi({ description: 'The ID of the access policy.' })),
-    accessPolicyArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the access policy, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:access-policy/${AccessPolicyId}</code> </p>',
-        }),
-    ),
-    accessPolicyIdentity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identity (IAM Identity Center user, IAM Identity Center group, or IAM user) to which this access policy applies.',
-        }),
-    ),
-    accessPolicyResource: ResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IoT SiteWise Monitor resource (portal or project) to which this access policy provides access.',
-        }),
-    ),
-    accessPolicyPermission: PermissionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The access policy permission. Note that a project <code>ADMINISTRATOR</code> is also known as a project owner.',
-        }),
-    ),
-    accessPolicyCreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date the access policy was created, in Unix epoch time.' }),
-    ),
-    accessPolicyLastUpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date the access policy was last updated, in Unix epoch time.',
-        }),
-    ),
+    accessPolicyId: IDSchema.openapi({ description: 'The ID of the access policy.' }),
+    accessPolicyArn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the access policy, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:access-policy/${AccessPolicyId}</code> </p>',
+    }),
+    accessPolicyIdentity: IdentitySchema.openapi({
+      description:
+        'The identity (IAM Identity Center user, IAM Identity Center group, or IAM user) to which this access policy applies.',
+    }),
+    accessPolicyResource: ResourceSchema.openapi({
+      description:
+        'The IoT SiteWise Monitor resource (portal or project) to which this access policy provides access.',
+    }),
+    accessPolicyPermission: PermissionSchema.openapi({
+      description:
+        'The access policy permission. Note that a project <code>ADMINISTRATOR</code> is also known as a project owner.',
+    }),
+    accessPolicyCreationDate: TimestampSchema.openapi({
+      description: 'The date the access policy was created, in Unix epoch time.',
+    }),
+    accessPolicyLastUpdateDate: TimestampSchema.openapi({
+      description: 'The date the access policy was last updated, in Unix epoch time.',
+    }),
   })
   .openapi({
     required: [
@@ -2000,78 +1804,29 @@ const DescribeAccessPolicyResponseSchema = z
   })
   .openapi('DescribeAccessPolicyResponse')
 
-const PropertyAliasSchema = z
-  .string()
-  .regex(/[^\u0000-\u001F\u007F]+/)
-  .min(1)
-  .openapi('PropertyAlias')
-
-const PropertyNotificationTopicSchema = z.string().openapi('PropertyNotificationTopic')
-
-const PropertyNotificationStateSchema = z
-  .enum(['ENABLED', 'DISABLED'])
-  .openapi('PropertyNotificationState')
-
-const PropertyNotificationSchema = z
-  .object({
-    topic: PropertyNotificationTopicSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The MQTT topic to which IoT SiteWise publishes property value update notifications.',
-        }),
-    ),
-    state: PropertyNotificationStateSchema.and(
-      z.any().openapi({ description: 'The current notification state.' }),
-    ),
-  })
-  .openapi({
-    required: ['topic', 'state'],
-    description:
-      'Contains asset property value notification information. When the notification state is enabled, IoT SiteWise publishes property value updates to a unique MQTT topic. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/interact-with-other-services.html">Interacting with other services</a> in the <i>IoT SiteWise User Guide</i>.',
-  })
-  .openapi('PropertyNotification')
-
 const AssetPropertySchema = z
   .object({
-    id: IDSchema.and(z.any().openapi({ description: 'The ID of the asset property.' })),
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the property.' })),
-    alias: PropertyAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
-    notification: PropertyNotificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The asset property\'s notification topic and state. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetProperty.html">UpdateAssetProperty</a>.',
-        }),
-    ).exactOptional(),
-    dataType: PropertyDataTypeSchema.and(
-      z.any().openapi({ description: 'The data type of the asset property.' }),
-    ),
-    dataTypeSpec: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data type of the structure for this property. This parameter exists on properties that have the <code>STRUCT</code> data type.',
-        }),
-    ).exactOptional(),
-    unit: PropertyUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unit (such as <code>Newtons</code> or <code>RPM</code>) of the asset property.',
-        }),
-    ).exactOptional(),
+    id: IDSchema.openapi({ description: 'The ID of the asset property.' }),
+    name: NameSchema.openapi({ description: 'The name of the property.' }),
+    alias: PropertyAliasSchema.exactOptional().openapi({
+      description:
+        'The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+    notification: PropertyNotificationSchema.exactOptional().openapi({
+      description:
+        'The asset property\'s notification topic and state. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetProperty.html">UpdateAssetProperty</a>.',
+    }),
+    dataType: PropertyDataTypeSchema.openapi({
+      description: 'The data type of the asset property.',
+    }),
+    dataTypeSpec: NameSchema.exactOptional().openapi({
+      description:
+        'The data type of the structure for this property. This parameter exists on properties that have the <code>STRUCT</code> data type.',
+    }),
+    unit: PropertyUnitSchema.exactOptional().openapi({
+      description:
+        'The unit (such as <code>Newtons</code> or <code>RPM</code>) of the asset property.',
+    }),
   })
   .openapi({
     required: ['id', 'name', 'dataType'],
@@ -2083,21 +1838,13 @@ const AssetPropertiesSchema = z.array(AssetPropertySchema).openapi('AssetPropert
 
 const AssetHierarchySchema = z
   .object({
-    id: IDSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the hierarchy. This ID is a <code>hierarchyId</code>.',
-        }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The hierarchy name provided in the <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModel.html">CreateAssetModel</a> or <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetModel.html">UpdateAssetModel</a> API operation.',
-        }),
-    ),
+    id: IDSchema.exactOptional().openapi({
+      description: 'The ID of the hierarchy. This ID is a <code>hierarchyId</code>.',
+    }),
+    name: NameSchema.openapi({
+      description:
+        'The hierarchy name provided in the <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModel.html">CreateAssetModel</a> or <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetModel.html">UpdateAssetModel</a> API operation.',
+    }),
   })
   .openapi({
     required: ['name'],
@@ -2109,24 +1856,18 @@ const AssetHierarchiesSchema = z.array(AssetHierarchySchema).openapi('AssetHiera
 
 const AssetCompositeModelSchema = z
   .object({
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the composite model.' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the composite model.' }),
-    ).exactOptional(),
-    type: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the composite model. For alarm composite models, this type is <code>AWS/ALARM</code>.',
-        }),
-    ),
+    name: NameSchema.openapi({ description: 'The name of the composite model.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the composite model.',
+    }),
+    type: NameSchema.openapi({
+      description:
+        'The type of the composite model. For alarm composite models, this type is <code>AWS/ALARM</code>.',
+    }),
     properties: z
       .any()
       .openapi({ description: 'The asset properties that this composite model defines.' }),
-    id: IDSchema.and(
-      z.any().openapi({ description: ' The ID of the asset composite model. ' }),
-    ).exactOptional(),
+    id: IDSchema.exactOptional().openapi({ description: ' The ID of the asset composite model. ' }),
   })
   .openapi({
     required: ['name', 'type', 'properties'],
@@ -2141,57 +1882,38 @@ const AssetCompositeModelsSchema = z
 
 const DescribeAssetResponseSchema = z
   .object({
-    assetId: IDSchema.and(z.any().openapi({ description: 'The ID of the asset.' })),
-    assetArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the asset, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:asset/${AssetId}</code> </p>',
-        }),
-    ),
-    assetName: NameSchema.and(z.any().openapi({ description: 'The name of the asset.' })),
-    assetModelId: IDSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the asset model that was used to create the asset.' }),
-    ),
-    assetProperties: AssetPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The list of asset properties for the asset.</p> <p>This object doesn't include properties that you define in composite models. You can find composite model properties in the <code>assetCompositeModels</code> object.</p>",
-        }),
-    ),
-    assetHierarchies: AssetHierarchiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of asset hierarchies that each contain a <code>hierarchyId</code>. A hierarchy specifies allowed parent/child asset relationships.',
-        }),
-    ),
-    assetCompositeModels: AssetCompositeModelsSchema.and(
-      z.any().openapi({ description: 'The composite models for the asset.' }),
-    ).exactOptional(),
-    assetCreationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the asset was created, in Unix epoch time.' }),
-    ),
-    assetLastUpdateDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the asset was last updated, in Unix epoch time.' }),
-    ),
-    assetStatus: AssetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the asset, which contains a state and any error message.',
-        }),
-    ),
-    assetDescription: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the asset.' }),
-    ).exactOptional(),
+    assetId: IDSchema.openapi({ description: 'The ID of the asset.' }),
+    assetArn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the asset, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:asset/${AssetId}</code> </p>',
+    }),
+    assetName: NameSchema.openapi({ description: 'The name of the asset.' }),
+    assetModelId: IDSchema.openapi({
+      description: 'The ID of the asset model that was used to create the asset.',
+    }),
+    assetProperties: AssetPropertiesSchema.openapi({
+      description:
+        "<p>The list of asset properties for the asset.</p> <p>This object doesn't include properties that you define in composite models. You can find composite model properties in the <code>assetCompositeModels</code> object.</p>",
+    }),
+    assetHierarchies: AssetHierarchiesSchema.openapi({
+      description:
+        'A list of asset hierarchies that each contain a <code>hierarchyId</code>. A hierarchy specifies allowed parent/child asset relationships.',
+    }),
+    assetCompositeModels: AssetCompositeModelsSchema.exactOptional().openapi({
+      description: 'The composite models for the asset.',
+    }),
+    assetCreationDate: TimestampSchema.openapi({
+      description: 'The date the asset was created, in Unix epoch time.',
+    }),
+    assetLastUpdateDate: TimestampSchema.openapi({
+      description: 'The date the asset was last updated, in Unix epoch time.',
+    }),
+    assetStatus: AssetStatusSchema.openapi({
+      description: 'The current status of the asset, which contains a state and any error message.',
+    }),
+    assetDescription: DescriptionSchema.exactOptional().openapi({
+      description: 'A description for the asset.',
+    }),
   })
   .openapi({
     required: [
@@ -2208,166 +1930,38 @@ const DescribeAssetResponseSchema = z
   })
   .openapi('DescribeAssetResponse')
 
-const AssetModelPropertySchema = z
+const DescribeAssetModelResponseSchema: z.ZodType<DescribeAssetModelResponseType> = z
   .object({
-    id: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the asset model property.' }),
-    ).exactOptional(),
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the asset model property.' })),
-    dataType: PropertyDataTypeSchema.and(
-      z.any().openapi({ description: 'The data type of the asset model property.' }),
-    ),
-    dataTypeSpec: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data type of the structure for this property. This parameter exists on properties that have the <code>STRUCT</code> data type.',
-        }),
-    ).exactOptional(),
-    unit: PropertyUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unit of the asset model property, such as <code>Newtons</code> or <code>RPM</code>.',
-        }),
-    ).exactOptional(),
-    type: PropertyTypeSchema.and(
-      z.any().openapi({ description: 'The property type (see <code>PropertyType</code>).' }),
-    ),
-  })
-  .openapi({
-    required: ['name', 'dataType', 'type'],
-    description: 'Contains information about an asset model property.',
-  })
-  .openapi('AssetModelProperty')
-
-const AssetModelPropertiesSchema = z.array(AssetModelPropertySchema).openapi('AssetModelProperties')
-
-const AssetModelHierarchySchema = z
-  .object({
-    id: IDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the asset model hierarchy. This ID is a <code>hierarchyId</code>.',
-        }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the asset model hierarchy that you specify by using the <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModel.html">CreateAssetModel</a> or <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetModel.html">UpdateAssetModel</a> API operation.',
-        }),
-    ),
-    childAssetModelId: IDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the asset model. All assets in this hierarchy must be instances of the <code>childAssetModelId</code> asset model.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['name', 'childAssetModelId'],
-    description:
-      "Describes an asset hierarchy that contains a hierarchy's name, ID, and child asset model ID that specifies the type of asset that can be in this hierarchy.",
-  })
-  .openapi('AssetModelHierarchy')
-
-const AssetModelHierarchiesSchema = z
-  .array(AssetModelHierarchySchema)
-  .openapi('AssetModelHierarchies')
-
-const AssetModelCompositeModelSchema = z
-  .object({
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the composite model.' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the composite model.' }),
-    ).exactOptional(),
-    type: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the composite model. For alarm composite models, this type is <code>AWS/ALARM</code>.',
-        }),
-    ),
-    properties: z
-      .any()
-      .exactOptional()
-      .openapi({ description: 'The asset property definitions for this composite model.' }),
-    id: IDSchema.and(
-      z.any().openapi({ description: ' The ID of the asset model composite model. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['name', 'type'],
-    description:
-      'Contains information about a composite model in an asset model. This object contains the asset property definitions that you define in the composite model.',
-  })
-  .openapi('AssetModelCompositeModel')
-
-const AssetModelCompositeModelsSchema = z
-  .array(AssetModelCompositeModelSchema)
-  .openapi('AssetModelCompositeModels')
-
-const DescribeAssetModelResponseSchema = z
-  .object({
-    assetModelId: IDSchema.and(z.any().openapi({ description: 'The ID of the asset model.' })),
-    assetModelArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the asset model, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:asset-model/${AssetModelId}</code> </p>',
-        }),
-    ),
-    assetModelName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the asset model.' }),
-    ),
-    assetModelDescription: DescriptionSchema.and(
-      z.any().openapi({ description: "The asset model's description." }),
-    ),
-    assetModelProperties: AssetModelPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The list of asset properties for the asset model.</p> <p>This object doesn't include properties that you define in composite models. You can find composite model properties in the <code>assetModelCompositeModels</code> object.</p>",
-        }),
-    ),
-    assetModelHierarchies: AssetModelHierarchiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of asset model hierarchies that each contain a <code>childAssetModelId</code> and a <code>hierarchyId</code> (named <code>id</code>). A hierarchy specifies allowed parent/child asset relationships for an asset model.',
-        }),
-    ),
-    assetModelCompositeModels: AssetModelCompositeModelsSchema.and(
-      z.any().openapi({ description: 'The list of composite asset models for the asset model.' }),
-    ).exactOptional(),
-    assetModelCreationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the asset model was created, in Unix epoch time.' }),
-    ),
-    assetModelLastUpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date the asset model was last updated, in Unix epoch time.' }),
-    ),
-    assetModelStatus: AssetModelStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the asset model, which contains a state and any error message.',
-        }),
-    ),
+    assetModelId: IDSchema.openapi({ description: 'The ID of the asset model.' }),
+    assetModelArn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the asset model, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:asset-model/${AssetModelId}</code> </p>',
+    }),
+    assetModelName: NameSchema.openapi({ description: 'The name of the asset model.' }),
+    assetModelDescription: DescriptionSchema.openapi({
+      description: "The asset model's description.",
+    }),
+    assetModelProperties: AssetModelPropertiesSchema.openapi({
+      description:
+        "<p>The list of asset properties for the asset model.</p> <p>This object doesn't include properties that you define in composite models. You can find composite model properties in the <code>assetModelCompositeModels</code> object.</p>",
+    }),
+    assetModelHierarchies: AssetModelHierarchiesSchema.openapi({
+      description:
+        'A list of asset model hierarchies that each contain a <code>childAssetModelId</code> and a <code>hierarchyId</code> (named <code>id</code>). A hierarchy specifies allowed parent/child asset relationships for an asset model.',
+    }),
+    assetModelCompositeModels: AssetModelCompositeModelsSchema.exactOptional().openapi({
+      description: 'The list of composite asset models for the asset model.',
+    }),
+    assetModelCreationDate: TimestampSchema.openapi({
+      description: 'The date the asset model was created, in Unix epoch time.',
+    }),
+    assetModelLastUpdateDate: TimestampSchema.openapi({
+      description: 'The date the asset model was last updated, in Unix epoch time.',
+    }),
+    assetModelStatus: AssetModelStatusSchema.openapi({
+      description:
+        'The current status of the asset model, which contains a state and any error message.',
+    }),
   })
   .openapi({
     required: [
@@ -2384,94 +1978,19 @@ const DescribeAssetModelResponseSchema = z
   })
   .openapi('DescribeAssetModelResponse')
 
-const PropertySchema = z
+const DescribeAssetPropertyResponseSchema: z.ZodType<DescribeAssetPropertyResponseType> = z
   .object({
-    id: IDSchema.and(z.any().openapi({ description: 'The ID of the asset property.' })),
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the property.' })),
-    alias: PropertyAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
-    notification: PropertyNotificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The asset property\'s notification topic and state. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetProperty.html">UpdateAssetProperty</a>.',
-        }),
-    ).exactOptional(),
-    dataType: PropertyDataTypeSchema.and(
-      z.any().openapi({ description: 'The property data type.' }),
-    ),
-    unit: PropertyUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unit (such as <code>Newtons</code> or <code>RPM</code>) of the asset property.',
-        }),
-    ).exactOptional(),
-    type: PropertyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The property type (see <code>PropertyType</code>). A property contains one type.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['id', 'name', 'dataType'],
-    description: 'Contains asset property information.',
-  })
-  .openapi('Property')
-
-const CompositeModelPropertySchema = z
-  .object({
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the property.' })),
-    type: NameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of the composite model that defines this property.' }),
-    ),
-    assetProperty: PropertySchema,
-    id: IDSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The ID of the composite model that contains the property. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['name', 'type', 'assetProperty'],
-    description: 'Contains information about a composite model property on an asset.',
-  })
-  .openapi('CompositeModelProperty')
-
-const DescribeAssetPropertyResponseSchema = z
-  .object({
-    assetId: IDSchema.and(z.any().openapi({ description: 'The ID of the asset.' })),
-    assetName: NameSchema.and(z.any().openapi({ description: 'The name of the asset.' })),
-    assetModelId: IDSchema.and(z.any().openapi({ description: 'The ID of the asset model.' })),
-    assetProperty: PropertySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The asset property's definition, alias, and notification state.</p> <p>This response includes this object for normal asset properties. If you describe an asset property in a composite model, this response includes the asset property information in <code>compositeModel</code>.</p>",
-        }),
-    ).exactOptional(),
-    compositeModel: CompositeModelPropertySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The composite asset model that declares this asset property, if this asset property exists in a composite model.',
-        }),
-    ).exactOptional(),
+    assetId: IDSchema.openapi({ description: 'The ID of the asset.' }),
+    assetName: NameSchema.openapi({ description: 'The name of the asset.' }),
+    assetModelId: IDSchema.openapi({ description: 'The ID of the asset model.' }),
+    assetProperty: PropertySchema.exactOptional().openapi({
+      description:
+        "<p>The asset property's definition, alias, and notification state.</p> <p>This response includes this object for normal asset properties. If you describe an asset property in a composite model, this response includes the asset property information in <code>compositeModel</code>.</p>",
+    }),
+    compositeModel: CompositeModelPropertySchema.exactOptional().openapi({
+      description:
+        'The composite asset model that declares this asset property, if this asset property exists in a composite model.',
+    }),
   })
   .openapi({ required: ['assetId', 'assetName', 'assetModelId'] })
   .openapi('DescribeAssetPropertyResponse')
@@ -2480,22 +1999,14 @@ const FilesSchema = z.array(FileSchema).openapi('Files')
 
 const ErrorReportLocationSchema = z
   .object({
-    bucket: BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon S3 bucket to which errors associated with the bulk import job are sent.',
-        }),
-    ),
-    prefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon S3 uses the prefix as a folder name to organize data in the bucket. Each Amazon S3 object has a key that is its unique identifier in the bucket. Each object in a bucket has exactly one key. The prefix must end with a forward slash (/). For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html">Organizing objects using prefixes</a> in the <i>Amazon Simple Storage Service User Guide</i>.',
-        }),
-    ),
+    bucket: BucketSchema.openapi({
+      description:
+        'The name of the Amazon S3 bucket to which errors associated with the bulk import job are sent.',
+    }),
+    prefix: StringSchema.openapi({
+      description:
+        'Amazon S3 uses the prefix as a folder name to organize data in the bucket. Each Amazon S3 object has a key that is its unique identifier in the bucket. Each object in a bucket has exactly one key. The prefix must end with a forward slash (/). For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html">Organizing objects using prefixes</a> in the <i>Amazon Simple Storage Service User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['bucket', 'prefix'],
@@ -2506,9 +2017,9 @@ const ErrorReportLocationSchema = z
 
 const JobConfigurationSchema = z
   .object({
-    fileFormat: FileFormatSchema.and(
-      z.any().openapi({ description: 'The file format of the data in Amazon S3.' }),
-    ),
+    fileFormat: FileFormatSchema.openapi({
+      description: 'The file format of the data in Amazon S3.',
+    }),
   })
   .openapi({
     required: ['fileFormat'],
@@ -2519,55 +2030,35 @@ const JobConfigurationSchema = z
 
 const DescribeBulkImportJobResponseSchema = z
   .object({
-    jobId: IDSchema.and(z.any().openapi({ description: 'The ID of the job.' })),
-    jobName: NameSchema.and(
-      z.any().openapi({ description: 'The unique name that helps identify the job request.' }),
-    ),
-    jobStatus: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the bulk import job can be one of following values.</p> <ul> <li> <p> <code>PENDING</code> – IoT SiteWise is waiting for the current bulk import job to finish.</p> </li> <li> <p> <code>CANCELLED</code> – The bulk import job has been canceled.</p> </li> <li> <p> <code>RUNNING</code> – IoT SiteWise is processing your request to import your data from Amazon S3.</p> </li> <li> <p> <code>COMPLETED</code> – IoT SiteWise successfully completed your request to import data from Amazon S3.</p> </li> <li> <p> <code>FAILED</code> – IoT SiteWise couldn't process your request to import data from Amazon S3. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> <li> <p> <code>COMPLETED_WITH_FAILURES</code> – IoT SiteWise completed your request to import data from Amazon S3 with errors. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> </ul>",
-        }),
-    ),
-    jobRoleArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the IAM role that allows IoT SiteWise to read Amazon S3 data.',
-        }),
-    ),
-    files: FilesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The files in the specified Amazon S3 bucket that contain your data.',
-        }),
-    ),
-    errorReportLocation: ErrorReportLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 destination where errors associated with the job creation request are saved.',
-        }),
-    ),
-    jobConfiguration: JobConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the configuration information of a job, such as the file format used to save data in Amazon S3.',
-        }),
-    ),
-    jobCreationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the job was created, in Unix epoch TIME.' }),
-    ),
-    jobLastUpdateDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the job was last updated, in Unix epoch time.' }),
-    ),
+    jobId: IDSchema.openapi({ description: 'The ID of the job.' }),
+    jobName: NameSchema.openapi({
+      description: 'The unique name that helps identify the job request.',
+    }),
+    jobStatus: JobStatusSchema.openapi({
+      description:
+        "<p>The status of the bulk import job can be one of following values.</p> <ul> <li> <p> <code>PENDING</code> – IoT SiteWise is waiting for the current bulk import job to finish.</p> </li> <li> <p> <code>CANCELLED</code> – The bulk import job has been canceled.</p> </li> <li> <p> <code>RUNNING</code> – IoT SiteWise is processing your request to import your data from Amazon S3.</p> </li> <li> <p> <code>COMPLETED</code> – IoT SiteWise successfully completed your request to import data from Amazon S3.</p> </li> <li> <p> <code>FAILED</code> – IoT SiteWise couldn't process your request to import data from Amazon S3. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> <li> <p> <code>COMPLETED_WITH_FAILURES</code> – IoT SiteWise completed your request to import data from Amazon S3 with errors. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> </ul>",
+    }),
+    jobRoleArn: ARNSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the IAM role that allows IoT SiteWise to read Amazon S3 data.',
+    }),
+    files: FilesSchema.openapi({
+      description: 'The files in the specified Amazon S3 bucket that contain your data.',
+    }),
+    errorReportLocation: ErrorReportLocationSchema.openapi({
+      description:
+        'The Amazon S3 destination where errors associated with the job creation request are saved.',
+    }),
+    jobConfiguration: JobConfigurationSchema.openapi({
+      description:
+        'Contains the configuration information of a job, such as the file format used to save data in Amazon S3.',
+    }),
+    jobCreationDate: TimestampSchema.openapi({
+      description: 'The date the job was created, in Unix epoch TIME.',
+    }),
+    jobLastUpdateDate: TimestampSchema.openapi({
+      description: 'The date the job was last updated, in Unix epoch time.',
+    }),
   })
   .openapi({
     required: [
@@ -2593,38 +2084,26 @@ const DashboardDefinitionSchema = z
 
 const DescribeDashboardResponseSchema = z
   .object({
-    dashboardId: IDSchema.and(z.any().openapi({ description: 'The ID of the dashboard.' })),
-    dashboardArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the dashboard, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:dashboard/${DashboardId}</code> </p>',
-        }),
-    ),
-    dashboardName: NameSchema.and(z.any().openapi({ description: 'The name of the dashboard.' })),
-    projectId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the project that the dashboard is in.' }),
-    ),
-    dashboardDescription: DescriptionSchema.and(
-      z.any().openapi({ description: "The dashboard's description." }),
-    ).exactOptional(),
-    dashboardDefinition: DashboardDefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The dashboard\'s definition JSON literal. For detailed information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/create-dashboards-using-aws-cli.html">Creating dashboards (CLI)</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ),
-    dashboardCreationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the dashboard was created, in Unix epoch time.' }),
-    ),
-    dashboardLastUpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date the dashboard was last updated, in Unix epoch time.' }),
-    ),
+    dashboardId: IDSchema.openapi({ description: 'The ID of the dashboard.' }),
+    dashboardArn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the dashboard, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:dashboard/${DashboardId}</code> </p>',
+    }),
+    dashboardName: NameSchema.openapi({ description: 'The name of the dashboard.' }),
+    projectId: IDSchema.openapi({ description: 'The ID of the project that the dashboard is in.' }),
+    dashboardDescription: DescriptionSchema.exactOptional().openapi({
+      description: "The dashboard's description.",
+    }),
+    dashboardDefinition: DashboardDefinitionSchema.openapi({
+      description:
+        'The dashboard\'s definition JSON literal. For detailed information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/create-dashboards-using-aws-cli.html">Creating dashboards (CLI)</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+    dashboardCreationDate: TimestampSchema.openapi({
+      description: 'The date the dashboard was created, in Unix epoch time.',
+    }),
+    dashboardLastUpdateDate: TimestampSchema.openapi({
+      description: 'The date the dashboard was last updated, in Unix epoch time.',
+    }),
   })
   .openapi({
     required: [
@@ -2649,8 +2128,8 @@ const ConfigurationStateSchema = z
 
 const ConfigurationErrorDetailsSchema = z
   .object({
-    code: ErrorCodeSchema.and(z.any().openapi({ description: 'The error code.' })),
-    message: ErrorMessageSchema.and(z.any().openapi({ description: 'The error message.' })),
+    code: ErrorCodeSchema.openapi({ description: 'The error code.' }),
+    message: ErrorMessageSchema.openapi({ description: 'The error message.' }),
   })
   .openapi({
     required: ['code', 'message'],
@@ -2660,12 +2139,12 @@ const ConfigurationErrorDetailsSchema = z
 
 const ConfigurationStatusSchema = z
   .object({
-    state: ConfigurationStateSchema.and(
-      z.any().openapi({ description: 'The current state of the configuration.' }),
-    ),
-    error: ConfigurationErrorDetailsSchema.and(
-      z.any().openapi({ description: 'Contains associated error information, if any.' }),
-    ).exactOptional(),
+    state: ConfigurationStateSchema.openapi({
+      description: 'The current state of the configuration.',
+    }),
+    error: ConfigurationErrorDetailsSchema.exactOptional().openapi({
+      description: 'Contains associated error information, if any.',
+    }),
   })
   .openapi({
     required: ['state'],
@@ -2675,39 +2154,29 @@ const ConfigurationStatusSchema = z
 
 const DescribeDefaultEncryptionConfigurationResponseSchema = z
   .object({
-    encryptionType: EncryptionTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of encryption used for the encryption configuration.' }),
-    ),
-    kmsKeyArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key ARN of the customer managed key used for KMS encryption if you use <code>KMS_BASED_ENCRYPTION</code>.',
-        }),
-    ).exactOptional(),
-    configurationStatus: ConfigurationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The status of the account configuration. This contains the <code>ConfigurationState</code>. If there's an error, it also contains the <code>ErrorDetails</code>.",
-        }),
-    ),
+    encryptionType: EncryptionTypeSchema.openapi({
+      description: 'The type of encryption used for the encryption configuration.',
+    }),
+    kmsKeyArn: ARNSchema.exactOptional().openapi({
+      description:
+        'The key ARN of the customer managed key used for KMS encryption if you use <code>KMS_BASED_ENCRYPTION</code>.',
+    }),
+    configurationStatus: ConfigurationStatusSchema.openapi({
+      description:
+        "The status of the account configuration. This contains the <code>ConfigurationState</code>. If there's an error, it also contains the <code>ErrorDetails</code>.",
+    }),
   })
   .openapi({ required: ['encryptionType', 'configurationStatus'] })
   .openapi('DescribeDefaultEncryptionConfigurationResponse')
 
 const GatewayPlatformSchema = z
   .object({
-    greengrass: GreengrassSchema.and(
-      z.any().openapi({ description: 'A gateway that runs on IoT Greengrass.' }),
-    ).exactOptional(),
-    greengrassV2: GreengrassV2Schema.and(
-      z.any().openapi({ description: 'A gateway that runs on IoT Greengrass V2.' }),
-    ).exactOptional(),
+    greengrass: GreengrassSchema.exactOptional().openapi({
+      description: 'A gateway that runs on IoT Greengrass.',
+    }),
+    greengrassV2: GreengrassV2Schema.exactOptional().openapi({
+      description: 'A gateway that runs on IoT Greengrass V2.',
+    }),
   })
   .openapi({ description: "Contains a gateway's platform information.", required: [] })
   .openapi('GatewayPlatform')
@@ -2725,22 +2194,14 @@ const CapabilitySyncStatusSchema = z
 
 const GatewayCapabilitySummarySchema = z
   .object({
-    capabilityNamespace: CapabilityNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The namespace of the capability configuration. For example, if you configure OPC-UA sources from the IoT SiteWise console, your OPC-UA capability configuration has the namespace <code>iotsitewise:opcuacollector:version</code>, where <code>version</code> is a number such as <code>1</code>.',
-        }),
-    ),
-    capabilitySyncStatus: CapabilitySyncStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The synchronization status of the capability configuration. The sync status can be one of the following:</p> <ul> <li> <p> <code>IN_SYNC</code> – The gateway is running the capability configuration.</p> </li> <li> <p> <code>OUT_OF_SYNC</code> – The gateway hasn't received the capability configuration.</p> </li> <li> <p> <code>SYNC_FAILED</code> – The gateway rejected the capability configuration.</p> </li> </ul>",
-        }),
-    ),
+    capabilityNamespace: CapabilityNamespaceSchema.openapi({
+      description:
+        'The namespace of the capability configuration. For example, if you configure OPC-UA sources from the IoT SiteWise console, your OPC-UA capability configuration has the namespace <code>iotsitewise:opcuacollector:version</code>, where <code>version</code> is a number such as <code>1</code>.',
+    }),
+    capabilitySyncStatus: CapabilitySyncStatusSchema.openapi({
+      description:
+        "<p>The synchronization status of the capability configuration. The sync status can be one of the following:</p> <ul> <li> <p> <code>IN_SYNC</code> – The gateway is running the capability configuration.</p> </li> <li> <p> <code>OUT_OF_SYNC</code> – The gateway hasn't received the capability configuration.</p> </li> <li> <p> <code>SYNC_FAILED</code> – The gateway rejected the capability configuration.</p> </li> </ul>",
+    }),
   })
   .openapi({
     required: ['capabilityNamespace', 'capabilitySyncStatus'],
@@ -2754,35 +2215,25 @@ const GatewayCapabilitySummariesSchema = z
 
 const DescribeGatewayResponseSchema = z
   .object({
-    gatewayId: IDSchema.and(z.any().openapi({ description: 'The ID of the gateway device.' })),
-    gatewayName: NameSchema.and(z.any().openapi({ description: 'The name of the gateway.' })),
-    gatewayArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the gateway, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:gateway/${GatewayId}</code> </p>',
-        }),
-    ),
-    gatewayPlatform: GatewayPlatformSchema.and(
-      z.any().openapi({ description: "The gateway's platform." }),
-    ).exactOptional(),
-    gatewayCapabilitySummaries: GatewayCapabilitySummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of gateway capability summaries that each contain a namespace and status. Each gateway capability defines data sources for the gateway. To retrieve a capability configuration\'s definition, use <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeGatewayCapabilityConfiguration.html">DescribeGatewayCapabilityConfiguration</a>.',
-        }),
-    ),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the gateway was created, in Unix epoch time.' }),
-    ),
-    lastUpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date the gateway was last updated, in Unix epoch time.' }),
-    ),
+    gatewayId: IDSchema.openapi({ description: 'The ID of the gateway device.' }),
+    gatewayName: NameSchema.openapi({ description: 'The name of the gateway.' }),
+    gatewayArn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the gateway, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:gateway/${GatewayId}</code> </p>',
+    }),
+    gatewayPlatform: GatewayPlatformSchema.exactOptional().openapi({
+      description: "The gateway's platform.",
+    }),
+    gatewayCapabilitySummaries: GatewayCapabilitySummariesSchema.openapi({
+      description:
+        'A list of gateway capability summaries that each contain a namespace and status. Each gateway capability defines data sources for the gateway. To retrieve a capability configuration\'s definition, use <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeGatewayCapabilityConfiguration.html">DescribeGatewayCapabilityConfiguration</a>.',
+    }),
+    creationDate: TimestampSchema.openapi({
+      description: 'The date the gateway was created, in Unix epoch time.',
+    }),
+    lastUpdateDate: TimestampSchema.openapi({
+      description: 'The date the gateway was last updated, in Unix epoch time.',
+    }),
   })
   .openapi({
     required: [
@@ -2804,32 +2255,20 @@ const CapabilityConfigurationSchema = z
 
 const DescribeGatewayCapabilityConfigurationResponseSchema = z
   .object({
-    gatewayId: IDSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the gateway that defines the capability configuration.',
-        }),
-    ),
-    capabilityNamespace: CapabilityNamespaceSchema.and(
-      z.any().openapi({ description: 'The namespace of the gateway capability.' }),
-    ),
-    capabilityConfiguration: CapabilityConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON document that defines the gateway capability\'s configuration. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/configure-sources.html#configure-source-cli">Configuring data sources (CLI)</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ),
-    capabilitySyncStatus: CapabilitySyncStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The synchronization status of the capability configuration. The sync status can be one of the following:</p> <ul> <li> <p> <code>IN_SYNC</code> – The gateway is running the capability configuration.</p> </li> <li> <p> <code>OUT_OF_SYNC</code> – The gateway hasn't received the capability configuration.</p> </li> <li> <p> <code>SYNC_FAILED</code> – The gateway rejected the capability configuration.</p> </li> </ul>",
-        }),
-    ),
+    gatewayId: IDSchema.openapi({
+      description: 'The ID of the gateway that defines the capability configuration.',
+    }),
+    capabilityNamespace: CapabilityNamespaceSchema.openapi({
+      description: 'The namespace of the gateway capability.',
+    }),
+    capabilityConfiguration: CapabilityConfigurationSchema.openapi({
+      description:
+        'The JSON document that defines the gateway capability\'s configuration. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/configure-sources.html#configure-source-cli">Configuring data sources (CLI)</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+    capabilitySyncStatus: CapabilitySyncStatusSchema.openapi({
+      description:
+        "<p>The synchronization status of the capability configuration. The sync status can be one of the following:</p> <ul> <li> <p> <code>IN_SYNC</code> – The gateway is running the capability configuration.</p> </li> <li> <p> <code>OUT_OF_SYNC</code> – The gateway hasn't received the capability configuration.</p> </li> <li> <p> <code>SYNC_FAILED</code> – The gateway rejected the capability configuration.</p> </li> </ul>",
+    }),
   })
   .openapi({
     required: [
@@ -2845,18 +2284,14 @@ const LoggingLevelSchema = z.enum(['ERROR', 'INFO', 'OFF']).openapi('LoggingLeve
 
 const LoggingOptionsSchema = z
   .object({
-    level: LoggingLevelSchema.and(
-      z.any().openapi({ description: 'The IoT SiteWise logging verbosity level.' }),
-    ),
+    level: LoggingLevelSchema.openapi({ description: 'The IoT SiteWise logging verbosity level.' }),
   })
   .openapi({ required: ['level'], description: 'Contains logging options.' })
   .openapi('LoggingOptions')
 
 const DescribeLoggingOptionsResponseSchema = z
   .object({
-    loggingOptions: LoggingOptionsSchema.and(
-      z.any().openapi({ description: 'The current logging options.' }),
-    ),
+    loggingOptions: LoggingOptionsSchema.openapi({ description: 'The current logging options.' }),
   })
   .openapi({ required: ['loggingOptions'] })
   .openapi('DescribeLoggingOptionsResponse')
@@ -2877,15 +2312,11 @@ const EmailSchema = z
 
 const ImageLocationSchema = z
   .object({
-    id: IDSchema.and(z.any().openapi({ description: 'The ID of the image.' })),
-    url: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL where the image is available. The URL is valid for 15 minutes so that you can view and download the image',
-        }),
-    ),
+    id: IDSchema.openapi({ description: 'The ID of the image.' }),
+    url: UrlSchema.openapi({
+      description:
+        'The URL where the image is available. The URL is valid for 15 minutes so that you can view and download the image',
+    }),
   })
   .openapi({
     required: ['id', 'url'],
@@ -2897,22 +2328,14 @@ const AuthModeSchema = z.enum(['IAM', 'SSO']).openapi('AuthMode')
 
 const AlarmsSchema = z
   .object({
-    alarmRoleArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the IAM role that allows the alarm to perform actions and access Amazon Web Services resources and services, such as IoT Events.',
-        }),
-    ),
-    notificationLambdaArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the Lambda function that manages alarm notifications. For more information, see <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/lambda-support.html">Managing alarm notifications</a> in the <i>IoT Events Developer Guide</i>.',
-        }),
-    ).exactOptional(),
+    alarmRoleArn: ARNSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the IAM role that allows the alarm to perform actions and access Amazon Web Services resources and services, such as IoT Events.',
+    }),
+    notificationLambdaArn: ARNSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the Lambda function that manages alarm notifications. For more information, see <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/lambda-support.html">Managing alarm notifications</a> in the <i>IoT Events Developer Guide</i>.',
+    }),
   })
   .openapi({
     required: ['alarmRoleArn'],
@@ -2923,79 +2346,53 @@ const AlarmsSchema = z
 
 const DescribePortalResponseSchema = z
   .object({
-    portalId: IDSchema.and(z.any().openapi({ description: 'The ID of the portal.' })),
-    portalArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the portal, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:portal/${PortalId}</code> </p>',
-        }),
-    ),
-    portalName: NameSchema.and(z.any().openapi({ description: 'The name of the portal.' })),
-    portalDescription: DescriptionSchema.and(
-      z.any().openapi({ description: "The portal's description." }),
-    ).exactOptional(),
-    portalClientId: PortalClientIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM Identity Center application generated client ID (used with IAM Identity Center APIs). IoT SiteWise includes <code>portalClientId</code> for only portals that use IAM Identity Center to authenticate users.',
-        }),
-    ),
-    portalStartUrl: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL for the IoT SiteWise Monitor portal. You can use this URL to access portals that use IAM Identity Center for authentication. For portals that use IAM for authentication, you must use the IoT SiteWise console to get a URL that you can use to access the portal.',
-        }),
-    ),
-    portalContactEmail: EmailSchema.and(
-      z
-        .any()
-        .openapi({ description: "The Amazon Web Services administrator's contact email address." }),
-    ),
-    portalStatus: PortalStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the portal, which contains a state and any error message.',
-        }),
-    ),
-    portalCreationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the portal was created, in Unix epoch time.' }),
-    ),
-    portalLastUpdateDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the portal was last updated, in Unix epoch time.' }),
-    ),
-    portalLogoImageLocation: ImageLocationSchema.and(
-      z.any().openapi({ description: "The portal's logo image, which is available at a URL." }),
-    ).exactOptional(),
-    roleArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the service role that allows the portal\'s users to access your IoT SiteWise resources on your behalf. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-service-role.html">Using service roles for IoT SiteWise Monitor</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
-    portalAuthMode: AuthModeSchema.and(
-      z.any().openapi({ description: 'The service to use to authenticate users to the portal.' }),
-    ).exactOptional(),
-    notificationSenderEmail: EmailSchema.and(
-      z.any().openapi({ description: 'The email address that sends alarm notifications.' }),
-    ).exactOptional(),
-    alarms: AlarmsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the configuration information of an alarm created in an IoT SiteWise Monitor portal.',
-        }),
-    ).exactOptional(),
+    portalId: IDSchema.openapi({ description: 'The ID of the portal.' }),
+    portalArn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the portal, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:portal/${PortalId}</code> </p>',
+    }),
+    portalName: NameSchema.openapi({ description: 'The name of the portal.' }),
+    portalDescription: DescriptionSchema.exactOptional().openapi({
+      description: "The portal's description.",
+    }),
+    portalClientId: PortalClientIdSchema.openapi({
+      description:
+        'The IAM Identity Center application generated client ID (used with IAM Identity Center APIs). IoT SiteWise includes <code>portalClientId</code> for only portals that use IAM Identity Center to authenticate users.',
+    }),
+    portalStartUrl: UrlSchema.openapi({
+      description:
+        'The URL for the IoT SiteWise Monitor portal. You can use this URL to access portals that use IAM Identity Center for authentication. For portals that use IAM for authentication, you must use the IoT SiteWise console to get a URL that you can use to access the portal.',
+    }),
+    portalContactEmail: EmailSchema.openapi({
+      description: "The Amazon Web Services administrator's contact email address.",
+    }),
+    portalStatus: PortalStatusSchema.openapi({
+      description:
+        'The current status of the portal, which contains a state and any error message.',
+    }),
+    portalCreationDate: TimestampSchema.openapi({
+      description: 'The date the portal was created, in Unix epoch time.',
+    }),
+    portalLastUpdateDate: TimestampSchema.openapi({
+      description: 'The date the portal was last updated, in Unix epoch time.',
+    }),
+    portalLogoImageLocation: ImageLocationSchema.exactOptional().openapi({
+      description: "The portal's logo image, which is available at a URL.",
+    }),
+    roleArn: ARNSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the service role that allows the portal\'s users to access your IoT SiteWise resources on your behalf. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-service-role.html">Using service roles for IoT SiteWise Monitor</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+    portalAuthMode: AuthModeSchema.exactOptional().openapi({
+      description: 'The service to use to authenticate users to the portal.',
+    }),
+    notificationSenderEmail: EmailSchema.exactOptional().openapi({
+      description: 'The email address that sends alarm notifications.',
+    }),
+    alarms: AlarmsSchema.exactOptional().openapi({
+      description:
+        'Contains the configuration information of an alarm created in an IoT SiteWise Monitor portal.',
+    }),
   })
   .openapi({
     required: [
@@ -3014,30 +2411,22 @@ const DescribePortalResponseSchema = z
 
 const DescribeProjectResponseSchema = z
   .object({
-    projectId: IDSchema.and(z.any().openapi({ description: 'The ID of the project.' })),
-    projectArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the project, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:project/${ProjectId}</code> </p>',
-        }),
-    ),
-    projectName: NameSchema.and(z.any().openapi({ description: 'The name of the project.' })),
-    portalId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the portal that the project is in.' }),
-    ),
-    projectDescription: DescriptionSchema.and(
-      z.any().openapi({ description: "The project's description." }),
-    ).exactOptional(),
-    projectCreationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the project was created, in Unix epoch time.' }),
-    ),
-    projectLastUpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date the project was last updated, in Unix epoch time.' }),
-    ),
+    projectId: IDSchema.openapi({ description: 'The ID of the project.' }),
+    projectArn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the project, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:project/${ProjectId}</code> </p>',
+    }),
+    projectName: NameSchema.openapi({ description: 'The name of the project.' }),
+    portalId: IDSchema.openapi({ description: 'The ID of the portal that the project is in.' }),
+    projectDescription: DescriptionSchema.exactOptional().openapi({
+      description: "The project's description.",
+    }),
+    projectCreationDate: TimestampSchema.openapi({
+      description: 'The date the project was created, in Unix epoch time.',
+    }),
+    projectLastUpdateDate: TimestampSchema.openapi({
+      description: 'The date the project was last updated, in Unix epoch time.',
+    }),
   })
   .openapi({
     required: [
@@ -3057,22 +2446,14 @@ const StorageTypeSchema = z
 
 const CustomerManagedS3StorageSchema = z
   .object({
-    s3ResourceArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the Amazon S3 object. For more information about how to find the ARN for an Amazon S3 object, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-arn-format.html">Amazon S3 resources</a> in the <i>Amazon Simple Storage Service User Guide</i>.',
-        }),
-    ),
-    roleArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the Identity and Access Management role that allows IoT SiteWise to send data to Amazon S3.',
-        }),
-    ),
+    s3ResourceArn: ARNSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the Amazon S3 object. For more information about how to find the ARN for an Amazon S3 object, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-arn-format.html">Amazon S3 resources</a> in the <i>Amazon Simple Storage Service User Guide</i>.',
+    }),
+    roleArn: ARNSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the Identity and Access Management role that allows IoT SiteWise to send data to Amazon S3.',
+    }),
   })
   .openapi({
     required: ['s3ResourceArn', 'roleArn'],
@@ -3082,13 +2463,9 @@ const CustomerManagedS3StorageSchema = z
 
 const MultiLayerStorageSchema = z
   .object({
-    customerManagedS3Storage: CustomerManagedS3StorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains information about a customer managed Amazon S3 bucket.',
-        }),
-    ),
+    customerManagedS3Storage: CustomerManagedS3StorageSchema.openapi({
+      description: 'Contains information about a customer managed Amazon S3 bucket.',
+    }),
   })
   .openapi({
     required: ['customerManagedS3Storage'],
@@ -3106,22 +2483,14 @@ const UnlimitedSchema = z.boolean().openapi('Unlimited')
 
 const RetentionPeriodSchema = z
   .object({
-    numberOfDays: NumberOfDaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days that your data is kept.</p> <note> <p>If you specified a value for this parameter, the <code>unlimited</code> parameter must be <code>false</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    unlimited: UnlimitedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If true, your data is kept indefinitely.</p> <note> <p>If configured to <code>true</code>, you must not specify a value for the <code>numberOfDays</code> parameter.</p> </note>',
-        }),
-    ).exactOptional(),
+    numberOfDays: NumberOfDaysSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days that your data is kept.</p> <note> <p>If you specified a value for this parameter, the <code>unlimited</code> parameter must be <code>false</code>.</p> </note>',
+    }),
+    unlimited: UnlimitedSchema.exactOptional().openapi({
+      description:
+        '<p>If true, your data is kept indefinitely.</p> <note> <p>If configured to <code>true</code>, you must not specify a value for the <code>numberOfDays</code> parameter.</p> </note>',
+    }),
   })
   .openapi({
     description:
@@ -3132,41 +2501,25 @@ const RetentionPeriodSchema = z
 
 const DescribeStorageConfigurationResponseSchema = z
   .object({
-    storageType: StorageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The storage tier that you specified for your data. The <code>storageType</code> parameter can be one of the following values:</p> <ul> <li> <p> <code>SITEWISE_DEFAULT_STORAGE</code> – IoT SiteWise saves your data into the hot tier. The hot tier is a service-managed database.</p> </li> <li> <p> <code>MULTI_LAYER_STORAGE</code> – IoT SiteWise saves your data in both the cold tier and the hot tier. The cold tier is a customer-managed Amazon S3 bucket.</p> </li> </ul>',
-        }),
-    ),
-    multiLayerStorage: MultiLayerStorageSchema.and(
-      z.any().openapi({ description: 'Contains information about the storage destination.' }),
-    ).exactOptional(),
-    disassociatedDataStorage: DisassociatedDataStorageStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Contains the storage configuration for time series (data streams) that aren't associated with asset properties. The <code>disassociatedDataStorage</code> can be one of the following values:</p> <ul> <li> <p> <code>ENABLED</code> – IoT SiteWise accepts time series that aren't associated with asset properties.</p> <important> <p>After the <code>disassociatedDataStorage</code> is enabled, you can't disable it.</p> </important> </li> <li> <p> <code>DISABLED</code> – IoT SiteWise doesn't accept time series (data streams) that aren't associated with asset properties.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/data-streams.html\">Data streams</a> in the <i>IoT SiteWise User Guide</i>.</p>",
-        }),
-    ).exactOptional(),
-    retentionPeriod: RetentionPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'How many days your data is kept in the hot tier. By default, your data is kept indefinitely in the hot tier.',
-        }),
-    ).exactOptional(),
+    storageType: StorageTypeSchema.openapi({
+      description:
+        '<p>The storage tier that you specified for your data. The <code>storageType</code> parameter can be one of the following values:</p> <ul> <li> <p> <code>SITEWISE_DEFAULT_STORAGE</code> – IoT SiteWise saves your data into the hot tier. The hot tier is a service-managed database.</p> </li> <li> <p> <code>MULTI_LAYER_STORAGE</code> – IoT SiteWise saves your data in both the cold tier and the hot tier. The cold tier is a customer-managed Amazon S3 bucket.</p> </li> </ul>',
+    }),
+    multiLayerStorage: MultiLayerStorageSchema.exactOptional().openapi({
+      description: 'Contains information about the storage destination.',
+    }),
+    disassociatedDataStorage: DisassociatedDataStorageStateSchema.exactOptional().openapi({
+      description:
+        "<p>Contains the storage configuration for time series (data streams) that aren't associated with asset properties. The <code>disassociatedDataStorage</code> can be one of the following values:</p> <ul> <li> <p> <code>ENABLED</code> – IoT SiteWise accepts time series that aren't associated with asset properties.</p> <important> <p>After the <code>disassociatedDataStorage</code> is enabled, you can't disable it.</p> </important> </li> <li> <p> <code>DISABLED</code> – IoT SiteWise doesn't accept time series (data streams) that aren't associated with asset properties.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/data-streams.html\">Data streams</a> in the <i>IoT SiteWise User Guide</i>.</p>",
+    }),
+    retentionPeriod: RetentionPeriodSchema.exactOptional().openapi({
+      description:
+        'How many days your data is kept in the hot tier. By default, your data is kept indefinitely in the hot tier.',
+    }),
     configurationStatus: ConfigurationStatusSchema,
-    lastUpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date the storage configuration was last updated, in Unix epoch time.',
-        }),
-    ).exactOptional(),
+    lastUpdateDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date the storage configuration was last updated, in Unix epoch time.',
+    }),
   })
   .openapi({ required: ['storageType', 'configurationStatus'] })
   .openapi('DescribeStorageConfigurationResponse')
@@ -3175,56 +2528,32 @@ const TimeSeriesIdSchema = z.string().min(36).max(73).openapi('TimeSeriesId')
 
 const DescribeTimeSeriesResponseSchema = z
   .object({
-    assetId: IDSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the asset in which the asset property was created.' }),
-    ).exactOptional(),
-    propertyId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the asset property.' }),
-    ).exactOptional(),
-    alias: PropertyAliasSchema.and(
-      z.any().openapi({ description: 'The alias that identifies the time series.' }),
-    ).exactOptional(),
-    timeSeriesId: TimeSeriesIdSchema.and(
-      z.any().openapi({ description: 'The ID of the time series.' }),
-    ),
-    dataType: PropertyDataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The data type of the time series.</p> <p>If you specify <code>STRUCT</code>, you must also specify <code>dataTypeSpec</code> to identify the type of the structure for this time series.</p>',
-        }),
-    ),
-    dataTypeSpec: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The data type of the structure for this time series. This parameter is required for time series that have the <code>STRUCT</code> data type.</p> <p>The options for this parameter depend on the type of the composite model in which you created the asset property that is associated with your time series. Use <code>AWS/ALARM_STATE</code> for alarm state in alarm composite models.</p>',
-        }),
-    ).exactOptional(),
-    timeSeriesCreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date that the time series was created, in Unix epoch time.' }),
-    ),
-    timeSeriesLastUpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date that the time series was last updated, in Unix epoch time.',
-        }),
-    ),
-    timeSeriesArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the time series, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:time-series/${TimeSeriesId}</code> </p>',
-        }),
-    ),
+    assetId: IDSchema.exactOptional().openapi({
+      description: 'The ID of the asset in which the asset property was created.',
+    }),
+    propertyId: IDSchema.exactOptional().openapi({ description: 'The ID of the asset property.' }),
+    alias: PropertyAliasSchema.exactOptional().openapi({
+      description: 'The alias that identifies the time series.',
+    }),
+    timeSeriesId: TimeSeriesIdSchema.openapi({ description: 'The ID of the time series.' }),
+    dataType: PropertyDataTypeSchema.openapi({
+      description:
+        '<p>The data type of the time series.</p> <p>If you specify <code>STRUCT</code>, you must also specify <code>dataTypeSpec</code> to identify the type of the structure for this time series.</p>',
+    }),
+    dataTypeSpec: NameSchema.exactOptional().openapi({
+      description:
+        '<p>The data type of the structure for this time series. This parameter is required for time series that have the <code>STRUCT</code> data type.</p> <p>The options for this parameter depend on the type of the composite model in which you created the asset property that is associated with your time series. Use <code>AWS/ALARM_STATE</code> for alarm state in alarm composite models.</p>',
+    }),
+    timeSeriesCreationDate: TimestampSchema.openapi({
+      description: 'The date that the time series was created, in Unix epoch time.',
+    }),
+    timeSeriesLastUpdateDate: TimestampSchema.openapi({
+      description: 'The date that the time series was last updated, in Unix epoch time.',
+    }),
+    timeSeriesArn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the time series, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:time-series/${TimeSeriesId}</code> </p>',
+    }),
   })
   .openapi({
     required: [
@@ -3239,43 +2568,35 @@ const DescribeTimeSeriesResponseSchema = z
 
 const GetAssetPropertyAggregatesResponseSchema = z
   .object({
-    aggregatedValues: AggregatedValuesSchema.and(
-      z.any().openapi({ description: 'The requested aggregated values.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    aggregatedValues: AggregatedValuesSchema.openapi({
+      description: 'The requested aggregated values.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['aggregatedValues'] })
   .openapi('GetAssetPropertyAggregatesResponse')
 
 const GetAssetPropertyValueResponseSchema = z
   .object({
-    propertyValue: AssetPropertyValueSchema.and(
-      z.any().openapi({ description: 'The current asset property value.' }),
-    ).exactOptional(),
+    propertyValue: AssetPropertyValueSchema.exactOptional().openapi({
+      description: 'The current asset property value.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAssetPropertyValueResponse')
 
 const GetAssetPropertyValueHistoryResponseSchema = z
   .object({
-    assetPropertyValueHistory: AssetPropertyValueHistorySchema.and(
-      z.any().openapi({ description: "The asset property's value history." }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    assetPropertyValueHistory: AssetPropertyValueHistorySchema.openapi({
+      description: "The asset property's value history.",
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['assetPropertyValueHistory'] })
   .openapi('GetAssetPropertyValueHistoryResponse')
@@ -3294,55 +2615,37 @@ const InterpolatedAssetPropertyValuesSchema = z
 
 const GetInterpolatedAssetPropertyValuesResponseSchema = z
   .object({
-    interpolatedAssetPropertyValues: InterpolatedAssetPropertyValuesSchema.and(
-      z.any().openapi({ description: 'The requested interpolated values.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    interpolatedAssetPropertyValues: InterpolatedAssetPropertyValuesSchema.openapi({
+      description: 'The requested interpolated values.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['interpolatedAssetPropertyValues'] })
   .openapi('GetInterpolatedAssetPropertyValuesResponse')
 
 const AccessPolicySummarySchema = z
   .object({
-    id: IDSchema.and(z.any().openapi({ description: 'The ID of the access policy.' })),
-    identity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identity (an IAM Identity Center user, an IAM Identity Center group, or an IAM user).',
-        }),
-    ),
-    resource: ResourceSchema.and(
-      z.any().openapi({ description: 'The IoT SiteWise Monitor resource (a portal or project).' }),
-    ),
-    permission: PermissionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The permissions for the access policy. Note that a project <code>ADMINISTRATOR</code> is also known as a project owner.',
-        }),
-    ),
-    creationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date the access policy was created, in Unix epoch time.' }),
-    ).exactOptional(),
-    lastUpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date the access policy was last updated, in Unix epoch time.',
-        }),
-    ).exactOptional(),
+    id: IDSchema.openapi({ description: 'The ID of the access policy.' }),
+    identity: IdentitySchema.openapi({
+      description:
+        'The identity (an IAM Identity Center user, an IAM Identity Center group, or an IAM user).',
+    }),
+    resource: ResourceSchema.openapi({
+      description: 'The IoT SiteWise Monitor resource (a portal or project).',
+    }),
+    permission: PermissionSchema.openapi({
+      description:
+        'The permissions for the access policy. Note that a project <code>ADMINISTRATOR</code> is also known as a project owner.',
+    }),
+    creationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date the access policy was created, in Unix epoch time.',
+    }),
+    lastUpdateDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date the access policy was last updated, in Unix epoch time.',
+    }),
   })
   .openapi({
     required: ['id', 'identity', 'resource', 'permission'],
@@ -3357,113 +2660,51 @@ const AccessPolicySummariesSchema = z
 
 const ListAccessPoliciesResponseSchema = z
   .object({
-    accessPolicySummaries: AccessPolicySummariesSchema.and(
-      z.any().openapi({ description: 'A list that summarizes each access policy.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    accessPolicySummaries: AccessPolicySummariesSchema.openapi({
+      description: 'A list that summarizes each access policy.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['accessPolicySummaries'] })
   .openapi('ListAccessPoliciesResponse')
 
-const AssetModelPropertySummarySchema = z
+const ListAssetModelPropertiesResponseSchema: z.ZodType<ListAssetModelPropertiesResponseType> = z
   .object({
-    id: IDSchema.and(z.any().openapi({ description: 'The ID of the property.' })).exactOptional(),
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the property.' })),
-    dataType: PropertyDataTypeSchema.and(
-      z.any().openapi({ description: 'The data type of the property.' }),
-    ),
-    dataTypeSpec: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data type of the structure for this property. This parameter exists on properties that have the <code>STRUCT</code> data type.',
-        }),
-    ).exactOptional(),
-    unit: PropertyUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unit (such as <code>Newtons</code> or <code>RPM</code>) of the property.',
-        }),
-    ).exactOptional(),
-    type: PropertyTypeSchema,
-    assetModelCompositeModelId: IDSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The ID of the composite model that contains the asset model property. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['name', 'dataType', 'type'],
-    description: 'Contains a summary of a property associated with a model.',
-  })
-  .openapi('AssetModelPropertySummary')
-
-const AssetModelPropertySummariesSchema = z
-  .array(AssetModelPropertySummarySchema)
-  .openapi('AssetModelPropertySummaries')
-
-const ListAssetModelPropertiesResponseSchema = z
-  .object({
-    assetModelPropertySummaries: AssetModelPropertySummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list that summarizes the properties associated with the specified asset model.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    assetModelPropertySummaries: AssetModelPropertySummariesSchema.openapi({
+      description:
+        'A list that summarizes the properties associated with the specified asset model.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['assetModelPropertySummaries'] })
   .openapi('ListAssetModelPropertiesResponse')
 
 const AssetModelSummarySchema = z
   .object({
-    id: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the asset model (used with IoT SiteWise APIs).' }),
-    ),
-    arn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the asset model, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:asset-model/${AssetModelId}</code> </p>',
-        }),
-    ),
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the asset model.' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The asset model description.' }),
-    ),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the asset model was created, in Unix epoch time.' }),
-    ),
-    lastUpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date the asset model was last updated, in Unix epoch time.' }),
-    ),
-    status: AssetModelStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the asset model.' }),
-    ),
+    id: IDSchema.openapi({
+      description: 'The ID of the asset model (used with IoT SiteWise APIs).',
+    }),
+    arn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the asset model, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:asset-model/${AssetModelId}</code> </p>',
+    }),
+    name: NameSchema.openapi({ description: 'The name of the asset model.' }),
+    description: DescriptionSchema.openapi({ description: 'The asset model description.' }),
+    creationDate: TimestampSchema.openapi({
+      description: 'The date the asset model was created, in Unix epoch time.',
+    }),
+    lastUpdateDate: TimestampSchema.openapi({
+      description: 'The date the asset model was last updated, in Unix epoch time.',
+    }),
+    status: AssetModelStatusSchema.openapi({
+      description: 'The current status of the asset model.',
+    }),
   })
   .openapi({
     required: ['id', 'arn', 'name', 'description', 'creationDate', 'lastUpdateDate', 'status'],
@@ -3475,47 +2716,31 @@ const AssetModelSummariesSchema = z.array(AssetModelSummarySchema).openapi('Asse
 
 const ListAssetModelsResponseSchema = z
   .object({
-    assetModelSummaries: AssetModelSummariesSchema.and(
-      z.any().openapi({ description: 'A list that summarizes each asset model.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    assetModelSummaries: AssetModelSummariesSchema.openapi({
+      description: 'A list that summarizes each asset model.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['assetModelSummaries'] })
   .openapi('ListAssetModelsResponse')
 
 const AssetPropertySummarySchema = z
   .object({
-    id: IDSchema.and(z.any().openapi({ description: 'The ID of the property.' })).exactOptional(),
-    alias: PropertyAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
-    unit: PropertyUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The unit of measure (such as Newtons or RPM) of the asset property. ',
-        }),
-    ).exactOptional(),
+    id: IDSchema.exactOptional().openapi({ description: 'The ID of the property.' }),
+    alias: PropertyAliasSchema.exactOptional().openapi({
+      description:
+        'The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+    unit: PropertyUnitSchema.exactOptional().openapi({
+      description: ' The unit of measure (such as Newtons or RPM) of the asset property. ',
+    }),
     notification: PropertyNotificationSchema.exactOptional(),
-    assetCompositeModelId: IDSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The ID of the composite model that contains the asset property. ',
-        }),
-    ).exactOptional(),
+    assetCompositeModelId: IDSchema.exactOptional().openapi({
+      description: ' The ID of the composite model that contains the asset property. ',
+    }),
   })
   .openapi({
     description: 'Contains a summary of a property associated with an asset.',
@@ -3529,33 +2754,25 @@ const AssetPropertySummariesSchema = z
 
 const ListAssetPropertiesResponseSchema = z
   .object({
-    assetPropertySummaries: AssetPropertySummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list that summarizes the properties associated with the specified asset.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    assetPropertySummaries: AssetPropertySummariesSchema.openapi({
+      description: 'A list that summarizes the properties associated with the specified asset.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['assetPropertySummaries'] })
   .openapi('ListAssetPropertiesResponse')
 
 const AssetHierarchyInfoSchema = z
   .object({
-    parentAssetId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the parent asset in this asset relationship.' }),
-    ).exactOptional(),
-    childAssetId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the child asset in this asset relationship.' }),
-    ).exactOptional(),
+    parentAssetId: IDSchema.exactOptional().openapi({
+      description: 'The ID of the parent asset in this asset relationship.',
+    }),
+    childAssetId: IDSchema.exactOptional().openapi({
+      description: 'The ID of the child asset in this asset relationship.',
+    }),
   })
   .openapi({
     description:
@@ -3568,22 +2785,14 @@ const AssetRelationshipTypeSchema = z.literal('HIERARCHY').openapi('AssetRelatio
 
 const AssetRelationshipSummarySchema = z
   .object({
-    hierarchyInfo: AssetHierarchyInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The assets that are related through an asset hierarchy.</p> <p>This object is present if the <code>relationshipType</code> is <code>HIERARCHY</code>.</p>',
-        }),
-    ).exactOptional(),
-    relationshipType: AssetRelationshipTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The relationship type of the assets in this relationship. This value is one of the following:</p> <ul> <li> <p> <code>HIERARCHY</code> – The assets are related through an asset hierarchy. If you specify this relationship type, this asset relationship includes the <code>hierarchyInfo</code> object.</p> </li> </ul>',
-        }),
-    ),
+    hierarchyInfo: AssetHierarchyInfoSchema.exactOptional().openapi({
+      description:
+        '<p>The assets that are related through an asset hierarchy.</p> <p>This object is present if the <code>relationshipType</code> is <code>HIERARCHY</code>.</p>',
+    }),
+    relationshipType: AssetRelationshipTypeSchema.openapi({
+      description:
+        '<p>The relationship type of the assets in this relationship. This value is one of the following:</p> <ul> <li> <p> <code>HIERARCHY</code> – The assets are related through an asset hierarchy. If you specify this relationship type, this asset relationship includes the <code>hierarchyInfo</code> object.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['relationshipType'],
@@ -3597,56 +2806,42 @@ const AssetRelationshipSummariesSchema = z
 
 const ListAssetRelationshipsResponseSchema = z
   .object({
-    assetRelationshipSummaries: AssetRelationshipSummariesSchema.and(
-      z.any().openapi({ description: 'A list that summarizes each asset relationship.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    assetRelationshipSummaries: AssetRelationshipSummariesSchema.openapi({
+      description: 'A list that summarizes each asset relationship.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['assetRelationshipSummaries'] })
   .openapi('ListAssetRelationshipsResponse')
 
 const AssetSummarySchema = z
   .object({
-    id: IDSchema.and(z.any().openapi({ description: 'The ID of the asset.' })),
-    arn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the asset, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:asset/${AssetId}</code> </p>',
-        }),
-    ),
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the asset.' })),
-    assetModelId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the asset model used to create this asset.' }),
-    ),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the asset was created, in Unix epoch time.' }),
-    ),
-    lastUpdateDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the asset was last updated, in Unix epoch time.' }),
-    ),
-    status: AssetStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the asset.' }),
-    ),
-    hierarchies: AssetHierarchiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of asset hierarchies that each contain a <code>hierarchyId</code>. A hierarchy specifies allowed parent/child asset relationships.',
-        }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the asset.' }),
-    ).exactOptional(),
+    id: IDSchema.openapi({ description: 'The ID of the asset.' }),
+    arn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the asset, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:asset/${AssetId}</code> </p>',
+    }),
+    name: NameSchema.openapi({ description: 'The name of the asset.' }),
+    assetModelId: IDSchema.openapi({
+      description: 'The ID of the asset model used to create this asset.',
+    }),
+    creationDate: TimestampSchema.openapi({
+      description: 'The date the asset was created, in Unix epoch time.',
+    }),
+    lastUpdateDate: TimestampSchema.openapi({
+      description: 'The date the asset was last updated, in Unix epoch time.',
+    }),
+    status: AssetStatusSchema.openapi({ description: 'The current status of the asset.' }),
+    hierarchies: AssetHierarchiesSchema.openapi({
+      description:
+        'A list of asset hierarchies that each contain a <code>hierarchyId</code>. A hierarchy specifies allowed parent/child asset relationships.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description for the asset.',
+    }),
   })
   .openapi({
     required: [
@@ -3667,56 +2862,42 @@ const AssetSummariesSchema = z.array(AssetSummarySchema).openapi('AssetSummaries
 
 const ListAssetsResponseSchema = z
   .object({
-    assetSummaries: AssetSummariesSchema.and(
-      z.any().openapi({ description: 'A list that summarizes each asset.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    assetSummaries: AssetSummariesSchema.openapi({
+      description: 'A list that summarizes each asset.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['assetSummaries'] })
   .openapi('ListAssetsResponse')
 
 const AssociatedAssetsSummarySchema = z
   .object({
-    id: IDSchema.and(z.any().openapi({ description: 'The ID of the asset.' })),
-    arn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the asset, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:asset/${AssetId}</code> </p>',
-        }),
-    ),
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the asset.' })),
-    assetModelId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the asset model used to create the asset.' }),
-    ),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the asset was created, in Unix epoch time.' }),
-    ),
-    lastUpdateDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the asset was last updated, in Unix epoch time.' }),
-    ),
-    status: AssetStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the asset.' }),
-    ),
-    hierarchies: AssetHierarchiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of asset hierarchies that each contain a <code>hierarchyId</code>. A hierarchy specifies allowed parent/child asset relationships.',
-        }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the asset.' }),
-    ).exactOptional(),
+    id: IDSchema.openapi({ description: 'The ID of the asset.' }),
+    arn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the asset, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:asset/${AssetId}</code> </p>',
+    }),
+    name: NameSchema.openapi({ description: 'The name of the asset.' }),
+    assetModelId: IDSchema.openapi({
+      description: 'The ID of the asset model used to create the asset.',
+    }),
+    creationDate: TimestampSchema.openapi({
+      description: 'The date the asset was created, in Unix epoch time.',
+    }),
+    lastUpdateDate: TimestampSchema.openapi({
+      description: 'The date the asset was last updated, in Unix epoch time.',
+    }),
+    status: AssetStatusSchema.openapi({ description: 'The current status of the asset.' }),
+    hierarchies: AssetHierarchiesSchema.openapi({
+      description:
+        'A list of asset hierarchies that each contain a <code>hierarchyId</code>. A hierarchy specifies allowed parent/child asset relationships.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description for the asset.',
+    }),
   })
   .openapi({
     required: [
@@ -3739,35 +2920,27 @@ const AssociatedAssetsSummariesSchema = z
 
 const ListAssociatedAssetsResponseSchema = z
   .object({
-    assetSummaries: AssociatedAssetsSummariesSchema.and(
-      z.any().openapi({ description: 'A list that summarizes the associated assets.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    assetSummaries: AssociatedAssetsSummariesSchema.openapi({
+      description: 'A list that summarizes the associated assets.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['assetSummaries'] })
   .openapi('ListAssociatedAssetsResponse')
 
 const JobSummarySchema = z
   .object({
-    id: IDSchema.and(z.any().openapi({ description: 'The ID of the job.' })),
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The unique name that helps identify the job request.' }),
-    ),
-    status: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the bulk import job can be one of following values.</p> <ul> <li> <p> <code>PENDING</code> – IoT SiteWise is waiting for the current bulk import job to finish.</p> </li> <li> <p> <code>CANCELLED</code> – The bulk import job has been canceled.</p> </li> <li> <p> <code>RUNNING</code> – IoT SiteWise is processing your request to import your data from Amazon S3.</p> </li> <li> <p> <code>COMPLETED</code> – IoT SiteWise successfully completed your request to import data from Amazon S3.</p> </li> <li> <p> <code>FAILED</code> – IoT SiteWise couldn't process your request to import data from Amazon S3. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> <li> <p> <code>COMPLETED_WITH_FAILURES</code> – IoT SiteWise completed your request to import data from Amazon S3 with errors. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> </ul>",
-        }),
-    ),
+    id: IDSchema.openapi({ description: 'The ID of the job.' }),
+    name: NameSchema.openapi({
+      description: 'The unique name that helps identify the job request.',
+    }),
+    status: JobStatusSchema.openapi({
+      description:
+        "<p>The status of the bulk import job can be one of following values.</p> <ul> <li> <p> <code>PENDING</code> – IoT SiteWise is waiting for the current bulk import job to finish.</p> </li> <li> <p> <code>CANCELLED</code> – The bulk import job has been canceled.</p> </li> <li> <p> <code>RUNNING</code> – IoT SiteWise is processing your request to import your data from Amazon S3.</p> </li> <li> <p> <code>COMPLETED</code> – IoT SiteWise successfully completed your request to import data from Amazon S3.</p> </li> <li> <p> <code>FAILED</code> – IoT SiteWise couldn't process your request to import data from Amazon S3. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> <li> <p> <code>COMPLETED_WITH_FAILURES</code> – IoT SiteWise completed your request to import data from Amazon S3 with errors. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> </ul>",
+    }),
   })
   .openapi({
     required: ['id', 'name', 'status'],
@@ -3779,36 +2952,28 @@ const JobSummariesSchema = z.array(JobSummarySchema).openapi('JobSummaries')
 
 const ListBulkImportJobsResponseSchema = z
   .object({
-    jobSummaries: JobSummariesSchema.and(
-      z.any().openapi({ description: 'One or more job summaries to list.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    jobSummaries: JobSummariesSchema.openapi({ description: 'One or more job summaries to list.' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['jobSummaries'] })
   .openapi('ListBulkImportJobsResponse')
 
 const DashboardSummarySchema = z
   .object({
-    id: IDSchema.and(z.any().openapi({ description: 'The ID of the dashboard.' })),
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the dashboard' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: "The dashboard's description." }),
-    ).exactOptional(),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the dashboard was created, in Unix epoch time.' }),
-    ).exactOptional(),
-    lastUpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date the dashboard was last updated, in Unix epoch time.' }),
-    ).exactOptional(),
+    id: IDSchema.openapi({ description: 'The ID of the dashboard.' }),
+    name: NameSchema.openapi({ description: 'The name of the dashboard' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: "The dashboard's description.",
+    }),
+    creationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date the dashboard was created, in Unix epoch time.',
+    }),
+    lastUpdateDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date the dashboard was last updated, in Unix epoch time.',
+    }),
   })
   .openapi({ required: ['id', 'name'], description: 'Contains a dashboard summary.' })
   .openapi('DashboardSummary')
@@ -3817,42 +2982,32 @@ const DashboardSummariesSchema = z.array(DashboardSummarySchema).openapi('Dashbo
 
 const ListDashboardsResponseSchema = z
   .object({
-    dashboardSummaries: DashboardSummariesSchema.and(
-      z.any().openapi({ description: 'A list that summarizes each dashboard in the project.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    dashboardSummaries: DashboardSummariesSchema.openapi({
+      description: 'A list that summarizes each dashboard in the project.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['dashboardSummaries'] })
   .openapi('ListDashboardsResponse')
 
 const GatewaySummarySchema = z
   .object({
-    gatewayId: IDSchema.and(z.any().openapi({ description: 'The ID of the gateway device.' })),
-    gatewayName: NameSchema.and(z.any().openapi({ description: 'The name of the asset.' })),
+    gatewayId: IDSchema.openapi({ description: 'The ID of the gateway device.' }),
+    gatewayName: NameSchema.openapi({ description: 'The name of the asset.' }),
     gatewayPlatform: GatewayPlatformSchema.exactOptional(),
-    gatewayCapabilitySummaries: GatewayCapabilitySummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of gateway capability summaries that each contain a namespace and status. Each gateway capability defines data sources for the gateway. To retrieve a capability configuration\'s definition, use <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeGatewayCapabilityConfiguration.html">DescribeGatewayCapabilityConfiguration</a>.',
-        }),
-    ).exactOptional(),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the gateway was created, in Unix epoch time.' }),
-    ),
-    lastUpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date the gateway was last updated, in Unix epoch time.' }),
-    ),
+    gatewayCapabilitySummaries: GatewayCapabilitySummariesSchema.exactOptional().openapi({
+      description:
+        'A list of gateway capability summaries that each contain a namespace and status. Each gateway capability defines data sources for the gateway. To retrieve a capability configuration\'s definition, use <a href="https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeGatewayCapabilityConfiguration.html">DescribeGatewayCapabilityConfiguration</a>.',
+    }),
+    creationDate: TimestampSchema.openapi({
+      description: 'The date the gateway was created, in Unix epoch time.',
+    }),
+    lastUpdateDate: TimestampSchema.openapi({
+      description: 'The date the gateway was last updated, in Unix epoch time.',
+    }),
   })
   .openapi({
     required: ['gatewayId', 'gatewayName', 'creationDate', 'lastUpdateDate'],
@@ -3864,50 +3019,38 @@ const GatewaySummariesSchema = z.array(GatewaySummarySchema).openapi('GatewaySum
 
 const ListGatewaysResponseSchema = z
   .object({
-    gatewaySummaries: GatewaySummariesSchema.and(
-      z.any().openapi({ description: 'A list that summarizes each gateway.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    gatewaySummaries: GatewaySummariesSchema.openapi({
+      description: 'A list that summarizes each gateway.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['gatewaySummaries'] })
   .openapi('ListGatewaysResponse')
 
 const PortalSummarySchema = z
   .object({
-    id: IDSchema.and(z.any().openapi({ description: 'The ID of the portal.' })),
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the portal.' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: "The portal's description." }),
-    ).exactOptional(),
-    startUrl: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL for the IoT SiteWise Monitor portal. You can use this URL to access portals that use IAM Identity Center for authentication. For portals that use IAM for authentication, you must use the IoT SiteWise console to get a URL that you can use to access the portal.',
-        }),
-    ),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the portal was created, in Unix epoch time.' }),
-    ).exactOptional(),
-    lastUpdateDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the portal was last updated, in Unix epoch time.' }),
-    ).exactOptional(),
-    roleArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the service role that allows the portal\'s users to access your IoT SiteWise resources on your behalf. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-service-role.html">Using service roles for IoT SiteWise Monitor</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
+    id: IDSchema.openapi({ description: 'The ID of the portal.' }),
+    name: NameSchema.openapi({ description: 'The name of the portal.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: "The portal's description.",
+    }),
+    startUrl: UrlSchema.openapi({
+      description:
+        'The URL for the IoT SiteWise Monitor portal. You can use this URL to access portals that use IAM Identity Center for authentication. For portals that use IAM for authentication, you must use the IoT SiteWise console to get a URL that you can use to access the portal.',
+    }),
+    creationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date the portal was created, in Unix epoch time.',
+    }),
+    lastUpdateDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date the portal was last updated, in Unix epoch time.',
+    }),
+    roleArn: ARNSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the service role that allows the portal\'s users to access your IoT SiteWise resources on your behalf. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-service-role.html">Using service roles for IoT SiteWise Monitor</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
     status: PortalStatusSchema,
   })
   .openapi({
@@ -3920,17 +3063,13 @@ const PortalSummariesSchema = z.array(PortalSummarySchema).openapi('PortalSummar
 
 const ListPortalsResponseSchema = z
   .object({
-    portalSummaries: PortalSummariesSchema.and(
-      z.any().openapi({ description: 'A list that summarizes each portal.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    portalSummaries: PortalSummariesSchema.exactOptional().openapi({
+      description: 'A list that summarizes each portal.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPortalsResponse')
@@ -3939,40 +3078,30 @@ const AssetIDsSchema = z.array(IDSchema).openapi('AssetIDs')
 
 const ListProjectAssetsResponseSchema = z
   .object({
-    assetIds: AssetIDsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list that contains the IDs of each asset associated with the project.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    assetIds: AssetIDsSchema.openapi({
+      description: 'A list that contains the IDs of each asset associated with the project.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['assetIds'] })
   .openapi('ListProjectAssetsResponse')
 
 const ProjectSummarySchema = z
   .object({
-    id: IDSchema.and(z.any().openapi({ description: 'The ID of the project.' })),
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the project.' })),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: "The project's description." }),
-    ).exactOptional(),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the project was created, in Unix epoch time.' }),
-    ).exactOptional(),
-    lastUpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date the project was last updated, in Unix epoch time.' }),
-    ).exactOptional(),
+    id: IDSchema.openapi({ description: 'The ID of the project.' }),
+    name: NameSchema.openapi({ description: 'The name of the project.' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: "The project's description.",
+    }),
+    creationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date the project was created, in Unix epoch time.',
+    }),
+    lastUpdateDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date the project was last updated, in Unix epoch time.',
+    }),
   })
   .openapi({ required: ['id', 'name'], description: 'Contains project summary information.' })
   .openapi('ProjectSummary')
@@ -3981,37 +3110,23 @@ const ProjectSummariesSchema = z.array(ProjectSummarySchema).openapi('ProjectSum
 
 const ListProjectsResponseSchema = z
   .object({
-    projectSummaries: ProjectSummariesSchema.and(
-      z.any().openapi({ description: 'A list that summarizes each project in the portal.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    projectSummaries: ProjectSummariesSchema.openapi({
+      description: 'A list that summarizes each project in the portal.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['projectSummaries'] })
   .openapi('ListProjectsResponse')
 
-const TagMapSchema = z
-  .record(z.string(), TagValueSchema)
-  .refine((val) => Object.keys(val).length >= 1)
-  .refine((val) => Object.keys(val).length <= 50)
-  .openapi('TagMap')
-
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -4020,56 +3135,32 @@ const UnauthorizedExceptionSchema = z.any().openapi('UnauthorizedException')
 
 const TimeSeriesSummarySchema = z
   .object({
-    assetId: IDSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the asset in which the asset property was created.' }),
-    ).exactOptional(),
-    propertyId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the asset property.' }),
-    ).exactOptional(),
-    alias: PropertyAliasSchema.and(
-      z.any().openapi({ description: 'The alias that identifies the time series.' }),
-    ).exactOptional(),
-    timeSeriesId: TimeSeriesIdSchema.and(
-      z.any().openapi({ description: 'The ID of the time series.' }),
-    ),
-    dataType: PropertyDataTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The data type of the time series.</p> <p>If you specify <code>STRUCT</code>, you must also specify <code>dataTypeSpec</code> to identify the type of the structure for this time series.</p>',
-        }),
-    ),
-    dataTypeSpec: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The data type of the structure for this time series. This parameter is required for time series that have the <code>STRUCT</code> data type.</p> <p>The options for this parameter depend on the type of the composite model in which you created the asset property that is associated with your time series. Use <code>AWS/ALARM_STATE</code> for alarm state in alarm composite models.</p>',
-        }),
-    ).exactOptional(),
-    timeSeriesCreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date that the time series was created, in Unix epoch time.' }),
-    ),
-    timeSeriesLastUpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date that the time series was last updated, in Unix epoch time.',
-        }),
-    ),
-    timeSeriesArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the time series, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:time-series/${TimeSeriesId}</code> </p>',
-        }),
-    ),
+    assetId: IDSchema.exactOptional().openapi({
+      description: 'The ID of the asset in which the asset property was created.',
+    }),
+    propertyId: IDSchema.exactOptional().openapi({ description: 'The ID of the asset property.' }),
+    alias: PropertyAliasSchema.exactOptional().openapi({
+      description: 'The alias that identifies the time series.',
+    }),
+    timeSeriesId: TimeSeriesIdSchema.openapi({ description: 'The ID of the time series.' }),
+    dataType: PropertyDataTypeSchema.openapi({
+      description:
+        '<p>The data type of the time series.</p> <p>If you specify <code>STRUCT</code>, you must also specify <code>dataTypeSpec</code> to identify the type of the structure for this time series.</p>',
+    }),
+    dataTypeSpec: NameSchema.exactOptional().openapi({
+      description:
+        '<p>The data type of the structure for this time series. This parameter is required for time series that have the <code>STRUCT</code> data type.</p> <p>The options for this parameter depend on the type of the composite model in which you created the asset property that is associated with your time series. Use <code>AWS/ALARM_STATE</code> for alarm state in alarm composite models.</p>',
+    }),
+    timeSeriesCreationDate: TimestampSchema.openapi({
+      description: 'The date that the time series was created, in Unix epoch time.',
+    }),
+    timeSeriesLastUpdateDate: TimestampSchema.openapi({
+      description: 'The date that the time series was last updated, in Unix epoch time.',
+    }),
+    timeSeriesArn: ARNSchema.openapi({
+      description:
+        '<p>The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the time series, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:time-series/${TimeSeriesId}</code> </p>',
+    }),
   })
   .openapi({
     required: [
@@ -4087,221 +3178,146 @@ const TimeSeriesSummariesSchema = z.array(TimeSeriesSummarySchema).openapi('Time
 
 const ListTimeSeriesResponseSchema = z
   .object({
-    TimeSeriesSummaries: TimeSeriesSummariesSchema.and(
-      z.any().openapi({ description: 'One or more time series summaries to list.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    TimeSeriesSummaries: TimeSeriesSummariesSchema.openapi({
+      description: 'One or more time series summaries to list.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: ['TimeSeriesSummaries'] })
   .openapi('ListTimeSeriesResponse')
 
 const PutDefaultEncryptionConfigurationResponseSchema = z
   .object({
-    encryptionType: EncryptionTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of encryption used for the encryption configuration.' }),
-    ),
-    kmsKeyArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Key ARN of the KMS key used for KMS encryption if you use <code>KMS_BASED_ENCRYPTION</code>.',
-        }),
-    ).exactOptional(),
-    configurationStatus: ConfigurationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the account configuration. This contains the <code>ConfigurationState</code>. If there is an error, it also contains the <code>ErrorDetails</code>.',
-        }),
-    ),
+    encryptionType: EncryptionTypeSchema.openapi({
+      description: 'The type of encryption used for the encryption configuration.',
+    }),
+    kmsKeyArn: ARNSchema.exactOptional().openapi({
+      description:
+        'The Key ARN of the KMS key used for KMS encryption if you use <code>KMS_BASED_ENCRYPTION</code>.',
+    }),
+    configurationStatus: ConfigurationStatusSchema.openapi({
+      description:
+        'The status of the account configuration. This contains the <code>ConfigurationState</code>. If there is an error, it also contains the <code>ErrorDetails</code>.',
+    }),
   })
   .openapi({ required: ['encryptionType', 'configurationStatus'] })
   .openapi('PutDefaultEncryptionConfigurationResponse')
 
-const PutLoggingOptionsResponseSchema = z.object({}).openapi('PutLoggingOptionsResponse')
+const PutLoggingOptionsResponseSchema = z.looseObject({}).openapi('PutLoggingOptionsResponse')
 
 const PutStorageConfigurationResponseSchema = z
   .object({
-    storageType: StorageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The storage tier that you specified for your data. The <code>storageType</code> parameter can be one of the following values:</p> <ul> <li> <p> <code>SITEWISE_DEFAULT_STORAGE</code> – IoT SiteWise saves your data into the hot tier. The hot tier is a service-managed database.</p> </li> <li> <p> <code>MULTI_LAYER_STORAGE</code> – IoT SiteWise saves your data in both the cold tier and the hot tier. The cold tier is a customer-managed Amazon S3 bucket.</p> </li> </ul>',
-        }),
-    ),
-    multiLayerStorage: MultiLayerStorageSchema.and(
-      z.any().openapi({ description: 'Contains information about the storage destination.' }),
-    ).exactOptional(),
-    disassociatedDataStorage: DisassociatedDataStorageStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Contains the storage configuration for time series (data streams) that aren't associated with asset properties. The <code>disassociatedDataStorage</code> can be one of the following values:</p> <ul> <li> <p> <code>ENABLED</code> – IoT SiteWise accepts time series that aren't associated with asset properties.</p> <important> <p>After the <code>disassociatedDataStorage</code> is enabled, you can't disable it.</p> </important> </li> <li> <p> <code>DISABLED</code> – IoT SiteWise doesn't accept time series (data streams) that aren't associated with asset properties.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/data-streams.html\">Data streams</a> in the <i>IoT SiteWise User Guide</i>.</p>",
-        }),
-    ).exactOptional(),
+    storageType: StorageTypeSchema.openapi({
+      description:
+        '<p>The storage tier that you specified for your data. The <code>storageType</code> parameter can be one of the following values:</p> <ul> <li> <p> <code>SITEWISE_DEFAULT_STORAGE</code> – IoT SiteWise saves your data into the hot tier. The hot tier is a service-managed database.</p> </li> <li> <p> <code>MULTI_LAYER_STORAGE</code> – IoT SiteWise saves your data in both the cold tier and the hot tier. The cold tier is a customer-managed Amazon S3 bucket.</p> </li> </ul>',
+    }),
+    multiLayerStorage: MultiLayerStorageSchema.exactOptional().openapi({
+      description: 'Contains information about the storage destination.',
+    }),
+    disassociatedDataStorage: DisassociatedDataStorageStateSchema.exactOptional().openapi({
+      description:
+        "<p>Contains the storage configuration for time series (data streams) that aren't associated with asset properties. The <code>disassociatedDataStorage</code> can be one of the following values:</p> <ul> <li> <p> <code>ENABLED</code> – IoT SiteWise accepts time series that aren't associated with asset properties.</p> <important> <p>After the <code>disassociatedDataStorage</code> is enabled, you can't disable it.</p> </important> </li> <li> <p> <code>DISABLED</code> – IoT SiteWise doesn't accept time series (data streams) that aren't associated with asset properties.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/data-streams.html\">Data streams</a> in the <i>IoT SiteWise User Guide</i>.</p>",
+    }),
     retentionPeriod: RetentionPeriodSchema.exactOptional(),
     configurationStatus: ConfigurationStatusSchema,
   })
   .openapi({ required: ['storageType', 'configurationStatus'] })
   .openapi('PutStorageConfigurationResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TooManyTagsExceptionSchema = z.any().openapi('TooManyTagsException')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z.string().min(1).max(128).openapi('TagKey')
 
-const UpdateAccessPolicyResponseSchema = z.object({}).openapi('UpdateAccessPolicyResponse')
+const UpdateAccessPolicyResponseSchema = z.looseObject({}).openapi('UpdateAccessPolicyResponse')
 
 const UpdateAssetResponseSchema = z
   .object({
-    assetStatus: AssetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the asset, which contains a state (<code>UPDATING</code> after successfully calling this operation) and any error message.',
-        }),
-    ),
+    assetStatus: AssetStatusSchema.openapi({
+      description:
+        'The status of the asset, which contains a state (<code>UPDATING</code> after successfully calling this operation) and any error message.',
+    }),
   })
   .openapi({ required: ['assetStatus'] })
   .openapi('UpdateAssetResponse')
 
 const UpdateAssetModelResponseSchema = z
   .object({
-    assetModelStatus: AssetModelStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the asset model, which contains a state (<code>UPDATING</code> after successfully calling this operation) and any error message.',
-        }),
-    ),
+    assetModelStatus: AssetModelStatusSchema.openapi({
+      description:
+        'The status of the asset model, which contains a state (<code>UPDATING</code> after successfully calling this operation) and any error message.',
+    }),
   })
   .openapi({ required: ['assetModelStatus'] })
   .openapi('UpdateAssetModelResponse')
 
-const UpdateDashboardResponseSchema = z.object({}).openapi('UpdateDashboardResponse')
+const UpdateDashboardResponseSchema = z.looseObject({}).openapi('UpdateDashboardResponse')
 
 const UpdateGatewayCapabilityConfigurationResponseSchema = z
   .object({
-    capabilityNamespace: CapabilityNamespaceSchema.and(
-      z.any().openapi({ description: 'The namespace of the gateway capability.' }),
-    ),
-    capabilitySyncStatus: CapabilitySyncStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The synchronization status of the capability configuration. The sync status can be one of the following:</p> <ul> <li> <p> <code>IN_SYNC</code> – The gateway is running the capability configuration.</p> </li> <li> <p> <code>OUT_OF_SYNC</code> – The gateway hasn't received the capability configuration.</p> </li> <li> <p> <code>SYNC_FAILED</code> – The gateway rejected the capability configuration.</p> </li> </ul> <p>After you update a capability configuration, its sync status is <code>OUT_OF_SYNC</code> until the gateway receives and applies or rejects the updated configuration.</p>",
-        }),
-    ),
+    capabilityNamespace: CapabilityNamespaceSchema.openapi({
+      description: 'The namespace of the gateway capability.',
+    }),
+    capabilitySyncStatus: CapabilitySyncStatusSchema.openapi({
+      description:
+        "<p>The synchronization status of the capability configuration. The sync status can be one of the following:</p> <ul> <li> <p> <code>IN_SYNC</code> – The gateway is running the capability configuration.</p> </li> <li> <p> <code>OUT_OF_SYNC</code> – The gateway hasn't received the capability configuration.</p> </li> <li> <p> <code>SYNC_FAILED</code> – The gateway rejected the capability configuration.</p> </li> </ul> <p>After you update a capability configuration, its sync status is <code>OUT_OF_SYNC</code> until the gateway receives and applies or rejects the updated configuration.</p>",
+    }),
   })
   .openapi({ required: ['capabilityNamespace', 'capabilitySyncStatus'] })
   .openapi('UpdateGatewayCapabilityConfigurationResponse')
 
 const UpdatePortalResponseSchema = z
   .object({
-    portalStatus: PortalStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the portal, which contains a state (<code>UPDATING</code> after successfully calling this operation) and any error message.',
-        }),
-    ),
+    portalStatus: PortalStatusSchema.openapi({
+      description:
+        'The status of the portal, which contains a state (<code>UPDATING</code> after successfully calling this operation) and any error message.',
+    }),
   })
   .openapi({ required: ['portalStatus'] })
   .openapi('UpdatePortalResponse')
 
 const ImageFileSchema = z
   .object({
-    data: ImageFileDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The image file contents, represented as a base64-encoded string. The file size must be less than 1 MB.',
-        }),
-    ),
-    type: ImageFileTypeSchema.and(z.any().openapi({ description: 'The file type of the image.' })),
+    data: ImageFileDataSchema.openapi({
+      description:
+        'The image file contents, represented as a base64-encoded string. The file size must be less than 1 MB.',
+    }),
+    type: ImageFileTypeSchema.openapi({ description: 'The file type of the image.' }),
   })
   .openapi({ required: ['data', 'type'], description: 'Contains an image file.' })
   .openapi('ImageFile')
 
-const UpdateProjectResponseSchema = z.object({}).openapi('UpdateProjectResponse')
+const UpdateProjectResponseSchema = z.looseObject({}).openapi('UpdateProjectResponse')
 
 const AmazonResourceNameSchema = z.string().min(1).max(1011).openapi('AmazonResourceName')
 
-const AssetModelCompositeModelDefinitionsSchema = z
-  .array(AssetModelCompositeModelDefinitionSchema)
-  .openapi('AssetModelCompositeModelDefinitions')
-
-const AssetModelHierarchyDefinitionsSchema = z
-  .array(AssetModelHierarchyDefinitionSchema)
-  .openapi('AssetModelHierarchyDefinitions')
-
-const AssetModelPropertyDefinitionsSchema = z
-  .array(AssetModelPropertyDefinitionSchema)
-  .openapi('AssetModelPropertyDefinitions')
-
-const ClientTokenSchema = z
-  .string()
-  .regex(/\S{36,64}/)
-  .min(36)
-  .max(64)
-  .openapi('ClientToken')
-
 const AssociateAssetsRequestSchema = z
   .object({
-    hierarchyId: IDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of a hierarchy in the parent asset\'s model. Hierarchies allow different groupings of assets to be formed that all come from the same asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ),
-    childAssetId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the child asset to be associated.' }),
-    ),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
+    hierarchyId: IDSchema.openapi({
+      description:
+        'The ID of a hierarchy in the parent asset\'s model. Hierarchies allow different groupings of assets to be formed that all come from the same asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+    childAssetId: IDSchema.openapi({ description: 'The ID of the child asset to be associated.' }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
   })
   .openapi({ required: ['hierarchyId', 'childAssetId'], title: 'AssociateAssetsRequest' })
   .openapi('AssociateAssetsRequest')
 
 const AssociateTimeSeriesToAssetPropertyRequestSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
   })
   .openapi({ title: 'AssociateTimeSeriesToAssetPropertyRequest', required: [] })
   .openapi('AssociateTimeSeriesToAssetPropertyRequest')
@@ -4310,36 +3326,26 @@ const IDsSchema = z.array(IDSchema).min(1).max(100).openapi('IDs')
 
 const BatchAssociateProjectAssetsRequestSchema = z
   .object({
-    assetIds: IDsSchema.and(
-      z.any().openapi({ description: 'The IDs of the assets to be associated to the project.' }),
-    ),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
+    assetIds: IDsSchema.openapi({
+      description: 'The IDs of the assets to be associated to the project.',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
   })
   .openapi({ required: ['assetIds'], title: 'BatchAssociateProjectAssetsRequest' })
   .openapi('BatchAssociateProjectAssetsRequest')
 
 const BatchDisassociateProjectAssetsRequestSchema = z
   .object({
-    assetIds: IDsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The IDs of the assets to be disassociated from the project.' }),
-    ),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
+    assetIds: IDsSchema.openapi({
+      description: 'The IDs of the assets to be disassociated from the project.',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
   })
   .openapi({ required: ['assetIds'], title: 'BatchDisassociateProjectAssetsRequest' })
   .openapi('BatchDisassociateProjectAssetsRequest')
@@ -4355,27 +3361,17 @@ const BatchGetAssetPropertyAggregatesMaxResultsSchema = z
 
 const BatchGetAssetPropertyAggregatesRequestSchema = z
   .object({
-    entries: BatchGetAssetPropertyAggregatesEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of asset property aggregate entries for the batch get request. You can specify up to 16 entries per request.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The token to be used for the next set of paginated results.' }),
-    ).exactOptional(),
-    maxResults: BatchGetAssetPropertyAggregatesMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of results to return for each paginated request. A result set is returned in the two cases, whichever occurs first.</p> <ul> <li> <p>The size of the result set is less than 1 MB.</p> </li> <li> <p>The number of data points in the result set is less than the value of <code>maxResults</code>. The maximum value of <code>maxResults</code> is 4000.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    entries: BatchGetAssetPropertyAggregatesEntriesSchema.openapi({
+      description:
+        'The list of asset property aggregate entries for the batch get request. You can specify up to 16 entries per request.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to be used for the next set of paginated results.',
+    }),
+    maxResults: BatchGetAssetPropertyAggregatesMaxResultsSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of results to return for each paginated request. A result set is returned in the two cases, whichever occurs first.</p> <ul> <li> <p>The size of the result set is less than 1 MB.</p> </li> <li> <p>The number of data points in the result set is less than the value of <code>maxResults</code>. The maximum value of <code>maxResults</code> is 4000.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['entries'], title: 'BatchGetAssetPropertyAggregatesRequest' })
   .openapi('BatchGetAssetPropertyAggregatesRequest')
@@ -4395,46 +3391,30 @@ const BatchGetAssetPropertyValueHistoryMaxResultsSchema = z
 
 const BatchGetAssetPropertyValueHistoryRequestSchema = z
   .object({
-    entries: BatchGetAssetPropertyValueHistoryEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of asset property historical value entries for the batch get request. You can specify up to 16 entries per request.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The token to be used for the next set of paginated results.' }),
-    ).exactOptional(),
-    maxResults: BatchGetAssetPropertyValueHistoryMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of results to return for each paginated request. A result set is returned in the two cases, whichever occurs first.</p> <ul> <li> <p>The size of the result set is less than 1 MB.</p> </li> <li> <p>The number of data points in the result set is less than the value of <code>maxResults</code>. The maximum value of <code>maxResults</code> is 4000.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    entries: BatchGetAssetPropertyValueHistoryEntriesSchema.openapi({
+      description:
+        'The list of asset property historical value entries for the batch get request. You can specify up to 16 entries per request.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to be used for the next set of paginated results.',
+    }),
+    maxResults: BatchGetAssetPropertyValueHistoryMaxResultsSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of results to return for each paginated request. A result set is returned in the two cases, whichever occurs first.</p> <ul> <li> <p>The size of the result set is less than 1 MB.</p> </li> <li> <p>The number of data points in the result set is less than the value of <code>maxResults</code>. The maximum value of <code>maxResults</code> is 4000.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['entries'], title: 'BatchGetAssetPropertyValueHistoryRequest' })
   .openapi('BatchGetAssetPropertyValueHistoryRequest')
 
 const BatchGetAssetPropertyValueRequestSchema = z
   .object({
-    entries: BatchGetAssetPropertyValueEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of asset property value entries for the batch get request. You can specify up to 128 entries per request.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The token to be used for the next set of paginated results.' }),
-    ).exactOptional(),
+    entries: BatchGetAssetPropertyValueEntriesSchema.openapi({
+      description:
+        'The list of asset property value entries for the batch get request. You can specify up to 128 entries per request.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to be used for the next set of paginated results.',
+    }),
   })
   .openapi({ required: ['entries'], title: 'BatchGetAssetPropertyValueRequest' })
   .openapi('BatchGetAssetPropertyValueRequest')
@@ -4445,60 +3425,36 @@ const PutAssetPropertyValueEntriesSchema = z
 
 const BatchPutAssetPropertyValueRequestSchema = z
   .object({
-    entries: PutAssetPropertyValueEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of asset property value entries for the batch put request. You can specify up to 10 entries per request.',
-        }),
-    ),
+    entries: PutAssetPropertyValueEntriesSchema.openapi({
+      description:
+        'The list of asset property value entries for the batch put request. You can specify up to 10 entries per request.',
+    }),
   })
   .openapi({ required: ['entries'], title: 'BatchPutAssetPropertyValueRequest' })
   .openapi('BatchPutAssetPropertyValueRequest')
 
 const CreateAccessPolicyRequestSchema = z
   .object({
-    accessPolicyIdentity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identity for this access policy. Choose an IAM Identity Center user, an IAM Identity Center group, or an IAM user.',
-        }),
-    ),
-    accessPolicyResource: ResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IoT SiteWise Monitor resource for this access policy. Choose either a portal or a project.',
-        }),
-    ),
-    accessPolicyPermission: PermissionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The permission level for this access policy. Note that a project <code>ADMINISTRATOR</code> is also known as a project owner.',
-        }),
-    ),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that contain metadata for the access policy. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
+    accessPolicyIdentity: IdentitySchema.openapi({
+      description:
+        'The identity for this access policy. Choose an IAM Identity Center user, an IAM Identity Center group, or an IAM user.',
+    }),
+    accessPolicyResource: ResourceSchema.openapi({
+      description:
+        'The IoT SiteWise Monitor resource for this access policy. Choose either a portal or a project.',
+    }),
+    accessPolicyPermission: PermissionSchema.openapi({
+      description:
+        'The permission level for this access policy. Note that a project <code>ADMINISTRATOR</code> is also known as a project owner.',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'A list of key-value pairs that contain metadata for the access policy. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['accessPolicyIdentity', 'accessPolicyResource', 'accessPolicyPermission'],
@@ -4506,123 +3462,79 @@ const CreateAccessPolicyRequestSchema = z
   })
   .openapi('CreateAccessPolicyRequest')
 
-const CreateAssetModelRequestSchema = z
+const CreateAssetModelRequestSchema: z.ZodType<CreateAssetModelRequestType> = z
   .object({
-    assetModelName: NameSchema.and(
-      z.any().openapi({ description: 'A unique, friendly name for the asset model.' }),
-    ),
-    assetModelDescription: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the asset model.' }),
-    ).exactOptional(),
-    assetModelProperties: AssetModelPropertyDefinitionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The property definitions of the asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-properties.html">Asset properties</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>You can specify up to 200 properties per asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    assetModelHierarchies: AssetModelHierarchyDefinitionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The hierarchy definitions of the asset model. Each hierarchy specifies an asset model whose assets can be children of any other assets created from this asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>You can specify up to 10 hierarchies per asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    assetModelCompositeModels: AssetModelCompositeModelDefinitionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The composite asset models that are part of this asset model. Composite asset models are asset models that contain specific properties. Each composite model has a type that defines the properties that the composite model supports. Use composite asset models to define alarms on this asset model.',
-        }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that contain metadata for the asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
+    assetModelName: NameSchema.openapi({
+      description: 'A unique, friendly name for the asset model.',
+    }),
+    assetModelDescription: DescriptionSchema.exactOptional().openapi({
+      description: 'A description for the asset model.',
+    }),
+    assetModelProperties: AssetModelPropertyDefinitionsSchema.exactOptional().openapi({
+      description:
+        '<p>The property definitions of the asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-properties.html">Asset properties</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>You can specify up to 200 properties per asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>',
+    }),
+    assetModelHierarchies: AssetModelHierarchyDefinitionsSchema.exactOptional().openapi({
+      description:
+        '<p>The hierarchy definitions of the asset model. Each hierarchy specifies an asset model whose assets can be children of any other assets created from this asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>You can specify up to 10 hierarchies per asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>',
+    }),
+    assetModelCompositeModels: AssetModelCompositeModelDefinitionsSchema.exactOptional().openapi({
+      description:
+        'The composite asset models that are part of this asset model. Composite asset models are asset models that contain specific properties. Each composite model has a type that defines the properties that the composite model supports. Use composite asset models to define alarms on this asset model.',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'A list of key-value pairs that contain metadata for the asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
   })
   .openapi({ required: ['assetModelName'], title: 'CreateAssetModelRequest' })
   .openapi('CreateAssetModelRequest')
 
 const CreateAssetRequestSchema = z
   .object({
-    assetName: NameSchema.and(z.any().openapi({ description: 'A friendly name for the asset.' })),
-    assetModelId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the asset model from which to create the asset.' }),
-    ),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that contain metadata for the asset. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
-    assetDescription: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the asset.' }),
-    ).exactOptional(),
+    assetName: NameSchema.openapi({ description: 'A friendly name for the asset.' }),
+    assetModelId: IDSchema.openapi({
+      description: 'The ID of the asset model from which to create the asset.',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'A list of key-value pairs that contain metadata for the asset. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+    assetDescription: DescriptionSchema.exactOptional().openapi({
+      description: 'A description for the asset.',
+    }),
   })
   .openapi({ required: ['assetName', 'assetModelId'], title: 'CreateAssetRequest' })
   .openapi('CreateAssetRequest')
 
 const CreateBulkImportJobRequestSchema = z
   .object({
-    jobName: NameSchema.and(
-      z.any().openapi({ description: 'The unique name that helps identify the job request.' }),
-    ),
-    jobRoleArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the IAM role that allows IoT SiteWise to read Amazon S3 data.',
-        }),
-    ),
-    files: FilesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The files in the specified Amazon S3 bucket that contain your data.',
-        }),
-    ),
-    errorReportLocation: ErrorReportLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 destination where errors associated with the job creation request are saved.',
-        }),
-    ),
-    jobConfiguration: JobConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the configuration information of a job, such as the file format used to save data in Amazon S3.',
-        }),
-    ),
+    jobName: NameSchema.openapi({
+      description: 'The unique name that helps identify the job request.',
+    }),
+    jobRoleArn: ARNSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the IAM role that allows IoT SiteWise to read Amazon S3 data.',
+    }),
+    files: FilesSchema.openapi({
+      description: 'The files in the specified Amazon S3 bucket that contain your data.',
+    }),
+    errorReportLocation: ErrorReportLocationSchema.openapi({
+      description:
+        'The Amazon S3 destination where errors associated with the job creation request are saved.',
+    }),
+    jobConfiguration: JobConfigurationSchema.openapi({
+      description:
+        'Contains the configuration information of a job, such as the file format used to save data in Amazon S3.',
+    }),
   })
   .openapi({
     required: ['jobName', 'jobRoleArn', 'files', 'errorReportLocation', 'jobConfiguration'],
@@ -4632,39 +3544,25 @@ const CreateBulkImportJobRequestSchema = z
 
 const CreateDashboardRequestSchema = z
   .object({
-    projectId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the project in which to create the dashboard.' }),
-    ),
-    dashboardName: NameSchema.and(
-      z.any().openapi({ description: 'A friendly name for the dashboard.' }),
-    ),
-    dashboardDescription: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the dashboard.' }),
-    ).exactOptional(),
-    dashboardDefinition: DashboardDefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The dashboard definition specified in a JSON literal. For detailed information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/create-dashboards-using-aws-cli.html">Creating dashboards (CLI)</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that contain metadata for the dashboard. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
+    projectId: IDSchema.openapi({
+      description: 'The ID of the project in which to create the dashboard.',
+    }),
+    dashboardName: NameSchema.openapi({ description: 'A friendly name for the dashboard.' }),
+    dashboardDescription: DescriptionSchema.exactOptional().openapi({
+      description: 'A description for the dashboard.',
+    }),
+    dashboardDefinition: DashboardDefinitionSchema.openapi({
+      description:
+        'The dashboard definition specified in a JSON literal. For detailed information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/create-dashboards-using-aws-cli.html">Creating dashboards (CLI)</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'A list of key-value pairs that contain metadata for the dashboard. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['projectId', 'dashboardName', 'dashboardDefinition'],
@@ -4674,95 +3572,55 @@ const CreateDashboardRequestSchema = z
 
 const CreateGatewayRequestSchema = z
   .object({
-    gatewayName: NameSchema.and(
-      z.any().openapi({ description: 'A unique, friendly name for the gateway.' }),
-    ),
-    gatewayPlatform: GatewayPlatformSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The gateway's platform. You can only specify one platform in a gateway.",
-        }),
-    ),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that contain metadata for the gateway. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
+    gatewayName: NameSchema.openapi({ description: 'A unique, friendly name for the gateway.' }),
+    gatewayPlatform: GatewayPlatformSchema.openapi({
+      description: "The gateway's platform. You can only specify one platform in a gateway.",
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'A list of key-value pairs that contain metadata for the gateway. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
   })
   .openapi({ required: ['gatewayName', 'gatewayPlatform'], title: 'CreateGatewayRequest' })
   .openapi('CreateGatewayRequest')
 
 const CreatePortalRequestSchema = z
   .object({
-    portalName: NameSchema.and(z.any().openapi({ description: 'A friendly name for the portal.' })),
-    portalDescription: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the portal.' }),
-    ).exactOptional(),
-    portalContactEmail: EmailSchema.and(
-      z
-        .any()
-        .openapi({ description: "The Amazon Web Services administrator's contact email address." }),
-    ),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
-    portalLogoImageFile: ImageFileSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A logo image to display in the portal. Upload a square, high-resolution image. The image is displayed on a dark background.',
-        }),
-    ).exactOptional(),
-    roleArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of a service role that allows the portal\'s users to access your IoT SiteWise resources on your behalf. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-service-role.html">Using service roles for IoT SiteWise Monitor</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that contain metadata for the portal. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
-    portalAuthMode: AuthModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The service to use to authenticate users to the portal. Choose from the following options:</p> <ul> <li> <p> <code>SSO</code> – The portal uses IAM Identity Center (successor to Single Sign-On) to authenticate users and manage user permissions. Before you can create a portal that uses IAM Identity Center, you must enable IAM Identity Center. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-get-started.html#mon-gs-sso">Enabling IAM Identity Center</a> in the <i>IoT SiteWise User Guide</i>. This option is only available in Amazon Web Services Regions other than the China Regions.</p> </li> <li> <p> <code>IAM</code> – The portal uses Identity and Access Management to authenticate users and manage user permissions.</p> </li> </ul> <p>You can\'t change this value after you create a portal.</p> <p>Default: <code>SSO</code> </p>',
-        }),
-    ).exactOptional(),
-    notificationSenderEmail: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The email address that sends alarm notifications.</p> <important> <p>If you use the <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/lambda-support.html">IoT Events managed Lambda function</a> to manage your emails, you must <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html">verify the sender email address in Amazon SES</a>.</p> </important>',
-        }),
-    ).exactOptional(),
-    alarms: AlarmsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the configuration information of an alarm created in an IoT SiteWise Monitor portal. You can use the alarm to monitor an asset property and get notified when the asset property value is outside a specified range. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/appguide/monitor-alarms.html">Monitoring with alarms</a> in the <i>IoT SiteWise Application Guide</i>.',
-        }),
-    ).exactOptional(),
+    portalName: NameSchema.openapi({ description: 'A friendly name for the portal.' }),
+    portalDescription: DescriptionSchema.exactOptional().openapi({
+      description: 'A description for the portal.',
+    }),
+    portalContactEmail: EmailSchema.openapi({
+      description: "The Amazon Web Services administrator's contact email address.",
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
+    portalLogoImageFile: ImageFileSchema.exactOptional().openapi({
+      description:
+        'A logo image to display in the portal. Upload a square, high-resolution image. The image is displayed on a dark background.',
+    }),
+    roleArn: ARNSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of a service role that allows the portal\'s users to access your IoT SiteWise resources on your behalf. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-service-role.html">Using service roles for IoT SiteWise Monitor</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'A list of key-value pairs that contain metadata for the portal. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+    portalAuthMode: AuthModeSchema.exactOptional().openapi({
+      description:
+        '<p>The service to use to authenticate users to the portal. Choose from the following options:</p> <ul> <li> <p> <code>SSO</code> – The portal uses IAM Identity Center (successor to Single Sign-On) to authenticate users and manage user permissions. Before you can create a portal that uses IAM Identity Center, you must enable IAM Identity Center. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-get-started.html#mon-gs-sso">Enabling IAM Identity Center</a> in the <i>IoT SiteWise User Guide</i>. This option is only available in Amazon Web Services Regions other than the China Regions.</p> </li> <li> <p> <code>IAM</code> – The portal uses Identity and Access Management to authenticate users and manage user permissions.</p> </li> </ul> <p>You can\'t change this value after you create a portal.</p> <p>Default: <code>SSO</code> </p>',
+    }),
+    notificationSenderEmail: EmailSchema.exactOptional().openapi({
+      description:
+        '<p>The email address that sends alarm notifications.</p> <important> <p>If you use the <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/lambda-support.html">IoT Events managed Lambda function</a> to manage your emails, you must <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html">verify the sender email address in Amazon SES</a>.</p> </important>',
+    }),
+    alarms: AlarmsSchema.exactOptional().openapi({
+      description:
+        'Contains the configuration information of an alarm created in an IoT SiteWise Monitor portal. You can use the alarm to monitor an asset property and get notified when the asset property value is outside a specified range. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/appguide/monitor-alarms.html">Monitoring with alarms</a> in the <i>IoT SiteWise Application Guide</i>.',
+    }),
   })
   .openapi({
     required: ['portalName', 'portalContactEmail', 'roleArn'],
@@ -4772,191 +3630,163 @@ const CreatePortalRequestSchema = z
 
 const CreateProjectRequestSchema = z
   .object({
-    portalId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the portal in which to create the project.' }),
-    ),
-    projectName: NameSchema.and(
-      z.any().openapi({ description: 'A friendly name for the project.' }),
-    ),
-    projectDescription: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the project.' }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that contain metadata for the project. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ).exactOptional(),
+    portalId: IDSchema.openapi({
+      description: 'The ID of the portal in which to create the project.',
+    }),
+    projectName: NameSchema.openapi({ description: 'A friendly name for the project.' }),
+    projectDescription: DescriptionSchema.exactOptional().openapi({
+      description: 'A description for the project.',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'A list of key-value pairs that contain metadata for the project. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
   })
   .openapi({ required: ['portalId', 'projectName'], title: 'CreateProjectRequest' })
   .openapi('CreateProjectRequest')
 
 const DeleteAccessPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAccessPolicyRequest' })
   .openapi('DeleteAccessPolicyRequest')
 
 const DeleteAssetModelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAssetModelRequest' })
   .openapi('DeleteAssetModelRequest')
 
 const DeleteAssetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAssetRequest' })
   .openapi('DeleteAssetRequest')
 
 const DeleteDashboardRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDashboardRequest' })
   .openapi('DeleteDashboardRequest')
 
 const DeleteGatewayRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteGatewayRequest' })
   .openapi('DeleteGatewayRequest')
 
 const DeletePortalRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeletePortalRequest' })
   .openapi('DeletePortalRequest')
 
 const DeleteProjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteProjectRequest' })
   .openapi('DeleteProjectRequest')
 
 const DeleteTimeSeriesRequestSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
   })
   .openapi({ title: 'DeleteTimeSeriesRequest', required: [] })
   .openapi('DeleteTimeSeriesRequest')
 
 const DescribeAccessPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAccessPolicyRequest' })
   .openapi('DescribeAccessPolicyRequest')
 
 const ExcludePropertiesSchema = z.boolean().openapi('ExcludeProperties')
 
 const DescribeAssetModelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAssetModelRequest' })
   .openapi('DescribeAssetModelRequest')
 
 const DescribeAssetPropertyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAssetPropertyRequest' })
   .openapi('DescribeAssetPropertyRequest')
 
 const DescribeAssetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAssetRequest' })
   .openapi('DescribeAssetRequest')
 
 const DescribeBulkImportJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeBulkImportJobRequest' })
   .openapi('DescribeBulkImportJobRequest')
 
 const DescribeDashboardRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDashboardRequest' })
   .openapi('DescribeDashboardRequest')
 
 const DescribeDefaultEncryptionConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDefaultEncryptionConfigurationRequest' })
   .openapi('DescribeDefaultEncryptionConfigurationRequest')
 
 const DescribeGatewayCapabilityConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeGatewayCapabilityConfigurationRequest' })
   .openapi('DescribeGatewayCapabilityConfigurationRequest')
 
 const DescribeGatewayRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeGatewayRequest' })
   .openapi('DescribeGatewayRequest')
 
 const DescribeLoggingOptionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeLoggingOptionsRequest' })
   .openapi('DescribeLoggingOptionsRequest')
 
 const DescribePortalRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribePortalRequest' })
   .openapi('DescribePortalRequest')
 
 const DescribeProjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeProjectRequest' })
   .openapi('DescribeProjectRequest')
 
 const DescribeStorageConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeStorageConfigurationRequest' })
   .openapi('DescribeStorageConfigurationRequest')
 
 const DescribeTimeSeriesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeTimeSeriesRequest' })
   .openapi('DescribeTimeSeriesRequest')
 
 const DisassociateAssetsRequestSchema = z
   .object({
-    hierarchyId: IDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of a hierarchy in the parent asset\'s model. Hierarchies allow different groupings of assets to be formed that all come from the same asset model. You can use the hierarchy ID to identify the correct asset to disassociate. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ),
-    childAssetId: IDSchema.and(
-      z.any().openapi({ description: 'The ID of the child asset to disassociate.' }),
-    ),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
+    hierarchyId: IDSchema.openapi({
+      description:
+        'The ID of a hierarchy in the parent asset\'s model. Hierarchies allow different groupings of assets to be formed that all come from the same asset model. You can use the hierarchy ID to identify the correct asset to disassociate. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+    childAssetId: IDSchema.openapi({ description: 'The ID of the child asset to disassociate.' }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
   })
   .openapi({ required: ['hierarchyId', 'childAssetId'], title: 'DisassociateAssetsRequest' })
   .openapi('DisassociateAssetsRequest')
 
 const DisassociateTimeSeriesFromAssetPropertyRequestSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
   })
   .openapi({ title: 'DisassociateTimeSeriesFromAssetPropertyRequest', required: [] })
   .openapi('DisassociateTimeSeriesFromAssetPropertyRequest')
@@ -4964,17 +3794,17 @@ const DisassociateTimeSeriesFromAssetPropertyRequestSchema = z
 const MaxResultsSchema = z.int().min(1).max(250).openapi('MaxResults')
 
 const GetAssetPropertyAggregatesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAssetPropertyAggregatesRequest' })
   .openapi('GetAssetPropertyAggregatesRequest')
 
 const GetAssetPropertyValueHistoryRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAssetPropertyValueHistoryRequest' })
   .openapi('GetAssetPropertyValueHistoryRequest')
 
 const GetAssetPropertyValueRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAssetPropertyValueRequest' })
   .openapi('GetAssetPropertyValueRequest')
 
@@ -4991,7 +3821,7 @@ const IntervalWindowInSecondsSchema = z
   .openapi('IntervalWindowInSeconds')
 
 const GetInterpolatedAssetPropertyValuesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetInterpolatedAssetPropertyValuesRequest' })
   .openapi('GetInterpolatedAssetPropertyValuesRequest')
 
@@ -4999,14 +3829,9 @@ const IdentityTypeSchema = z.enum(['USER', 'GROUP', 'IAM']).openapi('IdentityTyp
 
 const ImageSchema = z
   .object({
-    id: IDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of an existing image. Specify this parameter to keep an existing image.',
-        }),
-    ).exactOptional(),
+    id: IDSchema.exactOptional().openapi({
+      description: 'The ID of an existing image. Specify this parameter to keep an existing image.',
+    }),
     file: ImageFileSchema.exactOptional(),
   })
   .openapi({
@@ -5021,7 +3846,7 @@ const KmsKeyIdSchema = z.string().min(1).max(2048).openapi('KmsKeyId')
 const ResourceTypeSchema = z.enum(['PORTAL', 'PROJECT']).openapi('ResourceType')
 
 const ListAccessPoliciesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAccessPoliciesRequest' })
   .openapi('ListAccessPoliciesRequest')
 
@@ -5030,40 +3855,40 @@ const ListAssetModelPropertiesFilterSchema = z
   .openapi('ListAssetModelPropertiesFilter')
 
 const ListAssetModelPropertiesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAssetModelPropertiesRequest' })
   .openapi('ListAssetModelPropertiesRequest')
 
 const ListAssetModelsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAssetModelsRequest' })
   .openapi('ListAssetModelsRequest')
 
 const ListAssetPropertiesFilterSchema = z.enum(['ALL', 'BASE']).openapi('ListAssetPropertiesFilter')
 
 const ListAssetPropertiesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAssetPropertiesRequest' })
   .openapi('ListAssetPropertiesRequest')
 
 const TraversalTypeSchema = z.literal('PATH_TO_ROOT').openapi('TraversalType')
 
 const ListAssetRelationshipsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAssetRelationshipsRequest' })
   .openapi('ListAssetRelationshipsRequest')
 
 const ListAssetsFilterSchema = z.enum(['ALL', 'TOP_LEVEL']).openapi('ListAssetsFilter')
 
 const ListAssetsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAssetsRequest' })
   .openapi('ListAssetsRequest')
 
 const TraversalDirectionSchema = z.enum(['PARENT', 'CHILD']).openapi('TraversalDirection')
 
 const ListAssociatedAssetsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAssociatedAssetsRequest' })
   .openapi('ListAssociatedAssetsRequest')
 
@@ -5080,37 +3905,37 @@ const ListBulkImportJobsFilterSchema = z
   .openapi('ListBulkImportJobsFilter')
 
 const ListBulkImportJobsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBulkImportJobsRequest' })
   .openapi('ListBulkImportJobsRequest')
 
 const ListDashboardsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDashboardsRequest' })
   .openapi('ListDashboardsRequest')
 
 const ListGatewaysRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListGatewaysRequest' })
   .openapi('ListGatewaysRequest')
 
 const ListPortalsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPortalsRequest' })
   .openapi('ListPortalsRequest')
 
 const ListProjectAssetsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListProjectAssetsRequest' })
   .openapi('ListProjectAssetsRequest')
 
 const ListProjectsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListProjectsRequest' })
   .openapi('ListProjectsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -5119,64 +3944,44 @@ const ListTimeSeriesTypeSchema = z
   .openapi('ListTimeSeriesType')
 
 const ListTimeSeriesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTimeSeriesRequest' })
   .openapi('ListTimeSeriesRequest')
 
 const PutDefaultEncryptionConfigurationRequestSchema = z
   .object({
-    encryptionType: EncryptionTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of encryption used for the encryption configuration.' }),
-    ),
-    kmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Key ID of the customer managed key used for KMS encryption. This is required if you use <code>KMS_BASED_ENCRYPTION</code>.',
-        }),
-    ).exactOptional(),
+    encryptionType: EncryptionTypeSchema.openapi({
+      description: 'The type of encryption used for the encryption configuration.',
+    }),
+    kmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        'The Key ID of the customer managed key used for KMS encryption. This is required if you use <code>KMS_BASED_ENCRYPTION</code>.',
+    }),
   })
   .openapi({ required: ['encryptionType'], title: 'PutDefaultEncryptionConfigurationRequest' })
   .openapi('PutDefaultEncryptionConfigurationRequest')
 
 const PutLoggingOptionsRequestSchema = z
   .object({
-    loggingOptions: LoggingOptionsSchema.and(
-      z.any().openapi({ description: 'The logging options to set.' }),
-    ),
+    loggingOptions: LoggingOptionsSchema.openapi({ description: 'The logging options to set.' }),
   })
   .openapi({ required: ['loggingOptions'], title: 'PutLoggingOptionsRequest' })
   .openapi('PutLoggingOptionsRequest')
 
 const PutStorageConfigurationRequestSchema = z
   .object({
-    storageType: StorageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The storage tier that you specified for your data. The <code>storageType</code> parameter can be one of the following values:</p> <ul> <li> <p> <code>SITEWISE_DEFAULT_STORAGE</code> – IoT SiteWise saves your data into the hot tier. The hot tier is a service-managed database.</p> </li> <li> <p> <code>MULTI_LAYER_STORAGE</code> – IoT SiteWise saves your data in both the cold tier and the hot tier. The cold tier is a customer-managed Amazon S3 bucket.</p> </li> </ul>',
-        }),
-    ),
-    multiLayerStorage: MultiLayerStorageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifies a storage destination. If you specified <code>MULTI_LAYER_STORAGE</code> for the storage type, you must specify a <code>MultiLayerStorage</code> object.',
-        }),
-    ).exactOptional(),
-    disassociatedDataStorage: DisassociatedDataStorageStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Contains the storage configuration for time series (data streams) that aren't associated with asset properties. The <code>disassociatedDataStorage</code> can be one of the following values:</p> <ul> <li> <p> <code>ENABLED</code> – IoT SiteWise accepts time series that aren't associated with asset properties.</p> <important> <p>After the <code>disassociatedDataStorage</code> is enabled, you can't disable it.</p> </important> </li> <li> <p> <code>DISABLED</code> – IoT SiteWise doesn't accept time series (data streams) that aren't associated with asset properties.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/data-streams.html\">Data streams</a> in the <i>IoT SiteWise User Guide</i>.</p>",
-        }),
-    ).exactOptional(),
+    storageType: StorageTypeSchema.openapi({
+      description:
+        '<p>The storage tier that you specified for your data. The <code>storageType</code> parameter can be one of the following values:</p> <ul> <li> <p> <code>SITEWISE_DEFAULT_STORAGE</code> – IoT SiteWise saves your data into the hot tier. The hot tier is a service-managed database.</p> </li> <li> <p> <code>MULTI_LAYER_STORAGE</code> – IoT SiteWise saves your data in both the cold tier and the hot tier. The cold tier is a customer-managed Amazon S3 bucket.</p> </li> </ul>',
+    }),
+    multiLayerStorage: MultiLayerStorageSchema.exactOptional().openapi({
+      description:
+        'Identifies a storage destination. If you specified <code>MULTI_LAYER_STORAGE</code> for the storage type, you must specify a <code>MultiLayerStorage</code> object.',
+    }),
+    disassociatedDataStorage: DisassociatedDataStorageStateSchema.exactOptional().openapi({
+      description:
+        "<p>Contains the storage configuration for time series (data streams) that aren't associated with asset properties. The <code>disassociatedDataStorage</code> can be one of the following values:</p> <ul> <li> <p> <code>ENABLED</code> – IoT SiteWise accepts time series that aren't associated with asset properties.</p> <important> <p>After the <code>disassociatedDataStorage</code> is enabled, you can't disable it.</p> </important> </li> <li> <p> <code>DISABLED</code> – IoT SiteWise doesn't accept time series (data streams) that aren't associated with asset properties.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/data-streams.html\">Data streams</a> in the <i>IoT SiteWise User Guide</i>.</p>",
+    }),
     retentionPeriod: RetentionPeriodSchema.exactOptional(),
   })
   .openapi({ required: ['storageType'], title: 'PutStorageConfigurationRequest' })
@@ -5186,57 +3991,37 @@ const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyLi
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ),
+    tags: TagMapSchema.openapi({
+      description:
+        'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateAccessPolicyRequestSchema = z
   .object({
-    accessPolicyIdentity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identity for this access policy. Choose an IAM Identity Center user, an IAM Identity Center group, or an IAM user.',
-        }),
-    ),
-    accessPolicyResource: ResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IoT SiteWise Monitor resource for this access policy. Choose either a portal or a project.',
-        }),
-    ),
-    accessPolicyPermission: PermissionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The permission level for this access policy. Note that a project <code>ADMINISTRATOR</code> is also known as a project owner.',
-        }),
-    ),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
+    accessPolicyIdentity: IdentitySchema.openapi({
+      description:
+        'The identity for this access policy. Choose an IAM Identity Center user, an IAM Identity Center group, or an IAM user.',
+    }),
+    accessPolicyResource: ResourceSchema.openapi({
+      description:
+        'The IoT SiteWise Monitor resource for this access policy. Choose either a portal or a project.',
+    }),
+    accessPolicyPermission: PermissionSchema.openapi({
+      description:
+        'The permission level for this access policy. Note that a project <code>ADMINISTRATOR</code> is also known as a project owner.',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
   })
   .openapi({
     required: ['accessPolicyIdentity', 'accessPolicyResource', 'accessPolicyPermission'],
@@ -5244,152 +4029,98 @@ const UpdateAccessPolicyRequestSchema = z
   })
   .openapi('UpdateAccessPolicyRequest')
 
-const UpdateAssetModelRequestSchema = z
+const UpdateAssetModelRequestSchema: z.ZodType<UpdateAssetModelRequestType> = z
   .object({
-    assetModelName: NameSchema.and(
-      z.any().openapi({ description: 'A unique, friendly name for the asset model.' }),
-    ),
-    assetModelDescription: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the asset model.' }),
-    ).exactOptional(),
-    assetModelProperties: AssetModelPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The updated property definitions of the asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-properties.html">Asset properties</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>You can specify up to 200 properties per asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    assetModelHierarchies: AssetModelHierarchiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The updated hierarchy definitions of the asset model. Each hierarchy specifies an asset model whose assets can be children of any other assets created from this asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>You can specify up to 10 hierarchies per asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    assetModelCompositeModels: AssetModelCompositeModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The composite asset models that are part of this asset model. Composite asset models are asset models that contain specific properties. Each composite model has a type that defines the properties that the composite model supports. Use composite asset models to define alarms on this asset model.',
-        }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
+    assetModelName: NameSchema.openapi({
+      description: 'A unique, friendly name for the asset model.',
+    }),
+    assetModelDescription: DescriptionSchema.exactOptional().openapi({
+      description: 'A description for the asset model.',
+    }),
+    assetModelProperties: AssetModelPropertiesSchema.exactOptional().openapi({
+      description:
+        '<p>The updated property definitions of the asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-properties.html">Asset properties</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>You can specify up to 200 properties per asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>',
+    }),
+    assetModelHierarchies: AssetModelHierarchiesSchema.exactOptional().openapi({
+      description:
+        '<p>The updated hierarchy definitions of the asset model. Each hierarchy specifies an asset model whose assets can be children of any other assets created from this asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>You can specify up to 10 hierarchies per asset model. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>',
+    }),
+    assetModelCompositeModels: AssetModelCompositeModelsSchema.exactOptional().openapi({
+      description:
+        'The composite asset models that are part of this asset model. Composite asset models are asset models that contain specific properties. Each composite model has a type that defines the properties that the composite model supports. Use composite asset models to define alarms on this asset model.',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
   })
   .openapi({ required: ['assetModelName'], title: 'UpdateAssetModelRequest' })
   .openapi('UpdateAssetModelRequest')
 
 const UpdateAssetPropertyRequestSchema = z
   .object({
-    propertyAlias: PropertyAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>If you omit this parameter, the alias is removed from the property.</p>',
-        }),
-    ).exactOptional(),
-    propertyNotificationState: PropertyNotificationStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The MQTT notification state (enabled or disabled) for this asset property. When the notification state is enabled, IoT SiteWise publishes property value updates to a unique MQTT topic. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/interact-with-other-services.html">Interacting with other services</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>If you omit this parameter, the notification state is set to <code>DISABLED</code>.</p>',
-        }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
-    propertyUnit: PropertyUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The unit of measure (such as Newtons or RPM) of the asset property. If you don't specify a value for this parameter, the service uses the value of the <code>assetModelProperty</code> in the asset model.",
-        }),
-    ).exactOptional(),
+    propertyAlias: PropertyAliasSchema.exactOptional().openapi({
+      description:
+        '<p>The alias that identifies the property, such as an OPC-UA server data stream path (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html">Mapping industrial data streams to asset properties</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>If you omit this parameter, the alias is removed from the property.</p>',
+    }),
+    propertyNotificationState: PropertyNotificationStateSchema.exactOptional().openapi({
+      description:
+        '<p>The MQTT notification state (enabled or disabled) for this asset property. When the notification state is enabled, IoT SiteWise publishes property value updates to a unique MQTT topic. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/interact-with-other-services.html">Interacting with other services</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>If you omit this parameter, the notification state is set to <code>DISABLED</code>.</p>',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
+    propertyUnit: PropertyUnitSchema.exactOptional().openapi({
+      description:
+        "The unit of measure (such as Newtons or RPM) of the asset property. If you don't specify a value for this parameter, the service uses the value of the <code>assetModelProperty</code> in the asset model.",
+    }),
   })
   .openapi({ title: 'UpdateAssetPropertyRequest', required: [] })
   .openapi('UpdateAssetPropertyRequest')
 
 const UpdateAssetRequestSchema = z
   .object({
-    assetName: NameSchema.and(z.any().openapi({ description: 'A friendly name for the asset.' })),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
-    assetDescription: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the asset.' }),
-    ).exactOptional(),
+    assetName: NameSchema.openapi({ description: 'A friendly name for the asset.' }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
+    assetDescription: DescriptionSchema.exactOptional().openapi({
+      description: 'A description for the asset.',
+    }),
   })
   .openapi({ required: ['assetName'], title: 'UpdateAssetRequest' })
   .openapi('UpdateAssetRequest')
 
 const UpdateDashboardRequestSchema = z
   .object({
-    dashboardName: NameSchema.and(
-      z.any().openapi({ description: 'A new friendly name for the dashboard.' }),
-    ),
-    dashboardDescription: DescriptionSchema.and(
-      z.any().openapi({ description: 'A new description for the dashboard.' }),
-    ).exactOptional(),
-    dashboardDefinition: DashboardDefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new dashboard definition, as specified in a JSON literal. For detailed information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/create-dashboards-using-aws-cli.html">Creating dashboards (CLI)</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
+    dashboardName: NameSchema.openapi({ description: 'A new friendly name for the dashboard.' }),
+    dashboardDescription: DescriptionSchema.exactOptional().openapi({
+      description: 'A new description for the dashboard.',
+    }),
+    dashboardDefinition: DashboardDefinitionSchema.openapi({
+      description:
+        'The new dashboard definition, as specified in a JSON literal. For detailed information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/create-dashboards-using-aws-cli.html">Creating dashboards (CLI)</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
   })
   .openapi({ required: ['dashboardName', 'dashboardDefinition'], title: 'UpdateDashboardRequest' })
   .openapi('UpdateDashboardRequest')
 
 const UpdateGatewayCapabilityConfigurationRequestSchema = z
   .object({
-    capabilityNamespace: CapabilityNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The namespace of the gateway capability configuration to be updated. For example, if you configure OPC-UA sources from the IoT SiteWise console, your OPC-UA capability configuration has the namespace <code>iotsitewise:opcuacollector:version</code>, where <code>version</code> is a number such as <code>1</code>.',
-        }),
-    ),
-    capabilityConfiguration: CapabilityConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON document that defines the configuration for the gateway capability. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/configure-sources.html#configure-source-cli">Configuring data sources (CLI)</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ),
+    capabilityNamespace: CapabilityNamespaceSchema.openapi({
+      description:
+        'The namespace of the gateway capability configuration to be updated. For example, if you configure OPC-UA sources from the IoT SiteWise console, your OPC-UA capability configuration has the namespace <code>iotsitewise:opcuacollector:version</code>, where <code>version</code> is a number such as <code>1</code>.',
+    }),
+    capabilityConfiguration: CapabilityConfigurationSchema.openapi({
+      description:
+        'The JSON document that defines the configuration for the gateway capability. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/configure-sources.html#configure-source-cli">Configuring data sources (CLI)</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['capabilityNamespace', 'capabilityConfiguration'],
@@ -5399,54 +4130,36 @@ const UpdateGatewayCapabilityConfigurationRequestSchema = z
 
 const UpdateGatewayRequestSchema = z
   .object({
-    gatewayName: NameSchema.and(
-      z.any().openapi({ description: 'A unique, friendly name for the gateway.' }),
-    ),
+    gatewayName: NameSchema.openapi({ description: 'A unique, friendly name for the gateway.' }),
   })
   .openapi({ required: ['gatewayName'], title: 'UpdateGatewayRequest' })
   .openapi('UpdateGatewayRequest')
 
 const UpdatePortalRequestSchema = z
   .object({
-    portalName: NameSchema.and(
-      z.any().openapi({ description: 'A new friendly name for the portal.' }),
-    ),
-    portalDescription: DescriptionSchema.and(
-      z.any().openapi({ description: 'A new description for the portal.' }),
-    ).exactOptional(),
-    portalContactEmail: EmailSchema.and(
-      z
-        .any()
-        .openapi({ description: "The Amazon Web Services administrator's contact email address." }),
-    ),
+    portalName: NameSchema.openapi({ description: 'A new friendly name for the portal.' }),
+    portalDescription: DescriptionSchema.exactOptional().openapi({
+      description: 'A new description for the portal.',
+    }),
+    portalContactEmail: EmailSchema.openapi({
+      description: "The Amazon Web Services administrator's contact email address.",
+    }),
     portalLogoImage: ImageSchema.exactOptional(),
-    roleArn: ARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of a service role that allows the portal\'s users to access your IoT SiteWise resources on your behalf. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-service-role.html">Using service roles for IoT SiteWise Monitor</a> in the <i>IoT SiteWise User Guide</i>.',
-        }),
-    ),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
-    notificationSenderEmail: EmailSchema.and(
-      z.any().openapi({ description: 'The email address that sends alarm notifications.' }),
-    ).exactOptional(),
-    alarms: AlarmsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the configuration information of an alarm created in an IoT SiteWise Monitor portal. You can use the alarm to monitor an asset property and get notified when the asset property value is outside a specified range. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/appguide/monitor-alarms.html">Monitoring with alarms</a> in the <i>IoT SiteWise Application Guide</i>.',
-        }),
-    ).exactOptional(),
+    roleArn: ARNSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of a service role that allows the portal\'s users to access your IoT SiteWise resources on your behalf. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-service-role.html">Using service roles for IoT SiteWise Monitor</a> in the <i>IoT SiteWise User Guide</i>.',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
+    notificationSenderEmail: EmailSchema.exactOptional().openapi({
+      description: 'The email address that sends alarm notifications.',
+    }),
+    alarms: AlarmsSchema.exactOptional().openapi({
+      description:
+        'Contains the configuration information of an alarm created in an IoT SiteWise Monitor portal. You can use the alarm to monitor an asset property and get notified when the asset property value is outside a specified range. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/appguide/monitor-alarms.html">Monitoring with alarms</a> in the <i>IoT SiteWise Application Guide</i>.',
+    }),
   })
   .openapi({
     required: ['portalName', 'portalContactEmail', 'roleArn'],
@@ -5456,20 +4169,14 @@ const UpdatePortalRequestSchema = z
 
 const UpdateProjectRequestSchema = z
   .object({
-    projectName: NameSchema.and(
-      z.any().openapi({ description: 'A new friendly name for the project.' }),
-    ),
-    projectDescription: DescriptionSchema.and(
-      z.any().openapi({ description: 'A new description for the project.' }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
+    projectName: NameSchema.openapi({ description: 'A new friendly name for the project.' }),
+    projectDescription: DescriptionSchema.exactOptional().openapi({
+      description: 'A new description for the project.',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
   })
   .openapi({ required: ['projectName'], title: 'UpdateProjectRequest' })
   .openapi('UpdateProjectRequest')
@@ -6470,18 +5177,18 @@ export const postAccessPoliciesRoute = createRoute({
             .object({
               accessPolicyIdentity: z
                 .object({
-                  user: UserIdentitySchema.and(
-                    z.any().openapi({ description: 'An IAM Identity Center user identity.' }),
-                  ).exactOptional(),
-                  group: GroupIdentitySchema.and(
-                    z.any().openapi({ description: 'An IAM Identity Center group identity.' }),
-                  ).exactOptional(),
-                  iamUser: IAMUserIdentitySchema.and(
-                    z.any().openapi({ description: 'An IAM user identity.' }),
-                  ).exactOptional(),
-                  iamRole: IAMRoleIdentitySchema.and(
-                    z.any().openapi({ description: 'An IAM role identity.' }),
-                  ).exactOptional(),
+                  user: UserIdentitySchema.exactOptional().openapi({
+                    description: 'An IAM Identity Center user identity.',
+                  }),
+                  group: GroupIdentitySchema.exactOptional().openapi({
+                    description: 'An IAM Identity Center group identity.',
+                  }),
+                  iamUser: IAMUserIdentitySchema.exactOptional().openapi({
+                    description: 'An IAM user identity.',
+                  }),
+                  iamRole: IAMRoleIdentitySchema.exactOptional().openapi({
+                    description: 'An IAM role identity.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -6490,12 +5197,12 @@ export const postAccessPoliciesRoute = createRoute({
                 }),
               accessPolicyResource: z
                 .object({
-                  portal: PortalResourceSchema.and(
-                    z.any().openapi({ description: 'A portal resource.' }),
-                  ).exactOptional(),
-                  project: ProjectResourceSchema.and(
-                    z.any().openapi({ description: 'A project resource.' }),
-                  ).exactOptional(),
+                  portal: PortalResourceSchema.exactOptional().openapi({
+                    description: 'A portal resource.',
+                  }),
+                  project: ProjectResourceSchema.exactOptional().openapi({
+                    description: 'A project resource.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -7124,22 +5831,14 @@ export const postJobsRoute = createRoute({
                 }),
               errorReportLocation: z
                 .object({
-                  bucket: BucketSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The name of the Amazon S3 bucket to which errors associated with the bulk import job are sent.',
-                      }),
-                  ).exactOptional(),
-                  prefix: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Amazon S3 uses the prefix as a folder name to organize data in the bucket. Each Amazon S3 object has a key that is its unique identifier in the bucket. Each object in a bucket has exactly one key. The prefix must end with a forward slash (/). For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html">Organizing objects using prefixes</a> in the <i>Amazon Simple Storage Service User Guide</i>.',
-                      }),
-                  ).exactOptional(),
+                  bucket: BucketSchema.exactOptional().openapi({
+                    description:
+                      'The name of the Amazon S3 bucket to which errors associated with the bulk import job are sent.',
+                  }),
+                  prefix: StringSchema.exactOptional().openapi({
+                    description:
+                      'Amazon S3 uses the prefix as a folder name to organize data in the bucket. Each Amazon S3 object has a key that is its unique identifier in the bucket. Each object in a bucket has exactly one key. The prefix must end with a forward slash (/). For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html">Organizing objects using prefixes</a> in the <i>Amazon Simple Storage Service User Guide</i>.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -7148,9 +5847,9 @@ export const postJobsRoute = createRoute({
                 }),
               jobConfiguration: z
                 .object({
-                  fileFormat: FileFormatSchema.and(
-                    z.any().openapi({ description: 'The file format of the data in Amazon S3.' }),
-                  ).exactOptional(),
+                  fileFormat: FileFormatSchema.exactOptional().openapi({
+                    description: 'The file format of the data in Amazon S3.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -7414,12 +6113,12 @@ export const post20200301GatewaysRoute = createRoute({
                 .openapi({ description: 'A unique, friendly name for the gateway.' }),
               gatewayPlatform: z
                 .object({
-                  greengrass: GreengrassSchema.and(
-                    z.any().openapi({ description: 'A gateway that runs on IoT Greengrass.' }),
-                  ).exactOptional(),
-                  greengrassV2: GreengrassV2Schema.and(
-                    z.any().openapi({ description: 'A gateway that runs on IoT Greengrass V2.' }),
-                  ).exactOptional(),
+                  greengrass: GreengrassSchema.exactOptional().openapi({
+                    description: 'A gateway that runs on IoT Greengrass.',
+                  }),
+                  greengrassV2: GreengrassV2Schema.exactOptional().openapi({
+                    description: 'A gateway that runs on IoT Greengrass V2.',
+                  }),
                 })
                 .openapi({
                   description: "Contains a gateway's platform information.",
@@ -7597,17 +6296,13 @@ export const postPortalsRoute = createRoute({
                 }),
               portalLogoImageFile: z
                 .object({
-                  data: ImageFileDataSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The image file contents, represented as a base64-encoded string. The file size must be less than 1 MB.',
-                      }),
-                  ).exactOptional(),
-                  type: ImageFileTypeSchema.and(
-                    z.any().openapi({ description: 'The file type of the image.' }),
-                  ).exactOptional(),
+                  data: ImageFileDataSchema.exactOptional().openapi({
+                    description:
+                      'The image file contents, represented as a base64-encoded string. The file size must be less than 1 MB.',
+                  }),
+                  type: ImageFileTypeSchema.exactOptional().openapi({
+                    description: 'The file type of the image.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Contains an image file.', required: [] }),
@@ -7648,22 +6343,14 @@ export const postPortalsRoute = createRoute({
                 }),
               alarms: z
                 .object({
-                  alarmRoleArn: ARNSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the IAM role that allows the alarm to perform actions and access Amazon Web Services resources and services, such as IoT Events.',
-                      }),
-                  ).exactOptional(),
-                  notificationLambdaArn: ARNSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the Lambda function that manages alarm notifications. For more information, see <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/lambda-support.html">Managing alarm notifications</a> in the <i>IoT Events Developer Guide</i>.',
-                      }),
-                  ).exactOptional(),
+                  alarmRoleArn: ARNSchema.exactOptional().openapi({
+                    description:
+                      'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the IAM role that allows the alarm to perform actions and access Amazon Web Services resources and services, such as IoT Events.',
+                  }),
+                  notificationLambdaArn: ARNSchema.exactOptional().openapi({
+                    description:
+                      'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the Lambda function that manages alarm notifications. For more information, see <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/lambda-support.html">Managing alarm notifications</a> in the <i>IoT Events Developer Guide</i>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7903,18 +6590,18 @@ export const putAccessPoliciesAccessPolicyIdRoute = createRoute({
             .object({
               accessPolicyIdentity: z
                 .object({
-                  user: UserIdentitySchema.and(
-                    z.any().openapi({ description: 'An IAM Identity Center user identity.' }),
-                  ).exactOptional(),
-                  group: GroupIdentitySchema.and(
-                    z.any().openapi({ description: 'An IAM Identity Center group identity.' }),
-                  ).exactOptional(),
-                  iamUser: IAMUserIdentitySchema.and(
-                    z.any().openapi({ description: 'An IAM user identity.' }),
-                  ).exactOptional(),
-                  iamRole: IAMRoleIdentitySchema.and(
-                    z.any().openapi({ description: 'An IAM role identity.' }),
-                  ).exactOptional(),
+                  user: UserIdentitySchema.exactOptional().openapi({
+                    description: 'An IAM Identity Center user identity.',
+                  }),
+                  group: GroupIdentitySchema.exactOptional().openapi({
+                    description: 'An IAM Identity Center group identity.',
+                  }),
+                  iamUser: IAMUserIdentitySchema.exactOptional().openapi({
+                    description: 'An IAM user identity.',
+                  }),
+                  iamRole: IAMRoleIdentitySchema.exactOptional().openapi({
+                    description: 'An IAM role identity.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -7923,12 +6610,12 @@ export const putAccessPoliciesAccessPolicyIdRoute = createRoute({
                 }),
               accessPolicyResource: z
                 .object({
-                  portal: PortalResourceSchema.and(
-                    z.any().openapi({ description: 'A portal resource.' }),
-                  ).exactOptional(),
-                  project: ProjectResourceSchema.and(
-                    z.any().openapi({ description: 'A project resource.' }),
-                  ).exactOptional(),
+                  portal: PortalResourceSchema.exactOptional().openapi({
+                    description: 'A portal resource.',
+                  }),
+                  project: ProjectResourceSchema.exactOptional().openapi({
+                    description: 'A project resource.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -9168,14 +7855,10 @@ export const putPortalsPortalIdRoute = createRoute({
                 }),
               portalLogoImage: z
                 .object({
-                  id: IDSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ID of an existing image. Specify this parameter to keep an existing image.',
-                      }),
-                  ).exactOptional(),
+                  id: IDSchema.exactOptional().openapi({
+                    description:
+                      'The ID of an existing image. Specify this parameter to keep an existing image.',
+                  }),
                   file: ImageFileSchema.exactOptional(),
                 })
                 .exactOptional()
@@ -9212,22 +7895,14 @@ export const putPortalsPortalIdRoute = createRoute({
                 .openapi({ description: 'The email address that sends alarm notifications.' }),
               alarms: z
                 .object({
-                  alarmRoleArn: ARNSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the IAM role that allows the alarm to perform actions and access Amazon Web Services resources and services, such as IoT Events.',
-                      }),
-                  ).exactOptional(),
-                  notificationLambdaArn: ARNSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the Lambda function that manages alarm notifications. For more information, see <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/lambda-support.html">Managing alarm notifications</a> in the <i>IoT Events Developer Guide</i>.',
-                      }),
-                  ).exactOptional(),
+                  alarmRoleArn: ARNSchema.exactOptional().openapi({
+                    description:
+                      'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the IAM role that allows the alarm to perform actions and access Amazon Web Services resources and services, such as IoT Events.',
+                  }),
+                  notificationLambdaArn: ARNSchema.exactOptional().openapi({
+                    description:
+                      'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the Lambda function that manages alarm notifications. For more information, see <a href="https://docs.aws.amazon.com/iotevents/latest/developerguide/lambda-support.html">Managing alarm notifications</a> in the <i>IoT Events Developer Guide</i>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -10222,9 +8897,9 @@ export const putLoggingRoute = createRoute({
             .object({
               loggingOptions: z
                 .object({
-                  level: LoggingLevelSchema.and(
-                    z.any().openapi({ description: 'The IoT SiteWise logging verbosity level.' }),
-                  ).exactOptional(),
+                  level: LoggingLevelSchema.exactOptional().openapi({
+                    description: 'The IoT SiteWise logging verbosity level.',
+                  }),
                 })
                 .openapi({ description: 'Contains logging options.', required: [] }),
             })
@@ -10338,14 +9013,9 @@ export const postConfigurationAccountStorageRoute = createRoute({
                 }),
               multiLayerStorage: z
                 .object({
-                  customerManagedS3Storage: CustomerManagedS3StorageSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Contains information about a customer managed Amazon S3 bucket.',
-                      }),
-                  ).exactOptional(),
+                  customerManagedS3Storage: CustomerManagedS3StorageSchema.exactOptional().openapi({
+                    description: 'Contains information about a customer managed Amazon S3 bucket.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -10361,22 +9031,14 @@ export const postConfigurationAccountStorageRoute = createRoute({
                 }),
               retentionPeriod: z
                 .object({
-                  numberOfDays: NumberOfDaysSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The number of days that your data is kept.</p> <note> <p>If you specified a value for this parameter, the <code>unlimited</code> parameter must be <code>false</code>.</p> </note>',
-                      }),
-                  ).exactOptional(),
-                  unlimited: UnlimitedSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>If true, your data is kept indefinitely.</p> <note> <p>If configured to <code>true</code>, you must not specify a value for the <code>numberOfDays</code> parameter.</p> </note>',
-                      }),
-                  ).exactOptional(),
+                  numberOfDays: NumberOfDaysSchema.exactOptional().openapi({
+                    description:
+                      '<p>The number of days that your data is kept.</p> <note> <p>If you specified a value for this parameter, the <code>unlimited</code> parameter must be <code>false</code>.</p> </note>',
+                  }),
+                  unlimited: UnlimitedSchema.exactOptional().openapi({
+                    description:
+                      '<p>If true, your data is kept indefinitely.</p> <note> <p>If configured to <code>true</code>, you must not specify a value for the <code>numberOfDays</code> parameter.</p> </note>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

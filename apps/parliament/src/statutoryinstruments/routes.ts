@@ -117,6 +117,7 @@ const ProblemDetailsSchema = z
     type: z.string().nullable().exactOptional(),
   })
   .catchall(z.any())
+  .openapi({ required: [] })
   .openapi('ProblemDetails')
 
 const ProcedureSchema = z

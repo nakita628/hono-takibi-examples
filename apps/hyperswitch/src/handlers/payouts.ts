@@ -13,11 +13,15 @@ import type {
 
 export const postPayoutsCreateRouteHandler: RouteHandler<typeof postPayoutsCreateRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const getPayoutsPayoutIdRouteHandler: RouteHandler<typeof getPayoutsPayoutIdRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const postPayoutsPayoutIdRouteHandler: RouteHandler<
   typeof postPayoutsPayoutIdRoute
@@ -41,9 +45,9 @@ export const getPayoutsListRouteHandler: RouteHandler<typeof getPayoutsListRoute
   throw new Error('Not implemented')
 }
 
-export const postPayoutsListRouteHandler: RouteHandler<typeof postPayoutsListRoute> = async (
-  c,
-) => {}
+export const postPayoutsListRouteHandler: RouteHandler<typeof postPayoutsListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
 export const postPayoutsPayoutIdConfirmRouteHandler: RouteHandler<
   typeof postPayoutsPayoutIdConfirmRoute
@@ -53,4 +57,6 @@ export const postPayoutsPayoutIdConfirmRouteHandler: RouteHandler<
 
 export const postPayoutsFilterRouteHandler: RouteHandler<typeof postPayoutsFilterRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}

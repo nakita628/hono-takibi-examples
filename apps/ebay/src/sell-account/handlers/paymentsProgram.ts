@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const paymentsProgramHandler = app.openapi(
   getPaymentsProgramMarketplaceIdPaymentsProgramTypeRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

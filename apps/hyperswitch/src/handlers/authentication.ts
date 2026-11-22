@@ -12,7 +12,9 @@ import type {
 
 export const postAuthenticationRouteHandler: RouteHandler<typeof postAuthenticationRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const postAuthenticationAuthenticationIdEligibilityRouteHandler: RouteHandler<
   typeof postAuthenticationAuthenticationIdEligibilityRoute

@@ -6,5 +6,7 @@ const app = new OpenAPIHono()
 export const XAmzTargetAmazonEC2ContainerRegistryV20150921DescribeImageScanFindingsHandler =
   app.openapi(
     postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeImageScanFindingsRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

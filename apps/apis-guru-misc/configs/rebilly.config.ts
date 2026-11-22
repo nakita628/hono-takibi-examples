@@ -3,7 +3,9 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/rebilly.com/2.1/openapi.yaml',
   output: './src/rebilly/routes.ts',
-  template: {},
+  // template: { routeHandler: true }: the default template exports each handler file under its tag or first
+  // path segment, and one here starts with a digit, which is not an identifier (nakita628/hono-takibi#506).
+  template: { routeHandler: true },
   type: { output: './src/rebilly/types.ts' },
   client: { output: './src/rebilly/client.ts', baseUrl: '/' },
   rpc: { output: './src/rebilly/rpc.ts', parseResponse: true },

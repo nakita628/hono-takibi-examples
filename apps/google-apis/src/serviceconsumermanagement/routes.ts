@@ -261,6 +261,23 @@ const AuthProviderSchema = z
   })
   .openapi('AuthProvider')
 
+const OAuthRequirementsSchema = z
+  .object({
+    canonicalScopes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of publicly documented OAuth scopes that are allowed access. An OAuth token containing any of these scopes will be accepted. Example: canonical_scopes: https://www.googleapis.com/auth/calendar, https://www.googleapis.com/auth/calendar.read',
+      }),
+  })
+  .openapi({
+    description:
+      'OAuth scopes are a way to define data and permissions on data. For example, there are scopes defined for "Read-only access to Google Calendar" and "Access to Cloud Platform". Users can consent to a scope for an application, giving it permission to access that data on their behalf. OAuth scope specifications should be fairly coarse grained; a user will need to see and understand the text description of what your scope means. In most cases: use one or at most two OAuth scopes for an entire family of products. If your product has multiple APIs, you should probably be sharing the OAuth scope across all of those APIs. When you need finer grained OAuth consent screens: talk with your product management about how developers will use them in practice. Please note that even though each of the canonical scopes is enough for a request to be accepted and passed to the backend, a request can still fail due to the backend requiring additional scopes or permissions.',
+    required: [],
+  })
+  .openapi('OAuthRequirements')
+
 const AuthRequirementSchema = z
   .object({
     audiences: z
@@ -283,23 +300,6 @@ const AuthRequirementSchema = z
     required: [],
   })
   .openapi('AuthRequirement')
-
-const OAuthRequirementsSchema = z
-  .object({
-    canonicalScopes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of publicly documented OAuth scopes that are allowed access. An OAuth token containing any of these scopes will be accepted. Example: canonical_scopes: https://www.googleapis.com/auth/calendar, https://www.googleapis.com/auth/calendar.read',
-      }),
-  })
-  .openapi({
-    description:
-      'OAuth scopes are a way to define data and permissions on data. For example, there are scopes defined for "Read-only access to Google Calendar" and "Access to Cloud Platform". Users can consent to a scope for an application, giving it permission to access that data on their behalf. OAuth scope specifications should be fairly coarse grained; a user will need to see and understand the text description of what your scope means. In most cases: use one or at most two OAuth scopes for an entire family of products. If your product has multiple APIs, you should probably be sharing the OAuth scope across all of those APIs. When you need finer grained OAuth consent screens: talk with your product management about how developers will use them in practice. Please note that even though each of the canonical scopes is enough for a request to be accepted and passed to the backend, a request can still fail due to the backend requiring additional scopes or permissions.',
-    required: [],
-  })
-  .openapi('OAuthRequirements')
 
 const AuthenticationRuleSchema = z
   .object({
@@ -483,190 +483,6 @@ const BillingSchema = z
     required: [],
   })
   .openapi('Billing')
-
-const CommonLanguageSettingsSchema = z
-  .object({
-    destinations: z
-      .array(z.enum(['CLIENT_LIBRARY_DESTINATION_UNSPECIFIED', 'GITHUB', 'PACKAGE_MANAGER']))
-      .exactOptional()
-      .openapi({
-        description: 'The destination where API teams want this client library to be published.',
-      }),
-    referenceDocsUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest',
-      }),
-  })
-  .openapi({ description: 'Required information for every language.', required: [] })
-  .openapi('CommonLanguageSettings')
-
-const CppSettingsSchema = z
-  .object({
-    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
-  })
-  .openapi({ description: 'Settings for C++ client libraries.', required: [] })
-  .openapi('CppSettings')
-
-const DotnetSettingsSchema = z
-  .object({
-    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
-    forcedNamespaceAliases: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Namespaces which must be aliased in snippets due to a known (but non-generator-predictable) naming collision',
-      }),
-    handwrittenSignatures: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Method signatures (in the form "service.method(signature)") which are provided separately, so shouldn\'t be generated. Snippets *calling* these methods are still generated, however.',
-      }),
-    ignoredResources: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'List of full resource types to ignore during generation. This is typically used for API-specific Location resources, which should be handled by the generator as if they were actually the common Location resources. Example entry: "documentai.googleapis.com/Location"',
-      }),
-    renamedResources: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Map from full resource types to the effective short name for the resource. This is used when otherwise resource named from different services would cause naming collisions. Example entry: "datalabeling.googleapis.com/Dataset": "DataLabelingDataset"',
-      }),
-    renamedServices: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Map from original service names to renamed versions. This is used when the default generated types would cause a naming conflict. (Neither name is fully-qualified.) Example: Subscriber to SubscriberServiceApi.',
-      }),
-  })
-  .openapi({ description: 'Settings for Dotnet client libraries.', required: [] })
-  .openapi('DotnetSettings')
-
-const GoSettingsSchema = z
-  .object({
-    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
-  })
-  .openapi({ description: 'Settings for Go client libraries.', required: [] })
-  .openapi('GoSettings')
-
-const JavaSettingsSchema = z
-  .object({
-    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
-    libraryPackage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The package name to use in Java. Clobbers the java_package option set in the protobuf. This should be used **only** by APIs who have already set the language_settings.java.package_name" field in gapic.yaml. API teams should use the protobuf java_package option where possible. Example of a YAML configuration:: publishing: java_settings: library_package: com.google.cloud.pubsub.v1',
-      }),
-    serviceClassNames: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Configure the Java class name to use instead of the service\'s for its corresponding generated GAPIC client. Keys are fully-qualified service names as they appear in the protobuf (including the full the language_settings.java.interface_names" field in gapic.yaml. API teams should otherwise use the service name as it appears in the protobuf. Example of a YAML configuration:: publishing: java_settings: service_class_names: - google.pubsub.v1.Publisher: TopicAdmin - google.pubsub.v1.Subscriber: SubscriptionAdmin',
-      }),
-  })
-  .openapi({ description: 'Settings for Java client libraries.', required: [] })
-  .openapi('JavaSettings')
-
-const NodeSettingsSchema = z
-  .object({
-    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
-  })
-  .openapi({ description: 'Settings for Node client libraries.', required: [] })
-  .openapi('NodeSettings')
-
-const PhpSettingsSchema = z
-  .object({
-    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
-  })
-  .openapi({ description: 'Settings for Php client libraries.', required: [] })
-  .openapi('PhpSettings')
-
-const PythonSettingsSchema = z
-  .object({
-    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
-  })
-  .openapi({ description: 'Settings for Python client libraries.', required: [] })
-  .openapi('PythonSettings')
-
-const RubySettingsSchema = z
-  .object({
-    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
-  })
-  .openapi({ description: 'Settings for Ruby client libraries.', required: [] })
-  .openapi('RubySettings')
-
-const ClientLibrarySettingsSchema = z
-  .object({
-    cppSettings: CppSettingsSchema.exactOptional().openapi({
-      description: 'Settings for C++ client libraries.',
-    }),
-    dotnetSettings: DotnetSettingsSchema.exactOptional().openapi({
-      description: 'Settings for .NET client libraries.',
-    }),
-    goSettings: GoSettingsSchema.exactOptional().openapi({
-      description: 'Settings for Go client libraries.',
-    }),
-    javaSettings: JavaSettingsSchema.exactOptional().openapi({
-      description: 'Settings for legacy Java features, supported in the Service YAML.',
-    }),
-    launchStage: z
-      .enum([
-        'LAUNCH_STAGE_UNSPECIFIED',
-        'UNIMPLEMENTED',
-        'PRELAUNCH',
-        'EARLY_ACCESS',
-        'ALPHA',
-        'BETA',
-        'GA',
-        'DEPRECATED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Launch stage of this version of the API.' }),
-    nodeSettings: NodeSettingsSchema.exactOptional().openapi({
-      description: 'Settings for Node client libraries.',
-    }),
-    phpSettings: PhpSettingsSchema.exactOptional().openapi({
-      description: 'Settings for PHP client libraries.',
-    }),
-    pythonSettings: PythonSettingsSchema.exactOptional().openapi({
-      description: 'Settings for Python client libraries.',
-    }),
-    restNumericEnums: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When using transport=rest, the client request will encode enums as numbers rather than strings.',
-      }),
-    rubySettings: RubySettingsSchema.exactOptional().openapi({
-      description: 'Settings for Ruby client libraries.',
-    }),
-    version: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Version of the API to apply these settings to. This is the full protobuf package for the API, ending in the version element. Examples: "google.cloud.speech.v1" and "google.spanner.admin.database.v1".',
-      }),
-  })
-  .openapi({
-    description: 'Details about how and where to publish client libraries.',
-    required: [],
-  })
-  .openapi('ClientLibrarySettings')
 
 const ContextRuleSchema = z
   .object({
@@ -894,14 +710,6 @@ const DocumentationSchema = z
   })
   .openapi('Documentation')
 
-const EmptySchema = z
-  .object({})
-  .openapi({
-    description:
-      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
-  })
-  .openapi('Empty')
-
 const EndpointSchema = z
   .object({
     aliases: z
@@ -976,76 +784,6 @@ const EnumSchema = z
   })
   .openapi({ description: 'Enum type definition.', required: [] })
   .openapi('Enum')
-
-const FieldSchema = z
-  .object({
-    cardinality: z
-      .enum([
-        'CARDINALITY_UNKNOWN',
-        'CARDINALITY_OPTIONAL',
-        'CARDINALITY_REQUIRED',
-        'CARDINALITY_REPEATED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The field cardinality.' }),
-    defaultValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The string value of the default value of this field. Proto2 syntax only.',
-      }),
-    jsonName: z.string().exactOptional().openapi({ description: 'The field JSON name.' }),
-    kind: z
-      .enum([
-        'TYPE_UNKNOWN',
-        'TYPE_DOUBLE',
-        'TYPE_FLOAT',
-        'TYPE_INT64',
-        'TYPE_UINT64',
-        'TYPE_INT32',
-        'TYPE_FIXED64',
-        'TYPE_FIXED32',
-        'TYPE_BOOL',
-        'TYPE_STRING',
-        'TYPE_GROUP',
-        'TYPE_MESSAGE',
-        'TYPE_BYTES',
-        'TYPE_UINT32',
-        'TYPE_ENUM',
-        'TYPE_SFIXED32',
-        'TYPE_SFIXED64',
-        'TYPE_SINT32',
-        'TYPE_SINT64',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The field type.' }),
-    name: z.string().exactOptional().openapi({ description: 'The field name.' }),
-    number: z.int32().exactOptional().openapi({ description: 'The field number.' }),
-    oneofIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The index of the field type in `Type.oneofs`, for message or enumeration types. The first type has index 1; zero means the type is not in the list.',
-      }),
-    options: z
-      .array(OptionSchema)
-      .exactOptional()
-      .openapi({ description: 'The protocol buffer options.' }),
-    packed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether to use alternative packed wire representation.' }),
-    typeUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The field type URL, without the scheme, for message or enumeration types. Example: `"type.googleapis.com/google.protobuf.Timestamp"`.',
-      }),
-  })
-  .openapi({ description: 'A single field of a message type.', required: [] })
-  .openapi('Field')
 
 const HttpRuleSchema: z.ZodType<HttpRuleType> = z
   .lazy(() =>
@@ -1141,6 +879,54 @@ const HttpSchema = z
   })
   .openapi('Http')
 
+const LoggingDestinationSchema = z
+  .object({
+    logs: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Names of the logs to be sent to this destination. Each name must be defined in the Service.logs section. If the log name is not a domain scoped name, it will be automatically prefixed with the service name followed by "/".',
+      }),
+    monitoredResource: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The monitored resource type. The type must be defined in the Service.monitored_resources section.',
+      }),
+  })
+  .openapi({
+    description:
+      'Configuration of a specific logging destination (the producer project or the consumer project).',
+    required: [],
+  })
+  .openapi('LoggingDestination')
+
+const LoggingSchema = z
+  .object({
+    consumerDestinations: z
+      .array(LoggingDestinationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Logging configurations for sending logs to the consumer project. There can be multiple consumer destinations, each one must have a different monitored resource type. A log can be used in at most one consumer destination.',
+      }),
+    producerDestinations: z
+      .array(LoggingDestinationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Logging configurations for sending logs to the producer project. There can be multiple producer destinations, each one must have a different monitored resource type. A log can be used in at most one producer destination.',
+      }),
+  })
+  .openapi({
+    description:
+      'Logging configuration of the service. The following example shows how to configure logs to be sent to the producer and consumer projects. In the example, the `activity_history` log is sent to both the producer and consumer projects, whereas the `purchase_history` log is only sent to the producer project. monitored_resources: - type: library.googleapis.com/branch labels: - key: /city description: The city where the library branch is located in. - key: /name description: The name of the branch. logs: - name: activity_history labels: - key: /customer_id - name: purchase_history logging: producer_destinations: - monitored_resource: library.googleapis.com/branch logs: - activity_history - purchase_history consumer_destinations: - monitored_resource: library.googleapis.com/branch logs: - activity_history',
+    required: [],
+  })
+  .openapi('Logging')
+
 const LabelDescriptorSchema = z
   .object({
     description: z
@@ -1193,106 +979,6 @@ const LogDescriptorSchema = z
     required: [],
   })
   .openapi('LogDescriptor')
-
-const LoggingDestinationSchema = z
-  .object({
-    logs: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Names of the logs to be sent to this destination. Each name must be defined in the Service.logs section. If the log name is not a domain scoped name, it will be automatically prefixed with the service name followed by "/".',
-      }),
-    monitoredResource: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The monitored resource type. The type must be defined in the Service.monitored_resources section.',
-      }),
-  })
-  .openapi({
-    description:
-      'Configuration of a specific logging destination (the producer project or the consumer project).',
-    required: [],
-  })
-  .openapi('LoggingDestination')
-
-const LoggingSchema = z
-  .object({
-    consumerDestinations: z
-      .array(LoggingDestinationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Logging configurations for sending logs to the consumer project. There can be multiple consumer destinations, each one must have a different monitored resource type. A log can be used in at most one consumer destination.',
-      }),
-    producerDestinations: z
-      .array(LoggingDestinationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Logging configurations for sending logs to the producer project. There can be multiple producer destinations, each one must have a different monitored resource type. A log can be used in at most one producer destination.',
-      }),
-  })
-  .openapi({
-    description:
-      'Logging configuration of the service. The following example shows how to configure logs to be sent to the producer and consumer projects. In the example, the `activity_history` log is sent to both the producer and consumer projects, whereas the `purchase_history` log is only sent to the producer project. monitored_resources: - type: library.googleapis.com/branch labels: - key: /city description: The city where the library branch is located in. - key: /name description: The name of the branch. logs: - name: activity_history labels: - key: /customer_id - name: purchase_history logging: producer_destinations: - monitored_resource: library.googleapis.com/branch logs: - activity_history - purchase_history consumer_destinations: - monitored_resource: library.googleapis.com/branch logs: - activity_history',
-    required: [],
-  })
-  .openapi('Logging')
-
-const LongRunningSchema = z
-  .object({
-    initialPollDelay: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Initial delay after which the first poll request will be made. Default value: 5 seconds.',
-      }),
-    maxPollDelay: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum time between two subsequent poll requests. Default value: 45 seconds.',
-      }),
-    pollDelayMultiplier: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Multiplier to gradually increase delay between subsequent polls until it reaches max_poll_delay. Default value: 1.5.',
-      }),
-    totalPollTimeout: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Total polling timeout. Default value: 5 minutes.' }),
-  })
-  .openapi({
-    description:
-      'Describes settings to use when generating API methods that use the long-running operation pattern. All default values below are from those used in the client library generators (e.g. [Java](https://github.com/googleapis/gapic-generator-java/blob/04c2faa191a9b5a10b92392fe8482279c4404803/src/main/java/com/google/api/generator/gapic/composer/common/RetrySettingsComposer.java)).',
-    required: [],
-  })
-  .openapi('LongRunning')
-
-const MethodSettingsSchema = z
-  .object({
-    longRunning: LongRunningSchema.exactOptional().openapi({
-      description:
-        'Describes settings to use for long-running operations when generating API methods for RPCs. Complements RPCs that use the annotations in google/longrunning/operations.proto. Example of a YAML configuration:: publishing: method_settings: - selector: google.cloud.speech.v2.Speech.BatchRecognize long_running: initial_poll_delay: seconds: 60 # 1 minute poll_delay_multiplier: 1.5 max_poll_delay: seconds: 360 # 6 minutes total_poll_timeout: seconds: 54000 # 90 minutes',
-    }),
-    selector: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The fully qualified name of the method, for which the options below apply. This is used to find the method to apply the options.',
-      }),
-  })
-  .openapi({ description: 'Describes the generator configuration for a method.', required: [] })
-  .openapi('MethodSettings')
 
 const MetricDescriptorMetadataSchema = z
   .object({
@@ -1423,30 +1109,6 @@ const MetricDescriptorSchema = z
   })
   .openapi('MetricDescriptor')
 
-const MetricRuleSchema = z
-  .object({
-    metricCosts: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Metrics to update when the selected methods are called, and the associated cost applied to each metric. The key of the map is the metric name, and the values are the amount increased for the metric against which the quota limits are defined. The value must not be negative.',
-      }),
-    selector: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Selects the methods to which this rule applies. Refer to selector for syntax details.',
-      }),
-  })
-  .openapi({
-    description:
-      "Bind API methods to metrics. Binding a method to a metric causes that metric's configured quota behaviors to apply to the method call.",
-    required: [],
-  })
-  .openapi('MetricRule')
-
 const MonitoredResourceDescriptorSchema = z
   .object({
     description: z
@@ -1553,99 +1215,241 @@ const MonitoringSchema = z
   })
   .openapi('Monitoring')
 
-const StatusSchema = z
+const CommonLanguageSettingsSchema = z
   .object({
-    code: z
-      .int32()
+    destinations: z
+      .array(z.enum(['CLIENT_LIBRARY_DESTINATION_UNSPECIFIED', 'GITHUB', 'PACKAGE_MANAGER']))
       .exactOptional()
       .openapi({
-        description: 'The status code, which should be an enum value of google.rpc.Code.',
+        description: 'The destination where API teams want this client library to be published.',
       }),
-    details: z
-      .array(
-        z.record(
-          z.string(),
-          z
-            .any()
-            .openapi({
-              description: 'Properties of the object. Contains field @type with type URL.',
-            }),
-        ),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
-      }),
-    message: z
+    referenceDocsUri: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
+          'Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest',
       }),
   })
-  .openapi({
-    description:
-      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
-    required: [],
-  })
-  .openapi('Status')
+  .openapi({ description: 'Required information for every language.', required: [] })
+  .openapi('CommonLanguageSettings')
 
-const OperationSchema = z
+const CppSettingsSchema = z
   .object({
-    done: z
+    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
+  })
+  .openapi({ description: 'Settings for C++ client libraries.', required: [] })
+  .openapi('CppSettings')
+
+const DotnetSettingsSchema = z
+  .object({
+    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
+    forcedNamespaceAliases: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Namespaces which must be aliased in snippets due to a known (but non-generator-predictable) naming collision',
+      }),
+    handwrittenSignatures: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Method signatures (in the form "service.method(signature)") which are provided separately, so shouldn\'t be generated. Snippets *calling* these methods are still generated, however.',
+      }),
+    ignoredResources: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of full resource types to ignore during generation. This is typically used for API-specific Location resources, which should be handled by the generator as if they were actually the common Location resources. Example entry: "documentai.googleapis.com/Location"',
+      }),
+    renamedResources: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Map from full resource types to the effective short name for the resource. This is used when otherwise resource named from different services would cause naming collisions. Example entry: "datalabeling.googleapis.com/Dataset": "DataLabelingDataset"',
+      }),
+    renamedServices: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Map from original service names to renamed versions. This is used when the default generated types would cause a naming conflict. (Neither name is fully-qualified.) Example: Subscriber to SubscriberServiceApi.',
+      }),
+  })
+  .openapi({ description: 'Settings for Dotnet client libraries.', required: [] })
+  .openapi('DotnetSettings')
+
+const GoSettingsSchema = z
+  .object({
+    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
+  })
+  .openapi({ description: 'Settings for Go client libraries.', required: [] })
+  .openapi('GoSettings')
+
+const JavaSettingsSchema = z
+  .object({
+    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
+    libraryPackage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The package name to use in Java. Clobbers the java_package option set in the protobuf. This should be used **only** by APIs who have already set the language_settings.java.package_name" field in gapic.yaml. API teams should use the protobuf java_package option where possible. Example of a YAML configuration:: publishing: java_settings: library_package: com.google.cloud.pubsub.v1',
+      }),
+    serviceClassNames: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Configure the Java class name to use instead of the service\'s for its corresponding generated GAPIC client. Keys are fully-qualified service names as they appear in the protobuf (including the full the language_settings.java.interface_names" field in gapic.yaml. API teams should otherwise use the service name as it appears in the protobuf. Example of a YAML configuration:: publishing: java_settings: service_class_names: - google.pubsub.v1.Publisher: TopicAdmin - google.pubsub.v1.Subscriber: SubscriptionAdmin',
+      }),
+  })
+  .openapi({ description: 'Settings for Java client libraries.', required: [] })
+  .openapi('JavaSettings')
+
+const NodeSettingsSchema = z
+  .object({
+    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
+  })
+  .openapi({ description: 'Settings for Node client libraries.', required: [] })
+  .openapi('NodeSettings')
+
+const PhpSettingsSchema = z
+  .object({
+    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
+  })
+  .openapi({ description: 'Settings for Php client libraries.', required: [] })
+  .openapi('PhpSettings')
+
+const PythonSettingsSchema = z
+  .object({
+    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
+  })
+  .openapi({ description: 'Settings for Python client libraries.', required: [] })
+  .openapi('PythonSettings')
+
+const RubySettingsSchema = z
+  .object({
+    common: CommonLanguageSettingsSchema.exactOptional().openapi({ description: 'Some settings.' }),
+  })
+  .openapi({ description: 'Settings for Ruby client libraries.', required: [] })
+  .openapi('RubySettings')
+
+const ClientLibrarySettingsSchema = z
+  .object({
+    cppSettings: CppSettingsSchema.exactOptional().openapi({
+      description: 'Settings for C++ client libraries.',
+    }),
+    dotnetSettings: DotnetSettingsSchema.exactOptional().openapi({
+      description: 'Settings for .NET client libraries.',
+    }),
+    goSettings: GoSettingsSchema.exactOptional().openapi({
+      description: 'Settings for Go client libraries.',
+    }),
+    javaSettings: JavaSettingsSchema.exactOptional().openapi({
+      description: 'Settings for legacy Java features, supported in the Service YAML.',
+    }),
+    launchStage: z
+      .enum([
+        'LAUNCH_STAGE_UNSPECIFIED',
+        'UNIMPLEMENTED',
+        'PRELAUNCH',
+        'EARLY_ACCESS',
+        'ALPHA',
+        'BETA',
+        'GA',
+        'DEPRECATED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Launch stage of this version of the API.' }),
+    nodeSettings: NodeSettingsSchema.exactOptional().openapi({
+      description: 'Settings for Node client libraries.',
+    }),
+    phpSettings: PhpSettingsSchema.exactOptional().openapi({
+      description: 'Settings for PHP client libraries.',
+    }),
+    pythonSettings: PythonSettingsSchema.exactOptional().openapi({
+      description: 'Settings for Python client libraries.',
+    }),
+    restNumericEnums: z
       .boolean()
       .exactOptional()
       .openapi({
         description:
-          'If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.',
+          'When using transport=rest, the client request will encode enums as numbers rather than strings.',
       }),
-    error: StatusSchema.exactOptional().openapi({
-      description: 'The error result of the operation in case of failure or cancellation.',
+    rubySettings: RubySettingsSchema.exactOptional().openapi({
+      description: 'Settings for Ruby client libraries.',
     }),
-    metadata: z
-      .record(
-        z.string(),
-        z
-          .any()
-          .openapi({
-            description: 'Properties of the object. Contains field @type with type URL.',
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any.',
-      }),
-    name: z
+    version: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations/{unique_id}`.',
-      }),
-    response: z
-      .record(
-        z.string(),
-        z
-          .any()
-          .openapi({
-            description: 'Properties of the object. Contains field @type with type URL.',
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'The normal response of the operation in case of success. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`/`Create`/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.',
+          'Version of the API to apply these settings to. This is the full protobuf package for the API, ending in the version element. Examples: "google.cloud.speech.v1" and "google.spanner.admin.database.v1".',
       }),
   })
   .openapi({
-    description:
-      'This resource represents a long-running operation that is the result of a network API call.',
+    description: 'Details about how and where to publish client libraries.',
     required: [],
   })
-  .openapi('Operation')
+  .openapi('ClientLibrarySettings')
+
+const LongRunningSchema = z
+  .object({
+    initialPollDelay: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Initial delay after which the first poll request will be made. Default value: 5 seconds.',
+      }),
+    maxPollDelay: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum time between two subsequent poll requests. Default value: 45 seconds.',
+      }),
+    pollDelayMultiplier: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Multiplier to gradually increase delay between subsequent polls until it reaches max_poll_delay. Default value: 1.5.',
+      }),
+    totalPollTimeout: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Total polling timeout. Default value: 5 minutes.' }),
+  })
+  .openapi({
+    description:
+      'Describes settings to use when generating API methods that use the long-running operation pattern. All default values below are from those used in the client library generators (e.g. [Java](https://github.com/googleapis/gapic-generator-java/blob/04c2faa191a9b5a10b92392fe8482279c4404803/src/main/java/com/google/api/generator/gapic/composer/common/RetrySettingsComposer.java)).',
+    required: [],
+  })
+  .openapi('LongRunning')
+
+const MethodSettingsSchema = z
+  .object({
+    longRunning: LongRunningSchema.exactOptional().openapi({
+      description:
+        'Describes settings to use for long-running operations when generating API methods for RPCs. Complements RPCs that use the annotations in google/longrunning/operations.proto. Example of a YAML configuration:: publishing: method_settings: - selector: google.cloud.speech.v2.Speech.BatchRecognize long_running: initial_poll_delay: seconds: 60 # 1 minute poll_delay_multiplier: 1.5 max_poll_delay: seconds: 360 # 6 minutes total_poll_timeout: seconds: 54000 # 90 minutes',
+    }),
+    selector: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The fully qualified name of the method, for which the options below apply. This is used to find the method to apply the options.',
+      }),
+  })
+  .openapi({ description: 'Describes the generator configuration for a method.', required: [] })
+  .openapi('MethodSettings')
 
 const PublishingSchema = z
   .object({
@@ -1810,6 +1614,30 @@ const QuotaLimitSchema = z
   })
   .openapi('QuotaLimit')
 
+const MetricRuleSchema = z
+  .object({
+    metricCosts: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Metrics to update when the selected methods are called, and the associated cost applied to each metric. The key of the map is the metric name, and the values are the amount increased for the metric against which the quota limits are defined. The value must not be negative.',
+      }),
+    selector: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Selects the methods to which this rule applies. Refer to selector for syntax details.',
+      }),
+  })
+  .openapi({
+    description:
+      "Bind API methods to metrics. Binding a method to a metric causes that metric's configured quota behaviors to apply to the method call.",
+    required: [],
+  })
+  .openapi('MetricRule')
+
 const QuotaSchema = z
   .object({
     limits: z
@@ -1920,6 +1748,76 @@ const SystemParametersSchema = z
   })
   .openapi('SystemParameters')
 
+const FieldSchema = z
+  .object({
+    cardinality: z
+      .enum([
+        'CARDINALITY_UNKNOWN',
+        'CARDINALITY_OPTIONAL',
+        'CARDINALITY_REQUIRED',
+        'CARDINALITY_REPEATED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The field cardinality.' }),
+    defaultValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The string value of the default value of this field. Proto2 syntax only.',
+      }),
+    jsonName: z.string().exactOptional().openapi({ description: 'The field JSON name.' }),
+    kind: z
+      .enum([
+        'TYPE_UNKNOWN',
+        'TYPE_DOUBLE',
+        'TYPE_FLOAT',
+        'TYPE_INT64',
+        'TYPE_UINT64',
+        'TYPE_INT32',
+        'TYPE_FIXED64',
+        'TYPE_FIXED32',
+        'TYPE_BOOL',
+        'TYPE_STRING',
+        'TYPE_GROUP',
+        'TYPE_MESSAGE',
+        'TYPE_BYTES',
+        'TYPE_UINT32',
+        'TYPE_ENUM',
+        'TYPE_SFIXED32',
+        'TYPE_SFIXED64',
+        'TYPE_SINT32',
+        'TYPE_SINT64',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The field type.' }),
+    name: z.string().exactOptional().openapi({ description: 'The field name.' }),
+    number: z.int32().exactOptional().openapi({ description: 'The field number.' }),
+    oneofIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The index of the field type in `Type.oneofs`, for message or enumeration types. The first type has index 1; zero means the type is not in the list.',
+      }),
+    options: z
+      .array(OptionSchema)
+      .exactOptional()
+      .openapi({ description: 'The protocol buffer options.' }),
+    packed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether to use alternative packed wire representation.' }),
+    typeUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The field type URL, without the scheme, for message or enumeration types. Example: `"type.googleapis.com/google.protobuf.Timestamp"`.',
+      }),
+  })
+  .openapi({ description: 'A single field of a message type.', required: [] })
+  .openapi('Field')
+
 const TypeSchema = z
   .object({
     edition: z
@@ -2007,7 +1905,316 @@ const UsageSchema = z
   .openapi({ description: 'Configuration controlling usage of a service.', required: [] })
   .openapi('Usage')
 
-const ServiceSchema = z
+type ServiceType = {
+  apis?: z.infer<typeof ApiSchema>[]
+  authentication?: z.infer<typeof AuthenticationSchema>
+  backend?: z.infer<typeof BackendSchema>
+  billing?: z.infer<typeof BillingSchema>
+  configVersion?: number
+  context?: z.infer<typeof ContextSchema>
+  control?: z.infer<typeof ControlSchema>
+  customError?: z.infer<typeof CustomErrorSchema>
+  documentation?: z.infer<typeof DocumentationSchema>
+  endpoints?: z.infer<typeof EndpointSchema>[]
+  enums?: z.infer<typeof EnumSchema>[]
+  http?: z.infer<typeof HttpSchema>
+  id?: string
+  logging?: z.infer<typeof LoggingSchema>
+  logs?: z.infer<typeof LogDescriptorSchema>[]
+  metrics?: z.infer<typeof MetricDescriptorSchema>[]
+  monitoredResources?: z.infer<typeof MonitoredResourceDescriptorSchema>[]
+  monitoring?: z.infer<typeof MonitoringSchema>
+  name?: string
+  producerProjectId?: string
+  publishing?: z.infer<typeof PublishingSchema>
+  quota?: z.infer<typeof QuotaSchema>
+  sourceInfo?: z.infer<typeof SourceInfoSchema>
+  systemParameters?: z.infer<typeof SystemParametersSchema>
+  systemTypes?: z.infer<typeof TypeSchema>[]
+  title?: string
+  types?: z.infer<typeof TypeSchema>[]
+  usage?: z.infer<typeof UsageSchema>
+}
+
+const V1Beta1QuotaOverrideSchema = z
+  .object({
+    adminOverrideAncestor: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the ancestor that requested the override. For example: "organizations/12345" or "folders/67890". Used by admin overrides only.',
+      }),
+    dimensions: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          ' If this map is nonempty, then this override applies only to specific values for dimensions defined in the limit unit. For example, an override on a limit with the unit 1/{project}/{region} could contain an entry with the key "region" and the value "us-east-1"; the override is only applied to quota consumed in that region. This map has the following restrictions: * Keys that are not defined in the limit\'s unit are not valid keys. Any string appearing in {brackets} in the unit (besides {project} or {user}) is a defined key. * "project" is not a valid key; the project is already specified in the parent resource name. * "user" is not a valid key; the API does not support quota overrides that apply only to a specific user. * If "region" appears as a key, its value must be a valid Cloud region. * If "zone" appears as a key, its value must be a valid Cloud zone. * If any valid key other than "region" or "zone" appears in the map, then all valid keys other than "region" or "zone" must also appear in the map.',
+      }),
+    metric: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the metric to which this override applies. An example name would be: `compute.googleapis.com/cpus`',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the producer override. An example name would be: `services/compute.googleapis.com/projects/123/consumerQuotaMetrics/compute.googleapis.com%2Fcpus/limits/%2Fproject%2Fregion/producerOverrides/4a3f2c1d`',
+      }),
+    overrideValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The overriding quota limit value. Can be any nonnegative integer, or -1 (unlimited quota).',
+      }),
+    unit: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The limit unit of the limit to which this override applies. An example unit would be: `1/{project}/{region}` Note that `{project}` and `{region}` are not placeholders in this example; the literal characters `{` and `}` occur in the string.',
+      }),
+  })
+  .openapi({ description: 'A quota override', required: [] })
+  .openapi('V1Beta1QuotaOverride')
+
+const V1Beta1QuotaBucketSchema = z
+  .object({
+    adminOverride: V1Beta1QuotaOverrideSchema.exactOptional().openapi({
+      description: 'Admin override on this quota bucket.',
+    }),
+    consumerOverride: V1Beta1QuotaOverrideSchema.exactOptional().openapi({
+      description: 'Consumer override on this quota bucket.',
+    }),
+    defaultLimit: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The default limit of this quota bucket, as specified by the service configuration.',
+      }),
+    dimensions: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The dimensions of this quota bucket. If this map is empty, this is the global bucket, which is the default quota value applied to all requests that do not have a more specific override. If this map is nonempty, the default limit, effective limit, and quota overrides apply only to requests that have the dimensions given in the map. For example, if the map has key "region" and value "us-east-1", then the specified effective limit is only effective in that region, and the specified overrides apply only in that region.',
+      }),
+    effectiveLimit: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The effective limit of this quota bucket. Equal to default_limit if there are no overrides.',
+      }),
+    producerOverride: V1Beta1QuotaOverrideSchema.exactOptional().openapi({
+      description: 'Producer override on this quota bucket.',
+    }),
+  })
+  .openapi({
+    description: 'A quota bucket is a quota provisioning unit for a specific set of dimensions.',
+    required: [],
+  })
+  .openapi('V1Beta1QuotaBucket')
+
+const V1Beta1ConsumerQuotaLimitSchema = z
+  .object({
+    isPrecise: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether this limit is precise or imprecise.' }),
+    metric: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the parent metric of this limit. An example name would be: `compute.googleapis.com/cpus`',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the quota limit. An example name would be: `services/compute.googleapis.com/projects/123/consumerQuotaMetrics/compute.googleapis.com%2Fcpus/limits/%2Fproject%2Fregion` The resource name is intended to be opaque and should not be parsed for its component strings, since its representation could change in the future.',
+      }),
+    quotaBuckets: z
+      .array(V1Beta1QuotaBucketSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Summary of the enforced quota buckets, organized by quota dimension, ordered from least specific to most specific (for example, the global default bucket, with no quota dimensions, will always appear first).',
+      }),
+    supportedLocations: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of all supported locations. This field is present only if the limit has a {region} or {zone} dimension.',
+      }),
+    unit: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The limit unit. An example unit would be: `1/{project}/{region}` Note that `{project}` and `{region}` are not placeholders in this example; the literal characters `{` and `}` occur in the string.',
+      }),
+  })
+  .openapi({ description: 'Consumer quota settings for a quota limit.', required: [] })
+  .openapi('V1Beta1ConsumerQuotaLimit')
+
+const V1Beta1ConsumerQuotaMetricSchema = z
+  .object({
+    consumerQuotaLimits: z
+      .array(V1Beta1ConsumerQuotaLimitSchema)
+      .exactOptional()
+      .openapi({ description: 'The consumer quota for each quota limit defined on the metric.' }),
+    descendantConsumerQuotaLimits: z
+      .array(V1Beta1ConsumerQuotaLimitSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The quota limits targeting the descendant containers of the consumer in request. If the consumer in request is of type `organizations` or `folders`, the field will list per-project limits in the metric; if the consumer in request is of type `project`, the field will be empty. The `quota_buckets` field of each descendant consumer quota limit will not be populated.',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The display name of the metric. An example name would be: "CPUs"' }),
+    metric: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the metric. An example name would be: `compute.googleapis.com/cpus`',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the quota settings on this metric for this consumer. An example name would be: `services/serviceconsumermanagement.googleapis.com/projects/123/consumerQuotaMetrics/compute.googleapis.com%2Fcpus` The resource name is intended to be opaque and should not be parsed for its component strings, since its representation could change in the future.',
+      }),
+    unit: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The units in which the metric value is reported.' }),
+  })
+  .openapi({ description: 'Consumer quota settings for a quota metric.', required: [] })
+  .openapi('V1Beta1ConsumerQuotaMetric')
+
+type V1Beta1ListConsumerQuotaMetricsResponseType = {
+  metrics?: z.infer<typeof V1Beta1ConsumerQuotaMetricSchema>[]
+  nextPageToken?: string
+}
+
+const EmptySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
+  })
+  .openapi('Empty')
+
+const StatusSchema = z
+  .object({
+    code: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The status code, which should be an enum value of google.rpc.Code.',
+      }),
+    details: z
+      .array(
+        z.record(
+          z.string(),
+          z
+            .any()
+            .openapi({
+              description: 'Properties of the object. Contains field @type with type URL.',
+            }),
+        ),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
+      }),
+  })
+  .openapi({
+    description:
+      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
+    required: [],
+  })
+  .openapi('Status')
+
+const OperationSchema = z
+  .object({
+    done: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.',
+      }),
+    error: StatusSchema.exactOptional().openapi({
+      description: 'The error result of the operation in case of failure or cancellation.',
+    }),
+    metadata: z
+      .record(
+        z.string(),
+        z
+          .any()
+          .openapi({
+            description: 'Properties of the object. Contains field @type with type URL.',
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations/{unique_id}`.',
+      }),
+    response: z
+      .record(
+        z.string(),
+        z
+          .any()
+          .openapi({
+            description: 'Properties of the object. Contains field @type with type URL.',
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The normal response of the operation in case of success. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`/`Create`/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.',
+      }),
+  })
+  .openapi({
+    description:
+      'This resource represents a long-running operation that is the result of a network API call.',
+    required: [],
+  })
+  .openapi('Operation')
+
+const ServiceSchema: z.ZodType<ServiceType> = z
   .object({
     apis: z
       .array(ApiSchema)
@@ -2133,54 +2340,6 @@ const ServiceSchema = z
   })
   .openapi('Service')
 
-const V1Beta1QuotaOverrideSchema = z
-  .object({
-    adminOverrideAncestor: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the ancestor that requested the override. For example: "organizations/12345" or "folders/67890". Used by admin overrides only.',
-      }),
-    dimensions: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          ' If this map is nonempty, then this override applies only to specific values for dimensions defined in the limit unit. For example, an override on a limit with the unit 1/{project}/{region} could contain an entry with the key "region" and the value "us-east-1"; the override is only applied to quota consumed in that region. This map has the following restrictions: * Keys that are not defined in the limit\'s unit are not valid keys. Any string appearing in {brackets} in the unit (besides {project} or {user}) is a defined key. * "project" is not a valid key; the project is already specified in the parent resource name. * "user" is not a valid key; the API does not support quota overrides that apply only to a specific user. * If "region" appears as a key, its value must be a valid Cloud region. * If "zone" appears as a key, its value must be a valid Cloud zone. * If any valid key other than "region" or "zone" appears in the map, then all valid keys other than "region" or "zone" must also appear in the map.',
-      }),
-    metric: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the metric to which this override applies. An example name would be: `compute.googleapis.com/cpus`',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the producer override. An example name would be: `services/compute.googleapis.com/projects/123/consumerQuotaMetrics/compute.googleapis.com%2Fcpus/limits/%2Fproject%2Fregion/producerOverrides/4a3f2c1d`',
-      }),
-    overrideValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The overriding quota limit value. Can be any nonnegative integer, or -1 (unlimited quota).',
-      }),
-    unit: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The limit unit of the limit to which this override applies. An example unit would be: `1/{project}/{region}` Note that `{project}` and `{region}` are not placeholders in this example; the literal characters `{` and `}` occur in the string.',
-      }),
-  })
-  .openapi({ description: 'A quota override', required: [] })
-  .openapi('V1Beta1QuotaOverride')
-
 const V1Beta1BatchCreateProducerOverridesResponseSchema = z
   .object({
     overrides: z
@@ -2191,131 +2350,8 @@ const V1Beta1BatchCreateProducerOverridesResponseSchema = z
   .openapi({ description: 'Response message for BatchCreateProducerOverrides', required: [] })
   .openapi('V1Beta1BatchCreateProducerOverridesResponse')
 
-const V1Beta1QuotaBucketSchema = z
-  .object({
-    adminOverride: V1Beta1QuotaOverrideSchema.exactOptional().openapi({
-      description: 'Admin override on this quota bucket.',
-    }),
-    consumerOverride: V1Beta1QuotaOverrideSchema.exactOptional().openapi({
-      description: 'Consumer override on this quota bucket.',
-    }),
-    defaultLimit: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The default limit of this quota bucket, as specified by the service configuration.',
-      }),
-    dimensions: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The dimensions of this quota bucket. If this map is empty, this is the global bucket, which is the default quota value applied to all requests that do not have a more specific override. If this map is nonempty, the default limit, effective limit, and quota overrides apply only to requests that have the dimensions given in the map. For example, if the map has key "region" and value "us-east-1", then the specified effective limit is only effective in that region, and the specified overrides apply only in that region.',
-      }),
-    effectiveLimit: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The effective limit of this quota bucket. Equal to default_limit if there are no overrides.',
-      }),
-    producerOverride: V1Beta1QuotaOverrideSchema.exactOptional().openapi({
-      description: 'Producer override on this quota bucket.',
-    }),
-  })
-  .openapi({
-    description: 'A quota bucket is a quota provisioning unit for a specific set of dimensions.',
-    required: [],
-  })
-  .openapi('V1Beta1QuotaBucket')
-
-const V1Beta1ConsumerQuotaLimitSchema = z
-  .object({
-    isPrecise: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether this limit is precise or imprecise.' }),
-    metric: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the parent metric of this limit. An example name would be: `compute.googleapis.com/cpus`',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the quota limit. An example name would be: `services/compute.googleapis.com/projects/123/consumerQuotaMetrics/compute.googleapis.com%2Fcpus/limits/%2Fproject%2Fregion` The resource name is intended to be opaque and should not be parsed for its component strings, since its representation could change in the future.',
-      }),
-    quotaBuckets: z
-      .array(V1Beta1QuotaBucketSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Summary of the enforced quota buckets, organized by quota dimension, ordered from least specific to most specific (for example, the global default bucket, with no quota dimensions, will always appear first).',
-      }),
-    supportedLocations: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'List of all supported locations. This field is present only if the limit has a {region} or {zone} dimension.',
-      }),
-    unit: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The limit unit. An example unit would be: `1/{project}/{region}` Note that `{project}` and `{region}` are not placeholders in this example; the literal characters `{` and `}` occur in the string.',
-      }),
-  })
-  .openapi({ description: 'Consumer quota settings for a quota limit.', required: [] })
-  .openapi('V1Beta1ConsumerQuotaLimit')
-
-const V1Beta1ConsumerQuotaMetricSchema = z
-  .object({
-    consumerQuotaLimits: z
-      .array(V1Beta1ConsumerQuotaLimitSchema)
-      .exactOptional()
-      .openapi({ description: 'The consumer quota for each quota limit defined on the metric.' }),
-    descendantConsumerQuotaLimits: z
-      .array(V1Beta1ConsumerQuotaLimitSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The quota limits targeting the descendant containers of the consumer in request. If the consumer in request is of type `organizations` or `folders`, the field will list per-project limits in the metric; if the consumer in request is of type `project`, the field will be empty. The `quota_buckets` field of each descendant consumer quota limit will not be populated.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The display name of the metric. An example name would be: "CPUs"' }),
-    metric: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the metric. An example name would be: `compute.googleapis.com/cpus`',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the quota settings on this metric for this consumer. An example name would be: `services/serviceconsumermanagement.googleapis.com/projects/123/consumerQuotaMetrics/compute.googleapis.com%2Fcpus` The resource name is intended to be opaque and should not be parsed for its component strings, since its representation could change in the future.',
-      }),
-    unit: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The units in which the metric value is reported.' }),
-  })
-  .openapi({ description: 'Consumer quota settings for a quota metric.', required: [] })
-  .openapi('V1Beta1ConsumerQuotaMetric')
-
 const V1Beta1DisableConsumerResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Response message for the `DisableConsumer` method. This response message is assigned to the `response` field of the returned Operation when that operation is done.',
@@ -2323,7 +2359,7 @@ const V1Beta1DisableConsumerResponseSchema = z
   .openapi('V1Beta1DisableConsumerResponse')
 
 const V1Beta1EnableConsumerResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Response message for the `EnableConsumer` method. This response message is assigned to the `response` field of the returned Operation when that operation is done.',
@@ -2484,22 +2520,23 @@ const V1Beta1ImportProducerQuotaPoliciesResponseSchema = z
   .openapi({ description: 'Response message for ImportProducerQuotaPolicies', required: [] })
   .openapi('V1Beta1ImportProducerQuotaPoliciesResponse')
 
-const V1Beta1ListConsumerQuotaMetricsResponseSchema = z
-  .object({
-    metrics: z
-      .array(V1Beta1ConsumerQuotaMetricSchema)
-      .exactOptional()
-      .openapi({ description: 'Quota settings for the consumer, organized by quota metric.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token identifying which result to start with; returned by a previous list call.',
-      }),
-  })
-  .openapi({ description: 'Response message for ListConsumerQuotaMetrics.', required: [] })
-  .openapi('V1Beta1ListConsumerQuotaMetricsResponse')
+const V1Beta1ListConsumerQuotaMetricsResponseSchema: z.ZodType<V1Beta1ListConsumerQuotaMetricsResponseType> =
+  z
+    .object({
+      metrics: z
+        .array(V1Beta1ConsumerQuotaMetricSchema)
+        .exactOptional()
+        .openapi({ description: 'Quota settings for the consumer, organized by quota metric.' }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Token identifying which result to start with; returned by a previous list call.',
+        }),
+    })
+    .openapi({ description: 'Response message for ListConsumerQuotaMetrics.', required: [] })
+    .openapi('V1Beta1ListConsumerQuotaMetricsResponse')
 
 const V1Beta1ListProducerOverridesResponseSchema = z
   .object({
@@ -2519,7 +2556,7 @@ const V1Beta1ListProducerOverridesResponseSchema = z
   .openapi('V1Beta1ListProducerOverridesResponse')
 
 const V1Beta1RefreshConsumerResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Response message for the `RefreshConsumer` method. This response message is assigned to the `response` field of the returned Operation when that operation is done.',
@@ -2574,7 +2611,7 @@ const V1beta1DefaultIdentitySchema = z
   .openapi('V1beta1DefaultIdentity')
 
 const V1beta1DisableConsumerResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Response message for the `DisableConsumer` method. This response message is assigned to the `response` field of the returned Operation when that operation is done.',
@@ -2582,7 +2619,7 @@ const V1beta1DisableConsumerResponseSchema = z
   .openapi('V1beta1DisableConsumerResponse')
 
 const V1beta1EnableConsumerResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Response message for the `EnableConsumer` method. This response message is assigned to the `response` field of the returned Operation when that operation is done.',
@@ -2671,7 +2708,7 @@ const V1beta1GenerateServiceAccountResponseSchema = z
   .openapi('V1beta1GenerateServiceAccountResponse')
 
 const V1beta1RefreshConsumerResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Response message for the `RefreshConsumer` method. This response message is assigned to the `response` field of the returned Operation when that operation is done.',

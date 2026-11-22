@@ -6,7 +6,7 @@ This document describes the REST API and resources provided by Confluence. The R
 
 Base URLs:
 
-* <a href="https://developer.atlassian.com//your-domain.atlassian.net">https://developer.atlassian.com//your-domain.atlassian.net</a>
+* <a href="//your-domain.atlassian.net">//your-domain.atlassian.net</a>
 
 <a href="https://atlassian.com/terms/">Terms of service</a>
 

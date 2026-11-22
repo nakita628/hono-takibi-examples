@@ -31,16 +31,22 @@ export const consumerGroupV3Handler = app
   })
   .openapi(
     getClustersClusterIdConsumerGroupsConsumerGroupIdLagsTopicNamePartitionsPartitionIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(getClustersClusterIdConsumerGroupsConsumerGroupIdConsumersConsumerIdRoute, (c) => {
     throw new Error('Not implemented')
   })
   .openapi(
     getClustersClusterIdConsumerGroupsConsumerGroupIdConsumersConsumerIdAssignmentsRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     getClustersClusterIdConsumerGroupsConsumerGroupIdConsumersConsumerIdAssignmentsTopicNamePartitionsPartitionIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

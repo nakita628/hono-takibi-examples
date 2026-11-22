@@ -111,7 +111,7 @@ const CrawledUrlSchema = z
   .openapi('CrawledUrl')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -736,12 +736,12 @@ const ListScanRunsResponseSchema = z
   .openapi('ListScanRunsResponse')
 
 const StartScanRunRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for the `StartScanRun` method.' })
   .openapi('StartScanRunRequest')
 
 const StopScanRunRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for the `StopScanRun` method.' })
   .openapi('StopScanRunRequest')
 

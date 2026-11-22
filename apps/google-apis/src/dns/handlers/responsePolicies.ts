@@ -17,10 +17,9 @@ export const responsePoliciesHandler = app
   .openapi(postDnsV2ProjectsProjectLocationsLocationResponsePoliciesRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    deleteDnsV2ProjectsProjectLocationsLocationResponsePoliciesResponsePolicyRoute,
-    (c) => {},
-  )
+  .openapi(deleteDnsV2ProjectsProjectLocationsLocationResponsePoliciesResponsePolicyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(getDnsV2ProjectsProjectLocationsLocationResponsePoliciesResponsePolicyRoute, (c) => {
     throw new Error('Not implemented')
   })

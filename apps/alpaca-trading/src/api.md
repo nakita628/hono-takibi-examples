@@ -1473,7 +1473,7 @@ curl https://paper-api.alpaca.markets/v2/positions \
 
 `DELETE /v2/positions`
 
-Closes (liquidates) all of the account's open long and short positions. A response will be provided for each order that is attempted to be cancelled. If an order is no longer cancelable, the server will respond with status 500 and reject the request.
+Closes (liquidates) all of the account's open long and short positions. The 207 response contains one result per position: `body` is the closing Order when `status` is 200, otherwise the error describing why that position was not closed.
 
 <h3 id="close-all-positions-parameters">Parameters</h3>
 
@@ -1528,12 +1528,31 @@ Closes (liquidates) all of the account's open long and short positions. A respon
 ]
 ```
 
+> 422 Response
+
+```json
+{
+  "code": 40010001,
+  "message": "cancel_orders must be true or false"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": 50010000,
+  "message": "internal server error occurred"
+}
+```
+
 <h3 id="close-all-positions-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |207|Multi-Status|Multi-Status with body.<br><br>an array of PositionClosed responses|Inline|
-|500|Internal Server Error|Failed to liquidate|None|
+|422|Unprocessable Entity|Invalid Parameters.<br><br>One or more parameters provided are invalid.|[Error](#schemaerror)|
+|500|Internal Server Error|Request-level failure; no per-position results are returned. Positions that fail to close are reported in the 207 response.|[Error](#schemaerror)|
 
 <h3 id="close-all-positions-responseschema">Response Schema</h3>
 
@@ -2898,7 +2917,7 @@ Notes:
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|activity_types|query|[[ActivityType](#schemaactivitytype)]|false|A comma-separated list of activity types used to filter the results.|
+|activity_types|query|[[ActivityTypeFilter](#schemaactivitytypefilter)]|false|A comma-separated list of activity types used to filter the results.|
 |category|query|string|false|The activity category. Cannot be used with "activity_types" parameter.|
 |order_id|query|string(uuid)|false|Filter activities associated with a specific order. Useful for retrieving the fills that make up a completely filled order.|
 |date|query|string(date-time)|false|Filter activities by their creation date (created_at), not the activity's settlement date. For non-trade activities such as fees, the creation date is typically the day after the trade date (in UTC). Both formats YYYY-MM-DD and YYYY-MM-DDTHH:MM:SSZ are supported.|
@@ -2912,14 +2931,14 @@ Notes:
 
 |Parameter|Value|
 |---|---|
-|activity_types|FILL|
-|activity_types|TRANS|
-|activity_types|MISC|
 |activity_types|ACATC|
 |activity_types|ACATS|
+|activity_types|ALLOC|
 |activity_types|CFEE|
 |activity_types|CGD|
+|activity_types|CIL|
 |activity_types|CSD|
+|activity_types|CSR|
 |activity_types|CSW|
 |activity_types|DIV|
 |activity_types|DIVCGL|
@@ -2930,15 +2949,25 @@ Notes:
 |activity_types|DIVROC|
 |activity_types|DIVTW|
 |activity_types|DIVTXEX|
+|activity_types|DIVWH|
+|activity_types|DVF|
+|activity_types|ECEXP|
+|activity_types|EXTRD|
 |activity_types|FEE|
+|activity_types|FIMAT|
+|activity_types|FXCNV|
+|activity_types|FXTRD|
 |activity_types|INT|
 |activity_types|INTNRA|
 |activity_types|INTTW|
+|activity_types|INVPNL|
 |activity_types|JNL|
 |activity_types|JNLC|
 |activity_types|JNLS|
 |activity_types|MA|
+|activity_types|MEM|
 |activity_types|NC|
+|activity_types|OCT|
 |activity_types|OPASN|
 |activity_types|OPCA|
 |activity_types|OPCSH|
@@ -2949,10 +2978,18 @@ Notes:
 |activity_types|PTR|
 |activity_types|REO|
 |activity_types|REORG|
+|activity_types|SC|
 |activity_types|SPIN|
 |activity_types|SPLIT|
+|activity_types|SUB|
+|activity_types|SWP|
+|activity_types|TRD|
+|activity_types|VOF|
+|activity_types|WH|
 |activity_types|FOPT|
-|activity_types|OCT|
+|activity_types|FILL|
+|activity_types|MISC|
+|activity_types|TRANS|
 |category|trade_activity|
 |category|non_trade_activity|
 |direction|asc|
@@ -3009,7 +3046,7 @@ API_Key & API_Secret
 > Code samples
 
 ```bash
-curl https://paper-api.alpaca.markets/v2/account/activities/string \
+curl https://paper-api.alpaca.markets/v2/account/activities/ACATC \
   -H 'Accept: application/json' \
   -H "APCA-API-KEY-ID: ${API_KEY}" \
   -H "APCA-API-SECRET-KEY: ${API_KEY}"
@@ -3030,7 +3067,7 @@ Returns account activity entries for a specific type of activity.
 |direction|query|string|false|The chronological order of response based on the activity datetime.|
 |page_size|query|integer|false|The maximum number of entries to return in the response.|
 |page_token|query|string|false|Token used for pagination. Provide the ID of the last activity from the last page to retrieve the next set of results.|
-|activity_type|path|string|true|The activity type you want to view entries for. A list of valid activity types can be found at the bottom of this page.|
+|activity_type|path|[ActivityTypeFilter](#schemaactivitytypefilter)|true|Activity type to filter by. Accepted values are `ActivityTypeFilter`. `TRANS` and `MISC` expand to the entry types named there.|
 
 #### Enumerated Values
 
@@ -3038,6 +3075,65 @@ Returns account activity entries for a specific type of activity.
 |---|---|
 |direction|asc|
 |direction|desc|
+|activity_type|ACATC|
+|activity_type|ACATS|
+|activity_type|ALLOC|
+|activity_type|CFEE|
+|activity_type|CGD|
+|activity_type|CIL|
+|activity_type|CSD|
+|activity_type|CSR|
+|activity_type|CSW|
+|activity_type|DIV|
+|activity_type|DIVCGL|
+|activity_type|DIVCGS|
+|activity_type|DIVFEE|
+|activity_type|DIVFT|
+|activity_type|DIVNRA|
+|activity_type|DIVROC|
+|activity_type|DIVTW|
+|activity_type|DIVTXEX|
+|activity_type|DIVWH|
+|activity_type|DVF|
+|activity_type|ECEXP|
+|activity_type|EXTRD|
+|activity_type|FEE|
+|activity_type|FIMAT|
+|activity_type|FXCNV|
+|activity_type|FXTRD|
+|activity_type|INT|
+|activity_type|INTNRA|
+|activity_type|INTTW|
+|activity_type|INVPNL|
+|activity_type|JNL|
+|activity_type|JNLC|
+|activity_type|JNLS|
+|activity_type|MA|
+|activity_type|MEM|
+|activity_type|NC|
+|activity_type|OCT|
+|activity_type|OPASN|
+|activity_type|OPCA|
+|activity_type|OPCSH|
+|activity_type|OPEXC|
+|activity_type|OPEXP|
+|activity_type|OPTRD|
+|activity_type|PTC|
+|activity_type|PTR|
+|activity_type|REO|
+|activity_type|REORG|
+|activity_type|SC|
+|activity_type|SPIN|
+|activity_type|SPLIT|
+|activity_type|SUB|
+|activity_type|SWP|
+|activity_type|TRD|
+|activity_type|VOF|
+|activity_type|WH|
+|activity_type|FOPT|
+|activity_type|FILL|
+|activity_type|MISC|
+|activity_type|TRANS|
 
 > Example responses
 
@@ -3154,6 +3250,61 @@ The calendar API serves the full list of market days from 1970 to 2029. It can a
 |400|X-RateLimit-Limit|integer||Request limit per minute.|
 |400|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
 |400|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+|429|X-RateLimit-Limit|integer||Request limit per minute.|
+|429|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|429|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+API_Key & API_Secret
+</aside>
+
+## Get US Market Clock
+
+<a id="opIdLegacyClock"></a>
+
+> Code samples
+
+```bash
+curl https://paper-api.alpaca.markets/v2/clock \
+  -H 'Accept: application/json' \
+  -H "APCA-API-KEY-ID: ${API_KEY}" \
+  -H "APCA-API-SECRET-KEY: ${API_KEY}"
+```
+
+`GET /v2/clock`
+
+The clock API serves the current market timestamp, whether or not the market is currently open, as well as the times of the next market open and close.
+
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "is_open": true,
+  "next_close": "2025-06-24T16:00:00-04:00",
+  "next_open": "2025-06-25T09:30:00-04:00",
+  "timestamp": "2025-06-24T14:15:22-04:00"
+}
+```
+
+<h3 id="get-us-market-clock-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[legacy_clock](#schemalegacy_clock)|
+|429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
+|500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on Slack or on the Community Forum.<br>|None|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer||Request limit per minute.|
+|200|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
+|200|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
 |429|X-RateLimit-Limit|integer||Request limit per minute.|
 |429|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
 |429|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
@@ -3285,63 +3436,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 API_Key & API_Secret
 </aside>
 
-<h1 id="trading-api-clock">Clock</h1>
-
-## Get US Market Clock
-
-<a id="opIdLegacyClock"></a>
-
-> Code samples
-
-```bash
-curl https://paper-api.alpaca.markets/v2/clock \
-  -H 'Accept: application/json' \
-  -H "APCA-API-KEY-ID: ${API_KEY}" \
-  -H "APCA-API-SECRET-KEY: ${API_KEY}"
-```
-
-`GET /v2/clock`
-
-The clock API serves the current market timestamp, whether or not the market is currently open, as well as the times of the next market open and close.
-
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "is_open": true,
-  "next_close": "2025-06-24T16:00:00-04:00",
-  "next_open": "2025-06-25T09:30:00-04:00",
-  "timestamp": "2025-06-24T14:15:22-04:00"
-}
-```
-
-<h3 id="get-us-market-clock-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|OK|[legacy_clock](#schemalegacy_clock)|
-|429|Too Many Requests|Too many requests. You hit the rate limit. Use the X-RateLimit-... response headers to make sure you're under the rate limit.<br>|None|
-|500|Internal Server Error|Internal server error. We recommend retrying these later. If the issue persists, please contact us on Slack or on the Community Forum.<br>|None|
-
-### Response Headers
-
-|Status|Header|Type|Format|Description|
-|---|---|---|---|---|
-|200|X-RateLimit-Limit|integer||Request limit per minute.|
-|200|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
-|200|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
-|429|X-RateLimit-Limit|integer||Request limit per minute.|
-|429|X-RateLimit-Remaining|integer||Request limit per minute remaining.|
-|429|X-RateLimit-Reset|integer||The UNIX epoch when the remaining quota changes.|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-API_Key & API_Secret
-</aside>
-
 ## Get Market Clock
 
 <a id="opIdClock"></a>
@@ -3446,7 +3540,7 @@ Lists wallets for the account given in the path parameter. If an asset is specif
 |---|---|---|---|---|
 |asset|query|string|false|Filter by crypto asset symbol, e.g. BTC, ETH, USDT. If specified and no wallet exists, one will be created.|
 |chain|query|[CryptoChain](#schemacryptochain)|false|Optional chain identifier. Use to request wallets for a specific chain when asset is a multi-chain crypto asset. If not specified, network is considered.|
-|network|query|string|false|Deprecated. Use chain instead. Optional network identifier which is used to request wallets for a specific network when asset is a multi-chain crypto asset. When both 'chain' and 'network' are specified, 'chain' will take precedence and 'network' will be ignored. If 'chain' and 'network' are not specified, the default 'network' (ethereum) will be used.|
+|network|query|string|false|**Deprecated.** **Deprecation notice:**<br>Use `chain` instead.<br><br>Since: 2026-11-02<br>Sunset: 2027-02-02<br><br>---<br><br>Deprecated. Use chain instead. Optional network identifier which is used to request wallets for a specific network when asset is a multi-chain crypto asset. When both 'chain' and 'network' are specified, 'chain' will take precedence and 'network' will be ignored. If 'chain' and 'network' are not specified, the default 'network' (ethereum) will be used.|
 
 #### Enumerated Values
 
@@ -4117,6 +4211,7 @@ curl https://paper-api.alpaca.markets/v2/tokenization/mint \
   -H "APCA-API-KEY-ID: ${API_KEY}" \
   -H "APCA-API-SECRET-KEY: ${API_KEY}" \
   -d '{
+    "client_request_id": "string",
     "issuer": "xstocks",
     "network": "solana",
     "qty": "string",
@@ -4143,6 +4238,7 @@ without risking duplicate requests. Use a client-generated unique value (e.g. UU
 
 ```json
 {
+  "client_request_id": "string",
   "issuer": "xstocks",
   "network": "solana",
   "qty": "string",
@@ -4157,6 +4253,7 @@ without risking duplicate requests. Use a client-generated unique value (e.g. UU
 |---|---|---|---|---|
 |Idempotency-Key|header|string|false|Optional client-generated key for safe retries and duplicate request detection.<br>This endpoint currently accepts keys up to 128 characters. Alpaca is moving toward<br>a 36-character maximum; new implementations should generate a unique UUIDv7 or<br>UUIDv4 value (36 characters including hyphens) for each logical operation. Do not<br>reuse a key across operations.<br>|
 |body|body|[TokenizationMintRequest](#schematokenizationmintrequest)|true|none|
+|» client_request_id|body|string|false|Optional label of your choosing for this mint request. It is returned on the mint response and on the tokenization request, and you can retrieve the request by it with the Get Tokenization Request by `client_request_id` endpoint. If multiple requests within the same account share the same `client_request_id`, the endpoint returns the most recent matching request. To prevent duplicate processing, use the `Idempotency-Key` header.<br><br>Must be at most 128 printable ASCII characters with no leading or trailing whitespace.|
 |» issuer|body|[TokenizationIssuer](#schematokenizationissuer)|true|The tokenized asset's issuer|
 |» network|body|[TokenizationNetwork](#schematokenizationnetwork)|true|The token's blockchain network|
 |» qty|body|string|true|The underlying quantity to convert into the tokenized asset. It can be fractional.|
@@ -4168,8 +4265,10 @@ without risking duplicate requests. Use a client-generated unique value (e.g. UU
 |Parameter|Value|
 |---|---|
 |» issuer|binance|
+|» issuer|bitget|
 |» issuer|coinbase|
 |» issuer|ondo|
+|» issuer|robinhood|
 |» issuer|st0x|
 |» issuer|xstocks|
 |» network|arbitrum|
@@ -4191,6 +4290,7 @@ without risking duplicate requests. Use a client-generated unique value (e.g. UU
 
 ```json
 {
+  "client_request_id": "string",
   "created_at": "1970-01-01T00:00:00Z",
   "issuer": "xstocks",
   "network": "solana",
@@ -4292,8 +4392,10 @@ An Authorized Participant can use this endpoint to list the tokenization request
 |status|rejected|
 |status|completed|
 |issuer|binance|
+|issuer|bitget|
 |issuer|coinbase|
 |issuer|ondo|
+|issuer|robinhood|
 |issuer|st0x|
 |issuer|xstocks|
 |network|arbitrum|
@@ -5522,6 +5624,12 @@ Represents a more specific classification to the `activity_type`.
 This field is optional and may not always be populated, depending on the activity type and the available data.
 Each `activity_type` has a set of valid `activity_sub_type` values.
 
+This field is a free-form string rather than a closed enum: sub-type codes
+originate from several upstream clearing, corporate-action, and international-fee
+systems, and new codes can appear without a corresponding API change. The mapping
+below documents the sub-types known at the time of writing; it is not guaranteed
+to be exhaustive.
+
 Full mapping of `activity_type` to `activity_sub_type`:
 
 - **CGD**: Capital Gains Distribution activity sub-types:
@@ -5544,6 +5652,8 @@ Full mapping of `activity_type` to `activity_sub_type`:
   - **NRV**: Non-Retail Venue Fee
   - **COM**: Commission
   - **CAT**: Consolidated Audit Trail Fee
+  - **ICF**: Index Contract Fee
+  - **EPI**: Exchange Proprietary Fee
 
 - **INT**: Interest-related activity sub-types:
   - **MGN**: Margin Interest
@@ -5612,14 +5722,16 @@ Full mapping of `activity_type` to `activity_sub_type`:
 "FILL"
 ```
 
+Entry type returned on an activity. The listing returns the stored entry type.
+It omits ECJL, crypto-deposit JNLC, and SWP.
+
+TRANS and MISC are filter aliases. They are not returned as activity_type.
+This is the known set. A new clearing code can appear without an API change.
+
+Trade activities always have the type FILL.
+
 - FILL
   Order fills (both partial and full fills)
-
-- TRANS
-  Cash transactions (both CSD and CSW)
-
-- MISC
-  Miscellaneous or rarely used activity types (All types except those in TRANS, DIV, or FILL)
 
 - ACATC
   ACATS IN/OUT (Cash)
@@ -5627,17 +5739,29 @@ Full mapping of `activity_type` to `activity_sub_type`:
 - ACATS
   ACATS IN/OUT (Securities)
 
+- ALLOC
+  Allocation
+
 - CFEE
   Crypto fee
 
 - CGD
   Capital gains distribution
 
+- CIL
+  Cash in lieu of stock
+
+- CORR
+  Correction
+
 - CSD
-  Cash deposit(+)
+  Cash deposit (+), including returned withdrawals
+
+- CSR
+  Cash receipt (-)
 
 - CSW
-  Cash withdrawal(-)
+  Cash withdrawal (-), including returned deposits
 
 - DIV
   Dividends
@@ -5666,8 +5790,32 @@ Full mapping of `activity_type` to `activity_sub_type`:
 - DIVTXEX
   Dividend (tax exempt)
 
+- DIVWH
+  Dividend withholding
+
+- DTCS
+  DTC security settlement
+
+- DVF
+  DVP flip
+
+- ECEXP
+  Event contract expiration
+
+- EXTRD
+  External trade
+
 - FEE
-  Fee denominated in USD
+  Fee denominated in USD. See `activity_sub_type` for the specific fee.
+
+- FIMAT
+  Fixed income maturity
+
+- FXCNV
+  FX conversion
+
+- FXTRD
+  FX trade
 
 - INT
   Interest (credit/margin)
@@ -5677,6 +5825,9 @@ Full mapping of `activity_type` to `activity_sub_type`:
 
 - INTTW
   Interest adjusted (Tefra Withheld)
+
+- INVPNL
+  Inventory profit and loss
 
 - JNL
   Journal entry
@@ -5689,6 +5840,9 @@ Full mapping of `activity_type` to `activity_sub_type`:
 
 - MA
   Merger/Acquisition
+
+- MEM
+  Memopost
 
 - NC
   Name change
@@ -5723,17 +5877,61 @@ Full mapping of `activity_type` to `activity_sub_type`:
 - REORG
   Worthless removal CA
 
+- SC
+  Symbol change
+
+- SEG
+  Segregation
+
 - SPIN
   Stock spinoff
 
 - SPLIT
   Stock split
 
+- SSO
+  Former stock spin-off code. Current spin-offs use `SPIN`.
+
+- SSP
+  Former stock split code. Current splits use `SPLIT`.
+
+- SUB
+  Subscription
+
+- VOF
+  Voluntary offering (tender, warrant, rights, or exchange offers)
+
+- WH
+  Withholding
+
 - FOPT
   Free of Payment Transfers
 
 - OCT
   On chain transactions (blockchain deposits/withdrawals)
+
+<h2 id="tocS_ActivityTypeFilter">ActivityTypeFilter</h2>
+<!-- backwards compatibility -->
+<a id="schemaactivitytypefilter"></a>
+<a id="schema_ActivityTypeFilter"></a>
+<a id="tocSactivitytypefilter"></a>
+<a id="tocsactivitytypefilter"></a>
+
+```json
+"ACATC"
+```
+
+Activity type used to filter results. These are the values the backend accepts.
+
+`TRANS` and `MISC` are aliases. A response uses the expanded entry type, not the alias.
+
+`SWP` is accepted and then omitted from public results.
+
+- TRANS
+  Cash transactions (CSD, CSR, and CSW). Filter value only; not returned as an activity type.
+
+- MISC
+  A fixed group of less common activity types, such as ACATC, INT, and JNLC. FEE, CFEE, DIV, SPLIT, SPIN, OPCA, VOF, WH, OCT, and a few others are not included, so filter by those types directly. Filter value only; not returned as an activity type.
 
 <h2 id="tocS_ActivityV2DetailNTA">ActivityV2DetailNTA</h2>
 <!-- backwards compatibility -->
@@ -5796,6 +5994,7 @@ Full mapping of `activity_type` to `activity_sub_type`:
 |*oneOf*|[OpcaFSPLITActivityV2](#schemaopcafsplitactivityv2)|false|none|Options corporate action of forward-splits|
 |*oneOf*|[OpcaUSPLITActivityV2](#schemaopcausplitactivityv2)|false|none|Options corporate action of unit-splits|
 |*oneOf*|[OpcaRSPLITActivityV2](#schemaopcarsplitactivityv2)|false|none|Options corporate action of reverse-splits|
+|*oneOf*|[OpcaCGDActivityV2](#schemaopcacgdactivityv2)|false|none|Options corporate action of capital gains distributions. Used for both Long-Term (`CGD.LTCG`) and Short-Term (`CGD.STCG`) sub-types; `CGD.STCG` is emitted only when the distribution has no long-term leg. `rate` is the combined (LTCG + STCG) per-share rate; `long_term_rate` and `short_term_rate` carry the individual legs when present.|
 |*oneOf*|[OPASNActivityV2](#schemaopasnactivityv2)|false|none|Option assignment|
 |*oneOf*|[OPEXCActivityV2](#schemaopexcactivityv2)|false|none|Option exercise|
 |*oneOf*|[OPEXPActivityV2](#schemaopexpactivityv2)|false|none|Option expiry|
@@ -5862,6 +6061,7 @@ Activity details for a fill or partial_fill event
 |Property|Value|
 |---|---|
 |execution_type|fill|
+|execution_type|partial_fill|
 |execution_type|trade_correct|
 |execution_type|trade_bust|
 |side|buy|
@@ -6216,6 +6416,42 @@ Represents the result of a request to cancel and order
 |id|string(uuid)|false|none|orderId|
 |status|integer|false|none|http response code|
 
+<h2 id="tocS_ClosePositionError">ClosePositionError</h2>
+<!-- backwards compatibility -->
+<a id="schemaclosepositionerror"></a>
+<a id="schema_ClosePositionError"></a>
+<a id="tocSclosepositionerror"></a>
+<a id="tocsclosepositionerror"></a>
+
+```json
+{
+  "available": "string",
+  "code": 0,
+  "existing_qty": "string",
+  "held_for_options": "string",
+  "held_for_orders": "string",
+  "message": "string",
+  "symbol": "string",
+  "property1": "string",
+  "property2": "string"
+}
+```
+
+The per-position error reported inside a close-all-positions 207 response when a position's `status` is not 200. Other rejection-specific string fields may appear.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|available|string|false|none|Quantity available. On insufficient-quantity rejections, the position quantity available to close.|
+|code|integer|true|none|Alpaca error code, such as `40310000`. Usually the HTTP status code followed by a five-digit suffix. Several rejections can share the same code, so check `message` and the other fields for the specific reason.|
+|existing_qty|string|false|none|Absolute quantity of the existing position. Present only on insufficient-quantity rejections.|
+|held_for_options|string|false|none|Position quantity held for options. Present only on insufficient-quantity rejections, and only when that hold is positive.|
+|held_for_orders|string|false|none|Position quantity held by open orders. Present only on insufficient-quantity rejections.|
+|message|string|true|none|Human-readable reason for the rejection.|
+|symbol|string|false|none|Symbol the rejection applies to. Set on insufficient-quantity rejections and on some other order rejections, such as admin trading restrictions.|
+|**additionalProperties**|string|false|none|none|
+
 <h2 id="tocS_CommonAcatActivityV2">CommonAcatActivityV2</h2>
 <!-- backwards compatibility -->
 <a id="schemacommonacatactivityv2"></a>
@@ -6524,11 +6760,11 @@ Shared fields for non-trade (NTA) activity records.
 
 ```json
 {
+  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "system_date": "1970-01-01",
   "contract_symbol": "string",
   "cusip": "string",
-  "symbol": "string",
-  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "system_date": "1970-01-01"
+  "symbol": "string"
 }
 ```
 
@@ -6536,11 +6772,11 @@ Shared fields for non-trade (NTA) activity records.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
+|system_date|string(date)|true|none|The date when the activity was booked|
 |contract_symbol|string|false|none|The contract symbol of the security involved with the activity|
 |cusip|string|false|none|The CUSIP of the security involved with the activity|
 |symbol|string|false|none|The symbol of the security involved with the activity|
-|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
-|system_date|string(date)|true|none|The date when the activity was booked|
 
 <h2 id="tocS_CommonREOActivityV2">CommonREOActivityV2</h2>
 <!-- backwards compatibility -->
@@ -7298,8 +7534,8 @@ Dividend tax withholding (e.g. foreign withholding on global securities)
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|code|number|true|none|none|
-|message|string|true|none|none|
+|code|number|true|none|Alpaca error code, such as `40310000`. Usually the HTTP status code followed by a five-digit suffix. Several errors can share the same code, so check `message` for the specific reason.|
+|message|string|true|none|Human-readable reason for the rejection.|
 
 <h2 id="tocS_ErrorResponse">ErrorResponse</h2>
 <!-- backwards compatibility -->
@@ -8163,8 +8399,8 @@ Use this token in your next API call to paginate through the dataset and retriev
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|activity_sub_type|[ActivitySubType](#schemaactivitysubtype)|false|none|Represents a more specific classification to the `activity_type`.<br>This field is optional and may not always be populated, depending on the activity type and the available data.<br>Each `activity_type` has a set of valid `activity_sub_type` values.<br><br>Full mapping of `activity_type` to `activity_sub_type`:<br><br>- **CGD**: Capital Gains Distribution activity sub-types:<br>  - **LTCG**: Long-Term Capital Gain<br>  - **STCG**: Short-Term Capital Gain<br><br>- **DIV**: Dividend activity sub-types:<br>  - **CDIV**: Cash Dividend<br>  - **ROC**: Return of Capital<br>  - **SDIV**: Stock Dividend<br>  - **SPD**: Substitute Payment In Lieu Of Dividend<br><br>- **FEE**: Fee-related activity sub-types:<br>  - **REG**: Regulatory Fee<br>  - **TAF**: Trading Activity Fee<br>  - **LCT**: Local Currency Trading Fee<br>  - **ORF**: Options Regulatory Fee<br>  - **OCC**: Options Clearing Corporation Fee<br>  - **NRC**: Non-Retail Commission Fee<br>  - **NRV**: Non-Retail Venue Fee<br>  - **COM**: Commission<br>  - **CAT**: Consolidated Audit Trail Fee<br><br>- **INT**: Interest-related activity sub-types:<br>  - **MGN**: Margin Interest<br>  - **CDT**: Credit Interest<br>  - **SWP**: Sweep Interest<br>  - **QII**: Qualified Interest<br>  - **FI**: Fixed Income Interest (coupon or accrued)<br><br>- **MA**: Merger and Acquisition activity sub-types:<br>  - **CMA**: Cash Merger<br>  - **SMA**: Stock Merger<br>  - **SCMA**: Stock & Cash Merger<br><br>- **NC**: Name Change activity sub types<br>  - **SNC**: Symbol Name Change<br>  - **CNC**: CUSIP Name Change<br>  - **SCNC**: Symbol & CUSIP Name Change<br><br>- **OPCA**: Option Corporate Action activity sub-types:<br>  - **DIV.CDIV**: Cash Dividend<br>  - **DIV.ROC**: Return of Capital<br>  - **DIV.SDIV**: Stock Dividend<br>  - **MA.CMA**: Cash Merger<br>  - **MA.SMA**: Stock Merger<br>  - **MA.SCMA**: Stock & Cash Merger<br>  - **NC.CNC**: CUSIP Name Change<br>  - **NC.SNC**: Symbol Name Change<br>  - **NC.SCNC**: Symbol & CUSIP Name Change<br>  - **SPIN**: Spin-off<br>  - **SPLIT.FSPLIT**: Forward Stock Split<br>  - **SPLIT.RSPLIT**: Reverse Stock Split<br>  - **SPLIT.USPLIT**: Unit Split<br><br>- **REO**: Reorganization activity sub-types<br>  - **REOS**: Stock only (1 or more stock legs)<br>  - **REOC**: Cash only (1 cash leg)<br>  - **REOSC**: Stock and cash<br><br>- **REORG**: Activity sub-types:<br>  - **WRM**: Worthless Removal<br><br>- **SPLIT**: Stock Split activity sub-types:<br>  - **FSPLIT**: Forward Stock Split<br>  - **RSPLIT**: Reverse Stock Split<br>  - **USPLIT**: Unit Split<br><br>- **VOF**: Voluntary Offering activity sub-types:<br>  - **VTND**: Tender Offer<br>  - **VWRT**: Warrant Exercise<br>  - **VRGT**: Rights Offer<br>  - **VEXH**: Exchange Offer<br><br>- **WH**: Withholding activity sub-types:<br>  - **SWH**: State Withholding<br>  - **FWH**: Federal Withholding<br>  - **SLWH**: Sales Withholding|
-|activity_type|[ActivityType](#schemaactivitytype)|false|none|- FILL<br>  Order fills (both partial and full fills)<br><br>- TRANS<br>  Cash transactions (both CSD and CSW)<br><br>- MISC<br>  Miscellaneous or rarely used activity types (All types except those in TRANS, DIV, or FILL)<br><br>- ACATC<br>  ACATS IN/OUT (Cash)<br><br>- ACATS<br>  ACATS IN/OUT (Securities)<br><br>- CFEE<br>  Crypto fee<br><br>- CGD<br>  Capital gains distribution<br><br>- CSD<br>  Cash deposit(+)<br><br>- CSW<br>  Cash withdrawal(-)<br><br>- DIV<br>  Dividends<br><br>- DIVCGL<br>  Dividend (capital gains long term)<br><br>- DIVCGS<br>  Dividend (capital gains short term)<br><br>- DIVFEE<br>  Dividend fee<br><br>- DIVFT<br>  Dividend adjusted (Foreign Tax Withheld)<br><br>- DIVNRA<br>  Dividend adjusted (NRA Withheld)<br><br>- DIVROC<br>  Dividend return of capital<br><br>- DIVTW<br>  Dividend adjusted (Tefra Withheld)<br><br>- DIVTXEX<br>  Dividend (tax exempt)<br><br>- FEE<br>  Fee denominated in USD<br><br>- INT<br>  Interest (credit/margin)<br><br>- INTNRA<br>  Interest adjusted (NRA Withheld)<br><br>- INTTW<br>  Interest adjusted (Tefra Withheld)<br><br>- JNL<br>  Journal entry<br><br>- JNLC<br>  Journal entry (cash)<br><br>- JNLS<br>  Journal entry (stock)<br><br>- MA<br>  Merger/Acquisition<br><br>- NC<br>  Name change<br><br>- OPASN<br>  Option assignment<br><br>- OPCA<br>  Option corporate action<br><br>- OPCSH<br>  Option cash deliverable for non-standard contracts<br><br>- OPEXC<br>  Option exercise<br><br>- OPEXP<br>  Option expiration<br><br>- OPTRD<br>  Option trade<br><br>- PTC<br>  Pass Thru Charge<br><br>- PTR<br>  Pass Thru Rebate<br><br>- REO<br>  Reorganization<br><br>- REORG<br>  Worthless removal CA<br><br>- SPIN<br>  Stock spinoff<br><br>- SPLIT<br>  Stock split<br><br>- FOPT<br>  Free of Payment Transfers<br><br>- OCT<br>  On chain transactions (blockchain deposits/withdrawals)|
+|activity_sub_type|[ActivitySubType](#schemaactivitysubtype)|false|none|Represents a more specific classification to the `activity_type`.<br>This field is optional and may not always be populated, depending on the activity type and the available data.<br>Each `activity_type` has a set of valid `activity_sub_type` values.<br><br>This field is a free-form string rather than a closed enum: sub-type codes<br>originate from several upstream clearing, corporate-action, and international-fee<br>systems, and new codes can appear without a corresponding API change. The mapping<br>below documents the sub-types known at the time of writing; it is not guaranteed<br>to be exhaustive.<br><br>Full mapping of `activity_type` to `activity_sub_type`:<br><br>- **CGD**: Capital Gains Distribution activity sub-types:<br>  - **LTCG**: Long-Term Capital Gain<br>  - **STCG**: Short-Term Capital Gain<br><br>- **DIV**: Dividend activity sub-types:<br>  - **CDIV**: Cash Dividend<br>  - **ROC**: Return of Capital<br>  - **SDIV**: Stock Dividend<br>  - **SPD**: Substitute Payment In Lieu Of Dividend<br><br>- **FEE**: Fee-related activity sub-types:<br>  - **REG**: Regulatory Fee<br>  - **TAF**: Trading Activity Fee<br>  - **LCT**: Local Currency Trading Fee<br>  - **ORF**: Options Regulatory Fee<br>  - **OCC**: Options Clearing Corporation Fee<br>  - **NRC**: Non-Retail Commission Fee<br>  - **NRV**: Non-Retail Venue Fee<br>  - **COM**: Commission<br>  - **CAT**: Consolidated Audit Trail Fee<br>  - **ICF**: Index Contract Fee<br>  - **EPI**: Exchange Proprietary Fee<br><br>- **INT**: Interest-related activity sub-types:<br>  - **MGN**: Margin Interest<br>  - **CDT**: Credit Interest<br>  - **SWP**: Sweep Interest<br>  - **QII**: Qualified Interest<br>  - **FI**: Fixed Income Interest (coupon or accrued)<br><br>- **MA**: Merger and Acquisition activity sub-types:<br>  - **CMA**: Cash Merger<br>  - **SMA**: Stock Merger<br>  - **SCMA**: Stock & Cash Merger<br><br>- **NC**: Name Change activity sub types<br>  - **SNC**: Symbol Name Change<br>  - **CNC**: CUSIP Name Change<br>  - **SCNC**: Symbol & CUSIP Name Change<br><br>- **OPCA**: Option Corporate Action activity sub-types:<br>  - **DIV.CDIV**: Cash Dividend<br>  - **DIV.ROC**: Return of Capital<br>  - **DIV.SDIV**: Stock Dividend<br>  - **MA.CMA**: Cash Merger<br>  - **MA.SMA**: Stock Merger<br>  - **MA.SCMA**: Stock & Cash Merger<br>  - **NC.CNC**: CUSIP Name Change<br>  - **NC.SNC**: Symbol Name Change<br>  - **NC.SCNC**: Symbol & CUSIP Name Change<br>  - **SPIN**: Spin-off<br>  - **SPLIT.FSPLIT**: Forward Stock Split<br>  - **SPLIT.RSPLIT**: Reverse Stock Split<br>  - **SPLIT.USPLIT**: Unit Split<br><br>- **REO**: Reorganization activity sub-types<br>  - **REOS**: Stock only (1 or more stock legs)<br>  - **REOC**: Cash only (1 cash leg)<br>  - **REOSC**: Stock and cash<br><br>- **REORG**: Activity sub-types:<br>  - **WRM**: Worthless Removal<br><br>- **SPLIT**: Stock Split activity sub-types:<br>  - **FSPLIT**: Forward Stock Split<br>  - **RSPLIT**: Reverse Stock Split<br>  - **USPLIT**: Unit Split<br><br>- **VOF**: Voluntary Offering activity sub-types:<br>  - **VTND**: Tender Offer<br>  - **VWRT**: Warrant Exercise<br>  - **VRGT**: Rights Offer<br>  - **VEXH**: Exchange Offer<br><br>- **WH**: Withholding activity sub-types:<br>  - **SWH**: State Withholding<br>  - **FWH**: Federal Withholding<br>  - **SLWH**: Sales Withholding|
+|activity_type|[ActivityType](#schemaactivitytype)|false|none|Entry type returned on an activity. The listing returns the stored entry type.<br>It omits ECJL, crypto-deposit JNLC, and SWP.<br><br>TRANS and MISC are filter aliases. They are not returned as activity_type.<br>This is the known set. A new clearing code can appear without an API change.<br><br>Trade activities always have the type FILL.<br><br>- FILL<br>  Order fills (both partial and full fills)<br><br>- ACATC<br>  ACATS IN/OUT (Cash)<br><br>- ACATS<br>  ACATS IN/OUT (Securities)<br><br>- ALLOC<br>  Allocation<br><br>- CFEE<br>  Crypto fee<br><br>- CGD<br>  Capital gains distribution<br><br>- CIL<br>  Cash in lieu of stock<br><br>- CORR<br>  Correction<br><br>- CSD<br>  Cash deposit (+), including returned withdrawals<br><br>- CSR<br>  Cash receipt (-)<br><br>- CSW<br>  Cash withdrawal (-), including returned deposits<br><br>- DIV<br>  Dividends<br><br>- DIVCGL<br>  Dividend (capital gains long term)<br><br>- DIVCGS<br>  Dividend (capital gains short term)<br><br>- DIVFEE<br>  Dividend fee<br><br>- DIVFT<br>  Dividend adjusted (Foreign Tax Withheld)<br><br>- DIVNRA<br>  Dividend adjusted (NRA Withheld)<br><br>- DIVROC<br>  Dividend return of capital<br><br>- DIVTW<br>  Dividend adjusted (Tefra Withheld)<br><br>- DIVTXEX<br>  Dividend (tax exempt)<br><br>- DIVWH<br>  Dividend withholding<br><br>- DTCS<br>  DTC security settlement<br><br>- DVF<br>  DVP flip<br><br>- ECEXP<br>  Event contract expiration<br><br>- EXTRD<br>  External trade<br><br>- FEE<br>  Fee denominated in USD. See `activity_sub_type` for the specific fee.<br><br>- FIMAT<br>  Fixed income maturity<br><br>- FXCNV<br>  FX conversion<br><br>- FXTRD<br>  FX trade<br><br>- INT<br>  Interest (credit/margin)<br><br>- INTNRA<br>  Interest adjusted (NRA Withheld)<br><br>- INTTW<br>  Interest adjusted (Tefra Withheld)<br><br>- INVPNL<br>  Inventory profit and loss<br><br>- JNL<br>  Journal entry<br><br>- JNLC<br>  Journal entry (cash)<br><br>- JNLS<br>  Journal entry (stock)<br><br>- MA<br>  Merger/Acquisition<br><br>- MEM<br>  Memopost<br><br>- NC<br>  Name change<br><br>- OPASN<br>  Option assignment<br><br>- OPCA<br>  Option corporate action<br><br>- OPCSH<br>  Option cash deliverable for non-standard contracts<br><br>- OPEXC<br>  Option exercise<br><br>- OPEXP<br>  Option expiration<br><br>- OPTRD<br>  Option trade<br><br>- PTC<br>  Pass Thru Charge<br><br>- PTR<br>  Pass Thru Rebate<br><br>- REO<br>  Reorganization<br><br>- REORG<br>  Worthless removal CA<br><br>- SC<br>  Symbol change<br><br>- SEG<br>  Segregation<br><br>- SPIN<br>  Stock spinoff<br><br>- SPLIT<br>  Stock split<br><br>- SSO<br>  Former stock spin-off code. Current spin-offs use `SPIN`.<br><br>- SSP<br>  Former stock split code. Current splits use `SPLIT`.<br><br>- SUB<br>  Subscription<br><br>- VOF<br>  Voluntary offering (tender, warrant, rights, or exchange offers)<br><br>- WH<br>  Withholding<br><br>- FOPT<br>  Free of Payment Transfers<br><br>- OCT<br>  On chain transactions (blockchain deposits/withdrawals)|
 |created_at|string(date-time)|false|none|Valid only for non-trading activity types. Null for trading activities.|
 |currency|string|false|none|Currency denomination of the activity (e.g. USD). Included in NTA stream events and activity responses.|
 |cusip|string|false|none|The CUSIP of the security involved with the activity. Not present for all activity types.|
@@ -8182,13 +8418,15 @@ Use this token in your next API call to paginate through the dataset and retriev
 |Property|Value|
 |---|---|
 |activity_type|FILL|
-|activity_type|TRANS|
-|activity_type|MISC|
 |activity_type|ACATC|
 |activity_type|ACATS|
+|activity_type|ALLOC|
 |activity_type|CFEE|
 |activity_type|CGD|
+|activity_type|CIL|
+|activity_type|CORR|
 |activity_type|CSD|
+|activity_type|CSR|
 |activity_type|CSW|
 |activity_type|DIV|
 |activity_type|DIVCGL|
@@ -8199,14 +8437,24 @@ Use this token in your next API call to paginate through the dataset and retriev
 |activity_type|DIVROC|
 |activity_type|DIVTW|
 |activity_type|DIVTXEX|
+|activity_type|DIVWH|
+|activity_type|DTCS|
+|activity_type|DVF|
+|activity_type|ECEXP|
+|activity_type|EXTRD|
 |activity_type|FEE|
+|activity_type|FIMAT|
+|activity_type|FXCNV|
+|activity_type|FXTRD|
 |activity_type|INT|
 |activity_type|INTNRA|
 |activity_type|INTTW|
+|activity_type|INVPNL|
 |activity_type|JNL|
 |activity_type|JNLC|
 |activity_type|JNLS|
 |activity_type|MA|
+|activity_type|MEM|
 |activity_type|NC|
 |activity_type|OPASN|
 |activity_type|OPCA|
@@ -8218,8 +8466,15 @@ Use this token in your next API call to paginate through the dataset and retriev
 |activity_type|PTR|
 |activity_type|REO|
 |activity_type|REORG|
+|activity_type|SC|
+|activity_type|SEG|
 |activity_type|SPIN|
 |activity_type|SPLIT|
+|activity_type|SSO|
+|activity_type|SSP|
+|activity_type|SUB|
+|activity_type|VOF|
+|activity_type|WH|
 |activity_type|FOPT|
 |activity_type|OCT|
 |status|executed|
@@ -8261,11 +8516,11 @@ On chain transaction (blockchain deposit/withdrawal)
 
 ```json
 {
+  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "system_date": "1970-01-01",
   "contract_symbol": "string",
   "cusip": "string",
-  "symbol": "string",
-  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "system_date": "1970-01-01"
+  "symbol": "string"
 }
 ```
 
@@ -8275,11 +8530,11 @@ Option assignment
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
+|system_date|string(date)|true|none|The date when the activity was booked|
 |contract_symbol|string|false|none|The contract symbol of the security involved with the activity|
 |cusip|string|false|none|The CUSIP of the security involved with the activity|
 |symbol|string|false|none|The symbol of the security involved with the activity|
-|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
-|system_date|string(date)|true|none|The date when the activity was booked|
 
 <h2 id="tocS_OPCSHActivityV2">OPCSHActivityV2</h2>
 <!-- backwards compatibility -->
@@ -8290,11 +8545,11 @@ Option assignment
 
 ```json
 {
+  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "system_date": "1970-01-01",
   "contract_symbol": "string",
   "cusip": "string",
-  "symbol": "string",
-  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "system_date": "1970-01-01"
+  "symbol": "string"
 }
 ```
 
@@ -8304,11 +8559,11 @@ Option cash deliverable for non-standard contracts
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
+|system_date|string(date)|true|none|The date when the activity was booked|
 |contract_symbol|string|false|none|The contract symbol of the security involved with the activity|
 |cusip|string|false|none|The CUSIP of the security involved with the activity|
 |symbol|string|false|none|The symbol of the security involved with the activity|
-|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
-|system_date|string(date)|true|none|The date when the activity was booked|
 
 <h2 id="tocS_OPEXCActivityV2">OPEXCActivityV2</h2>
 <!-- backwards compatibility -->
@@ -8319,11 +8574,11 @@ Option cash deliverable for non-standard contracts
 
 ```json
 {
+  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "system_date": "1970-01-01",
   "contract_symbol": "string",
   "cusip": "string",
-  "symbol": "string",
-  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "system_date": "1970-01-01"
+  "symbol": "string"
 }
 ```
 
@@ -8333,11 +8588,11 @@ Option exercise
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
+|system_date|string(date)|true|none|The date when the activity was booked|
 |contract_symbol|string|false|none|The contract symbol of the security involved with the activity|
 |cusip|string|false|none|The CUSIP of the security involved with the activity|
 |symbol|string|false|none|The symbol of the security involved with the activity|
-|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
-|system_date|string(date)|true|none|The date when the activity was booked|
 
 <h2 id="tocS_OPEXPActivityV2">OPEXPActivityV2</h2>
 <!-- backwards compatibility -->
@@ -8348,11 +8603,11 @@ Option exercise
 
 ```json
 {
+  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "system_date": "1970-01-01",
   "contract_symbol": "string",
   "cusip": "string",
-  "symbol": "string",
-  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "system_date": "1970-01-01"
+  "symbol": "string"
 }
 ```
 
@@ -8362,11 +8617,11 @@ Option expiry
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
+|system_date|string(date)|true|none|The date when the activity was booked|
 |contract_symbol|string|false|none|The contract symbol of the security involved with the activity|
 |cusip|string|false|none|The CUSIP of the security involved with the activity|
 |symbol|string|false|none|The symbol of the security involved with the activity|
-|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
-|system_date|string(date)|true|none|The date when the activity was booked|
 
 <h2 id="tocS_OPTRDActivityV2">OPTRDActivityV2</h2>
 <!-- backwards compatibility -->
@@ -8377,11 +8632,11 @@ Option expiry
 
 ```json
 {
+  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "system_date": "1970-01-01",
   "contract_symbol": "string",
   "cusip": "string",
-  "symbol": "string",
-  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "system_date": "1970-01-01"
+  "symbol": "string"
 }
 ```
 
@@ -8391,11 +8646,11 @@ Trading activity that is paired with the assignment/exercise
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
+|system_date|string(date)|true|none|The date when the activity was booked|
 |contract_symbol|string|false|none|The contract symbol of the security involved with the activity|
 |cusip|string|false|none|The CUSIP of the security involved with the activity|
 |symbol|string|false|none|The symbol of the security involved with the activity|
-|group_id|string(uuid)|true|none|Optional group ID which can help grouping together related activities|
-|system_date|string(date)|true|none|The date when the activity was booked|
 
 <h2 id="tocS_OpcaCDIVActivityV2">OpcaCDIVActivityV2</h2>
 <!-- backwards compatibility -->
@@ -8466,6 +8721,63 @@ Options corporate action of cash dividend or return of capital
 |foreign|false|
 |special|true|
 |special|false|
+
+<h2 id="tocS_OpcaCGDActivityV2">OpcaCGDActivityV2</h2>
+<!-- backwards compatibility -->
+<a id="schemaopcacgdactivityv2"></a>
+<a id="schema_OpcaCGDActivityV2"></a>
+<a id="tocSopcacgdactivityv2"></a>
+<a id="tocsopcacgdactivityv2"></a>
+
+```json
+{
+  "group_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "system_date": "1970-01-01",
+  "ca_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "position_date": "1970-01-01",
+  "reorg_id": "string",
+  "new_contract_symbol": "string",
+  "new_qty": "string",
+  "old_contract_symbol": "string",
+  "old_qty": "string",
+  "qty": "string",
+  "cusip": "string",
+  "ex_date": "1970-01-01",
+  "isin": "string",
+  "long_term_rate": "string",
+  "payable_date": "1970-01-01",
+  "rate": "string",
+  "record_date": "1970-01-01",
+  "short_term_rate": "string",
+  "symbol": "string"
+}
+```
+
+Options corporate action of capital gains distributions. Used for both Long-Term (`CGD.LTCG`) and Short-Term (`CGD.STCG`) sub-types; `CGD.STCG` is emitted only when the distribution has no long-term leg. `rate` is the combined (LTCG + STCG) per-share rate; `long_term_rate` and `short_term_rate` carry the individual legs when present.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|group_id|string(uuid)|false|none|Optional group ID which can help grouping together related activities|
+|system_date|string(date)|true|none|The date when the activity was booked|
+|ca_id|string(uuid)|false|none|The unique identifier for this corporate action|
+|position_date|string(date)|true|none|The position_date for this corporate action|
+|reorg_id|string|false|none|The reorg identifier, if present in the source corporate action definition|
+|new_contract_symbol|string|true|none|The new contract symbol|
+|new_qty|string|false|none|used when the old contract's quantity is not equal to the new contract's quantity. Mutually exclusive with 'qty'.|
+|old_contract_symbol|string|true|none|The old contract symbol|
+|old_qty|string|false|none|used when the old contract's quantity is not equal to the new contract's quantity. Mutually exclusive with 'qty'.|
+|qty|string|false|none|used when the old contract's quantity is equal to the new contract's quantity. Mutually exclusive with 'old_qty' and 'new_qty'|
+|cusip|string|true|none|The CUSIP of the underlying security|
+|ex_date|string(date)|false|none|The ex_date for the underlying capital gains distribution|
+|isin|string|false|none|The ISIN of the underlying security, when applicable|
+|long_term_rate|string|false|none|Long-term capital gains distribution rate per share, when applicable|
+|payable_date|string(date)|false|none|The payable_date for the underlying capital gains distribution|
+|rate|string|true|none|Combined per-share capital-gains rate (LTCG + STCG). By default this is the strike reduction applied to the option contract; the adjusted strike is reflected in `new_contract_symbol`.|
+|record_date|string(date)|false|none|The record_date for the underlying capital gains distribution|
+|short_term_rate|string|false|none|Short-term capital gains distribution rate per share, when applicable|
+|symbol|string|true|none|The symbol of the underlying security|
 
 <h2 id="tocS_OpcaFSPLITActivityV2">OpcaFSPLITActivityV2</h2>
 <!-- backwards compatibility -->
@@ -9574,29 +9886,28 @@ Note: `qty` and `notional` are mutually exclusive on a single replace request. `
 
 ```json
 {
-  "base_value": 0,
-  "base_value_asof": "2023-10-20",
-  "cashflow": {
-    "property1": [
-      0
-    ],
-    "property2": [
-      0
-    ]
-  },
+  "base_value": 2774.16,
+  "base_value_asof": "2023-10-18",
   "equity": [
-    0
+    2773.79,
+    2769.04,
+    2768.65
   ],
   "profit_loss": [
-    0
+    -0.37,
+    -5.12,
+    -5.51
   ],
   "profit_loss_pct": [
-    0.001,
-    0.002
+    -0.0001,
+    -0.0018,
+    -0.002
   ],
   "timeframe": "15Min",
   "timestamp": [
-    0
+    1697722200,
+    1697723100,
+    1697724000
   ]
 }
 ```
@@ -9635,10 +9946,12 @@ Timeseries data for equity and profit loss information of the account.
 
 ```json
 {
-  "code": 0,
-  "message": "string"
+  "code": 40010001,
+  "message": "query: \"timeframe\": invalid value: \"2Min\""
 }
 ```
+
+Error returned by the portfolio history endpoint.
 
 ### Properties
 
@@ -9800,11 +10113,13 @@ The positions API provides information about an account's current open positions
 
 Represents the result of asking the api to close a position.
 
+When `status` is 200, `body` is the Order used to close out the position. For any other `status`, `body` is the error object describing why the close was rejected.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|body|[Order](#schemaorder)|false|none|The Orders API allows a user to monitor, place and cancel their orders with Alpaca.<br><br>Each order has a unique identifier provided by the client. This client-side unique order ID will be automatically generated by the system if not provided by the client, and will be returned as part of the order object along with the rest of the fields described below. Once an order is placed, it can be queried using the client-side order ID to check the status.<br><br>Updates on open orders at Alpaca will also be sent over the streaming interface, which is the recommended method of maintaining order state.|
+|body|[Order](#schemaorder) \| [ClosePositionError](#schemaclosepositionerror)|false|none|The Order used to close out the position when `status` is 200; otherwise the error object.|
 |status|integer|true|none|HTTP status code for the attempt to close this position|
 |symbol|string|true|none|Symbol name of the asset|
 
@@ -10243,6 +10558,7 @@ The tokenized asset's issuer
 
 ```json
 {
+  "client_request_id": "string",
   "issuer": "xstocks",
   "network": "solana",
   "qty": "string",
@@ -10255,6 +10571,7 @@ The tokenized asset's issuer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|client_request_id|string|false|none|Optional label of your choosing for this mint request. It is returned on the mint response and on the tokenization request, and you can retrieve the request by it with the Get Tokenization Request by `client_request_id` endpoint. If multiple requests within the same account share the same `client_request_id`, the endpoint returns the most recent matching request. To prevent duplicate processing, use the `Idempotency-Key` header.<br><br>Must be at most 128 printable ASCII characters with no leading or trailing whitespace.|
 |issuer|[TokenizationIssuer](#schematokenizationissuer)|true|none|The tokenized asset's issuer|
 |network|[TokenizationNetwork](#schematokenizationnetwork)|true|none|The token's blockchain network|
 |qty|string|true|none|The underlying quantity to convert into the tokenized asset. It can be fractional.|
@@ -10266,8 +10583,10 @@ The tokenized asset's issuer
 |Property|Value|
 |---|---|
 |issuer|binance|
+|issuer|bitget|
 |issuer|coinbase|
 |issuer|ondo|
+|issuer|robinhood|
 |issuer|st0x|
 |issuer|xstocks|
 |network|arbitrum|
@@ -10292,6 +10611,7 @@ The tokenized asset's issuer
 
 ```json
 {
+  "client_request_id": "string",
   "created_at": "1970-01-01T00:00:00Z",
   "issuer": "xstocks",
   "network": "solana",
@@ -10307,6 +10627,7 @@ The tokenized asset's issuer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|client_request_id|string|false|none|The `client_request_id` supplied on the mint request. Omitted when none was supplied.|
 |created_at|string(date-time)|true|none|none|
 |issuer|[TokenizationIssuer](#schematokenizationissuer)|true|none|The tokenized asset's issuer|
 |network|[TokenizationNetwork](#schematokenizationnetwork)|true|none|The token's blockchain network|
@@ -10321,8 +10642,10 @@ The tokenized asset's issuer
 |Property|Value|
 |---|---|
 |issuer|binance|
+|issuer|bitget|
 |issuer|coinbase|
 |issuer|ondo|
+|issuer|robinhood|
 |issuer|st0x|
 |issuer|xstocks|
 |network|arbitrum|
@@ -10412,8 +10735,10 @@ The token's blockchain network
 |Property|Value|
 |---|---|
 |issuer|binance|
+|issuer|bitget|
 |issuer|coinbase|
 |issuer|ondo|
+|issuer|robinhood|
 |issuer|st0x|
 |issuer|xstocks|
 |network|arbitrum|
@@ -10510,7 +10835,7 @@ Returned by the list and get tokenization request endpoints. Omitted when Alpaca
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|activity_type|[ActivityType](#schemaactivitytype)|false|none|- FILL<br>  Order fills (both partial and full fills)<br><br>- TRANS<br>  Cash transactions (both CSD and CSW)<br><br>- MISC<br>  Miscellaneous or rarely used activity types (All types except those in TRANS, DIV, or FILL)<br><br>- ACATC<br>  ACATS IN/OUT (Cash)<br><br>- ACATS<br>  ACATS IN/OUT (Securities)<br><br>- CFEE<br>  Crypto fee<br><br>- CGD<br>  Capital gains distribution<br><br>- CSD<br>  Cash deposit(+)<br><br>- CSW<br>  Cash withdrawal(-)<br><br>- DIV<br>  Dividends<br><br>- DIVCGL<br>  Dividend (capital gains long term)<br><br>- DIVCGS<br>  Dividend (capital gains short term)<br><br>- DIVFEE<br>  Dividend fee<br><br>- DIVFT<br>  Dividend adjusted (Foreign Tax Withheld)<br><br>- DIVNRA<br>  Dividend adjusted (NRA Withheld)<br><br>- DIVROC<br>  Dividend return of capital<br><br>- DIVTW<br>  Dividend adjusted (Tefra Withheld)<br><br>- DIVTXEX<br>  Dividend (tax exempt)<br><br>- FEE<br>  Fee denominated in USD<br><br>- INT<br>  Interest (credit/margin)<br><br>- INTNRA<br>  Interest adjusted (NRA Withheld)<br><br>- INTTW<br>  Interest adjusted (Tefra Withheld)<br><br>- JNL<br>  Journal entry<br><br>- JNLC<br>  Journal entry (cash)<br><br>- JNLS<br>  Journal entry (stock)<br><br>- MA<br>  Merger/Acquisition<br><br>- NC<br>  Name change<br><br>- OPASN<br>  Option assignment<br><br>- OPCA<br>  Option corporate action<br><br>- OPCSH<br>  Option cash deliverable for non-standard contracts<br><br>- OPEXC<br>  Option exercise<br><br>- OPEXP<br>  Option expiration<br><br>- OPTRD<br>  Option trade<br><br>- PTC<br>  Pass Thru Charge<br><br>- PTR<br>  Pass Thru Rebate<br><br>- REO<br>  Reorganization<br><br>- REORG<br>  Worthless removal CA<br><br>- SPIN<br>  Stock spinoff<br><br>- SPLIT<br>  Stock split<br><br>- FOPT<br>  Free of Payment Transfers<br><br>- OCT<br>  On chain transactions (blockchain deposits/withdrawals)|
+|activity_type|[ActivityType](#schemaactivitytype)|false|none|Entry type returned on an activity. The listing returns the stored entry type.<br>It omits ECJL, crypto-deposit JNLC, and SWP.<br><br>TRANS and MISC are filter aliases. They are not returned as activity_type.<br>This is the known set. A new clearing code can appear without an API change.<br><br>Trade activities always have the type FILL.<br><br>- FILL<br>  Order fills (both partial and full fills)<br><br>- ACATC<br>  ACATS IN/OUT (Cash)<br><br>- ACATS<br>  ACATS IN/OUT (Securities)<br><br>- ALLOC<br>  Allocation<br><br>- CFEE<br>  Crypto fee<br><br>- CGD<br>  Capital gains distribution<br><br>- CIL<br>  Cash in lieu of stock<br><br>- CORR<br>  Correction<br><br>- CSD<br>  Cash deposit (+), including returned withdrawals<br><br>- CSR<br>  Cash receipt (-)<br><br>- CSW<br>  Cash withdrawal (-), including returned deposits<br><br>- DIV<br>  Dividends<br><br>- DIVCGL<br>  Dividend (capital gains long term)<br><br>- DIVCGS<br>  Dividend (capital gains short term)<br><br>- DIVFEE<br>  Dividend fee<br><br>- DIVFT<br>  Dividend adjusted (Foreign Tax Withheld)<br><br>- DIVNRA<br>  Dividend adjusted (NRA Withheld)<br><br>- DIVROC<br>  Dividend return of capital<br><br>- DIVTW<br>  Dividend adjusted (Tefra Withheld)<br><br>- DIVTXEX<br>  Dividend (tax exempt)<br><br>- DIVWH<br>  Dividend withholding<br><br>- DTCS<br>  DTC security settlement<br><br>- DVF<br>  DVP flip<br><br>- ECEXP<br>  Event contract expiration<br><br>- EXTRD<br>  External trade<br><br>- FEE<br>  Fee denominated in USD. See `activity_sub_type` for the specific fee.<br><br>- FIMAT<br>  Fixed income maturity<br><br>- FXCNV<br>  FX conversion<br><br>- FXTRD<br>  FX trade<br><br>- INT<br>  Interest (credit/margin)<br><br>- INTNRA<br>  Interest adjusted (NRA Withheld)<br><br>- INTTW<br>  Interest adjusted (Tefra Withheld)<br><br>- INVPNL<br>  Inventory profit and loss<br><br>- JNL<br>  Journal entry<br><br>- JNLC<br>  Journal entry (cash)<br><br>- JNLS<br>  Journal entry (stock)<br><br>- MA<br>  Merger/Acquisition<br><br>- MEM<br>  Memopost<br><br>- NC<br>  Name change<br><br>- OPASN<br>  Option assignment<br><br>- OPCA<br>  Option corporate action<br><br>- OPCSH<br>  Option cash deliverable for non-standard contracts<br><br>- OPEXC<br>  Option exercise<br><br>- OPEXP<br>  Option expiration<br><br>- OPTRD<br>  Option trade<br><br>- PTC<br>  Pass Thru Charge<br><br>- PTR<br>  Pass Thru Rebate<br><br>- REO<br>  Reorganization<br><br>- REORG<br>  Worthless removal CA<br><br>- SC<br>  Symbol change<br><br>- SEG<br>  Segregation<br><br>- SPIN<br>  Stock spinoff<br><br>- SPLIT<br>  Stock split<br><br>- SSO<br>  Former stock spin-off code. Current spin-offs use `SPIN`.<br><br>- SSP<br>  Former stock split code. Current splits use `SPLIT`.<br><br>- SUB<br>  Subscription<br><br>- VOF<br>  Voluntary offering (tender, warrant, rights, or exchange offers)<br><br>- WH<br>  Withholding<br><br>- FOPT<br>  Free of Payment Transfers<br><br>- OCT<br>  On chain transactions (blockchain deposits/withdrawals)|
 |cum_qty|string|false|none|The cumulative quantity of shares involved in the execution.|
 |id|string|false|none|An id for the activity. Always in "::" format. Can be sent as page_token in requests to facilitate the paging of results.|
 |leaves_qty|string|false|none|For partially_filled orders, the quantity of shares that are left to be filled.<br>|
@@ -10528,13 +10853,15 @@ Returned by the list and get tokenization request endpoints. Omitted when Alpaca
 |Property|Value|
 |---|---|
 |activity_type|FILL|
-|activity_type|TRANS|
-|activity_type|MISC|
 |activity_type|ACATC|
 |activity_type|ACATS|
+|activity_type|ALLOC|
 |activity_type|CFEE|
 |activity_type|CGD|
+|activity_type|CIL|
+|activity_type|CORR|
 |activity_type|CSD|
+|activity_type|CSR|
 |activity_type|CSW|
 |activity_type|DIV|
 |activity_type|DIVCGL|
@@ -10545,14 +10872,24 @@ Returned by the list and get tokenization request endpoints. Omitted when Alpaca
 |activity_type|DIVROC|
 |activity_type|DIVTW|
 |activity_type|DIVTXEX|
+|activity_type|DIVWH|
+|activity_type|DTCS|
+|activity_type|DVF|
+|activity_type|ECEXP|
+|activity_type|EXTRD|
 |activity_type|FEE|
+|activity_type|FIMAT|
+|activity_type|FXCNV|
+|activity_type|FXTRD|
 |activity_type|INT|
 |activity_type|INTNRA|
 |activity_type|INTTW|
+|activity_type|INVPNL|
 |activity_type|JNL|
 |activity_type|JNLC|
 |activity_type|JNLS|
 |activity_type|MA|
+|activity_type|MEM|
 |activity_type|NC|
 |activity_type|OPASN|
 |activity_type|OPCA|
@@ -10564,8 +10901,15 @@ Returned by the list and get tokenization request endpoints. Omitted when Alpaca
 |activity_type|PTR|
 |activity_type|REO|
 |activity_type|REORG|
+|activity_type|SC|
+|activity_type|SEG|
 |activity_type|SPIN|
 |activity_type|SPLIT|
+|activity_type|SSO|
+|activity_type|SSP|
+|activity_type|SUB|
+|activity_type|VOF|
+|activity_type|WH|
 |activity_type|FOPT|
 |activity_type|OCT|
 |order_status|new|

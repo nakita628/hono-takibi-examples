@@ -3,8 +3,8 @@ import {
   getDeliveryEstimateRoute,
   putOrdersDeliverystateDriverlocationRoute,
   putOrdersOrderIdDeliverystateAtdeliveryaddressRoute,
-  putOrdersOrderIdDeliverystateAtrestaurantRoute,
   putOrdersOrderIdDeliverystateAtrestaurantetaRoute,
+  putOrdersOrderIdDeliverystateAtrestaurantRoute,
   putOrdersOrderIdDeliverystateDeliveredRoute,
   putOrdersOrderIdDeliverystateDriverassignedRoute,
   putOrdersOrderIdDeliverystateDriverlocationRoute,
@@ -15,13 +15,33 @@ import {
 const app = new OpenAPIHono()
 
 export const orderDeliveryAPIHandler = app
-  .openapi(getDeliveryEstimateRoute, (c) => {})
-  .openapi(putOrdersDeliverystateDriverlocationRoute, (c) => {})
-  .openapi(putOrdersOrderIdDeliverystateAtdeliveryaddressRoute, (c) => {})
-  .openapi(putOrdersOrderIdDeliverystateAtrestaurantRoute, (c) => {})
-  .openapi(putOrdersOrderIdDeliverystateAtrestaurantetaRoute, (c) => {})
-  .openapi(putOrdersOrderIdDeliverystateDeliveredRoute, (c) => {})
-  .openapi(putOrdersOrderIdDeliverystateDriverassignedRoute, (c) => {})
-  .openapi(putOrdersOrderIdDeliverystateDriverlocationRoute, (c) => {})
-  .openapi(putOrdersOrderIdDeliverystateDriverunassignedRoute, (c) => {})
-  .openapi(putOrdersOrderIdDeliverystateOnitswayRoute, (c) => {})
+  .openapi(getDeliveryEstimateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrdersDeliverystateDriverlocationRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrdersOrderIdDeliverystateAtdeliveryaddressRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrdersOrderIdDeliverystateAtrestaurantRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrdersOrderIdDeliverystateAtrestaurantetaRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrdersOrderIdDeliverystateDeliveredRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrdersOrderIdDeliverystateDriverassignedRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrdersOrderIdDeliverystateDriverlocationRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrdersOrderIdDeliverystateDriverunassignedRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putOrdersOrderIdDeliverystateOnitswayRoute, (c) => {
+    throw new Error('Not implemented')
+  })

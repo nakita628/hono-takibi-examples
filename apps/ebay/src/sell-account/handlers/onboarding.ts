@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const onboardingHandler = app.openapi(
   getPaymentsProgramMarketplaceIdPaymentsProgramTypeOnboardingRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

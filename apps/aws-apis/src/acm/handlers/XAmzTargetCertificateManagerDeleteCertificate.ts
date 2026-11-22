@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCertificateManagerDeleteCertificateHandler = app.openapi(
   postXAmzTargetCertificateManagerDeleteCertificateRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

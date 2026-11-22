@@ -337,7 +337,10 @@ const AttachmentSchema = z
         description:
           'The ID of the attachment in the database. Cast from an integer but not guaranteed to be a number',
       }),
-    meta: z.object({}).exactOptional().openapi({ description: 'Metadata returned by Paperclip.' }),
+    meta: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Metadata returned by Paperclip.' }),
     preview_url: z
       .string()
       .openapi({ description: 'The location of a scaled-down preview of the attachment.' }),
@@ -1038,7 +1041,7 @@ const InstanceSchema = z
       .string()
       .openapi({ description: 'A shorter description defined by the admin.' }),
     stats: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Statistics about how much information the instance contains.' }),
     thumbnail: z
       .string()
@@ -1047,7 +1050,7 @@ const InstanceSchema = z
       .openapi({ description: 'Banner image for the website.' }),
     title: z.string().openapi({ description: 'The title of the website.' }),
     uri: z.string().openapi({ description: 'The domain name of the instance.' }),
-    urls: z.object({}).openapi({ description: 'URLs of interest for clients apps.' }),
+    urls: z.looseObject({}).openapi({ description: 'URLs of interest for clients apps.' }),
     version: z
       .string()
       .openapi({ description: 'The version of Mastodon installed on the instance.' }),
@@ -1098,7 +1101,7 @@ const ListSchema = z
 const MarkerSchema = z
   .object({
     home: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: "Information about the user's position in the home timeline." }),
     last_read_id: z
@@ -1109,7 +1112,7 @@ const MarkerSchema = z
           'The ID of the most recently viewed entity. Cast from integer but not guaranteed to be a number',
       }),
     notifications: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: "Information about the user's position in their notifications." }),
     updated_at: z.iso
@@ -1197,7 +1200,7 @@ const PreferencesSchema = z
 const PushSubscriptionSchema = z
   .object({
     alerts: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Which alerts should be delivered to the `endpoint`.' }),
     endpoint: z.string().openapi({ description: 'Where push alerts will be sent to.' }),
     id: z
@@ -1716,7 +1719,7 @@ export const patchApiV1AccountsUpdateCredentialsRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'The display name to use for the profile.' }),
               fields_attributes: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -3139,7 +3142,7 @@ export const postApiV1AnnouncementsIdDismissRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
   security: [{ bearerAuth: [] }],
 })
@@ -3175,7 +3178,7 @@ export const putApiV1AnnouncementsIdReactionsNameRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     422: {
       description: 'Unprocessable Entity',
       content: { 'application/json': { schema: ErrorSchema } },
@@ -3215,7 +3218,7 @@ export const deleteApiV1AnnouncementsIdReactionsNameRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     422: {
       description: 'Unprocessable Entity',
       content: { 'application/json': { schema: ErrorSchema } },
@@ -3504,7 +3507,10 @@ export const deleteApiV1ConversationsIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Success.', content: { 'application/json': { schema: z.object({}) } } },
+    200: {
+      description: 'Success.',
+      content: { 'application/json': { schema: z.looseObject({}) } },
+    },
     401: {
       description: 'Invalid or missing Authorization header',
       content: { 'application/json': { schema: ErrorSchema } },
@@ -3707,7 +3713,7 @@ export const postApiV1DomainBlocksRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'success', content: { 'application/json': { schema: z.looseObject({}) } } },
     401: {
       description: 'Invalid or missing Authorization header',
       content: { 'application/json': { schema: ErrorSchema } },
@@ -3740,7 +3746,7 @@ export const deleteApiV1DomainBlocksRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'success', content: { 'application/json': { schema: z.looseObject({}) } } },
     401: {
       description: 'Invalid or missing Authorization header',
       content: { 'application/json': { schema: ErrorSchema } },
@@ -3943,7 +3949,7 @@ export const deleteApiV1FeaturedTagsIdRoute = createRoute({
   responses: {
     200: {
       description: 'An empty object will be returned if the featured tag was successfully deleted.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     404: {
       description: 'If the ID does not exist or is not owned by you',
@@ -4422,7 +4428,7 @@ export const deleteApiV1ListsRoute = createRoute({
   responses: {
     200: {
       description: 'A list was deleted successfully',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     401: {
       description: 'Invalid or missing Authorization header',
@@ -4581,7 +4587,7 @@ export const postApiV1ListsIdAccountsRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     401: {
       description: 'Invalid or missing Authorization header',
       content: { 'application/json': { schema: ErrorSchema } },
@@ -4634,7 +4640,7 @@ export const deleteApiV1ListsIdAccountsRoute = createRoute({
     200: {
       description:
         'Account was successfully removed from the list, or it was already not in the list.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     401: {
       description: 'Invalid or missing Authorization header',
@@ -4658,7 +4664,7 @@ export const getApiV1MarkersRoute = createRoute({
       timeline: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(z.object({})),
+          z.array(z.looseObject({})),
         )
         .openapi({
           param: {
@@ -4676,7 +4682,7 @@ export const getApiV1MarkersRoute = createRoute({
     200: {
       description:
         'Account was successfully removed from the list, or it was already not in the list.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     401: {
       description: 'Invalid or missing Authorization header',
@@ -4690,12 +4696,12 @@ export const postApiV1MarkersRoute = createRoute({
   method: 'post',
   path: '/api/v1/markers',
   description: 'Get saved timeline position',
-  request: { body: { content: { 'application/json': { schema: z.object({}) } } } },
+  request: { body: { content: { 'application/json': { schema: z.looseObject({}) } } } },
   responses: {
     200: {
       description:
         'Account was successfully removed from the list, or it was already not in the list.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     401: {
       description: 'Invalid or missing Authorization header',
@@ -5047,7 +5053,7 @@ export const postApiV1NotificationsClearRoute = createRoute({
   path: '/api/v1/notifications/clear',
   description: 'Clear all notifications from the server.',
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     401: {
       description: 'Invalid or missing Authorization header',
       content: { 'application/json': { schema: ErrorSchema } },
@@ -5284,7 +5290,7 @@ export const deleteApiV1PushSubscriptionRoute = createRoute({
   responses: {
     200: {
       description: 'Updating a PushSubscription to only receive mention alerts',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
   security: [{ bearerAuth: [] }],
@@ -5520,7 +5526,10 @@ export const deleteApiV1ScheduledStatusesIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Success.', content: { 'application/json': { schema: z.object({}) } } },
+    200: {
+      description: 'Success.',
+      content: { 'application/json': { schema: z.looseObject({}) } },
+    },
     401: {
       description: 'Invalid or missing Authorization header',
       content: { 'application/json': { schema: ErrorSchema } },
@@ -5572,7 +5581,7 @@ export const postApiV1StatusesRoute = createRoute({
                     description:
                       'Array of Attachment ids to be attached as media. If provided, `status` becomes optional, and `poll` cannot be used.',
                   }),
-                poll: z.array(z.object({})).exactOptional(),
+                poll: z.array(z.looseObject({})).exactOptional(),
                 scheduled_at: z
                   .string()
                   .exactOptional()
@@ -6223,7 +6232,7 @@ export const deleteApiV1SuggestionsIdRoute = createRoute({
   responses: {
     200: {
       description: 'Successfully removed',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     401: {
       description: 'Invalid or missing Authorization header',

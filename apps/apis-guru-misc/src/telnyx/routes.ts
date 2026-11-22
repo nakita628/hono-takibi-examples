@@ -10464,25 +10464,26 @@ const MessageDetailRecordSchema = z
   .openapi({ required: ['record_type'] })
   .openapi('MessageDetailRecord')
 
-const DetailRecordSchema = z
-  .unknown()
-  .check((ctx) => {
-    const val = ctx.value
-    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-      if (!Object.hasOwn(val, 'record_type')) {
-        ctx.issues.push({ ...{ code: 'custom' }, input: val })
+const DetailRecordSchema = (() => {
+  const Schema = z
+    .xor([
+      MessageDetailRecordSchema,
+      ConferenceDetailRecordSchema,
+      ConferenceParticipantDetailRecordSchema,
+    ])
+    .and(z.looseObject({}).openapi({ required: ['record_type'] }))
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const val = ctx.value
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'record_type')) {
+          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+        }
       }
-    }
-  })
-  .pipe(
-    z
-      .xor([
-        MessageDetailRecordSchema,
-        ConferenceDetailRecordSchema,
-        ConferenceParticipantDetailRecordSchema,
-      ])
-      .and(z.looseObject({}).openapi({ required: ['record_type'] })),
-  )
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description:
       'An object following one of the schemas published in https://developers.telnyx.com/docs/api/v2/detail-records',

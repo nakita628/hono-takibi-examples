@@ -112,7 +112,7 @@ const GetAddressInfoResponseSchema = z
               .exactOptional()
               .openapi({ description: 'Index of the UTXO at this address' }),
             scriptPubKey: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({ description: 'Object representing the scruptPubKey of the UTXO' }),
             tokens: z
@@ -309,7 +309,7 @@ const GetRawTxResponseSchema = z
   .openapi('GetRawTxResponse')
 
 const GetStatusResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Depending on the function called, the structure and information contained in this object will vary',
@@ -430,7 +430,7 @@ const GetTokenMetadataResponseSchema = z
     metadataOfUtxo: z
       .object({
         userData: z
-          .object({ meta: z.array(z.object({})).exactOptional() })
+          .object({ meta: z.array(z.looseObject({})).exactOptional() })
           .exactOptional()
           .openapi({ description: 'Metadata set by user on token for UTXO', required: [] }),
       })
@@ -976,12 +976,12 @@ const RpcRequestSchema = z
 const RpcResponseSchema = z
   .object({
     error: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Object containing any error information.' }),
     id: z.string().exactOptional().openapi({ description: 'Identifier of RCP caller' }),
     result: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Object containing the response output.' }),
   })
@@ -1263,12 +1263,10 @@ export const postRoute = createRoute({
     401: {
       description: 'Authentication information is missing or invalid',
       headers: z.object({
-        WWW_Authenticate: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        WWW_Authenticate: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },

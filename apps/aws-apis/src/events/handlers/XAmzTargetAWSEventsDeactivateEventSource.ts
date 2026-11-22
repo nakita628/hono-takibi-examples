@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSEventsDeactivateEventSourceHandler = app.openapi(
   postXAmzTargetAWSEventsDeactivateEventSourceRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

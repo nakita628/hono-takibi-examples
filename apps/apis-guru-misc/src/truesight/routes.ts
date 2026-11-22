@@ -950,7 +950,7 @@ const ReinitializeActionConfigurationSchema = z
 const ResultPageSchema = z
   .object({
     items: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'The list of currently accessible results.' }),
     restrictedRights: z

@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetLogs20140328StartQueryHandler = app.openapi(
   postXAmzTargetLogs20140328StartQueryRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

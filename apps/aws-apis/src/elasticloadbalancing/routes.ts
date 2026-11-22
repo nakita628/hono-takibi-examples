@@ -1,78 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const PolicyNameSchema = z.string().openapi('PolicyName')
-
-const CookieNameSchema = z.string().openapi('CookieName')
-
-const AppCookieStickinessPolicySchema = z
-  .object({
-    PolicyName: PolicyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The mnemonic name for the policy being created. The name must be unique within a set of policies for this load balancer.',
-        }),
-    ).exactOptional(),
-    CookieName: CookieNameSchema.and(
-      z.any().openapi({ description: 'The name of the application cookie used for stickiness.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Information about a policy for application-controlled session stickiness.',
-    required: [],
-  })
-  .openapi('AppCookieStickinessPolicy')
-
-const AppCookieStickinessPoliciesSchema = z
-  .array(AppCookieStickinessPolicySchema)
-  .openapi('AppCookieStickinessPolicies')
-
-const CookieExpirationPeriodSchema = z.int().openapi('CookieExpirationPeriod')
-
-const LBCookieStickinessPolicySchema = z
-  .object({
-    PolicyName: PolicyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the policy. This name must be unique within the set of policies for this load balancer.',
-        }),
-    ).exactOptional(),
-    CookieExpirationPeriod: CookieExpirationPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time period, in seconds, after which the cookie should be considered stale. If this parameter is not specified, the stickiness session lasts for the duration of the browser session.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Information about a policy for duration-based session stickiness.',
-    required: [],
-  })
-  .openapi('LBCookieStickinessPolicy')
-
-const LBCookieStickinessPoliciesSchema = z
-  .array(LBCookieStickinessPolicySchema)
-  .openapi('LBCookieStickinessPolicies')
-
-const PolicyNamesSchema = z.array(PolicyNameSchema).openapi('PolicyNames')
-
-type PoliciesType = {
-  AppCookieStickinessPolicies?: z.infer<typeof AppCookieStickinessPoliciesSchema> & {
-    [key: string]: unknown
-  }
-  LBCookieStickinessPolicies?: z.infer<typeof LBCookieStickinessPoliciesSchema> & {
-    [key: string]: unknown
-  }
-  OtherPolicies?: z.infer<typeof PolicyNamesSchema> & { [key: string]: unknown }
-}
-
 const AddTagsOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the output of AddTags.' })
   .openapi('AddTagsOutput')
 
@@ -94,10 +23,8 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: 'The key of the tag.' })),
-    Value: TagValueSchema.and(
-      z.any().openapi({ description: 'The value of the tag.' }),
-    ).exactOptional(),
+    Key: TagKeySchema.openapi({ description: 'The key of the tag.' }),
+    Value: TagValueSchema.exactOptional().openapi({ description: 'The value of the tag.' }),
   })
   .openapi({ required: ['Key'], description: 'Information about a tag.' })
   .openapi('Tag')
@@ -114,13 +41,9 @@ const SecurityGroupsSchema = z.array(SecurityGroupIdSchema).openapi('SecurityGro
 
 const ApplySecurityGroupsToLoadBalancerOutputSchema = z
   .object({
-    SecurityGroups: SecurityGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The IDs of the security groups associated with the load balancer.',
-        }),
-    ).exactOptional(),
+    SecurityGroups: SecurityGroupsSchema.exactOptional().openapi({
+      description: 'The IDs of the security groups associated with the load balancer.',
+    }),
   })
   .openapi({
     example: { SecurityGroups: ['sg-fc448899'] },
@@ -141,9 +64,9 @@ const SubnetsSchema = z.array(SubnetIdSchema).openapi('Subnets')
 
 const AttachLoadBalancerToSubnetsOutputSchema = z
   .object({
-    Subnets: SubnetsSchema.and(
-      z.any().openapi({ description: 'The IDs of the subnets attached to the load balancer.' }),
-    ).exactOptional(),
+    Subnets: SubnetsSchema.exactOptional().openapi({
+      description: 'The IDs of the subnets attached to the load balancer.',
+    }),
   })
   .openapi({
     example: { Subnets: ['subnet-15aaab61', 'subnet-0ecac448'] },
@@ -168,46 +91,26 @@ const HealthyThresholdSchema = z.int().min(2).max(10).openapi('HealthyThreshold'
 
 const HealthCheckSchema = z
   .object({
-    Target: HealthCheckTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The instance being checked. The protocol is either TCP, HTTP, HTTPS, or SSL. The range of valid ports is one (1) through 65535.</p> <p>TCP is the default, specified as a TCP: port pair, for example "TCP:5000". In this case, a health check simply attempts to open a TCP connection to the instance on the specified port. Failure to connect within the configured timeout is considered unhealthy.</p> <p>SSL is also specified as SSL: port pair, for example, SSL:5000.</p> <p>For HTTP/HTTPS, you must include a ping path in the string. HTTP is specified as a HTTP:port;/;PathToPing; grouping, for example "HTTP:80/weather/us/wa/seattle". In this case, a HTTP GET request is issued to the instance on the given port and path. Any answer other than "200 OK" within the timeout period is considered unhealthy.</p> <p>The total length of the HTTP ping target must be 1024 16-bit Unicode characters or less.</p>',
-        }),
-    ),
-    Interval: HealthCheckIntervalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The approximate interval, in seconds, between health checks of an individual instance.',
-        }),
-    ),
-    Timeout: HealthCheckTimeoutSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The amount of time, in seconds, during which no response means a failed health check.</p> <p>This value must be less than the <code>Interval</code> value.</p>',
-        }),
-    ),
-    UnhealthyThreshold: UnhealthyThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of consecutive health check failures required before moving the instance to the <code>Unhealthy</code> state.',
-        }),
-    ),
-    HealthyThreshold: HealthyThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of consecutive health checks successes required before moving the instance to the <code>Healthy</code> state.',
-        }),
-    ),
+    Target: HealthCheckTargetSchema.openapi({
+      description:
+        '<p>The instance being checked. The protocol is either TCP, HTTP, HTTPS, or SSL. The range of valid ports is one (1) through 65535.</p> <p>TCP is the default, specified as a TCP: port pair, for example "TCP:5000". In this case, a health check simply attempts to open a TCP connection to the instance on the specified port. Failure to connect within the configured timeout is considered unhealthy.</p> <p>SSL is also specified as SSL: port pair, for example, SSL:5000.</p> <p>For HTTP/HTTPS, you must include a ping path in the string. HTTP is specified as a HTTP:port;/;PathToPing; grouping, for example "HTTP:80/weather/us/wa/seattle". In this case, a HTTP GET request is issued to the instance on the given port and path. Any answer other than "200 OK" within the timeout period is considered unhealthy.</p> <p>The total length of the HTTP ping target must be 1024 16-bit Unicode characters or less.</p>',
+    }),
+    Interval: HealthCheckIntervalSchema.openapi({
+      description:
+        'The approximate interval, in seconds, between health checks of an individual instance.',
+    }),
+    Timeout: HealthCheckTimeoutSchema.openapi({
+      description:
+        '<p>The amount of time, in seconds, during which no response means a failed health check.</p> <p>This value must be less than the <code>Interval</code> value.</p>',
+    }),
+    UnhealthyThreshold: UnhealthyThresholdSchema.openapi({
+      description:
+        'The number of consecutive health check failures required before moving the instance to the <code>Unhealthy</code> state.',
+    }),
+    HealthyThreshold: HealthyThresholdSchema.openapi({
+      description:
+        'The number of consecutive health checks successes required before moving the instance to the <code>Healthy</code> state.',
+    }),
   })
   .openapi({
     required: ['Target', 'Interval', 'Timeout', 'UnhealthyThreshold', 'HealthyThreshold'],
@@ -217,9 +120,9 @@ const HealthCheckSchema = z
 
 const ConfigureHealthCheckOutputSchema = z
   .object({
-    HealthCheck: HealthCheckSchema.and(
-      z.any().openapi({ description: 'The updated health check.' }),
-    ).exactOptional(),
+    HealthCheck: HealthCheckSchema.exactOptional().openapi({
+      description: 'The updated health check.',
+    }),
   })
   .openapi({
     example: {
@@ -237,7 +140,7 @@ const ConfigureHealthCheckOutputSchema = z
   .openapi('ConfigureHealthCheckOutput')
 
 const CreateAppCookieStickinessPolicyOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the output for CreateAppCookieStickinessPolicy.' })
   .openapi('CreateAppCookieStickinessPolicyOutput')
 
@@ -246,7 +149,7 @@ const DuplicatePolicyNameExceptionSchema = z.any().openapi('DuplicatePolicyNameE
 const TooManyPoliciesExceptionSchema = z.any().openapi('TooManyPoliciesException')
 
 const CreateLBCookieStickinessPolicyOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the output for CreateLBCookieStickinessPolicy.' })
   .openapi('CreateLBCookieStickinessPolicyOutput')
 
@@ -254,9 +157,9 @@ const DNSNameSchema = z.string().openapi('DNSName')
 
 const CreateAccessPointOutputSchema = z
   .object({
-    DNSName: DNSNameSchema.and(
-      z.any().openapi({ description: 'The DNS name of the load balancer.' }),
-    ).exactOptional(),
+    DNSName: DNSNameSchema.exactOptional().openapi({
+      description: 'The DNS name of the load balancer.',
+    }),
   })
   .openapi({
     example: { DNSName: 'internal-my-load-balancer-123456789.us-west-2.elb.amazonaws.com' },
@@ -275,36 +178,24 @@ const SSLCertificateIdSchema = z.string().openapi('SSLCertificateId')
 
 const ListenerSchema = z
   .object({
-    Protocol: ProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The load balancer transport protocol to use for routing: HTTP, HTTPS, TCP, or SSL.',
-        }),
-    ),
-    LoadBalancerPort: AccessPointPortSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The port on which the load balancer is listening. On EC2-VPC, you can specify any port from the range 1-65535. On EC2-Classic, you can specify any port from the following list: 25, 80, 443, 465, 587, 1024-65535.',
-        }),
-    ),
-    InstanceProtocol: ProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The protocol to use for routing traffic to instances: HTTP, HTTPS, TCP, or SSL.</p> <p>If the front-end protocol is TCP or SSL, the back-end protocol must be TCP or SSL. If the front-end protocol is HTTP or HTTPS, the back-end protocol must be HTTP or HTTPS.</p> <p>If there is another listener with the same <code>InstancePort</code> whose <code>InstanceProtocol</code> is secure, (HTTPS or SSL), the listener's <code>InstanceProtocol</code> must also be secure.</p> <p>If there is another listener with the same <code>InstancePort</code> whose <code>InstanceProtocol</code> is HTTP or TCP, the listener's <code>InstanceProtocol</code> must be HTTP or TCP.</p>",
-        }),
-    ).exactOptional(),
-    InstancePort: InstancePortSchema.and(
-      z.any().openapi({ description: 'The port on which the instance is listening.' }),
-    ),
-    SSLCertificateId: SSLCertificateIdSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the server certificate.' }),
-    ).exactOptional(),
+    Protocol: ProtocolSchema.openapi({
+      description:
+        'The load balancer transport protocol to use for routing: HTTP, HTTPS, TCP, or SSL.',
+    }),
+    LoadBalancerPort: AccessPointPortSchema.openapi({
+      description:
+        'The port on which the load balancer is listening. On EC2-VPC, you can specify any port from the range 1-65535. On EC2-Classic, you can specify any port from the following list: 25, 80, 443, 465, 587, 1024-65535.',
+    }),
+    InstanceProtocol: ProtocolSchema.exactOptional().openapi({
+      description:
+        "<p>The protocol to use for routing traffic to instances: HTTP, HTTPS, TCP, or SSL.</p> <p>If the front-end protocol is TCP or SSL, the back-end protocol must be TCP or SSL. If the front-end protocol is HTTP or HTTPS, the back-end protocol must be HTTP or HTTPS.</p> <p>If there is another listener with the same <code>InstancePort</code> whose <code>InstanceProtocol</code> is secure, (HTTPS or SSL), the listener's <code>InstanceProtocol</code> must also be secure.</p> <p>If there is another listener with the same <code>InstancePort</code> whose <code>InstanceProtocol</code> is HTTP or TCP, the listener's <code>InstanceProtocol</code> must be HTTP or TCP.</p>",
+    }),
+    InstancePort: InstancePortSchema.openapi({
+      description: 'The port on which the instance is listening.',
+    }),
+    SSLCertificateId: SSLCertificateIdSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the server certificate.',
+    }),
   })
   .openapi({
     required: ['Protocol', 'LoadBalancerPort', 'InstancePort'],
@@ -328,14 +219,14 @@ const UnsupportedProtocolExceptionSchema = z.any().openapi('UnsupportedProtocolE
 const OperationNotPermittedExceptionSchema = z.any().openapi('OperationNotPermittedException')
 
 const CreateLoadBalancerListenerOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the parameters for CreateLoadBalancerListener.' })
   .openapi('CreateLoadBalancerListenerOutput')
 
 const DuplicateListenerExceptionSchema = z.any().openapi('DuplicateListenerException')
 
 const CreateLoadBalancerPolicyOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the output of CreateLoadBalancerPolicy.' })
   .openapi('CreateLoadBalancerPolicyOutput')
 
@@ -345,12 +236,12 @@ const AttributeValueSchema = z.string().openapi('AttributeValue')
 
 const PolicyAttributeSchema = z
   .object({
-    AttributeName: AttributeNameSchema.and(
-      z.any().openapi({ description: 'The name of the attribute.' }),
-    ).exactOptional(),
-    AttributeValue: AttributeValueSchema.and(
-      z.any().openapi({ description: 'The value of the attribute.' }),
-    ).exactOptional(),
+    AttributeName: AttributeNameSchema.exactOptional().openapi({
+      description: 'The name of the attribute.',
+    }),
+    AttributeValue: AttributeValueSchema.exactOptional().openapi({
+      description: 'The value of the attribute.',
+    }),
   })
   .openapi({ description: 'Information about a policy attribute.', required: [] })
   .openapi('PolicyAttribute')
@@ -358,17 +249,17 @@ const PolicyAttributeSchema = z
 const PolicyTypeNotFoundExceptionSchema = z.any().openapi('PolicyTypeNotFoundException')
 
 const DeleteAccessPointOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the output of DeleteLoadBalancer.' })
   .openapi('DeleteAccessPointOutput')
 
 const DeleteLoadBalancerListenerOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the output of DeleteLoadBalancerListeners.' })
   .openapi('DeleteLoadBalancerListenerOutput')
 
 const DeleteLoadBalancerPolicyOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the output of DeleteLoadBalancerPolicy.' })
   .openapi('DeleteLoadBalancerPolicyOutput')
 
@@ -376,9 +267,7 @@ const InstanceIdSchema = z.string().openapi('InstanceId')
 
 const InstanceSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z.any().openapi({ description: 'The instance ID.' }),
-    ).exactOptional(),
+    InstanceId: InstanceIdSchema.exactOptional().openapi({ description: 'The instance ID.' }),
   })
   .openapi({ description: 'The ID of an EC2 instance.', required: [] })
   .openapi('Instance')
@@ -387,11 +276,9 @@ const InstancesSchema = z.array(InstanceSchema).openapi('Instances')
 
 const DeregisterEndPointsOutputSchema = z
   .object({
-    Instances: InstancesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The remaining instances registered with the load balancer.' }),
-    ).exactOptional(),
+    Instances: InstancesSchema.exactOptional().openapi({
+      description: 'The remaining instances registered with the load balancer.',
+    }),
   })
   .openapi({
     example: { Instances: [{ InstanceId: 'i-207d9717' }, { InstanceId: 'i-afefb49b' }] },
@@ -408,17 +295,11 @@ const MaxSchema = z.string().openapi('Max')
 
 const LimitSchema = z
   .object({
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the limit. The possible values are:</p> <ul> <li> <p>classic-listeners</p> </li> <li> <p>classic-load-balancers</p> </li> <li> <p>classic-registered-instances</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Max: MaxSchema.and(
-      z.any().openapi({ description: 'The maximum value of the limit.' }),
-    ).exactOptional(),
+    Name: NameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the limit. The possible values are:</p> <ul> <li> <p>classic-listeners</p> </li> <li> <p>classic-load-balancers</p> </li> <li> <p>classic-registered-instances</p> </li> </ul>',
+    }),
+    Max: MaxSchema.exactOptional().openapi({ description: 'The maximum value of the limit.' }),
   })
   .openapi({
     description: 'Information about an Elastic Load Balancing resource limit for your AWS account.',
@@ -432,17 +313,11 @@ const MarkerSchema = z.string().openapi('Marker')
 
 const DescribeAccountLimitsOutputSchema = z
   .object({
-    Limits: LimitsSchema.and(
-      z.any().openapi({ description: 'Information about the limits.' }),
-    ).exactOptional(),
-    NextMarker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
-        }),
-    ).exactOptional(),
+    Limits: LimitsSchema.exactOptional().openapi({ description: 'Information about the limits.' }),
+    NextMarker: MarkerSchema.exactOptional().openapi({
+      description:
+        'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAccountLimitsOutput')
@@ -455,33 +330,21 @@ const DescriptionSchema = z.string().openapi('Description')
 
 const InstanceStateSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the instance.' }),
-    ).exactOptional(),
-    State: StateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current state of the instance.</p> <p>Valid values: <code>InService</code> | <code>OutOfService</code> | <code>Unknown</code> </p>',
-        }),
-    ).exactOptional(),
-    ReasonCode: ReasonCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the cause of <code>OutOfService</code> instances. Specifically, whether the cause is Elastic Load Balancing or the instance.</p> <p>Valid values: <code>ELB</code> | <code>Instance</code> | <code>N/A</code> </p>',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A description of the instance state. This string can contain one or more of the following messages.</p> <ul> <li> <p> <code>N/A</code> </p> </li> <li> <p> <code>A transient error occurred. Please try again later.</code> </p> </li> <li> <p> <code>Instance has failed at least the UnhealthyThreshold number of health checks consecutively.</code> </p> </li> <li> <p> <code>Instance has not passed the configured HealthyThreshold number of health checks consecutively.</code> </p> </li> <li> <p> <code>Instance registration is still in progress.</code> </p> </li> <li> <p> <code>Instance is in the EC2 Availability Zone for which LoadBalancer is not configured to route traffic to.</code> </p> </li> <li> <p> <code>Instance is not currently registered with the LoadBalancer.</code> </p> </li> <li> <p> <code>Instance deregistration currently in progress.</code> </p> </li> <li> <p> <code>Disable Availability Zone is currently in progress.</code> </p> </li> <li> <p> <code>Instance is in pending state.</code> </p> </li> <li> <p> <code>Instance is in stopped state.</code> </p> </li> <li> <p> <code>Instance is in terminated state.</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    InstanceId: InstanceIdSchema.exactOptional().openapi({
+      description: 'The ID of the instance.',
+    }),
+    State: StateSchema.exactOptional().openapi({
+      description:
+        '<p>The current state of the instance.</p> <p>Valid values: <code>InService</code> | <code>OutOfService</code> | <code>Unknown</code> </p>',
+    }),
+    ReasonCode: ReasonCodeSchema.exactOptional().openapi({
+      description:
+        '<p>Information about the cause of <code>OutOfService</code> instances. Specifically, whether the cause is Elastic Load Balancing or the instance.</p> <p>Valid values: <code>ELB</code> | <code>Instance</code> | <code>N/A</code> </p>',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description:
+        '<p>A description of the instance state. This string can contain one or more of the following messages.</p> <ul> <li> <p> <code>N/A</code> </p> </li> <li> <p> <code>A transient error occurred. Please try again later.</code> </p> </li> <li> <p> <code>Instance has failed at least the UnhealthyThreshold number of health checks consecutively.</code> </p> </li> <li> <p> <code>Instance has not passed the configured HealthyThreshold number of health checks consecutively.</code> </p> </li> <li> <p> <code>Instance registration is still in progress.</code> </p> </li> <li> <p> <code>Instance is in the EC2 Availability Zone for which LoadBalancer is not configured to route traffic to.</code> </p> </li> <li> <p> <code>Instance is not currently registered with the LoadBalancer.</code> </p> </li> <li> <p> <code>Instance deregistration currently in progress.</code> </p> </li> <li> <p> <code>Disable Availability Zone is currently in progress.</code> </p> </li> <li> <p> <code>Instance is in pending state.</code> </p> </li> <li> <p> <code>Instance is in stopped state.</code> </p> </li> <li> <p> <code>Instance is in terminated state.</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'Information about the state of an EC2 instance.', required: [] })
   .openapi('InstanceState')
@@ -490,9 +353,9 @@ const InstanceStatesSchema = z.array(InstanceStateSchema).openapi('InstanceState
 
 const DescribeEndPointStateOutputSchema = z
   .object({
-    InstanceStates: InstanceStatesSchema.and(
-      z.any().openapi({ description: 'Information about the health of the instances.' }),
-    ).exactOptional(),
+    InstanceStates: InstanceStatesSchema.exactOptional().openapi({
+      description: 'Information about the health of the instances.',
+    }),
   })
   .openapi({
     example: {
@@ -510,14 +373,9 @@ const CrossZoneLoadBalancingEnabledSchema = z.boolean().openapi('CrossZoneLoadBa
 
 const CrossZoneLoadBalancingSchema = z
   .object({
-    Enabled: CrossZoneLoadBalancingEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether cross-zone load balancing is enabled for the load balancer.',
-        }),
-    ),
+    Enabled: CrossZoneLoadBalancingEnabledSchema.openapi({
+      description: 'Specifies whether cross-zone load balancing is enabled for the load balancer.',
+    }),
   })
   .openapi({
     required: ['Enabled'],
@@ -535,36 +393,20 @@ const AccessLogPrefixSchema = z.string().openapi('AccessLogPrefix')
 
 const AccessLogSchema = z
   .object({
-    Enabled: AccessLogEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether access logs are enabled for the load balancer.',
-        }),
-    ),
-    S3BucketName: S3BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Amazon S3 bucket where the access logs are stored.',
-        }),
-    ).exactOptional(),
-    EmitInterval: AccessLogIntervalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The interval for publishing the access logs. You can specify an interval of either 5 minutes or 60 minutes.</p> <p>Default: 60 minutes</p>',
-        }),
-    ).exactOptional(),
-    S3BucketPrefix: AccessLogPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The logical hierarchy you created for your Amazon S3 bucket, for example <code>my-bucket-prefix/prod</code>. If the prefix is not provided, the log is placed at the root level of the bucket.',
-        }),
-    ).exactOptional(),
+    Enabled: AccessLogEnabledSchema.openapi({
+      description: 'Specifies whether access logs are enabled for the load balancer.',
+    }),
+    S3BucketName: S3BucketNameSchema.exactOptional().openapi({
+      description: 'The name of the Amazon S3 bucket where the access logs are stored.',
+    }),
+    EmitInterval: AccessLogIntervalSchema.exactOptional().openapi({
+      description:
+        '<p>The interval for publishing the access logs. You can specify an interval of either 5 minutes or 60 minutes.</p> <p>Default: 60 minutes</p>',
+    }),
+    S3BucketPrefix: AccessLogPrefixSchema.exactOptional().openapi({
+      description:
+        'The logical hierarchy you created for your Amazon S3 bucket, for example <code>my-bucket-prefix/prod</code>. If the prefix is not provided, the log is placed at the root level of the bucket.',
+    }),
   })
   .openapi({
     required: ['Enabled'],
@@ -578,21 +420,13 @@ const ConnectionDrainingTimeoutSchema = z.int().openapi('ConnectionDrainingTimeo
 
 const ConnectionDrainingSchema = z
   .object({
-    Enabled: ConnectionDrainingEnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether connection draining is enabled for the load balancer.',
-        }),
-    ),
-    Timeout: ConnectionDrainingTimeoutSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum time, in seconds, to keep the existing connections open before deregistering the instances.',
-        }),
-    ).exactOptional(),
+    Enabled: ConnectionDrainingEnabledSchema.openapi({
+      description: 'Specifies whether connection draining is enabled for the load balancer.',
+    }),
+    Timeout: ConnectionDrainingTimeoutSchema.exactOptional().openapi({
+      description:
+        'The maximum time, in seconds, to keep the existing connections open before deregistering the instances.',
+    }),
   })
   .openapi({
     required: ['Enabled'],
@@ -604,14 +438,10 @@ const IdleTimeoutSchema = z.int().min(1).max(3600).openapi('IdleTimeout')
 
 const ConnectionSettingsSchema = z
   .object({
-    IdleTimeout: IdleTimeoutSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in seconds, that the connection is allowed to be idle (no data has been sent over the connection) before it is closed by the load balancer.',
-        }),
-    ),
+    IdleTimeout: IdleTimeoutSchema.openapi({
+      description:
+        'The time, in seconds, that the connection is allowed to be idle (no data has been sent over the connection) before it is closed by the load balancer.',
+    }),
   })
   .openapi({
     required: ['IdleTimeout'],
@@ -633,17 +463,13 @@ const AdditionalAttributeValueSchema = z
 
 const AdditionalAttributeSchema = z
   .object({
-    Key: AdditionalAttributeKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the attribute.</p> <p>The following attribute is supported.</p> <ul> <li> <p> <code>elb.http.desyncmitigationmode</code> - Determines how the load balancer handles requests that might pose a security risk to your application. The possible values are <code>monitor</code>, <code>defensive</code>, and <code>strictest</code>. The default is <code>defensive</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Value: AdditionalAttributeValueSchema.and(
-      z.any().openapi({ description: 'This value of the attribute.' }),
-    ).exactOptional(),
+    Key: AdditionalAttributeKeySchema.exactOptional().openapi({
+      description:
+        '<p>The name of the attribute.</p> <p>The following attribute is supported.</p> <ul> <li> <p> <code>elb.http.desyncmitigationmode</code> - Determines how the load balancer handles requests that might pose a security risk to your application. The possible values are <code>monitor</code>, <code>defensive</code>, and <code>strictest</code>. The default is <code>defensive</code>.</p> </li> </ul>',
+    }),
+    Value: AdditionalAttributeValueSchema.exactOptional().openapi({
+      description: 'This value of the attribute.',
+    }),
   })
   .openapi({ description: 'Information about additional load balancer attributes.', required: [] })
   .openapi('AdditionalAttribute')
@@ -655,50 +481,34 @@ const AdditionalAttributesSchema = z
 
 const LoadBalancerAttributesSchema = z
   .object({
-    CrossZoneLoadBalancing: CrossZoneLoadBalancingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If enabled, the load balancer routes the request traffic evenly across all instances regardless of the Availability Zones.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/enable-disable-crosszone-lb.html">Configure Cross-Zone Load Balancing</a> in the <i>Classic Load Balancers Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    AccessLog: AccessLogSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If enabled, the load balancer captures detailed information of all requests and delivers the information to the Amazon S3 bucket that you specify.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/enable-access-logs.html">Enable Access Logs</a> in the <i>Classic Load Balancers Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    ConnectionDraining: ConnectionDrainingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If enabled, the load balancer allows existing requests to complete before the load balancer shifts traffic away from a deregistered or unhealthy instance.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/config-conn-drain.html">Configure Connection Draining</a> in the <i>Classic Load Balancers Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    ConnectionSettings: ConnectionSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If enabled, the load balancer allows the connections to remain idle (no data is sent over the connection) for the specified duration.</p> <p>By default, Elastic Load Balancing maintains a 60-second idle connection timeout for both front-end and back-end connections of your load balancer. For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/config-idle-timeout.html">Configure Idle Connection Timeout</a> in the <i>Classic Load Balancers Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    AdditionalAttributes: AdditionalAttributesSchema.and(
-      z.any().openapi({ description: 'Any additional attributes.' }),
-    ).exactOptional(),
+    CrossZoneLoadBalancing: CrossZoneLoadBalancingSchema.exactOptional().openapi({
+      description:
+        '<p>If enabled, the load balancer routes the request traffic evenly across all instances regardless of the Availability Zones.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/enable-disable-crosszone-lb.html">Configure Cross-Zone Load Balancing</a> in the <i>Classic Load Balancers Guide</i>.</p>',
+    }),
+    AccessLog: AccessLogSchema.exactOptional().openapi({
+      description:
+        '<p>If enabled, the load balancer captures detailed information of all requests and delivers the information to the Amazon S3 bucket that you specify.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/enable-access-logs.html">Enable Access Logs</a> in the <i>Classic Load Balancers Guide</i>.</p>',
+    }),
+    ConnectionDraining: ConnectionDrainingSchema.exactOptional().openapi({
+      description:
+        '<p>If enabled, the load balancer allows existing requests to complete before the load balancer shifts traffic away from a deregistered or unhealthy instance.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/config-conn-drain.html">Configure Connection Draining</a> in the <i>Classic Load Balancers Guide</i>.</p>',
+    }),
+    ConnectionSettings: ConnectionSettingsSchema.exactOptional().openapi({
+      description:
+        '<p>If enabled, the load balancer allows the connections to remain idle (no data is sent over the connection) for the specified duration.</p> <p>By default, Elastic Load Balancing maintains a 60-second idle connection timeout for both front-end and back-end connections of your load balancer. For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/config-idle-timeout.html">Configure Idle Connection Timeout</a> in the <i>Classic Load Balancers Guide</i>.</p>',
+    }),
+    AdditionalAttributes: AdditionalAttributesSchema.exactOptional().openapi({
+      description: 'Any additional attributes.',
+    }),
   })
   .openapi({ description: 'The attributes for a load balancer.', required: [] })
   .openapi('LoadBalancerAttributes')
 
 const DescribeLoadBalancerAttributesOutputSchema = z
   .object({
-    LoadBalancerAttributes: LoadBalancerAttributesSchema.and(
-      z.any().openapi({ description: 'Information about the load balancer attributes.' }),
-    ).exactOptional(),
+    LoadBalancerAttributes: LoadBalancerAttributesSchema.exactOptional().openapi({
+      description: 'Information about the load balancer attributes.',
+    }),
   })
   .openapi({
     example: {
@@ -718,16 +528,18 @@ const LoadBalancerAttributeNotFoundExceptionSchema = z
   .any()
   .openapi('LoadBalancerAttributeNotFoundException')
 
+const PolicyNameSchema = z.string().openapi('PolicyName')
+
 const PolicyTypeNameSchema = z.string().openapi('PolicyTypeName')
 
 const PolicyAttributeDescriptionSchema = z
   .object({
-    AttributeName: AttributeNameSchema.and(
-      z.any().openapi({ description: 'The name of the attribute.' }),
-    ).exactOptional(),
-    AttributeValue: AttributeValueSchema.and(
-      z.any().openapi({ description: 'The value of the attribute.' }),
-    ).exactOptional(),
+    AttributeName: AttributeNameSchema.exactOptional().openapi({
+      description: 'The name of the attribute.',
+    }),
+    AttributeValue: AttributeValueSchema.exactOptional().openapi({
+      description: 'The value of the attribute.',
+    }),
   })
   .openapi({ description: 'Information about a policy attribute.', required: [] })
   .openapi('PolicyAttributeDescription')
@@ -738,15 +550,15 @@ const PolicyAttributeDescriptionsSchema = z
 
 const PolicyDescriptionSchema = z
   .object({
-    PolicyName: PolicyNameSchema.and(
-      z.any().openapi({ description: 'The name of the policy.' }),
-    ).exactOptional(),
-    PolicyTypeName: PolicyTypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the policy type.' }),
-    ).exactOptional(),
-    PolicyAttributeDescriptions: PolicyAttributeDescriptionsSchema.and(
-      z.any().openapi({ description: 'The policy attributes.' }),
-    ).exactOptional(),
+    PolicyName: PolicyNameSchema.exactOptional().openapi({
+      description: 'The name of the policy.',
+    }),
+    PolicyTypeName: PolicyTypeNameSchema.exactOptional().openapi({
+      description: 'The name of the policy type.',
+    }),
+    PolicyAttributeDescriptions: PolicyAttributeDescriptionsSchema.exactOptional().openapi({
+      description: 'The policy attributes.',
+    }),
   })
   .openapi({ description: 'Information about a policy.', required: [] })
   .openapi('PolicyDescription')
@@ -755,9 +567,9 @@ const PolicyDescriptionsSchema = z.array(PolicyDescriptionSchema).openapi('Polic
 
 const DescribeLoadBalancerPoliciesOutputSchema = z
   .object({
-    PolicyDescriptions: PolicyDescriptionsSchema.and(
-      z.any().openapi({ description: 'Information about the policies.' }),
-    ).exactOptional(),
+    PolicyDescriptions: PolicyDescriptionsSchema.exactOptional().openapi({
+      description: 'Information about the policies.',
+    }),
   })
   .openapi({
     example: {
@@ -786,31 +598,23 @@ const CardinalitySchema = z.string().openapi('Cardinality')
 
 const PolicyAttributeTypeDescriptionSchema = z
   .object({
-    AttributeName: AttributeNameSchema.and(
-      z.any().openapi({ description: 'The name of the attribute.' }),
-    ).exactOptional(),
-    AttributeType: AttributeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the attribute. For example, <code>Boolean</code> or <code>Integer</code>.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the attribute.' }),
-    ).exactOptional(),
-    DefaultValue: DefaultValueSchema.and(
-      z.any().openapi({ description: 'The default value of the attribute, if applicable.' }),
-    ).exactOptional(),
-    Cardinality: CardinalitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cardinality of the attribute.</p> <p>Valid values:</p> <ul> <li> <p>ONE(1) : Single value required</p> </li> <li> <p>ZERO_OR_ONE(0..1) : Up to one value is allowed</p> </li> <li> <p>ZERO_OR_MORE(0..*) : Optional. Multiple values are allowed</p> </li> <li> <p>ONE_OR_MORE(1..*0) : Required. Multiple values are allowed</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    AttributeName: AttributeNameSchema.exactOptional().openapi({
+      description: 'The name of the attribute.',
+    }),
+    AttributeType: AttributeTypeSchema.exactOptional().openapi({
+      description:
+        'The type of the attribute. For example, <code>Boolean</code> or <code>Integer</code>.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the attribute.',
+    }),
+    DefaultValue: DefaultValueSchema.exactOptional().openapi({
+      description: 'The default value of the attribute, if applicable.',
+    }),
+    Cardinality: CardinalitySchema.exactOptional().openapi({
+      description:
+        '<p>The cardinality of the attribute.</p> <p>Valid values:</p> <ul> <li> <p>ONE(1) : Single value required</p> </li> <li> <p>ZERO_OR_ONE(0..1) : Up to one value is allowed</p> </li> <li> <p>ZERO_OR_MORE(0..*) : Optional. Multiple values are allowed</p> </li> <li> <p>ONE_OR_MORE(1..*0) : Required. Multiple values are allowed</p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'Information about a policy attribute type.', required: [] })
   .openapi('PolicyAttributeTypeDescription')
@@ -821,20 +625,16 @@ const PolicyAttributeTypeDescriptionsSchema = z
 
 const PolicyTypeDescriptionSchema = z
   .object({
-    PolicyTypeName: PolicyTypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the policy type.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the policy type.' }),
-    ).exactOptional(),
-    PolicyAttributeTypeDescriptions: PolicyAttributeTypeDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description of the policy attributes associated with the policies defined by Elastic Load Balancing.',
-        }),
-    ).exactOptional(),
+    PolicyTypeName: PolicyTypeNameSchema.exactOptional().openapi({
+      description: 'The name of the policy type.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the policy type.',
+    }),
+    PolicyAttributeTypeDescriptions: PolicyAttributeTypeDescriptionsSchema.exactOptional().openapi({
+      description:
+        'The description of the policy attributes associated with the policies defined by Elastic Load Balancing.',
+    }),
   })
   .openapi({ description: 'Information about a policy type.', required: [] })
   .openapi('PolicyTypeDescription')
@@ -845,9 +645,9 @@ const PolicyTypeDescriptionsSchema = z
 
 const DescribeLoadBalancerPolicyTypesOutputSchema = z
   .object({
-    PolicyTypeDescriptions: PolicyTypeDescriptionsSchema.and(
-      z.any().openapi({ description: 'Information about the policy types.' }),
-    ).exactOptional(),
+    PolicyTypeDescriptions: PolicyTypeDescriptionsSchema.exactOptional().openapi({
+      description: 'Information about the policy types.',
+    }),
   })
   .openapi({
     example: {
@@ -867,16 +667,14 @@ const DescribeLoadBalancerPolicyTypesOutputSchema = z
   })
   .openapi('DescribeLoadBalancerPolicyTypesOutput')
 
+const PolicyNamesSchema = z.array(PolicyNameSchema).openapi('PolicyNames')
+
 const ListenerDescriptionSchema = z
   .object({
-    Listener: ListenerSchema.and(z.any().openapi({ description: 'The listener.' })).exactOptional(),
-    PolicyNames: PolicyNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The policies. If there are no policies enabled, the list is empty.',
-        }),
-    ).exactOptional(),
+    Listener: ListenerSchema.exactOptional().openapi({ description: 'The listener.' }),
+    PolicyNames: PolicyNamesSchema.exactOptional().openapi({
+      description: 'The policies. If there are no policies enabled, the list is empty.',
+    }),
   })
   .openapi({ description: 'The policies enabled for a listener.', required: [] })
   .openapi('ListenerDescription')
@@ -885,42 +683,74 @@ const ListenerDescriptionsSchema = z
   .array(ListenerDescriptionSchema)
   .openapi('ListenerDescriptions')
 
-const PoliciesSchema: z.ZodType<PoliciesType> = z
-  .lazy(() =>
-    z
-      .object({
-        AppCookieStickinessPolicies: AppCookieStickinessPoliciesSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The stickiness policies created using <a>CreateAppCookieStickinessPolicy</a>.',
-            }),
-        ).exactOptional(),
-        LBCookieStickinessPolicies: LBCookieStickinessPoliciesSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The stickiness policies created using <a>CreateLBCookieStickinessPolicy</a>.',
-            }),
-        ).exactOptional(),
-        OtherPolicies: PolicyNamesSchema.and(
-          z.any().openapi({ description: 'The policies other than the stickiness policies.' }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'The policies for a load balancer.', required: [] }),
-  )
+const CookieNameSchema = z.string().openapi('CookieName')
+
+const AppCookieStickinessPolicySchema = z
+  .object({
+    PolicyName: PolicyNameSchema.exactOptional().openapi({
+      description:
+        'The mnemonic name for the policy being created. The name must be unique within a set of policies for this load balancer.',
+    }),
+    CookieName: CookieNameSchema.exactOptional().openapi({
+      description: 'The name of the application cookie used for stickiness.',
+    }),
+  })
+  .openapi({
+    description: 'Information about a policy for application-controlled session stickiness.',
+    required: [],
+  })
+  .openapi('AppCookieStickinessPolicy')
+
+const AppCookieStickinessPoliciesSchema = z
+  .array(AppCookieStickinessPolicySchema)
+  .openapi('AppCookieStickinessPolicies')
+
+const CookieExpirationPeriodSchema = z.int().openapi('CookieExpirationPeriod')
+
+const LBCookieStickinessPolicySchema = z
+  .object({
+    PolicyName: PolicyNameSchema.exactOptional().openapi({
+      description:
+        'The name of the policy. This name must be unique within the set of policies for this load balancer.',
+    }),
+    CookieExpirationPeriod: CookieExpirationPeriodSchema.exactOptional().openapi({
+      description:
+        'The time period, in seconds, after which the cookie should be considered stale. If this parameter is not specified, the stickiness session lasts for the duration of the browser session.',
+    }),
+  })
+  .openapi({
+    description: 'Information about a policy for duration-based session stickiness.',
+    required: [],
+  })
+  .openapi('LBCookieStickinessPolicy')
+
+const LBCookieStickinessPoliciesSchema = z
+  .array(LBCookieStickinessPolicySchema)
+  .openapi('LBCookieStickinessPolicies')
+
+const PoliciesSchema = z
+  .object({
+    AppCookieStickinessPolicies: AppCookieStickinessPoliciesSchema.exactOptional().openapi({
+      description: 'The stickiness policies created using <a>CreateAppCookieStickinessPolicy</a>.',
+    }),
+    LBCookieStickinessPolicies: LBCookieStickinessPoliciesSchema.exactOptional().openapi({
+      description: 'The stickiness policies created using <a>CreateLBCookieStickinessPolicy</a>.',
+    }),
+    OtherPolicies: PolicyNamesSchema.exactOptional().openapi({
+      description: 'The policies other than the stickiness policies.',
+    }),
+  })
+  .openapi({ description: 'The policies for a load balancer.', required: [] })
   .openapi('Policies')
 
 const BackendServerDescriptionSchema = z
   .object({
-    InstancePort: InstancePortSchema.and(
-      z.any().openapi({ description: 'The port on which the EC2 instance is listening.' }),
-    ).exactOptional(),
-    PolicyNames: PolicyNamesSchema.and(
-      z.any().openapi({ description: 'The names of the policies enabled for the EC2 instance.' }),
-    ).exactOptional(),
+    InstancePort: InstancePortSchema.exactOptional().openapi({
+      description: 'The port on which the EC2 instance is listening.',
+    }),
+    PolicyNames: PolicyNamesSchema.exactOptional().openapi({
+      description: 'The names of the policies enabled for the EC2 instance.',
+    }),
   })
   .openapi({ description: 'Information about the configuration of an EC2 instance.', required: [] })
   .openapi('BackendServerDescription')
@@ -939,12 +769,12 @@ const SecurityGroupNameSchema = z.string().openapi('SecurityGroupName')
 
 const SourceSecurityGroupSchema = z
   .object({
-    OwnerAlias: SecurityGroupOwnerAliasSchema.and(
-      z.any().openapi({ description: 'The owner of the security group.' }),
-    ).exactOptional(),
-    GroupName: SecurityGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the security group.' }),
-    ).exactOptional(),
+    OwnerAlias: SecurityGroupOwnerAliasSchema.exactOptional().openapi({
+      description: 'The owner of the security group.',
+    }),
+    GroupName: SecurityGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the security group.',
+    }),
   })
   .openapi({ description: 'Information about a source security group.', required: [] })
   .openapi('SourceSecurityGroup')
@@ -955,82 +785,58 @@ const LoadBalancerSchemeSchema = z.string().openapi('LoadBalancerScheme')
 
 const LoadBalancerDescriptionSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ).exactOptional(),
-    DNSName: DNSNameSchema.and(
-      z.any().openapi({ description: 'The DNS name of the load balancer.' }),
-    ).exactOptional(),
-    CanonicalHostedZoneName: DNSNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The DNS name of the load balancer.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/using-domain-names-with-elb.html">Configure a Custom Domain Name</a> in the <i>Classic Load Balancers Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    CanonicalHostedZoneNameID: DNSNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Amazon Route 53 hosted zone for the load balancer.',
-        }),
-    ).exactOptional(),
-    ListenerDescriptions: ListenerDescriptionsSchema.and(
-      z.any().openapi({ description: 'The listeners for the load balancer.' }),
-    ).exactOptional(),
-    Policies: PoliciesSchema.and(
-      z.any().openapi({ description: 'The policies defined for the load balancer.' }),
-    ).exactOptional(),
-    BackendServerDescriptions: BackendServerDescriptionsSchema.and(
-      z.any().openapi({ description: 'Information about your EC2 instances.' }),
-    ).exactOptional(),
-    AvailabilityZones: AvailabilityZonesSchema.and(
-      z.any().openapi({ description: 'The Availability Zones for the load balancer.' }),
-    ).exactOptional(),
-    Subnets: SubnetsSchema.and(
-      z.any().openapi({ description: 'The IDs of the subnets for the load balancer.' }),
-    ).exactOptional(),
-    VPCId: VPCIdSchema.and(
-      z.any().openapi({ description: 'The ID of the VPC for the load balancer.' }),
-    ).exactOptional(),
-    Instances: InstancesSchema.and(
-      z.any().openapi({ description: 'The IDs of the instances for the load balancer.' }),
-    ).exactOptional(),
-    HealthCheck: HealthCheckSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the health checks conducted on the load balancer.',
-        }),
-    ).exactOptional(),
-    SourceSecurityGroup: SourceSecurityGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The security group for the load balancer, which you can use as part of your inbound rules for your registered instances. To only allow traffic from load balancers, add a security group rule that specifies this source security group as the inbound source.',
-        }),
-    ).exactOptional(),
-    SecurityGroups: SecurityGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The security groups for the load balancer. Valid only for load balancers in a VPC.',
-        }),
-    ).exactOptional(),
-    CreatedTime: CreatedTimeSchema.and(
-      z.any().openapi({ description: 'The date and time the load balancer was created.' }),
-    ).exactOptional(),
-    Scheme: LoadBalancerSchemeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of load balancer. Valid only for load balancers in a VPC.</p> <p>If <code>Scheme</code> is <code>internet-facing</code>, the load balancer has a public DNS name that resolves to a public IP address.</p> <p>If <code>Scheme</code> is <code>internal</code>, the load balancer has a public DNS name that resolves to a private IP address.</p>',
-        }),
-    ).exactOptional(),
+    LoadBalancerName: AccessPointNameSchema.exactOptional().openapi({
+      description: 'The name of the load balancer.',
+    }),
+    DNSName: DNSNameSchema.exactOptional().openapi({
+      description: 'The DNS name of the load balancer.',
+    }),
+    CanonicalHostedZoneName: DNSNameSchema.exactOptional().openapi({
+      description:
+        '<p>The DNS name of the load balancer.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/using-domain-names-with-elb.html">Configure a Custom Domain Name</a> in the <i>Classic Load Balancers Guide</i>.</p>',
+    }),
+    CanonicalHostedZoneNameID: DNSNameSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Route 53 hosted zone for the load balancer.',
+    }),
+    ListenerDescriptions: ListenerDescriptionsSchema.exactOptional().openapi({
+      description: 'The listeners for the load balancer.',
+    }),
+    Policies: PoliciesSchema.exactOptional().openapi({
+      description: 'The policies defined for the load balancer.',
+    }),
+    BackendServerDescriptions: BackendServerDescriptionsSchema.exactOptional().openapi({
+      description: 'Information about your EC2 instances.',
+    }),
+    AvailabilityZones: AvailabilityZonesSchema.exactOptional().openapi({
+      description: 'The Availability Zones for the load balancer.',
+    }),
+    Subnets: SubnetsSchema.exactOptional().openapi({
+      description: 'The IDs of the subnets for the load balancer.',
+    }),
+    VPCId: VPCIdSchema.exactOptional().openapi({
+      description: 'The ID of the VPC for the load balancer.',
+    }),
+    Instances: InstancesSchema.exactOptional().openapi({
+      description: 'The IDs of the instances for the load balancer.',
+    }),
+    HealthCheck: HealthCheckSchema.exactOptional().openapi({
+      description: 'Information about the health checks conducted on the load balancer.',
+    }),
+    SourceSecurityGroup: SourceSecurityGroupSchema.exactOptional().openapi({
+      description:
+        'The security group for the load balancer, which you can use as part of your inbound rules for your registered instances. To only allow traffic from load balancers, add a security group rule that specifies this source security group as the inbound source.',
+    }),
+    SecurityGroups: SecurityGroupsSchema.exactOptional().openapi({
+      description:
+        'The security groups for the load balancer. Valid only for load balancers in a VPC.',
+    }),
+    CreatedTime: CreatedTimeSchema.exactOptional().openapi({
+      description: 'The date and time the load balancer was created.',
+    }),
+    Scheme: LoadBalancerSchemeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of load balancer. Valid only for load balancers in a VPC.</p> <p>If <code>Scheme</code> is <code>internet-facing</code>, the load balancer has a public DNS name that resolves to a public IP address.</p> <p>If <code>Scheme</code> is <code>internal</code>, the load balancer has a public DNS name that resolves to a private IP address.</p>',
+    }),
   })
   .openapi({ description: 'Information about a load balancer.', required: [] })
   .openapi('LoadBalancerDescription')
@@ -1041,17 +847,13 @@ const LoadBalancerDescriptionsSchema = z
 
 const DescribeAccessPointsOutputSchema = z
   .object({
-    LoadBalancerDescriptions: LoadBalancerDescriptionsSchema.and(
-      z.any().openapi({ description: 'Information about the load balancers.' }),
-    ).exactOptional(),
-    NextMarker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
-        }),
-    ).exactOptional(),
+    LoadBalancerDescriptions: LoadBalancerDescriptionsSchema.exactOptional().openapi({
+      description: 'Information about the load balancers.',
+    }),
+    NextMarker: MarkerSchema.exactOptional().openapi({
+      description:
+        'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
+    }),
   })
   .openapi({
     example: {
@@ -1127,10 +929,10 @@ const TagListSchema = z.array(TagSchema).min(1).openapi('TagList')
 
 const TagDescriptionSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(z.any().openapi({ description: 'The tags.' })).exactOptional(),
+    LoadBalancerName: AccessPointNameSchema.exactOptional().openapi({
+      description: 'The name of the load balancer.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'The tags.' }),
   })
   .openapi({ description: 'The tags associated with a load balancer.', required: [] })
   .openapi('TagDescription')
@@ -1139,9 +941,9 @@ const TagDescriptionsSchema = z.array(TagDescriptionSchema).openapi('TagDescript
 
 const DescribeTagsOutputSchema = z
   .object({
-    TagDescriptions: TagDescriptionsSchema.and(
-      z.any().openapi({ description: 'Information about the tags.' }),
-    ).exactOptional(),
+    TagDescriptions: TagDescriptionsSchema.exactOptional().openapi({
+      description: 'Information about the tags.',
+    }),
   })
   .openapi({
     example: {
@@ -1162,9 +964,9 @@ const DescribeTagsOutputSchema = z
 
 const DetachLoadBalancerFromSubnetsOutputSchema = z
   .object({
-    Subnets: SubnetsSchema.and(
-      z.any().openapi({ description: 'The IDs of the remaining subnets for the load balancer.' }),
-    ).exactOptional(),
+    Subnets: SubnetsSchema.exactOptional().openapi({
+      description: 'The IDs of the remaining subnets for the load balancer.',
+    }),
   })
   .openapi({
     example: { Subnets: ['subnet-15aaab61'] },
@@ -1175,9 +977,9 @@ const DetachLoadBalancerFromSubnetsOutputSchema = z
 
 const RemoveAvailabilityZonesOutputSchema = z
   .object({
-    AvailabilityZones: AvailabilityZonesSchema.and(
-      z.any().openapi({ description: 'The remaining Availability Zones for the load balancer.' }),
-    ).exactOptional(),
+    AvailabilityZones: AvailabilityZonesSchema.exactOptional().openapi({
+      description: 'The remaining Availability Zones for the load balancer.',
+    }),
   })
   .openapi({
     example: { AvailabilityZones: ['us-west-2b'] },
@@ -1188,11 +990,9 @@ const RemoveAvailabilityZonesOutputSchema = z
 
 const AddAvailabilityZonesOutputSchema = z
   .object({
-    AvailabilityZones: AvailabilityZonesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The updated list of Availability Zones for the load balancer.' }),
-    ).exactOptional(),
+    AvailabilityZones: AvailabilityZonesSchema.exactOptional().openapi({
+      description: 'The updated list of Availability Zones for the load balancer.',
+    }),
   })
   .openapi({
     example: { AvailabilityZones: ['us-west-2a', 'us-west-2b'] },
@@ -1203,12 +1003,12 @@ const AddAvailabilityZonesOutputSchema = z
 
 const ModifyLoadBalancerAttributesOutputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ).exactOptional(),
-    LoadBalancerAttributes: LoadBalancerAttributesSchema.and(
-      z.any().openapi({ description: 'Information about the load balancer attributes.' }),
-    ).exactOptional(),
+    LoadBalancerName: AccessPointNameSchema.exactOptional().openapi({
+      description: 'The name of the load balancer.',
+    }),
+    LoadBalancerAttributes: LoadBalancerAttributesSchema.exactOptional().openapi({
+      description: 'Information about the load balancer attributes.',
+    }),
   })
   .openapi({
     example: {
@@ -1222,9 +1022,9 @@ const ModifyLoadBalancerAttributesOutputSchema = z
 
 const RegisterEndPointsOutputSchema = z
   .object({
-    Instances: InstancesSchema.and(
-      z.any().openapi({ description: 'The updated list of instances for the load balancer.' }),
-    ).exactOptional(),
+    Instances: InstancesSchema.exactOptional().openapi({
+      description: 'The updated list of instances for the load balancer.',
+    }),
   })
   .openapi({
     example: {
@@ -1240,47 +1040,40 @@ const RegisterEndPointsOutputSchema = z
   .openapi('RegisterEndPointsOutput')
 
 const RemoveTagsOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the output of RemoveTags.' })
   .openapi('RemoveTagsOutput')
 
 const TagKeyOnlySchema = z
-  .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: 'The name of the key.' })).exactOptional(),
-  })
+  .object({ Key: TagKeySchema.exactOptional().openapi({ description: 'The name of the key.' }) })
   .openapi({ description: 'The key of a tag.', required: [] })
   .openapi('TagKeyOnly')
 
 const SetLoadBalancerListenerSSLCertificateOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the output of SetLoadBalancerListenerSSLCertificate.' })
   .openapi('SetLoadBalancerListenerSSLCertificateOutput')
 
 const ListenerNotFoundExceptionSchema = z.any().openapi('ListenerNotFoundException')
 
 const SetLoadBalancerPoliciesForBackendServerOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the output of SetLoadBalancerPoliciesForBackendServer.' })
   .openapi('SetLoadBalancerPoliciesForBackendServerOutput')
 
 const SetLoadBalancerPoliciesOfListenerOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the output of SetLoadBalancePoliciesOfListener.' })
   .openapi('SetLoadBalancerPoliciesOfListenerOutput')
 
 const AddAvailabilityZonesInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    AvailabilityZones: AvailabilityZonesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Availability Zones. These must be in the same region as the load balancer.',
-        }),
-    ),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    AvailabilityZones: AvailabilityZonesSchema.openapi({
+      description: 'The Availability Zones. These must be in the same region as the load balancer.',
+    }),
   })
   .openapi({
     required: ['LoadBalancerName', 'AvailabilityZones'],
@@ -1293,14 +1086,10 @@ const LoadBalancerNamesSchema = z.array(AccessPointNameSchema).openapi('LoadBala
 
 const AddTagsInputSchema = z
   .object({
-    LoadBalancerNames: LoadBalancerNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the load balancer. You can specify one load balancer only.',
-        }),
-    ),
-    Tags: TagListSchema.and(z.any().openapi({ description: 'The tags.' })),
+    LoadBalancerNames: LoadBalancerNamesSchema.openapi({
+      description: 'The name of the load balancer. You can specify one load balancer only.',
+    }),
+    Tags: TagListSchema.openapi({ description: 'The tags.' }),
   })
   .openapi({
     required: ['LoadBalancerNames', 'Tags'],
@@ -1311,17 +1100,13 @@ const AddTagsInputSchema = z
 
 const ApplySecurityGroupsToLoadBalancerInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    SecurityGroups: SecurityGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IDs of the security groups to associate with the load balancer. Note that you cannot specify the name of the security group.',
-        }),
-    ),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    SecurityGroups: SecurityGroupsSchema.openapi({
+      description:
+        'The IDs of the security groups to associate with the load balancer. Note that you cannot specify the name of the security group.',
+    }),
   })
   .openapi({
     required: ['LoadBalancerName', 'SecurityGroups'],
@@ -1332,17 +1117,13 @@ const ApplySecurityGroupsToLoadBalancerInputSchema = z
 
 const AttachLoadBalancerToSubnetsInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    Subnets: SubnetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IDs of the subnets to add. You can add only one subnet per Availability Zone.',
-        }),
-    ),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    Subnets: SubnetsSchema.openapi({
+      description:
+        'The IDs of the subnets to add. You can add only one subnet per Availability Zone.',
+    }),
   })
   .openapi({
     required: ['LoadBalancerName', 'Subnets'],
@@ -1353,12 +1134,10 @@ const AttachLoadBalancerToSubnetsInputSchema = z
 
 const ConfigureHealthCheckInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    HealthCheck: HealthCheckSchema.and(
-      z.any().openapi({ description: 'The configuration information.' }),
-    ),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    HealthCheck: HealthCheckSchema.openapi({ description: 'The configuration information.' }),
   })
   .openapi({
     required: ['LoadBalancerName', 'HealthCheck'],
@@ -1371,59 +1150,33 @@ const ListenersSchema = z.array(ListenerSchema).openapi('Listeners')
 
 const CreateAccessPointInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the load balancer.</p> <p>This name must be unique within your set of load balancers for the region, must have a maximum of 32 characters, must contain only alphanumeric characters or hyphens, and cannot begin or end with a hyphen.</p>',
-        }),
-    ),
-    Listeners: ListenersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The listeners.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-listener-config.html">Listeners for Your Classic Load Balancer</a> in the <i>Classic Load Balancers Guide</i>.</p>',
-        }),
-    ),
-    AvailabilityZones: AvailabilityZonesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more Availability Zones from the same region as the load balancer.</p> <p>You must specify at least one Availability Zone.</p> <p>You can add more Availability Zones after you create the load balancer using <a>EnableAvailabilityZonesForLoadBalancer</a>.</p>',
-        }),
-    ).exactOptional(),
-    Subnets: SubnetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IDs of the subnets in your VPC to attach to the load balancer. Specify one subnet per Availability Zone specified in <code>AvailabilityZones</code>.',
-        }),
-    ).exactOptional(),
-    SecurityGroups: SecurityGroupsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The IDs of the security groups to assign to the load balancer.' }),
-    ).exactOptional(),
-    Scheme: LoadBalancerSchemeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of a load balancer. Valid only for load balancers in a VPC.</p> <p>By default, Elastic Load Balancing creates an Internet-facing load balancer with a DNS name that resolves to public IP addresses. For more information about Internet-facing and Internal load balancers, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html#load-balancer-scheme">Load Balancer Scheme</a> in the <i>Elastic Load Balancing User Guide</i>.</p> <p>Specify <code>internal</code> to create a load balancer with a DNS name that resolves to private IP addresses.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of tags to assign to the load balancer.</p> <p>For more information about tagging your load balancer, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/add-remove-tags.html">Tag Your Classic Load Balancer</a> in the <i>Classic Load Balancers Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description:
+        '<p>The name of the load balancer.</p> <p>This name must be unique within your set of load balancers for the region, must have a maximum of 32 characters, must contain only alphanumeric characters or hyphens, and cannot begin or end with a hyphen.</p>',
+    }),
+    Listeners: ListenersSchema.openapi({
+      description:
+        '<p>The listeners.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-listener-config.html">Listeners for Your Classic Load Balancer</a> in the <i>Classic Load Balancers Guide</i>.</p>',
+    }),
+    AvailabilityZones: AvailabilityZonesSchema.exactOptional().openapi({
+      description:
+        '<p>One or more Availability Zones from the same region as the load balancer.</p> <p>You must specify at least one Availability Zone.</p> <p>You can add more Availability Zones after you create the load balancer using <a>EnableAvailabilityZonesForLoadBalancer</a>.</p>',
+    }),
+    Subnets: SubnetsSchema.exactOptional().openapi({
+      description:
+        'The IDs of the subnets in your VPC to attach to the load balancer. Specify one subnet per Availability Zone specified in <code>AvailabilityZones</code>.',
+    }),
+    SecurityGroups: SecurityGroupsSchema.exactOptional().openapi({
+      description: 'The IDs of the security groups to assign to the load balancer.',
+    }),
+    Scheme: LoadBalancerSchemeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of a load balancer. Valid only for load balancers in a VPC.</p> <p>By default, Elastic Load Balancing creates an Internet-facing load balancer with a DNS name that resolves to public IP addresses. For more information about Internet-facing and Internal load balancers, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html#load-balancer-scheme">Load Balancer Scheme</a> in the <i>Elastic Load Balancing User Guide</i>.</p> <p>Specify <code>internal</code> to create a load balancer with a DNS name that resolves to private IP addresses.</p>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of tags to assign to the load balancer.</p> <p>For more information about tagging your load balancer, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/add-remove-tags.html">Tag Your Classic Load Balancer</a> in the <i>Classic Load Balancers Guide</i>.</p>',
+    }),
   })
   .openapi({
     required: ['LoadBalancerName', 'Listeners'],
@@ -1434,20 +1187,16 @@ const CreateAccessPointInputSchema = z
 
 const CreateAppCookieStickinessPolicyInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    PolicyName: PolicyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the policy being created. Policy names must consist of alphanumeric characters and dashes (-). This name must be unique within the set of policies for this load balancer.',
-        }),
-    ),
-    CookieName: CookieNameSchema.and(
-      z.any().openapi({ description: 'The name of the application cookie used for stickiness.' }),
-    ),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    PolicyName: PolicyNameSchema.openapi({
+      description:
+        'The name of the policy being created. Policy names must consist of alphanumeric characters and dashes (-). This name must be unique within the set of policies for this load balancer.',
+    }),
+    CookieName: CookieNameSchema.openapi({
+      description: 'The name of the application cookie used for stickiness.',
+    }),
   })
   .openapi({
     required: ['LoadBalancerName', 'PolicyName', 'CookieName'],
@@ -1458,25 +1207,17 @@ const CreateAppCookieStickinessPolicyInputSchema = z
 
 const CreateLBCookieStickinessPolicyInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    PolicyName: PolicyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the policy being created. Policy names must consist of alphanumeric characters and dashes (-). This name must be unique within the set of policies for this load balancer.',
-        }),
-    ),
-    CookieExpirationPeriod: CookieExpirationPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time period, in seconds, after which the cookie should be considered stale. If you do not specify this parameter, the default value is 0, which indicates that the sticky session should last for the duration of the browser session.',
-        }),
-    ).exactOptional(),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    PolicyName: PolicyNameSchema.openapi({
+      description:
+        'The name of the policy being created. Policy names must consist of alphanumeric characters and dashes (-). This name must be unique within the set of policies for this load balancer.',
+    }),
+    CookieExpirationPeriod: CookieExpirationPeriodSchema.exactOptional().openapi({
+      description:
+        'The time period, in seconds, after which the cookie should be considered stale. If you do not specify this parameter, the default value is 0, which indicates that the sticky session should last for the duration of the browser session.',
+    }),
   })
   .openapi({
     required: ['LoadBalancerName', 'PolicyName'],
@@ -1487,10 +1228,10 @@ const CreateLBCookieStickinessPolicyInputSchema = z
 
 const CreateLoadBalancerListenerInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    Listeners: ListenersSchema.and(z.any().openapi({ description: 'The listeners.' })),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    Listeners: ListenersSchema.openapi({ description: 'The listeners.' }),
   })
   .openapi({
     required: ['LoadBalancerName', 'Listeners'],
@@ -1503,28 +1244,20 @@ const PolicyAttributesSchema = z.array(PolicyAttributeSchema).openapi('PolicyAtt
 
 const CreateLoadBalancerPolicyInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    PolicyName: PolicyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the load balancer policy to be created. This name must be unique within the set of policies for this load balancer.',
-        }),
-    ),
-    PolicyTypeName: PolicyTypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the base policy type. To get the list of policy types, use <a>DescribeLoadBalancerPolicyTypes</a>.',
-        }),
-    ),
-    PolicyAttributes: PolicyAttributesSchema.and(
-      z.any().openapi({ description: 'The policy attributes.' }),
-    ).exactOptional(),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    PolicyName: PolicyNameSchema.openapi({
+      description:
+        'The name of the load balancer policy to be created. This name must be unique within the set of policies for this load balancer.',
+    }),
+    PolicyTypeName: PolicyTypeNameSchema.openapi({
+      description:
+        'The name of the base policy type. To get the list of policy types, use <a>DescribeLoadBalancerPolicyTypes</a>.',
+    }),
+    PolicyAttributes: PolicyAttributesSchema.exactOptional().openapi({
+      description: 'The policy attributes.',
+    }),
   })
   .openapi({
     required: ['LoadBalancerName', 'PolicyName', 'PolicyTypeName'],
@@ -1535,9 +1268,9 @@ const CreateLoadBalancerPolicyInputSchema = z
 
 const DeleteAccessPointInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
   })
   .openapi({
     required: ['LoadBalancerName'],
@@ -1550,12 +1283,12 @@ const PortsSchema = z.array(AccessPointPortSchema).openapi('Ports')
 
 const DeleteLoadBalancerListenerInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    LoadBalancerPorts: PortsSchema.and(
-      z.any().openapi({ description: 'The client port numbers of the listeners.' }),
-    ),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    LoadBalancerPorts: PortsSchema.openapi({
+      description: 'The client port numbers of the listeners.',
+    }),
   })
   .openapi({
     required: ['LoadBalancerName', 'LoadBalancerPorts'],
@@ -1566,10 +1299,10 @@ const DeleteLoadBalancerListenerInputSchema = z
 
 const DeleteLoadBalancerPolicyInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    PolicyName: PolicyNameSchema.and(z.any().openapi({ description: 'The name of the policy.' })),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    PolicyName: PolicyNameSchema.openapi({ description: 'The name of the policy.' }),
   })
   .openapi({
     required: ['LoadBalancerName', 'PolicyName'],
@@ -1580,10 +1313,10 @@ const DeleteLoadBalancerPolicyInputSchema = z
 
 const DeregisterEndPointsInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    Instances: InstancesSchema.and(z.any().openapi({ description: 'The IDs of the instances.' })),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    Instances: InstancesSchema.openapi({ description: 'The IDs of the instances.' }),
   })
   .openapi({
     required: ['LoadBalancerName', 'Instances'],
@@ -1596,25 +1329,17 @@ const PageSizeSchema = z.int().min(1).max(400).openapi('PageSize')
 
 const DescribeAccessPointsInputSchema = z
   .object({
-    LoadBalancerNames: LoadBalancerNamesSchema.and(
-      z.any().openapi({ description: 'The names of the load balancers.' }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker for the next set of results. (You received this marker from a previous call.)',
-        }),
-    ).exactOptional(),
-    PageSize: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with this call (a number from 1 to 400). The default is 400.',
-        }),
-    ).exactOptional(),
+    LoadBalancerNames: LoadBalancerNamesSchema.exactOptional().openapi({
+      description: 'The names of the load balancers.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'The marker for the next set of results. (You received this marker from a previous call.)',
+    }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with this call (a number from 1 to 400). The default is 400.',
+    }),
   })
   .openapi({
     title: 'DescribeAccessPointsInput',
@@ -1625,29 +1350,25 @@ const DescribeAccessPointsInputSchema = z
 
 const DescribeAccountLimitsInputSchema = z
   .object({
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker for the next set of results. (You received this marker from a previous call.)',
-        }),
-    ).exactOptional(),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return with this call.' }),
-    ).exactOptional(),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'The marker for the next set of results. (You received this marker from a previous call.)',
+    }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return with this call.',
+    }),
   })
   .openapi({ title: 'DescribeAccountLimitsInput', required: [] })
   .openapi('DescribeAccountLimitsInput')
 
 const DescribeEndPointStateInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    Instances: InstancesSchema.and(
-      z.any().openapi({ description: 'The IDs of the instances.' }),
-    ).exactOptional(),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    Instances: InstancesSchema.exactOptional().openapi({
+      description: 'The IDs of the instances.',
+    }),
   })
   .openapi({
     required: ['LoadBalancerName'],
@@ -1658,9 +1379,9 @@ const DescribeEndPointStateInputSchema = z
 
 const DescribeLoadBalancerAttributesInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
   })
   .openapi({
     required: ['LoadBalancerName'],
@@ -1671,12 +1392,12 @@ const DescribeLoadBalancerAttributesInputSchema = z
 
 const DescribeLoadBalancerPoliciesInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ).exactOptional(),
-    PolicyNames: PolicyNamesSchema.and(
-      z.any().openapi({ description: 'The names of the policies.' }),
-    ).exactOptional(),
+    LoadBalancerName: AccessPointNameSchema.exactOptional().openapi({
+      description: 'The name of the load balancer.',
+    }),
+    PolicyNames: PolicyNamesSchema.exactOptional().openapi({
+      description: 'The names of the policies.',
+    }),
   })
   .openapi({
     title: 'DescribeLoadBalancerPoliciesInput',
@@ -1689,14 +1410,10 @@ const PolicyTypeNamesSchema = z.array(PolicyTypeNameSchema).openapi('PolicyTypeN
 
 const DescribeLoadBalancerPolicyTypesInputSchema = z
   .object({
-    PolicyTypeNames: PolicyTypeNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of the policy types. If no names are specified, describes all policy types defined by Elastic Load Balancing.',
-        }),
-    ).exactOptional(),
+    PolicyTypeNames: PolicyTypeNamesSchema.exactOptional().openapi({
+      description:
+        'The names of the policy types. If no names are specified, describes all policy types defined by Elastic Load Balancing.',
+    }),
   })
   .openapi({
     title: 'DescribeLoadBalancerPolicyTypesInput',
@@ -1713,9 +1430,9 @@ const LoadBalancerNamesMax20Schema = z
 
 const DescribeTagsInputSchema = z
   .object({
-    LoadBalancerNames: LoadBalancerNamesMax20Schema.and(
-      z.any().openapi({ description: 'The names of the load balancers.' }),
-    ),
+    LoadBalancerNames: LoadBalancerNamesMax20Schema.openapi({
+      description: 'The names of the load balancers.',
+    }),
   })
   .openapi({
     required: ['LoadBalancerNames'],
@@ -1726,10 +1443,10 @@ const DescribeTagsInputSchema = z
 
 const DetachLoadBalancerFromSubnetsInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    Subnets: SubnetsSchema.and(z.any().openapi({ description: 'The IDs of the subnets.' })),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    Subnets: SubnetsSchema.openapi({ description: 'The IDs of the subnets.' }),
   })
   .openapi({
     required: ['LoadBalancerName', 'Subnets'],
@@ -1742,12 +1459,12 @@ const EndPointPortSchema = z.int().openapi('EndPointPort')
 
 const ModifyLoadBalancerAttributesInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    LoadBalancerAttributes: LoadBalancerAttributesSchema.and(
-      z.any().openapi({ description: 'The attributes for the load balancer.' }),
-    ),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    LoadBalancerAttributes: LoadBalancerAttributesSchema.openapi({
+      description: 'The attributes for the load balancer.',
+    }),
   })
   .openapi({
     required: ['LoadBalancerName', 'LoadBalancerAttributes'],
@@ -1758,10 +1475,10 @@ const ModifyLoadBalancerAttributesInputSchema = z
 
 const RegisterEndPointsInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    Instances: InstancesSchema.and(z.any().openapi({ description: 'The IDs of the instances.' })),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    Instances: InstancesSchema.openapi({ description: 'The IDs of the instances.' }),
   })
   .openapi({
     required: ['LoadBalancerName', 'Instances'],
@@ -1772,12 +1489,10 @@ const RegisterEndPointsInputSchema = z
 
 const RemoveAvailabilityZonesInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    AvailabilityZones: AvailabilityZonesSchema.and(
-      z.any().openapi({ description: 'The Availability Zones.' }),
-    ),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    AvailabilityZones: AvailabilityZonesSchema.openapi({ description: 'The Availability Zones.' }),
   })
   .openapi({
     required: ['LoadBalancerName', 'AvailabilityZones'],
@@ -1790,15 +1505,11 @@ const TagKeyListSchema = z.array(TagKeyOnlySchema).min(1).openapi('TagKeyList')
 
 const RemoveTagsInputSchema = z
   .object({
-    LoadBalancerNames: LoadBalancerNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the load balancer. You can specify a maximum of one load balancer name.',
-        }),
-    ),
-    Tags: TagKeyListSchema.and(z.any().openapi({ description: 'The list of tag keys to remove.' })),
+    LoadBalancerNames: LoadBalancerNamesSchema.openapi({
+      description:
+        'The name of the load balancer. You can specify a maximum of one load balancer name.',
+    }),
+    Tags: TagKeyListSchema.openapi({ description: 'The list of tag keys to remove.' }),
   })
   .openapi({
     required: ['LoadBalancerNames', 'Tags'],
@@ -1809,15 +1520,15 @@ const RemoveTagsInputSchema = z
 
 const SetLoadBalancerListenerSSLCertificateInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    LoadBalancerPort: AccessPointPortSchema.and(
-      z.any().openapi({ description: 'The port that uses the specified SSL certificate.' }),
-    ),
-    SSLCertificateId: SSLCertificateIdSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the SSL certificate.' }),
-    ),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    LoadBalancerPort: AccessPointPortSchema.openapi({
+      description: 'The port that uses the specified SSL certificate.',
+    }),
+    SSLCertificateId: SSLCertificateIdSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the SSL certificate.',
+    }),
   })
   .openapi({
     required: ['LoadBalancerName', 'LoadBalancerPort', 'SSLCertificateId'],
@@ -1828,20 +1539,16 @@ const SetLoadBalancerListenerSSLCertificateInputSchema = z
 
 const SetLoadBalancerPoliciesForBackendServerInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    InstancePort: EndPointPortSchema.and(
-      z.any().openapi({ description: 'The port number associated with the EC2 instance.' }),
-    ),
-    PolicyNames: PolicyNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of the policies. If the list is empty, then all current polices are removed from the EC2 instance.',
-        }),
-    ),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    InstancePort: EndPointPortSchema.openapi({
+      description: 'The port number associated with the EC2 instance.',
+    }),
+    PolicyNames: PolicyNamesSchema.openapi({
+      description:
+        'The names of the policies. If the list is empty, then all current polices are removed from the EC2 instance.',
+    }),
   })
   .openapi({
     required: ['LoadBalancerName', 'InstancePort', 'PolicyNames'],
@@ -1852,20 +1559,16 @@ const SetLoadBalancerPoliciesForBackendServerInputSchema = z
 
 const SetLoadBalancerPoliciesOfListenerInputSchema = z
   .object({
-    LoadBalancerName: AccessPointNameSchema.and(
-      z.any().openapi({ description: 'The name of the load balancer.' }),
-    ),
-    LoadBalancerPort: AccessPointPortSchema.and(
-      z.any().openapi({ description: 'The external port of the load balancer.' }),
-    ),
-    PolicyNames: PolicyNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of the policies. This list must include all policies to be enabled. If you omit a policy that is currently enabled, it is disabled. If the list is empty, all current policies are disabled.',
-        }),
-    ),
+    LoadBalancerName: AccessPointNameSchema.openapi({
+      description: 'The name of the load balancer.',
+    }),
+    LoadBalancerPort: AccessPointPortSchema.openapi({
+      description: 'The external port of the load balancer.',
+    }),
+    PolicyNames: PolicyNamesSchema.openapi({
+      description:
+        'The names of the policies. This list must include all policies to be enabled. If you omit a policy that is currently enabled, it is disabled. If the list is empty, all current policies are disabled.',
+    }),
   })
   .openapi({
     required: ['LoadBalancerName', 'LoadBalancerPort', 'PolicyNames'],
@@ -2447,14 +2150,10 @@ export const getActionConfigureHealthCheckRoute = createRoute({
             }),
           HealthCheck: z
             .object({
-              Target: HealthCheckTargetSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>The instance being checked. The protocol is either TCP, HTTP, HTTPS, or SSL. The range of valid ports is one (1) through 65535.</p> <p>TCP is the default, specified as a TCP: port pair, for example "TCP:5000". In this case, a health check simply attempts to open a TCP connection to the instance on the specified port. Failure to connect within the configured timeout is considered unhealthy.</p> <p>SSL is also specified as SSL: port pair, for example, SSL:5000.</p> <p>For HTTP/HTTPS, you must include a ping path in the string. HTTP is specified as a HTTP:port;/;PathToPing; grouping, for example "HTTP:80/weather/us/wa/seattle". In this case, a HTTP GET request is issued to the instance on the given port and path. Any answer other than "200 OK" within the timeout period is considered unhealthy.</p> <p>The total length of the HTTP ping target must be 1024 16-bit Unicode characters or less.</p>',
-                  }),
-              ),
+              Target: HealthCheckTargetSchema.openapi({
+                description:
+                  '<p>The instance being checked. The protocol is either TCP, HTTP, HTTPS, or SSL. The range of valid ports is one (1) through 65535.</p> <p>TCP is the default, specified as a TCP: port pair, for example "TCP:5000". In this case, a health check simply attempts to open a TCP connection to the instance on the specified port. Failure to connect within the configured timeout is considered unhealthy.</p> <p>SSL is also specified as SSL: port pair, for example, SSL:5000.</p> <p>For HTTP/HTTPS, you must include a ping path in the string. HTTP is specified as a HTTP:port;/;PathToPing; grouping, for example "HTTP:80/weather/us/wa/seattle". In this case, a HTTP GET request is issued to the instance on the given port and path. Any answer other than "200 OK" within the timeout period is considered unhealthy.</p> <p>The total length of the HTTP ping target must be 1024 16-bit Unicode characters or less.</p>',
+              }),
               Interval: z
                 .preprocess(
                   (val) =>
@@ -2465,14 +2164,10 @@ export const getActionConfigureHealthCheckRoute = createRoute({
                       : val,
                   HealthCheckIntervalSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The approximate interval, in seconds, between health checks of an individual instance.',
-                    }),
-                ),
+                .openapi({
+                  description:
+                    'The approximate interval, in seconds, between health checks of an individual instance.',
+                }),
               Timeout: z
                 .preprocess(
                   (val) =>
@@ -2483,14 +2178,10 @@ export const getActionConfigureHealthCheckRoute = createRoute({
                       : val,
                   HealthCheckTimeoutSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>The amount of time, in seconds, during which no response means a failed health check.</p> <p>This value must be less than the <code>Interval</code> value.</p>',
-                    }),
-                ),
+                .openapi({
+                  description:
+                    '<p>The amount of time, in seconds, during which no response means a failed health check.</p> <p>This value must be less than the <code>Interval</code> value.</p>',
+                }),
               UnhealthyThreshold: z
                 .preprocess(
                   (val) =>
@@ -2501,14 +2192,10 @@ export const getActionConfigureHealthCheckRoute = createRoute({
                       : val,
                   UnhealthyThresholdSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The number of consecutive health check failures required before moving the instance to the <code>Unhealthy</code> state.',
-                    }),
-                ),
+                .openapi({
+                  description:
+                    'The number of consecutive health check failures required before moving the instance to the <code>Unhealthy</code> state.',
+                }),
               HealthyThreshold: z
                 .preprocess(
                   (val) =>
@@ -2519,14 +2206,10 @@ export const getActionConfigureHealthCheckRoute = createRoute({
                       : val,
                   HealthyThresholdSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The number of consecutive health checks successes required before moving the instance to the <code>Healthy</code> state.',
-                    }),
-                ),
+                .openapi({
+                  description:
+                    'The number of consecutive health checks successes required before moving the instance to the <code>Healthy</code> state.',
+                }),
             })
             .openapi({
               param: {
@@ -3050,14 +2733,10 @@ export const getActionCreateLoadBalancerRoute = createRoute({
           z.array(
             z
               .object({
-                Protocol: ProtocolSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The load balancer transport protocol to use for routing: HTTP, HTTPS, TCP, or SSL.',
-                    }),
-                ),
+                Protocol: ProtocolSchema.openapi({
+                  description:
+                    'The load balancer transport protocol to use for routing: HTTP, HTTPS, TCP, or SSL.',
+                }),
                 LoadBalancerPort: z
                   .preprocess(
                     (val) =>
@@ -3068,22 +2747,14 @@ export const getActionCreateLoadBalancerRoute = createRoute({
                         : val,
                     AccessPointPortSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The port on which the load balancer is listening. On EC2-VPC, you can specify any port from the range 1-65535. On EC2-Classic, you can specify any port from the following list: 25, 80, 443, 465, 587, 1024-65535.',
-                      }),
-                  ),
-                InstanceProtocol: ProtocolSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>The protocol to use for routing traffic to instances: HTTP, HTTPS, TCP, or SSL.</p> <p>If the front-end protocol is TCP or SSL, the back-end protocol must be TCP or SSL. If the front-end protocol is HTTP or HTTPS, the back-end protocol must be HTTP or HTTPS.</p> <p>If there is another listener with the same <code>InstancePort</code> whose <code>InstanceProtocol</code> is secure, (HTTPS or SSL), the listener's <code>InstanceProtocol</code> must also be secure.</p> <p>If there is another listener with the same <code>InstancePort</code> whose <code>InstanceProtocol</code> is HTTP or TCP, the listener's <code>InstanceProtocol</code> must be HTTP or TCP.</p>",
-                    }),
-                ).exactOptional(),
+                  .openapi({
+                    description:
+                      'The port on which the load balancer is listening. On EC2-VPC, you can specify any port from the range 1-65535. On EC2-Classic, you can specify any port from the following list: 25, 80, 443, 465, 587, 1024-65535.',
+                  }),
+                InstanceProtocol: ProtocolSchema.exactOptional().openapi({
+                  description:
+                    "<p>The protocol to use for routing traffic to instances: HTTP, HTTPS, TCP, or SSL.</p> <p>If the front-end protocol is TCP or SSL, the back-end protocol must be TCP or SSL. If the front-end protocol is HTTP or HTTPS, the back-end protocol must be HTTP or HTTPS.</p> <p>If there is another listener with the same <code>InstancePort</code> whose <code>InstanceProtocol</code> is secure, (HTTPS or SSL), the listener's <code>InstanceProtocol</code> must also be secure.</p> <p>If there is another listener with the same <code>InstancePort</code> whose <code>InstanceProtocol</code> is HTTP or TCP, the listener's <code>InstanceProtocol</code> must be HTTP or TCP.</p>",
+                }),
                 InstancePort: z
                   .preprocess(
                     (val) =>
@@ -3094,18 +2765,10 @@ export const getActionCreateLoadBalancerRoute = createRoute({
                         : val,
                     InstancePortSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({ description: 'The port on which the instance is listening.' }),
-                  ),
-                SSLCertificateId: SSLCertificateIdSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'The Amazon Resource Name (ARN) of the server certificate.',
-                    }),
-                ).exactOptional(),
+                  .openapi({ description: 'The port on which the instance is listening.' }),
+                SSLCertificateId: SSLCertificateIdSchema.exactOptional().openapi({
+                  description: 'The Amazon Resource Name (ARN) of the server certificate.',
+                }),
               })
               .openapi({
                 required: ['Protocol', 'LoadBalancerPort', 'InstancePort'],
@@ -3457,14 +3120,10 @@ export const getActionCreateLoadBalancerListenersRoute = createRoute({
           z.array(
             z
               .object({
-                Protocol: ProtocolSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The load balancer transport protocol to use for routing: HTTP, HTTPS, TCP, or SSL.',
-                    }),
-                ),
+                Protocol: ProtocolSchema.openapi({
+                  description:
+                    'The load balancer transport protocol to use for routing: HTTP, HTTPS, TCP, or SSL.',
+                }),
                 LoadBalancerPort: z
                   .preprocess(
                     (val) =>
@@ -3475,22 +3134,14 @@ export const getActionCreateLoadBalancerListenersRoute = createRoute({
                         : val,
                     AccessPointPortSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The port on which the load balancer is listening. On EC2-VPC, you can specify any port from the range 1-65535. On EC2-Classic, you can specify any port from the following list: 25, 80, 443, 465, 587, 1024-65535.',
-                      }),
-                  ),
-                InstanceProtocol: ProtocolSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>The protocol to use for routing traffic to instances: HTTP, HTTPS, TCP, or SSL.</p> <p>If the front-end protocol is TCP or SSL, the back-end protocol must be TCP or SSL. If the front-end protocol is HTTP or HTTPS, the back-end protocol must be HTTP or HTTPS.</p> <p>If there is another listener with the same <code>InstancePort</code> whose <code>InstanceProtocol</code> is secure, (HTTPS or SSL), the listener's <code>InstanceProtocol</code> must also be secure.</p> <p>If there is another listener with the same <code>InstancePort</code> whose <code>InstanceProtocol</code> is HTTP or TCP, the listener's <code>InstanceProtocol</code> must be HTTP or TCP.</p>",
-                    }),
-                ).exactOptional(),
+                  .openapi({
+                    description:
+                      'The port on which the load balancer is listening. On EC2-VPC, you can specify any port from the range 1-65535. On EC2-Classic, you can specify any port from the following list: 25, 80, 443, 465, 587, 1024-65535.',
+                  }),
+                InstanceProtocol: ProtocolSchema.exactOptional().openapi({
+                  description:
+                    "<p>The protocol to use for routing traffic to instances: HTTP, HTTPS, TCP, or SSL.</p> <p>If the front-end protocol is TCP or SSL, the back-end protocol must be TCP or SSL. If the front-end protocol is HTTP or HTTPS, the back-end protocol must be HTTP or HTTPS.</p> <p>If there is another listener with the same <code>InstancePort</code> whose <code>InstanceProtocol</code> is secure, (HTTPS or SSL), the listener's <code>InstanceProtocol</code> must also be secure.</p> <p>If there is another listener with the same <code>InstancePort</code> whose <code>InstanceProtocol</code> is HTTP or TCP, the listener's <code>InstanceProtocol</code> must be HTTP or TCP.</p>",
+                }),
                 InstancePort: z
                   .preprocess(
                     (val) =>
@@ -3501,18 +3152,10 @@ export const getActionCreateLoadBalancerListenersRoute = createRoute({
                         : val,
                     InstancePortSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({ description: 'The port on which the instance is listening.' }),
-                  ),
-                SSLCertificateId: SSLCertificateIdSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'The Amazon Resource Name (ARN) of the server certificate.',
-                    }),
-                ).exactOptional(),
+                  .openapi({ description: 'The port on which the instance is listening.' }),
+                SSLCertificateId: SSLCertificateIdSchema.exactOptional().openapi({
+                  description: 'The Amazon Resource Name (ARN) of the server certificate.',
+                }),
               })
               .openapi({
                 required: ['Protocol', 'LoadBalancerPort', 'InstancePort'],
@@ -5794,29 +5437,21 @@ export const getActionModifyLoadBalancerAttributesRoute = createRoute({
                       })(z.stringbool()),
                       CrossZoneLoadBalancingEnabledSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Specifies whether cross-zone load balancing is enabled for the load balancer.',
-                        }),
-                    ),
+                    .openapi({
+                      description:
+                        'Specifies whether cross-zone load balancing is enabled for the load balancer.',
+                    }),
                 })
                 .openapi({
                   required: ['Enabled'],
                   description:
                     'Information about the <code>CrossZoneLoadBalancing</code> attribute.',
                 })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>If enabled, the load balancer routes the request traffic evenly across all instances regardless of the Availability Zones.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/enable-disable-crosszone-lb.html">Configure Cross-Zone Load Balancing</a> in the <i>Classic Load Balancers Guide</i>.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>If enabled, the load balancer routes the request traffic evenly across all instances regardless of the Availability Zones.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/enable-disable-crosszone-lb.html">Configure Cross-Zone Load Balancing</a> in the <i>Classic Load Balancers Guide</i>.</p>',
+                }),
               AccessLog: z
                 .object({
                   Enabled: z
@@ -5827,22 +5462,14 @@ export const getActionModifyLoadBalancerAttributesRoute = createRoute({
                       })(z.stringbool()),
                       AccessLogEnabledSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Specifies whether access logs are enabled for the load balancer.',
-                        }),
-                    ),
-                  S3BucketName: S3BucketNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The name of the Amazon S3 bucket where the access logs are stored.',
-                      }),
-                  ).exactOptional(),
+                    .openapi({
+                      description:
+                        'Specifies whether access logs are enabled for the load balancer.',
+                    }),
+                  S3BucketName: S3BucketNameSchema.exactOptional().openapi({
+                    description:
+                      'The name of the Amazon S3 bucket where the access logs are stored.',
+                  }),
                   EmitInterval: z
                     .preprocess(
                       (val) =>
@@ -5853,37 +5480,25 @@ export const getActionModifyLoadBalancerAttributesRoute = createRoute({
                           : val,
                       AccessLogIntervalSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            '<p>The interval for publishing the access logs. You can specify an interval of either 5 minutes or 60 minutes.</p> <p>Default: 60 minutes</p>',
-                        }),
-                    )
-                    .exactOptional(),
-                  S3BucketPrefix: AccessLogPrefixSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The logical hierarchy you created for your Amazon S3 bucket, for example <code>my-bucket-prefix/prod</code>. If the prefix is not provided, the log is placed at the root level of the bucket.',
-                      }),
-                  ).exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        '<p>The interval for publishing the access logs. You can specify an interval of either 5 minutes or 60 minutes.</p> <p>Default: 60 minutes</p>',
+                    }),
+                  S3BucketPrefix: AccessLogPrefixSchema.exactOptional().openapi({
+                    description:
+                      'The logical hierarchy you created for your Amazon S3 bucket, for example <code>my-bucket-prefix/prod</code>. If the prefix is not provided, the log is placed at the root level of the bucket.',
+                  }),
                 })
                 .openapi({
                   required: ['Enabled'],
                   description: 'Information about the <code>AccessLog</code> attribute.',
                 })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>If enabled, the load balancer captures detailed information of all requests and delivers the information to the Amazon S3 bucket that you specify.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/enable-access-logs.html">Enable Access Logs</a> in the <i>Classic Load Balancers Guide</i>.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>If enabled, the load balancer captures detailed information of all requests and delivers the information to the Amazon S3 bucket that you specify.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/enable-access-logs.html">Enable Access Logs</a> in the <i>Classic Load Balancers Guide</i>.</p>',
+                }),
               ConnectionDraining: z
                 .object({
                   Enabled: z
@@ -5894,14 +5509,10 @@ export const getActionModifyLoadBalancerAttributesRoute = createRoute({
                       })(z.stringbool()),
                       ConnectionDrainingEnabledSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Specifies whether connection draining is enabled for the load balancer.',
-                        }),
-                    ),
+                    .openapi({
+                      description:
+                        'Specifies whether connection draining is enabled for the load balancer.',
+                    }),
                   Timeout: z
                     .preprocess(
                       (val) =>
@@ -5912,29 +5523,21 @@ export const getActionModifyLoadBalancerAttributesRoute = createRoute({
                           : val,
                       ConnectionDrainingTimeoutSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'The maximum time, in seconds, to keep the existing connections open before deregistering the instances.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The maximum time, in seconds, to keep the existing connections open before deregistering the instances.',
+                    }),
                 })
                 .openapi({
                   required: ['Enabled'],
                   description: 'Information about the <code>ConnectionDraining</code> attribute.',
                 })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>If enabled, the load balancer allows existing requests to complete before the load balancer shifts traffic away from a deregistered or unhealthy instance.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/config-conn-drain.html">Configure Connection Draining</a> in the <i>Classic Load Balancers Guide</i>.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>If enabled, the load balancer allows existing requests to complete before the load balancer shifts traffic away from a deregistered or unhealthy instance.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/config-conn-drain.html">Configure Connection Draining</a> in the <i>Classic Load Balancers Guide</i>.</p>',
+                }),
               ConnectionSettings: z
                 .object({
                   IdleTimeout: z
@@ -5947,31 +5550,23 @@ export const getActionModifyLoadBalancerAttributesRoute = createRoute({
                           : val,
                       IdleTimeoutSchema,
                     )
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'The time, in seconds, that the connection is allowed to be idle (no data has been sent over the connection) before it is closed by the load balancer.',
-                        }),
-                    ),
+                    .openapi({
+                      description:
+                        'The time, in seconds, that the connection is allowed to be idle (no data has been sent over the connection) before it is closed by the load balancer.',
+                    }),
                 })
                 .openapi({
                   required: ['IdleTimeout'],
                   description: 'Information about the <code>ConnectionSettings</code> attribute.',
                 })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>If enabled, the load balancer allows the connections to remain idle (no data is sent over the connection) for the specified duration.</p> <p>By default, Elastic Load Balancing maintains a 60-second idle connection timeout for both front-end and back-end connections of your load balancer. For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/config-idle-timeout.html">Configure Idle Connection Timeout</a> in the <i>Classic Load Balancers Guide</i>.</p>',
-                    }),
-                )
-                .exactOptional(),
-              AdditionalAttributes: AdditionalAttributesSchema.and(
-                z.any().openapi({ description: 'Any additional attributes.' }),
-              ).exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>If enabled, the load balancer allows the connections to remain idle (no data is sent over the connection) for the specified duration.</p> <p>By default, Elastic Load Balancing maintains a 60-second idle connection timeout for both front-end and back-end connections of your load balancer. For more information, see <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/config-idle-timeout.html">Configure Idle Connection Timeout</a> in the <i>Classic Load Balancers Guide</i>.</p>',
+                }),
+              AdditionalAttributes: AdditionalAttributesSchema.exactOptional().openapi({
+                description: 'Any additional attributes.',
+              }),
             })
             .openapi({
               param: {

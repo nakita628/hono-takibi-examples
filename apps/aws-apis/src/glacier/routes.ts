@@ -1,40 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
-
-const InvalidParameterValueExceptionSchema = z.any().openapi('InvalidParameterValueException')
-
-const MissingParameterValueExceptionSchema = z.any().openapi('MissingParameterValueException')
-
-const ServiceUnavailableExceptionSchema = z.any().openapi('ServiceUnavailableException')
-
-const TagValueSchema = z.string().openapi('TagValue')
-
-const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
-
-const ArchiveCreationOutputSchema = z
-  .object({})
-  .openapi({
-    example: {
-      archiveId:
-        'kKB7ymWJVpPSwhGP6ycSOAekp9ZYe_--zM_mw6k76ZFGEIWQX-ybtRDvc2VkPSDtfKmQrj0IRQLSGsNuDp-AJVlu2ccmDSyDUmZwKbwbpAdGATGDiB3hHO0bjbGehXTcApVud_wyDw',
-      checksum: '969fb39823836d81f0cc028195fcdbcbbe76cdde932d4646fa7de5f21e18aa67',
-      location:
-        '/0123456789012/vaults/my-vault/archives/kKB7ymWJVpPSwhGP6ycSOAekp9ZYe_--zM_mw6k76ZFGEIWQX-ybtRDvc2VkPSDtfKmQrj0IRQLSGsNuDp-AJVlu2ccmDSyDUmZwKbwbpAdGATGDiB3hHO0bjbGehXTcApVud_wyDw',
-    },
-    description:
-      '<p>Contains the Amazon S3 Glacier response to your request.</p> <p>For information about the underlying REST API, see <a href="https://docs.aws.amazon.com/amazonglacier/latest/dev/api-archive-post.html">Upload Archive</a>. For conceptual information, see <a href="https://docs.aws.amazon.com/amazonglacier/latest/dev/working-with-archives.html">Working with Archives in Amazon S3 Glacier</a>.</p>',
-  })
-  .openapi('ArchiveCreationOutput')
-
-const CreateVaultOutputSchema = z
-  .object({})
-  .openapi({
-    example: { location: '/111122223333/vaults/my-vault' },
-    description: 'Contains the Amazon S3 Glacier response to your request.',
-  })
-  .openapi('CreateVaultOutput')
-
 const StringSchema = z.string().openapi('String')
 
 const ActionCodeSchema = z
@@ -51,46 +16,26 @@ const DateTimeSchema = z.string().openapi('DateTime')
 
 const InventoryRetrievalJobDescriptionSchema = z
   .object({
-    Format: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output format for the vault inventory list, which is set by the <b>InitiateJob</b> request when initiating a job to retrieve a vault inventory. Valid values are <code>CSV</code> and <code>JSON</code>.',
-        }),
-    ).exactOptional(),
-    StartDate: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start of the date range in Universal Coordinated Time (UTC) for vault inventory retrieval that includes archives created on or after this date. This value should be a string in the ISO 8601 date format, for example <code>2013-03-20T17:03:43Z</code>.',
-        }),
-    ).exactOptional(),
-    EndDate: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end of the date range in UTC for vault inventory retrieval that includes archives created before this date. This value should be a string in the ISO 8601 date format, for example <code>2013-03-20T17:03:43Z</code>.',
-        }),
-    ).exactOptional(),
-    Limit: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of inventory items returned per vault inventory retrieval request. This limit is set when initiating the job with the a <b>InitiateJob</b> request. ',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque string that represents where to continue pagination of the vault inventory retrieval results. You use the marker in a new <b>InitiateJob</b> request to obtain additional inventory items. If there are no more inventory items, this value is <code>null</code>. For more information, see <a href="https://docs.aws.amazon.com/amazonglacier/latest/dev/api-initiate-job-post.html#api-initiate-job-post-vault-inventory-list-filtering"> Range Inventory Retrieval</a>.',
-        }),
-    ).exactOptional(),
+    Format: StringSchema.exactOptional().openapi({
+      description:
+        'The output format for the vault inventory list, which is set by the <b>InitiateJob</b> request when initiating a job to retrieve a vault inventory. Valid values are <code>CSV</code> and <code>JSON</code>.',
+    }),
+    StartDate: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The start of the date range in Universal Coordinated Time (UTC) for vault inventory retrieval that includes archives created on or after this date. This value should be a string in the ISO 8601 date format, for example <code>2013-03-20T17:03:43Z</code>.',
+    }),
+    EndDate: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The end of the date range in UTC for vault inventory retrieval that includes archives created before this date. This value should be a string in the ISO 8601 date format, for example <code>2013-03-20T17:03:43Z</code>.',
+    }),
+    Limit: StringSchema.exactOptional().openapi({
+      description:
+        'The maximum number of inventory items returned per vault inventory retrieval request. This limit is set when initiating the job with the a <b>InitiateJob</b> request. ',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An opaque string that represents where to continue pagination of the vault inventory retrieval results. You use the marker in a new <b>InitiateJob</b> request to obtain additional inventory items. If there are no more inventory items, this value is <code>null</code>. For more information, see <a href="https://docs.aws.amazon.com/amazonglacier/latest/dev/api-initiate-job-post.html#api-initiate-job-post-vault-inventory-list-filtering"> Range Inventory Retrieval</a>.',
+    }),
   })
   .openapi({
     description: 'Describes the options for a range inventory retrieval job.',
@@ -102,51 +47,28 @@ const FileHeaderInfoSchema = z.enum(['USE', 'IGNORE', 'NONE']).openapi('FileHead
 
 const CSVInputSchema = z
   .object({
-    FileHeaderInfo: FileHeaderInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the first line of input. Valid values are <code>None</code>, <code>Ignore</code>, and <code>Use</code>.',
-        }),
-    ).exactOptional(),
-    Comments: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A single character used to indicate that a row should be ignored when the character is present at the start of that row.',
-        }),
-    ).exactOptional(),
-    QuoteEscapeCharacter: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A single character used for escaping the quotation-mark character inside an already escaped value.',
-        }),
-    ).exactOptional(),
-    RecordDelimiter: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A value used to separate individual records from each other.' }),
-    ).exactOptional(),
-    FieldDelimiter: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value used to separate individual fields from each other within a record.',
-        }),
-    ).exactOptional(),
-    QuoteCharacter: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value used as an escape character where the field delimiter is part of the value.',
-        }),
-    ).exactOptional(),
+    FileHeaderInfo: FileHeaderInfoSchema.exactOptional().openapi({
+      description:
+        'Describes the first line of input. Valid values are <code>None</code>, <code>Ignore</code>, and <code>Use</code>.',
+    }),
+    Comments: StringSchema.exactOptional().openapi({
+      description:
+        'A single character used to indicate that a row should be ignored when the character is present at the start of that row.',
+    }),
+    QuoteEscapeCharacter: StringSchema.exactOptional().openapi({
+      description:
+        'A single character used for escaping the quotation-mark character inside an already escaped value.',
+    }),
+    RecordDelimiter: StringSchema.exactOptional().openapi({
+      description: 'A value used to separate individual records from each other.',
+    }),
+    FieldDelimiter: StringSchema.exactOptional().openapi({
+      description: 'A value used to separate individual fields from each other within a record.',
+    }),
+    QuoteCharacter: StringSchema.exactOptional().openapi({
+      description:
+        'A value used as an escape character where the field delimiter is part of the value.',
+    }),
   })
   .openapi({
     description: 'Contains information about the comma-separated value (CSV) file to select from.',
@@ -156,9 +78,9 @@ const CSVInputSchema = z
 
 const InputSerializationSchema = z
   .object({
-    csv: CSVInputSchema.and(
-      z.any().openapi({ description: 'Describes the serialization of a CSV-encoded object.' }),
-    ).exactOptional(),
+    csv: CSVInputSchema.exactOptional().openapi({
+      description: 'Describes the serialization of a CSV-encoded object.',
+    }),
   })
   .openapi({ description: 'Describes how the archive is serialized.', required: [] })
   .openapi('InputSerialization')
@@ -169,43 +91,24 @@ const QuoteFieldsSchema = z.enum(['ALWAYS', 'ASNEEDED']).openapi('QuoteFields')
 
 const CSVOutputSchema = z
   .object({
-    QuoteFields: QuoteFieldsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates whether all output fields should be contained within quotation marks.',
-        }),
-    ).exactOptional(),
-    QuoteEscapeCharacter: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A single character used for escaping the quotation-mark character inside an already escaped value.',
-        }),
-    ).exactOptional(),
-    RecordDelimiter: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A value used to separate individual records from each other.' }),
-    ).exactOptional(),
-    FieldDelimiter: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value used to separate individual fields from each other within a record.',
-        }),
-    ).exactOptional(),
-    QuoteCharacter: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value used as an escape character where the field delimiter is part of the value.',
-        }),
-    ).exactOptional(),
+    QuoteFields: QuoteFieldsSchema.exactOptional().openapi({
+      description:
+        'A value that indicates whether all output fields should be contained within quotation marks.',
+    }),
+    QuoteEscapeCharacter: StringSchema.exactOptional().openapi({
+      description:
+        'A single character used for escaping the quotation-mark character inside an already escaped value.',
+    }),
+    RecordDelimiter: StringSchema.exactOptional().openapi({
+      description: 'A value used to separate individual records from each other.',
+    }),
+    FieldDelimiter: StringSchema.exactOptional().openapi({
+      description: 'A value used to separate individual fields from each other within a record.',
+    }),
+    QuoteCharacter: StringSchema.exactOptional().openapi({
+      description:
+        'A value used as an escape character where the field delimiter is part of the value.',
+    }),
   })
   .openapi({
     description:
@@ -216,33 +119,27 @@ const CSVOutputSchema = z
 
 const OutputSerializationSchema = z
   .object({
-    csv: CSVOutputSchema.and(
-      z.any().openapi({ description: 'Describes the serialization of CSV-encoded query results.' }),
-    ).exactOptional(),
+    csv: CSVOutputSchema.exactOptional().openapi({
+      description: 'Describes the serialization of CSV-encoded query results.',
+    }),
   })
   .openapi({ description: 'Describes how the select output is serialized.', required: [] })
   .openapi('OutputSerialization')
 
 const SelectParametersSchema = z
   .object({
-    InputSerialization: InputSerializationSchema.and(
-      z.any().openapi({ description: 'Describes the serialization format of the object.' }),
-    ).exactOptional(),
-    ExpressionType: ExpressionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of the provided expression, for example <code>SQL</code>.',
-        }),
-    ).exactOptional(),
-    Expression: StringSchema.and(
-      z.any().openapi({ description: 'The expression that is used to select the object.' }),
-    ).exactOptional(),
-    OutputSerialization: OutputSerializationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Describes how the results of the select job are serialized.' }),
-    ).exactOptional(),
+    InputSerialization: InputSerializationSchema.exactOptional().openapi({
+      description: 'Describes the serialization format of the object.',
+    }),
+    ExpressionType: ExpressionTypeSchema.exactOptional().openapi({
+      description: 'The type of the provided expression, for example <code>SQL</code>.',
+    }),
+    Expression: StringSchema.exactOptional().openapi({
+      description: 'The expression that is used to select the object.',
+    }),
+    OutputSerialization: OutputSerializationSchema.exactOptional().openapi({
+      description: 'Describes how the results of the select job are serialized.',
+    }),
   })
   .openapi({
     description: 'Contains information about the parameters used for a select.',
@@ -254,30 +151,18 @@ const EncryptionTypeSchema = z.enum(['aws:kms', 'AES256']).openapi('EncryptionTy
 
 const EncryptionSchema = z
   .object({
-    EncryptionType: EncryptionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The server-side encryption algorithm used when storing job results in Amazon S3, for example <code>AES256</code> or <code>aws:kms</code>.',
-        }),
-    ).exactOptional(),
-    KMSKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS KMS key ID to use for object encryption. All GET and PUT requests for an object protected by AWS KMS fail if not made by using Secure Sockets Layer (SSL) or Signature Version 4. ',
-        }),
-    ).exactOptional(),
-    KMSContext: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. If the encryption type is <code>aws:kms</code>, you can use this value to specify the encryption context for the job results.',
-        }),
-    ).exactOptional(),
+    EncryptionType: EncryptionTypeSchema.exactOptional().openapi({
+      description:
+        'The server-side encryption algorithm used when storing job results in Amazon S3, for example <code>AES256</code> or <code>aws:kms</code>.',
+    }),
+    KMSKeyId: StringSchema.exactOptional().openapi({
+      description:
+        'The AWS KMS key ID to use for object encryption. All GET and PUT requests for an object protected by AWS KMS fail if not made by using Secure Sockets Layer (SSL) or Signature Version 4. ',
+    }),
+    KMSContext: StringSchema.exactOptional().openapi({
+      description:
+        'Optional. If the encryption type is <code>aws:kms</code>, you can use this value to specify the encryption context for the job results.',
+    }),
   })
   .openapi({
     description:
@@ -302,19 +187,17 @@ const TypeSchema = z.enum(['AmazonCustomerByEmail', 'CanonicalUser', 'Group']).o
 
 const GranteeSchema = z
   .object({
-    Type: TypeSchema.and(z.any().openapi({ description: 'Type of grantee' })),
-    DisplayName: StringSchema.and(
-      z.any().openapi({ description: 'Screen name of the grantee.' }),
-    ).exactOptional(),
-    URI: StringSchema.and(
-      z.any().openapi({ description: 'URI of the grantee group.' }),
-    ).exactOptional(),
-    ID: StringSchema.and(
-      z.any().openapi({ description: 'The canonical user ID of the grantee.' }),
-    ).exactOptional(),
-    EmailAddress: StringSchema.and(
-      z.any().openapi({ description: 'Email address of the grantee.' }),
-    ).exactOptional(),
+    Type: TypeSchema.openapi({ description: 'Type of grantee' }),
+    DisplayName: StringSchema.exactOptional().openapi({
+      description: 'Screen name of the grantee.',
+    }),
+    URI: StringSchema.exactOptional().openapi({ description: 'URI of the grantee group.' }),
+    ID: StringSchema.exactOptional().openapi({
+      description: 'The canonical user ID of the grantee.',
+    }),
+    EmailAddress: StringSchema.exactOptional().openapi({
+      description: 'Email address of the grantee.',
+    }),
   })
   .openapi({ required: ['Type'], description: 'Contains information about the grantee.' })
   .openapi('Grantee')
@@ -325,10 +208,10 @@ const PermissionSchema = z
 
 const GrantSchema = z
   .object({
-    Grantee: GranteeSchema.and(z.any().openapi({ description: 'The grantee.' })).exactOptional(),
-    Permission: PermissionSchema.and(
-      z.any().openapi({ description: 'Specifies the permission given to the grantee. ' }),
-    ).exactOptional(),
+    Grantee: GranteeSchema.exactOptional().openapi({ description: 'The grantee.' }),
+    Permission: PermissionSchema.exactOptional().openapi({
+      description: 'Specifies the permission given to the grantee. ',
+    }),
   })
   .openapi({ description: 'Contains information about a grant.', required: [] })
   .openapi('Grant')
@@ -343,49 +226,31 @@ const StorageClassSchema = z
 
 const S3LocationSchema = z
   .object({
-    BucketName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Amazon S3 bucket where the job results are stored.',
-        }),
-    ).exactOptional(),
-    Prefix: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The prefix that is prepended to the results for this request.' }),
-    ).exactOptional(),
-    Encryption: EncryptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the encryption used to store the job results in Amazon S3.',
-        }),
-    ).exactOptional(),
-    CannedACL: CannedACLSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The canned access control list (ACL) to apply to the job results.',
-        }),
-    ).exactOptional(),
-    AccessControlList: AccessControlPolicyListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of grants that control access to the staged results.' }),
-    ).exactOptional(),
-    Tagging: HashmapSchema.and(
-      z.any().openapi({ description: 'The tag-set that is applied to the job results.' }),
-    ).exactOptional(),
-    UserMetadata: HashmapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A map of metadata to store with the job results in Amazon S3.' }),
-    ).exactOptional(),
-    StorageClass: StorageClassSchema.and(
-      z.any().openapi({ description: 'The storage class used to store the job results.' }),
-    ).exactOptional(),
+    BucketName: StringSchema.exactOptional().openapi({
+      description: 'The name of the Amazon S3 bucket where the job results are stored.',
+    }),
+    Prefix: StringSchema.exactOptional().openapi({
+      description: 'The prefix that is prepended to the results for this request.',
+    }),
+    Encryption: EncryptionSchema.exactOptional().openapi({
+      description:
+        'Contains information about the encryption used to store the job results in Amazon S3.',
+    }),
+    CannedACL: CannedACLSchema.exactOptional().openapi({
+      description: 'The canned access control list (ACL) to apply to the job results.',
+    }),
+    AccessControlList: AccessControlPolicyListSchema.exactOptional().openapi({
+      description: 'A list of grants that control access to the staged results.',
+    }),
+    Tagging: HashmapSchema.exactOptional().openapi({
+      description: 'The tag-set that is applied to the job results.',
+    }),
+    UserMetadata: HashmapSchema.exactOptional().openapi({
+      description: 'A map of metadata to store with the job results in Amazon S3.',
+    }),
+    StorageClass: StorageClassSchema.exactOptional().openapi({
+      description: 'The storage class used to store the job results.',
+    }),
   })
   .openapi({
     description:
@@ -396,13 +261,9 @@ const S3LocationSchema = z
 
 const OutputLocationSchema = z
   .object({
-    S3: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes an S3 location that will receive the results of the job request.',
-        }),
-    ).exactOptional(),
+    S3: S3LocationSchema.exactOptional().openapi({
+      description: 'Describes an S3 location that will receive the results of the job request.',
+    }),
   })
   .openapi({
     description: 'Contains information about the location where the select job results are stored.',
@@ -412,140 +273,82 @@ const OutputLocationSchema = z
 
 const GlacierJobDescriptionSchema = z
   .object({
-    JobId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An opaque string that identifies an Amazon S3 Glacier job.' }),
-    ).exactOptional(),
-    JobDescription: StringSchema.and(
-      z.any().openapi({ description: 'The job description provided when initiating the job.' }),
-    ).exactOptional(),
-    Action: ActionCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The job type. This value is either <code>ArchiveRetrieval</code>, <code>InventoryRetrieval</code>, or <code>Select</code>. ',
-        }),
-    ).exactOptional(),
-    ArchiveId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The archive ID requested for a select job or archive retrieval. Otherwise, this field is null.',
-        }),
-    ).exactOptional(),
-    VaultARN: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the vault from which an archive retrieval was requested.',
-        }),
-    ).exactOptional(),
-    CreationDate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The UTC date when the job was created. This value is a string representation of ISO 8601 date format, for example <code>"2012-03-20T17:03:43.221Z"</code>.',
-        }),
-    ).exactOptional(),
-    Completed: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The job status. When a job is completed, you get the job's output using Get Job Output (GET output).",
-        }),
-    ).exactOptional(),
-    StatusCode: StatusCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status code can be <code>InProgress</code>, <code>Succeeded</code>, or <code>Failed</code>, and indicates the status of the job.',
-        }),
-    ).exactOptional(),
-    StatusMessage: StringSchema.and(
-      z.any().openapi({ description: 'A friendly message that describes the job status.' }),
-    ).exactOptional(),
-    ArchiveSizeInBytes: SizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For an archive retrieval job, this value is the size in bytes of the archive being requested for download. For an inventory retrieval or select job, this value is null.',
-        }),
-    ).exactOptional(),
-    InventorySizeInBytes: SizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For an inventory retrieval job, this value is the size in bytes of the inventory requested for download. For an archive retrieval or select job, this value is null.',
-        }),
-    ).exactOptional(),
-    SNSTopic: StringSchema.and(
-      z.any().openapi({ description: 'An Amazon SNS topic that receives notification.' }),
-    ).exactOptional(),
-    CompletionDate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The UTC time that the job request completed. While the job is in progress, the value is null.',
-        }),
-    ).exactOptional(),
-    SHA256TreeHash: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For an archive retrieval job, this value is the checksum of the archive. Otherwise, this value is null.</p> <p>The SHA256 tree hash value for the requested range of an archive. If the <b>InitiateJob</b> request for an archive specified a tree-hash aligned range, then this field returns a value.</p> <p>If the whole archive is retrieved, this value is the same as the ArchiveSHA256TreeHash value.</p> <p>This field is null for the following:</p> <ul> <li> <p>Archive retrieval jobs that specify a range that is not tree-hash aligned</p> </li> </ul> <ul> <li> <p>Archival jobs that specify a range that is equal to the whole archive, when the job status is <code>InProgress</code> </p> </li> </ul> <ul> <li> <p>Inventory jobs</p> </li> <li> <p>Select jobs</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ArchiveSHA256TreeHash: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SHA256 tree hash of the entire archive for an archive retrieval. For inventory retrieval or select jobs, this field is null.',
-        }),
-    ).exactOptional(),
-    RetrievalByteRange: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The retrieved byte range for archive retrieval jobs in the form <i>StartByteValue</i>-<i>EndByteValue</i>. If no range was specified in the archive retrieval, then the whole archive is retrieved. In this case, <i>StartByteValue</i> equals 0 and <i>EndByteValue</i> equals the size of the archive minus 1. For inventory retrieval or select jobs, this field is null. ',
-        }),
-    ).exactOptional(),
-    Tier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tier to use for a select or an archive retrieval. Valid values are <code>Expedited</code>, <code>Standard</code>, or <code>Bulk</code>. <code>Standard</code> is the default.',
-        }),
-    ).exactOptional(),
-    InventoryRetrievalParameters: InventoryRetrievalJobDescriptionSchema.and(
-      z.any().openapi({ description: 'Parameters used for range inventory retrieval.' }),
-    ).exactOptional(),
-    JobOutputPath: StringSchema.and(
-      z.any().openapi({ description: 'Contains the job output location.' }),
-    ).exactOptional(),
-    SelectParameters: SelectParametersSchema.and(
-      z.any().openapi({ description: 'Contains the parameters used for a select.' }),
-    ).exactOptional(),
-    OutputLocation: OutputLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains the location where the data from the select job is stored.',
-        }),
-    ).exactOptional(),
+    JobId: StringSchema.exactOptional().openapi({
+      description: 'An opaque string that identifies an Amazon S3 Glacier job.',
+    }),
+    JobDescription: StringSchema.exactOptional().openapi({
+      description: 'The job description provided when initiating the job.',
+    }),
+    Action: ActionCodeSchema.exactOptional().openapi({
+      description:
+        'The job type. This value is either <code>ArchiveRetrieval</code>, <code>InventoryRetrieval</code>, or <code>Select</code>. ',
+    }),
+    ArchiveId: StringSchema.exactOptional().openapi({
+      description:
+        'The archive ID requested for a select job or archive retrieval. Otherwise, this field is null.',
+    }),
+    VaultARN: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the vault from which an archive retrieval was requested.',
+    }),
+    CreationDate: StringSchema.exactOptional().openapi({
+      description:
+        'The UTC date when the job was created. This value is a string representation of ISO 8601 date format, for example <code>"2012-03-20T17:03:43.221Z"</code>.',
+    }),
+    Completed: BooleanSchema.exactOptional().openapi({
+      description:
+        "The job status. When a job is completed, you get the job's output using Get Job Output (GET output).",
+    }),
+    StatusCode: StatusCodeSchema.exactOptional().openapi({
+      description:
+        'The status code can be <code>InProgress</code>, <code>Succeeded</code>, or <code>Failed</code>, and indicates the status of the job.',
+    }),
+    StatusMessage: StringSchema.exactOptional().openapi({
+      description: 'A friendly message that describes the job status.',
+    }),
+    ArchiveSizeInBytes: SizeSchema.exactOptional().openapi({
+      description:
+        'For an archive retrieval job, this value is the size in bytes of the archive being requested for download. For an inventory retrieval or select job, this value is null.',
+    }),
+    InventorySizeInBytes: SizeSchema.exactOptional().openapi({
+      description:
+        'For an inventory retrieval job, this value is the size in bytes of the inventory requested for download. For an archive retrieval or select job, this value is null.',
+    }),
+    SNSTopic: StringSchema.exactOptional().openapi({
+      description: 'An Amazon SNS topic that receives notification.',
+    }),
+    CompletionDate: StringSchema.exactOptional().openapi({
+      description:
+        'The UTC time that the job request completed. While the job is in progress, the value is null.',
+    }),
+    SHA256TreeHash: StringSchema.exactOptional().openapi({
+      description:
+        '<p>For an archive retrieval job, this value is the checksum of the archive. Otherwise, this value is null.</p> <p>The SHA256 tree hash value for the requested range of an archive. If the <b>InitiateJob</b> request for an archive specified a tree-hash aligned range, then this field returns a value.</p> <p>If the whole archive is retrieved, this value is the same as the ArchiveSHA256TreeHash value.</p> <p>This field is null for the following:</p> <ul> <li> <p>Archive retrieval jobs that specify a range that is not tree-hash aligned</p> </li> </ul> <ul> <li> <p>Archival jobs that specify a range that is equal to the whole archive, when the job status is <code>InProgress</code> </p> </li> </ul> <ul> <li> <p>Inventory jobs</p> </li> <li> <p>Select jobs</p> </li> </ul>',
+    }),
+    ArchiveSHA256TreeHash: StringSchema.exactOptional().openapi({
+      description:
+        'The SHA256 tree hash of the entire archive for an archive retrieval. For inventory retrieval or select jobs, this field is null.',
+    }),
+    RetrievalByteRange: StringSchema.exactOptional().openapi({
+      description:
+        'The retrieved byte range for archive retrieval jobs in the form <i>StartByteValue</i>-<i>EndByteValue</i>. If no range was specified in the archive retrieval, then the whole archive is retrieved. In this case, <i>StartByteValue</i> equals 0 and <i>EndByteValue</i> equals the size of the archive minus 1. For inventory retrieval or select jobs, this field is null. ',
+    }),
+    Tier: StringSchema.exactOptional().openapi({
+      description:
+        'The tier to use for a select or an archive retrieval. Valid values are <code>Expedited</code>, <code>Standard</code>, or <code>Bulk</code>. <code>Standard</code> is the default.',
+    }),
+    InventoryRetrievalParameters: InventoryRetrievalJobDescriptionSchema.exactOptional().openapi({
+      description: 'Parameters used for range inventory retrieval.',
+    }),
+    JobOutputPath: StringSchema.exactOptional().openapi({
+      description: 'Contains the job output location.',
+    }),
+    SelectParameters: SelectParametersSchema.exactOptional().openapi({
+      description: 'Contains the parameters used for a select.',
+    }),
+    OutputLocation: OutputLocationSchema.exactOptional().openapi({
+      description: 'Contains the location where the data from the select job is stored.',
+    }),
   })
   .openapi({
     example: {
@@ -563,48 +366,72 @@ const GlacierJobDescriptionSchema = z
   })
   .openapi('GlacierJobDescription')
 
+const JobListSchema = z.array(GlacierJobDescriptionSchema).openapi('JobList')
+
+type ListJobsOutputType = {
+  JobList?: z.infer<typeof JobListSchema> & unknown
+  Marker?: z.infer<typeof StringSchema> & unknown
+}
+
+const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
+
+const InvalidParameterValueExceptionSchema = z.any().openapi('InvalidParameterValueException')
+
+const MissingParameterValueExceptionSchema = z.any().openapi('MissingParameterValueException')
+
+const ServiceUnavailableExceptionSchema = z.any().openapi('ServiceUnavailableException')
+
+const TagValueSchema = z.string().openapi('TagValue')
+
+const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
+
+const ArchiveCreationOutputSchema = z
+  .looseObject({})
+  .openapi({
+    example: {
+      archiveId:
+        'kKB7ymWJVpPSwhGP6ycSOAekp9ZYe_--zM_mw6k76ZFGEIWQX-ybtRDvc2VkPSDtfKmQrj0IRQLSGsNuDp-AJVlu2ccmDSyDUmZwKbwbpAdGATGDiB3hHO0bjbGehXTcApVud_wyDw',
+      checksum: '969fb39823836d81f0cc028195fcdbcbbe76cdde932d4646fa7de5f21e18aa67',
+      location:
+        '/0123456789012/vaults/my-vault/archives/kKB7ymWJVpPSwhGP6ycSOAekp9ZYe_--zM_mw6k76ZFGEIWQX-ybtRDvc2VkPSDtfKmQrj0IRQLSGsNuDp-AJVlu2ccmDSyDUmZwKbwbpAdGATGDiB3hHO0bjbGehXTcApVud_wyDw',
+    },
+    description:
+      '<p>Contains the Amazon S3 Glacier response to your request.</p> <p>For information about the underlying REST API, see <a href="https://docs.aws.amazon.com/amazonglacier/latest/dev/api-archive-post.html">Upload Archive</a>. For conceptual information, see <a href="https://docs.aws.amazon.com/amazonglacier/latest/dev/working-with-archives.html">Working with Archives in Amazon S3 Glacier</a>.</p>',
+  })
+  .openapi('ArchiveCreationOutput')
+
+const CreateVaultOutputSchema = z
+  .looseObject({})
+  .openapi({
+    example: { location: '/111122223333/vaults/my-vault' },
+    description: 'Contains the Amazon S3 Glacier response to your request.',
+  })
+  .openapi('CreateVaultOutput')
+
 const LongSchema = z.int().openapi('Long')
 
 const DescribeVaultOutputSchema = z
   .object({
-    VaultARN: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the vault.' }),
-    ).exactOptional(),
-    VaultName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the vault.' }),
-    ).exactOptional(),
-    CreationDate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Universal Coordinated Time (UTC) date when the vault was created. This value should be a string in the ISO 8601 date format, for example <code>2012-03-20T17:03:43.221Z</code>.',
-        }),
-    ).exactOptional(),
-    LastInventoryDate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Universal Coordinated Time (UTC) date when Amazon S3 Glacier completed the last vault inventory. This value should be a string in the ISO 8601 date format, for example <code>2012-03-20T17:03:43.221Z</code>.',
-        }),
-    ).exactOptional(),
-    NumberOfArchives: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of archives in the vault as of the last inventory date. This field will return <code>null</code> if an inventory has not yet run on the vault, for example if you just created the vault.',
-        }),
-    ).exactOptional(),
-    SizeInBytes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Total size, in bytes, of the archives in the vault as of the last inventory date. This field will return null if an inventory has not yet run on the vault, for example if you just created the vault.',
-        }),
-    ).exactOptional(),
+    VaultARN: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the vault.',
+    }),
+    VaultName: StringSchema.exactOptional().openapi({ description: 'The name of the vault.' }),
+    CreationDate: StringSchema.exactOptional().openapi({
+      description:
+        'The Universal Coordinated Time (UTC) date when the vault was created. This value should be a string in the ISO 8601 date format, for example <code>2012-03-20T17:03:43.221Z</code>.',
+    }),
+    LastInventoryDate: StringSchema.exactOptional().openapi({
+      description:
+        'The Universal Coordinated Time (UTC) date when Amazon S3 Glacier completed the last vault inventory. This value should be a string in the ISO 8601 date format, for example <code>2012-03-20T17:03:43.221Z</code>.',
+    }),
+    NumberOfArchives: LongSchema.exactOptional().openapi({
+      description:
+        'The number of archives in the vault as of the last inventory date. This field will return <code>null</code> if an inventory has not yet run on the vault, for example if you just created the vault.',
+    }),
+    SizeInBytes: LongSchema.exactOptional().openapi({
+      description:
+        'Total size, in bytes, of the archives in the vault as of the last inventory date. This field will return null if an inventory has not yet run on the vault, for example if you just created the vault.',
+    }),
   })
   .openapi({
     example: {
@@ -623,22 +450,14 @@ const NullableLongSchema = z.int().openapi('NullableLong')
 
 const DataRetrievalRuleSchema = z
   .object({
-    Strategy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of data retrieval policy to set.</p> <p>Valid values: BytesPerHour|FreeTier|None</p>',
-        }),
-    ).exactOptional(),
-    BytesPerHour: NullableLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of bytes that can be retrieved in an hour.</p> <p>This field is required only if the value of the Strategy field is <code>BytesPerHour</code>. Your PUT operation will be rejected if the Strategy field is not set to <code>BytesPerHour</code> and you set this field.</p>',
-        }),
-    ).exactOptional(),
+    Strategy: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The type of data retrieval policy to set.</p> <p>Valid values: BytesPerHour|FreeTier|None</p>',
+    }),
+    BytesPerHour: NullableLongSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of bytes that can be retrieved in an hour.</p> <p>This field is required only if the value of the Strategy field is <code>BytesPerHour</code>. Your PUT operation will be rejected if the Strategy field is not set to <code>BytesPerHour</code> and you set this field.</p>',
+    }),
   })
   .openapi({ description: 'Data retrieval policy rule.', required: [] })
   .openapi('DataRetrievalRule')
@@ -649,25 +468,19 @@ const DataRetrievalRulesListSchema = z
 
 const DataRetrievalPolicySchema = z
   .object({
-    Rules: DataRetrievalRulesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The policy rule. Although this is a list type, currently there must be only one rule, which contains a Strategy field and optionally a BytesPerHour field.',
-        }),
-    ).exactOptional(),
+    Rules: DataRetrievalRulesListSchema.exactOptional().openapi({
+      description:
+        'The policy rule. Although this is a list type, currently there must be only one rule, which contains a Strategy field and optionally a BytesPerHour field.',
+    }),
   })
   .openapi({ description: 'Data retrieval policy.', required: [] })
   .openapi('DataRetrievalPolicy')
 
 const GetDataRetrievalPolicyOutputSchema = z
   .object({
-    Policy: DataRetrievalPolicySchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the returned data retrieval policy in JSON format.' }),
-    ).exactOptional(),
+    Policy: DataRetrievalPolicySchema.exactOptional().openapi({
+      description: 'Contains the returned data retrieval policy in JSON format.',
+    }),
   })
   .openapi({
     example: { Policy: { Rules: [{ BytesPerHour: 10737418240, Strategy: 'BytesPerHour' }] } },
@@ -683,17 +496,13 @@ const HttpstatusSchema = z.int().openapi('Httpstatus')
 
 const GetJobOutputOutputSchema = z
   .object({
-    body: StreamSchema.and(
-      z.any().openapi({ description: 'The job data, either archive data or inventory data.' }),
-    ).exactOptional(),
-    status: HttpstatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HTTP response code for a job output request. The value depends on whether a range was specified in the request.',
-        }),
-    ).exactOptional(),
+    body: StreamSchema.exactOptional().openapi({
+      description: 'The job data, either archive data or inventory data.',
+    }),
+    status: HttpstatusSchema.exactOptional().openapi({
+      description:
+        'The HTTP response code for a job output request. The value depends on whether a range was specified in the request.',
+    }),
   })
   .openapi({
     example: {
@@ -709,20 +518,16 @@ const GetJobOutputOutputSchema = z
 
 const VaultAccessPolicySchema = z
   .object({
-    Policy: StringSchema.and(
-      z.any().openapi({ description: 'The vault access policy.' }),
-    ).exactOptional(),
+    Policy: StringSchema.exactOptional().openapi({ description: 'The vault access policy.' }),
   })
   .openapi({ description: 'Contains the vault access policy.', required: [] })
   .openapi('VaultAccessPolicy')
 
 const GetVaultAccessPolicyOutputSchema = z
   .object({
-    policy: VaultAccessPolicySchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the returned vault access policy as a JSON string.' }),
-    ).exactOptional(),
+    policy: VaultAccessPolicySchema.exactOptional().openapi({
+      description: 'Contains the returned vault access policy as a JSON string.',
+    }),
   })
   .openapi({
     example: {
@@ -738,38 +543,21 @@ const GetVaultAccessPolicyOutputSchema = z
 
 const GetVaultLockOutputSchema = z
   .object({
-    Policy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The vault lock policy as a JSON string, which uses "\\" as an escape character.',
-        }),
-    ).exactOptional(),
-    State: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state of the vault lock. <code>InProgress</code> or <code>Locked</code>.',
-        }),
-    ).exactOptional(),
-    ExpirationDate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The UTC date and time at which the lock ID expires. This value can be <code>null</code> if the vault lock is in a <code>Locked</code> state.',
-        }),
-    ).exactOptional(),
-    CreationDate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The UTC date and time at which the vault lock was put into the <code>InProgress</code> state.',
-        }),
-    ).exactOptional(),
+    Policy: StringSchema.exactOptional().openapi({
+      description:
+        'The vault lock policy as a JSON string, which uses "\\" as an escape character.',
+    }),
+    State: StringSchema.exactOptional().openapi({
+      description: 'The state of the vault lock. <code>InProgress</code> or <code>Locked</code>.',
+    }),
+    ExpirationDate: StringSchema.exactOptional().openapi({
+      description:
+        'The UTC date and time at which the lock ID expires. This value can be <code>null</code> if the vault lock is in a <code>Locked</code> state.',
+    }),
+    CreationDate: StringSchema.exactOptional().openapi({
+      description:
+        'The UTC date and time at which the vault lock was put into the <code>InProgress</code> state.',
+    }),
   })
   .openapi({
     example: {
@@ -788,31 +576,23 @@ const NotificationEventListSchema = z.array(StringSchema).openapi('NotificationE
 
 const VaultNotificationConfigSchema = z
   .object({
-    SNSTopic: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Simple Notification Service (Amazon SNS) topic Amazon Resource Name (ARN).',
-        }),
-    ).exactOptional(),
-    Events: NotificationEventListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of one or more events for which Amazon S3 Glacier will send a notification to the specified Amazon SNS topic.',
-        }),
-    ).exactOptional(),
+    SNSTopic: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Simple Notification Service (Amazon SNS) topic Amazon Resource Name (ARN).',
+    }),
+    Events: NotificationEventListSchema.exactOptional().openapi({
+      description:
+        'A list of one or more events for which Amazon S3 Glacier will send a notification to the specified Amazon SNS topic.',
+    }),
   })
   .openapi({ description: "Represents a vault's notification configuration.", required: [] })
   .openapi('VaultNotificationConfig')
 
 const GetVaultNotificationsOutputSchema = z
   .object({
-    vaultNotificationConfig: VaultNotificationConfigSchema.and(
-      z.any().openapi({ description: 'Returns the notification configuration set on the vault.' }),
-    ).exactOptional(),
+    vaultNotificationConfig: VaultNotificationConfigSchema.exactOptional().openapi({
+      description: 'Returns the notification configuration set on the vault.',
+    }),
   })
   .openapi({
     example: {
@@ -827,7 +607,7 @@ const GetVaultNotificationsOutputSchema = z
   .openapi('GetVaultNotificationsOutput')
 
 const InitiateJobOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     example: {
       jobId:
@@ -841,38 +621,22 @@ const InitiateJobOutputSchema = z
 
 const InventoryRetrievalJobInputSchema = z
   .object({
-    StartDate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start of the date range in UTC for vault inventory retrieval that includes archives created on or after this date. This value should be a string in the ISO 8601 date format, for example <code>2013-03-20T17:03:43Z</code>.',
-        }),
-    ).exactOptional(),
-    EndDate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end of the date range in UTC for vault inventory retrieval that includes archives created before this date. This value should be a string in the ISO 8601 date format, for example <code>2013-03-20T17:03:43Z</code>.',
-        }),
-    ).exactOptional(),
-    Limit: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the maximum number of inventory items returned per vault inventory retrieval request. Valid values are greater than or equal to 1.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque string that represents where to continue pagination of the vault inventory retrieval results. You use the marker in a new <b>InitiateJob</b> request to obtain additional inventory items. If there are no more inventory items, this value is <code>null</code>.',
-        }),
-    ).exactOptional(),
+    StartDate: StringSchema.exactOptional().openapi({
+      description:
+        'The start of the date range in UTC for vault inventory retrieval that includes archives created on or after this date. This value should be a string in the ISO 8601 date format, for example <code>2013-03-20T17:03:43Z</code>.',
+    }),
+    EndDate: StringSchema.exactOptional().openapi({
+      description:
+        'The end of the date range in UTC for vault inventory retrieval that includes archives created before this date. This value should be a string in the ISO 8601 date format, for example <code>2013-03-20T17:03:43Z</code>.',
+    }),
+    Limit: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the maximum number of inventory items returned per vault inventory retrieval request. Valid values are greater than or equal to 1.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An opaque string that represents where to continue pagination of the vault inventory retrieval results. You use the marker in a new <b>InitiateJob</b> request to obtain additional inventory items. If there are no more inventory items, this value is <code>null</code>.',
+    }),
   })
   .openapi({
     description: 'Provides options for specifying a range inventory retrieval job.',
@@ -885,7 +649,7 @@ const PolicyEnforcedExceptionSchema = z.any().openapi('PolicyEnforcedException')
 const InsufficientCapacityExceptionSchema = z.any().openapi('InsufficientCapacityException')
 
 const InitiateMultipartUploadOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     example: {
       location:
@@ -898,33 +662,22 @@ const InitiateMultipartUploadOutputSchema = z
   .openapi('InitiateMultipartUploadOutput')
 
 const InitiateVaultLockOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     example: { lockId: 'AE863rKkWZU53SLW5be4DUcW' },
     description: 'Contains the Amazon S3 Glacier response to your request.',
   })
   .openapi('InitiateVaultLockOutput')
 
-const JobListSchema = z.array(GlacierJobDescriptionSchema).openapi('JobList')
-
-const ListJobsOutputSchema = z
+const ListJobsOutputSchema: z.ZodType<ListJobsOutputType> = z
   .object({
-    JobList: JobListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of job objects. Each job object contains metadata describing the job.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An opaque string used for pagination that specifies the job at which the listing of jobs should begin. You get the <code>marker</code> value from a previous List Jobs response. You only need to include the marker if you are continuing the pagination of the results started in a previous List Jobs request. ',
-        }),
-    ).exactOptional(),
+    JobList: JobListSchema.exactOptional().openapi({
+      description: 'A list of job objects. Each job object contains metadata describing the job.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        ' An opaque string used for pagination that specifies the job at which the listing of jobs should begin. You get the <code>marker</code> value from a previous List Jobs response. You only need to include the marker if you are continuing the pagination of the results started in a previous List Jobs request. ',
+    }),
   })
   .openapi({
     example: {
@@ -965,35 +718,23 @@ const ListJobsOutputSchema = z
 
 const UploadListElementSchema = z
   .object({
-    MultipartUploadId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of a multipart upload.' }),
-    ).exactOptional(),
-    VaultARN: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the vault that contains the archive.',
-        }),
-    ).exactOptional(),
-    ArchiveDescription: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description of the archive that was specified in the Initiate Multipart Upload request.',
-        }),
-    ).exactOptional(),
-    PartSizeInBytes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The part size, in bytes, specified in the Initiate Multipart Upload request. This is the size of all the parts in the upload except the last part, which may be smaller than this size.',
-        }),
-    ).exactOptional(),
-    CreationDate: StringSchema.and(
-      z.any().openapi({ description: 'The UTC time at which the multipart upload was initiated.' }),
-    ).exactOptional(),
+    MultipartUploadId: StringSchema.exactOptional().openapi({
+      description: 'The ID of a multipart upload.',
+    }),
+    VaultARN: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the vault that contains the archive.',
+    }),
+    ArchiveDescription: StringSchema.exactOptional().openapi({
+      description:
+        'The description of the archive that was specified in the Initiate Multipart Upload request.',
+    }),
+    PartSizeInBytes: LongSchema.exactOptional().openapi({
+      description:
+        'The part size, in bytes, specified in the Initiate Multipart Upload request. This is the size of all the parts in the upload except the last part, which may be smaller than this size.',
+    }),
+    CreationDate: StringSchema.exactOptional().openapi({
+      description: 'The UTC time at which the multipart upload was initiated.',
+    }),
   })
   .openapi({ description: 'A list of in-progress multipart uploads for a vault.', required: [] })
   .openapi('UploadListElement')
@@ -1002,17 +743,13 @@ const UploadsListSchema = z.array(UploadListElementSchema).openapi('UploadsList'
 
 const ListMultipartUploadsOutputSchema = z
   .object({
-    UploadsList: UploadsListSchema.and(
-      z.any().openapi({ description: 'A list of in-progress multipart uploads.' }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque string that represents where to continue pagination of the results. You use the marker in a new List Multipart Uploads request to obtain more uploads in the list. If there are no more uploads, this value is <code>null</code>.',
-        }),
-    ).exactOptional(),
+    UploadsList: UploadsListSchema.exactOptional().openapi({
+      description: 'A list of in-progress multipart uploads.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An opaque string that represents where to continue pagination of the results. You use the marker in a new List Multipart Uploads request to obtain more uploads in the list. If there are no more uploads, this value is <code>null</code>.',
+    }),
   })
   .openapi({
     example: {
@@ -1051,21 +788,13 @@ const ListMultipartUploadsOutputSchema = z
 
 const PartListElementSchema = z
   .object({
-    RangeInBytes: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The byte range of a part, inclusive of the upper value of the range.',
-        }),
-    ).exactOptional(),
-    SHA256TreeHash: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SHA256 tree hash value that Amazon S3 Glacier calculated for the part. This field is never <code>null</code>.',
-        }),
-    ).exactOptional(),
+    RangeInBytes: StringSchema.exactOptional().openapi({
+      description: 'The byte range of a part, inclusive of the upper value of the range.',
+    }),
+    SHA256TreeHash: StringSchema.exactOptional().openapi({
+      description:
+        'The SHA256 tree hash value that Amazon S3 Glacier calculated for the part. This field is never <code>null</code>.',
+    }),
   })
   .openapi({ description: 'A list of the part sizes of the multipart upload.', required: [] })
   .openapi('PartListElement')
@@ -1074,52 +803,32 @@ const PartListSchema = z.array(PartListElementSchema).openapi('PartList')
 
 const ListPartsOutputSchema = z
   .object({
-    MultipartUploadId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the upload to which the parts are associated.' }),
-    ).exactOptional(),
-    VaultARN: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the vault to which the multipart upload was initiated.',
-        }),
-    ).exactOptional(),
-    ArchiveDescription: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description of the archive that was specified in the Initiate Multipart Upload request.',
-        }),
-    ).exactOptional(),
-    PartSizeInBytes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The part size in bytes. This is the same value that you specified in the Initiate Multipart Upload request.',
-        }),
-    ).exactOptional(),
-    CreationDate: StringSchema.and(
-      z.any().openapi({ description: 'The UTC time at which the multipart upload was initiated.' }),
-    ).exactOptional(),
-    Parts: PartListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the part sizes of the multipart upload. Each object in the array contains a <code>RangeBytes</code> and <code>sha256-tree-hash</code> name/value pair.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque string that represents where to continue pagination of the results. You use the marker in a new List Parts request to obtain more jobs in the list. If there are no more parts, this value is <code>null</code>.',
-        }),
-    ).exactOptional(),
+    MultipartUploadId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the upload to which the parts are associated.',
+    }),
+    VaultARN: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the vault to which the multipart upload was initiated.',
+    }),
+    ArchiveDescription: StringSchema.exactOptional().openapi({
+      description:
+        'The description of the archive that was specified in the Initiate Multipart Upload request.',
+    }),
+    PartSizeInBytes: LongSchema.exactOptional().openapi({
+      description:
+        'The part size in bytes. This is the same value that you specified in the Initiate Multipart Upload request.',
+    }),
+    CreationDate: StringSchema.exactOptional().openapi({
+      description: 'The UTC time at which the multipart upload was initiated.',
+    }),
+    Parts: PartListSchema.exactOptional().openapi({
+      description:
+        'A list of the part sizes of the multipart upload. Each object in the array contains a <code>RangeBytes</code> and <code>sha256-tree-hash</code> name/value pair.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An opaque string that represents where to continue pagination of the results. You use the marker in a new List Parts request to obtain more jobs in the list. If there are no more parts, this value is <code>null</code>.',
+    }),
   })
   .openapi({
     example: {
@@ -1142,25 +851,17 @@ const ListPartsOutputSchema = z
 
 const ProvisionedCapacityDescriptionSchema = z
   .object({
-    CapacityId: StringSchema.and(
-      z.any().openapi({ description: 'The ID that identifies the provisioned capacity unit.' }),
-    ).exactOptional(),
-    StartDate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date that the provisioned capacity unit was purchased, in Universal Coordinated Time (UTC).',
-        }),
-    ).exactOptional(),
-    ExpirationDate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date that the provisioned capacity unit expires, in Universal Coordinated Time (UTC).',
-        }),
-    ).exactOptional(),
+    CapacityId: StringSchema.exactOptional().openapi({
+      description: 'The ID that identifies the provisioned capacity unit.',
+    }),
+    StartDate: StringSchema.exactOptional().openapi({
+      description:
+        'The date that the provisioned capacity unit was purchased, in Universal Coordinated Time (UTC).',
+    }),
+    ExpirationDate: StringSchema.exactOptional().openapi({
+      description:
+        'The date that the provisioned capacity unit expires, in Universal Coordinated Time (UTC).',
+    }),
   })
   .openapi({ description: 'The definition for a provisioned capacity unit.', required: [] })
   .openapi('ProvisionedCapacityDescription')
@@ -1171,9 +872,9 @@ const ProvisionedCapacityListSchema = z
 
 const ListProvisionedCapacityOutputSchema = z
   .object({
-    ProvisionedCapacityList: ProvisionedCapacityListSchema.and(
-      z.any().openapi({ description: 'The response body contains the following JSON fields.' }),
-    ).exactOptional(),
+    ProvisionedCapacityList: ProvisionedCapacityListSchema.exactOptional().openapi({
+      description: 'The response body contains the following JSON fields.',
+    }),
   })
   .openapi({
     example: {
@@ -1198,13 +899,9 @@ const TagMapSchema = z.record(z.string(), TagValueSchema).openapi('TagMap')
 
 const ListTagsForVaultOutputSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags attached to the vault. Each tag is composed of a key and a value.',
-        }),
-    ).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags attached to the vault. Each tag is composed of a key and a value.',
+    }),
   })
   .openapi({
     example: { Tags: { date: 'july2015', id: '1234' } },
@@ -1217,17 +914,11 @@ const VaultListSchema = z.array(DescribeVaultOutputSchema).openapi('VaultList')
 
 const ListVaultsOutputSchema = z
   .object({
-    VaultList: VaultListSchema.and(
-      z.any().openapi({ description: 'List of vaults.' }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The vault ARN at which to continue pagination of the results. You use the marker in another List Vaults request to obtain more vaults in the list.',
-        }),
-    ).exactOptional(),
+    VaultList: VaultListSchema.exactOptional().openapi({ description: 'List of vaults.' }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'The vault ARN at which to continue pagination of the results. You use the marker in another List Vaults request to obtain more vaults in the list.',
+    }),
   })
   .openapi({
     example: {
@@ -1248,14 +939,14 @@ const ListVaultsOutputSchema = z
   .openapi('ListVaultsOutput')
 
 const PurchaseProvisionedCapacityOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: { capacityId: 'zSaq7NzHFQDANTfQkDen4V7z' } })
   .openapi('PurchaseProvisionedCapacityOutput')
 
 const RequestTimeoutExceptionSchema = z.any().openapi('RequestTimeoutException')
 
 const UploadMultipartPartOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     example: { checksum: 'c06f7cd4baacb087002a99a5f48bf953' },
     description: 'Contains the Amazon S3 Glacier response to your request.',
@@ -1263,7 +954,7 @@ const UploadMultipartPartOutputSchema = z
   .openapi('UploadMultipartPartOutput')
 
 const AbortMultipartUploadInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'AbortMultipartUploadInput',
     description:
@@ -1272,7 +963,7 @@ const AbortMultipartUploadInputSchema = z
   .openapi('AbortMultipartUploadInput')
 
 const AbortVaultLockInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'AbortVaultLockInput',
     description: 'The input values for <code>AbortVaultLock</code>.',
@@ -1281,14 +972,10 @@ const AbortVaultLockInputSchema = z
 
 const AddTagsToVaultInputSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to add to the vault. Each tag is composed of a key and a value. The value can be an empty string.',
-        }),
-    ).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags to add to the vault. Each tag is composed of a key and a value. The value can be an empty string.',
+    }),
   })
   .openapi({
     title: 'AddTagsToVaultInput',
@@ -1298,7 +985,7 @@ const AddTagsToVaultInputSchema = z
   .openapi('AddTagsToVaultInput')
 
 const CompleteMultipartUploadInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'CompleteMultipartUploadInput',
     description:
@@ -1307,7 +994,7 @@ const CompleteMultipartUploadInputSchema = z
   .openapi('CompleteMultipartUploadInput')
 
 const CompleteVaultLockInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'CompleteVaultLockInput',
     description: 'The input values for <code>CompleteVaultLock</code>.',
@@ -1315,12 +1002,12 @@ const CompleteVaultLockInputSchema = z
   .openapi('CompleteVaultLockInput')
 
 const CreateVaultInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CreateVaultInput', description: 'Provides options to create a vault.' })
   .openapi('CreateVaultInput')
 
 const DeleteArchiveInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteArchiveInput',
     description: 'Provides options for deleting an archive from an Amazon S3 Glacier vault.',
@@ -1328,12 +1015,12 @@ const DeleteArchiveInputSchema = z
   .openapi('DeleteArchiveInput')
 
 const DeleteVaultAccessPolicyInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteVaultAccessPolicyInput', description: 'DeleteVaultAccessPolicy input.' })
   .openapi('DeleteVaultAccessPolicyInput')
 
 const DeleteVaultInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteVaultInput',
     description: 'Provides options for deleting a vault from Amazon S3 Glacier.',
@@ -1341,7 +1028,7 @@ const DeleteVaultInputSchema = z
   .openapi('DeleteVaultInput')
 
 const DeleteVaultNotificationsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteVaultNotificationsInput',
     description:
@@ -1350,7 +1037,7 @@ const DeleteVaultNotificationsInputSchema = z
   .openapi('DeleteVaultNotificationsInput')
 
 const DescribeJobInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeJobInput',
     description: 'Provides options for retrieving a job description.',
@@ -1358,7 +1045,7 @@ const DescribeJobInputSchema = z
   .openapi('DescribeJobInput')
 
 const DescribeVaultInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeVaultInput',
     description: 'Provides options for retrieving metadata for a specific vault in Amazon Glacier.',
@@ -1366,7 +1053,7 @@ const DescribeVaultInputSchema = z
   .openapi('DescribeVaultInput')
 
 const GetDataRetrievalPolicyInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetDataRetrievalPolicyInput',
     description: 'Input for GetDataRetrievalPolicy.',
@@ -1374,7 +1061,7 @@ const GetDataRetrievalPolicyInputSchema = z
   .openapi('GetDataRetrievalPolicyInput')
 
 const GetJobOutputInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetJobOutputInput',
     description: 'Provides options for downloading output of an Amazon S3 Glacier job.',
@@ -1382,12 +1069,12 @@ const GetJobOutputInputSchema = z
   .openapi('GetJobOutputInput')
 
 const GetVaultAccessPolicyInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetVaultAccessPolicyInput', description: 'Input for GetVaultAccessPolicy.' })
   .openapi('GetVaultAccessPolicyInput')
 
 const GetVaultLockInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetVaultLockInput',
     description: 'The input values for <code>GetVaultLock</code>.',
@@ -1395,7 +1082,7 @@ const GetVaultLockInputSchema = z
   .openapi('GetVaultLockInput')
 
 const GetVaultNotificationsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetVaultNotificationsInput',
     description:
@@ -1405,85 +1092,53 @@ const GetVaultNotificationsInputSchema = z
 
 const JobParametersSchema = z
   .object({
-    Format: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When initiating a job to retrieve a vault inventory, you can optionally add this parameter to your request to specify the output format. If you are initiating an inventory job and do not specify a Format field, JSON is the default format. Valid values are "CSV" and "JSON".',
-        }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The job type. You can initiate a job to perform a select query on an archive, retrieve an archive, or get an inventory of a vault. Valid values are "select", "archive-retrieval" and "inventory-retrieval".',
-        }),
-    ).exactOptional(),
-    ArchiveId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the archive that you want to retrieve. This field is required only if <code>Type</code> is set to <code>select</code> or <code>archive-retrieval</code>code&gt;. An error occurs if you specify this request parameter for an inventory retrieval job request. ',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional description for the job. The description must be less than or equal to 1,024 bytes. The allowable characters are 7-bit ASCII without control codes-specifically, ASCII values 32-126 decimal or 0x20-0x7E hexadecimal.',
-        }),
-    ).exactOptional(),
-    SNSTopic: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon SNS topic ARN to which Amazon S3 Glacier sends a notification when the job is completed and the output is ready for you to download. The specified topic publishes the notification to its subscribers. The SNS topic must exist.',
-        }),
-    ).exactOptional(),
-    RetrievalByteRange: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The byte range to retrieve for an archive retrieval. in the form "<i>StartByteValue</i>-<i>EndByteValue</i>" If not specified, the whole archive is retrieved. If specified, the byte range must be megabyte (1024*1024) aligned which means that <i>StartByteValue</i> must be divisible by 1 MB and <i>EndByteValue</i> plus 1 must be divisible by 1 MB or be the end of the archive specified as the archive byte size value minus 1. If RetrievalByteRange is not megabyte aligned, this operation returns a 400 response. </p> <p>An error occurs if you specify this field for an inventory retrieval job request.</p>',
-        }),
-    ).exactOptional(),
-    Tier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tier to use for a select or an archive retrieval job. Valid values are <code>Expedited</code>, <code>Standard</code>, or <code>Bulk</code>. <code>Standard</code> is the default.',
-        }),
-    ).exactOptional(),
-    InventoryRetrievalParameters: InventoryRetrievalJobInputSchema.and(
-      z.any().openapi({ description: 'Input parameters used for range inventory retrieval.' }),
-    ).exactOptional(),
-    SelectParameters: SelectParametersSchema.and(
-      z.any().openapi({ description: 'Contains the parameters that define a job.' }),
-    ).exactOptional(),
-    OutputLocation: OutputLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the location where the select job results are stored.',
-        }),
-    ).exactOptional(),
+    Format: StringSchema.exactOptional().openapi({
+      description:
+        'When initiating a job to retrieve a vault inventory, you can optionally add this parameter to your request to specify the output format. If you are initiating an inventory job and do not specify a Format field, JSON is the default format. Valid values are "CSV" and "JSON".',
+    }),
+    Type: StringSchema.exactOptional().openapi({
+      description:
+        'The job type. You can initiate a job to perform a select query on an archive, retrieve an archive, or get an inventory of a vault. Valid values are "select", "archive-retrieval" and "inventory-retrieval".',
+    }),
+    ArchiveId: StringSchema.exactOptional().openapi({
+      description:
+        'The ID of the archive that you want to retrieve. This field is required only if <code>Type</code> is set to <code>select</code> or <code>archive-retrieval</code>code&gt;. An error occurs if you specify this request parameter for an inventory retrieval job request. ',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description:
+        'The optional description for the job. The description must be less than or equal to 1,024 bytes. The allowable characters are 7-bit ASCII without control codes-specifically, ASCII values 32-126 decimal or 0x20-0x7E hexadecimal.',
+    }),
+    SNSTopic: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon SNS topic ARN to which Amazon S3 Glacier sends a notification when the job is completed and the output is ready for you to download. The specified topic publishes the notification to its subscribers. The SNS topic must exist.',
+    }),
+    RetrievalByteRange: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The byte range to retrieve for an archive retrieval. in the form "<i>StartByteValue</i>-<i>EndByteValue</i>" If not specified, the whole archive is retrieved. If specified, the byte range must be megabyte (1024*1024) aligned which means that <i>StartByteValue</i> must be divisible by 1 MB and <i>EndByteValue</i> plus 1 must be divisible by 1 MB or be the end of the archive specified as the archive byte size value minus 1. If RetrievalByteRange is not megabyte aligned, this operation returns a 400 response. </p> <p>An error occurs if you specify this field for an inventory retrieval job request.</p>',
+    }),
+    Tier: StringSchema.exactOptional().openapi({
+      description:
+        'The tier to use for a select or an archive retrieval job. Valid values are <code>Expedited</code>, <code>Standard</code>, or <code>Bulk</code>. <code>Standard</code> is the default.',
+    }),
+    InventoryRetrievalParameters: InventoryRetrievalJobInputSchema.exactOptional().openapi({
+      description: 'Input parameters used for range inventory retrieval.',
+    }),
+    SelectParameters: SelectParametersSchema.exactOptional().openapi({
+      description: 'Contains the parameters that define a job.',
+    }),
+    OutputLocation: OutputLocationSchema.exactOptional().openapi({
+      description:
+        'Contains information about the location where the select job results are stored.',
+    }),
   })
   .openapi({ description: 'Provides options for defining a job.', required: [] })
   .openapi('JobParameters')
 
 const InitiateJobInputSchema = z
   .object({
-    jobParameters: JobParametersSchema.and(
-      z.any().openapi({ description: 'Provides options for specifying job information.' }),
-    ).exactOptional(),
+    jobParameters: JobParametersSchema.exactOptional().openapi({
+      description: 'Provides options for specifying job information.',
+    }),
   })
   .openapi({
     title: 'InitiateJobInput',
@@ -1493,7 +1148,7 @@ const InitiateJobInputSchema = z
   .openapi('InitiateJobInput')
 
 const InitiateMultipartUploadInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'InitiateMultipartUploadInput',
     description:
@@ -1503,23 +1158,17 @@ const InitiateMultipartUploadInputSchema = z
 
 const VaultLockPolicySchema = z
   .object({
-    Policy: StringSchema.and(
-      z.any().openapi({ description: 'The vault lock policy.' }),
-    ).exactOptional(),
+    Policy: StringSchema.exactOptional().openapi({ description: 'The vault lock policy.' }),
   })
   .openapi({ description: 'Contains the vault lock policy.', required: [] })
   .openapi('VaultLockPolicy')
 
 const InitiateVaultLockInputSchema = z
   .object({
-    policy: VaultLockPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The vault lock policy as a JSON string, which uses "\\" as an escape character.',
-        }),
-    ).exactOptional(),
+    policy: VaultLockPolicySchema.exactOptional().openapi({
+      description:
+        'The vault lock policy as a JSON string, which uses "\\" as an escape character.',
+    }),
   })
   .openapi({
     title: 'InitiateVaultLockInput',
@@ -1529,7 +1178,7 @@ const InitiateVaultLockInputSchema = z
   .openapi('InitiateVaultLockInput')
 
 const ListJobsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListJobsInput',
     description: 'Provides options for retrieving a job list for an Amazon S3 Glacier vault.',
@@ -1537,7 +1186,7 @@ const ListJobsInputSchema = z
   .openapi('ListJobsInput')
 
 const ListMultipartUploadsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListMultipartUploadsInput',
     description:
@@ -1546,7 +1195,7 @@ const ListMultipartUploadsInputSchema = z
   .openapi('ListMultipartUploadsInput')
 
 const ListPartsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListPartsInput',
     description:
@@ -1555,12 +1204,12 @@ const ListPartsInputSchema = z
   .openapi('ListPartsInput')
 
 const ListProvisionedCapacityInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListProvisionedCapacityInput' })
   .openapi('ListProvisionedCapacityInput')
 
 const ListTagsForVaultInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListTagsForVaultInput',
     description: 'The input value for <code>ListTagsForVaultInput</code>.',
@@ -1568,7 +1217,7 @@ const ListTagsForVaultInputSchema = z
   .openapi('ListTagsForVaultInput')
 
 const ListVaultsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListVaultsInput',
     description:
@@ -1577,7 +1226,7 @@ const ListVaultsInputSchema = z
   .openapi('ListVaultsInput')
 
 const PurchaseProvisionedCapacityInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'PurchaseProvisionedCapacityInput' })
   .openapi('PurchaseProvisionedCapacityInput')
 
@@ -1585,13 +1234,9 @@ const TagKeyListSchema = z.array(StringSchema).openapi('TagKeyList')
 
 const RemoveTagsFromVaultInputSchema = z
   .object({
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of tag keys. Each corresponding tag is removed from the vault.',
-        }),
-    ).exactOptional(),
+    TagKeys: TagKeyListSchema.exactOptional().openapi({
+      description: 'A list of tag keys. Each corresponding tag is removed from the vault.',
+    }),
   })
   .openapi({
     title: 'RemoveTagsFromVaultInput',
@@ -1602,9 +1247,9 @@ const RemoveTagsFromVaultInputSchema = z
 
 const SetDataRetrievalPolicyInputSchema = z
   .object({
-    Policy: DataRetrievalPolicySchema.and(
-      z.any().openapi({ description: 'The data retrieval policy in JSON format.' }),
-    ).exactOptional(),
+    Policy: DataRetrievalPolicySchema.exactOptional().openapi({
+      description: 'The data retrieval policy in JSON format.',
+    }),
   })
   .openapi({
     title: 'SetDataRetrievalPolicyInput',
@@ -1615,9 +1260,9 @@ const SetDataRetrievalPolicyInputSchema = z
 
 const SetVaultAccessPolicyInputSchema = z
   .object({
-    policy: VaultAccessPolicySchema.and(
-      z.any().openapi({ description: 'The vault access policy as a JSON string.' }),
-    ).exactOptional(),
+    policy: VaultAccessPolicySchema.exactOptional().openapi({
+      description: 'The vault access policy as a JSON string.',
+    }),
   })
   .openapi({
     title: 'SetVaultAccessPolicyInput',
@@ -1628,11 +1273,9 @@ const SetVaultAccessPolicyInputSchema = z
 
 const SetVaultNotificationsInputSchema = z
   .object({
-    vaultNotificationConfig: VaultNotificationConfigSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Provides options for specifying notification configuration.' }),
-    ).exactOptional(),
+    vaultNotificationConfig: VaultNotificationConfigSchema.exactOptional().openapi({
+      description: 'Provides options for specifying notification configuration.',
+    }),
   })
   .openapi({
     title: 'SetVaultNotificationsInput',
@@ -1645,9 +1288,7 @@ const SetVaultNotificationsInputSchema = z
 const TagKeySchema = z.string().openapi('TagKey')
 
 const UploadArchiveInputSchema = z
-  .object({
-    body: StreamSchema.and(z.any().openapi({ description: 'The data to upload.' })).exactOptional(),
-  })
+  .object({ body: StreamSchema.exactOptional().openapi({ description: 'The data to upload.' }) })
   .openapi({
     title: 'UploadArchiveInput',
     description: 'Provides options to add an archive to a vault.',
@@ -1656,9 +1297,7 @@ const UploadArchiveInputSchema = z
   .openapi('UploadArchiveInput')
 
 const UploadMultipartPartInputSchema = z
-  .object({
-    body: StreamSchema.and(z.any().openapi({ description: 'The data to upload.' })).exactOptional(),
-  })
+  .object({ body: StreamSchema.exactOptional().openapi({ description: 'The data to upload.' }) })
   .openapi({
     title: 'UploadMultipartPartInput',
     description: 'Provides options to upload a part of an archive in a multipart upload operation.',
@@ -2252,9 +1891,9 @@ export const postAccountIdVaultsVaultNameLockPolicyRoute = createRoute({
             .object({
               policy: z
                 .object({
-                  Policy: StringSchema.and(
-                    z.any().openapi({ description: 'The vault lock policy.' }),
-                  ).exactOptional(),
+                  Policy: StringSchema.exactOptional().openapi({
+                    description: 'The vault lock policy.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Contains the vault lock policy.', required: [] }),
@@ -2907,9 +2546,9 @@ export const putAccountIdVaultsVaultNameAccessPolicyRoute = createRoute({
             .object({
               policy: z
                 .object({
-                  Policy: StringSchema.and(
-                    z.any().openapi({ description: 'The vault access policy.' }),
-                  ).exactOptional(),
+                  Policy: StringSchema.exactOptional().openapi({
+                    description: 'The vault access policy.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Contains the vault access policy.', required: [] }),
@@ -3118,22 +2757,14 @@ export const putAccountIdVaultsVaultNameNotificationConfigurationRoute = createR
             .object({
               vaultNotificationConfig: z
                 .object({
-                  SNSTopic: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Simple Notification Service (Amazon SNS) topic Amazon Resource Name (ARN).',
-                      }),
-                  ).exactOptional(),
-                  Events: NotificationEventListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of one or more events for which Amazon S3 Glacier will send a notification to the specified Amazon SNS topic.',
-                      }),
-                  ).exactOptional(),
+                  SNSTopic: StringSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon Simple Notification Service (Amazon SNS) topic Amazon Resource Name (ARN).',
+                  }),
+                  Events: NotificationEventListSchema.exactOptional().openapi({
+                    description:
+                      'A list of one or more events for which Amazon S3 Glacier will send a notification to the specified Amazon SNS topic.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3396,14 +3027,10 @@ export const putAccountIdPoliciesDataRetrievalRoute = createRoute({
             .object({
               Policy: z
                 .object({
-                  Rules: DataRetrievalRulesListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The policy rule. Although this is a list type, currently there must be only one rule, which contains a Strategy field and optionally a BytesPerHour field.',
-                      }),
-                  ).exactOptional(),
+                  Rules: DataRetrievalRulesListSchema.exactOptional().openapi({
+                    description:
+                      'The policy rule. Although this is a list type, currently there must be only one rule, which contains a Strategy field and optionally a BytesPerHour field.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Data retrieval policy.', required: [] }),
@@ -3689,80 +3316,45 @@ export const postAccountIdVaultsVaultNameJobsRoute = createRoute({
             .object({
               jobParameters: z
                 .object({
-                  Format: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'When initiating a job to retrieve a vault inventory, you can optionally add this parameter to your request to specify the output format. If you are initiating an inventory job and do not specify a Format field, JSON is the default format. Valid values are "CSV" and "JSON".',
-                      }),
-                  ).exactOptional(),
-                  Type: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The job type. You can initiate a job to perform a select query on an archive, retrieve an archive, or get an inventory of a vault. Valid values are "select", "archive-retrieval" and "inventory-retrieval".',
-                      }),
-                  ).exactOptional(),
-                  ArchiveId: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ID of the archive that you want to retrieve. This field is required only if <code>Type</code> is set to <code>select</code> or <code>archive-retrieval</code>code&gt;. An error occurs if you specify this request parameter for an inventory retrieval job request. ',
-                      }),
-                  ).exactOptional(),
-                  Description: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The optional description for the job. The description must be less than or equal to 1,024 bytes. The allowable characters are 7-bit ASCII without control codes-specifically, ASCII values 32-126 decimal or 0x20-0x7E hexadecimal.',
-                      }),
-                  ).exactOptional(),
-                  SNSTopic: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon SNS topic ARN to which Amazon S3 Glacier sends a notification when the job is completed and the output is ready for you to download. The specified topic publishes the notification to its subscribers. The SNS topic must exist.',
-                      }),
-                  ).exactOptional(),
-                  RetrievalByteRange: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The byte range to retrieve for an archive retrieval. in the form "<i>StartByteValue</i>-<i>EndByteValue</i>" If not specified, the whole archive is retrieved. If specified, the byte range must be megabyte (1024*1024) aligned which means that <i>StartByteValue</i> must be divisible by 1 MB and <i>EndByteValue</i> plus 1 must be divisible by 1 MB or be the end of the archive specified as the archive byte size value minus 1. If RetrievalByteRange is not megabyte aligned, this operation returns a 400 response. </p> <p>An error occurs if you specify this field for an inventory retrieval job request.</p>',
-                      }),
-                  ).exactOptional(),
-                  Tier: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The tier to use for a select or an archive retrieval job. Valid values are <code>Expedited</code>, <code>Standard</code>, or <code>Bulk</code>. <code>Standard</code> is the default.',
-                      }),
-                  ).exactOptional(),
-                  InventoryRetrievalParameters: InventoryRetrievalJobInputSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Input parameters used for range inventory retrieval.',
-                      }),
-                  ).exactOptional(),
-                  SelectParameters: SelectParametersSchema.and(
-                    z.any().openapi({ description: 'Contains the parameters that define a job.' }),
-                  ).exactOptional(),
-                  OutputLocation: OutputLocationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Contains information about the location where the select job results are stored.',
-                      }),
-                  ).exactOptional(),
+                  Format: StringSchema.exactOptional().openapi({
+                    description:
+                      'When initiating a job to retrieve a vault inventory, you can optionally add this parameter to your request to specify the output format. If you are initiating an inventory job and do not specify a Format field, JSON is the default format. Valid values are "CSV" and "JSON".',
+                  }),
+                  Type: StringSchema.exactOptional().openapi({
+                    description:
+                      'The job type. You can initiate a job to perform a select query on an archive, retrieve an archive, or get an inventory of a vault. Valid values are "select", "archive-retrieval" and "inventory-retrieval".',
+                  }),
+                  ArchiveId: StringSchema.exactOptional().openapi({
+                    description:
+                      'The ID of the archive that you want to retrieve. This field is required only if <code>Type</code> is set to <code>select</code> or <code>archive-retrieval</code>code&gt;. An error occurs if you specify this request parameter for an inventory retrieval job request. ',
+                  }),
+                  Description: StringSchema.exactOptional().openapi({
+                    description:
+                      'The optional description for the job. The description must be less than or equal to 1,024 bytes. The allowable characters are 7-bit ASCII without control codes-specifically, ASCII values 32-126 decimal or 0x20-0x7E hexadecimal.',
+                  }),
+                  SNSTopic: StringSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon SNS topic ARN to which Amazon S3 Glacier sends a notification when the job is completed and the output is ready for you to download. The specified topic publishes the notification to its subscribers. The SNS topic must exist.',
+                  }),
+                  RetrievalByteRange: StringSchema.exactOptional().openapi({
+                    description:
+                      '<p>The byte range to retrieve for an archive retrieval. in the form "<i>StartByteValue</i>-<i>EndByteValue</i>" If not specified, the whole archive is retrieved. If specified, the byte range must be megabyte (1024*1024) aligned which means that <i>StartByteValue</i> must be divisible by 1 MB and <i>EndByteValue</i> plus 1 must be divisible by 1 MB or be the end of the archive specified as the archive byte size value minus 1. If RetrievalByteRange is not megabyte aligned, this operation returns a 400 response. </p> <p>An error occurs if you specify this field for an inventory retrieval job request.</p>',
+                  }),
+                  Tier: StringSchema.exactOptional().openapi({
+                    description:
+                      'The tier to use for a select or an archive retrieval job. Valid values are <code>Expedited</code>, <code>Standard</code>, or <code>Bulk</code>. <code>Standard</code> is the default.',
+                  }),
+                  InventoryRetrievalParameters:
+                    InventoryRetrievalJobInputSchema.exactOptional().openapi({
+                      description: 'Input parameters used for range inventory retrieval.',
+                    }),
+                  SelectParameters: SelectParametersSchema.exactOptional().openapi({
+                    description: 'Contains the parameters that define a job.',
+                  }),
+                  OutputLocation: OutputLocationSchema.exactOptional().openapi({
+                    description:
+                      'Contains information about the location where the select job results are stored.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Provides options for defining a job.', required: [] }),

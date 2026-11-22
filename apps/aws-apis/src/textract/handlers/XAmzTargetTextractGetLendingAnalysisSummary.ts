@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetTextractGetLendingAnalysisSummaryHandler = app.openapi(
   postXAmzTargetTextractGetLendingAnalysisSummaryRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

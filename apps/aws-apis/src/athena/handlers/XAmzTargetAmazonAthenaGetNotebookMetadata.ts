@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAmazonAthenaGetNotebookMetadataHandler = app.openapi(
   postXAmzTargetAmazonAthenaGetNotebookMetadataRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

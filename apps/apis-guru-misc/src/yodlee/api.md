@@ -6,7 +6,7 @@ This file describes the Yodlee Platform APIs using the swagger notation. You can
 
 Base URLs:
 
-* <a href="https://api.apis.guru/">https://api.apis.guru/</a>
+* <a href="/">/</a>
 
 <a href="https://developer.yodlee.com/terms/condition">Terms of service</a>
 Email: <a href="mailto:developer@yodlee.com">developer@yodlee.com</a> 

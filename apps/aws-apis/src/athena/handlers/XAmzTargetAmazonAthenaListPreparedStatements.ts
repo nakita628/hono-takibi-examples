@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAmazonAthenaListPreparedStatementsHandler = app.openapi(
   postXAmzTargetAmazonAthenaListPreparedStatementsRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

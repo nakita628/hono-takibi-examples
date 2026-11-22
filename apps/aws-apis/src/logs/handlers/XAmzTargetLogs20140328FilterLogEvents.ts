@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetLogs20140328FilterLogEventsHandler = app.openapi(
   postXAmzTargetLogs20140328FilterLogEventsRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const channelsEngagementHandler = app.openapi(
   getApiV1EngagementDashboardChannelsListRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

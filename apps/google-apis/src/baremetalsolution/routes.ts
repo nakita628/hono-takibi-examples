@@ -1,171 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AllowedClientSchema = z
-  .object({
-    allowDev: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Allow dev flag. Which controls whether to allow creation of devices.',
-      }),
-    allowSuid: z.boolean().exactOptional().openapi({ description: 'Allow the setuid flag.' }),
-    allowedClientsCidr: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The subnet of IP addresses permitted to access the share.' }),
-    mountPermissions: z
-      .enum(['MOUNT_PERMISSIONS_UNSPECIFIED', 'READ', 'READ_WRITE'])
-      .exactOptional()
-      .openapi({ description: 'Mount permissions.' }),
-    network: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The network the access point sits on.' }),
-    nfsPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The path to access NFS, in format shareIP:/InstanceID InstanceID is the generated ID instead of customer provided name. example like "10.0.0.0:/g123456789-nfs001"',
-        readOnly: true,
-      }),
-    noRootSquash: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Disable root squashing, which is a feature of NFS. Root squash is a special mapping of the remote superuser (root) identity when using identity authentication.',
-      }),
-    shareIp: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. The IP address of the share on this network. Assigned automatically during provisioning based on the network's services_cidr.",
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: "Represents an 'access point' for the share.", required: [] })
-  .openapi('AllowedClient')
-
-const DetachLunRequestSchema = z
-  .object({
-    lun: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Name of the Lun to detach.' }),
-    skipReboot: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true, performs lun unmapping without instance reboot.' }),
-  })
-  .openapi({ description: 'Message for detach specific LUN from an Instance.', required: [] })
-  .openapi('DetachLunRequest')
-
-const DisableInteractiveSerialConsoleRequestSchema = z
-  .object({})
-  .openapi({ description: 'Message for disabling the interactive serial console on an instance.' })
-  .openapi('DisableInteractiveSerialConsoleRequest')
-
-const EmptySchema = z
-  .object({})
-  .openapi({
-    description:
-      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
-  })
-  .openapi('Empty')
-
-const EnableInteractiveSerialConsoleRequestSchema = z
-  .object({})
-  .openapi({ description: 'Message for enabling the interactive serial console on an instance.' })
-  .openapi('EnableInteractiveSerialConsoleRequest')
-
-const EvictLunRequestSchema = z
-  .object({})
-  .openapi({ description: 'Request for skip lun cooloff and delete it.' })
-  .openapi('EvictLunRequest')
-
-const EvictVolumeRequestSchema = z
-  .object({})
-  .openapi({ description: 'Request for skip volume cooloff and delete it.' })
-  .openapi('EvictVolumeRequest')
-
-const GoogleCloudBaremetalsolutionV2ServerNetworkTemplateLogicalInterfaceSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Interface name. This is not a globally unique identifier. Name is unique only inside the ServerNetworkTemplate. This is of syntax or and forms part of the network template name.',
-      }),
-    required: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true, interface must have network connected.' }),
-    type: z
-      .enum(['INTERFACE_TYPE_UNSPECIFIED', 'BOND', 'NIC'])
-      .exactOptional()
-      .openapi({ description: 'Interface type.' }),
-  })
-  .openapi({ description: 'Logical interface.', required: [] })
-  .openapi('GoogleCloudBaremetalsolutionV2ServerNetworkTemplateLogicalInterface')
-
-const ServerNetworkTemplateSchema = z
-  .object({
-    applicableInstanceTypes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Instance types this template is applicable to.' }),
-    logicalInterfaces: z
-      .array(GoogleCloudBaremetalsolutionV2ServerNetworkTemplateLogicalInterfaceSchema)
-      .exactOptional()
-      .openapi({ description: 'Logical interfaces.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Template\'s unique name. The full resource name follows the pattern: `projects/{project}/locations/{location}/serverNetworkTemplate/{server_network_template}` Generally, the {server_network_template} follows the syntax of "bond" or "nic".',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Network template.', required: [] })
-  .openapi('ServerNetworkTemplate')
-
-const OSImageSchema = z
-  .object({
-    applicableInstanceTypes: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Instance types this image is applicable to. [Available types](https://cloud.google.com/bare-metal/docs/bms-planning#server_configurations)',
-      }),
-    code: z.string().exactOptional().openapi({ description: 'OS Image code.' }),
-    description: z.string().exactOptional().openapi({ description: 'OS Image description.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Output only. OS Image's unique name.", readOnly: true }),
-    supportedNetworkTemplates: z
-      .array(ServerNetworkTemplateSchema)
-      .exactOptional()
-      .openapi({ description: 'Network templates that can be used with this OS Image.' }),
-  })
-  .openapi({ description: 'Operation System image.', required: [] })
-  .openapi('OSImage')
-
-const FetchInstanceProvisioningSettingsResponseSchema = z
-  .object({
-    images: z
-      .array(OSImageSchema)
-      .exactOptional()
-      .openapi({ description: 'The OS images available.' }),
-  })
-  .openapi({ description: 'Response with all provisioning settings.', required: [] })
-  .openapi('FetchInstanceProvisioningSettingsResponse')
-
 const LogicalNetworkInterfaceSchema = z
   .object({
     defaultGateway: z
@@ -760,6 +594,25 @@ const InstanceSchema = z
   .openapi({ description: 'A server.', required: [] })
   .openapi('Instance')
 
+type ListInstancesResponseType = {
+  instances?: z.infer<typeof InstanceSchema>[]
+  nextPageToken?: string
+  unreachable?: string[]
+}
+
+const NetworkUsageSchema = z
+  .object({
+    network: NetworkSchema.exactOptional().openapi({ description: 'Network.' }),
+    usedIps: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'All used IP addresses in this network.' }),
+  })
+  .openapi({ description: 'Network with all used IP addresses.', required: [] })
+  .openapi('NetworkUsage')
+
+type ListNetworkUsageResponseType = { networks?: z.infer<typeof NetworkUsageSchema>[] }
+
 const NetworkAddressSchema = z
   .object({
     address: z
@@ -855,6 +708,461 @@ const InstanceConfigSchema = z
   .openapi({ description: 'Configuration parameters for a new instance.', required: [] })
   .openapi('InstanceConfig')
 
+const IntakeVlanAttachmentSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'Identifier of the VLAN attachment.' }),
+    pairingKey: z.string().exactOptional().openapi({ description: 'Attachment pairing key.' }),
+  })
+  .openapi({ description: 'A GCP vlan attachment.', required: [] })
+  .openapi('IntakeVlanAttachment')
+
+const NetworkConfigSchema = z
+  .object({
+    bandwidth: z
+      .enum(['BANDWIDTH_UNSPECIFIED', 'BW_1_GBPS', 'BW_2_GBPS', 'BW_5_GBPS', 'BW_10_GBPS'])
+      .exactOptional()
+      .openapi({ description: 'Interconnect bandwidth. Set only when type is CLIENT.' }),
+    cidr: z.string().exactOptional().openapi({ description: 'CIDR range of the network.' }),
+    gcpService: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The GCP service of the network. Available gcp_service are in https://cloud.google.com/bare-metal/docs/bms-planning.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A transient unique identifier to identify a volume within an ProvisioningConfig request.',
+      }),
+    jumboFramesEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'The JumboFramesEnabled option for customer to set.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The name of the network config.', readOnly: true }),
+    serviceCidr: z
+      .enum(['SERVICE_CIDR_UNSPECIFIED', 'DISABLED', 'HIGH_26', 'HIGH_27', 'HIGH_28'])
+      .exactOptional()
+      .openapi({ description: 'Service CIDR, if any.' }),
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'CLIENT', 'PRIVATE'])
+      .exactOptional()
+      .openapi({ description: 'The type of this network, either Client or Private.' }),
+    userNote: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'User note field, it can be used by customers to add additional information for the BMS Ops team .',
+      }),
+    vlanAttachments: z
+      .array(IntakeVlanAttachmentSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of VLAN attachments. As of now there are always 2 attachments, but it is going to change in the future (multi vlan).',
+      }),
+    vlanSameProject: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the VLAN attachment pair is located in the same project.' }),
+  })
+  .openapi({ description: 'Configuration parameters for a new network.', required: [] })
+  .openapi('NetworkConfig')
+
+const LunRangeSchema = z
+  .object({
+    quantity: z.int32().exactOptional().openapi({ description: 'Number of LUNs to create.' }),
+    sizeGb: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The requested size of each LUN, in GB.' }),
+  })
+  .openapi({ description: 'A LUN(Logical Unit Number) range.', required: [] })
+  .openapi('LunRange')
+
+const NfsExportSchema = z
+  .object({
+    allowDev: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Allow dev flag in NfsShare AllowedClientsRequest.' }),
+    allowSuid: z.boolean().exactOptional().openapi({ description: 'Allow the setuid flag.' }),
+    cidr: z.string().exactOptional().openapi({ description: 'A CIDR range.' }),
+    machineId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Either a single machine, identified by an ID, or a comma-separated list of machine IDs.',
+      }),
+    networkId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Network to use to publish the export.' }),
+    noRootSquash: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Disable root squashing, which is a feature of NFS. Root squash is a special mapping of the remote superuser (root) identity when using identity authentication.',
+      }),
+    permissions: z
+      .enum(['PERMISSIONS_UNSPECIFIED', 'READ_ONLY', 'READ_WRITE'])
+      .exactOptional()
+      .openapi({ description: 'Export permissions.' }),
+  })
+  .openapi({ description: 'A NFS export entry.', required: [] })
+  .openapi('NfsExport')
+
+const VolumeConfigSchema = z
+  .object({
+    gcpService: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The GCP service of the storage volume. Available gcp_service are in https://cloud.google.com/bare-metal/docs/bms-planning.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A transient unique identifier to identify a volume within an ProvisioningConfig request.',
+      }),
+    lunRanges: z
+      .array(LunRangeSchema)
+      .exactOptional()
+      .openapi({
+        description: 'LUN ranges to be configured. Set only when protocol is PROTOCOL_FC.',
+      }),
+    machineIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Machine ids connected to this volume. Set only when protocol is PROTOCOL_FC.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The name of the volume config.', readOnly: true }),
+    nfsExports: z
+      .array(NfsExportSchema)
+      .exactOptional()
+      .openapi({ description: 'NFS exports. Set only when protocol is PROTOCOL_NFS.' }),
+    performanceTier: z
+      .enum([
+        'VOLUME_PERFORMANCE_TIER_UNSPECIFIED',
+        'VOLUME_PERFORMANCE_TIER_SHARED',
+        'VOLUME_PERFORMANCE_TIER_ASSIGNED',
+        'VOLUME_PERFORMANCE_TIER_HT',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Performance tier of the Volume. Default is SHARED.' }),
+    protocol: z
+      .enum(['PROTOCOL_UNSPECIFIED', 'PROTOCOL_FC', 'PROTOCOL_NFS'])
+      .exactOptional()
+      .openapi({ description: 'Volume protocol.' }),
+    sizeGb: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The requested size of this volume, in GB.' }),
+    snapshotsEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether snapshots should be enabled.' }),
+    storageAggregatePool: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Input only. Name of the storage aggregate pool to allocate the volume in. Can be used only for VOLUME_PERFORMANCE_TIER_ASSIGNED volumes.',
+      }),
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'FLASH', 'DISK'])
+      .exactOptional()
+      .openapi({ description: 'The type of this Volume.' }),
+    userNote: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'User note field, it can be used by customers to add additional information for the BMS Ops team .',
+      }),
+  })
+  .openapi({ description: 'Configuration parameters for a new volume.', required: [] })
+  .openapi('VolumeConfig')
+
+const ProvisioningConfigSchema = z
+  .object({
+    cloudConsoleUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. URI to Cloud Console UI view of this provisioning config.',
+        readOnly: true,
+      }),
+    customId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. The user-defined identifier of the provisioning config.',
+      }),
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Email provided to send a confirmation with provisioning config to. Deprecated in favour of email field in request messages.',
+      }),
+    handoverServiceAccount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A service account to enable customers to access instance credentials upon handover.',
+      }),
+    instances: z
+      .array(InstanceConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'Instances to be created.' }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Location name of this ProvisioningConfig. It is optional only for Intake UI transition period.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The system-generated name of the provisioning config. This follows the UUID format.',
+        readOnly: true,
+      }),
+    networks: z
+      .array(NetworkConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'Networks to be created.' }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'DRAFT',
+        'SUBMITTED',
+        'PROVISIONING',
+        'PROVISIONED',
+        'VALIDATED',
+        'CANCELLED',
+        'FAILED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Output only. State of ProvisioningConfig.', readOnly: true }),
+    statusMessage: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional status messages associated with the FAILED state.' }),
+    ticketId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A generated ticket id to track provisioning request.' }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Last update timestamp.', readOnly: true }),
+    volumes: z
+      .array(VolumeConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'Volumes to be created.' }),
+    vpcScEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, VPC SC is enabled for the cluster.' }),
+  })
+  .openapi({ description: 'A provisioning configuration.', required: [] })
+  .openapi('ProvisioningConfig')
+
+type SubmitProvisioningConfigRequestType = {
+  email?: string
+  provisioningConfig?: z.infer<typeof ProvisioningConfigSchema>
+}
+
+type SubmitProvisioningConfigResponseType = {
+  provisioningConfig?: z.infer<typeof ProvisioningConfigSchema>
+}
+
+const AllowedClientSchema = z
+  .object({
+    allowDev: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Allow dev flag. Which controls whether to allow creation of devices.',
+      }),
+    allowSuid: z.boolean().exactOptional().openapi({ description: 'Allow the setuid flag.' }),
+    allowedClientsCidr: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The subnet of IP addresses permitted to access the share.' }),
+    mountPermissions: z
+      .enum(['MOUNT_PERMISSIONS_UNSPECIFIED', 'READ', 'READ_WRITE'])
+      .exactOptional()
+      .openapi({ description: 'Mount permissions.' }),
+    network: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The network the access point sits on.' }),
+    nfsPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The path to access NFS, in format shareIP:/InstanceID InstanceID is the generated ID instead of customer provided name. example like "10.0.0.0:/g123456789-nfs001"',
+        readOnly: true,
+      }),
+    noRootSquash: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Disable root squashing, which is a feature of NFS. Root squash is a special mapping of the remote superuser (root) identity when using identity authentication.',
+      }),
+    shareIp: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The IP address of the share on this network. Assigned automatically during provisioning based on the network's services_cidr.",
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: "Represents an 'access point' for the share.", required: [] })
+  .openapi('AllowedClient')
+
+const DetachLunRequestSchema = z
+  .object({
+    lun: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Name of the Lun to detach.' }),
+    skipReboot: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, performs lun unmapping without instance reboot.' }),
+  })
+  .openapi({ description: 'Message for detach specific LUN from an Instance.', required: [] })
+  .openapi('DetachLunRequest')
+
+const DisableInteractiveSerialConsoleRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'Message for disabling the interactive serial console on an instance.' })
+  .openapi('DisableInteractiveSerialConsoleRequest')
+
+const EmptySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
+  })
+  .openapi('Empty')
+
+const EnableInteractiveSerialConsoleRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'Message for enabling the interactive serial console on an instance.' })
+  .openapi('EnableInteractiveSerialConsoleRequest')
+
+const EvictLunRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'Request for skip lun cooloff and delete it.' })
+  .openapi('EvictLunRequest')
+
+const EvictVolumeRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'Request for skip volume cooloff and delete it.' })
+  .openapi('EvictVolumeRequest')
+
+const GoogleCloudBaremetalsolutionV2ServerNetworkTemplateLogicalInterfaceSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Interface name. This is not a globally unique identifier. Name is unique only inside the ServerNetworkTemplate. This is of syntax or and forms part of the network template name.',
+      }),
+    required: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true, interface must have network connected.' }),
+    type: z
+      .enum(['INTERFACE_TYPE_UNSPECIFIED', 'BOND', 'NIC'])
+      .exactOptional()
+      .openapi({ description: 'Interface type.' }),
+  })
+  .openapi({ description: 'Logical interface.', required: [] })
+  .openapi('GoogleCloudBaremetalsolutionV2ServerNetworkTemplateLogicalInterface')
+
+const ServerNetworkTemplateSchema = z
+  .object({
+    applicableInstanceTypes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Instance types this template is applicable to.' }),
+    logicalInterfaces: z
+      .array(GoogleCloudBaremetalsolutionV2ServerNetworkTemplateLogicalInterfaceSchema)
+      .exactOptional()
+      .openapi({ description: 'Logical interfaces.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Template\'s unique name. The full resource name follows the pattern: `projects/{project}/locations/{location}/serverNetworkTemplate/{server_network_template}` Generally, the {server_network_template} follows the syntax of "bond" or "nic".',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Network template.', required: [] })
+  .openapi('ServerNetworkTemplate')
+
+const OSImageSchema = z
+  .object({
+    applicableInstanceTypes: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Instance types this image is applicable to. [Available types](https://cloud.google.com/bare-metal/docs/bms-planning#server_configurations)',
+      }),
+    code: z.string().exactOptional().openapi({ description: 'OS Image code.' }),
+    description: z.string().exactOptional().openapi({ description: 'OS Image description.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Output only. OS Image's unique name.", readOnly: true }),
+    supportedNetworkTemplates: z
+      .array(ServerNetworkTemplateSchema)
+      .exactOptional()
+      .openapi({ description: 'Network templates that can be used with this OS Image.' }),
+  })
+  .openapi({ description: 'Operation System image.', required: [] })
+  .openapi('OSImage')
+
+const FetchInstanceProvisioningSettingsResponseSchema = z
+  .object({
+    images: z
+      .array(OSImageSchema)
+      .exactOptional()
+      .openapi({ description: 'The OS images available.' }),
+  })
+  .openapi({ description: 'Response with all provisioning settings.', required: [] })
+  .openapi('FetchInstanceProvisioningSettingsResponse')
+
 const InstanceQuotaSchema = z
   .object({
     availableMachineCount: z
@@ -884,15 +1192,7 @@ const InstanceQuotaSchema = z
   .openapi({ description: 'A resource budget.', required: [] })
   .openapi('InstanceQuota')
 
-const IntakeVlanAttachmentSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'Identifier of the VLAN attachment.' }),
-    pairingKey: z.string().exactOptional().openapi({ description: 'Attachment pairing key.' }),
-  })
-  .openapi({ description: 'A GCP vlan attachment.', required: [] })
-  .openapi('IntakeVlanAttachment')
-
-const ListInstancesResponseSchema = z
+const ListInstancesResponseSchema: z.ZodType<ListInstancesResponseType> = z
   .object({
     instances: z
       .array(InstanceSchema)
@@ -992,18 +1292,7 @@ const ListLunsResponseSchema = z
   })
   .openapi('ListLunsResponse')
 
-const NetworkUsageSchema = z
-  .object({
-    network: NetworkSchema.exactOptional().openapi({ description: 'Network.' }),
-    usedIps: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'All used IP addresses in this network.' }),
-  })
-  .openapi({ description: 'Network with all used IP addresses.', required: [] })
-  .openapi('NetworkUsage')
-
-const ListNetworkUsageResponseSchema = z
+const ListNetworkUsageResponseSchema: z.ZodType<ListNetworkUsageResponseType> = z
   .object({
     networks: z
       .array(NetworkUsageSchema)
@@ -1280,110 +1569,6 @@ const ListVolumesResponseSchema = z
   })
   .openapi('ListVolumesResponse')
 
-const LunRangeSchema = z
-  .object({
-    quantity: z.int32().exactOptional().openapi({ description: 'Number of LUNs to create.' }),
-    sizeGb: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The requested size of each LUN, in GB.' }),
-  })
-  .openapi({ description: 'A LUN(Logical Unit Number) range.', required: [] })
-  .openapi('LunRange')
-
-const NetworkConfigSchema = z
-  .object({
-    bandwidth: z
-      .enum(['BANDWIDTH_UNSPECIFIED', 'BW_1_GBPS', 'BW_2_GBPS', 'BW_5_GBPS', 'BW_10_GBPS'])
-      .exactOptional()
-      .openapi({ description: 'Interconnect bandwidth. Set only when type is CLIENT.' }),
-    cidr: z.string().exactOptional().openapi({ description: 'CIDR range of the network.' }),
-    gcpService: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The GCP service of the network. Available gcp_service are in https://cloud.google.com/bare-metal/docs/bms-planning.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A transient unique identifier to identify a volume within an ProvisioningConfig request.',
-      }),
-    jumboFramesEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'The JumboFramesEnabled option for customer to set.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The name of the network config.', readOnly: true }),
-    serviceCidr: z
-      .enum(['SERVICE_CIDR_UNSPECIFIED', 'DISABLED', 'HIGH_26', 'HIGH_27', 'HIGH_28'])
-      .exactOptional()
-      .openapi({ description: 'Service CIDR, if any.' }),
-    type: z
-      .enum(['TYPE_UNSPECIFIED', 'CLIENT', 'PRIVATE'])
-      .exactOptional()
-      .openapi({ description: 'The type of this network, either Client or Private.' }),
-    userNote: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'User note field, it can be used by customers to add additional information for the BMS Ops team .',
-      }),
-    vlanAttachments: z
-      .array(IntakeVlanAttachmentSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of VLAN attachments. As of now there are always 2 attachments, but it is going to change in the future (multi vlan).',
-      }),
-    vlanSameProject: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the VLAN attachment pair is located in the same project.' }),
-  })
-  .openapi({ description: 'Configuration parameters for a new network.', required: [] })
-  .openapi('NetworkConfig')
-
-const NfsExportSchema = z
-  .object({
-    allowDev: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Allow dev flag in NfsShare AllowedClientsRequest.' }),
-    allowSuid: z.boolean().exactOptional().openapi({ description: 'Allow the setuid flag.' }),
-    cidr: z.string().exactOptional().openapi({ description: 'A CIDR range.' }),
-    machineId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Either a single machine, identified by an ID, or a comma-separated list of machine IDs.',
-      }),
-    networkId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Network to use to publish the export.' }),
-    noRootSquash: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Disable root squashing, which is a feature of NFS. Root squash is a special mapping of the remote superuser (root) identity when using identity authentication.',
-      }),
-    permissions: z
-      .enum(['PERMISSIONS_UNSPECIFIED', 'READ_ONLY', 'READ_WRITE'])
-      .exactOptional()
-      .openapi({ description: 'Export permissions.' }),
-  })
-  .openapi({ description: 'A NFS export entry.', required: [] })
-  .openapi('NfsExport')
-
 const StatusSchema = z
   .object({
     code: z
@@ -1478,174 +1663,6 @@ const OperationSchema = z
   })
   .openapi('Operation')
 
-const VolumeConfigSchema = z
-  .object({
-    gcpService: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The GCP service of the storage volume. Available gcp_service are in https://cloud.google.com/bare-metal/docs/bms-planning.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A transient unique identifier to identify a volume within an ProvisioningConfig request.',
-      }),
-    lunRanges: z
-      .array(LunRangeSchema)
-      .exactOptional()
-      .openapi({
-        description: 'LUN ranges to be configured. Set only when protocol is PROTOCOL_FC.',
-      }),
-    machineIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Machine ids connected to this volume. Set only when protocol is PROTOCOL_FC.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The name of the volume config.', readOnly: true }),
-    nfsExports: z
-      .array(NfsExportSchema)
-      .exactOptional()
-      .openapi({ description: 'NFS exports. Set only when protocol is PROTOCOL_NFS.' }),
-    performanceTier: z
-      .enum([
-        'VOLUME_PERFORMANCE_TIER_UNSPECIFIED',
-        'VOLUME_PERFORMANCE_TIER_SHARED',
-        'VOLUME_PERFORMANCE_TIER_ASSIGNED',
-        'VOLUME_PERFORMANCE_TIER_HT',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Performance tier of the Volume. Default is SHARED.' }),
-    protocol: z
-      .enum(['PROTOCOL_UNSPECIFIED', 'PROTOCOL_FC', 'PROTOCOL_NFS'])
-      .exactOptional()
-      .openapi({ description: 'Volume protocol.' }),
-    sizeGb: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The requested size of this volume, in GB.' }),
-    snapshotsEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether snapshots should be enabled.' }),
-    storageAggregatePool: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Input only. Name of the storage aggregate pool to allocate the volume in. Can be used only for VOLUME_PERFORMANCE_TIER_ASSIGNED volumes.',
-      }),
-    type: z
-      .enum(['TYPE_UNSPECIFIED', 'FLASH', 'DISK'])
-      .exactOptional()
-      .openapi({ description: 'The type of this Volume.' }),
-    userNote: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'User note field, it can be used by customers to add additional information for the BMS Ops team .',
-      }),
-  })
-  .openapi({ description: 'Configuration parameters for a new volume.', required: [] })
-  .openapi('VolumeConfig')
-
-const ProvisioningConfigSchema = z
-  .object({
-    cloudConsoleUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. URI to Cloud Console UI view of this provisioning config.',
-        readOnly: true,
-      }),
-    customId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. The user-defined identifier of the provisioning config.',
-      }),
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Email provided to send a confirmation with provisioning config to. Deprecated in favour of email field in request messages.',
-      }),
-    handoverServiceAccount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A service account to enable customers to access instance credentials upon handover.',
-      }),
-    instances: z
-      .array(InstanceConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'Instances to be created.' }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Location name of this ProvisioningConfig. It is optional only for Intake UI transition period.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The system-generated name of the provisioning config. This follows the UUID format.',
-        readOnly: true,
-      }),
-    networks: z
-      .array(NetworkConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'Networks to be created.' }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'DRAFT',
-        'SUBMITTED',
-        'PROVISIONING',
-        'PROVISIONED',
-        'VALIDATED',
-        'CANCELLED',
-        'FAILED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Output only. State of ProvisioningConfig.', readOnly: true }),
-    statusMessage: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional status messages associated with the FAILED state.' }),
-    ticketId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A generated ticket id to track provisioning request.' }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Last update timestamp.', readOnly: true }),
-    volumes: z
-      .array(VolumeConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'Volumes to be created.' }),
-    vpcScEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true, VPC SC is enabled for the cluster.' }),
-  })
-  .openapi({ description: 'A provisioning configuration.', required: [] })
-  .openapi('ProvisioningConfig')
-
 const RenameInstanceRequestSchema = z
   .object({
     newInstanceId: z
@@ -1687,7 +1704,7 @@ const RenameVolumeRequestSchema = z
   .openapi('RenameVolumeRequest')
 
 const ResetInstanceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Message requesting to reset a server.' })
   .openapi('ResetInstanceRequest')
 
@@ -1699,21 +1716,21 @@ const ResizeVolumeRequestSchema = z
   .openapi('ResizeVolumeRequest')
 
 const RestoreVolumeSnapshotRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Message for restoring a volume snapshot.' })
   .openapi('RestoreVolumeSnapshotRequest')
 
 const StartInstanceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Message requesting to start a server.' })
   .openapi('StartInstanceRequest')
 
 const StopInstanceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Message requesting to stop a server.' })
   .openapi('StopInstanceRequest')
 
-const SubmitProvisioningConfigRequestSchema = z
+const SubmitProvisioningConfigRequestSchema: z.ZodType<SubmitProvisioningConfigRequestType> = z
   .object({
     email: z
       .string()
@@ -1728,7 +1745,7 @@ const SubmitProvisioningConfigRequestSchema = z
   .openapi({ description: 'Request for SubmitProvisioningConfig.', required: [] })
   .openapi('SubmitProvisioningConfigRequest')
 
-const SubmitProvisioningConfigResponseSchema = z
+const SubmitProvisioningConfigResponseSchema: z.ZodType<SubmitProvisioningConfigResponseType> = z
   .object({
     provisioningConfig: ProvisioningConfigSchema.exactOptional().openapi({
       description: 'The submitted provisioning config.',

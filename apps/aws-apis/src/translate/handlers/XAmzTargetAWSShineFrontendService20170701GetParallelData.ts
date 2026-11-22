@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSShineFrontendService20170701GetParallelDataHandler = app.openapi(
   postXAmzTargetAWSShineFrontendService20170701GetParallelDataRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

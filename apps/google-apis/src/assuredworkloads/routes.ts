@@ -21,7 +21,7 @@ const GoogleCloudAssuredworkloadsV1beta1AcknowledgeViolationRequestSchema = z
   .openapi('GoogleCloudAssuredworkloadsV1beta1AcknowledgeViolationRequest')
 
 const GoogleCloudAssuredworkloadsV1beta1AcknowledgeViolationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response for violation acknowledgement' })
   .openapi('GoogleCloudAssuredworkloadsV1beta1AcknowledgeViolationResponse')
 
@@ -695,7 +695,7 @@ const GoogleCloudAssuredworkloadsV1beta1RestrictAllowedResourcesRequestSchema = 
   .openapi('GoogleCloudAssuredworkloadsV1beta1RestrictAllowedResourcesRequest')
 
 const GoogleCloudAssuredworkloadsV1beta1RestrictAllowedResourcesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response for restricting the list of allowed resources.' })
   .openapi('GoogleCloudAssuredworkloadsV1beta1RestrictAllowedResourcesResponse')
 
@@ -810,7 +810,7 @@ const GoogleLongrunningListOperationsResponseSchema = z
   .openapi('GoogleLongrunningListOperationsResponse')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

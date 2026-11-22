@@ -17,9 +17,9 @@ import type {
   postV2AuthRulesRoute,
 } from '../routes'
 
-export const postV2AuthRulesRouteHandler: RouteHandler<typeof postV2AuthRulesRoute> = async (
-  c,
-) => {}
+export const postV2AuthRulesRouteHandler: RouteHandler<typeof postV2AuthRulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
 export const getV2AuthRulesRouteHandler: RouteHandler<typeof getV2AuthRulesRoute> = async (c) => {
   throw new Error('Not implemented')

@@ -15,16 +15,12 @@ const RepositoryNameSchema = z
 
 const AssociateApprovalRuleTemplateWithRepositoryInputSchema = z
   .object({
-    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.and(
-      z.any().openapi({ description: 'The name for the approval rule template. ' }),
-    ),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository that you want to associate with the template.',
-        }),
-    ),
+    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.openapi({
+      description: 'The name for the approval rule template. ',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository that you want to associate with the template.',
+    }),
   })
   .openapi({
     required: ['approvalRuleTemplateName', 'repositoryName'],
@@ -76,27 +72,17 @@ const ErrorMessageSchema = z.string().openapi('ErrorMessage')
 
 const BatchAssociateApprovalRuleTemplateWithRepositoriesErrorSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository where the association was not made.' }),
-    ).exactOptional(),
-    errorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An error code that specifies whether the repository name was not valid or not found.',
-        }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An error message that provides details about why the repository name was not found or not valid.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The name of the repository where the association was not made.',
+    }),
+    errorCode: ErrorCodeSchema.exactOptional().openapi({
+      description:
+        'An error code that specifies whether the repository name was not valid or not found.',
+    }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description:
+        'An error message that provides details about why the repository name was not found or not valid.',
+    }),
   })
   .openapi({
     description:
@@ -111,44 +97,27 @@ const BatchAssociateApprovalRuleTemplateWithRepositoriesErrorsListSchema = z
 
 const BatchAssociateApprovalRuleTemplateWithRepositoriesOutputSchema = z
   .object({
-    associatedRepositoryNames: RepositoryNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of names of the repositories that have been associated with the template.',
-        }),
-    ),
-    errors: BatchAssociateApprovalRuleTemplateWithRepositoriesErrorsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of any errors that might have occurred while attempting to create the association between the template and the repositories.',
-        }),
-    ),
+    associatedRepositoryNames: RepositoryNameListSchema.openapi({
+      description:
+        'A list of names of the repositories that have been associated with the template.',
+    }),
+    errors: BatchAssociateApprovalRuleTemplateWithRepositoriesErrorsListSchema.openapi({
+      description:
+        'A list of any errors that might have occurred while attempting to create the association between the template and the repositories.',
+    }),
   })
   .openapi({ required: ['associatedRepositoryNames', 'errors'] })
   .openapi('BatchAssociateApprovalRuleTemplateWithRepositoriesOutput')
 
 const BatchAssociateApprovalRuleTemplateWithRepositoriesInputSchema = z
   .object({
-    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the template you want to associate with one or more repositories.',
-        }),
-    ),
-    repositoryNames: RepositoryNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The names of the repositories you want to associate with the template.</p> <note> <p>The length constraint limit is for each string in the array. The array itself can be empty.</p> </note>',
-        }),
-    ),
+    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.openapi({
+      description: 'The name of the template you want to associate with one or more repositories.',
+    }),
+    repositoryNames: RepositoryNameListSchema.openapi({
+      description:
+        '<p>The names of the repositories you want to associate with the template.</p> <note> <p>The length constraint limit is for each string in the array. The array itself can be empty.</p> </note>',
+    }),
   })
   .openapi({
     required: ['approvalRuleTemplateName', 'repositoryNames'],
@@ -168,23 +137,15 @@ const FileSizeSchema = z.int().openapi('FileSize')
 
 const FileSizesSchema = z
   .object({
-    source: FileSizeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The size of a file in the source of a merge or pull request.' }),
-    ).exactOptional(),
-    destination: FileSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The size of a file in the destination of a merge or pull request.',
-        }),
-    ).exactOptional(),
-    base: FileSizeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The size of a file in the base of a merge or pull request.' }),
-    ).exactOptional(),
+    source: FileSizeSchema.exactOptional().openapi({
+      description: 'The size of a file in the source of a merge or pull request.',
+    }),
+    destination: FileSizeSchema.exactOptional().openapi({
+      description: 'The size of a file in the destination of a merge or pull request.',
+    }),
+    base: FileSizeSchema.exactOptional().openapi({
+      description: 'The size of a file in the base of a merge or pull request.',
+    }),
   })
   .openapi({
     description: 'Information about the size of files in a merge or pull request.',
@@ -198,27 +159,15 @@ const FileModeTypeEnumSchema = z
 
 const FileModesSchema = z
   .object({
-    source: FileModeTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The file mode of a file in the source of a merge or pull request.',
-        }),
-    ).exactOptional(),
-    destination: FileModeTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The file mode of a file in the destination of a merge or pull request.',
-        }),
-    ).exactOptional(),
-    base: FileModeTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The file mode of a file in the base of a merge or pull request.',
-        }),
-    ).exactOptional(),
+    source: FileModeTypeEnumSchema.exactOptional().openapi({
+      description: 'The file mode of a file in the source of a merge or pull request.',
+    }),
+    destination: FileModeTypeEnumSchema.exactOptional().openapi({
+      description: 'The file mode of a file in the destination of a merge or pull request.',
+    }),
+    base: FileModeTypeEnumSchema.exactOptional().openapi({
+      description: 'The file mode of a file in the base of a merge or pull request.',
+    }),
   })
   .openapi({
     description: 'Information about file modes in a merge or pull request.',
@@ -232,15 +181,15 @@ const ObjectTypeEnumSchema = z
 
 const ObjectTypesSchema = z
   .object({
-    source: ObjectTypeEnumSchema.and(
-      z.any().openapi({ description: 'The type of the object in the source branch.' }),
-    ).exactOptional(),
-    destination: ObjectTypeEnumSchema.and(
-      z.any().openapi({ description: 'The type of the object in the destination branch.' }),
-    ).exactOptional(),
-    base: ObjectTypeEnumSchema.and(
-      z.any().openapi({ description: 'The type of the object in the base commit of the merge.' }),
-    ).exactOptional(),
+    source: ObjectTypeEnumSchema.exactOptional().openapi({
+      description: 'The type of the object in the source branch.',
+    }),
+    destination: ObjectTypeEnumSchema.exactOptional().openapi({
+      description: 'The type of the object in the destination branch.',
+    }),
+    base: ObjectTypeEnumSchema.exactOptional().openapi({
+      description: 'The type of the object in the base commit of the merge.',
+    }),
   })
   .openapi({
     description: 'Information about the type of an object in a merge operation.',
@@ -254,30 +203,18 @@ const CapitalBooleanSchema = z.boolean().openapi('CapitalBoolean')
 
 const IsBinaryFileSchema = z
   .object({
-    source: CapitalBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The binary or non-binary status of file in the source of a merge or pull request.',
-        }),
-    ).exactOptional(),
-    destination: CapitalBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The binary or non-binary status of a file in the destination of a merge or pull request.',
-        }),
-    ).exactOptional(),
-    base: CapitalBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The binary or non-binary status of a file in the base of a merge or pull request.',
-        }),
-    ).exactOptional(),
+    source: CapitalBooleanSchema.exactOptional().openapi({
+      description:
+        'The binary or non-binary status of file in the source of a merge or pull request.',
+    }),
+    destination: CapitalBooleanSchema.exactOptional().openapi({
+      description:
+        'The binary or non-binary status of a file in the destination of a merge or pull request.',
+    }),
+    base: CapitalBooleanSchema.exactOptional().openapi({
+      description:
+        'The binary or non-binary status of a file in the base of a merge or pull request.',
+    }),
   })
   .openapi({
     description:
@@ -296,21 +233,13 @@ const ChangeTypeEnumSchema = z.enum(['A', 'M', 'D']).openapi('ChangeTypeEnum')
 
 const MergeOperationsSchema = z
   .object({
-    source: ChangeTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The operation (add, modify, or delete) on a file in the source of a merge or pull request.',
-        }),
-    ).exactOptional(),
-    destination: ChangeTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The operation on a file in the destination of a merge or pull request.',
-        }),
-    ).exactOptional(),
+    source: ChangeTypeEnumSchema.exactOptional().openapi({
+      description:
+        'The operation (add, modify, or delete) on a file in the source of a merge or pull request.',
+    }),
+    destination: ChangeTypeEnumSchema.exactOptional().openapi({
+      description: 'The operation on a file in the destination of a merge or pull request.',
+    }),
   })
   .openapi({
     description: 'Information about the file operation conflicts in a merge operation.',
@@ -320,80 +249,41 @@ const MergeOperationsSchema = z
 
 const ConflictMetadataSchema = z
   .object({
-    filePath: PathSchema.and(
-      z.any().openapi({ description: 'The path of the file that contains conflicts.' }),
-    ).exactOptional(),
-    fileSizes: FileSizesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The file sizes of the file in the source, destination, and base of the merge.',
-        }),
-    ).exactOptional(),
-    fileModes: FileModesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The file modes of the file in the source, destination, and base of the merge.',
-        }),
-    ).exactOptional(),
-    objectTypes: ObjectTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about any object type conflicts in a merge operation.',
-        }),
-    ).exactOptional(),
-    numberOfConflicts: NumberOfConflictsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of conflicts, including both hunk conflicts and metadata conflicts.',
-        }),
-    ).exactOptional(),
-    isBinaryFile: IsBinaryFileSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean value (true or false) indicating whether the file is binary or textual in the source, destination, and base of the merge.',
-        }),
-    ).exactOptional(),
-    contentConflict: IsContentConflictSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean value indicating whether there are conflicts in the content of a file.',
-        }),
-    ).exactOptional(),
-    fileModeConflict: IsFileModeConflictSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean value indicating whether there are conflicts in the file mode of a file.',
-        }),
-    ).exactOptional(),
-    objectTypeConflict: IsObjectTypeConflictSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean value (true or false) indicating whether there are conflicts between the branches in the object type of a file, folder, or submodule.',
-        }),
-    ).exactOptional(),
-    mergeOperations: MergeOperationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether an add, modify, or delete operation caused the conflict between the source and destination of the merge.',
-        }),
-    ).exactOptional(),
+    filePath: PathSchema.exactOptional().openapi({
+      description: 'The path of the file that contains conflicts.',
+    }),
+    fileSizes: FileSizesSchema.exactOptional().openapi({
+      description: 'The file sizes of the file in the source, destination, and base of the merge.',
+    }),
+    fileModes: FileModesSchema.exactOptional().openapi({
+      description: 'The file modes of the file in the source, destination, and base of the merge.',
+    }),
+    objectTypes: ObjectTypesSchema.exactOptional().openapi({
+      description: 'Information about any object type conflicts in a merge operation.',
+    }),
+    numberOfConflicts: NumberOfConflictsSchema.exactOptional().openapi({
+      description: 'The number of conflicts, including both hunk conflicts and metadata conflicts.',
+    }),
+    isBinaryFile: IsBinaryFileSchema.exactOptional().openapi({
+      description:
+        'A boolean value (true or false) indicating whether the file is binary or textual in the source, destination, and base of the merge.',
+    }),
+    contentConflict: IsContentConflictSchema.exactOptional().openapi({
+      description:
+        'A boolean value indicating whether there are conflicts in the content of a file.',
+    }),
+    fileModeConflict: IsFileModeConflictSchema.exactOptional().openapi({
+      description:
+        'A boolean value indicating whether there are conflicts in the file mode of a file.',
+    }),
+    objectTypeConflict: IsObjectTypeConflictSchema.exactOptional().openapi({
+      description:
+        'A boolean value (true or false) indicating whether there are conflicts between the branches in the object type of a file, folder, or submodule.',
+    }),
+    mergeOperations: MergeOperationsSchema.exactOptional().openapi({
+      description:
+        'Whether an add, modify, or delete operation caused the conflict between the source and destination of the merge.',
+    }),
   })
   .openapi({
     description: 'Information about the metadata for a conflict in a merge operation.',
@@ -409,20 +299,16 @@ const HunkContentSchema = z.string().openapi('HunkContent')
 
 const MergeHunkDetailSchema = z
   .object({
-    startLine: LineNumberSchema.and(
-      z.any().openapi({ description: 'The start position of the hunk in the merge result.' }),
-    ).exactOptional(),
-    endLine: LineNumberSchema.and(
-      z.any().openapi({ description: 'The end position of the hunk in the merge result.' }),
-    ).exactOptional(),
-    hunkContent: HunkContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base-64 encoded content of the hunk merged region that might contain a conflict.',
-        }),
-    ).exactOptional(),
+    startLine: LineNumberSchema.exactOptional().openapi({
+      description: 'The start position of the hunk in the merge result.',
+    }),
+    endLine: LineNumberSchema.exactOptional().openapi({
+      description: 'The end position of the hunk in the merge result.',
+    }),
+    hunkContent: HunkContentSchema.exactOptional().openapi({
+      description:
+        'The base-64 encoded content of the hunk merged region that might contain a conflict.',
+    }),
   })
   .openapi({
     description:
@@ -433,36 +319,20 @@ const MergeHunkDetailSchema = z
 
 const MergeHunkSchema = z
   .object({
-    isConflict: IsHunkConflictSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value indicating whether a combination of hunks contains a conflict. Conflicts occur when the same file or the same lines in a file were modified in both the source and destination of a merge or pull request. Valid values include true, false, and null. True when the hunk represents a conflict and one or more files contains a line conflict. File mode conflicts in a merge do not set this to true.',
-        }),
-    ).exactOptional(),
-    source: MergeHunkDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the merge hunk in the source of a merge or pull request.',
-        }),
-    ).exactOptional(),
-    destination: MergeHunkDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the merge hunk in the destination of a merge or pull request.',
-        }),
-    ).exactOptional(),
-    base: MergeHunkDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the merge hunk in the base of a merge or pull request.',
-        }),
-    ).exactOptional(),
+    isConflict: IsHunkConflictSchema.exactOptional().openapi({
+      description:
+        'A Boolean value indicating whether a combination of hunks contains a conflict. Conflicts occur when the same file or the same lines in a file were modified in both the source and destination of a merge or pull request. Valid values include true, false, and null. True when the hunk represents a conflict and one or more files contains a line conflict. File mode conflicts in a merge do not set this to true.',
+    }),
+    source: MergeHunkDetailSchema.exactOptional().openapi({
+      description: 'Information about the merge hunk in the source of a merge or pull request.',
+    }),
+    destination: MergeHunkDetailSchema.exactOptional().openapi({
+      description:
+        'Information about the merge hunk in the destination of a merge or pull request.',
+    }),
+    base: MergeHunkDetailSchema.exactOptional().openapi({
+      description: 'Information about the merge hunk in the base of a merge or pull request.',
+    }),
   })
   .openapi({
     description: 'Information about merge hunks in a merge or pull request operation.',
@@ -474,17 +344,13 @@ const MergeHunksSchema = z.array(MergeHunkSchema).openapi('MergeHunks')
 
 const ConflictSchema = z
   .object({
-    conflictMetadata: ConflictMetadataSchema.and(
-      z.any().openapi({ description: 'Metadata about a conflict in a merge operation.' }),
-    ).exactOptional(),
-    mergeHunks: MergeHunksSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of hunks that contain the differences between files or lines causing the conflict.',
-        }),
-    ).exactOptional(),
+    conflictMetadata: ConflictMetadataSchema.exactOptional().openapi({
+      description: 'Metadata about a conflict in a merge operation.',
+    }),
+    mergeHunks: MergeHunksSchema.exactOptional().openapi({
+      description:
+        'A list of hunks that contain the differences between files or lines causing the conflict.',
+    }),
   })
   .openapi({ description: 'Information about conflicts in a merge operation.', required: [] })
   .openapi('Conflict')
@@ -499,13 +365,9 @@ const MessageSchema = z.string().openapi('Message')
 
 const BatchDescribeMergeConflictsErrorSchema = z
   .object({
-    filePath: PathSchema.and(z.any().openapi({ description: 'The path to the file.' })),
-    exceptionName: ExceptionNameSchema.and(
-      z.any().openapi({ description: 'The name of the exception.' }),
-    ),
-    message: MessageSchema.and(
-      z.any().openapi({ description: 'The message provided by the exception.' }),
-    ),
+    filePath: PathSchema.openapi({ description: 'The path to the file.' }),
+    exceptionName: ExceptionNameSchema.openapi({ description: 'The name of the exception.' }),
+    message: MessageSchema.openapi({ description: 'The message provided by the exception.' }),
   })
   .openapi({
     required: ['filePath', 'exceptionName', 'message'],
@@ -521,49 +383,29 @@ const ObjectIdSchema = z.string().openapi('ObjectId')
 
 const BatchDescribeMergeConflictsOutputSchema = z
   .object({
-    conflicts: ConflictsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of conflicts for each file, including the conflict metadata and the hunks of the differences between the files.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that can be used in a request to return the next batch of the results.',
-        }),
-    ).exactOptional(),
-    errors: BatchDescribeMergeConflictsErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of any errors returned while describing the merge conflicts for each file.',
-        }),
-    ).exactOptional(),
-    destinationCommitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The commit ID of the destination commit specifier that was used in the merge evaluation.',
-        }),
-    ),
-    sourceCommitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The commit ID of the source commit specifier that was used in the merge evaluation.',
-        }),
-    ),
-    baseCommitId: ObjectIdSchema.and(
-      z.any().openapi({ description: 'The commit ID of the merge base.' }),
-    ).exactOptional(),
+    conflicts: ConflictsSchema.openapi({
+      description:
+        'A list of conflicts for each file, including the conflict metadata and the hunks of the differences between the files.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that can be used in a request to return the next batch of the results.',
+    }),
+    errors: BatchDescribeMergeConflictsErrorsSchema.exactOptional().openapi({
+      description:
+        'A list of any errors returned while describing the merge conflicts for each file.',
+    }),
+    destinationCommitId: ObjectIdSchema.openapi({
+      description:
+        'The commit ID of the destination commit specifier that was used in the merge evaluation.',
+    }),
+    sourceCommitId: ObjectIdSchema.openapi({
+      description:
+        'The commit ID of the source commit specifier that was used in the merge evaluation.',
+    }),
+    baseCommitId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The commit ID of the merge base.',
+    }),
   })
   .openapi({ required: ['conflicts', 'destinationCommitId', 'sourceCommitId'] })
   .openapi('BatchDescribeMergeConflictsOutput')
@@ -588,77 +430,43 @@ const ConflictResolutionStrategyTypeEnumSchema = z
 
 const BatchDescribeMergeConflictsInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository that contains the merge conflicts you want to review.',
-        }),
-    ),
-    destinationCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    sourceCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    mergeOption: MergeOptionTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The merge option or strategy you want to use to merge the code.',
-        }),
-    ),
-    maxMergeHunks: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of merge hunks to include in the output.' }),
-    ).exactOptional(),
-    maxConflictFiles: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of files to include in the output.' }),
-    ).exactOptional(),
-    filePaths: FilePathsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path of the target files used to describe the conflicts. If not specified, the default is all conflict files.',
-        }),
-    ).exactOptional(),
-    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
-        }),
-    ).exactOptional(),
-    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that, when provided in a request, returns the next batch of the results.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description:
+        'The name of the repository that contains the merge conflicts you want to review.',
+    }),
+    destinationCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    sourceCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    mergeOption: MergeOptionTypeEnumSchema.openapi({
+      description: 'The merge option or strategy you want to use to merge the code.',
+    }),
+    maxMergeHunks: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of merge hunks to include in the output.',
+    }),
+    maxConflictFiles: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of files to include in the output.',
+    }),
+    filePaths: FilePathsSchema.exactOptional().openapi({
+      description:
+        'The path of the target files used to describe the conflicts. If not specified, the default is all conflict files.',
+    }),
+    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.exactOptional().openapi({
+      description:
+        'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
+    }),
+    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.exactOptional().openapi({
+      description:
+        'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that, when provided in a request, returns the next batch of the results.',
+    }),
   })
   .openapi({
     required: [
@@ -707,30 +515,18 @@ const MaximumItemsToCompareExceededExceptionSchema = z
 
 const BatchDisassociateApprovalRuleTemplateFromRepositoriesErrorSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository where the association with the template was not able to be removed.',
-        }),
-    ).exactOptional(),
-    errorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An error code that specifies whether the repository name was not valid or not found.',
-        }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An error message that provides details about why the repository name was either not found or not valid.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description:
+        'The name of the repository where the association with the template was not able to be removed.',
+    }),
+    errorCode: ErrorCodeSchema.exactOptional().openapi({
+      description:
+        'An error code that specifies whether the repository name was not valid or not found.',
+    }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description:
+        'An error message that provides details about why the repository name was either not found or not valid.',
+    }),
   })
   .openapi({
     description:
@@ -745,44 +541,28 @@ const BatchDisassociateApprovalRuleTemplateFromRepositoriesErrorsListSchema = z
 
 const BatchDisassociateApprovalRuleTemplateFromRepositoriesOutputSchema = z
   .object({
-    disassociatedRepositoryNames: RepositoryNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of repository names that have had their association with the template removed.',
-        }),
-    ),
-    errors: BatchDisassociateApprovalRuleTemplateFromRepositoriesErrorsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of any errors that might have occurred while attempting to remove the association between the template and the repositories.',
-        }),
-    ),
+    disassociatedRepositoryNames: RepositoryNameListSchema.openapi({
+      description:
+        'A list of repository names that have had their association with the template removed.',
+    }),
+    errors: BatchDisassociateApprovalRuleTemplateFromRepositoriesErrorsListSchema.openapi({
+      description:
+        'A list of any errors that might have occurred while attempting to remove the association between the template and the repositories.',
+    }),
   })
   .openapi({ required: ['disassociatedRepositoryNames', 'errors'] })
   .openapi('BatchDisassociateApprovalRuleTemplateFromRepositoriesOutput')
 
 const BatchDisassociateApprovalRuleTemplateFromRepositoriesInputSchema = z
   .object({
-    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the template that you want to disassociate from one or more repositories.',
-        }),
-    ),
-    repositoryNames: RepositoryNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The repository names that you want to disassociate from the approval rule template.</p> <note> <p>The length constraint limit is for each string in the array. The array itself can be empty.</p> </note>',
-        }),
-    ),
+    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.openapi({
+      description:
+        'The name of the template that you want to disassociate from one or more repositories.',
+    }),
+    repositoryNames: RepositoryNameListSchema.openapi({
+      description:
+        '<p>The repository names that you want to disassociate from the approval rule template.</p> <note> <p>The length constraint limit is for each string in the array. The array itself can be empty.</p> </note>',
+    }),
   })
   .openapi({
     required: ['approvalRuleTemplateName', 'repositoryNames'],
@@ -800,24 +580,16 @@ const DateSchema = z.string().openapi('Date')
 
 const UserInfoSchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the user who made the specified commit.' }),
-    ).exactOptional(),
-    email: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The email address associated with the user who made the commit, if any.',
-        }),
-    ).exactOptional(),
-    date: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date when the specified commit was commited, in timestamp format with GMT offset.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({
+      description: 'The name of the user who made the specified commit.',
+    }),
+    email: EmailSchema.exactOptional().openapi({
+      description: 'The email address associated with the user who made the commit, if any.',
+    }),
+    date: DateSchema.exactOptional().openapi({
+      description:
+        'The date when the specified commit was commited, in timestamp format with GMT offset.',
+    }),
   })
   .openapi({ description: 'Information about the user who made a specified commit.', required: [] })
   .openapi('UserInfo')
@@ -826,42 +598,30 @@ const AdditionalDataSchema = z.string().openapi('AdditionalData')
 
 const CommitSchema = z
   .object({
-    commitId: ObjectIdSchema.and(
-      z.any().openapi({ description: 'The full SHA ID of the specified commit. ' }),
-    ).exactOptional(),
-    treeId: ObjectIdSchema.and(
-      z.any().openapi({ description: 'Tree information for the specified commit.' }),
-    ).exactOptional(),
-    parents: ParentListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of parent commits for the specified commit. Each parent commit ID is the full commit ID.',
-        }),
-    ).exactOptional(),
-    message: MessageSchema.and(
-      z.any().openapi({ description: 'The commit message associated with the specified commit.' }),
-    ).exactOptional(),
-    author: UserInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the author of the specified commit. Information includes the date in timestamp format with GMT offset, the name of the author, and the email address for the author, as configured in Git.',
-        }),
-    ).exactOptional(),
-    committer: UserInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the person who committed the specified commit, also known as the committer. Information includes the date in timestamp format with GMT offset, the name of the committer, and the email address for the committer, as configured in Git.</p> <p>For more information about the difference between an author and a committer in Git, see <a href="http://git-scm.com/book/ch2-3.html">Viewing the Commit History</a> in Pro Git by Scott Chacon and Ben Straub.</p>',
-        }),
-    ).exactOptional(),
-    additionalData: AdditionalDataSchema.and(
-      z.any().openapi({ description: 'Any other data associated with the specified commit.' }),
-    ).exactOptional(),
+    commitId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The full SHA ID of the specified commit. ',
+    }),
+    treeId: ObjectIdSchema.exactOptional().openapi({
+      description: 'Tree information for the specified commit.',
+    }),
+    parents: ParentListSchema.exactOptional().openapi({
+      description:
+        'A list of parent commits for the specified commit. Each parent commit ID is the full commit ID.',
+    }),
+    message: MessageSchema.exactOptional().openapi({
+      description: 'The commit message associated with the specified commit.',
+    }),
+    author: UserInfoSchema.exactOptional().openapi({
+      description:
+        'Information about the author of the specified commit. Information includes the date in timestamp format with GMT offset, the name of the author, and the email address for the author, as configured in Git.',
+    }),
+    committer: UserInfoSchema.exactOptional().openapi({
+      description:
+        '<p>Information about the person who committed the specified commit, also known as the committer. Information includes the date in timestamp format with GMT offset, the name of the committer, and the email address for the committer, as configured in Git.</p> <p>For more information about the difference between an author and a committer in Git, see <a href="http://git-scm.com/book/ch2-3.html">Viewing the Commit History</a> in Pro Git by Scott Chacon and Ben Straub.</p>',
+    }),
+    additionalData: AdditionalDataSchema.exactOptional().openapi({
+      description: 'Any other data associated with the specified commit.',
+    }),
   })
   .openapi({ description: 'Returns information about a specific commit.', required: [] })
   .openapi('Commit')
@@ -870,29 +630,16 @@ const CommitObjectsListSchema = z.array(CommitSchema).openapi('CommitObjectsList
 
 const BatchGetCommitsErrorSchema = z
   .object({
-    commitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A commit ID that either could not be found or was not in a valid format.',
-        }),
-    ).exactOptional(),
-    errorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An error code that specifies whether the commit ID was not valid or not found.',
-        }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An error message that provides detail about why the commit ID either was not found or was not valid.',
-        }),
-    ).exactOptional(),
+    commitId: ObjectIdSchema.exactOptional().openapi({
+      description: 'A commit ID that either could not be found or was not in a valid format.',
+    }),
+    errorCode: ErrorCodeSchema.exactOptional().openapi({
+      description: 'An error code that specifies whether the commit ID was not valid or not found.',
+    }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description:
+        'An error message that provides detail about why the commit ID either was not found or was not valid.',
+    }),
   })
   .openapi({
     description: 'Returns information about errors in a BatchGetCommits operation.',
@@ -906,22 +653,14 @@ const BatchGetCommitsErrorsListSchema = z
 
 const BatchGetCommitsOutputSchema = z
   .object({
-    commits: CommitObjectsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of commit data type objects, each of which contains information about a specified commit.',
-        }),
-    ).exactOptional(),
-    errors: BatchGetCommitsErrorsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns any commit IDs for which information could not be found. For example, if one of the commit IDs was a shortened SHA ID or that commit was not found in the specified repository, the ID returns an error object with more information.',
-        }),
-    ).exactOptional(),
+    commits: CommitObjectsListSchema.exactOptional().openapi({
+      description:
+        'An array of commit data type objects, each of which contains information about a specified commit.',
+    }),
+    errors: BatchGetCommitsErrorsListSchema.exactOptional().openapi({
+      description:
+        'Returns any commit IDs for which information could not be found. For example, if one of the commit IDs was a shortened SHA ID or that commit was not found in the specified repository, the ID returns an error object with more information.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchGetCommitsOutput')
@@ -930,17 +669,13 @@ const CommitIdsInputListSchema = z.array(ObjectIdSchema).openapi('CommitIdsInput
 
 const BatchGetCommitsInputSchema = z
   .object({
-    commitIds: CommitIdsInputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The full commit IDs of the commits to get information about.</p> <note> <p>You must supply the full SHA IDs of each commit. You cannot use shortened SHA IDs.</p> </note>',
-        }),
-    ),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository that contains the commits.' }),
-    ),
+    commitIds: CommitIdsInputListSchema.openapi({
+      description:
+        '<p>The full commit IDs of the commits to get information about.</p> <note> <p>You must supply the full SHA IDs of each commit. You cannot use shortened SHA IDs.</p> </note>',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository that contains the commits.',
+    }),
   })
   .openapi({ required: ['commitIds', 'repositoryName'], title: 'BatchGetCommitsInput' })
   .openapi('BatchGetCommitsInput')
@@ -969,44 +704,36 @@ const ArnSchema = z.string().openapi('Arn')
 
 const RepositoryMetadataSchema = z
   .object({
-    accountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The ID of the AWS account associated with the repository.' }),
-    ).exactOptional(),
-    repositoryId: RepositoryIdSchema.and(
-      z.any().openapi({ description: 'The ID of the repository.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: "The repository's name." }),
-    ).exactOptional(),
-    repositoryDescription: RepositoryDescriptionSchema.and(
-      z.any().openapi({ description: 'A comment or description about the repository.' }),
-    ).exactOptional(),
-    defaultBranch: BranchNameSchema.and(
-      z.any().openapi({ description: "The repository's default branch name." }),
-    ).exactOptional(),
-    lastModifiedDate: LastModifiedDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time the repository was last modified, in timestamp format.',
-        }),
-    ).exactOptional(),
-    creationDate: CreationDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time the repository was created, in timestamp format.',
-        }),
-    ).exactOptional(),
-    cloneUrlHttp: CloneUrlHttpSchema.and(
-      z.any().openapi({ description: 'The URL to use for cloning the repository over HTTPS.' }),
-    ).exactOptional(),
-    cloneUrlSsh: CloneUrlSshSchema.and(
-      z.any().openapi({ description: 'The URL to use for cloning the repository over SSH.' }),
-    ).exactOptional(),
-    Arn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the repository.' }),
-    ).exactOptional(),
+    accountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the AWS account associated with the repository.',
+    }),
+    repositoryId: RepositoryIdSchema.exactOptional().openapi({
+      description: 'The ID of the repository.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: "The repository's name.",
+    }),
+    repositoryDescription: RepositoryDescriptionSchema.exactOptional().openapi({
+      description: 'A comment or description about the repository.',
+    }),
+    defaultBranch: BranchNameSchema.exactOptional().openapi({
+      description: "The repository's default branch name.",
+    }),
+    lastModifiedDate: LastModifiedDateSchema.exactOptional().openapi({
+      description: 'The date and time the repository was last modified, in timestamp format.',
+    }),
+    creationDate: CreationDateSchema.exactOptional().openapi({
+      description: 'The date and time the repository was created, in timestamp format.',
+    }),
+    cloneUrlHttp: CloneUrlHttpSchema.exactOptional().openapi({
+      description: 'The URL to use for cloning the repository over HTTPS.',
+    }),
+    cloneUrlSsh: CloneUrlSshSchema.exactOptional().openapi({
+      description: 'The URL to use for cloning the repository over SSH.',
+    }),
+    Arn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the repository.',
+    }),
   })
   .openapi({ description: 'Information about a repository.', required: [] })
   .openapi('RepositoryMetadata')
@@ -1019,21 +746,12 @@ const RepositoryNotFoundListSchema = z.array(RepositoryNameSchema).openapi('Repo
 
 const BatchGetRepositoriesOutputSchema = z
   .object({
-    repositories: RepositoryMetadataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of repositories returned by the batch get repositories operation.',
-        }),
-    ).exactOptional(),
-    repositoriesNotFound: RepositoryNotFoundListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns a list of repository names for which information could not be found.',
-        }),
-    ).exactOptional(),
+    repositories: RepositoryMetadataListSchema.exactOptional().openapi({
+      description: 'A list of repositories returned by the batch get repositories operation.',
+    }),
+    repositoriesNotFound: RepositoryNotFoundListSchema.exactOptional().openapi({
+      description: 'Returns a list of repository names for which information could not be found.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a batch get repositories operation.',
@@ -1043,14 +761,10 @@ const BatchGetRepositoriesOutputSchema = z
 
 const BatchGetRepositoriesInputSchema = z
   .object({
-    repositoryNames: RepositoryNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The names of the repositories to get information about.</p> <note> <p>The length constraint limit is for each string in the array. The array itself can be empty.</p> </note>',
-        }),
-    ),
+    repositoryNames: RepositoryNameListSchema.openapi({
+      description:
+        '<p>The names of the repositories to get information about.</p> <note> <p>The length constraint limit is for each string in the array. The array itself can be empty.</p> </note>',
+    }),
   })
   .openapi({
     required: ['repositoryNames'],
@@ -1077,91 +791,59 @@ const RuleContentSha256Schema = z.string().openapi('RuleContentSha256')
 
 const ApprovalRuleTemplateSchema = z
   .object({
-    approvalRuleTemplateId: ApprovalRuleTemplateIdSchema.and(
-      z.any().openapi({ description: 'The system-generated ID of the approval rule template.' }),
-    ).exactOptional(),
-    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the approval rule template.' }),
-    ).exactOptional(),
-    approvalRuleTemplateDescription: ApprovalRuleTemplateDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the approval rule template.' }),
-    ).exactOptional(),
-    approvalRuleTemplateContent: ApprovalRuleTemplateContentSchema.and(
-      z.any().openapi({ description: 'The content of the approval rule template.' }),
-    ).exactOptional(),
-    ruleContentSha256: RuleContentSha256Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The SHA-256 hash signature for the content of the approval rule template.',
-        }),
-    ).exactOptional(),
-    lastModifiedDate: LastModifiedDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date the approval rule template was most recently changed, in timestamp format.',
-        }),
-    ).exactOptional(),
-    creationDate: CreationDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date the approval rule template was created, in timestamp format.',
-        }),
-    ).exactOptional(),
-    lastModifiedUser: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the user who made the most recent changes to the approval rule template.',
-        }),
-    ).exactOptional(),
+    approvalRuleTemplateId: ApprovalRuleTemplateIdSchema.exactOptional().openapi({
+      description: 'The system-generated ID of the approval rule template.',
+    }),
+    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.exactOptional().openapi({
+      description: 'The name of the approval rule template.',
+    }),
+    approvalRuleTemplateDescription: ApprovalRuleTemplateDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the approval rule template.',
+    }),
+    approvalRuleTemplateContent: ApprovalRuleTemplateContentSchema.exactOptional().openapi({
+      description: 'The content of the approval rule template.',
+    }),
+    ruleContentSha256: RuleContentSha256Schema.exactOptional().openapi({
+      description: 'The SHA-256 hash signature for the content of the approval rule template.',
+    }),
+    lastModifiedDate: LastModifiedDateSchema.exactOptional().openapi({
+      description:
+        'The date the approval rule template was most recently changed, in timestamp format.',
+    }),
+    creationDate: CreationDateSchema.exactOptional().openapi({
+      description: 'The date the approval rule template was created, in timestamp format.',
+    }),
+    lastModifiedUser: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the user who made the most recent changes to the approval rule template.',
+    }),
   })
   .openapi({ description: 'Returns information about an approval rule template.', required: [] })
   .openapi('ApprovalRuleTemplate')
 
 const CreateApprovalRuleTemplateOutputSchema = z
   .object({
-    approvalRuleTemplate: ApprovalRuleTemplateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The content and structure of the created approval rule template.',
-        }),
-    ),
+    approvalRuleTemplate: ApprovalRuleTemplateSchema.openapi({
+      description: 'The content and structure of the created approval rule template.',
+    }),
   })
   .openapi({ required: ['approvalRuleTemplate'] })
   .openapi('CreateApprovalRuleTemplateOutput')
 
 const CreateApprovalRuleTemplateInputSchema = z
   .object({
-    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the approval rule template. Provide descriptive names, because this name is applied to the approval rules created automatically in associated repositories.',
-        }),
-    ),
-    approvalRuleTemplateContent: ApprovalRuleTemplateContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The content of the approval rule that is created on pull requests in associated repositories. If you specify one or more destination references (branches), approval rules are created in an associated repository only if their destination references (branches) match those specified in the template.</p> <note> <p>When you create the content of the approval rule template, you can specify approvers in an approval pool in one of two ways:</p> <ul> <li> <p> <b>CodeCommitApprovers</b>: This option only requires an AWS account and a resource. It can be used for both IAM users and federated access users whose name matches the provided resource name. This is a very powerful option that offers a great deal of flexibility. For example, if you specify the AWS account <i>123456789012</i> and <i>Mary_Major</i>, all of the following are counted as approvals coming from that user:</p> <ul> <li> <p>An IAM user in the account (arn:aws:iam::<i>123456789012</i>:user/<i>Mary_Major</i>)</p> </li> <li> <p>A federated user identified in IAM as Mary_Major (arn:aws:sts::<i>123456789012</i>:federated-user/<i>Mary_Major</i>)</p> </li> </ul> <p>This option does not recognize an active session of someone assuming the role of CodeCommitReview with a role session name of <i>Mary_Major</i> (arn:aws:sts::<i>123456789012</i>:assumed-role/CodeCommitReview/<i>Mary_Major</i>) unless you include a wildcard (*Mary_Major).</p> </li> <li> <p> <b>Fully qualified ARN</b>: This option allows you to specify the fully qualified Amazon Resource Name (ARN) of the IAM user or role. </p> </li> </ul> <p>For more information about IAM ARNs, wildcards, and formats, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html">IAM Identifiers</a> in the <i>IAM User Guide</i>.</p> </note>',
-        }),
-    ),
-    approvalRuleTemplateDescription: ApprovalRuleTemplateDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description of the approval rule template. Consider providing a description that explains what this template does and when it might be appropriate to associate it with repositories.',
-        }),
-    ).exactOptional(),
+    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.openapi({
+      description:
+        'The name of the approval rule template. Provide descriptive names, because this name is applied to the approval rules created automatically in associated repositories.',
+    }),
+    approvalRuleTemplateContent: ApprovalRuleTemplateContentSchema.openapi({
+      description:
+        '<p>The content of the approval rule that is created on pull requests in associated repositories. If you specify one or more destination references (branches), approval rules are created in an associated repository only if their destination references (branches) match those specified in the template.</p> <note> <p>When you create the content of the approval rule template, you can specify approvers in an approval pool in one of two ways:</p> <ul> <li> <p> <b>CodeCommitApprovers</b>: This option only requires an AWS account and a resource. It can be used for both IAM users and federated access users whose name matches the provided resource name. This is a very powerful option that offers a great deal of flexibility. For example, if you specify the AWS account <i>123456789012</i> and <i>Mary_Major</i>, all of the following are counted as approvals coming from that user:</p> <ul> <li> <p>An IAM user in the account (arn:aws:iam::<i>123456789012</i>:user/<i>Mary_Major</i>)</p> </li> <li> <p>A federated user identified in IAM as Mary_Major (arn:aws:sts::<i>123456789012</i>:federated-user/<i>Mary_Major</i>)</p> </li> </ul> <p>This option does not recognize an active session of someone assuming the role of CodeCommitReview with a role session name of <i>Mary_Major</i> (arn:aws:sts::<i>123456789012</i>:assumed-role/CodeCommitReview/<i>Mary_Major</i>) unless you include a wildcard (*Mary_Major).</p> </li> <li> <p> <b>Fully qualified ARN</b>: This option allows you to specify the fully qualified Amazon Resource Name (ARN) of the IAM user or role. </p> </li> </ul> <p>For more information about IAM ARNs, wildcards, and formats, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html">IAM Identifiers</a> in the <i>IAM User Guide</i>.</p> </note>',
+    }),
+    approvalRuleTemplateDescription: ApprovalRuleTemplateDescriptionSchema.exactOptional().openapi({
+      description:
+        'The description of the approval rule template. Consider providing a description that explains what this template does and when it might be appropriate to associate it with repositories.',
+    }),
   })
   .openapi({
     required: ['approvalRuleTemplateName', 'approvalRuleTemplateContent'],
@@ -1193,19 +875,13 @@ const CommitIdSchema = z.string().openapi('CommitId')
 
 const CreateBranchInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository in which you want to create the new branch.',
-        }),
-    ),
-    branchName: BranchNameSchema.and(
-      z.any().openapi({ description: 'The name of the new branch to create.' }),
-    ),
-    commitId: CommitIdSchema.and(
-      z.any().openapi({ description: 'The ID of the commit to point the new branch to.' }),
-    ),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository in which you want to create the new branch.',
+    }),
+    branchName: BranchNameSchema.openapi({ description: 'The name of the new branch to create.' }),
+    commitId: CommitIdSchema.openapi({
+      description: 'The ID of the commit to point the new branch to.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'branchName', 'commitId'],
@@ -1226,25 +902,17 @@ const InvalidCommitIdExceptionSchema = z.any().openapi('InvalidCommitIdException
 
 const FileMetadataSchema = z
   .object({
-    absolutePath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full path to the file to be added or updated, including the name of the file.',
-        }),
-    ).exactOptional(),
-    blobId: ObjectIdSchema.and(
-      z.any().openapi({ description: 'The blob ID that contains the file information.' }),
-    ).exactOptional(),
-    fileMode: FileModeTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The extrapolated file mode permissions for the file. Valid values include EXECUTABLE and NORMAL.',
-        }),
-    ).exactOptional(),
+    absolutePath: PathSchema.exactOptional().openapi({
+      description:
+        'The full path to the file to be added or updated, including the name of the file.',
+    }),
+    blobId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The blob ID that contains the file information.',
+    }),
+    fileMode: FileModeTypeEnumSchema.exactOptional().openapi({
+      description:
+        'The extrapolated file mode permissions for the file. Valid values include EXECUTABLE and NORMAL.',
+    }),
   })
   .openapi({
     description: 'A file to be added, updated, or deleted as part of a commit.',
@@ -1256,31 +924,22 @@ const FilesMetadataSchema = z.array(FileMetadataSchema).openapi('FilesMetadata')
 
 const CreateCommitOutputSchema = z
   .object({
-    commitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the commit that contains your committed file changes.',
-        }),
-    ).exactOptional(),
-    treeId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full SHA-1 pointer of the tree information for the commit that contains the commited file changes.',
-        }),
-    ).exactOptional(),
-    filesAdded: FilesMetadataSchema.and(
-      z.any().openapi({ description: 'The files added as part of the committed file changes.' }),
-    ).exactOptional(),
-    filesUpdated: FilesMetadataSchema.and(
-      z.any().openapi({ description: 'The files updated as part of the commited file changes.' }),
-    ).exactOptional(),
-    filesDeleted: FilesMetadataSchema.and(
-      z.any().openapi({ description: 'The files deleted as part of the committed file changes.' }),
-    ).exactOptional(),
+    commitId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The full commit ID of the commit that contains your committed file changes.',
+    }),
+    treeId: ObjectIdSchema.exactOptional().openapi({
+      description:
+        'The full SHA-1 pointer of the tree information for the commit that contains the commited file changes.',
+    }),
+    filesAdded: FilesMetadataSchema.exactOptional().openapi({
+      description: 'The files added as part of the committed file changes.',
+    }),
+    filesUpdated: FilesMetadataSchema.exactOptional().openapi({
+      description: 'The files updated as part of the commited file changes.',
+    }),
+    filesDeleted: FilesMetadataSchema.exactOptional().openapi({
+      description: 'The files deleted as part of the committed file changes.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateCommitOutput')
@@ -1293,14 +952,12 @@ const IsMoveSchema = z.boolean().openapi('IsMove')
 
 const SourceFileSpecifierSchema = z
   .object({
-    filePath: PathSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The full path to the file, including the name of the file.' }),
-    ),
-    isMove: IsMoveSchema.and(
-      z.any().openapi({ description: 'Whether to remove the source file from the parent commit.' }),
-    ).exactOptional(),
+    filePath: PathSchema.openapi({
+      description: 'The full path to the file, including the name of the file.',
+    }),
+    isMove: IsMoveSchema.exactOptional().openapi({
+      description: 'Whether to remove the source file from the parent commit.',
+    }),
   })
   .openapi({
     required: ['filePath'],
@@ -1310,35 +967,20 @@ const SourceFileSpecifierSchema = z
 
 const PutFileEntrySchema = z
   .object({
-    filePath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full path to the file in the repository, including the name of the file.',
-        }),
-    ),
-    fileMode: FileModeTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The extrapolated file mode permissions for the file. Valid values include EXECUTABLE and NORMAL.',
-        }),
-    ).exactOptional(),
-    fileContent: FileContentSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The content of the file, if a source file is not specified.' }),
-    ).exactOptional(),
-    sourceFile: SourceFileSpecifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name and full path of the file that contains the changes you want to make as part of the commit, if you are not providing the file content directly.',
-        }),
-    ).exactOptional(),
+    filePath: PathSchema.openapi({
+      description: 'The full path to the file in the repository, including the name of the file.',
+    }),
+    fileMode: FileModeTypeEnumSchema.exactOptional().openapi({
+      description:
+        'The extrapolated file mode permissions for the file. Valid values include EXECUTABLE and NORMAL.',
+    }),
+    fileContent: FileContentSchema.exactOptional().openapi({
+      description: 'The content of the file, if a source file is not specified.',
+    }),
+    sourceFile: SourceFileSpecifierSchema.exactOptional().openapi({
+      description:
+        'The name and full path of the file that contains the changes you want to make as part of the commit, if you are not providing the file content directly.',
+    }),
   })
   .openapi({
     required: ['filePath'],
@@ -1350,13 +992,9 @@ const PutFileEntriesSchema = z.array(PutFileEntrySchema).openapi('PutFileEntries
 
 const DeleteFileEntrySchema = z
   .object({
-    filePath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The full path of the file to be deleted, including the name of the file.',
-        }),
-    ),
+    filePath: PathSchema.openapi({
+      description: 'The full path of the file to be deleted, including the name of the file.',
+    }),
   })
   .openapi({ required: ['filePath'], description: 'A file that is deleted as part of a commit.' })
   .openapi('DeleteFileEntry')
@@ -1365,14 +1003,10 @@ const DeleteFileEntriesSchema = z.array(DeleteFileEntrySchema).openapi('DeleteFi
 
 const SetFileModeEntrySchema = z
   .object({
-    filePath: PathSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The full path to the file, including the name of the file.' }),
-    ),
-    fileMode: FileModeTypeEnumSchema.and(
-      z.any().openapi({ description: 'The file mode for the file.' }),
-    ),
+    filePath: PathSchema.openapi({
+      description: 'The full path to the file, including the name of the file.',
+    }),
+    fileMode: FileModeTypeEnumSchema.openapi({ description: 'The file mode for the file.' }),
   })
   .openapi({
     required: ['filePath', 'fileMode'],
@@ -1384,61 +1018,41 @@ const SetFileModeEntriesSchema = z.array(SetFileModeEntrySchema).openapi('SetFil
 
 const CreateCommitInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository where you create the commit.' }),
-    ),
-    branchName: BranchNameSchema.and(
-      z.any().openapi({ description: 'The name of the branch where you create the commit.' }),
-    ),
-    parentCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the commit that is the parent of the commit you create. Not required if this is an empty repository.',
-        }),
-    ).exactOptional(),
-    authorName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the author who created the commit. This information is used as both the author and committer for the commit.',
-        }),
-    ).exactOptional(),
-    email: EmailSchema.and(
-      z.any().openapi({ description: 'The email address of the person who created the commit.' }),
-    ).exactOptional(),
-    commitMessage: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The commit message you want to include in the commit. Commit messages are limited to 256 KB. If no message is specified, a default message is used.',
-        }),
-    ).exactOptional(),
-    keepEmptyFolders: KeepEmptyFoldersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the commit contains deletions, whether to keep a folder or folder structure if the changes leave the folders empty. If true, a ..gitkeep file is created for empty folders. The default is false.',
-        }),
-    ).exactOptional(),
-    putFiles: PutFileEntriesSchema.and(
-      z.any().openapi({ description: 'The files to add or update in this commit.' }),
-    ).exactOptional(),
-    deleteFiles: DeleteFileEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The files to delete in this commit. These files still exist in earlier commits.',
-        }),
-    ).exactOptional(),
-    setFileModes: SetFileModeEntriesSchema.and(
-      z.any().openapi({ description: 'The file modes to update for files in this commit.' }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository where you create the commit.',
+    }),
+    branchName: BranchNameSchema.openapi({
+      description: 'The name of the branch where you create the commit.',
+    }),
+    parentCommitId: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the commit that is the parent of the commit you create. Not required if this is an empty repository.',
+    }),
+    authorName: NameSchema.exactOptional().openapi({
+      description:
+        'The name of the author who created the commit. This information is used as both the author and committer for the commit.',
+    }),
+    email: EmailSchema.exactOptional().openapi({
+      description: 'The email address of the person who created the commit.',
+    }),
+    commitMessage: MessageSchema.exactOptional().openapi({
+      description:
+        'The commit message you want to include in the commit. Commit messages are limited to 256 KB. If no message is specified, a default message is used.',
+    }),
+    keepEmptyFolders: KeepEmptyFoldersSchema.exactOptional().openapi({
+      description:
+        'If the commit contains deletions, whether to keep a folder or folder structure if the changes leave the folders empty. If true, a ..gitkeep file is created for empty folders. The default is false.',
+    }),
+    putFiles: PutFileEntriesSchema.exactOptional().openapi({
+      description: 'The files to add or update in this commit.',
+    }),
+    deleteFiles: DeleteFileEntriesSchema.exactOptional().openapi({
+      description:
+        'The files to delete in this commit. These files still exist in earlier commits.',
+    }),
+    setFileModes: SetFileModeEntriesSchema.exactOptional().openapi({
+      description: 'The file modes to update for files in this commit.',
+    }),
   })
   .openapi({ required: ['repositoryName', 'branchName'], title: 'CreateCommitInput' })
   .openapi('CreateCommitInput')
@@ -1531,24 +1145,18 @@ const IsMergedSchema = z.boolean().openapi('IsMerged')
 
 const MergeMetadataSchema = z
   .object({
-    isMerged: IsMergedSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A Boolean value indicating whether the merge has been made.' }),
-    ).exactOptional(),
-    mergedBy: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who merged the branches.',
-        }),
-    ).exactOptional(),
-    mergeCommitId: CommitIdSchema.and(
-      z.any().openapi({ description: 'The commit ID for the merge commit, if any.' }),
-    ).exactOptional(),
-    mergeOption: MergeOptionTypeEnumSchema.and(
-      z.any().openapi({ description: 'The merge strategy used in the merge.' }),
-    ).exactOptional(),
+    isMerged: IsMergedSchema.exactOptional().openapi({
+      description: 'A Boolean value indicating whether the merge has been made.',
+    }),
+    mergedBy: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who merged the branches.',
+    }),
+    mergeCommitId: CommitIdSchema.exactOptional().openapi({
+      description: 'The commit ID for the merge commit, if any.',
+    }),
+    mergeOption: MergeOptionTypeEnumSchema.exactOptional().openapi({
+      description: 'The merge strategy used in the merge.',
+    }),
   })
   .openapi({
     description:
@@ -1559,62 +1167,34 @@ const MergeMetadataSchema = z
 
 const PullRequestTargetSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository that contains the pull request source and destination branches.',
-        }),
-    ).exactOptional(),
-    sourceReference: ReferenceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch of the repository that contains the changes for the pull request. Also known as the source branch.',
-        }),
-    ).exactOptional(),
-    destinationReference: ReferenceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch of the repository where the pull request changes are merged. Also known as the destination branch. ',
-        }),
-    ).exactOptional(),
-    destinationCommit: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID that is the tip of the destination branch. This is the commit where the pull request was or will be merged.',
-        }),
-    ).exactOptional(),
-    sourceCommit: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the tip of the source branch used to create the pull request. If the pull request branch is updated by a push while the pull request is open, the commit ID changes to reflect the new tip of the branch.',
-        }),
-    ).exactOptional(),
-    mergeBase: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The commit ID of the most recent commit that the source branch and the destination branch have in common.',
-        }),
-    ).exactOptional(),
-    mergeMetadata: MergeMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns metadata about the state of the merge, including whether the merge has been made.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description:
+        'The name of the repository that contains the pull request source and destination branches.',
+    }),
+    sourceReference: ReferenceNameSchema.exactOptional().openapi({
+      description:
+        'The branch of the repository that contains the changes for the pull request. Also known as the source branch.',
+    }),
+    destinationReference: ReferenceNameSchema.exactOptional().openapi({
+      description:
+        'The branch of the repository where the pull request changes are merged. Also known as the destination branch. ',
+    }),
+    destinationCommit: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The full commit ID that is the tip of the destination branch. This is the commit where the pull request was or will be merged.',
+    }),
+    sourceCommit: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The full commit ID of the tip of the source branch used to create the pull request. If the pull request branch is updated by a push while the pull request is open, the commit ID changes to reflect the new tip of the branch.',
+    }),
+    mergeBase: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The commit ID of the most recent commit that the source branch and the destination branch have in common.',
+    }),
+    mergeMetadata: MergeMetadataSchema.exactOptional().openapi({
+      description:
+        'Returns metadata about the state of the merge, including whether the merge has been made.',
+    }),
   })
   .openapi({ description: 'Returns information about a pull request target.', required: [] })
   .openapi('PullRequestTarget')
@@ -1635,12 +1215,12 @@ const ApprovalRuleContentSchema = z.string().min(1).max(3000).openapi('ApprovalR
 
 const OriginApprovalRuleTemplateSchema = z
   .object({
-    approvalRuleTemplateId: ApprovalRuleTemplateIdSchema.and(
-      z.any().openapi({ description: 'The ID of the template that created the approval rule.' }),
-    ).exactOptional(),
-    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the template that created the approval rule.' }),
-    ).exactOptional(),
+    approvalRuleTemplateId: ApprovalRuleTemplateIdSchema.exactOptional().openapi({
+      description: 'The ID of the template that created the approval rule.',
+    }),
+    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.exactOptional().openapi({
+      description: 'The name of the template that created the approval rule.',
+    }),
   })
   .openapi({
     description:
@@ -1651,45 +1231,31 @@ const OriginApprovalRuleTemplateSchema = z
 
 const ApprovalRuleSchema = z
   .object({
-    approvalRuleId: ApprovalRuleIdSchema.and(
-      z.any().openapi({ description: 'The system-generated ID of the approval rule.' }),
-    ).exactOptional(),
-    approvalRuleName: ApprovalRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the approval rule.' }),
-    ).exactOptional(),
-    approvalRuleContent: ApprovalRuleContentSchema.and(
-      z.any().openapi({ description: 'The content of the approval rule.' }),
-    ).exactOptional(),
-    ruleContentSha256: RuleContentSha256Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The SHA-256 hash signature for the content of the approval rule.',
-        }),
-    ).exactOptional(),
-    lastModifiedDate: LastModifiedDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date the approval rule was most recently changed, in timestamp format.',
-        }),
-    ).exactOptional(),
-    creationDate: CreationDateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date the approval rule was created, in timestamp format.' }),
-    ).exactOptional(),
-    lastModifiedUser: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the user who made the most recent changes to the approval rule.',
-        }),
-    ).exactOptional(),
-    originApprovalRuleTemplate: OriginApprovalRuleTemplateSchema.and(
-      z.any().openapi({ description: 'The approval rule template used to create the rule.' }),
-    ).exactOptional(),
+    approvalRuleId: ApprovalRuleIdSchema.exactOptional().openapi({
+      description: 'The system-generated ID of the approval rule.',
+    }),
+    approvalRuleName: ApprovalRuleNameSchema.exactOptional().openapi({
+      description: 'The name of the approval rule.',
+    }),
+    approvalRuleContent: ApprovalRuleContentSchema.exactOptional().openapi({
+      description: 'The content of the approval rule.',
+    }),
+    ruleContentSha256: RuleContentSha256Schema.exactOptional().openapi({
+      description: 'The SHA-256 hash signature for the content of the approval rule.',
+    }),
+    lastModifiedDate: LastModifiedDateSchema.exactOptional().openapi({
+      description: 'The date the approval rule was most recently changed, in timestamp format.',
+    }),
+    creationDate: CreationDateSchema.exactOptional().openapi({
+      description: 'The date the approval rule was created, in timestamp format.',
+    }),
+    lastModifiedUser: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the user who made the most recent changes to the approval rule.',
+    }),
+    originApprovalRuleTemplate: OriginApprovalRuleTemplateSchema.exactOptional().openapi({
+      description: 'The approval rule template used to create the rule.',
+    }),
   })
   .openapi({ description: 'Returns information about an approval rule.', required: [] })
   .openapi('ApprovalRule')
@@ -1698,114 +1264,72 @@ const ApprovalRulesListSchema = z.array(ApprovalRuleSchema).openapi('ApprovalRul
 
 const PullRequestSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z.any().openapi({ description: 'The system-generated ID of the pull request. ' }),
-    ).exactOptional(),
-    title: TitleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user-defined title of the pull request. This title is displayed in the list of pull requests to other repository users.',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user-defined description of the pull request. This description can be used to clarify what should be reviewed and other details of the request.',
-        }),
-    ).exactOptional(),
-    lastActivityDate: LastModifiedDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The day and time of the last user or system activity on the pull request, in timestamp format.',
-        }),
-    ).exactOptional(),
-    creationDate: CreationDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time the pull request was originally created, in timestamp format.',
-        }),
-    ).exactOptional(),
-    pullRequestStatus: PullRequestStatusEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the pull request. Pull request status can only change from <code>OPEN</code> to <code>CLOSED</code>.',
-        }),
-    ).exactOptional(),
-    authorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who created the pull request.',
-        }),
-    ).exactOptional(),
-    pullRequestTargets: PullRequestTargetListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The targets of the pull request, including the source branch and destination branch for the pull request.',
-        }),
-    ).exactOptional(),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, client-generated idempotency token that, when provided in a request, ensures the request cannot be repeated with a changed parameter. If a request is received with the same parameters and a token is included, the request returns information about the initial request that used that token.',
-        }),
-    ).exactOptional(),
-    revisionId: RevisionIdSchema.and(
-      z.any().openapi({ description: 'The system-generated revision ID for the pull request.' }),
-    ).exactOptional(),
-    approvalRules: ApprovalRulesListSchema.and(
-      z.any().openapi({ description: 'The approval rules applied to the pull request.' }),
-    ).exactOptional(),
+    pullRequestId: PullRequestIdSchema.exactOptional().openapi({
+      description: 'The system-generated ID of the pull request. ',
+    }),
+    title: TitleSchema.exactOptional().openapi({
+      description:
+        'The user-defined title of the pull request. This title is displayed in the list of pull requests to other repository users.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description:
+        'The user-defined description of the pull request. This description can be used to clarify what should be reviewed and other details of the request.',
+    }),
+    lastActivityDate: LastModifiedDateSchema.exactOptional().openapi({
+      description:
+        'The day and time of the last user or system activity on the pull request, in timestamp format.',
+    }),
+    creationDate: CreationDateSchema.exactOptional().openapi({
+      description:
+        'The date and time the pull request was originally created, in timestamp format.',
+    }),
+    pullRequestStatus: PullRequestStatusEnumSchema.exactOptional().openapi({
+      description:
+        'The status of the pull request. Pull request status can only change from <code>OPEN</code> to <code>CLOSED</code>.',
+    }),
+    authorArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who created the pull request.',
+    }),
+    pullRequestTargets: PullRequestTargetListSchema.exactOptional().openapi({
+      description:
+        'The targets of the pull request, including the source branch and destination branch for the pull request.',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, client-generated idempotency token that, when provided in a request, ensures the request cannot be repeated with a changed parameter. If a request is received with the same parameters and a token is included, the request returns information about the initial request that used that token.',
+    }),
+    revisionId: RevisionIdSchema.exactOptional().openapi({
+      description: 'The system-generated revision ID for the pull request.',
+    }),
+    approvalRules: ApprovalRulesListSchema.exactOptional().openapi({
+      description: 'The approval rules applied to the pull request.',
+    }),
   })
   .openapi({ description: 'Returns information about a pull request.', required: [] })
   .openapi('PullRequest')
 
 const CreatePullRequestOutputSchema = z
   .object({
-    pullRequest: PullRequestSchema.and(
-      z.any().openapi({ description: 'Information about the newly created pull request.' }),
-    ),
+    pullRequest: PullRequestSchema.openapi({
+      description: 'Information about the newly created pull request.',
+    }),
   })
   .openapi({ required: ['pullRequest'] })
   .openapi('CreatePullRequestOutput')
 
 const TargetSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository that contains the pull request.' }),
-    ),
-    sourceReference: ReferenceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch of the repository that contains the changes for the pull request. Also known as the source branch.',
-        }),
-    ),
-    destinationReference: ReferenceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch of the repository where the pull request changes are merged. Also known as the destination branch.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository that contains the pull request.',
+    }),
+    sourceReference: ReferenceNameSchema.openapi({
+      description:
+        'The branch of the repository that contains the changes for the pull request. Also known as the source branch.',
+    }),
+    destinationReference: ReferenceNameSchema.exactOptional().openapi({
+      description:
+        'The branch of the repository where the pull request changes are merged. Also known as the destination branch.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'sourceReference'],
@@ -1817,33 +1341,21 @@ const TargetListSchema = z.array(TargetSchema).openapi('TargetList')
 
 const CreatePullRequestInputSchema = z
   .object({
-    title: TitleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The title of the pull request. This title is used to identify the pull request to other users in the repository.',
-        }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the pull request.' }),
-    ).exactOptional(),
-    targets: TargetListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The targets for the pull request, including the source of the code to be reviewed (the source branch) and the destination where the creator of the pull request intends the code to be merged after the pull request is closed (the destination branch).',
-        }),
-    ),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique, client-generated idempotency token that, when provided in a request, ensures the request cannot be repeated with a changed parameter. If a request is received with the same parameters and a token is included, the request returns information about the initial request that used that token.</p> <note> <p>The AWS SDKs prepopulate client request tokens. If you are using an AWS SDK, an idempotency token is created for you.</p> </note>',
-        }),
-    ).exactOptional(),
+    title: TitleSchema.openapi({
+      description:
+        'The title of the pull request. This title is used to identify the pull request to other users in the repository.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the pull request.',
+    }),
+    targets: TargetListSchema.openapi({
+      description:
+        'The targets for the pull request, including the source of the code to be reviewed (the source branch) and the destination where the creator of the pull request intends the code to be merged after the pull request is closed (the destination branch).',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        '<p>A unique, client-generated idempotency token that, when provided in a request, ensures the request cannot be repeated with a changed parameter. If a request is received with the same parameters and a token is included, the request returns information about the initial request that used that token.</p> <note> <p>The AWS SDKs prepopulate client request tokens. If you are using an AWS SDK, an idempotency token is created for you.</p> </note>',
+    }),
   })
   .openapi({ required: ['title', 'targets'], title: 'CreatePullRequestInput' })
   .openapi('CreatePullRequestInput')
@@ -1898,34 +1410,26 @@ const SourceAndDestinationAreSameExceptionSchema = z
 
 const CreatePullRequestApprovalRuleOutputSchema = z
   .object({
-    approvalRule: ApprovalRuleSchema.and(
-      z.any().openapi({ description: 'Information about the created approval rule.' }),
-    ),
+    approvalRule: ApprovalRuleSchema.openapi({
+      description: 'Information about the created approval rule.',
+    }),
   })
   .openapi({ required: ['approvalRule'] })
   .openapi('CreatePullRequestApprovalRuleOutput')
 
 const CreatePullRequestApprovalRuleInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the pull request for which you want to create the approval rule.',
-        }),
-    ),
-    approvalRuleName: ApprovalRuleNameSchema.and(
-      z.any().openapi({ description: 'The name for the approval rule.' }),
-    ),
-    approvalRuleContent: ApprovalRuleContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The content of the approval rule, including the number of approvals needed and the structure of an approval pool defined for approvals, if any. For more information about approval pools, see the AWS CodeCommit User Guide.</p> <note> <p>When you create the content of the approval rule, you can specify approvers in an approval pool in one of two ways:</p> <ul> <li> <p> <b>CodeCommitApprovers</b>: This option only requires an AWS account and a resource. It can be used for both IAM users and federated access users whose name matches the provided resource name. This is a very powerful option that offers a great deal of flexibility. For example, if you specify the AWS account <i>123456789012</i> and <i>Mary_Major</i>, all of the following would be counted as approvals coming from that user:</p> <ul> <li> <p>An IAM user in the account (arn:aws:iam::<i>123456789012</i>:user/<i>Mary_Major</i>)</p> </li> <li> <p>A federated user identified in IAM as Mary_Major (arn:aws:sts::<i>123456789012</i>:federated-user/<i>Mary_Major</i>)</p> </li> </ul> <p>This option does not recognize an active session of someone assuming the role of CodeCommitReview with a role session name of <i>Mary_Major</i> (arn:aws:sts::<i>123456789012</i>:assumed-role/CodeCommitReview/<i>Mary_Major</i>) unless you include a wildcard (*Mary_Major).</p> </li> <li> <p> <b>Fully qualified ARN</b>: This option allows you to specify the fully qualified Amazon Resource Name (ARN) of the IAM user or role. </p> </li> </ul> <p>For more information about IAM ARNs, wildcards, and formats, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html">IAM Identifiers</a> in the <i>IAM User Guide</i>.</p> </note>',
-        }),
-    ),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description:
+        'The system-generated ID of the pull request for which you want to create the approval rule.',
+    }),
+    approvalRuleName: ApprovalRuleNameSchema.openapi({
+      description: 'The name for the approval rule.',
+    }),
+    approvalRuleContent: ApprovalRuleContentSchema.openapi({
+      description:
+        '<p>The content of the approval rule, including the number of approvals needed and the structure of an approval pool defined for approvals, if any. For more information about approval pools, see the AWS CodeCommit User Guide.</p> <note> <p>When you create the content of the approval rule, you can specify approvers in an approval pool in one of two ways:</p> <ul> <li> <p> <b>CodeCommitApprovers</b>: This option only requires an AWS account and a resource. It can be used for both IAM users and federated access users whose name matches the provided resource name. This is a very powerful option that offers a great deal of flexibility. For example, if you specify the AWS account <i>123456789012</i> and <i>Mary_Major</i>, all of the following would be counted as approvals coming from that user:</p> <ul> <li> <p>An IAM user in the account (arn:aws:iam::<i>123456789012</i>:user/<i>Mary_Major</i>)</p> </li> <li> <p>A federated user identified in IAM as Mary_Major (arn:aws:sts::<i>123456789012</i>:federated-user/<i>Mary_Major</i>)</p> </li> </ul> <p>This option does not recognize an active session of someone assuming the role of CodeCommitReview with a role session name of <i>Mary_Major</i> (arn:aws:sts::<i>123456789012</i>:assumed-role/CodeCommitReview/<i>Mary_Major</i>) unless you include a wildcard (*Mary_Major).</p> </li> <li> <p> <b>Fully qualified ARN</b>: This option allows you to specify the fully qualified Amazon Resource Name (ARN) of the IAM user or role. </p> </li> </ul> <p>For more information about IAM ARNs, wildcards, and formats, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html">IAM Identifiers</a> in the <i>IAM User Guide</i>.</p> </note>',
+    }),
   })
   .openapi({
     required: ['pullRequestId', 'approvalRuleName', 'approvalRuleContent'],
@@ -1961,9 +1465,9 @@ const PullRequestAlreadyClosedExceptionSchema = z.any().openapi('PullRequestAlre
 
 const CreateRepositoryOutputSchema = z
   .object({
-    repositoryMetadata: RepositoryMetadataSchema.and(
-      z.any().openapi({ description: 'Information about the newly created repository.' }),
-    ).exactOptional(),
+    repositoryMetadata: RepositoryMetadataSchema.exactOptional().openapi({
+      description: 'Information about the newly created repository.',
+    }),
   })
   .openapi({ description: 'Represents the output of a create repository operation.', required: [] })
   .openapi('CreateRepositoryOutput')
@@ -1974,29 +1478,17 @@ const TagsMapSchema = z.record(z.string(), TagValueSchema).openapi('TagsMap')
 
 const CreateRepositoryInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the new repository to be created.</p> <note> <p>The repository name must be unique across the calling AWS account. Repository names are limited to 100 alphanumeric, dash, and underscore characters, and cannot include certain characters. For more information about the limits on repository names, see <a href="https://docs.aws.amazon.com/codecommit/latest/userguide/limits.html">Limits</a> in the <i>AWS CodeCommit User Guide</i>. The suffix .git is prohibited.</p> </note>',
-        }),
-    ),
-    repositoryDescription: RepositoryDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A comment or description about the new repository.</p> <note> <p>The description field for a repository accepts all HTML characters and all valid Unicode characters. Applications that do not HTML-encode the description and display it in a webpage can expose users to potentially malicious code. Make sure that you HTML-encode the description field in any application that uses this API to display the repository description on a webpage.</p> </note>',
-        }),
-    ).exactOptional(),
-    tags: TagsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'One or more tag key-value pairs to use when tagging this repository.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description:
+        '<p>The name of the new repository to be created.</p> <note> <p>The repository name must be unique across the calling AWS account. Repository names are limited to 100 alphanumeric, dash, and underscore characters, and cannot include certain characters. For more information about the limits on repository names, see <a href="https://docs.aws.amazon.com/codecommit/latest/userguide/limits.html">Limits</a> in the <i>AWS CodeCommit User Guide</i>. The suffix .git is prohibited.</p> </note>',
+    }),
+    repositoryDescription: RepositoryDescriptionSchema.exactOptional().openapi({
+      description:
+        '<p>A comment or description about the new repository.</p> <note> <p>The description field for a repository accepts all HTML characters and all valid Unicode characters. Applications that do not HTML-encode the description and display it in a webpage can expose users to potentially malicious code. Make sure that you HTML-encode the description field in any application that uses this API to display the repository description on a webpage.</p> </note>',
+    }),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description: 'One or more tag key-value pairs to use when tagging this repository.',
+    }),
   })
   .openapi({
     required: ['repositoryName'],
@@ -2023,21 +1515,13 @@ const TagPolicyExceptionSchema = z.any().openapi('TagPolicyException')
 
 const CreateUnreferencedMergeCommitOutputSchema = z
   .object({
-    commitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The full commit ID of the commit that contains your merge results.',
-        }),
-    ).exactOptional(),
-    treeId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full SHA-1 pointer of the tree information for the commit that contains the merge results.',
-        }),
-    ).exactOptional(),
+    commitId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The full commit ID of the commit that contains your merge results.',
+    }),
+    treeId: ObjectIdSchema.exactOptional().openapi({
+      description:
+        'The full SHA-1 pointer of the tree information for the commit that contains the merge results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateUnreferencedMergeCommitOutput')
@@ -2048,25 +1532,17 @@ const ReplacementTypeEnumSchema = z
 
 const ReplaceContentEntrySchema = z
   .object({
-    filePath: PathSchema.and(z.any().openapi({ description: 'The path of the conflicting file.' })),
-    replacementType: ReplacementTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The replacement type to use when determining how to resolve the conflict.',
-        }),
-    ),
-    content: FileContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base-64 encoded content to use when the replacement type is USE_NEW_CONTENT.',
-        }),
-    ).exactOptional(),
-    fileMode: FileModeTypeEnumSchema.and(
-      z.any().openapi({ description: 'The file mode to apply during conflict resoltion.' }),
-    ).exactOptional(),
+    filePath: PathSchema.openapi({ description: 'The path of the conflicting file.' }),
+    replacementType: ReplacementTypeEnumSchema.openapi({
+      description: 'The replacement type to use when determining how to resolve the conflict.',
+    }),
+    content: FileContentSchema.exactOptional().openapi({
+      description:
+        'The base-64 encoded content to use when the replacement type is USE_NEW_CONTENT.',
+    }),
+    fileMode: FileModeTypeEnumSchema.exactOptional().openapi({
+      description: 'The file mode to apply during conflict resoltion.',
+    }),
   })
   .openapi({
     required: ['filePath', 'replacementType'],
@@ -2081,25 +1557,15 @@ const ReplaceContentEntriesSchema = z
 
 const ConflictResolutionSchema = z
   .object({
-    replaceContents: ReplaceContentEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Files to have content replaced as part of the merge conflict resolution.',
-        }),
-    ).exactOptional(),
-    deleteFiles: DeleteFileEntriesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Files to be deleted as part of the merge conflict resolution.' }),
-    ).exactOptional(),
-    setFileModes: SetFileModeEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'File modes that are set as part of the merge conflict resolution.',
-        }),
-    ).exactOptional(),
+    replaceContents: ReplaceContentEntriesSchema.exactOptional().openapi({
+      description: 'Files to have content replaced as part of the merge conflict resolution.',
+    }),
+    deleteFiles: DeleteFileEntriesSchema.exactOptional().openapi({
+      description: 'Files to be deleted as part of the merge conflict resolution.',
+    }),
+    setFileModes: SetFileModeEntriesSchema.exactOptional().openapi({
+      description: 'File modes that are set as part of the merge conflict resolution.',
+    }),
   })
   .openapi({
     description:
@@ -2110,87 +1576,47 @@ const ConflictResolutionSchema = z
 
 const CreateUnreferencedMergeCommitInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository where you want to create the unreferenced merge commit.',
-        }),
-    ),
-    sourceCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    destinationCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    mergeOption: MergeOptionTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The merge option or strategy you want to use to merge the code.',
-        }),
-    ),
-    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
-        }),
-    ).exactOptional(),
-    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
-        }),
-    ).exactOptional(),
-    authorName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the author who created the unreferenced commit. This information is used as both the author and committer for the commit.',
-        }),
-    ).exactOptional(),
-    email: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The email address for the person who created the unreferenced commit.',
-        }),
-    ).exactOptional(),
-    commitMessage: MessageSchema.and(
-      z.any().openapi({ description: 'The commit message for the unreferenced commit.' }),
-    ).exactOptional(),
-    keepEmptyFolders: KeepEmptyFoldersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the commit contains deletions, whether to keep a folder or folder structure if the changes leave the folders empty. If this is specified as true, a .gitkeep file is created for empty folders. The default is false.',
-        }),
-    ).exactOptional(),
-    conflictResolution: ConflictResolutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If AUTOMERGE is the conflict resolution strategy, a list of inputs to use when resolving conflicts during a merge.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description:
+        'The name of the repository where you want to create the unreferenced merge commit.',
+    }),
+    sourceCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    destinationCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    mergeOption: MergeOptionTypeEnumSchema.openapi({
+      description: 'The merge option or strategy you want to use to merge the code.',
+    }),
+    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.exactOptional().openapi({
+      description:
+        'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
+    }),
+    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.exactOptional().openapi({
+      description:
+        'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
+    }),
+    authorName: NameSchema.exactOptional().openapi({
+      description:
+        'The name of the author who created the unreferenced commit. This information is used as both the author and committer for the commit.',
+    }),
+    email: EmailSchema.exactOptional().openapi({
+      description: 'The email address for the person who created the unreferenced commit.',
+    }),
+    commitMessage: MessageSchema.exactOptional().openapi({
+      description: 'The commit message for the unreferenced commit.',
+    }),
+    keepEmptyFolders: KeepEmptyFoldersSchema.exactOptional().openapi({
+      description:
+        'If the commit contains deletions, whether to keep a folder or folder structure if the changes leave the folders empty. If this is specified as true, a .gitkeep file is created for empty folders. The default is false.',
+    }),
+    conflictResolution: ConflictResolutionSchema.exactOptional().openapi({
+      description:
+        'If AUTOMERGE is the conflict resolution strategy, a list of inputs to use when resolving conflicts during a merge.',
+    }),
   })
   .openapi({
     required: [
@@ -2235,23 +1661,19 @@ const ConcurrentReferenceUpdateExceptionSchema = z
 
 const DeleteApprovalRuleTemplateOutputSchema = z
   .object({
-    approvalRuleTemplateId: ApprovalRuleTemplateIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the deleted approval rule template. If the template has been previously deleted, the only response is a 200 OK.',
-        }),
-    ),
+    approvalRuleTemplateId: ApprovalRuleTemplateIdSchema.openapi({
+      description:
+        'The system-generated ID of the deleted approval rule template. If the template has been previously deleted, the only response is a 200 OK.',
+    }),
   })
   .openapi({ required: ['approvalRuleTemplateId'] })
   .openapi('DeleteApprovalRuleTemplateOutput')
 
 const DeleteApprovalRuleTemplateInputSchema = z
   .object({
-    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the approval rule template to delete.' }),
-    ),
+    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.openapi({
+      description: 'The name of the approval rule template to delete.',
+    }),
   })
   .openapi({ required: ['approvalRuleTemplateName'], title: 'DeleteApprovalRuleTemplateInput' })
   .openapi('DeleteApprovalRuleTemplateInput')
@@ -2262,42 +1684,32 @@ const ApprovalRuleTemplateInUseExceptionSchema = z
 
 const BranchInfoSchema = z
   .object({
-    branchName: BranchNameSchema.and(
-      z.any().openapi({ description: 'The name of the branch.' }),
-    ).exactOptional(),
-    commitId: CommitIdSchema.and(
-      z.any().openapi({ description: 'The ID of the last commit made to the branch.' }),
-    ).exactOptional(),
+    branchName: BranchNameSchema.exactOptional().openapi({
+      description: 'The name of the branch.',
+    }),
+    commitId: CommitIdSchema.exactOptional().openapi({
+      description: 'The ID of the last commit made to the branch.',
+    }),
   })
   .openapi({ description: 'Returns information about a branch.', required: [] })
   .openapi('BranchInfo')
 
 const DeleteBranchOutputSchema = z
   .object({
-    deletedBranch: BranchInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the branch deleted by the operation, including the branch name and the commit ID that was the tip of the branch.',
-        }),
-    ).exactOptional(),
+    deletedBranch: BranchInfoSchema.exactOptional().openapi({
+      description:
+        'Information about the branch deleted by the operation, including the branch name and the commit ID that was the tip of the branch.',
+    }),
   })
   .openapi({ description: 'Represents the output of a delete branch operation.', required: [] })
   .openapi('DeleteBranchOutput')
 
 const DeleteBranchInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository that contains the branch to be deleted.',
-        }),
-    ),
-    branchName: BranchNameSchema.and(
-      z.any().openapi({ description: 'The name of the branch to delete.' }),
-    ),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository that contains the branch to be deleted.',
+    }),
+    branchName: BranchNameSchema.openapi({ description: 'The name of the branch to delete.' }),
   })
   .openapi({
     required: ['repositoryName', 'branchName'],
@@ -2326,95 +1738,56 @@ const ReactionCountsMapSchema = z.record(z.string(), CountSchema).openapi('React
 
 const CommentSchema = z
   .object({
-    commentId: CommentIdSchema.and(
-      z.any().openapi({ description: 'The system-generated comment ID.' }),
-    ).exactOptional(),
-    content: ContentSchema.and(
-      z.any().openapi({ description: 'The content of the comment.' }),
-    ).exactOptional(),
-    inReplyTo: CommentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the comment for which this comment is a reply, if any.',
-        }),
-    ).exactOptional(),
-    creationDate: CreationDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time the comment was created, in timestamp format.',
-        }),
-    ).exactOptional(),
-    lastModifiedDate: LastModifiedDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time the comment was most recently modified, in timestamp format.',
-        }),
-    ).exactOptional(),
-    authorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the person who posted the comment.',
-        }),
-    ).exactOptional(),
-    deleted: IsCommentDeletedSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A Boolean value indicating whether the comment has been deleted.',
-        }),
-    ).exactOptional(),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, client-generated idempotency token that, when provided in a request, ensures the request cannot be repeated with a changed parameter. If a request is received with the same parameters and a token is included, the request returns information about the initial request that used that token.',
-        }),
-    ).exactOptional(),
-    callerReactions: CallerReactionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The emoji reactions to a comment, if any, submitted by the user whose credentials are associated with the call to the API.',
-        }),
-    ).exactOptional(),
-    reactionCounts: ReactionCountsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string to integer map that represents the number of individual users who have responded to a comment with the specified reactions.',
-        }),
-    ).exactOptional(),
+    commentId: CommentIdSchema.exactOptional().openapi({
+      description: 'The system-generated comment ID.',
+    }),
+    content: ContentSchema.exactOptional().openapi({ description: 'The content of the comment.' }),
+    inReplyTo: CommentIdSchema.exactOptional().openapi({
+      description: 'The ID of the comment for which this comment is a reply, if any.',
+    }),
+    creationDate: CreationDateSchema.exactOptional().openapi({
+      description: 'The date and time the comment was created, in timestamp format.',
+    }),
+    lastModifiedDate: LastModifiedDateSchema.exactOptional().openapi({
+      description: 'The date and time the comment was most recently modified, in timestamp format.',
+    }),
+    authorArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the person who posted the comment.',
+    }),
+    deleted: IsCommentDeletedSchema.exactOptional().openapi({
+      description: 'A Boolean value indicating whether the comment has been deleted.',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, client-generated idempotency token that, when provided in a request, ensures the request cannot be repeated with a changed parameter. If a request is received with the same parameters and a token is included, the request returns information about the initial request that used that token.',
+    }),
+    callerReactions: CallerReactionsSchema.exactOptional().openapi({
+      description:
+        'The emoji reactions to a comment, if any, submitted by the user whose credentials are associated with the call to the API.',
+    }),
+    reactionCounts: ReactionCountsMapSchema.exactOptional().openapi({
+      description:
+        'A string to integer map that represents the number of individual users who have responded to a comment with the specified reactions.',
+    }),
   })
   .openapi({ description: 'Returns information about a specific comment.', required: [] })
   .openapi('Comment')
 
 const DeleteCommentContentOutputSchema = z
   .object({
-    comment: CommentSchema.and(
-      z.any().openapi({ description: 'Information about the comment you just deleted.' }),
-    ).exactOptional(),
+    comment: CommentSchema.exactOptional().openapi({
+      description: 'Information about the comment you just deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteCommentContentOutput')
 
 const DeleteCommentContentInputSchema = z
   .object({
-    commentId: CommentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique, system-generated ID of the comment. To get this ID, use <a>GetCommentsForComparedCommit</a> or <a>GetCommentsForPullRequest</a>.',
-        }),
-    ),
+    commentId: CommentIdSchema.openapi({
+      description:
+        'The unique, system-generated ID of the comment. To get this ID, use <a>GetCommentsForComparedCommit</a> or <a>GetCommentsForPullRequest</a>.',
+    }),
   })
   .openapi({ required: ['commentId'], title: 'DeleteCommentContentInput' })
   .openapi('DeleteCommentContentInput')
@@ -2429,103 +1802,57 @@ const CommentDeletedExceptionSchema = z.any().openapi('CommentDeletedException')
 
 const DeleteFileOutputSchema = z
   .object({
-    commitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the commit that contains the change that deletes the file.',
-        }),
-    ),
-    blobId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The blob ID removed from the tree as part of deleting the file.',
-        }),
-    ),
-    treeId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full SHA-1 pointer of the tree information for the commit that contains the delete file change.',
-        }),
-    ),
-    filePath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fully qualified path to the file to be deleted, including the full name and extension of that file.',
-        }),
-    ),
+    commitId: ObjectIdSchema.openapi({
+      description:
+        'The full commit ID of the commit that contains the change that deletes the file.',
+    }),
+    blobId: ObjectIdSchema.openapi({
+      description: 'The blob ID removed from the tree as part of deleting the file.',
+    }),
+    treeId: ObjectIdSchema.openapi({
+      description:
+        'The full SHA-1 pointer of the tree information for the commit that contains the delete file change.',
+    }),
+    filePath: PathSchema.openapi({
+      description:
+        'The fully qualified path to the file to be deleted, including the full name and extension of that file.',
+    }),
   })
   .openapi({ required: ['commitId', 'blobId', 'treeId', 'filePath'] })
   .openapi('DeleteFileOutput')
 
 const DeleteFileInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository that contains the file to delete.' }),
-    ),
-    branchName: BranchNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the branch where the commit that deletes the file is made.',
-        }),
-    ),
-    filePath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fully qualified path to the file that to be deleted, including the full name and extension of that file. For example, /examples/file.md is a fully qualified path to a file named file.md in a folder named examples.',
-        }),
-    ),
-    parentCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the commit that is the tip of the branch where you want to create the commit that deletes the file. This must be the HEAD commit for the branch. The commit that deletes the file is created from this commit ID.',
-        }),
-    ),
-    keepEmptyFolders: KeepEmptyFoldersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a file is the only object in the folder or directory, specifies whether to delete the folder or directory that contains the file. By default, empty folders are deleted. This includes empty folders that are part of the directory structure. For example, if the path to a file is dir1/dir2/dir3/dir4, and dir2 and dir3 are empty, deleting the last file in dir4 also deletes the empty folders dir4, dir3, and dir2.',
-        }),
-    ).exactOptional(),
-    commitMessage: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The commit message you want to include as part of deleting the file. Commit messages are limited to 256 KB. If no message is specified, a default message is used.',
-        }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the author of the commit that deletes the file. If no name is specified, the user's ARN is used as the author name and committer name.",
-        }),
-    ).exactOptional(),
-    email: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address for the commit that deletes the file. If no email address is specified, the email address is left blank.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository that contains the file to delete.',
+    }),
+    branchName: BranchNameSchema.openapi({
+      description: 'The name of the branch where the commit that deletes the file is made.',
+    }),
+    filePath: PathSchema.openapi({
+      description:
+        'The fully qualified path to the file that to be deleted, including the full name and extension of that file. For example, /examples/file.md is a fully qualified path to a file named file.md in a folder named examples.',
+    }),
+    parentCommitId: CommitIdSchema.openapi({
+      description:
+        'The ID of the commit that is the tip of the branch where you want to create the commit that deletes the file. This must be the HEAD commit for the branch. The commit that deletes the file is created from this commit ID.',
+    }),
+    keepEmptyFolders: KeepEmptyFoldersSchema.exactOptional().openapi({
+      description:
+        'If a file is the only object in the folder or directory, specifies whether to delete the folder or directory that contains the file. By default, empty folders are deleted. This includes empty folders that are part of the directory structure. For example, if the path to a file is dir1/dir2/dir3/dir4, and dir2 and dir3 are empty, deleting the last file in dir4 also deletes the empty folders dir4, dir3, and dir2.',
+    }),
+    commitMessage: MessageSchema.exactOptional().openapi({
+      description:
+        'The commit message you want to include as part of deleting the file. Commit messages are limited to 256 KB. If no message is specified, a default message is used.',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description:
+        "The name of the author of the commit that deletes the file. If no name is specified, the user's ARN is used as the author name and committer name.",
+    }),
+    email: EmailSchema.exactOptional().openapi({
+      description:
+        'The email address for the commit that deletes the file. If no email address is specified, the email address is left blank.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'branchName', 'filePath', 'parentCommitId'],
@@ -2535,31 +1862,23 @@ const DeleteFileInputSchema = z
 
 const DeletePullRequestApprovalRuleOutputSchema = z
   .object({
-    approvalRuleId: ApprovalRuleIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the deleted approval rule. </p> <note> <p>If the approval rule was deleted in an earlier API call, the response is 200 OK without content.</p> </note>',
-        }),
-    ),
+    approvalRuleId: ApprovalRuleIdSchema.openapi({
+      description:
+        '<p>The ID of the deleted approval rule. </p> <note> <p>If the approval rule was deleted in an earlier API call, the response is 200 OK without content.</p> </note>',
+    }),
   })
   .openapi({ required: ['approvalRuleId'] })
   .openapi('DeletePullRequestApprovalRuleOutput')
 
 const DeletePullRequestApprovalRuleInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the pull request that contains the approval rule you want to delete.',
-        }),
-    ),
-    approvalRuleName: ApprovalRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the approval rule you want to delete.' }),
-    ),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description:
+        'The system-generated ID of the pull request that contains the approval rule you want to delete.',
+    }),
+    approvalRuleName: ApprovalRuleNameSchema.openapi({
+      description: 'The name of the approval rule you want to delete.',
+    }),
   })
   .openapi({
     required: ['pullRequestId', 'approvalRuleName'],
@@ -2573,18 +1892,18 @@ const CannotDeleteApprovalRuleFromTemplateExceptionSchema = z
 
 const DeleteRepositoryOutputSchema = z
   .object({
-    repositoryId: RepositoryIdSchema.and(
-      z.any().openapi({ description: 'The ID of the repository that was deleted.' }),
-    ).exactOptional(),
+    repositoryId: RepositoryIdSchema.exactOptional().openapi({
+      description: 'The ID of the repository that was deleted.',
+    }),
   })
   .openapi({ description: 'Represents the output of a delete repository operation.', required: [] })
   .openapi('DeleteRepositoryOutput')
 
 const DeleteRepositoryInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository to delete.' }),
-    ),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository to delete.',
+    }),
   })
   .openapi({
     required: ['repositoryName'],
@@ -2595,43 +1914,27 @@ const DeleteRepositoryInputSchema = z
 
 const DescribeMergeConflictsOutputSchema = z
   .object({
-    conflictMetadata: ConflictMetadataSchema.and(
-      z.any().openapi({ description: 'Contains metadata about the conflicts found in the merge.' }),
-    ),
-    mergeHunks: MergeHunksSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of merge hunks of the differences between the files or lines.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that can be used in a request to return the next batch of the results.',
-        }),
-    ).exactOptional(),
-    destinationCommitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The commit ID of the destination commit specifier that was used in the merge evaluation.',
-        }),
-    ),
-    sourceCommitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The commit ID of the source commit specifier that was used in the merge evaluation.',
-        }),
-    ),
-    baseCommitId: ObjectIdSchema.and(
-      z.any().openapi({ description: 'The commit ID of the merge base.' }),
-    ).exactOptional(),
+    conflictMetadata: ConflictMetadataSchema.openapi({
+      description: 'Contains metadata about the conflicts found in the merge.',
+    }),
+    mergeHunks: MergeHunksSchema.openapi({
+      description: 'A list of merge hunks of the differences between the files or lines.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that can be used in a request to return the next batch of the results.',
+    }),
+    destinationCommitId: ObjectIdSchema.openapi({
+      description:
+        'The commit ID of the destination commit specifier that was used in the merge evaluation.',
+    }),
+    sourceCommitId: ObjectIdSchema.openapi({
+      description:
+        'The commit ID of the source commit specifier that was used in the merge evaluation.',
+    }),
+    baseCommitId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The commit ID of the merge base.',
+    }),
   })
   .openapi({
     required: ['conflictMetadata', 'mergeHunks', 'destinationCommitId', 'sourceCommitId'],
@@ -2640,71 +1943,39 @@ const DescribeMergeConflictsOutputSchema = z
 
 const DescribeMergeConflictsInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository where you want to get information about a merge conflict.',
-        }),
-    ),
-    destinationCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    sourceCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    mergeOption: MergeOptionTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The merge option or strategy you want to use to merge the code.',
-        }),
-    ),
-    maxMergeHunks: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of merge hunks to include in the output.' }),
-    ).exactOptional(),
-    filePath: PathSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The path of the target files used to describe the conflicts. ' }),
-    ),
-    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
-        }),
-    ).exactOptional(),
-    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that, when provided in a request, returns the next batch of the results.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description:
+        'The name of the repository where you want to get information about a merge conflict.',
+    }),
+    destinationCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    sourceCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    mergeOption: MergeOptionTypeEnumSchema.openapi({
+      description: 'The merge option or strategy you want to use to merge the code.',
+    }),
+    maxMergeHunks: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of merge hunks to include in the output.',
+    }),
+    filePath: PathSchema.openapi({
+      description: 'The path of the target files used to describe the conflicts. ',
+    }),
+    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.exactOptional().openapi({
+      description:
+        'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
+    }),
+    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.exactOptional().openapi({
+      description:
+        'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that, when provided in a request, returns the next batch of the results.',
+    }),
   })
   .openapi({
     required: [
@@ -2736,34 +2007,20 @@ const PullRequestEventTypeSchema = z
 
 const PullRequestCreatedEventMetadataSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository where the pull request was created.' }),
-    ).exactOptional(),
-    sourceCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The commit ID on the source branch used when the pull request was created.',
-        }),
-    ).exactOptional(),
-    destinationCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The commit ID of the tip of the branch specified as the destination branch when the pull request was created.',
-        }),
-    ).exactOptional(),
-    mergeBase: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The commit ID of the most recent commit that the source branch and the destination branch have in common.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The name of the repository where the pull request was created.',
+    }),
+    sourceCommitId: CommitIdSchema.exactOptional().openapi({
+      description: 'The commit ID on the source branch used when the pull request was created.',
+    }),
+    destinationCommitId: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The commit ID of the tip of the branch specified as the destination branch when the pull request was created.',
+    }),
+    mergeBase: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The commit ID of the most recent commit that the source branch and the destination branch have in common.',
+    }),
   })
   .openapi({
     description:
@@ -2774,9 +2031,9 @@ const PullRequestCreatedEventMetadataSchema = z
 
 const PullRequestStatusChangedEventMetadataSchema = z
   .object({
-    pullRequestStatus: PullRequestStatusEnumSchema.and(
-      z.any().openapi({ description: 'The changed status of the pull request.' }),
-    ).exactOptional(),
+    pullRequestStatus: PullRequestStatusEnumSchema.exactOptional().openapi({
+      description: 'The changed status of the pull request.',
+    }),
   })
   .openapi({
     description: 'Information about a change to the status of a pull request.',
@@ -2786,35 +2043,21 @@ const PullRequestStatusChangedEventMetadataSchema = z
 
 const PullRequestSourceReferenceUpdatedEventMetadataSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository where the pull request was updated.' }),
-    ).exactOptional(),
-    beforeCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the commit in the destination branch that was the tip of the branch at the time the pull request was updated.',
-        }),
-    ).exactOptional(),
-    afterCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the commit in the source branch that was the tip of the branch at the time the pull request was updated.',
-        }),
-    ).exactOptional(),
-    mergeBase: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The commit ID of the most recent commit that the source branch and the destination branch have in common.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The name of the repository where the pull request was updated.',
+    }),
+    beforeCommitId: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The full commit ID of the commit in the destination branch that was the tip of the branch at the time the pull request was updated.',
+    }),
+    afterCommitId: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The full commit ID of the commit in the source branch that was the tip of the branch at the time the pull request was updated.',
+    }),
+    mergeBase: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The commit ID of the most recent commit that the source branch and the destination branch have in common.',
+    }),
   })
   .openapi({
     description: 'Information about an update to the source branch of a pull request.',
@@ -2824,19 +2067,15 @@ const PullRequestSourceReferenceUpdatedEventMetadataSchema = z
 
 const PullRequestMergedStateChangedEventMetadataSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository where the pull request was created.' }),
-    ).exactOptional(),
-    destinationReference: ReferenceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the branch that the pull request is merged into.' }),
-    ).exactOptional(),
-    mergeMetadata: MergeMetadataSchema.and(
-      z.any().openapi({ description: 'Information about the merge state change event.' }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The name of the repository where the pull request was created.',
+    }),
+    destinationReference: ReferenceNameSchema.exactOptional().openapi({
+      description: 'The name of the branch that the pull request is merged into.',
+    }),
+    mergeMetadata: MergeMetadataSchema.exactOptional().openapi({
+      description: 'Information about the merge state change event.',
+    }),
   })
   .openapi({
     description:
@@ -2847,15 +2086,15 @@ const PullRequestMergedStateChangedEventMetadataSchema = z
 
 const ApprovalRuleEventMetadataSchema = z
   .object({
-    approvalRuleName: ApprovalRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the approval rule.' }),
-    ).exactOptional(),
-    approvalRuleId: ApprovalRuleIdSchema.and(
-      z.any().openapi({ description: 'The system-generated ID of the approval rule.' }),
-    ).exactOptional(),
-    approvalRuleContent: ApprovalRuleContentSchema.and(
-      z.any().openapi({ description: 'The content of the approval rule.' }),
-    ).exactOptional(),
+    approvalRuleName: ApprovalRuleNameSchema.exactOptional().openapi({
+      description: 'The name of the approval rule.',
+    }),
+    approvalRuleId: ApprovalRuleIdSchema.exactOptional().openapi({
+      description: 'The system-generated ID of the approval rule.',
+    }),
+    approvalRuleContent: ApprovalRuleContentSchema.exactOptional().openapi({
+      description: 'The content of the approval rule.',
+    }),
   })
   .openapi({
     description: 'Returns information about an event for an approval rule.',
@@ -2867,16 +2106,12 @@ const ApprovalStateSchema = z.enum(['APPROVE', 'REVOKE']).openapi('ApprovalState
 
 const ApprovalStateChangedEventMetadataSchema = z
   .object({
-    revisionId: RevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The revision ID of the pull request when the approval state changed.',
-        }),
-    ).exactOptional(),
-    approvalStatus: ApprovalStateSchema.and(
-      z.any().openapi({ description: 'The approval status for the pull request.' }),
-    ).exactOptional(),
+    revisionId: RevisionIdSchema.exactOptional().openapi({
+      description: 'The revision ID of the pull request when the approval state changed.',
+    }),
+    approvalStatus: ApprovalStateSchema.exactOptional().openapi({
+      description: 'The approval status for the pull request.',
+    }),
   })
   .openapi({
     description: 'Returns information about a change in the approval state for a pull request.',
@@ -2888,16 +2123,12 @@ const OverrideStatusSchema = z.enum(['OVERRIDE', 'REVOKE']).openapi('OverrideSta
 
 const ApprovalRuleOverriddenEventMetadataSchema = z
   .object({
-    revisionId: RevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The revision ID of the pull request when the override event occurred.',
-        }),
-    ).exactOptional(),
-    overrideStatus: OverrideStatusSchema.and(
-      z.any().openapi({ description: 'The status of the override event.' }),
-    ).exactOptional(),
+    revisionId: RevisionIdSchema.exactOptional().openapi({
+      description: 'The revision ID of the pull request when the override event occurred.',
+    }),
+    overrideStatus: OverrideStatusSchema.exactOptional().openapi({
+      description: 'The status of the override event.',
+    }),
   })
   .openapi({
     description:
@@ -2908,79 +2139,47 @@ const ApprovalRuleOverriddenEventMetadataSchema = z
 
 const PullRequestEventSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z.any().openapi({ description: 'The system-generated ID of the pull request.' }),
-    ).exactOptional(),
-    eventDate: EventDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The day and time of the pull request event, in timestamp format.',
-        }),
-    ).exactOptional(),
-    pullRequestEventType: PullRequestEventTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the pull request event (for example, a status change event (PULL_REQUEST_STATUS_CHANGED) or update event (PULL_REQUEST_SOURCE_REFERENCE_UPDATED)).',
-        }),
-    ).exactOptional(),
-    actorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the user whose actions resulted in the event. Examples include updating the pull request with more commits or changing the status of a pull request.',
-        }),
-    ).exactOptional(),
-    pullRequestCreatedEventMetadata: PullRequestCreatedEventMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the source and destination branches for the pull request.',
-        }),
-    ).exactOptional(),
-    pullRequestStatusChangedEventMetadata: PullRequestStatusChangedEventMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the change in status for the pull request event.',
-        }),
-    ).exactOptional(),
+    pullRequestId: PullRequestIdSchema.exactOptional().openapi({
+      description: 'The system-generated ID of the pull request.',
+    }),
+    eventDate: EventDateSchema.exactOptional().openapi({
+      description: 'The day and time of the pull request event, in timestamp format.',
+    }),
+    pullRequestEventType: PullRequestEventTypeSchema.exactOptional().openapi({
+      description:
+        'The type of the pull request event (for example, a status change event (PULL_REQUEST_STATUS_CHANGED) or update event (PULL_REQUEST_SOURCE_REFERENCE_UPDATED)).',
+    }),
+    actorArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the user whose actions resulted in the event. Examples include updating the pull request with more commits or changing the status of a pull request.',
+    }),
+    pullRequestCreatedEventMetadata: PullRequestCreatedEventMetadataSchema.exactOptional().openapi({
+      description: 'Information about the source and destination branches for the pull request.',
+    }),
+    pullRequestStatusChangedEventMetadata:
+      PullRequestStatusChangedEventMetadataSchema.exactOptional().openapi({
+        description: 'Information about the change in status for the pull request event.',
+      }),
     pullRequestSourceReferenceUpdatedEventMetadata:
-      PullRequestSourceReferenceUpdatedEventMetadataSchema.and(
-        z
-          .any()
-          .openapi({
-            description: 'Information about the updated source branch for the pull request event. ',
-          }),
-      ).exactOptional(),
+      PullRequestSourceReferenceUpdatedEventMetadataSchema.exactOptional().openapi({
+        description: 'Information about the updated source branch for the pull request event. ',
+      }),
     pullRequestMergedStateChangedEventMetadata:
-      PullRequestMergedStateChangedEventMetadataSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'Information about the change in mergability state for the pull request event.',
-          }),
-      ).exactOptional(),
-    approvalRuleEventMetadata: ApprovalRuleEventMetadataSchema.and(
-      z.any().openapi({ description: 'Information about a pull request event.' }),
-    ).exactOptional(),
-    approvalStateChangedEventMetadata: ApprovalStateChangedEventMetadataSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about an approval state change for a pull request.' }),
-    ).exactOptional(),
-    approvalRuleOverriddenEventMetadata: ApprovalRuleOverriddenEventMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about an approval rule override event for a pull request.',
-        }),
-    ).exactOptional(),
+      PullRequestMergedStateChangedEventMetadataSchema.exactOptional().openapi({
+        description:
+          'Information about the change in mergability state for the pull request event.',
+      }),
+    approvalRuleEventMetadata: ApprovalRuleEventMetadataSchema.exactOptional().openapi({
+      description: 'Information about a pull request event.',
+    }),
+    approvalStateChangedEventMetadata:
+      ApprovalStateChangedEventMetadataSchema.exactOptional().openapi({
+        description: 'Information about an approval state change for a pull request.',
+      }),
+    approvalRuleOverriddenEventMetadata:
+      ApprovalRuleOverriddenEventMetadataSchema.exactOptional().openapi({
+        description: 'Information about an approval rule override event for a pull request.',
+      }),
   })
   .openapi({ description: 'Returns information about a pull request event.', required: [] })
   .openapi('PullRequestEvent')
@@ -2989,63 +2188,39 @@ const PullRequestEventListSchema = z.array(PullRequestEventSchema).openapi('Pull
 
 const DescribePullRequestEventsOutputSchema = z
   .object({
-    pullRequestEvents: PullRequestEventListSchema.and(
-      z.any().openapi({ description: 'Information about the pull request events.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that can be used in a request to return the next batch of the results.',
-        }),
-    ).exactOptional(),
+    pullRequestEvents: PullRequestEventListSchema.openapi({
+      description: 'Information about the pull request events.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that can be used in a request to return the next batch of the results.',
+    }),
   })
   .openapi({ required: ['pullRequestEvents'] })
   .openapi('DescribePullRequestEventsOutput')
 
 const DescribePullRequestEventsInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
-        }),
-    ),
-    pullRequestEventType: PullRequestEventTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. The pull request event type about which you want to return information.',
-        }),
-    ).exactOptional(),
-    actorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the user whose actions resulted in the event. Examples include updating the pull request with more commits or changing the status of a pull request.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that, when provided in a request, returns the next batch of the results.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A non-zero, non-negative integer used to limit the number of returned results. The default is 100 events, which is also the maximum number of events that can be returned in a result.',
-        }),
-    ).exactOptional(),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description:
+        'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
+    }),
+    pullRequestEventType: PullRequestEventTypeSchema.exactOptional().openapi({
+      description:
+        'Optional. The pull request event type about which you want to return information.',
+    }),
+    actorArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the user whose actions resulted in the event. Examples include updating the pull request with more commits or changing the status of a pull request.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that, when provided in a request, returns the next batch of the results.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'A non-zero, non-negative integer used to limit the number of returned results. The default is 100 events, which is also the maximum number of events that can be returned in a result.',
+    }),
   })
   .openapi({ required: ['pullRequestId'], title: 'DescribePullRequestEventsInput' })
   .openapi('DescribePullRequestEventsInput')
@@ -3062,21 +2237,13 @@ const InvalidMaxResultsExceptionSchema = z.any().openapi('InvalidMaxResultsExcep
 
 const DisassociateApprovalRuleTemplateFromRepositoryInputSchema = z
   .object({
-    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the approval rule template to disassociate from a specified repository.',
-        }),
-    ),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository you want to disassociate from the template.',
-        }),
-    ),
+    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.openapi({
+      description:
+        'The name of the approval rule template to disassociate from a specified repository.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository you want to disassociate from the template.',
+    }),
   })
   .openapi({
     required: ['approvalRuleTemplateName', 'repositoryName'],
@@ -3098,31 +2265,19 @@ const ApprovalRulesNotSatisfiedListSchema = z
 
 const EvaluationSchema = z
   .object({
-    approved: ApprovedSchema.and(
-      z.any().openapi({ description: 'Whether the state of the pull request is approved.' }),
-    ).exactOptional(),
-    overridden: OverriddenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether the approval rule requirements for the pull request have been overridden and no longer need to be met.',
-        }),
-    ).exactOptional(),
-    approvalRulesSatisfied: ApprovalRulesSatisfiedListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The names of the approval rules that have had their conditions met.',
-        }),
-    ).exactOptional(),
-    approvalRulesNotSatisfied: ApprovalRulesNotSatisfiedListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The names of the approval rules that have not had their conditions met.',
-        }),
-    ).exactOptional(),
+    approved: ApprovedSchema.exactOptional().openapi({
+      description: 'Whether the state of the pull request is approved.',
+    }),
+    overridden: OverriddenSchema.exactOptional().openapi({
+      description:
+        'Whether the approval rule requirements for the pull request have been overridden and no longer need to be met.',
+    }),
+    approvalRulesSatisfied: ApprovalRulesSatisfiedListSchema.exactOptional().openapi({
+      description: 'The names of the approval rules that have had their conditions met.',
+    }),
+    approvalRulesNotSatisfied: ApprovalRulesNotSatisfiedListSchema.exactOptional().openapi({
+      description: 'The names of the approval rules that have not had their conditions met.',
+    }),
   })
   .openapi({
     description:
@@ -3133,35 +2288,23 @@ const EvaluationSchema = z
 
 const EvaluatePullRequestApprovalRulesOutputSchema = z
   .object({
-    evaluation: EvaluationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The result of the evaluation, including the names of the rules whose conditions have been met (if any), the names of the rules whose conditions have not been met (if any), whether the pull request is in the approved state, and whether the pull request approval rule has been set aside by an override. ',
-        }),
-    ),
+    evaluation: EvaluationSchema.openapi({
+      description:
+        'The result of the evaluation, including the names of the rules whose conditions have been met (if any), the names of the rules whose conditions have not been met (if any), whether the pull request is in the approved state, and whether the pull request approval rule has been set aside by an override. ',
+    }),
   })
   .openapi({ required: ['evaluation'] })
   .openapi('EvaluatePullRequestApprovalRulesOutput')
 
 const EvaluatePullRequestApprovalRulesInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The system-generated ID of the pull request you want to evaluate.',
-        }),
-    ),
-    revisionId: RevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID for the pull request revision. To retrieve the most recent revision ID for a pull request, use <a>GetPullRequest</a>.',
-        }),
-    ),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description: 'The system-generated ID of the pull request you want to evaluate.',
+    }),
+    revisionId: RevisionIdSchema.openapi({
+      description:
+        'The system-generated ID for the pull request revision. To retrieve the most recent revision ID for a pull request, use <a>GetPullRequest</a>.',
+    }),
   })
   .openapi({
     required: ['pullRequestId', 'revisionId'],
@@ -3177,23 +2320,18 @@ const RevisionNotCurrentExceptionSchema = z.any().openapi('RevisionNotCurrentExc
 
 const GetApprovalRuleTemplateOutputSchema = z
   .object({
-    approvalRuleTemplate: ApprovalRuleTemplateSchema.and(
-      z.any().openapi({ description: 'The content and structure of the approval rule template.' }),
-    ),
+    approvalRuleTemplate: ApprovalRuleTemplateSchema.openapi({
+      description: 'The content and structure of the approval rule template.',
+    }),
   })
   .openapi({ required: ['approvalRuleTemplate'] })
   .openapi('GetApprovalRuleTemplateOutput')
 
 const GetApprovalRuleTemplateInputSchema = z
   .object({
-    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the approval rule template for which you want to get information.',
-        }),
-    ),
+    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.openapi({
+      description: 'The name of the approval rule template for which you want to get information.',
+    }),
   })
   .openapi({ required: ['approvalRuleTemplateName'], title: 'GetApprovalRuleTemplateInput' })
   .openapi('GetApprovalRuleTemplateInput')
@@ -3202,21 +2340,19 @@ const BlobSchema = z.string().openapi('Blob')
 
 const GetBlobOutputSchema = z
   .object({
-    content: BlobSchema.and(
-      z.any().openapi({ description: 'The content of the blob, usually a file.' }),
-    ),
+    content: BlobSchema.openapi({ description: 'The content of the blob, usually a file.' }),
   })
   .openapi({ required: ['content'], description: 'Represents the output of a get blob operation.' })
   .openapi('GetBlobOutput')
 
 const GetBlobInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository that contains the blob.' }),
-    ),
-    blobId: ObjectIdSchema.and(
-      z.any().openapi({ description: 'The ID of the blob, which is its SHA-1 pointer.' }),
-    ),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository that contains the blob.',
+    }),
+    blobId: ObjectIdSchema.openapi({
+      description: 'The ID of the blob, which is its SHA-1 pointer.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'blobId'],
@@ -3235,30 +2371,20 @@ const FileTooLargeExceptionSchema = z.any().openapi('FileTooLargeException')
 
 const GetBranchOutputSchema = z
   .object({
-    branch: BranchInfoSchema.and(
-      z.any().openapi({ description: 'The name of the branch.' }),
-    ).exactOptional(),
+    branch: BranchInfoSchema.exactOptional().openapi({ description: 'The name of the branch.' }),
   })
   .openapi({ description: 'Represents the output of a get branch operation.', required: [] })
   .openapi('GetBranchOutput')
 
 const GetBranchInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository that contains the branch for which you want to retrieve information.',
-        }),
-    ).exactOptional(),
-    branchName: BranchNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the branch for which you want to retrieve information.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description:
+        'The name of the repository that contains the branch for which you want to retrieve information.',
+    }),
+    branchName: BranchNameSchema.exactOptional().openapi({
+      description: 'The name of the branch for which you want to retrieve information.',
+    }),
   })
   .openapi({
     title: 'GetBranchInput',
@@ -3269,23 +2395,17 @@ const GetBranchInputSchema = z
 
 const GetCommentOutputSchema = z
   .object({
-    comment: CommentSchema.and(
-      z.any().openapi({ description: 'The contents of the comment.' }),
-    ).exactOptional(),
+    comment: CommentSchema.exactOptional().openapi({ description: 'The contents of the comment.' }),
   })
   .openapi({ required: [] })
   .openapi('GetCommentOutput')
 
 const GetCommentInputSchema = z
   .object({
-    commentId: CommentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique, system-generated ID of the comment. To get this ID, use <a>GetCommentsForComparedCommit</a> or <a>GetCommentsForPullRequest</a>.',
-        }),
-    ),
+    commentId: CommentIdSchema.openapi({
+      description:
+        'The unique, system-generated ID of the comment. To get this ID, use <a>GetCommentsForComparedCommit</a> or <a>GetCommentsForPullRequest</a>.',
+    }),
   })
   .openapi({ required: ['commentId'], title: 'GetCommentInput' })
   .openapi('GetCommentInput')
@@ -3298,25 +2418,17 @@ const ReactionUnicodeSchema = z.string().openapi('ReactionUnicode')
 
 const ReactionValueFormatsSchema = z
   .object({
-    emoji: ReactionEmojiSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Emoji Version 1.0 graphic of the reaction. These graphics are interpreted slightly differently on different operating systems.',
-        }),
-    ).exactOptional(),
-    shortCode: ReactionShortCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The emoji short code for the reaction. Short codes are interpreted slightly differently on different operating systems. ',
-        }),
-    ).exactOptional(),
-    unicode: ReactionUnicodeSchema.and(
-      z.any().openapi({ description: 'The Unicode codepoint for the reaction.' }),
-    ).exactOptional(),
+    emoji: ReactionEmojiSchema.exactOptional().openapi({
+      description:
+        'The Emoji Version 1.0 graphic of the reaction. These graphics are interpreted slightly differently on different operating systems.',
+    }),
+    shortCode: ReactionShortCodeSchema.exactOptional().openapi({
+      description:
+        'The emoji short code for the reaction. Short codes are interpreted slightly differently on different operating systems. ',
+    }),
+    unicode: ReactionUnicodeSchema.exactOptional().openapi({
+      description: 'The Unicode codepoint for the reaction.',
+    }),
   })
   .openapi({
     description:
@@ -3329,25 +2441,17 @@ const ReactionUsersListSchema = z.array(ArnSchema).openapi('ReactionUsersList')
 
 const ReactionForCommentSchema = z
   .object({
-    reaction: ReactionValueFormatsSchema.and(
-      z.any().openapi({ description: 'The reaction for a specified comment.' }),
-    ).exactOptional(),
-    reactionUsers: ReactionUsersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Names (ARNs) of users who have provided reactions to the comment.',
-        }),
-    ).exactOptional(),
-    reactionsFromDeletedUsersCount: CountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A numerical count of users who reacted with the specified emoji whose identities have been subsequently deleted from IAM. While these IAM users or roles no longer exist, the reactions might still appear in total reaction counts.',
-        }),
-    ).exactOptional(),
+    reaction: ReactionValueFormatsSchema.exactOptional().openapi({
+      description: 'The reaction for a specified comment.',
+    }),
+    reactionUsers: ReactionUsersListSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Names (ARNs) of users who have provided reactions to the comment.',
+    }),
+    reactionsFromDeletedUsersCount: CountSchema.exactOptional().openapi({
+      description:
+        'A numerical count of users who reacted with the specified emoji whose identities have been subsequently deleted from IAM. While these IAM users or roles no longer exist, the reactions might still appear in total reaction counts.',
+    }),
   })
   .openapi({
     description: 'Information about the reaction values provided by users on a comment.',
@@ -3361,54 +2465,34 @@ const ReactionsForCommentListSchema = z
 
 const GetCommentReactionsOutputSchema = z
   .object({
-    reactionsForComment: ReactionsForCommentListSchema.and(
-      z.any().openapi({ description: 'An array of reactions to the specified comment.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that can be used in a request to return the next batch of the results.',
-        }),
-    ).exactOptional(),
+    reactionsForComment: ReactionsForCommentListSchema.openapi({
+      description: 'An array of reactions to the specified comment.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that can be used in a request to return the next batch of the results.',
+    }),
   })
   .openapi({ required: ['reactionsForComment'] })
   .openapi('GetCommentReactionsOutput')
 
 const GetCommentReactionsInputSchema = z
   .object({
-    commentId: CommentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the comment for which you want to get reactions information.',
-        }),
-    ),
-    reactionUserArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. The Amazon Resource Name (ARN) of the user or identity for which you want to get reaction information.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that, when provided in a request, returns the next batch of the results. ',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A non-zero, non-negative integer used to limit the number of returned results. The default is the same as the allowed maximum, 1,000.',
-        }),
-    ).exactOptional(),
+    commentId: CommentIdSchema.openapi({
+      description: 'The ID of the comment for which you want to get reactions information.',
+    }),
+    reactionUserArn: ArnSchema.exactOptional().openapi({
+      description:
+        'Optional. The Amazon Resource Name (ARN) of the user or identity for which you want to get reaction information.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that, when provided in a request, returns the next batch of the results. ',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'A non-zero, non-negative integer used to limit the number of returned results. The default is the same as the allowed maximum, 1,000.',
+    }),
   })
   .openapi({ required: ['commentId'], title: 'GetCommentReactionsInput' })
   .openapi('GetCommentReactionsInput')
@@ -3421,29 +2505,17 @@ const RelativeFileVersionEnumSchema = z.enum(['BEFORE', 'AFTER']).openapi('Relat
 
 const LocationSchema = z
   .object({
-    filePath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the file being compared, including its extension and subdirectory, if any.',
-        }),
-    ).exactOptional(),
-    filePosition: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The position of a change in a compared file, in line number format.',
-        }),
-    ).exactOptional(),
-    relativeFileVersion: RelativeFileVersionEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'In a comparison of commits or a pull request, whether the change is in the before or after of that comparison.',
-        }),
-    ).exactOptional(),
+    filePath: PathSchema.exactOptional().openapi({
+      description:
+        'The name of the file being compared, including its extension and subdirectory, if any.',
+    }),
+    filePosition: PositionSchema.exactOptional().openapi({
+      description: 'The position of a change in a compared file, in line number format.',
+    }),
+    relativeFileVersion: RelativeFileVersionEnumSchema.exactOptional().openapi({
+      description:
+        'In a comparison of commits or a pull request, whether the change is in the before or after of that comparison.',
+    }),
   })
   .openapi({
     description:
@@ -3456,59 +2528,31 @@ const CommentsSchema = z.array(CommentSchema).openapi('Comments')
 
 const CommentsForComparedCommitSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository that contains the compared commits.' }),
-    ).exactOptional(),
-    beforeCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the commit used to establish the before of the comparison.',
-        }),
-    ).exactOptional(),
-    afterCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the commit used to establish the after of the comparison.',
-        }),
-    ).exactOptional(),
-    beforeBlobId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full blob ID of the commit used to establish the before of the comparison.',
-        }),
-    ).exactOptional(),
-    afterBlobId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full blob ID of the commit used to establish the after of the comparison.',
-        }),
-    ).exactOptional(),
-    location: LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Location information about the comment on the comparison, including the file name, line number, and whether the version of the file where the comment was made is BEFORE or AFTER.',
-        }),
-    ).exactOptional(),
-    comments: CommentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of comment objects. Each comment object contains information about a comment on the comparison between commits.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The name of the repository that contains the compared commits.',
+    }),
+    beforeCommitId: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The full commit ID of the commit used to establish the before of the comparison.',
+    }),
+    afterCommitId: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The full commit ID of the commit used to establish the after of the comparison.',
+    }),
+    beforeBlobId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The full blob ID of the commit used to establish the before of the comparison.',
+    }),
+    afterBlobId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The full blob ID of the commit used to establish the after of the comparison.',
+    }),
+    location: LocationSchema.exactOptional().openapi({
+      description:
+        'Location information about the comment on the comparison, including the file name, line number, and whether the version of the file where the comment was made is BEFORE or AFTER.',
+    }),
+    comments: CommentsSchema.exactOptional().openapi({
+      description:
+        'An array of comment objects. Each comment object contains information about a comment on the comparison between commits.',
+    }),
   })
   .openapi({
     description: 'Returns information about comments on the comparison between two commits.',
@@ -3522,60 +2566,38 @@ const CommentsForComparedCommitDataSchema = z
 
 const GetCommentsForComparedCommitOutputSchema = z
   .object({
-    commentsForComparedCommitData: CommentsForComparedCommitDataSchema.and(
-      z.any().openapi({ description: 'A list of comment objects on the compared commit.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that can be used in a request to return the next batch of the results.',
-        }),
-    ).exactOptional(),
+    commentsForComparedCommitData: CommentsForComparedCommitDataSchema.exactOptional().openapi({
+      description: 'A list of comment objects on the compared commit.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that can be used in a request to return the next batch of the results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCommentsForComparedCommitOutput')
 
 const GetCommentsForComparedCommitInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository where you want to compare commits.' }),
-    ),
-    beforeCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To establish the directionality of the comparison, the full commit ID of the before commit.',
-        }),
-    ).exactOptional(),
-    afterCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To establish the directionality of the comparison, the full commit ID of the after commit.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that when provided in a request, returns the next batch of the results. ',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A non-zero, non-negative integer used to limit the number of returned results. The default is 100 comments, but you can configure up to 500.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository where you want to compare commits.',
+    }),
+    beforeCommitId: CommitIdSchema.exactOptional().openapi({
+      description:
+        'To establish the directionality of the comparison, the full commit ID of the before commit.',
+    }),
+    afterCommitId: CommitIdSchema.openapi({
+      description:
+        'To establish the directionality of the comparison, the full commit ID of the after commit.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that when provided in a request, returns the next batch of the results. ',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'A non-zero, non-negative integer used to limit the number of returned results. The default is 100 comments, but you can configure up to 500.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'afterCommitId'],
@@ -3585,62 +2607,36 @@ const GetCommentsForComparedCommitInputSchema = z
 
 const CommentsForPullRequestSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z.any().openapi({ description: 'The system-generated ID of the pull request.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository that contains the pull request.' }),
-    ).exactOptional(),
-    beforeCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the commit that was the tip of the destination branch when the pull request was created. This commit is superceded by the after commit in the source branch when and if you merge the source branch into the destination branch.',
-        }),
-    ).exactOptional(),
-    afterCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the commit that was the tip of the source branch at the time the comment was made. ',
-        }),
-    ).exactOptional(),
-    beforeBlobId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full blob ID of the file on which you want to comment on the destination commit.',
-        }),
-    ).exactOptional(),
-    afterBlobId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full blob ID of the file on which you want to comment on the source commit.',
-        }),
-    ).exactOptional(),
-    location: LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Location information about the comment on the pull request, including the file name, line number, and whether the version of the file where the comment was made is BEFORE (destination branch) or AFTER (source branch).',
-        }),
-    ).exactOptional(),
-    comments: CommentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of comment objects. Each comment object contains information about a comment on the pull request.',
-        }),
-    ).exactOptional(),
+    pullRequestId: PullRequestIdSchema.exactOptional().openapi({
+      description: 'The system-generated ID of the pull request.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The name of the repository that contains the pull request.',
+    }),
+    beforeCommitId: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The full commit ID of the commit that was the tip of the destination branch when the pull request was created. This commit is superceded by the after commit in the source branch when and if you merge the source branch into the destination branch.',
+    }),
+    afterCommitId: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The full commit ID of the commit that was the tip of the source branch at the time the comment was made. ',
+    }),
+    beforeBlobId: ObjectIdSchema.exactOptional().openapi({
+      description:
+        'The full blob ID of the file on which you want to comment on the destination commit.',
+    }),
+    afterBlobId: ObjectIdSchema.exactOptional().openapi({
+      description:
+        'The full blob ID of the file on which you want to comment on the source commit.',
+    }),
+    location: LocationSchema.exactOptional().openapi({
+      description:
+        'Location information about the comment on the pull request, including the file name, line number, and whether the version of the file where the comment was made is BEFORE (destination branch) or AFTER (source branch).',
+    }),
+    comments: CommentsSchema.exactOptional().openapi({
+      description:
+        'An array of comment objects. Each comment object contains information about a comment on the pull request.',
+    }),
   })
   .openapi({ description: 'Returns information about comments on a pull request.', required: [] })
   .openapi('CommentsForPullRequest')
@@ -3651,68 +2647,42 @@ const CommentsForPullRequestDataSchema = z
 
 const GetCommentsForPullRequestOutputSchema = z
   .object({
-    commentsForPullRequestData: CommentsForPullRequestDataSchema.and(
-      z.any().openapi({ description: 'An array of comment objects on the pull request.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that can be used in a request to return the next batch of the results.',
-        }),
-    ).exactOptional(),
+    commentsForPullRequestData: CommentsForPullRequestDataSchema.exactOptional().openapi({
+      description: 'An array of comment objects on the pull request.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that can be used in a request to return the next batch of the results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCommentsForPullRequestOutput')
 
 const GetCommentsForPullRequestInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
-        }),
-    ),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository that contains the pull request.' }),
-    ).exactOptional(),
-    beforeCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the commit in the destination branch that was the tip of the branch at the time the pull request was created.',
-        }),
-    ).exactOptional(),
-    afterCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the commit in the source branch that was the tip of the branch at the time the comment was made.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that, when provided in a request, returns the next batch of the results.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A non-zero, non-negative integer used to limit the number of returned results. The default is 100 comments. You can return up to 500 comments with a single request.',
-        }),
-    ).exactOptional(),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description:
+        'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The name of the repository that contains the pull request.',
+    }),
+    beforeCommitId: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The full commit ID of the commit in the destination branch that was the tip of the branch at the time the pull request was created.',
+    }),
+    afterCommitId: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The full commit ID of the commit in the source branch that was the tip of the branch at the time the comment was made.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that, when provided in a request, returns the next batch of the results.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'A non-zero, non-negative integer used to limit the number of returned results. The default is 100 comments. You can return up to 500 comments with a single request.',
+    }),
   })
   .openapi({ required: ['pullRequestId'], title: 'GetCommentsForPullRequestInput' })
   .openapi('GetCommentsForPullRequestInput')
@@ -3723,14 +2693,10 @@ const RepositoryNotAssociatedWithPullRequestExceptionSchema = z
 
 const GetCommitOutputSchema = z
   .object({
-    commit: CommitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A commit data type object that contains information about the specified commit.',
-        }),
-    ),
+    commit: CommitSchema.openapi({
+      description:
+        'A commit data type object that contains information about the specified commit.',
+    }),
   })
   .openapi({
     required: ['commit'],
@@ -3740,14 +2706,12 @@ const GetCommitOutputSchema = z
 
 const GetCommitInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository to which the commit was made.' }),
-    ),
-    commitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The commit ID. Commit IDs are the full SHA ID of the commit.' }),
-    ),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository to which the commit was made.',
+    }),
+    commitId: ObjectIdSchema.openapi({
+      description: 'The commit ID. Commit IDs are the full SHA ID of the commit.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'commitId'],
@@ -3762,50 +2726,32 @@ const ModeSchema = z.string().openapi('Mode')
 
 const BlobMetadataSchema = z
   .object({
-    blobId: ObjectIdSchema.and(
-      z.any().openapi({ description: 'The full ID of the blob.' }),
-    ).exactOptional(),
-    path: PathSchema.and(
-      z.any().openapi({ description: 'The path to the blob and associated file name, if any.' }),
-    ).exactOptional(),
-    mode: ModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The file mode permissions of the blob. File mode permission codes include:</p> <ul> <li> <p> <code>100644</code> indicates read/write</p> </li> <li> <p> <code>100755</code> indicates read/write/execute</p> </li> <li> <p> <code>160000</code> indicates a submodule</p> </li> <li> <p> <code>120000</code> indicates a symlink</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    blobId: ObjectIdSchema.exactOptional().openapi({ description: 'The full ID of the blob.' }),
+    path: PathSchema.exactOptional().openapi({
+      description: 'The path to the blob and associated file name, if any.',
+    }),
+    mode: ModeSchema.exactOptional().openapi({
+      description:
+        '<p>The file mode permissions of the blob. File mode permission codes include:</p> <ul> <li> <p> <code>100644</code> indicates read/write</p> </li> <li> <p> <code>100755</code> indicates read/write/execute</p> </li> <li> <p> <code>160000</code> indicates a submodule</p> </li> <li> <p> <code>120000</code> indicates a symlink</p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'Returns information about a specific Git blob object.', required: [] })
   .openapi('BlobMetadata')
 
 const DifferenceSchema = z
   .object({
-    beforeBlob: BlobMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a <code>beforeBlob</code> data type object, including the ID, the file mode permission code, and the path.',
-        }),
-    ).exactOptional(),
-    afterBlob: BlobMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about an <code>afterBlob</code> data type object, including the ID, the file mode permission code, and the path.',
-        }),
-    ).exactOptional(),
-    changeType: ChangeTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether the change type of the difference is an addition (A), deletion (D), or modification (M).',
-        }),
-    ).exactOptional(),
+    beforeBlob: BlobMetadataSchema.exactOptional().openapi({
+      description:
+        'Information about a <code>beforeBlob</code> data type object, including the ID, the file mode permission code, and the path.',
+    }),
+    afterBlob: BlobMetadataSchema.exactOptional().openapi({
+      description:
+        'Information about an <code>afterBlob</code> data type object, including the ID, the file mode permission code, and the path.',
+    }),
+    changeType: ChangeTypeEnumSchema.exactOptional().openapi({
+      description:
+        'Whether the change type of the difference is an addition (A), deletion (D), or modification (M).',
+    }),
   })
   .openapi({
     description: 'Returns information about a set of differences for a commit specifier.',
@@ -3817,22 +2763,14 @@ const DifferenceListSchema = z.array(DifferenceSchema).openapi('DifferenceList')
 
 const GetDifferencesOutputSchema = z
   .object({
-    differences: DifferenceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A data type object that contains information about the differences, including whether the difference is added, modified, or deleted (A, D, M).',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that can be used in a request to return the next batch of the results.',
-        }),
-    ).exactOptional(),
+    differences: DifferenceListSchema.exactOptional().openapi({
+      description:
+        'A data type object that contains information about the differences, including whether the difference is added, modified, or deleted (A, D, M).',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that can be used in a request to return the next batch of the results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDifferencesOutput')
@@ -3841,59 +2779,32 @@ const LimitSchema = z.int().openapi('Limit')
 
 const GetDifferencesInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository where you want to get differences.' }),
-    ),
-    beforeCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, the full commit ID). Optional. If not specified, all changes before the <code>afterCommitSpecifier</code> value are shown. If you do not use <code>beforeCommitSpecifier</code> in your request, consider limiting the results with <code>maxResults</code>.',
-        }),
-    ).exactOptional(),
-    afterCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit.',
-        }),
-    ),
-    beforePath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The file path in which to check for differences. Limits the results to this path. Can also be used to specify the previous name of a directory or folder. If <code>beforePath</code> and <code>afterPath</code> are not specified, differences are shown for all paths.',
-        }),
-    ).exactOptional(),
-    afterPath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The file path in which to check differences. Limits the results to this path. Can also be used to specify the changed name of a directory or folder, if it has changed. If not specified, differences are shown for all paths.',
-        }),
-    ).exactOptional(),
-    MaxResults: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A non-zero, non-negative integer used to limit the number of returned results.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that, when provided in a request, returns the next batch of the results.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository where you want to get differences.',
+    }),
+    beforeCommitSpecifier: CommitNameSchema.exactOptional().openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, the full commit ID). Optional. If not specified, all changes before the <code>afterCommitSpecifier</code> value are shown. If you do not use <code>beforeCommitSpecifier</code> in your request, consider limiting the results with <code>maxResults</code>.',
+    }),
+    afterCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit.',
+    }),
+    beforePath: PathSchema.exactOptional().openapi({
+      description:
+        'The file path in which to check for differences. Limits the results to this path. Can also be used to specify the previous name of a directory or folder. If <code>beforePath</code> and <code>afterPath</code> are not specified, differences are shown for all paths.',
+    }),
+    afterPath: PathSchema.exactOptional().openapi({
+      description:
+        'The file path in which to check differences. Limits the results to this path. Can also be used to specify the changed name of a directory or folder, if it has changed. If not specified, differences are shown for all paths.',
+    }),
+    MaxResults: LimitSchema.exactOptional().openapi({
+      description: 'A non-zero, non-negative integer used to limit the number of returned results.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that, when provided in a request, returns the next batch of the results.',
+    }),
   })
   .openapi({ required: ['repositoryName', 'afterCommitSpecifier'], title: 'GetDifferencesInput' })
   .openapi('GetDifferencesInput')
@@ -3904,96 +2815,62 @@ const ObjectSizeSchema = z.int().openapi('ObjectSize')
 
 const GetFileOutputSchema = z
   .object({
-    commitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the commit that contains the content returned by GetFile.',
-        }),
-    ),
-    blobId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The blob ID of the object that represents the file content.' }),
-    ),
-    filePath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fully qualified path to the specified file. Returns the name and extension of the file.',
-        }),
-    ),
-    fileMode: FileModeTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The extrapolated file mode permissions of the blob. Valid values include strings such as EXECUTABLE and not numeric values.</p> <note> <p>The file mode permissions returned by this API are not the standard file mode permission values, such as 100644, but rather extrapolated values. See the supported return values.</p> </note>',
-        }),
-    ),
-    fileSize: ObjectSizeSchema.and(
-      z.any().openapi({ description: 'The size of the contents of the file, in bytes.' }),
-    ),
-    fileContent: FileContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The base-64 encoded binary data object that represents the content of the file.',
-        }),
-    ),
+    commitId: ObjectIdSchema.openapi({
+      description:
+        'The full commit ID of the commit that contains the content returned by GetFile.',
+    }),
+    blobId: ObjectIdSchema.openapi({
+      description: 'The blob ID of the object that represents the file content.',
+    }),
+    filePath: PathSchema.openapi({
+      description:
+        'The fully qualified path to the specified file. Returns the name and extension of the file.',
+    }),
+    fileMode: FileModeTypeEnumSchema.openapi({
+      description:
+        '<p>The extrapolated file mode permissions of the blob. Valid values include strings such as EXECUTABLE and not numeric values.</p> <note> <p>The file mode permissions returned by this API are not the standard file mode permission values, such as 100644, but rather extrapolated values. See the supported return values.</p> </note>',
+    }),
+    fileSize: ObjectSizeSchema.openapi({
+      description: 'The size of the contents of the file, in bytes.',
+    }),
+    fileContent: FileContentSchema.openapi({
+      description:
+        'The base-64 encoded binary data object that represents the content of the file.',
+    }),
   })
   .openapi({ required: ['commitId', 'blobId', 'filePath', 'fileMode', 'fileSize', 'fileContent'] })
   .openapi('GetFileOutput')
 
 const GetFileInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository that contains the file.' }),
-    ),
-    commitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fully quaified reference that identifies the commit that contains the file. For example, you can specify a full commit ID, a tag, a branch name, or a reference such as refs/heads/master. If none is provided, the head commit is used.',
-        }),
-    ).exactOptional(),
-    filePath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fully qualified path to the file, including the full name and extension of the file. For example, /examples/file.md is the fully qualified path to a file named file.md in a folder named examples.',
-        }),
-    ),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository that contains the file.',
+    }),
+    commitSpecifier: CommitNameSchema.exactOptional().openapi({
+      description:
+        'The fully quaified reference that identifies the commit that contains the file. For example, you can specify a full commit ID, a tag, a branch name, or a reference such as refs/heads/master. If none is provided, the head commit is used.',
+    }),
+    filePath: PathSchema.openapi({
+      description:
+        'The fully qualified path to the file, including the full name and extension of the file. For example, /examples/file.md is the fully qualified path to a file named file.md in a folder named examples.',
+    }),
   })
   .openapi({ required: ['repositoryName', 'filePath'], title: 'GetFileInput' })
   .openapi('GetFileInput')
 
 const FolderSchema = z
   .object({
-    treeId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full SHA-1 pointer of the tree information for the commit that contains the folder.',
-        }),
-    ).exactOptional(),
-    absolutePath: PathSchema.and(
-      z.any().openapi({ description: 'The fully qualified path of the folder in the repository.' }),
-    ).exactOptional(),
-    relativePath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The relative path of the specified folder from the folder where the query originated.',
-        }),
-    ).exactOptional(),
+    treeId: ObjectIdSchema.exactOptional().openapi({
+      description:
+        'The full SHA-1 pointer of the tree information for the commit that contains the folder.',
+    }),
+    absolutePath: PathSchema.exactOptional().openapi({
+      description: 'The fully qualified path of the folder in the repository.',
+    }),
+    relativePath: PathSchema.exactOptional().openapi({
+      description:
+        'The relative path of the specified folder from the folder where the query originated.',
+    }),
   })
   .openapi({ description: 'Returns information about a folder in a repository.', required: [] })
   .openapi('Folder')
@@ -4002,27 +2879,19 @@ const FolderListSchema = z.array(FolderSchema).openapi('FolderList')
 
 const FileSchema = z
   .object({
-    blobId: ObjectIdSchema.and(
-      z.any().openapi({ description: 'The blob ID that contains the file information.' }),
-    ).exactOptional(),
-    absolutePath: PathSchema.and(
-      z.any().openapi({ description: 'The fully qualified path to the file in the repository.' }),
-    ).exactOptional(),
-    relativePath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The relative path of the file from the folder where the query originated.',
-        }),
-    ).exactOptional(),
-    fileMode: FileModeTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The extrapolated file mode permissions for the file. Valid values include EXECUTABLE and NORMAL.',
-        }),
-    ).exactOptional(),
+    blobId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The blob ID that contains the file information.',
+    }),
+    absolutePath: PathSchema.exactOptional().openapi({
+      description: 'The fully qualified path to the file in the repository.',
+    }),
+    relativePath: PathSchema.exactOptional().openapi({
+      description: 'The relative path of the file from the folder where the query originated.',
+    }),
+    fileMode: FileModeTypeEnumSchema.exactOptional().openapi({
+      description:
+        'The extrapolated file mode permissions for the file. Valid values include EXECUTABLE and NORMAL.',
+    }),
   })
   .openapi({ description: 'Returns information about a file in a repository.', required: [] })
   .openapi('File')
@@ -4031,36 +2900,20 @@ const FileListSchema = z.array(FileSchema).openapi('FileList')
 
 const SymbolicLinkSchema = z
   .object({
-    blobId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The blob ID that contains the information about the symbolic link.',
-        }),
-    ).exactOptional(),
-    absolutePath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The fully qualified path to the folder that contains the symbolic link.',
-        }),
-    ).exactOptional(),
-    relativePath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The relative path of the symbolic link from the folder where the query originated.',
-        }),
-    ).exactOptional(),
-    fileMode: FileModeTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The file mode permissions of the blob that cotains information about the symbolic link.',
-        }),
-    ).exactOptional(),
+    blobId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The blob ID that contains the information about the symbolic link.',
+    }),
+    absolutePath: PathSchema.exactOptional().openapi({
+      description: 'The fully qualified path to the folder that contains the symbolic link.',
+    }),
+    relativePath: PathSchema.exactOptional().openapi({
+      description:
+        'The relative path of the symbolic link from the folder where the query originated.',
+    }),
+    fileMode: FileModeTypeEnumSchema.exactOptional().openapi({
+      description:
+        'The file mode permissions of the blob that cotains information about the symbolic link.',
+    }),
   })
   .openapi({
     description: 'Returns information about a symbolic link in a repository folder.',
@@ -4072,27 +2925,16 @@ const SymbolicLinkListSchema = z.array(SymbolicLinkSchema).openapi('SymbolicLink
 
 const SubModuleSchema = z
   .object({
-    commitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The commit ID that contains the reference to the submodule.' }),
-    ).exactOptional(),
-    absolutePath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fully qualified path to the folder that contains the reference to the submodule.',
-        }),
-    ).exactOptional(),
-    relativePath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The relative path of the submodule from the folder where the query originated.',
-        }),
-    ).exactOptional(),
+    commitId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The commit ID that contains the reference to the submodule.',
+    }),
+    absolutePath: PathSchema.exactOptional().openapi({
+      description:
+        'The fully qualified path to the folder that contains the reference to the submodule.',
+    }),
+    relativePath: PathSchema.exactOptional().openapi({
+      description: 'The relative path of the submodule from the folder where the query originated.',
+    }),
   })
   .openapi({
     description: 'Returns information about a submodule reference in a repository folder.',
@@ -4104,75 +2946,45 @@ const SubModuleListSchema = z.array(SubModuleSchema).openapi('SubModuleList')
 
 const GetFolderOutputSchema = z
   .object({
-    commitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID used as a reference for the returned version of the folder content.',
-        }),
-    ),
-    folderPath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The fully qualified path of the folder whose contents are returned.',
-        }),
-    ),
-    treeId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full SHA-1 pointer of the tree information for the commit that contains the folder.',
-        }),
-    ).exactOptional(),
-    subFolders: FolderListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of folders that exist under the specified folder, if any.',
-        }),
-    ).exactOptional(),
-    files: FileListSchema.and(
-      z.any().openapi({ description: 'The list of files in the specified folder, if any.' }),
-    ).exactOptional(),
-    symbolicLinks: SymbolicLinkListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of symbolic links to other files and folders in the specified folder, if any.',
-        }),
-    ).exactOptional(),
-    subModules: SubModuleListSchema.and(
-      z.any().openapi({ description: 'The list of submodules in the specified folder, if any.' }),
-    ).exactOptional(),
+    commitId: ObjectIdSchema.openapi({
+      description:
+        'The full commit ID used as a reference for the returned version of the folder content.',
+    }),
+    folderPath: PathSchema.openapi({
+      description: 'The fully qualified path of the folder whose contents are returned.',
+    }),
+    treeId: ObjectIdSchema.exactOptional().openapi({
+      description:
+        'The full SHA-1 pointer of the tree information for the commit that contains the folder.',
+    }),
+    subFolders: FolderListSchema.exactOptional().openapi({
+      description: 'The list of folders that exist under the specified folder, if any.',
+    }),
+    files: FileListSchema.exactOptional().openapi({
+      description: 'The list of files in the specified folder, if any.',
+    }),
+    symbolicLinks: SymbolicLinkListSchema.exactOptional().openapi({
+      description:
+        'The list of symbolic links to other files and folders in the specified folder, if any.',
+    }),
+    subModules: SubModuleListSchema.exactOptional().openapi({
+      description: 'The list of submodules in the specified folder, if any.',
+    }),
   })
   .openapi({ required: ['commitId', 'folderPath'] })
   .openapi('GetFolderOutput')
 
 const GetFolderInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository.' }),
-    ),
-    commitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A fully qualified reference used to identify a commit that contains the version of the folder's content to return. A fully qualified reference can be a commit ID, branch name, tag, or reference such as HEAD. If no specifier is provided, the folder content is returned as it exists in the HEAD commit.",
-        }),
-    ).exactOptional(),
-    folderPath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fully qualified path to the folder whose contents are returned, including the folder name. For example, /examples is a fully-qualified path to a folder named examples that was created off of the root directory (/) of a repository. ',
-        }),
-    ),
+    repositoryName: RepositoryNameSchema.openapi({ description: 'The name of the repository.' }),
+    commitSpecifier: CommitNameSchema.exactOptional().openapi({
+      description:
+        "A fully qualified reference used to identify a commit that contains the version of the folder's content to return. A fully qualified reference can be a commit ID, branch name, tag, or reference such as HEAD. If no specifier is provided, the folder content is returned as it exists in the HEAD commit.",
+    }),
+    folderPath: PathSchema.openapi({
+      description:
+        'The fully qualified path to the folder whose contents are returned, including the folder name. For example, /examples is a fully-qualified path to a folder named examples that was created off of the root directory (/) of a repository. ',
+    }),
   })
   .openapi({ required: ['repositoryName', 'folderPath'], title: 'GetFolderInput' })
   .openapi('GetFolderInput')
@@ -4181,79 +2993,47 @@ const FolderDoesNotExistExceptionSchema = z.any().openapi('FolderDoesNotExistExc
 
 const GetMergeCommitOutputSchema = z
   .object({
-    sourceCommitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The commit ID of the source commit specifier that was used in the merge evaluation.',
-        }),
-    ).exactOptional(),
-    destinationCommitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The commit ID of the destination commit specifier that was used in the merge evaluation.',
-        }),
-    ).exactOptional(),
-    baseCommitId: ObjectIdSchema.and(
-      z.any().openapi({ description: 'The commit ID of the merge base.' }),
-    ).exactOptional(),
-    mergedCommitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The commit ID for the merge commit created when the source branch was merged into the destination branch. If the fast-forward merge strategy was used, there is no merge commit.',
-        }),
-    ).exactOptional(),
+    sourceCommitId: ObjectIdSchema.exactOptional().openapi({
+      description:
+        'The commit ID of the source commit specifier that was used in the merge evaluation.',
+    }),
+    destinationCommitId: ObjectIdSchema.exactOptional().openapi({
+      description:
+        'The commit ID of the destination commit specifier that was used in the merge evaluation.',
+    }),
+    baseCommitId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The commit ID of the merge base.',
+    }),
+    mergedCommitId: ObjectIdSchema.exactOptional().openapi({
+      description:
+        'The commit ID for the merge commit created when the source branch was merged into the destination branch. If the fast-forward merge strategy was used, there is no merge commit.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMergeCommitOutput')
 
 const GetMergeCommitInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository that contains the merge commit about which you want to get information.',
-        }),
-    ),
-    sourceCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    destinationCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
-        }),
-    ).exactOptional(),
-    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description:
+        'The name of the repository that contains the merge commit about which you want to get information.',
+    }),
+    sourceCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    destinationCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.exactOptional().openapi({
+      description:
+        'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
+    }),
+    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.exactOptional().openapi({
+      description:
+        'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'sourceCommitSpecifier', 'destinationCommitSpecifier'],
@@ -4267,49 +3047,29 @@ const ConflictMetadataListSchema = z.array(ConflictMetadataSchema).openapi('Conf
 
 const GetMergeConflictsOutputSchema = z
   .object({
-    mergeable: IsMergeableSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that indicates whether the code is mergeable by the specified merge option.',
-        }),
-    ),
-    destinationCommitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The commit ID of the destination commit specifier that was used in the merge evaluation.',
-        }),
-    ),
-    sourceCommitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The commit ID of the source commit specifier that was used in the merge evaluation.',
-        }),
-    ),
-    baseCommitId: ObjectIdSchema.and(
-      z.any().openapi({ description: 'The commit ID of the merge base.' }),
-    ).exactOptional(),
-    conflictMetadataList: ConflictMetadataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of metadata for any conflicting files. If the specified merge strategy is FAST_FORWARD_MERGE, this list is always empty.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that can be used in a request to return the next batch of the results.',
-        }),
-    ).exactOptional(),
+    mergeable: IsMergeableSchema.openapi({
+      description:
+        'A Boolean value that indicates whether the code is mergeable by the specified merge option.',
+    }),
+    destinationCommitId: ObjectIdSchema.openapi({
+      description:
+        'The commit ID of the destination commit specifier that was used in the merge evaluation.',
+    }),
+    sourceCommitId: ObjectIdSchema.openapi({
+      description:
+        'The commit ID of the source commit specifier that was used in the merge evaluation.',
+    }),
+    baseCommitId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The commit ID of the merge base.',
+    }),
+    conflictMetadataList: ConflictMetadataListSchema.openapi({
+      description:
+        'A list of metadata for any conflicting files. If the specified merge strategy is FAST_FORWARD_MERGE, this list is always empty.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that can be used in a request to return the next batch of the results.',
+    }),
   })
   .openapi({
     required: ['mergeable', 'destinationCommitId', 'sourceCommitId', 'conflictMetadataList'],
@@ -4318,61 +3078,35 @@ const GetMergeConflictsOutputSchema = z
 
 const GetMergeConflictsInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository where the pull request was created.' }),
-    ),
-    destinationCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    sourceCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    mergeOption: MergeOptionTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The merge option or strategy you want to use to merge the code. ',
-        }),
-    ),
-    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
-        }),
-    ).exactOptional(),
-    maxConflictFiles: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of files to include in the output.' }),
-    ).exactOptional(),
-    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that, when provided in a request, returns the next batch of the results.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository where the pull request was created.',
+    }),
+    destinationCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    sourceCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    mergeOption: MergeOptionTypeEnumSchema.openapi({
+      description: 'The merge option or strategy you want to use to merge the code. ',
+    }),
+    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.exactOptional().openapi({
+      description:
+        'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
+    }),
+    maxConflictFiles: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of files to include in the output.',
+    }),
+    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.exactOptional().openapi({
+      description:
+        'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that, when provided in a request, returns the next batch of the results.',
+    }),
   })
   .openapi({
     required: [
@@ -4397,74 +3131,44 @@ const MergeOptionsSchema = z.array(MergeOptionTypeEnumSchema).openapi('MergeOpti
 
 const GetMergeOptionsOutputSchema = z
   .object({
-    mergeOptions: MergeOptionsSchema.and(
-      z.any().openapi({ description: 'The merge option or strategy used to merge the code.' }),
-    ),
-    sourceCommitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The commit ID of the source commit specifier that was used in the merge evaluation.',
-        }),
-    ),
-    destinationCommitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The commit ID of the destination commit specifier that was used in the merge evaluation.',
-        }),
-    ),
-    baseCommitId: ObjectIdSchema.and(
-      z.any().openapi({ description: 'The commit ID of the merge base.' }),
-    ),
+    mergeOptions: MergeOptionsSchema.openapi({
+      description: 'The merge option or strategy used to merge the code.',
+    }),
+    sourceCommitId: ObjectIdSchema.openapi({
+      description:
+        'The commit ID of the source commit specifier that was used in the merge evaluation.',
+    }),
+    destinationCommitId: ObjectIdSchema.openapi({
+      description:
+        'The commit ID of the destination commit specifier that was used in the merge evaluation.',
+    }),
+    baseCommitId: ObjectIdSchema.openapi({ description: 'The commit ID of the merge base.' }),
   })
   .openapi({ required: ['mergeOptions', 'sourceCommitId', 'destinationCommitId', 'baseCommitId'] })
   .openapi('GetMergeOptionsOutput')
 
 const GetMergeOptionsInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository that contains the commits about which you want to get merge options.',
-        }),
-    ),
-    sourceCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    destinationCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
-        }),
-    ).exactOptional(),
-    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description:
+        'The name of the repository that contains the commits about which you want to get merge options.',
+    }),
+    sourceCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    destinationCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.exactOptional().openapi({
+      description:
+        'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
+    }),
+    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.exactOptional().openapi({
+      description:
+        'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'sourceCommitSpecifier', 'destinationCommitSpecifier'],
@@ -4474,40 +3178,31 @@ const GetMergeOptionsInputSchema = z
 
 const GetPullRequestOutputSchema = z
   .object({
-    pullRequest: PullRequestSchema.and(
-      z.any().openapi({ description: 'Information about the specified pull request.' }),
-    ),
+    pullRequest: PullRequestSchema.openapi({
+      description: 'Information about the specified pull request.',
+    }),
   })
   .openapi({ required: ['pullRequest'] })
   .openapi('GetPullRequestOutput')
 
 const GetPullRequestInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
-        }),
-    ),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description:
+        'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
+    }),
   })
   .openapi({ required: ['pullRequestId'], title: 'GetPullRequestInput' })
   .openapi('GetPullRequestInput')
 
 const ApprovalSchema = z
   .object({
-    userArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the user.' }),
-    ).exactOptional(),
-    approvalState: ApprovalStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state of the approval, APPROVE or REVOKE. REVOKE states are not stored.',
-        }),
-    ).exactOptional(),
+    userArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user.',
+    }),
+    approvalState: ApprovalStateSchema.exactOptional().openapi({
+      description: 'The state of the approval, APPROVE or REVOKE. REVOKE states are not stored.',
+    }),
   })
   .openapi({
     description: 'Returns information about a specific approval on a pull request.',
@@ -4519,23 +3214,21 @@ const ApprovalListSchema = z.array(ApprovalSchema).openapi('ApprovalList')
 
 const GetPullRequestApprovalStatesOutputSchema = z
   .object({
-    approvals: ApprovalListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about users who have approved the pull request.' }),
-    ).exactOptional(),
+    approvals: ApprovalListSchema.exactOptional().openapi({
+      description: 'Information about users who have approved the pull request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPullRequestApprovalStatesOutput')
 
 const GetPullRequestApprovalStatesInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z.any().openapi({ description: 'The system-generated ID for the pull request.' }),
-    ),
-    revisionId: RevisionIdSchema.and(
-      z.any().openapi({ description: 'The system-generated ID for the pull request revision.' }),
-    ),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description: 'The system-generated ID for the pull request.',
+    }),
+    revisionId: RevisionIdSchema.openapi({
+      description: 'The system-generated ID for the pull request revision.',
+    }),
   })
   .openapi({
     required: ['pullRequestId', 'revisionId'],
@@ -4545,62 +3238,46 @@ const GetPullRequestApprovalStatesInputSchema = z
 
 const GetPullRequestOverrideStateOutputSchema = z
   .object({
-    overridden: OverriddenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that indicates whether a pull request has had its rules set aside (TRUE) or whether all approval rules still apply (FALSE).',
-        }),
-    ).exactOptional(),
-    overrider: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the user or identity that overrode the rules and their requirements for the pull request.',
-        }),
-    ).exactOptional(),
+    overridden: OverriddenSchema.exactOptional().openapi({
+      description:
+        'A Boolean value that indicates whether a pull request has had its rules set aside (TRUE) or whether all approval rules still apply (FALSE).',
+    }),
+    overrider: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the user or identity that overrode the rules and their requirements for the pull request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPullRequestOverrideStateOutput')
 
 const GetPullRequestOverrideStateInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the pull request for which you want to get information about whether approval rules have been set aside (overridden).',
-        }),
-    ),
-    revisionId: RevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the revision for the pull request. To retrieve the most recent revision ID, use <a>GetPullRequest</a>.',
-        }),
-    ),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description:
+        'The ID of the pull request for which you want to get information about whether approval rules have been set aside (overridden).',
+    }),
+    revisionId: RevisionIdSchema.openapi({
+      description:
+        'The system-generated ID of the revision for the pull request. To retrieve the most recent revision ID, use <a>GetPullRequest</a>.',
+    }),
   })
   .openapi({ required: ['pullRequestId', 'revisionId'], title: 'GetPullRequestOverrideStateInput' })
   .openapi('GetPullRequestOverrideStateInput')
 
 const GetRepositoryOutputSchema = z
   .object({
-    repositoryMetadata: RepositoryMetadataSchema.and(
-      z.any().openapi({ description: 'Information about the repository.' }),
-    ).exactOptional(),
+    repositoryMetadata: RepositoryMetadataSchema.exactOptional().openapi({
+      description: 'Information about the repository.',
+    }),
   })
   .openapi({ description: 'Represents the output of a get repository operation.', required: [] })
   .openapi('GetRepositoryOutput')
 
 const GetRepositoryInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository to get information about.' }),
-    ),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository to get information about.',
+    }),
   })
   .openapi({
     required: ['repositoryName'],
@@ -4629,41 +3306,23 @@ const RepositoryTriggerEventListSchema = z
 
 const RepositoryTriggerSchema = z
   .object({
-    name: RepositoryTriggerNameSchema.and(
-      z.any().openapi({ description: 'The name of the trigger.' }),
-    ),
-    destinationArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the resource that is the target for a trigger (for example, the ARN of a topic in Amazon SNS).',
-        }),
-    ),
-    customData: RepositoryTriggerCustomDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Any custom data associated with the trigger to be included in the information sent to the target of the trigger.',
-        }),
-    ).exactOptional(),
-    branches: BranchNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The branches to be included in the trigger configuration. If you specify an empty array, the trigger applies to all branches.</p> <note> <p>Although no content is required in the array, you must include the array itself.</p> </note>',
-        }),
-    ).exactOptional(),
-    events: RepositoryTriggerEventListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The repository events that cause the trigger to run actions in another service, such as sending a notification through Amazon SNS. </p> <note> <p>The valid value "all" cannot be used with any other values.</p> </note>',
-        }),
-    ),
+    name: RepositoryTriggerNameSchema.openapi({ description: 'The name of the trigger.' }),
+    destinationArn: ArnSchema.openapi({
+      description:
+        'The ARN of the resource that is the target for a trigger (for example, the ARN of a topic in Amazon SNS).',
+    }),
+    customData: RepositoryTriggerCustomDataSchema.exactOptional().openapi({
+      description:
+        'Any custom data associated with the trigger to be included in the information sent to the target of the trigger.',
+    }),
+    branches: BranchNameListSchema.exactOptional().openapi({
+      description:
+        '<p>The branches to be included in the trigger configuration. If you specify an empty array, the trigger applies to all branches.</p> <note> <p>Although no content is required in the array, you must include the array itself.</p> </note>',
+    }),
+    events: RepositoryTriggerEventListSchema.openapi({
+      description:
+        '<p>The repository events that cause the trigger to run actions in another service, such as sending a notification through Amazon SNS. </p> <note> <p>The valid value "all" cannot be used with any other values.</p> </note>',
+    }),
   })
   .openapi({
     required: ['name', 'destinationArn', 'events'],
@@ -4677,14 +3336,12 @@ const RepositoryTriggersListSchema = z
 
 const GetRepositoryTriggersOutputSchema = z
   .object({
-    configurationId: RepositoryTriggersConfigurationIdSchema.and(
-      z.any().openapi({ description: 'The system-generated unique ID for the trigger.' }),
-    ).exactOptional(),
-    triggers: RepositoryTriggersListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The JSON block of configuration information for each trigger.' }),
-    ).exactOptional(),
+    configurationId: RepositoryTriggersConfigurationIdSchema.exactOptional().openapi({
+      description: 'The system-generated unique ID for the trigger.',
+    }),
+    triggers: RepositoryTriggersListSchema.exactOptional().openapi({
+      description: 'The JSON block of configuration information for each trigger.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a get repository triggers operation.',
@@ -4694,13 +3351,9 @@ const GetRepositoryTriggersOutputSchema = z
 
 const GetRepositoryTriggersInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository for which the trigger is configured.',
-        }),
-    ),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository for which the trigger is configured.',
+    }),
   })
   .openapi({
     required: ['repositoryName'],
@@ -4715,95 +3368,57 @@ const ApprovalRuleTemplateNameListSchema = z
 
 const ListApprovalRuleTemplatesOutputSchema = z
   .object({
-    approvalRuleTemplateNames: ApprovalRuleTemplateNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of all the approval rule templates found in the AWS Region for your AWS account.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that allows the operation to batch the next results of the operation.',
-        }),
-    ).exactOptional(),
+    approvalRuleTemplateNames: ApprovalRuleTemplateNameListSchema.exactOptional().openapi({
+      description:
+        'The names of all the approval rule templates found in the AWS Region for your AWS account.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that allows the operation to batch the next results of the operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListApprovalRuleTemplatesOutput')
 
 const ListApprovalRuleTemplatesInputSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that, when provided in a request, returns the next batch of the results.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A non-zero, non-negative integer used to limit the number of returned results.',
-        }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that, when provided in a request, returns the next batch of the results.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'A non-zero, non-negative integer used to limit the number of returned results.',
+    }),
   })
   .openapi({ title: 'ListApprovalRuleTemplatesInput', required: [] })
   .openapi('ListApprovalRuleTemplatesInput')
 
 const ListAssociatedApprovalRuleTemplatesForRepositoryOutputSchema = z
   .object({
-    approvalRuleTemplateNames: ApprovalRuleTemplateNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The names of all approval rule templates associated with the repository.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that allows the operation to batch the next results of the operation.',
-        }),
-    ).exactOptional(),
+    approvalRuleTemplateNames: ApprovalRuleTemplateNameListSchema.exactOptional().openapi({
+      description: 'The names of all approval rule templates associated with the repository.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that allows the operation to batch the next results of the operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAssociatedApprovalRuleTemplatesForRepositoryOutput')
 
 const ListAssociatedApprovalRuleTemplatesForRepositoryInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository for which you want to list all associated approval rule templates.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that, when provided in a request, returns the next batch of the results.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A non-zero, non-negative integer used to limit the number of returned results.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description:
+        'The name of the repository for which you want to list all associated approval rule templates.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that, when provided in a request, returns the next batch of the results.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'A non-zero, non-negative integer used to limit the number of returned results.',
+    }),
   })
   .openapi({
     required: ['repositoryName'],
@@ -4813,30 +3428,24 @@ const ListAssociatedApprovalRuleTemplatesForRepositoryInputSchema = z
 
 const ListBranchesOutputSchema = z
   .object({
-    branches: BranchNameListSchema.and(
-      z.any().openapi({ description: 'The list of branch names.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An enumeration token that returns the batch of the results.' }),
-    ).exactOptional(),
+    branches: BranchNameListSchema.exactOptional().openapi({
+      description: 'The list of branch names.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'An enumeration token that returns the batch of the results.',
+    }),
   })
   .openapi({ description: 'Represents the output of a list branches operation.', required: [] })
   .openapi('ListBranchesOutput')
 
 const ListBranchesInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository that contains the branches.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An enumeration token that allows the operation to batch the results.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository that contains the branches.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'An enumeration token that allows the operation to batch the results.',
+    }),
   })
   .openapi({
     required: ['repositoryName'],
@@ -4849,62 +3458,37 @@ const PullRequestIdListSchema = z.array(PullRequestIdSchema).openapi('PullReques
 
 const ListPullRequestsOutputSchema = z
   .object({
-    pullRequestIds: PullRequestIdListSchema.and(
-      z.any().openapi({ description: 'The system-generated IDs of the pull requests.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that allows the operation to batch the next results of the operation.',
-        }),
-    ).exactOptional(),
+    pullRequestIds: PullRequestIdListSchema.openapi({
+      description: 'The system-generated IDs of the pull requests.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that allows the operation to batch the next results of the operation.',
+    }),
   })
   .openapi({ required: ['pullRequestIds'] })
   .openapi('ListPullRequestsOutput')
 
 const ListPullRequestsInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository for which you want to list pull requests.',
-        }),
-    ),
-    authorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. The Amazon Resource Name (ARN) of the user who created the pull request. If used, this filters the results to pull requests created by that user.',
-        }),
-    ).exactOptional(),
-    pullRequestStatus: PullRequestStatusEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. The status of the pull request. If used, this refines the results to the pull requests that match the specified status.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that, when provided in a request, returns the next batch of the results.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A non-zero, non-negative integer used to limit the number of returned results.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository for which you want to list pull requests.',
+    }),
+    authorArn: ArnSchema.exactOptional().openapi({
+      description:
+        'Optional. The Amazon Resource Name (ARN) of the user who created the pull request. If used, this filters the results to pull requests created by that user.',
+    }),
+    pullRequestStatus: PullRequestStatusEnumSchema.exactOptional().openapi({
+      description:
+        'Optional. The status of the pull request. If used, this refines the results to the pull requests that match the specified status.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that, when provided in a request, returns the next batch of the results.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'A non-zero, non-negative integer used to limit the number of returned results.',
+    }),
   })
   .openapi({ required: ['repositoryName'], title: 'ListPullRequestsInput' })
   .openapi('ListPullRequestsInput')
@@ -4917,12 +3501,12 @@ const AuthorDoesNotExistExceptionSchema = z.any().openapi('AuthorDoesNotExistExc
 
 const RepositoryNameIdPairSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name associated with the repository.' }),
-    ).exactOptional(),
-    repositoryId: RepositoryIdSchema.and(
-      z.any().openapi({ description: 'The ID associated with the repository.' }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The name associated with the repository.',
+    }),
+    repositoryId: RepositoryIdSchema.exactOptional().openapi({
+      description: 'The ID associated with the repository.',
+    }),
   })
   .openapi({ description: 'Information about a repository name and ID.', required: [] })
   .openapi('RepositoryNameIdPair')
@@ -4933,21 +3517,13 @@ const RepositoryNameIdPairListSchema = z
 
 const ListRepositoriesOutputSchema = z
   .object({
-    repositories: RepositoryNameIdPairListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Lists the repositories called by the list repositories operation.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that allows the operation to batch the results of the operation. Batch sizes are 1,000 for list repository operations. When the client sends the token back to AWS CodeCommit, another page of 1,000 records is retrieved.',
-        }),
-    ).exactOptional(),
+    repositories: RepositoryNameIdPairListSchema.exactOptional().openapi({
+      description: 'Lists the repositories called by the list repositories operation.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that allows the operation to batch the results of the operation. Batch sizes are 1,000 for list repository operations. When the client sends the token back to AWS CodeCommit, another page of 1,000 records is retrieved.',
+    }),
   })
   .openapi({ description: 'Represents the output of a list repositories operation.', required: [] })
   .openapi('ListRepositoriesOutput')
@@ -4958,28 +3534,16 @@ const OrderEnumSchema = z.enum(['ascending', 'descending']).openapi('OrderEnum')
 
 const ListRepositoriesInputSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that allows the operation to batch the results of the operation. Batch sizes are 1,000 for list repository operations. When the client sends the token back to AWS CodeCommit, another page of 1,000 records is retrieved.',
-        }),
-    ).exactOptional(),
-    sortBy: SortByEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The criteria used to sort the results of a list repositories operation.',
-        }),
-    ).exactOptional(),
-    order: OrderEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The order in which to sort the results of a list repositories operation.',
-        }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that allows the operation to batch the results of the operation. Batch sizes are 1,000 for list repository operations. When the client sends the token back to AWS CodeCommit, another page of 1,000 records is retrieved.',
+    }),
+    sortBy: SortByEnumSchema.exactOptional().openapi({
+      description: 'The criteria used to sort the results of a list repositories operation.',
+    }),
+    order: OrderEnumSchema.exactOptional().openapi({
+      description: 'The order in which to sort the results of a list repositories operation.',
+    }),
   })
   .openapi({
     title: 'ListRepositoriesInput',
@@ -4994,52 +3558,31 @@ const InvalidOrderExceptionSchema = z.any().openapi('InvalidOrderException')
 
 const ListRepositoriesForApprovalRuleTemplateOutputSchema = z
   .object({
-    repositoryNames: RepositoryNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of repository names that are associated with the specified approval rule template.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that allows the operation to batch the next results of the operation.',
-        }),
-    ).exactOptional(),
+    repositoryNames: RepositoryNameListSchema.exactOptional().openapi({
+      description:
+        'A list of repository names that are associated with the specified approval rule template.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that allows the operation to batch the next results of the operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRepositoriesForApprovalRuleTemplateOutput')
 
 const ListRepositoriesForApprovalRuleTemplateInputSchema = z
   .object({
-    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the approval rule template for which you want to list repositories that are associated with that template.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that, when provided in a request, returns the next batch of the results.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A non-zero, non-negative integer used to limit the number of returned results.',
-        }),
-    ).exactOptional(),
+    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.openapi({
+      description:
+        'The name of the approval rule template for which you want to list repositories that are associated with that template.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that, when provided in a request, returns the next batch of the results.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'A non-zero, non-negative integer used to limit the number of returned results.',
+    }),
   })
   .openapi({
     required: ['approvalRuleTemplateName'],
@@ -5049,21 +3592,13 @@ const ListRepositoriesForApprovalRuleTemplateInputSchema = z
 
 const ListTagsForResourceOutputSchema = z
   .object({
-    tags: TagsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of tag key and value pairs associated with the specified resource.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that allows the operation to batch the next results of the operation.',
-        }),
-    ).exactOptional(),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description: 'A list of tag key and value pairs associated with the specified resource.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that allows the operation to batch the next results of the operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceOutput')
@@ -5072,22 +3607,14 @@ const ResourceArnSchema = z.string().openapi('ResourceArn')
 
 const ListTagsForResourceInputSchema = z
   .object({
-    resourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource for which you want to get information about tags, if any.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An enumeration token that, when provided in a request, returns the next batch of the results.',
-        }),
-    ).exactOptional(),
+    resourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource for which you want to get information about tags, if any.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An enumeration token that, when provided in a request, returns the next batch of the results.',
+    }),
   })
   .openapi({ required: ['resourceArn'], title: 'ListTagsForResourceInput' })
   .openapi('ListTagsForResourceInput')
@@ -5098,50 +3625,32 @@ const InvalidResourceArnExceptionSchema = z.any().openapi('InvalidResourceArnExc
 
 const MergeBranchesByFastForwardOutputSchema = z
   .object({
-    commitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The commit ID of the merge in the destination or target branch.',
-        }),
-    ).exactOptional(),
-    treeId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tree ID of the merge in the destination or target branch.' }),
-    ).exactOptional(),
+    commitId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The commit ID of the merge in the destination or target branch.',
+    }),
+    treeId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The tree ID of the merge in the destination or target branch.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('MergeBranchesByFastForwardOutput')
 
 const MergeBranchesByFastForwardInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository where you want to merge two branches.',
-        }),
-    ),
-    sourceCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    destinationCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    targetBranch: BranchNameSchema.and(
-      z.any().openapi({ description: 'The branch where the merge is applied.' }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository where you want to merge two branches.',
+    }),
+    sourceCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    destinationCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    targetBranch: BranchNameSchema.exactOptional().openapi({
+      description: 'The branch where the merge is applied.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'sourceCommitSpecifier', 'destinationCommitSpecifier'],
@@ -5153,101 +3662,59 @@ const InvalidTargetBranchExceptionSchema = z.any().openapi('InvalidTargetBranchE
 
 const MergeBranchesBySquashOutputSchema = z
   .object({
-    commitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The commit ID of the merge in the destination or target branch.',
-        }),
-    ).exactOptional(),
-    treeId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tree ID of the merge in the destination or target branch.' }),
-    ).exactOptional(),
+    commitId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The commit ID of the merge in the destination or target branch.',
+    }),
+    treeId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The tree ID of the merge in the destination or target branch.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('MergeBranchesBySquashOutput')
 
 const MergeBranchesBySquashInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository where you want to merge two branches.',
-        }),
-    ),
-    sourceCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    destinationCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    targetBranch: BranchNameSchema.and(
-      z.any().openapi({ description: 'The branch where the merge is applied. ' }),
-    ).exactOptional(),
-    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
-        }),
-    ).exactOptional(),
-    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
-        }),
-    ).exactOptional(),
-    authorName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the author who created the commit. This information is used as both the author and committer for the commit.',
-        }),
-    ).exactOptional(),
-    email: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address of the person merging the branches. This information is used in the commit information for the merge.',
-        }),
-    ).exactOptional(),
-    commitMessage: MessageSchema.and(
-      z.any().openapi({ description: 'The commit message for the merge.' }),
-    ).exactOptional(),
-    keepEmptyFolders: KeepEmptyFoldersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the commit contains deletions, whether to keep a folder or folder structure if the changes leave the folders empty. If this is specified as true, a .gitkeep file is created for empty folders. The default is false.',
-        }),
-    ).exactOptional(),
-    conflictResolution: ConflictResolutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If AUTOMERGE is the conflict resolution strategy, a list of inputs to use when resolving conflicts during a merge.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository where you want to merge two branches.',
+    }),
+    sourceCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    destinationCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    targetBranch: BranchNameSchema.exactOptional().openapi({
+      description: 'The branch where the merge is applied. ',
+    }),
+    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.exactOptional().openapi({
+      description:
+        'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
+    }),
+    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.exactOptional().openapi({
+      description:
+        'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
+    }),
+    authorName: NameSchema.exactOptional().openapi({
+      description:
+        'The name of the author who created the commit. This information is used as both the author and committer for the commit.',
+    }),
+    email: EmailSchema.exactOptional().openapi({
+      description:
+        'The email address of the person merging the branches. This information is used in the commit information for the merge.',
+    }),
+    commitMessage: MessageSchema.exactOptional().openapi({
+      description: 'The commit message for the merge.',
+    }),
+    keepEmptyFolders: KeepEmptyFoldersSchema.exactOptional().openapi({
+      description:
+        'If the commit contains deletions, whether to keep a folder or folder structure if the changes leave the folders empty. If this is specified as true, a .gitkeep file is created for empty folders. The default is false.',
+    }),
+    conflictResolution: ConflictResolutionSchema.exactOptional().openapi({
+      description:
+        'If AUTOMERGE is the conflict resolution strategy, a list of inputs to use when resolving conflicts during a merge.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'sourceCommitSpecifier', 'destinationCommitSpecifier'],
@@ -5257,105 +3724,59 @@ const MergeBranchesBySquashInputSchema = z
 
 const MergeBranchesByThreeWayOutputSchema = z
   .object({
-    commitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The commit ID of the merge in the destination or target branch.',
-        }),
-    ).exactOptional(),
-    treeId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tree ID of the merge in the destination or target branch.' }),
-    ).exactOptional(),
+    commitId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The commit ID of the merge in the destination or target branch.',
+    }),
+    treeId: ObjectIdSchema.exactOptional().openapi({
+      description: 'The tree ID of the merge in the destination or target branch.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('MergeBranchesByThreeWayOutput')
 
 const MergeBranchesByThreeWayInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository where you want to merge two branches.',
-        }),
-    ),
-    sourceCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    destinationCommitSpecifier: CommitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
-        }),
-    ),
-    targetBranch: BranchNameSchema.and(
-      z.any().openapi({ description: 'The branch where the merge is applied. ' }),
-    ).exactOptional(),
-    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
-        }),
-    ).exactOptional(),
-    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
-        }),
-    ).exactOptional(),
-    authorName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the author who created the commit. This information is used as both the author and committer for the commit.',
-        }),
-    ).exactOptional(),
-    email: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address of the person merging the branches. This information is used in the commit information for the merge.',
-        }),
-    ).exactOptional(),
-    commitMessage: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The commit message to include in the commit information for the merge.',
-        }),
-    ).exactOptional(),
-    keepEmptyFolders: KeepEmptyFoldersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the commit contains deletions, whether to keep a folder or folder structure if the changes leave the folders empty. If true, a .gitkeep file is created for empty folders. The default is false.',
-        }),
-    ).exactOptional(),
-    conflictResolution: ConflictResolutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If AUTOMERGE is the conflict resolution strategy, a list of inputs to use when resolving conflicts during a merge.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository where you want to merge two branches.',
+    }),
+    sourceCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    destinationCommitSpecifier: CommitNameSchema.openapi({
+      description:
+        'The branch, tag, HEAD, or other fully qualified reference used to identify a commit (for example, a branch name or a full commit ID).',
+    }),
+    targetBranch: BranchNameSchema.exactOptional().openapi({
+      description: 'The branch where the merge is applied. ',
+    }),
+    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.exactOptional().openapi({
+      description:
+        'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
+    }),
+    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.exactOptional().openapi({
+      description:
+        'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
+    }),
+    authorName: NameSchema.exactOptional().openapi({
+      description:
+        'The name of the author who created the commit. This information is used as both the author and committer for the commit.',
+    }),
+    email: EmailSchema.exactOptional().openapi({
+      description:
+        'The email address of the person merging the branches. This information is used in the commit information for the merge.',
+    }),
+    commitMessage: MessageSchema.exactOptional().openapi({
+      description: 'The commit message to include in the commit information for the merge.',
+    }),
+    keepEmptyFolders: KeepEmptyFoldersSchema.exactOptional().openapi({
+      description:
+        'If the commit contains deletions, whether to keep a folder or folder structure if the changes leave the folders empty. If true, a .gitkeep file is created for empty folders. The default is false.',
+    }),
+    conflictResolution: ConflictResolutionSchema.exactOptional().openapi({
+      description:
+        'If AUTOMERGE is the conflict resolution strategy, a list of inputs to use when resolving conflicts during a merge.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'sourceCommitSpecifier', 'destinationCommitSpecifier'],
@@ -5365,40 +3786,26 @@ const MergeBranchesByThreeWayInputSchema = z
 
 const MergePullRequestByFastForwardOutputSchema = z
   .object({
-    pullRequest: PullRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the specified pull request, including the merge.',
-        }),
-    ).exactOptional(),
+    pullRequest: PullRequestSchema.exactOptional().openapi({
+      description: 'Information about the specified pull request, including the merge.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('MergePullRequestByFastForwardOutput')
 
 const MergePullRequestByFastForwardInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
-        }),
-    ),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository where the pull request was created.' }),
-    ),
-    sourceCommitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the original or updated commit in the pull request source branch. Pass this value if you want an exception thrown if the current commit ID of the tip of the source branch does not match this commit ID.',
-        }),
-    ).exactOptional(),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description:
+        'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository where the pull request was created.',
+    }),
+    sourceCommitId: ObjectIdSchema.exactOptional().openapi({
+      description:
+        'The full commit ID of the original or updated commit in the pull request source branch. Pass this value if you want an exception thrown if the current commit ID of the tip of the source branch does not match this commit ID.',
+    }),
   })
   .openapi({
     required: ['pullRequestId', 'repositoryName'],
@@ -5421,82 +3828,44 @@ const MergePullRequestBySquashOutputSchema = z
 
 const MergePullRequestBySquashInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
-        }),
-    ),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository where the pull request was created.' }),
-    ),
-    sourceCommitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the original or updated commit in the pull request source branch. Pass this value if you want an exception thrown if the current commit ID of the tip of the source branch does not match this commit ID.',
-        }),
-    ).exactOptional(),
-    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
-        }),
-    ).exactOptional(),
-    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
-        }),
-    ).exactOptional(),
-    commitMessage: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The commit message to include in the commit information for the merge.',
-        }),
-    ).exactOptional(),
-    authorName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the author who created the commit. This information is used as both the author and committer for the commit.',
-        }),
-    ).exactOptional(),
-    email: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address of the person merging the branches. This information is used in the commit information for the merge.',
-        }),
-    ).exactOptional(),
-    keepEmptyFolders: KeepEmptyFoldersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the commit contains deletions, whether to keep a folder or folder structure if the changes leave the folders empty. If true, a .gitkeep file is created for empty folders. The default is false.',
-        }),
-    ).exactOptional(),
-    conflictResolution: ConflictResolutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If AUTOMERGE is the conflict resolution strategy, a list of inputs to use when resolving conflicts during a merge.',
-        }),
-    ).exactOptional(),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description:
+        'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository where the pull request was created.',
+    }),
+    sourceCommitId: ObjectIdSchema.exactOptional().openapi({
+      description:
+        'The full commit ID of the original or updated commit in the pull request source branch. Pass this value if you want an exception thrown if the current commit ID of the tip of the source branch does not match this commit ID.',
+    }),
+    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.exactOptional().openapi({
+      description:
+        'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
+    }),
+    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.exactOptional().openapi({
+      description:
+        'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
+    }),
+    commitMessage: MessageSchema.exactOptional().openapi({
+      description: 'The commit message to include in the commit information for the merge.',
+    }),
+    authorName: NameSchema.exactOptional().openapi({
+      description:
+        'The name of the author who created the commit. This information is used as both the author and committer for the commit.',
+    }),
+    email: EmailSchema.exactOptional().openapi({
+      description:
+        'The email address of the person merging the branches. This information is used in the commit information for the merge.',
+    }),
+    keepEmptyFolders: KeepEmptyFoldersSchema.exactOptional().openapi({
+      description:
+        'If the commit contains deletions, whether to keep a folder or folder structure if the changes leave the folders empty. If true, a .gitkeep file is created for empty folders. The default is false.',
+    }),
+    conflictResolution: ConflictResolutionSchema.exactOptional().openapi({
+      description:
+        'If AUTOMERGE is the conflict resolution strategy, a list of inputs to use when resolving conflicts during a merge.',
+    }),
   })
   .openapi({
     required: ['pullRequestId', 'repositoryName'],
@@ -5511,82 +3880,44 @@ const MergePullRequestByThreeWayOutputSchema = z
 
 const MergePullRequestByThreeWayInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
-        }),
-    ),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository where the pull request was created.' }),
-    ),
-    sourceCommitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the original or updated commit in the pull request source branch. Pass this value if you want an exception thrown if the current commit ID of the tip of the source branch does not match this commit ID.',
-        }),
-    ).exactOptional(),
-    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
-        }),
-    ).exactOptional(),
-    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
-        }),
-    ).exactOptional(),
-    commitMessage: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The commit message to include in the commit information for the merge.',
-        }),
-    ).exactOptional(),
-    authorName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the author who created the commit. This information is used as both the author and committer for the commit.',
-        }),
-    ).exactOptional(),
-    email: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address of the person merging the branches. This information is used in the commit information for the merge.',
-        }),
-    ).exactOptional(),
-    keepEmptyFolders: KeepEmptyFoldersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the commit contains deletions, whether to keep a folder or folder structure if the changes leave the folders empty. If true, a .gitkeep file is created for empty folders. The default is false.',
-        }),
-    ).exactOptional(),
-    conflictResolution: ConflictResolutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If AUTOMERGE is the conflict resolution strategy, a list of inputs to use when resolving conflicts during a merge.',
-        }),
-    ).exactOptional(),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description:
+        'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository where the pull request was created.',
+    }),
+    sourceCommitId: ObjectIdSchema.exactOptional().openapi({
+      description:
+        'The full commit ID of the original or updated commit in the pull request source branch. Pass this value if you want an exception thrown if the current commit ID of the tip of the source branch does not match this commit ID.',
+    }),
+    conflictDetailLevel: ConflictDetailLevelTypeEnumSchema.exactOptional().openapi({
+      description:
+        'The level of conflict detail to use. If unspecified, the default FILE_LEVEL is used, which returns a not-mergeable result if the same file has differences in both branches. If LINE_LEVEL is specified, a conflict is considered not mergeable if the same file in both branches has differences on the same line.',
+    }),
+    conflictResolutionStrategy: ConflictResolutionStrategyTypeEnumSchema.exactOptional().openapi({
+      description:
+        'Specifies which branch to use when resolving conflicts, or whether to attempt automatically merging two versions of a file. The default is NONE, which requires any conflicts to be resolved manually before the merge operation is successful.',
+    }),
+    commitMessage: MessageSchema.exactOptional().openapi({
+      description: 'The commit message to include in the commit information for the merge.',
+    }),
+    authorName: NameSchema.exactOptional().openapi({
+      description:
+        'The name of the author who created the commit. This information is used as both the author and committer for the commit.',
+    }),
+    email: EmailSchema.exactOptional().openapi({
+      description:
+        'The email address of the person merging the branches. This information is used in the commit information for the merge.',
+    }),
+    keepEmptyFolders: KeepEmptyFoldersSchema.exactOptional().openapi({
+      description:
+        'If the commit contains deletions, whether to keep a folder or folder structure if the changes leave the folders empty. If true, a .gitkeep file is created for empty folders. The default is false.',
+    }),
+    conflictResolution: ConflictResolutionSchema.exactOptional().openapi({
+      description:
+        'If AUTOMERGE is the conflict resolution strategy, a list of inputs to use when resolving conflicts during a merge.',
+    }),
   })
   .openapi({
     required: ['pullRequestId', 'repositoryName'],
@@ -5596,30 +3927,18 @@ const MergePullRequestByThreeWayInputSchema = z
 
 const OverridePullRequestApprovalRulesInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the pull request for which you want to override all approval rule requirements. To get this information, use <a>GetPullRequest</a>.',
-        }),
-    ),
-    revisionId: RevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the most recent revision of the pull request. You cannot override approval rules for anything but the most recent revision of a pull request. To get the revision ID, use GetPullRequest.',
-        }),
-    ),
-    overrideStatus: OverrideStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether you want to set aside approval rule requirements for the pull request (OVERRIDE) or revoke a previous override and apply approval rule requirements (REVOKE). REVOKE status is not stored.',
-        }),
-    ),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description:
+        'The system-generated ID of the pull request for which you want to override all approval rule requirements. To get this information, use <a>GetPullRequest</a>.',
+    }),
+    revisionId: RevisionIdSchema.openapi({
+      description:
+        'The system-generated ID of the most recent revision of the pull request. You cannot override approval rules for anything but the most recent revision of a pull request. To get the revision ID, use GetPullRequest.',
+    }),
+    overrideStatus: OverrideStatusSchema.openapi({
+      description:
+        'Whether you want to set aside approval rule requirements for the pull request (OVERRIDE) or revoke a previous override and apply approval rule requirements (REVOKE). REVOKE status is not stored.',
+    }),
   })
   .openapi({
     required: ['pullRequestId', 'revisionId', 'overrideStatus'],
@@ -5635,98 +3954,55 @@ const OverrideAlreadySetExceptionSchema = z.any().openapi('OverrideAlreadySetExc
 
 const PostCommentForComparedCommitOutputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository where you posted a comment on the comparison between commits.',
-        }),
-    ).exactOptional(),
-    beforeCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'In the directionality you established, the full commit ID of the before commit.',
-        }),
-    ).exactOptional(),
-    afterCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'In the directionality you established, the full commit ID of the after commit.',
-        }),
-    ).exactOptional(),
-    beforeBlobId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'In the directionality you established, the blob ID of the before blob.',
-        }),
-    ).exactOptional(),
-    afterBlobId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'In the directionality you established, the blob ID of the after blob.',
-        }),
-    ).exactOptional(),
-    location: LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The location of the comment in the comparison between the two commits.',
-        }),
-    ).exactOptional(),
-    comment: CommentSchema.and(
-      z.any().openapi({ description: 'The content of the comment you posted.' }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description:
+        'The name of the repository where you posted a comment on the comparison between commits.',
+    }),
+    beforeCommitId: CommitIdSchema.exactOptional().openapi({
+      description:
+        'In the directionality you established, the full commit ID of the before commit.',
+    }),
+    afterCommitId: CommitIdSchema.exactOptional().openapi({
+      description: 'In the directionality you established, the full commit ID of the after commit.',
+    }),
+    beforeBlobId: ObjectIdSchema.exactOptional().openapi({
+      description: 'In the directionality you established, the blob ID of the before blob.',
+    }),
+    afterBlobId: ObjectIdSchema.exactOptional().openapi({
+      description: 'In the directionality you established, the blob ID of the after blob.',
+    }),
+    location: LocationSchema.exactOptional().openapi({
+      description: 'The location of the comment in the comparison between the two commits.',
+    }),
+    comment: CommentSchema.exactOptional().openapi({
+      description: 'The content of the comment you posted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PostCommentForComparedCommitOutput')
 
 const PostCommentForComparedCommitInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository where you want to post a comment on the comparison between commits.',
-        }),
-    ),
-    beforeCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To establish the directionality of the comparison, the full commit ID of the before commit. Required for commenting on any commit unless that commit is the initial commit.',
-        }),
-    ).exactOptional(),
-    afterCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To establish the directionality of the comparison, the full commit ID of the after commit.',
-        }),
-    ),
-    location: LocationSchema.and(
-      z.any().openapi({ description: 'The location of the comparison where you want to comment.' }),
-    ).exactOptional(),
-    content: ContentSchema.and(
-      z.any().openapi({ description: 'The content of the comment you want to make.' }),
-    ),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, client-generated idempotency token that, when provided in a request, ensures the request cannot be repeated with a changed parameter. If a request is received with the same parameters and a token is included, the request returns information about the initial request that used that token.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description:
+        'The name of the repository where you want to post a comment on the comparison between commits.',
+    }),
+    beforeCommitId: CommitIdSchema.exactOptional().openapi({
+      description:
+        'To establish the directionality of the comparison, the full commit ID of the before commit. Required for commenting on any commit unless that commit is the initial commit.',
+    }),
+    afterCommitId: CommitIdSchema.openapi({
+      description:
+        'To establish the directionality of the comparison, the full commit ID of the after commit.',
+    }),
+    location: LocationSchema.exactOptional().openapi({
+      description: 'The location of the comparison where you want to comment.',
+    }),
+    content: ContentSchema.openapi({ description: 'The content of the comment you want to make.' }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, client-generated idempotency token that, when provided in a request, ensures the request cannot be repeated with a changed parameter. If a request is received with the same parameters and a token is included, the request returns information about the initial request that used that token.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'afterCommitId', 'content'],
@@ -5754,109 +4030,62 @@ const BeforeCommitIdAndAfterCommitIdAreSameExceptionSchema = z
 
 const PostCommentForPullRequestOutputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository where you posted a comment on a pull request.',
-        }),
-    ).exactOptional(),
-    pullRequestId: PullRequestIdSchema.and(
-      z.any().openapi({ description: 'The system-generated ID of the pull request. ' }),
-    ).exactOptional(),
-    beforeCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the commit in the source branch used to create the pull request, or in the case of an updated pull request, the full commit ID of the commit used to update the pull request.',
-        }),
-    ).exactOptional(),
-    afterCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the commit in the destination branch where the pull request is merged.',
-        }),
-    ).exactOptional(),
-    beforeBlobId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'In the directionality of the pull request, the blob ID of the before blob.',
-        }),
-    ).exactOptional(),
-    afterBlobId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'In the directionality of the pull request, the blob ID of the after blob.',
-        }),
-    ).exactOptional(),
-    location: LocationSchema.and(
-      z.any().openapi({ description: 'The location of the change where you posted your comment.' }),
-    ).exactOptional(),
-    comment: CommentSchema.and(
-      z.any().openapi({ description: 'The content of the comment you posted.' }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The name of the repository where you posted a comment on a pull request.',
+    }),
+    pullRequestId: PullRequestIdSchema.exactOptional().openapi({
+      description: 'The system-generated ID of the pull request. ',
+    }),
+    beforeCommitId: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The full commit ID of the commit in the source branch used to create the pull request, or in the case of an updated pull request, the full commit ID of the commit used to update the pull request.',
+    }),
+    afterCommitId: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The full commit ID of the commit in the destination branch where the pull request is merged.',
+    }),
+    beforeBlobId: ObjectIdSchema.exactOptional().openapi({
+      description: 'In the directionality of the pull request, the blob ID of the before blob.',
+    }),
+    afterBlobId: ObjectIdSchema.exactOptional().openapi({
+      description: 'In the directionality of the pull request, the blob ID of the after blob.',
+    }),
+    location: LocationSchema.exactOptional().openapi({
+      description: 'The location of the change where you posted your comment.',
+    }),
+    comment: CommentSchema.exactOptional().openapi({
+      description: 'The content of the comment you posted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PostCommentForPullRequestOutput')
 
 const PostCommentForPullRequestInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
-        }),
-    ),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository where you want to post a comment on a pull request.',
-        }),
-    ),
-    beforeCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the commit in the destination branch that was the tip of the branch at the time the pull request was created.',
-        }),
-    ),
-    afterCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full commit ID of the commit in the source branch that is the current tip of the branch for the pull request when you post the comment.',
-        }),
-    ),
-    location: LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the change where you want to post your comment. If no location is provided, the comment is posted as a general comment on the pull request difference between the before commit ID and the after commit ID.',
-        }),
-    ).exactOptional(),
-    content: ContentSchema.and(
-      z.any().openapi({ description: 'The content of your comment on the change.' }),
-    ),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, client-generated idempotency token that, when provided in a request, ensures the request cannot be repeated with a changed parameter. If a request is received with the same parameters and a token is included, the request returns information about the initial request that used that token.',
-        }),
-    ).exactOptional(),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description:
+        'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository where you want to post a comment on a pull request.',
+    }),
+    beforeCommitId: CommitIdSchema.openapi({
+      description:
+        'The full commit ID of the commit in the destination branch that was the tip of the branch at the time the pull request was created.',
+    }),
+    afterCommitId: CommitIdSchema.openapi({
+      description:
+        'The full commit ID of the commit in the source branch that is the current tip of the branch for the pull request when you post the comment.',
+    }),
+    location: LocationSchema.exactOptional().openapi({
+      description:
+        'The location of the change where you want to post your comment. If no location is provided, the comment is posted as a general comment on the pull request difference between the before commit ID and the after commit ID.',
+    }),
+    content: ContentSchema.openapi({ description: 'The content of your comment on the change.' }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, client-generated idempotency token that, when provided in a request, ensures the request cannot be repeated with a changed parameter. If a request is received with the same parameters and a token is included, the request returns information about the initial request that used that token.',
+    }),
   })
   .openapi({
     required: ['pullRequestId', 'repositoryName', 'beforeCommitId', 'afterCommitId', 'content'],
@@ -5866,55 +4095,37 @@ const PostCommentForPullRequestInputSchema = z
 
 const PostCommentReplyOutputSchema = z
   .object({
-    comment: CommentSchema.and(
-      z.any().openapi({ description: 'Information about the reply to a comment.' }),
-    ).exactOptional(),
+    comment: CommentSchema.exactOptional().openapi({
+      description: 'Information about the reply to a comment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PostCommentReplyOutput')
 
 const PostCommentReplyInputSchema = z
   .object({
-    inReplyTo: CommentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the comment to which you want to reply. To get this ID, use <a>GetCommentsForComparedCommit</a> or <a>GetCommentsForPullRequest</a>.',
-        }),
-    ),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, client-generated idempotency token that, when provided in a request, ensures the request cannot be repeated with a changed parameter. If a request is received with the same parameters and a token is included, the request returns information about the initial request that used that token.',
-        }),
-    ).exactOptional(),
-    content: ContentSchema.and(
-      z.any().openapi({ description: 'The contents of your reply to a comment.' }),
-    ),
+    inReplyTo: CommentIdSchema.openapi({
+      description:
+        'The system-generated ID of the comment to which you want to reply. To get this ID, use <a>GetCommentsForComparedCommit</a> or <a>GetCommentsForPullRequest</a>.',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, client-generated idempotency token that, when provided in a request, ensures the request cannot be repeated with a changed parameter. If a request is received with the same parameters and a token is included, the request returns information about the initial request that used that token.',
+    }),
+    content: ContentSchema.openapi({ description: 'The contents of your reply to a comment.' }),
   })
   .openapi({ required: ['inReplyTo', 'content'], title: 'PostCommentReplyInput' })
   .openapi('PostCommentReplyInput')
 
 const PutCommentReactionInputSchema = z
   .object({
-    commentId: CommentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the comment to which you want to add or update a reaction.',
-        }),
-    ),
-    reactionValue: ReactionValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The emoji reaction you want to add or update. To remove a reaction, provide a value of blank or null. You can also provide the value of none. For information about emoji reaction values supported in AWS CodeCommit, see the <a href="https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-commit-comment.html#emoji-reaction-table">AWS CodeCommit User Guide</a>.',
-        }),
-    ),
+    commentId: CommentIdSchema.openapi({
+      description: 'The ID of the comment to which you want to add or update a reaction.',
+    }),
+    reactionValue: ReactionValueSchema.openapi({
+      description:
+        'The emoji reaction you want to add or update. To remove a reaction, provide a value of blank or null. You can also provide the value of none. For information about emoji reaction values supported in AWS CodeCommit, see the <a href="https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-commit-comment.html#emoji-reaction-table">AWS CodeCommit User Guide</a>.',
+    }),
   })
   .openapi({ required: ['commentId', 'reactionValue'], title: 'PutCommentReactionInput' })
   .openapi('PutCommentReactionInput')
@@ -5927,91 +4138,55 @@ const ReactionLimitExceededExceptionSchema = z.any().openapi('ReactionLimitExcee
 
 const PutFileOutputSchema = z
   .object({
-    commitId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The full SHA ID of the commit that contains this file change.' }),
-    ),
-    blobId: ObjectIdSchema.and(
-      z.any().openapi({ description: 'The ID of the blob, which is its SHA-1 pointer.' }),
-    ),
-    treeId: ObjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full SHA-1 pointer of the tree information for the commit that contains this file change.',
-        }),
-    ),
+    commitId: ObjectIdSchema.openapi({
+      description: 'The full SHA ID of the commit that contains this file change.',
+    }),
+    blobId: ObjectIdSchema.openapi({
+      description: 'The ID of the blob, which is its SHA-1 pointer.',
+    }),
+    treeId: ObjectIdSchema.openapi({
+      description:
+        'The full SHA-1 pointer of the tree information for the commit that contains this file change.',
+    }),
   })
   .openapi({ required: ['commitId', 'blobId', 'treeId'] })
   .openapi('PutFileOutput')
 
 const PutFileInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository where you want to add or update the file.',
-        }),
-    ),
-    branchName: BranchNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the branch where you want to add or update the file. If this is an empty repository, this branch is created.',
-        }),
-    ),
-    fileContent: FileContentSchema.and(
-      z.any().openapi({ description: 'The content of the file, in binary object format. ' }),
-    ),
-    filePath: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the file you want to add or update, including the relative path to the file in the repository.</p> <note> <p>If the path does not currently exist in the repository, the path is created as part of adding the file.</p> </note>',
-        }),
-    ),
-    fileMode: FileModeTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The file mode permissions of the blob. Valid file mode permissions are listed here.',
-        }),
-    ).exactOptional(),
-    parentCommitId: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The full commit ID of the head commit in the branch where you want to add or update the file. If this is an empty repository, no commit ID is required. If this is not an empty repository, a commit ID is required. </p> <p>The commit ID must match the ID of the head commit at the time of the operation. Otherwise, an error occurs, and the file is not added or updated.</p>',
-        }),
-    ).exactOptional(),
-    commitMessage: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A message about why this file was added or updated. Although it is optional, a message makes the commit history for your repository more useful.',
-        }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the person adding or updating the file. Although it is optional, a name makes the commit history for your repository more useful.',
-        }),
-    ).exactOptional(),
-    email: EmailSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An email address for the person adding or updating the file.' }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository where you want to add or update the file.',
+    }),
+    branchName: BranchNameSchema.openapi({
+      description:
+        'The name of the branch where you want to add or update the file. If this is an empty repository, this branch is created.',
+    }),
+    fileContent: FileContentSchema.openapi({
+      description: 'The content of the file, in binary object format. ',
+    }),
+    filePath: PathSchema.openapi({
+      description:
+        '<p>The name of the file you want to add or update, including the relative path to the file in the repository.</p> <note> <p>If the path does not currently exist in the repository, the path is created as part of adding the file.</p> </note>',
+    }),
+    fileMode: FileModeTypeEnumSchema.exactOptional().openapi({
+      description:
+        'The file mode permissions of the blob. Valid file mode permissions are listed here.',
+    }),
+    parentCommitId: CommitIdSchema.exactOptional().openapi({
+      description:
+        '<p>The full commit ID of the head commit in the branch where you want to add or update the file. If this is an empty repository, no commit ID is required. If this is not an empty repository, a commit ID is required. </p> <p>The commit ID must match the ID of the head commit at the time of the operation. Otherwise, an error occurs, and the file is not added or updated.</p>',
+    }),
+    commitMessage: MessageSchema.exactOptional().openapi({
+      description:
+        'A message about why this file was added or updated. Although it is optional, a message makes the commit history for your repository more useful.',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description:
+        'The name of the person adding or updating the file. Although it is optional, a name makes the commit history for your repository more useful.',
+    }),
+    email: EmailSchema.exactOptional().openapi({
+      description: 'An email address for the person adding or updating the file.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'branchName', 'fileContent', 'filePath'],
@@ -6025,13 +4200,9 @@ const SameFileContentExceptionSchema = z.any().openapi('SameFileContentException
 
 const PutRepositoryTriggersOutputSchema = z
   .object({
-    configurationId: RepositoryTriggersConfigurationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The system-generated unique ID for the create or update operation.',
-        }),
-    ).exactOptional(),
+    configurationId: RepositoryTriggersConfigurationIdSchema.exactOptional().openapi({
+      description: 'The system-generated unique ID for the create or update operation.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a put repository triggers operation.',
@@ -6041,18 +4212,12 @@ const PutRepositoryTriggersOutputSchema = z
 
 const PutRepositoryTriggersInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository where you want to create or update the trigger.',
-        }),
-    ),
-    triggers: RepositoryTriggersListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The JSON block of configuration information for each trigger.' }),
-    ),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository where you want to create or update the trigger.',
+    }),
+    triggers: RepositoryTriggersListSchema.openapi({
+      description: 'The JSON block of configuration information for each trigger.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'triggers'],
@@ -6113,17 +4278,13 @@ const RepositoryTriggerEventsListRequiredExceptionSchema = z
 
 const TagResourceInputSchema = z
   .object({
-    resourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource to which you want to add or update tags.',
-        }),
-    ),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'The key-value pair to use when tagging this repository.' }),
-    ),
+    resourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource to which you want to add or update tags.',
+    }),
+    tags: TagsMapSchema.openapi({
+      description: 'The key-value pair to use when tagging this repository.',
+    }),
   })
   .openapi({ required: ['resourceArn', 'tags'], title: 'TagResourceInput' })
   .openapi('TagResourceInput')
@@ -6140,12 +4301,12 @@ const RepositoryTriggerExecutionFailureMessageSchema = z
 
 const RepositoryTriggerExecutionFailureSchema = z
   .object({
-    trigger: RepositoryTriggerNameSchema.and(
-      z.any().openapi({ description: 'The name of the trigger that did not run.' }),
-    ).exactOptional(),
-    failureMessage: RepositoryTriggerExecutionFailureMessageSchema.and(
-      z.any().openapi({ description: 'Message information about the trigger that did not run.' }),
-    ).exactOptional(),
+    trigger: RepositoryTriggerNameSchema.exactOptional().openapi({
+      description: 'The name of the trigger that did not run.',
+    }),
+    failureMessage: RepositoryTriggerExecutionFailureMessageSchema.exactOptional().openapi({
+      description: 'Message information about the trigger that did not run.',
+    }),
   })
   .openapi({ description: 'A trigger failed to run.', required: [] })
   .openapi('RepositoryTriggerExecutionFailure')
@@ -6156,22 +4317,14 @@ const RepositoryTriggerExecutionFailureListSchema = z
 
 const TestRepositoryTriggersOutputSchema = z
   .object({
-    successfulExecutions: RepositoryTriggerNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of triggers that were successfully tested. This list provides the names of the triggers that were successfully tested, separated by commas.',
-        }),
-    ).exactOptional(),
-    failedExecutions: RepositoryTriggerExecutionFailureListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of triggers that were not tested. This list provides the names of the triggers that could not be tested, separated by commas.',
-        }),
-    ).exactOptional(),
+    successfulExecutions: RepositoryTriggerNameListSchema.exactOptional().openapi({
+      description:
+        'The list of triggers that were successfully tested. This list provides the names of the triggers that were successfully tested, separated by commas.',
+    }),
+    failedExecutions: RepositoryTriggerExecutionFailureListSchema.exactOptional().openapi({
+      description:
+        'The list of triggers that were not tested. This list provides the names of the triggers that could not be tested, separated by commas.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a test repository triggers operation.',
@@ -6181,12 +4334,12 @@ const TestRepositoryTriggersOutputSchema = z
 
 const TestRepositoryTriggersInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository in which to test the triggers.' }),
-    ),
-    triggers: RepositoryTriggersListSchema.and(
-      z.any().openapi({ description: 'The list of triggers to test.' }),
-    ),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository in which to test the triggers.',
+    }),
+    triggers: RepositoryTriggersListSchema.openapi({
+      description: 'The list of triggers to test.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'triggers'],
@@ -6201,21 +4354,13 @@ const TagKeysListSchema = z.array(TagKeySchema).openapi('TagKeysList')
 
 const UntagResourceInputSchema = z
   .object({
-    resourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource to which you want to remove tags.',
-        }),
-    ),
-    tagKeys: TagKeysListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tag key for each tag that you want to remove from the resource.',
-        }),
-    ),
+    resourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource to which you want to remove tags.',
+    }),
+    tagKeys: TagKeysListSchema.openapi({
+      description: 'The tag key for each tag that you want to remove from the resource.',
+    }),
   })
   .openapi({ required: ['resourceArn', 'tagKeys'], title: 'UntagResourceInput' })
   .openapi('UntagResourceInput')
@@ -6231,30 +4376,18 @@ const UpdateApprovalRuleTemplateContentOutputSchema = z
 
 const UpdateApprovalRuleTemplateContentInputSchema = z
   .object({
-    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the approval rule template where you want to update the content of the rule. ',
-        }),
-    ),
-    newRuleContent: ApprovalRuleTemplateContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The content that replaces the existing content of the rule. Content statements must be complete. You cannot provide only the changes.',
-        }),
-    ),
-    existingRuleContentSha256: RuleContentSha256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SHA-256 hash signature for the content of the approval rule. You can retrieve this information by using <a>GetPullRequest</a>.',
-        }),
-    ).exactOptional(),
+    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.openapi({
+      description:
+        'The name of the approval rule template where you want to update the content of the rule. ',
+    }),
+    newRuleContent: ApprovalRuleTemplateContentSchema.openapi({
+      description:
+        'The content that replaces the existing content of the rule. Content statements must be complete. You cannot provide only the changes.',
+    }),
+    existingRuleContentSha256: RuleContentSha256Schema.exactOptional().openapi({
+      description:
+        'The SHA-256 hash signature for the content of the approval rule. You can retrieve this information by using <a>GetPullRequest</a>.',
+    }),
   })
   .openapi({
     required: ['approvalRuleTemplateName', 'newRuleContent'],
@@ -6266,29 +4399,21 @@ const InvalidRuleContentSha256ExceptionSchema = z.any().openapi('InvalidRuleCont
 
 const UpdateApprovalRuleTemplateDescriptionOutputSchema = z
   .object({
-    approvalRuleTemplate: ApprovalRuleTemplateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The structure and content of the updated approval rule template.',
-        }),
-    ),
+    approvalRuleTemplate: ApprovalRuleTemplateSchema.openapi({
+      description: 'The structure and content of the updated approval rule template.',
+    }),
   })
   .openapi({ required: ['approvalRuleTemplate'] })
   .openapi('UpdateApprovalRuleTemplateDescriptionOutput')
 
 const UpdateApprovalRuleTemplateDescriptionInputSchema = z
   .object({
-    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the template for which you want to update the description.',
-        }),
-    ),
-    approvalRuleTemplateDescription: ApprovalRuleTemplateDescriptionSchema.and(
-      z.any().openapi({ description: 'The updated description of the approval rule template.' }),
-    ),
+    approvalRuleTemplateName: ApprovalRuleTemplateNameSchema.openapi({
+      description: 'The name of the template for which you want to update the description.',
+    }),
+    approvalRuleTemplateDescription: ApprovalRuleTemplateDescriptionSchema.openapi({
+      description: 'The updated description of the approval rule template.',
+    }),
   })
   .openapi({
     required: ['approvalRuleTemplateName', 'approvalRuleTemplateDescription'],
@@ -6298,27 +4423,21 @@ const UpdateApprovalRuleTemplateDescriptionInputSchema = z
 
 const UpdateApprovalRuleTemplateNameOutputSchema = z
   .object({
-    approvalRuleTemplate: ApprovalRuleTemplateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The structure and content of the updated approval rule template.',
-        }),
-    ),
+    approvalRuleTemplate: ApprovalRuleTemplateSchema.openapi({
+      description: 'The structure and content of the updated approval rule template.',
+    }),
   })
   .openapi({ required: ['approvalRuleTemplate'] })
   .openapi('UpdateApprovalRuleTemplateNameOutput')
 
 const UpdateApprovalRuleTemplateNameInputSchema = z
   .object({
-    oldApprovalRuleTemplateName: ApprovalRuleTemplateNameSchema.and(
-      z.any().openapi({ description: 'The current name of the approval rule template.' }),
-    ),
-    newApprovalRuleTemplateName: ApprovalRuleTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The new name you want to apply to the approval rule template.' }),
-    ),
+    oldApprovalRuleTemplateName: ApprovalRuleTemplateNameSchema.openapi({
+      description: 'The current name of the approval rule template.',
+    }),
+    newApprovalRuleTemplateName: ApprovalRuleTemplateNameSchema.openapi({
+      description: 'The new name you want to apply to the approval rule template.',
+    }),
   })
   .openapi({
     required: ['oldApprovalRuleTemplateName', 'newApprovalRuleTemplateName'],
@@ -6328,30 +4447,22 @@ const UpdateApprovalRuleTemplateNameInputSchema = z
 
 const UpdateCommentOutputSchema = z
   .object({
-    comment: CommentSchema.and(
-      z.any().openapi({ description: 'Information about the updated comment.' }),
-    ).exactOptional(),
+    comment: CommentSchema.exactOptional().openapi({
+      description: 'Information about the updated comment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateCommentOutput')
 
 const UpdateCommentInputSchema = z
   .object({
-    commentId: CommentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the comment you want to update. To get this ID, use <a>GetCommentsForComparedCommit</a> or <a>GetCommentsForPullRequest</a>.',
-        }),
-    ),
-    content: ContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The updated content to replace the existing content of the comment.',
-        }),
-    ),
+    commentId: CommentIdSchema.openapi({
+      description:
+        'The system-generated ID of the comment you want to update. To get this ID, use <a>GetCommentsForComparedCommit</a> or <a>GetCommentsForPullRequest</a>.',
+    }),
+    content: ContentSchema.openapi({
+      description: 'The updated content to replace the existing content of the comment.',
+    }),
   })
   .openapi({ required: ['commentId', 'content'], title: 'UpdateCommentInput' })
   .openapi('UpdateCommentInput')
@@ -6362,16 +4473,12 @@ const CommentNotCreatedByCallerExceptionSchema = z
 
 const UpdateDefaultBranchInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository to set or change the default branch for.',
-        }),
-    ),
-    defaultBranchName: BranchNameSchema.and(
-      z.any().openapi({ description: 'The name of the branch to set as the default.' }),
-    ),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository to set or change the default branch for.',
+    }),
+    defaultBranchName: BranchNameSchema.openapi({
+      description: 'The name of the branch to set as the default.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'defaultBranchName'],
@@ -6382,37 +4489,29 @@ const UpdateDefaultBranchInputSchema = z
 
 const UpdatePullRequestApprovalRuleContentOutputSchema = z
   .object({
-    approvalRule: ApprovalRuleSchema.and(
-      z.any().openapi({ description: 'Information about the updated approval rule.' }),
-    ),
+    approvalRule: ApprovalRuleSchema.openapi({
+      description: 'Information about the updated approval rule.',
+    }),
   })
   .openapi({ required: ['approvalRule'] })
   .openapi('UpdatePullRequestApprovalRuleContentOutput')
 
 const UpdatePullRequestApprovalRuleContentInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z.any().openapi({ description: 'The system-generated ID of the pull request.' }),
-    ),
-    approvalRuleName: ApprovalRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the approval rule you want to update.' }),
-    ),
-    existingRuleContentSha256: RuleContentSha256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SHA-256 hash signature for the content of the approval rule. You can retrieve this information by using <a>GetPullRequest</a>.',
-        }),
-    ).exactOptional(),
-    newRuleContent: ApprovalRuleContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The updated content for the approval rule.</p> <note> <p>When you update the content of the approval rule, you can specify approvers in an approval pool in one of two ways:</p> <ul> <li> <p> <b>CodeCommitApprovers</b>: This option only requires an AWS account and a resource. It can be used for both IAM users and federated access users whose name matches the provided resource name. This is a very powerful option that offers a great deal of flexibility. For example, if you specify the AWS account <i>123456789012</i> and <i>Mary_Major</i>, all of the following are counted as approvals coming from that user:</p> <ul> <li> <p>An IAM user in the account (arn:aws:iam::<i>123456789012</i>:user/<i>Mary_Major</i>)</p> </li> <li> <p>A federated user identified in IAM as Mary_Major (arn:aws:sts::<i>123456789012</i>:federated-user/<i>Mary_Major</i>)</p> </li> </ul> <p>This option does not recognize an active session of someone assuming the role of CodeCommitReview with a role session name of <i>Mary_Major</i> (arn:aws:sts::<i>123456789012</i>:assumed-role/CodeCommitReview/<i>Mary_Major</i>) unless you include a wildcard (*Mary_Major).</p> </li> <li> <p> <b>Fully qualified ARN</b>: This option allows you to specify the fully qualified Amazon Resource Name (ARN) of the IAM user or role. </p> </li> </ul> <p>For more information about IAM ARNs, wildcards, and formats, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html">IAM Identifiers</a> in the <i>IAM User Guide</i>.</p> </note>',
-        }),
-    ),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description: 'The system-generated ID of the pull request.',
+    }),
+    approvalRuleName: ApprovalRuleNameSchema.openapi({
+      description: 'The name of the approval rule you want to update.',
+    }),
+    existingRuleContentSha256: RuleContentSha256Schema.exactOptional().openapi({
+      description:
+        'The SHA-256 hash signature for the content of the approval rule. You can retrieve this information by using <a>GetPullRequest</a>.',
+    }),
+    newRuleContent: ApprovalRuleContentSchema.openapi({
+      description:
+        '<p>The updated content for the approval rule.</p> <note> <p>When you update the content of the approval rule, you can specify approvers in an approval pool in one of two ways:</p> <ul> <li> <p> <b>CodeCommitApprovers</b>: This option only requires an AWS account and a resource. It can be used for both IAM users and federated access users whose name matches the provided resource name. This is a very powerful option that offers a great deal of flexibility. For example, if you specify the AWS account <i>123456789012</i> and <i>Mary_Major</i>, all of the following are counted as approvals coming from that user:</p> <ul> <li> <p>An IAM user in the account (arn:aws:iam::<i>123456789012</i>:user/<i>Mary_Major</i>)</p> </li> <li> <p>A federated user identified in IAM as Mary_Major (arn:aws:sts::<i>123456789012</i>:federated-user/<i>Mary_Major</i>)</p> </li> </ul> <p>This option does not recognize an active session of someone assuming the role of CodeCommitReview with a role session name of <i>Mary_Major</i> (arn:aws:sts::<i>123456789012</i>:assumed-role/CodeCommitReview/<i>Mary_Major</i>) unless you include a wildcard (*Mary_Major).</p> </li> <li> <p> <b>Fully qualified ARN</b>: This option allows you to specify the fully qualified Amazon Resource Name (ARN) of the IAM user or role. </p> </li> </ul> <p>For more information about IAM ARNs, wildcards, and formats, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html">IAM Identifiers</a> in the <i>IAM User Guide</i>.</p> </note>',
+    }),
   })
   .openapi({
     required: ['pullRequestId', 'approvalRuleName', 'newRuleContent'],
@@ -6428,19 +4527,15 @@ const CannotModifyApprovalRuleFromTemplateExceptionSchema = z
 
 const UpdatePullRequestApprovalStateInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z.any().openapi({ description: 'The system-generated ID of the pull request.' }),
-    ),
-    revisionId: RevisionIdSchema.and(
-      z.any().openapi({ description: 'The system-generated ID of the revision.' }),
-    ),
-    approvalState: ApprovalStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The approval state to associate with the user on the pull request.',
-        }),
-    ),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description: 'The system-generated ID of the pull request.',
+    }),
+    revisionId: RevisionIdSchema.openapi({
+      description: 'The system-generated ID of the revision.',
+    }),
+    approvalState: ApprovalStateSchema.openapi({
+      description: 'The approval state to associate with the user on the pull request.',
+    }),
   })
   .openapi({
     required: ['pullRequestId', 'revisionId', 'approvalState'],
@@ -6462,31 +4557,23 @@ const MaximumNumberOfApprovalsExceededExceptionSchema = z
 
 const UpdatePullRequestDescriptionOutputSchema = z
   .object({
-    pullRequest: PullRequestSchema.and(
-      z.any().openapi({ description: 'Information about the updated pull request.' }),
-    ),
+    pullRequest: PullRequestSchema.openapi({
+      description: 'Information about the updated pull request.',
+    }),
   })
   .openapi({ required: ['pullRequest'] })
   .openapi('UpdatePullRequestDescriptionOutput')
 
 const UpdatePullRequestDescriptionInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
-        }),
-    ),
-    description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated content of the description for the pull request. This content replaces the existing description.',
-        }),
-    ),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description:
+        'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
+    }),
+    description: DescriptionSchema.openapi({
+      description:
+        'The updated content of the description for the pull request. This content replaces the existing description.',
+    }),
   })
   .openapi({
     required: ['pullRequestId', 'description'],
@@ -6496,31 +4583,21 @@ const UpdatePullRequestDescriptionInputSchema = z
 
 const UpdatePullRequestStatusOutputSchema = z
   .object({
-    pullRequest: PullRequestSchema.and(
-      z.any().openapi({ description: 'Information about the pull request.' }),
-    ),
+    pullRequest: PullRequestSchema.openapi({ description: 'Information about the pull request.' }),
   })
   .openapi({ required: ['pullRequest'] })
   .openapi('UpdatePullRequestStatusOutput')
 
 const UpdatePullRequestStatusInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
-        }),
-    ),
-    pullRequestStatus: PullRequestStatusEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the pull request. The only valid operations are to update the status from <code>OPEN</code> to <code>OPEN</code>, <code>OPEN</code> to <code>CLOSED</code> or from <code>CLOSED</code> to <code>CLOSED</code>.',
-        }),
-    ),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description:
+        'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
+    }),
+    pullRequestStatus: PullRequestStatusEnumSchema.openapi({
+      description:
+        'The status of the pull request. The only valid operations are to update the status from <code>OPEN</code> to <code>OPEN</code>, <code>OPEN</code> to <code>CLOSED</code> or from <code>CLOSED</code> to <code>CLOSED</code>.',
+    }),
   })
   .openapi({
     required: ['pullRequestId', 'pullRequestStatus'],
@@ -6538,52 +4615,35 @@ const PullRequestStatusRequiredExceptionSchema = z
 
 const UpdatePullRequestTitleOutputSchema = z
   .object({
-    pullRequest: PullRequestSchema.and(
-      z.any().openapi({ description: 'Information about the updated pull request.' }),
-    ),
+    pullRequest: PullRequestSchema.openapi({
+      description: 'Information about the updated pull request.',
+    }),
   })
   .openapi({ required: ['pullRequest'] })
   .openapi('UpdatePullRequestTitleOutput')
 
 const UpdatePullRequestTitleInputSchema = z
   .object({
-    pullRequestId: PullRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
-        }),
-    ),
-    title: TitleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The updated title of the pull request. This replaces the existing title.',
-        }),
-    ),
+    pullRequestId: PullRequestIdSchema.openapi({
+      description:
+        'The system-generated ID of the pull request. To get this ID, use <a>ListPullRequests</a>.',
+    }),
+    title: TitleSchema.openapi({
+      description: 'The updated title of the pull request. This replaces the existing title.',
+    }),
   })
   .openapi({ required: ['pullRequestId', 'title'], title: 'UpdatePullRequestTitleInput' })
   .openapi('UpdatePullRequestTitleInput')
 
 const UpdateRepositoryDescriptionInputSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository to set or change the comment or description for.',
-        }),
-    ),
-    repositoryDescription: RepositoryDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new comment or description for the specified repository. Repository descriptions are limited to 1,000 characters.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository to set or change the comment or description for.',
+    }),
+    repositoryDescription: RepositoryDescriptionSchema.exactOptional().openapi({
+      description:
+        'The new comment or description for the specified repository. Repository descriptions are limited to 1,000 characters.',
+    }),
   })
   .openapi({
     required: ['repositoryName'],
@@ -6594,12 +4654,8 @@ const UpdateRepositoryDescriptionInputSchema = z
 
 const UpdateRepositoryNameInputSchema = z
   .object({
-    oldName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The current name of the repository.' }),
-    ),
-    newName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The new name for the repository.' }),
-    ),
+    oldName: RepositoryNameSchema.openapi({ description: 'The current name of the repository.' }),
+    newName: RepositoryNameSchema.openapi({ description: 'The new name for the repository.' }),
   })
   .openapi({
     required: ['oldName', 'newName'],

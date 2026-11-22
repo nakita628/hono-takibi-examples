@@ -419,13 +419,10 @@ export const postCallsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          description: 'URL of created call to monitor',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'URL of created call to monitor', param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'URL of created call to monitor', param: { required: false } }),
       }),
     },
     400: {
@@ -494,13 +491,10 @@ export const getCustomersRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          description: 'URL of customer account',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'URL of customer account', param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'URL of customer account', param: { required: false } }),
       }),
       links: {
         GetCustomer: {

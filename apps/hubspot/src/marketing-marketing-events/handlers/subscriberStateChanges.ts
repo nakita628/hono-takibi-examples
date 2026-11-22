@@ -9,9 +9,13 @@ const app = new OpenAPIHono()
 export const subscriberStateChangesHandler = app
   .openapi(
     postMarketingMarketingEvents202609EventsExternalEventIdSubscriberStateEmailUpsertRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     postMarketingMarketingEvents202609EventsExternalEventIdSubscriberStateUpsertRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

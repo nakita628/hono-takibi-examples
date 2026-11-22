@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetLogs20140328DeleteAccountPolicyHandler = app.openapi(
   postXAmzTargetLogs20140328DeleteAccountPolicyRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

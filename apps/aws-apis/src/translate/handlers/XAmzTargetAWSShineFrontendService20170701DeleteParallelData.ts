@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSShineFrontendService20170701DeleteParallelDataHandler = app.openapi(
   postXAmzTargetAWSShineFrontendService20170701DeleteParallelDataRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

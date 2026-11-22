@@ -1,288 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const BackupSchema = z
-  .object({
-    capacityGb: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Capacity of the source file share when the backup was created.',
-        readOnly: true,
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The time when the backup was created.',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A description of the backup with 2048 characters or less. Requests with longer descriptions will be rejected.',
-      }),
-    downloadBytes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Amount of bytes that will be downloaded if the backup is restored. This may be different than storage bytes, since sequential backups of the same disk will share storage.',
-        readOnly: true,
-      }),
-    kmsKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Immutable. KMS key name used for data encryption.' }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Resource labels to represent user provided metadata.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The resource name of the backup, in the format `projects/{project_number}/locations/{location_id}/backups/{backup_id}`.',
-        readOnly: true,
-      }),
-    satisfiesPzs: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Output only. Reserved for future use.', readOnly: true }),
-    sourceFileShare: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the file share in the source Filestore instance that the backup is created from.',
-      }),
-    sourceInstance: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the source Filestore instance, in the format `projects/{project_number}/locations/{location_id}/instances/{instance_id}`, used to create this backup.',
-      }),
-    sourceInstanceTier: z
-      .enum([
-        'TIER_UNSPECIFIED',
-        'STANDARD',
-        'PREMIUM',
-        'BASIC_HDD',
-        'BASIC_SSD',
-        'HIGH_SCALE_SSD',
-        'ENTERPRISE',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The service tier of the source Filestore instance that this backup is created from.',
-        readOnly: true,
-      }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'CREATING', 'FINALIZING', 'READY', 'DELETING', 'INVALID'])
-      .exactOptional()
-      .openapi({ description: 'Output only. The backup state.', readOnly: true }),
-    storageBytes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The size of the storage used by the backup. As backups share storage, this number is expected to change with backup creation/deletion.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'A Filestore backup.', required: [] })
-  .openapi('Backup')
-
-const CancelOperationRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request message for Operations.CancelOperation.' })
-  .openapi('CancelOperationRequest')
-
-const TimeOfDaySchema = z
-  .object({
-    hours: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-      }),
-    minutes: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Minutes of hour of day. Must be from 0 to 59.' }),
-    nanos: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.',
-      }),
-    seconds: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.',
-    required: [],
-  })
-  .openapi('TimeOfDay')
-
-const DailyCycleSchema = z
-  .object({
-    duration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Duration of the time window, set by service producer.',
-      }),
-    startTime: TimeOfDaySchema.exactOptional().openapi({
-      description: 'Time within the day to start the operations.',
-    }),
-  })
-  .openapi({ description: 'Time window specified for daily operations.', required: [] })
-  .openapi('DailyCycle')
-
-const DateSchema = z
-  .object({
-    day: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-      }),
-    month: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
-      }),
-    year: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
-    required: [],
-  })
-  .openapi('Date')
-
-const DenyMaintenancePeriodSchema = z
-  .object({
-    endDate: DateSchema.exactOptional().openapi({
-      description:
-        'Deny period end date. This can be: * A full date, with non-zero year, month and day values. * A month and day value, with a zero year. Allows recurring deny periods each year. Date matching this period will have to be before the end.',
-    }),
-    startDate: DateSchema.exactOptional().openapi({
-      description:
-        'Deny period start date. This can be: * A full date, with non-zero year, month and day values. * A month and day value, with a zero year. Allows recurring deny periods each year. Date matching this period will have to be the same or after the start.',
-    }),
-    time: TimeOfDaySchema.exactOptional().openapi({
-      description:
-        'Time in UTC when the Blackout period starts on start_date and ends on end_date. This can be: * Full time. * All zeros for 00:00:00 UTC',
-    }),
-  })
-  .openapi({
-    description:
-      'DenyMaintenancePeriod definition. Maintenance is forbidden within the deny period. The start_date must be less than the end_date.',
-    required: [],
-  })
-  .openapi('DenyMaintenancePeriod')
-
-const EmptySchema = z
-  .object({})
-  .openapi({
-    description:
-      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
-  })
-  .openapi('Empty')
-
-const NfsExportOptionsSchema = z
-  .object({
-    accessMode: z
-      .enum(['ACCESS_MODE_UNSPECIFIED', 'READ_ONLY', 'READ_WRITE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Either READ_ONLY, for allowing only read requests on the exported directory, or READ_WRITE, for allowing both read and write requests. The default is READ_WRITE.',
-      }),
-    anonGid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An integer representing the anonymous group id with a default value of 65534. Anon_gid may only be set with squash_mode of ROOT_SQUASH. An error will be returned if this field is specified for other squash_mode settings.',
-      }),
-    anonUid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An integer representing the anonymous user id with a default value of 65534. Anon_uid may only be set with squash_mode of ROOT_SQUASH. An error will be returned if this field is specified for other squash_mode settings.',
-      }),
-    ipRanges: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'List of either an IPv4 addresses in the format `{octet1}.{octet2}.{octet3}.{octet4}` or CIDR ranges in the format `{octet1}.{octet2}.{octet3}.{octet4}/{mask size}` which may mount the file share. Overlapping IP ranges are not allowed, both within and across NfsExportOptions. An error will be returned. The limit is 64 IP ranges/addresses for each FileShareConfig among all NfsExportOptions.',
-      }),
-    squashMode: z
-      .enum(['SQUASH_MODE_UNSPECIFIED', 'NO_ROOT_SQUASH', 'ROOT_SQUASH'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Either NO_ROOT_SQUASH, for allowing root access on the exported directory, or ROOT_SQUASH, for not allowing root access. The default is NO_ROOT_SQUASH.',
-      }),
-  })
-  .openapi({ description: 'NFS export options specifications.', required: [] })
-  .openapi('NfsExportOptions')
-
-const FileShareConfigSchema = z
-  .object({
-    capacityGb: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'File share capacity in gigabytes (GB). Filestore defines 1 GB as 1024^3 bytes.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the file share (must be 16 characters or less).' }),
-    nfsExportOptions: z
-      .array(NfsExportOptionsSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Nfs Export Options. There is a limit of 10 export options per file share.',
-      }),
-    sourceBackup: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the backup, in the format `projects/{project_number}/locations/{location_id}/backups/{backup_id}`, that this file share has been restored from.',
-      }),
-  })
-  .openapi({ description: 'File share configuration for the instance.', required: [] })
-  .openapi('FileShareConfig')
-
 const GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceScheduleSchema = z
   .object({
     canReschedule: z
@@ -321,6 +38,108 @@ const GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceScheduleSchema =
     required: [],
   })
   .openapi('GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSchedule')
+
+const DateSchema = z
+  .object({
+    day: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+      }),
+    month: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
+      }),
+    year: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
+    required: [],
+  })
+  .openapi('Date')
+
+const TimeOfDaySchema = z
+  .object({
+    hours: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
+      }),
+    minutes: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Minutes of hour of day. Must be from 0 to 59.' }),
+    nanos: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.',
+      }),
+    seconds: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.',
+    required: [],
+  })
+  .openapi('TimeOfDay')
+
+const DenyMaintenancePeriodSchema = z
+  .object({
+    endDate: DateSchema.exactOptional().openapi({
+      description:
+        'Deny period end date. This can be: * A full date, with non-zero year, month and day values. * A month and day value, with a zero year. Allows recurring deny periods each year. Date matching this period will have to be before the end.',
+    }),
+    startDate: DateSchema.exactOptional().openapi({
+      description:
+        'Deny period start date. This can be: * A full date, with non-zero year, month and day values. * A month and day value, with a zero year. Allows recurring deny periods each year. Date matching this period will have to be the same or after the start.',
+    }),
+    time: TimeOfDaySchema.exactOptional().openapi({
+      description:
+        'Time in UTC when the Blackout period starts on start_date and ends on end_date. This can be: * Full time. * All zeros for 00:00:00 UTC',
+    }),
+  })
+  .openapi({
+    description:
+      'DenyMaintenancePeriod definition. Maintenance is forbidden within the deny period. The start_date must be less than the end_date.',
+    required: [],
+  })
+  .openapi('DenyMaintenancePeriod')
+
+const DailyCycleSchema = z
+  .object({
+    duration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Duration of the time window, set by service producer.',
+      }),
+    startTime: TimeOfDaySchema.exactOptional().openapi({
+      description: 'Time within the day to start the operations.',
+    }),
+  })
+  .openapi({ description: 'Time window specified for daily operations.', required: [] })
+  .openapi('DailyCycle')
 
 const ScheduleSchema = z
   .object({
@@ -436,36 +255,43 @@ const MaintenancePolicySchema = z
   })
   .openapi('MaintenancePolicy')
 
-const GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettingsSchema = z
-  .object({
-    exclude: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Exclude instance from maintenance. When true, rollout service will not attempt maintenance on the instance. Rollout service will include the instance in reported rollout progress as not attempted.',
-      }),
-    isRollback: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If the update call is triggered from rollback, set the value as true.',
-      }),
-    maintenancePolicies: z
-      .record(z.string(), MaintenancePolicySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The MaintenancePolicies that have been attached to the instance. The key must be of the type name of the oneof policy name defined in MaintenancePolicy, and the embedded policy must define the same policy type. For details, please refer to go/cloud-saas-mw-ug. Should not be set if maintenance_policy_names is set. If only the name is needed, then only populate MaintenancePolicy.name.',
-      }),
-  })
-  .openapi({
-    description:
-      'Maintenance settings associated with instance. Allows service producers and end users to assign settings that controls maintenance on this instance.',
-    required: [],
-  })
-  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettings')
+type GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettingsType = {
+  exclude?: boolean
+  isRollback?: boolean
+  maintenancePolicies?: { [key: string]: z.infer<typeof MaintenancePolicySchema> }
+}
+
+const GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettingsSchema: z.ZodType<GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettingsType> =
+  z
+    .object({
+      exclude: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Exclude instance from maintenance. When true, rollout service will not attempt maintenance on the instance. Rollout service will include the instance in reported rollout progress as not attempted.',
+        }),
+      isRollback: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. If the update call is triggered from rollback, set the value as true.',
+        }),
+      maintenancePolicies: z
+        .record(z.string(), MaintenancePolicySchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The MaintenancePolicies that have been attached to the instance. The key must be of the type name of the oneof policy name defined in MaintenancePolicy, and the embedded policy must define the same policy type. For details, please refer to go/cloud-saas-mw-ug. Should not be set if maintenance_policy_names is set. If only the name is needed, then only populate MaintenancePolicy.name.',
+        }),
+    })
+    .openapi({
+      description:
+        'Maintenance settings associated with instance. Allows service producers and end users to assign settings that controls maintenance on this instance.',
+      required: [],
+    })
+    .openapi('GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettings')
 
 const GoogleCloudSaasacceleratorManagementProvidersV1NotificationParameterSchema = z
   .object({
@@ -594,145 +420,115 @@ const GoogleCloudSaasacceleratorManagementProvidersV1SloMetadataSchema = z
   })
   .openapi('GoogleCloudSaasacceleratorManagementProvidersV1SloMetadata')
 
-const GoogleCloudSaasacceleratorManagementProvidersV1InstanceSchema = z
+type GoogleCloudSaasacceleratorManagementProvidersV1InstanceType = {
+  consumerDefinedName?: string
+  createTime?: string
+  instanceType?: string
+  labels?: { [key: string]: string }
+  maintenancePolicyNames?: { [key: string]: string }
+  maintenanceSchedules?: {
+    [key: string]: z.infer<
+      typeof GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceScheduleSchema
+    >
+  }
+  maintenanceSettings?: z.infer<
+    typeof GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettingsSchema
+  >
+  name?: string
+  notificationParameters?: {
+    [key: string]: z.infer<
+      typeof GoogleCloudSaasacceleratorManagementProvidersV1NotificationParameterSchema
+    >
+  }
+  producerMetadata?: { [key: string]: string }
+  provisionedResources?: z.infer<
+    typeof GoogleCloudSaasacceleratorManagementProvidersV1ProvisionedResourceSchema
+  >[]
+  slmInstanceTemplate?: string
+  sloMetadata?: z.infer<typeof GoogleCloudSaasacceleratorManagementProvidersV1SloMetadataSchema>
+  softwareVersions?: { [key: string]: string }
+  state?:
+    | 'STATE_UNSPECIFIED'
+    | 'CREATING'
+    | 'READY'
+    | 'UPDATING'
+    | 'REPAIRING'
+    | 'DELETING'
+    | 'ERROR'
+  tenantProjectId?: string
+  updateTime?: string
+}
+
+const NfsExportOptionsSchema = z
   .object({
-    consumerDefinedName: z
+    accessMode: z
+      .enum(['ACCESS_MODE_UNSPECIFIED', 'READ_ONLY', 'READ_WRITE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Either READ_ONLY, for allowing only read requests on the exported directory, or READ_WRITE, for allowing both read and write requests. The default is READ_WRITE.',
+      }),
+    anonGid: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'consumer_defined_name is the name of the instance set by the service consumers. Generally this is different from the `name` field which reperesents the system-assigned id of the instance which the service consumers do not recognize. This is a required field for tenants onboarding to Maintenance Window notifications (go/slm-rollout-maintenance-policies#prerequisites).',
+          'An integer representing the anonymous group id with a default value of 65534. Anon_gid may only be set with squash_mode of ROOT_SQUASH. An error will be returned if this field is specified for other squash_mode settings.',
       }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Timestamp when the resource was created.',
-        readOnly: true,
-      }),
-    instanceType: z
+    anonUid: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          "Optional. The instance_type of this instance of format: projects/{project_number}/locations/{location_id}/instanceTypes/{instance_type_id}. Instance Type represents a high-level tier or SKU of the service that this instance belong to. When enabled(eg: Maintenance Rollout), Rollout uses 'instance_type' along with 'software_versions' to determine whether instance needs an update or not.",
+          'An integer representing the anonymous user id with a default value of 65534. Anon_uid may only be set with squash_mode of ROOT_SQUASH. An error will be returned if this field is specified for other squash_mode settings.',
       }),
-    labels: z
-      .record(z.string(), z.string())
+    ipRanges: z
+      .array(z.string())
       .exactOptional()
       .openapi({
         description:
-          'Optional. Resource labels to represent user provided metadata. Each label is a key-value pair, where both the key and the value are arbitrary strings provided by the user.',
+          'List of either an IPv4 addresses in the format `{octet1}.{octet2}.{octet3}.{octet4}` or CIDR ranges in the format `{octet1}.{octet2}.{octet3}.{octet4}/{mask size}` which may mount the file share. Overlapping IP ranges are not allowed, both within and across NfsExportOptions. An error will be returned. The limit is 64 IP ranges/addresses for each FileShareConfig among all NfsExportOptions.',
       }),
-    maintenancePolicyNames: z
-      .record(z.string(), z.string())
+    squashMode: z
+      .enum(['SQUASH_MODE_UNSPECIFIED', 'NO_ROOT_SQUASH', 'ROOT_SQUASH'])
       .exactOptional()
       .openapi({
         description:
-          'Optional. The MaintenancePolicies that have been attached to the instance. The key must be of the type name of the oneof policy name defined in MaintenancePolicy, and the referenced policy must define the same policy type. For details, please refer to go/cloud-saas-mw-ug. Should not be set if maintenance_settings.maintenance_policies is set.',
+          'Either NO_ROOT_SQUASH, for allowing root access on the exported directory, or ROOT_SQUASH, for not allowing root access. The default is NO_ROOT_SQUASH.',
       }),
-    maintenanceSchedules: z
-      .record(z.string(), GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceScheduleSchema)
+  })
+  .openapi({ description: 'NFS export options specifications.', required: [] })
+  .openapi('NfsExportOptions')
+
+const FileShareConfigSchema = z
+  .object({
+    capacityGb: z
+      .string()
       .exactOptional()
       .openapi({
         description:
-          'The MaintenanceSchedule contains the scheduling information of published maintenance schedule with same key as software_versions.',
+          'File share capacity in gigabytes (GB). Filestore defines 1 GB as 1024^3 bytes.',
       }),
-    maintenanceSettings:
-      GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettingsSchema.exactOptional().openapi(
-        { description: 'Optional. The MaintenanceSettings associated with instance.' },
-      ),
     name: z
       .string()
       .exactOptional()
-      .openapi({
-        description:
-          'Unique name of the resource. It uses the form: `projects/{project_number}/locations/{location_id}/instances/{instance_id}` Note: This name is passed, stored and logged across the rollout system. So use of consumer project_id or any other consumer PII in the name is strongly discouraged for wipeout (go/wipeout) compliance. See go/elysium/project_ids#storage-guidance for more details.',
-      }),
-    notificationParameters: z
-      .record(
-        z.string(),
-        GoogleCloudSaasacceleratorManagementProvidersV1NotificationParameterSchema,
-      )
+      .openapi({ description: 'The name of the file share (must be 16 characters or less).' }),
+    nfsExportOptions: z
+      .array(NfsExportOptionsSchema)
       .exactOptional()
       .openapi({
-        description:
-          'Optional. notification_parameter are information that service producers may like to include that is not relevant to Rollout. This parameter will only be passed to Gamma and Cloud Logging for notification/logging purpose.',
+        description: 'Nfs Export Options. There is a limit of 10 export options per file share.',
       }),
-    producerMetadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Custom string attributes used primarily to expose producer-specific information in monitoring dashboards. See go/get-instance-metadata.',
-        readOnly: true,
-      }),
-    provisionedResources: z
-      .array(GoogleCloudSaasacceleratorManagementProvidersV1ProvisionedResourceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The list of data plane resources provisioned for this instance, e.g. compute VMs. See go/get-instance-metadata.',
-        readOnly: true,
-      }),
-    slmInstanceTemplate: z
+    sourceBackup: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          "Link to the SLM instance template. Only populated when updating SLM instances via SSA's Actuation service adaptor. Service producers with custom control plane (e.g. Cloud SQL) doesn't need to populate this field. Instead they should use software_versions.",
-      }),
-    sloMetadata:
-      GoogleCloudSaasacceleratorManagementProvidersV1SloMetadataSchema.exactOptional().openapi({
-        description:
-          'Output only. SLO metadata for instance classification in the Standardized dataplane SLO platform. See go/cloud-ssa-standard-slo for feature description.',
-        readOnly: true,
-      }),
-    softwareVersions: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Software versions that are used to deploy this instance. This can be mutated by rollout services.',
-      }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'CREATING',
-        'READY',
-        'UPDATING',
-        'REPAIRING',
-        'DELETING',
-        'ERROR',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. Current lifecycle state of the resource (e.g. if it's being created or ready to use).",
-        readOnly: true,
-      }),
-    tenantProjectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. ID of the associated GCP tenant project. See go/get-instance-metadata.',
-        readOnly: true,
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Timestamp when the resource was last modified.',
-        readOnly: true,
+          'The resource name of the backup, in the format `projects/{project_number}/locations/{location_id}/backups/{backup_id}`, that this file share has been restored from.',
       }),
   })
-  .openapi({
-    description:
-      'Instance represents the interface for SLM services to actuate the state of control plane resources. Example Instance in JSON, where consumer-project-number=123456, producer-project-id=cloud-sql: ```json Instance: { "name": "projects/123456/locations/us-east1/instances/prod-instance", "create_time": { "seconds": 1526406431, }, "labels": { "env": "prod", "foo": "bar" }, "state": READY, "software_versions": { "software_update": "cloud-sql-09-28-2018", }, "maintenance_policy_names": { "UpdatePolicy": "projects/123456/locations/us-east1/maintenancePolicies/prod-update-policy", } "tenant_project_id": "cloud-sql-test-tenant", "producer_metadata": { "cloud-sql-tier": "basic", "cloud-sql-instance-size": "1G", }, "provisioned_resources": [ { "resource-type": "compute-instance", "resource-url": "https://www.googleapis.com/compute/v1/projects/cloud-sql/zones/us-east1-b/instances/vm-1", } ], "maintenance_schedules": { "csa_rollout": { "start_time": { "seconds": 1526406431, }, "end_time": { "seconds": 1535406431, }, }, "ncsa_rollout": { "start_time": { "seconds": 1526406431, }, "end_time": { "seconds": 1535406431, }, } }, "consumer_defined_name": "my-sql-instance1", } ``` LINT.IfChange',
-    required: [],
-  })
-  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1Instance')
+  .openapi({ description: 'File share configuration for the instance.', required: [] })
+  .openapi('FileShareConfig')
 
 const NetworkConfigSchema = z
   .object({
@@ -877,6 +673,266 @@ const InstanceSchema = z
   .openapi({ description: 'A Filestore instance.', required: [] })
   .openapi('Instance')
 
+type ListInstancesResponseType = {
+  instances?: z.infer<typeof InstanceSchema>[]
+  nextPageToken?: string
+  unreachable?: string[]
+}
+
+const BackupSchema = z
+  .object({
+    capacityGb: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Capacity of the source file share when the backup was created.',
+        readOnly: true,
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time when the backup was created.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A description of the backup with 2048 characters or less. Requests with longer descriptions will be rejected.',
+      }),
+    downloadBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Amount of bytes that will be downloaded if the backup is restored. This may be different than storage bytes, since sequential backups of the same disk will share storage.',
+        readOnly: true,
+      }),
+    kmsKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Immutable. KMS key name used for data encryption.' }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Resource labels to represent user provided metadata.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The resource name of the backup, in the format `projects/{project_number}/locations/{location_id}/backups/{backup_id}`.',
+        readOnly: true,
+      }),
+    satisfiesPzs: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Output only. Reserved for future use.', readOnly: true }),
+    sourceFileShare: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the file share in the source Filestore instance that the backup is created from.',
+      }),
+    sourceInstance: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the source Filestore instance, in the format `projects/{project_number}/locations/{location_id}/instances/{instance_id}`, used to create this backup.',
+      }),
+    sourceInstanceTier: z
+      .enum([
+        'TIER_UNSPECIFIED',
+        'STANDARD',
+        'PREMIUM',
+        'BASIC_HDD',
+        'BASIC_SSD',
+        'HIGH_SCALE_SSD',
+        'ENTERPRISE',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The service tier of the source Filestore instance that this backup is created from.',
+        readOnly: true,
+      }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'CREATING', 'FINALIZING', 'READY', 'DELETING', 'INVALID'])
+      .exactOptional()
+      .openapi({ description: 'Output only. The backup state.', readOnly: true }),
+    storageBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The size of the storage used by the backup. As backups share storage, this number is expected to change with backup creation/deletion.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'A Filestore backup.', required: [] })
+  .openapi('Backup')
+
+const CancelOperationRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request message for Operations.CancelOperation.' })
+  .openapi('CancelOperationRequest')
+
+const EmptySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
+  })
+  .openapi('Empty')
+
+const GoogleCloudSaasacceleratorManagementProvidersV1InstanceSchema: z.ZodType<GoogleCloudSaasacceleratorManagementProvidersV1InstanceType> =
+  z
+    .object({
+      consumerDefinedName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'consumer_defined_name is the name of the instance set by the service consumers. Generally this is different from the `name` field which reperesents the system-assigned id of the instance which the service consumers do not recognize. This is a required field for tenants onboarding to Maintenance Window notifications (go/slm-rollout-maintenance-policies#prerequisites).',
+        }),
+      createTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Output only. Timestamp when the resource was created.',
+          readOnly: true,
+        }),
+      instanceType: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            "Optional. The instance_type of this instance of format: projects/{project_number}/locations/{location_id}/instanceTypes/{instance_type_id}. Instance Type represents a high-level tier or SKU of the service that this instance belong to. When enabled(eg: Maintenance Rollout), Rollout uses 'instance_type' along with 'software_versions' to determine whether instance needs an update or not.",
+        }),
+      labels: z
+        .record(z.string(), z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Resource labels to represent user provided metadata. Each label is a key-value pair, where both the key and the value are arbitrary strings provided by the user.',
+        }),
+      maintenancePolicyNames: z
+        .record(z.string(), z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The MaintenancePolicies that have been attached to the instance. The key must be of the type name of the oneof policy name defined in MaintenancePolicy, and the referenced policy must define the same policy type. For details, please refer to go/cloud-saas-mw-ug. Should not be set if maintenance_settings.maintenance_policies is set.',
+        }),
+      maintenanceSchedules: z
+        .record(
+          z.string(),
+          GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceScheduleSchema,
+        )
+        .exactOptional()
+        .openapi({
+          description:
+            'The MaintenanceSchedule contains the scheduling information of published maintenance schedule with same key as software_versions.',
+        }),
+      maintenanceSettings:
+        GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettingsSchema.exactOptional().openapi(
+          { description: 'Optional. The MaintenanceSettings associated with instance.' },
+        ),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Unique name of the resource. It uses the form: `projects/{project_number}/locations/{location_id}/instances/{instance_id}` Note: This name is passed, stored and logged across the rollout system. So use of consumer project_id or any other consumer PII in the name is strongly discouraged for wipeout (go/wipeout) compliance. See go/elysium/project_ids#storage-guidance for more details.',
+        }),
+      notificationParameters: z
+        .record(
+          z.string(),
+          GoogleCloudSaasacceleratorManagementProvidersV1NotificationParameterSchema,
+        )
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. notification_parameter are information that service producers may like to include that is not relevant to Rollout. This parameter will only be passed to Gamma and Cloud Logging for notification/logging purpose.',
+        }),
+      producerMetadata: z
+        .record(z.string(), z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. Custom string attributes used primarily to expose producer-specific information in monitoring dashboards. See go/get-instance-metadata.',
+          readOnly: true,
+        }),
+      provisionedResources: z
+        .array(GoogleCloudSaasacceleratorManagementProvidersV1ProvisionedResourceSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. The list of data plane resources provisioned for this instance, e.g. compute VMs. See go/get-instance-metadata.',
+          readOnly: true,
+        }),
+      slmInstanceTemplate: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            "Link to the SLM instance template. Only populated when updating SLM instances via SSA's Actuation service adaptor. Service producers with custom control plane (e.g. Cloud SQL) doesn't need to populate this field. Instead they should use software_versions.",
+        }),
+      sloMetadata:
+        GoogleCloudSaasacceleratorManagementProvidersV1SloMetadataSchema.exactOptional().openapi({
+          description:
+            'Output only. SLO metadata for instance classification in the Standardized dataplane SLO platform. See go/cloud-ssa-standard-slo for feature description.',
+          readOnly: true,
+        }),
+      softwareVersions: z
+        .record(z.string(), z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Software versions that are used to deploy this instance. This can be mutated by rollout services.',
+        }),
+      state: z
+        .enum([
+          'STATE_UNSPECIFIED',
+          'CREATING',
+          'READY',
+          'UPDATING',
+          'REPAIRING',
+          'DELETING',
+          'ERROR',
+        ])
+        .exactOptional()
+        .openapi({
+          description:
+            "Output only. Current lifecycle state of the resource (e.g. if it's being created or ready to use).",
+          readOnly: true,
+        }),
+      tenantProjectId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. ID of the associated GCP tenant project. See go/get-instance-metadata.',
+          readOnly: true,
+        }),
+      updateTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Output only. Timestamp when the resource was last modified.',
+          readOnly: true,
+        }),
+    })
+    .openapi({
+      description:
+        'Instance represents the interface for SLM services to actuate the state of control plane resources. Example Instance in JSON, where consumer-project-number=123456, producer-project-id=cloud-sql: ```json Instance: { "name": "projects/123456/locations/us-east1/instances/prod-instance", "create_time": { "seconds": 1526406431, }, "labels": { "env": "prod", "foo": "bar" }, "state": READY, "software_versions": { "software_update": "cloud-sql-09-28-2018", }, "maintenance_policy_names": { "UpdatePolicy": "projects/123456/locations/us-east1/maintenancePolicies/prod-update-policy", } "tenant_project_id": "cloud-sql-test-tenant", "producer_metadata": { "cloud-sql-tier": "basic", "cloud-sql-instance-size": "1G", }, "provisioned_resources": [ { "resource-type": "compute-instance", "resource-url": "https://www.googleapis.com/compute/v1/projects/cloud-sql/zones/us-east1-b/instances/vm-1", } ], "maintenance_schedules": { "csa_rollout": { "start_time": { "seconds": 1526406431, }, "end_time": { "seconds": 1535406431, }, }, "ncsa_rollout": { "start_time": { "seconds": 1526406431, }, "end_time": { "seconds": 1535406431, }, } }, "consumer_defined_name": "my-sql-instance1", } ``` LINT.IfChange',
+      required: [],
+    })
+    .openapi('GoogleCloudSaasacceleratorManagementProvidersV1Instance')
+
 const ListBackupsResponseSchema = z
   .object({
     backups: z
@@ -904,7 +960,7 @@ const ListBackupsResponseSchema = z
   })
   .openapi('ListBackupsResponse')
 
-const ListInstancesResponseSchema = z
+const ListInstancesResponseSchema: z.ZodType<ListInstancesResponseType> = z
   .object({
     instances: z
       .array(InstanceSchema)

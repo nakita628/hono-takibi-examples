@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodePipeline20150709UntagResourceHandler = app.openapi(
   postXAmzTargetCodePipeline20150709UntagResourceRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

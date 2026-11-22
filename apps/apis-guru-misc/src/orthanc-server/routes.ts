@@ -59,7 +59,7 @@ export const getChangesRoute = createRoute({
           schema: z
             .object({
               Changes: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .exactOptional()
                 .openapi({ description: 'The individual changes' }),
               Done: z
@@ -580,7 +580,7 @@ export const postInstancesIdAnonymizeRoute = createRoute({
                     'List of additional tags to be removed from the DICOM instances. Starting with Orthanc 1.9.4, paths to subsequences can be provided using the same syntax as the `dcmodify` command-line tool (wildcards are supported as well).',
                 }),
               Replace: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -739,18 +739,14 @@ export const getInstancesIdAttachmentsNameRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -971,18 +967,14 @@ export const getInstancesIdAttachmentsNameCompressedDataRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -1048,18 +1040,14 @@ export const getInstancesIdAttachmentsNameCompressedMd5Route = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -1125,18 +1113,14 @@ export const getInstancesIdAttachmentsNameCompressedSizeRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -1199,18 +1183,14 @@ export const getInstancesIdAttachmentsNameDataRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -1284,18 +1264,14 @@ export const getInstancesIdAttachmentsNameInfoRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -1363,18 +1339,14 @@ export const getInstancesIdAttachmentsNameIsCompressedRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -1437,18 +1409,14 @@ export const getInstancesIdAttachmentsNameMd5Route = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -1511,18 +1479,14 @@ export const getInstancesIdAttachmentsNameSizeRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -3233,18 +3197,14 @@ export const getInstancesIdMetadataNameRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the metadata, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the metadata, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the metadata, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -3427,7 +3387,7 @@ export const postInstancesIdModifyRoute = createRoute({
                     'Remove the private tags from the DICOM instances (defaults to `false`)',
                 }),
               Replace: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -5456,7 +5416,7 @@ export const postModalitiesIdFindWorklistRoute = createRoute({
                     'If set to `true`, report the DICOM tags in full format (tags indexed by their hexadecimal format, associated with their symbolic name and their value)',
                 }),
               Query: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -5551,7 +5511,7 @@ export const postModalitiesIdMoveRoute = createRoute({
                     'In asynchronous mode, the priority of the job. The lower the value, the higher the priority.',
                 }),
               Resources: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .exactOptional()
                 .openapi({
                   description: 'List of queries identifying all the DICOM resources to be sent',
@@ -5653,7 +5613,7 @@ export const postModalitiesIdQueryRoute = createRoute({
                     'Whether to normalize the query, i.e. whether to wipe out from the query, the DICOM tags that are not applicable for the query-retrieve level of interest',
                 }),
               Query: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -5680,13 +5640,13 @@ export const postModalitiesIdQueryRoute = createRoute({
           schema: z
             .object({
               ID: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'Identifier of the query, to be used with `/queries/{id}`',
                 }),
               Path: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Root path to the query in the REST API' }),
             })
@@ -5725,7 +5685,7 @@ export const postModalitiesIdStorageCommitmentRoute = createRoute({
           schema: z
             .object({
               DicomInstances: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .exactOptional()
                 .openapi({
                   description:
@@ -5758,14 +5718,14 @@ export const postModalitiesIdStorageCommitmentRoute = createRoute({
           schema: z
             .object({
               ID: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
                     'Identifier of the storage commitment report, to be used with `/storage-commitment/{id}`',
                 }),
               Path: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'Root path to the storage commitment report in the REST API',
@@ -6314,7 +6274,7 @@ export const postPatientsIdAnonymizeRoute = createRoute({
                     'List of additional tags to be removed from the DICOM instances. Starting with Orthanc 1.9.4, paths to subsequences can be provided using the same syntax as the `dcmodify` command-line tool (wildcards are supported as well).',
                 }),
               Replace: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -6647,18 +6607,14 @@ export const getPatientsIdAttachmentsNameRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -6879,18 +6835,14 @@ export const getPatientsIdAttachmentsNameCompressedDataRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -6956,18 +6908,14 @@ export const getPatientsIdAttachmentsNameCompressedMd5Route = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -7033,18 +6981,14 @@ export const getPatientsIdAttachmentsNameCompressedSizeRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -7107,18 +7051,14 @@ export const getPatientsIdAttachmentsNameDataRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -7192,18 +7132,14 @@ export const getPatientsIdAttachmentsNameInfoRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -7271,18 +7207,14 @@ export const getPatientsIdAttachmentsNameIsCompressedRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -7345,18 +7277,14 @@ export const getPatientsIdAttachmentsNameMd5Route = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -7419,18 +7347,14 @@ export const getPatientsIdAttachmentsNameSizeRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -8153,18 +8077,14 @@ export const getPatientsIdMetadataNameRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the metadata, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the metadata, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the metadata, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -8367,7 +8287,7 @@ export const postPatientsIdModifyRoute = createRoute({
                     'Remove the private tags from the DICOM instances (defaults to `false`)',
                 }),
               Replace: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -9113,7 +9033,7 @@ export const putPeersIdRoute = createRoute({
                   description: 'Key password for the SSL certificate for the HTTPS connections',
                 }),
               HttpHeaders: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'HTTP headers to be used for the connections to the remote peer',
@@ -9865,7 +9785,7 @@ export const postQueriesIdAnswersIndexQueryInstancesRoute = createRoute({
           schema: z
             .object({
               Query: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -9891,13 +9811,13 @@ export const postQueriesIdAnswersIndexQueryInstancesRoute = createRoute({
           schema: z
             .object({
               ID: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'Identifier of the query, to be used with `/queries/{id}`',
                 }),
               Path: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Root path to the query in the REST API' }),
             })
@@ -9947,7 +9867,7 @@ export const postQueriesIdAnswersIndexQuerySeriesRoute = createRoute({
           schema: z
             .object({
               Query: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -9973,13 +9893,13 @@ export const postQueriesIdAnswersIndexQuerySeriesRoute = createRoute({
           schema: z
             .object({
               ID: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'Identifier of the query, to be used with `/queries/{id}`',
                 }),
               Path: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Root path to the query in the REST API' }),
             })
@@ -10029,7 +9949,7 @@ export const postQueriesIdAnswersIndexQueryStudiesRoute = createRoute({
           schema: z
             .object({
               Query: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -10055,13 +9975,13 @@ export const postQueriesIdAnswersIndexQueryStudiesRoute = createRoute({
           schema: z
             .object({
               ID: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description: 'Identifier of the query, to be used with `/queries/{id}`',
                 }),
               Path: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'Root path to the query in the REST API' }),
             })
@@ -10773,7 +10693,7 @@ export const postSeriesIdAnonymizeRoute = createRoute({
                     'List of additional tags to be removed from the DICOM instances. Starting with Orthanc 1.9.4, paths to subsequences can be provided using the same syntax as the `dcmodify` command-line tool (wildcards are supported as well).',
                 }),
               Replace: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -11106,18 +11026,14 @@ export const getSeriesIdAttachmentsNameRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11338,18 +11254,14 @@ export const getSeriesIdAttachmentsNameCompressedDataRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11415,18 +11327,14 @@ export const getSeriesIdAttachmentsNameCompressedMd5Route = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11492,18 +11400,14 @@ export const getSeriesIdAttachmentsNameCompressedSizeRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11566,18 +11470,14 @@ export const getSeriesIdAttachmentsNameDataRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11651,18 +11551,14 @@ export const getSeriesIdAttachmentsNameInfoRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11730,18 +11626,14 @@ export const getSeriesIdAttachmentsNameIsCompressedRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11804,18 +11696,14 @@ export const getSeriesIdAttachmentsNameMd5Route = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -11878,18 +11766,14 @@ export const getSeriesIdAttachmentsNameSizeRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -12463,18 +12347,14 @@ export const getSeriesIdMetadataNameRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the metadata, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the metadata, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the metadata, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -12677,7 +12557,7 @@ export const postSeriesIdModifyRoute = createRoute({
                     'Remove the private tags from the DICOM instances (defaults to `false`)',
                 }),
               Replace: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -13018,7 +12898,7 @@ export const getSeriesIdOrderedSlicesRoute = createRoute({
                     'Ordered list of paths to frames. It is recommended to use this field, as it is also valid in the case of multiframe images.',
                 }),
               SlicesShort: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .exactOptional()
                 .openapi({
                   description: 'Same information as the `Slices` field, but in a compact form',
@@ -13620,7 +13500,7 @@ export const getStorageCommitmentIdRoute = createRoute({
           schema: z
             .object({
               Failures: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .exactOptional()
                 .openapi({
                   description:
@@ -13638,7 +13518,7 @@ export const getStorageCommitmentIdRoute = createRoute({
                     'Can be `Success`, `Failure`, or `Pending` (the latter means that no report has been received yet)',
                 }),
               Success: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .exactOptional()
                 .openapi({
                   description:
@@ -14029,7 +13909,7 @@ export const postStudiesIdAnonymizeRoute = createRoute({
                     'List of additional tags to be removed from the DICOM instances. Starting with Orthanc 1.9.4, paths to subsequences can be provided using the same syntax as the `dcmodify` command-line tool (wildcards are supported as well).',
                 }),
               Replace: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -14362,18 +14242,14 @@ export const getStudiesIdAttachmentsNameRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14594,18 +14470,14 @@ export const getStudiesIdAttachmentsNameCompressedDataRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14671,18 +14543,14 @@ export const getStudiesIdAttachmentsNameCompressedMd5Route = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14748,18 +14616,14 @@ export const getStudiesIdAttachmentsNameCompressedSizeRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14822,18 +14686,14 @@ export const getStudiesIdAttachmentsNameDataRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14907,18 +14767,14 @@ export const getStudiesIdAttachmentsNameInfoRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -14986,18 +14842,14 @@ export const getStudiesIdAttachmentsNameIsCompressedRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15060,18 +14912,14 @@ export const getStudiesIdAttachmentsNameMd5Route = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15134,18 +14982,14 @@ export const getStudiesIdAttachmentsNameSizeRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the attachment, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -15977,18 +15821,14 @@ export const getStudiesIdMetadataNameRoute = createRoute({
         },
       },
       headers: z.object({
-        ETag: {
-          description:
-            'Revision of the metadata, to be used in further `PUT` or `DELETE` operations',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Revision of the metadata, to be used in further `PUT` or `DELETE` operations',
-              param: { required: false },
-            }),
-        },
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Revision of the metadata, to be used in further `PUT` or `DELETE` operations',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -16191,7 +16031,7 @@ export const postStudiesIdModifyRoute = createRoute({
                     'Remove the private tags from the DICOM instances (defaults to `false`)',
                 }),
               Replace: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -16912,7 +16752,7 @@ export const postStudiesIdSplitRoute = createRoute({
                     'List of tags that must be removed in the new study (from the same modules as in the `Replace` option)',
                 }),
               Replace: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -17150,7 +16990,7 @@ export const getSystemRoute = createRoute({
                     'Whether the REST API is properly secured (assuming no reverse proxy is in use): https://book.orthanc-server.com/faq/security.html#securing-the-http-server',
                 }),
               MainDicomTags: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -17431,7 +17271,7 @@ export const postToolsBulkAnonymizeRoute = createRoute({
                     'List of additional tags to be removed from the DICOM instances. Starting with Orthanc 1.9.4, paths to subsequences can be provided using the same syntax as the `dcmodify` command-line tool (wildcards are supported as well).',
                 }),
               Replace: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -17661,7 +17501,7 @@ export const postToolsBulkModifyRoute = createRoute({
                     'Remove the private tags from the DICOM instances (defaults to `false`)',
                 }),
               Replace: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -17853,7 +17693,7 @@ export const postToolsCreateDicomRoute = createRoute({
                   description: 'The private creator to be used for private tags in `Tags`',
                 }),
               Tags: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -18264,7 +18104,7 @@ export const postToolsFindRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'Limit the number of reported resources' }),
               Query: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:

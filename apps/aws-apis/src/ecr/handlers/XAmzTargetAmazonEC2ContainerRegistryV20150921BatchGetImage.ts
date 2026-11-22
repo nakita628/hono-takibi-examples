@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAmazonEC2ContainerRegistryV20150921BatchGetImageHandler = app.openapi(
   postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchGetImageRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

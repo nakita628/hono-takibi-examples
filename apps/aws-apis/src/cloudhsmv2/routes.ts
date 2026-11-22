@@ -19,35 +19,20 @@ const ClusterIdSchema = z
 
 const DestinationBackupSchema = z
   .object({
-    CreateTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time when both the source backup was created.' }),
-    ).exactOptional(),
-    SourceRegion: RegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS region that contains the source backup from which the new backup was copied.',
-        }),
-    ).exactOptional(),
-    SourceBackup: BackupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier (ID) of the source backup from which the new backup was copied.',
-        }),
-    ).exactOptional(),
-    SourceCluster: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier (ID) of the cluster containing the source backup from which the new backup was copied.',
-        }),
-    ).exactOptional(),
+    CreateTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time when both the source backup was created.',
+    }),
+    SourceRegion: RegionSchema.exactOptional().openapi({
+      description:
+        'The AWS region that contains the source backup from which the new backup was copied.',
+    }),
+    SourceBackup: BackupIdSchema.exactOptional().openapi({
+      description: 'The identifier (ID) of the source backup from which the new backup was copied.',
+    }),
+    SourceCluster: ClusterIdSchema.exactOptional().openapi({
+      description:
+        'The identifier (ID) of the cluster containing the source backup from which the new backup was copied.',
+    }),
   })
   .openapi({
     description:
@@ -58,14 +43,10 @@ const DestinationBackupSchema = z
 
 const CopyBackupToRegionResponseSchema = z
   .object({
-    DestinationBackup: DestinationBackupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information on the backup that will be copied to the destination region, including CreateTimestamp, SourceBackup, SourceCluster, and Source Region. CreateTimestamp of the destination backup will be the same as that of the source backup.</p> <p>You will need to use the <code>sourceBackupID</code> returned in this operation to use the <a>DescribeBackups</a> operation on the backup that will be copied to the destination region.</p>',
-        }),
-    ).exactOptional(),
+    DestinationBackup: DestinationBackupSchema.exactOptional().openapi({
+      description:
+        '<p>Information on the backup that will be copied to the destination region, including CreateTimestamp, SourceBackup, SourceCluster, and Source Region. CreateTimestamp of the destination backup will be the same as that of the source backup.</p> <p>You will need to use the <code>sourceBackupID</code> returned in this operation to use the <a>DescribeBackups</a> operation on the backup that will be copied to the destination region.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CopyBackupToRegionResponse')
@@ -86,8 +67,8 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: 'The key of the tag.' })),
-    Value: TagValueSchema.and(z.any().openapi({ description: 'The value of the tag.' })),
+    Key: TagKeySchema.openapi({ description: 'The key of the tag.' }),
+    Value: TagValueSchema.openapi({ description: 'The value of the tag.' }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -99,28 +80,16 @@ const TagListSchema = z.array(TagSchema).min(1).max(50).openapi('TagList')
 
 const CopyBackupToRegionRequestSchema = z
   .object({
-    DestinationRegion: RegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The AWS region that will contain your copied CloudHSM cluster backup.',
-        }),
-    ),
-    BackupId: BackupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the backup that will be copied to the destination region. ',
-        }),
-    ),
-    TagList: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to apply to the destination backup during creation. If you specify tags, only these tags will be applied to the destination backup. If you do not specify tags, the service copies tags from the source backup to the destination backup.',
-        }),
-    ).exactOptional(),
+    DestinationRegion: RegionSchema.openapi({
+      description: 'The AWS region that will contain your copied CloudHSM cluster backup.',
+    }),
+    BackupId: BackupIdSchema.openapi({
+      description: 'The ID of the backup that will be copied to the destination region. ',
+    }),
+    TagList: TagListSchema.exactOptional().openapi({
+      description:
+        'Tags to apply to the destination backup during creation. If you specify tags, only these tags will be applied to the destination backup. If you do not specify tags, the service copies tags from the source backup to the destination backup.',
+    }),
   })
   .openapi({ required: ['DestinationRegion', 'BackupId'], title: 'CopyBackupToRegionRequest' })
   .openapi('CopyBackupToRegionRequest')
@@ -150,17 +119,13 @@ const BackupRetentionValueSchema = z
 
 const BackupRetentionPolicySchema = z
   .object({
-    Type: BackupRetentionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of backup retention policy. For the <code>DAYS</code> type, the value is the number of days to retain backups.',
-        }),
-    ).exactOptional(),
-    Value: BackupRetentionValueSchema.and(
-      z.any().openapi({ description: 'Use a value between 7 - 379.' }),
-    ).exactOptional(),
+    Type: BackupRetentionTypeSchema.exactOptional().openapi({
+      description:
+        'The type of backup retention policy. For the <code>DAYS</code> type, the value is the number of days to retain backups.',
+    }),
+    Value: BackupRetentionValueSchema.exactOptional().openapi({
+      description: 'Use a value between 7 - 379.',
+    }),
   })
   .openapi({
     description: 'A policy that defines the number of days to retain backups.',
@@ -201,36 +166,26 @@ const StringSchema = z.string().openapi('String')
 
 const HsmSchema = z
   .object({
-    AvailabilityZone: ExternalAzSchema.and(
-      z.any().openapi({ description: 'The Availability Zone that contains the HSM.' }),
-    ).exactOptional(),
-    ClusterId: ClusterIdSchema.and(
-      z.any().openapi({ description: 'The identifier (ID) of the cluster that contains the HSM.' }),
-    ).exactOptional(),
-    SubnetId: SubnetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The subnet that contains the HSM's elastic network interface (ENI).",
-        }),
-    ).exactOptional(),
-    EniId: EniIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The identifier (ID) of the HSM's elastic network interface (ENI).",
-        }),
-    ).exactOptional(),
-    EniIp: IpAddressSchema.and(
-      z
-        .any()
-        .openapi({ description: "The IP address of the HSM's elastic network interface (ENI)." }),
-    ).exactOptional(),
-    HsmId: HsmIdSchema.and(z.any().openapi({ description: "The HSM's identifier (ID)." })),
-    State: HsmStateSchema.and(z.any().openapi({ description: "The HSM's state." })).exactOptional(),
-    StateMessage: StringSchema.and(
-      z.any().openapi({ description: "A description of the HSM's state." }),
-    ).exactOptional(),
+    AvailabilityZone: ExternalAzSchema.exactOptional().openapi({
+      description: 'The Availability Zone that contains the HSM.',
+    }),
+    ClusterId: ClusterIdSchema.exactOptional().openapi({
+      description: 'The identifier (ID) of the cluster that contains the HSM.',
+    }),
+    SubnetId: SubnetIdSchema.exactOptional().openapi({
+      description: "The subnet that contains the HSM's elastic network interface (ENI).",
+    }),
+    EniId: EniIdSchema.exactOptional().openapi({
+      description: "The identifier (ID) of the HSM's elastic network interface (ENI).",
+    }),
+    EniIp: IpAddressSchema.exactOptional().openapi({
+      description: "The IP address of the HSM's elastic network interface (ENI).",
+    }),
+    HsmId: HsmIdSchema.openapi({ description: "The HSM's identifier (ID)." }),
+    State: HsmStateSchema.exactOptional().openapi({ description: "The HSM's state." }),
+    StateMessage: StringSchema.exactOptional().openapi({
+      description: "A description of the HSM's state.",
+    }),
   })
   .openapi({
     required: ['HsmId'],
@@ -286,37 +241,23 @@ const CertSchema = z
 
 const CertificatesSchema = z
   .object({
-    ClusterCsr: CertSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The cluster's certificate signing request (CSR). The CSR exists only when the cluster's state is <code>UNINITIALIZED</code>.",
-        }),
-    ).exactOptional(),
-    HsmCertificate: CertSchema.and(
-      z.any().openapi({ description: 'The HSM certificate issued (signed) by the HSM hardware.' }),
-    ).exactOptional(),
-    AwsHardwareCertificate: CertSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The HSM hardware certificate issued (signed) by AWS CloudHSM.' }),
-    ).exactOptional(),
-    ManufacturerHardwareCertificate: CertSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The HSM hardware certificate issued (signed) by the hardware manufacturer.',
-        }),
-    ).exactOptional(),
-    ClusterCertificate: CertSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The cluster certificate issued (signed) by the issuing certificate authority (CA) of the cluster's owner.",
-        }),
-    ).exactOptional(),
+    ClusterCsr: CertSchema.exactOptional().openapi({
+      description:
+        "The cluster's certificate signing request (CSR). The CSR exists only when the cluster's state is <code>UNINITIALIZED</code>.",
+    }),
+    HsmCertificate: CertSchema.exactOptional().openapi({
+      description: 'The HSM certificate issued (signed) by the HSM hardware.',
+    }),
+    AwsHardwareCertificate: CertSchema.exactOptional().openapi({
+      description: 'The HSM hardware certificate issued (signed) by AWS CloudHSM.',
+    }),
+    ManufacturerHardwareCertificate: CertSchema.exactOptional().openapi({
+      description: 'The HSM hardware certificate issued (signed) by the hardware manufacturer.',
+    }),
+    ClusterCertificate: CertSchema.exactOptional().openapi({
+      description:
+        "The cluster certificate issued (signed) by the issuing certificate authority (CA) of the cluster's owner.",
+    }),
   })
   .openapi({
     description: 'Contains one or more certificates or a certificate signing request (CSR).',
@@ -326,83 +267,61 @@ const CertificatesSchema = z
 
 const ClusterSchema = z
   .object({
-    BackupPolicy: BackupPolicySchema.and(
-      z.any().openapi({ description: "The cluster's backup policy." }),
-    ).exactOptional(),
-    BackupRetentionPolicy: BackupRetentionPolicySchema.and(
-      z.any().openapi({ description: 'A policy that defines how the service retains backups.' }),
-    ).exactOptional(),
-    ClusterId: ClusterIdSchema.and(
-      z.any().openapi({ description: "The cluster's identifier (ID)." }),
-    ).exactOptional(),
-    CreateTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time when the cluster was created.' }),
-    ).exactOptional(),
-    Hsms: HsmsSchema.and(
-      z.any().openapi({ description: 'Contains information about the HSMs in the cluster.' }),
-    ).exactOptional(),
-    HsmType: HsmTypeSchema.and(
-      z.any().openapi({ description: 'The type of HSM that the cluster contains.' }),
-    ).exactOptional(),
-    PreCoPassword: PreCoPasswordSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The default password for the cluster's Pre-Crypto Officer (PRECO) user.",
-        }),
-    ).exactOptional(),
-    SecurityGroup: SecurityGroupSchema.and(
-      z.any().openapi({ description: "The identifier (ID) of the cluster's security group." }),
-    ).exactOptional(),
-    SourceBackupId: BackupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier (ID) of the backup used to create the cluster. This value exists only when the cluster was created from a backup.',
-        }),
-    ).exactOptional(),
-    State: ClusterStateSchema.and(
-      z.any().openapi({ description: "The cluster's state." }),
-    ).exactOptional(),
-    StateMessage: StateMessageSchema.and(
-      z.any().openapi({ description: "A description of the cluster's state." }),
-    ).exactOptional(),
-    SubnetMapping: ExternalSubnetMappingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map from availability zone to the cluster’s subnet in that availability zone.',
-        }),
-    ).exactOptional(),
-    VpcId: VpcIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier (ID) of the virtual private cloud (VPC) that contains the cluster.',
-        }),
-    ).exactOptional(),
-    Certificates: CertificatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains one or more certificates or a certificate signing request (CSR).',
-        }),
-    ).exactOptional(),
-    TagList: TagListSchema.and(
-      z.any().openapi({ description: 'The list of tags for the cluster.' }),
-    ).exactOptional(),
+    BackupPolicy: BackupPolicySchema.exactOptional().openapi({
+      description: "The cluster's backup policy.",
+    }),
+    BackupRetentionPolicy: BackupRetentionPolicySchema.exactOptional().openapi({
+      description: 'A policy that defines how the service retains backups.',
+    }),
+    ClusterId: ClusterIdSchema.exactOptional().openapi({
+      description: "The cluster's identifier (ID).",
+    }),
+    CreateTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time when the cluster was created.',
+    }),
+    Hsms: HsmsSchema.exactOptional().openapi({
+      description: 'Contains information about the HSMs in the cluster.',
+    }),
+    HsmType: HsmTypeSchema.exactOptional().openapi({
+      description: 'The type of HSM that the cluster contains.',
+    }),
+    PreCoPassword: PreCoPasswordSchema.exactOptional().openapi({
+      description: "The default password for the cluster's Pre-Crypto Officer (PRECO) user.",
+    }),
+    SecurityGroup: SecurityGroupSchema.exactOptional().openapi({
+      description: "The identifier (ID) of the cluster's security group.",
+    }),
+    SourceBackupId: BackupIdSchema.exactOptional().openapi({
+      description:
+        'The identifier (ID) of the backup used to create the cluster. This value exists only when the cluster was created from a backup.',
+    }),
+    State: ClusterStateSchema.exactOptional().openapi({ description: "The cluster's state." }),
+    StateMessage: StateMessageSchema.exactOptional().openapi({
+      description: "A description of the cluster's state.",
+    }),
+    SubnetMapping: ExternalSubnetMappingSchema.exactOptional().openapi({
+      description:
+        'A map from availability zone to the cluster’s subnet in that availability zone.',
+    }),
+    VpcId: VpcIdSchema.exactOptional().openapi({
+      description:
+        'The identifier (ID) of the virtual private cloud (VPC) that contains the cluster.',
+    }),
+    Certificates: CertificatesSchema.exactOptional().openapi({
+      description: 'Contains one or more certificates or a certificate signing request (CSR).',
+    }),
+    TagList: TagListSchema.exactOptional().openapi({
+      description: 'The list of tags for the cluster.',
+    }),
   })
   .openapi({ description: 'Contains information about an AWS CloudHSM cluster.', required: [] })
   .openapi('Cluster')
 
 const CreateClusterResponseSchema = z
   .object({
-    Cluster: ClusterSchema.and(
-      z.any().openapi({ description: 'Information about the cluster that was created.' }),
-    ).exactOptional(),
+    Cluster: ClusterSchema.exactOptional().openapi({
+      description: 'Information about the cluster that was created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateClusterResponse')
@@ -411,75 +330,51 @@ const SubnetIdsSchema = z.array(SubnetIdSchema).min(1).max(10).openapi('SubnetId
 
 const CreateClusterRequestSchema = z
   .object({
-    BackupRetentionPolicy: BackupRetentionPolicySchema.and(
-      z.any().openapi({ description: 'A policy that defines how the service retains backups.' }),
-    ).exactOptional(),
-    HsmType: HsmTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of HSM to use in the cluster. Currently the only allowed value is <code>hsm1.medium</code>.',
-        }),
-    ),
-    SourceBackupId: BackupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier (ID) of the cluster backup to restore. Use this value to restore the cluster from a backup instead of creating a new cluster. To find the backup ID, use <a>DescribeBackups</a>.',
-        }),
-    ).exactOptional(),
-    SubnetIds: SubnetIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifiers (IDs) of the subnets where you are creating the cluster. You must specify at least one subnet. If you specify multiple subnets, they must meet the following criteria:</p> <ul> <li> <p>All subnets must be in the same virtual private cloud (VPC).</p> </li> <li> <p>You can specify only one subnet per Availability Zone.</p> </li> </ul>',
-        }),
-    ),
-    TagList: TagListSchema.and(
-      z.any().openapi({ description: 'Tags to apply to the CloudHSM cluster during creation.' }),
-    ).exactOptional(),
+    BackupRetentionPolicy: BackupRetentionPolicySchema.exactOptional().openapi({
+      description: 'A policy that defines how the service retains backups.',
+    }),
+    HsmType: HsmTypeSchema.openapi({
+      description:
+        'The type of HSM to use in the cluster. Currently the only allowed value is <code>hsm1.medium</code>.',
+    }),
+    SourceBackupId: BackupIdSchema.exactOptional().openapi({
+      description:
+        'The identifier (ID) of the cluster backup to restore. Use this value to restore the cluster from a backup instead of creating a new cluster. To find the backup ID, use <a>DescribeBackups</a>.',
+    }),
+    SubnetIds: SubnetIdsSchema.openapi({
+      description:
+        '<p>The identifiers (IDs) of the subnets where you are creating the cluster. You must specify at least one subnet. If you specify multiple subnets, they must meet the following criteria:</p> <ul> <li> <p>All subnets must be in the same virtual private cloud (VPC).</p> </li> <li> <p>You can specify only one subnet per Availability Zone.</p> </li> </ul>',
+    }),
+    TagList: TagListSchema.exactOptional().openapi({
+      description: 'Tags to apply to the CloudHSM cluster during creation.',
+    }),
   })
   .openapi({ required: ['HsmType', 'SubnetIds'], title: 'CreateClusterRequest' })
   .openapi('CreateClusterRequest')
 
 const CreateHsmResponseSchema = z
   .object({
-    Hsm: HsmSchema.and(
-      z.any().openapi({ description: 'Information about the HSM that was created.' }),
-    ).exactOptional(),
+    Hsm: HsmSchema.exactOptional().openapi({
+      description: 'Information about the HSM that was created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateHsmResponse')
 
 const CreateHsmRequestSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The identifier (ID) of the HSM's cluster. To find the cluster ID, use <a>DescribeClusters</a>.",
-        }),
-    ),
-    AvailabilityZone: ExternalAzSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Availability Zone where you are creating the HSM. To find the cluster's Availability Zones, use <a>DescribeClusters</a>.",
-        }),
-    ),
-    IpAddress: IpAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The HSM's IP address. If you specify an IP address, use an available address from the subnet that maps to the Availability Zone where you are creating the HSM. If you don't specify an IP address, one is chosen for you from that subnet.",
-        }),
-    ).exactOptional(),
+    ClusterId: ClusterIdSchema.openapi({
+      description:
+        "The identifier (ID) of the HSM's cluster. To find the cluster ID, use <a>DescribeClusters</a>.",
+    }),
+    AvailabilityZone: ExternalAzSchema.openapi({
+      description:
+        "The Availability Zone where you are creating the HSM. To find the cluster's Availability Zones, use <a>DescribeClusters</a>.",
+    }),
+    IpAddress: IpAddressSchema.exactOptional().openapi({
+      description:
+        "The HSM's IP address. If you specify an IP address, use an available address from the subnet that maps to the Availability Zone where you are creating the HSM. If you don't specify an IP address, one is chosen for you from that subnet.",
+    }),
   })
   .openapi({ required: ['ClusterId', 'AvailabilityZone'], title: 'CreateHsmRequest' })
   .openapi('CreateHsmRequest')
@@ -492,65 +387,40 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const BackupSchema = z
   .object({
-    BackupId: BackupIdSchema.and(
-      z.any().openapi({ description: 'The identifier (ID) of the backup.' }),
-    ),
-    BackupState: BackupStateSchema.and(
-      z.any().openapi({ description: 'The state of the backup.' }),
-    ).exactOptional(),
-    ClusterId: ClusterIdSchema.and(
-      z.any().openapi({ description: 'The identifier (ID) of the cluster that was backed up.' }),
-    ).exactOptional(),
-    CreateTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time when the backup was created.' }),
-    ).exactOptional(),
-    CopyTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time when the backup was copied from a source backup.',
-        }),
-    ).exactOptional(),
-    NeverExpires: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the service should exempt a backup from the retention policy for the cluster. <code>True</code> exempts a backup from the retention policy. <code>False</code> means the service applies the backup retention policy defined at the cluster.',
-        }),
-    ).exactOptional(),
-    SourceRegion: RegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS Region that contains the source backup from which the new backup was copied.',
-        }),
-    ).exactOptional(),
-    SourceBackup: BackupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier (ID) of the source backup from which the new backup was copied.',
-        }),
-    ).exactOptional(),
-    SourceCluster: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier (ID) of the cluster containing the source backup from which the new backup was copied.',
-        }),
-    ).exactOptional(),
-    DeleteTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time when the backup will be permanently deleted.' }),
-    ).exactOptional(),
-    TagList: TagListSchema.and(
-      z.any().openapi({ description: 'The list of tags for the backup.' }),
-    ).exactOptional(),
+    BackupId: BackupIdSchema.openapi({ description: 'The identifier (ID) of the backup.' }),
+    BackupState: BackupStateSchema.exactOptional().openapi({
+      description: 'The state of the backup.',
+    }),
+    ClusterId: ClusterIdSchema.exactOptional().openapi({
+      description: 'The identifier (ID) of the cluster that was backed up.',
+    }),
+    CreateTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time when the backup was created.',
+    }),
+    CopyTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time when the backup was copied from a source backup.',
+    }),
+    NeverExpires: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the service should exempt a backup from the retention policy for the cluster. <code>True</code> exempts a backup from the retention policy. <code>False</code> means the service applies the backup retention policy defined at the cluster.',
+    }),
+    SourceRegion: RegionSchema.exactOptional().openapi({
+      description:
+        'The AWS Region that contains the source backup from which the new backup was copied.',
+    }),
+    SourceBackup: BackupIdSchema.exactOptional().openapi({
+      description: 'The identifier (ID) of the source backup from which the new backup was copied.',
+    }),
+    SourceCluster: ClusterIdSchema.exactOptional().openapi({
+      description:
+        'The identifier (ID) of the cluster containing the source backup from which the new backup was copied.',
+    }),
+    DeleteTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time when the backup will be permanently deleted.',
+    }),
+    TagList: TagListSchema.exactOptional().openapi({
+      description: 'The list of tags for the backup.',
+    }),
   })
   .openapi({
     required: ['BackupId'],
@@ -561,88 +431,68 @@ const BackupSchema = z
 
 const DeleteBackupResponseSchema = z
   .object({
-    Backup: BackupSchema.and(
-      z.any().openapi({ description: 'Information on the <code>Backup</code> object deleted.' }),
-    ).exactOptional(),
+    Backup: BackupSchema.exactOptional().openapi({
+      description: 'Information on the <code>Backup</code> object deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteBackupResponse')
 
 const DeleteBackupRequestSchema = z
   .object({
-    BackupId: BackupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the backup to be deleted. To find the ID of a backup, use the <a>DescribeBackups</a> operation.',
-        }),
-    ),
+    BackupId: BackupIdSchema.openapi({
+      description:
+        'The ID of the backup to be deleted. To find the ID of a backup, use the <a>DescribeBackups</a> operation.',
+    }),
   })
   .openapi({ required: ['BackupId'], title: 'DeleteBackupRequest' })
   .openapi('DeleteBackupRequest')
 
 const DeleteClusterResponseSchema = z
   .object({
-    Cluster: ClusterSchema.and(
-      z.any().openapi({ description: 'Information about the cluster that was deleted.' }),
-    ).exactOptional(),
+    Cluster: ClusterSchema.exactOptional().openapi({
+      description: 'Information about the cluster that was deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteClusterResponse')
 
 const DeleteClusterRequestSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier (ID) of the cluster that you are deleting. To find the cluster ID, use <a>DescribeClusters</a>.',
-        }),
-    ),
+    ClusterId: ClusterIdSchema.openapi({
+      description:
+        'The identifier (ID) of the cluster that you are deleting. To find the cluster ID, use <a>DescribeClusters</a>.',
+    }),
   })
   .openapi({ required: ['ClusterId'], title: 'DeleteClusterRequest' })
   .openapi('DeleteClusterRequest')
 
 const DeleteHsmResponseSchema = z
   .object({
-    HsmId: HsmIdSchema.and(
-      z.any().openapi({ description: 'The identifier (ID) of the HSM that was deleted.' }),
-    ).exactOptional(),
+    HsmId: HsmIdSchema.exactOptional().openapi({
+      description: 'The identifier (ID) of the HSM that was deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteHsmResponse')
 
 const DeleteHsmRequestSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier (ID) of the cluster that contains the HSM that you are deleting.',
-        }),
-    ),
-    HsmId: HsmIdSchema.and(
-      z.any().openapi({ description: 'The identifier (ID) of the HSM that you are deleting.' }),
-    ).exactOptional(),
-    EniId: EniIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier (ID) of the elastic network interface (ENI) of the HSM that you are deleting.',
-        }),
-    ).exactOptional(),
-    EniIp: IpAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address of the elastic network interface (ENI) of the HSM that you are deleting.',
-        }),
-    ).exactOptional(),
+    ClusterId: ClusterIdSchema.openapi({
+      description:
+        'The identifier (ID) of the cluster that contains the HSM that you are deleting.',
+    }),
+    HsmId: HsmIdSchema.exactOptional().openapi({
+      description: 'The identifier (ID) of the HSM that you are deleting.',
+    }),
+    EniId: EniIdSchema.exactOptional().openapi({
+      description:
+        'The identifier (ID) of the elastic network interface (ENI) of the HSM that you are deleting.',
+    }),
+    EniIp: IpAddressSchema.exactOptional().openapi({
+      description:
+        'The IP address of the elastic network interface (ENI) of the HSM that you are deleting.',
+    }),
   })
   .openapi({ required: ['ClusterId'], title: 'DeleteHsmRequest' })
   .openapi('DeleteHsmRequest')
@@ -653,17 +503,11 @@ const NextTokenSchema = z.string().regex(/.*/).max(256).openapi('NextToken')
 
 const DescribeBackupsResponseSchema = z
   .object({
-    Backups: BackupsSchema.and(
-      z.any().openapi({ description: 'A list of backups.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque string that indicates that the response contains only a subset of backups. Use this value in a subsequent <code>DescribeBackups</code> request to get more backups.',
-        }),
-    ).exactOptional(),
+    Backups: BackupsSchema.exactOptional().openapi({ description: 'A list of backups.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An opaque string that indicates that the response contains only a subset of backups. Use this value in a subsequent <code>DescribeBackups</code> request to get more backups.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeBackupsResponse')
@@ -676,38 +520,22 @@ const FiltersSchema = z.record(z.string(), StringsSchema).openapi('Filters')
 
 const DescribeBackupsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>NextToken</code> value that you received in the previous response. Use this value to get more backups.',
-        }),
-    ).exactOptional(),
-    MaxResults: BackupsMaxSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of backups to return in the response. When there are more backups than the number you specify, the response contains a <code>NextToken</code> value.',
-        }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more filters to limit the items returned in the response.</p> <p>Use the <code>backupIds</code> filter to return only the specified backups. Specify backups by their backup identifier (ID).</p> <p>Use the <code>sourceBackupIds</code> filter to return only the backups created from a source backup. The <code>sourceBackupID</code> of a source backup is returned by the <a>CopyBackupToRegion</a> operation.</p> <p>Use the <code>clusterIds</code> filter to return only the backups for the specified clusters. Specify clusters by their cluster identifier (ID).</p> <p>Use the <code>states</code> filter to return only backups that match the specified state.</p> <p>Use the <code>neverExpires</code> filter to return backups filtered by the value in the <code>neverExpires</code> parameter. <code>True</code> returns all backups exempt from the backup retention policy. <code>False</code> returns all backups with a backup retention policy defined at the cluster.</p>',
-        }),
-    ).exactOptional(),
-    SortAscending: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Designates whether or not to sort the return backups by ascending chronological order of generation.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>NextToken</code> value that you received in the previous response. Use this value to get more backups.',
+    }),
+    MaxResults: BackupsMaxSizeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of backups to return in the response. When there are more backups than the number you specify, the response contains a <code>NextToken</code> value.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>One or more filters to limit the items returned in the response.</p> <p>Use the <code>backupIds</code> filter to return only the specified backups. Specify backups by their backup identifier (ID).</p> <p>Use the <code>sourceBackupIds</code> filter to return only the backups created from a source backup. The <code>sourceBackupID</code> of a source backup is returned by the <a>CopyBackupToRegion</a> operation.</p> <p>Use the <code>clusterIds</code> filter to return only the backups for the specified clusters. Specify clusters by their cluster identifier (ID).</p> <p>Use the <code>states</code> filter to return only backups that match the specified state.</p> <p>Use the <code>neverExpires</code> filter to return backups filtered by the value in the <code>neverExpires</code> parameter. <code>True</code> returns all backups exempt from the backup retention policy. <code>False</code> returns all backups with a backup retention policy defined at the cluster.</p>',
+    }),
+    SortAscending: BooleanSchema.exactOptional().openapi({
+      description:
+        'Designates whether or not to sort the return backups by ascending chronological order of generation.',
+    }),
   })
   .openapi({ title: 'DescribeBackupsRequest', required: [] })
   .openapi('DescribeBackupsRequest')
@@ -716,17 +544,11 @@ const ClustersSchema = z.array(ClusterSchema).openapi('Clusters')
 
 const DescribeClustersResponseSchema = z
   .object({
-    Clusters: ClustersSchema.and(
-      z.any().openapi({ description: 'A list of clusters.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque string that indicates that the response contains only a subset of clusters. Use this value in a subsequent <code>DescribeClusters</code> request to get more clusters.',
-        }),
-    ).exactOptional(),
+    Clusters: ClustersSchema.exactOptional().openapi({ description: 'A list of clusters.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An opaque string that indicates that the response contains only a subset of clusters. Use this value in a subsequent <code>DescribeClusters</code> request to get more clusters.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeClustersResponse')
@@ -735,72 +557,46 @@ const ClustersMaxSizeSchema = z.int().min(1).max(25).openapi('ClustersMaxSize')
 
 const DescribeClustersRequestSchema = z
   .object({
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more filters to limit the items returned in the response.</p> <p>Use the <code>clusterIds</code> filter to return only the specified clusters. Specify clusters by their cluster identifier (ID).</p> <p>Use the <code>vpcIds</code> filter to return only the clusters in the specified virtual private clouds (VPCs). Specify VPCs by their VPC identifier (ID).</p> <p>Use the <code>states</code> filter to return only clusters that match the specified state.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>NextToken</code> value that you received in the previous response. Use this value to get more clusters.',
-        }),
-    ).exactOptional(),
-    MaxResults: ClustersMaxSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of clusters to return in the response. When there are more clusters than the number you specify, the response contains a <code>NextToken</code> value.',
-        }),
-    ).exactOptional(),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>One or more filters to limit the items returned in the response.</p> <p>Use the <code>clusterIds</code> filter to return only the specified clusters. Specify clusters by their cluster identifier (ID).</p> <p>Use the <code>vpcIds</code> filter to return only the clusters in the specified virtual private clouds (VPCs). Specify VPCs by their VPC identifier (ID).</p> <p>Use the <code>states</code> filter to return only clusters that match the specified state.</p>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>NextToken</code> value that you received in the previous response. Use this value to get more clusters.',
+    }),
+    MaxResults: ClustersMaxSizeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of clusters to return in the response. When there are more clusters than the number you specify, the response contains a <code>NextToken</code> value.',
+    }),
   })
   .openapi({ title: 'DescribeClustersRequest', required: [] })
   .openapi('DescribeClustersRequest')
 
 const InitializeClusterResponseSchema = z
   .object({
-    State: ClusterStateSchema.and(
-      z.any().openapi({ description: "The cluster's state." }),
-    ).exactOptional(),
-    StateMessage: StateMessageSchema.and(
-      z.any().openapi({ description: "A description of the cluster's state." }),
-    ).exactOptional(),
+    State: ClusterStateSchema.exactOptional().openapi({ description: "The cluster's state." }),
+    StateMessage: StateMessageSchema.exactOptional().openapi({
+      description: "A description of the cluster's state.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('InitializeClusterResponse')
 
 const InitializeClusterRequestSchema = z
   .object({
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier (ID) of the cluster that you are claiming. To find the cluster ID, use <a>DescribeClusters</a>.',
-        }),
-    ),
-    SignedCert: CertSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The cluster certificate issued (signed) by your issuing certificate authority (CA). The certificate must be in PEM format and can contain a maximum of 5000 characters.',
-        }),
-    ),
-    TrustAnchor: CertSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The issuing certificate of the issuing certificate authority (CA) that issued (signed) the cluster certificate. You must use a self-signed certificate. The certificate used to sign the HSM CSR must be directly available, and thus must be the root certificate. The certificate must be in PEM format and can contain a maximum of 5000 characters.',
-        }),
-    ),
+    ClusterId: ClusterIdSchema.openapi({
+      description:
+        'The identifier (ID) of the cluster that you are claiming. To find the cluster ID, use <a>DescribeClusters</a>.',
+    }),
+    SignedCert: CertSchema.openapi({
+      description:
+        'The cluster certificate issued (signed) by your issuing certificate authority (CA). The certificate must be in PEM format and can contain a maximum of 5000 characters.',
+    }),
+    TrustAnchor: CertSchema.openapi({
+      description:
+        'The issuing certificate of the issuing certificate authority (CA) that issued (signed) the cluster certificate. You must use a self-signed certificate. The certificate used to sign the HSM CSR must be directly available, and thus must be the root certificate. The certificate must be in PEM format and can contain a maximum of 5000 characters.',
+    }),
   })
   .openapi({
     required: ['ClusterId', 'SignedCert', 'TrustAnchor'],
@@ -810,15 +606,11 @@ const InitializeClusterRequestSchema = z
 
 const ListTagsResponseSchema = z
   .object({
-    TagList: TagListSchema.and(z.any().openapi({ description: 'A list of tags.' })),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque string that indicates that the response contains only a subset of tags. Use this value in a subsequent <code>ListTags</code> request to get more tags.',
-        }),
-    ).exactOptional(),
+    TagList: TagListSchema.openapi({ description: 'A list of tags.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An opaque string that indicates that the response contains only a subset of tags. Use this value in a subsequent <code>ListTags</code> request to get more tags.',
+    }),
   })
   .openapi({ required: ['TagList'] })
   .openapi('ListTagsResponse')
@@ -832,30 +624,18 @@ const MaxSizeSchema = z.int().min(1).max(100).openapi('MaxSize')
 
 const ListTagsRequestSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The cluster identifier (ID) for the cluster whose tags you are getting. To find the cluster ID, use <a>DescribeClusters</a>.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>NextToken</code> value that you received in the previous response. Use this value to get more tags.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of tags to return in the response. When there are more tags than the number you specify, the response contains a <code>NextToken</code> value.',
-        }),
-    ).exactOptional(),
+    ResourceId: ResourceIdSchema.openapi({
+      description:
+        'The cluster identifier (ID) for the cluster whose tags you are getting. To find the cluster ID, use <a>DescribeClusters</a>.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>NextToken</code> value that you received in the previous response. Use this value to get more tags.',
+    }),
+    MaxResults: MaxSizeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of tags to return in the response. When there are more tags than the number you specify, the response contains a <code>NextToken</code> value.',
+    }),
   })
   .openapi({ required: ['ResourceId'], title: 'ListTagsRequest' })
   .openapi('ListTagsRequest')
@@ -867,22 +647,14 @@ const ModifyBackupAttributesResponseSchema = z
 
 const ModifyBackupAttributesRequestSchema = z
   .object({
-    BackupId: BackupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier (ID) of the backup to modify. To find the ID of a backup, use the <a>DescribeBackups</a> operation.',
-        }),
-    ),
-    NeverExpires: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the service should exempt a backup from the retention policy for the cluster. <code>True</code> exempts a backup from the retention policy. <code>False</code> means the service applies the backup retention policy defined at the cluster.',
-        }),
-    ),
+    BackupId: BackupIdSchema.openapi({
+      description:
+        'The identifier (ID) of the backup to modify. To find the ID of a backup, use the <a>DescribeBackups</a> operation.',
+    }),
+    NeverExpires: BooleanSchema.openapi({
+      description:
+        'Specifies whether the service should exempt a backup from the retention policy for the cluster. <code>True</code> exempts a backup from the retention policy. <code>False</code> means the service applies the backup retention policy defined at the cluster.',
+    }),
   })
   .openapi({ required: ['BackupId', 'NeverExpires'], title: 'ModifyBackupAttributesRequest' })
   .openapi('ModifyBackupAttributesRequest')
@@ -894,83 +666,63 @@ const ModifyClusterResponseSchema = z
 
 const ModifyClusterRequestSchema = z
   .object({
-    BackupRetentionPolicy: BackupRetentionPolicySchema.and(
-      z.any().openapi({ description: 'A policy that defines how the service retains backups.' }),
-    ),
-    ClusterId: ClusterIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier (ID) of the cluster that you want to modify. To find the cluster ID, use <a>DescribeClusters</a>.',
-        }),
-    ),
+    BackupRetentionPolicy: BackupRetentionPolicySchema.openapi({
+      description: 'A policy that defines how the service retains backups.',
+    }),
+    ClusterId: ClusterIdSchema.openapi({
+      description:
+        'The identifier (ID) of the cluster that you want to modify. To find the cluster ID, use <a>DescribeClusters</a>.',
+    }),
   })
   .openapi({ required: ['BackupRetentionPolicy', 'ClusterId'], title: 'ModifyClusterRequest' })
   .openapi('ModifyClusterRequest')
 
 const RestoreBackupResponseSchema = z
   .object({
-    Backup: BackupSchema.and(
-      z.any().openapi({ description: 'Information on the <code>Backup</code> object created.' }),
-    ).exactOptional(),
+    Backup: BackupSchema.exactOptional().openapi({
+      description: 'Information on the <code>Backup</code> object created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RestoreBackupResponse')
 
 const RestoreBackupRequestSchema = z
   .object({
-    BackupId: BackupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the backup to be restored. To find the ID of a backup, use the <a>DescribeBackups</a> operation.',
-        }),
-    ),
+    BackupId: BackupIdSchema.openapi({
+      description:
+        'The ID of the backup to be restored. To find the ID of a backup, use the <a>DescribeBackups</a> operation.',
+    }),
   })
   .openapi({ required: ['BackupId'], title: 'RestoreBackupRequest' })
   .openapi('RestoreBackupRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The cluster identifier (ID) for the cluster that you are tagging. To find the cluster ID, use <a>DescribeClusters</a>.',
-        }),
-    ),
-    TagList: TagListSchema.and(z.any().openapi({ description: 'A list of one or more tags.' })),
+    ResourceId: ResourceIdSchema.openapi({
+      description:
+        'The cluster identifier (ID) for the cluster that you are tagging. To find the cluster ID, use <a>DescribeClusters</a>.',
+    }),
+    TagList: TagListSchema.openapi({ description: 'A list of one or more tags.' }),
   })
   .openapi({ required: ['ResourceId', 'TagList'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The cluster identifier (ID) for the cluster whose tags you are removing. To find the cluster ID, use <a>DescribeClusters</a>.',
-        }),
-    ),
-    TagKeyList: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of one or more tag keys for the tags that you are removing. Specify only the tag keys, not the tag values.',
-        }),
-    ),
+    ResourceId: ResourceIdSchema.openapi({
+      description:
+        'The cluster identifier (ID) for the cluster whose tags you are removing. To find the cluster ID, use <a>DescribeClusters</a>.',
+    }),
+    TagKeyList: TagKeyListSchema.openapi({
+      description:
+        'A list of one or more tag keys for the tags that you are removing. Specify only the tag keys, not the tag values.',
+    }),
   })
   .openapi({ required: ['ResourceId', 'TagKeyList'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')

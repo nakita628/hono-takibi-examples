@@ -55,7 +55,9 @@ export const post20181031LayersLayerNameVersionsRouteHandler: RouteHandler<
 
 export const get20181031LayersRouteHandler: RouteHandler<typeof get20181031LayersRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const delete20181031LayersLayerNameVersionsVersionNumberPolicyStatementIdRouteHandler: RouteHandler<
   typeof delete20181031LayersLayerNameVersionsVersionNumberPolicyStatementIdRoute

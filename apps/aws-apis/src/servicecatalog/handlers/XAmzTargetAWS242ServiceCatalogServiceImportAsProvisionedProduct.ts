@@ -1,0 +1,11 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetAWS242ServiceCatalogServiceImportAsProvisionedProductRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const XAmzTargetAWS242ServiceCatalogServiceImportAsProvisionedProductHandler = app.openapi(
+  postXAmzTargetAWS242ServiceCatalogServiceImportAsProvisionedProductRoute,
+  (c) => {
+    throw new Error('Not implemented')
+  },
+)

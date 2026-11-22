@@ -870,6 +870,7 @@ const TicketObjectSchema = z
             )
             .openapi({
               description: 'Alternative format using field ID as key, e.g. {"123": "value"}',
+              not: { required: ['id'] },
             }),
         ]),
       )
@@ -977,6 +978,7 @@ const TicketObjectSchema = z
             )
             .openapi({
               description: 'Alternative format using field ID as key, e.g. {"123": "value"}',
+              not: { required: ['id'] },
             }),
         ]),
       )
@@ -1898,7 +1900,7 @@ const CustomObjectRecordFilteredSearchConditionSchema = z
 const CustomObjectRecordFilterExpressionLevel1Schema =
   CustomObjectRecordFilteredSearchConditionSchema.and(
     z
-      .any()
+      .looseObject({})
       .refine(
         (val) =>
           !z
@@ -1907,7 +1909,15 @@ const CustomObjectRecordFilterExpressionLevel1Schema =
               z.looseObject({}).openapi({ required: ['$or'] }),
             ])
             .safeParse(val).success,
-      ),
+      )
+      .openapi({
+        not: {
+          anyOf: [
+            { type: 'object', required: ['$and'] },
+            { type: 'object', required: ['$or'] },
+          ],
+        },
+      }),
   ).openapi('CustomObjectRecordFilterExpressionLevel1')
 
 const CustomObjectRecordFilterExpressionLevel2Schema = z
@@ -15922,7 +15932,7 @@ const EndUserIdentityCreateInputSchema = z
         .openapi({ required: ['ownership', 'auto_ownership'] })
         .safeParse(val).success,
   )
-  .openapi({ required: ['type', 'value'] })
+  .openapi({ required: ['type', 'value'], not: { required: ['ownership', 'auto_ownership'] } })
   .openapi('EndUserIdentityCreateInput')
 
 const EndUserIdentityCreateRequestSchema = z
@@ -24185,7 +24195,72 @@ const RequestInputSchema = z
         description:
           'The collaborators (CCs) to set on the request, as user ids, email addresses, or objects carrying a name and an\nemail. Only applied when the account allows collaborators, and rejected when the request is submitted from the\nhelp center by an account that does not allow help center collaborators. At most 48 collaborators may be sent in\none call on accounts with CCs and followers enabled, and null is ignored\n',
       }),
-    comment: RequestCommentInputSchema,
+    comment: (() => {
+      const Schema = RequestCommentInputSchema
+      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+        const reported = ctx.issues.length
+        try {
+          ;((ctx) => {
+            const val = ctx.value
+            if (
+              !(
+                z
+                  .looseObject({})
+                  .openapi({ required: ['body'] })
+                  .safeParse(val).success ||
+                z
+                  .looseObject({})
+                  .openapi({ required: ['html_body'] })
+                  .safeParse(val).success ||
+                z
+                  .looseObject({})
+                  .openapi({ required: ['value'] })
+                  .safeParse(val).success
+              )
+            ) {
+              ctx.issues.push({ code: 'custom', input: val })
+            }
+          })(ctx)
+        } catch (error) {
+          if (!(error instanceof z.core.$ZodAsyncError)) throw error
+          ctx.issues.length = reported
+          return (async (ctx) => {
+            const val = ctx.value
+            if (
+              !(
+                (
+                  await z
+                    .looseObject({})
+                    .openapi({ required: ['body'] })
+                    .safeParseAsync(val)
+                ).success ||
+                (
+                  await z
+                    .looseObject({})
+                    .openapi({ required: ['html_body'] })
+                    .safeParseAsync(val)
+                ).success ||
+                (
+                  await z
+                    .looseObject({})
+                    .openapi({ required: ['value'] })
+                    .safeParseAsync(val)
+                ).success
+              )
+            ) {
+              ctx.issues.push({ code: 'custom', input: val })
+            }
+          })(ctx).then(() => val)
+        }
+        return val
+      }, Schema)
+    })().openapi({
+      anyOf: [
+        { type: 'object', additionalProperties: true, required: ['body'] },
+        { type: 'object', additionalProperties: true, required: ['html_body'] },
+        { type: 'object', additionalProperties: true, required: ['value'] },
+      ],
+    }),
     custom_fields: z
       .union([
         z.array(z.union([z.looseObject({}), z.string(), z.int(), z.boolean()])).nullable(),
@@ -31811,8 +31886,77 @@ const TriggerBulkUpdateRequestSchema = z
   .openapi({ required: [] })
   .openapi('TriggerBulkUpdateRequest')
 
+const TriggerCategoryRuleCountsSchema = z
+  .object({
+    active_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    inactive_count: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('TriggerCategoryRuleCounts')
+
 const TriggerCategoriesResponseSchema = z
-  .object({ trigger_categories: z.array(TriggerCategorySchema).exactOptional() })
+  .object({
+    trigger_categories: z
+      .array(
+        (() => {
+          const Schema = TriggerCategorySchema
+          return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+            const reported = ctx.issues.length
+            try {
+              ;((ctx) => {
+                const val = ctx.value
+                if (!TriggerCategoryRuleCountsSchema.safeParse(val).success) {
+                  ctx.issues.push({ code: 'custom', input: val })
+                }
+              })(ctx)
+            } catch (error) {
+              if (!(error instanceof z.core.$ZodAsyncError)) throw error
+              ctx.issues.length = reported
+              return (async (ctx) => {
+                const val = ctx.value
+                if (!(await TriggerCategoryRuleCountsSchema.safeParseAsync(val)).success) {
+                  ctx.issues.push({ code: 'custom', input: val })
+                }
+              })(ctx).then(() => val)
+            }
+            return val
+          }, Schema)
+        })().openapi({
+          anyOf: [
+            {
+              type: 'object',
+              properties: {
+                active_count: { type: 'integer', format: 'int64' },
+                inactive_count: { type: 'integer', format: 'int64' },
+              },
+            },
+          ],
+        }),
+      )
+      .exactOptional(),
+  })
   .openapi({ required: [] })
   .openapi('TriggerCategoriesResponse')
 
@@ -31846,36 +31990,6 @@ const TriggerCategoryResponseSchema = z
   .object({ trigger_category: TriggerCategorySchema.exactOptional() })
   .openapi({ required: [] })
   .openapi('TriggerCategoryResponse')
-
-const TriggerCategoryRuleCountsSchema = z
-  .object({
-    active_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    inactive_count: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('TriggerCategoryRuleCounts')
 
 const TriggerDefinitionObjectSchema = z
   .object({
@@ -33727,7 +33841,7 @@ const UserIdentityCreateInputSchema = z
         .openapi({ required: ['ownership', 'auto_ownership'] })
         .safeParse(val).success,
   )
-  .openapi({ required: ['type', 'value'] })
+  .openapi({ required: ['type', 'value'], not: { required: ['ownership', 'auto_ownership'] } })
   .openapi('UserIdentityCreateInput')
 
 const UserIdentityCreateRequestSchema = z
@@ -33816,6 +33930,7 @@ const UserIdentityUpdateInputSchema = z
   .openapi({
     description:
       'A partial update. Only the properties listed here can be changed on an existing identity - `type` and\n`primary` cannot, and are ignored if sent. Omitting a property leaves it unchanged.\n\nOne exception to "leaves it unchanged": if the identity is a non-primary email identity of the account\nowner, sending an `identity` object unverifies the identity and sends a verification email. The\ntrigger is the presence of the object - its contents make no difference, and `verified: true` or\n`verification_method: low` does not prevent it. Sending `"identity": null` instead of an object is the\none way to avoid it, because the whole update branch is then skipped. The account owner\'s primary\nemail identity cannot be updated at all.\n',
+    not: { required: ['ownership', 'auto_ownership'] },
   })
   .openapi('UserIdentityUpdateInput')
 
@@ -56322,6 +56437,7 @@ export const postApiV2ChannelsVoiceTicketsRoute = createRoute({
                           ).openapi({
                             description:
                               'Alternative format using field ID as key, e.g. {"123": "value"}',
+                            not: { required: ['id'] },
                           }),
                         ]),
                       ),
@@ -56588,6 +56704,7 @@ export const postApiV2ChannelsVoiceTicketsRoute = createRoute({
                           ).openapi({
                             description:
                               'Alternative format using field ID as key, e.g. {"123": "value"}',
+                            not: { required: ['id'] },
                           }),
                         ]),
                       ),

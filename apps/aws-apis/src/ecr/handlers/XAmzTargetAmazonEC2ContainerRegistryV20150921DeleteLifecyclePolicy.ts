@@ -4,7 +4,6 @@ import { postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteLifecyclePolicyR
 const app = new OpenAPIHono()
 
 export const XAmzTargetAmazonEC2ContainerRegistryV20150921DeleteLifecyclePolicyHandler =
-  app.openapi(
-    postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteLifecyclePolicyRoute,
-    (c) => {},
-  )
+  app.openapi(postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteLifecyclePolicyRoute, (c) => {
+    throw new Error('Not implemented')
+  })

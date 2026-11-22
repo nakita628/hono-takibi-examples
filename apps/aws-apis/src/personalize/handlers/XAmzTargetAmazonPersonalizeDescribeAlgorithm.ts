@@ -1,0 +1,11 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetAmazonPersonalizeDescribeAlgorithmRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const XAmzTargetAmazonPersonalizeDescribeAlgorithmHandler = app.openapi(
+  postXAmzTargetAmazonPersonalizeDescribeAlgorithmRoute,
+  (c) => {
+    throw new Error('Not implemented')
+  },
+)

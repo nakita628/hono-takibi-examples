@@ -47,18 +47,18 @@ export const autoscalingV1Handler = app
   .openapi(putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute,
-    (c) => {},
-  )
+  .openapi(getApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(
     patchApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
-  .openapi(
-    putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute,
-    (c) => {},
-  )
+  .openapi(putApisAutoscalingV1NamespacesNamespaceHorizontalpodautoscalersNameStatusRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(getApisAutoscalingV1WatchHorizontalpodautoscalersRoute, (c) => {
     throw new Error('Not implemented')
   })

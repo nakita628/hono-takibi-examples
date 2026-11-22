@@ -8,28 +8,18 @@ const LongSchema = z.int().openapi('Long')
 
 const SessionSchema = z
   .object({
-    id: String50CharsSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the session' }),
-    ).exactOptional(),
-    duration: LongSchema.and(
-      z.any().openapi({ description: 'The duration of the session.' }),
-    ).exactOptional(),
-    startTimestamp: ISO8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time the event started in ISO 8601 standard date time format. For example, 2014-06-30T19:07:47.885Z',
-        }),
-    ).exactOptional(),
-    stopTimestamp: ISO8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time the event terminated in ISO 8601 standard date time format. For example, 2014-06-30T19:07:47.885Z',
-        }),
-    ).exactOptional(),
+    id: String50CharsSchema.exactOptional().openapi({
+      description: 'A unique identifier for the session',
+    }),
+    duration: LongSchema.exactOptional().openapi({ description: 'The duration of the session.' }),
+    startTimestamp: ISO8601TimestampSchema.exactOptional().openapi({
+      description:
+        'The time the event started in ISO 8601 standard date time format. For example, 2014-06-30T19:07:47.885Z',
+    }),
+    stopTimestamp: ISO8601TimestampSchema.exactOptional().openapi({
+      description:
+        'The time the event terminated in ISO 8601 standard date time format. For example, 2014-06-30T19:07:47.885Z',
+    }),
   })
   .openapi({
     description: 'Describes the session. Session information is required on ALL events.',
@@ -57,44 +47,28 @@ const MapOfStringToNumberSchema = z
 
 const EventSchema = z
   .object({
-    eventType: String50CharsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name signifying an event that occurred in your app. This is used for grouping and aggregating like events together for reporting purposes.',
-        }),
-    ),
-    timestamp: ISO8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time the event occurred in ISO 8601 standard date time format. For example, 2014-06-30T19:07:47.885Z',
-        }),
-    ),
-    session: SessionSchema.and(
-      z.any().openapi({ description: 'The session the event occured within. ' }),
-    ).exactOptional(),
-    version: String10CharsSchema.and(
-      z.any().openapi({ description: 'The version of the event.' }),
-    ).exactOptional(),
-    attributes: MapOfStringToStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A collection of key-value pairs that give additional context to the event. The key-value pairs are specified by the developer.</p> <p>This collection can be empty or the attribute object can be omitted.</p>',
-        }),
-    ).exactOptional(),
-    metrics: MapOfStringToNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A collection of key-value pairs that gives additional, measurable context to the event. The key-value pairs are specified by the developer.</p> <p>This collection can be empty or the attribute object can be omitted.</p>',
-        }),
-    ).exactOptional(),
+    eventType: String50CharsSchema.openapi({
+      description:
+        'A name signifying an event that occurred in your app. This is used for grouping and aggregating like events together for reporting purposes.',
+    }),
+    timestamp: ISO8601TimestampSchema.openapi({
+      description:
+        'The time the event occurred in ISO 8601 standard date time format. For example, 2014-06-30T19:07:47.885Z',
+    }),
+    session: SessionSchema.exactOptional().openapi({
+      description: 'The session the event occured within. ',
+    }),
+    version: String10CharsSchema.exactOptional().openapi({
+      description: 'The version of the event.',
+    }),
+    attributes: MapOfStringToStringSchema.exactOptional().openapi({
+      description:
+        '<p>A collection of key-value pairs that give additional context to the event. The key-value pairs are specified by the developer.</p> <p>This collection can be empty or the attribute object can be omitted.</p>',
+    }),
+    metrics: MapOfStringToNumberSchema.exactOptional().openapi({
+      description:
+        '<p>A collection of key-value pairs that gives additional, measurable context to the event. The key-value pairs are specified by the developer.</p> <p>This collection can be empty or the attribute object can be omitted.</p>',
+    }),
   })
   .openapi({
     required: ['eventType', 'timestamp'],
@@ -106,13 +80,9 @@ const StringSchema = z.string().openapi('String')
 
 const BadRequestExceptionSchema = z
   .object({
-    message: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A text description associated with the BadRequestException object.',
-        }),
-    ).exactOptional(),
+    message: StringSchema.exactOptional().openapi({
+      description: 'A text description associated with the BadRequestException object.',
+    }),
   })
   .openapi({ description: 'An exception object returned when a request fails.', required: [] })
   .openapi('BadRequestException')
@@ -121,9 +91,7 @@ const EventListDefinitionSchema = z.array(EventSchema).openapi('EventListDefinit
 
 const PutEventsInputSchema = z
   .object({
-    events: EventListDefinitionSchema.and(
-      z.any().openapi({ description: 'An array of Event JSON objects' }),
-    ),
+    events: EventListDefinitionSchema.openapi({ description: 'An array of Event JSON objects' }),
   })
   .openapi({
     required: ['events'],

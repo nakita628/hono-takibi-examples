@@ -1,44 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const InputPropertyValueSchema = z.string().openapi('InputPropertyValue')
-
-const ComparisonOperatorSchema = z
-  .enum(['GREATER', 'GREATER_OR_EQUAL', 'LESS', 'LESS_OR_EQUAL', 'EQUAL', 'NOT_EQUAL'])
-  .openapi('ComparisonOperator')
-
-const ThresholdValueSchema = z.string().openapi('ThresholdValue')
-
-const SimpleRuleEvaluationSchema = z
-  .object({
-    inputPropertyValue: InputPropertyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the input property, on the left side of the comparison operator.',
-        }),
-    ).exactOptional(),
-    operator: ComparisonOperatorSchema.and(
-      z.any().openapi({ description: 'The comparison operator.' }),
-    ).exactOptional(),
-    thresholdValue: ThresholdValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The threshold value, on the right side of the comparison operator.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Information needed to compare two values with a comparison operator.',
-    required: [],
-  })
-  .openapi('SimpleRuleEvaluation')
-
-type RuleEvaluationType = {
-  simpleRuleEvaluation?: z.infer<typeof SimpleRuleEvaluationSchema> & { [key: string]: unknown }
-}
-
 const RequestIdSchema = z
   .string()
   .regex(/^[a-zA-Z0-9_-]+$/)
@@ -60,15 +21,13 @@ const ErrorMessageSchema = z.string().openapi('ErrorMessage')
 
 const BatchAlarmActionErrorEntrySchema = z
   .object({
-    requestId: RequestIdSchema.and(
-      z.any().openapi({ description: 'The request ID. Each ID must be unique within each batch.' }),
-    ).exactOptional(),
-    errorCode: ErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'A message that describes the error.' }),
-    ).exactOptional(),
+    requestId: RequestIdSchema.exactOptional().openapi({
+      description: 'The request ID. Each ID must be unique within each batch.',
+    }),
+    errorCode: ErrorCodeSchema.exactOptional().openapi({ description: 'The error code.' }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'A message that describes the error.',
+    }),
   })
   .openapi({
     description:
@@ -83,14 +42,10 @@ const BatchAlarmActionErrorEntriesSchema = z
 
 const BatchAcknowledgeAlarmResponseSchema = z
   .object({
-    errorEntries: BatchAlarmActionErrorEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of errors associated with the request, or <code>null</code> if there are no errors. Each error entry contains an entry ID that helps you identify the entry that failed.',
-        }),
-    ).exactOptional(),
+    errorEntries: BatchAlarmActionErrorEntriesSchema.exactOptional().openapi({
+      description:
+        'A list of errors associated with the request, or <code>null</code> if there are no errors. Each error entry contains an entry ID that helps you identify the entry that failed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchAcknowledgeAlarmResponse')
@@ -113,25 +68,17 @@ const NoteSchema = z.string().max(256).openapi('Note')
 
 const AcknowledgeAlarmActionRequestSchema = z
   .object({
-    requestId: RequestIdSchema.and(
-      z.any().openapi({ description: 'The request ID. Each ID must be unique within each batch.' }),
-    ),
-    alarmModelName: AlarmModelNameSchema.and(
-      z.any().openapi({ description: 'The name of the alarm model.' }),
-    ),
-    keyValue: KeyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the key used as a filter to select only the alarms associated with the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_CreateAlarmModel.html#iotevents-CreateAlarmModel-request-key">key</a>.',
-        }),
-    ).exactOptional(),
-    note: NoteSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The note that you can leave when you acknowledge the alarm.' }),
-    ).exactOptional(),
+    requestId: RequestIdSchema.openapi({
+      description: 'The request ID. Each ID must be unique within each batch.',
+    }),
+    alarmModelName: AlarmModelNameSchema.openapi({ description: 'The name of the alarm model.' }),
+    keyValue: KeyValueSchema.exactOptional().openapi({
+      description:
+        'The value of the key used as a filter to select only the alarms associated with the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_CreateAlarmModel.html#iotevents-CreateAlarmModel-request-key">key</a>.',
+    }),
+    note: NoteSchema.exactOptional().openapi({
+      description: 'The note that you can leave when you acknowledge the alarm.',
+    }),
   })
   .openapi({
     required: ['requestId', 'alarmModelName'],
@@ -156,20 +103,14 @@ const MessageIdSchema = z
 
 const BatchDeleteDetectorErrorEntrySchema = z
   .object({
-    messageId: MessageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the message that caused the error. (See the value of the <code>"messageId"</code> in the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_BatchDeleteDetector.html#iotevents-iotevents-data_BatchDeleteDetector-request-detectors">detectors</a> object of the <code>DeleteDetectorRequest</code>.)',
-        }),
-    ).exactOptional(),
-    errorCode: ErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'A message that describes the error.' }),
-    ).exactOptional(),
+    messageId: MessageIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the message that caused the error. (See the value of the <code>"messageId"</code> in the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_BatchDeleteDetector.html#iotevents-iotevents-data_BatchDeleteDetector-request-detectors">detectors</a> object of the <code>DeleteDetectorRequest</code>.)',
+    }),
+    errorCode: ErrorCodeSchema.exactOptional().openapi({ description: 'The error code.' }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'A message that describes the error.',
+    }),
   })
   .openapi({
     description: 'Contains error messages associated with the deletion request.',
@@ -183,14 +124,10 @@ const BatchDeleteDetectorErrorEntriesSchema = z
 
 const BatchDeleteDetectorResponseSchema = z
   .object({
-    batchDeleteDetectorErrorEntries: BatchDeleteDetectorErrorEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of errors associated with the request, or an empty array (<code>[]</code>) if there are no errors. Each error entry contains a <code>messageId</code> that helps you identify the entry that failed.',
-        }),
-    ).exactOptional(),
+    batchDeleteDetectorErrorEntries: BatchDeleteDetectorErrorEntriesSchema.exactOptional().openapi({
+      description:
+        'A list of errors associated with the request, or an empty array (<code>[]</code>) if there are no errors. Each error entry contains a <code>messageId</code> that helps you identify the entry that failed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchDeleteDetectorResponse')
@@ -204,30 +141,17 @@ const DetectorModelNameSchema = z
 
 const DeleteDetectorRequestSchema = z
   .object({
-    messageId: MessageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID to assign to the <code>DeleteDetectorRequest</code>. Each <code>"messageId"</code> must be unique within each batch sent.',
-        }),
-    ),
-    detectorModelName: DetectorModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the detector model that was used to create the detector instance.',
-        }),
-    ),
-    keyValue: KeyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_CreateDetectorModel.html#iotevents-CreateDetectorModel-request-key">key</a> used to identify the detector. ',
-        }),
-    ).exactOptional(),
+    messageId: MessageIdSchema.openapi({
+      description:
+        'The ID to assign to the <code>DeleteDetectorRequest</code>. Each <code>"messageId"</code> must be unique within each batch sent.',
+    }),
+    detectorModelName: DetectorModelNameSchema.openapi({
+      description: 'The name of the detector model that was used to create the detector instance.',
+    }),
+    keyValue: KeyValueSchema.exactOptional().openapi({
+      description:
+        'The value of the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_CreateDetectorModel.html#iotevents-CreateDetectorModel-request-key">key</a> used to identify the detector. ',
+    }),
   })
   .openapi({
     required: ['messageId', 'detectorModelName'],
@@ -237,37 +161,27 @@ const DeleteDetectorRequestSchema = z
 
 const BatchDisableAlarmResponseSchema = z
   .object({
-    errorEntries: BatchAlarmActionErrorEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of errors associated with the request, or <code>null</code> if there are no errors. Each error entry contains an entry ID that helps you identify the entry that failed.',
-        }),
-    ).exactOptional(),
+    errorEntries: BatchAlarmActionErrorEntriesSchema.exactOptional().openapi({
+      description:
+        'A list of errors associated with the request, or <code>null</code> if there are no errors. Each error entry contains an entry ID that helps you identify the entry that failed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchDisableAlarmResponse')
 
 const DisableAlarmActionRequestSchema = z
   .object({
-    requestId: RequestIdSchema.and(
-      z.any().openapi({ description: 'The request ID. Each ID must be unique within each batch.' }),
-    ),
-    alarmModelName: AlarmModelNameSchema.and(
-      z.any().openapi({ description: 'The name of the alarm model.' }),
-    ),
-    keyValue: KeyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the key used as a filter to select only the alarms associated with the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_CreateAlarmModel.html#iotevents-CreateAlarmModel-request-key">key</a>.',
-        }),
-    ).exactOptional(),
-    note: NoteSchema.and(
-      z.any().openapi({ description: 'The note that you can leave when you disable the alarm.' }),
-    ).exactOptional(),
+    requestId: RequestIdSchema.openapi({
+      description: 'The request ID. Each ID must be unique within each batch.',
+    }),
+    alarmModelName: AlarmModelNameSchema.openapi({ description: 'The name of the alarm model.' }),
+    keyValue: KeyValueSchema.exactOptional().openapi({
+      description:
+        'The value of the key used as a filter to select only the alarms associated with the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_CreateAlarmModel.html#iotevents-CreateAlarmModel-request-key">key</a>.',
+    }),
+    note: NoteSchema.exactOptional().openapi({
+      description: 'The note that you can leave when you disable the alarm.',
+    }),
   })
   .openapi({
     required: ['requestId', 'alarmModelName'],
@@ -277,37 +191,27 @@ const DisableAlarmActionRequestSchema = z
 
 const BatchEnableAlarmResponseSchema = z
   .object({
-    errorEntries: BatchAlarmActionErrorEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of errors associated with the request, or <code>null</code> if there are no errors. Each error entry contains an entry ID that helps you identify the entry that failed.',
-        }),
-    ).exactOptional(),
+    errorEntries: BatchAlarmActionErrorEntriesSchema.exactOptional().openapi({
+      description:
+        'A list of errors associated with the request, or <code>null</code> if there are no errors. Each error entry contains an entry ID that helps you identify the entry that failed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchEnableAlarmResponse')
 
 const EnableAlarmActionRequestSchema = z
   .object({
-    requestId: RequestIdSchema.and(
-      z.any().openapi({ description: 'The request ID. Each ID must be unique within each batch.' }),
-    ),
-    alarmModelName: AlarmModelNameSchema.and(
-      z.any().openapi({ description: 'The name of the alarm model.' }),
-    ),
-    keyValue: KeyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the key used as a filter to select only the alarms associated with the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_CreateAlarmModel.html#iotevents-CreateAlarmModel-request-key">key</a>.',
-        }),
-    ).exactOptional(),
-    note: NoteSchema.and(
-      z.any().openapi({ description: 'The note that you can leave when you enable the alarm.' }),
-    ).exactOptional(),
+    requestId: RequestIdSchema.openapi({
+      description: 'The request ID. Each ID must be unique within each batch.',
+    }),
+    alarmModelName: AlarmModelNameSchema.openapi({ description: 'The name of the alarm model.' }),
+    keyValue: KeyValueSchema.exactOptional().openapi({
+      description:
+        'The value of the key used as a filter to select only the alarms associated with the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_CreateAlarmModel.html#iotevents-CreateAlarmModel-request-key">key</a>.',
+    }),
+    note: NoteSchema.exactOptional().openapi({
+      description: 'The note that you can leave when you enable the alarm.',
+    }),
   })
   .openapi({
     required: ['requestId', 'alarmModelName'],
@@ -317,20 +221,14 @@ const EnableAlarmActionRequestSchema = z
 
 const BatchPutMessageErrorEntrySchema = z
   .object({
-    messageId: MessageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the message that caused the error. (See the value corresponding to the <code>"messageId"</code> key in the <code>"message"</code> object.)',
-        }),
-    ).exactOptional(),
-    errorCode: ErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'A message that describes the error.' }),
-    ).exactOptional(),
+    messageId: MessageIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the message that caused the error. (See the value corresponding to the <code>"messageId"</code> key in the <code>"message"</code> object.)',
+    }),
+    errorCode: ErrorCodeSchema.exactOptional().openapi({ description: 'The error code.' }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'A message that describes the error.',
+    }),
   })
   .openapi({ description: 'Contains information about the errors encountered.', required: [] })
   .openapi('BatchPutMessageErrorEntry')
@@ -341,11 +239,9 @@ const BatchPutMessageErrorEntriesSchema = z
 
 const BatchPutMessageResponseSchema = z
   .object({
-    BatchPutMessageErrorEntries: BatchPutMessageErrorEntriesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of any errors encountered when sending the messages.' }),
-    ).exactOptional(),
+    BatchPutMessageErrorEntries: BatchPutMessageErrorEntriesSchema.exactOptional().openapi({
+      description: 'A list of any errors encountered when sending the messages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchPutMessageResponse')
@@ -367,41 +263,29 @@ const EpochMilliTimestampSchema = z
 
 const TimestampValueSchema = z
   .object({
-    timeInMillis: EpochMilliTimestampSchema.and(
-      z.any().openapi({ description: 'The value of the timestamp, in the Unix epoch format.' }),
-    ).exactOptional(),
+    timeInMillis: EpochMilliTimestampSchema.exactOptional().openapi({
+      description: 'The value of the timestamp, in the Unix epoch format.',
+    }),
   })
   .openapi({ description: 'Contains information about a timestamp.', required: [] })
   .openapi('TimestampValue')
 
 const MessageSchema = z
   .object({
-    messageId: MessageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID to assign to the message. Within each batch sent, each <code>"messageId"</code> must be unique.',
-        }),
-    ),
-    inputName: EphemeralInputNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the input into which the message payload is transformed.',
-        }),
-    ),
-    payload: PayloadSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The payload of the message. This can be a JSON string or a Base-64-encoded string representing binary data (in which case you must decode it).',
-        }),
-    ),
-    timestamp: TimestampValueSchema.and(
-      z.any().openapi({ description: 'The timestamp associated with the message.' }),
-    ).exactOptional(),
+    messageId: MessageIdSchema.openapi({
+      description:
+        'The ID to assign to the message. Within each batch sent, each <code>"messageId"</code> must be unique.',
+    }),
+    inputName: EphemeralInputNameSchema.openapi({
+      description: 'The name of the input into which the message payload is transformed.',
+    }),
+    payload: PayloadSchema.openapi({
+      description:
+        'The payload of the message. This can be a JSON string or a Base-64-encoded string representing binary data (in which case you must decode it).',
+    }),
+    timestamp: TimestampValueSchema.exactOptional().openapi({
+      description: 'The timestamp associated with the message.',
+    }),
   })
   .openapi({
     required: ['messageId', 'inputName', 'payload'],
@@ -411,37 +295,27 @@ const MessageSchema = z
 
 const BatchResetAlarmResponseSchema = z
   .object({
-    errorEntries: BatchAlarmActionErrorEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of errors associated with the request, or <code>null</code> if there are no errors. Each error entry contains an entry ID that helps you identify the entry that failed.',
-        }),
-    ).exactOptional(),
+    errorEntries: BatchAlarmActionErrorEntriesSchema.exactOptional().openapi({
+      description:
+        'A list of errors associated with the request, or <code>null</code> if there are no errors. Each error entry contains an entry ID that helps you identify the entry that failed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchResetAlarmResponse')
 
 const ResetAlarmActionRequestSchema = z
   .object({
-    requestId: RequestIdSchema.and(
-      z.any().openapi({ description: 'The request ID. Each ID must be unique within each batch.' }),
-    ),
-    alarmModelName: AlarmModelNameSchema.and(
-      z.any().openapi({ description: 'The name of the alarm model.' }),
-    ),
-    keyValue: KeyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the key used as a filter to select only the alarms associated with the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_CreateAlarmModel.html#iotevents-CreateAlarmModel-request-key">key</a>.',
-        }),
-    ).exactOptional(),
-    note: NoteSchema.and(
-      z.any().openapi({ description: 'The note that you can leave when you reset the alarm.' }),
-    ).exactOptional(),
+    requestId: RequestIdSchema.openapi({
+      description: 'The request ID. Each ID must be unique within each batch.',
+    }),
+    alarmModelName: AlarmModelNameSchema.openapi({ description: 'The name of the alarm model.' }),
+    keyValue: KeyValueSchema.exactOptional().openapi({
+      description:
+        'The value of the key used as a filter to select only the alarms associated with the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_CreateAlarmModel.html#iotevents-CreateAlarmModel-request-key">key</a>.',
+    }),
+    note: NoteSchema.exactOptional().openapi({
+      description: 'The note that you can leave when you reset the alarm.',
+    }),
   })
   .openapi({
     required: ['requestId', 'alarmModelName'],
@@ -451,14 +325,10 @@ const ResetAlarmActionRequestSchema = z
 
 const BatchSnoozeAlarmResponseSchema = z
   .object({
-    errorEntries: BatchAlarmActionErrorEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of errors associated with the request, or <code>null</code> if there are no errors. Each error entry contains an entry ID that helps you identify the entry that failed.',
-        }),
-    ).exactOptional(),
+    errorEntries: BatchAlarmActionErrorEntriesSchema.exactOptional().openapi({
+      description:
+        'A list of errors associated with the request, or <code>null</code> if there are no errors. Each error entry contains an entry ID that helps you identify the entry that failed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchSnoozeAlarmResponse')
@@ -467,31 +337,21 @@ const SnoozeDurationSchema = z.int().openapi('SnoozeDuration')
 
 const SnoozeAlarmActionRequestSchema = z
   .object({
-    requestId: RequestIdSchema.and(
-      z.any().openapi({ description: 'The request ID. Each ID must be unique within each batch.' }),
-    ),
-    alarmModelName: AlarmModelNameSchema.and(
-      z.any().openapi({ description: 'The name of the alarm model.' }),
-    ),
-    keyValue: KeyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the key used as a filter to select only the alarms associated with the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_CreateAlarmModel.html#iotevents-CreateAlarmModel-request-key">key</a>.',
-        }),
-    ).exactOptional(),
-    note: NoteSchema.and(
-      z.any().openapi({ description: 'The note that you can leave when you snooze the alarm.' }),
-    ).exactOptional(),
-    snoozeDuration: SnoozeDurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The snooze time in seconds. The alarm automatically changes to the <code>NORMAL</code> state after this duration.',
-        }),
-    ),
+    requestId: RequestIdSchema.openapi({
+      description: 'The request ID. Each ID must be unique within each batch.',
+    }),
+    alarmModelName: AlarmModelNameSchema.openapi({ description: 'The name of the alarm model.' }),
+    keyValue: KeyValueSchema.exactOptional().openapi({
+      description:
+        'The value of the key used as a filter to select only the alarms associated with the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_CreateAlarmModel.html#iotevents-CreateAlarmModel-request-key">key</a>.',
+    }),
+    note: NoteSchema.exactOptional().openapi({
+      description: 'The note that you can leave when you snooze the alarm.',
+    }),
+    snoozeDuration: SnoozeDurationSchema.openapi({
+      description:
+        'The snooze time in seconds. The alarm automatically changes to the <code>NORMAL</code> state after this duration.',
+    }),
   })
   .openapi({
     required: ['requestId', 'alarmModelName', 'snoozeDuration'],
@@ -501,20 +361,14 @@ const SnoozeAlarmActionRequestSchema = z
 
 const BatchUpdateDetectorErrorEntrySchema = z
   .object({
-    messageId: MessageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>"messageId"</code> of the update request that caused the error. (The value of the <code>"messageId"</code> in the update request <code>"Detector"</code> object.)',
-        }),
-    ).exactOptional(),
-    errorCode: ErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'A message that describes the error.' }),
-    ).exactOptional(),
+    messageId: MessageIdSchema.exactOptional().openapi({
+      description:
+        'The <code>"messageId"</code> of the update request that caused the error. (The value of the <code>"messageId"</code> in the update request <code>"Detector"</code> object.)',
+    }),
+    errorCode: ErrorCodeSchema.exactOptional().openapi({ description: 'The error code.' }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'A message that describes the error.',
+    }),
   })
   .openapi({
     description: 'Information about the error that occurred when attempting to update a detector.',
@@ -528,14 +382,10 @@ const BatchUpdateDetectorErrorEntriesSchema = z
 
 const BatchUpdateDetectorResponseSchema = z
   .object({
-    batchUpdateDetectorErrorEntries: BatchUpdateDetectorErrorEntriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of those detector updates that resulted in errors. (If an error is listed here, the specific update did not occur.)',
-        }),
-    ).exactOptional(),
+    batchUpdateDetectorErrorEntries: BatchUpdateDetectorErrorEntriesSchema.exactOptional().openapi({
+      description:
+        'A list of those detector updates that resulted in errors. (If an error is listed here, the specific update did not occur.)',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchUpdateDetectorResponse')
@@ -553,10 +403,8 @@ const VariableValueSchema = z.string().min(1).max(1024).openapi('VariableValue')
 
 const VariableDefinitionSchema = z
   .object({
-    name: VariableNameSchema.and(z.any().openapi({ description: 'The name of the variable.' })),
-    value: VariableValueSchema.and(
-      z.any().openapi({ description: 'The new value of the variable.' }),
-    ),
+    name: VariableNameSchema.openapi({ description: 'The name of the variable.' }),
+    value: VariableValueSchema.openapi({ description: 'The new value of the variable.' }),
   })
   .openapi({ required: ['name', 'value'], description: 'The new value of the variable.' })
   .openapi('VariableDefinition')
@@ -569,15 +417,10 @@ const SecondsSchema = z.int().openapi('Seconds')
 
 const TimerDefinitionSchema = z
   .object({
-    name: TimerNameSchema.and(z.any().openapi({ description: 'The name of the timer.' })),
-    seconds: SecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new setting of the timer (the number of seconds before the timer elapses).',
-        }),
-    ),
+    name: TimerNameSchema.openapi({ description: 'The name of the timer.' }),
+    seconds: SecondsSchema.openapi({
+      description: 'The new setting of the timer (the number of seconds before the timer elapses).',
+    }),
   })
   .openapi({ required: ['name', 'seconds'], description: 'The new setting of a timer.' })
   .openapi('TimerDefinition')
@@ -586,25 +429,17 @@ const TimerDefinitionsSchema = z.array(TimerDefinitionSchema).openapi('TimerDefi
 
 const DetectorStateDefinitionSchema = z
   .object({
-    stateName: StateNameSchema.and(
-      z.any().openapi({ description: 'The name of the new state of the detector (instance).' }),
-    ),
-    variables: VariableDefinitionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The new values of the detector's variables. Any variable whose value isn't specified is cleared.",
-        }),
-    ),
-    timers: TimerDefinitionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The new values of the detector's timers. Any timer whose value isn't specified is cleared, and its timeout event won't occur.",
-        }),
-    ),
+    stateName: StateNameSchema.openapi({
+      description: 'The name of the new state of the detector (instance).',
+    }),
+    variables: VariableDefinitionsSchema.openapi({
+      description:
+        "The new values of the detector's variables. Any variable whose value isn't specified is cleared.",
+    }),
+    timers: TimerDefinitionsSchema.openapi({
+      description:
+        "The new values of the detector's timers. Any timer whose value isn't specified is cleared, and its timeout event won't occur.",
+    }),
   })
   .openapi({
     required: ['stateName', 'variables', 'timers'],
@@ -614,37 +449,20 @@ const DetectorStateDefinitionSchema = z
 
 const UpdateDetectorRequestSchema = z
   .object({
-    messageId: MessageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID to assign to the detector update <code>"message"</code>. Each <code>"messageId"</code> must be unique within each batch sent.',
-        }),
-    ),
-    detectorModelName: DetectorModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the detector model that created the detectors (instances).',
-        }),
-    ),
-    keyValue: KeyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the input key attribute (identifying the device or system) that caused the creation of this detector (instance).',
-        }),
-    ).exactOptional(),
-    state: DetectorStateDefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new state, variable values, and timer settings of the detector (instance).',
-        }),
-    ),
+    messageId: MessageIdSchema.openapi({
+      description:
+        'The ID to assign to the detector update <code>"message"</code>. Each <code>"messageId"</code> must be unique within each batch sent.',
+    }),
+    detectorModelName: DetectorModelNameSchema.openapi({
+      description: 'The name of the detector model that created the detectors (instances).',
+    }),
+    keyValue: KeyValueSchema.exactOptional().openapi({
+      description:
+        'The value of the input key attribute (identifying the device or system) that caused the creation of this detector (instance).',
+    }),
+    state: DetectorStateDefinitionSchema.openapi({
+      description: 'The new state, variable values, and timer settings of the detector (instance).',
+    }),
   })
   .openapi({
     required: ['messageId', 'detectorModelName', 'state'],
@@ -658,20 +476,39 @@ const AlarmStateNameSchema = z
   .enum(['DISABLED', 'NORMAL', 'ACTIVE', 'ACKNOWLEDGED', 'SNOOZE_DISABLED', 'LATCHED'])
   .openapi('AlarmStateName')
 
-const RuleEvaluationSchema: z.ZodType<RuleEvaluationType> = z
-  .lazy(() =>
-    z
-      .object({
-        simpleRuleEvaluation: SimpleRuleEvaluationSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Information needed to compare two values with a comparison operator.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'Information needed to evaluate data.', required: [] }),
-  )
+const InputPropertyValueSchema = z.string().openapi('InputPropertyValue')
+
+const ComparisonOperatorSchema = z
+  .enum(['GREATER', 'GREATER_OR_EQUAL', 'LESS', 'LESS_OR_EQUAL', 'EQUAL', 'NOT_EQUAL'])
+  .openapi('ComparisonOperator')
+
+const ThresholdValueSchema = z.string().openapi('ThresholdValue')
+
+const SimpleRuleEvaluationSchema = z
+  .object({
+    inputPropertyValue: InputPropertyValueSchema.exactOptional().openapi({
+      description: 'The value of the input property, on the left side of the comparison operator.',
+    }),
+    operator: ComparisonOperatorSchema.exactOptional().openapi({
+      description: 'The comparison operator.',
+    }),
+    thresholdValue: ThresholdValueSchema.exactOptional().openapi({
+      description: 'The threshold value, on the right side of the comparison operator.',
+    }),
+  })
+  .openapi({
+    description: 'Information needed to compare two values with a comparison operator.',
+    required: [],
+  })
+  .openapi('SimpleRuleEvaluation')
+
+const RuleEvaluationSchema = z
+  .object({
+    simpleRuleEvaluation: SimpleRuleEvaluationSchema.exactOptional().openapi({
+      description: 'Information needed to compare two values with a comparison operator.',
+    }),
+  })
+  .openapi({ description: 'Information needed to evaluate data.', required: [] })
   .openapi('RuleEvaluation')
 
 const CustomerActionNameSchema = z
@@ -680,17 +517,13 @@ const CustomerActionNameSchema = z
 
 const SnoozeActionConfigurationSchema = z
   .object({
-    snoozeDuration: SnoozeDurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The snooze time in seconds. The alarm automatically changes to the <code>NORMAL</code> state after this duration.',
-        }),
-    ).exactOptional(),
-    note: NoteSchema.and(
-      z.any().openapi({ description: 'The note that you can leave when you snooze the alarm.' }),
-    ).exactOptional(),
+    snoozeDuration: SnoozeDurationSchema.exactOptional().openapi({
+      description:
+        'The snooze time in seconds. The alarm automatically changes to the <code>NORMAL</code> state after this duration.',
+    }),
+    note: NoteSchema.exactOptional().openapi({
+      description: 'The note that you can leave when you snooze the alarm.',
+    }),
   })
   .openapi({
     description: 'Contains the configuration information of a snooze action.',
@@ -700,9 +533,9 @@ const SnoozeActionConfigurationSchema = z
 
 const EnableActionConfigurationSchema = z
   .object({
-    note: NoteSchema.and(
-      z.any().openapi({ description: 'The note that you can leave when you enable the alarm.' }),
-    ).exactOptional(),
+    note: NoteSchema.exactOptional().openapi({
+      description: 'The note that you can leave when you enable the alarm.',
+    }),
   })
   .openapi({
     description: 'Contains the configuration information of an enable action.',
@@ -712,9 +545,9 @@ const EnableActionConfigurationSchema = z
 
 const DisableActionConfigurationSchema = z
   .object({
-    note: NoteSchema.and(
-      z.any().openapi({ description: 'The note that you can leave when you disable the alarm.' }),
-    ).exactOptional(),
+    note: NoteSchema.exactOptional().openapi({
+      description: 'The note that you can leave when you disable the alarm.',
+    }),
   })
   .openapi({
     description: 'Contains the configuration information of a disable action.',
@@ -724,11 +557,9 @@ const DisableActionConfigurationSchema = z
 
 const AcknowledgeActionConfigurationSchema = z
   .object({
-    note: NoteSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The note that you can leave when you acknowledge the alarm.' }),
-    ).exactOptional(),
+    note: NoteSchema.exactOptional().openapi({
+      description: 'The note that you can leave when you acknowledge the alarm.',
+    }),
   })
   .openapi({
     description: 'Contains the configuration information of an acknowledge action.',
@@ -738,9 +569,9 @@ const AcknowledgeActionConfigurationSchema = z
 
 const ResetActionConfigurationSchema = z
   .object({
-    note: NoteSchema.and(
-      z.any().openapi({ description: 'The note that you can leave when you reset the alarm.' }),
-    ).exactOptional(),
+    note: NoteSchema.exactOptional().openapi({
+      description: 'The note that you can leave when you reset the alarm.',
+    }),
   })
   .openapi({
     description: 'Contains the configuration information of a reset action.',
@@ -750,39 +581,25 @@ const ResetActionConfigurationSchema = z
 
 const CustomerActionSchema = z
   .object({
-    actionName: CustomerActionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the action. The action name can be one of the following values:</p> <ul> <li> <p> <code>SNOOZE</code> - When you snooze the alarm, the alarm state changes to <code>SNOOZE_DISABLED</code>.</p> </li> <li> <p> <code>ENABLE</code> - When you enable the alarm, the alarm state changes to <code>NORMAL</code>.</p> </li> <li> <p> <code>DISABLE</code> - When you disable the alarm, the alarm state changes to <code>DISABLED</code>.</p> </li> <li> <p> <code>ACKNOWLEDGE</code> - When you acknowledge the alarm, the alarm state changes to <code>ACKNOWLEDGED</code>.</p> </li> <li> <p> <code>RESET</code> - When you reset the alarm, the alarm state changes to <code>NORMAL</code>.</p> </li> </ul> <p>For more information, see the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_AlarmState.html">AlarmState</a> API.</p>',
-        }),
-    ).exactOptional(),
-    snoozeActionConfiguration: SnoozeActionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the configuration information of a snooze action.' }),
-    ).exactOptional(),
-    enableActionConfiguration: EnableActionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the configuration information of an enable action.' }),
-    ).exactOptional(),
-    disableActionConfiguration: DisableActionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the configuration information of a disable action.' }),
-    ).exactOptional(),
-    acknowledgeActionConfiguration: AcknowledgeActionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains the configuration information of an acknowledge action.',
-        }),
-    ).exactOptional(),
-    resetActionConfiguration: ResetActionConfigurationSchema.and(
-      z.any().openapi({ description: 'Contains the configuration information of a reset action.' }),
-    ).exactOptional(),
+    actionName: CustomerActionNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the action. The action name can be one of the following values:</p> <ul> <li> <p> <code>SNOOZE</code> - When you snooze the alarm, the alarm state changes to <code>SNOOZE_DISABLED</code>.</p> </li> <li> <p> <code>ENABLE</code> - When you enable the alarm, the alarm state changes to <code>NORMAL</code>.</p> </li> <li> <p> <code>DISABLE</code> - When you disable the alarm, the alarm state changes to <code>DISABLED</code>.</p> </li> <li> <p> <code>ACKNOWLEDGE</code> - When you acknowledge the alarm, the alarm state changes to <code>ACKNOWLEDGED</code>.</p> </li> <li> <p> <code>RESET</code> - When you reset the alarm, the alarm state changes to <code>NORMAL</code>.</p> </li> </ul> <p>For more information, see the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_AlarmState.html">AlarmState</a> API.</p>',
+    }),
+    snoozeActionConfiguration: SnoozeActionConfigurationSchema.exactOptional().openapi({
+      description: 'Contains the configuration information of a snooze action.',
+    }),
+    enableActionConfiguration: EnableActionConfigurationSchema.exactOptional().openapi({
+      description: 'Contains the configuration information of an enable action.',
+    }),
+    disableActionConfiguration: DisableActionConfigurationSchema.exactOptional().openapi({
+      description: 'Contains the configuration information of a disable action.',
+    }),
+    acknowledgeActionConfiguration: AcknowledgeActionConfigurationSchema.exactOptional().openapi({
+      description: 'Contains the configuration information of an acknowledge action.',
+    }),
+    resetActionConfiguration: ResetActionConfigurationSchema.exactOptional().openapi({
+      description: 'Contains the configuration information of a reset action.',
+    }),
   })
   .openapi({
     description: 'Contains information about the action that you can take to respond to the alarm.',
@@ -796,14 +613,10 @@ const TriggerTypeSchema = z.literal('SNOOZE_TIMEOUT').openapi('TriggerType')
 
 const StateChangeConfigurationSchema = z
   .object({
-    triggerType: TriggerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The trigger type. If the value is <code>SNOOZE_TIMEOUT</code>, the snooze duration ends and the alarm automatically changes to the <code>NORMAL</code> state.',
-        }),
-    ).exactOptional(),
+    triggerType: TriggerTypeSchema.exactOptional().openapi({
+      description:
+        'The trigger type. If the value is <code>SNOOZE_TIMEOUT</code>, the snooze duration ends and the alarm automatically changes to the <code>NORMAL</code> state.',
+    }),
   })
   .openapi({
     description: 'Contains the configuration information of alarm state changes.',
@@ -813,47 +626,33 @@ const StateChangeConfigurationSchema = z
 
 const SystemEventSchema = z
   .object({
-    eventType: EventTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The event type. If the value is <code>STATE_CHANGE</code>, the event contains information about alarm state changes.',
-        }),
-    ).exactOptional(),
-    stateChangeConfiguration: StateChangeConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the configuration information of alarm state changes.' }),
-    ).exactOptional(),
+    eventType: EventTypeSchema.exactOptional().openapi({
+      description:
+        'The event type. If the value is <code>STATE_CHANGE</code>, the event contains information about alarm state changes.',
+    }),
+    stateChangeConfiguration: StateChangeConfigurationSchema.exactOptional().openapi({
+      description: 'Contains the configuration information of alarm state changes.',
+    }),
   })
   .openapi({ description: 'Contains information about alarm state changes.', required: [] })
   .openapi('SystemEvent')
 
 const AlarmStateSchema = z
   .object({
-    stateName: AlarmStateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the alarm state. The state name can be one of the following values:</p> <ul> <li> <p> <code>DISABLED</code> - When the alarm is in the <code>DISABLED</code> state, it isn't ready to evaluate data. To enable the alarm, you must change the alarm to the <code>NORMAL</code> state.</p> </li> <li> <p> <code>NORMAL</code> - When the alarm is in the <code>NORMAL</code> state, it's ready to evaluate data.</p> </li> <li> <p> <code>ACTIVE</code> - If the alarm is in the <code>ACTIVE</code> state, the alarm is invoked.</p> </li> <li> <p> <code>ACKNOWLEDGED</code> - When the alarm is in the <code>ACKNOWLEDGED</code> state, the alarm was invoked and you acknowledged the alarm.</p> </li> <li> <p> <code>SNOOZE_DISABLED</code> - When the alarm is in the <code>SNOOZE_DISABLED</code> state, the alarm is disabled for a specified period of time. After the snooze time, the alarm automatically changes to the <code>NORMAL</code> state. </p> </li> <li> <p> <code>LATCHED</code> - When the alarm is in the <code>LATCHED</code> state, the alarm was invoked. However, the data that the alarm is currently evaluating is within the specified range. To change the alarm to the <code>NORMAL</code> state, you must acknowledge the alarm.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    ruleEvaluation: RuleEvaluationSchema.and(
-      z.any().openapi({ description: 'Information needed to evaluate data.' }),
-    ).exactOptional(),
-    customerAction: CustomerActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the action that you can take to respond to the alarm.',
-        }),
-    ).exactOptional(),
-    systemEvent: SystemEventSchema.and(
-      z.any().openapi({ description: 'Contains information about alarm state changes.' }),
-    ).exactOptional(),
+    stateName: AlarmStateNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the alarm state. The state name can be one of the following values:</p> <ul> <li> <p> <code>DISABLED</code> - When the alarm is in the <code>DISABLED</code> state, it isn't ready to evaluate data. To enable the alarm, you must change the alarm to the <code>NORMAL</code> state.</p> </li> <li> <p> <code>NORMAL</code> - When the alarm is in the <code>NORMAL</code> state, it's ready to evaluate data.</p> </li> <li> <p> <code>ACTIVE</code> - If the alarm is in the <code>ACTIVE</code> state, the alarm is invoked.</p> </li> <li> <p> <code>ACKNOWLEDGED</code> - When the alarm is in the <code>ACKNOWLEDGED</code> state, the alarm was invoked and you acknowledged the alarm.</p> </li> <li> <p> <code>SNOOZE_DISABLED</code> - When the alarm is in the <code>SNOOZE_DISABLED</code> state, the alarm is disabled for a specified period of time. After the snooze time, the alarm automatically changes to the <code>NORMAL</code> state. </p> </li> <li> <p> <code>LATCHED</code> - When the alarm is in the <code>LATCHED</code> state, the alarm was invoked. However, the data that the alarm is currently evaluating is within the specified range. To change the alarm to the <code>NORMAL</code> state, you must acknowledge the alarm.</p> </li> </ul>",
+    }),
+    ruleEvaluation: RuleEvaluationSchema.exactOptional().openapi({
+      description: 'Information needed to evaluate data.',
+    }),
+    customerAction: CustomerActionSchema.exactOptional().openapi({
+      description:
+        'Contains information about the action that you can take to respond to the alarm.',
+    }),
+    systemEvent: SystemEventSchema.exactOptional().openapi({
+      description: 'Contains information about alarm state changes.',
+    }),
   })
   .openapi({
     description: 'Contains information about the current state of the alarm.',
@@ -867,49 +666,37 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const AlarmSchema = z
   .object({
-    alarmModelName: AlarmModelNameSchema.and(
-      z.any().openapi({ description: 'The name of the alarm model.' }),
-    ).exactOptional(),
-    alarmModelVersion: AlarmModelVersionSchema.and(
-      z.any().openapi({ description: 'The version of the alarm model.' }),
-    ).exactOptional(),
-    keyValue: KeyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the key used as a filter to select only the alarms associated with the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_CreateAlarmModel.html#iotevents-CreateAlarmModel-request-key">key</a>.',
-        }),
-    ).exactOptional(),
-    alarmState: AlarmStateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains information about the current state of the alarm.' }),
-    ).exactOptional(),
-    severity: SeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A non-negative integer that reflects the severity level of the alarm.',
-        }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the alarm was created, in the Unix epoch format.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time the alarm was last updated, in the Unix epoch format.' }),
-    ).exactOptional(),
+    alarmModelName: AlarmModelNameSchema.exactOptional().openapi({
+      description: 'The name of the alarm model.',
+    }),
+    alarmModelVersion: AlarmModelVersionSchema.exactOptional().openapi({
+      description: 'The version of the alarm model.',
+    }),
+    keyValue: KeyValueSchema.exactOptional().openapi({
+      description:
+        'The value of the key used as a filter to select only the alarms associated with the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_CreateAlarmModel.html#iotevents-CreateAlarmModel-request-key">key</a>.',
+    }),
+    alarmState: AlarmStateSchema.exactOptional().openapi({
+      description: 'Contains information about the current state of the alarm.',
+    }),
+    severity: SeveritySchema.exactOptional().openapi({
+      description: 'A non-negative integer that reflects the severity level of the alarm.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the alarm was created, in the Unix epoch format.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the alarm was last updated, in the Unix epoch format.',
+    }),
   })
   .openapi({ description: 'Contains information about an alarm.', required: [] })
   .openapi('Alarm')
 
 const DescribeAlarmResponseSchema = z
   .object({
-    alarm: AlarmSchema.and(
-      z.any().openapi({ description: 'Contains information about an alarm.' }),
-    ).exactOptional(),
+    alarm: AlarmSchema.exactOptional().openapi({
+      description: 'Contains information about an alarm.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAlarmResponse')
@@ -920,10 +707,8 @@ const DetectorModelVersionSchema = z.string().min(1).max(128).openapi('DetectorM
 
 const VariableSchema = z
   .object({
-    name: VariableNameSchema.and(z.any().openapi({ description: 'The name of the variable.' })),
-    value: VariableValueSchema.and(
-      z.any().openapi({ description: 'The current value of the variable.' }),
-    ),
+    name: VariableNameSchema.openapi({ description: 'The name of the variable.' }),
+    value: VariableValueSchema.openapi({ description: 'The current value of the variable.' }),
   })
   .openapi({ required: ['name', 'value'], description: 'The current state of the variable.' })
   .openapi('Variable')
@@ -932,10 +717,8 @@ const VariablesSchema = z.array(VariableSchema).openapi('Variables')
 
 const TimerSchema = z
   .object({
-    name: TimerNameSchema.and(z.any().openapi({ description: 'The name of the timer.' })),
-    timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The expiration time for the timer.' }),
-    ),
+    name: TimerNameSchema.openapi({ description: 'The name of the timer.' }),
+    timestamp: TimestampSchema.openapi({ description: 'The expiration time for the timer.' }),
   })
   .openapi({ required: ['name', 'timestamp'], description: 'The current state of a timer.' })
   .openapi('Timer')
@@ -944,13 +727,11 @@ const TimersSchema = z.array(TimerSchema).openapi('Timers')
 
 const DetectorStateSchema = z
   .object({
-    stateName: StateNameSchema.and(z.any().openapi({ description: 'The name of the state.' })),
-    variables: VariablesSchema.and(
-      z.any().openapi({ description: "The current values of the detector's variables." }),
-    ),
-    timers: TimersSchema.and(
-      z.any().openapi({ description: "The current state of the detector's timers." }),
-    ),
+    stateName: StateNameSchema.openapi({ description: 'The name of the state.' }),
+    variables: VariablesSchema.openapi({
+      description: "The current values of the detector's variables.",
+    }),
+    timers: TimersSchema.openapi({ description: "The current state of the detector's timers." }),
   })
   .openapi({
     required: ['stateName', 'variables', 'timers'],
@@ -960,82 +741,60 @@ const DetectorStateSchema = z
 
 const DetectorSchema = z
   .object({
-    detectorModelName: DetectorModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the detector model that created this detector (instance).',
-        }),
-    ).exactOptional(),
-    keyValue: KeyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the key (identifying the device or system) that caused the creation of this detector (instance).',
-        }),
-    ).exactOptional(),
-    detectorModelVersion: DetectorModelVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version of the detector model that created this detector (instance).',
-        }),
-    ).exactOptional(),
-    state: DetectorStateSchema.and(
-      z.any().openapi({ description: 'The current state of the detector (instance).' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the detector (instance) was created.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the detector (instance) was last updated.' }),
-    ).exactOptional(),
+    detectorModelName: DetectorModelNameSchema.exactOptional().openapi({
+      description: 'The name of the detector model that created this detector (instance).',
+    }),
+    keyValue: KeyValueSchema.exactOptional().openapi({
+      description:
+        'The value of the key (identifying the device or system) that caused the creation of this detector (instance).',
+    }),
+    detectorModelVersion: DetectorModelVersionSchema.exactOptional().openapi({
+      description: 'The version of the detector model that created this detector (instance).',
+    }),
+    state: DetectorStateSchema.exactOptional().openapi({
+      description: 'The current state of the detector (instance).',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the detector (instance) was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the detector (instance) was last updated.',
+    }),
   })
   .openapi({ description: 'Information about the detector (instance).', required: [] })
   .openapi('Detector')
 
 const DescribeDetectorResponseSchema = z
   .object({
-    detector: DetectorSchema.and(
-      z.any().openapi({ description: 'Information about the detector (instance).' }),
-    ).exactOptional(),
+    detector: DetectorSchema.exactOptional().openapi({
+      description: 'Information about the detector (instance).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDetectorResponse')
 
 const AlarmSummarySchema = z
   .object({
-    alarmModelName: AlarmModelNameSchema.and(
-      z.any().openapi({ description: 'The name of the alarm model.' }),
-    ).exactOptional(),
-    alarmModelVersion: AlarmModelVersionSchema.and(
-      z.any().openapi({ description: 'The version of the alarm model.' }),
-    ).exactOptional(),
-    keyValue: KeyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the key used as a filter to select only the alarms associated with the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_CreateAlarmModel.html#iotevents-CreateAlarmModel-request-key">key</a>.',
-        }),
-    ).exactOptional(),
-    stateName: AlarmStateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the alarm state. The state name can be one of the following values:</p> <ul> <li> <p> <code>DISABLED</code> - When the alarm is in the <code>DISABLED</code> state, it isn't ready to evaluate data. To enable the alarm, you must change the alarm to the <code>NORMAL</code> state.</p> </li> <li> <p> <code>NORMAL</code> - When the alarm is in the <code>NORMAL</code> state, it's ready to evaluate data.</p> </li> <li> <p> <code>ACTIVE</code> - If the alarm is in the <code>ACTIVE</code> state, the alarm is invoked.</p> </li> <li> <p> <code>ACKNOWLEDGED</code> - When the alarm is in the <code>ACKNOWLEDGED</code> state, the alarm was invoked and you acknowledged the alarm.</p> </li> <li> <p> <code>SNOOZE_DISABLED</code> - When the alarm is in the <code>SNOOZE_DISABLED</code> state, the alarm is disabled for a specified period of time. After the snooze time, the alarm automatically changes to the <code>NORMAL</code> state. </p> </li> <li> <p> <code>LATCHED</code> - When the alarm is in the <code>LATCHED</code> state, the alarm was invoked. However, the data that the alarm is currently evaluating is within the specified range. To change the alarm to the <code>NORMAL</code> state, you must acknowledge the alarm.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the alarm was created, in the Unix epoch format.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time the alarm was last updated, in the Unix epoch format.' }),
-    ).exactOptional(),
+    alarmModelName: AlarmModelNameSchema.exactOptional().openapi({
+      description: 'The name of the alarm model.',
+    }),
+    alarmModelVersion: AlarmModelVersionSchema.exactOptional().openapi({
+      description: 'The version of the alarm model.',
+    }),
+    keyValue: KeyValueSchema.exactOptional().openapi({
+      description:
+        'The value of the key used as a filter to select only the alarms associated with the <a href="https://docs.aws.amazon.com/iotevents/latest/apireference/API_CreateAlarmModel.html#iotevents-CreateAlarmModel-request-key">key</a>.',
+    }),
+    stateName: AlarmStateNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the alarm state. The state name can be one of the following values:</p> <ul> <li> <p> <code>DISABLED</code> - When the alarm is in the <code>DISABLED</code> state, it isn't ready to evaluate data. To enable the alarm, you must change the alarm to the <code>NORMAL</code> state.</p> </li> <li> <p> <code>NORMAL</code> - When the alarm is in the <code>NORMAL</code> state, it's ready to evaluate data.</p> </li> <li> <p> <code>ACTIVE</code> - If the alarm is in the <code>ACTIVE</code> state, the alarm is invoked.</p> </li> <li> <p> <code>ACKNOWLEDGED</code> - When the alarm is in the <code>ACKNOWLEDGED</code> state, the alarm was invoked and you acknowledged the alarm.</p> </li> <li> <p> <code>SNOOZE_DISABLED</code> - When the alarm is in the <code>SNOOZE_DISABLED</code> state, the alarm is disabled for a specified period of time. After the snooze time, the alarm automatically changes to the <code>NORMAL</code> state. </p> </li> <li> <p> <code>LATCHED</code> - When the alarm is in the <code>LATCHED</code> state, the alarm was invoked. However, the data that the alarm is currently evaluating is within the specified range. To change the alarm to the <code>NORMAL</code> state, you must acknowledge the alarm.</p> </li> </ul>",
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the alarm was created, in the Unix epoch format.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the alarm was last updated, in the Unix epoch format.',
+    }),
   })
   .openapi({ description: 'Contains a summary of an alarm.', required: [] })
   .openapi('AlarmSummary')
@@ -1046,63 +805,45 @@ const NextTokenSchema = z.string().openapi('NextToken')
 
 const ListAlarmsResponseSchema = z
   .object({
-    alarmSummaries: AlarmSummariesSchema.and(
-      z.any().openapi({ description: 'A list that summarizes each alarm.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that you can use to return the next set of results, or <code>null</code> if there are no more results.',
-        }),
-    ).exactOptional(),
+    alarmSummaries: AlarmSummariesSchema.exactOptional().openapi({
+      description: 'A list that summarizes each alarm.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token that you can use to return the next set of results, or <code>null</code> if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAlarmsResponse')
 
 const DetectorStateSummarySchema = z
   .object({
-    stateName: StateNameSchema.and(
-      z.any().openapi({ description: 'The name of the state.' }),
-    ).exactOptional(),
+    stateName: StateNameSchema.exactOptional().openapi({ description: 'The name of the state.' }),
   })
   .openapi({ description: 'Information about the detector state.', required: [] })
   .openapi('DetectorStateSummary')
 
 const DetectorSummarySchema = z
   .object({
-    detectorModelName: DetectorModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the detector model that created this detector (instance).',
-        }),
-    ).exactOptional(),
-    keyValue: KeyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the key (identifying the device or system) that caused the creation of this detector (instance).',
-        }),
-    ).exactOptional(),
-    detectorModelVersion: DetectorModelVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version of the detector model that created this detector (instance).',
-        }),
-    ).exactOptional(),
-    state: DetectorStateSummarySchema.and(
-      z.any().openapi({ description: 'The current state of the detector (instance).' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the detector (instance) was created.' }),
-    ).exactOptional(),
-    lastUpdateTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the detector (instance) was last updated.' }),
-    ).exactOptional(),
+    detectorModelName: DetectorModelNameSchema.exactOptional().openapi({
+      description: 'The name of the detector model that created this detector (instance).',
+    }),
+    keyValue: KeyValueSchema.exactOptional().openapi({
+      description:
+        'The value of the key (identifying the device or system) that caused the creation of this detector (instance).',
+    }),
+    detectorModelVersion: DetectorModelVersionSchema.exactOptional().openapi({
+      description: 'The version of the detector model that created this detector (instance).',
+    }),
+    state: DetectorStateSummarySchema.exactOptional().openapi({
+      description: 'The current state of the detector (instance).',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the detector (instance) was created.',
+    }),
+    lastUpdateTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the detector (instance) was last updated.',
+    }),
   })
   .openapi({ description: 'Information about the detector (instance).', required: [] })
   .openapi('DetectorSummary')
@@ -1111,19 +852,13 @@ const DetectorSummariesSchema = z.array(DetectorSummarySchema).openapi('Detector
 
 const ListDetectorsResponseSchema = z
   .object({
-    detectorSummaries: DetectorSummariesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of summary information about the detectors (instances).' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that you can use to return the next set of results, or <code>null</code> if there are no more results.',
-        }),
-    ).exactOptional(),
+    detectorSummaries: DetectorSummariesSchema.exactOptional().openapi({
+      description: 'A list of summary information about the detectors (instances).',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token that you can use to return the next set of results, or <code>null</code> if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDetectorsResponse')
@@ -1135,14 +870,10 @@ const AcknowledgeAlarmActionRequestsSchema = z
 
 const BatchAcknowledgeAlarmRequestSchema = z
   .object({
-    acknowledgeActionRequests: AcknowledgeAlarmActionRequestsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of acknowledge action requests. You can specify up to 10 requests per operation.',
-        }),
-    ),
+    acknowledgeActionRequests: AcknowledgeAlarmActionRequestsSchema.openapi({
+      description:
+        'The list of acknowledge action requests. You can specify up to 10 requests per operation.',
+    }),
   })
   .openapi({ required: ['acknowledgeActionRequests'], title: 'BatchAcknowledgeAlarmRequest' })
   .openapi('BatchAcknowledgeAlarmRequest')
@@ -1154,9 +885,9 @@ const DeleteDetectorRequestsSchema = z
 
 const BatchDeleteDetectorRequestSchema = z
   .object({
-    detectors: DeleteDetectorRequestsSchema.and(
-      z.any().openapi({ description: 'The list of one or more detectors to be deleted.' }),
-    ),
+    detectors: DeleteDetectorRequestsSchema.openapi({
+      description: 'The list of one or more detectors to be deleted.',
+    }),
   })
   .openapi({ required: ['detectors'], title: 'BatchDeleteDetectorRequest' })
   .openapi('BatchDeleteDetectorRequest')
@@ -1168,14 +899,10 @@ const DisableAlarmActionRequestsSchema = z
 
 const BatchDisableAlarmRequestSchema = z
   .object({
-    disableActionRequests: DisableAlarmActionRequestsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of disable action requests. You can specify up to 10 requests per operation.',
-        }),
-    ),
+    disableActionRequests: DisableAlarmActionRequestsSchema.openapi({
+      description:
+        'The list of disable action requests. You can specify up to 10 requests per operation.',
+    }),
   })
   .openapi({ required: ['disableActionRequests'], title: 'BatchDisableAlarmRequest' })
   .openapi('BatchDisableAlarmRequest')
@@ -1187,14 +914,10 @@ const EnableAlarmActionRequestsSchema = z
 
 const BatchEnableAlarmRequestSchema = z
   .object({
-    enableActionRequests: EnableAlarmActionRequestsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of enable action requests. You can specify up to 10 requests per operation.',
-        }),
-    ),
+    enableActionRequests: EnableAlarmActionRequestsSchema.openapi({
+      description:
+        'The list of enable action requests. You can specify up to 10 requests per operation.',
+    }),
   })
   .openapi({ required: ['enableActionRequests'], title: 'BatchEnableAlarmRequest' })
   .openapi('BatchEnableAlarmRequest')
@@ -1203,14 +926,10 @@ const MessagesSchema = z.array(MessageSchema).min(1).openapi('Messages')
 
 const BatchPutMessageRequestSchema = z
   .object({
-    messages: MessagesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of messages to send. Each message has the following format: <code>\'{ "messageId": "string", "inputName": "string", "payload": "string"}\'</code> ',
-        }),
-    ),
+    messages: MessagesSchema.openapi({
+      description:
+        'The list of messages to send. Each message has the following format: <code>\'{ "messageId": "string", "inputName": "string", "payload": "string"}\'</code> ',
+    }),
   })
   .openapi({ required: ['messages'], title: 'BatchPutMessageRequest' })
   .openapi('BatchPutMessageRequest')
@@ -1222,14 +941,10 @@ const ResetAlarmActionRequestsSchema = z
 
 const BatchResetAlarmRequestSchema = z
   .object({
-    resetActionRequests: ResetAlarmActionRequestsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of reset action requests. You can specify up to 10 requests per operation.',
-        }),
-    ),
+    resetActionRequests: ResetAlarmActionRequestsSchema.openapi({
+      description:
+        'The list of reset action requests. You can specify up to 10 requests per operation.',
+    }),
   })
   .openapi({ required: ['resetActionRequests'], title: 'BatchResetAlarmRequest' })
   .openapi('BatchResetAlarmRequest')
@@ -1241,14 +956,10 @@ const SnoozeAlarmActionRequestsSchema = z
 
 const BatchSnoozeAlarmRequestSchema = z
   .object({
-    snoozeActionRequests: SnoozeAlarmActionRequestsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of snooze action requests. You can specify up to 10 requests per operation.',
-        }),
-    ),
+    snoozeActionRequests: SnoozeAlarmActionRequestsSchema.openapi({
+      description:
+        'The list of snooze action requests. You can specify up to 10 requests per operation.',
+    }),
   })
   .openapi({ required: ['snoozeActionRequests'], title: 'BatchSnoozeAlarmRequest' })
   .openapi('BatchSnoozeAlarmRequest')
@@ -1260,37 +971,32 @@ const UpdateDetectorRequestsSchema = z
 
 const BatchUpdateDetectorRequestSchema = z
   .object({
-    detectors: UpdateDetectorRequestsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of detectors (instances) to update, along with the values to update.',
-        }),
-    ),
+    detectors: UpdateDetectorRequestsSchema.openapi({
+      description: 'The list of detectors (instances) to update, along with the values to update.',
+    }),
   })
   .openapi({ required: ['detectors'], title: 'BatchUpdateDetectorRequest' })
   .openapi('BatchUpdateDetectorRequest')
 
 const DescribeAlarmRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAlarmRequest' })
   .openapi('DescribeAlarmRequest')
 
 const DescribeDetectorRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDetectorRequest' })
   .openapi('DescribeDetectorRequest')
 
 const MaxResultsSchema = z.int().min(1).max(250).openapi('MaxResults')
 
 const ListAlarmsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAlarmsRequest' })
   .openapi('ListAlarmsRequest')
 
 const ListDetectorsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDetectorsRequest' })
   .openapi('ListDetectorsRequest')
 

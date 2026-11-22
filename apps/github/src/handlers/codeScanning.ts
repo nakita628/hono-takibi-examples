@@ -87,13 +87,14 @@ export const codeScanningHandler = app
   .openapi(postReposOwnerRepoCodeScanningCodeqlVariantAnalysesRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    getReposOwnerRepoCodeScanningCodeqlVariantAnalysesCodeqlVariantAnalysisIdRoute,
-    (c) => {},
-  )
+  .openapi(getReposOwnerRepoCodeScanningCodeqlVariantAnalysesCodeqlVariantAnalysisIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(
     getReposOwnerRepoCodeScanningCodeqlVariantAnalysesCodeqlVariantAnalysisIdReposRepoOwnerRepoNameRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(getReposOwnerRepoCodeScanningDefaultSetupRoute, (c) => {
     throw new Error('Not implemented')

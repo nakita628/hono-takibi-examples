@@ -1,91 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const OwnerSchema = z
-  .unknown()
-  .superRefine((val, ctx) => {
-    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-      if (!Object.hasOwn(val, 'ID')) {
-        ctx.addIssue({ code: 'custom' })
-      }
-      if (!Object.hasOwn(val, 'name')) {
-        ctx.addIssue({ code: 'custom' })
-      }
-      if (!Object.hasOwn(val, 'role')) {
-        ctx.addIssue({ code: 'custom' })
-      }
-      if (Object.hasOwn(val, 'ID')) {
-        const Schema = z.string().openapi({ example: '12345678Z' })
-        if (!Schema.safeParse(Reflect.get(val, 'ID')).success) {
-          ctx.addIssue({ code: 'custom' })
-        }
-      }
-      if (Object.hasOwn(val, 'name')) {
-        const Schema = z.string().openapi({ example: 'LUIS GARCIA BAQUERO' })
-        if (!Schema.safeParse(Reflect.get(val, 'name')).success) {
-          ctx.addIssue({ code: 'custom' })
-        }
-      }
-      if (Object.hasOwn(val, 'role')) {
-        const Schema = z
-          .enum([
-            'owner',
-            'co-owner',
-            'legal representative',
-            'administrator',
-            'attorney-in-fact',
-            'authorised',
-          ])
-          .openapi({ example: 'owner' })
-        if (!Schema.safeParse(Reflect.get(val, 'role')).success) {
-          ctx.addIssue({ code: 'custom' })
-        }
-      }
-    }
-    if (Array.isArray(val)) {
-      {
-        const Schema = z.array(z.any())
-        for (let i = 0; i < val.length; i++) {
-          if (!Schema.safeParse(val[i]).success) {
-            ctx.addIssue({ code: 'custom' })
-          }
-        }
-      }
-    }
-  })
-  .openapi({ required: ['ID', 'name', 'role'] })
-  .openapi('Owner')
-
 const AccountsSchema = z
-  .object({
-    balances: z
-      .object({
-        available: z.number().exactOptional().openapi({ example: 14302.07 }),
-        current: z.number().exactOptional().openapi({ example: 14302.07 }),
-      })
-      .openapi({ required: [] }),
-    code: z
-      .string()
-      .openapi({ description: 'Código IBAN sin espacios', example: 'ES4914651234561234567890' }),
-    currency: z.string().openapi({ example: 'EUR' }),
-    name: z.string().openapi({ example: 'Cuenta NÓMINA' }),
-    owners: OwnerSchema,
-    transactions: z.array(
-      z
-        .object({
-          amount: z.number().exactOptional().openapi({ example: -1.1 }),
-          balance: z.number().exactOptional().openapi({ example: 14302.07 }),
-          description: z.string().exactOptional().openapi({ example: 'Pago en TELPARK MADRID ES' }),
-          operation_date: z.iso.date().exactOptional().openapi({ example: '2022-12-30' }),
-          uuid: z
-            .string()
-            .exactOptional()
-            .openapi({ example: 'd0c2ea4c072cf4d7b0fd494d7728260d736e6b25' }),
-          value_date: z.iso.date().exactOptional().openapi({ example: '2022-12-30' }),
-        })
-        .openapi({ required: [] }),
-    ),
-    uuid: z.string().openapi({ example: '8076932f04f73e27fe608fee4d12fca8708dec8c' }),
-  })
+  .array(z.looseObject({}))
   .openapi({
     description:
       'Cuentas bancarias. En cuentas europeas, solamente activado cuando el cliente de Wealth Reader cuenta con licencia PSD2',
@@ -94,51 +10,7 @@ const AccountsSchema = z
   .openapi('Accounts')
 
 const CardsSchema = z
-  .object({
-    anual_interest: z.number().exactOptional().openapi({ example: 17.48 }),
-    balances: z
-      .object({
-        available: z.number().exactOptional().openapi({ example: 3980 }),
-        disposed: z.number().exactOptional().openapi({ example: 20 }),
-        limit: z.number().exactOptional().openapi({ example: 4000 }),
-      })
-      .openapi({ required: [] }),
-    code: z
-      .string()
-      .openapi({
-        description: 'Numeración con ofuscación PCI compliance',
-        example: '516097********1234',
-      }),
-    currency: z.string().openapi({ example: 'EUR' }),
-    linked_account: z.string().exactOptional().openapi({ example: 'ES4021005321592566566159' }),
-    name: z.string().openapi({ example: 'Tarjeta Crédito' }),
-    next_payment_date: z.iso.date().exactOptional().openapi({ example: '2023-01-05' }),
-    owner: OwnerSchema.exactOptional(),
-    status: z
-      .enum(['active', 'inactive', 'cancelled'])
-      .exactOptional()
-      .openapi({ example: 'active' }),
-    subtype: z.enum(['credit', 'debit', 'prepaid']).openapi({ example: 'credit' }),
-    tae: z.number().exactOptional().openapi({ example: 18.95 }),
-    transactions: z
-      .object({
-        amount: z.number().openapi({ example: -20 }),
-        description: z.string().openapi({ example: 'Pago en AMZN MKTP ES123CM0ZM4' }),
-        settled: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Indica si es un movimiento perteneciente a un extracto diferente del periodo de facturación actual',
-            example: false,
-          }),
-        uuid: z.string().openapi({ example: '78ceedca9cd9d2f2bfbb2439795ab6a1fcefc12b' }),
-        value_date: z.iso.date().openapi({ example: '2022-12-28' }),
-      })
-      .exactOptional()
-      .openapi({ required: ['uuid', 'value_date', 'amount', 'description'] }),
-    uuid: z.string().openapi({ example: 'aefd89eade0a6a09d9b8eab4c22da6a6a37632e6' }),
-  })
+  .array(z.looseObject({}))
   .openapi({
     description: 'Tarjetas de crédito, débito y prepago',
     required: ['subtype', 'uuid', 'code', 'name', 'currency', 'balances'],
@@ -146,22 +18,7 @@ const CardsSchema = z
   .openapi('Cards')
 
 const ContractsSchema = z
-  .object({
-    contract_id: z
-      .string()
-      .openapi({
-        description:
-          'Identificador único del contrato. Valor a indicar para seleccionar el contrato al que se desea acceder',
-        example: 'B12345678',
-      }),
-    description: z
-      .string()
-      .openapi({
-        description:
-          'Descripción que acompaña al contract_id. Normalmente será el nombre de la sociedad o persona titular del contrato',
-        example: 'WEALTH READER S.L.',
-      }),
-  })
+  .array(z.looseObject({}))
   .openapi({
     description:
       'Solamente estará informado cuando el valor de code sea 2020 (usuario multicontrato)',
@@ -169,282 +26,13 @@ const ContractsSchema = z
   })
   .openapi('Contracts')
 
-const StatisticsSchema = z
-  .object({
-    SESSION: z
-      .string()
-      .openapi({
-        description:
-          'Guarda siempre este valor, tanto si la conexión es correcta como si no. Es necesario para obtener soporte',
-        example: '3463754e3540884',
-      }),
-    execution_time: z
-      .number()
-      .openapi({ description: 'Duración de la ejecución', example: 0.958119869232178 }),
-    operation_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'El valor vendrá indicado cuando se haya invocado a la API a través del Widget que proporciona Wealth Reader. Para saber más sobre este tipo de integración, visita: https://docs-es.wealthreader.com/',
-        example: '1827C79229',
-      }),
-    token: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'El valor vendrá indicado cuando se ha pedido la custodia de credenciales con la opción tokenize=true',
-        example: 'FRJ0mHlaqZwLzu',
-      }),
-  })
-  .openapi({ required: ['SESSION', 'execution_time'] })
-  .openapi('Statistics')
-
 const EntitiesSchema = z
-  .object({
-    bic: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Código BIC. Solamente está indicado cuando la entidad es un banco',
-        example: 'BMARES2M',
-      }),
-    code: z.string().openapi({ description: 'El código de la institución', example: 'bancamarch' }),
-    inputs: z
-      .object({
-        document_type: z
-          .object({
-            name: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  "Nombre del campo. Al ser el campo 'tipo de documento' un listado de valores desplegables, este string es un listado de valores separados por punto y coma",
-                example: 'DNI;Pasaporte',
-              }),
-            placeholder: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Etiqueta dentro del campo que aporta información adicional sobre cómo rellenar la información',
-                example: '',
-              }),
-            required: z
-              .boolean()
-              .exactOptional()
-              .openapi({ description: 'Indica si el campo es requerido', example: 0 }),
-            validation_rule: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Indica el tipo de dato que acepta este campo',
-                example: '',
-              }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        password: z
-          .object({
-            name: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Nombre del campo', example: 'Clave de acceso' }),
-            placeholder: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Etiqueta dentro del campo que aporta información adicional sobre cómo rellenar la información',
-                example: '',
-              }),
-            required: z
-              .boolean()
-              .exactOptional()
-              .openapi({ description: 'Indica si el campo es requerido', example: 1 }),
-            validation_rule: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Indica el tipo de dato que acepta este campo',
-                example: "type='password'",
-              }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        second_password: z
-          .object({
-            name: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Indica el tipo de dato que acepta este campo',
-                example: '',
-              }),
-            placeholder: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Etiqueta dentro del campo que aporta información adicional sobre cómo rellenar la información',
-                example: '',
-              }),
-            required: z
-              .boolean()
-              .exactOptional()
-              .openapi({ description: 'Indica si el campo es requerido', example: 0 }),
-            validation_rule: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The validation rule for the field', example: '' }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        user: z
-          .object({
-            name: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Nombre del campo', example: 'Nombre de usuario' }),
-            placeholder: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'Etiqueta dentro del campo que aporta información adicional sobre cómo rellenar la información',
-                example: 'Email',
-              }),
-            required: z
-              .boolean()
-              .exactOptional()
-              .openapi({ description: 'Indica si el campo es requerido', example: 1 }),
-            validation_rule: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Indica el tipo de dato que acepta este campo',
-                example: "type='email'",
-              }),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .openapi({ required: [] }),
-    logo: z
-      .string()
-      .openapi({ description: 'Logotipo', example: 'https://cdn.wealthreader.com/bancamarch.svg' }),
-    name: z
-      .string()
-      .openapi({ description: 'The nombre de la institución', example: 'Bancamarch' }),
-    statistics: StatisticsSchema.exactOptional(),
-  })
+  .array(z.looseObject({}))
   .openapi({ required: ['code', 'name', 'logo', 'inputs', 'statictics'] })
   .openapi('Entities')
 
 const PortfoliosSchema = z
-  .object({
-    annualized_volatility: z
-      .number()
-      .openapi({ description: 'El valor será 0 cuando la entidad no lo proporcione', example: 0 }),
-    code: z.string().openapi({ example: '1465010091400123456789' }),
-    composition: z
-      .object({
-        DGS: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Valor indicado siempre que la cartera sea subtype: pension-plans',
-            example: 'F0062',
-          }),
-        DGS_description: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Valor indicado siempre que la cartera sea subtype: pension-plans',
-            example: 'ABANCA EMPLEO, FONDO DE PENSIONES',
-          }),
-        ISIN: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Valor indicado siempre que la cartera sea subtype: funds o stocks',
-            example: 'ES0152743003',
-          }),
-        ISIN_description: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Valor indicado siempre que la cartera sea subtype: funds o stocks',
-            example: 'Fondo Dinámico',
-          }),
-        currency: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Divisa en codificación ISO 4217', example: 'EUR' }),
-        price: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Precio actual', example: 14.5577 }),
-        shares: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Participaciones', example: 225.0077 }),
-        total_amount: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'Importe total', example: 3275.6 }),
-        weighting: z
-          .number()
-          .exactOptional()
-          .openapi({
-            description: 'Peso con respecto al resto de la composición de la cartera',
-            example: 100,
-          }),
-      })
-      .openapi({ description: 'Composición de la cartera', required: [] }),
-    contracting_date: z.iso.date().openapi({ example: '2016-04-27' }),
-    contributions: z.number().openapi({ example: 3019.33 }),
-    currency: z.string().openapi({ example: 'EUR' }),
-    linked_account: z
-      .string()
-      .openapi({
-        description:
-          'Código IBAN sin espacios. El valor será not-provided cuando la entidad no lo proporcione',
-        example: 'ES4021005321592566566159',
-      }),
-    name: z.string().openapi({ example: 'Fondo Dinámico' }),
-    owners: OwnerSchema,
-    subtype: z.enum(['funds', 'stocks', 'pension-plans']).openapi({ example: 'funds' }),
-    total_value: z.number().openapi({ example: 3275.6 }),
-    transactions: z
-      .xor([
-        z.object({ ISIN: z.string().exactOptional() }).openapi({ required: [] }),
-        z.object({ DGS: z.string().exactOptional() }).openapi({ required: [] }),
-      ])
-      .openapi({
-        required: [
-          'uuid',
-          'value_date',
-          'operation_type',
-          'shares',
-          'price',
-          'total_amount',
-          'reference_currency',
-          'currency',
-          'exchange_rate',
-        ],
-      }),
-    uuid: z
-      .string()
-      .openapi({
-        description: 'Identificador único asignado por Wealth Reader',
-        example: '05e4563f5bbf2d06efd0a29ebe7edbbb4e1bff63',
-      }),
-    weighted_return: z.number().openapi({ example: 8.49 }),
-    withholdings: z.number().openapi({ example: 0 }),
-    yield: z.number().openapi({ example: 256.27 }),
-  })
+  .array(z.looseObject({}))
   .openapi({
     description: 'Carteras de acciones, fondos y planes de pensiones',
     required: [
@@ -523,6 +111,38 @@ const UserInformationSchema = z
     required: ['ID', 'name'],
   })
   .openapi('UserInformation')
+
+const StatisticsSchema = z
+  .object({
+    SESSION: z
+      .string()
+      .openapi({
+        description:
+          'Guarda siempre este valor, tanto si la conexión es correcta como si no. Es necesario para obtener soporte',
+        example: '3463754e3540884',
+      }),
+    execution_time: z
+      .number()
+      .openapi({ description: 'Duración de la ejecución', example: 0.958119869232178 }),
+    operation_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'El valor vendrá indicado cuando se haya invocado a la API a través del Widget que proporciona Wealth Reader. Para saber más sobre este tipo de integración, visita: https://docs-es.wealthreader.com/',
+        example: '1827C79229',
+      }),
+    token: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'El valor vendrá indicado cuando se ha pedido la custodia de credenciales con la opción tokenize=true',
+        example: 'FRJ0mHlaqZwLzu',
+      }),
+  })
+  .openapi({ required: ['SESSION', 'execution_time'] })
+  .openapi('Statistics')
 
 const EntityDataSchema = z
   .union([
@@ -641,6 +261,61 @@ const ErrorCodesSchema = z
   })
   .openapi({ required: ['name'] })
   .openapi('ErrorCodes')
+
+const OwnerSchema = z
+  .unknown()
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'ID')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'role')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (Object.hasOwn(val, 'ID')) {
+        const Schema = z.string().openapi({ example: '12345678Z' })
+        if (!Schema.safeParse(Reflect.get(val, 'ID')).success) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+      if (Object.hasOwn(val, 'name')) {
+        const Schema = z.string().openapi({ example: 'LUIS GARCIA BAQUERO' })
+        if (!Schema.safeParse(Reflect.get(val, 'name')).success) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+      if (Object.hasOwn(val, 'role')) {
+        const Schema = z
+          .enum([
+            'owner',
+            'co-owner',
+            'legal representative',
+            'administrator',
+            'attorney-in-fact',
+            'authorised',
+          ])
+          .openapi({ example: 'owner' })
+        if (!Schema.safeParse(Reflect.get(val, 'role')).success) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    }
+    if (Array.isArray(val)) {
+      {
+        const Schema = z.array(z.any())
+        for (let i = 0; i < val.length; i++) {
+          if (!Schema.safeParse(val[i]).success) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      }
+    }
+  })
+  .openapi({ required: ['ID', 'name', 'role'] })
+  .openapi('Owner')
 
 export const getEntitiesRoute = createRoute({
   method: 'get',

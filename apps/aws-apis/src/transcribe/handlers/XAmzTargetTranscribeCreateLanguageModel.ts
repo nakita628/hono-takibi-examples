@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetTranscribeCreateLanguageModelHandler = app.openapi(
   postXAmzTargetTranscribeCreateLanguageModelRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

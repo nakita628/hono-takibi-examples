@@ -3,7 +3,9 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/mobileanalytics/2014-06-05/openapi.yaml',
   output: './src/mobileanalytics/routes.ts',
-  template: {},
+  // template: { routeHandler: true }: the default template exports each handler file under its tag or first
+  // path segment, and one here starts with a digit, which is not an identifier (nakita628/hono-takibi#506).
+  template: { routeHandler: true },
   type: { output: './src/mobileanalytics/types.ts' },
   client: { output: './src/mobileanalytics/client.ts', baseUrl: '/' },
   rpc: { output: './src/mobileanalytics/rpc.ts', parseResponse: true },

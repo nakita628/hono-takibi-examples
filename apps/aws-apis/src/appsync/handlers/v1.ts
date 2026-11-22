@@ -235,12 +235,13 @@ export const v1Handler = app
   })
   .openapi(
     getV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdTypesFormatRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
-  .openapi(
-    postV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdMergeRoute,
-    (c) => {},
-  )
+  .openapi(postV1MergedApisMergedApiIdentifierSourceApiAssociationsAssociationIdMergeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(deleteV1TagsResourceArnTagKeysRoute, (c) => {
     throw new Error('Not implemented')
   })

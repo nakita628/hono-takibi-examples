@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetLogs20140328ListTagsForResourceHandler = app.openapi(
   postXAmzTargetLogs20140328ListTagsForResourceRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

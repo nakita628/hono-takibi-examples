@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodeBuild20161006ListReportGroupsHandler = app.openapi(
   postXAmzTargetCodeBuild20161006ListReportGroupsRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

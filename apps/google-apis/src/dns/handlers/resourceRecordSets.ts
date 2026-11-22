@@ -18,13 +18,19 @@ export const resourceRecordSetsHandler = app
   })
   .openapi(
     deleteDnsV2ProjectsProjectLocationsLocationManagedZonesManagedZoneRrsetsNameTypeRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     getDnsV2ProjectsProjectLocationsLocationManagedZonesManagedZoneRrsetsNameTypeRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     patchDnsV2ProjectsProjectLocationsLocationManagedZonesManagedZoneRrsetsNameTypeRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

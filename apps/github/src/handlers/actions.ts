@@ -253,13 +253,14 @@ export const actionsHandler = app
   .openapi(getOrgsOrgActionsHostedRunnersImagesCustomImageDefinitionIdVersionsRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    getOrgsOrgActionsHostedRunnersImagesCustomImageDefinitionIdVersionsVersionRoute,
-    (c) => {},
-  )
+  .openapi(getOrgsOrgActionsHostedRunnersImagesCustomImageDefinitionIdVersionsVersionRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(
     deleteOrgsOrgActionsHostedRunnersImagesCustomImageDefinitionIdVersionsVersionRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(getOrgsOrgActionsHostedRunnersImagesGithubOwnedRoute, (c) => {
     throw new Error('Not implemented')

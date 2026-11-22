@@ -21,15 +21,21 @@ const app = new OpenAPIHono()
 export const batchHandler = app
   .openapi(
     postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchCreateRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchPurgeRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchUpdateRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(postCrmAssociations202609FromObjectTypeToObjectTypeBatchArchiveRoute, (c) => {
     throw new Error('Not implemented')
@@ -48,7 +54,9 @@ export const batchHandler = app
   })
   .openapi(
     putCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(postCrmObjects202609ObjectTypeBatchArchiveRoute, (c) => {
     throw new Error('Not implemented')

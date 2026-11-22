@@ -161,6 +161,1264 @@ const LinkSchema = z
   .openapi({ required: ['href'] })
   .openapi('Link')
 
+type SelfLinkType = z.infer<typeof LinkSchema>
+
+const SelfLinkSchema: z.ZodType<SelfLinkType> = LinkSchema.and(
+  z
+    .object({ rel: z.literal('self').openapi({ description: 'The link type.' }) })
+    .openapi({ required: ['rel'] }),
+)
+  .openapi({ required: ['rel'] })
+  .openapi('SelfLink')
+
+type CustomerLinkType = z.infer<typeof LinkSchema>
+
+const CustomerLinkSchema: z.ZodType<CustomerLinkType> = LinkSchema.and(
+  z
+    .object({
+      rel: z.enum(['customer', 'targetCustomer']).openapi({ description: 'The link type.' }),
+    })
+    .openapi({ required: ['rel'] }),
+)
+  .openapi({ required: ['rel'] })
+  .openapi('CustomerLink')
+
+type ServerTimestampType = string
+
+const ServerTimestampSchema: z.ZodType<ServerTimestampType> = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description: 'Read-only timestamp, automatically assigned on back-end.',
+    readOnly: true,
+  })
+  .openapi('ServerTimestamp')
+
+const LeadSourceDataSchema = z
+  .object({
+    _links: z
+      .array(z.union([SelfLinkSchema, CustomerLinkSchema]))
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'The links related to resource.', readOnly: true }),
+    affiliate: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Lead source affiliate (eg 123, Bob Smith).' }),
+    campaign: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Lead source campaign (eg go-big-123).' }),
+    clickId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Lead source click id (may come from an ad server).' }),
+    content: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Lead source content (eg smiley faces).' }),
+    createdTime: ServerTimestampSchema.exactOptional().openapi({
+      description: 'Lead source created time.',
+    }),
+    medium: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Lead source medium (eg search, display).' }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Lead source path url (eg www.example.com/some/landing/path).' }),
+    referrer: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Lead source [`referer` url](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referer) as determined (eg www.example.com/some/landing/path).',
+      }),
+    salesAgent: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Lead source sales agent (eg James Bond).' }),
+    source: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Lead source origin (eg google, yahoo).' }),
+    subAffiliate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Lead source sub-affiliate also called a sub-id or click id in some circles (eg 123456).',
+      }),
+    term: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Lead source term (eg salt shakers).' }),
+  })
+  .openapi({ required: [] })
+  .openapi('LeadSourceData')
+
+const LeadSourceSchema = LeadSourceDataSchema.and(
+  z
+    .object({ original: LeadSourceDataSchema.exactOptional().openapi({ readOnly: true }) })
+    .openapi({ required: [] }),
+).openapi('LeadSource')
+
+type LeadSourceEmbedType = { leadSource?: z.infer<typeof LeadSourceSchema> }
+
+const LeadSourceEmbedSchema: z.ZodType<LeadSourceEmbedType> = z
+  .object({ leadSource: LeadSourceSchema.exactOptional() })
+  .openapi({ description: 'Lead Source object.', readOnly: true, required: [] })
+  .openapi('LeadSourceEmbed')
+
+const DefaultPaymentInstrumentLinkSchema = LinkSchema.and(
+  z
+    .object({
+      rel: z.literal('defaultPaymentInstrument').openapi({ description: 'The link type.' }),
+    })
+    .openapi({ required: ['rel'] }),
+)
+  .openapi({ required: ['rel'] })
+  .openapi('DefaultPaymentInstrumentLink')
+
+type LeadSourceLinkType = z.infer<typeof LinkSchema>
+
+const LeadSourceLinkSchema: z.ZodType<LeadSourceLinkType> = LinkSchema.and(
+  z
+    .object({ rel: z.literal('leadSource').openapi({ description: 'The link type.' }) })
+    .openapi({ required: ['rel'] }),
+)
+  .openapi({ required: ['rel'] })
+  .openapi('LeadSourceLink')
+
+type WebsiteLinkType = z.infer<typeof LinkSchema>
+
+const WebsiteLinkSchema: z.ZodType<WebsiteLinkType> = LinkSchema.and(
+  z
+    .object({ rel: z.literal('website').openapi({ description: 'The link type.' }) })
+    .openapi({ required: ['rel'] }),
+)
+  .openapi({ required: ['rel'] })
+  .openapi('WebsiteLink')
+
+type CurrencyCodeType = string
+
+const CurrencyCodeSchema: z.ZodType<CurrencyCodeType> = z
+  .string()
+  .length(3)
+  .openapi({ description: 'ISO 4217 alphabetic currency code.', example: 'USD' })
+  .openapi('CurrencyCode')
+
+const CustomerAverageValueSchema = z
+  .object({
+    amount: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: "Average approved payment amount in Merchant's reporting currency.",
+        'x-basic': true,
+        'x-label': 'Average Value',
+        'x-sortable': true,
+        'x-type': 'Money',
+      }),
+    amountUsd: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Average approved payment amount in USD.' }),
+    currency: CurrencyCodeSchema.exactOptional().openapi({
+      description: "Merchant's reporting currency.",
+    }),
+  })
+  .openapi({ readOnly: true, required: [] })
+  .openapi('CustomerAverageValue')
+
+const ResourceCustomFieldsSchema = z
+  .looseObject({})
+  .default({})
+  .openapi({
+    description:
+      'Custom Fields list as a map `{"custom field name": "custom field value", ...}`. The format must follow the saved format (see Custom Fields section for the formats).\n',
+    example: { foo: 'bar' },
+  })
+  .openapi('ResourceCustomFields')
+
+type PaymentMethodType =
+  | 'payment-card'
+  | 'ach'
+  | 'cash'
+  | 'check'
+  | 'paypal'
+  | 'AdvCash'
+  | 'Airpay'
+  | 'Alfa-click'
+  | 'Alipay'
+  | 'Apple Pay'
+  | 'AstroPay Card'
+  | 'AstroPay-GO'
+  | 'bank-transfer'
+  | 'bank-transfer-2'
+  | 'bank-transfer-3'
+  | 'bank-transfer-4'
+  | 'bank-transfer-5'
+  | 'bank-transfer-6'
+  | 'bank-transfer-7'
+  | 'bank-transfer-8'
+  | 'bank-transfer-9'
+  | 'Beeline'
+  | 'Belfius-direct-net'
+  | 'bitcoin'
+  | 'Boleto'
+  | 'Boleto-2'
+  | 'Boleto-3'
+  | 'cash-deposit'
+  | 'CASHlib'
+  | 'CashToCode'
+  | 'CCAvenue'
+  | 'China UnionPay'
+  | 'CODVoucher'
+  | 'Conekta-oxxo'
+  | 'Conekta-spei'
+  | 'cryptocurrency'
+  | 'Cupon-de-pagos'
+  | 'CyberSource'
+  | 'domestic-cards'
+  | 'echeck'
+  | 'ecoPayz'
+  | 'ecoVoucher'
+  | 'EPS'
+  | 'ePay.bg'
+  | 'Ethereum'
+  | 'e-wallet'
+  | 'ezyEFT'
+  | 'eZeeWallet'
+  | 'Flexepin'
+  | 'Giropay'
+  | 'Google Pay'
+  | 'Gpaysafe'
+  | 'iDebit'
+  | 'iDEAL'
+  | 'ING-homepay'
+  | 'INOVAPAY-pin'
+  | 'INOVAPAY-wallet'
+  | 'InstaDebit'
+  | 'instant-bank-transfer'
+  | 'Interac-online'
+  | 'Interac-eTransfer'
+  | 'Interac-express-connect'
+  | 'Interac'
+  | 'invoice'
+  | 'iWallet'
+  | 'Jeton'
+  | 'jpay'
+  | 'Khelocard'
+  | 'Klarna'
+  | 'Litecoin'
+  | 'loonie'
+  | 'LPG-online'
+  | 'LPG-payment-card'
+  | 'Megafon'
+  | 'MiFinity-eWallet'
+  | 'miscellaneous'
+  | 'Bancontact'
+  | 'MTS'
+  | 'MuchBetter'
+  | 'MyFatoorah'
+  | 'Neosurf'
+  | 'Netbanking'
+  | 'Neteller'
+  | 'Nordea-Solo'
+  | 'OchaPay'
+  | 'online-bank-transfer'
+  | 'Onlineueberweisen'
+  | 'oriental-wallet'
+  | 'OXXO'
+  | 'Pagsmile-lottery'
+  | 'Pagsmile-deposit-express'
+  | 'PayCash'
+  | 'Payeer'
+  | 'PaymentAsia-crypto'
+  | 'Paysafecard'
+  | 'PayTabs'
+  | 'Pay4Fun'
+  | 'Paymero'
+  | 'Paymero-QR'
+  | 'PayULatam'
+  | 'Perfect-money'
+  | 'Piastrix'
+  | 'PIX'
+  | 'PinPay'
+  | 'phone'
+  | 'PhonePe'
+  | 'POLi'
+  | 'PostFinance-card'
+  | 'PostFinance-e-finance'
+  | 'Przelewy24'
+  | 'QIWI'
+  | 'QQPay'
+  | 'Resurs'
+  | 'SEPA'
+  | 'Siirto'
+  | 'Skrill'
+  | 'Skrill Rapid Transfer'
+  | 'SMSVoucher'
+  | 'Sofort'
+  | 'SparkPay'
+  | 'swift-dbt'
+  | 'Tele2'
+  | 'Terminaly-RF'
+  | 'Tether'
+  | 'ToditoCash-card'
+  | 'Trustly'
+  | 'TWINT'
+  | 'UniCrypt'
+  | 'UPayCard'
+  | 'UPI'
+  | 'VCreditos'
+  | 'VenusPoint'
+  | 'voucher'
+  | 'voucher-2'
+  | 'voucher-3'
+  | 'voucher-4'
+  | 'Webmoney'
+  | 'Webpay'
+  | 'Webpay-2'
+  | 'Webpay Card'
+  | 'WeChat Pay'
+  | 'XPay-P2P'
+  | 'XPay-QR'
+  | 'Yandex-money'
+  | 'Zotapay'
+  | 'Zimpler'
+
+const PaymentMethodSchema: z.ZodType<PaymentMethodType> = z
+  .enum([
+    'payment-card',
+    'ach',
+    'cash',
+    'check',
+    'paypal',
+    'AdvCash',
+    'Airpay',
+    'Alfa-click',
+    'Alipay',
+    'Apple Pay',
+    'AstroPay Card',
+    'AstroPay-GO',
+    'bank-transfer',
+    'bank-transfer-2',
+    'bank-transfer-3',
+    'bank-transfer-4',
+    'bank-transfer-5',
+    'bank-transfer-6',
+    'bank-transfer-7',
+    'bank-transfer-8',
+    'bank-transfer-9',
+    'Beeline',
+    'Belfius-direct-net',
+    'bitcoin',
+    'Boleto',
+    'Boleto-2',
+    'Boleto-3',
+    'cash-deposit',
+    'CASHlib',
+    'CashToCode',
+    'CCAvenue',
+    'China UnionPay',
+    'CODVoucher',
+    'Conekta-oxxo',
+    'Conekta-spei',
+    'cryptocurrency',
+    'Cupon-de-pagos',
+    'CyberSource',
+    'domestic-cards',
+    'echeck',
+    'ecoPayz',
+    'ecoVoucher',
+    'EPS',
+    'ePay.bg',
+    'Ethereum',
+    'e-wallet',
+    'ezyEFT',
+    'eZeeWallet',
+    'Flexepin',
+    'Giropay',
+    'Google Pay',
+    'Gpaysafe',
+    'iDebit',
+    'iDEAL',
+    'ING-homepay',
+    'INOVAPAY-pin',
+    'INOVAPAY-wallet',
+    'InstaDebit',
+    'instant-bank-transfer',
+    'Interac-online',
+    'Interac-eTransfer',
+    'Interac-express-connect',
+    'Interac',
+    'invoice',
+    'iWallet',
+    'Jeton',
+    'jpay',
+    'Khelocard',
+    'Klarna',
+    'Litecoin',
+    'loonie',
+    'LPG-online',
+    'LPG-payment-card',
+    'Megafon',
+    'MiFinity-eWallet',
+    'miscellaneous',
+    'Bancontact',
+    'MTS',
+    'MuchBetter',
+    'MyFatoorah',
+    'Neosurf',
+    'Netbanking',
+    'Neteller',
+    'Nordea-Solo',
+    'OchaPay',
+    'online-bank-transfer',
+    'Onlineueberweisen',
+    'oriental-wallet',
+    'OXXO',
+    'Pagsmile-lottery',
+    'Pagsmile-deposit-express',
+    'PayCash',
+    'Payeer',
+    'PaymentAsia-crypto',
+    'Paysafecard',
+    'PayTabs',
+    'Pay4Fun',
+    'Paymero',
+    'Paymero-QR',
+    'PayULatam',
+    'Perfect-money',
+    'Piastrix',
+    'PIX',
+    'PinPay',
+    'phone',
+    'PhonePe',
+    'POLi',
+    'PostFinance-card',
+    'PostFinance-e-finance',
+    'Przelewy24',
+    'QIWI',
+    'QQPay',
+    'Resurs',
+    'SEPA',
+    'Siirto',
+    'Skrill',
+    'Skrill Rapid Transfer',
+    'SMSVoucher',
+    'Sofort',
+    'SparkPay',
+    'swift-dbt',
+    'Tele2',
+    'Terminaly-RF',
+    'Tether',
+    'ToditoCash-card',
+    'Trustly',
+    'TWINT',
+    'UniCrypt',
+    'UPayCard',
+    'UPI',
+    'VCreditos',
+    'VenusPoint',
+    'voucher',
+    'voucher-2',
+    'voucher-3',
+    'voucher-4',
+    'Webmoney',
+    'Webpay',
+    'Webpay-2',
+    'Webpay Card',
+    'WeChat Pay',
+    'XPay-P2P',
+    'XPay-QR',
+    'Yandex-money',
+    'Zotapay',
+    'Zimpler',
+  ])
+  .openapi({ description: 'The payment method.' })
+  .openapi('PaymentMethod')
+
+type ResourceIdType = string
+
+const ResourceIdSchema: z.ZodType<ResourceIdType> = z
+  .string()
+  .max(50)
+  .openapi({
+    description: 'The resource ID. Defaults to UUID v4.',
+    example: '4f6cf35x-2c4y-483z-a0a9-158621f77a21',
+  })
+  .openapi('ResourceId')
+
+const VaultedInstrumentSchema = z
+  .object({
+    method: PaymentMethodSchema.openapi({
+      description:
+        'The payment method supported vault.\nSee [Payment Instruments API](https://api-reference.rebilly.com/tag/Payment-Instruments).\n',
+    }),
+    paymentInstrumentId: ResourceIdSchema.openapi({
+      description: 'The payment instrument identifier.',
+    }),
+  })
+  .openapi({
+    description: 'Vaulted payment instrument.',
+    required: ['method', 'paymentInstrumentId'],
+    title: 'Vaulted instrument',
+  })
+  .openapi('VaultedInstrument')
+
+const AlternativePaymentInstrumentSchema = z
+  .object({
+    method: PaymentMethodSchema,
+    paymentInstrumentId: z
+      .any()
+      .exactOptional()
+      .openapi({ description: 'The payment instrument ID.' }),
+  })
+  .openapi({
+    description: 'Alternative payment method instrument.',
+    required: ['method'],
+    title: 'Alternative instrument',
+  })
+  .openapi('AlternativePaymentInstrument')
+
+const CashInstrumentSchema = z
+  .object({
+    method: z.literal('cash'),
+    receivedBy: z.string().exactOptional().openapi({ description: "The receiver's name." }),
+  })
+  .openapi({ description: 'Cash payment instrument object.', required: ['method'], title: 'Cash' })
+  .openapi('CashInstrument')
+
+const CheckInstrumentSchema = z
+  .object({
+    method: z.literal('cash'),
+    reference: z.string().exactOptional().openapi({ description: 'Reference data.' }),
+  })
+  .openapi({
+    description: 'Check payment instrument object.',
+    required: ['method'],
+    title: 'Check',
+  })
+  .openapi('CheckInstrument')
+
+type PaymentInstrumentType =
+  | z.infer<typeof VaultedInstrumentSchema>
+  | z.infer<typeof AlternativePaymentInstrumentSchema>
+  | z.infer<typeof CashInstrumentSchema>
+  | z.infer<typeof CheckInstrumentSchema>
+
+const PaymentInstrumentSchema: z.ZodType<PaymentInstrumentType> = z
+  .xor([
+    VaultedInstrumentSchema,
+    AlternativePaymentInstrumentSchema,
+    CashInstrumentSchema,
+    CheckInstrumentSchema,
+  ])
+  .openapi('PaymentInstrument')
+
+const CustomerLifetimeRevenueSchema = z
+  .object({
+    amount: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: "Revenue amount in Merchant's reporting currency.",
+        'x-basic': true,
+        'x-label': 'Lifetime Revenue',
+        'x-sortable': true,
+        'x-type': 'Money',
+      }),
+    amountUsd: z.float64().exactOptional().openapi({ description: 'Revenue amount in USD.' }),
+    currency: CurrencyCodeSchema.exactOptional().openapi({
+      description: "Merchant's reporting currency.",
+    }),
+  })
+  .openapi({ readOnly: true, required: [] })
+  .openapi('CustomerLifetimeRevenue')
+
+const ContactEmailsSchema = z
+  .array(
+    z
+      .object({
+        label: z.string().max(45).openapi({ description: 'The email label.', example: 'main' }),
+        primary: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'True if email is primary.', example: true }),
+        value: z
+          .email()
+          .max(255)
+          .openapi({ description: 'The email value.', example: 'rebilly@example.com' }),
+      })
+      .openapi({ required: ['label', 'value'] }),
+  )
+  .openapi({ description: 'The list of emails.' })
+  .openapi('ContactEmails')
+
+const ContactPhoneNumbersSchema = z
+  .array(
+    z
+      .object({
+        label: z.string().max(45).openapi({ description: 'The phone label.', example: 'main' }),
+        primary: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'True if phone is primary.', example: true }),
+        value: z
+          .string()
+          .max(50)
+          .openapi({ description: 'The phone value.', example: '512-710-1640' }),
+      })
+      .openapi({ required: ['label', 'value'] }),
+  )
+  .openapi({ description: 'The list of phone numbers.' })
+  .openapi('ContactPhoneNumbers')
+
+const ContactObjectSchema = z
+  .object({
+    address: z
+      .string()
+      .regex(/^[\w\s\-\/\pL,.#;:()']+$/)
+      .max(60)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The contact street address.', example: '36 Craven St' }),
+    address2: z
+      .string()
+      .regex(/^[\w\s\-\/\pL,.#;:()']+$/)
+      .max(60)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The contact street address (second line).' }),
+    city: z
+      .string()
+      .regex(/^[\w\s\-\pL,.']+$/)
+      .max(45)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The contact city.', example: 'London' }),
+    country: z
+      .string()
+      .regex(/^[A-Z]{2}$/)
+      .max(2)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The contact country ISO Alpha-2 code.', example: 'GB' }),
+    emails: ContactEmailsSchema.exactOptional(),
+    firstName: z
+      .string()
+      .regex(/^[\w\s\-\pL,.']+$/)
+      .max(45)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The contact first name.', example: 'Benjamin' }),
+    hash: z
+      .string()
+      .max(40)
+      .exactOptional()
+      .openapi({
+        description:
+          'A hash that can be used to compare multiple contacts for identical attribute values.',
+        example: '056ae6d97c788b9e98b049ebafd7b229bf852221',
+        readOnly: true,
+      }),
+    lastName: z
+      .string()
+      .regex(/^[\w\s\-\pL,.']+$/)
+      .max(45)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The contact last name.', example: 'Franklin' }),
+    organization: z
+      .string()
+      .regex(/^[\w\s\-\pL,.']+$/)
+      .max(255)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The contact organization.',
+        example: { $ref: '#/components/schemas/ReadyToPayMethods/example/2/feature' },
+      }),
+    phoneNumbers: ContactPhoneNumbersSchema.exactOptional(),
+    postalCode: z
+      .string()
+      .regex(/^[\w\s\-]+$/)
+      .max(10)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The contact postal code.', example: 'WC2N 5NF' }),
+    region: z
+      .string()
+      .regex(/^[\w\s\-\/\pL,.#;:()']+$/)
+      .max(45)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The contact region (state).', example: 'London' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ContactObject')
+
+const TagSchema = z
+  .object({
+    _links: z
+      .array(z.union([SelfLinkSchema]))
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'The links related to resource.', readOnly: true }),
+    createdTime: ServerTimestampSchema.exactOptional().openapi({
+      description: "The tag's created time.",
+    }),
+    id: ResourceIdSchema.exactOptional().openapi({
+      description: "The tag's identifier string.",
+      readOnly: true,
+    }),
+    name: z
+      .string()
+      .regex(/^[@~\-\.\w\s]+$/)
+      .max(255)
+      .openapi({
+        description: 'The tag is unique name, which is case-insensitive.',
+        example: 'New',
+      }),
+    updatedTime: ServerTimestampSchema.exactOptional().openapi({
+      description: "The tag's updated time.",
+    }),
+  })
+  .openapi({ description: 'Tag.', required: ['name'] })
+  .openapi('Tag')
+
+const CustomerSchema = z
+  .object({
+    _embedded: z
+      .array(z.union([LeadSourceEmbedSchema]))
+      .min(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'Any embedded objects available that are requested by the `expand` querystring parameter.',
+        readOnly: true,
+      }),
+    _links: z
+      .array(
+        z.union([
+          SelfLinkSchema,
+          DefaultPaymentInstrumentLinkSchema,
+          LeadSourceLinkSchema,
+          WebsiteLinkSchema,
+        ]),
+      )
+      .min(3)
+      .exactOptional()
+      .openapi({ description: 'The links related to resource.', readOnly: true }),
+    averageValue: CustomerAverageValueSchema.exactOptional(),
+    createdTime: ServerTimestampSchema.exactOptional().openapi({
+      description: 'The customer created time.',
+      'x-label': 'Creation Time',
+      'x-sortable': true,
+    }),
+    customFields: ResourceCustomFieldsSchema.exactOptional(),
+    defaultPaymentInstrument: PaymentInstrumentSchema.exactOptional(),
+    email: z
+      .email()
+      .exactOptional()
+      .openapi({
+        description: "The customer's email.",
+        readOnly: true,
+        'x-basic': true,
+        'x-sortable': true,
+      }),
+    firstName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The customer's first name.", readOnly: true, 'x-basic': true }),
+    id: ResourceIdSchema.exactOptional().openapi({
+      description: 'The customer identifier string.',
+      readOnly: true,
+    }),
+    invoiceCount: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'An auto-incrementing number based on the sequence of invoices. If set to 0, then this record is a Lead, otherwise is a Customer.',
+        readOnly: true,
+        'x-sortable': true,
+      }),
+    lastName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The customer's last name.",
+        readOnly: true,
+        'x-basic': true,
+        'x-sortable': true,
+      }),
+    lastPaymentTime: ServerTimestampSchema.exactOptional().openapi({
+      description: 'The most recent time of an approved payment for the customer.',
+      'x-basic': true,
+      'x-label': 'Last Payment',
+      'x-sortable': true,
+    }),
+    lifetimeRevenue: CustomerLifetimeRevenueSchema.exactOptional(),
+    paymentCount: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'The number of approved payments for the customer.',
+        readOnly: true,
+        'x-basic': true,
+        'x-label': 'Payments',
+        'x-sortable': true,
+      }),
+    paymentToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A write-only payment token; if supplied, it will be converted into a\npayment instrument and be set as the `defaultPaymentInstrument`. The\nvalue of this property will override the `defaultPaymentInstrument`\nin the case that both are supplied. The token may only be used once\nbefore it is expired.\n',
+        writeOnly: true,
+      }),
+    primaryAddress: ContactObjectSchema.exactOptional(),
+    revision: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of times the customer data has been modified.\nThe revision is useful when analyzing webhook data to determine if the change takes precedence over the current representation.\n',
+        readOnly: true,
+      }),
+    tags: z
+      .array(TagSchema)
+      .exactOptional()
+      .openapi({ description: "A list of customer's tags.", readOnly: true }),
+    updatedTime: ServerTimestampSchema.exactOptional().openapi({
+      description: 'The customer updated time.',
+      'x-label': 'Last Update Time',
+      'x-sortable': true,
+    }),
+    websiteId: ResourceIdSchema.exactOptional().openapi({
+      description: "The website's ID.",
+      'x-sortable': true,
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('Customer')
+
+type CustomerEmbedType = { customer?: z.infer<typeof CustomerSchema> }
+
+const CustomerEmbedSchema: z.ZodType<CustomerEmbedType> = z
+  .object({ customer: CustomerSchema.exactOptional() })
+  .openapi({ description: 'Customer object.', readOnly: true, required: [] })
+  .openapi('CustomerEmbed')
+
+const AlternativePaymentMethodsSchema = z
+  .enum([
+    'cash',
+    'check',
+    'paypal',
+    'AdvCash',
+    'Alfa-click',
+    'Alipay',
+    'AstroPay Card',
+    'AstroPay-GO',
+    'bank-transfer',
+    'bank-transfer-2',
+    'bank-transfer-3',
+    'bank-transfer-4',
+    'bank-transfer-5',
+    'bank-transfer-6',
+    'bank-transfer-7',
+    'bank-transfer-8',
+    'bank-transfer-9',
+    'Beeline',
+    'Belfius-direct-net',
+    'bitcoin',
+    'Boleto',
+    'cash-deposit',
+    'CASHlib',
+    'CashToCode',
+    'China UnionPay',
+    'CODVoucher',
+    'Conekta-oxxo',
+    'Cupon-de-pagos',
+    'cryptocurrency',
+    'domestic-cards',
+    'echeck',
+    'ecoPayz',
+    'ecoVoucher',
+    'EPS',
+    'ePay.bg',
+    'eZeeWallet',
+    'Flexepin',
+    'Giropay',
+    'Gpaysafe',
+    'Google Pay',
+    'iDebit',
+    'iDEAL',
+    'ING-homepay',
+    'INOVAPAY-pin',
+    'INOVAPAY-wallet',
+    'InstaDebit',
+    'instant-bank-transfer',
+    'Interac',
+    'Interac-online',
+    'Interac-eTransfer',
+    'invoice',
+    'iWallet',
+    'Jeton',
+    'jpay',
+    'Khelocard',
+    'Klarna',
+    'loonie',
+    'Megafon',
+    'MiFinity-eWallet',
+    'miscellaneous',
+    'Bancontact',
+    'MTS',
+    'MuchBetter',
+    'Neosurf',
+    'Netbanking',
+    'Neteller',
+    'Nordea-Solo',
+    'OchaPay',
+    'online-bank-transfer',
+    'Onlineueberweisen',
+    'oriental-wallet',
+    'OXXO',
+    'Pagsmile-deposit-express',
+    'Pagsmile-lottery',
+    'PayCash',
+    'Payeer',
+    'PaymentAsia-crypto',
+    'Paymero',
+    'Perfect-money',
+    'Piastrix',
+    'plaid-account',
+    'PayTabs',
+    'Paysafecard',
+    'Paysafecash',
+    'Pay4Fun',
+    'PinPay',
+    'phone',
+    'PhonePe',
+    'POLi',
+    'PostFinance-card',
+    'PostFinance-e-finance',
+    'Przelewy24',
+    'QIWI',
+    'QQPay',
+    'Resurs',
+    'SEPA',
+    'Skrill',
+    'Skrill Rapid Transfer',
+    'SMSVoucher',
+    'Sofort',
+    'SparkPay',
+    'swift-dbt',
+    'Tele2',
+    'Terminaly-RF',
+    'ToditoCash-card',
+    'Trustly',
+    'UPayCard',
+    'UPI',
+    'VCreditos',
+    'VenusPoint',
+    'voucher',
+    'voucher-2',
+    'voucher-3',
+    'voucher-4',
+    'Webmoney',
+    'Webpay',
+    'Webpay-2',
+    'Webpay Card',
+    'WeChat Pay',
+    'XPay-P2P',
+    'XPay-QR',
+    'Yandex-money',
+    'Zotapay',
+    'Zimpler',
+  ])
+  .openapi('AlternativePaymentMethods')
+
+const BrowserDataSchema = z
+  .object({
+    colorDepth: z
+      .int()
+      .min(1)
+      .max(48)
+      .openapi({
+        description:
+          "The browser's color depth in bits per pixel obtained using the `screen.colorDepth` property.",
+        example: 24,
+      }),
+    isJavaEnabled: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether Java is enabled in a browser or not. Value is returned from the `navigator.javaEnabled` property.',
+      }),
+    language: z
+      .string()
+      .max(8)
+      .openapi({
+        description:
+          "The browser's language settings returned from the `navigator.language` property.",
+        example: 'en-US',
+      }),
+    screenHeight: z
+      .int()
+      .min(0)
+      .max(65535)
+      .openapi({
+        description: "The browser's screen height returned from the `screen.height` property.",
+        example: 1080,
+      }),
+    screenWidth: z
+      .int()
+      .min(0)
+      .max(65535)
+      .openapi({
+        description: "The browser's screen width returned from the `screen.width` property.",
+        example: 1920,
+      }),
+    timeZoneOffset: z
+      .int()
+      .min(-1410)
+      .max(1410)
+      .openapi({
+        description:
+          "The browser's time zone offset in minutes from UTC.\nA positive offset indicates the local time is behind UTC, and negative is ahead.\nCan find it with `(new Date()).getTimezoneOffset()` property.\n",
+        example: 300,
+      }),
+  })
+  .openapi({
+    description: 'Browser data used for 3DS and risk scoring.',
+    required: [
+      'colorDepth',
+      'isJavaEnabled',
+      'language',
+      'screenWidth',
+      'screenHeight',
+      'timeZoneOffset',
+    ],
+    title: 'Browser data',
+  })
+  .openapi('BrowserData')
+
+const HttpHeadersSchema = z
+  .record(z.string(), z.string())
+  .openapi({
+    description: 'The HTTP headers.',
+    example: {
+      Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      'Content-Type': 'application/json',
+    },
+  })
+  .openapi('HttpHeaders')
+
+type RiskMetadataType = {
+  accuracyRadius?: number
+  browserData?: z.infer<typeof BrowserDataSchema>
+  city?: string
+  country?: string
+  deviceVelocity?: number
+  distance?: number
+  fingerprint?: string
+  hasMismatchedBankCountry?: boolean
+  hasMismatchedBillingAddressCountry?: boolean
+  hasMismatchedHolderName?: boolean
+  hasMismatchedTimeZone?: boolean
+  httpHeaders?: z.infer<typeof HttpHeadersSchema>
+  ipAddress?: string
+  isHosting?: boolean
+  isProxy?: boolean
+  isTor?: boolean
+  isVpn?: boolean
+  isp?: string
+  latitude?: number
+  longitude?: number
+  paymentInstrumentVelocity?: number
+  postalCode?: string
+  region?: string
+  score?: number
+  timeZone?: string
+  vpnServiceName?: string
+}
+
+const RiskMetadataSchema: z.ZodType<RiskMetadataType> = z
+  .object({
+    accuracyRadius: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Accuracy radius for specified ipAddress (kilometers).',
+        readOnly: true,
+      }),
+    browserData: BrowserDataSchema.exactOptional(),
+    city: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'City for specified ipAddress.',
+        example: 'New York',
+        readOnly: true,
+      }),
+    country: z
+      .string()
+      .max(2)
+      .exactOptional()
+      .openapi({
+        description: 'Country ISO Alpha-2 code for specified ipAddress.',
+        example: 'US',
+        readOnly: true,
+      }),
+    deviceVelocity: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of transactions for this device (based on fingerprint) in the last 24 hours.',
+        readOnly: true,
+      }),
+    distance: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Distance between IP Address and Billing Address geolocation (kilometers).',
+        readOnly: true,
+      }),
+    fingerprint: z
+      .string()
+      .max(50)
+      .exactOptional()
+      .openapi({ description: 'The fingerprint.', example: 'pIUt3xbgX3l9g3YDiLbx' }),
+    hasMismatchedBankCountry: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'True if the bank country and geo-IP address are not the same.',
+        readOnly: true,
+      }),
+    hasMismatchedBillingAddressCountry: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'True if the billing address country and geo-IP address are not the same.',
+        readOnly: true,
+      }),
+    hasMismatchedHolderName: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "True if the customer's name from billing address and from customer's primary address are not the same.",
+        readOnly: true,
+      }),
+    hasMismatchedTimeZone: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'True if the browser time zone and IP address associated time zone are not the same.',
+        readOnly: true,
+      }),
+    httpHeaders: HttpHeadersSchema.exactOptional(),
+    ipAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The customer's IP.", example: '93.92.91.90' }),
+    isHosting: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: "True if customer's ip address is related to hosting.",
+        readOnly: true,
+      }),
+    isProxy: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: "True if customer's ip address is related to proxy.",
+        readOnly: true,
+      }),
+    isTor: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: "True if customer's ip address is related to TOR.", readOnly: true }),
+    isVpn: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: "True if customer's ip address is related to VPN.", readOnly: true }),
+    isp: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Internet Service Provider name, if available.', readOnly: true }),
+    latitude: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Latitude for specified ipAddress.', readOnly: true }),
+    longitude: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Longitude for specified ipAddress.', readOnly: true }),
+    paymentInstrumentVelocity: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of transactions for this payment instrument (based on fingerprint) in the last 24 hours.',
+        readOnly: true,
+      }),
+    postalCode: z
+      .string()
+      .max(10)
+      .exactOptional()
+      .openapi({ description: 'Postal code for specified ipAddress.', readOnly: true }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Region for specified ipAddress.', example: 'NY', readOnly: true }),
+    score: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Risk score computed per all the factors.', readOnly: true }),
+    timeZone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Time zone for specified ipAddress.',
+        example: 'America/New_York',
+        readOnly: true,
+      }),
+    vpnServiceName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'VPN service name, if available.', readOnly: true }),
+  })
+  .openapi({
+    description: 'Risk metadata used for 3DS and risk scoring.',
+    title: 'Risk metadata',
+    required: [],
+  })
+  .openapi('RiskMetadata')
+
+type AlternativePaymentInstrument_2Type = {
+  _embedded?: z.infer<typeof CustomerEmbedSchema>[]
+  _links?: (z.infer<typeof SelfLinkSchema> | z.infer<typeof CustomerLinkSchema>)[]
+  billingAddress?: z.infer<typeof ContactObjectSchema>
+  createdTime?: z.infer<typeof ServerTimestampSchema>
+  customFields?: z.infer<typeof ResourceCustomFieldsSchema>
+  customerId?: z.infer<typeof ResourceIdSchema>
+  id?: z.infer<typeof ResourceIdSchema>
+  method?: z.infer<typeof AlternativePaymentMethodsSchema>
+  riskMetadata?: z.infer<typeof RiskMetadataSchema>
+  status?: 'active' | 'deactivated'
+  updatedTime?: z.infer<typeof ServerTimestampSchema>
+}
+
 type ApprovalUrlLinkType = z.infer<typeof LinkSchema>
 
 const TransactionSchema: z.ZodType<TransactionType> = z
@@ -507,421 +1765,6 @@ type AuthTransactionEmbedType = { authTransaction?: z.infer<typeof TransactionSc
 
 type AuthTransactionLinkType = z.infer<typeof LinkSchema>
 
-const ContactEmailsSchema = z
-  .array(
-    z
-      .object({
-        label: z.string().max(45).openapi({ description: 'The email label.', example: 'main' }),
-        primary: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'True if email is primary.', example: true }),
-        value: z
-          .email()
-          .max(255)
-          .openapi({ description: 'The email value.', example: 'rebilly@example.com' }),
-      })
-      .openapi({ required: ['label', 'value'] }),
-  )
-  .openapi({ description: 'The list of emails.' })
-  .openapi('ContactEmails')
-
-const ContactPhoneNumbersSchema = z
-  .array(
-    z
-      .object({
-        label: z.string().max(45).openapi({ description: 'The phone label.', example: 'main' }),
-        primary: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'True if phone is primary.', example: true }),
-        value: z
-          .string()
-          .max(50)
-          .openapi({ description: 'The phone value.', example: '512-710-1640' }),
-      })
-      .openapi({ required: ['label', 'value'] }),
-  )
-  .openapi({ description: 'The list of phone numbers.' })
-  .openapi('ContactPhoneNumbers')
-
-const ContactObjectSchema = z
-  .object({
-    address: z
-      .string()
-      .regex(/^[\w\s\-\/\pL,.#;:()']+$/)
-      .max(60)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The contact street address.', example: '36 Craven St' }),
-    address2: z
-      .string()
-      .regex(/^[\w\s\-\/\pL,.#;:()']+$/)
-      .max(60)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The contact street address (second line).' }),
-    city: z
-      .string()
-      .regex(/^[\w\s\-\pL,.']+$/)
-      .max(45)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The contact city.', example: 'London' }),
-    country: z
-      .string()
-      .regex(/^[A-Z]{2}$/)
-      .max(2)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The contact country ISO Alpha-2 code.', example: 'GB' }),
-    emails: ContactEmailsSchema.exactOptional(),
-    firstName: z
-      .string()
-      .regex(/^[\w\s\-\pL,.']+$/)
-      .max(45)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The contact first name.', example: 'Benjamin' }),
-    hash: z
-      .string()
-      .max(40)
-      .exactOptional()
-      .openapi({
-        description:
-          'A hash that can be used to compare multiple contacts for identical attribute values.',
-        example: '056ae6d97c788b9e98b049ebafd7b229bf852221',
-        readOnly: true,
-      }),
-    lastName: z
-      .string()
-      .regex(/^[\w\s\-\pL,.']+$/)
-      .max(45)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The contact last name.', example: 'Franklin' }),
-    organization: z
-      .string()
-      .regex(/^[\w\s\-\pL,.']+$/)
-      .max(255)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The contact organization.',
-        example: { $ref: '#/components/schemas/ReadyToPayMethods/example/2/feature' },
-      }),
-    phoneNumbers: ContactPhoneNumbersSchema.exactOptional(),
-    postalCode: z
-      .string()
-      .regex(/^[\w\s\-]+$/)
-      .max(10)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The contact postal code.', example: 'WC2N 5NF' }),
-    region: z
-      .string()
-      .regex(/^[\w\s\-\/\pL,.#;:()']+$/)
-      .max(45)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The contact region (state).', example: 'London' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ContactObject')
-
-type ServerTimestampType = string
-
-const ServerTimestampSchema: z.ZodType<ServerTimestampType> = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description: 'Read-only timestamp, automatically assigned on back-end.',
-    readOnly: true,
-  })
-  .openapi('ServerTimestamp')
-
-const ResourceCustomFieldsSchema = z
-  .object({})
-  .default({})
-  .openapi({
-    description:
-      'Custom Fields list as a map `{"custom field name": "custom field value", ...}`. The format must follow the saved format (see Custom Fields section for the formats).\n',
-    example: { foo: 'bar' },
-  })
-  .openapi('ResourceCustomFields')
-
-type ResourceIdType = string
-
-const ResourceIdSchema: z.ZodType<ResourceIdType> = z
-  .string()
-  .max(50)
-  .openapi({
-    description: 'The resource ID. Defaults to UUID v4.',
-    example: '4f6cf35x-2c4y-483z-a0a9-158621f77a21',
-  })
-  .openapi('ResourceId')
-
-const BrowserDataSchema = z
-  .object({
-    colorDepth: z
-      .int()
-      .min(1)
-      .max(48)
-      .openapi({
-        description:
-          "The browser's color depth in bits per pixel obtained using the `screen.colorDepth` property.",
-        example: 24,
-      }),
-    isJavaEnabled: z
-      .boolean()
-      .openapi({
-        description:
-          'Whether Java is enabled in a browser or not. Value is returned from the `navigator.javaEnabled` property.',
-      }),
-    language: z
-      .string()
-      .max(8)
-      .openapi({
-        description:
-          "The browser's language settings returned from the `navigator.language` property.",
-        example: 'en-US',
-      }),
-    screenHeight: z
-      .int()
-      .min(0)
-      .max(65535)
-      .openapi({
-        description: "The browser's screen height returned from the `screen.height` property.",
-        example: 1080,
-      }),
-    screenWidth: z
-      .int()
-      .min(0)
-      .max(65535)
-      .openapi({
-        description: "The browser's screen width returned from the `screen.width` property.",
-        example: 1920,
-      }),
-    timeZoneOffset: z
-      .int()
-      .min(-1410)
-      .max(1410)
-      .openapi({
-        description:
-          "The browser's time zone offset in minutes from UTC.\nA positive offset indicates the local time is behind UTC, and negative is ahead.\nCan find it with `(new Date()).getTimezoneOffset()` property.\n",
-        example: 300,
-      }),
-  })
-  .openapi({
-    description: 'Browser data used for 3DS and risk scoring.',
-    required: [
-      'colorDepth',
-      'isJavaEnabled',
-      'language',
-      'screenWidth',
-      'screenHeight',
-      'timeZoneOffset',
-    ],
-    title: 'Browser data',
-  })
-  .openapi('BrowserData')
-
-const HttpHeadersSchema = z
-  .record(z.string(), z.string())
-  .openapi({
-    description: 'The HTTP headers.',
-    example: {
-      Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-      'Content-Type': 'application/json',
-    },
-  })
-  .openapi('HttpHeaders')
-
-type RiskMetadataType = {
-  accuracyRadius?: number
-  browserData?: z.infer<typeof BrowserDataSchema>
-  city?: string
-  country?: string
-  deviceVelocity?: number
-  distance?: number
-  fingerprint?: string
-  hasMismatchedBankCountry?: boolean
-  hasMismatchedBillingAddressCountry?: boolean
-  hasMismatchedHolderName?: boolean
-  hasMismatchedTimeZone?: boolean
-  httpHeaders?: z.infer<typeof HttpHeadersSchema>
-  ipAddress?: string
-  isHosting?: boolean
-  isProxy?: boolean
-  isTor?: boolean
-  isVpn?: boolean
-  isp?: string
-  latitude?: number
-  longitude?: number
-  paymentInstrumentVelocity?: number
-  postalCode?: string
-  region?: string
-  score?: number
-  timeZone?: string
-  vpnServiceName?: string
-}
-
-const RiskMetadataSchema: z.ZodType<RiskMetadataType> = z
-  .object({
-    accuracyRadius: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Accuracy radius for specified ipAddress (kilometers).',
-        readOnly: true,
-      }),
-    browserData: BrowserDataSchema.exactOptional(),
-    city: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'City for specified ipAddress.',
-        example: 'New York',
-        readOnly: true,
-      }),
-    country: z
-      .string()
-      .max(2)
-      .exactOptional()
-      .openapi({
-        description: 'Country ISO Alpha-2 code for specified ipAddress.',
-        example: 'US',
-        readOnly: true,
-      }),
-    deviceVelocity: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of transactions for this device (based on fingerprint) in the last 24 hours.',
-        readOnly: true,
-      }),
-    distance: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'Distance between IP Address and Billing Address geolocation (kilometers).',
-        readOnly: true,
-      }),
-    fingerprint: z
-      .string()
-      .max(50)
-      .exactOptional()
-      .openapi({ description: 'The fingerprint.', example: 'pIUt3xbgX3l9g3YDiLbx' }),
-    hasMismatchedBankCountry: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'True if the bank country and geo-IP address are not the same.',
-        readOnly: true,
-      }),
-    hasMismatchedBillingAddressCountry: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'True if the billing address country and geo-IP address are not the same.',
-        readOnly: true,
-      }),
-    hasMismatchedHolderName: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "True if the customer's name from billing address and from customer's primary address are not the same.",
-        readOnly: true,
-      }),
-    hasMismatchedTimeZone: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True if the browser time zone and IP address associated time zone are not the same.',
-        readOnly: true,
-      }),
-    httpHeaders: HttpHeadersSchema.exactOptional(),
-    ipAddress: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The customer's IP.", example: '93.92.91.90' }),
-    isHosting: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: "True if customer's ip address is related to hosting.",
-        readOnly: true,
-      }),
-    isProxy: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: "True if customer's ip address is related to proxy.",
-        readOnly: true,
-      }),
-    isTor: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: "True if customer's ip address is related to TOR.", readOnly: true }),
-    isVpn: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: "True if customer's ip address is related to VPN.", readOnly: true }),
-    isp: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Internet Service Provider name, if available.', readOnly: true }),
-    latitude: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Latitude for specified ipAddress.', readOnly: true }),
-    longitude: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Longitude for specified ipAddress.', readOnly: true }),
-    paymentInstrumentVelocity: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of transactions for this payment instrument (based on fingerprint) in the last 24 hours.',
-        readOnly: true,
-      }),
-    postalCode: z
-      .string()
-      .max(10)
-      .exactOptional()
-      .openapi({ description: 'Postal code for specified ipAddress.', readOnly: true }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Region for specified ipAddress.', example: 'NY', readOnly: true }),
-    score: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Risk score computed per all the factors.', readOnly: true }),
-    timeZone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Time zone for specified ipAddress.',
-        example: 'America/New_York',
-        readOnly: true,
-      }),
-    vpnServiceName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'VPN service name, if available.', readOnly: true }),
-  })
-  .openapi({
-    description: 'Risk metadata used for 3DS and risk scoring.',
-    title: 'Risk metadata',
-    required: [],
-  })
-  .openapi('RiskMetadata')
-
 const CommonBankAccountSchema = z
   .object({
     accountNumberType: z
@@ -979,379 +1822,31 @@ const CommonBankAccountSchema = z
   .openapi({ title: 'Bank Account', required: [] })
   .openapi('CommonBankAccount')
 
-type SelfLinkType = z.infer<typeof LinkSchema>
-
-const SelfLinkSchema: z.ZodType<SelfLinkType> = LinkSchema.and(
-  z
-    .object({ rel: z.literal('self').openapi({ description: 'The link type.' }) })
-    .openapi({ required: ['rel'] }),
-)
-  .openapi({ required: ['rel'] })
-  .openapi('SelfLink')
-
-type CustomerLinkType = z.infer<typeof LinkSchema>
-
-const CustomerLinkSchema: z.ZodType<CustomerLinkType> = LinkSchema.and(
-  z
-    .object({
-      rel: z.enum(['customer', 'targetCustomer']).openapi({ description: 'The link type.' }),
-    })
-    .openapi({ required: ['rel'] }),
-)
-  .openapi({ required: ['rel'] })
-  .openapi('CustomerLink')
-
-const LeadSourceDataSchema = z
-  .object({
-    _links: z
-      .array(z.union([SelfLinkSchema, CustomerLinkSchema]))
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'The links related to resource.', readOnly: true }),
-    affiliate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Lead source affiliate (eg 123, Bob Smith).' }),
-    campaign: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Lead source campaign (eg go-big-123).' }),
-    clickId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Lead source click id (may come from an ad server).' }),
-    content: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Lead source content (eg smiley faces).' }),
-    createdTime: ServerTimestampSchema.exactOptional().openapi({
-      description: 'Lead source created time.',
-    }),
-    medium: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Lead source medium (eg search, display).' }),
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Lead source path url (eg www.example.com/some/landing/path).' }),
-    referrer: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Lead source [`referer` url](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referer) as determined (eg www.example.com/some/landing/path).',
-      }),
-    salesAgent: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Lead source sales agent (eg James Bond).' }),
-    source: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Lead source origin (eg google, yahoo).' }),
-    subAffiliate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Lead source sub-affiliate also called a sub-id or click id in some circles (eg 123456).',
-      }),
-    term: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Lead source term (eg salt shakers).' }),
-  })
-  .openapi({ required: [] })
-  .openapi('LeadSourceData')
-
-const LeadSourceSchema = LeadSourceDataSchema.and(
-  z
-    .object({ original: LeadSourceDataSchema.exactOptional().openapi({ readOnly: true }) })
-    .openapi({ required: [] }),
-).openapi('LeadSource')
-
-type LeadSourceEmbedType = { leadSource?: z.infer<typeof LeadSourceSchema> }
-
-const LeadSourceEmbedSchema: z.ZodType<LeadSourceEmbedType> = z
-  .object({ leadSource: LeadSourceSchema.exactOptional() })
-  .openapi({ description: 'Lead Source object.', readOnly: true, required: [] })
-  .openapi('LeadSourceEmbed')
-
-const DefaultPaymentInstrumentLinkSchema = LinkSchema.and(
-  z
-    .object({
-      rel: z.literal('defaultPaymentInstrument').openapi({ description: 'The link type.' }),
-    })
-    .openapi({ required: ['rel'] }),
-)
-  .openapi({ required: ['rel'] })
-  .openapi('DefaultPaymentInstrumentLink')
-
-type LeadSourceLinkType = z.infer<typeof LinkSchema>
-
-const LeadSourceLinkSchema: z.ZodType<LeadSourceLinkType> = LinkSchema.and(
-  z
-    .object({ rel: z.literal('leadSource').openapi({ description: 'The link type.' }) })
-    .openapi({ required: ['rel'] }),
-)
-  .openapi({ required: ['rel'] })
-  .openapi('LeadSourceLink')
-
-type WebsiteLinkType = z.infer<typeof LinkSchema>
-
-const WebsiteLinkSchema: z.ZodType<WebsiteLinkType> = LinkSchema.and(
-  z
-    .object({ rel: z.literal('website').openapi({ description: 'The link type.' }) })
-    .openapi({ required: ['rel'] }),
-)
-  .openapi({ required: ['rel'] })
-  .openapi('WebsiteLink')
-
-type CurrencyCodeType = string
-
-const CurrencyCodeSchema: z.ZodType<CurrencyCodeType> = z
-  .string()
-  .length(3)
-  .openapi({ description: 'ISO 4217 alphabetic currency code.', example: 'USD' })
-  .openapi('CurrencyCode')
-
-const CustomerAverageValueSchema = z
-  .object({
-    amount: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: "Average approved payment amount in Merchant's reporting currency.",
-        'x-basic': true,
-        'x-label': 'Average Value',
-        'x-sortable': true,
-        'x-type': 'Money',
-      }),
-    amountUsd: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Average approved payment amount in USD.' }),
-    currency: CurrencyCodeSchema.exactOptional().openapi({
-      description: "Merchant's reporting currency.",
-    }),
-  })
-  .openapi({ readOnly: true, required: [] })
-  .openapi('CustomerAverageValue')
-
-const PaymentInstrumentSchema: z.ZodType<PaymentInstrumentType> = z
-  .lazy(() =>
-    z.xor([
-      VaultedInstrumentSchema,
-      AlternativePaymentInstrumentSchema,
-      CashInstrumentSchema,
-      CheckInstrumentSchema,
-    ]),
-  )
-  .openapi('PaymentInstrument')
-
-const CustomerLifetimeRevenueSchema = z
-  .object({
-    amount: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: "Revenue amount in Merchant's reporting currency.",
-        'x-basic': true,
-        'x-label': 'Lifetime Revenue',
-        'x-sortable': true,
-        'x-type': 'Money',
-      }),
-    amountUsd: z.float64().exactOptional().openapi({ description: 'Revenue amount in USD.' }),
-    currency: CurrencyCodeSchema.exactOptional().openapi({
-      description: "Merchant's reporting currency.",
-    }),
-  })
-  .openapi({ readOnly: true, required: [] })
-  .openapi('CustomerLifetimeRevenue')
-
-const TagSchema = z
-  .object({
-    _links: z
-      .array(z.union([SelfLinkSchema]))
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'The links related to resource.', readOnly: true }),
-    createdTime: ServerTimestampSchema.exactOptional().openapi({
-      description: "The tag's created time.",
-    }),
-    id: ResourceIdSchema.exactOptional().openapi({
-      description: "The tag's identifier string.",
-      readOnly: true,
-    }),
-    name: z
-      .string()
-      .regex(/^[@~\-\.\w\s]+$/)
-      .max(255)
-      .openapi({
-        description: 'The tag is unique name, which is case-insensitive.',
-        example: 'New',
-      }),
-    updatedTime: ServerTimestampSchema.exactOptional().openapi({
-      description: "The tag's updated time.",
-    }),
-  })
-  .openapi({ description: 'Tag.', required: ['name'] })
-  .openapi('Tag')
-
-const CustomerSchema = z
-  .object({
-    _embedded: z
-      .array(z.union([LeadSourceEmbedSchema]))
-      .min(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Any embedded objects available that are requested by the `expand` querystring parameter.',
-        readOnly: true,
-      }),
-    _links: z
-      .array(
-        z.union([
-          SelfLinkSchema,
-          DefaultPaymentInstrumentLinkSchema,
-          LeadSourceLinkSchema,
-          WebsiteLinkSchema,
-        ]),
-      )
-      .min(3)
-      .exactOptional()
-      .openapi({ description: 'The links related to resource.', readOnly: true }),
-    averageValue: CustomerAverageValueSchema.exactOptional(),
-    createdTime: ServerTimestampSchema.exactOptional().openapi({
-      description: 'The customer created time.',
-      'x-label': 'Creation Time',
-      'x-sortable': true,
-    }),
-    customFields: ResourceCustomFieldsSchema.exactOptional(),
-    defaultPaymentInstrument: PaymentInstrumentSchema.exactOptional(),
-    email: z
-      .email()
-      .exactOptional()
-      .openapi({
-        description: "The customer's email.",
-        readOnly: true,
-        'x-basic': true,
-        'x-sortable': true,
-      }),
-    firstName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The customer's first name.", readOnly: true, 'x-basic': true }),
-    id: ResourceIdSchema.exactOptional().openapi({
-      description: 'The customer identifier string.',
-      readOnly: true,
-    }),
-    invoiceCount: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'An auto-incrementing number based on the sequence of invoices. If set to 0, then this record is a Lead, otherwise is a Customer.',
-        readOnly: true,
-        'x-sortable': true,
-      }),
-    lastName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The customer's last name.",
-        readOnly: true,
-        'x-basic': true,
-        'x-sortable': true,
-      }),
-    lastPaymentTime: ServerTimestampSchema.exactOptional().openapi({
-      description: 'The most recent time of an approved payment for the customer.',
-      'x-basic': true,
-      'x-label': 'Last Payment',
-      'x-sortable': true,
-    }),
-    lifetimeRevenue: CustomerLifetimeRevenueSchema.exactOptional(),
-    paymentCount: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: 'The number of approved payments for the customer.',
-        readOnly: true,
-        'x-basic': true,
-        'x-label': 'Payments',
-        'x-sortable': true,
-      }),
-    paymentToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A write-only payment token; if supplied, it will be converted into a\npayment instrument and be set as the `defaultPaymentInstrument`. The\nvalue of this property will override the `defaultPaymentInstrument`\nin the case that both are supplied. The token may only be used once\nbefore it is expired.\n',
-        writeOnly: true,
-      }),
-    primaryAddress: ContactObjectSchema.exactOptional(),
-    revision: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of times the customer data has been modified.\nThe revision is useful when analyzing webhook data to determine if the change takes precedence over the current representation.\n',
-        readOnly: true,
-      }),
-    tags: z
-      .array(TagSchema)
-      .exactOptional()
-      .openapi({ description: "A list of customer's tags.", readOnly: true }),
-    updatedTime: ServerTimestampSchema.exactOptional().openapi({
-      description: 'The customer updated time.',
-      'x-label': 'Last Update Time',
-      'x-sortable': true,
-    }),
-    websiteId: ResourceIdSchema.exactOptional().openapi({
-      description: "The website's ID.",
-      'x-sortable': true,
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('Customer')
-
-type CustomerEmbedType = { customer?: z.infer<typeof CustomerSchema> }
-
-const CustomerEmbedSchema: z.ZodType<CustomerEmbedType> = z
-  .object({ customer: CustomerSchema.exactOptional() })
-  .openapi({ description: 'Customer object.', readOnly: true, required: [] })
-  .openapi('CustomerEmbed')
-
 type BankAccountType = z.infer<typeof CommonBankAccountSchema> & {
   _embedded?: z.infer<typeof CustomerEmbedSchema>[]
   _links?: (z.infer<typeof SelfLinkSchema> | z.infer<typeof CustomerLinkSchema>)[]
 }
 
-const BankAccountSchema: z.ZodType<BankAccountType> = z
-  .lazy(() =>
-    CommonBankAccountSchema.and(
-      z
-        .object({
-          _embedded: z
-            .array(z.union([CustomerEmbedSchema]))
-            .min(1)
-            .exactOptional()
-            .openapi({
-              description:
-                'Any embedded objects available that are requested by the `expand` querystring parameter.',
-              readOnly: true,
-            }),
-          _links: z
-            .array(z.union([SelfLinkSchema, CustomerLinkSchema]))
-            .min(1)
-            .exactOptional()
-            .openapi({ description: 'The links related to resource.', readOnly: true }),
-        })
-        .openapi({ required: [] }),
-    ),
-  )
-  .openapi('BankAccount')
+const BankAccountSchema: z.ZodType<BankAccountType> = CommonBankAccountSchema.and(
+  z
+    .object({
+      _embedded: z
+        .array(z.union([CustomerEmbedSchema]))
+        .min(1)
+        .exactOptional()
+        .openapi({
+          description:
+            'Any embedded objects available that are requested by the `expand` querystring parameter.',
+          readOnly: true,
+        }),
+      _links: z
+        .array(z.union([SelfLinkSchema, CustomerLinkSchema]))
+        .min(1)
+        .exactOptional()
+        .openapi({ description: 'The links related to resource.', readOnly: true }),
+    })
+    .openapi({ required: [] }),
+).openapi('BankAccount')
 
 type BankAccountEmbedType = { bankAccount?: z.infer<typeof BankAccountSchema> }
 
@@ -1368,53 +1863,270 @@ const InvoiceDiscountSchema = z
   .openapi({ readOnly: true, required: [] })
   .openapi('InvoiceDiscount')
 
-const ProductSchema: z.ZodType<ProductType> = z
-  .lazy(() =>
-    CommonProductSchema.and(
-      z
-        .object({
-          _links: z
-            .array(SelfLinkSchema)
-            .min(1)
-            .exactOptional()
-            .openapi({ description: 'The links related to resource.', readOnly: true }),
-          accountingCode: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The product accounting code.', example: '4010' }),
-          taxCategoryId: z
-            .enum(['00000', '99999', '20010', '40030', '51020', '51010', '31000', '30070'])
-            .exactOptional()
-            .openapi({ description: "The product's tax category identifier string." }),
-        })
-        .openapi({ required: [] }),
-    ),
-  )
-  .openapi('Product')
+const CommonProductSchema = z
+  .object({
+    createdTime: ServerTimestampSchema.exactOptional().openapi({
+      description: 'The product created time.',
+    }),
+    customFields: ResourceCustomFieldsSchema.exactOptional(),
+    description: z
+      .string()
+      .max(512)
+      .exactOptional()
+      .openapi({ description: 'The product description.' }),
+    id: ResourceIdSchema.exactOptional().openapi({
+      description: 'The product ID.',
+      example: 'membership',
+      readOnly: true,
+    }),
+    name: z
+      .string()
+      .max(255)
+      .openapi({ description: 'The product name.', example: 'Premium membership' }),
+    options: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The product options such as color, size, etc. The product options definition does\nnot include option values. Those are defined within the plans.\n',
+      }),
+    requiresShipping: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If the product requires shipping, shipping calculations will be applied.',
+        example: false,
+      }),
+    unitLabel: z
+      .string()
+      .max(50)
+      .default('unit')
+      .exactOptional()
+      .openapi({
+        description: 'The unit label, such as per `seat` or per `unit`.',
+        example: 'seat',
+      }),
+    updatedTime: ServerTimestampSchema.exactOptional().openapi({
+      description: 'The product updated time.',
+    }),
+  })
+  .openapi({
+    description:
+      'Products include digital goods, services, and physical goods.\nProducts appear on invoice line items. If you set a tax category identifier,\ntaxes will be calculated upon invoice generation. If it is shippable,\nshipping will be calculated upon invoice generation. Pricing and\nvariations are set within Plans.\n',
+    required: ['name'],
+  })
+  .openapi('CommonProduct')
+
+const ProductSchema = CommonProductSchema.and(
+  z
+    .object({
+      _links: z
+        .array(SelfLinkSchema)
+        .min(1)
+        .exactOptional()
+        .openapi({ description: 'The links related to resource.', readOnly: true }),
+      accountingCode: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The product accounting code.', example: '4010' }),
+      taxCategoryId: z
+        .enum(['00000', '99999', '20010', '40030', '51020', '51010', '31000', '30070'])
+        .exactOptional()
+        .openapi({ description: "The product's tax category identifier string." }),
+    })
+    .openapi({ required: [] }),
+).openapi('Product')
 
 const ProductEmbedSchema = z
   .object({ product: ProductSchema.exactOptional() })
   .openapi({ description: 'Product object.', readOnly: true, required: [] })
   .openapi('ProductEmbed')
 
-const PlanSchema: z.ZodType<PlanType> = z
-  .lazy(() =>
-    CommonPlanSchema.and(
+const PlanPriceFormulaSchema = z
+  .object({
+    formula: z
+      .enum(['fixed-fee', 'flat-rate', 'stairstep', 'tiered', 'volume'])
+      .openapi({
+        description:
+          'The price formula determines what algorithm is used to calculate the invoice price based on a few factors,\n- the quantity in the order (which may be variable if usage pricing, otherwise determined when creating the order)\n- the price brackets data\n\nTo determine which formula is correct, please see the price formula documentation.\n',
+      }),
+  })
+  .openapi({
+    discriminator: {
+      propertyName: 'formula',
+      mapping: {
+        'fixed-fee': '#/components/schemas/fixed-fee',
+        'flat-rate': '#/components/schemas/flat-rate',
+        stairstep: '#/components/schemas/stairstep',
+        tiered: '#/components/schemas/tiered',
+        volume: '#/components/schemas/volume',
+      },
+    },
+    required: ['formula'],
+  })
+  .openapi('PlanPriceFormula')
+
+const PlanPeriodSchema = z
+  .object({
+    length: z.int().openapi({ description: 'The length of time.' }),
+    unit: z.enum(['day', 'week', 'month', 'year']).openapi({ description: 'The unit of time.' }),
+  })
+  .openapi({ required: ['unit', 'length'] })
+  .openapi('PlanPeriod')
+
+const PlanBillingTimingSchema = z
+  .enum(['prepaid', 'postpaid'])
+  .default('prepaid')
+  .openapi({
+    description:
+      'The billing timing in relation to the service period.\nFor `prepaid` plans the customer pays when the service period starts,\nwhereas, for `postpaid` plans, the customer pays when the service period ends.\n',
+  })
+  .openapi('PlanBillingTiming')
+
+const CommonPlanSchema = z
+  .object({
+    createdTime: ServerTimestampSchema.exactOptional().openapi({
+      description: 'Plan created time.',
+    }),
+    currency: CurrencyCodeSchema,
+    currencySign: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Currency sign.', readOnly: true }),
+    customFields: ResourceCustomFieldsSchema.exactOptional(),
+    id: ResourceIdSchema.exactOptional().openapi({ description: 'The plan ID.', readOnly: true }),
+    isTrialOnly: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether a plan has a trial without recurring instructions.',
+        readOnly: true,
+      }),
+    name: z.string().openapi({ description: 'The plan name, displayed on invoices and receipts.' }),
+    pricing: PlanPriceFormulaSchema,
+    productId: ResourceIdSchema.openapi({ description: 'The related product ID.' }),
+    productOptions: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Name-value pairs to specify the product options.',
+        example: { color: 'red', size: 'xxl' },
+      }),
+    recurringInterval: PlanPeriodSchema.and(
       z
         .object({
-          _links: z
-            .array(SelfLinkSchema)
-            .min(1)
+          billingTiming: PlanBillingTimingSchema.exactOptional(),
+          limit: z
+            .int()
             .exactOptional()
-            .openapi({ description: 'The links related to resource.', readOnly: true }),
-          invoiceTimeShift: InvoiceTimeShiftSchema.exactOptional().openapi({
-            description: 'You can shift issue time and due time of invoices for this plan.',
-          }),
+            .openapi({
+              description:
+                'The number of invoices this subscription order will generate\n(if 1, it will not generate any beyond the initial order creation).\nFor example, set this property to `12`, when the `periodUnit` is month and the\n`periodDuration` is 1, for a 1 year contract billed monthly.\n',
+            }),
         })
         .openapi({ required: [] }),
-    ),
-  )
-  .openapi('Plan')
+    )
+      .exactOptional()
+      .openapi({ description: 'The service interval. For a one-time item, use `null`.' }),
+    revision: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Increments when the plan is modified. \nCompare to materialized subscription items revision.\n',
+        readOnly: true,
+      }),
+    setup: z
+      .object({
+        price: z
+          .float64()
+          .openapi({ description: 'The price of a setup - 0 is a valid value (for free).' }),
+      })
+      .exactOptional()
+      .openapi({ description: 'The setup. Set `null` if no setup.', required: ['price'] }),
+    trial: z
+      .object({
+        period: PlanPeriodSchema,
+        price: z
+          .float64()
+          .openapi({ description: 'The price of the trial. For a free trial, use `0`.' }),
+      })
+      .exactOptional()
+      .openapi({
+        description: 'The trial. Set `null` if no trial.',
+        required: ['price', 'period'],
+      }),
+    updatedTime: ServerTimestampSchema.exactOptional().openapi({
+      description: 'Plan updated time.',
+    }),
+  })
+  .openapi({ required: ['name', 'currency', 'productId', 'pricing'] })
+  .openapi('CommonPlan')
+
+const TimeUnitSchema = z
+  .enum(['second', 'minute', 'hour', 'day', 'month', 'year'])
+  .openapi('TimeUnit')
+
+const TimePluralUnitSchema = z
+  .enum(['seconds', 'minutes', 'hours', 'days', 'months', 'years'])
+  .openapi('TimePluralUnit')
+
+const DueTimeShiftInstructionSchema = z
+  .object({
+    duration: z.int().min(1).openapi({ description: 'The number of the units.' }),
+    unit: z.xor([TimeUnitSchema, TimePluralUnitSchema]),
+  })
+  .default({ duration: 1, unit: 'hour' })
+  .openapi({
+    description:
+      'The calculation instruction of due time.\nThis is used in conjunction with the **billing anchor** to calculate due time of invoice.\nThe chronology of due time shift is always **after**.\n',
+    required: ['duration', 'unit'],
+  })
+  .openapi('DueTimeShiftInstruction')
+
+const IssueTimeShiftInstructionSchema = z
+  .object({
+    chronology: z
+      .literal('before')
+      .openapi({
+        description: 'The chronology of the billing time relatively to the service period start.',
+      }),
+    duration: z.int().min(1).openapi({ description: 'The number of the units.' }),
+    unit: z.xor([TimeUnitSchema, TimePluralUnitSchema]),
+  })
+  .openapi({
+    description:
+      'The calculation instruction of billing time.\nThis is used in conjunction with the **service period anchor** to calculate the time the invoice is issued.\n',
+    required: ['chronology', 'duration', 'unit'],
+  })
+  .openapi('IssueTimeShiftInstruction')
+
+const InvoiceTimeShiftSchema = z
+  .object({
+    dueTimeShift: DueTimeShiftInstructionSchema.exactOptional(),
+    issueTimeShift: IssueTimeShiftInstructionSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'The invoice time shift in conjunction with `billingTiming` allows to setup different billing use cases such as:\n- Bill immediately when the service period _starts_\n- Bill immediately after the service period _ends_\n- Bill _interval of time_ before the service period _starts_\n- Bill _interval of time_ after the service period _starts_\n- Bill _interval of time_ before the service period _ends_\n- Bill _interval of time_ after the service period _ends_\nIt allows to control the billing time.\n',
+    required: [],
+  })
+  .openapi('InvoiceTimeShift')
+
+const PlanSchema = CommonPlanSchema.and(
+  z
+    .object({
+      _links: z
+        .array(SelfLinkSchema)
+        .min(1)
+        .exactOptional()
+        .openapi({ description: 'The links related to resource.', readOnly: true }),
+      invoiceTimeShift: InvoiceTimeShiftSchema.exactOptional().openapi({
+        description: 'You can shift issue time and due time of invoices for this plan.',
+      }),
+    })
+    .openapi({ required: [] }),
+).openapi('Plan')
 
 const PlanEmbedSchema = z
   .object({ plan: PlanSchema.exactOptional() })
@@ -1493,8 +2205,8 @@ const InvoiceShippingSchema = z
   .openapi({
     description: 'Invoice shipping.',
     discriminator: {
-      mapping: { manual: '#/components/schemas/manual', rebilly: '#/components/schemas/rebilly' },
       propertyName: 'calculator',
+      mapping: { manual: '#/components/schemas/manual', rebilly: '#/components/schemas/rebilly' },
     },
     required: ['calculator'],
   })
@@ -1515,11 +2227,11 @@ const InvoiceTaxSchema = z
   .openapi({
     description: 'Invoice taxes.',
     discriminator: {
+      propertyName: 'calculator',
       mapping: {
         manual: '#/components/schemas/manual-2',
         rebilly: '#/components/schemas/rebilly-taxjar',
       },
-      propertyName: 'calculator',
     },
     required: ['calculator'],
   })
@@ -1793,306 +2505,6 @@ const GatewayNameSchema = z
   .openapi({ description: 'The payment gateway name.' })
   .openapi('GatewayName')
 
-type PaymentMethodType =
-  | 'payment-card'
-  | 'ach'
-  | 'cash'
-  | 'check'
-  | 'paypal'
-  | 'AdvCash'
-  | 'Airpay'
-  | 'Alfa-click'
-  | 'Alipay'
-  | 'Apple Pay'
-  | 'AstroPay Card'
-  | 'AstroPay-GO'
-  | 'bank-transfer'
-  | 'bank-transfer-2'
-  | 'bank-transfer-3'
-  | 'bank-transfer-4'
-  | 'bank-transfer-5'
-  | 'bank-transfer-6'
-  | 'bank-transfer-7'
-  | 'bank-transfer-8'
-  | 'bank-transfer-9'
-  | 'Beeline'
-  | 'Belfius-direct-net'
-  | 'bitcoin'
-  | 'Boleto'
-  | 'Boleto-2'
-  | 'Boleto-3'
-  | 'cash-deposit'
-  | 'CASHlib'
-  | 'CashToCode'
-  | 'CCAvenue'
-  | 'China UnionPay'
-  | 'CODVoucher'
-  | 'Conekta-oxxo'
-  | 'Conekta-spei'
-  | 'cryptocurrency'
-  | 'Cupon-de-pagos'
-  | 'CyberSource'
-  | 'domestic-cards'
-  | 'echeck'
-  | 'ecoPayz'
-  | 'ecoVoucher'
-  | 'EPS'
-  | 'ePay.bg'
-  | 'Ethereum'
-  | 'e-wallet'
-  | 'ezyEFT'
-  | 'eZeeWallet'
-  | 'Flexepin'
-  | 'Giropay'
-  | 'Google Pay'
-  | 'Gpaysafe'
-  | 'iDebit'
-  | 'iDEAL'
-  | 'ING-homepay'
-  | 'INOVAPAY-pin'
-  | 'INOVAPAY-wallet'
-  | 'InstaDebit'
-  | 'instant-bank-transfer'
-  | 'Interac-online'
-  | 'Interac-eTransfer'
-  | 'Interac-express-connect'
-  | 'Interac'
-  | 'invoice'
-  | 'iWallet'
-  | 'Jeton'
-  | 'jpay'
-  | 'Khelocard'
-  | 'Klarna'
-  | 'Litecoin'
-  | 'loonie'
-  | 'LPG-online'
-  | 'LPG-payment-card'
-  | 'Megafon'
-  | 'MiFinity-eWallet'
-  | 'miscellaneous'
-  | 'Bancontact'
-  | 'MTS'
-  | 'MuchBetter'
-  | 'MyFatoorah'
-  | 'Neosurf'
-  | 'Netbanking'
-  | 'Neteller'
-  | 'Nordea-Solo'
-  | 'OchaPay'
-  | 'online-bank-transfer'
-  | 'Onlineueberweisen'
-  | 'oriental-wallet'
-  | 'OXXO'
-  | 'Pagsmile-lottery'
-  | 'Pagsmile-deposit-express'
-  | 'PayCash'
-  | 'Payeer'
-  | 'PaymentAsia-crypto'
-  | 'Paysafecard'
-  | 'PayTabs'
-  | 'Pay4Fun'
-  | 'Paymero'
-  | 'Paymero-QR'
-  | 'PayULatam'
-  | 'Perfect-money'
-  | 'Piastrix'
-  | 'PIX'
-  | 'PinPay'
-  | 'phone'
-  | 'PhonePe'
-  | 'POLi'
-  | 'PostFinance-card'
-  | 'PostFinance-e-finance'
-  | 'Przelewy24'
-  | 'QIWI'
-  | 'QQPay'
-  | 'Resurs'
-  | 'SEPA'
-  | 'Siirto'
-  | 'Skrill'
-  | 'Skrill Rapid Transfer'
-  | 'SMSVoucher'
-  | 'Sofort'
-  | 'SparkPay'
-  | 'swift-dbt'
-  | 'Tele2'
-  | 'Terminaly-RF'
-  | 'Tether'
-  | 'ToditoCash-card'
-  | 'Trustly'
-  | 'TWINT'
-  | 'UniCrypt'
-  | 'UPayCard'
-  | 'UPI'
-  | 'VCreditos'
-  | 'VenusPoint'
-  | 'voucher'
-  | 'voucher-2'
-  | 'voucher-3'
-  | 'voucher-4'
-  | 'Webmoney'
-  | 'Webpay'
-  | 'Webpay-2'
-  | 'Webpay Card'
-  | 'WeChat Pay'
-  | 'XPay-P2P'
-  | 'XPay-QR'
-  | 'Yandex-money'
-  | 'Zotapay'
-  | 'Zimpler'
-
-const PaymentMethodSchema: z.ZodType<PaymentMethodType> = z
-  .enum([
-    'payment-card',
-    'ach',
-    'cash',
-    'check',
-    'paypal',
-    'AdvCash',
-    'Airpay',
-    'Alfa-click',
-    'Alipay',
-    'Apple Pay',
-    'AstroPay Card',
-    'AstroPay-GO',
-    'bank-transfer',
-    'bank-transfer-2',
-    'bank-transfer-3',
-    'bank-transfer-4',
-    'bank-transfer-5',
-    'bank-transfer-6',
-    'bank-transfer-7',
-    'bank-transfer-8',
-    'bank-transfer-9',
-    'Beeline',
-    'Belfius-direct-net',
-    'bitcoin',
-    'Boleto',
-    'Boleto-2',
-    'Boleto-3',
-    'cash-deposit',
-    'CASHlib',
-    'CashToCode',
-    'CCAvenue',
-    'China UnionPay',
-    'CODVoucher',
-    'Conekta-oxxo',
-    'Conekta-spei',
-    'cryptocurrency',
-    'Cupon-de-pagos',
-    'CyberSource',
-    'domestic-cards',
-    'echeck',
-    'ecoPayz',
-    'ecoVoucher',
-    'EPS',
-    'ePay.bg',
-    'Ethereum',
-    'e-wallet',
-    'ezyEFT',
-    'eZeeWallet',
-    'Flexepin',
-    'Giropay',
-    'Google Pay',
-    'Gpaysafe',
-    'iDebit',
-    'iDEAL',
-    'ING-homepay',
-    'INOVAPAY-pin',
-    'INOVAPAY-wallet',
-    'InstaDebit',
-    'instant-bank-transfer',
-    'Interac-online',
-    'Interac-eTransfer',
-    'Interac-express-connect',
-    'Interac',
-    'invoice',
-    'iWallet',
-    'Jeton',
-    'jpay',
-    'Khelocard',
-    'Klarna',
-    'Litecoin',
-    'loonie',
-    'LPG-online',
-    'LPG-payment-card',
-    'Megafon',
-    'MiFinity-eWallet',
-    'miscellaneous',
-    'Bancontact',
-    'MTS',
-    'MuchBetter',
-    'MyFatoorah',
-    'Neosurf',
-    'Netbanking',
-    'Neteller',
-    'Nordea-Solo',
-    'OchaPay',
-    'online-bank-transfer',
-    'Onlineueberweisen',
-    'oriental-wallet',
-    'OXXO',
-    'Pagsmile-lottery',
-    'Pagsmile-deposit-express',
-    'PayCash',
-    'Payeer',
-    'PaymentAsia-crypto',
-    'Paysafecard',
-    'PayTabs',
-    'Pay4Fun',
-    'Paymero',
-    'Paymero-QR',
-    'PayULatam',
-    'Perfect-money',
-    'Piastrix',
-    'PIX',
-    'PinPay',
-    'phone',
-    'PhonePe',
-    'POLi',
-    'PostFinance-card',
-    'PostFinance-e-finance',
-    'Przelewy24',
-    'QIWI',
-    'QQPay',
-    'Resurs',
-    'SEPA',
-    'Siirto',
-    'Skrill',
-    'Skrill Rapid Transfer',
-    'SMSVoucher',
-    'Sofort',
-    'SparkPay',
-    'swift-dbt',
-    'Tele2',
-    'Terminaly-RF',
-    'Tether',
-    'ToditoCash-card',
-    'Trustly',
-    'TWINT',
-    'UniCrypt',
-    'UPayCard',
-    'UPI',
-    'VCreditos',
-    'VenusPoint',
-    'voucher',
-    'voucher-2',
-    'voucher-3',
-    'voucher-4',
-    'Webmoney',
-    'Webpay',
-    'Webpay-2',
-    'Webpay Card',
-    'WeChat Pay',
-    'XPay-P2P',
-    'XPay-QR',
-    'Yandex-money',
-    'Zotapay',
-    'Zimpler',
-  ])
-  .openapi({ description: 'The payment method.' })
-  .openapi('PaymentMethod')
-
 const InstrumentReferenceSchema = z
   .object({
     method: PaymentMethodSchema,
@@ -2155,6 +2567,224 @@ type CommonTransactionType = {
   type?: '3ds-authentication' | 'authorize' | 'capture' | 'credit' | 'refund' | 'sale' | 'void'
   updatedTime?: z.infer<typeof ServerTimestampSchema>
   websiteId?: z.infer<typeof ResourceIdSchema>
+}
+
+type TransactionEmbedType = { transaction?: z.infer<typeof TransactionSchema> }
+
+const TransactionEmbedSchema: z.ZodType<TransactionEmbedType> = z
+  .object({ transaction: TransactionSchema.exactOptional() })
+  .openapi({ description: 'Transaction object.', readOnly: true, required: [] })
+  .openapi('TransactionEmbed')
+
+const TransactionLinkSchema = LinkSchema.and(
+  z
+    .object({ rel: z.literal('transaction').openapi({ description: 'The link type.' }) })
+    .openapi({ required: ['rel'] }),
+)
+  .openapi({ required: ['rel'] })
+  .openapi('TransactionLink')
+
+type DisputeType = {
+  _embedded?: z.infer<typeof TransactionEmbedSchema>[]
+  _links?: (z.infer<typeof SelfLinkSchema> | z.infer<typeof TransactionLinkSchema>)[]
+  acquirerReferenceNumber?: string
+  amount: number
+  caseId?: string
+  category?:
+    | 'fraud'
+    | 'unrecognized'
+    | 'product-not-received'
+    | 'product-unacceptable'
+    | 'product-not-refunded'
+    | 'duplicate'
+    | 'subscription-canceled'
+    | 'uncategorized'
+  createdTime?: z.infer<typeof ServerTimestampSchema>
+  currency: z.infer<typeof CurrencyCodeSchema>
+  customerId?: string
+  deadlineTime?: string
+  id?: z.infer<typeof ResourceIdSchema>
+  postedTime: string
+  rawResponse?: string
+  reasonCode:
+    | '1000'
+    | '10.1'
+    | '10.2'
+    | '10.3'
+    | '10.4'
+    | '10.5'
+    | '11.1'
+    | '11.2'
+    | '11.3'
+    | '12'
+    | '12.1'
+    | '12.2'
+    | '12.3'
+    | '12.4'
+    | '12.5'
+    | '12.6'
+    | '12.7'
+    | '13.1'
+    | '13.2'
+    | '13.3'
+    | '13.4'
+    | '13.5'
+    | '13.6'
+    | '13.7'
+    | '13.8'
+    | '13.9'
+    | '2'
+    | '30'
+    | '31'
+    | '35'
+    | '37'
+    | '40'
+    | '41'
+    | '42'
+    | '46'
+    | '47'
+    | '49'
+    | '50'
+    | '53'
+    | '54'
+    | '55'
+    | '57'
+    | '59'
+    | '60'
+    | '62'
+    | '7'
+    | '70'
+    | '71'
+    | '72'
+    | '73'
+    | '74'
+    | '75'
+    | '76'
+    | '77'
+    | '79'
+    | '8'
+    | '80'
+    | '81'
+    | '82'
+    | '83'
+    | '85'
+    | '86'
+    | '93'
+    | '00'
+    | '63'
+    | 'A01'
+    | 'A02'
+    | 'A08'
+    | 'F10'
+    | 'F14'
+    | 'F22'
+    | 'F24'
+    | 'F29'
+    | 'C02'
+    | 'C04'
+    | 'C05'
+    | 'C08'
+    | 'C14'
+    | 'C18'
+    | 'C28'
+    | 'C31'
+    | 'C32'
+    | 'M10'
+    | 'M49'
+    | 'P01'
+    | 'P03'
+    | 'P04'
+    | 'P05'
+    | 'P07'
+    | 'P08'
+    | 'P22'
+    | 'P23'
+    | 'R03'
+    | 'R13'
+    | 'M01'
+    | 'FR1'
+    | 'FR4'
+    | 'FR6'
+    | 'AL'
+    | 'AP'
+    | 'AW'
+    | 'CA'
+    | 'CD'
+    | 'CR'
+    | 'DA'
+    | 'DP'
+    | 'DP1'
+    | 'EX'
+    | 'IC'
+    | 'IN'
+    | 'IS'
+    | 'LP'
+    | 'N'
+    | 'NA'
+    | 'NC'
+    | 'P'
+    | 'RG'
+    | 'RM'
+    | 'RN1'
+    | 'RN2'
+    | 'SV'
+    | 'TF'
+    | 'TNM'
+    | 'UA01'
+    | 'UA02'
+    | 'UA32'
+    | 'UA99'
+    | 'UA03'
+    | 'UA10'
+    | 'UA11'
+    | 'UA12'
+    | 'UA18'
+    | 'UA20'
+    | 'UA21'
+    | 'UA22'
+    | 'UA23'
+    | 'UA28'
+    | 'UA30'
+    | 'UA31'
+    | 'UA38'
+    | 'duplicate'
+    | 'fraudulent'
+    | 'subscription_canceled'
+    | 'product_unacceptable'
+    | 'product_not_received'
+    | 'unrecognized'
+    | 'credit_not_processed'
+    | 'customer_initiated'
+    | 'incorrect_account_details'
+    | 'insufficient_funds'
+    | 'bank_cannot_process'
+    | 'debit_not_authorized'
+    | 'general'
+    | 'pre-chargeback-alert'
+    | '0'
+    | '1'
+    | '2'
+    | '3'
+    | '4'
+    | '5'
+    | '6'
+    | '7'
+    | '9'
+    | '51'
+    | 'A'
+    | 'B'
+  resolvedTime?: z.infer<typeof ServerTimestampSchema>
+  status: 'response-needed' | 'under-review' | 'forfeited' | 'won' | 'lost' | 'unknown'
+  transactionId: string
+  type:
+    | 'information-request'
+    | 'first-chargeback'
+    | 'second-chargeback'
+    | 'arbitration'
+    | 'fraud'
+    | 'ethoca-alert'
+    | 'verifi-alert'
+  updatedTime?: z.infer<typeof ServerTimestampSchema>
 }
 
 type DisputeLinkType = z.infer<typeof LinkSchema>
@@ -2545,6 +3175,7 @@ const GatewayAccountSchema = z
   })
   .openapi({
     discriminator: {
+      propertyName: 'gatewayName',
       mapping: {
         A1Gateway: '#/components/schemas/A1Gateway',
         Adyen: '#/components/schemas/Adyen',
@@ -2699,7 +3330,6 @@ const GatewayAccountSchema = z
         loonie: '#/components/schemas/loonie',
         vegaaH: '#/components/schemas/vegaaH',
       },
-      propertyName: 'gatewayName',
     },
     required: ['gatewayName', 'method', 'acceptedCurrencies'],
   })
@@ -2708,6 +3338,113 @@ const GatewayAccountSchema = z
 type GatewayAccountEmbedType = { gatewayAccount?: z.infer<typeof GatewayAccountSchema> }
 
 type GatewayAccountLinkType = z.infer<typeof LinkSchema>
+
+const InvoiceSchema: z.ZodType<InvoiceType> = z
+  .lazy(() =>
+    CommonInvoiceSchema.and(
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'customerId')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
+        .openapi({ required: ['customerId'] }),
+    ).and(
+      z
+        .object({
+          _embedded: z
+            .array(
+              z.union([
+                CustomerEmbedSchema,
+                WebsiteEmbedSchema,
+                OrganizationEmbedSchema,
+                LeadSourceEmbedSchema,
+              ]),
+            )
+            .min(1)
+            .exactOptional()
+            .openapi({
+              description:
+                'Any embedded objects available that are requested by the `expand` querystring parameter.',
+              readOnly: true,
+            }),
+          _links: z
+            .array(
+              z.union([
+                SelfLinkSchema,
+                CustomerLinkSchema,
+                WebsiteLinkSchema,
+                OrganizationLinkSchema,
+                LeadSourceLinkSchema,
+                TransactionAllocationsLinkSchema,
+                RecalculateInvoiceLinkSchema,
+                SubscriptionLinkSchema,
+              ]),
+            )
+            .min(1)
+            .exactOptional()
+            .openapi({ description: 'The links related to resource.', readOnly: true }),
+          customerId: ResourceIdSchema.exactOptional().openapi({
+            description: "The сustomer's ID.",
+            'x-basic': true,
+          }),
+          dueReminderNumber: z
+            .int()
+            .exactOptional()
+            .openapi({
+              description: 'Number of past due reminder events triggered.',
+              readOnly: true,
+            }),
+          dueReminderTime: ServerTimestampSchema.nullable()
+            .exactOptional()
+            .openapi({ description: 'Time past due reminder event will be triggered.' }),
+          retryInstruction: z
+            .object({
+              afterAttemptPolicies: z
+                .array(z.literal('change-subscription-renewal-time'))
+                .openapi({ description: 'The policy on the attempt finishes.' }),
+              afterRetryEndPolicies: z
+                .array(z.enum(['abandon-invoice', 'cancel-subscription']))
+                .openapi({ description: 'The policy on the retry ends.' }),
+              attempts: z
+                .array(
+                  z
+                    .object({ scheduleInstruction: InvoiceRetryScheduleInstructionSchema })
+                    .openapi({ required: ['scheduleInstruction'] }),
+                )
+                .min(1),
+            })
+            .exactOptional()
+            .openapi({
+              description: 'The invoice retry instruction.',
+              required: ['attempts', 'afterAttemptPolicies', 'afterRetryEndPolicies'],
+            }),
+          revision: z
+            .int()
+            .exactOptional()
+            .openapi({
+              description:
+                'The number of times the invoice data has been modified.\nThe revision is useful when analyzing webhook data to determine if the change takes precedence over the current representation.\n',
+              readOnly: true,
+            }),
+          transactions: z
+            .array(TransactionSchema)
+            .exactOptional()
+            .openapi({ description: 'Invoice transactions array.', readOnly: true }),
+          type: z
+            .enum(['initial', 'renewal', 'interim', 'cancellation', 'one-time', 'refund', 'charge'])
+            .exactOptional()
+            .openapi({ description: 'Invoice type.', readOnly: true }),
+        })
+        .openapi({ required: [] }),
+    ),
+  )
+  .openapi('Invoice')
+
+type InitialInvoiceEmbedType = { initialInvoice?: z.infer<typeof InvoiceSchema> }
 
 const CommonInvoiceSchema: z.ZodType<CommonInvoiceType> = z
   .object({
@@ -2886,7 +3623,7 @@ const CommonInvoiceSchema: z.ZodType<CommonInvoiceType> = z
 type WebsiteEmbedType = { website?: { [key: string]: unknown } }
 
 const WebsiteEmbedSchema: z.ZodType<WebsiteEmbedType> = z
-  .object({ website: z.object({}).exactOptional() })
+  .object({ website: z.looseObject({}).exactOptional() })
   .openapi({ description: 'Website object.', readOnly: true, required: [] })
   .openapi('WebsiteEmbed')
 
@@ -3040,6 +3777,7 @@ const InvoiceRetryScheduleInstructionSchema: z.ZodType<InvoiceRetryScheduleInstr
   .openapi({
     description: 'The calculation instruction of scheduled time.',
     discriminator: {
+      propertyName: 'method',
       mapping: {
         'date-interval': '#/components/schemas/date-interval',
         'day-of-month': '#/components/schemas/day-of-month',
@@ -3047,326 +3785,63 @@ const InvoiceRetryScheduleInstructionSchema: z.ZodType<InvoiceRetryScheduleInstr
         immediately: '#/components/schemas/immediately',
         intelligent: '#/components/schemas/intelligent',
       },
-      propertyName: 'method',
     },
     required: ['method'],
   })
   .openapi('InvoiceRetryScheduleInstruction')
 
-type InvoiceType = z.infer<typeof CommonInvoiceSchema> & { [key: string]: unknown } & {
-  _embedded?: (
-    | z.infer<typeof CustomerEmbedSchema>
-    | z.infer<typeof WebsiteEmbedSchema>
-    | z.infer<typeof OrganizationEmbedSchema>
-    | z.infer<typeof LeadSourceEmbedSchema>
-  )[]
-  _links?: (
-    | z.infer<typeof SelfLinkSchema>
-    | z.infer<typeof CustomerLinkSchema>
-    | z.infer<typeof WebsiteLinkSchema>
-    | z.infer<typeof OrganizationLinkSchema>
-    | z.infer<typeof LeadSourceLinkSchema>
-    | z.infer<typeof TransactionAllocationsLinkSchema>
-    | z.infer<typeof RecalculateInvoiceLinkSchema>
-    | z.infer<typeof SubscriptionLinkSchema>
-  )[]
-  customerId?: z.infer<typeof ResourceIdSchema>
-  dueReminderNumber?: number
-  dueReminderTime?: z.infer<typeof ServerTimestampSchema> | null
-  retryInstruction?: {
-    afterAttemptPolicies: 'change-subscription-renewal-time'[]
-    afterRetryEndPolicies: ('abandon-invoice' | 'cancel-subscription')[]
-    attempts: { scheduleInstruction: z.infer<typeof InvoiceRetryScheduleInstructionSchema> }[]
+type InvoiceType = z.infer<typeof CommonInvoiceSchema> &
+  unknown & {
+    _embedded?: (
+      | z.infer<typeof CustomerEmbedSchema>
+      | z.infer<typeof WebsiteEmbedSchema>
+      | z.infer<typeof OrganizationEmbedSchema>
+      | z.infer<typeof LeadSourceEmbedSchema>
+    )[]
+    _links?: (
+      | z.infer<typeof SelfLinkSchema>
+      | z.infer<typeof CustomerLinkSchema>
+      | z.infer<typeof WebsiteLinkSchema>
+      | z.infer<typeof OrganizationLinkSchema>
+      | z.infer<typeof LeadSourceLinkSchema>
+      | z.infer<typeof TransactionAllocationsLinkSchema>
+      | z.infer<typeof RecalculateInvoiceLinkSchema>
+      | z.infer<typeof SubscriptionLinkSchema>
+    )[]
+    customerId?: z.infer<typeof ResourceIdSchema>
+    dueReminderNumber?: number
+    dueReminderTime?: z.infer<typeof ServerTimestampSchema> | null
+    retryInstruction?: {
+      afterAttemptPolicies: 'change-subscription-renewal-time'[]
+      afterRetryEndPolicies: ('abandon-invoice' | 'cancel-subscription')[]
+      attempts: { scheduleInstruction: z.infer<typeof InvoiceRetryScheduleInstructionSchema> }[]
+    }
+    revision?: number
+    transactions?: z.infer<typeof TransactionSchema>[]
+    type?: 'initial' | 'renewal' | 'interim' | 'cancellation' | 'one-time' | 'refund' | 'charge'
   }
-  revision?: number
-  transactions?: z.infer<typeof TransactionSchema>[]
-  type?: 'initial' | 'renewal' | 'interim' | 'cancellation' | 'one-time' | 'refund' | 'charge'
-}
-
-const InvoiceSchema: z.ZodType<InvoiceType> = z
-  .lazy(() =>
-    CommonInvoiceSchema.and(
-      z
-        .unknown()
-        .superRefine((val, ctx) => {
-          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-            if (!Object.hasOwn(val, 'customerId')) {
-              ctx.addIssue({ code: 'custom' })
-            }
-          }
-        })
-        .openapi({ required: ['customerId'] }),
-    ).and(
-      z
-        .object({
-          _embedded: z
-            .array(
-              z.union([
-                CustomerEmbedSchema,
-                WebsiteEmbedSchema,
-                OrganizationEmbedSchema,
-                LeadSourceEmbedSchema,
-              ]),
-            )
-            .min(1)
-            .exactOptional()
-            .openapi({
-              description:
-                'Any embedded objects available that are requested by the `expand` querystring parameter.',
-              readOnly: true,
-            }),
-          _links: z
-            .array(
-              z.union([
-                SelfLinkSchema,
-                CustomerLinkSchema,
-                WebsiteLinkSchema,
-                OrganizationLinkSchema,
-                LeadSourceLinkSchema,
-                TransactionAllocationsLinkSchema,
-                RecalculateInvoiceLinkSchema,
-                SubscriptionLinkSchema,
-              ]),
-            )
-            .min(1)
-            .exactOptional()
-            .openapi({ description: 'The links related to resource.', readOnly: true }),
-          customerId: ResourceIdSchema.exactOptional().openapi({
-            description: "The сustomer's ID.",
-            'x-basic': true,
-          }),
-          dueReminderNumber: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Number of past due reminder events triggered.',
-              readOnly: true,
-            }),
-          dueReminderTime: ServerTimestampSchema.nullable()
-            .exactOptional()
-            .openapi({ description: 'Time past due reminder event will be triggered.' }),
-          retryInstruction: z
-            .object({
-              afterAttemptPolicies: z
-                .array(z.literal('change-subscription-renewal-time'))
-                .openapi({ description: 'The policy on the attempt finishes.' }),
-              afterRetryEndPolicies: z
-                .array(z.enum(['abandon-invoice', 'cancel-subscription']))
-                .openapi({ description: 'The policy on the retry ends.' }),
-              attempts: z
-                .array(
-                  z
-                    .object({ scheduleInstruction: InvoiceRetryScheduleInstructionSchema })
-                    .openapi({ required: ['scheduleInstruction'] }),
-                )
-                .min(1),
-            })
-            .exactOptional()
-            .openapi({
-              description: 'The invoice retry instruction.',
-              required: ['attempts', 'afterAttemptPolicies', 'afterRetryEndPolicies'],
-            }),
-          revision: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of times the invoice data has been modified.\nThe revision is useful when analyzing webhook data to determine if the change takes precedence over the current representation.\n',
-              readOnly: true,
-            }),
-          transactions: z
-            .array(TransactionSchema)
-            .exactOptional()
-            .openapi({ description: 'Invoice transactions array.', readOnly: true }),
-          type: z
-            .enum(['initial', 'renewal', 'interim', 'cancellation', 'one-time', 'refund', 'charge'])
-            .exactOptional()
-            .openapi({ description: 'Invoice type.', readOnly: true }),
-        })
-        .openapi({ required: [] }),
-    ),
-  )
-  .openapi('Invoice')
 
 type InvoicesEmbedType = { invoices?: z.infer<typeof InvoiceSchema>[] }
 
 type InvoicesLinkType = z.infer<typeof LinkSchema>
 
-const KycDocumentSubtypesSchema = z
-  .enum([
-    'passport',
-    'id-card',
-    'driver-license',
-    'birth-certificate',
-    'utility-bill',
-    'rental-receipt',
-    'lease-agreement',
-    'copy-credit-card',
-    'credit-card-statement',
-    'bank-statement',
-    'inheritance-documentation',
-    'tax-return',
-    'salary-slip',
-    'sale-of-assets',
-    'public-health-card',
-    'proof-of-age-card',
-    'reverse-of-id',
-    'public-service',
-    'ewallet-holder-details',
-    'ewallet-transaction-statement',
-    'other',
-  ])
-  .openapi('KycDocumentSubtypes')
-
-const KycDocumentTypesSchema = z
-  .enum(['identity-proof', 'address-proof', 'funds-proof', 'purchase-proof'])
-  .openapi('KycDocumentTypes')
-
-const KycDocumentRejectionSchema = z
-  .object({
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The rejection message.',
-        example: 'Provided document is unreadable',
-      }),
-    type: z
-      .enum([
-        'document-unreadable',
-        'document-expired',
-        'document-not-matching',
-        'underage-person',
-        'other',
-      ])
-      .exactOptional(),
-  })
-  .openapi({ readOnly: true, required: [] })
-  .openapi('KycDocumentRejection')
-
-const CommonKycDocumentSchema = z
-  .object({
-    _links: z
-      .array(z.union([SelfLinkSchema]))
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'The links related to resource.', readOnly: true }),
-    createdTime: ServerTimestampSchema.exactOptional().openapi({
-      description: 'Creation date/time.',
-    }),
-    documentSubtype: KycDocumentSubtypesSchema.exactOptional().openapi({
-      description: 'Document subtype submitted for validation.',
-    }),
-    documentType: KycDocumentTypesSchema.openapi({
-      description:
-        'Document type submitted for validation, only identity-proof type is analyzed in an automated manner.',
-    }),
-    fileId: ResourceIdSchema.exactOptional().openapi({
-      deprecated: true,
-      description: 'Linked file object id.',
-    }),
-    fileIds: z
-      .array(ResourceIdSchema)
-      .exactOptional()
-      .openapi({ description: "Linked file object id's." }),
-    id: ResourceIdSchema.exactOptional().openapi({ readOnly: true }),
-    processedTime: ServerTimestampSchema.exactOptional().openapi({
-      description: 'Processing date/time.',
-    }),
-    rejectionReason: KycDocumentRejectionSchema.exactOptional(),
-    requestId: ResourceIdSchema.nullable()
-      .exactOptional()
-      .openapi({ description: 'KYC request identifier string.', readOnly: true }),
-    status: z
-      .enum(['pending', 'in-progress', 'accepted', 'rejected'])
-      .openapi({ description: 'Status of the validation.', readOnly: true }),
-    updatedTime: ServerTimestampSchema.exactOptional().openapi({
-      description: 'Latest update date/time.',
-    }),
-  })
-  .openapi({ required: ['customerId', 'documentType', 'status'] })
-  .openapi('CommonKycDocument')
-
-type KycDocumentType = z.infer<typeof CommonKycDocumentSchema> & {
+type KhelocardCardType = {
+  _embedded?: z.infer<typeof CustomerEmbedSchema>[]
+  _links?: (z.infer<typeof SelfLinkSchema> | z.infer<typeof CustomerLinkSchema>)[]
+  billingAddress?: z.infer<typeof ContactObjectSchema>
+  createdTime?: z.infer<typeof ServerTimestampSchema>
+  customFields?: z.infer<typeof ResourceCustomFieldsSchema>
   customerId?: z.infer<typeof ResourceIdSchema>
-  matchLevel?: number
-  notes?: string | null
-  reason?: string
-  reviewTime?: z.infer<typeof ServerTimestampSchema> | null
-  reviewerId?: z.infer<typeof ResourceIdSchema> | null
-  reviewerName?: string | null
-}
-
-const CommonKycRequestSchema = z
-  .object({
-    createdTime: ServerTimestampSchema.exactOptional().openapi({
-      description: 'Creation date/time.',
-    }),
-    documents: z
-      .array(
-        z
-          .object({
-            maxAttempts: z
-              .int()
-              .min(0)
-              .max(100)
-              .default(3)
-              .exactOptional()
-              .openapi({
-                description: 'The number of document upload attempts. `0` treated as unlimited.',
-              }),
-            subtypes: z
-              .array(KycDocumentSubtypesSchema)
-              .exactOptional()
-              .openapi({ description: 'Document subtype allowed for customer.' }),
-            type: KycDocumentTypesSchema.openapi({
-              description: 'Document type to be requested from customer.',
-            }),
-          })
-          .openapi({ required: ['type'] }),
-      )
-      .openapi({ description: 'Documents to be requested from customer.' }),
-    expirationTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Expiration date/time.' }),
-    id: ResourceIdSchema.exactOptional().openapi({ readOnly: true }),
-    redirectUrl: z
-      .url()
-      .exactOptional()
-      .openapi({ description: 'The URL to redirect the customer when an upload is completed.' }),
-    updatedTime: ServerTimestampSchema.exactOptional().openapi({
-      description: 'Latest update date/time.',
-    }),
-  })
-  .openapi({ required: ['documents'] })
-  .openapi('CommonKycRequest')
-
-const KycDocumentsLinkSchema = LinkSchema.and(
-  z
-    .object({ rel: z.literal('kycDocuments').openapi({ description: 'The link type.' }) })
-    .openapi({ required: ['rel'] }),
-)
-  .openapi({ required: ['rel'] })
-  .openapi('KycDocumentsLink')
-
-const KycGathererLinkSchema = LinkSchema.and(
-  z
-    .object({ rel: z.literal('kycGatherer').openapi({ description: 'The link type.' }) })
-    .openapi({ required: ['rel'] }),
-)
-  .openapi({ required: ['rel'] })
-  .openapi('KycGathererLink')
-
-type KycRequestType = z.infer<typeof CommonKycRequestSchema> & {
-  _links?: (
-    | z.infer<typeof SelfLinkSchema>
-    | z.infer<typeof KycDocumentsLinkSchema>
-    | z.infer<typeof KycGathererLinkSchema>
-  )[]
-  customerId: z.infer<typeof ResourceIdSchema>
-  matchLevel?: number
-  reason?: string
+  expMonth?: number
+  expYear?: number
+  fingerprint?: string
+  id?: z.infer<typeof ResourceIdSchema>
+  last4?: string
+  method?: 'Khelocard'
+  number?: string
+  riskMetadata?: z.infer<typeof RiskMetadataSchema>
+  status?: 'active' | 'deactivated'
+  updatedTime?: z.infer<typeof ServerTimestampSchema>
 }
 
 type LanguageIsoCodeType = string
@@ -3382,127 +3857,6 @@ type MoneyType = {
   amount: z.infer<typeof MoneyAmountSchema>
   currency: z.infer<typeof CurrencyCodeSchema>
 }
-
-const PlanPriceFormulaSchema = z
-  .object({
-    formula: z
-      .enum(['fixed-fee', 'flat-rate', 'stairstep', 'tiered', 'volume'])
-      .openapi({
-        description:
-          'The price formula determines what algorithm is used to calculate the invoice price based on a few factors,\n- the quantity in the order (which may be variable if usage pricing, otherwise determined when creating the order)\n- the price brackets data\n\nTo determine which formula is correct, please see the price formula documentation.\n',
-      }),
-  })
-  .openapi({
-    discriminator: {
-      mapping: {
-        'fixed-fee': '#/components/schemas/fixed-fee',
-        'flat-rate': '#/components/schemas/flat-rate',
-        stairstep: '#/components/schemas/stairstep',
-        tiered: '#/components/schemas/tiered',
-        volume: '#/components/schemas/volume',
-      },
-      propertyName: 'formula',
-    },
-    required: ['formula'],
-  })
-  .openapi('PlanPriceFormula')
-
-const PlanPeriodSchema = z
-  .object({
-    length: z.int().openapi({ description: 'The length of time.' }),
-    unit: z.enum(['day', 'week', 'month', 'year']).openapi({ description: 'The unit of time.' }),
-  })
-  .openapi({ required: ['unit', 'length'] })
-  .openapi('PlanPeriod')
-
-const PlanBillingTimingSchema = z
-  .enum(['prepaid', 'postpaid'])
-  .default('prepaid')
-  .openapi({
-    description:
-      'The billing timing in relation to the service period.\nFor `prepaid` plans the customer pays when the service period starts,\nwhereas, for `postpaid` plans, the customer pays when the service period ends.\n',
-  })
-  .openapi('PlanBillingTiming')
-
-const CommonPlanSchema = z
-  .object({
-    createdTime: ServerTimestampSchema.exactOptional().openapi({
-      description: 'Plan created time.',
-    }),
-    currency: CurrencyCodeSchema,
-    currencySign: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Currency sign.', readOnly: true }),
-    customFields: ResourceCustomFieldsSchema.exactOptional(),
-    id: ResourceIdSchema.exactOptional().openapi({ description: 'The plan ID.', readOnly: true }),
-    isTrialOnly: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether a plan has a trial without recurring instructions.',
-        readOnly: true,
-      }),
-    name: z.string().openapi({ description: 'The plan name, displayed on invoices and receipts.' }),
-    pricing: PlanPriceFormulaSchema,
-    productId: ResourceIdSchema.openapi({ description: 'The related product ID.' }),
-    productOptions: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Name-value pairs to specify the product options.',
-        example: { color: 'red', size: 'xxl' },
-      }),
-    recurringInterval: PlanPeriodSchema.and(
-      z
-        .object({
-          billingTiming: PlanBillingTimingSchema.exactOptional(),
-          limit: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'The number of invoices this subscription order will generate\n(if 1, it will not generate any beyond the initial order creation).\nFor example, set this property to `12`, when the `periodUnit` is month and the\n`periodDuration` is 1, for a 1 year contract billed monthly.\n',
-            }),
-        })
-        .openapi({ required: [] }),
-    )
-      .exactOptional()
-      .openapi({ description: 'The service interval. For a one-time item, use `null`.' }),
-    revision: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Increments when the plan is modified. \nCompare to materialized subscription items revision.\n',
-        readOnly: true,
-      }),
-    setup: z
-      .object({
-        price: z
-          .float64()
-          .openapi({ description: 'The price of a setup - 0 is a valid value (for free).' }),
-      })
-      .exactOptional()
-      .openapi({ description: 'The setup. Set `null` if no setup.', required: ['price'] }),
-    trial: z
-      .object({
-        period: PlanPeriodSchema,
-        price: z
-          .float64()
-          .openapi({ description: 'The price of the trial. For a free trial, use `0`.' }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'The trial. Set `null` if no trial.',
-        required: ['price', 'period'],
-      }),
-    updatedTime: ServerTimestampSchema.exactOptional().openapi({
-      description: 'Plan updated time.',
-    }),
-  })
-  .openapi({ required: ['name', 'currency', 'productId', 'pricing'] })
-  .openapi('CommonPlan')
 
 const FlexiblePlanSchema = CommonPlanSchema.and(
   z
@@ -3642,12 +3996,14 @@ const CommonOneTimeOrderSchema = CommonSubscriptionSchema.and(
     .openapi({ required: [] }),
 ).openapi('CommonOneTimeOrder')
 
-const RecentInvoiceEmbedSchema = z
+type RecentInvoiceEmbedType = { recentInvoice?: z.infer<typeof InvoiceSchema> }
+
+const RecentInvoiceEmbedSchema: z.ZodType<RecentInvoiceEmbedType> = z
   .object({ recentInvoice: InvoiceSchema.exactOptional() })
   .openapi({ description: 'Recent Invoice object.', readOnly: true, required: [] })
   .openapi('RecentInvoiceEmbed')
 
-const InitialInvoiceEmbedSchema = z
+const InitialInvoiceEmbedSchema: z.ZodType<InitialInvoiceEmbedType> = z
   .object({ initialInvoice: InvoiceSchema.exactOptional() })
   .openapi({ description: 'Initial Invoice object.', readOnly: true, required: [] })
   .openapi('InitialInvoiceEmbed')
@@ -3676,7 +4032,30 @@ const ApprovalUrlLinkSchema: z.ZodType<ApprovalUrlLinkType> = LinkSchema.and(
   .openapi({ required: ['rel'] })
   .openapi('ApprovalUrlLink')
 
-const SubscriptionMetadataSchema = z
+type SubscriptionMetadataType = {
+  _embedded?: (
+    | z.infer<typeof RecentInvoiceEmbedSchema>
+    | z.infer<typeof InitialInvoiceEmbedSchema>
+    | z.infer<typeof CustomerEmbedSchema>
+    | z.infer<typeof WebsiteEmbedSchema>
+    | z.infer<typeof LeadSourceEmbedSchema>
+  )[]
+  _links?: (
+    | z.infer<typeof SelfLinkSchema>
+    | z.infer<typeof CustomerLinkSchema>
+    | z.infer<typeof InitialInvoiceLinkSchema>
+    | z.infer<typeof RecentInvoiceLinkSchema>
+    | z.infer<typeof WebsiteLinkSchema>
+    | z.infer<typeof ApprovalUrlLinkSchema>
+  )[]
+  createdTime?: z.infer<typeof ServerTimestampSchema>
+  customFields?: z.infer<typeof ResourceCustomFieldsSchema>
+  revision?: number
+  riskMetadata?: z.infer<typeof RiskMetadataSchema> | null
+  updatedTime?: z.infer<typeof ServerTimestampSchema>
+}
+
+const SubscriptionMetadataSchema: z.ZodType<SubscriptionMetadataType> = z
   .object({
     _embedded: z
       .array(
@@ -3936,97 +4315,35 @@ type PaymentCardEmbedType = { paymentCard?: z.infer<typeof PaymentCardSchema> }
 
 type PaymentCardLinkType = z.infer<typeof LinkSchema>
 
-const VaultedInstrumentSchema = z
-  .object({
-    method: PaymentMethodSchema.openapi({
-      description:
-        'The payment method supported vault.\nSee [Payment Instruments API](https://api-reference.rebilly.com/tag/Payment-Instruments).\n',
-    }),
-    paymentInstrumentId: ResourceIdSchema.openapi({
-      description: 'The payment instrument identifier.',
-    }),
-  })
-  .openapi({
-    description: 'Vaulted payment instrument.',
-    required: ['method', 'paymentInstrumentId'],
-    title: 'Vaulted instrument',
-  })
-  .openapi('VaultedInstrument')
+const PayPalAccountSchema: z.ZodType<PayPalAccountType> = CommonPayPalAccountSchema.and(
+  z
+    .object({
+      _embedded: z
+        .array(z.union([AuthTransactionEmbedSchema, CustomerEmbedSchema]))
+        .min(1)
+        .exactOptional()
+        .openapi({
+          description:
+            'Any embedded objects available that are requested by the `expand` querystring parameter.',
+          readOnly: true,
+        }),
+      _links: z
+        .array(
+          z.union([
+            SelfLinkSchema,
+            CustomerLinkSchema,
+            AuthTransactionLinkSchema,
+            ApprovalUrlLinkSchema,
+          ]),
+        )
+        .min(1)
+        .exactOptional()
+        .openapi({ description: 'The links related to resource.', readOnly: true }),
+    })
+    .openapi({ required: [] }),
+).openapi('PayPalAccount')
 
-const AlternativePaymentInstrumentSchema = z
-  .object({
-    method: PaymentMethodSchema,
-    paymentInstrumentId: z
-      .any()
-      .exactOptional()
-      .openapi({ description: 'The payment instrument ID.' }),
-  })
-  .openapi({
-    description: 'Alternative payment method instrument.',
-    required: ['method'],
-    title: 'Alternative instrument',
-  })
-  .openapi('AlternativePaymentInstrument')
-
-const CashInstrumentSchema = z
-  .object({
-    method: z.literal('cash'),
-    receivedBy: z.string().exactOptional().openapi({ description: "The receiver's name." }),
-  })
-  .openapi({ description: 'Cash payment instrument object.', required: ['method'], title: 'Cash' })
-  .openapi('CashInstrument')
-
-const CheckInstrumentSchema = z
-  .object({
-    method: z.literal('cash'),
-    reference: z.string().exactOptional().openapi({ description: 'Reference data.' }),
-  })
-  .openapi({
-    description: 'Check payment instrument object.',
-    required: ['method'],
-    title: 'Check',
-  })
-  .openapi('CheckInstrument')
-
-type PaymentInstrumentType =
-  | z.infer<typeof VaultedInstrumentSchema>
-  | z.infer<typeof AlternativePaymentInstrumentSchema>
-  | z.infer<typeof CashInstrumentSchema>
-  | z.infer<typeof CheckInstrumentSchema>
-
-const PayPalAccountSchema: z.ZodType<PayPalAccountType> = z
-  .lazy(() =>
-    CommonPayPalAccountSchema.and(
-      z
-        .object({
-          _embedded: z
-            .array(z.union([AuthTransactionEmbedSchema, CustomerEmbedSchema]))
-            .min(1)
-            .exactOptional()
-            .openapi({
-              description:
-                'Any embedded objects available that are requested by the `expand` querystring parameter.',
-              readOnly: true,
-            }),
-          _links: z
-            .array(
-              z.union([
-                SelfLinkSchema,
-                CustomerLinkSchema,
-                AuthTransactionLinkSchema,
-                ApprovalUrlLinkSchema,
-              ]),
-            )
-            .min(1)
-            .exactOptional()
-            .openapi({ description: 'The links related to resource.', readOnly: true }),
-        })
-        .openapi({ required: [] }),
-    ),
-  )
-  .openapi('PayPalAccount')
-
-const KhelocardCardSchema = z
+const KhelocardCardSchema: z.ZodType<KhelocardCardType> = z
   .object({
     _embedded: z
       .array(z.union([CustomerEmbedSchema]))
@@ -4081,136 +4398,7 @@ const KhelocardCardSchema = z
   .openapi({ title: 'Khelocard Card', required: [] })
   .openapi('KhelocardCard')
 
-const AlternativePaymentMethodsSchema = z
-  .enum([
-    'cash',
-    'check',
-    'paypal',
-    'AdvCash',
-    'Alfa-click',
-    'Alipay',
-    'AstroPay Card',
-    'AstroPay-GO',
-    'bank-transfer',
-    'bank-transfer-2',
-    'bank-transfer-3',
-    'bank-transfer-4',
-    'bank-transfer-5',
-    'bank-transfer-6',
-    'bank-transfer-7',
-    'bank-transfer-8',
-    'bank-transfer-9',
-    'Beeline',
-    'Belfius-direct-net',
-    'bitcoin',
-    'Boleto',
-    'cash-deposit',
-    'CASHlib',
-    'CashToCode',
-    'China UnionPay',
-    'CODVoucher',
-    'Conekta-oxxo',
-    'Cupon-de-pagos',
-    'cryptocurrency',
-    'domestic-cards',
-    'echeck',
-    'ecoPayz',
-    'ecoVoucher',
-    'EPS',
-    'ePay.bg',
-    'eZeeWallet',
-    'Flexepin',
-    'Giropay',
-    'Gpaysafe',
-    'Google Pay',
-    'iDebit',
-    'iDEAL',
-    'ING-homepay',
-    'INOVAPAY-pin',
-    'INOVAPAY-wallet',
-    'InstaDebit',
-    'instant-bank-transfer',
-    'Interac',
-    'Interac-online',
-    'Interac-eTransfer',
-    'invoice',
-    'iWallet',
-    'Jeton',
-    'jpay',
-    'Khelocard',
-    'Klarna',
-    'loonie',
-    'Megafon',
-    'MiFinity-eWallet',
-    'miscellaneous',
-    'Bancontact',
-    'MTS',
-    'MuchBetter',
-    'Neosurf',
-    'Netbanking',
-    'Neteller',
-    'Nordea-Solo',
-    'OchaPay',
-    'online-bank-transfer',
-    'Onlineueberweisen',
-    'oriental-wallet',
-    'OXXO',
-    'Pagsmile-deposit-express',
-    'Pagsmile-lottery',
-    'PayCash',
-    'Payeer',
-    'PaymentAsia-crypto',
-    'Paymero',
-    'Perfect-money',
-    'Piastrix',
-    'plaid-account',
-    'PayTabs',
-    'Paysafecard',
-    'Paysafecash',
-    'Pay4Fun',
-    'PinPay',
-    'phone',
-    'PhonePe',
-    'POLi',
-    'PostFinance-card',
-    'PostFinance-e-finance',
-    'Przelewy24',
-    'QIWI',
-    'QQPay',
-    'Resurs',
-    'SEPA',
-    'Skrill',
-    'Skrill Rapid Transfer',
-    'SMSVoucher',
-    'Sofort',
-    'SparkPay',
-    'swift-dbt',
-    'Tele2',
-    'Terminaly-RF',
-    'ToditoCash-card',
-    'Trustly',
-    'UPayCard',
-    'UPI',
-    'VCreditos',
-    'VenusPoint',
-    'voucher',
-    'voucher-2',
-    'voucher-3',
-    'voucher-4',
-    'Webmoney',
-    'Webpay',
-    'Webpay-2',
-    'Webpay Card',
-    'WeChat Pay',
-    'XPay-P2P',
-    'XPay-QR',
-    'Yandex-money',
-    'Zotapay',
-    'Zimpler',
-  ])
-  .openapi('AlternativePaymentMethods')
-
-const AlternativePaymentInstrument_2Schema = z
+const AlternativePaymentInstrument_2Schema: z.ZodType<AlternativePaymentInstrument_2Type> = z
   .object({
     _embedded: z
       .array(z.union([CustomerEmbedSchema]))
@@ -4261,11 +4449,11 @@ const AmountAdjustmentSchema = z
   .object({ method: z.enum(['none', 'partial', 'discount']) })
   .openapi({
     discriminator: {
+      propertyName: 'method',
       mapping: {
         discount: '#/components/schemas/discount2',
         partial: '#/components/schemas/partial',
       },
-      propertyName: 'method',
     },
     required: ['method'],
   })
@@ -4285,6 +4473,7 @@ const CommonScheduleInstructionSchema = z
   .openapi({
     description: 'The calculation instruction of scheduled time.',
     discriminator: {
+      propertyName: 'method',
       mapping: {
         auto: '#/components/schemas/auto',
         'date-interval': '#/components/schemas/date-interval',
@@ -4293,7 +4482,6 @@ const CommonScheduleInstructionSchema = z
         immediately: '#/components/schemas/immediately',
         intelligent: '#/components/schemas/intelligent',
       },
-      propertyName: 'method',
     },
     required: ['method'],
   })
@@ -4306,174 +4494,6 @@ type PaymentRetryType = {
     paymentInstruction: z.infer<typeof AmountAdjustmentSchema>
     scheduleInstruction: z.infer<typeof CommonScheduleInstructionSchema>
   }[]
-}
-
-const TimeUnitSchema = z
-  .enum(['second', 'minute', 'hour', 'day', 'month', 'year'])
-  .openapi('TimeUnit')
-
-const TimePluralUnitSchema = z
-  .enum(['seconds', 'minutes', 'hours', 'days', 'months', 'years'])
-  .openapi('TimePluralUnit')
-
-const DueTimeShiftInstructionSchema = z
-  .object({
-    duration: z.int().min(1).openapi({ description: 'The number of the units.' }),
-    unit: z.xor([TimeUnitSchema, TimePluralUnitSchema]),
-  })
-  .default({ duration: 1, unit: 'hour' })
-  .openapi({
-    description:
-      'The calculation instruction of due time.\nThis is used in conjunction with the **billing anchor** to calculate due time of invoice.\nThe chronology of due time shift is always **after**.\n',
-    required: ['duration', 'unit'],
-  })
-  .openapi('DueTimeShiftInstruction')
-
-const IssueTimeShiftInstructionSchema = z
-  .object({
-    chronology: z
-      .literal('before')
-      .openapi({
-        description: 'The chronology of the billing time relatively to the service period start.',
-      }),
-    duration: z.int().min(1).openapi({ description: 'The number of the units.' }),
-    unit: z.xor([TimeUnitSchema, TimePluralUnitSchema]),
-  })
-  .openapi({
-    description:
-      'The calculation instruction of billing time.\nThis is used in conjunction with the **service period anchor** to calculate the time the invoice is issued.\n',
-    required: ['chronology', 'duration', 'unit'],
-  })
-  .openapi('IssueTimeShiftInstruction')
-
-const InvoiceTimeShiftSchema = z
-  .object({
-    dueTimeShift: DueTimeShiftInstructionSchema.exactOptional(),
-    issueTimeShift: IssueTimeShiftInstructionSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'The invoice time shift in conjunction with `billingTiming` allows to setup different billing use cases such as:\n- Bill immediately when the service period _starts_\n- Bill immediately after the service period _ends_\n- Bill _interval of time_ before the service period _starts_\n- Bill _interval of time_ after the service period _starts_\n- Bill _interval of time_ before the service period _ends_\n- Bill _interval of time_ after the service period _ends_\nIt allows to control the billing time.\n',
-    required: [],
-  })
-  .openapi('InvoiceTimeShift')
-
-type PlanType = z.infer<typeof CommonPlanSchema> & {
-  _links?: z.infer<typeof SelfLinkSchema>[]
-  invoiceTimeShift?: z.infer<typeof InvoiceTimeShiftSchema>
-}
-
-const BlankProblemSchema = z
-  .looseObject({
-    status: z
-      .int()
-      .min(400)
-      .max(599)
-      .exactOptional()
-      .openapi({ description: 'The HTTP status code.' }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization.',
-      }),
-  })
-  .refine((val) => Object.keys(val).length >= 1)
-  .openapi({
-    description:
-      'The Problem Details JSON Object [[RFC7807](https://tools.ietf.org/html/rfc7807)].',
-    required: [],
-  })
-  .openapi('BlankProblem')
-
-const DocumentedProblemSchema = z
-  .object({
-    type: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description:
-          'A URI reference [[RFC3986](https://tools.ietf.org/html/rfc3986)] that identifies the problem type. It should provide human-readable documentation for the problem type. When this member is not present, its value is assumed to be "about:blank".',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(BlankProblemSchema)
-  .openapi('DocumentedProblem')
-
-const DetailedProblemSchema = BlankProblemSchema.and(
-  z
-    .object({
-      detail: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'A human-readable explanation specific to this occurrence of the problem.',
-        }),
-    })
-    .openapi({ required: [] }),
-).openapi('DetailedProblem')
-
-type ProblemType = z.infer<typeof DocumentedProblemSchema> & z.infer<typeof DetailedProblemSchema>
-
-const CommonProductSchema = z
-  .object({
-    createdTime: ServerTimestampSchema.exactOptional().openapi({
-      description: 'The product created time.',
-    }),
-    customFields: ResourceCustomFieldsSchema.exactOptional(),
-    description: z
-      .string()
-      .max(512)
-      .exactOptional()
-      .openapi({ description: 'The product description.' }),
-    id: ResourceIdSchema.exactOptional().openapi({
-      description: 'The product ID.',
-      example: 'membership',
-      readOnly: true,
-    }),
-    name: z
-      .string()
-      .max(255)
-      .openapi({ description: 'The product name.', example: 'Premium membership' }),
-    options: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The product options such as color, size, etc. The product options definition does\nnot include option values. Those are defined within the plans.\n',
-      }),
-    requiresShipping: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'If the product requires shipping, shipping calculations will be applied.',
-        example: false,
-      }),
-    unitLabel: z
-      .string()
-      .max(50)
-      .default('unit')
-      .exactOptional()
-      .openapi({
-        description: 'The unit label, such as per `seat` or per `unit`.',
-        example: 'seat',
-      }),
-    updatedTime: ServerTimestampSchema.exactOptional().openapi({
-      description: 'The product updated time.',
-    }),
-  })
-  .openapi({
-    description:
-      'Products include digital goods, services, and physical goods.\nProducts appear on invoice line items. If you set a tax category identifier,\ntaxes will be calculated upon invoice generation. If it is shippable,\nshipping will be calculated upon invoice generation. Pricing and\nvariations are set within Plans.\n',
-    required: ['name'],
-  })
-  .openapi('CommonProduct')
-
-type ProductType = z.infer<typeof CommonProductSchema> & {
-  _links?: z.infer<typeof SelfLinkSchema>[]
-  accountingCode?: string
-  taxCategoryId?: '00000' | '99999' | '20010' | '40030' | '51020' | '51010' | '31000' | '30070'
 }
 
 type PurchaseBumpOfferType = {
@@ -4511,6 +4531,36 @@ type RefundUrlLinkType = z.infer<typeof LinkSchema>
 type RetriedTransactionEmbedType = { retriedTransaction?: z.infer<typeof TransactionSchema> }
 
 type RetriedTransactionLinkType = z.infer<typeof LinkSchema>
+
+const SubscriptionSchema = z
+  .object({
+    orderType: z
+      .enum(['subscription-order', 'one-time-order'])
+      .exactOptional()
+      .openapi({
+        description: 'Specifies the type of order, a subscription or a one-time purchase.\n',
+        'x-basic': true,
+      }),
+  })
+  .openapi({
+    discriminator: {
+      propertyName: 'orderType',
+      mapping: {
+        'one-time-order': '#/components/schemas/OneTimeOrder',
+        'subscription-order': '#/components/schemas/SubscriptionOrder',
+      },
+    },
+    required: [],
+  })
+  .openapi('Subscription')
+
+type SearchType = {
+  customers?: z.infer<typeof CustomerSchema>[]
+  invoices?: z.infer<typeof InvoiceSchema>[]
+  orders?: z.infer<typeof SubscriptionSchema>[]
+  searched?: string[]
+  transactions?: z.infer<typeof TransactionSchema>[]
+}
 
 const UpcomingInvoiceItemSchema = z
   .object({
@@ -4550,12 +4600,12 @@ const ServicePeriodAnchorInstructionSchema = z
     description:
       'Instruction for calculating the service period anchor.\nThis is used in conjunction with the **subscription start** to calculate the time the service period starts and ends.\n',
     discriminator: {
+      propertyName: 'method',
       mapping: {
         'day-of-month': '#/components/schemas/day-of-month',
         'day-of-week': '#/components/schemas/day-of-week',
         immediately: '#/components/schemas/immediately',
       },
-      propertyName: 'method',
     },
     required: ['method'],
   })
@@ -5193,125 +5243,6 @@ type TransactionType = z.infer<typeof CommonTransactionSchema> & {
   velocity?: number
 }
 
-const PaymentTokenSchema = z
-  .object({ token: z.string().openapi({ description: 'Payment Token ID.' }) })
-  .openapi({ required: ['token'], title: 'Payment Token' })
-  .openapi('PaymentToken')
-
-const PaymentInstrument_3Schema = z
-  .object({
-    paymentInstrumentId: ResourceIdSchema.openapi({
-      description: 'The Payment Instrument identifier string.',
-    }),
-  })
-  .openapi({ required: ['paymentInstrumentId'], title: 'Payment Instrument' })
-  .openapi('PaymentInstrument_3')
-
-const PaymentMethodsSchema = z
-  .object({
-    methods: z
-      .array(PaymentMethodSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of available payment methods.\nOnly payment methods with at least one active gateway account are allowed.\n\nIf not specified all available payment methods will be displayed.\n\nCustomer can choose any of those as well as the payment instrument for them.\nAdditional steps will occur via a redirect to `approvalUrl`.\n',
-      }),
-  })
-  .openapi({ title: 'Payment Methods', required: [] })
-  .openapi('PaymentMethods')
-
-const PaymentInstructionSchema = z
-  .xor([PaymentTokenSchema, PaymentInstrument_3Schema, PaymentMethodsSchema])
-  .openapi('PaymentInstruction')
-
-const CommonTransactionRequestSchema = z
-  .object({
-    amount: z.float64().openapi({ description: 'The transaction amount.', example: 97.97 }),
-    billingAddress: ContactObjectSchema.nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Billing address. If not supplied, we use the billing address associated with the payment instrument, and then customer.',
-      }),
-    currency: CurrencyCodeSchema,
-    customFields: ResourceCustomFieldsSchema.exactOptional(),
-    customerId: ResourceIdSchema.openapi({ description: 'The customer identifier string.' }),
-    description: z
-      .string()
-      .max(255)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The payment description.' }),
-    gatewayAccountId: ResourceIdSchema.nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Rebilly will select the appropriate payment gateway account for the transaction based on the properties of the transaction and the `gateway-account-requested` event rules configurations. If you wish to prevent Rebilly from making the gateway account selection, you may supply a gateway account id here, and it will be used instead. Only use this field if you intend to override the settings.',
-      }),
-    invoiceIds: z
-      .array(ResourceIdSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The array of invoice identifiers.' }),
-    isMerchantInitiated: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'True if the transaction was initiated by the merchant.' }),
-    isProcessedOutside: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({ description: 'True if transaction was processed outside Rebilly.' }),
-    notificationUrl: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The URL where a server-to-server notification request type `POST` with a transaction payload will be sent when the transaction's result is finalized. Do not trust the notification; follow with a `GET` request to confirm the result of the transaction. Please respond with a `2xx` HTTP status code, or we will reattempt the request again. You may use `{id}` or `{result}` as placeholders in the URL and we will replace them with the transaction's id and result accordingly.\n",
-      }),
-    paymentInstruction: PaymentInstructionSchema.exactOptional().openapi({
-      description:
-        "Payment instruction. If not supplied, customer's default payment instrument will be used.",
-    }),
-    paymentInstrument: PaymentInstrumentSchema.exactOptional().openapi({ deprecated: true }),
-    processedTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The time the transaction was processed. Can be specified only if transaction was processed outside Rebilly.',
-      }),
-    redirectUrl: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The URL to redirect the end-user when an offsite transaction is completed. Defaults to the website's configured URL. You may use `{id}` or `{result}` as placeholders in the URL and we will replace them with the transaction's id and result accordingly.",
-      }),
-    requestId: z
-      .string()
-      .regex(/^[\-\w]+$/)
-      .max(50)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The request id is **recommended**. It prevents duplicate transaction requests within a short period of time. If a duplicate request is sent with the same `requestId` it will be ignored to prevent double-billing anyone.  It must be unique within a 24-hour period.  We recommend generating a UUID v4 as its value.',
-        example: '44433322-2c4y-483z-a0a9-158621f77a21',
-      }),
-    riskMetadata: RiskMetadataSchema.exactOptional(),
-    websiteId: ResourceIdSchema.openapi({ description: 'The website identifier string.' }),
-  })
-  .openapi({ required: ['websiteId', 'customerId', 'currency', 'amount'] })
-  .openapi('CommonTransactionRequest')
-
-type TransactionRequestType = z.infer<typeof CommonTransactionRequestSchema> & {
-  [key: string]: unknown
-} & { type?: '3ds-authentication' | 'sale' | 'authorize' }
-
 const ThreeDSecureServerNameSchema = z
   .enum([
     'Payvision3dsServer',
@@ -5341,11 +5272,11 @@ const A1Gateway3dsServersSchema = z
   .openapi({
     description: 'A1Gateway 3DS Servers.',
     discriminator: {
+      propertyName: 'name',
       mapping: {
         Other: '#/components/schemas/Other',
         Paay3dsServer: '#/components/schemas/Paay3dsServer',
       },
-      propertyName: 'name',
     },
     required: ['name'],
   })
@@ -5854,8 +5785,8 @@ const DigitalWalletValidationSchema = z
   })
   .openapi({
     discriminator: {
-      mapping: { 'Apple Pay': '#/components/schemas/ApplePayValidation' },
       propertyName: 'type',
+      mapping: { 'Apple Pay': '#/components/schemas/ApplePayValidation' },
     },
     required: ['type'],
   })
@@ -5891,7 +5822,7 @@ const ApplePayValidationSchema = DigitalWalletValidationSchema.and(
         })
         .openapi({ description: 'The validation request.', writeOnly: true, required: [] }),
       validationResponse: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           description: 'The validation response to use by the Apple Pay SDK to proceed.',
@@ -6166,11 +6097,11 @@ const AuthenticationTokenSchema = z
   })
   .openapi({
     discriminator: {
+      propertyName: 'mode',
       mapping: {
         password: '#/components/schemas/password',
         passwordless: '#/components/schemas/passwordless',
       },
-      propertyName: 'mode',
     },
     required: [],
   })
@@ -6221,11 +6152,11 @@ const BankAccountInstrumentSchema = z
   .openapi({
     description: 'The bank account BBAN or IBAN instrument.',
     discriminator: {
+      propertyName: 'accountNumberType',
       mapping: {
         BBAN: '#/components/schemas/BBANInstrument',
         IBAN: '#/components/schemas/IBANInstrument',
       },
-      propertyName: 'accountNumberType',
     },
     required: ['accountNumberType'],
   })
@@ -6398,6 +6329,30 @@ const BitPaySchema = GatewayAccountSchema.and(
   .openapi({ description: 'BitPay Gateway config.' })
   .openapi('BitPay')
 
+const BlankProblemSchema = z
+  .looseObject({
+    status: z
+      .int()
+      .min(400)
+      .max(599)
+      .exactOptional()
+      .openapi({ description: 'The HTTP status code.' }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A short, human-readable summary of the problem type. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization.',
+      }),
+  })
+  .refine((val) => Object.keys(val).length >= 1)
+  .openapi({
+    description:
+      'The Problem Details JSON Object [[RFC7807](https://tools.ietf.org/html/rfc7807)].',
+    required: [],
+  })
+  .openapi('BlankProblem')
+
 const BlocklistSchema = z
   .object({
     _links: z
@@ -6535,6 +6490,7 @@ const Payvision3dsServersSchema = z
   .openapi({
     description: 'Payvision 3DS Servers.',
     discriminator: {
+      propertyName: 'name',
       mapping: {
         CardinalCommerce3dsServer: '#/components/schemas/CardinalCommerce3dsServer',
         Other: '#/components/schemas/Other',
@@ -6542,7 +6498,6 @@ const Payvision3dsServersSchema = z
         Payvision3dsServer: '#/components/schemas/Payvision3dsServer',
         ThreeDSecureIO3dsServer: '#/components/schemas/ThreeDSecureIO3dsServer',
       },
-      propertyName: 'name',
     },
     required: ['name'],
   })
@@ -6724,8 +6679,8 @@ const Clearhaus3dsServersSchema = z
   .openapi({
     description: 'Clearhaus 3DS Servers.',
     discriminator: {
-      mapping: { Clearhaus3dsServer: '#/components/schemas/Clearhaus3dsServer' },
       propertyName: 'name',
+      mapping: { Clearhaus3dsServer: '#/components/schemas/Clearhaus3dsServer' },
     },
     required: ['name'],
   })
@@ -6776,6 +6731,261 @@ const CoinPaymentsSchema = GatewayAccountSchema.and(
 )
   .openapi({ description: 'CoinPayments config.' })
   .openapi('CoinPayments')
+
+const KycDocumentSubtypesSchema = z
+  .enum([
+    'passport',
+    'id-card',
+    'driver-license',
+    'birth-certificate',
+    'utility-bill',
+    'rental-receipt',
+    'lease-agreement',
+    'copy-credit-card',
+    'credit-card-statement',
+    'bank-statement',
+    'inheritance-documentation',
+    'tax-return',
+    'salary-slip',
+    'sale-of-assets',
+    'public-health-card',
+    'proof-of-age-card',
+    'reverse-of-id',
+    'public-service',
+    'ewallet-holder-details',
+    'ewallet-transaction-statement',
+    'other',
+  ])
+  .openapi('KycDocumentSubtypes')
+
+const KycDocumentTypesSchema = z
+  .enum(['identity-proof', 'address-proof', 'funds-proof', 'purchase-proof'])
+  .openapi('KycDocumentTypes')
+
+const KycDocumentRejectionSchema = z
+  .object({
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The rejection message.',
+        example: 'Provided document is unreadable',
+      }),
+    type: z
+      .enum([
+        'document-unreadable',
+        'document-expired',
+        'document-not-matching',
+        'underage-person',
+        'other',
+      ])
+      .exactOptional(),
+  })
+  .openapi({ readOnly: true, required: [] })
+  .openapi('KycDocumentRejection')
+
+const CommonKycDocumentSchema = z
+  .object({
+    _links: z
+      .array(z.union([SelfLinkSchema]))
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'The links related to resource.', readOnly: true }),
+    createdTime: ServerTimestampSchema.exactOptional().openapi({
+      description: 'Creation date/time.',
+    }),
+    documentSubtype: KycDocumentSubtypesSchema.exactOptional().openapi({
+      description: 'Document subtype submitted for validation.',
+    }),
+    documentType: KycDocumentTypesSchema.openapi({
+      description:
+        'Document type submitted for validation, only identity-proof type is analyzed in an automated manner.',
+    }),
+    fileId: ResourceIdSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'Linked file object id.',
+    }),
+    fileIds: z
+      .array(ResourceIdSchema)
+      .exactOptional()
+      .openapi({ description: "Linked file object id's." }),
+    id: ResourceIdSchema.exactOptional().openapi({ readOnly: true }),
+    processedTime: ServerTimestampSchema.exactOptional().openapi({
+      description: 'Processing date/time.',
+    }),
+    rejectionReason: KycDocumentRejectionSchema.exactOptional(),
+    requestId: ResourceIdSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'KYC request identifier string.', readOnly: true }),
+    status: z
+      .enum(['pending', 'in-progress', 'accepted', 'rejected'])
+      .openapi({ description: 'Status of the validation.', readOnly: true }),
+    updatedTime: ServerTimestampSchema.exactOptional().openapi({
+      description: 'Latest update date/time.',
+    }),
+  })
+  .openapi({ required: ['customerId', 'documentType', 'status'] })
+  .openapi('CommonKycDocument')
+
+const CommonKycRequestSchema = z
+  .object({
+    createdTime: ServerTimestampSchema.exactOptional().openapi({
+      description: 'Creation date/time.',
+    }),
+    documents: z
+      .array(
+        z
+          .object({
+            maxAttempts: z
+              .int()
+              .min(0)
+              .max(100)
+              .default(3)
+              .exactOptional()
+              .openapi({
+                description: 'The number of document upload attempts. `0` treated as unlimited.',
+              }),
+            subtypes: z
+              .array(KycDocumentSubtypesSchema)
+              .exactOptional()
+              .openapi({ description: 'Document subtype allowed for customer.' }),
+            type: KycDocumentTypesSchema.openapi({
+              description: 'Document type to be requested from customer.',
+            }),
+          })
+          .openapi({ required: ['type'] }),
+      )
+      .openapi({ description: 'Documents to be requested from customer.' }),
+    expirationTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Expiration date/time.' }),
+    id: ResourceIdSchema.exactOptional().openapi({ readOnly: true }),
+    redirectUrl: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'The URL to redirect the customer when an upload is completed.' }),
+    updatedTime: ServerTimestampSchema.exactOptional().openapi({
+      description: 'Latest update date/time.',
+    }),
+  })
+  .openapi({ required: ['documents'] })
+  .openapi('CommonKycRequest')
+
+const PaymentTokenSchema = z
+  .object({ token: z.string().openapi({ description: 'Payment Token ID.' }) })
+  .openapi({ required: ['token'], title: 'Payment Token' })
+  .openapi('PaymentToken')
+
+const PaymentInstrument_3Schema = z
+  .object({
+    paymentInstrumentId: ResourceIdSchema.openapi({
+      description: 'The Payment Instrument identifier string.',
+    }),
+  })
+  .openapi({ required: ['paymentInstrumentId'], title: 'Payment Instrument' })
+  .openapi('PaymentInstrument_3')
+
+const PaymentMethodsSchema = z
+  .object({
+    methods: z
+      .array(PaymentMethodSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of available payment methods.\nOnly payment methods with at least one active gateway account are allowed.\n\nIf not specified all available payment methods will be displayed.\n\nCustomer can choose any of those as well as the payment instrument for them.\nAdditional steps will occur via a redirect to `approvalUrl`.\n',
+      }),
+  })
+  .openapi({ title: 'Payment Methods', required: [] })
+  .openapi('PaymentMethods')
+
+const PaymentInstructionSchema = z
+  .xor([PaymentTokenSchema, PaymentInstrument_3Schema, PaymentMethodsSchema])
+  .openapi('PaymentInstruction')
+
+const CommonTransactionRequestSchema = z
+  .object({
+    amount: z.float64().openapi({ description: 'The transaction amount.', example: 97.97 }),
+    billingAddress: ContactObjectSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Billing address. If not supplied, we use the billing address associated with the payment instrument, and then customer.',
+      }),
+    currency: CurrencyCodeSchema,
+    customFields: ResourceCustomFieldsSchema.exactOptional(),
+    customerId: ResourceIdSchema.openapi({ description: 'The customer identifier string.' }),
+    description: z
+      .string()
+      .max(255)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The payment description.' }),
+    gatewayAccountId: ResourceIdSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Rebilly will select the appropriate payment gateway account for the transaction based on the properties of the transaction and the `gateway-account-requested` event rules configurations. If you wish to prevent Rebilly from making the gateway account selection, you may supply a gateway account id here, and it will be used instead. Only use this field if you intend to override the settings.',
+      }),
+    invoiceIds: z
+      .array(ResourceIdSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The array of invoice identifiers.' }),
+    isMerchantInitiated: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'True if the transaction was initiated by the merchant.' }),
+    isProcessedOutside: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({ description: 'True if transaction was processed outside Rebilly.' }),
+    notificationUrl: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The URL where a server-to-server notification request type `POST` with a transaction payload will be sent when the transaction's result is finalized. Do not trust the notification; follow with a `GET` request to confirm the result of the transaction. Please respond with a `2xx` HTTP status code, or we will reattempt the request again. You may use `{id}` or `{result}` as placeholders in the URL and we will replace them with the transaction's id and result accordingly.\n",
+      }),
+    paymentInstruction: PaymentInstructionSchema.exactOptional().openapi({
+      description:
+        "Payment instruction. If not supplied, customer's default payment instrument will be used.",
+    }),
+    paymentInstrument: PaymentInstrumentSchema.exactOptional().openapi({ deprecated: true }),
+    processedTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The time the transaction was processed. Can be specified only if transaction was processed outside Rebilly.',
+      }),
+    redirectUrl: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The URL to redirect the end-user when an offsite transaction is completed. Defaults to the website's configured URL. You may use `{id}` or `{result}` as placeholders in the URL and we will replace them with the transaction's id and result accordingly.",
+      }),
+    requestId: z
+      .string()
+      .regex(/^[\-\w]+$/)
+      .max(50)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The request id is **recommended**. It prevents duplicate transaction requests within a short period of time. If a duplicate request is sent with the same `requestId` it will be ignored to prevent double-billing anyone.  It must be unique within a 24-hour period.  We recommend generating a UUID v4 as its value.',
+        example: '44433322-2c4y-483z-a0a9-158621f77a21',
+      }),
+    riskMetadata: RiskMetadataSchema.exactOptional(),
+    websiteId: ResourceIdSchema.openapi({ description: 'The website identifier string.' }),
+  })
+  .openapi({ required: ['websiteId', 'customerId', 'currency', 'amount'] })
+  .openapi('CommonTransactionRequest')
 
 const PaymentCardTokenSchema = CommonPaymentTokenSchema.and(
   z
@@ -6861,7 +7071,7 @@ const DigitalWalletTokenSchema = CommonPaymentTokenSchema.and(
             .exactOptional()
             .openapi({ description: "Payment Card PAN's last 4 digits.", readOnly: true }),
           payload: z
-            .object({})
+            .looseObject({})
             .openapi({
               description:
                 'The digital wallet encoded data. May contain the digital wallet billing address.',
@@ -7015,6 +7225,18 @@ const ReadyToPayItemsSchema = z
 
 const ReadyToPaySchema = z
   .xor([ReadyToPayAmountSchema, ReadyToPayItemsSchema])
+  .and(
+    z
+      .object({
+        billingAddress: ContactObjectSchema.exactOptional().openapi({
+          description: 'The billing address.',
+          writeOnly: true,
+        }),
+        riskMetadata: RiskMetadataSchema,
+        websiteId: ResourceIdSchema.openapi({ description: 'The website identifier string.' }),
+      })
+      .openapi({ required: ['websiteId', 'riskMetadata'] }),
+  )
   .openapi({ required: ['websiteId', 'riskMetadata'] })
   .openapi('ReadyToPay')
 
@@ -7042,8 +7264,8 @@ const DiscountSchema = z
   })
   .openapi({
     discriminator: {
-      mapping: { fixed: '#/components/schemas/fixed', percent: '#/components/schemas/percent' },
       propertyName: 'type',
+      mapping: { fixed: '#/components/schemas/fixed', percent: '#/components/schemas/percent' },
     },
     required: [],
   })
@@ -7068,6 +7290,7 @@ const CouponRestrictionSchema = z
   .openapi({
     description: 'Coupon restrictions.',
     discriminator: {
+      propertyName: 'type',
       mapping: {
         'discounts-per-redemption': '#/components/schemas/discounts-per-redemption',
         'minimum-order-amount': '#/components/schemas/minimum-order-amount',
@@ -7079,7 +7302,6 @@ const CouponRestrictionSchema = z
         'restrict-to-subscriptions': '#/components/schemas/restrict-to-subscriptions',
         'total-redemptions': '#/components/schemas/total-redemptions',
       },
-      propertyName: 'type',
     },
     required: ['type'],
   })
@@ -7178,6 +7400,7 @@ const RedemptionRestrictionSchema = z
   .openapi({
     description: 'Redemption restrictions.',
     discriminator: {
+      propertyName: 'type',
       mapping: {
         'discounts-per-redemption': '#/components/schemas/discounts-per-redemption',
         'minimum-order-amount': '#/components/schemas/minimum-order-amount',
@@ -7187,7 +7410,6 @@ const RedemptionRestrictionSchema = z
         'restrict-to-products': '#/components/schemas/restrict-to-products',
         'restrict-to-subscriptions': '#/components/schemas/restrict-to-subscriptions',
       },
-      propertyName: 'type',
     },
     required: ['type'],
   })
@@ -7282,12 +7504,12 @@ const CustomEventScheduleInstructionSchema = z
   .openapi({
     description: 'The calculation instruction of scheduled time.',
     discriminator: {
+      propertyName: 'method',
       mapping: {
         'date-interval': '#/components/schemas/date-interval',
         'day-of-month': '#/components/schemas/day-of-month',
         'day-of-week': '#/components/schemas/day-of-week',
       },
-      propertyName: 'method',
     },
     required: ['method'],
   })
@@ -7397,12 +7619,12 @@ const TimelineActionSchema = z
   })
   .openapi({
     discriminator: {
+      propertyName: 'action',
       mapping: {
         'redemption-cancel': '#/components/schemas/redemption-cancel',
         'resend-email': '#/components/schemas/resend-email',
         'ruleset-restore': '#/components/schemas/ruleset-restore',
       },
-      propertyName: 'action',
     },
     readOnly: true,
     required: [],
@@ -7418,13 +7640,13 @@ const TimelineTableSchema = z
   .openapi({
     description: 'Additional information about Timeline message.',
     discriminator: {
+      propertyName: 'type',
       mapping: {
         list: '#/components/schemas/list',
         'one-column': '#/components/schemas/one-column',
         'three-columns': '#/components/schemas/three-columns',
         'two-columns': '#/components/schemas/two-columns',
       },
-      propertyName: 'type',
     },
     required: [],
   })
@@ -7481,7 +7703,7 @@ const CustomerTimelineSchema = z
       .exactOptional()
       .openapi({ description: 'The links related to resource.', readOnly: true }),
     customData: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -7635,8 +7857,8 @@ const DataCash3dsServersSchema = z
   .openapi({
     description: 'DataCash 3DS Servers.',
     discriminator: {
-      mapping: { DataCash3dsServer: '#/components/schemas/DataCash3dsServer' },
       propertyName: 'name',
+      mapping: { DataCash3dsServer: '#/components/schemas/DataCash3dsServer' },
     },
     required: ['name'],
   })
@@ -7724,6 +7946,19 @@ const DengiSchema = GatewayAccountSchema.and(
 )
   .openapi({ description: 'Dengi Gateway config.' })
   .openapi('Dengi')
+
+const DetailedProblemSchema = BlankProblemSchema.and(
+  z
+    .object({
+      detail: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'A human-readable explanation specific to this occurrence of the problem.',
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('DetailedProblem')
 
 const Directa24BanksSchema = z
   .enum([
@@ -7833,20 +8068,7 @@ const Directa24Schema = GatewayAccountSchema.and(
   .openapi({ description: 'Directa24 config.' })
   .openapi('Directa24')
 
-const TransactionEmbedSchema = z
-  .object({ transaction: TransactionSchema.exactOptional() })
-  .openapi({ description: 'Transaction object.', readOnly: true, required: [] })
-  .openapi('TransactionEmbed')
-
-const TransactionLinkSchema = LinkSchema.and(
-  z
-    .object({ rel: z.literal('transaction').openapi({ description: 'The link type.' }) })
-    .openapi({ required: ['rel'] }),
-)
-  .openapi({ required: ['rel'] })
-  .openapi('TransactionLink')
-
-const DisputeSchema = z
+const DisputeSchema: z.ZodType<DisputeType> = z
   .object({
     _embedded: z
       .array(z.union([TransactionEmbedSchema]))
@@ -8099,6 +8321,20 @@ const DisputeSchema = z
   })
   .openapi('Dispute')
 
+const DocumentedProblemSchema = z
+  .object({
+    type: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description:
+          'A URI reference [[RFC3986](https://tools.ietf.org/html/rfc3986)] that identifies the problem type. It should provide human-readable documentation for the problem type. When this member is not present, its value is assumed to be "about:blank".',
+      }),
+  })
+  .openapi({ required: [] })
+  .and(BlankProblemSchema)
+  .openapi('DocumentedProblem')
+
 const DragonphoenixSchema = GatewayAccountSchema.and(
   z
     .object({
@@ -8131,8 +8367,8 @@ const EMS3dsServersSchema = z
   .openapi({
     description: 'EMS 3DS Servers.',
     discriminator: {
-      mapping: { ThreeDSecureIO3dsServer: '#/components/schemas/ThreeDSecureIO3dsServer' },
       propertyName: 'name',
+      mapping: { ThreeDSecureIO3dsServer: '#/components/schemas/ThreeDSecureIO3dsServer' },
     },
     required: ['name'],
   })
@@ -8261,9 +8497,7 @@ const ElavonSchema = GatewayAccountSchema.and(
   .openapi({ description: 'Elavon config.' })
   .openapi('Elavon')
 
-const ProblemSchema: z.ZodType<ProblemType> = z
-  .lazy(() => DocumentedProblemSchema.and(DetailedProblemSchema))
-  .openapi('Problem')
+const ProblemSchema = DocumentedProblemSchema.and(DetailedProblemSchema).openapi('Problem')
 
 const ErrorSchema = ProblemSchema.and(
   z
@@ -8450,11 +8684,11 @@ const GET3dsServersSchema = z
   .openapi({
     description: 'GET 3DS Servers.',
     discriminator: {
+      propertyName: 'name',
       mapping: {
         Other: '#/components/schemas/Other',
         Paay3dsServer: '#/components/schemas/Paay3dsServer',
       },
-      propertyName: 'name',
     },
     required: ['name'],
   })
@@ -8847,8 +9081,8 @@ const Ilixium3dsServersSchema = z
   .openapi({
     description: 'Ilixium3dsServers 3DS Servers.',
     discriminator: {
-      mapping: { Ilixium3dsServer: '#/components/schemas/Ilixium3dsServer' },
       propertyName: 'name',
+      mapping: { Ilixium3dsServer: '#/components/schemas/Ilixium3dsServer' },
     },
     required: ['name'],
   })
@@ -8905,8 +9139,8 @@ const Ingenico3dsServersSchema = z
   .openapi({
     description: 'Ingenico 3DS Servers.',
     discriminator: {
-      mapping: { Ingenico3dsServer: '#/components/schemas/Ingenico3dsServer' },
       propertyName: 'name',
+      mapping: { Ingenico3dsServer: '#/components/schemas/Ingenico3dsServer' },
     },
     required: ['name'],
   })
@@ -8942,8 +9176,8 @@ const Inovio3dsServersSchema = z
   .openapi({
     description: 'Inovio 3DS Servers.',
     discriminator: {
-      mapping: { Inovio3dsServer: '#/components/schemas/Inovio3dsServer' },
       propertyName: 'name',
+      mapping: { Inovio3dsServer: '#/components/schemas/Inovio3dsServer' },
     },
     required: ['name'],
   })
@@ -9294,41 +9528,32 @@ const KonnektiveSchema = GatewayAccountSchema.and(
   .openapi({ description: 'Konnektive config.' })
   .openapi('Konnektive')
 
-const KycDocumentSchema: z.ZodType<KycDocumentType> = z
-  .lazy(() =>
-    CommonKycDocumentSchema.and(
-      z
-        .object({
-          customerId: ResourceIdSchema.exactOptional().openapi({
-            description: "The сustomer's ID.",
-          }),
-          matchLevel: z
-            .int()
-            .min(1)
-            .max(2)
-            .exactOptional()
-            .openapi({
-              description: 'The level of strictness for the document matches.',
-              example: 2,
-            }),
-          notes: z.string().nullable().exactOptional().openapi({ description: 'Reviewer notes.' }),
-          reason: z.string().exactOptional().openapi({ description: 'Reason for uploading.' }),
-          reviewTime: ServerTimestampSchema.nullable()
-            .exactOptional()
-            .openapi({ description: 'Date and time of manual review.' }),
-          reviewerId: ResourceIdSchema.nullable()
-            .exactOptional()
-            .openapi({ description: "Reviewer's user ID.", readOnly: true }),
-          reviewerName: z
-            .string()
-            .nullable()
-            .exactOptional()
-            .openapi({ description: "Reviewer's first and last name.", readOnly: true }),
-        })
-        .openapi({ required: [] }),
-    ),
-  )
-  .openapi('KycDocument')
+const KycDocumentSchema = CommonKycDocumentSchema.and(
+  z
+    .object({
+      customerId: ResourceIdSchema.exactOptional().openapi({ description: "The сustomer's ID." }),
+      matchLevel: z
+        .int()
+        .min(1)
+        .max(2)
+        .exactOptional()
+        .openapi({ description: 'The level of strictness for the document matches.', example: 2 }),
+      notes: z.string().nullable().exactOptional().openapi({ description: 'Reviewer notes.' }),
+      reason: z.string().exactOptional().openapi({ description: 'Reason for uploading.' }),
+      reviewTime: ServerTimestampSchema.nullable()
+        .exactOptional()
+        .openapi({ description: 'Date and time of manual review.' }),
+      reviewerId: ResourceIdSchema.nullable()
+        .exactOptional()
+        .openapi({ description: "Reviewer's user ID.", readOnly: true }),
+      reviewerName: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({ description: "Reviewer's first and last name.", readOnly: true }),
+    })
+    .openapi({ required: [] }),
+).openapi('KycDocument')
 
 const ProofOfIdentitySchema = KycDocumentSchema.and(
   z
@@ -9418,13 +9643,13 @@ const KycDocument_2Schema = z
   .xor([ProofOfIdentitySchema, ProofOfAddressSchema, ProofOfFundsSchema, ProofOfPurchaseSchema])
   .openapi({
     discriminator: {
+      propertyName: 'documentType',
       mapping: {
         'address-proof': '#/components/schemas/ProofOfAddress',
         'funds-proof': '#/components/schemas/ProofOfFunds',
         'identity-proof': '#/components/schemas/ProofOfIdentity',
         'purchase-proof': '#/components/schemas/ProofOfPurchase',
       },
-      propertyName: 'documentType',
     },
   })
   .openapi('KycDocument_2')
@@ -9437,32 +9662,41 @@ const KycDocumentLinkSchema = LinkSchema.and(
   .openapi({ required: ['rel'] })
   .openapi('KycDocumentLink')
 
-const KycRequestSchema: z.ZodType<KycRequestType> = z
-  .lazy(() =>
-    CommonKycRequestSchema.and(
-      z
-        .object({
-          _links: z
-            .array(z.union([SelfLinkSchema, KycDocumentsLinkSchema, KycGathererLinkSchema]))
-            .min(1)
-            .exactOptional()
-            .openapi({ description: 'The links related to resource.', readOnly: true }),
-          customerId: ResourceIdSchema.openapi({ description: "The сustomer's ID." }),
-          matchLevel: z
-            .int()
-            .min(1)
-            .max(2)
-            .exactOptional()
-            .openapi({
-              description: 'The level of strictness for the document matches.',
-              example: 2,
-            }),
-          reason: z.string().exactOptional().openapi({ description: 'Reason for uploading.' }),
-        })
-        .openapi({ required: ['customerId'] }),
-    ),
-  )
-  .openapi('KycRequest')
+const KycDocumentsLinkSchema = LinkSchema.and(
+  z
+    .object({ rel: z.literal('kycDocuments').openapi({ description: 'The link type.' }) })
+    .openapi({ required: ['rel'] }),
+)
+  .openapi({ required: ['rel'] })
+  .openapi('KycDocumentsLink')
+
+const KycGathererLinkSchema = LinkSchema.and(
+  z
+    .object({ rel: z.literal('kycGatherer').openapi({ description: 'The link type.' }) })
+    .openapi({ required: ['rel'] }),
+)
+  .openapi({ required: ['rel'] })
+  .openapi('KycGathererLink')
+
+const KycRequestSchema = CommonKycRequestSchema.and(
+  z
+    .object({
+      _links: z
+        .array(z.union([SelfLinkSchema, KycDocumentsLinkSchema, KycGathererLinkSchema]))
+        .min(1)
+        .exactOptional()
+        .openapi({ description: 'The links related to resource.', readOnly: true }),
+      customerId: ResourceIdSchema.openapi({ description: "The сustomer's ID." }),
+      matchLevel: z
+        .int()
+        .min(1)
+        .max(2)
+        .exactOptional()
+        .openapi({ description: 'The level of strictness for the document matches.', example: 2 }),
+      reason: z.string().exactOptional().openapi({ description: 'Reason for uploading.' }),
+    })
+    .openapi({ required: ['customerId'] }),
+).openapi('KycRequest')
 
 const LPGSchema = GatewayAccountSchema.and(
   z
@@ -9594,8 +9828,8 @@ const NGenius3dsServersSchema = z
   .openapi({
     description: 'NGenius 3DS Servers.',
     discriminator: {
-      mapping: { NGenius3dsServer: '#/components/schemas/NGenius3dsServer' },
       propertyName: 'name',
+      mapping: { NGenius3dsServer: '#/components/schemas/NGenius3dsServer' },
     },
     required: ['name'],
   })
@@ -9626,11 +9860,11 @@ const NMI3dsServersSchema = z
   .openapi({
     description: 'NMI 3DS Servers.',
     discriminator: {
+      propertyName: 'name',
       mapping: {
         Other: '#/components/schemas/Other',
         Paay3dsServer: '#/components/schemas/Paay3dsServer',
       },
-      propertyName: 'name',
     },
     required: ['name'],
   })
@@ -9811,21 +10045,37 @@ const OnRampSchema = GatewayAccountSchema.and(
   .openapi({ description: 'OnRamp config.' })
   .openapi('OnRamp')
 
-const OneTimeOrderSchema: z.ZodType<OneTimeOrderType> = z
-  .lazy(() =>
-    CommonOneTimeOrderSchema.and(
-      z
-        .object({
-          customerId: ResourceIdSchema.exactOptional().openapi({
-            description: 'The customer identifier string.',
-            'x-basic': true,
-          }),
-        })
-        .openapi({ required: [] }),
-    )
-      .and(SubscriptionMetadataSchema)
-      .openapi({ required: ['orderType', 'customerId', 'websiteId', 'items'] }),
+const OneTimeOrderSchema: z.ZodType<OneTimeOrderType> = CommonOneTimeOrderSchema.and(
+  z.looseObject({}).openapi({ required: ['orderType', 'customerId', 'websiteId', 'items'] }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'orderType')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'customerId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'websiteId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'items')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        customerId: ResourceIdSchema.exactOptional().openapi({
+          description: 'The customer identifier string.',
+          'x-basic': true,
+        }),
+      })
+      .openapi({ required: [] }),
   )
+  .and(SubscriptionMetadataSchema)
+  .openapi({ required: ['orderType', 'customerId', 'websiteId', 'items'] })
   .openapi('OneTimeOrder')
 
 const OnlineueberweisenSchema = GatewayAccountSchema.and(
@@ -9934,13 +10184,13 @@ const EMerchantPay3dsServersSchema = z
   .openapi({
     description: 'eMerchantPay 3DS Servers.',
     discriminator: {
+      propertyName: 'name',
       mapping: {
         Other: '#/components/schemas/Other',
         Paay3dsServer: '#/components/schemas/Paay3dsServer',
         ThreeDSecureIO3dsServer: '#/components/schemas/ThreeDSecureIO3dsServer',
         eMerchantPay3dsServer: '#/components/schemas/eMerchantPay3dsServer',
       },
-      propertyName: 'name',
     },
     required: ['name'],
   })
@@ -9951,11 +10201,11 @@ const VantivLitle3dsServersSchema = z
   .openapi({
     description: 'VantivLitle 3DS Servers.',
     discriminator: {
+      propertyName: 'name',
       mapping: {
         Other: '#/components/schemas/Other',
         Paay3dsServer: '#/components/schemas/Paay3dsServer',
       },
-      propertyName: 'name',
     },
     required: ['name'],
   })
@@ -9966,11 +10216,11 @@ const Walpay3dsServersSchema = z
   .openapi({
     description: 'Walpay 3DS Servers.',
     discriminator: {
+      propertyName: 'name',
       mapping: {
         Other: '#/components/schemas/Other',
         Paay3dsServer: '#/components/schemas/Paay3dsServer',
       },
-      propertyName: 'name',
     },
     required: ['name'],
   })
@@ -9981,12 +10231,12 @@ const Worldpay3dsServersSchema = z
   .openapi({
     description: 'Worldpay 3DS Servers.',
     discriminator: {
+      propertyName: 'name',
       mapping: {
         Other: '#/components/schemas/Other',
         Paay3dsServer: '#/components/schemas/Paay3dsServer',
         ThreeDSecureIO3dsServer: '#/components/schemas/ThreeDSecureIO3dsServer',
       },
-      propertyName: 'name',
     },
     required: ['name'],
   })
@@ -10043,8 +10293,8 @@ const Panamerican3dsServersSchema = z
   .openapi({
     description: 'Panamerican 3DS Servers.',
     discriminator: {
-      mapping: { Panamerican3dsServer: '#/components/schemas/Panamerican3dsServer' },
       propertyName: 'name',
+      mapping: { Panamerican3dsServer: '#/components/schemas/Panamerican3dsServer' },
     },
     required: ['name'],
   })
@@ -10421,15 +10671,13 @@ const PaymentCardUpdatePlainSchema = z
   .openapi('PaymentCardUpdatePlain')
 
 const PaymentInstrument_2Schema: z.ZodType<PaymentInstrument_2Type> = z
-  .lazy(() =>
-    z.xor([
-      PaymentCardSchema,
-      BankAccountSchema,
-      PayPalAccountSchema,
-      KhelocardCardSchema,
-      AlternativePaymentInstrument_2Schema,
-    ]),
-  )
+  .xor([
+    PaymentCardSchema,
+    BankAccountSchema,
+    PayPalAccountSchema,
+    KhelocardCardSchema,
+    AlternativePaymentInstrument_2Schema,
+  ])
   .openapi('PaymentInstrument_2')
 
 const PaymentInstrumentCreateTokenSchema = z
@@ -10534,8 +10782,8 @@ const Paysafe3dsServersSchema = z
   .openapi({
     description: 'Paysafe 3DS Servers.',
     discriminator: {
-      mapping: { Paysafe3dsServer: '#/components/schemas/Paysafe3dsServer' },
       propertyName: 'name',
+      mapping: { Paysafe3dsServer: '#/components/schemas/Paysafe3dsServer' },
     },
     required: ['name'],
   })
@@ -10607,8 +10855,8 @@ const Piastrix3dsServersSchema = z
   .openapi({
     description: 'Piastrix 3DS Servers.',
     discriminator: {
-      mapping: { Piastrix3dsServer: '#/components/schemas/Piastrix3dsServer' },
       propertyName: 'name',
+      mapping: { Piastrix3dsServer: '#/components/schemas/Piastrix3dsServer' },
     },
     required: ['name'],
   })
@@ -11034,29 +11282,7 @@ const SeamlessChexSchema = GatewayAccountSchema.and(
   .openapi({ description: 'SeamlessChex config.' })
   .openapi('SeamlessChex')
 
-const SubscriptionSchema = z
-  .object({
-    orderType: z
-      .enum(['subscription-order', 'one-time-order'])
-      .exactOptional()
-      .openapi({
-        description: 'Specifies the type of order, a subscription or a one-time purchase.\n',
-        'x-basic': true,
-      }),
-  })
-  .openapi({
-    discriminator: {
-      mapping: {
-        'one-time-order': '#/components/schemas/OneTimeOrder',
-        'subscription-order': '#/components/schemas/SubscriptionOrder',
-      },
-      propertyName: 'orderType',
-    },
-    required: [],
-  })
-  .openapi('Subscription')
-
-const SearchSchema = z
+const SearchSchema: z.ZodType<SearchType> = z
   .object({
     customers: z
       .array(CustomerSchema)
@@ -11090,8 +11316,8 @@ const SecureTrading3dsServersSchema = z
   .openapi({
     description: 'SecureTrading 3DS Servers.',
     discriminator: {
-      mapping: { SecureTrading3dsServer: '#/components/schemas/SecureTrading3dsServer' },
       propertyName: 'name',
+      mapping: { SecureTrading3dsServer: '#/components/schemas/SecureTrading3dsServer' },
     },
     required: ['name'],
   })
@@ -11126,8 +11352,8 @@ const SecurionPay3dsServersSchema = z
   .openapi({
     description: 'SecurionPay 3DS Servers.',
     discriminator: {
-      mapping: { ThreeDSecureIO3dsServer: '#/components/schemas/ThreeDSecureIO3dsServer' },
       propertyName: 'name',
+      mapping: { ThreeDSecureIO3dsServer: '#/components/schemas/ThreeDSecureIO3dsServer' },
     },
     required: ['name'],
   })
@@ -11223,8 +11449,8 @@ const SmartInvoice3dsServersSchema = z
   .openapi({
     description: 'SmartInvoice 3DS Servers.',
     discriminator: {
-      mapping: { SmartInvoice3dsServer: '#/components/schemas/SmartInvoice3dsServer' },
       propertyName: 'name',
+      mapping: { SmartInvoice3dsServer: '#/components/schemas/SmartInvoice3dsServer' },
     },
     required: ['name'],
   })
@@ -11293,7 +11519,7 @@ const SparkPaySchema = GatewayAccountSchema.and(
   .openapi({ description: 'SparkPay config.' })
   .openapi('SparkPay')
 
-const StaticGatewaySchema = GatewayAccountSchema.and(z.object({}))
+const StaticGatewaySchema = GatewayAccountSchema.and(z.looseObject({}))
   .openapi({ description: 'StaticGateway Gateway config.' })
   .openapi('StaticGateway')
 
@@ -11302,8 +11528,8 @@ const Stripe3dsServersSchema = z
   .openapi({
     description: 'Stripe 3DS Servers.',
     discriminator: {
-      mapping: { Stripe3dsServer: '#/components/schemas/Stripe3dsServer' },
       propertyName: 'name',
+      mapping: { Stripe3dsServer: '#/components/schemas/Stripe3dsServer' },
     },
     required: [],
   })
@@ -11524,42 +11750,52 @@ const SubscriptionInvoiceSchema = z
   .openapi({ required: [] })
   .openapi('SubscriptionInvoice')
 
-const SubscriptionOrderSchema: z.ZodType<SubscriptionOrderType> = z
-  .lazy(() =>
-    CommonSubscriptionOrderSchema.and(
-      z
-        .object({
-          customerId: ResourceIdSchema.exactOptional().openapi({
-            description: 'The customer identifier string.',
-            'x-basic': true,
-          }),
-          renewalReminderNumber: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Number of renewal reminder events triggered.',
-              readOnly: true,
-            }),
-          renewalReminderTime: ServerTimestampSchema.nullable()
-            .exactOptional()
-            .openapi({ description: 'Time renewal reminder event will be triggered.' }),
-          trialReminderNumber: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Number of renewal reminder events triggered.',
-              readOnly: true,
-            }),
-          trialReminderTime: ServerTimestampSchema.nullable()
-            .exactOptional()
-            .openapi({ description: 'Time renewal reminder event will be triggered.' }),
-        })
-        .openapi({ required: [] }),
-    )
-      .and(SubscriptionCancellationStateSchema)
-      .and(SubscriptionMetadataSchema)
-      .openapi({ required: ['orderType', 'customerId', 'websiteId', 'items'] }),
+const SubscriptionOrderSchema: z.ZodType<SubscriptionOrderType> = CommonSubscriptionOrderSchema.and(
+  z.looseObject({}).openapi({ required: ['orderType', 'customerId', 'websiteId', 'items'] }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'orderType')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'customerId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'websiteId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'items')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        customerId: ResourceIdSchema.exactOptional().openapi({
+          description: 'The customer identifier string.',
+          'x-basic': true,
+        }),
+        renewalReminderNumber: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Number of renewal reminder events triggered.', readOnly: true }),
+        renewalReminderTime: ServerTimestampSchema.nullable()
+          .exactOptional()
+          .openapi({ description: 'Time renewal reminder event will be triggered.' }),
+        trialReminderNumber: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Number of renewal reminder events triggered.', readOnly: true }),
+        trialReminderTime: ServerTimestampSchema.nullable()
+          .exactOptional()
+          .openapi({ description: 'Time renewal reminder event will be triggered.' }),
+      })
+      .openapi({ required: [] }),
   )
+  .and(SubscriptionCancellationStateSchema)
+  .and(SubscriptionMetadataSchema)
+  .openapi({ required: ['orderType', 'customerId', 'websiteId', 'items'] })
   .openapi('SubscriptionOrder')
 
 const SubscriptionReactivationSchema = z
@@ -11643,11 +11879,11 @@ const TestProcessor3dsServersSchema = z
   .openapi({
     description: 'TestProcessor3dsServers 3DS Servers.',
     discriminator: {
+      propertyName: 'name',
       mapping: {
         TestSandbox3dsServer: '#/components/schemas/TestProcessor3dsServer',
         ThreeDSecureIO3dsServer: '#/components/schemas/ThreeDSecureIO3dsServer',
       },
-      propertyName: 'name',
     },
     required: ['name'],
   })
@@ -11728,8 +11964,8 @@ const WorldlineAtosFrankfurt3dsServersSchema = z
   .openapi({
     description: 'WorldlineAtosFrankfurt 3DS Servers.',
     discriminator: {
-      mapping: { ThreeDSecureIO3dsServer: '#/components/schemas/ThreeDSecureIO3dsServer' },
       propertyName: 'name',
+      mapping: { ThreeDSecureIO3dsServer: '#/components/schemas/ThreeDSecureIO3dsServer' },
     },
     required: ['name'],
   })
@@ -11856,32 +12092,30 @@ const TransactionRefundSchema = z
   .openapi({ required: ['amount'] })
   .openapi('TransactionRefund')
 
-const TransactionRequestSchema: z.ZodType<TransactionRequestType> = z
-  .lazy(() =>
-    CommonTransactionRequestSchema.and(
-      z
-        .unknown()
-        .superRefine((val, ctx) => {
-          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-            if (!Object.hasOwn(val, 'type')) {
-              ctx.addIssue({ code: 'custom' })
-            }
-          }
-        })
-        .openapi({ required: ['type'] }),
-    ).and(
-      z
-        .object({
-          type: z
-            .enum(['3ds-authentication', 'sale', 'authorize'])
-            .exactOptional()
-            .openapi({
-              description:
-                'The type of transaction requested.\nYou should always include the type within your API request.\nThis supports a limited subset of Transaction types.  To refund or void, use the refund endpoint.\nTo `capture` use the `sale` type. If any existing `authorize` transactions are eligible, then they will be captured and the `sale` will be converted to a `capture` type.\n',
-            }),
-        })
-        .openapi({ required: [] }),
-    ),
+const TransactionRequestSchema = CommonTransactionRequestSchema.and(
+  z
+    .unknown()
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .openapi({ required: ['type'] }),
+)
+  .and(
+    z
+      .object({
+        type: z
+          .enum(['3ds-authentication', 'sale', 'authorize'])
+          .exactOptional()
+          .openapi({
+            description:
+              'The type of transaction requested.\nYou should always include the type within your API request.\nThis supports a limited subset of Transaction types.  To refund or void, use the refund endpoint.\nTo `capture` use the `sale` type. If any existing `authorize` transactions are eligible, then they will be captured and the `sale` will be converted to a `capture` type.\n',
+          }),
+      })
+      .openapi({ required: [] }),
   )
   .openapi('TransactionRequest')
 
@@ -12142,8 +12376,8 @@ const Wirecard3dsServersSchema = z
   .openapi({
     description: 'Wirecard 3DS Servers.',
     discriminator: {
-      mapping: { Wirecard3dsServer: '#/components/schemas/Wirecard3dsServer' },
       propertyName: 'name',
+      mapping: { Wirecard3dsServer: '#/components/schemas/Wirecard3dsServer' },
     },
     required: ['name'],
   })
@@ -12760,33 +12994,56 @@ const PartialSchema = AmountAdjustmentSchema.and(
 ).openapi('Partial')
 
 const PasswordSchema = AuthenticationTokenSchema.and(
-  z
-    .object({
-      customerId: ResourceIdSchema.exactOptional().openapi({
-        description: "The token's customer ID.",
-        readOnly: true,
-      }),
-      password: z
-        .string()
-        .exactOptional()
-        .openapi({ description: "The token's password.", writeOnly: true }),
-      username: z.string().exactOptional().openapi({ description: "The token's username." }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['username', 'password'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'username')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'password')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        customerId: ResourceIdSchema.exactOptional().openapi({
+          description: "The token's customer ID.",
+          readOnly: true,
+        }),
+        password: z
+          .string()
+          .exactOptional()
+          .openapi({ description: "The token's password.", writeOnly: true }),
+        username: z.string().exactOptional().openapi({ description: "The token's username." }),
+      })
+      .openapi({ required: [] }),
+  )
   .and(AuthenticationTokenMetadataSchema)
   .openapi({ required: ['username', 'password'] })
   .openapi('Password')
 
 const PasswordlessSchema = AuthenticationTokenSchema.and(
-  z
-    .object({
-      customerId: ResourceIdSchema.exactOptional().openapi({
-        description: "The token's customer ID.",
-      }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['customerId'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'customerId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        customerId: ResourceIdSchema.exactOptional().openapi({
+          description: "The token's customer ID.",
+        }),
+      })
+      .openapi({ required: [] }),
+  )
   .and(AuthenticationTokenMetadataSchema)
   .openapi({ required: ['customerId'] })
   .openapi('Passwordless')
@@ -13122,12 +13379,10 @@ const ForbiddenResponse = {
 const FoundResponse = {
   description: 'Resource was moved.',
   headers: z.object({
-    Location: {
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({ param: { required: false } }),
-    },
+    Location: z
+      .string()
+      .exactOptional()
+      .openapi({ param: { required: false } }),
   }),
 }
 
@@ -16274,23 +16529,14 @@ export const getFilesIdDownloadRoute = createRoute({
       description: 'The file was retrieved successfully.',
       content: { 'application/json': { schema: z.string().openapi({ readOnly: true }) } },
       headers: z.object({
-        'Content-Length': {
-          description: 'The number of bytes in the file.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of bytes in the file.',
-              param: { required: false },
-            }),
-        },
-        'Content-Type': {
-          description: 'The MIME type of the file.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The MIME type of the file.', param: { required: false } }),
-        },
+        'Content-Length': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'The number of bytes in the file.', param: { required: false } }),
+        'Content-Type': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The MIME type of the file.', param: { required: false } }),
       }),
     },
     302: FoundResponse,
@@ -16329,23 +16575,14 @@ export const getFilesIdDownloadExtensionRoute = createRoute({
       description: 'The file was retrieved successfully.',
       content: { 'application/json': { schema: z.string().openapi({ readOnly: true }) } },
       headers: z.object({
-        'Content-Length': {
-          description: 'The number of bytes in the file.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'The number of bytes in the file.',
-              param: { required: false },
-            }),
-        },
-        'Content-Type': {
-          description: 'The MIME type of the file.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The MIME type of the file.', param: { required: false } }),
-        },
+        'Content-Length': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'The number of bytes in the file.', param: { required: false } }),
+        'Content-Type': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The MIME type of the file.', param: { required: false } }),
       }),
     },
     401: UnauthorizedResponse,

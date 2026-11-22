@@ -217,6 +217,17 @@ const AssetSchema = z
   })
   .openapi('Asset')
 
+const UserAssetSchema = z
+  .object({ asset: AssetSchema.exactOptional().openapi({ description: 'An Asset.' }) })
+  .openapi({ description: "Data about the user's asset.", required: [] })
+  .openapi('UserAsset')
+
+type ListUserAssetsResponseType = {
+  nextPageToken?: string
+  totalSize?: number
+  userAssets?: z.infer<typeof UserAssetSchema>[]
+}
+
 const ImageErrorSchema = z
   .object({
     code: z
@@ -372,12 +383,7 @@ const ListLikedAssetsResponseSchema = z
   .openapi({ description: 'A response message from a request to list.', required: [] })
   .openapi('ListLikedAssetsResponse')
 
-const UserAssetSchema = z
-  .object({ asset: AssetSchema.exactOptional().openapi({ description: 'An Asset.' }) })
-  .openapi({ description: "Data about the user's asset.", required: [] })
-  .openapi('UserAsset')
-
-const ListUserAssetsResponseSchema = z
+const ListUserAssetsResponseSchema: z.ZodType<ListUserAssetsResponseType> = z
   .object({
     nextPageToken: z
       .string()

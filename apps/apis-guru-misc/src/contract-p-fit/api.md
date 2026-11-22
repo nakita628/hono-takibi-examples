@@ -50,7 +50,7 @@ You can reprocess a document using POST */documents/{document_id}/reprocess* : i
 
 Base URLs:
 
-* <a href="https://api.apis.guru//cfportal.contract-p.fit/api">https://api.apis.guru//cfportal.contract-p.fit/api</a>
+* <a href="//cfportal.contract-p.fit/api">//cfportal.contract-p.fit/api</a>
 
 # Authentication
 

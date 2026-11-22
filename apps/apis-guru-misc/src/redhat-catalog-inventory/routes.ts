@@ -3,7 +3,7 @@ import { createRoute, z } from '@hono/zod-openapi'
 const AppliedInventoriesParametersServicePlanSchema = z
   .strictObject({
     service_parameters: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -30,7 +30,7 @@ const TaskSchema = z
     created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
     id: UUIDSchema.exactOptional(),
     input: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ example: 'Task payload input content', readOnly: true, title: 'Content' }),
     message: z
@@ -39,7 +39,7 @@ const TaskSchema = z
       .openapi({ example: 'received message starting inventory collection', title: 'Message' }),
     name: z.string().exactOptional().openapi({ example: 'Order Service Plan', title: 'Name' }),
     output: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ example: 'Result of Task Execution', title: 'Result' }),
     owner: z.string().exactOptional().openapi({ example: 'jdoe', readOnly: true, title: 'Owner' }),
@@ -113,7 +113,7 @@ const GraphQLRequestSchema = z
       }),
     query: z.string().default('{}').openapi({ description: 'The GraphQL query' }),
     variables: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'Optional Query variables' }),
@@ -123,9 +123,12 @@ const GraphQLRequestSchema = z
 
 const GraphQLResponseSchema = z
   .object({
-    data: z.object({}).exactOptional().openapi({ description: 'Results from the GraphQL query' }),
+    data: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Results from the GraphQL query' }),
     errors: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'Errors resulting from the GraphQL query' }),
   })
@@ -139,14 +142,14 @@ const LaunchJobTaskSchema = TaskSchema.openapi('LaunchJobTask')
 const OrderParametersServiceOfferingSchema = z
   .strictObject({
     provider_control_parameters: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
           'The provider specific parameters needed to provision this service. This might include namespaces, special keys',
       }),
     service_parameters: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'JSON object with provisioning parameters' }),
     service_plan_id: IDSchema.exactOptional(),
@@ -157,14 +160,14 @@ const OrderParametersServiceOfferingSchema = z
 const OrderParametersServicePlanSchema = z
   .strictObject({
     provider_control_parameters: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
           'The provider specific parameters needed to provision this service. This might include namespaces, special keys',
       }),
     service_parameters: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'JSON object with provisioning parameters' }),
   })
@@ -235,7 +238,7 @@ const ServiceInstanceSchema = z
     created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
     external_url: z.string().exactOptional().openapi({ readOnly: true }),
     extra: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Extra information about this object in JSON format',
@@ -265,7 +268,7 @@ const ServiceInstanceNodeSchema = z
   .strictObject({
     archived_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
     created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    extra: z.object({}).exactOptional(),
+    extra: z.looseObject({}).exactOptional(),
     id: IDSchema.exactOptional(),
     last_seen_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
     name: z.string().exactOptional(),
@@ -305,7 +308,7 @@ const ServiceInventorySchema = z
     archived_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
     created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
     description: z.string().exactOptional().openapi({ readOnly: true }),
-    extra: z.object({}).exactOptional().openapi({ readOnly: true }),
+    extra: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     id: IDSchema.exactOptional(),
     last_seen_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
     name: z.string().exactOptional().openapi({ readOnly: true }),
@@ -354,7 +357,7 @@ const ServiceOfferingSchema = z
         title: 'Documentation URL',
       }),
     extra: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Extra information about this object in JSON format',
@@ -428,7 +431,7 @@ const ServiceOfferingNodeSchema = z
   .strictObject({
     archived_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
     created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    extra: z.object({}).exactOptional(),
+    extra: z.looseObject({}).exactOptional(),
     id: IDSchema.exactOptional(),
     last_seen_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
     name: z.string().exactOptional(),
@@ -466,7 +469,7 @@ const ServiceOfferingsCollectionSchema = z
 const ServicePlanSchema = z
   .strictObject({
     archived_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    create_json_schema: z.object({}).exactOptional().openapi({ readOnly: true }),
+    create_json_schema: z.looseObject({}).exactOptional().openapi({ readOnly: true }),
     created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
     description: z
       .string()
@@ -477,7 +480,7 @@ const ServicePlanSchema = z
         title: 'Description',
       }),
     extra: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Extra information about this object in JSON format',
@@ -544,7 +547,7 @@ const SourceSchema = z
       .openapi({ readOnly: true, title: 'Enabled' }),
     id: IDSchema.exactOptional(),
     info: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ example: 'The version of Tower being used', readOnly: true, title: 'Info' }),
     last_available_at: z.iso
@@ -663,7 +666,7 @@ const IDParamsSchema = z
   })
 
 const QueryFilterParamsSchema = z
-  .object({})
+  .looseObject({})
   .exactOptional()
   .openapi({
     param: {
@@ -722,7 +725,7 @@ const QueryOffsetParamsSchema = z
   })
 
 const QuerySortByParamsSchema = z
-  .object({})
+  .looseObject({})
   .exactOptional()
   .openapi({
     param: {
@@ -783,7 +786,7 @@ export const getOpenapiJsonRoute = createRoute({
   responses: {
     200: {
       description: 'The API document for this version of the API',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
 })

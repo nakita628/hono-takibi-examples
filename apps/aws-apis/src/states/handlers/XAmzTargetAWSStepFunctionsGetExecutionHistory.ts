@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSStepFunctionsGetExecutionHistoryHandler = app.openapi(
   postXAmzTargetAWSStepFunctionsGetExecutionHistoryRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

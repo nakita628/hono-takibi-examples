@@ -50,6 +50,98 @@ const RenderRequestSchema = z
       })
       .openapi({ required: ['html'] }),
   ])
+  .and(
+    z
+      .object({
+        block_ads: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether to block ads on the rendered page' }),
+        click_accept: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether to automatically click accept buttons on the rendered page',
+          }),
+        delay: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The amount of milliseconds to delay before taking a screenshot',
+          }),
+        format: z
+          .enum(['png', 'jpg', 'pdf', 'svg', 'mp4', 'webp', 'webm', 'html'])
+          .exactOptional()
+          .openapi({ description: 'The format of the rendered output' }),
+        full_page: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether to capture the full page' }),
+        gpu: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether to enable GPU rendering' }),
+        height: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'The viewport height of the rendered output' }),
+        hide_cookie_banners: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether to hide cookie banners on the rendered page' }),
+        html: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The raw HTML to render as an image or video' }),
+        metadata: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether to return metadata about the URL' }),
+        retina: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether to render the image in retina quality' }),
+        selector: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The CSS selector of an element you would like to capture' }),
+        thumb_height: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'The height of the thumbnail image' }),
+        thumb_width: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'The width of the thumbnail image' }),
+        url: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The URL to render as an image or video' }),
+        wait_for: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'CSS selector of an element to wait to be present in the web page before rendering',
+          }),
+        wait_to_leave: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'CSS selector of an element, such as a loading spinner, to wait to leave the web page before rendering',
+          }),
+        wait_until: z
+          .enum(['requestsfinished', 'mostrequestsfinished', 'loaded', 'domloaded'])
+          .exactOptional()
+          .openapi({ description: 'When' }),
+        width: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'The viewport width of the rendered output' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi('RenderRequest')
 
 const RenderResponseSchema = z
@@ -99,77 +191,50 @@ export const postV1RenderSyncRoute = createRoute({
       description: 'Successful operation',
       content: { 'application/json': { schema: RenderResponseSchema } },
       headers: z.object({
-        'x-renders-allowed': {
-          description: 'The number of renders allowed',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'The number of renders allowed', param: { required: false } }),
-        },
-        'x-renders-reset': {
-          description: 'The date and time when the render count will reset',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The date and time when the render count will reset',
-              param: { required: false },
-            }),
-        },
-        'x-renders-used': {
-          description: 'The number of renders used',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'The number of renders used', param: { required: false } }),
-        },
-        'x-urlbox-acceptedby': {
-          description: 'The server that accepted the request',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The server that accepted the request',
-              param: { required: false },
-            }),
-        },
-        'x-urlbox-cache-status': {
-          description: 'The cache status of the response',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The cache status of the response',
-              param: { required: false },
-            }),
-        },
-        'x-urlbox-cachekey': {
-          description: 'The cache key used by URLBox',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The cache key used by URLBox', param: { required: false } }),
-        },
-        'x-urlbox-renderedby': {
-          description: 'The server that rendered the response',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The server that rendered the response',
-              param: { required: false },
-            }),
-        },
-        'x-urlbox-requestid': {
-          description: 'The request ID assigned by URLBox',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The request ID assigned by URLBox',
-              param: { required: false },
-            }),
-        },
+        'x-renders-allowed': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'The number of renders allowed', param: { required: false } }),
+        'x-renders-reset': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The date and time when the render count will reset',
+            param: { required: false },
+          }),
+        'x-renders-used': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'The number of renders used', param: { required: false } }),
+        'x-urlbox-acceptedby': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The server that accepted the request',
+            param: { required: false },
+          }),
+        'x-urlbox-cache-status': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The cache status of the response', param: { required: false } }),
+        'x-urlbox-cachekey': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The cache key used by URLBox', param: { required: false } }),
+        'x-urlbox-renderedby': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The server that rendered the response',
+            param: { required: false },
+          }),
+        'x-urlbox-requestid': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The request ID assigned by URLBox',
+            param: { required: false },
+          }),
       }),
     },
     307: {
@@ -185,15 +250,13 @@ export const postV1RenderSyncRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'The URL to follow for the long running request',
-            }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'The URL to follow for the long running request',
+          }),
       }),
     },
     400: {
@@ -205,16 +268,13 @@ export const postV1RenderSyncRoute = createRoute({
         },
       },
       headers: z.object({
-        'x-urlbox-error-message': {
-          description: 'An error message describing the reason the request failed',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'An error message describing the reason the request failed',
-              param: { required: false },
-            }),
-        },
+        'x-urlbox-error-message': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'An error message describing the reason the request failed',
+            param: { required: false },
+          }),
       }),
     },
     401: {
@@ -226,16 +286,13 @@ export const postV1RenderSyncRoute = createRoute({
         },
       },
       headers: z.object({
-        'x-urlbox-error-message': {
-          description: 'An error message describing the reason the request failed',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'An error message describing the reason the request failed',
-              param: { required: false },
-            }),
-        },
+        'x-urlbox-error-message': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'An error message describing the reason the request failed',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -249,16 +306,13 @@ export const postV1RenderSyncRoute = createRoute({
         },
       },
       headers: z.object({
-        'x-urlbox-error-message': {
-          description: 'An error message describing the reason the request failed',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'An error message describing the reason the request failed',
-              param: { required: false },
-            }),
-        },
+        'x-urlbox-error-message': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'An error message describing the reason the request failed',
+            param: { required: false },
+          }),
       }),
     },
   },

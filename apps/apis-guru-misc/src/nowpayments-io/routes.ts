@@ -88,125 +88,89 @@ export const getV1EstimateRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '605abb081ca11669-ARN' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'br' }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Tue, 22 Dec 2020 15:03:37 GMT' }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        NEL: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: '{"report_to":"cf-nel","max_age":604800}',
-            }),
-        },
-        'Report-To': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report?s=Be6PnrVenND3qBzQJTWszI2slyEd9pXNhEyFMkukSYUC1m3om7zFPg%2BQq%2F6xT2ridpvoQiRE5q8CWGblOvjJ7%2Bup%2B3ZwGuN7TNvHk04WYiWIlRk%3D"}],"group":"cf-nel","max_age":604800}',
-            }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=15768000' }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Origin' }),
-        },
-        'X-Content-Type-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'X-DNS-Prefetch-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'X-Download-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'X-Frame-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'X-XSS-Protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1; mode=block' }),
-        },
-        'cf-request-id': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '072c9339110000166928295000000001' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '605abb081ca11669-ARN' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'br' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Tue, 22 Dec 2020 15:03:37 GMT' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        NEL: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: '{"report_to":"cf-nel","max_age":604800}',
+          }),
+        'Report-To': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report?s=Be6PnrVenND3qBzQJTWszI2slyEd9pXNhEyFMkukSYUC1m3om7zFPg%2BQq%2F6xT2ridpvoQiRE5q8CWGblOvjJ7%2Bup%2B3ZwGuN7TNvHk04WYiWIlRk%3D"}],"group":"cf-nel","max_age":604800}',
+          }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=15768000' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Origin' }),
+        'X-Content-Type-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'X-DNS-Prefetch-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'X-Download-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'X-Frame-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'X-XSS-Protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1; mode=block' }),
+        'cf-request-id': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '072c9339110000166928295000000001' }),
       }),
     },
   },
@@ -288,125 +252,89 @@ export const getV1MinAmountRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '605abd48af901669-ARN' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'br' }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Tue, 22 Dec 2020 15:05:09 GMT' }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        NEL: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: '{"report_to":"cf-nel","max_age":604800}',
-            }),
-        },
-        'Report-To': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report?s=JE3EB5TyT0ppi%2B%2FTPlGcGUDcr2ry9EL%2BhHtpB8%2BYtZMjD087RoOl6UD9284JzS7VANH4ZivF8A7jHMl42n8GLxJL1u7fyKvugNSiViphSjgmGKc%3D"}],"group":"cf-nel","max_age":604800}',
-            }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=15768000' }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Origin' }),
-        },
-        'X-Content-Type-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'X-DNS-Prefetch-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'X-Download-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'X-Frame-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'X-XSS-Protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1; mode=block' }),
-        },
-        'cf-request-id': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '072c94a16a0000166954256000000001' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '605abd48af901669-ARN' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'br' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Tue, 22 Dec 2020 15:05:09 GMT' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        NEL: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: '{"report_to":"cf-nel","max_age":604800}',
+          }),
+        'Report-To': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report?s=JE3EB5TyT0ppi%2B%2FTPlGcGUDcr2ry9EL%2BhHtpB8%2BYtZMjD087RoOl6UD9284JzS7VANH4ZivF8A7jHMl42n8GLxJL1u7fyKvugNSiViphSjgmGKc%3D"}],"group":"cf-nel","max_age":604800}',
+          }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=15768000' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Origin' }),
+        'X-Content-Type-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'X-DNS-Prefetch-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'X-Download-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'X-Frame-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'X-XSS-Protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1; mode=block' }),
+        'cf-request-id': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '072c94a16a0000166954256000000001' }),
       }),
     },
   },
@@ -869,125 +797,89 @@ export const getV1PaymentIndexRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '605abddd7db41669-ARN' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'br' }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Tue, 22 Dec 2020 15:05:33 GMT' }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        NEL: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: '{"report_to":"cf-nel","max_age":604800}',
-            }),
-        },
-        'Report-To': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report?s=4Sj25uNN8wdCtby0RbHx%2FbSLll68tMBpk%2FVG%2BQxVvo3wGnCf6Zu1DPFpwjsTBVasLRcoOsZVemVR6eVlvGP3HF9uJ1VOuaj%2Be9TCiwikq16Y5Vg%3D"}],"group":"cf-nel","max_age":604800}',
-            }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=15768000' }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Origin' }),
-        },
-        'X-Content-Type-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'X-DNS-Prefetch-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'X-Download-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'X-Frame-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'X-XSS-Protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1; mode=block' }),
-        },
-        'cf-request-id': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '072c94fe6c00001669e783e000000001' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '605abddd7db41669-ARN' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'br' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Tue, 22 Dec 2020 15:05:33 GMT' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        NEL: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: '{"report_to":"cf-nel","max_age":604800}',
+          }),
+        'Report-To': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report?s=4Sj25uNN8wdCtby0RbHx%2FbSLll68tMBpk%2FVG%2BQxVvo3wGnCf6Zu1DPFpwjsTBVasLRcoOsZVemVR6eVlvGP3HF9uJ1VOuaj%2Be9TCiwikq16Y5Vg%3D"}],"group":"cf-nel","max_age":604800}',
+          }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=15768000' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Origin' }),
+        'X-Content-Type-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'X-DNS-Prefetch-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'X-Download-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'X-Frame-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'X-XSS-Protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1; mode=block' }),
+        'cf-request-id': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '072c94fe6c00001669e783e000000001' }),
       }),
     },
   },
@@ -1059,128 +951,92 @@ export const postV1PaymentIdUpdateMerchantEstimateRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '73995c778c69c2e1-VIE' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'br' }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Fri, 12 Aug 2022 12:54:43 GMT' }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        NEL: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}',
-            }),
-        },
-        'Report-To': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v3?s=UlD77RlowCWTg1qTZ2LeHmo1PgG3zxPObaiXYfhalA0YMLx%2BN07RVybi%2BZ%2BM4TkZr5jAjyQN5IMEcOW88%2FFqbuIQhrYnNXIBWUq6QwBFc4nG3FZMlvkLybT0QbYxAutJE4b1rL8%3D"}],"group":"cf-nel","max_age":604800}',
-            }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        'alt-svc': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'h3=":443"; ma=86400, h3-29=":443"; ma=86400',
-            }),
-        },
-        'strict-transport-security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=15768000' }),
-        },
-        vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Origin, Accept-Encoding' }),
-        },
-        'x-content-type-options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'x-dns-prefetch-control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'x-download-options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'x-frame-options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'x-xss-protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1; mode=block' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '73995c778c69c2e1-VIE' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'br' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Fri, 12 Aug 2022 12:54:43 GMT' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        NEL: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}',
+          }),
+        'Report-To': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v3?s=UlD77RlowCWTg1qTZ2LeHmo1PgG3zxPObaiXYfhalA0YMLx%2BN07RVybi%2BZ%2BM4TkZr5jAjyQN5IMEcOW88%2FFqbuIQhrYnNXIBWUq6QwBFc4nG3FZMlvkLybT0QbYxAutJE4b1rL8%3D"}],"group":"cf-nel","max_age":604800}',
+          }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        'alt-svc': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: 'h3=":443"; ma=86400, h3-29=":443"; ma=86400',
+          }),
+        'strict-transport-security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=15768000' }),
+        vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Origin, Accept-Encoding' }),
+        'x-content-type-options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'x-dns-prefetch-control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'x-download-options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'x-frame-options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'x-xss-protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1; mode=block' }),
       }),
     },
   },
@@ -1277,125 +1133,89 @@ export const getV1PaymentPaymentIdRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '60294baa3828fe40-HEL' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'br' }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Wed, 16 Dec 2020 15:04:13 GMT' }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        NEL: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: '{"report_to":"cf-nel","max_age":604800}',
-            }),
-        },
-        'Report-To': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report?s=zEbhqHJbg3q36U8j53OXNXd%2Bko6cS9sMgMStn1FBVWWkPsG8UrIRJyCEhmY1qK%2FXx3U%2FGPx54%2BOtE2Btl8ZwU9i9wZ%2BJkAo8q7FqZydfMMQgcb4%3D"}],"group":"cf-nel","max_age":604800}',
-            }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=15768000' }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Origin' }),
-        },
-        'X-Content-Type-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'nosniff' }),
-        },
-        'X-DNS-Prefetch-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'off' }),
-        },
-        'X-Download-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'noopen' }),
-        },
-        'X-Frame-Options': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
-        },
-        'X-XSS-Protection': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1; mode=block' }),
-        },
-        'cf-request-id': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '070dad9e670000fe402dae0000000001' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '60294baa3828fe40-HEL' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'br' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Wed, 16 Dec 2020 15:04:13 GMT' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        NEL: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: '{"report_to":"cf-nel","max_age":604800}',
+          }),
+        'Report-To': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report?s=zEbhqHJbg3q36U8j53OXNXd%2Bko6cS9sMgMStn1FBVWWkPsG8UrIRJyCEhmY1qK%2FXx3U%2FGPx54%2BOtE2Btl8ZwU9i9wZ%2BJkAo8q7FqZydfMMQgcb4%3D"}],"group":"cf-nel","max_age":604800}',
+          }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=15768000' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Origin' }),
+        'X-Content-Type-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'nosniff' }),
+        'X-DNS-Prefetch-Control': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'off' }),
+        'X-Download-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'noopen' }),
+        'X-Frame-Options': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'SAMEORIGIN' }),
+        'X-XSS-Protection': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1; mode=block' }),
+        'cf-request-id': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '070dad9e670000fe402dae0000000001' }),
       }),
     },
   },

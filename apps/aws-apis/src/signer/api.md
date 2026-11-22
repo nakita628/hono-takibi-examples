@@ -3011,12 +3011,12 @@ The validity period for a signing job.
 |value|object|false|none|none|
 |type|object|false|none|none|
 
-<h2 id="tocS_string">string</h2>
+<h2 id="tocS_string2">string2</h2>
 <!-- backwards compatibility -->
-<a id="schemastring-1"></a>
-<a id="schema_string"></a>
-<a id="tocSstring-1"></a>
-<a id="tocsstring-1"></a>
+<a id="schemastring2"></a>
+<a id="schema_string2"></a>
+<a id="tocSstring2"></a>
+<a id="tocsstring2"></a>
 
 ```json
 "string"

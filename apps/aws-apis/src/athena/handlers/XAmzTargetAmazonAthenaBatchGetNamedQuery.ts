@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAmazonAthenaBatchGetNamedQueryHandler = app.openapi(
   postXAmzTargetAmazonAthenaBatchGetNamedQueryRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

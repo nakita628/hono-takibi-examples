@@ -77,11 +77,15 @@ export const postV1SimulateReturnReversalRouteHandler: RouteHandler<
 
 export const postV1SimulateVoidRouteHandler: RouteHandler<typeof postV1SimulateVoidRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const getV1TransactionsRouteHandler: RouteHandler<typeof getV1TransactionsRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const getV1TransactionsTransactionTokenRouteHandler: RouteHandler<
   typeof getV1TransactionsTransactionTokenRoute

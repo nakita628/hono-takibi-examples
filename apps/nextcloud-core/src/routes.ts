@@ -1311,6 +1311,7 @@ export const getOcsV2PhpCoreAutocompleteGetRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 10, minimum: 1 },
             required: false,
           },
+          default: 10,
         }),
       offset: z
         .preprocess((val) => {
@@ -1330,6 +1331,7 @@ export const getOcsV2PhpCoreAutocompleteGetRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0, minimum: 0 },
             required: false,
           },
+          default: 0,
         }),
     }),
     headers: z.object({
@@ -6757,6 +6759,7 @@ export const getIndexPhpCorePreviewPngRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 32, minimum: -1 },
             required: false,
           },
+          default: 32,
         }),
       y: z
         .preprocess((val) => {
@@ -6777,6 +6780,7 @@ export const getIndexPhpCorePreviewPngRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 32, minimum: -1 },
             required: false,
           },
+          default: 32,
         }),
       a: z
         .stringbool()
@@ -6910,6 +6914,7 @@ export const getIndexPhpCorePreviewRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 32, minimum: -1 },
             required: false,
           },
+          default: 32,
         }),
       y: z
         .preprocess((val) => {
@@ -6930,6 +6935,7 @@ export const getIndexPhpCorePreviewRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 32, minimum: -1 },
             required: false,
           },
+          default: 32,
         }),
       a: z
         .stringbool()
@@ -8708,6 +8714,7 @@ export const getOcsV2PhpTaskprocessingTasksProviderNextBatchRoute = createRoute(
             schema: { type: 'integer', format: 'int64', default: 1 },
             required: false,
           },
+          default: 1,
         }),
     }),
     headers: z.object({

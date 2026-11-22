@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAmazonAthenaGetCalculationExecutionStatusHandler = app.openapi(
   postXAmzTargetAmazonAthenaGetCalculationExecutionStatusRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

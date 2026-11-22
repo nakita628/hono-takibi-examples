@@ -7,7 +7,9 @@ import type {
 
 export const getV1FundingEventsRouteHandler: RouteHandler<typeof getV1FundingEventsRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const getV1FundingEventsFundingEventTokenRouteHandler: RouteHandler<
   typeof getV1FundingEventsFundingEventTokenRoute

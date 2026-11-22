@@ -229,7 +229,12 @@ const EventSchema = z
   })
   .openapi('Event')
 
-const ActivitySchema = z
+type ActivityType = {
+  combinedEvent?: z.infer<typeof EventSchema>
+  singleEvents?: z.infer<typeof EventSchema>[]
+}
+
+const ActivitySchema: z.ZodType<ActivityType> = z
   .object({
     combinedEvent: EventSchema.exactOptional().openapi({
       description: 'The fields common to all of the singleEvents that make up the Activity.',
@@ -246,7 +251,12 @@ const ActivitySchema = z
   })
   .openapi('Activity')
 
-const ListActivitiesResponseSchema = z
+type ListActivitiesResponseType = {
+  activities?: z.infer<typeof ActivitySchema>[]
+  nextPageToken?: string
+}
+
+const ListActivitiesResponseSchema: z.ZodType<ListActivitiesResponseType> = z
   .object({
     activities: z
       .array(ActivitySchema)

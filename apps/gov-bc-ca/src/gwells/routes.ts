@@ -41,6 +41,50 @@ const ApplicationListSchema = z
   .openapi({ required: ['subactivity'] })
   .openapi('ApplicationList')
 
+const OrganizationListSchema = z
+  .object({
+    city: z.string().max(50).exactOptional().openapi({ title: 'Town/City' }),
+    email: z.email().max(254).exactOptional().openapi({ title: 'Email adddress' }),
+    fax_tel: z.string().max(15).exactOptional().openapi({ title: 'Fax number' }),
+    main_tel: z.string().max(15).exactOptional().openapi({ title: 'Telephone number' }),
+    name: z.string().max(200).openapi({ title: 'Name' }),
+    org_guid: z.uuid().exactOptional().openapi({ readOnly: true, title: 'Organization UUID' }),
+    org_verbose_name: z
+      .string()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Org verbose name' }),
+    postal_code: z.string().max(10).exactOptional().openapi({ title: 'Postal Code' }),
+    province_state: z.string().openapi({ title: 'Province/State' }),
+    street_address: z.string().max(100).exactOptional().openapi({ title: 'Street Address' }),
+    website_url: z.url().max(200).exactOptional().openapi({ title: 'Website' }),
+  })
+  .openapi({ required: ['name', 'province_state'], title: 'Organization' })
+  .openapi('OrganizationList')
+
+const RegistrationsListSchema = z
+  .object({
+    activity: z.string().exactOptional().openapi({ readOnly: true, title: 'Activity' }),
+    activity_description: z
+      .string()
+      .exactOptional()
+      .openapi({ readOnly: true, title: 'Activity description' }),
+    applications: z.array(ApplicationListSchema).exactOptional().openapi({ readOnly: true }),
+    organization: OrganizationListSchema,
+    registration_no: z.string().max(15).exactOptional().openapi({ title: 'Registration no' }),
+  })
+  .openapi({ required: ['organization'] })
+  .openapi('RegistrationsList')
+
+type PersonListType = {
+  contact_cell?: string
+  contact_email?: string
+  contact_tel?: string
+  first_name: string
+  person_guid?: string
+  registrations?: z.infer<typeof RegistrationsListSchema>[]
+  surname: string
+}
+
 const AquiferSchema = z
   .object({
     aquifer_id: z.int().exactOptional().openapi({ readOnly: true, title: 'Aquifer ID Number' }),
@@ -229,26 +273,6 @@ const LithologyDescriptionSchema = z
   .openapi({ required: [] })
   .openapi('LithologyDescription')
 
-const OrganizationListSchema = z
-  .object({
-    city: z.string().max(50).exactOptional().openapi({ title: 'Town/City' }),
-    email: z.email().max(254).exactOptional().openapi({ title: 'Email adddress' }),
-    fax_tel: z.string().max(15).exactOptional().openapi({ title: 'Fax number' }),
-    main_tel: z.string().max(15).exactOptional().openapi({ title: 'Telephone number' }),
-    name: z.string().max(200).openapi({ title: 'Name' }),
-    org_guid: z.uuid().exactOptional().openapi({ readOnly: true, title: 'Organization UUID' }),
-    org_verbose_name: z
-      .string()
-      .exactOptional()
-      .openapi({ readOnly: true, title: 'Org verbose name' }),
-    postal_code: z.string().max(10).exactOptional().openapi({ title: 'Postal Code' }),
-    province_state: z.string().openapi({ title: 'Province/State' }),
-    street_address: z.string().max(100).exactOptional().openapi({ title: 'Street Address' }),
-    website_url: z.url().max(200).exactOptional().openapi({ title: 'Website' }),
-  })
-  .openapi({ required: ['name', 'province_state'], title: 'Organization' })
-  .openapi('OrganizationList')
-
 const OrganizationNameListSchema = z
   .object({
     name: z.string().max(200).openapi({ title: 'Name' }),
@@ -269,21 +293,7 @@ const PersonBasicSchema = z
   .openapi({ title: 'Person responsible', required: [] })
   .openapi('PersonBasic')
 
-const RegistrationsListSchema = z
-  .object({
-    activity: z.string().exactOptional().openapi({ readOnly: true, title: 'Activity' }),
-    activity_description: z
-      .string()
-      .exactOptional()
-      .openapi({ readOnly: true, title: 'Activity description' }),
-    applications: z.array(ApplicationListSchema).exactOptional().openapi({ readOnly: true }),
-    organization: OrganizationListSchema,
-    registration_no: z.string().max(15).exactOptional().openapi({ title: 'Registration no' }),
-  })
-  .openapi({ required: ['organization'] })
-  .openapi('RegistrationsList')
-
-const PersonListSchema = z
+const PersonListSchema: z.ZodType<PersonListType> = z
   .object({
     contact_cell: z.string().max(15).exactOptional().openapi({ title: 'Contact cell number' }),
     contact_email: z.email().max(254).exactOptional().openapi({ title: 'Email address' }),

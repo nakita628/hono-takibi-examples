@@ -15,25 +15,17 @@ const LocationSchema = z.string().min(1).max(256).openapi('Location')
 
 const AcceleratorTypeOfferingSchema = z
   .object({
-    acceleratorType: AcceleratorTypeNameSchema.and(
-      z.any().openapi({ description: ' The name of the Elastic Inference Accelerator type. ' }),
-    ).exactOptional(),
-    locationType: LocationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The location type for the offering. It can assume the following values: region: defines that the offering is at the regional level. availability-zone: defines that the offering is at the availability zone level. availability-zone-id: defines that the offering is at the availability zone level, defined by the availability zone id. ',
-        }),
-    ).exactOptional(),
-    location: LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The location for the offering. It will return either the region, availability zone or availability zone id for the offering depending on the locationType value. ',
-        }),
-    ).exactOptional(),
+    acceleratorType: AcceleratorTypeNameSchema.exactOptional().openapi({
+      description: ' The name of the Elastic Inference Accelerator type. ',
+    }),
+    locationType: LocationTypeSchema.exactOptional().openapi({
+      description:
+        ' The location type for the offering. It can assume the following values: region: defines that the offering is at the regional level. availability-zone: defines that the offering is at the availability zone level. availability-zone-id: defines that the offering is at the availability zone level, defined by the availability zone id. ',
+    }),
+    location: LocationSchema.exactOptional().openapi({
+      description:
+        ' The location for the offering. It will return either the region, availability zone or availability zone id for the offering depending on the locationType value. ',
+    }),
   })
   .openapi({
     description: ' The offering for an Elastic Inference Accelerator type. ',
@@ -49,13 +41,9 @@ const AcceleratorTypeOfferingListSchema = z
 
 const DescribeAcceleratorOfferingsResponseSchema = z
   .object({
-    acceleratorTypeOfferings: AcceleratorTypeOfferingListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The list of accelerator type offerings for a specific location. ',
-        }),
-    ).exactOptional(),
+    acceleratorTypeOfferings: AcceleratorTypeOfferingListSchema.exactOptional().openapi({
+      description: ' The list of accelerator type offerings for a specific location. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAcceleratorOfferingsResponse')
@@ -70,13 +58,9 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const MemoryInfoSchema = z
   .object({
-    sizeInMiB: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The size in mebibytes of the Elastic Inference Accelerator type. ',
-        }),
-    ).exactOptional(),
+    sizeInMiB: IntegerSchema.exactOptional().openapi({
+      description: ' The size in mebibytes of the Elastic Inference Accelerator type. ',
+    }),
   })
   .openapi({
     description: ' The memory information of an Elastic Inference Accelerator type. ',
@@ -90,21 +74,13 @@ const ValueSchema = z.int().openapi('Value')
 
 const KeyValuePairSchema = z
   .object({
-    key: KeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The throughput value of the Elastic Inference Accelerator type. It can assume the following values: TFLOPS16bit: the throughput expressed in 16bit TeraFLOPS. TFLOPS32bit: the throughput expressed in 32bit TeraFLOPS. ',
-        }),
-    ).exactOptional(),
-    value: ValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The throughput value of the Elastic Inference Accelerator type. ',
-        }),
-    ).exactOptional(),
+    key: KeySchema.exactOptional().openapi({
+      description:
+        ' The throughput value of the Elastic Inference Accelerator type. It can assume the following values: TFLOPS16bit: the throughput expressed in 16bit TeraFLOPS. TFLOPS32bit: the throughput expressed in 32bit TeraFLOPS. ',
+    }),
+    value: ValueSchema.exactOptional().openapi({
+      description: ' The throughput value of the Elastic Inference Accelerator type. ',
+    }),
   })
   .openapi({
     description: ' A throughput entry for an Elastic Inference Accelerator type. ',
@@ -120,23 +96,15 @@ const ThroughputInfoListSchema = z
 
 const AcceleratorTypeSchema = z
   .object({
-    acceleratorTypeName: AcceleratorTypeNameSchema.and(
-      z.any().openapi({ description: ' The name of the Elastic Inference Accelerator type. ' }),
-    ).exactOptional(),
-    memoryInfo: MemoryInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The memory information of the Elastic Inference Accelerator type. ',
-        }),
-    ).exactOptional(),
-    throughputInfo: ThroughputInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The throughput information of the Elastic Inference Accelerator type. ',
-        }),
-    ).exactOptional(),
+    acceleratorTypeName: AcceleratorTypeNameSchema.exactOptional().openapi({
+      description: ' The name of the Elastic Inference Accelerator type. ',
+    }),
+    memoryInfo: MemoryInfoSchema.exactOptional().openapi({
+      description: ' The memory information of the Elastic Inference Accelerator type. ',
+    }),
+    throughputInfo: ThroughputInfoListSchema.exactOptional().openapi({
+      description: ' The throughput information of the Elastic Inference Accelerator type. ',
+    }),
   })
   .openapi({ description: ' The details of an Elastic Inference Accelerator type. ', required: [] })
   .openapi('AcceleratorType')
@@ -149,9 +117,9 @@ const AcceleratorTypeListSchema = z
 
 const DescribeAcceleratorTypesResponseSchema = z
   .object({
-    acceleratorTypes: AcceleratorTypeListSchema.and(
-      z.any().openapi({ description: ' The available accelerator types. ' }),
-    ).exactOptional(),
+    acceleratorTypes: AcceleratorTypeListSchema.exactOptional().openapi({
+      description: ' The available accelerator types. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAcceleratorTypesResponse')
@@ -160,9 +128,9 @@ const AcceleratorHealthStatusSchema = z.string().min(1).max(256).openapi('Accele
 
 const ElasticInferenceAcceleratorHealthSchema = z
   .object({
-    status: AcceleratorHealthStatusSchema.and(
-      z.any().openapi({ description: ' The health status of the Elastic Inference Accelerator. ' }),
-    ).exactOptional(),
+    status: AcceleratorHealthStatusSchema.exactOptional().openapi({
+      description: ' The health status of the Elastic Inference Accelerator. ',
+    }),
   })
   .openapi({
     description: ' The health details of an Elastic Inference Accelerator. ',
@@ -183,31 +151,22 @@ const ResourceArnSchema = z.string().min(1).max(1283).openapi('ResourceArn')
 
 const ElasticInferenceAcceleratorSchema = z
   .object({
-    acceleratorHealth: ElasticInferenceAcceleratorHealthSchema.and(
-      z.any().openapi({ description: ' The health of the Elastic Inference Accelerator. ' }),
-    ).exactOptional(),
-    acceleratorType: AcceleratorTypeNameSchema.and(
-      z.any().openapi({ description: ' The type of the Elastic Inference Accelerator. ' }),
-    ).exactOptional(),
-    acceleratorId: AcceleratorIdSchema.and(
-      z.any().openapi({ description: ' The ID of the Elastic Inference Accelerator. ' }),
-    ).exactOptional(),
-    availabilityZone: AvailabilityZoneSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The availability zone where the Elastic Inference Accelerator is present. ',
-        }),
-    ).exactOptional(),
-    attachedResource: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ARN of the resource that the Elastic Inference Accelerator is attached to. ',
-        }),
-    ).exactOptional(),
+    acceleratorHealth: ElasticInferenceAcceleratorHealthSchema.exactOptional().openapi({
+      description: ' The health of the Elastic Inference Accelerator. ',
+    }),
+    acceleratorType: AcceleratorTypeNameSchema.exactOptional().openapi({
+      description: ' The type of the Elastic Inference Accelerator. ',
+    }),
+    acceleratorId: AcceleratorIdSchema.exactOptional().openapi({
+      description: ' The ID of the Elastic Inference Accelerator. ',
+    }),
+    availabilityZone: AvailabilityZoneSchema.exactOptional().openapi({
+      description: ' The availability zone where the Elastic Inference Accelerator is present. ',
+    }),
+    attachedResource: ResourceArnSchema.exactOptional().openapi({
+      description:
+        ' The ARN of the resource that the Elastic Inference Accelerator is attached to. ',
+    }),
   })
   .openapi({ description: ' The details of an Elastic Inference Accelerator. ', required: [] })
   .openapi('ElasticInferenceAccelerator')
@@ -225,17 +184,13 @@ const NextTokenSchema = z
 
 const DescribeAcceleratorsResponseSchema = z
   .object({
-    acceleratorSet: ElasticInferenceAcceleratorSetSchema.and(
-      z.any().openapi({ description: ' The details of the Elastic Inference Accelerators. ' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A token to specify where to start paginating. This is the NextToken from a previously truncated response. ',
-        }),
-    ).exactOptional(),
+    acceleratorSet: ElasticInferenceAcceleratorSetSchema.exactOptional().openapi({
+      description: ' The details of the Elastic Inference Accelerators. ',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A token to specify where to start paginating. This is the NextToken from a previously truncated response. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAcceleratorsResponse')
@@ -248,21 +203,13 @@ const ValueStringListSchema = z.array(StringSchema).min(0).max(100).openapi('Val
 
 const FilterSchema = z
   .object({
-    name: FilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The filter name for the Elastic Inference Accelerator list. It can assume the following values: accelerator-type: the type of Elastic Inference Accelerator to filter for. instance-id: an EC2 instance id to filter for. ',
-        }),
-    ).exactOptional(),
-    values: ValueStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The values for the filter of the Elastic Inference Accelerator list. ',
-        }),
-    ).exactOptional(),
+    name: FilterNameSchema.exactOptional().openapi({
+      description:
+        ' The filter name for the Elastic Inference Accelerator list. It can assume the following values: accelerator-type: the type of Elastic Inference Accelerator to filter for. instance-id: an EC2 instance id to filter for. ',
+    }),
+    values: ValueStringListSchema.exactOptional().openapi({
+      description: ' The values for the filter of the Elastic Inference Accelerator list. ',
+    }),
   })
   .openapi({
     description: ' A filter expression for the Elastic Inference Accelerator list. ',
@@ -280,16 +227,16 @@ const TagMapSchema = z
 
 const ListTagsForResourceResultSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: ' The tags of the Elastic Inference Accelerator. ' }),
-    ).exactOptional(),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: ' The tags of the Elastic Inference Accelerator. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResult')
 
-const TagResourceResultSchema = z.object({}).openapi('TagResourceResult')
+const TagResourceResultSchema = z.looseObject({}).openapi('TagResourceResult')
 
-const UntagResourceResultSchema = z.object({}).openapi('UntagResourceResult')
+const UntagResourceResultSchema = z.looseObject({}).openapi('UntagResourceResult')
 
 const TagKeySchema = z.string().regex(/^\S$/).min(1).max(128).openapi('TagKey')
 
@@ -307,23 +254,19 @@ const AcceleratorTypeNameListSchema = z
 
 const DescribeAcceleratorOfferingsRequestSchema = z
   .object({
-    locationType: LocationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The location type that you want to describe accelerator type offerings for. It can assume the following values: region: will return the accelerator type offering at the regional level. availability-zone: will return the accelerator type offering at the availability zone level. availability-zone-id: will return the accelerator type offering at the availability zone level returning the availability zone id. ',
-        }),
-    ),
-    acceleratorTypes: AcceleratorTypeNameListSchema.and(
-      z.any().openapi({ description: ' The list of accelerator types to describe. ' }),
-    ).exactOptional(),
+    locationType: LocationTypeSchema.openapi({
+      description:
+        ' The location type that you want to describe accelerator type offerings for. It can assume the following values: region: will return the accelerator type offering at the regional level. availability-zone: will return the accelerator type offering at the availability zone level. availability-zone-id: will return the accelerator type offering at the availability zone level returning the availability zone id. ',
+    }),
+    acceleratorTypes: AcceleratorTypeNameListSchema.exactOptional().openapi({
+      description: ' The list of accelerator types to describe. ',
+    }),
   })
   .openapi({ required: ['locationType'], title: 'DescribeAcceleratorOfferingsRequest' })
   .openapi('DescribeAcceleratorOfferingsRequest')
 
 const DescribeAcceleratorTypesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAcceleratorTypesRequest' })
   .openapi('DescribeAcceleratorTypesRequest')
 
@@ -333,33 +276,21 @@ const MaxResultsSchema = z.int().min(0).max(100).openapi('MaxResults')
 
 const DescribeAcceleratorsRequestSchema = z
   .object({
-    acceleratorIds: AcceleratorIdListSchema.and(
-      z.any().openapi({ description: ' The IDs of the accelerators to describe. ' }),
-    ).exactOptional(),
-    filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' One or more filters. Filter names and values are case-sensitive. Valid filter names are: accelerator-types: can provide a list of accelerator type names to filter for. instance-id: can provide a list of EC2 instance ids to filter for. ',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The total number of items to return in the command's output. If the total number of items available is more than the value specified, a NextToken is provided in the command's output. To resume pagination, provide the NextToken value in the starting-token argument of a subsequent command. Do not use the NextToken response element directly outside of the AWS CLI. ",
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A token to specify where to start paginating. This is the NextToken from a previously truncated response. ',
-        }),
-    ).exactOptional(),
+    acceleratorIds: AcceleratorIdListSchema.exactOptional().openapi({
+      description: ' The IDs of the accelerators to describe. ',
+    }),
+    filters: FilterListSchema.exactOptional().openapi({
+      description:
+        ' One or more filters. Filter names and values are case-sensitive. Valid filter names are: accelerator-types: can provide a list of accelerator type names to filter for. instance-id: can provide a list of EC2 instance ids to filter for. ',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        " The total number of items to return in the command's output. If the total number of items available is more than the value specified, a NextToken is provided in the command's output. To resume pagination, provide the NextToken value in the starting-token argument of a subsequent command. Do not use the NextToken response element directly outside of the AWS CLI. ",
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A token to specify where to start paginating. This is the NextToken from a previously truncated response. ',
+    }),
   })
   .openapi({ title: 'DescribeAcceleratorsRequest', required: [] })
   .openapi('DescribeAcceleratorsRequest')
@@ -374,7 +305,7 @@ const ResourceARNSchema = z
   .openapi('ResourceARN')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -382,15 +313,15 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyLis
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: ' The tags to add to the Elastic Inference Accelerator. ' }),
-    ),
+    tags: TagMapSchema.openapi({
+      description: ' The tags to add to the Elastic Inference Accelerator. ',
+    }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 

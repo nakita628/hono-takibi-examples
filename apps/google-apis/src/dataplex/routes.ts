@@ -1,101 +1,853 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const GoogleCloudDataplexV1SchemaSchemaFieldSchema: z.ZodType<GoogleCloudDataplexV1SchemaSchemaFieldType> =
-  z
-    .lazy(() =>
-      z
-        .object({
-          description: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Optional. User friendly field description. Must be less than or equal to 1024 characters.',
-            }),
-          fields: z
-            .array(GoogleCloudDataplexV1SchemaSchemaFieldSchema)
-            .exactOptional()
-            .openapi({ description: 'Optional. Any nested field for complex types.' }),
-          mode: z
-            .enum(['MODE_UNSPECIFIED', 'REQUIRED', 'NULLABLE', 'REPEATED'])
-            .exactOptional()
-            .openapi({ description: 'Required. Additional field semantics.' }),
-          name: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Required. The name of the field. Must contain only letters, numbers and underscores, with a maximum length of 767 characters, and must begin with a letter or underscore.',
-            }),
-          type: z
-            .enum([
-              'TYPE_UNSPECIFIED',
-              'BOOLEAN',
-              'BYTE',
-              'INT16',
-              'INT32',
-              'INT64',
-              'FLOAT',
-              'DOUBLE',
-              'DECIMAL',
-              'STRING',
-              'BINARY',
-              'TIMESTAMP',
-              'DATE',
-              'TIME',
-              'RECORD',
-              'NULL',
-            ])
-            .exactOptional()
-            .openapi({ description: 'Required. The type of field.' }),
-        })
-        .openapi({ description: 'Represents a column field within a table schema.', required: [] }),
-    )
-    .openapi('GoogleCloudDataplexV1SchemaSchemaField')
-
-const GoogleCloudDataplexV1SchemaPartitionFieldSchema = z
+const GoogleCloudDataplexV1DataSourceSchema = z
   .object({
+    entity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. The Dataplex entity that represents the data source (e.g. BigQuery table) for DataScan, of the form: projects/{project_number}/locations/{location_id}/lakes/{lake_id}/zones/{zone_id}/entities/{entity_id}.',
+      }),
+    resource: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. The service-qualified full resource name of the cloud resource for a DataScan job to scan against. The field could be: BigQuery table of type "TABLE" for DataProfileScan/DataQualityScan Format: //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID',
+      }),
+  })
+  .openapi({ description: 'The data source for DataScan.', required: [] })
+  .openapi('GoogleCloudDataplexV1DataSource')
+
+const GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoDoubleFieldInfoSchema = z
+  .object({
+    average: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Average of non-null values in the scanned data. NaN, if the field has a NaN.',
+      }),
+    max: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Maximum of non-null values in the scanned data. NaN, if the field has a NaN.',
+      }),
+    min: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Minimum of non-null values in the scanned data. NaN, if the field has a NaN.',
+      }),
+    quartiles: z
+      .array(z.float64())
+      .exactOptional()
+      .openapi({
+        description:
+          'A quartile divides the number of data points into four parts, or quarters, of more-or-less equal size. Three main quartiles used are: The first quartile (Q1) splits off the lowest 25% of data from the highest 75%. It is also known as the lower or 25th empirical quartile, as 25% of the data is below this point. The second quartile (Q2) is the median of a data set. So, 50% of the data lies below this point. The third quartile (Q3) splits off the highest 25% of data from the lowest 75%. It is known as the upper or 75th empirical quartile, as 75% of the data lies below this point. Here, the quartiles is provided as an ordered list of quartile values for the scanned data, occurring in order Q1, median, Q3.',
+      }),
+    standardDeviation: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Standard deviation of non-null values in the scanned data. NaN, if the field has a NaN.',
+      }),
+  })
+  .openapi({ description: 'The profile information for a double type field.', required: [] })
+  .openapi('GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoDoubleFieldInfo')
+
+const GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoIntegerFieldInfoSchema = z
+  .object({
+    average: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description: 'Average of non-null values in the scanned data. NaN, if the field has a NaN.',
+      }),
+    max: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Maximum of non-null values in the scanned data. NaN, if the field has a NaN.',
+      }),
+    min: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Minimum of non-null values in the scanned data. NaN, if the field has a NaN.',
+      }),
+    quartiles: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A quartile divides the number of data points into four parts, or quarters, of more-or-less equal size. Three main quartiles used are: The first quartile (Q1) splits off the lowest 25% of data from the highest 75%. It is also known as the lower or 25th empirical quartile, as 25% of the data is below this point. The second quartile (Q2) is the median of a data set. So, 50% of the data lies below this point. The third quartile (Q3) splits off the highest 25% of data from the lowest 75%. It is known as the upper or 75th empirical quartile, as 75% of the data lies below this point. Here, the quartiles is provided as an ordered list of quartile values for the scanned data, occurring in order Q1, median, Q3.',
+      }),
+    standardDeviation: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Standard deviation of non-null values in the scanned data. NaN, if the field has a NaN.',
+      }),
+  })
+  .openapi({ description: 'The profile information for an integer type field.', required: [] })
+  .openapi('GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoIntegerFieldInfo')
+
+const GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoStringFieldInfoSchema = z
+  .object({
+    averageLength: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Average length of non-null values in the scanned data.' }),
+    maxLength: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Maximum length of non-null values in the scanned data.' }),
+    minLength: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Minimum length of non-null values in the scanned data.' }),
+  })
+  .openapi({ description: 'The profile information for a string type field.', required: [] })
+  .openapi('GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoStringFieldInfo')
+
+const GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoTopNValueSchema = z
+  .object({
+    count: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Count of the corresponding value in the scanned data.' }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'String value of a top N non-null value.' }),
+  })
+  .openapi({ description: 'Top N non-null values in the scanned data.', required: [] })
+  .openapi('GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoTopNValue')
+
+const GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoSchema = z
+  .object({
+    distinctRatio: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Ratio of rows with distinct values against total scanned rows. Not available for complex non-groupable field type RECORD and fields with REPEATABLE mode.',
+      }),
+    doubleProfile:
+      GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoDoubleFieldInfoSchema.exactOptional().openapi(
+        { description: 'Double type field information.' },
+      ),
+    integerProfile:
+      GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoIntegerFieldInfoSchema.exactOptional().openapi(
+        { description: 'Integer type field information.' },
+      ),
+    nullRatio: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Ratio of rows with null value against total scanned rows.' }),
+    stringProfile:
+      GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoStringFieldInfoSchema.exactOptional().openapi(
+        { description: 'String type field information.' },
+      ),
+    topNValues: z
+      .array(GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoTopNValueSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of top N non-null values and number of times they occur in the scanned data. N is 10 or equal to the number of distinct values in the field, whichever is smaller. Not available for complex non-groupable field type RECORD and fields with REPEATABLE mode.',
+      }),
+  })
+  .openapi({ description: 'The profile information for each field type.', required: [] })
+  .openapi('GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfo')
+
+const GoogleCloudDataplexV1DataProfileResultProfileFieldSchema = z
+  .object({
+    mode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The mode of the field. Possible values include: REQUIRED, if it is a required field. NULLABLE, if it is an optional field. REPEATED, if it is a repeated field.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the field.' }),
+    profile:
+      GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoSchema.exactOptional().openapi({
+        description: 'Profile information for the corresponding field.',
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The data type retrieved from the schema of the data source. For instance, for a BigQuery native table, it is the BigQuery Table Schema (https://cloud.google.com/bigquery/docs/reference/rest/v2/tables#tablefieldschema). For a Dataplex Entity, it is the Entity Schema (https://cloud.google.com/dataplex/docs/reference/rpc/google.cloud.dataplex.v1#type_3).',
+      }),
+  })
+  .openapi({ description: 'A field within a table.', required: [] })
+  .openapi('GoogleCloudDataplexV1DataProfileResultProfileField')
+
+const GoogleCloudDataplexV1DataProfileResultProfileSchema = z
+  .object({
+    fields: z
+      .array(GoogleCloudDataplexV1DataProfileResultProfileFieldSchema)
+      .exactOptional()
+      .openapi({
+        description: 'List of fields with structural and profile information for each field.',
+      }),
+  })
+  .openapi({
+    description: 'Contains name, type, mode and field type specific profile information.',
+    required: [],
+  })
+  .openapi('GoogleCloudDataplexV1DataProfileResultProfile')
+
+const GoogleCloudDataplexV1ScannedDataIncrementalFieldSchema = z
+  .object({
+    end: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Value that marks the end of the range.' }),
+    field: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The field that contains values which monotonically increases over time (e.g. a timestamp column).',
+      }),
+    start: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Value that marks the start of the range.' }),
+  })
+  .openapi({
+    description: 'A data range denoted by a pair of start/end values of a field.',
+    required: [],
+  })
+  .openapi('GoogleCloudDataplexV1ScannedDataIncrementalField')
+
+const GoogleCloudDataplexV1ScannedDataSchema = z
+  .object({
+    incrementalField:
+      GoogleCloudDataplexV1ScannedDataIncrementalFieldSchema.exactOptional().openapi({
+        description: 'The range denoted by values of an incremental field',
+      }),
+  })
+  .openapi({
+    description: 'The data scanned during processing (e.g. in incremental DataScan)',
+    required: [],
+  })
+  .openapi('GoogleCloudDataplexV1ScannedData')
+
+const GoogleCloudDataplexV1DataProfileResultSchema = z
+  .object({
+    profile: GoogleCloudDataplexV1DataProfileResultProfileSchema.exactOptional().openapi({
+      description: 'The profile information per field.',
+    }),
+    rowCount: z.string().exactOptional().openapi({ description: 'The count of rows scanned.' }),
+    scannedData: GoogleCloudDataplexV1ScannedDataSchema.exactOptional().openapi({
+      description: 'The data scanned for this result.',
+    }),
+  })
+  .openapi({
+    description:
+      'DataProfileResult defines the output of DataProfileScan. Each field of the table will have field type specific profile result.',
+    required: [],
+  })
+  .openapi('GoogleCloudDataplexV1DataProfileResult')
+
+const GoogleCloudDataplexV1DataProfileSpecSchema = z
+  .looseObject({})
+  .openapi({ description: 'DataProfileScan related setting.' })
+  .openapi('GoogleCloudDataplexV1DataProfileSpec')
+
+const GoogleCloudDataplexV1DataQualityDimensionResultSchema = z
+  .object({
+    passed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the dimension passed or failed.' }),
+  })
+  .openapi({
+    description:
+      'DataQualityDimensionResult provides a more detailed, per-dimension view of the results.',
+    required: [],
+  })
+  .openapi('GoogleCloudDataplexV1DataQualityDimensionResult')
+
+const GoogleCloudDataplexV1DataQualityRuleNonNullExpectationSchema = z
+  .looseObject({})
+  .openapi({ description: 'Evaluates whether each column value is null.' })
+  .openapi('GoogleCloudDataplexV1DataQualityRuleNonNullExpectation')
+
+const GoogleCloudDataplexV1DataQualityRuleRangeExpectationSchema = z
+  .object({
+    maxValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The maximum column value allowed for a row to pass this validation. At least one of min_value and max_value need to be provided.',
+      }),
+    minValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The minimum column value allowed for a row to pass this validation. At least one of min_value and max_value need to be provided.',
+      }),
+    strictMaxEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. Whether each value needs to be strictly lesser than ('<') the maximum, or if equality is allowed.Only relevant if a max_value has been defined. Default = false.",
+      }),
+    strictMinEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. Whether each value needs to be strictly greater than ('>') the minimum, or if equality is allowed.Only relevant if a min_value has been defined. Default = false.",
+      }),
+  })
+  .openapi({
+    description: 'Evaluates whether each column value lies between a specified range.',
+    required: [],
+  })
+  .openapi('GoogleCloudDataplexV1DataQualityRuleRangeExpectation')
+
+const GoogleCloudDataplexV1DataQualityRuleRegexExpectationSchema = z
+  .object({
+    regex: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A regular expression the column value is expected to match.' }),
+  })
+  .openapi({
+    description: 'Evaluates whether each column value matches a specified regex.',
+    required: [],
+  })
+  .openapi('GoogleCloudDataplexV1DataQualityRuleRegexExpectation')
+
+const GoogleCloudDataplexV1DataQualityRuleRowConditionExpectationSchema = z
+  .object({
+    sqlExpression: z.string().exactOptional().openapi({ description: 'The SQL expression.' }),
+  })
+  .openapi({
+    description:
+      'Evaluates whether each row passes the specified condition.The SQL expression needs to use BigQuery standard SQL syntax and should produce a boolean value per row as the result.Example: col1 >= 0 AND col2 < 10',
+    required: [],
+  })
+  .openapi('GoogleCloudDataplexV1DataQualityRuleRowConditionExpectation')
+
+const GoogleCloudDataplexV1DataQualityRuleSetExpectationSchema = z
+  .object({
+    values: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Expected values for the column value.' }),
+  })
+  .openapi({
+    description: 'Evaluates whether each column value is contained by a specified set.',
+    required: [],
+  })
+  .openapi('GoogleCloudDataplexV1DataQualityRuleSetExpectation')
+
+const GoogleCloudDataplexV1DataQualityRuleStatisticRangeExpectationSchema = z
+  .object({
+    maxValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum column statistic value allowed for a row to pass this validation.At least one of min_value and max_value need to be provided.',
+      }),
+    minValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The minimum column statistic value allowed for a row to pass this validation.At least one of min_value and max_value need to be provided.',
+      }),
+    statistic: z
+      .enum(['STATISTIC_UNDEFINED', 'MEAN', 'MIN', 'MAX'])
+      .exactOptional()
+      .openapi({ description: 'The aggregate metric to evaluate.' }),
+    strictMaxEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether column statistic needs to be strictly lesser than ('<') the maximum, or if equality is allowed.Only relevant if a max_value has been defined. Default = false.",
+      }),
+    strictMinEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether column statistic needs to be strictly greater than ('>') the minimum, or if equality is allowed.Only relevant if a min_value has been defined. Default = false.",
+      }),
+  })
+  .openapi({
+    description: 'Evaluates whether the column aggregate statistic lies between a specified range.',
+    required: [],
+  })
+  .openapi('GoogleCloudDataplexV1DataQualityRuleStatisticRangeExpectation')
+
+const GoogleCloudDataplexV1DataQualityRuleTableConditionExpectationSchema = z
+  .object({
+    sqlExpression: z.string().exactOptional().openapi({ description: 'The SQL expression.' }),
+  })
+  .openapi({
+    description:
+      'Evaluates whether the provided expression is true.The SQL expression needs to use BigQuery standard SQL syntax and should produce a scalar boolean result.Example: MIN(col1) >= 0',
+    required: [],
+  })
+  .openapi('GoogleCloudDataplexV1DataQualityRuleTableConditionExpectation')
+
+const GoogleCloudDataplexV1DataQualityRuleUniquenessExpectationSchema = z
+  .looseObject({})
+  .openapi({ description: 'Evaluates whether the column has duplicates.' })
+  .openapi('GoogleCloudDataplexV1DataQualityRuleUniquenessExpectation')
+
+const GoogleCloudDataplexV1DataQualityRuleSchema = z
+  .object({
+    column: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. The unnested column which this rule is evaluated against.',
+      }),
+    dimension: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The dimension a rule belongs to. Results are also aggregated at the dimension level. Supported dimensions are "COMPLETENESS", "ACCURACY", "CONSISTENCY", "VALIDITY", "UNIQUENESS", "INTEGRITY"',
+      }),
+    ignoreNull: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Rows with null values will automatically fail a rule, unless ignore_null is true. In that case, such null rows are trivially considered passing.Only applicable to ColumnMap rules.',
+      }),
+    nonNullExpectation:
+      GoogleCloudDataplexV1DataQualityRuleNonNullExpectationSchema.exactOptional().openapi({
+        description: 'ColumnMap rule which evaluates whether each column value is null.',
+      }),
+    rangeExpectation:
+      GoogleCloudDataplexV1DataQualityRuleRangeExpectationSchema.exactOptional().openapi({
+        description:
+          'ColumnMap rule which evaluates whether each column value lies between a specified range.',
+      }),
+    regexExpectation:
+      GoogleCloudDataplexV1DataQualityRuleRegexExpectationSchema.exactOptional().openapi({
+        description:
+          'ColumnMap rule which evaluates whether each column value matches a specified regex.',
+      }),
+    rowConditionExpectation:
+      GoogleCloudDataplexV1DataQualityRuleRowConditionExpectationSchema.exactOptional().openapi({
+        description: 'Table rule which evaluates whether each row passes the specified condition.',
+      }),
+    setExpectation:
+      GoogleCloudDataplexV1DataQualityRuleSetExpectationSchema.exactOptional().openapi({
+        description:
+          'ColumnMap rule which evaluates whether each column value is contained by a specified set.',
+      }),
+    statisticRangeExpectation:
+      GoogleCloudDataplexV1DataQualityRuleStatisticRangeExpectationSchema.exactOptional().openapi({
+        description:
+          'ColumnAggregate rule which evaluates whether the column aggregate statistic lies between a specified range.',
+      }),
+    tableConditionExpectation:
+      GoogleCloudDataplexV1DataQualityRuleTableConditionExpectationSchema.exactOptional().openapi({
+        description: 'Table rule which evaluates whether the provided expression is true.',
+      }),
+    threshold: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The minimum ratio of passing_rows / total_rows required to pass this rule, with a range of 0.0, 1.0.0 indicates default value (i.e. 1.0).',
+      }),
+    uniquenessExpectation:
+      GoogleCloudDataplexV1DataQualityRuleUniquenessExpectationSchema.exactOptional().openapi({
+        description: 'ColumnAggregate rule which evaluates whether the column has duplicates.',
+      }),
+  })
+  .openapi({
+    description: 'A rule captures data quality intent about a data source.',
+    required: [],
+  })
+  .openapi('GoogleCloudDataplexV1DataQualityRule')
+
+const GoogleCloudDataplexV1DataQualityRuleResultSchema = z
+  .object({
+    evaluatedCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of rows a rule was evaluated against. This field is only valid for ColumnMap type rules.Evaluated count can be configured to either include all rows (default) - with null rows automatically failing rule evaluation, or exclude null rows from the evaluated_count, by setting ignore_nulls = true.',
+      }),
+    failingRowsQuery: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The query to find rows that did not pass this rule. Only applies to ColumnMap and RowCondition rules.',
+      }),
+    nullCount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The number of rows with null values in the specified column.' }),
+    passRatio: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ratio of passed_count / evaluated_count. This field is only valid for ColumnMap type rules.',
+      }),
+    passed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the rule passed or failed.' }),
+    passedCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of rows which passed a rule evaluation. This field is only valid for ColumnMap type rules.',
+      }),
+    rule: GoogleCloudDataplexV1DataQualityRuleSchema.exactOptional().openapi({
+      description: 'The rule specified in the DataQualitySpec, as is.',
+    }),
+  })
+  .openapi({
+    description: 'DataQualityRuleResult provides a more detailed, per-rule view of the results.',
+    required: [],
+  })
+  .openapi('GoogleCloudDataplexV1DataQualityRuleResult')
+
+const GoogleCloudDataplexV1DataQualityResultSchema = z
+  .object({
+    dimensions: z
+      .array(GoogleCloudDataplexV1DataQualityDimensionResultSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of results at the dimension level.' }),
+    passed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Overall data quality result -- true if all rules passed.' }),
+    rowCount: z.string().exactOptional().openapi({ description: 'The count of rows processed.' }),
+    rules: z
+      .array(GoogleCloudDataplexV1DataQualityRuleResultSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of all the rules in a job, and their results.' }),
+    scannedData: GoogleCloudDataplexV1ScannedDataSchema.exactOptional().openapi({
+      description: 'The data scanned for this result.',
+    }),
+  })
+  .openapi({ description: 'The output of a DataQualityScan.', required: [] })
+  .openapi('GoogleCloudDataplexV1DataQualityResult')
+
+const GoogleCloudDataplexV1DataQualitySpecSchema = z
+  .object({
+    rules: z
+      .array(GoogleCloudDataplexV1DataQualityRuleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of rules to evaluate against a data source. At least one rule is required.',
+      }),
+  })
+  .openapi({ description: 'DataQualityScan related setting.', required: [] })
+  .openapi('GoogleCloudDataplexV1DataQualitySpec')
+
+const GoogleCloudDataplexV1TriggerOnDemandSchema = z
+  .looseObject({})
+  .openapi({ description: 'The scan runs once via RunDataScan API.' })
+  .openapi('GoogleCloudDataplexV1TriggerOnDemand')
+
+const GoogleCloudDataplexV1TriggerScheduleSchema = z
+  .object({
+    cron: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Cron (https://en.wikipedia.org/wiki/Cron) schedule for running scans periodically.To explicitly set a timezone in the cron tab, apply a prefix in the cron tab: "CRON_TZ=${IANA_TIME_ZONE}" or "TZ=${IANA_TIME_ZONE}". The ${IANA_TIME_ZONE} may only be a valid string from IANA time zone database (wikipedia (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)). For example, CRON_TZ=America/New_York 1 * * * *, or TZ=America/New_York 1 * * * *.This field is required for Schedule scans.',
+      }),
+  })
+  .openapi({ description: 'The scan is scheduled to run periodically.', required: [] })
+  .openapi('GoogleCloudDataplexV1TriggerSchedule')
+
+const GoogleCloudDataplexV1TriggerSchema = z
+  .object({
+    onDemand: GoogleCloudDataplexV1TriggerOnDemandSchema.exactOptional().openapi({
+      description: 'The scan runs once via RunDataScan API.',
+    }),
+    schedule: GoogleCloudDataplexV1TriggerScheduleSchema.exactOptional().openapi({
+      description: 'The scan is scheduled to run periodically.',
+    }),
+  })
+  .openapi({ description: 'DataScan scheduling and trigger settings.', required: [] })
+  .openapi('GoogleCloudDataplexV1Trigger')
+
+const GoogleCloudDataplexV1DataScanExecutionSpecSchema = z
+  .object({
+    field: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. The unnested field (of type Date or Timestamp) that contains values which monotonically increase over time.If not specified, a data scan will run for all data in the table.',
+      }),
+    trigger: GoogleCloudDataplexV1TriggerSchema.exactOptional().openapi({
+      description:
+        'Optional. Spec related to how often and when a scan should be triggered.If not specified, the default is OnDemand, which means the scan will not run until the user calls RunDataScan API.',
+    }),
+  })
+  .openapi({ description: 'DataScan execution settings.', required: [] })
+  .openapi('GoogleCloudDataplexV1DataScanExecutionSpec')
+
+const GoogleCloudDataplexV1DataScanExecutionStatusSchema = z
+  .object({
+    latestJobEndTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time when the latest DataScanJob ended.' }),
+    latestJobStartTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time when the latest DataScanJob started.' }),
+  })
+  .openapi({ description: 'Status of the data scan execution.', required: [] })
+  .openapi('GoogleCloudDataplexV1DataScanExecutionStatus')
+
+type GoogleCloudDataplexV1DataScanType = {
+  createTime?: string
+  data?: z.infer<typeof GoogleCloudDataplexV1DataSourceSchema>
+  dataProfileResult?: z.infer<typeof GoogleCloudDataplexV1DataProfileResultSchema>
+  dataProfileSpec?: z.infer<typeof GoogleCloudDataplexV1DataProfileSpecSchema>
+  dataQualityResult?: z.infer<typeof GoogleCloudDataplexV1DataQualityResultSchema>
+  dataQualitySpec?: z.infer<typeof GoogleCloudDataplexV1DataQualitySpecSchema>
+  description?: string
+  displayName?: string
+  executionSpec?: z.infer<typeof GoogleCloudDataplexV1DataScanExecutionSpecSchema>
+  executionStatus?: z.infer<typeof GoogleCloudDataplexV1DataScanExecutionStatusSchema>
+  labels?: { [key: string]: string }
+  name?: string
+  state?: 'STATE_UNSPECIFIED' | 'ACTIVE' | 'CREATING' | 'DELETING' | 'ACTION_REQUIRED'
+  type?: 'DATA_SCAN_TYPE_UNSPECIFIED' | 'DATA_QUALITY' | 'DATA_PROFILE'
+  uid?: string
+  updateTime?: string
+}
+
+type GoogleCloudDataplexV1DataScanJobType = {
+  dataProfileResult?: z.infer<typeof GoogleCloudDataplexV1DataProfileResultSchema>
+  dataProfileSpec?: z.infer<typeof GoogleCloudDataplexV1DataProfileSpecSchema>
+  dataQualityResult?: z.infer<typeof GoogleCloudDataplexV1DataQualityResultSchema>
+  dataQualitySpec?: z.infer<typeof GoogleCloudDataplexV1DataQualitySpecSchema>
+  endTime?: string
+  message?: string
+  name?: string
+  startTime?: string
+  state?:
+    | 'STATE_UNSPECIFIED'
+    | 'RUNNING'
+    | 'CANCELING'
+    | 'CANCELLED'
+    | 'SUCCEEDED'
+    | 'FAILED'
+    | 'PENDING'
+  type?: 'DATA_SCAN_TYPE_UNSPECIFIED' | 'DATA_QUALITY' | 'DATA_PROFILE'
+  uid?: string
+}
+
+const GoogleCloudDataplexV1DataScanJobSchema: z.ZodType<GoogleCloudDataplexV1DataScanJobType> = z
+  .object({
+    dataProfileResult: GoogleCloudDataplexV1DataProfileResultSchema.exactOptional().openapi({
+      description: 'Output only. The result of the data profile scan.',
+      readOnly: true,
+    }),
+    dataProfileSpec: GoogleCloudDataplexV1DataProfileSpecSchema.exactOptional().openapi({
+      description: 'Output only. DataProfileScan related setting.',
+      readOnly: true,
+    }),
+    dataQualityResult: GoogleCloudDataplexV1DataQualityResultSchema.exactOptional().openapi({
+      description: 'Output only. The result of the data quality scan.',
+      readOnly: true,
+    }),
+    dataQualitySpec: GoogleCloudDataplexV1DataQualitySpecSchema.exactOptional().openapi({
+      description: 'Output only. DataQualityScan related setting.',
+      readOnly: true,
+    }),
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time when the DataScanJob ended.',
+        readOnly: true,
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Additional information about the current state.',
+        readOnly: true,
+      }),
     name: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Required. Partition field name must consist of letters, numbers, and underscores only, with a maximum of length of 256 characters, and must begin with a letter or underscore..',
+          'Output only. The relative resource name of the DataScanJob, of the form: projects/{project}/locations/{location_id}/dataScans/{datascan_id}/jobs/{job_id}, where project refers to a project_id or project_number and location_id refers to a GCP region.',
+        readOnly: true,
       }),
-    type: z
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time when the DataScanJob was started.',
+        readOnly: true,
+      }),
+    state: z
       .enum([
-        'TYPE_UNSPECIFIED',
-        'BOOLEAN',
-        'BYTE',
-        'INT16',
-        'INT32',
-        'INT64',
-        'FLOAT',
-        'DOUBLE',
-        'DECIMAL',
-        'STRING',
-        'BINARY',
-        'TIMESTAMP',
-        'DATE',
-        'TIME',
-        'RECORD',
-        'NULL',
+        'STATE_UNSPECIFIED',
+        'RUNNING',
+        'CANCELING',
+        'CANCELLED',
+        'SUCCEEDED',
+        'FAILED',
+        'PENDING',
       ])
       .exactOptional()
-      .openapi({ description: 'Required. Immutable. The type of field.' }),
+      .openapi({
+        description: 'Output only. Execution state for the DataScanJob.',
+        readOnly: true,
+      }),
+    type: z
+      .enum(['DATA_SCAN_TYPE_UNSPECIFIED', 'DATA_QUALITY', 'DATA_PROFILE'])
+      .exactOptional()
+      .openapi({ description: 'Output only. The type of the parent DataScan.', readOnly: true }),
+    uid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. System generated globally unique ID for the DataScanJob.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'A DataScanJob represents an instance of DataScan execution.',
+    required: [],
+  })
+  .openapi('GoogleCloudDataplexV1DataScanJob')
+
+type GoogleCloudDataplexV1ListDataScanJobsResponseType = {
+  dataScanJobs?: z.infer<typeof GoogleCloudDataplexV1DataScanJobSchema>[]
+  nextPageToken?: string
+}
+
+const GoogleCloudDataplexV1DataScanSchema: z.ZodType<GoogleCloudDataplexV1DataScanType> = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The time when the scan was created.', readOnly: true }),
+    data: GoogleCloudDataplexV1DataSourceSchema.exactOptional().openapi({
+      description: 'Required. The data source for DataScan.',
+    }),
+    dataProfileResult: GoogleCloudDataplexV1DataProfileResultSchema.exactOptional().openapi({
+      description: 'Output only. The result of the data profile scan.',
+      readOnly: true,
+    }),
+    dataProfileSpec: GoogleCloudDataplexV1DataProfileSpecSchema.exactOptional().openapi({
+      description: 'DataProfileScan related setting.',
+    }),
+    dataQualityResult: GoogleCloudDataplexV1DataQualityResultSchema.exactOptional().openapi({
+      description: 'Output only. The result of the data quality scan.',
+      readOnly: true,
+    }),
+    dataQualitySpec: GoogleCloudDataplexV1DataQualitySpecSchema.exactOptional().openapi({
+      description: 'DataQualityScan related setting.',
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. Description of the scan. Must be between 1-1024 characters.',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. User friendly display name. Must be between 1-256 characters.',
+      }),
+    executionSpec: GoogleCloudDataplexV1DataScanExecutionSpecSchema.exactOptional().openapi({
+      description:
+        'Optional. DataScan execution settings.If not specified, the fields in it will use their default values.',
+    }),
+    executionStatus: GoogleCloudDataplexV1DataScanExecutionStatusSchema.exactOptional().openapi({
+      description: 'Output only. Status of the data scan execution.',
+      readOnly: true,
+    }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Optional. User-defined labels for the scan.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The relative resource name of the scan, of the form: projects/{project}/locations/{location_id}/dataScans/{datascan_id}, where project refers to a project_id or project_number and location_id refers to a GCP region.',
+        readOnly: true,
+      }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'ACTIVE', 'CREATING', 'DELETING', 'ACTION_REQUIRED'])
+      .exactOptional()
+      .openapi({ description: 'Output only. Current state of the DataScan.', readOnly: true }),
+    type: z
+      .enum(['DATA_SCAN_TYPE_UNSPECIFIED', 'DATA_QUALITY', 'DATA_PROFILE'])
+      .exactOptional()
+      .openapi({ description: 'Output only. The type of DataScan.', readOnly: true }),
+    uid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. System generated globally unique ID for the scan. This ID will be different if the scan is deleted and re-created with the same name.',
+        readOnly: true,
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time when the scan was last updated.',
+        readOnly: true,
+      }),
   })
   .openapi({
     description:
-      "Represents a key field within the entity's partition structure. You could have up to 20 partition fields, but only the first 10 partitions have the filtering ability due to performance consideration. Note: Partition fields are immutable.",
+      'Represents a user-visible job which provides the insights for the related data source.For example: Data Quality: generates queries based on the rules and runs against the data to get data quality check results. Data Profile: analyzes the data in table(s) and generates insights about the structure, content and relationships (such as null percent, cardinality, min/max/mean, etc).',
     required: [],
   })
-  .openapi('GoogleCloudDataplexV1SchemaPartitionField')
+  .openapi('GoogleCloudDataplexV1DataScan')
 
-type GoogleCloudDataplexV1SchemaType = {
-  fields?: z.infer<typeof GoogleCloudDataplexV1SchemaSchemaFieldSchema>[]
-  partitionFields?: z.infer<typeof GoogleCloudDataplexV1SchemaPartitionFieldSchema>[]
-  partitionStyle?: 'PARTITION_STYLE_UNSPECIFIED' | 'HIVE_COMPATIBLE'
-  userManaged?: boolean
+type GoogleCloudDataplexV1ListDataScansResponseType = {
+  dataScans?: z.infer<typeof GoogleCloudDataplexV1DataScanSchema>[]
+  nextPageToken?: string
+  unreachable?: string[]
+}
+
+type GoogleCloudDataplexV1RunDataScanResponseType = {
+  job?: z.infer<typeof GoogleCloudDataplexV1DataScanJobSchema>
 }
 
 type GoogleCloudDataplexV1SchemaSchemaFieldType = {
@@ -123,7 +875,7 @@ type GoogleCloudDataplexV1SchemaSchemaFieldType = {
 }
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); } ',
@@ -210,7 +962,7 @@ const GoogleCloudDataplexV1ActionInvalidDataFormatSchema = z
   .openapi('GoogleCloudDataplexV1ActionInvalidDataFormat')
 
 const GoogleCloudDataplexV1ActionInvalidDataOrganizationSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Action details for invalid data arrangement.' })
   .openapi('GoogleCloudDataplexV1ActionInvalidDataOrganization')
 
@@ -228,19 +980,19 @@ const GoogleCloudDataplexV1ActionInvalidDataPartitionSchema = z
   .openapi('GoogleCloudDataplexV1ActionInvalidDataPartition')
 
 const GoogleCloudDataplexV1ActionMissingDataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Action details for absence of data detected by discovery.' })
   .openapi('GoogleCloudDataplexV1ActionMissingData')
 
 const GoogleCloudDataplexV1ActionMissingResourceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Action details for resource references in assets that cannot be located.',
   })
   .openapi('GoogleCloudDataplexV1ActionMissingResource')
 
 const GoogleCloudDataplexV1ActionUnauthorizedResourceSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Action details for unauthorized resource issues raised to indicate that the service account associated with the lake instance is not authorized to access or manage the resource associated with an asset.',
@@ -657,7 +1409,7 @@ const GoogleCloudDataplexV1AssetStatusSchema = z
   .openapi('GoogleCloudDataplexV1AssetStatus')
 
 const GoogleCloudDataplexV1CancelJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Cancel task jobs.' })
   .openapi('GoogleCloudDataplexV1CancelJobRequest')
 
@@ -973,721 +1725,6 @@ const GoogleCloudDataplexV1DataAttributeBindingSchema = z
   })
   .openapi('GoogleCloudDataplexV1DataAttributeBinding')
 
-const GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoDoubleFieldInfoSchema = z
-  .object({
-    average: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Average of non-null values in the scanned data. NaN, if the field has a NaN.',
-      }),
-    max: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Maximum of non-null values in the scanned data. NaN, if the field has a NaN.',
-      }),
-    min: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Minimum of non-null values in the scanned data. NaN, if the field has a NaN.',
-      }),
-    quartiles: z
-      .array(z.float64())
-      .exactOptional()
-      .openapi({
-        description:
-          'A quartile divides the number of data points into four parts, or quarters, of more-or-less equal size. Three main quartiles used are: The first quartile (Q1) splits off the lowest 25% of data from the highest 75%. It is also known as the lower or 25th empirical quartile, as 25% of the data is below this point. The second quartile (Q2) is the median of a data set. So, 50% of the data lies below this point. The third quartile (Q3) splits off the highest 25% of data from the lowest 75%. It is known as the upper or 75th empirical quartile, as 75% of the data lies below this point. Here, the quartiles is provided as an ordered list of quartile values for the scanned data, occurring in order Q1, median, Q3.',
-      }),
-    standardDeviation: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Standard deviation of non-null values in the scanned data. NaN, if the field has a NaN.',
-      }),
-  })
-  .openapi({ description: 'The profile information for a double type field.', required: [] })
-  .openapi('GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoDoubleFieldInfo')
-
-const GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoIntegerFieldInfoSchema = z
-  .object({
-    average: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description: 'Average of non-null values in the scanned data. NaN, if the field has a NaN.',
-      }),
-    max: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Maximum of non-null values in the scanned data. NaN, if the field has a NaN.',
-      }),
-    min: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Minimum of non-null values in the scanned data. NaN, if the field has a NaN.',
-      }),
-    quartiles: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A quartile divides the number of data points into four parts, or quarters, of more-or-less equal size. Three main quartiles used are: The first quartile (Q1) splits off the lowest 25% of data from the highest 75%. It is also known as the lower or 25th empirical quartile, as 25% of the data is below this point. The second quartile (Q2) is the median of a data set. So, 50% of the data lies below this point. The third quartile (Q3) splits off the highest 25% of data from the lowest 75%. It is known as the upper or 75th empirical quartile, as 75% of the data lies below this point. Here, the quartiles is provided as an ordered list of quartile values for the scanned data, occurring in order Q1, median, Q3.',
-      }),
-    standardDeviation: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Standard deviation of non-null values in the scanned data. NaN, if the field has a NaN.',
-      }),
-  })
-  .openapi({ description: 'The profile information for an integer type field.', required: [] })
-  .openapi('GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoIntegerFieldInfo')
-
-const GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoStringFieldInfoSchema = z
-  .object({
-    averageLength: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Average length of non-null values in the scanned data.' }),
-    maxLength: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Maximum length of non-null values in the scanned data.' }),
-    minLength: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Minimum length of non-null values in the scanned data.' }),
-  })
-  .openapi({ description: 'The profile information for a string type field.', required: [] })
-  .openapi('GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoStringFieldInfo')
-
-const GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoTopNValueSchema = z
-  .object({
-    count: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Count of the corresponding value in the scanned data.' }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'String value of a top N non-null value.' }),
-  })
-  .openapi({ description: 'Top N non-null values in the scanned data.', required: [] })
-  .openapi('GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoTopNValue')
-
-const GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoSchema = z
-  .object({
-    distinctRatio: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Ratio of rows with distinct values against total scanned rows. Not available for complex non-groupable field type RECORD and fields with REPEATABLE mode.',
-      }),
-    doubleProfile:
-      GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoDoubleFieldInfoSchema.exactOptional().openapi(
-        { description: 'Double type field information.' },
-      ),
-    integerProfile:
-      GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoIntegerFieldInfoSchema.exactOptional().openapi(
-        { description: 'Integer type field information.' },
-      ),
-    nullRatio: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Ratio of rows with null value against total scanned rows.' }),
-    stringProfile:
-      GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoStringFieldInfoSchema.exactOptional().openapi(
-        { description: 'String type field information.' },
-      ),
-    topNValues: z
-      .array(GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoTopNValueSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of top N non-null values and number of times they occur in the scanned data. N is 10 or equal to the number of distinct values in the field, whichever is smaller. Not available for complex non-groupable field type RECORD and fields with REPEATABLE mode.',
-      }),
-  })
-  .openapi({ description: 'The profile information for each field type.', required: [] })
-  .openapi('GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfo')
-
-const GoogleCloudDataplexV1DataProfileResultProfileFieldSchema = z
-  .object({
-    mode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The mode of the field. Possible values include: REQUIRED, if it is a required field. NULLABLE, if it is an optional field. REPEATED, if it is a repeated field.',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the field.' }),
-    profile:
-      GoogleCloudDataplexV1DataProfileResultProfileFieldProfileInfoSchema.exactOptional().openapi({
-        description: 'Profile information for the corresponding field.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The data type retrieved from the schema of the data source. For instance, for a BigQuery native table, it is the BigQuery Table Schema (https://cloud.google.com/bigquery/docs/reference/rest/v2/tables#tablefieldschema). For a Dataplex Entity, it is the Entity Schema (https://cloud.google.com/dataplex/docs/reference/rpc/google.cloud.dataplex.v1#type_3).',
-      }),
-  })
-  .openapi({ description: 'A field within a table.', required: [] })
-  .openapi('GoogleCloudDataplexV1DataProfileResultProfileField')
-
-const GoogleCloudDataplexV1DataProfileResultProfileSchema = z
-  .object({
-    fields: z
-      .array(GoogleCloudDataplexV1DataProfileResultProfileFieldSchema)
-      .exactOptional()
-      .openapi({
-        description: 'List of fields with structural and profile information for each field.',
-      }),
-  })
-  .openapi({
-    description: 'Contains name, type, mode and field type specific profile information.',
-    required: [],
-  })
-  .openapi('GoogleCloudDataplexV1DataProfileResultProfile')
-
-const GoogleCloudDataplexV1ScannedDataIncrementalFieldSchema = z
-  .object({
-    end: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Value that marks the end of the range.' }),
-    field: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The field that contains values which monotonically increases over time (e.g. a timestamp column).',
-      }),
-    start: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Value that marks the start of the range.' }),
-  })
-  .openapi({
-    description: 'A data range denoted by a pair of start/end values of a field.',
-    required: [],
-  })
-  .openapi('GoogleCloudDataplexV1ScannedDataIncrementalField')
-
-const GoogleCloudDataplexV1ScannedDataSchema = z
-  .object({
-    incrementalField:
-      GoogleCloudDataplexV1ScannedDataIncrementalFieldSchema.exactOptional().openapi({
-        description: 'The range denoted by values of an incremental field',
-      }),
-  })
-  .openapi({
-    description: 'The data scanned during processing (e.g. in incremental DataScan)',
-    required: [],
-  })
-  .openapi('GoogleCloudDataplexV1ScannedData')
-
-const GoogleCloudDataplexV1DataProfileResultSchema = z
-  .object({
-    profile: GoogleCloudDataplexV1DataProfileResultProfileSchema.exactOptional().openapi({
-      description: 'The profile information per field.',
-    }),
-    rowCount: z.string().exactOptional().openapi({ description: 'The count of rows scanned.' }),
-    scannedData: GoogleCloudDataplexV1ScannedDataSchema.exactOptional().openapi({
-      description: 'The data scanned for this result.',
-    }),
-  })
-  .openapi({
-    description:
-      'DataProfileResult defines the output of DataProfileScan. Each field of the table will have field type specific profile result.',
-    required: [],
-  })
-  .openapi('GoogleCloudDataplexV1DataProfileResult')
-
-const GoogleCloudDataplexV1DataProfileSpecSchema = z
-  .object({})
-  .openapi({ description: 'DataProfileScan related setting.' })
-  .openapi('GoogleCloudDataplexV1DataProfileSpec')
-
-const GoogleCloudDataplexV1DataQualityDimensionResultSchema = z
-  .object({
-    passed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the dimension passed or failed.' }),
-  })
-  .openapi({
-    description:
-      'DataQualityDimensionResult provides a more detailed, per-dimension view of the results.',
-    required: [],
-  })
-  .openapi('GoogleCloudDataplexV1DataQualityDimensionResult')
-
-const GoogleCloudDataplexV1DataQualityRuleNonNullExpectationSchema = z
-  .object({})
-  .openapi({ description: 'Evaluates whether each column value is null.' })
-  .openapi('GoogleCloudDataplexV1DataQualityRuleNonNullExpectation')
-
-const GoogleCloudDataplexV1DataQualityRuleRangeExpectationSchema = z
-  .object({
-    maxValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The maximum column value allowed for a row to pass this validation. At least one of min_value and max_value need to be provided.',
-      }),
-    minValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The minimum column value allowed for a row to pass this validation. At least one of min_value and max_value need to be provided.',
-      }),
-    strictMaxEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. Whether each value needs to be strictly lesser than ('<') the maximum, or if equality is allowed.Only relevant if a max_value has been defined. Default = false.",
-      }),
-    strictMinEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. Whether each value needs to be strictly greater than ('>') the minimum, or if equality is allowed.Only relevant if a min_value has been defined. Default = false.",
-      }),
-  })
-  .openapi({
-    description: 'Evaluates whether each column value lies between a specified range.',
-    required: [],
-  })
-  .openapi('GoogleCloudDataplexV1DataQualityRuleRangeExpectation')
-
-const GoogleCloudDataplexV1DataQualityRuleRegexExpectationSchema = z
-  .object({
-    regex: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A regular expression the column value is expected to match.' }),
-  })
-  .openapi({
-    description: 'Evaluates whether each column value matches a specified regex.',
-    required: [],
-  })
-  .openapi('GoogleCloudDataplexV1DataQualityRuleRegexExpectation')
-
-const GoogleCloudDataplexV1DataQualityRuleRowConditionExpectationSchema = z
-  .object({
-    sqlExpression: z.string().exactOptional().openapi({ description: 'The SQL expression.' }),
-  })
-  .openapi({
-    description:
-      'Evaluates whether each row passes the specified condition.The SQL expression needs to use BigQuery standard SQL syntax and should produce a boolean value per row as the result.Example: col1 >= 0 AND col2 < 10',
-    required: [],
-  })
-  .openapi('GoogleCloudDataplexV1DataQualityRuleRowConditionExpectation')
-
-const GoogleCloudDataplexV1DataQualityRuleSetExpectationSchema = z
-  .object({
-    values: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Expected values for the column value.' }),
-  })
-  .openapi({
-    description: 'Evaluates whether each column value is contained by a specified set.',
-    required: [],
-  })
-  .openapi('GoogleCloudDataplexV1DataQualityRuleSetExpectation')
-
-const GoogleCloudDataplexV1DataQualityRuleStatisticRangeExpectationSchema = z
-  .object({
-    maxValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum column statistic value allowed for a row to pass this validation.At least one of min_value and max_value need to be provided.',
-      }),
-    minValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The minimum column statistic value allowed for a row to pass this validation.At least one of min_value and max_value need to be provided.',
-      }),
-    statistic: z
-      .enum(['STATISTIC_UNDEFINED', 'MEAN', 'MIN', 'MAX'])
-      .exactOptional()
-      .openapi({ description: 'The aggregate metric to evaluate.' }),
-    strictMaxEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether column statistic needs to be strictly lesser than ('<') the maximum, or if equality is allowed.Only relevant if a max_value has been defined. Default = false.",
-      }),
-    strictMinEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Whether column statistic needs to be strictly greater than ('>') the minimum, or if equality is allowed.Only relevant if a min_value has been defined. Default = false.",
-      }),
-  })
-  .openapi({
-    description: 'Evaluates whether the column aggregate statistic lies between a specified range.',
-    required: [],
-  })
-  .openapi('GoogleCloudDataplexV1DataQualityRuleStatisticRangeExpectation')
-
-const GoogleCloudDataplexV1DataQualityRuleTableConditionExpectationSchema = z
-  .object({
-    sqlExpression: z.string().exactOptional().openapi({ description: 'The SQL expression.' }),
-  })
-  .openapi({
-    description:
-      'Evaluates whether the provided expression is true.The SQL expression needs to use BigQuery standard SQL syntax and should produce a scalar boolean result.Example: MIN(col1) >= 0',
-    required: [],
-  })
-  .openapi('GoogleCloudDataplexV1DataQualityRuleTableConditionExpectation')
-
-const GoogleCloudDataplexV1DataQualityRuleUniquenessExpectationSchema = z
-  .object({})
-  .openapi({ description: 'Evaluates whether the column has duplicates.' })
-  .openapi('GoogleCloudDataplexV1DataQualityRuleUniquenessExpectation')
-
-const GoogleCloudDataplexV1DataQualityRuleSchema = z
-  .object({
-    column: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. The unnested column which this rule is evaluated against.',
-      }),
-    dimension: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The dimension a rule belongs to. Results are also aggregated at the dimension level. Supported dimensions are "COMPLETENESS", "ACCURACY", "CONSISTENCY", "VALIDITY", "UNIQUENESS", "INTEGRITY"',
-      }),
-    ignoreNull: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Rows with null values will automatically fail a rule, unless ignore_null is true. In that case, such null rows are trivially considered passing.Only applicable to ColumnMap rules.',
-      }),
-    nonNullExpectation:
-      GoogleCloudDataplexV1DataQualityRuleNonNullExpectationSchema.exactOptional().openapi({
-        description: 'ColumnMap rule which evaluates whether each column value is null.',
-      }),
-    rangeExpectation:
-      GoogleCloudDataplexV1DataQualityRuleRangeExpectationSchema.exactOptional().openapi({
-        description:
-          'ColumnMap rule which evaluates whether each column value lies between a specified range.',
-      }),
-    regexExpectation:
-      GoogleCloudDataplexV1DataQualityRuleRegexExpectationSchema.exactOptional().openapi({
-        description:
-          'ColumnMap rule which evaluates whether each column value matches a specified regex.',
-      }),
-    rowConditionExpectation:
-      GoogleCloudDataplexV1DataQualityRuleRowConditionExpectationSchema.exactOptional().openapi({
-        description: 'Table rule which evaluates whether each row passes the specified condition.',
-      }),
-    setExpectation:
-      GoogleCloudDataplexV1DataQualityRuleSetExpectationSchema.exactOptional().openapi({
-        description:
-          'ColumnMap rule which evaluates whether each column value is contained by a specified set.',
-      }),
-    statisticRangeExpectation:
-      GoogleCloudDataplexV1DataQualityRuleStatisticRangeExpectationSchema.exactOptional().openapi({
-        description:
-          'ColumnAggregate rule which evaluates whether the column aggregate statistic lies between a specified range.',
-      }),
-    tableConditionExpectation:
-      GoogleCloudDataplexV1DataQualityRuleTableConditionExpectationSchema.exactOptional().openapi({
-        description: 'Table rule which evaluates whether the provided expression is true.',
-      }),
-    threshold: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The minimum ratio of passing_rows / total_rows required to pass this rule, with a range of 0.0, 1.0.0 indicates default value (i.e. 1.0).',
-      }),
-    uniquenessExpectation:
-      GoogleCloudDataplexV1DataQualityRuleUniquenessExpectationSchema.exactOptional().openapi({
-        description: 'ColumnAggregate rule which evaluates whether the column has duplicates.',
-      }),
-  })
-  .openapi({
-    description: 'A rule captures data quality intent about a data source.',
-    required: [],
-  })
-  .openapi('GoogleCloudDataplexV1DataQualityRule')
-
-const GoogleCloudDataplexV1DataQualityRuleResultSchema = z
-  .object({
-    evaluatedCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of rows a rule was evaluated against. This field is only valid for ColumnMap type rules.Evaluated count can be configured to either include all rows (default) - with null rows automatically failing rule evaluation, or exclude null rows from the evaluated_count, by setting ignore_nulls = true.',
-      }),
-    failingRowsQuery: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The query to find rows that did not pass this rule. Only applies to ColumnMap and RowCondition rules.',
-      }),
-    nullCount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The number of rows with null values in the specified column.' }),
-    passRatio: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ratio of passed_count / evaluated_count. This field is only valid for ColumnMap type rules.',
-      }),
-    passed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the rule passed or failed.' }),
-    passedCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of rows which passed a rule evaluation. This field is only valid for ColumnMap type rules.',
-      }),
-    rule: GoogleCloudDataplexV1DataQualityRuleSchema.exactOptional().openapi({
-      description: 'The rule specified in the DataQualitySpec, as is.',
-    }),
-  })
-  .openapi({
-    description: 'DataQualityRuleResult provides a more detailed, per-rule view of the results.',
-    required: [],
-  })
-  .openapi('GoogleCloudDataplexV1DataQualityRuleResult')
-
-const GoogleCloudDataplexV1DataQualityResultSchema = z
-  .object({
-    dimensions: z
-      .array(GoogleCloudDataplexV1DataQualityDimensionResultSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of results at the dimension level.' }),
-    passed: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Overall data quality result -- true if all rules passed.' }),
-    rowCount: z.string().exactOptional().openapi({ description: 'The count of rows processed.' }),
-    rules: z
-      .array(GoogleCloudDataplexV1DataQualityRuleResultSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of all the rules in a job, and their results.' }),
-    scannedData: GoogleCloudDataplexV1ScannedDataSchema.exactOptional().openapi({
-      description: 'The data scanned for this result.',
-    }),
-  })
-  .openapi({ description: 'The output of a DataQualityScan.', required: [] })
-  .openapi('GoogleCloudDataplexV1DataQualityResult')
-
-const GoogleCloudDataplexV1DataQualitySpecSchema = z
-  .object({
-    rules: z
-      .array(GoogleCloudDataplexV1DataQualityRuleSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of rules to evaluate against a data source. At least one rule is required.',
-      }),
-  })
-  .openapi({ description: 'DataQualityScan related setting.', required: [] })
-  .openapi('GoogleCloudDataplexV1DataQualitySpec')
-
-const GoogleCloudDataplexV1DataSourceSchema = z
-  .object({
-    entity: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. The Dataplex entity that represents the data source (e.g. BigQuery table) for DataScan, of the form: projects/{project_number}/locations/{location_id}/lakes/{lake_id}/zones/{zone_id}/entities/{entity_id}.',
-      }),
-    resource: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. The service-qualified full resource name of the cloud resource for a DataScan job to scan against. The field could be: BigQuery table of type "TABLE" for DataProfileScan/DataQualityScan Format: //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID',
-      }),
-  })
-  .openapi({ description: 'The data source for DataScan.', required: [] })
-  .openapi('GoogleCloudDataplexV1DataSource')
-
-const GoogleCloudDataplexV1TriggerOnDemandSchema = z
-  .object({})
-  .openapi({ description: 'The scan runs once via RunDataScan API.' })
-  .openapi('GoogleCloudDataplexV1TriggerOnDemand')
-
-const GoogleCloudDataplexV1TriggerScheduleSchema = z
-  .object({
-    cron: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Cron (https://en.wikipedia.org/wiki/Cron) schedule for running scans periodically.To explicitly set a timezone in the cron tab, apply a prefix in the cron tab: "CRON_TZ=${IANA_TIME_ZONE}" or "TZ=${IANA_TIME_ZONE}". The ${IANA_TIME_ZONE} may only be a valid string from IANA time zone database (wikipedia (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)). For example, CRON_TZ=America/New_York 1 * * * *, or TZ=America/New_York 1 * * * *.This field is required for Schedule scans.',
-      }),
-  })
-  .openapi({ description: 'The scan is scheduled to run periodically.', required: [] })
-  .openapi('GoogleCloudDataplexV1TriggerSchedule')
-
-const GoogleCloudDataplexV1TriggerSchema = z
-  .object({
-    onDemand: GoogleCloudDataplexV1TriggerOnDemandSchema.exactOptional().openapi({
-      description: 'The scan runs once via RunDataScan API.',
-    }),
-    schedule: GoogleCloudDataplexV1TriggerScheduleSchema.exactOptional().openapi({
-      description: 'The scan is scheduled to run periodically.',
-    }),
-  })
-  .openapi({ description: 'DataScan scheduling and trigger settings.', required: [] })
-  .openapi('GoogleCloudDataplexV1Trigger')
-
-const GoogleCloudDataplexV1DataScanExecutionSpecSchema = z
-  .object({
-    field: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. The unnested field (of type Date or Timestamp) that contains values which monotonically increase over time.If not specified, a data scan will run for all data in the table.',
-      }),
-    trigger: GoogleCloudDataplexV1TriggerSchema.exactOptional().openapi({
-      description:
-        'Optional. Spec related to how often and when a scan should be triggered.If not specified, the default is OnDemand, which means the scan will not run until the user calls RunDataScan API.',
-    }),
-  })
-  .openapi({ description: 'DataScan execution settings.', required: [] })
-  .openapi('GoogleCloudDataplexV1DataScanExecutionSpec')
-
-const GoogleCloudDataplexV1DataScanExecutionStatusSchema = z
-  .object({
-    latestJobEndTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time when the latest DataScanJob ended.' }),
-    latestJobStartTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time when the latest DataScanJob started.' }),
-  })
-  .openapi({ description: 'Status of the data scan execution.', required: [] })
-  .openapi('GoogleCloudDataplexV1DataScanExecutionStatus')
-
-const GoogleCloudDataplexV1DataScanSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The time when the scan was created.', readOnly: true }),
-    data: GoogleCloudDataplexV1DataSourceSchema.exactOptional().openapi({
-      description: 'Required. The data source for DataScan.',
-    }),
-    dataProfileResult: GoogleCloudDataplexV1DataProfileResultSchema.exactOptional().openapi({
-      description: 'Output only. The result of the data profile scan.',
-      readOnly: true,
-    }),
-    dataProfileSpec: GoogleCloudDataplexV1DataProfileSpecSchema.exactOptional().openapi({
-      description: 'DataProfileScan related setting.',
-    }),
-    dataQualityResult: GoogleCloudDataplexV1DataQualityResultSchema.exactOptional().openapi({
-      description: 'Output only. The result of the data quality scan.',
-      readOnly: true,
-    }),
-    dataQualitySpec: GoogleCloudDataplexV1DataQualitySpecSchema.exactOptional().openapi({
-      description: 'DataQualityScan related setting.',
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. Description of the scan. Must be between 1-1024 characters.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. User friendly display name. Must be between 1-256 characters.',
-      }),
-    executionSpec: GoogleCloudDataplexV1DataScanExecutionSpecSchema.exactOptional().openapi({
-      description:
-        'Optional. DataScan execution settings.If not specified, the fields in it will use their default values.',
-    }),
-    executionStatus: GoogleCloudDataplexV1DataScanExecutionStatusSchema.exactOptional().openapi({
-      description: 'Output only. Status of the data scan execution.',
-      readOnly: true,
-    }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Optional. User-defined labels for the scan.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The relative resource name of the scan, of the form: projects/{project}/locations/{location_id}/dataScans/{datascan_id}, where project refers to a project_id or project_number and location_id refers to a GCP region.',
-        readOnly: true,
-      }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'ACTIVE', 'CREATING', 'DELETING', 'ACTION_REQUIRED'])
-      .exactOptional()
-      .openapi({ description: 'Output only. Current state of the DataScan.', readOnly: true }),
-    type: z
-      .enum(['DATA_SCAN_TYPE_UNSPECIFIED', 'DATA_QUALITY', 'DATA_PROFILE'])
-      .exactOptional()
-      .openapi({ description: 'Output only. The type of DataScan.', readOnly: true }),
-    uid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. System generated globally unique ID for the scan. This ID will be different if the scan is deleted and re-created with the same name.',
-        readOnly: true,
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The time when the scan was last updated.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a user-visible job which provides the insights for the related data source.For example: Data Quality: generates queries based on the rules and runs against the data to get data quality check results. Data Profile: analyzes the data in table(s) and generates insights about the structure, content and relationships (such as null percent, cardinality, min/max/mean, etc).',
-    required: [],
-  })
-  .openapi('GoogleCloudDataplexV1DataScan')
-
 const GoogleCloudDataplexV1DataScanEventDataProfileResultSchema = z
   .object({
     rowCount: z
@@ -1778,86 +1815,6 @@ const GoogleCloudDataplexV1DataScanEventSchema = z
     required: [],
   })
   .openapi('GoogleCloudDataplexV1DataScanEvent')
-
-const GoogleCloudDataplexV1DataScanJobSchema = z
-  .object({
-    dataProfileResult: GoogleCloudDataplexV1DataProfileResultSchema.exactOptional().openapi({
-      description: 'Output only. The result of the data profile scan.',
-      readOnly: true,
-    }),
-    dataProfileSpec: GoogleCloudDataplexV1DataProfileSpecSchema.exactOptional().openapi({
-      description: 'Output only. DataProfileScan related setting.',
-      readOnly: true,
-    }),
-    dataQualityResult: GoogleCloudDataplexV1DataQualityResultSchema.exactOptional().openapi({
-      description: 'Output only. The result of the data quality scan.',
-      readOnly: true,
-    }),
-    dataQualitySpec: GoogleCloudDataplexV1DataQualitySpecSchema.exactOptional().openapi({
-      description: 'Output only. DataQualityScan related setting.',
-      readOnly: true,
-    }),
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The time when the DataScanJob ended.',
-        readOnly: true,
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Additional information about the current state.',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The relative resource name of the DataScanJob, of the form: projects/{project}/locations/{location_id}/dataScans/{datascan_id}/jobs/{job_id}, where project refers to a project_id or project_number and location_id refers to a GCP region.',
-        readOnly: true,
-      }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The time when the DataScanJob was started.',
-        readOnly: true,
-      }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'RUNNING',
-        'CANCELING',
-        'CANCELLED',
-        'SUCCEEDED',
-        'FAILED',
-        'PENDING',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Execution state for the DataScanJob.',
-        readOnly: true,
-      }),
-    type: z
-      .enum(['DATA_SCAN_TYPE_UNSPECIFIED', 'DATA_QUALITY', 'DATA_PROFILE'])
-      .exactOptional()
-      .openapi({ description: 'Output only. The type of the parent DataScan.', readOnly: true }),
-    uid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. System generated globally unique ID for the DataScanJob.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'A DataScanJob represents an instance of DataScan execution.',
-    required: [],
-  })
-  .openapi('GoogleCloudDataplexV1DataScanJob')
 
 const GoogleCloudDataplexV1DataTaxonomySchema = z
   .object({
@@ -2211,44 +2168,132 @@ const GoogleCloudDataplexV1StorageFormatSchema = z
   })
   .openapi('GoogleCloudDataplexV1StorageFormat')
 
-const GoogleCloudDataplexV1SchemaSchema: z.ZodType<GoogleCloudDataplexV1SchemaType> = z
-  .lazy(() =>
-    z
-      .object({
-        fields: z
-          .array(GoogleCloudDataplexV1SchemaSchemaFieldSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. The sequence of fields describing data in table entities. Note: BigQuery SchemaFields are immutable.',
-          }),
-        partitionFields: z
-          .array(GoogleCloudDataplexV1SchemaPartitionFieldSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. The sequence of fields describing the partition structure in entities. If this field is empty, there are no partitions within the data.',
-          }),
-        partitionStyle: z
-          .enum(['PARTITION_STYLE_UNSPECIFIED', 'HIVE_COMPATIBLE'])
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. The structure of paths containing partition data within the entity.',
-          }),
-        userManaged: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Required. Set to true if user-managed or false if managed by Dataplex. The default is false (managed by Dataplex). Set to falseto enable Dataplex discovery to update the schema. including new data discovery, schema inference, and schema evolution. Users retain the ability to input and edit the schema. Dataplex treats schema input by the user as though produced by a previous Dataplex discovery operation, and it will evolve the schema and take action based on that treatment. Set to true to fully manage the entity schema. This setting guarantees that Dataplex will not change schema fields.',
-          }),
-      })
+const GoogleCloudDataplexV1SchemaSchemaFieldSchema: z.ZodType<GoogleCloudDataplexV1SchemaSchemaFieldType> =
+  z
+    .lazy(() =>
+      z
+        .object({
+          description: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Optional. User friendly field description. Must be less than or equal to 1024 characters.',
+            }),
+          fields: z
+            .array(GoogleCloudDataplexV1SchemaSchemaFieldSchema)
+            .exactOptional()
+            .openapi({ description: 'Optional. Any nested field for complex types.' }),
+          mode: z
+            .enum(['MODE_UNSPECIFIED', 'REQUIRED', 'NULLABLE', 'REPEATED'])
+            .exactOptional()
+            .openapi({ description: 'Required. Additional field semantics.' }),
+          name: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Required. The name of the field. Must contain only letters, numbers and underscores, with a maximum length of 767 characters, and must begin with a letter or underscore.',
+            }),
+          type: z
+            .enum([
+              'TYPE_UNSPECIFIED',
+              'BOOLEAN',
+              'BYTE',
+              'INT16',
+              'INT32',
+              'INT64',
+              'FLOAT',
+              'DOUBLE',
+              'DECIMAL',
+              'STRING',
+              'BINARY',
+              'TIMESTAMP',
+              'DATE',
+              'TIME',
+              'RECORD',
+              'NULL',
+            ])
+            .exactOptional()
+            .openapi({ description: 'Required. The type of field.' }),
+        })
+        .openapi({ description: 'Represents a column field within a table schema.', required: [] }),
+    )
+    .openapi('GoogleCloudDataplexV1SchemaSchemaField')
+
+const GoogleCloudDataplexV1SchemaPartitionFieldSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
       .openapi({
-        description: 'Schema information describing the structure and layout of the data.',
-        required: [],
+        description:
+          'Required. Partition field name must consist of letters, numbers, and underscores only, with a maximum of length of 256 characters, and must begin with a letter or underscore..',
       }),
-  )
+    type: z
+      .enum([
+        'TYPE_UNSPECIFIED',
+        'BOOLEAN',
+        'BYTE',
+        'INT16',
+        'INT32',
+        'INT64',
+        'FLOAT',
+        'DOUBLE',
+        'DECIMAL',
+        'STRING',
+        'BINARY',
+        'TIMESTAMP',
+        'DATE',
+        'TIME',
+        'RECORD',
+        'NULL',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Required. Immutable. The type of field.' }),
+  })
+  .openapi({
+    description:
+      "Represents a key field within the entity's partition structure. You could have up to 20 partition fields, but only the first 10 partitions have the filtering ability due to performance consideration. Note: Partition fields are immutable.",
+    required: [],
+  })
+  .openapi('GoogleCloudDataplexV1SchemaPartitionField')
+
+const GoogleCloudDataplexV1SchemaSchema = z
+  .object({
+    fields: z
+      .array(GoogleCloudDataplexV1SchemaSchemaFieldSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The sequence of fields describing data in table entities. Note: BigQuery SchemaFields are immutable.',
+      }),
+    partitionFields: z
+      .array(GoogleCloudDataplexV1SchemaPartitionFieldSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The sequence of fields describing the partition structure in entities. If this field is empty, there are no partitions within the data.',
+      }),
+    partitionStyle: z
+      .enum(['PARTITION_STYLE_UNSPECIFIED', 'HIVE_COMPATIBLE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The structure of paths containing partition data within the entity.',
+      }),
+    userManaged: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Set to true if user-managed or false if managed by Dataplex. The default is false (managed by Dataplex). Set to falseto enable Dataplex discovery to update the schema. including new data discovery, schema inference, and schema evolution. Users retain the ability to input and edit the schema. Dataplex treats schema input by the user as though produced by a previous Dataplex discovery operation, and it will evolve the schema and take action based on that treatment. Set to true to fully manage the entity schema. This setting guarantees that Dataplex will not change schema fields.',
+      }),
+  })
+  .openapi({
+    description: 'Schema information describing the structure and layout of the data.',
+    required: [],
+  })
   .openapi('GoogleCloudDataplexV1Schema')
 
 const GoogleCloudDataplexV1EntitySchema = z
@@ -2889,43 +2934,45 @@ const GoogleCloudDataplexV1ListDataAttributesResponseSchema = z
   .openapi({ description: 'List DataAttributes response.', required: [] })
   .openapi('GoogleCloudDataplexV1ListDataAttributesResponse')
 
-const GoogleCloudDataplexV1ListDataScanJobsResponseSchema = z
-  .object({
-    dataScanJobs: z
-      .array(GoogleCloudDataplexV1DataScanJobSchema)
-      .exactOptional()
-      .openapi({ description: 'DataScanJobs (BASIC view only) under a given dataScan.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-  })
-  .openapi({ description: 'List DataScanJobs response.', required: [] })
-  .openapi('GoogleCloudDataplexV1ListDataScanJobsResponse')
+const GoogleCloudDataplexV1ListDataScanJobsResponseSchema: z.ZodType<GoogleCloudDataplexV1ListDataScanJobsResponseType> =
+  z
+    .object({
+      dataScanJobs: z
+        .array(GoogleCloudDataplexV1DataScanJobSchema)
+        .exactOptional()
+        .openapi({ description: 'DataScanJobs (BASIC view only) under a given dataScan.' }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+        }),
+    })
+    .openapi({ description: 'List DataScanJobs response.', required: [] })
+    .openapi('GoogleCloudDataplexV1ListDataScanJobsResponse')
 
-const GoogleCloudDataplexV1ListDataScansResponseSchema = z
-  .object({
-    dataScans: z
-      .array(GoogleCloudDataplexV1DataScanSchema)
-      .exactOptional()
-      .openapi({ description: 'DataScans (BASIC view only) under the given parent location.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Token to retrieve the next page of results, or empty if there are no more results in the list.',
-      }),
-    unreachable: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Locations that could not be reached.' }),
-  })
-  .openapi({ description: 'List dataScans response.', required: [] })
-  .openapi('GoogleCloudDataplexV1ListDataScansResponse')
+const GoogleCloudDataplexV1ListDataScansResponseSchema: z.ZodType<GoogleCloudDataplexV1ListDataScansResponseType> =
+  z
+    .object({
+      dataScans: z
+        .array(GoogleCloudDataplexV1DataScanSchema)
+        .exactOptional()
+        .openapi({ description: 'DataScans (BASIC view only) under the given parent location.' }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Token to retrieve the next page of results, or empty if there are no more results in the list.',
+        }),
+      unreachable: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({ description: 'Locations that could not be reached.' }),
+    })
+    .openapi({ description: 'List dataScans response.', required: [] })
+    .openapi('GoogleCloudDataplexV1ListDataScansResponse')
 
 const GoogleCloudDataplexV1ListDataTaxonomiesResponseSchema = z
   .object({
@@ -3725,21 +3772,22 @@ const GoogleCloudDataplexV1OperationMetadataSchema = z
   .openapi('GoogleCloudDataplexV1OperationMetadata')
 
 const GoogleCloudDataplexV1RunDataScanRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Run DataScan Request' })
   .openapi('GoogleCloudDataplexV1RunDataScanRequest')
 
-const GoogleCloudDataplexV1RunDataScanResponseSchema = z
-  .object({
-    job: GoogleCloudDataplexV1DataScanJobSchema.exactOptional().openapi({
-      description: 'DataScanJob created by RunDataScan request.',
-    }),
-  })
-  .openapi({ description: 'Run DataScan Response.', required: [] })
-  .openapi('GoogleCloudDataplexV1RunDataScanResponse')
+const GoogleCloudDataplexV1RunDataScanResponseSchema: z.ZodType<GoogleCloudDataplexV1RunDataScanResponseType> =
+  z
+    .object({
+      job: GoogleCloudDataplexV1DataScanJobSchema.exactOptional().openapi({
+        description: 'DataScanJob created by RunDataScan request.',
+      }),
+    })
+    .openapi({ description: 'Run DataScan Response.', required: [] })
+    .openapi('GoogleCloudDataplexV1RunDataScanResponse')
 
 const GoogleCloudDataplexV1RunTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi('GoogleCloudDataplexV1RunTaskRequest')
 
 const GoogleCloudDataplexV1RunTaskResponseSchema = z
@@ -4070,7 +4118,7 @@ const GoogleIamV1TestIamPermissionsResponseSchema = z
   .openapi('GoogleIamV1TestIamPermissionsResponse')
 
 const GoogleLongrunningCancelOperationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request message for Operations.CancelOperation.' })
   .openapi('GoogleLongrunningCancelOperationRequest')
 

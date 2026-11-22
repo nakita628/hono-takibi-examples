@@ -516,7 +516,7 @@ export const postMosaikBabelfeeNewofferDoitRoute = createRoute({
   operationId: 'doCreateBabelBox',
   request: {
     body: {
-      content: { 'application/json': { schema: z.record(z.string(), z.object({})) } },
+      content: { 'application/json': { schema: z.record(z.string(), z.looseObject({})) } },
       required: true,
     },
   },
@@ -536,7 +536,7 @@ export const postMosaikBabelfeeNewofferNewInputRoute = createRoute({
   operationId: 'replaceTokenAmountInputFields',
   request: {
     body: {
-      content: { 'application/json': { schema: z.record(z.string(), z.object({})) } },
+      content: { 'application/json': { schema: z.record(z.string(), z.looseObject({})) } },
       required: true,
     },
   },
@@ -644,7 +644,7 @@ export const postMosaikTokenburnPrepareRoute = createRoute({
   operationId: 'prepareTransaction',
   request: {
     body: {
-      content: { 'application/json': { schema: z.record(z.string(), z.object({})) } },
+      content: { 'application/json': { schema: z.record(z.string(), z.looseObject({})) } },
       required: true,
     },
   },
@@ -815,6 +815,7 @@ export const getSigrsvExchangeIndexRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
       executionFee: z
         .preprocess((val) => {
@@ -833,6 +834,7 @@ export const getSigrsvExchangeIndexRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
     }),
   },
@@ -941,6 +943,7 @@ export const getSigusdExchangeIndexRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
       executionFee: z
         .preprocess((val) => {
@@ -959,6 +962,7 @@ export const getSigusdExchangeIndexRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
     }),
   },

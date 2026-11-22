@@ -1,5 +1,178 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const VariableSchema: z.ZodType<VariableType> = z
+  .lazy(() =>
+    z
+      .object({
+        members: z
+          .array(VariableSchema)
+          .exactOptional()
+          .openapi({ description: 'Members contained or pointed to by the variable.' }),
+        name: z.string().exactOptional().openapi({ description: 'Name of the variable, if any.' }),
+        status: StatusMessageSchema.exactOptional().openapi({
+          description:
+            'Status associated with the variable. This field will usually stay unset. A status of a single variable only applies to that variable or expression. The rest of breakpoint data still remains valid. Variables might be reported in error state even when breakpoint is not in final state. The message may refer to variable name with `refers_to` set to `VARIABLE_NAME`. Alternatively `refers_to` will be set to `VARIABLE_VALUE`. In either case variable value and members will be unset. Example of error message applied to name: `Invalid expression syntax`. Example of information message applied to value: `Not captured`. Examples of error message applied to value: * `Malformed string`, * `Field f not found in class C` * `Null pointer dereference`',
+        }),
+        type: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Variable type (e.g. `MyClass`). If the variable is split with `var_table_index`, `type` goes next to `value`. The interpretation of a type is agent specific. It is recommended to include the dynamic type rather than a static type of an object.',
+          }),
+        value: z.string().exactOptional().openapi({ description: 'Simple value of the variable.' }),
+        varTableIndex: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description:
+              'Reference to a variable in the shared variable table. More than one variable can reference the same variable in the table. The `var_table_index` field is an index into `variable_table` in Breakpoint.',
+          }),
+      })
+      .openapi({
+        description:
+          'Represents a variable or an argument possibly of a compound object type. Note how the following variables are represented: 1) A simple variable: int x = 5 { name: "x", value: "5", type: "int" } // Captured variable 2) A compound object: struct T { int m1; int m2; }; T x = { 3, 7 }; { // Captured variable name: "x", type: "T", members { name: "m1", value: "3", type: "int" }, members { name: "m2", value: "7", type: "int" } } 3) A pointer where the pointee was captured: T x = { 3, 7 }; T* p = &x; { // Captured variable name: "p", type: "T*", value: "0x00500500", members { name: "m1", value: "3", type: "int" }, members { name: "m2", value: "7", type: "int" } } 4) A pointer where the pointee was not captured: T* p = new T; { // Captured variable name: "p", type: "T*", value: "0x00400400" status { is_error: true, description { format: "unavailable" } } } The status should describe the reason for the missing value, such as ``, ``, ``. Note that a null pointer should not have members. 5) An unnamed value: int* p = new int(7); { // Captured variable name: "p", value: "0x00500500", type: "int*", members { value: "7", type: "int" } } 6) An unnamed pointer where the pointee was not captured: int* p = new int(7); int** pp = &p; { // Captured variable name: "pp", value: "0x00500500", type: "int**", members { value: "0x00400400", type: "int*" status { is_error: true, description: { format: "unavailable" } } } } } To optimize computation, memory and network traffic, variables that repeat in the output multiple times can be stored once in a shared variable table and be referenced using the `var_table_index` field. The variables stored in the shared table are nameless and are essentially a partition of the complete variable. To reconstruct the complete variable, merge the referencing variable with the referenced variable. When using the shared variable table, the following variables: T x = { 3, 7 }; T* p = &x; T& r = x; { name: "x", var_table_index: 3, type: "T" } // Captured variables { name: "p", value "0x00500500", type="T*", var_table_index: 3 } { name: "r", type="T&", var_table_index: 3 } { // Shared variable table entry #3: members { name: "m1", value: "3", type: "int" }, members { name: "m2", value: "7", type: "int" } } Note that the pointer address is stored with the referencing variable and not with the referenced variable. This allows the referenced variable to be shared between pointers and references. The type field is optional. The debugger agent may or may not support it.',
+        required: [],
+      }),
+  )
+  .openapi('Variable')
+
+const SourceLocationSchema = z
+  .object({
+    column: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Column within a line. The first column in a line as the value `1`. Agents that do not support setting breakpoints on specific columns ignore this field.',
+      }),
+    line: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Line inside the file. The first line in the file has the value `1`.',
+      }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Path to the source file within the source context of the target binary.',
+      }),
+  })
+  .openapi({ description: 'Represents a location in the source code.', required: [] })
+  .openapi('SourceLocation')
+
+const StackFrameSchema = z
+  .object({
+    arguments: z
+      .array(VariableSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Set of arguments passed to this function. Note that this might not be populated for all stack frames.',
+      }),
+    function: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Demangled function name at the call site.' }),
+    locals: z
+      .array(VariableSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Set of local variables at the stack frame location. Note that this might not be populated for all stack frames.',
+      }),
+    location: SourceLocationSchema.exactOptional().openapi({
+      description: 'Source location of the call site.',
+    }),
+  })
+  .openapi({ description: 'Represents a stack frame context.', required: [] })
+  .openapi('StackFrame')
+
+const FormatMessageSchema = z
+  .object({
+    format: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Format template for the message. The `format` uses placeholders `$0`, `$1`, etc. to reference parameters. `$$` can be used to denote the `$` character. Examples: * `Failed to load '$0' which helps debug $1 the first time it is loaded. Again, $0 is very important.` * `Please pay $$10 to use $0 instead of $1.`",
+      }),
+    parameters: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Optional parameters to be embedded into the message.' }),
+  })
+  .openapi({ description: 'Represents a message with parameters.', required: [] })
+  .openapi('FormatMessage')
+
+const StatusMessageSchema = z
+  .object({
+    description: FormatMessageSchema.exactOptional().openapi({
+      description: 'Status message text.',
+    }),
+    isError: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Distinguishes errors from informational messages.' }),
+    refersTo: z
+      .enum([
+        'UNSPECIFIED',
+        'BREAKPOINT_SOURCE_LOCATION',
+        'BREAKPOINT_CONDITION',
+        'BREAKPOINT_EXPRESSION',
+        'BREAKPOINT_AGE',
+        'BREAKPOINT_CANARY_FAILED',
+        'VARIABLE_NAME',
+        'VARIABLE_VALUE',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Reference to which the message applies.' }),
+  })
+  .openapi({
+    description:
+      'Represents a contextual status message. The message can indicate an error or informational status, and refer to specific parts of the containing object. For example, the `Breakpoint.status` field can indicate an error referring to the `BREAKPOINT_SOURCE_LOCATION` with the message `Location not found`.',
+    required: [],
+  })
+  .openapi('StatusMessage')
+
+type BreakpointType = {
+  action?: 'CAPTURE' | 'LOG'
+  canaryExpireTime?: string
+  condition?: string
+  createTime?: string
+  evaluatedExpressions?: z.infer<typeof VariableSchema>[]
+  expressions?: string[]
+  finalTime?: string
+  id?: string
+  isFinalState?: boolean
+  labels?: { [key: string]: string }
+  location?: z.infer<typeof SourceLocationSchema>
+  logLevel?: 'INFO' | 'WARNING' | 'ERROR'
+  logMessageFormat?: string
+  stackFrames?: z.infer<typeof StackFrameSchema>[]
+  state?:
+    | 'STATE_UNSPECIFIED'
+    | 'STATE_CANARY_PENDING_AGENTS'
+    | 'STATE_CANARY_ACTIVE'
+    | 'STATE_ROLLING_TO_ALL'
+    | 'STATE_IS_FINAL'
+  status?: z.infer<typeof StatusMessageSchema>
+  userEmail?: string
+  variableTable?: z.infer<typeof VariableSchema>[]
+}
+
+const AliasContextSchema = z
+  .object({
+    kind: z
+      .enum(['ANY', 'FIXED', 'MOVABLE', 'OTHER'])
+      .exactOptional()
+      .openapi({ description: 'The alias kind.' }),
+    name: z.string().exactOptional().openapi({ description: 'The alias name.' }),
+  })
+  .openapi({ description: 'An alias to a repo revision.', required: [] })
+  .openapi('AliasContext')
+
 const ProjectRepoIdSchema = z
   .object({
     projectId: z.string().exactOptional().openapi({ description: 'The ID of the project.' }),
@@ -15,33 +188,17 @@ const ProjectRepoIdSchema = z
   })
   .openapi('ProjectRepoId')
 
-type RepoIdType = { projectRepoId?: z.infer<typeof ProjectRepoIdSchema>; uid?: string }
-
-const AliasContextSchema = z
+const RepoIdSchema = z
   .object({
-    kind: z
-      .enum(['ANY', 'FIXED', 'MOVABLE', 'OTHER'])
+    projectRepoId: ProjectRepoIdSchema.exactOptional().openapi({
+      description: 'A combination of a project ID and a repo name.',
+    }),
+    uid: z
+      .string()
       .exactOptional()
-      .openapi({ description: 'The alias kind.' }),
-    name: z.string().exactOptional().openapi({ description: 'The alias name.' }),
+      .openapi({ description: 'A server-assigned, globally unique identifier.' }),
   })
-  .openapi({ description: 'An alias to a repo revision.', required: [] })
-  .openapi('AliasContext')
-
-const RepoIdSchema: z.ZodType<RepoIdType> = z
-  .lazy(() =>
-    z
-      .object({
-        projectRepoId: ProjectRepoIdSchema.exactOptional().openapi({
-          description: 'A combination of a project ID and a repo name.',
-        }),
-        uid: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A server-assigned, globally unique identifier.' }),
-      })
-      .openapi({ description: 'A unique identifier for a cloud repo.', required: [] }),
-  )
+  .openapi({ description: 'A unique identifier for a cloud repo.', required: [] })
   .openapi('RepoId')
 
 const CloudRepoSourceContextSchema = z
@@ -139,159 +296,64 @@ const GitSourceContextSchema = z
   })
   .openapi('GitSourceContext')
 
-type SourceContextType = {
-  cloudRepo?: z.infer<typeof CloudRepoSourceContextSchema>
-  cloudWorkspace?: z.infer<typeof CloudWorkspaceSourceContextSchema>
-  gerrit?: z.infer<typeof GerritSourceContextSchema>
-  git?: z.infer<typeof GitSourceContextSchema>
-}
-
-const FormatMessageSchema = z
+const SourceContextSchema = z
   .object({
-    format: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Format template for the message. The `format` uses placeholders `$0`, `$1`, etc. to reference parameters. `$$` can be used to denote the `$` character. Examples: * `Failed to load '$0' which helps debug $1 the first time it is loaded. Again, $0 is very important.` * `Please pay $$10 to use $0 instead of $1.`",
-      }),
-    parameters: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Optional parameters to be embedded into the message.' }),
-  })
-  .openapi({ description: 'Represents a message with parameters.', required: [] })
-  .openapi('FormatMessage')
-
-const StatusMessageSchema = z
-  .object({
-    description: FormatMessageSchema.exactOptional().openapi({
-      description: 'Status message text.',
+    cloudRepo: CloudRepoSourceContextSchema.exactOptional().openapi({
+      description: 'A SourceContext referring to a revision in a cloud repo.',
     }),
-    isError: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Distinguishes errors from informational messages.' }),
-    refersTo: z
-      .enum([
-        'UNSPECIFIED',
-        'BREAKPOINT_SOURCE_LOCATION',
-        'BREAKPOINT_CONDITION',
-        'BREAKPOINT_EXPRESSION',
-        'BREAKPOINT_AGE',
-        'BREAKPOINT_CANARY_FAILED',
-        'VARIABLE_NAME',
-        'VARIABLE_VALUE',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Reference to which the message applies.' }),
+    cloudWorkspace: CloudWorkspaceSourceContextSchema.exactOptional().openapi({
+      description: 'A SourceContext referring to a snapshot in a cloud workspace.',
+    }),
+    gerrit: GerritSourceContextSchema.exactOptional().openapi({
+      description: 'A SourceContext referring to a Gerrit project.',
+    }),
+    git: GitSourceContextSchema.exactOptional().openapi({
+      description: 'A SourceContext referring to any third party Git repo (e.g. GitHub).',
+    }),
   })
   .openapi({
     description:
-      'Represents a contextual status message. The message can indicate an error or informational status, and refer to specific parts of the containing object. For example, the `Breakpoint.status` field can indicate an error referring to the `BREAKPOINT_SOURCE_LOCATION` with the message `Location not found`.',
+      'A SourceContext is a reference to a tree of files. A SourceContext together with a path point to a unique revision of a single file or directory.',
     required: [],
   })
-  .openapi('StatusMessage')
+  .openapi('SourceContext')
 
-type VariableType = {
-  members?: VariableType[]
-  name?: string
+const ExtendedSourceContextSchema = z
+  .object({
+    context: SourceContextSchema.exactOptional().openapi({ description: 'Any source context.' }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Labels with user defined metadata.' }),
+  })
+  .openapi({
+    description:
+      'An ExtendedSourceContext is a SourceContext combined with additional details describing the context.',
+    required: [],
+  })
+  .openapi('ExtendedSourceContext')
+
+type DebuggeeType = {
+  agentVersion?: string
+  canaryMode?:
+    | 'CANARY_MODE_UNSPECIFIED'
+    | 'CANARY_MODE_ALWAYS_ENABLED'
+    | 'CANARY_MODE_ALWAYS_DISABLED'
+    | 'CANARY_MODE_DEFAULT_ENABLED'
+    | 'CANARY_MODE_DEFAULT_DISABLED'
+  description?: string
+  extSourceContexts?: z.infer<typeof ExtendedSourceContextSchema>[]
+  id?: string
+  isDisabled?: boolean
+  isInactive?: boolean
+  labels?: { [key: string]: string }
+  project?: string
+  sourceContexts?: z.infer<typeof SourceContextSchema>[]
   status?: z.infer<typeof StatusMessageSchema>
-  type?: string
-  value?: string
-  varTableIndex?: number
+  uniquifier?: string
 }
 
-const VariableSchema: z.ZodType<VariableType> = z
-  .lazy(() =>
-    z
-      .object({
-        members: z
-          .array(VariableSchema)
-          .exactOptional()
-          .openapi({ description: 'Members contained or pointed to by the variable.' }),
-        name: z.string().exactOptional().openapi({ description: 'Name of the variable, if any.' }),
-        status: StatusMessageSchema.exactOptional().openapi({
-          description:
-            'Status associated with the variable. This field will usually stay unset. A status of a single variable only applies to that variable or expression. The rest of breakpoint data still remains valid. Variables might be reported in error state even when breakpoint is not in final state. The message may refer to variable name with `refers_to` set to `VARIABLE_NAME`. Alternatively `refers_to` will be set to `VARIABLE_VALUE`. In either case variable value and members will be unset. Example of error message applied to name: `Invalid expression syntax`. Example of information message applied to value: `Not captured`. Examples of error message applied to value: * `Malformed string`, * `Field f not found in class C` * `Null pointer dereference`',
-        }),
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Variable type (e.g. `MyClass`). If the variable is split with `var_table_index`, `type` goes next to `value`. The interpretation of a type is agent specific. It is recommended to include the dynamic type rather than a static type of an object.',
-          }),
-        value: z.string().exactOptional().openapi({ description: 'Simple value of the variable.' }),
-        varTableIndex: z
-          .int32()
-          .exactOptional()
-          .openapi({
-            description:
-              'Reference to a variable in the shared variable table. More than one variable can reference the same variable in the table. The `var_table_index` field is an index into `variable_table` in Breakpoint.',
-          }),
-      })
-      .openapi({
-        description:
-          'Represents a variable or an argument possibly of a compound object type. Note how the following variables are represented: 1) A simple variable: int x = 5 { name: "x", value: "5", type: "int" } // Captured variable 2) A compound object: struct T { int m1; int m2; }; T x = { 3, 7 }; { // Captured variable name: "x", type: "T", members { name: "m1", value: "3", type: "int" }, members { name: "m2", value: "7", type: "int" } } 3) A pointer where the pointee was captured: T x = { 3, 7 }; T* p = &x; { // Captured variable name: "p", type: "T*", value: "0x00500500", members { name: "m1", value: "3", type: "int" }, members { name: "m2", value: "7", type: "int" } } 4) A pointer where the pointee was not captured: T* p = new T; { // Captured variable name: "p", type: "T*", value: "0x00400400" status { is_error: true, description { format: "unavailable" } } } The status should describe the reason for the missing value, such as ``, ``, ``. Note that a null pointer should not have members. 5) An unnamed value: int* p = new int(7); { // Captured variable name: "p", value: "0x00500500", type: "int*", members { value: "7", type: "int" } } 6) An unnamed pointer where the pointee was not captured: int* p = new int(7); int** pp = &p; { // Captured variable name: "pp", value: "0x00500500", type: "int**", members { value: "0x00400400", type: "int*" status { is_error: true, description: { format: "unavailable" } } } } } To optimize computation, memory and network traffic, variables that repeat in the output multiple times can be stored once in a shared variable table and be referenced using the `var_table_index` field. The variables stored in the shared table are nameless and are essentially a partition of the complete variable. To reconstruct the complete variable, merge the referencing variable with the referenced variable. When using the shared variable table, the following variables: T x = { 3, 7 }; T* p = &x; T& r = x; { name: "x", var_table_index: 3, type: "T" } // Captured variables { name: "p", value "0x00500500", type="T*", var_table_index: 3 } { name: "r", type="T&", var_table_index: 3 } { // Shared variable table entry #3: members { name: "m1", value: "3", type: "int" }, members { name: "m2", value: "7", type: "int" } } Note that the pointer address is stored with the referencing variable and not with the referenced variable. This allows the referenced variable to be shared between pointers and references. The type field is optional. The debugger agent may or may not support it.',
-        required: [],
-      }),
-  )
-  .openapi('Variable')
-
-const SourceLocationSchema = z
-  .object({
-    column: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Column within a line. The first column in a line as the value `1`. Agents that do not support setting breakpoints on specific columns ignore this field.',
-      }),
-    line: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Line inside the file. The first line in the file has the value `1`.',
-      }),
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Path to the source file within the source context of the target binary.',
-      }),
-  })
-  .openapi({ description: 'Represents a location in the source code.', required: [] })
-  .openapi('SourceLocation')
-
-const StackFrameSchema = z
-  .object({
-    arguments: z
-      .array(VariableSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Set of arguments passed to this function. Note that this might not be populated for all stack frames.',
-      }),
-    function: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Demangled function name at the call site.' }),
-    locals: z
-      .array(VariableSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Set of local variables at the stack frame location. Note that this might not be populated for all stack frames.',
-      }),
-    location: SourceLocationSchema.exactOptional().openapi({
-      description: 'Source location of the call site.',
-    }),
-  })
-  .openapi({ description: 'Represents a stack frame context.', required: [] })
-  .openapi('StackFrame')
-
-const BreakpointSchema = z
+const BreakpointSchema: z.ZodType<BreakpointType> = z
   .object({
     action: z
       .enum(['CAPTURE', 'LOG'])
@@ -415,47 +477,20 @@ const BreakpointSchema = z
   })
   .openapi('Breakpoint')
 
-const SourceContextSchema: z.ZodType<SourceContextType> = z
-  .lazy(() =>
-    z
-      .object({
-        cloudRepo: CloudRepoSourceContextSchema.exactOptional().openapi({
-          description: 'A SourceContext referring to a revision in a cloud repo.',
-        }),
-        cloudWorkspace: CloudWorkspaceSourceContextSchema.exactOptional().openapi({
-          description: 'A SourceContext referring to a snapshot in a cloud workspace.',
-        }),
-        gerrit: GerritSourceContextSchema.exactOptional().openapi({
-          description: 'A SourceContext referring to a Gerrit project.',
-        }),
-        git: GitSourceContextSchema.exactOptional().openapi({
-          description: 'A SourceContext referring to any third party Git repo (e.g. GitHub).',
-        }),
-      })
-      .openapi({
-        description:
-          'A SourceContext is a reference to a tree of files. A SourceContext together with a path point to a unique revision of a single file or directory.',
-        required: [],
-      }),
-  )
-  .openapi('SourceContext')
+type GetBreakpointResponseType = { breakpoint?: z.infer<typeof BreakpointSchema> }
 
-const ExtendedSourceContextSchema = z
-  .object({
-    context: SourceContextSchema.exactOptional().openapi({ description: 'Any source context.' }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Labels with user defined metadata.' }),
-  })
-  .openapi({
-    description:
-      'An ExtendedSourceContext is a SourceContext combined with additional details describing the context.',
-    required: [],
-  })
-  .openapi('ExtendedSourceContext')
+type ListActiveBreakpointsResponseType = {
+  breakpoints?: z.infer<typeof BreakpointSchema>[]
+  nextWaitToken?: string
+  waitExpired?: boolean
+}
 
-const DebuggeeSchema = z
+type ListBreakpointsResponseType = {
+  breakpoints?: z.infer<typeof BreakpointSchema>[]
+  nextWaitToken?: string
+}
+
+const DebuggeeSchema: z.ZodType<DebuggeeType> = z
   .object({
     agentVersion: z
       .string()
@@ -548,15 +583,34 @@ const DebuggeeSchema = z
   })
   .openapi('Debuggee')
 
+type ListDebuggeesResponseType = { debuggees?: z.infer<typeof DebuggeeSchema>[] }
+
+type RegisterDebuggeeRequestType = { debuggee?: z.infer<typeof DebuggeeSchema> }
+
+type RegisterDebuggeeResponseType = { agentId?: string; debuggee?: z.infer<typeof DebuggeeSchema> }
+
+type SetBreakpointResponseType = { breakpoint?: z.infer<typeof BreakpointSchema> }
+
+type UpdateActiveBreakpointRequestType = { breakpoint?: z.infer<typeof BreakpointSchema> }
+
+type VariableType = {
+  members?: VariableType[]
+  name?: string
+  status?: z.infer<typeof StatusMessageSchema>
+  type?: string
+  value?: string
+  varTableIndex?: number
+}
+
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
   })
   .openapi('Empty')
 
-const GetBreakpointResponseSchema = z
+const GetBreakpointResponseSchema: z.ZodType<GetBreakpointResponseType> = z
   .object({
     breakpoint: BreakpointSchema.exactOptional().openapi({
       description:
@@ -566,7 +620,7 @@ const GetBreakpointResponseSchema = z
   .openapi({ description: 'Response for getting breakpoint information.', required: [] })
   .openapi('GetBreakpointResponse')
 
-const ListActiveBreakpointsResponseSchema = z
+const ListActiveBreakpointsResponseSchema: z.ZodType<ListActiveBreakpointsResponseType> = z
   .object({
     breakpoints: z
       .array(BreakpointSchema)
@@ -593,7 +647,7 @@ const ListActiveBreakpointsResponseSchema = z
   .openapi({ description: 'Response for listing active breakpoints.', required: [] })
   .openapi('ListActiveBreakpointsResponse')
 
-const ListBreakpointsResponseSchema = z
+const ListBreakpointsResponseSchema: z.ZodType<ListBreakpointsResponseType> = z
   .object({
     breakpoints: z
       .array(BreakpointSchema)
@@ -613,7 +667,7 @@ const ListBreakpointsResponseSchema = z
   .openapi({ description: 'Response for listing breakpoints.', required: [] })
   .openapi('ListBreakpointsResponse')
 
-const ListDebuggeesResponseSchema = z
+const ListDebuggeesResponseSchema: z.ZodType<ListDebuggeesResponseType> = z
   .object({
     debuggees: z
       .array(DebuggeeSchema)
@@ -626,7 +680,7 @@ const ListDebuggeesResponseSchema = z
   .openapi({ description: 'Response for listing debuggees.', required: [] })
   .openapi('ListDebuggeesResponse')
 
-const RegisterDebuggeeRequestSchema = z
+const RegisterDebuggeeRequestSchema: z.ZodType<RegisterDebuggeeRequestType> = z
   .object({
     debuggee: DebuggeeSchema.exactOptional().openapi({
       description:
@@ -636,7 +690,7 @@ const RegisterDebuggeeRequestSchema = z
   .openapi({ description: 'Request to register a debuggee.', required: [] })
   .openapi('RegisterDebuggeeRequest')
 
-const RegisterDebuggeeResponseSchema = z
+const RegisterDebuggeeResponseSchema: z.ZodType<RegisterDebuggeeResponseType> = z
   .object({
     agentId: z
       .string()
@@ -653,7 +707,7 @@ const RegisterDebuggeeResponseSchema = z
   .openapi({ description: 'Response for registering a debuggee.', required: [] })
   .openapi('RegisterDebuggeeResponse')
 
-const SetBreakpointResponseSchema = z
+const SetBreakpointResponseSchema: z.ZodType<SetBreakpointResponseType> = z
   .object({
     breakpoint: BreakpointSchema.exactOptional().openapi({
       description:
@@ -663,7 +717,7 @@ const SetBreakpointResponseSchema = z
   .openapi({ description: 'Response for setting a breakpoint.', required: [] })
   .openapi('SetBreakpointResponse')
 
-const UpdateActiveBreakpointRequestSchema = z
+const UpdateActiveBreakpointRequestSchema: z.ZodType<UpdateActiveBreakpointRequestType> = z
   .object({
     breakpoint: BreakpointSchema.exactOptional().openapi({
       description:
@@ -674,7 +728,7 @@ const UpdateActiveBreakpointRequestSchema = z
   .openapi('UpdateActiveBreakpointRequest')
 
 const UpdateActiveBreakpointResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Response for updating an active breakpoint. The message is defined to allow future extensions.',

@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSEventsTestEventPatternHandler = app.openapi(
   postXAmzTargetAWSEventsTestEventPatternRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

@@ -12,7 +12,9 @@ const app = new OpenAPIHono()
 export const termsOfServiceHandler = app
   .openapi(
     getLegalEntitiesIdAcceptedTermsOfServiceDocumentTermsofserviceacceptancereferenceRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(postLegalEntitiesIdTermsOfServiceRoute, (c) => {
     throw new Error('Not implemented')

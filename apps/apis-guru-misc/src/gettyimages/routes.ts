@@ -1,43 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const HeroImageDisplaySizeSchema = z
-  .strictObject({
-    is_watermarked: z.boolean().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    uri: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('HeroImageDisplaySize')
-
-const HeroImageSchema = z
-  .strictObject({
-    display_sizes: z.array(HeroImageDisplaySizeSchema).nullable().exactOptional(),
-    id: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('HeroImage')
-
-const LocationEventSchema = z
-  .strictObject({
-    city: z.string().nullable().exactOptional(),
-    country: z.string().nullable().exactOptional(),
-    state_province: z.string().nullable().exactOptional(),
-    venue: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('LocationEvent')
-
-type EventType = {
-  child_event_count?: number
-  editorial_segments?: string[] | null
-  hero_image?: z.infer<typeof HeroImageSchema>
-  id?: number
-  image_count?: number
-  location?: z.infer<typeof LocationEventSchema>
-  name?: string | null
-  start_date?: string | null
-}
-
 const ExtendedLicensesSchema = z
   .enum(['multiseat', 'unlimited', 'resale', 'indemnification'])
   .openapi('ExtendedLicenses')
@@ -1300,21 +1262,45 @@ const EthnicityFilterTypeSchema = z
   ])
   .openapi('EthnicityFilterType')
 
-const EventSchema: z.ZodType<EventType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        child_event_count: z.int32().exactOptional(),
-        editorial_segments: z.array(z.string()).nullable().exactOptional(),
-        hero_image: HeroImageSchema.exactOptional(),
-        id: z.int32().exactOptional(),
-        image_count: z.int32().exactOptional(),
-        location: LocationEventSchema.exactOptional(),
-        name: z.string().nullable().exactOptional(),
-        start_date: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
+const HeroImageDisplaySizeSchema = z
+  .strictObject({
+    is_watermarked: z.boolean().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    uri: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('HeroImageDisplaySize')
+
+const HeroImageSchema = z
+  .strictObject({
+    display_sizes: z.array(HeroImageDisplaySizeSchema).nullable().exactOptional(),
+    id: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('HeroImage')
+
+const LocationEventSchema = z
+  .strictObject({
+    city: z.string().nullable().exactOptional(),
+    country: z.string().nullable().exactOptional(),
+    state_province: z.string().nullable().exactOptional(),
+    venue: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('LocationEvent')
+
+const EventSchema = z
+  .strictObject({
+    child_event_count: z.int32().exactOptional(),
+    editorial_segments: z.array(z.string()).nullable().exactOptional(),
+    hero_image: HeroImageSchema.exactOptional(),
+    id: z.int32().exactOptional(),
+    image_count: z.int32().exactOptional(),
+    location: LocationEventSchema.exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    start_date: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
   .openapi('Event')
 
 const EventDetailFieldValuesSchema = z

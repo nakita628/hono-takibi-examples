@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const twoStepVerificationHandler = app.openapi(
   postAdminDirectoryV1UsersUserKeyTwoStepVerificationTurnOffRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

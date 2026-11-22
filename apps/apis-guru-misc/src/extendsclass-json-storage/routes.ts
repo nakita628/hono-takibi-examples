@@ -24,7 +24,7 @@ const ErrorSchema = z
 
 const UpdateStatusSchema = z
   .object({
-    data: z.object({}).exactOptional().openapi({ title: 'Data updated' }),
+    data: z.looseObject({}).exactOptional().openapi({ title: 'Data updated' }),
     status: z.int().exactOptional().openapi({ title: 'Update status (0: Success)' }),
   })
   .openapi({ required: [] })
@@ -62,7 +62,10 @@ export const getBinIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Bin data', content: { 'application/json': { schema: z.object({}) } } },
+    200: {
+      description: 'Bin data',
+      content: { 'application/json': { schema: z.looseObject({}) } },
+    },
     404: { description: 'Bin not found', content: { 'application/json': { schema: ErrorSchema } } },
     422: {
       description: 'Id must be specified',

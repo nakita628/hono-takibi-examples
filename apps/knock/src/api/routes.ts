@@ -887,7 +887,9 @@ const PreferenceSetChannelsSchema = z
 
 const PreferenceSetWorkflowCategorySettingSchema = z
   .xor([
-    z.boolean().openapi({ example: false, 'x-struct': null, 'x-validate': null }),
+    z
+      .looseObject({})
+      .and(z.boolean().openapi({ example: false, 'x-struct': null, 'x-validate': null })),
     z
       .object({
         channel_types: z
@@ -2612,7 +2614,7 @@ const ActivitySchema = z
     actor: z
       .union([
         RecipientSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -4493,8 +4495,8 @@ const CreateSchedulesRequestSchema: z.ZodType<CreateSchedulesRequestType> = z
   .object({
     actor: z
       .xor([
-        RecipientRequestSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(RecipientRequestSchema),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -7028,8 +7030,10 @@ const BulkCreateSchedulesRequestSchema: z.ZodType<BulkCreateSchedulesRequestType
           .object({
             actor: z
               .xor([
-                RecipientRequestSchema,
-                z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+                z.looseObject({}).and(RecipientRequestSchema),
+                z
+                  .looseObject({})
+                  .and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
               ])
               .exactOptional()
               .openapi({
@@ -7228,7 +7232,7 @@ const MessageDeliveryLogResponseSchema = z
   .object({
     body: z
       .xor([
-        z.string().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.string().openapi({ 'x-struct': null, 'x-validate': null })),
         z.looseObject({}).openapi({ 'x-struct': null, 'x-validate': null }),
       ])
       .exactOptional()
@@ -7347,7 +7351,7 @@ const MessageDeliveryLogRequestSchema = z
   .object({
     body: z
       .xor([
-        z.string().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.string().openapi({ 'x-struct': null, 'x-validate': null })),
         z.looseObject({}).openapi({ 'x-struct': null, 'x-validate': null }),
       ])
       .exactOptional()

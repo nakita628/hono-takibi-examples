@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const CreateConfigurationSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An empty object that indicates that the configuration set was successfully created.',
@@ -19,7 +19,7 @@ const InternalServiceErrorExceptionSchema = z.any().openapi('InternalServiceErro
 const AlreadyExistsExceptionSchema = z.any().openapi('AlreadyExistsException')
 
 const CreateConfigurationSetEventDestinationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An empty object that indicates that the event destination was created successfully.',
@@ -30,22 +30,13 @@ const StringSchema = z.string().openapi('String')
 
 const CloudWatchLogsDestinationSchema = z
   .object({
-    IamRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an Amazon Identity and Access Management (IAM) role that is able to write event data to an Amazon CloudWatch destination.',
-        }),
-    ).exactOptional(),
-    LogGroupArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon CloudWatch Log Group that you want to record events in.',
-        }),
-    ).exactOptional(),
+    IamRoleArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an Amazon Identity and Access Management (IAM) role that is able to write event data to an Amazon CloudWatch destination.',
+    }),
+    LogGroupArn: StringSchema.exactOptional().openapi({
+      description: 'The name of the Amazon CloudWatch Log Group that you want to record events in.',
+    }),
   })
   .openapi({
     description:
@@ -58,22 +49,14 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const KinesisFirehoseDestinationSchema = z
   .object({
-    DeliveryStreamArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an IAM role that can write data to an Amazon Kinesis Data Firehose stream.',
-        }),
-    ).exactOptional(),
-    IamRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon Kinesis Data Firehose destination that you want to use in the event destination.',
-        }),
-    ).exactOptional(),
+    DeliveryStreamArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an IAM role that can write data to an Amazon Kinesis Data Firehose stream.',
+    }),
+    IamRoleArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon Kinesis Data Firehose destination that you want to use in the event destination.',
+    }),
   })
   .openapi({
     description:
@@ -97,14 +80,10 @@ const EventTypesSchema = z
 
 const SnsDestinationSchema = z
   .object({
-    TopicArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon SNS topic that you want to publish events to.',
-        }),
-    ).exactOptional(),
+    TopicArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon SNS topic that you want to publish events to.',
+    }),
   })
   .openapi({
     description:
@@ -116,7 +95,7 @@ const SnsDestinationSchema = z
 const NotFoundExceptionSchema = z.any().openapi('NotFoundException')
 
 const DeleteConfigurationSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An empty object that indicates that the configuration set was deleted successfully.',
@@ -124,7 +103,7 @@ const DeleteConfigurationSetResponseSchema = z
   .openapi('DeleteConfigurationSetResponse')
 
 const DeleteConfigurationSetEventDestinationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An empty object that indicates that the event destination was deleted successfully.',
@@ -134,21 +113,15 @@ const DeleteConfigurationSetEventDestinationResponseSchema = z
 const EventDestinationSchema = z
   .object({
     CloudWatchLogsDestination: CloudWatchLogsDestinationSchema.exactOptional(),
-    Enabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether or not the event destination is enabled. If the event destination is enabled, then Amazon Pinpoint sends response data to the specified event destination.',
-        }),
-    ).exactOptional(),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether or not the event destination is enabled. If the event destination is enabled, then Amazon Pinpoint sends response data to the specified event destination.',
+    }),
     KinesisFirehoseDestination: KinesisFirehoseDestinationSchema.exactOptional(),
     MatchingEventTypes: EventTypesSchema.exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A name that identifies the event destination configuration.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'A name that identifies the event destination configuration.',
+    }),
     SnsDestination: SnsDestinationSchema.exactOptional(),
   })
   .openapi({ description: 'An object that defines an event destination.', required: [] })
@@ -184,22 +157,14 @@ const NextTokenStringSchema = z.string().openapi('NextTokenString')
 
 const ListConfigurationSetsResponseSchema = z
   .object({
-    ConfigurationSets: ConfigurationSetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains a list of configuration sets for your account in the current region.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token returned from a previous call to ListConfigurationSets to indicate the position in the list of configuration sets.',
-        }),
-    ).exactOptional(),
+    ConfigurationSets: ConfigurationSetsSchema.exactOptional().openapi({
+      description:
+        'An object that contains a list of configuration sets for your account in the current region.',
+    }),
+    NextToken: NextTokenStringSchema.exactOptional().openapi({
+      description:
+        'A token returned from a previous call to ListConfigurationSets to indicate the position in the list of configuration sets.',
+    }),
   })
   .openapi({
     description:
@@ -210,9 +175,9 @@ const ListConfigurationSetsResponseSchema = z
 
 const SendVoiceMessageResponseSchema = z
   .object({
-    MessageId: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the voice message.' }),
-    ).exactOptional(),
+    MessageId: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the voice message.',
+    }),
   })
   .openapi({
     description:
@@ -225,14 +190,10 @@ const NonEmptyStringSchema = z.string().openapi('NonEmptyString')
 
 const CallInstructionsMessageTypeSchema = z
   .object({
-    Text: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language to use when delivering the message. For a complete list of supported languages, see the Amazon Polly Developer Guide.',
-        }),
-    ).exactOptional(),
+    Text: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The language to use when delivering the message. For a complete list of supported languages, see the Amazon Polly Developer Guide.',
+    }),
   })
   .openapi({
     description:
@@ -243,29 +204,17 @@ const CallInstructionsMessageTypeSchema = z
 
 const PlainTextMessageTypeSchema = z
   .object({
-    LanguageCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language to use when delivering the message. For a complete list of supported languages, see the Amazon Polly Developer Guide.',
-        }),
-    ).exactOptional(),
-    Text: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The plain (not SSML-formatted) text to deliver to the recipient.',
-        }),
-    ).exactOptional(),
-    VoiceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the voice that you want to use to deliver the message. For a complete list of supported voices, see the Amazon Polly Developer Guide.',
-        }),
-    ).exactOptional(),
+    LanguageCode: StringSchema.exactOptional().openapi({
+      description:
+        'The language to use when delivering the message. For a complete list of supported languages, see the Amazon Polly Developer Guide.',
+    }),
+    Text: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The plain (not SSML-formatted) text to deliver to the recipient.',
+    }),
+    VoiceId: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the voice that you want to use to deliver the message. For a complete list of supported voices, see the Amazon Polly Developer Guide.',
+    }),
   })
   .openapi({
     description: 'An object that defines a message that contains unformatted text.',
@@ -275,25 +224,17 @@ const PlainTextMessageTypeSchema = z
 
 const SSMLMessageTypeSchema = z
   .object({
-    LanguageCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The language to use when delivering the message. For a complete list of supported languages, see the Amazon Polly Developer Guide.',
-        }),
-    ).exactOptional(),
-    Text: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The SSML-formatted text to deliver to the recipient.' }),
-    ).exactOptional(),
-    VoiceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the voice that you want to use to deliver the message. For a complete list of supported voices, see the Amazon Polly Developer Guide.',
-        }),
-    ).exactOptional(),
+    LanguageCode: StringSchema.exactOptional().openapi({
+      description:
+        'The language to use when delivering the message. For a complete list of supported languages, see the Amazon Polly Developer Guide.',
+    }),
+    Text: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The SSML-formatted text to deliver to the recipient.',
+    }),
+    VoiceId: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the voice that you want to use to deliver the message. For a complete list of supported voices, see the Amazon Polly Developer Guide.',
+    }),
   })
   .openapi({
     description: 'An object that defines a message that contains SSML-formatted text.',
@@ -302,7 +243,7 @@ const SSMLMessageTypeSchema = z
   .openapi('SSMLMessageType')
 
 const UpdateConfigurationSetEventDestinationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An empty object that indicates that the event destination was updated successfully.',
@@ -314,14 +255,10 @@ const String2Schema = z.string().openapi('String2')
 const EventDestinationDefinitionSchema = z
   .object({
     CloudWatchLogsDestination: CloudWatchLogsDestinationSchema.exactOptional(),
-    Enabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether or not the event destination is enabled. If the event destination is enabled, then Amazon Pinpoint sends response data to the specified event destination.',
-        }),
-    ).exactOptional(),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether or not the event destination is enabled. If the event destination is enabled, then Amazon Pinpoint sends response data to the specified event destination.',
+    }),
     KinesisFirehoseDestination: KinesisFirehoseDestinationSchema.exactOptional(),
     MatchingEventTypes: EventTypesSchema.exactOptional(),
     SnsDestination: SnsDestinationSchema.exactOptional(),
@@ -332,9 +269,9 @@ const EventDestinationDefinitionSchema = z
 const CreateConfigurationSetEventDestinationRequestSchema = z
   .object({
     EventDestination: EventDestinationDefinitionSchema.exactOptional(),
-    EventDestinationName: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'A name that identifies the event destination.' }),
-    ).exactOptional(),
+    EventDestinationName: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'A name that identifies the event destination.',
+    }),
   })
   .openapi({
     title: 'CreateConfigurationSetEventDestinationRequest',
@@ -345,9 +282,9 @@ const CreateConfigurationSetEventDestinationRequestSchema = z
 
 const CreateConfigurationSetRequestSchema = z
   .object({
-    ConfigurationSetName: WordCharactersWithDelimitersSchema.and(
-      z.any().openapi({ description: 'The name that you want to give the configuration set.' }),
-    ).exactOptional(),
+    ConfigurationSetName: WordCharactersWithDelimitersSchema.exactOptional().openapi({
+      description: 'The name that you want to give the configuration set.',
+    }),
   })
   .openapi({
     title: 'CreateConfigurationSetRequest',
@@ -357,22 +294,22 @@ const CreateConfigurationSetRequestSchema = z
   .openapi('CreateConfigurationSetRequest')
 
 const DeleteConfigurationSetEventDestinationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteConfigurationSetEventDestinationRequest' })
   .openapi('DeleteConfigurationSetEventDestinationRequest')
 
 const DeleteConfigurationSetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteConfigurationSetRequest' })
   .openapi('DeleteConfigurationSetRequest')
 
 const GetConfigurationSetEventDestinationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetConfigurationSetEventDestinationsRequest' })
   .openapi('GetConfigurationSetEventDestinationsRequest')
 
 const ListConfigurationSetsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListConfigurationSetsRequest' })
   .openapi('ListConfigurationSetsRequest')
 
@@ -391,36 +328,21 @@ const VoiceMessageContentSchema = z
 
 const SendVoiceMessageRequestSchema = z
   .object({
-    CallerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The phone number that appears on recipients' devices when they receive the message.",
-        }),
-    ).exactOptional(),
-    ConfigurationSetName: WordCharactersWithDelimitersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the configuration set that you want to use to send the message.',
-        }),
-    ).exactOptional(),
+    CallerId: StringSchema.exactOptional().openapi({
+      description:
+        "The phone number that appears on recipients' devices when they receive the message.",
+    }),
+    ConfigurationSetName: WordCharactersWithDelimitersSchema.exactOptional().openapi({
+      description: 'The name of the configuration set that you want to use to send the message.',
+    }),
     Content: VoiceMessageContentSchema.exactOptional(),
-    DestinationPhoneNumber: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The phone number that you want to send the voice message to.' }),
-    ).exactOptional(),
-    OriginationPhoneNumber: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The phone number that Amazon Pinpoint should use to send the voice message. This isn't necessarily the phone number that appears on recipients' devices when they receive the message, because you can specify a CallerId parameter in the request.",
-        }),
-    ).exactOptional(),
+    DestinationPhoneNumber: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The phone number that you want to send the voice message to.',
+    }),
+    OriginationPhoneNumber: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        "The phone number that Amazon Pinpoint should use to send the voice message. This isn't necessarily the phone number that appears on recipients' devices when they receive the message, because you can specify a CallerId parameter in the request.",
+    }),
   })
   .openapi({
     title: 'SendVoiceMessageRequest',
@@ -730,14 +652,10 @@ export const postV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestination
                 EventDestination: z
                   .object({
                     CloudWatchLogsDestination: CloudWatchLogsDestinationSchema.exactOptional(),
-                    Enabled: BooleanSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Indicates whether or not the event destination is enabled. If the event destination is enabled, then Amazon Pinpoint sends response data to the specified event destination.',
-                        }),
-                    ).exactOptional(),
+                    Enabled: BooleanSchema.exactOptional().openapi({
+                      description:
+                        'Indicates whether or not the event destination is enabled. If the event destination is enabled, then Amazon Pinpoint sends response data to the specified event destination.',
+                    }),
                     KinesisFirehoseDestination: KinesisFirehoseDestinationSchema.exactOptional(),
                     MatchingEventTypes: EventTypesSchema.exactOptional(),
                     SnsDestination: SnsDestinationSchema.exactOptional(),
@@ -894,14 +812,10 @@ export const putV1SmsVoiceConfigurationSetsConfigurationSetNameEventDestinations
                 EventDestination: z
                   .object({
                     CloudWatchLogsDestination: CloudWatchLogsDestinationSchema.exactOptional(),
-                    Enabled: BooleanSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Indicates whether or not the event destination is enabled. If the event destination is enabled, then Amazon Pinpoint sends response data to the specified event destination.',
-                        }),
-                    ).exactOptional(),
+                    Enabled: BooleanSchema.exactOptional().openapi({
+                      description:
+                        'Indicates whether or not the event destination is enabled. If the event destination is enabled, then Amazon Pinpoint sends response data to the specified event destination.',
+                    }),
                     KinesisFirehoseDestination: KinesisFirehoseDestinationSchema.exactOptional(),
                     MatchingEventTypes: EventTypesSchema.exactOptional(),
                     SnsDestination: SnsDestinationSchema.exactOptional(),

@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetTranscribeStartMedicalTranscriptionJobHandler = app.openapi(
   postXAmzTargetTranscribeStartMedicalTranscriptionJobRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

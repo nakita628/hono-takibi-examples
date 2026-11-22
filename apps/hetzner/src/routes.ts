@@ -1733,6 +1733,7 @@ export const getCertificatesRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -1761,6 +1762,7 @@ export const getCertificatesRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -2800,6 +2802,7 @@ export const getCertificatesActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -2828,6 +2831,7 @@ export const getCertificatesActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -4196,6 +4200,7 @@ export const getCertificatesIdActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -4224,6 +4229,7 @@ export const getCertificatesIdActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -5129,6 +5135,7 @@ export const getDatacentersRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -5157,6 +5164,7 @@ export const getDatacentersRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -5972,6 +5980,7 @@ export const getFirewallsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -6000,6 +6009,7 @@ export const getFirewallsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -7162,6 +7172,7 @@ export const getFirewallsActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -7190,6 +7201,7 @@ export const getFirewallsActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -8597,6 +8609,7 @@ export const getFirewallsIdActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -8625,6 +8638,7 @@ export const getFirewallsIdActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -10246,6 +10260,7 @@ export const getFloatingIpsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -10274,6 +10289,7 @@ export const getFloatingIpsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -11400,6 +11416,7 @@ export const getFloatingIpsActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -11428,6 +11445,7 @@ export const getFloatingIpsActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -12904,6 +12922,7 @@ export const getFloatingIpsIdActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -12932,6 +12951,7 @@ export const getFloatingIpsIdActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -14782,6 +14802,7 @@ export const getImagesRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -14810,6 +14831,7 @@ export const getImagesRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -15387,6 +15409,7 @@ export const getImagesActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -15415,6 +15438,7 @@ export const getImagesActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -16878,6 +16902,7 @@ export const getImagesIdActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -16906,6 +16931,7 @@ export const getImagesIdActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -17839,6 +17865,7 @@ export const getIsosRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -17867,6 +17894,7 @@ export const getIsosRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -18361,6 +18389,7 @@ export const getLoadBalancerTypesRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -18389,6 +18418,7 @@ export const getLoadBalancerTypesRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -19247,6 +19277,7 @@ export const getLoadBalancersRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -19275,6 +19306,7 @@ export const getLoadBalancersRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -23761,6 +23793,7 @@ export const getLoadBalancersActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -23789,6 +23822,7 @@ export const getLoadBalancersActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -28005,6 +28039,7 @@ export const getLoadBalancersIdActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -28033,6 +28068,7 @@ export const getLoadBalancersIdActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -28433,110 +28469,127 @@ export const postLoadBalancersIdActionsAddServiceRoute = createRoute({
                 .boolean()
                 .exactOptional()
                 .openapi({ description: 'Is Proxyprotocol enabled or not.', example: false }),
-              health_check: z
-                .strictObject({
-                  protocol: z
-                    .enum(['tcp', 'http'])
-                    .exactOptional()
-                    .openapi({ description: 'Type of the health check.', example: 'http' }),
-                  port: z
-                    .int()
-                    .exactOptional()
-                    .openapi({
-                      description: 'Port the health check will be performed on.',
-                      example: 4711,
-                    }),
-                  interval: z
-                    .int()
-                    .min(3)
-                    .max(60)
-                    .exactOptional()
-                    .openapi({
-                      description: 'Time interval in seconds health checks are performed.',
-                      example: 15,
-                    }),
-                  timeout: z
-                    .int()
-                    .min(1)
-                    .max(60)
-                    .exactOptional()
-                    .openapi({
-                      description: 'Time in seconds after an attempt is considered a timeout.',
-                      example: 10,
-                    }),
-                  retries: z
-                    .int()
-                    .min(1)
-                    .max(5)
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'Unsuccessful retries needed until a target is considered unhealthy; an unhealthy target needs the same number of successful retries to become healthy again.',
-                      example: 3,
-                    }),
-                  http: z
-                    .strictObject({
-                      domain: z
-                        .string()
-                        .max(128)
-                        .nullable()
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'Host header to send in the HTTP request. May not contain spaces, percent or backslash symbols. Can be null, in that case no host header is sent.',
-                          example: 'example.com',
-                        }),
-                      path: z
-                        .string()
-                        .min(1)
-                        .max(256)
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'HTTP path to use for health checks. May not contain literal spaces, use percent-encoding instead.',
-                          example: '/',
-                        }),
-                      response: z
-                        .string()
-                        .max(256)
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'String that must be contained in HTTP response in order to pass the health check.',
-                          example: '{"status": "ok"}',
-                        }),
-                      status_codes: z
-                        .array(z.string())
-                        .max(20)
-                        .default(['2??', '3??'])
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'List of returned HTTP status codes in order to pass the health check. Supports the wildcards `?` for exactly one character and `*` for multiple ones.',
-                          example: ['2??', '3??'],
-                        }),
-                      tls: z
-                        .boolean()
-                        .exactOptional()
-                        .openapi({ description: 'Use HTTPS for health check.', example: false }),
-                    })
-                    .exactOptional()
-                    .openapi({
-                      description: 'Additional configuration for protocol http.',
-                      required: [],
-                    }),
-                })
-                .openapi({
-                  title: 'LoadBalancerServiceHealthCheck',
-                  description: 'Service health check.',
-                  required: [],
-                })
-                .and(
-                  z
-                    .looseObject({})
-                    .openapi({ required: ['protocol', 'port', 'interval', 'timeout', 'retries'] }),
-                )
-                .exactOptional(),
+              health_check: (() => {
+                const Schema = z
+                  .strictObject({
+                    protocol: z
+                      .enum(['tcp', 'http'])
+                      .exactOptional()
+                      .openapi({ description: 'Type of the health check.', example: 'http' }),
+                    port: z
+                      .int()
+                      .exactOptional()
+                      .openapi({
+                        description: 'Port the health check will be performed on.',
+                        example: 4711,
+                      }),
+                    interval: z
+                      .int()
+                      .min(3)
+                      .max(60)
+                      .exactOptional()
+                      .openapi({
+                        description: 'Time interval in seconds health checks are performed.',
+                        example: 15,
+                      }),
+                    timeout: z
+                      .int()
+                      .min(1)
+                      .max(60)
+                      .exactOptional()
+                      .openapi({
+                        description: 'Time in seconds after an attempt is considered a timeout.',
+                        example: 10,
+                      }),
+                    retries: z
+                      .int()
+                      .min(1)
+                      .max(5)
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Unsuccessful retries needed until a target is considered unhealthy; an unhealthy target needs the same number of successful retries to become healthy again.',
+                        example: 3,
+                      }),
+                    http: z
+                      .strictObject({
+                        domain: z
+                          .string()
+                          .max(128)
+                          .nullable()
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'Host header to send in the HTTP request. May not contain spaces, percent or backslash symbols. Can be null, in that case no host header is sent.',
+                            example: 'example.com',
+                          }),
+                        path: z
+                          .string()
+                          .min(1)
+                          .max(256)
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'HTTP path to use for health checks. May not contain literal spaces, use percent-encoding instead.',
+                            example: '/',
+                          }),
+                        response: z
+                          .string()
+                          .max(256)
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'String that must be contained in HTTP response in order to pass the health check.',
+                            example: '{"status": "ok"}',
+                          }),
+                        status_codes: z
+                          .array(z.string())
+                          .max(20)
+                          .default(['2??', '3??'])
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'List of returned HTTP status codes in order to pass the health check. Supports the wildcards `?` for exactly one character and `*` for multiple ones.',
+                            example: ['2??', '3??'],
+                          }),
+                        tls: z
+                          .boolean()
+                          .exactOptional()
+                          .openapi({ description: 'Use HTTPS for health check.', example: false }),
+                      })
+                      .exactOptional()
+                      .openapi({
+                        description: 'Additional configuration for protocol http.',
+                        required: [],
+                      }),
+                  })
+                  .openapi({
+                    title: 'LoadBalancerServiceHealthCheck',
+                    description: 'Service health check.',
+                    required: [],
+                  })
+                  .and(
+                    z
+                      .looseObject({})
+                      .openapi({
+                        required: ['protocol', 'port', 'interval', 'timeout', 'retries'],
+                      }),
+                  )
+                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                  ;((ctx) => {
+                    const o = ctx.value
+                    if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                    for (const k of Object.keys(o)) {
+                      if (
+                        !['protocol', 'port', 'interval', 'timeout', 'retries', 'http'].includes(k)
+                      ) {
+                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                      }
+                    }
+                  })(ctx)
+                  return val
+                }, Schema)
+              })().exactOptional(),
             })
             .openapi({ title: 'LoadBalancerService', required: [] })
             .and(
@@ -31865,110 +31918,127 @@ export const postLoadBalancersIdActionsUpdateServiceRoute = createRoute({
                 .boolean()
                 .exactOptional()
                 .openapi({ description: 'Is Proxyprotocol enabled or not.', example: false }),
-              health_check: z
-                .strictObject({
-                  protocol: z
-                    .enum(['tcp', 'http'])
-                    .exactOptional()
-                    .openapi({ description: 'Type of the health check.', example: 'http' }),
-                  port: z
-                    .int()
-                    .exactOptional()
-                    .openapi({
-                      description: 'Port the health check will be performed on.',
-                      example: 4711,
-                    }),
-                  interval: z
-                    .int()
-                    .min(3)
-                    .max(60)
-                    .exactOptional()
-                    .openapi({
-                      description: 'Time interval in seconds health checks are performed.',
-                      example: 15,
-                    }),
-                  timeout: z
-                    .int()
-                    .min(1)
-                    .max(60)
-                    .exactOptional()
-                    .openapi({
-                      description: 'Time in seconds after an attempt is considered a timeout.',
-                      example: 10,
-                    }),
-                  retries: z
-                    .int()
-                    .min(1)
-                    .max(5)
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'Unsuccessful retries needed until a target is considered unhealthy; an unhealthy target needs the same number of successful retries to become healthy again.',
-                      example: 3,
-                    }),
-                  http: z
-                    .strictObject({
-                      domain: z
-                        .string()
-                        .max(128)
-                        .nullable()
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'Host header to send in the HTTP request. May not contain spaces, percent or backslash symbols. Can be null, in that case no host header is sent.',
-                          example: 'example.com',
-                        }),
-                      path: z
-                        .string()
-                        .min(1)
-                        .max(256)
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'HTTP path to use for health checks. May not contain literal spaces, use percent-encoding instead.',
-                          example: '/',
-                        }),
-                      response: z
-                        .string()
-                        .max(256)
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'String that must be contained in HTTP response in order to pass the health check.',
-                          example: '{"status": "ok"}',
-                        }),
-                      status_codes: z
-                        .array(z.string())
-                        .max(20)
-                        .default(['2??', '3??'])
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'List of returned HTTP status codes in order to pass the health check. Supports the wildcards `?` for exactly one character and `*` for multiple ones.',
-                          example: ['2??', '3??'],
-                        }),
-                      tls: z
-                        .boolean()
-                        .exactOptional()
-                        .openapi({ description: 'Use HTTPS for health check.', example: false }),
-                    })
-                    .exactOptional()
-                    .openapi({
-                      description: 'Additional configuration for protocol http.',
-                      required: [],
-                    }),
-                })
-                .openapi({
-                  title: 'LoadBalancerServiceHealthCheck',
-                  description: 'Service health check.',
-                  required: [],
-                })
-                .and(
-                  z
-                    .looseObject({})
-                    .openapi({ required: ['protocol', 'port', 'interval', 'timeout', 'retries'] }),
-                )
-                .exactOptional(),
+              health_check: (() => {
+                const Schema = z
+                  .strictObject({
+                    protocol: z
+                      .enum(['tcp', 'http'])
+                      .exactOptional()
+                      .openapi({ description: 'Type of the health check.', example: 'http' }),
+                    port: z
+                      .int()
+                      .exactOptional()
+                      .openapi({
+                        description: 'Port the health check will be performed on.',
+                        example: 4711,
+                      }),
+                    interval: z
+                      .int()
+                      .min(3)
+                      .max(60)
+                      .exactOptional()
+                      .openapi({
+                        description: 'Time interval in seconds health checks are performed.',
+                        example: 15,
+                      }),
+                    timeout: z
+                      .int()
+                      .min(1)
+                      .max(60)
+                      .exactOptional()
+                      .openapi({
+                        description: 'Time in seconds after an attempt is considered a timeout.',
+                        example: 10,
+                      }),
+                    retries: z
+                      .int()
+                      .min(1)
+                      .max(5)
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Unsuccessful retries needed until a target is considered unhealthy; an unhealthy target needs the same number of successful retries to become healthy again.',
+                        example: 3,
+                      }),
+                    http: z
+                      .strictObject({
+                        domain: z
+                          .string()
+                          .max(128)
+                          .nullable()
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'Host header to send in the HTTP request. May not contain spaces, percent or backslash symbols. Can be null, in that case no host header is sent.',
+                            example: 'example.com',
+                          }),
+                        path: z
+                          .string()
+                          .min(1)
+                          .max(256)
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'HTTP path to use for health checks. May not contain literal spaces, use percent-encoding instead.',
+                            example: '/',
+                          }),
+                        response: z
+                          .string()
+                          .max(256)
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'String that must be contained in HTTP response in order to pass the health check.',
+                            example: '{"status": "ok"}',
+                          }),
+                        status_codes: z
+                          .array(z.string())
+                          .max(20)
+                          .default(['2??', '3??'])
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'List of returned HTTP status codes in order to pass the health check. Supports the wildcards `?` for exactly one character and `*` for multiple ones.',
+                            example: ['2??', '3??'],
+                          }),
+                        tls: z
+                          .boolean()
+                          .exactOptional()
+                          .openapi({ description: 'Use HTTPS for health check.', example: false }),
+                      })
+                      .exactOptional()
+                      .openapi({
+                        description: 'Additional configuration for protocol http.',
+                        required: [],
+                      }),
+                  })
+                  .openapi({
+                    title: 'LoadBalancerServiceHealthCheck',
+                    description: 'Service health check.',
+                    required: [],
+                  })
+                  .and(
+                    z
+                      .looseObject({})
+                      .openapi({
+                        required: ['protocol', 'port', 'interval', 'timeout', 'retries'],
+                      }),
+                  )
+                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                  ;((ctx) => {
+                    const o = ctx.value
+                    if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                    for (const k of Object.keys(o)) {
+                      if (
+                        !['protocol', 'port', 'interval', 'timeout', 'retries', 'http'].includes(k)
+                      ) {
+                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                      }
+                    }
+                  })(ctx)
+                  return val
+                }, Schema)
+              })().exactOptional(),
             })
             .openapi({ title: 'LoadBalancerService', required: [] })
             .and(
@@ -32920,6 +32990,7 @@ export const getLocationsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -32948,6 +33019,7 @@ export const getLocationsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -33523,6 +33595,7 @@ export const getNetworksRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -33551,6 +33624,7 @@ export const getNetworksRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -34529,6 +34603,7 @@ export const getNetworksActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -34557,6 +34632,7 @@ export const getNetworksActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -36013,6 +36089,7 @@ export const getNetworksIdActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -36041,6 +36118,7 @@ export const getNetworksIdActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -38438,6 +38516,7 @@ export const getNetworksIdMembersRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -38466,6 +38545,7 @@ export const getNetworksIdMembersRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -38899,6 +38979,7 @@ export const getPlacementGroupsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -38927,6 +39008,7 @@ export const getPlacementGroupsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -40679,6 +40761,7 @@ export const getPrimaryIpsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -40707,6 +40790,7 @@ export const getPrimaryIpsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
       sort: z
         .preprocess(
@@ -41881,6 +41965,7 @@ export const getPrimaryIpsActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -41909,6 +41994,7 @@ export const getPrimaryIpsActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -42580,6 +42666,7 @@ export const getPrimaryIpsIdActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -42608,6 +42695,7 @@ export const getPrimaryIpsIdActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -45046,6 +45134,7 @@ export const getServerTypesRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -45074,6 +45163,7 @@ export const getServerTypesRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -46080,6 +46170,7 @@ export const getServersRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -46108,6 +46199,7 @@ export const getServersRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -49480,6 +49572,7 @@ export const getServersActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -49508,6 +49601,7 @@ export const getServersActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -52973,6 +53067,7 @@ export const getServersIdActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -53001,6 +53096,7 @@ export const getServersIdActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -59983,6 +60079,7 @@ export const getSshKeysRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -60011,6 +60108,7 @@ export const getSshKeysRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -61002,6 +61100,7 @@ export const getVolumesRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -61030,6 +61129,7 @@ export const getVolumesRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -62305,6 +62405,7 @@ export const getVolumesActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -62333,6 +62434,7 @@ export const getVolumesActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -63810,6 +63912,7 @@ export const getVolumesIdActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -63838,6 +63941,7 @@ export const getVolumesIdActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -65621,6 +65725,7 @@ export const getZonesRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -65649,6 +65754,7 @@ export const getZonesRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -68883,6 +68989,7 @@ export const getZonesActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -68911,6 +69018,7 @@ export const getZonesActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -69568,6 +69676,7 @@ export const getZonesIdOrNameActionsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -69596,6 +69705,7 @@ export const getZonesIdOrNameActionsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },
@@ -71340,6 +71450,7 @@ export const getZonesIdOrNameRrsetsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1, minimum: 1, example: 1 },
           },
           example: 1,
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -71368,6 +71479,7 @@ export const getZonesIdOrNameRrsetsRoute = createRoute({
             },
           },
           example: 25,
+          default: 25,
         }),
     }),
   },

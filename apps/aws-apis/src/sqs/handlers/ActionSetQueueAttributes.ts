@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const ActionSetQueueAttributesHandler = app.openapi(
   postActionSetQueueAttributesRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

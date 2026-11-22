@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSEventsDisableRuleHandler = app.openapi(
   postXAmzTargetAWSEventsDisableRuleRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

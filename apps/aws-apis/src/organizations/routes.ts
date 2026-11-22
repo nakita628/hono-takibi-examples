@@ -4,30 +4,18 @@ const HandshakeResourceSchema: z.ZodType<HandshakeResourceType> = z
   .lazy(() =>
     z
       .object({
-        Value: HandshakeResourceValueSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The information that is passed to the other party in the handshake. The format of the value string must match the requirements of the specified type.',
-            }),
-        ).exactOptional(),
-        Type: HandshakeResourceTypeSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>The type of information being passed, specifying how the value is to be interpreted by the other party:</p> <ul> <li> <p> <code>ACCOUNT</code> - Specifies an Amazon Web Services account ID number.</p> </li> <li> <p> <code>ORGANIZATION</code> - Specifies an organization ID number.</p> </li> <li> <p> <code>EMAIL</code> - Specifies the email address that is associated with the account that receives the handshake. </p> </li> <li> <p> <code>OWNER_EMAIL</code> - Specifies the email address associated with the management account. Included as information about an organization. </p> </li> <li> <p> <code>OWNER_NAME</code> - Specifies the name associated with the management account. Included as information about an organization. </p> </li> <li> <p> <code>NOTES</code> - Additional text provided by the handshake initiator and intended for the recipient to read.</p> </li> </ul>',
-            }),
-        ).exactOptional(),
-        Resources: HandshakeResourcesSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'When needed, contains an additional array of <code>HandshakeResource</code> objects.',
-            }),
-        ).exactOptional(),
+        Value: HandshakeResourceValueSchema.exactOptional().openapi({
+          description:
+            'The information that is passed to the other party in the handshake. The format of the value string must match the requirements of the specified type.',
+        }),
+        Type: HandshakeResourceTypeSchema.exactOptional().openapi({
+          description:
+            '<p>The type of information being passed, specifying how the value is to be interpreted by the other party:</p> <ul> <li> <p> <code>ACCOUNT</code> - Specifies an Amazon Web Services account ID number.</p> </li> <li> <p> <code>ORGANIZATION</code> - Specifies an organization ID number.</p> </li> <li> <p> <code>EMAIL</code> - Specifies the email address that is associated with the account that receives the handshake. </p> </li> <li> <p> <code>OWNER_EMAIL</code> - Specifies the email address associated with the management account. Included as information about an organization. </p> </li> <li> <p> <code>OWNER_NAME</code> - Specifies the name associated with the management account. Included as information about an organization. </p> </li> <li> <p> <code>NOTES</code> - Additional text provided by the handshake initiator and intended for the recipient to read.</p> </li> </ul>',
+        }),
+        Resources: HandshakeResourcesSchema.exactOptional().openapi({
+          description:
+            'When needed, contains an additional array of <code>HandshakeResource</code> objects.',
+        }),
       })
       .openapi({
         description: 'Contains additional data that is needed to process a handshake.',
@@ -72,9 +60,9 @@ const HandshakeResourcesSchema: z.ZodType<HandshakeResourcesType> = z
   .openapi('HandshakeResources')
 
 type HandshakeResourceType = {
-  Value?: z.infer<typeof HandshakeResourceValueSchema> & { [key: string]: unknown }
-  Type?: z.infer<typeof HandshakeResourceTypeSchema> & { [key: string]: unknown }
-  Resources?: z.infer<typeof HandshakeResourcesSchema> & { [key: string]: unknown }
+  Value?: z.infer<typeof HandshakeResourceValueSchema> & unknown
+  Type?: z.infer<typeof HandshakeResourceTypeSchema> & unknown
+  Resources?: z.infer<typeof HandshakeResourcesSchema> & unknown
 }
 
 const HandshakeIdSchema = z
@@ -103,15 +91,11 @@ const HandshakePartyTypeSchema = z
 
 const HandshakePartySchema = z
   .object({
-    Id: HandshakePartyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) for the party.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.</p>',
-        }),
-    ),
-    Type: HandshakePartyTypeSchema.and(z.any().openapi({ description: 'The type of party.' })),
+    Id: HandshakePartyIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) for the party.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.</p>',
+    }),
+    Type: HandshakePartyTypeSchema.openapi({ description: 'The type of party.' }),
   })
   .openapi({ required: ['Id', 'Type'], description: 'Identifies a participant in a handshake.' })
   .openapi('HandshakeParty')
@@ -135,64 +119,35 @@ const ActionTypeSchema = z
 
 const HandshakeSchema = z
   .object({
-    Id: HandshakeIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of a handshake. The originating account creates the ID when it initiates the handshake.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.</p>',
-        }),
-    ).exactOptional(),
-    Arn: HandshakeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of a handshake.</p> <p>For more information about ARNs in Organizations, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies">ARN Formats Supported by Organizations</a> in the <i>Amazon Web Services Service Authorization Reference</i>.</p>',
-        }),
-    ).exactOptional(),
-    Parties: HandshakePartiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the two accounts that are participating in the handshake.',
-        }),
-    ).exactOptional(),
-    State: HandshakeStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current state of the handshake. Use the state to trace the flow of the handshake through the process from its creation to its acceptance. The meaning of each of the valid values is as follows:</p> <ul> <li> <p> <b>REQUESTED</b>: This handshake was sent to multiple recipients (applicable to only some handshake types) and not all recipients have responded yet. The request stays in this state until all recipients respond.</p> </li> <li> <p> <b>OPEN</b>: This handshake was sent to multiple recipients (applicable to only some policy types) and all recipients have responded, allowing the originator to complete the handshake action.</p> </li> <li> <p> <b>CANCELED</b>: This handshake is no longer active because it was canceled by the originating account.</p> </li> <li> <p> <b>ACCEPTED</b>: This handshake is complete because it has been accepted by the recipient.</p> </li> <li> <p> <b>DECLINED</b>: This handshake is no longer active because it was declined by the recipient account.</p> </li> <li> <p> <b>EXPIRED</b>: This handshake is no longer active because the originator did not receive a response of any kind from the recipient before the expiration time (15 days).</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    RequestedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the handshake request was made.' }),
-    ).exactOptional(),
-    ExpirationTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the handshake expires. If the recipient of the handshake request fails to respond before the specified date and time, the handshake becomes inactive and is no longer valid.',
-        }),
-    ).exactOptional(),
-    Action: ActionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The type of handshake, indicating what action occurs when the recipient accepts the handshake. The following handshake types are supported:</p> <ul> <li> <p> <b>INVITE</b>: This type of handshake represents a request to join an organization. It is always sent from the management account to only non-member accounts.</p> </li> <li> <p> <b>ENABLE_ALL_FEATURES</b>: This type of handshake represents a request to enable all features in an organization. It is always sent from the management account to only <i>invited</i> member accounts. Created accounts do not receive this because those accounts were created by the organization's management account and approval is inferred.</p> </li> <li> <p> <b>APPROVE_ALL_FEATURES</b>: This type of handshake is sent from the Organizations service when all member accounts have approved the <code>ENABLE_ALL_FEATURES</code> invitation. It is sent only to the management account and signals the master that it can finalize the process to enable all features.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    Resources: HandshakeResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Additional information that is needed to process the handshake.',
-        }),
-    ).exactOptional(),
+    Id: HandshakeIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier (ID) of a handshake. The originating account creates the ID when it initiates the handshake.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.</p>',
+    }),
+    Arn: HandshakeArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of a handshake.</p> <p>For more information about ARNs in Organizations, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies">ARN Formats Supported by Organizations</a> in the <i>Amazon Web Services Service Authorization Reference</i>.</p>',
+    }),
+    Parties: HandshakePartiesSchema.exactOptional().openapi({
+      description: 'Information about the two accounts that are participating in the handshake.',
+    }),
+    State: HandshakeStateSchema.exactOptional().openapi({
+      description:
+        '<p>The current state of the handshake. Use the state to trace the flow of the handshake through the process from its creation to its acceptance. The meaning of each of the valid values is as follows:</p> <ul> <li> <p> <b>REQUESTED</b>: This handshake was sent to multiple recipients (applicable to only some handshake types) and not all recipients have responded yet. The request stays in this state until all recipients respond.</p> </li> <li> <p> <b>OPEN</b>: This handshake was sent to multiple recipients (applicable to only some policy types) and all recipients have responded, allowing the originator to complete the handshake action.</p> </li> <li> <p> <b>CANCELED</b>: This handshake is no longer active because it was canceled by the originating account.</p> </li> <li> <p> <b>ACCEPTED</b>: This handshake is complete because it has been accepted by the recipient.</p> </li> <li> <p> <b>DECLINED</b>: This handshake is no longer active because it was declined by the recipient account.</p> </li> <li> <p> <b>EXPIRED</b>: This handshake is no longer active because the originator did not receive a response of any kind from the recipient before the expiration time (15 days).</p> </li> </ul>',
+    }),
+    RequestedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the handshake request was made.',
+    }),
+    ExpirationTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that the handshake expires. If the recipient of the handshake request fails to respond before the specified date and time, the handshake becomes inactive and is no longer valid.',
+    }),
+    Action: ActionTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The type of handshake, indicating what action occurs when the recipient accepts the handshake. The following handshake types are supported:</p> <ul> <li> <p> <b>INVITE</b>: This type of handshake represents a request to join an organization. It is always sent from the management account to only non-member accounts.</p> </li> <li> <p> <b>ENABLE_ALL_FEATURES</b>: This type of handshake represents a request to enable all features in an organization. It is always sent from the management account to only <i>invited</i> member accounts. Created accounts do not receive this because those accounts were created by the organization's management account and approval is inferred.</p> </li> <li> <p> <b>APPROVE_ALL_FEATURES</b>: This type of handshake is sent from the Organizations service when all member accounts have approved the <code>ENABLE_ALL_FEATURES</code> invitation. It is sent only to the management account and signals the master that it can finalize the process to enable all features.</p> </li> </ul>",
+    }),
+    Resources: HandshakeResourcesSchema.exactOptional().openapi({
+      description: 'Additional information that is needed to process the handshake.',
+    }),
   })
   .openapi({
     description:
@@ -203,13 +158,9 @@ const HandshakeSchema = z
 
 const AcceptHandshakeResponseSchema = z
   .object({
-    Handshake: HandshakeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A structure that contains details about the accepted handshake.',
-        }),
-    ).exactOptional(),
+    Handshake: HandshakeSchema.exactOptional().openapi({
+      description: 'A structure that contains details about the accepted handshake.',
+    }),
   })
   .openapi({
     example: {
@@ -244,14 +195,10 @@ const AcceptHandshakeResponseSchema = z
 
 const AcceptHandshakeRequestSchema = z
   .object({
-    HandshakeId: HandshakeIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the handshake that you want to accept.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.</p>',
-        }),
-    ),
+    HandshakeId: HandshakeIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the handshake that you want to accept.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.</p>',
+    }),
   })
   .openapi({ required: ['HandshakeId'], title: 'AcceptHandshakeRequest' })
   .openapi('AcceptHandshakeRequest')
@@ -298,22 +245,14 @@ const PolicyTargetIdSchema = z
 
 const AttachPolicyRequestSchema = z
   .object({
-    PolicyId: PolicyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the policy that you want to attach to the target. You can get the ID for the policy by calling the <a>ListPolicies</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).</p>',
-        }),
-    ),
-    TargetId: PolicyTargetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the root, OU, or account that you want to attach the policy to. You can get the ID by calling the <a>ListRoots</a>, <a>ListOrganizationalUnitsForParent</a>, or <a>ListAccounts</a> operations.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a target ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Account</b> - A string that consists of exactly 12 digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
-        }),
-    ),
+    PolicyId: PolicyIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the policy that you want to attach to the target. You can get the ID for the policy by calling the <a>ListPolicies</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).</p>',
+    }),
+    TargetId: PolicyTargetIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the root, OU, or account that you want to attach the policy to. You can get the ID by calling the <a>ListRoots</a>, <a>ListOrganizationalUnitsForParent</a>, or <a>ListAccounts</a> operations.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a target ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Account</b> - A string that consists of exactly 12 digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['PolicyId', 'TargetId'], title: 'AttachPolicyRequest' })
   .openapi('AttachPolicyRequest')
@@ -336,13 +275,9 @@ const PolicyChangesInProgressExceptionSchema = z.any().openapi('PolicyChangesInP
 
 const CancelHandshakeResponseSchema = z
   .object({
-    Handshake: HandshakeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A structure that contains details about the handshake that you canceled.',
-        }),
-    ).exactOptional(),
+    Handshake: HandshakeSchema.exactOptional().openapi({
+      description: 'A structure that contains details about the handshake that you canceled.',
+    }),
   })
   .openapi({
     example: {
@@ -381,14 +316,10 @@ const CancelHandshakeResponseSchema = z
 
 const CancelHandshakeRequestSchema = z
   .object({
-    HandshakeId: HandshakeIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the handshake that you want to cancel. You can get the ID from the <a>ListHandshakesForOrganization</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.</p>',
-        }),
-    ),
+    HandshakeId: HandshakeIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the handshake that you want to cancel. You can get the ID from the <a>ListHandshakesForOrganization</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.</p>',
+    }),
   })
   .openapi({ required: ['HandshakeId'], title: 'CancelHandshakeRequest' })
   .openapi('CancelHandshakeRequest')
@@ -401,14 +332,10 @@ const AccountIdSchema = z
 
 const CloseAccountRequestSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Retrieves the Amazon Web Services account Id for the current <code>CloseAccount</code> API request. ',
-        }),
-    ),
+    AccountId: AccountIdSchema.openapi({
+      description:
+        'Retrieves the Amazon Web Services account Id for the current <code>CloseAccount</code> API request. ',
+    }),
   })
   .openapi({ required: ['AccountId'], title: 'CloseAccountRequest' })
   .openapi('CloseAccountRequest')
@@ -458,65 +385,35 @@ const CreateAccountFailureReasonSchema = z
 
 const CreateAccountStatusSchema = z
   .object({
-    Id: CreateAccountRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) that references this request. You get this value from the response of the initial <a>CreateAccount</a> request to create the account.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a create account request ID string requires "car-" followed by from 8 to 32 lowercase letters or digits.</p>',
-        }),
-    ).exactOptional(),
-    AccountName: CreateAccountNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The account name given to the account when it was created.' }),
-    ).exactOptional(),
-    State: CreateAccountStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the asynchronous request to create an Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    RequestedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time that the request was made for the account creation.',
-        }),
-    ).exactOptional(),
-    CompletedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time that the account was created and the request completed.',
-        }),
-    ).exactOptional(),
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If the account was created successfully, the unique identifier (ID) of the new account.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an account ID string requires exactly 12 digits.</p>',
-        }),
-    ).exactOptional(),
-    GovCloudAccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the account was created successfully, the unique identifier (ID) of the new account in the Amazon Web Services GovCloud (US) Region.',
-        }),
-    ).exactOptional(),
-    FailureReason: CreateAccountFailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>If the request failed, a description of the reason for the failure.</p> <ul> <li> <p>ACCOUNT_LIMIT_EXCEEDED: The account couldn't be created because you reached the limit on the number of accounts in your organization.</p> </li> <li> <p>CONCURRENT_ACCOUNT_MODIFICATION: You already submitted a request with the same information.</p> </li> <li> <p>EMAIL_ALREADY_EXISTS: The account could not be created because another Amazon Web Services account with that email address already exists.</p> </li> <li> <p>FAILED_BUSINESS_VALIDATION: The Amazon Web Services account that owns your organization failed to receive business license validation.</p> </li> <li> <p>GOVCLOUD_ACCOUNT_ALREADY_EXISTS: The account in the Amazon Web Services GovCloud (US) Region could not be created because this Region already includes an account with that email address.</p> </li> <li> <p>IDENTITY_INVALID_BUSINESS_VALIDATION: The Amazon Web Services account that owns your organization can't complete business license validation because it doesn't have valid identity data.</p> </li> <li> <p>INVALID_ADDRESS: The account could not be created because the address you provided is not valid.</p> </li> <li> <p>INVALID_EMAIL: The account could not be created because the email address you provided is not valid.</p> </li> <li> <p>INVALID_PAYMENT_INSTRUMENT: The Amazon Web Services account that owns your organization does not have a supported payment method associated with the account. Amazon Web Services does not support cards issued by financial institutions in Russia or Belarus. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/manage-general.html\">Managing your Amazon Web Services payments</a>.</p> </li> <li> <p>INTERNAL_FAILURE: The account could not be created because of an internal failure. Try again later. If the problem persists, contact Amazon Web Services Customer Support.</p> </li> <li> <p>MISSING_BUSINESS_VALIDATION: The Amazon Web Services account that owns your organization has not received Business Validation.</p> </li> <li> <p> MISSING_PAYMENT_INSTRUMENT: You must configure the management account with a valid payment method, such as a credit card.</p> </li> <li> <p>PENDING_BUSINESS_VALIDATION: The Amazon Web Services account that owns your organization is still in the process of completing business license validation.</p> </li> <li> <p>UNKNOWN_BUSINESS_VALIDATION: The Amazon Web Services account that owns your organization has an unknown issue with business license validation.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    Id: CreateAccountRequestIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier (ID) that references this request. You get this value from the response of the initial <a>CreateAccount</a> request to create the account.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a create account request ID string requires "car-" followed by from 8 to 32 lowercase letters or digits.</p>',
+    }),
+    AccountName: CreateAccountNameSchema.exactOptional().openapi({
+      description: 'The account name given to the account when it was created.',
+    }),
+    State: CreateAccountStateSchema.exactOptional().openapi({
+      description:
+        'The status of the asynchronous request to create an Amazon Web Services account.',
+    }),
+    RequestedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the request was made for the account creation.',
+    }),
+    CompletedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the account was created and the request completed.',
+    }),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description:
+        '<p>If the account was created successfully, the unique identifier (ID) of the new account.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an account ID string requires exactly 12 digits.</p>',
+    }),
+    GovCloudAccountId: AccountIdSchema.exactOptional().openapi({
+      description:
+        'If the account was created successfully, the unique identifier (ID) of the new account in the Amazon Web Services GovCloud (US) Region.',
+    }),
+    FailureReason: CreateAccountFailureReasonSchema.exactOptional().openapi({
+      description:
+        "<p>If the request failed, a description of the reason for the failure.</p> <ul> <li> <p>ACCOUNT_LIMIT_EXCEEDED: The account couldn't be created because you reached the limit on the number of accounts in your organization.</p> </li> <li> <p>CONCURRENT_ACCOUNT_MODIFICATION: You already submitted a request with the same information.</p> </li> <li> <p>EMAIL_ALREADY_EXISTS: The account could not be created because another Amazon Web Services account with that email address already exists.</p> </li> <li> <p>FAILED_BUSINESS_VALIDATION: The Amazon Web Services account that owns your organization failed to receive business license validation.</p> </li> <li> <p>GOVCLOUD_ACCOUNT_ALREADY_EXISTS: The account in the Amazon Web Services GovCloud (US) Region could not be created because this Region already includes an account with that email address.</p> </li> <li> <p>IDENTITY_INVALID_BUSINESS_VALIDATION: The Amazon Web Services account that owns your organization can't complete business license validation because it doesn't have valid identity data.</p> </li> <li> <p>INVALID_ADDRESS: The account could not be created because the address you provided is not valid.</p> </li> <li> <p>INVALID_EMAIL: The account could not be created because the email address you provided is not valid.</p> </li> <li> <p>INVALID_PAYMENT_INSTRUMENT: The Amazon Web Services account that owns your organization does not have a supported payment method associated with the account. Amazon Web Services does not support cards issued by financial institutions in Russia or Belarus. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/manage-general.html\">Managing your Amazon Web Services payments</a>.</p> </li> <li> <p>INTERNAL_FAILURE: The account could not be created because of an internal failure. Try again later. If the problem persists, contact Amazon Web Services Customer Support.</p> </li> <li> <p>MISSING_BUSINESS_VALIDATION: The Amazon Web Services account that owns your organization has not received Business Validation.</p> </li> <li> <p> MISSING_PAYMENT_INSTRUMENT: You must configure the management account with a valid payment method, such as a credit card.</p> </li> <li> <p>PENDING_BUSINESS_VALIDATION: The Amazon Web Services account that owns your organization is still in the process of completing business license validation.</p> </li> <li> <p>UNKNOWN_BUSINESS_VALIDATION: The Amazon Web Services account that owns your organization has an unknown issue with business license validation.</p> </li> </ul>",
+    }),
   })
   .openapi({
     description:
@@ -527,14 +424,10 @@ const CreateAccountStatusSchema = z
 
 const CreateAccountResponseSchema = z
   .object({
-    CreateAccountStatus: CreateAccountStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains details about the request to create an account. This response structure might not be fully populated when you first receive it because account creation is an asynchronous process. You can pass the returned <code>CreateAccountStatus</code> ID as a parameter to <a>DescribeCreateAccountStatus</a> to get status about the progress of the request at later times. You can also check the CloudTrail log for the <code>CreateAccountResult</code> event. For more information, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_monitoring.html">Monitoring the Activity in Your Organization</a> in the <i>Organizations User Guide</i>.',
-        }),
-    ).exactOptional(),
+    CreateAccountStatus: CreateAccountStatusSchema.exactOptional().openapi({
+      description:
+        'A structure that contains details about the request to create an account. This response structure might not be fully populated when you first receive it because account creation is an asynchronous process. You can pass the returned <code>CreateAccountStatus</code> ID as a parameter to <a>DescribeCreateAccountStatus</a> to get status about the progress of the request at later times. You can also check the CloudTrail log for the <code>CreateAccountResult</code> event. For more information, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_monitoring.html">Monitoring the Activity in Your Organization</a> in the <i>Organizations User Guide</i>.',
+    }),
   })
   .openapi({
     example: {
@@ -575,17 +468,11 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z.any().openapi({ description: 'The key identifier, or name, of the tag.' }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The string value that's associated with the key of the tag. You can set the value of a tag to an empty string, but you can't set the value of a tag to null.",
-        }),
-    ),
+    Key: TagKeySchema.openapi({ description: 'The key identifier, or name, of the tag.' }),
+    Value: TagValueSchema.openapi({
+      description:
+        "The string value that's associated with the key of the tag. You can set the value of a tag to an empty string, but you can't set the value of a tag to null.",
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -598,41 +485,25 @@ const TagsSchema = z.array(TagSchema).openapi('Tags')
 
 const CreateAccountRequestSchema = z
   .object({
-    Email: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The email address of the owner to assign to the new member account. This email address must not already be associated with another Amazon Web Services account. You must use a valid email address to complete account creation.</p> <p>The rules for a valid email address:</p> <ul> <li> <p>The address must be a minimum of 6 and a maximum of 64 characters long.</p> </li> <li> <p>All characters must be 7-bit ASCII characters.</p> </li> <li> <p>There must be one and only one @ symbol, which separates the local name from the domain name.</p> </li> <li> <p>The local name can't contain any of the following characters:</p> <p>whitespace, \" ' ( ) &lt; &gt; [ ] : ; , \\ | % &amp;</p> </li> <li> <p>The local name can't begin with a dot (.)</p> </li> <li> <p>The domain name can consist of only the characters [a-z],[A-Z],[0-9], hyphen (-), or dot (.)</p> </li> <li> <p>The domain name can't begin or end with a hyphen (-) or dot (.)</p> </li> <li> <p>The domain name must contain at least one dot</p> </li> </ul> <p>You can't access the root user of the account or remove an account that was created with an invalid email address.</p>",
-        }),
-    ),
-    AccountName: CreateAccountNameSchema.and(
-      z.any().openapi({ description: 'The friendly name of the member account.' }),
-    ),
-    RoleName: RoleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of an IAM role that Organizations automatically preconfigures in the new member account. This role trusts the management account, allowing users in the management account to assume the role, as permitted by the management account administrator. The role has administrator permissions in the new member account.</p> <p>If you don\'t specify this parameter, the role name defaults to <code>OrganizationAccountAccessRole</code>.</p> <p>For more information about how to use this role to access the member account, see the following links:</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html#orgs_manage_accounts_create-cross-account-role">Accessing and Administering the Member Accounts in Your Organization</a> in the <i>Organizations User Guide</i> </p> </li> <li> <p>Steps 2 and 3 in <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html">Tutorial: Delegate Access Across Amazon Web Services accounts Using IAM Roles</a> in the <i>IAM User Guide</i> </p> </li> </ul> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter. The pattern can include uppercase letters, lowercase letters, digits with no spaces, and any of the following characters: =,.@-</p>',
-        }),
-    ).exactOptional(),
-    IamUserAccessToBilling: IAMUserAccessToBillingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If set to <code>ALLOW</code>, the new account enables IAM users to access account billing information <i>if</i> they have the required permissions. If set to <code>DENY</code>, only the root user of the new account can access account billing information. For more information, see <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/grantaccess.html#ControllingAccessWebsite-Activate">Activating Access to the Billing and Cost Management Console</a> in the <i>Amazon Web Services Billing and Cost Management User Guide</i>.</p> <p>If you don\'t specify this parameter, the value defaults to <code>ALLOW</code>, and IAM users and roles with the required permissions can access billing information for the new account.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of tags that you want to attach to the newly created account. For each tag in the list, you must specify both a tag key and a value. You can set the value to an empty string, but you can\'t set it to <code>null</code>. For more information about tagging, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html">Tagging Organizations resources</a> in the Organizations User Guide.</p> <note> <p>If any one of the tags is not valid or if you exceed the maximum allowed number of tags for an account, then the entire request fails and the account is not created.</p> </note>',
-        }),
-    ).exactOptional(),
+    Email: EmailSchema.openapi({
+      description:
+        "<p>The email address of the owner to assign to the new member account. This email address must not already be associated with another Amazon Web Services account. You must use a valid email address to complete account creation.</p> <p>The rules for a valid email address:</p> <ul> <li> <p>The address must be a minimum of 6 and a maximum of 64 characters long.</p> </li> <li> <p>All characters must be 7-bit ASCII characters.</p> </li> <li> <p>There must be one and only one @ symbol, which separates the local name from the domain name.</p> </li> <li> <p>The local name can't contain any of the following characters:</p> <p>whitespace, \" ' ( ) &lt; &gt; [ ] : ; , \\ | % &amp;</p> </li> <li> <p>The local name can't begin with a dot (.)</p> </li> <li> <p>The domain name can consist of only the characters [a-z],[A-Z],[0-9], hyphen (-), or dot (.)</p> </li> <li> <p>The domain name can't begin or end with a hyphen (-) or dot (.)</p> </li> <li> <p>The domain name must contain at least one dot</p> </li> </ul> <p>You can't access the root user of the account or remove an account that was created with an invalid email address.</p>",
+    }),
+    AccountName: CreateAccountNameSchema.openapi({
+      description: 'The friendly name of the member account.',
+    }),
+    RoleName: RoleNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of an IAM role that Organizations automatically preconfigures in the new member account. This role trusts the management account, allowing users in the management account to assume the role, as permitted by the management account administrator. The role has administrator permissions in the new member account.</p> <p>If you don\'t specify this parameter, the role name defaults to <code>OrganizationAccountAccessRole</code>.</p> <p>For more information about how to use this role to access the member account, see the following links:</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html#orgs_manage_accounts_create-cross-account-role">Accessing and Administering the Member Accounts in Your Organization</a> in the <i>Organizations User Guide</i> </p> </li> <li> <p>Steps 2 and 3 in <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html">Tutorial: Delegate Access Across Amazon Web Services accounts Using IAM Roles</a> in the <i>IAM User Guide</i> </p> </li> </ul> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter. The pattern can include uppercase letters, lowercase letters, digits with no spaces, and any of the following characters: =,.@-</p>',
+    }),
+    IamUserAccessToBilling: IAMUserAccessToBillingSchema.exactOptional().openapi({
+      description:
+        '<p>If set to <code>ALLOW</code>, the new account enables IAM users to access account billing information <i>if</i> they have the required permissions. If set to <code>DENY</code>, only the root user of the new account can access account billing information. For more information, see <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/grantaccess.html#ControllingAccessWebsite-Activate">Activating Access to the Billing and Cost Management Console</a> in the <i>Amazon Web Services Billing and Cost Management User Guide</i>.</p> <p>If you don\'t specify this parameter, the value defaults to <code>ALLOW</code>, and IAM users and roles with the required permissions can access billing information for the new account.</p>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>A list of tags that you want to attach to the newly created account. For each tag in the list, you must specify both a tag key and a value. You can set the value to an empty string, but you can\'t set it to <code>null</code>. For more information about tagging, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html">Tagging Organizations resources</a> in the Organizations User Guide.</p> <note> <p>If any one of the tags is not valid or if you exceed the maximum allowed number of tags for an account, then the entire request fails and the account is not created.</p> </note>',
+    }),
   })
   .openapi({ required: ['Email', 'AccountName'], title: 'CreateAccountRequest' })
   .openapi('CreateAccountRequest')
@@ -646,46 +517,26 @@ const CreateGovCloudAccountResponseSchema = z
 
 const CreateGovCloudAccountRequestSchema = z
   .object({
-    Email: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies the email address of the owner to assign to the new member account in the commercial Region. This email address must not already be associated with another Amazon Web Services account. You must use a valid email address to complete account creation.</p> <p>The rules for a valid email address:</p> <ul> <li> <p>The address must be a minimum of 6 and a maximum of 64 characters long.</p> </li> <li> <p>All characters must be 7-bit ASCII characters.</p> </li> <li> <p>There must be one and only one @ symbol, which separates the local name from the domain name.</p> </li> <li> <p>The local name can't contain any of the following characters:</p> <p>whitespace, \" ' ( ) &lt; &gt; [ ] : ; , \\ | % &amp;</p> </li> <li> <p>The local name can't begin with a dot (.)</p> </li> <li> <p>The domain name can consist of only the characters [a-z],[A-Z],[0-9], hyphen (-), or dot (.)</p> </li> <li> <p>The domain name can't begin or end with a hyphen (-) or dot (.)</p> </li> <li> <p>The domain name must contain at least one dot</p> </li> </ul> <p>You can't access the root user of the account or remove an account that was created with an invalid email address. Like all request parameters for <code>CreateGovCloudAccount</code>, the request for the email address for the Amazon Web Services GovCloud (US) account originates from the commercial Region, not from the Amazon Web Services GovCloud (US) Region.</p>",
-        }),
-    ),
-    AccountName: CreateAccountNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The friendly name of the member account. </p> <p>The account name can consist of only the characters [a-z],[A-Z],[0-9], hyphen (-), or dot (.) You can't separate characters with a dash (–).</p>",
-        }),
-    ),
-    RoleName: RoleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>(Optional)</p> <p>The name of an IAM role that Organizations automatically preconfigures in the new member accounts in both the Amazon Web Services GovCloud (US) Region and in the commercial Region. This role trusts the management account, allowing users in the management account to assume the role, as permitted by the management account administrator. The role has administrator permissions in the new member account.</p> <p>If you don\'t specify this parameter, the role name defaults to <code>OrganizationAccountAccessRole</code>.</p> <p>For more information about how to use this role to access the member account, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html#orgs_manage_accounts_create-cross-account-role">Accessing and Administering the Member Accounts in Your Organization</a> in the <i>Organizations User Guide</i> and steps 2 and 3 in <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html">Tutorial: Delegate Access Across Amazon Web Services accounts Using IAM Roles</a> in the <i>IAM User Guide.</i> </p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter. The pattern can include uppercase letters, lowercase letters, digits with no spaces, and any of the following characters: =,.@-</p>',
-        }),
-    ).exactOptional(),
-    IamUserAccessToBilling: IAMUserAccessToBillingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If set to <code>ALLOW</code>, the new linked account in the commercial Region enables IAM users to access account billing information <i>if</i> they have the required permissions. If set to <code>DENY</code>, only the root user of the new account can access account billing information. For more information, see <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/grantaccess.html#ControllingAccessWebsite-Activate">Activating Access to the Billing and Cost Management Console</a> in the <i>Amazon Web Services Billing and Cost Management User Guide.</i> </p> <p>If you don\'t specify this parameter, the value defaults to <code>ALLOW</code>, and IAM users and roles with the required permissions can access billing information for the new account.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of tags that you want to attach to the newly created account. These tags are attached to the commercial account associated with the GovCloud account, and not to the GovCloud account itself. To add tags to the actual GovCloud account, call the <a>TagResource</a> operation in the GovCloud region after the new GovCloud account exists.</p> <p>For each tag in the list, you must specify both a tag key and a value. You can set the value to an empty string, but you can\'t set it to <code>null</code>. For more information about tagging, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html">Tagging Organizations resources</a> in the Organizations User Guide.</p> <note> <p>If any one of the tags is not valid or if you exceed the maximum allowed number of tags for an account, then the entire request fails and the account is not created.</p> </note>',
-        }),
-    ).exactOptional(),
+    Email: EmailSchema.openapi({
+      description:
+        "<p>Specifies the email address of the owner to assign to the new member account in the commercial Region. This email address must not already be associated with another Amazon Web Services account. You must use a valid email address to complete account creation.</p> <p>The rules for a valid email address:</p> <ul> <li> <p>The address must be a minimum of 6 and a maximum of 64 characters long.</p> </li> <li> <p>All characters must be 7-bit ASCII characters.</p> </li> <li> <p>There must be one and only one @ symbol, which separates the local name from the domain name.</p> </li> <li> <p>The local name can't contain any of the following characters:</p> <p>whitespace, \" ' ( ) &lt; &gt; [ ] : ; , \\ | % &amp;</p> </li> <li> <p>The local name can't begin with a dot (.)</p> </li> <li> <p>The domain name can consist of only the characters [a-z],[A-Z],[0-9], hyphen (-), or dot (.)</p> </li> <li> <p>The domain name can't begin or end with a hyphen (-) or dot (.)</p> </li> <li> <p>The domain name must contain at least one dot</p> </li> </ul> <p>You can't access the root user of the account or remove an account that was created with an invalid email address. Like all request parameters for <code>CreateGovCloudAccount</code>, the request for the email address for the Amazon Web Services GovCloud (US) account originates from the commercial Region, not from the Amazon Web Services GovCloud (US) Region.</p>",
+    }),
+    AccountName: CreateAccountNameSchema.openapi({
+      description:
+        "<p>The friendly name of the member account. </p> <p>The account name can consist of only the characters [a-z],[A-Z],[0-9], hyphen (-), or dot (.) You can't separate characters with a dash (–).</p>",
+    }),
+    RoleName: RoleNameSchema.exactOptional().openapi({
+      description:
+        '<p>(Optional)</p> <p>The name of an IAM role that Organizations automatically preconfigures in the new member accounts in both the Amazon Web Services GovCloud (US) Region and in the commercial Region. This role trusts the management account, allowing users in the management account to assume the role, as permitted by the management account administrator. The role has administrator permissions in the new member account.</p> <p>If you don\'t specify this parameter, the role name defaults to <code>OrganizationAccountAccessRole</code>.</p> <p>For more information about how to use this role to access the member account, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html#orgs_manage_accounts_create-cross-account-role">Accessing and Administering the Member Accounts in Your Organization</a> in the <i>Organizations User Guide</i> and steps 2 and 3 in <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html">Tutorial: Delegate Access Across Amazon Web Services accounts Using IAM Roles</a> in the <i>IAM User Guide.</i> </p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter. The pattern can include uppercase letters, lowercase letters, digits with no spaces, and any of the following characters: =,.@-</p>',
+    }),
+    IamUserAccessToBilling: IAMUserAccessToBillingSchema.exactOptional().openapi({
+      description:
+        '<p>If set to <code>ALLOW</code>, the new linked account in the commercial Region enables IAM users to access account billing information <i>if</i> they have the required permissions. If set to <code>DENY</code>, only the root user of the new account can access account billing information. For more information, see <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/grantaccess.html#ControllingAccessWebsite-Activate">Activating Access to the Billing and Cost Management Console</a> in the <i>Amazon Web Services Billing and Cost Management User Guide.</i> </p> <p>If you don\'t specify this parameter, the value defaults to <code>ALLOW</code>, and IAM users and roles with the required permissions can access billing information for the new account.</p>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>A list of tags that you want to attach to the newly created account. These tags are attached to the commercial account associated with the GovCloud account, and not to the GovCloud account itself. To add tags to the actual GovCloud account, call the <a>TagResource</a> operation in the GovCloud region after the new GovCloud account exists.</p> <p>For each tag in the list, you must specify both a tag key and a value. You can set the value to an empty string, but you can\'t set it to <code>null</code>. For more information about tagging, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html">Tagging Organizations resources</a> in the Organizations User Guide.</p> <note> <p>If any one of the tags is not valid or if you exceed the maximum allowed number of tags for an account, then the entire request fails and the account is not created.</p> </note>',
+    }),
   })
   .openapi({ required: ['Email', 'AccountName'], title: 'CreateGovCloudAccountRequest' })
   .openapi('CreateGovCloudAccountRequest')
@@ -719,17 +570,11 @@ const PolicyTypeStatusSchema = z
 
 const PolicyTypeSummarySchema = z
   .object({
-    Type: PolicyTypeSchema.and(
-      z.any().openapi({ description: 'The name of the policy type.' }),
-    ).exactOptional(),
-    Status: PolicyTypeStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the policy type as it relates to the associated root. To attach a policy of the specified type to a root or to an OU or account in that root, it must be available in the organization and enabled for that root.',
-        }),
-    ).exactOptional(),
+    Type: PolicyTypeSchema.exactOptional().openapi({ description: 'The name of the policy type.' }),
+    Status: PolicyTypeStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the policy type as it relates to the associated root. To attach a policy of the specified type to a root or to an OU or account in that root, it must be available in the organization and enabled for that root.',
+    }),
   })
   .openapi({
     description: 'Contains information about a policy type and its status in the associated root.',
@@ -741,62 +586,34 @@ const PolicyTypesSchema = z.array(PolicyTypeSummarySchema).openapi('PolicyTypes'
 
 const OrganizationSchema = z
   .object({
-    Id: OrganizationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of an organization.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an organization ID string requires "o-" followed by from 10 to 32 lowercase letters or digits.</p>',
-        }),
-    ).exactOptional(),
-    Arn: OrganizationArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of an organization.</p> <p>For more information about ARNs in Organizations, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies">ARN Formats Supported by Organizations</a> in the <i>Amazon Web Services Service Authorization Reference</i>.</p>',
-        }),
-    ).exactOptional(),
-    FeatureSet: OrganizationFeatureSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the functionality that currently is available to the organization. If set to "ALL", then all features are enabled and policies can be applied to accounts in the organization. If set to "CONSOLIDATED_BILLING", then only consolidated billing functionality is available. For more information, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_org_support-all-features.html">Enabling All Features in Your Organization</a> in the <i>Organizations User Guide</i>.',
-        }),
-    ).exactOptional(),
-    MasterAccountArn: AccountArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the account that is designated as the management account for the organization.</p> <p>For more information about ARNs in Organizations, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies">ARN Formats Supported by Organizations</a> in the <i>Amazon Web Services Service Authorization Reference</i>.</p>',
-        }),
-    ).exactOptional(),
-    MasterAccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the management account of an organization.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an account ID string requires exactly 12 digits.</p>',
-        }),
-    ).exactOptional(),
-    MasterAccountEmail: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address that is associated with the Amazon Web Services account that is designated as the management account for the organization.',
-        }),
-    ).exactOptional(),
-    AvailablePolicyTypes: PolicyTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<important> <p>Do not use. This field is deprecated and doesn't provide complete information about the policies in your organization.</p> </important> <p>To determine the policies that are enabled and available for use in your organization, use the <a>ListRoots</a> operation instead.</p>",
-        }),
-    ).exactOptional(),
+    Id: OrganizationIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier (ID) of an organization.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an organization ID string requires "o-" followed by from 10 to 32 lowercase letters or digits.</p>',
+    }),
+    Arn: OrganizationArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of an organization.</p> <p>For more information about ARNs in Organizations, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies">ARN Formats Supported by Organizations</a> in the <i>Amazon Web Services Service Authorization Reference</i>.</p>',
+    }),
+    FeatureSet: OrganizationFeatureSetSchema.exactOptional().openapi({
+      description:
+        'Specifies the functionality that currently is available to the organization. If set to "ALL", then all features are enabled and policies can be applied to accounts in the organization. If set to "CONSOLIDATED_BILLING", then only consolidated billing functionality is available. For more information, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_org_support-all-features.html">Enabling All Features in Your Organization</a> in the <i>Organizations User Guide</i>.',
+    }),
+    MasterAccountArn: AccountArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the account that is designated as the management account for the organization.</p> <p>For more information about ARNs in Organizations, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies">ARN Formats Supported by Organizations</a> in the <i>Amazon Web Services Service Authorization Reference</i>.</p>',
+    }),
+    MasterAccountId: AccountIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier (ID) of the management account of an organization.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an account ID string requires exactly 12 digits.</p>',
+    }),
+    MasterAccountEmail: EmailSchema.exactOptional().openapi({
+      description:
+        'The email address that is associated with the Amazon Web Services account that is designated as the management account for the organization.',
+    }),
+    AvailablePolicyTypes: PolicyTypesSchema.exactOptional().openapi({
+      description:
+        "<important> <p>Do not use. This field is deprecated and doesn't provide complete information about the policies in your organization.</p> </important> <p>To determine the policies that are enabled and available for use in your organization, use the <a>ListRoots</a> operation instead.</p>",
+    }),
   })
   .openapi({
     description:
@@ -807,13 +624,9 @@ const OrganizationSchema = z
 
 const CreateOrganizationResponseSchema = z
   .object({
-    Organization: OrganizationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A structure that contains details about the newly created organization.',
-        }),
-    ).exactOptional(),
+    Organization: OrganizationSchema.exactOptional().openapi({
+      description: 'A structure that contains details about the newly created organization.',
+    }),
   })
   .openapi({
     example: {
@@ -833,14 +646,10 @@ const CreateOrganizationResponseSchema = z
 
 const CreateOrganizationRequestSchema = z
   .object({
-    FeatureSet: OrganizationFeatureSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the feature set supported by the new organization. Each feature set supports different levels of functionality.</p> <ul> <li> <p> <code>CONSOLIDATED_BILLING</code>: All member accounts have their bills consolidated to and paid by the management account. For more information, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html#feature-set-cb-only">Consolidated billing</a> in the <i>Organizations User Guide.</i> </p> <p> The consolidated billing feature subset isn\'t available for organizations in the Amazon Web Services GovCloud (US) Region.</p> </li> <li> <p> <code>ALL</code>: In addition to all the features supported by the consolidated billing feature set, the management account can also apply any policy type to any member account in the organization. For more information, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html#feature-set-all">All features</a> in the <i>Organizations User Guide.</i> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    FeatureSet: OrganizationFeatureSetSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the feature set supported by the new organization. Each feature set supports different levels of functionality.</p> <ul> <li> <p> <code>CONSOLIDATED_BILLING</code>: All member accounts have their bills consolidated to and paid by the management account. For more information, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html#feature-set-cb-only">Consolidated billing</a> in the <i>Organizations User Guide.</i> </p> <p> The consolidated billing feature subset isn\'t available for organizations in the Amazon Web Services GovCloud (US) Region.</p> </li> <li> <p> <code>ALL</code>: In addition to all the features supported by the consolidated billing feature set, the management account can also apply any policy type to any member account in the organization. For more information, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html#feature-set-all">All features</a> in the <i>Organizations User Guide.</i> </p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'CreateOrganizationRequest', required: [] })
   .openapi('CreateOrganizationRequest')
@@ -867,30 +676,18 @@ const OrganizationalUnitNameSchema = z
 
 const OrganizationalUnitSchema = z
   .object({
-    Id: OrganizationalUnitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) associated with this OU.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an organizational unit ID string requires "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that contains the OU). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p>',
-        }),
-    ).exactOptional(),
-    Arn: OrganizationalUnitArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of this OU.</p> <p>For more information about ARNs in Organizations, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies">ARN Formats Supported by Organizations</a> in the <i>Amazon Web Services Service Authorization Reference</i>.</p>',
-        }),
-    ).exactOptional(),
-    Name: OrganizationalUnitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The friendly name of this OU.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of any of the characters in the ASCII character range.</p>',
-        }),
-    ).exactOptional(),
+    Id: OrganizationalUnitIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier (ID) associated with this OU.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an organizational unit ID string requires "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that contains the OU). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p>',
+    }),
+    Arn: OrganizationalUnitArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of this OU.</p> <p>For more information about ARNs in Organizations, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies">ARN Formats Supported by Organizations</a> in the <i>Amazon Web Services Service Authorization Reference</i>.</p>',
+    }),
+    Name: OrganizationalUnitNameSchema.exactOptional().openapi({
+      description:
+        '<p>The friendly name of this OU.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of any of the characters in the ASCII character range.</p>',
+    }),
   })
   .openapi({
     description:
@@ -901,11 +698,9 @@ const OrganizationalUnitSchema = z
 
 const CreateOrganizationalUnitResponseSchema = z
   .object({
-    OrganizationalUnit: OrganizationalUnitSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A structure that contains details about the newly created OU.' }),
-    ).exactOptional(),
+    OrganizationalUnit: OrganizationalUnitSchema.exactOptional().openapi({
+      description: 'A structure that contains details about the newly created OU.',
+    }),
   })
   .openapi({
     example: {
@@ -927,25 +722,17 @@ const ParentIdSchema = z
 
 const CreateOrganizationalUnitRequestSchema = z
   .object({
-    ParentId: ParentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the parent root or OU that you want to create the new OU in.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a parent ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
-        }),
-    ),
-    Name: OrganizationalUnitNameSchema.and(
-      z.any().openapi({ description: 'The friendly name to assign to the new OU.' }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of tags that you want to attach to the newly created OU. For each tag in the list, you must specify both a tag key and a value. You can set the value to an empty string, but you can\'t set it to <code>null</code>. For more information about tagging, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html">Tagging Organizations resources</a> in the Organizations User Guide.</p> <note> <p>If any one of the tags is not valid or if you exceed the allowed number of tags for an OU, then the entire request fails and the OU is not created.</p> </note>',
-        }),
-    ).exactOptional(),
+    ParentId: ParentIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the parent root or OU that you want to create the new OU in.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a parent ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
+    }),
+    Name: OrganizationalUnitNameSchema.openapi({
+      description: 'The friendly name to assign to the new OU.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>A list of tags that you want to attach to the newly created OU. For each tag in the list, you must specify both a tag key and a value. You can set the value to an empty string, but you can\'t set it to <code>null</code>. For more information about tagging, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html">Tagging Organizations resources</a> in the Organizations User Guide.</p> <note> <p>If any one of the tags is not valid or if you exceed the allowed number of tags for an OU, then the entire request fails and the OU is not created.</p> </note>',
+    }),
   })
   .openapi({ required: ['ParentId', 'Name'], title: 'CreateOrganizationalUnitRequest' })
   .openapi('CreateOrganizationalUnitRequest')
@@ -980,44 +767,26 @@ const AwsManagedPolicySchema = z.boolean().openapi('AwsManagedPolicy')
 
 const PolicySummarySchema = z
   .object({
-    Id: PolicyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the policy.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).</p>',
-        }),
-    ).exactOptional(),
-    Arn: PolicyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the policy.</p> <p>For more information about ARNs in Organizations, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies">ARN Formats Supported by Organizations</a> in the <i>Amazon Web Services Service Authorization Reference</i>.</p>',
-        }),
-    ).exactOptional(),
-    Name: PolicyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The friendly name of the policy.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of any of the characters in the ASCII character range.</p>',
-        }),
-    ).exactOptional(),
-    Description: PolicyDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the policy.' }),
-    ).exactOptional(),
-    Type: PolicyTypeSchema.and(
-      z.any().openapi({ description: 'The type of policy.' }),
-    ).exactOptional(),
-    AwsManaged: AwsManagedPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean value that indicates whether the specified policy is an Amazon Web Services managed policy. If true, then you can attach the policy to roots, OUs, or accounts, but you cannot edit it.',
-        }),
-    ).exactOptional(),
+    Id: PolicyIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier (ID) of the policy.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).</p>',
+    }),
+    Arn: PolicyArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the policy.</p> <p>For more information about ARNs in Organizations, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies">ARN Formats Supported by Organizations</a> in the <i>Amazon Web Services Service Authorization Reference</i>.</p>',
+    }),
+    Name: PolicyNameSchema.exactOptional().openapi({
+      description:
+        '<p>The friendly name of the policy.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of any of the characters in the ASCII character range.</p>',
+    }),
+    Description: PolicyDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the policy.',
+    }),
+    Type: PolicyTypeSchema.exactOptional().openapi({ description: 'The type of policy.' }),
+    AwsManaged: AwsManagedPolicySchema.exactOptional().openapi({
+      description:
+        'A boolean value that indicates whether the specified policy is an Amazon Web Services managed policy. If true, then you can attach the policy to roots, OUs, or accounts, but you cannot edit it.',
+    }),
   })
   .openapi({
     description:
@@ -1035,14 +804,12 @@ const PolicyContentSchema = z
 
 const PolicySchema = z
   .object({
-    PolicySummary: PolicySummarySchema.and(
-      z
-        .any()
-        .openapi({ description: 'A structure that contains additional details about the policy.' }),
-    ).exactOptional(),
-    Content: PolicyContentSchema.and(
-      z.any().openapi({ description: 'The text content of the policy.' }),
-    ).exactOptional(),
+    PolicySummary: PolicySummarySchema.exactOptional().openapi({
+      description: 'A structure that contains additional details about the policy.',
+    }),
+    Content: PolicyContentSchema.exactOptional().openapi({
+      description: 'The text content of the policy.',
+    }),
   })
   .openapi({
     description:
@@ -1053,13 +820,9 @@ const PolicySchema = z
 
 const CreatePolicyResponseSchema = z
   .object({
-    Policy: PolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A structure that contains details about the newly created policy.',
-        }),
-    ).exactOptional(),
+    Policy: PolicySchema.exactOptional().openapi({
+      description: 'A structure that contains details about the newly created policy.',
+    }),
   })
   .openapi({
     example: {
@@ -1079,41 +842,25 @@ const CreatePolicyResponseSchema = z
 
 const CreatePolicyRequestSchema = z
   .object({
-    Content: PolicyContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The policy text content to add to the new policy. The text that you supply must adhere to the rules of the policy type you specify in the <code>Type</code> parameter.',
-        }),
-    ),
-    Description: PolicyDescriptionSchema.and(
-      z.any().openapi({ description: 'An optional description to assign to the policy.' }),
-    ),
-    Name: PolicyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The friendly name to assign to the policy.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of any of the characters in the ASCII character range.</p>',
-        }),
-    ),
-    Type: PolicyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of policy to create. You can specify one of the following values:</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html">AISERVICES_OPT_OUT_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html">BACKUP_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html">SERVICE_CONTROL_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html">TAG_POLICY</a> </p> </li> </ul>',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of tags that you want to attach to the newly created policy. For each tag in the list, you must specify both a tag key and a value. You can set the value to an empty string, but you can\'t set it to <code>null</code>. For more information about tagging, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html">Tagging Organizations resources</a> in the Organizations User Guide.</p> <note> <p>If any one of the tags is not valid or if you exceed the allowed number of tags for a policy, then the entire request fails and the policy is not created.</p> </note>',
-        }),
-    ).exactOptional(),
+    Content: PolicyContentSchema.openapi({
+      description:
+        'The policy text content to add to the new policy. The text that you supply must adhere to the rules of the policy type you specify in the <code>Type</code> parameter.',
+    }),
+    Description: PolicyDescriptionSchema.openapi({
+      description: 'An optional description to assign to the policy.',
+    }),
+    Name: PolicyNameSchema.openapi({
+      description:
+        '<p>The friendly name to assign to the policy.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of any of the characters in the ASCII character range.</p>',
+    }),
+    Type: PolicyTypeSchema.openapi({
+      description:
+        '<p>The type of policy to create. You can specify one of the following values:</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html">AISERVICES_OPT_OUT_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html">BACKUP_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html">SERVICE_CONTROL_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html">TAG_POLICY</a> </p> </li> </ul>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>A list of tags that you want to attach to the newly created policy. For each tag in the list, you must specify both a tag key and a value. You can set the value to an empty string, but you can\'t set it to <code>null</code>. For more information about tagging, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html">Tagging Organizations resources</a> in the Organizations User Guide.</p> <note> <p>If any one of the tags is not valid or if you exceed the allowed number of tags for a policy, then the entire request fails and the policy is not created.</p> </note>',
+    }),
   })
   .openapi({ required: ['Content', 'Description', 'Name', 'Type'], title: 'CreatePolicyRequest' })
   .openapi('CreatePolicyRequest')
@@ -1128,14 +875,10 @@ const PolicyTypeNotAvailableForOrganizationExceptionSchema = z
 
 const DeclineHandshakeResponseSchema = z
   .object({
-    Handshake: HandshakeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains details about the declined handshake. The state is updated to show the value <code>DECLINED</code>.',
-        }),
-    ).exactOptional(),
+    Handshake: HandshakeSchema.exactOptional().openapi({
+      description:
+        'A structure that contains details about the declined handshake. The state is updated to show the value <code>DECLINED</code>.',
+    }),
   })
   .openapi({
     example: {
@@ -1173,14 +916,10 @@ const DeclineHandshakeResponseSchema = z
 
 const DeclineHandshakeRequestSchema = z
   .object({
-    HandshakeId: HandshakeIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the handshake that you want to decline. You can get the ID from the <a>ListHandshakesForAccount</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.</p>',
-        }),
-    ),
+    HandshakeId: HandshakeIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the handshake that you want to decline. You can get the ID from the <a>ListHandshakesForAccount</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.</p>',
+    }),
   })
   .openapi({ required: ['HandshakeId'], title: 'DeclineHandshakeRequest' })
   .openapi('DeclineHandshakeRequest')
@@ -1189,14 +928,10 @@ const OrganizationNotEmptyExceptionSchema = z.any().openapi('OrganizationNotEmpt
 
 const DeleteOrganizationalUnitRequestSchema = z
   .object({
-    OrganizationalUnitId: OrganizationalUnitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the organizational unit that you want to delete. You can get the ID from the <a>ListOrganizationalUnitsForParent</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an organizational unit ID string requires "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that contains the OU). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p>',
-        }),
-    ),
+    OrganizationalUnitId: OrganizationalUnitIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the organizational unit that you want to delete. You can get the ID from the <a>ListOrganizationalUnitsForParent</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an organizational unit ID string requires "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that contains the OU). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p>',
+    }),
   })
   .openapi({ required: ['OrganizationalUnitId'], title: 'DeleteOrganizationalUnitRequest' })
   .openapi('DeleteOrganizationalUnitRequest')
@@ -1211,14 +946,10 @@ const OrganizationalUnitNotFoundExceptionSchema = z
 
 const DeletePolicyRequestSchema = z
   .object({
-    PolicyId: PolicyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the policy that you want to delete. You can get the ID from the <a>ListPolicies</a> or <a>ListPoliciesForTarget</a> operations.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).</p>',
-        }),
-    ),
+    PolicyId: PolicyIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the policy that you want to delete. You can get the ID from the <a>ListPolicies</a> or <a>ListPoliciesForTarget</a> operations.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).</p>',
+    }),
   })
   .openapi({ required: ['PolicyId'], title: 'DeletePolicyRequest' })
   .openapi('DeletePolicyRequest')
@@ -1236,22 +967,14 @@ const ServicePrincipalSchema = z
 
 const DeregisterDelegatedAdministratorRequestSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The account ID number of the member account in the organization that you want to deregister as a delegated administrator.',
-        }),
-    ),
-    ServicePrincipal: ServicePrincipalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The service principal name of an Amazon Web Services service for which the account is a delegated administrator.</p> <p>Delegated administrator privileges are revoked for only the specified Amazon Web Services service from the member account. If the specified service is the only service for which the member account is a delegated administrator, the operation also revokes Organizations read action permissions.</p>',
-        }),
-    ),
+    AccountId: AccountIdSchema.openapi({
+      description:
+        'The account ID number of the member account in the organization that you want to deregister as a delegated administrator.',
+    }),
+    ServicePrincipal: ServicePrincipalSchema.openapi({
+      description:
+        '<p>The service principal name of an Amazon Web Services service for which the account is a delegated administrator.</p> <p>Delegated administrator privileges are revoked for only the specified Amazon Web Services service from the member account. If the specified service is the only service for which the member account is a delegated administrator, the operation also revokes Organizations read action permissions.</p>',
+    }),
   })
   .openapi({
     required: ['AccountId', 'ServicePrincipal'],
@@ -1276,47 +999,31 @@ const AccountJoinedMethodSchema = z.enum(['INVITED', 'CREATED']).openapi('Accoun
 
 const AccountSchema = z
   .object({
-    Id: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the account.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an account ID string requires exactly 12 digits.</p>',
-        }),
-    ).exactOptional(),
-    Arn: AccountArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the account.</p> <p>For more information about ARNs in Organizations, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies">ARN Formats Supported by Organizations</a> in the <i>Amazon Web Services Service Authorization Reference</i>.</p>',
-        }),
-    ).exactOptional(),
-    Email: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The email address associated with the Amazon Web Services account.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for this parameter is a string of characters that represents a standard internet email address.</p>',
-        }),
-    ).exactOptional(),
-    Name: AccountNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The friendly name of the account.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of any of the characters in the ASCII character range.</p>',
-        }),
-    ).exactOptional(),
-    Status: AccountStatusSchema.and(
-      z.any().openapi({ description: 'The status of the account in the organization.' }),
-    ).exactOptional(),
-    JoinedMethod: AccountJoinedMethodSchema.and(
-      z.any().openapi({ description: 'The method by which the account joined the organization.' }),
-    ).exactOptional(),
-    JoinedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the account became a part of the organization.' }),
-    ).exactOptional(),
+    Id: AccountIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier (ID) of the account.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an account ID string requires exactly 12 digits.</p>',
+    }),
+    Arn: AccountArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the account.</p> <p>For more information about ARNs in Organizations, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies">ARN Formats Supported by Organizations</a> in the <i>Amazon Web Services Service Authorization Reference</i>.</p>',
+    }),
+    Email: EmailSchema.exactOptional().openapi({
+      description:
+        '<p>The email address associated with the Amazon Web Services account.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for this parameter is a string of characters that represents a standard internet email address.</p>',
+    }),
+    Name: AccountNameSchema.exactOptional().openapi({
+      description:
+        '<p>The friendly name of the account.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of any of the characters in the ASCII character range.</p>',
+    }),
+    Status: AccountStatusSchema.exactOptional().openapi({
+      description: 'The status of the account in the organization.',
+    }),
+    JoinedMethod: AccountJoinedMethodSchema.exactOptional().openapi({
+      description: 'The method by which the account joined the organization.',
+    }),
+    JoinedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The date the account became a part of the organization.',
+    }),
   })
   .openapi({
     description:
@@ -1327,13 +1034,9 @@ const AccountSchema = z
 
 const DescribeAccountResponseSchema = z
   .object({
-    Account: AccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A structure that contains information about the requested account.',
-        }),
-    ).exactOptional(),
+    Account: AccountSchema.exactOptional().openapi({
+      description: 'A structure that contains information about the requested account.',
+    }),
   })
   .openapi({
     example: {
@@ -1350,28 +1053,19 @@ const DescribeAccountResponseSchema = z
 
 const DescribeAccountRequestSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the Amazon Web Services account that you want information about. You can get the ID from the <a>ListAccounts</a> or <a>ListAccountsForParent</a> operations.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an account ID string requires exactly 12 digits.</p>',
-        }),
-    ),
+    AccountId: AccountIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the Amazon Web Services account that you want information about. You can get the ID from the <a>ListAccounts</a> or <a>ListAccountsForParent</a> operations.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an account ID string requires exactly 12 digits.</p>',
+    }),
   })
   .openapi({ required: ['AccountId'], title: 'DescribeAccountRequest' })
   .openapi('DescribeAccountRequest')
 
 const DescribeCreateAccountStatusResponseSchema = z
   .object({
-    CreateAccountStatus: CreateAccountStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains the current status of an account creation request.',
-        }),
-    ).exactOptional(),
+    CreateAccountStatus: CreateAccountStatusSchema.exactOptional().openapi({
+      description: 'A structure that contains the current status of an account creation request.',
+    }),
   })
   .openapi({
     example: {
@@ -1387,14 +1081,10 @@ const DescribeCreateAccountStatusResponseSchema = z
 
 const DescribeCreateAccountStatusRequestSchema = z
   .object({
-    CreateAccountRequestId: CreateAccountRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the <code>Id</code> value that uniquely identifies the <code>CreateAccount</code> request. You can get the value from the <code>CreateAccountStatus.Id</code> response in an earlier <a>CreateAccount</a> request, or from the <a>ListCreateAccountStatus</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a create account request ID string requires "car-" followed by from 8 to 32 lowercase letters or digits.</p>',
-        }),
-    ),
+    CreateAccountRequestId: CreateAccountRequestIdSchema.openapi({
+      description:
+        '<p>Specifies the <code>Id</code> value that uniquely identifies the <code>CreateAccount</code> request. You can get the value from the <code>CreateAccountStatus.Id</code> response in an earlier <a>CreateAccount</a> request, or from the <a>ListCreateAccountStatus</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a create account request ID string requires "car-" followed by from 8 to 32 lowercase letters or digits.</p>',
+    }),
   })
   .openapi({ required: ['CreateAccountRequestId'], title: 'DescribeCreateAccountStatusRequest' })
   .openapi('DescribeCreateAccountStatusRequest')
@@ -1409,18 +1099,18 @@ const EffectivePolicyTypeSchema = z
 
 const EffectivePolicySchema = z
   .object({
-    PolicyContent: PolicyContentSchema.and(
-      z.any().openapi({ description: 'The text content of the policy.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time of the last update to this policy.' }),
-    ).exactOptional(),
-    TargetId: PolicyTargetIdSchema.and(
-      z.any().openapi({ description: 'The account ID of the policy target. ' }),
-    ).exactOptional(),
-    PolicyType: EffectivePolicyTypeSchema.and(
-      z.any().openapi({ description: 'The policy type.' }),
-    ).exactOptional(),
+    PolicyContent: PolicyContentSchema.exactOptional().openapi({
+      description: 'The text content of the policy.',
+    }),
+    LastUpdatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time of the last update to this policy.',
+    }),
+    TargetId: PolicyTargetIdSchema.exactOptional().openapi({
+      description: 'The account ID of the policy target. ',
+    }),
+    PolicyType: EffectivePolicyTypeSchema.exactOptional().openapi({
+      description: 'The policy type.',
+    }),
   })
   .openapi({
     description:
@@ -1431,31 +1121,23 @@ const EffectivePolicySchema = z
 
 const DescribeEffectivePolicyResponseSchema = z
   .object({
-    EffectivePolicy: EffectivePolicySchema.and(
-      z.any().openapi({ description: 'The contents of the effective policy.' }),
-    ).exactOptional(),
+    EffectivePolicy: EffectivePolicySchema.exactOptional().openapi({
+      description: 'The contents of the effective policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEffectivePolicyResponse')
 
 const DescribeEffectivePolicyRequestSchema = z
   .object({
-    PolicyType: EffectivePolicyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of policy that you want information about. You can specify one of the following values:</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html">AISERVICES_OPT_OUT_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html">BACKUP_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html">TAG_POLICY</a> </p> </li> </ul>',
-        }),
-    ),
-    TargetId: PolicyTargetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "When you're signed in as the management account, specify the ID of the account that you want details about. Specifying an organization root or organizational unit (OU) as the target is not supported.",
-        }),
-    ).exactOptional(),
+    PolicyType: EffectivePolicyTypeSchema.openapi({
+      description:
+        '<p>The type of policy that you want information about. You can specify one of the following values:</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html">AISERVICES_OPT_OUT_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html">BACKUP_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html">TAG_POLICY</a> </p> </li> </ul>',
+    }),
+    TargetId: PolicyTargetIdSchema.exactOptional().openapi({
+      description:
+        "When you're signed in as the management account, specify the ID of the account that you want details about. Specifying an organization root or organizational unit (OU) as the target is not supported.",
+    }),
   })
   .openapi({ required: ['PolicyType'], title: 'DescribeEffectivePolicyRequest' })
   .openapi('DescribeEffectivePolicyRequest')
@@ -1464,13 +1146,9 @@ const EffectivePolicyNotFoundExceptionSchema = z.any().openapi('EffectivePolicyN
 
 const DescribeHandshakeResponseSchema = z
   .object({
-    Handshake: HandshakeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A structure that contains information about the specified handshake.',
-        }),
-    ).exactOptional(),
+    Handshake: HandshakeSchema.exactOptional().openapi({
+      description: 'A structure that contains information about the specified handshake.',
+    }),
   })
   .openapi({
     example: {
@@ -1504,28 +1182,20 @@ const DescribeHandshakeResponseSchema = z
 
 const DescribeHandshakeRequestSchema = z
   .object({
-    HandshakeId: HandshakeIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the handshake that you want information about. You can get the ID from the original call to <a>InviteAccountToOrganization</a>, or from a call to <a>ListHandshakesForAccount</a> or <a>ListHandshakesForOrganization</a>.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.</p>',
-        }),
-    ),
+    HandshakeId: HandshakeIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the handshake that you want information about. You can get the ID from the original call to <a>InviteAccountToOrganization</a>, or from a call to <a>ListHandshakesForAccount</a> or <a>ListHandshakesForOrganization</a>.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.</p>',
+    }),
   })
   .openapi({ required: ['HandshakeId'], title: 'DescribeHandshakeRequest' })
   .openapi('DescribeHandshakeRequest')
 
 const DescribeOrganizationResponseSchema = z
   .object({
-    Organization: OrganizationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A structure that contains information about the organization.</p> <important> <p>The <code>AvailablePolicyTypes</code> part of the response is deprecated, and you shouldn't use it in your apps. It doesn't include any policy type supported by Organizations other than SCPs. To determine which policy types are enabled in your organization, use the <code> <a>ListRoots</a> </code> operation.</p> </important>",
-        }),
-    ).exactOptional(),
+    Organization: OrganizationSchema.exactOptional().openapi({
+      description:
+        "<p>A structure that contains information about the organization.</p> <important> <p>The <code>AvailablePolicyTypes</code> part of the response is deprecated, and you shouldn't use it in your apps. It doesn't include any policy type supported by Organizations other than SCPs. To determine which policy types are enabled in your organization, use the <code> <a>ListRoots</a> </code> operation.</p> </important>",
+    }),
   })
   .openapi({
     example: {
@@ -1544,9 +1214,9 @@ const DescribeOrganizationResponseSchema = z
 
 const DescribeOrganizationalUnitResponseSchema = z
   .object({
-    OrganizationalUnit: OrganizationalUnitSchema.and(
-      z.any().openapi({ description: 'A structure that contains details about the specified OU.' }),
-    ).exactOptional(),
+    OrganizationalUnit: OrganizationalUnitSchema.exactOptional().openapi({
+      description: 'A structure that contains details about the specified OU.',
+    }),
   })
   .openapi({
     example: {
@@ -1562,25 +1232,19 @@ const DescribeOrganizationalUnitResponseSchema = z
 
 const DescribeOrganizationalUnitRequestSchema = z
   .object({
-    OrganizationalUnitId: OrganizationalUnitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the organizational unit that you want details about. You can get the ID from the <a>ListOrganizationalUnitsForParent</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an organizational unit ID string requires "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that contains the OU). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p>',
-        }),
-    ),
+    OrganizationalUnitId: OrganizationalUnitIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the organizational unit that you want details about. You can get the ID from the <a>ListOrganizationalUnitsForParent</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an organizational unit ID string requires "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that contains the OU). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p>',
+    }),
   })
   .openapi({ required: ['OrganizationalUnitId'], title: 'DescribeOrganizationalUnitRequest' })
   .openapi('DescribeOrganizationalUnitRequest')
 
 const DescribePolicyResponseSchema = z
   .object({
-    Policy: PolicySchema.and(
-      z
-        .any()
-        .openapi({ description: 'A structure that contains details about the specified policy.' }),
-    ).exactOptional(),
+    Policy: PolicySchema.exactOptional().openapi({
+      description: 'A structure that contains details about the specified policy.',
+    }),
   })
   .openapi({
     example: {
@@ -1603,14 +1267,10 @@ const DescribePolicyResponseSchema = z
 
 const DescribePolicyRequestSchema = z
   .object({
-    PolicyId: PolicyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the policy that you want details about. You can get the ID from the <a>ListPolicies</a> or <a>ListPoliciesForTarget</a> operations.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).</p>',
-        }),
-    ),
+    PolicyId: PolicyIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the policy that you want details about. You can get the ID from the <a>ListPolicies</a> or <a>ListPoliciesForTarget</a> operations.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).</p>',
+    }),
   })
   .openapi({ required: ['PolicyId'], title: 'DescribePolicyRequest' })
   .openapi('DescribePolicyRequest')
@@ -1630,12 +1290,12 @@ const ResourcePolicyArnSchema = z
 
 const ResourcePolicySummarySchema = z
   .object({
-    Id: ResourcePolicyIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier (ID) of the resource policy.' }),
-    ).exactOptional(),
-    Arn: ResourcePolicyArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource policy.' }),
-    ).exactOptional(),
+    Id: ResourcePolicyIdSchema.exactOptional().openapi({
+      description: 'The unique identifier (ID) of the resource policy.',
+    }),
+    Arn: ResourcePolicyArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource policy.',
+    }),
   })
   .openapi({
     description: 'A structure that contains resource policy ID and Amazon Resource Name (ARN).',
@@ -1652,17 +1312,12 @@ const ResourcePolicyContentSchema = z
 
 const ResourcePolicySchema = z
   .object({
-    ResourcePolicySummary: ResourcePolicySummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains resource policy ID and Amazon Resource Name (ARN).',
-        }),
-    ).exactOptional(),
-    Content: ResourcePolicyContentSchema.and(
-      z.any().openapi({ description: 'The policy text of the resource policy.' }),
-    ).exactOptional(),
+    ResourcePolicySummary: ResourcePolicySummarySchema.exactOptional().openapi({
+      description: 'A structure that contains resource policy ID and Amazon Resource Name (ARN).',
+    }),
+    Content: ResourcePolicyContentSchema.exactOptional().openapi({
+      description: 'The policy text of the resource policy.',
+    }),
   })
   .openapi({
     description: 'A structure that contains details about a resource policy.',
@@ -1672,33 +1327,23 @@ const ResourcePolicySchema = z
 
 const DescribeResourcePolicyResponseSchema = z
   .object({
-    ResourcePolicy: ResourcePolicySchema.and(
-      z
-        .any()
-        .openapi({ description: 'A structure that contains details about the resource policy.' }),
-    ).exactOptional(),
+    ResourcePolicy: ResourcePolicySchema.exactOptional().openapi({
+      description: 'A structure that contains details about the resource policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeResourcePolicyResponse')
 
 const DetachPolicyRequestSchema = z
   .object({
-    PolicyId: PolicyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the policy you want to detach. You can get the ID from the <a>ListPolicies</a> or <a>ListPoliciesForTarget</a> operations.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).</p>',
-        }),
-    ),
-    TargetId: PolicyTargetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the root, OU, or account that you want to detach the policy from. You can get the ID from the <a>ListRoots</a>, <a>ListOrganizationalUnitsForParent</a>, or <a>ListAccounts</a> operations.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a target ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Account</b> - A string that consists of exactly 12 digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
-        }),
-    ),
+    PolicyId: PolicyIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the policy you want to detach. You can get the ID from the <a>ListPolicies</a> or <a>ListPoliciesForTarget</a> operations.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).</p>',
+    }),
+    TargetId: PolicyTargetIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the root, OU, or account that you want to detach the policy from. You can get the ID from the <a>ListRoots</a>, <a>ListOrganizationalUnitsForParent</a>, or <a>ListAccounts</a> operations.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a target ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Account</b> - A string that consists of exactly 12 digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['PolicyId', 'TargetId'], title: 'DetachPolicyRequest' })
   .openapi('DetachPolicyRequest')
@@ -1707,14 +1352,10 @@ const PolicyNotAttachedExceptionSchema = z.any().openapi('PolicyNotAttachedExcep
 
 const DisableAWSServiceAccessRequestSchema = z
   .object({
-    ServicePrincipal: ServicePrincipalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The service principal name of the Amazon Web Services service for which you want to disable integration with your organization. This is typically in the form of a URL, such as <code> <i>service-abbreviation</i>.amazonaws.com</code>.',
-        }),
-    ),
+    ServicePrincipal: ServicePrincipalSchema.openapi({
+      description:
+        'The service principal name of the Amazon Web Services service for which you want to disable integration with your organization. This is typically in the form of a URL, such as <code> <i>service-abbreviation</i>.amazonaws.com</code>.',
+    }),
   })
   .openapi({ required: ['ServicePrincipal'], title: 'DisableAWSServiceAccessRequest' })
   .openapi('DisableAWSServiceAccessRequest')
@@ -1734,38 +1375,22 @@ const RootNameSchema = z.string().min(1).max(128).openapi('RootName')
 
 const RootSchema = z
   .object({
-    Id: RootIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) for the root.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a root ID string requires "r-" followed by from 4 to 32 lowercase letters or digits.</p>',
-        }),
-    ).exactOptional(),
-    Arn: RootArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the root.</p> <p>For more information about ARNs in Organizations, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies">ARN Formats Supported by Organizations</a> in the <i>Amazon Web Services Service Authorization Reference</i>.</p>',
-        }),
-    ).exactOptional(),
-    Name: RootNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The friendly name of the root.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of any of the characters in the ASCII character range.</p>',
-        }),
-    ).exactOptional(),
-    PolicyTypes: PolicyTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The types of policies that are currently enabled for the root and therefore can be attached to the root or to its OUs or accounts.</p> <note> <p>Even if a policy type is shown as available in the organization, you can separately enable and disable them at the root level by using <a>EnablePolicyType</a> and <a>DisablePolicyType</a>. Use <a>DescribeOrganization</a> to see the availability of the policy types in that organization.</p> </note>',
-        }),
-    ).exactOptional(),
+    Id: RootIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier (ID) for the root.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a root ID string requires "r-" followed by from 4 to 32 lowercase letters or digits.</p>',
+    }),
+    Arn: RootArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the root.</p> <p>For more information about ARNs in Organizations, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies">ARN Formats Supported by Organizations</a> in the <i>Amazon Web Services Service Authorization Reference</i>.</p>',
+    }),
+    Name: RootNameSchema.exactOptional().openapi({
+      description:
+        '<p>The friendly name of the root.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of any of the characters in the ASCII character range.</p>',
+    }),
+    PolicyTypes: PolicyTypesSchema.exactOptional().openapi({
+      description:
+        '<p>The types of policies that are currently enabled for the root and therefore can be attached to the root or to its OUs or accounts.</p> <note> <p>Even if a policy type is shown as available in the organization, you can separately enable and disable them at the root level by using <a>EnablePolicyType</a> and <a>DisablePolicyType</a>. Use <a>DescribeOrganization</a> to see the availability of the policy types in that organization.</p> </note>',
+    }),
   })
   .openapi({
     description:
@@ -1776,14 +1401,9 @@ const RootSchema = z
 
 const DisablePolicyTypeResponseSchema = z
   .object({
-    Root: RootSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that shows the root with the updated list of enabled policy types.',
-        }),
-    ).exactOptional(),
+    Root: RootSchema.exactOptional().openapi({
+      description: 'A structure that shows the root with the updated list of enabled policy types.',
+    }),
   })
   .openapi({
     example: {
@@ -1800,22 +1420,14 @@ const DisablePolicyTypeResponseSchema = z
 
 const DisablePolicyTypeRequestSchema = z
   .object({
-    RootId: RootIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the root in which you want to disable a policy type. You can get the ID from the <a>ListRoots</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a root ID string requires "r-" followed by from 4 to 32 lowercase letters or digits.</p>',
-        }),
-    ),
-    PolicyType: PolicyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy type that you want to disable in this root. You can specify one of the following values:</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html">AISERVICES_OPT_OUT_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html">BACKUP_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html">SERVICE_CONTROL_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html">TAG_POLICY</a> </p> </li> </ul>',
-        }),
-    ),
+    RootId: RootIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the root in which you want to disable a policy type. You can get the ID from the <a>ListRoots</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a root ID string requires "r-" followed by from 4 to 32 lowercase letters or digits.</p>',
+    }),
+    PolicyType: PolicyTypeSchema.openapi({
+      description:
+        '<p>The policy type that you want to disable in this root. You can specify one of the following values:</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html">AISERVICES_OPT_OUT_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html">BACKUP_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html">SERVICE_CONTROL_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html">TAG_POLICY</a> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['RootId', 'PolicyType'], title: 'DisablePolicyTypeRequest' })
   .openapi('DisablePolicyTypeRequest')
@@ -1824,28 +1436,20 @@ const RootNotFoundExceptionSchema = z.any().openapi('RootNotFoundException')
 
 const EnableAWSServiceAccessRequestSchema = z
   .object({
-    ServicePrincipal: ServicePrincipalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The service principal name of the Amazon Web Services service for which you want to enable integration with your organization. This is typically in the form of a URL, such as <code> <i>service-abbreviation</i>.amazonaws.com</code>.',
-        }),
-    ),
+    ServicePrincipal: ServicePrincipalSchema.openapi({
+      description:
+        'The service principal name of the Amazon Web Services service for which you want to enable integration with your organization. This is typically in the form of a URL, such as <code> <i>service-abbreviation</i>.amazonaws.com</code>.',
+    }),
   })
   .openapi({ required: ['ServicePrincipal'], title: 'EnableAWSServiceAccessRequest' })
   .openapi('EnableAWSServiceAccessRequest')
 
 const EnableAllFeaturesResponseSchema = z
   .object({
-    Handshake: HandshakeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains details about the handshake created to support this request to enable all features in the organization.',
-        }),
-    ).exactOptional(),
+    Handshake: HandshakeSchema.exactOptional().openapi({
+      description:
+        'A structure that contains details about the handshake created to support this request to enable all features in the organization.',
+    }),
   })
   .openapi({
     example: {
@@ -1865,20 +1469,15 @@ const EnableAllFeaturesResponseSchema = z
   .openapi('EnableAllFeaturesResponse')
 
 const EnableAllFeaturesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'EnableAllFeaturesRequest' })
   .openapi('EnableAllFeaturesRequest')
 
 const EnablePolicyTypeResponseSchema = z
   .object({
-    Root: RootSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that shows the root with the updated list of enabled policy types.',
-        }),
-    ).exactOptional(),
+    Root: RootSchema.exactOptional().openapi({
+      description: 'A structure that shows the root with the updated list of enabled policy types.',
+    }),
   })
   .openapi({
     example: {
@@ -1895,22 +1494,14 @@ const EnablePolicyTypeResponseSchema = z
 
 const EnablePolicyTypeRequestSchema = z
   .object({
-    RootId: RootIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the root in which you want to enable a policy type. You can get the ID from the <a>ListRoots</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a root ID string requires "r-" followed by from 4 to 32 lowercase letters or digits.</p>',
-        }),
-    ),
-    PolicyType: PolicyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy type that you want to enable. You can specify one of the following values:</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html">AISERVICES_OPT_OUT_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html">BACKUP_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html">SERVICE_CONTROL_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html">TAG_POLICY</a> </p> </li> </ul>',
-        }),
-    ),
+    RootId: RootIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the root in which you want to enable a policy type. You can get the ID from the <a>ListRoots</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a root ID string requires "r-" followed by from 4 to 32 lowercase letters or digits.</p>',
+    }),
+    PolicyType: PolicyTypeSchema.openapi({
+      description:
+        '<p>The policy type that you want to enable. You can specify one of the following values:</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html">AISERVICES_OPT_OUT_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html">BACKUP_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html">SERVICE_CONTROL_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html">TAG_POLICY</a> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['RootId', 'PolicyType'], title: 'EnablePolicyTypeRequest' })
   .openapi('EnablePolicyTypeRequest')
@@ -1919,14 +1510,10 @@ const PolicyTypeAlreadyEnabledExceptionSchema = z.any().openapi('PolicyTypeAlrea
 
 const InviteAccountToOrganizationResponseSchema = z
   .object({
-    Handshake: HandshakeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains details about the handshake that is created to support this invitation request.',
-        }),
-    ).exactOptional(),
+    Handshake: HandshakeSchema.exactOptional().openapi({
+      description:
+        'A structure that contains details about the handshake that is created to support this invitation request.',
+    }),
   })
   .openapi({
     example: {
@@ -1967,30 +1554,18 @@ const HandshakeNotesSchema = z
 
 const InviteAccountToOrganizationRequestSchema = z
   .object({
-    Target: HandshakePartySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier (ID) of the Amazon Web Services account that you want to invite to join your organization. This is a JSON object that contains the following elements:</p> <p> <code>{ "Type": "ACCOUNT", "Id": "&lt;<i> <b>account id number</b> </i>&gt;" }</code> </p> <p>If you use the CLI, you can submit this as a single string, similar to the following example:</p> <p> <code>--target Id=123456789012,Type=ACCOUNT</code> </p> <p>If you specify <code>"Type": "ACCOUNT"</code>, you must provide the Amazon Web Services account ID number as the <code>Id</code>. If you specify <code>"Type": "EMAIL"</code>, you must specify the email address that is associated with the account.</p> <p> <code>--target Id=diego@example.com,Type=EMAIL</code> </p>',
-        }),
-    ),
-    Notes: HandshakeNotesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional information that you want to include in the generated email to the recipient account owner.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of tags that you want to attach to the account when it becomes a member of the organization. For each tag in the list, you must specify both a tag key and a value. You can set the value to an empty string, but you can\'t set it to <code>null</code>. For more information about tagging, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html">Tagging Organizations resources</a> in the Organizations User Guide.</p> <important> <p>Any tags in the request are checked for compliance with any applicable tag policies when the request is made. The request is rejected if the tags in the request don\'t match the requirements of the policy at that time. Tag policy compliance is <i> <b>not</b> </i> checked again when the invitation is accepted and the tags are actually attached to the account. That means that if the tag policy changes between the invitation and the acceptance, then that tags could potentially be non-compliant.</p> </important> <note> <p>If any one of the tags is not valid or if you exceed the allowed number of tags for an account, then the entire request fails and invitations are not sent.</p> </note>',
-        }),
-    ).exactOptional(),
+    Target: HandshakePartySchema.openapi({
+      description:
+        '<p>The identifier (ID) of the Amazon Web Services account that you want to invite to join your organization. This is a JSON object that contains the following elements:</p> <p> <code>{ "Type": "ACCOUNT", "Id": "&lt;<i> <b>account id number</b> </i>&gt;" }</code> </p> <p>If you use the CLI, you can submit this as a single string, similar to the following example:</p> <p> <code>--target Id=123456789012,Type=ACCOUNT</code> </p> <p>If you specify <code>"Type": "ACCOUNT"</code>, you must provide the Amazon Web Services account ID number as the <code>Id</code>. If you specify <code>"Type": "EMAIL"</code>, you must specify the email address that is associated with the account.</p> <p> <code>--target Id=diego@example.com,Type=EMAIL</code> </p>',
+    }),
+    Notes: HandshakeNotesSchema.exactOptional().openapi({
+      description:
+        'Additional information that you want to include in the generated email to the recipient account owner.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>A list of tags that you want to attach to the account when it becomes a member of the organization. For each tag in the list, you must specify both a tag key and a value. You can set the value to an empty string, but you can\'t set it to <code>null</code>. For more information about tagging, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html">Tagging Organizations resources</a> in the Organizations User Guide.</p> <important> <p>Any tags in the request are checked for compliance with any applicable tag policies when the request is made. The request is rejected if the tags in the request don\'t match the requirements of the policy at that time. Tag policy compliance is <i> <b>not</b> </i> checked again when the invitation is accepted and the tags are actually attached to the account. That means that if the tag policy changes between the invitation and the acceptance, then that tags could potentially be non-compliant.</p> </important> <note> <p>If any one of the tags is not valid or if you exceed the allowed number of tags for an account, then the entire request fails and invitations are not sent.</p> </note>',
+    }),
   })
   .openapi({ required: ['Target'], title: 'InviteAccountToOrganizationRequest' })
   .openapi('InviteAccountToOrganizationRequest')
@@ -2005,22 +1580,14 @@ const MasterCannotLeaveOrganizationExceptionSchema = z
 
 const EnabledServicePrincipalSchema = z
   .object({
-    ServicePrincipal: ServicePrincipalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the service principal. This is typically in the form of a URL, such as: <code> <i>servicename</i>.amazonaws.com</code>.',
-        }),
-    ).exactOptional(),
-    DateEnabled: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date that the service principal was enabled for integration with Organizations.',
-        }),
-    ).exactOptional(),
+    ServicePrincipal: ServicePrincipalSchema.exactOptional().openapi({
+      description:
+        'The name of the service principal. This is typically in the form of a URL, such as: <code> <i>servicename</i>.amazonaws.com</code>.',
+    }),
+    DateEnabled: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date that the service principal was enabled for integration with Organizations.',
+    }),
   })
   .openapi({
     description:
@@ -2041,22 +1608,14 @@ const NextTokenSchema = z
 
 const ListAWSServiceAccessForOrganizationResponseSchema = z
   .object({
-    EnabledServicePrincipals: EnabledServicePrincipalsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the service principals for the services that are enabled to integrate with your organization. Each principal is a structure that includes the name and the date that it was enabled for integration with Organizations.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
+    EnabledServicePrincipals: EnabledServicePrincipalsSchema.exactOptional().openapi({
+      description:
+        'A list of the service principals for the services that are enabled to integrate with your organization. Each principal is a structure that includes the name and the date that it was enabled for integration with Organizations.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAWSServiceAccessForOrganizationResponse')
@@ -2065,22 +1624,14 @@ const MaxResultsSchema = z.int().min(1).max(20).openapi('MaxResults')
 
 const ListAWSServiceAccessForOrganizationRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
+    }),
   })
   .openapi({ title: 'ListAWSServiceAccessForOrganizationRequest', required: [] })
   .openapi('ListAWSServiceAccessForOrganizationRequest')
@@ -2089,17 +1640,13 @@ const AccountsSchema = z.array(AccountSchema).openapi('Accounts')
 
 const ListAccountsResponseSchema = z
   .object({
-    Accounts: AccountsSchema.and(
-      z.any().openapi({ description: 'A list of objects in the organization.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
+    Accounts: AccountsSchema.exactOptional().openapi({
+      description: 'A list of objects in the organization.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
   })
   .openapi({
     example: {
@@ -2148,39 +1695,27 @@ const ListAccountsResponseSchema = z
 
 const ListAccountsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
+    }),
   })
   .openapi({ title: 'ListAccountsRequest', required: [] })
   .openapi('ListAccountsRequest')
 
 const ListAccountsForParentResponseSchema = z
   .object({
-    Accounts: AccountsSchema.and(
-      z.any().openapi({ description: 'A list of the accounts in the specified root or OU.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
+    Accounts: AccountsSchema.exactOptional().openapi({
+      description: 'A list of the accounts in the specified root or OU.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
   })
   .openapi({
     example: {
@@ -2211,30 +1746,18 @@ const ListAccountsForParentResponseSchema = z
 
 const ListAccountsForParentRequestSchema = z
   .object({
-    ParentId: ParentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier (ID) for the parent root or organization unit (OU) whose accounts you want to list.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
-        }),
-    ).exactOptional(),
+    ParentId: ParentIdSchema.openapi({
+      description:
+        'The unique identifier (ID) for the parent root or organization unit (OU) whose accounts you want to list.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
+    }),
   })
   .openapi({ required: ['ParentId'], title: 'ListAccountsForParentRequest' })
   .openapi('ListAccountsForParentRequest')
@@ -2249,17 +1772,13 @@ const ChildTypeSchema = z.enum(['ACCOUNT', 'ORGANIZATIONAL_UNIT']).openapi('Chil
 
 const ChildSchema = z
   .object({
-    Id: ChildIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of this child entity.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a child ID string requires one of the following:</p> <ul> <li> <p> <b>Account</b> - A string that consists of exactly 12 digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that contains the OU). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Type: ChildTypeSchema.and(
-      z.any().openapi({ description: 'The type of this child entity.' }),
-    ).exactOptional(),
+    Id: ChildIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier (ID) of this child entity.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a child ID string requires one of the following:</p> <ul> <li> <p> <b>Account</b> - A string that consists of exactly 12 digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that contains the OU). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
+    }),
+    Type: ChildTypeSchema.exactOptional().openapi({
+      description: 'The type of this child entity.',
+    }),
   })
   .openapi({
     description: 'Contains a list of child entities, either OUs or accounts.',
@@ -2271,17 +1790,13 @@ const ChildrenSchema = z.array(ChildSchema).openapi('Children')
 
 const ListChildrenResponseSchema = z
   .object({
-    Children: ChildrenSchema.and(
-      z.any().openapi({ description: 'The list of children of the specified parent container.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
+    Children: ChildrenSchema.exactOptional().openapi({
+      description: 'The list of children of the specified parent container.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
   })
   .openapi({
     example: {
@@ -2296,35 +1811,21 @@ const ListChildrenResponseSchema = z
 
 const ListChildrenRequestSchema = z
   .object({
-    ParentId: ParentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) for the parent root or OU whose children you want to list.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a parent ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
-        }),
-    ),
-    ChildType: ChildTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Filters the output to include only the specified child type.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
-        }),
-    ).exactOptional(),
+    ParentId: ParentIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) for the parent root or OU whose children you want to list.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a parent ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
+    }),
+    ChildType: ChildTypeSchema.openapi({
+      description: 'Filters the output to include only the specified child type.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
+    }),
   })
   .openapi({ required: ['ParentId', 'ChildType'], title: 'ListChildrenRequest' })
   .openapi('ListChildrenRequest')
@@ -2335,22 +1836,14 @@ const CreateAccountStatusesSchema = z
 
 const ListCreateAccountStatusResponseSchema = z
   .object({
-    CreateAccountStatuses: CreateAccountStatusesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of objects with details about the requests. Certain elements, such as the accountId number, are present in the output only after the account has been successfully created.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
+    CreateAccountStatuses: CreateAccountStatusesSchema.exactOptional().openapi({
+      description:
+        'A list of objects with details about the requests. Certain elements, such as the accountId number, are present in the output only after the account has been successfully created.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
   })
   .openapi({
     example: {
@@ -2371,91 +1864,51 @@ const CreateAccountStatesSchema = z.array(CreateAccountStateSchema).openapi('Cre
 
 const ListCreateAccountStatusRequestSchema = z
   .object({
-    States: CreateAccountStatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of one or more states that you want included in the response. If this parameter isn't present, all requests are included in the response.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
-        }),
-    ).exactOptional(),
+    States: CreateAccountStatesSchema.exactOptional().openapi({
+      description:
+        "A list of one or more states that you want included in the response. If this parameter isn't present, all requests are included in the response.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
+    }),
   })
   .openapi({ title: 'ListCreateAccountStatusRequest', required: [] })
   .openapi('ListCreateAccountStatusRequest')
 
 const DelegatedAdministratorSchema = z
   .object({
-    Id: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The unique identifier (ID) of the delegated administrator's account.",
-        }),
-    ).exactOptional(),
-    Arn: AccountArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The Amazon Resource Name (ARN) of the delegated administrator's account.",
-        }),
-    ).exactOptional(),
-    Email: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The email address that is associated with the delegated administrator's Amazon Web Services account.",
-        }),
-    ).exactOptional(),
-    Name: AccountNameSchema.and(
-      z
-        .any()
-        .openapi({ description: "The friendly name of the delegated administrator's account." }),
-    ).exactOptional(),
-    Status: AccountStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The status of the delegated administrator's account in the organization.",
-        }),
-    ).exactOptional(),
-    JoinedMethod: AccountJoinedMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The method by which the delegated administrator's account joined the organization.",
-        }),
-    ).exactOptional(),
-    JoinedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The date when the delegated administrator's account became a part of the organization.",
-        }),
-    ).exactOptional(),
-    DelegationEnabledDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date when the account was made a delegated administrator.' }),
-    ).exactOptional(),
+    Id: AccountIdSchema.exactOptional().openapi({
+      description: "The unique identifier (ID) of the delegated administrator's account.",
+    }),
+    Arn: AccountArnSchema.exactOptional().openapi({
+      description: "The Amazon Resource Name (ARN) of the delegated administrator's account.",
+    }),
+    Email: EmailSchema.exactOptional().openapi({
+      description:
+        "The email address that is associated with the delegated administrator's Amazon Web Services account.",
+    }),
+    Name: AccountNameSchema.exactOptional().openapi({
+      description: "The friendly name of the delegated administrator's account.",
+    }),
+    Status: AccountStatusSchema.exactOptional().openapi({
+      description: "The status of the delegated administrator's account in the organization.",
+    }),
+    JoinedMethod: AccountJoinedMethodSchema.exactOptional().openapi({
+      description:
+        "The method by which the delegated administrator's account joined the organization.",
+    }),
+    JoinedTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        "The date when the delegated administrator's account became a part of the organization.",
+    }),
+    DelegationEnabledDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date when the account was made a delegated administrator.',
+    }),
   })
   .openapi({ description: 'Contains information about the delegated administrator.', required: [] })
   .openapi('DelegatedAdministrator')
@@ -2466,71 +1919,44 @@ const DelegatedAdministratorsSchema = z
 
 const ListDelegatedAdministratorsResponseSchema = z
   .object({
-    DelegatedAdministrators: DelegatedAdministratorsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of delegated administrators in your organization.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
+    DelegatedAdministrators: DelegatedAdministratorsSchema.exactOptional().openapi({
+      description: 'The list of delegated administrators in your organization.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDelegatedAdministratorsResponse')
 
 const ListDelegatedAdministratorsRequestSchema = z
   .object({
-    ServicePrincipal: ServicePrincipalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies a service principal name. If specified, then the operation lists the delegated administrators only for the specified service.</p> <p>If you don't specify a service principal, the operation lists all delegated administrators for all services in your organization.</p>",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
-        }),
-    ).exactOptional(),
+    ServicePrincipal: ServicePrincipalSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies a service principal name. If specified, then the operation lists the delegated administrators only for the specified service.</p> <p>If you don't specify a service principal, the operation lists all delegated administrators for all services in your organization.</p>",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
+    }),
   })
   .openapi({ title: 'ListDelegatedAdministratorsRequest', required: [] })
   .openapi('ListDelegatedAdministratorsRequest')
 
 const DelegatedServiceSchema = z
   .object({
-    ServicePrincipal: ServicePrincipalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an Amazon Web Services service that can request an operation for the specified service. This is typically in the form of a URL, such as: <code> <i>servicename</i>.amazonaws.com</code>.',
-        }),
-    ).exactOptional(),
-    DelegationEnabledDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date that the account became a delegated administrator for this service. ',
-        }),
-    ).exactOptional(),
+    ServicePrincipal: ServicePrincipalSchema.exactOptional().openapi({
+      description:
+        'The name of an Amazon Web Services service that can request an operation for the specified service. This is typically in the form of a URL, such as: <code> <i>servicename</i>.amazonaws.com</code>.',
+    }),
+    DelegationEnabledDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date that the account became a delegated administrator for this service. ',
+    }),
   })
   .openapi({
     description:
@@ -2543,51 +1969,31 @@ const DelegatedServicesSchema = z.array(DelegatedServiceSchema).openapi('Delegat
 
 const ListDelegatedServicesForAccountResponseSchema = z
   .object({
-    DelegatedServices: DelegatedServicesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The services for which the account is a delegated administrator.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
+    DelegatedServices: DelegatedServicesSchema.exactOptional().openapi({
+      description: 'The services for which the account is a delegated administrator.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDelegatedServicesForAccountResponse')
 
 const ListDelegatedServicesForAccountRequestSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The account ID number of a delegated administrator account in the organization.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.openapi({
+      description:
+        'The account ID number of a delegated administrator account in the organization.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
+    }),
   })
   .openapi({ required: ['AccountId'], title: 'ListDelegatedServicesForAccountRequest' })
   .openapi('ListDelegatedServicesForAccountRequest')
@@ -2596,22 +2002,14 @@ const HandshakesSchema = z.array(HandshakeSchema).openapi('Handshakes')
 
 const ListHandshakesForAccountResponseSchema = z
   .object({
-    Handshakes: HandshakesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a>Handshake</a> objects with details about each of the handshakes that is associated with the specified account.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
+    Handshakes: HandshakesSchema.exactOptional().openapi({
+      description:
+        'A list of <a>Handshake</a> objects with details about each of the handshakes that is associated with the specified account.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
   })
   .openapi({
     example: {
@@ -2648,22 +2046,14 @@ const ListHandshakesForAccountResponseSchema = z
 
 const HandshakeFilterSchema = z
   .object({
-    ActionType: ActionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the type of handshake action.</p> <p>If you specify <code>ActionType</code>, you cannot also specify <code>ParentHandshakeId</code>.</p>',
-        }),
-    ).exactOptional(),
-    ParentHandshakeId: HandshakeIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the parent handshake. Only used for handshake types that are a child of another type.</p> <p>If you specify <code>ParentHandshakeId</code>, you cannot also specify <code>ActionType</code>.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.</p>',
-        }),
-    ).exactOptional(),
+    ActionType: ActionTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the type of handshake action.</p> <p>If you specify <code>ActionType</code>, you cannot also specify <code>ParentHandshakeId</code>.</p>',
+    }),
+    ParentHandshakeId: HandshakeIdSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the parent handshake. Only used for handshake types that are a child of another type.</p> <p>If you specify <code>ParentHandshakeId</code>, you cannot also specify <code>ActionType</code>.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for handshake ID string requires "h-" followed by from 8 to 32 lowercase letters or digits.</p>',
+    }),
   })
   .openapi({
     description: 'Specifies the criteria that are used to select the handshakes for the operation.',
@@ -2673,52 +2063,32 @@ const HandshakeFilterSchema = z
 
 const ListHandshakesForAccountRequestSchema = z
   .object({
-    Filter: HandshakeFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the handshakes that you want included in the response. The default is all types. Use the <code>ActionType</code> element to limit the output to only a specified type, such as <code>INVITE</code>, <code>ENABLE_ALL_FEATURES</code>, or <code>APPROVE_ALL_FEATURES</code>. Alternatively, for the <code>ENABLE_ALL_FEATURES</code> handshake that generates a separate child handshake for each member account, you can specify <code>ParentHandshakeId</code> to see only the handshakes that were generated by that parent request.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
-        }),
-    ).exactOptional(),
+    Filter: HandshakeFilterSchema.exactOptional().openapi({
+      description:
+        'Filters the handshakes that you want included in the response. The default is all types. Use the <code>ActionType</code> element to limit the output to only a specified type, such as <code>INVITE</code>, <code>ENABLE_ALL_FEATURES</code>, or <code>APPROVE_ALL_FEATURES</code>. Alternatively, for the <code>ENABLE_ALL_FEATURES</code> handshake that generates a separate child handshake for each member account, you can specify <code>ParentHandshakeId</code> to see only the handshakes that were generated by that parent request.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
+    }),
   })
   .openapi({ title: 'ListHandshakesForAccountRequest', required: [] })
   .openapi('ListHandshakesForAccountRequest')
 
 const ListHandshakesForOrganizationResponseSchema = z
   .object({
-    Handshakes: HandshakesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a>Handshake</a> objects with details about each of the handshakes that are associated with an organization.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
+    Handshakes: HandshakesSchema.exactOptional().openapi({
+      description:
+        'A list of <a>Handshake</a> objects with details about each of the handshakes that are associated with an organization.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
   })
   .openapi({
     example: {
@@ -2782,30 +2152,18 @@ const ListHandshakesForOrganizationResponseSchema = z
 
 const ListHandshakesForOrganizationRequestSchema = z
   .object({
-    Filter: HandshakeFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A filter of the handshakes that you want included in the response. The default is all types. Use the <code>ActionType</code> element to limit the output to only a specified type, such as <code>INVITE</code>, <code>ENABLE-ALL-FEATURES</code>, or <code>APPROVE-ALL-FEATURES</code>. Alternatively, for the <code>ENABLE-ALL-FEATURES</code> handshake that generates a separate child handshake for each member account, you can specify the <code>ParentHandshakeId</code> to see only the handshakes that were generated by that parent request.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
-        }),
-    ).exactOptional(),
+    Filter: HandshakeFilterSchema.exactOptional().openapi({
+      description:
+        'A filter of the handshakes that you want included in the response. The default is all types. Use the <code>ActionType</code> element to limit the output to only a specified type, such as <code>INVITE</code>, <code>ENABLE-ALL-FEATURES</code>, or <code>APPROVE-ALL-FEATURES</code>. Alternatively, for the <code>ENABLE-ALL-FEATURES</code> handshake that generates a separate child handshake for each member account, you can specify the <code>ParentHandshakeId</code> to see only the handshakes that were generated by that parent request.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
+    }),
   })
   .openapi({ title: 'ListHandshakesForOrganizationRequest', required: [] })
   .openapi('ListHandshakesForOrganizationRequest')
@@ -2814,17 +2172,13 @@ const OrganizationalUnitsSchema = z.array(OrganizationalUnitSchema).openapi('Org
 
 const ListOrganizationalUnitsForParentResponseSchema = z
   .object({
-    OrganizationalUnits: OrganizationalUnitsSchema.and(
-      z.any().openapi({ description: 'A list of the OUs in the specified root or parent OU.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
+    OrganizationalUnits: OrganizationalUnitsSchema.exactOptional().openapi({
+      description: 'A list of the OUs in the specified root or parent OU.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
   })
   .openapi({
     example: {
@@ -2847,30 +2201,18 @@ const ListOrganizationalUnitsForParentResponseSchema = z
 
 const ListOrganizationalUnitsForParentRequestSchema = z
   .object({
-    ParentId: ParentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the root or OU whose child OUs you want to list.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a parent ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
-        }),
-    ).exactOptional(),
+    ParentId: ParentIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the root or OU whose child OUs you want to list.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a parent ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
+    }),
   })
   .openapi({ required: ['ParentId'], title: 'ListOrganizationalUnitsForParentRequest' })
   .openapi('ListOrganizationalUnitsForParentRequest')
@@ -2879,17 +2221,13 @@ const ParentTypeSchema = z.enum(['ROOT', 'ORGANIZATIONAL_UNIT']).openapi('Parent
 
 const ParentSchema = z
   .object({
-    Id: ParentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the parent entity.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a parent ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Type: ParentTypeSchema.and(
-      z.any().openapi({ description: 'The type of the parent entity.' }),
-    ).exactOptional(),
+    Id: ParentIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier (ID) of the parent entity.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a parent ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
+    }),
+    Type: ParentTypeSchema.exactOptional().openapi({
+      description: 'The type of the parent entity.',
+    }),
   })
   .openapi({
     description:
@@ -2902,17 +2240,13 @@ const ParentsSchema = z.array(ParentSchema).openapi('Parents')
 
 const ListParentsResponseSchema = z
   .object({
-    Parents: ParentsSchema.and(
-      z.any().openapi({ description: 'A list of parents for the specified child account or OU.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
+    Parents: ParentsSchema.exactOptional().openapi({
+      description: 'A list of parents for the specified child account or OU.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
   })
   .openapi({
     example: {
@@ -2924,30 +2258,18 @@ const ListParentsResponseSchema = z
 
 const ListParentsRequestSchema = z
   .object({
-    ChildId: ChildIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the OU or account whose parent containers you want to list. Don\'t specify a root.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a child ID string requires one of the following:</p> <ul> <li> <p> <b>Account</b> - A string that consists of exactly 12 digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that contains the OU). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
-        }),
-    ).exactOptional(),
+    ChildId: ChildIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the OU or account whose parent containers you want to list. Don\'t specify a root.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a child ID string requires one of the following:</p> <ul> <li> <p> <b>Account</b> - A string that consists of exactly 12 digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that contains the OU). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
+    }),
   })
   .openapi({ required: ['ChildId'], title: 'ListParentsRequest' })
   .openapi('ListParentsRequest')
@@ -2958,22 +2280,14 @@ const PoliciesSchema = z.array(PolicySummarySchema).openapi('Policies')
 
 const ListPoliciesResponseSchema = z
   .object({
-    Policies: PoliciesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of policies that match the filter criteria in the request. The output list doesn't include the policy contents. To see the content for a policy, see <a>DescribePolicy</a>.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
+    Policies: PoliciesSchema.exactOptional().openapi({
+      description:
+        "A list of policies that match the filter criteria in the request. The output list doesn't include the policy contents. To see the content for a policy, see <a>DescribePolicy</a>.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
   })
   .openapi({
     example: {
@@ -3012,49 +2326,31 @@ const ListPoliciesResponseSchema = z
 
 const ListPoliciesRequestSchema = z
   .object({
-    Filter: PolicyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the type of policy that you want to include in the response. You must specify one of the following values:</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html">AISERVICES_OPT_OUT_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html">BACKUP_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html">SERVICE_CONTROL_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html">TAG_POLICY</a> </p> </li> </ul>',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
-        }),
-    ).exactOptional(),
+    Filter: PolicyTypeSchema.openapi({
+      description:
+        '<p>Specifies the type of policy that you want to include in the response. You must specify one of the following values:</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html">AISERVICES_OPT_OUT_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html">BACKUP_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html">SERVICE_CONTROL_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html">TAG_POLICY</a> </p> </li> </ul>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
+    }),
   })
   .openapi({ required: ['Filter'], title: 'ListPoliciesRequest' })
   .openapi('ListPoliciesRequest')
 
 const ListPoliciesForTargetResponseSchema = z
   .object({
-    Policies: PoliciesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of policies that match the criteria in the request.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
+    Policies: PoliciesSchema.exactOptional().openapi({
+      description: 'The list of policies that match the criteria in the request.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
   })
   .openapi({
     example: {
@@ -3076,38 +2372,22 @@ const ListPoliciesForTargetResponseSchema = z
 
 const ListPoliciesForTargetRequestSchema = z
   .object({
-    TargetId: PolicyTargetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the root, organizational unit, or account whose policies you want to list.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a target ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Account</b> - A string that consists of exactly 12 digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
-        }),
-    ),
-    Filter: PolicyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of policy that you want to include in the returned list. You must specify one of the following values:</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html">AISERVICES_OPT_OUT_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html">BACKUP_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html">SERVICE_CONTROL_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html">TAG_POLICY</a> </p> </li> </ul>',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
-        }),
-    ).exactOptional(),
+    TargetId: PolicyTargetIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the root, organizational unit, or account whose policies you want to list.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a target ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Account</b> - A string that consists of exactly 12 digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
+    }),
+    Filter: PolicyTypeSchema.openapi({
+      description:
+        '<p>The type of policy that you want to include in the returned list. You must specify one of the following values:</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html">AISERVICES_OPT_OUT_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html">BACKUP_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html">SERVICE_CONTROL_POLICY</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html">TAG_POLICY</a> </p> </li> </ul>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
+    }),
   })
   .openapi({ required: ['TargetId', 'Filter'], title: 'ListPoliciesForTargetRequest' })
   .openapi('ListPoliciesForTargetRequest')
@@ -3116,17 +2396,13 @@ const RootsSchema = z.array(RootSchema).openapi('Roots')
 
 const ListRootsResponseSchema = z
   .object({
-    Roots: RootsSchema.and(
-      z.any().openapi({ description: 'A list of roots that are defined in an organization.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
+    Roots: RootsSchema.exactOptional().openapi({
+      description: 'A list of roots that are defined in an organization.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
   })
   .openapi({
     example: {
@@ -3145,39 +2421,27 @@ const ListRootsResponseSchema = z
 
 const ListRootsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
+    }),
   })
   .openapi({ title: 'ListRootsRequest', required: [] })
   .openapi('ListRootsRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags that are assigned to the resource.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags that are assigned to the resource.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -3192,22 +2456,14 @@ const TaggableResourceIdSchema = z
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceId: TaggableResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the resource with the tags to list.</p> <p>You can specify any of the following taggable resources.</p> <ul> <li> <p>Amazon Web Services account – specify the account ID number.</p> </li> <li> <p>Organizational unit – specify the OU ID that begins with <code>ou-</code> and looks similar to: <code>ou-<i>1a2b-34uvwxyz</i> </code> </p> </li> <li> <p>Root – specify the root ID that begins with <code>r-</code> and looks similar to: <code>r-<i>1a2b</i> </code> </p> </li> <li> <p>Policy – specify the policy ID that begins with <code>p-</code> andlooks similar to: <code>p-<i>12abcdefg3</i> </code> </p> </li> </ul>',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
+    ResourceId: TaggableResourceIdSchema.openapi({
+      description:
+        '<p>The ID of the resource with the tags to list.</p> <p>You can specify any of the following taggable resources.</p> <ul> <li> <p>Amazon Web Services account – specify the account ID number.</p> </li> <li> <p>Organizational unit – specify the OU ID that begins with <code>ou-</code> and looks similar to: <code>ou-<i>1a2b-34uvwxyz</i> </code> </p> </li> <li> <p>Root – specify the root ID that begins with <code>r-</code> and looks similar to: <code>r-<i>1a2b</i> </code> </p> </li> <li> <p>Policy – specify the policy ID that begins with <code>p-</code> andlooks similar to: <code>p-<i>12abcdefg3</i> </code> </p> </li> </ul>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
   })
   .openapi({ required: ['ResourceId'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
@@ -3223,33 +2479,21 @@ const TargetTypeSchema = z.enum(['ACCOUNT', 'ORGANIZATIONAL_UNIT', 'ROOT']).open
 
 const PolicyTargetSummarySchema = z
   .object({
-    TargetId: PolicyTargetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the policy target.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a target ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Account</b> - A string that consists of exactly 12 digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Arn: GenericArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the policy target.</p> <p>For more information about ARNs in Organizations, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies">ARN Formats Supported by Organizations</a> in the <i>Amazon Web Services Service Authorization Reference</i>.</p>',
-        }),
-    ).exactOptional(),
-    Name: TargetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The friendly name of the policy target.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of any of the characters in the ASCII character range.</p>',
-        }),
-    ).exactOptional(),
-    Type: TargetTypeSchema.and(
-      z.any().openapi({ description: 'The type of the policy target.' }),
-    ).exactOptional(),
+    TargetId: PolicyTargetIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier (ID) of the policy target.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a target ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Account</b> - A string that consists of exactly 12 digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
+    }),
+    Arn: GenericArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the policy target.</p> <p>For more information about ARNs in Organizations, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsorganizations.html#awsorganizations-resources-for-iam-policies">ARN Formats Supported by Organizations</a> in the <i>Amazon Web Services Service Authorization Reference</i>.</p>',
+    }),
+    Name: TargetNameSchema.exactOptional().openapi({
+      description:
+        '<p>The friendly name of the policy target.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of any of the characters in the ASCII character range.</p>',
+    }),
+    Type: TargetTypeSchema.exactOptional().openapi({
+      description: 'The type of the policy target.',
+    }),
   })
   .openapi({
     description: 'Contains information about a root, OU, or account that a policy is attached to.',
@@ -3261,22 +2505,14 @@ const PolicyTargetsSchema = z.array(PolicyTargetSummarySchema).openapi('PolicyTa
 
 const ListTargetsForPolicyResponseSchema = z
   .object({
-    Targets: PolicyTargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of structures, each of which contains details about one of the entities to which the specified policy is attached.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
-        }),
-    ).exactOptional(),
+    Targets: PolicyTargetsSchema.exactOptional().openapi({
+      description:
+        'A list of structures, each of which contains details about one of the entities to which the specified policy is attached.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.',
+    }),
   })
   .openapi({
     example: {
@@ -3307,60 +2543,36 @@ const ListTargetsForPolicyResponseSchema = z
 
 const ListTargetsForPolicyRequestSchema = z
   .object({
-    PolicyId: PolicyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the policy whose attachments you want to know.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).</p>',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
-        }),
-    ).exactOptional(),
+    PolicyId: PolicyIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the policy whose attachments you want to know.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).</p>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.',
+    }),
   })
   .openapi({ required: ['PolicyId'], title: 'ListTargetsForPolicyRequest' })
   .openapi('ListTargetsForPolicyRequest')
 
 const MoveAccountRequestSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the account that you want to move.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an account ID string requires exactly 12 digits.</p>',
-        }),
-    ),
-    SourceParentId: ParentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the root or organizational unit that you want to move the account from.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a parent ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
-        }),
-    ),
-    DestinationParentId: ParentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the root or organizational unit that you want to move the account to.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a parent ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
-        }),
-    ),
+    AccountId: AccountIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the account that you want to move.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an account ID string requires exactly 12 digits.</p>',
+    }),
+    SourceParentId: ParentIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the root or organizational unit that you want to move the account from.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a parent ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
+    }),
+    DestinationParentId: ParentIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the root or organizational unit that you want to move the account to.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a parent ID string requires one of the following:</p> <ul> <li> <p> <b>Root</b> - A string that begins with "r-" followed by from 4 to 32 lowercase letters or digits.</p> </li> <li> <p> <b>Organizational unit (OU)</b> - A string that begins with "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that the OU is in). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['AccountId', 'SourceParentId', 'DestinationParentId'],
@@ -3378,55 +2590,37 @@ const DuplicateAccountExceptionSchema = z.any().openapi('DuplicateAccountExcepti
 
 const PutResourcePolicyResponseSchema = z
   .object({
-    ResourcePolicy: ResourcePolicySchema.and(
-      z
-        .any()
-        .openapi({ description: 'A structure that contains details about the resource policy.' }),
-    ).exactOptional(),
+    ResourcePolicy: ResourcePolicySchema.exactOptional().openapi({
+      description: 'A structure that contains details about the resource policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutResourcePolicyResponse')
 
 const PutResourcePolicyRequestSchema = z
   .object({
-    Content: ResourcePolicyContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If provided, the new content for the resource policy. The text must be correctly formatted JSON that complies with the syntax for the resource policy\'s type. For more information, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_scp-syntax.html">Service Control Policy Syntax</a> in the <i>Organizations User Guide.</i> ',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of tags that you want to attach to the newly created resource policy. For each tag in the list, you must specify both a tag key and a value. You can set the value to an empty string, but you can\'t set it to <code>null</code>. For more information about tagging, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html">Tagging Organizations resources</a> in the Organizations User Guide.</p> <note> <p>Calls with tags apply to the initial creation of the resource policy, otherwise an exception is thrown. If any one of the tags is not valid or if you exceed the allowed number of tags for the resource policy, then the entire request fails and the resource policy is not created. </p> </note>',
-        }),
-    ).exactOptional(),
+    Content: ResourcePolicyContentSchema.openapi({
+      description:
+        'If provided, the new content for the resource policy. The text must be correctly formatted JSON that complies with the syntax for the resource policy\'s type. For more information, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_scp-syntax.html">Service Control Policy Syntax</a> in the <i>Organizations User Guide.</i> ',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>A list of tags that you want to attach to the newly created resource policy. For each tag in the list, you must specify both a tag key and a value. You can set the value to an empty string, but you can\'t set it to <code>null</code>. For more information about tagging, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html">Tagging Organizations resources</a> in the Organizations User Guide.</p> <note> <p>Calls with tags apply to the initial creation of the resource policy, otherwise an exception is thrown. If any one of the tags is not valid or if you exceed the allowed number of tags for the resource policy, then the entire request fails and the resource policy is not created. </p> </note>',
+    }),
   })
   .openapi({ required: ['Content'], title: 'PutResourcePolicyRequest' })
   .openapi('PutResourcePolicyRequest')
 
 const RegisterDelegatedAdministratorRequestSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The account ID number of the member account in the organization to register as a delegated administrator.',
-        }),
-    ),
-    ServicePrincipal: ServicePrincipalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The service principal of the Amazon Web Services service for which you want to make the member account a delegated administrator.',
-        }),
-    ),
+    AccountId: AccountIdSchema.openapi({
+      description:
+        'The account ID number of the member account in the organization to register as a delegated administrator.',
+    }),
+    ServicePrincipal: ServicePrincipalSchema.openapi({
+      description:
+        'The service principal of the Amazon Web Services service for which you want to make the member account a delegated administrator.',
+    }),
   })
   .openapi({
     required: ['AccountId', 'ServicePrincipal'],
@@ -3438,36 +2632,24 @@ const AccountAlreadyRegisteredExceptionSchema = z.any().openapi('AccountAlreadyR
 
 const RemoveAccountFromOrganizationRequestSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the member account that you want to remove from the organization.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an account ID string requires exactly 12 digits.</p>',
-        }),
-    ),
+    AccountId: AccountIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the member account that you want to remove from the organization.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an account ID string requires exactly 12 digits.</p>',
+    }),
   })
   .openapi({ required: ['AccountId'], title: 'RemoveAccountFromOrganizationRequest' })
   .openapi('RemoveAccountFromOrganizationRequest')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceId: TaggableResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the resource to add a tag to.</p> <p>You can specify any of the following taggable resources.</p> <ul> <li> <p>Amazon Web Services account – specify the account ID number.</p> </li> <li> <p>Organizational unit – specify the OU ID that begins with <code>ou-</code> and looks similar to: <code>ou-<i>1a2b-34uvwxyz</i> </code> </p> </li> <li> <p>Root – specify the root ID that begins with <code>r-</code> and looks similar to: <code>r-<i>1a2b</i> </code> </p> </li> <li> <p>Policy – specify the policy ID that begins with <code>p-</code> andlooks similar to: <code>p-<i>12abcdefg3</i> </code> </p> </li> </ul>',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of tags to add to the specified resource.</p> <p>For each tag in the list, you must specify both a tag key and a value. The value can be an empty string, but you can't set it to <code>null</code>.</p> <note> <p>If any one of the tags is not valid or if you exceed the maximum allowed number of tags for a resource, then the entire request fails.</p> </note>",
-        }),
-    ),
+    ResourceId: TaggableResourceIdSchema.openapi({
+      description:
+        '<p>The ID of the resource to add a tag to.</p> <p>You can specify any of the following taggable resources.</p> <ul> <li> <p>Amazon Web Services account – specify the account ID number.</p> </li> <li> <p>Organizational unit – specify the OU ID that begins with <code>ou-</code> and looks similar to: <code>ou-<i>1a2b-34uvwxyz</i> </code> </p> </li> <li> <p>Root – specify the root ID that begins with <code>r-</code> and looks similar to: <code>r-<i>1a2b</i> </code> </p> </li> <li> <p>Policy – specify the policy ID that begins with <code>p-</code> andlooks similar to: <code>p-<i>12abcdefg3</i> </code> </p> </li> </ul>',
+    }),
+    Tags: TagsSchema.openapi({
+      description:
+        "<p>A list of tags to add to the specified resource.</p> <p>For each tag in the list, you must specify both a tag key and a value. The value can be an empty string, but you can't set it to <code>null</code>.</p> <note> <p>If any one of the tags is not valid or if you exceed the maximum allowed number of tags for a resource, then the entire request fails.</p> </note>",
+    }),
   })
   .openapi({ required: ['ResourceId', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
@@ -3476,35 +2658,23 @@ const TagKeysSchema = z.array(TagKeySchema).openapi('TagKeys')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceId: TaggableResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the resource to remove a tag from.</p> <p>You can specify any of the following taggable resources.</p> <ul> <li> <p>Amazon Web Services account – specify the account ID number.</p> </li> <li> <p>Organizational unit – specify the OU ID that begins with <code>ou-</code> and looks similar to: <code>ou-<i>1a2b-34uvwxyz</i> </code> </p> </li> <li> <p>Root – specify the root ID that begins with <code>r-</code> and looks similar to: <code>r-<i>1a2b</i> </code> </p> </li> <li> <p>Policy – specify the policy ID that begins with <code>p-</code> andlooks similar to: <code>p-<i>12abcdefg3</i> </code> </p> </li> </ul>',
-        }),
-    ),
-    TagKeys: TagKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of keys for tags to remove from the specified resource.',
-        }),
-    ),
+    ResourceId: TaggableResourceIdSchema.openapi({
+      description:
+        '<p>The ID of the resource to remove a tag from.</p> <p>You can specify any of the following taggable resources.</p> <ul> <li> <p>Amazon Web Services account – specify the account ID number.</p> </li> <li> <p>Organizational unit – specify the OU ID that begins with <code>ou-</code> and looks similar to: <code>ou-<i>1a2b-34uvwxyz</i> </code> </p> </li> <li> <p>Root – specify the root ID that begins with <code>r-</code> and looks similar to: <code>r-<i>1a2b</i> </code> </p> </li> <li> <p>Policy – specify the policy ID that begins with <code>p-</code> andlooks similar to: <code>p-<i>12abcdefg3</i> </code> </p> </li> </ul>',
+    }),
+    TagKeys: TagKeysSchema.openapi({
+      description: 'The list of keys for tags to remove from the specified resource.',
+    }),
   })
   .openapi({ required: ['ResourceId', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateOrganizationalUnitResponseSchema = z
   .object({
-    OrganizationalUnit: OrganizationalUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains the details about the specified OU, including its new name.',
-        }),
-    ).exactOptional(),
+    OrganizationalUnit: OrganizationalUnitSchema.exactOptional().openapi({
+      description:
+        'A structure that contains the details about the specified OU, including its new name.',
+    }),
   })
   .openapi({
     example: {
@@ -3520,36 +2690,24 @@ const UpdateOrganizationalUnitResponseSchema = z
 
 const UpdateOrganizationalUnitRequestSchema = z
   .object({
-    OrganizationalUnitId: OrganizationalUnitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the OU that you want to rename. You can get the ID from the <a>ListOrganizationalUnitsForParent</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an organizational unit ID string requires "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that contains the OU). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p>',
-        }),
-    ),
-    Name: OrganizationalUnitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new name that you want to assign to the OU.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of any of the characters in the ASCII character range.</p>',
-        }),
-    ).exactOptional(),
+    OrganizationalUnitId: OrganizationalUnitIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the OU that you want to rename. You can get the ID from the <a>ListOrganizationalUnitsForParent</a> operation.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for an organizational unit ID string requires "ou-" followed by from 4 to 32 lowercase letters or digits (the ID of the root that contains the OU). This string is followed by a second "-" dash and from 8 to 32 additional lowercase letters or digits.</p>',
+    }),
+    Name: OrganizationalUnitNameSchema.exactOptional().openapi({
+      description:
+        '<p>The new name that you want to assign to the OU.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of any of the characters in the ASCII character range.</p>',
+    }),
   })
   .openapi({ required: ['OrganizationalUnitId'], title: 'UpdateOrganizationalUnitRequest' })
   .openapi('UpdateOrganizationalUnitRequest')
 
 const UpdatePolicyResponseSchema = z
   .object({
-    Policy: PolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that contains details about the updated policy, showing the requested changes.',
-        }),
-    ).exactOptional(),
+    Policy: PolicySchema.exactOptional().openapi({
+      description:
+        'A structure that contains details about the updated policy, showing the requested changes.',
+    }),
   })
   .openapi({
     example: {
@@ -3572,33 +2730,21 @@ const UpdatePolicyResponseSchema = z
 
 const UpdatePolicyRequestSchema = z
   .object({
-    PolicyId: PolicyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier (ID) of the policy that you want to update.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).</p>',
-        }),
-    ),
-    Name: PolicyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If provided, the new name for the policy.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of any of the characters in the ASCII character range.</p>',
-        }),
-    ).exactOptional(),
-    Description: PolicyDescriptionSchema.and(
-      z.any().openapi({ description: 'If provided, the new description for the policy.' }),
-    ).exactOptional(),
-    Content: PolicyContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If provided, the new content for the policy. The text must be correctly formatted JSON that complies with the syntax for the policy\'s type. For more information, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_scp-syntax.html">Service Control Policy Syntax</a> in the <i>Organizations User Guide.</i> ',
-        }),
-    ).exactOptional(),
+    PolicyId: PolicyIdSchema.openapi({
+      description:
+        '<p>The unique identifier (ID) of the policy that you want to update.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> for a policy ID string requires "p-" followed by from 8 to 128 lowercase or uppercase letters, digits, or the underscore character (_).</p>',
+    }),
+    Name: PolicyNameSchema.exactOptional().openapi({
+      description:
+        '<p>If provided, the new name for the policy.</p> <p>The <a href="http://wikipedia.org/wiki/regex">regex pattern</a> that is used to validate this parameter is a string of any of the characters in the ASCII character range.</p>',
+    }),
+    Description: PolicyDescriptionSchema.exactOptional().openapi({
+      description: 'If provided, the new description for the policy.',
+    }),
+    Content: PolicyContentSchema.exactOptional().openapi({
+      description:
+        'If provided, the new content for the policy. The text must be correctly formatted JSON that complies with the syntax for the policy\'s type. For more information, see <a href="https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_scp-syntax.html">Service Control Policy Syntax</a> in the <i>Organizations User Guide.</i> ',
+    }),
   })
   .openapi({ required: ['PolicyId'], title: 'UpdatePolicyRequest' })
   .openapi('UpdatePolicyRequest')

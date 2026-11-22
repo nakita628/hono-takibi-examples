@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodeBuild20161006DeleteSourceCredentialsHandler = app.openapi(
   postXAmzTargetCodeBuild20161006DeleteSourceCredentialsRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

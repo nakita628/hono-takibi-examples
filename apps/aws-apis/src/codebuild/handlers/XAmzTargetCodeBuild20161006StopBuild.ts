@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodeBuild20161006StopBuildHandler = app.openapi(
   postXAmzTargetCodeBuild20161006StopBuildRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

@@ -13709,6 +13709,7 @@ export const getCollaborationsRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
       limit: z
         .preprocess((val) => {
@@ -14135,6 +14136,7 @@ export const getCollectionsRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
       limit: z
         .preprocess((val) => {
@@ -14235,6 +14237,7 @@ export const getCollectionsCollectionIdItemsRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
       limit: z
         .preprocess((val) => {
@@ -14743,6 +14746,7 @@ export const getEventsRoute = createRoute({
             schema: { default: 100, format: 'int64', maximum: 500, type: 'integer' },
             required: false,
           },
+          default: 100,
         }),
       event_type: z
         .preprocess(
@@ -16156,6 +16160,7 @@ export const getFilesUploadSessionsUploadSessionIdPartsRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
       limit: z
         .preprocess((val) => {
@@ -17508,6 +17513,7 @@ export const getFilesFileIdCommentsRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
     }),
   },
@@ -19336,6 +19342,7 @@ export const getFilesFileIdVersionsRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
     }),
   },
@@ -20147,6 +20154,7 @@ export const getFoldersTrashItemsRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
       usemarker: z
         .stringbool()
@@ -21676,6 +21684,7 @@ export const getFoldersFolderIdItemsRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
       limit: z
         .preprocess((val) => {
@@ -23074,6 +23083,7 @@ export const getGroupsRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
     }),
   },
@@ -23542,6 +23552,7 @@ export const getGroupsGroupIdCollaborationsRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
     }),
   },
@@ -23621,6 +23632,7 @@ export const getGroupsGroupIdMembershipsRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
     }),
   },
@@ -24585,6 +24597,7 @@ export const getMetadataCascadePoliciesRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
     }),
   },
@@ -27709,6 +27722,7 @@ export const getSearchRoute = createRoute({
             required: false,
             schema: { default: 30, format: 'int64', maximum: 200, type: 'integer' },
           },
+          default: 30,
         }),
       include_recent_shared_links: z
         .stringbool()
@@ -27768,6 +27782,7 @@ export const getSearchRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
     }),
   },
@@ -30961,6 +30976,7 @@ export const getUsersRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
       limit: z
         .preprocess((val) => {
@@ -32131,6 +32147,7 @@ export const getUsersUserIdMembershipsRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
     }),
   },

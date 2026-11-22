@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSEventsCancelReplayHandler = app.openapi(
   postXAmzTargetAWSEventsCancelReplayRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

@@ -24,6 +24,144 @@ const EntityKeySchema = z
   })
   .openapi('EntityKey')
 
+const ExpiryDetailSchema = z
+  .object({
+    expireTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time at which the `MembershipRole` will expire.' }),
+  })
+  .openapi({ description: 'The `MembershipRole` expiry details.', required: [] })
+  .openapi('ExpiryDetail')
+
+const MembershipRoleRestrictionEvaluationSchema = z
+  .object({
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'COMPLIANT', 'FORWARD_COMPLIANT', 'NON_COMPLIANT', 'EVALUATING'])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The current state of the restriction',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'The evaluated state of this restriction.', required: [] })
+  .openapi('MembershipRoleRestrictionEvaluation')
+
+const RestrictionEvaluationsSchema = z
+  .object({
+    memberRestrictionEvaluation: MembershipRoleRestrictionEvaluationSchema.exactOptional().openapi({
+      description:
+        'Evaluation of the member restriction applied to this membership. Empty if the user lacks permission to view the restriction evaluation.',
+    }),
+  })
+  .openapi({
+    description: 'Evaluations of restrictions applied to parent group on this membership.',
+    required: [],
+  })
+  .openapi('RestrictionEvaluations')
+
+const MembershipRoleSchema = z
+  .object({
+    expiryDetail: ExpiryDetailSchema.exactOptional().openapi({
+      description:
+        'The expiry details of the `MembershipRole`. Expiry details are only supported for `MEMBER` `MembershipRoles`. May be set if `name` is `MEMBER`. Must not be set if `name` is any other value.',
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the `MembershipRole`. Must be one of `OWNER`, `MANAGER`, `MEMBER`.',
+      }),
+    restrictionEvaluations: RestrictionEvaluationsSchema.exactOptional().openapi({
+      description: 'Evaluations of restrictions applied to parent group on this membership.',
+    }),
+  })
+  .openapi({
+    description:
+      'A membership role within the Cloud Identity Groups API. A `MembershipRole` defines the privileges granted to a `Membership`.',
+    required: [],
+  })
+  .openapi('MembershipRole')
+
+const MembershipSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time when the `Membership` was created.',
+        readOnly: true,
+      }),
+    deliverySetting: z
+      .enum(['DELIVERY_SETTING_UNSPECIFIED', 'ALL_MAIL', 'DIGEST', 'DAILY', 'NONE', 'DISABLED'])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Delivery setting associated with the membership.',
+        readOnly: true,
+      }),
+    memberKey: EntityKeySchema.exactOptional().openapi({
+      description:
+        'Immutable. The `EntityKey` of the member. Either `member_key` or `preferred_member_key` must be set when calling MembershipsService.CreateMembership but not both; both shall be set when returned.',
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The [resource name](https://cloud.google.com/apis/design/resource_names) of the `Membership`. Shall be of the form `groups/{group_id}/memberships/{membership_id}`.',
+        readOnly: true,
+      }),
+    preferredMemberKey: EntityKeySchema.exactOptional().openapi({
+      description:
+        'Required. Immutable. The `EntityKey` of the member. Either `member_key` or `preferred_member_key` must be set when calling MembershipsService.CreateMembership but not both; both shall be set when returned.',
+    }),
+    roles: z
+      .array(MembershipRoleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The `MembershipRole`s that apply to the `Membership`. If unspecified, defaults to a single `MembershipRole` with `name` `MEMBER`. Must not contain duplicate `MembershipRole`s with the same `name`.',
+      }),
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'USER', 'SERVICE_ACCOUNT', 'GROUP', 'SHARED_DRIVE', 'OTHER'])
+      .exactOptional()
+      .openapi({ description: 'Output only. The type of the membership.', readOnly: true }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time when the `Membership` was last updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'A membership within the Cloud Identity Groups API. A `Membership` defines a relationship between a `Group` and an entity belonging to that `Group`, referred to as a "member".',
+    required: [],
+  })
+  .openapi('Membership')
+
+const MembershipAdjacencyListSchema = z
+  .object({
+    edges: z
+      .array(MembershipSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Each edge contains information about the member that belongs to this group. Note: Fields returned here will help identify the specific Membership resource (e.g name, preferred_member_key and role), but may not be a comprehensive list of all fields.',
+      }),
+    group: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Resource name of the group that the members belong to.' }),
+  })
+  .openapi({
+    description: "Membership graph's path information as an adjacency list.",
+    required: [],
+  })
+  .openapi('MembershipAdjacencyList')
+
 const DynamicGroupQuerySchema = z
   .object({
     query: z
@@ -93,22 +231,87 @@ const PosixGroupSchema = z
   })
   .openapi('PosixGroup')
 
-type GroupType = {
-  additionalGroupKeys?: z.infer<typeof EntityKeySchema>[]
-  createTime?: string
-  description?: string
-  displayName?: string
-  dynamicGroupMetadata?: z.infer<typeof DynamicGroupMetadataSchema>
-  groupKey?: z.infer<typeof EntityKeySchema>
-  labels?: { [key: string]: string }
-  name?: string
-  parent?: string
-  posixGroups?: z.infer<typeof PosixGroupSchema>[]
-  updateTime?: string
+const GroupSchema = z
+  .object({
+    additionalGroupKeys: z
+      .array(EntityKeySchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Additional group keys associated with the Group.',
+        readOnly: true,
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time when the `Group` was created.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An extended description to help users determine the purpose of a `Group`. Must not be longer than 4,096 characters.',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The display name of the `Group`.' }),
+    dynamicGroupMetadata: DynamicGroupMetadataSchema.exactOptional().openapi({
+      description: 'Optional. Dynamic group metadata like queries and status.',
+    }),
+    groupKey: EntityKeySchema.exactOptional().openapi({
+      description: 'Required. The `EntityKey` of the `Group`.',
+    }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. One or more label entries that apply to the Group. Currently supported labels contain a key with an empty value. Google Groups are the default type of group and have a label with a key of `cloudidentity.googleapis.com/groups.discussion_forum` and an empty value. Existing Google Groups can have an additional label with a key of `cloudidentity.googleapis.com/groups.security` and an empty value added to them. **This is an immutable change and the security label cannot be removed once added.** Dynamic groups have a label with a key of `cloudidentity.googleapis.com/groups.dynamic`. Identity-mapped groups for Cloud Search have a label with a key of `system/groups/external` and an empty value.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The [resource name](https://cloud.google.com/apis/design/resource_names) of the `Group`. Shall be of the form `groups/{group_id}`.',
+        readOnly: true,
+      }),
+    parent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Immutable. The resource name of the entity under which this `Group` resides in the Cloud Identity resource hierarchy. Must be of the form `identitysources/{identity_source}` for external [identity-mapped groups](https://support.google.com/a/answer/9039510) or `customers/{customer_id}` for Google Groups. The `customer_id` must begin with "C" (for example, \'C046psxkn\'). [Find your customer ID.] (https://support.google.com/cloudidentity/answer/10070793)',
+      }),
+    posixGroups: z
+      .array(PosixGroupSchema)
+      .exactOptional()
+      .openapi({ description: 'Optional. The POSIX groups associated with the `Group`.' }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The time when the `Group` was last updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'A group within the Cloud Identity Groups API. A `Group` is a collection of entities, where each entity is either a user, another group, or a service account.',
+    required: [],
+  })
+  .openapi('Group')
+
+type GetMembershipGraphResponseType = {
+  adjacencyList?: z.infer<typeof MembershipAdjacencyListSchema>[]
+  groups?: z.infer<typeof GroupSchema>[]
 }
 
 const AddIdpCredentialOperationMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'LRO response metadata for InboundSamlSsoProfilesService.AddIdpCredential.',
   })
@@ -300,7 +503,7 @@ const BlockDeviceUserResponseSchema = z
   .openapi('BlockDeviceUserResponse')
 
 const CancelUserInvitationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request to cancel sent invitation for target email in UserInvitation.' })
   .openapi('CancelUserInvitationRequest')
 
@@ -772,7 +975,7 @@ const CreateDeviceRequestSchema = z
   .openapi('CreateDeviceRequest')
 
 const CreateInboundSamlSsoProfileOperationMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'LRO response metadata for InboundSamlSsoProfilesService.CreateInboundSamlSsoProfile.',
@@ -780,7 +983,7 @@ const CreateInboundSamlSsoProfileOperationMetadataSchema = z
   .openapi('CreateInboundSamlSsoProfileOperationMetadata')
 
 const CreateInboundSsoAssignmentOperationMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'LRO response metadata for InboundSsoAssignmentsService.CreateInboundSsoAssignment.',
@@ -788,14 +991,14 @@ const CreateInboundSsoAssignmentOperationMetadataSchema = z
   .openapi('CreateInboundSsoAssignmentOperationMetadata')
 
 const DeleteIdpCredentialOperationMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'LRO response metadata for InboundSamlSsoProfilesService.DeleteIdpCredential.',
   })
   .openapi('DeleteIdpCredentialOperationMetadata')
 
 const DeleteInboundSamlSsoProfileOperationMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'LRO response metadata for InboundSamlSsoProfilesService.DeleteInboundSamlSsoProfile.',
@@ -803,7 +1006,7 @@ const DeleteInboundSamlSsoProfileOperationMetadataSchema = z
   .openapi('DeleteInboundSamlSsoProfileOperationMetadata')
 
 const DeleteInboundSsoAssignmentOperationMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'LRO response metadata for InboundSsoAssignmentsService.DeleteInboundSsoAssignment.',
@@ -820,222 +1023,7 @@ const DsaPublicKeyInfoSchema = z
   .openapi({ description: 'Information of a DSA public key.', required: [] })
   .openapi('DsaPublicKeyInfo')
 
-const ExpiryDetailSchema = z
-  .object({
-    expireTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time at which the `MembershipRole` will expire.' }),
-  })
-  .openapi({ description: 'The `MembershipRole` expiry details.', required: [] })
-  .openapi('ExpiryDetail')
-
-const MembershipRoleRestrictionEvaluationSchema = z
-  .object({
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'COMPLIANT', 'FORWARD_COMPLIANT', 'NON_COMPLIANT', 'EVALUATING'])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The current state of the restriction',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'The evaluated state of this restriction.', required: [] })
-  .openapi('MembershipRoleRestrictionEvaluation')
-
-const RestrictionEvaluationsSchema = z
-  .object({
-    memberRestrictionEvaluation: MembershipRoleRestrictionEvaluationSchema.exactOptional().openapi({
-      description:
-        'Evaluation of the member restriction applied to this membership. Empty if the user lacks permission to view the restriction evaluation.',
-    }),
-  })
-  .openapi({
-    description: 'Evaluations of restrictions applied to parent group on this membership.',
-    required: [],
-  })
-  .openapi('RestrictionEvaluations')
-
-const MembershipRoleSchema = z
-  .object({
-    expiryDetail: ExpiryDetailSchema.exactOptional().openapi({
-      description:
-        'The expiry details of the `MembershipRole`. Expiry details are only supported for `MEMBER` `MembershipRoles`. May be set if `name` is `MEMBER`. Must not be set if `name` is any other value.',
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the `MembershipRole`. Must be one of `OWNER`, `MANAGER`, `MEMBER`.',
-      }),
-    restrictionEvaluations: RestrictionEvaluationsSchema.exactOptional().openapi({
-      description: 'Evaluations of restrictions applied to parent group on this membership.',
-    }),
-  })
-  .openapi({
-    description:
-      'A membership role within the Cloud Identity Groups API. A `MembershipRole` defines the privileges granted to a `Membership`.',
-    required: [],
-  })
-  .openapi('MembershipRole')
-
-const MembershipSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The time when the `Membership` was created.',
-        readOnly: true,
-      }),
-    deliverySetting: z
-      .enum(['DELIVERY_SETTING_UNSPECIFIED', 'ALL_MAIL', 'DIGEST', 'DAILY', 'NONE', 'DISABLED'])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Delivery setting associated with the membership.',
-        readOnly: true,
-      }),
-    memberKey: EntityKeySchema.exactOptional().openapi({
-      description:
-        'Immutable. The `EntityKey` of the member. Either `member_key` or `preferred_member_key` must be set when calling MembershipsService.CreateMembership but not both; both shall be set when returned.',
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The [resource name](https://cloud.google.com/apis/design/resource_names) of the `Membership`. Shall be of the form `groups/{group_id}/memberships/{membership_id}`.',
-        readOnly: true,
-      }),
-    preferredMemberKey: EntityKeySchema.exactOptional().openapi({
-      description:
-        'Required. Immutable. The `EntityKey` of the member. Either `member_key` or `preferred_member_key` must be set when calling MembershipsService.CreateMembership but not both; both shall be set when returned.',
-    }),
-    roles: z
-      .array(MembershipRoleSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The `MembershipRole`s that apply to the `Membership`. If unspecified, defaults to a single `MembershipRole` with `name` `MEMBER`. Must not contain duplicate `MembershipRole`s with the same `name`.',
-      }),
-    type: z
-      .enum(['TYPE_UNSPECIFIED', 'USER', 'SERVICE_ACCOUNT', 'GROUP', 'SHARED_DRIVE', 'OTHER'])
-      .exactOptional()
-      .openapi({ description: 'Output only. The type of the membership.', readOnly: true }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The time when the `Membership` was last updated.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'A membership within the Cloud Identity Groups API. A `Membership` defines a relationship between a `Group` and an entity belonging to that `Group`, referred to as a "member".',
-    required: [],
-  })
-  .openapi('Membership')
-
-const MembershipAdjacencyListSchema = z
-  .object({
-    edges: z
-      .array(MembershipSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Each edge contains information about the member that belongs to this group. Note: Fields returned here will help identify the specific Membership resource (e.g name, preferred_member_key and role), but may not be a comprehensive list of all fields.',
-      }),
-    group: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Resource name of the group that the members belong to.' }),
-  })
-  .openapi({
-    description: "Membership graph's path information as an adjacency list.",
-    required: [],
-  })
-  .openapi('MembershipAdjacencyList')
-
-const GroupSchema: z.ZodType<GroupType> = z
-  .lazy(() =>
-    z
-      .object({
-        additionalGroupKeys: z
-          .array(EntityKeySchema)
-          .exactOptional()
-          .openapi({
-            description: 'Output only. Additional group keys associated with the Group.',
-            readOnly: true,
-          }),
-        createTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. The time when the `Group` was created.',
-            readOnly: true,
-          }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'An extended description to help users determine the purpose of a `Group`. Must not be longer than 4,096 characters.',
-          }),
-        displayName: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The display name of the `Group`.' }),
-        dynamicGroupMetadata: DynamicGroupMetadataSchema.exactOptional().openapi({
-          description: 'Optional. Dynamic group metadata like queries and status.',
-        }),
-        groupKey: EntityKeySchema.exactOptional().openapi({
-          description: 'Required. The `EntityKey` of the `Group`.',
-        }),
-        labels: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'Required. One or more label entries that apply to the Group. Currently supported labels contain a key with an empty value. Google Groups are the default type of group and have a label with a key of `cloudidentity.googleapis.com/groups.discussion_forum` and an empty value. Existing Google Groups can have an additional label with a key of `cloudidentity.googleapis.com/groups.security` and an empty value added to them. **This is an immutable change and the security label cannot be removed once added.** Dynamic groups have a label with a key of `cloudidentity.googleapis.com/groups.dynamic`. Identity-mapped groups for Cloud Search have a label with a key of `system/groups/external` and an empty value.',
-          }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The [resource name](https://cloud.google.com/apis/design/resource_names) of the `Group`. Shall be of the form `groups/{group_id}`.',
-            readOnly: true,
-          }),
-        parent: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Required. Immutable. The resource name of the entity under which this `Group` resides in the Cloud Identity resource hierarchy. Must be of the form `identitysources/{identity_source}` for external [identity-mapped groups](https://support.google.com/a/answer/9039510) or `customers/{customer_id}` for Google Groups. The `customer_id` must begin with "C" (for example, \'C046psxkn\'). [Find your customer ID.] (https://support.google.com/cloudidentity/answer/10070793)',
-          }),
-        posixGroups: z
-          .array(PosixGroupSchema)
-          .exactOptional()
-          .openapi({ description: 'Optional. The POSIX groups associated with the `Group`.' }),
-        updateTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. The time when the `Group` was last updated.',
-            readOnly: true,
-          }),
-      })
-      .openapi({
-        description:
-          'A group within the Cloud Identity Groups API. A `Group` is a collection of entities, where each entity is either a user, another group, or a service account.',
-        required: [],
-      }),
-  )
-  .openapi('Group')
-
-const GetMembershipGraphResponseSchema = z
+const GetMembershipGraphResponseSchema: z.ZodType<GetMembershipGraphResponseType> = z
   .object({
     adjacencyList: z
       .array(MembershipAdjacencyListSchema)
@@ -1096,7 +1084,7 @@ const GoogleAppsCloudidentityDevicesV1AndroidAttributesSchema = z
   .openapi('GoogleAppsCloudidentityDevicesV1AndroidAttributes')
 
 const GoogleAppsCloudidentityDevicesV1ApproveDeviceUserMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata for ApproveDeviceUser LRO.' })
   .openapi('GoogleAppsCloudidentityDevicesV1ApproveDeviceUserMetadata')
 
@@ -1190,7 +1178,7 @@ const GoogleAppsCloudidentityDevicesV1ApproveDeviceUserResponseSchema = z
   .openapi('GoogleAppsCloudidentityDevicesV1ApproveDeviceUserResponse')
 
 const GoogleAppsCloudidentityDevicesV1BlockDeviceUserMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata for BlockDeviceUser LRO.' })
   .openapi('GoogleAppsCloudidentityDevicesV1BlockDeviceUserMetadata')
 
@@ -1207,7 +1195,7 @@ const GoogleAppsCloudidentityDevicesV1BlockDeviceUserResponseSchema = z
   .openapi('GoogleAppsCloudidentityDevicesV1BlockDeviceUserResponse')
 
 const GoogleAppsCloudidentityDevicesV1CancelWipeDeviceMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata for CancelWipeDevice LRO.' })
   .openapi('GoogleAppsCloudidentityDevicesV1CancelWipeDeviceMetadata')
 
@@ -1414,7 +1402,7 @@ const GoogleAppsCloudidentityDevicesV1CancelWipeDeviceResponseSchema = z
   .openapi('GoogleAppsCloudidentityDevicesV1CancelWipeDeviceResponse')
 
 const GoogleAppsCloudidentityDevicesV1CancelWipeDeviceUserMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata for CancelWipeDeviceUser LRO.' })
   .openapi('GoogleAppsCloudidentityDevicesV1CancelWipeDeviceUserMetadata')
 
@@ -1527,42 +1515,42 @@ const GoogleAppsCloudidentityDevicesV1ClientStateSchema = z
   .openapi('GoogleAppsCloudidentityDevicesV1ClientState')
 
 const GoogleAppsCloudidentityDevicesV1CreateDeviceMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata for CreateDevice LRO.' })
   .openapi('GoogleAppsCloudidentityDevicesV1CreateDeviceMetadata')
 
 const GoogleAppsCloudidentityDevicesV1DeleteDeviceMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata for DeleteDevice LRO.' })
   .openapi('GoogleAppsCloudidentityDevicesV1DeleteDeviceMetadata')
 
 const GoogleAppsCloudidentityDevicesV1DeleteDeviceUserMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata for DeleteDeviceUser LRO.' })
   .openapi('GoogleAppsCloudidentityDevicesV1DeleteDeviceUserMetadata')
 
 const GoogleAppsCloudidentityDevicesV1ListEndpointAppsMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata for ListEndpointApps LRO.' })
   .openapi('GoogleAppsCloudidentityDevicesV1ListEndpointAppsMetadata')
 
 const GoogleAppsCloudidentityDevicesV1SignoutDeviceUserMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata for SignoutDeviceUser LRO.' })
   .openapi('GoogleAppsCloudidentityDevicesV1SignoutDeviceUserMetadata')
 
 const GoogleAppsCloudidentityDevicesV1UpdateClientStateMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata for UpdateClientState LRO.' })
   .openapi('GoogleAppsCloudidentityDevicesV1UpdateClientStateMetadata')
 
 const GoogleAppsCloudidentityDevicesV1UpdateDeviceMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata for UpdateDevice LRO.' })
   .openapi('GoogleAppsCloudidentityDevicesV1UpdateDeviceMetadata')
 
 const GoogleAppsCloudidentityDevicesV1WipeDeviceMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata for WipeDevice LRO.' })
   .openapi('GoogleAppsCloudidentityDevicesV1WipeDeviceMetadata')
 
@@ -1577,7 +1565,7 @@ const GoogleAppsCloudidentityDevicesV1WipeDeviceResponseSchema = z
   .openapi('GoogleAppsCloudidentityDevicesV1WipeDeviceResponse')
 
 const GoogleAppsCloudidentityDevicesV1WipeDeviceUserMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata for WipeDeviceUser LRO.' })
   .openapi('GoogleAppsCloudidentityDevicesV1WipeDeviceUserMetadata')
 
@@ -2537,7 +2525,7 @@ const SecuritySettingsSchema = z
   .openapi('SecuritySettings')
 
 const SendUserInvitationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A request to send email for inviting target user corresponding to the UserInvitation.',
@@ -2545,7 +2533,7 @@ const SendUserInvitationRequestSchema = z
   .openapi('SendUserInvitationRequest')
 
 const UpdateInboundSamlSsoProfileOperationMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'LRO response metadata for InboundSamlSsoProfilesService.UpdateInboundSamlSsoProfile.',
@@ -2553,7 +2541,7 @@ const UpdateInboundSamlSsoProfileOperationMetadataSchema = z
   .openapi('UpdateInboundSamlSsoProfileOperationMetadata')
 
 const UpdateInboundSsoAssignmentOperationMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'LRO response metadata for InboundSsoAssignmentsService.UpdateInboundSsoAssignment.',

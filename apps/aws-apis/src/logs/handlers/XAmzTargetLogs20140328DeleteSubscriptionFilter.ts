@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetLogs20140328DeleteSubscriptionFilterHandler = app.openapi(
   postXAmzTargetLogs20140328DeleteSubscriptionFilterRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

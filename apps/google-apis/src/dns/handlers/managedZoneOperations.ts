@@ -7,11 +7,12 @@ import {
 const app = new OpenAPIHono()
 
 export const managedZoneOperationsHandler = app
-  .openapi(
-    getDnsV2ProjectsProjectLocationsLocationManagedZonesManagedZoneOperationsRoute,
-    (c) => {},
-  )
+  .openapi(getDnsV2ProjectsProjectLocationsLocationManagedZonesManagedZoneOperationsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(
     getDnsV2ProjectsProjectLocationsLocationManagedZonesManagedZoneOperationsOperationRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

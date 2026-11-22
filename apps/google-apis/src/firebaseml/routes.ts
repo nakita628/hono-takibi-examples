@@ -136,18 +136,75 @@ const TfLiteModelSchema = z
   .openapi({ description: 'Information that is specific to TfLite models.', required: [] })
   .openapi('TfLiteModel')
 
-type ModelType = {
-  activeOperations?: z.infer<typeof OperationSchema>[]
-  createTime?: string
-  displayName?: string
-  etag?: string
-  modelHash?: string
-  name?: string
-  state?: z.infer<typeof ModelStateSchema>
-  tags?: string[]
-  tfliteModel?: z.infer<typeof TfLiteModelSchema>
-  updateTime?: string
-}
+const ModelSchema = z
+  .object({
+    activeOperations: z
+      .array(OperationSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Lists operation ids associated with this model whose status is NOT done.',
+        readOnly: true,
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Timestamp when this model was created in Firebase ML.',
+        readOnly: true,
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The name of the model to create. The name can be up to 32 characters long and can consist only of ASCII Latin letters A-Z and a-z, underscores(_) and ASCII digits 0-9. It must start with a letter.',
+      }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. See RFC7232 https://tools.ietf.org/html/rfc7232#section-2.3',
+        readOnly: true,
+      }),
+    modelHash: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The model_hash will change if a new file is available for download.',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the Model. Model names have the form `projects/{project_id}/models/{model_id}` The name is ignored when creating a model.',
+      }),
+    state: ModelStateSchema.exactOptional().openapi({
+      description:
+        'State common to all model types. Includes publishing and validation information.',
+    }),
+    tags: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'User defined tags which can be used to group/filter models during listing',
+      }),
+    tfliteModel: TfLiteModelSchema.exactOptional().openapi({ description: 'A TFLite Model' }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Timestamp when this model was updated in Firebase ML.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'An ML model hosted in Firebase ML', required: [] })
+  .openapi('Model')
+
+type ListModelsResponseType = { models?: z.infer<typeof ModelSchema>[]; nextPageToken?: string }
 
 const DownloadModelResponseSchema = z
   .object({
@@ -185,86 +242,14 @@ const DownloadModelResponseSchema = z
   .openapi('DownloadModelResponse')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
   })
   .openapi('Empty')
 
-const ModelSchema: z.ZodType<ModelType> = z
-  .lazy(() =>
-    z
-      .object({
-        activeOperations: z
-          .array(OperationSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. Lists operation ids associated with this model whose status is NOT done.',
-            readOnly: true,
-          }),
-        createTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. Timestamp when this model was created in Firebase ML.',
-            readOnly: true,
-          }),
-        displayName: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Required. The name of the model to create. The name can be up to 32 characters long and can consist only of ASCII Latin letters A-Z and a-z, underscores(_) and ASCII digits 0-9. It must start with a letter.',
-          }),
-        etag: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. See RFC7232 https://tools.ietf.org/html/rfc7232#section-2.3',
-            readOnly: true,
-          }),
-        modelHash: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The model_hash will change if a new file is available for download.',
-            readOnly: true,
-          }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The resource name of the Model. Model names have the form `projects/{project_id}/models/{model_id}` The name is ignored when creating a model.',
-          }),
-        state: ModelStateSchema.exactOptional().openapi({
-          description:
-            'State common to all model types. Includes publishing and validation information.',
-        }),
-        tags: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'User defined tags which can be used to group/filter models during listing',
-          }),
-        tfliteModel: TfLiteModelSchema.exactOptional().openapi({ description: 'A TFLite Model' }),
-        updateTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. Timestamp when this model was updated in Firebase ML.',
-            readOnly: true,
-          }),
-      })
-      .openapi({ description: 'An ML model hosted in Firebase ML', required: [] }),
-  )
-  .openapi('Model')
-
-const ListModelsResponseSchema = z
+const ListModelsResponseSchema: z.ZodType<ListModelsResponseType> = z
   .object({
     models: z.array(ModelSchema).exactOptional().openapi({ description: 'The list of models' }),
     nextPageToken: z

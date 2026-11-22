@@ -1,37 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ConsentDomainUpdateSchema = z
-  .object({
-    agreedAt: z
-      .string()
-      .openapi({
-        description: 'Timestamp indicating when the end-user consented to these agreements',
-      }),
-    agreedBy: z
-      .string()
-      .openapi({
-        description:
-          "Originating client IP address of the end-user's computer when they consented to the agreements",
-      }),
-    agreementKeys: z
-      .array(z.literal('EXPOSE_WHOIS'))
-      .openapi({
-        description:
-          "Unique identifiers of the agreements to which the end-user has agreed, as required by the elements being updated<br/><ul><li><strong style='margin-left: 12px;'>EXPOSE_WHOIS</strong> - Required when the exposeWhois field is updated to true</li></ul>",
-      }),
-  })
-  .openapi({ required: ['agreementKeys', 'agreedBy', 'agreedAt'] })
-  .openapi('ConsentDomainUpdate')
-
-type DomainUpdateType = {
-  consent?: z.infer<typeof ConsentDomainUpdateSchema>
-  exposeWhois?: boolean
-  locked?: boolean
-  nameServers?: { [key: string]: unknown }[]
-  renewAuto?: boolean
-  subaccountId?: string
-}
-
 const ErrorFieldSchema = z
   .object({
     code: z
@@ -486,6 +454,29 @@ const ConsentSchema = z
   .openapi({ required: ['agreementKeys', 'agreedBy', 'agreedAt'] })
   .openapi('Consent')
 
+const ConsentDomainUpdateSchema = z
+  .object({
+    agreedAt: z
+      .string()
+      .openapi({
+        description: 'Timestamp indicating when the end-user consented to these agreements',
+      }),
+    agreedBy: z
+      .string()
+      .openapi({
+        description:
+          "Originating client IP address of the end-user's computer when they consented to the agreements",
+      }),
+    agreementKeys: z
+      .array(z.literal('EXPOSE_WHOIS'))
+      .openapi({
+        description:
+          "Unique identifiers of the agreements to which the end-user has agreed, as required by the elements being updated<br/><ul><li><strong style='margin-left: 12px;'>EXPOSE_WHOIS</strong> - Required when the exposeWhois field is updated to true</li></ul>",
+      }),
+  })
+  .openapi({ required: ['agreementKeys', 'agreedBy', 'agreedAt'] })
+  .openapi('ConsentDomainUpdate')
+
 const ConsentRedemptionSchema = z
   .strictObject({
     agreedAt: z
@@ -575,7 +566,7 @@ const ContactDomainSchema = z
     fax: z.string().max(17).exactOptional(),
     jobTitle: z.string().exactOptional(),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -1236,7 +1227,7 @@ const DomainNotificationSchema = z
   .object({
     addedAt: z.string().default('').openapi({ description: 'The date the notification was added' }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -1574,43 +1565,37 @@ const DomainTransferInSchema = z
   .openapi({ required: ['authCode', 'consent'] })
   .openapi('DomainTransferIn')
 
-const DomainUpdateSchema: z.ZodType<DomainUpdateType> = z
-  .lazy(() =>
-    z
-      .object({
-        consent: ConsentDomainUpdateSchema.exactOptional(),
-        exposeWhois: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Whether or not the domain contact details should be shown in the WHOIS',
-          }),
-        locked: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Whether or not the domain should be locked to prevent transfers',
-          }),
-        nameServers: z
-          .array(z.any())
-          .exactOptional()
-          .openapi({
-            description:
-              'Fully-qualified domain names for Name Servers to associate with the domain',
-          }),
-        renewAuto: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Whether or not the domain should be configured to automatically renew',
-          }),
-        subaccountId: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Reseller subaccount shopperid who can manage the domain' }),
-      })
-      .openapi({ required: [] }),
-  )
+const DomainUpdateSchema = z
+  .object({
+    consent: ConsentDomainUpdateSchema.exactOptional(),
+    exposeWhois: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether or not the domain contact details should be shown in the WHOIS',
+      }),
+    locked: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the domain should be locked to prevent transfers' }),
+    nameServers: z
+      .array(z.any())
+      .exactOptional()
+      .openapi({
+        description: 'Fully-qualified domain names for Name Servers to associate with the domain',
+      }),
+    renewAuto: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether or not the domain should be configured to automatically renew',
+      }),
+    subaccountId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Reseller subaccount shopperid who can manage the domain' }),
+  })
+  .openapi({ required: [] })
   .openapi('DomainUpdate')
 
 const DomainsContactsBulkSchema = z
@@ -1779,7 +1764,7 @@ const JsonPropertySchema = z
   .object({
     defaultValue: z.string().exactOptional(),
     format: z.string().exactOptional(),
-    items: z.object({}).exactOptional(),
+    items: z.looseObject({}).exactOptional(),
     maxItems: z.int().exactOptional(),
     maximum: z.int().exactOptional(),
     minItems: z.int().exactOptional(),
@@ -1794,8 +1779,8 @@ const JsonPropertySchema = z
 const JsonSchemaSchema = z
   .object({
     id: z.string(),
-    models: z.object({}),
-    properties: z.object({}),
+    models: z.looseObject({}),
+    properties: z.looseObject({}),
     required: z.array(z.string()),
   })
   .openapi({ required: ['id', 'properties', 'required', 'models'] })

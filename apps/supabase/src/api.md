@@ -257,13 +257,13 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/analytics/endpoin
 
 Executes an SQL or LQL query on the project's unified logs stream.
 
-Either the `iso_timestamp_start` and `iso_timestamp_end` parameters must be provided.
-If both are not provided, only the last 1 minute of logs will be queried.
-The timestamp range must be no more than 24 hours and is rounded to the nearest minute. If the range is more than 24 hours, a validation error will be thrown.
+  Either the `iso_timestamp_start` and `iso_timestamp_end` parameters must be provided.
+  If both are not provided, only the last 1 minute of logs will be queried.
+  The timestamp range must be no more than 24 hours and is rounded to the nearest minute. If the range is more than 24 hours, a validation error will be thrown.
 
-Filter by the `source` column to specify specific log sources, such as edge_logs, postgres_logs, etc.
+  Filter by the `source` column to specify specific log sources, such as edge_logs, postgres_logs, etc.
 
-Note: SQL must be written in **ClickHouse SQL dialect**.
+  Note: SQL must be written in **ClickHouse SQL dialect**.
 
 
 <h3 id="gets-all-projects-logs-in-a-single-log-stream-parameters">Parameters</h3>
@@ -272,6 +272,7 @@ Note: SQL must be written in **ClickHouse SQL dialect**.
 |---|---|---|---|---|
 |ref|path|string|true|Project ref|
 |sql|query|string|false|Custom SQL query to execute on the logs. See [querying logs](https://supabase.com/docs/guides/monitoring-and-debugging/logs#querying-with-the-logs-explorer) for more details.|
+|lql|query|string|false|Custom LQL query to execute on the logs. See [querying logs](https://supabase.com/docs/guides/monitoring-and-debugging/logs#querying-with-the-logs-explorer) for more details.|
 |iso_timestamp_start|query|string(date-time)|false|none|
 |iso_timestamp_end|query|string(date-time)|false|none|
 
@@ -289,6 +290,87 @@ Note: SQL must be written in **ClickHouse SQL dialect**.
 ```
 
 <h3 id="gets-all-projects-logs-in-a-single-log-stream-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[AnalyticsResponse_Output](#schemaanalyticsresponse_output)|
+|401|Unauthorized|Unauthorized|None|
+|402|Payment Required|Usage exceeded. Enable additional usage to continue querying|None|
+|403|Forbidden|Forbidden action|None|
+|429|Too Many Requests|Rate limit exceeded|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
+## Gets all project's logs in a single log stream
+
+<a id="opIdv1-post-project-logs"></a>
+
+> Code samples
+
+```bash
+curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/analytics/endpoints/logs \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "sql": "select event_message from edge_logs limit 10",
+    "iso_timestamp_start": "2025-03-01T00:00:00Z",
+    "iso_timestamp_end": "2025-03-01T23:59:59Z"
+  }'
+```
+
+`POST /v1/projects/{ref}/analytics/endpoints/logs`
+
+Executes an SQL or LQL query on the project's unified logs stream.
+
+  Either the `iso_timestamp_start` and `iso_timestamp_end` parameters must be provided.
+  If both are not provided, only the last 1 minute of logs will be queried.
+  The timestamp range must be no more than 24 hours and is rounded to the nearest minute. If the range is more than 24 hours, a validation error will be thrown.
+
+  Filter by the `source` column to specify specific log sources, such as edge_logs, postgres_logs, etc.
+
+  Note: SQL must be written in **ClickHouse SQL dialect**.
+
+
+> Body parameter
+
+```json
+{
+  "sql": "select event_message from edge_logs limit 10",
+  "iso_timestamp_start": "2025-03-01T00:00:00Z",
+  "iso_timestamp_end": "2025-03-01T23:59:59Z"
+}
+```
+
+<h3 id="gets-all-projects-logs-in-a-single-log-stream-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ref|path|string|true|Project ref|
+|body|body|[V1PostProjectLogsBody](#schemav1postprojectlogsbody)|true|none|
+|» sql|body|string|false|Custom SQL query to execute on the logs. See [querying logs](https://supabase.com/docs/guides/monitoring-and-debugging/logs#querying-with-the-logs-explorer) for more details.|
+|» lql|body|string|false|Custom LQL query to execute on the logs. See [querying logs](https://supabase.com/docs/guides/monitoring-and-debugging/logs#querying-with-the-logs-explorer) for more details.|
+|» iso_timestamp_start|body|string(date-time)|false|none|
+|» iso_timestamp_end|body|string(date-time)|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "result": [
+    null
+  ],
+  "error": "string"
+}
+```
+
+<h3 id="gets-all-projects-logs-in-a-single-log-stream-1-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -2122,6 +2204,15 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/auth/sso/p
   "items": [
     {
       "id": "string",
+      "domains": [
+        {
+          "domain": "string",
+          "created_at": "string",
+          "updated_at": "string"
+        }
+      ],
+      "created_at": "string",
+      "updated_at": "string",
       "saml": {
         "entity_id": "string",
         "metadata_url": "string",
@@ -2146,17 +2237,9 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/auth/sso/p
             }
           }
         },
-        "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
-      },
-      "domains": [
-        {
-          "domain": "string",
-          "created_at": "string",
-          "updated_at": "string"
-        }
-      ],
-      "created_at": "string",
-      "updated_at": "string"
+        "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+        "dedicated_scope": true
+      }
     }
   ]
 }
@@ -2260,6 +2343,7 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/auth/sso/p
 |» » » » » *anyOf*|body|string|false|none|
 |» » » » » *anyOf*|body|boolean|false|none|
 |» name_id_format|body|string|false|none|
+|» dedicated_scope|body|boolean|false|When `true`, the provider's SAML ACS URL and entity ID are scoped to its own provider ID instead of the ones shared by all SAML providers in the project. The same signing key is still used. This cannot be changed once the provider is created.|
 
 #### Enumerated Values
 
@@ -2278,6 +2362,15 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/auth/sso/p
 ```json
 {
   "id": "string",
+  "domains": [
+    {
+      "domain": "string",
+      "created_at": "string",
+      "updated_at": "string"
+    }
+  ],
+  "created_at": "string",
+  "updated_at": "string",
   "saml": {
     "entity_id": "string",
     "metadata_url": "string",
@@ -2302,17 +2395,22 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/auth/sso/p
         }
       }
     },
-    "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
-  },
-  "domains": [
-    {
-      "domain": "string",
-      "created_at": "string",
-      "updated_at": "string"
-    }
-  ],
-  "created_at": "string",
-  "updated_at": "string"
+    "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+    "dedicated_scope": true
+  }
+}
+```
+
+> 402 Response
+
+```json
+{
+  "message": "string",
+  "error": {
+    "code": "entitlement_required",
+    "feature": "string",
+    "upgrade_url": "string"
+  }
 }
 ```
 
@@ -2322,6 +2420,7 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/auth/sso/p
 |---|---|---|---|
 |201|Created||[CreateProviderResponse_Output](#schemacreateproviderresponse_output)|
 |401|Unauthorized|Unauthorized|None|
+|402|Payment Required|This feature requires the Pro, Team, or Enterprise organization plan.|[PlanGateErrorBody](#schemaplangateerrorbody)|
 |403|Forbidden|Forbidden action|None|
 |404|Not Found|SAML 2.0 support is not enabled for this project|None|
 |429|Too Many Requests|Rate limit exceeded|None|
@@ -2359,6 +2458,15 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/auth/sso/p
 ```json
 {
   "id": "string",
+  "domains": [
+    {
+      "domain": "string",
+      "created_at": "string",
+      "updated_at": "string"
+    }
+  ],
+  "created_at": "string",
+  "updated_at": "string",
   "saml": {
     "entity_id": "string",
     "metadata_url": "string",
@@ -2383,17 +2491,9 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/auth/sso/p
         }
       }
     },
-    "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
-  },
-  "domains": [
-    {
-      "domain": "string",
-      "created_at": "string",
-      "updated_at": "string"
-    }
-  ],
-  "created_at": "string",
-  "updated_at": "string"
+    "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+    "dedicated_scope": true
+  }
 }
 ```
 
@@ -2486,6 +2586,15 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/auth/sso/p
 ```json
 {
   "id": "string",
+  "domains": [
+    {
+      "domain": "string",
+      "created_at": "string",
+      "updated_at": "string"
+    }
+  ],
+  "created_at": "string",
+  "updated_at": "string",
   "saml": {
     "entity_id": "string",
     "metadata_url": "string",
@@ -2511,16 +2620,20 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/auth/sso/p
       }
     },
     "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
-  },
-  "domains": [
-    {
-      "domain": "string",
-      "created_at": "string",
-      "updated_at": "string"
-    }
-  ],
-  "created_at": "string",
-  "updated_at": "string"
+  }
+}
+```
+
+> 402 Response
+
+```json
+{
+  "message": "string",
+  "error": {
+    "code": "entitlement_required",
+    "feature": "string",
+    "upgrade_url": "string"
+  }
 }
 ```
 
@@ -2530,6 +2643,7 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/auth/sso/p
 |---|---|---|---|
 |200|OK||[UpdateProviderResponse_Output](#schemaupdateproviderresponse_output)|
 |401|Unauthorized|Unauthorized|None|
+|402|Payment Required|This feature requires the Pro, Team, or Enterprise organization plan.|[PlanGateErrorBody](#schemaplangateerrorbody)|
 |403|Forbidden|Forbidden action|None|
 |404|Not Found|Either SAML 2.0 was not enabled for this project, or the provider does not exist|None|
 |429|Too Many Requests|Rate limit exceeded|None|
@@ -2568,6 +2682,15 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/auth/sso/p
 ```json
 {
   "id": "string",
+  "domains": [
+    {
+      "domain": "string",
+      "created_at": "string",
+      "updated_at": "string"
+    }
+  ],
+  "created_at": "string",
+  "updated_at": "string",
   "saml": {
     "entity_id": "string",
     "metadata_url": "string",
@@ -2592,17 +2715,9 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/config/auth/sso/p
         }
       }
     },
-    "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
-  },
-  "domains": [
-    {
-      "domain": "string",
-      "created_at": "string",
-      "updated_at": "string"
-    }
-  ],
-  "created_at": "string",
-  "updated_at": "string"
+    "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+    "dedicated_scope": true
+  }
 }
 ```
 
@@ -3996,7 +4111,8 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/database/query \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "query": "select * from pg_stat_activity limit 1;",
-    "read_only": true
+    "read_only": true,
+    "disable_statement_timeout": false
   }'
 ```
 
@@ -4011,7 +4127,8 @@ This endpoint is currently in its **Beta** stage.
 ```json
 {
   "query": "select * from pg_stat_activity limit 1;",
-  "read_only": true
+  "read_only": true,
+  "disable_statement_timeout": false
 }
 ```
 
@@ -4024,6 +4141,7 @@ This endpoint is currently in its **Beta** stage.
 |» query|body|string|true|none|
 |» parameters|body|[object]|false|none|
 |» read_only|body|boolean|false|none|
+|» disable_statement_timeout|body|boolean|false|Disable statement timeout for the query. Role-based or global timeout <br>        still apply https://supabase.com/docs/guides/database/postgres/timeouts|
 
 <h3 id="run-sql-query-responses">Responses</h3>
 
@@ -4052,7 +4170,8 @@ curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/database/query/re
   -H 'Content-Type: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "query": "select * from pg_stat_activity limit 1;"
+    "query": "select * from pg_stat_activity limit 1;",
+    "disable_statement_timeout": false
   }'
 ```
 
@@ -4066,7 +4185,8 @@ This endpoint is currently in its **Beta** stage.
 
 ```json
 {
-  "query": "select * from pg_stat_activity limit 1;"
+  "query": "select * from pg_stat_activity limit 1;",
+  "disable_statement_timeout": false
 }
 ```
 
@@ -4078,6 +4198,7 @@ This endpoint is currently in its **Beta** stage.
 |body|body|[V1ReadOnlyQueryBody](#schemav1readonlyquerybody)|true|none|
 |» query|body|string|true|none|
 |» parameters|body|[object]|false|none|
+|» disable_statement_timeout|body|boolean|false|Disable statement timeout for the query. Role-based or global timeout <br>        still apply https://supabase.com/docs/guides/database/postgres/timeouts|
 
 <h3 id="run-a-sql-query-as-supabasereadonlyuser-responses">Responses</h3>
 
@@ -6924,6 +7045,41 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
+## Deletes all Edge Functions from a project
+
+<a id="opIdv1-delete-all-functions"></a>
+
+> Code samples
+
+```bash
+curl https://api.supabase.com/v1/projects/abcdefghijklmnopqrst/functions \
+  -X DELETE \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /v1/projects/{ref}/functions`
+
+<h3 id="deletes-all-edge-functions-from-a-project-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|ref|path|string|true|Project ref|
+
+<h3 id="deletes-all-edge-functions-from-a-project-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content||None|
+|401|Unauthorized|Unauthorized|None|
+|403|Forbidden|Forbidden action|None|
+|429|Too Many Requests|Rate limit exceeded|None|
+|500|Internal Server Error|Failed to delete project's functions|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
 ## Deploy a function
 
 <a id="opIdv1-deploy-a-function"></a>
@@ -9190,6 +9346,13 @@ curl https://api.supabase.com/v1/projects \
 |» release_channel|body|null|false|**Deprecated.**|
 |» postgres_engine|body|null|false|**Deprecated.**|
 |» high_availability|body|boolean|false|[Experimental] Whether to enable high availability for the project.|
+|» db_sql|body|string|false|Initial SQL to run on the database. Limited to 1024 characters (1 KiB). For complex database changes, please use migrations https://supabase.com/docs/guides/deployment/database-migrations|
+|» auth_site_url|body|string(uri)|false|URL of the authentication site.|
+|» data_api_exposed_schemas|body|[string]|false|Schemas exposed by the data API.|
+|» data_api_use_api_schema|body|boolean|false|Whether to use the API schema for the data API.|
+|» data_api_revoke_default_privileges|body|boolean|false|Force revoke default privileges for the data API. This flag will be ignored if the organization enforces `true` by default, and cannot be overridden.|
+|» github_installation_id|body|integer|false|GitHub installation ID for linkage. Must first grant access to the repository on the Dashboard.|
+|» github_repository_id|body|integer|false|GitHub repository ID for linkage. Must first grant access to the repository on the Dashboard.|
 
 #### Enumerated Values
 
@@ -12479,6 +12642,7 @@ bearer
 |status|PAUSE_FAILED|
 |status|RESIZING|
 |status|PROMOTING|
+|status|RIGHTSIZING|
 
 <h2 id="tocS_UpdateBranchBody">UpdateBranchBody</h2>
 <!-- backwards compatibility -->
@@ -12597,6 +12761,7 @@ bearer
 |preview_project_status|PAUSE_FAILED|
 |preview_project_status|RESIZING|
 |preview_project_status|PROMOTING|
+|preview_project_status|RIGHTSIZING|
 
 <h2 id="tocS_PlanGateErrorBody">PlanGateErrorBody</h2>
 <!-- backwards compatibility -->
@@ -12779,6 +12944,7 @@ bearer
 |status|PAUSE_FAILED|
 |status|RESIZING|
 |status|PROMOTING|
+|status|RIGHTSIZING|
 
 <h2 id="tocS_V1CreateProjectBody">V1CreateProjectBody</h2>
 <!-- backwards compatibility -->
@@ -12813,6 +12979,13 @@ bearer
 |release_channel|null|false|none|**Deprecated.**|
 |postgres_engine|null|false|none|**Deprecated.**|
 |high_availability|boolean|false|none|[Experimental] Whether to enable high availability for the project.|
+|db_sql|string|false|none|Initial SQL to run on the database. Limited to 1024 characters (1 KiB). For complex database changes, please use migrations https://supabase.com/docs/guides/deployment/database-migrations|
+|auth_site_url|string(uri)|false|none|URL of the authentication site.|
+|data_api_exposed_schemas|[string]|false|none|Schemas exposed by the data API.|
+|data_api_use_api_schema|boolean|false|none|Whether to use the API schema for the data API.|
+|data_api_revoke_default_privileges|boolean|false|none|Force revoke default privileges for the data API. This flag will be ignored if the organization enforces `true` by default, and cannot be overridden.|
+|github_installation_id|integer|false|none|GitHub installation ID for linkage. Must first grant access to the repository on the Dashboard.|
+|github_repository_id|integer|false|none|GitHub repository ID for linkage. Must first grant access to the repository on the Dashboard.|
 
 #### Enumerated Values
 
@@ -12911,6 +13084,7 @@ bearer
 |status|PAUSE_FAILED|
 |status|RESIZING|
 |status|PROMOTING|
+|status|RIGHTSIZING|
 
 <h2 id="tocS_RegionsInfoV1_Output">RegionsInfoV1_Output</h2>
 <!-- backwards compatibility -->
@@ -15886,6 +16060,32 @@ Any JSON-serializable value
 |result|[object]|false|none|none|
 |error|string \| object|false|none|none|
 
+<h2 id="tocS_V1PostProjectLogsBody">V1PostProjectLogsBody</h2>
+<!-- backwards compatibility -->
+<a id="schemav1postprojectlogsbody"></a>
+<a id="schema_V1PostProjectLogsBody"></a>
+<a id="tocSv1postprojectlogsbody"></a>
+<a id="tocsv1postprojectlogsbody"></a>
+
+```json
+{
+  "sql": "select event_message from edge_logs limit 10",
+  "iso_timestamp_start": "2025-03-01T00:00:00Z",
+  "iso_timestamp_end": "2025-03-01T23:59:59Z"
+}
+```
+
+Request body for searching project logs with POST body
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|sql|string|false|none|Custom SQL query to execute on the logs. See [querying logs](https://supabase.com/docs/guides/monitoring-and-debugging/logs#querying-with-the-logs-explorer) for more details.|
+|lql|string|false|none|Custom LQL query to execute on the logs. See [querying logs](https://supabase.com/docs/guides/monitoring-and-debugging/logs#querying-with-the-logs-explorer) for more details.|
+|iso_timestamp_start|string(date-time)|false|none|none|
+|iso_timestamp_end|string(date-time)|false|none|none|
+
 <h2 id="tocS_V1GetUsageApiCountResponse_Output">V1GetUsageApiCountResponse_Output</h2>
 <!-- backwards compatibility -->
 <a id="schemav1getusageapicountresponse_output"></a>
@@ -16133,7 +16333,8 @@ Any JSON-serializable value
 ```json
 {
   "query": "select * from pg_stat_activity limit 1;",
-  "read_only": true
+  "read_only": true,
+  "disable_statement_timeout": false
 }
 ```
 
@@ -16144,6 +16345,7 @@ Any JSON-serializable value
 |query|string|true|none|none|
 |parameters|[object]|false|none|none|
 |read_only|boolean|false|none|none|
+|disable_statement_timeout|boolean|false|none|Disable statement timeout for the query. Role-based or global timeout <br>        still apply https://supabase.com/docs/guides/database/postgres/timeouts|
 
 <h2 id="tocS_V1ReadOnlyQueryBody">V1ReadOnlyQueryBody</h2>
 <!-- backwards compatibility -->
@@ -16154,7 +16356,8 @@ Any JSON-serializable value
 
 ```json
 {
-  "query": "select * from pg_stat_activity limit 1;"
+  "query": "select * from pg_stat_activity limit 1;",
+  "disable_statement_timeout": false
 }
 ```
 
@@ -16164,6 +16367,7 @@ Any JSON-serializable value
 |---|---|---|---|---|
 |query|string|true|none|none|
 |parameters|[object]|false|none|none|
+|disable_statement_timeout|boolean|false|none|Disable statement timeout for the query. Role-based or global timeout <br>        still apply https://supabase.com/docs/guides/database/postgres/timeouts|
 
 <h2 id="tocS_GetProjectDbMetadataResponse_Output">GetProjectDbMetadataResponse_Output</h2>
 <!-- backwards compatibility -->
@@ -17476,6 +17680,7 @@ console.log(ezbr_sha256);
 |domains|[string]|false|none|none|
 |attribute_mapping|object|false|none|none|
 |name_id_format|string|false|none|none|
+|dedicated_scope|boolean|false|none|When `true`, the provider's SAML ACS URL and entity ID are scoped to its own provider ID instead of the ones shared by all SAML providers in the project. The same signing key is still used. This cannot be changed once the provider is created.|
 
 #### Enumerated Values
 
@@ -17497,6 +17702,15 @@ console.log(ezbr_sha256);
 ```json
 {
   "id": "string",
+  "domains": [
+    {
+      "domain": "string",
+      "created_at": "string",
+      "updated_at": "string"
+    }
+  ],
+  "created_at": "string",
+  "updated_at": "string",
   "saml": {
     "entity_id": "string",
     "metadata_url": "string",
@@ -17521,17 +17735,9 @@ console.log(ezbr_sha256);
         }
       }
     },
-    "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
-  },
-  "domains": [
-    {
-      "domain": "string",
-      "created_at": "string",
-      "updated_at": "string"
-    }
-  ],
-  "created_at": "string",
-  "updated_at": "string"
+    "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+    "dedicated_scope": true
+  }
 }
 ```
 
@@ -17540,10 +17746,10 @@ console.log(ezbr_sha256);
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|true|none|none|
-|saml|object|false|none|none|
 |domains|[object]|false|none|none|
 |created_at|string|false|none|none|
 |updated_at|string|false|none|none|
+|saml|object|false|none|none|
 
 <h2 id="tocS_ListProvidersResponse_Output">ListProvidersResponse_Output</h2>
 <!-- backwards compatibility -->
@@ -17557,6 +17763,15 @@ console.log(ezbr_sha256);
   "items": [
     {
       "id": "string",
+      "domains": [
+        {
+          "domain": "string",
+          "created_at": "string",
+          "updated_at": "string"
+        }
+      ],
+      "created_at": "string",
+      "updated_at": "string",
       "saml": {
         "entity_id": "string",
         "metadata_url": "string",
@@ -17581,17 +17796,9 @@ console.log(ezbr_sha256);
             }
           }
         },
-        "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
-      },
-      "domains": [
-        {
-          "domain": "string",
-          "created_at": "string",
-          "updated_at": "string"
-        }
-      ],
-      "created_at": "string",
-      "updated_at": "string"
+        "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+        "dedicated_scope": true
+      }
     }
   ]
 }
@@ -17613,6 +17820,15 @@ console.log(ezbr_sha256);
 ```json
 {
   "id": "string",
+  "domains": [
+    {
+      "domain": "string",
+      "created_at": "string",
+      "updated_at": "string"
+    }
+  ],
+  "created_at": "string",
+  "updated_at": "string",
   "saml": {
     "entity_id": "string",
     "metadata_url": "string",
@@ -17637,17 +17853,9 @@ console.log(ezbr_sha256);
         }
       }
     },
-    "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
-  },
-  "domains": [
-    {
-      "domain": "string",
-      "created_at": "string",
-      "updated_at": "string"
-    }
-  ],
-  "created_at": "string",
-  "updated_at": "string"
+    "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+    "dedicated_scope": true
+  }
 }
 ```
 
@@ -17656,10 +17864,10 @@ console.log(ezbr_sha256);
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|true|none|none|
-|saml|object|false|none|none|
 |domains|[object]|false|none|none|
 |created_at|string|false|none|none|
 |updated_at|string|false|none|none|
+|saml|object|false|none|none|
 
 <h2 id="tocS_UpdateProviderBody">UpdateProviderBody</h2>
 <!-- backwards compatibility -->
@@ -17707,6 +17915,15 @@ console.log(ezbr_sha256);
 ```json
 {
   "id": "string",
+  "domains": [
+    {
+      "domain": "string",
+      "created_at": "string",
+      "updated_at": "string"
+    }
+  ],
+  "created_at": "string",
+  "updated_at": "string",
   "saml": {
     "entity_id": "string",
     "metadata_url": "string",
@@ -17732,16 +17949,7 @@ console.log(ezbr_sha256);
       }
     },
     "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
-  },
-  "domains": [
-    {
-      "domain": "string",
-      "created_at": "string",
-      "updated_at": "string"
-    }
-  ],
-  "created_at": "string",
-  "updated_at": "string"
+  }
 }
 ```
 
@@ -17750,10 +17958,10 @@ console.log(ezbr_sha256);
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|true|none|none|
-|saml|object|false|none|none|
 |domains|[object]|false|none|none|
 |created_at|string|false|none|none|
 |updated_at|string|false|none|none|
+|saml|object|false|none|none|
 
 <h2 id="tocS_DeleteProviderResponse_Output">DeleteProviderResponse_Output</h2>
 <!-- backwards compatibility -->
@@ -17765,6 +17973,15 @@ console.log(ezbr_sha256);
 ```json
 {
   "id": "string",
+  "domains": [
+    {
+      "domain": "string",
+      "created_at": "string",
+      "updated_at": "string"
+    }
+  ],
+  "created_at": "string",
+  "updated_at": "string",
   "saml": {
     "entity_id": "string",
     "metadata_url": "string",
@@ -17789,17 +18006,9 @@ console.log(ezbr_sha256);
         }
       }
     },
-    "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
-  },
-  "domains": [
-    {
-      "domain": "string",
-      "created_at": "string",
-      "updated_at": "string"
-    }
-  ],
-  "created_at": "string",
-  "updated_at": "string"
+    "name_id_format": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+    "dedicated_scope": true
+  }
 }
 ```
 
@@ -17808,10 +18017,10 @@ console.log(ezbr_sha256);
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|true|none|none|
-|saml|object|false|none|none|
 |domains|[object]|false|none|none|
 |created_at|string|false|none|none|
 |updated_at|string|false|none|none|
+|saml|object|false|none|none|
 
 <h2 id="tocS_V1BackupsResponse_Output">V1BackupsResponse_Output</h2>
 <!-- backwards compatibility -->

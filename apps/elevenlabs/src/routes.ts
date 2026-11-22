@@ -84181,12 +84181,823 @@ export const postV1SpeechToTextRoute = createRoute({
       description: 'Synchronous transcription result',
       content: {
         'application/json': {
-          schema: z
-            .union([
+          schema: (() => {
+            const Schema = z.union([
               SpeechToTextChunkResponseModelSchema,
               MultichannelSpeechToTextResponseModelSchema,
               SpeechToTextWebhookResponseModelSchema,
             ])
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              const reported = ctx.issues.length
+              try {
+                ;((ctx) => {
+                  const val = ctx.value
+                  if (
+                    (SpeechToTextChunkResponseModelSchema.safeParse(val).success ? 1 : 0) +
+                      (MultichannelSpeechToTextResponseModelSchema.safeParse(val).success
+                        ? 1
+                        : 0) !==
+                    1
+                  ) {
+                    ctx.issues.push({ code: 'custom', input: val })
+                  }
+                })(ctx)
+              } catch (error) {
+                if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                ctx.issues.length = reported
+                return (async (ctx) => {
+                  const val = ctx.value
+                  if (
+                    ((await SpeechToTextChunkResponseModelSchema.safeParseAsync(val)).success
+                      ? 1
+                      : 0) +
+                      ((await MultichannelSpeechToTextResponseModelSchema.safeParseAsync(val))
+                        .success
+                        ? 1
+                        : 0) !==
+                    1
+                  ) {
+                    ctx.issues.push({ code: 'custom', input: val })
+                  }
+                })(ctx).then(() => val)
+              }
+              return val
+            }, Schema)
+          })()
+            .openapi({
+              oneOf: [
+                {
+                  properties: {
+                    language_code: {
+                      type: 'string',
+                      title: 'Language Code',
+                      description: "The detected language code (e.g. 'eng' for English).",
+                    },
+                    language_probability: {
+                      type: 'number',
+                      title: 'Language Probability',
+                      description: 'The confidence score of the language detection (0 to 1).',
+                    },
+                    text: {
+                      type: 'string',
+                      title: 'Text',
+                      description: 'The raw text of the transcription.',
+                    },
+                    words: {
+                      items: {
+                        properties: {
+                          text: {
+                            type: 'string',
+                            title: 'Text',
+                            description: 'The word or sound that was transcribed.',
+                          },
+                          start: {
+                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                            title: 'Start',
+                            description: 'The start time of the word or sound in seconds.',
+                          },
+                          end: {
+                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                            title: 'End',
+                            description: 'The end time of the word or sound in seconds.',
+                          },
+                          type: {
+                            type: 'string',
+                            enum: ['word', 'spacing', 'audio_event'],
+                            title: 'Type',
+                            description:
+                              "The type of the word or sound. 'audio_event' is used for non-word sounds like laughter or footsteps.",
+                          },
+                          speaker_id: {
+                            anyOf: [{ type: 'string' }, { type: 'null' }],
+                            title: 'Speaker Id',
+                            description: 'Unique identifier for the speaker of this word.',
+                          },
+                          logprob: {
+                            type: 'number',
+                            title: 'Logprob',
+                            description:
+                              'The log of the probability with which this word was predicted. Logprobs are in range [-infinity, 0], higher logprobs indicate a higher confidence the model has in its predictions.',
+                          },
+                          characters: {
+                            anyOf: [
+                              {
+                                items: {
+                                  properties: {
+                                    text: {
+                                      type: 'string',
+                                      title: 'Text',
+                                      description: 'The character that was transcribed.',
+                                    },
+                                    start: {
+                                      anyOf: [{ type: 'number' }, { type: 'null' }],
+                                      title: 'Start',
+                                      description: 'The start time of the character in seconds.',
+                                    },
+                                    end: {
+                                      anyOf: [{ type: 'number' }, { type: 'null' }],
+                                      title: 'End',
+                                      description: 'The end time of the character in seconds.',
+                                    },
+                                  },
+                                  type: 'object',
+                                  required: ['text'],
+                                  title: 'SpeechToTextCharacterResponseModel',
+                                  example: { end: 0.1, start: 0, text: 'H' },
+                                },
+                                type: 'array',
+                              },
+                              { type: 'null' },
+                            ],
+                            title: 'Characters',
+                            description:
+                              'The characters that make up the word and their timing information.',
+                          },
+                          channel_index: {
+                            anyOf: [{ type: 'integer' }, { type: 'null' }],
+                            title: 'Channel Index',
+                            description:
+                              'The channel this word was spoken on (for multichannel audio). Null for single-channel transcriptions.',
+                          },
+                        },
+                        type: 'object',
+                        required: ['text', 'type', 'logprob'],
+                        title: 'SpeechToTextWordResponseModel',
+                        description:
+                          'Word-level detail of the transcription with timing information.',
+                        example: {
+                          characters: [
+                            { end: 0.1, start: 0, text: 'H' },
+                            { end: 0.2, start: 0.1, text: 'e' },
+                            { end: 0.3, start: 0.2, text: 'l' },
+                            { end: 0.4, start: 0.3, text: 'l' },
+                            { end: 0.5, start: 0.4, text: 'o' },
+                          ],
+                          end: 0.5,
+                          logprob: -0.124,
+                          speaker_id: 'speaker_1',
+                          start: 0,
+                          text: 'Hello',
+                          type: 'word',
+                        },
+                      },
+                      type: 'array',
+                      title: 'Words',
+                      description: 'List of words with their timing information.',
+                    },
+                    channel_index: {
+                      anyOf: [{ type: 'integer' }, { type: 'null' }],
+                      title: 'Channel Index',
+                      description:
+                        'The channel index this transcript belongs to (for multichannel audio).',
+                    },
+                    additional_formats: {
+                      anyOf: [
+                        {
+                          items: {
+                            anyOf: [
+                              {
+                                properties: {
+                                  requested_format: {
+                                    type: 'string',
+                                    title: 'Requested Format',
+                                    description: 'The requested format.',
+                                  },
+                                  file_extension: {
+                                    type: 'string',
+                                    title: 'File Extension',
+                                    description: 'The file extension of the additional format.',
+                                  },
+                                  content_type: {
+                                    type: 'string',
+                                    title: 'Content Type',
+                                    description: 'The content type of the additional format.',
+                                  },
+                                  is_base64_encoded: {
+                                    type: 'boolean',
+                                    title: 'Is Base64 Encoded',
+                                    description: 'Whether the content is base64 encoded.',
+                                  },
+                                  content: {
+                                    type: 'string',
+                                    title: 'Content',
+                                    description: 'The content of the additional format.',
+                                  },
+                                },
+                                type: 'object',
+                                required: [
+                                  'requested_format',
+                                  'file_extension',
+                                  'content_type',
+                                  'is_base64_encoded',
+                                  'content',
+                                ],
+                                title: 'AdditionalFormatResponseModel',
+                              },
+                              { type: 'null' },
+                            ],
+                          },
+                          type: 'array',
+                        },
+                        { type: 'null' },
+                      ],
+                      title: 'Additional Formats',
+                      description: 'Requested additional formats of the transcript.',
+                    },
+                    transcription_id: {
+                      anyOf: [{ type: 'string' }, { type: 'null' }],
+                      title: 'Transcription Id',
+                      description: 'The transcription ID of the response.',
+                    },
+                    entities: {
+                      anyOf: [
+                        {
+                          items: {
+                            properties: {
+                              text: {
+                                type: 'string',
+                                title: 'Text',
+                                description: 'The text that was identified as an entity.',
+                              },
+                              entity_type: {
+                                type: 'string',
+                                title: 'Entity Type',
+                                description:
+                                  "The type of entity detected (e.g., 'credit_card', 'email_address', 'person_name').",
+                              },
+                              start_char: {
+                                type: 'integer',
+                                title: 'Start Char',
+                                description: 'Start character position in the transcript text.',
+                              },
+                              end_char: {
+                                type: 'integer',
+                                title: 'End Char',
+                                description: 'End character position in the transcript text.',
+                              },
+                            },
+                            type: 'object',
+                            required: ['text', 'entity_type', 'start_char', 'end_char'],
+                            title: 'DetectedEntity',
+                          },
+                          type: 'array',
+                        },
+                        { type: 'null' },
+                      ],
+                      title: 'Entities',
+                      description:
+                        'List of detected entities with their text, type, and character positions in the transcript.',
+                    },
+                    audio_duration_secs: {
+                      anyOf: [{ type: 'number' }, { type: 'null' }],
+                      title: 'Audio Duration Secs',
+                      description: 'The duration of the audio that was transcribed in seconds.',
+                    },
+                    edited_transcript: {
+                      anyOf: [
+                        {
+                          oneOf: [
+                            {
+                              properties: {
+                                kind: {
+                                  type: 'string',
+                                  const: 'transcript',
+                                  title: 'Kind',
+                                  default: 'transcript',
+                                },
+                                text: {
+                                  type: 'string',
+                                  title: 'Text',
+                                  description: 'The edited transcript text.',
+                                },
+                                edited_text: {
+                                  type: 'string',
+                                  title: 'Edited Text',
+                                  description:
+                                    'The edited transcript text. Same value as `text`; matches the `edited_text` field of the realtime `edited_transcript` event.',
+                                  readOnly: true,
+                                },
+                              },
+                              type: 'object',
+                              required: ['kind', 'text', 'edited_text'],
+                              title: 'EditedTranscript',
+                              description:
+                                'A transcript produced by the optional transcript edit (text only, untimed).',
+                            },
+                            {
+                              properties: {
+                                kind: {
+                                  type: 'string',
+                                  const: 'error',
+                                  title: 'Kind',
+                                  default: 'error',
+                                },
+                                error_type: {
+                                  type: 'string',
+                                  const: 'edit_failed',
+                                  title: 'Error Type',
+                                  description: 'edit_failed: the edit could not be produced.',
+                                },
+                                message: {
+                                  type: 'string',
+                                  title: 'Message',
+                                  description: 'A short, user-facing explanation of the failure.',
+                                },
+                              },
+                              type: 'object',
+                              required: ['kind', 'error_type', 'message'],
+                              title: 'TranscriptEditError',
+                              description:
+                                'An error returned in place of an edited transcript when the edit could not be produced.',
+                            },
+                          ],
+                          discriminator: {
+                            propertyName: 'kind',
+                            mapping: {
+                              error: '#/components/schemas/TranscriptEditError',
+                              transcript: '#/components/schemas/EditedTranscript',
+                            },
+                          },
+                        },
+                        { type: 'null' },
+                      ],
+                      title: 'Edited Transcript',
+                      description:
+                        'Result of the optional transcript edit: the edited text, or an error if it could not be produced. Absent when no edit was requested. On success, both `text` and `edited_text` hold the edited transcript; compare them with the top-level `text` to see what changed.',
+                    },
+                  },
+                  type: 'object',
+                  required: ['language_code', 'language_probability', 'text', 'words'],
+                  title: 'SpeechToTextChunkResponseModel',
+                  description: 'Chunk-level detail of the transcription with timing information.',
+                  example: {
+                    language_code: 'en',
+                    language_probability: 0.98,
+                    text: 'Hello world!',
+                    words: [
+                      {
+                        end: 0.5,
+                        logprob: -0.124,
+                        speaker_id: 'speaker_1',
+                        start: 0,
+                        text: 'Hello',
+                        type: 'word',
+                      },
+                      {
+                        end: 0.5,
+                        logprob: 0,
+                        speaker_id: 'speaker_1',
+                        start: 0.5,
+                        text: ' ',
+                        type: 'spacing',
+                      },
+                      {
+                        end: 1.2,
+                        logprob: -0.089,
+                        speaker_id: 'speaker_1',
+                        start: 0.5,
+                        text: 'world!',
+                        type: 'word',
+                      },
+                    ],
+                  },
+                },
+                {
+                  properties: {
+                    transcripts: {
+                      items: {
+                        properties: {
+                          language_code: {
+                            type: 'string',
+                            title: 'Language Code',
+                            description: "The detected language code (e.g. 'eng' for English).",
+                          },
+                          language_probability: {
+                            type: 'number',
+                            title: 'Language Probability',
+                            description: 'The confidence score of the language detection (0 to 1).',
+                          },
+                          text: {
+                            type: 'string',
+                            title: 'Text',
+                            description: 'The raw text of the transcription.',
+                          },
+                          words: {
+                            items: {
+                              properties: {
+                                text: {
+                                  type: 'string',
+                                  title: 'Text',
+                                  description: 'The word or sound that was transcribed.',
+                                },
+                                start: {
+                                  anyOf: [{ type: 'number' }, { type: 'null' }],
+                                  title: 'Start',
+                                  description: 'The start time of the word or sound in seconds.',
+                                },
+                                end: {
+                                  anyOf: [{ type: 'number' }, { type: 'null' }],
+                                  title: 'End',
+                                  description: 'The end time of the word or sound in seconds.',
+                                },
+                                type: {
+                                  type: 'string',
+                                  enum: ['word', 'spacing', 'audio_event'],
+                                  title: 'Type',
+                                  description:
+                                    "The type of the word or sound. 'audio_event' is used for non-word sounds like laughter or footsteps.",
+                                },
+                                speaker_id: {
+                                  anyOf: [{ type: 'string' }, { type: 'null' }],
+                                  title: 'Speaker Id',
+                                  description: 'Unique identifier for the speaker of this word.',
+                                },
+                                logprob: {
+                                  type: 'number',
+                                  title: 'Logprob',
+                                  description:
+                                    'The log of the probability with which this word was predicted. Logprobs are in range [-infinity, 0], higher logprobs indicate a higher confidence the model has in its predictions.',
+                                },
+                                characters: {
+                                  anyOf: [
+                                    {
+                                      items: {
+                                        properties: {
+                                          text: {
+                                            type: 'string',
+                                            title: 'Text',
+                                            description: 'The character that was transcribed.',
+                                          },
+                                          start: {
+                                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                                            title: 'Start',
+                                            description:
+                                              'The start time of the character in seconds.',
+                                          },
+                                          end: {
+                                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                                            title: 'End',
+                                            description:
+                                              'The end time of the character in seconds.',
+                                          },
+                                        },
+                                        type: 'object',
+                                        required: ['text'],
+                                        title: 'SpeechToTextCharacterResponseModel',
+                                        example: { end: 0.1, start: 0, text: 'H' },
+                                      },
+                                      type: 'array',
+                                    },
+                                    { type: 'null' },
+                                  ],
+                                  title: 'Characters',
+                                  description:
+                                    'The characters that make up the word and their timing information.',
+                                },
+                                channel_index: {
+                                  anyOf: [{ type: 'integer' }, { type: 'null' }],
+                                  title: 'Channel Index',
+                                  description:
+                                    'The channel this word was spoken on (for multichannel audio). Null for single-channel transcriptions.',
+                                },
+                              },
+                              type: 'object',
+                              required: ['text', 'type', 'logprob'],
+                              title: 'SpeechToTextWordResponseModel',
+                              description:
+                                'Word-level detail of the transcription with timing information.',
+                              example: {
+                                characters: [
+                                  { end: 0.1, start: 0, text: 'H' },
+                                  { end: 0.2, start: 0.1, text: 'e' },
+                                  { end: 0.3, start: 0.2, text: 'l' },
+                                  { end: 0.4, start: 0.3, text: 'l' },
+                                  { end: 0.5, start: 0.4, text: 'o' },
+                                ],
+                                end: 0.5,
+                                logprob: -0.124,
+                                speaker_id: 'speaker_1',
+                                start: 0,
+                                text: 'Hello',
+                                type: 'word',
+                              },
+                            },
+                            type: 'array',
+                            title: 'Words',
+                            description: 'List of words with their timing information.',
+                          },
+                          channel_index: {
+                            anyOf: [{ type: 'integer' }, { type: 'null' }],
+                            title: 'Channel Index',
+                            description:
+                              'The channel index this transcript belongs to (for multichannel audio).',
+                          },
+                          additional_formats: {
+                            anyOf: [
+                              {
+                                items: {
+                                  anyOf: [
+                                    {
+                                      properties: {
+                                        requested_format: {
+                                          type: 'string',
+                                          title: 'Requested Format',
+                                          description: 'The requested format.',
+                                        },
+                                        file_extension: {
+                                          type: 'string',
+                                          title: 'File Extension',
+                                          description:
+                                            'The file extension of the additional format.',
+                                        },
+                                        content_type: {
+                                          type: 'string',
+                                          title: 'Content Type',
+                                          description: 'The content type of the additional format.',
+                                        },
+                                        is_base64_encoded: {
+                                          type: 'boolean',
+                                          title: 'Is Base64 Encoded',
+                                          description: 'Whether the content is base64 encoded.',
+                                        },
+                                        content: {
+                                          type: 'string',
+                                          title: 'Content',
+                                          description: 'The content of the additional format.',
+                                        },
+                                      },
+                                      type: 'object',
+                                      required: [
+                                        'requested_format',
+                                        'file_extension',
+                                        'content_type',
+                                        'is_base64_encoded',
+                                        'content',
+                                      ],
+                                      title: 'AdditionalFormatResponseModel',
+                                    },
+                                    { type: 'null' },
+                                  ],
+                                },
+                                type: 'array',
+                              },
+                              { type: 'null' },
+                            ],
+                            title: 'Additional Formats',
+                            description: 'Requested additional formats of the transcript.',
+                          },
+                          transcription_id: {
+                            anyOf: [{ type: 'string' }, { type: 'null' }],
+                            title: 'Transcription Id',
+                            description: 'The transcription ID of the response.',
+                          },
+                          entities: {
+                            anyOf: [
+                              {
+                                items: {
+                                  properties: {
+                                    text: {
+                                      type: 'string',
+                                      title: 'Text',
+                                      description: 'The text that was identified as an entity.',
+                                    },
+                                    entity_type: {
+                                      type: 'string',
+                                      title: 'Entity Type',
+                                      description:
+                                        "The type of entity detected (e.g., 'credit_card', 'email_address', 'person_name').",
+                                    },
+                                    start_char: {
+                                      type: 'integer',
+                                      title: 'Start Char',
+                                      description:
+                                        'Start character position in the transcript text.',
+                                    },
+                                    end_char: {
+                                      type: 'integer',
+                                      title: 'End Char',
+                                      description: 'End character position in the transcript text.',
+                                    },
+                                  },
+                                  type: 'object',
+                                  required: ['text', 'entity_type', 'start_char', 'end_char'],
+                                  title: 'DetectedEntity',
+                                },
+                                type: 'array',
+                              },
+                              { type: 'null' },
+                            ],
+                            title: 'Entities',
+                            description:
+                              'List of detected entities with their text, type, and character positions in the transcript.',
+                          },
+                          audio_duration_secs: {
+                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                            title: 'Audio Duration Secs',
+                            description:
+                              'The duration of the audio that was transcribed in seconds.',
+                          },
+                          edited_transcript: {
+                            anyOf: [
+                              {
+                                oneOf: [
+                                  {
+                                    properties: {
+                                      kind: {
+                                        type: 'string',
+                                        const: 'transcript',
+                                        title: 'Kind',
+                                        default: 'transcript',
+                                      },
+                                      text: {
+                                        type: 'string',
+                                        title: 'Text',
+                                        description: 'The edited transcript text.',
+                                      },
+                                      edited_text: {
+                                        type: 'string',
+                                        title: 'Edited Text',
+                                        description:
+                                          'The edited transcript text. Same value as `text`; matches the `edited_text` field of the realtime `edited_transcript` event.',
+                                        readOnly: true,
+                                      },
+                                    },
+                                    type: 'object',
+                                    required: ['kind', 'text', 'edited_text'],
+                                    title: 'EditedTranscript',
+                                    description:
+                                      'A transcript produced by the optional transcript edit (text only, untimed).',
+                                  },
+                                  {
+                                    properties: {
+                                      kind: {
+                                        type: 'string',
+                                        const: 'error',
+                                        title: 'Kind',
+                                        default: 'error',
+                                      },
+                                      error_type: {
+                                        type: 'string',
+                                        const: 'edit_failed',
+                                        title: 'Error Type',
+                                        description: 'edit_failed: the edit could not be produced.',
+                                      },
+                                      message: {
+                                        type: 'string',
+                                        title: 'Message',
+                                        description:
+                                          'A short, user-facing explanation of the failure.',
+                                      },
+                                    },
+                                    type: 'object',
+                                    required: ['kind', 'error_type', 'message'],
+                                    title: 'TranscriptEditError',
+                                    description:
+                                      'An error returned in place of an edited transcript when the edit could not be produced.',
+                                  },
+                                ],
+                                discriminator: {
+                                  propertyName: 'kind',
+                                  mapping: {
+                                    error: '#/components/schemas/TranscriptEditError',
+                                    transcript: '#/components/schemas/EditedTranscript',
+                                  },
+                                },
+                              },
+                              { type: 'null' },
+                            ],
+                            title: 'Edited Transcript',
+                            description:
+                              'Result of the optional transcript edit: the edited text, or an error if it could not be produced. Absent when no edit was requested. On success, both `text` and `edited_text` hold the edited transcript; compare them with the top-level `text` to see what changed.',
+                          },
+                        },
+                        type: 'object',
+                        required: ['language_code', 'language_probability', 'text', 'words'],
+                        title: 'SpeechToTextChunkResponseModel',
+                        description:
+                          'Chunk-level detail of the transcription with timing information.',
+                        example: {
+                          language_code: 'en',
+                          language_probability: 0.98,
+                          text: 'Hello world!',
+                          words: [
+                            {
+                              end: 0.5,
+                              logprob: -0.124,
+                              speaker_id: 'speaker_1',
+                              start: 0,
+                              text: 'Hello',
+                              type: 'word',
+                            },
+                            {
+                              end: 0.5,
+                              logprob: 0,
+                              speaker_id: 'speaker_1',
+                              start: 0.5,
+                              text: ' ',
+                              type: 'spacing',
+                            },
+                            {
+                              end: 1.2,
+                              logprob: -0.089,
+                              speaker_id: 'speaker_1',
+                              start: 0.5,
+                              text: 'world!',
+                              type: 'word',
+                            },
+                          ],
+                        },
+                      },
+                      type: 'array',
+                      title: 'Transcripts',
+                      description:
+                        'List of transcripts, one for each audio channel. Each transcript contains the text and word-level details for its respective channel.',
+                    },
+                    transcription_id: {
+                      anyOf: [{ type: 'string' }, { type: 'null' }],
+                      title: 'Transcription Id',
+                      description: 'The transcription ID of the response.',
+                    },
+                    audio_duration_secs: {
+                      anyOf: [{ type: 'number' }, { type: 'null' }],
+                      title: 'Audio Duration Secs',
+                      description:
+                        'The duration of the audio that was transcribed across all channels in seconds.',
+                    },
+                  },
+                  type: 'object',
+                  required: ['transcripts'],
+                  title: 'MultichannelSpeechToTextResponseModel',
+                  description: 'Response model for multichannel speech-to-text transcription.',
+                  example: {
+                    transcripts: [
+                      {
+                        language_code: 'en',
+                        language_probability: 0.98,
+                        text: 'Hello from channel one.',
+                        words: [
+                          {
+                            end: 0.5,
+                            logprob: -0.124,
+                            speaker_id: 'speaker_0',
+                            start: 0,
+                            text: 'Hello',
+                            type: 'word',
+                          },
+                          {
+                            end: 0.5,
+                            logprob: 0,
+                            speaker_id: 'speaker_0',
+                            start: 0.5,
+                            text: ' ',
+                            type: 'spacing',
+                          },
+                          {
+                            end: 0.8,
+                            logprob: -0.089,
+                            speaker_id: 'speaker_0',
+                            start: 0.5,
+                            text: 'from',
+                            type: 'word',
+                          },
+                        ],
+                      },
+                      {
+                        language_code: 'en',
+                        language_probability: 0.97,
+                        text: 'Greetings from channel two.',
+                        words: [
+                          {
+                            end: 0.7,
+                            logprob: -0.156,
+                            speaker_id: 'speaker_1',
+                            start: 0.1,
+                            text: 'Greetings',
+                            type: 'word',
+                          },
+                          {
+                            end: 0.7,
+                            logprob: 0,
+                            speaker_id: 'speaker_1',
+                            start: 0.7,
+                            text: ' ',
+                            type: 'spacing',
+                          },
+                          {
+                            end: 1,
+                            logprob: -0.078,
+                            speaker_id: 'speaker_1',
+                            start: 0.7,
+                            text: 'from',
+                            type: 'word',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                },
+              ],
+            })
             .openapi({ title: 'Response Speech To Text V1 Speech To Text Post' }),
           examples: {
             single_channel: {
@@ -84319,11 +85130,822 @@ export const getV1SpeechToTextTranscriptsTranscriptionIdRoute = createRoute({
       description: 'The transcript data',
       content: {
         'application/json': {
-          schema: z
-            .union([
+          schema: (() => {
+            const Schema = z.union([
               SpeechToTextChunkResponseModelSchema,
               MultichannelSpeechToTextResponseModelSchema,
             ])
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              const reported = ctx.issues.length
+              try {
+                ;((ctx) => {
+                  const val = ctx.value
+                  if (
+                    (SpeechToTextChunkResponseModelSchema.safeParse(val).success ? 1 : 0) +
+                      (MultichannelSpeechToTextResponseModelSchema.safeParse(val).success
+                        ? 1
+                        : 0) !==
+                    1
+                  ) {
+                    ctx.issues.push({ code: 'custom', input: val })
+                  }
+                })(ctx)
+              } catch (error) {
+                if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                ctx.issues.length = reported
+                return (async (ctx) => {
+                  const val = ctx.value
+                  if (
+                    ((await SpeechToTextChunkResponseModelSchema.safeParseAsync(val)).success
+                      ? 1
+                      : 0) +
+                      ((await MultichannelSpeechToTextResponseModelSchema.safeParseAsync(val))
+                        .success
+                        ? 1
+                        : 0) !==
+                    1
+                  ) {
+                    ctx.issues.push({ code: 'custom', input: val })
+                  }
+                })(ctx).then(() => val)
+              }
+              return val
+            }, Schema)
+          })()
+            .openapi({
+              oneOf: [
+                {
+                  properties: {
+                    language_code: {
+                      type: 'string',
+                      title: 'Language Code',
+                      description: "The detected language code (e.g. 'eng' for English).",
+                    },
+                    language_probability: {
+                      type: 'number',
+                      title: 'Language Probability',
+                      description: 'The confidence score of the language detection (0 to 1).',
+                    },
+                    text: {
+                      type: 'string',
+                      title: 'Text',
+                      description: 'The raw text of the transcription.',
+                    },
+                    words: {
+                      items: {
+                        properties: {
+                          text: {
+                            type: 'string',
+                            title: 'Text',
+                            description: 'The word or sound that was transcribed.',
+                          },
+                          start: {
+                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                            title: 'Start',
+                            description: 'The start time of the word or sound in seconds.',
+                          },
+                          end: {
+                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                            title: 'End',
+                            description: 'The end time of the word or sound in seconds.',
+                          },
+                          type: {
+                            type: 'string',
+                            enum: ['word', 'spacing', 'audio_event'],
+                            title: 'Type',
+                            description:
+                              "The type of the word or sound. 'audio_event' is used for non-word sounds like laughter or footsteps.",
+                          },
+                          speaker_id: {
+                            anyOf: [{ type: 'string' }, { type: 'null' }],
+                            title: 'Speaker Id',
+                            description: 'Unique identifier for the speaker of this word.',
+                          },
+                          logprob: {
+                            type: 'number',
+                            title: 'Logprob',
+                            description:
+                              'The log of the probability with which this word was predicted. Logprobs are in range [-infinity, 0], higher logprobs indicate a higher confidence the model has in its predictions.',
+                          },
+                          characters: {
+                            anyOf: [
+                              {
+                                items: {
+                                  properties: {
+                                    text: {
+                                      type: 'string',
+                                      title: 'Text',
+                                      description: 'The character that was transcribed.',
+                                    },
+                                    start: {
+                                      anyOf: [{ type: 'number' }, { type: 'null' }],
+                                      title: 'Start',
+                                      description: 'The start time of the character in seconds.',
+                                    },
+                                    end: {
+                                      anyOf: [{ type: 'number' }, { type: 'null' }],
+                                      title: 'End',
+                                      description: 'The end time of the character in seconds.',
+                                    },
+                                  },
+                                  type: 'object',
+                                  required: ['text'],
+                                  title: 'SpeechToTextCharacterResponseModel',
+                                  example: { end: 0.1, start: 0, text: 'H' },
+                                },
+                                type: 'array',
+                              },
+                              { type: 'null' },
+                            ],
+                            title: 'Characters',
+                            description:
+                              'The characters that make up the word and their timing information.',
+                          },
+                          channel_index: {
+                            anyOf: [{ type: 'integer' }, { type: 'null' }],
+                            title: 'Channel Index',
+                            description:
+                              'The channel this word was spoken on (for multichannel audio). Null for single-channel transcriptions.',
+                          },
+                        },
+                        type: 'object',
+                        required: ['text', 'type', 'logprob'],
+                        title: 'SpeechToTextWordResponseModel',
+                        description:
+                          'Word-level detail of the transcription with timing information.',
+                        example: {
+                          characters: [
+                            { end: 0.1, start: 0, text: 'H' },
+                            { end: 0.2, start: 0.1, text: 'e' },
+                            { end: 0.3, start: 0.2, text: 'l' },
+                            { end: 0.4, start: 0.3, text: 'l' },
+                            { end: 0.5, start: 0.4, text: 'o' },
+                          ],
+                          end: 0.5,
+                          logprob: -0.124,
+                          speaker_id: 'speaker_1',
+                          start: 0,
+                          text: 'Hello',
+                          type: 'word',
+                        },
+                      },
+                      type: 'array',
+                      title: 'Words',
+                      description: 'List of words with their timing information.',
+                    },
+                    channel_index: {
+                      anyOf: [{ type: 'integer' }, { type: 'null' }],
+                      title: 'Channel Index',
+                      description:
+                        'The channel index this transcript belongs to (for multichannel audio).',
+                    },
+                    additional_formats: {
+                      anyOf: [
+                        {
+                          items: {
+                            anyOf: [
+                              {
+                                properties: {
+                                  requested_format: {
+                                    type: 'string',
+                                    title: 'Requested Format',
+                                    description: 'The requested format.',
+                                  },
+                                  file_extension: {
+                                    type: 'string',
+                                    title: 'File Extension',
+                                    description: 'The file extension of the additional format.',
+                                  },
+                                  content_type: {
+                                    type: 'string',
+                                    title: 'Content Type',
+                                    description: 'The content type of the additional format.',
+                                  },
+                                  is_base64_encoded: {
+                                    type: 'boolean',
+                                    title: 'Is Base64 Encoded',
+                                    description: 'Whether the content is base64 encoded.',
+                                  },
+                                  content: {
+                                    type: 'string',
+                                    title: 'Content',
+                                    description: 'The content of the additional format.',
+                                  },
+                                },
+                                type: 'object',
+                                required: [
+                                  'requested_format',
+                                  'file_extension',
+                                  'content_type',
+                                  'is_base64_encoded',
+                                  'content',
+                                ],
+                                title: 'AdditionalFormatResponseModel',
+                              },
+                              { type: 'null' },
+                            ],
+                          },
+                          type: 'array',
+                        },
+                        { type: 'null' },
+                      ],
+                      title: 'Additional Formats',
+                      description: 'Requested additional formats of the transcript.',
+                    },
+                    transcription_id: {
+                      anyOf: [{ type: 'string' }, { type: 'null' }],
+                      title: 'Transcription Id',
+                      description: 'The transcription ID of the response.',
+                    },
+                    entities: {
+                      anyOf: [
+                        {
+                          items: {
+                            properties: {
+                              text: {
+                                type: 'string',
+                                title: 'Text',
+                                description: 'The text that was identified as an entity.',
+                              },
+                              entity_type: {
+                                type: 'string',
+                                title: 'Entity Type',
+                                description:
+                                  "The type of entity detected (e.g., 'credit_card', 'email_address', 'person_name').",
+                              },
+                              start_char: {
+                                type: 'integer',
+                                title: 'Start Char',
+                                description: 'Start character position in the transcript text.',
+                              },
+                              end_char: {
+                                type: 'integer',
+                                title: 'End Char',
+                                description: 'End character position in the transcript text.',
+                              },
+                            },
+                            type: 'object',
+                            required: ['text', 'entity_type', 'start_char', 'end_char'],
+                            title: 'DetectedEntity',
+                          },
+                          type: 'array',
+                        },
+                        { type: 'null' },
+                      ],
+                      title: 'Entities',
+                      description:
+                        'List of detected entities with their text, type, and character positions in the transcript.',
+                    },
+                    audio_duration_secs: {
+                      anyOf: [{ type: 'number' }, { type: 'null' }],
+                      title: 'Audio Duration Secs',
+                      description: 'The duration of the audio that was transcribed in seconds.',
+                    },
+                    edited_transcript: {
+                      anyOf: [
+                        {
+                          oneOf: [
+                            {
+                              properties: {
+                                kind: {
+                                  type: 'string',
+                                  const: 'transcript',
+                                  title: 'Kind',
+                                  default: 'transcript',
+                                },
+                                text: {
+                                  type: 'string',
+                                  title: 'Text',
+                                  description: 'The edited transcript text.',
+                                },
+                                edited_text: {
+                                  type: 'string',
+                                  title: 'Edited Text',
+                                  description:
+                                    'The edited transcript text. Same value as `text`; matches the `edited_text` field of the realtime `edited_transcript` event.',
+                                  readOnly: true,
+                                },
+                              },
+                              type: 'object',
+                              required: ['kind', 'text', 'edited_text'],
+                              title: 'EditedTranscript',
+                              description:
+                                'A transcript produced by the optional transcript edit (text only, untimed).',
+                            },
+                            {
+                              properties: {
+                                kind: {
+                                  type: 'string',
+                                  const: 'error',
+                                  title: 'Kind',
+                                  default: 'error',
+                                },
+                                error_type: {
+                                  type: 'string',
+                                  const: 'edit_failed',
+                                  title: 'Error Type',
+                                  description: 'edit_failed: the edit could not be produced.',
+                                },
+                                message: {
+                                  type: 'string',
+                                  title: 'Message',
+                                  description: 'A short, user-facing explanation of the failure.',
+                                },
+                              },
+                              type: 'object',
+                              required: ['kind', 'error_type', 'message'],
+                              title: 'TranscriptEditError',
+                              description:
+                                'An error returned in place of an edited transcript when the edit could not be produced.',
+                            },
+                          ],
+                          discriminator: {
+                            propertyName: 'kind',
+                            mapping: {
+                              error: '#/components/schemas/TranscriptEditError',
+                              transcript: '#/components/schemas/EditedTranscript',
+                            },
+                          },
+                        },
+                        { type: 'null' },
+                      ],
+                      title: 'Edited Transcript',
+                      description:
+                        'Result of the optional transcript edit: the edited text, or an error if it could not be produced. Absent when no edit was requested. On success, both `text` and `edited_text` hold the edited transcript; compare them with the top-level `text` to see what changed.',
+                    },
+                  },
+                  type: 'object',
+                  required: ['language_code', 'language_probability', 'text', 'words'],
+                  title: 'SpeechToTextChunkResponseModel',
+                  description: 'Chunk-level detail of the transcription with timing information.',
+                  example: {
+                    language_code: 'en',
+                    language_probability: 0.98,
+                    text: 'Hello world!',
+                    words: [
+                      {
+                        end: 0.5,
+                        logprob: -0.124,
+                        speaker_id: 'speaker_1',
+                        start: 0,
+                        text: 'Hello',
+                        type: 'word',
+                      },
+                      {
+                        end: 0.5,
+                        logprob: 0,
+                        speaker_id: 'speaker_1',
+                        start: 0.5,
+                        text: ' ',
+                        type: 'spacing',
+                      },
+                      {
+                        end: 1.2,
+                        logprob: -0.089,
+                        speaker_id: 'speaker_1',
+                        start: 0.5,
+                        text: 'world!',
+                        type: 'word',
+                      },
+                    ],
+                  },
+                },
+                {
+                  properties: {
+                    transcripts: {
+                      items: {
+                        properties: {
+                          language_code: {
+                            type: 'string',
+                            title: 'Language Code',
+                            description: "The detected language code (e.g. 'eng' for English).",
+                          },
+                          language_probability: {
+                            type: 'number',
+                            title: 'Language Probability',
+                            description: 'The confidence score of the language detection (0 to 1).',
+                          },
+                          text: {
+                            type: 'string',
+                            title: 'Text',
+                            description: 'The raw text of the transcription.',
+                          },
+                          words: {
+                            items: {
+                              properties: {
+                                text: {
+                                  type: 'string',
+                                  title: 'Text',
+                                  description: 'The word or sound that was transcribed.',
+                                },
+                                start: {
+                                  anyOf: [{ type: 'number' }, { type: 'null' }],
+                                  title: 'Start',
+                                  description: 'The start time of the word or sound in seconds.',
+                                },
+                                end: {
+                                  anyOf: [{ type: 'number' }, { type: 'null' }],
+                                  title: 'End',
+                                  description: 'The end time of the word or sound in seconds.',
+                                },
+                                type: {
+                                  type: 'string',
+                                  enum: ['word', 'spacing', 'audio_event'],
+                                  title: 'Type',
+                                  description:
+                                    "The type of the word or sound. 'audio_event' is used for non-word sounds like laughter or footsteps.",
+                                },
+                                speaker_id: {
+                                  anyOf: [{ type: 'string' }, { type: 'null' }],
+                                  title: 'Speaker Id',
+                                  description: 'Unique identifier for the speaker of this word.',
+                                },
+                                logprob: {
+                                  type: 'number',
+                                  title: 'Logprob',
+                                  description:
+                                    'The log of the probability with which this word was predicted. Logprobs are in range [-infinity, 0], higher logprobs indicate a higher confidence the model has in its predictions.',
+                                },
+                                characters: {
+                                  anyOf: [
+                                    {
+                                      items: {
+                                        properties: {
+                                          text: {
+                                            type: 'string',
+                                            title: 'Text',
+                                            description: 'The character that was transcribed.',
+                                          },
+                                          start: {
+                                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                                            title: 'Start',
+                                            description:
+                                              'The start time of the character in seconds.',
+                                          },
+                                          end: {
+                                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                                            title: 'End',
+                                            description:
+                                              'The end time of the character in seconds.',
+                                          },
+                                        },
+                                        type: 'object',
+                                        required: ['text'],
+                                        title: 'SpeechToTextCharacterResponseModel',
+                                        example: { end: 0.1, start: 0, text: 'H' },
+                                      },
+                                      type: 'array',
+                                    },
+                                    { type: 'null' },
+                                  ],
+                                  title: 'Characters',
+                                  description:
+                                    'The characters that make up the word and their timing information.',
+                                },
+                                channel_index: {
+                                  anyOf: [{ type: 'integer' }, { type: 'null' }],
+                                  title: 'Channel Index',
+                                  description:
+                                    'The channel this word was spoken on (for multichannel audio). Null for single-channel transcriptions.',
+                                },
+                              },
+                              type: 'object',
+                              required: ['text', 'type', 'logprob'],
+                              title: 'SpeechToTextWordResponseModel',
+                              description:
+                                'Word-level detail of the transcription with timing information.',
+                              example: {
+                                characters: [
+                                  { end: 0.1, start: 0, text: 'H' },
+                                  { end: 0.2, start: 0.1, text: 'e' },
+                                  { end: 0.3, start: 0.2, text: 'l' },
+                                  { end: 0.4, start: 0.3, text: 'l' },
+                                  { end: 0.5, start: 0.4, text: 'o' },
+                                ],
+                                end: 0.5,
+                                logprob: -0.124,
+                                speaker_id: 'speaker_1',
+                                start: 0,
+                                text: 'Hello',
+                                type: 'word',
+                              },
+                            },
+                            type: 'array',
+                            title: 'Words',
+                            description: 'List of words with their timing information.',
+                          },
+                          channel_index: {
+                            anyOf: [{ type: 'integer' }, { type: 'null' }],
+                            title: 'Channel Index',
+                            description:
+                              'The channel index this transcript belongs to (for multichannel audio).',
+                          },
+                          additional_formats: {
+                            anyOf: [
+                              {
+                                items: {
+                                  anyOf: [
+                                    {
+                                      properties: {
+                                        requested_format: {
+                                          type: 'string',
+                                          title: 'Requested Format',
+                                          description: 'The requested format.',
+                                        },
+                                        file_extension: {
+                                          type: 'string',
+                                          title: 'File Extension',
+                                          description:
+                                            'The file extension of the additional format.',
+                                        },
+                                        content_type: {
+                                          type: 'string',
+                                          title: 'Content Type',
+                                          description: 'The content type of the additional format.',
+                                        },
+                                        is_base64_encoded: {
+                                          type: 'boolean',
+                                          title: 'Is Base64 Encoded',
+                                          description: 'Whether the content is base64 encoded.',
+                                        },
+                                        content: {
+                                          type: 'string',
+                                          title: 'Content',
+                                          description: 'The content of the additional format.',
+                                        },
+                                      },
+                                      type: 'object',
+                                      required: [
+                                        'requested_format',
+                                        'file_extension',
+                                        'content_type',
+                                        'is_base64_encoded',
+                                        'content',
+                                      ],
+                                      title: 'AdditionalFormatResponseModel',
+                                    },
+                                    { type: 'null' },
+                                  ],
+                                },
+                                type: 'array',
+                              },
+                              { type: 'null' },
+                            ],
+                            title: 'Additional Formats',
+                            description: 'Requested additional formats of the transcript.',
+                          },
+                          transcription_id: {
+                            anyOf: [{ type: 'string' }, { type: 'null' }],
+                            title: 'Transcription Id',
+                            description: 'The transcription ID of the response.',
+                          },
+                          entities: {
+                            anyOf: [
+                              {
+                                items: {
+                                  properties: {
+                                    text: {
+                                      type: 'string',
+                                      title: 'Text',
+                                      description: 'The text that was identified as an entity.',
+                                    },
+                                    entity_type: {
+                                      type: 'string',
+                                      title: 'Entity Type',
+                                      description:
+                                        "The type of entity detected (e.g., 'credit_card', 'email_address', 'person_name').",
+                                    },
+                                    start_char: {
+                                      type: 'integer',
+                                      title: 'Start Char',
+                                      description:
+                                        'Start character position in the transcript text.',
+                                    },
+                                    end_char: {
+                                      type: 'integer',
+                                      title: 'End Char',
+                                      description: 'End character position in the transcript text.',
+                                    },
+                                  },
+                                  type: 'object',
+                                  required: ['text', 'entity_type', 'start_char', 'end_char'],
+                                  title: 'DetectedEntity',
+                                },
+                                type: 'array',
+                              },
+                              { type: 'null' },
+                            ],
+                            title: 'Entities',
+                            description:
+                              'List of detected entities with their text, type, and character positions in the transcript.',
+                          },
+                          audio_duration_secs: {
+                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                            title: 'Audio Duration Secs',
+                            description:
+                              'The duration of the audio that was transcribed in seconds.',
+                          },
+                          edited_transcript: {
+                            anyOf: [
+                              {
+                                oneOf: [
+                                  {
+                                    properties: {
+                                      kind: {
+                                        type: 'string',
+                                        const: 'transcript',
+                                        title: 'Kind',
+                                        default: 'transcript',
+                                      },
+                                      text: {
+                                        type: 'string',
+                                        title: 'Text',
+                                        description: 'The edited transcript text.',
+                                      },
+                                      edited_text: {
+                                        type: 'string',
+                                        title: 'Edited Text',
+                                        description:
+                                          'The edited transcript text. Same value as `text`; matches the `edited_text` field of the realtime `edited_transcript` event.',
+                                        readOnly: true,
+                                      },
+                                    },
+                                    type: 'object',
+                                    required: ['kind', 'text', 'edited_text'],
+                                    title: 'EditedTranscript',
+                                    description:
+                                      'A transcript produced by the optional transcript edit (text only, untimed).',
+                                  },
+                                  {
+                                    properties: {
+                                      kind: {
+                                        type: 'string',
+                                        const: 'error',
+                                        title: 'Kind',
+                                        default: 'error',
+                                      },
+                                      error_type: {
+                                        type: 'string',
+                                        const: 'edit_failed',
+                                        title: 'Error Type',
+                                        description: 'edit_failed: the edit could not be produced.',
+                                      },
+                                      message: {
+                                        type: 'string',
+                                        title: 'Message',
+                                        description:
+                                          'A short, user-facing explanation of the failure.',
+                                      },
+                                    },
+                                    type: 'object',
+                                    required: ['kind', 'error_type', 'message'],
+                                    title: 'TranscriptEditError',
+                                    description:
+                                      'An error returned in place of an edited transcript when the edit could not be produced.',
+                                  },
+                                ],
+                                discriminator: {
+                                  propertyName: 'kind',
+                                  mapping: {
+                                    error: '#/components/schemas/TranscriptEditError',
+                                    transcript: '#/components/schemas/EditedTranscript',
+                                  },
+                                },
+                              },
+                              { type: 'null' },
+                            ],
+                            title: 'Edited Transcript',
+                            description:
+                              'Result of the optional transcript edit: the edited text, or an error if it could not be produced. Absent when no edit was requested. On success, both `text` and `edited_text` hold the edited transcript; compare them with the top-level `text` to see what changed.',
+                          },
+                        },
+                        type: 'object',
+                        required: ['language_code', 'language_probability', 'text', 'words'],
+                        title: 'SpeechToTextChunkResponseModel',
+                        description:
+                          'Chunk-level detail of the transcription with timing information.',
+                        example: {
+                          language_code: 'en',
+                          language_probability: 0.98,
+                          text: 'Hello world!',
+                          words: [
+                            {
+                              end: 0.5,
+                              logprob: -0.124,
+                              speaker_id: 'speaker_1',
+                              start: 0,
+                              text: 'Hello',
+                              type: 'word',
+                            },
+                            {
+                              end: 0.5,
+                              logprob: 0,
+                              speaker_id: 'speaker_1',
+                              start: 0.5,
+                              text: ' ',
+                              type: 'spacing',
+                            },
+                            {
+                              end: 1.2,
+                              logprob: -0.089,
+                              speaker_id: 'speaker_1',
+                              start: 0.5,
+                              text: 'world!',
+                              type: 'word',
+                            },
+                          ],
+                        },
+                      },
+                      type: 'array',
+                      title: 'Transcripts',
+                      description:
+                        'List of transcripts, one for each audio channel. Each transcript contains the text and word-level details for its respective channel.',
+                    },
+                    transcription_id: {
+                      anyOf: [{ type: 'string' }, { type: 'null' }],
+                      title: 'Transcription Id',
+                      description: 'The transcription ID of the response.',
+                    },
+                    audio_duration_secs: {
+                      anyOf: [{ type: 'number' }, { type: 'null' }],
+                      title: 'Audio Duration Secs',
+                      description:
+                        'The duration of the audio that was transcribed across all channels in seconds.',
+                    },
+                  },
+                  type: 'object',
+                  required: ['transcripts'],
+                  title: 'MultichannelSpeechToTextResponseModel',
+                  description: 'Response model for multichannel speech-to-text transcription.',
+                  example: {
+                    transcripts: [
+                      {
+                        language_code: 'en',
+                        language_probability: 0.98,
+                        text: 'Hello from channel one.',
+                        words: [
+                          {
+                            end: 0.5,
+                            logprob: -0.124,
+                            speaker_id: 'speaker_0',
+                            start: 0,
+                            text: 'Hello',
+                            type: 'word',
+                          },
+                          {
+                            end: 0.5,
+                            logprob: 0,
+                            speaker_id: 'speaker_0',
+                            start: 0.5,
+                            text: ' ',
+                            type: 'spacing',
+                          },
+                          {
+                            end: 0.8,
+                            logprob: -0.089,
+                            speaker_id: 'speaker_0',
+                            start: 0.5,
+                            text: 'from',
+                            type: 'word',
+                          },
+                        ],
+                      },
+                      {
+                        language_code: 'en',
+                        language_probability: 0.97,
+                        text: 'Greetings from channel two.',
+                        words: [
+                          {
+                            end: 0.7,
+                            logprob: -0.156,
+                            speaker_id: 'speaker_1',
+                            start: 0.1,
+                            text: 'Greetings',
+                            type: 'word',
+                          },
+                          {
+                            end: 0.7,
+                            logprob: 0,
+                            speaker_id: 'speaker_1',
+                            start: 0.7,
+                            text: ' ',
+                            type: 'spacing',
+                          },
+                          {
+                            end: 1,
+                            logprob: -0.078,
+                            speaker_id: 'speaker_1',
+                            start: 0.7,
+                            text: 'from',
+                            type: 'word',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                },
+              ],
+            })
             .openapi({
               title:
                 'Response Get Transcript By Id V1 Speech To Text Transcripts  Transcription Id  Get',

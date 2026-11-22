@@ -108,30 +108,42 @@ export const projectsHandler = app
   })
   .openapi(
     deleteV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRoute, (c) => {
     throw new Error('Not implemented')
   })
   .openapi(
     postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdAutoscalingRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdSetManagementRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdSetSizeRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdUpdateRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRollbackRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdResourceLabelsRoute, (c) => {
     throw new Error('Not implemented')
@@ -139,10 +151,9 @@ export const projectsHandler = app
   .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdCompleteIpRotationRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetMaintenancePolicyRoute,
-    (c) => {},
-  )
+  .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetMaintenancePolicyRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetMasterAuthRoute, (c) => {
     throw new Error('Not implemented')
   })

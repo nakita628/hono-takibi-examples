@@ -2533,251 +2533,304 @@ const ConnectConnectorCreateDataSchema = z
   })
   .openapi('ConnectConnectorCreateData')
 
-const ConnectCreateConnectorRequestSchema = z
-  .union([
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'type')) {
-            ctx.addIssue({ code: 'custom' })
+const ConnectCreateConnectorRequestSchema = (() => {
+  const Schema = z
+    .union([
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'type')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
+        })
+        .openapi({ title: 'Full configuration', required: ['type'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'service')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'connectionMethod')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
+        .openapi({ title: 'Preset configuration', required: ['service', 'connectionMethod'] }),
+    ])
+    .and(
+      z
+        .object({
+          data: ConnectConnectorCreateDataSchema.openapi({
+            description:
+              'Provider configuration for the selected connector type or connection method.',
+          }),
+          icon: z
+            .string()
+            .regex(/^[0-9a-fA-F]{40}$/)
+            .exactOptional()
+            .openapi({
+              description:
+                "SHA-1 digest of a PNG or JPEG icon that is at least 640 by 640 pixels. This field does not accept a URL or image bytes.\n\nFirst compute the digest and upload the raw image with [POST /v2/files](https://vercel.com/docs/rest-api/deployments/upload-deployment-files). Send `Content-Length` and the same 40-character digest in `x-vercel-digest`. Then set `icon` to that digest.\n\n```js\nimport { createHash } from 'node:crypto';\nimport { readFile } from 'node:fs/promises';\n\nconst VERCEL_TOKEN = process.env.VERCEL_TOKEN;\nconst connectorId = 'scl_...';\nconst bytes = await readFile('icon.png');\nconst digest = createHash('sha1').update(bytes).digest('hex');\n\nawait fetch('https://api.vercel.com/v2/files', {\n  method: 'POST',\n  headers: {\n    Authorization: `Bearer ${VERCEL_TOKEN}`,\n    'Content-Type': 'application/octet-stream',\n    'Content-Length': String(bytes.length),\n    'x-vercel-digest': digest,\n  },\n  body: bytes,\n});\n\nawait fetch(`https://api.vercel.com/v2/connect/connectors/${connectorId}`, {\n  method: 'PATCH',\n  headers: {\n    Authorization: `Bearer ${VERCEL_TOKEN}`,\n    'Content-Type': 'application/json',\n  },\n  body: JSON.stringify({ icon: digest }),\n});\n```\n",
+            }),
+          backgroundColor: z
+            .string()
+            .regex(/^#[0-9a-fA-F]{6}$/)
+            .exactOptional()
+            .openapi({ description: 'Branding background color (6-digit hex, for example' }),
+          accentColor: z
+            .string()
+            .regex(/^#[0-9a-fA-F]{6}$/)
+            .exactOptional()
+            .openapi({ description: 'Branding accent color (6-digit hex, for example' }),
+          type: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Connector implementation type for full configuration. Known types: api-key, discord, github, linear, linq, microsoft-entra, oauth, photon, salesforce, sendblue, slack, snowflake, snowflake-wif. Optional when service and connectionMethod select the type.',
+            }),
+          service: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Service slug or URL for which the connector is used. Required when connectionMethod is set. Service alone does not enable preset configuration.',
+            }),
+          connectionMethod: z
+            .string()
+            .max(64)
+            .exactOptional()
+            .openapi({
+              description:
+                'Connection method slug of the service. Use it with service to select preset configuration.',
+            }),
+          params: z
+            .record(z.string(), z.string().max(256))
+            .refine((val) => Object.keys(val).length <= 16)
+            .exactOptional()
+            .openapi({
+              description:
+                "Values for the selected connection method's template fields. Requires connectionMethod.",
+            }),
+          target: z
+            .string()
+            .max(64)
+            .exactOptional()
+            .openapi({
+              description:
+                'Which of the service\'s targets this connector is for. Requires \\"connectionMethod\\" and must be one that method serves. Optional.',
+            }),
+          uid: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Optional team-scoped unique identifier for the connector. If omitted or empty, Connect generates a value.',
+            }),
+          name: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Connector name. The value is trimmed and cannot contain control characters. If omitted or empty, the project name is used. A name or projectId is required. API key connectors require name.',
+            }),
+          projectId: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Project to connect during creation. If environments is omitted, the connection uses development, preview, and production.',
+            }),
+          environments: z
+            .array(
+              z
+                .union([
+                  z.enum(['development', 'preview', 'production']),
+                  z.string().regex(/^env_/),
+                ])
+                .openapi({
+                  description:
+                    'A built-in environment name or the stable env_* ID of a custom environment.',
+                }),
+            )
+            .min(1)
+            .exactOptional()
+            .openapi({
+              description:
+                'Environments for the project connection. Requires projectId. Use one or more built-in environment names or stable custom environment IDs that belong to the project. Duplicate values are accepted and removed.',
+            }),
+          triggers: z
+            .boolean()
+            .exactOptional()
+            .openapi({ description: 'Whether the triggers are enabled for this connector.' }),
+          triggerType: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Trigger driver type. Resolved automatically from the known service connection method when not provided. Only set when using the newly decoupled triggers resolution flow.',
+            }),
+          triggerVerificationInput: z
+            .looseObject({})
+            .exactOptional()
+            .openapi({
+              description:
+                'Plaintext verification inputs, validated by the trigger driver and encrypted into stored triggerData. An empty object makes no changes.',
+            }),
+          triggerRegistrationInput: z
+            .looseObject({})
+            .exactOptional()
+            .openapi({
+              description:
+                'Additional registration inputs, validated by the trigger driver. Requires triggers: true. Shared verification credentials are read from triggerData.',
+            }),
+          triggerDestination: z
+            .xor([
+              z
+                .strictObject({
+                  projectId: z
+                    .string()
+                    .min(1)
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Project that receives triggers. During connector creation, omit it to use the top-level projectId.',
+                    }),
+                  path: z
+                    .string()
+                    .min(1)
+                    .max(2048)
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Route path on the linked project that receives forwarded trigger requests.',
+                    }),
+                })
+                .refine((val) => Object.keys(val).length >= 1)
+                .openapi({ title: 'Default deployment', required: [] }),
+              z
+                .strictObject({
+                  projectId: z
+                    .string()
+                    .min(1)
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Project that receives triggers. During connector creation, omit it to use the top-level projectId.',
+                    }),
+                  branch: z
+                    .string()
+                    .min(1)
+                    .max(250)
+                    .openapi({ description: 'Git branch used to select a preview deployment.' }),
+                  path: z
+                    .string()
+                    .min(1)
+                    .max(2048)
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Route path on the linked project that receives forwarded trigger requests.',
+                    }),
+                })
+                .openapi({ title: 'Branch', required: ['branch'] }),
+              z
+                .strictObject({
+                  projectId: z
+                    .string()
+                    .min(1)
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Project that receives triggers. During connector creation, omit it to use the top-level projectId.',
+                    }),
+                  customEnvironmentId: z
+                    .string()
+                    .regex(/^env_/)
+                    .openapi({
+                      description:
+                        'Stable custom environment ID that belongs to the destination project.',
+                    }),
+                  path: z
+                    .string()
+                    .min(1)
+                    .max(2048)
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Route path on the linked project that receives forwarded trigger requests.',
+                    }),
+                })
+                .openapi({ title: 'Custom environment', required: ['customEnvironmentId'] }),
+            ])
+            .exactOptional()
+            .openapi({
+              description:
+                'Initial trigger destination. Requires triggers to be enabled and a projectId here or at the top level. Connector responses expose the resulting set as triggerDestinations. Replace the complete set with PATCH /v1/connect/connectors/{connector}/trigger-destinations.',
+            }),
+          events: z
+            .array(z.string())
+            .exactOptional()
+            .openapi({ description: 'Default trigger events for this connector.' }),
+        })
+        .openapi({ required: ['data'] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    const reported = ctx.issues.length
+    try {
+      ;((ctx) => {
+        const val = ctx.value
+        if (
+          z
+            .unknown()
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'externalId')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .openapi({ required: ['externalId'] })
+            .safeParse(val).success
+        ) {
+          ctx.issues.push({ code: 'custom', input: val })
         }
-      })
-      .openapi({ title: 'Full configuration', required: ['type'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'service')) {
-            ctx.addIssue({ code: 'custom' })
-          }
-          if (!Object.hasOwn(val, 'connectionMethod')) {
-            ctx.addIssue({ code: 'custom' })
-          }
+      })(ctx)
+    } catch (error) {
+      if (!(error instanceof z.core.$ZodAsyncError)) throw error
+      ctx.issues.length = reported
+      return (async (ctx) => {
+        const val = ctx.value
+        if (
+          (
+            await z
+              .unknown()
+              .superRefine((val, ctx) => {
+                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                  if (!Object.hasOwn(val, 'externalId')) {
+                    ctx.addIssue({ code: 'custom' })
+                  }
+                }
+              })
+              .openapi({ required: ['externalId'] })
+              .safeParseAsync(val)
+          ).success
+        ) {
+          ctx.issues.push({ code: 'custom', input: val })
         }
-      })
-      .openapi({ title: 'Preset configuration', required: ['service', 'connectionMethod'] }),
-  ])
-  .and(
-    z
-      .object({
-        data: ConnectConnectorCreateDataSchema.openapi({
-          description:
-            'Provider configuration for the selected connector type or connection method.',
-        }),
-        icon: z
-          .string()
-          .regex(/^[0-9a-fA-F]{40}$/)
-          .exactOptional()
-          .openapi({
-            description:
-              "SHA-1 digest of a PNG or JPEG icon that is at least 640 by 640 pixels. This field does not accept a URL or image bytes.\n\nFirst compute the digest and upload the raw image with [POST /v2/files](https://vercel.com/docs/rest-api/deployments/upload-deployment-files). Send `Content-Length` and the same 40-character digest in `x-vercel-digest`. Then set `icon` to that digest.\n\n```js\nimport { createHash } from 'node:crypto';\nimport { readFile } from 'node:fs/promises';\n\nconst VERCEL_TOKEN = process.env.VERCEL_TOKEN;\nconst connectorId = 'scl_...';\nconst bytes = await readFile('icon.png');\nconst digest = createHash('sha1').update(bytes).digest('hex');\n\nawait fetch('https://api.vercel.com/v2/files', {\n  method: 'POST',\n  headers: {\n    Authorization: `Bearer ${VERCEL_TOKEN}`,\n    'Content-Type': 'application/octet-stream',\n    'Content-Length': String(bytes.length),\n    'x-vercel-digest': digest,\n  },\n  body: bytes,\n});\n\nawait fetch(`https://api.vercel.com/v2/connect/connectors/${connectorId}`, {\n  method: 'PATCH',\n  headers: {\n    Authorization: `Bearer ${VERCEL_TOKEN}`,\n    'Content-Type': 'application/json',\n  },\n  body: JSON.stringify({ icon: digest }),\n});\n```\n",
-          }),
-        backgroundColor: z
-          .string()
-          .regex(/^#[0-9a-fA-F]{6}$/)
-          .exactOptional()
-          .openapi({ description: 'Branding background color (6-digit hex, for example' }),
-        accentColor: z
-          .string()
-          .regex(/^#[0-9a-fA-F]{6}$/)
-          .exactOptional()
-          .openapi({ description: 'Branding accent color (6-digit hex, for example' }),
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Connector implementation type for full configuration. Known types: api-key, discord, github, linear, linq, microsoft-entra, oauth, photon, salesforce, sendblue, slack, snowflake, snowflake-wif. Optional when service and connectionMethod select the type.',
-          }),
-        service: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Service slug or URL for which the connector is used. Required when connectionMethod is set. Service alone does not enable preset configuration.',
-          }),
-        connectionMethod: z
-          .string()
-          .max(64)
-          .exactOptional()
-          .openapi({
-            description:
-              'Connection method slug of the service. Use it with service to select preset configuration.',
-          }),
-        params: z
-          .record(z.string(), z.string().max(256))
-          .refine((val) => Object.keys(val).length <= 16)
-          .exactOptional()
-          .openapi({
-            description:
-              "Values for the selected connection method's template fields. Requires connectionMethod.",
-          }),
-        target: z
-          .string()
-          .max(64)
-          .exactOptional()
-          .openapi({
-            description:
-              'Which of the service\'s targets this connector is for. Requires \\"connectionMethod\\" and must be one that method serves. Optional.',
-          }),
-        uid: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional team-scoped unique identifier for the connector. If omitted or empty, Connect generates a value.',
-          }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Connector name. The value is trimmed and cannot contain control characters. If omitted or empty, the project name is used. A name or projectId is required. API key connectors require name.',
-          }),
-        projectId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Project to connect during creation. If environments is omitted, the connection uses development, preview, and production.',
-          }),
-        environments: z
-          .array(
-            z
-              .union([z.enum(['development', 'preview', 'production']), z.string().regex(/^env_/)])
-              .openapi({
-                description:
-                  'A built-in environment name or the stable env_* ID of a custom environment.',
-              }),
-          )
-          .min(1)
-          .exactOptional()
-          .openapi({
-            description:
-              'Environments for the project connection. Requires projectId. Use one or more built-in environment names or stable custom environment IDs that belong to the project. Duplicate values are accepted and removed.',
-          }),
-        triggers: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether the triggers are enabled for this connector.' }),
-        triggerType: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Trigger driver type. Resolved automatically from the known service connection method when not provided. Only set when using the newly decoupled triggers resolution flow.',
-          }),
-        triggerVerificationInput: z
-          .looseObject({})
-          .exactOptional()
-          .openapi({
-            description:
-              'Plaintext verification inputs, validated by the trigger driver and encrypted into stored triggerData. An empty object makes no changes.',
-          }),
-        triggerRegistrationInput: z
-          .looseObject({})
-          .exactOptional()
-          .openapi({
-            description:
-              'Additional registration inputs, validated by the trigger driver. Requires triggers: true. Shared verification credentials are read from triggerData.',
-          }),
-        triggerDestination: z
-          .xor([
-            z
-              .strictObject({
-                projectId: z
-                  .string()
-                  .min(1)
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Project that receives triggers. During connector creation, omit it to use the top-level projectId.',
-                  }),
-                path: z
-                  .string()
-                  .min(1)
-                  .max(2048)
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Route path on the linked project that receives forwarded trigger requests.',
-                  }),
-              })
-              .refine((val) => Object.keys(val).length >= 1)
-              .openapi({ title: 'Default deployment', required: [] }),
-            z
-              .strictObject({
-                projectId: z
-                  .string()
-                  .min(1)
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Project that receives triggers. During connector creation, omit it to use the top-level projectId.',
-                  }),
-                branch: z
-                  .string()
-                  .min(1)
-                  .max(250)
-                  .openapi({ description: 'Git branch used to select a preview deployment.' }),
-                path: z
-                  .string()
-                  .min(1)
-                  .max(2048)
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Route path on the linked project that receives forwarded trigger requests.',
-                  }),
-              })
-              .openapi({ title: 'Branch', required: ['branch'] }),
-            z
-              .strictObject({
-                projectId: z
-                  .string()
-                  .min(1)
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Project that receives triggers. During connector creation, omit it to use the top-level projectId.',
-                  }),
-                customEnvironmentId: z
-                  .string()
-                  .regex(/^env_/)
-                  .openapi({
-                    description:
-                      'Stable custom environment ID that belongs to the destination project.',
-                  }),
-                path: z
-                  .string()
-                  .min(1)
-                  .max(2048)
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Route path on the linked project that receives forwarded trigger requests.',
-                  }),
-              })
-              .openapi({ title: 'Custom environment', required: ['customEnvironmentId'] }),
-          ])
-          .exactOptional()
-          .openapi({
-            description:
-              'Initial trigger destination. Requires triggers to be enabled and a projectId here or at the top level. Connector responses expose the resulting set as triggerDestinations. Replace the complete set with PATCH /v1/connect/connectors/{connector}/trigger-destinations.',
-          }),
-        events: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ description: 'Default trigger events for this connector.' }),
-      })
-      .openapi({ required: ['data'] }),
-  )
+      })(ctx).then(() => val)
+    }
+    return val
+  }, Schema)
+})()
   .openapi({
     required: ['data'],
     description:
       'Create a connector with full provider configuration or with a known service connection method.',
+    not: { required: ['externalId'] },
   })
   .openapi('ConnectCreateConnectorRequest')
 
@@ -39168,7 +39221,16 @@ export const postV1ConnectTokenConnectorRoute = createRoute({
                           .openapi({ required: ['type'] })
                           .safeParse(val).success,
                     )
-                    .openapi({ title: 'type:other', required: ['type'] }),
+                    .openapi({
+                      title: 'type:other',
+                      required: ['type'],
+                      not: {
+                        properties: {
+                          type: { type: 'string', enum: ['app', 'user', 'jwt-bearer', 'token'] },
+                        },
+                        required: ['type'],
+                      },
+                    }),
                 ])
                 .exactOptional(),
               installationId: z.string().exactOptional(),
@@ -39338,7 +39400,16 @@ export const postV1ConnectAuthorizeConnectorRoute = createRoute({
                           .openapi({ required: ['type'] })
                           .safeParse(val).success,
                     )
-                    .openapi({ title: 'type:other', required: ['type'] }),
+                    .openapi({
+                      title: 'type:other',
+                      required: ['type'],
+                      not: {
+                        properties: {
+                          type: { type: 'string', enum: ['app', 'user', 'jwt-bearer', 'token'] },
+                        },
+                        required: ['type'],
+                      },
+                    }),
                 ])
                 .exactOptional(),
               installationId: z.string().exactOptional(),
@@ -54813,8 +54884,8 @@ export const postV2DomainsDomainRecordsRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .union([
+          schema: (() => {
+            const Operand = z.union([
               z
                 .strictObject({
                   name: z
@@ -55159,7 +55230,7 @@ export const postV2DomainsDomainRecordsRoute = createRoute({
                 })
                 .openapi({ required: ['type', 'name', 'https'] }),
             ])
-            .and(
+            const Schema = Operand.and(
               z
                 .object({
                   type: z
@@ -55170,7 +55241,68 @@ export const postV2DomainsDomainRecordsRoute = createRoute({
                 })
                 .openapi({ required: ['type'] }),
             )
-            .openapi({ required: ['type'] }),
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              const reported = ctx.issues.length
+              try {
+                ;((ctx) => {
+                  const o = ctx.value
+                  if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                  {
+                    const result = Operand.safeParse(o)
+                    if (
+                      !result.success &&
+                      result.error.issues.every(
+                        (issue) => issue.code === 'unrecognized_keys' && issue.path.length === 0,
+                      )
+                    ) {
+                      for (const issue of result.error.issues) {
+                        if (issue.code === 'unrecognized_keys') {
+                          for (const k of issue.keys) {
+                            ctx.issues.push({
+                              code: 'custom',
+                              path: [k],
+                              input: o,
+                              message: issue.message,
+                            })
+                          }
+                        }
+                      }
+                    }
+                  }
+                })(ctx)
+              } catch (error) {
+                if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                ctx.issues.length = reported
+                return (async (ctx) => {
+                  const o = ctx.value
+                  if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                  {
+                    const result = await Operand.safeParseAsync(o)
+                    if (
+                      !result.success &&
+                      result.error.issues.every(
+                        (issue) => issue.code === 'unrecognized_keys' && issue.path.length === 0,
+                      )
+                    ) {
+                      for (const issue of result.error.issues) {
+                        if (issue.code === 'unrecognized_keys') {
+                          for (const k of issue.keys) {
+                            ctx.issues.push({
+                              code: 'custom',
+                              path: [k],
+                              input: o,
+                              message: issue.message,
+                            })
+                          }
+                        }
+                      }
+                    }
+                  }
+                })(ctx).then(() => val)
+              }
+              return val
+            }, Schema)
+          })().openapi({ required: ['type'] }),
         },
       },
       required: true,
@@ -65409,37 +65541,51 @@ export const deleteV1GlobalConfigEdgeConfigIdTokensRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .union([
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'tokens')) {
-                      ctx.addIssue({ code: 'custom' })
+          schema: (() => {
+            const Schema = z
+              .union([
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'tokens')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['tokens'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'ids')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['tokens'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'ids')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
+                  })
+                  .openapi({ required: ['ids'] }),
+              ])
+              .and(
+                z
+                  .object({
+                    tokens: z.array(z.string()).min(1).exactOptional(),
+                    ids: z.array(z.string()).min(1).exactOptional(),
+                  })
+                  .openapi({ required: [] }),
+              )
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  if (!['tokens', 'ids'].includes(k)) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o })
                   }
-                })
-                .openapi({ required: ['ids'] }),
-            ])
-            .and(
-              z
-                .object({
-                  tokens: z.array(z.string()).min(1).exactOptional(),
-                  ids: z.array(z.string()).min(1).exactOptional(),
-                })
-                .openapi({ required: [] }),
-            ),
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })().openapi({ additionalProperties: false }),
         },
       },
       required: true,
@@ -89633,80 +89779,101 @@ export const postV1OrganizationsOrganizationIdTeamsRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .xor([
-              z
-                .object({ mode: z.literal('create'), name: z.any() })
-                .openapi({ required: ['mode', 'slug', 'name'] }),
-              z
-                .any()
-                .refine(
-                  (val) =>
-                    !z
-                      .unknown()
-                      .superRefine((val, ctx) => {
-                        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                          if (!Object.hasOwn(val, 'name')) {
-                            ctx.addIssue({ code: 'custom' })
+          schema: (() => {
+            const Schema = z
+              .xor([
+                z
+                  .object({ mode: z.literal('create'), name: z.any() })
+                  .openapi({ required: ['mode', 'slug', 'name'] }),
+                z
+                  .any()
+                  .refine(
+                    (val) =>
+                      !z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'name')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
                           }
-                        }
-                      })
-                      .openapi({ required: ['name'] })
-                      .safeParse(val).success,
-                )
-                .openapi({ required: ['mode', 'teamId', 'billingPlan'] }),
-              z
-                .any()
-                .refine(
-                  (val) =>
-                    !z
-                      .unknown()
-                      .superRefine((val, ctx) => {
-                        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                          if (!Object.hasOwn(val, 'name')) {
-                            ctx.addIssue({ code: 'custom' })
+                        })
+                        .openapi({ required: ['name'] })
+                        .safeParse(val).success,
+                  )
+                  .openapi({
+                    required: ['mode', 'teamId', 'billingPlan'],
+                    not: { required: ['name'] },
+                  }),
+                z
+                  .any()
+                  .refine(
+                    (val) =>
+                      !z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'name')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
                           }
-                        }
-                      })
-                      .openapi({ required: ['name'] })
-                      .safeParse(val).success,
-                )
-                .openapi({ required: ['mode', 'slug', 'billingPlan'] }),
-            ])
-            .and(
-              z
-                .object({
-                  mode: z
-                    .enum(['create', 'link'])
-                    .openapi({
-                      description:
-                        'Whether to create a new team under the organization (\\"create\\") or link an existing one (\\"link\\").',
-                    }),
-                  teamId: z
-                    .string()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'The ID of an existing team to add to the organization (link mode).',
-                    }),
-                  slug: z
-                    .string()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'The slug of an existing team to link, or the slug for a new team to create.',
-                    }),
-                  name: z
-                    .string()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'The display name for a new team. Required in create mode; rejected in link mode.',
-                    }),
-                  billingPlan: z.enum(['enterprise', 'platform']).exactOptional(),
-                })
-                .openapi({ required: ['mode'] }),
-            )
+                        })
+                        .openapi({ required: ['name'] })
+                        .safeParse(val).success,
+                  )
+                  .openapi({
+                    required: ['mode', 'slug', 'billingPlan'],
+                    not: { required: ['name'] },
+                  }),
+              ])
+              .and(
+                z
+                  .object({
+                    mode: z
+                      .enum(['create', 'link'])
+                      .openapi({
+                        description:
+                          'Whether to create a new team under the organization (\\"create\\") or link an existing one (\\"link\\").',
+                      }),
+                    teamId: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The ID of an existing team to add to the organization (link mode).',
+                      }),
+                    slug: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The slug of an existing team to link, or the slug for a new team to create.',
+                      }),
+                    name: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The display name for a new team. Required in create mode; rejected in link mode.',
+                      }),
+                    billingPlan: z.enum(['enterprise', 'platform']).exactOptional(),
+                  })
+                  .openapi({ required: ['mode'] }),
+              )
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  if (!['mode', 'teamId', 'slug', 'name', 'billingPlan'].includes(k)) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o })
+                  }
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })()
+            .openapi({ additionalProperties: false })
             .openapi({ required: ['mode'] }),
         },
       },
@@ -90648,77 +90815,92 @@ export const postV1ProjectsIdOrNameMembersRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .xor([
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'uid')) {
-                      ctx.addIssue({ code: 'custom' })
+          schema: (() => {
+            const Schema = z
+              .xor([
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'uid')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['uid'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'username')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['uid'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'username')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['username'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'email')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['username'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'email')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
+                  })
+                  .openapi({ required: ['email'] }),
+              ])
+              .and(
+                z
+                  .object({
+                    uid: z
+                      .string()
+                      .max(256)
+                      .exactOptional()
+                      .openapi({
+                        example: 'ndlgr43fadlPyCtREAqxxdyFK',
+                        description:
+                          'The ID of the team member that should be added to this project.',
+                      }),
+                    username: z
+                      .string()
+                      .max(256)
+                      .exactOptional()
+                      .openapi({
+                        example: 'example',
+                        description:
+                          'The username of the team member that should be added to this project.',
+                      }),
+                    email: z
+                      .email()
+                      .exactOptional()
+                      .openapi({
+                        example: 'entity@example.com',
+                        description:
+                          'The email of the team member that should be added to this project.',
+                      }),
+                    role: z
+                      .enum(['ADMIN', 'PROJECT_VIEWER', 'PROJECT_DEVELOPER'])
+                      .openapi({
+                        example: 'ADMIN',
+                        description: 'The project role of the member that will be added.',
+                      }),
+                  })
+                  .openapi({ required: ['role'] }),
+              )
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  if (!['uid', 'username', 'email', 'role'].includes(k)) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o })
                   }
-                })
-                .openapi({ required: ['email'] }),
-            ])
-            .and(
-              z
-                .object({
-                  uid: z
-                    .string()
-                    .max(256)
-                    .exactOptional()
-                    .openapi({
-                      example: 'ndlgr43fadlPyCtREAqxxdyFK',
-                      description:
-                        'The ID of the team member that should be added to this project.',
-                    }),
-                  username: z
-                    .string()
-                    .max(256)
-                    .exactOptional()
-                    .openapi({
-                      example: 'example',
-                      description:
-                        'The username of the team member that should be added to this project.',
-                    }),
-                  email: z
-                    .email()
-                    .exactOptional()
-                    .openapi({
-                      example: 'entity@example.com',
-                      description:
-                        'The email of the team member that should be added to this project.',
-                    }),
-                  role: z
-                    .enum(['ADMIN', 'PROJECT_VIEWER', 'PROJECT_DEVELOPER'])
-                    .openapi({
-                      example: 'ADMIN',
-                      description: 'The project role of the member that will be added.',
-                    }),
-                })
-                .openapi({ required: ['role'] }),
-            )
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })()
+            .openapi({ additionalProperties: false })
             .openapi({ required: ['role'] }),
         },
       },
@@ -116486,130 +116668,162 @@ export const patchV9ProjectsIdOrNameRoute = createRoute({
                             .array(
                               z
                                 .strictObject({
-                                  to: z
-                                    .union([
-                                      z
-                                        .unknown()
-                                        .superRefine((val, ctx) => {
-                                          if (
-                                            typeof val === 'object' &&
-                                            val !== null &&
-                                            !Array.isArray(val)
-                                          ) {
-                                            if (!Object.hasOwn(val, 'slugs')) {
-                                              ctx.addIssue({ code: 'custom' })
-                                            }
-                                          }
-                                        })
-                                        .openapi({ required: ['slugs'] }),
-                                      z
-                                        .unknown()
-                                        .superRefine((val, ctx) => {
-                                          if (
-                                            typeof val === 'object' &&
-                                            val !== null &&
-                                            !Array.isArray(val)
-                                          ) {
-                                            if (!Object.hasOwn(val, 'preset')) {
-                                              ctx.addIssue({ code: 'custom' })
-                                            }
-                                          }
-                                        })
-                                        .openapi({ required: ['preset'] }),
-                                    ])
-                                    .and(
-                                      z
-                                        .object({
-                                          slugs: z
-                                            .array(
-                                              z
-                                                .string()
-                                                .max(64)
-                                                .openapi({
-                                                  description:
-                                                    'A system environment (\\"production\\", \\"preview\\", or \\"development\\") or a custom environment slug',
-                                                }),
-                                            )
-                                            .min(1)
-                                            .max(10)
-                                            .superRefine((items, ctx) => {
-                                              const seen = new Map()
-                                              for (const [i, val] of items.entries()) {
-                                                const key = JSON.stringify(val)
-                                                if (seen.has(key))
-                                                  ctx.addIssue({ code: 'custom', path: [i] })
-                                                else seen.set(key, i)
+                                  to: (() => {
+                                    const Schema = z
+                                      .union([
+                                        z
+                                          .unknown()
+                                          .superRefine((val, ctx) => {
+                                            if (
+                                              typeof val === 'object' &&
+                                              val !== null &&
+                                              !Array.isArray(val)
+                                            ) {
+                                              if (!Object.hasOwn(val, 'slugs')) {
+                                                ctx.addIssue({ code: 'custom' })
                                               }
-                                            })
-                                            .exactOptional(),
-                                          preset: z.literal('all-custom').exactOptional(),
-                                        })
-                                        .openapi({ required: [] }),
-                                    )
+                                            }
+                                          })
+                                          .openapi({ required: ['slugs'] }),
+                                        z
+                                          .unknown()
+                                          .superRefine((val, ctx) => {
+                                            if (
+                                              typeof val === 'object' &&
+                                              val !== null &&
+                                              !Array.isArray(val)
+                                            ) {
+                                              if (!Object.hasOwn(val, 'preset')) {
+                                                ctx.addIssue({ code: 'custom' })
+                                              }
+                                            }
+                                          })
+                                          .openapi({ required: ['preset'] }),
+                                      ])
+                                      .and(
+                                        z
+                                          .object({
+                                            slugs: z
+                                              .array(
+                                                z
+                                                  .string()
+                                                  .max(64)
+                                                  .openapi({
+                                                    description:
+                                                      'A system environment (\\"production\\", \\"preview\\", or \\"development\\") or a custom environment slug',
+                                                  }),
+                                              )
+                                              .min(1)
+                                              .max(10)
+                                              .superRefine((items, ctx) => {
+                                                const seen = new Map()
+                                                for (const [i, val] of items.entries()) {
+                                                  const key = JSON.stringify(val)
+                                                  if (seen.has(key))
+                                                    ctx.addIssue({ code: 'custom', path: [i] })
+                                                  else seen.set(key, i)
+                                                }
+                                              })
+                                              .exactOptional(),
+                                            preset: z.literal('all-custom').exactOptional(),
+                                          })
+                                          .openapi({ required: [] }),
+                                      )
+                                    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                      ;((ctx) => {
+                                        const o = ctx.value
+                                        if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                          return
+                                        for (const k of Object.keys(o)) {
+                                          if (!['slugs', 'preset'].includes(k)) {
+                                            ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                          }
+                                        }
+                                      })(ctx)
+                                      return val
+                                    }, Schema)
+                                  })()
+                                    .openapi({ additionalProperties: false })
                                     .openapi({
                                       description:
                                         'A set of environments, expressed as explicit slugs, a named preset, or both. At least one of `slugs` or `preset` must be set.',
                                     }),
-                                  from: z
-                                    .union([
-                                      z
-                                        .unknown()
-                                        .superRefine((val, ctx) => {
-                                          if (
-                                            typeof val === 'object' &&
-                                            val !== null &&
-                                            !Array.isArray(val)
-                                          ) {
-                                            if (!Object.hasOwn(val, 'slugs')) {
-                                              ctx.addIssue({ code: 'custom' })
-                                            }
-                                          }
-                                        })
-                                        .openapi({ required: ['slugs'] }),
-                                      z
-                                        .unknown()
-                                        .superRefine((val, ctx) => {
-                                          if (
-                                            typeof val === 'object' &&
-                                            val !== null &&
-                                            !Array.isArray(val)
-                                          ) {
-                                            if (!Object.hasOwn(val, 'preset')) {
-                                              ctx.addIssue({ code: 'custom' })
-                                            }
-                                          }
-                                        })
-                                        .openapi({ required: ['preset'] }),
-                                    ])
-                                    .and(
-                                      z
-                                        .object({
-                                          slugs: z
-                                            .array(
-                                              z
-                                                .string()
-                                                .max(64)
-                                                .openapi({
-                                                  description:
-                                                    'A system environment (\\"production\\", \\"preview\\", or \\"development\\") or a custom environment slug',
-                                                }),
-                                            )
-                                            .min(1)
-                                            .max(10)
-                                            .superRefine((items, ctx) => {
-                                              const seen = new Map()
-                                              for (const [i, val] of items.entries()) {
-                                                const key = JSON.stringify(val)
-                                                if (seen.has(key))
-                                                  ctx.addIssue({ code: 'custom', path: [i] })
-                                                else seen.set(key, i)
+                                  from: (() => {
+                                    const Schema = z
+                                      .union([
+                                        z
+                                          .unknown()
+                                          .superRefine((val, ctx) => {
+                                            if (
+                                              typeof val === 'object' &&
+                                              val !== null &&
+                                              !Array.isArray(val)
+                                            ) {
+                                              if (!Object.hasOwn(val, 'slugs')) {
+                                                ctx.addIssue({ code: 'custom' })
                                               }
-                                            })
-                                            .exactOptional(),
-                                          preset: z.literal('all-custom').exactOptional(),
-                                        })
-                                        .openapi({ required: [] }),
-                                    )
+                                            }
+                                          })
+                                          .openapi({ required: ['slugs'] }),
+                                        z
+                                          .unknown()
+                                          .superRefine((val, ctx) => {
+                                            if (
+                                              typeof val === 'object' &&
+                                              val !== null &&
+                                              !Array.isArray(val)
+                                            ) {
+                                              if (!Object.hasOwn(val, 'preset')) {
+                                                ctx.addIssue({ code: 'custom' })
+                                              }
+                                            }
+                                          })
+                                          .openapi({ required: ['preset'] }),
+                                      ])
+                                      .and(
+                                        z
+                                          .object({
+                                            slugs: z
+                                              .array(
+                                                z
+                                                  .string()
+                                                  .max(64)
+                                                  .openapi({
+                                                    description:
+                                                      'A system environment (\\"production\\", \\"preview\\", or \\"development\\") or a custom environment slug',
+                                                  }),
+                                              )
+                                              .min(1)
+                                              .max(10)
+                                              .superRefine((items, ctx) => {
+                                                const seen = new Map()
+                                                for (const [i, val] of items.entries()) {
+                                                  const key = JSON.stringify(val)
+                                                  if (seen.has(key))
+                                                    ctx.addIssue({ code: 'custom', path: [i] })
+                                                  else seen.set(key, i)
+                                                }
+                                              })
+                                              .exactOptional(),
+                                            preset: z.literal('all-custom').exactOptional(),
+                                          })
+                                          .openapi({ required: [] }),
+                                      )
+                                    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                      ;((ctx) => {
+                                        const o = ctx.value
+                                        if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                          return
+                                        for (const k of Object.keys(o)) {
+                                          if (!['slugs', 'preset'].includes(k)) {
+                                            ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                          }
+                                        }
+                                      })(ctx)
+                                      return val
+                                    }, Schema)
+                                  })()
+                                    .openapi({ additionalProperties: false })
                                     .openapi({
                                       description:
                                         'A set of environments, expressed as explicit slugs, a named preset, or both. At least one of `slugs` or `preset` must be set.',
@@ -116643,66 +116857,82 @@ export const patchV9ProjectsIdOrNameRoute = createRoute({
                                 .openapi({
                                   description: 'The label or description of the trusted source',
                                 }),
-                              to: z
-                                .union([
-                                  z
-                                    .unknown()
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'slugs')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                      }
-                                    })
-                                    .openapi({ required: ['slugs'] }),
-                                  z
-                                    .unknown()
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'preset')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                      }
-                                    })
-                                    .openapi({ required: ['preset'] }),
-                                ])
-                                .and(
-                                  z
-                                    .object({
-                                      slugs: z
-                                        .array(
-                                          z
-                                            .string()
-                                            .max(64)
-                                            .openapi({
-                                              description:
-                                                'A system environment (\\"production\\", \\"preview\\", or \\"development\\") or a custom environment slug',
-                                            }),
-                                        )
-                                        .min(1)
-                                        .max(10)
-                                        .superRefine((items, ctx) => {
-                                          const seen = new Map()
-                                          for (const [i, val] of items.entries()) {
-                                            const key = JSON.stringify(val)
-                                            if (seen.has(key))
-                                              ctx.addIssue({ code: 'custom', path: [i] })
-                                            else seen.set(key, i)
+                              to: (() => {
+                                const Schema = z
+                                  .union([
+                                    z
+                                      .unknown()
+                                      .superRefine((val, ctx) => {
+                                        if (
+                                          typeof val === 'object' &&
+                                          val !== null &&
+                                          !Array.isArray(val)
+                                        ) {
+                                          if (!Object.hasOwn(val, 'slugs')) {
+                                            ctx.addIssue({ code: 'custom' })
                                           }
-                                        })
-                                        .exactOptional(),
-                                      preset: z.literal('all-custom').exactOptional(),
-                                    })
-                                    .openapi({ required: [] }),
-                                )
+                                        }
+                                      })
+                                      .openapi({ required: ['slugs'] }),
+                                    z
+                                      .unknown()
+                                      .superRefine((val, ctx) => {
+                                        if (
+                                          typeof val === 'object' &&
+                                          val !== null &&
+                                          !Array.isArray(val)
+                                        ) {
+                                          if (!Object.hasOwn(val, 'preset')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                        }
+                                      })
+                                      .openapi({ required: ['preset'] }),
+                                  ])
+                                  .and(
+                                    z
+                                      .object({
+                                        slugs: z
+                                          .array(
+                                            z
+                                              .string()
+                                              .max(64)
+                                              .openapi({
+                                                description:
+                                                  'A system environment (\\"production\\", \\"preview\\", or \\"development\\") or a custom environment slug',
+                                              }),
+                                          )
+                                          .min(1)
+                                          .max(10)
+                                          .superRefine((items, ctx) => {
+                                            const seen = new Map()
+                                            for (const [i, val] of items.entries()) {
+                                              const key = JSON.stringify(val)
+                                              if (seen.has(key))
+                                                ctx.addIssue({ code: 'custom', path: [i] })
+                                              else seen.set(key, i)
+                                            }
+                                          })
+                                          .exactOptional(),
+                                        preset: z.literal('all-custom').exactOptional(),
+                                      })
+                                      .openapi({ required: [] }),
+                                  )
+                                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                  ;((ctx) => {
+                                    const o = ctx.value
+                                    if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                      return
+                                    for (const k of Object.keys(o)) {
+                                      if (!['slugs', 'preset'].includes(k)) {
+                                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                      }
+                                    }
+                                  })(ctx)
+                                  return val
+                                }, Schema)
+                              })()
+                                .openapi({ additionalProperties: false })
                                 .openapi({
                                   description:
                                     'A set of environments, expressed as explicit slugs, a named preset, or both. At least one of `slugs` or `preset` must be set.',
@@ -116848,32 +117078,59 @@ export const patchV9ProjectsIdOrNameRoute = createRoute({
                 }),
               connectConfigurations: z
                 .array(
-                  z
-                    .xor([z.looseObject({})])
-                    .and(
-                      z
-                        .object({
-                          envId: z.string().openapi({ description: 'The ID of the environment' }),
-                          connectConfigurationId: z
-                            .string()
-                            .openapi({ description: 'The ID of the Secure Compute network' }),
-                          passive: z
-                            .boolean()
-                            .openapi({
-                              description:
-                                'Whether the configuration should be passive, meaning builds will not run there and only passive Serverless Functions will be deployed',
-                            }),
-                          buildsEnabled: z
-                            .boolean()
-                            .openapi({
-                              description:
-                                'Flag saying if project builds should use Secure Compute',
-                            }),
-                        })
-                        .openapi({
-                          required: ['envId', 'connectConfigurationId', 'passive', 'buildsEnabled'],
-                        }),
-                    )
+                  (() => {
+                    const Schema = z
+                      .xor([z.looseObject({})])
+                      .and(
+                        z
+                          .object({
+                            envId: z.string().openapi({ description: 'The ID of the environment' }),
+                            connectConfigurationId: z
+                              .string()
+                              .openapi({ description: 'The ID of the Secure Compute network' }),
+                            passive: z
+                              .boolean()
+                              .openapi({
+                                description:
+                                  'Whether the configuration should be passive, meaning builds will not run there and only passive Serverless Functions will be deployed',
+                              }),
+                            buildsEnabled: z
+                              .boolean()
+                              .openapi({
+                                description:
+                                  'Flag saying if project builds should use Secure Compute',
+                              }),
+                          })
+                          .openapi({
+                            required: [
+                              'envId',
+                              'connectConfigurationId',
+                              'passive',
+                              'buildsEnabled',
+                            ],
+                          }),
+                      )
+                    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                      ;((ctx) => {
+                        const o = ctx.value
+                        if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                        for (const k of Object.keys(o)) {
+                          if (
+                            ![
+                              'envId',
+                              'connectConfigurationId',
+                              'passive',
+                              'buildsEnabled',
+                            ].includes(k)
+                          ) {
+                            ctx.issues.push({ code: 'custom', path: [k], input: o })
+                          }
+                        }
+                      })(ctx)
+                      return val
+                    }, Schema)
+                  })()
+                    .openapi({ additionalProperties: false })
                     .openapi({
                       required: ['envId', 'connectConfigurationId', 'passive', 'buildsEnabled'],
                     }),
@@ -148020,6 +148277,7 @@ export const postV2SandboxesRoute = createRoute({
                     .openapi({
                       description:
                         'A port number to expose from the sandbox. Must be between 1024 and 65535.',
+                      not: { enum: [23456] },
                     }),
                 )
                 .max(15)
@@ -150631,6 +150889,7 @@ export const patchV2SandboxesNameRoute = createRoute({
                     .openapi({
                       description:
                         'A port number to expose from the sandbox. Must be between 1024 and 65535.',
+                      not: { enum: [23456] },
                     }),
                 )
                 .max(15)
@@ -153206,6 +153465,7 @@ export const postV2SandboxesNameForkRoute = createRoute({
                     .openapi({
                       description:
                         'A port number to expose from the sandbox. Must be between 1024 and 65535.',
+                      not: { enum: [23456] },
                     }),
                 )
                 .max(15)
@@ -154130,6 +154390,7 @@ export const postV3SandboxesRoute = createRoute({
                     .openapi({
                       description:
                         'A port number to expose from the sandbox. Must be between 1024 and 65535.',
+                      not: { enum: [23456] },
                     }),
                 )
                 .max(15)
@@ -155100,6 +155361,7 @@ export const postV3SandboxesNameForkRoute = createRoute({
                     .openapi({
                       description:
                         'A port number to expose from the sandbox. Must be between 1024 and 65535.',
+                      not: { enum: [23456] },
                     }),
                 )
                 .max(15)
@@ -156028,6 +156290,7 @@ export const postV4SandboxesRoute = createRoute({
                     .openapi({
                       description:
                         'A port number to expose from the sandbox. Must be between 1024 and 65535.',
+                      not: { enum: [23456] },
                     }),
                 )
                 .max(15)
@@ -162901,54 +163164,70 @@ export const postV1SecurityFirewallBypassRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .xor([
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'domain')) {
-                      ctx.addIssue({ code: 'custom' })
+          schema: (() => {
+            const Schema = z
+              .xor([
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'domain')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['domain'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'projectScope')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['domain'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'projectScope')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
+                  })
+                  .openapi({ required: ['projectScope'] }),
+              ])
+              .and(
+                z
+                  .object({
+                    domain: z
+                      .string()
+                      .regex(/([a-z]+[a-z.]+)$/)
+                      .max(2544)
+                      .exactOptional(),
+                    projectScope: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'If the specified bypass will apply to all domains for a project.',
+                      }),
+                    sourceIp: z.string().exactOptional(),
+                    allSources: z.boolean().exactOptional(),
+                    ttl: z
+                      .number()
+                      .exactOptional()
+                      .openapi({ description: 'Time to live in milliseconds' }),
+                    note: z.string().max(500).exactOptional(),
+                  })
+                  .openapi({ required: [] }),
+              )
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  if (
+                    !['domain', 'projectScope', 'sourceIp', 'allSources', 'ttl', 'note'].includes(k)
+                  ) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o })
                   }
-                })
-                .openapi({ required: ['projectScope'] }),
-            ])
-            .and(
-              z
-                .object({
-                  domain: z
-                    .string()
-                    .regex(/([a-z]+[a-z.]+)$/)
-                    .max(2544)
-                    .exactOptional(),
-                  projectScope: z
-                    .boolean()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'If the specified bypass will apply to all domains for a project.',
-                    }),
-                  sourceIp: z.string().exactOptional(),
-                  allSources: z.boolean().exactOptional(),
-                  ttl: z
-                    .number()
-                    .exactOptional()
-                    .openapi({ description: 'Time to live in milliseconds' }),
-                  note: z.string().max(500).exactOptional(),
-                })
-                .openapi({ required: [] }),
-            ),
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })().openapi({ additionalProperties: false }),
         },
       },
     },
@@ -163079,44 +163358,58 @@ export const deleteV1SecurityFirewallBypassRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .xor([
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'domain')) {
-                      ctx.addIssue({ code: 'custom' })
+          schema: (() => {
+            const Schema = z
+              .xor([
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'domain')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['domain'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'projectScope')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['domain'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'projectScope')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
+                  })
+                  .openapi({ required: ['projectScope'] }),
+              ])
+              .and(
+                z
+                  .object({
+                    domain: z
+                      .string()
+                      .regex(/([a-z]+[a-z.]+)$/)
+                      .max(2544)
+                      .exactOptional(),
+                    projectScope: z.boolean().exactOptional(),
+                    sourceIp: z.string().exactOptional(),
+                    allSources: z.boolean().exactOptional(),
+                    note: z.string().max(500).exactOptional(),
+                  })
+                  .openapi({ required: [] }),
+              )
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  if (!['domain', 'projectScope', 'sourceIp', 'allSources', 'note'].includes(k)) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o })
                   }
-                })
-                .openapi({ required: ['projectScope'] }),
-            ])
-            .and(
-              z
-                .object({
-                  domain: z
-                    .string()
-                    .regex(/([a-z]+[a-z.]+)$/)
-                    .max(2544)
-                    .exactOptional(),
-                  projectScope: z.boolean().exactOptional(),
-                  sourceIp: z.string().exactOptional(),
-                  allSources: z.boolean().exactOptional(),
-                  note: z.string().max(500).exactOptional(),
-                })
-                .openapi({ required: [] }),
-            ),
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })().openapi({ additionalProperties: false }),
         },
       },
     },
@@ -165122,24 +165415,12 @@ export const postV1StorageStoresIntegrationDirectRoute = createRoute({
               integrationProductIdOrSlug: z
                 .xor([
                   z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'string') {
-                        if (!new RegExp('^iap_[a-zA-Z0-9_]+$').test(val)) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
+                    .string()
+                    .regex(/^iap_[a-zA-Z0-9_]+$/)
                     .openapi({ description: 'Product ID format' }),
                   z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'string') {
-                        if (!new RegExp('^[a-z0-9-]+$').test(val)) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
+                    .string()
+                    .regex(/^[a-z0-9-]+$/)
                     .openapi({ description: 'Product slug format' }),
                 ])
                 .openapi({
@@ -178282,54 +178563,30 @@ export const getV1QueryWebAnalyticsVisitsAggregateRoute = createRoute({
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
           z
             .array(
-              ((schema) =>
-                z.union([
-                  z.preprocess(
-                    (val) =>
-                      typeof val === 'string' &&
-                      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                        ? Number(val)
-                        : val,
-                    schema,
-                  ),
-                  z.preprocess(
-                    (val) => (val === 'true' ? true : val === 'false' ? false : val),
-                    schema,
-                  ),
-                  schema,
-                ]))(
-                z.union([
-                  z.enum([
-                    'hour',
-                    'day',
-                    'week',
-                    'month',
-                    'year',
-                    'country',
-                    'deviceType',
-                    'environment',
-                    'requestPath',
-                    'referrerHostname',
-                    'osName',
-                    'browserName',
-                    'route',
-                    'utmSource',
-                    'utmMedium',
-                    'utmCampaign',
-                    'utmContent',
-                    'utmTerm',
-                    'flags',
-                  ]),
-                  z.unknown().superRefine((val, ctx) => {
-                    if (typeof val === 'string') {
-                      if (!new RegExp("^(flags)(/([0-9A-Za-z_]+|'([^']|'')*'))+$").test(val)) {
-                        ctx.addIssue({ code: 'custom' })
-                      }
-                    }
-                  }),
+              z.union([
+                z.enum([
+                  'hour',
+                  'day',
+                  'week',
+                  'month',
+                  'year',
+                  'country',
+                  'deviceType',
+                  'environment',
+                  'requestPath',
+                  'referrerHostname',
+                  'osName',
+                  'browserName',
+                  'route',
+                  'utmSource',
+                  'utmMedium',
+                  'utmCampaign',
+                  'utmContent',
+                  'utmTerm',
+                  'flags',
                 ]),
-              ),
+                z.string().regex(/^(flags)(\/([0-9A-Za-z_]+|'([^']|'')*'))+$/),
+              ]),
             )
             .min(1)
             .max(2)
@@ -178702,58 +178959,32 @@ export const getV1QueryWebAnalyticsEventsAggregateRoute = createRoute({
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
           z
             .array(
-              ((schema) =>
-                z.union([
-                  z.preprocess(
-                    (val) =>
-                      typeof val === 'string' &&
-                      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                        ? Number(val)
-                        : val,
-                    schema,
-                  ),
-                  z.preprocess(
-                    (val) => (val === 'true' ? true : val === 'false' ? false : val),
-                    schema,
-                  ),
-                  schema,
-                ]))(
-                z.union([
-                  z.enum([
-                    'hour',
-                    'day',
-                    'week',
-                    'month',
-                    'year',
-                    'country',
-                    'deviceType',
-                    'environment',
-                    'requestPath',
-                    'referrerHostname',
-                    'osName',
-                    'browserName',
-                    'route',
-                    'utmSource',
-                    'utmMedium',
-                    'utmCampaign',
-                    'utmContent',
-                    'utmTerm',
-                    'eventName',
-                    'flags',
-                    'eventData',
-                  ]),
-                  z.unknown().superRefine((val, ctx) => {
-                    if (typeof val === 'string') {
-                      if (
-                        !new RegExp("^(flags|eventData)(/([0-9A-Za-z_]+|'([^']|'')*'))+$").test(val)
-                      ) {
-                        ctx.addIssue({ code: 'custom' })
-                      }
-                    }
-                  }),
+              z.union([
+                z.enum([
+                  'hour',
+                  'day',
+                  'week',
+                  'month',
+                  'year',
+                  'country',
+                  'deviceType',
+                  'environment',
+                  'requestPath',
+                  'referrerHostname',
+                  'osName',
+                  'browserName',
+                  'route',
+                  'utmSource',
+                  'utmMedium',
+                  'utmCampaign',
+                  'utmContent',
+                  'utmTerm',
+                  'eventName',
+                  'flags',
+                  'eventData',
                 ]),
-              ),
+                z.string().regex(/^(flags|eventData)(\/([0-9A-Za-z_]+|'([^']|'')*'))+$/),
+              ]),
             )
             .min(1)
             .max(2)

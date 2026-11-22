@@ -6,12 +6,12 @@ const AttributeNameListSchema = z.array(StringSchema).openapi('AttributeNameList
 
 const ServiceSchema = z
   .object({
-    ServiceCode: StringSchema.and(
-      z.any().openapi({ description: 'The code for the Amazon Web Services service.' }),
-    ),
-    AttributeNames: AttributeNameListSchema.and(
-      z.any().openapi({ description: 'The attributes that are available for this service.' }),
-    ).exactOptional(),
+    ServiceCode: StringSchema.openapi({
+      description: 'The code for the Amazon Web Services service.',
+    }),
+    AttributeNames: AttributeNameListSchema.exactOptional().openapi({
+      description: 'The attributes that are available for this service.',
+    }),
   })
   .openapi({
     required: ['ServiceCode'],
@@ -24,25 +24,15 @@ const ServiceListSchema = z.array(ServiceSchema).openapi('ServiceList')
 
 const DescribeServicesResponseSchema = z
   .object({
-    Services: ServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The service metadata for the service or services in the response.',
-        }),
-    ).exactOptional(),
-    FormatVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The format version of the response. For example, <code>aws_v1</code>.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token for the next set of retrievable results.' }),
-    ).exactOptional(),
+    Services: ServiceListSchema.exactOptional().openapi({
+      description: 'The service metadata for the service or services in the response.',
+    }),
+    FormatVersion: StringSchema.exactOptional().openapi({
+      description: 'The format version of the response. For example, <code>aws_v1</code>.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The pagination token for the next set of retrievable results.',
+    }),
   })
   .openapi({
     example: {
@@ -69,37 +59,21 @@ const BoxedIntegerSchema = z.int().min(1).max(100).openapi('BoxedInteger')
 
 const DescribeServicesRequestSchema = z
   .object({
-    ServiceCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The code for the service whose information you want to retrieve, such as <code>AmazonEC2</code>. You can use the <code>ServiceCode</code> to filter the results in a <code>GetProducts</code> call. To retrieve a list of all services, leave this blank.',
-        }),
-    ).exactOptional(),
-    FormatVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The format version that you want the response to be in.</p> <p>Valid values are: <code>aws_v1</code> </p>',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token that indicates the next set of results that you want to retrieve.',
-        }),
-    ).exactOptional(),
-    MaxResults: BoxedIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results that you want returned in the response.',
-        }),
-    ).exactOptional(),
+    ServiceCode: StringSchema.exactOptional().openapi({
+      description:
+        'The code for the service whose information you want to retrieve, such as <code>AmazonEC2</code>. You can use the <code>ServiceCode</code> to filter the results in a <code>GetProducts</code> call. To retrieve a list of all services, leave this blank.',
+    }),
+    FormatVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The format version that you want the response to be in.</p> <p>Valid values are: <code>aws_v1</code> </p>',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token that indicates the next set of results that you want to retrieve.',
+    }),
+    MaxResults: BoxedIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results that you want returned in the response.',
+    }),
   })
   .openapi({ title: 'DescribeServicesRequest', required: [] })
   .openapi('DescribeServicesRequest')
@@ -116,9 +90,9 @@ const ExpiredNextTokenExceptionSchema = z.any().openapi('ExpiredNextTokenExcepti
 
 const AttributeValueSchema = z
   .object({
-    Value: StringSchema.and(
-      z.any().openapi({ description: 'The specific value of an <code>attributeName</code>.' }),
-    ).exactOptional(),
+    Value: StringSchema.exactOptional().openapi({
+      description: 'The specific value of an <code>attributeName</code>.',
+    }),
   })
   .openapi({
     description:
@@ -131,21 +105,13 @@ const AttributeValueListSchema = z.array(AttributeValueSchema).openapi('Attribut
 
 const GetAttributeValuesResponseSchema = z
   .object({
-    AttributeValues: AttributeValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of values for an attribute. For example, <code>Throughput Optimized HDD</code> and <code>Provisioned IOPS</code> are two available values for the <code>AmazonEC2</code> <code>volumeType</code>.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the next set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    AttributeValues: AttributeValueListSchema.exactOptional().openapi({
+      description:
+        'The list of values for an attribute. For example, <code>Throughput Optimized HDD</code> and <code>Provisioned IOPS</code> are two available values for the <code>AmazonEC2</code> <code>volumeType</code>.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the next set of results to retrieve.',
+    }),
   })
   .openapi({
     example: {
@@ -159,42 +125,30 @@ const GetAttributeValuesResponseSchema = z
 
 const GetAttributeValuesRequestSchema = z
   .object({
-    ServiceCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The service code for the service whose attributes you want to retrieve. For example, if you want the retrieve an EC2 attribute, use <code>AmazonEC2</code>.',
-        }),
-    ),
-    AttributeName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the attribute that you want to retrieve the values for, such as <code>volumeType</code>.',
-        }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token that indicates the next set of results that you want to retrieve.',
-        }),
-    ).exactOptional(),
-    MaxResults: BoxedIntegerSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in response.' }),
-    ).exactOptional(),
+    ServiceCode: StringSchema.openapi({
+      description:
+        'The service code for the service whose attributes you want to retrieve. For example, if you want the retrieve an EC2 attribute, use <code>AmazonEC2</code>.',
+    }),
+    AttributeName: StringSchema.openapi({
+      description:
+        'The name of the attribute that you want to retrieve the values for, such as <code>volumeType</code>.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token that indicates the next set of results that you want to retrieve.',
+    }),
+    MaxResults: BoxedIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in response.',
+    }),
   })
   .openapi({ required: ['ServiceCode', 'AttributeName'], title: 'GetAttributeValuesRequest' })
   .openapi('GetAttributeValuesRequest')
 
 const GetPriceListFileUrlResponseSchema = z
   .object({
-    Url: StringSchema.and(
-      z.any().openapi({ description: 'The URL to download your Price List file from. ' }),
-    ).exactOptional(),
+    Url: StringSchema.exactOptional().openapi({
+      description: 'The URL to download your Price List file from. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPriceListFileUrlResponse')
@@ -210,22 +164,14 @@ const FileFormatSchema = z.string().min(1).max(255).openapi('FileFormat')
 
 const GetPriceListFileUrlRequestSchema = z
   .object({
-    PriceListArn: PriceListArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier that maps to where your Price List files are located. <code>PriceListArn</code> can be obtained from the <a href="https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_ListPriceLists.html"> <code>ListPriceLists</code> </a> response. ',
-        }),
-    ),
-    FileFormat: FileFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The format that you want to retrieve your Price List files in. The <code>FileFormat</code> can be obtained from the <a href="https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_ListPriceLists.html"> <code>ListPriceLists</code> </a> response. ',
-        }),
-    ),
+    PriceListArn: PriceListArnSchema.openapi({
+      description:
+        'The unique identifier that maps to where your Price List files are located. <code>PriceListArn</code> can be obtained from the <a href="https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_ListPriceLists.html"> <code>ListPriceLists</code> </a> response. ',
+    }),
+    FileFormat: FileFormatSchema.openapi({
+      description:
+        'The format that you want to retrieve your Price List files in. The <code>FileFormat</code> can be obtained from the <a href="https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_ListPriceLists.html"> <code>ListPriceLists</code> </a> response. ',
+    }),
   })
   .openapi({ required: ['PriceListArn', 'FileFormat'], title: 'GetPriceListFileUrlRequest' })
   .openapi('GetPriceListFileUrlRequest')
@@ -238,24 +184,16 @@ const PriceListJsonItemsSchema = z.array(PriceListJsonItemSchema).openapi('Price
 
 const GetProductsResponseSchema = z
   .object({
-    FormatVersion: StringSchema.and(
-      z.any().openapi({ description: 'The format version of the response. For example, aws_v1.' }),
-    ).exactOptional(),
-    PriceList: PriceListJsonItemsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of products that match your filters. The list contains both the product metadata and the price information.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the next set of results to retrieve.',
-        }),
-    ).exactOptional(),
+    FormatVersion: StringSchema.exactOptional().openapi({
+      description: 'The format version of the response. For example, aws_v1.',
+    }),
+    PriceList: PriceListJsonItemsSchema.exactOptional().openapi({
+      description:
+        'The list of products that match your filters. The list contains both the product metadata and the price information.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the next set of results to retrieve.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetProductsResponse')
@@ -264,30 +202,18 @@ const FilterTypeSchema = z.literal('TERM_MATCH').openapi('FilterType')
 
 const FilterSchema = z
   .object({
-    Type: FilterTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of filter that you want to use.</p> <p>Valid values are: <code>TERM_MATCH</code>. <code>TERM_MATCH</code> returns only products that match both the given filter field and the given value.</p>',
-        }),
-    ),
-    Field: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The product metadata field that you want to filter on. You can filter by just the service code to see all products for a specific service, filter by just the attribute name to see a specific attribute for multiple services, or use both a service code and an attribute name to retrieve only products that match both fields.</p> <p>Valid values include: <code>ServiceCode</code>, and all attribute names</p> <p>For example, you can filter by the <code>AmazonEC2</code> service code and the <code>volumeType</code> attribute name to get the prices for only Amazon EC2 volumes.</p>',
-        }),
-    ),
-    Value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The service code or attribute value that you want to filter by. If you're filtering by service code this is the actual service code, such as <code>AmazonEC2</code>. If you're filtering by attribute name, this is the attribute value that you want the returned products to match, such as a <code>Provisioned IOPS</code> volume.",
-        }),
-    ),
+    Type: FilterTypeSchema.openapi({
+      description:
+        '<p>The type of filter that you want to use.</p> <p>Valid values are: <code>TERM_MATCH</code>. <code>TERM_MATCH</code> returns only products that match both the given filter field and the given value.</p>',
+    }),
+    Field: StringSchema.openapi({
+      description:
+        '<p>The product metadata field that you want to filter on. You can filter by just the service code to see all products for a specific service, filter by just the attribute name to see a specific attribute for multiple services, or use both a service code and an attribute name to retrieve only products that match both fields.</p> <p>Valid values include: <code>ServiceCode</code>, and all attribute names</p> <p>For example, you can filter by the <code>AmazonEC2</code> service code and the <code>volumeType</code> attribute name to get the prices for only Amazon EC2 volumes.</p>',
+    }),
+    Value: StringSchema.openapi({
+      description:
+        "The service code or attribute value that you want to filter by. If you're filtering by service code this is the actual service code, such as <code>AmazonEC2</code>. If you're filtering by attribute name, this is the attribute value that you want the returned products to match, such as a <code>Provisioned IOPS</code> volume.",
+    }),
   })
   .openapi({
     required: ['Type', 'Field', 'Value'],
@@ -299,38 +225,24 @@ const FiltersSchema = z.array(FilterSchema).openapi('Filters')
 
 const GetProductsRequestSchema = z
   .object({
-    ServiceCode: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The code for the service whose products you want to retrieve. ' }),
-    ),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of filters that limit the returned products. only products that match all filters are returned.',
-        }),
-    ).exactOptional(),
-    FormatVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The format version that you want the response to be in.</p> <p>Valid values are: <code>aws_v1</code> </p>',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token that indicates the next set of results that you want to retrieve.',
-        }),
-    ).exactOptional(),
-    MaxResults: BoxedIntegerSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in the response.' }),
-    ).exactOptional(),
+    ServiceCode: StringSchema.openapi({
+      description: 'The code for the service whose products you want to retrieve. ',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        'The list of filters that limit the returned products. only products that match all filters are returned.',
+    }),
+    FormatVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The format version that you want the response to be in.</p> <p>Valid values are: <code>aws_v1</code> </p>',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token that indicates the next set of results that you want to retrieve.',
+    }),
+    MaxResults: BoxedIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the response.',
+    }),
   })
   .openapi({ required: ['ServiceCode'], title: 'GetProductsRequest' })
   .openapi('GetProductsRequest')
@@ -346,38 +258,22 @@ const FileFormatsSchema = z.array(FileFormatSchema).openapi('FileFormats')
 
 const PriceListSchema = z
   .object({
-    PriceListArn: PriceListArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier that maps to where your Price List files are located. <code>PriceListArn</code> can be obtained from the <a href="https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_ListPriceLists.html"> <code>ListPriceList</code> </a> response. ',
-        }),
-    ).exactOptional(),
-    RegionCode: RegionCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is used to filter the Price List by Amazon Web Services Region. For example, to get the price list only for the <code>US East (N. Virginia)</code> Region, use <code>us-east-1</code>. If nothing is specified, you retrieve price lists for all applicable Regions. The available <code>RegionCode</code> list can be retrieved from <a href="https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_GetAttributeValues.html"> <code>GetAttributeValues</code> </a> API. ',
-        }),
-    ).exactOptional(),
-    CurrencyCode: CurrencyCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The three alphabetical character ISO-4217 currency code the Price List files are denominated in. ',
-        }),
-    ).exactOptional(),
-    FileFormats: FileFormatsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The format you want to retrieve your Price List files. The <code>FileFormat</code> can be obtained from the <a href="https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_ListPriceLists.html"> <code>ListPriceList</code> </a> response. ',
-        }),
-    ).exactOptional(),
+    PriceListArn: PriceListArnSchema.exactOptional().openapi({
+      description:
+        'The unique identifier that maps to where your Price List files are located. <code>PriceListArn</code> can be obtained from the <a href="https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_ListPriceLists.html"> <code>ListPriceList</code> </a> response. ',
+    }),
+    RegionCode: RegionCodeSchema.exactOptional().openapi({
+      description:
+        'This is used to filter the Price List by Amazon Web Services Region. For example, to get the price list only for the <code>US East (N. Virginia)</code> Region, use <code>us-east-1</code>. If nothing is specified, you retrieve price lists for all applicable Regions. The available <code>RegionCode</code> list can be retrieved from <a href="https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_GetAttributeValues.html"> <code>GetAttributeValues</code> </a> API. ',
+    }),
+    CurrencyCode: CurrencyCodeSchema.exactOptional().openapi({
+      description:
+        'The three alphabetical character ISO-4217 currency code the Price List files are denominated in. ',
+    }),
+    FileFormats: FileFormatsSchema.exactOptional().openapi({
+      description:
+        'The format you want to retrieve your Price List files. The <code>FileFormat</code> can be obtained from the <a href="https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_ListPriceLists.html"> <code>ListPriceList</code> </a> response. ',
+    }),
   })
   .openapi({
     description:
@@ -390,18 +286,12 @@ const PriceListsSchema = z.array(PriceListSchema).openapi('PriceLists')
 
 const ListPriceListsResponseSchema = z
   .object({
-    PriceLists: PriceListsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of price list references that match your request. ' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token that indicates the next set of results to retrieve. ',
-        }),
-    ).exactOptional(),
+    PriceLists: PriceListsSchema.exactOptional().openapi({
+      description: 'The type of price list references that match your request. ',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The pagination token that indicates the next set of results to retrieve. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPriceListsResponse')
@@ -414,46 +304,28 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListPriceListsRequestSchema = z
   .object({
-    ServiceCode: ServiceCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The service code or the Savings Plan service code for the attributes that you want to retrieve. For example, to get the list of applicable Amazon EC2 price lists, use <code>AmazonEC2</code>. For a full list of service codes containing On-Demand and Reserved Instance (RI) pricing, use the <a href="https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_DescribeServices.html#awscostmanagement-pricing_DescribeServices-request-FormatVersion"> <code>DescribeServices</code> </a> API.</p> <p>To retrieve the Compute Savings Plan price lists, use <code>ComputeSavingsPlans</code>. To retrieve Machine Learning Savings Plans price lists, use <code>MachineLearningSavingsPlans</code>. </p>',
-        }),
-    ),
-    EffectiveDate: EffectiveDateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date that the Price List file prices are effective from. ' }),
-    ),
-    RegionCode: RegionCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is used to filter the Price List by Amazon Web Services Region. For example, to get the price list only for the <code>US East (N. Virginia)</code> Region, use <code>us-east-1</code>. If nothing is specified, you retrieve price lists for all applicable Regions. The available <code>RegionCode</code> list can be retrieved from <a href="https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_GetAttributeValues.html"> <code>GetAttributeValues</code> </a> API.',
-        }),
-    ).exactOptional(),
-    CurrencyCode: CurrencyCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The three alphabetical character ISO-4217 currency code that the Price List files are denominated in. ',
-        }),
-    ),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token that indicates the next set of results that you want to retrieve. ',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in the response. ' }),
-    ).exactOptional(),
+    ServiceCode: ServiceCodeSchema.openapi({
+      description:
+        '<p>The service code or the Savings Plan service code for the attributes that you want to retrieve. For example, to get the list of applicable Amazon EC2 price lists, use <code>AmazonEC2</code>. For a full list of service codes containing On-Demand and Reserved Instance (RI) pricing, use the <a href="https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_DescribeServices.html#awscostmanagement-pricing_DescribeServices-request-FormatVersion"> <code>DescribeServices</code> </a> API.</p> <p>To retrieve the Compute Savings Plan price lists, use <code>ComputeSavingsPlans</code>. To retrieve Machine Learning Savings Plans price lists, use <code>MachineLearningSavingsPlans</code>. </p>',
+    }),
+    EffectiveDate: EffectiveDateSchema.openapi({
+      description: 'The date that the Price List file prices are effective from. ',
+    }),
+    RegionCode: RegionCodeSchema.exactOptional().openapi({
+      description:
+        'This is used to filter the Price List by Amazon Web Services Region. For example, to get the price list only for the <code>US East (N. Virginia)</code> Region, use <code>us-east-1</code>. If nothing is specified, you retrieve price lists for all applicable Regions. The available <code>RegionCode</code> list can be retrieved from <a href="https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_GetAttributeValues.html"> <code>GetAttributeValues</code> </a> API.',
+    }),
+    CurrencyCode: CurrencyCodeSchema.openapi({
+      description:
+        'The three alphabetical character ISO-4217 currency code that the Price List files are denominated in. ',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token that indicates the next set of results that you want to retrieve. ',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the response. ',
+    }),
   })
   .openapi({
     required: ['ServiceCode', 'EffectiveDate', 'CurrencyCode'],

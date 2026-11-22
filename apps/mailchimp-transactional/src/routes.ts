@@ -112,14 +112,28 @@ const InboundRouteNotFoundErrorSchema = ErrorSchema.openapi({
   },
 }).openapi('InboundRouteNotFoundError')
 
-const InvalidKeyErrorSchema = ErrorSchema.and(
-  z
-    .object({
-      name: z.literal('Invalid_Key').exactOptional(),
-      code: z.literal(401).exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
+const InvalidKeyErrorSchema = (() => {
+  const Schema = ErrorSchema.and(
+    z
+      .object({
+        name: z.literal('Invalid_Key').exactOptional(),
+        code: z.literal(401).exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['status', 'code', 'name', 'message'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'The provided API key is not valid or is missing.',
     example: { status: 'error', code: 401, name: 'Invalid_Key', message: 'Invalid API key' },
@@ -206,14 +220,28 @@ const MetadataNotFoundErrorSchema = ErrorSchema.openapi({
   },
 }).openapi('MetadataNotFoundError')
 
-const PaymentRequiredErrorSchema = ErrorSchema.and(
-  z
-    .object({
-      name: z.literal('PaymentRequired').exactOptional(),
-      code: z.literal(10).exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
+const PaymentRequiredErrorSchema = (() => {
+  const Schema = ErrorSchema.and(
+    z
+      .object({
+        name: z.literal('PaymentRequired').exactOptional(),
+        code: z.literal(10).exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['status', 'code', 'name', 'message'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description:
       'The account does not have the required paid plan or billing status to perform this action.',
@@ -256,14 +284,28 @@ const RejectSubaccountNotFoundErrorSchema = ErrorSchema.openapi({
   },
 }).openapi('RejectSubaccountNotFoundError')
 
-const RequestLimitExceededErrorSchema = ErrorSchema.and(
-  z
-    .object({
-      name: z.literal('RequestLimitExceeded').exactOptional(),
-      code: z.literal(429).exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
+const RequestLimitExceededErrorSchema = (() => {
+  const Schema = ErrorSchema.and(
+    z
+      .object({
+        name: z.literal('RequestLimitExceeded').exactOptional(),
+        code: z.literal(429).exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['status', 'code', 'name', 'message'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'The request has been rate-limited. Slow down and retry after a brief delay.',
     example: {
@@ -382,9 +424,23 @@ const UrlNotFoundErrorSchema = ErrorSchema.openapi({
   },
 }).openapi('UrlNotFoundError')
 
-const ValidationErrorSchema = ErrorSchema.and(
-  z.object({ name: z.literal('ValidationError').exactOptional() }).openapi({ required: [] }),
-)
+const ValidationErrorSchema = (() => {
+  const Schema = ErrorSchema.and(
+    z.object({ name: z.literal('ValidationError').exactOptional() }).openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['status', 'code', 'name', 'message'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'One or more request parameters failed validation.',
     example: {
@@ -501,26 +557,45 @@ const StatsWindowSchema = z
   .openapi({ description: 'Aggregate sending statistics for a time window', required: [] })
   .openapi('StatsWindow')
 
-const AllowlistsAddRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      email: z
-        .email()
-        .openapi({
-          description: 'An email address to add to the allowlist',
-          example: 'user@example.com',
-        }),
-      comment: z
-        .string()
-        .max(255)
-        .exactOptional()
-        .openapi({
-          description: 'An optional description of why the email was added to the allowlist',
-          example: 'Internal support address',
-        }),
-    })
-    .openapi({ required: ['email'] }),
-)
+const AllowlistsAddRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        email: z
+          .email()
+          .openapi({
+            description: 'An email address to add to the allowlist',
+            example: 'user@example.com',
+          }),
+        comment: z
+          .string()
+          .max(255)
+          .exactOptional()
+          .openapi({
+            description: 'An optional description of why the email was added to the allowlist',
+            example: 'Internal support address',
+          }),
+      })
+      .openapi({ required: ['email'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['email', 'comment'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for adding an email to the allowlist',
     example: {
@@ -545,18 +620,37 @@ const AllowlistsAddResponseSchema = z
   })
   .openapi('AllowlistsAddResponse')
 
-const AllowlistsDeleteRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      email: z
-        .email()
-        .openapi({
-          description: 'The email address to remove from the allowlist',
-          example: 'user@example.com',
-        }),
-    })
-    .openapi({ required: ['email'] }),
-)
+const AllowlistsDeleteRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        email: z
+          .email()
+          .openapi({
+            description: 'The email address to remove from the allowlist',
+            example: 'user@example.com',
+          }),
+      })
+      .openapi({ required: ['email'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['email'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for removing an email from the allowlist',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', email: 'user@example.com' },
@@ -582,19 +676,38 @@ const AllowlistsDeleteResponseSchema = z
   })
   .openapi('AllowlistsDeleteResponse')
 
-const AllowlistsListRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      email: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An optional email address or prefix to search by',
-          example: 'user',
-        }),
-    })
-    .openapi({ required: [] }),
-)
+const AllowlistsListRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        email: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'An optional email address or prefix to search by',
+            example: 'user',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['email'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for retrieving the allowlist',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', email: 'user' },
@@ -771,19 +884,38 @@ const ExportSchema = z
 
 const ExportsActivityResponseSchema = ExportSchema.openapi('ExportsActivityResponse')
 
-const ExportsAllowlistRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      notify_email: z
-        .email()
-        .exactOptional()
-        .openapi({
-          description: 'Optional email address to notify when the export job has finished',
-          example: 'admin@example.com',
-        }),
-    })
-    .openapi({ required: [] }),
-)
+const ExportsAllowlistRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        notify_email: z
+          .email()
+          .exactOptional()
+          .openapi({
+            description: 'Optional email address to notify when the export job has finished',
+            example: 'admin@example.com',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['notify_email'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for exporting the rejection allowlist',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', notify_email: 'admin@example.com' },
@@ -792,15 +924,34 @@ const ExportsAllowlistRequestSchema = ApiKeySchema.and(
 
 const ExportsAllowlistResponseSchema = ExportSchema.openapi('ExportsAllowlistResponse')
 
-const ExportsInfoRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      id: z
-        .string()
-        .openapi({ description: 'Export job identifier', example: '2013-01-01 12:20:28.13842' }),
-    })
-    .openapi({ required: ['id'] }),
-)
+const ExportsInfoRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        id: z
+          .string()
+          .openapi({ description: 'Export job identifier', example: '2013-01-01 12:20:28.13842' }),
+      })
+      .openapi({ required: ['id'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for retrieving export job information',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', id: '2013-01-01 12:20:28.13842' },
@@ -819,19 +970,38 @@ const ExportsListResponseSchema = z
   .openapi({ description: 'List of export jobs for the account' })
   .openapi('ExportsListResponse')
 
-const ExportsRejectsRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      notify_email: z
-        .email()
-        .exactOptional()
-        .openapi({
-          description: 'Optional email address to notify when the export job has finished',
-          example: 'admin@example.com',
-        }),
-    })
-    .openapi({ required: [] }),
-)
+const ExportsRejectsRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        notify_email: z
+          .email()
+          .exactOptional()
+          .openapi({
+            description: 'Optional email address to notify when the export job has finished',
+            example: 'admin@example.com',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['notify_email'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for exporting the rejection blacklist',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', notify_email: 'admin@example.com' },
@@ -840,19 +1010,38 @@ const ExportsRejectsRequestSchema = ApiKeySchema.and(
 
 const ExportsRejectsResponseSchema = ExportSchema.openapi('ExportsRejectsResponse')
 
-const ExportsWhitelistRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      notify_email: z
-        .email()
-        .exactOptional()
-        .openapi({
-          description: 'Optional email address to notify when the export job has finished',
-          example: 'admin@example.com',
-        }),
-    })
-    .openapi({ required: [] }),
-)
+const ExportsWhitelistRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        notify_email: z
+          .email()
+          .exactOptional()
+          .openapi({
+            description: 'Optional email address to notify when the export job has finished',
+            example: 'admin@example.com',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['notify_email'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for exporting the rejection allowlist (legacy endpoint)',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', notify_email: 'admin@example.com' },
@@ -861,13 +1050,32 @@ const ExportsWhitelistRequestSchema = ApiKeySchema.and(
 
 const ExportsWhitelistResponseSchema = ExportSchema.openapi('ExportsWhitelistResponse')
 
-const IPsCancelWarmupRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      ip: z.string().openapi({ description: 'A dedicated IP address', example: '127.0.0.1' }),
-    })
-    .openapi({ required: ['ip'] }),
-)
+const IPsCancelWarmupRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        ip: z.string().openapi({ description: 'A dedicated IP address', example: '127.0.0.1' }),
+      })
+      .openapi({ required: ['ip'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['ip'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for cancelling the warmup process for a dedicated IP',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', ip: '127.0.0.1' },
@@ -976,16 +1184,35 @@ const IPSchema = z
 
 const IPsCancelWarmupResponseSchema = IPSchema.openapi('IPsCancelWarmupResponse')
 
-const IPsCheckCustomDnsRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      ip: z.string().openapi({ description: 'A dedicated IP address', example: '127.0.0.1' }),
-      domain: z
-        .hostname()
-        .openapi({ description: 'The domain name to test', example: 'example.com' }),
-    })
-    .openapi({ required: ['ip', 'domain'] }),
-)
+const IPsCheckCustomDnsRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        ip: z.string().openapi({ description: 'A dedicated IP address', example: '127.0.0.1' }),
+        domain: z
+          .hostname()
+          .openapi({ description: 'The domain name to test', example: 'example.com' }),
+      })
+      .openapi({ required: ['ip', 'domain'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['ip', 'domain'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description:
       'Request payload for testing whether a domain name is valid for use as the custom reverse DNS for a dedicated IP',
@@ -1019,15 +1246,34 @@ const IPsCheckCustomDnsResponseSchema = z
   })
   .openapi('IPsCheckCustomDnsResponse')
 
-const IPsCreatePoolRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      pool: z
-        .string()
-        .openapi({ description: 'The name of a pool to create', example: 'New Pool' }),
-    })
-    .openapi({ required: ['pool'] }),
-)
+const IPsCreatePoolRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        pool: z
+          .string()
+          .openapi({ description: 'The name of a pool to create', example: 'New Pool' }),
+      })
+      .openapi({ required: ['pool'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['pool'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for creating a dedicated IP pool',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', pool: 'New Pool' },
@@ -1068,15 +1314,34 @@ const IPsPoolSchema = z
 
 const IPsCreatePoolResponseSchema = IPsPoolSchema.openapi('IPsCreatePoolResponse')
 
-const IPsDeletePoolRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      pool: z
-        .string()
-        .openapi({ description: 'The name of a pool to delete', example: 'Main Pool' }),
-    })
-    .openapi({ required: ['pool'] }),
-)
+const IPsDeletePoolRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        pool: z
+          .string()
+          .openapi({ description: 'The name of a pool to delete', example: 'Main Pool' }),
+      })
+      .openapi({ required: ['pool'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['pool'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for deleting a dedicated IP pool',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', pool: 'Main Pool' },
@@ -1099,18 +1364,37 @@ const IPsDeletePoolResponseSchema = z
   })
   .openapi('IPsDeletePoolResponse')
 
-const IPsDeleteRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      ip: z
-        .string()
-        .openapi({
-          description: 'The dedicated IP to remove from your account',
-          example: '127.0.0.1',
-        }),
-    })
-    .openapi({ required: ['ip'] }),
-)
+const IPsDeleteRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        ip: z
+          .string()
+          .openapi({
+            description: 'The dedicated IP to remove from your account',
+            example: '127.0.0.1',
+          }),
+      })
+      .openapi({ required: ['ip'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['ip'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for deleting a dedicated IP',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', ip: '127.0.0.1' },
@@ -1133,13 +1417,32 @@ const IPsDeleteResponseSchema = z
   })
   .openapi('IPsDeleteResponse')
 
-const IPsInfoRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      ip: z.string().openapi({ description: 'A dedicated IP address', example: '127.0.0.1' }),
-    })
-    .openapi({ required: ['ip'] }),
-)
+const IPsInfoRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        ip: z.string().openapi({ description: 'A dedicated IP address', example: '127.0.0.1' }),
+      })
+      .openapi({ required: ['ip'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['ip'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for retrieving information about a single dedicated IP',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', ip: '127.0.0.1' },
@@ -1168,13 +1471,32 @@ const IPsListResponseSchema = z
   .openapi({ description: 'Array of dedicated IP information' })
   .openapi('IPsListResponse')
 
-const IPsPoolInfoRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      pool: z.string().openapi({ description: 'A pool name', example: 'Main Pool' }),
-    })
-    .openapi({ required: ['pool'] }),
-)
+const IPsPoolInfoRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        pool: z.string().openapi({ description: 'A pool name', example: 'Main Pool' }),
+      })
+      .openapi({ required: ['pool'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['pool'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for describing a single dedicated IP pool',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', pool: 'Main Pool' },
@@ -1183,25 +1505,44 @@ const IPsPoolInfoRequestSchema = ApiKeySchema.and(
 
 const IPsPoolInfoResponseSchema = IPsPoolSchema.openapi('IPsPoolInfoResponse')
 
-const IPsProvisionRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      warmup: z
-        .boolean()
-        .exactOptional()
-        .openapi({ description: 'Whether to enable warmup mode for the IP', example: false }),
-      pool: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            "The ID of the pool to add the dedicated IP to, or null to use your account's default pool",
-          example: 'Main Pool',
-        }),
-    })
-    .openapi({ required: [] }),
-)
+const IPsProvisionRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        warmup: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether to enable warmup mode for the IP', example: false }),
+        pool: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "The ID of the pool to add the dedicated IP to, or null to use your account's default pool",
+            example: 'Main Pool',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['warmup', 'pool'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for provisioning an additional dedicated IP',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', warmup: false, pool: 'Main Pool' },
@@ -1226,19 +1567,38 @@ const IPsProvisionResponseSchema = z
   })
   .openapi('IPsProvisionResponse')
 
-const IPsSetCustomDnsRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      ip: z.string().openapi({ description: 'A dedicated IP address', example: '127.0.0.1' }),
-      domain: z
-        .hostname()
-        .openapi({
-          description: "A domain name to set as the dedicated IP's custom DNS name",
-          example: 'example.com',
-        }),
-    })
-    .openapi({ required: ['ip', 'domain'] }),
-)
+const IPsSetCustomDnsRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        ip: z.string().openapi({ description: 'A dedicated IP address', example: '127.0.0.1' }),
+        domain: z
+          .hostname()
+          .openapi({
+            description: "A domain name to set as the dedicated IP's custom DNS name",
+            example: 'example.com',
+          }),
+      })
+      .openapi({ required: ['ip', 'domain'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['ip', 'domain'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for configuring the custom DNS name for a dedicated IP',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', ip: '127.0.0.1', domain: 'example.com' },
@@ -1247,27 +1607,46 @@ const IPsSetCustomDnsRequestSchema = ApiKeySchema.and(
 
 const IPsSetCustomDnsResponseSchema = IPSchema.openapi('IPsSetCustomDnsResponse')
 
-const IPsSetPoolRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      ip: z.string().openapi({ description: 'A dedicated IP address', example: '127.0.0.1' }),
-      pool: z
-        .string()
-        .openapi({
-          description: 'The name of the new pool to add the dedicated IP to',
-          example: 'Main Pool',
-        }),
-      create_pool: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'Whether to create the pool if it does not exist; if false and the pool does not exist, an Unknown_Pool will be thrown',
-          example: false,
-        }),
-    })
-    .openapi({ required: ['ip', 'pool'] }),
-)
+const IPsSetPoolRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        ip: z.string().openapi({ description: 'A dedicated IP address', example: '127.0.0.1' }),
+        pool: z
+          .string()
+          .openapi({
+            description: 'The name of the new pool to add the dedicated IP to',
+            example: 'Main Pool',
+          }),
+        create_pool: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether to create the pool if it does not exist; if false and the pool does not exist, an Unknown_Pool will be thrown',
+            example: false,
+          }),
+      })
+      .openapi({ required: ['ip', 'pool'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['ip', 'pool', 'create_pool'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for moving a dedicated IP to a different pool',
     example: {
@@ -1281,13 +1660,32 @@ const IPsSetPoolRequestSchema = ApiKeySchema.and(
 
 const IPsSetPoolResponseSchema = IPSchema.openapi('IPsSetPoolResponse')
 
-const IPsStartWarmupRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      ip: z.string().openapi({ description: 'A dedicated IP address', example: '127.0.0.1' }),
-    })
-    .openapi({ required: ['ip'] }),
-)
+const IPsStartWarmupRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        ip: z.string().openapi({ description: 'A dedicated IP address', example: '127.0.0.1' }),
+      })
+      .openapi({ required: ['ip'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['ip'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for beginning the warmup process for a dedicated IP',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', ip: '127.0.0.1' },
@@ -1296,18 +1694,37 @@ const IPsStartWarmupRequestSchema = ApiKeySchema.and(
 
 const IPsStartWarmupResponseSchema = IPSchema.openapi('IPsStartWarmupResponse')
 
-const InboundAddDomainRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      domain: z
-        .hostname()
-        .openapi({
-          description: 'A domain name for inbound email delivery',
-          example: 'inbound.example.com',
-        }),
-    })
-    .openapi({ required: ['domain'] }),
-)
+const InboundAddDomainRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        domain: z
+          .hostname()
+          .openapi({
+            description: 'A domain name for inbound email delivery',
+            example: 'inbound.example.com',
+          }),
+      })
+      .openapi({ required: ['domain'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['domain'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for adding an inbound domain',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', domain: 'inbound.example.com' },
@@ -1347,27 +1764,46 @@ const InboundDomainSchema = z
 
 const InboundAddDomainResponseSchema = InboundDomainSchema.openapi('InboundAddDomainResponse')
 
-const InboundAddRouteRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      domain: z
-        .hostname()
-        .openapi({ description: 'An existing inbound domain', example: 'inbound.example.com' }),
-      pattern: z
-        .string()
-        .openapi({
-          description: 'The search pattern that the mailbox name should match',
-          example: 'mailbox-*',
-        }),
-      url: z
-        .string()
-        .openapi({
-          description: 'The webhook URL where the inbound messages will be published',
-          example: 'https://example.com/webhook-url',
-        }),
-    })
-    .openapi({ required: ['domain', 'pattern', 'url'] }),
-)
+const InboundAddRouteRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        domain: z
+          .hostname()
+          .openapi({ description: 'An existing inbound domain', example: 'inbound.example.com' }),
+        pattern: z
+          .string()
+          .openapi({
+            description: 'The search pattern that the mailbox name should match',
+            example: 'mailbox-*',
+          }),
+        url: z
+          .string()
+          .openapi({
+            description: 'The webhook URL where the inbound messages will be published',
+            example: 'https://example.com/webhook-url',
+          }),
+      })
+      .openapi({ required: ['domain', 'pattern', 'url'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['domain', 'pattern', 'url'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for adding a new mailbox route to an inbound domain',
     example: {
@@ -1406,18 +1842,37 @@ const InboundRouteSchema = z
 
 const InboundAddRouteResponseSchema = InboundRouteSchema.openapi('InboundAddRouteResponse')
 
-const InboundCheckDomainRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      domain: z
-        .hostname()
-        .openapi({
-          description: 'A domain name for inbound email delivery',
-          example: 'inbound.example.com',
-        }),
-    })
-    .openapi({ required: ['domain'] }),
-)
+const InboundCheckDomainRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        domain: z
+          .hostname()
+          .openapi({
+            description: 'A domain name for inbound email delivery',
+            example: 'inbound.example.com',
+          }),
+      })
+      .openapi({ required: ['domain'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['domain'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for checking an inbound domain',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', domain: 'inbound.example.com' },
@@ -1426,18 +1881,37 @@ const InboundCheckDomainRequestSchema = ApiKeySchema.and(
 
 const InboundCheckDomainResponseSchema = InboundDomainSchema.openapi('InboundCheckDomainResponse')
 
-const InboundDeleteDomainRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      domain: z
-        .hostname()
-        .openapi({
-          description: 'A domain name for inbound email delivery',
-          example: 'inbound.example.com',
-        }),
-    })
-    .openapi({ required: ['domain'] }),
-)
+const InboundDeleteDomainRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        domain: z
+          .hostname()
+          .openapi({
+            description: 'A domain name for inbound email delivery',
+            example: 'inbound.example.com',
+          }),
+      })
+      .openapi({ required: ['domain'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['domain'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for deleting an inbound domain',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', domain: 'inbound.example.com' },
@@ -1446,18 +1920,37 @@ const InboundDeleteDomainRequestSchema = ApiKeySchema.and(
 
 const InboundDeleteDomainResponseSchema = InboundDomainSchema.openapi('InboundDeleteDomainResponse')
 
-const InboundDeleteRouteRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      id: z
-        .string()
-        .openapi({
-          description: 'The unique identifier of an existing route',
-          example: '88.214614',
-        }),
-    })
-    .openapi({ required: ['id'] }),
-)
+const InboundDeleteRouteRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        id: z
+          .string()
+          .openapi({
+            description: 'The unique identifier of an existing route',
+            example: '88.214614',
+          }),
+      })
+      .openapi({ required: ['id'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for deleting an existing inbound mailbox route',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', id: '88.214614' },
@@ -1476,15 +1969,34 @@ const InboundDomainsResponseSchema = z
   .openapi({ description: 'List of inbound domains associated with the account' })
   .openapi('InboundDomainsResponse')
 
-const InboundRoutesRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      domain: z
-        .hostname()
-        .openapi({ description: 'The domain to check', example: 'inbound.example.com' }),
-    })
-    .openapi({ required: ['domain'] }),
-)
+const InboundRoutesRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        domain: z
+          .hostname()
+          .openapi({ description: 'The domain to check', example: 'inbound.example.com' }),
+      })
+      .openapi({ required: ['domain'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['domain'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for listing mailbox routes for an inbound domain',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', domain: 'inbound.example.com' },
@@ -1496,49 +2008,68 @@ const InboundRoutesResponseSchema = z
   .openapi({ description: 'List of mailbox routes for an inbound domain' })
   .openapi('InboundRoutesResponse')
 
-const InboundSendRawRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      raw_message: z
-        .string()
-        .openapi({
-          description: 'The full MIME document of an email message',
-          example:
-            'From: sender@example.com\\nTo: mailbox-123@inbound.example.com\\nSubject: Some Subject\\n\\nSome content.',
-        }),
-      to: z
-        .array(z.email())
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            "Optionally define the recipients to receive the message - otherwise we'll use the To, Cc, and Bcc headers provided in the document",
-          example: ['mailbox-123@inbound.example.com'],
-        }),
-      mail_from: z
-        .email()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'The address specified in the MAIL FROM stage of the SMTP conversation',
-          example: 'sender@example.com',
-        }),
-      helo: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'The hostname provided during HELO',
-          example: 'sender.example.com',
-        }),
-      client_address: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: "The remote host's IP address", example: '192.168.1.100' }),
-    })
-    .openapi({ required: ['raw_message'] }),
-)
+const InboundSendRawRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        raw_message: z
+          .string()
+          .openapi({
+            description: 'The full MIME document of an email message',
+            example:
+              'From: sender@example.com\\nTo: mailbox-123@inbound.example.com\\nSubject: Some Subject\\n\\nSome content.',
+          }),
+        to: z
+          .array(z.email())
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "Optionally define the recipients to receive the message - otherwise we'll use the To, Cc, and Bcc headers provided in the document",
+            example: ['mailbox-123@inbound.example.com'],
+          }),
+        mail_from: z
+          .email()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The address specified in the MAIL FROM stage of the SMTP conversation',
+            example: 'sender@example.com',
+          }),
+        helo: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The hostname provided during HELO',
+            example: 'sender.example.com',
+          }),
+        client_address: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: "The remote host's IP address", example: '192.168.1.100' }),
+      })
+      .openapi({ required: ['raw_message'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['raw_message', 'to', 'mail_from', 'helo', 'client_address'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for sending a raw MIME document to the inbound hook',
     example: {
@@ -1593,36 +2124,55 @@ const InboundSendRawResponseSchema = z
   .openapi({ description: 'Response from processing raw MIME message' })
   .openapi('InboundSendRawResponse')
 
-const InboundUpdateRouteRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      id: z
-        .string()
-        .openapi({
-          description: 'The unique identifier of an existing mailbox route',
-          example: '88.2144614',
-        }),
-      pattern: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'The search pattern that the mailbox name should match (null to leave unchanged)',
-          example: '*.*',
-        }),
-      url: z
-        .url()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'The webhook URL where the inbound messages will be published (null to leave unchanged)',
-          example: 'https://example.com/webhook-url',
-        }),
-    })
-    .openapi({ required: ['id'] }),
-)
+const InboundUpdateRouteRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        id: z
+          .string()
+          .openapi({
+            description: 'The unique identifier of an existing mailbox route',
+            example: '88.2144614',
+          }),
+        pattern: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The search pattern that the mailbox name should match (null to leave unchanged)',
+            example: '*.*',
+          }),
+        url: z
+          .url()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The webhook URL where the inbound messages will be published (null to leave unchanged)',
+            example: 'https://example.com/webhook-url',
+          }),
+      })
+      .openapi({ required: ['id'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['id', 'pattern', 'url'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for updating an existing inbound mailbox route',
     example: {
@@ -1636,13 +2186,34 @@ const InboundUpdateRouteRequestSchema = ApiKeySchema.and(
 
 const InboundUpdateRouteResponseSchema = InboundRouteSchema.openapi('InboundUpdateRouteResponse')
 
-const MctemplatesInfoRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      mc_template_id: z.int().openapi({ description: 'The Mailchimp template ID', example: 12345 }),
-    })
-    .openapi({ required: ['mc_template_id'] }),
-)
+const MctemplatesInfoRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        mc_template_id: z
+          .int()
+          .openapi({ description: 'The Mailchimp template ID', example: 12345 }),
+      })
+      .openapi({ required: ['mc_template_id'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['mc_template_id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for getting Mailchimp Transactional template information',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', mc_template_id: 12345 },
@@ -1746,17 +2317,36 @@ const MctemplatesInfoResponseSchema = MctemplatesMcTemplateSchema.openapi({
   description: 'Mailchimp Transactional template information',
 }).openapi('MctemplatesInfoResponse')
 
-const MctemplatesListRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      search_query: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'Optional search query to filter templates' }),
-    })
-    .openapi({ required: [] }),
-)
+const MctemplatesListRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        search_query: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Optional search query to filter templates' }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['search_query'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for listing Mailchimp Transactional templates',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', search_query: 'welcome' },
@@ -1768,39 +2358,60 @@ const MctemplatesListResponseSchema = z
   .openapi({ description: 'Array of Mailchimp Transactional templates' })
   .openapi('MctemplatesListResponse')
 
-const MctemplatesRenderRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      mc_template_id: z.int().openapi({ description: 'The Mailchimp template ID', example: 12345 }),
-      mc_template_version: z
-        .enum(['published', 'draft'])
-        .default('published')
-        .exactOptional()
-        .openapi({
-          description: 'The template version to render - "published" or "draft"',
-          example: 'published',
-        }),
-      merge_vars: z
-        .array(
-          z
-            .object({
-              name: z
-                .string()
-                .exactOptional()
-                .openapi({ description: 'Variable name', example: 'FIRSTNAME' }),
-              content: z
-                .string()
-                .exactOptional()
-                .openapi({ description: 'Variable value', example: 'John' }),
-            })
-            .openapi({ required: [] }),
-        )
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'Optional merge variables to inject into the template' }),
-    })
-    .openapi({ required: ['mc_template_id'] }),
-)
+const MctemplatesRenderRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        mc_template_id: z
+          .int()
+          .openapi({ description: 'The Mailchimp template ID', example: 12345 }),
+        mc_template_version: z
+          .enum(['published', 'draft'])
+          .default('published')
+          .exactOptional()
+          .openapi({
+            description: 'The template version to render - "published" or "draft"',
+            example: 'published',
+          }),
+        merge_vars: z
+          .array(
+            z
+              .object({
+                name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Variable name', example: 'FIRSTNAME' }),
+                content: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'Variable value', example: 'John' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Optional merge variables to inject into the template' }),
+      })
+      .openapi({ required: ['mc_template_id'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['mc_template_id', 'mc_template_version', 'merge_vars'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for rendering a Mailchimp Transactional template',
     example: {
@@ -1882,13 +2493,34 @@ const MctemplatesTimeSeriesSchema = z
   })
   .openapi('MctemplatesTimeSeries')
 
-const MctemplatesTimeSeriesRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      mc_template_id: z.int().openapi({ description: 'The Mailchimp template ID', example: 12345 }),
-    })
-    .openapi({ required: ['mc_template_id'] }),
-)
+const MctemplatesTimeSeriesRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        mc_template_id: z
+          .int()
+          .openapi({ description: 'The Mailchimp template ID', example: 12345 }),
+      })
+      .openapi({ required: ['mc_template_id'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['mc_template_id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for getting Mailchimp Transactional template time series data',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', mc_template_id: 12345 },
@@ -1903,19 +2535,33 @@ const MctemplatesTimeSeriesResponseSchema = z
   })
   .openapi('MctemplatesTimeSeriesResponse')
 
-const MessagesCancelScheduledRequestSchema = ApiKeySchema.and(
-  z
-    .object({
-      id: z
-        .string()
-        .openapi({
-          description:
-            'a scheduled email id, as returned by any of the messages/send calls or messages/list-scheduled',
-          example: 'I_dtFt2ZNPW5QD9-FaDU1A',
-        }),
-    })
-    .openapi({ required: ['id'] }),
-)
+const MessagesCancelScheduledRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .object({
+        id: z
+          .string()
+          .openapi({
+            description:
+              'a scheduled email id, as returned by any of the messages/send calls or messages/list-scheduled',
+            example: 'I_dtFt2ZNPW5QD9-FaDU1A',
+          }),
+      })
+      .openapi({ required: ['id'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Request body for messages/cancel-scheduled' })
   .openapi('MessagesCancelScheduledRequest')
 
@@ -1961,19 +2607,33 @@ const MessagesClickDetailSchema = z
   })
   .openapi('MessagesClickDetail')
 
-const MessagesContentRequestSchema = ApiKeySchema.and(
-  z
-    .object({
-      id: z
-        .string()
-        .openapi({
-          description:
-            'the unique id of the message to get - passed as the "_id" field in webhooks, send calls, or search calls',
-          example: 'abc123abc123abc123abc123abc123',
-        }),
-    })
-    .openapi({ required: ['id'] }),
-)
+const MessagesContentRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .object({
+        id: z
+          .string()
+          .openapi({
+            description:
+              'the unique id of the message to get - passed as the "_id" field in webhooks, send calls, or search calls',
+            example: 'abc123abc123abc123abc123abc123',
+          }),
+      })
+      .openapi({ required: ['id'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Request body for messages/content' })
   .openapi('MessagesContentRequest')
 
@@ -2181,19 +2841,33 @@ const MessagesEmailInfoSchema = MessagesMessageBaseSchema.and(MessagesEmailDetai
   .openapi({ description: 'Detailed information about a sent email message' })
   .openapi('MessagesEmailInfo')
 
-const MessagesInfoRequestSchema = ApiKeySchema.and(
-  z
-    .object({
-      id: z
-        .string()
-        .openapi({
-          description:
-            'the unique id of the message to get - passed as the "_id" field in webhooks, send calls, or search calls',
-          example: 'abc123abc123abc123abc123abc123',
-        }),
-    })
-    .openapi({ required: ['id'] }),
-)
+const MessagesInfoRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .object({
+        id: z
+          .string()
+          .openapi({
+            description:
+              'the unique id of the message to get - passed as the "_id" field in webhooks, send calls, or search calls',
+            example: 'abc123abc123abc123abc123abc123',
+          }),
+      })
+      .openapi({ required: ['id'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Request body for messages/info' })
   .openapi('MessagesInfoRequest')
 
@@ -2263,20 +2937,34 @@ const MessagesInfoResponseSchema = z
   .openapi({ description: 'Information about the message (email or SMS)' })
   .openapi('MessagesInfoResponse')
 
-const MessagesListScheduledRequestSchema = ApiKeySchema.and(
-  z
-    .object({
-      to: z
-        .email()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'an optional recipient address to restrict results to',
-          example: 'test.recipient@example.com',
-        }),
-    })
-    .openapi({ required: [] }),
-)
+const MessagesListScheduledRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .object({
+        to: z
+          .email()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'an optional recipient address to restrict results to',
+            example: 'test.recipient@example.com',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Request body for messages/list-scheduled' })
   .openapi('MessagesListScheduledRequest')
 
@@ -2285,19 +2973,33 @@ const MessagesListScheduledResponseSchema = z
   .openapi({ description: 'Array of scheduled messages' })
   .openapi('MessagesListScheduledResponse')
 
-const MessagesParseRequestSchema = ApiKeySchema.and(
-  z
-    .object({
-      raw_message: z
-        .string()
-        .openapi({
-          description: 'the full MIME document of an email message',
-          example:
-            'From: sender@example.com\\nTo: recipient.email@example.com\\nSubject: Some Subject\\n\\nSome content.',
-        }),
-    })
-    .openapi({ required: ['raw_message'] }),
-)
+const MessagesParseRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .object({
+        raw_message: z
+          .string()
+          .openapi({
+            description: 'the full MIME document of an email message',
+            example:
+              'From: sender@example.com\\nTo: recipient.email@example.com\\nSubject: Some Subject\\n\\nSome content.',
+          }),
+      })
+      .openapi({ required: ['raw_message'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Request body for messages/parse' })
   .openapi('MessagesParseRequest')
 
@@ -2671,26 +3373,40 @@ const MessagesRequestComponentSchema = z
   .openapi({ description: 'Mandrill message payload for transactional email', required: [] })
   .openapi('MessagesRequestComponent')
 
-const MessagesRescheduleRequestSchema = ApiKeySchema.and(
-  z
-    .object({
-      id: z
-        .string()
-        .openapi({
-          description:
-            'a scheduled email id, as returned by any of the messages/send calls or messages/list-scheduled',
-          example: 'I_dtFt2ZNPW5QD9-FaDU1A',
-        }),
-      send_at: z.iso
-        .datetime({ offset: true })
-        .openapi({
-          description:
-            "the new UTC timestamp when the message should sent. Mandrill can't time travel, so if you specify a time in past the message will be sent immediately",
-          example: '2020-06-01 08:15:01',
-        }),
-    })
-    .openapi({ required: ['id', 'send_at'] }),
-)
+const MessagesRescheduleRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .object({
+        id: z
+          .string()
+          .openapi({
+            description:
+              'a scheduled email id, as returned by any of the messages/send calls or messages/list-scheduled',
+            example: 'I_dtFt2ZNPW5QD9-FaDU1A',
+          }),
+        send_at: z.iso
+          .datetime({ offset: true })
+          .openapi({
+            description:
+              "the new UTC timestamp when the message should sent. Mandrill can't time travel, so if you specify a time in past the message will be sent immediately",
+            example: '2020-06-01 08:15:01',
+          }),
+      })
+      .openapi({ required: ['id', 'send_at'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Request body for messages/reschedule' })
   .openapi('MessagesRescheduleRequest')
 
@@ -2698,43 +3414,57 @@ const MessagesRescheduleResponseSchema = MessagesScheduledSchema.openapi(
   'MessagesRescheduleResponse',
 )
 
-const MessagesSearchRequestSchema = ApiKeySchema.and(
-  z
-    .object({
-      query: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'search terms to find matching messages', example: '*' }),
-      date_from: z.iso.date().nullable().exactOptional().openapi({ description: 'start date' }),
-      date_to: z.iso.date().nullable().exactOptional().openapi({ description: 'end date' }),
-      tags: z
-        .array(z.string())
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'an array of tag names to narrow the search to' }),
-      senders: z
-        .array(z.email())
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'an array of sender addresses to narrow the search to' }),
-      api_keys: z
-        .array(z.string())
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'an array of API keys to narrow the search to' }),
-      limit: z
-        .int()
-        .min(1)
-        .max(1000)
-        .exactOptional()
-        .openapi({
-          description:
-            'the maximum number of results to return, defaults to 100, upper limit of 1000',
-          example: 100,
-        }),
-    })
-    .openapi({ required: [] }),
-)
+const MessagesSearchRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .object({
+        query: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'search terms to find matching messages', example: '*' }),
+        date_from: z.iso.date().nullable().exactOptional().openapi({ description: 'start date' }),
+        date_to: z.iso.date().nullable().exactOptional().openapi({ description: 'end date' }),
+        tags: z
+          .array(z.string())
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'an array of tag names to narrow the search to' }),
+        senders: z
+          .array(z.email())
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'an array of sender addresses to narrow the search to' }),
+        api_keys: z
+          .array(z.string())
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'an array of API keys to narrow the search to' }),
+        limit: z
+          .int()
+          .min(1)
+          .max(1000)
+          .exactOptional()
+          .openapi({
+            description:
+              'the maximum number of results to return, defaults to 100, upper limit of 1000',
+            example: 100,
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Request body for messages/search' })
   .openapi('MessagesSearchRequest')
 
@@ -2801,47 +3531,61 @@ const MessagesSearchTimeSeriesSchema = z
   })
   .openapi('MessagesSearchTimeSeries')
 
-const MessagesSearchTimeSeriesRequestSchema = ApiKeySchema.and(
-  z
-    .object({
-      query: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'the search terms to find matching messages for',
-          example: 'email:gmail.com',
-        }),
-      date_from: z.iso
-        .date()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'start date', example: '2013-01-01' }),
-      date_to: z.iso
-        .date()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'end date', example: '2013-01-02' }),
-      tags: z
-        .array(z.string())
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'an array of tag names to narrow the search to, will return messages that contain ANY of the tags',
-          example: ['password-reset', 'welcome'],
-        }),
-      senders: z
-        .array(z.email())
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'an array of sender addresses to narrow the search to, will return messages sent by ANY of the senders',
-          example: ['sender@example.com'],
-        }),
-    })
-    .openapi({ required: [] }),
-)
+const MessagesSearchTimeSeriesRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .object({
+        query: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'the search terms to find matching messages for',
+            example: 'email:gmail.com',
+          }),
+        date_from: z.iso
+          .date()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'start date', example: '2013-01-01' }),
+        date_to: z.iso
+          .date()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'end date', example: '2013-01-02' }),
+        tags: z
+          .array(z.string())
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'an array of tag names to narrow the search to, will return messages that contain ANY of the tags',
+            example: ['password-reset', 'welcome'],
+          }),
+        senders: z
+          .array(z.email())
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'an array of sender addresses to narrow the search to, will return messages sent by ANY of the senders',
+            example: ['sender@example.com'],
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Request body for messages/search-time-series' })
   .openapi('MessagesSearchTimeSeriesRequest')
 
@@ -2850,51 +3594,65 @@ const MessagesSearchTimeSeriesResponseSchema = z
   .openapi({ description: 'Array of hourly message stats matching the search query' })
   .openapi('MessagesSearchTimeSeriesResponse')
 
-const MessagesSendMcTemplateRequestSchema = ApiKeySchema.and(
-  z
-    .object({
-      mc_template_id: z
-        .int()
-        .openapi({
-          description: "the Mailchimp Transactional template ID from the user's account",
-          example: 12345,
+const MessagesSendMcTemplateRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .object({
+        mc_template_id: z
+          .int()
+          .openapi({
+            description: "the Mailchimp Transactional template ID from the user's account",
+            example: 12345,
+          }),
+        mc_template_version: z
+          .enum(['draft', 'published'])
+          .exactOptional()
+          .openapi({
+            description:
+              'which version of the template to use - "draft" for draft content or "published" for published content. Defaults to "published". Note: requesting "published" when the template has not been published will return a 404 error.',
+            example: 'published',
+          }),
+        message: MessagesRequestComponentSchema.openapi({
+          description: 'the other information on the message to send - same as /messages/send',
         }),
-      mc_template_version: z
-        .enum(['draft', 'published'])
-        .exactOptional()
-        .openapi({
-          description:
-            'which version of the template to use - "draft" for draft content or "published" for published content. Defaults to "published". Note: requesting "published" when the template has not been published will return a 404 error.',
-          example: 'published',
-        }),
-      message: MessagesRequestComponentSchema.openapi({
-        description: 'the other information on the message to send - same as /messages/send',
-      }),
-      async: z
-        .boolean()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'enable a background sending mode that is optimized for bulk sending. In async mode, messages/send will immediately return a status of "queued" for every recipient. To handle rejections when sending in async mode, set up a webhook for the \'reject\' event. Defaults to false for messages with no more than 10 recipients; messages with more than 10 recipients are always sent asynchronously, regardless of the value of async.',
-        }),
-      ip_pool: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'the name of the dedicated ip pool that should be used to send the message. If you do not have any dedicated IPs, this parameter has no effect. If you specify a pool that does not exist, your default pool will be used instead.',
-        }),
-      send_at: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description:
-            "when this message should be sent as a UTC timestamp in YYYY-MM-DD HH:MM:SS format. If you specify a time in the past, the message will be sent immediately; for future dates, you're limited to one year from the date of scheduling.",
-        }),
-    })
-    .openapi({ required: ['mc_template_id', 'message'] }),
-)
+        async: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'enable a background sending mode that is optimized for bulk sending. In async mode, messages/send will immediately return a status of "queued" for every recipient. To handle rejections when sending in async mode, set up a webhook for the \'reject\' event. Defaults to false for messages with no more than 10 recipients; messages with more than 10 recipients are always sent asynchronously, regardless of the value of async.',
+          }),
+        ip_pool: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'the name of the dedicated ip pool that should be used to send the message. If you do not have any dedicated IPs, this parameter has no effect. If you specify a pool that does not exist, your default pool will be used instead.',
+          }),
+        send_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description:
+              "when this message should be sent as a UTC timestamp in YYYY-MM-DD HH:MM:SS format. If you specify a time in the past, the message will be sent immediately; for future dates, you're limited to one year from the date of scheduling.",
+          }),
+      })
+      .openapi({ required: ['mc_template_id', 'message'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Request body for messages/send-mc-template' })
   .openapi('MessagesSendMcTemplateRequest')
 
@@ -2963,199 +3721,241 @@ const MessagesSendMcTemplateResponseSchema = MessagesSendResponseSchema.openapi(
   'MessagesSendMcTemplateResponse',
 )
 
-const MessagesSendRawRequestSchema = ApiKeySchema.and(
-  z
-    .object({
-      raw_message: z
-        .string()
-        .openapi({ description: 'the full MIME document of an email message' }),
-      from_email: z
-        .email()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            "optionally define the sender address - otherwise we'll use the address found in the provided headers",
-        }),
-      from_name: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'optionally define the sender alias' }),
-      to: z
-        .array(z.email())
-        .exactOptional()
-        .openapi({
-          description:
-            "optionally define the recipient to receive the message - otherwise we'll use the To, Cc, and Bcc headers provided in the document",
-          example: ['recipient.email@example.com'],
-        }),
-      async: z
-        .boolean()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'enable a background sending mode that is optimized for bulk sending. In async mode, messages/send will immediately return a status of "queued" for every recipient. To handle rejections when sending in async mode, set up a webhook for the \'reject\' event. Defaults to false for messages with no more than 10 recipients; messages with more than 10 recipients are always sent asynchronously, regardless of the value of async.',
-        }),
-      ip_pool: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'the name of the dedicated ip pool that should be used to send the message. If you do not have any dedicated IPs, this parameter has no effect. If you specify a pool that does not exist, your default pool will be used instead.',
-        }),
-      send_at: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description:
-            "when this message should be sent as a UTC timestamp in YYYY-MM-DD HH:MM:SS format. If you specify a time in the past, the message will be sent immediately; for future dates, you're limited to one year from the date of scheduling.",
-        }),
-      return_path_domain: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: "a custom domain to use for the messages' return-path",
-          example: null,
-        }),
-    })
-    .openapi({ required: ['raw_message'] }),
-)
+const MessagesSendRawRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .object({
+        raw_message: z
+          .string()
+          .openapi({ description: 'the full MIME document of an email message' }),
+        from_email: z
+          .email()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "optionally define the sender address - otherwise we'll use the address found in the provided headers",
+          }),
+        from_name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'optionally define the sender alias' }),
+        to: z
+          .array(z.email())
+          .exactOptional()
+          .openapi({
+            description:
+              "optionally define the recipient to receive the message - otherwise we'll use the To, Cc, and Bcc headers provided in the document",
+            example: ['recipient.email@example.com'],
+          }),
+        async: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'enable a background sending mode that is optimized for bulk sending. In async mode, messages/send will immediately return a status of "queued" for every recipient. To handle rejections when sending in async mode, set up a webhook for the \'reject\' event. Defaults to false for messages with no more than 10 recipients; messages with more than 10 recipients are always sent asynchronously, regardless of the value of async.',
+          }),
+        ip_pool: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'the name of the dedicated ip pool that should be used to send the message. If you do not have any dedicated IPs, this parameter has no effect. If you specify a pool that does not exist, your default pool will be used instead.',
+          }),
+        send_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description:
+              "when this message should be sent as a UTC timestamp in YYYY-MM-DD HH:MM:SS format. If you specify a time in the past, the message will be sent immediately; for future dates, you're limited to one year from the date of scheduling.",
+          }),
+        return_path_domain: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: "a custom domain to use for the messages' return-path",
+            example: null,
+          }),
+      })
+      .openapi({ required: ['raw_message'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Request body for messages/send-raw' })
   .openapi('MessagesSendRawRequest')
 
 const MessagesSendRawResponseSchema = MessagesSendResponseSchema.openapi('MessagesSendRawResponse')
 
-const MessagesSendRequestSchema = ApiKeySchema.and(
-  z
-    .object({
-      message: MessagesRequestComponentSchema.openapi({
-        description: 'the information on the message to send',
-      }),
-      async: z
-        .boolean()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'enable a background sending mode that is optimized for bulk sending. In async mode, messages/send will immediately return a status of "queued" for every recipient. To handle rejections when sending in async mode, set up a webhook for the \'reject\' event. Defaults to false for messages with no more than 10 recipients; messages with more than 10 recipients are always sent asynchronously, regardless of the value of async.',
+const MessagesSendRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .object({
+        message: MessagesRequestComponentSchema.openapi({
+          description: 'the information on the message to send',
         }),
-      ip_pool: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'the name of the dedicated ip pool that should be used to send the message. If you do not have any dedicated IPs, this parameter has no effect. If you specify a pool that does not exist, your default pool will be used instead.',
-        }),
-      send_at: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description:
-            "when this message should be sent as a UTC timestamp in YYYY-MM-DD HH:MM:SS format. If you specify a time in the past, the message will be sent immediately; for future dates, you're limited to one year from the date of scheduling.",
-        }),
-    })
-    .openapi({ required: ['message'] }),
-)
+        async: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'enable a background sending mode that is optimized for bulk sending. In async mode, messages/send will immediately return a status of "queued" for every recipient. To handle rejections when sending in async mode, set up a webhook for the \'reject\' event. Defaults to false for messages with no more than 10 recipients; messages with more than 10 recipients are always sent asynchronously, regardless of the value of async.',
+          }),
+        ip_pool: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'the name of the dedicated ip pool that should be used to send the message. If you do not have any dedicated IPs, this parameter has no effect. If you specify a pool that does not exist, your default pool will be used instead.',
+          }),
+        send_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description:
+              "when this message should be sent as a UTC timestamp in YYYY-MM-DD HH:MM:SS format. If you specify a time in the past, the message will be sent immediately; for future dates, you're limited to one year from the date of scheduling.",
+          }),
+      })
+      .openapi({ required: ['message'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Request body for messages/send' })
   .openapi('MessagesSendRequest')
 
-const MessagesSendSmsRequestSchema = ApiKeySchema.and(
-  z
-    .object({
-      message: z
-        .object({
-          sms: z
-            .object({
-              text: z
-                .string()
-                .openapi({
-                  description: 'The SMS message content to be sent.',
-                  example: 'Hello from Mandrill SMS!',
-                }),
-              to: z
-                .array(z.string().regex(/^\+[1-9]\d{1,14}$/))
-                .openapi({
-                  description: 'The phone numbers to send the SMS to.',
-                  example: ['+10000000000', '+10000000001'],
-                }),
-              from: z
-                .string()
-                .openapi({
-                  description: 'The phone number to send the SMS from.',
-                  example: '+10000000000',
-                }),
-              consent: z
-                .enum(['onetime', 'recurring', 'recurring-no-confirm'])
-                .openapi({ description: 'The consent type for this SMS', example: 'onetime' }),
-              track_clicks: z
-                .boolean()
-                .exactOptional()
-                .openapi({
-                  description: 'whether or not to turn on click tracking for the message',
-                }),
-            })
-            .openapi({ required: ['text', 'to', 'from', 'consent'] }),
-          merge: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description:
-                'Whether to evaluate merge tags in the message. Will automatically be set to true if either merge_vars or global_merge_vars are provided.',
-            }),
-          merge_language: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'the merge tag language to use when evaluating merge tags, either mailchimp or handlebars Possible values: "mailchimp" or "handlebars".',
-            }),
-          global_merge_vars: z
-            .array(MergeVarSchema)
-            .exactOptional()
-            .openapi({
-              description:
-                'global merge variables to use for all recipients. You can override these per recipient.',
-            }),
-          merge_vars: z
-            .array(
-              z
-                .object({
-                  rcpt: z
-                    .string()
-                    .regex(/^\+[1-9]\d{1,14}$/)
-                    .exactOptional()
-                    .openapi({
-                      description: 'Phone number of the recipient',
-                      example: '+11234567890',
-                    }),
-                  vars: z
-                    .array(MergeVarSchema)
-                    .exactOptional()
-                    .openapi({ description: 'Recipient-specific merge variables' }),
-                })
-                .openapi({ required: [] }),
-            )
-            .exactOptional()
-            .openapi({
-              description:
-                'per-recipient merge variables, which override global merge variables with the same name.',
-            }),
-        })
-        .openapi({ required: ['sms'] }),
-      async: z
-        .boolean()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'enable a background sending mode that is optimized for bulk sending. In async mode, messages/send-sms will immediately return a status of "queued" for every recipient. To handle rejections when sending in async mode, set up a webhook for the \'reject\' event. Defaults to false for messages with no more than 10 recipients; messages with more than 10 recipients are always sent asynchronously, regardless of the value of async.',
-        }),
-    })
-    .openapi({ required: ['message'] }),
-)
+const MessagesSendSmsRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .object({
+        message: z
+          .object({
+            sms: z
+              .object({
+                text: z
+                  .string()
+                  .openapi({
+                    description: 'The SMS message content to be sent.',
+                    example: 'Hello from Mandrill SMS!',
+                  }),
+                to: z
+                  .array(z.string().regex(/^\+[1-9]\d{1,14}$/))
+                  .openapi({
+                    description: 'The phone numbers to send the SMS to.',
+                    example: ['+10000000000', '+10000000001'],
+                  }),
+                from: z
+                  .string()
+                  .openapi({
+                    description: 'The phone number to send the SMS from.',
+                    example: '+10000000000',
+                  }),
+                consent: z
+                  .enum(['onetime', 'recurring', 'recurring-no-confirm'])
+                  .openapi({ description: 'The consent type for this SMS', example: 'onetime' }),
+                track_clicks: z
+                  .boolean()
+                  .exactOptional()
+                  .openapi({
+                    description: 'whether or not to turn on click tracking for the message',
+                  }),
+              })
+              .openapi({ required: ['text', 'to', 'from', 'consent'] }),
+            merge: z
+              .boolean()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Whether to evaluate merge tags in the message. Will automatically be set to true if either merge_vars or global_merge_vars are provided.',
+              }),
+            merge_language: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'the merge tag language to use when evaluating merge tags, either mailchimp or handlebars Possible values: "mailchimp" or "handlebars".',
+              }),
+            global_merge_vars: z
+              .array(MergeVarSchema)
+              .exactOptional()
+              .openapi({
+                description:
+                  'global merge variables to use for all recipients. You can override these per recipient.',
+              }),
+            merge_vars: z
+              .array(
+                z
+                  .object({
+                    rcpt: z
+                      .string()
+                      .regex(/^\+[1-9]\d{1,14}$/)
+                      .exactOptional()
+                      .openapi({
+                        description: 'Phone number of the recipient',
+                        example: '+11234567890',
+                      }),
+                    vars: z
+                      .array(MergeVarSchema)
+                      .exactOptional()
+                      .openapi({ description: 'Recipient-specific merge variables' }),
+                  })
+                  .openapi({ required: [] }),
+              )
+              .exactOptional()
+              .openapi({
+                description:
+                  'per-recipient merge variables, which override global merge variables with the same name.',
+              }),
+          })
+          .openapi({ required: ['sms'] }),
+        async: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'enable a background sending mode that is optimized for bulk sending. In async mode, messages/send-sms will immediately return a status of "queued" for every recipient. To handle rejections when sending in async mode, set up a webhook for the \'reject\' event. Defaults to false for messages with no more than 10 recipients; messages with more than 10 recipients are always sent asynchronously, regardless of the value of async.',
+          }),
+      })
+      .openapi({ required: ['message'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Request body for messages/send-sms' })
   .openapi('MessagesSendSmsRequest')
 
@@ -3216,60 +4016,79 @@ const MessagesSendSmsResponseSchema = z
   .openapi({ description: 'Array of SMS send results, one per recipient' })
   .openapi('MessagesSendSmsResponse')
 
-const MessagesSendTemplateRequestSchema = ApiKeySchema.and(
-  z
-    .object({
-      template_name: z
-        .string()
-        .openapi({
+const MessagesSendTemplateRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .object({
+        template_name: z
+          .string()
+          .openapi({
+            description:
+              "the immutable slug of a template that exists in the user's account. Make sure you don't use the template name as this one might change.",
+          }),
+        template_content: z
+          .array(
+            z
+              .object({
+                name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description: 'the name of the mc:edit editable region to inject into',
+                  }),
+                content: z
+                  .string()
+                  .exactOptional()
+                  .openapi({ description: 'the content to inject' }),
+              })
+              .openapi({ required: [] }),
+          )
+          .openapi({
+            description:
+              'an array of template content to send. Each item in the array should be a struct with two keys - name: the name of the content block to set the content for, and content: the actual content to put into the block',
+          }),
+        message: MessagesRequestComponentSchema.openapi({
           description:
-            "the immutable slug of a template that exists in the user's account. Make sure you don't use the template name as this one might change.",
+            'the other information on the message to send - same as /messages/send, but without the html content',
         }),
-      template_content: z
-        .array(
-          z
-            .object({
-              name: z
-                .string()
-                .exactOptional()
-                .openapi({ description: 'the name of the mc:edit editable region to inject into' }),
-              content: z.string().exactOptional().openapi({ description: 'the content to inject' }),
-            })
-            .openapi({ required: [] }),
-        )
-        .openapi({
-          description:
-            'an array of template content to send. Each item in the array should be a struct with two keys - name: the name of the content block to set the content for, and content: the actual content to put into the block',
-        }),
-      message: MessagesRequestComponentSchema.openapi({
-        description:
-          'the other information on the message to send - same as /messages/send, but without the html content',
-      }),
-      async: z
-        .boolean()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'enable a background sending mode that is optimized for bulk sending. In async mode, messages/send will immediately return a status of "queued" for every recipient. To handle rejections when sending in async mode, set up a webhook for the \'reject\' event. Defaults to false for messages with no more than 10 recipients; messages with more than 10 recipients are always sent asynchronously, regardless of the value of async.',
-        }),
-      ip_pool: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'the name of the dedicated ip pool that should be used to send the message. If you do not have any dedicated IPs, this parameter has no effect. If you specify a pool that does not exist, your default pool will be used instead.',
-        }),
-      send_at: z.iso
-        .datetime({ offset: true })
-        .exactOptional()
-        .openapi({
-          description:
-            "when this message should be sent as a UTC timestamp in YYYY-MM-DD HH:MM:SS format. If you specify a time in the past, the message will be sent immediately; for future dates, you're limited to one year from the date of scheduling.",
-        }),
-    })
-    .openapi({ required: ['template_name', 'template_content', 'message'] }),
-)
+        async: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'enable a background sending mode that is optimized for bulk sending. In async mode, messages/send will immediately return a status of "queued" for every recipient. To handle rejections when sending in async mode, set up a webhook for the \'reject\' event. Defaults to false for messages with no more than 10 recipients; messages with more than 10 recipients are always sent asynchronously, regardless of the value of async.',
+          }),
+        ip_pool: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'the name of the dedicated ip pool that should be used to send the message. If you do not have any dedicated IPs, this parameter has no effect. If you specify a pool that does not exist, your default pool will be used instead.',
+          }),
+        send_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description:
+              "when this message should be sent as a UTC timestamp in YYYY-MM-DD HH:MM:SS format. If you specify a time in the past, the message will be sent immediately; for future dates, you're limited to one year from the date of scheduling.",
+          }),
+      })
+      .openapi({ required: ['template_name', 'template_content', 'message'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Request body for messages/send-template' })
   .openapi('MessagesSendTemplateRequest')
 
@@ -3277,29 +4096,48 @@ const MessagesSendTemplateResponseSchema = MessagesSendResponseSchema.openapi(
   'MessagesSendTemplateResponse',
 )
 
-const MetadataAddRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      name: z
-        .string()
-        .max(64)
-        .openapi({
-          description: 'A unique identifier for the metadata field',
-          example: 'group_id',
-        }),
-      view_template: z
-        .string()
-        .max(1024)
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'Optional Mustache template to control how the metadata is rendered in your activity log',
-          example: '<a href="http://yourapplication.com/user/{{value}}">{{value}}</a>',
-        }),
-    })
-    .openapi({ required: ['name'] }),
-)
+const MetadataAddRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        name: z
+          .string()
+          .max(64)
+          .openapi({
+            description: 'A unique identifier for the metadata field',
+            example: 'group_id',
+          }),
+        view_template: z
+          .string()
+          .max(1024)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Optional Mustache template to control how the metadata is rendered in your activity log',
+            example: '<a href="http://yourapplication.com/user/{{value}}">{{value}}</a>',
+          }),
+      })
+      .openapi({ required: ['name'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['name', 'view_template'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for adding a custom metadata field',
     example: {
@@ -3342,19 +4180,38 @@ const MetadataResponseDataSchema = z
 
 const MetadataAddResponseSchema = MetadataResponseDataSchema.openapi('MetadataAddResponse')
 
-const MetadataDeleteRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      name: z
-        .string()
-        .max(64)
-        .openapi({
-          description: 'The unique identifier of the metadata field to delete',
-          example: 'group_id',
-        }),
-    })
-    .openapi({ required: ['name'] }),
-)
+const MetadataDeleteRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        name: z
+          .string()
+          .max(64)
+          .openapi({
+            description: 'The unique identifier of the metadata field to delete',
+            example: 'group_id',
+          }),
+      })
+      .openapi({ required: ['name'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['name'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for deleting a custom metadata field',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', name: 'group_id' },
@@ -3375,27 +4232,46 @@ const MetadataListResponseSchema = z
 
 const MetadataSchema = MetadataResponseDataSchema.openapi('Metadata')
 
-const MetadataUpdateRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      name: z
-        .string()
-        .max(64)
-        .openapi({
-          description: 'The unique identifier of the metadata field to update',
-          example: 'group_id',
-        }),
-      view_template: z
-        .string()
-        .max(1024)
-        .openapi({
-          description:
-            'Mustache template to control how the metadata is rendered in your activity log',
-          example: '<a href="http://yourapplication.com/user/{{value}}">{{value}}</a>',
-        }),
-    })
-    .openapi({ required: ['name', 'view_template'] }),
-)
+const MetadataUpdateRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        name: z
+          .string()
+          .max(64)
+          .openapi({
+            description: 'The unique identifier of the metadata field to update',
+            example: 'group_id',
+          }),
+        view_template: z
+          .string()
+          .max(1024)
+          .openapi({
+            description:
+              'Mustache template to control how the metadata is rendered in your activity log',
+            example: '<a href="http://yourapplication.com/user/{{value}}">{{value}}</a>',
+          }),
+      })
+      .openapi({ required: ['name', 'view_template'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['name', 'view_template'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for updating a custom metadata field',
     example: {
@@ -3408,31 +4284,50 @@ const MetadataUpdateRequestSchema = ApiKeySchema.and(
 
 const MetadataUpdateResponseSchema = MetadataResponseDataSchema.openapi('MetadataUpdateResponse')
 
-const RejectsAddRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      email: z
-        .email()
-        .openapi({ description: 'An email address to block', example: 'user@example.com' }),
-      comment: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An optional comment describing the rejection',
-          example: 'Manually blocked due to spam complaints',
-        }),
-      subaccount: z
-        .string()
-        .max(255)
-        .exactOptional()
-        .openapi({
-          description:
-            'An optional unique identifier for the subaccount to limit the blacklist entry',
-          example: 'cust-123',
-        }),
-    })
-    .openapi({ required: ['email'] }),
-)
+const RejectsAddRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        email: z
+          .email()
+          .openapi({ description: 'An email address to block', example: 'user@example.com' }),
+        comment: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'An optional comment describing the rejection',
+            example: 'Manually blocked due to spam complaints',
+          }),
+        subaccount: z
+          .string()
+          .max(255)
+          .exactOptional()
+          .openapi({
+            description:
+              'An optional unique identifier for the subaccount to limit the blacklist entry',
+            example: 'cust-123',
+          }),
+      })
+      .openapi({ required: ['email'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['email', 'comment', 'subaccount'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for adding an email to the rejection blacklist',
     example: {
@@ -3458,34 +4353,53 @@ const RejectsAddResponseSchema = z
   })
   .openapi('RejectsAddResponse')
 
-const RejectsAddSmsRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      phone: z
-        .string()
-        .openapi({
-          description: 'A phone number to block in E.164 format',
-          example: '+12025551234',
-        }),
-      comment: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An optional comment describing the rejection',
-          example: 'Manually blocked due to spam',
-        }),
-      subaccount: z
-        .string()
-        .max(255)
-        .exactOptional()
-        .openapi({
-          description:
-            'An optional unique identifier for the subaccount to limit the denylist entry',
-          example: 'cust-123',
-        }),
-    })
-    .openapi({ required: ['phone'] }),
-)
+const RejectsAddSmsRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        phone: z
+          .string()
+          .openapi({
+            description: 'A phone number to block in E.164 format',
+            example: '+12025551234',
+          }),
+        comment: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'An optional comment describing the rejection',
+            example: 'Manually blocked due to spam',
+          }),
+        subaccount: z
+          .string()
+          .max(255)
+          .exactOptional()
+          .openapi({
+            description:
+              'An optional unique identifier for the subaccount to limit the denylist entry',
+            example: 'cust-123',
+          }),
+      })
+      .openapi({ required: ['phone'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['phone', 'comment', 'subaccount'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for adding a phone number to the SMS rejection denylist',
     example: {
@@ -3528,27 +4442,46 @@ const RejectsSmsRejectSchema = z
 
 const RejectsAddSmsResponseSchema = RejectsSmsRejectSchema.openapi('RejectsAddSmsResponse')
 
-const RejectsDeleteRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      email: z
-        .email()
-        .openapi({
-          description: 'An email address to remove from the blacklist',
-          example: 'user@example.com',
-        }),
-      subaccount: z
-        .string()
-        .max(255)
-        .exactOptional()
-        .openapi({
-          description:
-            'An optional unique identifier for the subaccount to limit the blacklist deletion',
-          example: 'cust-123',
-        }),
-    })
-    .openapi({ required: ['email'] }),
-)
+const RejectsDeleteRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        email: z
+          .email()
+          .openapi({
+            description: 'An email address to remove from the blacklist',
+            example: 'user@example.com',
+          }),
+        subaccount: z
+          .string()
+          .max(255)
+          .exactOptional()
+          .openapi({
+            description:
+              'An optional unique identifier for the subaccount to limit the blacklist deletion',
+            example: 'cust-123',
+          }),
+      })
+      .openapi({ required: ['email'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['email', 'subaccount'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for deleting an email from the rejection blacklist',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', email: 'user@example.com', subaccount: 'cust-123' },
@@ -3581,24 +4514,43 @@ const RejectsDeleteResponseSchema = z
   })
   .openapi('RejectsDeleteResponse')
 
-const RejectsDeleteSmsRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      phone: z
-        .string()
-        .openapi({ description: 'A phone number in E.164 format', example: '+12025551234' }),
-      subaccount: z
-        .string()
-        .max(255)
-        .exactOptional()
-        .openapi({
-          description:
-            'An optional unique identifier for the subaccount to limit the denylist deletion',
-          example: 'cust-123',
-        }),
-    })
-    .openapi({ required: ['phone'] }),
-)
+const RejectsDeleteSmsRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        phone: z
+          .string()
+          .openapi({ description: 'A phone number in E.164 format', example: '+12025551234' }),
+        subaccount: z
+          .string()
+          .max(255)
+          .exactOptional()
+          .openapi({
+            description:
+              'An optional unique identifier for the subaccount to limit the denylist deletion',
+            example: 'cust-123',
+          }),
+      })
+      .openapi({ required: ['phone'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['phone', 'subaccount'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for deleting a phone number from the SMS rejection denylist',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', phone: '+12025551234', subaccount: 'cust-123' },
@@ -3607,34 +4559,53 @@ const RejectsDeleteSmsRequestSchema = ApiKeySchema.and(
 
 const RejectsDeleteSmsResponseSchema = RejectsSmsRejectSchema.openapi('RejectsDeleteSmsResponse')
 
-const RejectsListRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      email: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An optional email address to search by',
-          example: 'user@example.com',
-        }),
-      include_expired: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description: 'Whether to include rejections that have already expired',
-          example: false,
-        }),
-      subaccount: z
-        .string()
-        .max(255)
-        .exactOptional()
-        .openapi({
-          description: 'An optional unique identifier for the subaccount to limit the blacklist',
-          example: 'cust-123',
-        }),
-    })
-    .openapi({ required: [] }),
-)
+const RejectsListRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        email: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'An optional email address to search by',
+            example: 'user@example.com',
+          }),
+        include_expired: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether to include rejections that have already expired',
+            example: false,
+          }),
+        subaccount: z
+          .string()
+          .max(255)
+          .exactOptional()
+          .openapi({
+            description: 'An optional unique identifier for the subaccount to limit the blacklist',
+            example: 'cust-123',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['email', 'include_expired', 'subaccount'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for retrieving email rejection blacklist',
     example: {
@@ -3819,34 +4790,53 @@ const RejectsListResponseSchema = z
   })
   .openapi('RejectsListResponse')
 
-const RejectsListSmsRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      phone: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An optional phone number to search by in E.164 format',
-          example: '+12025551234',
-        }),
-      include_expired: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description: 'Whether to include rejections that have already expired',
-          example: false,
-        }),
-      subaccount: z
-        .string()
-        .max(255)
-        .exactOptional()
-        .openapi({
-          description: 'An optional unique identifier for the subaccount to limit the denylist',
-          example: 'cust-123',
-        }),
-    })
-    .openapi({ required: [] }),
-)
+const RejectsListSmsRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        phone: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'An optional phone number to search by in E.164 format',
+            example: '+12025551234',
+          }),
+        include_expired: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether to include rejections that have already expired',
+            example: false,
+          }),
+        subaccount: z
+          .string()
+          .max(255)
+          .exactOptional()
+          .openapi({
+            description: 'An optional unique identifier for the subaccount to limit the denylist',
+            example: 'cust-123',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['phone', 'include_expired', 'subaccount'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for retrieving the SMS rejection denylist',
     example: {
@@ -3909,11 +4899,25 @@ const RejectsListSmsResponseSchema = z
   })
   .openapi('RejectsListSmsResponse')
 
-const SendersAddDomainRequestSchema = ApiKeySchema.and(
-  z
-    .object({ domain: z.hostname().max(255).openapi({ example: 'example.com' }) })
-    .openapi({ required: ['domain'] }),
-)
+const SendersAddDomainRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .object({ domain: z.hostname().max(255).openapi({ example: 'example.com' }) })
+      .openapi({ required: ['domain'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Request body for adding a sender domain.' })
   .openapi('SendersAddDomainRequest')
 
@@ -3993,11 +4997,25 @@ const SendersSenderDomainSchema = z
 
 const SendersAddDomainResponseSchema = SendersSenderDomainSchema.openapi('SendersAddDomainResponse')
 
-const SendersCheckDomainRequestSchema = ApiKeySchema.and(
-  z
-    .object({ domain: z.hostname().max(255).openapi({ example: 'example.com' }) })
-    .openapi({ required: ['domain'] }),
-)
+const SendersCheckDomainRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .object({ domain: z.hostname().max(255).openapi({ example: 'example.com' }) })
+      .openapi({ required: ['domain'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Request body for checking a sender domain.' })
   .openapi('SendersCheckDomainRequest')
 
@@ -4005,16 +5023,30 @@ const SendersCheckDomainResponseSchema = SendersSenderDomainSchema.openapi(
   'SendersCheckDomainResponse',
 )
 
-const SendersDeleteDomainRequestSchema = ApiKeySchema.and(
-  z
-    .object({
-      domain: z
-        .hostname()
-        .max(255)
-        .openapi({ description: 'the domain name to delete', example: 'example.com' }),
-    })
-    .openapi({ required: ['domain'] }),
-)
+const SendersDeleteDomainRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .object({
+        domain: z
+          .hostname()
+          .max(255)
+          .openapi({ description: 'the domain name to delete', example: 'example.com' }),
+      })
+      .openapi({ required: ['domain'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Request body for deleting a sender domain.' })
   .openapi('SendersDeleteDomainRequest')
 
@@ -4053,18 +5085,37 @@ const SendersHourStatSchema = z
   .openapi({ description: 'Hourly stats row for a sender over the last 30 days.', required: [] })
   .openapi('SendersHourStat')
 
-const SendersInfoRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      address: z
-        .email()
-        .openapi({
-          description: 'The email address of the sender',
-          example: 'sender.example@mandrillapp.com',
-        }),
-    })
-    .openapi({ required: ['address'] }),
-)
+const SendersInfoRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        address: z
+          .email()
+          .openapi({
+            description: 'The email address of the sender',
+            example: 'sender.example@mandrillapp.com',
+          }),
+      })
+      .openapi({ required: ['address'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['address'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for retrieving detailed information about a single sender',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', address: 'sender.example@mandrillapp.com' },
@@ -4102,18 +5153,37 @@ const SendersListResponseSchema = z
   })
   .openapi('SendersListResponse')
 
-const SendersTimeSeriesRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      address: z
-        .email()
-        .openapi({
-          description: 'The email address of the sender',
-          example: 'sender.example@mandrillapp.com',
-        }),
-    })
-    .openapi({ required: ['address'] }),
-)
+const SendersTimeSeriesRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        address: z
+          .email()
+          .openapi({
+            description: 'The email address of the sender',
+            example: 'sender.example@mandrillapp.com',
+          }),
+      })
+      .openapi({ required: ['address'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['address'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for retrieving hourly stats for a sender',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', address: 'sender.example@mandrillapp.com' },
@@ -4125,24 +5195,43 @@ const SendersTimeSeriesResponseSchema = z
   .openapi({ description: 'Array of hourly stats for a sender over the last 30 days' })
   .openapi('SendersTimeSeriesResponse')
 
-const SendersVerifyDomainRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      domain: z
-        .hostname()
-        .openapi({
-          description: 'A domain name at which you can receive email',
-          example: 'example.com',
-        }),
-      mailbox: z
-        .string()
-        .openapi({
-          description: 'A mailbox at the domain where the verification email should be sent',
-          example: 'postmaster',
-        }),
-    })
-    .openapi({ required: ['domain', 'mailbox'] }),
-)
+const SendersVerifyDomainRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        domain: z
+          .hostname()
+          .openapi({
+            description: 'A domain name at which you can receive email',
+            example: 'example.com',
+          }),
+        mailbox: z
+          .string()
+          .openapi({
+            description: 'A mailbox at the domain where the verification email should be sent',
+            example: 'postmaster',
+          }),
+      })
+      .openapi({ required: ['domain', 'mailbox'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['domain', 'mailbox'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for sending a verification email to verify ownership of a domain',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', domain: 'example.com', mailbox: 'postmaster' },
@@ -4158,46 +5247,65 @@ const SendersVerifyDomainResponseSchema = z
   })
   .openapi('SendersVerifyDomainResponse')
 
-const SubaccountsAddRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      id: z
-        .string()
-        .max(255)
-        .openapi({
-          description: 'A unique identifier for the subaccount to be used in sending calls',
-          example: 'cust-123',
-        }),
-      name: z
-        .string()
-        .max(1024)
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'An optional display name to further identify the subaccount',
-          example: 'ABC Widgets, Inc.',
-        }),
-      notes: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'Optional extra text to associate with the subaccount',
-          example: 'Free plan user, signed up on 2013-01-01 12:00:00',
-        }),
-      custom_quota: z
-        .int()
-        .min(1)
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'An optional manual hourly quota for the subaccount. If not specified, Mandrill will manage this based on reputation',
-          example: null,
-        }),
-    })
-    .openapi({ required: ['id'] }),
-)
+const SubaccountsAddRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        id: z
+          .string()
+          .max(255)
+          .openapi({
+            description: 'A unique identifier for the subaccount to be used in sending calls',
+            example: 'cust-123',
+          }),
+        name: z
+          .string()
+          .max(1024)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'An optional display name to further identify the subaccount',
+            example: 'ABC Widgets, Inc.',
+          }),
+        notes: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Optional extra text to associate with the subaccount',
+            example: 'Free plan user, signed up on 2013-01-01 12:00:00',
+          }),
+        custom_quota: z
+          .int()
+          .min(1)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'An optional manual hourly quota for the subaccount. If not specified, Mandrill will manage this based on reputation',
+            example: null,
+          }),
+      })
+      .openapi({ required: ['id'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['id', 'name', 'notes', 'custom_quota'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for creating a new subaccount',
     example: {
@@ -4294,18 +5402,37 @@ const SubaccountsSubaccountSchema = z
 
 const SubaccountsAddResponseSchema = SubaccountsSubaccountSchema.openapi('SubaccountsAddResponse')
 
-const SubaccountsDeleteRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      id: z
-        .string()
-        .openapi({
-          description: 'The unique identifier of the subaccount to delete',
-          example: 'cust-123',
-        }),
-    })
-    .openapi({ required: ['id'] }),
-)
+const SubaccountsDeleteRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        id: z
+          .string()
+          .openapi({
+            description: 'The unique identifier of the subaccount to delete',
+            example: 'cust-123',
+          }),
+      })
+      .openapi({ required: ['id'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for deleting a subaccount',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', id: 'cust-123' },
@@ -4316,18 +5443,37 @@ const SubaccountsDeleteResponseSchema = SubaccountsSubaccountSchema.openapi(
   'SubaccountsDeleteResponse',
 )
 
-const SubaccountsInfoRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      id: z
-        .string()
-        .openapi({
-          description: 'The unique identifier of the subaccount to query',
-          example: 'cust-123',
-        }),
-    })
-    .openapi({ required: ['id'] }),
-)
+const SubaccountsInfoRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        id: z
+          .string()
+          .openapi({
+            description: 'The unique identifier of the subaccount to query',
+            example: 'cust-123',
+          }),
+      })
+      .openapi({ required: ['id'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for subaccount operations requiring only a subaccount ID',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', id: 'cust-123' },
@@ -4367,19 +5513,38 @@ const SubaccountsInfoResponseSchema = SubaccountsSubaccountSchema.and(
   })
   .openapi('SubaccountsInfoResponse')
 
-const SubaccountsListRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      q: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: "An optional prefix to filter the subaccounts' ids and names",
-          example: 'cust-1',
-        }),
-    })
-    .openapi({ required: [] }),
-)
+const SubaccountsListRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        q: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: "An optional prefix to filter the subaccounts' ids and names",
+            example: 'cust-1',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['q'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for listing subaccounts, optionally filtered by a prefix',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', q: 'cust-1' },
@@ -4391,18 +5556,37 @@ const SubaccountsListResponseSchema = z
   .openapi({ description: 'List of subaccounts for the account, up to a maximum of 1,000' })
   .openapi('SubaccountsListResponse')
 
-const SubaccountsPauseRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      id: z
-        .string()
-        .openapi({
-          description: 'The unique identifier of the subaccount to pause',
-          example: 'cust-123',
-        }),
-    })
-    .openapi({ required: ['id'] }),
-)
+const SubaccountsPauseRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        id: z
+          .string()
+          .openapi({
+            description: 'The unique identifier of the subaccount to pause',
+            example: 'cust-123',
+          }),
+      })
+      .openapi({ required: ['id'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for pausing a subaccount',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', id: 'cust-123' },
@@ -4413,18 +5597,37 @@ const SubaccountsPauseResponseSchema = SubaccountsSubaccountSchema.openapi(
   'SubaccountsPauseResponse',
 )
 
-const SubaccountsResumeRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      id: z
-        .string()
-        .openapi({
-          description: 'The unique identifier of the subaccount to resume',
-          example: 'cust-123',
-        }),
-    })
-    .openapi({ required: ['id'] }),
-)
+const SubaccountsResumeRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        id: z
+          .string()
+          .openapi({
+            description: 'The unique identifier of the subaccount to resume',
+            example: 'cust-123',
+          }),
+      })
+      .openapi({ required: ['id'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['id'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for resuming a paused subaccount',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', id: 'cust-123' },
@@ -4435,45 +5638,64 @@ const SubaccountsResumeResponseSchema = SubaccountsSubaccountSchema.openapi(
   'SubaccountsResumeResponse',
 )
 
-const SubaccountsUpdateRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      id: z
-        .string()
-        .openapi({
-          description: 'The unique identifier of the subaccount to update',
-          example: 'cust-123',
-        }),
-      name: z
-        .string()
-        .max(1024)
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'An optional display name to further identify the subaccount',
-          example: 'ABC Widgets, Inc.',
-        }),
-      notes: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'Optional extra text to associate with the subaccount',
-          example: 'Free plan user, signed up on 2013-01-01 12:00:00',
-        }),
-      custom_quota: z
-        .int()
-        .min(1)
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'An optional manual hourly quota for the subaccount. If not specified, Mandrill will manage this based on reputation',
-          example: null,
-        }),
-    })
-    .openapi({ required: ['id'] }),
-)
+const SubaccountsUpdateRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        id: z
+          .string()
+          .openapi({
+            description: 'The unique identifier of the subaccount to update',
+            example: 'cust-123',
+          }),
+        name: z
+          .string()
+          .max(1024)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'An optional display name to further identify the subaccount',
+            example: 'ABC Widgets, Inc.',
+          }),
+        notes: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Optional extra text to associate with the subaccount',
+            example: 'Free plan user, signed up on 2013-01-01 12:00:00',
+          }),
+        custom_quota: z
+          .int()
+          .min(1)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'An optional manual hourly quota for the subaccount. If not specified, Mandrill will manage this based on reputation',
+            example: null,
+          }),
+      })
+      .openapi({ required: ['id'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['id', 'name', 'notes', 'custom_quota'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for updating an existing subaccount',
     example: {
@@ -4549,10 +5771,8 @@ const TagsTagTimeSeriesSchema = z
   })
   .openapi('TagsTagTimeSeries')
 
-const TagsTimeSeriesWithTagSchema = TagsTagTimeSeriesSchema.and(
-  z.looseObject({}).openapi({ required: ['tag'] }),
-)
-  .and(
+const TagsTimeSeriesWithTagSchema = (() => {
+  const Schema = TagsTagTimeSeriesSchema.and(z.looseObject({}).openapi({ required: ['tag'] })).and(
     z
       .object({
         tag: z
@@ -4562,6 +5782,33 @@ const TagsTimeSeriesWithTagSchema = TagsTagTimeSeriesSchema.and(
       })
       .openapi({ required: [] }),
   )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'sent',
+            'hard_bounces',
+            'soft_bounces',
+            'rejects',
+            'complaints',
+            'unsubs',
+            'opens',
+            'unique_opens',
+            'clicks',
+            'unique_clicks',
+            'time',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Hourly statistics for a tag in a specific time period, including the tag name',
   })
@@ -4572,8 +5819,8 @@ const TagsAllTimeSeriesResponseSchema = z
   .openapi({ description: 'Array of hourly stats across all tags for the last 30 days' })
   .openapi('TagsAllTimeSeriesResponse')
 
-const TagsDeleteRequestSchema = ApiKeySchema.and(z.strictObject({}).openapi({ required: ['tag'] }))
-  .and(
+const TagsDeleteRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(z.strictObject({}).openapi({ required: ['tag'] })).and(
     z
       .object({
         tag: z
@@ -4583,6 +5830,22 @@ const TagsDeleteRequestSchema = ApiKeySchema.and(z.strictObject({}).openapi({ re
       })
       .openapi({ required: [] }),
   )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for deleting a tag',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', tag: 'example-tag' },
@@ -4667,8 +5930,8 @@ const TagsDeleteResponseSchema = z
   })
   .openapi('TagsDeleteResponse')
 
-const TagsInfoRequestSchema = ApiKeySchema.and(z.strictObject({}).openapi({ required: ['tag'] }))
-  .and(
+const TagsInfoRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(z.strictObject({}).openapi({ required: ['tag'] })).and(
     z
       .object({
         tag: z
@@ -4678,6 +5941,22 @@ const TagsInfoRequestSchema = ApiKeySchema.and(z.strictObject({}).openapi({ requ
       })
       .openapi({ required: [] }),
   )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for getting tag info',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', tag: 'example-tag' },
@@ -4828,10 +6107,8 @@ const TagsListResponseSchema = z
   .openapi({ description: 'Array of tags used in the account' })
   .openapi('TagsListResponse')
 
-const TagsTimeSeriesRequestSchema = ApiKeySchema.and(
-  z.strictObject({}).openapi({ required: ['tag'] }),
-)
-  .and(
+const TagsTimeSeriesRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(z.strictObject({}).openapi({ required: ['tag'] })).and(
     z
       .object({
         tag: z
@@ -4841,6 +6118,22 @@ const TagsTimeSeriesRequestSchema = ApiKeySchema.and(
       })
       .openapi({ required: [] }),
   )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for getting tag time series data',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', tag: 'example-tag' },
@@ -4852,71 +6145,101 @@ const TagsTimeSeriesResponseSchema = z
   .openapi({ description: 'Array of hourly stats for the last 30 days for a tag' })
   .openapi('TagsTimeSeriesResponse')
 
-const TemplatesAddRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      name: z
-        .string()
-        .openapi({
-          description: 'Name for the new template - must be unique',
-          example: 'Example Template',
-        }),
-      from_email: z
-        .email()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'Default sending address for emails sent using this template',
-          example: 'sender@example.com',
-        }),
-      from_name: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'Default from name to be used', example: 'Example Name' }),
-      subject: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'Default subject line to be used',
-          example: 'Welcome to our service',
-        }),
-      code: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'HTML code for the template with mc:edit attributes for editable elements',
-          example: '<div>example code</div>',
-        }),
-      text: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'Default text part to be used when sending with this template',
-          example: 'Example text content',
-        }),
-      publish: z
-        .boolean()
-        .default(true)
-        .exactOptional()
-        .openapi({
-          description: 'Set to false to add a draft template without publishing',
-          example: false,
-        }),
-      labels: z
-        .array(z.string().max(100))
-        .max(10)
-        .exactOptional()
-        .openapi({
-          description: 'Optional array of up to 10 labels to use for filtering templates',
-          example: ['example-label'],
-        }),
-    })
-    .openapi({ required: ['name'] }),
-)
+const TemplatesAddRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        name: z
+          .string()
+          .openapi({
+            description: 'Name for the new template - must be unique',
+            example: 'Example Template',
+          }),
+        from_email: z
+          .email()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Default sending address for emails sent using this template',
+            example: 'sender@example.com',
+          }),
+        from_name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Default from name to be used', example: 'Example Name' }),
+        subject: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Default subject line to be used',
+            example: 'Welcome to our service',
+          }),
+        code: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'HTML code for the template with mc:edit attributes for editable elements',
+            example: '<div>example code</div>',
+          }),
+        text: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Default text part to be used when sending with this template',
+            example: 'Example text content',
+          }),
+        publish: z
+          .boolean()
+          .default(true)
+          .exactOptional()
+          .openapi({
+            description: 'Set to false to add a draft template without publishing',
+            example: false,
+          }),
+        labels: z
+          .array(z.string().max(100))
+          .max(10)
+          .exactOptional()
+          .openapi({
+            description: 'Optional array of up to 10 labels to use for filtering templates',
+            example: ['example-label'],
+          }),
+      })
+      .openapi({ required: ['name'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'name',
+            'from_email',
+            'from_name',
+            'subject',
+            'code',
+            'text',
+            'publish',
+            'labels',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for adding a new template',
     example: {
@@ -5057,18 +6380,37 @@ const TemplatesTemplateSchema = z
 
 const TemplatesAddResponseSchema = TemplatesTemplateSchema.openapi('TemplatesAddResponse')
 
-const TemplatesDeleteRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      name: z
-        .string()
-        .openapi({
-          description: 'Immutable slug of an existing template',
-          example: 'example-template',
-        }),
-    })
-    .openapi({ required: ['name'] }),
-)
+const TemplatesDeleteRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        name: z
+          .string()
+          .openapi({
+            description: 'Immutable slug of an existing template',
+            example: 'example-template',
+          }),
+      })
+      .openapi({ required: ['name'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['name'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for deleting a template',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', name: 'example-template' },
@@ -5077,18 +6419,37 @@ const TemplatesDeleteRequestSchema = ApiKeySchema.and(
 
 const TemplatesDeleteResponseSchema = TemplatesTemplateSchema.openapi('TemplatesDeleteResponse')
 
-const TemplatesInfoRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      name: z
-        .string()
-        .openapi({
-          description: 'Immutable name of an existing template',
-          example: 'Example Template',
-        }),
-    })
-    .openapi({ required: ['name'] }),
-)
+const TemplatesInfoRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        name: z
+          .string()
+          .openapi({
+            description: 'Immutable name of an existing template',
+            example: 'Example Template',
+          }),
+      })
+      .openapi({ required: ['name'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['name'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for getting template information',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', name: 'Example Template' },
@@ -5097,20 +6458,39 @@ const TemplatesInfoRequestSchema = ApiKeySchema.and(
 
 const TemplatesInfoResponseSchema = TemplatesTemplateSchema.openapi('TemplatesInfoResponse')
 
-const TemplatesListRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      label: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'Optional label to filter the templates',
-          example: 'example-label',
-        }),
-    })
-    .openapi({ required: [] }),
-)
+const TemplatesListRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        label: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Optional label to filter the templates',
+            example: 'example-label',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['label'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for listing templates',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', label: 'example-label' },
@@ -5122,18 +6502,37 @@ const TemplatesListResponseSchema = z
   .openapi({ description: 'Array of templates available to the account' })
   .openapi('TemplatesListResponse')
 
-const TemplatesPublishRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      name: z
-        .string()
-        .openapi({
-          description: 'Immutable name of an existing template',
-          example: 'Example Template',
-        }),
-    })
-    .openapi({ required: ['name'] }),
-)
+const TemplatesPublishRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        name: z
+          .string()
+          .openapi({
+            description: 'Immutable name of an existing template',
+            example: 'Example Template',
+          }),
+      })
+      .openapi({ required: ['name'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['name'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for publishing a template',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', name: 'Example Template' },
@@ -5165,28 +6564,47 @@ const TemplateContentSchema = z
   })
   .openapi('TemplateContent')
 
-const TemplatesRenderRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      template_name: z
-        .string()
-        .openapi({
-          description: "Immutable name or slug of a template that exists in the user's account",
-          example: 'example-template',
-        }),
-      template_content: z
-        .array(TemplateContentSchema)
-        .openapi({ description: 'Array of template content to render' }),
-      merge_vars: z
-        .array(MergeVarSchema)
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'Optional merge variables to use for injecting merge field content',
-        }),
-    })
-    .openapi({ required: ['template_name', 'template_content'] }),
-)
+const TemplatesRenderRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        template_name: z
+          .string()
+          .openapi({
+            description: "Immutable name or slug of a template that exists in the user's account",
+            example: 'example-template',
+          }),
+        template_content: z
+          .array(TemplateContentSchema)
+          .openapi({ description: 'Array of template content to render' }),
+        merge_vars: z
+          .array(MergeVarSchema)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Optional merge variables to use for injecting merge field content',
+          }),
+      })
+      .openapi({ required: ['template_name', 'template_content'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['template_name', 'template_content', 'merge_vars'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for rendering a template with content and merge variables',
     example: {
@@ -5281,15 +6699,34 @@ const TemplatesTemplateHistorySchema = z
   })
   .openapi('TemplatesTemplateHistory')
 
-const TemplatesTimeSeriesRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      name: z
-        .string()
-        .openapi({ description: 'Name of an existing template', example: 'Example Template' }),
-    })
-    .openapi({ required: ['name'] }),
-)
+const TemplatesTimeSeriesRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        name: z
+          .string()
+          .openapi({ description: 'Name of an existing template', example: 'Example Template' }),
+      })
+      .openapi({ required: ['name'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['name'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for getting template time series data',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', name: 'Example Template' },
@@ -5301,66 +6738,96 @@ const TemplatesTimeSeriesResponseSchema = z
   .openapi({ description: 'Array of hourly stats for the last 30 days for a template' })
   .openapi('TemplatesTimeSeriesResponse')
 
-const TemplatesUpdateRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      name: z
-        .string()
-        .openapi({
-          description: 'Immutable name of an existing template',
-          example: 'Example Template',
-        }),
-      from_email: z
-        .email()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'New default sending address', example: 'sender@example.com' }),
-      from_name: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'New default from name', example: 'Example Name' }),
-      subject: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'New default subject line', example: 'Welcome to our service' }),
-      code: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'New code for the template',
-          example: '<div>new example code</div>',
-        }),
-      text: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'New default text part to be used',
-          example: 'Example text content',
-        }),
-      publish: z
-        .boolean()
-        .default(true)
-        .exactOptional()
-        .openapi({
-          description: 'Set to false to update the draft version without publishing',
-          example: false,
-        }),
-      labels: z
-        .array(z.string().max(100))
-        .max(10)
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: 'Optional array of up to 10 labels to use for filtering templates',
-          example: ['example-label'],
-        }),
-    })
-    .openapi({ required: ['name'] }),
-)
+const TemplatesUpdateRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        name: z
+          .string()
+          .openapi({
+            description: 'Immutable name of an existing template',
+            example: 'Example Template',
+          }),
+        from_email: z
+          .email()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'New default sending address', example: 'sender@example.com' }),
+        from_name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'New default from name', example: 'Example Name' }),
+        subject: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'New default subject line', example: 'Welcome to our service' }),
+        code: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'New code for the template',
+            example: '<div>new example code</div>',
+          }),
+        text: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'New default text part to be used',
+            example: 'Example text content',
+          }),
+        publish: z
+          .boolean()
+          .default(true)
+          .exactOptional()
+          .openapi({
+            description: 'Set to false to update the draft version without publishing',
+            example: false,
+          }),
+        labels: z
+          .array(z.string().max(100))
+          .max(10)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'Optional array of up to 10 labels to use for filtering templates',
+            example: ['example-label'],
+          }),
+      })
+      .openapi({ required: ['name'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'name',
+            'from_email',
+            'from_name',
+            'subject',
+            'code',
+            'text',
+            'publish',
+            'labels',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for updating an existing template',
     example: {
@@ -5379,18 +6846,37 @@ const TemplatesUpdateRequestSchema = ApiKeySchema.and(
 
 const TemplatesUpdateResponseSchema = TemplatesTemplateSchema.openapi('TemplatesUpdateResponse')
 
-const UrlsAddTrackingDomainRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      domain: z
-        .hostname()
-        .openapi({
-          description: 'A domain name to add for tracking',
-          example: 'track.example.com',
-        }),
-    })
-    .openapi({ required: ['domain'] }),
-)
+const UrlsAddTrackingDomainRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        domain: z
+          .hostname()
+          .openapi({
+            description: 'A domain name to add for tracking',
+            example: 'track.example.com',
+          }),
+      })
+      .openapi({ required: ['domain'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['domain'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for adding a tracking domain to your account',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', domain: 'track.example.com' },
@@ -5456,15 +6942,37 @@ const UrlsAddTrackingDomainResponseSchema = TrackingDomainSchema.openapi(
   'UrlsAddTrackingDomainResponse',
 )
 
-const UrlsCheckTrackingDomainRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      domain: z
-        .hostname()
-        .openapi({ description: 'An existing tracking domain name', example: 'track.example.com' }),
-    })
-    .openapi({ required: ['domain'] }),
-)
+const UrlsCheckTrackingDomainRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        domain: z
+          .hostname()
+          .openapi({
+            description: 'An existing tracking domain name',
+            example: 'track.example.com',
+          }),
+      })
+      .openapi({ required: ['domain'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['domain'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for checking the CNAME settings for a tracking domain',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', domain: 'track.example.com' },
@@ -5475,15 +6983,37 @@ const UrlsCheckTrackingDomainResponseSchema = TrackingDomainSchema.openapi(
   'UrlsCheckTrackingDomainResponse',
 )
 
-const UrlsDeleteTrackingDomainRequestSchema = ApiKeySchema.and(
-  z
-    .strictObject({
-      domain: z
-        .hostname()
-        .openapi({ description: 'An existing tracking domain name', example: 'track.example.com' }),
-    })
-    .openapi({ required: ['domain'] }),
-)
+const UrlsDeleteTrackingDomainRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(
+    z
+      .strictObject({
+        domain: z
+          .hostname()
+          .openapi({
+            description: 'An existing tracking domain name',
+            example: 'track.example.com',
+          }),
+      })
+      .openapi({ required: ['domain'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['domain'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for deleting a tracking domain from your account',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', domain: 'track.example.com' },
@@ -5603,8 +7133,8 @@ const UsersSendersResponseSchema = z
   })
   .openapi('UsersSendersResponse')
 
-const WebhooksAddRequestSchema = ApiKeySchema.and(z.looseObject({}).openapi({ required: ['url'] }))
-  .and(
+const WebhooksAddRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(z.looseObject({}).openapi({ required: ['url'] })).and(
     z
       .object({
         url: z
@@ -5636,6 +7166,19 @@ const WebhooksAddRequestSchema = ApiKeySchema.and(z.looseObject({}).openapi({ re
       })
       .openapi({ required: [] }),
   )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for creating a new webhook.',
     example: {
@@ -5748,10 +7291,8 @@ const WebhookSchema = z
 
 const WebhooksAddResponseSchema = WebhookSchema.openapi('WebhooksAddResponse')
 
-const WebhooksDeleteRequestSchema = ApiKeySchema.and(
-  z.looseObject({}).openapi({ required: ['id'] }),
-)
-  .and(
+const WebhooksDeleteRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(z.looseObject({}).openapi({ required: ['id'] })).and(
     z
       .object({
         id: z
@@ -5761,6 +7302,19 @@ const WebhooksDeleteRequestSchema = ApiKeySchema.and(
       })
       .openapi({ required: [] }),
   )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for deleting a webhook.',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', id: 12345 },
@@ -5769,8 +7323,8 @@ const WebhooksDeleteRequestSchema = ApiKeySchema.and(
 
 const WebhooksDeleteResponseSchema = WebhookSchema.openapi('WebhooksDeleteResponse')
 
-const WebhooksInfoRequestSchema = ApiKeySchema.and(z.looseObject({}).openapi({ required: ['id'] }))
-  .and(
+const WebhooksInfoRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(z.looseObject({}).openapi({ required: ['id'] })).and(
     z
       .object({
         id: z
@@ -5780,6 +7334,19 @@ const WebhooksInfoRequestSchema = ApiKeySchema.and(z.looseObject({}).openapi({ r
       })
       .openapi({ required: [] }),
   )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for getting webhook info.',
     example: { key: 'ONzNrsmbtNXoIKyfPmjnig', id: 12345 },
@@ -5798,10 +7365,8 @@ const WebhooksListResponseSchema = z
   .openapi({ description: 'Array of webhooks configured for the account' })
   .openapi('WebhooksListResponse')
 
-const WebhooksUpdateRequestSchema = ApiKeySchema.and(
-  z.looseObject({}).openapi({ required: ['id', 'url'] }),
-)
-  .and(
+const WebhooksUpdateRequestSchema = (() => {
+  const Schema = ApiKeySchema.and(z.looseObject({}).openapi({ required: ['id', 'url'] })).and(
     z
       .object({
         id: z
@@ -5837,6 +7402,19 @@ const WebhooksUpdateRequestSchema = ApiKeySchema.and(
       })
       .openapi({ required: [] }),
   )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['key'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     description: 'Request payload for updating an existing webhook.',
     example: {

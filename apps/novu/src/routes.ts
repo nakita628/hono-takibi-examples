@@ -3550,10 +3550,61 @@ const ChannelPreferenceDtoSchema = z
 
 const WorkflowPreferencesDtoSchema = z
   .object({
-    all: WorkflowPreferenceDtoSchema.openapi({
-      description:
-        'A preference for the workflow. The values specified here will be used if no preference is specified for a channel.',
-    }),
+    all: (() => {
+      const Schema = WorkflowPreferenceDtoSchema
+      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+        const reported = ctx.issues.length
+        try {
+          ;((ctx) => {
+            const val = ctx.value
+            if ((WorkflowPreferenceDtoSchema.safeParse(val).success ? 1 : 0) !== 1) {
+              ctx.issues.push({ code: 'custom', input: val })
+            }
+          })(ctx)
+        } catch (error) {
+          if (!(error instanceof z.core.$ZodAsyncError)) throw error
+          ctx.issues.length = reported
+          return (async (ctx) => {
+            const val = ctx.value
+            if (((await WorkflowPreferenceDtoSchema.safeParseAsync(val)).success ? 1 : 0) !== 1) {
+              ctx.issues.push({ code: 'custom', input: val })
+            }
+          })(ctx).then(() => val)
+        }
+        return val
+      }, Schema)
+    })()
+      .openapi({
+        oneOf: [
+          {
+            type: 'object',
+            properties: {
+              enabled: {
+                type: 'boolean',
+                description:
+                  'A flag specifying if notification delivery is enabled for the workflow. If true, notification delivery is enabled by default for all channels. This setting can be overridden by the channel preferences.',
+                default: true,
+              },
+              readOnly: {
+                type: 'boolean',
+                description:
+                  'A flag specifying if the preference is read-only. If true, the preference cannot be changed by the Subscriber.',
+                default: false,
+              },
+              condition: {
+                type: 'object',
+                additionalProperties: true,
+                description: 'JsonLogic condition controlling whether this preference applies',
+              },
+            },
+            required: ['enabled', 'readOnly'],
+          },
+        ],
+      })
+      .openapi({
+        description:
+          'A preference for the workflow. The values specified here will be used if no preference is specified for a channel.',
+      }),
     channels: z
       .record(z.string(), ChannelPreferenceDtoSchema)
       .openapi({

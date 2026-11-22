@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const findEligibleMethodsHandler = app.openapi(
   postV2PaymentsFindEligibleMethodsRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

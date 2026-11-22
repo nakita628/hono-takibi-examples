@@ -183,13 +183,13 @@ const ConsentArtefactResponseSchema = z
                 .openapi({ required: ['patientReference', 'careContextReference'] }),
             ),
             consentId: z.uuid(),
-            consentManager: OrganizationRepresentationSchema.and(
-              z.any().openapi({ xml: { name: 'consentManager' } }),
-            ),
+            consentManager: OrganizationRepresentationSchema.openapi({
+              xml: { name: 'consentManager' },
+            }),
             createdAt: z.iso.datetime({ offset: true }),
             hiTypes: z.array(HITypeEnumSchema),
-            hip: OrganizationRepresentationSchema.and(z.any().openapi({ xml: { name: 'hip' } })),
-            hiu: OrganizationRepresentationSchema.and(z.any().openapi({ xml: { name: 'hiu' } })),
+            hip: OrganizationRepresentationSchema.openapi({ xml: { name: 'hip' } }),
+            hiu: OrganizationRepresentationSchema.openapi({ xml: { name: 'hiu' } }),
             patient: ConsentManagerPatientIDSchema,
             permission: PermissionSchema,
             purpose: UsePurposeSchema,
@@ -251,11 +251,9 @@ const ConsentRequestSchema = z
       .object({
         careContexts: z.array(CareContextDefinitionSchema).exactOptional(),
         hiTypes: z.array(HITypeEnumSchema),
-        hip: OrganizationRepresentationSchema.and(
-          z.any().openapi({ xml: { name: 'hip' } }),
-        ).exactOptional(),
-        hiu: OrganizationRepresentationSchema.and(z.any().openapi({ xml: { name: 'hiu' } })),
-        patient: ConsentManagerPatientIDSchema.and(z.any().openapi({ xml: { name: 'patient' } })),
+        hip: OrganizationRepresentationSchema.exactOptional().openapi({ xml: { name: 'hip' } }),
+        hiu: OrganizationRepresentationSchema.openapi({ xml: { name: 'hiu' } }),
+        patient: ConsentManagerPatientIDSchema.openapi({ xml: { name: 'patient' } }),
         permission: PermissionSchema,
         purpose: UsePurposeSchema,
         requester: RequesterSchema,

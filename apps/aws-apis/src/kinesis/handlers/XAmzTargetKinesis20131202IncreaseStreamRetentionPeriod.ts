@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetKinesis20131202IncreaseStreamRetentionPeriodHandler = app.openapi(
   postXAmzTargetKinesis20131202IncreaseStreamRetentionPeriodRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

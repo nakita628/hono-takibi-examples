@@ -1,5 +1,15 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AccessPreviewIdSchema = z
+  .string()
+  .regex(/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/)
+  .openapi('AccessPreviewId')
+
+const AnalyzerArnSchema = z
+  .string()
+  .regex(/[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:analyzer\/.{1,255}/)
+  .openapi('AnalyzerArn')
+
 const EbsUserIdSchema = z.string().openapi('EbsUserId')
 
 const EbsUserIdListSchema = z.array(EbsUserIdSchema).openapi('EbsUserIdList')
@@ -12,30 +22,18 @@ const EbsSnapshotDataEncryptionKeyIdSchema = z.string().openapi('EbsSnapshotData
 
 const EbsSnapshotConfigurationSchema = z
   .object({
-    userIds: EbsUserIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IDs of the Amazon Web Services accounts that have access to the Amazon EBS volume snapshot.</p> <ul> <li> <p>If the configuration is for an existing Amazon EBS volume snapshot and you do not specify the <code>userIds</code>, then the access preview uses the existing shared <code>userIds</code> for the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the <code>userIds</code>, then the access preview considers the snapshot without any <code>userIds</code>.</p> </li> <li> <p>To propose deletion of existing shared <code>accountIds</code>, you can specify an empty list for <code>userIds</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    groups: EbsGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The groups that have access to the Amazon EBS volume snapshot. If the value <code>all</code> is specified, then the Amazon EBS volume snapshot is public.</p> <ul> <li> <p>If the configuration is for an existing Amazon EBS volume snapshot and you do not specify the <code>groups</code>, then the access preview uses the existing shared <code>groups</code> for the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the <code>groups</code>, then the access preview considers the snapshot without any <code>groups</code>.</p> </li> <li> <p>To propose deletion of existing shared <code>groups</code>, you can specify an empty list for <code>groups</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    kmsKeyId: EbsSnapshotDataEncryptionKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The KMS key identifier for an encrypted Amazon EBS volume snapshot. The KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <ul> <li> <p>If the configuration is for an existing Amazon EBS volume snapshot and you do not specify the <code>kmsKeyId</code>, or you specify an empty string, then the access preview uses the existing <code>kmsKeyId</code> of the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the <code>kmsKeyId</code>, the access preview considers the snapshot as unencrypted.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    userIds: EbsUserIdListSchema.exactOptional().openapi({
+      description:
+        '<p>The IDs of the Amazon Web Services accounts that have access to the Amazon EBS volume snapshot.</p> <ul> <li> <p>If the configuration is for an existing Amazon EBS volume snapshot and you do not specify the <code>userIds</code>, then the access preview uses the existing shared <code>userIds</code> for the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the <code>userIds</code>, then the access preview considers the snapshot without any <code>userIds</code>.</p> </li> <li> <p>To propose deletion of existing shared <code>accountIds</code>, you can specify an empty list for <code>userIds</code>.</p> </li> </ul>',
+    }),
+    groups: EbsGroupListSchema.exactOptional().openapi({
+      description:
+        '<p>The groups that have access to the Amazon EBS volume snapshot. If the value <code>all</code> is specified, then the Amazon EBS volume snapshot is public.</p> <ul> <li> <p>If the configuration is for an existing Amazon EBS volume snapshot and you do not specify the <code>groups</code>, then the access preview uses the existing shared <code>groups</code> for the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the <code>groups</code>, then the access preview considers the snapshot without any <code>groups</code>.</p> </li> <li> <p>To propose deletion of existing shared <code>groups</code>, you can specify an empty list for <code>groups</code>.</p> </li> </ul>',
+    }),
+    kmsKeyId: EbsSnapshotDataEncryptionKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>The KMS key identifier for an encrypted Amazon EBS volume snapshot. The KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <ul> <li> <p>If the configuration is for an existing Amazon EBS volume snapshot and you do not specify the <code>kmsKeyId</code>, or you specify an empty string, then the access preview uses the existing <code>kmsKeyId</code> of the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the <code>kmsKeyId</code>, the access preview considers the snapshot as unencrypted.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -48,14 +46,10 @@ const EcrRepositoryPolicySchema = z.string().openapi('EcrRepositoryPolicy')
 
 const EcrRepositoryConfigurationSchema = z
   .object({
-    repositoryPolicy: EcrRepositoryPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON repository policy text to apply to the Amazon ECR repository. For more information, see <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policy-examples.html">Private repository policy examples</a> in the <i>Amazon ECR User Guide</i>.',
-        }),
-    ).exactOptional(),
+    repositoryPolicy: EcrRepositoryPolicySchema.exactOptional().openapi({
+      description:
+        'The JSON repository policy text to apply to the Amazon ECR repository. For more information, see <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policy-examples.html">Private repository policy examples</a> in the <i>Amazon ECR User Guide</i>.',
+    }),
   })
   .openapi({
     description:
@@ -68,9 +62,9 @@ const IamTrustPolicySchema = z.string().openapi('IamTrustPolicy')
 
 const IamRoleConfigurationSchema = z
   .object({
-    trustPolicy: IamTrustPolicySchema.and(
-      z.any().openapi({ description: 'The proposed trust policy for the IAM role.' }),
-    ).exactOptional(),
+    trustPolicy: IamTrustPolicySchema.exactOptional().openapi({
+      description: 'The proposed trust policy for the IAM role.',
+    }),
   })
   .openapi({
     description:
@@ -83,14 +77,10 @@ const EfsFileSystemPolicySchema = z.string().openapi('EfsFileSystemPolicy')
 
 const EfsFileSystemConfigurationSchema = z
   .object({
-    fileSystemPolicy: EfsFileSystemPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON policy definition to apply to the Amazon EFS file system. For more information on the elements that make up a file system policy, see <a href="https://docs.aws.amazon.com/efs/latest/ug/access-control-overview.html#access-control-manage-access-intro-resource-policies">Amazon EFS Resource-based policies</a>.',
-        }),
-    ).exactOptional(),
+    fileSystemPolicy: EfsFileSystemPolicySchema.exactOptional().openapi({
+      description:
+        'The JSON policy definition to apply to the Amazon EFS file system. For more information on the elements that make up a file system policy, see <a href="https://docs.aws.amazon.com/efs/latest/ug/access-control-overview.html#access-control-manage-access-intro-resource-policies">Amazon EFS Resource-based policies</a>.',
+    }),
   })
   .openapi({
     description:
@@ -140,22 +130,14 @@ const KmsConstraintsMapSchema = z
 
 const KmsGrantConstraintsSchema = z
   .object({
-    encryptionContextEquals: KmsConstraintsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that must match the encryption context in the <a href="https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#cryptographic-operations">cryptographic operation</a> request. The grant allows the operation only when the encryption context in the request is the same as the encryption context specified in this constraint.',
-        }),
-    ).exactOptional(),
-    encryptionContextSubset: KmsConstraintsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that must be included in the encryption context of the <a href="https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#cryptographic-operations">cryptographic operation</a> request. The grant allows the cryptographic operation only when the encryption context in the request includes the key-value pairs specified in this constraint, although it can include additional key-value pairs.',
-        }),
-    ).exactOptional(),
+    encryptionContextEquals: KmsConstraintsMapSchema.exactOptional().openapi({
+      description:
+        'A list of key-value pairs that must match the encryption context in the <a href="https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#cryptographic-operations">cryptographic operation</a> request. The grant allows the operation only when the encryption context in the request is the same as the encryption context specified in this constraint.',
+    }),
+    encryptionContextSubset: KmsConstraintsMapSchema.exactOptional().openapi({
+      description:
+        'A list of key-value pairs that must be included in the encryption context of the <a href="https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#cryptographic-operations">cryptographic operation</a> request. The grant allows the cryptographic operation only when the encryption context in the request includes the key-value pairs specified in this constraint, although it can include additional key-value pairs.',
+    }),
   })
   .openapi({
     description:
@@ -168,41 +150,25 @@ const IssuingAccountSchema = z.string().openapi('IssuingAccount')
 
 const KmsGrantConfigurationSchema = z
   .object({
-    operations: KmsGrantOperationsListSchema.and(
-      z.any().openapi({ description: 'A list of operations that the grant permits.' }),
-    ),
-    granteePrincipal: GranteePrincipalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The principal that is given permission to perform the operations that the grant permits.',
-        }),
-    ),
-    retiringPrincipal: RetiringPrincipalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The principal that is given permission to retire the grant by using <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_RetireGrant.html">RetireGrant</a> operation.',
-        }),
-    ).exactOptional(),
-    constraints: KmsGrantConstraintsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this structure to propose allowing <a href="https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#cryptographic-operations">cryptographic operations</a> in the grant only when the operation request includes the specified <a href="https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context">encryption context</a>.',
-        }),
-    ).exactOptional(),
-    issuingAccount: IssuingAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Web Services account under which the grant was issued. The account is used to propose KMS grants issued by accounts other than the owner of the key.',
-        }),
-    ),
+    operations: KmsGrantOperationsListSchema.openapi({
+      description: 'A list of operations that the grant permits.',
+    }),
+    granteePrincipal: GranteePrincipalSchema.openapi({
+      description:
+        'The principal that is given permission to perform the operations that the grant permits.',
+    }),
+    retiringPrincipal: RetiringPrincipalSchema.exactOptional().openapi({
+      description:
+        'The principal that is given permission to retire the grant by using <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_RetireGrant.html">RetireGrant</a> operation.',
+    }),
+    constraints: KmsGrantConstraintsSchema.exactOptional().openapi({
+      description:
+        'Use this structure to propose allowing <a href="https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#cryptographic-operations">cryptographic operations</a> in the grant only when the operation request includes the specified <a href="https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context">encryption context</a>.',
+    }),
+    issuingAccount: IssuingAccountSchema.openapi({
+      description:
+        ' The Amazon Web Services account under which the grant was issued. The account is used to propose KMS grants issued by accounts other than the owner of the key.',
+    }),
   })
   .openapi({
     required: ['operations', 'granteePrincipal', 'issuingAccount'],
@@ -217,22 +183,14 @@ const KmsGrantConfigurationsListSchema = z
 
 const KmsKeyConfigurationSchema = z
   .object({
-    keyPolicies: KmsKeyPoliciesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Resource policy configuration for the KMS key. The only valid value for the name of the key policy is <code>default</code>. For more information, see <a href="https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default">Default key policy</a>.',
-        }),
-    ).exactOptional(),
-    grants: KmsGrantConfigurationsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of proposed grant configurations for the KMS key. If the proposed grant configuration is for an existing key, the access preview uses the proposed list of grant configurations in place of the existing grants. Otherwise, the access preview uses the existing grants for the key.',
-        }),
-    ).exactOptional(),
+    keyPolicies: KmsKeyPoliciesMapSchema.exactOptional().openapi({
+      description:
+        'Resource policy configuration for the KMS key. The only valid value for the name of the key policy is <code>default</code>. For more information, see <a href="https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default">Default key policy</a>.',
+    }),
+    grants: KmsGrantConfigurationsListSchema.exactOptional().openapi({
+      description:
+        'A list of proposed grant configurations for the KMS key. If the proposed grant configuration is for an existing key, the access preview uses the proposed list of grant configurations in place of the existing grants. Otherwise, the access preview uses the existing grants for the key.',
+    }),
   })
   .openapi({
     description:
@@ -249,14 +207,10 @@ const RdsDbClusterSnapshotAccountIdsListSchema = z
 
 const RdsDbClusterSnapshotAttributeValueSchema = z
   .object({
-    accountIds: RdsDbClusterSnapshotAccountIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Web Services account IDs that have access to the manual Amazon RDS DB cluster snapshot. If the value <code>all</code> is specified, then the Amazon RDS DB cluster snapshot is public and can be copied or restored by all Amazon Web Services accounts.</p> <ul> <li> <p>If the configuration is for an existing Amazon RDS DB cluster snapshot and you do not specify the <code>accountIds</code> in <code>RdsDbClusterSnapshotAttributeValue</code>, then the access preview uses the existing shared <code>accountIds</code> for the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the specify the <code>accountIds</code> in <code>RdsDbClusterSnapshotAttributeValue</code>, then the access preview considers the snapshot without any attributes.</p> </li> <li> <p>To propose deletion of existing shared <code>accountIds</code>, you can specify an empty list for <code>accountIds</code> in the <code>RdsDbClusterSnapshotAttributeValue</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    accountIds: RdsDbClusterSnapshotAccountIdsListSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Web Services account IDs that have access to the manual Amazon RDS DB cluster snapshot. If the value <code>all</code> is specified, then the Amazon RDS DB cluster snapshot is public and can be copied or restored by all Amazon Web Services accounts.</p> <ul> <li> <p>If the configuration is for an existing Amazon RDS DB cluster snapshot and you do not specify the <code>accountIds</code> in <code>RdsDbClusterSnapshotAttributeValue</code>, then the access preview uses the existing shared <code>accountIds</code> for the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the specify the <code>accountIds</code> in <code>RdsDbClusterSnapshotAttributeValue</code>, then the access preview considers the snapshot without any attributes.</p> </li> <li> <p>To propose deletion of existing shared <code>accountIds</code>, you can specify an empty list for <code>accountIds</code> in the <code>RdsDbClusterSnapshotAttributeValue</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description: 'The values for a manual Amazon RDS DB cluster snapshot attribute.',
@@ -272,22 +226,14 @@ const RdsDbClusterSnapshotKmsKeyIdSchema = z.string().openapi('RdsDbClusterSnaps
 
 const RdsDbClusterSnapshotConfigurationSchema = z
   .object({
-    attributes: RdsDbClusterSnapshotAttributesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names and values of manual DB cluster snapshot attributes. Manual DB cluster snapshot attributes are used to authorize other Amazon Web Services accounts to restore a manual DB cluster snapshot. The only valid value for <code>AttributeName</code> for the attribute map is <code>restore</code> ',
-        }),
-    ).exactOptional(),
-    kmsKeyId: RdsDbClusterSnapshotKmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The KMS key identifier for an encrypted Amazon RDS DB cluster snapshot. The KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <ul> <li> <p>If the configuration is for an existing Amazon RDS DB cluster snapshot and you do not specify the <code>kmsKeyId</code>, or you specify an empty string, then the access preview uses the existing <code>kmsKeyId</code> of the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the specify the <code>kmsKeyId</code>, then the access preview considers the snapshot as unencrypted.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    attributes: RdsDbClusterSnapshotAttributesMapSchema.exactOptional().openapi({
+      description:
+        'The names and values of manual DB cluster snapshot attributes. Manual DB cluster snapshot attributes are used to authorize other Amazon Web Services accounts to restore a manual DB cluster snapshot. The only valid value for <code>AttributeName</code> for the attribute map is <code>restore</code> ',
+    }),
+    kmsKeyId: RdsDbClusterSnapshotKmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>The KMS key identifier for an encrypted Amazon RDS DB cluster snapshot. The KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <ul> <li> <p>If the configuration is for an existing Amazon RDS DB cluster snapshot and you do not specify the <code>kmsKeyId</code>, or you specify an empty string, then the access preview uses the existing <code>kmsKeyId</code> of the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the specify the <code>kmsKeyId</code>, then the access preview considers the snapshot as unencrypted.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -304,14 +250,10 @@ const RdsDbSnapshotAccountIdsListSchema = z
 
 const RdsDbSnapshotAttributeValueSchema = z
   .object({
-    accountIds: RdsDbSnapshotAccountIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Web Services account IDs that have access to the manual Amazon RDS DB snapshot. If the value <code>all</code> is specified, then the Amazon RDS DB snapshot is public and can be copied or restored by all Amazon Web Services accounts.</p> <ul> <li> <p>If the configuration is for an existing Amazon RDS DB snapshot and you do not specify the <code>accountIds</code> in <code>RdsDbSnapshotAttributeValue</code>, then the access preview uses the existing shared <code>accountIds</code> for the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the specify the <code>accountIds</code> in <code>RdsDbSnapshotAttributeValue</code>, then the access preview considers the snapshot without any attributes.</p> </li> <li> <p>To propose deletion of an existing shared <code>accountIds</code>, you can specify an empty list for <code>accountIds</code> in the <code>RdsDbSnapshotAttributeValue</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    accountIds: RdsDbSnapshotAccountIdsListSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Web Services account IDs that have access to the manual Amazon RDS DB snapshot. If the value <code>all</code> is specified, then the Amazon RDS DB snapshot is public and can be copied or restored by all Amazon Web Services accounts.</p> <ul> <li> <p>If the configuration is for an existing Amazon RDS DB snapshot and you do not specify the <code>accountIds</code> in <code>RdsDbSnapshotAttributeValue</code>, then the access preview uses the existing shared <code>accountIds</code> for the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the specify the <code>accountIds</code> in <code>RdsDbSnapshotAttributeValue</code>, then the access preview considers the snapshot without any attributes.</p> </li> <li> <p>To propose deletion of an existing shared <code>accountIds</code>, you can specify an empty list for <code>accountIds</code> in the <code>RdsDbSnapshotAttributeValue</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -328,22 +270,14 @@ const RdsDbSnapshotKmsKeyIdSchema = z.string().openapi('RdsDbSnapshotKmsKeyId')
 
 const RdsDbSnapshotConfigurationSchema = z
   .object({
-    attributes: RdsDbSnapshotAttributesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names and values of manual DB snapshot attributes. Manual DB snapshot attributes are used to authorize other Amazon Web Services accounts to restore a manual DB snapshot. The only valid value for <code>attributeName</code> for the attribute map is restore.',
-        }),
-    ).exactOptional(),
-    kmsKeyId: RdsDbSnapshotKmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The KMS key identifier for an encrypted Amazon RDS DB snapshot. The KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <ul> <li> <p>If the configuration is for an existing Amazon RDS DB snapshot and you do not specify the <code>kmsKeyId</code>, or you specify an empty string, then the access preview uses the existing <code>kmsKeyId</code> of the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the specify the <code>kmsKeyId</code>, then the access preview considers the snapshot as unencrypted.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    attributes: RdsDbSnapshotAttributesMapSchema.exactOptional().openapi({
+      description:
+        'The names and values of manual DB snapshot attributes. Manual DB snapshot attributes are used to authorize other Amazon Web Services accounts to restore a manual DB snapshot. The only valid value for <code>attributeName</code> for the attribute map is restore.',
+    }),
+    kmsKeyId: RdsDbSnapshotKmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>The KMS key identifier for an encrypted Amazon RDS DB snapshot. The KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <ul> <li> <p>If the configuration is for an existing Amazon RDS DB snapshot and you do not specify the <code>kmsKeyId</code>, or you specify an empty string, then the access preview uses the existing <code>kmsKeyId</code> of the snapshot.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the specify the <code>kmsKeyId</code>, then the access preview considers the snapshot as unencrypted.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -358,16 +292,12 @@ const SecretsManagerSecretPolicySchema = z.string().openapi('SecretsManagerSecre
 
 const SecretsManagerSecretConfigurationSchema = z
   .object({
-    kmsKeyId: SecretsManagerSecretKmsIdSchema.and(
-      z.any().openapi({ description: 'The proposed ARN, key ID, or alias of the KMS key.' }),
-    ).exactOptional(),
-    secretPolicy: SecretsManagerSecretPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The proposed resource policy defining who can access or manage the secret.',
-        }),
-    ).exactOptional(),
+    kmsKeyId: SecretsManagerSecretKmsIdSchema.exactOptional().openapi({
+      description: 'The proposed ARN, key ID, or alias of the KMS key.',
+    }),
+    secretPolicy: SecretsManagerSecretPolicySchema.exactOptional().openapi({
+      description: 'The proposed resource policy defining who can access or manage the secret.',
+    }),
   })
   .openapi({
     description:
@@ -388,17 +318,13 @@ const AclUriSchema = z.string().openapi('AclUri')
 
 const AclGranteeSchema = z
   .object({
-    id: AclCanonicalIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value specified is the canonical user ID of an Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    uri: AclUriSchema.and(
-      z.any().openapi({ description: 'Used for granting permissions to a predefined group.' }),
-    ).exactOptional(),
+    id: AclCanonicalIdSchema.exactOptional().openapi({
+      description:
+        'The value specified is the canonical user ID of an Amazon Web Services account.',
+    }),
+    uri: AclUriSchema.exactOptional().openapi({
+      description: 'Used for granting permissions to a predefined group.',
+    }),
   })
   .openapi({
     description:
@@ -409,12 +335,10 @@ const AclGranteeSchema = z
 
 const S3BucketAclGrantConfigurationSchema = z
   .object({
-    permission: AclPermissionSchema.and(
-      z.any().openapi({ description: 'The permissions being granted.' }),
-    ),
-    grantee: AclGranteeSchema.and(
-      z.any().openapi({ description: 'The grantee to whom you’re assigning access rights.' }),
-    ),
+    permission: AclPermissionSchema.openapi({ description: 'The permissions being granted.' }),
+    grantee: AclGranteeSchema.openapi({
+      description: 'The grantee to whom you’re assigning access rights.',
+    }),
   })
   .openapi({
     required: ['permission', 'grantee'],
@@ -431,22 +355,14 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const S3PublicAccessBlockConfigurationSchema = z
   .object({
-    ignorePublicAcls: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies whether Amazon S3 should ignore public ACLs for this bucket and objects in this bucket. ',
-        }),
-    ),
-    restrictPublicBuckets: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies whether Amazon S3 should restrict public bucket policies for this bucket. ',
-        }),
-    ),
+    ignorePublicAcls: BooleanSchema.openapi({
+      description:
+        ' Specifies whether Amazon S3 should ignore public ACLs for this bucket and objects in this bucket. ',
+    }),
+    restrictPublicBuckets: BooleanSchema.openapi({
+      description:
+        ' Specifies whether Amazon S3 should restrict public bucket policies for this bucket. ',
+    }),
   })
   .openapi({
     required: ['ignorePublicAcls', 'restrictPublicBuckets'],
@@ -464,14 +380,10 @@ const VpcIdSchema = z
 
 const VpcConfigurationSchema = z
   .object({
-    vpcId: VpcIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If this field is specified, this access point will only allow connections from the specified VPC ID. ',
-        }),
-    ),
+    vpcId: VpcIdSchema.openapi({
+      description:
+        ' If this field is specified, this access point will only allow connections from the specified VPC ID. ',
+    }),
   })
   .openapi({
     required: ['vpcId'],
@@ -481,7 +393,7 @@ const VpcConfigurationSchema = z
   .openapi('VpcConfiguration')
 
 const InternetConfigurationSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'This configuration sets the network origin for the Amazon S3 access point or multi-region access point to <code>Internet</code>.',
@@ -491,14 +403,10 @@ const InternetConfigurationSchema = z
 const NetworkOriginConfigurationSchema = z
   .object({
     vpcConfiguration: VpcConfigurationSchema.exactOptional(),
-    internetConfiguration: InternetConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for the Amazon S3 access point or multi-region access point with an <code>Internet</code> origin.',
-        }),
-    ).exactOptional(),
+    internetConfiguration: InternetConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration for the Amazon S3 access point or multi-region access point with an <code>Internet</code> origin.',
+    }),
   })
   .openapi({
     description:
@@ -509,25 +417,17 @@ const NetworkOriginConfigurationSchema = z
 
 const S3AccessPointConfigurationSchema = z
   .object({
-    accessPointPolicy: AccessPointPolicySchema.and(
-      z.any().openapi({ description: 'The access point or multi-region access point policy.' }),
-    ).exactOptional(),
-    publicAccessBlock: S3PublicAccessBlockConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The proposed <code>S3PublicAccessBlock</code> configuration to apply to this Amazon S3 access point or multi-region access point.',
-        }),
-    ).exactOptional(),
-    networkOrigin: NetworkOriginConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The proposed <code>Internet</code> and <code>VpcConfiguration</code> to apply to this Amazon S3 access point. <code>VpcConfiguration</code> does not apply to multi-region access points. If the access preview is for a new resource and neither is specified, the access preview uses <code>Internet</code> for the network origin. If the access preview is for an existing resource and neither is specified, the access preview uses the exiting network origin.',
-        }),
-    ).exactOptional(),
+    accessPointPolicy: AccessPointPolicySchema.exactOptional().openapi({
+      description: 'The access point or multi-region access point policy.',
+    }),
+    publicAccessBlock: S3PublicAccessBlockConfigurationSchema.exactOptional().openapi({
+      description:
+        'The proposed <code>S3PublicAccessBlock</code> configuration to apply to this Amazon S3 access point or multi-region access point.',
+    }),
+    networkOrigin: NetworkOriginConfigurationSchema.exactOptional().openapi({
+      description:
+        'The proposed <code>Internet</code> and <code>VpcConfiguration</code> to apply to this Amazon S3 access point. <code>VpcConfiguration</code> does not apply to multi-region access points. If the access preview is for a new resource and neither is specified, the access preview uses <code>Internet</code> for the network origin. If the access preview is for an existing resource and neither is specified, the access preview uses the exiting network origin.',
+    }),
   })
   .openapi({
     description:
@@ -542,32 +442,20 @@ const S3AccessPointConfigurationsMapSchema = z
 
 const S3BucketConfigurationSchema = z
   .object({
-    bucketPolicy: S3BucketPolicySchema.and(
-      z.any().openapi({ description: 'The proposed bucket policy for the Amazon S3 bucket.' }),
-    ).exactOptional(),
-    bucketAclGrants: S3BucketAclGrantConfigurationsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The proposed list of ACL grants for the Amazon S3 bucket. You can propose up to 100 ACL grants per bucket. If the proposed grant configuration is for an existing bucket, the access preview uses the proposed list of grant configurations in place of the existing grants. Otherwise, the access preview uses the existing grants for the bucket.',
-        }),
-    ).exactOptional(),
-    bucketPublicAccessBlock: S3PublicAccessBlockConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The proposed block public access configuration for the Amazon S3 bucket.',
-        }),
-    ).exactOptional(),
-    accessPoints: S3AccessPointConfigurationsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration of Amazon S3 access points or multi-region access points for the bucket. You can propose up to 10 new access points per bucket.',
-        }),
-    ).exactOptional(),
+    bucketPolicy: S3BucketPolicySchema.exactOptional().openapi({
+      description: 'The proposed bucket policy for the Amazon S3 bucket.',
+    }),
+    bucketAclGrants: S3BucketAclGrantConfigurationsListSchema.exactOptional().openapi({
+      description:
+        'The proposed list of ACL grants for the Amazon S3 bucket. You can propose up to 100 ACL grants per bucket. If the proposed grant configuration is for an existing bucket, the access preview uses the proposed list of grant configurations in place of the existing grants. Otherwise, the access preview uses the existing grants for the bucket.',
+    }),
+    bucketPublicAccessBlock: S3PublicAccessBlockConfigurationSchema.exactOptional().openapi({
+      description: 'The proposed block public access configuration for the Amazon S3 bucket.',
+    }),
+    accessPoints: S3AccessPointConfigurationsMapSchema.exactOptional().openapi({
+      description:
+        'The configuration of Amazon S3 access points or multi-region access points for the bucket. You can propose up to 10 new access points per bucket.',
+    }),
   })
   .openapi({
     description:
@@ -580,14 +468,10 @@ const SnsTopicPolicySchema = z.string().min(0).max(30720).openapi('SnsTopicPolic
 
 const SnsTopicConfigurationSchema = z
   .object({
-    topicPolicy: SnsTopicPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON policy text that defines who can access an Amazon SNS topic. For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-access-policy-use-cases.html">Example cases for Amazon SNS access control</a> in the <i>Amazon SNS Developer Guide</i>.',
-        }),
-    ).exactOptional(),
+    topicPolicy: SnsTopicPolicySchema.exactOptional().openapi({
+      description:
+        'The JSON policy text that defines who can access an Amazon SNS topic. For more information, see <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-access-policy-use-cases.html">Example cases for Amazon SNS access control</a> in the <i>Amazon SNS Developer Guide</i>.',
+    }),
   })
   .openapi({
     description:
@@ -600,9 +484,9 @@ const SqsQueuePolicySchema = z.string().openapi('SqsQueuePolicy')
 
 const SqsQueueConfigurationSchema = z
   .object({
-    queuePolicy: SqsQueuePolicySchema.and(
-      z.any().openapi({ description: ' The proposed resource policy for the Amazon SQS queue. ' }),
-    ).exactOptional(),
+    queuePolicy: SqsQueuePolicySchema.exactOptional().openapi({
+      description: ' The proposed resource policy for the Amazon SQS queue. ',
+    }),
   })
   .openapi({
     description:
@@ -611,215 +495,48 @@ const SqsQueueConfigurationSchema = z
   })
   .openapi('SqsQueueConfiguration')
 
-type ConfigurationType = {
-  ebsSnapshot?: z.infer<typeof EbsSnapshotConfigurationSchema> & { [key: string]: unknown }
-  ecrRepository?: z.infer<typeof EcrRepositoryConfigurationSchema> & { [key: string]: unknown }
-  iamRole?: z.infer<typeof IamRoleConfigurationSchema> & { [key: string]: unknown }
-  efsFileSystem?: z.infer<typeof EfsFileSystemConfigurationSchema> & { [key: string]: unknown }
-  kmsKey?: z.infer<typeof KmsKeyConfigurationSchema> & { [key: string]: unknown }
-  rdsDbClusterSnapshot?: z.infer<typeof RdsDbClusterSnapshotConfigurationSchema> & {
-    [key: string]: unknown
-  }
-  rdsDbSnapshot?: z.infer<typeof RdsDbSnapshotConfigurationSchema> & { [key: string]: unknown }
-  secretsManagerSecret?: z.infer<typeof SecretsManagerSecretConfigurationSchema> & {
-    [key: string]: unknown
-  }
-  s3Bucket?: z.infer<typeof S3BucketConfigurationSchema> & { [key: string]: unknown }
-  snsTopic?: z.infer<typeof SnsTopicConfigurationSchema> & { [key: string]: unknown }
-  sqsQueue?: z.infer<typeof SqsQueueConfigurationSchema> & { [key: string]: unknown }
-}
-
-const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
-
-const ValidationExceptionSchema = z.any().openapi('ValidationException')
-
-const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
-
-const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
-
-const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
-
-const CancelPolicyGenerationResponseSchema = z.object({}).openapi('CancelPolicyGenerationResponse')
-
-const AccessPreviewIdSchema = z
-  .string()
-  .regex(/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/)
-  .openapi('AccessPreviewId')
-
-const CreateAccessPreviewResponseSchema = z
+const ConfigurationSchema = z
   .object({
-    id: AccessPreviewIdSchema.and(
-      z.any().openapi({ description: 'The unique ID for the access preview.' }),
-    ),
-  })
-  .openapi({ required: ['id'] })
-  .openapi('CreateAccessPreviewResponse')
-
-const ConfigurationSchema: z.ZodType<ConfigurationType> = z
-  .lazy(() =>
-    z
-      .object({
-        ebsSnapshot: EbsSnapshotConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The access control configuration is for an Amazon EBS volume snapshot.',
-            }),
-        ).exactOptional(),
-        ecrRepository: EcrRepositoryConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The access control configuration is for an Amazon ECR repository.',
-            }),
-        ).exactOptional(),
-        iamRole: IamRoleConfigurationSchema.and(
-          z.any().openapi({ description: 'The access control configuration is for an IAM role. ' }),
-        ).exactOptional(),
-        efsFileSystem: EfsFileSystemConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The access control configuration is for an Amazon EFS file system.',
-            }),
-        ).exactOptional(),
-        kmsKey: KmsKeyConfigurationSchema.and(
-          z.any().openapi({ description: 'The access control configuration is for a KMS key. ' }),
-        ).exactOptional(),
-        rdsDbClusterSnapshot: RdsDbClusterSnapshotConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The access control configuration is for an Amazon RDS DB cluster snapshot.',
-            }),
-        ).exactOptional(),
-        rdsDbSnapshot: RdsDbSnapshotConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The access control configuration is for an Amazon RDS DB snapshot.',
-            }),
-        ).exactOptional(),
-        secretsManagerSecret: SecretsManagerSecretConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The access control configuration is for a Secrets Manager secret.',
-            }),
-        ).exactOptional(),
-        s3Bucket: S3BucketConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The access control configuration is for an Amazon S3 Bucket. ',
-            }),
-        ).exactOptional(),
-        snsTopic: SnsTopicConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The access control configuration is for an Amazon SNS topic',
-            }),
-        ).exactOptional(),
-        sqsQueue: SqsQueueConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The access control configuration is for an Amazon SQS queue. ',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'Access control configuration structures for your resource. You specify the configuration as a type-value pair. You can specify only one type of access control configuration.',
-        required: [],
-      }),
-  )
-  .openapi('Configuration')
-
-const ConflictExceptionSchema = z.any().openapi('ConflictException')
-
-const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceededException')
-
-const AnalyzerArnSchema = z
-  .string()
-  .regex(/[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:analyzer\/.{1,255}/)
-  .openapi('AnalyzerArn')
-
-const CreateAnalyzerResponseSchema = z
-  .object({
-    arn: AnalyzerArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the analyzer that was created by the request.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The response to the request to create an analyzer.', required: [] })
-  .openapi('CreateAnalyzerResponse')
-
-const NameSchema = z
-  .string()
-  .regex(/[A-Za-z][A-Za-z0-9_.-]*/)
-  .min(1)
-  .max(255)
-  .openapi('Name')
-
-const StringSchema = z.string().openapi('String')
-
-const ValueListSchema = z.array(StringSchema).min(1).max(20).openapi('ValueList')
-
-const CriterionSchema = z
-  .object({
-    eq: ValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An "equals" operator to match for the filter used to create the rule.',
-        }),
-    ).exactOptional(),
-    neq: ValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A "not equals" operator to match for the filter used to create the rule.',
-        }),
-    ).exactOptional(),
-    contains: ValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A "contains" operator to match for the filter used to create the rule.',
-        }),
-    ).exactOptional(),
-    exists: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An "exists" operator to match for the filter used to create the rule. ',
-        }),
-    ).exactOptional(),
+    ebsSnapshot: EbsSnapshotConfigurationSchema.exactOptional().openapi({
+      description: 'The access control configuration is for an Amazon EBS volume snapshot.',
+    }),
+    ecrRepository: EcrRepositoryConfigurationSchema.exactOptional().openapi({
+      description: 'The access control configuration is for an Amazon ECR repository.',
+    }),
+    iamRole: IamRoleConfigurationSchema.exactOptional().openapi({
+      description: 'The access control configuration is for an IAM role. ',
+    }),
+    efsFileSystem: EfsFileSystemConfigurationSchema.exactOptional().openapi({
+      description: 'The access control configuration is for an Amazon EFS file system.',
+    }),
+    kmsKey: KmsKeyConfigurationSchema.exactOptional().openapi({
+      description: 'The access control configuration is for a KMS key. ',
+    }),
+    rdsDbClusterSnapshot: RdsDbClusterSnapshotConfigurationSchema.exactOptional().openapi({
+      description: 'The access control configuration is for an Amazon RDS DB cluster snapshot.',
+    }),
+    rdsDbSnapshot: RdsDbSnapshotConfigurationSchema.exactOptional().openapi({
+      description: 'The access control configuration is for an Amazon RDS DB snapshot.',
+    }),
+    secretsManagerSecret: SecretsManagerSecretConfigurationSchema.exactOptional().openapi({
+      description: 'The access control configuration is for a Secrets Manager secret.',
+    }),
+    s3Bucket: S3BucketConfigurationSchema.exactOptional().openapi({
+      description: 'The access control configuration is for an Amazon S3 Bucket. ',
+    }),
+    snsTopic: SnsTopicConfigurationSchema.exactOptional().openapi({
+      description: 'The access control configuration is for an Amazon SNS topic',
+    }),
+    sqsQueue: SqsQueueConfigurationSchema.exactOptional().openapi({
+      description: 'The access control configuration is for an Amazon SQS queue. ',
+    }),
   })
   .openapi({
     description:
-      'The criteria to use in the filter that defines the archive rule. For more information on available filter keys, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html">IAM Access Analyzer filter keys</a>.',
+      'Access control configuration structures for your resource. You specify the configuration as a type-value pair. You can specify only one type of access control configuration.',
     required: [],
   })
-  .openapi('Criterion')
-
-const FilterCriteriaMapSchema = z.record(z.string(), CriterionSchema).openapi('FilterCriteriaMap')
-
-const InlineArchiveRuleSchema = z
-  .object({
-    ruleName: NameSchema.and(z.any().openapi({ description: 'The name of the rule.' })),
-    filter: FilterCriteriaMapSchema.and(
-      z.any().openapi({ description: 'The condition and values for a criterion.' }),
-    ),
-  })
-  .openapi({
-    required: ['ruleName', 'filter'],
-    description:
-      'An criterion statement in an archive rule. Each archive rule may have multiple criteria.',
-  })
-  .openapi('InlineArchiveRule')
+  .openapi('Configuration')
 
 const ConfigurationsMapSchema = z
   .record(z.string(), ConfigurationSchema)
@@ -837,11 +554,9 @@ const AccessPreviewStatusReasonCodeSchema = z
 
 const AccessPreviewStatusReasonSchema = z
   .object({
-    code: AccessPreviewStatusReasonCodeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The reason code for the current status of the access preview.' }),
-    ),
+    code: AccessPreviewStatusReasonCodeSchema.openapi({
+      description: 'The reason code for the current status of the access preview.',
+    }),
   })
   .openapi({
     required: ['code'],
@@ -850,42 +565,35 @@ const AccessPreviewStatusReasonSchema = z
   })
   .openapi('AccessPreviewStatusReason')
 
-const AccessPreviewSchema = z
+type AccessPreviewType = {
+  id: z.infer<typeof AccessPreviewIdSchema> & unknown
+  analyzerArn: z.infer<typeof AnalyzerArnSchema> & unknown
+  configurations: z.infer<typeof ConfigurationsMapSchema> & unknown
+  createdAt: z.infer<typeof TimestampSchema> & unknown
+  status: z.infer<typeof AccessPreviewStatusSchema> & unknown
+  statusReason?: z.infer<typeof AccessPreviewStatusReasonSchema> & unknown
+}
+
+const AccessPreviewSchema: z.ZodType<AccessPreviewType> = z
   .object({
-    id: AccessPreviewIdSchema.and(
-      z.any().openapi({ description: 'The unique ID for the access preview.' }),
-    ),
-    analyzerArn: AnalyzerArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the analyzer used to generate the access preview.' }),
-    ),
-    configurations: ConfigurationsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A map of resource ARNs for the proposed resource configuration.',
-        }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the access preview was created.' }),
-    ),
-    status: AccessPreviewStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the access preview.</p> <ul> <li> <p> <code>Creating</code> - The access preview creation is in progress.</p> </li> <li> <p> <code>Completed</code> - The access preview is complete. You can preview findings for external access to the resource.</p> </li> <li> <p> <code>Failed</code> - The access preview creation has failed.</p> </li> </ul>',
-        }),
-    ),
-    statusReason: AccessPreviewStatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Provides more details about the current status of the access preview.</p> <p>For example, if the creation of the access preview fails, a <code>Failed</code> status is returned. This failure can be due to an internal issue with the analysis or due to an invalid resource configuration.</p>',
-        }),
-    ).exactOptional(),
+    id: AccessPreviewIdSchema.openapi({ description: 'The unique ID for the access preview.' }),
+    analyzerArn: AnalyzerArnSchema.openapi({
+      description: 'The ARN of the analyzer used to generate the access preview.',
+    }),
+    configurations: ConfigurationsMapSchema.openapi({
+      description: 'A map of resource ARNs for the proposed resource configuration.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time at which the access preview was created.',
+    }),
+    status: AccessPreviewStatusSchema.openapi({
+      description:
+        '<p>The status of the access preview.</p> <ul> <li> <p> <code>Creating</code> - The access preview creation is in progress.</p> </li> <li> <p> <code>Completed</code> - The access preview is complete. You can preview findings for external access to the resource.</p> </li> <li> <p> <code>Failed</code> - The access preview creation has failed.</p> </li> </ul>',
+    }),
+    statusReason: AccessPreviewStatusReasonSchema.exactOptional().openapi({
+      description:
+        '<p>Provides more details about the current status of the access preview.</p> <p>For example, if the creation of the access preview fails, a <code>Failed</code> status is returned. This failure can be due to an internal issue with the analysis or due to an invalid resource configuration.</p>',
+    }),
   })
   .openapi({
     required: ['id', 'analyzerArn', 'configurations', 'createdAt', 'status'],
@@ -893,13 +601,226 @@ const AccessPreviewSchema = z
   })
   .openapi('AccessPreview')
 
-const GetAccessPreviewResponseSchema = z
+type GetAccessPreviewResponseType = { accessPreview: z.infer<typeof AccessPreviewSchema> & unknown }
+
+const StringSchema = z.string().openapi('String')
+
+const ValidatePolicyFindingTypeSchema = z
+  .enum(['ERROR', 'SECURITY_WARNING', 'SUGGESTION', 'WARNING'])
+  .openapi('ValidatePolicyFindingType')
+
+const IssueCodeSchema = z.string().openapi('IssueCode')
+
+const LearnMoreLinkSchema = z.string().openapi('LearnMoreLink')
+
+const IntegerSchema = z.int().openapi('Integer')
+
+const SubstringSchema = z
   .object({
-    accessPreview: AccessPreviewSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that contains information about the access preview.' }),
-    ),
+    start: IntegerSchema.openapi({
+      description: 'The start index of the substring, starting from 0.',
+    }),
+    length: IntegerSchema.openapi({ description: 'The length of the substring.' }),
+  })
+  .openapi({
+    required: ['start', 'length'],
+    description: 'A reference to a substring of a literal string in a JSON document.',
+  })
+  .openapi('Substring')
+
+const PathElementSchema = z
+  .object({
+    index: IntegerSchema.exactOptional().openapi({
+      description: 'Refers to an index in a JSON array.',
+    }),
+    key: StringSchema.exactOptional().openapi({ description: 'Refers to a key in a JSON object.' }),
+    substring: SubstringSchema.exactOptional().openapi({
+      description: 'Refers to a substring of a literal string in a JSON object.',
+    }),
+    value: StringSchema.exactOptional().openapi({
+      description: 'Refers to the value associated with a given key in a JSON object.',
+    }),
+  })
+  .openapi({
+    description: 'A single element in a path through the JSON representation of a policy.',
+    required: [],
+  })
+  .openapi('PathElement')
+
+const PathElementListSchema = z.array(PathElementSchema).openapi('PathElementList')
+
+const PositionSchema = z
+  .object({
+    line: IntegerSchema.openapi({ description: 'The line of the position, starting from 1.' }),
+    column: IntegerSchema.openapi({ description: 'The column of the position, starting from 0.' }),
+    offset: IntegerSchema.openapi({
+      description:
+        'The offset within the policy that corresponds to the position, starting from 0.',
+    }),
+  })
+  .openapi({ required: ['line', 'column', 'offset'], description: 'A position in a policy.' })
+  .openapi('Position')
+
+const SpanSchema = z
+  .object({
+    start: PositionSchema.openapi({ description: 'The start position of the span (inclusive).' }),
+    end: PositionSchema.openapi({ description: 'The end position of the span (exclusive).' }),
+  })
+  .openapi({
+    required: ['start', 'end'],
+    description:
+      'A span in a policy. The span consists of a start position (inclusive) and end position (exclusive).',
+  })
+  .openapi('Span')
+
+const LocationSchema = z
+  .object({
+    path: PathElementListSchema.openapi({
+      description: 'A path in a policy, represented as a sequence of path elements.',
+    }),
+    span: SpanSchema.openapi({ description: 'A span in a policy.' }),
+  })
+  .openapi({
+    required: ['path', 'span'],
+    description:
+      'A location in a policy that is represented as a path through the JSON representation and a corresponding span.',
+  })
+  .openapi('Location')
+
+const LocationListSchema = z.array(LocationSchema).openapi('LocationList')
+
+const ValidatePolicyFindingSchema = z
+  .object({
+    findingDetails: StringSchema.openapi({
+      description:
+        'A localized message that explains the finding and provides guidance on how to address it.',
+    }),
+    findingType: ValidatePolicyFindingTypeSchema.openapi({
+      description:
+        '<p>The impact of the finding.</p> <p>Security warnings report when the policy allows access that we consider overly permissive.</p> <p>Errors report when a part of the policy is not functional.</p> <p>Warnings report non-security issues when a policy does not conform to policy writing best practices.</p> <p>Suggestions recommend stylistic improvements in the policy that do not impact access.</p>',
+    }),
+    issueCode: IssueCodeSchema.openapi({
+      description:
+        'The issue code provides an identifier of the issue associated with this finding.',
+    }),
+    learnMoreLink: LearnMoreLinkSchema.openapi({
+      description: 'A link to additional documentation about the type of finding.',
+    }),
+    locations: LocationListSchema.openapi({
+      description:
+        'The list of locations in the policy document that are related to the finding. The issue code provides a summary of an issue identified by the finding.',
+    }),
+  })
+  .openapi({
+    required: ['findingDetails', 'findingType', 'issueCode', 'learnMoreLink', 'locations'],
+    description:
+      'A finding in a policy. Each finding is an actionable recommendation that can be used to improve the policy.',
+  })
+  .openapi('ValidatePolicyFinding')
+
+const ValidatePolicyFindingListSchema = z
+  .array(ValidatePolicyFindingSchema)
+  .openapi('ValidatePolicyFindingList')
+
+const TokenSchema = z.string().openapi('Token')
+
+type ValidatePolicyResponseType = {
+  findings: z.infer<typeof ValidatePolicyFindingListSchema> & unknown
+  nextToken?: z.infer<typeof TokenSchema> & unknown
+}
+
+type CreateAccessPreviewRequestType = {
+  analyzerArn: z.infer<typeof AnalyzerArnSchema> & unknown
+  configurations: z.infer<typeof ConfigurationsMapSchema> & unknown
+  clientToken?: z.infer<typeof StringSchema> & unknown
+}
+
+const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
+
+const ValidationExceptionSchema = z.any().openapi('ValidationException')
+
+const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
+
+const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
+
+const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
+
+const CancelPolicyGenerationResponseSchema = z
+  .looseObject({})
+  .openapi('CancelPolicyGenerationResponse')
+
+const CreateAccessPreviewResponseSchema = z
+  .object({
+    id: AccessPreviewIdSchema.openapi({ description: 'The unique ID for the access preview.' }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('CreateAccessPreviewResponse')
+
+const ConflictExceptionSchema = z.any().openapi('ConflictException')
+
+const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceededException')
+
+const CreateAnalyzerResponseSchema = z
+  .object({
+    arn: AnalyzerArnSchema.exactOptional().openapi({
+      description: 'The ARN of the analyzer that was created by the request.',
+    }),
+  })
+  .openapi({ description: 'The response to the request to create an analyzer.', required: [] })
+  .openapi('CreateAnalyzerResponse')
+
+const NameSchema = z
+  .string()
+  .regex(/[A-Za-z][A-Za-z0-9_.-]*/)
+  .min(1)
+  .max(255)
+  .openapi('Name')
+
+const ValueListSchema = z.array(StringSchema).min(1).max(20).openapi('ValueList')
+
+const CriterionSchema = z
+  .object({
+    eq: ValueListSchema.exactOptional().openapi({
+      description: 'An "equals" operator to match for the filter used to create the rule.',
+    }),
+    neq: ValueListSchema.exactOptional().openapi({
+      description: 'A "not equals" operator to match for the filter used to create the rule.',
+    }),
+    contains: ValueListSchema.exactOptional().openapi({
+      description: 'A "contains" operator to match for the filter used to create the rule.',
+    }),
+    exists: BooleanSchema.exactOptional().openapi({
+      description: 'An "exists" operator to match for the filter used to create the rule. ',
+    }),
+  })
+  .openapi({
+    description:
+      'The criteria to use in the filter that defines the archive rule. For more information on available filter keys, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html">IAM Access Analyzer filter keys</a>.',
+    required: [],
+  })
+  .openapi('Criterion')
+
+const FilterCriteriaMapSchema = z.record(z.string(), CriterionSchema).openapi('FilterCriteriaMap')
+
+const InlineArchiveRuleSchema = z
+  .object({
+    ruleName: NameSchema.openapi({ description: 'The name of the rule.' }),
+    filter: FilterCriteriaMapSchema.openapi({
+      description: 'The condition and values for a criterion.',
+    }),
+  })
+  .openapi({
+    required: ['ruleName', 'filter'],
+    description:
+      'An criterion statement in an archive rule. Each archive rule may have multiple criteria.',
+  })
+  .openapi('InlineArchiveRule')
+
+const GetAccessPreviewResponseSchema: z.ZodType<GetAccessPreviewResponseType> = z
+  .object({
+    accessPreview: AccessPreviewSchema.openapi({
+      description: 'An object that contains information about the access preview.',
+    }),
   })
   .openapi({ required: ['accessPreview'] })
   .openapi('GetAccessPreviewResponse')
@@ -935,58 +856,40 @@ const FindingStatusSchema = z.enum(['ACTIVE', 'ARCHIVED', 'RESOLVED']).openapi('
 
 const AnalyzedResourceSchema = z
   .object({
-    resourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource that was analyzed.' }),
-    ),
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the resource that was analyzed.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the finding was created.' }),
-    ),
-    analyzedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the resource was analyzed.' }),
-    ),
-    updatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the finding was updated.' }),
-    ),
-    isPublic: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the policy that generated the finding grants public access to the resource.',
-        }),
-    ),
-    actions: ActionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The actions that an external principal is granted permission to use by the policy that generated the finding.',
-        }),
-    ).exactOptional(),
-    sharedVia: SharedViaListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates how the access that generated the finding is granted. This is populated for Amazon S3 bucket findings.',
-        }),
-    ).exactOptional(),
-    status: FindingStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The current status of the finding generated from the analyzed resource.',
-        }),
-    ).exactOptional(),
-    resourceOwnerAccount: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Web Services account ID that owns the resource.' }),
-    ),
-    error: StringSchema.and(z.any().openapi({ description: 'An error message.' })).exactOptional(),
+    resourceArn: ResourceArnSchema.openapi({
+      description: 'The ARN of the resource that was analyzed.',
+    }),
+    resourceType: ResourceTypeSchema.openapi({
+      description: 'The type of the resource that was analyzed.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time at which the finding was created.',
+    }),
+    analyzedAt: TimestampSchema.openapi({
+      description: 'The time at which the resource was analyzed.',
+    }),
+    updatedAt: TimestampSchema.openapi({
+      description: 'The time at which the finding was updated.',
+    }),
+    isPublic: BooleanSchema.openapi({
+      description:
+        'Indicates whether the policy that generated the finding grants public access to the resource.',
+    }),
+    actions: ActionListSchema.exactOptional().openapi({
+      description:
+        'The actions that an external principal is granted permission to use by the policy that generated the finding.',
+    }),
+    sharedVia: SharedViaListSchema.exactOptional().openapi({
+      description:
+        'Indicates how the access that generated the finding is granted. This is populated for Amazon S3 bucket findings.',
+    }),
+    status: FindingStatusSchema.exactOptional().openapi({
+      description: 'The current status of the finding generated from the analyzed resource.',
+    }),
+    resourceOwnerAccount: StringSchema.openapi({
+      description: 'The Amazon Web Services account ID that owns the resource.',
+    }),
+    error: StringSchema.exactOptional().openapi({ description: 'An error message.' }),
   })
   .openapi({
     required: [
@@ -1004,14 +907,10 @@ const AnalyzedResourceSchema = z
 
 const GetAnalyzedResourceResponseSchema = z
   .object({
-    resource: AnalyzedResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>AnalyzedResource</code> object that contains information that IAM Access Analyzer found when it analyzed the resource.',
-        }),
-    ).exactOptional(),
+    resource: AnalyzedResourceSchema.exactOptional().openapi({
+      description:
+        'An <code>AnalyzedResource</code> object that contains information that IAM Access Analyzer found when it analyzed the resource.',
+    }),
   })
   .openapi({ description: 'The response to the request.', required: [] })
   .openapi('GetAnalyzedResourceResponse')
@@ -1035,9 +934,9 @@ const ReasonCodeSchema = z
 
 const StatusReasonSchema = z
   .object({
-    code: ReasonCodeSchema.and(
-      z.any().openapi({ description: 'The reason code for the current status of the analyzer.' }),
-    ),
+    code: ReasonCodeSchema.openapi({
+      description: 'The reason code for the current status of the analyzer.',
+    }),
   })
   .openapi({
     required: ['code'],
@@ -1048,52 +947,30 @@ const StatusReasonSchema = z
 
 const AnalyzerSummarySchema = z
   .object({
-    arn: AnalyzerArnSchema.and(z.any().openapi({ description: 'The ARN of the analyzer.' })),
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the analyzer.' })),
-    type: TypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of analyzer, which corresponds to the zone of trust chosen for the analyzer.',
-        }),
-    ),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A timestamp for the time at which the analyzer was created.' }),
-    ),
-    lastResourceAnalyzed: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The resource that was most recently analyzed by the analyzer.' }),
-    ).exactOptional(),
-    lastResourceAnalyzedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time at which the most recently analyzed resource was analyzed.',
-        }),
-    ).exactOptional(),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'The tags added to the analyzer.' }),
-    ).exactOptional(),
-    status: AnalyzerStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the analyzer. An <code>Active</code> analyzer successfully monitors supported resources and generates new findings. The analyzer is <code>Disabled</code> when a user action, such as removing trusted access for Identity and Access Management Access Analyzer from Organizations, causes the analyzer to stop generating new findings. The status is <code>Creating</code> when the analyzer creation is in progress and <code>Failed</code> when the analyzer creation has failed. ',
-        }),
-    ),
-    statusReason: StatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>statusReason</code> provides more details about the current status of the analyzer. For example, if the creation for the analyzer fails, a <code>Failed</code> status is returned. For an analyzer with organization as the type, this failure can be due to an issue with creating the service-linked roles required in the member accounts of the Amazon Web Services organization.',
-        }),
-    ).exactOptional(),
+    arn: AnalyzerArnSchema.openapi({ description: 'The ARN of the analyzer.' }),
+    name: NameSchema.openapi({ description: 'The name of the analyzer.' }),
+    type: TypeSchema.openapi({
+      description:
+        'The type of analyzer, which corresponds to the zone of trust chosen for the analyzer.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'A timestamp for the time at which the analyzer was created.',
+    }),
+    lastResourceAnalyzed: StringSchema.exactOptional().openapi({
+      description: 'The resource that was most recently analyzed by the analyzer.',
+    }),
+    lastResourceAnalyzedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the most recently analyzed resource was analyzed.',
+    }),
+    tags: TagsMapSchema.exactOptional().openapi({ description: 'The tags added to the analyzer.' }),
+    status: AnalyzerStatusSchema.openapi({
+      description:
+        'The status of the analyzer. An <code>Active</code> analyzer successfully monitors supported resources and generates new findings. The analyzer is <code>Disabled</code> when a user action, such as removing trusted access for Identity and Access Management Access Analyzer from Organizations, causes the analyzer to stop generating new findings. The status is <code>Creating</code> when the analyzer creation is in progress and <code>Failed</code> when the analyzer creation has failed. ',
+    }),
+    statusReason: StatusReasonSchema.exactOptional().openapi({
+      description:
+        'The <code>statusReason</code> provides more details about the current status of the analyzer. For example, if the creation for the analyzer fails, a <code>Failed</code> status is returned. For an analyzer with organization as the type, this failure can be due to an issue with creating the service-linked roles required in the member accounts of the Amazon Web Services organization.',
+    }),
   })
   .openapi({
     required: ['arn', 'name', 'type', 'createdAt', 'status'],
@@ -1103,30 +980,26 @@ const AnalyzerSummarySchema = z
 
 const GetAnalyzerResponseSchema = z
   .object({
-    analyzer: AnalyzerSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>AnalyzerSummary</code> object that contains information about the analyzer.',
-        }),
-    ),
+    analyzer: AnalyzerSummarySchema.openapi({
+      description:
+        'An <code>AnalyzerSummary</code> object that contains information about the analyzer.',
+    }),
   })
   .openapi({ required: ['analyzer'], description: 'The response to the request.' })
   .openapi('GetAnalyzerResponse')
 
 const ArchiveRuleSummarySchema = z
   .object({
-    ruleName: NameSchema.and(z.any().openapi({ description: 'The name of the archive rule.' })),
-    filter: FilterCriteriaMapSchema.and(
-      z.any().openapi({ description: 'A filter used to define the archive rule.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the archive rule was created.' }),
-    ),
-    updatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the archive rule was last updated.' }),
-    ),
+    ruleName: NameSchema.openapi({ description: 'The name of the archive rule.' }),
+    filter: FilterCriteriaMapSchema.openapi({
+      description: 'A filter used to define the archive rule.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time at which the archive rule was created.',
+    }),
+    updatedAt: TimestampSchema.openapi({
+      description: 'The time at which the archive rule was last updated.',
+    }),
   })
   .openapi({
     required: ['ruleName', 'filter', 'createdAt', 'updatedAt'],
@@ -1151,21 +1024,13 @@ const FindingSourceTypeSchema = z
 
 const FindingSourceDetailSchema = z
   .object({
-    accessPointArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the access point that generated the finding. The ARN format depends on whether the ARN represents an access point or a multi-region access point.',
-        }),
-    ).exactOptional(),
-    accessPointAccount: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The account of the cross-account access point that generated the finding.',
-        }),
-    ).exactOptional(),
+    accessPointArn: StringSchema.exactOptional().openapi({
+      description:
+        'The ARN of the access point that generated the finding. The ARN format depends on whether the ARN represents an access point or a multi-region access point.',
+    }),
+    accessPointAccount: StringSchema.exactOptional().openapi({
+      description: 'The account of the cross-account access point that generated the finding.',
+    }),
   })
   .openapi({
     description:
@@ -1176,17 +1041,13 @@ const FindingSourceDetailSchema = z
 
 const FindingSourceSchema = z
   .object({
-    type: FindingSourceTypeSchema.and(
-      z.any().openapi({ description: 'Indicates the type of access that generated the finding.' }),
-    ),
-    detail: FindingSourceDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Includes details about how the access that generated the finding is granted. This is populated for Amazon S3 bucket findings.',
-        }),
-    ).exactOptional(),
+    type: FindingSourceTypeSchema.openapi({
+      description: 'Indicates the type of access that generated the finding.',
+    }),
+    detail: FindingSourceDetailSchema.exactOptional().openapi({
+      description:
+        'Includes details about how the access that generated the finding is granted. This is populated for Amazon S3 bucket findings.',
+    }),
   })
   .openapi({
     required: ['type'],
@@ -1199,69 +1060,45 @@ const FindingSourceListSchema = z.array(FindingSourceSchema).openapi('FindingSou
 
 const FindingSchema = z
   .object({
-    id: FindingIdSchema.and(z.any().openapi({ description: 'The ID of the finding.' })),
-    principal: PrincipalMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The external principal that access to a resource within the zone of trust.',
-        }),
-    ).exactOptional(),
-    action: ActionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action in the analyzed policy statement that an external principal has permission to use.',
-        }),
-    ).exactOptional(),
-    resource: StringSchema.and(
-      z.any().openapi({ description: 'The resource that an external principal has access to.' }),
-    ).exactOptional(),
-    isPublic: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the policy that generated the finding allows public access to the resource.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the resource identified in the finding.' }),
-    ),
-    condition: ConditionKeyMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The condition in the analyzed policy statement that resulted in a finding.',
-        }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the finding was generated.' }),
-    ),
-    analyzedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the resource was analyzed.' }),
-    ),
-    updatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the finding was updated.' }),
-    ),
-    status: FindingStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the finding.' }),
-    ),
-    resourceOwnerAccount: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Web Services account ID that owns the resource.' }),
-    ),
-    error: StringSchema.and(z.any().openapi({ description: 'An error.' })).exactOptional(),
-    sources: FindingSourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sources of the finding. This indicates how the access that generated the finding is granted. It is populated for Amazon S3 bucket findings.',
-        }),
-    ).exactOptional(),
+    id: FindingIdSchema.openapi({ description: 'The ID of the finding.' }),
+    principal: PrincipalMapSchema.exactOptional().openapi({
+      description: 'The external principal that access to a resource within the zone of trust.',
+    }),
+    action: ActionListSchema.exactOptional().openapi({
+      description:
+        'The action in the analyzed policy statement that an external principal has permission to use.',
+    }),
+    resource: StringSchema.exactOptional().openapi({
+      description: 'The resource that an external principal has access to.',
+    }),
+    isPublic: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the policy that generated the finding allows public access to the resource.',
+    }),
+    resourceType: ResourceTypeSchema.openapi({
+      description: 'The type of the resource identified in the finding.',
+    }),
+    condition: ConditionKeyMapSchema.openapi({
+      description: 'The condition in the analyzed policy statement that resulted in a finding.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time at which the finding was generated.',
+    }),
+    analyzedAt: TimestampSchema.openapi({
+      description: 'The time at which the resource was analyzed.',
+    }),
+    updatedAt: TimestampSchema.openapi({
+      description: 'The time at which the finding was updated.',
+    }),
+    status: FindingStatusSchema.openapi({ description: 'The current status of the finding.' }),
+    resourceOwnerAccount: StringSchema.openapi({
+      description: 'The Amazon Web Services account ID that owns the resource.',
+    }),
+    error: StringSchema.exactOptional().openapi({ description: 'An error.' }),
+    sources: FindingSourceListSchema.exactOptional().openapi({
+      description:
+        'The sources of the finding. This indicates how the access that generated the finding is granted. It is populated for Amazon S3 bucket findings.',
+    }),
   })
   .openapi({
     required: [
@@ -1280,11 +1117,9 @@ const FindingSchema = z
 
 const GetFindingResponseSchema = z
   .object({
-    finding: FindingSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A <code>finding</code> object that contains finding details.' }),
-    ).exactOptional(),
+    finding: FindingSchema.exactOptional().openapi({
+      description: 'A <code>finding</code> object that contains finding details.',
+    }),
   })
   .openapi({ description: 'The response to the request.', required: [] })
   .openapi('GetFindingResponse')
@@ -1306,15 +1141,11 @@ const JobErrorCodeSchema = z
 
 const JobErrorSchema = z
   .object({
-    code: JobErrorCodeSchema.and(z.any().openapi({ description: 'The job error code.' })),
-    message: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specific information about the error. For example, which service quota was exceeded or which resource was not found.',
-        }),
-    ),
+    code: JobErrorCodeSchema.openapi({ description: 'The job error code.' }),
+    message: StringSchema.openapi({
+      description:
+        'Specific information about the error. For example, which service quota was exceeded or which resource was not found.',
+    }),
   })
   .openapi({
     required: ['code', 'message'],
@@ -1324,24 +1155,18 @@ const JobErrorSchema = z
 
 const JobDetailsSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>JobId</code> that is returned by the <code>StartPolicyGeneration</code> operation. The <code>JobId</code> can be used with <code>GetGeneratedPolicy</code> to retrieve the generated policies or used with <code>CancelPolicyGeneration</code> to cancel the policy generation request.',
-        }),
-    ),
-    status: JobStatusSchema.and(z.any().openapi({ description: 'The status of the job request.' })),
-    startedOn: TimestampSchema.and(
-      z.any().openapi({ description: 'A timestamp of when the job was started.' }),
-    ),
-    completedOn: TimestampSchema.and(
-      z.any().openapi({ description: 'A timestamp of when the job was completed.' }),
-    ).exactOptional(),
-    jobError: JobErrorSchema.and(
-      z.any().openapi({ description: 'The job error for the policy generation request.' }),
-    ).exactOptional(),
+    jobId: JobIdSchema.openapi({
+      description:
+        'The <code>JobId</code> that is returned by the <code>StartPolicyGeneration</code> operation. The <code>JobId</code> can be used with <code>GetGeneratedPolicy</code> to retrieve the generated policies or used with <code>CancelPolicyGeneration</code> to cancel the policy generation request.',
+    }),
+    status: JobStatusSchema.openapi({ description: 'The status of the job request.' }),
+    startedOn: TimestampSchema.openapi({ description: 'A timestamp of when the job was started.' }),
+    completedOn: TimestampSchema.exactOptional().openapi({
+      description: 'A timestamp of when the job was completed.',
+    }),
+    jobError: JobErrorSchema.exactOptional().openapi({
+      description: 'The job error for the policy generation request.',
+    }),
   })
   .openapi({
     required: ['jobId', 'status', 'startedOn'],
@@ -1351,14 +1176,10 @@ const JobDetailsSchema = z
 
 const GeneratedPolicySchema = z
   .object({
-    policy: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The text to use as the content for the new policy. The policy is created using the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreatePolicy.html">CreatePolicy</a> action.',
-        }),
-    ),
+    policy: StringSchema.openapi({
+      description:
+        'The text to use as the content for the new policy. The policy is created using the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreatePolicy.html">CreatePolicy</a> action.',
+    }),
   })
   .openapi({ required: ['policy'], description: 'Contains the text for the generated policy.' })
   .openapi('GeneratedPolicy')
@@ -1373,14 +1194,10 @@ const GeneratedPolicyResultSchema = z
         description:
           'A <code>GeneratedPolicyProperties</code> object that contains properties of the generated policy.',
       }),
-    generatedPolicies: GeneratedPolicyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The text to use as the content for the new policy. The policy is created using the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreatePolicy.html">CreatePolicy</a> action.',
-        }),
-    ).exactOptional(),
+    generatedPolicies: GeneratedPolicyListSchema.exactOptional().openapi({
+      description:
+        'The text to use as the content for the new policy. The policy is created using the <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreatePolicy.html">CreatePolicy</a> action.',
+    }),
   })
   .openapi({
     required: ['properties'],
@@ -1390,22 +1207,14 @@ const GeneratedPolicyResultSchema = z
 
 const GetGeneratedPolicyResponseSchema = z
   .object({
-    jobDetails: JobDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>GeneratedPolicyDetails</code> object that contains details about the generated policy.',
-        }),
-    ),
-    generatedPolicyResult: GeneratedPolicyResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>GeneratedPolicyResult</code> object that contains the generated policies and associated details.',
-        }),
-    ),
+    jobDetails: JobDetailsSchema.openapi({
+      description:
+        'A <code>GeneratedPolicyDetails</code> object that contains details about the generated policy.',
+    }),
+    generatedPolicyResult: GeneratedPolicyResultSchema.openapi({
+      description:
+        'A <code>GeneratedPolicyResult</code> object that contains the generated policies and associated details.',
+    }),
   })
   .openapi({ required: ['jobDetails', 'generatedPolicyResult'] })
   .openapi('GetGeneratedPolicyResponse')
@@ -1416,109 +1225,58 @@ const FindingChangeTypeSchema = z.enum(['CHANGED', 'NEW', 'UNCHANGED']).openapi(
 
 const AccessPreviewFindingSchema = z
   .object({
-    id: AccessPreviewFindingIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the access preview finding. This ID uniquely identifies the element in the list of access preview findings and is not related to the finding ID in Access Analyzer.',
-        }),
-    ),
-    existingFindingId: FindingIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The existing ID of the finding in IAM Access Analyzer, provided only for existing findings.',
-        }),
-    ).exactOptional(),
-    existingFindingStatus: FindingStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The existing status of the finding, provided only for existing findings.',
-        }),
-    ).exactOptional(),
-    principal: PrincipalMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The external principal that has access to a resource within the zone of trust.',
-        }),
-    ).exactOptional(),
-    action: ActionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action in the analyzed policy statement that an external principal has permission to perform.',
-        }),
-    ).exactOptional(),
-    condition: ConditionKeyMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The condition in the analyzed policy statement that resulted in a finding.',
-        }),
-    ).exactOptional(),
-    resource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource that an external principal has access to. This is the resource associated with the access preview.',
-        }),
-    ).exactOptional(),
-    isPublic: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the policy that generated the finding allows public access to the resource.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of the resource that can be accessed in the finding.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the access preview finding was created.' }),
-    ),
-    changeType: FindingChangeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Provides context on how the access preview finding compares to existing access identified in IAM Access Analyzer.</p> <ul> <li> <p> <code>New</code> - The finding is for newly-introduced access.</p> </li> <li> <p> <code>Unchanged</code> - The preview finding is an existing finding that would remain unchanged.</p> </li> <li> <p> <code>Changed</code> - The preview finding is an existing finding with a change in status.</p> </li> </ul> <p>For example, a <code>Changed</code> finding with preview status <code>Resolved</code> and existing status <code>Active</code> indicates the existing <code>Active</code> finding would become <code>Resolved</code> as a result of the proposed permissions change.</p>',
-        }),
-    ),
-    status: FindingStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The preview status of the finding. This is what the status of the finding would be after permissions deployment. For example, a <code>Changed</code> finding with preview status <code>Resolved</code> and existing status <code>Active</code> indicates the existing <code>Active</code> finding would become <code>Resolved</code> as a result of the proposed permissions change.',
-        }),
-    ),
-    resourceOwnerAccount: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID that owns the resource. For most Amazon Web Services resources, the owning account is the account in which the resource was created.',
-        }),
-    ),
-    error: StringSchema.and(z.any().openapi({ description: 'An error.' })).exactOptional(),
-    sources: FindingSourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sources of the finding. This indicates how the access that generated the finding is granted. It is populated for Amazon S3 bucket findings.',
-        }),
-    ).exactOptional(),
+    id: AccessPreviewFindingIdSchema.openapi({
+      description:
+        'The ID of the access preview finding. This ID uniquely identifies the element in the list of access preview findings and is not related to the finding ID in Access Analyzer.',
+    }),
+    existingFindingId: FindingIdSchema.exactOptional().openapi({
+      description:
+        'The existing ID of the finding in IAM Access Analyzer, provided only for existing findings.',
+    }),
+    existingFindingStatus: FindingStatusSchema.exactOptional().openapi({
+      description: 'The existing status of the finding, provided only for existing findings.',
+    }),
+    principal: PrincipalMapSchema.exactOptional().openapi({
+      description: 'The external principal that has access to a resource within the zone of trust.',
+    }),
+    action: ActionListSchema.exactOptional().openapi({
+      description:
+        'The action in the analyzed policy statement that an external principal has permission to perform.',
+    }),
+    condition: ConditionKeyMapSchema.exactOptional().openapi({
+      description: 'The condition in the analyzed policy statement that resulted in a finding.',
+    }),
+    resource: StringSchema.exactOptional().openapi({
+      description:
+        'The resource that an external principal has access to. This is the resource associated with the access preview.',
+    }),
+    isPublic: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the policy that generated the finding allows public access to the resource.',
+    }),
+    resourceType: ResourceTypeSchema.openapi({
+      description: 'The type of the resource that can be accessed in the finding.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time at which the access preview finding was created.',
+    }),
+    changeType: FindingChangeTypeSchema.openapi({
+      description:
+        '<p>Provides context on how the access preview finding compares to existing access identified in IAM Access Analyzer.</p> <ul> <li> <p> <code>New</code> - The finding is for newly-introduced access.</p> </li> <li> <p> <code>Unchanged</code> - The preview finding is an existing finding that would remain unchanged.</p> </li> <li> <p> <code>Changed</code> - The preview finding is an existing finding with a change in status.</p> </li> </ul> <p>For example, a <code>Changed</code> finding with preview status <code>Resolved</code> and existing status <code>Active</code> indicates the existing <code>Active</code> finding would become <code>Resolved</code> as a result of the proposed permissions change.</p>',
+    }),
+    status: FindingStatusSchema.openapi({
+      description:
+        'The preview status of the finding. This is what the status of the finding would be after permissions deployment. For example, a <code>Changed</code> finding with preview status <code>Resolved</code> and existing status <code>Active</code> indicates the existing <code>Active</code> finding would become <code>Resolved</code> as a result of the proposed permissions change.',
+    }),
+    resourceOwnerAccount: StringSchema.openapi({
+      description:
+        'The Amazon Web Services account ID that owns the resource. For most Amazon Web Services resources, the owning account is the account in which the resource was created.',
+    }),
+    error: StringSchema.exactOptional().openapi({ description: 'An error.' }),
+    sources: FindingSourceListSchema.exactOptional().openapi({
+      description:
+        'The sources of the finding. This indicates how the access that generated the finding is granted. It is populated for Amazon S3 bucket findings.',
+    }),
   })
   .openapi({
     required: ['id', 'resourceType', 'createdAt', 'changeType', 'status', 'resourceOwnerAccount'],
@@ -1530,46 +1288,31 @@ const AccessPreviewFindingsListSchema = z
   .array(AccessPreviewFindingSchema)
   .openapi('AccessPreviewFindingsList')
 
-const TokenSchema = z.string().openapi('Token')
-
 const ListAccessPreviewFindingsResponseSchema = z
   .object({
-    findings: AccessPreviewFindingsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of access preview findings that match the specified filter criteria.',
-        }),
-    ),
-    nextToken: TokenSchema.and(
-      z.any().openapi({ description: 'A token used for pagination of results returned.' }),
-    ).exactOptional(),
+    findings: AccessPreviewFindingsListSchema.openapi({
+      description: 'A list of access preview findings that match the specified filter criteria.',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: 'A token used for pagination of results returned.',
+    }),
   })
   .openapi({ required: ['findings'] })
   .openapi('ListAccessPreviewFindingsResponse')
 
 const AccessPreviewSummarySchema = z
   .object({
-    id: AccessPreviewIdSchema.and(
-      z.any().openapi({ description: 'The unique ID for the access preview.' }),
-    ),
-    analyzerArn: AnalyzerArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the analyzer used to generate the access preview.' }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the access preview was created.' }),
-    ),
-    status: AccessPreviewStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the access preview.</p> <ul> <li> <p> <code>Creating</code> - The access preview creation is in progress.</p> </li> <li> <p> <code>Completed</code> - The access preview is complete and previews the findings for external access to the resource.</p> </li> <li> <p> <code>Failed</code> - The access preview creation has failed.</p> </li> </ul>',
-        }),
-    ),
+    id: AccessPreviewIdSchema.openapi({ description: 'The unique ID for the access preview.' }),
+    analyzerArn: AnalyzerArnSchema.openapi({
+      description: 'The ARN of the analyzer used to generate the access preview.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time at which the access preview was created.',
+    }),
+    status: AccessPreviewStatusSchema.openapi({
+      description:
+        '<p>The status of the access preview.</p> <ul> <li> <p> <code>Creating</code> - The access preview creation is in progress.</p> </li> <li> <p> <code>Completed</code> - The access preview is complete and previews the findings for external access to the resource.</p> </li> <li> <p> <code>Failed</code> - The access preview creation has failed.</p> </li> </ul>',
+    }),
     statusReason: AccessPreviewStatusReasonSchema.exactOptional(),
   })
   .openapi({
@@ -1582,29 +1325,25 @@ const AccessPreviewsListSchema = z.array(AccessPreviewSummarySchema).openapi('Ac
 
 const ListAccessPreviewsResponseSchema = z
   .object({
-    accessPreviews: AccessPreviewsListSchema.and(
-      z.any().openapi({ description: 'A list of access previews retrieved for the analyzer.' }),
-    ),
-    nextToken: TokenSchema.and(
-      z.any().openapi({ description: 'A token used for pagination of results returned.' }),
-    ).exactOptional(),
+    accessPreviews: AccessPreviewsListSchema.openapi({
+      description: 'A list of access previews retrieved for the analyzer.',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: 'A token used for pagination of results returned.',
+    }),
   })
   .openapi({ required: ['accessPreviews'] })
   .openapi('ListAccessPreviewsResponse')
 
 const AnalyzedResourceSummarySchema = z
   .object({
-    resourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the analyzed resource.' }),
-    ),
-    resourceOwnerAccount: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Web Services account ID that owns the resource.' }),
-    ),
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of resource that was analyzed.' }),
-    ),
+    resourceArn: ResourceArnSchema.openapi({ description: 'The ARN of the analyzed resource.' }),
+    resourceOwnerAccount: StringSchema.openapi({
+      description: 'The Amazon Web Services account ID that owns the resource.',
+    }),
+    resourceType: ResourceTypeSchema.openapi({
+      description: 'The type of resource that was analyzed.',
+    }),
   })
   .openapi({
     required: ['resourceArn', 'resourceOwnerAccount', 'resourceType'],
@@ -1618,12 +1357,12 @@ const AnalyzedResourcesListSchema = z
 
 const ListAnalyzedResourcesResponseSchema = z
   .object({
-    analyzedResources: AnalyzedResourcesListSchema.and(
-      z.any().openapi({ description: 'A list of resources that were analyzed.' }),
-    ),
-    nextToken: TokenSchema.and(
-      z.any().openapi({ description: 'A token used for pagination of results returned.' }),
-    ).exactOptional(),
+    analyzedResources: AnalyzedResourcesListSchema.openapi({
+      description: 'A list of resources that were analyzed.',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: 'A token used for pagination of results returned.',
+    }),
   })
   .openapi({ required: ['analyzedResources'], description: 'The response to the request.' })
   .openapi('ListAnalyzedResourcesResponse')
@@ -1632,12 +1371,10 @@ const AnalyzersListSchema = z.array(AnalyzerSummarySchema).openapi('AnalyzersLis
 
 const ListAnalyzersResponseSchema = z
   .object({
-    analyzers: AnalyzersListSchema.and(
-      z.any().openapi({ description: 'The analyzers retrieved.' }),
-    ),
-    nextToken: TokenSchema.and(
-      z.any().openapi({ description: 'A token used for pagination of results returned.' }),
-    ).exactOptional(),
+    analyzers: AnalyzersListSchema.openapi({ description: 'The analyzers retrieved.' }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: 'A token used for pagination of results returned.',
+    }),
   })
   .openapi({ required: ['analyzers'], description: 'The response to the request.' })
   .openapi('ListAnalyzersResponse')
@@ -1646,93 +1383,60 @@ const ArchiveRulesListSchema = z.array(ArchiveRuleSummarySchema).openapi('Archiv
 
 const ListArchiveRulesResponseSchema = z
   .object({
-    archiveRules: ArchiveRulesListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of archive rules created for the specified analyzer.' }),
-    ),
-    nextToken: TokenSchema.and(
-      z.any().openapi({ description: 'A token used for pagination of results returned.' }),
-    ).exactOptional(),
+    archiveRules: ArchiveRulesListSchema.openapi({
+      description: 'A list of archive rules created for the specified analyzer.',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: 'A token used for pagination of results returned.',
+    }),
   })
   .openapi({ required: ['archiveRules'], description: 'The response to the request.' })
   .openapi('ListArchiveRulesResponse')
 
 const FindingSummarySchema = z
   .object({
-    id: FindingIdSchema.and(z.any().openapi({ description: 'The ID of the finding.' })),
-    principal: PrincipalMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The external principal that has access to a resource within the zone of trust.',
-        }),
-    ).exactOptional(),
-    action: ActionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action in the analyzed policy statement that an external principal has permission to use.',
-        }),
-    ).exactOptional(),
-    resource: StringSchema.and(
-      z.any().openapi({ description: 'The resource that the external principal has access to.' }),
-    ).exactOptional(),
-    isPublic: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the finding reports a resource that has a policy that allows public access.',
-        }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of the resource that the external principal has access to.',
-        }),
-    ),
-    condition: ConditionKeyMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The condition in the analyzed policy statement that resulted in a finding.',
-        }),
-    ),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the finding was created.' }),
-    ),
-    analyzedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time at which the resource-based policy that generated the finding was analyzed.',
-        }),
-    ),
-    updatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the finding was most recently updated.' }),
-    ),
-    status: FindingStatusSchema.and(z.any().openapi({ description: 'The status of the finding.' })),
-    resourceOwnerAccount: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Web Services account ID that owns the resource.' }),
-    ),
-    error: StringSchema.and(
-      z.any().openapi({ description: 'The error that resulted in an Error finding.' }),
-    ).exactOptional(),
-    sources: FindingSourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sources of the finding. This indicates how the access that generated the finding is granted. It is populated for Amazon S3 bucket findings.',
-        }),
-    ).exactOptional(),
+    id: FindingIdSchema.openapi({ description: 'The ID of the finding.' }),
+    principal: PrincipalMapSchema.exactOptional().openapi({
+      description: 'The external principal that has access to a resource within the zone of trust.',
+    }),
+    action: ActionListSchema.exactOptional().openapi({
+      description:
+        'The action in the analyzed policy statement that an external principal has permission to use.',
+    }),
+    resource: StringSchema.exactOptional().openapi({
+      description: 'The resource that the external principal has access to.',
+    }),
+    isPublic: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the finding reports a resource that has a policy that allows public access.',
+    }),
+    resourceType: ResourceTypeSchema.openapi({
+      description: 'The type of the resource that the external principal has access to.',
+    }),
+    condition: ConditionKeyMapSchema.openapi({
+      description: 'The condition in the analyzed policy statement that resulted in a finding.',
+    }),
+    createdAt: TimestampSchema.openapi({
+      description: 'The time at which the finding was created.',
+    }),
+    analyzedAt: TimestampSchema.openapi({
+      description:
+        'The time at which the resource-based policy that generated the finding was analyzed.',
+    }),
+    updatedAt: TimestampSchema.openapi({
+      description: 'The time at which the finding was most recently updated.',
+    }),
+    status: FindingStatusSchema.openapi({ description: 'The status of the finding.' }),
+    resourceOwnerAccount: StringSchema.openapi({
+      description: 'The Amazon Web Services account ID that owns the resource.',
+    }),
+    error: StringSchema.exactOptional().openapi({
+      description: 'The error that resulted in an Error finding.',
+    }),
+    sources: FindingSourceListSchema.exactOptional().openapi({
+      description:
+        'The sources of the finding. This indicates how the access that generated the finding is granted. It is populated for Amazon S3 bucket findings.',
+    }),
   })
   .openapi({
     required: [
@@ -1753,17 +1457,13 @@ const FindingsListSchema = z.array(FindingSummarySchema).openapi('FindingsList')
 
 const ListFindingsResponseSchema = z
   .object({
-    findings: FindingsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of findings retrieved from the analyzer that match the filter criteria specified, if any.',
-        }),
-    ),
-    nextToken: TokenSchema.and(
-      z.any().openapi({ description: 'A token used for pagination of results returned.' }),
-    ).exactOptional(),
+    findings: FindingsListSchema.openapi({
+      description:
+        'A list of findings retrieved from the analyzer that match the filter criteria specified, if any.',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: 'A token used for pagination of results returned.',
+    }),
   })
   .openapi({ required: ['findings'], description: 'The response to the request.' })
   .openapi('ListFindingsResponse')
@@ -1777,31 +1477,23 @@ const PrincipalArnSchema = z
 
 const PolicyGenerationSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>JobId</code> that is returned by the <code>StartPolicyGeneration</code> operation. The <code>JobId</code> can be used with <code>GetGeneratedPolicy</code> to retrieve the generated policies or used with <code>CancelPolicyGeneration</code> to cancel the policy generation request.',
-        }),
-    ),
-    principalArn: PrincipalArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM entity (user or role) for which you are generating a policy.',
-        }),
-    ),
-    status: JobStatusSchema.and(
-      z.any().openapi({ description: 'The status of the policy generation request.' }),
-    ),
-    startedOn: TimestampSchema.and(
-      z.any().openapi({ description: 'A timestamp of when the policy generation started.' }),
-    ),
-    completedOn: TimestampSchema.and(
-      z.any().openapi({ description: 'A timestamp of when the policy generation was completed.' }),
-    ).exactOptional(),
+    jobId: JobIdSchema.openapi({
+      description:
+        'The <code>JobId</code> that is returned by the <code>StartPolicyGeneration</code> operation. The <code>JobId</code> can be used with <code>GetGeneratedPolicy</code> to retrieve the generated policies or used with <code>CancelPolicyGeneration</code> to cancel the policy generation request.',
+    }),
+    principalArn: PrincipalArnSchema.openapi({
+      description:
+        'The ARN of the IAM entity (user or role) for which you are generating a policy.',
+    }),
+    status: JobStatusSchema.openapi({
+      description: 'The status of the policy generation request.',
+    }),
+    startedOn: TimestampSchema.openapi({
+      description: 'A timestamp of when the policy generation started.',
+    }),
+    completedOn: TimestampSchema.exactOptional().openapi({
+      description: 'A timestamp of when the policy generation was completed.',
+    }),
   })
   .openapi({
     required: ['jobId', 'principalArn', 'status', 'startedOn'],
@@ -1813,40 +1505,32 @@ const PolicyGenerationListSchema = z.array(PolicyGenerationSchema).openapi('Poli
 
 const ListPolicyGenerationsResponseSchema = z
   .object({
-    policyGenerations: PolicyGenerationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>PolicyGeneration</code> object that contains details about the generated policy.',
-        }),
-    ),
-    nextToken: TokenSchema.and(
-      z.any().openapi({ description: 'A token used for pagination of results returned.' }),
-    ).exactOptional(),
+    policyGenerations: PolicyGenerationListSchema.openapi({
+      description:
+        'A <code>PolicyGeneration</code> object that contains details about the generated policy.',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: 'A token used for pagination of results returned.',
+    }),
   })
   .openapi({ required: ['policyGenerations'] })
   .openapi('ListPolicyGenerationsResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'The tags that are applied to the specified resource.' }),
-    ).exactOptional(),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description: 'The tags that are applied to the specified resource.',
+    }),
   })
   .openapi({ description: 'The response to the request.', required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const StartPolicyGenerationResponseSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>JobId</code> that is returned by the <code>StartPolicyGeneration</code> operation. The <code>JobId</code> can be used with <code>GetGeneratedPolicy</code> to retrieve the generated policies or used with <code>CancelPolicyGeneration</code> to cancel the policy generation request.',
-        }),
-    ),
+    jobId: JobIdSchema.openapi({
+      description:
+        'The <code>JobId</code> that is returned by the <code>StartPolicyGeneration</code> operation. The <code>JobId</code> can be used with <code>GetGeneratedPolicy</code> to retrieve the generated policies or used with <code>CancelPolicyGeneration</code> to cancel the policy generation request.',
+    }),
   })
   .openapi({ required: ['jobId'] })
   .openapi('StartPolicyGenerationResponse')
@@ -1860,30 +1544,18 @@ const RegionListSchema = z.array(StringSchema).openapi('RegionList')
 
 const TrailSchema = z
   .object({
-    cloudTrailArn: CloudTrailArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the ARN of the trail. The format of a trail ARN is <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code>.',
-        }),
-    ),
-    regions: RegionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of regions to get CloudTrail data from and analyze to generate a policy.',
-        }),
-    ).exactOptional(),
-    allRegions: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Possible values are <code>true</code> or <code>false</code>. If set to <code>true</code>, IAM Access Analyzer retrieves CloudTrail data from all regions to analyze and generate a policy.',
-        }),
-    ).exactOptional(),
+    cloudTrailArn: CloudTrailArnSchema.openapi({
+      description:
+        'Specifies the ARN of the trail. The format of a trail ARN is <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code>.',
+    }),
+    regions: RegionListSchema.exactOptional().openapi({
+      description:
+        'A list of regions to get CloudTrail data from and analyze to generate a policy.',
+    }),
+    allRegions: BooleanSchema.exactOptional().openapi({
+      description:
+        'Possible values are <code>true</code> or <code>false</code>. If set to <code>true</code>, IAM Access Analyzer retrieves CloudTrail data from all regions to analyze and generate a policy.',
+    }),
   })
   .openapi({
     required: ['cloudTrailArn'],
@@ -1899,187 +1571,24 @@ const RoleArnSchema = z
   .openapi('RoleArn')
 
 const TagResourceResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The response to the request.' })
   .openapi('TagResourceResponse')
 
 const UntagResourceResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The response to the request.' })
   .openapi('UntagResourceResponse')
 
-const ValidatePolicyFindingTypeSchema = z
-  .enum(['ERROR', 'SECURITY_WARNING', 'SUGGESTION', 'WARNING'])
-  .openapi('ValidatePolicyFindingType')
-
-const IssueCodeSchema = z.string().openapi('IssueCode')
-
-const LearnMoreLinkSchema = z.string().openapi('LearnMoreLink')
-
-const IntegerSchema = z.int().openapi('Integer')
-
-const SubstringSchema = z
+const ValidatePolicyResponseSchema: z.ZodType<ValidatePolicyResponseType> = z
   .object({
-    start: IntegerSchema.and(
-      z.any().openapi({ description: 'The start index of the substring, starting from 0.' }),
-    ),
-    length: IntegerSchema.and(z.any().openapi({ description: 'The length of the substring.' })),
-  })
-  .openapi({
-    required: ['start', 'length'],
-    description: 'A reference to a substring of a literal string in a JSON document.',
-  })
-  .openapi('Substring')
-
-const PathElementSchema = z
-  .object({
-    index: IntegerSchema.and(
-      z.any().openapi({ description: 'Refers to an index in a JSON array.' }),
-    ).exactOptional(),
-    key: StringSchema.and(
-      z.any().openapi({ description: 'Refers to a key in a JSON object.' }),
-    ).exactOptional(),
-    substring: SubstringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Refers to a substring of a literal string in a JSON object.' }),
-    ).exactOptional(),
-    value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Refers to the value associated with a given key in a JSON object.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'A single element in a path through the JSON representation of a policy.',
-    required: [],
-  })
-  .openapi('PathElement')
-
-const PathElementListSchema = z.array(PathElementSchema).openapi('PathElementList')
-
-const PositionSchema = z
-  .object({
-    line: IntegerSchema.and(
-      z.any().openapi({ description: 'The line of the position, starting from 1.' }),
-    ),
-    column: IntegerSchema.and(
-      z.any().openapi({ description: 'The column of the position, starting from 0.' }),
-    ),
-    offset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The offset within the policy that corresponds to the position, starting from 0.',
-        }),
-    ),
-  })
-  .openapi({ required: ['line', 'column', 'offset'], description: 'A position in a policy.' })
-  .openapi('Position')
-
-const SpanSchema = z
-  .object({
-    start: PositionSchema.and(
-      z.any().openapi({ description: 'The start position of the span (inclusive).' }),
-    ),
-    end: PositionSchema.and(
-      z.any().openapi({ description: 'The end position of the span (exclusive).' }),
-    ),
-  })
-  .openapi({
-    required: ['start', 'end'],
-    description:
-      'A span in a policy. The span consists of a start position (inclusive) and end position (exclusive).',
-  })
-  .openapi('Span')
-
-const LocationSchema = z
-  .object({
-    path: PathElementListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A path in a policy, represented as a sequence of path elements.',
-        }),
-    ),
-    span: SpanSchema.and(z.any().openapi({ description: 'A span in a policy.' })),
-  })
-  .openapi({
-    required: ['path', 'span'],
-    description:
-      'A location in a policy that is represented as a path through the JSON representation and a corresponding span.',
-  })
-  .openapi('Location')
-
-const LocationListSchema = z.array(LocationSchema).openapi('LocationList')
-
-const ValidatePolicyFindingSchema = z
-  .object({
-    findingDetails: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A localized message that explains the finding and provides guidance on how to address it.',
-        }),
-    ),
-    findingType: ValidatePolicyFindingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The impact of the finding.</p> <p>Security warnings report when the policy allows access that we consider overly permissive.</p> <p>Errors report when a part of the policy is not functional.</p> <p>Warnings report non-security issues when a policy does not conform to policy writing best practices.</p> <p>Suggestions recommend stylistic improvements in the policy that do not impact access.</p>',
-        }),
-    ),
-    issueCode: IssueCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The issue code provides an identifier of the issue associated with this finding.',
-        }),
-    ),
-    learnMoreLink: LearnMoreLinkSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A link to additional documentation about the type of finding.' }),
-    ),
-    locations: LocationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of locations in the policy document that are related to the finding. The issue code provides a summary of an issue identified by the finding.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['findingDetails', 'findingType', 'issueCode', 'learnMoreLink', 'locations'],
-    description:
-      'A finding in a policy. Each finding is an actionable recommendation that can be used to improve the policy.',
-  })
-  .openapi('ValidatePolicyFinding')
-
-const ValidatePolicyFindingListSchema = z
-  .array(ValidatePolicyFindingSchema)
-  .openapi('ValidatePolicyFindingList')
-
-const ValidatePolicyResponseSchema = z
-  .object({
-    findings: ValidatePolicyFindingListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of findings in a policy returned by IAM Access Analyzer based on its suite of policy checks.',
-        }),
-    ),
-    nextToken: TokenSchema.and(
-      z.any().openapi({ description: 'A token used for pagination of results returned.' }),
-    ).exactOptional(),
+    findings: ValidatePolicyFindingListSchema.openapi({
+      description:
+        'The list of findings in a policy returned by IAM Access Analyzer based on its suite of policy checks.',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: 'A token used for pagination of results returned.',
+    }),
   })
   .openapi({ required: ['findings'] })
   .openapi('ValidatePolicyResponse')
@@ -2091,13 +1600,11 @@ const AccessPointArnSchema = z
 
 const ApplyArchiveRuleRequestSchema = z
   .object({
-    analyzerArn: AnalyzerArnSchema.and(
-      z.any().openapi({ description: 'The Amazon resource name (ARN) of the analyzer.' }),
-    ),
-    ruleName: NameSchema.and(z.any().openapi({ description: 'The name of the rule to apply.' })),
-    clientToken: StringSchema.and(
-      z.any().openapi({ description: 'A client token.' }),
-    ).exactOptional(),
+    analyzerArn: AnalyzerArnSchema.openapi({
+      description: 'The Amazon resource name (ARN) of the analyzer.',
+    }),
+    ruleName: NameSchema.openapi({ description: 'The name of the rule to apply.' }),
+    clientToken: StringSchema.exactOptional().openapi({ description: 'A client token.' }),
   })
   .openapi({
     required: ['analyzerArn', 'ruleName'],
@@ -2107,43 +1614,27 @@ const ApplyArchiveRuleRequestSchema = z
   .openapi('ApplyArchiveRuleRequest')
 
 const CancelPolicyGenerationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CancelPolicyGenerationRequest' })
   .openapi('CancelPolicyGenerationRequest')
 
 const CloudTrailDetailsSchema = z
   .object({
-    trails: TrailListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A <code>Trail</code> object that contains settings for a trail.',
-        }),
-    ),
-    accessRole: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the service role that IAM Access Analyzer uses to access your CloudTrail trail and service last accessed information.',
-        }),
-    ),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp before this time are not considered to generate a policy.',
-        }),
-    ),
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp after this time are not considered to generate a policy. If this is not included in the request, the default value is the current time.',
-        }),
-    ).exactOptional(),
+    trails: TrailListSchema.openapi({
+      description: 'A <code>Trail</code> object that contains settings for a trail.',
+    }),
+    accessRole: RoleArnSchema.openapi({
+      description:
+        'The ARN of the service role that IAM Access Analyzer uses to access your CloudTrail trail and service last accessed information.',
+    }),
+    startTime: TimestampSchema.openapi({
+      description:
+        'The start of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp before this time are not considered to generate a policy.',
+    }),
+    endTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The end of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp after this time are not considered to generate a policy. If this is not included in the request, the default value is the current time.',
+    }),
   })
   .openapi({
     required: ['trails', 'accessRole', 'startTime'],
@@ -2153,30 +1644,18 @@ const CloudTrailDetailsSchema = z
 
 const TrailPropertiesSchema = z
   .object({
-    cloudTrailArn: CloudTrailArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the ARN of the trail. The format of a trail ARN is <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code>.',
-        }),
-    ),
-    regions: RegionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of regions to get CloudTrail data from and analyze to generate a policy.',
-        }),
-    ).exactOptional(),
-    allRegions: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Possible values are <code>true</code> or <code>false</code>. If set to <code>true</code>, IAM Access Analyzer retrieves CloudTrail data from all regions to analyze and generate a policy.',
-        }),
-    ).exactOptional(),
+    cloudTrailArn: CloudTrailArnSchema.openapi({
+      description:
+        'Specifies the ARN of the trail. The format of a trail ARN is <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code>.',
+    }),
+    regions: RegionListSchema.exactOptional().openapi({
+      description:
+        'A list of regions to get CloudTrail data from and analyze to generate a policy.',
+    }),
+    allRegions: BooleanSchema.exactOptional().openapi({
+      description:
+        'Possible values are <code>true</code> or <code>false</code>. If set to <code>true</code>, IAM Access Analyzer retrieves CloudTrail data from all regions to analyze and generate a policy.',
+    }),
   })
   .openapi({
     required: ['cloudTrailArn'],
@@ -2188,30 +1667,18 @@ const TrailPropertiesListSchema = z.array(TrailPropertiesSchema).openapi('TrailP
 
 const CloudTrailPropertiesSchema = z
   .object({
-    trailProperties: TrailPropertiesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>TrailProperties</code> object that contains settings for trail properties.',
-        }),
-    ),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp before this time are not considered to generate a policy.',
-        }),
-    ),
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp after this time are not considered to generate a policy. If this is not included in the request, the default value is the current time.',
-        }),
-    ),
+    trailProperties: TrailPropertiesListSchema.openapi({
+      description:
+        'A <code>TrailProperties</code> object that contains settings for trail properties.',
+    }),
+    startTime: TimestampSchema.openapi({
+      description:
+        'The start of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp before this time are not considered to generate a policy.',
+    }),
+    endTime: TimestampSchema.openapi({
+      description:
+        'The end of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp after this time are not considered to generate a policy. If this is not included in the request, the default value is the current time.',
+    }),
   })
   .openapi({
     required: ['trailProperties', 'startTime', 'endTime'],
@@ -2221,27 +1688,17 @@ const CloudTrailPropertiesSchema = z
 
 const ConfigurationsMapKeySchema = z.string().openapi('ConfigurationsMapKey')
 
-const CreateAccessPreviewRequestSchema = z
+const CreateAccessPreviewRequestSchema: z.ZodType<CreateAccessPreviewRequestType> = z
   .object({
-    analyzerArn: AnalyzerArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources">ARN of the account analyzer</a> used to generate the access preview. You can only create an access preview for analyzers with an <code>Account</code> type and <code>Active</code> status.',
-        }),
-    ),
-    configurations: ConfigurationsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Access control configuration for your resource that is used to generate the access preview. The access preview includes findings for external access allowed to the resource with the proposed access control configuration. The configuration must contain exactly one element.',
-        }),
-    ),
-    clientToken: StringSchema.and(
-      z.any().openapi({ description: 'A client token.' }),
-    ).exactOptional(),
+    analyzerArn: AnalyzerArnSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources">ARN of the account analyzer</a> used to generate the access preview. You can only create an access preview for analyzers with an <code>Account</code> type and <code>Active</code> status.',
+    }),
+    configurations: ConfigurationsMapSchema.openapi({
+      description:
+        'Access control configuration for your resource that is used to generate the access preview. The access preview includes findings for external access allowed to the resource with the proposed access control configuration. The configuration must contain exactly one element.',
+    }),
+    clientToken: StringSchema.exactOptional().openapi({ description: 'A client token.' }),
   })
   .openapi({ required: ['analyzerArn', 'configurations'], title: 'CreateAccessPreviewRequest' })
   .openapi('CreateAccessPreviewRequest')
@@ -2252,31 +1709,19 @@ const InlineArchiveRulesListSchema = z
 
 const CreateAnalyzerRequestSchema = z
   .object({
-    analyzerName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the analyzer to create.' }),
-    ),
-    type: TypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of analyzer to create. Only ACCOUNT and ORGANIZATION analyzers are supported. You can create only one analyzer per account per Region. You can create up to 5 analyzers per organization per Region.',
-        }),
-    ),
-    archiveRules: InlineArchiveRulesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the archive rules to add for the analyzer. Archive rules automatically archive findings that meet the criteria you define for the rule.',
-        }),
-    ).exactOptional(),
-    tags: TagsMapSchema.and(
-      z.any().openapi({ description: 'The tags to apply to the analyzer.' }),
-    ).exactOptional(),
-    clientToken: StringSchema.and(
-      z.any().openapi({ description: 'A client token.' }),
-    ).exactOptional(),
+    analyzerName: NameSchema.openapi({ description: 'The name of the analyzer to create.' }),
+    type: TypeSchema.openapi({
+      description:
+        'The type of analyzer to create. Only ACCOUNT and ORGANIZATION analyzers are supported. You can create only one analyzer per account per Region. You can create up to 5 analyzers per organization per Region.',
+    }),
+    archiveRules: InlineArchiveRulesListSchema.exactOptional().openapi({
+      description:
+        'Specifies the archive rules to add for the analyzer. Archive rules automatically archive findings that meet the criteria you define for the rule.',
+    }),
+    tags: TagsMapSchema.exactOptional().openapi({
+      description: 'The tags to apply to the analyzer.',
+    }),
+    clientToken: StringSchema.exactOptional().openapi({ description: 'A client token.' }),
   })
   .openapi({
     required: ['analyzerName', 'type'],
@@ -2287,13 +1732,9 @@ const CreateAnalyzerRequestSchema = z
 
 const CreateArchiveRuleRequestSchema = z
   .object({
-    ruleName: NameSchema.and(z.any().openapi({ description: 'The name of the rule to create.' })),
-    filter: FilterCriteriaMapSchema.and(
-      z.any().openapi({ description: 'The criteria for the rule.' }),
-    ),
-    clientToken: StringSchema.and(
-      z.any().openapi({ description: 'A client token.' }),
-    ).exactOptional(),
+    ruleName: NameSchema.openapi({ description: 'The name of the rule to create.' }),
+    filter: FilterCriteriaMapSchema.openapi({ description: 'The criteria for the rule.' }),
+    clientToken: StringSchema.exactOptional().openapi({ description: 'A client token.' }),
   })
   .openapi({
     required: ['ruleName', 'filter'],
@@ -2303,12 +1744,12 @@ const CreateArchiveRuleRequestSchema = z
   .openapi('CreateArchiveRuleRequest')
 
 const DeleteAnalyzerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAnalyzerRequest', description: 'Deletes an analyzer.' })
   .openapi('DeleteAnalyzerRequest')
 
 const DeleteArchiveRuleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteArchiveRuleRequest', description: 'Deletes an archive rule.' })
   .openapi('DeleteArchiveRuleRequest')
 
@@ -2318,60 +1759,48 @@ const FindingStatusUpdateSchema = z.enum(['ACTIVE', 'ARCHIVED']).openapi('Findin
 
 const GeneratedPolicyPropertiesSchema = z
   .object({
-    isComplete: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This value is set to <code>true</code> if the generated policy contains all possible actions for a service that IAM Access Analyzer identified from the CloudTrail trail that you specified, and <code>false</code> otherwise.',
-        }),
-    ).exactOptional(),
-    principalArn: PrincipalArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM entity (user or role) for which you are generating a policy.',
-        }),
-    ),
-    cloudTrailProperties: CloudTrailPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Lists details about the <code>Trail</code> used to generated policy.',
-        }),
-    ).exactOptional(),
+    isComplete: BooleanSchema.exactOptional().openapi({
+      description:
+        'This value is set to <code>true</code> if the generated policy contains all possible actions for a service that IAM Access Analyzer identified from the CloudTrail trail that you specified, and <code>false</code> otherwise.',
+    }),
+    principalArn: PrincipalArnSchema.openapi({
+      description:
+        'The ARN of the IAM entity (user or role) for which you are generating a policy.',
+    }),
+    cloudTrailProperties: CloudTrailPropertiesSchema.exactOptional().openapi({
+      description: 'Lists details about the <code>Trail</code> used to generated policy.',
+    }),
   })
   .openapi({ required: ['principalArn'], description: 'Contains the generated policy details.' })
   .openapi('GeneratedPolicyProperties')
 
 const GetAccessPreviewRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAccessPreviewRequest' })
   .openapi('GetAccessPreviewRequest')
 
 const GetAnalyzedResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAnalyzedResourceRequest', description: 'Retrieves an analyzed resource.' })
   .openapi('GetAnalyzedResourceRequest')
 
 const GetAnalyzerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAnalyzerRequest', description: 'Retrieves an analyzer.' })
   .openapi('GetAnalyzerRequest')
 
 const GetArchiveRuleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetArchiveRuleRequest', description: 'Retrieves an archive rule.' })
   .openapi('GetArchiveRuleRequest')
 
 const GetFindingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetFindingRequest', description: 'Retrieves a finding.' })
   .openapi('GetFindingRequest')
 
 const GetGeneratedPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetGeneratedPolicyRequest' })
   .openapi('GetGeneratedPolicyRequest')
 
@@ -2379,51 +1808,43 @@ const KmsConstraintsKeySchema = z.string().openapi('KmsConstraintsKey')
 
 const ListAccessPreviewFindingsRequestSchema = z
   .object({
-    analyzerArn: AnalyzerArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources">ARN of the analyzer</a> used to generate the access.',
-        }),
-    ),
-    filter: FilterCriteriaMapSchema.and(
-      z.any().openapi({ description: 'Criteria to filter the returned findings.' }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z.any().openapi({ description: 'A token used for pagination of results returned.' }),
-    ).exactOptional(),
-    maxResults: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in the response.' }),
-    ).exactOptional(),
+    analyzerArn: AnalyzerArnSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources">ARN of the analyzer</a> used to generate the access.',
+    }),
+    filter: FilterCriteriaMapSchema.exactOptional().openapi({
+      description: 'Criteria to filter the returned findings.',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: 'A token used for pagination of results returned.',
+    }),
+    maxResults: IntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the response.',
+    }),
   })
   .openapi({ required: ['analyzerArn'], title: 'ListAccessPreviewFindingsRequest' })
   .openapi('ListAccessPreviewFindingsRequest')
 
 const ListAccessPreviewsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAccessPreviewsRequest' })
   .openapi('ListAccessPreviewsRequest')
 
 const ListAnalyzedResourcesRequestSchema = z
   .object({
-    analyzerArn: AnalyzerArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources">ARN of the analyzer</a> to retrieve a list of analyzed resources from.',
-        }),
-    ),
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of resource.' }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z.any().openapi({ description: 'A token used for pagination of results returned.' }),
-    ).exactOptional(),
-    maxResults: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in the response.' }),
-    ).exactOptional(),
+    analyzerArn: AnalyzerArnSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources">ARN of the analyzer</a> to retrieve a list of analyzed resources from.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of resource.',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: 'A token used for pagination of results returned.',
+    }),
+    maxResults: IntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the response.',
+    }),
   })
   .openapi({
     required: ['analyzerArn'],
@@ -2433,12 +1854,12 @@ const ListAnalyzedResourcesRequestSchema = z
   .openapi('ListAnalyzedResourcesRequest')
 
 const ListAnalyzersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAnalyzersRequest', description: 'Retrieves a list of analyzers.' })
   .openapi('ListAnalyzersRequest')
 
 const ListArchiveRulesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListArchiveRulesRequest',
     description: 'Retrieves a list of archive rules created for the specified analyzer.',
@@ -2447,38 +1868,34 @@ const ListArchiveRulesRequestSchema = z
 
 const SortCriteriaSchema = z
   .object({
-    attributeName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the attribute to sort on.' }),
-    ).exactOptional(),
-    orderBy: OrderBySchema.and(
-      z.any().openapi({ description: 'The sort order, ascending or descending.' }),
-    ).exactOptional(),
+    attributeName: StringSchema.exactOptional().openapi({
+      description: 'The name of the attribute to sort on.',
+    }),
+    orderBy: OrderBySchema.exactOptional().openapi({
+      description: 'The sort order, ascending or descending.',
+    }),
   })
   .openapi({ description: 'The criteria used to sort.', required: [] })
   .openapi('SortCriteria')
 
 const ListFindingsRequestSchema = z
   .object({
-    analyzerArn: AnalyzerArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources">ARN of the analyzer</a> to retrieve findings from.',
-        }),
-    ),
-    filter: FilterCriteriaMapSchema.and(
-      z.any().openapi({ description: 'A filter to match for the findings to return.' }),
-    ).exactOptional(),
-    sort: SortCriteriaSchema.and(
-      z.any().openapi({ description: 'The sort order for the findings returned.' }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z.any().openapi({ description: 'A token used for pagination of results returned.' }),
-    ).exactOptional(),
-    maxResults: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in the response.' }),
-    ).exactOptional(),
+    analyzerArn: AnalyzerArnSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources">ARN of the analyzer</a> to retrieve findings from.',
+    }),
+    filter: FilterCriteriaMapSchema.exactOptional().openapi({
+      description: 'A filter to match for the findings to return.',
+    }),
+    sort: SortCriteriaSchema.exactOptional().openapi({
+      description: 'The sort order for the findings returned.',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: 'A token used for pagination of results returned.',
+    }),
+    maxResults: IntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the response.',
+    }),
   })
   .openapi({
     required: ['analyzerArn'],
@@ -2493,12 +1910,12 @@ const ListPolicyGenerationsRequestMaxResultsIntegerSchema = z
   .openapi('ListPolicyGenerationsRequestMaxResultsInteger')
 
 const ListPolicyGenerationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPolicyGenerationsRequest' })
   .openapi('ListPolicyGenerationsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListTagsForResourceRequest',
     description: 'Retrieves a list of tags applied to the specified resource.',
@@ -2513,14 +1930,10 @@ const PolicyDocumentSchema = z.string().openapi('PolicyDocument')
 
 const PolicyGenerationDetailsSchema = z
   .object({
-    principalArn: PrincipalArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the IAM entity (user or role) for which you are generating a policy.',
-        }),
-    ),
+    principalArn: PrincipalArnSchema.openapi({
+      description:
+        'The ARN of the IAM entity (user or role) for which you are generating a policy.',
+    }),
   })
   .openapi({
     required: ['principalArn'],
@@ -2542,55 +1955,33 @@ const RdsDbSnapshotAttributeNameSchema = z.string().openapi('RdsDbSnapshotAttrib
 
 const StartPolicyGenerationRequestSchema = z
   .object({
-    policyGenerationDetails: PolicyGenerationDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the ARN of the IAM entity (user or role) for which you are generating a policy.',
-        }),
-    ),
-    cloudTrailDetails: CloudTrailDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>CloudTrailDetails</code> object that contains details about a <code>Trail</code> that you want to analyze to generate policies.',
-        }),
-    ).exactOptional(),
-    clientToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect.</p> <p>If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.</p>',
-        }),
-    ).exactOptional(),
+    policyGenerationDetails: PolicyGenerationDetailsSchema.openapi({
+      description:
+        'Contains the ARN of the IAM entity (user or role) for which you are generating a policy.',
+    }),
+    cloudTrailDetails: CloudTrailDetailsSchema.exactOptional().openapi({
+      description:
+        'A <code>CloudTrailDetails</code> object that contains details about a <code>Trail</code> that you want to analyze to generate policies.',
+    }),
+    clientToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect.</p> <p>If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.</p>',
+    }),
   })
   .openapi({ required: ['policyGenerationDetails'], title: 'StartPolicyGenerationRequest' })
   .openapi('StartPolicyGenerationRequest')
 
 const StartResourceScanRequestSchema = z
   .object({
-    analyzerArn: AnalyzerArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources">ARN of the analyzer</a> to use to scan the policies applied to the specified resource.',
-        }),
-    ),
-    resourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource to scan.' }),
-    ),
-    resourceOwnerAccount: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID that owns the resource. For most Amazon Web Services resources, the owning account is the account in which the resource was created.',
-        }),
-    ).exactOptional(),
+    analyzerArn: AnalyzerArnSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources">ARN of the analyzer</a> to use to scan the policies applied to the specified resource.',
+    }),
+    resourceArn: ResourceArnSchema.openapi({ description: 'The ARN of the resource to scan.' }),
+    resourceOwnerAccount: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID that owns the resource. For most Amazon Web Services resources, the owning account is the account in which the resource was created.',
+    }),
   })
   .openapi({
     required: ['analyzerArn', 'resourceArn'],
@@ -2602,9 +1993,7 @@ const StartResourceScanRequestSchema = z
 const TagKeysSchema = z.array(StringSchema).openapi('TagKeys')
 
 const TagResourceRequestSchema = z
-  .object({
-    tags: TagsMapSchema.and(z.any().openapi({ description: 'The tags to add to the resource.' })),
-  })
+  .object({ tags: TagsMapSchema.openapi({ description: 'The tags to add to the resource.' }) })
   .openapi({
     required: ['tags'],
     title: 'TagResourceRequest',
@@ -2613,7 +2002,7 @@ const TagResourceRequestSchema = z
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'UntagResourceRequest',
     description: 'Removes a tag from the specified resource.',
@@ -2622,17 +2011,11 @@ const UntagResourceRequestSchema = z
 
 const UpdateArchiveRuleRequestSchema = z
   .object({
-    filter: FilterCriteriaMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A filter to match for the rules to update. Only rules that match the filter are updated.',
-        }),
-    ),
-    clientToken: StringSchema.and(
-      z.any().openapi({ description: 'A client token.' }),
-    ).exactOptional(),
+    filter: FilterCriteriaMapSchema.openapi({
+      description:
+        'A filter to match for the rules to update. Only rules that match the filter are updated.',
+    }),
+    clientToken: StringSchema.exactOptional().openapi({ description: 'A client token.' }),
   })
   .openapi({
     required: ['filter'],
@@ -2643,31 +2026,21 @@ const UpdateArchiveRuleRequestSchema = z
 
 const UpdateFindingsRequestSchema = z
   .object({
-    analyzerArn: AnalyzerArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources">ARN of the analyzer</a> that generated the findings to update.',
-        }),
-    ),
-    status: FindingStatusUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state represents the action to take to update the finding Status. Use <code>ARCHIVE</code> to change an Active finding to an Archived finding. Use <code>ACTIVE</code> to change an Archived finding to an Active finding.',
-        }),
-    ),
-    ids: FindingIdListSchema.and(
-      z.any().openapi({ description: 'The IDs of the findings to update.' }),
-    ).exactOptional(),
-    resourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource identified in the finding.' }),
-    ).exactOptional(),
-    clientToken: StringSchema.and(
-      z.any().openapi({ description: 'A client token.' }),
-    ).exactOptional(),
+    analyzerArn: AnalyzerArnSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources">ARN of the analyzer</a> that generated the findings to update.',
+    }),
+    status: FindingStatusUpdateSchema.openapi({
+      description:
+        'The state represents the action to take to update the finding Status. Use <code>ARCHIVE</code> to change an Active finding to an Archived finding. Use <code>ACTIVE</code> to change an Archived finding to an Active finding.',
+    }),
+    ids: FindingIdListSchema.exactOptional().openapi({
+      description: 'The IDs of the findings to update.',
+    }),
+    resourceArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The ARN of the resource identified in the finding.',
+    }),
+    clientToken: StringSchema.exactOptional().openapi({ description: 'A client token.' }),
   })
   .openapi({
     required: ['analyzerArn', 'status'],
@@ -2688,30 +2061,20 @@ const ValidatePolicyResourceTypeSchema = z
 
 const ValidatePolicyRequestSchema = z
   .object({
-    locale: LocaleSchema.and(
-      z.any().openapi({ description: 'The locale to use for localizing the findings.' }),
-    ).exactOptional(),
-    policyDocument: PolicyDocumentSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The JSON policy document to use as the content for the policy.' }),
-    ),
-    policyType: PolicyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of policy to validate. Identity policies grant permissions to IAM principals. Identity policies include managed and inline policies for IAM roles, users, and groups. They also include service-control policies (SCPs) that are attached to an Amazon Web Services organization, organizational unit (OU), or an account.</p> <p>Resource policies grant permissions on Amazon Web Services resources. Resource policies include trust policies for IAM roles and bucket policies for Amazon S3 buckets. You can provide a generic input such as identity policy or resource policy or a specific input such as managed policy or Amazon S3 bucket policy. </p>',
-        }),
-    ),
-    validatePolicyResourceType: ValidatePolicyResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of resource to attach to your resource policy. Specify a value for the policy validation resource type only if the policy type is <code>RESOURCE_POLICY</code>. For example, to validate a resource policy to attach to an Amazon S3 bucket, you can choose <code>AWS::S3::Bucket</code> for the policy validation resource type.</p> <p>For resource types not supported as valid values, IAM Access Analyzer runs policy checks that apply to all resource policies. For example, to validate a resource policy to attach to a KMS key, do not specify a value for the policy validation resource type and IAM Access Analyzer will run policy checks that apply to all resource policies.</p>',
-        }),
-    ).exactOptional(),
+    locale: LocaleSchema.exactOptional().openapi({
+      description: 'The locale to use for localizing the findings.',
+    }),
+    policyDocument: PolicyDocumentSchema.openapi({
+      description: 'The JSON policy document to use as the content for the policy.',
+    }),
+    policyType: PolicyTypeSchema.openapi({
+      description:
+        '<p>The type of policy to validate. Identity policies grant permissions to IAM principals. Identity policies include managed and inline policies for IAM roles, users, and groups. They also include service-control policies (SCPs) that are attached to an Amazon Web Services organization, organizational unit (OU), or an account.</p> <p>Resource policies grant permissions on Amazon Web Services resources. Resource policies include trust policies for IAM roles and bucket policies for Amazon S3 buckets. You can provide a generic input such as identity policy or resource policy or a specific input such as managed policy or Amazon S3 bucket policy. </p>',
+    }),
+    validatePolicyResourceType: ValidatePolicyResourceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of resource to attach to your resource policy. Specify a value for the policy validation resource type only if the policy type is <code>RESOURCE_POLICY</code>. For example, to validate a resource policy to attach to an Amazon S3 bucket, you can choose <code>AWS::S3::Bucket</code> for the policy validation resource type.</p> <p>For resource types not supported as valid values, IAM Access Analyzer runs policy checks that apply to all resource policies. For example, to validate a resource policy to attach to a KMS key, do not specify a value for the policy validation resource type and IAM Access Analyzer will run policy checks that apply to all resource policies.</p>',
+    }),
   })
   .openapi({ required: ['policyDocument', 'policyType'], title: 'ValidatePolicyRequest' })
   .openapi('ValidatePolicyRequest')
@@ -4530,12 +3893,12 @@ export const postFindingRoute = createRoute({
                 .openapi({ description: 'A filter to match for the findings to return.' }),
               sort: z
                 .object({
-                  attributeName: StringSchema.and(
-                    z.any().openapi({ description: 'The name of the attribute to sort on.' }),
-                  ).exactOptional(),
-                  orderBy: OrderBySchema.and(
-                    z.any().openapi({ description: 'The sort order, ascending or descending.' }),
-                  ).exactOptional(),
+                  attributeName: StringSchema.exactOptional().openapi({
+                    description: 'The name of the attribute to sort on.',
+                  }),
+                  orderBy: OrderBySchema.exactOptional().openapi({
+                    description: 'The sort order, ascending or descending.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'The criteria used to sort.', required: [] }),
@@ -4694,14 +4057,10 @@ export const putPolicyGenerationRoute = createRoute({
             .object({
               policyGenerationDetails: z
                 .object({
-                  principalArn: PrincipalArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ARN of the IAM entity (user or role) for which you are generating a policy.',
-                      }),
-                  ).exactOptional(),
+                  principalArn: PrincipalArnSchema.exactOptional().openapi({
+                    description:
+                      'The ARN of the IAM entity (user or role) for which you are generating a policy.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -4710,38 +4069,21 @@ export const putPolicyGenerationRoute = createRoute({
                 }),
               cloudTrailDetails: z
                 .object({
-                  trails: TrailListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A <code>Trail</code> object that contains settings for a trail.',
-                      }),
-                  ).exactOptional(),
-                  accessRole: RoleArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ARN of the service role that IAM Access Analyzer uses to access your CloudTrail trail and service last accessed information.',
-                      }),
-                  ).exactOptional(),
-                  startTime: TimestampSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The start of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp before this time are not considered to generate a policy.',
-                      }),
-                  ).exactOptional(),
-                  endTime: TimestampSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The end of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp after this time are not considered to generate a policy. If this is not included in the request, the default value is the current time.',
-                      }),
-                  ).exactOptional(),
+                  trails: TrailListSchema.exactOptional().openapi({
+                    description: 'A <code>Trail</code> object that contains settings for a trail.',
+                  }),
+                  accessRole: RoleArnSchema.exactOptional().openapi({
+                    description:
+                      'The ARN of the service role that IAM Access Analyzer uses to access your CloudTrail trail and service last accessed information.',
+                  }),
+                  startTime: TimestampSchema.exactOptional().openapi({
+                    description:
+                      'The start of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp before this time are not considered to generate a policy.',
+                  }),
+                  endTime: TimestampSchema.exactOptional().openapi({
+                    description:
+                      'The end of the time range for which IAM Access Analyzer reviews your CloudTrail events. Events with a timestamp after this time are not considered to generate a policy. If this is not included in the request, the default value is the current time.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

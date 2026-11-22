@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetLogs20140328DeleteLogGroupHandler = app.openapi(
   postXAmzTargetLogs20140328DeleteLogGroupRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

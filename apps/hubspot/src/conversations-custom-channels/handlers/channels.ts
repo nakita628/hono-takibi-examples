@@ -20,5 +20,7 @@ export const channelsHandler = app
   })
   .openapi(
     getConversationsCustomChannels202609ChannelIdChannelAccountsChannelAccountIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

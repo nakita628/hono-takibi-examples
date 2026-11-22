@@ -1,51 +1,31 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const GoogleCloudDatapipelinesV1SdkVersionSchema = z
+const GoogleCloudDatapipelinesV1ScheduleSpecSchema = z
   .object({
-    sdkSupportStatus: z
-      .enum(['UNKNOWN', 'SUPPORTED', 'STALE', 'DEPRECATED', 'UNSUPPORTED'])
-      .exactOptional()
-      .openapi({ description: 'The support status for this SDK version.' }),
-    version: z
+    nextJobTime: z
       .string()
-      .exactOptional()
-      .openapi({ description: 'The version of the SDK used to run the job.' }),
-    versionDisplayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A readable string describing the version of the SDK.' }),
-  })
-  .openapi({ description: 'The version of the SDK used to run the job.', required: [] })
-  .openapi('GoogleCloudDatapipelinesV1SdkVersion')
-
-const GoogleCloudDatapipelinesV1DataflowJobDetailsSchema = z
-  .object({
-    currentWorkers: z
-      .int32()
       .exactOptional()
       .openapi({
-        description:
-          'Output only. The current number of workers used to run the jobs. Only set to a value if the job is still running.',
+        description: 'Output only. When the next Scheduler job is going to run.',
         readOnly: true,
       }),
-    resourceInfo: z
-      .record(z.string(), z.float64())
+    schedule: z
+      .string()
       .exactOptional()
       .openapi({
         description:
-          'Cached version of all the metrics of interest for the job. This value gets stored here when the job is terminated. As long as the job is running, this field is populated from the Dataflow API.',
+          'Unix-cron format of the schedule. This information is retrieved from the linked Cloud Scheduler.',
       }),
-    sdkVersion: GoogleCloudDatapipelinesV1SdkVersionSchema.exactOptional().openapi({
-      description: 'Output only. The SDK version used to run the job.',
-      readOnly: true,
-    }),
+    timeZone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Timezone ID. This matches the timezone IDs used by the Cloud Scheduler API. If empty, UTC time is assumed.',
+      }),
   })
-  .openapi({
-    description:
-      'Pipeline job details specific to the Dataflow API. This is encapsulated here to allow for more executors to store their specific details separately.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatapipelinesV1DataflowJobDetails')
+  .openapi({ description: 'Details of the schedule the pipeline runs on.', required: [] })
+  .openapi('GoogleCloudDatapipelinesV1ScheduleSpec')
 
 const GoogleCloudDatapipelinesV1FlexTemplateRuntimeEnvironmentSchema = z
   .object({
@@ -152,93 +132,6 @@ const GoogleCloudDatapipelinesV1FlexTemplateRuntimeEnvironmentSchema = z
     required: [],
   })
   .openapi('GoogleCloudDatapipelinesV1FlexTemplateRuntimeEnvironment')
-
-const GoogleRpcStatusSchema = z
-  .object({
-    code: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The status code, which should be an enum value of google.rpc.Code.',
-      }),
-    details: z
-      .array(
-        z.record(
-          z.string(),
-          z
-            .any()
-            .openapi({
-              description: 'Properties of the object. Contains field @type with type URL.',
-            }),
-        ),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
-      }),
-  })
-  .openapi({
-    description:
-      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
-    required: [],
-  })
-  .openapi('GoogleRpcStatus')
-
-const GoogleCloudDatapipelinesV1JobSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The time of job creation.', readOnly: true }),
-    dataflowJobDetails: GoogleCloudDatapipelinesV1DataflowJobDetailsSchema.exactOptional().openapi({
-      description: 'All the details that are specific to a Dataflow job.',
-    }),
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The time of job termination. This is absent if the job is still running.',
-        readOnly: true,
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The internal ID for the job.', readOnly: true }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The fully qualified resource name for the job.' }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'STATE_PENDING',
-        'STATE_RUNNING',
-        'STATE_DONE',
-        'STATE_FAILED',
-        'STATE_CANCELLED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The current state of the job.' }),
-    status: GoogleRpcStatusSchema.exactOptional().openapi({
-      description:
-        'Status capturing any error code or message related to job creation or execution.',
-    }),
-  })
-  .openapi({
-    description:
-      'Definition of the job information maintained by the pipeline. Fields in this entity are retrieved from the executor API (e.g. Dataflow API).',
-    required: [],
-  })
-  .openapi('GoogleCloudDatapipelinesV1Job')
 
 const GoogleCloudDatapipelinesV1LaunchFlexTemplateParameterSchema = z
   .object({
@@ -496,53 +389,6 @@ const GoogleCloudDatapipelinesV1LaunchTemplateRequestSchema = z
   .openapi({ description: 'A request to launch a template.', required: [] })
   .openapi('GoogleCloudDatapipelinesV1LaunchTemplateRequest')
 
-const GoogleCloudDatapipelinesV1ListJobsResponseSchema = z
-  .object({
-    jobs: z
-      .array(GoogleCloudDatapipelinesV1JobSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Results that were accessible to the caller. Results are always in descending order of job creation date.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages.',
-      }),
-  })
-  .openapi({ description: 'Response message for ListJobs', required: [] })
-  .openapi('GoogleCloudDatapipelinesV1ListJobsResponse')
-
-const GoogleCloudDatapipelinesV1ScheduleSpecSchema = z
-  .object({
-    nextJobTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. When the next Scheduler job is going to run.',
-        readOnly: true,
-      }),
-    schedule: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unix-cron format of the schedule. This information is retrieved from the linked Cloud Scheduler.',
-      }),
-    timeZone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timezone ID. This matches the timezone IDs used by the Cloud Scheduler API. If empty, UTC time is assumed.',
-      }),
-  })
-  .openapi({ description: 'Details of the schedule the pipeline runs on.', required: [] })
-  .openapi('GoogleCloudDatapipelinesV1ScheduleSpec')
-
 const GoogleCloudDatapipelinesV1WorkloadSchema = z
   .object({
     dataflowFlexTemplateRequest:
@@ -645,8 +491,154 @@ const GoogleCloudDatapipelinesV1PipelineSchema = z
   })
   .openapi('GoogleCloudDatapipelinesV1Pipeline')
 
-const GoogleCloudDatapipelinesV1ListPipelinesResponseSchema = z
+type GoogleCloudDatapipelinesV1ListPipelinesResponseType = {
+  nextPageToken?: string
+  pipelines?: z.infer<typeof GoogleCloudDatapipelinesV1PipelineSchema>[]
+}
+
+const GoogleCloudDatapipelinesV1SdkVersionSchema = z
   .object({
+    sdkSupportStatus: z
+      .enum(['UNKNOWN', 'SUPPORTED', 'STALE', 'DEPRECATED', 'UNSUPPORTED'])
+      .exactOptional()
+      .openapi({ description: 'The support status for this SDK version.' }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The version of the SDK used to run the job.' }),
+    versionDisplayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A readable string describing the version of the SDK.' }),
+  })
+  .openapi({ description: 'The version of the SDK used to run the job.', required: [] })
+  .openapi('GoogleCloudDatapipelinesV1SdkVersion')
+
+const GoogleCloudDatapipelinesV1DataflowJobDetailsSchema = z
+  .object({
+    currentWorkers: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The current number of workers used to run the jobs. Only set to a value if the job is still running.',
+        readOnly: true,
+      }),
+    resourceInfo: z
+      .record(z.string(), z.float64())
+      .exactOptional()
+      .openapi({
+        description:
+          'Cached version of all the metrics of interest for the job. This value gets stored here when the job is terminated. As long as the job is running, this field is populated from the Dataflow API.',
+      }),
+    sdkVersion: GoogleCloudDatapipelinesV1SdkVersionSchema.exactOptional().openapi({
+      description: 'Output only. The SDK version used to run the job.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    description:
+      'Pipeline job details specific to the Dataflow API. This is encapsulated here to allow for more executors to store their specific details separately.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatapipelinesV1DataflowJobDetails')
+
+const GoogleRpcStatusSchema = z
+  .object({
+    code: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The status code, which should be an enum value of google.rpc.Code.',
+      }),
+    details: z
+      .array(
+        z.record(
+          z.string(),
+          z
+            .any()
+            .openapi({
+              description: 'Properties of the object. Contains field @type with type URL.',
+            }),
+        ),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
+      }),
+  })
+  .openapi({
+    description:
+      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
+    required: [],
+  })
+  .openapi('GoogleRpcStatus')
+
+const GoogleCloudDatapipelinesV1JobSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The time of job creation.', readOnly: true }),
+    dataflowJobDetails: GoogleCloudDatapipelinesV1DataflowJobDetailsSchema.exactOptional().openapi({
+      description: 'All the details that are specific to a Dataflow job.',
+    }),
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The time of job termination. This is absent if the job is still running.',
+        readOnly: true,
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The internal ID for the job.', readOnly: true }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The fully qualified resource name for the job.' }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'STATE_PENDING',
+        'STATE_RUNNING',
+        'STATE_DONE',
+        'STATE_FAILED',
+        'STATE_CANCELLED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The current state of the job.' }),
+    status: GoogleRpcStatusSchema.exactOptional().openapi({
+      description:
+        'Status capturing any error code or message related to job creation or execution.',
+    }),
+  })
+  .openapi({
+    description:
+      'Definition of the job information maintained by the pipeline. Fields in this entity are retrieved from the executor API (e.g. Dataflow API).',
+    required: [],
+  })
+  .openapi('GoogleCloudDatapipelinesV1Job')
+
+const GoogleCloudDatapipelinesV1ListJobsResponseSchema = z
+  .object({
+    jobs: z
+      .array(GoogleCloudDatapipelinesV1JobSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Results that were accessible to the caller. Results are always in descending order of job creation date.',
+      }),
     nextPageToken: z
       .string()
       .exactOptional()
@@ -654,19 +646,33 @@ const GoogleCloudDatapipelinesV1ListPipelinesResponseSchema = z
         description:
           'A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages.',
       }),
-    pipelines: z
-      .array(GoogleCloudDatapipelinesV1PipelineSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Results that matched the filter criteria and were accessible to the caller. Results are always in descending order of pipeline creation date.',
-      }),
   })
-  .openapi({ description: 'Response message for ListPipelines.', required: [] })
-  .openapi('GoogleCloudDatapipelinesV1ListPipelinesResponse')
+  .openapi({ description: 'Response message for ListJobs', required: [] })
+  .openapi('GoogleCloudDatapipelinesV1ListJobsResponse')
+
+const GoogleCloudDatapipelinesV1ListPipelinesResponseSchema: z.ZodType<GoogleCloudDatapipelinesV1ListPipelinesResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages.',
+        }),
+      pipelines: z
+        .array(GoogleCloudDatapipelinesV1PipelineSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Results that matched the filter criteria and were accessible to the caller. Results are always in descending order of pipeline creation date.',
+        }),
+    })
+    .openapi({ description: 'Response message for ListPipelines.', required: [] })
+    .openapi('GoogleCloudDatapipelinesV1ListPipelinesResponse')
 
 const GoogleCloudDatapipelinesV1RunPipelineRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for RunPipeline' })
   .openapi('GoogleCloudDatapipelinesV1RunPipelineRequest')
 
@@ -680,12 +686,12 @@ const GoogleCloudDatapipelinesV1RunPipelineResponseSchema = z
   .openapi('GoogleCloudDatapipelinesV1RunPipelineResponse')
 
 const GoogleCloudDatapipelinesV1StopPipelineRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for StopPipeline.' })
   .openapi('GoogleCloudDatapipelinesV1StopPipelineRequest')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

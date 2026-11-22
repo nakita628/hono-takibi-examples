@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodePipeline20150709RetryStageExecutionHandler = app.openapi(
   postXAmzTargetCodePipeline20150709RetryStageExecutionRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

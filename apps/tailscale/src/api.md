@@ -2371,7 +2371,11 @@ curl https://api.tailscale.com/api/v2/tailnet/example.com/keys \
           "preauthorized": true,
           "tags": [
             "tag:example"
-          ]
+          ],
+          "nodeAttributes": {
+            "custom:environment": "production",
+            "custom:rack": 12
+          }
         }
       }
     },
@@ -2404,7 +2408,7 @@ The key should be recorded and kept safe and secure because it wields the capabi
 The identity of the key is embedded in the key itself and can be used to perform operations on the key (e.g., revoking it or retrieving information about it).
 The full key can no longer be retrieved after the initial response.
 
-OAuth Scope: `auth_keys` grants access to create machine auth keys.
+OAuth Scope: `auth_keys` grants access to create machine auth keys. If you include `nodeAttributes` in the request body, you must also have `devices:posture_attributes`.
 
 OAuth Scope: `oauth_keys` grants access to create OAuth clients.
 
@@ -2425,7 +2429,11 @@ OAuth Scope: `federated_keys` grants access to created federated identities.
         "preauthorized": true,
         "tags": [
           "tag:example"
-        ]
+        ],
+        "nodeAttributes": {
+          "custom:environment": "production",
+          "custom:rack": 12
+        }
       }
     }
   },
@@ -2494,7 +2502,11 @@ OAuth Scope: `federated_keys` grants access to created federated identities.
         "preauthorized": true,
         "tags": [
           "tag:example"
-        ]
+        ],
+        "nodeAttributes": {
+          "custom:environment": "production",
+          "custom:rack": 12
+        }
       }
     }
   },
@@ -2600,7 +2612,11 @@ OAuth Scope: `federated_keys:read` grants access to federated identities.
         "preauthorized": true,
         "tags": [
           "tag:example"
-        ]
+        ],
+        "nodeAttributes": {
+          "custom:environment": "production",
+          "custom:rack": 12
+        }
       }
     }
   },
@@ -2760,7 +2776,11 @@ OAuth Scope: `federated_keys` grants access to federated identities.
         "preauthorized": true,
         "tags": [
           "tag:example"
-        ]
+        ],
+        "nodeAttributes": {
+          "custom:environment": "production",
+          "custom:rack": 12
+        }
       }
     }
   },
@@ -7938,7 +7958,7 @@ OAuth Scope: `feature_settings:read` - required to view all settings except thos
 
 OAuth Scope: `logs:network:read` - required to view the `networkFlowLoggingOn` setting.
 
-OAuth Scope: `networking_settings:read` - required to view the `httpsCertificates` setting.
+OAuth Scope: `networking_settings:read` - required to view the `httpsEnabled` setting.
 
 OAuth Scope: `policy_file:read` - required to view the `aclsExternallyManagedOn` & `aclsExternalLink` settings.
 
@@ -8045,7 +8065,7 @@ OAuth Scope: `feature_settings` - required to update all settings except those g
 
 OAuth Scope: `logs:network` - required to update the `networkFlowLoggingOn` setting.
 
-OAuth Scope: `networking_settings` - required to update the `httpsCertificates` setting.
+OAuth Scope: `networking_settings` - required to update the `httpsEnabled` setting.
 
 OAuth Scope: `policy_file` - required to update the `aclsExternallyManagedOn` & `aclsExternalLink` settings.
 
@@ -10634,7 +10654,11 @@ Map of domain names to lists of nameservers or to `null`.
       "preauthorized": true,
       "tags": [
         "tag:example"
-      ]
+      ],
+      "nodeAttributes": {
+        "custom:environment": "production",
+        "custom:rack": 12
+      }
     }
   }
 }
@@ -10673,7 +10697,11 @@ Map of domain names to lists of nameservers or to `null`.
         "preauthorized": true,
         "tags": [
           "tag:example"
-        ]
+        ],
+        "nodeAttributes": {
+          "custom:environment": "production",
+          "custom:rack": 12
+        }
       }
     }
   },

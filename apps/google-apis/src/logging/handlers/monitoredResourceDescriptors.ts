@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const monitoredResourceDescriptorsHandler = app.openapi(
   getV2MonitoredResourceDescriptorsRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

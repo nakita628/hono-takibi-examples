@@ -46,7 +46,7 @@ const GoogleAdsSearchads360V0CommonDeviceInfoSchema = z
   .openapi('GoogleAdsSearchads360V0CommonDeviceInfo')
 
 const GoogleAdsSearchads360V0CommonEnhancedCpcSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An automated bidding strategy that raises bids for clicks that seem more likely to lead to a conversion and lowers them for clicks where they seem less likely. This bidding strategy is deprecated and cannot be created anymore. Use ManualCpc with enhanced_cpc_enabled set to true for equivalent functionality.',
@@ -54,7 +54,7 @@ const GoogleAdsSearchads360V0CommonEnhancedCpcSchema = z
   .openapi('GoogleAdsSearchads360V0CommonEnhancedCpc')
 
 const GoogleAdsSearchads360V0CommonFrequencyCapEntrySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A rule specifying the maximum number of times an ad (or some set of ads) can be shown to a user over a particular time period.',
@@ -153,7 +153,7 @@ const GoogleAdsSearchads360V0CommonLocationInfoSchema = z
   .openapi('GoogleAdsSearchads360V0CommonLocationInfo')
 
 const GoogleAdsSearchads360V0CommonManualCpaSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Manual bidding strategy that allows advertiser to set the bid per advertiser-specified action.',
@@ -173,7 +173,7 @@ const GoogleAdsSearchads360V0CommonManualCpcSchema = z
   .openapi('GoogleAdsSearchads360V0CommonManualCpc')
 
 const GoogleAdsSearchads360V0CommonManualCpmSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Manual impression-based bidding where user pays per thousand impressions.',
   })
@@ -835,7 +835,7 @@ const GoogleAdsSearchads360V0CommonTargetCpaSchema = z
   .openapi('GoogleAdsSearchads360V0CommonTargetCpa')
 
 const GoogleAdsSearchads360V0CommonTargetCpmSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Target CPM (cost per thousand impressions) is an automated bidding strategy that sets bids to optimize performance given the target CPM you set.',

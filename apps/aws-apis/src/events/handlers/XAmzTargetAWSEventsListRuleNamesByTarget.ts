@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSEventsListRuleNamesByTargetHandler = app.openapi(
   postXAmzTargetAWSEventsListRuleNamesByTargetRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

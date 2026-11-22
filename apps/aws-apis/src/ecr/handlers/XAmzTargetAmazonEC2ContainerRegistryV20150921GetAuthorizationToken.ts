@@ -4,7 +4,6 @@ import { postXAmzTargetAmazonEC2ContainerRegistryV20150921GetAuthorizationTokenR
 const app = new OpenAPIHono()
 
 export const XAmzTargetAmazonEC2ContainerRegistryV20150921GetAuthorizationTokenHandler =
-  app.openapi(
-    postXAmzTargetAmazonEC2ContainerRegistryV20150921GetAuthorizationTokenRoute,
-    (c) => {},
-  )
+  app.openapi(postXAmzTargetAmazonEC2ContainerRegistryV20150921GetAuthorizationTokenRoute, (c) => {
+    throw new Error('Not implemented')
+  })

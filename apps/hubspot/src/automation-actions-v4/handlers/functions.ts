@@ -24,15 +24,15 @@ export const functionsHandler = app
   .openapi(deleteAutomationActions202609AppIdDefinitionIdFunctionsFunctionTypeRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    getAutomationActions202609AppIdDefinitionIdFunctionsFunctionTypeFunctionIdRoute,
-    (c) => {},
-  )
-  .openapi(
-    putAutomationActions202609AppIdDefinitionIdFunctionsFunctionTypeFunctionIdRoute,
-    (c) => {},
-  )
+  .openapi(getAutomationActions202609AppIdDefinitionIdFunctionsFunctionTypeFunctionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putAutomationActions202609AppIdDefinitionIdFunctionsFunctionTypeFunctionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(
     deleteAutomationActions202609AppIdDefinitionIdFunctionsFunctionTypeFunctionIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

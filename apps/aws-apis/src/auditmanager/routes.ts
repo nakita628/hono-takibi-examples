@@ -1,397 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AssociateAssessmentReportEvidenceFolderResponseSchema = z
-  .object({})
-  .openapi('AssociateAssessmentReportEvidenceFolderResponse')
-
-const ValidationExceptionSchema = z.any().openapi('ValidationException')
-
-const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
-
-const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
-
-const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
-
-const UUIDSchema = z
-  .string()
-  .regex(/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/)
-  .length(36)
-  .openapi('UUID')
-
-const EvidenceIdsSchema = z.array(UUIDSchema).min(0).max(50).openapi('EvidenceIds')
-
-const ErrorCodeSchema = z
-  .string()
-  .regex(/[0-9]{3}/)
-  .length(3)
-  .openapi('ErrorCode')
-
-const ErrorMessageSchema = z
-  .string()
-  .regex(/^[\w\W\s\S]*$/)
-  .max(300)
-  .openapi('ErrorMessage')
-
-const AssessmentReportEvidenceErrorSchema = z
-  .object({
-    evidenceId: UUIDSchema.and(
-      z.any().openapi({ description: ' The identifier for the evidence. ' }),
-    ).exactOptional(),
-    errorCode: ErrorCodeSchema.and(
-      z.any().openapi({ description: ' The error code that was returned. ' }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: ' The error message that was returned. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      ' An error entity for assessment report evidence errors. This is used to provide more meaningful errors than a simple string message. ',
-    required: [],
-  })
-  .openapi('AssessmentReportEvidenceError')
-
-const AssessmentReportEvidenceErrorsSchema = z
-  .array(AssessmentReportEvidenceErrorSchema)
-  .openapi('AssessmentReportEvidenceErrors')
-
-const BatchAssociateAssessmentReportEvidenceResponseSchema = z
-  .object({
-    evidenceIds: EvidenceIdsSchema.and(
-      z.any().openapi({ description: ' The list of evidence identifiers. ' }),
-    ).exactOptional(),
-    errors: AssessmentReportEvidenceErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of errors that the <code>BatchAssociateAssessmentReportEvidence</code> API returned. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BatchAssociateAssessmentReportEvidenceResponse')
-
-const AssessmentNameSchema = z
-  .string()
-  .regex(/^[^\\]*$/)
-  .min(1)
-  .max(300)
-  .openapi('AssessmentName')
-
-const DelegationStatusSchema = z
-  .enum(['IN_PROGRESS', 'UNDER_REVIEW', 'COMPLETE'])
-  .openapi('DelegationStatus')
-
-const IamArnSchema = z
-  .string()
-  .regex(/^arn:.*:iam:.*/)
-  .min(20)
-  .max(2048)
-  .openapi('IamArn')
-
-const RoleTypeSchema = z.enum(['PROCESS_OWNER', 'RESOURCE_OWNER']).openapi('RoleType')
-
-const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
-
-const ControlSetIdSchema = z
-  .string()
-  .regex(/^[\w\W\s\S]*$/)
-  .min(1)
-  .max(300)
-  .openapi('ControlSetId')
-
-const DelegationCommentSchema = z
-  .string()
-  .regex(/^[\w\W\s\S]*$/)
-  .max(350)
-  .openapi('DelegationComment')
-
-const CreatedBySchema = z
-  .string()
-  .regex(/^[a-zA-Z0-9\s-_()\[\]]+$/)
-  .min(1)
-  .max(100)
-  .openapi('CreatedBy')
-
-const DelegationSchema = z
-  .object({
-    id: UUIDSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the delegation. ' }),
-    ).exactOptional(),
-    assessmentName: AssessmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The name of the assessment that's associated with the delegation. ",
-        }),
-    ).exactOptional(),
-    assessmentId: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The identifier for the assessment that's associated with the delegation. ",
-        }),
-    ).exactOptional(),
-    status: DelegationStatusSchema.and(
-      z.any().openapi({ description: ' The status of the delegation. ' }),
-    ).exactOptional(),
-    roleArn: IamArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) of the IAM role. ' }),
-    ).exactOptional(),
-    roleType: RoleTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The type of customer persona. </p> <note> <p>In <code>CreateAssessment</code>, <code>roleType</code> can only be <code>PROCESS_OWNER</code>. </p> <p>In <code>UpdateSettings</code>, <code>roleType</code> can only be <code>PROCESS_OWNER</code>.</p> <p>In <code>BatchCreateDelegationByAssessment</code>, <code>roleType</code> can only be <code>RESOURCE_OWNER</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: ' Specifies when the delegation was created. ' }),
-    ).exactOptional(),
-    lastUpdated: TimestampSchema.and(
-      z.any().openapi({ description: ' Specifies when the delegation was last updated. ' }),
-    ).exactOptional(),
-    controlSetId: ControlSetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The identifier for the control set that's associated with the delegation. ",
-        }),
-    ).exactOptional(),
-    comment: DelegationCommentSchema.and(
-      z.any().openapi({ description: " The comment that's related to the delegation. " }),
-    ).exactOptional(),
-    createdBy: CreatedBySchema.and(
-      z.any().openapi({ description: ' The user or role that created the delegation. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: ' The assignment of a control set to a delegate for review. ',
-    required: [],
-  })
-  .openapi('Delegation')
-
-const DelegationsSchema = z.array(DelegationSchema).openapi('Delegations')
-
-const CreateDelegationRequestSchema = z
-  .object({
-    comment: DelegationCommentSchema.and(
-      z.any().openapi({ description: " A comment that's related to the delegation request. " }),
-    ).exactOptional(),
-    controlSetId: ControlSetIdSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the control set. ' }),
-    ).exactOptional(),
-    roleArn: IamArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) of the IAM role. ' }),
-    ).exactOptional(),
-    roleType: RoleTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The type of customer persona. </p> <note> <p>In <code>CreateAssessment</code>, <code>roleType</code> can only be <code>PROCESS_OWNER</code>. </p> <p>In <code>UpdateSettings</code>, <code>roleType</code> can only be <code>PROCESS_OWNER</code>.</p> <p>In <code>BatchCreateDelegationByAssessment</code>, <code>roleType</code> can only be <code>RESOURCE_OWNER</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      " A collection of attributes that's used to create a delegation for an assessment in Audit Manager. ",
-    required: [],
-  })
-  .openapi('CreateDelegationRequest')
-
-const BatchCreateDelegationByAssessmentErrorSchema = z
-  .object({
-    createDelegationRequest: CreateDelegationRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The API request to batch create delegations in Audit Manager. ',
-        }),
-    ).exactOptional(),
-    errorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The error code that the <code>BatchCreateDelegationByAssessment</code> API returned. ',
-        }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The error message that the <code>BatchCreateDelegationByAssessment</code> API returned. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      ' An error entity for the <code>BatchCreateDelegationByAssessment</code> API. This is used to provide more meaningful errors than a simple string message. ',
-    required: [],
-  })
-  .openapi('BatchCreateDelegationByAssessmentError')
-
-const BatchCreateDelegationByAssessmentErrorsSchema = z
-  .array(BatchCreateDelegationByAssessmentErrorSchema)
-  .openapi('BatchCreateDelegationByAssessmentErrors')
-
-const BatchCreateDelegationByAssessmentResponseSchema = z
-  .object({
-    delegations: DelegationsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The delegations that are associated with the assessment. ' }),
-    ).exactOptional(),
-    errors: BatchCreateDelegationByAssessmentErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of errors that the <code>BatchCreateDelegationByAssessment</code> API returned. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BatchCreateDelegationByAssessmentResponse')
-
-const BatchDeleteDelegationByAssessmentErrorSchema = z
-  .object({
-    delegationId: UUIDSchema.and(
-      z.any().openapi({ description: ' The identifier for the delegation. ' }),
-    ).exactOptional(),
-    errorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The error code that the <code>BatchDeleteDelegationByAssessment</code> API returned. ',
-        }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The error message that the <code>BatchDeleteDelegationByAssessment</code> API returned. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      ' An error entity for the <code>BatchDeleteDelegationByAssessment</code> API. This is used to provide more meaningful errors than a simple string message. ',
-    required: [],
-  })
-  .openapi('BatchDeleteDelegationByAssessmentError')
-
-const BatchDeleteDelegationByAssessmentErrorsSchema = z
-  .array(BatchDeleteDelegationByAssessmentErrorSchema)
-  .openapi('BatchDeleteDelegationByAssessmentErrors')
-
-const BatchDeleteDelegationByAssessmentResponseSchema = z
-  .object({
-    errors: BatchDeleteDelegationByAssessmentErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of errors that the <code>BatchDeleteDelegationByAssessment</code> API returned. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BatchDeleteDelegationByAssessmentResponse')
-
-const BatchDisassociateAssessmentReportEvidenceResponseSchema = z
-  .object({
-    evidenceIds: EvidenceIdsSchema.and(
-      z.any().openapi({ description: ' The identifier for the evidence. ' }),
-    ).exactOptional(),
-    errors: AssessmentReportEvidenceErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of errors that the <code>BatchDisassociateAssessmentReportEvidence</code> API returned. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BatchDisassociateAssessmentReportEvidenceResponse')
-
-const S3UrlSchema = z
-  .string()
-  .regex(/^(S|s)3:\/\/[a-zA-Z0-9\-\.\(\)\'\*\_\!\/]+$/)
-  .min(1)
-  .max(1024)
-  .openapi('S3Url')
-
-const ManualEvidenceSchema = z
-  .object({
-    s3ResourcePath: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The Amazon S3 URL that points to a manual evidence object. ' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: " Evidence that's uploaded to Audit Manager manually. ", required: [] })
-  .openapi('ManualEvidence')
-
-const BatchImportEvidenceToAssessmentControlErrorSchema = z
-  .object({
-    manualEvidence: ManualEvidenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " Manual evidence that can't be collected automatically by Audit Manager. ",
-        }),
-    ).exactOptional(),
-    errorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The error code that the <code>BatchImportEvidenceToAssessmentControl</code> API returned. ',
-        }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The error message that the <code>BatchImportEvidenceToAssessmentControl</code> API returned. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      ' An error entity for the <code>BatchImportEvidenceToAssessmentControl</code> API. This is used to provide more meaningful errors than a simple string message. ',
-    required: [],
-  })
-  .openapi('BatchImportEvidenceToAssessmentControlError')
-
-const BatchImportEvidenceToAssessmentControlErrorsSchema = z
-  .array(BatchImportEvidenceToAssessmentControlErrorSchema)
-  .openapi('BatchImportEvidenceToAssessmentControlErrors')
-
-const BatchImportEvidenceToAssessmentControlResponseSchema = z
-  .object({
-    errors: BatchImportEvidenceToAssessmentControlErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of errors that the <code>BatchImportEvidenceToAssessmentControl</code> API returned. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BatchImportEvidenceToAssessmentControlResponse')
-
 const AuditManagerArnSchema = z
   .string()
   .regex(/^arn:.*:auditmanager:.*/)
@@ -421,20 +29,15 @@ const AccountNameSchema = z
 
 const AWSAccountSchema = z
   .object({
-    id: AccountIdSchema.and(
-      z.any().openapi({ description: ' The identifier for the Amazon Web Services account. ' }),
-    ).exactOptional(),
-    emailAddress: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The email address that's associated with the Amazon Web Services account. ",
-        }),
-    ).exactOptional(),
-    name: AccountNameSchema.and(
-      z.any().openapi({ description: ' The name of the Amazon Web Services account. ' }),
-    ).exactOptional(),
+    id: AccountIdSchema.exactOptional().openapi({
+      description: ' The identifier for the Amazon Web Services account. ',
+    }),
+    emailAddress: EmailAddressSchema.exactOptional().openapi({
+      description: " The email address that's associated with the Amazon Web Services account. ",
+    }),
+    name: AccountNameSchema.exactOptional().openapi({
+      description: ' The name of the Amazon Web Services account. ',
+    }),
   })
   .openapi({
     description:
@@ -442,6 +45,19 @@ const AWSAccountSchema = z
     required: [],
   })
   .openapi('AWSAccount')
+
+const AssessmentNameSchema = z
+  .string()
+  .regex(/^[^\\]*$/)
+  .min(1)
+  .max(300)
+  .openapi('AssessmentName')
+
+const UUIDSchema = z
+  .string()
+  .regex(/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/)
+  .length(36)
+  .openapi('UUID')
 
 const AssessmentDescriptionSchema = z
   .string()
@@ -461,14 +77,21 @@ const AssessmentReportDestinationTypeSchema = z
   .literal('S3')
   .openapi('AssessmentReportDestinationType')
 
+const S3UrlSchema = z
+  .string()
+  .regex(/^(S|s)3:\/\/[a-zA-Z0-9\-\.\(\)\'\*\_\!\/]+$/)
+  .min(1)
+  .max(1024)
+  .openapi('S3Url')
+
 const AssessmentReportsDestinationSchema = z
   .object({
-    destinationType: AssessmentReportDestinationTypeSchema.and(
-      z.any().openapi({ description: ' The destination type, such as Amazon S3. ' }),
-    ).exactOptional(),
-    destination: S3UrlSchema.and(
-      z.any().openapi({ description: ' The destination of the assessment report. ' }),
-    ).exactOptional(),
+    destinationType: AssessmentReportDestinationTypeSchema.exactOptional().openapi({
+      description: ' The destination type, such as Amazon S3. ',
+    }),
+    destination: S3UrlSchema.exactOptional().openapi({
+      description: ' The destination of the assessment report. ',
+    }),
   })
   .openapi({
     description:
@@ -488,9 +111,9 @@ const AWSServiceNameSchema = z
 
 const AWSServiceSchema = z
   .object({
-    serviceName: AWSServiceNameSchema.and(
-      z.any().openapi({ description: ' The name of the Amazon Web Service. ' }),
-    ).exactOptional(),
+    serviceName: AWSServiceNameSchema.exactOptional().openapi({
+      description: ' The name of the Amazon Web Service. ',
+    }),
   })
   .openapi({
     description:
@@ -503,22 +126,14 @@ const AWSServicesSchema = z.array(AWSServiceSchema).openapi('AWSServices')
 
 const ScopeSchema = z
   .object({
-    awsAccounts: AWSAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Web Services accounts that are included in the scope of the assessment. ',
-        }),
-    ).exactOptional(),
-    awsServices: AWSServicesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Web Services services that are included in the scope of the assessment. ',
-        }),
-    ).exactOptional(),
+    awsAccounts: AWSAccountsSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Web Services accounts that are included in the scope of the assessment. ',
+    }),
+    awsServices: AWSServicesSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Web Services services that are included in the scope of the assessment. ',
+    }),
   })
   .openapi({
     description:
@@ -527,19 +142,24 @@ const ScopeSchema = z
   })
   .openapi('Scope')
 
+const RoleTypeSchema = z.enum(['PROCESS_OWNER', 'RESOURCE_OWNER']).openapi('RoleType')
+
+const IamArnSchema = z
+  .string()
+  .regex(/^arn:.*:iam:.*/)
+  .min(20)
+  .max(2048)
+  .openapi('IamArn')
+
 const RoleSchema = z
   .object({
-    roleType: RoleTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The type of customer persona. </p> <note> <p>In <code>CreateAssessment</code>, <code>roleType</code> can only be <code>PROCESS_OWNER</code>. </p> <p>In <code>UpdateSettings</code>, <code>roleType</code> can only be <code>PROCESS_OWNER</code>.</p> <p>In <code>BatchCreateDelegationByAssessment</code>, <code>roleType</code> can only be <code>RESOURCE_OWNER</code>.</p> </note>',
-        }),
-    ),
-    roleArn: IamArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) of the IAM role. ' }),
-    ),
+    roleType: RoleTypeSchema.openapi({
+      description:
+        '<p> The type of customer persona. </p> <note> <p>In <code>CreateAssessment</code>, <code>roleType</code> can only be <code>PROCESS_OWNER</code>. </p> <p>In <code>UpdateSettings</code>, <code>roleType</code> can only be <code>PROCESS_OWNER</code>.</p> <p>In <code>BatchCreateDelegationByAssessment</code>, <code>roleType</code> can only be <code>RESOURCE_OWNER</code>.</p> </note>',
+    }),
+    roleArn: IamArnSchema.openapi({
+      description: ' The Amazon Resource Name (ARN) of the IAM role. ',
+    }),
   })
   .openapi({
     required: ['roleType', 'roleArn'],
@@ -550,57 +170,114 @@ const RoleSchema = z
 
 const RolesSchema = z.array(RoleSchema).openapi('Roles')
 
+const DelegationStatusSchema = z
+  .enum(['IN_PROGRESS', 'UNDER_REVIEW', 'COMPLETE'])
+  .openapi('DelegationStatus')
+
+const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
+
+const ControlSetIdSchema = z
+  .string()
+  .regex(/^[\w\W\s\S]*$/)
+  .min(1)
+  .max(300)
+  .openapi('ControlSetId')
+
+const DelegationCommentSchema = z
+  .string()
+  .regex(/^[\w\W\s\S]*$/)
+  .max(350)
+  .openapi('DelegationComment')
+
+const CreatedBySchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9\s-_()\[\]]+$/)
+  .min(1)
+  .max(100)
+  .openapi('CreatedBy')
+
+const DelegationSchema = z
+  .object({
+    id: UUIDSchema.exactOptional().openapi({
+      description: ' The unique identifier for the delegation. ',
+    }),
+    assessmentName: AssessmentNameSchema.exactOptional().openapi({
+      description: " The name of the assessment that's associated with the delegation. ",
+    }),
+    assessmentId: UUIDSchema.exactOptional().openapi({
+      description: " The identifier for the assessment that's associated with the delegation. ",
+    }),
+    status: DelegationStatusSchema.exactOptional().openapi({
+      description: ' The status of the delegation. ',
+    }),
+    roleArn: IamArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the IAM role. ',
+    }),
+    roleType: RoleTypeSchema.exactOptional().openapi({
+      description:
+        '<p> The type of customer persona. </p> <note> <p>In <code>CreateAssessment</code>, <code>roleType</code> can only be <code>PROCESS_OWNER</code>. </p> <p>In <code>UpdateSettings</code>, <code>roleType</code> can only be <code>PROCESS_OWNER</code>.</p> <p>In <code>BatchCreateDelegationByAssessment</code>, <code>roleType</code> can only be <code>RESOURCE_OWNER</code>.</p> </note>',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: ' Specifies when the delegation was created. ',
+    }),
+    lastUpdated: TimestampSchema.exactOptional().openapi({
+      description: ' Specifies when the delegation was last updated. ',
+    }),
+    controlSetId: ControlSetIdSchema.exactOptional().openapi({
+      description: " The identifier for the control set that's associated with the delegation. ",
+    }),
+    comment: DelegationCommentSchema.exactOptional().openapi({
+      description: " The comment that's related to the delegation. ",
+    }),
+    createdBy: CreatedBySchema.exactOptional().openapi({
+      description: ' The user or role that created the delegation. ',
+    }),
+  })
+  .openapi({
+    description: ' The assignment of a control set to a delegate for review. ',
+    required: [],
+  })
+  .openapi('Delegation')
+
+const DelegationsSchema = z.array(DelegationSchema).openapi('Delegations')
+
 const AssessmentMetadataSchema = z
   .object({
-    name: AssessmentNameSchema.and(
-      z.any().openapi({ description: ' The name of the assessment. ' }),
-    ).exactOptional(),
-    id: UUIDSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the assessment. ' }),
-    ).exactOptional(),
-    description: AssessmentDescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the assessment. ' }),
-    ).exactOptional(),
-    complianceType: ComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The name of the compliance standard that's related to the assessment, such as PCI-DSS. ",
-        }),
-    ).exactOptional(),
-    status: AssessmentStatusSchema.and(
-      z.any().openapi({ description: ' The overall status of the assessment. ' }),
-    ).exactOptional(),
-    assessmentReportsDestination: AssessmentReportsDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The destination that evidence reports are stored in for the assessment. ',
-        }),
-    ).exactOptional(),
-    scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The wrapper of Amazon Web Services accounts and services that are in scope for the assessment. ',
-        }),
-    ).exactOptional(),
-    roles: RolesSchema.and(
-      z.any().openapi({ description: ' The roles that are associated with the assessment. ' }),
-    ).exactOptional(),
-    delegations: DelegationsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The delegations that are associated with the assessment. ' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: ' Specifies when the assessment was created. ' }),
-    ).exactOptional(),
-    lastUpdated: TimestampSchema.and(
-      z.any().openapi({ description: ' The time of the most recent update. ' }),
-    ).exactOptional(),
+    name: AssessmentNameSchema.exactOptional().openapi({
+      description: ' The name of the assessment. ',
+    }),
+    id: UUIDSchema.exactOptional().openapi({
+      description: ' The unique identifier for the assessment. ',
+    }),
+    description: AssessmentDescriptionSchema.exactOptional().openapi({
+      description: ' The description of the assessment. ',
+    }),
+    complianceType: ComplianceTypeSchema.exactOptional().openapi({
+      description:
+        " The name of the compliance standard that's related to the assessment, such as PCI-DSS. ",
+    }),
+    status: AssessmentStatusSchema.exactOptional().openapi({
+      description: ' The overall status of the assessment. ',
+    }),
+    assessmentReportsDestination: AssessmentReportsDestinationSchema.exactOptional().openapi({
+      description: ' The destination that evidence reports are stored in for the assessment. ',
+    }),
+    scope: ScopeSchema.exactOptional().openapi({
+      description:
+        ' The wrapper of Amazon Web Services accounts and services that are in scope for the assessment. ',
+    }),
+    roles: RolesSchema.exactOptional().openapi({
+      description: ' The roles that are associated with the assessment. ',
+    }),
+    delegations: DelegationsSchema.exactOptional().openapi({
+      description: ' The delegations that are associated with the assessment. ',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: ' Specifies when the assessment was created. ',
+    }),
+    lastUpdated: TimestampSchema.exactOptional().openapi({
+      description: ' The time of the most recent update. ',
+    }),
   })
   .openapi({
     description: " The metadata that's associated with the specified assessment. ",
@@ -624,23 +301,19 @@ const FilenameSchema = z
 
 const FrameworkMetadataSchema = z
   .object({
-    name: AssessmentNameSchema.and(
-      z.any().openapi({ description: ' The name of the framework. ' }),
-    ).exactOptional(),
-    description: AssessmentFrameworkDescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the framework. ' }),
-    ).exactOptional(),
-    logo: FilenameSchema.and(
-      z.any().openapi({ description: " The logo that's associated with the framework. " }),
-    ).exactOptional(),
-    complianceType: ComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The compliance standard that's associated with the framework. For example, this could be PCI DSS or HIPAA. ",
-        }),
-    ).exactOptional(),
+    name: AssessmentNameSchema.exactOptional().openapi({
+      description: ' The name of the framework. ',
+    }),
+    description: AssessmentFrameworkDescriptionSchema.exactOptional().openapi({
+      description: ' The description of the framework. ',
+    }),
+    logo: FilenameSchema.exactOptional().openapi({
+      description: " The logo that's associated with the framework. ",
+    }),
+    complianceType: ComplianceTypeSchema.exactOptional().openapi({
+      description:
+        " The compliance standard that's associated with the framework. For example, this could be PCI DSS or HIPAA. ",
+    }),
   })
   .openapi({
     description: ' The metadata of a framework, such as the name, ID, or description. ',
@@ -695,15 +368,15 @@ const ControlCommentBodySchema = z
 
 const ControlCommentSchema = z
   .object({
-    authorName: UsernameSchema.and(
-      z.any().openapi({ description: ' The name of the user who authored the comment. ' }),
-    ).exactOptional(),
-    commentBody: ControlCommentBodySchema.and(
-      z.any().openapi({ description: ' The body text of a control comment. ' }),
-    ).exactOptional(),
-    postedDate: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when the comment was posted. ' }),
-    ).exactOptional(),
+    authorName: UsernameSchema.exactOptional().openapi({
+      description: ' The name of the user who authored the comment. ',
+    }),
+    commentBody: ControlCommentBodySchema.exactOptional().openapi({
+      description: ' The body text of a control comment. ',
+    }),
+    postedDate: TimestampSchema.exactOptional().openapi({
+      description: ' The time when the comment was posted. ',
+    }),
   })
   .openapi({
     description:
@@ -720,35 +393,29 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const AssessmentControlSchema = z
   .object({
-    id: UUIDSchema.and(
-      z.any().openapi({ description: ' The identifier for the control. ' }),
-    ).exactOptional(),
-    name: ControlNameSchema.and(
-      z.any().openapi({ description: ' The name of the control. ' }),
-    ).exactOptional(),
-    description: ControlDescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the control. ' }),
-    ).exactOptional(),
-    status: ControlStatusSchema.and(
-      z.any().openapi({ description: ' The status of the control. ' }),
-    ).exactOptional(),
-    response: ControlResponseSchema.and(
-      z.any().openapi({ description: ' The response of the control. ' }),
-    ).exactOptional(),
-    comments: ControlCommentsSchema.and(
-      z.any().openapi({ description: " The list of comments that's attached to the control. " }),
-    ).exactOptional(),
-    evidenceSources: EvidenceSourcesSchema.and(
-      z.any().openapi({ description: ' The list of data sources for the evidence. ' }),
-    ).exactOptional(),
-    evidenceCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: " The amount of evidence that's collected for the control. " }),
-    ).exactOptional(),
-    assessmentReportEvidenceCount: IntegerSchema.and(
-      z.any().openapi({ description: ' The amount of evidence in the assessment report. ' }),
-    ).exactOptional(),
+    id: UUIDSchema.exactOptional().openapi({ description: ' The identifier for the control. ' }),
+    name: ControlNameSchema.exactOptional().openapi({ description: ' The name of the control. ' }),
+    description: ControlDescriptionSchema.exactOptional().openapi({
+      description: ' The description of the control. ',
+    }),
+    status: ControlStatusSchema.exactOptional().openapi({
+      description: ' The status of the control. ',
+    }),
+    response: ControlResponseSchema.exactOptional().openapi({
+      description: ' The response of the control. ',
+    }),
+    comments: ControlCommentsSchema.exactOptional().openapi({
+      description: " The list of comments that's attached to the control. ",
+    }),
+    evidenceSources: EvidenceSourcesSchema.exactOptional().openapi({
+      description: ' The list of data sources for the evidence. ',
+    }),
+    evidenceCount: IntegerSchema.exactOptional().openapi({
+      description: " The amount of evidence that's collected for the control. ",
+    }),
+    assessmentReportEvidenceCount: IntegerSchema.exactOptional().openapi({
+      description: ' The amount of evidence in the assessment report. ',
+    }),
   })
   .openapi({
     description:
@@ -761,49 +428,33 @@ const AssessmentControlsSchema = z.array(AssessmentControlSchema).openapi('Asses
 
 const AssessmentControlSetSchema = z
   .object({
-    id: ControlSetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The identifier of the control set in the assessment. This is the control set name in a plain string format. ',
-        }),
-    ).exactOptional(),
-    description: NonEmptyStringSchema.and(
-      z.any().openapi({ description: ' The description for the control set. ' }),
-    ).exactOptional(),
-    status: ControlSetStatusSchema.and(
-      z.any().openapi({ description: ' The current status of the control set. ' }),
-    ).exactOptional(),
-    roles: RolesSchema.and(
-      z.any().openapi({ description: ' The roles that are associated with the control set. ' }),
-    ).exactOptional(),
-    controls: AssessmentControlsSchema.and(
-      z
-        .any()
-        .openapi({ description: " The list of controls that's contained with the control set. " }),
-    ).exactOptional(),
-    delegations: DelegationsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The delegations that are associated with the control set. ' }),
-    ).exactOptional(),
-    systemEvidenceCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The total number of evidence objects that are retrieved automatically for the control set. ',
-        }),
-    ).exactOptional(),
-    manualEvidenceCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The total number of evidence objects that are uploaded manually to the control set. ',
-        }),
-    ).exactOptional(),
+    id: ControlSetIdSchema.exactOptional().openapi({
+      description:
+        ' The identifier of the control set in the assessment. This is the control set name in a plain string format. ',
+    }),
+    description: NonEmptyStringSchema.exactOptional().openapi({
+      description: ' The description for the control set. ',
+    }),
+    status: ControlSetStatusSchema.exactOptional().openapi({
+      description: ' The current status of the control set. ',
+    }),
+    roles: RolesSchema.exactOptional().openapi({
+      description: ' The roles that are associated with the control set. ',
+    }),
+    controls: AssessmentControlsSchema.exactOptional().openapi({
+      description: " The list of controls that's contained with the control set. ",
+    }),
+    delegations: DelegationsSchema.exactOptional().openapi({
+      description: ' The delegations that are associated with the control set. ',
+    }),
+    systemEvidenceCount: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The total number of evidence objects that are retrieved automatically for the control set. ',
+    }),
+    manualEvidenceCount: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The total number of evidence objects that are uploaded manually to the control set. ',
+    }),
   })
   .openapi({
     description: ' Represents a set of controls in an Audit Manager assessment. ',
@@ -817,18 +468,16 @@ const AssessmentControlSetsSchema = z
 
 const AssessmentFrameworkSchema = z
   .object({
-    id: UUIDSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the framework. ' }),
-    ).exactOptional(),
-    arn: AuditManagerArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) of the framework. ' }),
-    ).exactOptional(),
+    id: UUIDSchema.exactOptional().openapi({
+      description: ' The unique identifier for the framework. ',
+    }),
+    arn: AuditManagerArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the framework. ',
+    }),
     metadata: FrameworkMetadataSchema.exactOptional(),
-    controlSets: AssessmentControlSetsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The control sets that are associated with the framework. ' }),
-    ).exactOptional(),
+    controlSets: AssessmentControlSetsSchema.exactOptional().openapi({
+      description: ' The control sets that are associated with the framework. ',
+    }),
   })
   .openapi({
     description:
@@ -850,27 +499,31 @@ const TagMapSchema = z
   .refine((val) => Object.keys(val).length <= 50)
   .openapi('TagMap')
 
-const AssessmentSchema = z
+type AssessmentType = {
+  arn?: z.infer<typeof AuditManagerArnSchema> & unknown
+  awsAccount?: z.infer<typeof AWSAccountSchema> & unknown
+  metadata?: z.infer<typeof AssessmentMetadataSchema> & unknown
+  framework?: z.infer<typeof AssessmentFrameworkSchema> & unknown
+  tags?: z.infer<typeof TagMapSchema> & unknown
+}
+
+const AssessmentSchema: z.ZodType<AssessmentType> = z
   .object({
-    arn: AuditManagerArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) of the assessment. ' }),
-    ).exactOptional(),
-    awsAccount: AWSAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The Amazon Web Services account that's associated with the assessment. ",
-        }),
-    ).exactOptional(),
-    metadata: AssessmentMetadataSchema.and(
-      z.any().openapi({ description: ' The metadata for the assessment. ' }),
-    ).exactOptional(),
-    framework: AssessmentFrameworkSchema.and(
-      z.any().openapi({ description: ' The framework that the assessment was created from. ' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: ' The tags that are associated with the assessment. ' }),
-    ).exactOptional(),
+    arn: AuditManagerArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the assessment. ',
+    }),
+    awsAccount: AWSAccountSchema.exactOptional().openapi({
+      description: " The Amazon Web Services account that's associated with the assessment. ",
+    }),
+    metadata: AssessmentMetadataSchema.exactOptional().openapi({
+      description: ' The metadata for the assessment. ',
+    }),
+    framework: AssessmentFrameworkSchema.exactOptional().openapi({
+      description: ' The framework that the assessment was created from. ',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: ' The tags that are associated with the assessment. ',
+    }),
   })
   .openapi({
     description:
@@ -879,12 +532,7 @@ const AssessmentSchema = z
   })
   .openapi('Assessment')
 
-const CreateAssessmentResponseSchema = z
-  .object({ assessment: AssessmentSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('CreateAssessmentResponse')
-
-const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceededException')
+type CreateAssessmentResponseType = { assessment?: z.infer<typeof AssessmentSchema> }
 
 const FrameworkNameSchema = z
   .string()
@@ -963,17 +611,13 @@ const KeywordValueSchema = z
 
 const SourceKeywordSchema = z
   .object({
-    keywordInputType: KeywordInputTypeSchema.and(
-      z.any().openapi({ description: ' The input method for the keyword. ' }),
-    ).exactOptional(),
-    keywordValue: KeywordValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The value of the keyword that\'s used when mapping a control data source. For example, this can be a CloudTrail event name, a rule name for Config, a Security Hub control, or the name of an Amazon Web Services API call. </p> <p>If you’re mapping a data source to a rule in Config, the <code>keywordValue</code> that you specify depends on the type of rule:</p> <ul> <li> <p>For <a href="https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html">managed rules</a>, you can use the rule identifier as the <code>keywordValue</code>. You can find the rule identifier from the <a href="https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html">list of Config managed rules</a>.</p> <ul> <li> <p>Managed rule name: <a href="https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-acl-prohibited.html">s3-bucket-acl-prohibited</a> </p> <p> <code>keywordValue</code>: <code>S3_BUCKET_ACL_PROHIBITED</code> </p> </li> </ul> </li> <li> <p>For <a href="https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_develop-rules.html">custom rules</a>, you form the <code>keywordValue</code> by adding the <code>Custom_</code> prefix to the rule name. This prefix distinguishes the rule from a managed rule.</p> <ul> <li> <p>Custom rule name: my-custom-config-rule</p> <p> <code>keywordValue</code>: <code>Custom_my-custom-config-rule</code> </p> </li> </ul> </li> <li> <p>For <a href="https://docs.aws.amazon.com/config/latest/developerguide/service-linked-awsconfig-rules.html">service-linked rules</a>, you form the <code>keywordValue</code> by adding the <code>Custom_</code> prefix to the rule name. In addition, you remove the suffix ID that appears at the end of the rule name.</p> <ul> <li> <p>Service-linked rule name: CustomRuleForAccount-conformance-pack-szsm1uv0w</p> <p> <code>keywordValue</code>: <code>Custom_CustomRuleForAccount-conformance-pack</code> </p> </li> <li> <p>Service-linked rule name: OrgConfigRule-s3-bucket-versioning-enabled-dbgzf8ba</p> <p> <code>keywordValue</code>: <code>Custom_OrgConfigRule-s3-bucket-versioning-enabled</code> </p> </li> </ul> </li> </ul>',
-        }),
-    ).exactOptional(),
+    keywordInputType: KeywordInputTypeSchema.exactOptional().openapi({
+      description: ' The input method for the keyword. ',
+    }),
+    keywordValue: KeywordValueSchema.exactOptional().openapi({
+      description:
+        '<p> The value of the keyword that\'s used when mapping a control data source. For example, this can be a CloudTrail event name, a rule name for Config, a Security Hub control, or the name of an Amazon Web Services API call. </p> <p>If you’re mapping a data source to a rule in Config, the <code>keywordValue</code> that you specify depends on the type of rule:</p> <ul> <li> <p>For <a href="https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html">managed rules</a>, you can use the rule identifier as the <code>keywordValue</code>. You can find the rule identifier from the <a href="https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html">list of Config managed rules</a>.</p> <ul> <li> <p>Managed rule name: <a href="https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-acl-prohibited.html">s3-bucket-acl-prohibited</a> </p> <p> <code>keywordValue</code>: <code>S3_BUCKET_ACL_PROHIBITED</code> </p> </li> </ul> </li> <li> <p>For <a href="https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_develop-rules.html">custom rules</a>, you form the <code>keywordValue</code> by adding the <code>Custom_</code> prefix to the rule name. This prefix distinguishes the rule from a managed rule.</p> <ul> <li> <p>Custom rule name: my-custom-config-rule</p> <p> <code>keywordValue</code>: <code>Custom_my-custom-config-rule</code> </p> </li> </ul> </li> <li> <p>For <a href="https://docs.aws.amazon.com/config/latest/developerguide/service-linked-awsconfig-rules.html">service-linked rules</a>, you form the <code>keywordValue</code> by adding the <code>Custom_</code> prefix to the rule name. In addition, you remove the suffix ID that appears at the end of the rule name.</p> <ul> <li> <p>Service-linked rule name: CustomRuleForAccount-conformance-pack-szsm1uv0w</p> <p> <code>keywordValue</code>: <code>Custom_CustomRuleForAccount-conformance-pack</code> </p> </li> <li> <p>Service-linked rule name: OrgConfigRule-s3-bucket-versioning-enabled-dbgzf8ba</p> <p> <code>keywordValue</code>: <code>Custom_OrgConfigRule-s3-bucket-versioning-enabled</code> </p> </li> </ul> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -992,41 +636,29 @@ const TroubleshootingTextSchema = z
 
 const ControlMappingSourceSchema = z
   .object({
-    sourceId: UUIDSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the source. ' }),
-    ).exactOptional(),
-    sourceName: SourceNameSchema.and(
-      z.any().openapi({ description: ' The name of the source. ' }),
-    ).exactOptional(),
-    sourceDescription: SourceDescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the source. ' }),
-    ).exactOptional(),
-    sourceSetUpOption: SourceSetUpOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The setup option for the data source. This option reflects if the evidence collection is automated or manual. ',
-        }),
-    ).exactOptional(),
-    sourceType: SourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Specifies one of the five data source types for evidence collection. ',
-        }),
-    ).exactOptional(),
+    sourceId: UUIDSchema.exactOptional().openapi({
+      description: ' The unique identifier for the source. ',
+    }),
+    sourceName: SourceNameSchema.exactOptional().openapi({
+      description: ' The name of the source. ',
+    }),
+    sourceDescription: SourceDescriptionSchema.exactOptional().openapi({
+      description: ' The description of the source. ',
+    }),
+    sourceSetUpOption: SourceSetUpOptionSchema.exactOptional().openapi({
+      description:
+        ' The setup option for the data source. This option reflects if the evidence collection is automated or manual. ',
+    }),
+    sourceType: SourceTypeSchema.exactOptional().openapi({
+      description: ' Specifies one of the five data source types for evidence collection. ',
+    }),
     sourceKeyword: SourceKeywordSchema.exactOptional(),
-    sourceFrequency: SourceFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The frequency of evidence collection for the control mapping source. ',
-        }),
-    ).exactOptional(),
-    troubleshootingText: TroubleshootingTextSchema.and(
-      z.any().openapi({ description: ' The instructions for troubleshooting the control. ' }),
-    ).exactOptional(),
+    sourceFrequency: SourceFrequencySchema.exactOptional().openapi({
+      description: ' The frequency of evidence collection for the control mapping source. ',
+    }),
+    troubleshootingText: TroubleshootingTextSchema.exactOptional().openapi({
+      description: ' The instructions for troubleshooting the control. ',
+    }),
   })
   .openapi({
     description:
@@ -1049,73 +681,51 @@ const LastUpdatedBySchema = z
 
 const ControlSchema = z
   .object({
-    arn: AuditManagerArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) of the control. ' }),
-    ).exactOptional(),
-    id: UUIDSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the control. ' }),
-    ).exactOptional(),
-    type: ControlTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The type of control, such as a custom control or a standard control. ',
-        }),
-    ).exactOptional(),
-    name: ControlNameSchema.and(
-      z.any().openapi({ description: ' The name of the control. ' }),
-    ).exactOptional(),
-    description: ControlDescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the control. ' }),
-    ).exactOptional(),
-    testingInformation: TestingInformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The steps that you should follow to determine if the control has been satisfied. ',
-        }),
-    ).exactOptional(),
-    actionPlanTitle: ActionPlanTitleSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The title of the action plan for remediating the control. ' }),
-    ).exactOptional(),
-    actionPlanInstructions: ActionPlanInstructionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The recommended actions to carry out if the control isn't fulfilled. ",
-        }),
-    ).exactOptional(),
-    controlSources: ControlSourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The data source types that determine where Audit Manager collects evidence from for the control. ',
-        }),
-    ).exactOptional(),
-    controlMappingSources: ControlMappingSourcesSchema.and(
-      z.any().openapi({ description: ' The data mapping sources for the control. ' }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when the control was created. ' }),
-    ).exactOptional(),
-    lastUpdatedAt: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when the control was most recently updated. ' }),
-    ).exactOptional(),
-    createdBy: CreatedBySchema.and(
-      z.any().openapi({ description: ' The user or role that created the control. ' }),
-    ).exactOptional(),
-    lastUpdatedBy: LastUpdatedBySchema.and(
-      z
-        .any()
-        .openapi({ description: ' The user or role that most recently updated the control. ' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: ' The tags associated with the control. ' }),
-    ).exactOptional(),
+    arn: AuditManagerArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the control. ',
+    }),
+    id: UUIDSchema.exactOptional().openapi({
+      description: ' The unique identifier for the control. ',
+    }),
+    type: ControlTypeSchema.exactOptional().openapi({
+      description: ' The type of control, such as a custom control or a standard control. ',
+    }),
+    name: ControlNameSchema.exactOptional().openapi({ description: ' The name of the control. ' }),
+    description: ControlDescriptionSchema.exactOptional().openapi({
+      description: ' The description of the control. ',
+    }),
+    testingInformation: TestingInformationSchema.exactOptional().openapi({
+      description:
+        ' The steps that you should follow to determine if the control has been satisfied. ',
+    }),
+    actionPlanTitle: ActionPlanTitleSchema.exactOptional().openapi({
+      description: ' The title of the action plan for remediating the control. ',
+    }),
+    actionPlanInstructions: ActionPlanInstructionsSchema.exactOptional().openapi({
+      description: " The recommended actions to carry out if the control isn't fulfilled. ",
+    }),
+    controlSources: ControlSourcesSchema.exactOptional().openapi({
+      description:
+        ' The data source types that determine where Audit Manager collects evidence from for the control. ',
+    }),
+    controlMappingSources: ControlMappingSourcesSchema.exactOptional().openapi({
+      description: ' The data mapping sources for the control. ',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: ' The time when the control was created. ',
+    }),
+    lastUpdatedAt: TimestampSchema.exactOptional().openapi({
+      description: ' The time when the control was most recently updated. ',
+    }),
+    createdBy: CreatedBySchema.exactOptional().openapi({
+      description: ' The user or role that created the control. ',
+    }),
+    lastUpdatedBy: LastUpdatedBySchema.exactOptional().openapi({
+      description: ' The user or role that most recently updated the control. ',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: ' The tags associated with the control. ',
+    }),
   })
   .openapi({ description: ' A control in Audit Manager. ', required: [] })
   .openapi('Control')
@@ -1124,87 +734,84 @@ const ControlsSchema = z.array(ControlSchema).min(1).openapi('Controls')
 
 const ControlSetSchema = z
   .object({
-    id: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The identifier of the control set in the assessment. This is the control set name in a plain string format. ',
-        }),
-    ).exactOptional(),
-    name: ControlSetNameSchema.and(
-      z.any().openapi({ description: ' The name of the control set. ' }),
-    ).exactOptional(),
-    controls: ControlsSchema.and(
-      z.any().openapi({ description: ' The list of controls within the control set. ' }),
-    ).exactOptional(),
+    id: UUIDSchema.exactOptional().openapi({
+      description:
+        ' The identifier of the control set in the assessment. This is the control set name in a plain string format. ',
+    }),
+    name: ControlSetNameSchema.exactOptional().openapi({
+      description: ' The name of the control set. ',
+    }),
+    controls: ControlsSchema.exactOptional().openapi({
+      description: ' The list of controls within the control set. ',
+    }),
   })
   .openapi({ description: ' A set of controls in Audit Manager. ', required: [] })
   .openapi('ControlSet')
 
 const ControlSetsSchema = z.array(ControlSetSchema).min(1).openapi('ControlSets')
 
-const FrameworkSchema = z
+type FrameworkType = {
+  arn?: z.infer<typeof AuditManagerArnSchema> & unknown
+  id?: z.infer<typeof UUIDSchema> & unknown
+  name?: z.infer<typeof FrameworkNameSchema> & unknown
+  type?: z.infer<typeof FrameworkTypeSchema> & unknown
+  complianceType?: z.infer<typeof ComplianceTypeSchema> & unknown
+  description?: z.infer<typeof FrameworkDescriptionSchema> & unknown
+  logo?: z.infer<typeof FilenameSchema> & unknown
+  controlSources?: z.infer<typeof ControlSourcesSchema> & unknown
+  controlSets?: z.infer<typeof ControlSetsSchema> & unknown
+  createdAt?: z.infer<typeof TimestampSchema> & unknown
+  lastUpdatedAt?: z.infer<typeof TimestampSchema> & unknown
+  createdBy?: z.infer<typeof CreatedBySchema> & unknown
+  lastUpdatedBy?: z.infer<typeof LastUpdatedBySchema> & unknown
+  tags?: z.infer<typeof TagMapSchema> & unknown
+}
+
+const FrameworkSchema: z.ZodType<FrameworkType> = z
   .object({
-    arn: AuditManagerArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) of the framework. ' }),
-    ).exactOptional(),
-    id: UUIDSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the framework. ' }),
-    ).exactOptional(),
-    name: FrameworkNameSchema.and(
-      z.any().openapi({ description: ' The name of the framework. ' }),
-    ).exactOptional(),
-    type: FrameworkTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The framework type, such as a custom framework or a standard framework. ',
-        }),
-    ).exactOptional(),
-    complianceType: ComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The compliance type that the new custom framework supports, such as CIS or HIPAA. ',
-        }),
-    ).exactOptional(),
-    description: FrameworkDescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the framework. ' }),
-    ).exactOptional(),
-    logo: FilenameSchema.and(
-      z.any().openapi({ description: " The logo that's associated with the framework. " }),
-    ).exactOptional(),
-    controlSources: ControlSourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The sources that Audit Manager collects evidence from for the control. ',
-        }),
-    ).exactOptional(),
-    controlSets: ControlSetsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The control sets that are associated with the framework. ' }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when the framework was created. ' }),
-    ).exactOptional(),
-    lastUpdatedAt: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when the framework was most recently updated. ' }),
-    ).exactOptional(),
-    createdBy: CreatedBySchema.and(
-      z.any().openapi({ description: ' The user or role that created the framework. ' }),
-    ).exactOptional(),
-    lastUpdatedBy: LastUpdatedBySchema.and(
-      z
-        .any()
-        .openapi({ description: ' The user or role that most recently updated the framework. ' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: ' The tags that are associated with the framework. ' }),
-    ).exactOptional(),
+    arn: AuditManagerArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the framework. ',
+    }),
+    id: UUIDSchema.exactOptional().openapi({
+      description: ' The unique identifier for the framework. ',
+    }),
+    name: FrameworkNameSchema.exactOptional().openapi({
+      description: ' The name of the framework. ',
+    }),
+    type: FrameworkTypeSchema.exactOptional().openapi({
+      description: ' The framework type, such as a custom framework or a standard framework. ',
+    }),
+    complianceType: ComplianceTypeSchema.exactOptional().openapi({
+      description:
+        ' The compliance type that the new custom framework supports, such as CIS or HIPAA. ',
+    }),
+    description: FrameworkDescriptionSchema.exactOptional().openapi({
+      description: ' The description of the framework. ',
+    }),
+    logo: FilenameSchema.exactOptional().openapi({
+      description: " The logo that's associated with the framework. ",
+    }),
+    controlSources: ControlSourcesSchema.exactOptional().openapi({
+      description: ' The sources that Audit Manager collects evidence from for the control. ',
+    }),
+    controlSets: ControlSetsSchema.exactOptional().openapi({
+      description: ' The control sets that are associated with the framework. ',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: ' The time when the framework was created. ',
+    }),
+    lastUpdatedAt: TimestampSchema.exactOptional().openapi({
+      description: ' The time when the framework was most recently updated. ',
+    }),
+    createdBy: CreatedBySchema.exactOptional().openapi({
+      description: ' The user or role that created the framework. ',
+    }),
+    lastUpdatedBy: LastUpdatedBySchema.exactOptional().openapi({
+      description: ' The user or role that most recently updated the framework. ',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: ' The tags that are associated with the framework. ',
+    }),
   })
   .openapi({
     description:
@@ -1213,24 +820,261 @@ const FrameworkSchema = z
   })
   .openapi('Framework')
 
-const CreateAssessmentFrameworkResponseSchema = z
+type CreateAssessmentFrameworkResponseType = {
+  framework?: z.infer<typeof FrameworkSchema> & unknown
+}
+
+type GetAssessmentResponseType = {
+  assessment?: z.infer<typeof AssessmentSchema>
+  userRole?: z.infer<typeof RoleSchema>
+}
+
+type GetAssessmentFrameworkResponseType = { framework?: z.infer<typeof FrameworkSchema> & unknown }
+
+type UpdateAssessmentResponseType = { assessment?: z.infer<typeof AssessmentSchema> & unknown }
+
+type UpdateAssessmentFrameworkResponseType = {
+  framework?: z.infer<typeof FrameworkSchema> & unknown
+}
+
+type UpdateAssessmentStatusResponseType = {
+  assessment?: z.infer<typeof AssessmentSchema> & unknown
+}
+
+const AssociateAssessmentReportEvidenceFolderResponseSchema = z
+  .looseObject({})
+  .openapi('AssociateAssessmentReportEvidenceFolderResponse')
+
+const ValidationExceptionSchema = z.any().openapi('ValidationException')
+
+const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
+
+const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
+
+const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
+
+const EvidenceIdsSchema = z.array(UUIDSchema).min(0).max(50).openapi('EvidenceIds')
+
+const ErrorCodeSchema = z
+  .string()
+  .regex(/[0-9]{3}/)
+  .length(3)
+  .openapi('ErrorCode')
+
+const ErrorMessageSchema = z
+  .string()
+  .regex(/^[\w\W\s\S]*$/)
+  .max(300)
+  .openapi('ErrorMessage')
+
+const AssessmentReportEvidenceErrorSchema = z
   .object({
-    framework: FrameworkSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the new framework that the <code>CreateAssessmentFramework</code> API returned. ',
-        }),
-    ).exactOptional(),
+    evidenceId: UUIDSchema.exactOptional().openapi({
+      description: ' The identifier for the evidence. ',
+    }),
+    errorCode: ErrorCodeSchema.exactOptional().openapi({
+      description: ' The error code that was returned. ',
+    }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: ' The error message that was returned. ',
+    }),
+  })
+  .openapi({
+    description:
+      ' An error entity for assessment report evidence errors. This is used to provide more meaningful errors than a simple string message. ',
+    required: [],
+  })
+  .openapi('AssessmentReportEvidenceError')
+
+const AssessmentReportEvidenceErrorsSchema = z
+  .array(AssessmentReportEvidenceErrorSchema)
+  .openapi('AssessmentReportEvidenceErrors')
+
+const BatchAssociateAssessmentReportEvidenceResponseSchema = z
+  .object({
+    evidenceIds: EvidenceIdsSchema.exactOptional().openapi({
+      description: ' The list of evidence identifiers. ',
+    }),
+    errors: AssessmentReportEvidenceErrorsSchema.exactOptional().openapi({
+      description:
+        ' A list of errors that the <code>BatchAssociateAssessmentReportEvidence</code> API returned. ',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('BatchAssociateAssessmentReportEvidenceResponse')
+
+const CreateDelegationRequestSchema = z
+  .object({
+    comment: DelegationCommentSchema.exactOptional().openapi({
+      description: " A comment that's related to the delegation request. ",
+    }),
+    controlSetId: ControlSetIdSchema.exactOptional().openapi({
+      description: ' The unique identifier for the control set. ',
+    }),
+    roleArn: IamArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the IAM role. ',
+    }),
+    roleType: RoleTypeSchema.exactOptional().openapi({
+      description:
+        '<p> The type of customer persona. </p> <note> <p>In <code>CreateAssessment</code>, <code>roleType</code> can only be <code>PROCESS_OWNER</code>. </p> <p>In <code>UpdateSettings</code>, <code>roleType</code> can only be <code>PROCESS_OWNER</code>.</p> <p>In <code>BatchCreateDelegationByAssessment</code>, <code>roleType</code> can only be <code>RESOURCE_OWNER</code>.</p> </note>',
+    }),
+  })
+  .openapi({
+    description:
+      " A collection of attributes that's used to create a delegation for an assessment in Audit Manager. ",
+    required: [],
+  })
+  .openapi('CreateDelegationRequest')
+
+const BatchCreateDelegationByAssessmentErrorSchema = z
+  .object({
+    createDelegationRequest: CreateDelegationRequestSchema.exactOptional().openapi({
+      description: ' The API request to batch create delegations in Audit Manager. ',
+    }),
+    errorCode: ErrorCodeSchema.exactOptional().openapi({
+      description:
+        ' The error code that the <code>BatchCreateDelegationByAssessment</code> API returned. ',
+    }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description:
+        ' The error message that the <code>BatchCreateDelegationByAssessment</code> API returned. ',
+    }),
+  })
+  .openapi({
+    description:
+      ' An error entity for the <code>BatchCreateDelegationByAssessment</code> API. This is used to provide more meaningful errors than a simple string message. ',
+    required: [],
+  })
+  .openapi('BatchCreateDelegationByAssessmentError')
+
+const BatchCreateDelegationByAssessmentErrorsSchema = z
+  .array(BatchCreateDelegationByAssessmentErrorSchema)
+  .openapi('BatchCreateDelegationByAssessmentErrors')
+
+const BatchCreateDelegationByAssessmentResponseSchema = z
+  .object({
+    delegations: DelegationsSchema.exactOptional().openapi({
+      description: ' The delegations that are associated with the assessment. ',
+    }),
+    errors: BatchCreateDelegationByAssessmentErrorsSchema.exactOptional().openapi({
+      description:
+        ' A list of errors that the <code>BatchCreateDelegationByAssessment</code> API returned. ',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('BatchCreateDelegationByAssessmentResponse')
+
+const BatchDeleteDelegationByAssessmentErrorSchema = z
+  .object({
+    delegationId: UUIDSchema.exactOptional().openapi({
+      description: ' The identifier for the delegation. ',
+    }),
+    errorCode: ErrorCodeSchema.exactOptional().openapi({
+      description:
+        ' The error code that the <code>BatchDeleteDelegationByAssessment</code> API returned. ',
+    }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description:
+        ' The error message that the <code>BatchDeleteDelegationByAssessment</code> API returned. ',
+    }),
+  })
+  .openapi({
+    description:
+      ' An error entity for the <code>BatchDeleteDelegationByAssessment</code> API. This is used to provide more meaningful errors than a simple string message. ',
+    required: [],
+  })
+  .openapi('BatchDeleteDelegationByAssessmentError')
+
+const BatchDeleteDelegationByAssessmentErrorsSchema = z
+  .array(BatchDeleteDelegationByAssessmentErrorSchema)
+  .openapi('BatchDeleteDelegationByAssessmentErrors')
+
+const BatchDeleteDelegationByAssessmentResponseSchema = z
+  .object({
+    errors: BatchDeleteDelegationByAssessmentErrorsSchema.exactOptional().openapi({
+      description:
+        ' A list of errors that the <code>BatchDeleteDelegationByAssessment</code> API returned. ',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('BatchDeleteDelegationByAssessmentResponse')
+
+const BatchDisassociateAssessmentReportEvidenceResponseSchema = z
+  .object({
+    evidenceIds: EvidenceIdsSchema.exactOptional().openapi({
+      description: ' The identifier for the evidence. ',
+    }),
+    errors: AssessmentReportEvidenceErrorsSchema.exactOptional().openapi({
+      description:
+        ' A list of errors that the <code>BatchDisassociateAssessmentReportEvidence</code> API returned. ',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('BatchDisassociateAssessmentReportEvidenceResponse')
+
+const ManualEvidenceSchema = z
+  .object({
+    s3ResourcePath: S3UrlSchema.exactOptional().openapi({
+      description: ' The Amazon S3 URL that points to a manual evidence object. ',
+    }),
+  })
+  .openapi({ description: " Evidence that's uploaded to Audit Manager manually. ", required: [] })
+  .openapi('ManualEvidence')
+
+const BatchImportEvidenceToAssessmentControlErrorSchema = z
+  .object({
+    manualEvidence: ManualEvidenceSchema.exactOptional().openapi({
+      description: " Manual evidence that can't be collected automatically by Audit Manager. ",
+    }),
+    errorCode: ErrorCodeSchema.exactOptional().openapi({
+      description:
+        ' The error code that the <code>BatchImportEvidenceToAssessmentControl</code> API returned. ',
+    }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description:
+        ' The error message that the <code>BatchImportEvidenceToAssessmentControl</code> API returned. ',
+    }),
+  })
+  .openapi({
+    description:
+      ' An error entity for the <code>BatchImportEvidenceToAssessmentControl</code> API. This is used to provide more meaningful errors than a simple string message. ',
+    required: [],
+  })
+  .openapi('BatchImportEvidenceToAssessmentControlError')
+
+const BatchImportEvidenceToAssessmentControlErrorsSchema = z
+  .array(BatchImportEvidenceToAssessmentControlErrorSchema)
+  .openapi('BatchImportEvidenceToAssessmentControlErrors')
+
+const BatchImportEvidenceToAssessmentControlResponseSchema = z
+  .object({
+    errors: BatchImportEvidenceToAssessmentControlErrorsSchema.exactOptional().openapi({
+      description:
+        ' A list of errors that the <code>BatchImportEvidenceToAssessmentControl</code> API returned. ',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('BatchImportEvidenceToAssessmentControlResponse')
+
+const CreateAssessmentResponseSchema: z.ZodType<CreateAssessmentResponseType> = z
+  .object({ assessment: AssessmentSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('CreateAssessmentResponse')
+
+const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceededException')
+
+const CreateAssessmentFrameworkResponseSchema: z.ZodType<CreateAssessmentFrameworkResponseType> = z
+  .object({
+    framework: FrameworkSchema.exactOptional().openapi({
+      description:
+        ' The name of the new framework that the <code>CreateAssessmentFramework</code> API returned. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateAssessmentFrameworkResponse')
 
 const CreateAssessmentFrameworkControlSchema = z
-  .object({
-    id: UUIDSchema.and(z.any().openapi({ description: ' The unique identifier of the control. ' })),
-  })
+  .object({ id: UUIDSchema.openapi({ description: ' The unique identifier of the control. ' }) })
   .openapi({
     required: ['id'],
     description:
@@ -1245,17 +1089,11 @@ const CreateAssessmentFrameworkControlsSchema = z
 
 const CreateAssessmentFrameworkControlSetSchema = z
   .object({
-    name: ControlSetNameSchema.and(
-      z.any().openapi({ description: ' The name of the control set. ' }),
-    ),
-    controls: CreateAssessmentFrameworkControlsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The list of controls within the control set. This doesn't contain the control set ID. ",
-        }),
-    ).exactOptional(),
+    name: ControlSetNameSchema.openapi({ description: ' The name of the control set. ' }),
+    controls: CreateAssessmentFrameworkControlsSchema.exactOptional().openapi({
+      description:
+        " The list of controls within the control set. This doesn't contain the control set ID. ",
+    }),
   })
   .openapi({
     required: ['name'],
@@ -1283,37 +1121,33 @@ const AssessmentReportStatusSchema = z
 
 const AssessmentReportSchema = z
   .object({
-    id: UUIDSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the assessment report. ' }),
-    ).exactOptional(),
-    name: AssessmentReportNameSchema.and(
-      z.any().openapi({ description: " The name that's given to the assessment report. " }),
-    ).exactOptional(),
-    description: AssessmentReportDescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the specified assessment report. ' }),
-    ).exactOptional(),
-    awsAccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The identifier for the specified Amazon Web Services account. ',
-        }),
-    ).exactOptional(),
-    assessmentId: UUIDSchema.and(
-      z.any().openapi({ description: ' The identifier for the specified assessment. ' }),
-    ).exactOptional(),
-    assessmentName: AssessmentNameSchema.and(
-      z.any().openapi({ description: ' The name of the associated assessment. ' }),
-    ).exactOptional(),
-    author: UsernameSchema.and(
-      z.any().openapi({ description: ' The name of the user who created the assessment report. ' }),
-    ).exactOptional(),
-    status: AssessmentReportStatusSchema.and(
-      z.any().openapi({ description: ' The current status of the specified assessment report. ' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: ' Specifies when the assessment report was created. ' }),
-    ).exactOptional(),
+    id: UUIDSchema.exactOptional().openapi({
+      description: ' The unique identifier for the assessment report. ',
+    }),
+    name: AssessmentReportNameSchema.exactOptional().openapi({
+      description: " The name that's given to the assessment report. ",
+    }),
+    description: AssessmentReportDescriptionSchema.exactOptional().openapi({
+      description: ' The description of the specified assessment report. ',
+    }),
+    awsAccountId: AccountIdSchema.exactOptional().openapi({
+      description: ' The identifier for the specified Amazon Web Services account. ',
+    }),
+    assessmentId: UUIDSchema.exactOptional().openapi({
+      description: ' The identifier for the specified assessment. ',
+    }),
+    assessmentName: AssessmentNameSchema.exactOptional().openapi({
+      description: ' The name of the associated assessment. ',
+    }),
+    author: UsernameSchema.exactOptional().openapi({
+      description: ' The name of the user who created the assessment report. ',
+    }),
+    status: AssessmentReportStatusSchema.exactOptional().openapi({
+      description: ' The current status of the specified assessment report. ',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: ' Specifies when the assessment report was created. ',
+    }),
   })
   .openapi({
     description:
@@ -1324,70 +1158,46 @@ const AssessmentReportSchema = z
 
 const CreateAssessmentReportResponseSchema = z
   .object({
-    assessmentReport: AssessmentReportSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The new assessment report that the <code>CreateAssessmentReport</code> API returned. ',
-        }),
-    ).exactOptional(),
+    assessmentReport: AssessmentReportSchema.exactOptional().openapi({
+      description:
+        ' The new assessment report that the <code>CreateAssessmentReport</code> API returned. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateAssessmentReportResponse')
 
 const CreateControlResponseSchema = z
   .object({
-    control: ControlSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The new control that the <code>CreateControl</code> API returned. ',
-        }),
-    ).exactOptional(),
+    control: ControlSchema.exactOptional().openapi({
+      description: ' The new control that the <code>CreateControl</code> API returned. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateControlResponse')
 
 const CreateControlMappingSourceSchema = z
   .object({
-    sourceName: SourceNameSchema.and(
-      z.any().openapi({ description: ' The name of the control mapping data source. ' }),
-    ).exactOptional(),
-    sourceDescription: SourceDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The description of the data source that determines where Audit Manager collects evidence from for the control. ',
-        }),
-    ).exactOptional(),
-    sourceSetUpOption: SourceSetUpOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The setup option for the data source, which reflects if the evidence collection is automated or manual. ',
-        }),
-    ).exactOptional(),
-    sourceType: SourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Specifies one of the five types of data sources for evidence collection. ',
-        }),
-    ).exactOptional(),
+    sourceName: SourceNameSchema.exactOptional().openapi({
+      description: ' The name of the control mapping data source. ',
+    }),
+    sourceDescription: SourceDescriptionSchema.exactOptional().openapi({
+      description:
+        ' The description of the data source that determines where Audit Manager collects evidence from for the control. ',
+    }),
+    sourceSetUpOption: SourceSetUpOptionSchema.exactOptional().openapi({
+      description:
+        ' The setup option for the data source, which reflects if the evidence collection is automated or manual. ',
+    }),
+    sourceType: SourceTypeSchema.exactOptional().openapi({
+      description: ' Specifies one of the five types of data sources for evidence collection. ',
+    }),
     sourceKeyword: SourceKeywordSchema.exactOptional(),
-    sourceFrequency: SourceFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The frequency of evidence collection for the control mapping source. ',
-        }),
-    ).exactOptional(),
-    troubleshootingText: TroubleshootingTextSchema.and(
-      z.any().openapi({ description: ' The instructions for troubleshooting the control. ' }),
-    ).exactOptional(),
+    sourceFrequency: SourceFrequencySchema.exactOptional().openapi({
+      description: ' The frequency of evidence collection for the control mapping source. ',
+    }),
+    troubleshootingText: TroubleshootingTextSchema.exactOptional().openapi({
+      description: ' The instructions for troubleshooting the control. ',
+    }),
   })
   .openapi({
     description:
@@ -1396,19 +1206,21 @@ const CreateControlMappingSourceSchema = z
   })
   .openapi('CreateControlMappingSource')
 
-const DeleteAssessmentResponseSchema = z.object({}).openapi('DeleteAssessmentResponse')
+const DeleteAssessmentResponseSchema = z.looseObject({}).openapi('DeleteAssessmentResponse')
 
 const DeleteAssessmentFrameworkResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteAssessmentFrameworkResponse')
 
 const DeleteAssessmentFrameworkShareResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteAssessmentFrameworkShareResponse')
 
-const DeleteAssessmentReportResponseSchema = z.object({}).openapi('DeleteAssessmentReportResponse')
+const DeleteAssessmentReportResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteAssessmentReportResponse')
 
-const DeleteControlResponseSchema = z.object({}).openapi('DeleteControlResponse')
+const DeleteControlResponseSchema = z.looseObject({}).openapi('DeleteControlResponse')
 
 const AccountStatusSchema = z
   .enum(['ACTIVE', 'INACTIVE', 'PENDING_ACTIVATION'])
@@ -1416,44 +1228,40 @@ const AccountStatusSchema = z
 
 const DeregisterAccountResponseSchema = z
   .object({
-    status: AccountStatusSchema.and(
-      z.any().openapi({ description: ' The registration status of the account. ' }),
-    ).exactOptional(),
+    status: AccountStatusSchema.exactOptional().openapi({
+      description: ' The registration status of the account. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeregisterAccountResponse')
 
 const DeregisterOrganizationAdminAccountResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeregisterOrganizationAdminAccountResponse')
 
 const DisassociateAssessmentReportEvidenceFolderResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateAssessmentReportEvidenceFolderResponse')
 
 const GetAccountStatusResponseSchema = z
   .object({
-    status: AccountStatusSchema.and(
-      z.any().openapi({ description: ' The status of the Amazon Web Services account. ' }),
-    ).exactOptional(),
+    status: AccountStatusSchema.exactOptional().openapi({
+      description: ' The status of the Amazon Web Services account. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAccountStatusResponse')
 
-const GetAssessmentResponseSchema = z
+const GetAssessmentResponseSchema: z.ZodType<GetAssessmentResponseType> = z
   .object({ assessment: AssessmentSchema.exactOptional(), userRole: RoleSchema.exactOptional() })
   .openapi({ required: [] })
   .openapi('GetAssessmentResponse')
 
-const GetAssessmentFrameworkResponseSchema = z
+const GetAssessmentFrameworkResponseSchema: z.ZodType<GetAssessmentFrameworkResponseType> = z
   .object({
-    framework: FrameworkSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The framework that the <code>GetAssessmentFramework</code> API returned. ',
-        }),
-    ).exactOptional(),
+    framework: FrameworkSchema.exactOptional().openapi({
+      description: ' The framework that the <code>GetAssessmentFramework</code> API returned. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAssessmentFrameworkResponse')
@@ -1474,12 +1282,12 @@ const UrlLinkSchema = z
 
 const URLSchema = z
   .object({
-    hyperlinkName: HyperlinkNameSchema.and(
-      z.any().openapi({ description: " The name or word that's used as a hyperlink to the URL. " }),
-    ).exactOptional(),
-    link: UrlLinkSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the internet resource. ' }),
-    ).exactOptional(),
+    hyperlinkName: HyperlinkNameSchema.exactOptional().openapi({
+      description: " The name or word that's used as a hyperlink to the URL. ",
+    }),
+    link: UrlLinkSchema.exactOptional().openapi({
+      description: ' The unique identifier for the internet resource. ',
+    }),
   })
   .openapi({
     description:
@@ -1512,36 +1320,22 @@ const ActionEnumSchema = z
 
 const ChangeLogSchema = z
   .object({
-    objectType: ObjectTypeEnumSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The object that was changed, such as an assessment, control, or control set. ',
-        }),
-    ).exactOptional(),
-    objectName: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the object that changed. This could be the name of an assessment, control, or control set.',
-        }),
-    ).exactOptional(),
-    action: ActionEnumSchema.and(
-      z.any().openapi({ description: ' The action that was performed. ' }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The time when the action was performed and the changelog record was created. ',
-        }),
-    ).exactOptional(),
-    createdBy: IamArnSchema.and(
-      z.any().openapi({ description: ' The user or role that performed the action. ' }),
-    ).exactOptional(),
+    objectType: ObjectTypeEnumSchema.exactOptional().openapi({
+      description: ' The object that was changed, such as an assessment, control, or control set. ',
+    }),
+    objectName: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        ' The name of the object that changed. This could be the name of an assessment, control, or control set.',
+    }),
+    action: ActionEnumSchema.exactOptional().openapi({
+      description: ' The action that was performed. ',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: ' The time when the action was performed and the changelog record was created. ',
+    }),
+    createdBy: IamArnSchema.exactOptional().openapi({
+      description: ' The user or role that performed the action. ',
+    }),
   })
   .openapi({
     description:
@@ -1561,60 +1355,48 @@ const TokenSchema = z
 
 const GetChangeLogsResponseSchema = z
   .object({
-    changeLogs: ChangeLogsSchema.and(
-      z.any().openapi({ description: 'The list of user activity for the control. ' }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The pagination token that's used to fetch the next set of results. ",
-        }),
-    ).exactOptional(),
+    changeLogs: ChangeLogsSchema.exactOptional().openapi({
+      description: 'The list of user activity for the control. ',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: "The pagination token that's used to fetch the next set of results. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetChangeLogsResponse')
 
 const GetControlResponseSchema = z
   .object({
-    control: ControlSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The name of the control that the <code>GetControl</code> API returned. ',
-        }),
-    ).exactOptional(),
+    control: ControlSchema.exactOptional().openapi({
+      description: ' The name of the control that the <code>GetControl</code> API returned. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetControlResponse')
 
 const DelegationMetadataSchema = z
   .object({
-    id: UUIDSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the delegation. ' }),
-    ).exactOptional(),
-    assessmentName: AssessmentNameSchema.and(
-      z.any().openapi({ description: ' The name of the associated assessment. ' }),
-    ).exactOptional(),
-    assessmentId: UUIDSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the assessment. ' }),
-    ).exactOptional(),
-    status: DelegationStatusSchema.and(
-      z.any().openapi({ description: ' The current status of the delegation. ' }),
-    ).exactOptional(),
-    roleArn: IamArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) of the IAM role. ' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: ' Specifies when the delegation was created. ' }),
-    ).exactOptional(),
-    controlSetName: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Specifies the name of the control set that was delegated for review. ',
-        }),
-    ).exactOptional(),
+    id: UUIDSchema.exactOptional().openapi({
+      description: ' The unique identifier for the delegation. ',
+    }),
+    assessmentName: AssessmentNameSchema.exactOptional().openapi({
+      description: ' The name of the associated assessment. ',
+    }),
+    assessmentId: UUIDSchema.exactOptional().openapi({
+      description: ' The unique identifier for the assessment. ',
+    }),
+    status: DelegationStatusSchema.exactOptional().openapi({
+      description: ' The current status of the delegation. ',
+    }),
+    roleArn: IamArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the IAM role. ',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: ' Specifies when the delegation was created. ',
+    }),
+    controlSetName: NonEmptyStringSchema.exactOptional().openapi({
+      description: ' Specifies the name of the control set that was delegated for review. ',
+    }),
   })
   .openapi({ description: " The metadata that's associated with the delegation. ", required: [] })
   .openapi('DelegationMetadata')
@@ -1625,21 +1407,12 @@ const DelegationMetadataListSchema = z
 
 const GetDelegationsResponseSchema = z
   .object({
-    delegations: DelegationMetadataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of delegations that the <code>GetDelegations</code> API returned. ',
-        }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The pagination token that's used to fetch the next set of results. ",
-        }),
-    ).exactOptional(),
+    delegations: DelegationMetadataListSchema.exactOptional().openapi({
+      description: ' The list of delegations that the <code>GetDelegations</code> API returned. ',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: " The pagination token that's used to fetch the next set of results. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDelegationsResponse')
@@ -1661,20 +1434,14 @@ const GenericArnSchema = z
 
 const ResourceSchema = z
   .object({
-    arn: GenericArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) for the resource. ' }),
-    ).exactOptional(),
-    value: StringSchema.and(
-      z.any().openapi({ description: ' The value of the resource. ' }),
-    ).exactOptional(),
-    complianceCheck: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> The evaluation status for a resource that was assessed when collecting compliance check evidence. </p> <ul> <li> <p>Audit Manager classes the resource as non-compliant if Security Hub reports a <i>Fail</i> result, or if Config reports a <i>Non-compliant</i> result.</p> </li> <li> <p>Audit Manager classes the resource as compliant if Security Hub reports a <i>Pass</i> result, or if Config reports a <i>Compliant</i> result.</p> </li> <li> <p>If a compliance check isn't available or applicable, then no compliance evaluation can be made for that resource. This is the case if a resource assessment uses Config or Security Hub as the underlying data source type, but those services aren't enabled. This is also the case if the resource assessment uses an underlying data source type that doesn't support compliance checks (such as manual evidence, Amazon Web Services API calls, or CloudTrail). </p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    arn: GenericArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) for the resource. ',
+    }),
+    value: StringSchema.exactOptional().openapi({ description: ' The value of the resource. ' }),
+    complianceCheck: StringSchema.exactOptional().openapi({
+      description:
+        "<p> The evaluation status for a resource that was assessed when collecting compliance check evidence. </p> <ul> <li> <p>Audit Manager classes the resource as non-compliant if Security Hub reports a <i>Fail</i> result, or if Config reports a <i>Non-compliant</i> result.</p> </li> <li> <p>Audit Manager classes the resource as compliant if Security Hub reports a <i>Pass</i> result, or if Config reports a <i>Compliant</i> result.</p> </li> <li> <p>If a compliance check isn't available or applicable, then no compliance evaluation can be made for that resource. This is the case if a resource assessment uses Config or Security Hub as the underlying data source type, but those services aren't enabled. This is also the case if the resource assessment uses an underlying data source type that doesn't support compliance checks (such as manual evidence, Amazon Web Services API calls, or CloudTrail). </p> </li> </ul>",
+    }),
   })
   .openapi({
     description: " A system asset that's evaluated in an Audit Manager assessment. ",
@@ -1696,89 +1463,53 @@ const EvidenceAttributesSchema = z
 
 const EvidenceSchema = z
   .object({
-    dataSource: StringSchema.and(
-      z.any().openapi({ description: ' The data source where the evidence was collected from. ' }),
-    ).exactOptional(),
-    evidenceAwsAccountId: AccountIdSchema.and(
-      z.any().openapi({ description: ' The identifier for the Amazon Web Services account. ' }),
-    ).exactOptional(),
-    time: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The timestamp that represents when the evidence was collected. ',
-        }),
-    ).exactOptional(),
-    eventSource: AWSServiceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The Amazon Web Service that the evidence is collected from. ' }),
-    ).exactOptional(),
-    eventName: EventNameSchema.and(
-      z.any().openapi({ description: ' The name of the evidence event. ' }),
-    ).exactOptional(),
-    evidenceByType: StringSchema.and(
-      z.any().openapi({ description: ' The type of automated evidence. ' }),
-    ).exactOptional(),
-    resourcesIncluded: ResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The list of resources that are assessed to generate the evidence. ',
-        }),
-    ).exactOptional(),
-    attributes: EvidenceAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The names and values that are used by the evidence event. This includes an attribute name (such as <code>allowUsersToChangePassword</code>) and value (such as <code>true</code> or <code>false</code>). ',
-        }),
-    ).exactOptional(),
-    iamId: IamArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The unique identifier for the user or role that's associated with the evidence. ",
-        }),
-    ).exactOptional(),
-    complianceCheck: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The evaluation status for automated evidence that falls under the compliance check category.</p> <ul> <li> <p>Audit Manager classes evidence as non-compliant if Security Hub reports a <i>Fail</i> result, or if Config reports a <i>Non-compliant</i> result.</p> </li> <li> <p>Audit Manager classes evidence as compliant if Security Hub reports a <i>Pass</i> result, or if Config reports a <i>Compliant</i> result.</p> </li> <li> <p>If a compliance check isn't available or applicable, then no compliance evaluation can be made for that evidence. This is the case if the evidence uses Config or Security Hub as the underlying data source type, but those services aren't enabled. This is also the case if the evidence uses an underlying data source type that doesn't support compliance checks (such as manual evidence, Amazon Web Services API calls, or CloudTrail). </p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    awsOrganization: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Web Services account that the evidence is collected from, and its organization path. ',
-        }),
-    ).exactOptional(),
-    awsAccountId: AccountIdSchema.and(
-      z.any().openapi({ description: ' The identifier for the Amazon Web Services account. ' }),
-    ).exactOptional(),
-    evidenceFolderId: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The identifier for the folder that the evidence is stored in. ',
-        }),
-    ).exactOptional(),
-    id: UUIDSchema.and(
-      z.any().openapi({ description: ' The identifier for the evidence. ' }),
-    ).exactOptional(),
-    assessmentReportSelection: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Specifies whether the evidence is included in the assessment report. ',
-        }),
-    ).exactOptional(),
+    dataSource: StringSchema.exactOptional().openapi({
+      description: ' The data source where the evidence was collected from. ',
+    }),
+    evidenceAwsAccountId: AccountIdSchema.exactOptional().openapi({
+      description: ' The identifier for the Amazon Web Services account. ',
+    }),
+    time: TimestampSchema.exactOptional().openapi({
+      description: ' The timestamp that represents when the evidence was collected. ',
+    }),
+    eventSource: AWSServiceNameSchema.exactOptional().openapi({
+      description: ' The Amazon Web Service that the evidence is collected from. ',
+    }),
+    eventName: EventNameSchema.exactOptional().openapi({
+      description: ' The name of the evidence event. ',
+    }),
+    evidenceByType: StringSchema.exactOptional().openapi({
+      description: ' The type of automated evidence. ',
+    }),
+    resourcesIncluded: ResourcesSchema.exactOptional().openapi({
+      description: ' The list of resources that are assessed to generate the evidence. ',
+    }),
+    attributes: EvidenceAttributesSchema.exactOptional().openapi({
+      description:
+        ' The names and values that are used by the evidence event. This includes an attribute name (such as <code>allowUsersToChangePassword</code>) and value (such as <code>true</code> or <code>false</code>). ',
+    }),
+    iamId: IamArnSchema.exactOptional().openapi({
+      description:
+        " The unique identifier for the user or role that's associated with the evidence. ",
+    }),
+    complianceCheck: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The evaluation status for automated evidence that falls under the compliance check category.</p> <ul> <li> <p>Audit Manager classes evidence as non-compliant if Security Hub reports a <i>Fail</i> result, or if Config reports a <i>Non-compliant</i> result.</p> </li> <li> <p>Audit Manager classes evidence as compliant if Security Hub reports a <i>Pass</i> result, or if Config reports a <i>Compliant</i> result.</p> </li> <li> <p>If a compliance check isn't available or applicable, then no compliance evaluation can be made for that evidence. This is the case if the evidence uses Config or Security Hub as the underlying data source type, but those services aren't enabled. This is also the case if the evidence uses an underlying data source type that doesn't support compliance checks (such as manual evidence, Amazon Web Services API calls, or CloudTrail). </p> </li> </ul>",
+    }),
+    awsOrganization: StringSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Web Services account that the evidence is collected from, and its organization path. ',
+    }),
+    awsAccountId: AccountIdSchema.exactOptional().openapi({
+      description: ' The identifier for the Amazon Web Services account. ',
+    }),
+    evidenceFolderId: UUIDSchema.exactOptional().openapi({
+      description: ' The identifier for the folder that the evidence is stored in. ',
+    }),
+    id: UUIDSchema.exactOptional().openapi({ description: ' The identifier for the evidence. ' }),
+    assessmentReportSelection: StringSchema.exactOptional().openapi({
+      description: ' Specifies whether the evidence is included in the assessment report. ',
+    }),
   })
   .openapi({
     description:
@@ -1789,11 +1520,9 @@ const EvidenceSchema = z
 
 const GetEvidenceResponseSchema = z
   .object({
-    evidence: EvidenceSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The evidence that the <code>GetEvidence</code> API returned. ' }),
-    ).exactOptional(),
+    evidence: EvidenceSchema.exactOptional().openapi({
+      description: ' The evidence that the <code>GetEvidence</code> API returned. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEvidenceResponse')
@@ -1802,21 +1531,13 @@ const EvidenceListSchema = z.array(EvidenceSchema).openapi('EvidenceList')
 
 const GetEvidenceByEvidenceFolderResponseSchema = z
   .object({
-    evidence: EvidenceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of evidence that the <code>GetEvidenceByEvidenceFolder</code> API returned. ',
-        }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The pagination token that's used to fetch the next set of results. ",
-        }),
-    ).exactOptional(),
+    evidence: EvidenceListSchema.exactOptional().openapi({
+      description:
+        ' The list of evidence that the <code>GetEvidenceByEvidenceFolder</code> API returned. ',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: " The pagination token that's used to fetch the next set of results. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEvidenceByEvidenceFolderResponse')
@@ -1830,108 +1551,66 @@ const AssessmentEvidenceFolderNameSchema = z
 
 const AssessmentEvidenceFolderSchema = z
   .object({
-    name: AssessmentEvidenceFolderNameSchema.and(
-      z.any().openapi({ description: ' The name of the evidence folder. ' }),
-    ).exactOptional(),
-    date: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The date when the first evidence was added to the evidence folder. ',
-        }),
-    ).exactOptional(),
-    assessmentId: UUIDSchema.and(
-      z.any().openapi({ description: ' The identifier for the assessment. ' }),
-    ).exactOptional(),
-    controlSetId: ControlSetIdSchema.and(
-      z.any().openapi({ description: ' The identifier for the control set. ' }),
-    ).exactOptional(),
-    controlId: UUIDSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the control. ' }),
-    ).exactOptional(),
-    id: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The identifier for the folder that the evidence is stored in. ',
-        }),
-    ).exactOptional(),
-    dataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The Amazon Web Service that the evidence was collected from. ' }),
-    ).exactOptional(),
-    author: StringSchema.and(
-      z.any().openapi({ description: ' The name of the user who created the evidence folder. ' }),
-    ).exactOptional(),
-    totalEvidence: IntegerSchema.and(
-      z.any().openapi({ description: ' The total amount of evidence in the evidence folder. ' }),
-    ).exactOptional(),
-    assessmentReportSelectionCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The total count of evidence that's included in the assessment report. ",
-        }),
-    ).exactOptional(),
-    controlName: ControlNameSchema.and(
-      z.any().openapi({ description: ' The name of the control. ' }),
-    ).exactOptional(),
-    evidenceResourcesIncludedCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The amount of evidence that's included in the evidence folder. ",
-        }),
-    ).exactOptional(),
-    evidenceByTypeConfigurationDataCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of evidence that falls under the configuration data category. This evidence is collected from configuration snapshots of other Amazon Web Services such as Amazon EC2, Amazon S3, or IAM. ',
-        }),
-    ).exactOptional(),
-    evidenceByTypeManualCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of evidence that falls under the manual category. This evidence is imported manually. ',
-        }),
-    ).exactOptional(),
-    evidenceByTypeComplianceCheckCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of evidence that falls under the compliance check category. This evidence is collected from Config or Security Hub. ',
-        }),
-    ).exactOptional(),
-    evidenceByTypeComplianceCheckIssuesCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The total number of issues that were reported directly from Security Hub, Config, or both. ',
-        }),
-    ).exactOptional(),
-    evidenceByTypeUserActivityCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The number of evidence that falls under the user activity category. This evidence is collected from CloudTrail logs. ',
-        }),
-    ).exactOptional(),
-    evidenceAwsServiceSourceCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The total number of Amazon Web Services resources that were assessed to generate the evidence. ',
-        }),
-    ).exactOptional(),
+    name: AssessmentEvidenceFolderNameSchema.exactOptional().openapi({
+      description: ' The name of the evidence folder. ',
+    }),
+    date: TimestampSchema.exactOptional().openapi({
+      description: ' The date when the first evidence was added to the evidence folder. ',
+    }),
+    assessmentId: UUIDSchema.exactOptional().openapi({
+      description: ' The identifier for the assessment. ',
+    }),
+    controlSetId: ControlSetIdSchema.exactOptional().openapi({
+      description: ' The identifier for the control set. ',
+    }),
+    controlId: UUIDSchema.exactOptional().openapi({
+      description: ' The unique identifier for the control. ',
+    }),
+    id: UUIDSchema.exactOptional().openapi({
+      description: ' The identifier for the folder that the evidence is stored in. ',
+    }),
+    dataSource: StringSchema.exactOptional().openapi({
+      description: ' The Amazon Web Service that the evidence was collected from. ',
+    }),
+    author: StringSchema.exactOptional().openapi({
+      description: ' The name of the user who created the evidence folder. ',
+    }),
+    totalEvidence: IntegerSchema.exactOptional().openapi({
+      description: ' The total amount of evidence in the evidence folder. ',
+    }),
+    assessmentReportSelectionCount: IntegerSchema.exactOptional().openapi({
+      description: " The total count of evidence that's included in the assessment report. ",
+    }),
+    controlName: ControlNameSchema.exactOptional().openapi({
+      description: ' The name of the control. ',
+    }),
+    evidenceResourcesIncludedCount: IntegerSchema.exactOptional().openapi({
+      description: " The amount of evidence that's included in the evidence folder. ",
+    }),
+    evidenceByTypeConfigurationDataCount: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The number of evidence that falls under the configuration data category. This evidence is collected from configuration snapshots of other Amazon Web Services such as Amazon EC2, Amazon S3, or IAM. ',
+    }),
+    evidenceByTypeManualCount: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The number of evidence that falls under the manual category. This evidence is imported manually. ',
+    }),
+    evidenceByTypeComplianceCheckCount: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The number of evidence that falls under the compliance check category. This evidence is collected from Config or Security Hub. ',
+    }),
+    evidenceByTypeComplianceCheckIssuesCount: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The total number of issues that were reported directly from Security Hub, Config, or both. ',
+    }),
+    evidenceByTypeUserActivityCount: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The number of evidence that falls under the user activity category. This evidence is collected from CloudTrail logs. ',
+    }),
+    evidenceAwsServiceSourceCount: IntegerSchema.exactOptional().openapi({
+      description:
+        ' The total number of Amazon Web Services resources that were assessed to generate the evidence. ',
+    }),
   })
   .openapi({
     description: ' The folder where Audit Manager stores evidence for an assessment. ',
@@ -1941,9 +1620,9 @@ const AssessmentEvidenceFolderSchema = z
 
 const GetEvidenceFolderResponseSchema = z
   .object({
-    evidenceFolder: AssessmentEvidenceFolderSchema.and(
-      z.any().openapi({ description: ' The folder that the evidence is stored in. ' }),
-    ).exactOptional(),
+    evidenceFolder: AssessmentEvidenceFolderSchema.exactOptional().openapi({
+      description: ' The folder that the evidence is stored in. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEvidenceFolderResponse')
@@ -1954,42 +1633,26 @@ const AssessmentEvidenceFoldersSchema = z
 
 const GetEvidenceFoldersByAssessmentResponseSchema = z
   .object({
-    evidenceFolders: AssessmentEvidenceFoldersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of evidence folders that the <code>GetEvidenceFoldersByAssessment</code> API returned. ',
-        }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The pagination token that's used to fetch the next set of results. ",
-        }),
-    ).exactOptional(),
+    evidenceFolders: AssessmentEvidenceFoldersSchema.exactOptional().openapi({
+      description:
+        ' The list of evidence folders that the <code>GetEvidenceFoldersByAssessment</code> API returned. ',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: " The pagination token that's used to fetch the next set of results. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEvidenceFoldersByAssessmentResponse')
 
 const GetEvidenceFoldersByAssessmentControlResponseSchema = z
   .object({
-    evidenceFolders: AssessmentEvidenceFoldersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of evidence folders that the <code>GetEvidenceFoldersByAssessmentControl</code> API returned. ',
-        }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The pagination token that's used to fetch the next set of results. ",
-        }),
-    ).exactOptional(),
+    evidenceFolders: AssessmentEvidenceFoldersSchema.exactOptional().openapi({
+      description:
+        ' The list of evidence folders that the <code>GetEvidenceFoldersByAssessmentControl</code> API returned. ',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: " The pagination token that's used to fetch the next set of results. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEvidenceFoldersByAssessmentControlResponse')
@@ -1998,53 +1661,31 @@ const NullableIntegerSchema = z.int().openapi('NullableInteger')
 
 const InsightsSchema = z
   .object({
-    activeAssessmentsCount: NullableIntegerSchema.and(
-      z.any().openapi({ description: 'The number of active assessments in Audit Manager. ' }),
-    ).exactOptional(),
-    noncompliantEvidenceCount: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of compliance check evidence that Audit Manager classified as non-compliant on the <code>lastUpdated</code> date. This includes evidence that was collected from Security Hub with a <i>Fail</i> ruling, or collected from Config with a <i>Non-compliant</i> ruling. ',
-        }),
-    ).exactOptional(),
-    compliantEvidenceCount: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of compliance check evidence that Audit Manager classified as compliant on the <code>lastUpdated</code> date. This includes evidence that was collected from Security Hub with a <i>Pass</i> ruling, or collected from Config with a <i>Compliant</i> ruling. ',
-        }),
-    ).exactOptional(),
-    inconclusiveEvidenceCount: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The number of evidence without a compliance check ruling. Evidence is inconclusive when the associated control uses Security Hub or Config as a data source but you didn't enable those services. This is also the case when a control uses a data source that doesn’t support compliance checks (for example: manual evidence, API calls, or CloudTrail). </p> <note> <p>If evidence has a compliance check status of <i>not applicable</i>, it's classed as <i>inconclusive</i> in <code>Insights</code> data.</p> </note>",
-        }),
-    ).exactOptional(),
-    assessmentControlsCountByNoncompliantEvidence: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of assessment controls that collected non-compliant evidence on the <code>lastUpdated</code> date. ',
-        }),
-    ).exactOptional(),
-    totalAssessmentControlsCount: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The total number of controls across all active assessments. ' }),
-    ).exactOptional(),
-    lastUpdated: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the cross-assessment insights were last updated. ',
-        }),
-    ).exactOptional(),
+    activeAssessmentsCount: NullableIntegerSchema.exactOptional().openapi({
+      description: 'The number of active assessments in Audit Manager. ',
+    }),
+    noncompliantEvidenceCount: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'The number of compliance check evidence that Audit Manager classified as non-compliant on the <code>lastUpdated</code> date. This includes evidence that was collected from Security Hub with a <i>Fail</i> ruling, or collected from Config with a <i>Non-compliant</i> ruling. ',
+    }),
+    compliantEvidenceCount: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'The number of compliance check evidence that Audit Manager classified as compliant on the <code>lastUpdated</code> date. This includes evidence that was collected from Security Hub with a <i>Pass</i> ruling, or collected from Config with a <i>Compliant</i> ruling. ',
+    }),
+    inconclusiveEvidenceCount: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        "<p>The number of evidence without a compliance check ruling. Evidence is inconclusive when the associated control uses Security Hub or Config as a data source but you didn't enable those services. This is also the case when a control uses a data source that doesn’t support compliance checks (for example: manual evidence, API calls, or CloudTrail). </p> <note> <p>If evidence has a compliance check status of <i>not applicable</i>, it's classed as <i>inconclusive</i> in <code>Insights</code> data.</p> </note>",
+    }),
+    assessmentControlsCountByNoncompliantEvidence: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'The number of assessment controls that collected non-compliant evidence on the <code>lastUpdated</code> date. ',
+    }),
+    totalAssessmentControlsCount: NullableIntegerSchema.exactOptional().openapi({
+      description: 'The total number of controls across all active assessments. ',
+    }),
+    lastUpdated: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the cross-assessment insights were last updated. ',
+    }),
   })
   .openapi({
     description:
@@ -2055,57 +1696,37 @@ const InsightsSchema = z
 
 const GetInsightsResponseSchema = z
   .object({
-    insights: InsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The analytics data that the <code>GetInsights</code> API returned. ',
-        }),
-    ).exactOptional(),
+    insights: InsightsSchema.exactOptional().openapi({
+      description: 'The analytics data that the <code>GetInsights</code> API returned. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInsightsResponse')
 
 const InsightsByAssessmentSchema = z
   .object({
-    noncompliantEvidenceCount: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of compliance check evidence that Audit Manager classified as non-compliant. This includes evidence that was collected from Security Hub with a <i>Fail</i> ruling, or collected from Config with a <i>Non-compliant</i> ruling. ',
-        }),
-    ).exactOptional(),
-    compliantEvidenceCount: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of compliance check evidence that Audit Manager classified as compliant. This includes evidence that was collected from Security Hub with a <i>Pass</i> ruling, or collected from Config with a <i>Compliant</i> ruling. ',
-        }),
-    ).exactOptional(),
-    inconclusiveEvidenceCount: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The amount of evidence without a compliance check ruling. Evidence is inconclusive if the associated control uses Security Hub or Config as a data source and you didn't enable those services. This is also the case if a control uses a data source that doesn’t support compliance checks (for example, manual evidence, API calls, or CloudTrail). </p> <note> <p>If evidence has a compliance check status of <i>not applicable</i>, it's classified as <i>inconclusive</i> in <code>InsightsByAssessment</code> data.</p> </note>",
-        }),
-    ).exactOptional(),
-    assessmentControlsCountByNoncompliantEvidence: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of assessment controls that collected non-compliant evidence on the <code>lastUpdated</code> date. ',
-        }),
-    ).exactOptional(),
-    totalAssessmentControlsCount: NullableIntegerSchema.and(
-      z.any().openapi({ description: 'The total number of controls in the assessment. ' }),
-    ).exactOptional(),
-    lastUpdated: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the assessment insights were last updated.' }),
-    ).exactOptional(),
+    noncompliantEvidenceCount: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'The number of compliance check evidence that Audit Manager classified as non-compliant. This includes evidence that was collected from Security Hub with a <i>Fail</i> ruling, or collected from Config with a <i>Non-compliant</i> ruling. ',
+    }),
+    compliantEvidenceCount: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'The number of compliance check evidence that Audit Manager classified as compliant. This includes evidence that was collected from Security Hub with a <i>Pass</i> ruling, or collected from Config with a <i>Compliant</i> ruling. ',
+    }),
+    inconclusiveEvidenceCount: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        "<p>The amount of evidence without a compliance check ruling. Evidence is inconclusive if the associated control uses Security Hub or Config as a data source and you didn't enable those services. This is also the case if a control uses a data source that doesn’t support compliance checks (for example, manual evidence, API calls, or CloudTrail). </p> <note> <p>If evidence has a compliance check status of <i>not applicable</i>, it's classified as <i>inconclusive</i> in <code>InsightsByAssessment</code> data.</p> </note>",
+    }),
+    assessmentControlsCountByNoncompliantEvidence: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'The number of assessment controls that collected non-compliant evidence on the <code>lastUpdated</code> date. ',
+    }),
+    totalAssessmentControlsCount: NullableIntegerSchema.exactOptional().openapi({
+      description: 'The total number of controls in the assessment. ',
+    }),
+    lastUpdated: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the assessment insights were last updated.',
+    }),
   })
   .openapi({
     description:
@@ -2116,14 +1737,10 @@ const InsightsByAssessmentSchema = z
 
 const GetInsightsByAssessmentResponseSchema = z
   .object({
-    insights: InsightsByAssessmentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The assessment analytics data that the <code>GetInsightsByAssessment</code> API returned. ',
-        }),
-    ).exactOptional(),
+    insights: InsightsByAssessmentSchema.exactOptional().openapi({
+      description:
+        ' The assessment analytics data that the <code>GetInsightsByAssessment</code> API returned. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInsightsByAssessmentResponse')
@@ -2137,35 +1754,31 @@ const OrganizationIdSchema = z
 
 const GetOrganizationAdminAccountResponseSchema = z
   .object({
-    adminAccountId: AccountIdSchema.and(
-      z.any().openapi({ description: ' The identifier for the administrator account. ' }),
-    ).exactOptional(),
-    organizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: ' The identifier for the organization. ' }),
-    ).exactOptional(),
+    adminAccountId: AccountIdSchema.exactOptional().openapi({
+      description: ' The identifier for the administrator account. ',
+    }),
+    organizationId: OrganizationIdSchema.exactOptional().openapi({
+      description: ' The identifier for the organization. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetOrganizationAdminAccountResponse')
 
 const ServiceMetadataSchema = z
   .object({
-    name: AWSServiceNameSchema.and(
-      z.any().openapi({ description: ' The name of the Amazon Web Service. ' }),
-    ).exactOptional(),
-    displayName: NonEmptyStringSchema.and(
-      z.any().openapi({ description: ' The display name of the Amazon Web Service. ' }),
-    ).exactOptional(),
-    description: NonEmptyStringSchema.and(
-      z.any().openapi({ description: ' The description of the Amazon Web Service. ' }),
-    ).exactOptional(),
-    category: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The category that the Amazon Web Service belongs to, such as compute, storage, or database. ',
-        }),
-    ).exactOptional(),
+    name: AWSServiceNameSchema.exactOptional().openapi({
+      description: ' The name of the Amazon Web Service. ',
+    }),
+    displayName: NonEmptyStringSchema.exactOptional().openapi({
+      description: ' The display name of the Amazon Web Service. ',
+    }),
+    description: NonEmptyStringSchema.exactOptional().openapi({
+      description: ' The description of the Amazon Web Service. ',
+    }),
+    category: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        ' The category that the Amazon Web Service belongs to, such as compute, storage, or database. ',
+    }),
   })
   .openapi({
     description: " The metadata that's associated with the Amazon Web Service. ",
@@ -2177,11 +1790,9 @@ const ServiceMetadataListSchema = z.array(ServiceMetadataSchema).openapi('Servic
 
 const GetServicesInScopeResponseSchema = z
   .object({
-    serviceMetadata: ServiceMetadataListSchema.and(
-      z
-        .any()
-        .openapi({ description: " The metadata that's associated with the Amazon Web Service. " }),
-    ).exactOptional(),
+    serviceMetadata: ServiceMetadataListSchema.exactOptional().openapi({
+      description: " The metadata that's associated with the Amazon Web Service. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetServicesInScopeResponse')
@@ -2219,38 +1830,22 @@ const EvidenceFinderBackfillStatusSchema = z
 
 const EvidenceFinderEnablementSchema = z
   .object({
-    eventDataStoreArn: CloudTrailArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the CloudTrail Lake event data store that’s used by evidence finder. The event data store is the lake of evidence data that evidence finder runs queries against.',
-        }),
-    ).exactOptional(),
-    enablementStatus: EvidenceFinderEnablementStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The current status of the evidence finder feature and the related event data store. </p> <ul> <li> <p> <code>ENABLE_IN_PROGRESS</code> means that you requested to enable evidence finder. An event data store is currently being created to support evidence finder queries.</p> </li> <li> <p> <code>ENABLED</code> means that an event data store was successfully created and evidence finder is enabled. We recommend that you wait 7 days until the event data store is backfilled with your past two years’ worth of evidence data. You can use evidence finder in the meantime, but not all data might be available until the backfill is complete.</p> </li> <li> <p> <code>DISABLE_IN_PROGRESS</code> means that you requested to disable evidence finder, and your request is pending the deletion of the event data store.</p> </li> <li> <p> <code>DISABLED</code> means that you have permanently disabled evidence finder and the event data store has been deleted. You can't re-enable evidence finder after this point.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    backfillStatus: EvidenceFinderBackfillStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current status of the evidence data backfill process. </p> <p>The backfill starts after you enable evidence finder. During this task, Audit Manager populates an event data store with your past two years’ worth of evidence data so that your evidence can be queried.</p> <ul> <li> <p> <code>NOT_STARTED</code> means that the backfill hasn’t started yet. </p> </li> <li> <p> <code>IN_PROGRESS</code> means that the backfill is in progress. This can take up to 7 days to complete, depending on the amount of evidence data. </p> </li> <li> <p> <code>COMPLETED</code> means that the backfill is complete. All of your past evidence is now queryable. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    error: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents any errors that occurred when enabling or disabling evidence finder. ',
-        }),
-    ).exactOptional(),
+    eventDataStoreArn: CloudTrailArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the CloudTrail Lake event data store that’s used by evidence finder. The event data store is the lake of evidence data that evidence finder runs queries against.',
+    }),
+    enablementStatus: EvidenceFinderEnablementStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The current status of the evidence finder feature and the related event data store. </p> <ul> <li> <p> <code>ENABLE_IN_PROGRESS</code> means that you requested to enable evidence finder. An event data store is currently being created to support evidence finder queries.</p> </li> <li> <p> <code>ENABLED</code> means that an event data store was successfully created and evidence finder is enabled. We recommend that you wait 7 days until the event data store is backfilled with your past two years’ worth of evidence data. You can use evidence finder in the meantime, but not all data might be available until the backfill is complete.</p> </li> <li> <p> <code>DISABLE_IN_PROGRESS</code> means that you requested to disable evidence finder, and your request is pending the deletion of the event data store.</p> </li> <li> <p> <code>DISABLED</code> means that you have permanently disabled evidence finder and the event data store has been deleted. You can't re-enable evidence finder after this point.</p> </li> </ul>",
+    }),
+    backfillStatus: EvidenceFinderBackfillStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The current status of the evidence data backfill process. </p> <p>The backfill starts after you enable evidence finder. During this task, Audit Manager populates an event data store with your past two years’ worth of evidence data so that your evidence can be queried.</p> <ul> <li> <p> <code>NOT_STARTED</code> means that the backfill hasn’t started yet. </p> </li> <li> <p> <code>IN_PROGRESS</code> means that the backfill is in progress. This can take up to 7 days to complete, depending on the amount of evidence data. </p> </li> <li> <p> <code>COMPLETED</code> means that the backfill is complete. All of your past evidence is now queryable. </p> </li> </ul>',
+    }),
+    error: ErrorMessageSchema.exactOptional().openapi({
+      description:
+        'Represents any errors that occurred when enabling or disabling evidence finder. ',
+    }),
   })
   .openapi({
     description:
@@ -2263,14 +1858,10 @@ const DeleteResourcesSchema = z.enum(['ALL', 'DEFAULT']).openapi('DeleteResource
 
 const DeregistrationPolicySchema = z
   .object({
-    deleteResources: DeleteResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies which Audit Manager data will be deleted when you deregister Audit Manager.</p> <ul> <li> <p>If you set the value to <code>ALL</code>, all of your data is deleted within seven days of deregistration.</p> </li> <li> <p>If you set the value to <code>DEFAULT</code>, none of your data is deleted at the time of deregistration. However, keep in mind that the Audit Manager data retention policy still applies. As a result, any evidence data will be deleted two years after its creation date. Your other Audit Manager resources will continue to exist indefinitely.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    deleteResources: DeleteResourcesSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies which Audit Manager data will be deleted when you deregister Audit Manager.</p> <ul> <li> <p>If you set the value to <code>ALL</code>, all of your data is deleted within seven days of deregistration.</p> </li> <li> <p>If you set the value to <code>DEFAULT</code>, none of your data is deleted at the time of deregistration. However, keep in mind that the Audit Manager data retention policy still applies. As a result, any evidence data will be deleted two years after its creation date. Your other Audit Manager resources will continue to exist indefinitely.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -2281,40 +1872,26 @@ const DeregistrationPolicySchema = z
 
 const SettingsSchema = z
   .object({
-    isAwsOrgEnabled: BooleanSchema.and(
-      z.any().openapi({ description: ' Specifies whether Organizations is enabled. ' }),
-    ).exactOptional(),
-    snsTopic: SNSTopicSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The designated Amazon Simple Notification Service (Amazon SNS) topic. ',
-        }),
-    ).exactOptional(),
-    defaultAssessmentReportsDestination: AssessmentReportsDestinationSchema.and(
-      z.any().openapi({ description: ' The default storage destination for assessment reports. ' }),
-    ).exactOptional(),
-    defaultProcessOwners: RolesSchema.and(
-      z.any().openapi({ description: ' The designated default audit owners. ' }),
-    ).exactOptional(),
-    kmsKey: KmsKeySchema.and(
-      z.any().openapi({ description: ' The KMS key details. ' }),
-    ).exactOptional(),
-    evidenceFinderEnablement: EvidenceFinderEnablementSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The current evidence finder status and event data store details.',
-        }),
-    ).exactOptional(),
-    deregistrationPolicy: DeregistrationPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The deregistration policy for your Audit Manager data. You can use this attribute to determine how your data is handled when you deregister Audit Manager.',
-        }),
-    ).exactOptional(),
+    isAwsOrgEnabled: BooleanSchema.exactOptional().openapi({
+      description: ' Specifies whether Organizations is enabled. ',
+    }),
+    snsTopic: SNSTopicSchema.exactOptional().openapi({
+      description: ' The designated Amazon Simple Notification Service (Amazon SNS) topic. ',
+    }),
+    defaultAssessmentReportsDestination: AssessmentReportsDestinationSchema.exactOptional().openapi(
+      { description: ' The default storage destination for assessment reports. ' },
+    ),
+    defaultProcessOwners: RolesSchema.exactOptional().openapi({
+      description: ' The designated default audit owners. ',
+    }),
+    kmsKey: KmsKeySchema.exactOptional().openapi({ description: ' The KMS key details. ' }),
+    evidenceFinderEnablement: EvidenceFinderEnablementSchema.exactOptional().openapi({
+      description: 'The current evidence finder status and event data store details.',
+    }),
+    deregistrationPolicy: DeregistrationPolicySchema.exactOptional().openapi({
+      description:
+        'The deregistration policy for your Audit Manager data. You can use this attribute to determine how your data is handled when you deregister Audit Manager.',
+    }),
   })
   .openapi({
     description: ' The settings object that holds all supported Audit Manager settings. ',
@@ -2324,43 +1901,27 @@ const SettingsSchema = z
 
 const GetSettingsResponseSchema = z
   .object({
-    settings: SettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The settings object that holds all supported Audit Manager settings. ',
-        }),
-    ).exactOptional(),
+    settings: SettingsSchema.exactOptional().openapi({
+      description: ' The settings object that holds all supported Audit Manager settings. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSettingsResponse')
 
 const EvidenceInsightsSchema = z
   .object({
-    noncompliantEvidenceCount: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of compliance check evidence that Audit Manager classified as non-compliant. This includes evidence that was collected from Security Hub with a <i>Fail</i> ruling, or collected from Config with a <i>Non-compliant</i> ruling. ',
-        }),
-    ).exactOptional(),
-    compliantEvidenceCount: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of compliance check evidence that Audit Manager classified as compliant. This includes evidence that was collected from Security Hub with a <i>Pass</i> ruling, or collected from Config with a <i>Compliant</i> ruling. ',
-        }),
-    ).exactOptional(),
-    inconclusiveEvidenceCount: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The number of evidence that a compliance check ruling isn't available for. Evidence is inconclusive when the associated control uses Security Hub or Config as a data source but you didn't enable those services. This is also the case when a control uses a data source that doesn’t support compliance checks (for example, manual evidence, API calls, or CloudTrail). </p> <note> <p>If evidence has a compliance check status of <i>not applicable</i> in the console, it's classified as <i>inconclusive</i> in <code>EvidenceInsights</code> data.</p> </note>",
-        }),
-    ).exactOptional(),
+    noncompliantEvidenceCount: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'The number of compliance check evidence that Audit Manager classified as non-compliant. This includes evidence that was collected from Security Hub with a <i>Fail</i> ruling, or collected from Config with a <i>Non-compliant</i> ruling. ',
+    }),
+    compliantEvidenceCount: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'The number of compliance check evidence that Audit Manager classified as compliant. This includes evidence that was collected from Security Hub with a <i>Pass</i> ruling, or collected from Config with a <i>Compliant</i> ruling. ',
+    }),
+    inconclusiveEvidenceCount: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        "<p>The number of evidence that a compliance check ruling isn't available for. Evidence is inconclusive when the associated control uses Security Hub or Config as a data source but you didn't enable those services. This is also the case when a control uses a data source that doesn’t support compliance checks (for example, manual evidence, API calls, or CloudTrail). </p> <note> <p>If evidence has a compliance check status of <i>not applicable</i> in the console, it's classified as <i>inconclusive</i> in <code>EvidenceInsights</code> data.</p> </note>",
+    }),
   })
   .openapi({
     description:
@@ -2371,34 +1932,22 @@ const EvidenceInsightsSchema = z
 
 const ControlInsightsMetadataByAssessmentItemSchema = z
   .object({
-    name: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The name of the assessment control. ' }),
-    ).exactOptional(),
-    id: UUIDSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the assessment control. ' }),
-    ).exactOptional(),
-    evidenceInsights: EvidenceInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A breakdown of the compliance check status for the evidence that’s associated with the assessment control. ',
-        }),
-    ).exactOptional(),
-    controlSetName: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the control set that the assessment control belongs to. ',
-        }),
-    ).exactOptional(),
-    lastUpdated: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the assessment control insights were last updated. ',
-        }),
-    ).exactOptional(),
+    name: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The name of the assessment control. ',
+    }),
+    id: UUIDSchema.exactOptional().openapi({
+      description: 'The unique identifier for the assessment control. ',
+    }),
+    evidenceInsights: EvidenceInsightsSchema.exactOptional().openapi({
+      description:
+        'A breakdown of the compliance check status for the evidence that’s associated with the assessment control. ',
+    }),
+    controlSetName: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The name of the control set that the assessment control belongs to. ',
+    }),
+    lastUpdated: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the assessment control insights were last updated. ',
+    }),
   })
   .openapi({
     description:
@@ -2413,21 +1962,13 @@ const ControlInsightsMetadataByAssessmentSchema = z
 
 const ListAssessmentControlInsightsByControlDomainResponseSchema = z
   .object({
-    controlInsightsByAssessment: ControlInsightsMetadataByAssessmentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The assessment control analytics data that the <code>ListAssessmentControlInsightsByControlDomain</code> API returned. ',
-        }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The pagination token that's used to fetch the next set of results. ",
-        }),
-    ).exactOptional(),
+    controlInsightsByAssessment: ControlInsightsMetadataByAssessmentSchema.exactOptional().openapi({
+      description:
+        'The assessment control analytics data that the <code>ListAssessmentControlInsightsByControlDomain</code> API returned. ',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: "The pagination token that's used to fetch the next set of results. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAssessmentControlInsightsByControlDomainResponse')
@@ -2449,72 +1990,52 @@ const ShareRequestCommentSchema = z
 
 const AssessmentFrameworkShareRequestSchema = z
   .object({
-    id: UUIDSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the share request. ' }),
-    ).exactOptional(),
-    frameworkId: UUIDSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the shared custom framework. ' }),
-    ).exactOptional(),
-    frameworkName: FrameworkNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The name of the custom framework that the share request is for. ',
-        }),
-    ).exactOptional(),
-    frameworkDescription: FrameworkDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the shared custom framework.' }),
-    ).exactOptional(),
-    status: ShareRequestStatusSchema.and(
-      z.any().openapi({ description: ' The status of the share request. ' }),
-    ).exactOptional(),
-    sourceAccount: AccountIdSchema.and(
-      z.any().openapi({ description: ' The Amazon Web Services account of the sender. ' }),
-    ).exactOptional(),
-    destinationAccount: AccountIdSchema.and(
-      z.any().openapi({ description: ' The Amazon Web Services account of the recipient. ' }),
-    ).exactOptional(),
-    destinationRegion: RegionSchema.and(
-      z.any().openapi({ description: ' The Amazon Web Services Region of the recipient. ' }),
-    ).exactOptional(),
-    expirationTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when the share request expires. ' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when the share request was created. ' }),
-    ).exactOptional(),
-    lastUpdated: TimestampSchema.and(
-      z.any().openapi({ description: ' Specifies when the share request was last updated. ' }),
-    ).exactOptional(),
-    comment: ShareRequestCommentSchema.and(
-      z
-        .any()
-        .openapi({ description: ' An optional comment from the sender about the share request. ' }),
-    ).exactOptional(),
-    standardControlsCount: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of standard controls that are part of the shared custom framework. ',
-        }),
-    ).exactOptional(),
-    customControlsCount: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of custom controls that are part of the shared custom framework.',
-        }),
-    ).exactOptional(),
-    complianceType: ComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The compliance type that the shared custom framework supports, such as CIS or HIPAA.',
-        }),
-    ).exactOptional(),
+    id: UUIDSchema.exactOptional().openapi({
+      description: ' The unique identifier for the share request. ',
+    }),
+    frameworkId: UUIDSchema.exactOptional().openapi({
+      description: 'The unique identifier for the shared custom framework. ',
+    }),
+    frameworkName: FrameworkNameSchema.exactOptional().openapi({
+      description: ' The name of the custom framework that the share request is for. ',
+    }),
+    frameworkDescription: FrameworkDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the shared custom framework.',
+    }),
+    status: ShareRequestStatusSchema.exactOptional().openapi({
+      description: ' The status of the share request. ',
+    }),
+    sourceAccount: AccountIdSchema.exactOptional().openapi({
+      description: ' The Amazon Web Services account of the sender. ',
+    }),
+    destinationAccount: AccountIdSchema.exactOptional().openapi({
+      description: ' The Amazon Web Services account of the recipient. ',
+    }),
+    destinationRegion: RegionSchema.exactOptional().openapi({
+      description: ' The Amazon Web Services Region of the recipient. ',
+    }),
+    expirationTime: TimestampSchema.exactOptional().openapi({
+      description: ' The time when the share request expires. ',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: ' The time when the share request was created. ',
+    }),
+    lastUpdated: TimestampSchema.exactOptional().openapi({
+      description: ' Specifies when the share request was last updated. ',
+    }),
+    comment: ShareRequestCommentSchema.exactOptional().openapi({
+      description: ' An optional comment from the sender about the share request. ',
+    }),
+    standardControlsCount: NullableIntegerSchema.exactOptional().openapi({
+      description: 'The number of standard controls that are part of the shared custom framework. ',
+    }),
+    customControlsCount: NullableIntegerSchema.exactOptional().openapi({
+      description: 'The number of custom controls that are part of the shared custom framework.',
+    }),
+    complianceType: ComplianceTypeSchema.exactOptional().openapi({
+      description:
+        'The compliance type that the shared custom framework supports, such as CIS or HIPAA.',
+    }),
   })
   .openapi({
     description: ' Represents a share request for a custom framework in Audit Manager. ',
@@ -2528,21 +2049,14 @@ const AssessmentFrameworkShareRequestListSchema = z
 
 const ListAssessmentFrameworkShareRequestsResponseSchema = z
   .object({
-    assessmentFrameworkShareRequests: AssessmentFrameworkShareRequestListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of share requests that the <code>ListAssessmentFrameworkShareRequests</code> API returned. ',
-        }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The pagination token that's used to fetch the next set of results. ",
-        }),
-    ).exactOptional(),
+    assessmentFrameworkShareRequests:
+      AssessmentFrameworkShareRequestListSchema.exactOptional().openapi({
+        description:
+          ' The list of share requests that the <code>ListAssessmentFrameworkShareRequests</code> API returned. ',
+      }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: " The pagination token that's used to fetch the next set of results. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAssessmentFrameworkShareRequestsResponse')
@@ -2553,56 +2067,40 @@ const ControlSetsCountSchema = z.int().openapi('ControlSetsCount')
 
 const AssessmentFrameworkMetadataSchema = z
   .object({
-    arn: AuditManagerArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) of the framework. ' }),
-    ).exactOptional(),
-    id: UUIDSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the framework. ' }),
-    ).exactOptional(),
-    type: FrameworkTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The framework type, such as a standard framework or a custom framework. ',
-        }),
-    ).exactOptional(),
-    name: FrameworkNameSchema.and(
-      z.any().openapi({ description: ' The name of the framework. ' }),
-    ).exactOptional(),
-    description: FrameworkDescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the framework. ' }),
-    ).exactOptional(),
-    logo: FilenameSchema.and(
-      z.any().openapi({ description: " The logo that's associated with the framework. " }),
-    ).exactOptional(),
-    complianceType: ComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The compliance type that the new custom framework supports, such as CIS or HIPAA. ',
-        }),
-    ).exactOptional(),
-    controlsCount: ControlsCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The number of controls that are associated with the framework. ',
-        }),
-    ).exactOptional(),
-    controlSetsCount: ControlSetsCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The number of control sets that are associated with the framework. ',
-        }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when the framework was created. ' }),
-    ).exactOptional(),
-    lastUpdatedAt: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when the framework was most recently updated. ' }),
-    ).exactOptional(),
+    arn: AuditManagerArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the framework. ',
+    }),
+    id: UUIDSchema.exactOptional().openapi({
+      description: ' The unique identifier for the framework. ',
+    }),
+    type: FrameworkTypeSchema.exactOptional().openapi({
+      description: ' The framework type, such as a standard framework or a custom framework. ',
+    }),
+    name: FrameworkNameSchema.exactOptional().openapi({
+      description: ' The name of the framework. ',
+    }),
+    description: FrameworkDescriptionSchema.exactOptional().openapi({
+      description: ' The description of the framework. ',
+    }),
+    logo: FilenameSchema.exactOptional().openapi({
+      description: " The logo that's associated with the framework. ",
+    }),
+    complianceType: ComplianceTypeSchema.exactOptional().openapi({
+      description:
+        ' The compliance type that the new custom framework supports, such as CIS or HIPAA. ',
+    }),
+    controlsCount: ControlsCountSchema.exactOptional().openapi({
+      description: ' The number of controls that are associated with the framework. ',
+    }),
+    controlSetsCount: ControlSetsCountSchema.exactOptional().openapi({
+      description: ' The number of control sets that are associated with the framework. ',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: ' The time when the framework was created. ',
+    }),
+    lastUpdatedAt: TimestampSchema.exactOptional().openapi({
+      description: ' The time when the framework was most recently updated. ',
+    }),
   })
   .openapi({
     description:
@@ -2617,46 +2115,42 @@ const FrameworkMetadataListSchema = z
 
 const ListAssessmentFrameworksResponseSchema = z
   .object({
-    frameworkMetadataList: FrameworkMetadataListSchema.and(
-      z.any().openapi({ description: ' The list of metadata objects for the framework. ' }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The pagination token that's used to fetch the next set of results. ",
-        }),
-    ).exactOptional(),
+    frameworkMetadataList: FrameworkMetadataListSchema.exactOptional().openapi({
+      description: ' The list of metadata objects for the framework. ',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: " The pagination token that's used to fetch the next set of results. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAssessmentFrameworksResponse')
 
 const AssessmentReportMetadataSchema = z
   .object({
-    id: UUIDSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the assessment report. ' }),
-    ).exactOptional(),
-    name: AssessmentReportNameSchema.and(
-      z.any().openapi({ description: ' The name of the assessment report. ' }),
-    ).exactOptional(),
-    description: AssessmentReportDescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the assessment report. ' }),
-    ).exactOptional(),
-    assessmentId: UUIDSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the associated assessment. ' }),
-    ).exactOptional(),
-    assessmentName: AssessmentNameSchema.and(
-      z.any().openapi({ description: 'The name of the associated assessment. ' }),
-    ).exactOptional(),
-    author: UsernameSchema.and(
-      z.any().openapi({ description: ' The name of the user who created the assessment report. ' }),
-    ).exactOptional(),
-    status: AssessmentReportStatusSchema.and(
-      z.any().openapi({ description: ' The current status of the assessment report. ' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: ' Specifies when the assessment report was created. ' }),
-    ).exactOptional(),
+    id: UUIDSchema.exactOptional().openapi({
+      description: ' The unique identifier for the assessment report. ',
+    }),
+    name: AssessmentReportNameSchema.exactOptional().openapi({
+      description: ' The name of the assessment report. ',
+    }),
+    description: AssessmentReportDescriptionSchema.exactOptional().openapi({
+      description: ' The description of the assessment report. ',
+    }),
+    assessmentId: UUIDSchema.exactOptional().openapi({
+      description: ' The unique identifier for the associated assessment. ',
+    }),
+    assessmentName: AssessmentNameSchema.exactOptional().openapi({
+      description: 'The name of the associated assessment. ',
+    }),
+    author: UsernameSchema.exactOptional().openapi({
+      description: ' The name of the user who created the assessment report. ',
+    }),
+    status: AssessmentReportStatusSchema.exactOptional().openapi({
+      description: ' The current status of the assessment report. ',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: ' Specifies when the assessment report was created. ',
+    }),
   })
   .openapi({
     description: ' The metadata objects that are associated with the specified assessment report. ',
@@ -2670,58 +2164,44 @@ const AssessmentReportsMetadataSchema = z
 
 const ListAssessmentReportsResponseSchema = z
   .object({
-    assessmentReports: AssessmentReportsMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of assessment reports that the <code>ListAssessmentReports</code> API returned. ',
-        }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The pagination token that's used to fetch the next set of results. ",
-        }),
-    ).exactOptional(),
+    assessmentReports: AssessmentReportsMetadataSchema.exactOptional().openapi({
+      description:
+        ' The list of assessment reports that the <code>ListAssessmentReports</code> API returned. ',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: " The pagination token that's used to fetch the next set of results. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAssessmentReportsResponse')
 
 const AssessmentMetadataItemSchema = z
   .object({
-    name: AssessmentNameSchema.and(
-      z.any().openapi({ description: ' The name of the assessment. ' }),
-    ).exactOptional(),
-    id: UUIDSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the assessment. ' }),
-    ).exactOptional(),
-    complianceType: ComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The name of the compliance standard that's related to the assessment, such as PCI-DSS. ",
-        }),
-    ).exactOptional(),
-    status: AssessmentStatusSchema.and(
-      z.any().openapi({ description: ' The current status of the assessment. ' }),
-    ).exactOptional(),
-    roles: RolesSchema.and(
-      z.any().openapi({ description: ' The roles that are associated with the assessment. ' }),
-    ).exactOptional(),
-    delegations: DelegationsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The delegations that are associated with the assessment. ' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: ' Specifies when the assessment was created. ' }),
-    ).exactOptional(),
-    lastUpdated: TimestampSchema.and(
-      z.any().openapi({ description: ' The time of the most recent update. ' }),
-    ).exactOptional(),
+    name: AssessmentNameSchema.exactOptional().openapi({
+      description: ' The name of the assessment. ',
+    }),
+    id: UUIDSchema.exactOptional().openapi({
+      description: ' The unique identifier for the assessment. ',
+    }),
+    complianceType: ComplianceTypeSchema.exactOptional().openapi({
+      description:
+        " The name of the compliance standard that's related to the assessment, such as PCI-DSS. ",
+    }),
+    status: AssessmentStatusSchema.exactOptional().openapi({
+      description: ' The current status of the assessment. ',
+    }),
+    roles: RolesSchema.exactOptional().openapi({
+      description: ' The roles that are associated with the assessment. ',
+    }),
+    delegations: DelegationsSchema.exactOptional().openapi({
+      description: ' The delegations that are associated with the assessment. ',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: ' Specifies when the assessment was created. ',
+    }),
+    lastUpdated: TimestampSchema.exactOptional().openapi({
+      description: ' The time of the most recent update. ',
+    }),
   })
   .openapi({
     description: " A metadata object that's associated with an assessment in Audit Manager. ",
@@ -2735,52 +2215,38 @@ const ListAssessmentMetadataSchema = z
 
 const ListAssessmentsResponseSchema = z
   .object({
-    assessmentMetadata: ListAssessmentMetadataSchema.and(
-      z.any().openapi({ description: " The metadata that's associated with the assessment. " }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The pagination token that's used to fetch the next set of results. ",
-        }),
-    ).exactOptional(),
+    assessmentMetadata: ListAssessmentMetadataSchema.exactOptional().openapi({
+      description: " The metadata that's associated with the assessment. ",
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: " The pagination token that's used to fetch the next set of results. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAssessmentsResponse')
 
 const ControlDomainInsightsSchema = z
   .object({
-    name: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The name of the control domain. ' }),
-    ).exactOptional(),
-    id: UUIDSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the control domain. ' }),
-    ).exactOptional(),
-    controlsCountByNoncompliantEvidence: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of controls in the control domain that collected non-compliant evidence on the <code>lastUpdated</code> date. ',
-        }),
-    ).exactOptional(),
-    totalControlsCount: NullableIntegerSchema.and(
-      z.any().openapi({ description: 'The total number of controls in the control domain. ' }),
-    ).exactOptional(),
-    evidenceInsights: EvidenceInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A breakdown of the compliance check status for the evidence that’s associated with the control domain. ',
-        }),
-    ).exactOptional(),
-    lastUpdated: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time when the control domain insights were last updated. ' }),
-    ).exactOptional(),
+    name: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The name of the control domain. ',
+    }),
+    id: UUIDSchema.exactOptional().openapi({
+      description: 'The unique identifier for the control domain. ',
+    }),
+    controlsCountByNoncompliantEvidence: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'The number of controls in the control domain that collected non-compliant evidence on the <code>lastUpdated</code> date. ',
+    }),
+    totalControlsCount: NullableIntegerSchema.exactOptional().openapi({
+      description: 'The total number of controls in the control domain. ',
+    }),
+    evidenceInsights: EvidenceInsightsSchema.exactOptional().openapi({
+      description:
+        'A breakdown of the compliance check status for the evidence that’s associated with the control domain. ',
+    }),
+    lastUpdated: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the control domain insights were last updated. ',
+    }),
   })
   .openapi({
     description:
@@ -2795,65 +2261,45 @@ const ControlDomainInsightsListSchema = z
 
 const ListControlDomainInsightsResponseSchema = z
   .object({
-    controlDomainInsights: ControlDomainInsightsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The control domain analytics data that the <code>ListControlDomainInsights</code> API returned. ',
-        }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The pagination token that's used to fetch the next set of results. ",
-        }),
-    ).exactOptional(),
+    controlDomainInsights: ControlDomainInsightsListSchema.exactOptional().openapi({
+      description:
+        'The control domain analytics data that the <code>ListControlDomainInsights</code> API returned. ',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: "The pagination token that's used to fetch the next set of results. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListControlDomainInsightsResponse')
 
 const ListControlDomainInsightsByAssessmentResponseSchema = z
   .object({
-    controlDomainInsights: ControlDomainInsightsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The control domain analytics data that the <code>ListControlDomainInsightsByAssessment</code> API returned. ',
-        }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The pagination token that's used to fetch the next set of results. ",
-        }),
-    ).exactOptional(),
+    controlDomainInsights: ControlDomainInsightsListSchema.exactOptional().openapi({
+      description:
+        'The control domain analytics data that the <code>ListControlDomainInsightsByAssessment</code> API returned. ',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: "The pagination token that's used to fetch the next set of results. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListControlDomainInsightsByAssessmentResponse')
 
 const ControlInsightsMetadataItemSchema = z
   .object({
-    name: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The name of the control. ' }),
-    ).exactOptional(),
-    id: UUIDSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the control. ' }),
-    ).exactOptional(),
-    evidenceInsights: EvidenceInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A breakdown of the compliance check status for the evidence that’s associated with the control. ',
-        }),
-    ).exactOptional(),
-    lastUpdated: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the control insights were last updated. ' }),
-    ).exactOptional(),
+    name: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The name of the control. ',
+    }),
+    id: UUIDSchema.exactOptional().openapi({
+      description: 'The unique identifier for the control. ',
+    }),
+    evidenceInsights: EvidenceInsightsSchema.exactOptional().openapi({
+      description:
+        'A breakdown of the compliance check status for the evidence that’s associated with the control. ',
+    }),
+    lastUpdated: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the control insights were last updated. ',
+    }),
   })
   .openapi({
     description:
@@ -2868,50 +2314,36 @@ const ControlInsightsMetadataSchema = z
 
 const ListControlInsightsByControlDomainResponseSchema = z
   .object({
-    controlInsightsMetadata: ControlInsightsMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The control analytics data that the <code>ListControlInsightsByControlDomain</code> API returned. ',
-        }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The pagination token that's used to fetch the next set of results. ",
-        }),
-    ).exactOptional(),
+    controlInsightsMetadata: ControlInsightsMetadataSchema.exactOptional().openapi({
+      description:
+        'The control analytics data that the <code>ListControlInsightsByControlDomain</code> API returned. ',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: "The pagination token that's used to fetch the next set of results. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListControlInsightsByControlDomainResponse')
 
 const ControlMetadataSchema = z
   .object({
-    arn: AuditManagerArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) of the control. ' }),
-    ).exactOptional(),
-    id: UUIDSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the control. ' }),
-    ).exactOptional(),
-    name: ControlNameSchema.and(
-      z.any().openapi({ description: ' The name of the control. ' }),
-    ).exactOptional(),
-    controlSources: ControlSourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The data source that determines where Audit Manager collects evidence from for the control. ',
-        }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when the control was created. ' }),
-    ).exactOptional(),
-    lastUpdatedAt: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when the control was most recently updated. ' }),
-    ).exactOptional(),
+    arn: AuditManagerArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the control. ',
+    }),
+    id: UUIDSchema.exactOptional().openapi({
+      description: ' The unique identifier for the control. ',
+    }),
+    name: ControlNameSchema.exactOptional().openapi({ description: ' The name of the control. ' }),
+    controlSources: ControlSourcesSchema.exactOptional().openapi({
+      description:
+        ' The data source that determines where Audit Manager collects evidence from for the control. ',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: ' The time when the control was created. ',
+    }),
+    lastUpdatedAt: TimestampSchema.exactOptional().openapi({
+      description: ' The time when the control was most recently updated. ',
+    }),
   })
   .openapi({
     description: " The metadata that's associated with the standard control or custom control. ",
@@ -2923,21 +2355,13 @@ const ControlMetadataListSchema = z.array(ControlMetadataSchema).openapi('Contro
 
 const ListControlsResponseSchema = z
   .object({
-    controlMetadataList: ControlMetadataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of control metadata objects that the <code>ListControls</code> API returned. ',
-        }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The pagination token that's used to fetch the next set of results. ",
-        }),
-    ).exactOptional(),
+    controlMetadataList: ControlMetadataListSchema.exactOptional().openapi({
+      description:
+        ' The list of control metadata objects that the <code>ListControls</code> API returned. ',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: " The pagination token that's used to fetch the next set of results. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListControlsResponse')
@@ -2946,16 +2370,12 @@ const KeywordsSchema = z.array(KeywordValueSchema).openapi('Keywords')
 
 const ListKeywordsForDataSourceResponseSchema = z
   .object({
-    keywords: KeywordsSchema.and(
-      z.any().openapi({ description: ' The list of keywords for the event mapping source. ' }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The pagination token that's used to fetch the next set of results. ",
-        }),
-    ).exactOptional(),
+    keywords: KeywordsSchema.exactOptional().openapi({
+      description: ' The list of keywords for the event mapping source. ',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: " The pagination token that's used to fetch the next set of results. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListKeywordsForDataSourceResponse')
@@ -2969,34 +2389,30 @@ const TimestampUUIDSchema = z
 
 const NotificationSchema = z
   .object({
-    id: TimestampUUIDSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the notification. ' }),
-    ).exactOptional(),
-    assessmentId: UUIDSchema.and(
-      z.any().openapi({ description: ' The identifier for the assessment. ' }),
-    ).exactOptional(),
-    assessmentName: AssessmentNameSchema.and(
-      z.any().openapi({ description: ' The name of the related assessment. ' }),
-    ).exactOptional(),
-    controlSetId: ControlSetIdSchema.and(
-      z.any().openapi({ description: ' The identifier for the control set. ' }),
-    ).exactOptional(),
-    controlSetName: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Specifies the name of the control set that the notification is about. ',
-        }),
-    ).exactOptional(),
-    description: NonEmptyStringSchema.and(
-      z.any().openapi({ description: ' The description of the notification. ' }),
-    ).exactOptional(),
-    eventTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when the notification was sent. ' }),
-    ).exactOptional(),
-    source: NonEmptyStringSchema.and(
-      z.any().openapi({ description: ' The sender of the notification. ' }),
-    ).exactOptional(),
+    id: TimestampUUIDSchema.exactOptional().openapi({
+      description: ' The unique identifier for the notification. ',
+    }),
+    assessmentId: UUIDSchema.exactOptional().openapi({
+      description: ' The identifier for the assessment. ',
+    }),
+    assessmentName: AssessmentNameSchema.exactOptional().openapi({
+      description: ' The name of the related assessment. ',
+    }),
+    controlSetId: ControlSetIdSchema.exactOptional().openapi({
+      description: ' The identifier for the control set. ',
+    }),
+    controlSetName: NonEmptyStringSchema.exactOptional().openapi({
+      description: ' Specifies the name of the control set that the notification is about. ',
+    }),
+    description: NonEmptyStringSchema.exactOptional().openapi({
+      description: ' The description of the notification. ',
+    }),
+    eventTime: TimestampSchema.exactOptional().openapi({
+      description: ' The time when the notification was sent. ',
+    }),
+    source: NonEmptyStringSchema.exactOptional().openapi({
+      description: ' The sender of the notification. ',
+    }),
   })
   .openapi({
     description:
@@ -3009,38 +2425,30 @@ const NotificationsSchema = z.array(NotificationSchema).openapi('Notifications')
 
 const ListNotificationsResponseSchema = z
   .object({
-    notifications: NotificationsSchema.and(
-      z.any().openapi({ description: ' The returned list of notifications. ' }),
-    ).exactOptional(),
-    nextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The pagination token that's used to fetch the next set of results. ",
-        }),
-    ).exactOptional(),
+    notifications: NotificationsSchema.exactOptional().openapi({
+      description: ' The returned list of notifications. ',
+    }),
+    nextToken: TokenSchema.exactOptional().openapi({
+      description: " The pagination token that's used to fetch the next set of results. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListNotificationsResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The list of tags that the <code>ListTagsForResource</code> API returned. ',
-        }),
-    ).exactOptional(),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: ' The list of tags that the <code>ListTagsForResource</code> API returned. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const RegisterAccountResponseSchema = z
   .object({
-    status: AccountStatusSchema.and(
-      z.any().openapi({ description: ' The status of the account registration request. ' }),
-    ).exactOptional(),
+    status: AccountStatusSchema.exactOptional().openapi({
+      description: ' The status of the account registration request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RegisterAccountResponse')
@@ -3049,33 +2457,29 @@ const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
 
 const RegisterOrganizationAdminAccountResponseSchema = z
   .object({
-    adminAccountId: AccountIdSchema.and(
-      z.any().openapi({ description: ' The identifier for the delegated administrator account. ' }),
-    ).exactOptional(),
-    organizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: ' The identifier for the organization. ' }),
-    ).exactOptional(),
+    adminAccountId: AccountIdSchema.exactOptional().openapi({
+      description: ' The identifier for the delegated administrator account. ',
+    }),
+    organizationId: OrganizationIdSchema.exactOptional().openapi({
+      description: ' The identifier for the organization. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RegisterOrganizationAdminAccountResponse')
 
 const StartAssessmentFrameworkShareResponseSchema = z
   .object({
-    assessmentFrameworkShareRequest: AssessmentFrameworkShareRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The share request that's created by the <code>StartAssessmentFrameworkShare</code> API. ",
-        }),
-    ).exactOptional(),
+    assessmentFrameworkShareRequest: AssessmentFrameworkShareRequestSchema.exactOptional().openapi({
+      description:
+        " The share request that's created by the <code>StartAssessmentFrameworkShare</code> API. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartAssessmentFrameworkShareResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z
   .string()
@@ -3084,72 +2488,54 @@ const TagKeySchema = z
   .max(128)
   .openapi('TagKey')
 
-const UpdateAssessmentResponseSchema = z
+const UpdateAssessmentResponseSchema: z.ZodType<UpdateAssessmentResponseType> = z
   .object({
-    assessment: AssessmentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The response object for the <code>UpdateAssessment</code> API. This is the name of the updated assessment.',
-        }),
-    ).exactOptional(),
+    assessment: AssessmentSchema.exactOptional().openapi({
+      description:
+        ' The response object for the <code>UpdateAssessment</code> API. This is the name of the updated assessment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAssessmentResponse')
 
 const UpdateAssessmentControlResponseSchema = z
   .object({
-    control: AssessmentControlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the updated control set that the <code>UpdateAssessmentControl</code> API returned. ',
-        }),
-    ).exactOptional(),
+    control: AssessmentControlSchema.exactOptional().openapi({
+      description:
+        ' The name of the updated control set that the <code>UpdateAssessmentControl</code> API returned. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAssessmentControlResponse')
 
 const UpdateAssessmentControlSetStatusResponseSchema = z
   .object({
-    controlSet: AssessmentControlSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the updated control set that the <code>UpdateAssessmentControlSetStatus</code> API returned. ',
-        }),
-    ).exactOptional(),
+    controlSet: AssessmentControlSetSchema.exactOptional().openapi({
+      description:
+        ' The name of the updated control set that the <code>UpdateAssessmentControlSetStatus</code> API returned. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAssessmentControlSetStatusResponse')
 
-const UpdateAssessmentFrameworkResponseSchema = z
+const UpdateAssessmentFrameworkResponseSchema: z.ZodType<UpdateAssessmentFrameworkResponseType> = z
   .object({
-    framework: FrameworkSchema.and(
-      z.any().openapi({ description: ' The name of the framework. ' }),
-    ).exactOptional(),
+    framework: FrameworkSchema.exactOptional().openapi({
+      description: ' The name of the framework. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAssessmentFrameworkResponse')
 
 const UpdateAssessmentFrameworkControlSetSchema = z
   .object({
-    id: ControlSetNameSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the control set. ' }),
-    ).exactOptional(),
-    name: ControlSetNameSchema.and(
-      z.any().openapi({ description: ' The name of the control set. ' }),
-    ),
-    controls: CreateAssessmentFrameworkControlsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The list of controls that are contained within the control set. ',
-        }),
-    ),
+    id: ControlSetNameSchema.exactOptional().openapi({
+      description: ' The unique identifier for the control set. ',
+    }),
+    name: ControlSetNameSchema.openapi({ description: ' The name of the control set. ' }),
+    controls: CreateAssessmentFrameworkControlsSchema.openapi({
+      description: ' The list of controls that are contained within the control set. ',
+    }),
   })
   .openapi({
     required: ['name', 'controls'],
@@ -3160,51 +2546,39 @@ const UpdateAssessmentFrameworkControlSetSchema = z
 
 const UpdateAssessmentFrameworkShareResponseSchema = z
   .object({
-    assessmentFrameworkShareRequest: AssessmentFrameworkShareRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The updated share request that's returned by the <code>UpdateAssessmentFrameworkShare</code> operation. ",
-        }),
-    ).exactOptional(),
+    assessmentFrameworkShareRequest: AssessmentFrameworkShareRequestSchema.exactOptional().openapi({
+      description:
+        " The updated share request that's returned by the <code>UpdateAssessmentFrameworkShare</code> operation. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAssessmentFrameworkShareResponse')
 
-const UpdateAssessmentStatusResponseSchema = z
+const UpdateAssessmentStatusResponseSchema: z.ZodType<UpdateAssessmentStatusResponseType> = z
   .object({
-    assessment: AssessmentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the updated assessment that the <code>UpdateAssessmentStatus</code> API returned. ',
-        }),
-    ).exactOptional(),
+    assessment: AssessmentSchema.exactOptional().openapi({
+      description:
+        ' The name of the updated assessment that the <code>UpdateAssessmentStatus</code> API returned. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAssessmentStatusResponse')
 
 const UpdateControlResponseSchema = z
   .object({
-    control: ControlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the updated control set that the <code>UpdateControl</code> API returned. ',
-        }),
-    ).exactOptional(),
+    control: ControlSchema.exactOptional().openapi({
+      description:
+        ' The name of the updated control set that the <code>UpdateControl</code> API returned. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateControlResponse')
 
 const UpdateSettingsResponseSchema = z
   .object({
-    settings: SettingsSchema.and(
-      z.any().openapi({ description: ' The current list of settings. ' }),
-    ).exactOptional(),
+    settings: SettingsSchema.exactOptional().openapi({
+      description: ' The current list of settings. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateSettingsResponse')
@@ -3213,49 +2587,31 @@ const ValidationErrorsSchema = z.array(NonEmptyStringSchema).openapi('Validation
 
 const ValidateAssessmentReportIntegrityResponseSchema = z
   .object({
-    signatureValid: BooleanSchema.and(
-      z.any().openapi({ description: ' Specifies whether the signature key is valid. ' }),
-    ).exactOptional(),
-    signatureAlgorithm: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The signature algorithm that's used to code sign the assessment report file. ",
-        }),
-    ).exactOptional(),
-    signatureDateTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The date and time signature that specifies when the assessment report was created. ',
-        }),
-    ).exactOptional(),
-    signatureKeyId: StringSchema.and(
-      z.any().openapi({ description: ' The unique identifier for the validation signature key. ' }),
-    ).exactOptional(),
-    validationErrors: ValidationErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Represents any errors that occurred when validating the assessment report. ',
-        }),
-    ).exactOptional(),
+    signatureValid: BooleanSchema.exactOptional().openapi({
+      description: ' Specifies whether the signature key is valid. ',
+    }),
+    signatureAlgorithm: StringSchema.exactOptional().openapi({
+      description: " The signature algorithm that's used to code sign the assessment report file. ",
+    }),
+    signatureDateTime: StringSchema.exactOptional().openapi({
+      description:
+        ' The date and time signature that specifies when the assessment report was created. ',
+    }),
+    signatureKeyId: StringSchema.exactOptional().openapi({
+      description: ' The unique identifier for the validation signature key. ',
+    }),
+    validationErrors: ValidationErrorsSchema.exactOptional().openapi({
+      description: ' Represents any errors that occurred when validating the assessment report. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ValidateAssessmentReportIntegrityResponse')
 
 const AssociateAssessmentReportEvidenceFolderRequestSchema = z
   .object({
-    evidenceFolderId: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The identifier for the folder that the evidence is stored in. ',
-        }),
-    ),
+    evidenceFolderId: UUIDSchema.openapi({
+      description: ' The identifier for the folder that the evidence is stored in. ',
+    }),
   })
   .openapi({
     required: ['evidenceFolderId'],
@@ -3265,16 +2621,10 @@ const AssociateAssessmentReportEvidenceFolderRequestSchema = z
 
 const BatchAssociateAssessmentReportEvidenceRequestSchema = z
   .object({
-    evidenceFolderId: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The identifier for the folder that the evidence is stored in. ',
-        }),
-    ),
-    evidenceIds: EvidenceIdsSchema.and(
-      z.any().openapi({ description: ' The list of evidence identifiers. ' }),
-    ),
+    evidenceFolderId: UUIDSchema.openapi({
+      description: ' The identifier for the folder that the evidence is stored in. ',
+    }),
+    evidenceIds: EvidenceIdsSchema.openapi({ description: ' The list of evidence identifiers. ' }),
   })
   .openapi({
     required: ['evidenceFolderId', 'evidenceIds'],
@@ -3290,13 +2640,9 @@ const CreateDelegationRequestsSchema = z
 
 const BatchCreateDelegationByAssessmentRequestSchema = z
   .object({
-    createDelegationRequests: CreateDelegationRequestsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The API request to batch create delegations in Audit Manager. ',
-        }),
-    ),
+    createDelegationRequests: CreateDelegationRequestsSchema.openapi({
+      description: ' The API request to batch create delegations in Audit Manager. ',
+    }),
   })
   .openapi({
     required: ['createDelegationRequests'],
@@ -3308,25 +2654,19 @@ const DelegationIdsSchema = z.array(UUIDSchema).min(1).max(50).openapi('Delegati
 
 const BatchDeleteDelegationByAssessmentRequestSchema = z
   .object({
-    delegationIds: DelegationIdsSchema.and(
-      z.any().openapi({ description: ' The identifiers for the delegations. ' }),
-    ),
+    delegationIds: DelegationIdsSchema.openapi({
+      description: ' The identifiers for the delegations. ',
+    }),
   })
   .openapi({ required: ['delegationIds'], title: 'BatchDeleteDelegationByAssessmentRequest' })
   .openapi('BatchDeleteDelegationByAssessmentRequest')
 
 const BatchDisassociateAssessmentReportEvidenceRequestSchema = z
   .object({
-    evidenceFolderId: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The identifier for the folder that the evidence is stored in. ',
-        }),
-    ),
-    evidenceIds: EvidenceIdsSchema.and(
-      z.any().openapi({ description: ' The list of evidence identifiers. ' }),
-    ),
+    evidenceFolderId: UUIDSchema.openapi({
+      description: ' The identifier for the folder that the evidence is stored in. ',
+    }),
+    evidenceIds: EvidenceIdsSchema.openapi({ description: ' The list of evidence identifiers. ' }),
   })
   .openapi({
     required: ['evidenceFolderId', 'evidenceIds'],
@@ -3342,9 +2682,9 @@ const ManualEvidenceListSchema = z
 
 const BatchImportEvidenceToAssessmentControlRequestSchema = z
   .object({
-    manualEvidence: ManualEvidenceListSchema.and(
-      z.any().openapi({ description: ' The list of manual evidence objects. ' }),
-    ),
+    manualEvidence: ManualEvidenceListSchema.openapi({
+      description: ' The list of manual evidence objects. ',
+    }),
   })
   .openapi({ required: ['manualEvidence'], title: 'BatchImportEvidenceToAssessmentControlRequest' })
   .openapi('BatchImportEvidenceToAssessmentControlRequest')
@@ -3356,28 +2696,20 @@ const CreateAssessmentFrameworkControlSetsSchema = z
 
 const CreateAssessmentFrameworkRequestSchema = z
   .object({
-    name: FrameworkNameSchema.and(
-      z.any().openapi({ description: ' The name of the new custom framework. ' }),
-    ),
-    description: FrameworkDescriptionSchema.and(
-      z.any().openapi({ description: ' An optional description for the new custom framework. ' }),
-    ).exactOptional(),
-    complianceType: ComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The compliance type that the new custom framework supports, such as CIS or HIPAA. ',
-        }),
-    ).exactOptional(),
-    controlSets: CreateAssessmentFrameworkControlSetsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The control sets that are associated with the framework. ' }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: ' The tags that are associated with the framework. ' }),
-    ).exactOptional(),
+    name: FrameworkNameSchema.openapi({ description: ' The name of the new custom framework. ' }),
+    description: FrameworkDescriptionSchema.exactOptional().openapi({
+      description: ' An optional description for the new custom framework. ',
+    }),
+    complianceType: ComplianceTypeSchema.exactOptional().openapi({
+      description:
+        ' The compliance type that the new custom framework supports, such as CIS or HIPAA. ',
+    }),
+    controlSets: CreateAssessmentFrameworkControlSetsSchema.openapi({
+      description: ' The control sets that are associated with the framework. ',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: ' The tags that are associated with the framework. ',
+    }),
   })
   .openapi({ required: ['name', 'controlSets'], title: 'CreateAssessmentFrameworkRequest' })
   .openapi('CreateAssessmentFrameworkRequest')
@@ -3391,57 +2723,40 @@ const QueryStatementSchema = z
 
 const CreateAssessmentReportRequestSchema = z
   .object({
-    name: AssessmentReportNameSchema.and(
-      z.any().openapi({ description: ' The name of the new assessment report. ' }),
-    ),
-    description: AssessmentReportDescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the assessment report. ' }),
-    ).exactOptional(),
-    queryStatement: QueryStatementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A SQL statement that represents an evidence finder query.</p> <p>Provide this parameter when you want to generate an assessment report from the results of an evidence finder search query. When you use this parameter, Audit Manager generates a one-time report using only the evidence from the query output. This report does not include any assessment evidence that was manually <a href="https://docs.aws.amazon.com/audit-manager/latest/userguide/generate-assessment-report.html#generate-assessment-report-include-evidence">added to a report using the console</a>, or <a href="https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_BatchAssociateAssessmentReportEvidence.html">associated with a report using the API</a>. </p> <p>To use this parameter, the <a href="https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_EvidenceFinderEnablement.html#auditmanager-Type-EvidenceFinderEnablement-enablementStatus">enablementStatus</a> of evidence finder must be <code>ENABLED</code>. </p> <p> For examples and help resolving <code>queryStatement</code> validation exceptions, see <a href="https://docs.aws.amazon.com/audit-manager/latest/userguide/evidence-finder-issues.html#querystatement-exceptions">Troubleshooting evidence finder issues</a> in the <i>Audit Manager User Guide.</i> </p>',
-        }),
-    ).exactOptional(),
+    name: AssessmentReportNameSchema.openapi({
+      description: ' The name of the new assessment report. ',
+    }),
+    description: AssessmentReportDescriptionSchema.exactOptional().openapi({
+      description: ' The description of the assessment report. ',
+    }),
+    queryStatement: QueryStatementSchema.exactOptional().openapi({
+      description:
+        '<p>A SQL statement that represents an evidence finder query.</p> <p>Provide this parameter when you want to generate an assessment report from the results of an evidence finder search query. When you use this parameter, Audit Manager generates a one-time report using only the evidence from the query output. This report does not include any assessment evidence that was manually <a href="https://docs.aws.amazon.com/audit-manager/latest/userguide/generate-assessment-report.html#generate-assessment-report-include-evidence">added to a report using the console</a>, or <a href="https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_BatchAssociateAssessmentReportEvidence.html">associated with a report using the API</a>. </p> <p>To use this parameter, the <a href="https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_EvidenceFinderEnablement.html#auditmanager-Type-EvidenceFinderEnablement-enablementStatus">enablementStatus</a> of evidence finder must be <code>ENABLED</code>. </p> <p> For examples and help resolving <code>queryStatement</code> validation exceptions, see <a href="https://docs.aws.amazon.com/audit-manager/latest/userguide/evidence-finder-issues.html#querystatement-exceptions">Troubleshooting evidence finder issues</a> in the <i>Audit Manager User Guide.</i> </p>',
+    }),
   })
   .openapi({ required: ['name'], title: 'CreateAssessmentReportRequest' })
   .openapi('CreateAssessmentReportRequest')
 
 const CreateAssessmentRequestSchema = z
   .object({
-    name: AssessmentNameSchema.and(
-      z.any().openapi({ description: ' The name of the assessment to be created. ' }),
-    ),
-    description: AssessmentDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The optional description of the assessment to be created. ' }),
-    ).exactOptional(),
-    assessmentReportsDestination: AssessmentReportsDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The assessment report storage destination for the assessment that's being created. ",
-        }),
-    ),
+    name: AssessmentNameSchema.openapi({
+      description: ' The name of the assessment to be created. ',
+    }),
+    description: AssessmentDescriptionSchema.exactOptional().openapi({
+      description: ' The optional description of the assessment to be created. ',
+    }),
+    assessmentReportsDestination: AssessmentReportsDestinationSchema.openapi({
+      description:
+        " The assessment report storage destination for the assessment that's being created. ",
+    }),
     scope: ScopeSchema,
-    roles: RolesSchema.and(
-      z.any().openapi({ description: ' The list of roles for the assessment. ' }),
-    ),
-    frameworkId: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The identifier for the framework that the assessment will be created from. ',
-        }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: ' The tags that are associated with the assessment. ' }),
-    ).exactOptional(),
+    roles: RolesSchema.openapi({ description: ' The list of roles for the assessment. ' }),
+    frameworkId: UUIDSchema.openapi({
+      description: ' The identifier for the framework that the assessment will be created from. ',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: ' The tags that are associated with the assessment. ',
+    }),
   })
   .openapi({
     required: ['name', 'assessmentReportsDestination', 'scope', 'roles', 'frameworkId'],
@@ -3456,89 +2771,75 @@ const CreateControlMappingSourcesSchema = z
 
 const CreateControlRequestSchema = z
   .object({
-    name: ControlNameSchema.and(z.any().openapi({ description: ' The name of the control. ' })),
-    description: ControlDescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the control. ' }),
-    ).exactOptional(),
-    testingInformation: TestingInformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The steps to follow to determine if the control is satisfied. ',
-        }),
-    ).exactOptional(),
-    actionPlanTitle: ActionPlanTitleSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The title of the action plan for remediating the control. ' }),
-    ).exactOptional(),
-    actionPlanInstructions: ActionPlanInstructionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The recommended actions to carry out if the control isn't fulfilled. ",
-        }),
-    ).exactOptional(),
-    controlMappingSources: CreateControlMappingSourcesSchema.and(
-      z.any().openapi({ description: ' The data mapping sources for the control. ' }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: ' The tags that are associated with the control. ' }),
-    ).exactOptional(),
+    name: ControlNameSchema.openapi({ description: ' The name of the control. ' }),
+    description: ControlDescriptionSchema.exactOptional().openapi({
+      description: ' The description of the control. ',
+    }),
+    testingInformation: TestingInformationSchema.exactOptional().openapi({
+      description: ' The steps to follow to determine if the control is satisfied. ',
+    }),
+    actionPlanTitle: ActionPlanTitleSchema.exactOptional().openapi({
+      description: ' The title of the action plan for remediating the control. ',
+    }),
+    actionPlanInstructions: ActionPlanInstructionsSchema.exactOptional().openapi({
+      description: " The recommended actions to carry out if the control isn't fulfilled. ",
+    }),
+    controlMappingSources: CreateControlMappingSourcesSchema.openapi({
+      description: ' The data mapping sources for the control. ',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: ' The tags that are associated with the control. ',
+    }),
   })
   .openapi({ required: ['name', 'controlMappingSources'], title: 'CreateControlRequest' })
   .openapi('CreateControlRequest')
 
 const DeleteAssessmentFrameworkRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAssessmentFrameworkRequest' })
   .openapi('DeleteAssessmentFrameworkRequest')
 
 const ShareRequestTypeSchema = z.enum(['SENT', 'RECEIVED']).openapi('ShareRequestType')
 
 const DeleteAssessmentFrameworkShareRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAssessmentFrameworkShareRequest' })
   .openapi('DeleteAssessmentFrameworkShareRequest')
 
 const DeleteAssessmentReportRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAssessmentReportRequest' })
   .openapi('DeleteAssessmentReportRequest')
 
 const DeleteAssessmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAssessmentRequest' })
   .openapi('DeleteAssessmentRequest')
 
 const DeleteControlRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteControlRequest' })
   .openapi('DeleteControlRequest')
 
 const DeregisterAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeregisterAccountRequest' })
   .openapi('DeregisterAccountRequest')
 
 const DeregisterOrganizationAdminAccountRequestSchema = z
   .object({
-    adminAccountId: AccountIdSchema.and(
-      z.any().openapi({ description: ' The identifier for the administrator account. ' }),
-    ).exactOptional(),
+    adminAccountId: AccountIdSchema.exactOptional().openapi({
+      description: ' The identifier for the administrator account. ',
+    }),
   })
   .openapi({ title: 'DeregisterOrganizationAdminAccountRequest', required: [] })
   .openapi('DeregisterOrganizationAdminAccountRequest')
 
 const DisassociateAssessmentReportEvidenceFolderRequestSchema = z
   .object({
-    evidenceFolderId: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The unique identifier for the folder that the evidence is stored in. ',
-        }),
-    ),
+    evidenceFolderId: UUIDSchema.openapi({
+      description: ' The unique identifier for the folder that the evidence is stored in. ',
+    }),
   })
   .openapi({
     required: ['evidenceFolderId'],
@@ -3553,22 +2854,22 @@ const EvidenceAttributeKeySchema = z
   .openapi('EvidenceAttributeKey')
 
 const GetAccountStatusRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAccountStatusRequest' })
   .openapi('GetAccountStatusRequest')
 
 const GetAssessmentFrameworkRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAssessmentFrameworkRequest' })
   .openapi('GetAssessmentFrameworkRequest')
 
 const GetAssessmentReportUrlRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAssessmentReportUrlRequest' })
   .openapi('GetAssessmentReportUrlRequest')
 
 const GetAssessmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAssessmentRequest' })
   .openapi('GetAssessmentRequest')
 
@@ -3580,62 +2881,62 @@ const MaxResultsSchema = z
   .openapi('MaxResults')
 
 const GetChangeLogsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetChangeLogsRequest' })
   .openapi('GetChangeLogsRequest')
 
 const GetControlRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetControlRequest' })
   .openapi('GetControlRequest')
 
 const GetDelegationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDelegationsRequest' })
   .openapi('GetDelegationsRequest')
 
 const GetEvidenceByEvidenceFolderRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetEvidenceByEvidenceFolderRequest' })
   .openapi('GetEvidenceByEvidenceFolderRequest')
 
 const GetEvidenceFolderRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetEvidenceFolderRequest' })
   .openapi('GetEvidenceFolderRequest')
 
 const GetEvidenceFoldersByAssessmentControlRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetEvidenceFoldersByAssessmentControlRequest' })
   .openapi('GetEvidenceFoldersByAssessmentControlRequest')
 
 const GetEvidenceFoldersByAssessmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetEvidenceFoldersByAssessmentRequest' })
   .openapi('GetEvidenceFoldersByAssessmentRequest')
 
 const GetEvidenceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetEvidenceRequest' })
   .openapi('GetEvidenceRequest')
 
 const GetInsightsByAssessmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetInsightsByAssessmentRequest' })
   .openapi('GetInsightsByAssessmentRequest')
 
 const GetInsightsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetInsightsRequest' })
   .openapi('GetInsightsRequest')
 
 const GetOrganizationAdminAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetOrganizationAdminAccountRequest' })
   .openapi('GetOrganizationAdminAccountRequest')
 
 const GetServicesInScopeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetServicesInScopeRequest' })
   .openapi('GetServicesInScopeRequest')
 
@@ -3652,87 +2953,85 @@ const SettingAttributeSchema = z
   .openapi('SettingAttribute')
 
 const GetSettingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSettingsRequest' })
   .openapi('GetSettingsRequest')
 
 const ListAssessmentControlInsightsByControlDomainRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAssessmentControlInsightsByControlDomainRequest' })
   .openapi('ListAssessmentControlInsightsByControlDomainRequest')
 
 const ListAssessmentFrameworkShareRequestsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAssessmentFrameworkShareRequestsRequest' })
   .openapi('ListAssessmentFrameworkShareRequestsRequest')
 
 const ListAssessmentFrameworksRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAssessmentFrameworksRequest' })
   .openapi('ListAssessmentFrameworksRequest')
 
 const ListAssessmentReportsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAssessmentReportsRequest' })
   .openapi('ListAssessmentReportsRequest')
 
 const ListAssessmentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAssessmentsRequest' })
   .openapi('ListAssessmentsRequest')
 
 const ListControlDomainInsightsByAssessmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListControlDomainInsightsByAssessmentRequest' })
   .openapi('ListControlDomainInsightsByAssessmentRequest')
 
 const ListControlDomainInsightsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListControlDomainInsightsRequest' })
   .openapi('ListControlDomainInsightsRequest')
 
 const ListControlInsightsByControlDomainRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListControlInsightsByControlDomainRequest' })
   .openapi('ListControlInsightsByControlDomainRequest')
 
 const ListControlsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListControlsRequest' })
   .openapi('ListControlsRequest')
 
 const ListKeywordsForDataSourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListKeywordsForDataSourceRequest' })
   .openapi('ListKeywordsForDataSourceRequest')
 
 const ListNotificationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListNotificationsRequest' })
   .openapi('ListNotificationsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const RegisterAccountRequestSchema = z
   .object({
-    kmsKey: KmsKeySchema.and(
-      z.any().openapi({ description: ' The KMS key details. ' }),
-    ).exactOptional(),
-    delegatedAdminAccount: AccountIdSchema.and(
-      z.any().openapi({ description: ' The delegated administrator account for Audit Manager. ' }),
-    ).exactOptional(),
+    kmsKey: KmsKeySchema.exactOptional().openapi({ description: ' The KMS key details. ' }),
+    delegatedAdminAccount: AccountIdSchema.exactOptional().openapi({
+      description: ' The delegated administrator account for Audit Manager. ',
+    }),
   })
   .openapi({ title: 'RegisterAccountRequest', required: [] })
   .openapi('RegisterAccountRequest')
 
 const RegisterOrganizationAdminAccountRequestSchema = z
   .object({
-    adminAccountId: AccountIdSchema.and(
-      z.any().openapi({ description: ' The identifier for the delegated administrator account. ' }),
-    ),
+    adminAccountId: AccountIdSchema.openapi({
+      description: ' The identifier for the delegated administrator account. ',
+    }),
   })
   .openapi({ required: ['adminAccountId'], title: 'RegisterOrganizationAdminAccountRequest' })
   .openapi('RegisterOrganizationAdminAccountRequest')
@@ -3750,17 +3049,15 @@ const SnsArnSchema = z
 
 const StartAssessmentFrameworkShareRequestSchema = z
   .object({
-    destinationAccount: AccountIdSchema.and(
-      z.any().openapi({ description: ' The Amazon Web Services account of the recipient. ' }),
-    ),
-    destinationRegion: RegionSchema.and(
-      z.any().openapi({ description: ' The Amazon Web Services Region of the recipient. ' }),
-    ),
-    comment: ShareRequestCommentSchema.and(
-      z
-        .any()
-        .openapi({ description: ' An optional comment from the sender about the share request. ' }),
-    ).exactOptional(),
+    destinationAccount: AccountIdSchema.openapi({
+      description: ' The Amazon Web Services account of the recipient. ',
+    }),
+    destinationRegion: RegionSchema.openapi({
+      description: ' The Amazon Web Services Region of the recipient. ',
+    }),
+    comment: ShareRequestCommentSchema.exactOptional().openapi({
+      description: ' An optional comment from the sender about the share request. ',
+    }),
   })
   .openapi({
     required: ['destinationAccount', 'destinationRegion'],
@@ -3772,38 +3069,38 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyLis
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: ' The tags that are associated with the resource. ' }),
-    ),
+    tags: TagMapSchema.openapi({
+      description: ' The tags that are associated with the resource. ',
+    }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateAssessmentControlRequestSchema = z
   .object({
-    controlStatus: ControlStatusSchema.and(
-      z.any().openapi({ description: ' The status of the control. ' }),
-    ).exactOptional(),
-    commentBody: ControlCommentBodySchema.and(
-      z.any().openapi({ description: ' The comment body text for the control. ' }),
-    ).exactOptional(),
+    controlStatus: ControlStatusSchema.exactOptional().openapi({
+      description: ' The status of the control. ',
+    }),
+    commentBody: ControlCommentBodySchema.exactOptional().openapi({
+      description: ' The comment body text for the control. ',
+    }),
   })
   .openapi({ title: 'UpdateAssessmentControlRequest', required: [] })
   .openapi('UpdateAssessmentControlRequest')
 
 const UpdateAssessmentControlSetStatusRequestSchema = z
   .object({
-    status: ControlSetStatusSchema.and(
-      z.any().openapi({ description: " The status of the control set that's being updated. " }),
-    ),
-    comment: DelegationCommentSchema.and(
-      z.any().openapi({ description: " The comment that's related to the status update. " }),
-    ),
+    status: ControlSetStatusSchema.openapi({
+      description: " The status of the control set that's being updated. ",
+    }),
+    comment: DelegationCommentSchema.openapi({
+      description: " The comment that's related to the status update. ",
+    }),
   })
   .openapi({ required: ['status', 'comment'], title: 'UpdateAssessmentControlSetStatusRequest' })
   .openapi('UpdateAssessmentControlSetStatusRequest')
@@ -3815,162 +3112,117 @@ const UpdateAssessmentFrameworkControlSetsSchema = z
 
 const UpdateAssessmentFrameworkRequestSchema = z
   .object({
-    name: FrameworkNameSchema.and(
-      z.any().openapi({ description: ' The name of the framework to be updated. ' }),
-    ),
-    description: FrameworkDescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the updated framework. ' }),
-    ).exactOptional(),
-    complianceType: ComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The compliance type that the new custom framework supports, such as CIS or HIPAA. ',
-        }),
-    ).exactOptional(),
-    controlSets: UpdateAssessmentFrameworkControlSetsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The control sets that are associated with the framework. ' }),
-    ),
+    name: FrameworkNameSchema.openapi({
+      description: ' The name of the framework to be updated. ',
+    }),
+    description: FrameworkDescriptionSchema.exactOptional().openapi({
+      description: ' The description of the updated framework. ',
+    }),
+    complianceType: ComplianceTypeSchema.exactOptional().openapi({
+      description:
+        ' The compliance type that the new custom framework supports, such as CIS or HIPAA. ',
+    }),
+    controlSets: UpdateAssessmentFrameworkControlSetsSchema.openapi({
+      description: ' The control sets that are associated with the framework. ',
+    }),
   })
   .openapi({ required: ['name', 'controlSets'], title: 'UpdateAssessmentFrameworkRequest' })
   .openapi('UpdateAssessmentFrameworkRequest')
 
 const UpdateAssessmentFrameworkShareRequestSchema = z
   .object({
-    requestType: ShareRequestTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the share request is a sent request or a received request.',
-        }),
-    ),
-    action: ShareRequestActionSchema.and(
-      z.any().openapi({ description: 'Specifies the update action for the share request.' }),
-    ),
+    requestType: ShareRequestTypeSchema.openapi({
+      description: 'Specifies whether the share request is a sent request or a received request.',
+    }),
+    action: ShareRequestActionSchema.openapi({
+      description: 'Specifies the update action for the share request.',
+    }),
   })
   .openapi({ required: ['requestType', 'action'], title: 'UpdateAssessmentFrameworkShareRequest' })
   .openapi('UpdateAssessmentFrameworkShareRequest')
 
 const UpdateAssessmentRequestSchema = z
   .object({
-    assessmentName: AssessmentNameSchema.and(
-      z.any().openapi({ description: ' The name of the assessment to be updated. ' }),
-    ).exactOptional(),
-    assessmentDescription: AssessmentDescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the assessment. ' }),
-    ).exactOptional(),
-    scope: ScopeSchema.and(z.any().openapi({ description: ' The scope of the assessment. ' })),
-    assessmentReportsDestination: AssessmentReportsDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The assessment report storage destination for the assessment that's being updated. ",
-        }),
-    ).exactOptional(),
-    roles: RolesSchema.and(
-      z.any().openapi({ description: ' The list of roles for the assessment. ' }),
-    ).exactOptional(),
+    assessmentName: AssessmentNameSchema.exactOptional().openapi({
+      description: ' The name of the assessment to be updated. ',
+    }),
+    assessmentDescription: AssessmentDescriptionSchema.exactOptional().openapi({
+      description: ' The description of the assessment. ',
+    }),
+    scope: ScopeSchema.openapi({ description: ' The scope of the assessment. ' }),
+    assessmentReportsDestination: AssessmentReportsDestinationSchema.exactOptional().openapi({
+      description:
+        " The assessment report storage destination for the assessment that's being updated. ",
+    }),
+    roles: RolesSchema.exactOptional().openapi({
+      description: ' The list of roles for the assessment. ',
+    }),
   })
   .openapi({ required: ['scope'], title: 'UpdateAssessmentRequest' })
   .openapi('UpdateAssessmentRequest')
 
 const UpdateAssessmentStatusRequestSchema = z
   .object({
-    status: AssessmentStatusSchema.and(
-      z.any().openapi({ description: ' The current status of the assessment. ' }),
-    ),
+    status: AssessmentStatusSchema.openapi({
+      description: ' The current status of the assessment. ',
+    }),
   })
   .openapi({ required: ['status'], title: 'UpdateAssessmentStatusRequest' })
   .openapi('UpdateAssessmentStatusRequest')
 
 const UpdateControlRequestSchema = z
   .object({
-    name: ControlNameSchema.and(
-      z.any().openapi({ description: ' The name of the updated control. ' }),
-    ),
-    description: ControlDescriptionSchema.and(
-      z.any().openapi({ description: ' The optional description of the control. ' }),
-    ).exactOptional(),
-    testingInformation: TestingInformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The steps that you should follow to determine if the control is met. ',
-        }),
-    ).exactOptional(),
-    actionPlanTitle: ActionPlanTitleSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The title of the action plan for remediating the control. ' }),
-    ).exactOptional(),
-    actionPlanInstructions: ActionPlanInstructionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " The recommended actions to carry out if the control isn't fulfilled. ",
-        }),
-    ).exactOptional(),
-    controlMappingSources: ControlMappingSourcesSchema.and(
-      z.any().openapi({ description: ' The data mapping sources for the control. ' }),
-    ),
+    name: ControlNameSchema.openapi({ description: ' The name of the updated control. ' }),
+    description: ControlDescriptionSchema.exactOptional().openapi({
+      description: ' The optional description of the control. ',
+    }),
+    testingInformation: TestingInformationSchema.exactOptional().openapi({
+      description: ' The steps that you should follow to determine if the control is met. ',
+    }),
+    actionPlanTitle: ActionPlanTitleSchema.exactOptional().openapi({
+      description: ' The title of the action plan for remediating the control. ',
+    }),
+    actionPlanInstructions: ActionPlanInstructionsSchema.exactOptional().openapi({
+      description: " The recommended actions to carry out if the control isn't fulfilled. ",
+    }),
+    controlMappingSources: ControlMappingSourcesSchema.openapi({
+      description: ' The data mapping sources for the control. ',
+    }),
   })
   .openapi({ required: ['name', 'controlMappingSources'], title: 'UpdateControlRequest' })
   .openapi('UpdateControlRequest')
 
 const UpdateSettingsRequestSchema = z
   .object({
-    snsTopic: SnsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Simple Notification Service (Amazon SNS) topic that Audit Manager sends notifications to. ',
-        }),
-    ).exactOptional(),
-    defaultAssessmentReportsDestination: AssessmentReportsDestinationSchema.and(
-      z.any().openapi({ description: ' The default storage destination for assessment reports. ' }),
-    ).exactOptional(),
-    defaultProcessOwners: RolesSchema.and(
-      z.any().openapi({ description: ' A list of the default audit owners. ' }),
-    ).exactOptional(),
-    kmsKey: KmsKeySchema.and(
-      z.any().openapi({ description: ' The KMS key details. ' }),
-    ).exactOptional(),
-    evidenceFinderEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether the evidence finder feature is enabled. Change this attribute to enable or disable evidence finder.</p> <important> <p>When you use this attribute to disable evidence finder, Audit Manager deletes the event data store that’s used to query your evidence data. As a result, you can’t re-enable evidence finder and use the feature again. Your only alternative is to <a href="https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_DeregisterAccount.html">deregister</a> and then <a href="https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_RegisterAccount.html">re-register</a> Audit Manager. </p> </important>',
-        }),
-    ).exactOptional(),
-    deregistrationPolicy: DeregistrationPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The deregistration policy for your Audit Manager data. You can use this attribute to determine how your data is handled when you deregister Audit Manager.',
-        }),
-    ).exactOptional(),
+    snsTopic: SnsArnSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Simple Notification Service (Amazon SNS) topic that Audit Manager sends notifications to. ',
+    }),
+    defaultAssessmentReportsDestination: AssessmentReportsDestinationSchema.exactOptional().openapi(
+      { description: ' The default storage destination for assessment reports. ' },
+    ),
+    defaultProcessOwners: RolesSchema.exactOptional().openapi({
+      description: ' A list of the default audit owners. ',
+    }),
+    kmsKey: KmsKeySchema.exactOptional().openapi({ description: ' The KMS key details. ' }),
+    evidenceFinderEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether the evidence finder feature is enabled. Change this attribute to enable or disable evidence finder.</p> <important> <p>When you use this attribute to disable evidence finder, Audit Manager deletes the event data store that’s used to query your evidence data. As a result, you can’t re-enable evidence finder and use the feature again. Your only alternative is to <a href="https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_DeregisterAccount.html">deregister</a> and then <a href="https://docs.aws.amazon.com/audit-manager/latest/APIReference/API_RegisterAccount.html">re-register</a> Audit Manager. </p> </important>',
+    }),
+    deregistrationPolicy: DeregistrationPolicySchema.exactOptional().openapi({
+      description:
+        'The deregistration policy for your Audit Manager data. You can use this attribute to determine how your data is handled when you deregister Audit Manager.',
+    }),
   })
   .openapi({ title: 'UpdateSettingsRequest', required: [] })
   .openapi('UpdateSettingsRequest')
 
 const ValidateAssessmentReportIntegrityRequestSchema = z
   .object({
-    s3RelativePath: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The relative path of the Amazon S3 bucket that the assessment report is stored in. ',
-        }),
-    ),
+    s3RelativePath: S3UrlSchema.openapi({
+      description:
+        ' The relative path of the Amazon S3 bucket that the assessment report is stored in. ',
+    }),
   })
   .openapi({ required: ['s3RelativePath'], title: 'ValidateAssessmentReportIntegrityRequest' })
   .openapi('ValidateAssessmentReportIntegrityRequest')
@@ -4703,12 +3955,12 @@ export const postAssessmentsRoute = createRoute({
                 }),
               assessmentReportsDestination: z
                 .object({
-                  destinationType: AssessmentReportDestinationTypeSchema.and(
-                    z.any().openapi({ description: ' The destination type, such as Amazon S3. ' }),
-                  ).exactOptional(),
-                  destination: S3UrlSchema.and(
-                    z.any().openapi({ description: ' The destination of the assessment report. ' }),
-                  ).exactOptional(),
+                  destinationType: AssessmentReportDestinationTypeSchema.exactOptional().openapi({
+                    description: ' The destination type, such as Amazon S3. ',
+                  }),
+                  destination: S3UrlSchema.exactOptional().openapi({
+                    description: ' The destination of the assessment report. ',
+                  }),
                 })
                 .openapi({
                   description:
@@ -4717,22 +3969,14 @@ export const postAssessmentsRoute = createRoute({
                 }),
               scope: z
                 .object({
-                  awsAccounts: AWSAccountsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The Amazon Web Services accounts that are included in the scope of the assessment. ',
-                      }),
-                  ).exactOptional(),
-                  awsServices: AWSServicesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The Amazon Web Services services that are included in the scope of the assessment. ',
-                      }),
-                  ).exactOptional(),
+                  awsAccounts: AWSAccountsSchema.exactOptional().openapi({
+                    description:
+                      ' The Amazon Web Services accounts that are included in the scope of the assessment. ',
+                  }),
+                  awsServices: AWSServicesSchema.exactOptional().openapi({
+                    description:
+                      ' The Amazon Web Services services that are included in the scope of the assessment. ',
+                  }),
                 })
                 .openapi({
                   description:
@@ -5194,22 +4438,14 @@ export const putAssessmentsAssessmentIdRoute = createRoute({
                 .openapi({ description: ' The description of the assessment. ' }),
               scope: z
                 .object({
-                  awsAccounts: AWSAccountsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The Amazon Web Services accounts that are included in the scope of the assessment. ',
-                      }),
-                  ).exactOptional(),
-                  awsServices: AWSServicesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The Amazon Web Services services that are included in the scope of the assessment. ',
-                      }),
-                  ).exactOptional(),
+                  awsAccounts: AWSAccountsSchema.exactOptional().openapi({
+                    description:
+                      ' The Amazon Web Services accounts that are included in the scope of the assessment. ',
+                  }),
+                  awsServices: AWSServicesSchema.exactOptional().openapi({
+                    description:
+                      ' The Amazon Web Services services that are included in the scope of the assessment. ',
+                  }),
                 })
                 .openapi({
                   description:
@@ -5218,12 +4454,12 @@ export const putAssessmentsAssessmentIdRoute = createRoute({
                 }),
               assessmentReportsDestination: z
                 .object({
-                  destinationType: AssessmentReportDestinationTypeSchema.and(
-                    z.any().openapi({ description: ' The destination type, such as Amazon S3. ' }),
-                  ).exactOptional(),
-                  destination: S3UrlSchema.and(
-                    z.any().openapi({ description: ' The destination of the assessment report. ' }),
-                  ).exactOptional(),
+                  destinationType: AssessmentReportDestinationTypeSchema.exactOptional().openapi({
+                    description: ' The destination type, such as Amazon S3. ',
+                  }),
+                  destination: S3UrlSchema.exactOptional().openapi({
+                    description: ' The destination of the assessment report. ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9126,12 +8362,12 @@ export const putSettingsRoute = createRoute({
                 }),
               defaultAssessmentReportsDestination: z
                 .object({
-                  destinationType: AssessmentReportDestinationTypeSchema.and(
-                    z.any().openapi({ description: ' The destination type, such as Amazon S3. ' }),
-                  ).exactOptional(),
-                  destination: S3UrlSchema.and(
-                    z.any().openapi({ description: ' The destination of the assessment report. ' }),
-                  ).exactOptional(),
+                  destinationType: AssessmentReportDestinationTypeSchema.exactOptional().openapi({
+                    description: ' The destination type, such as Amazon S3. ',
+                  }),
+                  destination: S3UrlSchema.exactOptional().openapi({
+                    description: ' The destination of the assessment report. ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9159,14 +8395,10 @@ export const putSettingsRoute = createRoute({
                 }),
               deregistrationPolicy: z
                 .object({
-                  deleteResources: DeleteResourcesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Specifies which Audit Manager data will be deleted when you deregister Audit Manager.</p> <ul> <li> <p>If you set the value to <code>ALL</code>, all of your data is deleted within seven days of deregistration.</p> </li> <li> <p>If you set the value to <code>DEFAULT</code>, none of your data is deleted at the time of deregistration. However, keep in mind that the Audit Manager data retention policy still applies. As a result, any evidence data will be deleted two years after its creation date. Your other Audit Manager resources will continue to exist indefinitely.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
+                  deleteResources: DeleteResourcesSchema.exactOptional().openapi({
+                    description:
+                      '<p>Specifies which Audit Manager data will be deleted when you deregister Audit Manager.</p> <ul> <li> <p>If you set the value to <code>ALL</code>, all of your data is deleted within seven days of deregistration.</p> </li> <li> <p>If you set the value to <code>DEFAULT</code>, none of your data is deleted at the time of deregistration. However, keep in mind that the Audit Manager data retention policy still applies. As a result, any evidence data will be deleted two years after its creation date. Your other Audit Manager resources will continue to exist indefinitely.</p> </li> </ul>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

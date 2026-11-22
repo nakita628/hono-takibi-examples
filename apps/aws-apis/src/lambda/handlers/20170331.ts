@@ -7,7 +7,9 @@ import type {
 
 export const get20170331TagsARNRouteHandler: RouteHandler<typeof get20170331TagsARNRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const post20170331TagsARNRouteHandler: RouteHandler<
   typeof post20170331TagsARNRoute

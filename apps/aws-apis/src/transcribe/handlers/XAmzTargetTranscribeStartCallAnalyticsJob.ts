@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetTranscribeStartCallAnalyticsJobHandler = app.openapi(
   postXAmzTargetTranscribeStartCallAnalyticsJobRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

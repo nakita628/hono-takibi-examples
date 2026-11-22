@@ -4,5 +4,9 @@ import { getSearchAutocompleteTenantRoute, getSearchRestaurantsTenantRoute } fro
 const app = new OpenAPIHono()
 
 export const searchHandler = app
-  .openapi(getSearchAutocompleteTenantRoute, (c) => {})
-  .openapi(getSearchRestaurantsTenantRoute, (c) => {})
+  .openapi(getSearchAutocompleteTenantRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getSearchRestaurantsTenantRoute, (c) => {
+    throw new Error('Not implemented')
+  })

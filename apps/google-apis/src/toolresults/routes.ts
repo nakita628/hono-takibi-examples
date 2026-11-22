@@ -1,53 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const BasicPerfSampleSeriesSchema = z
-  .object({
-    perfMetricType: z
-      .enum(['perfMetricTypeUnspecified', 'memory', 'cpu', 'network', 'graphics'])
-      .exactOptional(),
-    perfUnit: z
-      .enum([
-        'perfUnitUnspecified',
-        'kibibyte',
-        'percent',
-        'bytesPerSecond',
-        'framesPerSecond',
-        'byte',
-      ])
-      .exactOptional(),
-    sampleSeriesLabel: z
-      .enum([
-        'sampleSeriesTypeUnspecified',
-        'memoryRssPrivate',
-        'memoryRssShared',
-        'memoryRssTotal',
-        'memoryTotal',
-        'cpuUser',
-        'cpuKernel',
-        'cpuTotal',
-        'ntBytesTransferred',
-        'ntBytesReceived',
-        'networkSent',
-        'networkReceived',
-        'graphicsFrameRate',
-      ])
-      .exactOptional(),
-  })
-  .openapi({
-    description: 'Encapsulates the metadata for basic sample series represented by a line chart',
-    required: [],
-  })
-  .openapi('BasicPerfSampleSeries')
-
-type PerfSampleSeriesType = {
-  basicPerfSampleSeries?: z.infer<typeof BasicPerfSampleSeriesSchema>
-  executionId?: string
-  historyId?: string
-  projectId?: string
-  sampleSeriesId?: string
-  stepId?: string
-}
-
 const TimestampSchema = z
   .object({
     nanos: z
@@ -72,109 +24,10 @@ const TimestampSchema = z
   })
   .openapi('Timestamp')
 
-const DurationSchema = z
-  .object({
-    nanos: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Signed fractions of a second at nanosecond resolution of the span of time. Durations less than one second are represented with a 0 `seconds` field and a positive or negative `nanos` field. For durations of one second or more, a non-zero value for the `nanos` field must be of the same sign as the `seconds` field. Must be from -999,999,999 to +999,999,999 inclusive.',
-      }),
-    seconds: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Signed seconds of the span of time. Must be from -315,576,000,000 to +315,576,000,000 inclusive. Note: these bounds are computed from: 60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year * 10000 years',
-      }),
-  })
-  .openapi({
-    description:
-      ' A Duration represents a signed, fixed-length span of time represented as a count of seconds and fractions of seconds at nanosecond resolution. It is independent of any calendar and concepts like "day" or "month". It is related to Timestamp in that the difference between two Timestamp values is a Duration and it can be added or subtracted from a Timestamp. Range is approximately +-10,000 years.',
-    required: [],
-  })
-  .openapi('Duration')
-
-const StepDimensionValueEntrySchema = z
+const EnvironmentDimensionValueEntrySchema = z
   .object({ key: z.string().exactOptional(), value: z.string().exactOptional() })
   .openapi({ required: [] })
-  .openapi('StepDimensionValueEntry')
-
-const StepLabelsEntrySchema = z
-  .object({ key: z.string().exactOptional(), value: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('StepLabelsEntry')
-
-const IndividualOutcomeSchema = z
-  .object({
-    multistepNumber: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unique int given to each step. Ranges from 0(inclusive) to total number of steps(exclusive). The primary step is 0.',
-      }),
-    outcomeSummary: z
-      .enum(['unset', 'success', 'failure', 'inconclusive', 'skipped', 'flaky'])
-      .exactOptional(),
-    runDuration: DurationSchema.exactOptional().openapi({
-      description: 'How long it took for this step to run.',
-    }),
-    stepId: z.string().exactOptional(),
-  })
-  .openapi({
-    description:
-      'Step Id and outcome of each individual step that was run as a group with other steps with the same configuration.',
-    required: [],
-  })
-  .openapi('IndividualOutcome')
-
-const PrimaryStepSchema = z
-  .object({
-    individualOutcome: z
-      .array(IndividualOutcomeSchema)
-      .exactOptional()
-      .openapi({ description: 'Step Id and outcome of each individual step.' }),
-    rollUp: z
-      .enum(['unset', 'success', 'failure', 'inconclusive', 'skipped', 'flaky'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Rollup test status of multiple steps that were run with the same configuration as a group.',
-      }),
-  })
-  .openapi({
-    description:
-      'Stores rollup test status of multiple steps that were run as a group and outcome of each individual step.',
-    required: [],
-  })
-  .openapi('PrimaryStep')
-
-const MultiStepSchema = z
-  .object({
-    multistepNumber: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unique int given to each step. Ranges from 0(inclusive) to total number of steps(exclusive). The primary step is 0.',
-      }),
-    primaryStep: PrimaryStepSchema.exactOptional().openapi({
-      description: 'Present if it is a primary (original) step.',
-    }),
-    primaryStepId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Step Id of the primary (original) step, which might be this step.',
-      }),
-  })
-  .openapi({
-    description: 'Details when multiple steps are run with the same configuration as a group.',
-    required: [],
-  })
-  .openapi('MultiStep')
+  .openapi('EnvironmentDimensionValueEntry')
 
 const FailureDetailSchema = z
   .object({
@@ -317,6 +170,299 @@ const OutcomeSchema = z
   })
   .openapi('Outcome')
 
+const DurationSchema = z
+  .object({
+    nanos: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Signed fractions of a second at nanosecond resolution of the span of time. Durations less than one second are represented with a 0 `seconds` field and a positive or negative `nanos` field. For durations of one second or more, a non-zero value for the `nanos` field must be of the same sign as the `seconds` field. Must be from -999,999,999 to +999,999,999 inclusive.',
+      }),
+    seconds: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Signed seconds of the span of time. Must be from -315,576,000,000 to +315,576,000,000 inclusive. Note: these bounds are computed from: 60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year * 10000 years',
+      }),
+  })
+  .openapi({
+    description:
+      ' A Duration represents a signed, fixed-length span of time represented as a count of seconds and fractions of seconds at nanosecond resolution. It is independent of any calendar and concepts like "day" or "month". It is related to Timestamp in that the difference between two Timestamp values is a Duration and it can be added or subtracted from a Timestamp. Range is approximately +-10,000 years.',
+    required: [],
+  })
+  .openapi('Duration')
+
+const FileReferenceSchema = z
+  .object({
+    fileUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URI of a file stored in Google Cloud Storage. For example: http://storage.googleapis.com/mybucket/path/to/test.xml or in gsutil format: gs://mybucket/path/to/test.xml with version-specific info, gs://mybucket/path/to/test.xml#1360383693690000 An INVALID_ARGUMENT error will be returned if the URI format is not supported. - In response: always set - In create/update request: always set',
+      }),
+  })
+  .openapi({ description: 'A reference to a file.', required: [] })
+  .openapi('FileReference')
+
+const TestSuiteOverviewSchema = z
+  .object({
+    elapsedTime: DurationSchema.exactOptional().openapi({
+      description: 'Elapsed time of test suite.',
+    }),
+    errorCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of test cases in error, typically set by the service by parsing the xml_source. - In create/response: always set - In update request: never',
+      }),
+    failureCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of failed test cases, typically set by the service by parsing the xml_source. May also be set by the user. - In create/response: always set - In update request: never',
+      }),
+    flakyCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of flaky test cases, set by the service by rolling up flaky test attempts. Present only for rollup test suite overview at environment level. A step cannot have flaky test cases.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the test suite. - In create/response: always set - In update request: never',
+      }),
+    skippedCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of test cases not run, typically set by the service by parsing the xml_source. - In create/response: always set - In update request: never',
+      }),
+    totalCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of test cases, typically set by the service by parsing the xml_source. - In create/response: always set - In update request: never',
+      }),
+    xmlSource: FileReferenceSchema.exactOptional().openapi({
+      description:
+        'If this test suite was parsed from XML, this is the URI where the original XML file is stored. Note: Multiple test suites can share the same xml_source Returns INVALID_ARGUMENT if the uri format is not supported. - In create/response: optional - In update request: never',
+    }),
+  })
+  .openapi({
+    description:
+      'A summary of a test suite result either parsed from XML or uploaded directly by a user. Note: the API related comments are for StepService only. This message is also being used in ExecutionService in a read only mode for the corresponding step.',
+    required: [],
+  })
+  .openapi('TestSuiteOverview')
+
+const MergedResultSchema = z
+  .object({
+    outcome: OutcomeSchema.exactOptional().openapi({ description: 'Outcome of the resource' }),
+    state: z
+      .enum(['unknownState', 'pending', 'inProgress', 'complete'])
+      .exactOptional()
+      .openapi({ description: 'State of the resource' }),
+    testSuiteOverviews: z
+      .array(TestSuiteOverviewSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The combined and rolled-up result of each test suite that was run as part of this environment. Combining: When the test cases from a suite are run in different steps (sharding), the results are added back together in one overview. (e.g., if shard1 has 2 failures and shard2 has 1 failure than the overview failure_count = 3). Rollup: When test cases from the same suite are run multiple times (flaky), the results are combined (e.g., if testcase1.run1 fails, testcase1.run2 passes, and both testcase2.run1 and testcase2.run2 fail then the overview flaky_count = 1 and failure_count = 1).',
+      }),
+  })
+  .openapi({
+    description:
+      'Merged test result for environment. If the environment has only one step (no reruns or shards), then the merged result is the same as the step result. If the environment has multiple shards and/or reruns, then the results of shards and reruns that belong to the same environment are merged into one environment result.',
+    required: [],
+  })
+  .openapi('MergedResult')
+
+const ResultsStorageSchema = z
+  .object({
+    resultsStoragePath: FileReferenceSchema.exactOptional().openapi({
+      description: 'The root directory for test results.',
+    }),
+    xunitXmlFile: FileReferenceSchema.exactOptional().openapi({
+      description: 'The path to the Xunit XML file.',
+    }),
+  })
+  .openapi({ description: 'The storage for test results.', required: [] })
+  .openapi('ResultsStorage')
+
+const StepSummarySchema = z
+  .looseObject({})
+  .openapi({ description: 'Lightweight summary of a step within this execution.' })
+  .openapi('StepSummary')
+
+const ShardSummarySchema = z
+  .object({
+    runs: z
+      .array(StepSummarySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Summaries of the steps belonging to the shard. With flaky_test_attempts enabled from TestExecutionService, more than one run (Step) can present. And the runs will be sorted by multistep_number.',
+      }),
+    shardResult: MergedResultSchema.exactOptional().openapi({
+      description: 'Merged result of the shard.',
+    }),
+  })
+  .openapi({ description: 'Result summary for a shard in an environment.', required: [] })
+  .openapi('ShardSummary')
+
+const EnvironmentSchema = z
+  .object({
+    completionTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Output only. The time when the Environment status was set to complete. This value will be set automatically when state transitions to COMPLETE.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description: 'Output only. The time when the Environment was created.',
+    }),
+    dimensionValue: z
+      .array(EnvironmentDimensionValueEntrySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Dimension values describing the environment. Dimension values always consist of "Model", "Version", "Locale", and "Orientation". - In response: always set - In create request: always set - In update request: never set',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A short human-readable name to display in the UI. Maximum of 100 characters. For example: Nexus 5, API 27.',
+      }),
+    environmentId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. An Environment id.' }),
+    environmentResult: MergedResultSchema.exactOptional().openapi({
+      description: 'Merged result of the environment.',
+    }),
+    executionId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. An Execution id.' }),
+    historyId: z.string().exactOptional().openapi({ description: 'Output only. A History id.' }),
+    projectId: z.string().exactOptional().openapi({ description: 'Output only. A Project id.' }),
+    resultsStorage: ResultsStorageSchema.exactOptional().openapi({
+      description: 'The location where output files are stored in the user bucket.',
+    }),
+    shardSummaries: z
+      .array(ShardSummarySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Summaries of shards. Only one shard will present unless sharding feature is enabled in TestExecutionService.',
+      }),
+  })
+  .openapi({
+    description:
+      'An Environment represents the set of test runs (Steps) from the parent Execution that are configured with the same set of dimensions (Model, Version, Locale, and Orientation). Multiple such runs occur particularly because of features like sharding (splitting up a test suite to run in parallel across devices) and reruns (running a test multiple times to check for different outcomes).',
+    required: [],
+  })
+  .openapi('Environment')
+
+type ListEnvironmentsResponseType = {
+  environments?: z.infer<typeof EnvironmentSchema>[]
+  executionId?: string
+  historyId?: string
+  nextPageToken?: string
+  projectId?: string
+}
+
+const StepDimensionValueEntrySchema = z
+  .object({ key: z.string().exactOptional(), value: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('StepDimensionValueEntry')
+
+const StepLabelsEntrySchema = z
+  .object({ key: z.string().exactOptional(), value: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('StepLabelsEntry')
+
+const IndividualOutcomeSchema = z
+  .object({
+    multistepNumber: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique int given to each step. Ranges from 0(inclusive) to total number of steps(exclusive). The primary step is 0.',
+      }),
+    outcomeSummary: z
+      .enum(['unset', 'success', 'failure', 'inconclusive', 'skipped', 'flaky'])
+      .exactOptional(),
+    runDuration: DurationSchema.exactOptional().openapi({
+      description: 'How long it took for this step to run.',
+    }),
+    stepId: z.string().exactOptional(),
+  })
+  .openapi({
+    description:
+      'Step Id and outcome of each individual step that was run as a group with other steps with the same configuration.',
+    required: [],
+  })
+  .openapi('IndividualOutcome')
+
+const PrimaryStepSchema = z
+  .object({
+    individualOutcome: z
+      .array(IndividualOutcomeSchema)
+      .exactOptional()
+      .openapi({ description: 'Step Id and outcome of each individual step.' }),
+    rollUp: z
+      .enum(['unset', 'success', 'failure', 'inconclusive', 'skipped', 'flaky'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Rollup test status of multiple steps that were run with the same configuration as a group.',
+      }),
+  })
+  .openapi({
+    description:
+      'Stores rollup test status of multiple steps that were run as a group and outcome of each individual step.',
+    required: [],
+  })
+  .openapi('PrimaryStep')
+
+const MultiStepSchema = z
+  .object({
+    multistepNumber: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique int given to each step. Ranges from 0(inclusive) to total number of steps(exclusive). The primary step is 0.',
+      }),
+    primaryStep: PrimaryStepSchema.exactOptional().openapi({
+      description: 'Present if it is a primary (original) step.',
+    }),
+    primaryStepId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Step Id of the primary (original) step, which might be this step.',
+      }),
+  })
+  .openapi({
+    description: 'Details when multiple steps are run with the same configuration as a group.',
+    required: [],
+  })
+  .openapi('MultiStep')
+
 const StackTraceSchema = z
   .object({
     exception: z
@@ -411,78 +557,6 @@ const TestIssueSchema = z
   })
   .openapi({ description: 'An issue detected occurring during a test execution.', required: [] })
   .openapi('TestIssue')
-
-const FileReferenceSchema = z
-  .object({
-    fileUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URI of a file stored in Google Cloud Storage. For example: http://storage.googleapis.com/mybucket/path/to/test.xml or in gsutil format: gs://mybucket/path/to/test.xml with version-specific info, gs://mybucket/path/to/test.xml#1360383693690000 An INVALID_ARGUMENT error will be returned if the URI format is not supported. - In response: always set - In create/update request: always set',
-      }),
-  })
-  .openapi({ description: 'A reference to a file.', required: [] })
-  .openapi('FileReference')
-
-const TestSuiteOverviewSchema = z
-  .object({
-    elapsedTime: DurationSchema.exactOptional().openapi({
-      description: 'Elapsed time of test suite.',
-    }),
-    errorCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of test cases in error, typically set by the service by parsing the xml_source. - In create/response: always set - In update request: never',
-      }),
-    failureCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of failed test cases, typically set by the service by parsing the xml_source. May also be set by the user. - In create/response: always set - In update request: never',
-      }),
-    flakyCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of flaky test cases, set by the service by rolling up flaky test attempts. Present only for rollup test suite overview at environment level. A step cannot have flaky test cases.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the test suite. - In create/response: always set - In update request: never',
-      }),
-    skippedCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of test cases not run, typically set by the service by parsing the xml_source. - In create/response: always set - In update request: never',
-      }),
-    totalCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of test cases, typically set by the service by parsing the xml_source. - In create/response: always set - In update request: never',
-      }),
-    xmlSource: FileReferenceSchema.exactOptional().openapi({
-      description:
-        'If this test suite was parsed from XML, this is the URI where the original XML file is stored. Note: Multiple test suites can share the same xml_source Returns INVALID_ARGUMENT if the uri format is not supported. - In create/response: optional - In update request: never',
-    }),
-  })
-  .openapi({
-    description:
-      'A summary of a test suite result either parsed from XML or uploaded directly by a user. Note: the API related comments are for StepService only. This message is also being used in ExecutionService in a read only mode for the corresponding step.',
-    required: [],
-  })
-  .openapi('TestSuiteOverview')
 
 const TestTimingSchema = z
   .object({
@@ -625,23 +699,96 @@ const ToolExecutionStepSchema = z
   })
   .openapi('ToolExecutionStep')
 
-type StepType = {
-  completionTime?: z.infer<typeof TimestampSchema>
-  creationTime?: z.infer<typeof TimestampSchema>
-  description?: string
-  deviceUsageDuration?: z.infer<typeof DurationSchema>
-  dimensionValue?: z.infer<typeof StepDimensionValueEntrySchema>[]
-  hasImages?: boolean
-  labels?: z.infer<typeof StepLabelsEntrySchema>[]
-  multiStep?: z.infer<typeof MultiStepSchema>
-  name?: string
-  outcome?: z.infer<typeof OutcomeSchema>
-  runDuration?: z.infer<typeof DurationSchema>
-  state?: 'unknownState' | 'pending' | 'inProgress' | 'complete'
-  stepId?: string
-  testExecutionStep?: z.infer<typeof TestExecutionStepSchema>
-  toolExecutionStep?: z.infer<typeof ToolExecutionStepSchema>
-}
+const StepSchema = z
+  .object({
+    completionTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time when the step status was set to complete. This value will be set automatically when state transitions to COMPLETE. - In response: set if the execution state is COMPLETE. - In create/update request: never set',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time when the step was created. - In response: always set - In create/update request: never set',
+    }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A description of this tool For example: mvn clean package -D skipTests=true - In response: present if set by create/update request - In create/update request: optional',
+      }),
+    deviceUsageDuration: DurationSchema.exactOptional().openapi({
+      description:
+        "How much the device resource is used to perform the test. This is the device usage used for billing purpose, which is different from the run_duration, for example, infrastructure failure won't be charged for device usage. PRECONDITION_FAILED will be returned if one attempts to set a device_usage on a step which already has this field set. - In response: present if previously set. - In create request: optional - In update request: optional",
+    }),
+    dimensionValue: z
+      .array(StepDimensionValueEntrySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "If the execution containing this step has any dimension_definition set, then this field allows the child to specify the values of the dimensions. The keys must exactly match the dimension_definition of the execution. For example, if the execution has `dimension_definition = ['attempt', 'device']` then a step must define values for those dimensions, eg. `dimension_value = ['attempt': '1', 'device': 'Nexus 6']` If a step does not participate in one dimension of the matrix, the value for that dimension should be empty string. For example, if one of the tests is executed by a runner which does not support retries, the step could have `dimension_value = ['attempt': '', 'device': 'Nexus 6']` If the step does not participate in any dimensions of the matrix, it may leave dimension_value unset. A PRECONDITION_FAILED will be returned if any of the keys do not exist in the dimension_definition of the execution. A PRECONDITION_FAILED will be returned if another step in this execution already has the same name and dimension_value, but differs on other data fields, for example, step field is different. A PRECONDITION_FAILED will be returned if dimension_value is set, and there is a dimension_definition in the execution which is not specified as one of the keys. - In response: present if set by create - In create request: optional - In update request: never set",
+      }),
+    hasImages: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether any of the outputs of this step are images whose thumbnails can be fetched with ListThumbnails. - In response: always set - In create/update request: never set',
+      }),
+    labels: z
+      .array(StepLabelsEntrySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Arbitrary user-supplied key/value pairs that are associated with the step. Users are responsible for managing the key namespace such that keys don't accidentally collide. An INVALID_ARGUMENT will be returned if the number of labels exceeds 100 or if the length of any of the keys or values exceeds 100 characters. - In response: always set - In create request: optional - In update request: optional; any new key/value pair will be added to the map, and any new value for an existing key will update that key's value",
+      }),
+    multiStep: MultiStepSchema.exactOptional().openapi({
+      description:
+        "Details when multiple steps are run with the same configuration as a group. These details can be used identify which group this step is part of. It also identifies the groups 'primary step' which indexes all the group members. - In response: present if previously set. - In create request: optional, set iff this step was performed more than once. - In update request: optional",
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A short human-readable name to display in the UI. Maximum of 100 characters. For example: Clean build A PRECONDITION_FAILED will be returned upon creating a new step if it shares its name and dimension_value with an existing step. If two steps represent a similar action, but have different dimension values, they should share the same name. For instance, if the same set of tests is run on two different platforms, the two steps should have the same name. - In response: always set - In create request: always set - In update request: never set',
+      }),
+    outcome: OutcomeSchema.exactOptional().openapi({
+      description:
+        'Classification of the result, for example into SUCCESS or FAILURE - In response: present if set by create/update request - In create/update request: optional',
+    }),
+    runDuration: DurationSchema.exactOptional().openapi({
+      description:
+        'How long it took for this step to run. If unset, this is set to the difference between creation_time and completion_time when the step is set to the COMPLETE state. In some cases, it is appropriate to set this value separately: For instance, if a step is created, but the operation it represents is queued for a few minutes before it executes, it would be appropriate not to include the time spent queued in its run_duration. PRECONDITION_FAILED will be returned if one attempts to set a run_duration on a step which already has this field set. - In response: present if previously set; always present on COMPLETE step - In create request: optional - In update request: optional',
+    }),
+    state: z
+      .enum(['unknownState', 'pending', 'inProgress', 'complete'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The initial state is IN_PROGRESS. The only legal state transitions are * IN_PROGRESS -> COMPLETE A PRECONDITION_FAILED will be returned if an invalid transition is requested. It is valid to create Step with a state set to COMPLETE. The state can only be set to COMPLETE once. A PRECONDITION_FAILED will be returned if the state is set to COMPLETE multiple times. - In response: always set - In create/update request: optional',
+      }),
+    stepId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique identifier within a Execution for this Step. Returns INVALID_ARGUMENT if this field is set or overwritten by the caller. - In response: always set - In create/update request: never set',
+      }),
+    testExecutionStep: TestExecutionStepSchema.exactOptional().openapi({
+      description: 'An execution of a test runner.',
+    }),
+    toolExecutionStep: ToolExecutionStepSchema.exactOptional().openapi({
+      description: "An execution of a tool (used for steps we don't explicitly support).",
+    }),
+  })
+  .openapi({
+    description:
+      "A Step represents a single operation performed as part of Execution. A step can be used to represent the execution of a tool ( for example a test runner execution or an execution of a compiler). Steps can overlap (for instance two steps might have the same start time if some operations are done in parallel). Here is an example, let's consider that we have a continuous build is executing a test runner for each iteration. The workflow would look like: - user creates a Execution with id 1 - user creates a TestExecutionStep with id 100 for Execution 1 - user update TestExecutionStep with id 100 to add a raw xml log + the service parses the xml logs and returns a TestExecutionStep with updated TestResult(s). - user update the status of TestExecutionStep with id 100 to COMPLETE A Step can be updated until its state is set to COMPLETE at which points it becomes immutable. Next tag: 27",
+    required: [],
+  })
+  .openapi('Step')
+
+type ListStepsResponseType = { nextPageToken?: string; steps?: z.infer<typeof StepSchema>[] }
 
 const ANRSchema = z
   .object({
@@ -739,7 +886,7 @@ const AndroidRoboTestSchema = z
   .openapi('AndroidRoboTest')
 
 const AndroidTestLoopSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Test Loops are tests that can be launched by the app itself, determining when to run by listening for an intent.',
@@ -782,9 +929,48 @@ const AppStartTimeSchema = z
   .openapi('AppStartTime')
 
 const AvailableDeepLinksSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A suggestion to use deep links for a Robo run.' })
   .openapi('AvailableDeepLinks')
+
+const BasicPerfSampleSeriesSchema = z
+  .object({
+    perfMetricType: z
+      .enum(['perfMetricTypeUnspecified', 'memory', 'cpu', 'network', 'graphics'])
+      .exactOptional(),
+    perfUnit: z
+      .enum([
+        'perfUnitUnspecified',
+        'kibibyte',
+        'percent',
+        'bytesPerSecond',
+        'framesPerSecond',
+        'byte',
+      ])
+      .exactOptional(),
+    sampleSeriesLabel: z
+      .enum([
+        'sampleSeriesTypeUnspecified',
+        'memoryRssPrivate',
+        'memoryRssShared',
+        'memoryRssTotal',
+        'memoryTotal',
+        'cpuUser',
+        'cpuKernel',
+        'cpuTotal',
+        'ntBytesTransferred',
+        'ntBytesReceived',
+        'networkSent',
+        'networkReceived',
+        'graphicsFrameRate',
+      ])
+      .exactOptional(),
+  })
+  .openapi({
+    description: 'Encapsulates the metadata for basic sample series represented by a line chart',
+    required: [],
+  })
+  .openapi('BasicPerfSampleSeries')
 
 const PerfSampleSchema = z
   .object({
@@ -859,7 +1045,7 @@ const CrashDialogErrorSchema = z
   .openapi('CrashDialogError')
 
 const DetectedAppSplashScreenSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A notification that Robo detected a splash screen provided by app (vs. Android OS splash screen).',
@@ -867,7 +1053,7 @@ const DetectedAppSplashScreenSchema = z
   .openapi('DetectedAppSplashScreen')
 
 const DeviceOutOfMemorySchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A warning that device ran out of memory' })
   .openapi('DeviceOutOfMemory')
 
@@ -905,122 +1091,8 @@ const EncounteredNonAndroidUiWidgetScreenSchema = z
   })
   .openapi('EncounteredNonAndroidUiWidgetScreen')
 
-const EnvironmentDimensionValueEntrySchema = z
-  .object({ key: z.string().exactOptional(), value: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('EnvironmentDimensionValueEntry')
-
-const MergedResultSchema = z
-  .object({
-    outcome: OutcomeSchema.exactOptional().openapi({ description: 'Outcome of the resource' }),
-    state: z
-      .enum(['unknownState', 'pending', 'inProgress', 'complete'])
-      .exactOptional()
-      .openapi({ description: 'State of the resource' }),
-    testSuiteOverviews: z
-      .array(TestSuiteOverviewSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The combined and rolled-up result of each test suite that was run as part of this environment. Combining: When the test cases from a suite are run in different steps (sharding), the results are added back together in one overview. (e.g., if shard1 has 2 failures and shard2 has 1 failure than the overview failure_count = 3). Rollup: When test cases from the same suite are run multiple times (flaky), the results are combined (e.g., if testcase1.run1 fails, testcase1.run2 passes, and both testcase2.run1 and testcase2.run2 fail then the overview flaky_count = 1 and failure_count = 1).',
-      }),
-  })
-  .openapi({
-    description:
-      'Merged test result for environment. If the environment has only one step (no reruns or shards), then the merged result is the same as the step result. If the environment has multiple shards and/or reruns, then the results of shards and reruns that belong to the same environment are merged into one environment result.',
-    required: [],
-  })
-  .openapi('MergedResult')
-
-const ResultsStorageSchema = z
-  .object({
-    resultsStoragePath: FileReferenceSchema.exactOptional().openapi({
-      description: 'The root directory for test results.',
-    }),
-    xunitXmlFile: FileReferenceSchema.exactOptional().openapi({
-      description: 'The path to the Xunit XML file.',
-    }),
-  })
-  .openapi({ description: 'The storage for test results.', required: [] })
-  .openapi('ResultsStorage')
-
-const StepSummarySchema = z
-  .object({})
-  .openapi({ description: 'Lightweight summary of a step within this execution.' })
-  .openapi('StepSummary')
-
-const ShardSummarySchema = z
-  .object({
-    runs: z
-      .array(StepSummarySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Summaries of the steps belonging to the shard. With flaky_test_attempts enabled from TestExecutionService, more than one run (Step) can present. And the runs will be sorted by multistep_number.',
-      }),
-    shardResult: MergedResultSchema.exactOptional().openapi({
-      description: 'Merged result of the shard.',
-    }),
-  })
-  .openapi({ description: 'Result summary for a shard in an environment.', required: [] })
-  .openapi('ShardSummary')
-
-const EnvironmentSchema = z
-  .object({
-    completionTime: TimestampSchema.exactOptional().openapi({
-      description:
-        'Output only. The time when the Environment status was set to complete. This value will be set automatically when state transitions to COMPLETE.',
-    }),
-    creationTime: TimestampSchema.exactOptional().openapi({
-      description: 'Output only. The time when the Environment was created.',
-    }),
-    dimensionValue: z
-      .array(EnvironmentDimensionValueEntrySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Dimension values describing the environment. Dimension values always consist of "Model", "Version", "Locale", and "Orientation". - In response: always set - In create request: always set - In update request: never set',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A short human-readable name to display in the UI. Maximum of 100 characters. For example: Nexus 5, API 27.',
-      }),
-    environmentId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. An Environment id.' }),
-    environmentResult: MergedResultSchema.exactOptional().openapi({
-      description: 'Merged result of the environment.',
-    }),
-    executionId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. An Execution id.' }),
-    historyId: z.string().exactOptional().openapi({ description: 'Output only. A History id.' }),
-    projectId: z.string().exactOptional().openapi({ description: 'Output only. A Project id.' }),
-    resultsStorage: ResultsStorageSchema.exactOptional().openapi({
-      description: 'The location where output files are stored in the user bucket.',
-    }),
-    shardSummaries: z
-      .array(ShardSummarySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Summaries of shards. Only one shard will present unless sharding feature is enabled in TestExecutionService.',
-      }),
-  })
-  .openapi({
-    description:
-      'An Environment represents the set of test runs (Steps) from the parent Execution that are configured with the same set of dimensions (Model, Version, Locale, and Orientation). Multiple such runs occur particularly because of features like sharding (splitting up a test suite to run in parallel across devices) and reruns (running a test multiple times to check for different outcomes).',
-    required: [],
-  })
-  .openapi('Environment')
-
 const MatrixDimensionDefinitionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'One dimension of the matrix of different runs of a step.' })
   .openapi('MatrixDimensionDefinition')
 
@@ -1032,7 +1104,7 @@ const IosAppInfoSchema = z
   .openapi('IosAppInfo')
 
 const IosRoboTestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A Robo test for an iOS application.' })
   .openapi('IosRoboTest')
 
@@ -1139,7 +1211,7 @@ const ExecutionSchema = z
   .openapi('Execution')
 
 const FailedToInstallSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Failed to install the APK.' })
   .openapi('FailedToInstall')
 
@@ -1368,7 +1440,7 @@ const InAppPurchasesFoundSchema = z
   .openapi('InAppPurchasesFound')
 
 const InsufficientCoverageSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'A warning that Robo did not crawl potentially important parts of the app.',
   })
@@ -1384,11 +1456,11 @@ const IosAppCrashedSchema = z
   .openapi('IosAppCrashed')
 
 const LauncherActivityNotFoundSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Failed to find the launcher activity of an app.' })
   .openapi('LauncherActivityNotFound')
 
-const ListEnvironmentsResponseSchema = z
+const ListEnvironmentsResponseSchema: z.ZodType<ListEnvironmentsResponseType> = z
   .object({
     environments: z
       .array(EnvironmentSchema)
@@ -1442,39 +1514,33 @@ const ListHistoriesResponseSchema = z
   .openapi({ description: 'Response message for HistoryService.List', required: [] })
   .openapi('ListHistoriesResponse')
 
-const PerfSampleSeriesSchema: z.ZodType<PerfSampleSeriesType> = z
-  .lazy(() =>
-    z
-      .object({
-        basicPerfSampleSeries: BasicPerfSampleSeriesSchema.exactOptional().openapi({
-          description: 'Basic series represented by a line chart',
-        }),
-        executionId: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A tool results execution ID. @OutputOnly' }),
-        historyId: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A tool results history ID. @OutputOnly' }),
-        projectId: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The cloud project @OutputOnly' }),
-        sampleSeriesId: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A sample series id @OutputOnly' }),
-        stepId: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A tool results step ID. @OutputOnly' }),
-      })
-      .openapi({
-        description: 'Resource representing a collection of performance samples (or data points)',
-        required: [],
-      }),
-  )
+const PerfSampleSeriesSchema = z
+  .object({
+    basicPerfSampleSeries: BasicPerfSampleSeriesSchema.exactOptional().openapi({
+      description: 'Basic series represented by a line chart',
+    }),
+    executionId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A tool results execution ID. @OutputOnly' }),
+    historyId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A tool results history ID. @OutputOnly' }),
+    projectId: z.string().exactOptional().openapi({ description: 'The cloud project @OutputOnly' }),
+    sampleSeriesId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A sample series id @OutputOnly' }),
+    stepId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A tool results step ID. @OutputOnly' }),
+  })
+  .openapi({
+    description: 'Resource representing a collection of performance samples (or data points)',
+    required: [],
+  })
   .openapi('PerfSampleSeries')
 
 const ListPerfSampleSeriesResponseSchema = z
@@ -1732,99 +1798,7 @@ const ListStepThumbnailsResponseSchema = z
   .openapi({ description: 'A response containing the thumbnails in a step.', required: [] })
   .openapi('ListStepThumbnailsResponse')
 
-const StepSchema: z.ZodType<StepType> = z
-  .lazy(() =>
-    z
-      .object({
-        completionTime: TimestampSchema.exactOptional().openapi({
-          description:
-            'The time when the step status was set to complete. This value will be set automatically when state transitions to COMPLETE. - In response: set if the execution state is COMPLETE. - In create/update request: never set',
-        }),
-        creationTime: TimestampSchema.exactOptional().openapi({
-          description:
-            'The time when the step was created. - In response: always set - In create/update request: never set',
-        }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'A description of this tool For example: mvn clean package -D skipTests=true - In response: present if set by create/update request - In create/update request: optional',
-          }),
-        deviceUsageDuration: DurationSchema.exactOptional().openapi({
-          description:
-            "How much the device resource is used to perform the test. This is the device usage used for billing purpose, which is different from the run_duration, for example, infrastructure failure won't be charged for device usage. PRECONDITION_FAILED will be returned if one attempts to set a device_usage on a step which already has this field set. - In response: present if previously set. - In create request: optional - In update request: optional",
-        }),
-        dimensionValue: z
-          .array(StepDimensionValueEntrySchema)
-          .exactOptional()
-          .openapi({
-            description:
-              "If the execution containing this step has any dimension_definition set, then this field allows the child to specify the values of the dimensions. The keys must exactly match the dimension_definition of the execution. For example, if the execution has `dimension_definition = ['attempt', 'device']` then a step must define values for those dimensions, eg. `dimension_value = ['attempt': '1', 'device': 'Nexus 6']` If a step does not participate in one dimension of the matrix, the value for that dimension should be empty string. For example, if one of the tests is executed by a runner which does not support retries, the step could have `dimension_value = ['attempt': '', 'device': 'Nexus 6']` If the step does not participate in any dimensions of the matrix, it may leave dimension_value unset. A PRECONDITION_FAILED will be returned if any of the keys do not exist in the dimension_definition of the execution. A PRECONDITION_FAILED will be returned if another step in this execution already has the same name and dimension_value, but differs on other data fields, for example, step field is different. A PRECONDITION_FAILED will be returned if dimension_value is set, and there is a dimension_definition in the execution which is not specified as one of the keys. - In response: present if set by create - In create request: optional - In update request: never set",
-          }),
-        hasImages: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether any of the outputs of this step are images whose thumbnails can be fetched with ListThumbnails. - In response: always set - In create/update request: never set',
-          }),
-        labels: z
-          .array(StepLabelsEntrySchema)
-          .exactOptional()
-          .openapi({
-            description:
-              "Arbitrary user-supplied key/value pairs that are associated with the step. Users are responsible for managing the key namespace such that keys don't accidentally collide. An INVALID_ARGUMENT will be returned if the number of labels exceeds 100 or if the length of any of the keys or values exceeds 100 characters. - In response: always set - In create request: optional - In update request: optional; any new key/value pair will be added to the map, and any new value for an existing key will update that key's value",
-          }),
-        multiStep: MultiStepSchema.exactOptional().openapi({
-          description:
-            "Details when multiple steps are run with the same configuration as a group. These details can be used identify which group this step is part of. It also identifies the groups 'primary step' which indexes all the group members. - In response: present if previously set. - In create request: optional, set iff this step was performed more than once. - In update request: optional",
-        }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'A short human-readable name to display in the UI. Maximum of 100 characters. For example: Clean build A PRECONDITION_FAILED will be returned upon creating a new step if it shares its name and dimension_value with an existing step. If two steps represent a similar action, but have different dimension values, they should share the same name. For instance, if the same set of tests is run on two different platforms, the two steps should have the same name. - In response: always set - In create request: always set - In update request: never set',
-          }),
-        outcome: OutcomeSchema.exactOptional().openapi({
-          description:
-            'Classification of the result, for example into SUCCESS or FAILURE - In response: present if set by create/update request - In create/update request: optional',
-        }),
-        runDuration: DurationSchema.exactOptional().openapi({
-          description:
-            'How long it took for this step to run. If unset, this is set to the difference between creation_time and completion_time when the step is set to the COMPLETE state. In some cases, it is appropriate to set this value separately: For instance, if a step is created, but the operation it represents is queued for a few minutes before it executes, it would be appropriate not to include the time spent queued in its run_duration. PRECONDITION_FAILED will be returned if one attempts to set a run_duration on a step which already has this field set. - In response: present if previously set; always present on COMPLETE step - In create request: optional - In update request: optional',
-        }),
-        state: z
-          .enum(['unknownState', 'pending', 'inProgress', 'complete'])
-          .exactOptional()
-          .openapi({
-            description:
-              'The initial state is IN_PROGRESS. The only legal state transitions are * IN_PROGRESS -> COMPLETE A PRECONDITION_FAILED will be returned if an invalid transition is requested. It is valid to create Step with a state set to COMPLETE. The state can only be set to COMPLETE once. A PRECONDITION_FAILED will be returned if the state is set to COMPLETE multiple times. - In response: always set - In create/update request: optional',
-          }),
-        stepId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'A unique identifier within a Execution for this Step. Returns INVALID_ARGUMENT if this field is set or overwritten by the caller. - In response: always set - In create/update request: never set',
-          }),
-        testExecutionStep: TestExecutionStepSchema.exactOptional().openapi({
-          description: 'An execution of a test runner.',
-        }),
-        toolExecutionStep: ToolExecutionStepSchema.exactOptional().openapi({
-          description: "An execution of a tool (used for steps we don't explicitly support).",
-        }),
-      })
-      .openapi({
-        description:
-          "A Step represents a single operation performed as part of Execution. A step can be used to represent the execution of a tool ( for example a test runner execution or an execution of a compiler). Steps can overlap (for instance two steps might have the same start time if some operations are done in parallel). Here is an example, let's consider that we have a continuous build is executing a test runner for each iteration. The workflow would look like: - user creates a Execution with id 1 - user creates a TestExecutionStep with id 100 for Execution 1 - user update TestExecutionStep with id 100 to add a raw xml log + the service parses the xml logs and returns a TestExecutionStep with updated TestResult(s). - user update the status of TestExecutionStep with id 100 to COMPLETE A Step can be updated until its state is set to COMPLETE at which points it becomes immutable. Next tag: 27",
-        required: [],
-      }),
-  )
-  .openapi('Step')
-
-const ListStepsResponseSchema = z
+const ListStepsResponseSchema: z.ZodType<ListStepsResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -1896,7 +1870,7 @@ const ListTestCasesResponseSchema = z
   .openapi('ListTestCasesResponse')
 
 const LogcatCollectionErrorSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A warning that there were issues in logcat collection.' })
   .openapi('LogcatCollectionError')
 
@@ -2130,7 +2104,7 @@ const PerfMetricsSummarySchema = z
   .openapi('PerfMetricsSummary')
 
 const PerformedGoogleLoginSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A notification that Robo signed in with Google.' })
   .openapi('PerformedGoogleLogin')
 
@@ -2212,7 +2186,7 @@ const UIElementTooDeepSchema = z
   .openapi('UIElementTooDeep')
 
 const UnspecifiedWarningSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Default unspecified warning.' })
   .openapi('UnspecifiedWarning')
 

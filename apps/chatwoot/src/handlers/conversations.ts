@@ -56,8 +56,8 @@ export const conversationsHandler = app
   .openapi(
     postApiV1AccountsAccountIdConversationsConversationIdDestroyCustomAttributesRoute,
     (c) => {
-  throw new Error('Not implemented')
-},
+      throw new Error('Not implemented')
+    },
   )
   .openapi(getApiV1AccountsAccountIdConversationsConversationIdLabelsRoute, (c) => {
     throw new Error('Not implemented')

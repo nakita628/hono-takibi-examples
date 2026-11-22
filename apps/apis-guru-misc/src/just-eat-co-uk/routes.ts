@@ -3457,21 +3457,47 @@ const ActiveConsumerOfferSchema = z
   .openapi({ required: ['Type', 'offerId'] })
   .openapi('ActiveConsumerOffer')
 
-const PercentSchema = ActiveConsumerOfferSchema.and(
-  z
-    .strictObject({
-      amount: z.number().exactOptional().openapi({ description: 'The percentage value discount' }),
-      maxQualifyingValue: z
-        .number()
-        .exactOptional()
-        .openapi({ description: 'The maximum order value required to be eligible for the offer' }),
-      qualifyingValue: z
-        .number()
-        .exactOptional()
-        .openapi({ description: 'The minimum order value required to be eligible for the Offer' }),
-    })
-    .openapi({ required: [] }),
-).openapi('Percent')
+const PercentSchema = (() => {
+  const Schema = ActiveConsumerOfferSchema.and(
+    z
+      .strictObject({
+        amount: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'The percentage value discount' }),
+        maxQualifyingValue: z
+          .number()
+          .exactOptional()
+          .openapi({
+            description: 'The maximum order value required to be eligible for the offer',
+          }),
+        qualifyingValue: z
+          .number()
+          .exactOptional()
+          .openapi({
+            description: 'The minimum order value required to be eligible for the Offer',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['Type', 'offerId'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['amount', 'maxQualifyingValue', 'qualifyingValue'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('Percent')
 
 const ActiveConsumerOffersByRestaurantSchema = z
   .strictObject({
@@ -5649,8 +5675,8 @@ const CheckoutGetResponseSchema = z
   })
   .openapi('CheckoutGetResponse')
 
-const CheckoutIssueAdditionalItemsRequiredSchema = CheckoutIssueSchema.and(z.strictObject({}))
-  .and(
+const CheckoutIssueAdditionalItemsRequiredSchema = (() => {
+  const Schema = CheckoutIssueSchema.and(z.strictObject({})).and(
     z
       .object({
         code: z
@@ -5663,10 +5689,20 @@ const CheckoutIssueAdditionalItemsRequiredSchema = CheckoutIssueSchema.and(z.str
       })
       .openapi({ required: [] }),
   )
-  .openapi('CheckoutIssueAdditionalItemsRequired')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CheckoutIssueAdditionalItemsRequired')
 
-const CheckoutIssueAddressLinesRequiredSchema = CheckoutIssueSchema.and(z.strictObject({}))
-  .and(
+const CheckoutIssueAddressLinesRequiredSchema = (() => {
+  const Schema = CheckoutIssueSchema.and(z.strictObject({})).and(
     z
       .object({
         code: z
@@ -5679,10 +5715,20 @@ const CheckoutIssueAddressLinesRequiredSchema = CheckoutIssueSchema.and(z.strict
       })
       .openapi({ required: [] }),
   )
-  .openapi('CheckoutIssueAddressLinesRequired')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CheckoutIssueAddressLinesRequired')
 
-const CheckoutIssueAdministrativeAreaRequiredSchema = CheckoutIssueSchema.and(z.strictObject({}))
-  .and(
+const CheckoutIssueAdministrativeAreaRequiredSchema = (() => {
+  const Schema = CheckoutIssueSchema.and(z.strictObject({})).and(
     z
       .object({
         code: z
@@ -5695,10 +5741,20 @@ const CheckoutIssueAdministrativeAreaRequiredSchema = CheckoutIssueSchema.and(z.
       })
       .openapi({ required: [] }),
   )
-  .openapi('CheckoutIssueAdministrativeAreaRequired')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CheckoutIssueAdministrativeAreaRequired')
 
-const CheckoutIssueAgeVerificationFailedSchema = CheckoutIssueSchema.and(z.strictObject({}))
-  .and(
+const CheckoutIssueAgeVerificationFailedSchema = (() => {
+  const Schema = CheckoutIssueSchema.and(z.strictObject({})).and(
     z
       .object({
         code: z
@@ -5711,10 +5767,20 @@ const CheckoutIssueAgeVerificationFailedSchema = CheckoutIssueSchema.and(z.stric
       })
       .openapi({ required: [] }),
   )
-  .openapi('CheckoutIssueAgeVerificationFailed')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CheckoutIssueAgeVerificationFailed')
 
-const CheckoutIssueDateOfBirthRequiredSchema = CheckoutIssueSchema.and(z.strictObject({}))
-  .and(
+const CheckoutIssueDateOfBirthRequiredSchema = (() => {
+  const Schema = CheckoutIssueSchema.and(z.strictObject({})).and(
     z
       .object({
         code: z
@@ -5727,10 +5793,20 @@ const CheckoutIssueDateOfBirthRequiredSchema = CheckoutIssueSchema.and(z.strictO
       })
       .openapi({ required: [] }),
   )
-  .openapi('CheckoutIssueDateOfBirthRequired')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CheckoutIssueDateOfBirthRequired')
 
-const CheckoutIssueFirstNameRequiredSchema = CheckoutIssueSchema.and(z.strictObject({}))
-  .and(
+const CheckoutIssueFirstNameRequiredSchema = (() => {
+  const Schema = CheckoutIssueSchema.and(z.strictObject({})).and(
     z
       .object({
         code: z
@@ -5742,10 +5818,20 @@ const CheckoutIssueFirstNameRequiredSchema = CheckoutIssueSchema.and(z.strictObj
       })
       .openapi({ required: [] }),
   )
-  .openapi('CheckoutIssueFirstNameRequired')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CheckoutIssueFirstNameRequired')
 
-const CheckoutIssueFulfilmentTimeRequiredSchema = CheckoutIssueSchema.and(z.strictObject({}))
-  .and(
+const CheckoutIssueFulfilmentTimeRequiredSchema = (() => {
+  const Schema = CheckoutIssueSchema.and(z.strictObject({})).and(
     z
       .object({
         code: z
@@ -5757,10 +5843,20 @@ const CheckoutIssueFulfilmentTimeRequiredSchema = CheckoutIssueSchema.and(z.stri
       })
       .openapi({ required: [] }),
   )
-  .openapi('CheckoutIssueFulfilmentTimeRequired')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CheckoutIssueFulfilmentTimeRequired')
 
-const CheckoutIssueFulfilmentTimeUnavailableSchema = CheckoutIssueSchema.and(z.strictObject({}))
-  .and(
+const CheckoutIssueFulfilmentTimeUnavailableSchema = (() => {
+  const Schema = CheckoutIssueSchema.and(z.strictObject({})).and(
     z
       .object({
         code: z
@@ -5773,10 +5869,20 @@ const CheckoutIssueFulfilmentTimeUnavailableSchema = CheckoutIssueSchema.and(z.s
       })
       .openapi({ required: [] }),
   )
-  .openapi('CheckoutIssueFulfilmentTimeUnavailable')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CheckoutIssueFulfilmentTimeUnavailable')
 
-const CheckoutIssueGeolocationRequiredSchema = CheckoutIssueSchema.and(z.strictObject({}))
-  .and(
+const CheckoutIssueGeolocationRequiredSchema = (() => {
+  const Schema = CheckoutIssueSchema.and(z.strictObject({})).and(
     z
       .object({
         code: z
@@ -5789,10 +5895,20 @@ const CheckoutIssueGeolocationRequiredSchema = CheckoutIssueSchema.and(z.strictO
       })
       .openapi({ required: [] }),
   )
-  .openapi('CheckoutIssueGeolocationRequired')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CheckoutIssueGeolocationRequired')
 
-const CheckoutIssueItemsUnorderableSchema = CheckoutIssueSchema.and(z.strictObject({}))
-  .and(
+const CheckoutIssueItemsUnorderableSchema = (() => {
+  const Schema = CheckoutIssueSchema.and(z.strictObject({})).and(
     z
       .object({
         code: z
@@ -5802,10 +5918,20 @@ const CheckoutIssueItemsUnorderableSchema = CheckoutIssueSchema.and(z.strictObje
       })
       .openapi({ required: [] }),
   )
-  .openapi('CheckoutIssueItemsUnorderable')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CheckoutIssueItemsUnorderable')
 
-const CheckoutIssueLocalityRequiredSchema = CheckoutIssueSchema.and(z.strictObject({}))
-  .and(
+const CheckoutIssueLocalityRequiredSchema = (() => {
+  const Schema = CheckoutIssueSchema.and(z.strictObject({})).and(
     z
       .object({
         code: z
@@ -5818,10 +5944,20 @@ const CheckoutIssueLocalityRequiredSchema = CheckoutIssueSchema.and(z.strictObje
       })
       .openapi({ required: [] }),
   )
-  .openapi('CheckoutIssueLocalityRequired')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CheckoutIssueLocalityRequired')
 
-const CheckoutIssueLocationUndeliverableSchema = CheckoutIssueSchema.and(z.strictObject({}))
-  .and(
+const CheckoutIssueLocationUndeliverableSchema = (() => {
+  const Schema = CheckoutIssueSchema.and(z.strictObject({})).and(
     z
       .object({
         code: z
@@ -5831,33 +5967,43 @@ const CheckoutIssueLocationUndeliverableSchema = CheckoutIssueSchema.and(z.stric
       })
       .openapi({ required: [] }),
   )
-  .openapi('CheckoutIssueLocationUndeliverable')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CheckoutIssueLocationUndeliverable')
 
-const CheckoutIssueMinimumOrderValueNotMetSchema = CheckoutIssueSchema.and(
-  z
-    .strictObject({
-      additionalSpendRequired: z
-        .number()
-        .openapi({
-          description:
-            'The amount the customer needs to spend to meet minimum order value. This is in the smallest unit of local currency e.g. pence.',
-        }),
-      currency: z
-        .string()
-        .openapi({
-          description:
-            'The currency in which the value amounts are returned represented in ISO 4217 format.',
-        }),
-      minimumOrderValue: z
-        .number()
-        .openapi({
-          description:
-            'The minimum order value required to complete an order. This is in the smallest unit of local currency e.g. pence.',
-        }),
-    })
-    .openapi({ required: ['currency', 'minimumOrderValue', 'additionalSpendRequired'] }),
-)
-  .and(
+const CheckoutIssueMinimumOrderValueNotMetSchema = (() => {
+  const Schema = CheckoutIssueSchema.and(
+    z
+      .strictObject({
+        additionalSpendRequired: z
+          .number()
+          .openapi({
+            description:
+              'The amount the customer needs to spend to meet minimum order value. This is in the smallest unit of local currency e.g. pence.',
+          }),
+        currency: z
+          .string()
+          .openapi({
+            description:
+              'The currency in which the value amounts are returned represented in ISO 4217 format.',
+          }),
+        minimumOrderValue: z
+          .number()
+          .openapi({
+            description:
+              'The minimum order value required to complete an order. This is in the smallest unit of local currency e.g. pence.',
+          }),
+      })
+      .openapi({ required: ['currency', 'minimumOrderValue', 'additionalSpendRequired'] }),
+  ).and(
     z
       .object({
         code: z
@@ -5867,10 +6013,22 @@ const CheckoutIssueMinimumOrderValueNotMetSchema = CheckoutIssueSchema.and(
       })
       .openapi({ required: [] }),
   )
-  .openapi('CheckoutIssueMinimumOrderValueNotMet')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['additionalSpendRequired', 'currency', 'minimumOrderValue'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CheckoutIssueMinimumOrderValueNotMet')
 
-const CheckoutIssuePhoneNumberRequiredSchema = CheckoutIssueSchema.and(z.strictObject({}))
-  .and(
+const CheckoutIssuePhoneNumberRequiredSchema = (() => {
+  const Schema = CheckoutIssueSchema.and(z.strictObject({})).and(
     z
       .object({
         code: z
@@ -5883,10 +6041,20 @@ const CheckoutIssuePhoneNumberRequiredSchema = CheckoutIssueSchema.and(z.strictO
       })
       .openapi({ required: [] }),
   )
-  .openapi('CheckoutIssuePhoneNumberRequired')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CheckoutIssuePhoneNumberRequired')
 
-const CheckoutIssuePostalCodeRequiredSchema = CheckoutIssueSchema.and(z.strictObject({}))
-  .and(
+const CheckoutIssuePostalCodeRequiredSchema = (() => {
+  const Schema = CheckoutIssueSchema.and(z.strictObject({})).and(
     z
       .object({
         code: z
@@ -5899,10 +6067,20 @@ const CheckoutIssuePostalCodeRequiredSchema = CheckoutIssueSchema.and(z.strictOb
       })
       .openapi({ required: [] }),
   )
-  .openapi('CheckoutIssuePostalCodeRequired')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CheckoutIssuePostalCodeRequired')
 
-const CheckoutIssueRestaurantNotTakingOrdersSchema = CheckoutIssueSchema.and(z.strictObject({}))
-  .and(
+const CheckoutIssueRestaurantNotTakingOrdersSchema = (() => {
+  const Schema = CheckoutIssueSchema.and(z.strictObject({})).and(
     z
       .object({
         code: z
@@ -5915,10 +6093,20 @@ const CheckoutIssueRestaurantNotTakingOrdersSchema = CheckoutIssueSchema.and(z.s
       })
       .openapi({ required: [] }),
   )
-  .openapi('CheckoutIssueRestaurantNotTakingOrders')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CheckoutIssueRestaurantNotTakingOrders')
 
-const CheckoutIssueServiceTypeUnavailableSchema = CheckoutIssueSchema.and(z.strictObject({}))
-  .and(
+const CheckoutIssueServiceTypeUnavailableSchema = (() => {
+  const Schema = CheckoutIssueSchema.and(z.strictObject({})).and(
     z
       .object({
         code: z
@@ -5931,7 +6119,17 @@ const CheckoutIssueServiceTypeUnavailableSchema = CheckoutIssueSchema.and(z.stri
       })
       .openapi({ required: [] }),
   )
-  .openapi('CheckoutIssueServiceTypeUnavailable')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CheckoutIssueServiceTypeUnavailable')
 
 const CheckoutRequestSchema = z
   .object({
@@ -7303,29 +7501,60 @@ const ConsumerOfferStampCardDiscountSchema = z
   .openapi({ required: ['discountValue', 'discountCode'] })
   .openapi('ConsumerOfferStampCardDiscount')
 
-const ConsumerOfferBogofSchema = ConsumerOfferSchema.and(
-  z
-    .strictObject({
-      productCategories: z
-        .array(ConsumerOffersProductCategorySchema)
-        .min(1)
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'One of the products from category needed to be included in the basket to make offer applicable.\nThe second occurrence of such product gets 100% discount',
+const ConsumerOfferBogofSchema = (() => {
+  const Schema = ConsumerOfferSchema.and(
+    z
+      .strictObject({
+        productCategories: z
+          .array(ConsumerOffersProductCategorySchema)
+          .min(1)
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'One of the products from category needed to be included in the basket to make offer applicable.\nThe second occurrence of such product gets 100% discount',
+          }),
+        products: z
+          .array(ConsumerOffersProductSchema)
+          .min(1)
+          .openapi({
+            description:
+              'One of those products needed to be included in the basket to make offer applicable.\nThe second occurrence of such product gets 100% discount',
+          }),
+        prompt: ConsumerOfferPromptSchema.openapi({
+          description: 'A prompt displayed to consumer',
         }),
-      products: z
-        .array(ConsumerOffersProductSchema)
-        .min(1)
-        .openapi({
-          description:
-            'One of those products needed to be included in the basket to make offer applicable.\nThe second occurrence of such product gets 100% discount',
-        }),
-      prompt: ConsumerOfferPromptSchema.openapi({ description: 'A prompt displayed to consumer' }),
-    })
-    .openapi({ required: ['products', 'prompt'] }),
-)
+      })
+      .openapi({ required: ['products', 'prompt'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'campaignId',
+            'consumerSegment',
+            'offerId',
+            'offerType',
+            'priority',
+            'qualifyingConditions',
+            'restaurantId',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['productCategories', 'products', 'prompt'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     example: {
       campaignId: 'freeIceCream',
@@ -7342,36 +7571,75 @@ const ConsumerOfferBogofSchema = ConsumerOfferSchema.and(
   })
   .openapi('ConsumerOfferBogof')
 
-const ConsumerOfferFreeItemSchema = ConsumerOfferSchema.and(
-  z
-    .strictObject({
-      freeProduct: ConsumerOffersProductSchema.openapi({
-        deprecated: true,
-        description:
-          'The product that gets 100% discount applied [Deprecated - use freeProducts instead]',
-      }),
-      freeProducts: z
-        .array(ConsumerOffersProductSchema)
-        .min(1)
-        .exactOptional()
-        .openapi({ description: 'One or more of those products gets 100% discount applied' }),
-      maximumRedemptions: z
-        .number()
-        .min(1)
-        .exactOptional()
-        .openapi({ description: 'The maximum number of discounted items for this offer' }),
-      prompt: ConsumerOfferPromptSchema.openapi({ description: 'A prompt displayed to consumer' }),
-      qualifyingProducts: z
-        .array(ConsumerOffersProductSchema)
-        .min(1)
-        .openapi({
+const ConsumerOfferFreeItemSchema = (() => {
+  const Schema = ConsumerOfferSchema.and(
+    z
+      .strictObject({
+        freeProduct: ConsumerOffersProductSchema.openapi({
           deprecated: true,
           description:
-            'One of those products needed to be included in the collection of products to make offer applicable [Deprecated - use `qualifyingConditions` instead]',
+            'The product that gets 100% discount applied [Deprecated - use freeProducts instead]',
         }),
-    })
-    .openapi({ required: ['qualifyingProducts', 'freeProduct', 'prompt'] }),
-)
+        freeProducts: z
+          .array(ConsumerOffersProductSchema)
+          .min(1)
+          .exactOptional()
+          .openapi({ description: 'One or more of those products gets 100% discount applied' }),
+        maximumRedemptions: z
+          .number()
+          .min(1)
+          .exactOptional()
+          .openapi({ description: 'The maximum number of discounted items for this offer' }),
+        prompt: ConsumerOfferPromptSchema.openapi({
+          description: 'A prompt displayed to consumer',
+        }),
+        qualifyingProducts: z
+          .array(ConsumerOffersProductSchema)
+          .min(1)
+          .openapi({
+            deprecated: true,
+            description:
+              'One of those products needed to be included in the collection of products to make offer applicable [Deprecated - use `qualifyingConditions` instead]',
+          }),
+      })
+      .openapi({ required: ['qualifyingProducts', 'freeProduct', 'prompt'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'campaignId',
+            'consumerSegment',
+            'offerId',
+            'offerType',
+            'priority',
+            'qualifyingConditions',
+            'restaurantId',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'freeProduct',
+            'freeProducts',
+            'maximumRedemptions',
+            'prompt',
+            'qualifyingProducts',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     example: {
       campaignId: 'freePotato',
@@ -7392,34 +7660,92 @@ const ConsumerOfferFreeItemSchema = ConsumerOfferSchema.and(
   })
   .openapi('ConsumerOfferFreeItem')
 
-const ConsumerOfferPercentSchema = ConsumerOfferSchema.and(
-  z
-    .strictObject({
-      amount: z.number().openapi({ description: 'The percentage value discount' }),
-      qualifyingValue: z
-        .number()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          deprecated: true,
-          description:
-            'The minimum order value required to be eligible for the Offer in smallest unit of relevant currency. [Deprecated - use `qualifyingConditions` instead]',
-        }),
-    })
-    .openapi({ required: ['amount'] }),
-)
+const ConsumerOfferPercentSchema = (() => {
+  const Schema = ConsumerOfferSchema.and(
+    z
+      .strictObject({
+        amount: z.number().openapi({ description: 'The percentage value discount' }),
+        qualifyingValue: z
+          .number()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            deprecated: true,
+            description:
+              'The minimum order value required to be eligible for the Offer in smallest unit of relevant currency. [Deprecated - use `qualifyingConditions` instead]',
+          }),
+      })
+      .openapi({ required: ['amount'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'campaignId',
+            'consumerSegment',
+            'offerId',
+            'offerType',
+            'priority',
+            'qualifyingConditions',
+            'restaurantId',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['amount', 'qualifyingValue'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ example: { amount: 10, qualifyingConditions: { minimumOrderValue: 1500 } } })
   .openapi('ConsumerOfferPercent')
 
-const ConsumerOfferStampCardSchema = ConsumerOfferSchema.and(
-  z
-    .strictObject({
-      discounts: z
-        .array(ConsumerOfferStampCardDiscountSchema)
-        .openapi({ description: 'The list of completed stamp card discounts' }),
-    })
-    .openapi({ required: ['discounts'] }),
-).openapi('ConsumerOfferStampCard')
+const ConsumerOfferStampCardSchema = (() => {
+  const Schema = ConsumerOfferSchema.and(
+    z
+      .strictObject({
+        discounts: z
+          .array(ConsumerOfferStampCardDiscountSchema)
+          .openapi({ description: 'The list of completed stamp card discounts' }),
+      })
+      .openapi({ required: ['discounts'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'campaignId',
+            'consumerSegment',
+            'offerId',
+            'offerType',
+            'priority',
+            'qualifyingConditions',
+            'restaurantId',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['discounts'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('ConsumerOfferStampCard')
 
 const ConsumerOffersBasketItemSchema = z
   .strictObject({
@@ -18151,9 +18477,26 @@ const TwilioProxyOutOfSessionCallbackRequestSchema = z
   .openapi({ required: [] })
   .openapi('TwilioProxyOutOfSessionCallbackRequest')
 
-const UnauthorisedMarketingResponseSchema = MarketingErrorResponseSchema.and(
-  z.strictObject({}).openapi({ description: '401 Unauthorised Returned' }),
-)
+const UnauthorisedMarketingResponseSchema = (() => {
+  const Schema = MarketingErrorResponseSchema.and(
+    z.strictObject({}).openapi({ description: '401 Unauthorised Returned' }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['errors', 'faultId', 'message'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     example: {
       errors: [{ description: 'Unauthorised', errorCode: '401' }],

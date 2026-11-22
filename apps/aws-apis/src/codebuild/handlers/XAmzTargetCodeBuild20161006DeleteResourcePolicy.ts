@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodeBuild20161006DeleteResourcePolicyHandler = app.openapi(
   postXAmzTargetCodeBuild20161006DeleteResourcePolicyRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

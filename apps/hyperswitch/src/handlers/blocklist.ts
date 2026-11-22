@@ -13,9 +13,9 @@ import type {
   postBlocklistToggleRoute,
 } from '../routes'
 
-export const deleteBlocklistRouteHandler: RouteHandler<typeof deleteBlocklistRoute> = async (
-  c,
-) => {}
+export const deleteBlocklistRouteHandler: RouteHandler<typeof deleteBlocklistRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
 export const getBlocklistRouteHandler: RouteHandler<typeof getBlocklistRoute> = async (c) => {
   throw new Error('Not implemented')
@@ -33,19 +33,27 @@ export const postBlocklistToggleRouteHandler: RouteHandler<
 
 export const getBlocklistCountRouteHandler: RouteHandler<typeof getBlocklistCountRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const getBlocklistLookupRouteHandler: RouteHandler<typeof getBlocklistLookupRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const postBlocklistBatchRouteHandler: RouteHandler<typeof postBlocklistBatchRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const getBlocklistBatchRouteHandler: RouteHandler<typeof getBlocklistBatchRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const getBlocklistBatchJobIdRouteHandler: RouteHandler<
   typeof getBlocklistBatchJobIdRoute
@@ -61,4 +69,6 @@ export const postBlocklistExportRouteHandler: RouteHandler<
 
 export const postBlocklistCloneRouteHandler: RouteHandler<typeof postBlocklistCloneRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}

@@ -294,27 +294,29 @@ const CompleteUserSchema = z
         if (Array.isArray(val)) {
           {
             const Schema = z.union([
-              z
-                .object({
-                  product: z
-                    .object({
-                      id: z
-                        .string()
-                        .exactOptional()
-                        .openapi({ description: 'subscription id instance.' }),
-                      name: z
-                        .string()
-                        .exactOptional()
-                        .openapi({ description: 'subscription name instance.' }),
-                    })
-                    .exactOptional()
-                    .openapi({ description: 'product', required: [] }),
-                  recurring: z
-                    .boolean()
-                    .exactOptional()
-                    .openapi({ description: 'if the subscription is recurring or not' }),
-                })
-                .openapi({ description: 'subscription', required: [] }),
+              z.array(z.any()).and(
+                z
+                  .object({
+                    product: z
+                      .object({
+                        id: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ description: 'subscription id instance.' }),
+                        name: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ description: 'subscription name instance.' }),
+                      })
+                      .exactOptional()
+                      .openapi({ description: 'product', required: [] }),
+                    recurring: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({ description: 'if the subscription is recurring or not' }),
+                  })
+                  .openapi({ description: 'subscription', required: [] }),
+              ),
             ])
             for (let i = 0; i < val.length; i++) {
               if (!Schema.safeParse(val[i]).success) {
@@ -632,27 +634,29 @@ const UserSchema = z
         if (Array.isArray(val)) {
           {
             const Schema = z.union([
-              z
-                .object({
-                  product: z
-                    .object({
-                      id: z
-                        .string()
-                        .exactOptional()
-                        .openapi({ description: 'subscription id instance.' }),
-                      name: z
-                        .string()
-                        .exactOptional()
-                        .openapi({ description: 'subscription name instance.' }),
-                    })
-                    .exactOptional()
-                    .openapi({ description: 'product', required: [] }),
-                  recurring: z
-                    .boolean()
-                    .exactOptional()
-                    .openapi({ description: 'if the subscription is recurring or not' }),
-                })
-                .openapi({ description: 'subscription', required: [] }),
+              z.array(z.any()).and(
+                z
+                  .object({
+                    product: z
+                      .object({
+                        id: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ description: 'subscription id instance.' }),
+                        name: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ description: 'subscription name instance.' }),
+                      })
+                      .exactOptional()
+                      .openapi({ description: 'product', required: [] }),
+                    recurring: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({ description: 'if the subscription is recurring or not' }),
+                  })
+                  .openapi({ description: 'subscription', required: [] }),
+              ),
             ])
             for (let i = 0; i < val.length; i++) {
               if (!Schema.safeParse(val[i]).success) {
@@ -735,27 +739,29 @@ const UsersListSchema = z
             if (Array.isArray(val)) {
               {
                 const Schema = z.union([
-                  z
-                    .object({
-                      product: z
-                        .object({
-                          id: z
-                            .string()
-                            .exactOptional()
-                            .openapi({ description: 'subscription id instance.' }),
-                          name: z
-                            .string()
-                            .exactOptional()
-                            .openapi({ description: 'subscription name instance.' }),
-                        })
-                        .exactOptional()
-                        .openapi({ description: 'product', required: [] }),
-                      recurring: z
-                        .boolean()
-                        .exactOptional()
-                        .openapi({ description: 'if the subscription is recurring or not' }),
-                    })
-                    .openapi({ description: 'subscription', required: [] }),
+                  z.array(z.any()).and(
+                    z
+                      .object({
+                        product: z
+                          .object({
+                            id: z
+                              .string()
+                              .exactOptional()
+                              .openapi({ description: 'subscription id instance.' }),
+                            name: z
+                              .string()
+                              .exactOptional()
+                              .openapi({ description: 'subscription name instance.' }),
+                          })
+                          .exactOptional()
+                          .openapi({ description: 'product', required: [] }),
+                        recurring: z
+                          .boolean()
+                          .exactOptional()
+                          .openapi({ description: 'if the subscription is recurring or not' }),
+                      })
+                      .openapi({ description: 'subscription', required: [] }),
+                  ),
                 ])
                 for (let i = 0; i < val.length; i++) {
                   if (!Schema.safeParse(val[i]).success) {

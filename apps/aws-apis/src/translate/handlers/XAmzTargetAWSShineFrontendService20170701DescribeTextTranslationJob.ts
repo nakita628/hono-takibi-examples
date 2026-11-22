@@ -4,7 +4,6 @@ import { postXAmzTargetAWSShineFrontendService20170701DescribeTextTranslationJob
 const app = new OpenAPIHono()
 
 export const XAmzTargetAWSShineFrontendService20170701DescribeTextTranslationJobHandler =
-  app.openapi(
-    postXAmzTargetAWSShineFrontendService20170701DescribeTextTranslationJobRoute,
-    (c) => {},
-  )
+  app.openapi(postXAmzTargetAWSShineFrontendService20170701DescribeTextTranslationJobRoute, (c) => {
+    throw new Error('Not implemented')
+  })

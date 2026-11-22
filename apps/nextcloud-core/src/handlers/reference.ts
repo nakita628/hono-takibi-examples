@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const referenceHandler = app.openapi(
   getIndexPhpCoreReferencesPreviewReferenceIdRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

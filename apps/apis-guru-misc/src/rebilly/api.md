@@ -120539,12 +120539,12 @@ dLocal config.
 |week|first-in-month|
 |week|last-in-month|
 
-<h2 id="tocS_discount">discount</h2>
+<h2 id="tocS_discount2">discount2</h2>
 <!-- backwards compatibility -->
-<a id="schemadiscount-1"></a>
-<a id="schema_discount"></a>
-<a id="tocSdiscount-1"></a>
-<a id="tocsdiscount-1"></a>
+<a id="schemadiscount2"></a>
+<a id="schema_discount2"></a>
+<a id="tocSdiscount2"></a>
+<a id="tocsdiscount2"></a>
 
 ```json
 {

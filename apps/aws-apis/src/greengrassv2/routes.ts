@@ -4,15 +4,11 @@ const StringSchema = z.string().openapi('String')
 
 const AssociateServiceRoleToAccountResponseSchema = z
   .object({
-    associatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'AssociatedAt' },
-          description:
-            'The time when the service role was associated with IoT Greengrass for your Amazon Web Services account in this Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
+    associatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'AssociatedAt' },
+      description:
+        'The time when the service role was associated with IoT Greengrass for your Amazon Web Services account in this Amazon Web Services Region.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateServiceRoleToAccountResponse')
@@ -27,19 +23,15 @@ const NonEmptyStringSchema = z.string().min(1).openapi('NonEmptyString')
 
 const AssociateClientDeviceWithCoreDeviceErrorEntrySchema = z
   .object({
-    thingName: IoTThingNameSchema.and(
-      z.any().openapi({ description: 'The name of the IoT thing whose associate request failed.' }),
-    ).exactOptional(),
-    code: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The error code for the request.' }),
-    ).exactOptional(),
-    message: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A message that provides additional information about the error.',
-        }),
-    ).exactOptional(),
+    thingName: IoTThingNameSchema.exactOptional().openapi({
+      description: 'The name of the IoT thing whose associate request failed.',
+    }),
+    code: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The error code for the request.',
+    }),
+    message: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'A message that provides additional information about the error.',
+    }),
   })
   .openapi({
     description:
@@ -55,27 +47,19 @@ const AssociateClientDeviceWithCoreDeviceErrorListSchema = z
 
 const BatchAssociateClientDeviceWithCoreDeviceResponseSchema = z
   .object({
-    errorEntries: AssociateClientDeviceWithCoreDeviceErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of any errors for the entries in the request. Each error entry contains the name of the IoT thing that failed to associate.',
-        }),
-    ).exactOptional(),
+    errorEntries: AssociateClientDeviceWithCoreDeviceErrorListSchema.exactOptional().openapi({
+      description:
+        'The list of any errors for the entries in the request. Each error entry contains the name of the IoT thing that failed to associate.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchAssociateClientDeviceWithCoreDeviceResponse')
 
 const AssociateClientDeviceWithCoreDeviceEntrySchema = z
   .object({
-    thingName: IoTThingNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the IoT thing that represents the client device to associate.',
-        }),
-    ),
+    thingName: IoTThingNameSchema.openapi({
+      description: 'The name of the IoT thing that represents the client device to associate.',
+    }),
   })
   .openapi({
     required: ['thingName'],
@@ -92,21 +76,15 @@ const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
 
 const DisassociateClientDeviceFromCoreDeviceErrorEntrySchema = z
   .object({
-    thingName: IoTThingNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the IoT thing whose disassociate request failed.' }),
-    ).exactOptional(),
-    code: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The error code for the request.' }),
-    ).exactOptional(),
-    message: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A message that provides additional information about the error.',
-        }),
-    ).exactOptional(),
+    thingName: IoTThingNameSchema.exactOptional().openapi({
+      description: 'The name of the IoT thing whose disassociate request failed.',
+    }),
+    code: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The error code for the request.',
+    }),
+    message: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'A message that provides additional information about the error.',
+    }),
   })
   .openapi({
     description:
@@ -122,28 +100,19 @@ const DisassociateClientDeviceFromCoreDeviceErrorListSchema = z
 
 const BatchDisassociateClientDeviceFromCoreDeviceResponseSchema = z
   .object({
-    errorEntries: DisassociateClientDeviceFromCoreDeviceErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of any errors for the entries in the request. Each error entry contains the name of the IoT thing that failed to disassociate.',
-        }),
-    ).exactOptional(),
+    errorEntries: DisassociateClientDeviceFromCoreDeviceErrorListSchema.exactOptional().openapi({
+      description:
+        'The list of any errors for the entries in the request. Each error entry contains the name of the IoT thing that failed to disassociate.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchDisassociateClientDeviceFromCoreDeviceResponse')
 
 const DisassociateClientDeviceFromCoreDeviceEntrySchema = z
   .object({
-    thingName: IoTThingNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the IoT thing that represents the client device to disassociate.',
-        }),
-    ),
+    thingName: IoTThingNameSchema.openapi({
+      description: 'The name of the IoT thing that represents the client device to disassociate.',
+    }),
   })
   .openapi({
     required: ['thingName'],
@@ -154,9 +123,9 @@ const DisassociateClientDeviceFromCoreDeviceEntrySchema = z
 
 const CancelDeploymentResponseSchema = z
   .object({
-    message: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'A message that communicates if the cancel was successful.' }),
-    ).exactOptional(),
+    message: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'A message that communicates if the cancel was successful.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CancelDeploymentResponse')
@@ -184,41 +153,25 @@ const VendorGuidanceSchema = z.enum(['ACTIVE', 'DISCONTINUED', 'DELETED']).opena
 
 const CloudComponentStatusSchema = z
   .object({
-    componentState: CloudComponentStateSchema.and(
-      z.any().openapi({ description: 'The state of the component version.' }),
-    ).exactOptional(),
-    message: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A message that communicates details, such as errors, about the status of the component version.',
-        }),
-    ).exactOptional(),
-    errors: StringMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A dictionary of errors that communicate why the component version is in an error state. For example, if IoT Greengrass can't access an artifact for the component version, then <code>errors</code> contains the artifact's URI as a key, and the error message as the value for that key.",
-        }),
-    ).exactOptional(),
-    vendorGuidance: VendorGuidanceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The vendor guidance state for the component version. This state indicates whether the component version has any issues that you should consider before you deploy it. The vendor guidance state can be:</p> <ul> <li> <p> <code>ACTIVE</code> – This component version is available and recommended for use.</p> </li> <li> <p> <code>DISCONTINUED</code> – This component version has been discontinued by its publisher. You can deploy this component version, but we recommend that you use a different version of this component.</p> </li> <li> <p> <code>DELETED</code> – This component version has been deleted by its publisher, so you can't deploy it. If you have any existing deployments that specify this component version, those deployments will fail.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    vendorGuidanceMessage: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A message that communicates details about the vendor guidance state of the component version. This message communicates why a component version is discontinued or deleted.',
-        }),
-    ).exactOptional(),
+    componentState: CloudComponentStateSchema.exactOptional().openapi({
+      description: 'The state of the component version.',
+    }),
+    message: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'A message that communicates details, such as errors, about the status of the component version.',
+    }),
+    errors: StringMapSchema.exactOptional().openapi({
+      description:
+        "A dictionary of errors that communicate why the component version is in an error state. For example, if IoT Greengrass can't access an artifact for the component version, then <code>errors</code> contains the artifact's URI as a key, and the error message as the value for that key.",
+    }),
+    vendorGuidance: VendorGuidanceSchema.exactOptional().openapi({
+      description:
+        "<p>The vendor guidance state for the component version. This state indicates whether the component version has any issues that you should consider before you deploy it. The vendor guidance state can be:</p> <ul> <li> <p> <code>ACTIVE</code> – This component version is available and recommended for use.</p> </li> <li> <p> <code>DISCONTINUED</code> – This component version has been discontinued by its publisher. You can deploy this component version, but we recommend that you use a different version of this component.</p> </li> <li> <p> <code>DELETED</code> – This component version has been deleted by its publisher, so you can't deploy it. If you have any existing deployments that specify this component version, those deployments will fail.</p> </li> </ul>",
+    }),
+    vendorGuidanceMessage: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'A message that communicates details about the vendor guidance state of the component version. This message communicates why a component version is discontinued or deleted.',
+    }),
   })
   .openapi({
     description: 'Contains the status of a component version in the IoT Greengrass service.',
@@ -228,35 +181,21 @@ const CloudComponentStatusSchema = z
 
 const CreateComponentVersionResponseSchema = z
   .object({
-    arn: ComponentVersionARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the component version.',
-        }),
-    ).exactOptional(),
-    componentName: ComponentNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the component.' }),
-    ),
-    componentVersion: ComponentVersionStringSchema.and(
-      z.any().openapi({ description: 'The version of the component.' }),
-    ),
-    creationTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time at which the component was created, expressed in ISO 8601 format.',
-        }),
-    ),
-    status: CloudComponentStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the component version in IoT Greengrass V2. This status is different from the status of the component on a core device.',
-        }),
-    ),
+    arn: ComponentVersionARNSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the component version.',
+    }),
+    componentName: ComponentNameStringSchema.openapi({ description: 'The name of the component.' }),
+    componentVersion: ComponentVersionStringSchema.openapi({
+      description: 'The version of the component.',
+    }),
+    creationTimestamp: TimestampSchema.openapi({
+      description: 'The time at which the component was created, expressed in ISO 8601 format.',
+    }),
+    status: CloudComponentStatusSchema.openapi({
+      description:
+        'The status of the component version in IoT Greengrass V2. This status is different from the status of the component on a core device.',
+    }),
   })
   .openapi({ required: ['componentName', 'componentVersion', 'creationTimestamp', 'status'] })
   .openapi('CreateComponentVersionResponse')
@@ -267,22 +206,14 @@ const PlatformAttributesMapSchema = z
 
 const ComponentPlatformSchema = z
   .object({
-    name: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The friendly name of the platform. This name helps you identify the platform.</p> <p>If you omit this parameter, IoT Greengrass creates a friendly name from the <code>os</code> and <code>architecture</code> of the platform.</p>',
-        }),
-    ).exactOptional(),
-    attributes: PlatformAttributesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A dictionary of attributes for the platform. The IoT Greengrass Core software defines the <code>os</code> and <code>architecture</code> by default. You can specify additional platform attributes for a core device when you deploy the Greengrass nucleus component. For more information, see the <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html">Greengrass nucleus component</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
-        }),
-    ).exactOptional(),
+    name: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        '<p>The friendly name of the platform. This name helps you identify the platform.</p> <p>If you omit this parameter, IoT Greengrass creates a friendly name from the <code>os</code> and <code>architecture</code> of the platform.</p>',
+    }),
+    attributes: PlatformAttributesMapSchema.exactOptional().openapi({
+      description:
+        'A dictionary of attributes for the platform. The IoT Greengrass Core software defines the <code>os</code> and <code>architecture</code> by default. You can specify additional platform attributes for a core device when you deploy the Greengrass nucleus component. For more information, see the <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html">Greengrass nucleus component</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
+    }),
   })
   .openapi({
     description: 'Contains information about a platform that a component supports.',
@@ -298,22 +229,14 @@ const ComponentDependencyTypeSchema = z.enum(['HARD', 'SOFT']).openapi('Componen
 
 const ComponentDependencyRequirementSchema = z
   .object({
-    versionRequirement: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The component version requirement for the component dependency.</p> <p>IoT Greengrass V2 uses semantic version constraints. For more information, see <a href="https://semver.org/">Semantic Versioning</a>.</p>',
-        }),
-    ).exactOptional(),
-    dependencyType: ComponentDependencyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The type of this dependency. Choose from the following options:</p> <ul> <li> <p> <code>SOFT</code> – The component doesn't restart if the dependency changes state.</p> </li> <li> <p> <code>HARD</code> – The component restarts if the dependency changes state.</p> </li> </ul> <p>Default: <code>HARD</code> </p>",
-        }),
-    ).exactOptional(),
+    versionRequirement: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        '<p>The component version requirement for the component dependency.</p> <p>IoT Greengrass V2 uses semantic version constraints. For more information, see <a href="https://semver.org/">Semantic Versioning</a>.</p>',
+    }),
+    dependencyType: ComponentDependencyTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The type of this dependency. Choose from the following options:</p> <ul> <li> <p> <code>SOFT</code> – The component doesn't restart if the dependency changes state.</p> </li> <li> <p> <code>HARD</code> – The component restarts if the dependency changes state.</p> </li> </ul> <p>Default: <code>HARD</code> </p>",
+    }),
   })
   .openapi({
     description:
@@ -332,19 +255,13 @@ const LambdaEventSourceTypeSchema = z.enum(['PUB_SUB', 'IOT_CORE']).openapi('Lam
 
 const LambdaEventSourceSchema = z
   .object({
-    topic: TopicStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The topic to which to subscribe to receive event messages.' }),
-    ),
-    type: LambdaEventSourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The type of event source. Choose from the following options:</p> <ul> <li> <p> <code>PUB_SUB</code> – Subscribe to local publish/subscribe messages. This event source type doesn't support MQTT wildcards (<code>+</code> and <code>#</code>) in the event source topic.</p> </li> <li> <p> <code>IOT_CORE</code> – Subscribe to Amazon Web Services IoT Core MQTT messages. This event source type supports MQTT wildcards (<code>+</code> and <code>#</code>) in the event source topic.</p> </li> </ul>",
-        }),
-    ),
+    topic: TopicStringSchema.openapi({
+      description: 'The topic to which to subscribe to receive event messages.',
+    }),
+    type: LambdaEventSourceTypeSchema.openapi({
+      description:
+        "<p>The type of event source. Choose from the following options:</p> <ul> <li> <p> <code>PUB_SUB</code> – Subscribe to local publish/subscribe messages. This event source type doesn't support MQTT wildcards (<code>+</code> and <code>#</code>) in the event source topic.</p> </li> <li> <p> <code>IOT_CORE</code> – Subscribe to Amazon Web Services IoT Core MQTT messages. This event source type supports MQTT wildcards (<code>+</code> and <code>#</code>) in the event source topic.</p> </li> </ul>",
+    }),
   })
   .openapi({
     required: ['topic', 'type'],
@@ -383,28 +300,20 @@ const LambdaFilesystemPermissionSchema = z.enum(['ro', 'rw']).openapi('LambdaFil
 
 const LambdaVolumeMountSchema = z
   .object({
-    sourcePath: FileSystemPathSchema.and(
-      z.any().openapi({ description: 'The path to the physical volume in the file system.' }),
-    ),
-    destinationPath: FileSystemPathSchema.and(
-      z.any().openapi({ description: 'The path to the logical volume in the file system.' }),
-    ),
-    permission: LambdaFilesystemPermissionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The permission to access the volume: read/only (<code>ro</code>) or read/write (<code>rw</code>).</p> <p>Default: <code>ro</code> </p>',
-        }),
-    ).exactOptional(),
-    addGroupOwner: OptionalBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether or not to add the IoT Greengrass user group as an owner of the volume.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
+    sourcePath: FileSystemPathSchema.openapi({
+      description: 'The path to the physical volume in the file system.',
+    }),
+    destinationPath: FileSystemPathSchema.openapi({
+      description: 'The path to the logical volume in the file system.',
+    }),
+    permission: LambdaFilesystemPermissionSchema.exactOptional().openapi({
+      description:
+        '<p>The permission to access the volume: read/only (<code>ro</code>) or read/write (<code>rw</code>).</p> <p>Default: <code>ro</code> </p>',
+    }),
+    addGroupOwner: OptionalBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Whether or not to add the IoT Greengrass user group as an owner of the volume.</p> <p>Default: <code>false</code> </p>',
+    }),
   })
   .openapi({
     required: ['sourcePath', 'destinationPath'],
@@ -417,25 +326,17 @@ const LambdaVolumeListSchema = z.array(LambdaVolumeMountSchema).openapi('LambdaV
 
 const LambdaDeviceMountSchema = z
   .object({
-    path: FileSystemPathSchema.and(
-      z.any().openapi({ description: 'The mount path for the device in the file system.' }),
-    ),
-    permission: LambdaFilesystemPermissionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The permission to access the device: read/only (<code>ro</code>) or read/write (<code>rw</code>).</p> <p>Default: <code>ro</code> </p>',
-        }),
-    ).exactOptional(),
-    addGroupOwner: OptionalBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Whether or not to add the component's system user as an owner of the device.</p> <p>Default: <code>false</code> </p>",
-        }),
-    ).exactOptional(),
+    path: FileSystemPathSchema.openapi({
+      description: 'The mount path for the device in the file system.',
+    }),
+    permission: LambdaFilesystemPermissionSchema.exactOptional().openapi({
+      description:
+        '<p>The permission to access the device: read/only (<code>ro</code>) or read/write (<code>rw</code>).</p> <p>Default: <code>ro</code> </p>',
+    }),
+    addGroupOwner: OptionalBooleanSchema.exactOptional().openapi({
+      description:
+        "<p>Whether or not to add the component's system user as an owner of the device.</p> <p>Default: <code>false</code> </p>",
+    }),
   })
   .openapi({
     required: ['path'],
@@ -448,28 +349,20 @@ const LambdaDeviceListSchema = z.array(LambdaDeviceMountSchema).openapi('LambdaD
 
 const LambdaContainerParamsSchema = z
   .object({
-    memorySizeInKB: OptionalIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The memory size of the container, expressed in kilobytes.</p> <p>Default: <code>16384</code> (16 MB)</p>',
-        }),
-    ).exactOptional(),
-    mountROSysfs: OptionalBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Whether or not the container can read information from the device's <code>/sys</code> folder.</p> <p>Default: <code>false</code> </p>",
-        }),
-    ).exactOptional(),
-    volumes: LambdaVolumeListSchema.and(
-      z.any().openapi({ description: 'The list of volumes that the container can access.' }),
-    ).exactOptional(),
-    devices: LambdaDeviceListSchema.and(
-      z.any().openapi({ description: 'The list of system devices that the container can access.' }),
-    ).exactOptional(),
+    memorySizeInKB: OptionalIntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The memory size of the container, expressed in kilobytes.</p> <p>Default: <code>16384</code> (16 MB)</p>',
+    }),
+    mountROSysfs: OptionalBooleanSchema.exactOptional().openapi({
+      description:
+        "<p>Whether or not the container can read information from the device's <code>/sys</code> folder.</p> <p>Default: <code>false</code> </p>",
+    }),
+    volumes: LambdaVolumeListSchema.exactOptional().openapi({
+      description: 'The list of volumes that the container can access.',
+    }),
+    devices: LambdaDeviceListSchema.exactOptional().openapi({
+      description: 'The list of system devices that the container can access.',
+    }),
   })
   .openapi({
     description:
@@ -480,21 +373,13 @@ const LambdaContainerParamsSchema = z
 
 const LambdaLinuxProcessParamsSchema = z
   .object({
-    isolationMode: LambdaIsolationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The isolation mode for the process that contains the Lambda function. The process can run in an isolated runtime environment inside the IoT Greengrass container, or as a regular process outside any container.</p> <p>Default: <code>GreengrassContainer</code> </p>',
-        }),
-    ).exactOptional(),
-    containerParams: LambdaContainerParamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The parameters for the container in which the Lambda function runs.',
-        }),
-    ).exactOptional(),
+    isolationMode: LambdaIsolationModeSchema.exactOptional().openapi({
+      description:
+        '<p>The isolation mode for the process that contains the Lambda function. The process can run in an isolated runtime environment inside the IoT Greengrass container, or as a regular process outside any container.</p> <p>Default: <code>GreengrassContainer</code> </p>',
+    }),
+    containerParams: LambdaContainerParamsSchema.exactOptional().openapi({
+      description: 'The parameters for the container in which the Lambda function runs.',
+    }),
   })
   .openapi({
     description: 'Contains parameters for a Linux process that contains an Lambda function.',
@@ -504,92 +389,48 @@ const LambdaLinuxProcessParamsSchema = z
 
 const LambdaExecutionParametersSchema = z
   .object({
-    eventSources: LambdaEventSourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of event sources to which to subscribe to receive work messages. The Lambda function runs when it receives a message from an event source. You can subscribe this function to local publish/subscribe messages and Amazon Web Services IoT Core MQTT messages.',
-        }),
-    ).exactOptional(),
-    maxQueueSize: OptionalIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum size of the message queue for the Lambda function component. The IoT Greengrass core stores messages in a FIFO (first-in-first-out) queue until it can run the Lambda function to consume each message.',
-        }),
-    ).exactOptional(),
-    maxInstancesCount: OptionalIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of instances that a non-pinned Lambda function can run at the same time.',
-        }),
-    ).exactOptional(),
-    maxIdleTimeInSeconds: OptionalIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum amount of time in seconds that a non-pinned Lambda function can idle before the IoT Greengrass Core software stops its process.',
-        }),
-    ).exactOptional(),
-    timeoutInSeconds: OptionalIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum amount of time in seconds that the Lambda function can process a work item.',
-        }),
-    ).exactOptional(),
-    statusTimeoutInSeconds: OptionalIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The interval in seconds at which a pinned (also known as long-lived) Lambda function component sends status updates to the Lambda manager component.',
-        }),
-    ).exactOptional(),
-    pinned: OptionalBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether or not the Lambda function is pinned, or long-lived.</p> <ul> <li> <p>A pinned Lambda function starts when IoT Greengrass starts and keeps running in its own container.</p> </li> <li> <p>A non-pinned Lambda function starts only when it receives a work item and exists after it idles for <code>maxIdleTimeInSeconds</code>. If the function has multiple work items, the IoT Greengrass Core software creates multiple instances of the function.</p> </li> </ul> <p>Default: <code>true</code> </p>',
-        }),
-    ).exactOptional(),
-    inputPayloadEncodingType: LambdaInputPayloadEncodingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The encoding type that the Lambda function supports.</p> <p>Default: <code>json</code> </p>',
-        }),
-    ).exactOptional(),
-    execArgs: LambdaExecArgsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of arguments to pass to the Lambda function when it runs.',
-        }),
-    ).exactOptional(),
-    environmentVariables: LambdaEnvironmentVariablesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The map of environment variables that are available to the Lambda function when it runs.',
-        }),
-    ).exactOptional(),
-    linuxProcessParams: LambdaLinuxProcessParamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The parameters for the Linux process that contains the Lambda function.',
-        }),
-    ).exactOptional(),
+    eventSources: LambdaEventSourceListSchema.exactOptional().openapi({
+      description:
+        'The list of event sources to which to subscribe to receive work messages. The Lambda function runs when it receives a message from an event source. You can subscribe this function to local publish/subscribe messages and Amazon Web Services IoT Core MQTT messages.',
+    }),
+    maxQueueSize: OptionalIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum size of the message queue for the Lambda function component. The IoT Greengrass core stores messages in a FIFO (first-in-first-out) queue until it can run the Lambda function to consume each message.',
+    }),
+    maxInstancesCount: OptionalIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of instances that a non-pinned Lambda function can run at the same time.',
+    }),
+    maxIdleTimeInSeconds: OptionalIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum amount of time in seconds that a non-pinned Lambda function can idle before the IoT Greengrass Core software stops its process.',
+    }),
+    timeoutInSeconds: OptionalIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum amount of time in seconds that the Lambda function can process a work item.',
+    }),
+    statusTimeoutInSeconds: OptionalIntegerSchema.exactOptional().openapi({
+      description:
+        'The interval in seconds at which a pinned (also known as long-lived) Lambda function component sends status updates to the Lambda manager component.',
+    }),
+    pinned: OptionalBooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Whether or not the Lambda function is pinned, or long-lived.</p> <ul> <li> <p>A pinned Lambda function starts when IoT Greengrass starts and keeps running in its own container.</p> </li> <li> <p>A non-pinned Lambda function starts only when it receives a work item and exists after it idles for <code>maxIdleTimeInSeconds</code>. If the function has multiple work items, the IoT Greengrass Core software creates multiple instances of the function.</p> </li> </ul> <p>Default: <code>true</code> </p>',
+    }),
+    inputPayloadEncodingType: LambdaInputPayloadEncodingTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The encoding type that the Lambda function supports.</p> <p>Default: <code>json</code> </p>',
+    }),
+    execArgs: LambdaExecArgsListSchema.exactOptional().openapi({
+      description: 'The list of arguments to pass to the Lambda function when it runs.',
+    }),
+    environmentVariables: LambdaEnvironmentVariablesSchema.exactOptional().openapi({
+      description:
+        'The map of environment variables that are available to the Lambda function when it runs.',
+    }),
+    linuxProcessParams: LambdaLinuxProcessParamsSchema.exactOptional().openapi({
+      description: 'The parameters for the Linux process that contains the Lambda function.',
+    }),
   })
   .openapi({
     description: 'Contains parameters for a Lambda function that runs on IoT Greengrass.',
@@ -610,24 +451,16 @@ const IoTJobARNSchema = z
 
 const CreateDeploymentResponseSchema = z
   .object({
-    deploymentId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The ID of the deployment.' }),
-    ).exactOptional(),
-    iotJobId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the IoT job that applies the deployment to target devices.',
-        }),
-    ).exactOptional(),
-    iotJobArn: IoTJobARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the IoT job that applies the deployment to target devices.',
-        }),
-    ).exactOptional(),
+    deploymentId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The ID of the deployment.',
+    }),
+    iotJobId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The ID of the IoT job that applies the deployment to target devices.',
+    }),
+    iotJobArn: IoTJobARNSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the IoT job that applies the deployment to target devices.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDeploymentResponse')
@@ -650,22 +483,14 @@ const ComponentConfigurationPathListSchema = z
 
 const ComponentConfigurationUpdateSchema = z
   .object({
-    merge: ComponentConfigurationStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A serialized JSON string that contains the configuration object to merge to target devices. The core device merges this configuration with the component's existing configuration. If this is the first time a component deploys on a device, the core device merges this configuration with the component's default configuration. This means that the core device keeps it's existing configuration for keys and values that you don't specify in this object. For more information, see <a href=\"https://docs.aws.amazon.com/greengrass/v2/developerguide/update-component-configurations.html#merge-configuration-update\">Merge configuration updates</a> in the <i>IoT Greengrass V2 Developer Guide</i>.",
-        }),
-    ).exactOptional(),
-    reset: ComponentConfigurationPathListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of configuration nodes to reset to default values on target devices. Use JSON pointers to specify each node to reset. JSON pointers start with a forward slash (<code>/</code>) and use forward slashes to separate the key for each level in the object. For more information, see the <a href="https://tools.ietf.org/html/rfc6901">JSON pointer specification</a> and <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/update-component-configurations.html#reset-configuration-update">Reset configuration updates</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
-        }),
-    ).exactOptional(),
+    merge: ComponentConfigurationStringSchema.exactOptional().openapi({
+      description:
+        "A serialized JSON string that contains the configuration object to merge to target devices. The core device merges this configuration with the component's existing configuration. If this is the first time a component deploys on a device, the core device merges this configuration with the component's default configuration. This means that the core device keeps it's existing configuration for keys and values that you don't specify in this object. For more information, see <a href=\"https://docs.aws.amazon.com/greengrass/v2/developerguide/update-component-configurations.html#merge-configuration-update\">Merge configuration updates</a> in the <i>IoT Greengrass V2 Developer Guide</i>.",
+    }),
+    reset: ComponentConfigurationPathListSchema.exactOptional().openapi({
+      description:
+        'The list of configuration nodes to reset to default values on target devices. Use JSON pointers to specify each node to reset. JSON pointers start with a forward slash (<code>/</code>) and use forward slashes to separate the key for each level in the object. For more information, see the <a href="https://tools.ietf.org/html/rfc6901">JSON pointer specification</a> and <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/update-component-configurations.html#reset-configuration-update">Reset configuration updates</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
+    }),
   })
   .openapi({
     description:
@@ -680,22 +505,14 @@ const CPUSchema = z.float64().min(0).openapi('CPU')
 
 const SystemResourceLimitsSchema = z
   .object({
-    memory: MemorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum amount of RAM, expressed in kilobytes, that a component's processes can use on the core device.",
-        }),
-    ).exactOptional(),
-    cpus: CPUSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum amount of CPU time that a component's processes can use on the core device. A core device's total CPU time is equivalent to the device's number of CPU cores. For example, on a core device with 4 CPU cores, you can set this value to <code>2</code> to limit the component's processes to 50 percent usage of each CPU core. On a device with 1 CPU core, you can set this value to <code>0.25</code> to limit the component's processes to 25 percent usage of the CPU. If you set this value to a number greater than the number of CPU cores, the IoT Greengrass Core software doesn't limit the component's CPU usage.",
-        }),
-    ).exactOptional(),
+    memory: MemorySchema.exactOptional().openapi({
+      description:
+        "The maximum amount of RAM, expressed in kilobytes, that a component's processes can use on the core device.",
+    }),
+    cpus: CPUSchema.exactOptional().openapi({
+      description:
+        "The maximum amount of CPU time that a component's processes can use on the core device. A core device's total CPU time is equivalent to the device's number of CPU cores. For example, on a core device with 4 CPU cores, you can set this value to <code>2</code> to limit the component's processes to 50 percent usage of each CPU core. On a device with 1 CPU core, you can set this value to <code>0.25</code> to limit the component's processes to 25 percent usage of the CPU. If you set this value to a number greater than the number of CPU cores, the IoT Greengrass Core software doesn't limit the component's CPU usage.",
+    }),
   })
   .openapi({
     description:
@@ -706,30 +523,18 @@ const SystemResourceLimitsSchema = z
 
 const ComponentRunWithSchema = z
   .object({
-    posixUser: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The POSIX system user and, optionally, group to use to run this component on Linux core devices. The user, and group if specified, must exist on each Linux core device. Specify the user and group separated by a colon (<code>:</code>) in the following format: <code>user:group</code>. The group is optional. If you don\'t specify a group, the IoT Greengrass Core software uses the primary user for the group.</p> <p>If you omit this parameter, the IoT Greengrass Core software uses the default system user and group that you configure on the Greengrass nucleus component. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/configure-greengrass-core-v2.html#configure-component-user">Configure the user and group that run components</a>.</p>',
-        }),
-    ).exactOptional(),
-    systemResourceLimits: SystemResourceLimitsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The system resource limits to apply to this component\'s process on the core device. IoT Greengrass currently supports this feature on only Linux core devices.</p> <p>If you omit this parameter, the IoT Greengrass Core software uses the default system resource limits that you configure on the Greengrass nucleus component. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/configure-greengrass-core-v2.html#configure-component-system-resource-limits">Configure system resource limits for components</a>.</p>',
-        }),
-    ).exactOptional(),
-    windowsUser: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Windows user to use to run this component on Windows core devices. The user must exist on each Windows core device, and its name and password must be in the LocalSystem account\'s Credentials Manager instance.</p> <p>If you omit this parameter, the IoT Greengrass Core software uses the default Windows user that you configure on the Greengrass nucleus component. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/configure-greengrass-core-v2.html#configure-component-user">Configure the user and group that run components</a>.</p>',
-        }),
-    ).exactOptional(),
+    posixUser: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        '<p>The POSIX system user and, optionally, group to use to run this component on Linux core devices. The user, and group if specified, must exist on each Linux core device. Specify the user and group separated by a colon (<code>:</code>) in the following format: <code>user:group</code>. The group is optional. If you don\'t specify a group, the IoT Greengrass Core software uses the primary user for the group.</p> <p>If you omit this parameter, the IoT Greengrass Core software uses the default system user and group that you configure on the Greengrass nucleus component. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/configure-greengrass-core-v2.html#configure-component-user">Configure the user and group that run components</a>.</p>',
+    }),
+    systemResourceLimits: SystemResourceLimitsSchema.exactOptional().openapi({
+      description:
+        '<p>The system resource limits to apply to this component\'s process on the core device. IoT Greengrass currently supports this feature on only Linux core devices.</p> <p>If you omit this parameter, the IoT Greengrass Core software uses the default system resource limits that you configure on the Greengrass nucleus component. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/configure-greengrass-core-v2.html#configure-component-system-resource-limits">Configure system resource limits for components</a>.</p>',
+    }),
+    windowsUser: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        '<p>The Windows user to use to run this component on Windows core devices. The user must exist on each Windows core device, and its name and password must be in the LocalSystem account\'s Credentials Manager instance.</p> <p>If you omit this parameter, the IoT Greengrass Core software uses the default Windows user that you configure on the Greengrass nucleus component. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/configure-greengrass-core-v2.html#configure-component-user">Configure the user and group that run components</a>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -740,25 +545,17 @@ const ComponentRunWithSchema = z
 
 const ComponentDeploymentSpecificationSchema = z
   .object({
-    componentVersion: ComponentVersionStringSchema.and(
-      z.any().openapi({ description: 'The version of the component.' }),
-    ).exactOptional(),
-    configurationUpdate: ComponentConfigurationUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration updates to deploy for the component. You can define <i>reset</i> updates and <i>merge</i> updates. A reset updates the keys that you specify to the default configuration for the component. A merge updates the core device\'s component configuration with the keys and values that you specify. The IoT Greengrass Core software applies reset updates before it applies merge updates. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/update-component-configurations.html">Update component configurations</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    runWith: ComponentRunWithSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system user and group that the IoT Greengrass Core software uses to run component processes on the core device. If you omit this parameter, the IoT Greengrass Core software uses the system user and group that you configure for the core device. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/configure-greengrass-core-v2.html#configure-component-user">Configure the user and group that run components</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
-        }),
-    ).exactOptional(),
+    componentVersion: ComponentVersionStringSchema.exactOptional().openapi({
+      description: 'The version of the component.',
+    }),
+    configurationUpdate: ComponentConfigurationUpdateSchema.exactOptional().openapi({
+      description:
+        'The configuration updates to deploy for the component. You can define <i>reset</i> updates and <i>merge</i> updates. A reset updates the keys that you specify to the default configuration for the component. A merge updates the core device\'s component configuration with the keys and values that you specify. The IoT Greengrass Core software applies reset updates before it applies merge updates. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/update-component-configurations.html">Update component configurations</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
+    }),
+    runWith: ComponentRunWithSchema.exactOptional().openapi({
+      description:
+        'The system user and group that the IoT Greengrass Core software uses to run component processes on the core device. If you omit this parameter, the IoT Greengrass Core software uses the system user and group that you configure for the core device. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/configure-greengrass-core-v2.html#configure-component-user">Configure the user and group that run components</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
+    }),
   })
   .openapi({ description: 'Contains information about a component to deploy.', required: [] })
   .openapi('ComponentDeploymentSpecification')
@@ -779,22 +576,14 @@ const IoTJobNumberOfThingsSchema = z.int().min(1).openapi('IoTJobNumberOfThings'
 
 const IoTJobRateIncreaseCriteriaSchema = z
   .object({
-    numberOfNotifiedThings: IoTJobNumberOfThingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of devices to receive the job notification before the rollout rate increases.',
-        }),
-    ).exactOptional(),
-    numberOfSucceededThings: IoTJobNumberOfThingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of devices to successfully run the configuration job before the rollout rate increases.',
-        }),
-    ).exactOptional(),
+    numberOfNotifiedThings: IoTJobNumberOfThingsSchema.exactOptional().openapi({
+      description:
+        'The number of devices to receive the job notification before the rollout rate increases.',
+    }),
+    numberOfSucceededThings: IoTJobNumberOfThingsSchema.exactOptional().openapi({
+      description:
+        'The number of devices to successfully run the configuration job before the rollout rate increases.',
+    }),
   })
   .openapi({
     description:
@@ -805,25 +594,17 @@ const IoTJobRateIncreaseCriteriaSchema = z
 
 const IoTJobExponentialRolloutRateSchema = z
   .object({
-    baseRatePerMinute: IoTJobRolloutBaseRatePerMinuteSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum number of devices that receive a pending job notification, per minute, when the job starts. This parameter defines the initial rollout rate of the job.',
-        }),
-    ),
-    incrementFactor: IoTJobRolloutIncrementFactorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The exponential factor to increase the rollout rate for the job.</p> <p>This parameter supports up to one digit after the decimal (for example, you can specify <code>1.5</code>, but not <code>1.55</code>).</p>',
-        }),
-    ),
-    rateIncreaseCriteria: IoTJobRateIncreaseCriteriaSchema.and(
-      z.any().openapi({ description: 'The criteria to increase the rollout rate for the job.' }),
-    ),
+    baseRatePerMinute: IoTJobRolloutBaseRatePerMinuteSchema.openapi({
+      description:
+        'The minimum number of devices that receive a pending job notification, per minute, when the job starts. This parameter defines the initial rollout rate of the job.',
+    }),
+    incrementFactor: IoTJobRolloutIncrementFactorSchema.openapi({
+      description:
+        '<p>The exponential factor to increase the rollout rate for the job.</p> <p>This parameter supports up to one digit after the decimal (for example, you can specify <code>1.5</code>, but not <code>1.55</code>).</p>',
+    }),
+    rateIncreaseCriteria: IoTJobRateIncreaseCriteriaSchema.openapi({
+      description: 'The criteria to increase the rollout rate for the job.',
+    }),
   })
   .openapi({
     required: ['baseRatePerMinute', 'incrementFactor', 'rateIncreaseCriteria'],
@@ -840,17 +621,13 @@ const IoTJobMaxExecutionsPerMinSchema = z
 
 const IoTJobExecutionsRolloutConfigSchema = z
   .object({
-    exponentialRate: IoTJobExponentialRolloutRateSchema.and(
-      z.any().openapi({ description: 'The exponential rate to increase the job rollout rate.' }),
-    ).exactOptional(),
-    maximumPerMinute: IoTJobMaxExecutionsPerMinSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of devices that receive a pending job notification, per minute.',
-        }),
-    ).exactOptional(),
+    exponentialRate: IoTJobExponentialRolloutRateSchema.exactOptional().openapi({
+      description: 'The exponential rate to increase the job rollout rate.',
+    }),
+    maximumPerMinute: IoTJobMaxExecutionsPerMinSchema.exactOptional().openapi({
+      description:
+        'The maximum number of devices that receive a pending job notification, per minute.',
+    }),
   })
   .openapi({
     description:
@@ -877,28 +654,20 @@ const IoTJobMinimumNumberOfExecutedThingsSchema = z
 
 const IoTJobAbortCriteriaSchema = z
   .object({
-    failureType: IoTJobExecutionFailureTypeSchema.and(
-      z.any().openapi({ description: 'The type of job deployment failure that can cancel a job.' }),
-    ),
-    action: IoTJobAbortActionSchema.and(
-      z.any().openapi({ description: 'The action to perform when the criteria are met.' }),
-    ),
-    thresholdPercentage: IoTJobAbortThresholdPercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The minimum percentage of <code>failureType</code> failures that occur before the job can cancel.</p> <p>This parameter supports up to two digits after the decimal (for example, you can specify <code>10.9</code> or <code>10.99</code>, but not <code>10.999</code>).</p>',
-        }),
-    ),
-    minNumberOfExecutedThings: IoTJobMinimumNumberOfExecutedThingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum number of things that receive the configuration before the job can cancel.',
-        }),
-    ),
+    failureType: IoTJobExecutionFailureTypeSchema.openapi({
+      description: 'The type of job deployment failure that can cancel a job.',
+    }),
+    action: IoTJobAbortActionSchema.openapi({
+      description: 'The action to perform when the criteria are met.',
+    }),
+    thresholdPercentage: IoTJobAbortThresholdPercentageSchema.openapi({
+      description:
+        '<p>The minimum percentage of <code>failureType</code> failures that occur before the job can cancel.</p> <p>This parameter supports up to two digits after the decimal (for example, you can specify <code>10.9</code> or <code>10.99</code>, but not <code>10.999</code>).</p>',
+    }),
+    minNumberOfExecutedThings: IoTJobMinimumNumberOfExecutedThingsSchema.openapi({
+      description:
+        'The minimum number of things that receive the configuration before the job can cancel.',
+    }),
   })
   .openapi({
     required: ['failureType', 'action', 'thresholdPercentage', 'minNumberOfExecutedThings'],
@@ -914,14 +683,10 @@ const IoTJobAbortCriteriaListSchema = z
 
 const IoTJobAbortConfigSchema = z
   .object({
-    criteriaList: IoTJobAbortCriteriaListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of criteria that define when and how to cancel the configuration deployment.',
-        }),
-    ),
+    criteriaList: IoTJobAbortCriteriaListSchema.openapi({
+      description:
+        'The list of criteria that define when and how to cancel the configuration deployment.',
+    }),
   })
   .openapi({
     required: ['criteriaList'],
@@ -934,14 +699,10 @@ const IoTJobInProgressTimeoutInMinutesSchema = z.int().openapi('IoTJobInProgress
 
 const IoTJobTimeoutConfigSchema = z
   .object({
-    inProgressTimeoutInMinutes: IoTJobInProgressTimeoutInMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The amount of time, in minutes, that devices have to complete the job. The timer starts when the job status is set to <code>IN_PROGRESS</code>. If the job status doesn't change to a terminal state before the time expires, then the job status is set to <code>TIMED_OUT</code>.</p> <p>The timeout interval must be between 1 minute and 7 days (10080 minutes).</p>",
-        }),
-    ).exactOptional(),
+    inProgressTimeoutInMinutes: IoTJobInProgressTimeoutInMinutesSchema.exactOptional().openapi({
+      description:
+        "<p>The amount of time, in minutes, that devices have to complete the job. The timer starts when the job status is set to <code>IN_PROGRESS</code>. If the job status doesn't change to a terminal state before the time expires, then the job status is set to <code>TIMED_OUT</code>.</p> <p>The timeout interval must be between 1 minute and 7 days (10080 minutes).</p>",
+    }),
   })
   .openapi({
     description: 'Contains information about the timeout configuration for a job.',
@@ -959,22 +720,14 @@ const DeploymentComponentUpdatePolicyActionSchema = z
 
 const DeploymentComponentUpdatePolicySchema = z
   .object({
-    timeoutInSeconds: OptionalIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The amount of time in seconds that each component on a device has to report that it's safe to update. If the component waits for longer than this timeout, then the deployment proceeds on the device.</p> <p>Default: <code>60</code> </p>",
-        }),
-    ).exactOptional(),
-    action: DeploymentComponentUpdatePolicyActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether or not to notify components and wait for components to become safe to update. Choose from the following options:</p> <ul> <li> <p> <code>NOTIFY_COMPONENTS</code> – The deployment notifies each component before it stops and updates that component. Components can use the <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/interprocess-communication.html#ipc-operation-subscribetocomponentupdates">SubscribeToComponentUpdates</a> IPC operation to receive these notifications. Then, components can respond with the <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/interprocess-communication.html#ipc-operation-defercomponentupdate">DeferComponentUpdate</a> IPC operation. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/create-deployments.html">Create deployments</a> in the <i>IoT Greengrass V2 Developer Guide</i>.</p> </li> <li> <p> <code>SKIP_NOTIFY_COMPONENTS</code> – The deployment doesn\'t notify components or wait for them to be safe to update.</p> </li> </ul> <p>Default: <code>NOTIFY_COMPONENTS</code> </p>',
-        }),
-    ).exactOptional(),
+    timeoutInSeconds: OptionalIntegerSchema.exactOptional().openapi({
+      description:
+        "<p>The amount of time in seconds that each component on a device has to report that it's safe to update. If the component waits for longer than this timeout, then the deployment proceeds on the device.</p> <p>Default: <code>60</code> </p>",
+    }),
+    action: DeploymentComponentUpdatePolicyActionSchema.exactOptional().openapi({
+      description:
+        '<p>Whether or not to notify components and wait for components to become safe to update. Choose from the following options:</p> <ul> <li> <p> <code>NOTIFY_COMPONENTS</code> – The deployment notifies each component before it stops and updates that component. Components can use the <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/interprocess-communication.html#ipc-operation-subscribetocomponentupdates">SubscribeToComponentUpdates</a> IPC operation to receive these notifications. Then, components can respond with the <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/interprocess-communication.html#ipc-operation-defercomponentupdate">DeferComponentUpdate</a> IPC operation. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/create-deployments.html">Create deployments</a> in the <i>IoT Greengrass V2 Developer Guide</i>.</p> </li> <li> <p> <code>SKIP_NOTIFY_COMPONENTS</code> – The deployment doesn\'t notify components or wait for them to be safe to update.</p> </li> </ul> <p>Default: <code>NOTIFY_COMPONENTS</code> </p>',
+    }),
   })
   .openapi({
     description:
@@ -985,14 +738,10 @@ const DeploymentComponentUpdatePolicySchema = z
 
 const DeploymentConfigurationValidationPolicySchema = z
   .object({
-    timeoutInSeconds: OptionalIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The amount of time in seconds that a component can validate its configuration updates. If the validation time exceeds this timeout, then the deployment proceeds for the device.</p> <p>Default: <code>30</code> </p>',
-        }),
-    ).exactOptional(),
+    timeoutInSeconds: OptionalIntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The amount of time in seconds that a component can validate its configuration updates. If the validation time exceeds this timeout, then the deployment proceeds for the device.</p> <p>Default: <code>30</code> </p>',
+    }),
   })
   .openapi({
     description:
@@ -1013,67 +762,47 @@ const TagMapSchema = z
 
 const DescribeComponentResponseSchema = z
   .object({
-    arn: ComponentVersionARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the component version.',
-        }),
-    ).exactOptional(),
-    componentName: ComponentNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the component.' }),
-    ).exactOptional(),
-    componentVersion: ComponentVersionStringSchema.and(
-      z.any().openapi({ description: 'The version of the component.' }),
-    ).exactOptional(),
-    creationTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time at which the component was created, expressed in ISO 8601 format.',
-        }),
-    ).exactOptional(),
-    publisher: PublisherStringSchema.and(
-      z.any().openapi({ description: 'The publisher of the component version.' }),
-    ).exactOptional(),
-    description: DescriptionStringSchema.and(
-      z.any().openapi({ description: 'The description of the component version.' }),
-    ).exactOptional(),
-    status: CloudComponentStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the component version in IoT Greengrass V2. This status is different from the status of the component on a core device.',
-        }),
-    ).exactOptional(),
-    platforms: ComponentPlatformListSchema.and(
-      z.any().openapi({ description: 'The platforms that the component version supports.' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html">Tag your resources</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
-        }),
-    ).exactOptional(),
+    arn: ComponentVersionARNSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the component version.',
+    }),
+    componentName: ComponentNameStringSchema.exactOptional().openapi({
+      description: 'The name of the component.',
+    }),
+    componentVersion: ComponentVersionStringSchema.exactOptional().openapi({
+      description: 'The version of the component.',
+    }),
+    creationTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the component was created, expressed in ISO 8601 format.',
+    }),
+    publisher: PublisherStringSchema.exactOptional().openapi({
+      description: 'The publisher of the component version.',
+    }),
+    description: DescriptionStringSchema.exactOptional().openapi({
+      description: 'The description of the component version.',
+    }),
+    status: CloudComponentStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the component version in IoT Greengrass V2. This status is different from the status of the component on a core device.',
+    }),
+    platforms: ComponentPlatformListSchema.exactOptional().openapi({
+      description: 'The platforms that the component version supports.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html">Tag your resources</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeComponentResponse')
 
 const DisassociateServiceRoleFromAccountResponseSchema = z
   .object({
-    disassociatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'DisassociatedAt' },
-          description:
-            'The time when the service role was disassociated from IoT Greengrass for your Amazon Web Services account in this Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
+    disassociatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'DisassociatedAt' },
+      description:
+        'The time when the service role was disassociated from IoT Greengrass for your Amazon Web Services account in this Amazon Web Services Region.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateServiceRoleFromAccountResponse')
@@ -1084,29 +813,21 @@ const RecipeBlobSchema = z.string().openapi('RecipeBlob')
 
 const GetComponentResponseSchema = z
   .object({
-    recipeOutputFormat: RecipeOutputFormatSchema.and(
-      z.any().openapi({ description: 'The format of the recipe.' }),
-    ),
-    recipe: RecipeBlobSchema.and(
-      z.any().openapi({ description: 'The recipe of the component version.' }),
-    ),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html">Tag your resources</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
-        }),
-    ).exactOptional(),
+    recipeOutputFormat: RecipeOutputFormatSchema.openapi({
+      description: 'The format of the recipe.',
+    }),
+    recipe: RecipeBlobSchema.openapi({ description: 'The recipe of the component version.' }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html">Tag your resources</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
+    }),
   })
   .openapi({ required: ['recipeOutputFormat', 'recipe'] })
   .openapi('GetComponentResponse')
 
 const GetComponentVersionArtifactResponseSchema = z
   .object({
-    preSignedUrl: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The URL of the artifact.' }),
-    ),
+    preSignedUrl: NonEmptyStringSchema.openapi({ description: 'The URL of the artifact.' }),
   })
   .openapi({ required: ['preSignedUrl'] })
   .openapi('GetComponentVersionArtifactResponse')
@@ -1115,38 +836,25 @@ const PortNumberIntSchema = z.int().min(0).max(65535).openapi('PortNumberInt')
 
 const ConnectivityInfoSchema = z
   .object({
-    id: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'Id' }, description: 'An ID for the connectivity information.' }),
-    ).exactOptional(),
-    hostAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'HostAddress' },
-          description:
-            'The IP address or DNS address where client devices can connect to an MQTT broker on the Greengrass core device.',
-        }),
-    ).exactOptional(),
-    portNumber: PortNumberIntSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'PortNumber' },
-          description:
-            'The port where the MQTT broker operates on the core device. This port is typically 8883, which is the default port for the MQTT broker component that runs on core devices.',
-        }),
-    ).exactOptional(),
-    metadata: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Metadata' },
-          description:
-            'Additional metadata to provide to client devices that connect to this core device.',
-        }),
-    ).exactOptional(),
+    id: StringSchema.exactOptional().openapi({
+      xml: { name: 'Id' },
+      description: 'An ID for the connectivity information.',
+    }),
+    hostAddress: StringSchema.exactOptional().openapi({
+      xml: { name: 'HostAddress' },
+      description:
+        'The IP address or DNS address where client devices can connect to an MQTT broker on the Greengrass core device.',
+    }),
+    portNumber: PortNumberIntSchema.exactOptional().openapi({
+      xml: { name: 'PortNumber' },
+      description:
+        'The port where the MQTT broker operates on the core device. This port is typically 8883, which is the default port for the MQTT broker component that runs on core devices.',
+    }),
+    metadata: StringSchema.exactOptional().openapi({
+      xml: { name: 'Metadata' },
+      description:
+        'Additional metadata to provide to client devices that connect to this core device.',
+    }),
   })
   .openapi({
     description:
@@ -1159,22 +867,14 @@ const ConnectivityInfoListSchema = z.array(ConnectivityInfoSchema).openapi('Conn
 
 const GetConnectivityInfoResponseSchema = z
   .object({
-    connectivityInfo: ConnectivityInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ConnectivityInfo' },
-          description: 'The connectivity information for the core device.',
-        }),
-    ).exactOptional(),
-    message: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Message' },
-          description: 'A message about the connectivity information request.',
-        }),
-    ).exactOptional(),
+    connectivityInfo: ConnectivityInfoListSchema.exactOptional().openapi({
+      xml: { name: 'ConnectivityInfo' },
+      description: 'The connectivity information for the core device.',
+    }),
+    message: StringSchema.exactOptional().openapi({
+      xml: { name: 'Message' },
+      description: 'A message about the connectivity information request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetConnectivityInfoResponse')
@@ -1199,51 +899,31 @@ const CoreDeviceStatusSchema = z.enum(['HEALTHY', 'UNHEALTHY']).openapi('CoreDev
 
 const GetCoreDeviceResponseSchema = z
   .object({
-    coreDeviceThingName: CoreDeviceThingNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the core device. This is also the name of the IoT thing.',
-        }),
-    ).exactOptional(),
-    coreVersion: GGCVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the IoT Greengrass Core software that the core device runs. This version is equivalent to the version of the Greengrass nucleus component that runs on the core device. For more information, see the <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html">Greengrass nucleus component</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    platform: CoreDevicePlatformStringSchema.and(
-      z.any().openapi({ description: 'The operating system platform that the core device runs.' }),
-    ).exactOptional(),
-    architecture: CoreDeviceArchitectureStringSchema.and(
-      z.any().openapi({ description: 'The computer architecture of the core device.' }),
-    ).exactOptional(),
-    status: CoreDeviceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the core device. The core device status can be:</p> <ul> <li> <p> <code>HEALTHY</code> – The IoT Greengrass Core software and all components run on the core device without issue.</p> </li> <li> <p> <code>UNHEALTHY</code> – The IoT Greengrass Core software or a component is in a failed state on the core device.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    lastStatusUpdateTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time at which the core device's status last updated, expressed in ISO 8601 format.",
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html">Tag your resources</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
-        }),
-    ).exactOptional(),
+    coreDeviceThingName: CoreDeviceThingNameSchema.exactOptional().openapi({
+      description: 'The name of the core device. This is also the name of the IoT thing.',
+    }),
+    coreVersion: GGCVersionSchema.exactOptional().openapi({
+      description:
+        'The version of the IoT Greengrass Core software that the core device runs. This version is equivalent to the version of the Greengrass nucleus component that runs on the core device. For more information, see the <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html">Greengrass nucleus component</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
+    }),
+    platform: CoreDevicePlatformStringSchema.exactOptional().openapi({
+      description: 'The operating system platform that the core device runs.',
+    }),
+    architecture: CoreDeviceArchitectureStringSchema.exactOptional().openapi({
+      description: 'The computer architecture of the core device.',
+    }),
+    status: CoreDeviceStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the core device. The core device status can be:</p> <ul> <li> <p> <code>HEALTHY</code> – The IoT Greengrass Core software and all components run on the core device without issue.</p> </li> <li> <p> <code>UNHEALTHY</code> – The IoT Greengrass Core software or a component is in a failed state on the core device.</p> </li> </ul>',
+    }),
+    lastStatusUpdateTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        "The time at which the core device's status last updated, expressed in ISO 8601 format.",
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html">Tag your resources</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCoreDeviceResponse')
@@ -1265,30 +945,19 @@ const ComponentDeploymentSpecificationsSchema = z
 
 const DeploymentPoliciesSchema = z
   .object({
-    failureHandlingPolicy: DeploymentFailureHandlingPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The failure handling policy for the configuration deployment. This policy defines what to do if the deployment fails.</p> <p>Default: <code>ROLLBACK</code> </p>',
-        }),
-    ).exactOptional(),
-    componentUpdatePolicy: DeploymentComponentUpdatePolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The component update policy for the configuration deployment. This policy defines when it's safe to deploy the configuration to devices.",
-        }),
-    ).exactOptional(),
-    configurationValidationPolicy: DeploymentConfigurationValidationPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration validation policy for the configuration deployment. This policy defines how long each component has to validate its configure updates.',
-        }),
-    ).exactOptional(),
+    failureHandlingPolicy: DeploymentFailureHandlingPolicySchema.exactOptional().openapi({
+      description:
+        '<p>The failure handling policy for the configuration deployment. This policy defines what to do if the deployment fails.</p> <p>Default: <code>ROLLBACK</code> </p>',
+    }),
+    componentUpdatePolicy: DeploymentComponentUpdatePolicySchema.exactOptional().openapi({
+      description:
+        "The component update policy for the configuration deployment. This policy defines when it's safe to deploy the configuration to devices.",
+    }),
+    configurationValidationPolicy:
+      DeploymentConfigurationValidationPolicySchema.exactOptional().openapi({
+        description:
+          'The configuration validation policy for the configuration deployment. This policy defines how long each component has to validate its configure updates.',
+      }),
   })
   .openapi({
     description:
@@ -1299,30 +968,18 @@ const DeploymentPoliciesSchema = z
 
 const DeploymentIoTJobConfigurationSchema = z
   .object({
-    jobExecutionsRolloutConfig: IoTJobExecutionsRolloutConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The rollout configuration for the job. This configuration defines the rate at which the job rolls out to the fleet of target devices.',
-        }),
-    ).exactOptional(),
-    abortConfig: IoTJobAbortConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stop configuration for the job. This configuration defines when and how to stop a job rollout.',
-        }),
-    ).exactOptional(),
-    timeoutConfig: IoTJobTimeoutConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timeout configuration for the job. This configuration defines the amount of time each device has to complete the job.',
-        }),
-    ).exactOptional(),
+    jobExecutionsRolloutConfig: IoTJobExecutionsRolloutConfigSchema.exactOptional().openapi({
+      description:
+        'The rollout configuration for the job. This configuration defines the rate at which the job rolls out to the fleet of target devices.',
+    }),
+    abortConfig: IoTJobAbortConfigSchema.exactOptional().openapi({
+      description:
+        'The stop configuration for the job. This configuration defines when and how to stop a job rollout.',
+    }),
+    timeoutConfig: IoTJobTimeoutConfigSchema.exactOptional().openapi({
+      description:
+        'The timeout configuration for the job. This configuration defines the amount of time each device has to complete the job.',
+    }),
   })
   .openapi({ description: 'Contains information about an IoT job configuration.', required: [] })
   .openapi('DeploymentIoTJobConfiguration')
@@ -1336,141 +993,83 @@ const ThingGroupARNSchema = z
 
 const GetDeploymentResponseSchema = z
   .object({
-    targetArn: TargetARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the target IoT thing or thing group.',
-        }),
-    ).exactOptional(),
-    revisionId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The revision number of the deployment.' }),
-    ).exactOptional(),
-    deploymentId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The ID of the deployment.' }),
-    ).exactOptional(),
-    deploymentName: NullableStringSchema.and(
-      z.any().openapi({ description: 'The name of the deployment.' }),
-    ).exactOptional(),
-    deploymentStatus: DeploymentStatusSchema.and(
-      z.any().openapi({ description: 'The status of the deployment.' }),
-    ).exactOptional(),
-    iotJobId: NullableStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the IoT job that applies the deployment to target devices.',
-        }),
-    ).exactOptional(),
-    iotJobArn: IoTJobARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the IoT job that applies the deployment to target devices.',
-        }),
-    ).exactOptional(),
-    components: ComponentDeploymentSpecificationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The components to deploy. This is a dictionary, where each key is the name of a component, and each key's value is the version and configuration to deploy for that component.",
-        }),
-    ).exactOptional(),
-    deploymentPolicies: DeploymentPoliciesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The deployment policies for the deployment. These policies define how the deployment updates components and handles failure.',
-        }),
-    ).exactOptional(),
-    iotJobConfiguration: DeploymentIoTJobConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The job configuration for the deployment configuration. The job configuration specifies the rollout, timeout, and stop configurations for the deployment configuration.',
-        }),
-    ).exactOptional(),
-    creationTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time at which the deployment was created, expressed in ISO 8601 format.',
-        }),
-    ).exactOptional(),
-    isLatestForTarget: IsLatestForTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether or not the deployment is the latest revision for its target.',
-        }),
-    ).exactOptional(),
-    parentTargetArn: ThingGroupARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The parent deployment\'s target <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> within a subdeployment.',
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html">Tag your resources</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
-        }),
-    ).exactOptional(),
+    targetArn: TargetARNSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the target IoT thing or thing group.',
+    }),
+    revisionId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The revision number of the deployment.',
+    }),
+    deploymentId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The ID of the deployment.',
+    }),
+    deploymentName: NullableStringSchema.exactOptional().openapi({
+      description: 'The name of the deployment.',
+    }),
+    deploymentStatus: DeploymentStatusSchema.exactOptional().openapi({
+      description: 'The status of the deployment.',
+    }),
+    iotJobId: NullableStringSchema.exactOptional().openapi({
+      description: 'The ID of the IoT job that applies the deployment to target devices.',
+    }),
+    iotJobArn: IoTJobARNSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the IoT job that applies the deployment to target devices.',
+    }),
+    components: ComponentDeploymentSpecificationsSchema.exactOptional().openapi({
+      description:
+        "The components to deploy. This is a dictionary, where each key is the name of a component, and each key's value is the version and configuration to deploy for that component.",
+    }),
+    deploymentPolicies: DeploymentPoliciesSchema.exactOptional().openapi({
+      description:
+        'The deployment policies for the deployment. These policies define how the deployment updates components and handles failure.',
+    }),
+    iotJobConfiguration: DeploymentIoTJobConfigurationSchema.exactOptional().openapi({
+      description:
+        'The job configuration for the deployment configuration. The job configuration specifies the rollout, timeout, and stop configurations for the deployment configuration.',
+    }),
+    creationTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the deployment was created, expressed in ISO 8601 format.',
+    }),
+    isLatestForTarget: IsLatestForTargetSchema.exactOptional().openapi({
+      description: 'Whether or not the deployment is the latest revision for its target.',
+    }),
+    parentTargetArn: ThingGroupARNSchema.exactOptional().openapi({
+      description:
+        'The parent deployment\'s target <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> within a subdeployment.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html">Tag your resources</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDeploymentResponse')
 
 const GetServiceRoleForAccountResponseSchema = z
   .object({
-    associatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'AssociatedAt' },
-          description:
-            'The time when the service role was associated with IoT Greengrass for your Amazon Web Services account in this Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
-    roleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'RoleArn' },
-          description:
-            'The ARN of the service role that is associated with IoT Greengrass for your Amazon Web Services account in this Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
+    associatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'AssociatedAt' },
+      description:
+        'The time when the service role was associated with IoT Greengrass for your Amazon Web Services account in this Amazon Web Services Region.',
+    }),
+    roleArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'RoleArn' },
+      description:
+        'The ARN of the service role that is associated with IoT Greengrass for your Amazon Web Services account in this Amazon Web Services Region.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetServiceRoleForAccountResponse')
 
 const AssociatedClientDeviceSchema = z
   .object({
-    thingName: IoTThingNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the IoT thing that represents the associated client device.',
-        }),
-    ).exactOptional(),
-    associationTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the client device was associated, expressed in ISO 8601 format.',
-        }),
-    ).exactOptional(),
+    thingName: IoTThingNameSchema.exactOptional().openapi({
+      description: 'The name of the IoT thing that represents the associated client device.',
+    }),
+    associationTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the client device was associated, expressed in ISO 8601 format.',
+    }),
   })
   .openapi({
     description:
@@ -1489,42 +1088,30 @@ const NextTokenStringSchema = z.string().openapi('NextTokenString')
 
 const ListClientDevicesAssociatedWithCoreDeviceResponseSchema = z
   .object({
-    associatedClientDevices: AssociatedClientDeviceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list that describes the client devices that are associated with the core device.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    associatedClientDevices: AssociatedClientDeviceListSchema.exactOptional().openapi({
+      description:
+        'A list that describes the client devices that are associated with the core device.',
+    }),
+    nextToken: NextTokenStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListClientDevicesAssociatedWithCoreDeviceResponse')
 
 const ComponentVersionListItemSchema = z
   .object({
-    componentName: ComponentNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the component.' }),
-    ).exactOptional(),
-    componentVersion: ComponentVersionStringSchema.and(
-      z.any().openapi({ description: 'The version of the component.' }),
-    ).exactOptional(),
-    arn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the component version.',
-        }),
-    ).exactOptional(),
+    componentName: ComponentNameStringSchema.exactOptional().openapi({
+      description: 'The name of the component.',
+    }),
+    componentVersion: ComponentVersionStringSchema.exactOptional().openapi({
+      description: 'The version of the component.',
+    }),
+    arn: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the component version.',
+    }),
   })
   .openapi({
     description: 'Contains information about a component version in a list.',
@@ -1538,17 +1125,13 @@ const ComponentVersionListSchema = z
 
 const ListComponentVersionsResponseSchema = z
   .object({
-    componentVersions: ComponentVersionListSchema.and(
-      z.any().openapi({ description: 'A list of versions that exist for the component.' }),
-    ).exactOptional(),
-    nextToken: NextTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    componentVersions: ComponentVersionListSchema.exactOptional().openapi({
+      description: 'A list of versions that exist for the component.',
+    }),
+    nextToken: NextTokenStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListComponentVersionsResponse')
@@ -1560,33 +1143,25 @@ const ComponentARNSchema = z
 
 const ComponentLatestVersionSchema = z
   .object({
-    arn: ComponentVersionARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the component version.',
-        }),
-    ).exactOptional(),
-    componentVersion: ComponentVersionStringSchema.and(
-      z.any().openapi({ description: 'The version of the component.' }),
-    ).exactOptional(),
-    creationTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time at which the component was created, expressed in ISO 8601 format.',
-        }),
-    ).exactOptional(),
-    description: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The description of the component version.' }),
-    ).exactOptional(),
-    publisher: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The publisher of the component version.' }),
-    ).exactOptional(),
-    platforms: ComponentPlatformListSchema.and(
-      z.any().openapi({ description: 'The platforms that the component version supports.' }),
-    ).exactOptional(),
+    arn: ComponentVersionARNSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the component version.',
+    }),
+    componentVersion: ComponentVersionStringSchema.exactOptional().openapi({
+      description: 'The version of the component.',
+    }),
+    creationTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the component was created, expressed in ISO 8601 format.',
+    }),
+    description: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The description of the component version.',
+    }),
+    publisher: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The publisher of the component version.',
+    }),
+    platforms: ComponentPlatformListSchema.exactOptional().openapi({
+      description: 'The platforms that the component version supports.',
+    }),
   })
   .openapi({
     description: 'Contains information about the latest version of a component.',
@@ -1596,20 +1171,16 @@ const ComponentLatestVersionSchema = z
 
 const ComponentSchema = z
   .object({
-    arn: ComponentARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the component version.',
-        }),
-    ).exactOptional(),
-    componentName: ComponentNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the component.' }),
-    ).exactOptional(),
-    latestVersion: ComponentLatestVersionSchema.and(
-      z.any().openapi({ description: 'The latest version of the component and its details.' }),
-    ).exactOptional(),
+    arn: ComponentARNSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the component version.',
+    }),
+    componentName: ComponentNameStringSchema.exactOptional().openapi({
+      description: 'The name of the component.',
+    }),
+    latestVersion: ComponentLatestVersionSchema.exactOptional().openapi({
+      description: 'The latest version of the component and its details.',
+    }),
   })
   .openapi({ description: 'Contains information about a component.', required: [] })
   .openapi('Component')
@@ -1618,46 +1189,30 @@ const ComponentListSchema = z.array(ComponentSchema).openapi('ComponentList')
 
 const ListComponentsResponseSchema = z
   .object({
-    components: ComponentListSchema.and(
-      z.any().openapi({ description: 'A list that summarizes each component.' }),
-    ).exactOptional(),
-    nextToken: NextTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    components: ComponentListSchema.exactOptional().openapi({
+      description: 'A list that summarizes each component.',
+    }),
+    nextToken: NextTokenStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListComponentsResponse')
 
 const CoreDeviceSchema = z
   .object({
-    coreDeviceThingName: CoreDeviceThingNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the core device. This is also the name of the IoT thing.',
-        }),
-    ).exactOptional(),
-    status: CoreDeviceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the core device. Core devices can have the following statuses:</p> <ul> <li> <p> <code>HEALTHY</code> – The IoT Greengrass Core software and all components run on the core device without issue.</p> </li> <li> <p> <code>UNHEALTHY</code> – The IoT Greengrass Core software or a component is in a failed state on the core device.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    lastStatusUpdateTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time at which the core device's status last updated, expressed in ISO 8601 format.",
-        }),
-    ).exactOptional(),
+    coreDeviceThingName: CoreDeviceThingNameSchema.exactOptional().openapi({
+      description: 'The name of the core device. This is also the name of the IoT thing.',
+    }),
+    status: CoreDeviceStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the core device. Core devices can have the following statuses:</p> <ul> <li> <p> <code>HEALTHY</code> – The IoT Greengrass Core software and all components run on the core device without issue.</p> </li> <li> <p> <code>UNHEALTHY</code> – The IoT Greengrass Core software or a component is in a failed state on the core device.</p> </li> </ul>',
+    }),
+    lastStatusUpdateTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        "The time at which the core device's status last updated, expressed in ISO 8601 format.",
+    }),
   })
   .openapi({
     description:
@@ -1670,66 +1225,45 @@ const CoreDevicesListSchema = z.array(CoreDeviceSchema).openapi('CoreDevicesList
 
 const ListCoreDevicesResponseSchema = z
   .object({
-    coreDevices: CoreDevicesListSchema.and(
-      z.any().openapi({ description: 'A list that summarizes each core device.' }),
-    ).exactOptional(),
-    nextToken: NextTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    coreDevices: CoreDevicesListSchema.exactOptional().openapi({
+      description: 'A list that summarizes each core device.',
+    }),
+    nextToken: NextTokenStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCoreDevicesResponse')
 
 const DeploymentSchema = z
   .object({
-    targetArn: TargetARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the target IoT thing or thing group. When creating a subdeployment, the targetARN can only be a thing group.',
-        }),
-    ).exactOptional(),
-    revisionId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The revision number of the deployment.' }),
-    ).exactOptional(),
-    deploymentId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The ID of the deployment.' }),
-    ).exactOptional(),
-    deploymentName: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The name of the deployment.' }),
-    ).exactOptional(),
-    creationTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time at which the deployment was created, expressed in ISO 8601 format.',
-        }),
-    ).exactOptional(),
-    deploymentStatus: DeploymentStatusSchema.and(
-      z.any().openapi({ description: 'The status of the deployment.' }),
-    ).exactOptional(),
-    isLatestForTarget: IsLatestForTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether or not the deployment is the latest revision for its target.',
-        }),
-    ).exactOptional(),
-    parentTargetArn: ThingGroupARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The parent deployment\'s target <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> within a subdeployment.',
-        }),
-    ).exactOptional(),
+    targetArn: TargetARNSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the target IoT thing or thing group. When creating a subdeployment, the targetARN can only be a thing group.',
+    }),
+    revisionId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The revision number of the deployment.',
+    }),
+    deploymentId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The ID of the deployment.',
+    }),
+    deploymentName: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The name of the deployment.',
+    }),
+    creationTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the deployment was created, expressed in ISO 8601 format.',
+    }),
+    deploymentStatus: DeploymentStatusSchema.exactOptional().openapi({
+      description: 'The status of the deployment.',
+    }),
+    isLatestForTarget: IsLatestForTargetSchema.exactOptional().openapi({
+      description: 'Whether or not the deployment is the latest revision for its target.',
+    }),
+    parentTargetArn: ThingGroupARNSchema.exactOptional().openapi({
+      description:
+        'The parent deployment\'s target <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> within a subdeployment.',
+    }),
   })
   .openapi({ description: 'Contains information about a deployment.', required: [] })
   .openapi('Deployment')
@@ -1738,17 +1272,13 @@ const DeploymentListSchema = z.array(DeploymentSchema).openapi('DeploymentList')
 
 const ListDeploymentsResponseSchema = z
   .object({
-    deployments: DeploymentListSchema.and(
-      z.any().openapi({ description: 'A list that summarizes each deployment.' }),
-    ).exactOptional(),
-    nextToken: NextTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    deployments: DeploymentListSchema.exactOptional().openapi({
+      description: 'A list that summarizes each deployment.',
+    }),
+    nextToken: NextTokenStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDeploymentsResponse')
@@ -1798,22 +1328,14 @@ const EffectiveDeploymentErrorTypeListSchema = z
 
 const EffectiveDeploymentStatusDetailsSchema = z
   .object({
-    errorStack: EffectiveDeploymentErrorStackSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains an ordered list of short error codes that range from the most generic error to the most specific one. The error codes describe the reason for failure whenever the <code>coreDeviceExecutionStatus</code> is in a failed state. The response will be an empty list if there is no error.',
-        }),
-    ).exactOptional(),
-    errorTypes: EffectiveDeploymentErrorTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains tags which describe the error. You can use the error types to classify errors to assist with remediating the failure. The response will be an empty list if there is no error.',
-        }),
-    ).exactOptional(),
+    errorStack: EffectiveDeploymentErrorStackSchema.exactOptional().openapi({
+      description:
+        'Contains an ordered list of short error codes that range from the most generic error to the most specific one. The error codes describe the reason for failure whenever the <code>coreDeviceExecutionStatus</code> is in a failed state. The response will be an empty list if there is no error.',
+    }),
+    errorTypes: EffectiveDeploymentErrorTypeListSchema.exactOptional().openapi({
+      description:
+        'Contains tags which describe the error. You can use the error types to classify errors to assist with remediating the failure. The response will be an empty list if there is no error.',
+    }),
   })
   .openapi({
     description:
@@ -1824,73 +1346,40 @@ const EffectiveDeploymentStatusDetailsSchema = z
 
 const EffectiveDeploymentSchema = z
   .object({
-    deploymentId: DeploymentIDSchema.and(
-      z.any().openapi({ description: 'The ID of the deployment.' }),
-    ),
-    deploymentName: DeploymentNameSchema.and(
-      z.any().openapi({ description: 'The name of the deployment.' }),
-    ),
-    iotJobId: IoTJobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the IoT job that applies the deployment to target devices.',
-        }),
-    ).exactOptional(),
-    iotJobArn: IoTJobARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the IoT job that applies the deployment to target devices.',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the deployment job.' }),
-    ).exactOptional(),
-    targetArn: TargetARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the target IoT thing or thing group.',
-        }),
-    ),
-    coreDeviceExecutionStatus: EffectiveDeploymentExecutionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the deployment job on the Greengrass core device.</p> <ul> <li> <p> <code>IN_PROGRESS</code> – The deployment job is running.</p> </li> <li> <p> <code>QUEUED</code> – The deployment job is in the job queue and waiting to run.</p> </li> <li> <p> <code>FAILED</code> – The deployment failed. For more information, see the <code>statusDetails</code> field.</p> </li> <li> <p> <code>COMPLETED</code> – The deployment to an IoT thing was completed successfully.</p> </li> <li> <p> <code>TIMED_OUT</code> – The deployment didn't complete in the allotted time. </p> </li> <li> <p> <code>CANCELED</code> – The deployment was canceled by the user.</p> </li> <li> <p> <code>REJECTED</code> – The deployment was rejected. For more information, see the <code>statusDetails</code> field.</p> </li> <li> <p> <code>SUCCEEDED</code> – The deployment to an IoT thing group was completed successfully.</p> </li> </ul>",
-        }),
-    ),
-    reason: ReasonSchema.and(
-      z.any().openapi({ description: 'The reason code for the update, if the job was updated.' }),
-    ).exactOptional(),
-    creationTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time at which the deployment was created, expressed in ISO 8601 format.',
-        }),
-    ),
-    modifiedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time at which the deployment job was last modified, expressed in ISO 8601 format.',
-        }),
-    ),
-    statusDetails: EffectiveDeploymentStatusDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status details that explain why a deployment has an error. This response will be null if the deployment is in a success state.',
-        }),
-    ).exactOptional(),
+    deploymentId: DeploymentIDSchema.openapi({ description: 'The ID of the deployment.' }),
+    deploymentName: DeploymentNameSchema.openapi({ description: 'The name of the deployment.' }),
+    iotJobId: IoTJobIdSchema.exactOptional().openapi({
+      description: 'The ID of the IoT job that applies the deployment to target devices.',
+    }),
+    iotJobArn: IoTJobARNSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the IoT job that applies the deployment to target devices.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the deployment job.',
+    }),
+    targetArn: TargetARNSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the target IoT thing or thing group.',
+    }),
+    coreDeviceExecutionStatus: EffectiveDeploymentExecutionStatusSchema.openapi({
+      description:
+        "<p>The status of the deployment job on the Greengrass core device.</p> <ul> <li> <p> <code>IN_PROGRESS</code> – The deployment job is running.</p> </li> <li> <p> <code>QUEUED</code> – The deployment job is in the job queue and waiting to run.</p> </li> <li> <p> <code>FAILED</code> – The deployment failed. For more information, see the <code>statusDetails</code> field.</p> </li> <li> <p> <code>COMPLETED</code> – The deployment to an IoT thing was completed successfully.</p> </li> <li> <p> <code>TIMED_OUT</code> – The deployment didn't complete in the allotted time. </p> </li> <li> <p> <code>CANCELED</code> – The deployment was canceled by the user.</p> </li> <li> <p> <code>REJECTED</code> – The deployment was rejected. For more information, see the <code>statusDetails</code> field.</p> </li> <li> <p> <code>SUCCEEDED</code> – The deployment to an IoT thing group was completed successfully.</p> </li> </ul>",
+    }),
+    reason: ReasonSchema.exactOptional().openapi({
+      description: 'The reason code for the update, if the job was updated.',
+    }),
+    creationTimestamp: TimestampSchema.openapi({
+      description: 'The time at which the deployment was created, expressed in ISO 8601 format.',
+    }),
+    modifiedTimestamp: TimestampSchema.openapi({
+      description:
+        'The time at which the deployment job was last modified, expressed in ISO 8601 format.',
+    }),
+    statusDetails: EffectiveDeploymentStatusDetailsSchema.exactOptional().openapi({
+      description:
+        'The status details that explain why a deployment has an error. This response will be null if the deployment is in a success state.',
+    }),
   })
   .openapi({
     required: [
@@ -1912,19 +1401,13 @@ const EffectiveDeploymentsListSchema = z
 
 const ListEffectiveDeploymentsResponseSchema = z
   .object({
-    effectiveDeployments: EffectiveDeploymentsListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list that summarizes each deployment on the core device.' }),
-    ).exactOptional(),
-    nextToken: NextTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    effectiveDeployments: EffectiveDeploymentsListSchema.exactOptional().openapi({
+      description: 'A list that summarizes each deployment on the core device.',
+    }),
+    nextToken: NextTokenStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEffectiveDeploymentsResponse')
@@ -1949,58 +1432,38 @@ const InstalledComponentLifecycleStatusCodeListSchema = z
 
 const InstalledComponentSchema = z
   .object({
-    componentName: ComponentNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the component.' }),
-    ).exactOptional(),
-    componentVersion: ComponentVersionStringSchema.and(
-      z.any().openapi({ description: 'The version of the component.' }),
-    ).exactOptional(),
-    lifecycleState: InstalledComponentLifecycleStateSchema.and(
-      z.any().openapi({ description: 'The lifecycle state of the component.' }),
-    ).exactOptional(),
-    lifecycleStateDetails: LifecycleStateDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A detailed response about the lifecycle state of the component that explains the reason why a component has an error or is broken.',
-        }),
-    ).exactOptional(),
-    isRoot: IsRootSchema.and(
-      z.any().openapi({ description: 'Whether or not the component is a root component.' }),
-    ).exactOptional(),
-    lastStatusChangeTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of how current the data is.</p> <p>This response is based off of component state changes. The status reflects component disruptions and deployments. If a component only sees a configuration update during a deployment, it might not undergo a state change and this status would not be updated.</p>',
-        }),
-    ).exactOptional(),
-    lastReportedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The last time the Greengrass core device sent a message containing a component's state to the Amazon Web Services Cloud.</p> <p>A component does not need to see a state change for this field to update.</p>",
-        }),
-    ).exactOptional(),
-    lastInstallationSource: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The most recent deployment source that brought the component to the Greengrass core device. For a thing group deployment or thing deployment, the source will be the The ID of the deployment. and for local deployments it will be <code>LOCAL</code>.</p> <note> <p>Any deployment will attempt to reinstall currently broken components on the device, which will update the last installation source.</p> </note>',
-        }),
-    ).exactOptional(),
-    lifecycleStatusCodes: InstalledComponentLifecycleStatusCodeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status codes that indicate the reason for failure whenever the <code>lifecycleState</code> has an error or is in a broken state.</p> <note> <p>Greengrass nucleus v2.8.0 or later is required to get an accurate <code>lifecycleStatusCodes</code> response. This response can be inaccurate in earlier Greengrass nucleus versions.</p> </note>',
-        }),
-    ).exactOptional(),
+    componentName: ComponentNameStringSchema.exactOptional().openapi({
+      description: 'The name of the component.',
+    }),
+    componentVersion: ComponentVersionStringSchema.exactOptional().openapi({
+      description: 'The version of the component.',
+    }),
+    lifecycleState: InstalledComponentLifecycleStateSchema.exactOptional().openapi({
+      description: 'The lifecycle state of the component.',
+    }),
+    lifecycleStateDetails: LifecycleStateDetailsSchema.exactOptional().openapi({
+      description:
+        'A detailed response about the lifecycle state of the component that explains the reason why a component has an error or is broken.',
+    }),
+    isRoot: IsRootSchema.exactOptional().openapi({
+      description: 'Whether or not the component is a root component.',
+    }),
+    lastStatusChangeTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The status of how current the data is.</p> <p>This response is based off of component state changes. The status reflects component disruptions and deployments. If a component only sees a configuration update during a deployment, it might not undergo a state change and this status would not be updated.</p>',
+    }),
+    lastReportedTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        "<p>The last time the Greengrass core device sent a message containing a component's state to the Amazon Web Services Cloud.</p> <p>A component does not need to see a state change for this field to update.</p>",
+    }),
+    lastInstallationSource: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        '<p>The most recent deployment source that brought the component to the Greengrass core device. For a thing group deployment or thing deployment, the source will be the The ID of the deployment. and for local deployments it will be <code>LOCAL</code>.</p> <note> <p>Any deployment will attempt to reinstall currently broken components on the device, which will update the last installation source.</p> </note>',
+    }),
+    lifecycleStatusCodes: InstalledComponentLifecycleStatusCodeListSchema.exactOptional().openapi({
+      description:
+        '<p>The status codes that indicate the reason for failure whenever the <code>lifecycleState</code> has an error or is in a broken state.</p> <note> <p>Greengrass nucleus v2.8.0 or later is required to get an accurate <code>lifecycleStatusCodes</code> response. This response can be inaccurate in earlier Greengrass nucleus versions.</p> </note>',
+    }),
   })
   .openapi({
     description: 'Contains information about a component on a Greengrass core device.',
@@ -2014,75 +1477,51 @@ const InstalledComponentListSchema = z
 
 const ListInstalledComponentsResponseSchema = z
   .object({
-    installedComponents: InstalledComponentListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list that summarizes each component on the core device.</p> <note> <p>Greengrass nucleus v2.7.0 or later is required to get an accurate <code>lastStatusChangeTimestamp</code> response. This response can be inaccurate in earlier Greengrass nucleus versions.</p> </note> <note> <p>Greengrass nucleus v2.8.0 or later is required to get an accurate <code>lastInstallationSource</code> and <code>lastReportedTimestamp</code> response. This response can be inaccurate or null in earlier Greengrass nucleus versions.</p> </note>',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    installedComponents: InstalledComponentListSchema.exactOptional().openapi({
+      description:
+        '<p>A list that summarizes each component on the core device.</p> <note> <p>Greengrass nucleus v2.7.0 or later is required to get an accurate <code>lastStatusChangeTimestamp</code> response. This response can be inaccurate in earlier Greengrass nucleus versions.</p> </note> <note> <p>Greengrass nucleus v2.8.0 or later is required to get an accurate <code>lastInstallationSource</code> and <code>lastReportedTimestamp</code> response. This response can be inaccurate or null in earlier Greengrass nucleus versions.</p> </note>',
+    }),
+    nextToken: NextTokenStringSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListInstalledComponentsResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html">Tag your resources</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
-        }),
-    ).exactOptional(),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html">Tag your resources</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ResolvedComponentVersionSchema = z
   .object({
-    arn: ComponentVersionARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the component version.',
-        }),
-    ).exactOptional(),
-    componentName: ComponentNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the component.' }),
-    ).exactOptional(),
-    componentVersion: ComponentVersionStringSchema.and(
-      z.any().openapi({ description: 'The version of the component.' }),
-    ).exactOptional(),
-    recipe: RecipeBlobSchema.and(
-      z.any().openapi({ description: 'The recipe of the component version.' }),
-    ).exactOptional(),
-    vendorGuidance: VendorGuidanceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The vendor guidance state for the component version. This state indicates whether the component version has any issues that you should consider before you deploy it. The vendor guidance state can be:</p> <ul> <li> <p> <code>ACTIVE</code> – This component version is available and recommended for use.</p> </li> <li> <p> <code>DISCONTINUED</code> – This component version has been discontinued by its publisher. You can deploy this component version, but we recommend that you use a different version of this component.</p> </li> <li> <p> <code>DELETED</code> – This component version has been deleted by its publisher, so you can't deploy it. If you have any existing deployments that specify this component version, those deployments will fail.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    message: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A message that communicates details about the vendor guidance state of the component version. This message communicates why a component version is discontinued or deleted.',
-        }),
-    ).exactOptional(),
+    arn: ComponentVersionARNSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the component version.',
+    }),
+    componentName: ComponentNameStringSchema.exactOptional().openapi({
+      description: 'The name of the component.',
+    }),
+    componentVersion: ComponentVersionStringSchema.exactOptional().openapi({
+      description: 'The version of the component.',
+    }),
+    recipe: RecipeBlobSchema.exactOptional().openapi({
+      description: 'The recipe of the component version.',
+    }),
+    vendorGuidance: VendorGuidanceSchema.exactOptional().openapi({
+      description:
+        "<p>The vendor guidance state for the component version. This state indicates whether the component version has any issues that you should consider before you deploy it. The vendor guidance state can be:</p> <ul> <li> <p> <code>ACTIVE</code> – This component version is available and recommended for use.</p> </li> <li> <p> <code>DISCONTINUED</code> – This component version has been discontinued by its publisher. You can deploy this component version, but we recommend that you use a different version of this component.</p> </li> <li> <p> <code>DELETED</code> – This component version has been deleted by its publisher, so you can't deploy it. If you have any existing deployments that specify this component version, those deployments will fail.</p> </li> </ul>",
+    }),
+    message: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'A message that communicates details about the vendor guidance state of the component version. This message communicates why a component version is discontinued or deleted.',
+    }),
   })
   .openapi({
     description:
@@ -2097,14 +1536,10 @@ const ResolvedComponentVersionsListSchema = z
 
 const ResolveComponentCandidatesResponseSchema = z
   .object({
-    resolvedComponentVersions: ResolvedComponentVersionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of components that meet the requirements that you specify in the request. This list includes each component's recipe that you can use to install the component.",
-        }),
-    ).exactOptional(),
+    resolvedComponentVersions: ResolvedComponentVersionsListSchema.exactOptional().openapi({
+      description:
+        "A list of components that meet the requirements that you specify in the request. This list includes each component's recipe that you can use to install the component.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ResolveComponentCandidatesResponse')
@@ -2115,20 +1550,16 @@ const ComponentVersionRequirementMapSchema = z
 
 const ComponentCandidateSchema = z
   .object({
-    componentName: ComponentNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the component.' }),
-    ).exactOptional(),
-    componentVersion: ComponentVersionStringSchema.and(
-      z.any().openapi({ description: 'The version of the component.' }),
-    ).exactOptional(),
-    versionRequirements: ComponentVersionRequirementMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The version requirements for the component\'s dependencies. Greengrass core devices get the version requirements from component recipes.</p> <p>IoT Greengrass V2 uses semantic version constraints. For more information, see <a href="https://semver.org/">Semantic Versioning</a>.</p>',
-        }),
-    ).exactOptional(),
+    componentName: ComponentNameStringSchema.exactOptional().openapi({
+      description: 'The name of the component.',
+    }),
+    componentVersion: ComponentVersionStringSchema.exactOptional().openapi({
+      description: 'The version of the component.',
+    }),
+    versionRequirements: ComponentVersionRequirementMapSchema.exactOptional().openapi({
+      description:
+        '<p>The version requirements for the component\'s dependencies. Greengrass core devices get the version requirements from component recipes.</p> <p>IoT Greengrass V2 uses semantic version constraints. For more information, see <a href="https://semver.org/">Semantic Versioning</a>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -2137,30 +1568,22 @@ const ComponentCandidateSchema = z
   })
   .openapi('ComponentCandidate')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z.string().min(1).max(128).openapi('TagKey')
 
 const UpdateConnectivityInfoResponseSchema = z
   .object({
-    version: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Version' },
-          description: 'The new version of the connectivity information for the core device.',
-        }),
-    ).exactOptional(),
-    message: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'Message' },
-          description: 'A message about the connectivity information update request.',
-        }),
-    ).exactOptional(),
+    version: StringSchema.exactOptional().openapi({
+      xml: { name: 'Version' },
+      description: 'The new version of the connectivity information for the core device.',
+    }),
+    message: StringSchema.exactOptional().openapi({
+      xml: { name: 'Message' },
+      description: 'A message about the connectivity information update request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateConnectivityInfoResponse')
@@ -2173,24 +1596,20 @@ const AssociateClientDeviceWithCoreDeviceEntryListSchema = z
 
 const AssociateServiceRoleToAccountRequestSchema = z
   .object({
-    roleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'RoleArn' },
-          description:
-            'The Amazon Resource Name (ARN) of the service role to associate with IoT Greengrass for your Amazon Web Services account in this Amazon Web Services Region.',
-        }),
-    ),
+    roleArn: StringSchema.openapi({
+      xml: { name: 'RoleArn' },
+      description:
+        'The Amazon Resource Name (ARN) of the service role to associate with IoT Greengrass for your Amazon Web Services account in this Amazon Web Services Region.',
+    }),
   })
   .openapi({ required: ['roleArn'], title: 'AssociateServiceRoleToAccountRequest' })
   .openapi('AssociateServiceRoleToAccountRequest')
 
 const BatchAssociateClientDeviceWithCoreDeviceRequestSchema = z
   .object({
-    entries: AssociateClientDeviceWithCoreDeviceEntryListSchema.and(
-      z.any().openapi({ description: 'The list of client devices to associate.' }),
-    ).exactOptional(),
+    entries: AssociateClientDeviceWithCoreDeviceEntryListSchema.exactOptional().openapi({
+      description: 'The list of client devices to associate.',
+    }),
   })
   .openapi({ title: 'BatchAssociateClientDeviceWithCoreDeviceRequest', required: [] })
   .openapi('BatchAssociateClientDeviceWithCoreDeviceRequest')
@@ -2203,15 +1622,15 @@ const DisassociateClientDeviceFromCoreDeviceEntryListSchema = z
 
 const BatchDisassociateClientDeviceFromCoreDeviceRequestSchema = z
   .object({
-    entries: DisassociateClientDeviceFromCoreDeviceEntryListSchema.and(
-      z.any().openapi({ description: 'The list of client devices to disassociate.' }),
-    ).exactOptional(),
+    entries: DisassociateClientDeviceFromCoreDeviceEntryListSchema.exactOptional().openapi({
+      description: 'The list of client devices to disassociate.',
+    }),
   })
   .openapi({ title: 'BatchDisassociateClientDeviceFromCoreDeviceRequest', required: [] })
   .openapi('BatchDisassociateClientDeviceFromCoreDeviceRequest')
 
 const CancelDeploymentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CancelDeploymentRequest' })
   .openapi('CancelDeploymentRequest')
 
@@ -2232,48 +1651,28 @@ const ComponentVisibilityScopeSchema = z
 
 const LambdaFunctionRecipeSourceSchema = z
   .object({
-    lambdaArn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the Lambda function. The ARN must include the version of the function to import. You can\'t use version aliases like <code>$LATEST</code>.',
-        }),
-    ),
-    componentName: ComponentNameStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the component.</p> <p>Defaults to the name of the Lambda function.</p>',
-        }),
-    ).exactOptional(),
-    componentVersion: ComponentVersionStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The version of the component.</p> <p>Defaults to the version of the Lambda function as a semantic version. For example, if your function version is <code>3</code>, the component version becomes <code>3.0.0</code>.</p>',
-        }),
-    ).exactOptional(),
-    componentPlatforms: ComponentPlatformListSchema.and(
-      z.any().openapi({ description: 'The platforms that the component version supports.' }),
-    ).exactOptional(),
-    componentDependencies: ComponentDependencyMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The component versions on which this Lambda function component depends.',
-        }),
-    ).exactOptional(),
-    componentLambdaParameters: LambdaExecutionParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system and runtime parameters for the Lambda function as it runs on the Greengrass core device.',
-        }),
-    ).exactOptional(),
+    lambdaArn: NonEmptyStringSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the Lambda function. The ARN must include the version of the function to import. You can\'t use version aliases like <code>$LATEST</code>.',
+    }),
+    componentName: ComponentNameStringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the component.</p> <p>Defaults to the name of the Lambda function.</p>',
+    }),
+    componentVersion: ComponentVersionStringSchema.exactOptional().openapi({
+      description:
+        '<p>The version of the component.</p> <p>Defaults to the version of the Lambda function as a semantic version. For example, if your function version is <code>3</code>, the component version becomes <code>3.0.0</code>.</p>',
+    }),
+    componentPlatforms: ComponentPlatformListSchema.exactOptional().openapi({
+      description: 'The platforms that the component version supports.',
+    }),
+    componentDependencies: ComponentDependencyMapSchema.exactOptional().openapi({
+      description: 'The component versions on which this Lambda function component depends.',
+    }),
+    componentLambdaParameters: LambdaExecutionParametersSchema.exactOptional().openapi({
+      description:
+        'The system and runtime parameters for the Lambda function as it runs on the Greengrass core device.',
+    }),
   })
   .openapi({
     required: ['lambdaArn'],
@@ -2283,38 +1682,22 @@ const LambdaFunctionRecipeSourceSchema = z
 
 const CreateComponentVersionRequestSchema = z
   .object({
-    inlineRecipe: RecipeBlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The recipe to use to create the component. The recipe defines the component's metadata, parameters, dependencies, lifecycle, artifacts, and platform compatibility.</p> <p>You must specify either <code>inlineRecipe</code> or <code>lambdaFunction</code>.</p>",
-        }),
-    ).exactOptional(),
-    lambdaFunction: LambdaFunctionRecipeSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The parameters to create a component from a Lambda function.</p> <p>You must specify either <code>inlineRecipe</code> or <code>lambdaFunction</code>.</p>',
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html">Tag your resources</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    clientToken: ClientTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you can provide to ensure that the request is idempotent. Idempotency means that the request is successfully processed only once, even if you send the request multiple times. When a request succeeds, and you specify the same client token for subsequent successful requests, the IoT Greengrass V2 service returns the successful response that it caches from the previous request. IoT Greengrass V2 caches successful responses for idempotent requests for up to 8 hours.',
-        }),
-    ).exactOptional(),
+    inlineRecipe: RecipeBlobSchema.exactOptional().openapi({
+      description:
+        "<p>The recipe to use to create the component. The recipe defines the component's metadata, parameters, dependencies, lifecycle, artifacts, and platform compatibility.</p> <p>You must specify either <code>inlineRecipe</code> or <code>lambdaFunction</code>.</p>",
+    }),
+    lambdaFunction: LambdaFunctionRecipeSourceSchema.exactOptional().openapi({
+      description:
+        '<p>The parameters to create a component from a Lambda function.</p> <p>You must specify either <code>inlineRecipe</code> or <code>lambdaFunction</code>.</p>',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html">Tag your resources</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
+    }),
+    clientToken: ClientTokenStringSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you can provide to ensure that the request is idempotent. Idempotency means that the request is successfully processed only once, even if you send the request multiple times. When a request succeeds, and you specify the same client token for subsequent successful requests, the IoT Greengrass V2 service returns the successful response that it caches from the previous request. IoT Greengrass V2 caches successful responses for idempotent requests for up to 8 hours.',
+    }),
   })
   .openapi({ title: 'CreateComponentVersionRequest', required: [] })
   .openapi('CreateComponentVersionRequest')
@@ -2323,65 +1706,37 @@ const DeploymentNameStringSchema = z.string().min(1).max(256).openapi('Deploymen
 
 const CreateDeploymentRequestSchema = z
   .object({
-    targetArn: TargetARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the target IoT thing or thing group. When creating a subdeployment, the targetARN can only be a thing group.',
-        }),
-    ),
-    deploymentName: DeploymentNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the deployment.' }),
-    ).exactOptional(),
-    components: ComponentDeploymentSpecificationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The components to deploy. This is a dictionary, where each key is the name of a component, and each key's value is the version and configuration to deploy for that component.",
-        }),
-    ).exactOptional(),
-    iotJobConfiguration: DeploymentIoTJobConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The job configuration for the deployment configuration. The job configuration specifies the rollout, timeout, and stop configurations for the deployment configuration.',
-        }),
-    ).exactOptional(),
-    deploymentPolicies: DeploymentPoliciesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The deployment policies for the deployment. These policies define how the deployment updates components and handles failure.',
-        }),
-    ).exactOptional(),
-    parentTargetArn: ThingGroupARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The parent deployment\'s target <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> within a subdeployment.',
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html">Tag your resources</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    clientToken: ClientTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you can provide to ensure that the request is idempotent. Idempotency means that the request is successfully processed only once, even if you send the request multiple times. When a request succeeds, and you specify the same client token for subsequent successful requests, the IoT Greengrass V2 service returns the successful response that it caches from the previous request. IoT Greengrass V2 caches successful responses for idempotent requests for up to 8 hours.',
-        }),
-    ).exactOptional(),
+    targetArn: TargetARNSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the target IoT thing or thing group. When creating a subdeployment, the targetARN can only be a thing group.',
+    }),
+    deploymentName: DeploymentNameStringSchema.exactOptional().openapi({
+      description: 'The name of the deployment.',
+    }),
+    components: ComponentDeploymentSpecificationsSchema.exactOptional().openapi({
+      description:
+        "The components to deploy. This is a dictionary, where each key is the name of a component, and each key's value is the version and configuration to deploy for that component.",
+    }),
+    iotJobConfiguration: DeploymentIoTJobConfigurationSchema.exactOptional().openapi({
+      description:
+        'The job configuration for the deployment configuration. The job configuration specifies the rollout, timeout, and stop configurations for the deployment configuration.',
+    }),
+    deploymentPolicies: DeploymentPoliciesSchema.exactOptional().openapi({
+      description:
+        'The deployment policies for the deployment. These policies define how the deployment updates components and handles failure.',
+    }),
+    parentTargetArn: ThingGroupARNSchema.exactOptional().openapi({
+      description:
+        'The parent deployment\'s target <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> within a subdeployment.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html">Tag your resources</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
+    }),
+    clientToken: ClientTokenStringSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you can provide to ensure that the request is idempotent. Idempotency means that the request is successfully processed only once, even if you send the request multiple times. When a request succeeds, and you specify the same client token for subsequent successful requests, the IoT Greengrass V2 service returns the successful response that it caches from the previous request. IoT Greengrass V2 caches successful responses for idempotent requests for up to 8 hours.',
+    }),
   })
   .openapi({ required: ['targetArn'], title: 'CreateDeploymentRequest' })
   .openapi('CreateDeploymentRequest')
@@ -2389,17 +1744,17 @@ const CreateDeploymentRequestSchema = z
 const DefaultMaxResultsSchema = z.int().min(1).max(100).openapi('DefaultMaxResults')
 
 const DeleteComponentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteComponentRequest' })
   .openapi('DeleteComponentRequest')
 
 const DeleteCoreDeviceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteCoreDeviceRequest' })
   .openapi('DeleteCoreDeviceRequest')
 
 const DeleteDeploymentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDeploymentRequest' })
   .openapi('DeleteDeploymentRequest')
 
@@ -2408,12 +1763,12 @@ const DeploymentHistoryFilterSchema = z
   .openapi('DeploymentHistoryFilter')
 
 const DescribeComponentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeComponentRequest' })
   .openapi('DescribeComponentRequest')
 
 const DisassociateServiceRoleFromAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateServiceRoleFromAccountRequest' })
   .openapi('DisassociateServiceRoleFromAccountRequest')
 
@@ -2423,32 +1778,32 @@ const GenericV2ARNSchema = z
   .openapi('GenericV2ARN')
 
 const GetComponentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetComponentRequest' })
   .openapi('GetComponentRequest')
 
 const GetComponentVersionArtifactRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetComponentVersionArtifactRequest' })
   .openapi('GetComponentVersionArtifactRequest')
 
 const GetConnectivityInfoRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetConnectivityInfoRequest' })
   .openapi('GetConnectivityInfoRequest')
 
 const GetCoreDeviceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetCoreDeviceRequest' })
   .openapi('GetCoreDeviceRequest')
 
 const GetDeploymentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDeploymentRequest' })
   .openapi('GetDeploymentRequest')
 
 const GetServiceRoleForAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetServiceRoleForAccountRequest' })
   .openapi('GetServiceRoleForAccountRequest')
 
@@ -2457,53 +1812,53 @@ const InstalledComponentTopologyFilterSchema = z
   .openapi('InstalledComponentTopologyFilter')
 
 const ListClientDevicesAssociatedWithCoreDeviceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListClientDevicesAssociatedWithCoreDeviceRequest' })
   .openapi('ListClientDevicesAssociatedWithCoreDeviceRequest')
 
 const ListComponentVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListComponentVersionsRequest' })
   .openapi('ListComponentVersionsRequest')
 
 const ListComponentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListComponentsRequest' })
   .openapi('ListComponentsRequest')
 
 const ListCoreDevicesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListCoreDevicesRequest' })
   .openapi('ListCoreDevicesRequest')
 
 const ListDeploymentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDeploymentsRequest' })
   .openapi('ListDeploymentsRequest')
 
 const ListEffectiveDeploymentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListEffectiveDeploymentsRequest' })
   .openapi('ListEffectiveDeploymentsRequest')
 
 const ListInstalledComponentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListInstalledComponentsRequest' })
   .openapi('ListInstalledComponentsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const ResolveComponentCandidatesRequestSchema = z
   .object({
-    platform: ComponentPlatformSchema.and(
-      z.any().openapi({ description: 'The platform to use to resolve compatible components.' }),
-    ).exactOptional(),
-    componentCandidates: ComponentCandidateListSchema.and(
-      z.any().openapi({ description: 'The list of components to resolve.' }),
-    ).exactOptional(),
+    platform: ComponentPlatformSchema.exactOptional().openapi({
+      description: 'The platform to use to resolve compatible components.',
+    }),
+    componentCandidates: ComponentCandidateListSchema.exactOptional().openapi({
+      description: 'The list of components to resolve.',
+    }),
   })
   .openapi({ title: 'ResolveComponentCandidatesRequest', required: [] })
   .openapi('ResolveComponentCandidatesRequest')
@@ -2512,33 +1867,25 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(200).openapi('TagKeyLi
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html">Tag your resources</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
-        }),
-    ),
+    tags: TagMapSchema.openapi({
+      description:
+        'A list of key-value pairs that contain metadata for the resource. For more information, see <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html">Tag your resources</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
+    }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateConnectivityInfoRequestSchema = z
   .object({
-    connectivityInfo: ConnectivityInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ConnectivityInfo' },
-          description: 'The connectivity information for the core device.',
-        }),
-    ),
+    connectivityInfo: ConnectivityInfoListSchema.openapi({
+      xml: { name: 'ConnectivityInfo' },
+      description: 'The connectivity information for the core device.',
+    }),
   })
   .openapi({ required: ['connectivityInfo'], title: 'UpdateConnectivityInfoRequest' })
   .openapi('UpdateConnectivityInfoRequest')
@@ -2976,53 +2323,30 @@ export const postGreengrassV2CreateComponentVersionRoute = createRoute({
                 }),
               lambdaFunction: z
                 .object({
-                  lambdaArn: NonEmptyStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the Lambda function. The ARN must include the version of the function to import. You can\'t use version aliases like <code>$LATEST</code>.',
-                      }),
-                  ).exactOptional(),
-                  componentName: ComponentNameStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The name of the component.</p> <p>Defaults to the name of the Lambda function.</p>',
-                      }),
-                  ).exactOptional(),
-                  componentVersion: ComponentVersionStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The version of the component.</p> <p>Defaults to the version of the Lambda function as a semantic version. For example, if your function version is <code>3</code>, the component version becomes <code>3.0.0</code>.</p>',
-                      }),
-                  ).exactOptional(),
-                  componentPlatforms: ComponentPlatformListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The platforms that the component version supports.',
-                      }),
-                  ).exactOptional(),
-                  componentDependencies: ComponentDependencyMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The component versions on which this Lambda function component depends.',
-                      }),
-                  ).exactOptional(),
-                  componentLambdaParameters: LambdaExecutionParametersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The system and runtime parameters for the Lambda function as it runs on the Greengrass core device.',
-                      }),
-                  ).exactOptional(),
+                  lambdaArn: NonEmptyStringSchema.exactOptional().openapi({
+                    description:
+                      'The <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">ARN</a> of the Lambda function. The ARN must include the version of the function to import. You can\'t use version aliases like <code>$LATEST</code>.',
+                  }),
+                  componentName: ComponentNameStringSchema.exactOptional().openapi({
+                    description:
+                      '<p>The name of the component.</p> <p>Defaults to the name of the Lambda function.</p>',
+                  }),
+                  componentVersion: ComponentVersionStringSchema.exactOptional().openapi({
+                    description:
+                      '<p>The version of the component.</p> <p>Defaults to the version of the Lambda function as a semantic version. For example, if your function version is <code>3</code>, the component version becomes <code>3.0.0</code>.</p>',
+                  }),
+                  componentPlatforms: ComponentPlatformListSchema.exactOptional().openapi({
+                    description: 'The platforms that the component version supports.',
+                  }),
+                  componentDependencies: ComponentDependencyMapSchema.exactOptional().openapi({
+                    description:
+                      'The component versions on which this Lambda function component depends.',
+                  }),
+                  componentLambdaParameters:
+                    LambdaExecutionParametersSchema.exactOptional().openapi({
+                      description:
+                        'The system and runtime parameters for the Lambda function as it runs on the Greengrass core device.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3250,30 +2574,19 @@ export const postGreengrassV2DeploymentsRoute = createRoute({
                 }),
               iotJobConfiguration: z
                 .object({
-                  jobExecutionsRolloutConfig: IoTJobExecutionsRolloutConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The rollout configuration for the job. This configuration defines the rate at which the job rolls out to the fleet of target devices.',
-                      }),
-                  ).exactOptional(),
-                  abortConfig: IoTJobAbortConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The stop configuration for the job. This configuration defines when and how to stop a job rollout.',
-                      }),
-                  ).exactOptional(),
-                  timeoutConfig: IoTJobTimeoutConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The timeout configuration for the job. This configuration defines the amount of time each device has to complete the job.',
-                      }),
-                  ).exactOptional(),
+                  jobExecutionsRolloutConfig:
+                    IoTJobExecutionsRolloutConfigSchema.exactOptional().openapi({
+                      description:
+                        'The rollout configuration for the job. This configuration defines the rate at which the job rolls out to the fleet of target devices.',
+                    }),
+                  abortConfig: IoTJobAbortConfigSchema.exactOptional().openapi({
+                    description:
+                      'The stop configuration for the job. This configuration defines when and how to stop a job rollout.',
+                  }),
+                  timeoutConfig: IoTJobTimeoutConfigSchema.exactOptional().openapi({
+                    description:
+                      'The timeout configuration for the job. This configuration defines the amount of time each device has to complete the job.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3282,30 +2595,21 @@ export const postGreengrassV2DeploymentsRoute = createRoute({
                 }),
               deploymentPolicies: z
                 .object({
-                  failureHandlingPolicy: DeploymentFailureHandlingPolicySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The failure handling policy for the configuration deployment. This policy defines what to do if the deployment fails.</p> <p>Default: <code>ROLLBACK</code> </p>',
-                      }),
-                  ).exactOptional(),
-                  componentUpdatePolicy: DeploymentComponentUpdatePolicySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The component update policy for the configuration deployment. This policy defines when it's safe to deploy the configuration to devices.",
-                      }),
-                  ).exactOptional(),
-                  configurationValidationPolicy: DeploymentConfigurationValidationPolicySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The configuration validation policy for the configuration deployment. This policy defines how long each component has to validate its configure updates.',
-                      }),
-                  ).exactOptional(),
+                  failureHandlingPolicy:
+                    DeploymentFailureHandlingPolicySchema.exactOptional().openapi({
+                      description:
+                        '<p>The failure handling policy for the configuration deployment. This policy defines what to do if the deployment fails.</p> <p>Default: <code>ROLLBACK</code> </p>',
+                    }),
+                  componentUpdatePolicy:
+                    DeploymentComponentUpdatePolicySchema.exactOptional().openapi({
+                      description:
+                        "The component update policy for the configuration deployment. This policy defines when it's safe to deploy the configuration to devices.",
+                    }),
+                  configurationValidationPolicy:
+                    DeploymentConfigurationValidationPolicySchema.exactOptional().openapi({
+                      description:
+                        'The configuration validation policy for the configuration deployment. This policy defines how long each component has to validate its configure updates.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4753,22 +4057,14 @@ export const postGreengrassV2ResolveComponentCandidatesRoute = createRoute({
             .object({
               platform: z
                 .object({
-                  name: NonEmptyStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The friendly name of the platform. This name helps you identify the platform.</p> <p>If you omit this parameter, IoT Greengrass creates a friendly name from the <code>os</code> and <code>architecture</code> of the platform.</p>',
-                      }),
-                  ).exactOptional(),
-                  attributes: PlatformAttributesMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A dictionary of attributes for the platform. The IoT Greengrass Core software defines the <code>os</code> and <code>architecture</code> by default. You can specify additional platform attributes for a core device when you deploy the Greengrass nucleus component. For more information, see the <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html">Greengrass nucleus component</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
-                      }),
-                  ).exactOptional(),
+                  name: NonEmptyStringSchema.exactOptional().openapi({
+                    description:
+                      '<p>The friendly name of the platform. This name helps you identify the platform.</p> <p>If you omit this parameter, IoT Greengrass creates a friendly name from the <code>os</code> and <code>architecture</code> of the platform.</p>',
+                  }),
+                  attributes: PlatformAttributesMapSchema.exactOptional().openapi({
+                    description:
+                      'A dictionary of attributes for the platform. The IoT Greengrass Core software defines the <code>os</code> and <code>architecture</code> by default. You can specify additional platform attributes for a core device when you deploy the Greengrass nucleus component. For more information, see the <a href="https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html">Greengrass nucleus component</a> in the <i>IoT Greengrass V2 Developer Guide</i>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

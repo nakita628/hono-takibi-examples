@@ -93,6 +93,7 @@ const DocumentSplitCreateRequestManualSchema = z
     required: ['split_type', 'split_definition'],
     title: 'Document Split manual create request',
     'x-box-tag': 'document_split',
+    not: { anyOf: [{ required: ['prompt'] }, { required: ['page_selection'] }] },
   })
   .openapi('DocumentSplitCreateRequestManual')
 
@@ -256,6 +257,7 @@ const DocumentSplitCreateRequestPageSelectionSchema = z
     required: ['split_type', 'page_selection'],
     title: 'Document Split page selection create request',
     'x-box-tag': 'document_split',
+    not: { anyOf: [{ required: ['prompt'] }, { required: ['split_definition'] }] },
   })
   .openapi('DocumentSplitCreateRequestPageSelection')
 
@@ -311,6 +313,7 @@ const DocumentSplitCreateRequestSmartSchema = z
     required: ['split_type', 'prompt'],
     title: 'Document Split smart create request',
     'x-box-tag': 'document_split',
+    not: { anyOf: [{ required: ['split_definition'] }, { required: ['page_selection'] }] },
   })
   .openapi('DocumentSplitCreateRequestSmart')
 

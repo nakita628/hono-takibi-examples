@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetSecretsmanagerPutResourcePolicyHandler = app.openapi(
   postXAmzTargetSecretsmanagerPutResourcePolicyRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

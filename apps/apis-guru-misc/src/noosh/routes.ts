@@ -1,5 +1,539 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const BigDecimalSchema = z
+  .any()
+  .openapi({ description: 'Java type: java.math.BigDecimal' })
+  .openapi('BigDecimal')
+
+const PropertyPaAndAttVOSchema = z
+  .object({
+    date_value: z.iso.date().exactOptional().openapi({ description: '' }),
+    number_value: BigDecimalSchema.exactOptional(),
+    param_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    param_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'sample param_name' }),
+    property_attribute_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    string_value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'sample string_value' }),
+  })
+  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.PropertyPaAndAttVO', required: [] })
+  .openapi('PropertyPaAndAttVO')
+
+const BreakoutVOSchema = z
+  .object({
+    breakout_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    breakout_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'sample breakout_name' }),
+    breakout_pre_markup: BigDecimalSchema.exactOptional(),
+    breakout_price: BigDecimalSchema.exactOptional(),
+    transactional_breakout_pre_markup: BigDecimalSchema.exactOptional(),
+    transactional_breakout_price: BigDecimalSchema.exactOptional(),
+  })
+  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.BreakoutVO', required: [] })
+  .openapi('BreakoutVO')
+
+const ItemOptionVOSchema = z
+  .object({
+    item_option_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    quantity: z.string().exactOptional().openapi({ description: '', example: 'sample quantity' }),
+  })
+  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.ItemOptionVO', required: [] })
+  .openapi('ItemOptionVO')
+
+const EstimateItemPriceVOSchema = z
+  .object({
+    add_price: BigDecimalSchema.exactOptional(),
+    breakouts: z.array(BreakoutVOSchema).exactOptional().openapi({ description: '' }),
+    em_estimate_item_price_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    item_option: ItemOptionVOSchema.exactOptional(),
+    price: BigDecimalSchema.exactOptional(),
+    shipping: BigDecimalSchema.exactOptional(),
+    tax: BigDecimalSchema.exactOptional(),
+    total_price: BigDecimalSchema.exactOptional(),
+    transactional_add_price: BigDecimalSchema.exactOptional(),
+    transactional_price: BigDecimalSchema.exactOptional(),
+    transactional_shipping: BigDecimalSchema.exactOptional(),
+    transactional_tax: BigDecimalSchema.exactOptional(),
+    transactional_total_price: BigDecimalSchema.exactOptional(),
+  })
+  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.EstimateItemPriceVO', required: [] })
+  .openapi('EstimateItemPriceVO')
+
+const EstimateItemDetailsVOSchema = z
+  .object({
+    comments: z.string().exactOptional().openapi({ description: '', example: 'sample comments' }),
+    custom_fields: z.array(PropertyPaAndAttVOSchema).exactOptional().openapi({ description: '' }),
+    estimate_item_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    option_prices: z.array(EstimateItemPriceVOSchema).exactOptional().openapi({ description: '' }),
+    pc_job_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    spec_name: z.string().exactOptional().openapi({ description: '', example: 'sample spec_name' }),
+    spec_reference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'sample spec_reference' }),
+    spec_reference_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+  })
+  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.EstimateItemDetailsVO', required: [] })
+  .openapi('EstimateItemDetailsVO')
+
+const ProjectBaseVOSchema = z
+  .object({
+    project_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    project_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'sample project_name' }),
+    project_number: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'sample project_number' }),
+  })
+  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.ProjectBaseVO', required: [] })
+  .openapi('ProjectBaseVO')
+
+const RfeBaseVOSchema = z
+  .object({
+    rfe_due_date: z.iso.date().exactOptional().openapi({ description: '' }),
+    rfe_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    rfe_title: z.string().exactOptional().openapi({ description: '', example: 'sample rfe_title' }),
+    status: z.string().exactOptional().openapi({ description: '', example: 'sample status' }),
+  })
+  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.RfeBaseVO', required: [] })
+  .openapi('RfeBaseVO')
+
+const WorkgroupBaseVOSchema = z
+  .object({
+    workgroup_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    workgroup_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'sample workgroup_name' }),
+  })
+  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.WorkgroupBaseVO', required: [] })
+  .openapi('WorkgroupBaseVO')
+
+const EstimateDetailsVOSchema = z
+  .object({
+    comments: z.string().exactOptional().openapi({ description: '', example: 'sample comments' }),
+    create_date: z.iso.date().exactOptional().openapi({ description: '' }),
+    currency: z.string().exactOptional().openapi({ description: '', example: 'sample currency' }),
+    custom_fields: z.array(PropertyPaAndAttVOSchema).exactOptional().openapi({ description: '' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'sample description' }),
+    estimate_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    estimate_title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'sample estimate_title' }),
+    expiration_date: z.iso.date().exactOptional().openapi({ description: '' }),
+    items: z.array(EstimateItemDetailsVOSchema).exactOptional().openapi({ description: '' }),
+    project: ProjectBaseVOSchema.exactOptional(),
+    reference_number: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'sample reference_number' }),
+    rfe: RfeBaseVOSchema.exactOptional(),
+    status: z.string().exactOptional().openapi({ description: '', example: 'sample status' }),
+    submit_date: z.iso.date().exactOptional().openapi({ description: '' }),
+    submitted_by: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'sample submitted_by' }),
+    submitted_by_user_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    supplier_workgroup: WorkgroupBaseVOSchema.exactOptional(),
+    transactional_currency: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'sample transactional_currency' }),
+  })
+  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.EstimateDetailsVO', required: [] })
+  .openapi('EstimateDetailsVO')
+
+type EstimateExpandVOType = {
+  result?: z.infer<typeof EstimateDetailsVOSchema>
+  status_code?: number
+  status_reason?: string
+}
+
+const QuotePriceSourceVOSchema = z
+  .any()
+  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.QuotePriceSourceVO' })
+  .openapi('QuotePriceSourceVO')
+
+const QuotePriceDetailVOSchema = z
+  .object({
+    breakouts: z.array(BreakoutVOSchema).exactOptional().openapi({ description: '' }),
+    cost: BigDecimalSchema.exactOptional(),
+    custom_fields: z.array(PropertyPaAndAttVOSchema).exactOptional().openapi({ description: '' }),
+    fixed: BigDecimalSchema.exactOptional(),
+    is_chosen: z.boolean().exactOptional().openapi({ description: '', example: 'false' }),
+    is_included: z.boolean().exactOptional().openapi({ description: '', example: 'false' }),
+    is_quoted: z.boolean().exactOptional().openapi({ description: '', example: 'false' }),
+    parent_price_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    price_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    quantity: BigDecimalSchema.exactOptional(),
+    sell_price: BigDecimalSchema.exactOptional(),
+    shipping: BigDecimalSchema.exactOptional(),
+    source: QuotePriceSourceVOSchema.exactOptional(),
+    supplier: z.string().exactOptional().openapi({ description: '', example: 'sample supplier' }),
+    tax: BigDecimalSchema.exactOptional(),
+    total: BigDecimalSchema.exactOptional(),
+    transactional_cost: BigDecimalSchema.exactOptional(),
+    transactional_fixed: BigDecimalSchema.exactOptional(),
+    transactional_sell_price: BigDecimalSchema.exactOptional(),
+    transactional_shipping: BigDecimalSchema.exactOptional(),
+    transactional_tax: BigDecimalSchema.exactOptional(),
+    transactional_total: BigDecimalSchema.exactOptional(),
+    transactional_variable: BigDecimalSchema.exactOptional(),
+    variable: BigDecimalSchema.exactOptional(),
+    variable_percent: BigDecimalSchema.exactOptional(),
+  })
+  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.QuotePriceDetailVO', required: [] })
+  .openapi('QuotePriceDetailVO')
+
+const SpecBaseVOSchema = z
+  .object({
+    job_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    reference_number: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'sample reference_number' }),
+    spec_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    spec_name: z.string().exactOptional().openapi({ description: '', example: 'sample spec_name' }),
+  })
+  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.SpecBaseVO', required: [] })
+  .openapi('SpecBaseVO')
+
+const QuoteItemDetailVOSchema = z
+  .object({
+    chosen_quantity: BigDecimalSchema.exactOptional(),
+    comments: z.string().exactOptional().openapi({ description: '', example: 'sample comments' }),
+    completion_date: z.iso.date().exactOptional().openapi({ description: '' }),
+    custom_fields: z.array(PropertyPaAndAttVOSchema).exactOptional().openapi({ description: '' }),
+    item_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    item_prices: z.array(QuotePriceDetailVOSchema).exactOptional().openapi({ description: '' }),
+    item_shipping_total: BigDecimalSchema.exactOptional(),
+    item_tax_total: BigDecimalSchema.exactOptional(),
+    item_total: BigDecimalSchema.exactOptional(),
+    reason_for_quote_selection: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'sample reason_for_quote_selection' }),
+    show_cost_prices_and_markup: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: '', example: 'false' }),
+    spec: SpecBaseVOSchema.exactOptional(),
+    transactional_item_shipping_total: BigDecimalSchema.exactOptional(),
+    transactional_item_tax_total: BigDecimalSchema.exactOptional(),
+    transactional_item_total: BigDecimalSchema.exactOptional(),
+    vat_code: z.string().exactOptional().openapi({ description: '', example: 'sample vat_code' }),
+    vat_rate: BigDecimalSchema.exactOptional(),
+  })
+  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.QuoteItemDetailVO', required: [] })
+  .openapi('QuoteItemDetailVO')
+
+const QuoteDetailVOSchema = z
+  .object({
+    client: z.string().exactOptional().openapi({ description: '', example: 'sample client' }),
+    client_user_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    comments: z.string().exactOptional().openapi({ description: '', example: 'sample comments' }),
+    creator_user_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    currency: z.string().exactOptional().openapi({ description: '', example: 'sample currency' }),
+    custom_fields: z.array(PropertyPaAndAttVOSchema).exactOptional().openapi({ description: '' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'sample description' }),
+    grand_total: BigDecimalSchema.exactOptional(),
+    is_show_supplier_information: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: '', example: 'false' }),
+    last_update_by_user_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    proposed_order_completion_date: z.iso.date().exactOptional().openapi({ description: '' }),
+    quote_expiration_date: z.iso.date().exactOptional().openapi({ description: '' }),
+    quote_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
+    quote_items: z.array(QuoteItemDetailVOSchema).exactOptional().openapi({ description: '' }),
+    quote_items_total: BigDecimalSchema.exactOptional(),
+    quote_title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'sample quote_title' }),
+    shipping: BigDecimalSchema.exactOptional(),
+    status: z.string().exactOptional().openapi({ description: '', example: 'sample status' }),
+    submit_date: z.iso.date().exactOptional().openapi({ description: '' }),
+    tax: BigDecimalSchema.exactOptional(),
+    transactional_currency: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '', example: 'sample transactional_currency' }),
+    transactional_grand_total: BigDecimalSchema.exactOptional(),
+    transactional_quote_items_total: BigDecimalSchema.exactOptional(),
+    transactional_shipping: BigDecimalSchema.exactOptional(),
+    transactional_tax: BigDecimalSchema.exactOptional(),
+    vat_code: z.string().exactOptional().openapi({ description: '', example: 'sample vat_code' }),
+    vat_rate: BigDecimalSchema.exactOptional(),
+  })
+  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.QuoteDetailVO', required: [] })
+  .openapi('QuoteDetailVO')
+
+type QuoteExpandVOType = {
+  result?: z.infer<typeof QuoteDetailVOSchema>
+  status_code?: number
+  status_reason?: string
+}
+
 const PersonVOSchema = z
   .object({
     email: z.string().exactOptional().openapi({ description: '', example: 'sample email' }),
@@ -98,77 +632,6 @@ const AutomaticInvitationsListVOSchema = z
     required: [],
   })
   .openapi('AutomaticInvitationsListVO')
-
-const BigDecimalSchema = z
-  .any()
-  .openapi({ description: 'Java type: java.math.BigDecimal' })
-  .openapi('BigDecimal')
-
-const BreakoutVOSchema = z
-  .object({
-    breakout_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    breakout_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'sample breakout_name' }),
-    breakout_pre_markup: BigDecimalSchema.exactOptional(),
-    breakout_price: BigDecimalSchema.exactOptional(),
-    transactional_breakout_pre_markup: BigDecimalSchema.exactOptional(),
-    transactional_breakout_price: BigDecimalSchema.exactOptional(),
-  })
-  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.BreakoutVO', required: [] })
-  .openapi('BreakoutVO')
-
-const PropertyPaAndAttVOSchema = z
-  .object({
-    date_value: z.iso.date().exactOptional().openapi({ description: '' }),
-    number_value: BigDecimalSchema.exactOptional(),
-    param_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    param_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'sample param_name' }),
-    property_attribute_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    string_value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'sample string_value' }),
-  })
-  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.PropertyPaAndAttVO', required: [] })
-  .openapi('PropertyPaAndAttVO')
 
 const ClientWorkgroupDetailVOSchema = z
   .object({
@@ -476,75 +939,6 @@ const ErgoSpecSimpleVOSchema = z
   .openapi({ description: 'Java type: com.noosh.nooshapi.vo.ergo.ErgoSpecSimpleVO', required: [] })
   .openapi('ErgoSpecSimpleVO')
 
-const ProjectBaseVOSchema = z
-  .object({
-    project_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    project_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'sample project_name' }),
-    project_number: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'sample project_number' }),
-  })
-  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.ProjectBaseVO', required: [] })
-  .openapi('ProjectBaseVO')
-
-const RfeBaseVOSchema = z
-  .object({
-    rfe_due_date: z.iso.date().exactOptional().openapi({ description: '' }),
-    rfe_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    rfe_title: z.string().exactOptional().openapi({ description: '', example: 'sample rfe_title' }),
-    status: z.string().exactOptional().openapi({ description: '', example: 'sample status' }),
-  })
-  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.RfeBaseVO', required: [] })
-  .openapi('RfeBaseVO')
-
-const WorkgroupBaseVOSchema = z
-  .object({
-    workgroup_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    workgroup_name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'sample workgroup_name' }),
-  })
-  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.WorkgroupBaseVO', required: [] })
-  .openapi('WorkgroupBaseVO')
-
 const EstimateBaseVOSchema = z
   .object({
     create_date: z.iso.date().exactOptional().openapi({ description: '' }),
@@ -579,167 +973,7 @@ const EstimateBaseVOSchema = z
   .openapi({ description: 'Java type: com.noosh.nooshapi.vo.EstimateBaseVO', required: [] })
   .openapi('EstimateBaseVO')
 
-const ItemOptionVOSchema = z
-  .object({
-    item_option_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    quantity: z.string().exactOptional().openapi({ description: '', example: 'sample quantity' }),
-  })
-  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.ItemOptionVO', required: [] })
-  .openapi('ItemOptionVO')
-
-const EstimateItemPriceVOSchema = z
-  .object({
-    add_price: BigDecimalSchema.exactOptional(),
-    breakouts: z.array(BreakoutVOSchema).exactOptional().openapi({ description: '' }),
-    em_estimate_item_price_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    item_option: ItemOptionVOSchema.exactOptional(),
-    price: BigDecimalSchema.exactOptional(),
-    shipping: BigDecimalSchema.exactOptional(),
-    tax: BigDecimalSchema.exactOptional(),
-    total_price: BigDecimalSchema.exactOptional(),
-    transactional_add_price: BigDecimalSchema.exactOptional(),
-    transactional_price: BigDecimalSchema.exactOptional(),
-    transactional_shipping: BigDecimalSchema.exactOptional(),
-    transactional_tax: BigDecimalSchema.exactOptional(),
-    transactional_total_price: BigDecimalSchema.exactOptional(),
-  })
-  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.EstimateItemPriceVO', required: [] })
-  .openapi('EstimateItemPriceVO')
-
-const EstimateItemDetailsVOSchema = z
-  .object({
-    comments: z.string().exactOptional().openapi({ description: '', example: 'sample comments' }),
-    custom_fields: z.array(PropertyPaAndAttVOSchema).exactOptional().openapi({ description: '' }),
-    estimate_item_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    option_prices: z.array(EstimateItemPriceVOSchema).exactOptional().openapi({ description: '' }),
-    pc_job_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    spec_name: z.string().exactOptional().openapi({ description: '', example: 'sample spec_name' }),
-    spec_reference: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'sample spec_reference' }),
-    spec_reference_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-  })
-  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.EstimateItemDetailsVO', required: [] })
-  .openapi('EstimateItemDetailsVO')
-
-const EstimateDetailsVOSchema = z
-  .object({
-    comments: z.string().exactOptional().openapi({ description: '', example: 'sample comments' }),
-    create_date: z.iso.date().exactOptional().openapi({ description: '' }),
-    currency: z.string().exactOptional().openapi({ description: '', example: 'sample currency' }),
-    custom_fields: z.array(PropertyPaAndAttVOSchema).exactOptional().openapi({ description: '' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'sample description' }),
-    estimate_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    estimate_title: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'sample estimate_title' }),
-    expiration_date: z.iso.date().exactOptional().openapi({ description: '' }),
-    items: z.array(EstimateItemDetailsVOSchema).exactOptional().openapi({ description: '' }),
-    project: ProjectBaseVOSchema.exactOptional(),
-    reference_number: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'sample reference_number' }),
-    rfe: RfeBaseVOSchema.exactOptional(),
-    status: z.string().exactOptional().openapi({ description: '', example: 'sample status' }),
-    submit_date: z.iso.date().exactOptional().openapi({ description: '' }),
-    submitted_by: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'sample submitted_by' }),
-    submitted_by_user_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    supplier_workgroup: WorkgroupBaseVOSchema.exactOptional(),
-    transactional_currency: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'sample transactional_currency' }),
-  })
-  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.EstimateDetailsVO', required: [] })
-  .openapi('EstimateDetailsVO')
-
-const EstimateExpandVOSchema = z
+const EstimateExpandVOSchema: z.ZodType<EstimateExpandVOType> = z
   .object({
     result: EstimateDetailsVOSchema.exactOptional(),
     status_code: z.int32().exactOptional().openapi({ description: '', example: '1' }),
@@ -1659,41 +1893,6 @@ const OrderDetailBaseVOSchema = z
   })
   .openapi({ description: 'Java type: com.noosh.nooshapi.vo.OrderDetailBaseVO', required: [] })
   .openapi('OrderDetailBaseVO')
-
-const SpecBaseVOSchema = z
-  .object({
-    job_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    reference_number: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'sample reference_number' }),
-    spec_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    spec_name: z.string().exactOptional().openapi({ description: '', example: 'sample spec_name' }),
-  })
-  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.SpecBaseVO', required: [] })
-  .openapi('SpecBaseVO')
 
 const OrderItemSimpleVOSchema = z
   .object({
@@ -3389,194 +3588,7 @@ const QuoteBaseVOSchema = z
   .openapi({ description: 'Java type: com.noosh.nooshapi.vo.QuoteBaseVO', required: [] })
   .openapi('QuoteBaseVO')
 
-const QuotePriceSourceVOSchema = z
-  .any()
-  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.QuotePriceSourceVO' })
-  .openapi('QuotePriceSourceVO')
-
-const QuotePriceDetailVOSchema = z
-  .object({
-    breakouts: z.array(BreakoutVOSchema).exactOptional().openapi({ description: '' }),
-    cost: BigDecimalSchema.exactOptional(),
-    custom_fields: z.array(PropertyPaAndAttVOSchema).exactOptional().openapi({ description: '' }),
-    fixed: BigDecimalSchema.exactOptional(),
-    is_chosen: z.boolean().exactOptional().openapi({ description: '', example: 'false' }),
-    is_included: z.boolean().exactOptional().openapi({ description: '', example: 'false' }),
-    is_quoted: z.boolean().exactOptional().openapi({ description: '', example: 'false' }),
-    parent_price_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    price_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    quantity: BigDecimalSchema.exactOptional(),
-    sell_price: BigDecimalSchema.exactOptional(),
-    shipping: BigDecimalSchema.exactOptional(),
-    source: QuotePriceSourceVOSchema.exactOptional(),
-    supplier: z.string().exactOptional().openapi({ description: '', example: 'sample supplier' }),
-    tax: BigDecimalSchema.exactOptional(),
-    total: BigDecimalSchema.exactOptional(),
-    transactional_cost: BigDecimalSchema.exactOptional(),
-    transactional_fixed: BigDecimalSchema.exactOptional(),
-    transactional_sell_price: BigDecimalSchema.exactOptional(),
-    transactional_shipping: BigDecimalSchema.exactOptional(),
-    transactional_tax: BigDecimalSchema.exactOptional(),
-    transactional_total: BigDecimalSchema.exactOptional(),
-    transactional_variable: BigDecimalSchema.exactOptional(),
-    variable: BigDecimalSchema.exactOptional(),
-    variable_percent: BigDecimalSchema.exactOptional(),
-  })
-  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.QuotePriceDetailVO', required: [] })
-  .openapi('QuotePriceDetailVO')
-
-const QuoteItemDetailVOSchema = z
-  .object({
-    chosen_quantity: BigDecimalSchema.exactOptional(),
-    comments: z.string().exactOptional().openapi({ description: '', example: 'sample comments' }),
-    completion_date: z.iso.date().exactOptional().openapi({ description: '' }),
-    custom_fields: z.array(PropertyPaAndAttVOSchema).exactOptional().openapi({ description: '' }),
-    item_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    item_prices: z.array(QuotePriceDetailVOSchema).exactOptional().openapi({ description: '' }),
-    item_shipping_total: BigDecimalSchema.exactOptional(),
-    item_tax_total: BigDecimalSchema.exactOptional(),
-    item_total: BigDecimalSchema.exactOptional(),
-    reason_for_quote_selection: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'sample reason_for_quote_selection' }),
-    show_cost_prices_and_markup: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: '', example: 'false' }),
-    spec: SpecBaseVOSchema.exactOptional(),
-    transactional_item_shipping_total: BigDecimalSchema.exactOptional(),
-    transactional_item_tax_total: BigDecimalSchema.exactOptional(),
-    transactional_item_total: BigDecimalSchema.exactOptional(),
-    vat_code: z.string().exactOptional().openapi({ description: '', example: 'sample vat_code' }),
-    vat_rate: BigDecimalSchema.exactOptional(),
-  })
-  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.QuoteItemDetailVO', required: [] })
-  .openapi('QuoteItemDetailVO')
-
-const QuoteDetailVOSchema = z
-  .object({
-    client: z.string().exactOptional().openapi({ description: '', example: 'sample client' }),
-    client_user_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    comments: z.string().exactOptional().openapi({ description: '', example: 'sample comments' }),
-    creator_user_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    currency: z.string().exactOptional().openapi({ description: '', example: 'sample currency' }),
-    custom_fields: z.array(PropertyPaAndAttVOSchema).exactOptional().openapi({ description: '' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'sample description' }),
-    grand_total: BigDecimalSchema.exactOptional(),
-    is_show_supplier_information: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: '', example: 'false' }),
-    last_update_by_user_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    proposed_order_completion_date: z.iso.date().exactOptional().openapi({ description: '' }),
-    quote_expiration_date: z.iso.date().exactOptional().openapi({ description: '' }),
-    quote_id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: '', example: '1' }),
-    quote_items: z.array(QuoteItemDetailVOSchema).exactOptional().openapi({ description: '' }),
-    quote_items_total: BigDecimalSchema.exactOptional(),
-    quote_title: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'sample quote_title' }),
-    shipping: BigDecimalSchema.exactOptional(),
-    status: z.string().exactOptional().openapi({ description: '', example: 'sample status' }),
-    submit_date: z.iso.date().exactOptional().openapi({ description: '' }),
-    tax: BigDecimalSchema.exactOptional(),
-    transactional_currency: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '', example: 'sample transactional_currency' }),
-    transactional_grand_total: BigDecimalSchema.exactOptional(),
-    transactional_quote_items_total: BigDecimalSchema.exactOptional(),
-    transactional_shipping: BigDecimalSchema.exactOptional(),
-    transactional_tax: BigDecimalSchema.exactOptional(),
-    vat_code: z.string().exactOptional().openapi({ description: '', example: 'sample vat_code' }),
-    vat_rate: BigDecimalSchema.exactOptional(),
-  })
-  .openapi({ description: 'Java type: com.noosh.nooshapi.vo.QuoteDetailVO', required: [] })
-  .openapi('QuoteDetailVO')
-
-const QuoteExpandVOSchema = z
+const QuoteExpandVOSchema: z.ZodType<QuoteExpandVOType> = z
   .object({
     result: QuoteDetailVOSchema.exactOptional(),
     status_code: z.int32().exactOptional().openapi({ description: '', example: '1' }),

@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAmazonAthenaDeleteDataCatalogHandler = app.openapi(
   postXAmzTargetAmazonAthenaDeleteDataCatalogRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

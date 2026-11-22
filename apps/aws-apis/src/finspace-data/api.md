@@ -5400,12 +5400,12 @@ The request for a CreateDataset operation
 |apiAccessPrincipalArn|object|false|none|none|
 |clientToken|object|false|none|none|
 
-<h2 id="tocS_stringValueLength1to255">stringValueLength1to255</h2>
+<h2 id="tocS_stringValueLength1to2552">stringValueLength1to2552</h2>
 <!-- backwards compatibility -->
-<a id="schemastringvaluelength1to255-1"></a>
-<a id="schema_stringValueLength1to255"></a>
-<a id="tocSstringvaluelength1to255-1"></a>
-<a id="tocsstringvaluelength1to255-1"></a>
+<a id="schemastringvaluelength1to2552"></a>
+<a id="schema_stringValueLength1to2552"></a>
+<a id="tocSstringvaluelength1to2552"></a>
+<a id="tocsstringvaluelength1to2552"></a>
 
 ```json
 "string"

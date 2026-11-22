@@ -124,11 +124,9 @@ const ConsentRequestSchema = z
       .object({
         careContexts: z.array(CareContextDefinitionSchema).exactOptional(),
         hiTypes: z.array(HITypeEnumSchema),
-        hip: OrganizationRepresentationSchema.and(
-          z.any().openapi({ xml: { name: 'hip' } }),
-        ).exactOptional(),
-        hiu: OrganizationRepresentationSchema.and(z.any().openapi({ xml: { name: 'hiu' } })),
-        patient: ConsentManagerPatientIDSchema.and(z.any().openapi({ xml: { name: 'patient' } })),
+        hip: OrganizationRepresentationSchema.exactOptional().openapi({ xml: { name: 'hip' } }),
+        hiu: OrganizationRepresentationSchema.openapi({ xml: { name: 'hiu' } }),
+        patient: ConsentManagerPatientIDSchema.openapi({ xml: { name: 'patient' } }),
         permission: PermissionSchema,
         purpose: UsePurposeSchema,
         requester: RequesterSchema,

@@ -214,13 +214,13 @@ const SearchFreetextResponseSchema = z
   })
   .openapi({
     discriminator: {
+      propertyName: 'searchType',
       mapping: {
         ATTRACTION: '#/components/schemas/SearchFreetextResponseAttraction',
         DESTINATION: '#/components/schemas/SearchFreetextResponseDestination',
         PRODUCT: '#/components/schemas/SearchFreetextResponseProduct',
         RECOMMENDATION: '#/components/schemas/SearchFreetextResponseRecommendation',
       },
-      propertyName: 'searchType',
     },
     required: [],
   })
@@ -618,7 +618,7 @@ const SearchFreetextResponseProductSchema = SearchFreetextResponseSchema.and(
               description: '**number** of panoramic images available for *this* product',
             }),
           pas: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description:
@@ -927,12 +927,12 @@ const BasicErrorModelSchema = z
       .exactOptional()
       .openapi({ description: '**code** specifying the type of error' }),
     extraInfo: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'ignore (Viator only)' }),
     extraObject: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'ignore (Viator only)' }),
@@ -11216,7 +11216,7 @@ export const postBookingAvailabilityTourgradesRoute = createRoute({
                           .exactOptional()
                           .openapi({ description: '**natural-language title** of the tour grade' }),
                         langServices: z
-                          .object({})
+                          .looseObject({})
                           .exactOptional()
                           .openapi({
                             description:
@@ -12182,7 +12182,7 @@ export const postBookingBookRoute = createRoute({
                                 description: "**telephone number** of *this* product's supplier",
                               }),
                             termsAndConditions: z
-                              .object({})
+                              .looseObject({})
                               .exactOptional()
                               .openapi({ description: 'ignore (Viator only)' }),
                             tourGradeCode: z
@@ -15641,7 +15641,7 @@ export const getProductRoute = createRoute({
                         description: '**number** of panoramic images available for *this* product',
                       }),
                     pas: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({ description: 'ignore (Viator only)' }),
                     passengerAttributes: z
@@ -16321,7 +16321,7 @@ export const postSearchProductsRoute = createRoute({
                               '**number** of panoramic images available for *this* product',
                           }),
                         pas: z
-                          .object({})
+                          .looseObject({})
                           .nullable()
                           .exactOptional()
                           .openapi({
@@ -16583,7 +16583,7 @@ export const postSearchProductsCodesRoute = createRoute({
                               '**number** of panoramic images available for *this* product',
                           }),
                         pas: z
-                          .object({})
+                          .looseObject({})
                           .nullable()
                           .exactOptional()
                           .openapi({ description: 'ignore (Viator only)' }),

@@ -10,33 +10,21 @@ const ExpirationTimestampTypeSchema = z.int().openapi('ExpirationTimestampType')
 
 const RoleCredentialsSchema = z
   .object({
-    accessKeyId: AccessKeyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier used for the temporary security credentials. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html">Using Temporary Security Credentials to Request Access to AWS Resources</a> in the <i>AWS IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
-    secretAccessKey: SecretAccessKeyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key that is used to sign the request. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html">Using Temporary Security Credentials to Request Access to AWS Resources</a> in the <i>AWS IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
-    sessionToken: SessionTokenTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used for temporary credentials. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html">Using Temporary Security Credentials to Request Access to AWS Resources</a> in the <i>AWS IAM User Guide</i>.',
-        }),
-    ).exactOptional(),
-    expiration: ExpirationTimestampTypeSchema.and(
-      z.any().openapi({ description: 'The date on which temporary security credentials expire.' }),
-    ).exactOptional(),
+    accessKeyId: AccessKeyTypeSchema.exactOptional().openapi({
+      description:
+        'The identifier used for the temporary security credentials. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html">Using Temporary Security Credentials to Request Access to AWS Resources</a> in the <i>AWS IAM User Guide</i>.',
+    }),
+    secretAccessKey: SecretAccessKeyTypeSchema.exactOptional().openapi({
+      description:
+        'The key that is used to sign the request. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html">Using Temporary Security Credentials to Request Access to AWS Resources</a> in the <i>AWS IAM User Guide</i>.',
+    }),
+    sessionToken: SessionTokenTypeSchema.exactOptional().openapi({
+      description:
+        'The token used for temporary credentials. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html">Using Temporary Security Credentials to Request Access to AWS Resources</a> in the <i>AWS IAM User Guide</i>.',
+    }),
+    expiration: ExpirationTimestampTypeSchema.exactOptional().openapi({
+      description: 'The date on which temporary security credentials expire.',
+    }),
   })
   .openapi({
     description: 'Provides information about the role credentials that are assigned to the user.',
@@ -46,11 +34,9 @@ const RoleCredentialsSchema = z
 
 const GetRoleCredentialsResponseSchema = z
   .object({
-    roleCredentials: RoleCredentialsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The credentials for the role that is assigned to the user.' }),
-    ).exactOptional(),
+    roleCredentials: RoleCredentialsSchema.exactOptional().openapi({
+      description: 'The credentials for the role that is assigned to the user.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRoleCredentialsResponse')
@@ -71,14 +57,12 @@ const AccountIdTypeSchema = z.string().openapi('AccountIdType')
 
 const RoleInfoSchema = z
   .object({
-    roleName: RoleNameTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The friendly name of the role that is assigned to the user.' }),
-    ).exactOptional(),
-    accountId: AccountIdTypeSchema.and(
-      z.any().openapi({ description: 'The identifier of the AWS account assigned to the user.' }),
-    ).exactOptional(),
+    roleName: RoleNameTypeSchema.exactOptional().openapi({
+      description: 'The friendly name of the role that is assigned to the user.',
+    }),
+    accountId: AccountIdTypeSchema.exactOptional().openapi({
+      description: 'The identifier of the AWS account assigned to the user.',
+    }),
   })
   .openapi({
     description: 'Provides information about the role that is assigned to the user.',
@@ -90,21 +74,13 @@ const RoleListTypeSchema = z.array(RoleInfoSchema).openapi('RoleListType')
 
 const ListAccountRolesResponseSchema = z
   .object({
-    nextToken: NextTokenTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The page token client that is used to retrieve the list of accounts.',
-        }),
-    ).exactOptional(),
-    roleList: RoleListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A paginated response with the list of roles and the next token if more results are available.',
-        }),
-    ).exactOptional(),
+    nextToken: NextTokenTypeSchema.exactOptional().openapi({
+      description: 'The page token client that is used to retrieve the list of accounts.',
+    }),
+    roleList: RoleListTypeSchema.exactOptional().openapi({
+      description:
+        'A paginated response with the list of roles and the next token if more results are available.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAccountRolesResponse')
@@ -115,27 +91,15 @@ const EmailAddressTypeSchema = z.string().min(1).max(254).openapi('EmailAddressT
 
 const AccountInfoSchema = z
   .object({
-    accountId: AccountIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the AWS account that is assigned to the user.',
-        }),
-    ).exactOptional(),
-    accountName: AccountNameTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The display name of the AWS account that is assigned to the user.',
-        }),
-    ).exactOptional(),
-    emailAddress: EmailAddressTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The email address of the AWS account that is assigned to the user.',
-        }),
-    ).exactOptional(),
+    accountId: AccountIdTypeSchema.exactOptional().openapi({
+      description: 'The identifier of the AWS account that is assigned to the user.',
+    }),
+    accountName: AccountNameTypeSchema.exactOptional().openapi({
+      description: 'The display name of the AWS account that is assigned to the user.',
+    }),
+    emailAddress: EmailAddressTypeSchema.exactOptional().openapi({
+      description: 'The email address of the AWS account that is assigned to the user.',
+    }),
   })
   .openapi({ description: 'Provides information about your AWS account.', required: [] })
   .openapi('AccountInfo')
@@ -144,21 +108,13 @@ const AccountListTypeSchema = z.array(AccountInfoSchema).openapi('AccountListTyp
 
 const ListAccountsResponseSchema = z
   .object({
-    nextToken: NextTokenTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The page token client that is used to retrieve the list of accounts.',
-        }),
-    ).exactOptional(),
-    accountList: AccountListTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A paginated response with the list of account information and the next token if more results are available.',
-        }),
-    ).exactOptional(),
+    nextToken: NextTokenTypeSchema.exactOptional().openapi({
+      description: 'The page token client that is used to retrieve the list of accounts.',
+    }),
+    accountList: AccountListTypeSchema.exactOptional().openapi({
+      description:
+        'A paginated response with the list of account information and the next token if more results are available.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAccountsResponse')
@@ -166,24 +122,24 @@ const ListAccountsResponseSchema = z
 const AccessTokenTypeSchema = z.string().openapi('AccessTokenType')
 
 const GetRoleCredentialsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetRoleCredentialsRequest' })
   .openapi('GetRoleCredentialsRequest')
 
 const MaxResultTypeSchema = z.int().min(1).max(100).openapi('MaxResultType')
 
 const ListAccountRolesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAccountRolesRequest' })
   .openapi('ListAccountRolesRequest')
 
 const ListAccountsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAccountsRequest' })
   .openapi('ListAccountsRequest')
 
 const LogoutRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'LogoutRequest' })
   .openapi('LogoutRequest')
 

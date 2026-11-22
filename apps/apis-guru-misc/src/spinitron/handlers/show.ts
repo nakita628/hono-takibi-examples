@@ -1,0 +1,12 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { getShowsIdRoute, getShowsRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const showHandler = app
+  .openapi(getShowsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getShowsIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })

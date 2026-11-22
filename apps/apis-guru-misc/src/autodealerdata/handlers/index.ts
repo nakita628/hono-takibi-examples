@@ -1,0 +1,7 @@
+export * from './supplyData'
+export * from './staticData'
+export * from './dealershipData'
+export * from './salesData'
+export * from './authentication'
+export * from './pricingData'
+export * from './vehicleData'

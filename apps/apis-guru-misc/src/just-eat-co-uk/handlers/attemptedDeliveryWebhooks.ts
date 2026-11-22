@@ -4,5 +4,9 @@ import { putAttemptedDeliveryQueryResolvedRoute, putDeliveryFailedRoute } from '
 const app = new OpenAPIHono()
 
 export const attemptedDeliveryWebhooksHandler = app
-  .openapi(putAttemptedDeliveryQueryResolvedRoute, (c) => {})
-  .openapi(putDeliveryFailedRoute, (c) => {})
+  .openapi(putAttemptedDeliveryQueryResolvedRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putDeliveryFailedRoute, (c) => {
+    throw new Error('Not implemented')
+  })

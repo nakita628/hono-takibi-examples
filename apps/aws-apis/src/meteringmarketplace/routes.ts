@@ -40,22 +40,14 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that makes up a <code>tag</code>. A <code>key</code> is a label that acts like a category for the specific tag values.',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that makes up a <code>tag</code>. A <code>value</code> acts as a descriptor within a tag category (key). The value can be empty or null.',
-        }),
-    ),
+    Key: TagKeySchema.openapi({
+      description:
+        'One part of a key-value pair that makes up a <code>tag</code>. A <code>key</code> is a label that acts like a category for the specific tag values.',
+    }),
+    Value: TagValueSchema.openapi({
+      description:
+        'One part of a key-value pair that makes up a <code>tag</code>. A <code>value</code> acts as a descriptor within a tag category (key). The value can be empty or null.',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -68,17 +60,13 @@ const TagListSchema = z.array(TagSchema).min(1).max(5).openapi('TagList')
 
 const UsageAllocationSchema = z
   .object({
-    AllocatedUsageQuantity: AllocatedUsageQuantitySchema.and(
-      z.any().openapi({ description: 'The total quantity allocated to this bucket of usage.' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The set of tags that define the bucket of usage. For the bucket of items with no tags, this parameter can be left out.',
-        }),
-    ).exactOptional(),
+    AllocatedUsageQuantity: AllocatedUsageQuantitySchema.openapi({
+      description: 'The total quantity allocated to this bucket of usage.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The set of tags that define the bucket of usage. For the bucket of items with no tags, this parameter can be left out.',
+    }),
   })
   .openapi({
     required: ['AllocatedUsageQuantity'],
@@ -95,46 +83,26 @@ const UsageAllocationsSchema = z
 
 const UsageRecordSchema = z
   .object({
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Timestamp, in UTC, for which the usage is being reported.</p> <p>Your application can meter usage for up to one hour in the past. Make sure the <code>timestamp</code> value is not before the start of the software usage.</p>',
-        }),
-    ),
-    CustomerIdentifier: CustomerIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>CustomerIdentifier</code> is obtained through the <code>ResolveCustomer</code> operation and represents an individual buyer in your application.',
-        }),
-    ),
-    Dimension: UsageDimensionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'During the process of registering a product on AWS Marketplace, dimensions are specified. These represent different units of value in your application.',
-        }),
-    ),
-    Quantity: UsageQuantitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The quantity of usage consumed by the customer for the given dimension and time. Defaults to <code>0</code> if not specified.',
-        }),
-    ).exactOptional(),
-    UsageAllocations: UsageAllocationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The set of <code>UsageAllocations</code> to submit. The sum of all <code>UsageAllocation</code> quantities must equal the Quantity of the <code>UsageRecord</code>.',
-        }),
-    ).exactOptional(),
+    Timestamp: TimestampSchema.openapi({
+      description:
+        '<p>Timestamp, in UTC, for which the usage is being reported.</p> <p>Your application can meter usage for up to one hour in the past. Make sure the <code>timestamp</code> value is not before the start of the software usage.</p>',
+    }),
+    CustomerIdentifier: CustomerIdentifierSchema.openapi({
+      description:
+        'The <code>CustomerIdentifier</code> is obtained through the <code>ResolveCustomer</code> operation and represents an individual buyer in your application.',
+    }),
+    Dimension: UsageDimensionSchema.openapi({
+      description:
+        'During the process of registering a product on AWS Marketplace, dimensions are specified. These represent different units of value in your application.',
+    }),
+    Quantity: UsageQuantitySchema.exactOptional().openapi({
+      description:
+        'The quantity of usage consumed by the customer for the given dimension and time. Defaults to <code>0</code> if not specified.',
+    }),
+    UsageAllocations: UsageAllocationsSchema.exactOptional().openapi({
+      description:
+        'The set of <code>UsageAllocations</code> to submit. The sum of all <code>UsageAllocation</code> quantities must equal the Quantity of the <code>UsageRecord</code>.',
+    }),
   })
   .openapi({
     required: ['Timestamp', 'CustomerIdentifier', 'Dimension'],
@@ -151,30 +119,18 @@ const UsageRecordResultStatusSchema = z
 
 const UsageRecordResultSchema = z
   .object({
-    UsageRecord: UsageRecordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>UsageRecord</code> that was part of the <code>BatchMeterUsage</code> request.',
-        }),
-    ).exactOptional(),
-    MeteringRecordId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>MeteringRecordId</code> is a unique identifier for this metering event.',
-        }),
-    ).exactOptional(),
-    Status: UsageRecordResultStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The <code>UsageRecordResult</code> <code>Status</code> indicates the status of an individual <code>UsageRecord</code> processed by <code>BatchMeterUsage</code>.</p> <ul> <li> <p> <i>Success</i>- The <code>UsageRecord</code> was accepted and honored by <code>BatchMeterUsage</code>.</p> </li> <li> <p> <i>CustomerNotSubscribed</i>- The <code>CustomerIdentifier</code> specified is not able to use your product. The <code>UsageRecord</code> was not honored. There are three causes for this result:</p> <ul> <li> <p>The customer identifier is invalid.</p> </li> <li> <p>The customer identifier provided in the metering record does not have an active agreement or subscription with this product. Future <code>UsageRecords</code> for this customer will fail until the customer subscribes to your product.</p> </li> <li> <p>The customer's AWS account was suspended.</p> </li> </ul> </li> <li> <p> <i>DuplicateRecord</i>- Indicates that the <code>UsageRecord</code> was invalid and not honored. A previously metered <code>UsageRecord</code> had the same customer, dimension, and time, but a different quantity.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    UsageRecord: UsageRecordSchema.exactOptional().openapi({
+      description:
+        'The <code>UsageRecord</code> that was part of the <code>BatchMeterUsage</code> request.',
+    }),
+    MeteringRecordId: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>MeteringRecordId</code> is a unique identifier for this metering event.',
+    }),
+    Status: UsageRecordResultStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The <code>UsageRecordResult</code> <code>Status</code> indicates the status of an individual <code>UsageRecord</code> processed by <code>BatchMeterUsage</code>.</p> <ul> <li> <p> <i>Success</i>- The <code>UsageRecord</code> was accepted and honored by <code>BatchMeterUsage</code>.</p> </li> <li> <p> <i>CustomerNotSubscribed</i>- The <code>CustomerIdentifier</code> specified is not able to use your product. The <code>UsageRecord</code> was not honored. There are three causes for this result:</p> <ul> <li> <p>The customer identifier is invalid.</p> </li> <li> <p>The customer identifier provided in the metering record does not have an active agreement or subscription with this product. Future <code>UsageRecords</code> for this customer will fail until the customer subscribes to your product.</p> </li> <li> <p>The customer's AWS account was suspended.</p> </li> </ul> </li> <li> <p> <i>DuplicateRecord</i>- Indicates that the <code>UsageRecord</code> was invalid and not honored. A previously metered <code>UsageRecord</code> had the same customer, dimension, and time, but a different quantity.</p> </li> </ul>",
+    }),
   })
   .openapi({
     description:
@@ -189,24 +145,21 @@ const UsageRecordResultListSchema = z
 
 const UsageRecordListSchema = z.array(UsageRecordSchema).min(0).max(25).openapi('UsageRecordList')
 
-const BatchMeterUsageResultSchema = z
+type BatchMeterUsageResultType = {
+  Results?: z.infer<typeof UsageRecordResultListSchema> & unknown
+  UnprocessedRecords?: z.infer<typeof UsageRecordListSchema> & unknown
+}
+
+const BatchMeterUsageResultSchema: z.ZodType<BatchMeterUsageResultType> = z
   .object({
-    Results: UsageRecordResultListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains all <code>UsageRecords</code> processed by <code>BatchMeterUsage</code>. These records were either honored by AWS Marketplace Metering Service or were invalid. Invalid records should be fixed before being resubmitted.',
-        }),
-    ).exactOptional(),
-    UnprocessedRecords: UsageRecordListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains all <code>UsageRecords</code> that were not processed by <code>BatchMeterUsage</code>. This is a list of <code>UsageRecords</code>. You can retry the failed request by making another <code>BatchMeterUsage</code> call with this list as input in the <code>BatchMeterUsageRequest</code>.',
-        }),
-    ).exactOptional(),
+    Results: UsageRecordResultListSchema.exactOptional().openapi({
+      description:
+        'Contains all <code>UsageRecords</code> processed by <code>BatchMeterUsage</code>. These records were either honored by AWS Marketplace Metering Service or were invalid. Invalid records should be fixed before being resubmitted.',
+    }),
+    UnprocessedRecords: UsageRecordListSchema.exactOptional().openapi({
+      description:
+        'Contains all <code>UsageRecords</code> that were not processed by <code>BatchMeterUsage</code>. This is a list of <code>UsageRecords</code>. You can retry the failed request by making another <code>BatchMeterUsage</code> call with this list as input in the <code>BatchMeterUsageRequest</code>.',
+    }),
   })
   .openapi({
     description:
@@ -224,22 +177,14 @@ const ProductCodeSchema = z
 
 const BatchMeterUsageRequestSchema = z
   .object({
-    UsageRecords: UsageRecordListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The set of <code>UsageRecords</code> to submit. <code>BatchMeterUsage</code> accepts up to 25 <code>UsageRecords</code> at a time.',
-        }),
-    ),
-    ProductCode: ProductCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Product code is used to uniquely identify a product in AWS Marketplace. The product code should be the same as the one used during the publishing of a new product.',
-        }),
-    ),
+    UsageRecords: UsageRecordListSchema.openapi({
+      description:
+        'The set of <code>UsageRecords</code> to submit. <code>BatchMeterUsage</code> accepts up to 25 <code>UsageRecords</code> at a time.',
+    }),
+    ProductCode: ProductCodeSchema.openapi({
+      description:
+        'Product code is used to uniquely identify a product in AWS Marketplace. The product code should be the same as the one used during the publishing of a new product.',
+    }),
   })
   .openapi({
     required: ['UsageRecords', 'ProductCode'],
@@ -271,9 +216,7 @@ const DisabledApiExceptionSchema = z.any().openapi('DisabledApiException')
 
 const MeterUsageResultSchema = z
   .object({
-    MeteringRecordId: StringSchema.and(
-      z.any().openapi({ description: 'Metering record id.' }),
-    ).exactOptional(),
+    MeteringRecordId: StringSchema.exactOptional().openapi({ description: 'Metering record id.' }),
   })
   .openapi({ required: [] })
   .openapi('MeterUsageResult')
@@ -282,54 +225,29 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const MeterUsageRequestSchema = z
   .object({
-    ProductCode: ProductCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Product code is used to uniquely identify a product in AWS Marketplace. The product code should be the same as the one used during the publishing of a new product.',
-        }),
-    ),
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Timestamp, in UTC, for which the usage is being reported. Your application can meter usage for up to one hour in the past. Make sure the <code>timestamp</code> value is not before the start of the software usage.',
-        }),
-    ),
-    UsageDimension: UsageDimensionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'It will be one of the fcp dimension name provided during the publishing of the product.',
-        }),
-    ),
-    UsageQuantity: UsageQuantitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Consumption value for the hour. Defaults to <code>0</code> if not specified.',
-        }),
-    ).exactOptional(),
-    DryRun: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Checks whether you have the permissions required for the action, but does not make the request. If you have the permissions, the request returns <code>DryRunOperation</code>; otherwise, it returns <code>UnauthorizedException</code>. Defaults to <code>false</code> if not specified.',
-        }),
-    ).exactOptional(),
-    UsageAllocations: UsageAllocationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The set of <code>UsageAllocations</code> to submit.</p> <p>The sum of all <code>UsageAllocation</code> quantities must equal the <code>UsageQuantity</code> of the <code>MeterUsage</code> request, and each <code>UsageAllocation</code> must have a unique set of tags (include no tags).</p>',
-        }),
-    ).exactOptional(),
+    ProductCode: ProductCodeSchema.openapi({
+      description:
+        'Product code is used to uniquely identify a product in AWS Marketplace. The product code should be the same as the one used during the publishing of a new product.',
+    }),
+    Timestamp: TimestampSchema.openapi({
+      description:
+        'Timestamp, in UTC, for which the usage is being reported. Your application can meter usage for up to one hour in the past. Make sure the <code>timestamp</code> value is not before the start of the software usage.',
+    }),
+    UsageDimension: UsageDimensionSchema.openapi({
+      description:
+        'It will be one of the fcp dimension name provided during the publishing of the product.',
+    }),
+    UsageQuantity: UsageQuantitySchema.exactOptional().openapi({
+      description: 'Consumption value for the hour. Defaults to <code>0</code> if not specified.',
+    }),
+    DryRun: BooleanSchema.exactOptional().openapi({
+      description:
+        'Checks whether you have the permissions required for the action, but does not make the request. If you have the permissions, the request returns <code>DryRunOperation</code>; otherwise, it returns <code>UnauthorizedException</code>. Defaults to <code>false</code> if not specified.',
+    }),
+    UsageAllocations: UsageAllocationsSchema.exactOptional().openapi({
+      description:
+        '<p>The set of <code>UsageAllocations</code> to submit.</p> <p>The sum of all <code>UsageAllocation</code> quantities must equal the <code>UsageQuantity</code> of the <code>MeterUsage</code> request, and each <code>UsageAllocation</code> must have a unique set of tags (include no tags).</p>',
+    }),
   })
   .openapi({ required: ['ProductCode', 'Timestamp', 'UsageDimension'], title: 'MeterUsageRequest' })
   .openapi('MeterUsageRequest')
@@ -347,14 +265,10 @@ const NonEmptyStringSchema = z
 
 const RegisterUsageResultSchema = z
   .object({
-    PublicKeyRotationTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: '(Optional) Only included when public key version has expired' }),
-    ).exactOptional(),
-    Signature: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'JWT Token' }),
-    ).exactOptional(),
+    PublicKeyRotationTimestamp: TimestampSchema.exactOptional().openapi({
+      description: '(Optional) Only included when public key version has expired',
+    }),
+    Signature: NonEmptyStringSchema.exactOptional().openapi({ description: 'JWT Token' }),
   })
   .openapi({ required: [] })
   .openapi('RegisterUsageResult')
@@ -369,25 +283,17 @@ const NonceSchema = z
 
 const RegisterUsageRequestSchema = z
   .object({
-    ProductCode: ProductCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Product code is used to uniquely identify a product in AWS Marketplace. The product code should be the same as the one used during the publishing of a new product.',
-        }),
-    ),
-    PublicKeyVersion: VersionIntegerSchema.and(
-      z.any().openapi({ description: 'Public Key Version provided by AWS Marketplace' }),
-    ),
-    Nonce: NonceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Optional) To scope down the registration to a specific running software instance and guard against replay attacks.',
-        }),
-    ).exactOptional(),
+    ProductCode: ProductCodeSchema.openapi({
+      description:
+        'Product code is used to uniquely identify a product in AWS Marketplace. The product code should be the same as the one used during the publishing of a new product.',
+    }),
+    PublicKeyVersion: VersionIntegerSchema.openapi({
+      description: 'Public Key Version provided by AWS Marketplace',
+    }),
+    Nonce: NonceSchema.exactOptional().openapi({
+      description:
+        '(Optional) To scope down the registration to a specific running software instance and guard against replay attacks.',
+    }),
   })
   .openapi({ required: ['ProductCode', 'PublicKeyVersion'], title: 'RegisterUsageRequest' })
   .openapi('RegisterUsageRequest')
@@ -407,30 +313,18 @@ const CustomerAWSAccountIdSchema = z
 
 const ResolveCustomerResultSchema = z
   .object({
-    CustomerIdentifier: CustomerIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>CustomerIdentifier</code> is used to identify an individual customer in your application. Calls to <code>BatchMeterUsage</code> require <code>CustomerIdentifiers</code> for each <code>UsageRecord</code>.',
-        }),
-    ).exactOptional(),
-    ProductCode: ProductCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The product code is returned to confirm that the buyer is registering for your product. Subsequent <code>BatchMeterUsage</code> calls should be made using this product code.',
-        }),
-    ).exactOptional(),
-    CustomerAWSAccountId: CustomerAWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>CustomerAWSAccountId</code> provides the AWS account ID associated with the <code>CustomerIdentifier</code> for the individual customer.',
-        }),
-    ).exactOptional(),
+    CustomerIdentifier: CustomerIdentifierSchema.exactOptional().openapi({
+      description:
+        'The <code>CustomerIdentifier</code> is used to identify an individual customer in your application. Calls to <code>BatchMeterUsage</code> require <code>CustomerIdentifiers</code> for each <code>UsageRecord</code>.',
+    }),
+    ProductCode: ProductCodeSchema.exactOptional().openapi({
+      description:
+        'The product code is returned to confirm that the buyer is registering for your product. Subsequent <code>BatchMeterUsage</code> calls should be made using this product code.',
+    }),
+    CustomerAWSAccountId: CustomerAWSAccountIdSchema.exactOptional().openapi({
+      description:
+        'The <code>CustomerAWSAccountId</code> provides the AWS account ID associated with the <code>CustomerIdentifier</code> for the individual customer.',
+    }),
   })
   .openapi({
     description:
@@ -441,14 +335,10 @@ const ResolveCustomerResultSchema = z
 
 const ResolveCustomerRequestSchema = z
   .object({
-    RegistrationToken: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When a buyer visits your website during the registration process, the buyer submits a registration token through the browser. The registration token is resolved to obtain a <code>CustomerIdentifier</code> along with the <code>CustomerAWSAccountId</code> and <code>ProductCode</code>.',
-        }),
-    ),
+    RegistrationToken: NonEmptyStringSchema.openapi({
+      description:
+        'When a buyer visits your website during the registration process, the buyer submits a registration token through the browser. The registration token is resolved to obtain a <code>CustomerIdentifier</code> along with the <code>CustomerAWSAccountId</code> and <code>ProductCode</code>.',
+    }),
   })
   .openapi({
     required: ['RegistrationToken'],

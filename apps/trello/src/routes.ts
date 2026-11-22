@@ -5509,17 +5509,8 @@ export const getCardsIdRoute = createRoute({
             schema: { type: 'string' },
           },
         }),
-      attachments: ((schema) =>
-        z.union([
-          z.preprocess(
-            ((read) => (val: unknown) => {
-              const result = read.safeParse(val)
-              return result.success ? result.data : val
-            })(z.stringbool()),
-            schema,
-          ),
-          schema,
-        ]))(z.xor([z.literal('cover'), z.boolean()]))
+      attachments: z
+        .xor([z.literal('cover'), z.string().and(z.stringbool())])
         .default(false)
         .exactOptional()
         .openapi({
@@ -8612,19 +8603,25 @@ export const postChecklistsIdCheckItemsRoute = createRoute({
             schema: { type: 'string', maxLength: 16384, minLength: 1 },
           },
         }),
-      pos: ((schema) =>
-        z.union([
-          z.preprocess(
-            (val) =>
-              typeof val === 'string' &&
-              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                ? Number(val)
-                : val,
-            schema,
-          ),
-          schema,
-        ]))(z.xor([z.enum(['top', 'bottom']), z.float32().openapi({ example: 1293.5 })]))
+      pos: z
+        .xor([
+          z.enum(['top', 'bottom']),
+          z
+            .string()
+            .and(
+              z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'string' &&
+                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                      ? Number(val)
+                      : val,
+                  z.float32(),
+                )
+                .openapi({ example: 1293.5 }),
+            ),
+        ])
         .default('bottom')
         .exactOptional()
         .openapi({

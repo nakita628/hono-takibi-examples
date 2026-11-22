@@ -1,32 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AccessTokensSchema = z
-  .object({
-    appId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The identifier of the application for which the access token is generated.<br><br><b>Endpoints</b>:<ul><li>GET user/accessTokens</li></ul>',
-      }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Base URL using which the application is accessed.<br><br><b>Endpoints</b>:<ul><li>GET user/accessTokens</li></ul>',
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Access token value used to invoke the widgets/apps.<br><br><b>Endpoints</b>:<ul><li>GET user/accessTokens</li></ul>',
-      }),
-  })
-  .openapi({ title: 'AccessTokens', required: [] })
-  .openapi('AccessTokens')
-
 const MoneySchema = z
   .object({
     amount: z.float64(),
@@ -1245,691 +1218,7 @@ const AccountSchema = z
   .openapi({ title: 'Account', required: [] })
   .openapi('Account')
 
-const HistoricalBalanceSchema = z
-  .object({
-    asOfDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Date as of when the balance is last updated due to the auto account updates or user triggered updates. This balance will be carry forward for the days where there is no balance available in the system. <br><br><b>Aggregated / Manual</b>: Both <br><b>Applicable containers</b>: bank, creditCard, investment, insurance, realEstate, loan<br><b>Endpoints</b>:<ul><li>GET accounts/historicalBalances</li></ul>',
-        readOnly: true,
-      }),
-    balance: MoneySchema.exactOptional(),
-    dataSourceType: z
-      .enum(['S', 'C', 'CF'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The source of balance information.<br><br><b>Aggregated / Manual</b>: Both <br><b>Applicable containers</b>: bank, creditCard, investment, insurance, realEstate, loan<br><b>Endpoints</b>:<ul><li>GET accounts/historicalBalances</li></ul><b>Applicable Values</b><br>',
-        readOnly: true,
-      }),
-    date: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Date for which the account balance was provided.  This balance could be a carryforward, calculated or a scraped balance.<br><b>Additional Details</b>:<br><b>Scraped</b>: Balance shown in the provider site. This balance gets stored in Yodlee system during system/user account updates.<br><b>CarryForward</b>: Balance carried forward from the scraped balance to the days for which the balance was not available in the system. Balance may not be available for all the days in the system due to MFA information required, error in the site, credential changes, etc.<br><b>calculated</b>: Balances that gets calculated for the days that are prior to the account added date.  <br><br><b>Aggregated / Manual</b>: Both <br><b>Applicable containers</b>: bank, creditCard, investment, insurance, realEstate, loan<br><b>Endpoints</b>:<ul><li>GET accounts/historicalBalances</li><li>GET derived/networth</li></ul>',
-        readOnly: true,
-      }),
-    isAsset: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the balance is an asset or liability.<br><br><b>Aggregated / Manual</b>: Both <br><b>Applicable containers</b>: bank, creditCard, investment, insurance, realEstate, loan<br><b>Endpoints</b>:<ul><li>GET accounts/historicalBalances</li></ul>',
-        readOnly: true,
-      }),
-  })
-  .openapi({ title: 'HistoricalBalance', required: [] })
-  .openapi('HistoricalBalance')
-
-const AccountHistorySchema = z
-  .object({
-    historicalBalances: z
-      .array(HistoricalBalanceSchema)
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', readOnly: true }),
-  })
-  .openapi({ title: 'AccountHistory', required: [] })
-  .openapi('AccountHistory')
-
-const AccountHistoricalBalancesResponseSchema = z
-  .object({ account: z.array(AccountHistorySchema).exactOptional().openapi({ readOnly: true }) })
-  .openapi({ title: 'AccountHistoricalBalancesResponse', required: [] })
-  .openapi('AccountHistoricalBalancesResponse')
-
-const AccountResponseSchema = z
-  .object({ account: z.array(AccountSchema).exactOptional().openapi({ readOnly: true }) })
-  .openapi({ title: 'AccountResponse', required: [] })
-  .openapi('AccountResponse')
-
-const ApiKeyOutputSchema = z
-  .object({
-    createdDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date on which the apiKey was created for the customer.<br><br><b>Endpoints</b>:<ul><li>GET /auth/apiKey</li><li>POST /auth/apiKey</li></ul>',
-      }),
-    expiresIn: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Time in seconds after which the JWT token created for users expires.<br><br><b>Endpoints</b>:<ul><li>GET /auth/apiKey</li><li>POST /auth/apiKey</li></ul>',
-      }),
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'ApiKey or the issuer key used to generate the JWT token for authentication.<br><br><b>Endpoints</b>:<ul><li>GET /auth/apiKey</li><li>POST /auth/apiKey</li></ul>',
-      }),
-    publicKey: z
-      .string()
-      .min(1)
-      .max(2147483647)
-      .exactOptional()
-      .openapi({
-        description:
-          'Public key uploaded by the customer while generating ApiKey.<br><br><b>Endpoints</b>:<ul><li>GET /auth/apiKey</li><li>POST /auth/apiKey</li></ul>',
-      }),
-  })
-  .openapi({ title: 'ApiKeyOutput', required: [] })
-  .openapi('ApiKeyOutput')
-
-const ApiKeyRequestSchema = z
-  .object({
-    publicKey: z
-      .string()
-      .min(1)
-      .max(2147483647)
-      .exactOptional()
-      .openapi({
-        description:
-          'Public key uploaded by the customer while generating ApiKey.<br><br><b>Endpoints</b>:<ul><li>GET /auth/apiKey</li><li>POST /auth/apiKey</li></ul>',
-      }),
-  })
-  .openapi({ title: 'ApiKeyRequest', required: [] })
-  .openapi('ApiKeyRequest')
-
-const ApiKeyResponseSchema = z
-  .object({
-    apiKey: z
-      .array(ApiKeyOutputSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'ApiKey customer details.<br><br><b>Endpoints</b>:<ul><li>GET /auth/apiKey</li><li>POST /auth/apiKey</li></ul>',
-      }),
-  })
-  .openapi({ title: 'ApiKeyResponse', required: [] })
-  .openapi('ApiKeyResponse')
-
-const AssetClassificationSchema = z
-  .object({
-    allocation: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The allocation percentage of the holding.<br><br><b>Required Feature Enablement</b>: Asset classification feature<br><br><b>Applicable containers</b>: investment<br>',
-        readOnly: true,
-      }),
-    classificationType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of classification to which the investment belongs (assetClass, country, sector, and style).<br><b>Required Feature Enablement</b>: Asset classification feature<br><br><b>Applicable containers</b>: investment<br>',
-        readOnly: true,
-      }),
-    classificationValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value for each classificationType.<br><b>Required Feature Enablement</b>: Asset classification feature<br><br><b>Applicable containers</b>: investment<br>',
-        readOnly: true,
-      }),
-  })
-  .openapi({ title: 'AssetClassification', required: [] })
-  .openapi('AssetClassification')
-
-const AssetClassificationListSchema = z
-  .object({
-    classificationType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of classification to which the investment belongs (assetClass, country, sector, and style).<br><b>Required Feature Enablement</b>: Asset classification feature<br><br><b>Applicable containers</b>: investment<br>',
-        readOnly: true,
-      }),
-    classificationValue: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The value for each classificationType.<br><b>Required Feature Enablement</b>: Asset classification feature<br><br><b>Applicable containers</b>: investment<br>',
-        readOnly: true,
-      }),
-  })
-  .openapi({ title: 'AssetClassificationList', required: [] })
-  .openapi('AssetClassificationList')
-
-const TransactionDaysSchema = z
-  .object({
-    fullAccountNumberFields: z
-      .array(z.enum(['paymentAccountNumber', 'unmaskedAccountNumber']))
-      .exactOptional(),
-    numberOfTransactionDays: z.int32().exactOptional(),
-  })
-  .openapi({ title: 'TransactionDays', required: [] })
-  .openapi('TransactionDays')
-
-const ContainerAttributesSchema = z
-  .object({
-    BANK: TransactionDaysSchema.exactOptional(),
-    CREDITCARD: TransactionDaysSchema.exactOptional(),
-    INSURANCE: TransactionDaysSchema.exactOptional(),
-    INVESTMENT: TransactionDaysSchema.exactOptional(),
-    LOAN: TransactionDaysSchema.exactOptional(),
-  })
-  .openapi({ title: 'ContainerAttributes', required: [] })
-  .openapi('ContainerAttributes')
-
-const AttributeSchema = z
-  .object({
-    container: z
-      .array(
-        z.enum([
-          'bank',
-          'creditCard',
-          'investment',
-          'insurance',
-          'loan',
-          'reward',
-          'realEstate',
-          'otherAssets',
-          'otherLiabilities',
-        ]),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Containers for which the attributes are supported.<br><br><b>Endpoints</b>:<ul><li>GET providers</li><li>GET providers/{providerId}</li></ul>',
-      }),
-    containerAttributes: ContainerAttributesSchema.exactOptional(),
-    fromDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Applicable only to EBILLS and STATEMENTS attributes of DOCUMENT dataset.<br><br><b>Endpoints</b>:<ul><li>POST providerAccounts</li><li>PUT providerAccounts</li></ul>',
-        readOnly: true,
-      }),
-    fromFinYear: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Applicable only to TAX attribute of DOCUMENT dataset.<br><br><b>Endpoints</b>:<ul><li>POST providerAccounts</li><li>PUT providerAccounts</li></ul>',
-        readOnly: true,
-      }),
-    name: z
-      .enum([
-        'BASIC_ACCOUNT_INFO',
-        'TRANSACTIONS',
-        'STATEMENTS',
-        'HOLDINGS',
-        'ACCOUNT_DETAILS',
-        'TAX',
-        'EBILLS',
-        'FULL_ACCT_NUMBER',
-        'BANK_TRANSFER_CODE',
-        'HOLDER_NAME',
-        'HOLDER_DETAILS',
-        'PAYMENT_PROFILE',
-        'PAYMENT_DETAILS',
-        'INTEREST_DETAILS',
-        'COVERAGE',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Attributes that are supported for a dataset.<br><br><b>Endpoints</b>:<ul><li>GET providers</li><li>GET providers/{providerId}</li></ul>',
-      }),
-    toDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Applicable only to EBILLS and STATEMENTS attributes of DOCUMENT dataset.<br><br><b>Endpoints</b>:<ul><li>POST providerAccounts</li><li>PUT providerAccounts</li></ul>',
-        readOnly: true,
-      }),
-    toFinYear: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Applicable only to TAX attribute of DOCUMENT dataset.<br><br><b>Endpoints</b>:<ul><li>POST providerAccounts</li><li>PUT providerAccounts</li></ul>',
-        readOnly: true,
-      }),
-  })
-  .openapi({ title: 'Attribute', required: [] })
-  .openapi('Attribute')
-
-const CapabilitySchema = z
-  .object({
-    container: z
-      .array(
-        z.enum([
-          'bank',
-          'creditCard',
-          'investment',
-          'insurance',
-          'loan',
-          'reward',
-          'realEstate',
-          'otherAssets',
-          'otherLiabilities',
-        ]),
-      )
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    name: z.string().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ title: 'Capability', required: [] })
-  .openapi('Capability')
-
-const ClientCredentialTokenSchema = z
-  .object({
-    accessToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Access Token to access YSL 1.1 services.<br><br><b>Endpoints</b>:<ul><li>POST /auth/token</li></ul>',
-        readOnly: true,
-      }),
-    expiresIn: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time in seconds after which the issued accessToken expires.<br><br><b>Endpoints</b>:<ul><li>POST /auth/token</li></ul>',
-        readOnly: true,
-      }),
-    issuedAt: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date and time on which accessToken was created for the customer.<br><br><b>Endpoints</b>:<ul><li>POST /auth/token</li></ul>',
-        readOnly: true,
-      }),
-  })
-  .openapi({ title: 'ClientCredentialToken', required: [] })
-  .openapi('ClientCredentialToken')
-
-const ClientCredentialTokenResponseSchema = z
-  .object({ token: ClientCredentialTokenSchema.exactOptional() })
-  .openapi({ title: 'ClientCredentialTokenResponse', required: [] })
-  .openapi('ClientCredentialTokenResponse')
-
-const CobrandSchema = z
-  .object({
-    cobrandLogin: z.string().min(1).max(2147483647),
-    cobrandPassword: z.string().min(1).max(2147483647),
-    locale: z
-      .string()
-      .regex(/[a-z]{2}_[A-Z]{2}/)
-      .exactOptional()
-      .openapi({
-        description:
-          "The customer's locale that will be considered for the localization functionality.<br><br><b>Endpoints</b>:<ul><li>POST cobrand/login</li></ul>",
-      }),
-  })
-  .openapi({ required: ['cobrandLogin', 'cobrandPassword'], title: 'Cobrand' })
-  .openapi('Cobrand')
-
-const CobrandLoginRequestSchema = z
-  .object({ cobrand: CobrandSchema })
-  .openapi({ required: ['cobrand'], title: 'CobrandLoginRequest' })
-  .openapi('CobrandLoginRequest')
-
-const CobrandSessionSchema = z
-  .object({ cobSession: z.string().exactOptional() })
-  .openapi({ title: 'CobrandSession', required: [] })
-  .openapi('CobrandSession')
-
-const CobrandLoginResponseSchema = z
-  .object({
-    applicationId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The application identifier.<br><br><b>Endpoints</b>:<ul><li>POST cobrand/login</li></ul>',
-        readOnly: true,
-      }),
-    cobrandId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Unique identifier of the cobrand (customer) in the system.<br><br><b>Endpoints</b>:<ul><li>POST cobrand/login</li></ul>',
-        readOnly: true,
-      }),
-    locale: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The customer's locale that will be considered for the localization functionality.<br><br><b>Endpoints</b>:<ul><li>POST cobrand/login</li></ul>",
-        readOnly: true,
-      }),
-    session: CobrandSessionSchema.exactOptional(),
-  })
-  .openapi({ title: 'CobrandLoginResponse', required: [] })
-  .openapi('CobrandLoginResponse')
-
-const CobrandNotificationEventSchema = z
-  .object({
-    callbackUrl: z
-      .string()
-      .min(1)
-      .max(2147483647)
-      .exactOptional()
-      .openapi({
-        description:
-          'URL to which the notification should be posted.<br><br><b>Endpoints</b>:<ul><li>GET cobrand/config/notifications/events</li></ul>',
-      }),
-    name: z
-      .enum(['REFRESH', 'DATA_UPDATES', 'AUTO_REFRESH_UPDATES'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the event for which the customers must subscribe to receive notifications.<br><b>Valid Value:</b> Notification Events Name<br><br><b>Endpoints</b>:<ul><li>GET cobrand/config/notifications/events</li></ul><b>Applicable Values</b><br>',
-      }),
-  })
-  .openapi({ title: 'CobrandNotificationEvent', required: [] })
-  .openapi('CobrandNotificationEvent')
-
-const CobrandNotificationResponseSchema = z
-  .object({
-    event: z.array(CobrandNotificationEventSchema).exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ title: 'CobrandNotificationResponse', required: [] })
-  .openapi('CobrandNotificationResponse')
-
-const CobrandPublicKeyResponseSchema = z
-  .object({
-    keyAlias: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The key name used for encryption.<br><br><b>Endpoints</b>:<ul><li>GET cobrand/publicKey</li></ul>',
-        readOnly: true,
-      }),
-    keyAsPemString: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Public key that the customer should be using to encrypt the credentials and answers before sending to the add & update providerAccounts APIs.<br><br><b>Endpoints</b>:<ul><li>GET cobrand/publicKey</li></ul>',
-        readOnly: true,
-      }),
-  })
-  .openapi({ title: 'CobrandPublicKeyResponse', required: [] })
-  .openapi('CobrandPublicKeyResponse')
-
-const ConfigsNotificationEventSchema = z
-  .object({
-    callbackUrl: z
-      .string()
-      .min(1)
-      .max(2147483647)
-      .exactOptional()
-      .openapi({
-        description:
-          'URL to which the notification should be posted.<br><br><b>Endpoints</b>:<ul><li>GET configs/notifications/events</li></ul>',
-      }),
-    name: z
-      .enum(['REFRESH', 'DATA_UPDATES', 'AUTO_REFRESH_UPDATES'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the event for which the customers must subscribe to receive notifications.<br><b>Valid Value:</b> Notification Events Name<br><br><b>Endpoints</b>:<ul><li>GET configs/notifications/events</li></ul><b>Applicable Values</b><br>',
-      }),
-  })
-  .openapi({ title: 'ConfigsNotificationEvent', required: [] })
-  .openapi('ConfigsNotificationEvent')
-
-const ConfigsNotificationResponseSchema = z
-  .object({
-    event: z.array(ConfigsNotificationEventSchema).exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ title: 'ConfigsNotificationResponse', required: [] })
-  .openapi('ConfigsNotificationResponse')
-
-const ConfigsPublicKeySchema = z
-  .object({
-    alias: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The key name used for encryption.<br><br><b>Endpoints</b>:<ul><li>GET configs/publicKey</li></ul>',
-        readOnly: true,
-      }),
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Public key that the customer should be using to encrypt the credentials and answers before sending to the add and update providerAccounts APIs.<br><br><b>Endpoints</b>:<ul><li>GET configs/publicKey</li></ul>',
-        readOnly: true,
-      }),
-  })
-  .openapi({ title: 'ConfigsPublicKey', required: [] })
-  .openapi('ConfigsPublicKey')
-
-const ConfigsPublicKeyResponseSchema = z
-  .object({ publicKey: ConfigsPublicKeySchema.exactOptional() })
-  .openapi({ title: 'ConfigsPublicKeyResponse', required: [] })
-  .openapi('ConfigsPublicKeyResponse')
-
-const ContactSchema = z
-  .object({
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Email Id of the merchant<br><br><b>Applicable containers</b>: bank,creditCard,investment,loan<br>',
-      }),
-    phone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Phone number of the merchant<br><br><b>Applicable containers</b>: bank,creditCard,investment,loan<br>',
-      }),
-  })
-  .openapi({ title: 'Contact', required: [] })
-  .openapi('Contact')
-
-const CoordinatesSchema = z
-  .object({
-    latitude: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Latitude of the merchant<br><br><b>Applicable containers</b>: bank,creditCard,loan<br>',
-      }),
-    longitude: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Longitude of the merchant<br><br><b>Applicable containers</b>: bank,creditCard,loan<br>',
-      }),
-  })
-  .openapi({ title: 'Coordinates', required: [] })
-  .openapi('Coordinates')
-
-const CreateAccountInfoSchema = z
-  .object({
-    accountName: z.string().min(1).max(100),
-    accountNumber: z
-      .string()
-      .regex(/^[a-zA-Z0-9]+$/)
-      .min(0)
-      .max(100)
-      .exactOptional(),
-    accountType: z.string().min(1).max(2147483647),
-    address: AccountAddressSchema.exactOptional(),
-    amountDue: MoneySchema.exactOptional(),
-    balance: MoneySchema.exactOptional(),
-    dueDate: z.string().exactOptional(),
-    frequency: z
-      .enum([
-        'DAILY',
-        'ONE_TIME',
-        'WEEKLY',
-        'EVERY_2_WEEKS',
-        'SEMI_MONTHLY',
-        'MONTHLY',
-        'QUARTERLY',
-        'SEMI_ANNUALLY',
-        'ANNUALLY',
-        'EVERY_2_MONTHS',
-        'EBILL',
-        'FIRST_DAY_MONTHLY',
-        'LAST_DAY_MONTHLY',
-        'EVERY_4_WEEKS',
-        'UNKNOWN',
-        'OTHER',
-      ])
-      .exactOptional(),
-    homeValue: MoneySchema.exactOptional(),
-    includeInNetWorth: z.string().exactOptional(),
-    memo: z.string().min(0).max(250).exactOptional(),
-    nickname: z.string().min(0).max(50).exactOptional(),
-    valuationType: z.enum(['SYSTEM', 'MANUAL']).exactOptional(),
-  })
-  .openapi({ required: ['accountName', 'accountType'], title: 'CreateAccountInfo' })
-  .openapi('CreateAccountInfo')
-
-const CreateAccountRequestSchema = z
-  .object({ account: CreateAccountInfoSchema })
-  .openapi({ required: ['account'], title: 'CreateAccountRequest' })
-  .openapi('CreateAccountRequest')
-
-const CreateCobrandNotificationEventSchema = z
-  .object({
-    callbackUrl: z
-      .string()
-      .min(1)
-      .max(2147483647)
-      .exactOptional()
-      .openapi({
-        description:
-          'URL to which the notification should be posted.<br><br><b>Endpoints</b>:<ul><li>GET cobrand/config/notifications/events</li></ul>',
-      }),
-  })
-  .openapi({ title: 'CreateCobrandNotificationEvent', required: [] })
-  .openapi('CreateCobrandNotificationEvent')
-
-const CreateCobrandNotificationEventRequestSchema = z
-  .object({ event: CreateCobrandNotificationEventSchema })
-  .openapi({ required: ['event'], title: 'CreateCobrandNotificationEventRequest' })
-  .openapi('CreateCobrandNotificationEventRequest')
-
-const CreateConfigsNotificationEventSchema = z
-  .object({
-    callbackUrl: z
-      .string()
-      .min(1)
-      .max(2147483647)
-      .exactOptional()
-      .openapi({
-        description:
-          'URL to which the notification should be posted.<br><br><b>Endpoints</b>:<ul><li>GET configs/notifications/events</li></ul>',
-      }),
-  })
-  .openapi({ title: 'CreateConfigsNotificationEvent', required: [] })
-  .openapi('CreateConfigsNotificationEvent')
-
-const CreateConfigsNotificationEventRequestSchema = z
-  .object({ event: CreateConfigsNotificationEventSchema })
-  .openapi({ required: ['event'], title: 'CreateConfigsNotificationEventRequest' })
-  .openapi('CreateConfigsNotificationEventRequest')
-
-const CreatedAccountInfoSchema = z
-  .object({
-    accountName: z.string().exactOptional().openapi({ readOnly: true }),
-    accountNumber: z.string().exactOptional().openapi({ readOnly: true }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', readOnly: true }),
-  })
-  .openapi({ title: 'CreatedAccountInfo', required: [] })
-  .openapi('CreatedAccountInfo')
-
-const CreatedAccountResponseSchema = z
-  .object({
-    account: z.array(CreatedAccountInfoSchema).exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ title: 'CreatedAccountResponse', required: [] })
-  .openapi('CreatedAccountResponse')
+type AccountResponseType = { account?: z.infer<typeof AccountSchema>[] }
 
 const DataExtractsAccountSchema = z
   .object({
@@ -2563,51 +1852,6 @@ const DataExtractsAccountSchema = z
   .openapi({ title: 'DataExtractsAccount', required: [] })
   .openapi('DataExtractsAccount')
 
-const DataExtractsEventLinksSchema = z
-  .object({
-    href: z.string().exactOptional().openapi({ readOnly: true }),
-    methodType: z.string().exactOptional().openapi({ readOnly: true }),
-    rel: z.string().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ title: 'DataExtractsEventLinks', required: [] })
-  .openapi('DataExtractsEventLinks')
-
-const DataExtractsUserSchema = z
-  .object({ loginName: z.string().exactOptional().openapi({ readOnly: true }) })
-  .openapi({ title: 'DataExtractsUser', required: [] })
-  .openapi('DataExtractsUser')
-
-const DataExtractsEventUserDataSchema = z
-  .object({
-    links: z.array(DataExtractsEventLinksSchema).exactOptional().openapi({ readOnly: true }),
-    user: DataExtractsUserSchema.exactOptional(),
-  })
-  .openapi({ title: 'DataExtractsEventUserData', required: [] })
-  .openapi('DataExtractsEventUserData')
-
-const DataExtractsEventDataSchema = z
-  .object({
-    fromDate: z.string().exactOptional().openapi({ readOnly: true }),
-    toDate: z.string().exactOptional().openapi({ readOnly: true }),
-    userCount: z.int32().exactOptional().openapi({ readOnly: true }),
-    userData: z.array(DataExtractsEventUserDataSchema).exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ title: 'DataExtractsEventData', required: [] })
-  .openapi('DataExtractsEventData')
-
-const DataExtractsEventSchema = z
-  .object({
-    data: DataExtractsEventDataSchema.exactOptional(),
-    info: z.string().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ title: 'DataExtractsEvent', required: [] })
-  .openapi('DataExtractsEvent')
-
-const DataExtractsEventResponseSchema = z
-  .object({ event: DataExtractsEventSchema.exactOptional() })
-  .openapi({ title: 'DataExtractsEventResponse', required: [] })
-  .openapi('DataExtractsEventResponse')
-
 const DataExtractsHoldingSchema = z
   .object({
     accountId: z
@@ -3071,6 +2315,46 @@ const DescriptionSchema = z
   })
   .openapi({ title: 'Description', required: [] })
   .openapi('Description')
+
+const ContactSchema = z
+  .object({
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Email Id of the merchant<br><br><b>Applicable containers</b>: bank,creditCard,investment,loan<br>',
+      }),
+    phone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Phone number of the merchant<br><br><b>Applicable containers</b>: bank,creditCard,investment,loan<br>',
+      }),
+  })
+  .openapi({ title: 'Contact', required: [] })
+  .openapi('Contact')
+
+const CoordinatesSchema = z
+  .object({
+    latitude: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Latitude of the merchant<br><br><b>Applicable containers</b>: bank,creditCard,loan<br>',
+      }),
+    longitude: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Longitude of the merchant<br><br><b>Applicable containers</b>: bank,creditCard,loan<br>',
+      }),
+  })
+  .openapi({ title: 'Coordinates', required: [] })
+  .openapi('Coordinates')
 
 const MerchantSchema = z
   .object({
@@ -3568,7 +2852,21 @@ const DataExtractsTransactionSchema = z
   .openapi({ title: 'DataExtractsTransaction', required: [] })
   .openapi('DataExtractsTransaction')
 
-const DataExtractsUserDataSchema = z
+const DataExtractsUserSchema = z
+  .object({ loginName: z.string().exactOptional().openapi({ readOnly: true }) })
+  .openapi({ title: 'DataExtractsUser', required: [] })
+  .openapi('DataExtractsUser')
+
+type DataExtractsUserDataType = {
+  account?: z.infer<typeof DataExtractsAccountSchema>[]
+  holding?: z.infer<typeof DataExtractsHoldingSchema>[]
+  providerAccount?: z.infer<typeof DataExtractsProviderAccountSchema>[]
+  totalTransactionsCount?: bigint
+  transaction?: z.infer<typeof DataExtractsTransactionSchema>[]
+  user?: z.infer<typeof DataExtractsUserSchema>
+}
+
+const DataExtractsUserDataSchema: z.ZodType<DataExtractsUserDataType> = z
   .object({
     account: z.array(DataExtractsAccountSchema).exactOptional().openapi({ readOnly: true }),
     holding: z.array(DataExtractsHoldingSchema).exactOptional().openapi({ readOnly: true }),
@@ -3594,12 +2892,21 @@ const DataExtractsUserDataSchema = z
   .openapi({ title: 'DataExtractsUserData', required: [] })
   .openapi('DataExtractsUserData')
 
-const DataExtractsUserDataResponseSchema = z
+type DataExtractsUserDataResponseType = { userData?: z.infer<typeof DataExtractsUserDataSchema>[] }
+
+const DerivedTransactionsLinksSchema = z
   .object({
-    userData: z.array(DataExtractsUserDataSchema).exactOptional().openapi({ readOnly: true }),
+    transactions: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Link of the transaction API service that corresponds to the value derivation.<br><br><b>Applicable containers</b>: creditCard, bank, investment<br>',
+        readOnly: true,
+      }),
   })
-  .openapi({ title: 'DataExtractsUserDataResponse', required: [] })
-  .openapi('DataExtractsUserDataResponse')
+  .openapi({ title: 'DerivedTransactionsLinks', required: [] })
+  .openapi('DerivedTransactionsLinks')
 
 const DerivedCategorySummaryDetailsSchema = z
   .object({
@@ -3616,20 +2923,6 @@ const DerivedCategorySummaryDetailsSchema = z
   })
   .openapi({ title: 'DerivedCategorySummaryDetails', required: [] })
   .openapi('DerivedCategorySummaryDetails')
-
-const DerivedTransactionsLinksSchema = z
-  .object({
-    transactions: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Link of the transaction API service that corresponds to the value derivation.<br><br><b>Applicable containers</b>: creditCard, bank, investment<br>',
-        readOnly: true,
-      }),
-  })
-  .openapi({ title: 'DerivedTransactionsLinks', required: [] })
-  .openapi('DerivedTransactionsLinks')
 
 const DerivedCategorySummarySchema = z
   .object({
@@ -3673,6 +2966,2460 @@ const DerivedCategorySummarySchema = z
   })
   .openapi({ title: 'DerivedCategorySummary', required: [] })
   .openapi('DerivedCategorySummary')
+
+const DerivedTransactionsSummarySchema = z
+  .object({
+    categorySummary: z
+      .array(DerivedCategorySummarySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Summary of transaction amouts at category level.<br><br><b>Applicable containers</b>: creditCard, bank, investment<br>',
+        readOnly: true,
+      }),
+    categoryType: z
+      .enum(['TRANSFER', 'DEFERRED_COMPENSATION', 'UNCATEGORIZE', 'INCOME', 'EXPENSE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Type of categories provided by transactions/categories service.<br><br><b>Applicable containers</b>: creditCard, bank, investment<br><b>Applicable Values</b><br>',
+        readOnly: true,
+      }),
+    creditTotal: MoneySchema.exactOptional(),
+    debitTotal: MoneySchema.exactOptional(),
+    links: DerivedTransactionsLinksSchema.exactOptional(),
+  })
+  .openapi({ title: 'DerivedTransactionsSummary', required: [] })
+  .openapi('DerivedTransactionsSummary')
+
+type DerivedTransactionSummaryResponseType = {
+  links?: z.infer<typeof DerivedTransactionsLinksSchema>
+  transactionSummary?: z.infer<typeof DerivedTransactionsSummarySchema>[]
+}
+
+const OptionSchema = z
+  .object({
+    displayText: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The text that is displayed to the user for that option in the provider site.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+      }),
+    isSelected: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'The option that is selected by default in the provider site.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+      }),
+    optionValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value that is associated with the option.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+      }),
+  })
+  .openapi({ title: 'Option', required: [] })
+  .openapi('Option')
+
+const FieldSchema = z
+  .object({
+    id: z
+      .string()
+      .min(1)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description:
+          'Identifier for the field.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+      }),
+    image: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Image displayed at the endsite.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li></ul>',
+      }),
+    isOptional: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if a field is an optional field or a mandatory field.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+        readOnly: true,
+      }),
+    isValueProvided: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates that the answer to the security question already exists in the Yodlee system.Persuading the user to provide the answer to the security question again during the edit-credential flow can be avoided.<br><br><br><b>Endpoints</b>:<ul><li>GET providerAccounts?include=questions</li><li>GET providerAccounts/{providerAccountId}? include=questions</li></ul>',
+        readOnly: true,
+      }),
+    maxLength: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The maximum length of the login form field.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+        readOnly: true,
+      }),
+    minLength: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The minimum length of the login form field.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the field.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+        readOnly: true,
+      }),
+    option: z
+      .array(OptionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Provides the different values that are available for the user to choose. This field is applicable for drop-down or radio field types.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+        readOnly: true,
+      }),
+    prefix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The prefix string that has to be displayed before the field value.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+        readOnly: true,
+      }),
+    suffix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The suffix string that has to be displayed next to the field value.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+        readOnly: true,
+      }),
+    type: z
+      .enum(['text', 'password', 'option', 'checkbox', 'radio', 'image'])
+      .exactOptional()
+      .openapi({
+        description:
+          'This indicates the display type of the field. For example, text box, image, etc. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul><b>Applicable Values</b><br>',
+        readOnly: true,
+      }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Value expected from the user for the field. This will be blank and is expected to be filled and sent back when submitting the login or MFA information.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+      }),
+    valueEditable: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the field is editable or not.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+        readOnly: true,
+      }),
+  })
+  .openapi({ title: 'Field', required: [] })
+  .openapi('Field')
+
+const RowSchema = z
+  .object({
+    field: z
+      .array(FieldSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Details of fields that belong to the row.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+      }),
+    fieldRowChoice: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Fields that belong to a particular choice are collected together using this field.<br><b>Recommendations</b>: All the field row choices label to be grouped and displayed as options to the customer. On choosing a particular choice field, we recommend displaying the fields relevant to them. First field choice could be selected by default.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+      }),
+    form: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Form denotes the set of the fields that are related. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique identifier of the row.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+      }),
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The label text displayed for a row in the form.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+      }),
+  })
+  .openapi({ title: 'Row', required: [] })
+  .openapi('Row')
+
+const LoginFormSchema = z
+  .object({
+    forgetPasswordURL: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The forget password URL of the provider site.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+      }),
+    formType: z
+      .enum(['login', 'questionAndAnswer', 'token', 'image'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of the forms for which the user information is required.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul><b>Applicable Values</b><br>',
+      }),
+    help: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The help that can be displayed to the customer in the login form.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+        readOnly: true,
+      }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The identifier of the login form.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+      }),
+    loginHelp: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The help that can be displayed to the customer in the login form.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+        readOnly: true,
+      }),
+    mfaInfoText: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The text displayed in the provider site while requesting the user's MFA information. This field is applicable for MFA form types only. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li></ul>",
+        readOnly: true,
+      }),
+    mfaInfoTitle: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The title for the MFA information demanded from the user.This is the title displayed in the provider site.This field is applicable for MFA form types only. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li></ul>',
+        readOnly: true,
+      }),
+    mfaTimeout: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The amount of time before which the user is expected to provide MFA information. This field is applicable for MFA form types only. This would be an useful information that could be displayed to the users. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+        readOnly: true,
+      }),
+    row: z
+      .array(RowSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'This indicates one row in the form. The row will have one label. But it may have single or multiple fields.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
+      }),
+  })
+  .openapi({ title: 'LoginForm', required: [] })
+  .openapi('LoginForm')
+
+const ProviderAccountPreferencesSchema = z
+  .object({
+    isAutoRefreshEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if auto-refreshes have to be triggered for the provider account.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts?include=preferences</li><li>GET providerAccounts/{providerAccountId}?include=preferences</li></ul>',
+      }),
+    isDataExtractsEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the updates to the provider account should be part of the data extracts event notification or the data extract data retrieval service.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts?include=preferences</li><li>GET providerAccounts/{providerAccountId}?include=preferences</li></ul>',
+      }),
+    linkedProviderAccountId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'LinkedproviderAccountd is a providerAccountId linked by the user to the primary provider account. <br>LinkedProviderAccountId and the providerAccountId belongs to the same institution.<br><br><b>Endpoints</b>:<ul><li>POST Provider Account</li><li>PUT Provider Account</li><li>GET Provider Accounts</li></ul>',
+      }),
+  })
+  .openapi({ title: 'ProviderAccountPreferences', required: [] })
+  .openapi('ProviderAccountPreferences')
+
+type ProviderAccountDetailType = {
+  aggregationSource?: 'SYSTEM' | 'USER'
+  consentId: bigint
+  createdDate?: string
+  dataset?: z.infer<typeof AccountDatasetSchema>[]
+  id?: bigint
+  isManual?: boolean
+  lastUpdated?: string
+  loginForm?: z.infer<typeof LoginFormSchema>[]
+  oauthMigrationStatus?: 'IN_PROGRESS' | 'TO_BE_MIGRATED' | 'COMPLETED'
+  preferences?: z.infer<typeof ProviderAccountPreferencesSchema>
+  providerId?: bigint
+  requestId?: string
+  status?:
+    | 'LOGIN_IN_PROGRESS'
+    | 'USER_INPUT_REQUIRED'
+    | 'IN_PROGRESS'
+    | 'PARTIAL_SUCCESS'
+    | 'SUCCESS'
+    | 'FAILED'
+    | 'MIGRATION_IN_PROGRESS'
+}
+
+const ProviderAccountDetailSchema: z.ZodType<ProviderAccountDetailType> = z
+  .object({
+    aggregationSource: z
+      .enum(['SYSTEM', 'USER'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The source through which the providerAccount is added in the system.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul><b>Applicable Values</b><br>',
+        readOnly: true,
+      }),
+    consentId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Consent Id generated through POST Consent.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li></ul>',
+      }),
+    createdDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date on when the provider account is created in the system.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li></ul>',
+        readOnly: true,
+      }),
+    dataset: z
+      .array(AccountDatasetSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Logical grouping of dataset attributes into datasets such as Basic Aggregation Data, Account Profile and Documents.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
+        readOnly: true,
+      }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Unique identifier for the provider account resource. This is created during account addition.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
+        readOnly: true,
+      }),
+    isManual: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether account is a manual or aggregated provider account.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
+        readOnly: true,
+      }),
+    lastUpdated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicate when the providerAccount is last updated successfully.<br><br><b>Account Type</b>: Aggregated<br><b>Endpoints</b>:<ul><li>GET dataExtracts/userData</li></ul>',
+        readOnly: true,
+      }),
+    loginForm: z
+      .array(LoginFormSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'This entity gets returned in the response for only MFA based provider accounts during the add/update account polling process. This indicates that the MFA information is expected from the user to complete the process. This represents the structure of MFA form that is displayed to the user in the provider site.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li></ul>',
+        readOnly: true,
+      }),
+    oauthMigrationStatus: z
+      .enum(['IN_PROGRESS', 'TO_BE_MIGRATED', 'COMPLETED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the migration status of the provider account from screen-scraping provider to the Open Banking provider. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>GET providerAccounts/{providerAccountId}</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
+        readOnly: true,
+      }),
+    preferences: ProviderAccountPreferencesSchema.exactOptional(),
+    providerId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Unique identifier for the provider resource. This denotes the provider for which the provider account id is generated by the user.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
+        readOnly: true,
+      }),
+    requestId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique id generated to indicate the request.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li></ul>',
+        readOnly: true,
+      }),
+    status: z
+      .enum([
+        'LOGIN_IN_PROGRESS',
+        'USER_INPUT_REQUIRED',
+        'IN_PROGRESS',
+        'PARTIAL_SUCCESS',
+        'SUCCESS',
+        'FAILED',
+        'MIGRATION_IN_PROGRESS',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of last update attempted for the account. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul><b>Applicable Values</b><br>',
+        readOnly: true,
+      }),
+  })
+  .openapi({ required: ['consentId'], title: 'ProviderAccountDetail' })
+  .openapi('ProviderAccountDetail')
+
+type ProviderAccountDetailResponseType = {
+  providerAccount?: z.infer<typeof ProviderAccountDetailSchema>[]
+}
+
+const TransactionDaysSchema = z
+  .object({
+    fullAccountNumberFields: z
+      .array(z.enum(['paymentAccountNumber', 'unmaskedAccountNumber']))
+      .exactOptional(),
+    numberOfTransactionDays: z.int32().exactOptional(),
+  })
+  .openapi({ title: 'TransactionDays', required: [] })
+  .openapi('TransactionDays')
+
+const ContainerAttributesSchema = z
+  .object({
+    BANK: TransactionDaysSchema.exactOptional(),
+    CREDITCARD: TransactionDaysSchema.exactOptional(),
+    INSURANCE: TransactionDaysSchema.exactOptional(),
+    INVESTMENT: TransactionDaysSchema.exactOptional(),
+    LOAN: TransactionDaysSchema.exactOptional(),
+  })
+  .openapi({ title: 'ContainerAttributes', required: [] })
+  .openapi('ContainerAttributes')
+
+const AttributeSchema = z
+  .object({
+    container: z
+      .array(
+        z.enum([
+          'bank',
+          'creditCard',
+          'investment',
+          'insurance',
+          'loan',
+          'reward',
+          'realEstate',
+          'otherAssets',
+          'otherLiabilities',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Containers for which the attributes are supported.<br><br><b>Endpoints</b>:<ul><li>GET providers</li><li>GET providers/{providerId}</li></ul>',
+      }),
+    containerAttributes: ContainerAttributesSchema.exactOptional(),
+    fromDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Applicable only to EBILLS and STATEMENTS attributes of DOCUMENT dataset.<br><br><b>Endpoints</b>:<ul><li>POST providerAccounts</li><li>PUT providerAccounts</li></ul>',
+        readOnly: true,
+      }),
+    fromFinYear: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Applicable only to TAX attribute of DOCUMENT dataset.<br><br><b>Endpoints</b>:<ul><li>POST providerAccounts</li><li>PUT providerAccounts</li></ul>',
+        readOnly: true,
+      }),
+    name: z
+      .enum([
+        'BASIC_ACCOUNT_INFO',
+        'TRANSACTIONS',
+        'STATEMENTS',
+        'HOLDINGS',
+        'ACCOUNT_DETAILS',
+        'TAX',
+        'EBILLS',
+        'FULL_ACCT_NUMBER',
+        'BANK_TRANSFER_CODE',
+        'HOLDER_NAME',
+        'HOLDER_DETAILS',
+        'PAYMENT_PROFILE',
+        'PAYMENT_DETAILS',
+        'INTEREST_DETAILS',
+        'COVERAGE',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Attributes that are supported for a dataset.<br><br><b>Endpoints</b>:<ul><li>GET providers</li><li>GET providers/{providerId}</li></ul>',
+      }),
+    toDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Applicable only to EBILLS and STATEMENTS attributes of DOCUMENT dataset.<br><br><b>Endpoints</b>:<ul><li>POST providerAccounts</li><li>PUT providerAccounts</li></ul>',
+        readOnly: true,
+      }),
+    toFinYear: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Applicable only to TAX attribute of DOCUMENT dataset.<br><br><b>Endpoints</b>:<ul><li>POST providerAccounts</li><li>PUT providerAccounts</li></ul>',
+        readOnly: true,
+      }),
+  })
+  .openapi({ title: 'Attribute', required: [] })
+  .openapi('Attribute')
+
+const ProvidersDatasetSchema = z
+  .object({
+    attribute: z
+      .array(AttributeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the dataset attribute suported by the provider.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+      }),
+    name: z
+      .enum(['BASIC_AGG_DATA', 'ADVANCE_AGG_DATA', 'ACCT_PROFILE', 'DOCUMENT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the dataset requested from the provider site<br><br><b>Account Type</b>: Manual<br><b>Endpoints</b>:<ul><li>GET accounts</li><li>GET accounts/{accountId}</li><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li><li>GET providers</li></ul><b>Applicable Values</b><br>',
+      }),
+  })
+  .openapi({ title: 'ProvidersDataset', required: [] })
+  .openapi('ProvidersDataset')
+
+type ProviderAccountRequestType = {
+  aggregationSource?: 'SYSTEM' | 'USER'
+  consentId?: bigint
+  dataset?: z.infer<typeof ProvidersDatasetSchema>[]
+  datasetName?: ('BASIC_AGG_DATA' | 'ADVANCE_AGG_DATA' | 'ACCT_PROFILE' | 'DOCUMENT')[]
+  field: z.infer<typeof FieldSchema>[]
+  preferences?: z.infer<typeof ProviderAccountPreferencesSchema>
+}
+
+const CapabilitySchema = z
+  .object({
+    container: z
+      .array(
+        z.enum([
+          'bank',
+          'creditCard',
+          'investment',
+          'insurance',
+          'loan',
+          'reward',
+          'realEstate',
+          'otherAssets',
+          'otherLiabilities',
+        ]),
+      )
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    name: z.string().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ title: 'Capability', required: [] })
+  .openapi('Capability')
+
+type ProviderDetailType = {
+  PRIORITY?: 'POPULAR' | 'SUGGESTED' | 'COBRAND' | 'SEARCH' | 'ALL'
+  accountType?: ('CURRENT' | 'BROKERAGE_CASH')[]
+  associatedProviderIds?: bigint[]
+  authParameter?: ('authorizationCode' | 'idToken' | 'authResponse')[]
+  authType?: 'OAUTH' | 'CREDENTIALS' | 'MFA_CREDENTIALS'
+  baseUrl?: string
+  capability?: z.infer<typeof CapabilitySchema>[]
+  countryISOCode?: string
+  dataset?: z.infer<typeof ProvidersDatasetSchema>[]
+  favicon?: string
+  help?: string
+  id?: bigint
+  isAddedByUser?: string
+  isAutoRefreshEnabled?: boolean
+  isConsentRequired?: boolean
+  languageISOCode?: string
+  lastModified?: string
+  loginForm?: z.infer<typeof LoginFormSchema>[]
+  loginUrl?: string
+  logo?: string
+  name?: string
+  primaryLanguageISOCode?: string
+  status?: 'Supported' | 'Beta' | 'Unsupported'
+}
+
+const ProviderDetailSchema: z.ZodType<ProviderDetailType> = z
+  .object({
+    PRIORITY: z
+      .enum(['POPULAR', 'SUGGESTED', 'COBRAND', 'SEARCH', 'ALL'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the priority for which the service is invoked.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul><b>Applicable Values</b><br>',
+        readOnly: true,
+      }),
+    accountType: z
+      .array(z.enum(['CURRENT', 'BROKERAGE_CASH']))
+      .exactOptional()
+      .openapi({
+        description:
+          'AccountType supported by the provider, eg: Brokerage Cash, Current<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    associatedProviderIds: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The screen-scraping providers that are associated to the Open Banking provider ID.<br><br><b>Applicable containers</b>: All Containers<br><b>Endpoints</b>:<ul><li>GET providers</li><li>GET providers/{providerId}</li></ul>',
+        readOnly: true,
+      }),
+    authParameter: z
+      .array(z.enum(['authorizationCode', 'idToken', 'authResponse']))
+      .exactOptional()
+      .openapi({
+        description:
+          'AuthParameter appears in the response only in case of token-based aggregation sites.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    authType: z
+      .enum(['OAUTH', 'CREDENTIALS', 'MFA_CREDENTIALS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The authentication type enabled at the provider site. <br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul><b>Applicable Values</b><br>',
+        readOnly: true,
+      }),
+    baseUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The base URL of the provider's site.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>",
+        readOnly: true,
+      }),
+    capability: z
+      .array(CapabilitySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Capability of the site<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul><br><b>Note : </b> capability has been deprecated',
+        readOnly: true,
+      }),
+    countryISOCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Country to which the provider belongs.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    dataset: z
+      .array(ProvidersDatasetSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Logical grouping of dataset attributes into datasets such as Basic Aggregation Data, Account Profile and Documents<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    favicon: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Favicon link of the provider.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    help: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Text to guide user through linking an account that belongs to the site<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Unique identifier for the provider site(e.g., financial institution sites, biller sites, lender sites, etc.).<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    isAddedByUser: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates that the site has been added by the user at least once.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    isAutoRefreshEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if a provider site is auto-refreshed.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    isConsentRequired: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if a provider site requires consent.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    languageISOCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The language in which the provider details are provided. For example, a site supports two languages English and French. English being the primary language, the provider response will be provided in French depending on the user's locale. The language follows the two letter ISO code.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>",
+        readOnly: true,
+      }),
+    lastModified: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Determines when the provider information was updated by Yodlee. If the customer caches the data, the cache is recommended to be refreshed based on this field.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    loginForm: z
+      .array(LoginFormSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'This entity represents the structure of the login or MFA form that is displayed to the user at the provider site. For performance reasons, this field is returned only when a single provider is requested in the request.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li></ul>',
+        readOnly: true,
+      }),
+    loginUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The login URL of the provider's site.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>",
+        readOnly: true,
+      }),
+    logo: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The logo link of the provider institution. The link will return the logo in the PNG format.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of a provider site.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    primaryLanguageISOCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The primary language of the site.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    status: z
+      .enum(['Supported', 'Beta', 'Unsupported'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Determines if the provider is supported for the cobrand (customer), is in the beta stage, etc. <br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+  })
+  .openapi({ title: 'ProviderDetail', required: [] })
+  .openapi('ProviderDetail')
+
+type ProviderDetailResponseType = { provider?: z.infer<typeof ProviderDetailSchema>[] }
+
+type ProvidersType = {
+  PRIORITY?: 'POPULAR' | 'SUGGESTED' | 'COBRAND' | 'SEARCH' | 'ALL'
+  accountType?: ('CURRENT' | 'BROKERAGE_CASH')[]
+  associatedProviderIds?: bigint[]
+  authParameter?: ('authorizationCode' | 'idToken' | 'authResponse')[]
+  authType?: 'OAUTH' | 'CREDENTIALS' | 'MFA_CREDENTIALS'
+  baseUrl?: string
+  capability?: z.infer<typeof CapabilitySchema>[]
+  countryISOCode?: string
+  dataset?: z.infer<typeof ProvidersDatasetSchema>[]
+  favicon?: string
+  forgetPasswordUrl?: string
+  help?: string
+  id?: bigint
+  isAddedByUser?: string
+  isAutoRefreshEnabled?: boolean
+  isConsentRequired?: boolean
+  languageISOCode?: string
+  lastModified?: string
+  loginHelp?: string
+  loginUrl?: string
+  logo?: string
+  name?: string
+  primaryLanguageISOCode?: string
+  status?: 'Supported' | 'Beta' | 'Unsupported'
+}
+
+const ProvidersSchema: z.ZodType<ProvidersType> = z
+  .object({
+    PRIORITY: z
+      .enum(['POPULAR', 'SUGGESTED', 'COBRAND', 'SEARCH', 'ALL'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the priority for which the service is invoked.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul><b>Applicable Values</b><br>',
+        readOnly: true,
+      }),
+    accountType: z
+      .array(z.enum(['CURRENT', 'BROKERAGE_CASH']))
+      .exactOptional()
+      .openapi({
+        description:
+          'AccountType supported by the provider, eg: Brokerage Cash, Current<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    associatedProviderIds: z
+      .array(
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The screen-scraping providers that are associated to the Open Banking provider ID.<br><br><b>Applicable containers</b>: All Containers<br><b>Endpoints</b>:<ul><li>GET providers</li><li>GET providers/{providerId}</li></ul>',
+        readOnly: true,
+      }),
+    authParameter: z
+      .array(z.enum(['authorizationCode', 'idToken', 'authResponse']))
+      .exactOptional()
+      .openapi({
+        description:
+          'AuthParameter appears in the response only in case of token-based aggregation sites.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    authType: z
+      .enum(['OAUTH', 'CREDENTIALS', 'MFA_CREDENTIALS'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The authentication type enabled at the provider site. <br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul><b>Applicable Values</b><br>',
+        readOnly: true,
+      }),
+    baseUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The base URL of the provider's site.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>",
+        readOnly: true,
+      }),
+    capability: z
+      .array(CapabilitySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Capability of the site<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul><br><b>Note : </b> capability has been deprecated',
+        readOnly: true,
+      }),
+    countryISOCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Country to which the provider belongs.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    dataset: z
+      .array(ProvidersDatasetSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Logical grouping of dataset attributes into datasets such as Basic Aggregation Data, Account Profile and Documents<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    favicon: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Favicon link of the provider.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    forgetPasswordUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The forget password URL of the provider site.<br><br><b>Endpoints</b>:<ul><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    help: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Text to guide user through linking an account that belongs to the site<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Unique identifier for the provider site(e.g., financial institution sites, biller sites, lender sites, etc.).<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    isAddedByUser: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates that the site has been added by the user at least once.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    isAutoRefreshEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if a provider site is auto-refreshed.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    isConsentRequired: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if a provider site requires consent.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    languageISOCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The language in which the provider details are provided. For example, a site supports two languages English and French. English being the primary language, the provider response will be provided in French depending on the user's locale. The language follows the two letter ISO code.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>",
+        readOnly: true,
+      }),
+    lastModified: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Determines when the provider information was updated by Yodlee. If the customer caches the data, the cache is recommended to be refreshed based on this field.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    loginHelp: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Help text to guide the user to choose the correct provider site.<br><br><b>Endpoints</b>:<ul><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    loginUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The login URL of the provider's site.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>",
+        readOnly: true,
+      }),
+    logo: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The logo link of the provider institution. The link will return the logo in the PNG format.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of a provider site.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    primaryLanguageISOCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The primary language of the site.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+    status: z
+      .enum(['Supported', 'Beta', 'Unsupported'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Determines if the provider is supported for the cobrand (customer), is in the beta stage, etc. <br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
+        readOnly: true,
+      }),
+  })
+  .openapi({ title: 'Providers', required: [] })
+  .openapi('Providers')
+
+type ProviderResponseType = { provider?: z.infer<typeof ProvidersSchema>[] }
+
+type UpdatedProviderAccountType = {
+  aggregationSource?: 'SYSTEM' | 'USER'
+  createdDate?: string
+  dataset?: z.infer<typeof AccountDatasetSchema>[]
+  id?: bigint
+  isManual?: boolean
+  lastUpdated?: string
+  loginForm?: z.infer<typeof LoginFormSchema>[]
+  oauthMigrationStatus?: 'IN_PROGRESS' | 'TO_BE_MIGRATED' | 'COMPLETED'
+  providerId?: bigint
+  requestId?: string
+  status?:
+    | 'LOGIN_IN_PROGRESS'
+    | 'USER_INPUT_REQUIRED'
+    | 'IN_PROGRESS'
+    | 'PARTIAL_SUCCESS'
+    | 'SUCCESS'
+    | 'FAILED'
+    | 'MIGRATION_IN_PROGRESS'
+}
+
+const UpdatedProviderAccountSchema: z.ZodType<UpdatedProviderAccountType> = z
+  .object({
+    aggregationSource: z
+      .enum(['SYSTEM', 'USER'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The source through which the providerAccount is added in the system.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul><b>Applicable Values</b><br>',
+        readOnly: true,
+      }),
+    createdDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date on when the provider account is created in the system.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
+        readOnly: true,
+      }),
+    dataset: z
+      .array(AccountDatasetSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Logical grouping of dataset attributes into datasets such as Basic Aggregation Data, Account Profile and Documents.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
+        readOnly: true,
+      }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Unique identifier for the provider account resource. This is created during account addition.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
+        readOnly: true,
+      }),
+    isManual: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether account is a manual or aggregated provider account.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
+        readOnly: true,
+      }),
+    lastUpdated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicate when the providerAccount is last updated successfully.<br><br><b>Account Type</b>: Aggregated<br><b>Endpoints</b>:<ul><li>GET dataExtracts/userData</li></ul>',
+        readOnly: true,
+      }),
+    loginForm: z
+      .array(LoginFormSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'This entity gets returned in the response for only MFA based provider accounts during the add/update account polling process. This indicates that the MFA information is expected from the user to complete the process. This represents the structure of MFA form that is displayed to the user in the provider site.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li></ul>',
+        readOnly: true,
+      }),
+    oauthMigrationStatus: z
+      .enum(['IN_PROGRESS', 'TO_BE_MIGRATED', 'COMPLETED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the migration status of the provider account from screen-scraping provider to the Open Banking provider. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>GET providerAccounts/{providerAccountId}</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
+        readOnly: true,
+      }),
+    providerId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Unique identifier for the provider resource. This denotes the provider for which the provider account id is generated by the user.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
+        readOnly: true,
+      }),
+    requestId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique id generated to indicate the request.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li></ul>',
+        readOnly: true,
+      }),
+    status: z
+      .enum([
+        'LOGIN_IN_PROGRESS',
+        'USER_INPUT_REQUIRED',
+        'IN_PROGRESS',
+        'PARTIAL_SUCCESS',
+        'SUCCESS',
+        'FAILED',
+        'MIGRATION_IN_PROGRESS',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of last update attempted for the account. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul><b>Applicable Values</b><br>',
+        readOnly: true,
+      }),
+  })
+  .openapi({ title: 'UpdatedProviderAccount', required: [] })
+  .openapi('UpdatedProviderAccount')
+
+type UpdatedProviderAccountResponseType = {
+  providerAccount?: z.infer<typeof UpdatedProviderAccountSchema>[]
+}
+
+const VerifiedAccountSchema = z
+  .object({
+    accountNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The account number as it appears on the site. (The POST accounts service response return this field as number)<br><b>Additional Details</b>:<b> Bank/ Loan/ Insurance/ Investment</b>:<br> The account number for the bank account as it appears at the site.<br><b>Credit Card</b>: The account number of the card account as it appears at the site,<br>i.e., the card number.The account number can be full or partial based on how it is displayed in the account summary page of the site.In most cases, the site does not display the full account number in the account summary page and additional navigation is required to aggregate it.<br><b>Applicable containers</b>: All Containers<br><b>Aggregated / Manual</b>: Both <br><b>Endpoints</b>:<br><ul><li>GET accounts</li><li>GET accounts/{accountId}</li><li>POST accounts</li></ul>',
+        readOnly: true,
+      }),
+    accountType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of account that is aggregated, i.e., savings, checking, credit card, charge, HELOC, etc. The account type is derived based on the attributes of the account. <br><b>Valid Values:</b><br><b>Aggregated Account Type</b><br><b>bank</b><ul><li>CHECKING</li><li>SAVINGS</li><li>CD</li><li>PPF</li><li>RECURRING_DEPOSIT</li><li>FSA</li><li>MONEY_MARKET</li><li>IRA</li><li>PREPAID</li></ul><b>creditCard</b><ul><li>OTHER</li><li>CREDIT</li><li>STORE</li><li>CHARGE</li><li>OTHER</li></ul><b>investment (SN 1.0)</b><ul><li>BROKERAGE_MARGIN</li><li>HSA</li><li>IRA</li><li>BROKERAGE_CASH</li><li>401K</li><li>403B</li><li>TRUST</li><li>ANNUITY</li><li>SIMPLE</li><li>CUSTODIAL</li><li>BROKERAGE_CASH_OPTION</li><li>BROKERAGE_MARGIN_OPTION</li><li>INDIVIDUAL</li><li>CORPORATE</li><li>JTTIC</li><li>JTWROS</li><li>COMMUNITY_PROPERTY</li><li>JOINT_BY_ENTIRETY</li><li>CONSERVATORSHIP</li><li>ROTH</li><li>ROTH_CONVERSION</li><li>ROLLOVER</li><li>EDUCATIONAL</li><li>529_PLAN</li><li>457_DEFERRED_COMPENSATION</li><li>401A</li><li>PSP</li><li>MPP</li><li>STOCK_BASKET</li><li>LIVING_TRUST</li><li>REVOCABLE_TRUST</li><li>IRREVOCABLE_TRUST</li><li>CHARITABLE_REMAINDER</li><li>CHARITABLE_LEAD</li><li>CHARITABLE_GIFT_ACCOUNT</li><li>SEP</li><li>UTMA</li><li>UGMA</li><li>ESOPP</li><li>ADMINISTRATOR</li><li>EXECUTOR</li><li>PARTNERSHIP</li><li>SOLE_PROPRIETORSHIP</li><li>CHURCH</li><li>INVESTMENT_CLUB</li><li>RESTRICTED_STOCK_AWARD</li><li>CMA</li><li>EMPLOYEE_STOCK_PURCHASE_PLAN</li><li>PERFORMANCE_PLAN</li><li>BROKERAGE_LINK_ACCOUNT</li><li>MONEY_MARKET</li><li>SUPER_ANNUATION</li><li>REGISTERED_RETIREMENT_SAVINGS_PLAN</li><li>SPOUSAL_RETIREMENT_SAVINGS_PLAN</li><li>DEFERRED_PROFIT_SHARING_PLAN</li><li>NON_REGISTERED_SAVINGS_PLAN</li><li>REGISTERED_EDUCATION_SAVINGS_PLAN</li><li>GROUP_RETIREMENT_SAVINGS_PLAN</li><li>LOCKED_IN_RETIREMENT_SAVINGS_PLAN</li><li>RESTRICTED_LOCKED_IN_SAVINGS_PLAN</li><li>LOCKED_IN_RETIREMENT_ACCOUNT</li><li>REGISTERED_PENSION_PLAN</li><li>TAX_FREE_SAVINGS_ACCOUNT</li><li>LIFE_INCOME_FUND</li><li>REGISTERED_RETIREMENT_INCOME_FUND</li><li>SPOUSAL_RETIREMENT_INCOME_FUND</li><li>LOCKED_IN_REGISTERED_INVESTMENT_FUND</li><li>PRESCRIBED_REGISTERED_RETIREMENT_INCOME_FUND</li><li>GUARANTEED_INVESTMENT_CERTIFICATES</li><li>REGISTERED_DISABILITY_SAVINGS_PLAN</li><li>OTHER</li></ul><b>investment (SN 2.0)</b><ul><li>BROKERAGE_CASH</li><li>BROKERAGE_MARGIN</li><li>INDIVIDUAL_RETIREMENT_ACCOUNT_IRA</li><li>EMPLOYEE_RETIREMENT_ACCOUNT_401K</li><li>EMPLOYEE_RETIREMENT_SAVINGS_PLAN_403B</li><li>TRUST</li><li>ANNUITY</li><li>SIMPLE_IRA</li><li>CUSTODIAL_ACCOUNT</li><li>BROKERAGE_CASH_OPTION</li><li>BROKERAGE_MARGIN_OPTION</li><li>INDIVIDUAL</li><li>CORPORATE_INVESTMENT_ACCOUNT</li><li>JOINT_TENANTS_TENANCY_IN_COMMON_JTIC</li><li>JOINT_TENANTS_WITH_RIGHTS_OF_SURVIVORSHIP_JTWROS</li><li>JOINT_TENANTS_COMMUNITY_PROPERTY</li><li>JOINT_TENANTS_TENANTS_BY_ENTIRETY</li><li>CONSERVATOR</li><li>ROTH_IRA</li><li>ROTH_CONVERSION</li><li>ROLLOVER_IRA</li><li>EDUCATIONAL</li><li>EDUCATIONAL_SAVINGS_PLAN_529</li><li>DEFERRED_COMPENSATION_PLAN_457</li><li>MONEY_PURCHASE_RETIREMENT_PLAN_401A</li><li>PROFIT_SHARING_PLAN</li><li>MONEY_PURCHASE_PLAN</li><li>STOCK_BASKET_ACCOUNT</li><li>LIVING_TRUST</li><li>REVOCABLE_TRUST</li><li>IRREVOCABLE_TRUST</li><li>CHARITABLE_REMAINDER_TRUST</li><li>CHARITABLE_LEAD_TRUST</li><li>CHARITABLE_GIFT_ACCOUNT</li><li>SEP_IRA</li><li>UNIFORM_TRANSFER_TO_MINORS_ACT_UTMA</li><li>UNIFORM_GIFT_TO_MINORS_ACT_UGMA</li><li>EMPLOYEE_STOCK_OWNERSHIP_PLAN_ESOP</li><li>ADMINISTRATOR</li><li>EXECUTOR</li><li>PARTNERSHIP</li><li>PROPRIETORSHIP</li><li>CHURCH_ACCOUNT</li><li>INVESTMENT_CLUB</li><li>RESTRICTED_STOCK_AWARD</li><li>CASH_MANAGEMENT_ACCOUNT</li><li>EMPLOYEE_STOCK_PURCHASE_PLAN_ESPP</li><li>PERFORMANCE_PLAN</li><li>BROKERAGE_LINK_ACCOUNT</li><li>MONEY_MARKET_ACCOUNT</li><li>SUPERANNUATION</li><li>REGISTERED_RETIREMENT_SAVINGS_PLAN_RRSP</li><li>SPOUSAL_RETIREMENT_SAVINGS_PLAN_SRSP</li><li>DEFERRED_PROFIT_SHARING_PLAN_DPSP</li><li>NON_REGISTERED_SAVINGS_PLAN_NRSP</li><li>REGISTERED_EDUCATION_SAVINGS_PLAN_RESP</li><li>GROUP_RETIREMENT_SAVINGS_PLAN_GRSP</li><li>LOCKED_IN_RETIREMENT_SAVINGS_PLAN_LRSP</li><li>RESTRICTED_LOCKED_IN_SAVINGS_PLAN_RLSP</li><li>LOCKED_IN_RETIREMENT_ACCOUNT_LIRA</li><li>REGISTERED_PENSION_PLAN_RPP</li><li>TAX_FREE_SAVINGS_ACCOUNT_TFSA</li><li>LIFE_INCOME_FUND_LIF</li><li>REGISTERED_RETIREMENT_INCOME_FUND_RIF</li><li>SPOUSAL_RETIREMENT_INCOME_FUND_SRIF</li><li>LOCKED_IN_REGISTERED_INVESTMENT_FUND_LRIF</li><li>PRESCRIBED_REGISTERED_RETIREMENT_INCOME_FUND_PRIF</li><li>GUARANTEED_INVESTMENT_CERTIFICATES_GIC</li><li>REGISTERED_DISABILITY_SAVINGS_PLAN_RDSP</li><li>DEFINED_CONTRIBUTION_PLAN</li><li>DEFINED_BENEFIT_PLAN</li><li>EMPLOYEE_STOCK_OPTION_PLAN</li><li>NONQUALIFIED_DEFERRED_COMPENSATION_PLAN_409A</li><li>KEOGH_PLAN</li><li>EMPLOYEE_RETIREMENT_ACCOUNT_ROTH_401K</li><li>DEFERRED_CONTINGENT_CAPITAL_PLAN_DCCP</li><li>EMPLOYEE_BENEFIT_PLAN</li><li>EMPLOYEE_SAVINGS_PLAN</li><li>HEALTH_SAVINGS_ACCOUNT_HSA</li><li>COVERDELL_EDUCATION_SAVINGS_ACCOUNT_ESA</li><li>TESTAMENTARY_TRUST</li><li>ESTATE</li><li>GRANTOR_RETAINED_ANNUITY_TRUST_GRAT</li><li>ADVISORY_ACCOUNT</li><li>NON_PROFIT_ORGANIZATION_501C</li><li>HEALTH_REIMBURSEMENT_ARRANGEMENT_HRA</li><li>INDIVIDUAL_SAVINGS_ACCOUNT_ISA</li><li>CASH_ISA</li><li>STOCKS_AND_SHARES_ISA</li><li>INNOVATIVE_FINANCE_ISA</li><li>JUNIOR_ISA</li><li>EMPLOYEES_PROVIDENT_FUND_ORGANIZATION_EPFO</li><li>PUBLIC_PROVIDENT_FUND_PPF</li><li>EMPLOYEES_PENSION_SCHEME_EPS</li><li>NATIONAL_PENSION_SYSTEM_NPS</li><li>INDEXED_ANNUITY</li><li>ANNUITIZED_ANNUITY</li><li>VARIABLE_ANNUITY</li><li>ROTH_403B</li><li>SPOUSAL_IRA</li><li>SPOUSAL_ROTH_IRA</li><li>SARSEP_IRA</li><li>SUBSTANTIALLY_EQUAL_PERIODIC_PAYMENTS_SEPP</li><li>OFFSHORE_TRUST</li><li>IRREVOCABLE_LIFE_INSURANCE_TRUST</li><li>INTERNATIONAL_TRUST</li><li>LIFE_INTEREST_TRUST</li><li>EMPLOYEE_BENEFIT_TRUST</li><li>PRECIOUS_METAL_ACCOUNT</li><li>INVESTMENT_LOAN_ACCOUNT</li><li>GRANTOR_RETAINED_INCOME_TRUST</li><li>PENSION_PLAN</li><li>OTHER</li></ul><b>loan</b><ul><li>MORTGAGE</li><li>INSTALLMENT_LOAN</li><li>PERSONAL_LOAN</li><li>HOME_EQUITY_LINE_OF_CREDIT</li><li>LINE_OF_CREDIT</li><li>AUTO_LOAN</li><li>STUDENT_LOAN</li><li>HOME_LOAN</li></ul><b>insurance</b><ul><li>AUTO_INSURANCE</li><li>HEALTH_INSURANCE</li><li>HOME_INSURANCE</li><li>LIFE_INSURANCE</li><li>ANNUITY</li><li>TRAVEL_INSURANCE</li><li>INSURANCE</li></ul><b>realEstate</b><ul> <li>REAL_ESTATE</li></ul><b>reward</b><ul><li>REWARD_POINTS</li></ul><b>Manual Account Type</b><br><b>bank</b><ul><li>CHECKING</li><li>SAVINGS</li><li>CD</li><li>PREPAID</li></ul><b>credit</b><ul>  <li>CREDIT</li></ul><b>loan</b><ul>  <li>PERSONAL_LOAN</li><li>HOME_LOAN</li></ul><b>insurance</b><ul><li>INSURANCE</li><li>ANNUITY</li></ul><b>investment</b><ul><li>BROKERAGE_CASH</li></ul><br><br><b>Aggregated / Manual</b>: Both <br><b>Applicable containers</b>: All containers<br></ul>',
+        readOnly: true,
+      }),
+    bankTransferCode: z
+      .array(BankTransferCodeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Bank and branch identification information.<br><b>Aggregated / Manual</b>: Aggregated<br><b>Applicable containers</b>: bank, investment, loan<br><b>Endpoints</b>:<br><ul></ul>',
+        readOnly: true,
+      }),
+    fullAccountNumber: z.string().exactOptional(),
+    holder: z.array(AccountHolderSchema).exactOptional(),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    providerAccountId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The primary key of the provider account resource.<br><br><b>Aggregated / Manual</b>: Both <br><b>Applicable containers</b>: All containers<br>',
+        readOnly: true,
+      }),
+    providerName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '<b>Applicable containers</b>: reward, bank, creditCard, investment, loan, insurance, realEstate,  otherLiabilities<br>',
+        readOnly: true,
+      }),
+  })
+  .openapi({ title: 'VerifiedAccount', required: [] })
+  .openapi('VerifiedAccount')
+
+const TransactionSchema = z
+  .object({
+    CONTAINER: z
+      .enum([
+        'bank',
+        'creditCard',
+        'investment',
+        'insurance',
+        'loan',
+        'reward',
+        'realEstate',
+        'otherAssets',
+        'otherLiabilities',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          "The account's container.<br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br><b>Applicable Values</b><br>",
+        readOnly: true,
+      }),
+    accountId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The account from which the transaction was made. This is basically the primary key of the account resource. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
+        readOnly: true,
+      }),
+    amount: MoneySchema.exactOptional(),
+    baseType: z
+      .enum(['CREDIT', 'DEBIT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the transaction appears as a debit or a credit transaction in the account. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br><b>Applicable Values</b><br>',
+        readOnly: true,
+      }),
+    category: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the category assigned to the transaction. This is the category field of the transaction category resource. The supported values are provided by the GET transactions/categories.<br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
+        readOnly: true,
+      }),
+    categoryId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The id of the category assigned to the transaction. This is the id field of the transaction category resource. The supported values are provided by the GET transactions/categories.<br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
+        readOnly: true,
+      }),
+    categorySource: z
+      .enum(['SYSTEM', 'USER'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the source of the category, i.e., categories derived by the system or assigned/provided by the consumer. This is the source field of the transaction category resource. The supported values are provided by the GET transactions/categories.<br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br><b>Applicable Values</b><br>',
+        readOnly: true,
+      }),
+    categoryType: z
+      .enum(['TRANSFER', 'DEFERRED_COMPENSATION', 'UNCATEGORIZE', 'INCOME', 'EXPENSE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The categoryType of the category assigned to the transaction. This is the type field of the transaction category resource. The supported values are provided by the GET transactions/categories.<br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
+        readOnly: true,
+      }),
+    checkNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The checkNumber of the transaction.<br><br><b>Applicable containers</b>: bank<br>',
+        readOnly: true,
+      }),
+    commission: MoneySchema.exactOptional(),
+    createdDate: z.string().exactOptional().openapi({ readOnly: true }),
+    cusipNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The CUSIP (Committee on Uniform Securities Identification Procedures) identifies the financial instruments in the United States and Canada.<br><b><br><b>Note</b></b>: The CUSIP number field applies only to trade related transactions.<br><br><b>Applicable containers</b>: investment<br>',
+        readOnly: true,
+      }),
+    date: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value provided will be either postDate or transactionDate. postDate takes higher priority than transactionDate, except for the investment container as only transactionDate is available. The availability of postDate or transactionDate depends on the provider site.<br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
+        readOnly: true,
+      }),
+    description: DescriptionSchema.exactOptional(),
+    detailCategoryId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The id of the detail category that is assigned to the transaction. The supported values are provided by GET transactions/categories.<br><br><b>Applicable containers</b>: bank,creditCard<br>',
+        readOnly: true,
+      }),
+    highLevelCategoryId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The high level category assigned to the transaction. The supported values are provided by the GET transactions/categories. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
+        readOnly: true,
+      }),
+    holdingDescription: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'For transactions involving securities, this captures the securities description.<br><br><b>Applicable containers</b>: investment<br>',
+        readOnly: true,
+      }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'An unique identifier for the transaction. The combination of the id and account container are unique in the system. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
+        readOnly: true,
+      }),
+    interest: MoneySchema.exactOptional(),
+    isManual: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the transaction is aggregated from the FI site or the consumer has manually created the transaction using the application or an API. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
+        readOnly: true,
+      }),
+    isin: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'International Securities Identification Number (ISIN) standard is used worldwide to identify specific securities.<br><br><b>Applicable containers</b>: investment<br>',
+        readOnly: true,
+      }),
+    lastUpdated: z.string().exactOptional().openapi({ readOnly: true }),
+    memo: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional notes provided by the user for a particular  transaction through application or API services. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
+        readOnly: true,
+      }),
+    merchant: MerchantSchema.exactOptional(),
+    parentCategoryId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'The parentCategoryId of the category assigned to the transaction.<br><b>Note</b>: This field will be provided in the response if the transaction is assigned to a user-created category. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
+        readOnly: true,
+      }),
+    postDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date on which the transaction is posted to the account.<br><br><b>Applicable containers</b>: bank,creditCard,insurance,loan<br>',
+        readOnly: true,
+      }),
+    price: MoneySchema.exactOptional(),
+    principal: MoneySchema.exactOptional(),
+    quantity: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'The quantity associated with the transaction.<br><b>Note</b>: The quantity field applies only to trade-related transactions.<br><br><b>Applicable containers</b>: investment<br>',
+        readOnly: true,
+      }),
+    runningBalance: MoneySchema.exactOptional(),
+    sedol: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'SEDOL stands for Stock Exchange Daily Official List, a list of security identifiers used in the United Kingdom and Ireland for clearing purposes.<br><br><b>Applicable containers</b>: investment<br>',
+        readOnly: true,
+      }),
+    settleDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'It is the date on which the transaction is finalized, that is, the date the ownership of the security is transferred to the buyer. The settlement date is usually few days after the transaction date.<br><br><b>Applicable containers</b>: investment<br>',
+        readOnly: true,
+      }),
+    sourceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique ID that the provider site has assigned to the transaction. The source ID is only available for the pre-populated accounts.<br>Pre-populated accounts are the accounts that the FI customers shares with Yodlee, so that the user does not have to add or aggregate those accounts.',
+        readOnly: true,
+      }),
+    sourceType: z
+      .enum(['AGGREGATED', 'MANUAL'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The source through which the transaction is added to the Yodlee system.<br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loann<br><b>Applicable Values:</b><br>',
+        readOnly: true,
+      }),
+    status: z
+      .enum(['POSTED', 'PENDING', 'SCHEDULED', 'FAILED', 'CLEARED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of the transaction: pending or posted.<br><b>Note</b>: Most FI sites only display posted transactions. If the FI site displays transaction status, same will be aggregated.  <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br><b>Applicable Values</b><br>',
+        readOnly: true,
+      }),
+    subType: z
+      .enum([
+        'AUTH_HOLD',
+        'AUTH_REQUEST',
+        'OVERDRAFT_CHARGE',
+        'CREDIT_ADJUSTMENT',
+        'PIN_DEBIT',
+        'BANK_DIRECT_DEPOSIT',
+        'DIVIDEND_DEPOSIT',
+        'INTEREST_SAVINGS',
+        'INTEREST_ADJUSTMENT',
+        'ONLINE_PURCHASE',
+        'PURCHASED_WITH_CHECK',
+        'RECURRING_BILLING',
+        'TAX_PAYMENT',
+        'PAYMENT_BY_CHECK',
+        'PAYMENT_PLAN',
+        'FEE_REFUND',
+        'WIRE_TRANSFER_CHARGE',
+        'ACCOUNT_TO_ACCOUNT_TRANSFER',
+        'BANK_TO_BANK_TRANSACTION',
+        'BANK_TO_NON_BANK_ACCOUNT_TRANSFER',
+        'CASH_WITHDRAWAL_AT_FI',
+        'ATM_CASH_WITHDRAWAL',
+        'AUTH_PROCESSING',
+        'AUTH_RELEASE',
+        'PRE_AUTH',
+        'AUTH_COMPLETE',
+        'AUTH_VOID',
+        'BALANCE_ENQUIRY',
+        'ACCOUNT_VERIFICATION',
+        'PRE_AUTH_COMPLETION',
+        'SERVICE_CHARGE',
+        'SERVICE_CHARGE_FEE_REFUND',
+        'RETURNED_CHECK_CHARGE',
+        'RETURNED_CHECK_REIMBURSEMENT',
+        'CASH_ADVANCE',
+        'BILL_PAY_CHARGE',
+        'CHECK_IMAGE_SERVICE_CHARGE',
+        'OVERDRAFT_PROTECTION_CHARGE',
+        'STOP_PAYMENT_CHARGE',
+        'CHECKS_ORDERING_CHARGE',
+        'MONTHLY_MAINTENANCE_CHARGE',
+        'DEBIT_CARD_FEE',
+        'CONVENIENCE_FEE',
+        'PERSONAL_LOAN_CREDIT',
+        'CREDIT_CARD_CREDIT',
+        'AUTO_LOAN',
+        'HOME_LOAN_MORTGAGE',
+        'SHORT_TERM_CREDIT',
+        'SIGNATURE_DEBIT',
+        'CONTACT_LESS_DEBIT',
+        'DEFERRED_DEPOSIT',
+        'DEFERRED_BILL_PAY',
+        'INSTALLMENT_PAYMENT',
+        'RECURRING_SUBSCRIPTION_PAYMENT',
+        'HOLD_CHECK_PAYMENT',
+        'CAPITAL_GAINS_DISTIBUTION',
+        'CG_LONG_TERM_DEPOSIT',
+        'OPEN_SALE_DEPOSIT',
+        'INTEREST__CHECK',
+        'PURCHASE_VOID',
+        'PURCHASE_WITH_CREDIT_CARD',
+        'PURCHASE_WITH_DEBIT_CARD',
+        'CHARGE_A_REPEAT_CUSTOMER',
+        'DOWN_PAYMENT_OR_ANNUITY_PAYMENT_OR_DIRECT_PAYMENT',
+        'FEE_PAYMENT',
+        'FINANCE_CHARGE_REFUND',
+        'TRANSACTION_VOID',
+        'FEE_VOID',
+        'DEBIT_CARD_WITHDRAWAL_AT_STORE',
+        'ELECTRONIC_PAYMENT',
+        'ACH_DEBIT',
+        'ATM_TELLER_DEPOSIT',
+        'POS_DEBIT',
+        'BANK_ADJUSTMENT',
+        'CHARGES_FEES',
+        'INTEREST',
+        'DEPOSITS_CREDITS',
+        'PAYMENT',
+        'PURCHASE',
+        'REFUND',
+        'TRANSFER',
+        'WITHDRAWAL',
+        'OTHER_DEPOSITS',
+        'OTHER_WITHDRAWALS',
+        'ADJUSTMENT',
+        'FINANCE_CHARGE',
+        'OTHER_CHARGES_FEES',
+        'ANNUAL_FEE',
+        'DEPOSIT',
+        'DIRECT_DEPOSIT_SALARY',
+        'INVESTMENT_INCOME_CASH',
+        'SSA',
+        'REWARDS',
+        'CHECK_DEPOSIT',
+        'MOBILE_REMOTE_DEPOSIT',
+        'TELLER_DEPOSIT',
+        'TAX_REFUND',
+        'CREDIT_CARD_PAYMENT',
+        'INSURANCE_PAYMENT',
+        'UTILITIES_PAYMENT',
+        'CHILD_SUPPORT',
+        'LOAN',
+        'PERSONAL_LOAN',
+        'STUDENT_LOAN',
+        'SALES_TAX',
+        'REIMBURSEMENT',
+        'BALANCE_TRANSFER',
+        'WIRE_TRANSFER',
+        'OVERDRAFT_PROTECTION',
+        'DEBIT',
+        'CREDIT',
+        'NSF_FEES',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The transaction subtype field provides a detailed transaction type. For example, purchase is a transaction type and the transaction subtype field indicates if the purchase was made using a debit or credit card.<br><b>Note</b>: The transaction subtype field is available only in the United States, Canada, United Kingdom, and India.<br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
+        readOnly: true,
+      }),
+    symbol: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The symbol of the security being traded.<br><b>Note</b>: The settle date field applies only to trade-related transactions. <br><br><b>Applicable containers</b>: investment<br>',
+        readOnly: true,
+      }),
+    transactionDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date the transaction happens in the account. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
+        readOnly: true,
+      }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The nature of the transaction, i.e., deposit, refund, payment, etc.<br><b>Note</b>: The transaction type field is available only for the United States, Canada, United Kingdom, and India based provider sites. <br><br><b>Applicable containers</b>: bank,creditCard,investment<br>',
+        readOnly: true,
+      }),
+    valoren: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'It is an identification number that is assigned to financial instruments such as stocks and bonds trading in Switzerland.<br><br><b>Applicable containers</b>: investment<br>',
+        readOnly: true,
+      }),
+  })
+  .openapi({ title: 'Transaction', required: [] })
+  .openapi('Transaction')
+
+const VerifyTransactionCriteriaSchema = z
+  .object({
+    amount: z.float64(),
+    baseType: z
+      .enum(['CREDIT', 'DEBIT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the transaction appears as a debit or a credit transaction in the account. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br><b>Applicable Values</b><br>',
+      }),
+    date: z.string(),
+    dateVariance: z.string().exactOptional(),
+    keyword: z.string().exactOptional(),
+    matched: z
+      .enum(['COMPLETE', 'NONE'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates if the criteria is matched or not. <br><b>Applicable Values</b><br>',
+        readOnly: true,
+      }),
+    verifiedTransaction: z.array(TransactionSchema).exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['amount', 'date'], title: 'VerifyTransactionCriteria' })
+  .openapi('VerifyTransactionCriteria')
+
+const VerifyAccountSchema = z
+  .object({
+    account: z.array(VerifiedAccountSchema).exactOptional(),
+    transactionCriteria: z.array(VerifyTransactionCriteriaSchema).exactOptional(),
+  })
+  .openapi({ title: 'VerifyAccount', required: [] })
+  .openapi('VerifyAccount')
+
+type VerifyAccountResponseType = { verifyAccount?: z.infer<typeof VerifyAccountSchema> }
+
+const AccessTokensSchema = z
+  .object({
+    appId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The identifier of the application for which the access token is generated.<br><br><b>Endpoints</b>:<ul><li>GET user/accessTokens</li></ul>',
+      }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Base URL using which the application is accessed.<br><br><b>Endpoints</b>:<ul><li>GET user/accessTokens</li></ul>',
+      }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Access token value used to invoke the widgets/apps.<br><br><b>Endpoints</b>:<ul><li>GET user/accessTokens</li></ul>',
+      }),
+  })
+  .openapi({ title: 'AccessTokens', required: [] })
+  .openapi('AccessTokens')
+
+const HistoricalBalanceSchema = z
+  .object({
+    asOfDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Date as of when the balance is last updated due to the auto account updates or user triggered updates. This balance will be carry forward for the days where there is no balance available in the system. <br><br><b>Aggregated / Manual</b>: Both <br><b>Applicable containers</b>: bank, creditCard, investment, insurance, realEstate, loan<br><b>Endpoints</b>:<ul><li>GET accounts/historicalBalances</li></ul>',
+        readOnly: true,
+      }),
+    balance: MoneySchema.exactOptional(),
+    dataSourceType: z
+      .enum(['S', 'C', 'CF'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The source of balance information.<br><br><b>Aggregated / Manual</b>: Both <br><b>Applicable containers</b>: bank, creditCard, investment, insurance, realEstate, loan<br><b>Endpoints</b>:<ul><li>GET accounts/historicalBalances</li></ul><b>Applicable Values</b><br>',
+        readOnly: true,
+      }),
+    date: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Date for which the account balance was provided.  This balance could be a carryforward, calculated or a scraped balance.<br><b>Additional Details</b>:<br><b>Scraped</b>: Balance shown in the provider site. This balance gets stored in Yodlee system during system/user account updates.<br><b>CarryForward</b>: Balance carried forward from the scraped balance to the days for which the balance was not available in the system. Balance may not be available for all the days in the system due to MFA information required, error in the site, credential changes, etc.<br><b>calculated</b>: Balances that gets calculated for the days that are prior to the account added date.  <br><br><b>Aggregated / Manual</b>: Both <br><b>Applicable containers</b>: bank, creditCard, investment, insurance, realEstate, loan<br><b>Endpoints</b>:<ul><li>GET accounts/historicalBalances</li><li>GET derived/networth</li></ul>',
+        readOnly: true,
+      }),
+    isAsset: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the balance is an asset or liability.<br><br><b>Aggregated / Manual</b>: Both <br><b>Applicable containers</b>: bank, creditCard, investment, insurance, realEstate, loan<br><b>Endpoints</b>:<ul><li>GET accounts/historicalBalances</li></ul>',
+        readOnly: true,
+      }),
+  })
+  .openapi({ title: 'HistoricalBalance', required: [] })
+  .openapi('HistoricalBalance')
+
+const AccountHistorySchema = z
+  .object({
+    historicalBalances: z
+      .array(HistoricalBalanceSchema)
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', readOnly: true }),
+  })
+  .openapi({ title: 'AccountHistory', required: [] })
+  .openapi('AccountHistory')
+
+const AccountHistoricalBalancesResponseSchema = z
+  .object({ account: z.array(AccountHistorySchema).exactOptional().openapi({ readOnly: true }) })
+  .openapi({ title: 'AccountHistoricalBalancesResponse', required: [] })
+  .openapi('AccountHistoricalBalancesResponse')
+
+const AccountResponseSchema: z.ZodType<AccountResponseType> = z
+  .object({ account: z.array(AccountSchema).exactOptional().openapi({ readOnly: true }) })
+  .openapi({ title: 'AccountResponse', required: [] })
+  .openapi('AccountResponse')
+
+const ApiKeyOutputSchema = z
+  .object({
+    createdDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date on which the apiKey was created for the customer.<br><br><b>Endpoints</b>:<ul><li>GET /auth/apiKey</li><li>POST /auth/apiKey</li></ul>',
+      }),
+    expiresIn: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Time in seconds after which the JWT token created for users expires.<br><br><b>Endpoints</b>:<ul><li>GET /auth/apiKey</li><li>POST /auth/apiKey</li></ul>',
+      }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'ApiKey or the issuer key used to generate the JWT token for authentication.<br><br><b>Endpoints</b>:<ul><li>GET /auth/apiKey</li><li>POST /auth/apiKey</li></ul>',
+      }),
+    publicKey: z
+      .string()
+      .min(1)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description:
+          'Public key uploaded by the customer while generating ApiKey.<br><br><b>Endpoints</b>:<ul><li>GET /auth/apiKey</li><li>POST /auth/apiKey</li></ul>',
+      }),
+  })
+  .openapi({ title: 'ApiKeyOutput', required: [] })
+  .openapi('ApiKeyOutput')
+
+const ApiKeyRequestSchema = z
+  .object({
+    publicKey: z
+      .string()
+      .min(1)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description:
+          'Public key uploaded by the customer while generating ApiKey.<br><br><b>Endpoints</b>:<ul><li>GET /auth/apiKey</li><li>POST /auth/apiKey</li></ul>',
+      }),
+  })
+  .openapi({ title: 'ApiKeyRequest', required: [] })
+  .openapi('ApiKeyRequest')
+
+const ApiKeyResponseSchema = z
+  .object({
+    apiKey: z
+      .array(ApiKeyOutputSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'ApiKey customer details.<br><br><b>Endpoints</b>:<ul><li>GET /auth/apiKey</li><li>POST /auth/apiKey</li></ul>',
+      }),
+  })
+  .openapi({ title: 'ApiKeyResponse', required: [] })
+  .openapi('ApiKeyResponse')
+
+const AssetClassificationSchema = z
+  .object({
+    allocation: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'The allocation percentage of the holding.<br><br><b>Required Feature Enablement</b>: Asset classification feature<br><br><b>Applicable containers</b>: investment<br>',
+        readOnly: true,
+      }),
+    classificationType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of classification to which the investment belongs (assetClass, country, sector, and style).<br><b>Required Feature Enablement</b>: Asset classification feature<br><br><b>Applicable containers</b>: investment<br>',
+        readOnly: true,
+      }),
+    classificationValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value for each classificationType.<br><b>Required Feature Enablement</b>: Asset classification feature<br><br><b>Applicable containers</b>: investment<br>',
+        readOnly: true,
+      }),
+  })
+  .openapi({ title: 'AssetClassification', required: [] })
+  .openapi('AssetClassification')
+
+const AssetClassificationListSchema = z
+  .object({
+    classificationType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of classification to which the investment belongs (assetClass, country, sector, and style).<br><b>Required Feature Enablement</b>: Asset classification feature<br><br><b>Applicable containers</b>: investment<br>',
+        readOnly: true,
+      }),
+    classificationValue: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The value for each classificationType.<br><b>Required Feature Enablement</b>: Asset classification feature<br><br><b>Applicable containers</b>: investment<br>',
+        readOnly: true,
+      }),
+  })
+  .openapi({ title: 'AssetClassificationList', required: [] })
+  .openapi('AssetClassificationList')
+
+const ClientCredentialTokenSchema = z
+  .object({
+    accessToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Access Token to access YSL 1.1 services.<br><br><b>Endpoints</b>:<ul><li>POST /auth/token</li></ul>',
+        readOnly: true,
+      }),
+    expiresIn: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time in seconds after which the issued accessToken expires.<br><br><b>Endpoints</b>:<ul><li>POST /auth/token</li></ul>',
+        readOnly: true,
+      }),
+    issuedAt: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The date and time on which accessToken was created for the customer.<br><br><b>Endpoints</b>:<ul><li>POST /auth/token</li></ul>',
+        readOnly: true,
+      }),
+  })
+  .openapi({ title: 'ClientCredentialToken', required: [] })
+  .openapi('ClientCredentialToken')
+
+const ClientCredentialTokenResponseSchema = z
+  .object({ token: ClientCredentialTokenSchema.exactOptional() })
+  .openapi({ title: 'ClientCredentialTokenResponse', required: [] })
+  .openapi('ClientCredentialTokenResponse')
+
+const CobrandSchema = z
+  .object({
+    cobrandLogin: z.string().min(1).max(2147483647),
+    cobrandPassword: z.string().min(1).max(2147483647),
+    locale: z
+      .string()
+      .regex(/[a-z]{2}_[A-Z]{2}/)
+      .exactOptional()
+      .openapi({
+        description:
+          "The customer's locale that will be considered for the localization functionality.<br><br><b>Endpoints</b>:<ul><li>POST cobrand/login</li></ul>",
+      }),
+  })
+  .openapi({ required: ['cobrandLogin', 'cobrandPassword'], title: 'Cobrand' })
+  .openapi('Cobrand')
+
+const CobrandLoginRequestSchema = z
+  .object({ cobrand: CobrandSchema })
+  .openapi({ required: ['cobrand'], title: 'CobrandLoginRequest' })
+  .openapi('CobrandLoginRequest')
+
+const CobrandSessionSchema = z
+  .object({ cobSession: z.string().exactOptional() })
+  .openapi({ title: 'CobrandSession', required: [] })
+  .openapi('CobrandSession')
+
+const CobrandLoginResponseSchema = z
+  .object({
+    applicationId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The application identifier.<br><br><b>Endpoints</b>:<ul><li>POST cobrand/login</li></ul>',
+        readOnly: true,
+      }),
+    cobrandId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Unique identifier of the cobrand (customer) in the system.<br><br><b>Endpoints</b>:<ul><li>POST cobrand/login</li></ul>',
+        readOnly: true,
+      }),
+    locale: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The customer's locale that will be considered for the localization functionality.<br><br><b>Endpoints</b>:<ul><li>POST cobrand/login</li></ul>",
+        readOnly: true,
+      }),
+    session: CobrandSessionSchema.exactOptional(),
+  })
+  .openapi({ title: 'CobrandLoginResponse', required: [] })
+  .openapi('CobrandLoginResponse')
+
+const CobrandNotificationEventSchema = z
+  .object({
+    callbackUrl: z
+      .string()
+      .min(1)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description:
+          'URL to which the notification should be posted.<br><br><b>Endpoints</b>:<ul><li>GET cobrand/config/notifications/events</li></ul>',
+      }),
+    name: z
+      .enum(['REFRESH', 'DATA_UPDATES', 'AUTO_REFRESH_UPDATES'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the event for which the customers must subscribe to receive notifications.<br><b>Valid Value:</b> Notification Events Name<br><br><b>Endpoints</b>:<ul><li>GET cobrand/config/notifications/events</li></ul><b>Applicable Values</b><br>',
+      }),
+  })
+  .openapi({ title: 'CobrandNotificationEvent', required: [] })
+  .openapi('CobrandNotificationEvent')
+
+const CobrandNotificationResponseSchema = z
+  .object({
+    event: z.array(CobrandNotificationEventSchema).exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ title: 'CobrandNotificationResponse', required: [] })
+  .openapi('CobrandNotificationResponse')
+
+const CobrandPublicKeyResponseSchema = z
+  .object({
+    keyAlias: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The key name used for encryption.<br><br><b>Endpoints</b>:<ul><li>GET cobrand/publicKey</li></ul>',
+        readOnly: true,
+      }),
+    keyAsPemString: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Public key that the customer should be using to encrypt the credentials and answers before sending to the add & update providerAccounts APIs.<br><br><b>Endpoints</b>:<ul><li>GET cobrand/publicKey</li></ul>',
+        readOnly: true,
+      }),
+  })
+  .openapi({ title: 'CobrandPublicKeyResponse', required: [] })
+  .openapi('CobrandPublicKeyResponse')
+
+const ConfigsNotificationEventSchema = z
+  .object({
+    callbackUrl: z
+      .string()
+      .min(1)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description:
+          'URL to which the notification should be posted.<br><br><b>Endpoints</b>:<ul><li>GET configs/notifications/events</li></ul>',
+      }),
+    name: z
+      .enum(['REFRESH', 'DATA_UPDATES', 'AUTO_REFRESH_UPDATES'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the event for which the customers must subscribe to receive notifications.<br><b>Valid Value:</b> Notification Events Name<br><br><b>Endpoints</b>:<ul><li>GET configs/notifications/events</li></ul><b>Applicable Values</b><br>',
+      }),
+  })
+  .openapi({ title: 'ConfigsNotificationEvent', required: [] })
+  .openapi('ConfigsNotificationEvent')
+
+const ConfigsNotificationResponseSchema = z
+  .object({
+    event: z.array(ConfigsNotificationEventSchema).exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ title: 'ConfigsNotificationResponse', required: [] })
+  .openapi('ConfigsNotificationResponse')
+
+const ConfigsPublicKeySchema = z
+  .object({
+    alias: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The key name used for encryption.<br><br><b>Endpoints</b>:<ul><li>GET configs/publicKey</li></ul>',
+        readOnly: true,
+      }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Public key that the customer should be using to encrypt the credentials and answers before sending to the add and update providerAccounts APIs.<br><br><b>Endpoints</b>:<ul><li>GET configs/publicKey</li></ul>',
+        readOnly: true,
+      }),
+  })
+  .openapi({ title: 'ConfigsPublicKey', required: [] })
+  .openapi('ConfigsPublicKey')
+
+const ConfigsPublicKeyResponseSchema = z
+  .object({ publicKey: ConfigsPublicKeySchema.exactOptional() })
+  .openapi({ title: 'ConfigsPublicKeyResponse', required: [] })
+  .openapi('ConfigsPublicKeyResponse')
+
+const CreateAccountInfoSchema = z
+  .object({
+    accountName: z.string().min(1).max(100),
+    accountNumber: z
+      .string()
+      .regex(/^[a-zA-Z0-9]+$/)
+      .min(0)
+      .max(100)
+      .exactOptional(),
+    accountType: z.string().min(1).max(2147483647),
+    address: AccountAddressSchema.exactOptional(),
+    amountDue: MoneySchema.exactOptional(),
+    balance: MoneySchema.exactOptional(),
+    dueDate: z.string().exactOptional(),
+    frequency: z
+      .enum([
+        'DAILY',
+        'ONE_TIME',
+        'WEEKLY',
+        'EVERY_2_WEEKS',
+        'SEMI_MONTHLY',
+        'MONTHLY',
+        'QUARTERLY',
+        'SEMI_ANNUALLY',
+        'ANNUALLY',
+        'EVERY_2_MONTHS',
+        'EBILL',
+        'FIRST_DAY_MONTHLY',
+        'LAST_DAY_MONTHLY',
+        'EVERY_4_WEEKS',
+        'UNKNOWN',
+        'OTHER',
+      ])
+      .exactOptional(),
+    homeValue: MoneySchema.exactOptional(),
+    includeInNetWorth: z.string().exactOptional(),
+    memo: z.string().min(0).max(250).exactOptional(),
+    nickname: z.string().min(0).max(50).exactOptional(),
+    valuationType: z.enum(['SYSTEM', 'MANUAL']).exactOptional(),
+  })
+  .openapi({ required: ['accountName', 'accountType'], title: 'CreateAccountInfo' })
+  .openapi('CreateAccountInfo')
+
+const CreateAccountRequestSchema = z
+  .object({ account: CreateAccountInfoSchema })
+  .openapi({ required: ['account'], title: 'CreateAccountRequest' })
+  .openapi('CreateAccountRequest')
+
+const CreateCobrandNotificationEventSchema = z
+  .object({
+    callbackUrl: z
+      .string()
+      .min(1)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description:
+          'URL to which the notification should be posted.<br><br><b>Endpoints</b>:<ul><li>GET cobrand/config/notifications/events</li></ul>',
+      }),
+  })
+  .openapi({ title: 'CreateCobrandNotificationEvent', required: [] })
+  .openapi('CreateCobrandNotificationEvent')
+
+const CreateCobrandNotificationEventRequestSchema = z
+  .object({ event: CreateCobrandNotificationEventSchema })
+  .openapi({ required: ['event'], title: 'CreateCobrandNotificationEventRequest' })
+  .openapi('CreateCobrandNotificationEventRequest')
+
+const CreateConfigsNotificationEventSchema = z
+  .object({
+    callbackUrl: z
+      .string()
+      .min(1)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description:
+          'URL to which the notification should be posted.<br><br><b>Endpoints</b>:<ul><li>GET configs/notifications/events</li></ul>',
+      }),
+  })
+  .openapi({ title: 'CreateConfigsNotificationEvent', required: [] })
+  .openapi('CreateConfigsNotificationEvent')
+
+const CreateConfigsNotificationEventRequestSchema = z
+  .object({ event: CreateConfigsNotificationEventSchema })
+  .openapi({ required: ['event'], title: 'CreateConfigsNotificationEventRequest' })
+  .openapi('CreateConfigsNotificationEventRequest')
+
+const CreatedAccountInfoSchema = z
+  .object({
+    accountName: z.string().exactOptional().openapi({ readOnly: true }),
+    accountNumber: z.string().exactOptional().openapi({ readOnly: true }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', readOnly: true }),
+  })
+  .openapi({ title: 'CreatedAccountInfo', required: [] })
+  .openapi('CreatedAccountInfo')
+
+const CreatedAccountResponseSchema = z
+  .object({
+    account: z.array(CreatedAccountInfoSchema).exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ title: 'CreatedAccountResponse', required: [] })
+  .openapi('CreatedAccountResponse')
+
+const DataExtractsEventLinksSchema = z
+  .object({
+    href: z.string().exactOptional().openapi({ readOnly: true }),
+    methodType: z.string().exactOptional().openapi({ readOnly: true }),
+    rel: z.string().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ title: 'DataExtractsEventLinks', required: [] })
+  .openapi('DataExtractsEventLinks')
+
+const DataExtractsEventUserDataSchema = z
+  .object({
+    links: z.array(DataExtractsEventLinksSchema).exactOptional().openapi({ readOnly: true }),
+    user: DataExtractsUserSchema.exactOptional(),
+  })
+  .openapi({ title: 'DataExtractsEventUserData', required: [] })
+  .openapi('DataExtractsEventUserData')
+
+const DataExtractsEventDataSchema = z
+  .object({
+    fromDate: z.string().exactOptional().openapi({ readOnly: true }),
+    toDate: z.string().exactOptional().openapi({ readOnly: true }),
+    userCount: z.int32().exactOptional().openapi({ readOnly: true }),
+    userData: z.array(DataExtractsEventUserDataSchema).exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ title: 'DataExtractsEventData', required: [] })
+  .openapi('DataExtractsEventData')
+
+const DataExtractsEventSchema = z
+  .object({
+    data: DataExtractsEventDataSchema.exactOptional(),
+    info: z.string().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ title: 'DataExtractsEvent', required: [] })
+  .openapi('DataExtractsEvent')
+
+const DataExtractsEventResponseSchema = z
+  .object({ event: DataExtractsEventSchema.exactOptional() })
+  .openapi({ title: 'DataExtractsEventResponse', required: [] })
+  .openapi('DataExtractsEventResponse')
+
+const DataExtractsUserDataResponseSchema: z.ZodType<DataExtractsUserDataResponseType> = z
+  .object({
+    userData: z.array(DataExtractsUserDataSchema).exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ title: 'DataExtractsUserDataResponse', required: [] })
+  .openapi('DataExtractsUserDataResponse')
 
 const DerivedHoldingSchema = z
   .object({
@@ -4141,32 +5888,7 @@ const DerivedNetworthResponseSchema = z
   .openapi({ title: 'DerivedNetworthResponse', required: [] })
   .openapi('DerivedNetworthResponse')
 
-const DerivedTransactionsSummarySchema = z
-  .object({
-    categorySummary: z
-      .array(DerivedCategorySummarySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Summary of transaction amouts at category level.<br><br><b>Applicable containers</b>: creditCard, bank, investment<br>',
-        readOnly: true,
-      }),
-    categoryType: z
-      .enum(['TRANSFER', 'DEFERRED_COMPENSATION', 'UNCATEGORIZE', 'INCOME', 'EXPENSE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Type of categories provided by transactions/categories service.<br><br><b>Applicable containers</b>: creditCard, bank, investment<br><b>Applicable Values</b><br>',
-        readOnly: true,
-      }),
-    creditTotal: MoneySchema.exactOptional(),
-    debitTotal: MoneySchema.exactOptional(),
-    links: DerivedTransactionsLinksSchema.exactOptional(),
-  })
-  .openapi({ title: 'DerivedTransactionsSummary', required: [] })
-  .openapi('DerivedTransactionsSummary')
-
-const DerivedTransactionSummaryResponseSchema = z
+const DerivedTransactionSummaryResponseSchema: z.ZodType<DerivedTransactionSummaryResponseType> = z
   .object({
     links: DerivedTransactionsLinksSchema.exactOptional(),
     transactionSummary: z
@@ -4365,162 +6087,6 @@ const EvaluateAddressResponseSchema = z
   .openapi({ title: 'EvaluateAddressResponse', required: [] })
   .openapi('EvaluateAddressResponse')
 
-const OptionSchema = z
-  .object({
-    displayText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The text that is displayed to the user for that option in the provider site.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-      }),
-    isSelected: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'The option that is selected by default in the provider site.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-      }),
-    optionValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value that is associated with the option.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-      }),
-  })
-  .openapi({ title: 'Option', required: [] })
-  .openapi('Option')
-
-const FieldSchema = z
-  .object({
-    id: z
-      .string()
-      .min(1)
-      .max(2147483647)
-      .exactOptional()
-      .openapi({
-        description:
-          'Identifier for the field.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-      }),
-    image: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Image displayed at the endsite.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li></ul>',
-      }),
-    isOptional: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if a field is an optional field or a mandatory field.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-        readOnly: true,
-      }),
-    isValueProvided: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates that the answer to the security question already exists in the Yodlee system.Persuading the user to provide the answer to the security question again during the edit-credential flow can be avoided.<br><br><br><b>Endpoints</b>:<ul><li>GET providerAccounts?include=questions</li><li>GET providerAccounts/{providerAccountId}? include=questions</li></ul>',
-        readOnly: true,
-      }),
-    maxLength: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The maximum length of the login form field.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-        readOnly: true,
-      }),
-    minLength: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The minimum length of the login form field.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the field.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-        readOnly: true,
-      }),
-    option: z
-      .array(OptionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Provides the different values that are available for the user to choose. This field is applicable for drop-down or radio field types.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-        readOnly: true,
-      }),
-    prefix: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The prefix string that has to be displayed before the field value.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-        readOnly: true,
-      }),
-    suffix: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The suffix string that has to be displayed next to the field value.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-        readOnly: true,
-      }),
-    type: z
-      .enum(['text', 'password', 'option', 'checkbox', 'radio', 'image'])
-      .exactOptional()
-      .openapi({
-        description:
-          'This indicates the display type of the field. For example, text box, image, etc. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul><b>Applicable Values</b><br>',
-        readOnly: true,
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Value expected from the user for the field. This will be blank and is expected to be filled and sent back when submitting the login or MFA information.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-      }),
-    valueEditable: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the field is editable or not.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-        readOnly: true,
-      }),
-  })
-  .openapi({ title: 'Field', required: [] })
-  .openapi('Field')
-
 const FieldOperationSchema = z
   .object({
     field: z
@@ -4546,7 +6112,7 @@ const FieldOperationSchema = z
           'Operation for which the clause is created.<br><br><b>Applicable containers</b>: bank, creditCard, investment, insurance, loan<br><b>Applicable values (depends on the value of field)</b>:<ul><li>field is <b>description</b> -> operation can be<ol><li>stringEquals</li><li>stringContains</li></ol></li><li>field is <b>amount</b> -> operation can be<ol><li>numberEquals</li><li>numberLessThan</li><li>numberLessThanEquals</li><li>numberGreaterThan</li><li>numberGreaterThanEquals</li></ol></li></ul><b>Applicable Values</b><br>',
       }),
     value: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -5287,141 +6853,6 @@ const HoldingTypeListResponseSchema = z
   .openapi({ title: 'HoldingTypeListResponse', required: [] })
   .openapi('HoldingTypeListResponse')
 
-const RowSchema = z
-  .object({
-    field: z
-      .array(FieldSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Details of fields that belong to the row.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-      }),
-    fieldRowChoice: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Fields that belong to a particular choice are collected together using this field.<br><b>Recommendations</b>: All the field row choices label to be grouped and displayed as options to the customer. On choosing a particular choice field, we recommend displaying the fields relevant to them. First field choice could be selected by default.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-      }),
-    form: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Form denotes the set of the fields that are related. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unique identifier of the row.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-      }),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The label text displayed for a row in the form.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-      }),
-  })
-  .openapi({ title: 'Row', required: [] })
-  .openapi('Row')
-
-const LoginFormSchema = z
-  .object({
-    forgetPasswordURL: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The forget password URL of the provider site.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-      }),
-    formType: z
-      .enum(['login', 'questionAndAnswer', 'token', 'image'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of the forms for which the user information is required.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul><b>Applicable Values</b><br>',
-      }),
-    help: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The help that can be displayed to the customer in the login form.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-        readOnly: true,
-      }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The identifier of the login form.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-      }),
-    loginHelp: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The help that can be displayed to the customer in the login form.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-        readOnly: true,
-      }),
-    mfaInfoText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The text displayed in the provider site while requesting the user's MFA information. This field is applicable for MFA form types only. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li></ul>",
-        readOnly: true,
-      }),
-    mfaInfoTitle: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The title for the MFA information demanded from the user.This is the title displayed in the provider site.This field is applicable for MFA form types only. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li></ul>',
-        readOnly: true,
-      }),
-    mfaTimeout: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The amount of time before which the user is expected to provide MFA information. This field is applicable for MFA form types only. This would be an useful information that could be displayed to the users. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-        readOnly: true,
-      }),
-    row: z
-      .array(RowSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'This indicates one row in the form. The row will have one label. But it may have single or multiple fields.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li></ul>',
-      }),
-  })
-  .openapi({ title: 'LoginForm', required: [] })
-  .openapi('LoginForm')
-
 const ProfileSchema = z
   .object({
     address: z
@@ -5468,43 +6899,6 @@ const ProfileSchema = z
   })
   .openapi({ title: 'Profile', required: [] })
   .openapi('Profile')
-
-const ProviderAccountPreferencesSchema = z
-  .object({
-    isAutoRefreshEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if auto-refreshes have to be triggered for the provider account.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts?include=preferences</li><li>GET providerAccounts/{providerAccountId}?include=preferences</li></ul>',
-      }),
-    isDataExtractsEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if the updates to the provider account should be part of the data extracts event notification or the data extract data retrieval service.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts?include=preferences</li><li>GET providerAccounts/{providerAccountId}?include=preferences</li></ul>',
-      }),
-    linkedProviderAccountId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'LinkedproviderAccountd is a providerAccountId linked by the user to the primary provider account. <br>LinkedProviderAccountId and the providerAccountId belongs to the same institution.<br><br><b>Endpoints</b>:<ul><li>POST Provider Account</li><li>PUT Provider Account</li><li>GET Provider Accounts</li></ul>',
-      }),
-  })
-  .openapi({ title: 'ProviderAccountPreferences', required: [] })
-  .openapi('ProviderAccountPreferences')
 
 const ProviderAccountSchema = z
   .object({
@@ -5638,146 +7032,7 @@ const ProviderAccountSchema = z
   .openapi({ title: 'ProviderAccount', required: [] })
   .openapi('ProviderAccount')
 
-const ProviderAccountDetailSchema = z
-  .object({
-    aggregationSource: z
-      .enum(['SYSTEM', 'USER'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The source through which the providerAccount is added in the system.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul><b>Applicable Values</b><br>',
-        readOnly: true,
-      }),
-    consentId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Consent Id generated through POST Consent.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li></ul>',
-      }),
-    createdDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date on when the provider account is created in the system.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li></ul>',
-        readOnly: true,
-      }),
-    dataset: z
-      .array(AccountDatasetSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Logical grouping of dataset attributes into datasets such as Basic Aggregation Data, Account Profile and Documents.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
-        readOnly: true,
-      }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Unique identifier for the provider account resource. This is created during account addition.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
-        readOnly: true,
-      }),
-    isManual: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether account is a manual or aggregated provider account.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
-        readOnly: true,
-      }),
-    lastUpdated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicate when the providerAccount is last updated successfully.<br><br><b>Account Type</b>: Aggregated<br><b>Endpoints</b>:<ul><li>GET dataExtracts/userData</li></ul>',
-        readOnly: true,
-      }),
-    loginForm: z
-      .array(LoginFormSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'This entity gets returned in the response for only MFA based provider accounts during the add/update account polling process. This indicates that the MFA information is expected from the user to complete the process. This represents the structure of MFA form that is displayed to the user in the provider site.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li></ul>',
-        readOnly: true,
-      }),
-    oauthMigrationStatus: z
-      .enum(['IN_PROGRESS', 'TO_BE_MIGRATED', 'COMPLETED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the migration status of the provider account from screen-scraping provider to the Open Banking provider. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>GET providerAccounts/{providerAccountId}</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
-        readOnly: true,
-      }),
-    preferences: ProviderAccountPreferencesSchema.exactOptional(),
-    providerId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Unique identifier for the provider resource. This denotes the provider for which the provider account id is generated by the user.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
-        readOnly: true,
-      }),
-    requestId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unique id generated to indicate the request.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li></ul>',
-        readOnly: true,
-      }),
-    status: z
-      .enum([
-        'LOGIN_IN_PROGRESS',
-        'USER_INPUT_REQUIRED',
-        'IN_PROGRESS',
-        'PARTIAL_SUCCESS',
-        'SUCCESS',
-        'FAILED',
-        'MIGRATION_IN_PROGRESS',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The status of last update attempted for the account. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul><b>Applicable Values</b><br>',
-        readOnly: true,
-      }),
-  })
-  .openapi({ required: ['consentId'], title: 'ProviderAccountDetail' })
-  .openapi('ProviderAccountDetail')
-
-const ProviderAccountDetailResponseSchema = z
+const ProviderAccountDetailResponseSchema: z.ZodType<ProviderAccountDetailResponseType> = z
   .object({
     providerAccount: z
       .array(ProviderAccountDetailSchema)
@@ -5824,27 +7079,7 @@ const ProviderAccountProfileSchema = z
   .openapi({ title: 'ProviderAccountProfile', required: [] })
   .openapi('ProviderAccountProfile')
 
-const ProvidersDatasetSchema = z
-  .object({
-    attribute: z
-      .array(AttributeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the dataset attribute suported by the provider.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-      }),
-    name: z
-      .enum(['BASIC_AGG_DATA', 'ADVANCE_AGG_DATA', 'ACCT_PROFILE', 'DOCUMENT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the dataset requested from the provider site<br><br><b>Account Type</b>: Manual<br><b>Endpoints</b>:<ul><li>GET accounts</li><li>GET accounts/{accountId}</li><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET providers/{providerId}</li><li>GET providers</li></ul><b>Applicable Values</b><br>',
-      }),
-  })
-  .openapi({ title: 'ProvidersDataset', required: [] })
-  .openapi('ProvidersDataset')
-
-const ProviderAccountRequestSchema = z
+const ProviderAccountRequestSchema: z.ZodType<ProviderAccountRequestType> = z
   .object({
     aggregationSource: z.enum(['SYSTEM', 'USER']).exactOptional(),
     consentId: z
@@ -5891,444 +7126,12 @@ const ProviderAccountUserProfileResponseSchema = z
   .openapi({ title: 'ProviderAccountUserProfileResponse', required: [] })
   .openapi('ProviderAccountUserProfileResponse')
 
-const ProviderDetailSchema = z
-  .object({
-    PRIORITY: z
-      .enum(['POPULAR', 'SUGGESTED', 'COBRAND', 'SEARCH', 'ALL'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the priority for which the service is invoked.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul><b>Applicable Values</b><br>',
-        readOnly: true,
-      }),
-    accountType: z
-      .array(z.enum(['CURRENT', 'BROKERAGE_CASH']))
-      .exactOptional()
-      .openapi({
-        description:
-          'AccountType supported by the provider, eg: Brokerage Cash, Current<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    associatedProviderIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'The screen-scraping providers that are associated to the Open Banking provider ID.<br><br><b>Applicable containers</b>: All Containers<br><b>Endpoints</b>:<ul><li>GET providers</li><li>GET providers/{providerId}</li></ul>',
-        readOnly: true,
-      }),
-    authParameter: z
-      .array(z.enum(['authorizationCode', 'idToken', 'authResponse']))
-      .exactOptional()
-      .openapi({
-        description:
-          'AuthParameter appears in the response only in case of token-based aggregation sites.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    authType: z
-      .enum(['OAUTH', 'CREDENTIALS', 'MFA_CREDENTIALS'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The authentication type enabled at the provider site. <br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul><b>Applicable Values</b><br>',
-        readOnly: true,
-      }),
-    baseUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The base URL of the provider's site.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>",
-        readOnly: true,
-      }),
-    capability: z
-      .array(CapabilitySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Capability of the site<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul><br><b>Note : </b> capability has been deprecated',
-        readOnly: true,
-      }),
-    countryISOCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Country to which the provider belongs.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    dataset: z
-      .array(ProvidersDatasetSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Logical grouping of dataset attributes into datasets such as Basic Aggregation Data, Account Profile and Documents<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    favicon: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Favicon link of the provider.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    help: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Text to guide user through linking an account that belongs to the site<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Unique identifier for the provider site(e.g., financial institution sites, biller sites, lender sites, etc.).<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    isAddedByUser: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates that the site has been added by the user at least once.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    isAutoRefreshEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if a provider site is auto-refreshed.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    isConsentRequired: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if a provider site requires consent.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    languageISOCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The language in which the provider details are provided. For example, a site supports two languages English and French. English being the primary language, the provider response will be provided in French depending on the user's locale. The language follows the two letter ISO code.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>",
-        readOnly: true,
-      }),
-    lastModified: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Determines when the provider information was updated by Yodlee. If the customer caches the data, the cache is recommended to be refreshed based on this field.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    loginForm: z
-      .array(LoginFormSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'This entity represents the structure of the login or MFA form that is displayed to the user at the provider site. For performance reasons, this field is returned only when a single provider is requested in the request.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li></ul>',
-        readOnly: true,
-      }),
-    loginUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The login URL of the provider's site.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>",
-        readOnly: true,
-      }),
-    logo: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The logo link of the provider institution. The link will return the logo in the PNG format.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of a provider site.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    primaryLanguageISOCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The primary language of the site.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    status: z
-      .enum(['Supported', 'Beta', 'Unsupported'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Determines if the provider is supported for the cobrand (customer), is in the beta stage, etc. <br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-  })
-  .openapi({ title: 'ProviderDetail', required: [] })
-  .openapi('ProviderDetail')
-
-const ProviderDetailResponseSchema = z
+const ProviderDetailResponseSchema: z.ZodType<ProviderDetailResponseType> = z
   .object({ provider: z.array(ProviderDetailSchema).exactOptional().openapi({ readOnly: true }) })
   .openapi({ title: 'ProviderDetailResponse', required: [] })
   .openapi('ProviderDetailResponse')
 
-const ProvidersSchema = z
-  .object({
-    PRIORITY: z
-      .enum(['POPULAR', 'SUGGESTED', 'COBRAND', 'SEARCH', 'ALL'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the priority for which the service is invoked.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul><b>Applicable Values</b><br>',
-        readOnly: true,
-      }),
-    accountType: z
-      .array(z.enum(['CURRENT', 'BROKERAGE_CASH']))
-      .exactOptional()
-      .openapi({
-        description:
-          'AccountType supported by the provider, eg: Brokerage Cash, Current<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    associatedProviderIds: z
-      .array(
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'The screen-scraping providers that are associated to the Open Banking provider ID.<br><br><b>Applicable containers</b>: All Containers<br><b>Endpoints</b>:<ul><li>GET providers</li><li>GET providers/{providerId}</li></ul>',
-        readOnly: true,
-      }),
-    authParameter: z
-      .array(z.enum(['authorizationCode', 'idToken', 'authResponse']))
-      .exactOptional()
-      .openapi({
-        description:
-          'AuthParameter appears in the response only in case of token-based aggregation sites.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    authType: z
-      .enum(['OAUTH', 'CREDENTIALS', 'MFA_CREDENTIALS'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The authentication type enabled at the provider site. <br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul><b>Applicable Values</b><br>',
-        readOnly: true,
-      }),
-    baseUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The base URL of the provider's site.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>",
-        readOnly: true,
-      }),
-    capability: z
-      .array(CapabilitySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Capability of the site<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul><br><b>Note : </b> capability has been deprecated',
-        readOnly: true,
-      }),
-    countryISOCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Country to which the provider belongs.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    dataset: z
-      .array(ProvidersDatasetSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Logical grouping of dataset attributes into datasets such as Basic Aggregation Data, Account Profile and Documents<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    favicon: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Favicon link of the provider.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    forgetPasswordUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The forget password URL of the provider site.<br><br><b>Endpoints</b>:<ul><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    help: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Text to guide user through linking an account that belongs to the site<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Unique identifier for the provider site(e.g., financial institution sites, biller sites, lender sites, etc.).<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    isAddedByUser: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates that the site has been added by the user at least once.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    isAutoRefreshEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if a provider site is auto-refreshed.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    isConsentRequired: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if a provider site requires consent.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    languageISOCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The language in which the provider details are provided. For example, a site supports two languages English and French. English being the primary language, the provider response will be provided in French depending on the user's locale. The language follows the two letter ISO code.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>",
-        readOnly: true,
-      }),
-    lastModified: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Determines when the provider information was updated by Yodlee. If the customer caches the data, the cache is recommended to be refreshed based on this field.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    loginHelp: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Help text to guide the user to choose the correct provider site.<br><br><b>Endpoints</b>:<ul><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    loginUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The login URL of the provider's site.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>",
-        readOnly: true,
-      }),
-    logo: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The logo link of the provider institution. The link will return the logo in the PNG format.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of a provider site.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    primaryLanguageISOCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The primary language of the site.<br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-    status: z
-      .enum(['Supported', 'Beta', 'Unsupported'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Determines if the provider is supported for the cobrand (customer), is in the beta stage, etc. <br><br><b>Endpoints</b>:<ul><li>GET providers/{providerId}</li><li>GET providers</li></ul>',
-        readOnly: true,
-      }),
-  })
-  .openapi({ title: 'Providers', required: [] })
-  .openapi('Providers')
-
-const ProviderResponseSchema = z
+const ProviderResponseSchema: z.ZodType<ProviderResponseType> = z
   .object({ provider: z.array(ProvidersSchema).exactOptional().openapi({ readOnly: true }) })
   .openapi({ title: 'ProviderResponse', required: [] })
   .openapi('ProviderResponse')
@@ -6561,445 +7364,6 @@ const StatementResponseSchema = z
   .object({ statement: z.array(StatementSchema).exactOptional().openapi({ readOnly: true }) })
   .openapi({ title: 'StatementResponse', required: [] })
   .openapi('StatementResponse')
-
-const TransactionSchema = z
-  .object({
-    CONTAINER: z
-      .enum([
-        'bank',
-        'creditCard',
-        'investment',
-        'insurance',
-        'loan',
-        'reward',
-        'realEstate',
-        'otherAssets',
-        'otherLiabilities',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          "The account's container.<br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br><b>Applicable Values</b><br>",
-        readOnly: true,
-      }),
-    accountId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The account from which the transaction was made. This is basically the primary key of the account resource. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
-        readOnly: true,
-      }),
-    amount: MoneySchema.exactOptional(),
-    baseType: z
-      .enum(['CREDIT', 'DEBIT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if the transaction appears as a debit or a credit transaction in the account. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br><b>Applicable Values</b><br>',
-        readOnly: true,
-      }),
-    category: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the category assigned to the transaction. This is the category field of the transaction category resource. The supported values are provided by the GET transactions/categories.<br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
-        readOnly: true,
-      }),
-    categoryId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The id of the category assigned to the transaction. This is the id field of the transaction category resource. The supported values are provided by the GET transactions/categories.<br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
-        readOnly: true,
-      }),
-    categorySource: z
-      .enum(['SYSTEM', 'USER'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the source of the category, i.e., categories derived by the system or assigned/provided by the consumer. This is the source field of the transaction category resource. The supported values are provided by the GET transactions/categories.<br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br><b>Applicable Values</b><br>',
-        readOnly: true,
-      }),
-    categoryType: z
-      .enum(['TRANSFER', 'DEFERRED_COMPENSATION', 'UNCATEGORIZE', 'INCOME', 'EXPENSE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The categoryType of the category assigned to the transaction. This is the type field of the transaction category resource. The supported values are provided by the GET transactions/categories.<br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
-        readOnly: true,
-      }),
-    checkNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The checkNumber of the transaction.<br><br><b>Applicable containers</b>: bank<br>',
-        readOnly: true,
-      }),
-    commission: MoneySchema.exactOptional(),
-    createdDate: z.string().exactOptional().openapi({ readOnly: true }),
-    cusipNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The CUSIP (Committee on Uniform Securities Identification Procedures) identifies the financial instruments in the United States and Canada.<br><b><br><b>Note</b></b>: The CUSIP number field applies only to trade related transactions.<br><br><b>Applicable containers</b>: investment<br>',
-        readOnly: true,
-      }),
-    date: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value provided will be either postDate or transactionDate. postDate takes higher priority than transactionDate, except for the investment container as only transactionDate is available. The availability of postDate or transactionDate depends on the provider site.<br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
-        readOnly: true,
-      }),
-    description: DescriptionSchema.exactOptional(),
-    detailCategoryId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The id of the detail category that is assigned to the transaction. The supported values are provided by GET transactions/categories.<br><br><b>Applicable containers</b>: bank,creditCard<br>',
-        readOnly: true,
-      }),
-    highLevelCategoryId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The high level category assigned to the transaction. The supported values are provided by the GET transactions/categories. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
-        readOnly: true,
-      }),
-    holdingDescription: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'For transactions involving securities, this captures the securities description.<br><br><b>Applicable containers</b>: investment<br>',
-        readOnly: true,
-      }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'An unique identifier for the transaction. The combination of the id and account container are unique in the system. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
-        readOnly: true,
-      }),
-    interest: MoneySchema.exactOptional(),
-    isManual: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if the transaction is aggregated from the FI site or the consumer has manually created the transaction using the application or an API. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
-        readOnly: true,
-      }),
-    isin: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'International Securities Identification Number (ISIN) standard is used worldwide to identify specific securities.<br><br><b>Applicable containers</b>: investment<br>',
-        readOnly: true,
-      }),
-    lastUpdated: z.string().exactOptional().openapi({ readOnly: true }),
-    memo: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional notes provided by the user for a particular  transaction through application or API services. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
-        readOnly: true,
-      }),
-    merchant: MerchantSchema.exactOptional(),
-    parentCategoryId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The parentCategoryId of the category assigned to the transaction.<br><b>Note</b>: This field will be provided in the response if the transaction is assigned to a user-created category. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
-        readOnly: true,
-      }),
-    postDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date on which the transaction is posted to the account.<br><br><b>Applicable containers</b>: bank,creditCard,insurance,loan<br>',
-        readOnly: true,
-      }),
-    price: MoneySchema.exactOptional(),
-    principal: MoneySchema.exactOptional(),
-    quantity: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The quantity associated with the transaction.<br><b>Note</b>: The quantity field applies only to trade-related transactions.<br><br><b>Applicable containers</b>: investment<br>',
-        readOnly: true,
-      }),
-    runningBalance: MoneySchema.exactOptional(),
-    sedol: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'SEDOL stands for Stock Exchange Daily Official List, a list of security identifiers used in the United Kingdom and Ireland for clearing purposes.<br><br><b>Applicable containers</b>: investment<br>',
-        readOnly: true,
-      }),
-    settleDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'It is the date on which the transaction is finalized, that is, the date the ownership of the security is transferred to the buyer. The settlement date is usually few days after the transaction date.<br><br><b>Applicable containers</b>: investment<br>',
-        readOnly: true,
-      }),
-    sourceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A unique ID that the provider site has assigned to the transaction. The source ID is only available for the pre-populated accounts.<br>Pre-populated accounts are the accounts that the FI customers shares with Yodlee, so that the user does not have to add or aggregate those accounts.',
-        readOnly: true,
-      }),
-    sourceType: z
-      .enum(['AGGREGATED', 'MANUAL'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The source through which the transaction is added to the Yodlee system.<br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loann<br><b>Applicable Values:</b><br>',
-        readOnly: true,
-      }),
-    status: z
-      .enum(['POSTED', 'PENDING', 'SCHEDULED', 'FAILED', 'CLEARED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The status of the transaction: pending or posted.<br><b>Note</b>: Most FI sites only display posted transactions. If the FI site displays transaction status, same will be aggregated.  <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br><b>Applicable Values</b><br>',
-        readOnly: true,
-      }),
-    subType: z
-      .enum([
-        'AUTH_HOLD',
-        'AUTH_REQUEST',
-        'OVERDRAFT_CHARGE',
-        'CREDIT_ADJUSTMENT',
-        'PIN_DEBIT',
-        'BANK_DIRECT_DEPOSIT',
-        'DIVIDEND_DEPOSIT',
-        'INTEREST_SAVINGS',
-        'INTEREST_ADJUSTMENT',
-        'ONLINE_PURCHASE',
-        'PURCHASED_WITH_CHECK',
-        'RECURRING_BILLING',
-        'TAX_PAYMENT',
-        'PAYMENT_BY_CHECK',
-        'PAYMENT_PLAN',
-        'FEE_REFUND',
-        'WIRE_TRANSFER_CHARGE',
-        'ACCOUNT_TO_ACCOUNT_TRANSFER',
-        'BANK_TO_BANK_TRANSACTION',
-        'BANK_TO_NON_BANK_ACCOUNT_TRANSFER',
-        'CASH_WITHDRAWAL_AT_FI',
-        'ATM_CASH_WITHDRAWAL',
-        'AUTH_PROCESSING',
-        'AUTH_RELEASE',
-        'PRE_AUTH',
-        'AUTH_COMPLETE',
-        'AUTH_VOID',
-        'BALANCE_ENQUIRY',
-        'ACCOUNT_VERIFICATION',
-        'PRE_AUTH_COMPLETION',
-        'SERVICE_CHARGE',
-        'SERVICE_CHARGE_FEE_REFUND',
-        'RETURNED_CHECK_CHARGE',
-        'RETURNED_CHECK_REIMBURSEMENT',
-        'CASH_ADVANCE',
-        'BILL_PAY_CHARGE',
-        'CHECK_IMAGE_SERVICE_CHARGE',
-        'OVERDRAFT_PROTECTION_CHARGE',
-        'STOP_PAYMENT_CHARGE',
-        'CHECKS_ORDERING_CHARGE',
-        'MONTHLY_MAINTENANCE_CHARGE',
-        'DEBIT_CARD_FEE',
-        'CONVENIENCE_FEE',
-        'PERSONAL_LOAN_CREDIT',
-        'CREDIT_CARD_CREDIT',
-        'AUTO_LOAN',
-        'HOME_LOAN_MORTGAGE',
-        'SHORT_TERM_CREDIT',
-        'SIGNATURE_DEBIT',
-        'CONTACT_LESS_DEBIT',
-        'DEFERRED_DEPOSIT',
-        'DEFERRED_BILL_PAY',
-        'INSTALLMENT_PAYMENT',
-        'RECURRING_SUBSCRIPTION_PAYMENT',
-        'HOLD_CHECK_PAYMENT',
-        'CAPITAL_GAINS_DISTIBUTION',
-        'CG_LONG_TERM_DEPOSIT',
-        'OPEN_SALE_DEPOSIT',
-        'INTEREST__CHECK',
-        'PURCHASE_VOID',
-        'PURCHASE_WITH_CREDIT_CARD',
-        'PURCHASE_WITH_DEBIT_CARD',
-        'CHARGE_A_REPEAT_CUSTOMER',
-        'DOWN_PAYMENT_OR_ANNUITY_PAYMENT_OR_DIRECT_PAYMENT',
-        'FEE_PAYMENT',
-        'FINANCE_CHARGE_REFUND',
-        'TRANSACTION_VOID',
-        'FEE_VOID',
-        'DEBIT_CARD_WITHDRAWAL_AT_STORE',
-        'ELECTRONIC_PAYMENT',
-        'ACH_DEBIT',
-        'ATM_TELLER_DEPOSIT',
-        'POS_DEBIT',
-        'BANK_ADJUSTMENT',
-        'CHARGES_FEES',
-        'INTEREST',
-        'DEPOSITS_CREDITS',
-        'PAYMENT',
-        'PURCHASE',
-        'REFUND',
-        'TRANSFER',
-        'WITHDRAWAL',
-        'OTHER_DEPOSITS',
-        'OTHER_WITHDRAWALS',
-        'ADJUSTMENT',
-        'FINANCE_CHARGE',
-        'OTHER_CHARGES_FEES',
-        'ANNUAL_FEE',
-        'DEPOSIT',
-        'DIRECT_DEPOSIT_SALARY',
-        'INVESTMENT_INCOME_CASH',
-        'SSA',
-        'REWARDS',
-        'CHECK_DEPOSIT',
-        'MOBILE_REMOTE_DEPOSIT',
-        'TELLER_DEPOSIT',
-        'TAX_REFUND',
-        'CREDIT_CARD_PAYMENT',
-        'INSURANCE_PAYMENT',
-        'UTILITIES_PAYMENT',
-        'CHILD_SUPPORT',
-        'LOAN',
-        'PERSONAL_LOAN',
-        'STUDENT_LOAN',
-        'SALES_TAX',
-        'REIMBURSEMENT',
-        'BALANCE_TRANSFER',
-        'WIRE_TRANSFER',
-        'OVERDRAFT_PROTECTION',
-        'DEBIT',
-        'CREDIT',
-        'NSF_FEES',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The transaction subtype field provides a detailed transaction type. For example, purchase is a transaction type and the transaction subtype field indicates if the purchase was made using a debit or credit card.<br><b>Note</b>: The transaction subtype field is available only in the United States, Canada, United Kingdom, and India.<br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
-        readOnly: true,
-      }),
-    symbol: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The symbol of the security being traded.<br><b>Note</b>: The settle date field applies only to trade-related transactions. <br><br><b>Applicable containers</b>: investment<br>',
-        readOnly: true,
-      }),
-    transactionDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date the transaction happens in the account. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br>',
-        readOnly: true,
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The nature of the transaction, i.e., deposit, refund, payment, etc.<br><b>Note</b>: The transaction type field is available only for the United States, Canada, United Kingdom, and India based provider sites. <br><br><b>Applicable containers</b>: bank,creditCard,investment<br>',
-        readOnly: true,
-      }),
-    valoren: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'It is an identification number that is assigned to financial instruments such as stocks and bonds trading in Switzerland.<br><br><b>Applicable containers</b>: investment<br>',
-        readOnly: true,
-      }),
-  })
-  .openapi({ title: 'Transaction', required: [] })
-  .openapi('Transaction')
 
 const TransactionCategorizationRuleSchema = z
   .object({
@@ -7655,129 +8019,7 @@ const UpdateVerificationRequestSchema = z
   .openapi({ title: 'UpdateVerificationRequest', required: [] })
   .openapi('UpdateVerificationRequest')
 
-const UpdatedProviderAccountSchema = z
-  .object({
-    aggregationSource: z
-      .enum(['SYSTEM', 'USER'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The source through which the providerAccount is added in the system.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul><b>Applicable Values</b><br>',
-        readOnly: true,
-      }),
-    createdDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The date on when the provider account is created in the system.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
-        readOnly: true,
-      }),
-    dataset: z
-      .array(AccountDatasetSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Logical grouping of dataset attributes into datasets such as Basic Aggregation Data, Account Profile and Documents.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
-        readOnly: true,
-      }),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Unique identifier for the provider account resource. This is created during account addition.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
-        readOnly: true,
-      }),
-    isManual: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether account is a manual or aggregated provider account.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
-        readOnly: true,
-      }),
-    lastUpdated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicate when the providerAccount is last updated successfully.<br><br><b>Account Type</b>: Aggregated<br><b>Endpoints</b>:<ul><li>GET dataExtracts/userData</li></ul>',
-        readOnly: true,
-      }),
-    loginForm: z
-      .array(LoginFormSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'This entity gets returned in the response for only MFA based provider accounts during the add/update account polling process. This indicates that the MFA information is expected from the user to complete the process. This represents the structure of MFA form that is displayed to the user in the provider site.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li></ul>',
-        readOnly: true,
-      }),
-    oauthMigrationStatus: z
-      .enum(['IN_PROGRESS', 'TO_BE_MIGRATED', 'COMPLETED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the migration status of the provider account from screen-scraping provider to the Open Banking provider. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>GET providerAccounts/{providerAccountId}</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
-        readOnly: true,
-      }),
-    providerId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'Unique identifier for the provider resource. This denotes the provider for which the provider account id is generated by the user.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul>',
-        readOnly: true,
-      }),
-    requestId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unique id generated to indicate the request.<br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li></ul>',
-        readOnly: true,
-      }),
-    status: z
-      .enum([
-        'LOGIN_IN_PROGRESS',
-        'USER_INPUT_REQUIRED',
-        'IN_PROGRESS',
-        'PARTIAL_SUCCESS',
-        'SUCCESS',
-        'FAILED',
-        'MIGRATION_IN_PROGRESS',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The status of last update attempted for the account. <br><br><b>Endpoints</b>:<ul><li>GET providerAccounts</li><li>POST providerAccounts</li><li>PUT providerAccounts/{providerAccountId}</li><li>GET providerAccounts/{providerAccountId}</li><li>GET dataExtracts/userData</li></ul><b>Applicable Values</b><br>',
-        readOnly: true,
-      }),
-  })
-  .openapi({ title: 'UpdatedProviderAccount', required: [] })
-  .openapi('UpdatedProviderAccount')
-
-const UpdatedProviderAccountResponseSchema = z
+const UpdatedProviderAccountResponseSchema: z.ZodType<UpdatedProviderAccountResponseType> = z
   .object({
     providerAccount: z
       .array(UpdatedProviderAccountSchema)
@@ -8202,110 +8444,6 @@ const VerificationStatusResponseSchema = z
   .openapi({ title: 'VerificationStatusResponse', required: [] })
   .openapi('VerificationStatusResponse')
 
-const VerifiedAccountSchema = z
-  .object({
-    accountNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The account number as it appears on the site. (The POST accounts service response return this field as number)<br><b>Additional Details</b>:<b> Bank/ Loan/ Insurance/ Investment</b>:<br> The account number for the bank account as it appears at the site.<br><b>Credit Card</b>: The account number of the card account as it appears at the site,<br>i.e., the card number.The account number can be full or partial based on how it is displayed in the account summary page of the site.In most cases, the site does not display the full account number in the account summary page and additional navigation is required to aggregate it.<br><b>Applicable containers</b>: All Containers<br><b>Aggregated / Manual</b>: Both <br><b>Endpoints</b>:<br><ul><li>GET accounts</li><li>GET accounts/{accountId}</li><li>POST accounts</li></ul>',
-        readOnly: true,
-      }),
-    accountType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of account that is aggregated, i.e., savings, checking, credit card, charge, HELOC, etc. The account type is derived based on the attributes of the account. <br><b>Valid Values:</b><br><b>Aggregated Account Type</b><br><b>bank</b><ul><li>CHECKING</li><li>SAVINGS</li><li>CD</li><li>PPF</li><li>RECURRING_DEPOSIT</li><li>FSA</li><li>MONEY_MARKET</li><li>IRA</li><li>PREPAID</li></ul><b>creditCard</b><ul><li>OTHER</li><li>CREDIT</li><li>STORE</li><li>CHARGE</li><li>OTHER</li></ul><b>investment (SN 1.0)</b><ul><li>BROKERAGE_MARGIN</li><li>HSA</li><li>IRA</li><li>BROKERAGE_CASH</li><li>401K</li><li>403B</li><li>TRUST</li><li>ANNUITY</li><li>SIMPLE</li><li>CUSTODIAL</li><li>BROKERAGE_CASH_OPTION</li><li>BROKERAGE_MARGIN_OPTION</li><li>INDIVIDUAL</li><li>CORPORATE</li><li>JTTIC</li><li>JTWROS</li><li>COMMUNITY_PROPERTY</li><li>JOINT_BY_ENTIRETY</li><li>CONSERVATORSHIP</li><li>ROTH</li><li>ROTH_CONVERSION</li><li>ROLLOVER</li><li>EDUCATIONAL</li><li>529_PLAN</li><li>457_DEFERRED_COMPENSATION</li><li>401A</li><li>PSP</li><li>MPP</li><li>STOCK_BASKET</li><li>LIVING_TRUST</li><li>REVOCABLE_TRUST</li><li>IRREVOCABLE_TRUST</li><li>CHARITABLE_REMAINDER</li><li>CHARITABLE_LEAD</li><li>CHARITABLE_GIFT_ACCOUNT</li><li>SEP</li><li>UTMA</li><li>UGMA</li><li>ESOPP</li><li>ADMINISTRATOR</li><li>EXECUTOR</li><li>PARTNERSHIP</li><li>SOLE_PROPRIETORSHIP</li><li>CHURCH</li><li>INVESTMENT_CLUB</li><li>RESTRICTED_STOCK_AWARD</li><li>CMA</li><li>EMPLOYEE_STOCK_PURCHASE_PLAN</li><li>PERFORMANCE_PLAN</li><li>BROKERAGE_LINK_ACCOUNT</li><li>MONEY_MARKET</li><li>SUPER_ANNUATION</li><li>REGISTERED_RETIREMENT_SAVINGS_PLAN</li><li>SPOUSAL_RETIREMENT_SAVINGS_PLAN</li><li>DEFERRED_PROFIT_SHARING_PLAN</li><li>NON_REGISTERED_SAVINGS_PLAN</li><li>REGISTERED_EDUCATION_SAVINGS_PLAN</li><li>GROUP_RETIREMENT_SAVINGS_PLAN</li><li>LOCKED_IN_RETIREMENT_SAVINGS_PLAN</li><li>RESTRICTED_LOCKED_IN_SAVINGS_PLAN</li><li>LOCKED_IN_RETIREMENT_ACCOUNT</li><li>REGISTERED_PENSION_PLAN</li><li>TAX_FREE_SAVINGS_ACCOUNT</li><li>LIFE_INCOME_FUND</li><li>REGISTERED_RETIREMENT_INCOME_FUND</li><li>SPOUSAL_RETIREMENT_INCOME_FUND</li><li>LOCKED_IN_REGISTERED_INVESTMENT_FUND</li><li>PRESCRIBED_REGISTERED_RETIREMENT_INCOME_FUND</li><li>GUARANTEED_INVESTMENT_CERTIFICATES</li><li>REGISTERED_DISABILITY_SAVINGS_PLAN</li><li>OTHER</li></ul><b>investment (SN 2.0)</b><ul><li>BROKERAGE_CASH</li><li>BROKERAGE_MARGIN</li><li>INDIVIDUAL_RETIREMENT_ACCOUNT_IRA</li><li>EMPLOYEE_RETIREMENT_ACCOUNT_401K</li><li>EMPLOYEE_RETIREMENT_SAVINGS_PLAN_403B</li><li>TRUST</li><li>ANNUITY</li><li>SIMPLE_IRA</li><li>CUSTODIAL_ACCOUNT</li><li>BROKERAGE_CASH_OPTION</li><li>BROKERAGE_MARGIN_OPTION</li><li>INDIVIDUAL</li><li>CORPORATE_INVESTMENT_ACCOUNT</li><li>JOINT_TENANTS_TENANCY_IN_COMMON_JTIC</li><li>JOINT_TENANTS_WITH_RIGHTS_OF_SURVIVORSHIP_JTWROS</li><li>JOINT_TENANTS_COMMUNITY_PROPERTY</li><li>JOINT_TENANTS_TENANTS_BY_ENTIRETY</li><li>CONSERVATOR</li><li>ROTH_IRA</li><li>ROTH_CONVERSION</li><li>ROLLOVER_IRA</li><li>EDUCATIONAL</li><li>EDUCATIONAL_SAVINGS_PLAN_529</li><li>DEFERRED_COMPENSATION_PLAN_457</li><li>MONEY_PURCHASE_RETIREMENT_PLAN_401A</li><li>PROFIT_SHARING_PLAN</li><li>MONEY_PURCHASE_PLAN</li><li>STOCK_BASKET_ACCOUNT</li><li>LIVING_TRUST</li><li>REVOCABLE_TRUST</li><li>IRREVOCABLE_TRUST</li><li>CHARITABLE_REMAINDER_TRUST</li><li>CHARITABLE_LEAD_TRUST</li><li>CHARITABLE_GIFT_ACCOUNT</li><li>SEP_IRA</li><li>UNIFORM_TRANSFER_TO_MINORS_ACT_UTMA</li><li>UNIFORM_GIFT_TO_MINORS_ACT_UGMA</li><li>EMPLOYEE_STOCK_OWNERSHIP_PLAN_ESOP</li><li>ADMINISTRATOR</li><li>EXECUTOR</li><li>PARTNERSHIP</li><li>PROPRIETORSHIP</li><li>CHURCH_ACCOUNT</li><li>INVESTMENT_CLUB</li><li>RESTRICTED_STOCK_AWARD</li><li>CASH_MANAGEMENT_ACCOUNT</li><li>EMPLOYEE_STOCK_PURCHASE_PLAN_ESPP</li><li>PERFORMANCE_PLAN</li><li>BROKERAGE_LINK_ACCOUNT</li><li>MONEY_MARKET_ACCOUNT</li><li>SUPERANNUATION</li><li>REGISTERED_RETIREMENT_SAVINGS_PLAN_RRSP</li><li>SPOUSAL_RETIREMENT_SAVINGS_PLAN_SRSP</li><li>DEFERRED_PROFIT_SHARING_PLAN_DPSP</li><li>NON_REGISTERED_SAVINGS_PLAN_NRSP</li><li>REGISTERED_EDUCATION_SAVINGS_PLAN_RESP</li><li>GROUP_RETIREMENT_SAVINGS_PLAN_GRSP</li><li>LOCKED_IN_RETIREMENT_SAVINGS_PLAN_LRSP</li><li>RESTRICTED_LOCKED_IN_SAVINGS_PLAN_RLSP</li><li>LOCKED_IN_RETIREMENT_ACCOUNT_LIRA</li><li>REGISTERED_PENSION_PLAN_RPP</li><li>TAX_FREE_SAVINGS_ACCOUNT_TFSA</li><li>LIFE_INCOME_FUND_LIF</li><li>REGISTERED_RETIREMENT_INCOME_FUND_RIF</li><li>SPOUSAL_RETIREMENT_INCOME_FUND_SRIF</li><li>LOCKED_IN_REGISTERED_INVESTMENT_FUND_LRIF</li><li>PRESCRIBED_REGISTERED_RETIREMENT_INCOME_FUND_PRIF</li><li>GUARANTEED_INVESTMENT_CERTIFICATES_GIC</li><li>REGISTERED_DISABILITY_SAVINGS_PLAN_RDSP</li><li>DEFINED_CONTRIBUTION_PLAN</li><li>DEFINED_BENEFIT_PLAN</li><li>EMPLOYEE_STOCK_OPTION_PLAN</li><li>NONQUALIFIED_DEFERRED_COMPENSATION_PLAN_409A</li><li>KEOGH_PLAN</li><li>EMPLOYEE_RETIREMENT_ACCOUNT_ROTH_401K</li><li>DEFERRED_CONTINGENT_CAPITAL_PLAN_DCCP</li><li>EMPLOYEE_BENEFIT_PLAN</li><li>EMPLOYEE_SAVINGS_PLAN</li><li>HEALTH_SAVINGS_ACCOUNT_HSA</li><li>COVERDELL_EDUCATION_SAVINGS_ACCOUNT_ESA</li><li>TESTAMENTARY_TRUST</li><li>ESTATE</li><li>GRANTOR_RETAINED_ANNUITY_TRUST_GRAT</li><li>ADVISORY_ACCOUNT</li><li>NON_PROFIT_ORGANIZATION_501C</li><li>HEALTH_REIMBURSEMENT_ARRANGEMENT_HRA</li><li>INDIVIDUAL_SAVINGS_ACCOUNT_ISA</li><li>CASH_ISA</li><li>STOCKS_AND_SHARES_ISA</li><li>INNOVATIVE_FINANCE_ISA</li><li>JUNIOR_ISA</li><li>EMPLOYEES_PROVIDENT_FUND_ORGANIZATION_EPFO</li><li>PUBLIC_PROVIDENT_FUND_PPF</li><li>EMPLOYEES_PENSION_SCHEME_EPS</li><li>NATIONAL_PENSION_SYSTEM_NPS</li><li>INDEXED_ANNUITY</li><li>ANNUITIZED_ANNUITY</li><li>VARIABLE_ANNUITY</li><li>ROTH_403B</li><li>SPOUSAL_IRA</li><li>SPOUSAL_ROTH_IRA</li><li>SARSEP_IRA</li><li>SUBSTANTIALLY_EQUAL_PERIODIC_PAYMENTS_SEPP</li><li>OFFSHORE_TRUST</li><li>IRREVOCABLE_LIFE_INSURANCE_TRUST</li><li>INTERNATIONAL_TRUST</li><li>LIFE_INTEREST_TRUST</li><li>EMPLOYEE_BENEFIT_TRUST</li><li>PRECIOUS_METAL_ACCOUNT</li><li>INVESTMENT_LOAN_ACCOUNT</li><li>GRANTOR_RETAINED_INCOME_TRUST</li><li>PENSION_PLAN</li><li>OTHER</li></ul><b>loan</b><ul><li>MORTGAGE</li><li>INSTALLMENT_LOAN</li><li>PERSONAL_LOAN</li><li>HOME_EQUITY_LINE_OF_CREDIT</li><li>LINE_OF_CREDIT</li><li>AUTO_LOAN</li><li>STUDENT_LOAN</li><li>HOME_LOAN</li></ul><b>insurance</b><ul><li>AUTO_INSURANCE</li><li>HEALTH_INSURANCE</li><li>HOME_INSURANCE</li><li>LIFE_INSURANCE</li><li>ANNUITY</li><li>TRAVEL_INSURANCE</li><li>INSURANCE</li></ul><b>realEstate</b><ul> <li>REAL_ESTATE</li></ul><b>reward</b><ul><li>REWARD_POINTS</li></ul><b>Manual Account Type</b><br><b>bank</b><ul><li>CHECKING</li><li>SAVINGS</li><li>CD</li><li>PREPAID</li></ul><b>credit</b><ul>  <li>CREDIT</li></ul><b>loan</b><ul>  <li>PERSONAL_LOAN</li><li>HOME_LOAN</li></ul><b>insurance</b><ul><li>INSURANCE</li><li>ANNUITY</li></ul><b>investment</b><ul><li>BROKERAGE_CASH</li></ul><br><br><b>Aggregated / Manual</b>: Both <br><b>Applicable containers</b>: All containers<br></ul>',
-        readOnly: true,
-      }),
-    bankTransferCode: z
-      .array(BankTransferCodeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Bank and branch identification information.<br><b>Aggregated / Manual</b>: Aggregated<br><b>Applicable containers</b>: bank, investment, loan<br><b>Endpoints</b>:<br><ul></ul>',
-        readOnly: true,
-      }),
-    fullAccountNumber: z.string().exactOptional(),
-    holder: z.array(AccountHolderSchema).exactOptional(),
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    providerAccountId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          'The primary key of the provider account resource.<br><br><b>Aggregated / Manual</b>: Both <br><b>Applicable containers</b>: All containers<br>',
-        readOnly: true,
-      }),
-    providerName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '<b>Applicable containers</b>: reward, bank, creditCard, investment, loan, insurance, realEstate,  otherLiabilities<br>',
-        readOnly: true,
-      }),
-  })
-  .openapi({ title: 'VerifiedAccount', required: [] })
-  .openapi('VerifiedAccount')
-
-const VerifyTransactionCriteriaSchema = z
-  .object({
-    amount: z.float64(),
-    baseType: z
-      .enum(['CREDIT', 'DEBIT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if the transaction appears as a debit or a credit transaction in the account. <br><br><b>Applicable containers</b>: bank,creditCard,investment,insurance,loan<br><b>Applicable Values</b><br>',
-      }),
-    date: z.string(),
-    dateVariance: z.string().exactOptional(),
-    keyword: z.string().exactOptional(),
-    matched: z
-      .enum(['COMPLETE', 'NONE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if the criteria is matched or not. <br><b>Applicable Values</b><br>',
-        readOnly: true,
-      }),
-    verifiedTransaction: z.array(TransactionSchema).exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['amount', 'date'], title: 'VerifyTransactionCriteria' })
-  .openapi('VerifyTransactionCriteria')
-
-const VerifyAccountSchema = z
-  .object({
-    account: z.array(VerifiedAccountSchema).exactOptional(),
-    transactionCriteria: z.array(VerifyTransactionCriteriaSchema).exactOptional(),
-  })
-  .openapi({ title: 'VerifyAccount', required: [] })
-  .openapi('VerifyAccount')
-
 const VerifyAccountRequestSchema = z
   .object({
     accountId: z
@@ -8338,7 +8476,7 @@ const VerifyAccountRequestSchema = z
   .openapi({ required: ['transactionCriteria'], title: 'VerifyAccountRequest' })
   .openapi('VerifyAccountRequest')
 
-const VerifyAccountResponseSchema = z
+const VerifyAccountResponseSchema: z.ZodType<VerifyAccountResponseType> = z
   .object({ verifyAccount: VerifyAccountSchema.exactOptional() })
   .openapi({ title: 'VerifyAccountResponse', required: [] })
   .openapi('VerifyAccountResponse')

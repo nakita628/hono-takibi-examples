@@ -5514,7 +5514,7 @@ const AuthKeyResponseResponse = {
           User: z
             .object({
               id: UserIdSchema.exactOptional(),
-              org_id: OrganisationIdSchema.nullable().exactOptional(),
+              org_id: z.looseObject({}).and(OrganisationIdSchema).nullable().exactOptional(),
               email: z.email().nullable().exactOptional(),
             })
             .exactOptional()

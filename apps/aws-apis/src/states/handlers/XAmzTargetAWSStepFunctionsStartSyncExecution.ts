@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSStepFunctionsStartSyncExecutionHandler = app.openapi(
   postXAmzTargetAWSStepFunctionsStartSyncExecutionRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

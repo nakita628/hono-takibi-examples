@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetLogs20140328DeleteDestinationHandler = app.openapi(
   postXAmzTargetLogs20140328DeleteDestinationRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

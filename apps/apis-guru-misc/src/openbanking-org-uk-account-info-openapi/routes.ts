@@ -1,5 +1,861 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+type OBBCAData1Type = {
+  CreditInterest?: {
+    TierBandSet: {
+      CalculationMethod?: 'Compound' | 'SimpleInterest'
+      Destination: 'PayAway' | 'SelfCredit'
+      Notes?: string[]
+      TierBand: {
+        AER: string
+        ApplicationFrequency:
+          | 'Daily'
+          | 'HalfYearly'
+          | 'Monthly'
+          | 'Other'
+          | 'Quarterly'
+          | 'PerStatementDate'
+          | 'Weekly'
+          | 'Yearly'
+        BankInterestRate?: string
+        BankInterestRateType?: 'Gross' | 'Other'
+        CalculationFrequency?:
+          | 'Daily'
+          | 'HalfYearly'
+          | 'Monthly'
+          | 'Other'
+          | 'Quarterly'
+          | 'PerStatementDate'
+          | 'Weekly'
+          | 'Yearly'
+        DepositInterestAppliedCoverage?: 'Banded' | 'Tiered' | 'Whole'
+        FixedVariableInterestRateType: 'Fixed' | 'Variable'
+        Identification?: string
+        Notes?: string[]
+        OtherApplicationFrequency?: { Code?: string; Description: string; Name: string }
+        OtherBankInterestType?: { Code?: string; Description: string; Name: string }
+        OtherCalculationFrequency?: { Code?: string; Description: string; Name: string }
+        TierValueMaximum?: string
+        TierValueMinimum: string
+      }[]
+      TierBandMethod: 'Banded' | 'Tiered' | 'Whole'
+    }[]
+  }
+  OtherFeesCharges?: {
+    FeeChargeCap?: {
+      CappingPeriod?: 'Day' | 'Half Year' | 'Month' | 'Quarter' | 'Week' | 'Year'
+      FeeCapAmount?: string
+      FeeCapOccurrence?: number
+      FeeType: (
+        | 'Other'
+        | 'ServiceCAccountFee'
+        | 'ServiceCAccountFeeMonthly'
+        | 'ServiceCAccountFeeQuarterly'
+        | 'ServiceCFixedTariff'
+        | 'ServiceCBusiDepAccBreakage'
+        | 'ServiceCMinimumMonthlyFee'
+        | 'ServiceCOther'
+      )[]
+      MinMaxType: 'Minimum' | 'Maximum'
+      Notes?: string[]
+      OtherFeeType?: { Code?: string; Description: string; Name: string }[]
+    }[]
+    FeeChargeDetail: {
+      ApplicationFrequency:
+        | 'OnClosing'
+        | 'OnOpening'
+        | 'ChargingPeriod'
+        | 'Daily'
+        | 'PerItem'
+        | 'Monthly'
+        | 'OnAnniversary'
+        | 'Other'
+        | 'PerHundredPounds'
+        | 'PerHour'
+        | 'PerOccurrence'
+        | 'PerSheet'
+        | 'PerTransaction'
+        | 'PerTransactionAmount'
+        | 'PerTransactionPercentage'
+        | 'Quarterly'
+        | 'SixMonthly'
+        | 'StatementMonthly'
+        | 'Weekly'
+        | 'Yearly'
+      CalculationFrequency?:
+        | 'OnClosing'
+        | 'OnOpening'
+        | 'ChargingPeriod'
+        | 'Daily'
+        | 'PerItem'
+        | 'Monthly'
+        | 'OnAnniversary'
+        | 'Other'
+        | 'PerHundredPounds'
+        | 'PerHour'
+        | 'PerOccurrence'
+        | 'PerSheet'
+        | 'PerTransaction'
+        | 'PerTransactionAmount'
+        | 'PerTransactionPercentage'
+        | 'Quarterly'
+        | 'SixMonthly'
+        | 'StatementMonthly'
+        | 'Weekly'
+        | 'Yearly'
+      FeeAmount?: string
+      FeeApplicableRange?: {
+        MaximumAmount?: string
+        MaximumRate?: string
+        MinimumAmount?: string
+        MinimumRate?: string
+      }
+      FeeCategory: 'Other' | 'Servicing'
+      FeeChargeCap?: {
+        CappingPeriod?: 'Day' | 'Half Year' | 'Month' | 'Quarter' | 'Week' | 'Year'
+        FeeCapAmount?: string
+        FeeCapOccurrence?: number
+        FeeType: (
+          | 'Other'
+          | 'ServiceCAccountFee'
+          | 'ServiceCAccountFeeMonthly'
+          | 'ServiceCAccountFeeQuarterly'
+          | 'ServiceCFixedTariff'
+          | 'ServiceCBusiDepAccBreakage'
+          | 'ServiceCMinimumMonthlyFee'
+          | 'ServiceCOther'
+        )[]
+        MinMaxType: 'Minimum' | 'Maximum'
+        Notes?: string[]
+        OtherFeeType?: { Code?: string; Description: string; Name: string }[]
+      }[]
+      FeeRate?: string
+      FeeRateType?: 'Gross' | 'Other'
+      FeeType:
+        | 'Other'
+        | 'ServiceCAccountFee'
+        | 'ServiceCAccountFeeMonthly'
+        | 'ServiceCAccountFeeQuarterly'
+        | 'ServiceCFixedTariff'
+        | 'ServiceCBusiDepAccBreakage'
+        | 'ServiceCMinimumMonthlyFee'
+        | 'ServiceCOther'
+      NegotiableIndicator?: boolean
+      Notes?: string[]
+      OtherApplicationFrequency?: { Code?: string; Description: string; Name: string }
+      OtherCalculationFrequency?: { Code?: string; Description: string; Name: string }
+      OtherFeeCategoryType?: { Code?: string; Description: string; Name: string }
+      OtherFeeRateType?: { Code?: string; Description: string; Name: string }
+      OtherFeeType?: {
+        Code?: string
+        Description: string
+        FeeCategory: 'Other' | 'Servicing'
+        Name: string
+      }
+    }[]
+    OtherTariffType?: { Code?: string; Description: string; Name: string }
+    TariffName?: string
+    TariffType?: 'Electronic' | 'Mixed' | 'Other'
+  }[]
+  Overdraft?: {
+    Notes?: string[]
+    OverdraftTierBandSet: {
+      AuthorisedIndicator?: boolean
+      BufferAmount?: string
+      Identification?: string
+      Notes?: string[]
+      OverdraftFeesCharges?: {
+        OverdraftFeeChargeCap?: {
+          CappingPeriod?: 'Day' | 'Half Year' | 'Month' | 'Quarter' | 'Week' | 'Year'
+          FeeCapAmount?: string
+          FeeCapOccurrence?: number
+          FeeType: (
+            | 'ArrangedOverdraft'
+            | 'AnnualReview'
+            | 'EmergencyBorrowing'
+            | 'BorrowingItem'
+            | 'OverdraftRenewal'
+            | 'OverdraftSetup'
+            | 'Surcharge'
+            | 'TempOverdraft'
+            | 'UnauthorisedBorrowing'
+            | 'UnauthorisedPaidTrans'
+            | 'Other'
+            | 'UnauthorisedUnpaidTrans'
+          )[]
+          MinMaxType: 'Minimum' | 'Maximum'
+          Notes?: string[]
+          OtherFeeType?: { Code?: string; Description: string; Name: string }[]
+        }[]
+        OverdraftFeeChargeDetail: {
+          ApplicationFrequency:
+            | 'OnClosing'
+            | 'OnOpening'
+            | 'ChargingPeriod'
+            | 'Daily'
+            | 'PerItem'
+            | 'Monthly'
+            | 'OnAnniversary'
+            | 'Other'
+            | 'PerHundredPounds'
+            | 'PerHour'
+            | 'PerOccurrence'
+            | 'PerSheet'
+            | 'PerTransaction'
+            | 'PerTransactionAmount'
+            | 'PerTransactionPercentage'
+            | 'Quarterly'
+            | 'SixMonthly'
+            | 'StatementMonthly'
+            | 'Weekly'
+            | 'Yearly'
+          CalculationFrequency?:
+            | 'OnClosing'
+            | 'OnOpening'
+            | 'ChargingPeriod'
+            | 'Daily'
+            | 'PerItem'
+            | 'Monthly'
+            | 'OnAnniversary'
+            | 'Other'
+            | 'PerHundredPounds'
+            | 'PerHour'
+            | 'PerOccurrence'
+            | 'PerSheet'
+            | 'PerTransaction'
+            | 'PerTransactionAmount'
+            | 'PerTransactionPercentage'
+            | 'Quarterly'
+            | 'SixMonthly'
+            | 'StatementMonthly'
+            | 'Weekly'
+            | 'Yearly'
+          FeeAmount?: string
+          FeeRate?: string
+          FeeRateType?: 'Gross' | 'Other'
+          FeeType:
+            | 'ArrangedOverdraft'
+            | 'AnnualReview'
+            | 'EmergencyBorrowing'
+            | 'BorrowingItem'
+            | 'OverdraftRenewal'
+            | 'OverdraftSetup'
+            | 'Surcharge'
+            | 'TempOverdraft'
+            | 'UnauthorisedBorrowing'
+            | 'UnauthorisedPaidTrans'
+            | 'Other'
+            | 'UnauthorisedUnpaidTrans'
+          IncrementalBorrowingAmount?: string
+          NegotiableIndicator?: boolean
+          Notes?: string[]
+          OtherApplicationFrequency?: { Code?: string; Description: string; Name: string }
+          OtherCalculationFrequency?: { Code?: string; Description: string; Name: string }
+          OtherFeeRateType?: { Code?: string; Description: string; Name: string }
+          OtherFeeType?: { Code?: string; Description: string; Name: string }
+          OverdraftControlIndicator?: boolean
+          OverdraftFeeChargeCap?: {
+            CappingPeriod?: 'Day' | 'Half Year' | 'Month' | 'Quarter' | 'Week' | 'Year'
+            FeeCapAmount?: string
+            FeeCapOccurrence?: number
+            FeeType: (
+              | 'ArrangedOverdraft'
+              | 'AnnualReview'
+              | 'EmergencyBorrowing'
+              | 'BorrowingItem'
+              | 'OverdraftRenewal'
+              | 'OverdraftSetup'
+              | 'Surcharge'
+              | 'TempOverdraft'
+              | 'UnauthorisedBorrowing'
+              | 'UnauthorisedPaidTrans'
+              | 'Other'
+              | 'UnauthorisedUnpaidTrans'
+            )[]
+            MinMaxType: 'Minimum' | 'Maximum'
+            Notes?: string[]
+            OtherFeeType?: { Code?: string; Description: string; Name: string }[]
+          }[]
+        }[]
+      }[]
+      OverdraftTierBand: {
+        AgreementLengthMax?: number
+        AgreementLengthMin?: number
+        AgreementPeriod?: 'Day' | 'Half Year' | 'Month' | 'Quarter' | 'Week' | 'Year'
+        BankGuaranteedIndicator?: boolean
+        EAR?: string
+        Identification?: string
+        Notes?: string[]
+        OverdraftFeesCharges?: {
+          OverdraftFeeChargeCap?: {
+            CappingPeriod?: 'Day' | 'Half Year' | 'Month' | 'Quarter' | 'Week' | 'Year'
+            FeeCapAmount?: string
+            FeeCapOccurrence?: number
+            FeeType: (
+              | 'ArrangedOverdraft'
+              | 'AnnualReview'
+              | 'EmergencyBorrowing'
+              | 'BorrowingItem'
+              | 'OverdraftRenewal'
+              | 'OverdraftSetup'
+              | 'Surcharge'
+              | 'TempOverdraft'
+              | 'UnauthorisedBorrowing'
+              | 'UnauthorisedPaidTrans'
+              | 'Other'
+              | 'UnauthorisedUnpaidTrans'
+            )[]
+            MinMaxType: 'Minimum' | 'Maximum'
+            Notes?: string[]
+            OtherFeeType?: { Code?: string; Description: string; Name: string }[]
+          }[]
+          OverdraftFeeChargeDetail: {
+            ApplicationFrequency:
+              | 'OnClosing'
+              | 'OnOpening'
+              | 'ChargingPeriod'
+              | 'Daily'
+              | 'PerItem'
+              | 'Monthly'
+              | 'OnAnniversary'
+              | 'Other'
+              | 'PerHundredPounds'
+              | 'PerHour'
+              | 'PerOccurrence'
+              | 'PerSheet'
+              | 'PerTransaction'
+              | 'PerTransactionAmount'
+              | 'PerTransactionPercentage'
+              | 'Quarterly'
+              | 'SixMonthly'
+              | 'StatementMonthly'
+              | 'Weekly'
+              | 'Yearly'
+            CalculationFrequency?:
+              | 'OnClosing'
+              | 'OnOpening'
+              | 'ChargingPeriod'
+              | 'Daily'
+              | 'PerItem'
+              | 'Monthly'
+              | 'OnAnniversary'
+              | 'Other'
+              | 'PerHundredPounds'
+              | 'PerHour'
+              | 'PerOccurrence'
+              | 'PerSheet'
+              | 'PerTransaction'
+              | 'PerTransactionAmount'
+              | 'PerTransactionPercentage'
+              | 'Quarterly'
+              | 'SixMonthly'
+              | 'StatementMonthly'
+              | 'Weekly'
+              | 'Yearly'
+            FeeAmount?: string
+            FeeRate?: string
+            FeeRateType?: 'Gross' | 'Other'
+            FeeType:
+              | 'ArrangedOverdraft'
+              | 'AnnualReview'
+              | 'EmergencyBorrowing'
+              | 'BorrowingItem'
+              | 'OverdraftRenewal'
+              | 'OverdraftSetup'
+              | 'Surcharge'
+              | 'TempOverdraft'
+              | 'UnauthorisedBorrowing'
+              | 'UnauthorisedPaidTrans'
+              | 'Other'
+              | 'UnauthorisedUnpaidTrans'
+            IncrementalBorrowingAmount?: string
+            NegotiableIndicator?: boolean
+            Notes?: string[]
+            OtherApplicationFrequency?: { Code?: string; Description: string; Name: string }
+            OtherCalculationFrequency?: { Code?: string; Description: string; Name: string }
+            OtherFeeRateType?: { Code?: string; Description: string; Name: string }
+            OtherFeeType?: { Code?: string; Description: string; Name: string }
+            OverdraftControlIndicator?: boolean
+            OverdraftFeeChargeCap?: {
+              CappingPeriod?: 'Day' | 'Half Year' | 'Month' | 'Quarter' | 'Week' | 'Year'
+              FeeCapAmount?: string
+              FeeCapOccurrence?: number
+              FeeType: (
+                | 'ArrangedOverdraft'
+                | 'AnnualReview'
+                | 'EmergencyBorrowing'
+                | 'BorrowingItem'
+                | 'OverdraftRenewal'
+                | 'OverdraftSetup'
+                | 'Surcharge'
+                | 'TempOverdraft'
+                | 'UnauthorisedBorrowing'
+                | 'UnauthorisedPaidTrans'
+                | 'Other'
+                | 'UnauthorisedUnpaidTrans'
+              )[]
+              MinMaxType: 'Minimum' | 'Maximum'
+              Notes?: string[]
+              OtherFeeType?: { Code?: string; Description: string; Name: string }[]
+            }[]
+          }[]
+        }[]
+        OverdraftInterestChargingCoverage?: 'Banded' | 'Tiered' | 'Whole'
+        RepresentativeAPR?: string
+        TierValueMax?: string
+        TierValueMin: string
+      }[]
+      OverdraftType?: 'Committed' | 'OnDemand'
+      TierBandMethod: 'Banded' | 'Tiered' | 'Whole'
+    }[]
+  }
+  ProductDetails?: {
+    FeeFreeLength?: number
+    FeeFreeLengthPeriod?: 'Day' | 'Half Year' | 'Month' | 'Quarter' | 'Week' | 'Year'
+    Notes?: string[]
+    Segment?: (
+      | 'ClientAccount'
+      | 'Standard'
+      | 'NonCommercialChaitiesClbSoc'
+      | 'NonCommercialPublicAuthGovt'
+      | 'Religious'
+      | 'SectorSpecific'
+      | 'Startup'
+      | 'Switcher'
+    )[]
+  }
+}
+
+type OBPCAData1Type = {
+  CreditInterest?: {
+    TierBandSet: {
+      CalculationMethod?: 'Compound' | 'SimpleInterest'
+      Destination?: 'PayAway' | 'SelfCredit'
+      Notes?: string[]
+      TierBand: {
+        AER: string
+        ApplicationFrequency:
+          | 'PerAcademicTerm'
+          | 'Daily'
+          | 'HalfYearly'
+          | 'Monthly'
+          | 'Other'
+          | 'Quarterly'
+          | 'PerStatementDate'
+          | 'Weekly'
+          | 'Yearly'
+        BankInterestRate?: string
+        BankInterestRateType?: 'LinkedBaseRate' | 'Gross' | 'Net' | 'Other'
+        CalculationFrequency?:
+          | 'PerAcademicTerm'
+          | 'Daily'
+          | 'HalfYearly'
+          | 'Monthly'
+          | 'Other'
+          | 'Quarterly'
+          | 'PerStatementDate'
+          | 'Weekly'
+          | 'Yearly'
+        DepositInterestAppliedCoverage?: 'Tiered' | 'Whole'
+        FixedVariableInterestRateType: 'Fixed' | 'Variable'
+        Identification?: string
+        Notes?: string[]
+        OtherApplicationFrequency?: { Code?: string; Description: string; Name: string }
+        OtherBankInterestType?: { Code?: string; Description: string; Name: string }
+        OtherCalculationFrequency?: { Code?: string; Description: string; Name: string }
+        TierValueMaximum?: string
+        TierValueMinimum: string
+      }[]
+      TierBandMethod: 'Tiered' | 'Whole'
+    }[]
+  }
+  OtherFeesCharges?: {
+    FeeChargeCap?: {
+      CappingPeriod?: 'AcademicTerm' | 'Day' | 'Half Year' | 'Month' | 'Quarter' | 'Week' | 'Year'
+      FeeCapAmount?: string
+      FeeCapOccurrence?: number
+      FeeType: ('ServiceCAccountFee' | 'ServiceCAccountFeeMonthly' | 'ServiceCOther' | 'Other')[]
+      MinMaxType: 'Minimum' | 'Maximum'
+      Notes?: string[]
+      OtherFeeType?: { Code?: string; Description: string; Name: string }[]
+    }[]
+    FeeChargeDetail: {
+      ApplicationFrequency:
+        | 'AccountClosing'
+        | 'AccountOpening'
+        | 'AcademicTerm'
+        | 'ChargingPeriod'
+        | 'Daily'
+        | 'PerItem'
+        | 'Monthly'
+        | 'OnAccountAnniversary'
+        | 'Other'
+        | 'PerHour'
+        | 'PerOccurrence'
+        | 'PerSheet'
+        | 'PerTransaction'
+        | 'PerTransactionAmount'
+        | 'PerTransactionPercentage'
+        | 'Quarterly'
+        | 'SixMonthly'
+        | 'StatementMonthly'
+        | 'Weekly'
+        | 'Yearly'
+      CalculationFrequency?:
+        | 'AccountClosing'
+        | 'AccountOpening'
+        | 'AcademicTerm'
+        | 'ChargingPeriod'
+        | 'Daily'
+        | 'PerItem'
+        | 'Monthly'
+        | 'OnAccountAnniversary'
+        | 'Other'
+        | 'PerHour'
+        | 'PerOccurrence'
+        | 'PerSheet'
+        | 'PerTransaction'
+        | 'PerTransactionAmount'
+        | 'PerTransactionPercentage'
+        | 'Quarterly'
+        | 'SixMonthly'
+        | 'StatementMonthly'
+        | 'Weekly'
+        | 'Yearly'
+      FeeAmount?: string
+      FeeApplicableRange?: {
+        MaximumAmount?: string
+        MaximumRate?: string
+        MinimumAmount?: string
+        MinimumRate?: string
+      }
+      FeeCategory: 'Other' | 'Servicing'
+      FeeChargeCap?: {
+        CappingPeriod?: 'AcademicTerm' | 'Day' | 'Half Year' | 'Month' | 'Quarter' | 'Week' | 'Year'
+        FeeCapAmount?: string
+        FeeCapOccurrence?: number
+        FeeType: ('ServiceCAccountFee' | 'ServiceCAccountFeeMonthly' | 'ServiceCOther' | 'Other')[]
+        MinMaxType: 'Minimum' | 'Maximum'
+        Notes?: string[]
+        OtherFeeType?: { Code?: string; Description: string; Name: string }[]
+      }[]
+      FeeRate?: string
+      FeeRateType?: 'LinkedBaseRate' | 'Gross' | 'Net' | 'Other'
+      FeeType: 'ServiceCAccountFee' | 'ServiceCAccountFeeMonthly' | 'ServiceCOther' | 'Other'
+      Notes?: string[]
+      OtherApplicationFrequency?: { Code?: string; Description: string; Name: string }
+      OtherCalculationFrequency?: { Code?: string; Description: string; Name: string }
+      OtherFeeCategoryType?: { Code?: string; Description: string; Name: string }
+      OtherFeeRateType?: { Code?: string; Description: string; Name: string }
+      OtherFeeType?: {
+        Code?: string
+        Description: string
+        FeeCategory: 'Other' | 'Servicing'
+        Name: string
+      }
+    }[]
+  }
+  Overdraft?: {
+    Notes?: string[]
+    OverdraftTierBandSet: {
+      AuthorisedIndicator?: boolean
+      BufferAmount?: string
+      Identification?: string
+      Notes?: string[]
+      OverdraftFeesCharges?: {
+        OverdraftFeeChargeCap?: {
+          CappingPeriod?:
+            | 'AcademicTerm'
+            | 'Day'
+            | 'Half Year'
+            | 'Month'
+            | 'Quarter'
+            | 'Week'
+            | 'Year'
+          FeeCapAmount?: string
+          FeeCapOccurrence?: number
+          FeeType: (
+            | 'ArrangedOverdraft'
+            | 'EmergencyBorrowing'
+            | 'BorrowingItem'
+            | 'OverdraftRenewal'
+            | 'AnnualReview'
+            | 'OverdraftSetup'
+            | 'Surcharge'
+            | 'TempOverdraft'
+            | 'UnauthorisedBorrowing'
+            | 'UnauthorisedPaidTrans'
+            | 'Other'
+            | 'UnauthorisedUnpaidTrans'
+          )[]
+          MinMaxType: 'Minimum' | 'Maximum'
+          Notes?: string[]
+          OtherFeeType?: { Code?: string; Description: string; Name: string }[]
+          OverdraftControlIndicator?: boolean
+        }[]
+        OverdraftFeeChargeDetail: {
+          ApplicationFrequency:
+            | 'AccountClosing'
+            | 'AccountOpening'
+            | 'AcademicTerm'
+            | 'ChargingPeriod'
+            | 'Daily'
+            | 'PerItem'
+            | 'Monthly'
+            | 'OnAccountAnniversary'
+            | 'Other'
+            | 'PerHour'
+            | 'PerOccurrence'
+            | 'PerSheet'
+            | 'PerTransaction'
+            | 'PerTransactionAmount'
+            | 'PerTransactionPercentage'
+            | 'Quarterly'
+            | 'SixMonthly'
+            | 'StatementMonthly'
+            | 'Weekly'
+            | 'Yearly'
+          CalculationFrequency?:
+            | 'AccountClosing'
+            | 'AccountOpening'
+            | 'AcademicTerm'
+            | 'ChargingPeriod'
+            | 'Daily'
+            | 'PerItem'
+            | 'Monthly'
+            | 'OnAccountAnniversary'
+            | 'Other'
+            | 'PerHour'
+            | 'PerOccurrence'
+            | 'PerSheet'
+            | 'PerTransaction'
+            | 'PerTransactionAmount'
+            | 'PerTransactionPercentage'
+            | 'Quarterly'
+            | 'SixMonthly'
+            | 'StatementMonthly'
+            | 'Weekly'
+            | 'Yearly'
+          FeeAmount?: string
+          FeeRate?: string
+          FeeRateType?: 'LinkedBaseRate' | 'Gross' | 'Net' | 'Other'
+          FeeType:
+            | 'ArrangedOverdraft'
+            | 'EmergencyBorrowing'
+            | 'BorrowingItem'
+            | 'OverdraftRenewal'
+            | 'AnnualReview'
+            | 'OverdraftSetup'
+            | 'Surcharge'
+            | 'TempOverdraft'
+            | 'UnauthorisedBorrowing'
+            | 'UnauthorisedPaidTrans'
+            | 'Other'
+            | 'UnauthorisedUnpaidTrans'
+          IncrementalBorrowingAmount?: string
+          Notes?: string[]
+          OtherApplicationFrequency?: { Code?: string; Description: string; Name: string }
+          OtherCalculationFrequency?: { Code?: string; Description: string; Name: string }
+          OtherFeeRateType?: { Code?: string; Description: string; Name: string }
+          OtherFeeType?: { Code?: string; Description: string; Name: string }
+          OverdraftControlIndicator?: boolean
+          OverdraftFeeChargeCap?: {
+            CappingPeriod?:
+              | 'AcademicTerm'
+              | 'Day'
+              | 'Half Year'
+              | 'Month'
+              | 'Quarter'
+              | 'Week'
+              | 'Year'
+            FeeCapAmount?: string
+            FeeCapOccurrence?: number
+            FeeType: (
+              | 'ArrangedOverdraft'
+              | 'EmergencyBorrowing'
+              | 'BorrowingItem'
+              | 'OverdraftRenewal'
+              | 'AnnualReview'
+              | 'OverdraftSetup'
+              | 'Surcharge'
+              | 'TempOverdraft'
+              | 'UnauthorisedBorrowing'
+              | 'UnauthorisedPaidTrans'
+              | 'Other'
+              | 'UnauthorisedUnpaidTrans'
+            )[]
+            MinMaxType: 'Minimum' | 'Maximum'
+            Notes?: string[]
+            OtherFeeType?: { Code?: string; Description: string; Name: string }[]
+            OverdraftControlIndicator?: boolean
+          }
+        }[]
+      }[]
+      OverdraftTierBand: {
+        BankGuaranteedIndicator?: boolean
+        EAR?: string
+        Identification?: string
+        Notes?: string[]
+        OverdraftFeesCharges?: {
+          OverdraftFeeChargeCap?: {
+            CappingPeriod?:
+              | 'AcademicTerm'
+              | 'Day'
+              | 'Half Year'
+              | 'Month'
+              | 'Quarter'
+              | 'Week'
+              | 'Year'
+            FeeCapAmount?: string
+            FeeCapOccurrence?: number
+            FeeType: (
+              | 'ArrangedOverdraft'
+              | 'EmergencyBorrowing'
+              | 'BorrowingItem'
+              | 'OverdraftRenewal'
+              | 'AnnualReview'
+              | 'OverdraftSetup'
+              | 'Surcharge'
+              | 'TempOverdraft'
+              | 'UnauthorisedBorrowing'
+              | 'UnauthorisedPaidTrans'
+              | 'Other'
+              | 'UnauthorisedUnpaidTrans'
+            )[]
+            MinMaxType: 'Minimum' | 'Maximum'
+            Notes?: string[]
+            OtherFeeType?: { Code?: string; Description: string; Name: string }[]
+            OverdraftControlIndicator?: boolean
+          }[]
+          OverdraftFeeChargeDetail: {
+            ApplicationFrequency:
+              | 'AccountClosing'
+              | 'AccountOpening'
+              | 'AcademicTerm'
+              | 'ChargingPeriod'
+              | 'Daily'
+              | 'PerItem'
+              | 'Monthly'
+              | 'OnAccountAnniversary'
+              | 'Other'
+              | 'PerHour'
+              | 'PerOccurrence'
+              | 'PerSheet'
+              | 'PerTransaction'
+              | 'PerTransactionAmount'
+              | 'PerTransactionPercentage'
+              | 'Quarterly'
+              | 'SixMonthly'
+              | 'StatementMonthly'
+              | 'Weekly'
+              | 'Yearly'
+            CalculationFrequency?:
+              | 'AccountClosing'
+              | 'AccountOpening'
+              | 'AcademicTerm'
+              | 'ChargingPeriod'
+              | 'Daily'
+              | 'PerItem'
+              | 'Monthly'
+              | 'OnAccountAnniversary'
+              | 'Other'
+              | 'PerHour'
+              | 'PerOccurrence'
+              | 'PerSheet'
+              | 'PerTransaction'
+              | 'PerTransactionAmount'
+              | 'PerTransactionPercentage'
+              | 'Quarterly'
+              | 'SixMonthly'
+              | 'StatementMonthly'
+              | 'Weekly'
+              | 'Yearly'
+            FeeAmount?: string
+            FeeRate?: string
+            FeeRateType?: 'LinkedBaseRate' | 'Gross' | 'Net' | 'Other'
+            FeeType:
+              | 'ArrangedOverdraft'
+              | 'EmergencyBorrowing'
+              | 'BorrowingItem'
+              | 'OverdraftRenewal'
+              | 'AnnualReview'
+              | 'OverdraftSetup'
+              | 'Surcharge'
+              | 'TempOverdraft'
+              | 'UnauthorisedBorrowing'
+              | 'UnauthorisedPaidTrans'
+              | 'Other'
+              | 'UnauthorisedUnpaidTrans'
+            IncrementalBorrowingAmount?: string
+            Notes?: string[]
+            OtherApplicationFrequency?: { Code?: string; Description: string; Name: string }
+            OtherCalculationFrequency?: { Code?: string; Description: string; Name: string }
+            OtherFeeRateType?: { Code?: string; Description: string; Name: string }
+            OtherFeeType?: { Code?: string; Description: string; Name: string }
+            OverdraftControlIndicator?: boolean
+            OverdraftFeeChargeCap?: {
+              CappingPeriod?:
+                | 'AcademicTerm'
+                | 'Day'
+                | 'Half Year'
+                | 'Month'
+                | 'Quarter'
+                | 'Week'
+                | 'Year'
+              FeeCapAmount?: string
+              FeeCapOccurrence?: number
+              FeeType: (
+                | 'ArrangedOverdraft'
+                | 'EmergencyBorrowing'
+                | 'BorrowingItem'
+                | 'OverdraftRenewal'
+                | 'AnnualReview'
+                | 'OverdraftSetup'
+                | 'Surcharge'
+                | 'TempOverdraft'
+                | 'UnauthorisedBorrowing'
+                | 'UnauthorisedPaidTrans'
+                | 'Other'
+                | 'UnauthorisedUnpaidTrans'
+              )[]
+              MinMaxType: 'Minimum' | 'Maximum'
+              Notes?: string[]
+              OtherFeeType?: { Code?: string; Description: string; Name: string }[]
+              OverdraftControlIndicator?: boolean
+            }
+          }[]
+        }[]
+        OverdraftInterestChargingCoverage?: 'Tiered' | 'Whole'
+        RepresentativeAPR?: string
+        TierValueMax?: string
+        TierValueMin: string
+      }[]
+      OverdraftType?: 'Committed' | 'OnDemand' | 'Other'
+      TierBandMethod: 'Tiered' | 'Whole' | 'Banded'
+    }[]
+  }
+  ProductDetails?: {
+    MonthlyMaximumCharge?: string
+    Notes?: string[]
+    Segment?: (
+      | 'Basic'
+      | 'BenefitAndReward'
+      | 'CreditInterest'
+      | 'Cashback'
+      | 'General'
+      | 'Graduate'
+      | 'Other'
+      | 'Overdraft'
+      | 'Packaged'
+      | 'Premium'
+      | 'Reward'
+      | 'Student'
+      | 'YoungAdult'
+      | 'Youth'
+    )[]
+  }
+}
+
 const AccountIdSchema = z
   .string()
   .min(1)
@@ -10,812 +866,7 @@ const AccountIdSchema = z
   })
   .openapi('AccountId')
 
-const ActiveOrHistoricCurrencyCode_0Schema = z
-  .string()
-  .regex(/^[A-Z]{3,3}$/)
-  .openapi({
-    description:
-      'Identification of the currency in which the account is held. \nUsage: Currency should only be used in case one and the same account number covers several currencies\nand the initiating party needs to identify which currency needs to be used for settlement on the account.',
-  })
-  .openapi('ActiveOrHistoricCurrencyCode_0')
-
-const ActiveOrHistoricCurrencyCode_1Schema = z
-  .string()
-  .regex(/^[A-Z]{3,3}$/)
-  .openapi({
-    description:
-      'A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds".',
-  })
-  .openapi('ActiveOrHistoricCurrencyCode_1')
-
-const AddressLineSchema = z
-  .string()
-  .min(1)
-  .max(70)
-  .openapi({
-    description:
-      'Information that locates and identifies a specific address for a transaction entry, that is presented in free format text.',
-  })
-  .openapi('AddressLine')
-
-const BeneficiaryIdSchema = z
-  .string()
-  .min(1)
-  .max(40)
-  .openapi({
-    description:
-      'A unique and immutable identifier used to identify the beneficiary resource. This identifier has no meaning to the account owner.',
-  })
-  .openapi('BeneficiaryId')
-
-const BookingDateTimeSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description:
-      "Date and time when a transaction entry is posted to an account on the account servicer's books.\nUsage: Booking date is the expected booking date, unless the status is booked, in which case it is the actual booking date.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
-  })
-  .openapi('BookingDateTime')
-
-const BuildingNumberSchema = z
-  .string()
-  .min(1)
-  .max(16)
-  .openapi({ description: 'Number that identifies the position of a building on a street.' })
-  .openapi('BuildingNumber')
-
-const CountryCodeSchema = z
-  .string()
-  .regex(/^[A-Z]{2,2}$/)
-  .openapi({ description: 'Nation with its own government, occupying a particular territory.' })
-  .openapi('CountryCode')
-
-const CountrySubDivisionSchema = z
-  .string()
-  .min(1)
-  .max(35)
-  .openapi({ description: 'Identifies a subdivision of a country eg, state, region, county.' })
-  .openapi('CountrySubDivision')
-
-const CreationDateTimeSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description:
-      'Date and time at which the resource was created.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
-  })
-  .openapi('CreationDateTime')
-
-const DateTimeSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description:
-      'Date and time associated with the date time type.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
-  })
-  .openapi('DateTime')
-
-const DebtorReferenceSchema = z
-  .string()
-  .min(1)
-  .max(35)
-  .openapi({
-    description:
-      'A reference value provided by the PSU to the PISP while setting up the scheduled payment.',
-  })
-  .openapi('DebtorReference')
-
-const Description_0Schema = z
-  .string()
-  .min(1)
-  .max(35)
-  .openapi({ description: 'Specifies the description of the account type.' })
-  .openapi('Description_0')
-
-const Description_1Schema = z
-  .string()
-  .min(1)
-  .max(128)
-  .openapi({ description: 'Description that may be available for the statement fee.' })
-  .openapi('Description_1')
-
-const Description_2Schema = z
-  .string()
-  .min(1)
-  .max(128)
-  .openapi({ description: 'Description that may be available for the statement interest.' })
-  .openapi('Description_2')
-
-const Description_3Schema = z
-  .string()
-  .min(1)
-  .max(350)
-  .openapi({ description: 'Description to describe the purpose of the code' })
-  .openapi('Description_3')
-
-const DirectDebitIdSchema = z
-  .string()
-  .min(1)
-  .max(40)
-  .openapi({
-    description:
-      'A unique and immutable identifier used to identify the direct debit resource. This identifier has no meaning to the account owner.',
-  })
-  .openapi('DirectDebitId')
-
-const EmailAddressSchema = z
-  .string()
-  .min(1)
-  .max(256)
-  .openapi({ description: 'Address for electronic mail (e-mail).' })
-  .openapi('EmailAddress')
-
-const EndDateTimeSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description:
-      'Date and time at which the statement period ends.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
-  })
-  .openapi('EndDateTime')
-
-const FileSchema = z.object({}).openapi('File')
-
-const FinalPaymentDateTimeSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description:
-      'The date on which the final payment for a Standing Order schedule will be made.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
-  })
-  .openapi('FinalPaymentDateTime')
-
-const FirstPaymentDateTimeSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description:
-      'The date on which the first payment for a Standing Order schedule will be made.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
-  })
-  .openapi('FirstPaymentDateTime')
-
-const Frequency_0Schema = z
-  .string()
-  .regex(
-    /^(EvryDay)$|^(EvryWorkgDay)$|^(IntrvlWkDay:0[1-9]:0[1-7])$|^(WkInMnthDay:0[1-5]:0[1-7])$|^(IntrvlMnthDay:(0[1-6]|12|24):(-0[1-5]|0[1-9]|[12][0-9]|3[01]))$|^(QtrDay:(ENGLISH|SCOTTISH|RECEIVED))$/,
-  )
-  .openapi({
-    description:
-      'Individual Definitions:\nEvryDay - Every day\nEvryWorkgDay - Every working day\nIntrvlWkDay - An interval specified in weeks (01 to 09), and the day within the week (01 to 07)\nWkInMnthDay - A monthly interval, specifying the week of the month (01 to 05) and day within the week (01 to 07)\nIntrvlMnthDay - An interval specified in months (between 01 to 06, 12, 24), specifying the day within the month (-5 to -1, 1 to 31)\nQtrDay - Quarterly (either ENGLISH, SCOTTISH, or RECEIVED)\nENGLISH = Paid on the 25th March, 24th June, 29th September and 25th December. \nSCOTTISH = Paid on the 2nd February, 15th May, 1st August and 11th November.\nRECEIVED = Paid on the 20th March, 19th June, 24th September and 20th December. \nIndividual Patterns:\nEvryDay (ScheduleCode)\nEvryWorkgDay (ScheduleCode)\nIntrvlWkDay:IntervalInWeeks:DayInWeek (ScheduleCode + IntervalInWeeks + DayInWeek)\nWkInMnthDay:WeekInMonth:DayInWeek (ScheduleCode + WeekInMonth + DayInWeek)\nIntrvlMnthDay:IntervalInMonths:DayInMonth (ScheduleCode + IntervalInMonths + DayInMonth)\nQtrDay: + either (ENGLISH, SCOTTISH or RECEIVED) ScheduleCode + QuarterDay\nThe regular expression for this element combines five smaller versions for each permitted pattern. To aid legibility - the components are presented individually here:\nEvryDay\nEvryWorkgDay\nIntrvlWkDay:0[1-9]:0[1-7]\nWkInMnthDay:0[1-5]:0[1-7]\nIntrvlMnthDay:(0[1-6]|12|24):(-0[1-5]|0[1-9]|[12][0-9]|3[01])\nQtrDay:(ENGLISH|SCOTTISH|RECEIVED)\nFull Regular Expression:\n^(EvryDay)$|^(EvryWorkgDay)$|^(IntrvlWkDay:0[1-9]:0[1-7])$|^(WkInMnthDay:0[1-5]:0[1-7])$|^(IntrvlMnthDay:(0[1-6]|12|24):(-0[1-5]|0[1-9]|[12][0-9]|3[01]))$|^(QtrDay:(ENGLISH|SCOTTISH|RECEIVED))$',
-  })
-  .openapi('Frequency_0')
-
-const Frequency_1Schema = z
-  .string()
-  .regex(
-    /^(NotKnown)$|^(EvryDay)$|^(EvryWorkgDay)$|^(IntrvlDay:((0[2-9])|([1-2][0-9])|3[0-1]))$|^(IntrvlWkDay:0[1-9]:0[1-7])$|^(WkInMnthDay:0[1-5]:0[1-7])$|^(IntrvlMnthDay:(0[1-6]|12|24):(-0[1-5]|0[1-9]|[12][0-9]|3[01]))$|^(QtrDay:(ENGLISH|SCOTTISH|RECEIVED))$/,
-  )
-  .openapi({
-    description:
-      'Individual Definitions:\nNotKnown - Not Known\nEvryDay - Every day\nEvryWorkgDay - Every working day\nIntrvlDay - An interval specified in number of calendar days (02 to 31)\nIntrvlWkDay - An interval specified in weeks (01 to 09), and the day within the week (01 to 07)\nWkInMnthDay - A monthly interval, specifying the week of the month (01 to 05) and day within the week (01 to 07)\nIntrvlMnthDay - An interval specified in months (between 01 to 06, 12, 24), specifying the day within the month (-05 to -01, 01 to 31)\nQtrDay - Quarterly (either ENGLISH, SCOTTISH, or RECEIVED)\nENGLISH = Paid on the 25th March, 24th June, 29th September and 25th December.\nSCOTTISH = Paid on the 2nd February, 15th May, 1st August and 11th November.\nRECEIVED = Paid on the 20th March, 19th June, 24th September and 20th December.\nIndividual Patterns:\nNotKnown (ScheduleCode)\nEvryDay (ScheduleCode)\nEvryWorkgDay (ScheduleCode)\nIntrvlDay:NoOfDay (ScheduleCode + NoOfDay)\nIntrvlWkDay:IntervalInWeeks:DayInWeek (ScheduleCode + IntervalInWeeks + DayInWeek)\nWkInMnthDay:WeekInMonth:DayInWeek (ScheduleCode + WeekInMonth + DayInWeek)\nIntrvlMnthDay:IntervalInMonths:DayInMonth (ScheduleCode + IntervalInMonths + DayInMonth)\nQtrDay: + either (ENGLISH, SCOTTISH or RECEIVED) ScheduleCode + QuarterDay\nThe regular expression for this element combines five smaller versions for each permitted pattern. To aid legibility - the components are presented individually here:\nNotKnown\nEvryDay\nEvryWorkgDay\nIntrvlDay:((0[2-9])|([1-2][0-9])|3[0-1])\nIntrvlWkDay:0[1-9]:0[1-7]\nWkInMnthDay:0[1-5]:0[1-7]\nIntrvlMnthDay:(0[1-6]|12|24):(-0[1-5]|0[1-9]|[12][0-9]|3[01])\nQtrDay:(ENGLISH|SCOTTISH|RECEIVED)\nFull Regular Expression:\n^(NotKnown)$|^(EvryDay)$|^(EvryWorkgDay)$|^(IntrvlDay:((0[2-9])|([1-2][0-9])|3[0-1]))$|^(IntrvlWkDay:0[1-9]:0[1-7])$|^(WkInMnthDay:0[1-5]:0[1-7])$|^(IntrvlMnthDay:(0[1-6]|12|24):(-0[1-5]|0[1-9]|[12][0-9]|3[01]))$|^(QtrDay:(ENGLISH|SCOTTISH|RECEIVED))$',
-  })
-  .openapi('Frequency_1')
-
-const FullLegalNameSchema = z
-  .string()
-  .min(1)
-  .max(350)
-  .openapi({ description: 'Specifies a character string with a maximum length of 350 characters.' })
-  .openapi('FullLegalName')
-
-const ISODateTimeSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description:
-      'All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
-  })
-  .openapi('ISODateTime')
-
-const Identification_0Schema = z
-  .string()
-  .min(1)
-  .max(256)
-  .openapi({
-    description:
-      'Identification assigned by an institution to identify an account. This identification is known by the account owner.',
-  })
-  .openapi('Identification_0')
-
-const Identification_1Schema = z
-  .string()
-  .min(1)
-  .max(35)
-  .openapi({ description: 'Unique and unambiguous identification of the servicing institution.' })
-  .openapi('Identification_1')
-
-const Identification_2Schema = z
-  .string()
-  .min(1)
-  .max(35)
-  .openapi({
-    description:
-      'Unique and unambiguous identification of a financial institution or a branch of a financial institution.',
-  })
-  .openapi('Identification_2')
-
-const LastPaymentDateTimeSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description:
-      'The date on which the last (most recent) payment for a Standing Order schedule was made.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
-  })
-  .openapi('LastPaymentDateTime')
-
-const LinksSchema = z
-  .strictObject({
-    First: z.url().exactOptional(),
-    Last: z.url().exactOptional(),
-    Next: z.url().exactOptional(),
-    Prev: z.url().exactOptional(),
-    Self: z.url(),
-  })
-  .openapi({ description: 'Links relevant to the payload', required: ['Self'] })
-  .openapi('Links')
-
-const MandateIdentificationSchema = z
-  .string()
-  .min(1)
-  .max(35)
-  .openapi({
-    description:
-      'Direct Debit reference. For AUDDIS service users provide Core Reference. For non AUDDIS service users provide Core reference if possible or last used reference.',
-  })
-  .openapi('MandateIdentification')
-
-const MaturityDateSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description:
-      'Maturity date of the account.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
-  })
-  .openapi('MaturityDate')
-
-const MetaSchema = z
-  .strictObject({
-    FirstAvailableDateTime: ISODateTimeSchema.exactOptional(),
-    LastAvailableDateTime: ISODateTimeSchema.exactOptional(),
-    TotalPages: z.int32().exactOptional(),
-  })
-  .openapi({ description: 'Meta Data relevant to the payload', title: 'MetaData', required: [] })
-  .openapi('Meta')
-
-const ModelSchema = z
-  .object({
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Model')
-
-const Name_0Schema = z
-  .string()
-  .min(1)
-  .max(350)
-  .openapi({
-    description:
-      "The account name is the name or names of the account owner(s) represented at an account level, as displayed by the ASPSP's online channels.\nNote, the account name is not the product name or the nickname of the account.",
-  })
-  .openapi('Name_0')
-
-const Name_1Schema = z
-  .string()
-  .min(1)
-  .max(140)
-  .openapi({
-    description:
-      'Name by which an agent is known and which is usually used to identify that agent.',
-  })
-  .openapi('Name_1')
-
-const Name_2Schema = z
-  .string()
-  .min(1)
-  .max(70)
-  .openapi({ description: 'Name of Service User.' })
-  .openapi('Name_2')
-
-const Name_3Schema = z
-  .string()
-  .min(1)
-  .max(350)
-  .openapi({
-    description: 'Name by which a party is known and which is usually used to identify that party.',
-  })
-  .openapi('Name_3')
-
-const Name_4Schema = z
-  .string()
-  .min(1)
-  .max(70)
-  .openapi({ description: 'Long name associated with the code' })
-  .openapi('Name_4')
-
-const NextPaymentDateTimeSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description:
-      'The date on which the next payment for a Standing Order schedule will be made.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
-  })
-  .openapi('NextPaymentDateTime')
-
-const NicknameSchema = z
-  .string()
-  .min(1)
-  .max(70)
-  .openapi({
-    description:
-      'The nickname of the account, assigned by the account owner in order to provide an additional means of identification of the account.',
-  })
-  .openapi('Nickname')
-
-const NumberOfPaymentsSchema = z
-  .string()
-  .min(1)
-  .max(35)
-  .openapi({
-    description:
-      'Number of the payments that will be made in completing this frequency sequence including any executed since the sequence start date.',
-  })
-  .openapi('NumberOfPayments')
-
-const Number_0Schema = z
-  .int()
-  .openapi({
-    description:
-      'Indicates whether the advertised overdraft rate is guaranteed to be offered to a borrower by the bank e.g. if it�s part of a government scheme, or whether the rate may vary dependent on the applicant�s circumstances.',
-  })
-  .openapi('Number_0')
-
-const Number_1Schema = z
-  .int()
-  .openapi({
-    description:
-      'fee/charges are captured dependent on the number of occurrences rather than capped at a particular amount',
-  })
-  .openapi('Number_1')
-
-const OBExternalAccountIdentification4CodeSchema = z
-  .string()
-  .openapi({
-    description:
-      'Name of the identification scheme, in a coded form as published in an external list.',
-    'x-namespaced-enum': [
-      'UK.OBIE.BBAN',
-      'UK.OBIE.IBAN',
-      'UK.OBIE.PAN',
-      'UK.OBIE.Paym',
-      'UK.OBIE.SortCodeAccountNumber',
-    ],
-  })
-  .openapi('OBExternalAccountIdentification4Code')
-
-const SecondaryIdentificationSchema = z
-  .string()
-  .min(1)
-  .max(34)
-  .openapi({
-    description:
-      'This is secondary identification of the account, as assigned by the account servicing institution. \nThis can be used by building societies to additionally identify accounts with a roll number (in addition to a sort code and account number combination).',
-  })
-  .openapi('SecondaryIdentification')
-
-const OBExternalAccountSubType1CodeSchema = z
-  .enum([
-    'ChargeCard',
-    'CreditCard',
-    'CurrentAccount',
-    'EMoney',
-    'Loan',
-    'Mortgage',
-    'PrePaidCard',
-    'Savings',
-  ])
-  .openapi({ description: 'Specifies the sub type of account (product family group).' })
-  .openapi('OBExternalAccountSubType1Code')
-
-const OBExternalAccountType1CodeSchema = z
-  .enum(['Business', 'Personal'])
-  .openapi({ description: 'Specifies the type of account (personal or business).' })
-  .openapi('OBExternalAccountType1Code')
-
-const OBExternalFinancialInstitutionIdentification4CodeSchema = z
-  .string()
-  .openapi({
-    description:
-      'Name of the identification scheme, in a coded form as published in an external list.',
-    'x-namespaced-enum': ['UK.OBIE.BICFI'],
-  })
-  .openapi('OBExternalFinancialInstitutionIdentification4Code')
-
-const OBBranchAndFinancialInstitutionIdentification5_0Schema = z
-  .object({
-    Identification: Identification_1Schema,
-    SchemeName: OBExternalFinancialInstitutionIdentification4CodeSchema,
-  })
-  .openapi({
-    description:
-      'Party that manages the account on behalf of the account owner, that is manages the registration and booking of entries on the account, calculates balances on the account and provides information about the account.',
-    required: ['SchemeName', 'Identification'],
-  })
-  .openapi('OBBranchAndFinancialInstitutionIdentification5_0')
-
-const OBAccountStatus1CodeSchema = z
-  .enum(['Deleted', 'Disabled', 'Enabled', 'Pending', 'ProForma'])
-  .openapi({ description: 'Specifies the status of account resource in code form.' })
-  .openapi('OBAccountStatus1Code')
-
-const StatusUpdateDateTimeSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description:
-      'Date and time at which the resource status was updated.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
-  })
-  .openapi('StatusUpdateDateTime')
-
-const OBAccount4Schema = z
-  .object({
-    Account: z
-      .array(
-        z
-          .object({
-            Identification: Identification_0Schema,
-            Name: Name_0Schema.exactOptional(),
-            SchemeName: OBExternalAccountIdentification4CodeSchema,
-            SecondaryIdentification: SecondaryIdentificationSchema.exactOptional(),
-          })
-          .openapi({
-            description: 'Provides the details to identify an account.',
-            required: ['SchemeName', 'Identification'],
-          }),
-      )
-      .exactOptional(),
-    AccountId: AccountIdSchema,
-    AccountSubType: OBExternalAccountSubType1CodeSchema,
-    AccountType: OBExternalAccountType1CodeSchema,
-    Currency: ActiveOrHistoricCurrencyCode_0Schema,
-    Description: Description_0Schema.exactOptional(),
-    Nickname: NicknameSchema.exactOptional(),
-    Servicer: OBBranchAndFinancialInstitutionIdentification5_0Schema.exactOptional(),
-    Status: OBAccountStatus1CodeSchema.exactOptional(),
-    StatusUpdateDateTime: StatusUpdateDateTimeSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Unambiguous identification of the account to which credit and debit entries are made.',
-    required: ['AccountId', 'Currency', 'AccountType', 'AccountSubType'],
-  })
-  .openapi('OBAccount4')
-
-const OBAccount4BasicSchema = z
-  .object({
-    AccountId: AccountIdSchema,
-    AccountSubType: OBExternalAccountSubType1CodeSchema,
-    AccountType: OBExternalAccountType1CodeSchema,
-    Currency: ActiveOrHistoricCurrencyCode_0Schema,
-    Description: Description_0Schema.exactOptional(),
-    Nickname: NicknameSchema.exactOptional(),
-    Status: OBAccountStatus1CodeSchema.exactOptional(),
-    StatusUpdateDateTime: StatusUpdateDateTimeSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Unambiguous identification of the account to which credit and debit entries are made.',
-    required: ['AccountId', 'Currency', 'AccountType', 'AccountSubType'],
-  })
-  .openapi('OBAccount4Basic')
-
-const OBAccount4DetailSchema = z
-  .object({
-    Account: z.array(
-      z
-        .object({
-          Identification: Identification_0Schema,
-          Name: Name_0Schema.exactOptional(),
-          SchemeName: OBExternalAccountIdentification4CodeSchema,
-          SecondaryIdentification: SecondaryIdentificationSchema.exactOptional(),
-        })
-        .openapi({
-          description: 'Provides the details to identify an account.',
-          required: ['SchemeName', 'Identification'],
-        }),
-    ),
-    AccountId: AccountIdSchema,
-    AccountSubType: OBExternalAccountSubType1CodeSchema,
-    AccountType: OBExternalAccountType1CodeSchema,
-    Currency: ActiveOrHistoricCurrencyCode_0Schema,
-    Description: Description_0Schema.exactOptional(),
-    Nickname: NicknameSchema.exactOptional(),
-    Servicer: OBBranchAndFinancialInstitutionIdentification5_0Schema.exactOptional(),
-    Status: OBAccountStatus1CodeSchema.exactOptional(),
-    StatusUpdateDateTime: StatusUpdateDateTimeSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Unambiguous identification of the account to which credit and debit entries are made.',
-    required: ['AccountId', 'Currency', 'AccountType', 'AccountSubType', 'Account'],
-  })
-  .openapi('OBAccount4Detail')
-
-const OpeningDateSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description:
-      'Date on which the account and related basic services are effectively operational for the account owner.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
-  })
-  .openapi('OpeningDate')
-
-const OBExternalSwitchStatusCodeSchema = z
-  .string()
-  .openapi({
-    description: 'Specifies the switch status for the account, in a coded form.',
-    'x-namespaced-enum': ['UK.CASS.NotSwitced', 'UK.CASS.SwitchCompleted'],
-  })
-  .openapi('OBExternalSwitchStatusCode')
-
-const OBAccount6Schema = z
-  .strictObject({
-    Account: z
-      .array(
-        z
-          .object({
-            Identification: Identification_0Schema,
-            Name: Name_0Schema.exactOptional(),
-            SchemeName: OBExternalAccountIdentification4CodeSchema,
-            SecondaryIdentification: SecondaryIdentificationSchema.exactOptional(),
-          })
-          .openapi({
-            description: 'Provides the details to identify an account.',
-            required: ['SchemeName', 'Identification'],
-          }),
-      )
-      .exactOptional(),
-    AccountId: AccountIdSchema,
-    AccountSubType: OBExternalAccountSubType1CodeSchema.exactOptional(),
-    AccountType: OBExternalAccountType1CodeSchema.exactOptional(),
-    Currency: ActiveOrHistoricCurrencyCode_0Schema.exactOptional(),
-    Description: Description_0Schema.exactOptional(),
-    MaturityDate: MaturityDateSchema.exactOptional(),
-    Nickname: NicknameSchema.exactOptional(),
-    OpeningDate: OpeningDateSchema.exactOptional(),
-    Servicer: OBBranchAndFinancialInstitutionIdentification5_0Schema.exactOptional(),
-    Status: OBAccountStatus1CodeSchema.exactOptional(),
-    StatusUpdateDateTime: StatusUpdateDateTimeSchema.exactOptional(),
-    SwitchStatus: OBExternalSwitchStatusCodeSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Unambiguous identification of the account to which credit and debit entries are made. The following fields are optional only for accounts that are switched:\n\n  * Data.Currency  \n  * Data.AccountType  \n  * Data.AccountSubType\n\nFor all other accounts, the fields must be populated by the ASPSP.',
-    required: ['AccountId'],
-  })
-  .openapi('OBAccount6')
-
-const OBAccount6BasicSchema = z
-  .strictObject({
-    AccountId: AccountIdSchema,
-    AccountSubType: OBExternalAccountSubType1CodeSchema,
-    AccountType: OBExternalAccountType1CodeSchema,
-    Currency: ActiveOrHistoricCurrencyCode_0Schema,
-    Description: Description_0Schema.exactOptional(),
-    MaturityDate: MaturityDateSchema.exactOptional(),
-    Nickname: NicknameSchema.exactOptional(),
-    OpeningDate: OpeningDateSchema.exactOptional(),
-    Status: OBAccountStatus1CodeSchema.exactOptional(),
-    StatusUpdateDateTime: StatusUpdateDateTimeSchema.exactOptional(),
-    SwitchStatus: OBExternalSwitchStatusCodeSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Unambiguous identification of the account to which credit and debit entries are made.',
-    required: ['AccountId', 'Currency', 'AccountType', 'AccountSubType'],
-  })
-  .openapi('OBAccount6Basic')
-
-const OBAccount6DetailSchema = z
-  .strictObject({
-    Account: z.array(
-      z
-        .object({
-          Identification: Identification_0Schema,
-          Name: Name_0Schema.exactOptional(),
-          SchemeName: OBExternalAccountIdentification4CodeSchema,
-          SecondaryIdentification: SecondaryIdentificationSchema.exactOptional(),
-        })
-        .openapi({
-          description: 'Provides the details to identify an account.',
-          required: ['SchemeName', 'Identification'],
-        }),
-    ),
-    AccountId: AccountIdSchema,
-    AccountSubType: OBExternalAccountSubType1CodeSchema,
-    AccountType: OBExternalAccountType1CodeSchema,
-    Currency: ActiveOrHistoricCurrencyCode_0Schema,
-    Description: Description_0Schema.exactOptional(),
-    MaturityDate: MaturityDateSchema.exactOptional(),
-    Nickname: NicknameSchema.exactOptional(),
-    OpeningDate: OpeningDateSchema.exactOptional(),
-    Servicer: OBBranchAndFinancialInstitutionIdentification5_0Schema.exactOptional(),
-    Status: OBAccountStatus1CodeSchema.exactOptional(),
-    StatusUpdateDateTime: StatusUpdateDateTimeSchema.exactOptional(),
-    SwitchStatus: OBExternalSwitchStatusCodeSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Unambiguous identification of the account to which credit and debit entries are made.',
-    required: ['AccountId', 'Currency', 'AccountType', 'AccountSubType', 'Account'],
-  })
-  .openapi('OBAccount6Detail')
-
-const OBActiveCurrencyAndAmountSimpleTypeSchema = z
-  .string()
-  .regex(/^\d{1,13}$|^\d{1,13}\.\d{1,5}$/)
-  .openapi({
-    description:
-      'A number of monetary units specified in an active currency where the unit of currency is explicit and compliant with ISO 4217.',
-  })
-  .openapi('OBActiveCurrencyAndAmountSimpleType')
-
-const OBActiveOrHistoricCurrencyAndAmount_0Schema = z
-  .object({
-    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
-    Currency: ActiveOrHistoricCurrencyCode_1Schema,
-  })
-  .openapi({
-    description: 'The amount of the most recent direct debit collection.',
-    required: ['Amount', 'Currency'],
-  })
-  .openapi('OBActiveOrHistoricCurrencyAndAmount_0')
-
-const OBActiveOrHistoricCurrencyAndAmount_1Schema = z
-  .object({
-    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
-    Currency: ActiveOrHistoricCurrencyCode_1Schema,
-  })
-  .openapi({
-    description:
-      'Amount of money to be moved between the debtor and creditor, before deduction of charges, expressed in the currency as ordered by the initiating party.\nUsage: This amount has to be transported unchanged through the transaction chain.',
-    required: ['Amount', 'Currency'],
-  })
-  .openapi('OBActiveOrHistoricCurrencyAndAmount_1')
-
-const OBActiveOrHistoricCurrencyAndAmount_10Schema = z
-  .object({
-    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
-    Currency: ActiveOrHistoricCurrencyCode_1Schema,
-  })
-  .openapi({
-    description: 'Transaction charges to be paid by the charge bearer.',
-    required: ['Amount', 'Currency'],
-  })
-  .openapi('OBActiveOrHistoricCurrencyAndAmount_10')
-
-const OBActiveOrHistoricCurrencyAndAmount_11Schema = z
-  .object({
-    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
-    Currency: ActiveOrHistoricCurrencyCode_1Schema,
-  })
-  .openapi({
-    description: 'The amount of the last (most recent) Standing Order instruction.',
-    required: ['Amount', 'Currency'],
-  })
-  .openapi('OBActiveOrHistoricCurrencyAndAmount_11')
-
-const OBActiveOrHistoricCurrencyAndAmount_2Schema = z
-  .object({
-    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
-    Currency: ActiveOrHistoricCurrencyCode_1Schema,
-  })
-  .openapi({
-    description: 'The amount of the first Standing Order',
-    required: ['Amount', 'Currency'],
-  })
-  .openapi('OBActiveOrHistoricCurrencyAndAmount_2')
-
-const OBActiveOrHistoricCurrencyAndAmount_3Schema = z
-  .object({
-    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
-    Currency: ActiveOrHistoricCurrencyCode_1Schema,
-  })
-  .openapi({
-    description: 'The amount of the next Standing Order.',
-    required: ['Amount', 'Currency'],
-  })
-  .openapi('OBActiveOrHistoricCurrencyAndAmount_3')
-
-const OBActiveOrHistoricCurrencyAndAmount_4Schema = z
-  .object({
-    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
-    Currency: ActiveOrHistoricCurrencyCode_1Schema,
-  })
-  .openapi({
-    description: 'The amount of the final Standing Order',
-    required: ['Amount', 'Currency'],
-  })
-  .openapi('OBActiveOrHistoricCurrencyAndAmount_4')
-
-const OBActiveOrHistoricCurrencyAndAmount_5Schema = z
-  .object({
-    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
-    Currency: ActiveOrHistoricCurrencyCode_1Schema,
-  })
-  .openapi({
-    description: 'Amount of money associated with the statement benefit type.',
-    required: ['Amount', 'Currency'],
-  })
-  .openapi('OBActiveOrHistoricCurrencyAndAmount_5')
-
-const OBActiveOrHistoricCurrencyAndAmount_6Schema = z
-  .object({
-    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
-    Currency: ActiveOrHistoricCurrencyCode_1Schema,
-  })
-  .openapi({
-    description: 'Amount of money associated with the statement fee type.',
-    required: ['Amount', 'Currency'],
-  })
-  .openapi('OBActiveOrHistoricCurrencyAndAmount_6')
-
-const OBActiveOrHistoricCurrencyAndAmount_7Schema = z
-  .object({
-    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
-    Currency: ActiveOrHistoricCurrencyCode_1Schema,
-  })
-  .openapi({
-    description: 'Amount of money associated with the statement interest amount type.',
-    required: ['Amount', 'Currency'],
-  })
-  .openapi('OBActiveOrHistoricCurrencyAndAmount_7')
-
-const OBActiveOrHistoricCurrencyAndAmount_8Schema = z
-  .object({
-    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
-    Currency: ActiveOrHistoricCurrencyCode_1Schema,
-  })
-  .openapi({
-    description: 'Amount of money associated with the amount type.',
-    required: ['Amount', 'Currency'],
-  })
-  .openapi('OBActiveOrHistoricCurrencyAndAmount_8')
-
-const OBActiveOrHistoricCurrencyAndAmount_9Schema = z
-  .object({
-    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
-    Currency: ActiveOrHistoricCurrencyCode_1Schema,
-  })
-  .openapi({
-    description: 'Amount of money in the cash transaction entry.',
-    required: ['Amount', 'Currency'],
-  })
-  .openapi('OBActiveOrHistoricCurrencyAndAmount_9')
-
-const OBAddressTypeCodeSchema = z
-  .enum([
-    'Business',
-    'Correspondence',
-    'DeliveryTo',
-    'MailTo',
-    'POBox',
-    'Postal',
-    'Residential',
-    'Statement',
-  ])
-  .openapi({ description: 'Identifies the nature of the postal address.' })
-  .openapi('OBAddressTypeCode')
-
-const OBBCAData1Schema = z
+const OBBCAData1Schema: z.ZodType<OBBCAData1Type> = z
   .strictObject({
     CreditInterest: z
       .strictObject({
@@ -3212,164 +3263,418 @@ const OBBCAData1Schema = z
   .openapi({ title: 'BCA', required: [] })
   .openapi('OBBCAData1')
 
-const OBBalanceType1CodeSchema = z
-  .enum([
-    'ClosingAvailable',
-    'ClosingBooked',
-    'ClosingCleared',
-    'Expected',
-    'ForwardAvailable',
-    'Information',
-    'InterimAvailable',
-    'InterimBooked',
-    'InterimCleared',
-    'OpeningAvailable',
-    'OpeningBooked',
-    'OpeningCleared',
-    'PreviouslyClosedBooked',
-  ])
-  .openapi({ description: 'Balance type, in a coded form.' })
-  .openapi('OBBalanceType1Code')
+const OBInterestCalculationMethod1CodeSchema = z
+  .enum(['ITCO', 'ITOT', 'ITSI'])
+  .openapi({ description: 'Methods of calculating interest' })
+  .openapi('OBInterestCalculationMethod1Code')
 
-const OBBankTransactionCodeStructure1Schema = z
-  .object({
-    Code: z.string().openapi({ description: 'Specifies the family within a domain.' }),
-    SubCode: z
-      .string()
-      .openapi({ description: 'Specifies the sub-product family within a specific family.' }),
-  })
-  .openapi({
-    description:
-      'Set of elements used to fully identify the type of underlying transaction resulting in an entry.',
-    required: ['Code', 'SubCode'],
-  })
-  .openapi('OBBankTransactionCodeStructure1')
+const OBCodeMnemonicSchema = z
+  .string()
+  .regex(/^\\w{0,4}$/)
+  .openapi({ description: 'The four letter Mnemonic used within an XML file to identify a code' })
+  .openapi('OBCodeMnemonic')
 
-const OBBeneficiaryType1CodeSchema = z
-  .enum(['Trusted', 'Ordinary'])
-  .openapi({ description: 'Specifies the Beneficiary Type.' })
-  .openapi('OBBeneficiaryType1Code')
-
-const OBCashAccount5_0Schema = z
-  .object({
-    Identification: Identification_0Schema,
-    Name: Name_0Schema.exactOptional(),
-    SchemeName: OBExternalAccountIdentification4CodeSchema,
-    SecondaryIdentification: SecondaryIdentificationSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Provides the details to identify the beneficiary account.',
-    required: ['SchemeName', 'Identification'],
-  })
-  .openapi('OBCashAccount5_0')
-
-const PostCodeSchema = z
+const Description_3Schema = z
   .string()
   .min(1)
-  .max(16)
-  .openapi({
-    description:
-      'Identifier consisting of a group of letters and/or numbers that is added to a postal address to assist the sorting of mail.',
-  })
-  .openapi('PostCode')
+  .max(350)
+  .openapi({ description: 'Description to describe the purpose of the code' })
+  .openapi('Description_3')
 
-const StreetNameSchema = z
+const Name_4Schema = z
   .string()
   .min(1)
   .max(70)
-  .openapi({ description: 'Name of a street or thoroughfare.' })
-  .openapi('StreetName')
+  .openapi({ description: 'Long name associated with the code' })
+  .openapi('Name_4')
 
-const TownNameSchema = z
+const OBOtherCodeType1_0Schema = z
+  .strictObject({
+    Code: OBCodeMnemonicSchema.exactOptional(),
+    Description: Description_3Schema,
+    Name: Name_4Schema,
+  })
+  .openapi({ required: ['Name', 'Description'] })
+  .openapi('OBOtherCodeType1_0')
+
+const OBInterestFixedVariableType1CodeSchema = z
+  .enum(['INFI', 'INVA'])
+  .openapi({ description: 'Type of interest rate, Fixed or Variable' })
+  .openapi('OBInterestFixedVariableType1Code')
+
+const OBOtherCodeType1_1Schema = z
+  .strictObject({
+    Code: OBCodeMnemonicSchema.exactOptional(),
+    Description: Description_3Schema,
+    Name: Name_4Schema,
+  })
+  .openapi({
+    description: 'Other application frequencies that are not available in the standard code list',
+    required: ['Name', 'Description'],
+  })
+  .openapi('OBOtherCodeType1_1')
+
+const OBOtherCodeType1_2Schema = z
+  .strictObject({
+    Code: OBCodeMnemonicSchema.exactOptional(),
+    Description: Description_3Schema,
+    Name: Name_4Schema,
+  })
+  .openapi({
+    description: 'Other calculation frequency which is not available in the standard code set.',
+    required: ['Name', 'Description'],
+  })
+  .openapi('OBOtherCodeType1_2')
+
+const OBFeeFrequency1Code_4Schema = z
+  .enum([
+    'FEAC',
+    'FEAO',
+    'FECP',
+    'FEDA',
+    'FEHO',
+    'FEI',
+    'FEMO',
+    'FEOA',
+    'FEOT',
+    'FEPC',
+    'FEPH',
+    'FEPO',
+    'FEPS',
+    'FEPT',
+    'FEPTA',
+    'FEPTP',
+    'FEQU',
+    'FESM',
+    'FEST',
+    'FEWE',
+    'FEYE',
+  ])
+  .openapi({ description: 'Period e.g. day, week, month etc. for which the fee/charge is capped' })
+  .openapi('OBFeeFrequency1Code_4')
+
+const OBAmount1_4Schema = z
   .string()
-  .min(1)
-  .max(35)
-  .openapi({
-    description: 'Name of a built-up area, with defined boundaries, and a local government.',
-  })
-  .openapi('TownName')
-
-const OBPostalAddress6Schema = z
-  .object({
-    AddressLine: z
-      .array(
-        z
-          .string()
-          .min(1)
-          .max(70)
-          .openapi({
-            description:
-              'Information that locates and identifies a specific address, as defined by postal services, presented in free format text.',
-          }),
-      )
-      .min(0)
-      .max(7)
-      .exactOptional(),
-    AddressType: OBAddressTypeCodeSchema.exactOptional(),
-    BuildingNumber: BuildingNumberSchema.exactOptional(),
-    Country: z
-      .string()
-      .regex(/^[A-Z]{2,2}$/)
-      .exactOptional()
-      .openapi({ description: 'Nation with its own government.' }),
-    CountrySubDivision: z
-      .string()
-      .min(1)
-      .max(35)
-      .exactOptional()
-      .openapi({
-        description: 'Identifies a subdivision of a country such as state, region, county.',
-      }),
-    Department: z
-      .string()
-      .min(1)
-      .max(70)
-      .exactOptional()
-      .openapi({
-        description: 'Identification of a division of a large organisation or building.',
-      }),
-    PostCode: PostCodeSchema.exactOptional(),
-    StreetName: StreetNameSchema.exactOptional(),
-    SubDepartment: z
-      .string()
-      .min(1)
-      .max(70)
-      .exactOptional()
-      .openapi({
-        description: 'Identification of a sub-division of a large organisation or building.',
-      }),
-    TownName: TownNameSchema.exactOptional(),
-  })
+  .regex(/^(-?\d{1,14}){1}(\.\d{1,4}){0,1}$/)
   .openapi({
     description:
-      'Information that locates and identifies a specific address, as defined by postal services.',
-    required: [],
+      'Cap amount charged for a fee/charge (where it is charged in terms of an amount rather than a rate)',
   })
-  .openapi('OBPostalAddress6')
+  .openapi('OBAmount1_4')
 
-const OBBranchAndFinancialInstitutionIdentification6_0Schema = z
-  .object({
-    Identification: Identification_1Schema.exactOptional(),
-    Name: Name_1Schema.exactOptional(),
-    PostalAddress: OBPostalAddress6Schema.exactOptional(),
-    SchemeName: OBExternalFinancialInstitutionIdentification4CodeSchema.exactOptional(),
-  })
+const Number_1Schema = z
+  .int()
   .openapi({
     description:
-      'Party that manages the account on behalf of the account owner, that is manages the registration and booking of entries on the account, calculates balances on the account and provides information about the account.\nThis is the servicer of the beneficiary account.',
-    required: [],
+      'fee/charges are captured dependent on the number of occurrences rather than capped at a particular amount',
   })
-  .openapi('OBBranchAndFinancialInstitutionIdentification6_0')
+  .openapi('Number_1')
 
-const ReferenceSchema = z
+const OBMinMaxType1CodeSchema = z
+  .enum(['FMMN', 'FMMX'])
+  .openapi({ description: 'Min Max type' })
+  .openapi('OBMinMaxType1Code')
+
+const OBFeeFrequency1Code_2Schema = z
+  .enum([
+    'FEAC',
+    'FEAO',
+    'FECP',
+    'FEDA',
+    'FEHO',
+    'FEI',
+    'FEMO',
+    'FEOA',
+    'FEOT',
+    'FEPC',
+    'FEPH',
+    'FEPO',
+    'FEPS',
+    'FEPT',
+    'FEPTA',
+    'FEPTP',
+    'FEQU',
+    'FESM',
+    'FEST',
+    'FEWE',
+    'FEYE',
+  ])
+  .openapi({ description: 'How frequently the fee/charge is applied to the account' })
+  .openapi('OBFeeFrequency1Code_2')
+
+const OBFeeFrequency1Code_3Schema = z
+  .enum([
+    'FEAC',
+    'FEAO',
+    'FECP',
+    'FEDA',
+    'FEHO',
+    'FEI',
+    'FEMO',
+    'FEOA',
+    'FEOT',
+    'FEPC',
+    'FEPH',
+    'FEPO',
+    'FEPS',
+    'FEPT',
+    'FEPTA',
+    'FEPTP',
+    'FEQU',
+    'FESM',
+    'FEST',
+    'FEWE',
+    'FEYE',
+  ])
+  .openapi({ description: 'How frequently the fee/charge is calculated' })
+  .openapi('OBFeeFrequency1Code_3')
+
+const OBAmount1_3Schema = z
   .string()
-  .min(1)
-  .max(35)
+  .regex(/^(-?\d{1,14}){1}(\.\d{1,4}){0,1}$/)
   .openapi({
     description:
-      "Unique reference, as assigned by the creditor, to unambiguously refer to the payment transaction.\nUsage: If available, the initiating party should provide this reference in the structured remittance information, to enable reconciliation by the creditor upon receipt of the amount of money.\nIf the business context requires the use of a creditor reference or a payment remit identification, and only one identifier can be passed through the end-to-end chain, the creditor's reference or payment remittance identification should be quoted in the end-to-end transaction identification.",
+      'Fee Amount charged for a fee/charge (where it is charged in terms of an amount rather than a rate)',
   })
-  .openapi('Reference')
+  .openapi('OBAmount1_3')
+
+const OBRate1_12Schema = z
+  .string()
+  .regex(/^(-?\d{1,3}){1}(\.\d{1,4}){0,1}$/)
+  .openapi({
+    description:
+      'Rate charged for Fee/Charge (where it is charged in terms of a rate rather than an amount)',
+  })
+  .openapi('OBRate1_12')
+
+const OBInterestRateType1Code_1Schema = z
+  .enum(['INBB', 'INFR', 'INGR', 'INLR', 'INNE', 'INOT'])
+  .openapi({
+    description:
+      'Rate type for Fee/Charge (where it is charged in terms of a rate rather than an amount)',
+  })
+  .openapi('OBInterestRateType1Code_1')
+
+const OBFeeType1CodeSchema = z
+  .enum(['FEPF', 'FTOT', 'FYAF', 'FYAM', 'FYAQ', 'FYCP', 'FYDB', 'FYMI', 'FYXX'])
+  .openapi({ description: 'Fee/Charge Type' })
+  .openapi('OBFeeType1Code')
+
+const OBOtherCodeType1_6Schema = z
+  .strictObject({
+    Code: OBCodeMnemonicSchema.exactOptional(),
+    Description: Description_3Schema,
+    Name: Name_4Schema,
+  })
+  .openapi({
+    description: 'Other application frequencies not covered in the standard code list',
+    required: ['Name', 'Description'],
+  })
+  .openapi('OBOtherCodeType1_6')
+
+const OBOtherCodeType1_7Schema = z
+  .strictObject({
+    Code: OBCodeMnemonicSchema.exactOptional(),
+    Description: Description_3Schema,
+    Name: Name_4Schema,
+  })
+  .openapi({
+    description: 'Other calculation frequency which is not available in standard code set.',
+    required: ['Name', 'Description'],
+  })
+  .openapi('OBOtherCodeType1_7')
+
+const OBOtherCodeType1_5Schema = z
+  .strictObject({
+    Code: OBCodeMnemonicSchema.exactOptional(),
+    Description: Description_3Schema,
+    Name: Name_4Schema,
+  })
+  .openapi({
+    description: 'Other fee rate type which is not in the standard rate type list',
+    required: ['Name', 'Description'],
+  })
+  .openapi('OBOtherCodeType1_5')
+
+const OBFeeCategory1CodeSchema = z
+  .enum(['FCOT', 'FCRE', 'FCSV'])
+  .openapi({ description: 'Categorisation of fees and charges into standard categories.' })
+  .openapi('OBFeeCategory1Code')
+
+const OBOtherFeeChargeDetailTypeSchema = z
+  .strictObject({
+    Code: OBCodeMnemonicSchema.exactOptional(),
+    Description: Description_3Schema,
+    FeeCategory: OBFeeCategory1CodeSchema,
+    Name: Name_4Schema,
+  })
+  .openapi({
+    description: 'Other Fee/charge type which is not available in the standard code set',
+    required: ['FeeCategory', 'Name', 'Description'],
+  })
+  .openapi('OBOtherFeeChargeDetailType')
+
+const OBPeriod1CodeSchema = z
+  .enum(['PACT', 'PDAY', 'PHYR', 'PMTH', 'PQTR', 'PWEK', 'PYER'])
+  .openapi({ description: 'Period e.g. day, week, month etc. for which the fee/charge is capped' })
+  .openapi('OBPeriod1Code')
+
+const OBOtherCodeType1_8Schema = z
+  .strictObject({
+    Code: OBCodeMnemonicSchema.exactOptional(),
+    Description: Description_3Schema,
+    Name: Name_4Schema,
+  })
+  .openapi({
+    description: 'Other fee rate type which is not available in the standard code set',
+    required: ['Name', 'Description'],
+  })
+  .openapi('OBOtherCodeType1_8')
+
+const OBAmount1_0Schema = z
+  .string()
+  .regex(/^(-?\d{1,14}){1}(\.\d{1,4}){0,1}$/)
+  .openapi({ description: 'Cap amount charged for a fee/charge' })
+  .openapi('OBAmount1_0')
+
+const Number_0Schema = z
+  .int()
+  .openapi({
+    description:
+      'Indicates whether the advertised overdraft rate is guaranteed to be offered to a borrower by the bank e.g. if it�s part of a government scheme, or whether the rate may vary dependent on the applicant�s circumstances.',
+  })
+  .openapi('Number_0')
+
+const OBFeeFrequency1Code_0Schema = z
+  .enum([
+    'FEAC',
+    'FEAO',
+    'FECP',
+    'FEDA',
+    'FEHO',
+    'FEI',
+    'FEMO',
+    'FEOA',
+    'FEOT',
+    'FEPC',
+    'FEPH',
+    'FEPO',
+    'FEPS',
+    'FEPT',
+    'FEPTA',
+    'FEPTP',
+    'FEQU',
+    'FESM',
+    'FEST',
+    'FEWE',
+    'FEYE',
+  ])
+  .openapi({ description: 'Frequency at which the overdraft charge is applied to the account' })
+  .openapi('OBFeeFrequency1Code_0')
+
+const OBFeeFrequency1Code_1Schema = z
+  .enum([
+    'FEAC',
+    'FEAO',
+    'FECP',
+    'FEDA',
+    'FEHO',
+    'FEI',
+    'FEMO',
+    'FEOA',
+    'FEOT',
+    'FEPC',
+    'FEPH',
+    'FEPO',
+    'FEPS',
+    'FEPT',
+    'FEPTA',
+    'FEPTP',
+    'FEQU',
+    'FESM',
+    'FEST',
+    'FEWE',
+    'FEYE',
+  ])
+  .openapi({ description: 'How often is the overdraft fee/charge calculated for the account.' })
+  .openapi('OBFeeFrequency1Code_1')
+
+const OBAmount1_2Schema = z
+  .string()
+  .regex(/^(-?\d{1,14}){1}(\.\d{1,4}){0,1}$/)
+  .openapi({
+    description:
+      'Amount charged for an overdraft fee/charge (where it is charged in terms of an amount rather than a rate)',
+  })
+  .openapi('OBAmount1_2')
+
+const OBRate1_02Schema = z
+  .string()
+  .regex(/^(-?\d{1,3}){1}(\.\d{1,4}){0,1}$/)
+  .openapi({
+    description:
+      'Rate charged for overdraft fee/charge (where it is charged in terms of a rate rather than an amount)',
+  })
+  .openapi('OBRate1_02')
+
+const OBInterestRateType1Code_0Schema = z
+  .enum(['INBB', 'INFR', 'INGR', 'INLR', 'INNE', 'INOT'])
+  .openapi({
+    description:
+      'Rate type for overdraft fee/charge (where it is charged in terms of a rate rather than an amount)',
+  })
+  .openapi('OBInterestRateType1Code_0')
+
+const OBOverdraftFeeType1CodeSchema = z
+  .enum([
+    'FBAO',
+    'FBAR',
+    'FBEB',
+    'FBIT',
+    'FBOR',
+    'FBOS',
+    'FBSC',
+    'FBTO',
+    'FBUB',
+    'FBUT',
+    'FTOT',
+    'FTUT',
+  ])
+  .openapi({ description: 'Overdraft fee type' })
+  .openapi('OBOverdraftFeeType1Code')
+
+const OBAmount1_1Schema = z
+  .string()
+  .regex(/^(-?\d{1,14}){1}(\.\d{1,4}){0,1}$/)
+  .openapi({
+    description:
+      'Every additional tranche of an overdraft balance to which an overdraft fee is applied',
+  })
+  .openapi('OBAmount1_1')
+
+const OBOtherCodeType1_4Schema = z
+  .strictObject({
+    Code: OBCodeMnemonicSchema.exactOptional(),
+    Description: Description_3Schema,
+    Name: Name_4Schema,
+  })
+  .openapi({
+    description: 'Other fee rate type code which is not available in the standard code set',
+    required: ['Name', 'Description'],
+  })
+  .openapi('OBOtherCodeType1_4')
+
+const OBOtherCodeType1_3Schema = z
+  .strictObject({
+    Code: OBCodeMnemonicSchema.exactOptional(),
+    Description: Description_3Schema,
+    Name: Name_4Schema,
+  })
+  .openapi({
+    description: 'Other Fee type which is not available in the standard code set',
+    required: ['Name', 'Description'],
+  })
+  .openapi('OBOtherCodeType1_3')
 
 const OBSupplementaryData1Schema = z
   .looseObject({})
@@ -3379,594 +3684,7 @@ const OBSupplementaryData1Schema = z
   })
   .openapi('OBSupplementaryData1')
 
-const OBBeneficiary5Schema = z
-  .strictObject({
-    AccountId: AccountIdSchema.exactOptional(),
-    BeneficiaryId: BeneficiaryIdSchema.exactOptional(),
-    BeneficiaryType: OBBeneficiaryType1CodeSchema.exactOptional(),
-    CreditorAccount: OBCashAccount5_0Schema.exactOptional(),
-    CreditorAgent: OBBranchAndFinancialInstitutionIdentification6_0Schema.exactOptional(),
-    Reference: ReferenceSchema.exactOptional(),
-    SupplementaryData: OBSupplementaryData1Schema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OBBeneficiary5')
-
-const OBBeneficiary5BasicSchema = z
-  .strictObject({
-    AccountId: AccountIdSchema.exactOptional(),
-    BeneficiaryId: BeneficiaryIdSchema.exactOptional(),
-    BeneficiaryType: OBBeneficiaryType1CodeSchema.exactOptional(),
-    Reference: ReferenceSchema.exactOptional(),
-    SupplementaryData: OBSupplementaryData1Schema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('OBBeneficiary5Basic')
-
-const OBBeneficiary5DetailSchema = z
-  .strictObject({
-    AccountId: AccountIdSchema.exactOptional(),
-    BeneficiaryId: BeneficiaryIdSchema.exactOptional(),
-    BeneficiaryType: OBBeneficiaryType1CodeSchema.exactOptional(),
-    CreditorAccount: OBCashAccount5_0Schema,
-    CreditorAgent: OBBranchAndFinancialInstitutionIdentification6_0Schema.exactOptional(),
-    Reference: ReferenceSchema.exactOptional(),
-    SupplementaryData: OBSupplementaryData1Schema.exactOptional(),
-  })
-  .openapi({ required: ['CreditorAccount'] })
-  .openapi('OBBeneficiary5Detail')
-
-const OBBranchAndFinancialInstitutionIdentification5_1Schema = z
-  .object({
-    Identification: Identification_1Schema,
-    SchemeName: OBExternalFinancialInstitutionIdentification4CodeSchema,
-  })
-  .openapi({
-    description:
-      'Party that manages the account on behalf of the account owner, that is manages the registration and booking of entries on the account, calculates balances on the account and provides information about the account.\nThis is the servicer of the beneficiary account.',
-    required: ['SchemeName', 'Identification'],
-  })
-  .openapi('OBBranchAndFinancialInstitutionIdentification5_1')
-
-const OBBranchAndFinancialInstitutionIdentification6_1Schema = z
-  .object({
-    Identification: Identification_2Schema.exactOptional(),
-    Name: Name_1Schema.exactOptional(),
-    PostalAddress: OBPostalAddress6Schema.exactOptional(),
-    SchemeName: OBExternalFinancialInstitutionIdentification4CodeSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Financial institution servicing an account for the creditor.',
-    required: [],
-  })
-  .openapi('OBBranchAndFinancialInstitutionIdentification6_1')
-
-const OBBranchAndFinancialInstitutionIdentification6_2Schema = z
-  .object({
-    Identification: Identification_2Schema.exactOptional(),
-    Name: Name_1Schema.exactOptional(),
-    PostalAddress: OBPostalAddress6Schema.exactOptional(),
-    SchemeName: OBExternalFinancialInstitutionIdentification4CodeSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Financial institution servicing an account for the debtor.',
-    required: [],
-  })
-  .openapi('OBBranchAndFinancialInstitutionIdentification6_2')
-
-const OBCashAccount5_1Schema = z
-  .object({
-    Identification: z
-      .string()
-      .min(1)
-      .max(256)
-      .openapi({ description: 'Beneficiary account identification.' }),
-    Name: Name_0Schema.exactOptional(),
-    SchemeName: OBExternalAccountIdentification4CodeSchema,
-    SecondaryIdentification: SecondaryIdentificationSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Provides the details to identify the beneficiary account.',
-    required: ['SchemeName', 'Identification'],
-  })
-  .openapi('OBCashAccount5_1')
-
-const OBCashAccount6_0Schema = z
-  .object({
-    Identification: Identification_0Schema.exactOptional(),
-    Name: Name_0Schema.exactOptional(),
-    SchemeName: OBExternalAccountIdentification4CodeSchema.exactOptional(),
-    SecondaryIdentification: SecondaryIdentificationSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Unambiguous identification of the account of the creditor, in the case of a debit transaction.',
-    required: [],
-  })
-  .openapi('OBCashAccount6_0')
-
-const OBCashAccount6_1Schema = z
-  .object({
-    Identification: Identification_0Schema.exactOptional(),
-    Name: Name_0Schema.exactOptional(),
-    SchemeName: OBExternalAccountIdentification4CodeSchema.exactOptional(),
-    SecondaryIdentification: SecondaryIdentificationSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Unambiguous identification of the account of the debtor, in the case of a crebit transaction.',
-    required: [],
-  })
-  .openapi('OBCashAccount6_1')
-
-const OBCreditDebitCode_0Schema = z
-  .enum(['Credit', 'Debit'])
-  .openapi({
-    description:
-      'Indicates whether the amount is a credit or a debit. \nUsage: A zero amount is considered to be a credit amount.',
-  })
-  .openapi('OBCreditDebitCode_0')
-
-const OBCreditDebitCode_1Schema = z
-  .enum(['Credit', 'Debit'])
-  .openapi({ description: 'Indicates whether the transaction is a credit or a debit entry.' })
-  .openapi('OBCreditDebitCode_1')
-
-const OBCreditDebitCode_2Schema = z
-  .enum(['Credit', 'Debit'])
-  .openapi({
-    description:
-      'Indicates whether the balance is a credit or a debit balance. \nUsage: A zero balance is considered to be a credit balance.',
-  })
-  .openapi('OBCreditDebitCode_2')
-
-const OBCurrencyExchange5Schema = z
-  .object({
-    ContractIdentification: z
-      .string()
-      .min(1)
-      .max(35)
-      .exactOptional()
-      .openapi({
-        description:
-          'Unique identification to unambiguously identify the foreign exchange contract.',
-      }),
-    ExchangeRate: z
-      .number()
-      .openapi({
-        description:
-          'Factor used to convert an amount from one currency into another. This reflects the price at which one currency was bought with another currency.\nUsage: ExchangeRate expresses the ratio between UnitCurrency and QuotedCurrency (ExchangeRate = UnitCurrency/QuotedCurrency).',
-      }),
-    InstructedAmount: z
-      .object({
-        Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
-        Currency: ActiveOrHistoricCurrencyCode_1Schema,
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Amount of money to be moved between the debtor and creditor, before deduction of charges, expressed in the currency as ordered by the initiating party.',
-        required: ['Amount', 'Currency'],
-      }),
-    QuotationDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Date and time at which an exchange rate is quoted.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
-      }),
-    SourceCurrency: z
-      .string()
-      .regex(/^[A-Z]{3,3}$/)
-      .openapi({
-        description: 'Currency from which an amount is to be converted in a currency conversion.',
-      }),
-    TargetCurrency: z
-      .string()
-      .regex(/^[A-Z]{3,3}$/)
-      .exactOptional()
-      .openapi({
-        description: 'Currency into which an amount is to be converted in a currency conversion.',
-      }),
-    UnitCurrency: z
-      .string()
-      .regex(/^[A-Z]{3,3}$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Currency in which the rate of exchange is expressed in a currency exchange. In the example 1GBP = xxxCUR, the unit currency is GBP.',
-      }),
-  })
-  .openapi({
-    description: 'Set of elements used to provide details on the currency exchange.',
-    required: ['SourceCurrency', 'ExchangeRate'],
-  })
-  .openapi('OBCurrencyExchange5')
-
-const OBEntryStatus1CodeSchema = z
-  .enum(['Booked', 'Pending'])
-  .openapi({ description: 'Status of a transaction entry on the books of the account servicer.' })
-  .openapi('OBEntryStatus1Code')
-
-const OBError1Schema = z
-  .strictObject({
-    ErrorCode: z
-      .string()
-      .openapi({
-        description: 'Low level textual error code, e.g., UK.OBIE.Field.Missing',
-        'x-namespaced-enum': [
-          'UK.OBIE.Field.Expected',
-          'UK.OBIE.Field.Invalid',
-          'UK.OBIE.Field.InvalidDate',
-          'UK.OBIE.Field.Missing',
-          'UK.OBIE.Field.Unexpected',
-          'UK.OBIE.Header.Invalid',
-          'UK.OBIE.Header.Missing',
-          'UK.OBIE.Reauthenticate',
-          'UK.OBIE.Resource.ConsentMismatch',
-          'UK.OBIE.Resource.InvalidConsentStatus',
-          'UK.OBIE.Resource.InvalidFormat',
-          'UK.OBIE.Resource.NotFound',
-          'UK.OBIE.Rules.AfterCutOffDateTime',
-          'UK.OBIE.Rules.DuplicateReference',
-          'UK.OBIE.Signature.Invalid',
-          'UK.OBIE.Signature.InvalidClaim',
-          'UK.OBIE.Signature.Malformed',
-          'UK.OBIE.Signature.Missing',
-          'UK.OBIE.Signature.MissingClaim',
-          'UK.OBIE.Signature.Unexpected',
-          'UK.OBIE.UnexpectedError',
-          'UK.OBIE.Unsupported.AccountIdentifier',
-          'UK.OBIE.Unsupported.AccountSecondaryIdentifier',
-          'UK.OBIE.Unsupported.Currency',
-          'UK.OBIE.Unsupported.Frequency',
-          'UK.OBIE.Unsupported.LocalInstrument',
-          'UK.OBIE.Unsupported.Scheme',
-        ],
-      }),
-    Message: z
-      .string()
-      .min(1)
-      .max(500)
-      .openapi({
-        description:
-          "A description of the error that occurred. e.g., 'A mandatory field isn't supplied' or 'RequestedExecutionDateTime must be in future'\nOBIE doesn't standardise this field",
-      }),
-    Path: z
-      .string()
-      .min(1)
-      .max(500)
-      .exactOptional()
-      .openapi({
-        description:
-          'Recommended but optional reference to the JSON Path of the field with error, e.g., Data.Initiation.InstructedAmount.Currency',
-      }),
-    Url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'URL to help remediate the problem, or provide more information, or to API Reference, or help etc',
-      }),
-  })
-  .refine((val) => Object.keys(val).length >= 1)
-  .openapi({ required: ['ErrorCode', 'Message'] })
-  .openapi('OBError1')
-
-const OBErrorResponse1Schema = z
-  .strictObject({
-    Code: z
-      .string()
-      .min(1)
-      .max(40)
-      .openapi({ description: 'High level textual error code, to help categorize the errors.' }),
-    Errors: z.array(OBError1Schema).min(1),
-    Id: z
-      .string()
-      .min(1)
-      .max(40)
-      .exactOptional()
-      .openapi({
-        description:
-          'A unique reference for the error instance, for audit purposes, in case of unknown/unclassified errors.',
-      }),
-    Message: z
-      .string()
-      .min(1)
-      .max(500)
-      .openapi({
-        description:
-          "Brief Error message, e.g., 'There is something wrong with the request parameters provided'",
-      }),
-  })
-  .openapi({
-    description:
-      'An array of detail error codes, and messages, and URLs to documentation to help remediation.',
-    required: ['Code', 'Message', 'Errors'],
-  })
-  .openapi('OBErrorResponse1')
-
-const OBExternalAccountRole1CodeSchema = z
-  .string()
-  .openapi({
-    description: 'A party’s role with respect to the related account.',
-    'x-namespaced-enum': [
-      'UK.OBIE.Administrator',
-      'UK.OBIE.Beneficiary',
-      'UK.OBIE.CustodianForMinor',
-      'UK.OBIE.Granter',
-      'UK.OBIE.LegalGuardian',
-      'UK.OBIE.OtherParty',
-      'UK.OBIE.PowerOfAttorney',
-      'UK.OBIE.Principal',
-      'UK.OBIE.Protector',
-      'UK.OBIE.RegisteredShareholderName',
-      'UK.OBIE.SecondaryOwner',
-      'UK.OBIE.SeniorManagingOfficial',
-      'UK.OBIE.Settlor',
-      'UK.OBIE.SuccessorOnDeath',
-    ],
-  })
-  .openapi('OBExternalAccountRole1Code')
-
-const OBExternalDirectDebitStatus1CodeSchema = z
-  .enum(['Active', 'Inactive'])
-  .openapi({ description: 'Specifies the status of the direct debit in code form.' })
-  .openapi('OBExternalDirectDebitStatus1Code')
-
-const OBExternalLegalStructureType1CodeSchema = z
-  .string()
-  .openapi({
-    description: 'Legal standing of the party.',
-    'x-namespaced-enum': [
-      'UK.OBIE.CIC',
-      'UK.OBIE.CIO',
-      'UK.OBIE.Charity',
-      'UK.OBIE.CoOp',
-      'UK.OBIE.GeneralPartnership',
-      'UK.OBIE.Individual',
-      'UK.OBIE.LimitedLiabilityPartnership',
-      'UK.OBIE.LimitedPartnership',
-      'UK.OBIE.PrivateLimitedCompany',
-      'UK.OBIE.PublicLimitedCompany',
-      'UK.OBIE.ScottishLimitedPartnership',
-      'UK.OBIE.Sole',
-    ],
-  })
-  .openapi('OBExternalLegalStructureType1Code')
-
-const OBExternalPartyType1CodeSchema = z
-  .enum(['Delegate', 'Joint', 'Sole'])
-  .openapi({ description: 'Party type, in a coded form.' })
-  .openapi('OBExternalPartyType1Code')
-
-const OBExternalScheduleType1CodeSchema = z
-  .enum(['Arrival', 'Execution'])
-  .openapi({ description: 'Specifies the scheduled payment date type requested' })
-  .openapi('OBExternalScheduleType1Code')
-
-const OBExternalStandingOrderStatus1CodeSchema = z
-  .enum(['Active', 'Inactive'])
-  .openapi({ description: 'Specifies the status of the standing order in code form.' })
-  .openapi('OBExternalStandingOrderStatus1Code')
-
-const OBExternalStatementAmountType1CodeSchema = z
-  .string()
-  .openapi({
-    description: 'Amount type, in a coded form.',
-    'x-namespaced-enum': [
-      'UK.OBIE.ArrearsClosingBalance',
-      'UK.OBIE.AvailableBalance',
-      'UK.OBIE.AverageBalanceWhenInCredit',
-      'UK.OBIE.AverageBalanceWhenInDebit',
-      'UK.OBIE.AverageDailyBalance',
-      'UK.OBIE.BalanceTransferClosingBalance',
-      'UK.OBIE.CashClosingBalance',
-      'UK.OBIE.ClosingBalance',
-      'UK.OBIE.CreditLimit',
-      'UK.OBIE.CurrentPayment',
-      'UK.OBIE.DirectDebitPaymentDue',
-      'UK.OBIE.FSCSInsurance',
-      'UK.OBIE.MinimumPaymentDue',
-      'UK.OBIE.PendingTransactionsBalance',
-      'UK.OBIE.PreviousClosingBalance',
-      'UK.OBIE.PreviousPayment',
-      'UK.OBIE.PurchaseClosingBalance',
-      'UK.OBIE.StartingBalance',
-      'UK.OBIE.TotalAdjustments',
-      'UK.OBIE.TotalCashAdvances',
-      'UK.OBIE.TotalCharges',
-      'UK.OBIE.TotalCredits',
-      'UK.OBIE.TotalDebits',
-      'UK.OBIE.TotalPurchases',
-    ],
-  })
-  .openapi('OBExternalStatementAmountType1Code')
-
-const OBExternalStatementBenefitType1CodeSchema = z
-  .string()
-  .openapi({
-    description: 'Benefit type, in a coded form.',
-    'x-namespaced-enum': [
-      'UK.OBIE.Cashback',
-      'UK.OBIE.Insurance',
-      'UK.OBIE.TravelDiscount',
-      'UK.OBIE.TravelInsurance',
-    ],
-  })
-  .openapi('OBExternalStatementBenefitType1Code')
-
-const OBExternalStatementDateTimeType1CodeSchema = z
-  .string()
-  .openapi({
-    description: 'Date time type, in a coded form.',
-    'x-namespaced-enum': [
-      'UK.OBIE.BalanceTransferPromoEnd',
-      'UK.OBIE.DirectDebitDue',
-      'UK.OBIE.LastPayment',
-      'UK.OBIE.LastStatement',
-      'UK.OBIE.NextStatement',
-      'UK.OBIE.PaymentDue',
-      'UK.OBIE.PurchasePromoEnd',
-      'UK.OBIE.StatementAvailable',
-    ],
-  })
-  .openapi('OBExternalStatementDateTimeType1Code')
-
-const OBExternalStatementFeeFrequency1CodeSchema = z
-  .string()
-  .openapi({
-    description: 'How frequently the fee is applied to the Account.',
-    'x-namespaced-enum': [
-      'UK.OBIE.ChargingPeriod',
-      'UK.OBIE.PerTransactionAmount',
-      'UK.OBIE.PerTransactionPercentage',
-      'UK.OBIE.Quarterly',
-      'UK.OBIE.StatementMonthly',
-      'UK.OBIE.Weekly',
-    ],
-  })
-  .openapi('OBExternalStatementFeeFrequency1Code')
-
-const OBExternalStatementFeeRateType1CodeSchema = z
-  .string()
-  .openapi({
-    description: 'Description that may be available for the statement fee rate type.',
-    'x-namespaced-enum': ['UK.OBIE.AER', 'UK.OBIE.EAR'],
-  })
-  .openapi('OBExternalStatementFeeRateType1Code')
-
-const OBExternalStatementFeeType1CodeSchema = z
-  .string()
-  .openapi({
-    description: 'Fee type, in a coded form.',
-    'x-namespaced-enum': [
-      'UK.OBIE.Annual',
-      'UK.OBIE.BalanceTransfer',
-      'UK.OBIE.CashAdvance',
-      'UK.OBIE.CashTransaction',
-      'UK.OBIE.ForeignCashTransaction',
-      'UK.OBIE.ForeignTransaction',
-      'UK.OBIE.Gambling',
-      'UK.OBIE.LatePayment',
-      'UK.OBIE.MoneyTransfer',
-      'UK.OBIE.Monthly',
-      'UK.OBIE.Overlimit',
-      'UK.OBIE.PostalOrder',
-      'UK.OBIE.PrizeEntry',
-      'UK.OBIE.StatementCopy',
-      'UK.OBIE.Total',
-    ],
-  })
-  .openapi('OBExternalStatementFeeType1Code')
-
-const OBExternalStatementInterestFrequency1CodeSchema = z
-  .string()
-  .openapi({
-    description: 'Specifies the statement fee type requested',
-    'x-namespaced-enum': [
-      'UK.OBIE.Daily',
-      'UK.OBIE.HalfYearly',
-      'UK.OBIE.Monthly',
-      'UK.OBIE.PerStatementDate',
-      'UK.OBIE.Quarterly',
-      'UK.OBIE.Weekly',
-      'UK.OBIE.Yearly',
-    ],
-  })
-  .openapi('OBExternalStatementInterestFrequency1Code')
-
-const OBExternalStatementInterestRateType1CodeSchema = z
-  .string()
-  .openapi({
-    description: 'Description that may be available for the statement Interest rate type.',
-    'x-namespaced-enum': [
-      'UK.OBIE.BOEBaseRate',
-      'UK.OBIE.FixedRate',
-      'UK.OBIE.Gross',
-      'UK.OBIE.LoanProviderBaseRate',
-      'UK.OBIE.Net',
-    ],
-  })
-  .openapi('OBExternalStatementInterestRateType1Code')
-
-const OBExternalStatementInterestType1CodeSchema = z
-  .string()
-  .openapi({
-    description: 'Interest amount type, in a coded form.',
-    'x-namespaced-enum': [
-      'UK.OBIE.BalanceTransfer',
-      'UK.OBIE.Cash',
-      'UK.OBIE.EstimatedNext',
-      'UK.OBIE.Purchase',
-      'UK.OBIE.Total',
-    ],
-  })
-  .openapi('OBExternalStatementInterestType1Code')
-
-const OBExternalStatementRateType1CodeSchema = z
-  .string()
-  .openapi({
-    description: 'Statement rate type, in a coded form.',
-    'x-namespaced-enum': [
-      'UK.OBIE.AnnualBalanceTransfer',
-      'UK.OBIE.AnnualBalanceTransferAfterPromo',
-      'UK.OBIE.AnnualBalanceTransferPromo',
-      'UK.OBIE.AnnualCash',
-      'UK.OBIE.AnnualPurchase',
-      'UK.OBIE.AnnualPurchaseAfterPromo',
-      'UK.OBIE.AnnualPurchasePromo',
-      'UK.OBIE.MonthlyBalanceTransfer',
-      'UK.OBIE.MonthlyCash',
-      'UK.OBIE.MonthlyPurchase',
-    ],
-  })
-  .openapi('OBExternalStatementRateType1Code')
-
-const OBExternalStatementType1CodeSchema = z
-  .enum(['AccountClosure', 'AccountOpening', 'Annual', 'Interim', 'RegularPeriodic'])
-  .openapi({ description: 'Statement type, in a coded form.' })
-  .openapi('OBExternalStatementType1Code')
-
-const OBExternalStatementValueType1CodeSchema = z
-  .string()
-  .openapi({
-    description: 'Statement value type, in a coded form.',
-    'x-namespaced-enum': [
-      'UK.OBIE.AirMilesPoints',
-      'UK.OBIE.AirMilesPointsBalance',
-      'UK.OBIE.Credits',
-      'UK.OBIE.Debits',
-      'UK.OBIE.HotelPoints',
-      'UK.OBIE.HotelPointsBalance',
-      'UK.OBIE.RetailShoppingPoints',
-      'UK.OBIE.RetailShoppingPointsBalance',
-    ],
-  })
-  .openapi('OBExternalStatementValueType1Code')
-
-const OBMerchantDetails1Schema = z
-  .object({
-    MerchantCategoryCode: z
-      .string()
-      .min(3)
-      .max(4)
-      .exactOptional()
-      .openapi({
-        description:
-          'Category code conform to ISO 18245, related to the type of services or goods the merchant provides for the transaction.',
-      }),
-    MerchantName: z
-      .string()
-      .min(1)
-      .max(350)
-      .exactOptional()
-      .openapi({ description: 'Name by which the merchant is known.' }),
-  })
-  .openapi({ description: 'Details of the merchant involved in the transaction.', required: [] })
-  .openapi('OBMerchantDetails1')
-
-const OBPCAData1Schema = z
+const OBPCAData1Schema: z.ZodType<OBPCAData1Type> = z
   .strictObject({
     CreditInterest: z
       .strictObject({
@@ -6290,6 +6008,2072 @@ const OBPCAData1Schema = z
   .openapi({ title: 'PCA', required: [] })
   .openapi('OBPCAData1')
 
+const LinksSchema = z
+  .strictObject({
+    First: z.url().exactOptional(),
+    Last: z.url().exactOptional(),
+    Next: z.url().exactOptional(),
+    Prev: z.url().exactOptional(),
+    Self: z.url(),
+  })
+  .openapi({ description: 'Links relevant to the payload', required: ['Self'] })
+  .openapi('Links')
+
+const ISODateTimeSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description:
+      'All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
+  })
+  .openapi('ISODateTime')
+
+const MetaSchema = z
+  .strictObject({
+    FirstAvailableDateTime: ISODateTimeSchema.exactOptional(),
+    LastAvailableDateTime: ISODateTimeSchema.exactOptional(),
+    TotalPages: z.int32().exactOptional(),
+  })
+  .openapi({ description: 'Meta Data relevant to the payload', title: 'MetaData', required: [] })
+  .openapi('Meta')
+
+type OBReadProduct2Type = {
+  Data: {
+    Product?: {
+      AccountId: z.infer<typeof AccountIdSchema>
+      BCA?: z.infer<typeof OBBCAData1Schema>
+      MarketingStateId?: string
+      OtherProductType?: {
+        CreditInterest?: {
+          TierBandSet: {
+            CalculationMethod?: z.infer<typeof OBInterestCalculationMethod1CodeSchema>
+            Destination: 'INOT' | 'INPA' | 'INSC'
+            Notes?: string[]
+            OtherCalculationMethod?: z.infer<typeof OBOtherCodeType1_0Schema>
+            OtherDestination?: z.infer<typeof OBOtherCodeType1_0Schema>
+            TierBand: {
+              AER: string
+              ApplicationFrequency:
+                | 'FQAT'
+                | 'FQDY'
+                | 'FQHY'
+                | 'FQMY'
+                | 'FQOT'
+                | 'FQQY'
+                | 'FQSD'
+                | 'FQWY'
+                | 'FQYY'
+              BankInterestRate?: string
+              BankInterestRateType?: 'INBB' | 'INFR' | 'INGR' | 'INLR' | 'INNE' | 'INOT'
+              CalculationFrequency?:
+                | 'FQAT'
+                | 'FQDY'
+                | 'FQHY'
+                | 'FQMY'
+                | 'FQOT'
+                | 'FQQY'
+                | 'FQSD'
+                | 'FQWY'
+                | 'FQYY'
+              DepositInterestAppliedCoverage?: 'INBA' | 'INTI' | 'INWH'
+              FixedVariableInterestRateType: z.infer<typeof OBInterestFixedVariableType1CodeSchema>
+              Identification?: string
+              Notes?: string[]
+              OtherApplicationFrequency?: z.infer<typeof OBOtherCodeType1_1Schema>
+              OtherBankInterestType?: {
+                Code?: z.infer<typeof OBCodeMnemonicSchema>
+                Description: z.infer<typeof Description_3Schema>
+                Name: z.infer<typeof Name_4Schema>
+              }
+              OtherCalculationFrequency?: z.infer<typeof OBOtherCodeType1_2Schema>
+              TierValueMaximum?: string
+              TierValueMinimum: string
+            }[]
+            TierBandMethod: 'INBA' | 'INTI' | 'INWH'
+          }[]
+        }
+        Description: string
+        LoanInterest?: {
+          LoanInterestTierBandSet: {
+            CalculationMethod: z.infer<typeof OBInterestCalculationMethod1CodeSchema>
+            Identification?: string
+            LoanInterestFeesCharges?: {
+              LoanInterestFeeChargeCap?: {
+                CappingPeriod?: z.infer<typeof OBFeeFrequency1Code_4Schema>
+                FeeCapAmount?: z.infer<typeof OBAmount1_4Schema>
+                FeeCapOccurrence?: z.infer<typeof Number_1Schema>
+                FeeType: (
+                  | 'FEPF'
+                  | 'FTOT'
+                  | 'FYAF'
+                  | 'FYAM'
+                  | 'FYAQ'
+                  | 'FYCP'
+                  | 'FYDB'
+                  | 'FYMI'
+                  | 'FYXX'
+                )[]
+                MinMaxType: z.infer<typeof OBMinMaxType1CodeSchema>
+                Notes?: string[]
+                OtherFeeType?: {
+                  Code?: z.infer<typeof OBCodeMnemonicSchema>
+                  Description: z.infer<typeof Description_3Schema>
+                  Name: z.infer<typeof Name_4Schema>
+                }[]
+              }[]
+              LoanInterestFeeChargeDetail: {
+                ApplicationFrequency: z.infer<typeof OBFeeFrequency1Code_2Schema>
+                CalculationFrequency: z.infer<typeof OBFeeFrequency1Code_3Schema>
+                FeeAmount?: z.infer<typeof OBAmount1_3Schema>
+                FeeRate?: z.infer<typeof OBRate1_12Schema>
+                FeeRateType?: z.infer<typeof OBInterestRateType1Code_1Schema>
+                FeeType: z.infer<typeof OBFeeType1CodeSchema>
+                NegotiableIndicator?: boolean
+                Notes?: string[]
+                OtherApplicationFrequency?: z.infer<typeof OBOtherCodeType1_6Schema>
+                OtherCalculationFrequency?: z.infer<typeof OBOtherCodeType1_7Schema>
+                OtherFeeRateType?: z.infer<typeof OBOtherCodeType1_5Schema>
+                OtherFeeType?: z.infer<typeof OBOtherFeeChargeDetailTypeSchema>
+              }[]
+            }[]
+            LoanInterestTierBand: {
+              FixedVariableInterestRateType: z.infer<typeof OBInterestFixedVariableType1CodeSchema>
+              Identification?: string
+              LoanInterestFeesCharges?: {
+                LoanInterestFeeChargeCap?: {
+                  CappingPeriod?: z.infer<typeof OBFeeFrequency1Code_4Schema>
+                  FeeCapAmount?: z.infer<typeof OBAmount1_4Schema>
+                  FeeCapOccurrence?: z.infer<typeof Number_1Schema>
+                  FeeType: (
+                    | 'FEPF'
+                    | 'FTOT'
+                    | 'FYAF'
+                    | 'FYAM'
+                    | 'FYAQ'
+                    | 'FYCP'
+                    | 'FYDB'
+                    | 'FYMI'
+                    | 'FYXX'
+                  )[]
+                  MinMaxType: z.infer<typeof OBMinMaxType1CodeSchema>
+                  Notes?: string[]
+                  OtherFeeType?: {
+                    Code?: z.infer<typeof OBCodeMnemonicSchema>
+                    Description: z.infer<typeof Description_3Schema>
+                    Name: z.infer<typeof Name_4Schema>
+                  }[]
+                }[]
+                LoanInterestFeeChargeDetail: {
+                  ApplicationFrequency: z.infer<typeof OBFeeFrequency1Code_2Schema>
+                  CalculationFrequency: z.infer<typeof OBFeeFrequency1Code_3Schema>
+                  FeeAmount?: z.infer<typeof OBAmount1_3Schema>
+                  FeeRate?: z.infer<typeof OBRate1_12Schema>
+                  FeeRateType?: z.infer<typeof OBInterestRateType1Code_1Schema>
+                  FeeType: z.infer<typeof OBFeeType1CodeSchema>
+                  NegotiableIndicator?: boolean
+                  Notes?: string[]
+                  OtherApplicationFrequency?: z.infer<typeof OBOtherCodeType1_6Schema>
+                  OtherCalculationFrequency?: z.infer<typeof OBOtherCodeType1_7Schema>
+                  OtherFeeRateType?: z.infer<typeof OBOtherCodeType1_5Schema>
+                  OtherFeeType?: z.infer<typeof OBOtherFeeChargeDetailTypeSchema>
+                }[]
+              }[]
+              LoanProviderInterestRate?: string
+              LoanProviderInterestRateType?: 'INBB' | 'INFR' | 'INGR' | 'INLR' | 'INNE' | 'INOT'
+              MaxTermPeriod?: 'PACT' | 'PDAY' | 'PHYR' | 'PMTH' | 'PQTR' | 'PWEK' | 'PYER'
+              MinTermPeriod: 'PACT' | 'PDAY' | 'PHYR' | 'PMTH' | 'PQTR' | 'PWEK' | 'PYER'
+              Notes?: string[]
+              OtherLoanProviderInterestRateType?: {
+                Code?: z.infer<typeof OBCodeMnemonicSchema>
+                Description: z.infer<typeof Description_3Schema>
+                Name: z.infer<typeof Name_4Schema>
+              }
+              RepAPR: string
+              TierValueMaxTerm?: number
+              TierValueMaximum?: string
+              TierValueMinTerm: number
+              TierValueMinimum: string
+            }[]
+            Notes?: string[]
+            OtherCalculationMethod?: z.infer<typeof OBOtherCodeType1_0Schema>
+            TierBandMethod: 'INBA' | 'INTI' | 'INWH'
+          }[]
+          Notes?: string[]
+        }
+        Name: string
+        OtherFeesCharges?: {
+          FeeChargeCap?: {
+            CappingPeriod?: z.infer<typeof OBPeriod1CodeSchema>
+            FeeCapAmount?: z.infer<typeof OBAmount1_4Schema>
+            FeeCapOccurrence?: z.infer<typeof Number_1Schema>
+            FeeType: (
+              | 'FEPF'
+              | 'FTOT'
+              | 'FYAF'
+              | 'FYAM'
+              | 'FYAQ'
+              | 'FYCP'
+              | 'FYDB'
+              | 'FYMI'
+              | 'FYXX'
+            )[]
+            MinMaxType: z.infer<typeof OBMinMaxType1CodeSchema>
+            Notes?: string[]
+            OtherFeeType?: {
+              Code?: z.infer<typeof OBCodeMnemonicSchema>
+              Description: z.infer<typeof Description_3Schema>
+              Name: z.infer<typeof Name_4Schema>
+            }[]
+          }[]
+          FeeChargeDetail: {
+            ApplicationFrequency: z.infer<typeof OBFeeFrequency1Code_2Schema>
+            CalculationFrequency?: z.infer<typeof OBFeeFrequency1Code_3Schema>
+            FeeAmount?: z.infer<typeof OBAmount1_3Schema>
+            FeeApplicableRange?: {
+              MaximumAmount?: string
+              MaximumRate?: string
+              MinimumAmount?: string
+              MinimumRate?: string
+            }
+            FeeCategory: z.infer<typeof OBFeeCategory1CodeSchema>
+            FeeChargeCap?: {
+              CappingPeriod?: z.infer<typeof OBPeriod1CodeSchema>
+              FeeCapAmount?: z.infer<typeof OBAmount1_4Schema>
+              FeeCapOccurrence?: z.infer<typeof Number_1Schema>
+              FeeType: (
+                | 'FEPF'
+                | 'FTOT'
+                | 'FYAF'
+                | 'FYAM'
+                | 'FYAQ'
+                | 'FYCP'
+                | 'FYDB'
+                | 'FYMI'
+                | 'FYXX'
+              )[]
+              MinMaxType: z.infer<typeof OBMinMaxType1CodeSchema>
+              Notes?: string[]
+              OtherFeeType?: {
+                Code?: z.infer<typeof OBCodeMnemonicSchema>
+                Description: z.infer<typeof Description_3Schema>
+                Name: z.infer<typeof Name_4Schema>
+              }[]
+            }[]
+            FeeRate?: z.infer<typeof OBRate1_12Schema>
+            FeeRateType?: z.infer<typeof OBInterestRateType1Code_1Schema>
+            FeeType: z.infer<typeof OBFeeType1CodeSchema>
+            NegotiableIndicator?: boolean
+            Notes?: string[]
+            OtherApplicationFrequency?: z.infer<typeof OBOtherCodeType1_6Schema>
+            OtherCalculationFrequency?: z.infer<typeof OBOtherCodeType1_7Schema>
+            OtherFeeCategoryType?: z.infer<typeof OBOtherCodeType1_0Schema>
+            OtherFeeRateType?: z.infer<typeof OBOtherCodeType1_8Schema>
+            OtherFeeType?: z.infer<typeof OBOtherFeeChargeDetailTypeSchema>
+          }[]
+          OtherTariffType?: {
+            Code?: z.infer<typeof OBCodeMnemonicSchema>
+            Description: z.infer<typeof Description_3Schema>
+            Name: z.infer<typeof Name_4Schema>
+          }
+          TariffName?: string
+          TariffType?: 'TTEL' | 'TTMX' | 'TTOT'
+        }[]
+        Overdraft?: {
+          Notes?: string[]
+          OverdraftTierBandSet: {
+            AuthorisedIndicator?: boolean
+            BufferAmount?: string
+            Identification?: string
+            Notes?: string[]
+            OverdraftFeesCharges?: {
+              OverdraftFeeChargeCap?: {
+                CappingPeriod?: z.infer<typeof OBPeriod1CodeSchema>
+                FeeCapAmount?: z.infer<typeof OBAmount1_0Schema>
+                FeeCapOccurrence?: z.infer<typeof Number_0Schema>
+                FeeType: (
+                  | 'FBAO'
+                  | 'FBAR'
+                  | 'FBEB'
+                  | 'FBIT'
+                  | 'FBOR'
+                  | 'FBOS'
+                  | 'FBSC'
+                  | 'FBTO'
+                  | 'FBUB'
+                  | 'FBUT'
+                  | 'FTOT'
+                  | 'FTUT'
+                )[]
+                MinMaxType: z.infer<typeof OBMinMaxType1CodeSchema>
+                Notes?: string[]
+                OtherFeeType?: {
+                  Code?: z.infer<typeof OBCodeMnemonicSchema>
+                  Description: z.infer<typeof Description_3Schema>
+                  Name: z.infer<typeof Name_4Schema>
+                }[]
+              }[]
+              OverdraftFeeChargeDetail: {
+                ApplicationFrequency: z.infer<typeof OBFeeFrequency1Code_0Schema>
+                CalculationFrequency?: z.infer<typeof OBFeeFrequency1Code_1Schema>
+                FeeAmount?: z.infer<typeof OBAmount1_2Schema>
+                FeeRate?: z.infer<typeof OBRate1_02Schema>
+                FeeRateType?: z.infer<typeof OBInterestRateType1Code_0Schema>
+                FeeType: z.infer<typeof OBOverdraftFeeType1CodeSchema>
+                IncrementalBorrowingAmount?: z.infer<typeof OBAmount1_1Schema>
+                NegotiableIndicator?: boolean
+                Notes?: string[]
+                OtherApplicationFrequency?: z.infer<typeof OBOtherCodeType1_1Schema>
+                OtherCalculationFrequency?: z.infer<typeof OBOtherCodeType1_2Schema>
+                OtherFeeRateType?: z.infer<typeof OBOtherCodeType1_4Schema>
+                OtherFeeType?: z.infer<typeof OBOtherCodeType1_3Schema>
+                OverdraftControlIndicator?: boolean
+                OverdraftFeeChargeCap?: {
+                  CappingPeriod?: z.infer<typeof OBPeriod1CodeSchema>
+                  FeeCapAmount?: z.infer<typeof OBAmount1_0Schema>
+                  FeeCapOccurrence?: z.infer<typeof Number_0Schema>
+                  FeeType: (
+                    | 'FBAO'
+                    | 'FBAR'
+                    | 'FBEB'
+                    | 'FBIT'
+                    | 'FBOR'
+                    | 'FBOS'
+                    | 'FBSC'
+                    | 'FBTO'
+                    | 'FBUB'
+                    | 'FBUT'
+                    | 'FTOT'
+                    | 'FTUT'
+                  )[]
+                  MinMaxType: z.infer<typeof OBMinMaxType1CodeSchema>
+                  Notes?: string[]
+                  OtherFeeType?: {
+                    Code?: z.infer<typeof OBCodeMnemonicSchema>
+                    Description: z.infer<typeof Description_3Schema>
+                    Name: z.infer<typeof Name_4Schema>
+                  }[]
+                }[]
+              }[]
+            }[]
+            OverdraftTierBand: {
+              AgreementLengthMax?: number
+              AgreementLengthMin?: number
+              AgreementPeriod?: 'PACT' | 'PDAY' | 'PHYR' | 'PMTH' | 'PQTR' | 'PWEK' | 'PYER'
+              BankGuaranteedIndicator?: boolean
+              EAR?: string
+              Identification?: string
+              Notes?: string[]
+              OverdraftFeesCharges?: {
+                OverdraftFeeChargeCap?: {
+                  CappingPeriod?: z.infer<typeof OBPeriod1CodeSchema>
+                  FeeCapAmount?: z.infer<typeof OBAmount1_0Schema>
+                  FeeCapOccurrence?: z.infer<typeof Number_0Schema>
+                  FeeType: (
+                    | 'FBAO'
+                    | 'FBAR'
+                    | 'FBEB'
+                    | 'FBIT'
+                    | 'FBOR'
+                    | 'FBOS'
+                    | 'FBSC'
+                    | 'FBTO'
+                    | 'FBUB'
+                    | 'FBUT'
+                    | 'FTOT'
+                    | 'FTUT'
+                  )[]
+                  MinMaxType: z.infer<typeof OBMinMaxType1CodeSchema>
+                  Notes?: string[]
+                  OtherFeeType?: {
+                    Code?: z.infer<typeof OBCodeMnemonicSchema>
+                    Description: z.infer<typeof Description_3Schema>
+                    Name: z.infer<typeof Name_4Schema>
+                  }[]
+                }[]
+                OverdraftFeeChargeDetail: {
+                  ApplicationFrequency: z.infer<typeof OBFeeFrequency1Code_0Schema>
+                  CalculationFrequency?: z.infer<typeof OBFeeFrequency1Code_1Schema>
+                  FeeAmount?: z.infer<typeof OBAmount1_2Schema>
+                  FeeRate?: z.infer<typeof OBRate1_02Schema>
+                  FeeRateType?: z.infer<typeof OBInterestRateType1Code_0Schema>
+                  FeeType: z.infer<typeof OBOverdraftFeeType1CodeSchema>
+                  IncrementalBorrowingAmount?: z.infer<typeof OBAmount1_1Schema>
+                  NegotiableIndicator?: boolean
+                  Notes?: string[]
+                  OtherApplicationFrequency?: z.infer<typeof OBOtherCodeType1_1Schema>
+                  OtherCalculationFrequency?: z.infer<typeof OBOtherCodeType1_2Schema>
+                  OtherFeeRateType?: z.infer<typeof OBOtherCodeType1_4Schema>
+                  OtherFeeType?: z.infer<typeof OBOtherCodeType1_3Schema>
+                  OverdraftControlIndicator?: boolean
+                  OverdraftFeeChargeCap?: {
+                    CappingPeriod?: z.infer<typeof OBPeriod1CodeSchema>
+                    FeeCapAmount?: z.infer<typeof OBAmount1_0Schema>
+                    FeeCapOccurrence?: z.infer<typeof Number_0Schema>
+                    FeeType: (
+                      | 'FBAO'
+                      | 'FBAR'
+                      | 'FBEB'
+                      | 'FBIT'
+                      | 'FBOR'
+                      | 'FBOS'
+                      | 'FBSC'
+                      | 'FBTO'
+                      | 'FBUB'
+                      | 'FBUT'
+                      | 'FTOT'
+                      | 'FTUT'
+                    )[]
+                    MinMaxType: z.infer<typeof OBMinMaxType1CodeSchema>
+                    Notes?: string[]
+                    OtherFeeType?: {
+                      Code?: z.infer<typeof OBCodeMnemonicSchema>
+                      Description: z.infer<typeof Description_3Schema>
+                      Name: z.infer<typeof Name_4Schema>
+                    }[]
+                  }[]
+                }[]
+              }[]
+              OverdraftInterestChargingCoverage?: 'INBA' | 'INTI' | 'INWH'
+              TierValueMax?: string
+              TierValueMin: string
+            }[]
+            OverdraftType?: 'OVCO' | 'OVOD' | 'OVOT'
+            TierBandMethod: 'INBA' | 'INTI' | 'INWH'
+          }[]
+        }
+        ProductDetails?: {
+          FeeFreeLength?: number
+          FeeFreeLengthPeriod?: 'PACT' | 'PDAY' | 'PHYR' | 'PMTH' | 'PQTR' | 'PWEK' | 'PYER'
+          MonthlyMaximumCharge?: string
+          Notes?: string[]
+          OtherSegment?: z.infer<typeof OBOtherCodeType1_0Schema>
+          Segment?: (
+            | 'GEAS'
+            | 'GEBA'
+            | 'GEBR'
+            | 'GEBU'
+            | 'GECI'
+            | 'GECS'
+            | 'GEFB'
+            | 'GEFG'
+            | 'GEG'
+            | 'GEGR'
+            | 'GEGS'
+            | 'GEOT'
+            | 'GEOV'
+            | 'GEPA'
+            | 'GEPR'
+            | 'GERE'
+            | 'GEST'
+            | 'GEYA'
+            | 'GEYO'
+            | 'PSCA'
+            | 'PSES'
+            | 'PSNC'
+            | 'PSNP'
+            | 'PSRG'
+            | 'PSSS'
+            | 'PSST'
+            | 'PSSW'
+          )[]
+        }
+        Repayment?: {
+          AmountType?: 'RABD' | 'RABL' | 'RACI' | 'RAFC' | 'RAIO' | 'RALT' | 'USOT'
+          Notes?: string[]
+          OtherAmountType?: {
+            Code?: z.infer<typeof OBCodeMnemonicSchema>
+            Description: z.infer<typeof Description_3Schema>
+            Name: z.infer<typeof Name_4Schema>
+          }
+          OtherRepaymentFrequency?: {
+            Code?: z.infer<typeof OBCodeMnemonicSchema>
+            Description: z.infer<typeof Description_3Schema>
+            Name: z.infer<typeof Name_4Schema>
+          }
+          OtherRepaymentType?: {
+            Code?: z.infer<typeof OBCodeMnemonicSchema>
+            Description: z.infer<typeof Description_3Schema>
+            Name: z.infer<typeof Name_4Schema>
+          }
+          RepaymentFeeCharges?: {
+            RepaymentFeeChargeCap?: {
+              CappingPeriod?: z.infer<typeof OBPeriod1CodeSchema>
+              FeeCapAmount?: z.infer<typeof OBAmount1_4Schema>
+              FeeCapOccurrence?: z.infer<typeof Number_1Schema>
+              FeeType: (
+                | 'FEPF'
+                | 'FTOT'
+                | 'FYAF'
+                | 'FYAM'
+                | 'FYAQ'
+                | 'FYCP'
+                | 'FYDB'
+                | 'FYMI'
+                | 'FYXX'
+              )[]
+              MinMaxType: z.infer<typeof OBMinMaxType1CodeSchema>
+              Notes?: string[]
+              OtherFeeType?: {
+                Code?: z.infer<typeof OBCodeMnemonicSchema>
+                Description: z.infer<typeof Description_3Schema>
+                Name: z.infer<typeof Name_4Schema>
+              }[]
+            }[]
+            RepaymentFeeChargeDetail: {
+              ApplicationFrequency: z.infer<typeof OBFeeFrequency1Code_2Schema>
+              CalculationFrequency: z.infer<typeof OBFeeFrequency1Code_3Schema>
+              FeeAmount?: z.infer<typeof OBAmount1_3Schema>
+              FeeRate?: z.infer<typeof OBRate1_12Schema>
+              FeeRateType?: z.infer<typeof OBInterestRateType1Code_1Schema>
+              FeeType: z.infer<typeof OBFeeType1CodeSchema>
+              NegotiableIndicator?: boolean
+              Notes?: string[]
+              OtherApplicationFrequency?: z.infer<typeof OBOtherCodeType1_6Schema>
+              OtherCalculationFrequency?: z.infer<typeof OBOtherCodeType1_7Schema>
+              OtherFeeRateType?: z.infer<typeof OBOtherCodeType1_8Schema>
+              OtherFeeType?: z.infer<typeof OBOtherFeeChargeDetailTypeSchema>
+            }[]
+          }
+          RepaymentFrequency?:
+            | 'SMDA'
+            | 'SMFL'
+            | 'SMFO'
+            | 'SMHY'
+            | 'SMMO'
+            | 'SMOT'
+            | 'SMQU'
+            | 'SMWE'
+            | 'SMYE'
+          RepaymentHoliday?: {
+            MaxHolidayLength?: number
+            MaxHolidayPeriod?: 'PACT' | 'PDAY' | 'PHYR' | 'PMTH' | 'PQTR' | 'PWEK' | 'PYER'
+            Notes?: string[]
+          }[]
+          RepaymentType?:
+            | 'USBA'
+            | 'USBU'
+            | 'USCI'
+            | 'USCS'
+            | 'USER'
+            | 'USFA'
+            | 'USFB'
+            | 'USFI'
+            | 'USIO'
+            | 'USOT'
+            | 'USPF'
+            | 'USRW'
+            | 'USSL'
+        }
+        SupplementaryData?: z.infer<typeof OBSupplementaryData1Schema>
+      }
+      PCA?: z.infer<typeof OBPCAData1Schema>
+      ProductId?: string
+      ProductName?: string
+      ProductType:
+        | 'BusinessCurrentAccount'
+        | 'CommercialCreditCard'
+        | 'Other'
+        | 'PersonalCurrentAccount'
+        | 'SMELoan'
+      SecondaryProductId?: string
+    }[]
+  }
+  Links?: z.infer<typeof LinksSchema>
+  Meta?: z.infer<typeof MetaSchema>
+}
+
+const ActiveOrHistoricCurrencyCode_0Schema = z
+  .string()
+  .regex(/^[A-Z]{3,3}$/)
+  .openapi({
+    description:
+      'Identification of the currency in which the account is held. \nUsage: Currency should only be used in case one and the same account number covers several currencies\nand the initiating party needs to identify which currency needs to be used for settlement on the account.',
+  })
+  .openapi('ActiveOrHistoricCurrencyCode_0')
+
+const ActiveOrHistoricCurrencyCode_1Schema = z
+  .string()
+  .regex(/^[A-Z]{3,3}$/)
+  .openapi({
+    description:
+      'A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds".',
+  })
+  .openapi('ActiveOrHistoricCurrencyCode_1')
+
+const AddressLineSchema = z
+  .string()
+  .min(1)
+  .max(70)
+  .openapi({
+    description:
+      'Information that locates and identifies a specific address for a transaction entry, that is presented in free format text.',
+  })
+  .openapi('AddressLine')
+
+const BeneficiaryIdSchema = z
+  .string()
+  .min(1)
+  .max(40)
+  .openapi({
+    description:
+      'A unique and immutable identifier used to identify the beneficiary resource. This identifier has no meaning to the account owner.',
+  })
+  .openapi('BeneficiaryId')
+
+const BookingDateTimeSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description:
+      "Date and time when a transaction entry is posted to an account on the account servicer's books.\nUsage: Booking date is the expected booking date, unless the status is booked, in which case it is the actual booking date.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+  })
+  .openapi('BookingDateTime')
+
+const BuildingNumberSchema = z
+  .string()
+  .min(1)
+  .max(16)
+  .openapi({ description: 'Number that identifies the position of a building on a street.' })
+  .openapi('BuildingNumber')
+
+const CountryCodeSchema = z
+  .string()
+  .regex(/^[A-Z]{2,2}$/)
+  .openapi({ description: 'Nation with its own government, occupying a particular territory.' })
+  .openapi('CountryCode')
+
+const CountrySubDivisionSchema = z
+  .string()
+  .min(1)
+  .max(35)
+  .openapi({ description: 'Identifies a subdivision of a country eg, state, region, county.' })
+  .openapi('CountrySubDivision')
+
+const CreationDateTimeSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description:
+      'Date and time at which the resource was created.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
+  })
+  .openapi('CreationDateTime')
+
+const DateTimeSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description:
+      'Date and time associated with the date time type.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
+  })
+  .openapi('DateTime')
+
+const DebtorReferenceSchema = z
+  .string()
+  .min(1)
+  .max(35)
+  .openapi({
+    description:
+      'A reference value provided by the PSU to the PISP while setting up the scheduled payment.',
+  })
+  .openapi('DebtorReference')
+
+const Description_0Schema = z
+  .string()
+  .min(1)
+  .max(35)
+  .openapi({ description: 'Specifies the description of the account type.' })
+  .openapi('Description_0')
+
+const Description_1Schema = z
+  .string()
+  .min(1)
+  .max(128)
+  .openapi({ description: 'Description that may be available for the statement fee.' })
+  .openapi('Description_1')
+
+const Description_2Schema = z
+  .string()
+  .min(1)
+  .max(128)
+  .openapi({ description: 'Description that may be available for the statement interest.' })
+  .openapi('Description_2')
+
+const DirectDebitIdSchema = z
+  .string()
+  .min(1)
+  .max(40)
+  .openapi({
+    description:
+      'A unique and immutable identifier used to identify the direct debit resource. This identifier has no meaning to the account owner.',
+  })
+  .openapi('DirectDebitId')
+
+const EmailAddressSchema = z
+  .string()
+  .min(1)
+  .max(256)
+  .openapi({ description: 'Address for electronic mail (e-mail).' })
+  .openapi('EmailAddress')
+
+const EndDateTimeSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description:
+      'Date and time at which the statement period ends.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
+  })
+  .openapi('EndDateTime')
+
+const FileSchema = z.looseObject({}).openapi('File')
+
+const FinalPaymentDateTimeSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description:
+      'The date on which the final payment for a Standing Order schedule will be made.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
+  })
+  .openapi('FinalPaymentDateTime')
+
+const FirstPaymentDateTimeSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description:
+      'The date on which the first payment for a Standing Order schedule will be made.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
+  })
+  .openapi('FirstPaymentDateTime')
+
+const Frequency_0Schema = z
+  .string()
+  .regex(
+    /^(EvryDay)$|^(EvryWorkgDay)$|^(IntrvlWkDay:0[1-9]:0[1-7])$|^(WkInMnthDay:0[1-5]:0[1-7])$|^(IntrvlMnthDay:(0[1-6]|12|24):(-0[1-5]|0[1-9]|[12][0-9]|3[01]))$|^(QtrDay:(ENGLISH|SCOTTISH|RECEIVED))$/,
+  )
+  .openapi({
+    description:
+      'Individual Definitions:\nEvryDay - Every day\nEvryWorkgDay - Every working day\nIntrvlWkDay - An interval specified in weeks (01 to 09), and the day within the week (01 to 07)\nWkInMnthDay - A monthly interval, specifying the week of the month (01 to 05) and day within the week (01 to 07)\nIntrvlMnthDay - An interval specified in months (between 01 to 06, 12, 24), specifying the day within the month (-5 to -1, 1 to 31)\nQtrDay - Quarterly (either ENGLISH, SCOTTISH, or RECEIVED)\nENGLISH = Paid on the 25th March, 24th June, 29th September and 25th December. \nSCOTTISH = Paid on the 2nd February, 15th May, 1st August and 11th November.\nRECEIVED = Paid on the 20th March, 19th June, 24th September and 20th December. \nIndividual Patterns:\nEvryDay (ScheduleCode)\nEvryWorkgDay (ScheduleCode)\nIntrvlWkDay:IntervalInWeeks:DayInWeek (ScheduleCode + IntervalInWeeks + DayInWeek)\nWkInMnthDay:WeekInMonth:DayInWeek (ScheduleCode + WeekInMonth + DayInWeek)\nIntrvlMnthDay:IntervalInMonths:DayInMonth (ScheduleCode + IntervalInMonths + DayInMonth)\nQtrDay: + either (ENGLISH, SCOTTISH or RECEIVED) ScheduleCode + QuarterDay\nThe regular expression for this element combines five smaller versions for each permitted pattern. To aid legibility - the components are presented individually here:\nEvryDay\nEvryWorkgDay\nIntrvlWkDay:0[1-9]:0[1-7]\nWkInMnthDay:0[1-5]:0[1-7]\nIntrvlMnthDay:(0[1-6]|12|24):(-0[1-5]|0[1-9]|[12][0-9]|3[01])\nQtrDay:(ENGLISH|SCOTTISH|RECEIVED)\nFull Regular Expression:\n^(EvryDay)$|^(EvryWorkgDay)$|^(IntrvlWkDay:0[1-9]:0[1-7])$|^(WkInMnthDay:0[1-5]:0[1-7])$|^(IntrvlMnthDay:(0[1-6]|12|24):(-0[1-5]|0[1-9]|[12][0-9]|3[01]))$|^(QtrDay:(ENGLISH|SCOTTISH|RECEIVED))$',
+  })
+  .openapi('Frequency_0')
+
+const Frequency_1Schema = z
+  .string()
+  .regex(
+    /^(NotKnown)$|^(EvryDay)$|^(EvryWorkgDay)$|^(IntrvlDay:((0[2-9])|([1-2][0-9])|3[0-1]))$|^(IntrvlWkDay:0[1-9]:0[1-7])$|^(WkInMnthDay:0[1-5]:0[1-7])$|^(IntrvlMnthDay:(0[1-6]|12|24):(-0[1-5]|0[1-9]|[12][0-9]|3[01]))$|^(QtrDay:(ENGLISH|SCOTTISH|RECEIVED))$/,
+  )
+  .openapi({
+    description:
+      'Individual Definitions:\nNotKnown - Not Known\nEvryDay - Every day\nEvryWorkgDay - Every working day\nIntrvlDay - An interval specified in number of calendar days (02 to 31)\nIntrvlWkDay - An interval specified in weeks (01 to 09), and the day within the week (01 to 07)\nWkInMnthDay - A monthly interval, specifying the week of the month (01 to 05) and day within the week (01 to 07)\nIntrvlMnthDay - An interval specified in months (between 01 to 06, 12, 24), specifying the day within the month (-05 to -01, 01 to 31)\nQtrDay - Quarterly (either ENGLISH, SCOTTISH, or RECEIVED)\nENGLISH = Paid on the 25th March, 24th June, 29th September and 25th December.\nSCOTTISH = Paid on the 2nd February, 15th May, 1st August and 11th November.\nRECEIVED = Paid on the 20th March, 19th June, 24th September and 20th December.\nIndividual Patterns:\nNotKnown (ScheduleCode)\nEvryDay (ScheduleCode)\nEvryWorkgDay (ScheduleCode)\nIntrvlDay:NoOfDay (ScheduleCode + NoOfDay)\nIntrvlWkDay:IntervalInWeeks:DayInWeek (ScheduleCode + IntervalInWeeks + DayInWeek)\nWkInMnthDay:WeekInMonth:DayInWeek (ScheduleCode + WeekInMonth + DayInWeek)\nIntrvlMnthDay:IntervalInMonths:DayInMonth (ScheduleCode + IntervalInMonths + DayInMonth)\nQtrDay: + either (ENGLISH, SCOTTISH or RECEIVED) ScheduleCode + QuarterDay\nThe regular expression for this element combines five smaller versions for each permitted pattern. To aid legibility - the components are presented individually here:\nNotKnown\nEvryDay\nEvryWorkgDay\nIntrvlDay:((0[2-9])|([1-2][0-9])|3[0-1])\nIntrvlWkDay:0[1-9]:0[1-7]\nWkInMnthDay:0[1-5]:0[1-7]\nIntrvlMnthDay:(0[1-6]|12|24):(-0[1-5]|0[1-9]|[12][0-9]|3[01])\nQtrDay:(ENGLISH|SCOTTISH|RECEIVED)\nFull Regular Expression:\n^(NotKnown)$|^(EvryDay)$|^(EvryWorkgDay)$|^(IntrvlDay:((0[2-9])|([1-2][0-9])|3[0-1]))$|^(IntrvlWkDay:0[1-9]:0[1-7])$|^(WkInMnthDay:0[1-5]:0[1-7])$|^(IntrvlMnthDay:(0[1-6]|12|24):(-0[1-5]|0[1-9]|[12][0-9]|3[01]))$|^(QtrDay:(ENGLISH|SCOTTISH|RECEIVED))$',
+  })
+  .openapi('Frequency_1')
+
+const FullLegalNameSchema = z
+  .string()
+  .min(1)
+  .max(350)
+  .openapi({ description: 'Specifies a character string with a maximum length of 350 characters.' })
+  .openapi('FullLegalName')
+
+const Identification_0Schema = z
+  .string()
+  .min(1)
+  .max(256)
+  .openapi({
+    description:
+      'Identification assigned by an institution to identify an account. This identification is known by the account owner.',
+  })
+  .openapi('Identification_0')
+
+const Identification_1Schema = z
+  .string()
+  .min(1)
+  .max(35)
+  .openapi({ description: 'Unique and unambiguous identification of the servicing institution.' })
+  .openapi('Identification_1')
+
+const Identification_2Schema = z
+  .string()
+  .min(1)
+  .max(35)
+  .openapi({
+    description:
+      'Unique and unambiguous identification of a financial institution or a branch of a financial institution.',
+  })
+  .openapi('Identification_2')
+
+const LastPaymentDateTimeSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description:
+      'The date on which the last (most recent) payment for a Standing Order schedule was made.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
+  })
+  .openapi('LastPaymentDateTime')
+
+const MandateIdentificationSchema = z
+  .string()
+  .min(1)
+  .max(35)
+  .openapi({
+    description:
+      'Direct Debit reference. For AUDDIS service users provide Core Reference. For non AUDDIS service users provide Core reference if possible or last used reference.',
+  })
+  .openapi('MandateIdentification')
+
+const MaturityDateSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description:
+      'Maturity date of the account.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
+  })
+  .openapi('MaturityDate')
+
+const ModelSchema = z
+  .object({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Model')
+
+const Name_0Schema = z
+  .string()
+  .min(1)
+  .max(350)
+  .openapi({
+    description:
+      "The account name is the name or names of the account owner(s) represented at an account level, as displayed by the ASPSP's online channels.\nNote, the account name is not the product name or the nickname of the account.",
+  })
+  .openapi('Name_0')
+
+const Name_1Schema = z
+  .string()
+  .min(1)
+  .max(140)
+  .openapi({
+    description:
+      'Name by which an agent is known and which is usually used to identify that agent.',
+  })
+  .openapi('Name_1')
+
+const Name_2Schema = z
+  .string()
+  .min(1)
+  .max(70)
+  .openapi({ description: 'Name of Service User.' })
+  .openapi('Name_2')
+
+const Name_3Schema = z
+  .string()
+  .min(1)
+  .max(350)
+  .openapi({
+    description: 'Name by which a party is known and which is usually used to identify that party.',
+  })
+  .openapi('Name_3')
+
+const NextPaymentDateTimeSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description:
+      'The date on which the next payment for a Standing Order schedule will be made.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
+  })
+  .openapi('NextPaymentDateTime')
+
+const NicknameSchema = z
+  .string()
+  .min(1)
+  .max(70)
+  .openapi({
+    description:
+      'The nickname of the account, assigned by the account owner in order to provide an additional means of identification of the account.',
+  })
+  .openapi('Nickname')
+
+const NumberOfPaymentsSchema = z
+  .string()
+  .min(1)
+  .max(35)
+  .openapi({
+    description:
+      'Number of the payments that will be made in completing this frequency sequence including any executed since the sequence start date.',
+  })
+  .openapi('NumberOfPayments')
+
+const OBExternalAccountIdentification4CodeSchema = z
+  .string()
+  .openapi({
+    description:
+      'Name of the identification scheme, in a coded form as published in an external list.',
+    'x-namespaced-enum': [
+      'UK.OBIE.BBAN',
+      'UK.OBIE.IBAN',
+      'UK.OBIE.PAN',
+      'UK.OBIE.Paym',
+      'UK.OBIE.SortCodeAccountNumber',
+    ],
+  })
+  .openapi('OBExternalAccountIdentification4Code')
+
+const SecondaryIdentificationSchema = z
+  .string()
+  .min(1)
+  .max(34)
+  .openapi({
+    description:
+      'This is secondary identification of the account, as assigned by the account servicing institution. \nThis can be used by building societies to additionally identify accounts with a roll number (in addition to a sort code and account number combination).',
+  })
+  .openapi('SecondaryIdentification')
+
+const OBExternalAccountSubType1CodeSchema = z
+  .enum([
+    'ChargeCard',
+    'CreditCard',
+    'CurrentAccount',
+    'EMoney',
+    'Loan',
+    'Mortgage',
+    'PrePaidCard',
+    'Savings',
+  ])
+  .openapi({ description: 'Specifies the sub type of account (product family group).' })
+  .openapi('OBExternalAccountSubType1Code')
+
+const OBExternalAccountType1CodeSchema = z
+  .enum(['Business', 'Personal'])
+  .openapi({ description: 'Specifies the type of account (personal or business).' })
+  .openapi('OBExternalAccountType1Code')
+
+const OBExternalFinancialInstitutionIdentification4CodeSchema = z
+  .string()
+  .openapi({
+    description:
+      'Name of the identification scheme, in a coded form as published in an external list.',
+    'x-namespaced-enum': ['UK.OBIE.BICFI'],
+  })
+  .openapi('OBExternalFinancialInstitutionIdentification4Code')
+
+const OBBranchAndFinancialInstitutionIdentification5_0Schema = z
+  .object({
+    Identification: Identification_1Schema,
+    SchemeName: OBExternalFinancialInstitutionIdentification4CodeSchema,
+  })
+  .openapi({
+    description:
+      'Party that manages the account on behalf of the account owner, that is manages the registration and booking of entries on the account, calculates balances on the account and provides information about the account.',
+    required: ['SchemeName', 'Identification'],
+  })
+  .openapi('OBBranchAndFinancialInstitutionIdentification5_0')
+
+const OBAccountStatus1CodeSchema = z
+  .enum(['Deleted', 'Disabled', 'Enabled', 'Pending', 'ProForma'])
+  .openapi({ description: 'Specifies the status of account resource in code form.' })
+  .openapi('OBAccountStatus1Code')
+
+const StatusUpdateDateTimeSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description:
+      'Date and time at which the resource status was updated.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
+  })
+  .openapi('StatusUpdateDateTime')
+
+const OBAccount4Schema = z
+  .object({
+    Account: z
+      .array(
+        z
+          .object({
+            Identification: Identification_0Schema,
+            Name: Name_0Schema.exactOptional(),
+            SchemeName: OBExternalAccountIdentification4CodeSchema,
+            SecondaryIdentification: SecondaryIdentificationSchema.exactOptional(),
+          })
+          .openapi({
+            description: 'Provides the details to identify an account.',
+            required: ['SchemeName', 'Identification'],
+          }),
+      )
+      .exactOptional(),
+    AccountId: AccountIdSchema,
+    AccountSubType: OBExternalAccountSubType1CodeSchema,
+    AccountType: OBExternalAccountType1CodeSchema,
+    Currency: ActiveOrHistoricCurrencyCode_0Schema,
+    Description: Description_0Schema.exactOptional(),
+    Nickname: NicknameSchema.exactOptional(),
+    Servicer: OBBranchAndFinancialInstitutionIdentification5_0Schema.exactOptional(),
+    Status: OBAccountStatus1CodeSchema.exactOptional(),
+    StatusUpdateDateTime: StatusUpdateDateTimeSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Unambiguous identification of the account to which credit and debit entries are made.',
+    required: ['AccountId', 'Currency', 'AccountType', 'AccountSubType'],
+  })
+  .openapi('OBAccount4')
+
+const OBAccount4BasicSchema = z
+  .object({
+    AccountId: AccountIdSchema,
+    AccountSubType: OBExternalAccountSubType1CodeSchema,
+    AccountType: OBExternalAccountType1CodeSchema,
+    Currency: ActiveOrHistoricCurrencyCode_0Schema,
+    Description: Description_0Schema.exactOptional(),
+    Nickname: NicknameSchema.exactOptional(),
+    Status: OBAccountStatus1CodeSchema.exactOptional(),
+    StatusUpdateDateTime: StatusUpdateDateTimeSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Unambiguous identification of the account to which credit and debit entries are made.',
+    required: ['AccountId', 'Currency', 'AccountType', 'AccountSubType'],
+  })
+  .openapi('OBAccount4Basic')
+
+const OBAccount4DetailSchema = z
+  .object({
+    Account: z.array(
+      z
+        .object({
+          Identification: Identification_0Schema,
+          Name: Name_0Schema.exactOptional(),
+          SchemeName: OBExternalAccountIdentification4CodeSchema,
+          SecondaryIdentification: SecondaryIdentificationSchema.exactOptional(),
+        })
+        .openapi({
+          description: 'Provides the details to identify an account.',
+          required: ['SchemeName', 'Identification'],
+        }),
+    ),
+    AccountId: AccountIdSchema,
+    AccountSubType: OBExternalAccountSubType1CodeSchema,
+    AccountType: OBExternalAccountType1CodeSchema,
+    Currency: ActiveOrHistoricCurrencyCode_0Schema,
+    Description: Description_0Schema.exactOptional(),
+    Nickname: NicknameSchema.exactOptional(),
+    Servicer: OBBranchAndFinancialInstitutionIdentification5_0Schema.exactOptional(),
+    Status: OBAccountStatus1CodeSchema.exactOptional(),
+    StatusUpdateDateTime: StatusUpdateDateTimeSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Unambiguous identification of the account to which credit and debit entries are made.',
+    required: ['AccountId', 'Currency', 'AccountType', 'AccountSubType', 'Account'],
+  })
+  .openapi('OBAccount4Detail')
+
+const OpeningDateSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description:
+      'Date on which the account and related basic services are effectively operational for the account owner.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
+  })
+  .openapi('OpeningDate')
+
+const OBExternalSwitchStatusCodeSchema = z
+  .string()
+  .openapi({
+    description: 'Specifies the switch status for the account, in a coded form.',
+    'x-namespaced-enum': ['UK.CASS.NotSwitced', 'UK.CASS.SwitchCompleted'],
+  })
+  .openapi('OBExternalSwitchStatusCode')
+
+const OBAccount6Schema = z
+  .strictObject({
+    Account: z
+      .array(
+        z
+          .object({
+            Identification: Identification_0Schema,
+            Name: Name_0Schema.exactOptional(),
+            SchemeName: OBExternalAccountIdentification4CodeSchema,
+            SecondaryIdentification: SecondaryIdentificationSchema.exactOptional(),
+          })
+          .openapi({
+            description: 'Provides the details to identify an account.',
+            required: ['SchemeName', 'Identification'],
+          }),
+      )
+      .exactOptional(),
+    AccountId: AccountIdSchema,
+    AccountSubType: OBExternalAccountSubType1CodeSchema.exactOptional(),
+    AccountType: OBExternalAccountType1CodeSchema.exactOptional(),
+    Currency: ActiveOrHistoricCurrencyCode_0Schema.exactOptional(),
+    Description: Description_0Schema.exactOptional(),
+    MaturityDate: MaturityDateSchema.exactOptional(),
+    Nickname: NicknameSchema.exactOptional(),
+    OpeningDate: OpeningDateSchema.exactOptional(),
+    Servicer: OBBranchAndFinancialInstitutionIdentification5_0Schema.exactOptional(),
+    Status: OBAccountStatus1CodeSchema.exactOptional(),
+    StatusUpdateDateTime: StatusUpdateDateTimeSchema.exactOptional(),
+    SwitchStatus: OBExternalSwitchStatusCodeSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Unambiguous identification of the account to which credit and debit entries are made. The following fields are optional only for accounts that are switched:\n\n  * Data.Currency  \n  * Data.AccountType  \n  * Data.AccountSubType\n\nFor all other accounts, the fields must be populated by the ASPSP.',
+    required: ['AccountId'],
+  })
+  .openapi('OBAccount6')
+
+const OBAccount6BasicSchema = z
+  .strictObject({
+    AccountId: AccountIdSchema,
+    AccountSubType: OBExternalAccountSubType1CodeSchema,
+    AccountType: OBExternalAccountType1CodeSchema,
+    Currency: ActiveOrHistoricCurrencyCode_0Schema,
+    Description: Description_0Schema.exactOptional(),
+    MaturityDate: MaturityDateSchema.exactOptional(),
+    Nickname: NicknameSchema.exactOptional(),
+    OpeningDate: OpeningDateSchema.exactOptional(),
+    Status: OBAccountStatus1CodeSchema.exactOptional(),
+    StatusUpdateDateTime: StatusUpdateDateTimeSchema.exactOptional(),
+    SwitchStatus: OBExternalSwitchStatusCodeSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Unambiguous identification of the account to which credit and debit entries are made.',
+    required: ['AccountId', 'Currency', 'AccountType', 'AccountSubType'],
+  })
+  .openapi('OBAccount6Basic')
+
+const OBAccount6DetailSchema = z
+  .strictObject({
+    Account: z.array(
+      z
+        .object({
+          Identification: Identification_0Schema,
+          Name: Name_0Schema.exactOptional(),
+          SchemeName: OBExternalAccountIdentification4CodeSchema,
+          SecondaryIdentification: SecondaryIdentificationSchema.exactOptional(),
+        })
+        .openapi({
+          description: 'Provides the details to identify an account.',
+          required: ['SchemeName', 'Identification'],
+        }),
+    ),
+    AccountId: AccountIdSchema,
+    AccountSubType: OBExternalAccountSubType1CodeSchema,
+    AccountType: OBExternalAccountType1CodeSchema,
+    Currency: ActiveOrHistoricCurrencyCode_0Schema,
+    Description: Description_0Schema.exactOptional(),
+    MaturityDate: MaturityDateSchema.exactOptional(),
+    Nickname: NicknameSchema.exactOptional(),
+    OpeningDate: OpeningDateSchema.exactOptional(),
+    Servicer: OBBranchAndFinancialInstitutionIdentification5_0Schema.exactOptional(),
+    Status: OBAccountStatus1CodeSchema.exactOptional(),
+    StatusUpdateDateTime: StatusUpdateDateTimeSchema.exactOptional(),
+    SwitchStatus: OBExternalSwitchStatusCodeSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Unambiguous identification of the account to which credit and debit entries are made.',
+    required: ['AccountId', 'Currency', 'AccountType', 'AccountSubType', 'Account'],
+  })
+  .openapi('OBAccount6Detail')
+
+const OBActiveCurrencyAndAmountSimpleTypeSchema = z
+  .string()
+  .regex(/^\d{1,13}$|^\d{1,13}\.\d{1,5}$/)
+  .openapi({
+    description:
+      'A number of monetary units specified in an active currency where the unit of currency is explicit and compliant with ISO 4217.',
+  })
+  .openapi('OBActiveCurrencyAndAmountSimpleType')
+
+const OBActiveOrHistoricCurrencyAndAmount_0Schema = z
+  .object({
+    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
+    Currency: ActiveOrHistoricCurrencyCode_1Schema,
+  })
+  .openapi({
+    description: 'The amount of the most recent direct debit collection.',
+    required: ['Amount', 'Currency'],
+  })
+  .openapi('OBActiveOrHistoricCurrencyAndAmount_0')
+
+const OBActiveOrHistoricCurrencyAndAmount_1Schema = z
+  .object({
+    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
+    Currency: ActiveOrHistoricCurrencyCode_1Schema,
+  })
+  .openapi({
+    description:
+      'Amount of money to be moved between the debtor and creditor, before deduction of charges, expressed in the currency as ordered by the initiating party.\nUsage: This amount has to be transported unchanged through the transaction chain.',
+    required: ['Amount', 'Currency'],
+  })
+  .openapi('OBActiveOrHistoricCurrencyAndAmount_1')
+
+const OBActiveOrHistoricCurrencyAndAmount_10Schema = z
+  .object({
+    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
+    Currency: ActiveOrHistoricCurrencyCode_1Schema,
+  })
+  .openapi({
+    description: 'Transaction charges to be paid by the charge bearer.',
+    required: ['Amount', 'Currency'],
+  })
+  .openapi('OBActiveOrHistoricCurrencyAndAmount_10')
+
+const OBActiveOrHistoricCurrencyAndAmount_11Schema = z
+  .object({
+    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
+    Currency: ActiveOrHistoricCurrencyCode_1Schema,
+  })
+  .openapi({
+    description: 'The amount of the last (most recent) Standing Order instruction.',
+    required: ['Amount', 'Currency'],
+  })
+  .openapi('OBActiveOrHistoricCurrencyAndAmount_11')
+
+const OBActiveOrHistoricCurrencyAndAmount_2Schema = z
+  .object({
+    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
+    Currency: ActiveOrHistoricCurrencyCode_1Schema,
+  })
+  .openapi({
+    description: 'The amount of the first Standing Order',
+    required: ['Amount', 'Currency'],
+  })
+  .openapi('OBActiveOrHistoricCurrencyAndAmount_2')
+
+const OBActiveOrHistoricCurrencyAndAmount_3Schema = z
+  .object({
+    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
+    Currency: ActiveOrHistoricCurrencyCode_1Schema,
+  })
+  .openapi({
+    description: 'The amount of the next Standing Order.',
+    required: ['Amount', 'Currency'],
+  })
+  .openapi('OBActiveOrHistoricCurrencyAndAmount_3')
+
+const OBActiveOrHistoricCurrencyAndAmount_4Schema = z
+  .object({
+    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
+    Currency: ActiveOrHistoricCurrencyCode_1Schema,
+  })
+  .openapi({
+    description: 'The amount of the final Standing Order',
+    required: ['Amount', 'Currency'],
+  })
+  .openapi('OBActiveOrHistoricCurrencyAndAmount_4')
+
+const OBActiveOrHistoricCurrencyAndAmount_5Schema = z
+  .object({
+    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
+    Currency: ActiveOrHistoricCurrencyCode_1Schema,
+  })
+  .openapi({
+    description: 'Amount of money associated with the statement benefit type.',
+    required: ['Amount', 'Currency'],
+  })
+  .openapi('OBActiveOrHistoricCurrencyAndAmount_5')
+
+const OBActiveOrHistoricCurrencyAndAmount_6Schema = z
+  .object({
+    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
+    Currency: ActiveOrHistoricCurrencyCode_1Schema,
+  })
+  .openapi({
+    description: 'Amount of money associated with the statement fee type.',
+    required: ['Amount', 'Currency'],
+  })
+  .openapi('OBActiveOrHistoricCurrencyAndAmount_6')
+
+const OBActiveOrHistoricCurrencyAndAmount_7Schema = z
+  .object({
+    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
+    Currency: ActiveOrHistoricCurrencyCode_1Schema,
+  })
+  .openapi({
+    description: 'Amount of money associated with the statement interest amount type.',
+    required: ['Amount', 'Currency'],
+  })
+  .openapi('OBActiveOrHistoricCurrencyAndAmount_7')
+
+const OBActiveOrHistoricCurrencyAndAmount_8Schema = z
+  .object({
+    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
+    Currency: ActiveOrHistoricCurrencyCode_1Schema,
+  })
+  .openapi({
+    description: 'Amount of money associated with the amount type.',
+    required: ['Amount', 'Currency'],
+  })
+  .openapi('OBActiveOrHistoricCurrencyAndAmount_8')
+
+const OBActiveOrHistoricCurrencyAndAmount_9Schema = z
+  .object({
+    Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
+    Currency: ActiveOrHistoricCurrencyCode_1Schema,
+  })
+  .openapi({
+    description: 'Amount of money in the cash transaction entry.',
+    required: ['Amount', 'Currency'],
+  })
+  .openapi('OBActiveOrHistoricCurrencyAndAmount_9')
+
+const OBAddressTypeCodeSchema = z
+  .enum([
+    'Business',
+    'Correspondence',
+    'DeliveryTo',
+    'MailTo',
+    'POBox',
+    'Postal',
+    'Residential',
+    'Statement',
+  ])
+  .openapi({ description: 'Identifies the nature of the postal address.' })
+  .openapi('OBAddressTypeCode')
+
+const OBBalanceType1CodeSchema = z
+  .enum([
+    'ClosingAvailable',
+    'ClosingBooked',
+    'ClosingCleared',
+    'Expected',
+    'ForwardAvailable',
+    'Information',
+    'InterimAvailable',
+    'InterimBooked',
+    'InterimCleared',
+    'OpeningAvailable',
+    'OpeningBooked',
+    'OpeningCleared',
+    'PreviouslyClosedBooked',
+  ])
+  .openapi({ description: 'Balance type, in a coded form.' })
+  .openapi('OBBalanceType1Code')
+
+const OBBankTransactionCodeStructure1Schema = z
+  .object({
+    Code: z.string().openapi({ description: 'Specifies the family within a domain.' }),
+    SubCode: z
+      .string()
+      .openapi({ description: 'Specifies the sub-product family within a specific family.' }),
+  })
+  .openapi({
+    description:
+      'Set of elements used to fully identify the type of underlying transaction resulting in an entry.',
+    required: ['Code', 'SubCode'],
+  })
+  .openapi('OBBankTransactionCodeStructure1')
+
+const OBBeneficiaryType1CodeSchema = z
+  .enum(['Trusted', 'Ordinary'])
+  .openapi({ description: 'Specifies the Beneficiary Type.' })
+  .openapi('OBBeneficiaryType1Code')
+
+const OBCashAccount5_0Schema = z
+  .object({
+    Identification: Identification_0Schema,
+    Name: Name_0Schema.exactOptional(),
+    SchemeName: OBExternalAccountIdentification4CodeSchema,
+    SecondaryIdentification: SecondaryIdentificationSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Provides the details to identify the beneficiary account.',
+    required: ['SchemeName', 'Identification'],
+  })
+  .openapi('OBCashAccount5_0')
+
+const PostCodeSchema = z
+  .string()
+  .min(1)
+  .max(16)
+  .openapi({
+    description:
+      'Identifier consisting of a group of letters and/or numbers that is added to a postal address to assist the sorting of mail.',
+  })
+  .openapi('PostCode')
+
+const StreetNameSchema = z
+  .string()
+  .min(1)
+  .max(70)
+  .openapi({ description: 'Name of a street or thoroughfare.' })
+  .openapi('StreetName')
+
+const TownNameSchema = z
+  .string()
+  .min(1)
+  .max(35)
+  .openapi({
+    description: 'Name of a built-up area, with defined boundaries, and a local government.',
+  })
+  .openapi('TownName')
+
+const OBPostalAddress6Schema = z
+  .object({
+    AddressLine: z
+      .array(
+        z
+          .string()
+          .min(1)
+          .max(70)
+          .openapi({
+            description:
+              'Information that locates and identifies a specific address, as defined by postal services, presented in free format text.',
+          }),
+      )
+      .min(0)
+      .max(7)
+      .exactOptional(),
+    AddressType: OBAddressTypeCodeSchema.exactOptional(),
+    BuildingNumber: BuildingNumberSchema.exactOptional(),
+    Country: z
+      .string()
+      .regex(/^[A-Z]{2,2}$/)
+      .exactOptional()
+      .openapi({ description: 'Nation with its own government.' }),
+    CountrySubDivision: z
+      .string()
+      .min(1)
+      .max(35)
+      .exactOptional()
+      .openapi({
+        description: 'Identifies a subdivision of a country such as state, region, county.',
+      }),
+    Department: z
+      .string()
+      .min(1)
+      .max(70)
+      .exactOptional()
+      .openapi({
+        description: 'Identification of a division of a large organisation or building.',
+      }),
+    PostCode: PostCodeSchema.exactOptional(),
+    StreetName: StreetNameSchema.exactOptional(),
+    SubDepartment: z
+      .string()
+      .min(1)
+      .max(70)
+      .exactOptional()
+      .openapi({
+        description: 'Identification of a sub-division of a large organisation or building.',
+      }),
+    TownName: TownNameSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Information that locates and identifies a specific address, as defined by postal services.',
+    required: [],
+  })
+  .openapi('OBPostalAddress6')
+
+const OBBranchAndFinancialInstitutionIdentification6_0Schema = z
+  .object({
+    Identification: Identification_1Schema.exactOptional(),
+    Name: Name_1Schema.exactOptional(),
+    PostalAddress: OBPostalAddress6Schema.exactOptional(),
+    SchemeName: OBExternalFinancialInstitutionIdentification4CodeSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Party that manages the account on behalf of the account owner, that is manages the registration and booking of entries on the account, calculates balances on the account and provides information about the account.\nThis is the servicer of the beneficiary account.',
+    required: [],
+  })
+  .openapi('OBBranchAndFinancialInstitutionIdentification6_0')
+
+const ReferenceSchema = z
+  .string()
+  .min(1)
+  .max(35)
+  .openapi({
+    description:
+      "Unique reference, as assigned by the creditor, to unambiguously refer to the payment transaction.\nUsage: If available, the initiating party should provide this reference in the structured remittance information, to enable reconciliation by the creditor upon receipt of the amount of money.\nIf the business context requires the use of a creditor reference or a payment remit identification, and only one identifier can be passed through the end-to-end chain, the creditor's reference or payment remittance identification should be quoted in the end-to-end transaction identification.",
+  })
+  .openapi('Reference')
+
+const OBBeneficiary5Schema = z
+  .strictObject({
+    AccountId: AccountIdSchema.exactOptional(),
+    BeneficiaryId: BeneficiaryIdSchema.exactOptional(),
+    BeneficiaryType: OBBeneficiaryType1CodeSchema.exactOptional(),
+    CreditorAccount: OBCashAccount5_0Schema.exactOptional(),
+    CreditorAgent: OBBranchAndFinancialInstitutionIdentification6_0Schema.exactOptional(),
+    Reference: ReferenceSchema.exactOptional(),
+    SupplementaryData: OBSupplementaryData1Schema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OBBeneficiary5')
+
+const OBBeneficiary5BasicSchema = z
+  .strictObject({
+    AccountId: AccountIdSchema.exactOptional(),
+    BeneficiaryId: BeneficiaryIdSchema.exactOptional(),
+    BeneficiaryType: OBBeneficiaryType1CodeSchema.exactOptional(),
+    Reference: ReferenceSchema.exactOptional(),
+    SupplementaryData: OBSupplementaryData1Schema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('OBBeneficiary5Basic')
+
+const OBBeneficiary5DetailSchema = z
+  .strictObject({
+    AccountId: AccountIdSchema.exactOptional(),
+    BeneficiaryId: BeneficiaryIdSchema.exactOptional(),
+    BeneficiaryType: OBBeneficiaryType1CodeSchema.exactOptional(),
+    CreditorAccount: OBCashAccount5_0Schema,
+    CreditorAgent: OBBranchAndFinancialInstitutionIdentification6_0Schema.exactOptional(),
+    Reference: ReferenceSchema.exactOptional(),
+    SupplementaryData: OBSupplementaryData1Schema.exactOptional(),
+  })
+  .openapi({ required: ['CreditorAccount'] })
+  .openapi('OBBeneficiary5Detail')
+
+const OBBranchAndFinancialInstitutionIdentification5_1Schema = z
+  .object({
+    Identification: Identification_1Schema,
+    SchemeName: OBExternalFinancialInstitutionIdentification4CodeSchema,
+  })
+  .openapi({
+    description:
+      'Party that manages the account on behalf of the account owner, that is manages the registration and booking of entries on the account, calculates balances on the account and provides information about the account.\nThis is the servicer of the beneficiary account.',
+    required: ['SchemeName', 'Identification'],
+  })
+  .openapi('OBBranchAndFinancialInstitutionIdentification5_1')
+
+const OBBranchAndFinancialInstitutionIdentification6_1Schema = z
+  .object({
+    Identification: Identification_2Schema.exactOptional(),
+    Name: Name_1Schema.exactOptional(),
+    PostalAddress: OBPostalAddress6Schema.exactOptional(),
+    SchemeName: OBExternalFinancialInstitutionIdentification4CodeSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Financial institution servicing an account for the creditor.',
+    required: [],
+  })
+  .openapi('OBBranchAndFinancialInstitutionIdentification6_1')
+
+const OBBranchAndFinancialInstitutionIdentification6_2Schema = z
+  .object({
+    Identification: Identification_2Schema.exactOptional(),
+    Name: Name_1Schema.exactOptional(),
+    PostalAddress: OBPostalAddress6Schema.exactOptional(),
+    SchemeName: OBExternalFinancialInstitutionIdentification4CodeSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Financial institution servicing an account for the debtor.',
+    required: [],
+  })
+  .openapi('OBBranchAndFinancialInstitutionIdentification6_2')
+
+const OBCashAccount5_1Schema = z
+  .object({
+    Identification: z
+      .string()
+      .min(1)
+      .max(256)
+      .openapi({ description: 'Beneficiary account identification.' }),
+    Name: Name_0Schema.exactOptional(),
+    SchemeName: OBExternalAccountIdentification4CodeSchema,
+    SecondaryIdentification: SecondaryIdentificationSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Provides the details to identify the beneficiary account.',
+    required: ['SchemeName', 'Identification'],
+  })
+  .openapi('OBCashAccount5_1')
+
+const OBCashAccount6_0Schema = z
+  .object({
+    Identification: Identification_0Schema.exactOptional(),
+    Name: Name_0Schema.exactOptional(),
+    SchemeName: OBExternalAccountIdentification4CodeSchema.exactOptional(),
+    SecondaryIdentification: SecondaryIdentificationSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Unambiguous identification of the account of the creditor, in the case of a debit transaction.',
+    required: [],
+  })
+  .openapi('OBCashAccount6_0')
+
+const OBCashAccount6_1Schema = z
+  .object({
+    Identification: Identification_0Schema.exactOptional(),
+    Name: Name_0Schema.exactOptional(),
+    SchemeName: OBExternalAccountIdentification4CodeSchema.exactOptional(),
+    SecondaryIdentification: SecondaryIdentificationSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Unambiguous identification of the account of the debtor, in the case of a crebit transaction.',
+    required: [],
+  })
+  .openapi('OBCashAccount6_1')
+
+const OBCreditDebitCode_0Schema = z
+  .enum(['Credit', 'Debit'])
+  .openapi({
+    description:
+      'Indicates whether the amount is a credit or a debit. \nUsage: A zero amount is considered to be a credit amount.',
+  })
+  .openapi('OBCreditDebitCode_0')
+
+const OBCreditDebitCode_1Schema = z
+  .enum(['Credit', 'Debit'])
+  .openapi({ description: 'Indicates whether the transaction is a credit or a debit entry.' })
+  .openapi('OBCreditDebitCode_1')
+
+const OBCreditDebitCode_2Schema = z
+  .enum(['Credit', 'Debit'])
+  .openapi({
+    description:
+      'Indicates whether the balance is a credit or a debit balance. \nUsage: A zero balance is considered to be a credit balance.',
+  })
+  .openapi('OBCreditDebitCode_2')
+
+const OBCurrencyExchange5Schema = z
+  .object({
+    ContractIdentification: z
+      .string()
+      .min(1)
+      .max(35)
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique identification to unambiguously identify the foreign exchange contract.',
+      }),
+    ExchangeRate: z
+      .number()
+      .openapi({
+        description:
+          'Factor used to convert an amount from one currency into another. This reflects the price at which one currency was bought with another currency.\nUsage: ExchangeRate expresses the ratio between UnitCurrency and QuotedCurrency (ExchangeRate = UnitCurrency/QuotedCurrency).',
+      }),
+    InstructedAmount: z
+      .object({
+        Amount: OBActiveCurrencyAndAmountSimpleTypeSchema,
+        Currency: ActiveOrHistoricCurrencyCode_1Schema,
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'Amount of money to be moved between the debtor and creditor, before deduction of charges, expressed in the currency as ordered by the initiating party.',
+        required: ['Amount', 'Currency'],
+      }),
+    QuotationDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Date and time at which an exchange rate is quoted.All dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00',
+      }),
+    SourceCurrency: z
+      .string()
+      .regex(/^[A-Z]{3,3}$/)
+      .openapi({
+        description: 'Currency from which an amount is to be converted in a currency conversion.',
+      }),
+    TargetCurrency: z
+      .string()
+      .regex(/^[A-Z]{3,3}$/)
+      .exactOptional()
+      .openapi({
+        description: 'Currency into which an amount is to be converted in a currency conversion.',
+      }),
+    UnitCurrency: z
+      .string()
+      .regex(/^[A-Z]{3,3}$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Currency in which the rate of exchange is expressed in a currency exchange. In the example 1GBP = xxxCUR, the unit currency is GBP.',
+      }),
+  })
+  .openapi({
+    description: 'Set of elements used to provide details on the currency exchange.',
+    required: ['SourceCurrency', 'ExchangeRate'],
+  })
+  .openapi('OBCurrencyExchange5')
+
+const OBEntryStatus1CodeSchema = z
+  .enum(['Booked', 'Pending'])
+  .openapi({ description: 'Status of a transaction entry on the books of the account servicer.' })
+  .openapi('OBEntryStatus1Code')
+
+const OBError1Schema = z
+  .strictObject({
+    ErrorCode: z
+      .string()
+      .openapi({
+        description: 'Low level textual error code, e.g., UK.OBIE.Field.Missing',
+        'x-namespaced-enum': [
+          'UK.OBIE.Field.Expected',
+          'UK.OBIE.Field.Invalid',
+          'UK.OBIE.Field.InvalidDate',
+          'UK.OBIE.Field.Missing',
+          'UK.OBIE.Field.Unexpected',
+          'UK.OBIE.Header.Invalid',
+          'UK.OBIE.Header.Missing',
+          'UK.OBIE.Reauthenticate',
+          'UK.OBIE.Resource.ConsentMismatch',
+          'UK.OBIE.Resource.InvalidConsentStatus',
+          'UK.OBIE.Resource.InvalidFormat',
+          'UK.OBIE.Resource.NotFound',
+          'UK.OBIE.Rules.AfterCutOffDateTime',
+          'UK.OBIE.Rules.DuplicateReference',
+          'UK.OBIE.Signature.Invalid',
+          'UK.OBIE.Signature.InvalidClaim',
+          'UK.OBIE.Signature.Malformed',
+          'UK.OBIE.Signature.Missing',
+          'UK.OBIE.Signature.MissingClaim',
+          'UK.OBIE.Signature.Unexpected',
+          'UK.OBIE.UnexpectedError',
+          'UK.OBIE.Unsupported.AccountIdentifier',
+          'UK.OBIE.Unsupported.AccountSecondaryIdentifier',
+          'UK.OBIE.Unsupported.Currency',
+          'UK.OBIE.Unsupported.Frequency',
+          'UK.OBIE.Unsupported.LocalInstrument',
+          'UK.OBIE.Unsupported.Scheme',
+        ],
+      }),
+    Message: z
+      .string()
+      .min(1)
+      .max(500)
+      .openapi({
+        description:
+          "A description of the error that occurred. e.g., 'A mandatory field isn't supplied' or 'RequestedExecutionDateTime must be in future'\nOBIE doesn't standardise this field",
+      }),
+    Path: z
+      .string()
+      .min(1)
+      .max(500)
+      .exactOptional()
+      .openapi({
+        description:
+          'Recommended but optional reference to the JSON Path of the field with error, e.g., Data.Initiation.InstructedAmount.Currency',
+      }),
+    Url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'URL to help remediate the problem, or provide more information, or to API Reference, or help etc',
+      }),
+  })
+  .refine((val) => Object.keys(val).length >= 1)
+  .openapi({ required: ['ErrorCode', 'Message'] })
+  .openapi('OBError1')
+
+const OBErrorResponse1Schema = z
+  .strictObject({
+    Code: z
+      .string()
+      .min(1)
+      .max(40)
+      .openapi({ description: 'High level textual error code, to help categorize the errors.' }),
+    Errors: z.array(OBError1Schema).min(1),
+    Id: z
+      .string()
+      .min(1)
+      .max(40)
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique reference for the error instance, for audit purposes, in case of unknown/unclassified errors.',
+      }),
+    Message: z
+      .string()
+      .min(1)
+      .max(500)
+      .openapi({
+        description:
+          "Brief Error message, e.g., 'There is something wrong with the request parameters provided'",
+      }),
+  })
+  .openapi({
+    description:
+      'An array of detail error codes, and messages, and URLs to documentation to help remediation.',
+    required: ['Code', 'Message', 'Errors'],
+  })
+  .openapi('OBErrorResponse1')
+
+const OBExternalAccountRole1CodeSchema = z
+  .string()
+  .openapi({
+    description: 'A party’s role with respect to the related account.',
+    'x-namespaced-enum': [
+      'UK.OBIE.Administrator',
+      'UK.OBIE.Beneficiary',
+      'UK.OBIE.CustodianForMinor',
+      'UK.OBIE.Granter',
+      'UK.OBIE.LegalGuardian',
+      'UK.OBIE.OtherParty',
+      'UK.OBIE.PowerOfAttorney',
+      'UK.OBIE.Principal',
+      'UK.OBIE.Protector',
+      'UK.OBIE.RegisteredShareholderName',
+      'UK.OBIE.SecondaryOwner',
+      'UK.OBIE.SeniorManagingOfficial',
+      'UK.OBIE.Settlor',
+      'UK.OBIE.SuccessorOnDeath',
+    ],
+  })
+  .openapi('OBExternalAccountRole1Code')
+
+const OBExternalDirectDebitStatus1CodeSchema = z
+  .enum(['Active', 'Inactive'])
+  .openapi({ description: 'Specifies the status of the direct debit in code form.' })
+  .openapi('OBExternalDirectDebitStatus1Code')
+
+const OBExternalLegalStructureType1CodeSchema = z
+  .string()
+  .openapi({
+    description: 'Legal standing of the party.',
+    'x-namespaced-enum': [
+      'UK.OBIE.CIC',
+      'UK.OBIE.CIO',
+      'UK.OBIE.Charity',
+      'UK.OBIE.CoOp',
+      'UK.OBIE.GeneralPartnership',
+      'UK.OBIE.Individual',
+      'UK.OBIE.LimitedLiabilityPartnership',
+      'UK.OBIE.LimitedPartnership',
+      'UK.OBIE.PrivateLimitedCompany',
+      'UK.OBIE.PublicLimitedCompany',
+      'UK.OBIE.ScottishLimitedPartnership',
+      'UK.OBIE.Sole',
+    ],
+  })
+  .openapi('OBExternalLegalStructureType1Code')
+
+const OBExternalPartyType1CodeSchema = z
+  .enum(['Delegate', 'Joint', 'Sole'])
+  .openapi({ description: 'Party type, in a coded form.' })
+  .openapi('OBExternalPartyType1Code')
+
+const OBExternalScheduleType1CodeSchema = z
+  .enum(['Arrival', 'Execution'])
+  .openapi({ description: 'Specifies the scheduled payment date type requested' })
+  .openapi('OBExternalScheduleType1Code')
+
+const OBExternalStandingOrderStatus1CodeSchema = z
+  .enum(['Active', 'Inactive'])
+  .openapi({ description: 'Specifies the status of the standing order in code form.' })
+  .openapi('OBExternalStandingOrderStatus1Code')
+
+const OBExternalStatementAmountType1CodeSchema = z
+  .string()
+  .openapi({
+    description: 'Amount type, in a coded form.',
+    'x-namespaced-enum': [
+      'UK.OBIE.ArrearsClosingBalance',
+      'UK.OBIE.AvailableBalance',
+      'UK.OBIE.AverageBalanceWhenInCredit',
+      'UK.OBIE.AverageBalanceWhenInDebit',
+      'UK.OBIE.AverageDailyBalance',
+      'UK.OBIE.BalanceTransferClosingBalance',
+      'UK.OBIE.CashClosingBalance',
+      'UK.OBIE.ClosingBalance',
+      'UK.OBIE.CreditLimit',
+      'UK.OBIE.CurrentPayment',
+      'UK.OBIE.DirectDebitPaymentDue',
+      'UK.OBIE.FSCSInsurance',
+      'UK.OBIE.MinimumPaymentDue',
+      'UK.OBIE.PendingTransactionsBalance',
+      'UK.OBIE.PreviousClosingBalance',
+      'UK.OBIE.PreviousPayment',
+      'UK.OBIE.PurchaseClosingBalance',
+      'UK.OBIE.StartingBalance',
+      'UK.OBIE.TotalAdjustments',
+      'UK.OBIE.TotalCashAdvances',
+      'UK.OBIE.TotalCharges',
+      'UK.OBIE.TotalCredits',
+      'UK.OBIE.TotalDebits',
+      'UK.OBIE.TotalPurchases',
+    ],
+  })
+  .openapi('OBExternalStatementAmountType1Code')
+
+const OBExternalStatementBenefitType1CodeSchema = z
+  .string()
+  .openapi({
+    description: 'Benefit type, in a coded form.',
+    'x-namespaced-enum': [
+      'UK.OBIE.Cashback',
+      'UK.OBIE.Insurance',
+      'UK.OBIE.TravelDiscount',
+      'UK.OBIE.TravelInsurance',
+    ],
+  })
+  .openapi('OBExternalStatementBenefitType1Code')
+
+const OBExternalStatementDateTimeType1CodeSchema = z
+  .string()
+  .openapi({
+    description: 'Date time type, in a coded form.',
+    'x-namespaced-enum': [
+      'UK.OBIE.BalanceTransferPromoEnd',
+      'UK.OBIE.DirectDebitDue',
+      'UK.OBIE.LastPayment',
+      'UK.OBIE.LastStatement',
+      'UK.OBIE.NextStatement',
+      'UK.OBIE.PaymentDue',
+      'UK.OBIE.PurchasePromoEnd',
+      'UK.OBIE.StatementAvailable',
+    ],
+  })
+  .openapi('OBExternalStatementDateTimeType1Code')
+
+const OBExternalStatementFeeFrequency1CodeSchema = z
+  .string()
+  .openapi({
+    description: 'How frequently the fee is applied to the Account.',
+    'x-namespaced-enum': [
+      'UK.OBIE.ChargingPeriod',
+      'UK.OBIE.PerTransactionAmount',
+      'UK.OBIE.PerTransactionPercentage',
+      'UK.OBIE.Quarterly',
+      'UK.OBIE.StatementMonthly',
+      'UK.OBIE.Weekly',
+    ],
+  })
+  .openapi('OBExternalStatementFeeFrequency1Code')
+
+const OBExternalStatementFeeRateType1CodeSchema = z
+  .string()
+  .openapi({
+    description: 'Description that may be available for the statement fee rate type.',
+    'x-namespaced-enum': ['UK.OBIE.AER', 'UK.OBIE.EAR'],
+  })
+  .openapi('OBExternalStatementFeeRateType1Code')
+
+const OBExternalStatementFeeType1CodeSchema = z
+  .string()
+  .openapi({
+    description: 'Fee type, in a coded form.',
+    'x-namespaced-enum': [
+      'UK.OBIE.Annual',
+      'UK.OBIE.BalanceTransfer',
+      'UK.OBIE.CashAdvance',
+      'UK.OBIE.CashTransaction',
+      'UK.OBIE.ForeignCashTransaction',
+      'UK.OBIE.ForeignTransaction',
+      'UK.OBIE.Gambling',
+      'UK.OBIE.LatePayment',
+      'UK.OBIE.MoneyTransfer',
+      'UK.OBIE.Monthly',
+      'UK.OBIE.Overlimit',
+      'UK.OBIE.PostalOrder',
+      'UK.OBIE.PrizeEntry',
+      'UK.OBIE.StatementCopy',
+      'UK.OBIE.Total',
+    ],
+  })
+  .openapi('OBExternalStatementFeeType1Code')
+
+const OBExternalStatementInterestFrequency1CodeSchema = z
+  .string()
+  .openapi({
+    description: 'Specifies the statement fee type requested',
+    'x-namespaced-enum': [
+      'UK.OBIE.Daily',
+      'UK.OBIE.HalfYearly',
+      'UK.OBIE.Monthly',
+      'UK.OBIE.PerStatementDate',
+      'UK.OBIE.Quarterly',
+      'UK.OBIE.Weekly',
+      'UK.OBIE.Yearly',
+    ],
+  })
+  .openapi('OBExternalStatementInterestFrequency1Code')
+
+const OBExternalStatementInterestRateType1CodeSchema = z
+  .string()
+  .openapi({
+    description: 'Description that may be available for the statement Interest rate type.',
+    'x-namespaced-enum': [
+      'UK.OBIE.BOEBaseRate',
+      'UK.OBIE.FixedRate',
+      'UK.OBIE.Gross',
+      'UK.OBIE.LoanProviderBaseRate',
+      'UK.OBIE.Net',
+    ],
+  })
+  .openapi('OBExternalStatementInterestRateType1Code')
+
+const OBExternalStatementInterestType1CodeSchema = z
+  .string()
+  .openapi({
+    description: 'Interest amount type, in a coded form.',
+    'x-namespaced-enum': [
+      'UK.OBIE.BalanceTransfer',
+      'UK.OBIE.Cash',
+      'UK.OBIE.EstimatedNext',
+      'UK.OBIE.Purchase',
+      'UK.OBIE.Total',
+    ],
+  })
+  .openapi('OBExternalStatementInterestType1Code')
+
+const OBExternalStatementRateType1CodeSchema = z
+  .string()
+  .openapi({
+    description: 'Statement rate type, in a coded form.',
+    'x-namespaced-enum': [
+      'UK.OBIE.AnnualBalanceTransfer',
+      'UK.OBIE.AnnualBalanceTransferAfterPromo',
+      'UK.OBIE.AnnualBalanceTransferPromo',
+      'UK.OBIE.AnnualCash',
+      'UK.OBIE.AnnualPurchase',
+      'UK.OBIE.AnnualPurchaseAfterPromo',
+      'UK.OBIE.AnnualPurchasePromo',
+      'UK.OBIE.MonthlyBalanceTransfer',
+      'UK.OBIE.MonthlyCash',
+      'UK.OBIE.MonthlyPurchase',
+    ],
+  })
+  .openapi('OBExternalStatementRateType1Code')
+
+const OBExternalStatementType1CodeSchema = z
+  .enum(['AccountClosure', 'AccountOpening', 'Annual', 'Interim', 'RegularPeriodic'])
+  .openapi({ description: 'Statement type, in a coded form.' })
+  .openapi('OBExternalStatementType1Code')
+
+const OBExternalStatementValueType1CodeSchema = z
+  .string()
+  .openapi({
+    description: 'Statement value type, in a coded form.',
+    'x-namespaced-enum': [
+      'UK.OBIE.AirMilesPoints',
+      'UK.OBIE.AirMilesPointsBalance',
+      'UK.OBIE.Credits',
+      'UK.OBIE.Debits',
+      'UK.OBIE.HotelPoints',
+      'UK.OBIE.HotelPointsBalance',
+      'UK.OBIE.RetailShoppingPoints',
+      'UK.OBIE.RetailShoppingPointsBalance',
+    ],
+  })
+  .openapi('OBExternalStatementValueType1Code')
+
+const OBMerchantDetails1Schema = z
+  .object({
+    MerchantCategoryCode: z
+      .string()
+      .min(3)
+      .max(4)
+      .exactOptional()
+      .openapi({
+        description:
+          'Category code conform to ISO 18245, related to the type of services or goods the merchant provides for the transaction.',
+      }),
+    MerchantName: z
+      .string()
+      .min(1)
+      .max(350)
+      .exactOptional()
+      .openapi({ description: 'Name by which the merchant is known.' }),
+  })
+  .openapi({ description: 'Details of the merchant involved in the transaction.', required: [] })
+  .openapi('OBMerchantDetails1')
+
 const PhoneNumber_1Schema = z
   .string()
   .regex(/\+[0-9]{1,3}-[0-9()+\-]{1,30}/)
@@ -7172,390 +8956,7 @@ const OBReadParty3Schema = z
   .openapi({ required: ['Data'] })
   .openapi('OBReadParty3')
 
-const OBInterestCalculationMethod1CodeSchema = z
-  .enum(['ITCO', 'ITOT', 'ITSI'])
-  .openapi({ description: 'Methods of calculating interest' })
-  .openapi('OBInterestCalculationMethod1Code')
-
-const OBCodeMnemonicSchema = z
-  .string()
-  .regex(/^\\w{0,4}$/)
-  .openapi({ description: 'The four letter Mnemonic used within an XML file to identify a code' })
-  .openapi('OBCodeMnemonic')
-
-const OBOtherCodeType1_0Schema = z
-  .strictObject({
-    Code: OBCodeMnemonicSchema.exactOptional(),
-    Description: Description_3Schema,
-    Name: Name_4Schema,
-  })
-  .openapi({ required: ['Name', 'Description'] })
-  .openapi('OBOtherCodeType1_0')
-
-const OBInterestFixedVariableType1CodeSchema = z
-  .enum(['INFI', 'INVA'])
-  .openapi({ description: 'Type of interest rate, Fixed or Variable' })
-  .openapi('OBInterestFixedVariableType1Code')
-
-const OBOtherCodeType1_1Schema = z
-  .strictObject({
-    Code: OBCodeMnemonicSchema.exactOptional(),
-    Description: Description_3Schema,
-    Name: Name_4Schema,
-  })
-  .openapi({
-    description: 'Other application frequencies that are not available in the standard code list',
-    required: ['Name', 'Description'],
-  })
-  .openapi('OBOtherCodeType1_1')
-
-const OBOtherCodeType1_2Schema = z
-  .strictObject({
-    Code: OBCodeMnemonicSchema.exactOptional(),
-    Description: Description_3Schema,
-    Name: Name_4Schema,
-  })
-  .openapi({
-    description: 'Other calculation frequency which is not available in the standard code set.',
-    required: ['Name', 'Description'],
-  })
-  .openapi('OBOtherCodeType1_2')
-
-const OBFeeFrequency1Code_4Schema = z
-  .enum([
-    'FEAC',
-    'FEAO',
-    'FECP',
-    'FEDA',
-    'FEHO',
-    'FEI',
-    'FEMO',
-    'FEOA',
-    'FEOT',
-    'FEPC',
-    'FEPH',
-    'FEPO',
-    'FEPS',
-    'FEPT',
-    'FEPTA',
-    'FEPTP',
-    'FEQU',
-    'FESM',
-    'FEST',
-    'FEWE',
-    'FEYE',
-  ])
-  .openapi({ description: 'Period e.g. day, week, month etc. for which the fee/charge is capped' })
-  .openapi('OBFeeFrequency1Code_4')
-
-const OBAmount1_4Schema = z
-  .string()
-  .regex(/^(-?\d{1,14}){1}(\.\d{1,4}){0,1}$/)
-  .openapi({
-    description:
-      'Cap amount charged for a fee/charge (where it is charged in terms of an amount rather than a rate)',
-  })
-  .openapi('OBAmount1_4')
-
-const OBMinMaxType1CodeSchema = z
-  .enum(['FMMN', 'FMMX'])
-  .openapi({ description: 'Min Max type' })
-  .openapi('OBMinMaxType1Code')
-
-const OBFeeFrequency1Code_2Schema = z
-  .enum([
-    'FEAC',
-    'FEAO',
-    'FECP',
-    'FEDA',
-    'FEHO',
-    'FEI',
-    'FEMO',
-    'FEOA',
-    'FEOT',
-    'FEPC',
-    'FEPH',
-    'FEPO',
-    'FEPS',
-    'FEPT',
-    'FEPTA',
-    'FEPTP',
-    'FEQU',
-    'FESM',
-    'FEST',
-    'FEWE',
-    'FEYE',
-  ])
-  .openapi({ description: 'How frequently the fee/charge is applied to the account' })
-  .openapi('OBFeeFrequency1Code_2')
-
-const OBFeeFrequency1Code_3Schema = z
-  .enum([
-    'FEAC',
-    'FEAO',
-    'FECP',
-    'FEDA',
-    'FEHO',
-    'FEI',
-    'FEMO',
-    'FEOA',
-    'FEOT',
-    'FEPC',
-    'FEPH',
-    'FEPO',
-    'FEPS',
-    'FEPT',
-    'FEPTA',
-    'FEPTP',
-    'FEQU',
-    'FESM',
-    'FEST',
-    'FEWE',
-    'FEYE',
-  ])
-  .openapi({ description: 'How frequently the fee/charge is calculated' })
-  .openapi('OBFeeFrequency1Code_3')
-
-const OBAmount1_3Schema = z
-  .string()
-  .regex(/^(-?\d{1,14}){1}(\.\d{1,4}){0,1}$/)
-  .openapi({
-    description:
-      'Fee Amount charged for a fee/charge (where it is charged in terms of an amount rather than a rate)',
-  })
-  .openapi('OBAmount1_3')
-
-const OBRate1_12Schema = z
-  .string()
-  .regex(/^(-?\d{1,3}){1}(\.\d{1,4}){0,1}$/)
-  .openapi({
-    description:
-      'Rate charged for Fee/Charge (where it is charged in terms of a rate rather than an amount)',
-  })
-  .openapi('OBRate1_12')
-
-const OBInterestRateType1Code_1Schema = z
-  .enum(['INBB', 'INFR', 'INGR', 'INLR', 'INNE', 'INOT'])
-  .openapi({
-    description:
-      'Rate type for Fee/Charge (where it is charged in terms of a rate rather than an amount)',
-  })
-  .openapi('OBInterestRateType1Code_1')
-
-const OBFeeType1CodeSchema = z
-  .enum(['FEPF', 'FTOT', 'FYAF', 'FYAM', 'FYAQ', 'FYCP', 'FYDB', 'FYMI', 'FYXX'])
-  .openapi({ description: 'Fee/Charge Type' })
-  .openapi('OBFeeType1Code')
-
-const OBOtherCodeType1_6Schema = z
-  .strictObject({
-    Code: OBCodeMnemonicSchema.exactOptional(),
-    Description: Description_3Schema,
-    Name: Name_4Schema,
-  })
-  .openapi({
-    description: 'Other application frequencies not covered in the standard code list',
-    required: ['Name', 'Description'],
-  })
-  .openapi('OBOtherCodeType1_6')
-
-const OBOtherCodeType1_7Schema = z
-  .strictObject({
-    Code: OBCodeMnemonicSchema.exactOptional(),
-    Description: Description_3Schema,
-    Name: Name_4Schema,
-  })
-  .openapi({
-    description: 'Other calculation frequency which is not available in standard code set.',
-    required: ['Name', 'Description'],
-  })
-  .openapi('OBOtherCodeType1_7')
-
-const OBOtherCodeType1_5Schema = z
-  .strictObject({
-    Code: OBCodeMnemonicSchema.exactOptional(),
-    Description: Description_3Schema,
-    Name: Name_4Schema,
-  })
-  .openapi({
-    description: 'Other fee rate type which is not in the standard rate type list',
-    required: ['Name', 'Description'],
-  })
-  .openapi('OBOtherCodeType1_5')
-
-const OBFeeCategory1CodeSchema = z
-  .enum(['FCOT', 'FCRE', 'FCSV'])
-  .openapi({ description: 'Categorisation of fees and charges into standard categories.' })
-  .openapi('OBFeeCategory1Code')
-
-const OBOtherFeeChargeDetailTypeSchema = z
-  .strictObject({
-    Code: OBCodeMnemonicSchema.exactOptional(),
-    Description: Description_3Schema,
-    FeeCategory: OBFeeCategory1CodeSchema,
-    Name: Name_4Schema,
-  })
-  .openapi({
-    description: 'Other Fee/charge type which is not available in the standard code set',
-    required: ['FeeCategory', 'Name', 'Description'],
-  })
-  .openapi('OBOtherFeeChargeDetailType')
-
-const OBPeriod1CodeSchema = z
-  .enum(['PACT', 'PDAY', 'PHYR', 'PMTH', 'PQTR', 'PWEK', 'PYER'])
-  .openapi({ description: 'Period e.g. day, week, month etc. for which the fee/charge is capped' })
-  .openapi('OBPeriod1Code')
-
-const OBOtherCodeType1_8Schema = z
-  .strictObject({
-    Code: OBCodeMnemonicSchema.exactOptional(),
-    Description: Description_3Schema,
-    Name: Name_4Schema,
-  })
-  .openapi({
-    description: 'Other fee rate type which is not available in the standard code set',
-    required: ['Name', 'Description'],
-  })
-  .openapi('OBOtherCodeType1_8')
-
-const OBAmount1_0Schema = z
-  .string()
-  .regex(/^(-?\d{1,14}){1}(\.\d{1,4}){0,1}$/)
-  .openapi({ description: 'Cap amount charged for a fee/charge' })
-  .openapi('OBAmount1_0')
-
-const OBFeeFrequency1Code_0Schema = z
-  .enum([
-    'FEAC',
-    'FEAO',
-    'FECP',
-    'FEDA',
-    'FEHO',
-    'FEI',
-    'FEMO',
-    'FEOA',
-    'FEOT',
-    'FEPC',
-    'FEPH',
-    'FEPO',
-    'FEPS',
-    'FEPT',
-    'FEPTA',
-    'FEPTP',
-    'FEQU',
-    'FESM',
-    'FEST',
-    'FEWE',
-    'FEYE',
-  ])
-  .openapi({ description: 'Frequency at which the overdraft charge is applied to the account' })
-  .openapi('OBFeeFrequency1Code_0')
-
-const OBFeeFrequency1Code_1Schema = z
-  .enum([
-    'FEAC',
-    'FEAO',
-    'FECP',
-    'FEDA',
-    'FEHO',
-    'FEI',
-    'FEMO',
-    'FEOA',
-    'FEOT',
-    'FEPC',
-    'FEPH',
-    'FEPO',
-    'FEPS',
-    'FEPT',
-    'FEPTA',
-    'FEPTP',
-    'FEQU',
-    'FESM',
-    'FEST',
-    'FEWE',
-    'FEYE',
-  ])
-  .openapi({ description: 'How often is the overdraft fee/charge calculated for the account.' })
-  .openapi('OBFeeFrequency1Code_1')
-
-const OBAmount1_2Schema = z
-  .string()
-  .regex(/^(-?\d{1,14}){1}(\.\d{1,4}){0,1}$/)
-  .openapi({
-    description:
-      'Amount charged for an overdraft fee/charge (where it is charged in terms of an amount rather than a rate)',
-  })
-  .openapi('OBAmount1_2')
-
-const OBRate1_02Schema = z
-  .string()
-  .regex(/^(-?\d{1,3}){1}(\.\d{1,4}){0,1}$/)
-  .openapi({
-    description:
-      'Rate charged for overdraft fee/charge (where it is charged in terms of a rate rather than an amount)',
-  })
-  .openapi('OBRate1_02')
-
-const OBInterestRateType1Code_0Schema = z
-  .enum(['INBB', 'INFR', 'INGR', 'INLR', 'INNE', 'INOT'])
-  .openapi({
-    description:
-      'Rate type for overdraft fee/charge (where it is charged in terms of a rate rather than an amount)',
-  })
-  .openapi('OBInterestRateType1Code_0')
-
-const OBOverdraftFeeType1CodeSchema = z
-  .enum([
-    'FBAO',
-    'FBAR',
-    'FBEB',
-    'FBIT',
-    'FBOR',
-    'FBOS',
-    'FBSC',
-    'FBTO',
-    'FBUB',
-    'FBUT',
-    'FTOT',
-    'FTUT',
-  ])
-  .openapi({ description: 'Overdraft fee type' })
-  .openapi('OBOverdraftFeeType1Code')
-
-const OBAmount1_1Schema = z
-  .string()
-  .regex(/^(-?\d{1,14}){1}(\.\d{1,4}){0,1}$/)
-  .openapi({
-    description:
-      'Every additional tranche of an overdraft balance to which an overdraft fee is applied',
-  })
-  .openapi('OBAmount1_1')
-
-const OBOtherCodeType1_4Schema = z
-  .strictObject({
-    Code: OBCodeMnemonicSchema.exactOptional(),
-    Description: Description_3Schema,
-    Name: Name_4Schema,
-  })
-  .openapi({
-    description: 'Other fee rate type code which is not available in the standard code set',
-    required: ['Name', 'Description'],
-  })
-  .openapi('OBOtherCodeType1_4')
-
-const OBOtherCodeType1_3Schema = z
-  .strictObject({
-    Code: OBCodeMnemonicSchema.exactOptional(),
-    Description: Description_3Schema,
-    Name: Name_4Schema,
-  })
-  .openapi({
-    description: 'Other Fee type which is not available in the standard code set',
-    required: ['Name', 'Description'],
-  })
-  .openapi('OBOtherCodeType1_3')
-
-const OBReadProduct2Schema = z
+const OBReadProduct2Schema: z.ZodType<OBReadProduct2Type> = z
   .strictObject({
     Data: z
       .object({
@@ -9941,16 +11342,13 @@ const _200AccountAccessConsentsConsentIdReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadConsentResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -9962,16 +11360,13 @@ const _200AccountsAccountIdBalancesReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadBalance1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -9983,16 +11378,13 @@ const _200AccountsAccountIdBeneficiariesReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadBeneficiary5Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10004,16 +11396,13 @@ const _200AccountsAccountIdDirectDebitsReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadDirectDebit2Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10025,16 +11414,13 @@ const _200AccountsAccountIdOffersReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadOffer1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10046,16 +11432,13 @@ const _200AccountsAccountIdPartiesReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadParty3Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10067,16 +11450,13 @@ const _200AccountsAccountIdPartyReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadParty2Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10088,16 +11468,13 @@ const _200AccountsAccountIdProductReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadProduct2Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10109,16 +11486,13 @@ const _200AccountsAccountIdReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadAccount6Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10130,16 +11504,13 @@ const _200AccountsAccountIdScheduledPaymentsReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadScheduledPayment3Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10151,16 +11522,13 @@ const _200AccountsAccountIdStandingOrdersReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadStandingOrder6Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10172,16 +11540,13 @@ const _200AccountsAccountIdStatementsReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadStatement2Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10193,16 +11558,13 @@ const _200AccountsAccountIdStatementsStatementIdFileReadResponse = {
     'application/json; charset=utf-8': { schema: FileSchema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10214,16 +11576,13 @@ const _200AccountsAccountIdStatementsStatementIdReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadStatement2Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10235,16 +11594,13 @@ const _200AccountsAccountIdStatementsStatementIdTransactionsReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadTransaction6Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10256,16 +11612,13 @@ const _200AccountsAccountIdTransactionsReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadTransaction6Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10277,16 +11630,13 @@ const _200AccountsReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadAccount6Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10298,16 +11648,13 @@ const _200BalancesReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadBalance1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10319,16 +11666,13 @@ const _200BeneficiariesReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadBeneficiary5Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10340,16 +11684,13 @@ const _200DirectDebitsReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadDirectDebit2Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10361,16 +11702,13 @@ const _200OffersReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadOffer1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10382,16 +11720,13 @@ const _200PartyReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadParty2Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10403,16 +11738,13 @@ const _200ProductsReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadProduct2Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10424,16 +11756,13 @@ const _200ScheduledPaymentsReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadScheduledPayment3Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10445,16 +11774,13 @@ const _200StandingOrdersReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadStandingOrder6Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10466,16 +11792,13 @@ const _200StatementsReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadStatement2Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10487,16 +11810,13 @@ const _200TransactionsReadResponse = {
     'application/json; charset=utf-8': { schema: OBReadTransaction6Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10508,32 +11828,26 @@ const _201AccountAccessConsentsCreatedResponse = {
     'application/json; charset=utf-8': { schema: OBReadConsentResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _204AccountAccessConsentsConsentIdDeletedResponse = {
   description: 'Account Access Consents Deleted',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10545,32 +11859,26 @@ const _400ErrorResponse = {
     'application/json; charset=utf-8': { schema: OBErrorResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _401ErrorResponse = {
   description: 'Unauthorized',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10582,103 +11890,82 @@ const _403ErrorResponse = {
     'application/json; charset=utf-8': { schema: OBErrorResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _404ErrorResponse = {
   description: 'Not found',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _405ErrorResponse = {
   description: 'Method Not Allowed',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _406ErrorResponse = {
   description: 'Not Acceptable',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _415ErrorResponse = {
   description: 'Unsupported Media Type',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _429ErrorResponse = {
   description: 'Too Many Requests',
   headers: z.object({
-    'Retry-After': {
-      description: 'Number in seconds to wait',
-      schema: z
-        .int()
-        .exactOptional()
-        .openapi({ description: 'Number in seconds to wait', param: { required: false } }),
-    },
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'Retry-After': z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Number in seconds to wait', param: { required: false } }),
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -10690,16 +11977,13 @@ const _500ErrorResponse = {
     'application/json; charset=utf-8': { schema: OBErrorResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 

@@ -6,12 +6,10 @@ const DoubleSchema = z.float64().openapi('Double')
 
 const DataPointSchema = z
   .object({
-    Timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of the specific forecast.' }),
-    ).exactOptional(),
-    Value: DoubleSchema.and(
-      z.any().openapi({ description: 'The forecast value.' }),
-    ).exactOptional(),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of the specific forecast.',
+    }),
+    Value: DoubleSchema.exactOptional().openapi({ description: 'The forecast value.' }),
   })
   .openapi({
     description: 'The forecast value for a specific date. Part of the <a>Forecast</a> object.',
@@ -25,14 +23,10 @@ const PredictionsSchema = z.record(z.string(), TimeSeriesSchema).openapi('Predic
 
 const ForecastSchema = z
   .object({
-    Predictions: PredictionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The forecast.</p> <p>The <i>string</i> of the string-to-array map is one of the following values:</p> <ul> <li> <p>p10</p> </li> <li> <p>p50</p> </li> <li> <p>p90</p> </li> </ul> <p>The default setting is <code>["0.1", "0.5", "0.9"]</code>. Use the optional <code>ForecastTypes</code> parameter of the <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_CreateForecast.html">CreateForecast</a> operation to change the values. The values will vary depending on how this is set, with a minimum of <code>1</code> and a maximum of <code>5.</code> </p>',
-        }),
-    ).exactOptional(),
+    Predictions: PredictionsSchema.exactOptional().openapi({
+      description:
+        '<p>The forecast.</p> <p>The <i>string</i> of the string-to-array map is one of the following values:</p> <ul> <li> <p>p10</p> </li> <li> <p>p50</p> </li> <li> <p>p90</p> </li> </ul> <p>The default setting is <code>["0.1", "0.5", "0.9"]</code>. Use the optional <code>ForecastTypes</code> parameter of the <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_CreateForecast.html">CreateForecast</a> operation to change the values. The values will vary depending on how this is set, with a minimum of <code>1</code> and a maximum of <code>5.</code> </p>',
+    }),
   })
   .openapi({
     description:
@@ -42,9 +36,7 @@ const ForecastSchema = z
   .openapi('Forecast')
 
 const QueryForecastResponseSchema = z
-  .object({
-    Forecast: ForecastSchema.and(z.any().openapi({ description: 'The forecast.' })).exactOptional(),
-  })
+  .object({ Forecast: ForecastSchema.exactOptional().openapi({ description: 'The forecast.' }) })
   .openapi({ required: [] })
   .openapi('QueryForecastResponse')
 
@@ -68,41 +60,25 @@ const NextTokenSchema = z.string().min(1).max(3000).openapi('NextToken')
 
 const QueryForecastRequestSchema = z
   .object({
-    ForecastArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the forecast to query.' }),
-    ),
-    StartDate: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The start date for the forecast. Specify the date using this format: yyyy-MM-dd'T'HH:mm:ss (ISO 8601 format). For example, 2015-01-01T08:00:00.",
-        }),
-    ).exactOptional(),
-    EndDate: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The end date for the forecast. Specify the date using this format: yyyy-MM-dd'T'HH:mm:ss (ISO 8601 format). For example, 2015-01-01T20:00:00. ",
-        }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The filtering criteria to apply when retrieving the forecast. For example, to get the forecast for <code>client_21</code> in the electricity usage dataset, specify the following:</p> <p> <code>{"item_id" : "client_21"}</code> </p> <p>To get the full forecast, use the <a href="https://docs.aws.amazon.com/en_us/forecast/latest/dg/API_CreateForecastExportJob.html">CreateForecastExportJob</a> operation.</p>',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
+    ForecastArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the forecast to query.',
+    }),
+    StartDate: DateTimeSchema.exactOptional().openapi({
+      description:
+        "The start date for the forecast. Specify the date using this format: yyyy-MM-dd'T'HH:mm:ss (ISO 8601 format). For example, 2015-01-01T08:00:00.",
+    }),
+    EndDate: DateTimeSchema.exactOptional().openapi({
+      description:
+        "The end date for the forecast. Specify the date using this format: yyyy-MM-dd'T'HH:mm:ss (ISO 8601 format). For example, 2015-01-01T20:00:00. ",
+    }),
+    Filters: FiltersSchema.openapi({
+      description:
+        '<p>The filtering criteria to apply when retrieving the forecast. For example, to get the forecast for <code>client_21</code> in the electricity usage dataset, specify the following:</p> <p> <code>{"item_id" : "client_21"}</code> </p> <p>To get the full forecast, use the <a href="https://docs.aws.amazon.com/en_us/forecast/latest/dg/API_CreateForecastExportJob.html">CreateForecastExportJob</a> operation.</p>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
+    }),
   })
   .openapi({ required: ['ForecastArn', 'Filters'], title: 'QueryForecastRequest' })
   .openapi('QueryForecastRequest')
@@ -130,45 +106,25 @@ const LongArnSchema = z
 
 const QueryWhatIfForecastRequestSchema = z
   .object({
-    WhatIfForecastArn: LongArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the what-if forecast to query.',
-        }),
-    ),
-    StartDate: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The start date for the what-if forecast. Specify the date using this format: yyyy-MM-dd'T'HH:mm:ss (ISO 8601 format). For example, 2015-01-01T08:00:00.",
-        }),
-    ).exactOptional(),
-    EndDate: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The end date for the what-if forecast. Specify the date using this format: yyyy-MM-dd'T'HH:mm:ss (ISO 8601 format). For example, 2015-01-01T20:00:00. ",
-        }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The filtering criteria to apply when retrieving the forecast. For example, to get the forecast for <code>client_21</code> in the electricity usage dataset, specify the following:</p> <p> <code>{"item_id" : "client_21"}</code> </p> <p>To get the full what-if forecast, use the <a href="https://docs.aws.amazon.com/en_us/forecast/latest/dg/API_CreateWhatIfForecastExport.html">CreateForecastExportJob</a> operation.</p>',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
+    WhatIfForecastArn: LongArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the what-if forecast to query.',
+    }),
+    StartDate: DateTimeSchema.exactOptional().openapi({
+      description:
+        "The start date for the what-if forecast. Specify the date using this format: yyyy-MM-dd'T'HH:mm:ss (ISO 8601 format). For example, 2015-01-01T08:00:00.",
+    }),
+    EndDate: DateTimeSchema.exactOptional().openapi({
+      description:
+        "The end date for the what-if forecast. Specify the date using this format: yyyy-MM-dd'T'HH:mm:ss (ISO 8601 format). For example, 2015-01-01T20:00:00. ",
+    }),
+    Filters: FiltersSchema.openapi({
+      description:
+        '<p>The filtering criteria to apply when retrieving the forecast. For example, to get the forecast for <code>client_21</code> in the electricity usage dataset, specify the following:</p> <p> <code>{"item_id" : "client_21"}</code> </p> <p>To get the full what-if forecast, use the <a href="https://docs.aws.amazon.com/en_us/forecast/latest/dg/API_CreateWhatIfForecastExport.html">CreateForecastExportJob</a> operation.</p>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
+    }),
   })
   .openapi({ required: ['WhatIfForecastArn', 'Filters'], title: 'QueryWhatIfForecastRequest' })
   .openapi('QueryWhatIfForecastRequest')

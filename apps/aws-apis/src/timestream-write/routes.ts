@@ -7,121 +7,7 @@ const BatchLoadTaskIdSchema = z
   .max(32)
   .openapi('BatchLoadTaskId')
 
-const CreateBatchLoadTaskResponseSchema = z
-  .object({
-    TaskId: BatchLoadTaskIdSchema.and(
-      z.any().openapi({ description: 'The ID of the batch load task.' }),
-    ),
-  })
-  .openapi({ required: ['TaskId'] })
-  .openapi('CreateBatchLoadTaskResponse')
-
-const ClientRequestTokenSchema = z.string().min(1).max(64).openapi('ClientRequestToken')
-
-const StringValue256Schema = z.string().min(1).max(256).openapi('StringValue256')
-
-const TimeUnitSchema = z
-  .enum(['MILLISECONDS', 'SECONDS', 'MICROSECONDS', 'NANOSECONDS'])
-  .openapi('TimeUnit')
-
-const SchemaNameSchema = z.string().min(1).openapi('SchemaName')
-
-const DimensionMappingSchema = z
-  .object({
-    SourceColumn: SchemaNameSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    DestinationColumn: SchemaNameSchema.and(z.any().openapi({ description: ' ' })).exactOptional(),
-  })
-  .openapi({ description: '<p/>', required: [] })
-  .openapi('DimensionMapping')
-
-const DimensionMappingsSchema = z.array(DimensionMappingSchema).min(1).openapi('DimensionMappings')
-
-const ScalarMeasureValueTypeSchema = z
-  .enum(['DOUBLE', 'BIGINT', 'BOOLEAN', 'VARCHAR', 'TIMESTAMP'])
-  .openapi('ScalarMeasureValueType')
-
-const MultiMeasureAttributeMappingSchema = z
-  .object({
-    SourceColumn: SchemaNameSchema.and(z.any().openapi({ description: '<p/>' })),
-    TargetMultiMeasureAttributeName: SchemaNameSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    MeasureValueType: ScalarMeasureValueTypeSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['SourceColumn'], description: '<p/>' })
-  .openapi('MultiMeasureAttributeMapping')
-
-const MultiMeasureAttributeMappingListSchema = z
-  .array(MultiMeasureAttributeMappingSchema)
-  .min(1)
-  .openapi('MultiMeasureAttributeMappingList')
-
-const MultiMeasureMappingsSchema = z
-  .object({
-    TargetMultiMeasureName: SchemaNameSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    MultiMeasureAttributeMappings: MultiMeasureAttributeMappingListSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ),
-  })
-  .openapi({ required: ['MultiMeasureAttributeMappings'], description: '<p/>' })
-  .openapi('MultiMeasureMappings')
-
-const MeasureValueTypeSchema = z
-  .enum(['DOUBLE', 'BIGINT', 'VARCHAR', 'BOOLEAN', 'TIMESTAMP', 'MULTI'])
-  .openapi('MeasureValueType')
-
-const MixedMeasureMappingSchema = z
-  .object({
-    MeasureName: SchemaNameSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    SourceColumn: SchemaNameSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    TargetMeasureName: SchemaNameSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    MeasureValueType: MeasureValueTypeSchema.and(z.any().openapi({ description: '<p/>' })),
-    MultiMeasureAttributeMappings: MultiMeasureAttributeMappingListSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['MeasureValueType'], description: '<p/>' })
-  .openapi('MixedMeasureMapping')
-
-const MixedMeasureMappingListSchema = z
-  .array(MixedMeasureMappingSchema)
-  .min(1)
-  .openapi('MixedMeasureMappingList')
-
-const DataModelSchema = z
-  .object({
-    TimeColumn: StringValue256Schema.and(
-      z.any().openapi({ description: 'Source column to be mapped to time.' }),
-    ).exactOptional(),
-    TimeUnit: TimeUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The granularity of the timestamp unit. It indicates if the time value is in seconds, milliseconds, nanoseconds, or other supported values. Default is <code>MILLISECONDS</code>. ',
-        }),
-    ).exactOptional(),
-    DimensionMappings: DimensionMappingsSchema.and(
-      z.any().openapi({ description: 'Source to target mappings for dimensions.' }),
-    ),
-    MultiMeasureMappings: MultiMeasureMappingsSchema.and(
-      z.any().openapi({ description: 'Source to target mappings for multi-measure records.' }),
-    ).exactOptional(),
-    MixedMeasureMappings: MixedMeasureMappingListSchema.and(
-      z.any().openapi({ description: 'Source to target mappings for measures.' }),
-    ).exactOptional(),
-    MeasureNameColumn: StringValue256Schema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['DimensionMappings'], description: 'Data model for a batch load task.' })
-  .openapi('DataModel')
+const StringValue2048Schema = z.string().min(1).max(2048).openapi('StringValue2048')
 
 const S3BucketNameSchema = z
   .string()
@@ -137,60 +23,40 @@ const S3ObjectKeySchema = z
   .max(1024)
   .openapi('S3ObjectKey')
 
-const DataModelS3ConfigurationSchema = z
-  .object({
-    BucketName: S3BucketNameSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    ObjectKey: S3ObjectKeySchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-  })
-  .openapi({ description: '<p/>', required: [] })
-  .openapi('DataModelS3Configuration')
-
-const DataModelConfigurationSchema = z
-  .object({
-    DataModel: DataModelSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    DataModelS3Configuration: DataModelS3ConfigurationSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: '<p/>', required: [] })
-  .openapi('DataModelConfiguration')
-
 const DataSourceS3ConfigurationSchema = z
   .object({
-    BucketName: S3BucketNameSchema.and(
-      z.any().openapi({ description: 'The bucket name of the customer S3 bucket.' }),
-    ),
-    ObjectKeyPrefix: S3ObjectKeySchema.and(z.any().openapi({ description: ' ' })).exactOptional(),
+    BucketName: S3BucketNameSchema.openapi({
+      description: 'The bucket name of the customer S3 bucket.',
+    }),
+    ObjectKeyPrefix: S3ObjectKeySchema.exactOptional().openapi({ description: ' ' }),
   })
   .openapi({ required: ['BucketName'], description: ' ' })
   .openapi('DataSourceS3Configuration')
 
 const StringValue1Schema = z.string().length(1).openapi('StringValue1')
 
+const StringValue256Schema = z.string().min(1).max(256).openapi('StringValue256')
+
 const BooleanSchema = z.boolean().openapi('Boolean')
 
 const CsvConfigurationSchema = z
   .object({
-    ColumnSeparator: StringValue1Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Column separator can be one of comma (','), pipe ('|), semicolon (';'), tab('/t'), or blank space (' '). ",
-        }),
-    ).exactOptional(),
-    EscapeChar: StringValue1Schema.and(
-      z.any().openapi({ description: 'Escape character can be one of ' }),
-    ).exactOptional(),
-    QuoteChar: StringValue1Schema.and(
-      z.any().openapi({ description: 'Can be single quote (\') or double quote (").' }),
-    ).exactOptional(),
-    NullValue: StringValue256Schema.and(
-      z.any().openapi({ description: "Can be blank space (' ')." }),
-    ).exactOptional(),
-    TrimWhiteSpace: BooleanSchema.and(
-      z.any().openapi({ description: 'Specifies to trim leading and trailing white space.' }),
-    ).exactOptional(),
+    ColumnSeparator: StringValue1Schema.exactOptional().openapi({
+      description:
+        "Column separator can be one of comma (','), pipe ('|), semicolon (';'), tab('/t'), or blank space (' '). ",
+    }),
+    EscapeChar: StringValue1Schema.exactOptional().openapi({
+      description: 'Escape character can be one of ',
+    }),
+    QuoteChar: StringValue1Schema.exactOptional().openapi({
+      description: 'Can be single quote (\') or double quote (").',
+    }),
+    NullValue: StringValue256Schema.exactOptional().openapi({
+      description: "Can be blank space (' ').",
+    }),
+    TrimWhiteSpace: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies to trim leading and trailing white space.',
+    }),
   })
   .openapi({
     description:
@@ -203,23 +69,31 @@ const BatchLoadDataFormatSchema = z.literal('CSV').openapi('BatchLoadDataFormat'
 
 const DataSourceConfigurationSchema = z
   .object({
-    DataSourceS3Configuration: DataSourceS3ConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configuration of an S3 location for a file which contains data to load.',
-        }),
-    ),
+    DataSourceS3Configuration: DataSourceS3ConfigurationSchema.openapi({
+      description: 'Configuration of an S3 location for a file which contains data to load.',
+    }),
     CsvConfiguration: CsvConfigurationSchema.exactOptional(),
-    DataFormat: BatchLoadDataFormatSchema.and(
-      z.any().openapi({ description: 'This is currently CSV.' }),
-    ),
+    DataFormat: BatchLoadDataFormatSchema.openapi({ description: 'This is currently CSV.' }),
   })
   .openapi({
     required: ['DataSourceS3Configuration', 'DataFormat'],
     description: 'Defines configuration details about the data source.',
   })
   .openapi('DataSourceConfiguration')
+
+const LongSchema = z.int().openapi('Long')
+
+const BatchLoadProgressReportSchema = z
+  .object({
+    RecordsProcessed: LongSchema.exactOptional().openapi({ description: '<p/>' }),
+    RecordsIngested: LongSchema.exactOptional().openapi({ description: '<p/>' }),
+    ParseFailures: LongSchema.exactOptional().openapi({ description: '<p/>' }),
+    RecordIngestionFailures: LongSchema.exactOptional().openapi({ description: '<p/>' }),
+    FileFailures: LongSchema.exactOptional().openapi({ description: '<p/>' }),
+    BytesMetered: LongSchema.exactOptional().openapi({ description: '<p/>' }),
+  })
+  .openapi({ description: 'Details about the progress of a batch load task.', required: [] })
+  .openapi('BatchLoadProgressReport')
 
 const S3ObjectKeyPrefixSchema = z
   .string()
@@ -230,32 +104,22 @@ const S3ObjectKeyPrefixSchema = z
 
 const S3EncryptionOptionSchema = z.enum(['SSE_S3', 'SSE_KMS']).openapi('S3EncryptionOption')
 
-const StringValue2048Schema = z.string().min(1).max(2048).openapi('StringValue2048')
-
 const ReportS3ConfigurationSchema = z
   .object({
-    BucketName: S3BucketNameSchema.and(z.any().openapi({ description: '<p/>' })),
-    ObjectKeyPrefix: S3ObjectKeyPrefixSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    EncryptionOption: S3EncryptionOptionSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    KmsKeyId: StringValue2048Schema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
+    BucketName: S3BucketNameSchema.openapi({ description: '<p/>' }),
+    ObjectKeyPrefix: S3ObjectKeyPrefixSchema.exactOptional().openapi({ description: '<p/>' }),
+    EncryptionOption: S3EncryptionOptionSchema.exactOptional().openapi({ description: '<p/>' }),
+    KmsKeyId: StringValue2048Schema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({ required: ['BucketName'], description: '<p/>' })
   .openapi('ReportS3Configuration')
 
 const ReportConfigurationSchema = z
   .object({
-    ReportS3Configuration: ReportS3ConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration of an S3 location to write error reports and events for a batch load.',
-        }),
-    ).exactOptional(),
+    ReportS3Configuration: ReportS3ConfigurationSchema.exactOptional().openapi({
+      description:
+        'Configuration of an S3 location to write error reports and events for a batch load.',
+    }),
   })
   .openapi({
     description:
@@ -264,36 +128,193 @@ const ReportConfigurationSchema = z
   })
   .openapi('ReportConfiguration')
 
+const TimeUnitSchema = z
+  .enum(['MILLISECONDS', 'SECONDS', 'MICROSECONDS', 'NANOSECONDS'])
+  .openapi('TimeUnit')
+
+const SchemaNameSchema = z.string().min(1).openapi('SchemaName')
+
+const DimensionMappingSchema = z
+  .object({
+    SourceColumn: SchemaNameSchema.exactOptional().openapi({ description: '<p/>' }),
+    DestinationColumn: SchemaNameSchema.exactOptional().openapi({ description: ' ' }),
+  })
+  .openapi({ description: '<p/>', required: [] })
+  .openapi('DimensionMapping')
+
+const DimensionMappingsSchema = z.array(DimensionMappingSchema).min(1).openapi('DimensionMappings')
+
+const ScalarMeasureValueTypeSchema = z
+  .enum(['DOUBLE', 'BIGINT', 'BOOLEAN', 'VARCHAR', 'TIMESTAMP'])
+  .openapi('ScalarMeasureValueType')
+
+const MultiMeasureAttributeMappingSchema = z
+  .object({
+    SourceColumn: SchemaNameSchema.openapi({ description: '<p/>' }),
+    TargetMultiMeasureAttributeName: SchemaNameSchema.exactOptional().openapi({
+      description: '<p/>',
+    }),
+    MeasureValueType: ScalarMeasureValueTypeSchema.exactOptional().openapi({ description: '<p/>' }),
+  })
+  .openapi({ required: ['SourceColumn'], description: '<p/>' })
+  .openapi('MultiMeasureAttributeMapping')
+
+const MultiMeasureAttributeMappingListSchema = z
+  .array(MultiMeasureAttributeMappingSchema)
+  .min(1)
+  .openapi('MultiMeasureAttributeMappingList')
+
+const MultiMeasureMappingsSchema = z
+  .object({
+    TargetMultiMeasureName: SchemaNameSchema.exactOptional().openapi({ description: '<p/>' }),
+    MultiMeasureAttributeMappings: MultiMeasureAttributeMappingListSchema.openapi({
+      description: '<p/>',
+    }),
+  })
+  .openapi({ required: ['MultiMeasureAttributeMappings'], description: '<p/>' })
+  .openapi('MultiMeasureMappings')
+
+const MeasureValueTypeSchema = z
+  .enum(['DOUBLE', 'BIGINT', 'VARCHAR', 'BOOLEAN', 'TIMESTAMP', 'MULTI'])
+  .openapi('MeasureValueType')
+
+const MixedMeasureMappingSchema = z
+  .object({
+    MeasureName: SchemaNameSchema.exactOptional().openapi({ description: '<p/>' }),
+    SourceColumn: SchemaNameSchema.exactOptional().openapi({ description: '<p/>' }),
+    TargetMeasureName: SchemaNameSchema.exactOptional().openapi({ description: '<p/>' }),
+    MeasureValueType: MeasureValueTypeSchema.openapi({ description: '<p/>' }),
+    MultiMeasureAttributeMappings: MultiMeasureAttributeMappingListSchema.exactOptional().openapi({
+      description: '<p/>',
+    }),
+  })
+  .openapi({ required: ['MeasureValueType'], description: '<p/>' })
+  .openapi('MixedMeasureMapping')
+
+const MixedMeasureMappingListSchema = z
+  .array(MixedMeasureMappingSchema)
+  .min(1)
+  .openapi('MixedMeasureMappingList')
+
+const DataModelSchema = z
+  .object({
+    TimeColumn: StringValue256Schema.exactOptional().openapi({
+      description: 'Source column to be mapped to time.',
+    }),
+    TimeUnit: TimeUnitSchema.exactOptional().openapi({
+      description:
+        ' The granularity of the timestamp unit. It indicates if the time value is in seconds, milliseconds, nanoseconds, or other supported values. Default is <code>MILLISECONDS</code>. ',
+    }),
+    DimensionMappings: DimensionMappingsSchema.openapi({
+      description: 'Source to target mappings for dimensions.',
+    }),
+    MultiMeasureMappings: MultiMeasureMappingsSchema.exactOptional().openapi({
+      description: 'Source to target mappings for multi-measure records.',
+    }),
+    MixedMeasureMappings: MixedMeasureMappingListSchema.exactOptional().openapi({
+      description: 'Source to target mappings for measures.',
+    }),
+    MeasureNameColumn: StringValue256Schema.exactOptional().openapi({ description: '<p/>' }),
+  })
+  .openapi({ required: ['DimensionMappings'], description: 'Data model for a batch load task.' })
+  .openapi('DataModel')
+
+const DataModelS3ConfigurationSchema = z
+  .object({
+    BucketName: S3BucketNameSchema.exactOptional().openapi({ description: '<p/>' }),
+    ObjectKey: S3ObjectKeySchema.exactOptional().openapi({ description: '<p/>' }),
+  })
+  .openapi({ description: '<p/>', required: [] })
+  .openapi('DataModelS3Configuration')
+
+const DataModelConfigurationSchema = z
+  .object({
+    DataModel: DataModelSchema.exactOptional().openapi({ description: '<p/>' }),
+    DataModelS3Configuration: DataModelS3ConfigurationSchema.exactOptional().openapi({
+      description: '<p/>',
+    }),
+  })
+  .openapi({ description: '<p/>', required: [] })
+  .openapi('DataModelConfiguration')
+
+const ResourceNameSchema = z.string().openapi('ResourceName')
+
+const BatchLoadStatusSchema = z
+  .enum(['CREATED', 'IN_PROGRESS', 'FAILED', 'SUCCEEDED', 'PROGRESS_STOPPED', 'PENDING_RESUME'])
+  .openapi('BatchLoadStatus')
+
+const RecordVersionSchema = z.int().openapi('RecordVersion')
+
+const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
+
+const BatchLoadTaskDescriptionSchema = z
+  .object({
+    TaskId: BatchLoadTaskIdSchema.exactOptional().openapi({
+      description: 'The ID of the batch load task.',
+    }),
+    ErrorMessage: StringValue2048Schema.exactOptional().openapi({ description: '<p/>' }),
+    DataSourceConfiguration: DataSourceConfigurationSchema.exactOptional().openapi({
+      description: 'Configuration details about the data source for a batch load task.',
+    }),
+    ProgressReport: BatchLoadProgressReportSchema.exactOptional().openapi({ description: '<p/>' }),
+    ReportConfiguration: ReportConfigurationSchema.exactOptional().openapi({
+      description:
+        'Report configuration for a batch load task. This contains details about where error reports are stored.',
+    }),
+    DataModelConfiguration: DataModelConfigurationSchema.exactOptional().openapi({
+      description:
+        'Data model configuration for a batch load task. This contains details about where a data model for a batch load task is stored.',
+    }),
+    TargetDatabaseName: ResourceNameSchema.exactOptional().openapi({ description: '<p/>' }),
+    TargetTableName: ResourceNameSchema.exactOptional().openapi({ description: '<p/>' }),
+    TaskStatus: BatchLoadStatusSchema.exactOptional().openapi({
+      description: 'Status of the batch load task.',
+    }),
+    RecordVersion: RecordVersionSchema.exactOptional().openapi({ description: '<p/>' }),
+    CreationTime: DateSchema.exactOptional().openapi({
+      description: 'The time when the Timestream batch load task was created.',
+    }),
+    LastUpdatedTime: DateSchema.exactOptional().openapi({
+      description: 'The time when the Timestream batch load task was last updated.',
+    }),
+    ResumableUntil: DateSchema.exactOptional().openapi({ description: ' ' }),
+  })
+  .openapi({ description: 'Details about a batch load task.', required: [] })
+  .openapi('BatchLoadTaskDescription')
+
+type DescribeBatchLoadTaskResponseType = {
+  BatchLoadTaskDescription: z.infer<typeof BatchLoadTaskDescriptionSchema> & unknown
+}
+
+const CreateBatchLoadTaskResponseSchema = z
+  .object({
+    TaskId: BatchLoadTaskIdSchema.openapi({ description: 'The ID of the batch load task.' }),
+  })
+  .openapi({ required: ['TaskId'] })
+  .openapi('CreateBatchLoadTaskResponse')
+
+const ClientRequestTokenSchema = z.string().min(1).max(64).openapi('ClientRequestToken')
+
 const ResourceCreateAPINameSchema = z
   .string()
   .regex(/[a-zA-Z0-9_.-]+/)
   .openapi('ResourceCreateAPIName')
 
-const RecordVersionSchema = z.int().openapi('RecordVersion')
-
 const CreateBatchLoadTaskRequestSchema = z
   .object({
-    ClientToken: ClientRequestTokenSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    ClientToken: ClientRequestTokenSchema.exactOptional().openapi({ description: '<p/>' }),
     DataModelConfiguration: DataModelConfigurationSchema.exactOptional(),
-    DataSourceConfiguration: DataSourceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Defines configuration details about the data source for a batch load task.',
-        }),
-    ),
+    DataSourceConfiguration: DataSourceConfigurationSchema.openapi({
+      description: 'Defines configuration details about the data source for a batch load task.',
+    }),
     ReportConfiguration: ReportConfigurationSchema,
-    TargetDatabaseName: ResourceCreateAPINameSchema.and(
-      z.any().openapi({ description: 'Target Timestream database for a batch load task.' }),
-    ),
-    TargetTableName: ResourceCreateAPINameSchema.and(
-      z.any().openapi({ description: 'Target Timestream table for a batch load task.' }),
-    ),
-    RecordVersion: RecordVersionSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    TargetDatabaseName: ResourceCreateAPINameSchema.openapi({
+      description: 'Target Timestream database for a batch load task.',
+    }),
+    TargetTableName: ResourceCreateAPINameSchema.openapi({
+      description: 'Target Timestream table for a batch load task.',
+    }),
+    RecordVersion: RecordVersionSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({
     required: [
@@ -324,50 +345,26 @@ const InvalidEndpointExceptionSchema = z.any().openapi('InvalidEndpointException
 
 const StringSchema = z.string().openapi('String')
 
-const ResourceNameSchema = z.string().openapi('ResourceName')
-
-const LongSchema = z.int().openapi('Long')
-
-const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
-
 const DatabaseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name that uniquely identifies this database.',
-        }),
-    ).exactOptional(),
-    DatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Timestream database.' }),
-    ).exactOptional(),
-    TableCount: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The total number of tables found within a Timestream database. ',
-        }),
-    ).exactOptional(),
-    KmsKeyId: StringValue2048Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the KMS key used to encrypt the data stored in the database.',
-        }),
-    ).exactOptional(),
-    CreationTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time when the database was created, calculated from the Unix epoch time.',
-        }),
-    ).exactOptional(),
-    LastUpdatedTime: DateSchema.and(
-      z.any().openapi({ description: ' The last time that this database was updated. ' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name that uniquely identifies this database.',
+    }),
+    DatabaseName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the Timestream database.',
+    }),
+    TableCount: LongSchema.exactOptional().openapi({
+      description: 'The total number of tables found within a Timestream database. ',
+    }),
+    KmsKeyId: StringValue2048Schema.exactOptional().openapi({
+      description: 'The identifier of the KMS key used to encrypt the data stored in the database.',
+    }),
+    CreationTime: DateSchema.exactOptional().openapi({
+      description: 'The time when the database was created, calculated from the Unix epoch time.',
+    }),
+    LastUpdatedTime: DateSchema.exactOptional().openapi({
+      description: ' The last time that this database was updated. ',
+    }),
   })
   .openapi({
     description:
@@ -378,9 +375,9 @@ const DatabaseSchema = z
 
 const CreateDatabaseResponseSchema = z
   .object({
-    Database: DatabaseSchema.and(
-      z.any().openapi({ description: 'The newly created Timestream database.' }),
-    ).exactOptional(),
+    Database: DatabaseSchema.exactOptional().openapi({
+      description: 'The newly created Timestream database.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDatabaseResponse')
@@ -391,16 +388,12 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z.any().openapi({ description: ' The key of the tag. Tag keys are case sensitive. ' }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The value of the tag. Tag values are case-sensitive and can be null. ',
-        }),
-    ),
+    Key: TagKeySchema.openapi({
+      description: ' The key of the tag. Tag keys are case sensitive. ',
+    }),
+    Value: TagValueSchema.openapi({
+      description: ' The value of the tag. Tag values are case-sensitive and can be null. ',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -413,20 +406,16 @@ const TagListSchema = z.array(TagSchema).min(0).max(200).openapi('TagList')
 
 const CreateDatabaseRequestSchema = z
   .object({
-    DatabaseName: ResourceCreateAPINameSchema.and(
-      z.any().openapi({ description: 'The name of the Timestream database.' }),
-    ),
-    KmsKeyId: StringValue2048Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The KMS key for the database. If the KMS key is not specified, the database will be encrypted with a Timestream managed KMS key located in your account. For more information, see <a href="https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk">Amazon Web Services managed keys</a>.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: ' A list of key-value pairs to label the table. ' }),
-    ).exactOptional(),
+    DatabaseName: ResourceCreateAPINameSchema.openapi({
+      description: 'The name of the Timestream database.',
+    }),
+    KmsKeyId: StringValue2048Schema.exactOptional().openapi({
+      description:
+        'The KMS key for the database. If the KMS key is not specified, the database will be encrypted with a Timestream managed KMS key located in your account. For more information, see <a href="https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk">Amazon Web Services managed keys</a>.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: ' A list of key-value pairs to label the table. ',
+    }),
   })
   .openapi({ required: ['DatabaseName'], title: 'CreateDatabaseRequest' })
   .openapi('CreateDatabaseRequest')
@@ -447,20 +436,12 @@ const MagneticStoreRetentionPeriodInDaysSchema = z
 
 const RetentionPropertiesSchema = z
   .object({
-    MemoryStoreRetentionPeriodInHours: MemoryStoreRetentionPeriodInHoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The duration for which data must be stored in the memory store. ',
-        }),
-    ),
-    MagneticStoreRetentionPeriodInDays: MagneticStoreRetentionPeriodInDaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The duration for which data must be stored in the magnetic store. ',
-        }),
-    ),
+    MemoryStoreRetentionPeriodInHours: MemoryStoreRetentionPeriodInHoursSchema.openapi({
+      description: 'The duration for which data must be stored in the memory store. ',
+    }),
+    MagneticStoreRetentionPeriodInDays: MagneticStoreRetentionPeriodInDaysSchema.openapi({
+      description: 'The duration for which data must be stored in the magnetic store. ',
+    }),
   })
   .openapi({
     required: ['MemoryStoreRetentionPeriodInHours', 'MagneticStoreRetentionPeriodInDays'],
@@ -471,42 +452,30 @@ const RetentionPropertiesSchema = z
 
 const S3ConfigurationSchema = z
   .object({
-    BucketName: S3BucketNameSchema.and(
-      z.any().openapi({ description: 'The bucket name of the customer S3 bucket.' }),
-    ).exactOptional(),
-    ObjectKeyPrefix: S3ObjectKeyPrefixSchema.and(
-      z.any().openapi({ description: 'The object key preview for the customer S3 location.' }),
-    ).exactOptional(),
-    EncryptionOption: S3EncryptionOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The encryption option for the customer S3 location. Options are S3 server-side encryption with an S3 managed key or Amazon Web Services managed key.',
-        }),
-    ).exactOptional(),
-    KmsKeyId: StringValue2048Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The KMS key ID for the customer S3 location when encrypting with an Amazon Web Services managed key.',
-        }),
-    ).exactOptional(),
+    BucketName: S3BucketNameSchema.exactOptional().openapi({
+      description: 'The bucket name of the customer S3 bucket.',
+    }),
+    ObjectKeyPrefix: S3ObjectKeyPrefixSchema.exactOptional().openapi({
+      description: 'The object key preview for the customer S3 location.',
+    }),
+    EncryptionOption: S3EncryptionOptionSchema.exactOptional().openapi({
+      description:
+        'The encryption option for the customer S3 location. Options are S3 server-side encryption with an S3 managed key or Amazon Web Services managed key.',
+    }),
+    KmsKeyId: StringValue2048Schema.exactOptional().openapi({
+      description:
+        'The KMS key ID for the customer S3 location when encrypting with an Amazon Web Services managed key.',
+    }),
   })
   .openapi({ description: 'The configuration that specifies an S3 location.', required: [] })
   .openapi('S3Configuration')
 
 const MagneticStoreRejectedDataLocationSchema = z
   .object({
-    S3Configuration: S3ConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration of an S3 location to write error reports for records rejected, asynchronously, during magnetic store writes.',
-        }),
-    ).exactOptional(),
+    S3Configuration: S3ConfigurationSchema.exactOptional().openapi({
+      description:
+        'Configuration of an S3 location to write error reports for records rejected, asynchronously, during magnetic store writes.',
+    }),
   })
   .openapi({
     description:
@@ -517,17 +486,14 @@ const MagneticStoreRejectedDataLocationSchema = z
 
 const MagneticStoreWritePropertiesSchema = z
   .object({
-    EnableMagneticStoreWrites: BooleanSchema.and(
-      z.any().openapi({ description: 'A flag to enable magnetic store writes.' }),
-    ),
-    MagneticStoreRejectedDataLocation: MagneticStoreRejectedDataLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location to write error reports for records rejected asynchronously during magnetic store writes.',
-        }),
-    ).exactOptional(),
+    EnableMagneticStoreWrites: BooleanSchema.openapi({
+      description: 'A flag to enable magnetic store writes.',
+    }),
+    MagneticStoreRejectedDataLocation:
+      MagneticStoreRejectedDataLocationSchema.exactOptional().openapi({
+        description:
+          'The location to write error reports for records rejected asynchronously during magnetic store writes.',
+      }),
   })
   .openapi({
     required: ['EnableMagneticStoreWrites'],
@@ -537,48 +503,31 @@ const MagneticStoreWritePropertiesSchema = z
 
 const TableSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name that uniquely identifies this table.' }),
-    ).exactOptional(),
-    TableName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Timestream table.' }),
-    ).exactOptional(),
-    DatabaseName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the Timestream database that contains this table.' }),
-    ).exactOptional(),
-    TableStatus: TableStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current state of the table:</p> <ul> <li> <p> <code>DELETING</code> - The table is being deleted.</p> </li> <li> <p> <code>ACTIVE</code> - The table is ready for use.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    RetentionProperties: RetentionPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The retention duration for the memory store and magnetic store.',
-        }),
-    ).exactOptional(),
-    CreationTime: DateSchema.and(
-      z.any().openapi({ description: 'The time when the Timestream table was created. ' }),
-    ).exactOptional(),
-    LastUpdatedTime: DateSchema.and(
-      z.any().openapi({ description: 'The time when the Timestream table was last updated.' }),
-    ).exactOptional(),
-    MagneticStoreWriteProperties: MagneticStoreWritePropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains properties to set on the table when enabling magnetic store writes.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name that uniquely identifies this table.',
+    }),
+    TableName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the Timestream table.',
+    }),
+    DatabaseName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the Timestream database that contains this table.',
+    }),
+    TableStatus: TableStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The current state of the table:</p> <ul> <li> <p> <code>DELETING</code> - The table is being deleted.</p> </li> <li> <p> <code>ACTIVE</code> - The table is ready for use.</p> </li> </ul>',
+    }),
+    RetentionProperties: RetentionPropertiesSchema.exactOptional().openapi({
+      description: 'The retention duration for the memory store and magnetic store.',
+    }),
+    CreationTime: DateSchema.exactOptional().openapi({
+      description: 'The time when the Timestream table was created. ',
+    }),
+    LastUpdatedTime: DateSchema.exactOptional().openapi({
+      description: 'The time when the Timestream table was last updated.',
+    }),
+    MagneticStoreWriteProperties: MagneticStoreWritePropertiesSchema.exactOptional().openapi({
+      description: 'Contains properties to set on the table when enabling magnetic store writes.',
+    }),
   })
   .openapi({
     description:
@@ -589,188 +538,96 @@ const TableSchema = z
 
 const CreateTableResponseSchema = z
   .object({
-    Table: TableSchema.and(
-      z.any().openapi({ description: 'The newly created Timestream table.' }),
-    ).exactOptional(),
+    Table: TableSchema.exactOptional().openapi({
+      description: 'The newly created Timestream table.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateTableResponse')
 
 const CreateTableRequestSchema = z
   .object({
-    DatabaseName: ResourceCreateAPINameSchema.and(
-      z.any().openapi({ description: 'The name of the Timestream database.' }),
-    ),
-    TableName: ResourceCreateAPINameSchema.and(
-      z.any().openapi({ description: 'The name of the Timestream table.' }),
-    ),
-    RetentionProperties: RetentionPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The duration for which your time-series data must be stored in the memory store and the magnetic store.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: ' A list of key-value pairs to label the table. ' }),
-    ).exactOptional(),
-    MagneticStoreWriteProperties: MagneticStoreWritePropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains properties to set on the table when enabling magnetic store writes.',
-        }),
-    ).exactOptional(),
+    DatabaseName: ResourceCreateAPINameSchema.openapi({
+      description: 'The name of the Timestream database.',
+    }),
+    TableName: ResourceCreateAPINameSchema.openapi({
+      description: 'The name of the Timestream table.',
+    }),
+    RetentionProperties: RetentionPropertiesSchema.exactOptional().openapi({
+      description:
+        'The duration for which your time-series data must be stored in the memory store and the magnetic store.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: ' A list of key-value pairs to label the table. ',
+    }),
+    MagneticStoreWriteProperties: MagneticStoreWritePropertiesSchema.exactOptional().openapi({
+      description: 'Contains properties to set on the table when enabling magnetic store writes.',
+    }),
   })
   .openapi({ required: ['DatabaseName', 'TableName'], title: 'CreateTableRequest' })
   .openapi('CreateTableRequest')
 
 const DeleteDatabaseRequestSchema = z
   .object({
-    DatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Timestream database to be deleted.' }),
-    ),
+    DatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of the Timestream database to be deleted.',
+    }),
   })
   .openapi({ required: ['DatabaseName'], title: 'DeleteDatabaseRequest' })
   .openapi('DeleteDatabaseRequest')
 
 const DeleteTableRequestSchema = z
   .object({
-    DatabaseName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the database where the Timestream database is to be deleted.',
-        }),
-    ),
-    TableName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Timestream table to be deleted.' }),
-    ),
+    DatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of the database where the Timestream database is to be deleted.',
+    }),
+    TableName: ResourceNameSchema.openapi({
+      description: 'The name of the Timestream table to be deleted.',
+    }),
   })
   .openapi({ required: ['DatabaseName', 'TableName'], title: 'DeleteTableRequest' })
   .openapi('DeleteTableRequest')
 
-const BatchLoadProgressReportSchema = z
+const DescribeBatchLoadTaskResponseSchema: z.ZodType<DescribeBatchLoadTaskResponseType> = z
   .object({
-    RecordsProcessed: LongSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    RecordsIngested: LongSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    ParseFailures: LongSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    RecordIngestionFailures: LongSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    FileFailures: LongSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    BytesMetered: LongSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-  })
-  .openapi({ description: 'Details about the progress of a batch load task.', required: [] })
-  .openapi('BatchLoadProgressReport')
-
-const BatchLoadStatusSchema = z
-  .enum(['CREATED', 'IN_PROGRESS', 'FAILED', 'SUCCEEDED', 'PROGRESS_STOPPED', 'PENDING_RESUME'])
-  .openapi('BatchLoadStatus')
-
-const BatchLoadTaskDescriptionSchema = z
-  .object({
-    TaskId: BatchLoadTaskIdSchema.and(
-      z.any().openapi({ description: 'The ID of the batch load task.' }),
-    ).exactOptional(),
-    ErrorMessage: StringValue2048Schema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    DataSourceConfiguration: DataSourceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configuration details about the data source for a batch load task.',
-        }),
-    ).exactOptional(),
-    ProgressReport: BatchLoadProgressReportSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    ReportConfiguration: ReportConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Report configuration for a batch load task. This contains details about where error reports are stored.',
-        }),
-    ).exactOptional(),
-    DataModelConfiguration: DataModelConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Data model configuration for a batch load task. This contains details about where a data model for a batch load task is stored.',
-        }),
-    ).exactOptional(),
-    TargetDatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    TargetTableName: ResourceNameSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    TaskStatus: BatchLoadStatusSchema.and(
-      z.any().openapi({ description: 'Status of the batch load task.' }),
-    ).exactOptional(),
-    RecordVersion: RecordVersionSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    CreationTime: DateSchema.and(
-      z.any().openapi({ description: 'The time when the Timestream batch load task was created.' }),
-    ).exactOptional(),
-    LastUpdatedTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time when the Timestream batch load task was last updated.' }),
-    ).exactOptional(),
-    ResumableUntil: DateSchema.and(z.any().openapi({ description: ' ' })).exactOptional(),
-  })
-  .openapi({ description: 'Details about a batch load task.', required: [] })
-  .openapi('BatchLoadTaskDescription')
-
-const DescribeBatchLoadTaskResponseSchema = z
-  .object({
-    BatchLoadTaskDescription: BatchLoadTaskDescriptionSchema.and(
-      z.any().openapi({ description: 'Description of the batch load task.' }),
-    ),
+    BatchLoadTaskDescription: BatchLoadTaskDescriptionSchema.openapi({
+      description: 'Description of the batch load task.',
+    }),
   })
   .openapi({ required: ['BatchLoadTaskDescription'] })
   .openapi('DescribeBatchLoadTaskResponse')
 
 const DescribeBatchLoadTaskRequestSchema = z
   .object({
-    TaskId: BatchLoadTaskIdSchema.and(
-      z.any().openapi({ description: 'The ID of the batch load task.' }),
-    ),
+    TaskId: BatchLoadTaskIdSchema.openapi({ description: 'The ID of the batch load task.' }),
   })
   .openapi({ required: ['TaskId'], title: 'DescribeBatchLoadTaskRequest' })
   .openapi('DescribeBatchLoadTaskRequest')
 
 const DescribeDatabaseResponseSchema = z
   .object({
-    Database: DatabaseSchema.and(
-      z.any().openapi({ description: 'The name of the Timestream table.' }),
-    ).exactOptional(),
+    Database: DatabaseSchema.exactOptional().openapi({
+      description: 'The name of the Timestream table.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDatabaseResponse')
 
 const DescribeDatabaseRequestSchema = z
   .object({
-    DatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Timestream database.' }),
-    ),
+    DatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of the Timestream database.',
+    }),
   })
   .openapi({ required: ['DatabaseName'], title: 'DescribeDatabaseRequest' })
   .openapi('DescribeDatabaseRequest')
 
 const EndpointSchema = z
   .object({
-    Address: StringSchema.and(z.any().openapi({ description: 'An endpoint address.' })),
-    CachePeriodInMinutes: LongSchema.and(
-      z.any().openapi({ description: 'The TTL for the endpoint, in minutes.' }),
-    ),
+    Address: StringSchema.openapi({ description: 'An endpoint address.' }),
+    CachePeriodInMinutes: LongSchema.openapi({
+      description: 'The TTL for the endpoint, in minutes.',
+    }),
   })
   .openapi({
     required: ['Address', 'CachePeriodInMinutes'],
@@ -783,75 +640,55 @@ const EndpointsSchema = z.array(EndpointSchema).openapi('Endpoints')
 
 const DescribeEndpointsResponseSchema = z
   .object({
-    Endpoints: EndpointsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>Endpoints</code> object is returned when a <code>DescribeEndpoints</code> request is made.',
-        }),
-    ),
+    Endpoints: EndpointsSchema.openapi({
+      description:
+        'An <code>Endpoints</code> object is returned when a <code>DescribeEndpoints</code> request is made.',
+    }),
   })
   .openapi({ required: ['Endpoints'] })
   .openapi('DescribeEndpointsResponse')
 
 const DescribeEndpointsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeEndpointsRequest' })
   .openapi('DescribeEndpointsRequest')
 
 const DescribeTableResponseSchema = z
-  .object({
-    Table: TableSchema.and(
-      z.any().openapi({ description: 'The Timestream table.' }),
-    ).exactOptional(),
-  })
+  .object({ Table: TableSchema.exactOptional().openapi({ description: 'The Timestream table.' }) })
   .openapi({ required: [] })
   .openapi('DescribeTableResponse')
 
 const DescribeTableRequestSchema = z
   .object({
-    DatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Timestream database.' }),
-    ),
-    TableName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Timestream table.' }),
-    ),
+    DatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of the Timestream database.',
+    }),
+    TableName: ResourceNameSchema.openapi({ description: 'The name of the Timestream table.' }),
   })
   .openapi({ required: ['DatabaseName', 'TableName'], title: 'DescribeTableRequest' })
   .openapi('DescribeTableRequest')
 
 const BatchLoadTaskSchema = z
   .object({
-    TaskId: BatchLoadTaskIdSchema.and(
-      z.any().openapi({ description: 'The ID of the batch load task.' }),
-    ).exactOptional(),
-    TaskStatus: BatchLoadStatusSchema.and(
-      z.any().openapi({ description: 'Status of the batch load task.' }),
-    ).exactOptional(),
-    DatabaseName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Database name for the database into which a batch load task loads data.',
-        }),
-    ).exactOptional(),
-    TableName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Table name for the table into which a batch load task loads data.',
-        }),
-    ).exactOptional(),
-    CreationTime: DateSchema.and(
-      z.any().openapi({ description: 'The time when the Timestream batch load task was created.' }),
-    ).exactOptional(),
-    LastUpdatedTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time when the Timestream batch load task was last updated.' }),
-    ).exactOptional(),
-    ResumableUntil: DateSchema.and(z.any().openapi({ description: ' ' })).exactOptional(),
+    TaskId: BatchLoadTaskIdSchema.exactOptional().openapi({
+      description: 'The ID of the batch load task.',
+    }),
+    TaskStatus: BatchLoadStatusSchema.exactOptional().openapi({
+      description: 'Status of the batch load task.',
+    }),
+    DatabaseName: ResourceNameSchema.exactOptional().openapi({
+      description: 'Database name for the database into which a batch load task loads data.',
+    }),
+    TableName: ResourceNameSchema.exactOptional().openapi({
+      description: 'Table name for the table into which a batch load task loads data.',
+    }),
+    CreationTime: DateSchema.exactOptional().openapi({
+      description: 'The time when the Timestream batch load task was created.',
+    }),
+    LastUpdatedTime: DateSchema.exactOptional().openapi({
+      description: 'The time when the Timestream batch load task was last updated.',
+    }),
+    ResumableUntil: DateSchema.exactOptional().openapi({ description: ' ' }),
   })
   .openapi({ description: 'Details about a batch load task.', required: [] })
   .openapi('BatchLoadTask')
@@ -860,17 +697,13 @@ const BatchLoadTaskListSchema = z.array(BatchLoadTaskSchema).openapi('BatchLoadT
 
 const ListBatchLoadTasksResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token to specify where to start paginating. Provide the next ListBatchLoadTasksRequest.',
-        }),
-    ).exactOptional(),
-    BatchLoadTasks: BatchLoadTaskListSchema.and(
-      z.any().openapi({ description: 'A list of batch load task details.' }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'A token to specify where to start paginating. Provide the next ListBatchLoadTasksRequest.',
+    }),
+    BatchLoadTasks: BatchLoadTaskListSchema.exactOptional().openapi({
+      description: 'A list of batch load task details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBatchLoadTasksResponse')
@@ -879,25 +712,17 @@ const PageLimitSchema = z.int().min(1).max(100).openapi('PageLimit')
 
 const ListBatchLoadTasksRequestSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token to specify where to start paginating. This is the NextToken from a previously truncated response.',
-        }),
-    ).exactOptional(),
-    MaxResults: PageLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of items to return in the output. If the total number of items available is more than the value specified, a NextToken is provided in the output. To resume pagination, provide the NextToken value as argument of a subsequent API invocation.',
-        }),
-    ).exactOptional(),
-    TaskStatus: BatchLoadStatusSchema.and(
-      z.any().openapi({ description: 'Status of the batch load task.' }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'A token to specify where to start paginating. This is the NextToken from a previously truncated response.',
+    }),
+    MaxResults: PageLimitSchema.exactOptional().openapi({
+      description:
+        'The total number of items to return in the output. If the total number of items available is more than the value specified, a NextToken is provided in the output. To resume pagination, provide the NextToken value as argument of a subsequent API invocation.',
+    }),
+    TaskStatus: BatchLoadStatusSchema.exactOptional().openapi({
+      description: 'Status of the batch load task.',
+    }),
   })
   .openapi({ title: 'ListBatchLoadTasksRequest', required: [] })
   .openapi('ListBatchLoadTasksRequest')
@@ -906,17 +731,13 @@ const DatabaseListSchema = z.array(DatabaseSchema).openapi('DatabaseList')
 
 const ListDatabasesResponseSchema = z
   .object({
-    Databases: DatabaseListSchema.and(
-      z.any().openapi({ description: 'A list of database names.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token. This parameter is returned when the response is truncated.',
-        }),
-    ).exactOptional(),
+    Databases: DatabaseListSchema.exactOptional().openapi({
+      description: 'A list of database names.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token. This parameter is returned when the response is truncated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDatabasesResponse')
@@ -925,22 +746,14 @@ const PaginationLimitSchema = z.int().min(1).max(20).openapi('PaginationLimit')
 
 const ListDatabasesRequestSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token. To resume pagination, provide the NextToken value as argument of a subsequent API invocation.',
-        }),
-    ).exactOptional(),
-    MaxResults: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of items to return in the output. If the total number of items available is more than the value specified, a NextToken is provided in the output. To resume pagination, provide the NextToken value as argument of a subsequent API invocation.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token. To resume pagination, provide the NextToken value as argument of a subsequent API invocation.',
+    }),
+    MaxResults: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'The total number of items to return in the output. If the total number of items available is more than the value specified, a NextToken is provided in the output. To resume pagination, provide the NextToken value as argument of a subsequent API invocation.',
+    }),
   })
   .openapi({ title: 'ListDatabasesRequest', required: [] })
   .openapi('ListDatabasesRequest')
@@ -949,53 +762,37 @@ const TableListSchema = z.array(TableSchema).openapi('TableList')
 
 const ListTablesResponseSchema = z
   .object({
-    Tables: TableListSchema.and(
-      z.any().openapi({ description: 'A list of tables.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token to specify where to start paginating. This is the NextToken from a previously truncated response.',
-        }),
-    ).exactOptional(),
+    Tables: TableListSchema.exactOptional().openapi({ description: 'A list of tables.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'A token to specify where to start paginating. This is the NextToken from a previously truncated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTablesResponse')
 
 const ListTablesRequestSchema = z
   .object({
-    DatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Timestream database.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token. To resume pagination, provide the NextToken value as argument of a subsequent API invocation.',
-        }),
-    ).exactOptional(),
-    MaxResults: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of items to return in the output. If the total number of items available is more than the value specified, a NextToken is provided in the output. To resume pagination, provide the NextToken value as argument of a subsequent API invocation.',
-        }),
-    ).exactOptional(),
+    DatabaseName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the Timestream database.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The pagination token. To resume pagination, provide the NextToken value as argument of a subsequent API invocation.',
+    }),
+    MaxResults: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'The total number of items to return in the output. If the total number of items available is more than the value specified, a NextToken is provided in the output. To resume pagination, provide the NextToken value as argument of a subsequent API invocation.',
+    }),
   })
   .openapi({ title: 'ListTablesRequest', required: [] })
   .openapi('ListTablesRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The tags currently associated with the Timestream resource. ' }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: ' The tags currently associated with the Timestream resource. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -1004,70 +801,54 @@ const AmazonResourceNameSchema = z.string().min(1).max(1011).openapi('AmazonReso
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Timestream resource with tags to be listed. This value is an Amazon Resource Name (ARN). ',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        ' The Timestream resource with tags to be listed. This value is an Amazon Resource Name (ARN). ',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
-const ResumeBatchLoadTaskResponseSchema = z.object({}).openapi('ResumeBatchLoadTaskResponse')
+const ResumeBatchLoadTaskResponseSchema = z.looseObject({}).openapi('ResumeBatchLoadTaskResponse')
 
 const ResumeBatchLoadTaskRequestSchema = z
   .object({
-    TaskId: BatchLoadTaskIdSchema.and(
-      z.any().openapi({ description: 'The ID of the batch load task to resume.' }),
-    ),
+    TaskId: BatchLoadTaskIdSchema.openapi({
+      description: 'The ID of the batch load task to resume.',
+    }),
   })
   .openapi({ required: ['TaskId'], title: 'ResumeBatchLoadTaskRequest' })
   .openapi('ResumeBatchLoadTaskRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Identifies the Timestream resource to which tags should be added. This value is an Amazon Resource Name (ARN). ',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: ' The tags to be assigned to the Timestream resource. ' }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        ' Identifies the Timestream resource to which tags should be added. This value is an Amazon Resource Name (ARN). ',
+    }),
+    Tags: TagListSchema.openapi({
+      description: ' The tags to be assigned to the Timestream resource. ',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Timestream resource that the tags will be removed from. This value is an Amazon Resource Name (ARN). ',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of tags keys. Existing tags of the resource whose keys are members of this list will be removed from the Timestream resource. ',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        ' The Timestream resource that the tags will be removed from. This value is an Amazon Resource Name (ARN). ',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description:
+        ' A list of tags keys. Existing tags of the resource whose keys are members of this list will be removed from the Timestream resource. ',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
@@ -1079,53 +860,34 @@ const UpdateDatabaseResponseSchema = z
 
 const UpdateDatabaseRequestSchema = z
   .object({
-    DatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: ' The name of the database. ' }),
-    ),
-    KmsKeyId: StringValue2048Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The identifier of the new KMS key (<code>KmsKeyId</code>) to be used to encrypt the data stored in the database. If the <code>KmsKeyId</code> currently registered with the database is the same as the <code>KmsKeyId</code> in the request, there will not be any update. </p> <p>You can specify the <code>KmsKeyId</code> using any of the following:</p> <ul> <li> <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Key ARN: <code>arn:aws:kms:us-east-1:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Alias name: <code>alias/ExampleAlias</code> </p> </li> <li> <p>Alias ARN: <code>arn:aws:kms:us-east-1:111122223333:alias/ExampleAlias</code> </p> </li> </ul>',
-        }),
-    ),
+    DatabaseName: ResourceNameSchema.openapi({ description: ' The name of the database. ' }),
+    KmsKeyId: StringValue2048Schema.openapi({
+      description:
+        '<p> The identifier of the new KMS key (<code>KmsKeyId</code>) to be used to encrypt the data stored in the database. If the <code>KmsKeyId</code> currently registered with the database is the same as the <code>KmsKeyId</code> in the request, there will not be any update. </p> <p>You can specify the <code>KmsKeyId</code> using any of the following:</p> <ul> <li> <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Key ARN: <code>arn:aws:kms:us-east-1:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Alias name: <code>alias/ExampleAlias</code> </p> </li> <li> <p>Alias ARN: <code>arn:aws:kms:us-east-1:111122223333:alias/ExampleAlias</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['DatabaseName', 'KmsKeyId'], title: 'UpdateDatabaseRequest' })
   .openapi('UpdateDatabaseRequest')
 
 const UpdateTableResponseSchema = z
   .object({
-    Table: TableSchema.and(
-      z.any().openapi({ description: 'The updated Timestream table.' }),
-    ).exactOptional(),
+    Table: TableSchema.exactOptional().openapi({ description: 'The updated Timestream table.' }),
   })
   .openapi({ required: [] })
   .openapi('UpdateTableResponse')
 
 const UpdateTableRequestSchema = z
   .object({
-    DatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Timestream database.' }),
-    ),
-    TableName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Timestream table.' }),
-    ),
-    RetentionProperties: RetentionPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The retention duration of the memory store and the magnetic store.',
-        }),
-    ).exactOptional(),
-    MagneticStoreWriteProperties: MagneticStoreWritePropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains properties to set on the table when enabling magnetic store writes.',
-        }),
-    ).exactOptional(),
+    DatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of the Timestream database.',
+    }),
+    TableName: ResourceNameSchema.openapi({ description: 'The name of the Timestream table.' }),
+    RetentionProperties: RetentionPropertiesSchema.exactOptional().openapi({
+      description: 'The retention duration of the memory store and the magnetic store.',
+    }),
+    MagneticStoreWriteProperties: MagneticStoreWritePropertiesSchema.exactOptional().openapi({
+      description: 'Contains properties to set on the table when enabling magnetic store writes.',
+    }),
   })
   .openapi({ required: ['DatabaseName', 'TableName'], title: 'UpdateTableRequest' })
   .openapi('UpdateTableRequest')
@@ -1134,24 +896,24 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const RecordsIngestedSchema = z
   .object({
-    Total: IntegerSchema.and(
-      z.any().openapi({ description: 'Total count of successfully ingested records.' }),
-    ).exactOptional(),
-    MemoryStore: IntegerSchema.and(
-      z.any().openapi({ description: 'Count of records ingested into the memory store.' }),
-    ).exactOptional(),
-    MagneticStore: IntegerSchema.and(
-      z.any().openapi({ description: 'Count of records ingested into the magnetic store.' }),
-    ).exactOptional(),
+    Total: IntegerSchema.exactOptional().openapi({
+      description: 'Total count of successfully ingested records.',
+    }),
+    MemoryStore: IntegerSchema.exactOptional().openapi({
+      description: 'Count of records ingested into the memory store.',
+    }),
+    MagneticStore: IntegerSchema.exactOptional().openapi({
+      description: 'Count of records ingested into the magnetic store.',
+    }),
   })
   .openapi({ description: 'Information on the records ingested by this request.', required: [] })
   .openapi('RecordsIngested')
 
 const WriteRecordsResponseSchema = z
   .object({
-    RecordsIngested: RecordsIngestedSchema.and(
-      z.any().openapi({ description: 'Information on the records ingested by this request.' }),
-    ).exactOptional(),
+    RecordsIngested: RecordsIngestedSchema.exactOptional().openapi({
+      description: 'Information on the records ingested by this request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('WriteRecordsResponse')
@@ -1162,20 +924,14 @@ const DimensionValueTypeSchema = z.literal('VARCHAR').openapi('DimensionValueTyp
 
 const DimensionSchema = z
   .object({
-    Name: SchemaNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Dimension represents the metadata attributes of the time series. For example, the name and Availability Zone of an EC2 instance or the name of the manufacturer of a wind turbine are dimensions. </p> <p>For constraints on dimension names, see <a href="https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html#limits.naming">Naming Constraints</a>.</p>',
-        }),
-    ),
-    Value: SchemaValueSchema.and(z.any().openapi({ description: 'The value of the dimension.' })),
-    DimensionValueType: DimensionValueTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The data type of the dimension for the time-series data point.' }),
-    ).exactOptional(),
+    Name: SchemaNameSchema.openapi({
+      description:
+        '<p> Dimension represents the metadata attributes of the time series. For example, the name and Availability Zone of an EC2 instance or the name of the manufacturer of a wind turbine are dimensions. </p> <p>For constraints on dimension names, see <a href="https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html#limits.naming">Naming Constraints</a>.</p>',
+    }),
+    Value: SchemaValueSchema.openapi({ description: 'The value of the dimension.' }),
+    DimensionValueType: DimensionValueTypeSchema.exactOptional().openapi({
+      description: 'The data type of the dimension for the time-series data point.',
+    }),
   })
   .openapi({
     required: ['Name', 'Value'],
@@ -1188,24 +944,14 @@ const DimensionsSchema = z.array(DimensionSchema).max(128).openapi('Dimensions')
 
 const MeasureValueSchema = z
   .object({
-    Name: SchemaNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The name of the MeasureValue. </p> <p> For constraints on MeasureValue names, see <a href="https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html#limits.naming"> Naming Constraints</a> in the Amazon Timestream Developer Guide.</p>',
-        }),
-    ),
-    Value: StringValue2048Schema.and(
-      z.any().openapi({ description: ' The value for the MeasureValue. ' }),
-    ),
-    Type: MeasureValueTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains the data type of the MeasureValue for the time-series data point.',
-        }),
-    ),
+    Name: SchemaNameSchema.openapi({
+      description:
+        '<p> The name of the MeasureValue. </p> <p> For constraints on MeasureValue names, see <a href="https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html#limits.naming"> Naming Constraints</a> in the Amazon Timestream Developer Guide.</p>',
+    }),
+    Value: StringValue2048Schema.openapi({ description: ' The value for the MeasureValue. ' }),
+    Type: MeasureValueTypeSchema.openapi({
+      description: 'Contains the data type of the MeasureValue for the time-series data point.',
+    }),
   })
   .openapi({
     required: ['Name', 'Value', 'Type'],
@@ -1218,64 +964,36 @@ const MeasureValuesSchema = z.array(MeasureValueSchema).openapi('MeasureValues')
 
 const RecordSchema = z
   .object({
-    Dimensions: DimensionsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the list of dimensions for time-series data points.' }),
-    ).exactOptional(),
-    MeasureName: SchemaNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Measure represents the data attribute of the time series. For example, the CPU utilization of an EC2 instance or the RPM of a wind turbine are measures. ',
-        }),
-    ).exactOptional(),
-    MeasureValue: StringValue2048Schema.and(
-      z
-        .any()
-        .openapi({ description: ' Contains the measure value for the time-series data point. ' }),
-    ).exactOptional(),
-    MeasureValueType: MeasureValueTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Contains the data type of the measure value for the time-series data point. Default type is <code>DOUBLE</code>. ',
-        }),
-    ).exactOptional(),
-    Time: StringValue256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Contains the time at which the measure value for the data point was collected. The time value plus the unit provides the time elapsed since the epoch. For example, if the time value is <code>12345</code> and the unit is <code>ms</code>, then <code>12345 ms</code> have elapsed since the epoch. ',
-        }),
-    ).exactOptional(),
-    TimeUnit: TimeUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The granularity of the timestamp unit. It indicates if the time value is in seconds, milliseconds, nanoseconds, or other supported values. Default is <code>MILLISECONDS</code>. ',
-        }),
-    ).exactOptional(),
-    Version: RecordVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>64-bit attribute used for record updates. Write requests for duplicate data with a higher version number will update the existing measure value and version. In cases where the measure value is the same, <code>Version</code> will still be updated. Default value is <code>1</code>.</p> <note> <p> <code>Version</code> must be <code>1</code> or greater, or you will receive a <code>ValidationException</code> error.</p> </note>',
-        }),
-    ).exactOptional(),
-    MeasureValues: MeasureValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Contains the list of MeasureValue for time-series data points. </p> <p> This is only allowed for type <code>MULTI</code>. For scalar values, use <code>MeasureValue</code> attribute of the record directly. </p>',
-        }),
-    ).exactOptional(),
+    Dimensions: DimensionsSchema.exactOptional().openapi({
+      description: 'Contains the list of dimensions for time-series data points.',
+    }),
+    MeasureName: SchemaNameSchema.exactOptional().openapi({
+      description:
+        'Measure represents the data attribute of the time series. For example, the CPU utilization of an EC2 instance or the RPM of a wind turbine are measures. ',
+    }),
+    MeasureValue: StringValue2048Schema.exactOptional().openapi({
+      description: ' Contains the measure value for the time-series data point. ',
+    }),
+    MeasureValueType: MeasureValueTypeSchema.exactOptional().openapi({
+      description:
+        ' Contains the data type of the measure value for the time-series data point. Default type is <code>DOUBLE</code>. ',
+    }),
+    Time: StringValue256Schema.exactOptional().openapi({
+      description:
+        ' Contains the time at which the measure value for the data point was collected. The time value plus the unit provides the time elapsed since the epoch. For example, if the time value is <code>12345</code> and the unit is <code>ms</code>, then <code>12345 ms</code> have elapsed since the epoch. ',
+    }),
+    TimeUnit: TimeUnitSchema.exactOptional().openapi({
+      description:
+        ' The granularity of the timestamp unit. It indicates if the time value is in seconds, milliseconds, nanoseconds, or other supported values. Default is <code>MILLISECONDS</code>. ',
+    }),
+    Version: RecordVersionSchema.exactOptional().openapi({
+      description:
+        '<p>64-bit attribute used for record updates. Write requests for duplicate data with a higher version number will update the existing measure value and version. In cases where the measure value is the same, <code>Version</code> will still be updated. Default value is <code>1</code>.</p> <note> <p> <code>Version</code> must be <code>1</code> or greater, or you will receive a <code>ValidationException</code> error.</p> </note>',
+    }),
+    MeasureValues: MeasureValuesSchema.exactOptional().openapi({
+      description:
+        '<p> Contains the list of MeasureValue for time-series data points. </p> <p> This is only allowed for type <code>MULTI</code>. For scalar values, use <code>MeasureValue</code> attribute of the record directly. </p>',
+    }),
   })
   .openapi({
     description:
@@ -1288,28 +1006,18 @@ const RecordsSchema = z.array(RecordSchema).min(1).max(100).openapi('Records')
 
 const WriteRecordsRequestSchema = z
   .object({
-    DatabaseName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Timestream database.' }),
-    ),
-    TableName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Timestream table.' }),
-    ),
-    CommonAttributes: RecordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A record that contains the common measure, dimension, time, and version attributes shared across all the records in the request. The measure and dimension attributes specified will be merged with the measure and dimension attributes in the records object when the data is written into Timestream. Dimensions may not overlap, or a <code>ValidationException</code> will be thrown. In other words, a record must contain dimensions with unique names. ',
-        }),
-    ).exactOptional(),
-    Records: RecordsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of records that contain the unique measure, dimension, time, and version attributes for each time-series data point. ',
-        }),
-    ),
+    DatabaseName: ResourceNameSchema.openapi({
+      description: 'The name of the Timestream database.',
+    }),
+    TableName: ResourceNameSchema.openapi({ description: 'The name of the Timestream table.' }),
+    CommonAttributes: RecordSchema.exactOptional().openapi({
+      description:
+        'A record that contains the common measure, dimension, time, and version attributes shared across all the records in the request. The measure and dimension attributes specified will be merged with the measure and dimension attributes in the records object when the data is written into Timestream. Dimensions may not overlap, or a <code>ValidationException</code> will be thrown. In other words, a record must contain dimensions with unique names. ',
+    }),
+    Records: RecordsSchema.openapi({
+      description:
+        'An array of records that contain the unique measure, dimension, time, and version attributes for each time-series data point. ',
+    }),
   })
   .openapi({ required: ['DatabaseName', 'TableName', 'Records'], title: 'WriteRecordsRequest' })
   .openapi('WriteRecordsRequest')

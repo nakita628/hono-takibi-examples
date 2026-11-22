@@ -1177,36 +1177,26 @@ export const getRidesPagePagePerPagePerPageRoute = createRoute({
     200: {
       description: 'OK',
       headers: z.object({
-        'Current-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        Link: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Per-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Total-Entries': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Total-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Current-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        Link: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Per-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Total-Entries': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Total-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },

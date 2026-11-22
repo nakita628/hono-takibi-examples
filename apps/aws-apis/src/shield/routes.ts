@@ -1,6 +1,203 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AssociateDRTLogBucketResponseSchema = z.object({}).openapi('AssociateDRTLogBucketResponse')
+const AttackIdSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9\\-]*/)
+  .min(1)
+  .max(128)
+  .openapi('AttackId')
+
+const ResourceArnSchema = z
+  .string()
+  .regex(/^arn:aws.*/)
+  .min(1)
+  .max(2048)
+  .openapi('ResourceArn')
+
+const SubResourceTypeSchema = z.enum(['IP', 'URL']).openapi('SubResourceType')
+
+const StringSchema = z.string().openapi('String')
+
+const DoubleSchema = z.float64().openapi('Double')
+
+const IntegerSchema = z.int().openapi('Integer')
+
+const SummarizedCounterSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({ description: 'The counter name.' }),
+    Max: DoubleSchema.exactOptional().openapi({
+      description: 'The maximum value of the counter for a specified time period.',
+    }),
+    Average: DoubleSchema.exactOptional().openapi({
+      description: 'The average value of the counter for a specified time period.',
+    }),
+    Sum: DoubleSchema.exactOptional().openapi({
+      description: 'The total of counter values for a specified time period.',
+    }),
+    N: IntegerSchema.exactOptional().openapi({
+      description: 'The number of counters for a specified time period.',
+    }),
+    Unit: StringSchema.exactOptional().openapi({ description: 'The unit of the counters.' }),
+  })
+  .openapi({ description: 'The counter that describes a DDoS attack.', required: [] })
+  .openapi('SummarizedCounter')
+
+const SummarizedCounterListSchema = z
+  .array(SummarizedCounterSchema)
+  .openapi('SummarizedCounterList')
+
+const SummarizedAttackVectorSchema = z
+  .object({
+    VectorType: StringSchema.openapi({
+      description: 'The attack type, for example, SNMP reflection or SYN flood.',
+    }),
+    VectorCounters: SummarizedCounterListSchema.exactOptional().openapi({
+      description: 'The list of counters that describe the details of the attack.',
+    }),
+  })
+  .openapi({ required: ['VectorType'], description: 'A summary of information about the attack.' })
+  .openapi('SummarizedAttackVector')
+
+const SummarizedAttackVectorListSchema = z
+  .array(SummarizedAttackVectorSchema)
+  .openapi('SummarizedAttackVectorList')
+
+const SubResourceSummarySchema = z
+  .object({
+    Type: SubResourceTypeSchema.exactOptional().openapi({
+      description: 'The <code>SubResource</code> type.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The unique identifier (ID) of the <code>SubResource</code>.',
+    }),
+    AttackVectors: SummarizedAttackVectorListSchema.exactOptional().openapi({
+      description: 'The list of attack types and associated counters.',
+    }),
+    Counters: SummarizedCounterListSchema.exactOptional().openapi({
+      description: 'The counters that describe the details of the attack.',
+    }),
+  })
+  .openapi({ description: 'The attack information for the specified SubResource.', required: [] })
+  .openapi('SubResourceSummary')
+
+const SubResourceSummaryListSchema = z
+  .array(SubResourceSummarySchema)
+  .openapi('SubResourceSummaryList')
+
+const AttackTimestampSchema = z.iso.datetime({ offset: true }).openapi('AttackTimestamp')
+
+const AttackLayerSchema = z.enum(['NETWORK', 'APPLICATION']).openapi('AttackLayer')
+
+const AttackPropertyIdentifierSchema = z
+  .enum([
+    'DESTINATION_URL',
+    'REFERRER',
+    'SOURCE_ASN',
+    'SOURCE_COUNTRY',
+    'SOURCE_IP_ADDRESS',
+    'SOURCE_USER_AGENT',
+    'WORDPRESS_PINGBACK_REFLECTOR',
+    'WORDPRESS_PINGBACK_SOURCE',
+  ])
+  .openapi('AttackPropertyIdentifier')
+
+const LongSchema = z.int().openapi('Long')
+
+const ContributorSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({
+      description:
+        "The name of the contributor. The type of name that you'll find here depends on the <code>AttackPropertyIdentifier</code> setting in the <code>AttackProperty</code> where this contributor is defined. For example, if the <code>AttackPropertyIdentifier</code> is <code>SOURCE_COUNTRY</code>, the <code>Name</code> could be <code>United States</code>.",
+    }),
+    Value: LongSchema.exactOptional().openapi({
+      description:
+        'The contribution of this contributor expressed in <a>Protection</a> units. For example <code>10,000</code>.',
+    }),
+  })
+  .openapi({ description: 'A contributor to the attack and their contribution. ', required: [] })
+  .openapi('Contributor')
+
+const TopContributorsSchema = z.array(ContributorSchema).openapi('TopContributors')
+
+const UnitSchema = z.enum(['BITS', 'BYTES', 'PACKETS', 'REQUESTS']).openapi('Unit')
+
+const AttackPropertySchema = z
+  .object({
+    AttackLayer: AttackLayerSchema.exactOptional().openapi({
+      description:
+        '<p>The type of Shield event that was observed. <code>NETWORK</code> indicates layer 3 and layer 4 events and <code>APPLICATION</code> indicates layer 7 events.</p> <p>For infrastructure layer events (L3 and L4 events), you can view metrics for top contributors in Amazon CloudWatch metrics. For more information, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/monitoring-cloudwatch.html#set-ddos-alarms">Shield metrics and alarms</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+    AttackPropertyIdentifier: AttackPropertyIdentifierSchema.exactOptional().openapi({
+      description:
+        'Defines the Shield event property information that is provided. The <code>WORDPRESS_PINGBACK_REFLECTOR</code> and <code>WORDPRESS_PINGBACK_SOURCE</code> values are valid only for WordPress reflective pingback events.',
+    }),
+    TopContributors: TopContributorsSchema.exactOptional().openapi({
+      description:
+        'Contributor objects for the top five contributors to a Shield event. A contributor is a source of traffic that Shield Advanced identifies as responsible for some or all of an event.',
+    }),
+    Unit: UnitSchema.exactOptional().openapi({
+      description: 'The unit used for the <code>Contributor</code> <code>Value</code> property. ',
+    }),
+    Total: LongSchema.exactOptional().openapi({
+      description: 'The total contributions made to this Shield event by all contributors.',
+    }),
+  })
+  .openapi({
+    description: 'Details of a Shield event. This is provided as part of an <a>AttackDetail</a>.',
+    required: [],
+  })
+  .openapi('AttackProperty')
+
+const AttackPropertiesSchema = z.array(AttackPropertySchema).openapi('AttackProperties')
+
+const MitigationSchema = z
+  .object({
+    MitigationName: StringSchema.exactOptional().openapi({
+      description: 'The name of the mitigation taken for this attack.',
+    }),
+  })
+  .openapi({ description: 'The mitigation applied to a DDoS attack.', required: [] })
+  .openapi('Mitigation')
+
+const MitigationListSchema = z.array(MitigationSchema).openapi('MitigationList')
+
+const AttackDetailSchema = z
+  .object({
+    AttackId: AttackIdSchema.exactOptional().openapi({
+      description: 'The unique identifier (ID) of the attack.',
+    }),
+    ResourceArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the resource that was attacked.',
+    }),
+    SubResources: SubResourceSummaryListSchema.exactOptional().openapi({
+      description:
+        'If applicable, additional detail about the resource being attacked, for example, IP address or URL.',
+    }),
+    StartTime: AttackTimestampSchema.exactOptional().openapi({
+      description: 'The time the attack started, in Unix time in seconds. ',
+    }),
+    EndTime: AttackTimestampSchema.exactOptional().openapi({
+      description: 'The time the attack ended, in Unix time in seconds. ',
+    }),
+    AttackCounters: SummarizedCounterListSchema.exactOptional().openapi({
+      description: 'List of counters that describe the attack for the specified time period.',
+    }),
+    AttackProperties: AttackPropertiesSchema.exactOptional().openapi({
+      description:
+        '<p>The array of objects that provide details of the Shield event. </p> <p>For infrastructure layer events (L3 and L4 events), you can view metrics for top contributors in Amazon CloudWatch metrics. For more information, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/monitoring-cloudwatch.html#set-ddos-alarms">Shield metrics and alarms</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+    Mitigations: MitigationListSchema.exactOptional().openapi({
+      description: 'List of mitigation actions taken for the attack.',
+    }),
+  })
+  .openapi({ description: 'The details of a DDoS attack.', required: [] })
+  .openapi('AttackDetail')
+
+type DescribeAttackResponseType = { Attack?: z.infer<typeof AttackDetailSchema> & unknown }
+
+const AssociateDRTLogBucketResponseSchema = z
+  .looseObject({})
+  .openapi('AssociateDRTLogBucketResponse')
 
 const LogBucketSchema = z
   .string()
@@ -13,13 +210,9 @@ const LogBucketSchema = z
 
 const AssociateDRTLogBucketRequestSchema = z
   .object({
-    LogBucket: LogBucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon S3 bucket that contains the logs that you want to share.',
-        }),
-    ),
+    LogBucket: LogBucketSchema.openapi({
+      description: 'The Amazon S3 bucket that contains the logs that you want to share.',
+    }),
   })
   .openapi({ required: ['LogBucket'], title: 'AssociateDRTLogBucketRequest' })
   .openapi('AssociateDRTLogBucketRequest')
@@ -42,7 +235,7 @@ const OptimisticLockExceptionSchema = z.any().openapi('OptimisticLockException')
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
 
-const AssociateDRTRoleResponseSchema = z.object({}).openapi('AssociateDRTRoleResponse')
+const AssociateDRTRoleResponseSchema = z.looseObject({}).openapi('AssociateDRTRoleResponse')
 
 const RoleArnSchema = z
   .string()
@@ -53,19 +246,15 @@ const RoleArnSchema = z
 
 const AssociateDRTRoleRequestSchema = z
   .object({
-    RoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the role the SRT will use to access your Amazon Web Services account.</p> <p>Prior to making the <code>AssociateDRTRole</code> request, you must attach the <a href="https://console.aws.amazon.com/iam/home?#/policies/arn:aws:iam::aws:policy/service-role/AWSShieldDRTAccessPolicy">AWSShieldDRTAccessPolicy</a> managed policy to this role. For more information see <a href=" https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_manage-attach-detach.html">Attaching and Detaching IAM Policies</a>.</p>',
-        }),
-    ),
+    RoleArn: RoleArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the role the SRT will use to access your Amazon Web Services account.</p> <p>Prior to making the <code>AssociateDRTRole</code> request, you must attach the <a href="https://console.aws.amazon.com/iam/home?#/policies/arn:aws:iam::aws:policy/service-role/AWSShieldDRTAccessPolicy">AWSShieldDRTAccessPolicy</a> managed policy to this role. For more information see <a href=" https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_manage-attach-detach.html">Attaching and Detaching IAM Policies</a>.</p>',
+    }),
   })
   .openapi({ required: ['RoleArn'], title: 'AssociateDRTRoleRequest' })
   .openapi('AssociateDRTRoleRequest')
 
-const AssociateHealthCheckResponseSchema = z.object({}).openapi('AssociateHealthCheckResponse')
+const AssociateHealthCheckResponseSchema = z.looseObject({}).openapi('AssociateHealthCheckResponse')
 
 const ProtectionIdSchema = z
   .string()
@@ -82,22 +271,14 @@ const HealthCheckArnSchema = z
 
 const AssociateHealthCheckRequestSchema = z
   .object({
-    ProtectionId: ProtectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier (ID) for the <a>Protection</a> object to add the health check association to. ',
-        }),
-    ),
-    HealthCheckArn: HealthCheckArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the health check to associate with the protection.',
-        }),
-    ),
+    ProtectionId: ProtectionIdSchema.openapi({
+      description:
+        'The unique identifier (ID) for the <a>Protection</a> object to add the health check association to. ',
+    }),
+    HealthCheckArn: HealthCheckArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the health check to associate with the protection.',
+    }),
   })
   .openapi({ required: ['ProtectionId', 'HealthCheckArn'], title: 'AssociateHealthCheckRequest' })
   .openapi('AssociateHealthCheckRequest')
@@ -105,7 +286,7 @@ const AssociateHealthCheckRequestSchema = z
 const InvalidResourceExceptionSchema = z.any().openapi('InvalidResourceException')
 
 const AssociateProactiveEngagementDetailsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateProactiveEngagementDetailsResponse')
 
 const EmailAddressSchema = z
@@ -131,15 +312,13 @@ const ContactNotesSchema = z
 
 const EmergencyContactSchema = z
   .object({
-    EmailAddress: EmailAddressSchema.and(
-      z.any().openapi({ description: 'The email address for the contact.' }),
-    ),
-    PhoneNumber: PhoneNumberSchema.and(
-      z.any().openapi({ description: 'The phone number for the contact.' }),
-    ).exactOptional(),
-    ContactNotes: ContactNotesSchema.and(
-      z.any().openapi({ description: 'Additional notes regarding the contact. ' }),
-    ).exactOptional(),
+    EmailAddress: EmailAddressSchema.openapi({ description: 'The email address for the contact.' }),
+    PhoneNumber: PhoneNumberSchema.exactOptional().openapi({
+      description: 'The phone number for the contact.',
+    }),
+    ContactNotes: ContactNotesSchema.exactOptional().openapi({
+      description: 'Additional notes regarding the contact. ',
+    }),
   })
   .openapi({
     required: ['EmailAddress'],
@@ -156,14 +335,10 @@ const EmergencyContactListSchema = z
 
 const AssociateProactiveEngagementDetailsRequestSchema = z
   .object({
-    EmergencyContactList: EmergencyContactListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of email addresses and phone numbers that the Shield Response Team (SRT) can use to contact you for escalations to the SRT and to initiate proactive customer support. </p> <p>To enable proactive engagement, the contact list must include at least one phone number.</p> <note> <p>The contacts that you provide here replace any contacts that were already defined. If you already have contacts defined and want to use them, retrieve the list using <code>DescribeEmergencyContactSettings</code> and then provide it here. </p> </note>',
-        }),
-    ),
+    EmergencyContactList: EmergencyContactListSchema.openapi({
+      description:
+        '<p>A list of email addresses and phone numbers that the Shield Response Team (SRT) can use to contact you for escalations to the SRT and to initiate proactive customer support. </p> <p>To enable proactive engagement, the contact list must include at least one phone number.</p> <note> <p>The contacts that you provide here replace any contacts that were already defined. If you already have contacts defined and want to use them, retrieve the list using <code>DescribeEmergencyContactSettings</code> and then provide it here. </p> </note>',
+    }),
   })
   .openapi({
     required: ['EmergencyContactList'],
@@ -173,14 +348,9 @@ const AssociateProactiveEngagementDetailsRequestSchema = z
 
 const CreateProtectionResponseSchema = z
   .object({
-    ProtectionId: ProtectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier (ID) for the <a>Protection</a> object that is created.',
-        }),
-    ).exactOptional(),
+    ProtectionId: ProtectionIdSchema.exactOptional().openapi({
+      description: 'The unique identifier (ID) for the <a>Protection</a> object that is created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateProtectionResponse')
@@ -192,35 +362,20 @@ const ProtectionNameSchema = z
   .max(128)
   .openapi('ProtectionName')
 
-const ResourceArnSchema = z
-  .string()
-  .regex(/^arn:aws.*/)
-  .min(1)
-  .max(2048)
-  .openapi('ResourceArn')
-
 const TagKeySchema = z.string().min(1).max(128).openapi('TagKey')
 
 const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Part of the key:value pair that defines a tag. You can use a tag key to describe a category of information, such as "customer." Tag keys are case-sensitive.',
-        }),
-    ).exactOptional(),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Part of the key:value pair that defines a tag. You can use a tag value to describe a specific value within a category, such as "companyA" or "companyB." Tag values are case-sensitive.',
-        }),
-    ).exactOptional(),
+    Key: TagKeySchema.exactOptional().openapi({
+      description:
+        'Part of the key:value pair that defines a tag. You can use a tag key to describe a category of information, such as "customer." Tag keys are case-sensitive.',
+    }),
+    Value: TagValueSchema.exactOptional().openapi({
+      description:
+        'Part of the key:value pair that defines a tag. You can use a tag value to describe a specific value within a category, such as "companyA" or "companyB." Tag values are case-sensitive.',
+    }),
   })
   .openapi({
     description:
@@ -233,36 +388,26 @@ const TagListSchema = z.array(TagSchema).min(0).max(200).openapi('TagList')
 
 const CreateProtectionRequestSchema = z
   .object({
-    Name: ProtectionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Friendly name for the <code>Protection</code> you are creating.',
-        }),
-    ),
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN (Amazon Resource Name) of the resource to be protected.</p> <p>The ARN should be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:aws:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Elastic Load Balancer (Classic Load Balancer): <code>arn:aws:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/<i>load-balancer-name</i> </code> </p> </li> <li> <p>For an Amazon CloudFront distribution: <code>arn:aws:cloudfront::<i>account-id</i>:distribution/<i>distribution-id</i> </code> </p> </li> <li> <p>For an Global Accelerator standard accelerator: <code>arn:aws:globalaccelerator::<i>account-id</i>:accelerator/<i>accelerator-id</i> </code> </p> </li> <li> <p>For Amazon Route 53: <code>arn:aws:route53:::hostedzone/<i>hosted-zone-id</i> </code> </p> </li> <li> <p>For an Elastic IP address: <code>arn:aws:ec2:<i>region</i>:<i>account-id</i>:eip-allocation/<i>allocation-id</i> </code> </p> </li> </ul>',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more tag key-value pairs for the <a>Protection</a> object that is created.',
-        }),
-    ).exactOptional(),
+    Name: ProtectionNameSchema.openapi({
+      description: 'Friendly name for the <code>Protection</code> you are creating.',
+    }),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        '<p>The ARN (Amazon Resource Name) of the resource to be protected.</p> <p>The ARN should be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:aws:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Elastic Load Balancer (Classic Load Balancer): <code>arn:aws:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/<i>load-balancer-name</i> </code> </p> </li> <li> <p>For an Amazon CloudFront distribution: <code>arn:aws:cloudfront::<i>account-id</i>:distribution/<i>distribution-id</i> </code> </p> </li> <li> <p>For an Global Accelerator standard accelerator: <code>arn:aws:globalaccelerator::<i>account-id</i>:accelerator/<i>accelerator-id</i> </code> </p> </li> <li> <p>For Amazon Route 53: <code>arn:aws:route53:::hostedzone/<i>hosted-zone-id</i> </code> </p> </li> <li> <p>For an Elastic IP address: <code>arn:aws:ec2:<i>region</i>:<i>account-id</i>:eip-allocation/<i>allocation-id</i> </code> </p> </li> </ul>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'One or more tag key-value pairs for the <a>Protection</a> object that is created.',
+    }),
   })
   .openapi({ required: ['Name', 'ResourceArn'], title: 'CreateProtectionRequest' })
   .openapi('CreateProtectionRequest')
 
 const ResourceAlreadyExistsExceptionSchema = z.any().openapi('ResourceAlreadyExistsException')
 
-const CreateProtectionGroupResponseSchema = z.object({}).openapi('CreateProtectionGroupResponse')
+const CreateProtectionGroupResponseSchema = z
+  .looseObject({})
+  .openapi('CreateProtectionGroupResponse')
 
 const ProtectionGroupIdSchema = z
   .string()
@@ -298,49 +443,29 @@ const ProtectionGroupMembersSchema = z
 
 const CreateProtectionGroupRequestSchema = z
   .object({
-    ProtectionGroupId: ProtectionGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the protection group. You use this to identify the protection group in lists and to manage the protection group, for example to update, delete, or describe it. ',
-        }),
-    ),
-    Aggregation: ProtectionGroupAggregationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Defines how Shield combines resource data for the group in order to detect, mitigate, and report events.</p> <ul> <li> <p>Sum - Use the total traffic across the group. This is a good choice for most cases. Examples include Elastic IP addresses for EC2 instances that scale manually or automatically.</p> </li> <li> <p>Mean - Use the average of the traffic across the group. This is a good choice for resources that share traffic uniformly. Examples include accelerators and load balancers.</p> </li> <li> <p>Max - Use the highest traffic from each resource. This is useful for resources that don't share traffic and for resources that share that traffic in a non-uniform way. Examples include Amazon CloudFront and origin resources for CloudFront distributions.</p> </li> </ul>",
-        }),
-    ),
-    Pattern: ProtectionGroupPatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The criteria to use to choose the protected resources for inclusion in the group. You can include all resources that have protections, provide a list of resource Amazon Resource Names (ARNs), or include all resources of a specified resource type. ',
-        }),
-    ),
-    ResourceType: ProtectedResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource type to include in the protection group. All protected resources of this type are included in the protection group. Newly protected resources of this type are automatically added to the group. You must set this when you set <code>Pattern</code> to <code>BY_RESOURCE_TYPE</code> and you must not set it for any other <code>Pattern</code> setting. ',
-        }),
-    ).exactOptional(),
-    Members: ProtectionGroupMembersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Names (ARNs) of the resources to include in the protection group. You must set this when you set <code>Pattern</code> to <code>ARBITRARY</code> and you must not set it for any other <code>Pattern</code> setting. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'One or more tag key-value pairs for the protection group.' }),
-    ).exactOptional(),
+    ProtectionGroupId: ProtectionGroupIdSchema.openapi({
+      description:
+        'The name of the protection group. You use this to identify the protection group in lists and to manage the protection group, for example to update, delete, or describe it. ',
+    }),
+    Aggregation: ProtectionGroupAggregationSchema.openapi({
+      description:
+        "<p>Defines how Shield combines resource data for the group in order to detect, mitigate, and report events.</p> <ul> <li> <p>Sum - Use the total traffic across the group. This is a good choice for most cases. Examples include Elastic IP addresses for EC2 instances that scale manually or automatically.</p> </li> <li> <p>Mean - Use the average of the traffic across the group. This is a good choice for resources that share traffic uniformly. Examples include accelerators and load balancers.</p> </li> <li> <p>Max - Use the highest traffic from each resource. This is useful for resources that don't share traffic and for resources that share that traffic in a non-uniform way. Examples include Amazon CloudFront and origin resources for CloudFront distributions.</p> </li> </ul>",
+    }),
+    Pattern: ProtectionGroupPatternSchema.openapi({
+      description:
+        'The criteria to use to choose the protected resources for inclusion in the group. You can include all resources that have protections, provide a list of resource Amazon Resource Names (ARNs), or include all resources of a specified resource type. ',
+    }),
+    ResourceType: ProtectedResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The resource type to include in the protection group. All protected resources of this type are included in the protection group. Newly protected resources of this type are automatically added to the group. You must set this when you set <code>Pattern</code> to <code>BY_RESOURCE_TYPE</code> and you must not set it for any other <code>Pattern</code> setting. ',
+    }),
+    Members: ProtectionGroupMembersSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Names (ARNs) of the resources to include in the protection group. You must set this when you set <code>Pattern</code> to <code>ARBITRARY</code> and you must not set it for any other <code>Pattern</code> setting. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'One or more tag key-value pairs for the protection group.',
+    }),
   })
   .openapi({
     required: ['ProtectionGroupId', 'Aggregation', 'Pattern'],
@@ -348,313 +473,62 @@ const CreateProtectionGroupRequestSchema = z
   })
   .openapi('CreateProtectionGroupRequest')
 
-const CreateSubscriptionResponseSchema = z.object({}).openapi('CreateSubscriptionResponse')
+const CreateSubscriptionResponseSchema = z.looseObject({}).openapi('CreateSubscriptionResponse')
 
 const CreateSubscriptionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CreateSubscriptionRequest' })
   .openapi('CreateSubscriptionRequest')
 
-const DeleteProtectionResponseSchema = z.object({}).openapi('DeleteProtectionResponse')
+const DeleteProtectionResponseSchema = z.looseObject({}).openapi('DeleteProtectionResponse')
 
 const DeleteProtectionRequestSchema = z
   .object({
-    ProtectionId: ProtectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier (ID) for the <a>Protection</a> object to be deleted.',
-        }),
-    ),
+    ProtectionId: ProtectionIdSchema.openapi({
+      description: 'The unique identifier (ID) for the <a>Protection</a> object to be deleted.',
+    }),
   })
   .openapi({ required: ['ProtectionId'], title: 'DeleteProtectionRequest' })
   .openapi('DeleteProtectionRequest')
 
-const DeleteProtectionGroupResponseSchema = z.object({}).openapi('DeleteProtectionGroupResponse')
+const DeleteProtectionGroupResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteProtectionGroupResponse')
 
 const DeleteProtectionGroupRequestSchema = z
   .object({
-    ProtectionGroupId: ProtectionGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the protection group. You use this to identify the protection group in lists and to manage the protection group, for example to update, delete, or describe it. ',
-        }),
-    ),
+    ProtectionGroupId: ProtectionGroupIdSchema.openapi({
+      description:
+        'The name of the protection group. You use this to identify the protection group in lists and to manage the protection group, for example to update, delete, or describe it. ',
+    }),
   })
   .openapi({ required: ['ProtectionGroupId'], title: 'DeleteProtectionGroupRequest' })
   .openapi('DeleteProtectionGroupRequest')
 
 const DeleteSubscriptionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ deprecated: true })
   .openapi('DeleteSubscriptionResponse')
 
 const DeleteSubscriptionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ deprecated: true, title: 'DeleteSubscriptionRequest' })
   .openapi('DeleteSubscriptionRequest')
 
 const LockedSubscriptionExceptionSchema = z.any().openapi('LockedSubscriptionException')
 
-const AttackIdSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9\\-]*/)
-  .min(1)
-  .max(128)
-  .openapi('AttackId')
-
-const SubResourceTypeSchema = z.enum(['IP', 'URL']).openapi('SubResourceType')
-
-const StringSchema = z.string().openapi('String')
-
-const DoubleSchema = z.float64().openapi('Double')
-
-const IntegerSchema = z.int().openapi('Integer')
-
-const SummarizedCounterSchema = z
+const DescribeAttackResponseSchema: z.ZodType<DescribeAttackResponseType> = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'The counter name.' })).exactOptional(),
-    Max: DoubleSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum value of the counter for a specified time period.' }),
-    ).exactOptional(),
-    Average: DoubleSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The average value of the counter for a specified time period.' }),
-    ).exactOptional(),
-    Sum: DoubleSchema.and(
-      z.any().openapi({ description: 'The total of counter values for a specified time period.' }),
-    ).exactOptional(),
-    N: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of counters for a specified time period.' }),
-    ).exactOptional(),
-    Unit: StringSchema.and(
-      z.any().openapi({ description: 'The unit of the counters.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The counter that describes a DDoS attack.', required: [] })
-  .openapi('SummarizedCounter')
-
-const SummarizedCounterListSchema = z
-  .array(SummarizedCounterSchema)
-  .openapi('SummarizedCounterList')
-
-const SummarizedAttackVectorSchema = z
-  .object({
-    VectorType: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The attack type, for example, SNMP reflection or SYN flood.' }),
-    ),
-    VectorCounters: SummarizedCounterListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of counters that describe the details of the attack.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['VectorType'], description: 'A summary of information about the attack.' })
-  .openapi('SummarizedAttackVector')
-
-const SummarizedAttackVectorListSchema = z
-  .array(SummarizedAttackVectorSchema)
-  .openapi('SummarizedAttackVectorList')
-
-const SubResourceSummarySchema = z
-  .object({
-    Type: SubResourceTypeSchema.and(
-      z.any().openapi({ description: 'The <code>SubResource</code> type.' }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique identifier (ID) of the <code>SubResource</code>.' }),
-    ).exactOptional(),
-    AttackVectors: SummarizedAttackVectorListSchema.and(
-      z.any().openapi({ description: 'The list of attack types and associated counters.' }),
-    ).exactOptional(),
-    Counters: SummarizedCounterListSchema.and(
-      z.any().openapi({ description: 'The counters that describe the details of the attack.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The attack information for the specified SubResource.', required: [] })
-  .openapi('SubResourceSummary')
-
-const SubResourceSummaryListSchema = z
-  .array(SubResourceSummarySchema)
-  .openapi('SubResourceSummaryList')
-
-const AttackTimestampSchema = z.iso.datetime({ offset: true }).openapi('AttackTimestamp')
-
-const AttackLayerSchema = z.enum(['NETWORK', 'APPLICATION']).openapi('AttackLayer')
-
-const AttackPropertyIdentifierSchema = z
-  .enum([
-    'DESTINATION_URL',
-    'REFERRER',
-    'SOURCE_ASN',
-    'SOURCE_COUNTRY',
-    'SOURCE_IP_ADDRESS',
-    'SOURCE_USER_AGENT',
-    'WORDPRESS_PINGBACK_REFLECTOR',
-    'WORDPRESS_PINGBACK_SOURCE',
-  ])
-  .openapi('AttackPropertyIdentifier')
-
-const LongSchema = z.int().openapi('Long')
-
-const ContributorSchema = z
-  .object({
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the contributor. The type of name that you'll find here depends on the <code>AttackPropertyIdentifier</code> setting in the <code>AttackProperty</code> where this contributor is defined. For example, if the <code>AttackPropertyIdentifier</code> is <code>SOURCE_COUNTRY</code>, the <code>Name</code> could be <code>United States</code>.",
-        }),
-    ).exactOptional(),
-    Value: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The contribution of this contributor expressed in <a>Protection</a> units. For example <code>10,000</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'A contributor to the attack and their contribution. ', required: [] })
-  .openapi('Contributor')
-
-const TopContributorsSchema = z.array(ContributorSchema).openapi('TopContributors')
-
-const UnitSchema = z.enum(['BITS', 'BYTES', 'PACKETS', 'REQUESTS']).openapi('Unit')
-
-const AttackPropertySchema = z
-  .object({
-    AttackLayer: AttackLayerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of Shield event that was observed. <code>NETWORK</code> indicates layer 3 and layer 4 events and <code>APPLICATION</code> indicates layer 7 events.</p> <p>For infrastructure layer events (L3 and L4 events), you can view metrics for top contributors in Amazon CloudWatch metrics. For more information, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/monitoring-cloudwatch.html#set-ddos-alarms">Shield metrics and alarms</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-    AttackPropertyIdentifier: AttackPropertyIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines the Shield event property information that is provided. The <code>WORDPRESS_PINGBACK_REFLECTOR</code> and <code>WORDPRESS_PINGBACK_SOURCE</code> values are valid only for WordPress reflective pingback events.',
-        }),
-    ).exactOptional(),
-    TopContributors: TopContributorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contributor objects for the top five contributors to a Shield event. A contributor is a source of traffic that Shield Advanced identifies as responsible for some or all of an event.',
-        }),
-    ).exactOptional(),
-    Unit: UnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unit used for the <code>Contributor</code> <code>Value</code> property. ',
-        }),
-    ).exactOptional(),
-    Total: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The total contributions made to this Shield event by all contributors.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Details of a Shield event. This is provided as part of an <a>AttackDetail</a>.',
-    required: [],
-  })
-  .openapi('AttackProperty')
-
-const AttackPropertiesSchema = z.array(AttackPropertySchema).openapi('AttackProperties')
-
-const MitigationSchema = z
-  .object({
-    MitigationName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the mitigation taken for this attack.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The mitigation applied to a DDoS attack.', required: [] })
-  .openapi('Mitigation')
-
-const MitigationListSchema = z.array(MitigationSchema).openapi('MitigationList')
-
-const AttackDetailSchema = z
-  .object({
-    AttackId: AttackIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier (ID) of the attack.' }),
-    ).exactOptional(),
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN (Amazon Resource Name) of the resource that was attacked.',
-        }),
-    ).exactOptional(),
-    SubResources: SubResourceSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If applicable, additional detail about the resource being attacked, for example, IP address or URL.',
-        }),
-    ).exactOptional(),
-    StartTime: AttackTimestampSchema.and(
-      z.any().openapi({ description: 'The time the attack started, in Unix time in seconds. ' }),
-    ).exactOptional(),
-    EndTime: AttackTimestampSchema.and(
-      z.any().openapi({ description: 'The time the attack ended, in Unix time in seconds. ' }),
-    ).exactOptional(),
-    AttackCounters: SummarizedCounterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List of counters that describe the attack for the specified time period.',
-        }),
-    ).exactOptional(),
-    AttackProperties: AttackPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The array of objects that provide details of the Shield event. </p> <p>For infrastructure layer events (L3 and L4 events), you can view metrics for top contributors in Amazon CloudWatch metrics. For more information, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/monitoring-cloudwatch.html#set-ddos-alarms">Shield metrics and alarms</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-    Mitigations: MitigationListSchema.and(
-      z.any().openapi({ description: 'List of mitigation actions taken for the attack.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The details of a DDoS attack.', required: [] })
-  .openapi('AttackDetail')
-
-const DescribeAttackResponseSchema = z
-  .object({
-    Attack: AttackDetailSchema.and(
-      z.any().openapi({ description: 'The attack that you requested. ' }),
-    ).exactOptional(),
+    Attack: AttackDetailSchema.exactOptional().openapi({
+      description: 'The attack that you requested. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAttackResponse')
 
 const DescribeAttackRequestSchema = z
   .object({
-    AttackId: AttackIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier (ID) for the attack.' }),
-    ),
+    AttackId: AttackIdSchema.openapi({ description: 'The unique identifier (ID) for the attack.' }),
   })
   .openapi({ required: ['AttackId'], title: 'DescribeAttackRequest' })
   .openapi('DescribeAttackRequest')
@@ -665,21 +539,21 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const TimeRangeSchema = z
   .object({
-    FromInclusive: TimestampSchema.and(
-      z.any().openapi({ description: 'The start time, in Unix time in seconds. ' }),
-    ).exactOptional(),
-    ToExclusive: TimestampSchema.and(
-      z.any().openapi({ description: 'The end time, in Unix time in seconds. ' }),
-    ).exactOptional(),
+    FromInclusive: TimestampSchema.exactOptional().openapi({
+      description: 'The start time, in Unix time in seconds. ',
+    }),
+    ToExclusive: TimestampSchema.exactOptional().openapi({
+      description: 'The end time, in Unix time in seconds. ',
+    }),
   })
   .openapi({ description: 'The time range. ', required: [] })
   .openapi('TimeRange')
 
 const AttackVolumeStatisticsSchema = z
   .object({
-    Max: DoubleSchema.and(
-      z.any().openapi({ description: 'The maximum attack volume observed for the given unit.' }),
-    ),
+    Max: DoubleSchema.openapi({
+      description: 'The maximum attack volume observed for the given unit.',
+    }),
   })
   .openapi({
     required: ['Max'],
@@ -689,30 +563,18 @@ const AttackVolumeStatisticsSchema = z
 
 const AttackVolumeSchema = z
   .object({
-    BitsPerSecond: AttackVolumeStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A statistics object that uses bits per second as the unit. This is included for network level attacks. ',
-        }),
-    ).exactOptional(),
-    PacketsPerSecond: AttackVolumeStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A statistics object that uses packets per second as the unit. This is included for network level attacks. ',
-        }),
-    ).exactOptional(),
-    RequestsPerSecond: AttackVolumeStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A statistics object that uses requests per second as the unit. This is included for application level attacks, and is only available for accounts that are subscribed to Shield Advanced.',
-        }),
-    ).exactOptional(),
+    BitsPerSecond: AttackVolumeStatisticsSchema.exactOptional().openapi({
+      description:
+        'A statistics object that uses bits per second as the unit. This is included for network level attacks. ',
+    }),
+    PacketsPerSecond: AttackVolumeStatisticsSchema.exactOptional().openapi({
+      description:
+        'A statistics object that uses packets per second as the unit. This is included for network level attacks. ',
+    }),
+    RequestsPerSecond: AttackVolumeStatisticsSchema.exactOptional().openapi({
+      description:
+        'A statistics object that uses requests per second as the unit. This is included for application level attacks, and is only available for accounts that are subscribed to Shield Advanced.',
+    }),
   })
   .openapi({
     description:
@@ -723,22 +585,14 @@ const AttackVolumeSchema = z
 
 const AttackStatisticsDataItemSchema = z
   .object({
-    AttackVolume: AttackVolumeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the volume of attacks during the time period. If the accompanying <code>AttackCount</code> is zero, this setting might be empty.',
-        }),
-    ).exactOptional(),
-    AttackCount: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of attacks detected during the time period. This is always present, but might be zero. ',
-        }),
-    ),
+    AttackVolume: AttackVolumeSchema.exactOptional().openapi({
+      description:
+        'Information about the volume of attacks during the time period. If the accompanying <code>AttackCount</code> is zero, this setting might be empty.',
+    }),
+    AttackCount: LongSchema.openapi({
+      description:
+        'The number of attacks detected during the time period. This is always present, but might be zero. ',
+    }),
   })
   .openapi({
     required: ['AttackCount'],
@@ -753,22 +607,16 @@ const AttackStatisticsDataListSchema = z
 
 const DescribeAttackStatisticsResponseSchema = z
   .object({
-    TimeRange: TimeRangeSchema.and(
-      z.any().openapi({ description: 'The time range of the attack.' }),
-    ),
-    DataItems: AttackStatisticsDataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The data that describes the attacks detected during the time period.',
-        }),
-    ),
+    TimeRange: TimeRangeSchema.openapi({ description: 'The time range of the attack.' }),
+    DataItems: AttackStatisticsDataListSchema.openapi({
+      description: 'The data that describes the attacks detected during the time period.',
+    }),
   })
   .openapi({ required: ['TimeRange', 'DataItems'] })
   .openapi('DescribeAttackStatisticsResponse')
 
 const DescribeAttackStatisticsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAttackStatisticsRequest' })
   .openapi('DescribeAttackStatisticsRequest')
 
@@ -776,42 +624,34 @@ const LogBucketListSchema = z.array(LogBucketSchema).min(0).max(10).openapi('Log
 
 const DescribeDRTAccessResponseSchema = z
   .object({
-    RoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the role the SRT used to access your Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    LogBucketList: LogBucketListSchema.and(
-      z.any().openapi({ description: 'The list of Amazon S3 buckets accessed by the SRT.' }),
-    ).exactOptional(),
+    RoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the role the SRT used to access your Amazon Web Services account.',
+    }),
+    LogBucketList: LogBucketListSchema.exactOptional().openapi({
+      description: 'The list of Amazon S3 buckets accessed by the SRT.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDRTAccessResponse')
 
 const DescribeDRTAccessRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDRTAccessRequest' })
   .openapi('DescribeDRTAccessRequest')
 
 const DescribeEmergencyContactSettingsResponseSchema = z
   .object({
-    EmergencyContactList: EmergencyContactListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of email addresses and phone numbers that the Shield Response Team (SRT) can use to contact you if you have proactive engagement enabled, for escalations to the SRT and to initiate proactive customer support.',
-        }),
-    ).exactOptional(),
+    EmergencyContactList: EmergencyContactListSchema.exactOptional().openapi({
+      description:
+        'A list of email addresses and phone numbers that the Shield Response Team (SRT) can use to contact you if you have proactive engagement enabled, for escalations to the SRT and to initiate proactive customer support.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEmergencyContactSettingsResponse')
 
 const DescribeEmergencyContactSettingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeEmergencyContactSettingsRequest' })
   .openapi('DescribeEmergencyContactSettingsRequest')
 
@@ -824,7 +664,7 @@ const ApplicationLayerAutomaticResponseStatusSchema = z
   .openapi('ApplicationLayerAutomaticResponseStatus')
 
 const BlockActionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       '<p>Specifies that Shield Advanced should configure its WAF rules with the WAF <code>Block</code> action. </p> <p>This is only used in the context of the <code>ResponseAction</code> setting. </p> <p>JSON specification: <code>"Block": {}</code> </p>',
@@ -832,7 +672,7 @@ const BlockActionSchema = z
   .openapi('BlockAction')
 
 const CountActionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       '<p>Specifies that Shield Advanced should configure its WAF rules with the WAF <code>Count</code> action. </p> <p>This is only used in the context of the <code>ResponseAction</code> setting. </p> <p>JSON specification: <code>"Count": {}</code> </p>',
@@ -841,22 +681,14 @@ const CountActionSchema = z
 
 const ResponseActionSchema = z
   .object({
-    Block: BlockActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies that Shield Advanced should configure its WAF rules with the WAF <code>Block</code> action. </p> <p>You must specify exactly one action, either <code>Block</code> or <code>Count</code>.</p>',
-        }),
-    ).exactOptional(),
-    Count: CountActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies that Shield Advanced should configure its WAF rules with the WAF <code>Count</code> action. </p> <p>You must specify exactly one action, either <code>Block</code> or <code>Count</code>.</p>',
-        }),
-    ).exactOptional(),
+    Block: BlockActionSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies that Shield Advanced should configure its WAF rules with the WAF <code>Block</code> action. </p> <p>You must specify exactly one action, either <code>Block</code> or <code>Count</code>.</p>',
+    }),
+    Count: CountActionSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies that Shield Advanced should configure its WAF rules with the WAF <code>Count</code> action. </p> <p>You must specify exactly one action, either <code>Block</code> or <code>Count</code>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -867,22 +699,14 @@ const ResponseActionSchema = z
 
 const ApplicationLayerAutomaticResponseConfigurationSchema = z
   .object({
-    Status: ApplicationLayerAutomaticResponseStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether automatic application layer DDoS mitigation is enabled for the protection. ',
-        }),
-    ),
-    Action: ResponseActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the action setting that Shield Advanced should use in the WAF rules that it creates on behalf of the protected resource in response to DDoS attacks. You specify this as part of the configuration for the automatic application layer DDoS mitigation feature, when you enable or update automatic mitigation. Shield Advanced creates the WAF rules in a Shield Advanced-managed rule group, inside the web ACL that you have associated with the resource. ',
-        }),
-    ),
+    Status: ApplicationLayerAutomaticResponseStatusSchema.openapi({
+      description:
+        'Indicates whether automatic application layer DDoS mitigation is enabled for the protection. ',
+    }),
+    Action: ResponseActionSchema.openapi({
+      description:
+        'Specifies the action setting that Shield Advanced should use in the WAF rules that it creates on behalf of the protected resource in response to DDoS attacks. You specify this as part of the configuration for the automatic application layer DDoS mitigation feature, when you enable or update automatic mitigation. Shield Advanced creates the WAF rules in a Shield Advanced-managed rule group, inside the web ACL that you have associated with the resource. ',
+    }),
   })
   .openapi({
     required: ['Status', 'Action'],
@@ -893,45 +717,29 @@ const ApplicationLayerAutomaticResponseConfigurationSchema = z
 
 const ProtectionSchema = z
   .object({
-    Id: ProtectionIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier (ID) of the protection.' }),
-    ).exactOptional(),
-    Name: ProtectionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the protection. For example, <code>My CloudFront distributions</code>.',
-        }),
-    ).exactOptional(),
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN (Amazon Resource Name) of the Amazon Web Services resource that is protected.',
-        }),
-    ).exactOptional(),
-    HealthCheckIds: HealthCheckIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The unique identifier (ID) for the Route 53 health check that's associated with the protection. ",
-        }),
-    ).exactOptional(),
-    ProtectionArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) of the protection.' }),
-    ).exactOptional(),
+    Id: ProtectionIdSchema.exactOptional().openapi({
+      description: 'The unique identifier (ID) of the protection.',
+    }),
+    Name: ProtectionNameSchema.exactOptional().openapi({
+      description:
+        'The name of the protection. For example, <code>My CloudFront distributions</code>.',
+    }),
+    ResourceArn: ResourceArnSchema.exactOptional().openapi({
+      description:
+        'The ARN (Amazon Resource Name) of the Amazon Web Services resource that is protected.',
+    }),
+    HealthCheckIds: HealthCheckIdsSchema.exactOptional().openapi({
+      description:
+        "The unique identifier (ID) for the Route 53 health check that's associated with the protection. ",
+    }),
+    ProtectionArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the protection.',
+    }),
     ApplicationLayerAutomaticResponseConfiguration:
-      ApplicationLayerAutomaticResponseConfigurationSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The automatic application layer DDoS mitigation settings for the protection. This configuration determines whether Shield Advanced automatically manages rules in the web ACL in order to respond to application layer events that Shield Advanced determines to be DDoS attacks. ',
-          }),
-      ).exactOptional(),
+      ApplicationLayerAutomaticResponseConfigurationSchema.exactOptional().openapi({
+        description:
+          'The automatic application layer DDoS mitigation settings for the protection. This configuration determines whether Shield Advanced automatically manages rules in the web ACL in order to respond to application layer events that Shield Advanced determines to be DDoS attacks. ',
+      }),
   })
   .openapi({
     description: 'An object that represents a resource that is under DDoS protection.',
@@ -941,80 +749,52 @@ const ProtectionSchema = z
 
 const DescribeProtectionResponseSchema = z
   .object({
-    Protection: ProtectionSchema.and(
-      z.any().openapi({ description: 'The <a>Protection</a> that you requested. ' }),
-    ).exactOptional(),
+    Protection: ProtectionSchema.exactOptional().openapi({
+      description: 'The <a>Protection</a> that you requested. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeProtectionResponse')
 
 const DescribeProtectionRequestSchema = z
   .object({
-    ProtectionId: ProtectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier (ID) for the <a>Protection</a> object to describe. You must provide either the <code>ResourceArn</code> of the protected resource or the <code>ProtectionID</code> of the protection, but not both.',
-        }),
-    ).exactOptional(),
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN (Amazon Resource Name) of the protected Amazon Web Services resource. You must provide either the <code>ResourceArn</code> of the protected resource or the <code>ProtectionID</code> of the protection, but not both.',
-        }),
-    ).exactOptional(),
+    ProtectionId: ProtectionIdSchema.exactOptional().openapi({
+      description:
+        'The unique identifier (ID) for the <a>Protection</a> object to describe. You must provide either the <code>ResourceArn</code> of the protected resource or the <code>ProtectionID</code> of the protection, but not both.',
+    }),
+    ResourceArn: ResourceArnSchema.exactOptional().openapi({
+      description:
+        'The ARN (Amazon Resource Name) of the protected Amazon Web Services resource. You must provide either the <code>ResourceArn</code> of the protected resource or the <code>ProtectionID</code> of the protection, but not both.',
+    }),
   })
   .openapi({ title: 'DescribeProtectionRequest', required: [] })
   .openapi('DescribeProtectionRequest')
 
 const ProtectionGroupSchema = z
   .object({
-    ProtectionGroupId: ProtectionGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the protection group. You use this to identify the protection group in lists and to manage the protection group, for example to update, delete, or describe it. ',
-        }),
-    ),
-    Aggregation: ProtectionGroupAggregationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Defines how Shield combines resource data for the group in order to detect, mitigate, and report events.</p> <ul> <li> <p>Sum - Use the total traffic across the group. This is a good choice for most cases. Examples include Elastic IP addresses for EC2 instances that scale manually or automatically.</p> </li> <li> <p>Mean - Use the average of the traffic across the group. This is a good choice for resources that share traffic uniformly. Examples include accelerators and load balancers.</p> </li> <li> <p>Max - Use the highest traffic from each resource. This is useful for resources that don't share traffic and for resources that share that traffic in a non-uniform way. Examples include Amazon CloudFront distributions and origin resources for CloudFront distributions.</p> </li> </ul>",
-        }),
-    ),
-    Pattern: ProtectionGroupPatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The criteria to use to choose the protected resources for inclusion in the group. You can include all resources that have protections, provide a list of resource ARNs (Amazon Resource Names), or include all resources of a specified resource type.',
-        }),
-    ),
-    ResourceType: ProtectedResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource type to include in the protection group. All protected resources of this type are included in the protection group. You must set this when you set <code>Pattern</code> to <code>BY_RESOURCE_TYPE</code> and you must not set it for any other <code>Pattern</code> setting. ',
-        }),
-    ).exactOptional(),
-    Members: ProtectionGroupMembersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARNs (Amazon Resource Names) of the resources to include in the protection group. You must set this when you set <code>Pattern</code> to <code>ARBITRARY</code> and you must not set it for any other <code>Pattern</code> setting. ',
-        }),
-    ),
-    ProtectionGroupArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) of the protection group.' }),
-    ).exactOptional(),
+    ProtectionGroupId: ProtectionGroupIdSchema.openapi({
+      description:
+        'The name of the protection group. You use this to identify the protection group in lists and to manage the protection group, for example to update, delete, or describe it. ',
+    }),
+    Aggregation: ProtectionGroupAggregationSchema.openapi({
+      description:
+        "<p>Defines how Shield combines resource data for the group in order to detect, mitigate, and report events.</p> <ul> <li> <p>Sum - Use the total traffic across the group. This is a good choice for most cases. Examples include Elastic IP addresses for EC2 instances that scale manually or automatically.</p> </li> <li> <p>Mean - Use the average of the traffic across the group. This is a good choice for resources that share traffic uniformly. Examples include accelerators and load balancers.</p> </li> <li> <p>Max - Use the highest traffic from each resource. This is useful for resources that don't share traffic and for resources that share that traffic in a non-uniform way. Examples include Amazon CloudFront distributions and origin resources for CloudFront distributions.</p> </li> </ul>",
+    }),
+    Pattern: ProtectionGroupPatternSchema.openapi({
+      description:
+        'The criteria to use to choose the protected resources for inclusion in the group. You can include all resources that have protections, provide a list of resource ARNs (Amazon Resource Names), or include all resources of a specified resource type.',
+    }),
+    ResourceType: ProtectedResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The resource type to include in the protection group. All protected resources of this type are included in the protection group. You must set this when you set <code>Pattern</code> to <code>BY_RESOURCE_TYPE</code> and you must not set it for any other <code>Pattern</code> setting. ',
+    }),
+    Members: ProtectionGroupMembersSchema.openapi({
+      description:
+        'The ARNs (Amazon Resource Names) of the resources to include in the protection group. You must set this when you set <code>Pattern</code> to <code>ARBITRARY</code> and you must not set it for any other <code>Pattern</code> setting. ',
+    }),
+    ProtectionGroupArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the protection group.',
+    }),
   })
   .openapi({
     required: ['ProtectionGroupId', 'Aggregation', 'Pattern', 'Members'],
@@ -1025,28 +805,20 @@ const ProtectionGroupSchema = z
 
 const DescribeProtectionGroupResponseSchema = z
   .object({
-    ProtectionGroup: ProtectionGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A grouping of protected resources that you and Shield Advanced can monitor as a collective. This resource grouping improves the accuracy of detection and reduces false positives. ',
-        }),
-    ),
+    ProtectionGroup: ProtectionGroupSchema.openapi({
+      description:
+        'A grouping of protected resources that you and Shield Advanced can monitor as a collective. This resource grouping improves the accuracy of detection and reduces false positives. ',
+    }),
   })
   .openapi({ required: ['ProtectionGroup'] })
   .openapi('DescribeProtectionGroupResponse')
 
 const DescribeProtectionGroupRequestSchema = z
   .object({
-    ProtectionGroupId: ProtectionGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the protection group. You use this to identify the protection group in lists and to manage the protection group, for example to update, delete, or describe it. ',
-        }),
-    ),
+    ProtectionGroupId: ProtectionGroupIdSchema.openapi({
+      description:
+        'The name of the protection group. You use this to identify the protection group in lists and to manage the protection group, for example to update, delete, or describe it. ',
+    }),
   })
   .openapi({ required: ['ProtectionGroupId'], title: 'DescribeProtectionGroupRequest' })
   .openapi('DescribeProtectionGroupRequest')
@@ -1057,17 +829,11 @@ const AutoRenewSchema = z.enum(['ENABLED', 'DISABLED']).openapi('AutoRenew')
 
 const LimitSchema = z
   .object({
-    Type: StringSchema.and(
-      z.any().openapi({ description: 'The type of protection.' }),
-    ).exactOptional(),
-    Max: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of protections that can be created for the specified <code>Type</code>.',
-        }),
-    ).exactOptional(),
+    Type: StringSchema.exactOptional().openapi({ description: 'The type of protection.' }),
+    Max: LongSchema.exactOptional().openapi({
+      description:
+        'The maximum number of protections that can be created for the specified <code>Type</code>.',
+    }),
   })
   .openapi({
     description: 'Specifies how many protections of a given type you can create.',
@@ -1083,13 +849,9 @@ const ProactiveEngagementStatusSchema = z
 
 const ProtectionLimitsSchema = z
   .object({
-    ProtectedResourceTypeLimits: LimitsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of resource types that you can specify in a protection.',
-        }),
-    ),
+    ProtectedResourceTypeLimits: LimitsSchema.openapi({
+      description: 'The maximum number of resource types that you can specify in a protection.',
+    }),
   })
   .openapi({
     required: ['ProtectedResourceTypeLimits'],
@@ -1099,14 +861,10 @@ const ProtectionLimitsSchema = z
 
 const ProtectionGroupArbitraryPatternLimitsSchema = z
   .object({
-    MaxMembers: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of resources you can specify for a single arbitrary pattern in a protection group.',
-        }),
-    ),
+    MaxMembers: LongSchema.openapi({
+      description:
+        'The maximum number of resources you can specify for a single arbitrary pattern in a protection group.',
+    }),
   })
   .openapi({
     required: ['MaxMembers'],
@@ -1116,13 +874,9 @@ const ProtectionGroupArbitraryPatternLimitsSchema = z
 
 const ProtectionGroupPatternTypeLimitsSchema = z
   .object({
-    ArbitraryPatternLimits: ProtectionGroupArbitraryPatternLimitsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Limits settings on protection groups with arbitrary pattern type. ',
-        }),
-    ),
+    ArbitraryPatternLimits: ProtectionGroupArbitraryPatternLimitsSchema.openapi({
+      description: 'Limits settings on protection groups with arbitrary pattern type. ',
+    }),
   })
   .openapi({
     required: ['ArbitraryPatternLimits'],
@@ -1132,21 +886,13 @@ const ProtectionGroupPatternTypeLimitsSchema = z
 
 const ProtectionGroupLimitsSchema = z
   .object({
-    MaxProtectionGroups: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of protection groups that you can have at one time. ',
-        }),
-    ),
-    PatternTypeLimits: ProtectionGroupPatternTypeLimitsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Limits settings by pattern type in the protection groups for your subscription. ',
-        }),
-    ),
+    MaxProtectionGroups: LongSchema.openapi({
+      description: 'The maximum number of protection groups that you can have at one time. ',
+    }),
+    PatternTypeLimits: ProtectionGroupPatternTypeLimitsSchema.openapi({
+      description:
+        'Limits settings by pattern type in the protection groups for your subscription. ',
+    }),
   })
   .openapi({
     required: ['MaxProtectionGroups', 'PatternTypeLimits'],
@@ -1156,14 +902,12 @@ const ProtectionGroupLimitsSchema = z
 
 const SubscriptionLimitsSchema = z
   .object({
-    ProtectionLimits: ProtectionLimitsSchema.and(
-      z.any().openapi({ description: 'Limits settings on protections for your subscription. ' }),
-    ),
-    ProtectionGroupLimits: ProtectionGroupLimitsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Limits settings on protection groups for your subscription. ' }),
-    ),
+    ProtectionLimits: ProtectionLimitsSchema.openapi({
+      description: 'Limits settings on protections for your subscription. ',
+    }),
+    ProtectionGroupLimits: ProtectionGroupLimitsSchema.openapi({
+      description: 'Limits settings on protection groups for your subscription. ',
+    }),
   })
   .openapi({
     required: ['ProtectionLimits', 'ProtectionGroupLimits'],
@@ -1173,49 +917,32 @@ const SubscriptionLimitsSchema = z
 
 const SubscriptionSchema = z
   .object({
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The start time of the subscription, in Unix time in seconds. ' }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time your subscription will end.' }),
-    ).exactOptional(),
-    TimeCommitmentInSeconds: DurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The length, in seconds, of the Shield Advanced subscription for the account.',
-        }),
-    ).exactOptional(),
-    AutoRenew: AutoRenewSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>ENABLED</code>, the subscription will be automatically renewed at the end of the existing subscription period.</p> <p>When you initally create a subscription, <code>AutoRenew</code> is set to <code>ENABLED</code>. You can change this by submitting an <code>UpdateSubscription</code> request. If the <code>UpdateSubscription</code> request does not included a value for <code>AutoRenew</code>, the existing value for <code>AutoRenew</code> remains unchanged.</p>',
-        }),
-    ).exactOptional(),
-    Limits: LimitsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies how many protections of a given type you can create.' }),
-    ).exactOptional(),
-    ProactiveEngagementStatus: ProactiveEngagementStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>ENABLED</code>, the Shield Response Team (SRT) will use email and phone to notify contacts about escalations to the SRT and to initiate proactive customer support.</p> <p>If <code>PENDING</code>, you have requested proactive engagement and the request is pending. The status changes to <code>ENABLED</code> when your request is fully processed.</p> <p>If <code>DISABLED</code>, the SRT will not proactively notify contacts about escalations or to initiate proactive customer support. </p>',
-        }),
-    ).exactOptional(),
-    SubscriptionLimits: SubscriptionLimitsSchema.and(
-      z.any().openapi({ description: 'Limits settings for your subscription. ' }),
-    ),
-    SubscriptionArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) of the subscription.' }),
-    ).exactOptional(),
+    StartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The start time of the subscription, in Unix time in seconds. ',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time your subscription will end.',
+    }),
+    TimeCommitmentInSeconds: DurationInSecondsSchema.exactOptional().openapi({
+      description: 'The length, in seconds, of the Shield Advanced subscription for the account.',
+    }),
+    AutoRenew: AutoRenewSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>ENABLED</code>, the subscription will be automatically renewed at the end of the existing subscription period.</p> <p>When you initally create a subscription, <code>AutoRenew</code> is set to <code>ENABLED</code>. You can change this by submitting an <code>UpdateSubscription</code> request. If the <code>UpdateSubscription</code> request does not included a value for <code>AutoRenew</code>, the existing value for <code>AutoRenew</code> remains unchanged.</p>',
+    }),
+    Limits: LimitsSchema.exactOptional().openapi({
+      description: 'Specifies how many protections of a given type you can create.',
+    }),
+    ProactiveEngagementStatus: ProactiveEngagementStatusSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>ENABLED</code>, the Shield Response Team (SRT) will use email and phone to notify contacts about escalations to the SRT and to initiate proactive customer support.</p> <p>If <code>PENDING</code>, you have requested proactive engagement and the request is pending. The status changes to <code>ENABLED</code> when your request is fully processed.</p> <p>If <code>DISABLED</code>, the SRT will not proactively notify contacts about escalations or to initiate proactive customer support. </p>',
+    }),
+    SubscriptionLimits: SubscriptionLimitsSchema.openapi({
+      description: 'Limits settings for your subscription. ',
+    }),
+    SubscriptionArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the subscription.',
+    }),
   })
   .openapi({
     required: ['SubscriptionLimits'],
@@ -1225,86 +952,74 @@ const SubscriptionSchema = z
 
 const DescribeSubscriptionResponseSchema = z
   .object({
-    Subscription: SubscriptionSchema.and(
-      z.any().openapi({ description: 'The Shield Advanced subscription details for an account.' }),
-    ).exactOptional(),
+    Subscription: SubscriptionSchema.exactOptional().openapi({
+      description: 'The Shield Advanced subscription details for an account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSubscriptionResponse')
 
 const DescribeSubscriptionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeSubscriptionRequest' })
   .openapi('DescribeSubscriptionRequest')
 
 const DisableApplicationLayerAutomaticResponseResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisableApplicationLayerAutomaticResponseResponse')
 
 const DisableApplicationLayerAutomaticResponseRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) of the protected resource.' }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description: 'The ARN (Amazon Resource Name) of the protected resource.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'DisableApplicationLayerAutomaticResponseRequest' })
   .openapi('DisableApplicationLayerAutomaticResponseRequest')
 
 const DisableProactiveEngagementResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisableProactiveEngagementResponse')
 
 const DisableProactiveEngagementRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisableProactiveEngagementRequest' })
   .openapi('DisableProactiveEngagementRequest')
 
 const DisassociateDRTLogBucketResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateDRTLogBucketResponse')
 
 const DisassociateDRTLogBucketRequestSchema = z
   .object({
-    LogBucket: LogBucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon S3 bucket that contains the logs that you want to share.',
-        }),
-    ),
+    LogBucket: LogBucketSchema.openapi({
+      description: 'The Amazon S3 bucket that contains the logs that you want to share.',
+    }),
   })
   .openapi({ required: ['LogBucket'], title: 'DisassociateDRTLogBucketRequest' })
   .openapi('DisassociateDRTLogBucketRequest')
 
-const DisassociateDRTRoleResponseSchema = z.object({}).openapi('DisassociateDRTRoleResponse')
+const DisassociateDRTRoleResponseSchema = z.looseObject({}).openapi('DisassociateDRTRoleResponse')
 
 const DisassociateDRTRoleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateDRTRoleRequest' })
   .openapi('DisassociateDRTRoleRequest')
 
 const DisassociateHealthCheckResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateHealthCheckResponse')
 
 const DisassociateHealthCheckRequestSchema = z
   .object({
-    ProtectionId: ProtectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier (ID) for the <a>Protection</a> object to remove the health check association from. ',
-        }),
-    ),
-    HealthCheckArn: HealthCheckArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the health check that is associated with the protection.',
-        }),
-    ),
+    ProtectionId: ProtectionIdSchema.openapi({
+      description:
+        'The unique identifier (ID) for the <a>Protection</a> object to remove the health check association from. ',
+    }),
+    HealthCheckArn: HealthCheckArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the health check that is associated with the protection.',
+    }),
   })
   .openapi({
     required: ['ProtectionId', 'HealthCheckArn'],
@@ -1313,22 +1028,18 @@ const DisassociateHealthCheckRequestSchema = z
   .openapi('DisassociateHealthCheckRequest')
 
 const EnableApplicationLayerAutomaticResponseResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('EnableApplicationLayerAutomaticResponseResponse')
 
 const EnableApplicationLayerAutomaticResponseRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) of the protected resource.' }),
-    ),
-    Action: ResponseActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the action setting that Shield Advanced should use in the WAF rules that it creates on behalf of the protected resource in response to DDoS attacks. You specify this as part of the configuration for the automatic application layer DDoS mitigation feature, when you enable or update automatic mitigation. Shield Advanced creates the WAF rules in a Shield Advanced-managed rule group, inside the web ACL that you have associated with the resource. ',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description: 'The ARN (Amazon Resource Name) of the protected resource.',
+    }),
+    Action: ResponseActionSchema.openapi({
+      description:
+        'Specifies the action setting that Shield Advanced should use in the WAF rules that it creates on behalf of the protected resource in response to DDoS attacks. You specify this as part of the configuration for the automatic application layer DDoS mitigation feature, when you enable or update automatic mitigation. Shield Advanced creates the WAF rules in a Shield Advanced-managed rule group, inside the web ACL that you have associated with the resource. ',
+    }),
   })
   .openapi({
     required: ['ResourceArn', 'Action'],
@@ -1337,11 +1048,11 @@ const EnableApplicationLayerAutomaticResponseRequestSchema = z
   .openapi('EnableApplicationLayerAutomaticResponseRequest')
 
 const EnableProactiveEngagementResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('EnableProactiveEngagementResponse')
 
 const EnableProactiveEngagementRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'EnableProactiveEngagementRequest' })
   .openapi('EnableProactiveEngagementRequest')
 
@@ -1349,28 +1060,24 @@ const SubscriptionStateSchema = z.enum(['ACTIVE', 'INACTIVE']).openapi('Subscrip
 
 const GetSubscriptionStateResponseSchema = z
   .object({
-    SubscriptionState: SubscriptionStateSchema.and(
-      z.any().openapi({ description: 'The status of the subscription.' }),
-    ),
+    SubscriptionState: SubscriptionStateSchema.openapi({
+      description: 'The status of the subscription.',
+    }),
   })
   .openapi({ required: ['SubscriptionState'] })
   .openapi('GetSubscriptionStateResponse')
 
 const GetSubscriptionStateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSubscriptionStateRequest' })
   .openapi('GetSubscriptionStateRequest')
 
 const AttackVectorDescriptionSchema = z
   .object({
-    VectorType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The attack type. Valid values:</p> <ul> <li> <p>UDP_TRAFFIC</p> </li> <li> <p>UDP_FRAGMENT</p> </li> <li> <p>GENERIC_UDP_REFLECTION</p> </li> <li> <p>DNS_REFLECTION</p> </li> <li> <p>NTP_REFLECTION</p> </li> <li> <p>CHARGEN_REFLECTION</p> </li> <li> <p>SSDP_REFLECTION</p> </li> <li> <p>PORT_MAPPER</p> </li> <li> <p>RIP_REFLECTION</p> </li> <li> <p>SNMP_REFLECTION</p> </li> <li> <p>MSSQL_REFLECTION</p> </li> <li> <p>NET_BIOS_REFLECTION</p> </li> <li> <p>SYN_FLOOD</p> </li> <li> <p>ACK_FLOOD</p> </li> <li> <p>REQUEST_FLOOD</p> </li> <li> <p>HTTP_REFLECTION</p> </li> <li> <p>UDS_REFLECTION</p> </li> <li> <p>MEMCACHED_REFLECTION</p> </li> </ul>',
-        }),
-    ),
+    VectorType: StringSchema.openapi({
+      description:
+        '<p>The attack type. Valid values:</p> <ul> <li> <p>UDP_TRAFFIC</p> </li> <li> <p>UDP_FRAGMENT</p> </li> <li> <p>GENERIC_UDP_REFLECTION</p> </li> <li> <p>DNS_REFLECTION</p> </li> <li> <p>NTP_REFLECTION</p> </li> <li> <p>CHARGEN_REFLECTION</p> </li> <li> <p>SSDP_REFLECTION</p> </li> <li> <p>PORT_MAPPER</p> </li> <li> <p>RIP_REFLECTION</p> </li> <li> <p>SNMP_REFLECTION</p> </li> <li> <p>MSSQL_REFLECTION</p> </li> <li> <p>NET_BIOS_REFLECTION</p> </li> <li> <p>SYN_FLOOD</p> </li> <li> <p>ACK_FLOOD</p> </li> <li> <p>REQUEST_FLOOD</p> </li> <li> <p>HTTP_REFLECTION</p> </li> <li> <p>UDS_REFLECTION</p> </li> <li> <p>MEMCACHED_REFLECTION</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['VectorType'], description: 'Describes the attack.' })
   .openapi('AttackVectorDescription')
@@ -1381,25 +1088,21 @@ const AttackVectorDescriptionListSchema = z
 
 const AttackSummarySchema = z
   .object({
-    AttackId: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier (ID) of the attack.' }),
-    ).exactOptional(),
-    ResourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN (Amazon Resource Name) of the resource that was attacked.',
-        }),
-    ).exactOptional(),
-    StartTime: AttackTimestampSchema.and(
-      z.any().openapi({ description: 'The start time of the attack, in Unix time in seconds. ' }),
-    ).exactOptional(),
-    EndTime: AttackTimestampSchema.and(
-      z.any().openapi({ description: 'The end time of the attack, in Unix time in seconds. ' }),
-    ).exactOptional(),
-    AttackVectors: AttackVectorDescriptionListSchema.and(
-      z.any().openapi({ description: 'The list of attacks for a specified time period.' }),
-    ).exactOptional(),
+    AttackId: StringSchema.exactOptional().openapi({
+      description: 'The unique identifier (ID) of the attack.',
+    }),
+    ResourceArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the resource that was attacked.',
+    }),
+    StartTime: AttackTimestampSchema.exactOptional().openapi({
+      description: 'The start time of the attack, in Unix time in seconds. ',
+    }),
+    EndTime: AttackTimestampSchema.exactOptional().openapi({
+      description: 'The end time of the attack, in Unix time in seconds. ',
+    }),
+    AttackVectors: AttackVectorDescriptionListSchema.exactOptional().openapi({
+      description: 'The list of attacks for a specified time period.',
+    }),
   })
   .openapi({
     description: 'Summarizes all DDoS attacks for a specified time period.',
@@ -1413,17 +1116,13 @@ const TokenSchema = z.string().regex(/^.*$/).min(1).max(4096).openapi('Token')
 
 const ListAttacksResponseSchema = z
   .object({
-    AttackSummaries: AttackSummariesSchema.and(
-      z.any().openapi({ description: 'The attack information for the specified time range.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When you request a list of objects from Shield Advanced, if the response does not include all of the remaining available objects, Shield Advanced includes a <code>NextToken</code> value in the response. You can retrieve the next batch of objects by requesting the list again and providing the token that was returned by the prior call in your request. </p> <p>You can indicate the maximum number of objects that you want Shield Advanced to return for a single call with the <code>MaxResults</code> setting. Shield Advanced will not return more than <code>MaxResults</code> objects, but may return fewer, even if more objects are still available.</p> <p>Whenever more objects remain that Shield Advanced has not yet returned to you, the response will include a <code>NextToken</code> value.</p>',
-        }),
-    ).exactOptional(),
+    AttackSummaries: AttackSummariesSchema.exactOptional().openapi({
+      description: 'The attack information for the specified time range.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>When you request a list of objects from Shield Advanced, if the response does not include all of the remaining available objects, Shield Advanced includes a <code>NextToken</code> value in the response. You can retrieve the next batch of objects by requesting the list again and providing the token that was returned by the prior call in your request. </p> <p>You can indicate the maximum number of objects that you want Shield Advanced to return for a single call with the <code>MaxResults</code> setting. Shield Advanced will not return more than <code>MaxResults</code> objects, but may return fewer, even if more objects are still available.</p> <p>Whenever more objects remain that Shield Advanced has not yet returned to you, the response will include a <code>NextToken</code> value.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAttacksResponse')
@@ -1434,46 +1133,26 @@ const MaxResultsSchema = z.int().min(0).max(10000).openapi('MaxResults')
 
 const ListAttacksRequestSchema = z
   .object({
-    ResourceArns: ResourceArnFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARNs (Amazon Resource Names) of the resources that were attacked. If you leave this blank, all applicable resources for this account will be included.',
-        }),
-    ).exactOptional(),
-    StartTime: TimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start of the time period for the attacks. This is a <code>timestamp</code> type. The request syntax listing for this call indicates a <code>number</code> type, but you can provide the time in any valid <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-types.html#parameter-type-timestamp">timestamp format</a> setting. ',
-        }),
-    ).exactOptional(),
-    EndTime: TimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end of the time period for the attacks. This is a <code>timestamp</code> type. The request syntax listing for this call indicates a <code>number</code> type, but you can provide the time in any valid <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-types.html#parameter-type-timestamp">timestamp format</a> setting. ',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When you request a list of objects from Shield Advanced, if the response does not include all of the remaining available objects, Shield Advanced includes a <code>NextToken</code> value in the response. You can retrieve the next batch of objects by requesting the list again and providing the token that was returned by the prior call in your request. </p> <p>You can indicate the maximum number of objects that you want Shield Advanced to return for a single call with the <code>MaxResults</code> setting. Shield Advanced will not return more than <code>MaxResults</code> objects, but may return fewer, even if more objects are still available.</p> <p>Whenever more objects remain that Shield Advanced has not yet returned to you, the response will include a <code>NextToken</code> value.</p> <p>On your first call to a list operation, leave this setting empty.</p>',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The greatest number of objects that you want Shield Advanced to return to the list request. Shield Advanced might return fewer objects than you indicate in this setting, even if more objects are available. If there are more objects remaining, Shield Advanced will always also return a <code>NextToken</code> value in the response.</p> <p>The default setting is 20.</p>',
-        }),
-    ).exactOptional(),
+    ResourceArns: ResourceArnFilterListSchema.exactOptional().openapi({
+      description:
+        'The ARNs (Amazon Resource Names) of the resources that were attacked. If you leave this blank, all applicable resources for this account will be included.',
+    }),
+    StartTime: TimeRangeSchema.exactOptional().openapi({
+      description:
+        'The start of the time period for the attacks. This is a <code>timestamp</code> type. The request syntax listing for this call indicates a <code>number</code> type, but you can provide the time in any valid <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-types.html#parameter-type-timestamp">timestamp format</a> setting. ',
+    }),
+    EndTime: TimeRangeSchema.exactOptional().openapi({
+      description:
+        'The end of the time period for the attacks. This is a <code>timestamp</code> type. The request syntax listing for this call indicates a <code>number</code> type, but you can provide the time in any valid <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-types.html#parameter-type-timestamp">timestamp format</a> setting. ',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>When you request a list of objects from Shield Advanced, if the response does not include all of the remaining available objects, Shield Advanced includes a <code>NextToken</code> value in the response. You can retrieve the next batch of objects by requesting the list again and providing the token that was returned by the prior call in your request. </p> <p>You can indicate the maximum number of objects that you want Shield Advanced to return for a single call with the <code>MaxResults</code> setting. Shield Advanced will not return more than <code>MaxResults</code> objects, but may return fewer, even if more objects are still available.</p> <p>Whenever more objects remain that Shield Advanced has not yet returned to you, the response will include a <code>NextToken</code> value.</p> <p>On your first call to a list operation, leave this setting empty.</p>',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        '<p>The greatest number of objects that you want Shield Advanced to return to the list request. Shield Advanced might return fewer objects than you indicate in this setting, even if more objects are available. If there are more objects remaining, Shield Advanced will always also return a <code>NextToken</code> value in the response.</p> <p>The default setting is 20.</p>',
+    }),
   })
   .openapi({ title: 'ListAttacksRequest', required: [] })
   .openapi('ListAttacksRequest')
@@ -1482,15 +1161,11 @@ const ProtectionGroupsSchema = z.array(ProtectionGroupSchema).openapi('Protectio
 
 const ListProtectionGroupsResponseSchema = z
   .object({
-    ProtectionGroups: ProtectionGroupsSchema.and(z.any().openapi({ description: '<p/>' })),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When you request a list of objects from Shield Advanced, if the response does not include all of the remaining available objects, Shield Advanced includes a <code>NextToken</code> value in the response. You can retrieve the next batch of objects by requesting the list again and providing the token that was returned by the prior call in your request. </p> <p>You can indicate the maximum number of objects that you want Shield Advanced to return for a single call with the <code>MaxResults</code> setting. Shield Advanced will not return more than <code>MaxResults</code> objects, but may return fewer, even if more objects are still available.</p> <p>Whenever more objects remain that Shield Advanced has not yet returned to you, the response will include a <code>NextToken</code> value.</p>',
-        }),
-    ).exactOptional(),
+    ProtectionGroups: ProtectionGroupsSchema.openapi({ description: '<p/>' }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>When you request a list of objects from Shield Advanced, if the response does not include all of the remaining available objects, Shield Advanced includes a <code>NextToken</code> value in the response. You can retrieve the next batch of objects by requesting the list again and providing the token that was returned by the prior call in your request. </p> <p>You can indicate the maximum number of objects that you want Shield Advanced to return for a single call with the <code>MaxResults</code> setting. Shield Advanced will not return more than <code>MaxResults</code> objects, but may return fewer, even if more objects are still available.</p> <p>Whenever more objects remain that Shield Advanced has not yet returned to you, the response will include a <code>NextToken</code> value.</p>',
+    }),
   })
   .openapi({ required: ['ProtectionGroups'] })
   .openapi('ListProtectionGroupsResponse')
@@ -1517,35 +1192,19 @@ const ProtectionGroupAggregationFiltersSchema = z
 
 const InclusionProtectionGroupFiltersSchema = z
   .object({
-    ProtectionGroupIds: ProtectionGroupIdFiltersSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the protection group that you want to retrieve. ' }),
-    ).exactOptional(),
-    Patterns: ProtectionGroupPatternFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pattern specification of the protection groups that you want to retrieve. ',
-        }),
-    ).exactOptional(),
-    ResourceTypes: ProtectedResourceTypeFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The resource type configuration of the protection groups that you want to retrieve. In the protection group configuration, you specify the resource type when you set the group's <code>Pattern</code> to <code>BY_RESOURCE_TYPE</code>. ",
-        }),
-    ).exactOptional(),
-    Aggregations: ProtectionGroupAggregationFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The aggregation setting of the protection groups that you want to retrieve. ',
-        }),
-    ).exactOptional(),
+    ProtectionGroupIds: ProtectionGroupIdFiltersSchema.exactOptional().openapi({
+      description: 'The ID of the protection group that you want to retrieve. ',
+    }),
+    Patterns: ProtectionGroupPatternFiltersSchema.exactOptional().openapi({
+      description: 'The pattern specification of the protection groups that you want to retrieve. ',
+    }),
+    ResourceTypes: ProtectedResourceTypeFiltersSchema.exactOptional().openapi({
+      description:
+        "The resource type configuration of the protection groups that you want to retrieve. In the protection group configuration, you specify the resource type when you set the group's <code>Pattern</code> to <code>BY_RESOURCE_TYPE</code>. ",
+    }),
+    Aggregations: ProtectionGroupAggregationFiltersSchema.exactOptional().openapi({
+      description: 'The aggregation setting of the protection groups that you want to retrieve. ',
+    }),
   })
   .openapi({
     description:
@@ -1556,30 +1215,18 @@ const InclusionProtectionGroupFiltersSchema = z
 
 const ListProtectionGroupsRequestSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When you request a list of objects from Shield Advanced, if the response does not include all of the remaining available objects, Shield Advanced includes a <code>NextToken</code> value in the response. You can retrieve the next batch of objects by requesting the list again and providing the token that was returned by the prior call in your request. </p> <p>You can indicate the maximum number of objects that you want Shield Advanced to return for a single call with the <code>MaxResults</code> setting. Shield Advanced will not return more than <code>MaxResults</code> objects, but may return fewer, even if more objects are still available.</p> <p>Whenever more objects remain that Shield Advanced has not yet returned to you, the response will include a <code>NextToken</code> value.</p> <p>On your first call to a list operation, leave this setting empty.</p>',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The greatest number of objects that you want Shield Advanced to return to the list request. Shield Advanced might return fewer objects than you indicate in this setting, even if more objects are available. If there are more objects remaining, Shield Advanced will always also return a <code>NextToken</code> value in the response.</p> <p>The default setting is 20.</p>',
-        }),
-    ).exactOptional(),
-    InclusionFilters: InclusionProtectionGroupFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Narrows the set of protection groups that the call retrieves. You can retrieve a single protection group by its name and you can retrieve all protection groups that are configured with specific pattern or aggregation settings. You can provide up to one criteria per filter type. Shield Advanced returns the protection groups that exactly match all of the search criteria that you provide.',
-        }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>When you request a list of objects from Shield Advanced, if the response does not include all of the remaining available objects, Shield Advanced includes a <code>NextToken</code> value in the response. You can retrieve the next batch of objects by requesting the list again and providing the token that was returned by the prior call in your request. </p> <p>You can indicate the maximum number of objects that you want Shield Advanced to return for a single call with the <code>MaxResults</code> setting. Shield Advanced will not return more than <code>MaxResults</code> objects, but may return fewer, even if more objects are still available.</p> <p>Whenever more objects remain that Shield Advanced has not yet returned to you, the response will include a <code>NextToken</code> value.</p> <p>On your first call to a list operation, leave this setting empty.</p>',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        '<p>The greatest number of objects that you want Shield Advanced to return to the list request. Shield Advanced might return fewer objects than you indicate in this setting, even if more objects are available. If there are more objects remaining, Shield Advanced will always also return a <code>NextToken</code> value in the response.</p> <p>The default setting is 20.</p>',
+    }),
+    InclusionFilters: InclusionProtectionGroupFiltersSchema.exactOptional().openapi({
+      description:
+        'Narrows the set of protection groups that the call retrieves. You can retrieve a single protection group by its name and you can retrieve all protection groups that are configured with specific pattern or aggregation settings. You can provide up to one criteria per filter type. Shield Advanced returns the protection groups that exactly match all of the search criteria that you provide.',
+    }),
   })
   .openapi({ title: 'ListProtectionGroupsRequest', required: [] })
   .openapi('ListProtectionGroupsRequest')
@@ -1590,17 +1237,13 @@ const ProtectionsSchema = z.array(ProtectionSchema).openapi('Protections')
 
 const ListProtectionsResponseSchema = z
   .object({
-    Protections: ProtectionsSchema.and(
-      z.any().openapi({ description: 'The array of enabled <a>Protection</a> objects.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When you request a list of objects from Shield Advanced, if the response does not include all of the remaining available objects, Shield Advanced includes a <code>NextToken</code> value in the response. You can retrieve the next batch of objects by requesting the list again and providing the token that was returned by the prior call in your request. </p> <p>You can indicate the maximum number of objects that you want Shield Advanced to return for a single call with the <code>MaxResults</code> setting. Shield Advanced will not return more than <code>MaxResults</code> objects, but may return fewer, even if more objects are still available.</p> <p>Whenever more objects remain that Shield Advanced has not yet returned to you, the response will include a <code>NextToken</code> value.</p>',
-        }),
-    ).exactOptional(),
+    Protections: ProtectionsSchema.exactOptional().openapi({
+      description: 'The array of enabled <a>Protection</a> objects.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>When you request a list of objects from Shield Advanced, if the response does not include all of the remaining available objects, Shield Advanced includes a <code>NextToken</code> value in the response. You can retrieve the next batch of objects by requesting the list again and providing the token that was returned by the prior call in your request. </p> <p>You can indicate the maximum number of objects that you want Shield Advanced to return for a single call with the <code>MaxResults</code> setting. Shield Advanced will not return more than <code>MaxResults</code> objects, but may return fewer, even if more objects are still available.</p> <p>Whenever more objects remain that Shield Advanced has not yet returned to you, the response will include a <code>NextToken</code> value.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListProtectionsResponse')
@@ -1614,24 +1257,16 @@ const ProtectionNameFiltersSchema = z
 
 const InclusionProtectionFiltersSchema = z
   .object({
-    ResourceArns: ResourceArnFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN (Amazon Resource Name) of the resource whose protection you want to retrieve. ',
-        }),
-    ).exactOptional(),
-    ProtectionNames: ProtectionNameFiltersSchema.and(
-      z.any().openapi({ description: 'The name of the protection that you want to retrieve. ' }),
-    ).exactOptional(),
-    ResourceTypes: ProtectedResourceTypeFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of protected resource whose protections you want to retrieve. ',
-        }),
-    ).exactOptional(),
+    ResourceArns: ResourceArnFiltersSchema.exactOptional().openapi({
+      description:
+        'The ARN (Amazon Resource Name) of the resource whose protection you want to retrieve. ',
+    }),
+    ProtectionNames: ProtectionNameFiltersSchema.exactOptional().openapi({
+      description: 'The name of the protection that you want to retrieve. ',
+    }),
+    ResourceTypes: ProtectedResourceTypeFiltersSchema.exactOptional().openapi({
+      description: 'The type of protected resource whose protections you want to retrieve. ',
+    }),
   })
   .openapi({
     description:
@@ -1642,30 +1277,18 @@ const InclusionProtectionFiltersSchema = z
 
 const ListProtectionsRequestSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When you request a list of objects from Shield Advanced, if the response does not include all of the remaining available objects, Shield Advanced includes a <code>NextToken</code> value in the response. You can retrieve the next batch of objects by requesting the list again and providing the token that was returned by the prior call in your request. </p> <p>You can indicate the maximum number of objects that you want Shield Advanced to return for a single call with the <code>MaxResults</code> setting. Shield Advanced will not return more than <code>MaxResults</code> objects, but may return fewer, even if more objects are still available.</p> <p>Whenever more objects remain that Shield Advanced has not yet returned to you, the response will include a <code>NextToken</code> value.</p> <p>On your first call to a list operation, leave this setting empty.</p>',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The greatest number of objects that you want Shield Advanced to return to the list request. Shield Advanced might return fewer objects than you indicate in this setting, even if more objects are available. If there are more objects remaining, Shield Advanced will always also return a <code>NextToken</code> value in the response.</p> <p>The default setting is 20.</p>',
-        }),
-    ).exactOptional(),
-    InclusionFilters: InclusionProtectionFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Narrows the set of protections that the call retrieves. You can retrieve a single protection by providing its name or the ARN (Amazon Resource Name) of its protected resource. You can also retrieve all protections for a specific resource type. You can provide up to one criteria per filter type. Shield Advanced returns protections that exactly match all of the filter criteria that you provide.',
-        }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>When you request a list of objects from Shield Advanced, if the response does not include all of the remaining available objects, Shield Advanced includes a <code>NextToken</code> value in the response. You can retrieve the next batch of objects by requesting the list again and providing the token that was returned by the prior call in your request. </p> <p>You can indicate the maximum number of objects that you want Shield Advanced to return for a single call with the <code>MaxResults</code> setting. Shield Advanced will not return more than <code>MaxResults</code> objects, but may return fewer, even if more objects are still available.</p> <p>Whenever more objects remain that Shield Advanced has not yet returned to you, the response will include a <code>NextToken</code> value.</p> <p>On your first call to a list operation, leave this setting empty.</p>',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        '<p>The greatest number of objects that you want Shield Advanced to return to the list request. Shield Advanced might return fewer objects than you indicate in this setting, even if more objects are available. If there are more objects remaining, Shield Advanced will always also return a <code>NextToken</code> value in the response.</p> <p>The default setting is 20.</p>',
+    }),
+    InclusionFilters: InclusionProtectionFiltersSchema.exactOptional().openapi({
+      description:
+        'Narrows the set of protections that the call retrieves. You can retrieve a single protection by providing its name or the ARN (Amazon Resource Name) of its protected resource. You can also retrieve all protections for a specific resource type. You can provide up to one criteria per filter type. Shield Advanced returns protections that exactly match all of the filter criteria that you provide.',
+    }),
   })
   .openapi({ title: 'ListProtectionsRequest', required: [] })
   .openapi('ListProtectionsRequest')
@@ -1674,143 +1297,99 @@ const ResourceArnListSchema = z.array(ResourceArnSchema).openapi('ResourceArnLis
 
 const ListResourcesInProtectionGroupResponseSchema = z
   .object({
-    ResourceArns: ResourceArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Names (ARNs) of the resources that are included in the protection group.',
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When you request a list of objects from Shield Advanced, if the response does not include all of the remaining available objects, Shield Advanced includes a <code>NextToken</code> value in the response. You can retrieve the next batch of objects by requesting the list again and providing the token that was returned by the prior call in your request. </p> <p>You can indicate the maximum number of objects that you want Shield Advanced to return for a single call with the <code>MaxResults</code> setting. Shield Advanced will not return more than <code>MaxResults</code> objects, but may return fewer, even if more objects are still available.</p> <p>Whenever more objects remain that Shield Advanced has not yet returned to you, the response will include a <code>NextToken</code> value.</p>',
-        }),
-    ).exactOptional(),
+    ResourceArns: ResourceArnListSchema.openapi({
+      description:
+        'The Amazon Resource Names (ARNs) of the resources that are included in the protection group.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>When you request a list of objects from Shield Advanced, if the response does not include all of the remaining available objects, Shield Advanced includes a <code>NextToken</code> value in the response. You can retrieve the next batch of objects by requesting the list again and providing the token that was returned by the prior call in your request. </p> <p>You can indicate the maximum number of objects that you want Shield Advanced to return for a single call with the <code>MaxResults</code> setting. Shield Advanced will not return more than <code>MaxResults</code> objects, but may return fewer, even if more objects are still available.</p> <p>Whenever more objects remain that Shield Advanced has not yet returned to you, the response will include a <code>NextToken</code> value.</p>',
+    }),
   })
   .openapi({ required: ['ResourceArns'] })
   .openapi('ListResourcesInProtectionGroupResponse')
 
 const ListResourcesInProtectionGroupRequestSchema = z
   .object({
-    ProtectionGroupId: ProtectionGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the protection group. You use this to identify the protection group in lists and to manage the protection group, for example to update, delete, or describe it. ',
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When you request a list of objects from Shield Advanced, if the response does not include all of the remaining available objects, Shield Advanced includes a <code>NextToken</code> value in the response. You can retrieve the next batch of objects by requesting the list again and providing the token that was returned by the prior call in your request. </p> <p>You can indicate the maximum number of objects that you want Shield Advanced to return for a single call with the <code>MaxResults</code> setting. Shield Advanced will not return more than <code>MaxResults</code> objects, but may return fewer, even if more objects are still available.</p> <p>Whenever more objects remain that Shield Advanced has not yet returned to you, the response will include a <code>NextToken</code> value.</p> <p>On your first call to a list operation, leave this setting empty.</p>',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The greatest number of objects that you want Shield Advanced to return to the list request. Shield Advanced might return fewer objects than you indicate in this setting, even if more objects are available. If there are more objects remaining, Shield Advanced will always also return a <code>NextToken</code> value in the response.</p> <p>The default setting is 20.</p>',
-        }),
-    ).exactOptional(),
+    ProtectionGroupId: ProtectionGroupIdSchema.openapi({
+      description:
+        'The name of the protection group. You use this to identify the protection group in lists and to manage the protection group, for example to update, delete, or describe it. ',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>When you request a list of objects from Shield Advanced, if the response does not include all of the remaining available objects, Shield Advanced includes a <code>NextToken</code> value in the response. You can retrieve the next batch of objects by requesting the list again and providing the token that was returned by the prior call in your request. </p> <p>You can indicate the maximum number of objects that you want Shield Advanced to return for a single call with the <code>MaxResults</code> setting. Shield Advanced will not return more than <code>MaxResults</code> objects, but may return fewer, even if more objects are still available.</p> <p>Whenever more objects remain that Shield Advanced has not yet returned to you, the response will include a <code>NextToken</code> value.</p> <p>On your first call to a list operation, leave this setting empty.</p>',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        '<p>The greatest number of objects that you want Shield Advanced to return to the list request. Shield Advanced might return fewer objects than you indicate in this setting, even if more objects are available. If there are more objects remaining, Shield Advanced will always also return a <code>NextToken</code> value in the response.</p> <p>The default setting is 20.</p>',
+    }),
   })
   .openapi({ required: ['ProtectionGroupId'], title: 'ListResourcesInProtectionGroupRequest' })
   .openapi('ListResourcesInProtectionGroupRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of tag key and value pairs associated with the specified resource.',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'A list of tag key and value pairs associated with the specified resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceARN: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the resource to get tags for.',
-        }),
-    ),
+    ResourceARN: ResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource to get tags for.',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource that you want to add or update tags for.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags that you want to modify or add to the resource.' }),
-    ),
+    ResourceARN: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource that you want to add or update tags for.',
+    }),
+    Tags: TagListSchema.openapi({
+      description: 'The tags that you want to modify or add to the resource.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource that you want to remove tags from.',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tag key for each tag that you want to remove from the resource.',
-        }),
-    ),
+    ResourceARN: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource that you want to remove tags from.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: 'The tag key for each tag that you want to remove from the resource.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateApplicationLayerAutomaticResponseResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateApplicationLayerAutomaticResponseResponse')
 
 const UpdateApplicationLayerAutomaticResponseRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) of the resource.' }),
-    ),
-    Action: ResponseActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the action setting that Shield Advanced should use in the WAF rules that it creates on behalf of the protected resource in response to DDoS attacks. You specify this as part of the configuration for the automatic application layer DDoS mitigation feature, when you enable or update automatic mitigation. Shield Advanced creates the WAF rules in a Shield Advanced-managed rule group, inside the web ACL that you have associated with the resource. ',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description: 'The ARN (Amazon Resource Name) of the resource.',
+    }),
+    Action: ResponseActionSchema.openapi({
+      description:
+        'Specifies the action setting that Shield Advanced should use in the WAF rules that it creates on behalf of the protected resource in response to DDoS attacks. You specify this as part of the configuration for the automatic application layer DDoS mitigation feature, when you enable or update automatic mitigation. Shield Advanced creates the WAF rules in a Shield Advanced-managed rule group, inside the web ACL that you have associated with the resource. ',
+    }),
   })
   .openapi({
     required: ['ResourceArn', 'Action'],
@@ -1819,67 +1398,45 @@ const UpdateApplicationLayerAutomaticResponseRequestSchema = z
   .openapi('UpdateApplicationLayerAutomaticResponseRequest')
 
 const UpdateEmergencyContactSettingsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateEmergencyContactSettingsResponse')
 
 const UpdateEmergencyContactSettingsRequestSchema = z
   .object({
-    EmergencyContactList: EmergencyContactListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of email addresses and phone numbers that the Shield Response Team (SRT) can use to contact you if you have proactive engagement enabled, for escalations to the SRT and to initiate proactive customer support.</p> <p>If you have proactive engagement enabled, the contact list must include at least one phone number.</p>',
-        }),
-    ).exactOptional(),
+    EmergencyContactList: EmergencyContactListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of email addresses and phone numbers that the Shield Response Team (SRT) can use to contact you if you have proactive engagement enabled, for escalations to the SRT and to initiate proactive customer support.</p> <p>If you have proactive engagement enabled, the contact list must include at least one phone number.</p>',
+    }),
   })
   .openapi({ title: 'UpdateEmergencyContactSettingsRequest', required: [] })
   .openapi('UpdateEmergencyContactSettingsRequest')
 
-const UpdateProtectionGroupResponseSchema = z.object({}).openapi('UpdateProtectionGroupResponse')
+const UpdateProtectionGroupResponseSchema = z
+  .looseObject({})
+  .openapi('UpdateProtectionGroupResponse')
 
 const UpdateProtectionGroupRequestSchema = z
   .object({
-    ProtectionGroupId: ProtectionGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the protection group. You use this to identify the protection group in lists and to manage the protection group, for example to update, delete, or describe it. ',
-        }),
-    ),
-    Aggregation: ProtectionGroupAggregationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Defines how Shield combines resource data for the group in order to detect, mitigate, and report events.</p> <ul> <li> <p>Sum - Use the total traffic across the group. This is a good choice for most cases. Examples include Elastic IP addresses for EC2 instances that scale manually or automatically.</p> </li> <li> <p>Mean - Use the average of the traffic across the group. This is a good choice for resources that share traffic uniformly. Examples include accelerators and load balancers.</p> </li> <li> <p>Max - Use the highest traffic from each resource. This is useful for resources that don't share traffic and for resources that share that traffic in a non-uniform way. Examples include Amazon CloudFront distributions and origin resources for CloudFront distributions.</p> </li> </ul>",
-        }),
-    ),
-    Pattern: ProtectionGroupPatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The criteria to use to choose the protected resources for inclusion in the group. You can include all resources that have protections, provide a list of resource Amazon Resource Names (ARNs), or include all resources of a specified resource type.',
-        }),
-    ),
-    ResourceType: ProtectedResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource type to include in the protection group. All protected resources of this type are included in the protection group. You must set this when you set <code>Pattern</code> to <code>BY_RESOURCE_TYPE</code> and you must not set it for any other <code>Pattern</code> setting. ',
-        }),
-    ).exactOptional(),
-    Members: ProtectionGroupMembersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Names (ARNs) of the resources to include in the protection group. You must set this when you set <code>Pattern</code> to <code>ARBITRARY</code> and you must not set it for any other <code>Pattern</code> setting. ',
-        }),
-    ).exactOptional(),
+    ProtectionGroupId: ProtectionGroupIdSchema.openapi({
+      description:
+        'The name of the protection group. You use this to identify the protection group in lists and to manage the protection group, for example to update, delete, or describe it. ',
+    }),
+    Aggregation: ProtectionGroupAggregationSchema.openapi({
+      description:
+        "<p>Defines how Shield combines resource data for the group in order to detect, mitigate, and report events.</p> <ul> <li> <p>Sum - Use the total traffic across the group. This is a good choice for most cases. Examples include Elastic IP addresses for EC2 instances that scale manually or automatically.</p> </li> <li> <p>Mean - Use the average of the traffic across the group. This is a good choice for resources that share traffic uniformly. Examples include accelerators and load balancers.</p> </li> <li> <p>Max - Use the highest traffic from each resource. This is useful for resources that don't share traffic and for resources that share that traffic in a non-uniform way. Examples include Amazon CloudFront distributions and origin resources for CloudFront distributions.</p> </li> </ul>",
+    }),
+    Pattern: ProtectionGroupPatternSchema.openapi({
+      description:
+        'The criteria to use to choose the protected resources for inclusion in the group. You can include all resources that have protections, provide a list of resource Amazon Resource Names (ARNs), or include all resources of a specified resource type.',
+    }),
+    ResourceType: ProtectedResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The resource type to include in the protection group. All protected resources of this type are included in the protection group. You must set this when you set <code>Pattern</code> to <code>BY_RESOURCE_TYPE</code> and you must not set it for any other <code>Pattern</code> setting. ',
+    }),
+    Members: ProtectionGroupMembersSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Names (ARNs) of the resources to include in the protection group. You must set this when you set <code>Pattern</code> to <code>ARBITRARY</code> and you must not set it for any other <code>Pattern</code> setting. ',
+    }),
   })
   .openapi({
     required: ['ProtectionGroupId', 'Aggregation', 'Pattern'],
@@ -1887,18 +1444,14 @@ const UpdateProtectionGroupRequestSchema = z
   })
   .openapi('UpdateProtectionGroupRequest')
 
-const UpdateSubscriptionResponseSchema = z.object({}).openapi('UpdateSubscriptionResponse')
+const UpdateSubscriptionResponseSchema = z.looseObject({}).openapi('UpdateSubscriptionResponse')
 
 const UpdateSubscriptionRequestSchema = z
   .object({
-    AutoRenew: AutoRenewSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you initally create a subscription, <code>AutoRenew</code> is set to <code>ENABLED</code>. If <code>ENABLED</code>, the subscription will be automatically renewed at the end of the existing subscription period. You can change this by submitting an <code>UpdateSubscription</code> request. If the <code>UpdateSubscription</code> request does not included a value for <code>AutoRenew</code>, the existing value for <code>AutoRenew</code> remains unchanged.',
-        }),
-    ).exactOptional(),
+    AutoRenew: AutoRenewSchema.exactOptional().openapi({
+      description:
+        'When you initally create a subscription, <code>AutoRenew</code> is set to <code>ENABLED</code>. If <code>ENABLED</code>, the subscription will be automatically renewed at the end of the existing subscription period. You can change this by submitting an <code>UpdateSubscription</code> request. If the <code>UpdateSubscription</code> request does not included a value for <code>AutoRenew</code>, the existing value for <code>AutoRenew</code> remains unchanged.',
+    }),
   })
   .openapi({ title: 'UpdateSubscriptionRequest', required: [] })
   .openapi('UpdateSubscriptionRequest')

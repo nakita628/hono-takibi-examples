@@ -15986,12 +15986,12 @@ null
 null
 ```
 
-<h2 id="tocS_Aggregated_project_issues">Aggregated_project_issues</h2>
+<h2 id="tocS_Aggregated_project_issues2">Aggregated_project_issues2</h2>
 <!-- backwards compatibility -->
-<a id="schemaaggregated_project_issues-1"></a>
-<a id="schema_Aggregated_project_issues"></a>
-<a id="tocSaggregated_project_issues-1"></a>
-<a id="tocsaggregated_project_issues-1"></a>
+<a id="schemaaggregated_project_issues2"></a>
+<a id="schema_Aggregated_project_issues2"></a>
+<a id="tocSaggregated_project_issues2"></a>
+<a id="tocsaggregated_project_issues2"></a>
 
 ```json
 {
@@ -16376,12 +16376,12 @@ null
 |pkgs|[object]|true|none|Array of package dependencies.|
 |schemaVersion|string|true|none|Snyk DepGraph library schema version.|
 
-<h2 id="tocS_Dep_Graph">Dep_Graph</h2>
+<h2 id="tocS_Dep_Graph2">Dep_Graph2</h2>
 <!-- backwards compatibility -->
-<a id="schemadep_graph"></a>
-<a id="schema_Dep_Graph"></a>
-<a id="tocSdep_graph"></a>
-<a id="tocsdep_graph"></a>
+<a id="schemadep_graph2"></a>
+<a id="schema_Dep_Graph2"></a>
+<a id="tocSdep_graph2"></a>
+<a id="tocsdep_graph2"></a>
 
 ```json
 null
@@ -18472,7 +18472,7 @@ null
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attributes|[Project_attributes](#schemaproject_attributes-1)|false|none|none|
+|attributes|[Project_attributes2](#schemaproject_attributes2)|false|none|none|
 |branch|string \| null|false|none|The monitored branch (if available)|
 |browseUrl|string|false|none|URL with project overview|
 |created|string|false|none|The date that the project was created on|
@@ -18596,12 +18596,12 @@ null
 null
 ```
 
-<h2 id="tocS_Project_attributes">Project_attributes</h2>
+<h2 id="tocS_Project_attributes2">Project_attributes2</h2>
 <!-- backwards compatibility -->
-<a id="schemaproject_attributes-1"></a>
-<a id="schema_Project_attributes"></a>
-<a id="tocSproject_attributes-1"></a>
-<a id="tocsproject_attributes-1"></a>
+<a id="schemaproject_attributes2"></a>
+<a id="schema_Project_attributes2"></a>
+<a id="tocSproject_attributes2"></a>
+<a id="tocsproject_attributes2"></a>
 
 ```json
 {
@@ -18958,7 +18958,7 @@ null
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attributes|[Project_attributes](#schemaproject_attributes-1)|false|none|none|
+|attributes|[Project_attributes2](#schemaproject_attributes2)|false|none|none|
 |branch|string \| null|false|none|The monitored branch (if available)|
 |browseUrl|string|false|none|URL with project overview|
 |created|string|false|none|The date that the project was created on|
@@ -19249,12 +19249,12 @@ null
 |---|---|---|---|---|
 |results|[object]|true|none|A list of test counts|
 
-<h2 id="tocS_Test_counts">Test_counts</h2>
+<h2 id="tocS_Test_counts2">Test_counts2</h2>
 <!-- backwards compatibility -->
-<a id="schematest_counts-1"></a>
-<a id="schema_Test_counts"></a>
-<a id="tocStest_counts-1"></a>
-<a id="tocstest_counts-1"></a>
+<a id="schematest_counts2"></a>
+<a id="schema_Test_counts2"></a>
+<a id="tocStest_counts2"></a>
+<a id="tocstest_counts2"></a>
 
 ```json
 null

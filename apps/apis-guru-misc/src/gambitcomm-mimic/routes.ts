@@ -2382,7 +2382,7 @@ export const getMimicAgentAgentNumProtocolMsgCoapGetArgsRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Invalid agent number value' },
   },
@@ -2649,7 +2649,7 @@ export const getMimicAgentAgentNumProtocolMsgDhcpGetArgsRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Invalid agent number value' },
   },
@@ -2805,7 +2805,7 @@ export const getMimicAgentAgentNumProtocolMsgDhcpParamsRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.array(z.object({})) } },
+      content: { 'application/json': { schema: z.array(z.looseObject({})) } },
     },
     400: { description: 'Invalid agent number value' },
   },
@@ -2955,7 +2955,7 @@ export const getMimicAgentAgentNumProtocolMsgIpmiGetArgsRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Invalid agent number value' },
   },
@@ -4639,7 +4639,7 @@ export const getMimicAgentAgentNumProtocolMsgMqttGetArgsRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Invalid agent number value' },
   },
@@ -5110,7 +5110,7 @@ export const getMimicAgentAgentNumProtocolMsgNetflowFlowListRoute = createRoute(
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.array(z.object({})) } },
+      content: { 'application/json': { schema: z.array(z.looseObject({})) } },
     },
     400: { description: 'Invalid agent number value' },
   },
@@ -5149,7 +5149,7 @@ export const getMimicAgentAgentNumProtocolMsgNetflowGetArgsRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Invalid agent number value' },
   },
@@ -5633,7 +5633,7 @@ export const getMimicAgentAgentNumProtocolMsgProxyGetArgsRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Invalid agent number value' },
   },
@@ -6246,7 +6246,7 @@ export const getMimicAgentAgentNumProtocolMsgSflowGetArgsRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Invalid agent number value' },
   },
@@ -6630,7 +6630,7 @@ export const getMimicAgentAgentNumProtocolMsgSnmptcpGetArgsRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Invalid agent number value' },
   },
@@ -8466,7 +8466,7 @@ export const getMimicAgentAgentNumProtocolMsgSshGetArgsRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Invalid agent number value' },
   },
@@ -8962,7 +8962,7 @@ export const getMimicAgentAgentNumProtocolMsgSyslogGetArgsRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Invalid agent number value' },
   },
@@ -9587,7 +9587,7 @@ export const getMimicAgentAgentNumProtocolMsgTelnetGetArgsRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Invalid agent number value' },
   },
@@ -10319,7 +10319,7 @@ export const getMimicAgentAgentNumProtocolMsgTftpGetArgsRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Invalid agent number value' },
   },
@@ -10969,7 +10969,7 @@ export const getMimicAgentAgentNumProtocolMsgTodGetArgsRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Invalid agent number value' },
   },
@@ -11355,7 +11355,7 @@ export const getMimicAgentAgentNumProtocolMsgWebGetArgsRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Invalid agent number value' },
   },
@@ -12003,7 +12003,7 @@ export const getMimicAgentAgentNumProtocolProtGetConfigRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: { description: 'Invalid agent number value' },
   },
@@ -15698,7 +15698,7 @@ export const getMimicMgetInfoArrayRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.array(z.object({})) } },
+      content: { 'application/json': { schema: z.array(z.looseObject({})) } },
     },
     400: { description: 'Invalid info string' },
   },

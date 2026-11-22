@@ -2,7 +2,7 @@ import { createRoute, z } from '@hono/zod-openapi'
 
 const _400Schema = z
   .object({
-    data: z.object({}).exactOptional().openapi({ example: '{}' }),
+    data: z.looseObject({}).exactOptional().openapi({ example: '{}' }),
     message: z.string().exactOptional().openapi({ example: 'Your balance is exhausted' }),
     result: z.int().exactOptional().openapi({ example: '400' }),
   })
@@ -11,7 +11,7 @@ const _400Schema = z
 
 const _401Schema = z
   .object({
-    data: z.object({}).exactOptional().openapi({ example: '{}' }),
+    data: z.looseObject({}).exactOptional().openapi({ example: '{}' }),
     message: z.string().exactOptional().openapi({ example: 'Your package has expired' }),
     result: z.int().exactOptional().openapi({ example: '401' }),
   })
@@ -20,7 +20,7 @@ const _401Schema = z
 
 const _403Schema = z
   .object({
-    data: z.object({}).exactOptional().openapi({ example: '{}' }),
+    data: z.looseObject({}).exactOptional().openapi({ example: '{}' }),
     message: z.string().exactOptional().openapi({ example: 'Invalid API Key' }),
     result: z.int().exactOptional().openapi({ example: '403' }),
   })
@@ -29,7 +29,7 @@ const _403Schema = z
 
 const _422Schema = z
   .object({
-    data: z.object({}).exactOptional().openapi({ example: '{}' }),
+    data: z.looseObject({}).exactOptional().openapi({ example: '{}' }),
     message: z.string().exactOptional().openapi({ example: 'API key is missing' }),
     result: z.int().exactOptional().openapi({ example: '422' }),
   })
@@ -39,7 +39,7 @@ const _422Schema = z
 const BalanceResponseSchema = z
   .object({
     data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ example: { bank_balance: 100, basic_balance: 2000, expiry_date: '2021-05-16' } }),
     message: z.string().exactOptional().openapi({ example: 'SUCCESS' }),
@@ -51,7 +51,7 @@ const BalanceResponseSchema = z
 const IBANResultSchema = z
   .object({
     data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         example: {
@@ -99,7 +99,7 @@ const IBANResultSchema = z
 const IBANResultBasicSchema = z
   .object({
     data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         example: {

@@ -46,13 +46,14 @@ export const codeSecurityHandler = app
   .openapi(postEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdAttachRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    putEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdDefaultsRoute,
-    (c) => {},
-  )
+  .openapi(putEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdDefaultsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(
     getEnterprisesEnterpriseCodeSecurityConfigurationsConfigurationIdRepositoriesRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(getOrgsOrgCodeSecurityConfigurationsRoute, (c) => {
     throw new Error('Not implemented')

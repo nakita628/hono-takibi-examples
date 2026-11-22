@@ -1739,6 +1739,7 @@ export const getOcsV2PhpAppsFilesApiV1FolderTreeRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 1 },
             required: false,
           },
+          default: 1,
         }),
       withParents: z
         .stringbool()

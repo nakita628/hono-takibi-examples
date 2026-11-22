@@ -6,6 +6,6 @@ const app = new OpenAPIHono()
 export const conversationAssignmentsHandler = app.openapi(
   postApiV1AccountsAccountIdConversationsConversationIdAssignmentsRoute,
   (c) => {
-  throw new Error('Not implemented')
-},
+    throw new Error('Not implemented')
+  },
 )

@@ -23,29 +23,16 @@ const UrlSchema = z
 
 const CreateEnvironmentResponseSchema = z
   .object({
-    environmentId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier for FinSpace environment that you created.',
-        }),
-    ).exactOptional(),
-    environmentArn: EnvironmentArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the FinSpace environment that you created.',
-        }),
-    ).exactOptional(),
-    environmentUrl: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sign-in url for the web application of the FinSpace environment you created.',
-        }),
-    ).exactOptional(),
+    environmentId: IdTypeSchema.exactOptional().openapi({
+      description: 'The unique identifier for FinSpace environment that you created.',
+    }),
+    environmentArn: EnvironmentArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the FinSpace environment that you created.',
+    }),
+    environmentUrl: UrlSchema.exactOptional().openapi({
+      description:
+        'The sign-in url for the web application of the FinSpace environment you created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateEnvironmentResponse')
@@ -114,7 +101,7 @@ const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceede
 
 const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
 
-const DeleteEnvironmentResponseSchema = z.object({}).openapi('DeleteEnvironmentResponse')
+const DeleteEnvironmentResponseSchema = z.looseObject({}).openapi('DeleteEnvironmentResponse')
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
 
@@ -165,44 +152,27 @@ const FederationModeSchema = z.enum(['FEDERATED', 'LOCAL']).openapi('FederationM
 
 const FederationParametersSchema = z
   .object({
-    samlMetadataDocument: SamlMetadataDocumentSchema.and(
-      z.any().openapi({ description: 'SAML 2.0 Metadata document from identity provider (IdP).' }),
-    ).exactOptional(),
-    samlMetadataURL: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provide the metadata URL from your SAML 2.0 compliant identity provider (IdP).',
-        }),
-    ).exactOptional(),
-    applicationCallBackURL: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The redirect or sign-in URL that should be entered into the SAML 2.0 compliant identity provider configuration (IdP).',
-        }),
-    ).exactOptional(),
-    federationURN: UrnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Uniform Resource Name (URN). Also referred as Service Provider URN or Audience URI or Service Provider Entity ID.',
-        }),
-    ).exactOptional(),
-    federationProviderName: FederationProviderNameSchema.and(
-      z.any().openapi({ description: 'Name of the identity provider (IdP).' }),
-    ).exactOptional(),
-    attributeMap: AttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'SAML attribute name and value. The name must always be <code>Email</code> and the value should be set to the attribute definition in which user email is set. For example, name would be <code>Email</code> and value <code>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress</code>. Please check your SAML 2.0 compliant identity provider (IdP) documentation for details.',
-        }),
-    ).exactOptional(),
+    samlMetadataDocument: SamlMetadataDocumentSchema.exactOptional().openapi({
+      description: 'SAML 2.0 Metadata document from identity provider (IdP).',
+    }),
+    samlMetadataURL: UrlSchema.exactOptional().openapi({
+      description: 'Provide the metadata URL from your SAML 2.0 compliant identity provider (IdP).',
+    }),
+    applicationCallBackURL: UrlSchema.exactOptional().openapi({
+      description:
+        'The redirect or sign-in URL that should be entered into the SAML 2.0 compliant identity provider configuration (IdP).',
+    }),
+    federationURN: UrnSchema.exactOptional().openapi({
+      description:
+        'The Uniform Resource Name (URN). Also referred as Service Provider URN or Audience URI or Service Provider Entity ID.',
+    }),
+    federationProviderName: FederationProviderNameSchema.exactOptional().openapi({
+      description: 'Name of the identity provider (IdP).',
+    }),
+    attributeMap: AttributeMapSchema.exactOptional().openapi({
+      description:
+        'SAML attribute name and value. The name must always be <code>Email</code> and the value should be set to the attribute definition in which user email is set. For example, name would be <code>Email</code> and value <code>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress</code>. Please check your SAML 2.0 compliant identity provider (IdP) documentation for details.',
+    }),
   })
   .openapi({
     description: 'Configuration information when authentication mode is FEDERATED.',
@@ -212,79 +182,53 @@ const FederationParametersSchema = z
 
 const EnvironmentSchema = z
   .object({
-    name: EnvironmentNameSchema.and(
-      z.any().openapi({ description: 'The name of the FinSpace environment.' }),
-    ).exactOptional(),
-    environmentId: IdTypeSchema.and(
-      z.any().openapi({ description: 'The identifier of the FinSpace environment.' }),
-    ).exactOptional(),
-    awsAccountId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the AWS account in which the FinSpace environment is created.',
-        }),
-    ).exactOptional(),
-    status: EnvironmentStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The current status of creation of the FinSpace environment.' }),
-    ).exactOptional(),
-    environmentUrl: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The sign-in url for the web application of your FinSpace environment.',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the FinSpace environment.' }),
-    ).exactOptional(),
-    environmentArn: EnvironmentArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of your FinSpace environment.' }),
-    ).exactOptional(),
-    sageMakerStudioDomainUrl: SmsDomainUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The url of the integrated FinSpace notebook environment in your web application.',
-        }),
-    ).exactOptional(),
-    kmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The KMS key id used to encrypt in the FinSpace environment.' }),
-    ).exactOptional(),
-    dedicatedServiceAccountId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS account ID of the dedicated service account associated with your FinSpace environment.',
-        }),
-    ).exactOptional(),
-    federationMode: FederationModeSchema.and(
-      z.any().openapi({ description: 'The authentication mode for the environment.' }),
-    ).exactOptional(),
-    federationParameters: FederationParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configuration information when authentication mode is FEDERATED.',
-        }),
-    ).exactOptional(),
+    name: EnvironmentNameSchema.exactOptional().openapi({
+      description: 'The name of the FinSpace environment.',
+    }),
+    environmentId: IdTypeSchema.exactOptional().openapi({
+      description: 'The identifier of the FinSpace environment.',
+    }),
+    awsAccountId: IdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the AWS account in which the FinSpace environment is created.',
+    }),
+    status: EnvironmentStatusSchema.exactOptional().openapi({
+      description: 'The current status of creation of the FinSpace environment.',
+    }),
+    environmentUrl: UrlSchema.exactOptional().openapi({
+      description: 'The sign-in url for the web application of your FinSpace environment.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the FinSpace environment.',
+    }),
+    environmentArn: EnvironmentArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of your FinSpace environment.',
+    }),
+    sageMakerStudioDomainUrl: SmsDomainUrlSchema.exactOptional().openapi({
+      description:
+        'The url of the integrated FinSpace notebook environment in your web application.',
+    }),
+    kmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description: 'The KMS key id used to encrypt in the FinSpace environment.',
+    }),
+    dedicatedServiceAccountId: IdTypeSchema.exactOptional().openapi({
+      description:
+        'The AWS account ID of the dedicated service account associated with your FinSpace environment.',
+    }),
+    federationMode: FederationModeSchema.exactOptional().openapi({
+      description: 'The authentication mode for the environment.',
+    }),
+    federationParameters: FederationParametersSchema.exactOptional().openapi({
+      description: 'Configuration information when authentication mode is FEDERATED.',
+    }),
   })
   .openapi({ description: 'Represents an FinSpace environment.', required: [] })
   .openapi('Environment')
 
 const GetEnvironmentResponseSchema = z
   .object({
-    environment: EnvironmentSchema.and(
-      z.any().openapi({ description: 'The name of the FinSpace environment.' }),
-    ).exactOptional(),
+    environment: EnvironmentSchema.exactOptional().openapi({
+      description: 'The name of the FinSpace environment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEnvironmentResponse')
@@ -295,17 +239,13 @@ const PaginationTokenSchema = z.string().regex(/.*/).min(1).max(1000).openapi('P
 
 const ListEnvironmentsResponseSchema = z
   .object({
-    environments: EnvironmentListSchema.and(
-      z.any().openapi({ description: 'A list of all of your FinSpace environments.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that you can use in a subsequent call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    environments: EnvironmentListSchema.exactOptional().openapi({
+      description: 'A list of all of your FinSpace environments.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'A token that you can use in a subsequent call to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEnvironmentsResponse')
@@ -318,18 +258,18 @@ const TagMapSchema = z
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'A list of all tags for a resource.' }),
-    ).exactOptional(),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'A list of all tags for a resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const InvalidRequestExceptionSchema = z.any().openapi('InvalidRequestException')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z
   .string()
@@ -340,24 +280,18 @@ const TagKeySchema = z
 
 const UpdateEnvironmentResponseSchema = z
   .object({
-    environment: EnvironmentSchema.and(
-      z.any().openapi({ description: 'Returns the FinSpace environment object.' }),
-    ).exactOptional(),
+    environment: EnvironmentSchema.exactOptional().openapi({
+      description: 'Returns the FinSpace environment object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateEnvironmentResponse')
 
 const SuperuserParametersSchema = z
   .object({
-    emailAddress: EmailIdSchema.and(
-      z.any().openapi({ description: 'The email address of the superuser.' }),
-    ),
-    firstName: NameStringSchema.and(
-      z.any().openapi({ description: 'The first name of the superuser.' }),
-    ),
-    lastName: NameStringSchema.and(
-      z.any().openapi({ description: 'The last name of the superuser.' }),
-    ),
+    emailAddress: EmailIdSchema.openapi({ description: 'The email address of the superuser.' }),
+    firstName: NameStringSchema.openapi({ description: 'The first name of the superuser.' }),
+    lastName: NameStringSchema.openapi({ description: 'The last name of the superuser.' }),
   })
   .openapi({
     required: ['emailAddress', 'firstName', 'lastName'],
@@ -369,56 +303,38 @@ const DataBundleArnsSchema = z.array(DataBundleArnSchema).openapi('DataBundleArn
 
 const CreateEnvironmentRequestSchema = z
   .object({
-    name: EnvironmentNameSchema.and(
-      z.any().openapi({ description: 'The name of the FinSpace environment to be created.' }),
-    ),
-    description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The description of the FinSpace environment to be created.' }),
-    ).exactOptional(),
-    kmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The KMS key id to encrypt your data in the FinSpace environment.',
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Add tags to your FinSpace environment.' }),
-    ).exactOptional(),
-    federationMode: FederationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Authentication mode for the environment.</p> <ul> <li> <p> <code>FEDERATED</code> - Users access FinSpace through Single Sign On (SSO) via your Identity provider.</p> </li> <li> <p> <code>LOCAL</code> - Users access FinSpace via email and password managed within the FinSpace environment.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    federationParameters: FederationParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configuration information when authentication mode is FEDERATED.',
-        }),
-    ).exactOptional(),
-    superuserParameters: SuperuserParametersSchema.and(
-      z.any().openapi({ description: 'Configuration information for the superuser.' }),
-    ).exactOptional(),
-    dataBundles: DataBundleArnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of Amazon Resource Names (ARN) of the data bundles to install. Currently supported data bundle ARNs:</p> <ul> <li> <p> <code>arn:aws:finspace:${Region}::data-bundle/capital-markets-sample</code> - Contains sample Capital Markets datasets, categories and controlled vocabularies.</p> </li> <li> <p> <code>arn:aws:finspace:${Region}::data-bundle/taq</code> (default) - Contains trades and quotes data in addition to sample Capital Markets data.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    name: EnvironmentNameSchema.openapi({
+      description: 'The name of the FinSpace environment to be created.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the FinSpace environment to be created.',
+    }),
+    kmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description: 'The KMS key id to encrypt your data in the FinSpace environment.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'Add tags to your FinSpace environment.',
+    }),
+    federationMode: FederationModeSchema.exactOptional().openapi({
+      description:
+        '<p>Authentication mode for the environment.</p> <ul> <li> <p> <code>FEDERATED</code> - Users access FinSpace through Single Sign On (SSO) via your Identity provider.</p> </li> <li> <p> <code>LOCAL</code> - Users access FinSpace via email and password managed within the FinSpace environment.</p> </li> </ul>',
+    }),
+    federationParameters: FederationParametersSchema.exactOptional().openapi({
+      description: 'Configuration information when authentication mode is FEDERATED.',
+    }),
+    superuserParameters: SuperuserParametersSchema.exactOptional().openapi({
+      description: 'Configuration information for the superuser.',
+    }),
+    dataBundles: DataBundleArnsSchema.exactOptional().openapi({
+      description:
+        '<p>The list of Amazon Resource Names (ARN) of the data bundles to install. Currently supported data bundle ARNs:</p> <ul> <li> <p> <code>arn:aws:finspace:${Region}::data-bundle/capital-markets-sample</code> - Contains sample Capital Markets datasets, categories and controlled vocabularies.</p> </li> <li> <p> <code>arn:aws:finspace:${Region}::data-bundle/taq</code> (default) - Contains trades and quotes data in addition to sample Capital Markets data.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['name'], title: 'CreateEnvironmentRequest' })
   .openapi('CreateEnvironmentRequest')
 
 const DeleteEnvironmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteEnvironmentRequest' })
   .openapi('DeleteEnvironmentRequest')
 
@@ -430,19 +346,19 @@ const FederationAttributeKeySchema = z
   .openapi('FederationAttributeKey')
 
 const GetEnvironmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetEnvironmentRequest' })
   .openapi('GetEnvironmentRequest')
 
 const ResultLimitSchema = z.int().min(0).max(100).openapi('ResultLimit')
 
 const ListEnvironmentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListEnvironmentsRequest' })
   .openapi('ListEnvironmentsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -450,34 +366,28 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyLis
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'One or more tags to be assigned to the resource.' }),
-    ),
+    tags: TagMapSchema.openapi({ description: 'One or more tags to be assigned to the resource.' }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateEnvironmentRequestSchema = z
   .object({
-    name: EnvironmentNameSchema.and(
-      z.any().openapi({ description: 'The name of the environment.' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the environment.' }),
-    ).exactOptional(),
-    federationMode: FederationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Authentication mode for the environment.</p> <ul> <li> <p> <code>FEDERATED</code> - Users access FinSpace through Single Sign On (SSO) via your Identity provider.</p> </li> <li> <p> <code>LOCAL</code> - Users access FinSpace via email and password managed within the FinSpace environment.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    name: EnvironmentNameSchema.exactOptional().openapi({
+      description: 'The name of the environment.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the environment.',
+    }),
+    federationMode: FederationModeSchema.exactOptional().openapi({
+      description:
+        '<p>Authentication mode for the environment.</p> <ul> <li> <p> <code>FEDERATED</code> - Users access FinSpace through Single Sign On (SSO) via your Identity provider.</p> </li> <li> <p> <code>LOCAL</code> - Users access FinSpace via email and password managed within the FinSpace environment.</p> </li> </ul>',
+    }),
     federationParameters: FederationParametersSchema.exactOptional(),
   })
   .openapi({ title: 'UpdateEnvironmentRequest', required: [] })
@@ -684,48 +594,28 @@ export const postEnvironmentRoute = createRoute({
                 }),
               federationParameters: z
                 .object({
-                  samlMetadataDocument: SamlMetadataDocumentSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'SAML 2.0 Metadata document from identity provider (IdP).',
-                      }),
-                  ).exactOptional(),
-                  samlMetadataURL: UrlSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Provide the metadata URL from your SAML 2.0 compliant identity provider (IdP).',
-                      }),
-                  ).exactOptional(),
-                  applicationCallBackURL: UrlSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The redirect or sign-in URL that should be entered into the SAML 2.0 compliant identity provider configuration (IdP).',
-                      }),
-                  ).exactOptional(),
-                  federationURN: UrnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Uniform Resource Name (URN). Also referred as Service Provider URN or Audience URI or Service Provider Entity ID.',
-                      }),
-                  ).exactOptional(),
-                  federationProviderName: FederationProviderNameSchema.and(
-                    z.any().openapi({ description: 'Name of the identity provider (IdP).' }),
-                  ).exactOptional(),
-                  attributeMap: AttributeMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'SAML attribute name and value. The name must always be <code>Email</code> and the value should be set to the attribute definition in which user email is set. For example, name would be <code>Email</code> and value <code>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress</code>. Please check your SAML 2.0 compliant identity provider (IdP) documentation for details.',
-                      }),
-                  ).exactOptional(),
+                  samlMetadataDocument: SamlMetadataDocumentSchema.exactOptional().openapi({
+                    description: 'SAML 2.0 Metadata document from identity provider (IdP).',
+                  }),
+                  samlMetadataURL: UrlSchema.exactOptional().openapi({
+                    description:
+                      'Provide the metadata URL from your SAML 2.0 compliant identity provider (IdP).',
+                  }),
+                  applicationCallBackURL: UrlSchema.exactOptional().openapi({
+                    description:
+                      'The redirect or sign-in URL that should be entered into the SAML 2.0 compliant identity provider configuration (IdP).',
+                  }),
+                  federationURN: UrnSchema.exactOptional().openapi({
+                    description:
+                      'The Uniform Resource Name (URN). Also referred as Service Provider URN or Audience URI or Service Provider Entity ID.',
+                  }),
+                  federationProviderName: FederationProviderNameSchema.exactOptional().openapi({
+                    description: 'Name of the identity provider (IdP).',
+                  }),
+                  attributeMap: AttributeMapSchema.exactOptional().openapi({
+                    description:
+                      'SAML attribute name and value. The name must always be <code>Email</code> and the value should be set to the attribute definition in which user email is set. For example, name would be <code>Email</code> and value <code>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress</code>. Please check your SAML 2.0 compliant identity provider (IdP) documentation for details.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -734,15 +624,15 @@ export const postEnvironmentRoute = createRoute({
                 }),
               superuserParameters: z
                 .object({
-                  emailAddress: EmailIdSchema.and(
-                    z.any().openapi({ description: 'The email address of the superuser.' }),
-                  ).exactOptional(),
-                  firstName: NameStringSchema.and(
-                    z.any().openapi({ description: 'The first name of the superuser.' }),
-                  ).exactOptional(),
-                  lastName: NameStringSchema.and(
-                    z.any().openapi({ description: 'The last name of the superuser.' }),
-                  ).exactOptional(),
+                  emailAddress: EmailIdSchema.exactOptional().openapi({
+                    description: 'The email address of the superuser.',
+                  }),
+                  firstName: NameStringSchema.exactOptional().openapi({
+                    description: 'The first name of the superuser.',
+                  }),
+                  lastName: NameStringSchema.exactOptional().openapi({
+                    description: 'The last name of the superuser.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -910,48 +800,28 @@ export const putEnvironmentEnvironmentIdRoute = createRoute({
                 }),
               federationParameters: z
                 .object({
-                  samlMetadataDocument: SamlMetadataDocumentSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'SAML 2.0 Metadata document from identity provider (IdP).',
-                      }),
-                  ).exactOptional(),
-                  samlMetadataURL: UrlSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Provide the metadata URL from your SAML 2.0 compliant identity provider (IdP).',
-                      }),
-                  ).exactOptional(),
-                  applicationCallBackURL: UrlSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The redirect or sign-in URL that should be entered into the SAML 2.0 compliant identity provider configuration (IdP).',
-                      }),
-                  ).exactOptional(),
-                  federationURN: UrnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Uniform Resource Name (URN). Also referred as Service Provider URN or Audience URI or Service Provider Entity ID.',
-                      }),
-                  ).exactOptional(),
-                  federationProviderName: FederationProviderNameSchema.and(
-                    z.any().openapi({ description: 'Name of the identity provider (IdP).' }),
-                  ).exactOptional(),
-                  attributeMap: AttributeMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'SAML attribute name and value. The name must always be <code>Email</code> and the value should be set to the attribute definition in which user email is set. For example, name would be <code>Email</code> and value <code>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress</code>. Please check your SAML 2.0 compliant identity provider (IdP) documentation for details.',
-                      }),
-                  ).exactOptional(),
+                  samlMetadataDocument: SamlMetadataDocumentSchema.exactOptional().openapi({
+                    description: 'SAML 2.0 Metadata document from identity provider (IdP).',
+                  }),
+                  samlMetadataURL: UrlSchema.exactOptional().openapi({
+                    description:
+                      'Provide the metadata URL from your SAML 2.0 compliant identity provider (IdP).',
+                  }),
+                  applicationCallBackURL: UrlSchema.exactOptional().openapi({
+                    description:
+                      'The redirect or sign-in URL that should be entered into the SAML 2.0 compliant identity provider configuration (IdP).',
+                  }),
+                  federationURN: UrnSchema.exactOptional().openapi({
+                    description:
+                      'The Uniform Resource Name (URN). Also referred as Service Provider URN or Audience URI or Service Provider Entity ID.',
+                  }),
+                  federationProviderName: FederationProviderNameSchema.exactOptional().openapi({
+                    description: 'Name of the identity provider (IdP).',
+                  }),
+                  attributeMap: AttributeMapSchema.exactOptional().openapi({
+                    description:
+                      'SAML attribute name and value. The name must always be <code>Email</code> and the value should be set to the attribute definition in which user email is set. For example, name would be <code>Email</code> and value <code>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress</code>. Please check your SAML 2.0 compliant identity provider (IdP) documentation for details.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

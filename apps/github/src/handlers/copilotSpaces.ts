@@ -57,10 +57,9 @@ export const copilotSpacesHandler = app
   .openapi(putOrgsOrgCopilotSpacesSpaceNumberCollaboratorsActorTypeActorIdentifierRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    deleteOrgsOrgCopilotSpacesSpaceNumberCollaboratorsActorTypeActorIdentifierRoute,
-    (c) => {},
-  )
+  .openapi(deleteOrgsOrgCopilotSpacesSpaceNumberCollaboratorsActorTypeActorIdentifierRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(getOrgsOrgCopilotSpacesSpaceNumberResourcesRoute, (c) => {
     throw new Error('Not implemented')
   })
@@ -99,11 +98,15 @@ export const copilotSpacesHandler = app
   })
   .openapi(
     putUsersUsernameCopilotSpacesSpaceNumberCollaboratorsActorTypeActorIdentifierRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     deleteUsersUsernameCopilotSpacesSpaceNumberCollaboratorsActorTypeActorIdentifierRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(getUsersUsernameCopilotSpacesSpaceNumberResourcesRoute, (c) => {
     throw new Error('Not implemented')

@@ -6,7 +6,7 @@ The Ticketmaster Discovery API allows you to search for events, attractions, or 
 
 Base URLs:
 
-* <a href="https://api.apis.guru//www.ticketmaster.com/discovery/v2">https://api.apis.guru//www.ticketmaster.com/discovery/v2</a>
+* <a href="//www.ticketmaster.com/discovery/v2">//www.ticketmaster.com/discovery/v2</a>
 
 Web: <a href="http://developer.ticketmaster.com/support/contact-us/">http://developer.ticketmaster.com/support/contact-us/</a> 
 

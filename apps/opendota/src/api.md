@@ -206,6 +206,13 @@ Match data
           "key": "string"
         }
       ],
+      "assists_log": [
+        {
+          "time": 0,
+          "key": "string",
+          "ambiguous": true
+        }
+      ],
       "deaths_log": [
         {
           "time": 0,
@@ -4160,6 +4167,13 @@ This operation does not require authentication
         {
           "time": 0,
           "key": "string"
+        }
+      ],
+      "assists_log": [
+        {
+          "time": 0,
+          "key": "string",
+          "ambiguous": true
         }
       ],
       "deaths_log": [

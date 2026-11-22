@@ -1,20 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const RawPhoneNumberSchema = z
-  .string()
-  .regex(/^[\+0-9\#\,\(][\+0-9\-\.\/\(\)\,\#\s]+$/)
-  .min(0)
-  .max(50)
-  .openapi('RawPhoneNumber')
-
-const PhoneNumberTypeSchema = z.enum(['MOBILE', 'WORK', 'HOME']).openapi('PhoneNumberType')
-
-type PhoneNumberType = {
-  Number: z.infer<typeof RawPhoneNumberSchema> & { [key: string]: unknown }
-  Type: z.infer<typeof PhoneNumberTypeSchema> & { [key: string]: unknown }
-}
-
-const ApproveSkillResponseSchema = z.object({}).openapi('ApproveSkillResponse')
+const ApproveSkillResponseSchema = z.looseObject({}).openapi('ApproveSkillResponse')
 
 const SkillIdSchema = z
   .string()
@@ -23,9 +9,7 @@ const SkillIdSchema = z
 
 const ApproveSkillRequestSchema = z
   .object({
-    SkillId: SkillIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the skill.' }),
-    ),
+    SkillId: SkillIdSchema.openapi({ description: 'The unique identifier of the skill.' }),
   })
   .openapi({ required: ['SkillId'], title: 'ApproveSkillRequest' })
   .openapi('ApproveSkillRequest')
@@ -37,7 +21,7 @@ const NotFoundExceptionSchema = z.any().openapi('NotFoundException')
 const ConcurrentModificationExceptionSchema = z.any().openapi('ConcurrentModificationException')
 
 const AssociateContactWithAddressBookResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateContactWithAddressBookResponse')
 
 const ArnSchema = z
@@ -49,16 +33,12 @@ const ArnSchema = z
 
 const AssociateContactWithAddressBookRequestSchema = z
   .object({
-    ContactArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the contact to associate with an address book.' }),
-    ),
-    AddressBookArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the address book with which to associate the contact.',
-        }),
-    ),
+    ContactArn: ArnSchema.openapi({
+      description: 'The ARN of the contact to associate with an address book.',
+    }),
+    AddressBookArn: ArnSchema.openapi({
+      description: 'The ARN of the address book with which to associate the contact.',
+    }),
   })
   .openapi({
     required: ['ContactArn', 'AddressBookArn'],
@@ -67,17 +47,15 @@ const AssociateContactWithAddressBookRequestSchema = z
   .openapi('AssociateContactWithAddressBookRequest')
 
 const AssociateDeviceWithNetworkProfileResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateDeviceWithNetworkProfileResponse')
 
 const AssociateDeviceWithNetworkProfileRequestSchema = z
   .object({
-    DeviceArn: ArnSchema.and(z.any().openapi({ description: 'The device ARN.' })),
-    NetworkProfileArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the network profile to associate with a device.' }),
-    ),
+    DeviceArn: ArnSchema.openapi({ description: 'The device ARN.' }),
+    NetworkProfileArn: ArnSchema.openapi({
+      description: 'The ARN of the network profile to associate with a device.',
+    }),
   })
   .openapi({
     required: ['DeviceArn', 'NetworkProfileArn'],
@@ -88,63 +66,47 @@ const AssociateDeviceWithNetworkProfileRequestSchema = z
 const DeviceNotRegisteredExceptionSchema = z.any().openapi('DeviceNotRegisteredException')
 
 const AssociateDeviceWithRoomResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateDeviceWithRoomResponse')
 
 const AssociateDeviceWithRoomRequestSchema = z
   .object({
-    DeviceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the device to associate to a room. Required.' }),
-    ).exactOptional(),
-    RoomArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the room with which to associate the device. Required.',
-        }),
-    ).exactOptional(),
+    DeviceArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the device to associate to a room. Required.',
+    }),
+    RoomArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the room with which to associate the device. Required.',
+    }),
   })
   .openapi({ title: 'AssociateDeviceWithRoomRequest', required: [] })
   .openapi('AssociateDeviceWithRoomRequest')
 
 const AssociateSkillGroupWithRoomResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateSkillGroupWithRoomResponse')
 
 const AssociateSkillGroupWithRoomRequestSchema = z
   .object({
-    SkillGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the skill group to associate with a room. Required.' }),
-    ).exactOptional(),
-    RoomArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the room with which to associate the skill group. Required.',
-        }),
-    ).exactOptional(),
+    SkillGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the skill group to associate with a room. Required.',
+    }),
+    RoomArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the room with which to associate the skill group. Required.',
+    }),
   })
   .openapi({ title: 'AssociateSkillGroupWithRoomRequest', required: [] })
   .openapi('AssociateSkillGroupWithRoomRequest')
 
 const AssociateSkillWithSkillGroupResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateSkillWithSkillGroupResponse')
 
 const AssociateSkillWithSkillGroupRequestSchema = z
   .object({
-    SkillGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the skill group to associate the skill to. Required.',
-        }),
-    ).exactOptional(),
-    SkillId: SkillIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the skill.' }),
-    ),
+    SkillGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the skill group to associate the skill to. Required.',
+    }),
+    SkillId: SkillIdSchema.openapi({ description: 'The unique identifier of the skill.' }),
   })
   .openapi({ required: ['SkillId'], title: 'AssociateSkillWithSkillGroupRequest' })
   .openapi('AssociateSkillWithSkillGroupRequest')
@@ -152,27 +114,23 @@ const AssociateSkillWithSkillGroupRequestSchema = z
 const SkillNotLinkedExceptionSchema = z.any().openapi('SkillNotLinkedException')
 
 const AssociateSkillWithUsersResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateSkillWithUsersResponse')
 
 const AssociateSkillWithUsersRequestSchema = z
   .object({
-    SkillId: SkillIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The private skill ID you want to make available to enrolled users.',
-        }),
-    ),
+    SkillId: SkillIdSchema.openapi({
+      description: 'The private skill ID you want to make available to enrolled users.',
+    }),
   })
   .openapi({ required: ['SkillId'], title: 'AssociateSkillWithUsersRequest' })
   .openapi('AssociateSkillWithUsersRequest')
 
 const CreateAddressBookResponseSchema = z
   .object({
-    AddressBookArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the newly created address book.' }),
-    ).exactOptional(),
+    AddressBookArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the newly created address book.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateAddressBookResponse')
@@ -217,16 +175,10 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z.any().openapi({ description: 'The key of a tag. Tag keys are case-sensitive. ' }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value of a tag. Tag values are case sensitive and can be null.',
-        }),
-    ),
+    Key: TagKeySchema.openapi({ description: 'The key of a tag. Tag keys are case-sensitive. ' }),
+    Value: TagValueSchema.openapi({
+      description: 'The value of a tag. Tag values are case sensitive and can be null.',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -238,28 +190,16 @@ const TagListSchema = z.array(TagSchema).openapi('TagList')
 
 const CreateAddressBookRequestSchema = z
   .object({
-    Name: AddressBookNameSchema.and(
-      z.any().openapi({ description: 'The name of the address book.' }),
-    ),
-    Description: AddressBookDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the address book.' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, user-specified identifier for the request that ensures idempotency.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to be added to the specified resource. Do not provide system tags.',
-        }),
-    ).exactOptional(),
+    Name: AddressBookNameSchema.openapi({ description: 'The name of the address book.' }),
+    Description: AddressBookDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the address book.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description: 'A unique, user-specified identifier for the request that ensures idempotency.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to be added to the specified resource. Do not provide system tags.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreateAddressBookRequest' })
   .openapi('CreateAddressBookRequest')
@@ -268,9 +208,9 @@ const AlreadyExistsExceptionSchema = z.any().openapi('AlreadyExistsException')
 
 const CreateBusinessReportScheduleResponseSchema = z
   .object({
-    ScheduleArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the business report schedule.' }),
-    ).exactOptional(),
+    ScheduleArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the business report schedule.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateBusinessReportScheduleResponse')
@@ -302,9 +242,9 @@ const BusinessReportIntervalSchema = z
 
 const BusinessReportContentRangeSchema = z
   .object({
-    Interval: BusinessReportIntervalSchema.and(
-      z.any().openapi({ description: 'The interval of the content range.' }),
-    ),
+    Interval: BusinessReportIntervalSchema.openapi({
+      description: 'The interval of the content range.',
+    }),
   })
   .openapi({ required: ['Interval'], description: 'The content range of the report.' })
   .openapi('BusinessReportContentRange')
@@ -315,62 +255,48 @@ const DateSchema = z
   .openapi('Date')
 
 const BusinessReportRecurrenceSchema = z
-  .object({
-    StartDate: DateSchema.and(z.any().openapi({ description: 'The start date.' })).exactOptional(),
-  })
+  .object({ StartDate: DateSchema.exactOptional().openapi({ description: 'The start date.' }) })
   .openapi({ description: 'The recurrence of the reports.', required: [] })
   .openapi('BusinessReportRecurrence')
 
 const CreateBusinessReportScheduleRequestSchema = z
   .object({
-    ScheduleName: BusinessReportScheduleNameSchema.and(
-      z.any().openapi({ description: 'The name identifier of the schedule.' }),
-    ).exactOptional(),
-    S3BucketName: CustomerS3BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The S3 bucket name of the output reports. If this isn't specified, the report can be retrieved from a download link by calling ListBusinessReportSchedule. ",
-        }),
-    ).exactOptional(),
-    S3KeyPrefix: S3KeyPrefixSchema.and(
-      z.any().openapi({ description: 'The S3 key where the report is delivered.' }),
-    ).exactOptional(),
-    Format: BusinessReportFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The format of the generated report (individual CSV files or zipped files of individual files).',
-        }),
-    ),
-    ContentRange: BusinessReportContentRangeSchema.and(
-      z.any().openapi({ description: 'The content range of the reports.' }),
-    ),
-    Recurrence: BusinessReportRecurrenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The recurrence of the reports. If this isn't specified, the report will only be delivered one time when the API is called. ",
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z.any().openapi({ description: 'The client request token.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags for the business report schedule.' }),
-    ).exactOptional(),
+    ScheduleName: BusinessReportScheduleNameSchema.exactOptional().openapi({
+      description: 'The name identifier of the schedule.',
+    }),
+    S3BucketName: CustomerS3BucketNameSchema.exactOptional().openapi({
+      description:
+        "The S3 bucket name of the output reports. If this isn't specified, the report can be retrieved from a download link by calling ListBusinessReportSchedule. ",
+    }),
+    S3KeyPrefix: S3KeyPrefixSchema.exactOptional().openapi({
+      description: 'The S3 key where the report is delivered.',
+    }),
+    Format: BusinessReportFormatSchema.openapi({
+      description:
+        'The format of the generated report (individual CSV files or zipped files of individual files).',
+    }),
+    ContentRange: BusinessReportContentRangeSchema.openapi({
+      description: 'The content range of the reports.',
+    }),
+    Recurrence: BusinessReportRecurrenceSchema.exactOptional().openapi({
+      description:
+        "The recurrence of the reports. If this isn't specified, the report will only be delivered one time when the API is called. ",
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description: 'The client request token.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags for the business report schedule.',
+    }),
   })
   .openapi({ required: ['Format', 'ContentRange'], title: 'CreateBusinessReportScheduleRequest' })
   .openapi('CreateBusinessReportScheduleRequest')
 
 const CreateConferenceProviderResponseSchema = z
   .object({
-    ConferenceProviderArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the newly-created conference provider.' }),
-    ).exactOptional(),
+    ConferenceProviderArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the newly-created conference provider.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateConferenceProviderResponse')
@@ -403,10 +329,10 @@ const CommsProtocolSchema = z.enum(['SIP', 'SIPS', 'H323']).openapi('CommsProtoc
 
 const IPDialInSchema = z
   .object({
-    Endpoint: EndpointSchema.and(z.any().openapi({ description: 'The IP address.' })),
-    CommsProtocol: CommsProtocolSchema.and(
-      z.any().openapi({ description: 'The protocol, including SIP, SIPS, and H323.' }),
-    ),
+    Endpoint: EndpointSchema.openapi({ description: 'The IP address.' }),
+    CommsProtocol: CommsProtocolSchema.openapi({
+      description: 'The protocol, including SIP, SIPS, and H323.',
+    }),
   })
   .openapi({
     required: ['Endpoint', 'CommsProtocol'],
@@ -430,26 +356,18 @@ const OneClickPinDelaySchema = z.string().min(1).max(2).openapi('OneClickPinDela
 
 const PSTNDialInSchema = z
   .object({
-    CountryCode: CountryCodeSchema.and(z.any().openapi({ description: 'The zip code.' })),
-    PhoneNumber: OutboundPhoneNumberSchema.and(
-      z.any().openapi({ description: 'The phone number to call to join the conference.' }),
-    ),
-    OneClickIdDelay: OneClickIdDelaySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The delay duration before Alexa enters the conference ID with dual-tone multi-frequency (DTMF). Each number on the dial pad corresponds to a DTMF tone, which is how we send data over the telephone network.',
-        }),
-    ),
-    OneClickPinDelay: OneClickPinDelaySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The delay duration before Alexa enters the conference pin with dual-tone multi-frequency (DTMF). Each number on the dial pad corresponds to a DTMF tone, which is how we send data over the telephone network.',
-        }),
-    ),
+    CountryCode: CountryCodeSchema.openapi({ description: 'The zip code.' }),
+    PhoneNumber: OutboundPhoneNumberSchema.openapi({
+      description: 'The phone number to call to join the conference.',
+    }),
+    OneClickIdDelay: OneClickIdDelaySchema.openapi({
+      description:
+        'The delay duration before Alexa enters the conference ID with dual-tone multi-frequency (DTMF). Each number on the dial pad corresponds to a DTMF tone, which is how we send data over the telephone network.',
+    }),
+    OneClickPinDelay: OneClickPinDelaySchema.openapi({
+      description:
+        'The delay duration before Alexa enters the conference pin with dual-tone multi-frequency (DTMF). Each number on the dial pad corresponds to a DTMF tone, which is how we send data over the telephone network.',
+    }),
   })
   .openapi({
     required: ['CountryCode', 'PhoneNumber', 'OneClickIdDelay', 'OneClickPinDelay'],
@@ -461,11 +379,9 @@ const RequirePinSchema = z.enum(['YES', 'NO', 'OPTIONAL']).openapi('RequirePin')
 
 const MeetingSettingSchema = z
   .object({
-    RequirePin: RequirePinSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The values that indicate whether the pin is always required.' }),
-    ),
+    RequirePin: RequirePinSchema.openapi({
+      description: 'The values that indicate whether the pin is always required.',
+    }),
   })
   .openapi({
     required: ['RequirePin'],
@@ -476,32 +392,27 @@ const MeetingSettingSchema = z
 
 const CreateConferenceProviderRequestSchema = z
   .object({
-    ConferenceProviderName: ConferenceProviderNameSchema.and(
-      z.any().openapi({ description: 'The name of the conference provider.' }),
-    ),
-    ConferenceProviderType: ConferenceProviderTypeSchema.and(
-      z.any().openapi({ description: 'Represents a type within a list of predefined types.' }),
-    ),
-    IPDialIn: IPDialInSchema.and(
-      z.any().openapi({ description: 'The IP endpoint and protocol for calling.' }),
-    ).exactOptional(),
-    PSTNDialIn: PSTNDialInSchema.and(
-      z.any().openapi({ description: 'The information for PSTN conferencing.' }),
-    ).exactOptional(),
-    MeetingSetting: MeetingSettingSchema.and(
-      z.any().openapi({ description: 'The meeting settings for the conference provider.' }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z.any().openapi({ description: 'The request token of the client.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to be added to the specified resource. Do not provide system tags.',
-        }),
-    ).exactOptional(),
+    ConferenceProviderName: ConferenceProviderNameSchema.openapi({
+      description: 'The name of the conference provider.',
+    }),
+    ConferenceProviderType: ConferenceProviderTypeSchema.openapi({
+      description: 'Represents a type within a list of predefined types.',
+    }),
+    IPDialIn: IPDialInSchema.exactOptional().openapi({
+      description: 'The IP endpoint and protocol for calling.',
+    }),
+    PSTNDialIn: PSTNDialInSchema.exactOptional().openapi({
+      description: 'The information for PSTN conferencing.',
+    }),
+    MeetingSetting: MeetingSettingSchema.openapi({
+      description: 'The meeting settings for the conference provider.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description: 'The request token of the client.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to be added to the specified resource. Do not provide system tags.',
+    }),
   })
   .openapi({
     required: ['ConferenceProviderName', 'ConferenceProviderType', 'MeetingSetting'],
@@ -511,9 +422,9 @@ const CreateConferenceProviderRequestSchema = z
 
 const CreateContactResponseSchema = z
   .object({
-    ContactArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the newly created address book.' }),
-    ).exactOptional(),
+    ContactArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the newly created address book.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateContactResponse')
@@ -525,23 +436,25 @@ const ContactNameSchema = z
   .max(100)
   .openapi('ContactName')
 
-const PhoneNumberSchema: z.ZodType<PhoneNumberType> = z
-  .lazy(() =>
-    z
-      .object({
-        Number: RawPhoneNumberSchema.and(
-          z.any().openapi({ description: 'The raw value of the phone number.' }),
-        ),
-        Type: PhoneNumberTypeSchema.and(
-          z.any().openapi({ description: 'The type of the phone number.' }),
-        ),
-      })
-      .openapi({
-        required: ['Number', 'Type'],
-        description:
-          'The phone number for the contact containing the raw number and phone number type.',
-      }),
-  )
+const RawPhoneNumberSchema = z
+  .string()
+  .regex(/^[\+0-9\#\,\(][\+0-9\-\.\/\(\)\,\#\s]+$/)
+  .min(0)
+  .max(50)
+  .openapi('RawPhoneNumber')
+
+const PhoneNumberTypeSchema = z.enum(['MOBILE', 'WORK', 'HOME']).openapi('PhoneNumberType')
+
+const PhoneNumberSchema = z
+  .object({
+    Number: RawPhoneNumberSchema.openapi({ description: 'The raw value of the phone number.' }),
+    Type: PhoneNumberTypeSchema.openapi({ description: 'The type of the phone number.' }),
+  })
+  .openapi({
+    required: ['Number', 'Type'],
+    description:
+      'The phone number for the contact containing the raw number and phone number type.',
+  })
   .openapi('PhoneNumber')
 
 const PhoneNumberListSchema = z.array(PhoneNumberSchema).min(0).max(3).openapi('PhoneNumberList')
@@ -557,8 +470,8 @@ const SipTypeSchema = z.literal('WORK').openapi('SipType')
 
 const SipAddressSchema = z
   .object({
-    Uri: SipUriSchema.and(z.any().openapi({ description: 'The URI for the SIP address.' })),
-    Type: SipTypeSchema.and(z.any().openapi({ description: 'The type of the SIP address.' })),
+    Uri: SipUriSchema.openapi({ description: 'The URI for the SIP address.' }),
+    Type: SipTypeSchema.openapi({ description: 'The type of the SIP address.' }),
   })
   .openapi({
     required: ['Uri', 'Type'],
@@ -570,64 +483,40 @@ const SipAddressListSchema = z.array(SipAddressSchema).min(0).max(1).openapi('Si
 
 const CreateContactRequestSchema = z
   .object({
-    DisplayName: ContactNameSchema.and(
-      z.any().openapi({ description: 'The name of the contact to display on the console.' }),
-    ).exactOptional(),
-    FirstName: ContactNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The first name of the contact that is used to call the contact on the device.',
-        }),
-    ),
-    LastName: ContactNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The last name of the contact that is used to call the contact on the device.',
-        }),
-    ).exactOptional(),
-    PhoneNumber: RawPhoneNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number of the contact in E.164 format. The phone number type defaults to WORK. You can specify PhoneNumber or PhoneNumbers. We recommend that you use PhoneNumbers, which lets you specify the phone number type and multiple numbers.',
-        }),
-    ).exactOptional(),
-    PhoneNumbers: PhoneNumberListSchema.and(
-      z.any().openapi({ description: 'The list of phone numbers for the contact.' }),
-    ).exactOptional(),
-    SipAddresses: SipAddressListSchema.and(
-      z.any().openapi({ description: 'The list of SIP addresses for the contact.' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, user-specified identifier for this request that ensures idempotency.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to be added to the specified resource. Do not provide system tags.',
-        }),
-    ).exactOptional(),
+    DisplayName: ContactNameSchema.exactOptional().openapi({
+      description: 'The name of the contact to display on the console.',
+    }),
+    FirstName: ContactNameSchema.openapi({
+      description: 'The first name of the contact that is used to call the contact on the device.',
+    }),
+    LastName: ContactNameSchema.exactOptional().openapi({
+      description: 'The last name of the contact that is used to call the contact on the device.',
+    }),
+    PhoneNumber: RawPhoneNumberSchema.exactOptional().openapi({
+      description:
+        'The phone number of the contact in E.164 format. The phone number type defaults to WORK. You can specify PhoneNumber or PhoneNumbers. We recommend that you use PhoneNumbers, which lets you specify the phone number type and multiple numbers.',
+    }),
+    PhoneNumbers: PhoneNumberListSchema.exactOptional().openapi({
+      description: 'The list of phone numbers for the contact.',
+    }),
+    SipAddresses: SipAddressListSchema.exactOptional().openapi({
+      description: 'The list of SIP addresses for the contact.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description: 'A unique, user-specified identifier for this request that ensures idempotency.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to be added to the specified resource. Do not provide system tags.',
+    }),
   })
   .openapi({ required: ['FirstName'], title: 'CreateContactRequest' })
   .openapi('CreateContactRequest')
 
 const CreateGatewayGroupResponseSchema = z
   .object({
-    GatewayGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the created gateway group.' }),
-    ).exactOptional(),
+    GatewayGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the created gateway group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateGatewayGroupResponse')
@@ -643,37 +532,25 @@ const GatewayGroupDescriptionSchema = z.string().min(0).max(200).openapi('Gatewa
 
 const CreateGatewayGroupRequestSchema = z
   .object({
-    Name: GatewayGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the gateway group.' }),
-    ),
-    Description: GatewayGroupDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the gateway group.' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A unique, user-specified identifier for the request that ensures idempotency.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to be added to the specified resource. Do not provide system tags.',
-        }),
-    ).exactOptional(),
+    Name: GatewayGroupNameSchema.openapi({ description: 'The name of the gateway group.' }),
+    Description: GatewayGroupDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the gateway group.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.openapi({
+      description: ' A unique, user-specified identifier for the request that ensures idempotency.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to be added to the specified resource. Do not provide system tags.',
+    }),
   })
   .openapi({ required: ['Name', 'ClientRequestToken'], title: 'CreateGatewayGroupRequest' })
   .openapi('CreateGatewayGroupRequest')
 
 const CreateNetworkProfileResponseSchema = z
   .object({
-    NetworkProfileArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the network profile associated with a device.' }),
-    ).exactOptional(),
+    NetworkProfileArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the network profile associated with a device.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateNetworkProfileResponse')
@@ -730,65 +607,40 @@ const TrustAnchorListSchema = z.array(TrustAnchorSchema).min(1).max(5).openapi('
 
 const CreateNetworkProfileRequestSchema = z
   .object({
-    NetworkProfileName: NetworkProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the network profile associated with a device.' }),
-    ),
-    Description: NetworkProfileDescriptionSchema.and(
-      z.any().openapi({ description: "Detailed information about a device's network profile." }),
-    ).exactOptional(),
-    Ssid: NetworkSsidSchema.and(z.any().openapi({ description: 'The SSID of the Wi-Fi network.' })),
-    SecurityType: NetworkSecurityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The security type of the Wi-Fi network. This can be WPA2_ENTERPRISE, WPA2_PSK, WPA_PSK, WEP, or OPEN.',
-        }),
-    ),
-    EapMethod: NetworkEapMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication standard that is used in the EAP framework. Currently, EAP_TLS is supported.',
-        }),
-    ).exactOptional(),
-    CurrentPassword: CurrentWiFiPasswordSchema.and(
-      z.any().openapi({ description: 'The current password of the Wi-Fi network.' }),
-    ).exactOptional(),
-    NextPassword: NextWiFiPasswordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next, or subsequent, password of the Wi-Fi network. This password is asynchronously transmitted to the device and is used when the password of the network changes to NextPassword. ',
-        }),
-    ).exactOptional(),
-    CertificateAuthorityArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Private Certificate Authority (PCA) created in AWS Certificate Manager (ACM). This is used to issue certificates to the devices. ',
-        }),
-    ).exactOptional(),
-    TrustAnchors: TrustAnchorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The root certificates of your authentication server that is installed on your devices and used to trust your authentication server during EAP negotiation. ',
-        }),
-    ).exactOptional(),
+    NetworkProfileName: NetworkProfileNameSchema.openapi({
+      description: 'The name of the network profile associated with a device.',
+    }),
+    Description: NetworkProfileDescriptionSchema.exactOptional().openapi({
+      description: "Detailed information about a device's network profile.",
+    }),
+    Ssid: NetworkSsidSchema.openapi({ description: 'The SSID of the Wi-Fi network.' }),
+    SecurityType: NetworkSecurityTypeSchema.openapi({
+      description:
+        'The security type of the Wi-Fi network. This can be WPA2_ENTERPRISE, WPA2_PSK, WPA_PSK, WEP, or OPEN.',
+    }),
+    EapMethod: NetworkEapMethodSchema.exactOptional().openapi({
+      description:
+        'The authentication standard that is used in the EAP framework. Currently, EAP_TLS is supported.',
+    }),
+    CurrentPassword: CurrentWiFiPasswordSchema.exactOptional().openapi({
+      description: 'The current password of the Wi-Fi network.',
+    }),
+    NextPassword: NextWiFiPasswordSchema.exactOptional().openapi({
+      description:
+        'The next, or subsequent, password of the Wi-Fi network. This password is asynchronously transmitted to the device and is used when the password of the network changes to NextPassword. ',
+    }),
+    CertificateAuthorityArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Private Certificate Authority (PCA) created in AWS Certificate Manager (ACM). This is used to issue certificates to the devices. ',
+    }),
+    TrustAnchors: TrustAnchorListSchema.exactOptional().openapi({
+      description:
+        'The root certificates of your authentication server that is installed on your devices and used to trust your authentication server during EAP negotiation. ',
+    }),
     ClientRequestToken: ClientRequestTokenSchema,
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to be added to the specified resource. Do not provide system tags. ',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to be added to the specified resource. Do not provide system tags. ',
+    }),
   })
   .openapi({
     required: ['NetworkProfileName', 'Ssid', 'SecurityType', 'ClientRequestToken'],
@@ -806,11 +658,9 @@ const InvalidServiceLinkedRoleStateExceptionSchema = z
 
 const CreateProfileResponseSchema = z
   .object({
-    ProfileArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the newly created room profile in the response.' }),
-    ).exactOptional(),
+    ProfileArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the newly created room profile in the response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateProfileResponse')
@@ -851,23 +701,15 @@ const EndOfMeetingReminderTypeSchema = z
 
 const CreateEndOfMeetingReminderSchema = z
   .object({
-    ReminderAtMinutes: EndOfMeetingReminderMinutesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A range of 3 to 15 minutes that determines when the reminder begins.',
-        }),
-    ),
-    ReminderType: EndOfMeetingReminderTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of sound that users hear during the end of meeting reminder. ',
-        }),
-    ),
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether an end of meeting reminder is enabled or not.' }),
-    ),
+    ReminderAtMinutes: EndOfMeetingReminderMinutesListSchema.openapi({
+      description: ' A range of 3 to 15 minutes that determines when the reminder begins.',
+    }),
+    ReminderType: EndOfMeetingReminderTypeSchema.openapi({
+      description: 'The type of sound that users hear during the end of meeting reminder. ',
+    }),
+    Enabled: BooleanSchema.openapi({
+      description: 'Whether an end of meeting reminder is enabled or not.',
+    }),
   })
   .openapi({
     required: ['ReminderAtMinutes', 'ReminderType', 'Enabled'],
@@ -878,17 +720,11 @@ const CreateEndOfMeetingReminderSchema = z
 
 const CreateInstantBookingSchema = z
   .object({
-    DurationInMinutes: MinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Duration between 15 and 240 minutes at increments of 15 that determines how long to book an available room when a meeting is started with Alexa.',
-        }),
-    ),
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether instant booking is enabled or not.' }),
-    ),
+    DurationInMinutes: MinutesSchema.openapi({
+      description:
+        'Duration between 15 and 240 minutes at increments of 15 that determines how long to book an available room when a meeting is started with Alexa.',
+    }),
+    Enabled: BooleanSchema.openapi({ description: 'Whether instant booking is enabled or not.' }),
   })
   .openapi({
     required: ['DurationInMinutes', 'Enabled'],
@@ -899,17 +735,11 @@ const CreateInstantBookingSchema = z
 
 const CreateRequireCheckInSchema = z
   .object({
-    ReleaseAfterMinutes: MinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Duration between 5 and 20 minutes to determine when to release the room if it's not checked into.",
-        }),
-    ),
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether require check in is enabled or not.' }),
-    ),
+    ReleaseAfterMinutes: MinutesSchema.openapi({
+      description:
+        "Duration between 5 and 20 minutes to determine when to release the room if it's not checked into.",
+    }),
+    Enabled: BooleanSchema.openapi({ description: 'Whether require check in is enabled or not.' }),
   })
   .openapi({
     required: ['ReleaseAfterMinutes', 'Enabled'],
@@ -920,83 +750,59 @@ const CreateRequireCheckInSchema = z
 
 const CreateMeetingRoomConfigurationSchema = z
   .object({
-    RoomUtilizationMetricsEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether room utilization metrics are enabled or not.' }),
-    ).exactOptional(),
+    RoomUtilizationMetricsEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether room utilization metrics are enabled or not.',
+    }),
     EndOfMeetingReminder: CreateEndOfMeetingReminderSchema.exactOptional(),
-    InstantBooking: CreateInstantBookingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Settings to automatically book a room for a configured duration if it's free when joining a meeting with Alexa.",
-        }),
-    ).exactOptional(),
-    RequireCheckIn: CreateRequireCheckInSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Settings for requiring a check in when a room is reserved. Alexa can cancel a room reservation if it's not checked into to make the room available for others. Users can check in by joining the meeting with Alexa or an AVS device, or by saying “Alexa, check in.”",
-        }),
-    ).exactOptional(),
+    InstantBooking: CreateInstantBookingSchema.exactOptional().openapi({
+      description:
+        "Settings to automatically book a room for a configured duration if it's free when joining a meeting with Alexa.",
+    }),
+    RequireCheckIn: CreateRequireCheckInSchema.exactOptional().openapi({
+      description:
+        "Settings for requiring a check in when a room is reserved. Alexa can cancel a room reservation if it's not checked into to make the room available for others. Users can check in by joining the meeting with Alexa or an AVS device, or by saying “Alexa, check in.”",
+    }),
   })
   .openapi({ description: 'Creates meeting room settings of a room profile.', required: [] })
   .openapi('CreateMeetingRoomConfiguration')
 
 const CreateProfileRequestSchema = z
   .object({
-    ProfileName: ProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of a room profile.' }),
-    ),
-    Timezone: TimezoneSchema.and(
-      z.any().openapi({ description: 'The time zone used by a room profile.' }),
-    ),
-    Address: AddressSchema.and(z.any().openapi({ description: 'The valid address for the room.' })),
-    DistanceUnit: DistanceUnitSchema.and(
-      z.any().openapi({ description: 'The distance unit to be used by devices in the profile.' }),
-    ),
-    TemperatureUnit: TemperatureUnitSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The temperature unit to be used by devices in the profile.' }),
-    ),
-    WakeWord: WakeWordSchema.and(
-      z.any().openapi({ description: 'A wake word for Alexa, Echo, Amazon, or a computer.' }),
-    ),
-    Locale: DeviceLocaleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The locale of the room profile. (This is currently only available to a limited preview audience.)',
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user-specified token that is used during the creation of a profile.',
-        }),
-    ).exactOptional(),
-    SetupModeDisabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether room profile setup is enabled.' }),
-    ).exactOptional(),
-    MaxVolumeLimit: MaxVolumeLimitSchema.and(
-      z.any().openapi({ description: 'The maximum volume limit for a room profile.' }),
-    ).exactOptional(),
-    PSTNEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether PSTN calling is enabled.' }),
-    ).exactOptional(),
-    DataRetentionOptIn: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether data retention of the profile is enabled.' }),
-    ).exactOptional(),
-    MeetingRoomConfiguration: CreateMeetingRoomConfigurationSchema.and(
-      z.any().openapi({ description: 'The meeting room settings of a room profile.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags for the profile.' }),
-    ).exactOptional(),
+    ProfileName: ProfileNameSchema.openapi({ description: 'The name of a room profile.' }),
+    Timezone: TimezoneSchema.openapi({ description: 'The time zone used by a room profile.' }),
+    Address: AddressSchema.openapi({ description: 'The valid address for the room.' }),
+    DistanceUnit: DistanceUnitSchema.openapi({
+      description: 'The distance unit to be used by devices in the profile.',
+    }),
+    TemperatureUnit: TemperatureUnitSchema.openapi({
+      description: 'The temperature unit to be used by devices in the profile.',
+    }),
+    WakeWord: WakeWordSchema.openapi({
+      description: 'A wake word for Alexa, Echo, Amazon, or a computer.',
+    }),
+    Locale: DeviceLocaleSchema.exactOptional().openapi({
+      description:
+        'The locale of the room profile. (This is currently only available to a limited preview audience.)',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description: 'The user-specified token that is used during the creation of a profile.',
+    }),
+    SetupModeDisabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether room profile setup is enabled.',
+    }),
+    MaxVolumeLimit: MaxVolumeLimitSchema.exactOptional().openapi({
+      description: 'The maximum volume limit for a room profile.',
+    }),
+    PSTNEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether PSTN calling is enabled.',
+    }),
+    DataRetentionOptIn: BooleanSchema.exactOptional().openapi({
+      description: 'Whether data retention of the profile is enabled.',
+    }),
+    MeetingRoomConfiguration: CreateMeetingRoomConfigurationSchema.exactOptional().openapi({
+      description: 'The meeting room settings of a room profile.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'The tags for the profile.' }),
   })
   .openapi({
     required: ['ProfileName', 'Timezone', 'Address', 'DistanceUnit', 'TemperatureUnit', 'WakeWord'],
@@ -1006,9 +812,9 @@ const CreateProfileRequestSchema = z
 
 const CreateRoomResponseSchema = z
   .object({
-    RoomArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the newly created room in the response.' }),
-    ).exactOptional(),
+    RoomArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the newly created room in the response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRoomResponse')
@@ -1031,36 +837,30 @@ const ProviderCalendarIdSchema = z.string().min(0).max(100).openapi('ProviderCal
 
 const CreateRoomRequestSchema = z
   .object({
-    RoomName: RoomNameSchema.and(z.any().openapi({ description: 'The name for the room.' })),
-    Description: RoomDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for the room.' }),
-    ).exactOptional(),
-    ProfileArn: ArnSchema.and(
-      z.any().openapi({ description: 'The profile ARN for the room. This is required.' }),
-    ).exactOptional(),
-    ProviderCalendarId: ProviderCalendarIdSchema.and(
-      z.any().openapi({ description: 'The calendar ARN for the room.' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, user-specified identifier for this request that ensures idempotency. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags for the room.' }),
-    ).exactOptional(),
+    RoomName: RoomNameSchema.openapi({ description: 'The name for the room.' }),
+    Description: RoomDescriptionSchema.exactOptional().openapi({
+      description: 'The description for the room.',
+    }),
+    ProfileArn: ArnSchema.exactOptional().openapi({
+      description: 'The profile ARN for the room. This is required.',
+    }),
+    ProviderCalendarId: ProviderCalendarIdSchema.exactOptional().openapi({
+      description: 'The calendar ARN for the room.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, user-specified identifier for this request that ensures idempotency. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'The tags for the room.' }),
   })
   .openapi({ required: ['RoomName'], title: 'CreateRoomRequest' })
   .openapi('CreateRoomRequest')
 
 const CreateSkillGroupResponseSchema = z
   .object({
-    SkillGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the newly created skill group in the response.' }),
-    ).exactOptional(),
+    SkillGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the newly created skill group in the response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateSkillGroupResponse')
@@ -1081,32 +881,24 @@ const SkillGroupDescriptionSchema = z
 
 const CreateSkillGroupRequestSchema = z
   .object({
-    SkillGroupName: SkillGroupNameSchema.and(
-      z.any().openapi({ description: 'The name for the skill group.' }),
-    ),
-    Description: SkillGroupDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for the skill group.' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, user-specified identifier for this request that ensures idempotency. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags for the skill group.' }),
-    ).exactOptional(),
+    SkillGroupName: SkillGroupNameSchema.openapi({ description: 'The name for the skill group.' }),
+    Description: SkillGroupDescriptionSchema.exactOptional().openapi({
+      description: 'The description for the skill group.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, user-specified identifier for this request that ensures idempotency. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'The tags for the skill group.' }),
   })
   .openapi({ required: ['SkillGroupName'], title: 'CreateSkillGroupRequest' })
   .openapi('CreateSkillGroupRequest')
 
 const CreateUserResponseSchema = z
   .object({
-    UserArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the newly created user in the response.' }),
-    ).exactOptional(),
+    UserArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the newly created user in the response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateUserResponse')
@@ -1141,246 +933,210 @@ const EmailSchema = z
 
 const CreateUserRequestSchema = z
   .object({
-    UserId: UserUserIdSchema.and(z.any().openapi({ description: 'The ARN for the user.' })),
-    FirstName: UserFirstNameSchema.and(
-      z.any().openapi({ description: 'The first name for the user.' }),
-    ).exactOptional(),
-    LastName: UserLastNameSchema.and(
-      z.any().openapi({ description: 'The last name for the user.' }),
-    ).exactOptional(),
-    Email: EmailSchema.and(
-      z.any().openapi({ description: 'The email address for the user.' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, user-specified identifier for this request that ensures idempotency. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags for the user.' }),
-    ).exactOptional(),
+    UserId: UserUserIdSchema.openapi({ description: 'The ARN for the user.' }),
+    FirstName: UserFirstNameSchema.exactOptional().openapi({
+      description: 'The first name for the user.',
+    }),
+    LastName: UserLastNameSchema.exactOptional().openapi({
+      description: 'The last name for the user.',
+    }),
+    Email: EmailSchema.exactOptional().openapi({ description: 'The email address for the user.' }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, user-specified identifier for this request that ensures idempotency. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'The tags for the user.' }),
   })
   .openapi({ required: ['UserId'], title: 'CreateUserRequest' })
   .openapi('CreateUserRequest')
 
 const ResourceInUseExceptionSchema = z.any().openapi('ResourceInUseException')
 
-const DeleteAddressBookResponseSchema = z.object({}).openapi('DeleteAddressBookResponse')
+const DeleteAddressBookResponseSchema = z.looseObject({}).openapi('DeleteAddressBookResponse')
 
 const DeleteAddressBookRequestSchema = z
   .object({
-    AddressBookArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the address book to delete.' }),
-    ),
+    AddressBookArn: ArnSchema.openapi({ description: 'The ARN of the address book to delete.' }),
   })
   .openapi({ required: ['AddressBookArn'], title: 'DeleteAddressBookRequest' })
   .openapi('DeleteAddressBookRequest')
 
 const DeleteBusinessReportScheduleResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteBusinessReportScheduleResponse')
 
 const DeleteBusinessReportScheduleRequestSchema = z
   .object({
-    ScheduleArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the business report schedule.' }),
-    ),
+    ScheduleArn: ArnSchema.openapi({ description: 'The ARN of the business report schedule.' }),
   })
   .openapi({ required: ['ScheduleArn'], title: 'DeleteBusinessReportScheduleRequest' })
   .openapi('DeleteBusinessReportScheduleRequest')
 
 const DeleteConferenceProviderResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteConferenceProviderResponse')
 
 const DeleteConferenceProviderRequestSchema = z
   .object({
-    ConferenceProviderArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the conference provider.' }),
-    ),
+    ConferenceProviderArn: ArnSchema.openapi({
+      description: 'The ARN of the conference provider.',
+    }),
   })
   .openapi({ required: ['ConferenceProviderArn'], title: 'DeleteConferenceProviderRequest' })
   .openapi('DeleteConferenceProviderRequest')
 
-const DeleteContactResponseSchema = z.object({}).openapi('DeleteContactResponse')
+const DeleteContactResponseSchema = z.looseObject({}).openapi('DeleteContactResponse')
 
 const DeleteContactRequestSchema = z
-  .object({
-    ContactArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the contact to delete.' }),
-    ),
-  })
+  .object({ ContactArn: ArnSchema.openapi({ description: 'The ARN of the contact to delete.' }) })
   .openapi({ required: ['ContactArn'], title: 'DeleteContactRequest' })
   .openapi('DeleteContactRequest')
 
-const DeleteDeviceResponseSchema = z.object({}).openapi('DeleteDeviceResponse')
+const DeleteDeviceResponseSchema = z.looseObject({}).openapi('DeleteDeviceResponse')
 
 const DeleteDeviceRequestSchema = z
   .object({
-    DeviceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the device for which to request details.' }),
-    ),
+    DeviceArn: ArnSchema.openapi({
+      description: 'The ARN of the device for which to request details.',
+    }),
   })
   .openapi({ required: ['DeviceArn'], title: 'DeleteDeviceRequest' })
   .openapi('DeleteDeviceRequest')
 
-const DeleteDeviceUsageDataResponseSchema = z.object({}).openapi('DeleteDeviceUsageDataResponse')
+const DeleteDeviceUsageDataResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteDeviceUsageDataResponse')
 
 const DeviceUsageTypeSchema = z.literal('VOICE').openapi('DeviceUsageType')
 
 const DeleteDeviceUsageDataRequestSchema = z
   .object({
-    DeviceArn: ArnSchema.and(z.any().openapi({ description: 'The ARN of the device.' })),
-    DeviceUsageType: DeviceUsageTypeSchema.and(
-      z.any().openapi({ description: 'The type of usage data to delete.' }),
-    ),
+    DeviceArn: ArnSchema.openapi({ description: 'The ARN of the device.' }),
+    DeviceUsageType: DeviceUsageTypeSchema.openapi({
+      description: 'The type of usage data to delete.',
+    }),
   })
   .openapi({ required: ['DeviceArn', 'DeviceUsageType'], title: 'DeleteDeviceUsageDataRequest' })
   .openapi('DeleteDeviceUsageDataRequest')
 
-const DeleteGatewayGroupResponseSchema = z.object({}).openapi('DeleteGatewayGroupResponse')
+const DeleteGatewayGroupResponseSchema = z.looseObject({}).openapi('DeleteGatewayGroupResponse')
 
 const DeleteGatewayGroupRequestSchema = z
   .object({
-    GatewayGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the gateway group to delete.' }),
-    ),
+    GatewayGroupArn: ArnSchema.openapi({ description: 'The ARN of the gateway group to delete.' }),
   })
   .openapi({ required: ['GatewayGroupArn'], title: 'DeleteGatewayGroupRequest' })
   .openapi('DeleteGatewayGroupRequest')
 
 const ResourceAssociatedExceptionSchema = z.any().openapi('ResourceAssociatedException')
 
-const DeleteNetworkProfileResponseSchema = z.object({}).openapi('DeleteNetworkProfileResponse')
+const DeleteNetworkProfileResponseSchema = z.looseObject({}).openapi('DeleteNetworkProfileResponse')
 
 const DeleteNetworkProfileRequestSchema = z
   .object({
-    NetworkProfileArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the network profile associated with a device.' }),
-    ),
+    NetworkProfileArn: ArnSchema.openapi({
+      description: 'The ARN of the network profile associated with a device.',
+    }),
   })
   .openapi({ required: ['NetworkProfileArn'], title: 'DeleteNetworkProfileRequest' })
   .openapi('DeleteNetworkProfileRequest')
 
-const DeleteProfileResponseSchema = z.object({}).openapi('DeleteProfileResponse')
+const DeleteProfileResponseSchema = z.looseObject({}).openapi('DeleteProfileResponse')
 
 const DeleteProfileRequestSchema = z
   .object({
-    ProfileArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the room profile to delete. Required.' }),
-    ).exactOptional(),
+    ProfileArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the room profile to delete. Required.',
+    }),
   })
   .openapi({ title: 'DeleteProfileRequest', required: [] })
   .openapi('DeleteProfileRequest')
 
-const DeleteRoomResponseSchema = z.object({}).openapi('DeleteRoomResponse')
+const DeleteRoomResponseSchema = z.looseObject({}).openapi('DeleteRoomResponse')
 
 const DeleteRoomRequestSchema = z
   .object({
-    RoomArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the room to delete. Required.' }),
-    ).exactOptional(),
+    RoomArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the room to delete. Required.',
+    }),
   })
   .openapi({ title: 'DeleteRoomRequest', required: [] })
   .openapi('DeleteRoomRequest')
 
 const DeleteRoomSkillParameterResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteRoomSkillParameterResponse')
 
 const RoomSkillParameterKeySchema = z.string().min(1).max(256).openapi('RoomSkillParameterKey')
 
 const DeleteRoomSkillParameterRequestSchema = z
   .object({
-    RoomArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the room from which to remove the room skill parameter details.',
-        }),
-    ).exactOptional(),
-    SkillId: SkillIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the skill from which to remove the room skill parameter details.',
-        }),
-    ),
-    ParameterKey: RoomSkillParameterKeySchema.and(
-      z.any().openapi({ description: 'The room skill parameter key for which to remove details.' }),
-    ),
+    RoomArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the room from which to remove the room skill parameter details.',
+    }),
+    SkillId: SkillIdSchema.openapi({
+      description: 'The ID of the skill from which to remove the room skill parameter details.',
+    }),
+    ParameterKey: RoomSkillParameterKeySchema.openapi({
+      description: 'The room skill parameter key for which to remove details.',
+    }),
   })
   .openapi({ required: ['SkillId', 'ParameterKey'], title: 'DeleteRoomSkillParameterRequest' })
   .openapi('DeleteRoomSkillParameterRequest')
 
 const DeleteSkillAuthorizationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteSkillAuthorizationResponse')
 
 const DeleteSkillAuthorizationRequestSchema = z
   .object({
-    SkillId: SkillIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of a skill.' }),
-    ),
-    RoomArn: ArnSchema.and(
-      z.any().openapi({ description: 'The room that the skill is authorized for.' }),
-    ).exactOptional(),
+    SkillId: SkillIdSchema.openapi({ description: 'The unique identifier of a skill.' }),
+    RoomArn: ArnSchema.exactOptional().openapi({
+      description: 'The room that the skill is authorized for.',
+    }),
   })
   .openapi({ required: ['SkillId'], title: 'DeleteSkillAuthorizationRequest' })
   .openapi('DeleteSkillAuthorizationRequest')
 
-const DeleteSkillGroupResponseSchema = z.object({}).openapi('DeleteSkillGroupResponse')
+const DeleteSkillGroupResponseSchema = z.looseObject({}).openapi('DeleteSkillGroupResponse')
 
 const DeleteSkillGroupRequestSchema = z
   .object({
-    SkillGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the skill group to delete. Required.' }),
-    ).exactOptional(),
+    SkillGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the skill group to delete. Required.',
+    }),
   })
   .openapi({ title: 'DeleteSkillGroupRequest', required: [] })
   .openapi('DeleteSkillGroupRequest')
 
-const DeleteUserResponseSchema = z.object({}).openapi('DeleteUserResponse')
+const DeleteUserResponseSchema = z.looseObject({}).openapi('DeleteUserResponse')
 
 const EnrollmentIdSchema = z.string().min(0).max(128).openapi('EnrollmentId')
 
 const DeleteUserRequestSchema = z
   .object({
-    UserArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the user to delete in the organization. Required.' }),
-    ).exactOptional(),
-    EnrollmentId: EnrollmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The ARN of the user's enrollment in the organization. Required.",
-        }),
-    ),
+    UserArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the user to delete in the organization. Required.',
+    }),
+    EnrollmentId: EnrollmentIdSchema.openapi({
+      description: "The ARN of the user's enrollment in the organization. Required.",
+    }),
   })
   .openapi({ required: ['EnrollmentId'], title: 'DeleteUserRequest' })
   .openapi('DeleteUserRequest')
 
 const DisassociateContactFromAddressBookResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateContactFromAddressBookResponse')
 
 const DisassociateContactFromAddressBookRequestSchema = z
   .object({
-    ContactArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the contact to disassociate from an address book.' }),
-    ),
-    AddressBookArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the address from which to disassociate the contact.' }),
-    ),
+    ContactArn: ArnSchema.openapi({
+      description: 'The ARN of the contact to disassociate from an address book.',
+    }),
+    AddressBookArn: ArnSchema.openapi({
+      description: 'The ARN of the address from which to disassociate the contact.',
+    }),
   })
   .openapi({
     required: ['ContactArn', 'AddressBookArn'],
@@ -1389,129 +1145,115 @@ const DisassociateContactFromAddressBookRequestSchema = z
   .openapi('DisassociateContactFromAddressBookRequest')
 
 const DisassociateDeviceFromRoomResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateDeviceFromRoomResponse')
 
 const DisassociateDeviceFromRoomRequestSchema = z
   .object({
-    DeviceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the device to disassociate from a room. Required.' }),
-    ).exactOptional(),
+    DeviceArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the device to disassociate from a room. Required.',
+    }),
   })
   .openapi({ title: 'DisassociateDeviceFromRoomRequest', required: [] })
   .openapi('DisassociateDeviceFromRoomRequest')
 
 const DisassociateSkillFromSkillGroupResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateSkillFromSkillGroupResponse')
 
 const DisassociateSkillFromSkillGroupRequestSchema = z
   .object({
-    SkillGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The unique identifier of a skill. Required.' }),
-    ).exactOptional(),
-    SkillId: SkillIdSchema.and(
-      z.any().openapi({ description: 'The ARN of a skill group to associate to a skill.' }),
-    ),
+    SkillGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The unique identifier of a skill. Required.',
+    }),
+    SkillId: SkillIdSchema.openapi({
+      description: 'The ARN of a skill group to associate to a skill.',
+    }),
   })
   .openapi({ required: ['SkillId'], title: 'DisassociateSkillFromSkillGroupRequest' })
   .openapi('DisassociateSkillFromSkillGroupRequest')
 
 const DisassociateSkillFromUsersResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateSkillFromUsersResponse')
 
 const DisassociateSkillFromUsersRequestSchema = z
   .object({
-    SkillId: SkillIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The private skill ID you want to make unavailable for enrolled users.',
-        }),
-    ),
+    SkillId: SkillIdSchema.openapi({
+      description: ' The private skill ID you want to make unavailable for enrolled users.',
+    }),
   })
   .openapi({ required: ['SkillId'], title: 'DisassociateSkillFromUsersRequest' })
   .openapi('DisassociateSkillFromUsersRequest')
 
 const DisassociateSkillGroupFromRoomResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateSkillGroupFromRoomResponse')
 
 const DisassociateSkillGroupFromRoomRequestSchema = z
   .object({
-    SkillGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the skill group to disassociate from a room. Required.',
-        }),
-    ).exactOptional(),
-    RoomArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the room from which the skill group is to be disassociated. Required.',
-        }),
-    ).exactOptional(),
+    SkillGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the skill group to disassociate from a room. Required.',
+    }),
+    RoomArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the room from which the skill group is to be disassociated. Required.',
+    }),
   })
   .openapi({ title: 'DisassociateSkillGroupFromRoomRequest', required: [] })
   .openapi('DisassociateSkillGroupFromRoomRequest')
 
 const ForgetSmartHomeAppliancesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ForgetSmartHomeAppliancesResponse')
 
 const ForgetSmartHomeAppliancesRequestSchema = z
   .object({
-    RoomArn: ArnSchema.and(
-      z.any().openapi({ description: 'The room that the appliances are associated with.' }),
-    ),
+    RoomArn: ArnSchema.openapi({
+      description: 'The room that the appliances are associated with.',
+    }),
   })
   .openapi({ required: ['RoomArn'], title: 'ForgetSmartHomeAppliancesRequest' })
   .openapi('ForgetSmartHomeAppliancesRequest')
 
 const AddressBookSchema = z
   .object({
-    AddressBookArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the address book.' }),
-    ).exactOptional(),
-    Name: AddressBookNameSchema.and(
-      z.any().openapi({ description: 'The name of the address book.' }),
-    ).exactOptional(),
-    Description: AddressBookDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the address book.' }),
-    ).exactOptional(),
+    AddressBookArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the address book.',
+    }),
+    Name: AddressBookNameSchema.exactOptional().openapi({
+      description: 'The name of the address book.',
+    }),
+    Description: AddressBookDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the address book.',
+    }),
   })
   .openapi({ description: 'An address book with attributes.', required: [] })
   .openapi('AddressBook')
 
 const GetAddressBookResponseSchema = z
   .object({
-    AddressBook: AddressBookSchema.and(
-      z.any().openapi({ description: 'The details of the requested address book.' }),
-    ).exactOptional(),
+    AddressBook: AddressBookSchema.exactOptional().openapi({
+      description: 'The details of the requested address book.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAddressBookResponse')
 
 const GetAddressBookRequestSchema = z
   .object({
-    AddressBookArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the address book for which to request details.' }),
-    ),
+    AddressBookArn: ArnSchema.openapi({
+      description: 'The ARN of the address book for which to request details.',
+    }),
   })
   .openapi({ required: ['AddressBookArn'], title: 'GetAddressBookRequest' })
   .openapi('GetAddressBookRequest')
 
 const ConferencePreferenceSchema = z
   .object({
-    DefaultConferenceProviderArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the default conference provider.' }),
-    ).exactOptional(),
+    DefaultConferenceProviderArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the default conference provider.',
+    }),
   })
   .openapi({
     description:
@@ -1522,38 +1264,38 @@ const ConferencePreferenceSchema = z
 
 const GetConferencePreferenceResponseSchema = z
   .object({
-    Preference: ConferencePreferenceSchema.and(
-      z.any().openapi({ description: 'The conference preference.' }),
-    ).exactOptional(),
+    Preference: ConferencePreferenceSchema.exactOptional().openapi({
+      description: 'The conference preference.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetConferencePreferenceResponse')
 
 const GetConferencePreferenceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetConferencePreferenceRequest' })
   .openapi('GetConferencePreferenceRequest')
 
 const ConferenceProviderSchema = z
   .object({
-    Arn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the newly created conference provider.' }),
-    ).exactOptional(),
-    Name: ConferenceProviderNameSchema.and(
-      z.any().openapi({ description: 'The name of the conference provider.' }),
-    ).exactOptional(),
-    Type: ConferenceProviderTypeSchema.and(
-      z.any().openapi({ description: 'The type of conference providers.' }),
-    ).exactOptional(),
-    IPDialIn: IPDialInSchema.and(
-      z.any().openapi({ description: 'The IP endpoint and protocol for calling.' }),
-    ).exactOptional(),
-    PSTNDialIn: PSTNDialInSchema.and(
-      z.any().openapi({ description: 'The information for PSTN conferencing.' }),
-    ).exactOptional(),
-    MeetingSetting: MeetingSettingSchema.and(
-      z.any().openapi({ description: 'The meeting settings for the conference provider.' }),
-    ).exactOptional(),
+    Arn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the newly created conference provider.',
+    }),
+    Name: ConferenceProviderNameSchema.exactOptional().openapi({
+      description: 'The name of the conference provider.',
+    }),
+    Type: ConferenceProviderTypeSchema.exactOptional().openapi({
+      description: 'The type of conference providers.',
+    }),
+    IPDialIn: IPDialInSchema.exactOptional().openapi({
+      description: 'The IP endpoint and protocol for calling.',
+    }),
+    PSTNDialIn: PSTNDialInSchema.exactOptional().openapi({
+      description: 'The information for PSTN conferencing.',
+    }),
+    MeetingSetting: MeetingSettingSchema.exactOptional().openapi({
+      description: 'The meeting settings for the conference provider.',
+    }),
   })
   .openapi({
     description:
@@ -1564,76 +1306,62 @@ const ConferenceProviderSchema = z
 
 const GetConferenceProviderResponseSchema = z
   .object({
-    ConferenceProvider: ConferenceProviderSchema.and(
-      z.any().openapi({ description: 'The conference provider.' }),
-    ).exactOptional(),
+    ConferenceProvider: ConferenceProviderSchema.exactOptional().openapi({
+      description: 'The conference provider.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetConferenceProviderResponse')
 
 const GetConferenceProviderRequestSchema = z
   .object({
-    ConferenceProviderArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the newly created conference provider.' }),
-    ),
+    ConferenceProviderArn: ArnSchema.openapi({
+      description: 'The ARN of the newly created conference provider.',
+    }),
   })
   .openapi({ required: ['ConferenceProviderArn'], title: 'GetConferenceProviderRequest' })
   .openapi('GetConferenceProviderRequest')
 
 const ContactSchema = z
   .object({
-    ContactArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the contact.' }),
-    ).exactOptional(),
-    DisplayName: ContactNameSchema.and(
-      z.any().openapi({ description: 'The name of the contact to display on the console.' }),
-    ).exactOptional(),
-    FirstName: ContactNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The first name of the contact, used to call the contact on the device.',
-        }),
-    ).exactOptional(),
-    LastName: ContactNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The last name of the contact, used to call the contact on the device.',
-        }),
-    ).exactOptional(),
-    PhoneNumber: RawPhoneNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number of the contact. The phone number type defaults to WORK. You can either specify PhoneNumber or PhoneNumbers. We recommend that you use PhoneNumbers, which lets you specify the phone number type and multiple numbers.',
-        }),
-    ).exactOptional(),
-    PhoneNumbers: PhoneNumberListSchema.and(
-      z.any().openapi({ description: 'The list of phone numbers for the contact.' }),
-    ).exactOptional(),
-    SipAddresses: SipAddressListSchema.and(
-      z.any().openapi({ description: 'The list of SIP addresses for the contact.' }),
-    ).exactOptional(),
+    ContactArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the contact.' }),
+    DisplayName: ContactNameSchema.exactOptional().openapi({
+      description: 'The name of the contact to display on the console.',
+    }),
+    FirstName: ContactNameSchema.exactOptional().openapi({
+      description: 'The first name of the contact, used to call the contact on the device.',
+    }),
+    LastName: ContactNameSchema.exactOptional().openapi({
+      description: 'The last name of the contact, used to call the contact on the device.',
+    }),
+    PhoneNumber: RawPhoneNumberSchema.exactOptional().openapi({
+      description:
+        'The phone number of the contact. The phone number type defaults to WORK. You can either specify PhoneNumber or PhoneNumbers. We recommend that you use PhoneNumbers, which lets you specify the phone number type and multiple numbers.',
+    }),
+    PhoneNumbers: PhoneNumberListSchema.exactOptional().openapi({
+      description: 'The list of phone numbers for the contact.',
+    }),
+    SipAddresses: SipAddressListSchema.exactOptional().openapi({
+      description: 'The list of SIP addresses for the contact.',
+    }),
   })
   .openapi({ description: 'A contact with attributes.', required: [] })
   .openapi('Contact')
 
 const GetContactResponseSchema = z
   .object({
-    Contact: ContactSchema.and(
-      z.any().openapi({ description: 'The details of the requested contact.' }),
-    ).exactOptional(),
+    Contact: ContactSchema.exactOptional().openapi({
+      description: 'The details of the requested contact.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetContactResponse')
 
 const GetContactRequestSchema = z
   .object({
-    ContactArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the contact for which to request details.' }),
-    ),
+    ContactArn: ArnSchema.openapi({
+      description: 'The ARN of the contact for which to request details.',
+    }),
   })
   .openapi({ required: ['ContactArn'], title: 'GetContactRequest' })
   .openapi('GetContactRequest')
@@ -1700,12 +1428,12 @@ const DeviceStatusDetailCodeSchema = z
 
 const DeviceStatusDetailSchema = z
   .object({
-    Feature: FeatureSchema.and(
-      z.any().openapi({ description: 'The list of available features on the device.' }),
-    ).exactOptional(),
-    Code: DeviceStatusDetailCodeSchema.and(
-      z.any().openapi({ description: 'The device status detail code.' }),
-    ).exactOptional(),
+    Feature: FeatureSchema.exactOptional().openapi({
+      description: 'The list of available features on the device.',
+    }),
+    Code: DeviceStatusDetailCodeSchema.exactOptional().openapi({
+      description: 'The device status detail code.',
+    }),
   })
   .openapi({ description: 'Details of a device’s status.', required: [] })
   .openapi('DeviceStatusDetail')
@@ -1720,21 +1448,15 @@ const ConnectionStatusUpdatedTimeSchema = z.iso
 
 const DeviceStatusInfoSchema = z
   .object({
-    DeviceStatusDetails: DeviceStatusDetailsSchema.and(
-      z.any().openapi({ description: 'One or more device status detail descriptions.' }),
-    ).exactOptional(),
-    ConnectionStatus: ConnectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The latest available information about the connection status of a device. ',
-        }),
-    ).exactOptional(),
-    ConnectionStatusUpdatedTime: ConnectionStatusUpdatedTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time (in epoch) when the device connection status changed.' }),
-    ).exactOptional(),
+    DeviceStatusDetails: DeviceStatusDetailsSchema.exactOptional().openapi({
+      description: 'One or more device status detail descriptions.',
+    }),
+    ConnectionStatus: ConnectionStatusSchema.exactOptional().openapi({
+      description: 'The latest available information about the connection status of a device. ',
+    }),
+    ConnectionStatusUpdatedTime: ConnectionStatusUpdatedTimeSchema.exactOptional().openapi({
+      description: 'The time (in epoch) when the device connection status changed.',
+    }),
   })
   .openapi({ description: "Detailed information about a device's status.", required: [] })
   .openapi('DeviceStatusInfo')
@@ -1743,76 +1465,62 @@ const CertificateTimeSchema = z.iso.datetime({ offset: true }).openapi('Certific
 
 const DeviceNetworkProfileInfoSchema = z
   .object({
-    NetworkProfileArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the network profile associated with a device.' }),
-    ).exactOptional(),
-    CertificateArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the certificate associated with a device.' }),
-    ).exactOptional(),
-    CertificateExpirationTime: CertificateTimeSchema.and(
-      z.any().openapi({ description: 'The time (in epoch) when the certificate expires.' }),
-    ).exactOptional(),
+    NetworkProfileArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the network profile associated with a device.',
+    }),
+    CertificateArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the certificate associated with a device.',
+    }),
+    CertificateExpirationTime: CertificateTimeSchema.exactOptional().openapi({
+      description: 'The time (in epoch) when the certificate expires.',
+    }),
   })
   .openapi({ description: "Detailed information about a device's network profile.", required: [] })
   .openapi('DeviceNetworkProfileInfo')
 
 const DeviceSchema = z
   .object({
-    DeviceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of a device.' }),
-    ).exactOptional(),
-    DeviceSerialNumber: DeviceSerialNumberSchema.and(
-      z.any().openapi({ description: 'The serial number of a device.' }),
-    ).exactOptional(),
-    DeviceType: DeviceTypeSchema.and(
-      z.any().openapi({ description: 'The type of a device.' }),
-    ).exactOptional(),
-    DeviceName: DeviceNameSchema.and(
-      z.any().openapi({ description: 'The name of a device.' }),
-    ).exactOptional(),
-    SoftwareVersion: SoftwareVersionSchema.and(
-      z.any().openapi({ description: 'The software version of a device.' }),
-    ).exactOptional(),
-    MacAddress: MacAddressSchema.and(
-      z.any().openapi({ description: 'The MAC address of a device.' }),
-    ).exactOptional(),
-    RoomArn: ArnSchema.and(
-      z.any().openapi({ description: 'The room ARN of a device.' }),
-    ).exactOptional(),
-    DeviceStatus: DeviceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of a device. If the status is not READY, check the DeviceStatusInfo value for details.',
-        }),
-    ).exactOptional(),
-    DeviceStatusInfo: DeviceStatusInfoSchema.and(
-      z.any().openapi({ description: "Detailed information about a device's status." }),
-    ).exactOptional(),
-    NetworkProfileInfo: DeviceNetworkProfileInfoSchema.and(
-      z.any().openapi({ description: "Detailed information about a device's network profile." }),
-    ).exactOptional(),
+    DeviceArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of a device.' }),
+    DeviceSerialNumber: DeviceSerialNumberSchema.exactOptional().openapi({
+      description: 'The serial number of a device.',
+    }),
+    DeviceType: DeviceTypeSchema.exactOptional().openapi({ description: 'The type of a device.' }),
+    DeviceName: DeviceNameSchema.exactOptional().openapi({ description: 'The name of a device.' }),
+    SoftwareVersion: SoftwareVersionSchema.exactOptional().openapi({
+      description: 'The software version of a device.',
+    }),
+    MacAddress: MacAddressSchema.exactOptional().openapi({
+      description: 'The MAC address of a device.',
+    }),
+    RoomArn: ArnSchema.exactOptional().openapi({ description: 'The room ARN of a device.' }),
+    DeviceStatus: DeviceStatusSchema.exactOptional().openapi({
+      description:
+        'The status of a device. If the status is not READY, check the DeviceStatusInfo value for details.',
+    }),
+    DeviceStatusInfo: DeviceStatusInfoSchema.exactOptional().openapi({
+      description: "Detailed information about a device's status.",
+    }),
+    NetworkProfileInfo: DeviceNetworkProfileInfoSchema.exactOptional().openapi({
+      description: "Detailed information about a device's network profile.",
+    }),
   })
   .openapi({ description: 'A device with attributes.', required: [] })
   .openapi('Device')
 
 const GetDeviceResponseSchema = z
   .object({
-    Device: DeviceSchema.and(
-      z.any().openapi({ description: 'The details of the device requested. Required.' }),
-    ).exactOptional(),
+    Device: DeviceSchema.exactOptional().openapi({
+      description: 'The details of the device requested. Required.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDeviceResponse')
 
 const GetDeviceRequestSchema = z
   .object({
-    DeviceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the device for which to request details. Required.' }),
-    ).exactOptional(),
+    DeviceArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the device for which to request details. Required.',
+    }),
   })
   .openapi({ title: 'GetDeviceRequest', required: [] })
   .openapi('GetDeviceRequest')
@@ -1835,59 +1543,43 @@ const GatewayVersionSchema = z.string().min(1).max(50).openapi('GatewayVersion')
 
 const GatewaySchema = z
   .object({
-    Arn: ArnSchema.and(z.any().openapi({ description: 'The ARN of the gateway.' })).exactOptional(),
-    Name: GatewayNameSchema.and(
-      z.any().openapi({ description: 'The name of the gateway.' }),
-    ).exactOptional(),
-    Description: GatewayDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the gateway.' }),
-    ).exactOptional(),
-    GatewayGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the gateway group that the gateway is associated to.',
-        }),
-    ).exactOptional(),
-    SoftwareVersion: GatewayVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The software version of the gateway. The gateway automatically updates its software version during normal operation.',
-        }),
-    ).exactOptional(),
+    Arn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the gateway.' }),
+    Name: GatewayNameSchema.exactOptional().openapi({ description: 'The name of the gateway.' }),
+    Description: GatewayDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the gateway.',
+    }),
+    GatewayGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the gateway group that the gateway is associated to.',
+    }),
+    SoftwareVersion: GatewayVersionSchema.exactOptional().openapi({
+      description:
+        'The software version of the gateway. The gateway automatically updates its software version during normal operation.',
+    }),
   })
   .openapi({ description: 'The details of the gateway. ', required: [] })
   .openapi('Gateway')
 
 const GetGatewayResponseSchema = z
   .object({
-    Gateway: GatewaySchema.and(
-      z.any().openapi({ description: 'The details of the gateway.' }),
-    ).exactOptional(),
+    Gateway: GatewaySchema.exactOptional().openapi({ description: 'The details of the gateway.' }),
   })
   .openapi({ required: [] })
   .openapi('GetGatewayResponse')
 
 const GetGatewayRequestSchema = z
-  .object({
-    GatewayArn: ArnSchema.and(z.any().openapi({ description: 'The ARN of the gateway to get.' })),
-  })
+  .object({ GatewayArn: ArnSchema.openapi({ description: 'The ARN of the gateway to get.' }) })
   .openapi({ required: ['GatewayArn'], title: 'GetGatewayRequest' })
   .openapi('GetGatewayRequest')
 
 const GatewayGroupSchema = z
   .object({
-    Arn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the gateway group.' }),
-    ).exactOptional(),
-    Name: GatewayGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the gateway group.' }),
-    ).exactOptional(),
-    Description: GatewayGroupDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the gateway group.' }),
-    ).exactOptional(),
+    Arn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the gateway group.' }),
+    Name: GatewayGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the gateway group.',
+    }),
+    Description: GatewayGroupDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the gateway group.',
+    }),
   })
   .openapi({ description: 'The details of the gateway group.', required: [] })
   .openapi('GatewayGroup')
@@ -1899,9 +1591,7 @@ const GetGatewayGroupResponseSchema = z
 
 const GetGatewayGroupRequestSchema = z
   .object({
-    GatewayGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the gateway group to get.' }),
-    ),
+    GatewayGroupArn: ArnSchema.openapi({ description: 'The ARN of the gateway group to get.' }),
   })
   .openapi({ required: ['GatewayGroupArn'], title: 'GetGatewayGroupRequest' })
   .openapi('GetGatewayGroupRequest')
@@ -1917,113 +1607,81 @@ const ShortSkillIdListSchema = z.array(SkillIdSchema).min(0).max(3).openapi('Sho
 
 const GetInvitationConfigurationResponseSchema = z
   .object({
-    OrganizationName: OrganizationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the organization sending the enrollment invite to a user.',
-        }),
-    ).exactOptional(),
-    ContactEmail: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email ID of the organization or individual contact that the enrolled user can use. ',
-        }),
-    ).exactOptional(),
-    PrivateSkillIds: ShortSkillIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of private skill IDs that you want to recommend to the user to enable in the invitation.',
-        }),
-    ).exactOptional(),
+    OrganizationName: OrganizationNameSchema.exactOptional().openapi({
+      description: 'The name of the organization sending the enrollment invite to a user.',
+    }),
+    ContactEmail: EmailSchema.exactOptional().openapi({
+      description:
+        'The email ID of the organization or individual contact that the enrolled user can use. ',
+    }),
+    PrivateSkillIds: ShortSkillIdListSchema.exactOptional().openapi({
+      description:
+        'The list of private skill IDs that you want to recommend to the user to enable in the invitation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInvitationConfigurationResponse')
 
 const GetInvitationConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetInvitationConfigurationRequest' })
   .openapi('GetInvitationConfigurationRequest')
 
 const NetworkProfileSchema = z
   .object({
-    NetworkProfileArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the network profile associated with a device.' }),
-    ).exactOptional(),
-    NetworkProfileName: NetworkProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the network profile associated with a device.' }),
-    ).exactOptional(),
-    Description: NetworkProfileDescriptionSchema.and(
-      z.any().openapi({ description: "Detailed information about a device's network profile." }),
-    ).exactOptional(),
-    Ssid: NetworkSsidSchema.and(
-      z.any().openapi({ description: 'The SSID of the Wi-Fi network.' }),
-    ).exactOptional(),
-    SecurityType: NetworkSecurityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The security type of the Wi-Fi network. This can be WPA2_ENTERPRISE, WPA2_PSK, WPA_PSK, WEP, or OPEN.',
-        }),
-    ).exactOptional(),
-    EapMethod: NetworkEapMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication standard that is used in the EAP framework. Currently, EAP_TLS is supported. ',
-        }),
-    ).exactOptional(),
-    CurrentPassword: CurrentWiFiPasswordSchema.and(
-      z.any().openapi({ description: 'The current password of the Wi-Fi network.' }),
-    ).exactOptional(),
-    NextPassword: NextWiFiPasswordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next, or subsequent, password of the Wi-Fi network. This password is asynchronously transmitted to the device and is used when the password of the network changes to NextPassword. ',
-        }),
-    ).exactOptional(),
-    CertificateAuthorityArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Private Certificate Authority (PCA) created in AWS Certificate Manager (ACM). This is used to issue certificates to the devices. ',
-        }),
-    ).exactOptional(),
-    TrustAnchors: TrustAnchorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The root certificates of your authentication server, which is installed on your devices and used to trust your authentication server during EAP negotiation.',
-        }),
-    ).exactOptional(),
+    NetworkProfileArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the network profile associated with a device.',
+    }),
+    NetworkProfileName: NetworkProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the network profile associated with a device.',
+    }),
+    Description: NetworkProfileDescriptionSchema.exactOptional().openapi({
+      description: "Detailed information about a device's network profile.",
+    }),
+    Ssid: NetworkSsidSchema.exactOptional().openapi({
+      description: 'The SSID of the Wi-Fi network.',
+    }),
+    SecurityType: NetworkSecurityTypeSchema.exactOptional().openapi({
+      description:
+        'The security type of the Wi-Fi network. This can be WPA2_ENTERPRISE, WPA2_PSK, WPA_PSK, WEP, or OPEN.',
+    }),
+    EapMethod: NetworkEapMethodSchema.exactOptional().openapi({
+      description:
+        'The authentication standard that is used in the EAP framework. Currently, EAP_TLS is supported. ',
+    }),
+    CurrentPassword: CurrentWiFiPasswordSchema.exactOptional().openapi({
+      description: 'The current password of the Wi-Fi network.',
+    }),
+    NextPassword: NextWiFiPasswordSchema.exactOptional().openapi({
+      description:
+        'The next, or subsequent, password of the Wi-Fi network. This password is asynchronously transmitted to the device and is used when the password of the network changes to NextPassword. ',
+    }),
+    CertificateAuthorityArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Private Certificate Authority (PCA) created in AWS Certificate Manager (ACM). This is used to issue certificates to the devices. ',
+    }),
+    TrustAnchors: TrustAnchorListSchema.exactOptional().openapi({
+      description:
+        'The root certificates of your authentication server, which is installed on your devices and used to trust your authentication server during EAP negotiation.',
+    }),
   })
   .openapi({ description: 'The network profile associated with a device.', required: [] })
   .openapi('NetworkProfile')
 
 const GetNetworkProfileResponseSchema = z
   .object({
-    NetworkProfile: NetworkProfileSchema.and(
-      z.any().openapi({ description: 'The network profile associated with a device.' }),
-    ).exactOptional(),
+    NetworkProfile: NetworkProfileSchema.exactOptional().openapi({
+      description: 'The network profile associated with a device.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetNetworkProfileResponse')
 
 const GetNetworkProfileRequestSchema = z
   .object({
-    NetworkProfileArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the network profile associated with a device.' }),
-    ),
+    NetworkProfileArn: ArnSchema.openapi({
+      description: 'The ARN of the network profile associated with a device.',
+    }),
   })
   .openapi({ required: ['NetworkProfileArn'], title: 'GetNetworkProfileRequest' })
   .openapi('GetNetworkProfileRequest')
@@ -2034,23 +1692,15 @@ const InvalidSecretsManagerResourceExceptionSchema = z
 
 const EndOfMeetingReminderSchema = z
   .object({
-    ReminderAtMinutes: EndOfMeetingReminderMinutesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A range of 3 to 15 minutes that determines when the reminder begins.',
-        }),
-    ).exactOptional(),
-    ReminderType: EndOfMeetingReminderTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of sound that users hear during the end of meeting reminder. ',
-        }),
-    ).exactOptional(),
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether an end of meeting reminder is enabled or not.' }),
-    ).exactOptional(),
+    ReminderAtMinutes: EndOfMeetingReminderMinutesListSchema.exactOptional().openapi({
+      description: 'A range of 3 to 15 minutes that determines when the reminder begins.',
+    }),
+    ReminderType: EndOfMeetingReminderTypeSchema.exactOptional().openapi({
+      description: 'The type of sound that users hear during the end of meeting reminder. ',
+    }),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether an end of meeting reminder is enabled or not.',
+    }),
   })
   .openapi({
     description:
@@ -2061,17 +1711,13 @@ const EndOfMeetingReminderSchema = z
 
 const InstantBookingSchema = z
   .object({
-    DurationInMinutes: MinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Duration between 15 and 240 minutes at increments of 15 that determines how long to book an available room when a meeting is started with Alexa. ',
-        }),
-    ).exactOptional(),
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether instant booking is enabled or not.' }),
-    ).exactOptional(),
+    DurationInMinutes: MinutesSchema.exactOptional().openapi({
+      description:
+        'Duration between 15 and 240 minutes at increments of 15 that determines how long to book an available room when a meeting is started with Alexa. ',
+    }),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether instant booking is enabled or not.',
+    }),
   })
   .openapi({
     description:
@@ -2082,17 +1728,13 @@ const InstantBookingSchema = z
 
 const RequireCheckInSchema = z
   .object({
-    ReleaseAfterMinutes: MinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Duration between 5 and 20 minutes to determine when to release the room if it's not checked into. ",
-        }),
-    ).exactOptional(),
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether require check in is enabled or not.' }),
-    ).exactOptional(),
+    ReleaseAfterMinutes: MinutesSchema.exactOptional().openapi({
+      description:
+        "Duration between 5 and 20 minutes to determine when to release the room if it's not checked into. ",
+    }),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether require check in is enabled or not.',
+    }),
   })
   .openapi({
     description:
@@ -2103,150 +1745,120 @@ const RequireCheckInSchema = z
 
 const MeetingRoomConfigurationSchema = z
   .object({
-    RoomUtilizationMetricsEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether room utilization metrics are enabled or not.' }),
-    ).exactOptional(),
-    EndOfMeetingReminder: EndOfMeetingReminderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Settings for the end of meeting reminder feature that are applied to a room profile. The end of meeting reminder enables Alexa to remind users when a meeting is ending. ',
-        }),
-    ).exactOptional(),
-    InstantBooking: InstantBookingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Settings to automatically book the room if available for a configured duration when joining a meeting with Alexa. ',
-        }),
-    ).exactOptional(),
-    RequireCheckIn: RequireCheckInSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Settings for requiring a check in when a room is reserved. Alexa can cancel a room reservation if it's not checked into. This makes the room available for others. Users can check in by joining the meeting with Alexa or an AVS device, or by saying “Alexa, check in.” ",
-        }),
-    ).exactOptional(),
+    RoomUtilizationMetricsEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether room utilization metrics are enabled or not.',
+    }),
+    EndOfMeetingReminder: EndOfMeetingReminderSchema.exactOptional().openapi({
+      description:
+        'Settings for the end of meeting reminder feature that are applied to a room profile. The end of meeting reminder enables Alexa to remind users when a meeting is ending. ',
+    }),
+    InstantBooking: InstantBookingSchema.exactOptional().openapi({
+      description:
+        'Settings to automatically book the room if available for a configured duration when joining a meeting with Alexa. ',
+    }),
+    RequireCheckIn: RequireCheckInSchema.exactOptional().openapi({
+      description:
+        "Settings for requiring a check in when a room is reserved. Alexa can cancel a room reservation if it's not checked into. This makes the room available for others. Users can check in by joining the meeting with Alexa or an AVS device, or by saying “Alexa, check in.” ",
+    }),
   })
   .openapi({ description: 'Meeting room settings of a room profile.', required: [] })
   .openapi('MeetingRoomConfiguration')
 
 const ProfileSchema = z
   .object({
-    ProfileArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of a room profile.' }),
-    ).exactOptional(),
-    ProfileName: ProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of a room profile.' }),
-    ).exactOptional(),
-    IsDefault: BooleanSchema.and(
-      z.any().openapi({ description: 'Retrieves if the profile is default or not.' }),
-    ).exactOptional(),
-    Address: AddressSchema.and(
-      z.any().openapi({ description: 'The address of a room profile.' }),
-    ).exactOptional(),
-    Timezone: TimezoneSchema.and(
-      z.any().openapi({ description: 'The time zone of a room profile.' }),
-    ).exactOptional(),
-    DistanceUnit: DistanceUnitSchema.and(
-      z.any().openapi({ description: 'The distance unit of a room profile.' }),
-    ).exactOptional(),
-    TemperatureUnit: TemperatureUnitSchema.and(
-      z.any().openapi({ description: 'The temperature unit of a room profile.' }),
-    ).exactOptional(),
-    WakeWord: WakeWordSchema.and(
-      z.any().openapi({ description: 'The wake word of a room profile.' }),
-    ).exactOptional(),
-    Locale: DeviceLocaleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The locale of a room profile. (This is currently available only to a limited preview audience.)',
-        }),
-    ).exactOptional(),
-    SetupModeDisabled: BooleanSchema.and(
-      z.any().openapi({ description: 'The setup mode of a room profile.' }),
-    ).exactOptional(),
-    MaxVolumeLimit: MaxVolumeLimitSchema.and(
-      z.any().openapi({ description: 'The max volume limit of a room profile.' }),
-    ).exactOptional(),
-    PSTNEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'The PSTN setting of a room profile.' }),
-    ).exactOptional(),
-    DataRetentionOptIn: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether data retention of the profile is enabled.' }),
-    ).exactOptional(),
-    AddressBookArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the address book.' }),
-    ).exactOptional(),
-    MeetingRoomConfiguration: MeetingRoomConfigurationSchema.and(
-      z.any().openapi({ description: 'Meeting room settings of a room profile.' }),
-    ).exactOptional(),
+    ProfileArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of a room profile.' }),
+    ProfileName: ProfileNameSchema.exactOptional().openapi({
+      description: 'The name of a room profile.',
+    }),
+    IsDefault: BooleanSchema.exactOptional().openapi({
+      description: 'Retrieves if the profile is default or not.',
+    }),
+    Address: AddressSchema.exactOptional().openapi({
+      description: 'The address of a room profile.',
+    }),
+    Timezone: TimezoneSchema.exactOptional().openapi({
+      description: 'The time zone of a room profile.',
+    }),
+    DistanceUnit: DistanceUnitSchema.exactOptional().openapi({
+      description: 'The distance unit of a room profile.',
+    }),
+    TemperatureUnit: TemperatureUnitSchema.exactOptional().openapi({
+      description: 'The temperature unit of a room profile.',
+    }),
+    WakeWord: WakeWordSchema.exactOptional().openapi({
+      description: 'The wake word of a room profile.',
+    }),
+    Locale: DeviceLocaleSchema.exactOptional().openapi({
+      description:
+        'The locale of a room profile. (This is currently available only to a limited preview audience.)',
+    }),
+    SetupModeDisabled: BooleanSchema.exactOptional().openapi({
+      description: 'The setup mode of a room profile.',
+    }),
+    MaxVolumeLimit: MaxVolumeLimitSchema.exactOptional().openapi({
+      description: 'The max volume limit of a room profile.',
+    }),
+    PSTNEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'The PSTN setting of a room profile.',
+    }),
+    DataRetentionOptIn: BooleanSchema.exactOptional().openapi({
+      description: 'Whether data retention of the profile is enabled.',
+    }),
+    AddressBookArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the address book.',
+    }),
+    MeetingRoomConfiguration: MeetingRoomConfigurationSchema.exactOptional().openapi({
+      description: 'Meeting room settings of a room profile.',
+    }),
   })
   .openapi({ description: 'A room profile with attributes.', required: [] })
   .openapi('Profile')
 
 const GetProfileResponseSchema = z
   .object({
-    Profile: ProfileSchema.and(
-      z.any().openapi({ description: 'The details of the room profile requested. Required.' }),
-    ).exactOptional(),
+    Profile: ProfileSchema.exactOptional().openapi({
+      description: 'The details of the room profile requested. Required.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetProfileResponse')
 
 const GetProfileRequestSchema = z
   .object({
-    ProfileArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the room profile for which to request details. Required.',
-        }),
-    ).exactOptional(),
+    ProfileArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the room profile for which to request details. Required.',
+    }),
   })
   .openapi({ title: 'GetProfileRequest', required: [] })
   .openapi('GetProfileRequest')
 
 const RoomSchema = z
   .object({
-    RoomArn: ArnSchema.and(z.any().openapi({ description: 'The ARN of a room.' })).exactOptional(),
-    RoomName: RoomNameSchema.and(
-      z.any().openapi({ description: 'The name of a room.' }),
-    ).exactOptional(),
-    Description: RoomDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of a room.' }),
-    ).exactOptional(),
-    ProviderCalendarId: ProviderCalendarIdSchema.and(
-      z.any().openapi({ description: 'The provider calendar ARN of a room.' }),
-    ).exactOptional(),
-    ProfileArn: ArnSchema.and(
-      z.any().openapi({ description: 'The profile ARN of a room.' }),
-    ).exactOptional(),
+    RoomArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of a room.' }),
+    RoomName: RoomNameSchema.exactOptional().openapi({ description: 'The name of a room.' }),
+    Description: RoomDescriptionSchema.exactOptional().openapi({
+      description: 'The description of a room.',
+    }),
+    ProviderCalendarId: ProviderCalendarIdSchema.exactOptional().openapi({
+      description: 'The provider calendar ARN of a room.',
+    }),
+    ProfileArn: ArnSchema.exactOptional().openapi({ description: 'The profile ARN of a room.' }),
   })
   .openapi({ description: 'A room with attributes.', required: [] })
   .openapi('Room')
 
 const GetRoomResponseSchema = z
   .object({
-    Room: RoomSchema.and(
-      z.any().openapi({ description: 'The details of the room requested.' }),
-    ).exactOptional(),
+    Room: RoomSchema.exactOptional().openapi({ description: 'The details of the room requested.' }),
   })
   .openapi({ required: [] })
   .openapi('GetRoomResponse')
 
 const GetRoomRequestSchema = z
   .object({
-    RoomArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the room for which to request details. Required.' }),
-    ).exactOptional(),
+    RoomArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the room for which to request details. Required.',
+    }),
   })
   .openapi({ title: 'GetRoomRequest', required: [] })
   .openapi('GetRoomRequest')
@@ -2255,17 +1867,13 @@ const RoomSkillParameterValueSchema = z.string().min(1).max(512).openapi('RoomSk
 
 const RoomSkillParameterSchema = z
   .object({
-    ParameterKey: RoomSkillParameterKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The parameter key of a room skill parameter. ParameterKey is an enumerated type that only takes “DEFAULT” or “SCOPE” as valid values.',
-        }),
-    ),
-    ParameterValue: RoomSkillParameterValueSchema.and(
-      z.any().openapi({ description: 'The parameter value of a room skill parameter.' }),
-    ),
+    ParameterKey: RoomSkillParameterKeySchema.openapi({
+      description:
+        'The parameter key of a room skill parameter. ParameterKey is an enumerated type that only takes “DEFAULT” or “SCOPE” as valid values.',
+    }),
+    ParameterValue: RoomSkillParameterValueSchema.openapi({
+      description: 'The parameter value of a room skill parameter.',
+    }),
   })
   .openapi({
     required: ['ParameterKey', 'ParameterValue'],
@@ -2275,74 +1883,56 @@ const RoomSkillParameterSchema = z
 
 const GetRoomSkillParameterResponseSchema = z
   .object({
-    RoomSkillParameter: RoomSkillParameterSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The details of the room skill parameter requested. Required.' }),
-    ).exactOptional(),
+    RoomSkillParameter: RoomSkillParameterSchema.exactOptional().openapi({
+      description: 'The details of the room skill parameter requested. Required.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRoomSkillParameterResponse')
 
 const GetRoomSkillParameterRequestSchema = z
   .object({
-    RoomArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the room from which to get the room skill parameter details. ',
-        }),
-    ).exactOptional(),
-    SkillId: SkillIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the skill from which to get the room skill parameter details. Required.',
-        }),
-    ),
-    ParameterKey: RoomSkillParameterKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The room skill parameter key for which to get details. Required.',
-        }),
-    ),
+    RoomArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the room from which to get the room skill parameter details. ',
+    }),
+    SkillId: SkillIdSchema.openapi({
+      description:
+        'The ARN of the skill from which to get the room skill parameter details. Required.',
+    }),
+    ParameterKey: RoomSkillParameterKeySchema.openapi({
+      description: 'The room skill parameter key for which to get details. Required.',
+    }),
   })
   .openapi({ required: ['SkillId', 'ParameterKey'], title: 'GetRoomSkillParameterRequest' })
   .openapi('GetRoomSkillParameterRequest')
 
 const SkillGroupSchema = z
   .object({
-    SkillGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of a skill group.' }),
-    ).exactOptional(),
-    SkillGroupName: SkillGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of a skill group.' }),
-    ).exactOptional(),
-    Description: SkillGroupDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of a skill group.' }),
-    ).exactOptional(),
+    SkillGroupArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of a skill group.' }),
+    SkillGroupName: SkillGroupNameSchema.exactOptional().openapi({
+      description: 'The name of a skill group.',
+    }),
+    Description: SkillGroupDescriptionSchema.exactOptional().openapi({
+      description: 'The description of a skill group.',
+    }),
   })
   .openapi({ description: 'A skill group with attributes.', required: [] })
   .openapi('SkillGroup')
 
 const GetSkillGroupResponseSchema = z
   .object({
-    SkillGroup: SkillGroupSchema.and(
-      z.any().openapi({ description: 'The details of the skill group requested. Required.' }),
-    ).exactOptional(),
+    SkillGroup: SkillGroupSchema.exactOptional().openapi({
+      description: 'The details of the skill group requested. Required.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSkillGroupResponse')
 
 const GetSkillGroupRequestSchema = z
   .object({
-    SkillGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the skill group for which to get details. Required.' }),
-    ).exactOptional(),
+    SkillGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the skill group for which to get details. Required.',
+    }),
   })
   .openapi({ title: 'GetSkillGroupRequest', required: [] })
   .openapi('GetSkillGroupRequest')
@@ -2359,12 +1949,12 @@ const BusinessReportS3PathSchema = z.string().openapi('BusinessReportS3Path')
 
 const BusinessReportS3LocationSchema = z
   .object({
-    Path: BusinessReportS3PathSchema.and(
-      z.any().openapi({ description: 'The path of the business report.' }),
-    ).exactOptional(),
-    BucketName: CustomerS3BucketNameSchema.and(
-      z.any().openapi({ description: 'The S3 bucket name of the output reports.' }),
-    ).exactOptional(),
+    Path: BusinessReportS3PathSchema.exactOptional().openapi({
+      description: 'The path of the business report.',
+    }),
+    BucketName: CustomerS3BucketNameSchema.exactOptional().openapi({
+      description: 'The S3 bucket name of the output reports.',
+    }),
   })
   .openapi({ description: 'The S3 location of the output reports.', required: [] })
   .openapi('BusinessReportS3Location')
@@ -2377,66 +1967,53 @@ const BusinessReportDownloadUrlSchema = z.string().openapi('BusinessReportDownlo
 
 const BusinessReportSchema = z
   .object({
-    Status: BusinessReportStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the report generation execution (RUNNING, SUCCEEDED, or FAILED).',
-        }),
-    ).exactOptional(),
-    FailureCode: BusinessReportFailureCodeSchema.and(
-      z.any().openapi({ description: 'The failure code.' }),
-    ).exactOptional(),
-    S3Location: BusinessReportS3LocationSchema.and(
-      z.any().openapi({ description: 'The S3 location of the output reports.' }),
-    ).exactOptional(),
-    DeliveryTime: BusinessReportDeliveryTimeSchema.and(
-      z.any().openapi({ description: 'The time of report delivery.' }),
-    ).exactOptional(),
-    DownloadUrl: BusinessReportDownloadUrlSchema.and(
-      z.any().openapi({ description: 'The download link where a user can download the report.' }),
-    ).exactOptional(),
+    Status: BusinessReportStatusSchema.exactOptional().openapi({
+      description: 'The status of the report generation execution (RUNNING, SUCCEEDED, or FAILED).',
+    }),
+    FailureCode: BusinessReportFailureCodeSchema.exactOptional().openapi({
+      description: 'The failure code.',
+    }),
+    S3Location: BusinessReportS3LocationSchema.exactOptional().openapi({
+      description: 'The S3 location of the output reports.',
+    }),
+    DeliveryTime: BusinessReportDeliveryTimeSchema.exactOptional().openapi({
+      description: 'The time of report delivery.',
+    }),
+    DownloadUrl: BusinessReportDownloadUrlSchema.exactOptional().openapi({
+      description: 'The download link where a user can download the report.',
+    }),
   })
   .openapi({ description: 'Usage report with specified parameters.', required: [] })
   .openapi('BusinessReport')
 
 const BusinessReportScheduleSchema = z
   .object({
-    ScheduleArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the business report schedule.' }),
-    ).exactOptional(),
-    ScheduleName: BusinessReportScheduleNameSchema.and(
-      z.any().openapi({ description: 'The name identifier of the schedule.' }),
-    ).exactOptional(),
-    S3BucketName: CustomerS3BucketNameSchema.and(
-      z.any().openapi({ description: 'The S3 bucket name of the output reports.' }),
-    ).exactOptional(),
-    S3KeyPrefix: S3KeyPrefixSchema.and(
-      z.any().openapi({ description: 'The S3 key where the report is delivered.' }),
-    ).exactOptional(),
-    Format: BusinessReportFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The format of the generated report (individual CSV files or zipped files of individual files).',
-        }),
-    ).exactOptional(),
-    ContentRange: BusinessReportContentRangeSchema.and(
-      z.any().openapi({ description: 'The content range of the reports.' }),
-    ).exactOptional(),
-    Recurrence: BusinessReportRecurrenceSchema.and(
-      z.any().openapi({ description: 'The recurrence of the reports.' }),
-    ).exactOptional(),
-    LastBusinessReport: BusinessReportSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The details of the last business report delivery for a specified time interval.',
-        }),
-    ).exactOptional(),
+    ScheduleArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the business report schedule.',
+    }),
+    ScheduleName: BusinessReportScheduleNameSchema.exactOptional().openapi({
+      description: 'The name identifier of the schedule.',
+    }),
+    S3BucketName: CustomerS3BucketNameSchema.exactOptional().openapi({
+      description: 'The S3 bucket name of the output reports.',
+    }),
+    S3KeyPrefix: S3KeyPrefixSchema.exactOptional().openapi({
+      description: 'The S3 key where the report is delivered.',
+    }),
+    Format: BusinessReportFormatSchema.exactOptional().openapi({
+      description:
+        'The format of the generated report (individual CSV files or zipped files of individual files).',
+    }),
+    ContentRange: BusinessReportContentRangeSchema.exactOptional().openapi({
+      description: 'The content range of the reports.',
+    }),
+    Recurrence: BusinessReportRecurrenceSchema.exactOptional().openapi({
+      description: 'The recurrence of the reports.',
+    }),
+    LastBusinessReport: BusinessReportSchema.exactOptional().openapi({
+      description:
+        'The details of the last business report delivery for a specified time interval.',
+    }),
   })
   .openapi({ description: 'The schedule of the usage report.', required: [] })
   .openapi('BusinessReportSchedule')
@@ -2449,16 +2026,12 @@ const NextTokenSchema = z.string().min(1).max(1100).openapi('NextToken')
 
 const ListBusinessReportSchedulesResponseSchema = z
   .object({
-    BusinessReportSchedules: BusinessReportScheduleListSchema.and(
-      z.any().openapi({ description: 'The schedule of the reports.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token used to list the remaining schedules from the previous API call.',
-        }),
-    ).exactOptional(),
+    BusinessReportSchedules: BusinessReportScheduleListSchema.exactOptional().openapi({
+      description: 'The schedule of the reports.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token used to list the remaining schedules from the previous API call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBusinessReportSchedulesResponse')
@@ -2467,16 +2040,12 @@ const MaxResultsSchema = z.int().min(1).max(50).openapi('MaxResults')
 
 const ListBusinessReportSchedulesRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token used to list the remaining schedules from the previous API call.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of schedules listed in the call.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token used to list the remaining schedules from the previous API call.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of schedules listed in the call.',
+    }),
   })
   .openapi({ title: 'ListBusinessReportSchedulesRequest', required: [] })
   .openapi('ListBusinessReportSchedulesRequest')
@@ -2487,29 +2056,25 @@ const ConferenceProvidersListSchema = z
 
 const ListConferenceProvidersResponseSchema = z
   .object({
-    ConferenceProviders: ConferenceProvidersListSchema.and(
-      z.any().openapi({ description: 'The conference providers.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The tokens used for pagination.' }),
-    ).exactOptional(),
+    ConferenceProviders: ConferenceProvidersListSchema.exactOptional().openapi({
+      description: 'The conference providers.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The tokens used for pagination.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListConferenceProvidersResponse')
 
 const ListConferenceProvidersRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The tokens used for pagination.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of conference providers to be returned, per paginated calls.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The tokens used for pagination.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of conference providers to be returned, per paginated calls.',
+    }),
   })
   .openapi({ title: 'ListConferenceProvidersRequest', required: [] })
   .openapi('ListConferenceProvidersRequest')
@@ -2524,15 +2089,15 @@ const DeviceEventTimeSchema = z.iso.datetime({ offset: true }).openapi('DeviceEv
 
 const DeviceEventSchema = z
   .object({
-    Type: DeviceEventTypeSchema.and(
-      z.any().openapi({ description: 'The type of device event.' }),
-    ).exactOptional(),
-    Value: DeviceEventValueSchema.and(
-      z.any().openapi({ description: 'The value of the event.' }),
-    ).exactOptional(),
-    Timestamp: DeviceEventTimeSchema.and(
-      z.any().openapi({ description: 'The time (in epoch) when the event occurred. ' }),
-    ).exactOptional(),
+    Type: DeviceEventTypeSchema.exactOptional().openapi({
+      description: 'The type of device event.',
+    }),
+    Value: DeviceEventValueSchema.exactOptional().openapi({
+      description: 'The value of the event.',
+    }),
+    Timestamp: DeviceEventTimeSchema.exactOptional().openapi({
+      description: 'The time (in epoch) when the event occurred. ',
+    }),
   })
   .openapi({ description: 'The list of device events.', required: [] })
   .openapi('DeviceEvent')
@@ -2541,62 +2106,44 @@ const DeviceEventListSchema = z.array(DeviceEventSchema).openapi('DeviceEventLis
 
 const ListDeviceEventsResponseSchema = z
   .object({
-    DeviceEvents: DeviceEventListSchema.and(
-      z.any().openapi({ description: 'The device events requested for the device ARN.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned to indicate that there is more data available.',
-        }),
-    ).exactOptional(),
+    DeviceEvents: DeviceEventListSchema.exactOptional().openapi({
+      description: 'The device events requested for the device ARN.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned to indicate that there is more data available.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDeviceEventsResponse')
 
 const ListDeviceEventsRequestSchema = z
   .object({
-    DeviceArn: ArnSchema.and(z.any().openapi({ description: 'The ARN of a device.' })),
-    EventType: DeviceEventTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The event type to filter device events. If EventType isn't specified, this returns a list of all device events in reverse chronological order. If EventType is specified, this returns a list of device events for that EventType in reverse chronological order. ",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response only includes results beyond the token, up to the value specified by MaxResults. When the end of results is reached, the response has a value of null.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to include in the response. The default value is 50. If more results exist than the specified MaxResults value, a token is included in the response so that the remaining results can be retrieved. ',
-        }),
-    ).exactOptional(),
+    DeviceArn: ArnSchema.openapi({ description: 'The ARN of a device.' }),
+    EventType: DeviceEventTypeSchema.exactOptional().openapi({
+      description:
+        "The event type to filter device events. If EventType isn't specified, this returns a list of all device events in reverse chronological order. If EventType is specified, this returns a list of device events for that EventType in reverse chronological order. ",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response only includes results beyond the token, up to the value specified by MaxResults. When the end of results is reached, the response has a value of null.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to include in the response. The default value is 50. If more results exist than the specified MaxResults value, a token is included in the response so that the remaining results can be retrieved. ',
+    }),
   })
   .openapi({ required: ['DeviceArn'], title: 'ListDeviceEventsRequest' })
   .openapi('ListDeviceEventsRequest')
 
 const GatewayGroupSummarySchema = z
   .object({
-    Arn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the gateway group.' }),
-    ).exactOptional(),
-    Name: GatewayGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the gateway group.' }),
-    ).exactOptional(),
-    Description: GatewayGroupDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the gateway group.' }),
-    ).exactOptional(),
+    Arn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the gateway group.' }),
+    Name: GatewayGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the gateway group.',
+    }),
+    Description: GatewayGroupDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the gateway group.',
+    }),
   })
   .openapi({ description: 'The summary of a gateway group.', required: [] })
   .openapi('GatewayGroupSummary')
@@ -2607,67 +2154,42 @@ const GatewayGroupSummariesSchema = z
 
 const ListGatewayGroupsResponseSchema = z
   .object({
-    GatewayGroups: GatewayGroupSummariesSchema.and(
-      z.any().openapi({ description: 'The gateway groups in the list.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used to paginate though multiple pages of gateway group summaries.',
-        }),
-    ).exactOptional(),
+    GatewayGroups: GatewayGroupSummariesSchema.exactOptional().openapi({
+      description: 'The gateway groups in the list.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token used to paginate though multiple pages of gateway group summaries.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListGatewayGroupsResponse')
 
 const ListGatewayGroupsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used to paginate though multiple pages of gateway group summaries.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of gateway group summaries to return. The default is 50.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token used to paginate though multiple pages of gateway group summaries.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of gateway group summaries to return. The default is 50.',
+    }),
   })
   .openapi({ title: 'ListGatewayGroupsRequest', required: [] })
   .openapi('ListGatewayGroupsRequest')
 
 const GatewaySummarySchema = z
   .object({
-    Arn: ArnSchema.and(z.any().openapi({ description: 'The ARN of the gateway.' })).exactOptional(),
-    Name: GatewayNameSchema.and(
-      z.any().openapi({ description: 'The name of the gateway.' }),
-    ).exactOptional(),
-    Description: GatewayDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the gateway.' }),
-    ).exactOptional(),
-    GatewayGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the gateway group that the gateway is associated to.',
-        }),
-    ).exactOptional(),
-    SoftwareVersion: GatewayVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The software version of the gateway. The gateway automatically updates its software version during normal operation.',
-        }),
-    ).exactOptional(),
+    Arn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the gateway.' }),
+    Name: GatewayNameSchema.exactOptional().openapi({ description: 'The name of the gateway.' }),
+    Description: GatewayDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the gateway.',
+    }),
+    GatewayGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the gateway group that the gateway is associated to.',
+    }),
+    SoftwareVersion: GatewayVersionSchema.exactOptional().openapi({
+      description:
+        'The software version of the gateway. The gateway automatically updates its software version during normal operation.',
+    }),
   })
   .openapi({ description: 'The summary of a gateway.', required: [] })
   .openapi('GatewaySummary')
@@ -2676,39 +2198,27 @@ const GatewaySummariesSchema = z.array(GatewaySummarySchema).openapi('GatewaySum
 
 const ListGatewaysResponseSchema = z
   .object({
-    Gateways: GatewaySummariesSchema.and(
-      z.any().openapi({ description: 'The gateways in the list.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token used to paginate though multiple pages of gateway summaries.',
-        }),
-    ).exactOptional(),
+    Gateways: GatewaySummariesSchema.exactOptional().openapi({
+      description: 'The gateways in the list.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token used to paginate though multiple pages of gateway summaries.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListGatewaysResponse')
 
 const ListGatewaysRequestSchema = z
   .object({
-    GatewayGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The gateway group ARN for which to list gateways.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token used to paginate though multiple pages of gateway summaries.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of gateway summaries to return. The default is 50.',
-        }),
-    ).exactOptional(),
+    GatewayGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The gateway group ARN for which to list gateways.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token used to paginate though multiple pages of gateway summaries.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of gateway summaries to return. The default is 50.',
+    }),
   })
   .openapi({ title: 'ListGatewaysRequest', required: [] })
   .openapi('ListGatewaysRequest')
@@ -2728,28 +2238,20 @@ const SkillTypeSchema = z.enum(['PUBLIC', 'PRIVATE']).openapi('SkillType')
 
 const SkillSummarySchema = z
   .object({
-    SkillId: SkillIdSchema.and(
-      z.any().openapi({ description: 'The ARN of the skill summary.' }),
-    ).exactOptional(),
-    SkillName: SkillNameSchema.and(
-      z.any().openapi({ description: 'The name of the skill.' }),
-    ).exactOptional(),
-    SupportsLinking: Boolean2Schema.and(
-      z.any().openapi({ description: 'Linking support for a skill.' }),
-    ).exactOptional(),
-    EnablementType: EnablementTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Whether the skill is enabled under the user's account, or if it requires linking to be used.",
-        }),
-    ).exactOptional(),
-    SkillType: SkillTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Whether the skill is publicly available or is a private skill.' }),
-    ).exactOptional(),
+    SkillId: SkillIdSchema.exactOptional().openapi({
+      description: 'The ARN of the skill summary.',
+    }),
+    SkillName: SkillNameSchema.exactOptional().openapi({ description: 'The name of the skill.' }),
+    SupportsLinking: Boolean2Schema.exactOptional().openapi({
+      description: 'Linking support for a skill.',
+    }),
+    EnablementType: EnablementTypeSchema.exactOptional().openapi({
+      description:
+        "Whether the skill is enabled under the user's account, or if it requires linking to be used.",
+    }),
+    SkillType: SkillTypeSchema.exactOptional().openapi({
+      description: 'Whether the skill is publicly available or is a private skill.',
+    }),
   })
   .openapi({ description: 'The summary of skills.', required: [] })
   .openapi('SkillSummary')
@@ -2758,16 +2260,12 @@ const SkillSummaryListSchema = z.array(SkillSummarySchema).openapi('SkillSummary
 
 const ListSkillsResponseSchema = z
   .object({
-    SkillSummaries: SkillSummaryListSchema.and(
-      z.any().openapi({ description: 'The list of enabled skills requested. Required.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned to indicate that there is more data available.',
-        }),
-    ).exactOptional(),
+    SkillSummaries: SkillSummaryListSchema.exactOptional().openapi({
+      description: 'The list of enabled skills requested. Required.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned to indicate that there is more data available.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSkillsResponse')
@@ -2780,35 +2278,23 @@ const SkillListMaxResultsSchema = z.int().min(1).max(10).openapi('SkillListMaxRe
 
 const ListSkillsRequestSchema = z
   .object({
-    SkillGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the skill group for which to list enabled skills.' }),
-    ).exactOptional(),
-    EnablementType: EnablementTypeFilterSchema.and(
-      z.any().openapi({ description: "Whether the skill is enabled under the user's account." }),
-    ).exactOptional(),
-    SkillType: SkillTypeFilterSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Whether the skill is publicly available or is a private skill.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by <code>MaxResults</code>.',
-        }),
-    ).exactOptional(),
-    MaxResults: SkillListMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved.',
-        }),
-    ).exactOptional(),
+    SkillGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the skill group for which to list enabled skills.',
+    }),
+    EnablementType: EnablementTypeFilterSchema.exactOptional().openapi({
+      description: "Whether the skill is enabled under the user's account.",
+    }),
+    SkillType: SkillTypeFilterSchema.exactOptional().openapi({
+      description: 'Whether the skill is publicly available or is a private skill.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by <code>MaxResults</code>.',
+    }),
+    MaxResults: SkillListMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved.',
+    }),
   })
   .openapi({ title: 'ListSkillsRequest', required: [] })
   .openapi('ListSkillsRequest')
@@ -2819,12 +2305,12 @@ const CategoryNameSchema = z.string().openapi('CategoryName')
 
 const CategorySchema = z
   .object({
-    CategoryId: CategoryIdSchema.and(
-      z.any().openapi({ description: 'The ID of the skill store category.' }),
-    ).exactOptional(),
-    CategoryName: CategoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the skill store category.' }),
-    ).exactOptional(),
+    CategoryId: CategoryIdSchema.exactOptional().openapi({
+      description: 'The ID of the skill store category.',
+    }),
+    CategoryName: CategoryNameSchema.exactOptional().openapi({
+      description: 'The name of the skill store category.',
+    }),
   })
   .openapi({
     description:
@@ -2837,28 +2323,24 @@ const CategoryListSchema = z.array(CategorySchema).openapi('CategoryList')
 
 const ListSkillsStoreCategoriesResponseSchema = z
   .object({
-    CategoryList: CategoryListSchema.and(
-      z.any().openapi({ description: 'The list of categories.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The tokens used for pagination.' }),
-    ).exactOptional(),
+    CategoryList: CategoryListSchema.exactOptional().openapi({
+      description: 'The list of categories.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The tokens used for pagination.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSkillsStoreCategoriesResponse')
 
 const ListSkillsStoreCategoriesRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The tokens used for pagination.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of categories returned, per paginated calls.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The tokens used for pagination.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of categories returned, per paginated calls.',
+    }),
   })
   .openapi({ title: 'ListSkillsStoreCategoriesRequest', required: [] })
   .openapi('ListSkillsStoreCategoriesRequest')
@@ -2907,18 +2389,14 @@ const UrlSchema = z.string().openapi('Url')
 
 const DeveloperInfoSchema = z
   .object({
-    DeveloperName: DeveloperNameSchema.and(
-      z.any().openapi({ description: 'The name of the developer.' }),
-    ).exactOptional(),
-    PrivacyPolicy: PrivacyPolicySchema.and(
-      z.any().openapi({ description: 'The URL of the privacy policy.' }),
-    ).exactOptional(),
-    Email: EmailSchema.and(
-      z.any().openapi({ description: 'The email of the developer.' }),
-    ).exactOptional(),
-    Url: UrlSchema.and(
-      z.any().openapi({ description: 'The website of the developer.' }),
-    ).exactOptional(),
+    DeveloperName: DeveloperNameSchema.exactOptional().openapi({
+      description: 'The name of the developer.',
+    }),
+    PrivacyPolicy: PrivacyPolicySchema.exactOptional().openapi({
+      description: 'The URL of the privacy policy.',
+    }),
+    Email: EmailSchema.exactOptional().openapi({ description: 'The email of the developer.' }),
+    Url: UrlSchema.exactOptional().openapi({ description: 'The website of the developer.' }),
   })
   .openapi({
     description: 'The details about the developer that published the skill.',
@@ -2928,77 +2406,59 @@ const DeveloperInfoSchema = z
 
 const SkillDetailsSchema = z
   .object({
-    ProductDescription: ProductDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the product.' }),
-    ).exactOptional(),
-    InvocationPhrase: InvocationPhraseSchema.and(
-      z.any().openapi({ description: 'The phrase used to trigger the skill.' }),
-    ).exactOptional(),
-    ReleaseDate: ReleaseDateSchema.and(
-      z.any().openapi({ description: 'The date when the skill was released.' }),
-    ).exactOptional(),
-    EndUserLicenseAgreement: EndUserLicenseAgreementSchema.and(
-      z.any().openapi({ description: 'The URL of the end user license agreement.' }),
-    ).exactOptional(),
-    GenericKeywords: GenericKeywordsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The generic keywords associated with the skill that can be used to find a skill.',
-        }),
-    ).exactOptional(),
-    BulletPoints: BulletPointsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The details about what the skill supports organized as bullet points.',
-        }),
-    ).exactOptional(),
-    NewInThisVersionBulletPoints: NewInThisVersionBulletPointsSchema.and(
-      z.any().openapi({ description: 'The updates added in bullet points.' }),
-    ).exactOptional(),
-    SkillTypes: SkillTypesSchema.and(
-      z.any().openapi({ description: 'The types of skills.' }),
-    ).exactOptional(),
-    Reviews: ReviewsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> <i>This member has been deprecated.</i> </p> <p>The list of reviews for the skill, including Key and Value pair.</p>',
-        }),
-    ).exactOptional(),
-    DeveloperInfo: DeveloperInfoSchema.and(
-      z.any().openapi({ description: 'The details about the developer that published the skill.' }),
-    ).exactOptional(),
+    ProductDescription: ProductDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the product.',
+    }),
+    InvocationPhrase: InvocationPhraseSchema.exactOptional().openapi({
+      description: 'The phrase used to trigger the skill.',
+    }),
+    ReleaseDate: ReleaseDateSchema.exactOptional().openapi({
+      description: 'The date when the skill was released.',
+    }),
+    EndUserLicenseAgreement: EndUserLicenseAgreementSchema.exactOptional().openapi({
+      description: 'The URL of the end user license agreement.',
+    }),
+    GenericKeywords: GenericKeywordsSchema.exactOptional().openapi({
+      description:
+        'The generic keywords associated with the skill that can be used to find a skill.',
+    }),
+    BulletPoints: BulletPointsSchema.exactOptional().openapi({
+      description: 'The details about what the skill supports organized as bullet points.',
+    }),
+    NewInThisVersionBulletPoints: NewInThisVersionBulletPointsSchema.exactOptional().openapi({
+      description: 'The updates added in bullet points.',
+    }),
+    SkillTypes: SkillTypesSchema.exactOptional().openapi({ description: 'The types of skills.' }),
+    Reviews: ReviewsSchema.exactOptional().openapi({
+      description:
+        '<p> <i>This member has been deprecated.</i> </p> <p>The list of reviews for the skill, including Key and Value pair.</p>',
+    }),
+    DeveloperInfo: DeveloperInfoSchema.exactOptional().openapi({
+      description: 'The details about the developer that published the skill.',
+    }),
   })
   .openapi({ description: 'Granular information about the skill.', required: [] })
   .openapi('SkillDetails')
 
 const SkillsStoreSkillSchema = z
   .object({
-    SkillId: SkillIdSchema.and(
-      z.any().openapi({ description: 'The ARN of the skill.' }),
-    ).exactOptional(),
-    SkillName: SkillNameSchema.and(
-      z.any().openapi({ description: 'The name of the skill.' }),
-    ).exactOptional(),
-    ShortDescription: ShortDescriptionSchema.and(
-      z.any().openapi({ description: 'Short description about the skill.' }),
-    ).exactOptional(),
-    IconUrl: IconUrlSchema.and(
-      z.any().openapi({ description: 'The URL where the skill icon resides.' }),
-    ).exactOptional(),
-    SampleUtterances: SampleUtterancesSchema.and(
-      z.any().openapi({ description: 'Sample utterances that interact with the skill.' }),
-    ).exactOptional(),
-    SkillDetails: SkillDetailsSchema.and(
-      z.any().openapi({ description: 'Information about the skill.' }),
-    ).exactOptional(),
-    SupportsLinking: Boolean2Schema.and(
-      z.any().openapi({ description: 'Linking support for a skill.' }),
-    ).exactOptional(),
+    SkillId: SkillIdSchema.exactOptional().openapi({ description: 'The ARN of the skill.' }),
+    SkillName: SkillNameSchema.exactOptional().openapi({ description: 'The name of the skill.' }),
+    ShortDescription: ShortDescriptionSchema.exactOptional().openapi({
+      description: 'Short description about the skill.',
+    }),
+    IconUrl: IconUrlSchema.exactOptional().openapi({
+      description: 'The URL where the skill icon resides.',
+    }),
+    SampleUtterances: SampleUtterancesSchema.exactOptional().openapi({
+      description: 'Sample utterances that interact with the skill.',
+    }),
+    SkillDetails: SkillDetailsSchema.exactOptional().openapi({
+      description: 'Information about the skill.',
+    }),
+    SupportsLinking: Boolean2Schema.exactOptional().openapi({
+      description: 'Linking support for a skill.',
+    }),
   })
   .openapi({ description: 'The detailed information about an Alexa skill.', required: [] })
   .openapi('SkillsStoreSkill')
@@ -3007,34 +2467,27 @@ const SkillsStoreSkillListSchema = z.array(SkillsStoreSkillSchema).openapi('Skil
 
 const ListSkillsStoreSkillsByCategoryResponseSchema = z
   .object({
-    SkillsStoreSkills: SkillsStoreSkillListSchema.and(
-      z.any().openapi({ description: 'The skill store skills.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The tokens used for pagination.' }),
-    ).exactOptional(),
+    SkillsStoreSkills: SkillsStoreSkillListSchema.exactOptional().openapi({
+      description: 'The skill store skills.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The tokens used for pagination.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSkillsStoreSkillsByCategoryResponse')
 
 const ListSkillsStoreSkillsByCategoryRequestSchema = z
   .object({
-    CategoryId: CategoryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The category ID for which the skills are being retrieved from the skill store.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The tokens used for pagination.' }),
-    ).exactOptional(),
-    MaxResults: SkillListMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of skills returned per paginated calls.' }),
-    ).exactOptional(),
+    CategoryId: CategoryIdSchema.openapi({
+      description: 'The category ID for which the skills are being retrieved from the skill store.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The tokens used for pagination.',
+    }),
+    MaxResults: SkillListMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of skills returned per paginated calls.',
+    }),
   })
   .openapi({ required: ['CategoryId'], title: 'ListSkillsStoreSkillsByCategoryRequest' })
   .openapi('ListSkillsStoreSkillsByCategoryRequest')
@@ -3047,15 +2500,15 @@ const ApplianceManufacturerNameSchema = z.string().openapi('ApplianceManufacture
 
 const SmartHomeApplianceSchema = z
   .object({
-    FriendlyName: ApplianceFriendlyNameSchema.and(
-      z.any().openapi({ description: 'The friendly name of the smart home appliance.' }),
-    ).exactOptional(),
-    Description: ApplianceDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the smart home appliance.' }),
-    ).exactOptional(),
-    ManufacturerName: ApplianceManufacturerNameSchema.and(
-      z.any().openapi({ description: 'The name of the manufacturer of the smart home appliance.' }),
-    ).exactOptional(),
+    FriendlyName: ApplianceFriendlyNameSchema.exactOptional().openapi({
+      description: 'The friendly name of the smart home appliance.',
+    }),
+    Description: ApplianceDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the smart home appliance.',
+    }),
+    ManufacturerName: ApplianceManufacturerNameSchema.exactOptional().openapi({
+      description: 'The name of the manufacturer of the smart home appliance.',
+    }),
   })
   .openapi({
     description:
@@ -3070,150 +2523,116 @@ const SmartHomeApplianceListSchema = z
 
 const ListSmartHomeAppliancesResponseSchema = z
   .object({
-    SmartHomeAppliances: SmartHomeApplianceListSchema.and(
-      z.any().openapi({ description: 'The smart home appliances.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The tokens used for pagination.' }),
-    ).exactOptional(),
+    SmartHomeAppliances: SmartHomeApplianceListSchema.exactOptional().openapi({
+      description: 'The smart home appliances.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The tokens used for pagination.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSmartHomeAppliancesResponse')
 
 const ListSmartHomeAppliancesRequestSchema = z
   .object({
-    RoomArn: ArnSchema.and(
-      z.any().openapi({ description: 'The room that the appliances are associated with.' }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of appliances to be returned, per paginated calls.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The tokens used for pagination.' }),
-    ).exactOptional(),
+    RoomArn: ArnSchema.openapi({
+      description: 'The room that the appliances are associated with.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of appliances to be returned, per paginated calls.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The tokens used for pagination.',
+    }),
   })
   .openapi({ required: ['RoomArn'], title: 'ListSmartHomeAppliancesRequest' })
   .openapi('ListSmartHomeAppliancesRequest')
 
 const ListTagsResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags requested for the specified resource.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned to indicate that there is more data available.',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags requested for the specified resource.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned to indicate that there is more data available.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsResponse')
 
 const ListTagsRequestSchema = z
   .object({
-    Arn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the specified resource for which to list tags.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by <code>MaxResults</code>. ',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved.',
-        }),
-    ).exactOptional(),
+    Arn: ArnSchema.openapi({
+      description: 'The ARN of the specified resource for which to list tags.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by <code>MaxResults</code>. ',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved.',
+    }),
   })
   .openapi({ required: ['Arn'], title: 'ListTagsRequest' })
   .openapi('ListTagsRequest')
 
 const PutConferencePreferenceResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('PutConferencePreferenceResponse')
 
 const PutConferencePreferenceRequestSchema = z
   .object({
-    ConferencePreference: ConferencePreferenceSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The conference preference of a specific conference provider.' }),
-    ),
+    ConferencePreference: ConferencePreferenceSchema.openapi({
+      description: 'The conference preference of a specific conference provider.',
+    }),
   })
   .openapi({ required: ['ConferencePreference'], title: 'PutConferencePreferenceRequest' })
   .openapi('PutConferencePreferenceRequest')
 
 const PutInvitationConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('PutInvitationConfigurationResponse')
 
 const PutInvitationConfigurationRequestSchema = z
   .object({
-    OrganizationName: OrganizationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the organization sending the enrollment invite to a user.',
-        }),
-    ),
-    ContactEmail: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email ID of the organization or individual contact that the enrolled user can use. ',
-        }),
-    ).exactOptional(),
-    PrivateSkillIds: ShortSkillIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of private skill IDs that you want to recommend to the user to enable in the invitation.',
-        }),
-    ).exactOptional(),
+    OrganizationName: OrganizationNameSchema.openapi({
+      description: 'The name of the organization sending the enrollment invite to a user.',
+    }),
+    ContactEmail: EmailSchema.exactOptional().openapi({
+      description:
+        'The email ID of the organization or individual contact that the enrolled user can use. ',
+    }),
+    PrivateSkillIds: ShortSkillIdListSchema.exactOptional().openapi({
+      description:
+        'The list of private skill IDs that you want to recommend to the user to enable in the invitation.',
+    }),
   })
   .openapi({ required: ['OrganizationName'], title: 'PutInvitationConfigurationRequest' })
   .openapi('PutInvitationConfigurationRequest')
 
-const PutRoomSkillParameterResponseSchema = z.object({}).openapi('PutRoomSkillParameterResponse')
+const PutRoomSkillParameterResponseSchema = z
+  .looseObject({})
+  .openapi('PutRoomSkillParameterResponse')
 
 const PutRoomSkillParameterRequestSchema = z
   .object({
-    RoomArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the room associated with the room skill parameter. Required.',
-        }),
-    ).exactOptional(),
-    SkillId: SkillIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the skill associated with the room skill parameter. Required.',
-        }),
-    ),
-    RoomSkillParameter: RoomSkillParameterSchema.and(
-      z.any().openapi({ description: 'The updated room skill parameter. Required.' }),
-    ),
+    RoomArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the room associated with the room skill parameter. Required.',
+    }),
+    SkillId: SkillIdSchema.openapi({
+      description: 'The ARN of the skill associated with the room skill parameter. Required.',
+    }),
+    RoomSkillParameter: RoomSkillParameterSchema.openapi({
+      description: 'The updated room skill parameter. Required.',
+    }),
   })
   .openapi({ required: ['SkillId', 'RoomSkillParameter'], title: 'PutRoomSkillParameterRequest' })
   .openapi('PutRoomSkillParameterRequest')
 
-const PutSkillAuthorizationResponseSchema = z.object({}).openapi('PutSkillAuthorizationResponse')
+const PutSkillAuthorizationResponseSchema = z
+  .looseObject({})
+  .openapi('PutSkillAuthorizationResponse')
 
 const ValueSchema = z.string().min(1).openapi('Value')
 
@@ -3221,20 +2640,14 @@ const AuthorizationResultSchema = z.record(z.string(), ValueSchema).openapi('Aut
 
 const PutSkillAuthorizationRequestSchema = z
   .object({
-    AuthorizationResult: AuthorizationResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authorization result specific to OAUTH code grant output. "Code” must be populated in the AuthorizationResult map to establish the authorization.',
-        }),
-    ),
-    SkillId: SkillIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of a skill.' }),
-    ),
-    RoomArn: ArnSchema.and(
-      z.any().openapi({ description: 'The room that the skill is authorized for.' }),
-    ).exactOptional(),
+    AuthorizationResult: AuthorizationResultSchema.openapi({
+      description:
+        'The authorization result specific to OAUTH code grant output. "Code” must be populated in the AuthorizationResult map to establish the authorization.',
+    }),
+    SkillId: SkillIdSchema.openapi({ description: 'The unique identifier of a skill.' }),
+    RoomArn: ArnSchema.exactOptional().openapi({
+      description: 'The room that the skill is authorized for.',
+    }),
   })
   .openapi({ required: ['AuthorizationResult', 'SkillId'], title: 'PutSkillAuthorizationRequest' })
   .openapi('PutSkillAuthorizationRequest')
@@ -3243,9 +2656,7 @@ const UnauthorizedExceptionSchema = z.any().openapi('UnauthorizedException')
 
 const RegisterAVSDeviceResponseSchema = z
   .object({
-    DeviceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the device.' }),
-    ).exactOptional(),
+    DeviceArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the device.' }),
   })
   .openapi({ required: [] })
   .openapi('RegisterAVSDeviceResponse')
@@ -3274,61 +2685,32 @@ const AmazonIdSchema = z
 
 const RegisterAVSDeviceRequestSchema = z
   .object({
-    ClientId: ClientIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The client ID of the OEM used for code-based linking authorization on an AVS device.',
-        }),
-    ),
-    UserCode: UserCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The code that is obtained after your AVS device has made a POST request to LWA as a part of the Device Authorization Request component of the OAuth code-based linking specification.',
-        }),
-    ),
-    ProductId: ProductIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The product ID used to identify your AVS device during authorization.',
-        }),
-    ),
-    DeviceSerialNumber: DeviceSerialNumberForAVSSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key generated by the OEM that uniquely identifies a specified instance of your AVS device.',
-        }),
-    ).exactOptional(),
-    AmazonId: AmazonIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The device type ID for your AVS device generated by Amazon when the OEM creates a new product on Amazon's Developer Console.",
-        }),
-    ),
-    RoomArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the room with which to associate your AVS device.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to be added to the specified resource. Do not provide system tags.',
-        }),
-    ).exactOptional(),
+    ClientId: ClientIdSchema.openapi({
+      description:
+        'The client ID of the OEM used for code-based linking authorization on an AVS device.',
+    }),
+    UserCode: UserCodeSchema.openapi({
+      description:
+        'The code that is obtained after your AVS device has made a POST request to LWA as a part of the Device Authorization Request component of the OAuth code-based linking specification.',
+    }),
+    ProductId: ProductIdSchema.openapi({
+      description: 'The product ID used to identify your AVS device during authorization.',
+    }),
+    DeviceSerialNumber: DeviceSerialNumberForAVSSchema.exactOptional().openapi({
+      description:
+        'The key generated by the OEM that uniquely identifies a specified instance of your AVS device.',
+    }),
+    AmazonId: AmazonIdSchema.openapi({
+      description:
+        "The device type ID for your AVS device generated by Amazon when the OEM creates a new product on Amazon's Developer Console.",
+    }),
+    RoomArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the room with which to associate your AVS device.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to be added to the specified resource. Do not provide system tags.',
+    }),
   })
   .openapi({
     required: ['ClientId', 'UserCode', 'ProductId', 'AmazonId'],
@@ -3338,13 +2720,11 @@ const RegisterAVSDeviceRequestSchema = z
 
 const InvalidDeviceExceptionSchema = z.any().openapi('InvalidDeviceException')
 
-const RejectSkillResponseSchema = z.object({}).openapi('RejectSkillResponse')
+const RejectSkillResponseSchema = z.looseObject({}).openapi('RejectSkillResponse')
 
 const RejectSkillRequestSchema = z
   .object({
-    SkillId: SkillIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the skill.' }),
-    ),
+    SkillId: SkillIdSchema.openapi({ description: 'The unique identifier of the skill.' }),
   })
   .openapi({ required: ['SkillId'], title: 'RejectSkillRequest' })
   .openapi('RejectSkillRequest')
@@ -3353,19 +2733,15 @@ const RoomSkillParametersSchema = z.array(RoomSkillParameterSchema).openapi('Roo
 
 const ResolveRoomResponseSchema = z
   .object({
-    RoomArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the room from which the skill request was invoked.' }),
-    ).exactOptional(),
-    RoomName: RoomNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the room from which the skill request was invoked.' }),
-    ).exactOptional(),
-    RoomSkillParameters: RoomSkillParametersSchema.and(
-      z.any().openapi({ description: 'Response to get the room profile request. Required.' }),
-    ).exactOptional(),
+    RoomArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the room from which the skill request was invoked.',
+    }),
+    RoomName: RoomNameSchema.exactOptional().openapi({
+      description: 'The name of the room from which the skill request was invoked.',
+    }),
+    RoomSkillParameters: RoomSkillParametersSchema.exactOptional().openapi({
+      description: 'Response to get the room profile request. Required.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ResolveRoomResponse')
@@ -3377,43 +2753,39 @@ const UserIdSchema = z
 
 const ResolveRoomRequestSchema = z
   .object({
-    UserId: UserIdSchema.and(z.any().openapi({ description: 'The ARN of the user. Required.' })),
-    SkillId: SkillIdSchema.and(
-      z.any().openapi({ description: 'The ARN of the skill that was requested. Required.' }),
-    ),
+    UserId: UserIdSchema.openapi({ description: 'The ARN of the user. Required.' }),
+    SkillId: SkillIdSchema.openapi({
+      description: 'The ARN of the skill that was requested. Required.',
+    }),
   })
   .openapi({ required: ['UserId', 'SkillId'], title: 'ResolveRoomRequest' })
   .openapi('ResolveRoomRequest')
 
-const RevokeInvitationResponseSchema = z.object({}).openapi('RevokeInvitationResponse')
+const RevokeInvitationResponseSchema = z.looseObject({}).openapi('RevokeInvitationResponse')
 
 const RevokeInvitationRequestSchema = z
   .object({
-    UserArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the user for whom to revoke an enrollment invitation. Required.',
-        }),
-    ).exactOptional(),
-    EnrollmentId: EnrollmentIdSchema.and(
-      z.any().openapi({ description: 'The ARN of the enrollment invitation to revoke. Required.' }),
-    ).exactOptional(),
+    UserArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the user for whom to revoke an enrollment invitation. Required.',
+    }),
+    EnrollmentId: EnrollmentIdSchema.exactOptional().openapi({
+      description: 'The ARN of the enrollment invitation to revoke. Required.',
+    }),
   })
   .openapi({ title: 'RevokeInvitationRequest', required: [] })
   .openapi('RevokeInvitationRequest')
 
 const AddressBookDataSchema = z
   .object({
-    AddressBookArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the address book.' }),
-    ).exactOptional(),
-    Name: AddressBookNameSchema.and(
-      z.any().openapi({ description: 'The name of the address book.' }),
-    ).exactOptional(),
-    Description: AddressBookDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the address book.' }),
-    ).exactOptional(),
+    AddressBookArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the address book.',
+    }),
+    Name: AddressBookNameSchema.exactOptional().openapi({
+      description: 'The name of the address book.',
+    }),
+    Description: AddressBookDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the address book.',
+    }),
   })
   .openapi({ description: 'Information related to an address book.', required: [] })
   .openapi('AddressBookData')
@@ -3424,24 +2796,16 @@ const TotalCountSchema = z.int().openapi('TotalCount')
 
 const SearchAddressBooksResponseSchema = z
   .object({
-    AddressBooks: AddressBookDataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The address books that meet the specified set of filter criteria, in sort order.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned to indicate that there is more data available.',
-        }),
-    ).exactOptional(),
-    TotalCount: TotalCountSchema.and(
-      z.any().openapi({ description: 'The total number of address books returned.' }),
-    ).exactOptional(),
+    AddressBooks: AddressBookDataListSchema.exactOptional().openapi({
+      description:
+        'The address books that meet the specified set of filter criteria, in sort order.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned to indicate that there is more data available.',
+    }),
+    TotalCount: TotalCountSchema.exactOptional().openapi({
+      description: 'The total number of address books returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchAddressBooksResponse')
@@ -3454,8 +2818,8 @@ const FilterValueListSchema = z.array(FilterValueSchema).max(50).openapi('Filter
 
 const FilterSchema = z
   .object({
-    Key: FilterKeySchema.and(z.any().openapi({ description: 'The key of a filter.' })),
-    Values: FilterValueListSchema.and(z.any().openapi({ description: 'The values of a filter.' })),
+    Key: FilterKeySchema.openapi({ description: 'The key of a filter.' }),
+    Values: FilterValueListSchema.openapi({ description: 'The values of a filter.' }),
   })
   .openapi({
     required: ['Key', 'Values'],
@@ -3472,10 +2836,8 @@ const SortValueSchema = z.enum(['ASC', 'DESC']).openapi('SortValue')
 
 const SortSchema = z
   .object({
-    Key: SortKeySchema.and(z.any().openapi({ description: 'The sort key of a sort object.' })),
-    Value: SortValueSchema.and(
-      z.any().openapi({ description: 'The sort value of a sort object.' }),
-    ),
+    Key: SortKeySchema.openapi({ description: 'The sort key of a sort object.' }),
+    Value: SortValueSchema.openapi({ description: 'The sort value of a sort object.' }),
   })
   .openapi({ required: ['Key', 'Value'], description: 'An object representing a sort criteria. ' })
   .openapi('Sort')
@@ -3484,78 +2846,48 @@ const SortListSchema = z.array(SortSchema).max(25).openapi('SortList')
 
 const SearchAddressBooksRequestSchema = z
   .object({
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filters to use to list a specified set of address books. The supported filter key is AddressBookName.',
-        }),
-    ).exactOptional(),
-    SortCriteria: SortListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sort order to use in listing the specified set of address books. The supported sort key is AddressBookName.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response only includes results beyond the token, up to the value specified by MaxResults.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to include in the response. If more results exist than the specified MaxResults value, a token is included in the response so that the remaining results can be retrieved.',
-        }),
-    ).exactOptional(),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        'The filters to use to list a specified set of address books. The supported filter key is AddressBookName.',
+    }),
+    SortCriteria: SortListSchema.exactOptional().openapi({
+      description:
+        'The sort order to use in listing the specified set of address books. The supported sort key is AddressBookName.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response only includes results beyond the token, up to the value specified by MaxResults.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to include in the response. If more results exist than the specified MaxResults value, a token is included in the response so that the remaining results can be retrieved.',
+    }),
   })
   .openapi({ title: 'SearchAddressBooksRequest', required: [] })
   .openapi('SearchAddressBooksRequest')
 
 const ContactDataSchema = z
   .object({
-    ContactArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the contact.' }),
-    ).exactOptional(),
-    DisplayName: ContactNameSchema.and(
-      z.any().openapi({ description: 'The name of the contact to display on the console.' }),
-    ).exactOptional(),
-    FirstName: ContactNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The first name of the contact, used to call the contact on the device.',
-        }),
-    ).exactOptional(),
-    LastName: ContactNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The last name of the contact, used to call the contact on the device.',
-        }),
-    ).exactOptional(),
-    PhoneNumber: RawPhoneNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number of the contact. The phone number type defaults to WORK. You can specify PhoneNumber or PhoneNumbers. We recommend that you use PhoneNumbers, which lets you specify the phone number type and multiple numbers.',
-        }),
-    ).exactOptional(),
-    PhoneNumbers: PhoneNumberListSchema.and(
-      z.any().openapi({ description: 'The list of phone numbers for the contact.' }),
-    ).exactOptional(),
-    SipAddresses: SipAddressListSchema.and(
-      z.any().openapi({ description: 'The list of SIP addresses for the contact.' }),
-    ).exactOptional(),
+    ContactArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the contact.' }),
+    DisplayName: ContactNameSchema.exactOptional().openapi({
+      description: 'The name of the contact to display on the console.',
+    }),
+    FirstName: ContactNameSchema.exactOptional().openapi({
+      description: 'The first name of the contact, used to call the contact on the device.',
+    }),
+    LastName: ContactNameSchema.exactOptional().openapi({
+      description: 'The last name of the contact, used to call the contact on the device.',
+    }),
+    PhoneNumber: RawPhoneNumberSchema.exactOptional().openapi({
+      description:
+        'The phone number of the contact. The phone number type defaults to WORK. You can specify PhoneNumber or PhoneNumbers. We recommend that you use PhoneNumbers, which lets you specify the phone number type and multiple numbers.',
+    }),
+    PhoneNumbers: PhoneNumberListSchema.exactOptional().openapi({
+      description: 'The list of phone numbers for the contact.',
+    }),
+    SipAddresses: SipAddressListSchema.exactOptional().openapi({
+      description: 'The list of SIP addresses for the contact.',
+    }),
   })
   .openapi({ description: 'Information related to a contact.', required: [] })
   .openapi('ContactData')
@@ -3564,62 +2896,37 @@ const ContactDataListSchema = z.array(ContactDataSchema).openapi('ContactDataLis
 
 const SearchContactsResponseSchema = z
   .object({
-    Contacts: ContactDataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The contacts that meet the specified set of filter criteria, in sort order.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned to indicate that there is more data available.',
-        }),
-    ).exactOptional(),
-    TotalCount: TotalCountSchema.and(
-      z.any().openapi({ description: 'The total number of contacts returned.' }),
-    ).exactOptional(),
+    Contacts: ContactDataListSchema.exactOptional().openapi({
+      description: 'The contacts that meet the specified set of filter criteria, in sort order.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned to indicate that there is more data available.',
+    }),
+    TotalCount: TotalCountSchema.exactOptional().openapi({
+      description: 'The total number of contacts returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchContactsResponse')
 
 const SearchContactsRequestSchema = z
   .object({
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filters to use to list a specified set of address books. The supported filter keys are DisplayName, FirstName, LastName, and AddressBookArns.',
-        }),
-    ).exactOptional(),
-    SortCriteria: SortListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sort order to use in listing the specified set of contacts. The supported sort keys are DisplayName, FirstName, and LastName.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response only includes results beyond the token, up to the value specified by MaxResults.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to include in the response. If more results exist than the specified MaxResults value, a token is included in the response so that the remaining results can be retrieved.',
-        }),
-    ).exactOptional(),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        'The filters to use to list a specified set of address books. The supported filter keys are DisplayName, FirstName, LastName, and AddressBookArns.',
+    }),
+    SortCriteria: SortListSchema.exactOptional().openapi({
+      description:
+        'The sort order to use in listing the specified set of contacts. The supported sort keys are DisplayName, FirstName, and LastName.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response only includes results beyond the token, up to the value specified by MaxResults.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to include in the response. If more results exist than the specified MaxResults value, a token is included in the response so that the remaining results can be retrieved.',
+    }),
   })
   .openapi({ title: 'SearchContactsRequest', required: [] })
   .openapi('SearchContactsRequest')
@@ -3637,45 +2944,39 @@ const DeviceDataCreatedTimeSchema = z.iso
 
 const DeviceDataSchema = z
   .object({
-    DeviceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of a device.' }),
-    ).exactOptional(),
-    DeviceSerialNumber: DeviceSerialNumberSchema.and(
-      z.any().openapi({ description: 'The serial number of a device.' }),
-    ).exactOptional(),
-    DeviceType: DeviceTypeSchema.and(
-      z.any().openapi({ description: 'The type of a device.' }),
-    ).exactOptional(),
-    DeviceName: DeviceNameSchema.and(
-      z.any().openapi({ description: 'The name of a device.' }),
-    ).exactOptional(),
-    SoftwareVersion: SoftwareVersionSchema.and(
-      z.any().openapi({ description: 'The software version of a device.' }),
-    ).exactOptional(),
-    MacAddress: MacAddressSchema.and(
-      z.any().openapi({ description: 'The MAC address of a device.' }),
-    ).exactOptional(),
-    DeviceStatus: DeviceStatusSchema.and(
-      z.any().openapi({ description: 'The status of a device.' }),
-    ).exactOptional(),
-    NetworkProfileArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the network profile associated with a device.' }),
-    ).exactOptional(),
-    NetworkProfileName: NetworkProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the network profile associated with a device.' }),
-    ).exactOptional(),
-    RoomArn: ArnSchema.and(
-      z.any().openapi({ description: 'The room ARN associated with a device.' }),
-    ).exactOptional(),
-    RoomName: DeviceRoomNameSchema.and(
-      z.any().openapi({ description: 'The name of the room associated with a device.' }),
-    ).exactOptional(),
-    DeviceStatusInfo: DeviceStatusInfoSchema.and(
-      z.any().openapi({ description: "Detailed information about a device's status." }),
-    ).exactOptional(),
-    CreatedTime: DeviceDataCreatedTimeSchema.and(
-      z.any().openapi({ description: 'The time (in epoch) when the device data was created.' }),
-    ).exactOptional(),
+    DeviceArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of a device.' }),
+    DeviceSerialNumber: DeviceSerialNumberSchema.exactOptional().openapi({
+      description: 'The serial number of a device.',
+    }),
+    DeviceType: DeviceTypeSchema.exactOptional().openapi({ description: 'The type of a device.' }),
+    DeviceName: DeviceNameSchema.exactOptional().openapi({ description: 'The name of a device.' }),
+    SoftwareVersion: SoftwareVersionSchema.exactOptional().openapi({
+      description: 'The software version of a device.',
+    }),
+    MacAddress: MacAddressSchema.exactOptional().openapi({
+      description: 'The MAC address of a device.',
+    }),
+    DeviceStatus: DeviceStatusSchema.exactOptional().openapi({
+      description: 'The status of a device.',
+    }),
+    NetworkProfileArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the network profile associated with a device.',
+    }),
+    NetworkProfileName: NetworkProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the network profile associated with a device.',
+    }),
+    RoomArn: ArnSchema.exactOptional().openapi({
+      description: 'The room ARN associated with a device.',
+    }),
+    RoomName: DeviceRoomNameSchema.exactOptional().openapi({
+      description: 'The name of the room associated with a device.',
+    }),
+    DeviceStatusInfo: DeviceStatusInfoSchema.exactOptional().openapi({
+      description: "Detailed information about a device's status.",
+    }),
+    CreatedTime: DeviceDataCreatedTimeSchema.exactOptional().openapi({
+      description: 'The time (in epoch) when the device data was created.',
+    }),
   })
   .openapi({ description: 'Device attributes.', required: [] })
   .openapi('DeviceData')
@@ -3684,103 +2985,67 @@ const DeviceDataListSchema = z.array(DeviceDataSchema).openapi('DeviceDataList')
 
 const SearchDevicesResponseSchema = z
   .object({
-    Devices: DeviceDataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The devices that meet the specified set of filter criteria, in sort order.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned to indicate that there is more data available.',
-        }),
-    ).exactOptional(),
-    TotalCount: TotalCountSchema.and(
-      z.any().openapi({ description: 'The total number of devices returned.' }),
-    ).exactOptional(),
+    Devices: DeviceDataListSchema.exactOptional().openapi({
+      description: 'The devices that meet the specified set of filter criteria, in sort order.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned to indicate that there is more data available.',
+    }),
+    TotalCount: TotalCountSchema.exactOptional().openapi({
+      description: 'The total number of devices returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchDevicesResponse')
 
 const SearchDevicesRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by <code>MaxResults</code>.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved.',
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filters to use to list a specified set of devices. Supported filter keys are DeviceName, DeviceStatus, DeviceStatusDetailCode, RoomName, DeviceType, DeviceSerialNumber, UnassociatedOnly, ConnectionStatus (ONLINE and OFFLINE), NetworkProfileName, NetworkProfileArn, Feature, and FailureCode.',
-        }),
-    ).exactOptional(),
-    SortCriteria: SortListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sort order to use in listing the specified set of devices. Supported sort keys are DeviceName, DeviceStatus, RoomName, DeviceType, DeviceSerialNumber, ConnectionStatus, NetworkProfileName, NetworkProfileArn, Feature, and FailureCode.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by <code>MaxResults</code>.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        'The filters to use to list a specified set of devices. Supported filter keys are DeviceName, DeviceStatus, DeviceStatusDetailCode, RoomName, DeviceType, DeviceSerialNumber, UnassociatedOnly, ConnectionStatus (ONLINE and OFFLINE), NetworkProfileName, NetworkProfileArn, Feature, and FailureCode.',
+    }),
+    SortCriteria: SortListSchema.exactOptional().openapi({
+      description:
+        'The sort order to use in listing the specified set of devices. Supported sort keys are DeviceName, DeviceStatus, RoomName, DeviceType, DeviceSerialNumber, ConnectionStatus, NetworkProfileName, NetworkProfileArn, Feature, and FailureCode.',
+    }),
   })
   .openapi({ title: 'SearchDevicesRequest', required: [] })
   .openapi('SearchDevicesRequest')
 
 const NetworkProfileDataSchema = z
   .object({
-    NetworkProfileArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the network profile associated with a device.' }),
-    ).exactOptional(),
-    NetworkProfileName: NetworkProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the network profile associated with a device.' }),
-    ).exactOptional(),
-    Description: NetworkProfileDescriptionSchema.and(
-      z.any().openapi({ description: "Detailed information about a device's network profile." }),
-    ).exactOptional(),
-    Ssid: NetworkSsidSchema.and(
-      z.any().openapi({ description: 'The SSID of the Wi-Fi network.' }),
-    ).exactOptional(),
-    SecurityType: NetworkSecurityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The security type of the Wi-Fi network. This can be WPA2_ENTERPRISE, WPA2_PSK, WPA_PSK, WEP, or OPEN.',
-        }),
-    ).exactOptional(),
-    EapMethod: NetworkEapMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication standard that is used in the EAP framework. Currently, EAP_TLS is supported.',
-        }),
-    ).exactOptional(),
-    CertificateAuthorityArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Private Certificate Authority (PCA) created in AWS Certificate Manager (ACM). This is used to issue certificates to the devices.',
-        }),
-    ).exactOptional(),
+    NetworkProfileArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the network profile associated with a device.',
+    }),
+    NetworkProfileName: NetworkProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the network profile associated with a device.',
+    }),
+    Description: NetworkProfileDescriptionSchema.exactOptional().openapi({
+      description: "Detailed information about a device's network profile.",
+    }),
+    Ssid: NetworkSsidSchema.exactOptional().openapi({
+      description: 'The SSID of the Wi-Fi network.',
+    }),
+    SecurityType: NetworkSecurityTypeSchema.exactOptional().openapi({
+      description:
+        'The security type of the Wi-Fi network. This can be WPA2_ENTERPRISE, WPA2_PSK, WPA_PSK, WEP, or OPEN.',
+    }),
+    EapMethod: NetworkEapMethodSchema.exactOptional().openapi({
+      description:
+        'The authentication standard that is used in the EAP framework. Currently, EAP_TLS is supported.',
+    }),
+    CertificateAuthorityArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Private Certificate Authority (PCA) created in AWS Certificate Manager (ACM). This is used to issue certificates to the devices.',
+    }),
   })
   .openapi({ description: 'The data associated with a network profile.', required: [] })
   .openapi('NetworkProfileData')
@@ -3791,101 +3056,71 @@ const NetworkProfileDataListSchema = z
 
 const SearchNetworkProfilesResponseSchema = z
   .object({
-    NetworkProfiles: NetworkProfileDataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The network profiles that meet the specified set of filter criteria, in sort order. It is a list of NetworkProfileData objects. ',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by MaxResults.',
-        }),
-    ).exactOptional(),
-    TotalCount: TotalCountSchema.and(
-      z.any().openapi({ description: 'The total number of network profiles returned.' }),
-    ).exactOptional(),
+    NetworkProfiles: NetworkProfileDataListSchema.exactOptional().openapi({
+      description:
+        'The network profiles that meet the specified set of filter criteria, in sort order. It is a list of NetworkProfileData objects. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by MaxResults.',
+    }),
+    TotalCount: TotalCountSchema.exactOptional().openapi({
+      description: 'The total number of network profiles returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchNetworkProfilesResponse')
 
 const SearchNetworkProfilesRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by MaxResults. ',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to include in the response. If more results exist than the specified MaxResults value, a token is included in the response so that the remaining results can be retrieved. ',
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filters to use to list a specified set of network profiles. Valid filters are NetworkProfileName, Ssid, and SecurityType.',
-        }),
-    ).exactOptional(),
-    SortCriteria: SortListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sort order to use to list the specified set of network profiles. Valid sort criteria includes NetworkProfileName, Ssid, and SecurityType.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by MaxResults. ',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to include in the response. If more results exist than the specified MaxResults value, a token is included in the response so that the remaining results can be retrieved. ',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        'The filters to use to list a specified set of network profiles. Valid filters are NetworkProfileName, Ssid, and SecurityType.',
+    }),
+    SortCriteria: SortListSchema.exactOptional().openapi({
+      description:
+        'The sort order to use to list the specified set of network profiles. Valid sort criteria includes NetworkProfileName, Ssid, and SecurityType.',
+    }),
   })
   .openapi({ title: 'SearchNetworkProfilesRequest', required: [] })
   .openapi('SearchNetworkProfilesRequest')
 
 const ProfileDataSchema = z
   .object({
-    ProfileArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of a room profile.' }),
-    ).exactOptional(),
-    ProfileName: ProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of a room profile.' }),
-    ).exactOptional(),
-    IsDefault: BooleanSchema.and(
-      z.any().openapi({ description: 'Retrieves if the profile data is default or not.' }),
-    ).exactOptional(),
-    Address: AddressSchema.and(
-      z.any().openapi({ description: 'The address of a room profile.' }),
-    ).exactOptional(),
-    Timezone: TimezoneSchema.and(
-      z.any().openapi({ description: 'The time zone of a room profile.' }),
-    ).exactOptional(),
-    DistanceUnit: DistanceUnitSchema.and(
-      z.any().openapi({ description: 'The distance unit of a room profile.' }),
-    ).exactOptional(),
-    TemperatureUnit: TemperatureUnitSchema.and(
-      z.any().openapi({ description: 'The temperature unit of a room profile.' }),
-    ).exactOptional(),
-    WakeWord: WakeWordSchema.and(
-      z.any().openapi({ description: 'The wake word of a room profile.' }),
-    ).exactOptional(),
-    Locale: DeviceLocaleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The locale of a room profile. (This is currently available only to a limited preview audience.)',
-        }),
-    ).exactOptional(),
+    ProfileArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of a room profile.' }),
+    ProfileName: ProfileNameSchema.exactOptional().openapi({
+      description: 'The name of a room profile.',
+    }),
+    IsDefault: BooleanSchema.exactOptional().openapi({
+      description: 'Retrieves if the profile data is default or not.',
+    }),
+    Address: AddressSchema.exactOptional().openapi({
+      description: 'The address of a room profile.',
+    }),
+    Timezone: TimezoneSchema.exactOptional().openapi({
+      description: 'The time zone of a room profile.',
+    }),
+    DistanceUnit: DistanceUnitSchema.exactOptional().openapi({
+      description: 'The distance unit of a room profile.',
+    }),
+    TemperatureUnit: TemperatureUnitSchema.exactOptional().openapi({
+      description: 'The temperature unit of a room profile.',
+    }),
+    WakeWord: WakeWordSchema.exactOptional().openapi({
+      description: 'The wake word of a room profile.',
+    }),
+    Locale: DeviceLocaleSchema.exactOptional().openapi({
+      description:
+        'The locale of a room profile. (This is currently available only to a limited preview audience.)',
+    }),
   })
   .openapi({ description: 'The data of a room profile.', required: [] })
   .openapi('ProfileData')
@@ -3894,84 +3129,55 @@ const ProfileDataListSchema = z.array(ProfileDataSchema).openapi('ProfileDataLis
 
 const SearchProfilesResponseSchema = z
   .object({
-    Profiles: ProfileDataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The profiles that meet the specified set of filter criteria, in sort order.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned to indicate that there is more data available.',
-        }),
-    ).exactOptional(),
-    TotalCount: TotalCountSchema.and(
-      z.any().openapi({ description: 'The total number of room profiles returned.' }),
-    ).exactOptional(),
+    Profiles: ProfileDataListSchema.exactOptional().openapi({
+      description: 'The profiles that meet the specified set of filter criteria, in sort order.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned to indicate that there is more data available.',
+    }),
+    TotalCount: TotalCountSchema.exactOptional().openapi({
+      description: 'The total number of room profiles returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchProfilesResponse')
 
 const SearchProfilesRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by <code>MaxResults</code>.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved.',
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filters to use to list a specified set of room profiles. Supported filter keys are ProfileName and Address. Required. ',
-        }),
-    ).exactOptional(),
-    SortCriteria: SortListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sort order to use in listing the specified set of room profiles. Supported sort keys are ProfileName and Address.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by <code>MaxResults</code>.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        'The filters to use to list a specified set of room profiles. Supported filter keys are ProfileName and Address. Required. ',
+    }),
+    SortCriteria: SortListSchema.exactOptional().openapi({
+      description:
+        'The sort order to use in listing the specified set of room profiles. Supported sort keys are ProfileName and Address.',
+    }),
   })
   .openapi({ title: 'SearchProfilesRequest', required: [] })
   .openapi('SearchProfilesRequest')
 
 const RoomDataSchema = z
   .object({
-    RoomArn: ArnSchema.and(z.any().openapi({ description: 'The ARN of a room.' })).exactOptional(),
-    RoomName: RoomNameSchema.and(
-      z.any().openapi({ description: 'The name of a room.' }),
-    ).exactOptional(),
-    Description: RoomDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of a room.' }),
-    ).exactOptional(),
-    ProviderCalendarId: ProviderCalendarIdSchema.and(
-      z.any().openapi({ description: 'The provider calendar ARN of a room.' }),
-    ).exactOptional(),
-    ProfileArn: ArnSchema.and(
-      z.any().openapi({ description: 'The profile ARN of a room.' }),
-    ).exactOptional(),
-    ProfileName: ProfileNameSchema.and(
-      z.any().openapi({ description: 'The profile name of a room.' }),
-    ).exactOptional(),
+    RoomArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of a room.' }),
+    RoomName: RoomNameSchema.exactOptional().openapi({ description: 'The name of a room.' }),
+    Description: RoomDescriptionSchema.exactOptional().openapi({
+      description: 'The description of a room.',
+    }),
+    ProviderCalendarId: ProviderCalendarIdSchema.exactOptional().openapi({
+      description: 'The provider calendar ARN of a room.',
+    }),
+    ProfileArn: ArnSchema.exactOptional().openapi({ description: 'The profile ARN of a room.' }),
+    ProfileName: ProfileNameSchema.exactOptional().openapi({
+      description: 'The profile name of a room.',
+    }),
   })
   .openapi({ description: 'The data of a room.', required: [] })
   .openapi('RoomData')
@@ -3980,76 +3186,52 @@ const RoomDataListSchema = z.array(RoomDataSchema).openapi('RoomDataList')
 
 const SearchRoomsResponseSchema = z
   .object({
-    Rooms: RoomDataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The rooms that meet the specified set of filter criteria, in sort order.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned to indicate that there is more data available.',
-        }),
-    ).exactOptional(),
-    TotalCount: TotalCountSchema.and(
-      z.any().openapi({ description: 'The total number of rooms returned.' }),
-    ).exactOptional(),
+    Rooms: RoomDataListSchema.exactOptional().openapi({
+      description: 'The rooms that meet the specified set of filter criteria, in sort order.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned to indicate that there is more data available.',
+    }),
+    TotalCount: TotalCountSchema.exactOptional().openapi({
+      description: 'The total number of rooms returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchRoomsResponse')
 
 const SearchRoomsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by <code>MaxResults</code>.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved. ',
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filters to use to list a specified set of rooms. The supported filter keys are RoomName and ProfileName.',
-        }),
-    ).exactOptional(),
-    SortCriteria: SortListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sort order to use in listing the specified set of rooms. The supported sort keys are RoomName and ProfileName.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by <code>MaxResults</code>.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved. ',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        'The filters to use to list a specified set of rooms. The supported filter keys are RoomName and ProfileName.',
+    }),
+    SortCriteria: SortListSchema.exactOptional().openapi({
+      description:
+        'The sort order to use in listing the specified set of rooms. The supported sort keys are RoomName and ProfileName.',
+    }),
   })
   .openapi({ title: 'SearchRoomsRequest', required: [] })
   .openapi('SearchRoomsRequest')
 
 const SkillGroupDataSchema = z
   .object({
-    SkillGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The skill group ARN of a skill group.' }),
-    ).exactOptional(),
-    SkillGroupName: SkillGroupNameSchema.and(
-      z.any().openapi({ description: 'The skill group name of a skill group.' }),
-    ).exactOptional(),
-    Description: SkillGroupDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of a skill group.' }),
-    ).exactOptional(),
+    SkillGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The skill group ARN of a skill group.',
+    }),
+    SkillGroupName: SkillGroupNameSchema.exactOptional().openapi({
+      description: 'The skill group name of a skill group.',
+    }),
+    Description: SkillGroupDescriptionSchema.exactOptional().openapi({
+      description: 'The description of a skill group.',
+    }),
   })
   .openapi({ description: 'The attributes of a skill group.', required: [] })
   .openapi('SkillGroupData')
@@ -4058,59 +3240,37 @@ const SkillGroupDataListSchema = z.array(SkillGroupDataSchema).openapi('SkillGro
 
 const SearchSkillGroupsResponseSchema = z
   .object({
-    SkillGroups: SkillGroupDataListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The skill groups that meet the filter criteria, in sort order.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned to indicate that there is more data available.',
-        }),
-    ).exactOptional(),
-    TotalCount: TotalCountSchema.and(
-      z.any().openapi({ description: 'The total number of skill groups returned.' }),
-    ).exactOptional(),
+    SkillGroups: SkillGroupDataListSchema.exactOptional().openapi({
+      description: 'The skill groups that meet the filter criteria, in sort order.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned to indicate that there is more data available.',
+    }),
+    TotalCount: TotalCountSchema.exactOptional().openapi({
+      description: 'The total number of skill groups returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchSkillGroupsResponse')
 
 const SearchSkillGroupsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by <code>MaxResults</code>. Required.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved. ',
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filters to use to list a specified set of skill groups. The supported filter key is SkillGroupName. ',
-        }),
-    ).exactOptional(),
-    SortCriteria: SortListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sort order to use in listing the specified set of skill groups. The supported sort key is SkillGroupName. ',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by <code>MaxResults</code>. Required.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved. ',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        'The filters to use to list a specified set of skill groups. The supported filter key is SkillGroupName. ',
+    }),
+    SortCriteria: SortListSchema.exactOptional().openapi({
+      description:
+        'The sort order to use in listing the specified set of skill groups. The supported sort key is SkillGroupName. ',
+    }),
   })
   .openapi({ title: 'SearchSkillGroupsRequest', required: [] })
   .openapi('SearchSkillGroupsRequest')
@@ -4121,22 +3281,20 @@ const EnrollmentStatusSchema = z
 
 const UserDataSchema = z
   .object({
-    UserArn: ArnSchema.and(z.any().openapi({ description: 'The ARN of a user.' })).exactOptional(),
-    FirstName: UserFirstNameSchema.and(
-      z.any().openapi({ description: 'The first name of a user.' }),
-    ).exactOptional(),
-    LastName: UserLastNameSchema.and(
-      z.any().openapi({ description: 'The last name of a user.' }),
-    ).exactOptional(),
-    Email: EmailSchema.and(
-      z.any().openapi({ description: 'The email of a user.' }),
-    ).exactOptional(),
-    EnrollmentStatus: EnrollmentStatusSchema.and(
-      z.any().openapi({ description: 'The enrollment status of a user.' }),
-    ).exactOptional(),
-    EnrollmentId: EnrollmentIdSchema.and(
-      z.any().openapi({ description: 'The enrollment ARN of a user.' }),
-    ).exactOptional(),
+    UserArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of a user.' }),
+    FirstName: UserFirstNameSchema.exactOptional().openapi({
+      description: 'The first name of a user.',
+    }),
+    LastName: UserLastNameSchema.exactOptional().openapi({
+      description: 'The last name of a user.',
+    }),
+    Email: EmailSchema.exactOptional().openapi({ description: 'The email of a user.' }),
+    EnrollmentStatus: EnrollmentStatusSchema.exactOptional().openapi({
+      description: 'The enrollment status of a user.',
+    }),
+    EnrollmentId: EnrollmentIdSchema.exactOptional().openapi({
+      description: 'The enrollment ARN of a user.',
+    }),
   })
   .openapi({ description: 'Information related to a user.', required: [] })
   .openapi('UserData')
@@ -4145,70 +3303,46 @@ const UserDataListSchema = z.array(UserDataSchema).openapi('UserDataList')
 
 const SearchUsersResponseSchema = z
   .object({
-    Users: UserDataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The users that meet the specified set of filter criteria, in sort order.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token returned to indicate that there is more data available.',
-        }),
-    ).exactOptional(),
-    TotalCount: TotalCountSchema.and(
-      z.any().openapi({ description: 'The total number of users returned.' }),
-    ).exactOptional(),
+    Users: UserDataListSchema.exactOptional().openapi({
+      description: 'The users that meet the specified set of filter criteria, in sort order.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token returned to indicate that there is more data available.',
+    }),
+    TotalCount: TotalCountSchema.exactOptional().openapi({
+      description: 'The total number of users returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchUsersResponse')
 
 const SearchUsersRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by <code>MaxResults</code>. Required.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved. Required.',
-        }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filters to use for listing a specific set of users. Required. Supported filter keys are UserId, FirstName, LastName, Email, and EnrollmentStatus.',
-        }),
-    ).exactOptional(),
-    SortCriteria: SortListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sort order to use in listing the filtered set of users. Required. Supported sort keys are UserId, FirstName, LastName, Email, and EnrollmentStatus.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'An optional token returned from a prior request. Use this token for pagination of results from this action. If this parameter is specified, the response includes only results beyond the token, up to the value specified by <code>MaxResults</code>. Required.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved. Required.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        'The filters to use for listing a specific set of users. Required. Supported filter keys are UserId, FirstName, LastName, Email, and EnrollmentStatus.',
+    }),
+    SortCriteria: SortListSchema.exactOptional().openapi({
+      description:
+        'The sort order to use in listing the filtered set of users. Required. Supported sort keys are UserId, FirstName, LastName, Email, and EnrollmentStatus.',
+    }),
   })
   .openapi({ title: 'SearchUsersRequest', required: [] })
   .openapi('SearchUsersRequest')
 
 const SendAnnouncementResponseSchema = z
   .object({
-    AnnouncementArn: ArnSchema.and(
-      z.any().openapi({ description: 'The identifier of the announcement.' }),
-    ).exactOptional(),
+    AnnouncementArn: ArnSchema.exactOptional().openapi({
+      description: 'The identifier of the announcement.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SendAnnouncementResponse')
@@ -4224,12 +3358,10 @@ const TextValueSchema = z
 
 const TextSchema = z
   .object({
-    Locale: LocaleSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The locale of the text message. Currently, en-US is supported.' }),
-    ),
-    Value: TextValueSchema.and(z.any().openapi({ description: 'The value of the text message.' })),
+    Locale: LocaleSchema.openapi({
+      description: 'The locale of the text message. Currently, en-US is supported.',
+    }),
+    Value: TextValueSchema.openapi({ description: 'The value of the text message.' }),
   })
   .openapi({ required: ['Locale', 'Value'], description: 'The text message.' })
   .openapi('Text')
@@ -4245,19 +3377,13 @@ const SsmlValueSchema = z
 
 const SsmlSchema = z
   .object({
-    Locale: LocaleSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The locale of the SSML message. Currently, en-US is supported.' }),
-    ),
-    Value: SsmlValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the SSML message in the correct SSML format. The audio tag is not supported.',
-        }),
-    ),
+    Locale: LocaleSchema.openapi({
+      description: 'The locale of the SSML message. Currently, en-US is supported.',
+    }),
+    Value: SsmlValueSchema.openapi({
+      description:
+        'The value of the SSML message in the correct SSML format. The audio tag is not supported.',
+    }),
   })
   .openapi({
     required: ['Locale', 'Value'],
@@ -4279,21 +3405,13 @@ const AudioLocationSchema = z
 
 const AudioSchema = z
   .object({
-    Locale: LocaleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The locale of the audio message. Currently, en-US is supported.',
-        }),
-    ),
-    Location: AudioLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the audio file. Currently, S3 URLs are supported. Only S3 locations comprised of safe characters are valid. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html#Safe%20Characters">Safe Characters</a>.',
-        }),
-    ),
+    Locale: LocaleSchema.openapi({
+      description: 'The locale of the audio message. Currently, en-US is supported.',
+    }),
+    Location: AudioLocationSchema.openapi({
+      description:
+        'The location of the audio file. Currently, S3 URLs are supported. Only S3 locations comprised of safe characters are valid. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html#Safe%20Characters">Safe Characters</a>.',
+    }),
   })
   .openapi({
     required: ['Locale', 'Location'],
@@ -4306,15 +3424,11 @@ const AudioListSchema = z.array(AudioSchema).max(1).openapi('AudioList')
 
 const ContentSchema = z
   .object({
-    TextList: TextListSchema.and(
-      z.any().openapi({ description: 'The list of text messages.' }),
-    ).exactOptional(),
-    SsmlList: SsmlListSchema.and(
-      z.any().openapi({ description: 'The list of SSML messages.' }),
-    ).exactOptional(),
-    AudioList: AudioListSchema.and(
-      z.any().openapi({ description: 'The list of audio messages.' }),
-    ).exactOptional(),
+    TextList: TextListSchema.exactOptional().openapi({ description: 'The list of text messages.' }),
+    SsmlList: SsmlListSchema.exactOptional().openapi({ description: 'The list of SSML messages.' }),
+    AudioList: AudioListSchema.exactOptional().openapi({
+      description: 'The list of audio messages.',
+    }),
   })
   .openapi({
     description:
@@ -4327,38 +3441,22 @@ const TimeToLiveInSecondsSchema = z.int().min(1).max(3600).openapi('TimeToLiveIn
 
 const SendAnnouncementRequestSchema = z
   .object({
-    RoomFilters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filters to use to send an announcement to a specified list of rooms. The supported filter keys are RoomName, ProfileName, RoomArn, and ProfileArn. To send to all rooms, specify an empty RoomFilters list.',
-        }),
-    ),
-    Content: ContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The announcement content. This can contain only one of the three possible announcement types (text, SSML or audio).',
-        }),
-    ),
-    TimeToLiveInSeconds: TimeToLiveInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time to live for an announcement. Default is 300. If delivery doesn't occur within this time, the announcement is not delivered.",
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique, user-specified identifier for the request that ensures idempotency.',
-        }),
-    ),
+    RoomFilters: FilterListSchema.openapi({
+      description:
+        'The filters to use to send an announcement to a specified list of rooms. The supported filter keys are RoomName, ProfileName, RoomArn, and ProfileArn. To send to all rooms, specify an empty RoomFilters list.',
+    }),
+    Content: ContentSchema.openapi({
+      description:
+        'The announcement content. This can contain only one of the three possible announcement types (text, SSML or audio).',
+    }),
+    TimeToLiveInSeconds: TimeToLiveInSecondsSchema.exactOptional().openapi({
+      description:
+        "The time to live for an announcement. Default is 300. If delivery doesn't occur within this time, the announcement is not delivered.",
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.openapi({
+      description:
+        'The unique, user-specified identifier for the request that ensures idempotency.',
+    }),
   })
   .openapi({
     required: ['RoomFilters', 'Content', 'ClientRequestToken'],
@@ -4366,120 +3464,94 @@ const SendAnnouncementRequestSchema = z
   })
   .openapi('SendAnnouncementRequest')
 
-const SendInvitationResponseSchema = z.object({}).openapi('SendInvitationResponse')
+const SendInvitationResponseSchema = z.looseObject({}).openapi('SendInvitationResponse')
 
 const SendInvitationRequestSchema = z
   .object({
-    UserArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the user to whom to send an invitation. Required.' }),
-    ).exactOptional(),
+    UserArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the user to whom to send an invitation. Required.',
+    }),
   })
   .openapi({ title: 'SendInvitationRequest', required: [] })
   .openapi('SendInvitationRequest')
 
 const InvalidUserStatusExceptionSchema = z.any().openapi('InvalidUserStatusException')
 
-const StartDeviceSyncResponseSchema = z.object({}).openapi('StartDeviceSyncResponse')
+const StartDeviceSyncResponseSchema = z.looseObject({}).openapi('StartDeviceSyncResponse')
 
 const FeaturesSchema = z.array(FeatureSchema).openapi('Features')
 
 const StartDeviceSyncRequestSchema = z
   .object({
-    RoomArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the room with which the device to sync is associated. Required.',
-        }),
-    ).exactOptional(),
-    DeviceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the device to sync. Required.' }),
-    ).exactOptional(),
-    Features: FeaturesSchema.and(
-      z.any().openapi({ description: 'Request structure to start the device sync. Required.' }),
-    ),
+    RoomArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the room with which the device to sync is associated. Required.',
+    }),
+    DeviceArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the device to sync. Required.',
+    }),
+    Features: FeaturesSchema.openapi({
+      description: 'Request structure to start the device sync. Required.',
+    }),
   })
   .openapi({ required: ['Features'], title: 'StartDeviceSyncRequest' })
   .openapi('StartDeviceSyncRequest')
 
 const StartSmartHomeApplianceDiscoveryResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('StartSmartHomeApplianceDiscoveryResponse')
 
 const StartSmartHomeApplianceDiscoveryRequestSchema = z
   .object({
-    RoomArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The room where smart home appliance discovery was initiated.' }),
-    ),
+    RoomArn: ArnSchema.openapi({
+      description: 'The room where smart home appliance discovery was initiated.',
+    }),
   })
   .openapi({ required: ['RoomArn'], title: 'StartSmartHomeApplianceDiscoveryRequest' })
   .openapi('StartSmartHomeApplianceDiscoveryRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the resource to which to add metadata tags. Required. ',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to be added to the specified resource. Do not provide system tags. Required. ',
-        }),
-    ),
+    Arn: ArnSchema.openapi({
+      description: 'The ARN of the resource to which to add metadata tags. Required. ',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        'The tags to be added to the specified resource. Do not provide system tags. Required. ',
+    }),
   })
   .openapi({ required: ['Arn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the resource from which to remove metadata tags. Required. ',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to be removed from the specified resource. Do not provide system tags. Required. ',
-        }),
-    ),
+    Arn: ArnSchema.openapi({
+      description: 'The ARN of the resource from which to remove metadata tags. Required. ',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description:
+        'The tags to be removed from the specified resource. Do not provide system tags. Required. ',
+    }),
   })
   .openapi({ required: ['Arn', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
-const UpdateAddressBookResponseSchema = z.object({}).openapi('UpdateAddressBookResponse')
+const UpdateAddressBookResponseSchema = z.looseObject({}).openapi('UpdateAddressBookResponse')
 
 const UpdateAddressBookRequestSchema = z
   .object({
-    AddressBookArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the room to update.' }),
-    ),
-    Name: AddressBookNameSchema.and(
-      z.any().openapi({ description: 'The updated name of the room.' }),
-    ).exactOptional(),
-    Description: AddressBookDescriptionSchema.and(
-      z.any().openapi({ description: 'The updated description of the room.' }),
-    ).exactOptional(),
+    AddressBookArn: ArnSchema.openapi({ description: 'The ARN of the room to update.' }),
+    Name: AddressBookNameSchema.exactOptional().openapi({
+      description: 'The updated name of the room.',
+    }),
+    Description: AddressBookDescriptionSchema.exactOptional().openapi({
+      description: 'The updated description of the room.',
+    }),
   })
   .openapi({ required: ['AddressBookArn'], title: 'UpdateAddressBookRequest' })
   .openapi('UpdateAddressBookRequest')
@@ -4487,59 +3559,53 @@ const UpdateAddressBookRequestSchema = z
 const NameInUseExceptionSchema = z.any().openapi('NameInUseException')
 
 const UpdateBusinessReportScheduleResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateBusinessReportScheduleResponse')
 
 const UpdateBusinessReportScheduleRequestSchema = z
   .object({
-    ScheduleArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the business report schedule.' }),
-    ),
-    S3BucketName: CustomerS3BucketNameSchema.and(
-      z.any().openapi({ description: 'The S3 location of the output reports.' }),
-    ).exactOptional(),
-    S3KeyPrefix: S3KeyPrefixSchema.and(
-      z.any().openapi({ description: 'The S3 key where the report is delivered.' }),
-    ).exactOptional(),
-    Format: BusinessReportFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The format of the generated report (individual CSV files or zipped files of individual files).',
-        }),
-    ).exactOptional(),
-    ScheduleName: BusinessReportScheduleNameSchema.and(
-      z.any().openapi({ description: 'The name identifier of the schedule.' }),
-    ).exactOptional(),
-    Recurrence: BusinessReportRecurrenceSchema.and(
-      z.any().openapi({ description: 'The recurrence of the reports.' }),
-    ).exactOptional(),
+    ScheduleArn: ArnSchema.openapi({ description: 'The ARN of the business report schedule.' }),
+    S3BucketName: CustomerS3BucketNameSchema.exactOptional().openapi({
+      description: 'The S3 location of the output reports.',
+    }),
+    S3KeyPrefix: S3KeyPrefixSchema.exactOptional().openapi({
+      description: 'The S3 key where the report is delivered.',
+    }),
+    Format: BusinessReportFormatSchema.exactOptional().openapi({
+      description:
+        'The format of the generated report (individual CSV files or zipped files of individual files).',
+    }),
+    ScheduleName: BusinessReportScheduleNameSchema.exactOptional().openapi({
+      description: 'The name identifier of the schedule.',
+    }),
+    Recurrence: BusinessReportRecurrenceSchema.exactOptional().openapi({
+      description: 'The recurrence of the reports.',
+    }),
   })
   .openapi({ required: ['ScheduleArn'], title: 'UpdateBusinessReportScheduleRequest' })
   .openapi('UpdateBusinessReportScheduleRequest')
 
 const UpdateConferenceProviderResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateConferenceProviderResponse')
 
 const UpdateConferenceProviderRequestSchema = z
   .object({
-    ConferenceProviderArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the conference provider.' }),
-    ),
-    ConferenceProviderType: ConferenceProviderTypeSchema.and(
-      z.any().openapi({ description: 'The type of the conference provider.' }),
-    ),
-    IPDialIn: IPDialInSchema.and(
-      z.any().openapi({ description: 'The IP endpoint and protocol for calling.' }),
-    ).exactOptional(),
-    PSTNDialIn: PSTNDialInSchema.and(
-      z.any().openapi({ description: 'The information for PSTN conferencing.' }),
-    ).exactOptional(),
-    MeetingSetting: MeetingSettingSchema.and(
-      z.any().openapi({ description: 'The meeting settings for the conference provider.' }),
-    ),
+    ConferenceProviderArn: ArnSchema.openapi({
+      description: 'The ARN of the conference provider.',
+    }),
+    ConferenceProviderType: ConferenceProviderTypeSchema.openapi({
+      description: 'The type of the conference provider.',
+    }),
+    IPDialIn: IPDialInSchema.exactOptional().openapi({
+      description: 'The IP endpoint and protocol for calling.',
+    }),
+    PSTNDialIn: PSTNDialInSchema.exactOptional().openapi({
+      description: 'The information for PSTN conferencing.',
+    }),
+    MeetingSetting: MeetingSettingSchema.openapi({
+      description: 'The meeting settings for the conference provider.',
+    }),
   })
   .openapi({
     required: ['ConferenceProviderArn', 'ConferenceProviderType', 'MeetingSetting'],
@@ -4547,162 +3613,128 @@ const UpdateConferenceProviderRequestSchema = z
   })
   .openapi('UpdateConferenceProviderRequest')
 
-const UpdateContactResponseSchema = z.object({}).openapi('UpdateContactResponse')
+const UpdateContactResponseSchema = z.looseObject({}).openapi('UpdateContactResponse')
 
 const UpdateContactRequestSchema = z
   .object({
-    ContactArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the contact to update.' }),
-    ),
-    DisplayName: ContactNameSchema.and(
-      z.any().openapi({ description: 'The updated display name of the contact.' }),
-    ).exactOptional(),
-    FirstName: ContactNameSchema.and(
-      z.any().openapi({ description: 'The updated first name of the contact.' }),
-    ).exactOptional(),
-    LastName: ContactNameSchema.and(
-      z.any().openapi({ description: 'The updated last name of the contact.' }),
-    ).exactOptional(),
-    PhoneNumber: RawPhoneNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated phone number of the contact. The phone number type defaults to WORK. You can either specify PhoneNumber or PhoneNumbers. We recommend that you use PhoneNumbers, which lets you specify the phone number type and multiple numbers.',
-        }),
-    ).exactOptional(),
-    PhoneNumbers: PhoneNumberListSchema.and(
-      z.any().openapi({ description: 'The list of phone numbers for the contact.' }),
-    ).exactOptional(),
-    SipAddresses: SipAddressListSchema.and(
-      z.any().openapi({ description: 'The list of SIP addresses for the contact.' }),
-    ).exactOptional(),
+    ContactArn: ArnSchema.openapi({ description: 'The ARN of the contact to update.' }),
+    DisplayName: ContactNameSchema.exactOptional().openapi({
+      description: 'The updated display name of the contact.',
+    }),
+    FirstName: ContactNameSchema.exactOptional().openapi({
+      description: 'The updated first name of the contact.',
+    }),
+    LastName: ContactNameSchema.exactOptional().openapi({
+      description: 'The updated last name of the contact.',
+    }),
+    PhoneNumber: RawPhoneNumberSchema.exactOptional().openapi({
+      description:
+        'The updated phone number of the contact. The phone number type defaults to WORK. You can either specify PhoneNumber or PhoneNumbers. We recommend that you use PhoneNumbers, which lets you specify the phone number type and multiple numbers.',
+    }),
+    PhoneNumbers: PhoneNumberListSchema.exactOptional().openapi({
+      description: 'The list of phone numbers for the contact.',
+    }),
+    SipAddresses: SipAddressListSchema.exactOptional().openapi({
+      description: 'The list of SIP addresses for the contact.',
+    }),
   })
   .openapi({ required: ['ContactArn'], title: 'UpdateContactRequest' })
   .openapi('UpdateContactRequest')
 
-const UpdateDeviceResponseSchema = z.object({}).openapi('UpdateDeviceResponse')
+const UpdateDeviceResponseSchema = z.looseObject({}).openapi('UpdateDeviceResponse')
 
 const UpdateDeviceRequestSchema = z
   .object({
-    DeviceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the device to update. Required.' }),
-    ).exactOptional(),
-    DeviceName: DeviceNameSchema.and(
-      z.any().openapi({ description: 'The updated device name. Required.' }),
-    ).exactOptional(),
+    DeviceArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the device to update. Required.',
+    }),
+    DeviceName: DeviceNameSchema.exactOptional().openapi({
+      description: 'The updated device name. Required.',
+    }),
   })
   .openapi({ title: 'UpdateDeviceRequest', required: [] })
   .openapi('UpdateDeviceRequest')
 
-const UpdateGatewayResponseSchema = z.object({}).openapi('UpdateGatewayResponse')
+const UpdateGatewayResponseSchema = z.looseObject({}).openapi('UpdateGatewayResponse')
 
 const UpdateGatewayRequestSchema = z
   .object({
-    GatewayArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the gateway to update.' }),
-    ),
-    Name: GatewayNameSchema.and(
-      z.any().openapi({ description: 'The updated name of the gateway.' }),
-    ).exactOptional(),
-    Description: GatewayDescriptionSchema.and(
-      z.any().openapi({ description: 'The updated description of the gateway.' }),
-    ).exactOptional(),
-    SoftwareVersion: GatewayVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated software version of the gateway. The gateway automatically updates its software version during normal operation.',
-        }),
-    ).exactOptional(),
+    GatewayArn: ArnSchema.openapi({ description: 'The ARN of the gateway to update.' }),
+    Name: GatewayNameSchema.exactOptional().openapi({
+      description: 'The updated name of the gateway.',
+    }),
+    Description: GatewayDescriptionSchema.exactOptional().openapi({
+      description: 'The updated description of the gateway.',
+    }),
+    SoftwareVersion: GatewayVersionSchema.exactOptional().openapi({
+      description:
+        'The updated software version of the gateway. The gateway automatically updates its software version during normal operation.',
+    }),
   })
   .openapi({ required: ['GatewayArn'], title: 'UpdateGatewayRequest' })
   .openapi('UpdateGatewayRequest')
 
-const UpdateGatewayGroupResponseSchema = z.object({}).openapi('UpdateGatewayGroupResponse')
+const UpdateGatewayGroupResponseSchema = z.looseObject({}).openapi('UpdateGatewayGroupResponse')
 
 const UpdateGatewayGroupRequestSchema = z
   .object({
-    GatewayGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the gateway group to update.' }),
-    ),
-    Name: GatewayGroupNameSchema.and(
-      z.any().openapi({ description: 'The updated name of the gateway group.' }),
-    ).exactOptional(),
-    Description: GatewayGroupDescriptionSchema.and(
-      z.any().openapi({ description: 'The updated description of the gateway group.' }),
-    ).exactOptional(),
+    GatewayGroupArn: ArnSchema.openapi({ description: 'The ARN of the gateway group to update.' }),
+    Name: GatewayGroupNameSchema.exactOptional().openapi({
+      description: 'The updated name of the gateway group.',
+    }),
+    Description: GatewayGroupDescriptionSchema.exactOptional().openapi({
+      description: 'The updated description of the gateway group.',
+    }),
   })
   .openapi({ required: ['GatewayGroupArn'], title: 'UpdateGatewayGroupRequest' })
   .openapi('UpdateGatewayGroupRequest')
 
-const UpdateNetworkProfileResponseSchema = z.object({}).openapi('UpdateNetworkProfileResponse')
+const UpdateNetworkProfileResponseSchema = z.looseObject({}).openapi('UpdateNetworkProfileResponse')
 
 const UpdateNetworkProfileRequestSchema = z
   .object({
-    NetworkProfileArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the network profile associated with a device.' }),
-    ),
-    NetworkProfileName: NetworkProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the network profile associated with a device.' }),
-    ).exactOptional(),
-    Description: NetworkProfileDescriptionSchema.and(
-      z.any().openapi({ description: "Detailed information about a device's network profile." }),
-    ).exactOptional(),
-    CurrentPassword: CurrentWiFiPasswordSchema.and(
-      z.any().openapi({ description: 'The current password of the Wi-Fi network.' }),
-    ).exactOptional(),
-    NextPassword: NextWiFiPasswordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next, or subsequent, password of the Wi-Fi network. This password is asynchronously transmitted to the device and is used when the password of the network changes to NextPassword. ',
-        }),
-    ).exactOptional(),
-    CertificateAuthorityArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Private Certificate Authority (PCA) created in AWS Certificate Manager (ACM). This is used to issue certificates to the devices. ',
-        }),
-    ).exactOptional(),
-    TrustAnchors: TrustAnchorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The root certificate(s) of your authentication server that will be installed on your devices and used to trust your authentication server during EAP negotiation. ',
-        }),
-    ).exactOptional(),
+    NetworkProfileArn: ArnSchema.openapi({
+      description: 'The ARN of the network profile associated with a device.',
+    }),
+    NetworkProfileName: NetworkProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the network profile associated with a device.',
+    }),
+    Description: NetworkProfileDescriptionSchema.exactOptional().openapi({
+      description: "Detailed information about a device's network profile.",
+    }),
+    CurrentPassword: CurrentWiFiPasswordSchema.exactOptional().openapi({
+      description: 'The current password of the Wi-Fi network.',
+    }),
+    NextPassword: NextWiFiPasswordSchema.exactOptional().openapi({
+      description:
+        'The next, or subsequent, password of the Wi-Fi network. This password is asynchronously transmitted to the device and is used when the password of the network changes to NextPassword. ',
+    }),
+    CertificateAuthorityArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Private Certificate Authority (PCA) created in AWS Certificate Manager (ACM). This is used to issue certificates to the devices. ',
+    }),
+    TrustAnchors: TrustAnchorListSchema.exactOptional().openapi({
+      description:
+        'The root certificate(s) of your authentication server that will be installed on your devices and used to trust your authentication server during EAP negotiation. ',
+    }),
   })
   .openapi({ required: ['NetworkProfileArn'], title: 'UpdateNetworkProfileRequest' })
   .openapi('UpdateNetworkProfileRequest')
 
-const UpdateProfileResponseSchema = z.object({}).openapi('UpdateProfileResponse')
+const UpdateProfileResponseSchema = z.looseObject({}).openapi('UpdateProfileResponse')
 
 const UpdateEndOfMeetingReminderSchema = z
   .object({
-    ReminderAtMinutes: EndOfMeetingReminderMinutesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Updates settings for the end of meeting reminder feature that are applied to a room profile. The end of meeting reminder enables Alexa to remind users when a meeting is ending. ',
-        }),
-    ).exactOptional(),
-    ReminderType: EndOfMeetingReminderTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of sound that users hear during the end of meeting reminder. ',
-        }),
-    ).exactOptional(),
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether an end of meeting reminder is enabled or not.' }),
-    ).exactOptional(),
+    ReminderAtMinutes: EndOfMeetingReminderMinutesListSchema.exactOptional().openapi({
+      description:
+        'Updates settings for the end of meeting reminder feature that are applied to a room profile. The end of meeting reminder enables Alexa to remind users when a meeting is ending. ',
+    }),
+    ReminderType: EndOfMeetingReminderTypeSchema.exactOptional().openapi({
+      description: 'The type of sound that users hear during the end of meeting reminder. ',
+    }),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether an end of meeting reminder is enabled or not.',
+    }),
   })
   .openapi({
     description:
@@ -4713,17 +3745,13 @@ const UpdateEndOfMeetingReminderSchema = z
 
 const UpdateInstantBookingSchema = z
   .object({
-    DurationInMinutes: MinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Duration between 15 and 240 minutes at increments of 15 that determines how long to book an available room when a meeting is started with Alexa.',
-        }),
-    ).exactOptional(),
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether instant booking is enabled or not.' }),
-    ).exactOptional(),
+    DurationInMinutes: MinutesSchema.exactOptional().openapi({
+      description:
+        'Duration between 15 and 240 minutes at increments of 15 that determines how long to book an available room when a meeting is started with Alexa.',
+    }),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether instant booking is enabled or not.',
+    }),
   })
   .openapi({
     description:
@@ -4734,17 +3762,13 @@ const UpdateInstantBookingSchema = z
 
 const UpdateRequireCheckInSchema = z
   .object({
-    ReleaseAfterMinutes: MinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Duration between 5 and 20 minutes to determine when to release the room if it's not checked into. ",
-        }),
-    ).exactOptional(),
-    Enabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether require check in is enabled or not.' }),
-    ).exactOptional(),
+    ReleaseAfterMinutes: MinutesSchema.exactOptional().openapi({
+      description:
+        "Duration between 5 and 20 minutes to determine when to release the room if it's not checked into. ",
+    }),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether require check in is enabled or not.',
+    }),
   })
   .openapi({
     description:
@@ -4755,131 +3779,109 @@ const UpdateRequireCheckInSchema = z
 
 const UpdateMeetingRoomConfigurationSchema = z
   .object({
-    RoomUtilizationMetricsEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether room utilization metrics are enabled or not.' }),
-    ).exactOptional(),
-    EndOfMeetingReminder: UpdateEndOfMeetingReminderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Settings for the end of meeting reminder feature that are applied to a room profile. The end of meeting reminder enables Alexa to remind users when a meeting is ending. ',
-        }),
-    ).exactOptional(),
-    InstantBooking: UpdateInstantBookingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Settings to automatically book an available room available for a configured duration when joining a meeting with Alexa.',
-        }),
-    ).exactOptional(),
-    RequireCheckIn: UpdateRequireCheckInSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Settings for requiring a check in when a room is reserved. Alexa can cancel a room reservation if it's not checked into to make the room available for others. Users can check in by joining the meeting with Alexa or an AVS device, or by saying “Alexa, check in.” ",
-        }),
-    ).exactOptional(),
+    RoomUtilizationMetricsEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether room utilization metrics are enabled or not.',
+    }),
+    EndOfMeetingReminder: UpdateEndOfMeetingReminderSchema.exactOptional().openapi({
+      description:
+        'Settings for the end of meeting reminder feature that are applied to a room profile. The end of meeting reminder enables Alexa to remind users when a meeting is ending. ',
+    }),
+    InstantBooking: UpdateInstantBookingSchema.exactOptional().openapi({
+      description:
+        'Settings to automatically book an available room available for a configured duration when joining a meeting with Alexa.',
+    }),
+    RequireCheckIn: UpdateRequireCheckInSchema.exactOptional().openapi({
+      description:
+        "Settings for requiring a check in when a room is reserved. Alexa can cancel a room reservation if it's not checked into to make the room available for others. Users can check in by joining the meeting with Alexa or an AVS device, or by saying “Alexa, check in.” ",
+    }),
   })
   .openapi({ description: 'Updates meeting room settings of a room profile.', required: [] })
   .openapi('UpdateMeetingRoomConfiguration')
 
 const UpdateProfileRequestSchema = z
   .object({
-    ProfileArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the room profile to update. Required.' }),
-    ).exactOptional(),
-    ProfileName: ProfileNameSchema.and(
-      z.any().openapi({ description: 'The updated name for the room profile.' }),
-    ).exactOptional(),
-    IsDefault: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets the profile as default if selected. If this is missing, no update is done to the default status.',
-        }),
-    ).exactOptional(),
-    Timezone: TimezoneSchema.and(
-      z.any().openapi({ description: 'The updated timezone for the room profile.' }),
-    ).exactOptional(),
-    Address: AddressSchema.and(
-      z.any().openapi({ description: 'The updated address for the room profile.' }),
-    ).exactOptional(),
-    DistanceUnit: DistanceUnitSchema.and(
-      z.any().openapi({ description: 'The updated distance unit for the room profile.' }),
-    ).exactOptional(),
-    TemperatureUnit: TemperatureUnitSchema.and(
-      z.any().openapi({ description: 'The updated temperature unit for the room profile.' }),
-    ).exactOptional(),
-    WakeWord: WakeWordSchema.and(
-      z.any().openapi({ description: 'The updated wake word for the room profile.' }),
-    ).exactOptional(),
-    Locale: DeviceLocaleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated locale for the room profile. (This is currently only available to a limited preview audience.)',
-        }),
-    ).exactOptional(),
-    SetupModeDisabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the setup mode of the profile is enabled.' }),
-    ).exactOptional(),
-    MaxVolumeLimit: MaxVolumeLimitSchema.and(
-      z.any().openapi({ description: 'The updated maximum volume limit for the room profile.' }),
-    ).exactOptional(),
-    PSTNEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the PSTN setting of the room profile is enabled.' }),
-    ).exactOptional(),
-    DataRetentionOptIn: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether data retention of the profile is enabled.' }),
-    ).exactOptional(),
-    MeetingRoomConfiguration: UpdateMeetingRoomConfigurationSchema.and(
-      z.any().openapi({ description: 'The updated meeting room settings of a room profile.' }),
-    ).exactOptional(),
+    ProfileArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the room profile to update. Required.',
+    }),
+    ProfileName: ProfileNameSchema.exactOptional().openapi({
+      description: 'The updated name for the room profile.',
+    }),
+    IsDefault: BooleanSchema.exactOptional().openapi({
+      description:
+        'Sets the profile as default if selected. If this is missing, no update is done to the default status.',
+    }),
+    Timezone: TimezoneSchema.exactOptional().openapi({
+      description: 'The updated timezone for the room profile.',
+    }),
+    Address: AddressSchema.exactOptional().openapi({
+      description: 'The updated address for the room profile.',
+    }),
+    DistanceUnit: DistanceUnitSchema.exactOptional().openapi({
+      description: 'The updated distance unit for the room profile.',
+    }),
+    TemperatureUnit: TemperatureUnitSchema.exactOptional().openapi({
+      description: 'The updated temperature unit for the room profile.',
+    }),
+    WakeWord: WakeWordSchema.exactOptional().openapi({
+      description: 'The updated wake word for the room profile.',
+    }),
+    Locale: DeviceLocaleSchema.exactOptional().openapi({
+      description:
+        'The updated locale for the room profile. (This is currently only available to a limited preview audience.)',
+    }),
+    SetupModeDisabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the setup mode of the profile is enabled.',
+    }),
+    MaxVolumeLimit: MaxVolumeLimitSchema.exactOptional().openapi({
+      description: 'The updated maximum volume limit for the room profile.',
+    }),
+    PSTNEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the PSTN setting of the room profile is enabled.',
+    }),
+    DataRetentionOptIn: BooleanSchema.exactOptional().openapi({
+      description: 'Whether data retention of the profile is enabled.',
+    }),
+    MeetingRoomConfiguration: UpdateMeetingRoomConfigurationSchema.exactOptional().openapi({
+      description: 'The updated meeting room settings of a room profile.',
+    }),
   })
   .openapi({ title: 'UpdateProfileRequest', required: [] })
   .openapi('UpdateProfileRequest')
 
-const UpdateRoomResponseSchema = z.object({}).openapi('UpdateRoomResponse')
+const UpdateRoomResponseSchema = z.looseObject({}).openapi('UpdateRoomResponse')
 
 const UpdateRoomRequestSchema = z
   .object({
-    RoomArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the room to update. ' }),
-    ).exactOptional(),
-    RoomName: RoomNameSchema.and(
-      z.any().openapi({ description: 'The updated name for the room.' }),
-    ).exactOptional(),
-    Description: RoomDescriptionSchema.and(
-      z.any().openapi({ description: 'The updated description for the room.' }),
-    ).exactOptional(),
-    ProviderCalendarId: ProviderCalendarIdSchema.and(
-      z.any().openapi({ description: 'The updated provider calendar ARN for the room.' }),
-    ).exactOptional(),
-    ProfileArn: ArnSchema.and(
-      z.any().openapi({ description: 'The updated profile ARN for the room.' }),
-    ).exactOptional(),
+    RoomArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the room to update. ' }),
+    RoomName: RoomNameSchema.exactOptional().openapi({
+      description: 'The updated name for the room.',
+    }),
+    Description: RoomDescriptionSchema.exactOptional().openapi({
+      description: 'The updated description for the room.',
+    }),
+    ProviderCalendarId: ProviderCalendarIdSchema.exactOptional().openapi({
+      description: 'The updated provider calendar ARN for the room.',
+    }),
+    ProfileArn: ArnSchema.exactOptional().openapi({
+      description: 'The updated profile ARN for the room.',
+    }),
   })
   .openapi({ title: 'UpdateRoomRequest', required: [] })
   .openapi('UpdateRoomRequest')
 
-const UpdateSkillGroupResponseSchema = z.object({}).openapi('UpdateSkillGroupResponse')
+const UpdateSkillGroupResponseSchema = z.looseObject({}).openapi('UpdateSkillGroupResponse')
 
 const UpdateSkillGroupRequestSchema = z
   .object({
-    SkillGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the skill group to update. ' }),
-    ).exactOptional(),
-    SkillGroupName: SkillGroupNameSchema.and(
-      z.any().openapi({ description: 'The updated name for the skill group.' }),
-    ).exactOptional(),
-    Description: SkillGroupDescriptionSchema.and(
-      z.any().openapi({ description: 'The updated description for the skill group.' }),
-    ).exactOptional(),
+    SkillGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the skill group to update. ',
+    }),
+    SkillGroupName: SkillGroupNameSchema.exactOptional().openapi({
+      description: 'The updated name for the skill group.',
+    }),
+    Description: SkillGroupDescriptionSchema.exactOptional().openapi({
+      description: 'The updated description for the skill group.',
+    }),
   })
   .openapi({ title: 'UpdateSkillGroupRequest', required: [] })
   .openapi('UpdateSkillGroupRequest')

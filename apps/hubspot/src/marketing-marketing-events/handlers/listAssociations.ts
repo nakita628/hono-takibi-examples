@@ -13,15 +13,21 @@ const app = new OpenAPIHono()
 export const listAssociationsHandler = app
   .openapi(
     getMarketingMarketingEvents202609AssociationsExternalAccountIdExternalEventIdListsRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     putMarketingMarketingEvents202609AssociationsExternalAccountIdExternalEventIdListsListIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     deleteMarketingMarketingEvents202609AssociationsExternalAccountIdExternalEventIdListsListIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(getMarketingMarketingEvents202609AssociationsMarketingEventIdListsRoute, (c) => {
     throw new Error('Not implemented')
@@ -31,5 +37,7 @@ export const listAssociationsHandler = app
   })
   .openapi(
     deleteMarketingMarketingEvents202609AssociationsMarketingEventIdListsListIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

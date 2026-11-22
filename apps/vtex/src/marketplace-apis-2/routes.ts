@@ -22,15 +22,7 @@ const ImageSchema = z
   .openapi('Image')
 
 const ImagesSchema = z
-  .object({
-    'imagem1.jpg': z
-      .string()
-      .default('https://imageurl.example')
-      .openapi({
-        description:
-          "Array containing the URLs of the SKU's images.  The image must be sent through `https` protocol, otherwise it will not be rendered in VTEX Admin.",
-      }),
-  })
+  .array(z.any())
   .openapi({
     example: [{ 'imagem1.jpg': 'imageurl.example' }],
     required: ['imagem1.jpg'],
@@ -39,87 +31,8 @@ const ImagesSchema = z
   .openapi('Images')
 
 const MatchMultipleSchema = z
-  .object({
-    object: z
-      .object({
-        brandId: z
-          .int32()
-          .nullable()
-          .default(1234567)
-          .exactOptional()
-          .openapi({
-            description:
-              "Marketplace's Brand ID that the product belongs to, configured in the Catalog. It should be the brand chosen for the received SKU to be matched with. The `brandId` is already mapped through the [Get SKU Suggestion by ID](https://developers.vtex.com/vtex-rest-api/reference/getsuggestion). This field is nulled when the inserted value is 0, and is mandatory for the 'newproduct' action.",
-          }),
-        categoryId: z
-          .int32()
-          .nullable()
-          .default(12)
-          .openapi({
-            description:
-              "Marketplace's Category ID that the product belongs to, configured in the Catalog. It should be the category chosen for the received SKU to be matched with. The `categoryId` is already mapped through the [Get SKU Suggestion by ID](https://developers.vtex.com/vtex-rest-api/reference/getsuggestion). You can choose to keep the same suggested `categoryID`, or overwrite it with another value in this request. This field is nulled when the inserted value is 0.",
-          }),
-        itemId: z
-          .string()
-          .default('1234567')
-          .openapi({
-            description:
-              "This field can be used to link any string that identifies that SKU. Its most common use is the seller's SKU ID.",
-          }),
-        matchId: z
-          .string()
-          .default('vtex-matcher')
-          .openapi({
-            description:
-              "Whenever an SKU suggestion is matched, it is associated to a unique ID. Fill in this field with the matchId you wish to filter by. The `matchId`'s value can be obtained through the [Get SKU Suggestion by ID](https://developers.vtex.com/vtex-rest-api/reference/getsuggestion) endpoint.",
-          }),
-        matcherId: z
-          .string()
-          .default('vtex-matcher')
-          .openapi({
-            description:
-              "Identifies the matching entity. It can be either VTEX's matcher, or an external matcher developed by partners, for example. The `matcherId`'s value can be obtained through the [Get SKU Suggestion by ID](https://developers.vtex.com/vtex-rest-api/reference/getsuggestion) endpoint.",
-          }),
-        productRef: z
-          .string()
-          .nullable()
-          .default('123 product ref')
-          .exactOptional()
-          .openapi({
-            description:
-              "Fill in this field on your request when the matched item is a product. This field is mandatory for the 'productassociation' action.",
-          }),
-        sellerId: z
-          .string()
-          .default('seller123')
-          .openapi({
-            description:
-              'A string that identifies the seller in the marketplace. This ID must be created by the marketplace and informed to the seller before the integration is built.',
-          }),
-        skuRef: z
-          .string()
-          .nullable()
-          .default('123 sku ref')
-          .exactOptional()
-          .openapi({
-            description:
-              "Fill in this field on your request when the matched item is an SKU. This field is mandatory for the 'skuassociation' action.",
-          }),
-        versionId: z
-          .string()
-          .default('')
-          .openapi({
-            description:
-              "Whenever an SKU Suggestion is updated or changed, a new version of the original one is created. All versions are logged, so you can search for previous our current states of SKU suggestions. This field is the versionId associated to the version you choose to search for. You can get this field's value through the [Get SKU Suggestion by ID](https://developers.vtex.com/vtex-rest-api/reference/getsuggestion). through the `latestVersionId` field.",
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        required: ['itemId', 'versionId', 'matchId', 'matcherId', 'categoryId', 'sellerId'],
-        title: '',
-      }),
-  })
-  .openapi({ title: 'MatchMultiple', required: [] })
+  .array(z.any())
+  .openapi({ title: 'MatchMultiple' })
   .openapi('MatchMultiple')
 
 const ProductSchema = z
@@ -1060,42 +973,11 @@ export const putSuggestionsConfigurationRoute = createRoute({
                     "Type of approval configuration that apply to received SKUs sent by sellers. The possible values are: \n\n`default`: the matcher approves the SKU. \n\n`manual`: manual SKU's approvals. \n\n`AutoApprove`: automatic SKU's approvals.",
                 }),
               Matchers: z
-                .object({
-                  Description: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ description: 'The note inserted on the request body.' }),
-                  IsActive: z
-                    .boolean()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'Whether the matcher is active in the account (`true`), or not (`false`).',
-                    }),
-                  MatcherId: z
-                    .string()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        "Identifies the matching entity. It can be either [VTEX's matcher](https://help.vtex.com/en/tutorial/understanding-vtex-matcher-scoring), or an external matcher.",
-                    }),
-                  UpdatesNotificationEndpoint: z
-                    .string()
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        "The [received SKUs](https://help.vtex.com/en/tutorial/cataloging-received-skus--tutorials_396) module calls this endpoint for matcher's suggestions updates.",
-                    }),
-                  'hook-base-address': z
-                    .string()
-                    .exactOptional()
-                    .openapi({ description: "The given Matcher's URL." }),
-                })
+                .array(z.any())
                 .exactOptional()
                 .openapi({
                   description:
                     '[Matchers](https://help.vtex.com/en/tutorial/understanding-vtex-matcher-scoring) configurations for approving and rejecting [received SKUs](https://help.vtex.com/en/tutorial/cataloging-received-skus--tutorials_396) sent by sellers.',
-                  required: [],
                 }),
               Rules: z
                 .object({
@@ -1132,21 +1014,11 @@ export const putSuggestionsConfigurationRoute = createRoute({
                   required: [],
                 }),
               SpecificationsMapping: z
-                .object({
-                  Mapping: z
-                    .looseObject({})
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'The attributes and values mapped between the marketplace and the seller.',
-                    }),
-                  SellerId: z.string().exactOptional().openapi({ description: 'The Seller ID.' }),
-                })
+                .array(z.any())
                 .exactOptional()
                 .openapi({
                   description:
                     "This attribute maps product and SKU's specifications between the marketplace and the seller.",
-                  required: [],
                 }),
             })
             .openapi({

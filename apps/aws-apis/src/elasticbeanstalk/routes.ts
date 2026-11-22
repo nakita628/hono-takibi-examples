@@ -10,18 +10,18 @@ const ActionTypeSchema = z
 
 const ApplyEnvironmentManagedActionResultSchema = z
   .object({
-    ActionId: StringSchema.and(
-      z.any().openapi({ description: 'The action ID of the managed action.' }),
-    ).exactOptional(),
-    ActionDescription: StringSchema.and(
-      z.any().openapi({ description: 'A description of the managed action.' }),
-    ).exactOptional(),
-    ActionType: ActionTypeSchema.and(
-      z.any().openapi({ description: 'The type of managed action.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the managed action.' }),
-    ).exactOptional(),
+    ActionId: StringSchema.exactOptional().openapi({
+      description: 'The action ID of the managed action.',
+    }),
+    ActionDescription: StringSchema.exactOptional().openapi({
+      description: 'A description of the managed action.',
+    }),
+    ActionType: ActionTypeSchema.exactOptional().openapi({
+      description: 'The type of managed action.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description: 'The status of the managed action.',
+    }),
   })
   .openapi({
     description: 'The result message containing information about the managed action.',
@@ -41,22 +41,14 @@ const DNSCnameSchema = z.string().min(1).max(255).openapi('DNSCname')
 
 const CheckDNSAvailabilityResultMessageSchema = z
   .object({
-    Available: CnameAvailabilitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates if the specified CNAME is available:</p> <ul> <li> <p> <code>true</code> : The CNAME is available.</p> </li> <li> <p> <code>false</code> : The CNAME is not available.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    FullyQualifiedCNAME: DNSCnameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fully qualified CNAME to reserve when <a>CreateEnvironment</a> is called with the provided prefix.',
-        }),
-    ).exactOptional(),
+    Available: CnameAvailabilitySchema.exactOptional().openapi({
+      description:
+        '<p>Indicates if the specified CNAME is available:</p> <ul> <li> <p> <code>true</code> : The CNAME is available.</p> </li> <li> <p> <code>false</code> : The CNAME is not available.</p> </li> </ul>',
+    }),
+    FullyQualifiedCNAME: DNSCnameSchema.exactOptional().openapi({
+      description:
+        'The fully qualified CNAME to reserve when <a>CreateEnvironment</a> is called with the provided prefix.',
+    }),
   })
   .openapi({
     example: { Available: true, FullyQualifiedCNAME: 'my-cname.us-west-2.elasticbeanstalk.com' },
@@ -128,12 +120,12 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const ListenerSchema = z
   .object({
-    Protocol: StringSchema.and(
-      z.any().openapi({ description: 'The protocol that is used by the Listener.' }),
-    ).exactOptional(),
-    Port: IntegerSchema.and(
-      z.any().openapi({ description: 'The port that is used by the Listener.' }),
-    ).exactOptional(),
+    Protocol: StringSchema.exactOptional().openapi({
+      description: 'The protocol that is used by the Listener.',
+    }),
+    Port: IntegerSchema.exactOptional().openapi({
+      description: 'The port that is used by the Listener.',
+    }),
   })
   .openapi({
     description: 'Describes the properties of a Listener for the LoadBalancer.',
@@ -147,24 +139,24 @@ const LoadBalancerListenersDescriptionSchema = z
 
 const LoadBalancerDescriptionSchema = z
   .object({
-    LoadBalancerName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the LoadBalancer.' }),
-    ).exactOptional(),
-    Domain: StringSchema.and(
-      z.any().openapi({ description: 'The domain name of the LoadBalancer.' }),
-    ).exactOptional(),
-    Listeners: LoadBalancerListenersDescriptionSchema.and(
-      z.any().openapi({ description: 'A list of Listeners used by the LoadBalancer.' }),
-    ).exactOptional(),
+    LoadBalancerName: StringSchema.exactOptional().openapi({
+      description: 'The name of the LoadBalancer.',
+    }),
+    Domain: StringSchema.exactOptional().openapi({
+      description: 'The domain name of the LoadBalancer.',
+    }),
+    Listeners: LoadBalancerListenersDescriptionSchema.exactOptional().openapi({
+      description: 'A list of Listeners used by the LoadBalancer.',
+    }),
   })
   .openapi({ description: 'Describes the details of a LoadBalancer.', required: [] })
   .openapi('LoadBalancerDescription')
 
 const EnvironmentResourcesDescriptionSchema = z
   .object({
-    LoadBalancer: LoadBalancerDescriptionSchema.and(
-      z.any().openapi({ description: 'Describes the LoadBalancer.' }),
-    ).exactOptional(),
+    LoadBalancer: LoadBalancerDescriptionSchema.exactOptional().openapi({
+      description: 'Describes the LoadBalancer.',
+    }),
   })
   .openapi({
     description:
@@ -175,42 +167,28 @@ const EnvironmentResourcesDescriptionSchema = z
 
 const EnvironmentTierSchema = z
   .object({
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of this environment tier.</p> <p>Valid values:</p> <ul> <li> <p>For <i>Web server tier</i> – <code>WebServer</code> </p> </li> <li> <p>For <i>Worker tier</i> – <code>Worker</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of this environment tier.</p> <p>Valid values:</p> <ul> <li> <p>For <i>Web server tier</i> – <code>Standard</code> </p> </li> <li> <p>For <i>Worker tier</i> – <code>SQS/HTTP</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The version of this environment tier. When you don't set a value to it, Elastic Beanstalk uses the latest compatible worker tier version.</p> <note> <p>This member is deprecated. Any specific version that you set may become out of date. We recommend leaving it unspecified.</p> </note>",
-        }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of this environment tier.</p> <p>Valid values:</p> <ul> <li> <p>For <i>Web server tier</i> – <code>WebServer</code> </p> </li> <li> <p>For <i>Worker tier</i> – <code>Worker</code> </p> </li> </ul>',
+    }),
+    Type: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The type of this environment tier.</p> <p>Valid values:</p> <ul> <li> <p>For <i>Web server tier</i> – <code>Standard</code> </p> </li> <li> <p>For <i>Worker tier</i> – <code>SQS/HTTP</code> </p> </li> </ul>',
+    }),
+    Version: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The version of this environment tier. When you don't set a value to it, Elastic Beanstalk uses the latest compatible worker tier version.</p> <note> <p>This member is deprecated. Any specific version that you set may become out of date. We recommend leaving it unspecified.</p> </note>",
+    }),
   })
   .openapi({ description: 'Describes the properties of an environment tier', required: [] })
   .openapi('EnvironmentTier')
 
 const EnvironmentLinkSchema = z
   .object({
-    LinkName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the link.' }),
-    ).exactOptional(),
-    EnvironmentName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the linked environment (the dependency).' }),
-    ).exactOptional(),
+    LinkName: StringSchema.exactOptional().openapi({ description: 'The name of the link.' }),
+    EnvironmentName: StringSchema.exactOptional().openapi({
+      description: 'The name of the linked environment (the dependency).',
+    }),
   })
   .openapi({
     description:
@@ -227,118 +205,77 @@ const OperationsRoleSchema = z.string().min(1).max(256).openapi('OperationsRole'
 
 const EnvironmentDescriptionSchema = z
   .object({
-    EnvironmentName: EnvironmentNameSchema.and(
-      z.any().openapi({ description: 'The name of this environment.' }),
-    ).exactOptional(),
-    EnvironmentId: EnvironmentIdSchema.and(
-      z.any().openapi({ description: 'The ID of this environment.' }),
-    ).exactOptional(),
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the application associated with this environment.' }),
-    ).exactOptional(),
-    VersionLabel: VersionLabelSchema.and(
-      z.any().openapi({ description: 'The application version deployed in this environment.' }),
-    ).exactOptional(),
-    SolutionStackName: SolutionStackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the <code>SolutionStack</code> deployed with this environment. ',
-        }),
-    ).exactOptional(),
-    PlatformArn: PlatformArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the platform version.' }),
-    ).exactOptional(),
-    TemplateName: ConfigurationTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the configuration template used to originally launch this environment.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Describes this environment.' }),
-    ).exactOptional(),
-    EndpointURL: EndpointURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For load-balanced, autoscaling environments, the URL to the LoadBalancer. For single-instance environments, the IP address of the instance.',
-        }),
-    ).exactOptional(),
-    CNAME: DNSCnameSchema.and(
-      z.any().openapi({ description: 'The URL to the CNAME for this environment.' }),
-    ).exactOptional(),
-    DateCreated: CreationDateSchema.and(
-      z.any().openapi({ description: 'The creation date for this environment.' }),
-    ).exactOptional(),
-    DateUpdated: UpdateDateSchema.and(
-      z.any().openapi({ description: 'The last modified date for this environment.' }),
-    ).exactOptional(),
-    Status: EnvironmentStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current operational status of the environment:</p> <ul> <li> <p> <code>Launching</code>: Environment is in the process of initial deployment.</p> </li> <li> <p> <code>Updating</code>: Environment is in the process of updating its configuration settings or application version.</p> </li> <li> <p> <code>Ready</code>: Environment is available to have an action performed on it, such as update or terminate.</p> </li> <li> <p> <code>Terminating</code>: Environment is in the shut-down process.</p> </li> <li> <p> <code>Terminated</code>: Environment is not running.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    AbortableOperationInProgress: AbortableOperationInProgressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates if there is an in-progress environment configuration update or application version deployment that you can cancel.</p> <p> <code>true:</code> There is an update in progress. </p> <p> <code>false:</code> There are no updates currently in progress. </p>',
-        }),
-    ).exactOptional(),
-    Health: EnvironmentHealthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the health status of the environment. AWS Elastic Beanstalk indicates the failure levels for a running environment:</p> <ul> <li> <p> <code>Red</code>: Indicates the environment is not responsive. Occurs when three or more consecutive failures occur for an environment.</p> </li> <li> <p> <code>Yellow</code>: Indicates that something is wrong. Occurs when two consecutive failures occur for an environment.</p> </li> <li> <p> <code>Green</code>: Indicates the environment is healthy and fully functional.</p> </li> <li> <p> <code>Grey</code>: Default health for a new environment. The environment is not fully launched and health checks have not started or health checks are suspended during an <code>UpdateEnvironment</code> or <code>RestartEnvironment</code> request.</p> </li> </ul> <p> Default: <code>Grey</code> </p>',
-        }),
-    ).exactOptional(),
-    HealthStatus: EnvironmentHealthStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns the health status of the application running in your environment. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced-status.html">Health Colors and Statuses</a>.',
-        }),
-    ).exactOptional(),
-    Resources: EnvironmentResourcesDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The description of the AWS resources used by this environment.' }),
-    ).exactOptional(),
-    Tier: EnvironmentTierSchema.and(
-      z.any().openapi({ description: 'Describes the current tier of this environment.' }),
-    ).exactOptional(),
-    EnvironmentLinks: EnvironmentLinksSchema.and(
-      z.any().openapi({ description: 'A list of links to other environments in the same group.' }),
-    ).exactOptional(),
-    EnvironmentArn: EnvironmentArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The environment's Amazon Resource Name (ARN), which can be used in other API requests that require an ARN.",
-        }),
-    ).exactOptional(),
-    OperationsRole: OperationsRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the environment\'s operations role. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/iam-operationsrole.html">Operations roles</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.',
-        }),
-    ).exactOptional(),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description: 'The name of this environment.',
+    }),
+    EnvironmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description: 'The ID of this environment.',
+    }),
+    ApplicationName: ApplicationNameSchema.exactOptional().openapi({
+      description: 'The name of the application associated with this environment.',
+    }),
+    VersionLabel: VersionLabelSchema.exactOptional().openapi({
+      description: 'The application version deployed in this environment.',
+    }),
+    SolutionStackName: SolutionStackNameSchema.exactOptional().openapi({
+      description: ' The name of the <code>SolutionStack</code> deployed with this environment. ',
+    }),
+    PlatformArn: PlatformArnSchema.exactOptional().openapi({
+      description: 'The ARN of the platform version.',
+    }),
+    TemplateName: ConfigurationTemplateNameSchema.exactOptional().openapi({
+      description:
+        'The name of the configuration template used to originally launch this environment.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Describes this environment.',
+    }),
+    EndpointURL: EndpointURLSchema.exactOptional().openapi({
+      description:
+        'For load-balanced, autoscaling environments, the URL to the LoadBalancer. For single-instance environments, the IP address of the instance.',
+    }),
+    CNAME: DNSCnameSchema.exactOptional().openapi({
+      description: 'The URL to the CNAME for this environment.',
+    }),
+    DateCreated: CreationDateSchema.exactOptional().openapi({
+      description: 'The creation date for this environment.',
+    }),
+    DateUpdated: UpdateDateSchema.exactOptional().openapi({
+      description: 'The last modified date for this environment.',
+    }),
+    Status: EnvironmentStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The current operational status of the environment:</p> <ul> <li> <p> <code>Launching</code>: Environment is in the process of initial deployment.</p> </li> <li> <p> <code>Updating</code>: Environment is in the process of updating its configuration settings or application version.</p> </li> <li> <p> <code>Ready</code>: Environment is available to have an action performed on it, such as update or terminate.</p> </li> <li> <p> <code>Terminating</code>: Environment is in the shut-down process.</p> </li> <li> <p> <code>Terminated</code>: Environment is not running.</p> </li> </ul>',
+    }),
+    AbortableOperationInProgress: AbortableOperationInProgressSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates if there is an in-progress environment configuration update or application version deployment that you can cancel.</p> <p> <code>true:</code> There is an update in progress. </p> <p> <code>false:</code> There are no updates currently in progress. </p>',
+    }),
+    Health: EnvironmentHealthSchema.exactOptional().openapi({
+      description:
+        '<p>Describes the health status of the environment. AWS Elastic Beanstalk indicates the failure levels for a running environment:</p> <ul> <li> <p> <code>Red</code>: Indicates the environment is not responsive. Occurs when three or more consecutive failures occur for an environment.</p> </li> <li> <p> <code>Yellow</code>: Indicates that something is wrong. Occurs when two consecutive failures occur for an environment.</p> </li> <li> <p> <code>Green</code>: Indicates the environment is healthy and fully functional.</p> </li> <li> <p> <code>Grey</code>: Default health for a new environment. The environment is not fully launched and health checks have not started or health checks are suspended during an <code>UpdateEnvironment</code> or <code>RestartEnvironment</code> request.</p> </li> </ul> <p> Default: <code>Grey</code> </p>',
+    }),
+    HealthStatus: EnvironmentHealthStatusSchema.exactOptional().openapi({
+      description:
+        'Returns the health status of the application running in your environment. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced-status.html">Health Colors and Statuses</a>.',
+    }),
+    Resources: EnvironmentResourcesDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the AWS resources used by this environment.',
+    }),
+    Tier: EnvironmentTierSchema.exactOptional().openapi({
+      description: 'Describes the current tier of this environment.',
+    }),
+    EnvironmentLinks: EnvironmentLinksSchema.exactOptional().openapi({
+      description: 'A list of links to other environments in the same group.',
+    }),
+    EnvironmentArn: EnvironmentArnSchema.exactOptional().openapi({
+      description:
+        "The environment's Amazon Resource Name (ARN), which can be used in other API requests that require an ARN.",
+    }),
+    OperationsRole: OperationsRoleSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the environment\'s operations role. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/iam-operationsrole.html">Operations roles</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.',
+    }),
   })
   .openapi({
     example: {
@@ -369,17 +306,13 @@ const TokenSchema = z.string().openapi('Token')
 
 const EnvironmentDescriptionsMessageSchema = z
   .object({
-    Environments: EnvironmentDescriptionsListSchema.and(
-      z.any().openapi({ description: ' Returns an <a>EnvironmentDescription</a> list. ' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'In a paginated request, the token that you can pass in a subsequent request to get the next response page.',
-        }),
-    ).exactOptional(),
+    Environments: EnvironmentDescriptionsListSchema.exactOptional().openapi({
+      description: ' Returns an <a>EnvironmentDescription</a> list. ',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'In a paginated request, the token that you can pass in a subsequent request to get the next response page.',
+    }),
   })
   .openapi({
     example: {
@@ -422,27 +355,17 @@ const BoxedIntSchema = z.int().openapi('BoxedInt')
 
 const MaxCountRuleSchema = z
   .object({
-    Enabled: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify <code>true</code> to apply the rule, or <code>false</code> to disable it.',
-        }),
-    ),
-    MaxCount: BoxedIntSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specify the maximum number of application versions to retain.' }),
-    ).exactOptional(),
-    DeleteSourceFromS3: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Set to <code>true</code> to delete a version's source bundle from Amazon S3 when Elastic Beanstalk deletes the application version.",
-        }),
-    ).exactOptional(),
+    Enabled: BoxedBooleanSchema.openapi({
+      description:
+        'Specify <code>true</code> to apply the rule, or <code>false</code> to disable it.',
+    }),
+    MaxCount: BoxedIntSchema.exactOptional().openapi({
+      description: 'Specify the maximum number of application versions to retain.',
+    }),
+    DeleteSourceFromS3: BoxedBooleanSchema.exactOptional().openapi({
+      description:
+        "Set to <code>true</code> to delete a version's source bundle from Amazon S3 when Elastic Beanstalk deletes the application version.",
+    }),
   })
   .openapi({
     required: ['Enabled'],
@@ -453,27 +376,17 @@ const MaxCountRuleSchema = z
 
 const MaxAgeRuleSchema = z
   .object({
-    Enabled: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify <code>true</code> to apply the rule, or <code>false</code> to disable it.',
-        }),
-    ),
-    MaxAgeInDays: BoxedIntSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specify the number of days to retain an application versions.' }),
-    ).exactOptional(),
-    DeleteSourceFromS3: BoxedBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Set to <code>true</code> to delete a version's source bundle from Amazon S3 when Elastic Beanstalk deletes the application version.",
-        }),
-    ).exactOptional(),
+    Enabled: BoxedBooleanSchema.openapi({
+      description:
+        'Specify <code>true</code> to apply the rule, or <code>false</code> to disable it.',
+    }),
+    MaxAgeInDays: BoxedIntSchema.exactOptional().openapi({
+      description: 'Specify the number of days to retain an application versions.',
+    }),
+    DeleteSourceFromS3: BoxedBooleanSchema.exactOptional().openapi({
+      description:
+        "Set to <code>true</code> to delete a version's source bundle from Amazon S3 when Elastic Beanstalk deletes the application version.",
+    }),
   })
   .openapi({
     required: ['Enabled'],
@@ -484,22 +397,14 @@ const MaxAgeRuleSchema = z
 
 const ApplicationVersionLifecycleConfigSchema = z
   .object({
-    MaxCountRule: MaxCountRuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify a max count rule to restrict the number of application versions that are retained for an application.',
-        }),
-    ).exactOptional(),
-    MaxAgeRule: MaxAgeRuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify a max age rule to restrict the length of time that application versions are retained for an application.',
-        }),
-    ).exactOptional(),
+    MaxCountRule: MaxCountRuleSchema.exactOptional().openapi({
+      description:
+        'Specify a max count rule to restrict the number of application versions that are retained for an application.',
+    }),
+    MaxAgeRule: MaxAgeRuleSchema.exactOptional().openapi({
+      description:
+        'Specify a max age rule to restrict the length of time that application versions are retained for an application.',
+    }),
   })
   .openapi({
     description:
@@ -510,17 +415,13 @@ const ApplicationVersionLifecycleConfigSchema = z
 
 const ApplicationResourceLifecycleConfigSchema = z
   .object({
-    ServiceRole: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ARN of an IAM service role that Elastic Beanstalk has permission to assume.</p> <p>The <code>ServiceRole</code> property is required the first time that you provide a <code>VersionLifecycleConfig</code> for the application in one of the supporting calls (<code>CreateApplication</code> or <code>UpdateApplicationResourceLifecycle</code>). After you provide it once, in either one of the calls, Elastic Beanstalk persists the Service Role with the application, and you don't need to specify it again in subsequent <code>UpdateApplicationResourceLifecycle</code> calls. You can, however, specify it in subsequent calls to change the Service Role to another value.</p>",
-        }),
-    ).exactOptional(),
-    VersionLifecycleConfig: ApplicationVersionLifecycleConfigSchema.and(
-      z.any().openapi({ description: 'Defines lifecycle settings for application versions.' }),
-    ).exactOptional(),
+    ServiceRole: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The ARN of an IAM service role that Elastic Beanstalk has permission to assume.</p> <p>The <code>ServiceRole</code> property is required the first time that you provide a <code>VersionLifecycleConfig</code> for the application in one of the supporting calls (<code>CreateApplication</code> or <code>UpdateApplicationResourceLifecycle</code>). After you provide it once, in either one of the calls, Elastic Beanstalk persists the Service Role with the application, and you don't need to specify it again in subsequent <code>UpdateApplicationResourceLifecycle</code> calls. You can, however, specify it in subsequent calls to change the Service Role to another value.</p>",
+    }),
+    VersionLifecycleConfig: ApplicationVersionLifecycleConfigSchema.exactOptional().openapi({
+      description: 'Defines lifecycle settings for application versions.',
+    }),
   })
   .openapi({
     description:
@@ -531,43 +432,39 @@ const ApplicationResourceLifecycleConfigSchema = z
 
 const ApplicationDescriptionSchema = z
   .object({
-    ApplicationArn: ApplicationArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the application.' }),
-    ).exactOptional(),
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of the application.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'User-defined description of the application.' }),
-    ).exactOptional(),
-    DateCreated: CreationDateSchema.and(
-      z.any().openapi({ description: 'The date when the application was created.' }),
-    ).exactOptional(),
-    DateUpdated: UpdateDateSchema.and(
-      z.any().openapi({ description: 'The date when the application was last modified.' }),
-    ).exactOptional(),
-    Versions: VersionLabelsListSchema.and(
-      z.any().openapi({ description: 'The names of the versions for this application.' }),
-    ).exactOptional(),
-    ConfigurationTemplates: ConfigurationTemplateNamesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The names of the configuration templates associated with this application.',
-        }),
-    ).exactOptional(),
-    ResourceLifecycleConfig: ApplicationResourceLifecycleConfigSchema.and(
-      z.any().openapi({ description: 'The lifecycle settings for the application.' }),
-    ).exactOptional(),
+    ApplicationArn: ApplicationArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the application.',
+    }),
+    ApplicationName: ApplicationNameSchema.exactOptional().openapi({
+      description: 'The name of the application.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'User-defined description of the application.',
+    }),
+    DateCreated: CreationDateSchema.exactOptional().openapi({
+      description: 'The date when the application was created.',
+    }),
+    DateUpdated: UpdateDateSchema.exactOptional().openapi({
+      description: 'The date when the application was last modified.',
+    }),
+    Versions: VersionLabelsListSchema.exactOptional().openapi({
+      description: 'The names of the versions for this application.',
+    }),
+    ConfigurationTemplates: ConfigurationTemplateNamesListSchema.exactOptional().openapi({
+      description: 'The names of the configuration templates associated with this application.',
+    }),
+    ResourceLifecycleConfig: ApplicationResourceLifecycleConfigSchema.exactOptional().openapi({
+      description: 'The lifecycle settings for the application.',
+    }),
   })
   .openapi({ description: 'Describes the properties of an application.', required: [] })
   .openapi('ApplicationDescription')
 
 const ApplicationDescriptionMessageSchema = z
   .object({
-    Application: ApplicationDescriptionSchema.and(
-      z.any().openapi({ description: ' The <a>ApplicationDescription</a> of the application. ' }),
-    ).exactOptional(),
+    Application: ApplicationDescriptionSchema.exactOptional().openapi({
+      description: ' The <a>ApplicationDescription</a> of the application. ',
+    }),
   })
   .openapi({
     example: {
@@ -597,10 +494,8 @@ const TagValueSchema = z.string().min(1).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: 'The key of the tag.' })).exactOptional(),
-    Value: TagValueSchema.and(
-      z.any().openapi({ description: 'The value of the tag.' }),
-    ).exactOptional(),
+    Key: TagKeySchema.exactOptional().openapi({ description: 'The key of the tag.' }),
+    Value: TagValueSchema.exactOptional().openapi({ description: 'The value of the tag.' }),
   })
   .openapi({
     description: 'Describes a tag applied to a resource in an environment.',
@@ -625,30 +520,18 @@ const SourceLocationSchema = z
 
 const SourceBuildInformationSchema = z
   .object({
-    SourceType: SourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of repository.</p> <ul> <li> <p> <code>Git</code> </p> </li> <li> <p> <code>Zip</code> </p> </li> </ul>',
-        }),
-    ),
-    SourceRepository: SourceRepositorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Location where the repository is stored.</p> <ul> <li> <p> <code>CodeCommit</code> </p> </li> <li> <p> <code>S3</code> </p> </li> </ul>',
-        }),
-    ),
-    SourceLocation: SourceLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The location of the source code, as a formatted string, depending on the value of <code>SourceRepository</code> </p> <ul> <li> <p>For <code>CodeCommit</code>, the format is the repository name and commit ID, separated by a forward slash. For example, <code>my-git-repo/265cfa0cf6af46153527f55d6503ec030551f57a</code>.</p> </li> <li> <p>For <code>S3</code>, the format is the S3 bucket name and object key, separated by a forward slash. For example, <code>my-s3-bucket/Folders/my-source-file</code>.</p> </li> </ul>',
-        }),
-    ),
+    SourceType: SourceTypeSchema.openapi({
+      description:
+        '<p>The type of repository.</p> <ul> <li> <p> <code>Git</code> </p> </li> <li> <p> <code>Zip</code> </p> </li> </ul>',
+    }),
+    SourceRepository: SourceRepositorySchema.openapi({
+      description:
+        '<p>Location where the repository is stored.</p> <ul> <li> <p> <code>CodeCommit</code> </p> </li> <li> <p> <code>S3</code> </p> </li> </ul>',
+    }),
+    SourceLocation: SourceLocationSchema.openapi({
+      description:
+        '<p>The location of the source code, as a formatted string, depending on the value of <code>SourceRepository</code> </p> <ul> <li> <p>For <code>CodeCommit</code>, the format is the repository name and commit ID, separated by a forward slash. For example, <code>my-git-repo/265cfa0cf6af46153527f55d6503ec030551f57a</code>.</p> </li> <li> <p>For <code>S3</code>, the format is the S3 bucket name and object key, separated by a forward slash. For example, <code>my-s3-bucket/Folders/my-source-file</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['SourceType', 'SourceRepository', 'SourceLocation'],
@@ -662,12 +545,12 @@ const S3KeySchema = z.string().max(1024).openapi('S3Key')
 
 const S3LocationSchema = z
   .object({
-    S3Bucket: S3BucketSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 bucket where the data is located.' }),
-    ).exactOptional(),
-    S3Key: S3KeySchema.and(
-      z.any().openapi({ description: 'The Amazon S3 key where the data is located.' }),
-    ).exactOptional(),
+    S3Bucket: S3BucketSchema.exactOptional().openapi({
+      description: 'The Amazon S3 bucket where the data is located.',
+    }),
+    S3Key: S3KeySchema.exactOptional().openapi({
+      description: 'The Amazon S3 key where the data is located.',
+    }),
   })
   .openapi({ description: 'The bucket and key of an item stored in Amazon S3.', required: [] })
   .openapi('S3Location')
@@ -678,70 +561,47 @@ const ApplicationVersionStatusSchema = z
 
 const ApplicationVersionDescriptionSchema = z
   .object({
-    ApplicationVersionArn: ApplicationVersionArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the application version.' }),
-    ).exactOptional(),
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the application to which the application version belongs.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the application version.' }),
-    ).exactOptional(),
-    VersionLabel: VersionLabelSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the application version.' }),
-    ).exactOptional(),
-    SourceBuildInformation: SourceBuildInformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the version's source code was retrieved from AWS CodeCommit, the location of the source code for the application version.",
-        }),
-    ).exactOptional(),
-    BuildArn: StringSchema.and(
-      z.any().openapi({ description: 'Reference to the artifact from the AWS CodeBuild build.' }),
-    ).exactOptional(),
-    SourceBundle: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The storage location of the application version's source bundle in Amazon S3.",
-        }),
-    ).exactOptional(),
-    DateCreated: CreationDateSchema.and(
-      z.any().openapi({ description: 'The creation date of the application version.' }),
-    ).exactOptional(),
-    DateUpdated: UpdateDateSchema.and(
-      z.any().openapi({ description: 'The last modified date of the application version.' }),
-    ).exactOptional(),
-    Status: ApplicationVersionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The processing status of the application version. Reflects the state of the application version during its creation. Many of the values are only applicable if you specified <code>True</code> for the <code>Process</code> parameter of the <code>CreateApplicationVersion</code> action. The following list describes the possible values.</p> <ul> <li> <p> <code>Unprocessed</code> – Application version wasn't pre-processed or validated. Elastic Beanstalk will validate configuration files during deployment of the application version to an environment.</p> </li> <li> <p> <code>Processing</code> – Elastic Beanstalk is currently processing the application version.</p> </li> <li> <p> <code>Building</code> – Application version is currently undergoing an AWS CodeBuild build.</p> </li> <li> <p> <code>Processed</code> – Elastic Beanstalk was successfully pre-processed and validated.</p> </li> <li> <p> <code>Failed</code> – Either the AWS CodeBuild build failed or configuration files didn't pass validation. This application version isn't usable.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    ApplicationVersionArn: ApplicationVersionArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the application version.',
+    }),
+    ApplicationName: ApplicationNameSchema.exactOptional().openapi({
+      description: 'The name of the application to which the application version belongs.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the application version.',
+    }),
+    VersionLabel: VersionLabelSchema.exactOptional().openapi({
+      description: 'A unique identifier for the application version.',
+    }),
+    SourceBuildInformation: SourceBuildInformationSchema.exactOptional().openapi({
+      description:
+        "If the version's source code was retrieved from AWS CodeCommit, the location of the source code for the application version.",
+    }),
+    BuildArn: StringSchema.exactOptional().openapi({
+      description: 'Reference to the artifact from the AWS CodeBuild build.',
+    }),
+    SourceBundle: S3LocationSchema.exactOptional().openapi({
+      description: "The storage location of the application version's source bundle in Amazon S3.",
+    }),
+    DateCreated: CreationDateSchema.exactOptional().openapi({
+      description: 'The creation date of the application version.',
+    }),
+    DateUpdated: UpdateDateSchema.exactOptional().openapi({
+      description: 'The last modified date of the application version.',
+    }),
+    Status: ApplicationVersionStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The processing status of the application version. Reflects the state of the application version during its creation. Many of the values are only applicable if you specified <code>True</code> for the <code>Process</code> parameter of the <code>CreateApplicationVersion</code> action. The following list describes the possible values.</p> <ul> <li> <p> <code>Unprocessed</code> – Application version wasn't pre-processed or validated. Elastic Beanstalk will validate configuration files during deployment of the application version to an environment.</p> </li> <li> <p> <code>Processing</code> – Elastic Beanstalk is currently processing the application version.</p> </li> <li> <p> <code>Building</code> – Application version is currently undergoing an AWS CodeBuild build.</p> </li> <li> <p> <code>Processed</code> – Elastic Beanstalk was successfully pre-processed and validated.</p> </li> <li> <p> <code>Failed</code> – Either the AWS CodeBuild build failed or configuration files didn't pass validation. This application version isn't usable.</p> </li> </ul>",
+    }),
   })
   .openapi({ description: 'Describes the properties of an application version.', required: [] })
   .openapi('ApplicationVersionDescription')
 
 const ApplicationVersionDescriptionMessageSchema = z
   .object({
-    ApplicationVersion: ApplicationVersionDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The <a>ApplicationVersionDescription</a> of the application version. ',
-        }),
-    ).exactOptional(),
+    ApplicationVersion: ApplicationVersionDescriptionSchema.exactOptional().openapi({
+      description: ' The <a>ApplicationVersionDescription</a> of the application version. ',
+    }),
   })
   .openapi({
     example: {
@@ -797,27 +657,19 @@ const ConfigurationOptionValueSchema = z.string().openapi('ConfigurationOptionVa
 
 const ConfigurationOptionSettingSchema = z
   .object({
-    ResourceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique resource name for the option setting. Use it for a time–based scaling configuration option.',
-        }),
-    ).exactOptional(),
-    Namespace: OptionNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A unique namespace that identifies the option's associated AWS resource.",
-        }),
-    ).exactOptional(),
-    OptionName: ConfigurationOptionNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration option.' }),
-    ).exactOptional(),
-    Value: ConfigurationOptionValueSchema.and(
-      z.any().openapi({ description: 'The current value for the configuration option.' }),
-    ).exactOptional(),
+    ResourceName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'A unique resource name for the option setting. Use it for a time–based scaling configuration option.',
+    }),
+    Namespace: OptionNamespaceSchema.exactOptional().openapi({
+      description: "A unique namespace that identifies the option's associated AWS resource.",
+    }),
+    OptionName: ConfigurationOptionNameSchema.exactOptional().openapi({
+      description: 'The name of the configuration option.',
+    }),
+    Value: ConfigurationOptionValueSchema.exactOptional().openapi({
+      description: 'The current value for the configuration option.',
+    }),
   })
   .openapi({
     description:
@@ -832,70 +684,40 @@ const ConfigurationOptionSettingsListSchema = z
 
 const ConfigurationSettingsDescriptionSchema = z
   .object({
-    SolutionStackName: SolutionStackNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the solution stack this configuration set uses.' }),
-    ).exactOptional(),
-    PlatformArn: PlatformArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the platform version.' }),
-    ).exactOptional(),
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the application associated with this configuration set.',
-        }),
-    ).exactOptional(),
-    TemplateName: ConfigurationTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If not <code>null</code>, the name of the configuration template for this configuration set. ',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Describes this configuration set.' }),
-    ).exactOptional(),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If not <code>null</code>, the name of the environment for this configuration set. ',
-        }),
-    ).exactOptional(),
-    DeploymentStatus: ConfigurationDeploymentStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> If this configuration set is associated with an environment, the <code>DeploymentStatus</code> parameter indicates the deployment status of this configuration set: </p> <ul> <li> <p> <code>null</code>: This configuration is not associated with a running environment.</p> </li> <li> <p> <code>pending</code>: This is a draft configuration that is not deployed to the associated environment but is in the process of deploying.</p> </li> <li> <p> <code>deployed</code>: This is the configuration that is currently deployed to the associated running environment.</p> </li> <li> <p> <code>failed</code>: This is a draft configuration that failed to successfully deploy.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DateCreated: CreationDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date (in UTC time) when this configuration set was created.',
-        }),
-    ).exactOptional(),
-    DateUpdated: UpdateDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date (in UTC time) when this configuration set was last modified.',
-        }),
-    ).exactOptional(),
-    OptionSettings: ConfigurationOptionSettingsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the configuration options and their values in this configuration set.',
-        }),
-    ).exactOptional(),
+    SolutionStackName: SolutionStackNameSchema.exactOptional().openapi({
+      description: 'The name of the solution stack this configuration set uses.',
+    }),
+    PlatformArn: PlatformArnSchema.exactOptional().openapi({
+      description: 'The ARN of the platform version.',
+    }),
+    ApplicationName: ApplicationNameSchema.exactOptional().openapi({
+      description: 'The name of the application associated with this configuration set.',
+    }),
+    TemplateName: ConfigurationTemplateNameSchema.exactOptional().openapi({
+      description:
+        ' If not <code>null</code>, the name of the configuration template for this configuration set. ',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Describes this configuration set.',
+    }),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description:
+        ' If not <code>null</code>, the name of the environment for this configuration set. ',
+    }),
+    DeploymentStatus: ConfigurationDeploymentStatusSchema.exactOptional().openapi({
+      description:
+        '<p> If this configuration set is associated with an environment, the <code>DeploymentStatus</code> parameter indicates the deployment status of this configuration set: </p> <ul> <li> <p> <code>null</code>: This configuration is not associated with a running environment.</p> </li> <li> <p> <code>pending</code>: This is a draft configuration that is not deployed to the associated environment but is in the process of deploying.</p> </li> <li> <p> <code>deployed</code>: This is the configuration that is currently deployed to the associated running environment.</p> </li> <li> <p> <code>failed</code>: This is a draft configuration that failed to successfully deploy.</p> </li> </ul>',
+    }),
+    DateCreated: CreationDateSchema.exactOptional().openapi({
+      description: 'The date (in UTC time) when this configuration set was created.',
+    }),
+    DateUpdated: UpdateDateSchema.exactOptional().openapi({
+      description: 'The date (in UTC time) when this configuration set was last modified.',
+    }),
+    OptionSettings: ConfigurationOptionSettingsListSchema.exactOptional().openapi({
+      description:
+        'A list of the configuration options and their values in this configuration set.',
+    }),
   })
   .openapi({
     example: {
@@ -918,23 +740,15 @@ const TooManyConfigurationTemplatesExceptionSchema = z
 
 const OptionSpecificationSchema = z
   .object({
-    ResourceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique resource name for a time-based scaling configuration option.',
-        }),
-    ).exactOptional(),
-    Namespace: OptionNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A unique namespace identifying the option's associated AWS resource.",
-        }),
-    ).exactOptional(),
-    OptionName: ConfigurationOptionNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration option.' }),
-    ).exactOptional(),
+    ResourceName: ResourceNameSchema.exactOptional().openapi({
+      description: 'A unique resource name for a time-based scaling configuration option.',
+    }),
+    Namespace: OptionNamespaceSchema.exactOptional().openapi({
+      description: "A unique namespace identifying the option's associated AWS resource.",
+    }),
+    OptionName: ConfigurationOptionNameSchema.exactOptional().openapi({
+      description: 'The name of the configuration option.',
+    }),
   })
   .openapi({
     description: 'A specification identifying an individual configuration option.',
@@ -972,67 +786,45 @@ const PlatformBranchLifecycleStateSchema = z.string().openapi('PlatformBranchLif
 
 const PlatformSummarySchema = z
   .object({
-    PlatformArn: PlatformArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the platform version.' }),
-    ).exactOptional(),
-    PlatformOwner: PlatformOwnerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The AWS account ID of the person who created the platform version.',
-        }),
-    ).exactOptional(),
-    PlatformStatus: PlatformStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the platform version. You can create an environment from the platform version once it is ready.',
-        }),
-    ).exactOptional(),
-    PlatformCategory: PlatformCategorySchema.and(
-      z.any().openapi({ description: 'The category of platform version.' }),
-    ).exactOptional(),
-    OperatingSystemName: OperatingSystemNameSchema.and(
-      z.any().openapi({ description: 'The operating system used by the platform version.' }),
-    ).exactOptional(),
-    OperatingSystemVersion: OperatingSystemVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version of the operating system used by the platform version.',
-        }),
-    ).exactOptional(),
-    SupportedTierList: SupportedTierListSchema.and(
-      z.any().openapi({ description: 'The tiers in which the platform version runs.' }),
-    ).exactOptional(),
-    SupportedAddonList: SupportedAddonListSchema.and(
-      z.any().openapi({ description: 'The additions associated with the platform version.' }),
-    ).exactOptional(),
-    PlatformLifecycleState: PlatformLifecycleStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The state of the platform version in its lifecycle.</p> <p>Possible values: <code>recommended</code> | empty</p> <p>If an empty value is returned, the platform version is supported but isn't the recommended one for its branch.</p>",
-        }),
-    ).exactOptional(),
-    PlatformVersion: PlatformVersionSchema.and(
-      z.any().openapi({ description: 'The version string of the platform version.' }),
-    ).exactOptional(),
-    PlatformBranchName: BranchNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The platform branch to which the platform version belongs.' }),
-    ).exactOptional(),
-    PlatformBranchLifecycleState: PlatformBranchLifecycleStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The state of the platform version's branch in its lifecycle.</p> <p>Possible values: <code>beta</code> | <code>supported</code> | <code>deprecated</code> | <code>retired</code> </p>",
-        }),
-    ).exactOptional(),
+    PlatformArn: PlatformArnSchema.exactOptional().openapi({
+      description: 'The ARN of the platform version.',
+    }),
+    PlatformOwner: PlatformOwnerSchema.exactOptional().openapi({
+      description: 'The AWS account ID of the person who created the platform version.',
+    }),
+    PlatformStatus: PlatformStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the platform version. You can create an environment from the platform version once it is ready.',
+    }),
+    PlatformCategory: PlatformCategorySchema.exactOptional().openapi({
+      description: 'The category of platform version.',
+    }),
+    OperatingSystemName: OperatingSystemNameSchema.exactOptional().openapi({
+      description: 'The operating system used by the platform version.',
+    }),
+    OperatingSystemVersion: OperatingSystemVersionSchema.exactOptional().openapi({
+      description: 'The version of the operating system used by the platform version.',
+    }),
+    SupportedTierList: SupportedTierListSchema.exactOptional().openapi({
+      description: 'The tiers in which the platform version runs.',
+    }),
+    SupportedAddonList: SupportedAddonListSchema.exactOptional().openapi({
+      description: 'The additions associated with the platform version.',
+    }),
+    PlatformLifecycleState: PlatformLifecycleStateSchema.exactOptional().openapi({
+      description:
+        "<p>The state of the platform version in its lifecycle.</p> <p>Possible values: <code>recommended</code> | empty</p> <p>If an empty value is returned, the platform version is supported but isn't the recommended one for its branch.</p>",
+    }),
+    PlatformVersion: PlatformVersionSchema.exactOptional().openapi({
+      description: 'The version string of the platform version.',
+    }),
+    PlatformBranchName: BranchNameSchema.exactOptional().openapi({
+      description: 'The platform branch to which the platform version belongs.',
+    }),
+    PlatformBranchLifecycleState: PlatformBranchLifecycleStateSchema.exactOptional().openapi({
+      description:
+        "<p>The state of the platform version's branch in its lifecycle.</p> <p>Possible values: <code>beta</code> | <code>supported</code> | <code>deprecated</code> | <code>retired</code> </p>",
+    }),
   })
   .openapi({ description: 'Summary information about a platform version.', required: [] })
   .openapi('PlatformSummary')
@@ -1040,24 +832,18 @@ const PlatformSummarySchema = z
 const ARNSchema = z.string().openapi('ARN')
 
 const BuilderSchema = z
-  .object({
-    ARN: ARNSchema.and(z.any().openapi({ description: 'The ARN of the builder.' })).exactOptional(),
-  })
+  .object({ ARN: ARNSchema.exactOptional().openapi({ description: 'The ARN of the builder.' }) })
   .openapi({ description: 'The builder used to build the custom platform.', required: [] })
   .openapi('Builder')
 
 const CreatePlatformVersionResultSchema = z
   .object({
-    PlatformSummary: PlatformSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Detailed information about the new version of the custom platform.',
-        }),
-    ).exactOptional(),
-    Builder: BuilderSchema.and(
-      z.any().openapi({ description: 'The builder used to create the custom platform.' }),
-    ).exactOptional(),
+    PlatformSummary: PlatformSummarySchema.exactOptional().openapi({
+      description: 'Detailed information about the new version of the custom platform.',
+    }),
+    Builder: BuilderSchema.exactOptional().openapi({
+      description: 'The builder used to create the custom platform.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreatePlatformVersionResult')
@@ -1066,9 +852,9 @@ const TooManyPlatformsExceptionSchema = z.any().openapi('TooManyPlatformsExcepti
 
 const CreateStorageLocationResultMessageSchema = z
   .object({
-    S3Bucket: S3BucketSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon S3 bucket created.' }),
-    ).exactOptional(),
+    S3Bucket: S3BucketSchema.exactOptional().openapi({
+      description: 'The name of the Amazon S3 bucket created.',
+    }),
   })
   .openapi({
     example: { S3Bucket: 'elasticbeanstalk-us-west-2-0123456789012' },
@@ -1085,11 +871,9 @@ const SourceBundleDeletionExceptionSchema = z.any().openapi('SourceBundleDeletio
 
 const DeletePlatformVersionResultSchema = z
   .object({
-    PlatformSummary: PlatformSummarySchema.and(
-      z
-        .any()
-        .openapi({ description: 'Detailed information about the version of the custom platform.' }),
-    ).exactOptional(),
+    PlatformSummary: PlatformSummarySchema.exactOptional().openapi({
+      description: 'Detailed information about the version of the custom platform.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeletePlatformVersionResult')
@@ -1100,14 +884,10 @@ const PlatformVersionStillReferencedExceptionSchema = z
 
 const ResourceQuotaSchema = z
   .object({
-    Maximum: BoxedIntSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of instances of this Elastic Beanstalk resource type that an AWS account can use.',
-        }),
-    ).exactOptional(),
+    Maximum: BoxedIntSchema.exactOptional().openapi({
+      description:
+        'The maximum number of instances of this Elastic Beanstalk resource type that an AWS account can use.',
+    }),
   })
   .openapi({
     description:
@@ -1118,21 +898,21 @@ const ResourceQuotaSchema = z
 
 const ResourceQuotasSchema = z
   .object({
-    ApplicationQuota: ResourceQuotaSchema.and(
-      z.any().openapi({ description: 'The quota for applications in the AWS account.' }),
-    ).exactOptional(),
-    ApplicationVersionQuota: ResourceQuotaSchema.and(
-      z.any().openapi({ description: 'The quota for application versions in the AWS account.' }),
-    ).exactOptional(),
-    EnvironmentQuota: ResourceQuotaSchema.and(
-      z.any().openapi({ description: 'The quota for environments in the AWS account.' }),
-    ).exactOptional(),
-    ConfigurationTemplateQuota: ResourceQuotaSchema.and(
-      z.any().openapi({ description: 'The quota for configuration templates in the AWS account.' }),
-    ).exactOptional(),
-    CustomPlatformQuota: ResourceQuotaSchema.and(
-      z.any().openapi({ description: 'The quota for custom platforms in the AWS account.' }),
-    ).exactOptional(),
+    ApplicationQuota: ResourceQuotaSchema.exactOptional().openapi({
+      description: 'The quota for applications in the AWS account.',
+    }),
+    ApplicationVersionQuota: ResourceQuotaSchema.exactOptional().openapi({
+      description: 'The quota for application versions in the AWS account.',
+    }),
+    EnvironmentQuota: ResourceQuotaSchema.exactOptional().openapi({
+      description: 'The quota for environments in the AWS account.',
+    }),
+    ConfigurationTemplateQuota: ResourceQuotaSchema.exactOptional().openapi({
+      description: 'The quota for configuration templates in the AWS account.',
+    }),
+    CustomPlatformQuota: ResourceQuotaSchema.exactOptional().openapi({
+      description: 'The quota for custom platforms in the AWS account.',
+    }),
   })
   .openapi({
     description:
@@ -1143,14 +923,9 @@ const ResourceQuotasSchema = z
 
 const DescribeAccountAttributesResultSchema = z
   .object({
-    ResourceQuotas: ResourceQuotasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Elastic Beanstalk resource quotas associated with the calling AWS account.',
-        }),
-    ).exactOptional(),
+    ResourceQuotas: ResourceQuotasSchema.exactOptional().openapi({
+      description: 'The Elastic Beanstalk resource quotas associated with the calling AWS account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAccountAttributesResult')
@@ -1161,22 +936,14 @@ const ApplicationVersionDescriptionListSchema = z
 
 const ApplicationVersionDescriptionsMessageSchema = z
   .object({
-    ApplicationVersions: ApplicationVersionDescriptionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of <code>ApplicationVersionDescription</code> objects sorted in order of creation.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'In a paginated request, the token that you can pass in a subsequent request to get the next response page.',
-        }),
-    ).exactOptional(),
+    ApplicationVersions: ApplicationVersionDescriptionListSchema.exactOptional().openapi({
+      description:
+        'List of <code>ApplicationVersionDescription</code> objects sorted in order of creation.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'In a paginated request, the token that you can pass in a subsequent request to get the next response page.',
+    }),
   })
   .openapi({
     example: {
@@ -1216,13 +983,9 @@ const ApplicationDescriptionListSchema = z
 
 const ApplicationDescriptionsMessageSchema = z
   .object({
-    Applications: ApplicationDescriptionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'This parameter contains a list of <a>ApplicationDescription</a>.',
-        }),
-    ).exactOptional(),
+    Applications: ApplicationDescriptionListSchema.exactOptional().openapi({
+      description: 'This parameter contains a list of <a>ApplicationDescription</a>.',
+    }),
   })
   .openapi({
     example: {
@@ -1286,17 +1049,13 @@ const RegexLabelSchema = z.string().openapi('RegexLabel')
 
 const OptionRestrictionRegexSchema = z
   .object({
-    Pattern: RegexPatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The regular expression pattern that a string configuration option value with this restriction must match.',
-        }),
-    ).exactOptional(),
-    Label: RegexLabelSchema.and(
-      z.any().openapi({ description: 'A unique name representing this regular expression.' }),
-    ).exactOptional(),
+    Pattern: RegexPatternSchema.exactOptional().openapi({
+      description:
+        'The regular expression pattern that a string configuration option value with this restriction must match.',
+    }),
+    Label: RegexLabelSchema.exactOptional().openapi({
+      description: 'A unique name representing this regular expression.',
+    }),
   })
   .openapi({
     description:
@@ -1307,83 +1066,46 @@ const OptionRestrictionRegexSchema = z
 
 const ConfigurationOptionDescriptionSchema = z
   .object({
-    Namespace: OptionNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "A unique namespace identifying the option's associated AWS resource.",
-        }),
-    ).exactOptional(),
-    Name: ConfigurationOptionNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration option.' }),
-    ).exactOptional(),
-    DefaultValue: ConfigurationOptionDefaultValueSchema.and(
-      z.any().openapi({ description: 'The default value for this configuration option.' }),
-    ).exactOptional(),
-    ChangeSeverity: ConfigurationOptionSeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An indication of which action is required if the value for this configuration option changes:</p> <ul> <li> <p> <code>NoInterruption</code> : There is no interruption to the environment or application availability.</p> </li> <li> <p> <code>RestartEnvironment</code> : The environment is entirely restarted, all AWS resources are deleted and recreated, and the environment is unavailable during the process.</p> </li> <li> <p> <code>RestartApplicationServer</code> : The environment is available the entire time. However, a short application outage occurs when the application servers on the running Amazon EC2 instances are restarted.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    UserDefined: UserDefinedOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An indication of whether the user defined this configuration option:</p> <ul> <li> <p> <code>true</code> : This configuration option was defined by the user. It is a valid choice for specifying if this as an <code>Option to Remove</code> when updating configuration settings. </p> </li> <li> <p> <code>false</code> : This configuration was not defined by the user.</p> </li> </ul> <p> Constraint: You can remove only <code>UserDefined</code> options from a configuration. </p> <p> Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    ValueType: ConfigurationOptionValueTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An indication of which type of values this option has and whether it is allowable to select one or more than one of the possible values:</p> <ul> <li> <p> <code>Scalar</code> : Values for this option are a single selection from the possible values, or an unformatted string, or numeric value governed by the <code>MIN/MAX/Regex</code> constraints.</p> </li> <li> <p> <code>List</code> : Values for this option are multiple selections from the possible values.</p> </li> <li> <p> <code>Boolean</code> : Values for this option are either <code>true</code> or <code>false</code> .</p> </li> <li> <p> <code>Json</code> : Values for this option are a JSON representation of a <code>ConfigDocument</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ValueOptions: ConfigurationOptionPossibleValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, values for the configuration option are selected from this list.',
-        }),
-    ).exactOptional(),
-    MinValue: OptionRestrictionMinValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, the configuration option must be a numeric value greater than this value.',
-        }),
-    ).exactOptional(),
-    MaxValue: OptionRestrictionMaxValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, the configuration option must be a numeric value less than this value.',
-        }),
-    ).exactOptional(),
-    MaxLength: OptionRestrictionMaxLengthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, the configuration option must be a string value no longer than this value.',
-        }),
-    ).exactOptional(),
-    Regex: OptionRestrictionRegexSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, the configuration option must be a string value that satisfies this regular expression.',
-        }),
-    ).exactOptional(),
+    Namespace: OptionNamespaceSchema.exactOptional().openapi({
+      description: "A unique namespace identifying the option's associated AWS resource.",
+    }),
+    Name: ConfigurationOptionNameSchema.exactOptional().openapi({
+      description: 'The name of the configuration option.',
+    }),
+    DefaultValue: ConfigurationOptionDefaultValueSchema.exactOptional().openapi({
+      description: 'The default value for this configuration option.',
+    }),
+    ChangeSeverity: ConfigurationOptionSeveritySchema.exactOptional().openapi({
+      description:
+        '<p>An indication of which action is required if the value for this configuration option changes:</p> <ul> <li> <p> <code>NoInterruption</code> : There is no interruption to the environment or application availability.</p> </li> <li> <p> <code>RestartEnvironment</code> : The environment is entirely restarted, all AWS resources are deleted and recreated, and the environment is unavailable during the process.</p> </li> <li> <p> <code>RestartApplicationServer</code> : The environment is available the entire time. However, a short application outage occurs when the application servers on the running Amazon EC2 instances are restarted.</p> </li> </ul>',
+    }),
+    UserDefined: UserDefinedOptionSchema.exactOptional().openapi({
+      description:
+        '<p>An indication of whether the user defined this configuration option:</p> <ul> <li> <p> <code>true</code> : This configuration option was defined by the user. It is a valid choice for specifying if this as an <code>Option to Remove</code> when updating configuration settings. </p> </li> <li> <p> <code>false</code> : This configuration was not defined by the user.</p> </li> </ul> <p> Constraint: You can remove only <code>UserDefined</code> options from a configuration. </p> <p> Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    ValueType: ConfigurationOptionValueTypeSchema.exactOptional().openapi({
+      description:
+        '<p>An indication of which type of values this option has and whether it is allowable to select one or more than one of the possible values:</p> <ul> <li> <p> <code>Scalar</code> : Values for this option are a single selection from the possible values, or an unformatted string, or numeric value governed by the <code>MIN/MAX/Regex</code> constraints.</p> </li> <li> <p> <code>List</code> : Values for this option are multiple selections from the possible values.</p> </li> <li> <p> <code>Boolean</code> : Values for this option are either <code>true</code> or <code>false</code> .</p> </li> <li> <p> <code>Json</code> : Values for this option are a JSON representation of a <code>ConfigDocument</code>.</p> </li> </ul>',
+    }),
+    ValueOptions: ConfigurationOptionPossibleValuesSchema.exactOptional().openapi({
+      description: 'If specified, values for the configuration option are selected from this list.',
+    }),
+    MinValue: OptionRestrictionMinValueSchema.exactOptional().openapi({
+      description:
+        'If specified, the configuration option must be a numeric value greater than this value.',
+    }),
+    MaxValue: OptionRestrictionMaxValueSchema.exactOptional().openapi({
+      description:
+        'If specified, the configuration option must be a numeric value less than this value.',
+    }),
+    MaxLength: OptionRestrictionMaxLengthSchema.exactOptional().openapi({
+      description:
+        'If specified, the configuration option must be a string value no longer than this value.',
+    }),
+    Regex: OptionRestrictionRegexSchema.exactOptional().openapi({
+      description:
+        'If specified, the configuration option must be a string value that satisfies this regular expression.',
+    }),
   })
   .openapi({
     description: 'Describes the possible values for a configuration option.',
@@ -1397,19 +1119,15 @@ const ConfigurationOptionDescriptionsListSchema = z
 
 const ConfigurationOptionsDescriptionSchema = z
   .object({
-    SolutionStackName: SolutionStackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the solution stack these configuration options belong to.',
-        }),
-    ).exactOptional(),
-    PlatformArn: PlatformArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the platform version.' }),
-    ).exactOptional(),
-    Options: ConfigurationOptionDescriptionsListSchema.and(
-      z.any().openapi({ description: ' A list of <a>ConfigurationOptionDescription</a>. ' }),
-    ).exactOptional(),
+    SolutionStackName: SolutionStackNameSchema.exactOptional().openapi({
+      description: 'The name of the solution stack these configuration options belong to.',
+    }),
+    PlatformArn: PlatformArnSchema.exactOptional().openapi({
+      description: 'The ARN of the platform version.',
+    }),
+    Options: ConfigurationOptionDescriptionsListSchema.exactOptional().openapi({
+      description: ' A list of <a>ConfigurationOptionDescription</a>. ',
+    }),
   })
   .openapi({
     example: {
@@ -1446,9 +1164,9 @@ const ConfigurationSettingsDescriptionListSchema = z
 
 const ConfigurationSettingsDescriptionsSchema = z
   .object({
-    ConfigurationSettings: ConfigurationSettingsDescriptionListSchema.and(
-      z.any().openapi({ description: ' A list of <a>ConfigurationSettingsDescription</a>. ' }),
-    ).exactOptional(),
+    ConfigurationSettings: ConfigurationSettingsDescriptionListSchema.exactOptional().openapi({
+      description: ' A list of <a>ConfigurationSettingsDescription</a>. ',
+    }),
   })
   .openapi({
     example: {
@@ -1506,38 +1224,22 @@ const RequestCountSchema = z.int().openapi('RequestCount')
 
 const StatusCodesSchema = z
   .object({
-    Status2xx: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of requests over the last 10 seconds that resulted in a 2xx (200, 201, etc.) status code.',
-        }),
-    ).exactOptional(),
-    Status3xx: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of requests over the last 10 seconds that resulted in a 3xx (300, 301, etc.) status code.',
-        }),
-    ).exactOptional(),
-    Status4xx: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of requests over the last 10 seconds that resulted in a 4xx (400, 401, etc.) status code.',
-        }),
-    ).exactOptional(),
-    Status5xx: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of requests over the last 10 seconds that resulted in a 5xx (500, 501, etc.) status code.',
-        }),
-    ).exactOptional(),
+    Status2xx: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'The percentage of requests over the last 10 seconds that resulted in a 2xx (200, 201, etc.) status code.',
+    }),
+    Status3xx: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'The percentage of requests over the last 10 seconds that resulted in a 3xx (300, 301, etc.) status code.',
+    }),
+    Status4xx: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'The percentage of requests over the last 10 seconds that resulted in a 4xx (400, 401, etc.) status code.',
+    }),
+    Status5xx: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'The percentage of requests over the last 10 seconds that resulted in a 5xx (500, 501, etc.) status code.',
+    }),
   })
   .openapi({
     description:
@@ -1550,70 +1252,38 @@ const NullableDoubleSchema = z.float64().openapi('NullableDouble')
 
 const LatencySchema = z
   .object({
-    P999: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The average latency for the slowest 0.1 percent of requests over the last 10 seconds.',
-        }),
-    ).exactOptional(),
-    P99: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The average latency for the slowest 1 percent of requests over the last 10 seconds.',
-        }),
-    ).exactOptional(),
-    P95: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The average latency for the slowest 5 percent of requests over the last 10 seconds.',
-        }),
-    ).exactOptional(),
-    P90: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The average latency for the slowest 10 percent of requests over the last 10 seconds.',
-        }),
-    ).exactOptional(),
-    P85: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The average latency for the slowest 15 percent of requests over the last 10 seconds.',
-        }),
-    ).exactOptional(),
-    P75: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The average latency for the slowest 25 percent of requests over the last 10 seconds.',
-        }),
-    ).exactOptional(),
-    P50: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The average latency for the slowest 50 percent of requests over the last 10 seconds.',
-        }),
-    ).exactOptional(),
-    P10: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The average latency for the slowest 90 percent of requests over the last 10 seconds.',
-        }),
-    ).exactOptional(),
+    P999: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        'The average latency for the slowest 0.1 percent of requests over the last 10 seconds.',
+    }),
+    P99: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        'The average latency for the slowest 1 percent of requests over the last 10 seconds.',
+    }),
+    P95: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        'The average latency for the slowest 5 percent of requests over the last 10 seconds.',
+    }),
+    P90: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        'The average latency for the slowest 10 percent of requests over the last 10 seconds.',
+    }),
+    P85: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        'The average latency for the slowest 15 percent of requests over the last 10 seconds.',
+    }),
+    P75: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        'The average latency for the slowest 25 percent of requests over the last 10 seconds.',
+    }),
+    P50: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        'The average latency for the slowest 50 percent of requests over the last 10 seconds.',
+    }),
+    P10: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        'The average latency for the slowest 90 percent of requests over the last 10 seconds.',
+    }),
   })
   .openapi({
     description:
@@ -1624,38 +1294,22 @@ const LatencySchema = z
 
 const ApplicationMetricsSchema = z
   .object({
-    Duration: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time that the metrics cover (usually 10 seconds). For example, you might have 5 requests (<code>request_count</code>) within the most recent time slice of 10 seconds (<code>duration</code>).',
-        }),
-    ).exactOptional(),
-    RequestCount: RequestCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Average number of requests handled by the web server per second over the last 10 seconds.',
-        }),
-    ).exactOptional(),
-    StatusCodes: StatusCodesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the percentage of requests over the last 10 seconds that resulted in each type of status code response.',
-        }),
-    ).exactOptional(),
-    Latency: LatencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the average latency for the slowest X percent of requests over the last 10 seconds. Latencies are in seconds with one millisecond resolution.',
-        }),
-    ).exactOptional(),
+    Duration: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        'The amount of time that the metrics cover (usually 10 seconds). For example, you might have 5 requests (<code>request_count</code>) within the most recent time slice of 10 seconds (<code>duration</code>).',
+    }),
+    RequestCount: RequestCountSchema.exactOptional().openapi({
+      description:
+        'Average number of requests handled by the web server per second over the last 10 seconds.',
+    }),
+    StatusCodes: StatusCodesSchema.exactOptional().openapi({
+      description:
+        'Represents the percentage of requests over the last 10 seconds that resulted in each type of status code response.',
+    }),
+    Latency: LatencySchema.exactOptional().openapi({
+      description:
+        'Represents the average latency for the slowest X percent of requests over the last 10 seconds. Latencies are in seconds with one millisecond resolution.',
+    }),
   })
   .openapi({
     description: 'Application request metrics for an AWS Elastic Beanstalk environment.',
@@ -1665,67 +1319,37 @@ const ApplicationMetricsSchema = z
 
 const InstanceHealthSummarySchema = z
   .object({
-    NoData: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <b>Grey.</b> AWS Elastic Beanstalk and the health agent are reporting no data on an instance.',
-        }),
-    ).exactOptional(),
-    Unknown: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <b>Grey.</b> AWS Elastic Beanstalk and the health agent are reporting an insufficient amount of data on an instance.',
-        }),
-    ).exactOptional(),
-    Pending: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <b>Grey.</b> An operation is in progress on an instance within the command timeout.',
-        }),
-    ).exactOptional(),
-    Ok: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <b>Green.</b> An instance is passing health checks and the health agent is not reporting any problems.',
-        }),
-    ).exactOptional(),
-    Info: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: ' <b>Green.</b> An operation is in progress on an instance.' }),
-    ).exactOptional(),
-    Warning: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <b>Yellow.</b> The health agent is reporting a moderate number of request failures or other issues for an instance or environment.',
-        }),
-    ).exactOptional(),
-    Degraded: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <b>Red.</b> The health agent is reporting a high number of request failures or other issues for an instance or environment.',
-        }),
-    ).exactOptional(),
-    Severe: NullableIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <b>Red.</b> The health agent is reporting a very high number of request failures or other issues for an instance or environment.',
-        }),
-    ).exactOptional(),
+    NoData: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        ' <b>Grey.</b> AWS Elastic Beanstalk and the health agent are reporting no data on an instance.',
+    }),
+    Unknown: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        ' <b>Grey.</b> AWS Elastic Beanstalk and the health agent are reporting an insufficient amount of data on an instance.',
+    }),
+    Pending: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        ' <b>Grey.</b> An operation is in progress on an instance within the command timeout.',
+    }),
+    Ok: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        ' <b>Green.</b> An instance is passing health checks and the health agent is not reporting any problems.',
+    }),
+    Info: NullableIntegerSchema.exactOptional().openapi({
+      description: ' <b>Green.</b> An operation is in progress on an instance.',
+    }),
+    Warning: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        ' <b>Yellow.</b> The health agent is reporting a moderate number of request failures or other issues for an instance or environment.',
+    }),
+    Degraded: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        ' <b>Red.</b> The health agent is reporting a high number of request failures or other issues for an instance or environment.',
+    }),
+    Severe: NullableIntegerSchema.exactOptional().openapi({
+      description:
+        ' <b>Red.</b> The health agent is reporting a very high number of request failures or other issues for an instance or environment.',
+    }),
   })
   .openapi({
     description:
@@ -1738,56 +1362,34 @@ const RefreshedAtSchema = z.iso.datetime({ offset: true }).openapi('RefreshedAt'
 
 const DescribeEnvironmentHealthResultSchema = z
   .object({
-    EnvironmentName: EnvironmentNameSchema.and(
-      z.any().openapi({ description: "The environment's name." }),
-    ).exactOptional(),
-    HealthStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced-status.html">health status</a> of the environment. For example, <code>Ok</code>.',
-        }),
-    ).exactOptional(),
-    Status: EnvironmentHealthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The environment's operational status. <code>Ready</code>, <code>Launching</code>, <code>Updating</code>, <code>Terminating</code>, or <code>Terminated</code>.",
-        }),
-    ).exactOptional(),
-    Color: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced-status.html">health color</a> of the environment.',
-        }),
-    ).exactOptional(),
-    Causes: CausesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Descriptions of the data that contributed to the environment's current health status.",
-        }),
-    ).exactOptional(),
-    ApplicationMetrics: ApplicationMetricsSchema.and(
-      z.any().openapi({ description: 'Application request metrics for the environment.' }),
-    ).exactOptional(),
-    InstancesHealth: InstanceHealthSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Summary health information for the instances in the environment.',
-        }),
-    ).exactOptional(),
-    RefreshedAt: RefreshedAtSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time that the health information was retrieved.' }),
-    ).exactOptional(),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description: "The environment's name.",
+    }),
+    HealthStatus: StringSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced-status.html">health status</a> of the environment. For example, <code>Ok</code>.',
+    }),
+    Status: EnvironmentHealthSchema.exactOptional().openapi({
+      description:
+        "The environment's operational status. <code>Ready</code>, <code>Launching</code>, <code>Updating</code>, <code>Terminating</code>, or <code>Terminated</code>.",
+    }),
+    Color: StringSchema.exactOptional().openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced-status.html">health color</a> of the environment.',
+    }),
+    Causes: CausesSchema.exactOptional().openapi({
+      description:
+        "Descriptions of the data that contributed to the environment's current health status.",
+    }),
+    ApplicationMetrics: ApplicationMetricsSchema.exactOptional().openapi({
+      description: 'Application request metrics for the environment.',
+    }),
+    InstancesHealth: InstanceHealthSummarySchema.exactOptional().openapi({
+      description: 'Summary health information for the instances in the environment.',
+    }),
+    RefreshedAt: RefreshedAtSchema.exactOptional().openapi({
+      description: 'The date and time that the health information was retrieved.',
+    }),
   })
   .openapi({
     example: {
@@ -1862,30 +1464,30 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const ManagedActionHistoryItemSchema = z
   .object({
-    ActionId: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the managed action.' }),
-    ).exactOptional(),
-    ActionType: ActionTypeSchema.and(
-      z.any().openapi({ description: 'The type of the managed action.' }),
-    ).exactOptional(),
-    ActionDescription: StringSchema.and(
-      z.any().openapi({ description: 'A description of the managed action.' }),
-    ).exactOptional(),
-    FailureType: FailureTypeSchema.and(
-      z.any().openapi({ description: 'If the action failed, the type of failure.' }),
-    ).exactOptional(),
-    Status: ActionHistoryStatusSchema.and(
-      z.any().openapi({ description: 'The status of the action.' }),
-    ).exactOptional(),
-    FailureDescription: StringSchema.and(
-      z.any().openapi({ description: 'If the action failed, a description of the failure.' }),
-    ).exactOptional(),
-    ExecutedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the action started executing.' }),
-    ).exactOptional(),
-    FinishedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the action finished executing.' }),
-    ).exactOptional(),
+    ActionId: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the managed action.',
+    }),
+    ActionType: ActionTypeSchema.exactOptional().openapi({
+      description: 'The type of the managed action.',
+    }),
+    ActionDescription: StringSchema.exactOptional().openapi({
+      description: 'A description of the managed action.',
+    }),
+    FailureType: FailureTypeSchema.exactOptional().openapi({
+      description: 'If the action failed, the type of failure.',
+    }),
+    Status: ActionHistoryStatusSchema.exactOptional().openapi({
+      description: 'The status of the action.',
+    }),
+    FailureDescription: StringSchema.exactOptional().openapi({
+      description: 'If the action failed, a description of the failure.',
+    }),
+    ExecutedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the action started executing.',
+    }),
+    FinishedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the action finished executing.',
+    }),
   })
   .openapi({ description: 'The record of a completed or failed managed action.', required: [] })
   .openapi('ManagedActionHistoryItem')
@@ -1898,17 +1500,13 @@ const ManagedActionHistoryItemsSchema = z
 
 const DescribeEnvironmentManagedActionHistoryResultSchema = z
   .object({
-    ManagedActionHistoryItems: ManagedActionHistoryItemsSchema.and(
-      z.any().openapi({ description: 'A list of completed and failed managed actions.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token that you pass to <a>DescribeEnvironmentManagedActionHistory</a> to get the next page of results.',
-        }),
-    ).exactOptional(),
+    ManagedActionHistoryItems: ManagedActionHistoryItemsSchema.exactOptional().openapi({
+      description: 'A list of completed and failed managed actions.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'A pagination token that you pass to <a>DescribeEnvironmentManagedActionHistory</a> to get the next page of results.',
+    }),
   })
   .openapi({
     description: 'A result message containing a list of completed and failed managed actions.',
@@ -1922,31 +1520,23 @@ const ActionStatusSchema = z
 
 const ManagedActionSchema = z
   .object({
-    ActionId: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the managed action.' }),
-    ).exactOptional(),
-    ActionDescription: StringSchema.and(
-      z.any().openapi({ description: 'A description of the managed action.' }),
-    ).exactOptional(),
-    ActionType: ActionTypeSchema.and(
-      z.any().openapi({ description: 'The type of managed action.' }),
-    ).exactOptional(),
-    Status: ActionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the managed action. If the action is <code>Scheduled</code>, you can apply it immediately with <a>ApplyEnvironmentManagedAction</a>.',
-        }),
-    ).exactOptional(),
-    WindowStartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start time of the maintenance window in which the managed action will execute.',
-        }),
-    ).exactOptional(),
+    ActionId: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the managed action.',
+    }),
+    ActionDescription: StringSchema.exactOptional().openapi({
+      description: 'A description of the managed action.',
+    }),
+    ActionType: ActionTypeSchema.exactOptional().openapi({
+      description: 'The type of managed action.',
+    }),
+    Status: ActionStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the managed action. If the action is <code>Scheduled</code>, you can apply it immediately with <a>ApplyEnvironmentManagedAction</a>.',
+    }),
+    WindowStartTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The start time of the maintenance window in which the managed action will execute.',
+    }),
   })
   .openapi({
     description: 'The record of an upcoming or in-progress managed action.',
@@ -1958,9 +1548,9 @@ const ManagedActionsSchema = z.array(ManagedActionSchema).min(1).max(100).openap
 
 const DescribeEnvironmentManagedActionsResultSchema = z
   .object({
-    ManagedActions: ManagedActionsSchema.and(
-      z.any().openapi({ description: 'A list of upcoming and in-progress managed actions.' }),
-    ).exactOptional(),
+    ManagedActions: ManagedActionsSchema.exactOptional().openapi({
+      description: 'A list of upcoming and in-progress managed actions.',
+    }),
   })
   .openapi({
     description: 'The result message containing a list of managed actions.',
@@ -1972,9 +1562,9 @@ const ResourceIdSchema = z.string().openapi('ResourceId')
 
 const AutoScalingGroupSchema = z
   .object({
-    Name: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The name of the <code>AutoScalingGroup</code> . ' }),
-    ).exactOptional(),
+    Name: ResourceIdSchema.exactOptional().openapi({
+      description: 'The name of the <code>AutoScalingGroup</code> . ',
+    }),
   })
   .openapi({ description: 'Describes an Auto Scaling launch configuration.', required: [] })
   .openapi('AutoScalingGroup')
@@ -1983,9 +1573,9 @@ const AutoScalingGroupListSchema = z.array(AutoScalingGroupSchema).openapi('Auto
 
 const InstanceSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Amazon EC2 instance.' }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon EC2 instance.',
+    }),
   })
   .openapi({ description: 'The description of an Amazon EC2 instance.', required: [] })
   .openapi('Instance')
@@ -1994,9 +1584,9 @@ const InstanceListSchema = z.array(InstanceSchema).openapi('InstanceList')
 
 const LaunchConfigurationSchema = z
   .object({
-    Name: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The name of the launch configuration.' }),
-    ).exactOptional(),
+    Name: ResourceIdSchema.exactOptional().openapi({
+      description: 'The name of the launch configuration.',
+    }),
   })
   .openapi({ description: 'Describes an Auto Scaling launch configuration.', required: [] })
   .openapi('LaunchConfiguration')
@@ -2007,9 +1597,7 @@ const LaunchConfigurationListSchema = z
 
 const LaunchTemplateSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the launch template.' }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({ description: 'The ID of the launch template.' }),
   })
   .openapi({ description: 'Describes an Amazon EC2 launch template.', required: [] })
   .openapi('LaunchTemplate')
@@ -2018,9 +1606,9 @@ const LaunchTemplateListSchema = z.array(LaunchTemplateSchema).openapi('LaunchTe
 
 const LoadBalancerSchema = z
   .object({
-    Name: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The name of the LoadBalancer.' }),
-    ).exactOptional(),
+    Name: ResourceIdSchema.exactOptional().openapi({
+      description: 'The name of the LoadBalancer.',
+    }),
   })
   .openapi({ description: 'Describes a LoadBalancer.', required: [] })
   .openapi('LoadBalancer')
@@ -2029,9 +1617,7 @@ const LoadBalancerListSchema = z.array(LoadBalancerSchema).openapi('LoadBalancer
 
 const TriggerSchema = z
   .object({
-    Name: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The name of the trigger.' }),
-    ).exactOptional(),
+    Name: ResourceIdSchema.exactOptional().openapi({ description: 'The name of the trigger.' }),
   })
   .openapi({ description: 'Describes a trigger.', required: [] })
   .openapi('Trigger')
@@ -2040,12 +1626,8 @@ const TriggerListSchema = z.array(TriggerSchema).openapi('TriggerList')
 
 const QueueSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the queue.' }),
-    ).exactOptional(),
-    URL: StringSchema.and(
-      z.any().openapi({ description: 'The URL of the queue.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the queue.' }),
+    URL: StringSchema.exactOptional().openapi({ description: 'The URL of the queue.' }),
   })
   .openapi({ description: 'Describes a queue.', required: [] })
   .openapi('Queue')
@@ -2054,42 +1636,30 @@ const QueueListSchema = z.array(QueueSchema).openapi('QueueList')
 
 const EnvironmentResourceDescriptionSchema = z
   .object({
-    EnvironmentName: EnvironmentNameSchema.and(
-      z.any().openapi({ description: 'The name of the environment.' }),
-    ).exactOptional(),
-    AutoScalingGroups: AutoScalingGroupListSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The <code>AutoScalingGroups</code> used by this environment. ' }),
-    ).exactOptional(),
-    Instances: InstanceListSchema.and(
-      z.any().openapi({ description: 'The Amazon EC2 instances used by this environment.' }),
-    ).exactOptional(),
-    LaunchConfigurations: LaunchConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Auto Scaling launch configurations in use by this environment.',
-        }),
-    ).exactOptional(),
-    LaunchTemplates: LaunchTemplateListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon EC2 launch templates in use by this environment.' }),
-    ).exactOptional(),
-    LoadBalancers: LoadBalancerListSchema.and(
-      z.any().openapi({ description: 'The LoadBalancers in use by this environment.' }),
-    ).exactOptional(),
-    Triggers: TriggerListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <code>AutoScaling</code> triggers in use by this environment. ',
-        }),
-    ).exactOptional(),
-    Queues: QueueListSchema.and(
-      z.any().openapi({ description: 'The queues used by this environment.' }),
-    ).exactOptional(),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description: 'The name of the environment.',
+    }),
+    AutoScalingGroups: AutoScalingGroupListSchema.exactOptional().openapi({
+      description: ' The <code>AutoScalingGroups</code> used by this environment. ',
+    }),
+    Instances: InstanceListSchema.exactOptional().openapi({
+      description: 'The Amazon EC2 instances used by this environment.',
+    }),
+    LaunchConfigurations: LaunchConfigurationListSchema.exactOptional().openapi({
+      description: 'The Auto Scaling launch configurations in use by this environment.',
+    }),
+    LaunchTemplates: LaunchTemplateListSchema.exactOptional().openapi({
+      description: 'The Amazon EC2 launch templates in use by this environment.',
+    }),
+    LoadBalancers: LoadBalancerListSchema.exactOptional().openapi({
+      description: 'The LoadBalancers in use by this environment.',
+    }),
+    Triggers: TriggerListSchema.exactOptional().openapi({
+      description: 'The <code>AutoScaling</code> triggers in use by this environment. ',
+    }),
+    Queues: QueueListSchema.exactOptional().openapi({
+      description: 'The queues used by this environment.',
+    }),
   })
   .openapi({
     description: 'Describes the AWS resources in use by this environment. This data is live.',
@@ -2099,9 +1669,9 @@ const EnvironmentResourceDescriptionSchema = z
 
 const EnvironmentResourceDescriptionsMessageSchema = z
   .object({
-    EnvironmentResources: EnvironmentResourceDescriptionSchema.and(
-      z.any().openapi({ description: ' A list of <a>EnvironmentResourceDescription</a>. ' }),
-    ).exactOptional(),
+    EnvironmentResources: EnvironmentResourceDescriptionSchema.exactOptional().openapi({
+      description: ' A list of <a>EnvironmentResourceDescription</a>. ',
+    }),
   })
   .openapi({
     example: {
@@ -2136,39 +1706,31 @@ const EventSeveritySchema = z
 
 const EventDescriptionSchema = z
   .object({
-    EventDate: EventDateSchema.and(
-      z.any().openapi({ description: 'The date when the event occurred.' }),
-    ).exactOptional(),
-    Message: EventMessageSchema.and(
-      z.any().openapi({ description: 'The event message.' }),
-    ).exactOptional(),
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The application associated with the event.' }),
-    ).exactOptional(),
-    VersionLabel: VersionLabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The release label for the application version associated with this event.',
-        }),
-    ).exactOptional(),
-    TemplateName: ConfigurationTemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration associated with this event.' }),
-    ).exactOptional(),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z.any().openapi({ description: 'The name of the environment associated with this event.' }),
-    ).exactOptional(),
-    PlatformArn: PlatformArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the platform version.' }),
-    ).exactOptional(),
-    RequestId: RequestIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The web service request ID for the activity of this event.' }),
-    ).exactOptional(),
-    Severity: EventSeveritySchema.and(
-      z.any().openapi({ description: 'The severity level of this event.' }),
-    ).exactOptional(),
+    EventDate: EventDateSchema.exactOptional().openapi({
+      description: 'The date when the event occurred.',
+    }),
+    Message: EventMessageSchema.exactOptional().openapi({ description: 'The event message.' }),
+    ApplicationName: ApplicationNameSchema.exactOptional().openapi({
+      description: 'The application associated with the event.',
+    }),
+    VersionLabel: VersionLabelSchema.exactOptional().openapi({
+      description: 'The release label for the application version associated with this event.',
+    }),
+    TemplateName: ConfigurationTemplateNameSchema.exactOptional().openapi({
+      description: 'The name of the configuration associated with this event.',
+    }),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description: 'The name of the environment associated with this event.',
+    }),
+    PlatformArn: PlatformArnSchema.exactOptional().openapi({
+      description: 'The ARN of the platform version.',
+    }),
+    RequestId: RequestIdSchema.exactOptional().openapi({
+      description: 'The web service request ID for the activity of this event.',
+    }),
+    Severity: EventSeveritySchema.exactOptional().openapi({
+      description: 'The severity level of this event.',
+    }),
   })
   .openapi({ description: 'Describes an event.', required: [] })
   .openapi('EventDescription')
@@ -2177,17 +1739,13 @@ const EventDescriptionListSchema = z.array(EventDescriptionSchema).openapi('Even
 
 const EventDescriptionsMessageSchema = z
   .object({
-    Events: EventDescriptionListSchema.and(
-      z.any().openapi({ description: ' A list of <a>EventDescription</a>. ' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If returned, this indicates that there are more results to obtain. Use this token in the next <a>DescribeEvents</a> call to get the next batch of events. ',
-        }),
-    ).exactOptional(),
+    Events: EventDescriptionListSchema.exactOptional().openapi({
+      description: ' A list of <a>EventDescription</a>. ',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        ' If returned, this indicates that there are more results to obtain. Use this token in the next <a>DescribeEvents</a> call to get the next batch of events. ',
+    }),
   })
   .openapi({
     example: {
@@ -2237,70 +1795,38 @@ const LaunchedAtSchema = z.iso.datetime({ offset: true }).openapi('LaunchedAt')
 
 const CPUUtilizationSchema = z
   .object({
-    User: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Percentage of time that the CPU has spent in the <code>User</code> state over the last 10 seconds.',
-        }),
-    ).exactOptional(),
-    Nice: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Available on Linux environments only.</p> <p>Percentage of time that the CPU has spent in the <code>Nice</code> state over the last 10 seconds.</p>',
-        }),
-    ).exactOptional(),
-    System: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Available on Linux environments only.</p> <p>Percentage of time that the CPU has spent in the <code>System</code> state over the last 10 seconds.</p>',
-        }),
-    ).exactOptional(),
-    Idle: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Percentage of time that the CPU has spent in the <code>Idle</code> state over the last 10 seconds.',
-        }),
-    ).exactOptional(),
-    IOWait: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Available on Linux environments only.</p> <p>Percentage of time that the CPU has spent in the <code>I/O Wait</code> state over the last 10 seconds.</p>',
-        }),
-    ).exactOptional(),
-    IRQ: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Available on Linux environments only.</p> <p>Percentage of time that the CPU has spent in the <code>IRQ</code> state over the last 10 seconds.</p>',
-        }),
-    ).exactOptional(),
-    SoftIRQ: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Available on Linux environments only.</p> <p>Percentage of time that the CPU has spent in the <code>SoftIRQ</code> state over the last 10 seconds.</p>',
-        }),
-    ).exactOptional(),
-    Privileged: NullableDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Available on Windows environments only.</p> <p>Percentage of time that the CPU has spent in the <code>Privileged</code> state over the last 10 seconds.</p>',
-        }),
-    ).exactOptional(),
+    User: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        'Percentage of time that the CPU has spent in the <code>User</code> state over the last 10 seconds.',
+    }),
+    Nice: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>Available on Linux environments only.</p> <p>Percentage of time that the CPU has spent in the <code>Nice</code> state over the last 10 seconds.</p>',
+    }),
+    System: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>Available on Linux environments only.</p> <p>Percentage of time that the CPU has spent in the <code>System</code> state over the last 10 seconds.</p>',
+    }),
+    Idle: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        'Percentage of time that the CPU has spent in the <code>Idle</code> state over the last 10 seconds.',
+    }),
+    IOWait: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>Available on Linux environments only.</p> <p>Percentage of time that the CPU has spent in the <code>I/O Wait</code> state over the last 10 seconds.</p>',
+    }),
+    IRQ: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>Available on Linux environments only.</p> <p>Percentage of time that the CPU has spent in the <code>IRQ</code> state over the last 10 seconds.</p>',
+    }),
+    SoftIRQ: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>Available on Linux environments only.</p> <p>Percentage of time that the CPU has spent in the <code>SoftIRQ</code> state over the last 10 seconds.</p>',
+    }),
+    Privileged: NullableDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>Available on Windows environments only.</p> <p>Percentage of time that the CPU has spent in the <code>Privileged</code> state over the last 10 seconds.</p>',
+    }),
   })
   .openapi({ description: 'CPU utilization metrics for an instance.', required: [] })
   .openapi('CPUUtilization')
@@ -2311,17 +1837,13 @@ const LoadAverageSchema = z.array(LoadAverageValueSchema).openapi('LoadAverage')
 
 const SystemStatusSchema = z
   .object({
-    CPUUtilization: CPUUtilizationSchema.and(
-      z.any().openapi({ description: 'CPU utilization metrics for the instance.' }),
-    ).exactOptional(),
-    LoadAverage: LoadAverageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Load average in the last 1-minute, 5-minute, and 15-minute periods. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced-metrics.html#health-enhanced-metrics-os">Operating System Metrics</a>.',
-        }),
-    ).exactOptional(),
+    CPUUtilization: CPUUtilizationSchema.exactOptional().openapi({
+      description: 'CPU utilization metrics for the instance.',
+    }),
+    LoadAverage: LoadAverageSchema.exactOptional().openapi({
+      description:
+        'Load average in the last 1-minute, 5-minute, and 15-minute periods. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced-metrics.html#health-enhanced-metrics-os">Operating System Metrics</a>.',
+    }),
   })
   .openapi({
     description: 'CPU utilization and load average metrics for an Amazon EC2 instance.',
@@ -2335,90 +1857,58 @@ const DeploymentTimestampSchema = z.iso.datetime({ offset: true }).openapi('Depl
 
 const DeploymentSchema = z
   .object({
-    VersionLabel: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version label of the application version in the deployment.',
-        }),
-    ).exactOptional(),
-    DeploymentId: NullableLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the deployment. This number increases by one each time that you deploy source code or change instance configuration settings.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the deployment:</p> <ul> <li> <p> <code>In Progress</code> : The deployment is in progress.</p> </li> <li> <p> <code>Deployed</code> : The deployment succeeded.</p> </li> <li> <p> <code>Failed</code> : The deployment failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DeploymentTime: DeploymentTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For in-progress deployments, the time that the deployment started.</p> <p>For completed deployments, the time that the deployment ended.</p>',
-        }),
-    ).exactOptional(),
+    VersionLabel: StringSchema.exactOptional().openapi({
+      description: 'The version label of the application version in the deployment.',
+    }),
+    DeploymentId: NullableLongSchema.exactOptional().openapi({
+      description:
+        'The ID of the deployment. This number increases by one each time that you deploy source code or change instance configuration settings.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the deployment:</p> <ul> <li> <p> <code>In Progress</code> : The deployment is in progress.</p> </li> <li> <p> <code>Deployed</code> : The deployment succeeded.</p> </li> <li> <p> <code>Failed</code> : The deployment failed.</p> </li> </ul>',
+    }),
+    DeploymentTime: DeploymentTimestampSchema.exactOptional().openapi({
+      description:
+        '<p>For in-progress deployments, the time that the deployment started.</p> <p>For completed deployments, the time that the deployment ended.</p>',
+    }),
   })
   .openapi({ description: 'Information about an application version deployment.', required: [] })
   .openapi('Deployment')
 
 const SingleInstanceHealthSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Amazon EC2 instance.' }),
-    ).exactOptional(),
-    HealthStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns the health status of the specified instance. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced-status.html">Health Colors and Statuses</a>.',
-        }),
-    ).exactOptional(),
-    Color: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the color indicator that gives you information about the health of the EC2 instance. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced-status.html">Health Colors and Statuses</a>.',
-        }),
-    ).exactOptional(),
-    Causes: CausesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the causes, which provide more information about the current health status.',
-        }),
-    ).exactOptional(),
-    LaunchedAt: LaunchedAtSchema.and(
-      z.any().openapi({ description: 'The time at which the EC2 instance was launched.' }),
-    ).exactOptional(),
-    ApplicationMetrics: ApplicationMetricsSchema.and(
-      z.any().openapi({ description: 'Request metrics from your application.' }),
-    ).exactOptional(),
-    System: SystemStatusSchema.and(
-      z.any().openapi({ description: 'Operating system metrics from the instance.' }),
-    ).exactOptional(),
-    Deployment: DeploymentSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the most recent deployment to an instance.' }),
-    ).exactOptional(),
-    AvailabilityZone: StringSchema.and(
-      z.any().openapi({ description: 'The availability zone in which the instance runs.' }),
-    ).exactOptional(),
-    InstanceType: StringSchema.and(
-      z.any().openapi({ description: "The instance's type." }),
-    ).exactOptional(),
+    InstanceId: InstanceIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon EC2 instance.',
+    }),
+    HealthStatus: StringSchema.exactOptional().openapi({
+      description:
+        'Returns the health status of the specified instance. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced-status.html">Health Colors and Statuses</a>.',
+    }),
+    Color: StringSchema.exactOptional().openapi({
+      description:
+        'Represents the color indicator that gives you information about the health of the EC2 instance. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced-status.html">Health Colors and Statuses</a>.',
+    }),
+    Causes: CausesSchema.exactOptional().openapi({
+      description:
+        'Represents the causes, which provide more information about the current health status.',
+    }),
+    LaunchedAt: LaunchedAtSchema.exactOptional().openapi({
+      description: 'The time at which the EC2 instance was launched.',
+    }),
+    ApplicationMetrics: ApplicationMetricsSchema.exactOptional().openapi({
+      description: 'Request metrics from your application.',
+    }),
+    System: SystemStatusSchema.exactOptional().openapi({
+      description: 'Operating system metrics from the instance.',
+    }),
+    Deployment: DeploymentSchema.exactOptional().openapi({
+      description: 'Information about the most recent deployment to an instance.',
+    }),
+    AvailabilityZone: StringSchema.exactOptional().openapi({
+      description: 'The availability zone in which the instance runs.',
+    }),
+    InstanceType: StringSchema.exactOptional().openapi({ description: "The instance's type." }),
   })
   .openapi({
     description:
@@ -2433,24 +1923,16 @@ const NextTokenSchema = z.string().min(1).max(100).openapi('NextToken')
 
 const DescribeInstancesHealthResultSchema = z
   .object({
-    InstanceHealthList: InstanceHealthListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Detailed health information about each instance.</p> <p>The output differs slightly between Linux and Windows environments. There is a difference in the members that are supported under the <code>&lt;CPUUtilization&gt;</code> type.</p>',
-        }),
-    ).exactOptional(),
-    RefreshedAt: RefreshedAtSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time that the health information was retrieved.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Pagination token for the next page of results, if available.' }),
-    ).exactOptional(),
+    InstanceHealthList: InstanceHealthListSchema.exactOptional().openapi({
+      description:
+        '<p>Detailed health information about each instance.</p> <p>The output differs slightly between Linux and Windows environments. There is a difference in the members that are supported under the <code>&lt;CPUUtilization&gt;</code> type.</p>',
+    }),
+    RefreshedAt: RefreshedAtSchema.exactOptional().openapi({
+      description: 'The date and time that the health information was retrieved.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'Pagination token for the next page of results, if available.',
+    }),
   })
   .openapi({
     example: {
@@ -2520,12 +2002,12 @@ const MaintainerSchema = z.string().openapi('Maintainer')
 
 const PlatformProgrammingLanguageSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the programming language.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The version of the programming language.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of the programming language.',
+    }),
+    Version: StringSchema.exactOptional().openapi({
+      description: 'The version of the programming language.',
+    }),
   })
   .openapi({ description: 'A programming language supported by the platform.', required: [] })
   .openapi('PlatformProgrammingLanguage')
@@ -2536,12 +2018,8 @@ const PlatformProgrammingLanguagesSchema = z
 
 const PlatformFrameworkSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the framework.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The version of the framework.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the framework.' }),
+    Version: StringSchema.exactOptional().openapi({ description: 'The version of the framework.' }),
   })
   .openapi({ description: 'A framework supported by the platform.', required: [] })
   .openapi('PlatformFramework')
@@ -2554,12 +2032,12 @@ const ImageIdSchema = z.string().openapi('ImageId')
 
 const CustomAmiSchema = z
   .object({
-    VirtualizationType: VirtualizationTypeSchema.and(
-      z.any().openapi({ description: 'The type of virtualization used to create the custom AMI.' }),
-    ).exactOptional(),
-    ImageId: ImageIdSchema.and(
-      z.any().openapi({ description: 'THe ID of the image used to create the custom AMI.' }),
-    ).exactOptional(),
+    VirtualizationType: VirtualizationTypeSchema.exactOptional().openapi({
+      description: 'The type of virtualization used to create the custom AMI.',
+    }),
+    ImageId: ImageIdSchema.exactOptional().openapi({
+      description: 'THe ID of the image used to create the custom AMI.',
+    }),
   })
   .openapi({ description: 'A custom AMI available to platforms.', required: [] })
   .openapi('CustomAmi')
@@ -2568,102 +2046,80 @@ const CustomAmiListSchema = z.array(CustomAmiSchema).openapi('CustomAmiList')
 
 const PlatformDescriptionSchema = z
   .object({
-    PlatformArn: PlatformArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the platform version.' }),
-    ).exactOptional(),
-    PlatformOwner: PlatformOwnerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The AWS account ID of the person who created the platform version.',
-        }),
-    ).exactOptional(),
-    PlatformName: PlatformNameSchema.and(
-      z.any().openapi({ description: 'The name of the platform version.' }),
-    ).exactOptional(),
-    PlatformVersion: PlatformVersionSchema.and(
-      z.any().openapi({ description: 'The version of the platform version.' }),
-    ).exactOptional(),
-    SolutionStackName: SolutionStackNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the solution stack used by the platform version.' }),
-    ).exactOptional(),
-    PlatformStatus: PlatformStatusSchema.and(
-      z.any().openapi({ description: 'The status of the platform version.' }),
-    ).exactOptional(),
-    DateCreated: CreationDateSchema.and(
-      z.any().openapi({ description: 'The date when the platform version was created.' }),
-    ).exactOptional(),
-    DateUpdated: UpdateDateSchema.and(
-      z.any().openapi({ description: 'The date when the platform version was last updated.' }),
-    ).exactOptional(),
-    PlatformCategory: PlatformCategorySchema.and(
-      z.any().openapi({ description: 'The category of the platform version.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the platform version.' }),
-    ).exactOptional(),
-    Maintainer: MaintainerSchema.and(
-      z.any().openapi({ description: 'Information about the maintainer of the platform version.' }),
-    ).exactOptional(),
-    OperatingSystemName: OperatingSystemNameSchema.and(
-      z.any().openapi({ description: 'The operating system used by the platform version.' }),
-    ).exactOptional(),
-    OperatingSystemVersion: OperatingSystemVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version of the operating system used by the platform version.',
-        }),
-    ).exactOptional(),
-    ProgrammingLanguages: PlatformProgrammingLanguagesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The programming languages supported by the platform version.' }),
-    ).exactOptional(),
-    Frameworks: PlatformFrameworksSchema.and(
-      z.any().openapi({ description: 'The frameworks supported by the platform version.' }),
-    ).exactOptional(),
-    CustomAmiList: CustomAmiListSchema.and(
-      z.any().openapi({ description: 'The custom AMIs supported by the platform version.' }),
-    ).exactOptional(),
-    SupportedTierList: SupportedTierListSchema.and(
-      z.any().openapi({ description: 'The tiers supported by the platform version.' }),
-    ).exactOptional(),
-    SupportedAddonList: SupportedAddonListSchema.and(
-      z.any().openapi({ description: 'The additions supported by the platform version.' }),
-    ).exactOptional(),
-    PlatformLifecycleState: PlatformLifecycleStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The state of the platform version in its lifecycle.</p> <p>Possible values: <code>Recommended</code> | <code>null</code> </p> <p>If a null value is returned, the platform version isn't the recommended one for its branch. Each platform branch has a single recommended platform version, typically the most recent one.</p>",
-        }),
-    ).exactOptional(),
-    PlatformBranchName: BranchNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The platform branch to which the platform version belongs.' }),
-    ).exactOptional(),
-    PlatformBranchLifecycleState: PlatformBranchLifecycleStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The state of the platform version's branch in its lifecycle.</p> <p>Possible values: <code>Beta</code> | <code>Supported</code> | <code>Deprecated</code> | <code>Retired</code> </p>",
-        }),
-    ).exactOptional(),
+    PlatformArn: PlatformArnSchema.exactOptional().openapi({
+      description: 'The ARN of the platform version.',
+    }),
+    PlatformOwner: PlatformOwnerSchema.exactOptional().openapi({
+      description: 'The AWS account ID of the person who created the platform version.',
+    }),
+    PlatformName: PlatformNameSchema.exactOptional().openapi({
+      description: 'The name of the platform version.',
+    }),
+    PlatformVersion: PlatformVersionSchema.exactOptional().openapi({
+      description: 'The version of the platform version.',
+    }),
+    SolutionStackName: SolutionStackNameSchema.exactOptional().openapi({
+      description: 'The name of the solution stack used by the platform version.',
+    }),
+    PlatformStatus: PlatformStatusSchema.exactOptional().openapi({
+      description: 'The status of the platform version.',
+    }),
+    DateCreated: CreationDateSchema.exactOptional().openapi({
+      description: 'The date when the platform version was created.',
+    }),
+    DateUpdated: UpdateDateSchema.exactOptional().openapi({
+      description: 'The date when the platform version was last updated.',
+    }),
+    PlatformCategory: PlatformCategorySchema.exactOptional().openapi({
+      description: 'The category of the platform version.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the platform version.',
+    }),
+    Maintainer: MaintainerSchema.exactOptional().openapi({
+      description: 'Information about the maintainer of the platform version.',
+    }),
+    OperatingSystemName: OperatingSystemNameSchema.exactOptional().openapi({
+      description: 'The operating system used by the platform version.',
+    }),
+    OperatingSystemVersion: OperatingSystemVersionSchema.exactOptional().openapi({
+      description: 'The version of the operating system used by the platform version.',
+    }),
+    ProgrammingLanguages: PlatformProgrammingLanguagesSchema.exactOptional().openapi({
+      description: 'The programming languages supported by the platform version.',
+    }),
+    Frameworks: PlatformFrameworksSchema.exactOptional().openapi({
+      description: 'The frameworks supported by the platform version.',
+    }),
+    CustomAmiList: CustomAmiListSchema.exactOptional().openapi({
+      description: 'The custom AMIs supported by the platform version.',
+    }),
+    SupportedTierList: SupportedTierListSchema.exactOptional().openapi({
+      description: 'The tiers supported by the platform version.',
+    }),
+    SupportedAddonList: SupportedAddonListSchema.exactOptional().openapi({
+      description: 'The additions supported by the platform version.',
+    }),
+    PlatformLifecycleState: PlatformLifecycleStateSchema.exactOptional().openapi({
+      description:
+        "<p>The state of the platform version in its lifecycle.</p> <p>Possible values: <code>Recommended</code> | <code>null</code> </p> <p>If a null value is returned, the platform version isn't the recommended one for its branch. Each platform branch has a single recommended platform version, typically the most recent one.</p>",
+    }),
+    PlatformBranchName: BranchNameSchema.exactOptional().openapi({
+      description: 'The platform branch to which the platform version belongs.',
+    }),
+    PlatformBranchLifecycleState: PlatformBranchLifecycleStateSchema.exactOptional().openapi({
+      description:
+        "<p>The state of the platform version's branch in its lifecycle.</p> <p>Possible values: <code>Beta</code> | <code>Supported</code> | <code>Deprecated</code> | <code>Retired</code> </p>",
+    }),
   })
   .openapi({ description: 'Detailed information about a platform version.', required: [] })
   .openapi('PlatformDescription')
 
 const DescribePlatformVersionResultSchema = z
   .object({
-    PlatformDescription: PlatformDescriptionSchema.and(
-      z.any().openapi({ description: 'Detailed information about the platform version.' }),
-    ).exactOptional(),
+    PlatformDescription: PlatformDescriptionSchema.exactOptional().openapi({
+      description: 'Detailed information about the platform version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribePlatformVersionResult')
@@ -2680,12 +2136,12 @@ const SolutionStackFileTypeListSchema = z
 
 const SolutionStackDescriptionSchema = z
   .object({
-    SolutionStackName: SolutionStackNameSchema.and(
-      z.any().openapi({ description: 'The name of the solution stack.' }),
-    ).exactOptional(),
-    PermittedFileTypes: SolutionStackFileTypeListSchema.and(
-      z.any().openapi({ description: 'The permitted file types allowed for a solution stack.' }),
-    ).exactOptional(),
+    SolutionStackName: SolutionStackNameSchema.exactOptional().openapi({
+      description: 'The name of the solution stack.',
+    }),
+    PermittedFileTypes: SolutionStackFileTypeListSchema.exactOptional().openapi({
+      description: 'The permitted file types allowed for a solution stack.',
+    }),
   })
   .openapi({ description: 'Describes the solution stack.', required: [] })
   .openapi('SolutionStackDescription')
@@ -2696,17 +2152,13 @@ const AvailableSolutionStackDetailsListSchema = z
 
 const ListAvailableSolutionStacksResultMessageSchema = z
   .object({
-    SolutionStacks: AvailableSolutionStackNamesListSchema.and(
-      z.any().openapi({ description: 'A list of available solution stacks.' }),
-    ).exactOptional(),
-    SolutionStackDetails: AvailableSolutionStackDetailsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of available solution stacks and their <a>SolutionStackDescription</a>. ',
-        }),
-    ).exactOptional(),
+    SolutionStacks: AvailableSolutionStackNamesListSchema.exactOptional().openapi({
+      description: 'A list of available solution stacks.',
+    }),
+    SolutionStackDetails: AvailableSolutionStackDetailsListSchema.exactOptional().openapi({
+      description:
+        ' A list of available solution stacks and their <a>SolutionStackDescription</a>. ',
+    }),
   })
   .openapi({
     example: {
@@ -2756,40 +2208,24 @@ const BranchOrderSchema = z.int().openapi('BranchOrder')
 
 const PlatformBranchSummarySchema = z
   .object({
-    PlatformName: PlatformNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the platform to which this platform branch belongs.',
-        }),
-    ).exactOptional(),
-    BranchName: BranchNameSchema.and(
-      z.any().openapi({ description: 'The name of the platform branch.' }),
-    ).exactOptional(),
-    LifecycleState: PlatformBranchLifecycleStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The support life cycle state of the platform branch.</p> <p>Possible values: <code>beta</code> | <code>supported</code> | <code>deprecated</code> | <code>retired</code> </p>',
-        }),
-    ).exactOptional(),
-    BranchOrder: BranchOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An ordinal number that designates the order in which platform branches have been added to a platform. This can be helpful, for example, if your code calls the <code>ListPlatformBranches</code> action and then displays a list of platform branches.</p> <p>A larger <code>BranchOrder</code> value designates a newer platform branch within the platform.</p>',
-        }),
-    ).exactOptional(),
-    SupportedTierList: SupportedTierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The environment tiers that platform versions in this branch support.</p> <p>Possible values: <code>WebServer/Standard</code> | <code>Worker/SQS/HTTP</code> </p>',
-        }),
-    ).exactOptional(),
+    PlatformName: PlatformNameSchema.exactOptional().openapi({
+      description: 'The name of the platform to which this platform branch belongs.',
+    }),
+    BranchName: BranchNameSchema.exactOptional().openapi({
+      description: 'The name of the platform branch.',
+    }),
+    LifecycleState: PlatformBranchLifecycleStateSchema.exactOptional().openapi({
+      description:
+        '<p>The support life cycle state of the platform branch.</p> <p>Possible values: <code>beta</code> | <code>supported</code> | <code>deprecated</code> | <code>retired</code> </p>',
+    }),
+    BranchOrder: BranchOrderSchema.exactOptional().openapi({
+      description:
+        '<p>An ordinal number that designates the order in which platform branches have been added to a platform. This can be helpful, for example, if your code calls the <code>ListPlatformBranches</code> action and then displays a list of platform branches.</p> <p>A larger <code>BranchOrder</code> value designates a newer platform branch within the platform.</p>',
+    }),
+    SupportedTierList: SupportedTierListSchema.exactOptional().openapi({
+      description:
+        '<p>The environment tiers that platform versions in this branch support.</p> <p>Possible values: <code>WebServer/Standard</code> | <code>Worker/SQS/HTTP</code> </p>',
+    }),
   })
   .openapi({ description: 'Summary information about a platform branch.', required: [] })
   .openapi('PlatformBranchSummary')
@@ -2800,17 +2236,13 @@ const PlatformBranchSummaryListSchema = z
 
 const ListPlatformBranchesResultSchema = z
   .object({
-    PlatformBranchSummaryList: PlatformBranchSummaryListSchema.and(
-      z.any().openapi({ description: 'Summary information about the platform branches.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "In a paginated request, if this value isn't <code>null</code>, it's the token that you can pass in a subsequent request to get the next response page.",
-        }),
-    ).exactOptional(),
+    PlatformBranchSummaryList: PlatformBranchSummaryListSchema.exactOptional().openapi({
+      description: 'Summary information about the platform branches.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        "In a paginated request, if this value isn't <code>null</code>, it's the token that you can pass in a subsequent request to get the next response page.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPlatformBranchesResult')
@@ -2825,30 +2257,18 @@ const SearchFilterValuesSchema = z.array(SearchFilterValueSchema).openapi('Searc
 
 const SearchFilterSchema = z
   .object({
-    Attribute: SearchFilterAttributeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The result attribute to which the filter values are applied. Valid values vary by API action.',
-        }),
-    ).exactOptional(),
-    Operator: SearchFilterOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The operator to apply to the <code>Attribute</code> with each of the <code>Values</code>. Valid values vary by <code>Attribute</code>.',
-        }),
-    ).exactOptional(),
-    Values: SearchFilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of values applied to the <code>Attribute</code> and <code>Operator</code> attributes. Number of values and valid values vary by <code>Attribute</code>.',
-        }),
-    ).exactOptional(),
+    Attribute: SearchFilterAttributeSchema.exactOptional().openapi({
+      description:
+        'The result attribute to which the filter values are applied. Valid values vary by API action.',
+    }),
+    Operator: SearchFilterOperatorSchema.exactOptional().openapi({
+      description:
+        'The operator to apply to the <code>Attribute</code> with each of the <code>Values</code>. Valid values vary by <code>Attribute</code>.',
+    }),
+    Values: SearchFilterValuesSchema.exactOptional().openapi({
+      description:
+        'The list of values applied to the <code>Attribute</code> and <code>Operator</code> attributes. Number of values and valid values vary by <code>Attribute</code>.',
+    }),
   })
   .openapi({
     description:
@@ -2861,17 +2281,13 @@ const PlatformSummaryListSchema = z.array(PlatformSummarySchema).openapi('Platfo
 
 const ListPlatformVersionsResultSchema = z
   .object({
-    PlatformSummaryList: PlatformSummaryListSchema.and(
-      z.any().openapi({ description: 'Summary information about the platform versions.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "In a paginated request, if this value isn't <code>null</code>, it's the token that you can pass in a subsequent request to get the next response page.",
-        }),
-    ).exactOptional(),
+    PlatformSummaryList: PlatformSummaryListSchema.exactOptional().openapi({
+      description: 'Summary information about the platform versions.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        "In a paginated request, if this value isn't <code>null</code>, it's the token that you can pass in a subsequent request to get the next response page.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPlatformVersionsResult')
@@ -2888,30 +2304,18 @@ const PlatformFilterValueListSchema = z
 
 const PlatformFilterSchema = z
   .object({
-    Type: PlatformFilterTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The platform version attribute to which the filter values are applied.</p> <p>Valid values: <code>PlatformName</code> | <code>PlatformVersion</code> | <code>PlatformStatus</code> | <code>PlatformBranchName</code> | <code>PlatformLifecycleState</code> | <code>PlatformOwner</code> | <code>SupportedTier</code> | <code>SupportedAddon</code> | <code>ProgrammingLanguageName</code> | <code>OperatingSystemName</code> </p>',
-        }),
-    ).exactOptional(),
-    Operator: PlatformFilterOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The operator to apply to the <code>Type</code> with each of the <code>Values</code>.</p> <p>Valid values: <code>=</code> | <code>!=</code> | <code>&lt;</code> | <code>&lt;=</code> | <code>&gt;</code> | <code>&gt;=</code> | <code>contains</code> | <code>begins_with</code> | <code>ends_with</code> </p>',
-        }),
-    ).exactOptional(),
-    Values: PlatformFilterValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of values applied to the filtering platform version attribute. Only one value is supported for all current operators.</p> <p>The following list shows valid filter values for some filter attributes.</p> <ul> <li> <p> <code>PlatformStatus</code>: <code>Creating</code> | <code>Failed</code> | <code>Ready</code> | <code>Deleting</code> | <code>Deleted</code> </p> </li> <li> <p> <code>PlatformLifecycleState</code>: <code>recommended</code> </p> </li> <li> <p> <code>SupportedTier</code>: <code>WebServer/Standard</code> | <code>Worker/SQS/HTTP</code> </p> </li> <li> <p> <code>SupportedAddon</code>: <code>Log/S3</code> | <code>Monitoring/Healthd</code> | <code>WorkerDaemon/SQSD</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Type: PlatformFilterTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The platform version attribute to which the filter values are applied.</p> <p>Valid values: <code>PlatformName</code> | <code>PlatformVersion</code> | <code>PlatformStatus</code> | <code>PlatformBranchName</code> | <code>PlatformLifecycleState</code> | <code>PlatformOwner</code> | <code>SupportedTier</code> | <code>SupportedAddon</code> | <code>ProgrammingLanguageName</code> | <code>OperatingSystemName</code> </p>',
+    }),
+    Operator: PlatformFilterOperatorSchema.exactOptional().openapi({
+      description:
+        '<p>The operator to apply to the <code>Type</code> with each of the <code>Values</code>.</p> <p>Valid values: <code>=</code> | <code>!=</code> | <code>&lt;</code> | <code>&lt;=</code> | <code>&gt;</code> | <code>&gt;=</code> | <code>contains</code> | <code>begins_with</code> | <code>ends_with</code> </p>',
+    }),
+    Values: PlatformFilterValueListSchema.exactOptional().openapi({
+      description:
+        '<p>The list of values applied to the filtering platform version attribute. Only one value is supported for all current operators.</p> <p>The following list shows valid filter values for some filter attributes.</p> <ul> <li> <p> <code>PlatformStatus</code>: <code>Creating</code> | <code>Failed</code> | <code>Ready</code> | <code>Deleting</code> | <code>Deleted</code> </p> </li> <li> <p> <code>PlatformLifecycleState</code>: <code>recommended</code> </p> </li> <li> <p> <code>SupportedTier</code>: <code>WebServer/Standard</code> | <code>Worker/SQS/HTTP</code> </p> </li> <li> <p> <code>SupportedAddon</code>: <code>Log/S3</code> | <code>Monitoring/Healthd</code> | <code>WorkerDaemon/SQSD</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -2926,17 +2330,13 @@ const TagListSchema = z.array(TagSchema).openapi('TagList')
 
 const ResourceTagsDescriptionMessageSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource for which a tag list was requested.',
-        }),
-    ).exactOptional(),
-    ResourceTags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag key-value pairs.' }),
-    ).exactOptional(),
+    ResourceArn: ResourceArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource for which a tag list was requested.',
+    }),
+    ResourceTags: TagListSchema.exactOptional().openapi({
+      description: 'A list of tag key-value pairs.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ResourceTagsDescriptionMessage')
@@ -2955,23 +2355,19 @@ const MessageSchema = z.string().openapi('Message')
 
 const EnvironmentInfoDescriptionSchema = z
   .object({
-    InfoType: EnvironmentInfoTypeSchema.and(
-      z.any().openapi({ description: 'The type of information retrieved.' }),
-    ).exactOptional(),
-    Ec2InstanceId: Ec2InstanceIdSchema.and(
-      z.any().openapi({ description: 'The Amazon EC2 Instance ID for this information.' }),
-    ).exactOptional(),
-    SampleTimestamp: SampleTimestampSchema.and(
-      z.any().openapi({ description: 'The time stamp when this information was retrieved.' }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The retrieved information. Currently contains a presigned Amazon S3 URL. The files are deleted after 15 minutes.</p> <p>Anyone in possession of this URL can access the files before they are deleted. Make the URL available only to trusted parties.</p>',
-        }),
-    ).exactOptional(),
+    InfoType: EnvironmentInfoTypeSchema.exactOptional().openapi({
+      description: 'The type of information retrieved.',
+    }),
+    Ec2InstanceId: Ec2InstanceIdSchema.exactOptional().openapi({
+      description: 'The Amazon EC2 Instance ID for this information.',
+    }),
+    SampleTimestamp: SampleTimestampSchema.exactOptional().openapi({
+      description: 'The time stamp when this information was retrieved.',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description:
+        '<p>The retrieved information. Currently contains a presigned Amazon S3 URL. The files are deleted after 15 minutes.</p> <p>Anyone in possession of this URL can access the files before they are deleted. Make the URL available only to trusted parties.</p>',
+    }),
   })
   .openapi({
     description: 'The information retrieved from the Amazon EC2 instances.',
@@ -2985,11 +2381,9 @@ const EnvironmentInfoDescriptionListSchema = z
 
 const RetrieveEnvironmentInfoResultMessageSchema = z
   .object({
-    EnvironmentInfo: EnvironmentInfoDescriptionListSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The <a>EnvironmentInfoDescription</a> of the environment. ' }),
-    ).exactOptional(),
+    EnvironmentInfo: EnvironmentInfoDescriptionListSchema.exactOptional().openapi({
+      description: ' The <a>EnvironmentInfoDescription</a> of the environment. ',
+    }),
   })
   .openapi({
     example: {
@@ -3010,12 +2404,12 @@ const RetrieveEnvironmentInfoResultMessageSchema = z
 
 const ApplicationResourceLifecycleDescriptionMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of the application.' }),
-    ).exactOptional(),
-    ResourceLifecycleConfig: ApplicationResourceLifecycleConfigSchema.and(
-      z.any().openapi({ description: 'The lifecycle configuration.' }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.exactOptional().openapi({
+      description: 'The name of the application.',
+    }),
+    ResourceLifecycleConfig: ApplicationResourceLifecycleConfigSchema.exactOptional().openapi({
+      description: 'The lifecycle configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ApplicationResourceLifecycleDescriptionMessage')
@@ -3028,23 +2422,19 @@ const ValidationSeveritySchema = z.enum(['error', 'warning']).openapi('Validatio
 
 const ValidationMessageSchema = z
   .object({
-    Message: ValidationMessageStringSchema.and(
-      z.any().openapi({ description: 'A message describing the error or warning.' }),
-    ).exactOptional(),
-    Severity: ValidationSeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An indication of the severity of this message:</p> <ul> <li> <p> <code>error</code>: This message indicates that this is not a valid setting for an option.</p> </li> <li> <p> <code>warning</code>: This message is providing information you should take into account.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Namespace: OptionNamespaceSchema.and(
-      z.any().openapi({ description: 'The namespace to which the option belongs.' }),
-    ).exactOptional(),
-    OptionName: ConfigurationOptionNameSchema.and(
-      z.any().openapi({ description: 'The name of the option.' }),
-    ).exactOptional(),
+    Message: ValidationMessageStringSchema.exactOptional().openapi({
+      description: 'A message describing the error or warning.',
+    }),
+    Severity: ValidationSeveritySchema.exactOptional().openapi({
+      description:
+        '<p>An indication of the severity of this message:</p> <ul> <li> <p> <code>error</code>: This message indicates that this is not a valid setting for an option.</p> </li> <li> <p> <code>warning</code>: This message is providing information you should take into account.</p> </li> </ul>',
+    }),
+    Namespace: OptionNamespaceSchema.exactOptional().openapi({
+      description: 'The namespace to which the option belongs.',
+    }),
+    OptionName: ConfigurationOptionNameSchema.exactOptional().openapi({
+      description: 'The name of the option.',
+    }),
   })
   .openapi({
     description: 'An error or warning for a desired configuration option value.',
@@ -3058,9 +2448,9 @@ const ValidationMessagesListSchema = z
 
 const ConfigurationSettingsValidationMessagesSchema = z
   .object({
-    Messages: ValidationMessagesListSchema.and(
-      z.any().openapi({ description: ' A list of <a>ValidationMessage</a>. ' }),
-    ).exactOptional(),
+    Messages: ValidationMessagesListSchema.exactOptional().openapi({
+      description: ' A list of <a>ValidationMessage</a>. ',
+    }),
   })
   .openapi({
     example: { Messages: [] },
@@ -3071,22 +2461,14 @@ const ConfigurationSettingsValidationMessagesSchema = z
 
 const AbortEnvironmentUpdateMessageSchema = z
   .object({
-    EnvironmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This specifies the ID of the environment with the in-progress update that you want to cancel.',
-        }),
-    ).exactOptional(),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This specifies the name of the environment with the in-progress update that you want to cancel.',
-        }),
-    ).exactOptional(),
+    EnvironmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description:
+        'This specifies the ID of the environment with the in-progress update that you want to cancel.',
+    }),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description:
+        'This specifies the name of the environment with the in-progress update that you want to cancel.',
+    }),
   })
   .openapi({ title: 'AbortEnvironmentUpdateMessage', description: '<p/>', required: [] })
   .openapi('AbortEnvironmentUpdateMessage')
@@ -3097,15 +2479,15 @@ const ApplicationVersionProccessSchema = z.boolean().openapi('ApplicationVersion
 
 const ApplyEnvironmentManagedActionRequestSchema = z
   .object({
-    EnvironmentName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the target environment.' }),
-    ).exactOptional(),
-    EnvironmentId: StringSchema.and(
-      z.any().openapi({ description: 'The environment ID of the target environment.' }),
-    ).exactOptional(),
-    ActionId: StringSchema.and(
-      z.any().openapi({ description: 'The action ID of the scheduled managed action to execute.' }),
-    ),
+    EnvironmentName: StringSchema.exactOptional().openapi({
+      description: 'The name of the target environment.',
+    }),
+    EnvironmentId: StringSchema.exactOptional().openapi({
+      description: 'The environment ID of the target environment.',
+    }),
+    ActionId: StringSchema.openapi({
+      description: 'The action ID of the scheduled managed action to execute.',
+    }),
   })
   .openapi({
     required: ['ActionId'],
@@ -3116,21 +2498,13 @@ const ApplyEnvironmentManagedActionRequestSchema = z
 
 const AssociateEnvironmentOperationsRoleMessageSchema = z
   .object({
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the environment to which to set the operations role.',
-        }),
-    ),
-    OperationsRole: OperationsRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of an existing IAM role to be used as the environment's operations role.",
-        }),
-    ),
+    EnvironmentName: EnvironmentNameSchema.openapi({
+      description: 'The name of the environment to which to set the operations role.',
+    }),
+    OperationsRole: OperationsRoleSchema.openapi({
+      description:
+        "The Amazon Resource Name (ARN) of an existing IAM role to be used as the environment's operations role.",
+    }),
   })
   .openapi({
     required: ['EnvironmentName', 'OperationsRole'],
@@ -3143,41 +2517,25 @@ const AutoCreateApplicationSchema = z.boolean().openapi('AutoCreateApplication')
 
 const BuildConfigurationSchema = z
   .object({
-    ArtifactName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the artifact of the CodeBuild build. If provided, Elastic Beanstalk stores the build artifact in the S3 location <i>S3-bucket</i>/resources/<i>application-name</i>/codebuild/codebuild-<i>version-label</i>-<i>artifact-name</i>.zip. If not provided, Elastic Beanstalk stores the build artifact in the S3 location <i>S3-bucket</i>/resources/<i>application-name</i>/codebuild/codebuild-<i>version-label</i>.zip. ',
-        }),
-    ).exactOptional(),
-    CodeBuildServiceRole: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that enables AWS CodeBuild to interact with dependent AWS services on behalf of the AWS account.',
-        }),
-    ),
-    ComputeType: ComputeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the compute resources the build project will use.</p> <ul> <li> <p> <code>BUILD_GENERAL1_SMALL: Use up to 3 GB memory and 2 vCPUs for builds</code> </p> </li> <li> <p> <code>BUILD_GENERAL1_MEDIUM: Use up to 7 GB memory and 4 vCPUs for builds</code> </p> </li> <li> <p> <code>BUILD_GENERAL1_LARGE: Use up to 15 GB memory and 8 vCPUs for builds</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Image: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The ID of the Docker image to use for this build project.' }),
-    ),
-    TimeoutInMinutes: BoxedIntSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'How long in minutes, from 5 to 480 (8 hours), for AWS CodeBuild to wait until timing out any related build that does not get marked as completed. The default is 60 minutes.',
-        }),
-    ).exactOptional(),
+    ArtifactName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the artifact of the CodeBuild build. If provided, Elastic Beanstalk stores the build artifact in the S3 location <i>S3-bucket</i>/resources/<i>application-name</i>/codebuild/codebuild-<i>version-label</i>-<i>artifact-name</i>.zip. If not provided, Elastic Beanstalk stores the build artifact in the S3 location <i>S3-bucket</i>/resources/<i>application-name</i>/codebuild/codebuild-<i>version-label</i>.zip. ',
+    }),
+    CodeBuildServiceRole: NonEmptyStringSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that enables AWS CodeBuild to interact with dependent AWS services on behalf of the AWS account.',
+    }),
+    ComputeType: ComputeTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Information about the compute resources the build project will use.</p> <ul> <li> <p> <code>BUILD_GENERAL1_SMALL: Use up to 3 GB memory and 2 vCPUs for builds</code> </p> </li> <li> <p> <code>BUILD_GENERAL1_MEDIUM: Use up to 7 GB memory and 4 vCPUs for builds</code> </p> </li> <li> <p> <code>BUILD_GENERAL1_LARGE: Use up to 15 GB memory and 8 vCPUs for builds</code> </p> </li> </ul>',
+    }),
+    Image: NonEmptyStringSchema.openapi({
+      description: 'The ID of the Docker image to use for this build project.',
+    }),
+    TimeoutInMinutes: BoxedIntSchema.exactOptional().openapi({
+      description:
+        'How long in minutes, from 5 to 480 (8 hours), for AWS CodeBuild to wait until timing out any related build that does not get marked as completed. The default is 60 minutes.',
+    }),
   })
   .openapi({
     required: ['CodeBuildServiceRole', 'Image'],
@@ -3189,9 +2547,9 @@ const DNSCnamePrefixSchema = z.string().min(4).max(63).openapi('DNSCnamePrefix')
 
 const CheckDNSAvailabilityMessageSchema = z
   .object({
-    CNAMEPrefix: DNSCnamePrefixSchema.and(
-      z.any().openapi({ description: 'The prefix used when this CNAME is reserved.' }),
-    ),
+    CNAMEPrefix: DNSCnamePrefixSchema.openapi({
+      description: 'The prefix used when this CNAME is reserved.',
+    }),
   })
   .openapi({
     required: ['CNAMEPrefix'],
@@ -3206,29 +2564,17 @@ const VersionLabelsSchema = z.array(VersionLabelSchema).openapi('VersionLabels')
 
 const ComposeEnvironmentsMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the application to which the specified source bundles belong.',
-        }),
-    ).exactOptional(),
-    GroupName: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the group to which the target environments belong. Specify a group name only if the environment name defined in each target environment\'s manifest ends with a + (plus) character. See <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environment-cfg-manifest.html">Environment Manifest (env.yaml)</a> for details.',
-        }),
-    ).exactOptional(),
-    VersionLabels: VersionLabelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of version labels, specifying one or more application source bundles that belong to the target application. Each source bundle must include an environment manifest that specifies the name of the environment and the name of the solution stack to use, and optionally can specify environment links to create.',
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.exactOptional().openapi({
+      description: 'The name of the application to which the specified source bundles belong.',
+    }),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      description:
+        'The name of the group to which the target environments belong. Specify a group name only if the environment name defined in each target environment\'s manifest ends with a + (plus) character. See <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environment-cfg-manifest.html">Environment Manifest (env.yaml)</a> for details.',
+    }),
+    VersionLabels: VersionLabelsSchema.exactOptional().openapi({
+      description:
+        'A list of version labels, specifying one or more application source bundles that belong to the target application. Each source bundle must include an environment manifest that specifies the name of the environment and the name of the solution stack to use, and optionally can specify environment links to create.',
+    }),
   })
   .openapi({
     title: 'ComposeEnvironmentsMessage',
@@ -3241,32 +2587,20 @@ const TagsSchema = z.array(TagSchema).openapi('Tags')
 
 const CreateApplicationMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the application. Must be unique within your account.',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Your description of the application.' }),
-    ).exactOptional(),
-    ResourceLifecycleConfig: ApplicationResourceLifecycleConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies an application resource lifecycle configuration to prevent your application from accumulating too many versions.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies the tags applied to the application.</p> <p>Elastic Beanstalk applies these tags only to the application. Environments that you create in the application don't inherit the tags.</p>",
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of the application. Must be unique within your account.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Your description of the application.',
+    }),
+    ResourceLifecycleConfig: ApplicationResourceLifecycleConfigSchema.exactOptional().openapi({
+      description:
+        'Specifies an application resource lifecycle configuration to prevent your application from accumulating too many versions.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies the tags applied to the application.</p> <p>Elastic Beanstalk applies these tags only to the application. Environments that you create in the application don't inherit the tags.</p>",
+    }),
   })
   .openapi({
     required: ['ApplicationName'],
@@ -3277,68 +2611,40 @@ const CreateApplicationMessageSchema = z
 
 const CreateApplicationVersionMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the application. If no application is found with this name, and <code>AutoCreateApplication</code> is <code>false</code>, returns an <code>InvalidParameterValue</code> error. ',
-        }),
-    ),
-    VersionLabel: VersionLabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A label identifying this version.</p> <p>Constraint: Must be unique per application. If an application version already exists with this label for the specified application, AWS Elastic Beanstalk returns an <code>InvalidParameterValue</code> error. </p>',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of this application version.' }),
-    ).exactOptional(),
-    SourceBuildInformation: SourceBuildInformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify a commit in an AWS CodeCommit Git repository to use as the source code for the application version.',
-        }),
-    ).exactOptional(),
-    SourceBundle: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon S3 bucket and key that identify the location of the source bundle for this version.</p> <note> <p>The Amazon S3 bucket must be in the same region as the environment.</p> </note> <p>Specify a source bundle in S3 or a commit in an AWS CodeCommit repository (with <code>SourceBuildInformation</code>), but not both. If neither <code>SourceBundle</code> nor <code>SourceBuildInformation</code> are provided, Elastic Beanstalk uses a sample application.</p>',
-        }),
-    ).exactOptional(),
-    BuildConfiguration: BuildConfigurationSchema.and(
-      z.any().openapi({ description: 'Settings for an AWS CodeBuild build.' }),
-    ).exactOptional(),
-    AutoCreateApplication: AutoCreateApplicationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Set to <code>true</code> to create an application with the specified name if it doesn't already exist.",
-        }),
-    ).exactOptional(),
-    Process: ApplicationVersionProccessSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Pre-processes and validates the environment manifest (<code>env.yaml</code>) and configuration files (<code>*.config</code> files in the <code>.ebextensions</code> folder) in the source bundle. Validating configuration files can identify issues prior to deploying the application version to an environment.</p> <p>You must turn processing on for application versions that you create using AWS CodeBuild or AWS CodeCommit. For application versions built from a source bundle in Amazon S3, processing is optional.</p> <note> <p>The <code>Process</code> option validates Elastic Beanstalk configuration files. It doesn't validate your application's configuration files, like proxy server or Docker configuration.</p> </note>",
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies the tags applied to the application version.</p> <p>Elastic Beanstalk applies these tags only to the application version. Environments that use the application version don't inherit the tags.</p>",
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description:
+        ' The name of the application. If no application is found with this name, and <code>AutoCreateApplication</code> is <code>false</code>, returns an <code>InvalidParameterValue</code> error. ',
+    }),
+    VersionLabel: VersionLabelSchema.openapi({
+      description:
+        '<p>A label identifying this version.</p> <p>Constraint: Must be unique per application. If an application version already exists with this label for the specified application, AWS Elastic Beanstalk returns an <code>InvalidParameterValue</code> error. </p>',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of this application version.',
+    }),
+    SourceBuildInformation: SourceBuildInformationSchema.exactOptional().openapi({
+      description:
+        'Specify a commit in an AWS CodeCommit Git repository to use as the source code for the application version.',
+    }),
+    SourceBundle: S3LocationSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon S3 bucket and key that identify the location of the source bundle for this version.</p> <note> <p>The Amazon S3 bucket must be in the same region as the environment.</p> </note> <p>Specify a source bundle in S3 or a commit in an AWS CodeCommit repository (with <code>SourceBuildInformation</code>), but not both. If neither <code>SourceBundle</code> nor <code>SourceBuildInformation</code> are provided, Elastic Beanstalk uses a sample application.</p>',
+    }),
+    BuildConfiguration: BuildConfigurationSchema.exactOptional().openapi({
+      description: 'Settings for an AWS CodeBuild build.',
+    }),
+    AutoCreateApplication: AutoCreateApplicationSchema.exactOptional().openapi({
+      description:
+        "Set to <code>true</code> to create an application with the specified name if it doesn't already exist.",
+    }),
+    Process: ApplicationVersionProccessSchema.exactOptional().openapi({
+      description:
+        "<p>Pre-processes and validates the environment manifest (<code>env.yaml</code>) and configuration files (<code>*.config</code> files in the <code>.ebextensions</code> folder) in the source bundle. Validating configuration files can identify issues prior to deploying the application version to an environment.</p> <p>You must turn processing on for application versions that you create using AWS CodeBuild or AWS CodeCommit. For application versions built from a source bundle in Amazon S3, processing is optional.</p> <note> <p>The <code>Process</code> option validates Elastic Beanstalk configuration files. It doesn't validate your application's configuration files, like proxy server or Docker configuration.</p> </note>",
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies the tags applied to the application version.</p> <p>Elastic Beanstalk applies these tags only to the application version. Environments that use the application version don't inherit the tags.</p>",
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'VersionLabel'],
@@ -3349,82 +2655,52 @@ const CreateApplicationVersionMessageSchema = z
 
 const SourceConfigurationSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the application associated with the configuration.' }),
-    ).exactOptional(),
-    TemplateName: ConfigurationTemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration template.' }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.exactOptional().openapi({
+      description: 'The name of the application associated with the configuration.',
+    }),
+    TemplateName: ConfigurationTemplateNameSchema.exactOptional().openapi({
+      description: 'The name of the configuration template.',
+    }),
   })
   .openapi({ description: 'A specification for an environment configuration.', required: [] })
   .openapi('SourceConfiguration')
 
 const CreateConfigurationTemplateMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Elastic Beanstalk application to associate with this configuration template.',
-        }),
-    ),
-    TemplateName: ConfigurationTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the configuration template.</p> <p>Constraint: This name must be unique per application.</p>',
-        }),
-    ),
-    SolutionStackName: SolutionStackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of an Elastic Beanstalk solution stack (platform version) that this configuration uses. For example, <code>64bit Amazon Linux 2013.09 running Tomcat 7 Java 7</code>. A solution stack specifies the operating system, runtime, and application server for a configuration template. It also determines the set of configuration options as well as the possible and default values. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts.platforms.html">Supported Platforms</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.</p> <p>You must specify <code>SolutionStackName</code> if you don\'t specify <code>PlatformArn</code>, <code>EnvironmentId</code>, or <code>SourceConfiguration</code>.</p> <p>Use the <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/api/API_ListAvailableSolutionStacks.html"> <code>ListAvailableSolutionStacks</code> </a> API to obtain a list of available solution stacks.</p>',
-        }),
-    ).exactOptional(),
-    PlatformArn: PlatformArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the custom platform. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/custom-platforms.html"> Custom Platforms</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.</p> <note> <p>If you specify <code>PlatformArn</code>, then don\'t specify <code>SolutionStackName</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    SourceConfiguration: SourceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An Elastic Beanstalk configuration template to base this one on. If specified, Elastic Beanstalk uses the configuration values from the specified configuration template to create a new configuration.</p> <p>Values specified in <code>OptionSettings</code> override any values obtained from the <code>SourceConfiguration</code>.</p> <p>You must specify <code>SourceConfiguration</code> if you don't specify <code>PlatformArn</code>, <code>EnvironmentId</code>, or <code>SolutionStackName</code>.</p> <p>Constraint: If both solution stack name and source configuration are specified, the solution stack of the source configuration template must match the specified solution stack name.</p>",
-        }),
-    ).exactOptional(),
-    EnvironmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of an environment whose settings you want to use to create the configuration template. You must specify <code>EnvironmentId</code> if you don't specify <code>PlatformArn</code>, <code>SolutionStackName</code>, or <code>SourceConfiguration</code>.",
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'An optional description for this configuration.' }),
-    ).exactOptional(),
-    OptionSettings: ConfigurationOptionSettingsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Option values for the Elastic Beanstalk configuration, such as the instance type. If specified, these values override the values obtained from the solution stack or the source configuration template. For a complete list of Elastic Beanstalk configuration options, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html">Option Values</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'Specifies the tags applied to the configuration template.' }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description:
+        'The name of the Elastic Beanstalk application to associate with this configuration template.',
+    }),
+    TemplateName: ConfigurationTemplateNameSchema.openapi({
+      description:
+        '<p>The name of the configuration template.</p> <p>Constraint: This name must be unique per application.</p>',
+    }),
+    SolutionStackName: SolutionStackNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of an Elastic Beanstalk solution stack (platform version) that this configuration uses. For example, <code>64bit Amazon Linux 2013.09 running Tomcat 7 Java 7</code>. A solution stack specifies the operating system, runtime, and application server for a configuration template. It also determines the set of configuration options as well as the possible and default values. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts.platforms.html">Supported Platforms</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.</p> <p>You must specify <code>SolutionStackName</code> if you don\'t specify <code>PlatformArn</code>, <code>EnvironmentId</code>, or <code>SourceConfiguration</code>.</p> <p>Use the <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/api/API_ListAvailableSolutionStacks.html"> <code>ListAvailableSolutionStacks</code> </a> API to obtain a list of available solution stacks.</p>',
+    }),
+    PlatformArn: PlatformArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the custom platform. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/custom-platforms.html"> Custom Platforms</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.</p> <note> <p>If you specify <code>PlatformArn</code>, then don\'t specify <code>SolutionStackName</code>.</p> </note>',
+    }),
+    SourceConfiguration: SourceConfigurationSchema.exactOptional().openapi({
+      description:
+        "<p>An Elastic Beanstalk configuration template to base this one on. If specified, Elastic Beanstalk uses the configuration values from the specified configuration template to create a new configuration.</p> <p>Values specified in <code>OptionSettings</code> override any values obtained from the <code>SourceConfiguration</code>.</p> <p>You must specify <code>SourceConfiguration</code> if you don't specify <code>PlatformArn</code>, <code>EnvironmentId</code>, or <code>SolutionStackName</code>.</p> <p>Constraint: If both solution stack name and source configuration are specified, the solution stack of the source configuration template must match the specified solution stack name.</p>",
+    }),
+    EnvironmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description:
+        "The ID of an environment whose settings you want to use to create the configuration template. You must specify <code>EnvironmentId</code> if you don't specify <code>PlatformArn</code>, <code>SolutionStackName</code>, or <code>SourceConfiguration</code>.",
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'An optional description for this configuration.',
+    }),
+    OptionSettings: ConfigurationOptionSettingsListSchema.exactOptional().openapi({
+      description:
+        'Option values for the Elastic Beanstalk configuration, such as the instance type. If specified, these values override the values obtained from the solution stack or the source configuration template. For a complete list of Elastic Beanstalk configuration options, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html">Option Values</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'Specifies the tags applied to the configuration template.',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'TemplateName'],
@@ -3439,109 +2715,59 @@ const OptionsSpecifierListSchema = z
 
 const CreateEnvironmentMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the application that is associated with this environment.',
-        }),
-    ),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A unique name for the environment.</p> <p>Constraint: Must be from 4 to 40 characters in length. The name can contain only letters, numbers, and hyphens. It can't start or end with a hyphen. This name must be unique within a region in your account. If the specified name already exists in the region, Elastic Beanstalk returns an <code>InvalidParameterValue</code> error. </p> <p>If you don't specify the <code>CNAMEPrefix</code> parameter, the environment name becomes part of the CNAME, and therefore part of the visible URL for your application.</p>",
-        }),
-    ).exactOptional(),
-    GroupName: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the group to which the target environment belongs. Specify a group name only if the environment\'s name is specified in an environment manifest and not with the environment name parameter. See <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environment-cfg-manifest.html">Environment Manifest (env.yaml)</a> for details.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Your description for this environment.' }),
-    ).exactOptional(),
-    CNAMEPrefix: DNSCnamePrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, the environment attempts to use this value as the prefix for the CNAME in your Elastic Beanstalk environment URL. If not specified, the CNAME is generated automatically by appending a random alphanumeric string to the environment name.',
-        }),
-    ).exactOptional(),
-    Tier: EnvironmentTierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the tier to use in creating this environment. The environment tier that you choose determines whether Elastic Beanstalk provisions resources to support a web application that handles HTTP(S) requests or a web application that handles background-processing tasks.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the tags applied to resources in the environment.' }),
-    ).exactOptional(),
-    VersionLabel: VersionLabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the application version to deploy.</p> <p>Default: If not specified, Elastic Beanstalk attempts to deploy the sample application.</p>',
-        }),
-    ).exactOptional(),
-    TemplateName: ConfigurationTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the Elastic Beanstalk configuration template to use with the environment.</p> <note> <p>If you specify <code>TemplateName</code>, then don't specify <code>SolutionStackName</code>.</p> </note>",
-        }),
-    ).exactOptional(),
-    SolutionStackName: SolutionStackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of an Elastic Beanstalk solution stack (platform version) to use with the environment. If specified, Elastic Beanstalk sets the configuration values to the default values associated with the specified solution stack. For a list of current solution stacks, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/platforms/platforms-supported.html">Elastic Beanstalk Supported Platforms</a> in the <i>AWS Elastic Beanstalk Platforms</i> guide.</p> <note> <p>If you specify <code>SolutionStackName</code>, don\'t specify <code>PlatformArn</code> or <code>TemplateName</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    PlatformArn: PlatformArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the custom platform to use with the environment. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/custom-platforms.html">Custom Platforms</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.</p> <note> <p>If you specify <code>PlatformArn</code>, don\'t specify <code>SolutionStackName</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    OptionSettings: ConfigurationOptionSettingsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, AWS Elastic Beanstalk sets the specified configuration options to the requested value in the configuration set for the new environment. These override the values obtained from the solution stack or the configuration template.',
-        }),
-    ).exactOptional(),
-    OptionsToRemove: OptionsSpecifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of custom user-defined configuration options to remove from the configuration set for this new environment.',
-        }),
-    ).exactOptional(),
-    OperationsRole: OperationsRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an existing IAM role to be used as the environment\'s operations role. If specified, Elastic Beanstalk uses the operations role for permissions to downstream services during this call and during subsequent calls acting on this environment. To specify an operations role, you must have the <code>iam:PassRole</code> permission for the role. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/iam-operationsrole.html">Operations roles</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.',
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of the application that is associated with this environment.',
+    }),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description:
+        "<p>A unique name for the environment.</p> <p>Constraint: Must be from 4 to 40 characters in length. The name can contain only letters, numbers, and hyphens. It can't start or end with a hyphen. This name must be unique within a region in your account. If the specified name already exists in the region, Elastic Beanstalk returns an <code>InvalidParameterValue</code> error. </p> <p>If you don't specify the <code>CNAMEPrefix</code> parameter, the environment name becomes part of the CNAME, and therefore part of the visible URL for your application.</p>",
+    }),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      description:
+        'The name of the group to which the target environment belongs. Specify a group name only if the environment\'s name is specified in an environment manifest and not with the environment name parameter. See <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environment-cfg-manifest.html">Environment Manifest (env.yaml)</a> for details.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Your description for this environment.',
+    }),
+    CNAMEPrefix: DNSCnamePrefixSchema.exactOptional().openapi({
+      description:
+        'If specified, the environment attempts to use this value as the prefix for the CNAME in your Elastic Beanstalk environment URL. If not specified, the CNAME is generated automatically by appending a random alphanumeric string to the environment name.',
+    }),
+    Tier: EnvironmentTierSchema.exactOptional().openapi({
+      description:
+        'Specifies the tier to use in creating this environment. The environment tier that you choose determines whether Elastic Beanstalk provisions resources to support a web application that handles HTTP(S) requests or a web application that handles background-processing tasks.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'Specifies the tags applied to resources in the environment.',
+    }),
+    VersionLabel: VersionLabelSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the application version to deploy.</p> <p>Default: If not specified, Elastic Beanstalk attempts to deploy the sample application.</p>',
+    }),
+    TemplateName: ConfigurationTemplateNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the Elastic Beanstalk configuration template to use with the environment.</p> <note> <p>If you specify <code>TemplateName</code>, then don't specify <code>SolutionStackName</code>.</p> </note>",
+    }),
+    SolutionStackName: SolutionStackNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of an Elastic Beanstalk solution stack (platform version) to use with the environment. If specified, Elastic Beanstalk sets the configuration values to the default values associated with the specified solution stack. For a list of current solution stacks, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/platforms/platforms-supported.html">Elastic Beanstalk Supported Platforms</a> in the <i>AWS Elastic Beanstalk Platforms</i> guide.</p> <note> <p>If you specify <code>SolutionStackName</code>, don\'t specify <code>PlatformArn</code> or <code>TemplateName</code>.</p> </note>',
+    }),
+    PlatformArn: PlatformArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the custom platform to use with the environment. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/custom-platforms.html">Custom Platforms</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.</p> <note> <p>If you specify <code>PlatformArn</code>, don\'t specify <code>SolutionStackName</code>.</p> </note>',
+    }),
+    OptionSettings: ConfigurationOptionSettingsListSchema.exactOptional().openapi({
+      description:
+        'If specified, AWS Elastic Beanstalk sets the specified configuration options to the requested value in the configuration set for the new environment. These override the values obtained from the solution stack or the configuration template.',
+    }),
+    OptionsToRemove: OptionsSpecifierListSchema.exactOptional().openapi({
+      description:
+        'A list of custom user-defined configuration options to remove from the configuration set for this new environment.',
+    }),
+    OperationsRole: OperationsRoleSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an existing IAM role to be used as the environment\'s operations role. If specified, Elastic Beanstalk uses the operations role for permissions to downstream services during this call and during subsequent calls acting on this environment. To specify an operations role, you must have the <code>iam:PassRole</code> permission for the role. For more information, see <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/iam-operationsrole.html">Operations roles</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.',
+    }),
   })
   .openapi({
     required: ['ApplicationName'],
@@ -3552,35 +2778,23 @@ const CreateEnvironmentMessageSchema = z
 
 const CreatePlatformVersionRequestSchema = z
   .object({
-    PlatformName: PlatformNameSchema.and(
-      z.any().openapi({ description: 'The name of your custom platform.' }),
-    ),
-    PlatformVersion: PlatformVersionSchema.and(
-      z.any().openapi({ description: 'The number, such as 1.0.2, for the new platform version.' }),
-    ),
-    PlatformDefinitionBundle: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The location of the platform definition archive in Amazon S3.' }),
-    ),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z.any().openapi({ description: 'The name of the builder environment.' }),
-    ).exactOptional(),
-    OptionSettings: ConfigurationOptionSettingsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration option settings to apply to the builder environment.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies the tags applied to the new platform version.</p> <p>Elastic Beanstalk applies these tags only to the platform version. Environments that you create using the platform version don't inherit the tags.</p>",
-        }),
-    ).exactOptional(),
+    PlatformName: PlatformNameSchema.openapi({ description: 'The name of your custom platform.' }),
+    PlatformVersion: PlatformVersionSchema.openapi({
+      description: 'The number, such as 1.0.2, for the new platform version.',
+    }),
+    PlatformDefinitionBundle: S3LocationSchema.openapi({
+      description: 'The location of the platform definition archive in Amazon S3.',
+    }),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description: 'The name of the builder environment.',
+    }),
+    OptionSettings: ConfigurationOptionSettingsListSchema.exactOptional().openapi({
+      description: 'The configuration option settings to apply to the builder environment.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies the tags applied to the new platform version.</p> <p>Elastic Beanstalk applies these tags only to the platform version. Environments that you create using the platform version don't inherit the tags.</p>",
+    }),
   })
   .openapi({
     required: ['PlatformName', 'PlatformVersion', 'PlatformDefinitionBundle'],
@@ -3593,17 +2807,13 @@ const TerminateEnvForceSchema = z.boolean().openapi('TerminateEnvForce')
 
 const DeleteApplicationMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of the application to delete.' }),
-    ),
-    TerminateEnvByForce: TerminateEnvForceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When set to true, running environments will be terminated before deleting the application.',
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of the application to delete.',
+    }),
+    TerminateEnvByForce: TerminateEnvForceSchema.exactOptional().openapi({
+      description:
+        'When set to true, running environments will be terminated before deleting the application.',
+    }),
   })
   .openapi({
     required: ['ApplicationName'],
@@ -3616,20 +2826,16 @@ const DeleteSourceBundleSchema = z.boolean().openapi('DeleteSourceBundle')
 
 const DeleteApplicationVersionMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of the application to which the version belongs.' }),
-    ),
-    VersionLabel: VersionLabelSchema.and(
-      z.any().openapi({ description: 'The label of the version to delete.' }),
-    ),
-    DeleteSourceBundle: DeleteSourceBundleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to <code>true</code> to delete the source bundle from your storage bucket. Otherwise, the application version is deleted only from Elastic Beanstalk and the source bundle remains in Amazon S3.',
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of the application to which the version belongs.',
+    }),
+    VersionLabel: VersionLabelSchema.openapi({
+      description: 'The label of the version to delete.',
+    }),
+    DeleteSourceBundle: DeleteSourceBundleSchema.exactOptional().openapi({
+      description:
+        'Set to <code>true</code> to delete the source bundle from your storage bucket. Otherwise, the application version is deleted only from Elastic Beanstalk and the source bundle remains in Amazon S3.',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'VersionLabel'],
@@ -3640,16 +2846,12 @@ const DeleteApplicationVersionMessageSchema = z
 
 const DeleteConfigurationTemplateMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the application to delete the configuration template from.',
-        }),
-    ),
-    TemplateName: ConfigurationTemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration template to delete.' }),
-    ),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of the application to delete the configuration template from.',
+    }),
+    TemplateName: ConfigurationTemplateNameSchema.openapi({
+      description: 'The name of the configuration template to delete.',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'TemplateName'],
@@ -3660,20 +2862,12 @@ const DeleteConfigurationTemplateMessageSchema = z
 
 const DeleteEnvironmentConfigurationMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the application the environment is associated with.',
-        }),
-    ),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the environment to delete the draft configuration from.',
-        }),
-    ),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of the application the environment is associated with.',
+    }),
+    EnvironmentName: EnvironmentNameSchema.openapi({
+      description: 'The name of the environment to delete the draft configuration from.',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'EnvironmentName'],
@@ -3684,9 +2878,9 @@ const DeleteEnvironmentConfigurationMessageSchema = z
 
 const DeletePlatformVersionRequestSchema = z
   .object({
-    PlatformArn: PlatformArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the version of the custom platform.' }),
-    ).exactOptional(),
+    PlatformArn: PlatformArnSchema.exactOptional().openapi({
+      description: 'The ARN of the version of the custom platform.',
+    }),
   })
   .openapi({ title: 'DeletePlatformVersionRequest', required: [] })
   .openapi('DeletePlatformVersionRequest')
@@ -3695,37 +2889,21 @@ const MaxRecordsSchema = z.int().min(1).max(1000).openapi('MaxRecords')
 
 const DescribeApplicationVersionsMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify an application name to show only application versions for that application.',
-        }),
-    ).exactOptional(),
-    VersionLabels: VersionLabelsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specify a version label to show a specific application version.',
-        }),
-    ).exactOptional(),
-    MaxRecords: MaxRecordsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For a paginated request. Specify a maximum number of application versions to include in each response.</p> <p>If no <code>MaxRecords</code> is specified, all available application versions are retrieved in a single response.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For a paginated request. Specify a token from a previous response page to retrieve the next response page. All other parameter values must be identical to the ones specified in the initial request.</p> <p>If no <code>NextToken</code> is specified, the first page is retrieved.</p>',
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.exactOptional().openapi({
+      description:
+        'Specify an application name to show only application versions for that application.',
+    }),
+    VersionLabels: VersionLabelsListSchema.exactOptional().openapi({
+      description: 'Specify a version label to show a specific application version.',
+    }),
+    MaxRecords: MaxRecordsSchema.exactOptional().openapi({
+      description:
+        '<p>For a paginated request. Specify a maximum number of application versions to include in each response.</p> <p>If no <code>MaxRecords</code> is specified, all available application versions are retrieved in a single response.</p>',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>For a paginated request. Specify a token from a previous response page to retrieve the next response page. All other parameter values must be identical to the ones specified in the initial request.</p> <p>If no <code>NextToken</code> is specified, the first page is retrieved.</p>',
+    }),
   })
   .openapi({
     title: 'DescribeApplicationVersionsMessage',
@@ -3736,14 +2914,10 @@ const DescribeApplicationVersionsMessageSchema = z
 
 const DescribeApplicationsMessageSchema = z
   .object({
-    ApplicationNames: ApplicationNamesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, AWS Elastic Beanstalk restricts the returned descriptions to only include those with the specified names.',
-        }),
-    ).exactOptional(),
+    ApplicationNames: ApplicationNamesListSchema.exactOptional().openapi({
+      description:
+        'If specified, AWS Elastic Beanstalk restricts the returned descriptions to only include those with the specified names.',
+    }),
   })
   .openapi({
     title: 'DescribeApplicationsMessage',
@@ -3754,48 +2928,27 @@ const DescribeApplicationsMessageSchema = z
 
 const DescribeConfigurationOptionsMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the application associated with the configuration template or environment. Only needed if you want to describe the configuration options associated with either the configuration template or environment.',
-        }),
-    ).exactOptional(),
-    TemplateName: ConfigurationTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the configuration template whose configuration options you want to describe.',
-        }),
-    ).exactOptional(),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the environment whose configuration options you want to describe.',
-        }),
-    ).exactOptional(),
-    SolutionStackName: SolutionStackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the solution stack whose configuration options you want to describe.',
-        }),
-    ).exactOptional(),
-    PlatformArn: PlatformArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the custom platform.' }),
-    ).exactOptional(),
-    Options: OptionsSpecifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If specified, restricts the descriptions to only the specified options.',
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.exactOptional().openapi({
+      description:
+        'The name of the application associated with the configuration template or environment. Only needed if you want to describe the configuration options associated with either the configuration template or environment.',
+    }),
+    TemplateName: ConfigurationTemplateNameSchema.exactOptional().openapi({
+      description:
+        'The name of the configuration template whose configuration options you want to describe.',
+    }),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description: 'The name of the environment whose configuration options you want to describe.',
+    }),
+    SolutionStackName: SolutionStackNameSchema.exactOptional().openapi({
+      description:
+        'The name of the solution stack whose configuration options you want to describe.',
+    }),
+    PlatformArn: PlatformArnSchema.exactOptional().openapi({
+      description: 'The ARN of the custom platform.',
+    }),
+    Options: OptionsSpecifierListSchema.exactOptional().openapi({
+      description: 'If specified, restricts the descriptions to only the specified options.',
+    }),
   })
   .openapi({
     title: 'DescribeConfigurationOptionsMessage',
@@ -3806,27 +2959,17 @@ const DescribeConfigurationOptionsMessageSchema = z
 
 const DescribeConfigurationSettingsMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The application for the environment or configuration template.' }),
-    ),
-    TemplateName: ConfigurationTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the configuration template to describe.</p> <p> Conditional: You must specify either this parameter or an EnvironmentName, but not both. If you specify both, AWS Elastic Beanstalk returns an <code>InvalidParameterCombination</code> error. If you do not specify either, AWS Elastic Beanstalk returns a <code>MissingRequiredParameter</code> error. </p>',
-        }),
-    ).exactOptional(),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the environment to describe.</p> <p> Condition: You must specify either this or a TemplateName, but not both. If you specify both, AWS Elastic Beanstalk returns an <code>InvalidParameterCombination</code> error. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The application for the environment or configuration template.',
+    }),
+    TemplateName: ConfigurationTemplateNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the configuration template to describe.</p> <p> Conditional: You must specify either this parameter or an EnvironmentName, but not both. If you specify both, AWS Elastic Beanstalk returns an <code>InvalidParameterCombination</code> error. If you do not specify either, AWS Elastic Beanstalk returns a <code>MissingRequiredParameter</code> error. </p>',
+    }),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the environment to describe.</p> <p> Condition: You must specify either this or a TemplateName, but not both. If you specify both, AWS Elastic Beanstalk returns an <code>InvalidParameterCombination</code> error. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
+    }),
   })
   .openapi({
     required: ['ApplicationName'],
@@ -3842,30 +2985,18 @@ const EnvironmentHealthAttributesSchema = z
 
 const DescribeEnvironmentHealthRequestSchema = z
   .object({
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the environment by name.</p> <p>You must specify either this or an EnvironmentName, or both.</p>',
-        }),
-    ).exactOptional(),
-    EnvironmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the environment by ID.</p> <p>You must specify either this or an EnvironmentName, or both.</p>',
-        }),
-    ).exactOptional(),
-    AttributeNames: EnvironmentHealthAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the response elements to return. To retrieve all attributes, set to <code>All</code>. If no attribute names are specified, returns the name of the environment.',
-        }),
-    ).exactOptional(),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description:
+        '<p>Specify the environment by name.</p> <p>You must specify either this or an EnvironmentName, or both.</p>',
+    }),
+    EnvironmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description:
+        '<p>Specify the environment by ID.</p> <p>You must specify either this or an EnvironmentName, or both.</p>',
+    }),
+    AttributeNames: EnvironmentHealthAttributesSchema.exactOptional().openapi({
+      description:
+        'Specify the response elements to return. To retrieve all attributes, set to <code>All</code>. If no attribute names are specified, returns the name of the environment.',
+    }),
   })
   .openapi({
     title: 'DescribeEnvironmentHealthRequest',
@@ -3882,20 +3013,18 @@ const ManagedActionHistoryMaxItemsSchema = z
 
 const DescribeEnvironmentManagedActionHistoryRequestSchema = z
   .object({
-    EnvironmentId: EnvironmentIdSchema.and(
-      z.any().openapi({ description: 'The environment ID of the target environment.' }),
-    ).exactOptional(),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z.any().openapi({ description: 'The name of the target environment.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'The pagination token returned by a previous request.' }),
-    ).exactOptional(),
-    MaxItems: ManagedActionHistoryMaxItemsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of items to return for a single request.' }),
-    ).exactOptional(),
+    EnvironmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description: 'The environment ID of the target environment.',
+    }),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description: 'The name of the target environment.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The pagination token returned by a previous request.',
+    }),
+    MaxItems: ManagedActionHistoryMaxItemsSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return for a single request.',
+    }),
   })
   .openapi({
     title: 'DescribeEnvironmentManagedActionHistoryRequest',
@@ -3906,19 +3035,15 @@ const DescribeEnvironmentManagedActionHistoryRequestSchema = z
 
 const DescribeEnvironmentManagedActionsRequestSchema = z
   .object({
-    EnvironmentName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the target environment.' }),
-    ).exactOptional(),
-    EnvironmentId: StringSchema.and(
-      z.any().openapi({ description: 'The environment ID of the target environment.' }),
-    ).exactOptional(),
-    Status: ActionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'To show only actions with a particular status, specify a status.',
-        }),
-    ).exactOptional(),
+    EnvironmentName: StringSchema.exactOptional().openapi({
+      description: 'The name of the target environment.',
+    }),
+    EnvironmentId: StringSchema.exactOptional().openapi({
+      description: 'The environment ID of the target environment.',
+    }),
+    Status: ActionStatusSchema.exactOptional().openapi({
+      description: 'To show only actions with a particular status, specify a status.',
+    }),
   })
   .openapi({
     title: 'DescribeEnvironmentManagedActionsRequest',
@@ -3929,22 +3054,14 @@ const DescribeEnvironmentManagedActionsRequestSchema = z
 
 const DescribeEnvironmentResourcesMessageSchema = z
   .object({
-    EnvironmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the environment to retrieve AWS resource usage data.</p> <p> Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
-        }),
-    ).exactOptional(),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the environment to retrieve AWS resource usage data.</p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
-        }),
-    ).exactOptional(),
+    EnvironmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the environment to retrieve AWS resource usage data.</p> <p> Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
+    }),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the environment to retrieve AWS resource usage data.</p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
+    }),
   })
   .openapi({
     title: 'DescribeEnvironmentResourcesMessage',
@@ -3963,70 +3080,38 @@ const IncludeDeletedBackToSchema = z.iso.datetime({ offset: true }).openapi('Inc
 
 const DescribeEnvironmentsMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, AWS Elastic Beanstalk restricts the returned descriptions to include only those that are associated with this application.',
-        }),
-    ).exactOptional(),
-    VersionLabel: VersionLabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, AWS Elastic Beanstalk restricts the returned descriptions to include only those that are associated with this application version.',
-        }),
-    ).exactOptional(),
-    EnvironmentIds: EnvironmentIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, AWS Elastic Beanstalk restricts the returned descriptions to include only those that have the specified IDs.',
-        }),
-    ).exactOptional(),
-    EnvironmentNames: EnvironmentNamesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, AWS Elastic Beanstalk restricts the returned descriptions to include only those that have the specified names.',
-        }),
-    ).exactOptional(),
-    IncludeDeleted: IncludeDeletedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether to include deleted environments:</p> <p> <code>true</code>: Environments that have been deleted after <code>IncludedDeletedBackTo</code> are displayed.</p> <p> <code>false</code>: Do not include deleted environments.</p>',
-        }),
-    ).exactOptional(),
-    IncludedDeletedBackTo: IncludeDeletedBackToSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If specified when <code>IncludeDeleted</code> is set to <code>true</code>, then environments deleted after this date are displayed. ',
-        }),
-    ).exactOptional(),
-    MaxRecords: MaxRecordsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For a paginated request. Specify a maximum number of environments to include in each response.</p> <p>If no <code>MaxRecords</code> is specified, all available environments are retrieved in a single response.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For a paginated request. Specify a token from a previous response page to retrieve the next response page. All other parameter values must be identical to the ones specified in the initial request.</p> <p>If no <code>NextToken</code> is specified, the first page is retrieved.</p>',
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.exactOptional().openapi({
+      description:
+        'If specified, AWS Elastic Beanstalk restricts the returned descriptions to include only those that are associated with this application.',
+    }),
+    VersionLabel: VersionLabelSchema.exactOptional().openapi({
+      description:
+        'If specified, AWS Elastic Beanstalk restricts the returned descriptions to include only those that are associated with this application version.',
+    }),
+    EnvironmentIds: EnvironmentIdListSchema.exactOptional().openapi({
+      description:
+        'If specified, AWS Elastic Beanstalk restricts the returned descriptions to include only those that have the specified IDs.',
+    }),
+    EnvironmentNames: EnvironmentNamesListSchema.exactOptional().openapi({
+      description:
+        'If specified, AWS Elastic Beanstalk restricts the returned descriptions to include only those that have the specified names.',
+    }),
+    IncludeDeleted: IncludeDeletedSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether to include deleted environments:</p> <p> <code>true</code>: Environments that have been deleted after <code>IncludedDeletedBackTo</code> are displayed.</p> <p> <code>false</code>: Do not include deleted environments.</p>',
+    }),
+    IncludedDeletedBackTo: IncludeDeletedBackToSchema.exactOptional().openapi({
+      description:
+        ' If specified when <code>IncludeDeleted</code> is set to <code>true</code>, then environments deleted after this date are displayed. ',
+    }),
+    MaxRecords: MaxRecordsSchema.exactOptional().openapi({
+      description:
+        '<p>For a paginated request. Specify a maximum number of environments to include in each response.</p> <p>If no <code>MaxRecords</code> is specified, all available environments are retrieved in a single response.</p>',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>For a paginated request. Specify a token from a previous response page to retrieve the next response page. All other parameter values must be identical to the ones specified in the initial request.</p> <p>If no <code>NextToken</code> is specified, the first page is retrieved.</p>',
+    }),
   })
   .openapi({
     title: 'DescribeEnvironmentsMessage',
@@ -4041,102 +3126,53 @@ const TimeFilterEndSchema = z.iso.datetime({ offset: true }).openapi('TimeFilter
 
 const DescribeEventsMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, AWS Elastic Beanstalk restricts the returned descriptions to include only those associated with this application.',
-        }),
-    ).exactOptional(),
-    VersionLabel: VersionLabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, AWS Elastic Beanstalk restricts the returned descriptions to those associated with this application version.',
-        }),
-    ).exactOptional(),
-    TemplateName: ConfigurationTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, AWS Elastic Beanstalk restricts the returned descriptions to those that are associated with this environment configuration.',
-        }),
-    ).exactOptional(),
-    EnvironmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, AWS Elastic Beanstalk restricts the returned descriptions to those associated with this environment.',
-        }),
-    ).exactOptional(),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, AWS Elastic Beanstalk restricts the returned descriptions to those associated with this environment.',
-        }),
-    ).exactOptional(),
-    PlatformArn: PlatformArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of a custom platform version. If specified, AWS Elastic Beanstalk restricts the returned descriptions to those associated with this custom platform version.',
-        }),
-    ).exactOptional(),
-    RequestId: RequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, AWS Elastic Beanstalk restricts the described events to include only those associated with this request ID.',
-        }),
-    ).exactOptional(),
-    Severity: EventSeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, limits the events returned from this call to include only those with the specified severity or higher.',
-        }),
-    ).exactOptional(),
-    StartTime: TimeFilterStartSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, AWS Elastic Beanstalk restricts the returned descriptions to those that occur on or after this time.',
-        }),
-    ).exactOptional(),
-    EndTime: TimeFilterEndSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If specified, AWS Elastic Beanstalk restricts the returned descriptions to those that occur up to, but not including, the <code>EndTime</code>. ',
-        }),
-    ).exactOptional(),
-    MaxRecords: MaxRecordsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the maximum number of events that can be returned, beginning with the most recent event.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Pagination token. If specified, the events return the next batch of results.',
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.exactOptional().openapi({
+      description:
+        'If specified, AWS Elastic Beanstalk restricts the returned descriptions to include only those associated with this application.',
+    }),
+    VersionLabel: VersionLabelSchema.exactOptional().openapi({
+      description:
+        'If specified, AWS Elastic Beanstalk restricts the returned descriptions to those associated with this application version.',
+    }),
+    TemplateName: ConfigurationTemplateNameSchema.exactOptional().openapi({
+      description:
+        'If specified, AWS Elastic Beanstalk restricts the returned descriptions to those that are associated with this environment configuration.',
+    }),
+    EnvironmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description:
+        'If specified, AWS Elastic Beanstalk restricts the returned descriptions to those associated with this environment.',
+    }),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description:
+        'If specified, AWS Elastic Beanstalk restricts the returned descriptions to those associated with this environment.',
+    }),
+    PlatformArn: PlatformArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of a custom platform version. If specified, AWS Elastic Beanstalk restricts the returned descriptions to those associated with this custom platform version.',
+    }),
+    RequestId: RequestIdSchema.exactOptional().openapi({
+      description:
+        'If specified, AWS Elastic Beanstalk restricts the described events to include only those associated with this request ID.',
+    }),
+    Severity: EventSeveritySchema.exactOptional().openapi({
+      description:
+        'If specified, limits the events returned from this call to include only those with the specified severity or higher.',
+    }),
+    StartTime: TimeFilterStartSchema.exactOptional().openapi({
+      description:
+        'If specified, AWS Elastic Beanstalk restricts the returned descriptions to those that occur on or after this time.',
+    }),
+    EndTime: TimeFilterEndSchema.exactOptional().openapi({
+      description:
+        ' If specified, AWS Elastic Beanstalk restricts the returned descriptions to those that occur up to, but not including, the <code>EndTime</code>. ',
+    }),
+    MaxRecords: MaxRecordsSchema.exactOptional().openapi({
+      description:
+        'Specifies the maximum number of events that can be returned, beginning with the most recent event.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'Pagination token. If specified, the events return the next batch of results.',
+    }),
   })
   .openapi({
     title: 'DescribeEventsMessage',
@@ -4151,23 +3187,19 @@ const InstancesHealthAttributesSchema = z
 
 const DescribeInstancesHealthRequestSchema = z
   .object({
-    EnvironmentName: EnvironmentNameSchema.and(
-      z.any().openapi({ description: 'Specify the AWS Elastic Beanstalk environment by name.' }),
-    ).exactOptional(),
-    EnvironmentId: EnvironmentIdSchema.and(
-      z.any().openapi({ description: 'Specify the AWS Elastic Beanstalk environment by ID.' }),
-    ).exactOptional(),
-    AttributeNames: InstancesHealthAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the response elements you wish to receive. To retrieve all attributes, set to <code>All</code>. If no attribute names are specified, returns a list of instances.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'Specify the pagination token returned by a previous call.' }),
-    ).exactOptional(),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description: 'Specify the AWS Elastic Beanstalk environment by name.',
+    }),
+    EnvironmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description: 'Specify the AWS Elastic Beanstalk environment by ID.',
+    }),
+    AttributeNames: InstancesHealthAttributesSchema.exactOptional().openapi({
+      description:
+        'Specifies the response elements you wish to receive. To retrieve all attributes, set to <code>All</code>. If no attribute names are specified, returns a list of instances.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'Specify the pagination token returned by a previous call.',
+    }),
   })
   .openapi({
     title: 'DescribeInstancesHealthRequest',
@@ -4178,23 +3210,18 @@ const DescribeInstancesHealthRequestSchema = z
 
 const DescribePlatformVersionRequestSchema = z
   .object({
-    PlatformArn: PlatformArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the platform version.' }),
-    ).exactOptional(),
+    PlatformArn: PlatformArnSchema.exactOptional().openapi({
+      description: 'The ARN of the platform version.',
+    }),
   })
   .openapi({ title: 'DescribePlatformVersionRequest', required: [] })
   .openapi('DescribePlatformVersionRequest')
 
 const DisassociateEnvironmentOperationsRoleMessageSchema = z
   .object({
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the environment from which to disassociate the operations role.',
-        }),
-    ),
+    EnvironmentName: EnvironmentNameSchema.openapi({
+      description: 'The name of the environment from which to disassociate the operations role.',
+    }),
   })
   .openapi({
     required: ['EnvironmentName'],
@@ -4211,29 +3238,17 @@ const PlatformBranchMaxRecordsSchema = z.int().min(1).openapi('PlatformBranchMax
 
 const ListPlatformBranchesRequestSchema = z
   .object({
-    Filters: SearchFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Criteria for restricting the resulting list of platform branches. The filter is evaluated as a logical conjunction (AND) of the separate <code>SearchFilter</code> terms.</p> <p>The following list shows valid attribute values for each of the <code>SearchFilter</code> terms. Most operators take a single value. The <code>in</code> and <code>not_in</code> operators can take multiple values.</p> <ul> <li> <p> <code>Attribute = BranchName</code>:</p> <ul> <li> <p> <code>Operator</code>: <code>=</code> | <code>!=</code> | <code>begins_with</code> | <code>ends_with</code> | <code>contains</code> | <code>in</code> | <code>not_in</code> </p> </li> </ul> </li> <li> <p> <code>Attribute = LifecycleState</code>:</p> <ul> <li> <p> <code>Operator</code>: <code>=</code> | <code>!=</code> | <code>in</code> | <code>not_in</code> </p> </li> <li> <p> <code>Values</code>: <code>beta</code> | <code>supported</code> | <code>deprecated</code> | <code>retired</code> </p> </li> </ul> </li> <li> <p> <code>Attribute = PlatformName</code>:</p> <ul> <li> <p> <code>Operator</code>: <code>=</code> | <code>!=</code> | <code>begins_with</code> | <code>ends_with</code> | <code>contains</code> | <code>in</code> | <code>not_in</code> </p> </li> </ul> </li> <li> <p> <code>Attribute = TierType</code>:</p> <ul> <li> <p> <code>Operator</code>: <code>=</code> | <code>!=</code> </p> </li> <li> <p> <code>Values</code>: <code>WebServer/Standard</code> | <code>Worker/SQS/HTTP</code> </p> </li> </ul> </li> </ul> <p>Array size: limited to 10 <code>SearchFilter</code> objects.</p> <p>Within each <code>SearchFilter</code> item, the <code>Values</code> array is limited to 10 items.</p>',
-        }),
-    ).exactOptional(),
-    MaxRecords: PlatformBranchMaxRecordsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of platform branch values returned in one call.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For a paginated request. Specify a token from a previous response page to retrieve the next response page. All other parameter values must be identical to the ones specified in the initial request.</p> <p>If no <code>NextToken</code> is specified, the first page is retrieved.</p>',
-        }),
-    ).exactOptional(),
+    Filters: SearchFiltersSchema.exactOptional().openapi({
+      description:
+        '<p>Criteria for restricting the resulting list of platform branches. The filter is evaluated as a logical conjunction (AND) of the separate <code>SearchFilter</code> terms.</p> <p>The following list shows valid attribute values for each of the <code>SearchFilter</code> terms. Most operators take a single value. The <code>in</code> and <code>not_in</code> operators can take multiple values.</p> <ul> <li> <p> <code>Attribute = BranchName</code>:</p> <ul> <li> <p> <code>Operator</code>: <code>=</code> | <code>!=</code> | <code>begins_with</code> | <code>ends_with</code> | <code>contains</code> | <code>in</code> | <code>not_in</code> </p> </li> </ul> </li> <li> <p> <code>Attribute = LifecycleState</code>:</p> <ul> <li> <p> <code>Operator</code>: <code>=</code> | <code>!=</code> | <code>in</code> | <code>not_in</code> </p> </li> <li> <p> <code>Values</code>: <code>beta</code> | <code>supported</code> | <code>deprecated</code> | <code>retired</code> </p> </li> </ul> </li> <li> <p> <code>Attribute = PlatformName</code>:</p> <ul> <li> <p> <code>Operator</code>: <code>=</code> | <code>!=</code> | <code>begins_with</code> | <code>ends_with</code> | <code>contains</code> | <code>in</code> | <code>not_in</code> </p> </li> </ul> </li> <li> <p> <code>Attribute = TierType</code>:</p> <ul> <li> <p> <code>Operator</code>: <code>=</code> | <code>!=</code> </p> </li> <li> <p> <code>Values</code>: <code>WebServer/Standard</code> | <code>Worker/SQS/HTTP</code> </p> </li> </ul> </li> </ul> <p>Array size: limited to 10 <code>SearchFilter</code> objects.</p> <p>Within each <code>SearchFilter</code> item, the <code>Values</code> array is limited to 10 items.</p>',
+    }),
+    MaxRecords: PlatformBranchMaxRecordsSchema.exactOptional().openapi({
+      description: 'The maximum number of platform branch values returned in one call.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>For a paginated request. Specify a token from a previous response page to retrieve the next response page. All other parameter values must be identical to the ones specified in the initial request.</p> <p>If no <code>NextToken</code> is specified, the first page is retrieved.</p>',
+    }),
   })
   .openapi({ title: 'ListPlatformBranchesRequest', required: [] })
   .openapi('ListPlatformBranchesRequest')
@@ -4244,90 +3259,58 @@ const PlatformMaxRecordsSchema = z.int().min(1).openapi('PlatformMaxRecords')
 
 const ListPlatformVersionsRequestSchema = z
   .object({
-    Filters: PlatformFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Criteria for restricting the resulting list of platform versions. The filter is interpreted as a logical conjunction (AND) of the separate <code>PlatformFilter</code> terms.',
-        }),
-    ).exactOptional(),
-    MaxRecords: PlatformMaxRecordsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of platform version values returned in one call.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For a paginated request. Specify a token from a previous response page to retrieve the next response page. All other parameter values must be identical to the ones specified in the initial request.</p> <p>If no <code>NextToken</code> is specified, the first page is retrieved.</p>',
-        }),
-    ).exactOptional(),
+    Filters: PlatformFiltersSchema.exactOptional().openapi({
+      description:
+        'Criteria for restricting the resulting list of platform versions. The filter is interpreted as a logical conjunction (AND) of the separate <code>PlatformFilter</code> terms.',
+    }),
+    MaxRecords: PlatformMaxRecordsSchema.exactOptional().openapi({
+      description: 'The maximum number of platform version values returned in one call.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>For a paginated request. Specify a token from a previous response page to retrieve the next response page. All other parameter values must be identical to the ones specified in the initial request.</p> <p>If no <code>NextToken</code> is specified, the first page is retrieved.</p>',
+    }),
   })
   .openapi({ title: 'ListPlatformVersionsRequest', required: [] })
   .openapi('ListPlatformVersionsRequest')
 
 const ListTagsForResourceMessageSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the resouce for which a tag list is requested.</p> <p>Must be the ARN of an Elastic Beanstalk resource.</p>',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the resouce for which a tag list is requested.</p> <p>Must be the ARN of an Elastic Beanstalk resource.</p>',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceMessage' })
   .openapi('ListTagsForResourceMessage')
 
 const RebuildEnvironmentMessageSchema = z
   .object({
-    EnvironmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the environment to rebuild.</p> <p> Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
-        }),
-    ).exactOptional(),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the environment to rebuild.</p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
-        }),
-    ).exactOptional(),
+    EnvironmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the environment to rebuild.</p> <p> Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
+    }),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the environment to rebuild.</p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
+    }),
   })
   .openapi({ title: 'RebuildEnvironmentMessage', description: '<p/>', required: [] })
   .openapi('RebuildEnvironmentMessage')
 
 const RequestEnvironmentInfoMessageSchema = z
   .object({
-    EnvironmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the environment of the requested data.</p> <p>If no such environment is found, <code>RequestEnvironmentInfo</code> returns an <code>InvalidParameterValue</code> error. </p> <p>Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
-        }),
-    ).exactOptional(),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the environment of the requested data.</p> <p>If no such environment is found, <code>RequestEnvironmentInfo</code> returns an <code>InvalidParameterValue</code> error. </p> <p>Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
-        }),
-    ).exactOptional(),
-    InfoType: EnvironmentInfoTypeSchema.and(
-      z.any().openapi({ description: 'The type of information to request.' }),
-    ),
+    EnvironmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the environment of the requested data.</p> <p>If no such environment is found, <code>RequestEnvironmentInfo</code> returns an <code>InvalidParameterValue</code> error. </p> <p>Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
+    }),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the environment of the requested data.</p> <p>If no such environment is found, <code>RequestEnvironmentInfo</code> returns an <code>InvalidParameterValue</code> error. </p> <p>Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
+    }),
+    InfoType: EnvironmentInfoTypeSchema.openapi({
+      description: 'The type of information to request.',
+    }),
   })
   .openapi({
     required: ['InfoType'],
@@ -4339,47 +3322,31 @@ const RequestEnvironmentInfoMessageSchema = z
 
 const RestartAppServerMessageSchema = z
   .object({
-    EnvironmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the environment to restart the server for.</p> <p> Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
-        }),
-    ).exactOptional(),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the environment to restart the server for.</p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
-        }),
-    ).exactOptional(),
+    EnvironmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the environment to restart the server for.</p> <p> Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
+    }),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the environment to restart the server for.</p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
+    }),
   })
   .openapi({ title: 'RestartAppServerMessage', description: '<p/>', required: [] })
   .openapi('RestartAppServerMessage')
 
 const RetrieveEnvironmentInfoMessageSchema = z
   .object({
-    EnvironmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ID of the data's environment.</p> <p>If no such environment is found, returns an <code>InvalidParameterValue</code> error.</p> <p>Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error.</p>",
-        }),
-    ).exactOptional(),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the data's environment.</p> <p> If no such environment is found, returns an <code>InvalidParameterValue</code> error. </p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>",
-        }),
-    ).exactOptional(),
-    InfoType: EnvironmentInfoTypeSchema.and(
-      z.any().openapi({ description: 'The type of information to retrieve.' }),
-    ),
+    EnvironmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description:
+        "<p>The ID of the data's environment.</p> <p>If no such environment is found, returns an <code>InvalidParameterValue</code> error.</p> <p>Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error.</p>",
+    }),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the data's environment.</p> <p> If no such environment is found, returns an <code>InvalidParameterValue</code> error. </p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>",
+    }),
+    InfoType: EnvironmentInfoTypeSchema.openapi({
+      description: 'The type of information to retrieve.',
+    }),
   })
   .openapi({
     required: ['InfoType'],
@@ -4390,38 +3357,22 @@ const RetrieveEnvironmentInfoMessageSchema = z
 
 const SwapEnvironmentCNAMEsMessageSchema = z
   .object({
-    SourceEnvironmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the source environment.</p> <p> Condition: You must specify at least the <code>SourceEnvironmentID</code> or the <code>SourceEnvironmentName</code>. You may also specify both. If you specify the <code>SourceEnvironmentId</code>, you must specify the <code>DestinationEnvironmentId</code>. </p>',
-        }),
-    ).exactOptional(),
-    SourceEnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the source environment.</p> <p> Condition: You must specify at least the <code>SourceEnvironmentID</code> or the <code>SourceEnvironmentName</code>. You may also specify both. If you specify the <code>SourceEnvironmentName</code>, you must specify the <code>DestinationEnvironmentName</code>. </p>',
-        }),
-    ).exactOptional(),
-    DestinationEnvironmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the destination environment.</p> <p> Condition: You must specify at least the <code>DestinationEnvironmentID</code> or the <code>DestinationEnvironmentName</code>. You may also specify both. You must specify the <code>SourceEnvironmentId</code> with the <code>DestinationEnvironmentId</code>. </p>',
-        }),
-    ).exactOptional(),
-    DestinationEnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the destination environment.</p> <p> Condition: You must specify at least the <code>DestinationEnvironmentID</code> or the <code>DestinationEnvironmentName</code>. You may also specify both. You must specify the <code>SourceEnvironmentName</code> with the <code>DestinationEnvironmentName</code>. </p>',
-        }),
-    ).exactOptional(),
+    SourceEnvironmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the source environment.</p> <p> Condition: You must specify at least the <code>SourceEnvironmentID</code> or the <code>SourceEnvironmentName</code>. You may also specify both. If you specify the <code>SourceEnvironmentId</code>, you must specify the <code>DestinationEnvironmentId</code>. </p>',
+    }),
+    SourceEnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the source environment.</p> <p> Condition: You must specify at least the <code>SourceEnvironmentID</code> or the <code>SourceEnvironmentName</code>. You may also specify both. If you specify the <code>SourceEnvironmentName</code>, you must specify the <code>DestinationEnvironmentName</code>. </p>',
+    }),
+    DestinationEnvironmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the destination environment.</p> <p> Condition: You must specify at least the <code>DestinationEnvironmentID</code> or the <code>DestinationEnvironmentName</code>. You may also specify both. You must specify the <code>SourceEnvironmentId</code> with the <code>DestinationEnvironmentId</code>. </p>',
+    }),
+    DestinationEnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the destination environment.</p> <p> Condition: You must specify at least the <code>DestinationEnvironmentID</code> or the <code>DestinationEnvironmentName</code>. You may also specify both. You must specify the <code>SourceEnvironmentName</code> with the <code>DestinationEnvironmentName</code>. </p>',
+    }),
   })
   .openapi({
     title: 'SwapEnvironmentCNAMEsMessage',
@@ -4436,38 +3387,22 @@ const TerminateEnvironmentResourcesSchema = z.boolean().openapi('TerminateEnviro
 
 const TerminateEnvironmentMessageSchema = z
   .object({
-    EnvironmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the environment to terminate.</p> <p> Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
-        }),
-    ).exactOptional(),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the environment to terminate.</p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
-        }),
-    ).exactOptional(),
-    TerminateResources: TerminateEnvironmentResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the associated AWS resources should shut down when the environment is terminated:</p> <ul> <li> <p> <code>true</code>: The specified environment as well as the associated AWS resources, such as Auto Scaling group and LoadBalancer, are terminated.</p> </li> <li> <p> <code>false</code>: AWS Elastic Beanstalk resource management is removed from the environment, but the AWS resources continue to operate.</p> </li> </ul> <p> For more information, see the <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/ug/"> AWS Elastic Beanstalk User Guide. </a> </p> <p> Default: <code>true</code> </p> <p> Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    ForceTerminate: ForceTerminateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Terminates the target environment even if another environment in the same group is dependent on it.',
-        }),
-    ).exactOptional(),
+    EnvironmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the environment to terminate.</p> <p> Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
+    }),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the environment to terminate.</p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
+    }),
+    TerminateResources: TerminateEnvironmentResourcesSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether the associated AWS resources should shut down when the environment is terminated:</p> <ul> <li> <p> <code>true</code>: The specified environment as well as the associated AWS resources, such as Auto Scaling group and LoadBalancer, are terminated.</p> </li> <li> <p> <code>false</code>: AWS Elastic Beanstalk resource management is removed from the environment, but the AWS resources continue to operate.</p> </li> </ul> <p> For more information, see the <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/ug/"> AWS Elastic Beanstalk User Guide. </a> </p> <p> Default: <code>true</code> </p> <p> Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    ForceTerminate: ForceTerminateSchema.exactOptional().openapi({
+      description:
+        'Terminates the target environment even if another environment in the same group is dependent on it.',
+    }),
   })
   .openapi({
     title: 'TerminateEnvironmentMessage',
@@ -4478,22 +3413,14 @@ const TerminateEnvironmentMessageSchema = z
 
 const UpdateApplicationMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the application to update. If no such application is found, <code>UpdateApplication</code> returns an <code>InvalidParameterValue</code> error. ',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A new description for the application.</p> <p>Default: If not specified, AWS Elastic Beanstalk does not update the description.</p>',
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description:
+        'The name of the application to update. If no such application is found, <code>UpdateApplication</code> returns an <code>InvalidParameterValue</code> error. ',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description:
+        '<p>A new description for the application.</p> <p>Default: If not specified, AWS Elastic Beanstalk does not update the description.</p>',
+    }),
   })
   .openapi({
     required: ['ApplicationName'],
@@ -4504,12 +3431,10 @@ const UpdateApplicationMessageSchema = z
 
 const UpdateApplicationResourceLifecycleMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of the application.' }),
-    ),
-    ResourceLifecycleConfig: ApplicationResourceLifecycleConfigSchema.and(
-      z.any().openapi({ description: 'The lifecycle configuration.' }),
-    ),
+    ApplicationName: ApplicationNameSchema.openapi({ description: 'The name of the application.' }),
+    ResourceLifecycleConfig: ApplicationResourceLifecycleConfigSchema.openapi({
+      description: 'The lifecycle configuration.',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'ResourceLifecycleConfig'],
@@ -4519,25 +3444,17 @@ const UpdateApplicationResourceLifecycleMessageSchema = z
 
 const UpdateApplicationVersionMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the application associated with this version.</p> <p> If no application is found with this name, <code>UpdateApplication</code> returns an <code>InvalidParameterValue</code> error.</p>',
-        }),
-    ),
-    VersionLabel: VersionLabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the version to update.</p> <p>If no application version is found with this label, <code>UpdateApplication</code> returns an <code>InvalidParameterValue</code> error. </p>',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A new description for this version.' }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description:
+        '<p>The name of the application associated with this version.</p> <p> If no application is found with this name, <code>UpdateApplication</code> returns an <code>InvalidParameterValue</code> error.</p>',
+    }),
+    VersionLabel: VersionLabelSchema.openapi({
+      description:
+        '<p>The name of the version to update.</p> <p>If no application version is found with this label, <code>UpdateApplication</code> returns an <code>InvalidParameterValue</code> error. </p>',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A new description for this version.',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'VersionLabel'],
@@ -4548,41 +3465,25 @@ const UpdateApplicationVersionMessageSchema = z
 
 const UpdateConfigurationTemplateMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the application associated with the configuration template to update.</p> <p> If no application is found with this name, <code>UpdateConfigurationTemplate</code> returns an <code>InvalidParameterValue</code> error. </p>',
-        }),
-    ),
-    TemplateName: ConfigurationTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the configuration template to update.</p> <p> If no configuration template is found with this name, <code>UpdateConfigurationTemplate</code> returns an <code>InvalidParameterValue</code> error. </p>',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A new description for the configuration.' }),
-    ).exactOptional(),
-    OptionSettings: ConfigurationOptionSettingsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of configuration option settings to update with the new specified option value.',
-        }),
-    ).exactOptional(),
-    OptionsToRemove: OptionsSpecifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of configuration options to remove from the configuration set.</p> <p> Constraint: You can remove only <code>UserDefined</code> configuration options. </p>',
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description:
+        '<p>The name of the application associated with the configuration template to update.</p> <p> If no application is found with this name, <code>UpdateConfigurationTemplate</code> returns an <code>InvalidParameterValue</code> error. </p>',
+    }),
+    TemplateName: ConfigurationTemplateNameSchema.openapi({
+      description:
+        '<p>The name of the configuration template to update.</p> <p> If no configuration template is found with this name, <code>UpdateConfigurationTemplate</code> returns an <code>InvalidParameterValue</code> error. </p>',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A new description for the configuration.',
+    }),
+    OptionSettings: ConfigurationOptionSettingsListSchema.exactOptional().openapi({
+      description:
+        'A list of configuration option settings to update with the new specified option value.',
+    }),
+    OptionsToRemove: OptionsSpecifierListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of configuration options to remove from the configuration set.</p> <p> Constraint: You can remove only <code>UserDefined</code> configuration options. </p>',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'TemplateName'],
@@ -4593,96 +3494,52 @@ const UpdateConfigurationTemplateMessageSchema = z
 
 const UpdateEnvironmentMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the application with which the environment is associated.',
-        }),
-    ).exactOptional(),
-    EnvironmentId: EnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the environment to update.</p> <p>If no environment with this ID exists, AWS Elastic Beanstalk returns an <code>InvalidParameterValue</code> error.</p> <p>Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
-        }),
-    ).exactOptional(),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the environment to update. If no environment with this name exists, AWS Elastic Beanstalk returns an <code>InvalidParameterValue</code> error. </p> <p>Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
-        }),
-    ).exactOptional(),
-    GroupName: GroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the group to which the target environment belongs. Specify a group name only if the environment\'s name is specified in an environment manifest and not with the environment name or environment ID parameters. See <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environment-cfg-manifest.html">Environment Manifest (env.yaml)</a> for details.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this parameter is specified, AWS Elastic Beanstalk updates the description of this environment.',
-        }),
-    ).exactOptional(),
-    Tier: EnvironmentTierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This specifies the tier to use to update the environment.</p> <p>Condition: At this time, if you change the tier version, name, or type, AWS Elastic Beanstalk returns <code>InvalidParameterValue</code> error. </p>',
-        }),
-    ).exactOptional(),
-    VersionLabel: VersionLabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this parameter is specified, AWS Elastic Beanstalk deploys the named application version to the environment. If no such application version is found, returns an <code>InvalidParameterValue</code> error. ',
-        }),
-    ).exactOptional(),
-    TemplateName: ConfigurationTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this parameter is specified, AWS Elastic Beanstalk deploys this configuration template to the environment. If no such configuration template is found, AWS Elastic Beanstalk returns an <code>InvalidParameterValue</code> error. ',
-        }),
-    ).exactOptional(),
-    SolutionStackName: SolutionStackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This specifies the platform version that the environment will run after the environment is updated.',
-        }),
-    ).exactOptional(),
-    PlatformArn: PlatformArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the platform, if used.' }),
-    ).exactOptional(),
-    OptionSettings: ConfigurationOptionSettingsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, AWS Elastic Beanstalk updates the configuration set associated with the running environment and sets the specified configuration options to the requested value.',
-        }),
-    ).exactOptional(),
-    OptionsToRemove: OptionsSpecifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of custom user-defined configuration options to remove from the configuration set for this environment.',
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.exactOptional().openapi({
+      description: 'The name of the application with which the environment is associated.',
+    }),
+    EnvironmentId: EnvironmentIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the environment to update.</p> <p>If no environment with this ID exists, AWS Elastic Beanstalk returns an <code>InvalidParameterValue</code> error.</p> <p>Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
+    }),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the environment to update. If no environment with this name exists, AWS Elastic Beanstalk returns an <code>InvalidParameterValue</code> error. </p> <p>Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>',
+    }),
+    GroupName: GroupNameSchema.exactOptional().openapi({
+      description:
+        'The name of the group to which the target environment belongs. Specify a group name only if the environment\'s name is specified in an environment manifest and not with the environment name or environment ID parameters. See <a href="https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environment-cfg-manifest.html">Environment Manifest (env.yaml)</a> for details.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description:
+        'If this parameter is specified, AWS Elastic Beanstalk updates the description of this environment.',
+    }),
+    Tier: EnvironmentTierSchema.exactOptional().openapi({
+      description:
+        '<p>This specifies the tier to use to update the environment.</p> <p>Condition: At this time, if you change the tier version, name, or type, AWS Elastic Beanstalk returns <code>InvalidParameterValue</code> error. </p>',
+    }),
+    VersionLabel: VersionLabelSchema.exactOptional().openapi({
+      description:
+        'If this parameter is specified, AWS Elastic Beanstalk deploys the named application version to the environment. If no such application version is found, returns an <code>InvalidParameterValue</code> error. ',
+    }),
+    TemplateName: ConfigurationTemplateNameSchema.exactOptional().openapi({
+      description:
+        'If this parameter is specified, AWS Elastic Beanstalk deploys this configuration template to the environment. If no such configuration template is found, AWS Elastic Beanstalk returns an <code>InvalidParameterValue</code> error. ',
+    }),
+    SolutionStackName: SolutionStackNameSchema.exactOptional().openapi({
+      description:
+        'This specifies the platform version that the environment will run after the environment is updated.',
+    }),
+    PlatformArn: PlatformArnSchema.exactOptional().openapi({
+      description: 'The ARN of the platform, if used.',
+    }),
+    OptionSettings: ConfigurationOptionSettingsListSchema.exactOptional().openapi({
+      description:
+        'If specified, AWS Elastic Beanstalk updates the configuration set associated with the running environment and sets the specified configuration options to the requested value.',
+    }),
+    OptionsToRemove: OptionsSpecifierListSchema.exactOptional().openapi({
+      description:
+        'A list of custom user-defined configuration options to remove from the configuration set for this environment.',
+    }),
   })
   .openapi({
     title: 'UpdateEnvironmentMessage',
@@ -4693,63 +3550,39 @@ const UpdateEnvironmentMessageSchema = z
 
 const UpdateTagsForResourceMessageSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the resouce to be updated.</p> <p>Must be the ARN of an Elastic Beanstalk resource.</p>',
-        }),
-    ),
-    TagsToAdd: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of tags to add or update. If a key of an existing tag is added, the tag's value is updated.</p> <p>Specify at least one of these parameters: <code>TagsToAdd</code>, <code>TagsToRemove</code>.</p>",
-        }),
-    ).exactOptional(),
-    TagsToRemove: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of tag keys to remove. If a tag key doesn't exist, it is silently ignored.</p> <p>Specify at least one of these parameters: <code>TagsToAdd</code>, <code>TagsToRemove</code>.</p>",
-        }),
-    ).exactOptional(),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the resouce to be updated.</p> <p>Must be the ARN of an Elastic Beanstalk resource.</p>',
+    }),
+    TagsToAdd: TagListSchema.exactOptional().openapi({
+      description:
+        "<p>A list of tags to add or update. If a key of an existing tag is added, the tag's value is updated.</p> <p>Specify at least one of these parameters: <code>TagsToAdd</code>, <code>TagsToRemove</code>.</p>",
+    }),
+    TagsToRemove: TagKeyListSchema.exactOptional().openapi({
+      description:
+        "<p>A list of tag keys to remove. If a tag key doesn't exist, it is silently ignored.</p> <p>Specify at least one of these parameters: <code>TagsToAdd</code>, <code>TagsToRemove</code>.</p>",
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'UpdateTagsForResourceMessage' })
   .openapi('UpdateTagsForResourceMessage')
 
 const ValidateConfigurationSettingsMessageSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the application that the configuration template or environment belongs to.',
-        }),
-    ),
-    TemplateName: ConfigurationTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the configuration template to validate the settings against.</p> <p>Condition: You cannot specify both this and an environment name.</p>',
-        }),
-    ).exactOptional(),
-    EnvironmentName: EnvironmentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the environment to validate the settings against.</p> <p>Condition: You cannot specify both this and a configuration template name.</p>',
-        }),
-    ).exactOptional(),
-    OptionSettings: ConfigurationOptionSettingsListSchema.and(
-      z.any().openapi({ description: 'A list of the options and desired values to evaluate.' }),
-    ),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description:
+        'The name of the application that the configuration template or environment belongs to.',
+    }),
+    TemplateName: ConfigurationTemplateNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the configuration template to validate the settings against.</p> <p>Condition: You cannot specify both this and an environment name.</p>',
+    }),
+    EnvironmentName: EnvironmentNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the environment to validate the settings against.</p> <p>Condition: You cannot specify both this and a configuration template name.</p>',
+    }),
+    OptionSettings: ConfigurationOptionSettingsListSchema.openapi({
+      description: 'A list of the options and desired values to evaluate.',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'OptionSettings'],
@@ -5562,14 +4395,10 @@ export const getActionCreateApplicationRoute = createRoute({
             }),
           ResourceLifecycleConfig: z
             .object({
-              ServiceRole: StringSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      "<p>The ARN of an IAM service role that Elastic Beanstalk has permission to assume.</p> <p>The <code>ServiceRole</code> property is required the first time that you provide a <code>VersionLifecycleConfig</code> for the application in one of the supporting calls (<code>CreateApplication</code> or <code>UpdateApplicationResourceLifecycle</code>). After you provide it once, in either one of the calls, Elastic Beanstalk persists the Service Role with the application, and you don't need to specify it again in subsequent <code>UpdateApplicationResourceLifecycle</code> calls. You can, however, specify it in subsequent calls to change the Service Role to another value.</p>",
-                  }),
-              ).exactOptional(),
+              ServiceRole: StringSchema.exactOptional().openapi({
+                description:
+                  "<p>The ARN of an IAM service role that Elastic Beanstalk has permission to assume.</p> <p>The <code>ServiceRole</code> property is required the first time that you provide a <code>VersionLifecycleConfig</code> for the application in one of the supporting calls (<code>CreateApplication</code> or <code>UpdateApplicationResourceLifecycle</code>). After you provide it once, in either one of the calls, Elastic Beanstalk persists the Service Role with the application, and you don't need to specify it again in subsequent <code>UpdateApplicationResourceLifecycle</code> calls. You can, however, specify it in subsequent calls to change the Service Role to another value.</p>",
+              }),
               VersionLifecycleConfig: z
                 .object({
                   MaxCountRule: z
@@ -5582,14 +4411,10 @@ export const getActionCreateApplicationRoute = createRoute({
                           })(z.stringbool()),
                           BoxedBooleanSchema,
                         )
-                        .and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                'Specify <code>true</code> to apply the rule, or <code>false</code> to disable it.',
-                            }),
-                        ),
+                        .openapi({
+                          description:
+                            'Specify <code>true</code> to apply the rule, or <code>false</code> to disable it.',
+                        }),
                       MaxCount: z
                         .preprocess(
                           (val) =>
@@ -5600,15 +4425,11 @@ export const getActionCreateApplicationRoute = createRoute({
                               : val,
                           BoxedIntSchema,
                         )
-                        .and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                'Specify the maximum number of application versions to retain.',
-                            }),
-                        )
-                        .exactOptional(),
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'Specify the maximum number of application versions to retain.',
+                        }),
                       DeleteSourceFromS3: z
                         .preprocess(
                           ((read) => (val: unknown) => {
@@ -5617,30 +4438,22 @@ export const getActionCreateApplicationRoute = createRoute({
                           })(z.stringbool()),
                           BoxedBooleanSchema,
                         )
-                        .and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                "Set to <code>true</code> to delete a version's source bundle from Amazon S3 when Elastic Beanstalk deletes the application version.",
-                            }),
-                        )
-                        .exactOptional(),
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            "Set to <code>true</code> to delete a version's source bundle from Amazon S3 when Elastic Beanstalk deletes the application version.",
+                        }),
                     })
                     .openapi({
                       required: ['Enabled'],
                       description:
                         'A lifecycle rule that deletes the oldest application version when the maximum count is exceeded.',
                     })
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Specify a max count rule to restrict the number of application versions that are retained for an application.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Specify a max count rule to restrict the number of application versions that are retained for an application.',
+                    }),
                   MaxAgeRule: z
                     .object({
                       Enabled: z
@@ -5651,14 +4464,10 @@ export const getActionCreateApplicationRoute = createRoute({
                           })(z.stringbool()),
                           BoxedBooleanSchema,
                         )
-                        .and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                'Specify <code>true</code> to apply the rule, or <code>false</code> to disable it.',
-                            }),
-                        ),
+                        .openapi({
+                          description:
+                            'Specify <code>true</code> to apply the rule, or <code>false</code> to disable it.',
+                        }),
                       MaxAgeInDays: z
                         .preprocess(
                           (val) =>
@@ -5669,15 +4478,11 @@ export const getActionCreateApplicationRoute = createRoute({
                               : val,
                           BoxedIntSchema,
                         )
-                        .and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                'Specify the number of days to retain an application versions.',
-                            }),
-                        )
-                        .exactOptional(),
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'Specify the number of days to retain an application versions.',
+                        }),
                       DeleteSourceFromS3: z
                         .preprocess(
                           ((read) => (val: unknown) => {
@@ -5686,44 +4491,30 @@ export const getActionCreateApplicationRoute = createRoute({
                           })(z.stringbool()),
                           BoxedBooleanSchema,
                         )
-                        .and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                "Set to <code>true</code> to delete a version's source bundle from Amazon S3 when Elastic Beanstalk deletes the application version.",
-                            }),
-                        )
-                        .exactOptional(),
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            "Set to <code>true</code> to delete a version's source bundle from Amazon S3 when Elastic Beanstalk deletes the application version.",
+                        }),
                     })
                     .openapi({
                       required: ['Enabled'],
                       description:
                         'A lifecycle rule that deletes application versions after the specified number of days.',
                     })
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Specify a max age rule to restrict the length of time that application versions are retained for an application.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Specify a max age rule to restrict the length of time that application versions are retained for an application.',
+                    }),
                 })
                 .openapi({
                   description:
                     "<p>The application version lifecycle settings for an application. Defines the rules that Elastic Beanstalk applies to an application's versions in order to avoid hitting the per-region limit for application versions.</p> <p>When Elastic Beanstalk deletes an application version from its database, you can no longer deploy that version to an environment. The source bundle remains in S3 unless you configure the rule to delete it.</p>",
                   required: [],
                 })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'Defines lifecycle settings for application versions.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({ description: 'Defines lifecycle settings for application versions.' }),
             })
             .exactOptional()
             .openapi({
@@ -6052,30 +4843,18 @@ export const getActionCreateApplicationVersionRoute = createRoute({
             }),
           SourceBuildInformation: z
             .object({
-              SourceType: SourceTypeSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>The type of repository.</p> <ul> <li> <p> <code>Git</code> </p> </li> <li> <p> <code>Zip</code> </p> </li> </ul>',
-                  }),
-              ),
-              SourceRepository: SourceRepositorySchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>Location where the repository is stored.</p> <ul> <li> <p> <code>CodeCommit</code> </p> </li> <li> <p> <code>S3</code> </p> </li> </ul>',
-                  }),
-              ),
-              SourceLocation: SourceLocationSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>The location of the source code, as a formatted string, depending on the value of <code>SourceRepository</code> </p> <ul> <li> <p>For <code>CodeCommit</code>, the format is the repository name and commit ID, separated by a forward slash. For example, <code>my-git-repo/265cfa0cf6af46153527f55d6503ec030551f57a</code>.</p> </li> <li> <p>For <code>S3</code>, the format is the S3 bucket name and object key, separated by a forward slash. For example, <code>my-s3-bucket/Folders/my-source-file</code>.</p> </li> </ul>',
-                  }),
-              ),
+              SourceType: SourceTypeSchema.openapi({
+                description:
+                  '<p>The type of repository.</p> <ul> <li> <p> <code>Git</code> </p> </li> <li> <p> <code>Zip</code> </p> </li> </ul>',
+              }),
+              SourceRepository: SourceRepositorySchema.openapi({
+                description:
+                  '<p>Location where the repository is stored.</p> <ul> <li> <p> <code>CodeCommit</code> </p> </li> <li> <p> <code>S3</code> </p> </li> </ul>',
+              }),
+              SourceLocation: SourceLocationSchema.openapi({
+                description:
+                  '<p>The location of the source code, as a formatted string, depending on the value of <code>SourceRepository</code> </p> <ul> <li> <p>For <code>CodeCommit</code>, the format is the repository name and commit ID, separated by a forward slash. For example, <code>my-git-repo/265cfa0cf6af46153527f55d6503ec030551f57a</code>.</p> </li> <li> <p>For <code>S3</code>, the format is the S3 bucket name and object key, separated by a forward slash. For example, <code>my-s3-bucket/Folders/my-source-file</code>.</p> </li> </ul>',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -6125,12 +4904,12 @@ export const getActionCreateApplicationVersionRoute = createRoute({
             }),
           SourceBundle: z
             .object({
-              S3Bucket: S3BucketSchema.and(
-                z.any().openapi({ description: 'The Amazon S3 bucket where the data is located.' }),
-              ).exactOptional(),
-              S3Key: S3KeySchema.and(
-                z.any().openapi({ description: 'The Amazon S3 key where the data is located.' }),
-              ).exactOptional(),
+              S3Bucket: S3BucketSchema.exactOptional().openapi({
+                description: 'The Amazon S3 bucket where the data is located.',
+              }),
+              S3Key: S3KeySchema.exactOptional().openapi({
+                description: 'The Amazon S3 key where the data is located.',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -6164,37 +4943,21 @@ export const getActionCreateApplicationVersionRoute = createRoute({
             }),
           BuildConfiguration: z
             .object({
-              ArtifactName: StringSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The name of the artifact of the CodeBuild build. If provided, Elastic Beanstalk stores the build artifact in the S3 location <i>S3-bucket</i>/resources/<i>application-name</i>/codebuild/codebuild-<i>version-label</i>-<i>artifact-name</i>.zip. If not provided, Elastic Beanstalk stores the build artifact in the S3 location <i>S3-bucket</i>/resources/<i>application-name</i>/codebuild/codebuild-<i>version-label</i>.zip. ',
-                  }),
-              ).exactOptional(),
-              CodeBuildServiceRole: NonEmptyStringSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that enables AWS CodeBuild to interact with dependent AWS services on behalf of the AWS account.',
-                  }),
-              ),
-              ComputeType: ComputeTypeSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>Information about the compute resources the build project will use.</p> <ul> <li> <p> <code>BUILD_GENERAL1_SMALL: Use up to 3 GB memory and 2 vCPUs for builds</code> </p> </li> <li> <p> <code>BUILD_GENERAL1_MEDIUM: Use up to 7 GB memory and 4 vCPUs for builds</code> </p> </li> <li> <p> <code>BUILD_GENERAL1_LARGE: Use up to 15 GB memory and 8 vCPUs for builds</code> </p> </li> </ul>',
-                  }),
-              ).exactOptional(),
-              Image: NonEmptyStringSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'The ID of the Docker image to use for this build project.',
-                  }),
-              ),
+              ArtifactName: StringSchema.exactOptional().openapi({
+                description:
+                  'The name of the artifact of the CodeBuild build. If provided, Elastic Beanstalk stores the build artifact in the S3 location <i>S3-bucket</i>/resources/<i>application-name</i>/codebuild/codebuild-<i>version-label</i>-<i>artifact-name</i>.zip. If not provided, Elastic Beanstalk stores the build artifact in the S3 location <i>S3-bucket</i>/resources/<i>application-name</i>/codebuild/codebuild-<i>version-label</i>.zip. ',
+              }),
+              CodeBuildServiceRole: NonEmptyStringSchema.openapi({
+                description:
+                  'The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that enables AWS CodeBuild to interact with dependent AWS services on behalf of the AWS account.',
+              }),
+              ComputeType: ComputeTypeSchema.exactOptional().openapi({
+                description:
+                  '<p>Information about the compute resources the build project will use.</p> <ul> <li> <p> <code>BUILD_GENERAL1_SMALL: Use up to 3 GB memory and 2 vCPUs for builds</code> </p> </li> <li> <p> <code>BUILD_GENERAL1_MEDIUM: Use up to 7 GB memory and 4 vCPUs for builds</code> </p> </li> <li> <p> <code>BUILD_GENERAL1_LARGE: Use up to 15 GB memory and 8 vCPUs for builds</code> </p> </li> </ul>',
+              }),
+              Image: NonEmptyStringSchema.openapi({
+                description: 'The ID of the Docker image to use for this build project.',
+              }),
               TimeoutInMinutes: z
                 .preprocess(
                   (val) =>
@@ -6205,15 +4968,11 @@ export const getActionCreateApplicationVersionRoute = createRoute({
                       : val,
                   BoxedIntSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'How long in minutes, from 5 to 480 (8 hours), for AWS CodeBuild to wait until timing out any related build that does not get marked as completed. The default is 60 minutes.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'How long in minutes, from 5 to 480 (8 hours), for AWS CodeBuild to wait until timing out any related build that does not get marked as completed. The default is 60 minutes.',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -6511,16 +5270,12 @@ export const getActionCreateConfigurationTemplateRoute = createRoute({
         }),
       SourceConfiguration: z
         .object({
-          ApplicationName: ApplicationNameSchema.and(
-            z
-              .any()
-              .openapi({
-                description: 'The name of the application associated with the configuration.',
-              }),
-          ).exactOptional(),
-          TemplateName: ConfigurationTemplateNameSchema.and(
-            z.any().openapi({ description: 'The name of the configuration template.' }),
-          ).exactOptional(),
+          ApplicationName: ApplicationNameSchema.exactOptional().openapi({
+            description: 'The name of the application associated with the configuration.',
+          }),
+          TemplateName: ConfigurationTemplateNameSchema.exactOptional().openapi({
+            description: 'The name of the configuration template.',
+          }),
         })
         .exactOptional()
         .openapi({
@@ -6836,30 +5591,18 @@ export const getActionCreateEnvironmentRoute = createRoute({
             }),
           Tier: z
             .object({
-              Name: StringSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>The name of this environment tier.</p> <p>Valid values:</p> <ul> <li> <p>For <i>Web server tier</i> – <code>WebServer</code> </p> </li> <li> <p>For <i>Worker tier</i> – <code>Worker</code> </p> </li> </ul>',
-                  }),
-              ).exactOptional(),
-              Type: StringSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>The type of this environment tier.</p> <p>Valid values:</p> <ul> <li> <p>For <i>Web server tier</i> – <code>Standard</code> </p> </li> <li> <p>For <i>Worker tier</i> – <code>SQS/HTTP</code> </p> </li> </ul>',
-                  }),
-              ).exactOptional(),
-              Version: StringSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      "<p>The version of this environment tier. When you don't set a value to it, Elastic Beanstalk uses the latest compatible worker tier version.</p> <note> <p>This member is deprecated. Any specific version that you set may become out of date. We recommend leaving it unspecified.</p> </note>",
-                  }),
-              ).exactOptional(),
+              Name: StringSchema.exactOptional().openapi({
+                description:
+                  '<p>The name of this environment tier.</p> <p>Valid values:</p> <ul> <li> <p>For <i>Web server tier</i> – <code>WebServer</code> </p> </li> <li> <p>For <i>Worker tier</i> – <code>Worker</code> </p> </li> </ul>',
+              }),
+              Type: StringSchema.exactOptional().openapi({
+                description:
+                  '<p>The type of this environment tier.</p> <p>Valid values:</p> <ul> <li> <p>For <i>Web server tier</i> – <code>Standard</code> </p> </li> <li> <p>For <i>Worker tier</i> – <code>SQS/HTTP</code> </p> </li> </ul>',
+              }),
+              Version: StringSchema.exactOptional().openapi({
+                description:
+                  "<p>The version of this environment tier. When you don't set a value to it, Elastic Beanstalk uses the latest compatible worker tier version.</p> <note> <p>This member is deprecated. Any specific version that you set may become out of date. We recommend leaving it unspecified.</p> </note>",
+              }),
             })
             .exactOptional()
             .openapi({
@@ -7194,12 +5937,12 @@ export const getActionCreatePlatformVersionRoute = createRoute({
             }),
           PlatformDefinitionBundle: z
             .object({
-              S3Bucket: S3BucketSchema.and(
-                z.any().openapi({ description: 'The Amazon S3 bucket where the data is located.' }),
-              ).exactOptional(),
-              S3Key: S3KeySchema.and(
-                z.any().openapi({ description: 'The Amazon S3 key where the data is located.' }),
-              ).exactOptional(),
+              S3Bucket: S3BucketSchema.exactOptional().openapi({
+                description: 'The Amazon S3 bucket where the data is located.',
+              }),
+              S3Key: S3KeySchema.exactOptional().openapi({
+                description: 'The Amazon S3 key where the data is located.',
+              }),
             })
             .openapi({
               param: {
@@ -11925,14 +10668,10 @@ export const getActionUpdateApplicationResourceLifecycleRoute = createRoute({
             }),
           ResourceLifecycleConfig: z
             .object({
-              ServiceRole: StringSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      "<p>The ARN of an IAM service role that Elastic Beanstalk has permission to assume.</p> <p>The <code>ServiceRole</code> property is required the first time that you provide a <code>VersionLifecycleConfig</code> for the application in one of the supporting calls (<code>CreateApplication</code> or <code>UpdateApplicationResourceLifecycle</code>). After you provide it once, in either one of the calls, Elastic Beanstalk persists the Service Role with the application, and you don't need to specify it again in subsequent <code>UpdateApplicationResourceLifecycle</code> calls. You can, however, specify it in subsequent calls to change the Service Role to another value.</p>",
-                  }),
-              ).exactOptional(),
+              ServiceRole: StringSchema.exactOptional().openapi({
+                description:
+                  "<p>The ARN of an IAM service role that Elastic Beanstalk has permission to assume.</p> <p>The <code>ServiceRole</code> property is required the first time that you provide a <code>VersionLifecycleConfig</code> for the application in one of the supporting calls (<code>CreateApplication</code> or <code>UpdateApplicationResourceLifecycle</code>). After you provide it once, in either one of the calls, Elastic Beanstalk persists the Service Role with the application, and you don't need to specify it again in subsequent <code>UpdateApplicationResourceLifecycle</code> calls. You can, however, specify it in subsequent calls to change the Service Role to another value.</p>",
+              }),
               VersionLifecycleConfig: z
                 .object({
                   MaxCountRule: z
@@ -11945,14 +10684,10 @@ export const getActionUpdateApplicationResourceLifecycleRoute = createRoute({
                           })(z.stringbool()),
                           BoxedBooleanSchema,
                         )
-                        .and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                'Specify <code>true</code> to apply the rule, or <code>false</code> to disable it.',
-                            }),
-                        ),
+                        .openapi({
+                          description:
+                            'Specify <code>true</code> to apply the rule, or <code>false</code> to disable it.',
+                        }),
                       MaxCount: z
                         .preprocess(
                           (val) =>
@@ -11963,15 +10698,11 @@ export const getActionUpdateApplicationResourceLifecycleRoute = createRoute({
                               : val,
                           BoxedIntSchema,
                         )
-                        .and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                'Specify the maximum number of application versions to retain.',
-                            }),
-                        )
-                        .exactOptional(),
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'Specify the maximum number of application versions to retain.',
+                        }),
                       DeleteSourceFromS3: z
                         .preprocess(
                           ((read) => (val: unknown) => {
@@ -11980,30 +10711,22 @@ export const getActionUpdateApplicationResourceLifecycleRoute = createRoute({
                           })(z.stringbool()),
                           BoxedBooleanSchema,
                         )
-                        .and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                "Set to <code>true</code> to delete a version's source bundle from Amazon S3 when Elastic Beanstalk deletes the application version.",
-                            }),
-                        )
-                        .exactOptional(),
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            "Set to <code>true</code> to delete a version's source bundle from Amazon S3 when Elastic Beanstalk deletes the application version.",
+                        }),
                     })
                     .openapi({
                       required: ['Enabled'],
                       description:
                         'A lifecycle rule that deletes the oldest application version when the maximum count is exceeded.',
                     })
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Specify a max count rule to restrict the number of application versions that are retained for an application.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Specify a max count rule to restrict the number of application versions that are retained for an application.',
+                    }),
                   MaxAgeRule: z
                     .object({
                       Enabled: z
@@ -12014,14 +10737,10 @@ export const getActionUpdateApplicationResourceLifecycleRoute = createRoute({
                           })(z.stringbool()),
                           BoxedBooleanSchema,
                         )
-                        .and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                'Specify <code>true</code> to apply the rule, or <code>false</code> to disable it.',
-                            }),
-                        ),
+                        .openapi({
+                          description:
+                            'Specify <code>true</code> to apply the rule, or <code>false</code> to disable it.',
+                        }),
                       MaxAgeInDays: z
                         .preprocess(
                           (val) =>
@@ -12032,15 +10751,11 @@ export const getActionUpdateApplicationResourceLifecycleRoute = createRoute({
                               : val,
                           BoxedIntSchema,
                         )
-                        .and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                'Specify the number of days to retain an application versions.',
-                            }),
-                        )
-                        .exactOptional(),
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'Specify the number of days to retain an application versions.',
+                        }),
                       DeleteSourceFromS3: z
                         .preprocess(
                           ((read) => (val: unknown) => {
@@ -12049,44 +10764,30 @@ export const getActionUpdateApplicationResourceLifecycleRoute = createRoute({
                           })(z.stringbool()),
                           BoxedBooleanSchema,
                         )
-                        .and(
-                          z
-                            .any()
-                            .openapi({
-                              description:
-                                "Set to <code>true</code> to delete a version's source bundle from Amazon S3 when Elastic Beanstalk deletes the application version.",
-                            }),
-                        )
-                        .exactOptional(),
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            "Set to <code>true</code> to delete a version's source bundle from Amazon S3 when Elastic Beanstalk deletes the application version.",
+                        }),
                     })
                     .openapi({
                       required: ['Enabled'],
                       description:
                         'A lifecycle rule that deletes application versions after the specified number of days.',
                     })
-                    .and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Specify a max age rule to restrict the length of time that application versions are retained for an application.',
-                        }),
-                    )
-                    .exactOptional(),
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Specify a max age rule to restrict the length of time that application versions are retained for an application.',
+                    }),
                 })
                 .openapi({
                   description:
                     "<p>The application version lifecycle settings for an application. Defines the rules that Elastic Beanstalk applies to an application's versions in order to avoid hitting the per-region limit for application versions.</p> <p>When Elastic Beanstalk deletes an application version from its database, you can no longer deploy that version to an environment. The source bundle remains in S3 unless you configure the rule to delete it.</p>",
                   required: [],
                 })
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'Defines lifecycle settings for application versions.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({ description: 'Defines lifecycle settings for application versions.' }),
             })
             .openapi({
               param: {
@@ -12742,30 +11443,18 @@ export const getActionUpdateEnvironmentRoute = createRoute({
             }),
           Tier: z
             .object({
-              Name: StringSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>The name of this environment tier.</p> <p>Valid values:</p> <ul> <li> <p>For <i>Web server tier</i> – <code>WebServer</code> </p> </li> <li> <p>For <i>Worker tier</i> – <code>Worker</code> </p> </li> </ul>',
-                  }),
-              ).exactOptional(),
-              Type: StringSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>The type of this environment tier.</p> <p>Valid values:</p> <ul> <li> <p>For <i>Web server tier</i> – <code>Standard</code> </p> </li> <li> <p>For <i>Worker tier</i> – <code>SQS/HTTP</code> </p> </li> </ul>',
-                  }),
-              ).exactOptional(),
-              Version: StringSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      "<p>The version of this environment tier. When you don't set a value to it, Elastic Beanstalk uses the latest compatible worker tier version.</p> <note> <p>This member is deprecated. Any specific version that you set may become out of date. We recommend leaving it unspecified.</p> </note>",
-                  }),
-              ).exactOptional(),
+              Name: StringSchema.exactOptional().openapi({
+                description:
+                  '<p>The name of this environment tier.</p> <p>Valid values:</p> <ul> <li> <p>For <i>Web server tier</i> – <code>WebServer</code> </p> </li> <li> <p>For <i>Worker tier</i> – <code>Worker</code> </p> </li> </ul>',
+              }),
+              Type: StringSchema.exactOptional().openapi({
+                description:
+                  '<p>The type of this environment tier.</p> <p>Valid values:</p> <ul> <li> <p>For <i>Web server tier</i> – <code>Standard</code> </p> </li> <li> <p>For <i>Worker tier</i> – <code>SQS/HTTP</code> </p> </li> </ul>',
+              }),
+              Version: StringSchema.exactOptional().openapi({
+                description:
+                  "<p>The version of this environment tier. When you don't set a value to it, Elastic Beanstalk uses the latest compatible worker tier version.</p> <note> <p>This member is deprecated. Any specific version that you set may become out of date. We recommend leaving it unspecified.</p> </note>",
+              }),
             })
             .exactOptional()
             .openapi({

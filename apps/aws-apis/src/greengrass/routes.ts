@@ -2,382 +2,6 @@ import { createRoute, z } from '@hono/zod-openapi'
 
 const StringSchema = z.string().openapi('String')
 
-const AssociateRoleToGroupResponseSchema = z
-  .object({
-    AssociatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the role ARN was associated with the group.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AssociateRoleToGroupResponse')
-
-const BadRequestExceptionSchema = z.any().openapi('BadRequestException')
-
-const InternalServerErrorExceptionSchema = z.any().openapi('InternalServerErrorException')
-
-const AssociateServiceRoleToAccountResponseSchema = z
-  .object({
-    AssociatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the service role was associated with the account.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AssociateServiceRoleToAccountResponse')
-
-const CreateConnectorDefinitionResponseSchema = z
-  .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the definition.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the definition.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateConnectorDefinitionResponse')
-
-const MapOfStringSchema = z.record(z.string(), StringSchema).openapi('MapOfString')
-
-const ConnectorSchema = z
-  .object({
-    ConnectorArn: StringSchema.and(z.any().openapi({ description: 'The ARN of the connector.' })),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive or arbitrary ID for the connector. This value must be unique within the connector definition version. Max length is 128 characters with pattern [a-zA-Z0-9:_-]+.',
-        }),
-    ),
-    Parameters: MapOfStringSchema.and(
-      z.any().openapi({ description: 'The parameters or configuration that the connector uses.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['ConnectorArn', 'Id'],
-    description:
-      'Information about a connector. Connectors run on the Greengrass core and contain built-in integration with local infrastructure, device protocols, AWS, and other cloud services.',
-  })
-  .openapi('Connector')
-
-const ListOfConnectorSchema = z.array(ConnectorSchema).openapi('ListOfConnector')
-
-const CreateConnectorDefinitionVersionResponseSchema = z
-  .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the version.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in milliseconds since the epoch, when the version was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the parent definition that the version is associated with.',
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the version.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateConnectorDefinitionVersionResponse')
-
-const CreateCoreDefinitionResponseSchema = z
-  .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the definition.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the definition.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateCoreDefinitionResponse')
-
-const BooleanSchema = z.boolean().openapi('Boolean')
-
-const CoreSchema = z
-  .object({
-    CertificateArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the certificate associated with the core.' }),
-    ),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A descriptive or arbitrary ID for the core. This value must be unique within the core definition version. Max length is 128 characters with pattern ''[a-zA-Z0-9:_-]+''.",
-        }),
-    ),
-    SyncShadow: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "If true, the core's local shadow is automatically synced with the cloud.",
-        }),
-    ).exactOptional(),
-    ThingArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the thing which is the core.' }),
-    ),
-  })
-  .openapi({
-    required: ['ThingArn', 'Id', 'CertificateArn'],
-    description: 'Information about a core.',
-  })
-  .openapi('Core')
-
-const ListOfCoreSchema = z.array(CoreSchema).openapi('ListOfCore')
-
-const CreateCoreDefinitionVersionResponseSchema = z
-  .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the version.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in milliseconds since the epoch, when the version was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the parent definition that the version is associated with.',
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the version.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateCoreDefinitionVersionResponse')
-
-const CreateDeploymentResponseSchema = z
-  .object({
-    DeploymentArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the deployment.' }),
-    ).exactOptional(),
-    DeploymentId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the deployment.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateDeploymentResponse')
-
-const CreateDeviceDefinitionResponseSchema = z
-  .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the definition.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the definition.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateDeviceDefinitionResponse')
-
-const DeviceSchema = z
-  .object({
-    CertificateArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the certificate associated with the device.' }),
-    ),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A descriptive or arbitrary ID for the device. This value must be unique within the device definition version. Max length is 128 characters with pattern ''[a-zA-Z0-9:_-]+''.",
-        }),
-    ),
-    SyncShadow: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If true, the device's local shadow will be automatically synced with the cloud.",
-        }),
-    ).exactOptional(),
-    ThingArn: StringSchema.and(z.any().openapi({ description: 'The thing ARN of the device.' })),
-  })
-  .openapi({
-    required: ['ThingArn', 'Id', 'CertificateArn'],
-    description: 'Information about a device.',
-  })
-  .openapi('Device')
-
-const ListOfDeviceSchema = z.array(DeviceSchema).openapi('ListOfDevice')
-
-const CreateDeviceDefinitionVersionResponseSchema = z
-  .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the version.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in milliseconds since the epoch, when the version was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the parent definition that the version is associated with.',
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the version.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateDeviceDefinitionVersionResponse')
-
-const CreateFunctionDefinitionResponseSchema = z
-  .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the definition.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the definition.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreateFunctionDefinitionResponse')
-
 const FunctionIsolationModeSchema = z
   .enum(['GreengrassContainer', 'NoContainer'])
   .openapi({
@@ -390,20 +14,12 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const FunctionRunAsConfigSchema = z
   .object({
-    Gid: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The group ID whose permissions are used to run a Lambda function.',
-        }),
-    ).exactOptional(),
-    Uid: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user ID whose permissions are used to run a Lambda function.',
-        }),
-    ).exactOptional(),
+    Gid: IntegerSchema.exactOptional().openapi({
+      description: 'The group ID whose permissions are used to run a Lambda function.',
+    }),
+    Uid: IntegerSchema.exactOptional().openapi({
+      description: 'The user ID whose permissions are used to run a Lambda function.',
+    }),
   })
   .openapi({
     description:
@@ -434,6 +50,8 @@ const FunctionDefaultConfigSchema = z
 
 const EncodingTypeSchema = z.enum(['binary', 'json']).openapi('EncodingType')
 
+const BooleanSchema = z.boolean().openapi('Boolean')
+
 const FunctionExecutionConfigSchema = z
   .object({
     IsolationMode: FunctionIsolationModeSchema.exactOptional(),
@@ -452,22 +70,14 @@ const PermissionSchema = z
 
 const ResourceAccessPolicySchema = z
   .object({
-    Permission: PermissionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The permissions that the Lambda function has to the resource. Can be one of ''rw'' (read/write) or ''ro'' (read-only).",
-        }),
-    ).exactOptional(),
-    ResourceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the resource. (This ID is assigned to the resource when you create the resource definiton.)',
-        }),
-    ),
+    Permission: PermissionSchema.exactOptional().openapi({
+      description:
+        "The permissions that the Lambda function has to the resource. Can be one of ''rw'' (read/write) or ''ro'' (read-only).",
+    }),
+    ResourceId: StringSchema.openapi({
+      description:
+        'The ID of the resource. (This ID is assigned to the resource when you create the resource definiton.)',
+    }),
   })
   .openapi({
     required: ['ResourceId'],
@@ -479,252 +89,419 @@ const ListOfResourceAccessPolicySchema = z
   .array(ResourceAccessPolicySchema)
   .openapi('ListOfResourceAccessPolicy')
 
+const MapOfStringSchema = z.record(z.string(), StringSchema).openapi('MapOfString')
+
 const FunctionConfigurationEnvironmentSchema = z
   .object({
-    AccessSysfs: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If true, the Lambda function is allowed to access the host's /sys folder. Use this when the Lambda function needs to read device information from /sys. This setting applies only when you run the Lambda function in a Greengrass container.",
-        }),
-    ).exactOptional(),
-    Execution: FunctionExecutionConfigSchema.and(
-      z.any().openapi({ description: 'Configuration related to executing the Lambda function' }),
-    ).exactOptional(),
-    ResourceAccessPolicies: ListOfResourceAccessPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the resources, with their permissions, to which the Lambda function will be granted access. A Lambda function can have at most 10 resources. ResourceAccessPolicies apply only when you run the Lambda function in a Greengrass container.',
-        }),
-    ).exactOptional(),
-    Variables: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({ description: "Environment variables for the Lambda function's configuration." }),
-    ).exactOptional(),
+    AccessSysfs: BooleanSchema.exactOptional().openapi({
+      description:
+        "If true, the Lambda function is allowed to access the host's /sys folder. Use this when the Lambda function needs to read device information from /sys. This setting applies only when you run the Lambda function in a Greengrass container.",
+    }),
+    Execution: FunctionExecutionConfigSchema.exactOptional().openapi({
+      description: 'Configuration related to executing the Lambda function',
+    }),
+    ResourceAccessPolicies: ListOfResourceAccessPolicySchema.exactOptional().openapi({
+      description:
+        'A list of the resources, with their permissions, to which the Lambda function will be granted access. A Lambda function can have at most 10 resources. ResourceAccessPolicies apply only when you run the Lambda function in a Greengrass container.',
+    }),
+    Variables: MapOfStringSchema.exactOptional().openapi({
+      description: "Environment variables for the Lambda function's configuration.",
+    }),
   })
   .openapi({ description: 'The environment configuration of the function.', required: [] })
   .openapi('FunctionConfigurationEnvironment')
 
 const FunctionConfigurationSchema = z
   .object({
-    EncodingType: EncodingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The expected encoding type of the input payload for the function. The default is ''json''.",
-        }),
-    ).exactOptional(),
-    Environment: FunctionConfigurationEnvironmentSchema.and(
-      z.any().openapi({ description: 'The environment configuration of the function.' }),
-    ).exactOptional(),
-    ExecArgs: StringSchema.and(
-      z.any().openapi({ description: 'The execution arguments.' }),
-    ).exactOptional(),
-    Executable: StringSchema.and(
-      z.any().openapi({ description: 'The name of the function executable.' }),
-    ).exactOptional(),
-    MemorySize: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The memory size, in KB, which the function requires. This setting is not applicable and should be cleared when you run the Lambda function without containerization.',
-        }),
-    ).exactOptional(),
-    Pinned: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if the function is pinned. Pinned means the function is long-lived and starts when the core starts.',
-        }),
-    ).exactOptional(),
-    Timeout: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The allowed function execution time, after which Lambda should terminate the function. This timeout still applies to pinned Lambda functions for each request.',
-        }),
-    ).exactOptional(),
-    FunctionRuntimeOverride: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Lambda runtime supported by Greengrass which is to be used instead of the one specified in the Lambda function.',
-        }),
-    ).exactOptional(),
+    EncodingType: EncodingTypeSchema.exactOptional().openapi({
+      description:
+        "The expected encoding type of the input payload for the function. The default is ''json''.",
+    }),
+    Environment: FunctionConfigurationEnvironmentSchema.exactOptional().openapi({
+      description: 'The environment configuration of the function.',
+    }),
+    ExecArgs: StringSchema.exactOptional().openapi({ description: 'The execution arguments.' }),
+    Executable: StringSchema.exactOptional().openapi({
+      description: 'The name of the function executable.',
+    }),
+    MemorySize: IntegerSchema.exactOptional().openapi({
+      description:
+        'The memory size, in KB, which the function requires. This setting is not applicable and should be cleared when you run the Lambda function without containerization.',
+    }),
+    Pinned: BooleanSchema.exactOptional().openapi({
+      description:
+        'True if the function is pinned. Pinned means the function is long-lived and starts when the core starts.',
+    }),
+    Timeout: IntegerSchema.exactOptional().openapi({
+      description:
+        'The allowed function execution time, after which Lambda should terminate the function. This timeout still applies to pinned Lambda functions for each request.',
+    }),
+    FunctionRuntimeOverride: StringSchema.exactOptional().openapi({
+      description:
+        'The Lambda runtime supported by Greengrass which is to be used instead of the one specified in the Lambda function.',
+    }),
   })
   .openapi({ description: 'The configuration of the Lambda function.', required: [] })
   .openapi('FunctionConfiguration')
 
 const FunctionSchema = z
   .object({
-    FunctionArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the Lambda function.' }),
-    ).exactOptional(),
-    FunctionConfiguration: FunctionConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration of the Lambda function.' }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A descriptive or arbitrary ID for the function. This value must be unique within the function definition version. Max length is 128 characters with pattern ''[a-zA-Z0-9:_-]+''.",
-        }),
-    ),
+    FunctionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the Lambda function.',
+    }),
+    FunctionConfiguration: FunctionConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration of the Lambda function.',
+    }),
+    Id: StringSchema.openapi({
+      description:
+        "A descriptive or arbitrary ID for the function. This value must be unique within the function definition version. Max length is 128 characters with pattern ''[a-zA-Z0-9:_-]+''.",
+    }),
   })
   .openapi({ required: ['Id'], description: 'Information about a Lambda function.' })
   .openapi('Function')
 
 const ListOfFunctionSchema = z.array(FunctionSchema).openapi('ListOfFunction')
 
+const FunctionDefinitionVersionSchema = z
+  .object({
+    DefaultConfig: FunctionDefaultConfigSchema.exactOptional().openapi({
+      description:
+        'The default configuration that applies to all Lambda functions in this function definition version. Individual Lambda functions can override these settings.',
+    }),
+    Functions: ListOfFunctionSchema.exactOptional().openapi({
+      description: 'A list of Lambda functions in this function definition version.',
+    }),
+  })
+  .openapi({ description: 'Information about a function definition version.', required: [] })
+  .openapi('FunctionDefinitionVersion')
+
+type GetFunctionDefinitionVersionResponseType = {
+  Arn?: z.infer<typeof StringSchema> & unknown
+  CreationTimestamp?: z.infer<typeof StringSchema> & unknown
+  Definition?: z.infer<typeof FunctionDefinitionVersionSchema> & unknown
+  Id?: z.infer<typeof StringSchema> & unknown
+  NextToken?: z.infer<typeof StringSchema> & unknown
+  Version?: z.infer<typeof StringSchema> & unknown
+}
+
+const TagsSchema = z
+  .record(z.string(), StringSchema)
+  .openapi({ description: 'The key-value pair for the resource tag.' })
+  .openapi('Tags')
+
+type CreateFunctionDefinitionRequestType = {
+  InitialVersion?: z.infer<typeof FunctionDefinitionVersionSchema> & unknown
+  Name?: z.infer<typeof StringSchema> & unknown
+  tags?: z.infer<typeof TagsSchema> & unknown
+}
+
+const AssociateRoleToGroupResponseSchema = z
+  .object({
+    AssociatedAt: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the role ARN was associated with the group.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AssociateRoleToGroupResponse')
+
+const BadRequestExceptionSchema = z.any().openapi('BadRequestException')
+
+const InternalServerErrorExceptionSchema = z.any().openapi('InternalServerErrorException')
+
+const AssociateServiceRoleToAccountResponseSchema = z
+  .object({
+    AssociatedAt: StringSchema.exactOptional().openapi({
+      description: 'The time when the service role was associated with the account.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AssociateServiceRoleToAccountResponse')
+
+const CreateConnectorDefinitionResponseSchema = z
+  .object({
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the definition.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the definition was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the definition.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the definition was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the definition.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateConnectorDefinitionResponse')
+
+const ConnectorSchema = z
+  .object({
+    ConnectorArn: StringSchema.openapi({ description: 'The ARN of the connector.' }),
+    Id: StringSchema.openapi({
+      description:
+        'A descriptive or arbitrary ID for the connector. This value must be unique within the connector definition version. Max length is 128 characters with pattern [a-zA-Z0-9:_-]+.',
+    }),
+    Parameters: MapOfStringSchema.exactOptional().openapi({
+      description: 'The parameters or configuration that the connector uses.',
+    }),
+  })
+  .openapi({
+    required: ['ConnectorArn', 'Id'],
+    description:
+      'Information about a connector. Connectors run on the Greengrass core and contain built-in integration with local infrastructure, device protocols, AWS, and other cloud services.',
+  })
+  .openapi('Connector')
+
+const ListOfConnectorSchema = z.array(ConnectorSchema).openapi('ListOfConnector')
+
+const CreateConnectorDefinitionVersionResponseSchema = z
+  .object({
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the version.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the version was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of the parent definition that the version is associated with.',
+    }),
+    Version: StringSchema.exactOptional().openapi({ description: 'The ID of the version.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateConnectorDefinitionVersionResponse')
+
+const CreateCoreDefinitionResponseSchema = z
+  .object({
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the definition.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the definition was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the definition.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the definition was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the definition.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateCoreDefinitionResponse')
+
+const CoreSchema = z
+  .object({
+    CertificateArn: StringSchema.openapi({
+      description: 'The ARN of the certificate associated with the core.',
+    }),
+    Id: StringSchema.openapi({
+      description:
+        "A descriptive or arbitrary ID for the core. This value must be unique within the core definition version. Max length is 128 characters with pattern ''[a-zA-Z0-9:_-]+''.",
+    }),
+    SyncShadow: BooleanSchema.exactOptional().openapi({
+      description: "If true, the core's local shadow is automatically synced with the cloud.",
+    }),
+    ThingArn: StringSchema.openapi({ description: 'The ARN of the thing which is the core.' }),
+  })
+  .openapi({
+    required: ['ThingArn', 'Id', 'CertificateArn'],
+    description: 'Information about a core.',
+  })
+  .openapi('Core')
+
+const ListOfCoreSchema = z.array(CoreSchema).openapi('ListOfCore')
+
+const CreateCoreDefinitionVersionResponseSchema = z
+  .object({
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the version.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the version was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of the parent definition that the version is associated with.',
+    }),
+    Version: StringSchema.exactOptional().openapi({ description: 'The ID of the version.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateCoreDefinitionVersionResponse')
+
+const CreateDeploymentResponseSchema = z
+  .object({
+    DeploymentArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the deployment.',
+    }),
+    DeploymentId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the deployment.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateDeploymentResponse')
+
+const CreateDeviceDefinitionResponseSchema = z
+  .object({
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the definition.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the definition was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the definition.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the definition was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the definition.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateDeviceDefinitionResponse')
+
+const DeviceSchema = z
+  .object({
+    CertificateArn: StringSchema.openapi({
+      description: 'The ARN of the certificate associated with the device.',
+    }),
+    Id: StringSchema.openapi({
+      description:
+        "A descriptive or arbitrary ID for the device. This value must be unique within the device definition version. Max length is 128 characters with pattern ''[a-zA-Z0-9:_-]+''.",
+    }),
+    SyncShadow: BooleanSchema.exactOptional().openapi({
+      description:
+        "If true, the device's local shadow will be automatically synced with the cloud.",
+    }),
+    ThingArn: StringSchema.openapi({ description: 'The thing ARN of the device.' }),
+  })
+  .openapi({
+    required: ['ThingArn', 'Id', 'CertificateArn'],
+    description: 'Information about a device.',
+  })
+  .openapi('Device')
+
+const ListOfDeviceSchema = z.array(DeviceSchema).openapi('ListOfDevice')
+
+const CreateDeviceDefinitionVersionResponseSchema = z
+  .object({
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the version.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the version was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of the parent definition that the version is associated with.',
+    }),
+    Version: StringSchema.exactOptional().openapi({ description: 'The ID of the version.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateDeviceDefinitionVersionResponse')
+
+const CreateFunctionDefinitionResponseSchema = z
+  .object({
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the definition.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the definition was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the definition.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the definition was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the definition.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreateFunctionDefinitionResponse')
+
 const CreateFunctionDefinitionVersionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the version.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in milliseconds since the epoch, when the version was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the parent definition that the version is associated with.',
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the version.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the version.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the version was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of the parent definition that the version is associated with.',
+    }),
+    Version: StringSchema.exactOptional().openapi({ description: 'The ID of the version.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateFunctionDefinitionVersionResponse')
 
 const CreateGroupResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the definition.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the definition.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the definition.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the definition was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the definition.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the definition was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the definition.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateGroupResponse')
 
 const CreateGroupCertificateAuthorityResponseSchema = z
   .object({
-    GroupCertificateAuthorityArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the group certificate authority.' }),
-    ).exactOptional(),
+    GroupCertificateAuthorityArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the group certificate authority.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateGroupCertificateAuthorityResponse')
 
 const CreateGroupVersionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the version.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in milliseconds since the epoch, when the version was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the parent definition that the version is associated with.',
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the version.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the version.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the version was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of the parent definition that the version is associated with.',
+    }),
+    Version: StringSchema.exactOptional().openapi({ description: 'The ID of the version.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateGroupVersionResponse')
 
 const CreateLoggerDefinitionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the definition.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the definition.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the definition.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the definition was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the definition.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the definition was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the definition.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateLoggerDefinitionResponse')
@@ -737,29 +514,19 @@ const LoggerTypeSchema = z.enum(['FileSystem', 'AWSCloudWatch']).openapi('Logger
 
 const LoggerSchema = z
   .object({
-    Component: LoggerComponentSchema.and(
-      z.any().openapi({ description: 'The component that will be subject to logging.' }),
-    ),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A descriptive or arbitrary ID for the logger. This value must be unique within the logger definition version. Max length is 128 characters with pattern ''[a-zA-Z0-9:_-]+''.",
-        }),
-    ),
-    Level: LoggerLevelSchema.and(z.any().openapi({ description: 'The level of the logs.' })),
-    Space: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of file space, in KB, to use if the local file system is used for logging purposes.',
-        }),
-    ).exactOptional(),
-    Type: LoggerTypeSchema.and(
-      z.any().openapi({ description: 'The type of log output which will be used.' }),
-    ),
+    Component: LoggerComponentSchema.openapi({
+      description: 'The component that will be subject to logging.',
+    }),
+    Id: StringSchema.openapi({
+      description:
+        "A descriptive or arbitrary ID for the logger. This value must be unique within the logger definition version. Max length is 128 characters with pattern ''[a-zA-Z0-9:_-]+''.",
+    }),
+    Level: LoggerLevelSchema.openapi({ description: 'The level of the logs.' }),
+    Space: IntegerSchema.exactOptional().openapi({
+      description:
+        'The amount of file space, in KB, to use if the local file system is used for logging purposes.',
+    }),
+    Type: LoggerTypeSchema.openapi({ description: 'The type of log output which will be used.' }),
   })
   .openapi({
     required: ['Type', 'Level', 'Id', 'Component'],
@@ -771,157 +538,94 @@ const ListOfLoggerSchema = z.array(LoggerSchema).openapi('ListOfLogger')
 
 const CreateLoggerDefinitionVersionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the version.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in milliseconds since the epoch, when the version was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the parent definition that the version is associated with.',
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the version.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the version.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the version was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of the parent definition that the version is associated with.',
+    }),
+    Version: StringSchema.exactOptional().openapi({ description: 'The ID of the version.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateLoggerDefinitionVersionResponse')
 
 const CreateResourceDefinitionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the definition.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the definition.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the definition.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the definition was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the definition.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the definition was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the definition.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateResourceDefinitionResponse')
 
 const GroupOwnerSettingSchema = z
   .object({
-    AutoAddGroupOwner: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If true, AWS IoT Greengrass automatically adds the specified Linux OS group owner of the resource to the Lambda process privileges. Thus the Lambda process will have the file access permissions of the added Linux group.',
-        }),
-    ).exactOptional(),
-    GroupOwner: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Linux OS group whose privileges will be added to the Lambda process. This field is optional.',
-        }),
-    ).exactOptional(),
+    AutoAddGroupOwner: BooleanSchema.exactOptional().openapi({
+      description:
+        'If true, AWS IoT Greengrass automatically adds the specified Linux OS group owner of the resource to the Lambda process privileges. Thus the Lambda process will have the file access permissions of the added Linux group.',
+    }),
+    GroupOwner: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the Linux OS group whose privileges will be added to the Lambda process. This field is optional.',
+    }),
   })
   .openapi({ description: 'Group owner related settings for local resources.', required: [] })
   .openapi('GroupOwnerSetting')
 
 const LocalDeviceResourceDataSchema = z
   .object({
-    GroupOwnerSetting: GroupOwnerSettingSchema.and(
-      z.any().openapi({ description: 'Group/owner related settings for local resources.' }),
-    ).exactOptional(),
-    SourcePath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The local absolute path of the device resource. The source path for a device resource can refer only to a character device or block device under ''/dev''.",
-        }),
-    ).exactOptional(),
+    GroupOwnerSetting: GroupOwnerSettingSchema.exactOptional().openapi({
+      description: 'Group/owner related settings for local resources.',
+    }),
+    SourcePath: StringSchema.exactOptional().openapi({
+      description:
+        "The local absolute path of the device resource. The source path for a device resource can refer only to a character device or block device under ''/dev''.",
+    }),
   })
   .openapi({ description: 'Attributes that define a local device resource.', required: [] })
   .openapi('LocalDeviceResourceData')
 
 const LocalVolumeResourceDataSchema = z
   .object({
-    DestinationPath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The absolute local path of the resource inside the Lambda environment.',
-        }),
-    ).exactOptional(),
-    GroupOwnerSetting: GroupOwnerSettingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Allows you to configure additional group privileges for the Lambda process. This field is optional.',
-        }),
-    ).exactOptional(),
-    SourcePath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The local absolute path of the volume resource on the host. The source path for a volume resource type cannot start with ''/sys''.",
-        }),
-    ).exactOptional(),
+    DestinationPath: StringSchema.exactOptional().openapi({
+      description: 'The absolute local path of the resource inside the Lambda environment.',
+    }),
+    GroupOwnerSetting: GroupOwnerSettingSchema.exactOptional().openapi({
+      description:
+        'Allows you to configure additional group privileges for the Lambda process. This field is optional.',
+    }),
+    SourcePath: StringSchema.exactOptional().openapi({
+      description:
+        "The local absolute path of the volume resource on the host. The source path for a volume resource type cannot start with ''/sys''.",
+    }),
   })
   .openapi({ description: 'Attributes that define a local volume resource.', required: [] })
   .openapi('LocalVolumeResourceData')
 
 const ResourceDownloadOwnerSettingSchema = z
   .object({
-    GroupOwner: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The group owner of the resource. This is the name of an existing Linux OS group on the system or a GID. The group's permissions are added to the Lambda process.",
-        }),
-    ),
-    GroupPermission: PermissionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The permissions that the group owner has to the resource. Valid values are ''rw'' (read/write) or ''ro'' (read-only).",
-        }),
-    ),
+    GroupOwner: StringSchema.openapi({
+      description:
+        "The group owner of the resource. This is the name of an existing Linux OS group on the system or a GID. The group's permissions are added to the Lambda process.",
+    }),
+    GroupPermission: PermissionSchema.openapi({
+      description:
+        "The permissions that the group owner has to the resource. Valid values are ''rw'' (read/write) or ''ro'' (read-only).",
+    }),
   })
   .openapi({
     required: ['GroupOwner', 'GroupPermission'],
@@ -931,22 +635,14 @@ const ResourceDownloadOwnerSettingSchema = z
 
 const S3MachineLearningModelResourceDataSchema = z
   .object({
-    DestinationPath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The absolute local path of the resource inside the Lambda environment.',
-        }),
-    ).exactOptional(),
+    DestinationPath: StringSchema.exactOptional().openapi({
+      description: 'The absolute local path of the resource inside the Lambda environment.',
+    }),
     OwnerSetting: ResourceDownloadOwnerSettingSchema.exactOptional(),
-    S3Uri: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URI of the source model in an S3 bucket. The model package must be in tar.gz or .zip format.',
-        }),
-    ).exactOptional(),
+    S3Uri: StringSchema.exactOptional().openapi({
+      description:
+        'The URI of the source model in an S3 bucket. The model package must be in tar.gz or .zip format.',
+    }),
   })
   .openapi({
     description: 'Attributes that define an Amazon S3 machine learning resource.',
@@ -956,22 +652,13 @@ const S3MachineLearningModelResourceDataSchema = z
 
 const SageMakerMachineLearningModelResourceDataSchema = z
   .object({
-    DestinationPath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The absolute local path of the resource inside the Lambda environment.',
-        }),
-    ).exactOptional(),
+    DestinationPath: StringSchema.exactOptional().openapi({
+      description: 'The absolute local path of the resource inside the Lambda environment.',
+    }),
     OwnerSetting: ResourceDownloadOwnerSettingSchema.exactOptional(),
-    SageMakerJobArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Amazon SageMaker training job that represents the source model.',
-        }),
-    ).exactOptional(),
+    SageMakerJobArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the Amazon SageMaker training job that represents the source model.',
+    }),
   })
   .openapi({
     description: 'Attributes that define an Amazon SageMaker machine learning resource.',
@@ -983,22 +670,14 @@ const ListOfStringSchema = z.array(StringSchema).openapi('ListOfString')
 
 const SecretsManagerSecretResourceDataSchema = z
   .object({
-    ARN: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ARN of the Secrets Manager secret to make available on the core. The value of the secret's latest version (represented by the ''AWSCURRENT'' staging label) is included by default.",
-        }),
-    ).exactOptional(),
-    AdditionalStagingLabelsToDownload: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Optional. The staging labels whose values you want to make available on the core, in addition to ''AWSCURRENT''.",
-        }),
-    ).exactOptional(),
+    ARN: StringSchema.exactOptional().openapi({
+      description:
+        "The ARN of the Secrets Manager secret to make available on the core. The value of the secret's latest version (represented by the ''AWSCURRENT'' staging label) is included by default.",
+    }),
+    AdditionalStagingLabelsToDownload: ListOfStringSchema.exactOptional().openapi({
+      description:
+        "Optional. The staging labels whose values you want to make available on the core, in addition to ''AWSCURRENT''.",
+    }),
   })
   .openapi({
     description:
@@ -1009,32 +688,25 @@ const SecretsManagerSecretResourceDataSchema = z
 
 const ResourceDataContainerSchema = z
   .object({
-    LocalDeviceResourceData: LocalDeviceResourceDataSchema.and(
-      z.any().openapi({ description: 'Attributes that define the local device resource.' }),
-    ).exactOptional(),
-    LocalVolumeResourceData: LocalVolumeResourceDataSchema.and(
-      z.any().openapi({ description: 'Attributes that define the local volume resource.' }),
-    ).exactOptional(),
-    S3MachineLearningModelResourceData: S3MachineLearningModelResourceDataSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Attributes that define an Amazon S3 machine learning resource.' }),
-    ).exactOptional(),
-    SageMakerMachineLearningModelResourceData: SageMakerMachineLearningModelResourceDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Attributes that define an Amazon SageMaker machine learning resource.',
-        }),
-    ).exactOptional(),
-    SecretsManagerSecretResourceData: SecretsManagerSecretResourceDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Attributes that define a secret resource, which references a secret from AWS Secrets Manager.',
-        }),
-    ).exactOptional(),
+    LocalDeviceResourceData: LocalDeviceResourceDataSchema.exactOptional().openapi({
+      description: 'Attributes that define the local device resource.',
+    }),
+    LocalVolumeResourceData: LocalVolumeResourceDataSchema.exactOptional().openapi({
+      description: 'Attributes that define the local volume resource.',
+    }),
+    S3MachineLearningModelResourceData:
+      S3MachineLearningModelResourceDataSchema.exactOptional().openapi({
+        description: 'Attributes that define an Amazon S3 machine learning resource.',
+      }),
+    SageMakerMachineLearningModelResourceData:
+      SageMakerMachineLearningModelResourceDataSchema.exactOptional().openapi({
+        description: 'Attributes that define an Amazon SageMaker machine learning resource.',
+      }),
+    SecretsManagerSecretResourceData:
+      SecretsManagerSecretResourceDataSchema.exactOptional().openapi({
+        description:
+          'Attributes that define a secret resource, which references a secret from AWS Secrets Manager.',
+      }),
   })
   .openapi({
     description:
@@ -1045,25 +717,17 @@ const ResourceDataContainerSchema = z
 
 const ResourceSchema = z
   .object({
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The resource ID, used to refer to a resource in the Lambda function configuration. Max length is 128 characters with pattern ''[a-zA-Z0-9:_-]+''. This must be unique within a Greengrass group.",
-        }),
-    ),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The descriptive resource name, which is displayed on the AWS IoT Greengrass console. Max length 128 characters with pattern ''[a-zA-Z0-9:_-]+''. This must be unique within a Greengrass group.",
-        }),
-    ),
-    ResourceDataContainer: ResourceDataContainerSchema.and(
-      z.any().openapi({ description: 'A container of data for all resource types.' }),
-    ),
+    Id: StringSchema.openapi({
+      description:
+        "The resource ID, used to refer to a resource in the Lambda function configuration. Max length is 128 characters with pattern ''[a-zA-Z0-9:_-]+''. This must be unique within a Greengrass group.",
+    }),
+    Name: StringSchema.openapi({
+      description:
+        "The descriptive resource name, which is displayed on the AWS IoT Greengrass console. Max length 128 characters with pattern ''[a-zA-Z0-9:_-]+''. This must be unique within a Greengrass group.",
+    }),
+    ResourceDataContainer: ResourceDataContainerSchema.openapi({
+      description: 'A container of data for all resource types.',
+    }),
   })
   .openapi({
     required: ['ResourceDataContainer', 'Id', 'Name'],
@@ -1075,119 +739,70 @@ const ListOfResourceSchema = z.array(ResourceSchema).openapi('ListOfResource')
 
 const CreateResourceDefinitionVersionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the version.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in milliseconds since the epoch, when the version was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the parent definition that the version is associated with.',
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the version.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the version.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the version was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of the parent definition that the version is associated with.',
+    }),
+    Version: StringSchema.exactOptional().openapi({ description: 'The ID of the version.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateResourceDefinitionVersionResponse')
 
 const CreateSoftwareUpdateJobResponseSchema = z
   .object({
-    IotJobArn: StringSchema.and(
-      z.any().openapi({ description: 'The IoT Job ARN corresponding to this update.' }),
-    ).exactOptional(),
-    IotJobId: StringSchema.and(
-      z.any().openapi({ description: 'The IoT Job Id corresponding to this update.' }),
-    ).exactOptional(),
-    PlatformSoftwareVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The software version installed on the device or devices after the update.',
-        }),
-    ).exactOptional(),
+    IotJobArn: StringSchema.exactOptional().openapi({
+      description: 'The IoT Job ARN corresponding to this update.',
+    }),
+    IotJobId: StringSchema.exactOptional().openapi({
+      description: 'The IoT Job Id corresponding to this update.',
+    }),
+    PlatformSoftwareVersion: StringSchema.exactOptional().openapi({
+      description: 'The software version installed on the device or devices after the update.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateSoftwareUpdateJobResponse')
 
 const CreateSubscriptionDefinitionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the definition.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the definition.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the definition.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the definition was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the definition.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the definition was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the definition.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateSubscriptionDefinitionResponse')
 
 const SubscriptionSchema = z
   .object({
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A descriptive or arbitrary ID for the subscription. This value must be unique within the subscription definition version. Max length is 128 characters with pattern ''[a-zA-Z0-9:_-]+''.",
-        }),
-    ),
-    Source: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The source of the subscription. Can be a thing ARN, a Lambda function ARN, a connector ARN, 'cloud' (which represents the AWS IoT cloud), or 'GGShadowService'.",
-        }),
-    ),
-    Subject: StringSchema.and(
-      z.any().openapi({ description: 'The MQTT topic used to route the message.' }),
-    ),
-    Target: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Where the message is sent to. Can be a thing ARN, a Lambda function ARN, a connector ARN, 'cloud' (which represents the AWS IoT cloud), or 'GGShadowService'.",
-        }),
-    ),
+    Id: StringSchema.openapi({
+      description:
+        "A descriptive or arbitrary ID for the subscription. This value must be unique within the subscription definition version. Max length is 128 characters with pattern ''[a-zA-Z0-9:_-]+''.",
+    }),
+    Source: StringSchema.openapi({
+      description:
+        "The source of the subscription. Can be a thing ARN, a Lambda function ARN, a connector ARN, 'cloud' (which represents the AWS IoT cloud), or 'GGShadowService'.",
+    }),
+    Subject: StringSchema.openapi({ description: 'The MQTT topic used to route the message.' }),
+    Target: StringSchema.openapi({
+      description:
+        "Where the message is sent to. Can be a thing ARN, a Lambda function ARN, a connector ARN, 'cloud' (which represents the AWS IoT cloud), or 'GGShadowService'.",
+    }),
   })
   .openapi({
     required: ['Target', 'Id', 'Subject', 'Source'],
@@ -1199,119 +814,91 @@ const ListOfSubscriptionSchema = z.array(SubscriptionSchema).openapi('ListOfSubs
 
 const CreateSubscriptionDefinitionVersionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the version.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in milliseconds since the epoch, when the version was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the parent definition that the version is associated with.',
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the version.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the version.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the version was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of the parent definition that the version is associated with.',
+    }),
+    Version: StringSchema.exactOptional().openapi({ description: 'The ID of the version.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateSubscriptionDefinitionVersionResponse')
 
 const DeleteConnectorDefinitionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteConnectorDefinitionResponse')
 
-const DeleteCoreDefinitionResponseSchema = z.object({}).openapi('DeleteCoreDefinitionResponse')
+const DeleteCoreDefinitionResponseSchema = z.looseObject({}).openapi('DeleteCoreDefinitionResponse')
 
-const DeleteDeviceDefinitionResponseSchema = z.object({}).openapi('DeleteDeviceDefinitionResponse')
+const DeleteDeviceDefinitionResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteDeviceDefinitionResponse')
 
 const DeleteFunctionDefinitionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteFunctionDefinitionResponse')
 
-const DeleteGroupResponseSchema = z.object({}).openapi('DeleteGroupResponse')
+const DeleteGroupResponseSchema = z.looseObject({}).openapi('DeleteGroupResponse')
 
-const DeleteLoggerDefinitionResponseSchema = z.object({}).openapi('DeleteLoggerDefinitionResponse')
+const DeleteLoggerDefinitionResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteLoggerDefinitionResponse')
 
 const DeleteResourceDefinitionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteResourceDefinitionResponse')
 
 const DeleteSubscriptionDefinitionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteSubscriptionDefinitionResponse')
 
 const DisassociateRoleFromGroupResponseSchema = z
   .object({
-    DisassociatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the role was disassociated from the group.',
-        }),
-    ).exactOptional(),
+    DisassociatedAt: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the role was disassociated from the group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateRoleFromGroupResponse')
 
 const DisassociateServiceRoleFromAccountResponseSchema = z
   .object({
-    DisassociatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the service role was disassociated from the account.',
-        }),
-    ).exactOptional(),
+    DisassociatedAt: StringSchema.exactOptional().openapi({
+      description: 'The time when the service role was disassociated from the account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateServiceRoleFromAccountResponse')
 
 const GetAssociatedRoleResponseSchema = z
   .object({
-    AssociatedAt: StringSchema.and(
-      z.any().openapi({ description: 'The time when the role was associated with the group.' }),
-    ).exactOptional(),
-    RoleArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the role that is associated with the group.' }),
-    ).exactOptional(),
+    AssociatedAt: StringSchema.exactOptional().openapi({
+      description: 'The time when the role was associated with the group.',
+    }),
+    RoleArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the role that is associated with the group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAssociatedRoleResponse')
 
 const BulkDeploymentMetricsSchema = z
   .object({
-    InvalidInputRecords: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The total number of records that returned a non-retryable error. For example, this can occur if a group record from the input file uses an invalid format or specifies a nonexistent group version, or if the execution role doesn't grant permission to deploy a group or group version.",
-        }),
-    ).exactOptional(),
-    RecordsProcessed: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of group records from the input file that have been processed so far, or attempted.',
-        }),
-    ).exactOptional(),
-    RetryAttempts: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The total number of deployment attempts that returned a retryable error. For example, a retry is triggered if the attempt to deploy a group returns a throttling error. ''StartBulkDeployment'' retries a group deployment up to five times.",
-        }),
-    ).exactOptional(),
+    InvalidInputRecords: IntegerSchema.exactOptional().openapi({
+      description:
+        "The total number of records that returned a non-retryable error. For example, this can occur if a group record from the input file uses an invalid format or specifies a nonexistent group version, or if the execution role doesn't grant permission to deploy a group or group version.",
+    }),
+    RecordsProcessed: IntegerSchema.exactOptional().openapi({
+      description:
+        'The total number of group records from the input file that have been processed so far, or attempted.',
+    }),
+    RetryAttempts: IntegerSchema.exactOptional().openapi({
+      description:
+        "The total number of deployment attempts that returned a retryable error. For example, a retry is triggered if the attempt to deploy a group returns a throttling error. ''StartBulkDeployment'' retries a group deployment up to five times.",
+    }),
   })
   .openapi({
     description: 'Relevant metrics on input records processed during bulk deployment.',
@@ -1326,12 +913,12 @@ const BulkDeploymentStatusSchema = z
 
 const ErrorDetailSchema = z
   .object({
-    DetailedErrorCode: StringSchema.and(
-      z.any().openapi({ description: 'A detailed error code.' }),
-    ).exactOptional(),
-    DetailedErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'A detailed error message.' }),
-    ).exactOptional(),
+    DetailedErrorCode: StringSchema.exactOptional().openapi({
+      description: 'A detailed error code.',
+    }),
+    DetailedErrorMessage: StringSchema.exactOptional().openapi({
+      description: 'A detailed error message.',
+    }),
   })
   .openapi({ description: 'Details about the error.', required: [] })
   .openapi('ErrorDetail')
@@ -1341,57 +928,38 @@ const ErrorDetailsSchema = z
   .openapi({ description: 'A list of error details.' })
   .openapi('ErrorDetails')
 
-const TagsSchema = z
-  .record(z.string(), StringSchema)
-  .openapi({ description: 'The key-value pair for the resource tag.' })
-  .openapi('Tags')
-
 const GetBulkDeploymentStatusResponseSchema = z
   .object({
-    BulkDeploymentMetrics: BulkDeploymentMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Relevant metrics on input records processed during bulk deployment.',
-        }),
-    ).exactOptional(),
-    BulkDeploymentStatus: BulkDeploymentStatusSchema.and(
-      z.any().openapi({ description: 'The status of the bulk deployment.' }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z.any().openapi({ description: 'The time, in ISO format, when the deployment was created.' }),
-    ).exactOptional(),
-    ErrorDetails: ErrorDetailsSchema.and(
-      z.any().openapi({ description: 'Error details' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'Error message' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) attached to the resource arn.' }),
-    ).exactOptional(),
+    BulkDeploymentMetrics: BulkDeploymentMetricsSchema.exactOptional().openapi({
+      description: 'Relevant metrics on input records processed during bulk deployment.',
+    }),
+    BulkDeploymentStatus: BulkDeploymentStatusSchema.exactOptional().openapi({
+      description: 'The status of the bulk deployment.',
+    }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      description: 'The time, in ISO format, when the deployment was created.',
+    }),
+    ErrorDetails: ErrorDetailsSchema.exactOptional().openapi({ description: 'Error details' }),
+    ErrorMessage: StringSchema.exactOptional().openapi({ description: 'Error message' }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'Tag(s) attached to the resource arn.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBulkDeploymentStatusResponse')
 
 const ConnectivityInfoSchema = z
   .object({
-    HostAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The endpoint for the Greengrass core. Can be an IP address or DNS.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the connectivity information.' }),
-    ).exactOptional(),
-    Metadata: StringSchema.and(
-      z.any().openapi({ description: 'Metadata for this endpoint.' }),
-    ).exactOptional(),
-    PortNumber: IntegerSchema.and(
-      z.any().openapi({ description: 'The port of the Greengrass core. Usually 8883.' }),
-    ).exactOptional(),
+    HostAddress: StringSchema.exactOptional().openapi({
+      description: 'The endpoint for the Greengrass core. Can be an IP address or DNS.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of the connectivity information.',
+    }),
+    Metadata: StringSchema.exactOptional().openapi({ description: 'Metadata for this endpoint.' }),
+    PortNumber: IntegerSchema.exactOptional().openapi({
+      description: 'The port of the Greengrass core. Usually 8883.',
+    }),
   })
   .openapi({ description: "Information about a Greengrass core's connectivity.", required: [] })
   .openapi('ConnectivityInfo')
@@ -1402,75 +970,48 @@ const ListOfConnectivityInfoSchema = z
 
 const GetConnectivityInfoResponseSchema = z
   .object({
-    ConnectivityInfo: ListOfConnectivityInfoSchema.and(
-      z.any().openapi({ description: 'Connectivity info list.' }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'message' },
-          description: 'A message about the connectivity info request.',
-        }),
-    ).exactOptional(),
+    ConnectivityInfo: ListOfConnectivityInfoSchema.exactOptional().openapi({
+      description: 'Connectivity info list.',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      xml: { name: 'message' },
+      description: 'A message about the connectivity info request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetConnectivityInfoResponse')
 
 const GetConnectorDefinitionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the definition.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the definition.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) attached to the resource arn.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the definition.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the definition was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the definition.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the definition was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the definition.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'Tag(s) attached to the resource arn.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetConnectorDefinitionResponse')
 
 const ConnectorDefinitionVersionSchema = z
   .object({
-    Connectors: ListOfConnectorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of references to connectors in this version, with their corresponding configuration settings.',
-        }),
-    ).exactOptional(),
+    Connectors: ListOfConnectorSchema.exactOptional().openapi({
+      description:
+        'A list of references to connectors in this version, with their corresponding configuration settings.',
+    }),
   })
   .openapi({
     description:
@@ -1481,121 +1022,86 @@ const ConnectorDefinitionVersionSchema = z
 
 const GetConnectorDefinitionVersionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the connector definition version.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the connector definition version was created.',
-        }),
-    ).exactOptional(),
-    Definition: ConnectorDefinitionVersionSchema.and(
-      z.any().openapi({ description: 'Information about the connector definition version.' }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the connector definition version.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The version of the connector definition version.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the connector definition version.',
+    }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the connector definition version was created.',
+    }),
+    Definition: ConnectorDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Information about the connector definition version.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of the connector definition version.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
+    Version: StringSchema.exactOptional().openapi({
+      description: 'The version of the connector definition version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetConnectorDefinitionVersionResponse')
 
 const GetCoreDefinitionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the definition.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the definition.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) attached to the resource arn.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the definition.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the definition was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the definition.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the definition was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the definition.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'Tag(s) attached to the resource arn.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCoreDefinitionResponse')
 
 const CoreDefinitionVersionSchema = z
   .object({
-    Cores: ListOfCoreSchema.and(
-      z.any().openapi({ description: 'A list of cores in the core definition version.' }),
-    ).exactOptional(),
+    Cores: ListOfCoreSchema.exactOptional().openapi({
+      description: 'A list of cores in the core definition version.',
+    }),
   })
   .openapi({ description: 'Information about a core definition version.', required: [] })
   .openapi('CoreDefinitionVersion')
 
 const GetCoreDefinitionVersionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the core definition version.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the core definition version was created.',
-        }),
-    ).exactOptional(),
-    Definition: CoreDefinitionVersionSchema.and(
-      z.any().openapi({ description: 'Information about the core definition version.' }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the core definition version.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The version of the core definition version.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the core definition version.',
+    }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the core definition version was created.',
+    }),
+    Definition: CoreDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Information about the core definition version.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of the core definition version.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
+    Version: StringSchema.exactOptional().openapi({
+      description: 'The version of the core definition version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCoreDefinitionVersionResponse')
@@ -1610,623 +1116,413 @@ const DeploymentTypeSchema = z
 
 const GetDeploymentStatusResponseSchema = z
   .object({
-    DeploymentStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The status of the deployment: ''InProgress'', ''Building'', ''Success'', or ''Failure''.",
-        }),
-    ).exactOptional(),
-    DeploymentType: DeploymentTypeSchema.and(
-      z.any().openapi({ description: 'The type of the deployment.' }),
-    ).exactOptional(),
-    ErrorDetails: ErrorDetailsSchema.and(
-      z.any().openapi({ description: 'Error details' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'Error message' }),
-    ).exactOptional(),
-    UpdatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the deployment status was updated.',
-        }),
-    ).exactOptional(),
+    DeploymentStatus: StringSchema.exactOptional().openapi({
+      description:
+        "The status of the deployment: ''InProgress'', ''Building'', ''Success'', or ''Failure''.",
+    }),
+    DeploymentType: DeploymentTypeSchema.exactOptional().openapi({
+      description: 'The type of the deployment.',
+    }),
+    ErrorDetails: ErrorDetailsSchema.exactOptional().openapi({ description: 'Error details' }),
+    ErrorMessage: StringSchema.exactOptional().openapi({ description: 'Error message' }),
+    UpdatedAt: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the deployment status was updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDeploymentStatusResponse')
 
 const GetDeviceDefinitionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the definition.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the definition.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) attached to the resource arn.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the definition.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the definition was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the definition.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the definition was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the definition.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'Tag(s) attached to the resource arn.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDeviceDefinitionResponse')
 
 const DeviceDefinitionVersionSchema = z
   .object({
-    Devices: ListOfDeviceSchema.and(
-      z.any().openapi({ description: 'A list of devices in the definition version.' }),
-    ).exactOptional(),
+    Devices: ListOfDeviceSchema.exactOptional().openapi({
+      description: 'A list of devices in the definition version.',
+    }),
   })
   .openapi({ description: 'Information about a device definition version.', required: [] })
   .openapi('DeviceDefinitionVersion')
 
 const GetDeviceDefinitionVersionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the device definition version.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the device definition version was created.',
-        }),
-    ).exactOptional(),
-    Definition: DeviceDefinitionVersionSchema.and(
-      z.any().openapi({ description: 'Information about the device definition version.' }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the device definition version.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The version of the device definition version.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the device definition version.',
+    }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the device definition version was created.',
+    }),
+    Definition: DeviceDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Information about the device definition version.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of the device definition version.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
+    Version: StringSchema.exactOptional().openapi({
+      description: 'The version of the device definition version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDeviceDefinitionVersionResponse')
 
 const GetFunctionDefinitionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the definition.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the definition.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) attached to the resource arn.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the definition.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the definition was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the definition.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the definition was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the definition.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'Tag(s) attached to the resource arn.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetFunctionDefinitionResponse')
 
-const FunctionDefinitionVersionSchema = z
-  .object({
-    DefaultConfig: FunctionDefaultConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default configuration that applies to all Lambda functions in this function definition version. Individual Lambda functions can override these settings.',
-        }),
-    ).exactOptional(),
-    Functions: ListOfFunctionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of Lambda functions in this function definition version.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about a function definition version.', required: [] })
-  .openapi('FunctionDefinitionVersion')
-
-const GetFunctionDefinitionVersionResponseSchema = z
-  .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the function definition version.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the function definition version was created.',
-        }),
-    ).exactOptional(),
-    Definition: FunctionDefinitionVersionSchema.and(
-      z.any().openapi({ description: 'Information on the definition.' }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the function definition version.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The version of the function definition version.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GetFunctionDefinitionVersionResponse')
+const GetFunctionDefinitionVersionResponseSchema: z.ZodType<GetFunctionDefinitionVersionResponseType> =
+  z
+    .object({
+      Arn: StringSchema.exactOptional().openapi({
+        description: 'The ARN of the function definition version.',
+      }),
+      CreationTimestamp: StringSchema.exactOptional().openapi({
+        description:
+          'The time, in milliseconds since the epoch, when the function definition version was created.',
+      }),
+      Definition: FunctionDefinitionVersionSchema.exactOptional().openapi({
+        description: 'Information on the definition.',
+      }),
+      Id: StringSchema.exactOptional().openapi({
+        description: 'The ID of the function definition version.',
+      }),
+      NextToken: StringSchema.exactOptional().openapi({
+        description:
+          "The token for the next set of results, or ''null'' if there are no additional results.",
+      }),
+      Version: StringSchema.exactOptional().openapi({
+        description: 'The version of the function definition version.',
+      }),
+    })
+    .openapi({ required: [] })
+    .openapi('GetFunctionDefinitionVersionResponse')
 
 const GetGroupResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the definition.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the definition.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) attached to the resource arn.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the definition.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the definition was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the definition.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the definition was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the definition.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'Tag(s) attached to the resource arn.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetGroupResponse')
 
 const GetGroupCertificateAuthorityResponseSchema = z
   .object({
-    GroupCertificateAuthorityArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the certificate authority for the group.' }),
-    ).exactOptional(),
-    GroupCertificateAuthorityId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the certificate authority for the group.' }),
-    ).exactOptional(),
-    PemEncodedCertificate: StringSchema.and(
-      z.any().openapi({ description: 'The PEM encoded certificate for the group.' }),
-    ).exactOptional(),
+    GroupCertificateAuthorityArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the certificate authority for the group.',
+    }),
+    GroupCertificateAuthorityId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the certificate authority for the group.',
+    }),
+    PemEncodedCertificate: StringSchema.exactOptional().openapi({
+      description: 'The PEM encoded certificate for the group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetGroupCertificateAuthorityResponse')
 
 const GetGroupCertificateConfigurationResponseSchema = z
   .object({
-    CertificateAuthorityExpiryInMilliseconds: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time remaining before the certificate authority expires, in milliseconds.',
-        }),
-    ).exactOptional(),
-    CertificateExpiryInMilliseconds: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time remaining before the certificate expires, in milliseconds.',
-        }),
-    ).exactOptional(),
-    GroupId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the group certificate configuration.' }),
-    ).exactOptional(),
+    CertificateAuthorityExpiryInMilliseconds: StringSchema.exactOptional().openapi({
+      description:
+        'The amount of time remaining before the certificate authority expires, in milliseconds.',
+    }),
+    CertificateExpiryInMilliseconds: StringSchema.exactOptional().openapi({
+      description: 'The amount of time remaining before the certificate expires, in milliseconds.',
+    }),
+    GroupId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the group certificate configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetGroupCertificateConfigurationResponse')
 
 const GroupVersionSchema = z
   .object({
-    ConnectorDefinitionVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the connector definition version for this group.' }),
-    ).exactOptional(),
-    CoreDefinitionVersionArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the core definition version for this group.' }),
-    ).exactOptional(),
-    DeviceDefinitionVersionArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the device definition version for this group.' }),
-    ).exactOptional(),
-    FunctionDefinitionVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the function definition version for this group.' }),
-    ).exactOptional(),
-    LoggerDefinitionVersionArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the logger definition version for this group.' }),
-    ).exactOptional(),
-    ResourceDefinitionVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the resource definition version for this group.' }),
-    ).exactOptional(),
-    SubscriptionDefinitionVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the subscription definition version for this group.' }),
-    ).exactOptional(),
+    ConnectorDefinitionVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the connector definition version for this group.',
+    }),
+    CoreDefinitionVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the core definition version for this group.',
+    }),
+    DeviceDefinitionVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the device definition version for this group.',
+    }),
+    FunctionDefinitionVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the function definition version for this group.',
+    }),
+    LoggerDefinitionVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the logger definition version for this group.',
+    }),
+    ResourceDefinitionVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the resource definition version for this group.',
+    }),
+    SubscriptionDefinitionVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the subscription definition version for this group.',
+    }),
   })
   .openapi({ description: 'Information about a group version.', required: [] })
   .openapi('GroupVersion')
 
 const GetGroupVersionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the group version.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the group version was created.',
-        }),
-    ).exactOptional(),
-    Definition: GroupVersionSchema.and(
-      z.any().openapi({ description: 'Information about the group version definition.' }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the group that the version is associated with.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the group version.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the group version.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the group version was created.',
+    }),
+    Definition: GroupVersionSchema.exactOptional().openapi({
+      description: 'Information about the group version definition.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of the group that the version is associated with.',
+    }),
+    Version: StringSchema.exactOptional().openapi({ description: 'The ID of the group version.' }),
   })
   .openapi({ required: [] })
   .openapi('GetGroupVersionResponse')
 
 const GetLoggerDefinitionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the definition.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the definition.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) attached to the resource arn.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the definition.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the definition was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the definition.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the definition was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the definition.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'Tag(s) attached to the resource arn.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLoggerDefinitionResponse')
 
 const LoggerDefinitionVersionSchema = z
   .object({
-    Loggers: ListOfLoggerSchema.and(
-      z.any().openapi({ description: 'A list of loggers.' }),
-    ).exactOptional(),
+    Loggers: ListOfLoggerSchema.exactOptional().openapi({ description: 'A list of loggers.' }),
   })
   .openapi({ description: 'Information about a logger definition version.', required: [] })
   .openapi('LoggerDefinitionVersion')
 
 const GetLoggerDefinitionVersionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the logger definition version.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the logger definition version was created.',
-        }),
-    ).exactOptional(),
-    Definition: LoggerDefinitionVersionSchema.and(
-      z.any().openapi({ description: 'Information about the logger definition version.' }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the logger definition version.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The version of the logger definition version.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the logger definition version.',
+    }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the logger definition version was created.',
+    }),
+    Definition: LoggerDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Information about the logger definition version.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of the logger definition version.',
+    }),
+    Version: StringSchema.exactOptional().openapi({
+      description: 'The version of the logger definition version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLoggerDefinitionVersionResponse')
 
 const GetResourceDefinitionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the definition.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the definition.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) attached to the resource arn.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the definition.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the definition was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the definition.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the definition was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the definition.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'Tag(s) attached to the resource arn.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResourceDefinitionResponse')
 
 const ResourceDefinitionVersionSchema = z
   .object({
-    Resources: ListOfResourceSchema.and(
-      z.any().openapi({ description: 'A list of resources.' }),
-    ).exactOptional(),
+    Resources: ListOfResourceSchema.exactOptional().openapi({
+      description: 'A list of resources.',
+    }),
   })
   .openapi({ description: 'Information about a resource definition version.', required: [] })
   .openapi('ResourceDefinitionVersion')
 
 const GetResourceDefinitionVersionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'Arn of the resource definition version.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the resource definition version was created.',
-        }),
-    ).exactOptional(),
-    Definition: ResourceDefinitionVersionSchema.and(
-      z.any().openapi({ description: 'Information about the definition.' }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the resource definition version.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The version of the resource definition version.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'Arn of the resource definition version.',
+    }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the resource definition version was created.',
+    }),
+    Definition: ResourceDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Information about the definition.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of the resource definition version.',
+    }),
+    Version: StringSchema.exactOptional().openapi({
+      description: 'The version of the resource definition version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResourceDefinitionVersionResponse')
 
 const GetServiceRoleForAccountResponseSchema = z
   .object({
-    AssociatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the service role was associated with the account.',
-        }),
-    ).exactOptional(),
-    RoleArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the role which is associated with the account.' }),
-    ).exactOptional(),
+    AssociatedAt: StringSchema.exactOptional().openapi({
+      description: 'The time when the service role was associated with the account.',
+    }),
+    RoleArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the role which is associated with the account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetServiceRoleForAccountResponse')
 
 const GetSubscriptionDefinitionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the definition.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the definition.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) attached to the resource arn.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the definition.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the definition was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the definition.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the definition was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the definition.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'Tag(s) attached to the resource arn.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSubscriptionDefinitionResponse')
 
 const SubscriptionDefinitionVersionSchema = z
   .object({
-    Subscriptions: ListOfSubscriptionSchema.and(
-      z.any().openapi({ description: 'A list of subscriptions.' }),
-    ).exactOptional(),
+    Subscriptions: ListOfSubscriptionSchema.exactOptional().openapi({
+      description: 'A list of subscriptions.',
+    }),
   })
   .openapi({ description: 'Information about a subscription definition version.', required: [] })
   .openapi('SubscriptionDefinitionVersion')
 
 const GetSubscriptionDefinitionVersionResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the subscription definition version.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the subscription definition version was created.',
-        }),
-    ).exactOptional(),
-    Definition: SubscriptionDefinitionVersionSchema.and(
-      z.any().openapi({ description: 'Information about the subscription definition version.' }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the subscription definition version.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The version of the subscription definition version.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the subscription definition version.',
+    }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the subscription definition version was created.',
+    }),
+    Definition: SubscriptionDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Information about the subscription definition version.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of the subscription definition version.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
+    Version: StringSchema.exactOptional().openapi({
+      description: 'The version of the subscription definition version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSubscriptionDefinitionVersionResponse')
@@ -2239,17 +1535,11 @@ const TelemetrySchema = z.enum(['On', 'Off']).openapi('Telemetry')
 
 const TelemetryConfigurationSchema = z
   .object({
-    ConfigurationSyncStatus: ConfigurationSyncStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Synchronization status of the device reported configuration with the desired configuration.',
-        }),
-    ).exactOptional(),
-    Telemetry: TelemetrySchema.and(
-      z.any().openapi({ description: 'Configure telemetry to be on or off.' }),
-    ),
+    ConfigurationSyncStatus: ConfigurationSyncStatusSchema.exactOptional().openapi({
+      description:
+        'Synchronization status of the device reported configuration with the desired configuration.',
+    }),
+    Telemetry: TelemetrySchema.openapi({ description: 'Configure telemetry to be on or off.' }),
   })
   .openapi({
     required: ['Telemetry'],
@@ -2259,53 +1549,49 @@ const TelemetryConfigurationSchema = z
 
 const RuntimeConfigurationSchema = z
   .object({
-    TelemetryConfiguration: TelemetryConfigurationSchema.and(
-      z.any().openapi({ description: 'Configuration for telemetry service.' }),
-    ).exactOptional(),
+    TelemetryConfiguration: TelemetryConfigurationSchema.exactOptional().openapi({
+      description: 'Configuration for telemetry service.',
+    }),
   })
   .openapi({ description: 'Runtime configuration for a thing.', required: [] })
   .openapi('RuntimeConfiguration')
 
 const GetThingRuntimeConfigurationResponseSchema = z
   .object({
-    RuntimeConfiguration: RuntimeConfigurationSchema.and(
-      z.any().openapi({ description: 'Runtime configuration for a thing.' }),
-    ).exactOptional(),
+    RuntimeConfiguration: RuntimeConfigurationSchema.exactOptional().openapi({
+      description: 'Runtime configuration for a thing.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetThingRuntimeConfigurationResponse')
 
 const BulkDeploymentResultSchema = z
   .object({
-    CreatedAt: StringSchema.and(
-      z.any().openapi({ description: 'The time, in ISO format, when the deployment was created.' }),
-    ).exactOptional(),
-    DeploymentArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the group deployment.' }),
-    ).exactOptional(),
-    DeploymentId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the group deployment.' }),
-    ).exactOptional(),
-    DeploymentStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The current status of the group deployment: ''InProgress'', ''Building'', ''Success'', or ''Failure''.",
-        }),
-    ).exactOptional(),
-    DeploymentType: DeploymentTypeSchema.and(
-      z.any().openapi({ description: 'The type of the deployment.' }),
-    ).exactOptional(),
-    ErrorDetails: ErrorDetailsSchema.and(
-      z.any().openapi({ description: 'Details about the error.' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'The error message for a failed deployment' }),
-    ).exactOptional(),
-    GroupArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the Greengrass group.' }),
-    ).exactOptional(),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      description: 'The time, in ISO format, when the deployment was created.',
+    }),
+    DeploymentArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the group deployment.',
+    }),
+    DeploymentId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the group deployment.',
+    }),
+    DeploymentStatus: StringSchema.exactOptional().openapi({
+      description:
+        "The current status of the group deployment: ''InProgress'', ''Building'', ''Success'', or ''Failure''.",
+    }),
+    DeploymentType: DeploymentTypeSchema.exactOptional().openapi({
+      description: 'The type of the deployment.',
+    }),
+    ErrorDetails: ErrorDetailsSchema.exactOptional().openapi({
+      description: 'Details about the error.',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description: 'The error message for a failed deployment',
+    }),
+    GroupArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the Greengrass group.',
+    }),
   })
   .openapi({
     description: 'Information about an individual group deployment in a bulk deployment operation.',
@@ -2319,37 +1605,28 @@ const BulkDeploymentResultsSchema = z
 
 const ListBulkDeploymentDetailedReportsResponseSchema = z
   .object({
-    Deployments: BulkDeploymentResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the individual group deployments in the bulk deployment operation.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
+    Deployments: BulkDeploymentResultsSchema.exactOptional().openapi({
+      description: 'A list of the individual group deployments in the bulk deployment operation.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBulkDeploymentDetailedReportsResponse')
 
 const BulkDeploymentSchema = z
   .object({
-    BulkDeploymentArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the bulk deployment.' }),
-    ).exactOptional(),
-    BulkDeploymentId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the bulk deployment.' }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z.any().openapi({ description: 'The time, in ISO format, when the deployment was created.' }),
-    ).exactOptional(),
+    BulkDeploymentArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the bulk deployment.',
+    }),
+    BulkDeploymentId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the bulk deployment.',
+    }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      description: 'The time, in ISO format, when the deployment was created.',
+    }),
   })
   .openapi({
     description:
@@ -2362,43 +1639,27 @@ const BulkDeploymentsSchema = z.array(BulkDeploymentSchema).openapi('BulkDeploym
 
 const ListBulkDeploymentsResponseSchema = z
   .object({
-    BulkDeployments: BulkDeploymentsSchema.and(
-      z.any().openapi({ description: 'A list of bulk deployments.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
+    BulkDeployments: BulkDeploymentsSchema.exactOptional().openapi({
+      description: 'A list of bulk deployments.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBulkDeploymentsResponse')
 
 const VersionInformationSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the version.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in milliseconds since the epoch, when the version was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the parent definition that the version is associated with.',
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the version.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the version.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the version was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      description: 'The ID of the parent definition that the version is associated with.',
+    }),
+    Version: StringSchema.exactOptional().openapi({ description: 'The ID of the version.' }),
   })
   .openapi({ description: 'Information about a version.', required: [] })
   .openapi('VersionInformation')
@@ -2409,63 +1670,39 @@ const ListOfVersionInformationSchema = z
 
 const ListConnectorDefinitionVersionsResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
-    Versions: ListOfVersionInformationSchema.and(
-      z.any().openapi({ description: 'Information about a version.' }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
+    Versions: ListOfVersionInformationSchema.exactOptional().openapi({
+      description: 'Information about a version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListConnectorDefinitionVersionsResponse')
 
 const DefinitionInformationSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the definition.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the definition.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the definition was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the latest version associated with the definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'tags' }, description: 'Tag(s) attached to the resource arn.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the definition.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the definition was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the definition.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the definition was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the definition.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tag(s) attached to the resource arn.',
+    }),
   })
   .openapi({ description: 'Information about a definition.', required: [] })
   .openapi('DefinitionInformation')
@@ -2476,77 +1713,60 @@ const ListOfDefinitionInformationSchema = z
 
 const ListConnectorDefinitionsResponseSchema = z
   .object({
-    Definitions: ListOfDefinitionInformationSchema.and(
-      z.any().openapi({ description: 'Information about a definition.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
+    Definitions: ListOfDefinitionInformationSchema.exactOptional().openapi({
+      description: 'Information about a definition.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListConnectorDefinitionsResponse')
 
 const ListCoreDefinitionVersionsResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
-    Versions: ListOfVersionInformationSchema.and(
-      z.any().openapi({ description: 'Information about a version.' }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
+    Versions: ListOfVersionInformationSchema.exactOptional().openapi({
+      description: 'Information about a version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCoreDefinitionVersionsResponse')
 
 const ListCoreDefinitionsResponseSchema = z
   .object({
-    Definitions: ListOfDefinitionInformationSchema.and(
-      z.any().openapi({ description: 'Information about a definition.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
+    Definitions: ListOfDefinitionInformationSchema.exactOptional().openapi({
+      description: 'Information about a definition.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCoreDefinitionsResponse')
 
 const DeploymentSchema = z
   .object({
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the deployment was created.',
-        }),
-    ).exactOptional(),
-    DeploymentArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the deployment.' }),
-    ).exactOptional(),
-    DeploymentId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the deployment.' }),
-    ).exactOptional(),
-    DeploymentType: DeploymentTypeSchema.and(
-      z.any().openapi({ description: 'The type of the deployment.' }),
-    ).exactOptional(),
-    GroupArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the group for this deployment.' }),
-    ).exactOptional(),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the deployment was created.',
+    }),
+    DeploymentArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the deployment.',
+    }),
+    DeploymentId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the deployment.',
+    }),
+    DeploymentType: DeploymentTypeSchema.exactOptional().openapi({
+      description: 'The type of the deployment.',
+    }),
+    GroupArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the group for this deployment.',
+    }),
   })
   .openapi({ description: 'Information about a deployment.', required: [] })
   .openapi('Deployment')
@@ -2555,97 +1775,77 @@ const DeploymentsSchema = z.array(DeploymentSchema).openapi('Deployments')
 
 const ListDeploymentsResponseSchema = z
   .object({
-    Deployments: DeploymentsSchema.and(
-      z.any().openapi({ description: 'A list of deployments for the requested groups.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
+    Deployments: DeploymentsSchema.exactOptional().openapi({
+      description: 'A list of deployments for the requested groups.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDeploymentsResponse')
 
 const ListDeviceDefinitionVersionsResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
-    Versions: ListOfVersionInformationSchema.and(
-      z.any().openapi({ description: 'Information about a version.' }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
+    Versions: ListOfVersionInformationSchema.exactOptional().openapi({
+      description: 'Information about a version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDeviceDefinitionVersionsResponse')
 
 const ListDeviceDefinitionsResponseSchema = z
   .object({
-    Definitions: ListOfDefinitionInformationSchema.and(
-      z.any().openapi({ description: 'Information about a definition.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
+    Definitions: ListOfDefinitionInformationSchema.exactOptional().openapi({
+      description: 'Information about a definition.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDeviceDefinitionsResponse')
 
 const ListFunctionDefinitionVersionsResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
-    Versions: ListOfVersionInformationSchema.and(
-      z.any().openapi({ description: 'Information about a version.' }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
+    Versions: ListOfVersionInformationSchema.exactOptional().openapi({
+      description: 'Information about a version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFunctionDefinitionVersionsResponse')
 
 const ListFunctionDefinitionsResponseSchema = z
   .object({
-    Definitions: ListOfDefinitionInformationSchema.and(
-      z.any().openapi({ description: 'Information about a definition.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
+    Definitions: ListOfDefinitionInformationSchema.exactOptional().openapi({
+      description: 'Information about a definition.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFunctionDefinitionsResponse')
 
 const GroupCertificateAuthorityPropertiesSchema = z
   .object({
-    GroupCertificateAuthorityArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the certificate authority for the group.' }),
-    ).exactOptional(),
-    GroupCertificateAuthorityId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the certificate authority for the group.' }),
-    ).exactOptional(),
+    GroupCertificateAuthorityArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the certificate authority for the group.',
+    }),
+    GroupCertificateAuthorityId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the certificate authority for the group.',
+    }),
   })
   .openapi({ description: 'Information about a certificate authority for a group.', required: [] })
   .openapi('GroupCertificateAuthorityProperties')
@@ -2656,62 +1856,44 @@ const ListOfGroupCertificateAuthorityPropertiesSchema = z
 
 const ListGroupCertificateAuthoritiesResponseSchema = z
   .object({
-    GroupCertificateAuthorities: ListOfGroupCertificateAuthorityPropertiesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of certificate authorities associated with the group.' }),
-    ).exactOptional(),
+    GroupCertificateAuthorities:
+      ListOfGroupCertificateAuthorityPropertiesSchema.exactOptional().openapi({
+        description: 'A list of certificate authorities associated with the group.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('ListGroupCertificateAuthoritiesResponse')
 
 const ListGroupVersionsResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
-    Versions: ListOfVersionInformationSchema.and(
-      z.any().openapi({ description: 'Information about a version.' }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
+    Versions: ListOfVersionInformationSchema.exactOptional().openapi({
+      description: 'Information about a version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListGroupVersionsResponse')
 
 const GroupInformationSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the group.' }),
-    ).exactOptional(),
-    CreationTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in milliseconds since the epoch, when the group was created.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(z.any().openapi({ description: 'The ID of the group.' })).exactOptional(),
-    LastUpdatedTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the group was last updated.',
-        }),
-    ).exactOptional(),
-    LatestVersion: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the latest version associated with the group.' }),
-    ).exactOptional(),
-    LatestVersionArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the latest version associated with the group.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the group.' }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({ description: 'The ARN of the group.' }),
+    CreationTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the group was created.',
+    }),
+    Id: StringSchema.exactOptional().openapi({ description: 'The ID of the group.' }),
+    LastUpdatedTimestamp: StringSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the group was last updated.',
+    }),
+    LatestVersion: StringSchema.exactOptional().openapi({
+      description: 'The ID of the latest version associated with the group.',
+    }),
+    LatestVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the latest version associated with the group.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the group.' }),
   })
   .openapi({ description: 'Information about a group.', required: [] })
   .openapi('GroupInformation')
@@ -2722,119 +1904,91 @@ const ListOfGroupInformationSchema = z
 
 const ListGroupsResponseSchema = z
   .object({
-    Groups: ListOfGroupInformationSchema.and(
-      z.any().openapi({ description: 'Information about a group.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
+    Groups: ListOfGroupInformationSchema.exactOptional().openapi({
+      description: 'Information about a group.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListGroupsResponse')
 
 const ListLoggerDefinitionVersionsResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
-    Versions: ListOfVersionInformationSchema.and(
-      z.any().openapi({ description: 'Information about a version.' }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
+    Versions: ListOfVersionInformationSchema.exactOptional().openapi({
+      description: 'Information about a version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLoggerDefinitionVersionsResponse')
 
 const ListLoggerDefinitionsResponseSchema = z
   .object({
-    Definitions: ListOfDefinitionInformationSchema.and(
-      z.any().openapi({ description: 'Information about a definition.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
+    Definitions: ListOfDefinitionInformationSchema.exactOptional().openapi({
+      description: 'Information about a definition.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLoggerDefinitionsResponse')
 
 const ListResourceDefinitionVersionsResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
-    Versions: ListOfVersionInformationSchema.and(
-      z.any().openapi({ description: 'Information about a version.' }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
+    Versions: ListOfVersionInformationSchema.exactOptional().openapi({
+      description: 'Information about a version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResourceDefinitionVersionsResponse')
 
 const ListResourceDefinitionsResponseSchema = z
   .object({
-    Definitions: ListOfDefinitionInformationSchema.and(
-      z.any().openapi({ description: 'Information about a definition.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
+    Definitions: ListOfDefinitionInformationSchema.exactOptional().openapi({
+      description: 'Information about a definition.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResourceDefinitionsResponse')
 
 const ListSubscriptionDefinitionVersionsResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
-    Versions: ListOfVersionInformationSchema.and(
-      z.any().openapi({ description: 'Information about a version.' }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
+    Versions: ListOfVersionInformationSchema.exactOptional().openapi({
+      description: 'Information about a version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSubscriptionDefinitionVersionsResponse')
 
 const ListSubscriptionDefinitionsResponseSchema = z
   .object({
-    Definitions: ListOfDefinitionInformationSchema.and(
-      z.any().openapi({ description: 'Information about a definition.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The token for the next set of results, or ''null'' if there are no additional results.",
-        }),
-    ).exactOptional(),
+    Definitions: ListOfDefinitionInformationSchema.exactOptional().openapi({
+      description: 'Information about a definition.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "The token for the next set of results, or ''null'' if there are no additional results.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSubscriptionDefinitionsResponse')
@@ -2846,173 +2000,140 @@ const ListTagsForResourceResponseSchema = z
 
 const ResetDeploymentsResponseSchema = z
   .object({
-    DeploymentArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the deployment.' }),
-    ).exactOptional(),
-    DeploymentId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the deployment.' }),
-    ).exactOptional(),
+    DeploymentArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the deployment.',
+    }),
+    DeploymentId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the deployment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ResetDeploymentsResponse')
 
 const StartBulkDeploymentResponseSchema = z
   .object({
-    BulkDeploymentArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the bulk deployment.' }),
-    ).exactOptional(),
-    BulkDeploymentId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the bulk deployment.' }),
-    ).exactOptional(),
+    BulkDeploymentArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the bulk deployment.',
+    }),
+    BulkDeploymentId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the bulk deployment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartBulkDeploymentResponse')
 
-const StopBulkDeploymentResponseSchema = z.object({}).openapi('StopBulkDeploymentResponse')
+const StopBulkDeploymentResponseSchema = z.looseObject({}).openapi('StopBulkDeploymentResponse')
 
 const UpdateConnectivityInfoResponseSchema = z
   .object({
-    Message: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'message' },
-          description: 'A message about the connectivity info update request.',
-        }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'The new version of the connectivity info.' }),
-    ).exactOptional(),
+    Message: StringSchema.exactOptional().openapi({
+      xml: { name: 'message' },
+      description: 'A message about the connectivity info update request.',
+    }),
+    Version: StringSchema.exactOptional().openapi({
+      description: 'The new version of the connectivity info.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateConnectivityInfoResponse')
 
 const UpdateConnectorDefinitionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateConnectorDefinitionResponse')
 
-const UpdateCoreDefinitionResponseSchema = z.object({}).openapi('UpdateCoreDefinitionResponse')
+const UpdateCoreDefinitionResponseSchema = z.looseObject({}).openapi('UpdateCoreDefinitionResponse')
 
-const UpdateDeviceDefinitionResponseSchema = z.object({}).openapi('UpdateDeviceDefinitionResponse')
+const UpdateDeviceDefinitionResponseSchema = z
+  .looseObject({})
+  .openapi('UpdateDeviceDefinitionResponse')
 
 const UpdateFunctionDefinitionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateFunctionDefinitionResponse')
 
-const UpdateGroupResponseSchema = z.object({}).openapi('UpdateGroupResponse')
+const UpdateGroupResponseSchema = z.looseObject({}).openapi('UpdateGroupResponse')
 
 const UpdateGroupCertificateConfigurationResponseSchema = z
   .object({
-    CertificateAuthorityExpiryInMilliseconds: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time remaining before the certificate authority expires, in milliseconds.',
-        }),
-    ).exactOptional(),
-    CertificateExpiryInMilliseconds: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time remaining before the certificate expires, in milliseconds.',
-        }),
-    ).exactOptional(),
-    GroupId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the group certificate configuration.' }),
-    ).exactOptional(),
+    CertificateAuthorityExpiryInMilliseconds: StringSchema.exactOptional().openapi({
+      description:
+        'The amount of time remaining before the certificate authority expires, in milliseconds.',
+    }),
+    CertificateExpiryInMilliseconds: StringSchema.exactOptional().openapi({
+      description: 'The amount of time remaining before the certificate expires, in milliseconds.',
+    }),
+    GroupId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the group certificate configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateGroupCertificateConfigurationResponse')
 
-const UpdateLoggerDefinitionResponseSchema = z.object({}).openapi('UpdateLoggerDefinitionResponse')
+const UpdateLoggerDefinitionResponseSchema = z
+  .looseObject({})
+  .openapi('UpdateLoggerDefinitionResponse')
 
 const UpdateResourceDefinitionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateResourceDefinitionResponse')
 
 const UpdateSubscriptionDefinitionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateSubscriptionDefinitionResponse')
 
 const UpdateThingRuntimeConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateThingRuntimeConfigurationResponse')
 
 const AssociateRoleToGroupRequestSchema = z
   .object({
-    RoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role you wish to associate with this group. The existence of the role is not validated.',
-        }),
-    ),
+    RoleArn: StringSchema.openapi({
+      description:
+        'The ARN of the role you wish to associate with this group. The existence of the role is not validated.',
+    }),
   })
   .openapi({ required: ['RoleArn'], title: 'AssociateRoleToGroupRequest' })
   .openapi('AssociateRoleToGroupRequest')
 
 const AssociateServiceRoleToAccountRequestSchema = z
   .object({
-    RoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the service role you wish to associate with your account.',
-        }),
-    ),
+    RoleArn: StringSchema.openapi({
+      description: 'The ARN of the service role you wish to associate with your account.',
+    }),
   })
   .openapi({ required: ['RoleArn'], title: 'AssociateServiceRoleToAccountRequest' })
   .openapi('AssociateServiceRoleToAccountRequest')
 
 const CreateConnectorDefinitionRequestSchema = z
   .object({
-    InitialVersion: ConnectorDefinitionVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the initial version of the connector definition.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the connector definition.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) to add to the new resource.' }),
-    ).exactOptional(),
+    InitialVersion: ConnectorDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Information about the initial version of the connector definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of the connector definition.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({ description: 'Tag(s) to add to the new resource.' }),
   })
   .openapi({ title: 'CreateConnectorDefinitionRequest', required: [] })
   .openapi('CreateConnectorDefinitionRequest')
 
 const CreateConnectorDefinitionVersionRequestSchema = z
   .object({
-    Connectors: ListOfConnectorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of references to connectors in this version, with their corresponding configuration settings.',
-        }),
-    ).exactOptional(),
+    Connectors: ListOfConnectorSchema.exactOptional().openapi({
+      description:
+        'A list of references to connectors in this version, with their corresponding configuration settings.',
+    }),
   })
   .openapi({ title: 'CreateConnectorDefinitionVersionRequest', required: [] })
   .openapi('CreateConnectorDefinitionVersionRequest')
 
 const CreateCoreDefinitionRequestSchema = z
   .object({
-    InitialVersion: CoreDefinitionVersionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the initial version of the core definition.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the core definition.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) to add to the new resource.' }),
-    ).exactOptional(),
+    InitialVersion: CoreDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Information about the initial version of the core definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the core definition.' }),
+    tags: TagsSchema.exactOptional().openapi({ description: 'Tag(s) to add to the new resource.' }),
   })
   .openapi({
     title: 'CreateCoreDefinitionRequest',
@@ -3023,101 +2144,73 @@ const CreateCoreDefinitionRequestSchema = z
 
 const CreateCoreDefinitionVersionRequestSchema = z
   .object({
-    Cores: ListOfCoreSchema.and(
-      z.any().openapi({ description: 'A list of cores in the core definition version.' }),
-    ).exactOptional(),
+    Cores: ListOfCoreSchema.exactOptional().openapi({
+      description: 'A list of cores in the core definition version.',
+    }),
   })
   .openapi({ title: 'CreateCoreDefinitionVersionRequest', required: [] })
   .openapi('CreateCoreDefinitionVersionRequest')
 
 const CreateDeploymentRequestSchema = z
   .object({
-    DeploymentId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the deployment if you wish to redeploy a previous deployment.',
-        }),
-    ).exactOptional(),
-    DeploymentType: DeploymentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The type of deployment. When used for ''CreateDeployment'', only ''NewDeployment'' and ''Redeployment'' are valid.",
-        }),
-    ),
-    GroupVersionId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the group version to be deployed.' }),
-    ).exactOptional(),
+    DeploymentId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the deployment if you wish to redeploy a previous deployment.',
+    }),
+    DeploymentType: DeploymentTypeSchema.openapi({
+      description:
+        "The type of deployment. When used for ''CreateDeployment'', only ''NewDeployment'' and ''Redeployment'' are valid.",
+    }),
+    GroupVersionId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the group version to be deployed.',
+    }),
   })
   .openapi({ required: ['DeploymentType'], title: 'CreateDeploymentRequest' })
   .openapi('CreateDeploymentRequest')
 
 const CreateDeviceDefinitionRequestSchema = z
   .object({
-    InitialVersion: DeviceDefinitionVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the initial version of the device definition.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the device definition.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) to add to the new resource.' }),
-    ).exactOptional(),
+    InitialVersion: DeviceDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Information about the initial version of the device definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of the device definition.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({ description: 'Tag(s) to add to the new resource.' }),
   })
   .openapi({ title: 'CreateDeviceDefinitionRequest', required: [] })
   .openapi('CreateDeviceDefinitionRequest')
 
 const CreateDeviceDefinitionVersionRequestSchema = z
   .object({
-    Devices: ListOfDeviceSchema.and(
-      z.any().openapi({ description: 'A list of devices in the definition version.' }),
-    ).exactOptional(),
+    Devices: ListOfDeviceSchema.exactOptional().openapi({
+      description: 'A list of devices in the definition version.',
+    }),
   })
   .openapi({ title: 'CreateDeviceDefinitionVersionRequest', required: [] })
   .openapi('CreateDeviceDefinitionVersionRequest')
 
-const CreateFunctionDefinitionRequestSchema = z
+const CreateFunctionDefinitionRequestSchema: z.ZodType<CreateFunctionDefinitionRequestType> = z
   .object({
-    InitialVersion: FunctionDefinitionVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the initial version of the function definition.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the function definition.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) to add to the new resource.' }),
-    ).exactOptional(),
+    InitialVersion: FunctionDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Information about the initial version of the function definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of the function definition.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({ description: 'Tag(s) to add to the new resource.' }),
   })
   .openapi({ title: 'CreateFunctionDefinitionRequest', required: [] })
   .openapi('CreateFunctionDefinitionRequest')
 
 const CreateFunctionDefinitionVersionRequestSchema = z
   .object({
-    DefaultConfig: FunctionDefaultConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default configuration that applies to all Lambda functions in this function definition version. Individual Lambda functions can override these settings.',
-        }),
-    ).exactOptional(),
-    Functions: ListOfFunctionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of Lambda functions in this function definition version.',
-        }),
-    ).exactOptional(),
+    DefaultConfig: FunctionDefaultConfigSchema.exactOptional().openapi({
+      description:
+        'The default configuration that applies to all Lambda functions in this function definition version. Individual Lambda functions can override these settings.',
+    }),
+    Functions: ListOfFunctionSchema.exactOptional().openapi({
+      description: 'A list of Lambda functions in this function definition version.',
+    }),
   })
   .openapi({
     title: 'CreateFunctionDefinitionVersionRequest',
@@ -3127,110 +2220,86 @@ const CreateFunctionDefinitionVersionRequestSchema = z
   .openapi('CreateFunctionDefinitionVersionRequest')
 
 const CreateGroupCertificateAuthorityRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CreateGroupCertificateAuthorityRequest' })
   .openapi('CreateGroupCertificateAuthorityRequest')
 
 const CreateGroupRequestSchema = z
   .object({
-    InitialVersion: GroupVersionSchema.and(
-      z.any().openapi({ description: 'Information about the initial version of the group.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(z.any().openapi({ description: 'The name of the group.' })),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) to add to the new resource.' }),
-    ).exactOptional(),
+    InitialVersion: GroupVersionSchema.exactOptional().openapi({
+      description: 'Information about the initial version of the group.',
+    }),
+    Name: StringSchema.openapi({ description: 'The name of the group.' }),
+    tags: TagsSchema.exactOptional().openapi({ description: 'Tag(s) to add to the new resource.' }),
   })
   .openapi({ required: ['Name'], title: 'CreateGroupRequest' })
   .openapi('CreateGroupRequest')
 
 const CreateGroupVersionRequestSchema = z
   .object({
-    ConnectorDefinitionVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the connector definition version for this group.' }),
-    ).exactOptional(),
-    CoreDefinitionVersionArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the core definition version for this group.' }),
-    ).exactOptional(),
-    DeviceDefinitionVersionArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the device definition version for this group.' }),
-    ).exactOptional(),
-    FunctionDefinitionVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the function definition version for this group.' }),
-    ).exactOptional(),
-    LoggerDefinitionVersionArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the logger definition version for this group.' }),
-    ).exactOptional(),
-    ResourceDefinitionVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the resource definition version for this group.' }),
-    ).exactOptional(),
-    SubscriptionDefinitionVersionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the subscription definition version for this group.' }),
-    ).exactOptional(),
+    ConnectorDefinitionVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the connector definition version for this group.',
+    }),
+    CoreDefinitionVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the core definition version for this group.',
+    }),
+    DeviceDefinitionVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the device definition version for this group.',
+    }),
+    FunctionDefinitionVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the function definition version for this group.',
+    }),
+    LoggerDefinitionVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the logger definition version for this group.',
+    }),
+    ResourceDefinitionVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the resource definition version for this group.',
+    }),
+    SubscriptionDefinitionVersionArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the subscription definition version for this group.',
+    }),
   })
   .openapi({ title: 'CreateGroupVersionRequest', required: [] })
   .openapi('CreateGroupVersionRequest')
 
 const CreateLoggerDefinitionRequestSchema = z
   .object({
-    InitialVersion: LoggerDefinitionVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the initial version of the logger definition.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the logger definition.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) to add to the new resource.' }),
-    ).exactOptional(),
+    InitialVersion: LoggerDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Information about the initial version of the logger definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of the logger definition.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({ description: 'Tag(s) to add to the new resource.' }),
   })
   .openapi({ title: 'CreateLoggerDefinitionRequest', required: [] })
   .openapi('CreateLoggerDefinitionRequest')
 
 const CreateLoggerDefinitionVersionRequestSchema = z
   .object({
-    Loggers: ListOfLoggerSchema.and(
-      z.any().openapi({ description: 'A list of loggers.' }),
-    ).exactOptional(),
+    Loggers: ListOfLoggerSchema.exactOptional().openapi({ description: 'A list of loggers.' }),
   })
   .openapi({ title: 'CreateLoggerDefinitionVersionRequest', required: [] })
   .openapi('CreateLoggerDefinitionVersionRequest')
 
 const CreateResourceDefinitionRequestSchema = z
   .object({
-    InitialVersion: ResourceDefinitionVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the initial version of the resource definition.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the resource definition.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) to add to the new resource.' }),
-    ).exactOptional(),
+    InitialVersion: ResourceDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Information about the initial version of the resource definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of the resource definition.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({ description: 'Tag(s) to add to the new resource.' }),
   })
   .openapi({ title: 'CreateResourceDefinitionRequest', required: [] })
   .openapi('CreateResourceDefinitionRequest')
 
 const CreateResourceDefinitionVersionRequestSchema = z
   .object({
-    Resources: ListOfResourceSchema.and(
-      z.any().openapi({ description: 'A list of resources.' }),
-    ).exactOptional(),
+    Resources: ListOfResourceSchema.exactOptional().openapi({
+      description: 'A list of resources.',
+    }),
   })
   .openapi({ title: 'CreateResourceDefinitionVersionRequest', required: [] })
   .openapi('CreateResourceDefinitionVersionRequest')
@@ -3297,312 +2366,306 @@ const CreateSoftwareUpdateJobRequestSchema = z
 
 const CreateSubscriptionDefinitionRequestSchema = z
   .object({
-    InitialVersion: SubscriptionDefinitionVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the initial version of the subscription definition.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the subscription definition.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) to add to the new resource.' }),
-    ).exactOptional(),
+    InitialVersion: SubscriptionDefinitionVersionSchema.exactOptional().openapi({
+      description: 'Information about the initial version of the subscription definition.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of the subscription definition.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({ description: 'Tag(s) to add to the new resource.' }),
   })
   .openapi({ title: 'CreateSubscriptionDefinitionRequest', required: [] })
   .openapi('CreateSubscriptionDefinitionRequest')
 
 const CreateSubscriptionDefinitionVersionRequestSchema = z
   .object({
-    Subscriptions: ListOfSubscriptionSchema.and(
-      z.any().openapi({ description: 'A list of subscriptions.' }),
-    ).exactOptional(),
+    Subscriptions: ListOfSubscriptionSchema.exactOptional().openapi({
+      description: 'A list of subscriptions.',
+    }),
   })
   .openapi({ title: 'CreateSubscriptionDefinitionVersionRequest', required: [] })
   .openapi('CreateSubscriptionDefinitionVersionRequest')
 
 const DeleteConnectorDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteConnectorDefinitionRequest' })
   .openapi('DeleteConnectorDefinitionRequest')
 
 const DeleteCoreDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteCoreDefinitionRequest' })
   .openapi('DeleteCoreDefinitionRequest')
 
 const DeleteDeviceDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDeviceDefinitionRequest' })
   .openapi('DeleteDeviceDefinitionRequest')
 
 const DeleteFunctionDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteFunctionDefinitionRequest' })
   .openapi('DeleteFunctionDefinitionRequest')
 
 const DeleteGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteGroupRequest' })
   .openapi('DeleteGroupRequest')
 
 const DeleteLoggerDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteLoggerDefinitionRequest' })
   .openapi('DeleteLoggerDefinitionRequest')
 
 const DeleteResourceDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteResourceDefinitionRequest' })
   .openapi('DeleteResourceDefinitionRequest')
 
 const DeleteSubscriptionDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteSubscriptionDefinitionRequest' })
   .openapi('DeleteSubscriptionDefinitionRequest')
 
 const DisassociateRoleFromGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateRoleFromGroupRequest' })
   .openapi('DisassociateRoleFromGroupRequest')
 
 const DisassociateServiceRoleFromAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateServiceRoleFromAccountRequest' })
   .openapi('DisassociateServiceRoleFromAccountRequest')
 
 const GetAssociatedRoleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAssociatedRoleRequest' })
   .openapi('GetAssociatedRoleRequest')
 
 const GetBulkDeploymentStatusRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBulkDeploymentStatusRequest' })
   .openapi('GetBulkDeploymentStatusRequest')
 
 const GetConnectivityInfoRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetConnectivityInfoRequest' })
   .openapi('GetConnectivityInfoRequest')
 
 const GetConnectorDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetConnectorDefinitionRequest' })
   .openapi('GetConnectorDefinitionRequest')
 
 const GetConnectorDefinitionVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetConnectorDefinitionVersionRequest' })
   .openapi('GetConnectorDefinitionVersionRequest')
 
 const GetCoreDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetCoreDefinitionRequest' })
   .openapi('GetCoreDefinitionRequest')
 
 const GetCoreDefinitionVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetCoreDefinitionVersionRequest' })
   .openapi('GetCoreDefinitionVersionRequest')
 
 const GetDeploymentStatusRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDeploymentStatusRequest' })
   .openapi('GetDeploymentStatusRequest')
 
 const GetDeviceDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDeviceDefinitionRequest' })
   .openapi('GetDeviceDefinitionRequest')
 
 const GetDeviceDefinitionVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDeviceDefinitionVersionRequest' })
   .openapi('GetDeviceDefinitionVersionRequest')
 
 const GetFunctionDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetFunctionDefinitionRequest' })
   .openapi('GetFunctionDefinitionRequest')
 
 const GetFunctionDefinitionVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetFunctionDefinitionVersionRequest' })
   .openapi('GetFunctionDefinitionVersionRequest')
 
 const GetGroupCertificateAuthorityRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetGroupCertificateAuthorityRequest' })
   .openapi('GetGroupCertificateAuthorityRequest')
 
 const GetGroupCertificateConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetGroupCertificateConfigurationRequest' })
   .openapi('GetGroupCertificateConfigurationRequest')
 
 const GetGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetGroupRequest' })
   .openapi('GetGroupRequest')
 
 const GetGroupVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetGroupVersionRequest' })
   .openapi('GetGroupVersionRequest')
 
 const GetLoggerDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetLoggerDefinitionRequest' })
   .openapi('GetLoggerDefinitionRequest')
 
 const GetLoggerDefinitionVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetLoggerDefinitionVersionRequest' })
   .openapi('GetLoggerDefinitionVersionRequest')
 
 const GetResourceDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetResourceDefinitionRequest' })
   .openapi('GetResourceDefinitionRequest')
 
 const GetResourceDefinitionVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetResourceDefinitionVersionRequest' })
   .openapi('GetResourceDefinitionVersionRequest')
 
 const GetServiceRoleForAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetServiceRoleForAccountRequest' })
   .openapi('GetServiceRoleForAccountRequest')
 
 const GetSubscriptionDefinitionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSubscriptionDefinitionRequest' })
   .openapi('GetSubscriptionDefinitionRequest')
 
 const GetSubscriptionDefinitionVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSubscriptionDefinitionVersionRequest' })
   .openapi('GetSubscriptionDefinitionVersionRequest')
 
 const GetThingRuntimeConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetThingRuntimeConfigurationRequest' })
   .openapi('GetThingRuntimeConfigurationRequest')
 
 const ListBulkDeploymentDetailedReportsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBulkDeploymentDetailedReportsRequest' })
   .openapi('ListBulkDeploymentDetailedReportsRequest')
 
 const ListBulkDeploymentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBulkDeploymentsRequest' })
   .openapi('ListBulkDeploymentsRequest')
 
 const ListConnectorDefinitionVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListConnectorDefinitionVersionsRequest' })
   .openapi('ListConnectorDefinitionVersionsRequest')
 
 const ListConnectorDefinitionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListConnectorDefinitionsRequest' })
   .openapi('ListConnectorDefinitionsRequest')
 
 const ListCoreDefinitionVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListCoreDefinitionVersionsRequest' })
   .openapi('ListCoreDefinitionVersionsRequest')
 
 const ListCoreDefinitionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListCoreDefinitionsRequest' })
   .openapi('ListCoreDefinitionsRequest')
 
 const ListDeploymentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDeploymentsRequest' })
   .openapi('ListDeploymentsRequest')
 
 const ListDeviceDefinitionVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDeviceDefinitionVersionsRequest' })
   .openapi('ListDeviceDefinitionVersionsRequest')
 
 const ListDeviceDefinitionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDeviceDefinitionsRequest' })
   .openapi('ListDeviceDefinitionsRequest')
 
 const ListFunctionDefinitionVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListFunctionDefinitionVersionsRequest' })
   .openapi('ListFunctionDefinitionVersionsRequest')
 
 const ListFunctionDefinitionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListFunctionDefinitionsRequest' })
   .openapi('ListFunctionDefinitionsRequest')
 
 const ListGroupCertificateAuthoritiesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListGroupCertificateAuthoritiesRequest' })
   .openapi('ListGroupCertificateAuthoritiesRequest')
 
 const ListGroupVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListGroupVersionsRequest' })
   .openapi('ListGroupVersionsRequest')
 
 const ListGroupsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListGroupsRequest' })
   .openapi('ListGroupsRequest')
 
 const ListLoggerDefinitionVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListLoggerDefinitionVersionsRequest' })
   .openapi('ListLoggerDefinitionVersionsRequest')
 
 const ListLoggerDefinitionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListLoggerDefinitionsRequest' })
   .openapi('ListLoggerDefinitionsRequest')
 
 const ListResourceDefinitionVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListResourceDefinitionVersionsRequest' })
   .openapi('ListResourceDefinitionVersionsRequest')
 
 const ListResourceDefinitionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListResourceDefinitionsRequest' })
   .openapi('ListResourceDefinitionsRequest')
 
 const ListSubscriptionDefinitionVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSubscriptionDefinitionVersionsRequest' })
   .openapi('ListSubscriptionDefinitionVersionsRequest')
 
 const ListSubscriptionDefinitionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSubscriptionDefinitionsRequest' })
   .openapi('ListSubscriptionDefinitionsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const ResetDeploymentsRequestSchema = z
   .object({
-    Force: BooleanSchema.and(
-      z.any().openapi({ description: 'If true, performs a best-effort only core reset.' }),
-    ).exactOptional(),
+    Force: BooleanSchema.exactOptional().openapi({
+      description: 'If true, performs a best-effort only core reset.',
+    }),
   })
   .openapi({
     title: 'ResetDeploymentsRequest',
@@ -3613,31 +2676,21 @@ const ResetDeploymentsRequestSchema = z
 
 const StartBulkDeploymentRequestSchema = z
   .object({
-    ExecutionRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ARN of the execution role to associate with the bulk deployment operation. This IAM role must allow the ''greengrass:CreateDeployment'' action for all group versions that are listed in the input file. This IAM role must have access to the S3 bucket containing the input file.",
-        }),
-    ),
-    InputFileUri: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The URI of the input file contained in the S3 bucket. The execution role must have ''getObject'' permissions on this bucket to access the input file. The input file is a JSON-serialized, line delimited file with UTF-8 encoding that provides a list of group and version IDs and the deployment type. This file must be less than 100 MB. Currently, AWS IoT Greengrass supports only ''NewDeployment'' deployment types.",
-        }),
-    ),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'Tag(s) to add to the new resource.' }),
-    ).exactOptional(),
+    ExecutionRoleArn: StringSchema.openapi({
+      description:
+        "The ARN of the execution role to associate with the bulk deployment operation. This IAM role must allow the ''greengrass:CreateDeployment'' action for all group versions that are listed in the input file. This IAM role must have access to the S3 bucket containing the input file.",
+    }),
+    InputFileUri: StringSchema.openapi({
+      description:
+        "The URI of the input file contained in the S3 bucket. The execution role must have ''getObject'' permissions on this bucket to access the input file. The input file is a JSON-serialized, line delimited file with UTF-8 encoding that provides a list of group and version IDs and the deployment type. This file must be less than 100 MB. Currently, AWS IoT Greengrass supports only ''NewDeployment'' deployment types.",
+    }),
+    tags: TagsSchema.exactOptional().openapi({ description: 'Tag(s) to add to the new resource.' }),
   })
   .openapi({ required: ['ExecutionRoleArn', 'InputFileUri'], title: 'StartBulkDeploymentRequest' })
   .openapi('StartBulkDeploymentRequest')
 
 const StopBulkDeploymentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StopBulkDeploymentRequest' })
   .openapi('StopBulkDeploymentRequest')
 
@@ -3652,9 +2705,7 @@ const TagResourceRequestSchema = z
 
 const TelemetryConfigurationUpdateSchema = z
   .object({
-    Telemetry: TelemetrySchema.and(
-      z.any().openapi({ description: 'Configure telemetry to be on or off.' }),
-    ),
+    Telemetry: TelemetrySchema.openapi({ description: 'Configure telemetry to be on or off.' }),
   })
   .openapi({
     required: ['Telemetry'],
@@ -3663,15 +2714,15 @@ const TelemetryConfigurationUpdateSchema = z
   .openapi('TelemetryConfigurationUpdate')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateConnectivityInfoRequestSchema = z
   .object({
-    ConnectivityInfo: ListOfConnectivityInfoSchema.and(
-      z.any().openapi({ description: 'A list of connectivity info.' }),
-    ).exactOptional(),
+    ConnectivityInfo: ListOfConnectivityInfoSchema.exactOptional().openapi({
+      description: 'A list of connectivity info.',
+    }),
   })
   .openapi({
     title: 'UpdateConnectivityInfoRequest',
@@ -3682,95 +2733,74 @@ const UpdateConnectivityInfoRequestSchema = z
 
 const UpdateConnectorDefinitionRequestSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
   })
   .openapi({ title: 'UpdateConnectorDefinitionRequest', required: [] })
   .openapi('UpdateConnectorDefinitionRequest')
 
 const UpdateCoreDefinitionRequestSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
   })
   .openapi({ title: 'UpdateCoreDefinitionRequest', required: [] })
   .openapi('UpdateCoreDefinitionRequest')
 
 const UpdateDeviceDefinitionRequestSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
   })
   .openapi({ title: 'UpdateDeviceDefinitionRequest', required: [] })
   .openapi('UpdateDeviceDefinitionRequest')
 
 const UpdateFunctionDefinitionRequestSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
   })
   .openapi({ title: 'UpdateFunctionDefinitionRequest', required: [] })
   .openapi('UpdateFunctionDefinitionRequest')
 
 const UpdateGroupCertificateConfigurationRequestSchema = z
   .object({
-    CertificateExpiryInMilliseconds: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time remaining before the certificate expires, in milliseconds.',
-        }),
-    ).exactOptional(),
+    CertificateExpiryInMilliseconds: StringSchema.exactOptional().openapi({
+      description: 'The amount of time remaining before the certificate expires, in milliseconds.',
+    }),
   })
   .openapi({ title: 'UpdateGroupCertificateConfigurationRequest', required: [] })
   .openapi('UpdateGroupCertificateConfigurationRequest')
 
 const UpdateGroupRequestSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
   })
   .openapi({ title: 'UpdateGroupRequest', required: [] })
   .openapi('UpdateGroupRequest')
 
 const UpdateLoggerDefinitionRequestSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
   })
   .openapi({ title: 'UpdateLoggerDefinitionRequest', required: [] })
   .openapi('UpdateLoggerDefinitionRequest')
 
 const UpdateResourceDefinitionRequestSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
   })
   .openapi({ title: 'UpdateResourceDefinitionRequest', required: [] })
   .openapi('UpdateResourceDefinitionRequest')
 
 const UpdateSubscriptionDefinitionRequestSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the definition.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the definition.' }),
   })
   .openapi({ title: 'UpdateSubscriptionDefinitionRequest', required: [] })
   .openapi('UpdateSubscriptionDefinitionRequest')
 
 const UpdateThingRuntimeConfigurationRequestSchema = z
   .object({
-    TelemetryConfiguration: TelemetryConfigurationUpdateSchema.and(
-      z.any().openapi({ description: 'Configuration for telemetry service.' }),
-    ).exactOptional(),
+    TelemetryConfiguration: TelemetryConfigurationUpdateSchema.exactOptional().openapi({
+      description: 'Configuration for telemetry service.',
+    }),
   })
   .openapi({ title: 'UpdateThingRuntimeConfigurationRequest', required: [] })
   .openapi('UpdateThingRuntimeConfigurationRequest')
@@ -4193,14 +3223,10 @@ export const postGreengrassDefinitionConnectorsRoute = createRoute({
             .object({
               InitialVersion: z
                 .object({
-                  Connectors: ListOfConnectorSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of references to connectors in this version, with their corresponding configuration settings.',
-                      }),
-                  ).exactOptional(),
+                  Connectors: ListOfConnectorSchema.exactOptional().openapi({
+                    description:
+                      'A list of references to connectors in this version, with their corresponding configuration settings.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4461,11 +3487,9 @@ export const postGreengrassDefinitionCoresRoute = createRoute({
             .object({
               InitialVersion: z
                 .object({
-                  Cores: ListOfCoreSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'A list of cores in the core definition version.' }),
-                  ).exactOptional(),
+                  Cores: ListOfCoreSchema.exactOptional().openapi({
+                    description: 'A list of cores in the core definition version.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4872,11 +3896,9 @@ export const postGreengrassDefinitionDevicesRoute = createRoute({
             .object({
               InitialVersion: z
                 .object({
-                  Devices: ListOfDeviceSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'A list of devices in the definition version.' }),
-                  ).exactOptional(),
+                  Devices: ListOfDeviceSchema.exactOptional().openapi({
+                    description: 'A list of devices in the definition version.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5132,22 +4154,13 @@ export const postGreengrassDefinitionFunctionsRoute = createRoute({
             .object({
               InitialVersion: z
                 .object({
-                  DefaultConfig: FunctionDefaultConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The default configuration that applies to all Lambda functions in this function definition version. Individual Lambda functions can override these settings.',
-                      }),
-                  ).exactOptional(),
-                  Functions: ListOfFunctionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of Lambda functions in this function definition version.',
-                      }),
-                  ).exactOptional(),
+                  DefaultConfig: FunctionDefaultConfigSchema.exactOptional().openapi({
+                    description:
+                      'The default configuration that applies to all Lambda functions in this function definition version. Individual Lambda functions can override these settings.',
+                  }),
+                  Functions: ListOfFunctionSchema.exactOptional().openapi({
+                    description: 'A list of Lambda functions in this function definition version.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5413,56 +4426,27 @@ export const postGreengrassGroupsRoute = createRoute({
             .object({
               InitialVersion: z
                 .object({
-                  ConnectorDefinitionVersionArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ARN of the connector definition version for this group.',
-                      }),
-                  ).exactOptional(),
-                  CoreDefinitionVersionArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ARN of the core definition version for this group.',
-                      }),
-                  ).exactOptional(),
-                  DeviceDefinitionVersionArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ARN of the device definition version for this group.',
-                      }),
-                  ).exactOptional(),
-                  FunctionDefinitionVersionArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ARN of the function definition version for this group.',
-                      }),
-                  ).exactOptional(),
-                  LoggerDefinitionVersionArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ARN of the logger definition version for this group.',
-                      }),
-                  ).exactOptional(),
-                  ResourceDefinitionVersionArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ARN of the resource definition version for this group.',
-                      }),
-                  ).exactOptional(),
-                  SubscriptionDefinitionVersionArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ARN of the subscription definition version for this group.',
-                      }),
-                  ).exactOptional(),
+                  ConnectorDefinitionVersionArn: StringSchema.exactOptional().openapi({
+                    description: 'The ARN of the connector definition version for this group.',
+                  }),
+                  CoreDefinitionVersionArn: StringSchema.exactOptional().openapi({
+                    description: 'The ARN of the core definition version for this group.',
+                  }),
+                  DeviceDefinitionVersionArn: StringSchema.exactOptional().openapi({
+                    description: 'The ARN of the device definition version for this group.',
+                  }),
+                  FunctionDefinitionVersionArn: StringSchema.exactOptional().openapi({
+                    description: 'The ARN of the function definition version for this group.',
+                  }),
+                  LoggerDefinitionVersionArn: StringSchema.exactOptional().openapi({
+                    description: 'The ARN of the logger definition version for this group.',
+                  }),
+                  ResourceDefinitionVersionArn: StringSchema.exactOptional().openapi({
+                    description: 'The ARN of the resource definition version for this group.',
+                  }),
+                  SubscriptionDefinitionVersionArn: StringSchema.exactOptional().openapi({
+                    description: 'The ARN of the subscription definition version for this group.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Information about a group version.', required: [] }),
@@ -5851,9 +4835,9 @@ export const postGreengrassDefinitionLoggersRoute = createRoute({
             .object({
               InitialVersion: z
                 .object({
-                  Loggers: ListOfLoggerSchema.and(
-                    z.any().openapi({ description: 'A list of loggers.' }),
-                  ).exactOptional(),
+                  Loggers: ListOfLoggerSchema.exactOptional().openapi({
+                    description: 'A list of loggers.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6109,9 +5093,9 @@ export const postGreengrassDefinitionResourcesRoute = createRoute({
             .object({
               InitialVersion: z
                 .object({
-                  Resources: ListOfResourceSchema.and(
-                    z.any().openapi({ description: 'A list of resources.' }),
-                  ).exactOptional(),
+                  Resources: ListOfResourceSchema.exactOptional().openapi({
+                    description: 'A list of resources.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6466,9 +5450,9 @@ export const postGreengrassDefinitionSubscriptionsRoute = createRoute({
             .object({
               InitialVersion: z
                 .object({
-                  Subscriptions: ListOfSubscriptionSchema.and(
-                    z.any().openapi({ description: 'A list of subscriptions.' }),
-                  ).exactOptional(),
+                  Subscriptions: ListOfSubscriptionSchema.exactOptional().openapi({
+                    description: 'A list of subscriptions.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -8709,9 +7693,9 @@ export const putGreengrassThingsThingNameRuntimeconfigRoute = createRoute({
             .object({
               TelemetryConfiguration: z
                 .object({
-                  Telemetry: TelemetrySchema.and(
-                    z.any().openapi({ description: 'Configure telemetry to be on or off.' }),
-                  ).exactOptional(),
+                  Telemetry: TelemetrySchema.exactOptional().openapi({
+                    description: 'Configure telemetry to be on or off.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

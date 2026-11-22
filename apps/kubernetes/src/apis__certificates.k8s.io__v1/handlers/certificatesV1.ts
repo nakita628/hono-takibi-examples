@@ -116,31 +116,35 @@ export const certificatesV1Handler = app
   .openapi(postApisCertificatesK8sIoV1NamespacesNamespacePodcertificaterequestsRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    deleteApisCertificatesK8sIoV1NamespacesNamespacePodcertificaterequestsNameRoute,
-    (c) => {},
-  )
+  .openapi(deleteApisCertificatesK8sIoV1NamespacesNamespacePodcertificaterequestsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(getApisCertificatesK8sIoV1NamespacesNamespacePodcertificaterequestsNameRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    patchApisCertificatesK8sIoV1NamespacesNamespacePodcertificaterequestsNameRoute,
-    (c) => {},
-  )
+  .openapi(patchApisCertificatesK8sIoV1NamespacesNamespacePodcertificaterequestsNameRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(putApisCertificatesK8sIoV1NamespacesNamespacePodcertificaterequestsNameRoute, (c) => {
     throw new Error('Not implemented')
   })
   .openapi(
     getApisCertificatesK8sIoV1NamespacesNamespacePodcertificaterequestsNameStatusRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     patchApisCertificatesK8sIoV1NamespacesNamespacePodcertificaterequestsNameStatusRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     putApisCertificatesK8sIoV1NamespacesNamespacePodcertificaterequestsNameStatusRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(getApisCertificatesK8sIoV1PodcertificaterequestsRoute, (c) => {
     throw new Error('Not implemented')
@@ -162,7 +166,9 @@ export const certificatesV1Handler = app
   })
   .openapi(
     getApisCertificatesK8sIoV1WatchNamespacesNamespacePodcertificaterequestsNameRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(getApisCertificatesK8sIoV1WatchPodcertificaterequestsRoute, (c) => {
     throw new Error('Not implemented')

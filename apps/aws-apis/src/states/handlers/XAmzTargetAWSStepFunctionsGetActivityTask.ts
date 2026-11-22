@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSStepFunctionsGetActivityTaskHandler = app.openapi(
   postXAmzTargetAWSStepFunctionsGetActivityTaskRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

@@ -42,13 +42,13 @@ const ExecuteResponseSchema = z
       .openapi({ description: 'The error message if the execution failed.', title: 'Error' }),
     id: z.string().openapi({ description: 'The id of the execution log.', title: 'Id' }),
     input_params: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'The params we used / will use to execute the action.',
         title: 'Input Params',
       }),
     result: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -85,7 +85,7 @@ const ExposedActionSchemaSchema = z
       .string()
       .openapi({ description: 'The operation ID of the exposed action.', title: 'Operation Id' }),
     params: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'Available hint fields for the action.', title: 'Params' }),
   })
   .openapi({

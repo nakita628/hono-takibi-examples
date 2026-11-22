@@ -8322,7 +8322,7 @@ export const get3MovieMovieIdRecommendationsRoute = createRoute({
     200: {
       description: '200',
       content: {
-        'application/json': { schema: z.object({}), examples: { Result: { value: '{}' } } },
+        'application/json': { schema: z.looseObject({}), examples: { Result: { value: '{}' } } },
       },
     },
   },

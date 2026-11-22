@@ -4,7 +4,6 @@ import { postXAmzTargetAmazonEC2ContainerRegistryV20150921PutImageTagMutabilityR
 const app = new OpenAPIHono()
 
 export const XAmzTargetAmazonEC2ContainerRegistryV20150921PutImageTagMutabilityHandler =
-  app.openapi(
-    postXAmzTargetAmazonEC2ContainerRegistryV20150921PutImageTagMutabilityRoute,
-    (c) => {},
-  )
+  app.openapi(postXAmzTargetAmazonEC2ContainerRegistryV20150921PutImageTagMutabilityRoute, (c) => {
+    throw new Error('Not implemented')
+  })

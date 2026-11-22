@@ -1,5 +1,105 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AllowedIpRangeSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. User-provided description. It must contain at most 300 characters.',
+      }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'IP address or range, defined using CIDR notation, of requests that this rule applies to. Examples: `192.168.1.1` or `192.168.0.0/16` or `2001:db8::/32` or `2001:0db8:0000:0042:0000:8a2e:0370:7334`. IP range prefixes should be properly truncated. For example, `1.2.3.4/24` should be truncated to `1.2.3.0/24`. Similarly, for IPv6, `2001:db8::1/32` should be truncated to `2001:db8::/32`.',
+      }),
+  })
+  .openapi({ description: 'Allowed IP range with user-provided description.', required: [] })
+  .openapi('AllowedIpRange')
+
+const CheckUpgradeRequestSchema = z
+  .object({
+    imageVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The version of the software running in the environment. This encapsulates both the version of Cloud Composer functionality and the version of Apache Airflow. It must match the regular expression `composer-([0-9]+(\\.[0-9]+\\.[0-9]+(-preview\\.[0-9]+)?)?|latest)-airflow-([0-9]+(\\.[0-9]+(\\.[0-9]+)?)?)`. When used as input, the server also checks if the provided version is supported and denies the request for an unsupported version. The Cloud Composer portion of the image version is a full [semantic version](https://semver.org), or an alias in the form of major version number or `latest`. When an alias is provided, the server replaces it with the current Cloud Composer version that satisfies the alias. The Apache Airflow portion of the image version is a full semantic version that points to one of the supported Apache Airflow versions, or an alias in the form of only major or major.minor versions specified. When an alias is provided, the server replaces it with the latest Apache Airflow version that satisfies the alias and is supported in the given Cloud Composer version. In all cases, the resolved image version is stored in the same field. See also [version list](/composer/docs/concepts/versioning/composer-versions) and [versioning overview](/composer/docs/concepts/versioning/composer-versioning-overview).',
+      }),
+  })
+  .openapi({ description: 'Request to check whether image upgrade will succeed.', required: [] })
+  .openapi('CheckUpgradeRequest')
+
+const CheckUpgradeResponseSchema = z
+  .object({
+    buildLogUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Url for a docker build log of an upgraded image.',
+        readOnly: true,
+      }),
+    containsPypiModulesConflict: z
+      .enum(['CONFLICT_RESULT_UNSPECIFIED', 'CONFLICT', 'NO_CONFLICT'])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Whether build has succeeded or failed on modules conflicts.',
+        readOnly: true,
+      }),
+    imageVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Composer image for which the build was happening.' }),
+    pypiConflictBuildLogExtract: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Extract from a docker image build log containing information about pypi modules conflicts.',
+        readOnly: true,
+      }),
+    pypiDependencies: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Pypi dependencies specified in the environment configuration, at the time when the build was triggered.',
+      }),
+  })
+  .openapi({
+    description: 'Message containing information about the result of an upgrade check operation.',
+    required: [],
+  })
+  .openapi('CheckUpgradeResponse')
+
+const CidrBlockSchema = z
+  .object({
+    cidrBlock: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'CIDR block that must be specified in CIDR notation.' }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'User-defined name that identifies the CIDR block.' }),
+  })
+  .openapi({ description: 'CIDR block with an optional name.', required: [] })
+  .openapi('CidrBlock')
+
+const CloudDataLineageIntegrationSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. Whether or not Cloud Data Lineage integration is enabled.',
+      }),
+  })
+  .openapi({ description: 'Configuration for Cloud Data Lineage integration.', required: [] })
+  .openapi('CloudDataLineageIntegration')
+
 const DatabaseConfigSchema = z
   .object({
     machineType: z
@@ -16,6 +116,45 @@ const DatabaseConfigSchema = z
     required: [],
   })
   .openapi('DatabaseConfig')
+
+const DateSchema = z
+  .object({
+    day: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+      }),
+    month: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
+      }),
+    year: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
+    required: [],
+  })
+  .openapi('Date')
+
+const EmptySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
+  })
+  .openapi('Empty')
 
 const EncryptionConfigSchema = z
   .object({
@@ -63,20 +202,6 @@ const MaintenanceWindowSchema = z
     required: [],
   })
   .openapi('MaintenanceWindow')
-
-const CidrBlockSchema = z
-  .object({
-    cidrBlock: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'CIDR block that must be specified in CIDR notation.' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'User-defined name that identifies the CIDR block.' }),
-  })
-  .openapi({ description: 'CIDR block with an optional name.', required: [] })
-  .openapi('CidrBlock')
 
 const MasterAuthorizedNetworksConfigSchema = z
   .object({
@@ -393,18 +518,6 @@ const RecoveryConfigSchema = z
   .openapi({ description: 'The Recovery settings of an environment.', required: [] })
   .openapi('RecoveryConfig')
 
-const CloudDataLineageIntegrationSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. Whether or not Cloud Data Lineage integration is enabled.',
-      }),
-  })
-  .openapi({ description: 'Configuration for Cloud Data Lineage integration.', required: [] })
-  .openapi('CloudDataLineageIntegration')
-
 const SoftwareConfigSchema = z
   .object({
     airflowConfigOverrides: z
@@ -475,25 +588,6 @@ const WebServerConfigSchema = z
     required: [],
   })
   .openapi('WebServerConfig')
-
-const AllowedIpRangeSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. User-provided description. It must contain at most 300 characters.',
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'IP address or range, defined using CIDR notation, of requests that this rule applies to. Examples: `192.168.1.1` or `192.168.0.0/16` or `2001:db8::/32` or `2001:0db8:0000:0042:0000:8a2e:0370:7334`. IP range prefixes should be properly truncated. For example, `1.2.3.4/24` should be truncated to `1.2.3.0/24`. Similarly, for IPv6, `2001:db8::1/32` should be truncated to `2001:db8::/32`.',
-      }),
-  })
-  .openapi({ description: 'Allowed IP range with user-provided description.', required: [] })
-  .openapi('AllowedIpRange')
 
 const WebServerNetworkAccessControlSchema = z
   .object({
@@ -634,223 +728,101 @@ const WorkloadsConfigSchema = z
   })
   .openapi('WorkloadsConfig')
 
-type EnvironmentConfigType = {
-  airflowByoidUri?: string
-  airflowUri?: string
-  dagGcsPrefix?: string
-  databaseConfig?: z.infer<typeof DatabaseConfigSchema>
-  encryptionConfig?: z.infer<typeof EncryptionConfigSchema>
-  environmentSize?:
-    | 'ENVIRONMENT_SIZE_UNSPECIFIED'
-    | 'ENVIRONMENT_SIZE_SMALL'
-    | 'ENVIRONMENT_SIZE_MEDIUM'
-    | 'ENVIRONMENT_SIZE_LARGE'
-  gkeCluster?: string
-  maintenanceWindow?: z.infer<typeof MaintenanceWindowSchema>
-  masterAuthorizedNetworksConfig?: z.infer<typeof MasterAuthorizedNetworksConfigSchema>
-  nodeConfig?: z.infer<typeof NodeConfigSchema>
-  nodeCount?: number
-  privateEnvironmentConfig?: z.infer<typeof PrivateEnvironmentConfigSchema>
-  recoveryConfig?: z.infer<typeof RecoveryConfigSchema>
-  softwareConfig?: z.infer<typeof SoftwareConfigSchema>
-  webServerConfig?: z.infer<typeof WebServerConfigSchema>
-  webServerNetworkAccessControl?: z.infer<typeof WebServerNetworkAccessControlSchema>
-  workloadsConfig?: z.infer<typeof WorkloadsConfigSchema>
-}
-
-const CheckUpgradeRequestSchema = z
+const EnvironmentConfigSchema = z
   .object({
-    imageVersion: z
+    airflowByoidUri: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The version of the software running in the environment. This encapsulates both the version of Cloud Composer functionality and the version of Apache Airflow. It must match the regular expression `composer-([0-9]+(\\.[0-9]+\\.[0-9]+(-preview\\.[0-9]+)?)?|latest)-airflow-([0-9]+(\\.[0-9]+(\\.[0-9]+)?)?)`. When used as input, the server also checks if the provided version is supported and denies the request for an unsupported version. The Cloud Composer portion of the image version is a full [semantic version](https://semver.org), or an alias in the form of major version number or `latest`. When an alias is provided, the server replaces it with the current Cloud Composer version that satisfies the alias. The Apache Airflow portion of the image version is a full semantic version that points to one of the supported Apache Airflow versions, or an alias in the form of only major or major.minor versions specified. When an alias is provided, the server replaces it with the latest Apache Airflow version that satisfies the alias and is supported in the given Cloud Composer version. In all cases, the resolved image version is stored in the same field. See also [version list](/composer/docs/concepts/versioning/composer-versions) and [versioning overview](/composer/docs/concepts/versioning/composer-versioning-overview).',
-      }),
-  })
-  .openapi({ description: 'Request to check whether image upgrade will succeed.', required: [] })
-  .openapi('CheckUpgradeRequest')
-
-const CheckUpgradeResponseSchema = z
-  .object({
-    buildLogUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Url for a docker build log of an upgraded image.',
+          "Output only. The 'bring your own identity' variant of the URI of the Apache Airflow Web UI hosted within this environment, to be accessed with external identities using workforce identity federation (see [Access environments with workforce identity federation](/composer/docs/composer-2/access-environments-with-workforce-identity-federation)).",
         readOnly: true,
       }),
-    containsPypiModulesConflict: z
-      .enum(['CONFLICT_RESULT_UNSPECIFIED', 'CONFLICT', 'NO_CONFLICT'])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Whether build has succeeded or failed on modules conflicts.',
-        readOnly: true,
-      }),
-    imageVersion: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Composer image for which the build was happening.' }),
-    pypiConflictBuildLogExtract: z
+    airflowUri: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Output only. Extract from a docker image build log containing information about pypi modules conflicts.',
+          'Output only. The URI of the Apache Airflow Web UI hosted within this environment (see [Airflow web interface](/composer/docs/how-to/accessing/airflow-web-interface)).',
         readOnly: true,
       }),
-    pypiDependencies: z
-      .record(z.string(), z.string())
+    dagGcsPrefix: z
+      .string()
       .exactOptional()
       .openapi({
         description:
-          'Pypi dependencies specified in the environment configuration, at the time when the build was triggered.',
+          'Output only. The Cloud Storage prefix of the DAGs for this environment. Although Cloud Storage objects reside in a flat namespace, a hierarchical file tree can be simulated using "/"-delimited object name prefixes. DAG objects for this environment reside in a simulated directory with the given prefix.',
+        readOnly: true,
       }),
-  })
-  .openapi({
-    description: 'Message containing information about the result of an upgrade check operation.',
-    required: [],
-  })
-  .openapi('CheckUpgradeResponse')
-
-const DateSchema = z
-  .object({
-    day: z
+    databaseConfig: DatabaseConfigSchema.exactOptional().openapi({
+      description:
+        'Optional. The configuration settings for Cloud SQL instance used internally by Apache Airflow software.',
+    }),
+    encryptionConfig: EncryptionConfigSchema.exactOptional().openapi({
+      description:
+        'Optional. The encryption options for the Cloud Composer environment and its dependencies. Cannot be updated.',
+    }),
+    environmentSize: z
+      .enum([
+        'ENVIRONMENT_SIZE_UNSPECIFIED',
+        'ENVIRONMENT_SIZE_SMALL',
+        'ENVIRONMENT_SIZE_MEDIUM',
+        'ENVIRONMENT_SIZE_LARGE',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The size of the Cloud Composer environment. This field is supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.',
+      }),
+    gkeCluster: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The Kubernetes Engine cluster used to run this environment.',
+        readOnly: true,
+      }),
+    maintenanceWindow: MaintenanceWindowSchema.exactOptional().openapi({
+      description:
+        'Optional. The maintenance window is the period when Cloud Composer components may undergo maintenance. It is defined so that maintenance is not executed during peak hours or critical time periods. The system will not be under maintenance for every occurrence of this window, but when maintenance is planned, it will be scheduled during the window. The maintenance window period must encompass at least 12 hours per week. This may be split into multiple chunks, each with a size of at least 4 hours. If this value is omitted, Cloud Composer components may be subject to maintenance at any time.',
+    }),
+    masterAuthorizedNetworksConfig: MasterAuthorizedNetworksConfigSchema.exactOptional().openapi({
+      description:
+        'Optional. The configuration options for GKE cluster master authorized networks. By default master authorized networks feature is: - in case of private environment: enabled with no external networks allowlisted. - in case of public environment: disabled.',
+    }),
+    nodeConfig: NodeConfigSchema.exactOptional().openapi({
+      description: 'The configuration used for the Kubernetes Engine cluster.',
+    }),
+    nodeCount: z
       .int32()
       .exactOptional()
       .openapi({
         description:
-          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+          'The number of nodes in the Kubernetes Engine cluster that will be used to run this environment. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.',
       }),
-    month: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
-      }),
-    year: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
-      }),
+    privateEnvironmentConfig: PrivateEnvironmentConfigSchema.exactOptional().openapi({
+      description: 'The configuration used for the Private IP Cloud Composer environment.',
+    }),
+    recoveryConfig: RecoveryConfigSchema.exactOptional().openapi({
+      description:
+        'Optional. The Recovery settings configuration of an environment. This field is supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.',
+    }),
+    softwareConfig: SoftwareConfigSchema.exactOptional().openapi({
+      description: 'The configuration settings for software inside the environment.',
+    }),
+    webServerConfig: WebServerConfigSchema.exactOptional().openapi({
+      description:
+        'Optional. The configuration settings for the Airflow web server App Engine instance. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.',
+    }),
+    webServerNetworkAccessControl: WebServerNetworkAccessControlSchema.exactOptional().openapi({
+      description:
+        'Optional. The network-level access control policy for the Airflow web server. If unspecified, no network-level access restrictions will be applied.',
+    }),
+    workloadsConfig: WorkloadsConfigSchema.exactOptional().openapi({
+      description:
+        'Optional. The workloads configuration settings for the GKE cluster associated with the Cloud Composer environment. The GKE cluster runs Airflow scheduler, web server and workers workloads. This field is supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.',
+    }),
   })
-  .openapi({
-    description:
-      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
-    required: [],
-  })
-  .openapi('Date')
-
-const EmptySchema = z
-  .object({})
-  .openapi({
-    description:
-      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
-  })
-  .openapi('Empty')
-
-const EnvironmentConfigSchema: z.ZodType<EnvironmentConfigType> = z
-  .lazy(() =>
-    z
-      .object({
-        airflowByoidUri: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "Output only. The 'bring your own identity' variant of the URI of the Apache Airflow Web UI hosted within this environment, to be accessed with external identities using workforce identity federation (see [Access environments with workforce identity federation](/composer/docs/composer-2/access-environments-with-workforce-identity-federation)).",
-            readOnly: true,
-          }),
-        airflowUri: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The URI of the Apache Airflow Web UI hosted within this environment (see [Airflow web interface](/composer/docs/how-to/accessing/airflow-web-interface)).',
-            readOnly: true,
-          }),
-        dagGcsPrefix: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The Cloud Storage prefix of the DAGs for this environment. Although Cloud Storage objects reside in a flat namespace, a hierarchical file tree can be simulated using "/"-delimited object name prefixes. DAG objects for this environment reside in a simulated directory with the given prefix.',
-            readOnly: true,
-          }),
-        databaseConfig: DatabaseConfigSchema.exactOptional().openapi({
-          description:
-            'Optional. The configuration settings for Cloud SQL instance used internally by Apache Airflow software.',
-        }),
-        encryptionConfig: EncryptionConfigSchema.exactOptional().openapi({
-          description:
-            'Optional. The encryption options for the Cloud Composer environment and its dependencies. Cannot be updated.',
-        }),
-        environmentSize: z
-          .enum([
-            'ENVIRONMENT_SIZE_UNSPECIFIED',
-            'ENVIRONMENT_SIZE_SMALL',
-            'ENVIRONMENT_SIZE_MEDIUM',
-            'ENVIRONMENT_SIZE_LARGE',
-          ])
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. The size of the Cloud Composer environment. This field is supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.',
-          }),
-        gkeCluster: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Output only. The Kubernetes Engine cluster used to run this environment.',
-            readOnly: true,
-          }),
-        maintenanceWindow: MaintenanceWindowSchema.exactOptional().openapi({
-          description:
-            'Optional. The maintenance window is the period when Cloud Composer components may undergo maintenance. It is defined so that maintenance is not executed during peak hours or critical time periods. The system will not be under maintenance for every occurrence of this window, but when maintenance is planned, it will be scheduled during the window. The maintenance window period must encompass at least 12 hours per week. This may be split into multiple chunks, each with a size of at least 4 hours. If this value is omitted, Cloud Composer components may be subject to maintenance at any time.',
-        }),
-        masterAuthorizedNetworksConfig:
-          MasterAuthorizedNetworksConfigSchema.exactOptional().openapi({
-            description:
-              'Optional. The configuration options for GKE cluster master authorized networks. By default master authorized networks feature is: - in case of private environment: enabled with no external networks allowlisted. - in case of public environment: disabled.',
-          }),
-        nodeConfig: NodeConfigSchema.exactOptional().openapi({
-          description: 'The configuration used for the Kubernetes Engine cluster.',
-        }),
-        nodeCount: z
-          .int32()
-          .exactOptional()
-          .openapi({
-            description:
-              'The number of nodes in the Kubernetes Engine cluster that will be used to run this environment. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.',
-          }),
-        privateEnvironmentConfig: PrivateEnvironmentConfigSchema.exactOptional().openapi({
-          description: 'The configuration used for the Private IP Cloud Composer environment.',
-        }),
-        recoveryConfig: RecoveryConfigSchema.exactOptional().openapi({
-          description:
-            'Optional. The Recovery settings configuration of an environment. This field is supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.',
-        }),
-        softwareConfig: SoftwareConfigSchema.exactOptional().openapi({
-          description: 'The configuration settings for software inside the environment.',
-        }),
-        webServerConfig: WebServerConfigSchema.exactOptional().openapi({
-          description:
-            'Optional. The configuration settings for the Airflow web server App Engine instance. This field is supported for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.',
-        }),
-        webServerNetworkAccessControl: WebServerNetworkAccessControlSchema.exactOptional().openapi({
-          description:
-            'Optional. The network-level access control policy for the Airflow web server. If unspecified, no network-level access restrictions will be applied.',
-        }),
-        workloadsConfig: WorkloadsConfigSchema.exactOptional().openapi({
-          description:
-            'Optional. The workloads configuration settings for the GKE cluster associated with the Cloud Composer environment. The GKE cluster runs Airflow scheduler, web server and workers workloads. This field is supported for Cloud Composer environments in versions composer-2.*.*-airflow-*.*.* and newer.',
-        }),
-      })
-      .openapi({ description: 'Configuration information for an environment.', required: [] }),
-  )
+  .openapi({ description: 'Configuration information for an environment.', required: [] })
   .openapi('EnvironmentConfig')
 
 const EnvironmentSchema = z
@@ -1169,7 +1141,7 @@ const LoadSnapshotRequestSchema = z
   .openapi('LoadSnapshotRequest')
 
 const LoadSnapshotResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response to LoadSnapshotRequest.' })
   .openapi('LoadSnapshotResponse')
 
@@ -1240,7 +1212,7 @@ const PollAirflowCommandResponseSchema = z
   .openapi('PollAirflowCommandResponse')
 
 const RestartWebServerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Restart Airflow web server.' })
   .openapi('RestartWebServerRequest')
 

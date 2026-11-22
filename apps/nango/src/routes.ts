@@ -774,19 +774,49 @@ const IntegrationCredentialsWithConfigSchema = z
   })
   .openapi('IntegrationCredentialsWithConfig')
 
-const IntegrationFullSchema = IntegrationSchema.and(
-  z
-    .strictObject({
-      webhook_url: z
-        .union([z.string(), z.null().nullable()])
-        .exactOptional()
-        .openapi({ description: 'Configure your integration webhooks to point to this URL' }),
-      credentials: z
-        .union([IntegrationCredentialsWithConfigSchema, z.null().nullable()])
-        .exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('IntegrationFull')
+const IntegrationFullSchema = (() => {
+  const Schema = IntegrationSchema.and(
+    z
+      .strictObject({
+        webhook_url: z
+          .union([z.string(), z.null().nullable()])
+          .exactOptional()
+          .openapi({ description: 'Configure your integration webhooks to point to this URL' }),
+        credentials: z
+          .union([IntegrationCredentialsWithConfigSchema, z.null().nullable()])
+          .exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'unique_key',
+            'display_name',
+            'provider',
+            'logo',
+            'created_at',
+            'updated_at',
+            'forward_webhooks',
+            'missing_fields',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['webhook_url', 'credentials'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('IntegrationFull')
 
 const TagsSchema = z
   .record(z.string(), z.string().max(255))
@@ -937,9 +967,28 @@ const OAuth1CredentialsSchema = z
   .openapi({ title: 'OAuth1', required: ['oauth_token', 'oauth_token_secret', 'type'] })
   .openapi('OAuth1Credentials')
 
-const OAuth1CredentialsWithRawSchema = OAuth1CredentialsSchema.and(
-  z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
-)
+const OAuth1CredentialsWithRawSchema = (() => {
+  const Schema = OAuth1CredentialsSchema.and(
+    z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['oauth_token', 'oauth_token_secret', 'type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['raw'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'OAuth1' })
   .openapi('OAuth1CredentialsWithRaw')
 
@@ -960,9 +1009,30 @@ const OAuth2CredentialsSchema = z
   .openapi({ title: 'OAuth2', required: ['access_token', 'type'] })
   .openapi('OAuth2Credentials')
 
-const OAuth2CredentialsWithRawSchema = OAuth2CredentialsSchema.and(
-  z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
-)
+const OAuth2CredentialsWithRawSchema = (() => {
+  const Schema = OAuth2CredentialsSchema.and(
+    z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          !['access_token', 'config_override', 'expires_at', 'refresh_token', 'type'].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['raw'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'OAuth2' })
   .openapi('OAuth2CredentialsWithRaw')
 
@@ -1014,9 +1084,28 @@ const OAuth2ClientCredentialsSchema = z
   .openapi({ title: 'OAuth2 Client', required: ['client_id', 'client_secret', 'token', 'type'] })
   .openapi('OAuth2ClientCredentials')
 
-const OAuth2ClientCredentialsWithRawSchema = OAuth2ClientCredentialsSchema.and(
-  z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
-)
+const OAuth2ClientCredentialsWithRawSchema = (() => {
+  const Schema = OAuth2ClientCredentialsSchema.and(
+    z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['client_id', 'client_secret', 'expires_at', 'token', 'type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['raw'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'OAuth2 Client' })
   .openapi('OAuth2ClientCredentialsWithRaw')
 
@@ -1030,9 +1119,28 @@ const AppStoreCredentialsSchema = z
   .openapi({ title: 'App Store', required: ['access_token', 'private_key'] })
   .openapi('AppStoreCredentials')
 
-const AppStoreCredentialsWithRawSchema = AppStoreCredentialsSchema.and(
-  z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
-)
+const AppStoreCredentialsWithRawSchema = (() => {
+  const Schema = AppStoreCredentialsSchema.and(
+    z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['access_token', 'expires_at', 'private_key', 'type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['raw'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'App Store' })
   .openapi('AppStoreCredentialsWithRaw')
 
@@ -1078,9 +1186,39 @@ const BillCredentialsSchema = z
   })
   .openapi('BillCredentials')
 
-const BillCredentialsWithRawSchema = BillCredentialsSchema.and(
-  z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
-)
+const BillCredentialsWithRawSchema = (() => {
+  const Schema = BillCredentialsSchema.and(
+    z.strictObject({ raw: z.looseObject({}) }).openapi({ required: ['raw'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'dev_key',
+            'expires_at',
+            'organization_id',
+            'password',
+            'session_id',
+            'type',
+            'user_id',
+            'username',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['raw'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ title: 'Bill' })
   .openapi('BillCredentialsWithRaw')
 

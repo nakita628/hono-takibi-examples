@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodePipeline20150709PutThirdPartyJobFailureResultHandler = app.openapi(
   postXAmzTargetCodePipeline20150709PutThirdPartyJobFailureResultRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

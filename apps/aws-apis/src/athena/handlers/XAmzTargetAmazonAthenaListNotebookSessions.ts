@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAmazonAthenaListNotebookSessionsHandler = app.openapi(
   postXAmzTargetAmazonAthenaListNotebookSessionsRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

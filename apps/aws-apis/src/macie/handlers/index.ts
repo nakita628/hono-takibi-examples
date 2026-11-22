@@ -1,0 +1,7 @@
+export * from './XAmzTargetMacieServiceAssociateMemberAccount'
+export * from './XAmzTargetMacieServiceAssociateS3Resources'
+export * from './XAmzTargetMacieServiceDisassociateMemberAccount'
+export * from './XAmzTargetMacieServiceDisassociateS3Resources'
+export * from './XAmzTargetMacieServiceListMemberAccounts'
+export * from './XAmzTargetMacieServiceListS3Resources'
+export * from './XAmzTargetMacieServiceUpdateS3Resources'

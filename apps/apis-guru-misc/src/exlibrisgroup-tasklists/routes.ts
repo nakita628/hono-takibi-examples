@@ -6275,8 +6275,8 @@ export const getAlmawsV1TaskListsTestRoute = createRoute({
     200: {
       description: 'OK',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
       headers: z.object({ 'X-Exl-Api-Remaining': RemainingHeaderSchema }),
     },
@@ -6297,8 +6297,8 @@ export const postAlmawsV1TaskListsTestRoute = createRoute({
     200: {
       description: 'OK',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
       headers: z.object({ 'X-Exl-Api-Remaining': RemainingHeaderSchema }),
     },

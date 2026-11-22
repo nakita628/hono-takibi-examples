@@ -52,92 +52,56 @@ const JobDocumentSchema = z.string().max(32768).openapi('JobDocument')
 
 const JobExecutionSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier you assigned to this job when it was created.',
-        }),
-    ).exactOptional(),
-    thingName: ThingNameSchema.and(
-      z.any().openapi({ description: 'The name of the thing that is executing the job.' }),
-    ).exactOptional(),
-    status: JobExecutionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the job execution. Can be one of: "QUEUED", "IN_PROGRESS", "FAILED", "SUCCESS", "CANCELED", "REJECTED", or "REMOVED".',
-        }),
-    ).exactOptional(),
-    statusDetails: DetailsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of name/value pairs that describe the status of the job execution.',
-        }),
-    ).exactOptional(),
-    queuedAt: QueuedAtSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the job execution was enqueued.',
-        }),
-    ).exactOptional(),
-    startedAt: StartedAtSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the job execution was started.',
-        }),
-    ).exactOptional(),
-    lastUpdatedAt: LastUpdatedAtSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the job execution was last updated. ',
-        }),
-    ).exactOptional(),
-    approximateSecondsBeforeTimedOut: ApproximateSecondsBeforeTimedOutSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The estimated number of seconds that remain before the job execution status will be changed to <code>TIMED_OUT</code>.',
-        }),
-    ).exactOptional(),
-    versionNumber: VersionNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the job execution. Job execution versions are incremented each time they are updated by a device.',
-        }),
-    ).exactOptional(),
-    executionNumber: ExecutionNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A number that identifies a particular job execution on a particular device. It can be used later in commands that return or update job execution information.',
-        }),
-    ).exactOptional(),
-    jobDocument: JobDocumentSchema.and(
-      z.any().openapi({ description: 'The content of the job document.' }),
-    ).exactOptional(),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description: 'The unique identifier you assigned to this job when it was created.',
+    }),
+    thingName: ThingNameSchema.exactOptional().openapi({
+      description: 'The name of the thing that is executing the job.',
+    }),
+    status: JobExecutionStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the job execution. Can be one of: "QUEUED", "IN_PROGRESS", "FAILED", "SUCCESS", "CANCELED", "REJECTED", or "REMOVED".',
+    }),
+    statusDetails: DetailsMapSchema.exactOptional().openapi({
+      description:
+        'A collection of name/value pairs that describe the status of the job execution.',
+    }),
+    queuedAt: QueuedAtSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the job execution was enqueued.',
+    }),
+    startedAt: StartedAtSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the job execution was started.',
+    }),
+    lastUpdatedAt: LastUpdatedAtSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the job execution was last updated. ',
+    }),
+    approximateSecondsBeforeTimedOut:
+      ApproximateSecondsBeforeTimedOutSchema.exactOptional().openapi({
+        description:
+          'The estimated number of seconds that remain before the job execution status will be changed to <code>TIMED_OUT</code>.',
+      }),
+    versionNumber: VersionNumberSchema.exactOptional().openapi({
+      description:
+        'The version of the job execution. Job execution versions are incremented each time they are updated by a device.',
+    }),
+    executionNumber: ExecutionNumberSchema.exactOptional().openapi({
+      description:
+        'A number that identifies a particular job execution on a particular device. It can be used later in commands that return or update job execution information.',
+    }),
+    jobDocument: JobDocumentSchema.exactOptional().openapi({
+      description: 'The content of the job document.',
+    }),
   })
   .openapi({ description: 'Contains data about a job execution.', required: [] })
   .openapi('JobExecution')
 
 const DescribeJobExecutionResponseSchema = z
   .object({
-    execution: JobExecutionSchema.and(
-      z.any().openapi({ description: 'Contains data about a job execution.' }),
-    ).exactOptional(),
+    execution: JobExecutionSchema.exactOptional().openapi({
+      description: 'Contains data about a job execution.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeJobExecutionResponse')
@@ -156,52 +120,27 @@ const TerminalStateExceptionSchema = z.any().openapi('TerminalStateException')
 
 const JobExecutionSummarySchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier you assigned to this job when it was created.',
-        }),
-    ).exactOptional(),
-    queuedAt: QueuedAtSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the job execution was enqueued.',
-        }),
-    ).exactOptional(),
-    startedAt: StartedAtSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in milliseconds since the epoch, when the job execution started.',
-        }),
-    ).exactOptional(),
-    lastUpdatedAt: LastUpdatedAtSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the job execution was last updated.',
-        }),
-    ).exactOptional(),
-    versionNumber: VersionNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the job execution. Job execution versions are incremented each time AWS IoT Jobs receives an update from a device.',
-        }),
-    ).exactOptional(),
-    executionNumber: ExecutionNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A number that identifies a particular job execution on a particular device.',
-        }),
-    ).exactOptional(),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description: 'The unique identifier you assigned to this job when it was created.',
+    }),
+    queuedAt: QueuedAtSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the job execution was enqueued.',
+    }),
+    startedAt: StartedAtSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the job execution started.',
+    }),
+    lastUpdatedAt: LastUpdatedAtSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the job execution was last updated.',
+    }),
+    versionNumber: VersionNumberSchema.exactOptional().openapi({
+      description:
+        'The version of the job execution. Job execution versions are incremented each time AWS IoT Jobs receives an update from a device.',
+    }),
+    executionNumber: ExecutionNumberSchema.exactOptional().openapi({
+      description: 'A number that identifies a particular job execution on a particular device.',
+    }),
   })
   .openapi({ description: 'Contains a subset of information about a job execution.', required: [] })
   .openapi('JobExecutionSummary')
@@ -212,65 +151,51 @@ const JobExecutionSummaryListSchema = z
 
 const GetPendingJobExecutionsResponseSchema = z
   .object({
-    inProgressJobs: JobExecutionSummaryListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of JobExecutionSummary objects with status IN_PROGRESS.' }),
-    ).exactOptional(),
-    queuedJobs: JobExecutionSummaryListSchema.and(
-      z.any().openapi({ description: 'A list of JobExecutionSummary objects with status QUEUED.' }),
-    ).exactOptional(),
+    inProgressJobs: JobExecutionSummaryListSchema.exactOptional().openapi({
+      description: 'A list of JobExecutionSummary objects with status IN_PROGRESS.',
+    }),
+    queuedJobs: JobExecutionSummaryListSchema.exactOptional().openapi({
+      description: 'A list of JobExecutionSummary objects with status QUEUED.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPendingJobExecutionsResponse')
 
 const StartNextPendingJobExecutionResponseSchema = z
   .object({
-    execution: JobExecutionSchema.and(
-      z.any().openapi({ description: 'A JobExecution object.' }),
-    ).exactOptional(),
+    execution: JobExecutionSchema.exactOptional().openapi({
+      description: 'A JobExecution object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartNextPendingJobExecutionResponse')
 
 const JobExecutionStateSchema = z
   .object({
-    status: JobExecutionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the job execution. Can be one of: "QUEUED", "IN_PROGRESS", "FAILED", "SUCCESS", "CANCELED", "REJECTED", or "REMOVED".',
-        }),
-    ).exactOptional(),
-    statusDetails: DetailsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of name/value pairs that describe the status of the job execution.',
-        }),
-    ).exactOptional(),
-    versionNumber: VersionNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the job execution. Job execution versions are incremented each time they are updated by a device.',
-        }),
-    ).exactOptional(),
+    status: JobExecutionStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the job execution. Can be one of: "QUEUED", "IN_PROGRESS", "FAILED", "SUCCESS", "CANCELED", "REJECTED", or "REMOVED".',
+    }),
+    statusDetails: DetailsMapSchema.exactOptional().openapi({
+      description:
+        'A collection of name/value pairs that describe the status of the job execution.',
+    }),
+    versionNumber: VersionNumberSchema.exactOptional().openapi({
+      description:
+        'The version of the job execution. Job execution versions are incremented each time they are updated by a device.',
+    }),
   })
   .openapi({ description: 'Contains data about the state of a job execution.', required: [] })
   .openapi('JobExecutionState')
 
 const UpdateJobExecutionResponseSchema = z
   .object({
-    executionState: JobExecutionStateSchema.and(
-      z.any().openapi({ description: 'A JobExecutionState object.' }),
-    ).exactOptional(),
-    jobDocument: JobDocumentSchema.and(
-      z.any().openapi({ description: 'The contents of the Job Documents.' }),
-    ).exactOptional(),
+    executionState: JobExecutionStateSchema.exactOptional().openapi({
+      description: 'A JobExecutionState object.',
+    }),
+    jobDocument: JobDocumentSchema.exactOptional().openapi({
+      description: 'The contents of the Job Documents.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateJobExecutionResponse')
@@ -285,7 +210,7 @@ const DescribeJobExecutionJobIdSchema = z
 const IncludeJobDocumentSchema = z.boolean().openapi('IncludeJobDocument')
 
 const DescribeJobExecutionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeJobExecutionRequest' })
   .openapi('DescribeJobExecutionRequest')
 
@@ -299,7 +224,7 @@ const DetailsKeySchema = z
 const ExpectedVersionSchema = z.int().openapi('ExpectedVersion')
 
 const GetPendingJobExecutionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetPendingJobExecutionsRequest' })
   .openapi('GetPendingJobExecutionsRequest')
 
@@ -309,84 +234,48 @@ const StepTimeoutInMinutesSchema = z.int().openapi('StepTimeoutInMinutes')
 
 const StartNextPendingJobExecutionRequestSchema = z
   .object({
-    statusDetails: DetailsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of name/value pairs that describe the status of the job execution. If not specified, the statusDetails are unchanged.',
-        }),
-    ).exactOptional(),
-    stepTimeoutInMinutes: StepTimeoutInMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the amount of time this device has to finish execution of this job. If the job execution status is not set to a terminal state before this timer expires, or before the timer is reset (by calling <code>UpdateJobExecution</code>, setting the status to <code>IN_PROGRESS</code> and specifying a new timeout value in field <code>stepTimeoutInMinutes</code>) the job execution status will be automatically set to <code>TIMED_OUT</code>. Note that setting this timeout has no effect on that job execution timeout which may have been specified when the job was created (<code>CreateJob</code> using field <code>timeoutConfig</code>).',
-        }),
-    ).exactOptional(),
+    statusDetails: DetailsMapSchema.exactOptional().openapi({
+      description:
+        'A collection of name/value pairs that describe the status of the job execution. If not specified, the statusDetails are unchanged.',
+    }),
+    stepTimeoutInMinutes: StepTimeoutInMinutesSchema.exactOptional().openapi({
+      description:
+        'Specifies the amount of time this device has to finish execution of this job. If the job execution status is not set to a terminal state before this timer expires, or before the timer is reset (by calling <code>UpdateJobExecution</code>, setting the status to <code>IN_PROGRESS</code> and specifying a new timeout value in field <code>stepTimeoutInMinutes</code>) the job execution status will be automatically set to <code>TIMED_OUT</code>. Note that setting this timeout has no effect on that job execution timeout which may have been specified when the job was created (<code>CreateJob</code> using field <code>timeoutConfig</code>).',
+    }),
   })
   .openapi({ title: 'StartNextPendingJobExecutionRequest', required: [] })
   .openapi('StartNextPendingJobExecutionRequest')
 
 const UpdateJobExecutionRequestSchema = z
   .object({
-    status: JobExecutionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new status for the job execution (IN_PROGRESS, FAILED, SUCCESS, or REJECTED). This must be specified on every update.',
-        }),
-    ),
-    statusDetails: DetailsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Optional. A collection of name/value pairs that describe the status of the job execution. If not specified, the statusDetails are unchanged.',
-        }),
-    ).exactOptional(),
-    stepTimeoutInMinutes: StepTimeoutInMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the amount of time this device has to finish execution of this job. If the job execution status is not set to a terminal state before this timer expires, or before the timer is reset (by again calling <code>UpdateJobExecution</code>, setting the status to <code>IN_PROGRESS</code> and specifying a new timeout value in this field) the job execution status will be automatically set to <code>TIMED_OUT</code>. Note that setting or resetting this timeout has no effect on that job execution timeout which may have been specified when the job was created (<code>CreateJob</code> using field <code>timeoutConfig</code>).',
-        }),
-    ).exactOptional(),
-    expectedVersion: ExpectedVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. The expected current version of the job execution. Each time you update the job execution, its version is incremented. If the version of the job execution stored in Jobs does not match, the update is rejected with a VersionMismatch error, and an ErrorResponse that contains the current job execution status data is returned. (This makes it unnecessary to perform a separate DescribeJobExecution request in order to obtain the job execution status data.)',
-        }),
-    ).exactOptional(),
-    includeJobExecutionState: IncludeExecutionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. When included and set to true, the response contains the JobExecutionState data. The default is false.',
-        }),
-    ).exactOptional(),
-    includeJobDocument: IncludeJobDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. When set to true, the response contains the job document. The default is false.',
-        }),
-    ).exactOptional(),
-    executionNumber: ExecutionNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. A number that identifies a particular job execution on a particular device.',
-        }),
-    ).exactOptional(),
+    status: JobExecutionStatusSchema.openapi({
+      description:
+        'The new status for the job execution (IN_PROGRESS, FAILED, SUCCESS, or REJECTED). This must be specified on every update.',
+    }),
+    statusDetails: DetailsMapSchema.exactOptional().openapi({
+      description:
+        ' Optional. A collection of name/value pairs that describe the status of the job execution. If not specified, the statusDetails are unchanged.',
+    }),
+    stepTimeoutInMinutes: StepTimeoutInMinutesSchema.exactOptional().openapi({
+      description:
+        'Specifies the amount of time this device has to finish execution of this job. If the job execution status is not set to a terminal state before this timer expires, or before the timer is reset (by again calling <code>UpdateJobExecution</code>, setting the status to <code>IN_PROGRESS</code> and specifying a new timeout value in this field) the job execution status will be automatically set to <code>TIMED_OUT</code>. Note that setting or resetting this timeout has no effect on that job execution timeout which may have been specified when the job was created (<code>CreateJob</code> using field <code>timeoutConfig</code>).',
+    }),
+    expectedVersion: ExpectedVersionSchema.exactOptional().openapi({
+      description:
+        'Optional. The expected current version of the job execution. Each time you update the job execution, its version is incremented. If the version of the job execution stored in Jobs does not match, the update is rejected with a VersionMismatch error, and an ErrorResponse that contains the current job execution status data is returned. (This makes it unnecessary to perform a separate DescribeJobExecution request in order to obtain the job execution status data.)',
+    }),
+    includeJobExecutionState: IncludeExecutionStateSchema.exactOptional().openapi({
+      description:
+        'Optional. When included and set to true, the response contains the JobExecutionState data. The default is false.',
+    }),
+    includeJobDocument: IncludeJobDocumentSchema.exactOptional().openapi({
+      description:
+        'Optional. When set to true, the response contains the job document. The default is false.',
+    }),
+    executionNumber: ExecutionNumberSchema.exactOptional().openapi({
+      description:
+        'Optional. A number that identifies a particular job execution on a particular device.',
+    }),
   })
   .openapi({ required: ['status'], title: 'UpdateJobExecutionRequest' })
   .openapi('UpdateJobExecutionRequest')

@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodeBuild20161006ListCuratedEnvironmentImagesHandler = app.openapi(
   postXAmzTargetCodeBuild20161006ListCuratedEnvironmentImagesRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

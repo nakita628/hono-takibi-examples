@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetKinesis20131202DescribeLimitsHandler = app.openapi(
   postXAmzTargetKinesis20131202DescribeLimitsRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

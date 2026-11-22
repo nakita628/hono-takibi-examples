@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSEventsDeleteApiDestinationHandler = app.openapi(
   postXAmzTargetAWSEventsDeleteApiDestinationRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

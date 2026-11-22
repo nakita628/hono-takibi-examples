@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const ActionDeleteMessageBatchHandler = app.openapi(
   postActionDeleteMessageBatchRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

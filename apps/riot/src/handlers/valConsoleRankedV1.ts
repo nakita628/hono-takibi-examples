@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const valConsoleRankedV1Handler = app.openapi(
   getValConsoleRankedV1LeaderboardsByActActIdRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

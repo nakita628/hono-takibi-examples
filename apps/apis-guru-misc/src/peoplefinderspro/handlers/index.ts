@@ -1,0 +1,5 @@
+export * from './address'
+export * from './contact'
+export * from './email'
+export * from './identity'
+export * from './phone'

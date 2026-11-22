@@ -1,5 +1,1379 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const GoogleChromeManagementV1AudioStatusReportSchema = z
+  .object({
+    inputDevice: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Output only. Active input device's name.", readOnly: true }),
+    inputGain: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: "Output only. Active input device's gain in [0, 100].",
+        readOnly: true,
+      }),
+    inputMute: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Output only. Is active input device mute or not.', readOnly: true }),
+    outputDevice: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Output only. Active output device's name.", readOnly: true }),
+    outputMute: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Is active output device mute or not.',
+        readOnly: true,
+      }),
+    outputVolume: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: "Output only. Active output device's volume in [0, 100].",
+        readOnly: true,
+      }),
+    reportTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Timestamp of when the sample was collected on device.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Status data for storage. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceAudioStatus](https://chromeenterprise.google/policies/#ReportDeviceAudioStatus) * Data Collection Frequency: 10 minutes * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1AudioStatusReport')
+
+const GoogleTypeDateSchema = z
+  .object({
+    day: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+      }),
+    month: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
+      }),
+    year: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
+    required: [],
+  })
+  .openapi('GoogleTypeDate')
+
+const GoogleChromeManagementV1BatteryInfoSchema = z
+  .object({
+    designCapacity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Design capacity (mAmpere-hours).', readOnly: true }),
+    designMinVoltage: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Designed minimum output voltage (mV)',
+        readOnly: true,
+      }),
+    manufactureDate: GoogleTypeDateSchema.exactOptional().openapi({
+      description: 'Output only. The date the battery was manufactured.',
+      readOnly: true,
+    }),
+    manufacturer: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Battery manufacturer.', readOnly: true }),
+    serialNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Battery serial number.', readOnly: true }),
+    technology: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Technology of the battery. Example: Li-ion',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Information about the battery. * This field provides device information, which is static and will not change over time. * Data for this field is controlled via policy: [ReportDevicePowerStatus](https://chromeenterprise.google/policies/#ReportDevicePowerStatus) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1BatteryInfo')
+
+const GoogleChromeManagementV1BatterySampleReportSchema = z
+  .object({
+    chargeRate: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Output only. Battery charge percentage.', readOnly: true }),
+    current: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Battery current (mA).', readOnly: true }),
+    dischargeRate: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The battery discharge rate measured in mW. Positive if the battery is being discharged, negative if it's being charged.",
+        readOnly: true,
+      }),
+    remainingCapacity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Battery remaining capacity (mAmpere-hours).',
+        readOnly: true,
+      }),
+    reportTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Timestamp of when the sample was collected on device',
+        readOnly: true,
+      }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Battery status read from sysfs. Example: Discharging',
+        readOnly: true,
+      }),
+    temperature: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Output only. Temperature in Celsius degrees.', readOnly: true }),
+    voltage: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Battery voltage (millivolt).', readOnly: true }),
+  })
+  .openapi({
+    description:
+      'Sampling data for battery. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDevicePowerStatus](https://chromeenterprise.google/policies/#ReportDevicePowerStatus) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1BatterySampleReport')
+
+const GoogleChromeManagementV1BatteryStatusReportSchema = z
+  .object({
+    batteryHealth: z
+      .enum([
+        'BATTERY_HEALTH_UNSPECIFIED',
+        'BATTERY_HEALTH_NORMAL',
+        'BATTERY_REPLACE_SOON',
+        'BATTERY_REPLACE_NOW',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Output only. Battery health.', readOnly: true }),
+    cycleCount: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Output only. Cycle count.', readOnly: true }),
+    fullChargeCapacity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Full charge capacity (mAmpere-hours).',
+        readOnly: true,
+      }),
+    reportTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Timestamp of when the sample was collected on device',
+        readOnly: true,
+      }),
+    sample: z
+      .array(GoogleChromeManagementV1BatterySampleReportSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Sampling data for the battery sorted in a decreasing order of report_time.',
+        readOnly: true,
+      }),
+    serialNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Battery serial number.', readOnly: true }),
+  })
+  .openapi({
+    description:
+      'Status data for battery. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDevicePowerStatus](https://chromeenterprise.google/policies/#ReportDevicePowerStatus) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1BatteryStatusReport')
+
+const GoogleChromeManagementV1BootPerformanceReportSchema = z
+  .object({
+    bootUpDuration: z.string().exactOptional().openapi({ description: 'Total time to boot up.' }),
+    bootUpTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The timestamp when power came on.' }),
+    reportTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Timestamp when the report was collected.' }),
+    shutdownDuration: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Total time since shutdown start to power off.' }),
+    shutdownReason: z
+      .enum([
+        'SHUTDOWN_REASON_UNSPECIFIED',
+        'USER_REQUEST',
+        'SYSTEM_UPDATE',
+        'LOW_BATTERY',
+        'OTHER',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The shutdown reason.' }),
+    shutdownTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The timestamp when shutdown.' }),
+  })
+  .openapi({
+    description:
+      'Boot performance report of a device. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceBootMode](https://chromeenterprise.google/policies/#ReportDeviceBootMode) * Data Collection Frequency: On every boot up event * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: Yes * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1BootPerformanceReport')
+
+const GoogleChromeManagementV1CpuInfoSchema = z
+  .object({
+    architecture: z
+      .enum(['ARCHITECTURE_UNSPECIFIED', 'X64'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Architecture type for the CPU. * This field provides device information, which is static and will not change over time. * Data for this field is controlled via policy: [ReportDeviceCpuInfo](https://chromeenterprise.google/policies/#ReportDeviceCpuInfo) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
+        readOnly: true,
+      }),
+    keylockerConfigured: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Whether keylocker is configured.`TRUE` = Enabled; `FALSE` = disabled. Only reported if keylockerSupported = `TRUE`.',
+        readOnly: true,
+      }),
+    keylockerSupported: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Output only. Whether keylocker is supported.', readOnly: true }),
+    maxClockSpeed: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Output only. The max CPU clock speed in kHz.', readOnly: true }),
+    model: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The CPU model name. Example: Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'CPU specifications for the device * This field provides device information, which is static and will not change over time. * Data for this field is controlled via policy: [ReportDeviceCpuInfo](https://chromeenterprise.google/policies/#ReportDeviceCpuInfo) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1CpuInfo')
+
+const GoogleChromeManagementV1CpuTemperatureInfoSchema = z
+  .object({
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. CPU label. Example: Core 0', readOnly: true }),
+    temperatureCelsius: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Output only. CPU temperature in Celsius.', readOnly: true }),
+  })
+  .openapi({
+    description:
+      'CPU temperature of a device. Sampled per CPU core in Celsius. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceCpuInfo](https://chromeenterprise.google/policies/#ReportDeviceCpuInfo) * Data Collection Frequency: Every 10 minutes * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1CpuTemperatureInfo')
+
+const GoogleChromeManagementV1CpuStatusReportSchema = z
+  .object({
+    cpuTemperatureInfo: z
+      .array(GoogleChromeManagementV1CpuTemperatureInfoSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. CPU temperature sample info per CPU core in Celsius',
+        readOnly: true,
+      }),
+    cpuUtilizationPct: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Sample of CPU utilization (0-100 percent).',
+        readOnly: true,
+      }),
+    reportTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The timestamp in milliseconds representing time at which this report was sampled.',
+        readOnly: true,
+      }),
+    sampleFrequency: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Frequency the report is sampled.', readOnly: true }),
+  })
+  .openapi({
+    description:
+      'Provides information about the status of the CPU. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceCpuInfo](https://chromeenterprise.google/policies/#ReportDeviceCpuInfo) * Data Collection Frequency: Every 10 minutes * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1CpuStatusReport')
+
+const GoogleChromeManagementV1GraphicsAdapterInfoSchema = z
+  .object({
+    adapter: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Adapter name. Example: Mesa DRI Intel(R) UHD Graphics 620 (Kabylake GT2).',
+        readOnly: true,
+      }),
+    deviceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Represents the graphics card device id.',
+        readOnly: true,
+      }),
+    driverVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Version of the GPU driver.', readOnly: true }),
+  })
+  .openapi({ description: 'Information of a graphics adapter (GPU).', required: [] })
+  .openapi('GoogleChromeManagementV1GraphicsAdapterInfo')
+
+const GoogleChromeManagementV1DisplayDeviceSchema = z
+  .object({
+    displayHeightMm: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Output only. Display height in millimeters.', readOnly: true }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Display device name.', readOnly: true }),
+    displayWidthMm: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Output only. Display width in millimeters.', readOnly: true }),
+    internal: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Output only. Is display internal or not.', readOnly: true }),
+    manufactureYear: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Output only. Year of manufacture.', readOnly: true }),
+    manufacturerId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Three letter manufacturer ID.', readOnly: true }),
+    modelId: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Output only. Manufacturer product code.', readOnly: true }),
+  })
+  .openapi({ description: 'Information of a display device.', required: [] })
+  .openapi('GoogleChromeManagementV1DisplayDevice')
+
+const GoogleChromeManagementV1TouchScreenDeviceSchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Touch screen device display name.', readOnly: true }),
+    stylusCapable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Touch screen device is stylus capable or not.',
+        readOnly: true,
+      }),
+    touchPointCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Number of touch points supported on the device.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Information of an internal touch screen device.', required: [] })
+  .openapi('GoogleChromeManagementV1TouchScreenDevice')
+
+const GoogleChromeManagementV1TouchScreenInfoSchema = z
+  .object({
+    devices: z
+      .array(GoogleChromeManagementV1TouchScreenDeviceSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. List of the internal touch screen devices.',
+        readOnly: true,
+      }),
+    touchpadLibrary: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Touchpad library name used by the input stack.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Information on the device touch screen.', required: [] })
+  .openapi('GoogleChromeManagementV1TouchScreenInfo')
+
+const GoogleChromeManagementV1GraphicsInfoSchema = z
+  .object({
+    adapterInfo: GoogleChromeManagementV1GraphicsAdapterInfoSchema.exactOptional().openapi({
+      description: 'Output only. Information about the graphics adapter (GPU).',
+      readOnly: true,
+    }),
+    displayDevices: z
+      .array(GoogleChromeManagementV1DisplayDeviceSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Information about the display(s) of the device.',
+        readOnly: true,
+      }),
+    eprivacySupported: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Is ePrivacy screen supported or not.',
+        readOnly: true,
+      }),
+    touchScreenInfo: GoogleChromeManagementV1TouchScreenInfoSchema.exactOptional().openapi({
+      description: 'Output only. Information about the internal touch screen(s) of the device.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    description:
+      'Information of the graphics subsystem. * This field provides device information, which is static and will not change over time. * Data for this field is controlled via policy: [ReportDeviceGraphicsStatus](https://chromeenterprise.google/policies/#ReportDeviceGraphicsStatus) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1GraphicsInfo')
+
+const GoogleChromeManagementV1DisplayInfoSchema = z
+  .object({
+    deviceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Represents the graphics card device id.',
+        readOnly: true,
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Display device name.', readOnly: true }),
+    isInternal: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Indicates if display is internal or not.',
+        readOnly: true,
+      }),
+    refreshRate: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Output only. Refresh rate in Hz.', readOnly: true }),
+    resolutionHeight: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Output only. Resolution height in pixels.', readOnly: true }),
+    resolutionWidth: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Output only. Resolution width in pixels.', readOnly: true }),
+  })
+  .openapi({ description: 'Information for a display.', required: [] })
+  .openapi('GoogleChromeManagementV1DisplayInfo')
+
+const GoogleChromeManagementV1GraphicsStatusReportSchema = z
+  .object({
+    displays: z
+      .array(GoogleChromeManagementV1DisplayInfoSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Information about the displays for the device.',
+        readOnly: true,
+      }),
+    reportTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Time at which the graphics data was reported.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Information of the graphics subsystem. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceGraphicsInfo](https://chromeenterprise.google/policies/#ReportDeviceGraphicsInfo) * Data Collection Frequency: 3 hours. * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1GraphicsStatusReport')
+
+const GoogleChromeManagementV1TotalMemoryEncryptionInfoSchema = z
+  .object({
+    encryptionAlgorithm: z
+      .enum([
+        'MEMORY_ENCRYPTION_ALGORITHM_UNSPECIFIED',
+        'MEMORY_ENCRYPTION_ALGORITHM_UNKNOWN',
+        'MEMORY_ENCRYPTION_ALGORITHM_AES_XTS_128',
+        'MEMORY_ENCRYPTION_ALGORITHM_AES_XTS_256',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Memory encryption algorithm.' }),
+    encryptionState: z
+      .enum([
+        'MEMORY_ENCRYPTION_STATE_UNSPECIFIED',
+        'MEMORY_ENCRYPTION_STATE_UNKNOWN',
+        'MEMORY_ENCRYPTION_STATE_DISABLED',
+        'MEMORY_ENCRYPTION_STATE_TME',
+        'MEMORY_ENCRYPTION_STATE_MKTME',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The state of memory encryption on the device.' }),
+    keyLength: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The length of the encryption keys.' }),
+    maxKeys: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The maximum number of keys that can be used for encryption.' }),
+  })
+  .openapi({
+    description:
+      'Memory encryption information of a device. * This field provides device information, which is static and will not change over time. * Data for this field is controlled via policy: [ReportDeviceMemoryInfo](https://chromeenterprise.google/policies/#ReportDeviceMemoryInfo) * Data Collection Frequency: At device startup * Default Data Reporting Frequency: At device startup - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: Yes * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1TotalMemoryEncryptionInfo')
+
+const GoogleChromeManagementV1MemoryInfoSchema = z
+  .object({
+    availableRamBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Amount of available RAM in bytes.', readOnly: true }),
+    totalMemoryEncryption:
+      GoogleChromeManagementV1TotalMemoryEncryptionInfoSchema.exactOptional().openapi({
+        description: 'Output only. Total memory encryption info for the device.',
+        readOnly: true,
+      }),
+    totalRamBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Total RAM in bytes.', readOnly: true }),
+  })
+  .openapi({
+    description:
+      'Memory information of a device. * This field has both telemetry and device information: - `totalRamBytes` - Device information - `availableRamBytes` - Telemetry information - `totalMemoryEncryption` - Device information * Data for this field is controlled via policy: [ReportDeviceMemoryInfo](https://chromeenterprise.google/policies/#ReportDeviceMemoryInfo) * Data Collection Frequency: - `totalRamBytes` - Only at upload - `availableRamBytes` - Every 10 minutes - `totalMemoryEncryption` - at device startup * Default Data Reporting Frequency: - `totalRamBytes` - 3 hours - `availableRamBytes` - 3 hours - `totalMemoryEncryption` - at device startup - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: only for `totalMemoryEncryption` * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1MemoryInfo')
+
+const GoogleChromeManagementV1MemoryStatusReportSchema = z
+  .object({
+    pageFaults: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Number of page faults during this collection',
+        readOnly: true,
+      }),
+    reportTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The timestamp in milliseconds representing time at which this report was sampled.',
+        readOnly: true,
+      }),
+    sampleFrequency: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Frequency the report is sampled.', readOnly: true }),
+    systemRamFreeBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Amount of free RAM in bytes (unreliable due to Garbage Collection).',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Contains samples of memory status reports. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceMemoryInfo](https://chromeenterprise.google/policies/#ReportDeviceMemoryInfo) * Data Collection Frequency: Only at upload, SystemRamFreeByes is collected every 10 minutes * Default Data Reporting Frequency: Every 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1MemoryStatusReport')
+
+const GoogleChromeManagementV1HttpsLatencyRoutineDataSchema = z
+  .object({
+    latency: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. HTTPS latency if routine succeeded or failed because of HIGH_LATENCY or VERY_HIGH_LATENCY.',
+        readOnly: true,
+      }),
+    problem: z
+      .enum([
+        'HTTPS_LATENCY_PROBLEM_UNSPECIFIED',
+        'FAILED_DNS_RESOLUTIONS',
+        'FAILED_HTTPS_REQUESTS',
+        'HIGH_LATENCY',
+        'VERY_HIGH_LATENCY',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. HTTPS latency routine problem if a problem occurred.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Data that describes the result of the HTTPS latency diagnostics routine, with the HTTPS requests issued to Google websites.',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1HttpsLatencyRoutineData')
+
+const GoogleChromeManagementV1NetworkDiagnosticsReportSchema = z
+  .object({
+    httpsLatencyData: GoogleChromeManagementV1HttpsLatencyRoutineDataSchema.exactOptional().openapi(
+      { description: 'Output only. HTTPS latency test data.', readOnly: true },
+    ),
+    reportTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Timestamp of when the diagnostics were collected.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      "Network testing results to determine the health of the device's network connection, for example whether the HTTPS latency is high or normal.",
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1NetworkDiagnosticsReport')
+
+const GoogleChromeManagementV1NetworkDeviceSchema = z
+  .object({
+    iccid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The integrated circuit card ID associated with the device's sim card.",
+        readOnly: true,
+      }),
+    imei: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. IMEI (if applicable) of the corresponding network device.',
+        readOnly: true,
+      }),
+    macAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. MAC address (if applicable) of the corresponding network device.',
+        readOnly: true,
+      }),
+    mdn: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The mobile directory number associated with the device's sim card.",
+        readOnly: true,
+      }),
+    meid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. MEID (if applicable) of the corresponding network device.',
+        readOnly: true,
+      }),
+    type: z
+      .enum([
+        'NETWORK_DEVICE_TYPE_UNSPECIFIED',
+        'CELLULAR_DEVICE',
+        'ETHERNET_DEVICE',
+        'WIFI_DEVICE',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Output only. Network device type.', readOnly: true }),
+  })
+  .openapi({
+    description:
+      'Details about the network device. * This field provides device information, which is static and will not change over time. * Data for this field is controlled via policy: [ReportNetworkDeviceConfiguration](https://chromeenterprise.google/policies/#ReportNetworkDeviceConfiguration) * Data Collection Frequency: At device startup * Default Data Reporting Frequency: At device startup - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: Yes * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1NetworkDevice')
+
+const GoogleChromeManagementV1NetworkInfoSchema = z
+  .object({
+    networkDevices: z
+      .array(GoogleChromeManagementV1NetworkDeviceSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. List of network devices.', readOnly: true }),
+  })
+  .openapi({
+    description:
+      'Network device information. * This field provides device information, which is static and will not change over time. * Data for this field is controlled via policy: [ReportNetworkDeviceConfiguration](https://chromeenterprise.google/policies/#ReportNetworkDeviceConfiguration) * Data Collection Frequency: At device startup * Default Data Reporting Frequency: At device startup - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: Yes * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1NetworkInfo')
+
+const GoogleChromeManagementV1NetworkStatusReportSchema = z
+  .object({
+    connectionState: z
+      .enum([
+        'NETWORK_CONNECTION_STATE_UNSPECIFIED',
+        'ONLINE',
+        'CONNECTED',
+        'PORTAL',
+        'CONNECTING',
+        'NOT_CONNECTED',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Current connection state of the network.',
+        readOnly: true,
+      }),
+    connectionType: z
+      .enum(['NETWORK_TYPE_UNSPECIFIED', 'CELLULAR', 'ETHERNET', 'TETHER', 'VPN', 'WIFI'])
+      .exactOptional()
+      .openapi({ description: 'Output only. Network connection type.', readOnly: true }),
+    encryptionOn: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Whether the wifi encryption key is turned off.',
+        readOnly: true,
+      }),
+    gatewayIpAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Gateway IP address.', readOnly: true }),
+    guid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Network connection guid.', readOnly: true }),
+    lanIpAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. LAN IP address.', readOnly: true }),
+    receivingBitRateMbps: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Receiving bit rate measured in Megabits per second.',
+        readOnly: true,
+      }),
+    reportTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Time at which the network state was reported.',
+        readOnly: true,
+      }),
+    sampleFrequency: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Frequency the report is sampled.', readOnly: true }),
+    signalStrengthDbm: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Signal strength for wireless networks measured in decibels.',
+        readOnly: true,
+      }),
+    transmissionBitRateMbps: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Transmission bit rate measured in Megabits per second.',
+        readOnly: true,
+      }),
+    transmissionPowerDbm: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Transmission power measured in decibels.',
+        readOnly: true,
+      }),
+    wifiLinkQuality: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Wifi link quality. Value ranges from [0, 70]. 0 indicates no signal and 70 indicates a strong signal.',
+        readOnly: true,
+      }),
+    wifiPowerManagementEnabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Output only. Wifi power management enabled', readOnly: true }),
+  })
+  .openapi({
+    description:
+      'State of visible/configured networks. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportNetworkStatus](https://chromeenterprise.google/policies/#ReportNetworkStatus) * Data Collection Frequency: 60 minutes * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: Yes * Reported for affiliated users only: Yes',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1NetworkStatusReport')
+
+const GoogleChromeManagementV1OsUpdateStatusSchema = z
+  .object({
+    lastRebootTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Timestamp of the last reboot.', readOnly: true }),
+    lastUpdateCheckTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Timestamp of the last update check.', readOnly: true }),
+    lastUpdateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Timestamp of the last successful update.',
+        readOnly: true,
+      }),
+    newPlatformVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. New platform version of the os image being downloaded and applied. It is only set when update status is OS_IMAGE_DOWNLOAD_IN_PROGRESS or OS_UPDATE_NEED_REBOOT. Note this could be a dummy "0.0.0.0" for OS_UPDATE_NEED_REBOOT status for some edge cases, e.g. update engine is restarted without a reboot.',
+        readOnly: true,
+      }),
+    newRequestedPlatformVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. New requested platform version from the pending updated kiosk app.',
+        readOnly: true,
+      }),
+    updateState: z
+      .enum([
+        'UPDATE_STATE_UNSPECIFIED',
+        'OS_IMAGE_DOWNLOAD_NOT_STARTED',
+        'OS_IMAGE_DOWNLOAD_IN_PROGRESS',
+        'OS_UPDATE_NEED_REBOOT',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Output only. Current state of the os update.', readOnly: true }),
+  })
+  .openapi({
+    description:
+      'Contains information regarding the current OS update status. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceOsUpdateStatus](https://chromeenterprise.google/policies/#ReportDeviceOsUpdateStatus) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1OsUpdateStatus')
+
+const GoogleChromeManagementV1UsbPeripheralReportSchema = z
+  .object({
+    categories: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Categories the device belongs to https://www.usb.org/defined-class-codes',
+        readOnly: true,
+      }),
+    classId: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Class ID https://www.usb.org/defined-class-codes',
+        readOnly: true,
+      }),
+    firmwareVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Firmware version', readOnly: true }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Device name, model name, or product name',
+        readOnly: true,
+      }),
+    pid: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Output only. Product ID', readOnly: true }),
+    subclassId: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Subclass ID https://www.usb.org/defined-class-codes',
+        readOnly: true,
+      }),
+    vendor: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Vendor name', readOnly: true }),
+    vid: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Output only. Vendor ID', readOnly: true }),
+  })
+  .openapi({ description: 'USB connected peripheral report.', required: [] })
+  .openapi('GoogleChromeManagementV1UsbPeripheralReport')
+
+const GoogleChromeManagementV1PeripheralsReportSchema = z
+  .object({
+    reportTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Timestamp of when the report was collected.',
+        readOnly: true,
+      }),
+    usbPeripheralReport: z
+      .array(GoogleChromeManagementV1UsbPeripheralReportSchema)
+      .exactOptional()
+      .openapi({ description: 'Reports of all usb connected devices.' }),
+  })
+  .openapi({ description: 'Peripherals report.', required: [] })
+  .openapi('GoogleChromeManagementV1PeripheralsReport')
+
+const GoogleChromeManagementV1StorageInfoDiskVolumeSchema = z
+  .object({
+    storageFreeBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Free storage space in bytes.' }),
+    storageTotalBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Total storage space in bytes.' }),
+    volumeId: z.string().exactOptional().openapi({ description: 'Disk volume id.' }),
+  })
+  .openapi({ description: 'Information for disk volumes', required: [] })
+  .openapi('GoogleChromeManagementV1StorageInfoDiskVolume')
+
+const GoogleChromeManagementV1StorageInfoSchema = z
+  .object({
+    availableDiskBytes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The available space for user data storage in the device in bytes.',
+      }),
+    totalDiskBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The total space for user data storage in the device in bytes.' }),
+    volume: z
+      .array(GoogleChromeManagementV1StorageInfoDiskVolumeSchema)
+      .exactOptional()
+      .openapi({ description: 'Information for disk volumes' }),
+  })
+  .openapi({
+    description:
+      'Status data for storage. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceStorageStatus](https://chromeenterprise.google/policies/#ReportDeviceStorageStatus) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1StorageInfo')
+
+const GoogleChromeManagementV1DiskInfoSchema = z
+  .object({
+    bytesReadThisSession: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Number of bytes read since last boot.',
+        readOnly: true,
+      }),
+    bytesWrittenThisSession: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Number of bytes written since last boot.',
+        readOnly: true,
+      }),
+    discardTimeThisSession: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Time spent discarding since last boot. Discarding is writing to clear blocks which are no longer in use. Supported on kernels 4.18+.',
+        readOnly: true,
+      }),
+    health: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Disk health.', readOnly: true }),
+    ioTimeThisSession: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Counts the time the disk and queue were busy, so unlike the fields above, parallel requests are not counted multiple times.',
+        readOnly: true,
+      }),
+    manufacturer: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Disk manufacturer.', readOnly: true }),
+    model: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Disk model.', readOnly: true }),
+    readTimeThisSession: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Time spent reading from disk since last boot.',
+        readOnly: true,
+      }),
+    serialNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Disk serial number.', readOnly: true }),
+    sizeBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Disk size.', readOnly: true }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Disk type: eMMC / NVMe / ATA / SCSI.',
+        readOnly: true,
+      }),
+    volumeIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Output only. Disk volumes.', readOnly: true }),
+    writeTimeThisSession: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Time spent writing to disk since last boot.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Status of the single storage device.', required: [] })
+  .openapi('GoogleChromeManagementV1DiskInfo')
+
+const GoogleChromeManagementV1StorageStatusReportSchema = z
+  .object({
+    disk: z
+      .array(GoogleChromeManagementV1DiskInfoSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. Reports on disk.', readOnly: true }),
+    reportTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Timestamp of when the sample was collected on device',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Status data for storage. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceStorageStatus](https://chromeenterprise.google/policies/#ReportDeviceStorageStatus) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1StorageStatusReport')
+
+const GoogleChromeManagementV1ThunderboltInfoSchema = z
+  .object({
+    securityLevel: z
+      .enum([
+        'THUNDERBOLT_SECURITY_LEVEL_UNSPECIFIED',
+        'THUNDERBOLT_SECURITY_NONE_LEVEL',
+        'THUNDERBOLT_SECURITY_USER_LEVEL',
+        'THUNDERBOLT_SECURITY_SECURE_LEVEL',
+        'THUNDERBOLT_SECURITY_DP_ONLY_LEVEL',
+        'THUNDERBOLT_SECURITY_USB_ONLY_LEVEL',
+        'THUNDERBOLT_SECURITY_NO_PCIE_LEVEL',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Security level of the Thunderbolt bus.' }),
+  })
+  .openapi({
+    description:
+      'Thunderbolt bus info. * This field provides device information, which is static and will not change over time. * Data for this field is controlled via policy: [ReportDeviceSecurityStatus](https://chromeenterprise.google/policies/#ReportDeviceSecurityStatus) * Data Collection Frequency: At device startup * Default Data Reporting Frequency: At device startup - Policy Controlled: No * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: Yes * Reported for affiliated users only: N/A',
+    required: [],
+  })
+  .openapi('GoogleChromeManagementV1ThunderboltInfo')
+
+const GoogleChromeManagementV1TelemetryDeviceSchema = z
+  .object({
+    audioStatusReport: z
+      .array(GoogleChromeManagementV1AudioStatusReportSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Audio reports collected periodically sorted in a decreasing order of report_time.',
+        readOnly: true,
+      }),
+    batteryInfo: z
+      .array(GoogleChromeManagementV1BatteryInfoSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Information on battery specs for the device.',
+        readOnly: true,
+      }),
+    batteryStatusReport: z
+      .array(GoogleChromeManagementV1BatteryStatusReportSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Battery reports collected periodically.',
+        readOnly: true,
+      }),
+    bootPerformanceReport: z
+      .array(GoogleChromeManagementV1BootPerformanceReportSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Boot performance reports of the device.',
+        readOnly: true,
+      }),
+    cpuInfo: z
+      .array(GoogleChromeManagementV1CpuInfoSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Information regarding CPU specs for the device.',
+        readOnly: true,
+      }),
+    cpuStatusReport: z
+      .array(GoogleChromeManagementV1CpuStatusReportSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. CPU status reports collected periodically sorted in a decreasing order of report_time.',
+        readOnly: true,
+      }),
+    customer: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Google Workspace Customer whose enterprise enrolled the device.',
+        readOnly: true,
+      }),
+    deviceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. The unique Directory API ID of the device. This value is the same as the Admin Console's Directory API ID in the ChromeOS Devices tab",
+        readOnly: true,
+      }),
+    graphicsInfo: GoogleChromeManagementV1GraphicsInfoSchema.exactOptional().openapi({
+      description:
+        'Output only. Contains information regarding Graphic peripherals for the device.',
+      readOnly: true,
+    }),
+    graphicsStatusReport: z
+      .array(GoogleChromeManagementV1GraphicsStatusReportSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Graphics reports collected periodically.',
+        readOnly: true,
+      }),
+    memoryInfo: GoogleChromeManagementV1MemoryInfoSchema.exactOptional().openapi({
+      description: 'Output only. Information regarding memory specs for the device.',
+      readOnly: true,
+    }),
+    memoryStatusReport: z
+      .array(GoogleChromeManagementV1MemoryStatusReportSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Memory status reports collected periodically sorted decreasing by report_time.',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Resource name of the device.', readOnly: true }),
+    networkDiagnosticsReport: z
+      .array(GoogleChromeManagementV1NetworkDiagnosticsReportSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Network diagnostics collected periodically.',
+        readOnly: true,
+      }),
+    networkInfo: GoogleChromeManagementV1NetworkInfoSchema.exactOptional().openapi({
+      description: 'Output only. Network devices information.',
+      readOnly: true,
+    }),
+    networkStatusReport: z
+      .array(GoogleChromeManagementV1NetworkStatusReportSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Network specs collected periodically.',
+        readOnly: true,
+      }),
+    orgUnitId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Organization unit ID of the device.', readOnly: true }),
+    osUpdateStatus: z
+      .array(GoogleChromeManagementV1OsUpdateStatusSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Contains relevant information regarding ChromeOS update status.',
+        readOnly: true,
+      }),
+    peripheralsReport: z
+      .array(GoogleChromeManagementV1PeripheralsReportSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Peripherals reports collected periodically sorted in a decreasing order of report_time.',
+        readOnly: true,
+      }),
+    serialNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Output only. Device serial number. This value is the same as the Admin Console's Serial Number in the ChromeOS Devices tab.",
+        readOnly: true,
+      }),
+    storageInfo: GoogleChromeManagementV1StorageInfoSchema.exactOptional().openapi({
+      description: 'Output only. Information of storage specs for the device.',
+      readOnly: true,
+    }),
+    storageStatusReport: z
+      .array(GoogleChromeManagementV1StorageStatusReportSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Storage reports collected periodically.',
+        readOnly: true,
+      }),
+    thunderboltInfo: z
+      .array(GoogleChromeManagementV1ThunderboltInfoSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. Information on Thunderbolt bus.', readOnly: true }),
+  })
+  .openapi({ description: 'Telemetry data collected from a managed device.', required: [] })
+  .openapi('GoogleChromeManagementV1TelemetryDevice')
+
+type GoogleChromeManagementV1ListTelemetryDevicesResponseType = {
+  devices?: z.infer<typeof GoogleChromeManagementV1TelemetryDeviceSchema>[]
+  nextPageToken?: string
+}
+
+const GoogleChromeManagementV1TelemetryUserDeviceSchema = z
+  .object({
+    audioStatusReport: z
+      .array(GoogleChromeManagementV1AudioStatusReportSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Audio reports collected periodically sorted in a decreasing order of report_time.',
+        readOnly: true,
+      }),
+    deviceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The unique Directory API ID of the device. This value is the same as the Admin Console's Directory API ID in the ChromeOS Devices tab.",
+      }),
+    peripheralsReport: z
+      .array(GoogleChromeManagementV1PeripheralsReportSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Peripherals reports collected periodically sorted in a decreasing order of report_time.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Telemetry data collected for a managed user and device.', required: [] })
+  .openapi('GoogleChromeManagementV1TelemetryUserDevice')
+
+type GoogleChromeManagementV1TelemetryUserType = {
+  customer?: string
+  name?: string
+  orgUnitId?: string
+  userDevice?: z.infer<typeof GoogleChromeManagementV1TelemetryUserDeviceSchema>[]
+  userEmail?: string
+  userId?: string
+}
+
+const GoogleChromeManagementV1TelemetryUserSchema: z.ZodType<GoogleChromeManagementV1TelemetryUserType> =
+  z
+    .object({
+      customer: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'G Suite Customer whose enterprise enrolled the device.' }),
+      name: z.string().exactOptional().openapi({ description: 'Resource name of the user.' }),
+      orgUnitId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Organization unit of the user.' }),
+      userDevice: z
+        .array(GoogleChromeManagementV1TelemetryUserDeviceSchema)
+        .exactOptional()
+        .openapi({ description: 'Telemetry data collected from a managed user and device.' }),
+      userEmail: z.string().exactOptional().openapi({ description: 'Email address of the user.' }),
+      userId: z.string().exactOptional().openapi({ description: 'Directory ID of the user.' }),
+    })
+    .openapi({ description: 'Telemetry data collected from a managed user.', required: [] })
+    .openapi('GoogleChromeManagementV1TelemetryUser')
+
+type GoogleChromeManagementV1ListTelemetryUsersResponseType = {
+  nextPageToken?: string
+  telemetryUsers?: z.infer<typeof GoogleChromeManagementV1TelemetryUserSchema>[]
+}
+
 const GoogleChromeManagementV1AndroidAppPermissionSchema = z
   .object({
     type: z
@@ -304,268 +1678,6 @@ const GoogleChromeManagementV1AppDetailsSchema = z
   })
   .openapi({ description: 'Resource representing app details.', required: [] })
   .openapi('GoogleChromeManagementV1AppDetails')
-
-const GoogleChromeManagementV1AudioStatusReportSchema = z
-  .object({
-    inputDevice: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Output only. Active input device's name.", readOnly: true }),
-    inputGain: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: "Output only. Active input device's gain in [0, 100].",
-        readOnly: true,
-      }),
-    inputMute: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Output only. Is active input device mute or not.', readOnly: true }),
-    outputDevice: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Output only. Active output device's name.", readOnly: true }),
-    outputMute: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Is active output device mute or not.',
-        readOnly: true,
-      }),
-    outputVolume: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: "Output only. Active output device's volume in [0, 100].",
-        readOnly: true,
-      }),
-    reportTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Timestamp of when the sample was collected on device.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Status data for storage. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceAudioStatus](https://chromeenterprise.google/policies/#ReportDeviceAudioStatus) * Data Collection Frequency: 10 minutes * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1AudioStatusReport')
-
-const GoogleTypeDateSchema = z
-  .object({
-    day: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-      }),
-    month: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
-      }),
-    year: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
-    required: [],
-  })
-  .openapi('GoogleTypeDate')
-
-const GoogleChromeManagementV1BatteryInfoSchema = z
-  .object({
-    designCapacity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Design capacity (mAmpere-hours).', readOnly: true }),
-    designMinVoltage: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Designed minimum output voltage (mV)',
-        readOnly: true,
-      }),
-    manufactureDate: GoogleTypeDateSchema.exactOptional().openapi({
-      description: 'Output only. The date the battery was manufactured.',
-      readOnly: true,
-    }),
-    manufacturer: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Battery manufacturer.', readOnly: true }),
-    serialNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Battery serial number.', readOnly: true }),
-    technology: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Technology of the battery. Example: Li-ion',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Information about the battery. * This field provides device information, which is static and will not change over time. * Data for this field is controlled via policy: [ReportDevicePowerStatus](https://chromeenterprise.google/policies/#ReportDevicePowerStatus) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1BatteryInfo')
-
-const GoogleChromeManagementV1BatterySampleReportSchema = z
-  .object({
-    chargeRate: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Output only. Battery charge percentage.', readOnly: true }),
-    current: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Battery current (mA).', readOnly: true }),
-    dischargeRate: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. The battery discharge rate measured in mW. Positive if the battery is being discharged, negative if it's being charged.",
-        readOnly: true,
-      }),
-    remainingCapacity: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Battery remaining capacity (mAmpere-hours).',
-        readOnly: true,
-      }),
-    reportTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Timestamp of when the sample was collected on device',
-        readOnly: true,
-      }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Battery status read from sysfs. Example: Discharging',
-        readOnly: true,
-      }),
-    temperature: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Output only. Temperature in Celsius degrees.', readOnly: true }),
-    voltage: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Battery voltage (millivolt).', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'Sampling data for battery. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDevicePowerStatus](https://chromeenterprise.google/policies/#ReportDevicePowerStatus) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1BatterySampleReport')
-
-const GoogleChromeManagementV1BatteryStatusReportSchema = z
-  .object({
-    batteryHealth: z
-      .enum([
-        'BATTERY_HEALTH_UNSPECIFIED',
-        'BATTERY_HEALTH_NORMAL',
-        'BATTERY_REPLACE_SOON',
-        'BATTERY_REPLACE_NOW',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Output only. Battery health.', readOnly: true }),
-    cycleCount: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Output only. Cycle count.', readOnly: true }),
-    fullChargeCapacity: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Full charge capacity (mAmpere-hours).',
-        readOnly: true,
-      }),
-    reportTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Timestamp of when the sample was collected on device',
-        readOnly: true,
-      }),
-    sample: z
-      .array(GoogleChromeManagementV1BatterySampleReportSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Sampling data for the battery sorted in a decreasing order of report_time.',
-        readOnly: true,
-      }),
-    serialNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Battery serial number.', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'Status data for battery. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDevicePowerStatus](https://chromeenterprise.google/policies/#ReportDevicePowerStatus) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1BatteryStatusReport')
-
-const GoogleChromeManagementV1BootPerformanceReportSchema = z
-  .object({
-    bootUpDuration: z.string().exactOptional().openapi({ description: 'Total time to boot up.' }),
-    bootUpTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The timestamp when power came on.' }),
-    reportTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Timestamp when the report was collected.' }),
-    shutdownDuration: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Total time since shutdown start to power off.' }),
-    shutdownReason: z
-      .enum([
-        'SHUTDOWN_REASON_UNSPECIFIED',
-        'USER_REQUEST',
-        'SYSTEM_UPDATE',
-        'LOW_BATTERY',
-        'OTHER',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The shutdown reason.' }),
-    shutdownTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The timestamp when shutdown.' }),
-  })
-  .openapi({
-    description:
-      'Boot performance report of a device. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceBootMode](https://chromeenterprise.google/policies/#ReportDeviceBootMode) * Data Collection Frequency: On every boot up event * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: Yes * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1BootPerformanceReport')
 
 const GoogleChromeManagementV1BrowserVersionSchema = z
   .object({
@@ -971,102 +2083,6 @@ const GoogleChromeManagementV1CountInstalledAppsResponseSchema = z
   .openapi({ description: 'Response containing details of queried installed apps.', required: [] })
   .openapi('GoogleChromeManagementV1CountInstalledAppsResponse')
 
-const GoogleChromeManagementV1CpuInfoSchema = z
-  .object({
-    architecture: z
-      .enum(['ARCHITECTURE_UNSPECIFIED', 'X64'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Architecture type for the CPU. * This field provides device information, which is static and will not change over time. * Data for this field is controlled via policy: [ReportDeviceCpuInfo](https://chromeenterprise.google/policies/#ReportDeviceCpuInfo) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
-        readOnly: true,
-      }),
-    keylockerConfigured: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Whether keylocker is configured.`TRUE` = Enabled; `FALSE` = disabled. Only reported if keylockerSupported = `TRUE`.',
-        readOnly: true,
-      }),
-    keylockerSupported: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Output only. Whether keylocker is supported.', readOnly: true }),
-    maxClockSpeed: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Output only. The max CPU clock speed in kHz.', readOnly: true }),
-    model: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The CPU model name. Example: Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'CPU specifications for the device * This field provides device information, which is static and will not change over time. * Data for this field is controlled via policy: [ReportDeviceCpuInfo](https://chromeenterprise.google/policies/#ReportDeviceCpuInfo) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1CpuInfo')
-
-const GoogleChromeManagementV1CpuTemperatureInfoSchema = z
-  .object({
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. CPU label. Example: Core 0', readOnly: true }),
-    temperatureCelsius: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Output only. CPU temperature in Celsius.', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'CPU temperature of a device. Sampled per CPU core in Celsius. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceCpuInfo](https://chromeenterprise.google/policies/#ReportDeviceCpuInfo) * Data Collection Frequency: Every 10 minutes * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1CpuTemperatureInfo')
-
-const GoogleChromeManagementV1CpuStatusReportSchema = z
-  .object({
-    cpuTemperatureInfo: z
-      .array(GoogleChromeManagementV1CpuTemperatureInfoSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. CPU temperature sample info per CPU core in Celsius',
-        readOnly: true,
-      }),
-    cpuUtilizationPct: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Sample of CPU utilization (0-100 percent).',
-        readOnly: true,
-      }),
-    reportTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The timestamp in milliseconds representing time at which this report was sampled.',
-        readOnly: true,
-      }),
-    sampleFrequency: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Frequency the report is sampled.', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'Provides information about the status of the CPU. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceCpuInfo](https://chromeenterprise.google/policies/#ReportDeviceCpuInfo) * Data Collection Frequency: Every 10 minutes * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1CpuStatusReport')
-
 const GoogleChromeManagementV1DeviceSchema = z
   .object({
     deviceId: z
@@ -1090,157 +2106,6 @@ const GoogleChromeManagementV1DeviceSchema = z
     required: [],
   })
   .openapi('GoogleChromeManagementV1Device')
-
-const GoogleChromeManagementV1DiskInfoSchema = z
-  .object({
-    bytesReadThisSession: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Number of bytes read since last boot.',
-        readOnly: true,
-      }),
-    bytesWrittenThisSession: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Number of bytes written since last boot.',
-        readOnly: true,
-      }),
-    discardTimeThisSession: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Time spent discarding since last boot. Discarding is writing to clear blocks which are no longer in use. Supported on kernels 4.18+.',
-        readOnly: true,
-      }),
-    health: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Disk health.', readOnly: true }),
-    ioTimeThisSession: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Counts the time the disk and queue were busy, so unlike the fields above, parallel requests are not counted multiple times.',
-        readOnly: true,
-      }),
-    manufacturer: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Disk manufacturer.', readOnly: true }),
-    model: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Disk model.', readOnly: true }),
-    readTimeThisSession: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Time spent reading from disk since last boot.',
-        readOnly: true,
-      }),
-    serialNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Disk serial number.', readOnly: true }),
-    sizeBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Disk size.', readOnly: true }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Disk type: eMMC / NVMe / ATA / SCSI.',
-        readOnly: true,
-      }),
-    volumeIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Output only. Disk volumes.', readOnly: true }),
-    writeTimeThisSession: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Time spent writing to disk since last boot.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Status of the single storage device.', required: [] })
-  .openapi('GoogleChromeManagementV1DiskInfo')
-
-const GoogleChromeManagementV1DisplayDeviceSchema = z
-  .object({
-    displayHeightMm: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Output only. Display height in millimeters.', readOnly: true }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Display device name.', readOnly: true }),
-    displayWidthMm: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Output only. Display width in millimeters.', readOnly: true }),
-    internal: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Output only. Is display internal or not.', readOnly: true }),
-    manufactureYear: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Output only. Year of manufacture.', readOnly: true }),
-    manufacturerId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Three letter manufacturer ID.', readOnly: true }),
-    modelId: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Output only. Manufacturer product code.', readOnly: true }),
-  })
-  .openapi({ description: 'Information of a display device.', required: [] })
-  .openapi('GoogleChromeManagementV1DisplayDevice')
-
-const GoogleChromeManagementV1DisplayInfoSchema = z
-  .object({
-    deviceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Represents the graphics card device id.',
-        readOnly: true,
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Display device name.', readOnly: true }),
-    isInternal: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Indicates if display is internal or not.',
-        readOnly: true,
-      }),
-    refreshRate: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Output only. Refresh rate in Hz.', readOnly: true }),
-    resolutionHeight: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Output only. Resolution height in pixels.', readOnly: true }),
-    resolutionWidth: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Output only. Resolution width in pixels.', readOnly: true }),
-  })
-  .openapi({ description: 'Information for a display.', required: [] })
-  .openapi('GoogleChromeManagementV1DisplayInfo')
 
 const GoogleChromeManagementV1FindInstalledAppDevicesResponseSchema = z
   .object({
@@ -1266,817 +2131,23 @@ const GoogleChromeManagementV1FindInstalledAppDevicesResponseSchema = z
   })
   .openapi('GoogleChromeManagementV1FindInstalledAppDevicesResponse')
 
-const GoogleChromeManagementV1GraphicsAdapterInfoSchema = z
-  .object({
-    adapter: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Adapter name. Example: Mesa DRI Intel(R) UHD Graphics 620 (Kabylake GT2).',
-        readOnly: true,
-      }),
-    deviceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Represents the graphics card device id.',
-        readOnly: true,
-      }),
-    driverVersion: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Version of the GPU driver.', readOnly: true }),
-  })
-  .openapi({ description: 'Information of a graphics adapter (GPU).', required: [] })
-  .openapi('GoogleChromeManagementV1GraphicsAdapterInfo')
-
-const GoogleChromeManagementV1TouchScreenDeviceSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Touch screen device display name.', readOnly: true }),
-    stylusCapable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Touch screen device is stylus capable or not.',
-        readOnly: true,
-      }),
-    touchPointCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Number of touch points supported on the device.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Information of an internal touch screen device.', required: [] })
-  .openapi('GoogleChromeManagementV1TouchScreenDevice')
-
-const GoogleChromeManagementV1TouchScreenInfoSchema = z
-  .object({
-    devices: z
-      .array(GoogleChromeManagementV1TouchScreenDeviceSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. List of the internal touch screen devices.',
-        readOnly: true,
-      }),
-    touchpadLibrary: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Touchpad library name used by the input stack.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Information on the device touch screen.', required: [] })
-  .openapi('GoogleChromeManagementV1TouchScreenInfo')
-
-const GoogleChromeManagementV1GraphicsInfoSchema = z
-  .object({
-    adapterInfo: GoogleChromeManagementV1GraphicsAdapterInfoSchema.exactOptional().openapi({
-      description: 'Output only. Information about the graphics adapter (GPU).',
-      readOnly: true,
-    }),
-    displayDevices: z
-      .array(GoogleChromeManagementV1DisplayDeviceSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Information about the display(s) of the device.',
-        readOnly: true,
-      }),
-    eprivacySupported: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Is ePrivacy screen supported or not.',
-        readOnly: true,
-      }),
-    touchScreenInfo: GoogleChromeManagementV1TouchScreenInfoSchema.exactOptional().openapi({
-      description: 'Output only. Information about the internal touch screen(s) of the device.',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    description:
-      'Information of the graphics subsystem. * This field provides device information, which is static and will not change over time. * Data for this field is controlled via policy: [ReportDeviceGraphicsStatus](https://chromeenterprise.google/policies/#ReportDeviceGraphicsStatus) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1GraphicsInfo')
-
-const GoogleChromeManagementV1GraphicsStatusReportSchema = z
-  .object({
-    displays: z
-      .array(GoogleChromeManagementV1DisplayInfoSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Information about the displays for the device.',
-        readOnly: true,
-      }),
-    reportTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Time at which the graphics data was reported.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Information of the graphics subsystem. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceGraphicsInfo](https://chromeenterprise.google/policies/#ReportDeviceGraphicsInfo) * Data Collection Frequency: 3 hours. * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1GraphicsStatusReport')
-
-const GoogleChromeManagementV1HttpsLatencyRoutineDataSchema = z
-  .object({
-    latency: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. HTTPS latency if routine succeeded or failed because of HIGH_LATENCY or VERY_HIGH_LATENCY.',
-        readOnly: true,
-      }),
-    problem: z
-      .enum([
-        'HTTPS_LATENCY_PROBLEM_UNSPECIFIED',
-        'FAILED_DNS_RESOLUTIONS',
-        'FAILED_HTTPS_REQUESTS',
-        'HIGH_LATENCY',
-        'VERY_HIGH_LATENCY',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. HTTPS latency routine problem if a problem occurred.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Data that describes the result of the HTTPS latency diagnostics routine, with the HTTPS requests issued to Google websites.',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1HttpsLatencyRoutineData')
-
-const GoogleChromeManagementV1TotalMemoryEncryptionInfoSchema = z
-  .object({
-    encryptionAlgorithm: z
-      .enum([
-        'MEMORY_ENCRYPTION_ALGORITHM_UNSPECIFIED',
-        'MEMORY_ENCRYPTION_ALGORITHM_UNKNOWN',
-        'MEMORY_ENCRYPTION_ALGORITHM_AES_XTS_128',
-        'MEMORY_ENCRYPTION_ALGORITHM_AES_XTS_256',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Memory encryption algorithm.' }),
-    encryptionState: z
-      .enum([
-        'MEMORY_ENCRYPTION_STATE_UNSPECIFIED',
-        'MEMORY_ENCRYPTION_STATE_UNKNOWN',
-        'MEMORY_ENCRYPTION_STATE_DISABLED',
-        'MEMORY_ENCRYPTION_STATE_TME',
-        'MEMORY_ENCRYPTION_STATE_MKTME',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The state of memory encryption on the device.' }),
-    keyLength: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The length of the encryption keys.' }),
-    maxKeys: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The maximum number of keys that can be used for encryption.' }),
-  })
-  .openapi({
-    description:
-      'Memory encryption information of a device. * This field provides device information, which is static and will not change over time. * Data for this field is controlled via policy: [ReportDeviceMemoryInfo](https://chromeenterprise.google/policies/#ReportDeviceMemoryInfo) * Data Collection Frequency: At device startup * Default Data Reporting Frequency: At device startup - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: Yes * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1TotalMemoryEncryptionInfo')
-
-const GoogleChromeManagementV1MemoryInfoSchema = z
-  .object({
-    availableRamBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Amount of available RAM in bytes.', readOnly: true }),
-    totalMemoryEncryption:
-      GoogleChromeManagementV1TotalMemoryEncryptionInfoSchema.exactOptional().openapi({
-        description: 'Output only. Total memory encryption info for the device.',
-        readOnly: true,
-      }),
-    totalRamBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Total RAM in bytes.', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'Memory information of a device. * This field has both telemetry and device information: - `totalRamBytes` - Device information - `availableRamBytes` - Telemetry information - `totalMemoryEncryption` - Device information * Data for this field is controlled via policy: [ReportDeviceMemoryInfo](https://chromeenterprise.google/policies/#ReportDeviceMemoryInfo) * Data Collection Frequency: - `totalRamBytes` - Only at upload - `availableRamBytes` - Every 10 minutes - `totalMemoryEncryption` - at device startup * Default Data Reporting Frequency: - `totalRamBytes` - 3 hours - `availableRamBytes` - 3 hours - `totalMemoryEncryption` - at device startup - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: only for `totalMemoryEncryption` * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1MemoryInfo')
-
-const GoogleChromeManagementV1MemoryStatusReportSchema = z
-  .object({
-    pageFaults: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Number of page faults during this collection',
-        readOnly: true,
-      }),
-    reportTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The timestamp in milliseconds representing time at which this report was sampled.',
-        readOnly: true,
-      }),
-    sampleFrequency: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Frequency the report is sampled.', readOnly: true }),
-    systemRamFreeBytes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Amount of free RAM in bytes (unreliable due to Garbage Collection).',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Contains samples of memory status reports. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceMemoryInfo](https://chromeenterprise.google/policies/#ReportDeviceMemoryInfo) * Data Collection Frequency: Only at upload, SystemRamFreeByes is collected every 10 minutes * Default Data Reporting Frequency: Every 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1MemoryStatusReport')
-
-const GoogleChromeManagementV1NetworkDiagnosticsReportSchema = z
-  .object({
-    httpsLatencyData: GoogleChromeManagementV1HttpsLatencyRoutineDataSchema.exactOptional().openapi(
-      { description: 'Output only. HTTPS latency test data.', readOnly: true },
-    ),
-    reportTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Timestamp of when the diagnostics were collected.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      "Network testing results to determine the health of the device's network connection, for example whether the HTTPS latency is high or normal.",
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1NetworkDiagnosticsReport')
-
-const GoogleChromeManagementV1NetworkDeviceSchema = z
-  .object({
-    iccid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. The integrated circuit card ID associated with the device's sim card.",
-        readOnly: true,
-      }),
-    imei: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. IMEI (if applicable) of the corresponding network device.',
-        readOnly: true,
-      }),
-    macAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. MAC address (if applicable) of the corresponding network device.',
-        readOnly: true,
-      }),
-    mdn: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. The mobile directory number associated with the device's sim card.",
-        readOnly: true,
-      }),
-    meid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. MEID (if applicable) of the corresponding network device.',
-        readOnly: true,
-      }),
-    type: z
-      .enum([
-        'NETWORK_DEVICE_TYPE_UNSPECIFIED',
-        'CELLULAR_DEVICE',
-        'ETHERNET_DEVICE',
-        'WIFI_DEVICE',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Output only. Network device type.', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'Details about the network device. * This field provides device information, which is static and will not change over time. * Data for this field is controlled via policy: [ReportNetworkDeviceConfiguration](https://chromeenterprise.google/policies/#ReportNetworkDeviceConfiguration) * Data Collection Frequency: At device startup * Default Data Reporting Frequency: At device startup - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: Yes * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1NetworkDevice')
-
-const GoogleChromeManagementV1NetworkInfoSchema = z
-  .object({
-    networkDevices: z
-      .array(GoogleChromeManagementV1NetworkDeviceSchema)
-      .exactOptional()
-      .openapi({ description: 'Output only. List of network devices.', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'Network device information. * This field provides device information, which is static and will not change over time. * Data for this field is controlled via policy: [ReportNetworkDeviceConfiguration](https://chromeenterprise.google/policies/#ReportNetworkDeviceConfiguration) * Data Collection Frequency: At device startup * Default Data Reporting Frequency: At device startup - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: Yes * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1NetworkInfo')
-
-const GoogleChromeManagementV1NetworkStatusReportSchema = z
-  .object({
-    connectionState: z
-      .enum([
-        'NETWORK_CONNECTION_STATE_UNSPECIFIED',
-        'ONLINE',
-        'CONNECTED',
-        'PORTAL',
-        'CONNECTING',
-        'NOT_CONNECTED',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Current connection state of the network.',
-        readOnly: true,
-      }),
-    connectionType: z
-      .enum(['NETWORK_TYPE_UNSPECIFIED', 'CELLULAR', 'ETHERNET', 'TETHER', 'VPN', 'WIFI'])
-      .exactOptional()
-      .openapi({ description: 'Output only. Network connection type.', readOnly: true }),
-    encryptionOn: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Whether the wifi encryption key is turned off.',
-        readOnly: true,
-      }),
-    gatewayIpAddress: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Gateway IP address.', readOnly: true }),
-    guid: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Network connection guid.', readOnly: true }),
-    lanIpAddress: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. LAN IP address.', readOnly: true }),
-    receivingBitRateMbps: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Receiving bit rate measured in Megabits per second.',
-        readOnly: true,
-      }),
-    reportTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Time at which the network state was reported.',
-        readOnly: true,
-      }),
-    sampleFrequency: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Frequency the report is sampled.', readOnly: true }),
-    signalStrengthDbm: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Signal strength for wireless networks measured in decibels.',
-        readOnly: true,
-      }),
-    transmissionBitRateMbps: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Transmission bit rate measured in Megabits per second.',
-        readOnly: true,
-      }),
-    transmissionPowerDbm: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Transmission power measured in decibels.',
-        readOnly: true,
-      }),
-    wifiLinkQuality: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Wifi link quality. Value ranges from [0, 70]. 0 indicates no signal and 70 indicates a strong signal.',
-        readOnly: true,
-      }),
-    wifiPowerManagementEnabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Output only. Wifi power management enabled', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'State of visible/configured networks. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportNetworkStatus](https://chromeenterprise.google/policies/#ReportNetworkStatus) * Data Collection Frequency: 60 minutes * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: Yes * Reported for affiliated users only: Yes',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1NetworkStatusReport')
-
-const GoogleChromeManagementV1OsUpdateStatusSchema = z
-  .object({
-    lastRebootTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Timestamp of the last reboot.', readOnly: true }),
-    lastUpdateCheckTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Timestamp of the last update check.', readOnly: true }),
-    lastUpdateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Timestamp of the last successful update.',
-        readOnly: true,
-      }),
-    newPlatformVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. New platform version of the os image being downloaded and applied. It is only set when update status is OS_IMAGE_DOWNLOAD_IN_PROGRESS or OS_UPDATE_NEED_REBOOT. Note this could be a dummy "0.0.0.0" for OS_UPDATE_NEED_REBOOT status for some edge cases, e.g. update engine is restarted without a reboot.',
-        readOnly: true,
-      }),
-    newRequestedPlatformVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. New requested platform version from the pending updated kiosk app.',
-        readOnly: true,
-      }),
-    updateState: z
-      .enum([
-        'UPDATE_STATE_UNSPECIFIED',
-        'OS_IMAGE_DOWNLOAD_NOT_STARTED',
-        'OS_IMAGE_DOWNLOAD_IN_PROGRESS',
-        'OS_UPDATE_NEED_REBOOT',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Output only. Current state of the os update.', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'Contains information regarding the current OS update status. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceOsUpdateStatus](https://chromeenterprise.google/policies/#ReportDeviceOsUpdateStatus) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1OsUpdateStatus')
-
-const GoogleChromeManagementV1UsbPeripheralReportSchema = z
-  .object({
-    categories: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Categories the device belongs to https://www.usb.org/defined-class-codes',
-        readOnly: true,
-      }),
-    classId: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Class ID https://www.usb.org/defined-class-codes',
-        readOnly: true,
-      }),
-    firmwareVersion: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Firmware version', readOnly: true }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Device name, model name, or product name',
-        readOnly: true,
-      }),
-    pid: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Output only. Product ID', readOnly: true }),
-    subclassId: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Subclass ID https://www.usb.org/defined-class-codes',
-        readOnly: true,
-      }),
-    vendor: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Vendor name', readOnly: true }),
-    vid: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Output only. Vendor ID', readOnly: true }),
-  })
-  .openapi({ description: 'USB connected peripheral report.', required: [] })
-  .openapi('GoogleChromeManagementV1UsbPeripheralReport')
-
-const GoogleChromeManagementV1PeripheralsReportSchema = z
-  .object({
-    reportTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Timestamp of when the report was collected.',
-        readOnly: true,
-      }),
-    usbPeripheralReport: z
-      .array(GoogleChromeManagementV1UsbPeripheralReportSchema)
-      .exactOptional()
-      .openapi({ description: 'Reports of all usb connected devices.' }),
-  })
-  .openapi({ description: 'Peripherals report.', required: [] })
-  .openapi('GoogleChromeManagementV1PeripheralsReport')
-
-const GoogleChromeManagementV1StorageInfoDiskVolumeSchema = z
-  .object({
-    storageFreeBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Free storage space in bytes.' }),
-    storageTotalBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Total storage space in bytes.' }),
-    volumeId: z.string().exactOptional().openapi({ description: 'Disk volume id.' }),
-  })
-  .openapi({ description: 'Information for disk volumes', required: [] })
-  .openapi('GoogleChromeManagementV1StorageInfoDiskVolume')
-
-const GoogleChromeManagementV1StorageInfoSchema = z
-  .object({
-    availableDiskBytes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The available space for user data storage in the device in bytes.',
-      }),
-    totalDiskBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The total space for user data storage in the device in bytes.' }),
-    volume: z
-      .array(GoogleChromeManagementV1StorageInfoDiskVolumeSchema)
-      .exactOptional()
-      .openapi({ description: 'Information for disk volumes' }),
-  })
-  .openapi({
-    description:
-      'Status data for storage. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceStorageStatus](https://chromeenterprise.google/policies/#ReportDeviceStorageStatus) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1StorageInfo')
-
-const GoogleChromeManagementV1StorageStatusReportSchema = z
-  .object({
-    disk: z
-      .array(GoogleChromeManagementV1DiskInfoSchema)
-      .exactOptional()
-      .openapi({ description: 'Output only. Reports on disk.', readOnly: true }),
-    reportTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Timestamp of when the sample was collected on device',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Status data for storage. * This field is telemetry information and this will change over time as the device is utilized. * Data for this field is controlled via policy: [ReportDeviceStorageStatus](https://chromeenterprise.google/policies/#ReportDeviceStorageStatus) * Data Collection Frequency: Only at Upload * Default Data Reporting Frequency: 3 hours - Policy Controlled: Yes * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: No * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1StorageStatusReport')
-
-const GoogleChromeManagementV1ThunderboltInfoSchema = z
-  .object({
-    securityLevel: z
-      .enum([
-        'THUNDERBOLT_SECURITY_LEVEL_UNSPECIFIED',
-        'THUNDERBOLT_SECURITY_NONE_LEVEL',
-        'THUNDERBOLT_SECURITY_USER_LEVEL',
-        'THUNDERBOLT_SECURITY_SECURE_LEVEL',
-        'THUNDERBOLT_SECURITY_DP_ONLY_LEVEL',
-        'THUNDERBOLT_SECURITY_USB_ONLY_LEVEL',
-        'THUNDERBOLT_SECURITY_NO_PCIE_LEVEL',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Security level of the Thunderbolt bus.' }),
-  })
-  .openapi({
-    description:
-      'Thunderbolt bus info. * This field provides device information, which is static and will not change over time. * Data for this field is controlled via policy: [ReportDeviceSecurityStatus](https://chromeenterprise.google/policies/#ReportDeviceSecurityStatus) * Data Collection Frequency: At device startup * Default Data Reporting Frequency: At device startup - Policy Controlled: No * Cache: If the device is offline, the collected data is stored locally, and will be reported when the device is next online: Yes * Reported for affiliated users only: N/A',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1ThunderboltInfo')
-
-const GoogleChromeManagementV1TelemetryDeviceSchema = z
-  .object({
-    audioStatusReport: z
-      .array(GoogleChromeManagementV1AudioStatusReportSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Audio reports collected periodically sorted in a decreasing order of report_time.',
-        readOnly: true,
-      }),
-    batteryInfo: z
-      .array(GoogleChromeManagementV1BatteryInfoSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Information on battery specs for the device.',
-        readOnly: true,
-      }),
-    batteryStatusReport: z
-      .array(GoogleChromeManagementV1BatteryStatusReportSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Battery reports collected periodically.',
-        readOnly: true,
-      }),
-    bootPerformanceReport: z
-      .array(GoogleChromeManagementV1BootPerformanceReportSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Boot performance reports of the device.',
-        readOnly: true,
-      }),
-    cpuInfo: z
-      .array(GoogleChromeManagementV1CpuInfoSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Information regarding CPU specs for the device.',
-        readOnly: true,
-      }),
-    cpuStatusReport: z
-      .array(GoogleChromeManagementV1CpuStatusReportSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. CPU status reports collected periodically sorted in a decreasing order of report_time.',
-        readOnly: true,
-      }),
-    customer: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Google Workspace Customer whose enterprise enrolled the device.',
-        readOnly: true,
-      }),
-    deviceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. The unique Directory API ID of the device. This value is the same as the Admin Console's Directory API ID in the ChromeOS Devices tab",
-        readOnly: true,
-      }),
-    graphicsInfo: GoogleChromeManagementV1GraphicsInfoSchema.exactOptional().openapi({
-      description:
-        'Output only. Contains information regarding Graphic peripherals for the device.',
-      readOnly: true,
-    }),
-    graphicsStatusReport: z
-      .array(GoogleChromeManagementV1GraphicsStatusReportSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Graphics reports collected periodically.',
-        readOnly: true,
-      }),
-    memoryInfo: GoogleChromeManagementV1MemoryInfoSchema.exactOptional().openapi({
-      description: 'Output only. Information regarding memory specs for the device.',
-      readOnly: true,
-    }),
-    memoryStatusReport: z
-      .array(GoogleChromeManagementV1MemoryStatusReportSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Memory status reports collected periodically sorted decreasing by report_time.',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Resource name of the device.', readOnly: true }),
-    networkDiagnosticsReport: z
-      .array(GoogleChromeManagementV1NetworkDiagnosticsReportSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Network diagnostics collected periodically.',
-        readOnly: true,
-      }),
-    networkInfo: GoogleChromeManagementV1NetworkInfoSchema.exactOptional().openapi({
-      description: 'Output only. Network devices information.',
-      readOnly: true,
-    }),
-    networkStatusReport: z
-      .array(GoogleChromeManagementV1NetworkStatusReportSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Network specs collected periodically.',
-        readOnly: true,
-      }),
-    orgUnitId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Organization unit ID of the device.', readOnly: true }),
-    osUpdateStatus: z
-      .array(GoogleChromeManagementV1OsUpdateStatusSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Contains relevant information regarding ChromeOS update status.',
-        readOnly: true,
-      }),
-    peripheralsReport: z
-      .array(GoogleChromeManagementV1PeripheralsReportSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Peripherals reports collected periodically sorted in a decreasing order of report_time.',
-        readOnly: true,
-      }),
-    serialNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. Device serial number. This value is the same as the Admin Console's Serial Number in the ChromeOS Devices tab.",
-        readOnly: true,
-      }),
-    storageInfo: GoogleChromeManagementV1StorageInfoSchema.exactOptional().openapi({
-      description: 'Output only. Information of storage specs for the device.',
-      readOnly: true,
-    }),
-    storageStatusReport: z
-      .array(GoogleChromeManagementV1StorageStatusReportSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Storage reports collected periodically.',
-        readOnly: true,
-      }),
-    thunderboltInfo: z
-      .array(GoogleChromeManagementV1ThunderboltInfoSchema)
-      .exactOptional()
-      .openapi({ description: 'Output only. Information on Thunderbolt bus.', readOnly: true }),
-  })
-  .openapi({ description: 'Telemetry data collected from a managed device.', required: [] })
-  .openapi('GoogleChromeManagementV1TelemetryDevice')
-
-const GoogleChromeManagementV1ListTelemetryDevicesResponseSchema = z
-  .object({
-    devices: z
-      .array(GoogleChromeManagementV1TelemetryDeviceSchema)
-      .exactOptional()
-      .openapi({ description: 'Telemetry devices returned in the response.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Token to specify next page in the list.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GoogleChromeManagementV1ListTelemetryDevicesResponse')
+const GoogleChromeManagementV1ListTelemetryDevicesResponseSchema: z.ZodType<GoogleChromeManagementV1ListTelemetryDevicesResponseType> =
+  z
+    .object({
+      devices: z
+        .array(GoogleChromeManagementV1TelemetryDeviceSchema)
+        .exactOptional()
+        .openapi({ description: 'Telemetry devices returned in the response.' }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Token to specify next page in the list.' }),
+    })
+    .openapi({ required: [] })
+    .openapi('GoogleChromeManagementV1ListTelemetryDevicesResponse')
 
 const GoogleChromeManagementV1TelemetryAudioSevereUnderrunEventSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       '`TelemetryAudioSevereUnderrunEvent` is triggered when a audio devices run out of buffer data for more than 5 seconds.',
@@ -2220,72 +2291,23 @@ const GoogleChromeManagementV1ListTelemetryEventsResponseSchema = z
   })
   .openapi('GoogleChromeManagementV1ListTelemetryEventsResponse')
 
-const GoogleChromeManagementV1TelemetryUserDeviceSchema = z
-  .object({
-    audioStatusReport: z
-      .array(GoogleChromeManagementV1AudioStatusReportSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Audio reports collected periodically sorted in a decreasing order of report_time.',
-        readOnly: true,
-      }),
-    deviceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The unique Directory API ID of the device. This value is the same as the Admin Console's Directory API ID in the ChromeOS Devices tab.",
-      }),
-    peripheralsReport: z
-      .array(GoogleChromeManagementV1PeripheralsReportSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Peripherals reports collected periodically sorted in a decreasing order of report_time.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Telemetry data collected for a managed user and device.', required: [] })
-  .openapi('GoogleChromeManagementV1TelemetryUserDevice')
-
-const GoogleChromeManagementV1TelemetryUserSchema = z
-  .object({
-    customer: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'G Suite Customer whose enterprise enrolled the device.' }),
-    name: z.string().exactOptional().openapi({ description: 'Resource name of the user.' }),
-    orgUnitId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Organization unit of the user.' }),
-    userDevice: z
-      .array(GoogleChromeManagementV1TelemetryUserDeviceSchema)
-      .exactOptional()
-      .openapi({ description: 'Telemetry data collected from a managed user and device.' }),
-    userEmail: z.string().exactOptional().openapi({ description: 'Email address of the user.' }),
-    userId: z.string().exactOptional().openapi({ description: 'Directory ID of the user.' }),
-  })
-  .openapi({ description: 'Telemetry data collected from a managed user.', required: [] })
-  .openapi('GoogleChromeManagementV1TelemetryUser')
-
-const GoogleChromeManagementV1ListTelemetryUsersResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Token to specify next page in the list.' }),
-    telemetryUsers: z
-      .array(GoogleChromeManagementV1TelemetryUserSchema)
-      .exactOptional()
-      .openapi({ description: 'Telemetry users returned in the response.' }),
-  })
-  .openapi({
-    description: 'Response message for listing telemetry users for a customer.',
-    required: [],
-  })
-  .openapi('GoogleChromeManagementV1ListTelemetryUsersResponse')
+const GoogleChromeManagementV1ListTelemetryUsersResponseSchema: z.ZodType<GoogleChromeManagementV1ListTelemetryUsersResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Token to specify next page in the list.' }),
+      telemetryUsers: z
+        .array(GoogleChromeManagementV1TelemetryUserSchema)
+        .exactOptional()
+        .openapi({ description: 'Telemetry users returned in the response.' }),
+    })
+    .openapi({
+      description: 'Response message for listing telemetry users for a customer.',
+      required: [],
+    })
+    .openapi('GoogleChromeManagementV1ListTelemetryUsersResponse')
 
 const XgafvParamsSchema = z
   .enum(['1', '2'])

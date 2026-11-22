@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetSecretsmanagerStopReplicationToReplicaHandler = app.openapi(
   postXAmzTargetSecretsmanagerStopReplicationToReplicaRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

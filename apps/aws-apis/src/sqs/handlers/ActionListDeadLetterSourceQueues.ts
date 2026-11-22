@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const ActionListDeadLetterSourceQueuesHandler = app.openapi(
   postActionListDeadLetterSourceQueuesRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

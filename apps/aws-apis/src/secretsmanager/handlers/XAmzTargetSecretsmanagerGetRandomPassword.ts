@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetSecretsmanagerGetRandomPasswordHandler = app.openapi(
   postXAmzTargetSecretsmanagerGetRandomPasswordRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

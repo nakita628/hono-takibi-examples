@@ -1,75 +1,17 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const GoogleApiHttpBodySchema = z
+const GoogleCloudRecommendationengineV1beta1ImportErrorsConfigSchema = z
   .object({
-    contentType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The HTTP Content-Type header value specifying the content type of the body.',
-      }),
-    data: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The HTTP request/response body as raw binary.' }),
-    extensions: z
-      .array(
-        z.record(
-          z.string(),
-          z
-            .any()
-            .openapi({
-              description: 'Properties of the object. Contains field @type with type URL.',
-            }),
-        ),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Application specific response metadata. Must be set in the first response for streaming APIs.',
-      }),
-  })
-  .openapi({
-    description:
-      "Message that represents an arbitrary HTTP body. It should only be used for payload formats that can't be represented as JSON, such as raw binary or an HTML page. This message can be used both in streaming and non-streaming API methods in the request as well as the response. It can be used as a top-level request field, which is convenient if one wants to extract parameters from either the URL or HTTP template into the request fields and also want access to the raw HTTP body. Example: message GetResourceRequest { // A unique request id. string request_id = 1; // The raw HTTP body is bound to this field. google.api.HttpBody http_body = 2; } service ResourceService { rpc GetResource(GetResourceRequest) returns (google.api.HttpBody); rpc UpdateResource(google.api.HttpBody) returns (google.protobuf.Empty); } Example with streaming methods: service CaldavService { rpc GetCalendar(stream google.api.HttpBody) returns (stream google.api.HttpBody); rpc UpdateCalendar(stream google.api.HttpBody) returns (stream google.api.HttpBody); } Use of this type only changes how the request and response bodies are handled, all other features will continue to work unchanged.",
-    required: [],
-  })
-  .openapi('GoogleApiHttpBody')
-
-const GoogleCloudRecommendationengineV1alphaRejoinCatalogMetadataSchema = z
-  .object({})
-  .openapi({ description: 'Metadata for TriggerCatalogRejoin method.' })
-  .openapi('GoogleCloudRecommendationengineV1alphaRejoinCatalogMetadata')
-
-const GoogleCloudRecommendationengineV1alphaRejoinCatalogResponseSchema = z
-  .object({
-    rejoinedUserEventsCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Number of user events that were joined with latest catalog items.',
-      }),
-  })
-  .openapi({ description: 'Response message for TriggerCatalogRejoin method.', required: [] })
-  .openapi('GoogleCloudRecommendationengineV1alphaRejoinCatalogResponse')
-
-const GoogleCloudRecommendationengineV1alphaTuningMetadataSchema = z
-  .object({
-    recommendationModel: z
+    gcsPrefix: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The resource name of the recommendation model that this tune applies to. Format: projects/{project_number}/locations/{location_id}/catalogs/{catalog_id}/eventStores/{event_store_id}/recommendationModels/{recommendation_model_id}',
+          'Google Cloud Storage path for import errors. This must be an empty, existing Cloud Storage bucket. Import errors will be written to a file in this bucket, one per line, as a JSON-encoded `google.rpc.Status` message.',
       }),
   })
-  .openapi({ description: 'Metadata associated with a tune operation.', required: [] })
-  .openapi('GoogleCloudRecommendationengineV1alphaTuningMetadata')
-
-const GoogleCloudRecommendationengineV1alphaTuningResponseSchema = z
-  .object({})
-  .openapi({ description: 'Response associated with a tune operation.' })
-  .openapi('GoogleCloudRecommendationengineV1alphaTuningResponse')
+  .openapi({ description: 'Configuration of destination for Import related errors.', required: [] })
+  .openapi('GoogleCloudRecommendationengineV1beta1ImportErrorsConfig')
 
 const GoogleCloudRecommendationengineV1beta1BigQuerySourceSchema = z
   .object({
@@ -105,52 +47,6 @@ const GoogleCloudRecommendationengineV1beta1BigQuerySourceSchema = z
   })
   .openapi({ description: 'BigQuery source import data from.', required: [] })
   .openapi('GoogleCloudRecommendationengineV1beta1BigQuerySource')
-
-const GoogleCloudRecommendationengineV1beta1CatalogItemLevelConfigSchema = z
-  .object({
-    eventItemLevel: z
-      .enum(['CATALOG_ITEM_LEVEL_UNSPECIFIED', 'VARIANT', 'MASTER'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Level of the catalog at which events are uploaded. See https://cloud.google.com/recommendations-ai/docs/catalog#catalog-levels for more details.',
-      }),
-    predictItemLevel: z
-      .enum(['CATALOG_ITEM_LEVEL_UNSPECIFIED', 'VARIANT', 'MASTER'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Level of the catalog at which predictions are made. See https://cloud.google.com/recommendations-ai/docs/catalog#catalog-levels for more details.',
-      }),
-  })
-  .openapi({
-    description:
-      'Configures the catalog level that users send events to, and the level at which predictions are made.',
-    required: [],
-  })
-  .openapi('GoogleCloudRecommendationengineV1beta1CatalogItemLevelConfig')
-
-const GoogleCloudRecommendationengineV1beta1CatalogSchema = z
-  .object({
-    catalogItemLevelConfig:
-      GoogleCloudRecommendationengineV1beta1CatalogItemLevelConfigSchema.exactOptional().openapi({
-        description: 'Required. The catalog item level configuration.',
-      }),
-    defaultEventStoreId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The ID of the default event store.' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The catalog display name.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The fully qualified resource name of the catalog.' }),
-  })
-  .openapi({ description: 'The catalog configuration. Next ID: 5.', required: [] })
-  .openapi('GoogleCloudRecommendationengineV1beta1Catalog')
 
 const GoogleCloudRecommendationengineV1beta1CatalogItemCategoryHierarchySchema = z
   .object({
@@ -393,23 +289,28 @@ const GoogleCloudRecommendationengineV1beta1CatalogInlineSourceSchema = z
   })
   .openapi('GoogleCloudRecommendationengineV1beta1CatalogInlineSource')
 
-const GoogleCloudRecommendationengineV1beta1PredictionApiKeyRegistrationSchema = z
-  .object({ apiKey: z.string().exactOptional().openapi({ description: 'The API key.' }) })
-  .openapi({ description: 'Registered Api Key.', required: [] })
-  .openapi('GoogleCloudRecommendationengineV1beta1PredictionApiKeyRegistration')
-
-const GoogleCloudRecommendationengineV1beta1CreatePredictionApiKeyRegistrationRequestSchema = z
+const GoogleCloudRecommendationengineV1beta1GcsSourceSchema = z
   .object({
-    predictionApiKeyRegistration:
-      GoogleCloudRecommendationengineV1beta1PredictionApiKeyRegistrationSchema.exactOptional().openapi(
-        { description: 'Required. The prediction API key registration.' },
-      ),
+    inputUris: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Google Cloud Storage URIs to input files. URI can be up to 2000 characters long. URIs can match the full object path (for example, `gs://bucket/directory/object.json`) or a pattern matching one or more files, such as `gs://bucket/directory/*.json`. A request can contain at most 100 files, and each file can be up to 2 GB. See [Importing catalog information](/recommendations-ai/docs/upload-catalog) for the expected file format and setup instructions.',
+      }),
+    jsonSchema: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The schema to use when parsing the data from the source. Supported values for catalog imports: 1: "catalog_recommendations_ai" using https://cloud.google.com/recommendations-ai/docs/upload-catalog#json (Default for catalogItems.import) 2: "catalog_merchant_center" using https://cloud.google.com/recommendations-ai/docs/upload-catalog#mc Supported values for user events imports: 1: "user_events_recommendations_ai" using https://cloud.google.com/recommendations-ai/docs/manage-user-events#import (Default for userEvents.import) 2. "user_events_ga360" using https://support.google.com/analytics/answer/3437719?hl=en',
+      }),
   })
   .openapi({
-    description: 'Request message for the `CreatePredictionApiKeyRegistration` method.',
+    description: 'Google Cloud Storage location for input content. format.',
     required: [],
   })
-  .openapi('GoogleCloudRecommendationengineV1beta1CreatePredictionApiKeyRegistrationRequest')
+  .openapi('GoogleCloudRecommendationengineV1beta1GcsSource')
 
 const GoogleCloudRecommendationengineV1beta1EventDetailSchema = z
   .object({
@@ -457,42 +358,6 @@ const GoogleCloudRecommendationengineV1beta1EventDetailSchema = z
   })
   .openapi({ description: 'User event details shared by all recommendation types.', required: [] })
   .openapi('GoogleCloudRecommendationengineV1beta1EventDetail')
-
-const GoogleCloudRecommendationengineV1beta1GcsSourceSchema = z
-  .object({
-    inputUris: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Google Cloud Storage URIs to input files. URI can be up to 2000 characters long. URIs can match the full object path (for example, `gs://bucket/directory/object.json`) or a pattern matching one or more files, such as `gs://bucket/directory/*.json`. A request can contain at most 100 files, and each file can be up to 2 GB. See [Importing catalog information](/recommendations-ai/docs/upload-catalog) for the expected file format and setup instructions.',
-      }),
-    jsonSchema: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The schema to use when parsing the data from the source. Supported values for catalog imports: 1: "catalog_recommendations_ai" using https://cloud.google.com/recommendations-ai/docs/upload-catalog#json (Default for catalogItems.import) 2: "catalog_merchant_center" using https://cloud.google.com/recommendations-ai/docs/upload-catalog#mc Supported values for user events imports: 1: "user_events_recommendations_ai" using https://cloud.google.com/recommendations-ai/docs/manage-user-events#import (Default for userEvents.import) 2. "user_events_ga360" using https://support.google.com/analytics/answer/3437719?hl=en',
-      }),
-  })
-  .openapi({
-    description: 'Google Cloud Storage location for input content. format.',
-    required: [],
-  })
-  .openapi('GoogleCloudRecommendationengineV1beta1GcsSource')
-
-const GoogleCloudRecommendationengineV1beta1ImportErrorsConfigSchema = z
-  .object({
-    gcsPrefix: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Google Cloud Storage path for import errors. This must be an empty, existing Cloud Storage bucket. Import errors will be written to a file in this bucket, one per line, as a JSON-encoded `google.rpc.Status` message.',
-      }),
-  })
-  .openapi({ description: 'Configuration of destination for Import related errors.', required: [] })
-  .openapi('GoogleCloudRecommendationengineV1beta1ImportErrorsConfig')
 
 const GoogleCloudRecommendationengineV1beta1ProductDetailSchema = z
   .object({
@@ -683,111 +548,309 @@ const GoogleCloudRecommendationengineV1beta1UserInfoSchema = z
   .openapi({ description: 'Information of end users.', required: [] })
   .openapi('GoogleCloudRecommendationengineV1beta1UserInfo')
 
-const GoogleCloudRecommendationengineV1beta1UserEventSchema = z
-  .object({
-    eventDetail: GoogleCloudRecommendationengineV1beta1EventDetailSchema.exactOptional().openapi({
+type GoogleCloudRecommendationengineV1beta1UserEventType = {
+  eventDetail?: z.infer<typeof GoogleCloudRecommendationengineV1beta1EventDetailSchema>
+  eventSource?: 'EVENT_SOURCE_UNSPECIFIED' | 'AUTOML' | 'ECOMMERCE' | 'BATCH_UPLOAD'
+  eventTime?: string
+  eventType?: string
+  productEventDetail?: z.infer<
+    typeof GoogleCloudRecommendationengineV1beta1ProductEventDetailSchema
+  >
+  userInfo?: z.infer<typeof GoogleCloudRecommendationengineV1beta1UserInfoSchema>
+}
+
+const GoogleCloudRecommendationengineV1beta1UserEventSchema: z.ZodType<GoogleCloudRecommendationengineV1beta1UserEventType> =
+  z
+    .object({
+      eventDetail: GoogleCloudRecommendationengineV1beta1EventDetailSchema.exactOptional().openapi({
+        description:
+          'Optional. User event detailed information common across different recommendation types.',
+      }),
+      eventSource: z
+        .enum(['EVENT_SOURCE_UNSPECIFIED', 'AUTOML', 'ECOMMERCE', 'BATCH_UPLOAD'])
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. This field should *not* be set when using JavaScript pixel or the Recommendations AI Tag. Defaults to `EVENT_SOURCE_UNSPECIFIED`.',
+        }),
+      eventTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Only required for ImportUserEvents method. Timestamp of user event created.',
+        }),
+      eventType: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. User event type. Allowed values are: * `add-to-cart` Products being added to cart. * `add-to-list` Items being added to a list (shopping list, favorites etc). * `category-page-view` Special pages such as sale or promotion pages viewed. * `checkout-start` User starting a checkout process. * `detail-page-view` Products detail page viewed. * `home-page-view` Homepage viewed. * `page-visit` Generic page visits not included in the event types above. * `purchase-complete` User finishing a purchase. * `refund` Purchased items being refunded or returned. * `remove-from-cart` Products being removed from cart. * `remove-from-list` Items being removed from a list. * `search` Product search. * `shopping-cart-page-view` User viewing a shopping cart. * `impression` List of items displayed. Used by Google Tag Manager.',
+        }),
+      productEventDetail:
+        GoogleCloudRecommendationengineV1beta1ProductEventDetailSchema.exactOptional().openapi({
+          description:
+            "Optional. Retail product specific user event metadata. This field is required for the following event types: * `add-to-cart` * `add-to-list` * `category-page-view` * `checkout-start` * `detail-page-view` * `purchase-complete` * `refund` * `remove-from-cart` * `remove-from-list` * `search` This field is optional for the following event types: * `page-visit` * `shopping-cart-page-view` - note that 'product_event_detail' should be set for this unless the shopping cart is empty. This field is not allowed for the following event types: * `home-page-view`",
+        }),
+      userInfo: GoogleCloudRecommendationengineV1beta1UserInfoSchema.exactOptional().openapi({
+        description: 'Required. User information.',
+      }),
+    })
+    .openapi({
       description:
-        'Optional. User event detailed information common across different recommendation types.',
-    }),
-    eventSource: z
-      .enum(['EVENT_SOURCE_UNSPECIFIED', 'AUTOML', 'ECOMMERCE', 'BATCH_UPLOAD'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. This field should *not* be set when using JavaScript pixel or the Recommendations AI Tag. Defaults to `EVENT_SOURCE_UNSPECIFIED`.',
+        "UserEvent captures all metadata information recommendation engine needs to know about how end users interact with customers' website.",
+      required: [],
+    })
+    .openapi('GoogleCloudRecommendationengineV1beta1UserEvent')
+
+type GoogleCloudRecommendationengineV1beta1UserEventInlineSourceType = {
+  userEvents?: z.infer<typeof GoogleCloudRecommendationengineV1beta1UserEventSchema>[]
+}
+
+const GoogleCloudRecommendationengineV1beta1UserEventInlineSourceSchema: z.ZodType<GoogleCloudRecommendationengineV1beta1UserEventInlineSourceType> =
+  z
+    .object({
+      userEvents: z
+        .array(GoogleCloudRecommendationengineV1beta1UserEventSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Optional. A list of user events to import. Recommended max of 10k items.',
+        }),
+    })
+    .openapi({
+      description: 'The inline source for the input config for ImportUserEvents method.',
+      required: [],
+    })
+    .openapi('GoogleCloudRecommendationengineV1beta1UserEventInlineSource')
+
+type GoogleCloudRecommendationengineV1beta1InputConfigType = {
+  bigQuerySource?: z.infer<typeof GoogleCloudRecommendationengineV1beta1BigQuerySourceSchema>
+  catalogInlineSource?: z.infer<
+    typeof GoogleCloudRecommendationengineV1beta1CatalogInlineSourceSchema
+  >
+  gcsSource?: z.infer<typeof GoogleCloudRecommendationengineV1beta1GcsSourceSchema>
+  userEventInlineSource?: z.infer<
+    typeof GoogleCloudRecommendationengineV1beta1UserEventInlineSourceSchema
+  >
+}
+
+const GoogleCloudRecommendationengineV1beta1InputConfigSchema: z.ZodType<GoogleCloudRecommendationengineV1beta1InputConfigType> =
+  z
+    .object({
+      bigQuerySource:
+        GoogleCloudRecommendationengineV1beta1BigQuerySourceSchema.exactOptional().openapi({
+          description: 'BigQuery input source.',
+        }),
+      catalogInlineSource:
+        GoogleCloudRecommendationengineV1beta1CatalogInlineSourceSchema.exactOptional().openapi({
+          description: 'The Inline source for the input content for Catalog items.',
+        }),
+      gcsSource: GoogleCloudRecommendationengineV1beta1GcsSourceSchema.exactOptional().openapi({
+        description: 'Google Cloud Storage location for the input content.',
       }),
-    eventTime: z
+      userEventInlineSource:
+        GoogleCloudRecommendationengineV1beta1UserEventInlineSourceSchema.exactOptional().openapi({
+          description: 'The Inline source for the input content for UserEvents.',
+        }),
+    })
+    .openapi({ description: 'The input config source.', required: [] })
+    .openapi('GoogleCloudRecommendationengineV1beta1InputConfig')
+
+type GoogleCloudRecommendationengineV1beta1ImportCatalogItemsRequestType = {
+  errorsConfig?: z.infer<typeof GoogleCloudRecommendationengineV1beta1ImportErrorsConfigSchema>
+  inputConfig?: z.infer<typeof GoogleCloudRecommendationengineV1beta1InputConfigSchema>
+  requestId?: string
+  updateMask?: string
+}
+
+type GoogleCloudRecommendationengineV1beta1ImportUserEventsRequestType = {
+  errorsConfig?: z.infer<typeof GoogleCloudRecommendationengineV1beta1ImportErrorsConfigSchema>
+  inputConfig?: z.infer<typeof GoogleCloudRecommendationengineV1beta1InputConfigSchema>
+  requestId?: string
+}
+
+type GoogleCloudRecommendationengineV1beta1ListUserEventsResponseType = {
+  nextPageToken?: string
+  userEvents?: z.infer<typeof GoogleCloudRecommendationengineV1beta1UserEventSchema>[]
+}
+
+type GoogleCloudRecommendationengineV1beta1PredictRequestType = {
+  dryRun?: boolean
+  filter?: string
+  labels?: { [key: string]: string }
+  pageSize?: number
+  pageToken?: string
+  params?: { [key: string]: unknown }
+  userEvent?: z.infer<typeof GoogleCloudRecommendationengineV1beta1UserEventSchema>
+}
+
+type GoogleCloudRecommendationengineV1beta1PurgeUserEventsResponseType = {
+  purgedEventsCount?: string
+  userEventsSample?: z.infer<typeof GoogleCloudRecommendationengineV1beta1UserEventSchema>[]
+}
+
+const GoogleApiHttpBodySchema = z
+  .object({
+    contentType: z
       .string()
       .exactOptional()
       .openapi({
-        description:
-          'Optional. Only required for ImportUserEvents method. Timestamp of user event created.',
+        description: 'The HTTP Content-Type header value specifying the content type of the body.',
       }),
-    eventType: z
+    data: z
       .string()
+      .exactOptional()
+      .openapi({ description: 'The HTTP request/response body as raw binary.' }),
+    extensions: z
+      .array(
+        z.record(
+          z.string(),
+          z
+            .any()
+            .openapi({
+              description: 'Properties of the object. Contains field @type with type URL.',
+            }),
+        ),
+      )
       .exactOptional()
       .openapi({
         description:
-          'Required. User event type. Allowed values are: * `add-to-cart` Products being added to cart. * `add-to-list` Items being added to a list (shopping list, favorites etc). * `category-page-view` Special pages such as sale or promotion pages viewed. * `checkout-start` User starting a checkout process. * `detail-page-view` Products detail page viewed. * `home-page-view` Homepage viewed. * `page-visit` Generic page visits not included in the event types above. * `purchase-complete` User finishing a purchase. * `refund` Purchased items being refunded or returned. * `remove-from-cart` Products being removed from cart. * `remove-from-list` Items being removed from a list. * `search` Product search. * `shopping-cart-page-view` User viewing a shopping cart. * `impression` List of items displayed. Used by Google Tag Manager.',
+          'Application specific response metadata. Must be set in the first response for streaming APIs.',
       }),
-    productEventDetail:
-      GoogleCloudRecommendationengineV1beta1ProductEventDetailSchema.exactOptional().openapi({
-        description:
-          "Optional. Retail product specific user event metadata. This field is required for the following event types: * `add-to-cart` * `add-to-list` * `category-page-view` * `checkout-start` * `detail-page-view` * `purchase-complete` * `refund` * `remove-from-cart` * `remove-from-list` * `search` This field is optional for the following event types: * `page-visit` * `shopping-cart-page-view` - note that 'product_event_detail' should be set for this unless the shopping cart is empty. This field is not allowed for the following event types: * `home-page-view`",
-      }),
-    userInfo: GoogleCloudRecommendationengineV1beta1UserInfoSchema.exactOptional().openapi({
-      description: 'Required. User information.',
-    }),
   })
   .openapi({
     description:
-      "UserEvent captures all metadata information recommendation engine needs to know about how end users interact with customers' website.",
+      "Message that represents an arbitrary HTTP body. It should only be used for payload formats that can't be represented as JSON, such as raw binary or an HTML page. This message can be used both in streaming and non-streaming API methods in the request as well as the response. It can be used as a top-level request field, which is convenient if one wants to extract parameters from either the URL or HTTP template into the request fields and also want access to the raw HTTP body. Example: message GetResourceRequest { // A unique request id. string request_id = 1; // The raw HTTP body is bound to this field. google.api.HttpBody http_body = 2; } service ResourceService { rpc GetResource(GetResourceRequest) returns (google.api.HttpBody); rpc UpdateResource(google.api.HttpBody) returns (google.protobuf.Empty); } Example with streaming methods: service CaldavService { rpc GetCalendar(stream google.api.HttpBody) returns (stream google.api.HttpBody); rpc UpdateCalendar(stream google.api.HttpBody) returns (stream google.api.HttpBody); } Use of this type only changes how the request and response bodies are handled, all other features will continue to work unchanged.",
     required: [],
   })
-  .openapi('GoogleCloudRecommendationengineV1beta1UserEvent')
+  .openapi('GoogleApiHttpBody')
 
-const GoogleCloudRecommendationengineV1beta1UserEventInlineSourceSchema = z
+const GoogleCloudRecommendationengineV1alphaRejoinCatalogMetadataSchema = z
+  .looseObject({})
+  .openapi({ description: 'Metadata for TriggerCatalogRejoin method.' })
+  .openapi('GoogleCloudRecommendationengineV1alphaRejoinCatalogMetadata')
+
+const GoogleCloudRecommendationengineV1alphaRejoinCatalogResponseSchema = z
   .object({
-    userEvents: z
-      .array(GoogleCloudRecommendationengineV1beta1UserEventSchema)
+    rejoinedUserEventsCount: z
+      .string()
       .exactOptional()
       .openapi({
-        description: 'Optional. A list of user events to import. Recommended max of 10k items.',
+        description: 'Number of user events that were joined with latest catalog items.',
+      }),
+  })
+  .openapi({ description: 'Response message for TriggerCatalogRejoin method.', required: [] })
+  .openapi('GoogleCloudRecommendationengineV1alphaRejoinCatalogResponse')
+
+const GoogleCloudRecommendationengineV1alphaTuningMetadataSchema = z
+  .object({
+    recommendationModel: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the recommendation model that this tune applies to. Format: projects/{project_number}/locations/{location_id}/catalogs/{catalog_id}/eventStores/{event_store_id}/recommendationModels/{recommendation_model_id}',
+      }),
+  })
+  .openapi({ description: 'Metadata associated with a tune operation.', required: [] })
+  .openapi('GoogleCloudRecommendationengineV1alphaTuningMetadata')
+
+const GoogleCloudRecommendationengineV1alphaTuningResponseSchema = z
+  .looseObject({})
+  .openapi({ description: 'Response associated with a tune operation.' })
+  .openapi('GoogleCloudRecommendationengineV1alphaTuningResponse')
+
+const GoogleCloudRecommendationengineV1beta1CatalogItemLevelConfigSchema = z
+  .object({
+    eventItemLevel: z
+      .enum(['CATALOG_ITEM_LEVEL_UNSPECIFIED', 'VARIANT', 'MASTER'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Level of the catalog at which events are uploaded. See https://cloud.google.com/recommendations-ai/docs/catalog#catalog-levels for more details.',
+      }),
+    predictItemLevel: z
+      .enum(['CATALOG_ITEM_LEVEL_UNSPECIFIED', 'VARIANT', 'MASTER'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Level of the catalog at which predictions are made. See https://cloud.google.com/recommendations-ai/docs/catalog#catalog-levels for more details.',
       }),
   })
   .openapi({
-    description: 'The inline source for the input config for ImportUserEvents method.',
+    description:
+      'Configures the catalog level that users send events to, and the level at which predictions are made.',
     required: [],
   })
-  .openapi('GoogleCloudRecommendationengineV1beta1UserEventInlineSource')
+  .openapi('GoogleCloudRecommendationengineV1beta1CatalogItemLevelConfig')
 
-const GoogleCloudRecommendationengineV1beta1InputConfigSchema = z
+const GoogleCloudRecommendationengineV1beta1CatalogSchema = z
   .object({
-    bigQuerySource:
-      GoogleCloudRecommendationengineV1beta1BigQuerySourceSchema.exactOptional().openapi({
-        description: 'BigQuery input source.',
+    catalogItemLevelConfig:
+      GoogleCloudRecommendationengineV1beta1CatalogItemLevelConfigSchema.exactOptional().openapi({
+        description: 'Required. The catalog item level configuration.',
       }),
-    catalogInlineSource:
-      GoogleCloudRecommendationengineV1beta1CatalogInlineSourceSchema.exactOptional().openapi({
-        description: 'The Inline source for the input content for Catalog items.',
-      }),
-    gcsSource: GoogleCloudRecommendationengineV1beta1GcsSourceSchema.exactOptional().openapi({
-      description: 'Google Cloud Storage location for the input content.',
-    }),
-    userEventInlineSource:
-      GoogleCloudRecommendationengineV1beta1UserEventInlineSourceSchema.exactOptional().openapi({
-        description: 'The Inline source for the input content for UserEvents.',
-      }),
-  })
-  .openapi({ description: 'The input config source.', required: [] })
-  .openapi('GoogleCloudRecommendationengineV1beta1InputConfig')
-
-const GoogleCloudRecommendationengineV1beta1ImportCatalogItemsRequestSchema = z
-  .object({
-    errorsConfig:
-      GoogleCloudRecommendationengineV1beta1ImportErrorsConfigSchema.exactOptional().openapi({
-        description: 'Optional. The desired location of errors incurred during the Import.',
-      }),
-    inputConfig: GoogleCloudRecommendationengineV1beta1InputConfigSchema.exactOptional().openapi({
-      description: 'Required. The desired input location of the data.',
-    }),
-    requestId: z
+    defaultEventStoreId: z
       .string()
       .exactOptional()
-      .openapi({
-        description:
-          'Optional. Unique identifier provided by client, within the ancestor dataset scope. Ensures idempotency and used for request deduplication. Server-generated if unspecified. Up to 128 characters long. This is returned as google.longrunning.Operation.name in the response.',
-      }),
-    updateMask: z
+      .openapi({ description: 'Required. The ID of the default event store.' }),
+    displayName: z
       .string()
       .exactOptional()
-      .openapi({
-        description:
-          "Optional. Indicates which fields in the provided imported 'items' to update. If not set, will by default update all fields.",
-      }),
+      .openapi({ description: 'Required. The catalog display name.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The fully qualified resource name of the catalog.' }),
   })
-  .openapi({ description: 'Request message for Import methods.', required: [] })
-  .openapi('GoogleCloudRecommendationengineV1beta1ImportCatalogItemsRequest')
+  .openapi({ description: 'The catalog configuration. Next ID: 5.', required: [] })
+  .openapi('GoogleCloudRecommendationengineV1beta1Catalog')
+
+const GoogleCloudRecommendationengineV1beta1PredictionApiKeyRegistrationSchema = z
+  .object({ apiKey: z.string().exactOptional().openapi({ description: 'The API key.' }) })
+  .openapi({ description: 'Registered Api Key.', required: [] })
+  .openapi('GoogleCloudRecommendationengineV1beta1PredictionApiKeyRegistration')
+
+const GoogleCloudRecommendationengineV1beta1CreatePredictionApiKeyRegistrationRequestSchema = z
+  .object({
+    predictionApiKeyRegistration:
+      GoogleCloudRecommendationengineV1beta1PredictionApiKeyRegistrationSchema.exactOptional().openapi(
+        { description: 'Required. The prediction API key registration.' },
+      ),
+  })
+  .openapi({
+    description: 'Request message for the `CreatePredictionApiKeyRegistration` method.',
+    required: [],
+  })
+  .openapi('GoogleCloudRecommendationengineV1beta1CreatePredictionApiKeyRegistrationRequest')
+
+const GoogleCloudRecommendationengineV1beta1ImportCatalogItemsRequestSchema: z.ZodType<GoogleCloudRecommendationengineV1beta1ImportCatalogItemsRequestType> =
+  z
+    .object({
+      errorsConfig:
+        GoogleCloudRecommendationengineV1beta1ImportErrorsConfigSchema.exactOptional().openapi({
+          description: 'Optional. The desired location of errors incurred during the Import.',
+        }),
+      inputConfig: GoogleCloudRecommendationengineV1beta1InputConfigSchema.exactOptional().openapi({
+        description: 'Required. The desired input location of the data.',
+      }),
+      requestId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Unique identifier provided by client, within the ancestor dataset scope. Ensures idempotency and used for request deduplication. Server-generated if unspecified. Up to 128 characters long. This is returned as google.longrunning.Operation.name in the response.',
+        }),
+      updateMask: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            "Optional. Indicates which fields in the provided imported 'items' to update. If not set, will by default update all fields.",
+        }),
+    })
+    .openapi({ description: 'Request message for Import methods.', required: [] })
+    .openapi('GoogleCloudRecommendationengineV1beta1ImportCatalogItemsRequest')
 
 const GoogleRpcStatusSchema = z
   .object({
@@ -880,25 +943,26 @@ const GoogleCloudRecommendationengineV1beta1ImportMetadataSchema = z
   })
   .openapi('GoogleCloudRecommendationengineV1beta1ImportMetadata')
 
-const GoogleCloudRecommendationengineV1beta1ImportUserEventsRequestSchema = z
-  .object({
-    errorsConfig:
-      GoogleCloudRecommendationengineV1beta1ImportErrorsConfigSchema.exactOptional().openapi({
-        description: 'Optional. The desired location of errors incurred during the Import.',
+const GoogleCloudRecommendationengineV1beta1ImportUserEventsRequestSchema: z.ZodType<GoogleCloudRecommendationengineV1beta1ImportUserEventsRequestType> =
+  z
+    .object({
+      errorsConfig:
+        GoogleCloudRecommendationengineV1beta1ImportErrorsConfigSchema.exactOptional().openapi({
+          description: 'Optional. The desired location of errors incurred during the Import.',
+        }),
+      inputConfig: GoogleCloudRecommendationengineV1beta1InputConfigSchema.exactOptional().openapi({
+        description: 'Required. The desired input location of the data.',
       }),
-    inputConfig: GoogleCloudRecommendationengineV1beta1InputConfigSchema.exactOptional().openapi({
-      description: 'Required. The desired input location of the data.',
-    }),
-    requestId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Unique identifier provided by client, within the ancestor dataset scope. Ensures idempotency for expensive long running operations. Server-generated if unspecified. Up to 128 characters long. This is returned as google.longrunning.Operation.name in the response. Note that this field must not be set if the desired input config is catalog_inline_source.',
-      }),
-  })
-  .openapi({ description: 'Request message for the ImportUserEvents request.', required: [] })
-  .openapi('GoogleCloudRecommendationengineV1beta1ImportUserEventsRequest')
+      requestId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Unique identifier provided by client, within the ancestor dataset scope. Ensures idempotency for expensive long running operations. Server-generated if unspecified. Up to 128 characters long. This is returned as google.longrunning.Operation.name in the response. Note that this field must not be set if the desired input config is catalog_inline_source.',
+        }),
+    })
+    .openapi({ description: 'Request message for the ImportUserEvents request.', required: [] })
+    .openapi('GoogleCloudRecommendationengineV1beta1ImportUserEventsRequest')
 
 const GoogleCloudRecommendationengineV1beta1UserEventImportSummarySchema = z
   .object({
@@ -997,75 +1061,77 @@ const GoogleCloudRecommendationengineV1beta1ListPredictionApiKeyRegistrationsRes
   })
   .openapi('GoogleCloudRecommendationengineV1beta1ListPredictionApiKeyRegistrationsResponse')
 
-const GoogleCloudRecommendationengineV1beta1ListUserEventsResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "If empty, the list is complete. If nonempty, the token to pass to the next request's ListUserEvents.page_token.",
-      }),
-    userEvents: z
-      .array(GoogleCloudRecommendationengineV1beta1UserEventSchema)
-      .exactOptional()
-      .openapi({ description: 'The user events.' }),
-  })
-  .openapi({ description: 'Response message for ListUserEvents method.', required: [] })
-  .openapi('GoogleCloudRecommendationengineV1beta1ListUserEventsResponse')
+const GoogleCloudRecommendationengineV1beta1ListUserEventsResponseSchema: z.ZodType<GoogleCloudRecommendationengineV1beta1ListUserEventsResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            "If empty, the list is complete. If nonempty, the token to pass to the next request's ListUserEvents.page_token.",
+        }),
+      userEvents: z
+        .array(GoogleCloudRecommendationengineV1beta1UserEventSchema)
+        .exactOptional()
+        .openapi({ description: 'The user events.' }),
+    })
+    .openapi({ description: 'Response message for ListUserEvents method.', required: [] })
+    .openapi('GoogleCloudRecommendationengineV1beta1ListUserEventsResponse')
 
-const GoogleCloudRecommendationengineV1beta1PredictRequestSchema = z
-  .object({
-    dryRun: z
-      .boolean()
-      .exactOptional()
-      .openapi({
+const GoogleCloudRecommendationengineV1beta1PredictRequestSchema: z.ZodType<GoogleCloudRecommendationengineV1beta1PredictRequestType> =
+  z
+    .object({
+      dryRun: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Use dryRun mode for this prediction query. If set to true, a fake model will be used that returns arbitrary catalog items. Note that the dryRun mode should only be used for testing the API, or if the model is not ready.',
+        }),
+      filter: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Filter for restricting prediction results. Accepts values for tags and the `filterOutOfStockItems` flag. * Tag expressions. Restricts predictions to items that match all of the specified tags. Boolean operators `OR` and `NOT` are supported if the expression is enclosed in parentheses, and must be separated from the tag values by a space. `-"tagA"` is also supported and is equivalent to `NOT "tagA"`. Tag values must be double quoted UTF-8 encoded strings with a size limit of 1 KiB. * filterOutOfStockItems. Restricts predictions to items that do not have a stockState value of OUT_OF_STOCK. Examples: * tag=("Red" OR "Blue") tag="New-Arrival" tag=(NOT "promotional") * filterOutOfStockItems tag=(-"promotional") * filterOutOfStockItems If your filter blocks all prediction results, nothing will be returned. If you want generic (unfiltered) popular items to be returned instead, set `strictFiltering` to false in `PredictRequest.params`.',
+        }),
+      labels: z
+        .record(z.string(), z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The labels for the predict request. * Label keys can contain lowercase letters, digits and hyphens, must start with a letter, and must end with a letter or digit. * Non-zero label values can contain lowercase letters, digits and hyphens, must start with a letter, and must end with a letter or digit. * No more than 64 labels can be associated with a given request. See https://goo.gl/xmQnxf for more information on and examples of labels.',
+        }),
+      pageSize: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Maximum number of results to return per page. Set this property to the number of prediction results required. If zero, the service will choose a reasonable default.',
+        }),
+      pageToken: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Optional. The previous PredictResponse.next_page_token.' }),
+      params: z
+        .record(z.string(), z.any())
+        .exactOptional()
+        .openapi({
+          description:
+            "Optional. Additional domain specific parameters for the predictions. Allowed values: * `returnCatalogItem`: Boolean. If set to true, the associated catalogItem object will be returned in the `PredictResponse.PredictionResult.itemMetadata` object in the method response. * `returnItemScore`: Boolean. If set to true, the prediction 'score' corresponding to each returned item will be set in the `metadata` field in the prediction response. The given 'score' indicates the probability of an item being clicked/purchased given the user's context and history. * `strictFiltering`: Boolean. True by default. If set to false, the service will return generic (unfiltered) popular items instead of empty if your filter blocks all prediction results. * `priceRerankLevel`: String. Default empty. If set to be non-empty, then it needs to be one of {'no-price-reranking', 'low-price-reranking', 'medium-price-reranking', 'high-price-reranking'}. This gives request level control and adjust prediction results based on product price. * `diversityLevel`: String. Default empty. If set to be non-empty, then it needs to be one of {'no-diversity', 'low-diversity', 'medium-diversity', 'high-diversity', 'auto-diversity'}. This gives request level control and adjust prediction results based on product category.",
+        }),
+      userEvent: GoogleCloudRecommendationengineV1beta1UserEventSchema.exactOptional().openapi({
         description:
-          'Optional. Use dryRun mode for this prediction query. If set to true, a fake model will be used that returns arbitrary catalog items. Note that the dryRun mode should only be used for testing the API, or if the model is not ready.',
+          "Required. Context about the user, what they are looking at and what action they took to trigger the predict request. Note that this user event detail won't be ingested to userEvent logs. Thus, a separate userEvent write request is required for event logging. Don't set UserInfo.visitor_id or UserInfo.user_id to the same fixed ID for different users. If you are trying to receive non-personalized recommendations (not recommended; this can negatively impact model performance), instead set UserInfo.visitor_id to a random unique ID and leave UserInfo.user_id unset.",
       }),
-    filter: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Filter for restricting prediction results. Accepts values for tags and the `filterOutOfStockItems` flag. * Tag expressions. Restricts predictions to items that match all of the specified tags. Boolean operators `OR` and `NOT` are supported if the expression is enclosed in parentheses, and must be separated from the tag values by a space. `-"tagA"` is also supported and is equivalent to `NOT "tagA"`. Tag values must be double quoted UTF-8 encoded strings with a size limit of 1 KiB. * filterOutOfStockItems. Restricts predictions to items that do not have a stockState value of OUT_OF_STOCK. Examples: * tag=("Red" OR "Blue") tag="New-Arrival" tag=(NOT "promotional") * filterOutOfStockItems tag=(-"promotional") * filterOutOfStockItems If your filter blocks all prediction results, nothing will be returned. If you want generic (unfiltered) popular items to be returned instead, set `strictFiltering` to false in `PredictRequest.params`.',
-      }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The labels for the predict request. * Label keys can contain lowercase letters, digits and hyphens, must start with a letter, and must end with a letter or digit. * Non-zero label values can contain lowercase letters, digits and hyphens, must start with a letter, and must end with a letter or digit. * No more than 64 labels can be associated with a given request. See https://goo.gl/xmQnxf for more information on and examples of labels.',
-      }),
-    pageSize: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Maximum number of results to return per page. Set this property to the number of prediction results required. If zero, the service will choose a reasonable default.',
-      }),
-    pageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. The previous PredictResponse.next_page_token.' }),
-    params: z
-      .record(z.string(), z.any())
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. Additional domain specific parameters for the predictions. Allowed values: * `returnCatalogItem`: Boolean. If set to true, the associated catalogItem object will be returned in the `PredictResponse.PredictionResult.itemMetadata` object in the method response. * `returnItemScore`: Boolean. If set to true, the prediction 'score' corresponding to each returned item will be set in the `metadata` field in the prediction response. The given 'score' indicates the probability of an item being clicked/purchased given the user's context and history. * `strictFiltering`: Boolean. True by default. If set to false, the service will return generic (unfiltered) popular items instead of empty if your filter blocks all prediction results. * `priceRerankLevel`: String. Default empty. If set to be non-empty, then it needs to be one of {'no-price-reranking', 'low-price-reranking', 'medium-price-reranking', 'high-price-reranking'}. This gives request level control and adjust prediction results based on product price. * `diversityLevel`: String. Default empty. If set to be non-empty, then it needs to be one of {'no-diversity', 'low-diversity', 'medium-diversity', 'high-diversity', 'auto-diversity'}. This gives request level control and adjust prediction results based on product category.",
-      }),
-    userEvent: GoogleCloudRecommendationengineV1beta1UserEventSchema.exactOptional().openapi({
+    })
+    .openapi({
       description:
-        "Required. Context about the user, what they are looking at and what action they took to trigger the predict request. Note that this user event detail won't be ingested to userEvent logs. Thus, a separate userEvent write request is required for event logging. Don't set UserInfo.visitor_id or UserInfo.user_id to the same fixed ID for different users. If you are trying to receive non-personalized recommendations (not recommended; this can negatively impact model performance), instead set UserInfo.visitor_id to a random unique ID and leave UserInfo.user_id unset.",
-    }),
-  })
-  .openapi({
-    description:
-      'Request message for Predict method. Full resource name of the format: `{name=projects/*/locations/global/catalogs/default_catalog/eventStores/default_event_store/placements/*}` The id of the recommendation engine placement. This id is used to identify the set of models that will be used to make the prediction. We currently support three placements with the following IDs by default: // * `shopping_cart`: Predicts items frequently bought together with one or more catalog items in the same shopping session. Commonly displayed after `add-to-cart` event, on product detail pages, or on the shopping cart page. * `home_page`: Predicts the next product that a user will most likely engage with or purchase based on the shopping or viewing history of the specified `userId` or `visitorId`. For example - Recommendations for you. * `product_detail`: Predicts the next product that a user will most likely engage with or purchase. The prediction is based on the shopping or viewing history of the specified `userId` or `visitorId` and its relevance to a specified `CatalogItem`. Typically used on product detail pages. For example - More items like this. * `recently_viewed_default`: Returns up to 75 items recently viewed by the specified `userId` or `visitorId`, most recent ones first. Returns nothing if neither of them has viewed any items yet. For example - Recently viewed. The full list of available placements can be seen at https://console.cloud.google.com/recommendation/catalogs/default_catalog/placements',
-    required: [],
-  })
-  .openapi('GoogleCloudRecommendationengineV1beta1PredictRequest')
+        'Request message for Predict method. Full resource name of the format: `{name=projects/*/locations/global/catalogs/default_catalog/eventStores/default_event_store/placements/*}` The id of the recommendation engine placement. This id is used to identify the set of models that will be used to make the prediction. We currently support three placements with the following IDs by default: // * `shopping_cart`: Predicts items frequently bought together with one or more catalog items in the same shopping session. Commonly displayed after `add-to-cart` event, on product detail pages, or on the shopping cart page. * `home_page`: Predicts the next product that a user will most likely engage with or purchase based on the shopping or viewing history of the specified `userId` or `visitorId`. For example - Recommendations for you. * `product_detail`: Predicts the next product that a user will most likely engage with or purchase. The prediction is based on the shopping or viewing history of the specified `userId` or `visitorId` and its relevance to a specified `CatalogItem`. Typically used on product detail pages. For example - More items like this. * `recently_viewed_default`: Returns up to 75 items recently viewed by the specified `userId` or `visitorId`, most recent ones first. Returns nothing if neither of them has viewed any items yet. For example - Recently viewed. The full list of available placements can be seen at https://console.cloud.google.com/recommendation/catalogs/default_catalog/placements',
+      required: [],
+    })
+    .openapi('GoogleCloudRecommendationengineV1beta1PredictRequest')
 
 const GoogleCloudRecommendationengineV1beta1PredictResponsePredictionResultSchema = z
   .object({
@@ -1158,29 +1224,30 @@ const GoogleCloudRecommendationengineV1beta1PurgeUserEventsRequestSchema = z
   .openapi({ description: 'Request message for PurgeUserEvents method.', required: [] })
   .openapi('GoogleCloudRecommendationengineV1beta1PurgeUserEventsRequest')
 
-const GoogleCloudRecommendationengineV1beta1PurgeUserEventsResponseSchema = z
-  .object({
-    purgedEventsCount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The total count of events purged as a result of the operation.' }),
-    userEventsSample: z
-      .array(GoogleCloudRecommendationengineV1beta1UserEventSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A sampling of events deleted (or will be deleted) depending on the `force` property in the request. Max of 500 items will be returned.',
-      }),
-  })
-  .openapi({
-    description:
-      'Response of the PurgeUserEventsRequest. If the long running operation is successfully done, then this message is returned by the google.longrunning.Operations.response field.',
-    required: [],
-  })
-  .openapi('GoogleCloudRecommendationengineV1beta1PurgeUserEventsResponse')
+const GoogleCloudRecommendationengineV1beta1PurgeUserEventsResponseSchema: z.ZodType<GoogleCloudRecommendationengineV1beta1PurgeUserEventsResponseType> =
+  z
+    .object({
+      purgedEventsCount: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The total count of events purged as a result of the operation.' }),
+      userEventsSample: z
+        .array(GoogleCloudRecommendationengineV1beta1UserEventSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'A sampling of events deleted (or will be deleted) depending on the `force` property in the request. Max of 500 items will be returned.',
+        }),
+    })
+    .openapi({
+      description:
+        'Response of the PurgeUserEventsRequest. If the long running operation is successfully done, then this message is returned by the google.longrunning.Operations.response field.',
+      required: [],
+    })
+    .openapi('GoogleCloudRecommendationengineV1beta1PurgeUserEventsResponse')
 
 const GoogleCloudRecommendationengineV1beta1RejoinUserEventsMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata for RejoinUserEvents method.' })
   .openapi('GoogleCloudRecommendationengineV1beta1RejoinUserEventsMetadata')
 
@@ -1281,7 +1348,7 @@ const GoogleLongrunningListOperationsResponseSchema = z
   .openapi('GoogleLongrunningListOperationsResponse')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

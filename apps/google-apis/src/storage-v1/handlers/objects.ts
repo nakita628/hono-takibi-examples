@@ -64,5 +64,7 @@ export const objectsHandler = app
   })
   .openapi(
     postBSourceBucketOSourceObjectRewriteToBDestinationBucketODestinationObjectRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

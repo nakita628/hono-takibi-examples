@@ -374,62 +374,46 @@ export const getAtmsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description: 'Describes how long this response can be cached',
-          schema: z
-            .string()
-            .default('max-age=28800')
-            .exactOptional()
-            .openapi({
-              description: 'Describes how long this response can be cached',
-              param: { required: false },
-            }),
-        },
-        Etag: {
-          description: 'A unique ID identifying whether this resource has changed',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A unique ID identifying whether this resource has changed',
-              param: { required: false },
-            }),
-        },
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .default('max-age=31536000')
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .default('max-age=28800')
+          .exactOptional()
+          .openapi({
+            description: 'Describes how long this response can be cached',
+            param: { required: false },
+          }),
+        Etag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A unique ID identifying whether this resource has changed',
+            param: { required: false },
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .default('max-age=31536000')
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -446,40 +430,30 @@ export const getAtmsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     408: {
@@ -498,40 +472,30 @@ export const getAtmsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -548,40 +512,30 @@ export const getAtmsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -600,40 +554,30 @@ export const getAtmsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     503: {
@@ -650,40 +594,30 @@ export const getAtmsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     default: {
@@ -704,40 +638,30 @@ export const getAtmsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -783,7 +707,7 @@ export const headAtmsRoute = createRoute({
       description: 'No response',
       content: {
         'application/prs.openbanking.opendata.v1.3+json': {
-          schema: z.object({}).openapi({ title: 'No response' }),
+          schema: z.looseObject({}).openapi({ title: 'No response' }),
         },
       },
     },
@@ -1366,62 +1290,46 @@ export const getBranchesRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description: 'Describes how long this response can be cached',
-          schema: z
-            .string()
-            .default('max-age=28800')
-            .exactOptional()
-            .openapi({
-              description: 'Describes how long this response can be cached',
-              param: { required: false },
-            }),
-        },
-        Etag: {
-          description: 'A unique ID identifying whether this resource has changed',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A unique ID identifying whether this resource has changed',
-              param: { required: false },
-            }),
-        },
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .default('max-age=31536000')
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .default('max-age=28800')
+          .exactOptional()
+          .openapi({
+            description: 'Describes how long this response can be cached',
+            param: { required: false },
+          }),
+        Etag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A unique ID identifying whether this resource has changed',
+            param: { required: false },
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .default('max-age=31536000')
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -1438,40 +1346,30 @@ export const getBranchesRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     408: {
@@ -1490,40 +1388,30 @@ export const getBranchesRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -1540,40 +1428,30 @@ export const getBranchesRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -1592,40 +1470,30 @@ export const getBranchesRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     503: {
@@ -1642,40 +1510,30 @@ export const getBranchesRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     default: {
@@ -1696,40 +1554,30 @@ export const getBranchesRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -1775,7 +1623,7 @@ export const headBranchesRoute = createRoute({
       description: 'No response',
       content: {
         'application/prs.openbanking.opendata.v1.3+json': {
-          schema: z.object({}).openapi({ title: 'No response' }),
+          schema: z.looseObject({}).openapi({ title: 'No response' }),
         },
       },
     },
@@ -4321,62 +4169,46 @@ export const getBusinessCurrentAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description: 'Describes how long this response can be cached',
-          schema: z
-            .string()
-            .default('max-age=28800')
-            .exactOptional()
-            .openapi({
-              description: 'Describes how long this response can be cached',
-              param: { required: false },
-            }),
-        },
-        Etag: {
-          description: 'A unique ID identifying whether this resource has changed',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A unique ID identifying whether this resource has changed',
-              param: { required: false },
-            }),
-        },
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .default('max-age=31536000')
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .default('max-age=28800')
+          .exactOptional()
+          .openapi({
+            description: 'Describes how long this response can be cached',
+            param: { required: false },
+          }),
+        Etag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A unique ID identifying whether this resource has changed',
+            param: { required: false },
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .default('max-age=31536000')
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -4393,40 +4225,30 @@ export const getBusinessCurrentAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     408: {
@@ -4445,40 +4267,30 @@ export const getBusinessCurrentAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -4495,40 +4307,30 @@ export const getBusinessCurrentAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -4547,40 +4349,30 @@ export const getBusinessCurrentAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     503: {
@@ -4597,40 +4389,30 @@ export const getBusinessCurrentAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     default: {
@@ -4651,40 +4433,30 @@ export const getBusinessCurrentAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -4730,7 +4502,7 @@ export const headBusinessCurrentAccountsRoute = createRoute({
       description: 'No response',
       content: {
         'application/prs.openbanking.opendata.v1.3+json': {
-          schema: z.object({}).openapi({ title: 'No response' }),
+          schema: z.looseObject({}).openapi({ title: 'No response' }),
         },
       },
     },
@@ -5684,62 +5456,46 @@ export const getCommercialCreditCardsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description: 'Describes how long this response can be cached',
-          schema: z
-            .string()
-            .default('max-age=28800')
-            .exactOptional()
-            .openapi({
-              description: 'Describes how long this response can be cached',
-              param: { required: false },
-            }),
-        },
-        Etag: {
-          description: 'A unique ID identifying whether this resource has changed',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A unique ID identifying whether this resource has changed',
-              param: { required: false },
-            }),
-        },
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .default('max-age=31536000')
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .default('max-age=28800')
+          .exactOptional()
+          .openapi({
+            description: 'Describes how long this response can be cached',
+            param: { required: false },
+          }),
+        Etag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A unique ID identifying whether this resource has changed',
+            param: { required: false },
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .default('max-age=31536000')
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -5756,40 +5512,30 @@ export const getCommercialCreditCardsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     408: {
@@ -5808,40 +5554,30 @@ export const getCommercialCreditCardsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -5858,40 +5594,30 @@ export const getCommercialCreditCardsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -5910,40 +5636,30 @@ export const getCommercialCreditCardsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     503: {
@@ -5960,40 +5676,30 @@ export const getCommercialCreditCardsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     default: {
@@ -6014,40 +5720,30 @@ export const getCommercialCreditCardsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -6093,7 +5789,7 @@ export const headCommercialCreditCardsRoute = createRoute({
       description: 'No response',
       content: {
         'application/prs.openbanking.opendata.v1.3+json': {
-          schema: z.object({}).openapi({ title: 'No response' }),
+          schema: z.looseObject({}).openapi({ title: 'No response' }),
         },
       },
     },
@@ -8638,62 +8334,46 @@ export const getPersonalCurrentAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description: 'Describes how long this response can be cached',
-          schema: z
-            .string()
-            .default('max-age=28800')
-            .exactOptional()
-            .openapi({
-              description: 'Describes how long this response can be cached',
-              param: { required: false },
-            }),
-        },
-        Etag: {
-          description: 'A unique ID identifying whether this resource has changed',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A unique ID identifying whether this resource has changed',
-              param: { required: false },
-            }),
-        },
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .default('max-age=31536000')
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .default('max-age=28800')
+          .exactOptional()
+          .openapi({
+            description: 'Describes how long this response can be cached',
+            param: { required: false },
+          }),
+        Etag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A unique ID identifying whether this resource has changed',
+            param: { required: false },
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .default('max-age=31536000')
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -8710,40 +8390,30 @@ export const getPersonalCurrentAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     408: {
@@ -8762,40 +8432,30 @@ export const getPersonalCurrentAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -8812,40 +8472,30 @@ export const getPersonalCurrentAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -8864,40 +8514,30 @@ export const getPersonalCurrentAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     503: {
@@ -8914,40 +8554,30 @@ export const getPersonalCurrentAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     default: {
@@ -8968,40 +8598,30 @@ export const getPersonalCurrentAccountsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -9047,7 +8667,7 @@ export const headPersonalCurrentAccountsRoute = createRoute({
       description: 'No response',
       content: {
         'application/prs.openbanking.opendata.v1.3+json': {
-          schema: z.object({}).openapi({ title: 'No response' }),
+          schema: z.looseObject({}).openapi({ title: 'No response' }),
         },
       },
     },
@@ -10428,62 +10048,46 @@ export const getUnsecuredSmeLoansRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description: 'Describes how long this response can be cached',
-          schema: z
-            .string()
-            .default('max-age=28800')
-            .exactOptional()
-            .openapi({
-              description: 'Describes how long this response can be cached',
-              param: { required: false },
-            }),
-        },
-        Etag: {
-          description: 'A unique ID identifying whether this resource has changed',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'A unique ID identifying whether this resource has changed',
-              param: { required: false },
-            }),
-        },
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .default('max-age=31536000')
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .default('max-age=28800')
+          .exactOptional()
+          .openapi({
+            description: 'Describes how long this response can be cached',
+            param: { required: false },
+          }),
+        Etag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'A unique ID identifying whether this resource has changed',
+            param: { required: false },
+          }),
+        'Strict-Transport-Security': z
+          .string()
+          .default('max-age=31536000')
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -10500,40 +10104,30 @@ export const getUnsecuredSmeLoansRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     408: {
@@ -10552,40 +10146,30 @@ export const getUnsecuredSmeLoansRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     429: {
@@ -10602,40 +10186,30 @@ export const getUnsecuredSmeLoansRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -10654,40 +10228,30 @@ export const getUnsecuredSmeLoansRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     503: {
@@ -10704,40 +10268,30 @@ export const getUnsecuredSmeLoansRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
     default: {
@@ -10758,40 +10312,30 @@ export const getUnsecuredSmeLoansRoute = createRoute({
         },
       },
       headers: z.object({
-        'Strict-Transport-Security': {
-          description: 'HTTPS strict transport security header',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'HTTPS strict transport security header',
-              param: { required: false },
-            }),
-        },
-        'X-Content-Type-Options': {
-          description:
-            'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-          schema: z
-            .string()
-            .default('nosniff')
-            .exactOptional()
-            .openapi({
-              description:
-                'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
-              param: { required: false },
-            }),
-        },
-        'X-Frame-Options': {
-          description: 'Prevent this request from being loaded in any iframes',
-          schema: z
-            .string()
-            .default('DENY')
-            .exactOptional()
-            .openapi({
-              description: 'Prevent this request from being loaded in any iframes',
-              param: { required: false },
-            }),
-        },
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'HTTPS strict transport security header',
+            param: { required: false },
+          }),
+        'X-Content-Type-Options': z
+          .string()
+          .default('nosniff')
+          .exactOptional()
+          .openapi({
+            description:
+              'Ensures each page has a content type and prevents browsers from doing MIME type sniffing',
+            param: { required: false },
+          }),
+        'X-Frame-Options': z
+          .string()
+          .default('DENY')
+          .exactOptional()
+          .openapi({
+            description: 'Prevent this request from being loaded in any iframes',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -10837,7 +10381,7 @@ export const headUnsecuredSmeLoansRoute = createRoute({
       description: 'No response',
       content: {
         'application/prs.openbanking.opendata.v1.3+json': {
-          schema: z.object({}).openapi({ title: 'No response' }),
+          schema: z.looseObject({}).openapi({ title: 'No response' }),
         },
       },
     },

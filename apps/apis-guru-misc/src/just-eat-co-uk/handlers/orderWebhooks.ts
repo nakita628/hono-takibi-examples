@@ -8,6 +8,12 @@ import {
 const app = new OpenAPIHono()
 
 export const orderWebhooksHandler = app
-  .openapi(postOrderReadyForPreparationAsyncRoute, (c) => {})
-  .openapi(postOrderReadyForPreparationSyncRoute, (c) => {})
-  .openapi(postSendToPosFailedRoute, (c) => {})
+  .openapi(postOrderReadyForPreparationAsyncRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrderReadyForPreparationSyncRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postSendToPosFailedRoute, (c) => {
+    throw new Error('Not implemented')
+  })

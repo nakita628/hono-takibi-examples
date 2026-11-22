@@ -1,113 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const RepositoryNameSchema = z
-  .string()
-  .regex(/^\S[\w.-]*$/)
-  .min(1)
-  .max(100)
-  .openapi('RepositoryName')
-
-const CodeCommitCodeDestinationSchema = z
-  .object({
-    name: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the AWS CodeCommit repository to be created in AWS CodeStar.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['name'],
-    description:
-      'Information about the AWS CodeCommit repository to be created in AWS CodeStar. This is where the source code files provided with the project request will be uploaded after project creation.',
-  })
-  .openapi('CodeCommitCodeDestination')
-
-const RepositoryDescriptionSchema = z
-  .string()
-  .regex(/^\S(.*\S)?$/)
-  .min(1)
-  .max(1000)
-  .openapi('RepositoryDescription')
-
-const RepositoryTypeSchema = z
-  .string()
-  .regex(/^(user|organization|User|Organization)$/)
-  .openapi('RepositoryType')
-
-const RepositoryOwnerSchema = z
-  .string()
-  .regex(/^\S(.*\S)?$/)
-  .min(1)
-  .max(100)
-  .openapi('RepositoryOwner')
-
-const RepositoryIsPrivateSchema = z.boolean().openapi('RepositoryIsPrivate')
-
-const RepositoryEnableIssuesSchema = z.boolean().openapi('RepositoryEnableIssues')
-
-const GitHubPersonalTokenSchema = z.string().min(1).openapi('GitHubPersonalToken')
-
-const GitHubCodeDestinationSchema = z
-  .object({
-    name: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Name of the GitHub repository to be created in AWS CodeStar.' }),
-    ),
-    description: RepositoryDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Description for the GitHub repository to be created in AWS CodeStar. This description displays in GitHub after the repository is created.',
-        }),
-    ).exactOptional(),
-    type: RepositoryTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of GitHub repository to be created in AWS CodeStar. Valid values are User or Organization.',
-        }),
-    ),
-    owner: RepositoryOwnerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The GitHub username for the owner of the GitHub repository to be created in AWS CodeStar. If this repository should be owned by a GitHub organization, provide its name.',
-        }),
-    ),
-    privateRepository: RepositoryIsPrivateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Whether the GitHub repository is to be a private repository.' }),
-    ),
-    issuesEnabled: RepositoryEnableIssuesSchema.and(
-      z.any().openapi({ description: 'Whether to enable issues for the GitHub repository.' }),
-    ),
-    token: GitHubPersonalTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The GitHub user's personal access token for the GitHub repository.",
-        }),
-    ),
-  })
-  .openapi({
-    required: ['name', 'type', 'owner', 'privateRepository', 'issuesEnabled', 'token'],
-    description:
-      'Information about the GitHub repository to be created in AWS CodeStar. This is where the source code files provided with the project request will be uploaded after project creation.',
-  })
-  .openapi('GitHubCodeDestination')
-
-type CodeDestinationType = {
-  codeCommit?: z.infer<typeof CodeCommitCodeDestinationSchema> & { [key: string]: unknown }
-  gitHub?: z.infer<typeof GitHubCodeDestinationSchema> & { [key: string]: unknown }
-}
-
 const ClientRequestTokenSchema = z
   .string()
   .regex(/^[\w:\/-]+$/)
@@ -117,14 +9,10 @@ const ClientRequestTokenSchema = z
 
 const AssociateTeamMemberResultSchema = z
   .object({
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user- or system-generated token from the initial request that can be used to repeat the request.',
-        }),
-    ).exactOptional(),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'The user- or system-generated token from the initial request that can be used to repeat the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateTeamMemberResult')
@@ -152,41 +40,25 @@ const RemoteAccessAllowedSchema = z.boolean().openapi('RemoteAccessAllowed')
 
 const AssociateTeamMemberRequestSchema = z
   .object({
-    projectId: ProjectIdSchema.and(
-      z.any().openapi({ description: 'The ID of the project to which you will add the IAM user.' }),
-    ),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user- or system-generated token that identifies the entity that requested the team member association to the project. This token can be used to repeat the request.',
-        }),
-    ).exactOptional(),
-    userArn: UserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the IAM user you want to add to the AWS CodeStar project.',
-        }),
-    ),
-    projectRole: RoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS CodeStar project role that will apply to this user. This role determines what actions a user can take in an AWS CodeStar project.',
-        }),
-    ),
-    remoteAccessAllowed: RemoteAccessAllowedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether the team member is allowed to use an SSH public/private key pair to remotely access project resources, for example Amazon EC2 instances.',
-        }),
-    ).exactOptional(),
+    projectId: ProjectIdSchema.openapi({
+      description: 'The ID of the project to which you will add the IAM user.',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'A user- or system-generated token that identifies the entity that requested the team member association to the project. This token can be used to repeat the request.',
+    }),
+    userArn: UserArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the IAM user you want to add to the AWS CodeStar project.',
+    }),
+    projectRole: RoleSchema.openapi({
+      description:
+        'The AWS CodeStar project role that will apply to this user. This role determines what actions a user can take in an AWS CodeStar project.',
+    }),
+    remoteAccessAllowed: RemoteAccessAllowedSchema.exactOptional().openapi({
+      description:
+        'Whether the team member is allowed to use an SSH public/private key pair to remotely access project resources, for example Amazon EC2 instances.',
+    }),
   })
   .openapi({
     required: ['projectId', 'userArn', 'projectRole'],
@@ -225,21 +97,17 @@ const ProjectTemplateIdSchema = z
 
 const CreateProjectResultSchema = z
   .object({
-    id: ProjectIdSchema.and(z.any().openapi({ description: 'The ID of the project.' })),
-    arn: ProjectArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the created project.' }),
-    ),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user- or system-generated token that identifies the entity that requested project creation.',
-        }),
-    ).exactOptional(),
-    projectTemplateId: ProjectTemplateIdSchema.and(
-      z.any().openapi({ description: 'Reserved for future use.' }),
-    ).exactOptional(),
+    id: ProjectIdSchema.openapi({ description: 'The ID of the project.' }),
+    arn: ProjectArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the created project.',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'A user- or system-generated token that identifies the entity that requested project creation.',
+    }),
+    projectTemplateId: ProjectTemplateIdSchema.exactOptional().openapi({
+      description: 'Reserved for future use.',
+    }),
   })
   .openapi({ required: ['id', 'arn'] })
   .openapi('CreateProjectResult')
@@ -263,22 +131,14 @@ const BucketKeySchema = z.string().openapi('BucketKey')
 
 const S3LocationSchema = z
   .object({
-    bucketName: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 bucket name where the source code files provided with the project request are stored.',
-        }),
-    ).exactOptional(),
-    bucketKey: BucketKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 object key where the source code files provided with the project request are stored.',
-        }),
-    ).exactOptional(),
+    bucketName: BucketNameSchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 bucket name where the source code files provided with the project request are stored.',
+    }),
+    bucketKey: BucketKeySchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 object key where the source code files provided with the project request are stored.',
+    }),
   })
   .openapi({
     description:
@@ -289,14 +149,10 @@ const S3LocationSchema = z
 
 const CodeSourceSchema = z
   .object({
-    s3: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the Amazon S3 location where the source code files provided with the project request are stored. ',
-        }),
-    ),
+    s3: S3LocationSchema.openapi({
+      description:
+        'Information about the Amazon S3 location where the source code files provided with the project request are stored. ',
+    }),
   })
   .openapi({
     required: ['s3'],
@@ -305,53 +161,113 @@ const CodeSourceSchema = z
   })
   .openapi('CodeSource')
 
-const CodeDestinationSchema: z.ZodType<CodeDestinationType> = z
-  .lazy(() =>
-    z
-      .object({
-        codeCommit: CodeCommitCodeDestinationSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Information about the AWS CodeCommit repository to be created in AWS CodeStar. This is where the source code files provided with the project request will be uploaded after project creation.',
-            }),
-        ).exactOptional(),
-        gitHub: GitHubCodeDestinationSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Information about the GitHub repository to be created in AWS CodeStar. This is where the source code files provided with the project request will be uploaded after project creation.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'The repository to be created in AWS CodeStar. Valid values are AWS CodeCommit or GitHub. After AWS CodeStar provisions the new repository, the source code files provided with the project request are placed in the repository.',
-        required: [],
-      }),
-  )
+const RepositoryNameSchema = z
+  .string()
+  .regex(/^\S[\w.-]*$/)
+  .min(1)
+  .max(100)
+  .openapi('RepositoryName')
+
+const CodeCommitCodeDestinationSchema = z
+  .object({
+    name: RepositoryNameSchema.openapi({
+      description: 'The name of the AWS CodeCommit repository to be created in AWS CodeStar.',
+    }),
+  })
+  .openapi({
+    required: ['name'],
+    description:
+      'Information about the AWS CodeCommit repository to be created in AWS CodeStar. This is where the source code files provided with the project request will be uploaded after project creation.',
+  })
+  .openapi('CodeCommitCodeDestination')
+
+const RepositoryDescriptionSchema = z
+  .string()
+  .regex(/^\S(.*\S)?$/)
+  .min(1)
+  .max(1000)
+  .openapi('RepositoryDescription')
+
+const RepositoryTypeSchema = z
+  .string()
+  .regex(/^(user|organization|User|Organization)$/)
+  .openapi('RepositoryType')
+
+const RepositoryOwnerSchema = z
+  .string()
+  .regex(/^\S(.*\S)?$/)
+  .min(1)
+  .max(100)
+  .openapi('RepositoryOwner')
+
+const RepositoryIsPrivateSchema = z.boolean().openapi('RepositoryIsPrivate')
+
+const RepositoryEnableIssuesSchema = z.boolean().openapi('RepositoryEnableIssues')
+
+const GitHubPersonalTokenSchema = z.string().min(1).openapi('GitHubPersonalToken')
+
+const GitHubCodeDestinationSchema = z
+  .object({
+    name: RepositoryNameSchema.openapi({
+      description: 'Name of the GitHub repository to be created in AWS CodeStar.',
+    }),
+    description: RepositoryDescriptionSchema.exactOptional().openapi({
+      description:
+        'Description for the GitHub repository to be created in AWS CodeStar. This description displays in GitHub after the repository is created.',
+    }),
+    type: RepositoryTypeSchema.openapi({
+      description:
+        'The type of GitHub repository to be created in AWS CodeStar. Valid values are User or Organization.',
+    }),
+    owner: RepositoryOwnerSchema.openapi({
+      description:
+        'The GitHub username for the owner of the GitHub repository to be created in AWS CodeStar. If this repository should be owned by a GitHub organization, provide its name.',
+    }),
+    privateRepository: RepositoryIsPrivateSchema.openapi({
+      description: 'Whether the GitHub repository is to be a private repository.',
+    }),
+    issuesEnabled: RepositoryEnableIssuesSchema.openapi({
+      description: 'Whether to enable issues for the GitHub repository.',
+    }),
+    token: GitHubPersonalTokenSchema.openapi({
+      description: "The GitHub user's personal access token for the GitHub repository.",
+    }),
+  })
+  .openapi({
+    required: ['name', 'type', 'owner', 'privateRepository', 'issuesEnabled', 'token'],
+    description:
+      'Information about the GitHub repository to be created in AWS CodeStar. This is where the source code files provided with the project request will be uploaded after project creation.',
+  })
+  .openapi('GitHubCodeDestination')
+
+const CodeDestinationSchema = z
+  .object({
+    codeCommit: CodeCommitCodeDestinationSchema.exactOptional().openapi({
+      description:
+        'Information about the AWS CodeCommit repository to be created in AWS CodeStar. This is where the source code files provided with the project request will be uploaded after project creation.',
+    }),
+    gitHub: GitHubCodeDestinationSchema.exactOptional().openapi({
+      description:
+        'Information about the GitHub repository to be created in AWS CodeStar. This is where the source code files provided with the project request will be uploaded after project creation.',
+    }),
+  })
+  .openapi({
+    description:
+      'The repository to be created in AWS CodeStar. Valid values are AWS CodeCommit or GitHub. After AWS CodeStar provisions the new repository, the source code files provided with the project request are placed in the repository.',
+    required: [],
+  })
   .openapi('CodeDestination')
 
 const CodeSchema = z
   .object({
-    source: CodeSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location where the source code files provided with the project request are stored. AWS CodeStar retrieves the files during project creation.',
-        }),
-    ),
-    destination: CodeDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The repository to be created in AWS CodeStar. Valid values are AWS CodeCommit or GitHub. After AWS CodeStar provisions the new repository, the source code files provided with the project request are placed in the repository.',
-        }),
-    ),
+    source: CodeSourceSchema.openapi({
+      description:
+        'The location where the source code files provided with the project request are stored. AWS CodeStar retrieves the files during project creation.',
+    }),
+    destination: CodeDestinationSchema.openapi({
+      description:
+        'The repository to be created in AWS CodeStar. Valid values are AWS CodeCommit or GitHub. After AWS CodeStar provisions the new repository, the source code files provided with the project request are placed in the repository.',
+    }),
   })
   .openapi({
     required: ['source', 'destination'],
@@ -364,14 +280,10 @@ const SourceCodeSchema = z.array(CodeSchema).openapi('SourceCode')
 
 const ToolchainSourceSchema = z
   .object({
-    s3: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 bucket where the toolchain template file provided with the project request is stored.',
-        }),
-    ),
+    s3: S3LocationSchema.openapi({
+      description:
+        'The Amazon S3 bucket where the toolchain template file provided with the project request is stored.',
+    }),
   })
   .openapi({
     required: ['s3'],
@@ -396,30 +308,18 @@ const TemplateParameterMapSchema = z
 
 const ToolchainSchema = z
   .object({
-    source: ToolchainSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 location where the toolchain template file provided with the project request is stored. AWS CodeStar retrieves the file during project creation.',
-        }),
-    ),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The service role ARN for AWS CodeStar to use for the toolchain template during stack provisioning.',
-        }),
-    ).exactOptional(),
-    stackParameters: TemplateParameterMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of parameter overrides to be passed into the toolchain template during stack provisioning, if any.',
-        }),
-    ).exactOptional(),
+    source: ToolchainSourceSchema.openapi({
+      description:
+        'The Amazon S3 location where the toolchain template file provided with the project request is stored. AWS CodeStar retrieves the file during project creation.',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The service role ARN for AWS CodeStar to use for the toolchain template during stack provisioning.',
+    }),
+    stackParameters: TemplateParameterMapSchema.exactOptional().openapi({
+      description:
+        'The list of parameter overrides to be passed into the toolchain template during stack provisioning, if any.',
+    }),
   })
   .openapi({
     required: ['source'],
@@ -438,46 +338,28 @@ const TagsSchema = z.record(z.string(), TagValueSchema).openapi('Tags')
 
 const CreateProjectRequestSchema = z
   .object({
-    name: ProjectNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The display name for the project to be created in AWS CodeStar.',
-        }),
-    ),
-    id: ProjectIdSchema.and(
-      z.any().openapi({ description: 'The ID of the project to be created in AWS CodeStar.' }),
-    ),
-    description: ProjectDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the project, if any.' }),
-    ).exactOptional(),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user- or system-generated token that identifies the entity that requested project creation. This token can be used to repeat the request.',
-        }),
-    ).exactOptional(),
-    sourceCode: SourceCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the Code objects submitted with the project request. If this parameter is specified, the request must also include the toolchain parameter.',
-        }),
-    ).exactOptional(),
-    toolchain: ToolchainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the toolchain template file submitted with the project request. If this parameter is specified, the request must also include the sourceCode parameter.',
-        }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags created for the project.' }),
-    ).exactOptional(),
+    name: ProjectNameSchema.openapi({
+      description: 'The display name for the project to be created in AWS CodeStar.',
+    }),
+    id: ProjectIdSchema.openapi({
+      description: 'The ID of the project to be created in AWS CodeStar.',
+    }),
+    description: ProjectDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the project, if any.',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'A user- or system-generated token that identifies the entity that requested project creation. This token can be used to repeat the request.',
+    }),
+    sourceCode: SourceCodeSchema.exactOptional().openapi({
+      description:
+        'A list of the Code objects submitted with the project request. If this parameter is specified, the request must also include the toolchain parameter.',
+    }),
+    toolchain: ToolchainSchema.exactOptional().openapi({
+      description:
+        'The name of the toolchain template file submitted with the project request. If this parameter is specified, the request must also include the sourceCode parameter.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({ description: 'The tags created for the project.' }),
   })
   .openapi({ required: ['name', 'id'], title: 'CreateProjectRequest' })
   .openapi('CreateProjectRequest')
@@ -514,78 +396,47 @@ const LastModifiedTimestampSchema = z.iso
 
 const CreateUserProfileResultSchema = z
   .object({
-    userArn: UserArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the user in IAM.' }),
-    ),
-    displayName: UserProfileDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name that is displayed as the friendly name for the user in AWS CodeStar.',
-        }),
-    ).exactOptional(),
-    emailAddress: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The email address that is displayed as part of the user's profile in AWS CodeStar.",
-        }),
-    ).exactOptional(),
-    sshPublicKey: SshPublicKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SSH public key associated with the user in AWS CodeStar. This is the public portion of the public/private keypair the user can use to access project resources if a project owner allows the user remote access to those resources.',
-        }),
-    ).exactOptional(),
-    createdTimestamp: CreatedTimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date the user profile was created, in timestamp format.' }),
-    ).exactOptional(),
-    lastModifiedTimestamp: LastModifiedTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date the user profile was last modified, in timestamp format.',
-        }),
-    ).exactOptional(),
+    userArn: UserArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the user in IAM.',
+    }),
+    displayName: UserProfileDisplayNameSchema.exactOptional().openapi({
+      description: 'The name that is displayed as the friendly name for the user in AWS CodeStar.',
+    }),
+    emailAddress: EmailSchema.exactOptional().openapi({
+      description:
+        "The email address that is displayed as part of the user's profile in AWS CodeStar.",
+    }),
+    sshPublicKey: SshPublicKeySchema.exactOptional().openapi({
+      description:
+        'The SSH public key associated with the user in AWS CodeStar. This is the public portion of the public/private keypair the user can use to access project resources if a project owner allows the user remote access to those resources.',
+    }),
+    createdTimestamp: CreatedTimestampSchema.exactOptional().openapi({
+      description: 'The date the user profile was created, in timestamp format.',
+    }),
+    lastModifiedTimestamp: LastModifiedTimestampSchema.exactOptional().openapi({
+      description: 'The date the user profile was last modified, in timestamp format.',
+    }),
   })
   .openapi({ required: ['userArn'] })
   .openapi('CreateUserProfileResult')
 
 const CreateUserProfileRequestSchema = z
   .object({
-    userArn: UserArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the user in IAM.' }),
-    ),
-    displayName: UserProfileDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name that will be displayed as the friendly name for the user in AWS CodeStar. ',
-        }),
-    ),
-    emailAddress: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The email address that will be displayed as part of the user's profile in AWS CodeStar.",
-        }),
-    ),
-    sshPublicKey: SshPublicKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The SSH public key associated with the user in AWS CodeStar. If a project owner allows the user remote access to project resources, this public key will be used along with the user's private key for SSH access.",
-        }),
-    ).exactOptional(),
+    userArn: UserArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the user in IAM.',
+    }),
+    displayName: UserProfileDisplayNameSchema.openapi({
+      description:
+        'The name that will be displayed as the friendly name for the user in AWS CodeStar. ',
+    }),
+    emailAddress: EmailSchema.openapi({
+      description:
+        "The email address that will be displayed as part of the user's profile in AWS CodeStar.",
+    }),
+    sshPublicKey: SshPublicKeySchema.exactOptional().openapi({
+      description:
+        "The SSH public key associated with the user in AWS CodeStar. If a project owner allows the user remote access to project resources, this public key will be used along with the user's private key for SSH access.",
+    }),
   })
   .openapi({
     required: ['userArn', 'displayName', 'emailAddress'],
@@ -602,17 +453,13 @@ const StackIdSchema = z
 
 const DeleteProjectResultSchema = z
   .object({
-    stackId: StackIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the primary stack in AWS CloudFormation that will be deleted as part of deleting the project and its resources.',
-        }),
-    ).exactOptional(),
-    projectArn: ProjectArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the deleted project.' }),
-    ).exactOptional(),
+    stackId: StackIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the primary stack in AWS CloudFormation that will be deleted as part of deleting the project and its resources.',
+    }),
+    projectArn: ProjectArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the deleted project.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteProjectResult')
@@ -621,51 +468,35 @@ const DeleteStackSchema = z.boolean().openapi('DeleteStack')
 
 const DeleteProjectRequestSchema = z
   .object({
-    id: ProjectIdSchema.and(
-      z.any().openapi({ description: 'The ID of the project to be deleted in AWS CodeStar.' }),
-    ),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user- or system-generated token that identifies the entity that requested project deletion. This token can be used to repeat the request. ',
-        }),
-    ).exactOptional(),
-    deleteStack: DeleteStackSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to send a delete request for the primary stack in AWS CloudFormation originally used to generate the project and its resources. This option will delete all AWS resources for the project (except for any buckets in Amazon S3) as well as deleting the project itself. Recommended for most use cases.',
-        }),
-    ).exactOptional(),
+    id: ProjectIdSchema.openapi({
+      description: 'The ID of the project to be deleted in AWS CodeStar.',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'A user- or system-generated token that identifies the entity that requested project deletion. This token can be used to repeat the request. ',
+    }),
+    deleteStack: DeleteStackSchema.exactOptional().openapi({
+      description:
+        'Whether to send a delete request for the primary stack in AWS CloudFormation originally used to generate the project and its resources. This option will delete all AWS resources for the project (except for any buckets in Amazon S3) as well as deleting the project itself. Recommended for most use cases.',
+    }),
   })
   .openapi({ required: ['id'], title: 'DeleteProjectRequest' })
   .openapi('DeleteProjectRequest')
 
 const DeleteUserProfileResultSchema = z
   .object({
-    userArn: UserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user deleted from AWS CodeStar.',
-        }),
-    ),
+    userArn: UserArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the user deleted from AWS CodeStar.',
+    }),
   })
   .openapi({ required: ['userArn'] })
   .openapi('DeleteUserProfileResult')
 
 const DeleteUserProfileRequestSchema = z
   .object({
-    userArn: UserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user to delete from AWS CodeStar.',
-        }),
-    ),
+    userArn: UserArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the user to delete from AWS CodeStar.',
+    }),
   })
   .openapi({ required: ['userArn'], title: 'DeleteUserProfileRequest' })
   .openapi('DeleteUserProfileRequest')
@@ -685,19 +516,13 @@ const ReasonSchema = z
 
 const ProjectStatusSchema = z
   .object({
-    state: StateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The phase of completion for a project creation or deletion.' }),
-    ),
-    reason: ReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'In the case of a project creation or deletion failure, a reason for the failure.',
-        }),
-    ).exactOptional(),
+    state: StateSchema.openapi({
+      description: 'The phase of completion for a project creation or deletion.',
+    }),
+    reason: ReasonSchema.exactOptional().openapi({
+      description:
+        'In the case of a project creation or deletion failure, a reason for the failure.',
+    }),
   })
   .openapi({
     required: ['state'],
@@ -707,147 +532,99 @@ const ProjectStatusSchema = z
 
 const DescribeProjectResultSchema = z
   .object({
-    name: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The display name for the project.' }),
-    ).exactOptional(),
-    id: ProjectIdSchema.and(
-      z.any().openapi({ description: 'The ID of the project.' }),
-    ).exactOptional(),
-    arn: ProjectArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the project.' }),
-    ).exactOptional(),
-    description: ProjectDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the project, if any.' }),
-    ).exactOptional(),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user- or system-generated token that identifies the entity that requested project creation. ',
-        }),
-    ).exactOptional(),
-    createdTimeStamp: CreatedTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time the project was created, in timestamp format.',
-        }),
-    ).exactOptional(),
-    stackId: StackIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the primary stack in AWS CloudFormation used to generate resources for the project.',
-        }),
-    ).exactOptional(),
-    projectTemplateId: ProjectTemplateIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID for the AWS CodeStar project template used to create the project.',
-        }),
-    ).exactOptional(),
-    status: ProjectStatusSchema.and(
-      z.any().openapi({ description: 'The project creation or deletion status.' }),
-    ).exactOptional(),
+    name: ProjectNameSchema.exactOptional().openapi({
+      description: 'The display name for the project.',
+    }),
+    id: ProjectIdSchema.exactOptional().openapi({ description: 'The ID of the project.' }),
+    arn: ProjectArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the project.',
+    }),
+    description: ProjectDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the project, if any.',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'A user- or system-generated token that identifies the entity that requested project creation. ',
+    }),
+    createdTimeStamp: CreatedTimestampSchema.exactOptional().openapi({
+      description: 'The date and time the project was created, in timestamp format.',
+    }),
+    stackId: StackIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the primary stack in AWS CloudFormation used to generate resources for the project.',
+    }),
+    projectTemplateId: ProjectTemplateIdSchema.exactOptional().openapi({
+      description: 'The ID for the AWS CodeStar project template used to create the project.',
+    }),
+    status: ProjectStatusSchema.exactOptional().openapi({
+      description: 'The project creation or deletion status.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeProjectResult')
 
 const DescribeProjectRequestSchema = z
-  .object({ id: ProjectIdSchema.and(z.any().openapi({ description: 'The ID of the project.' })) })
+  .object({ id: ProjectIdSchema.openapi({ description: 'The ID of the project.' }) })
   .openapi({ required: ['id'], title: 'DescribeProjectRequest' })
   .openapi('DescribeProjectRequest')
 
 const DescribeUserProfileResultSchema = z
   .object({
-    userArn: UserArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the user.' }),
-    ),
-    displayName: UserProfileDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The display name shown for the user in AWS CodeStar projects. For example, this could be set to both first and last name ("Mary Major") or a single name ("Mary"). The display name is also used to generate the initial icon associated with the user in AWS CodeStar projects. If spaces are included in the display name, the first character that appears after the space will be used as the second character in the user initial icon. The initial icon displays a maximum of two characters, so a display name with more than one space (for example "Mary Jane Major") would generate an initial icon using the first character and the first character after the space ("MJ", not "MM").',
-        }),
-    ).exactOptional(),
-    emailAddress: EmailSchema.and(
-      z.any().openapi({ description: 'The email address for the user. Optional.' }),
-    ).exactOptional(),
-    sshPublicKey: SshPublicKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SSH public key associated with the user. This SSH public key is associated with the user profile, and can be used in conjunction with the associated private key for access to project resources, such as Amazon EC2 instances, if a project owner grants remote access to those resources.',
-        }),
-    ).exactOptional(),
-    createdTimestamp: CreatedTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the user profile was created in AWS CodeStar, in timestamp format.',
-        }),
-    ),
-    lastModifiedTimestamp: LastModifiedTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the user profile was last modified, in timestamp format.',
-        }),
-    ),
+    userArn: UserArnSchema.openapi({ description: 'The Amazon Resource Name (ARN) of the user.' }),
+    displayName: UserProfileDisplayNameSchema.exactOptional().openapi({
+      description:
+        'The display name shown for the user in AWS CodeStar projects. For example, this could be set to both first and last name ("Mary Major") or a single name ("Mary"). The display name is also used to generate the initial icon associated with the user in AWS CodeStar projects. If spaces are included in the display name, the first character that appears after the space will be used as the second character in the user initial icon. The initial icon displays a maximum of two characters, so a display name with more than one space (for example "Mary Jane Major") would generate an initial icon using the first character and the first character after the space ("MJ", not "MM").',
+    }),
+    emailAddress: EmailSchema.exactOptional().openapi({
+      description: 'The email address for the user. Optional.',
+    }),
+    sshPublicKey: SshPublicKeySchema.exactOptional().openapi({
+      description:
+        'The SSH public key associated with the user. This SSH public key is associated with the user profile, and can be used in conjunction with the associated private key for access to project resources, such as Amazon EC2 instances, if a project owner grants remote access to those resources.',
+    }),
+    createdTimestamp: CreatedTimestampSchema.openapi({
+      description:
+        'The date and time when the user profile was created in AWS CodeStar, in timestamp format.',
+    }),
+    lastModifiedTimestamp: LastModifiedTimestampSchema.openapi({
+      description:
+        'The date and time when the user profile was last modified, in timestamp format.',
+    }),
   })
   .openapi({ required: ['userArn', 'createdTimestamp', 'lastModifiedTimestamp'] })
   .openapi('DescribeUserProfileResult')
 
 const DescribeUserProfileRequestSchema = z
   .object({
-    userArn: UserArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the user.' }),
-    ),
+    userArn: UserArnSchema.openapi({ description: 'The Amazon Resource Name (ARN) of the user.' }),
   })
   .openapi({ required: ['userArn'], title: 'DescribeUserProfileRequest' })
   .openapi('DescribeUserProfileRequest')
 
 const UserProfileNotFoundExceptionSchema = z.any().openapi('UserProfileNotFoundException')
 
-const DisassociateTeamMemberResultSchema = z.object({}).openapi('DisassociateTeamMemberResult')
+const DisassociateTeamMemberResultSchema = z.looseObject({}).openapi('DisassociateTeamMemberResult')
 
 const DisassociateTeamMemberRequestSchema = z
   .object({
-    projectId: ProjectIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the AWS CodeStar project from which you want to remove a team member.',
-        }),
-    ),
-    userArn: UserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM user or group whom you want to remove from the project.',
-        }),
-    ),
+    projectId: ProjectIdSchema.openapi({
+      description:
+        'The ID of the AWS CodeStar project from which you want to remove a team member.',
+    }),
+    userArn: UserArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM user or group whom you want to remove from the project.',
+    }),
   })
   .openapi({ required: ['projectId', 'userArn'], title: 'DisassociateTeamMemberRequest' })
   .openapi('DisassociateTeamMemberRequest')
 
 const ProjectSummarySchema = z
   .object({
-    projectId: ProjectIdSchema.and(
-      z.any().openapi({ description: 'The ID of the project.' }),
-    ).exactOptional(),
-    projectArn: ProjectArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the project.' }),
-    ).exactOptional(),
+    projectId: ProjectIdSchema.exactOptional().openapi({ description: 'The ID of the project.' }),
+    projectArn: ProjectArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the project.',
+    }),
   })
   .openapi({ description: 'Information about the metadata for a project.', required: [] })
   .openapi('ProjectSummary')
@@ -863,15 +640,11 @@ const PaginationTokenSchema = z
 
 const ListProjectsResultSchema = z
   .object({
-    projects: ProjectsListSchema.and(z.any().openapi({ description: 'A list of projects.' })),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The continuation token to use when requesting the next set of results, if there are more results to be returned.',
-        }),
-    ).exactOptional(),
+    projects: ProjectsListSchema.openapi({ description: 'A list of projects.' }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The continuation token to use when requesting the next set of results, if there are more results to be returned.',
+    }),
   })
   .openapi({ required: ['projects'] })
   .openapi('ListProjectsResult')
@@ -880,22 +653,13 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListProjectsRequestSchema = z
   .object({
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The continuation token to be used to return the next set of results, if the results cannot be returned in one response.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum amount of data that can be contained in a single set of results.',
-        }),
-    ).exactOptional(),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The continuation token to be used to return the next set of results, if the results cannot be returned in one response.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum amount of data that can be contained in a single set of results.',
+    }),
   })
   .openapi({ title: 'ListProjectsRequest', required: [] })
   .openapi('ListProjectsRequest')
@@ -910,9 +674,9 @@ const ResourceIdSchema = z
 
 const ResourceSchema = z
   .object({
-    id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource.' }),
-    ),
+    id: ResourceIdSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource.',
+    }),
   })
   .openapi({ required: ['id'], description: 'Information about a resource for a project.' })
   .openapi('Resource')
@@ -921,92 +685,67 @@ const ResourcesResultSchema = z.array(ResourceSchema).openapi('ResourcesResult')
 
 const ListResourcesResultSchema = z
   .object({
-    resources: ResourcesResultSchema.and(
-      z.any().openapi({ description: 'An array of resources associated with the project. ' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The continuation token to use when requesting the next set of results, if there are more results to be returned.',
-        }),
-    ).exactOptional(),
+    resources: ResourcesResultSchema.exactOptional().openapi({
+      description: 'An array of resources associated with the project. ',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The continuation token to use when requesting the next set of results, if there are more results to be returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResourcesResult')
 
 const ListResourcesRequestSchema = z
   .object({
-    projectId: ProjectIdSchema.and(z.any().openapi({ description: 'The ID of the project.' })),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The continuation token for the next set of results, if the results cannot be returned in one response.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum amount of data that can be contained in a single set of results.',
-        }),
-    ).exactOptional(),
+    projectId: ProjectIdSchema.openapi({ description: 'The ID of the project.' }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The continuation token for the next set of results, if the results cannot be returned in one response.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum amount of data that can be contained in a single set of results.',
+    }),
   })
   .openapi({ required: ['projectId'], title: 'ListResourcesRequest' })
   .openapi('ListResourcesRequest')
 
 const ListTagsForProjectResultSchema = z
   .object({
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags for the project.' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Reserved for future use.' }),
-    ).exactOptional(),
+    tags: TagsSchema.exactOptional().openapi({ description: 'The tags for the project.' }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'Reserved for future use.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForProjectResult')
 
 const ListTagsForProjectRequestSchema = z
   .object({
-    id: ProjectIdSchema.and(
-      z.any().openapi({ description: 'The ID of the project to get tags for.' }),
-    ),
-    nextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Reserved for future use.' }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'Reserved for future use.' }),
-    ).exactOptional(),
+    id: ProjectIdSchema.openapi({ description: 'The ID of the project to get tags for.' }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'Reserved for future use.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'Reserved for future use.',
+    }),
   })
   .openapi({ required: ['id'], title: 'ListTagsForProjectRequest' })
   .openapi('ListTagsForProjectRequest')
 
 const TeamMemberSchema = z
   .object({
-    userArn: UserArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the user in IAM.' }),
-    ),
-    projectRole: RoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The role assigned to the user in the project. Project roles have different levels of access. For more information, see <a href="http://docs.aws.amazon.com/codestar/latest/userguide/working-with-teams.html">Working with Teams</a> in the <i>AWS CodeStar User Guide</i>. ',
-        }),
-    ),
-    remoteAccessAllowed: RemoteAccessAllowedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether the user is allowed to remotely access project resources using an SSH public/private key pair.',
-        }),
-    ).exactOptional(),
+    userArn: UserArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the user in IAM.',
+    }),
+    projectRole: RoleSchema.openapi({
+      description:
+        'The role assigned to the user in the project. Project roles have different levels of access. For more information, see <a href="http://docs.aws.amazon.com/codestar/latest/userguide/working-with-teams.html">Working with Teams</a> in the <i>AWS CodeStar User Guide</i>. ',
+    }),
+    remoteAccessAllowed: RemoteAccessAllowedSchema.exactOptional().openapi({
+      description:
+        'Whether the user is allowed to remotely access project resources using an SSH public/private key pair.',
+    }),
   })
   .openapi({
     required: ['userArn', 'projectRole'],
@@ -1018,71 +757,49 @@ const TeamMemberResultSchema = z.array(TeamMemberSchema).openapi('TeamMemberResu
 
 const ListTeamMembersResultSchema = z
   .object({
-    teamMembers: TeamMemberResultSchema.and(
-      z.any().openapi({ description: 'A list of team member objects for the project.' }),
-    ),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The continuation token to use when requesting the next set of results, if there are more results to be returned.',
-        }),
-    ).exactOptional(),
+    teamMembers: TeamMemberResultSchema.openapi({
+      description: 'A list of team member objects for the project.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The continuation token to use when requesting the next set of results, if there are more results to be returned.',
+    }),
   })
   .openapi({ required: ['teamMembers'] })
   .openapi('ListTeamMembersResult')
 
 const ListTeamMembersRequestSchema = z
   .object({
-    projectId: ProjectIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the project for which you want to list team members.' }),
-    ),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The continuation token for the next set of results, if the results cannot be returned in one response.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of team members you want returned in a response.',
-        }),
-    ).exactOptional(),
+    projectId: ProjectIdSchema.openapi({
+      description: 'The ID of the project for which you want to list team members.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The continuation token for the next set of results, if the results cannot be returned in one response.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of team members you want returned in a response.',
+    }),
   })
   .openapi({ required: ['projectId'], title: 'ListTeamMembersRequest' })
   .openapi('ListTeamMembersRequest')
 
 const UserProfileSummarySchema = z
   .object({
-    userArn: UserArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the user in IAM.' }),
-    ).exactOptional(),
-    displayName: UserProfileDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The display name of a user in AWS CodeStar. For example, this could be set to both first and last name ("Mary Major") or a single name ("Mary"). The display name is also used to generate the initial icon associated with the user in AWS CodeStar projects. If spaces are included in the display name, the first character that appears after the space will be used as the second character in the user initial icon. The initial icon displays a maximum of two characters, so a display name with more than one space (for example "Mary Jane Major") would generate an initial icon using the first character and the first character after the space ("MJ", not "MM").',
-        }),
-    ).exactOptional(),
-    emailAddress: EmailSchema.and(
-      z.any().openapi({ description: 'The email address associated with the user.' }),
-    ).exactOptional(),
-    sshPublicKey: SshPublicKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The SSH public key associated with the user in AWS CodeStar. If a project owner allows the user remote access to project resources, this public key will be used along with the user's private key for SSH access.",
-        }),
-    ).exactOptional(),
+    userArn: UserArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user in IAM.',
+    }),
+    displayName: UserProfileDisplayNameSchema.exactOptional().openapi({
+      description:
+        'The display name of a user in AWS CodeStar. For example, this could be set to both first and last name ("Mary Major") or a single name ("Mary"). The display name is also used to generate the initial icon associated with the user in AWS CodeStar projects. If spaces are included in the display name, the first character that appears after the space will be used as the second character in the user initial icon. The initial icon displays a maximum of two characters, so a display name with more than one space (for example "Mary Jane Major") would generate an initial icon using the first character and the first character after the space ("MJ", not "MM").',
+    }),
+    emailAddress: EmailSchema.exactOptional().openapi({
+      description: 'The email address associated with the user.',
+    }),
+    sshPublicKey: SshPublicKeySchema.exactOptional().openapi({
+      description:
+        "The SSH public key associated with the user in AWS CodeStar. If a project owner allows the user remote access to project resources, this public key will be used along with the user's private key for SSH access.",
+    }),
   })
   .openapi({ description: "Information about a user's profile in AWS CodeStar.", required: [] })
   .openapi('UserProfileSummary')
@@ -1091,64 +808,46 @@ const UserProfilesListSchema = z.array(UserProfileSummarySchema).openapi('UserPr
 
 const ListUserProfilesResultSchema = z
   .object({
-    userProfiles: UserProfilesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'All the user profiles configured in AWS CodeStar for an AWS account.',
-        }),
-    ),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The continuation token to use when requesting the next set of results, if there are more results to be returned.',
-        }),
-    ).exactOptional(),
+    userProfiles: UserProfilesListSchema.openapi({
+      description: 'All the user profiles configured in AWS CodeStar for an AWS account.',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The continuation token to use when requesting the next set of results, if there are more results to be returned.',
+    }),
   })
   .openapi({ required: ['userProfiles'] })
   .openapi('ListUserProfilesResult')
 
 const ListUserProfilesRequestSchema = z
   .object({
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The continuation token for the next set of results, if the results cannot be returned in one response.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return in a response.' }),
-    ).exactOptional(),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The continuation token for the next set of results, if the results cannot be returned in one response.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in a response.',
+    }),
   })
   .openapi({ title: 'ListUserProfilesRequest', required: [] })
   .openapi('ListUserProfilesRequest')
 
 const TagProjectResultSchema = z
   .object({
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags for the project.' }),
-    ).exactOptional(),
+    tags: TagsSchema.exactOptional().openapi({ description: 'The tags for the project.' }),
   })
   .openapi({ required: [] })
   .openapi('TagProjectResult')
 
 const TagProjectRequestSchema = z
   .object({
-    id: ProjectIdSchema.and(
-      z.any().openapi({ description: 'The ID of the project you want to add a tag to.' }),
-    ),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags you want to add to the project.' }),
-    ),
+    id: ProjectIdSchema.openapi({ description: 'The ID of the project you want to add a tag to.' }),
+    tags: TagsSchema.openapi({ description: 'The tags you want to add to the project.' }),
   })
   .openapi({ required: ['id', 'tags'], title: 'TagProjectRequest' })
   .openapi('TagProjectRequest')
 
-const UntagProjectResultSchema = z.object({}).openapi('UntagProjectResult')
+const UntagProjectResultSchema = z.looseObject({}).openapi('UntagProjectResult')
 
 const TagKeySchema = z
   .string()
@@ -1161,85 +860,59 @@ const TagKeysSchema = z.array(TagKeySchema).openapi('TagKeys')
 
 const UntagProjectRequestSchema = z
   .object({
-    id: ProjectIdSchema.and(
-      z.any().openapi({ description: 'The ID of the project to remove tags from.' }),
-    ),
-    tags: TagKeysSchema.and(
-      z.any().openapi({ description: 'The tags to remove from the project.' }),
-    ),
+    id: ProjectIdSchema.openapi({ description: 'The ID of the project to remove tags from.' }),
+    tags: TagKeysSchema.openapi({ description: 'The tags to remove from the project.' }),
   })
   .openapi({ required: ['id', 'tags'], title: 'UntagProjectRequest' })
   .openapi('UntagProjectRequest')
 
-const UpdateProjectResultSchema = z.object({}).openapi('UpdateProjectResult')
+const UpdateProjectResultSchema = z.looseObject({}).openapi('UpdateProjectResult')
 
 const UpdateProjectRequestSchema = z
   .object({
-    id: ProjectIdSchema.and(
-      z.any().openapi({ description: 'The ID of the project you want to update.' }),
-    ),
-    name: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The name of the project you want to update.' }),
-    ).exactOptional(),
-    description: ProjectDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the project, if any.' }),
-    ).exactOptional(),
+    id: ProjectIdSchema.openapi({ description: 'The ID of the project you want to update.' }),
+    name: ProjectNameSchema.exactOptional().openapi({
+      description: 'The name of the project you want to update.',
+    }),
+    description: ProjectDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the project, if any.',
+    }),
   })
   .openapi({ required: ['id'], title: 'UpdateProjectRequest' })
   .openapi('UpdateProjectRequest')
 
 const UpdateTeamMemberResultSchema = z
   .object({
-    userArn: UserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the user whose team membership attributes were updated.',
-        }),
-    ).exactOptional(),
-    projectRole: RoleSchema.and(
-      z.any().openapi({ description: 'The project role granted to the user.' }),
-    ).exactOptional(),
-    remoteAccessAllowed: RemoteAccessAllowedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Whether a team member is allowed to remotely access project resources using the SSH public key associated with the user's profile.",
-        }),
-    ).exactOptional(),
+    userArn: UserArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the user whose team membership attributes were updated.',
+    }),
+    projectRole: RoleSchema.exactOptional().openapi({
+      description: 'The project role granted to the user.',
+    }),
+    remoteAccessAllowed: RemoteAccessAllowedSchema.exactOptional().openapi({
+      description:
+        "Whether a team member is allowed to remotely access project resources using the SSH public key associated with the user's profile.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateTeamMemberResult')
 
 const UpdateTeamMemberRequestSchema = z
   .object({
-    projectId: ProjectIdSchema.and(z.any().openapi({ description: 'The ID of the project.' })),
-    userArn: UserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the user for whom you want to change team membership attributes.',
-        }),
-    ),
-    projectRole: RoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The role assigned to the user in the project. Project roles have different levels of access. For more information, see <a href="http://docs.aws.amazon.com/codestar/latest/userguide/working-with-teams.html">Working with Teams</a> in the <i>AWS CodeStar User Guide</i>.',
-        }),
-    ).exactOptional(),
-    remoteAccessAllowed: RemoteAccessAllowedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Whether a team member is allowed to remotely access project resources using the SSH public key associated with the user's profile. Even if this is set to True, the user must associate a public key with their profile before the user can access resources.",
-        }),
-    ).exactOptional(),
+    projectId: ProjectIdSchema.openapi({ description: 'The ID of the project.' }),
+    userArn: UserArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the user for whom you want to change team membership attributes.',
+    }),
+    projectRole: RoleSchema.exactOptional().openapi({
+      description:
+        'The role assigned to the user in the project. Project roles have different levels of access. For more information, see <a href="http://docs.aws.amazon.com/codestar/latest/userguide/working-with-teams.html">Working with Teams</a> in the <i>AWS CodeStar User Guide</i>.',
+    }),
+    remoteAccessAllowed: RemoteAccessAllowedSchema.exactOptional().openapi({
+      description:
+        "Whether a team member is allowed to remotely access project resources using the SSH public key associated with the user's profile. Even if this is set to True, the user must associate a public key with their profile before the user can access resources.",
+    }),
   })
   .openapi({ required: ['projectId', 'userArn'], title: 'UpdateTeamMemberRequest' })
   .openapi('UpdateTeamMemberRequest')
@@ -1248,83 +921,47 @@ const TeamMemberNotFoundExceptionSchema = z.any().openapi('TeamMemberNotFoundExc
 
 const UpdateUserProfileResultSchema = z
   .object({
-    userArn: UserArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the user in IAM.' }),
-    ),
-    displayName: UserProfileDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name that is displayed as the friendly name for the user in AWS CodeStar.',
-        }),
-    ).exactOptional(),
-    emailAddress: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The email address that is displayed as part of the user's profile in AWS CodeStar.",
-        }),
-    ).exactOptional(),
-    sshPublicKey: SshPublicKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SSH public key associated with the user in AWS CodeStar. This is the public portion of the public/private keypair the user can use to access project resources if a project owner allows the user remote access to those resources.',
-        }),
-    ).exactOptional(),
-    createdTimestamp: CreatedTimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date the user profile was created, in timestamp format.' }),
-    ).exactOptional(),
-    lastModifiedTimestamp: LastModifiedTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date the user profile was last modified, in timestamp format.',
-        }),
-    ).exactOptional(),
+    userArn: UserArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the user in IAM.',
+    }),
+    displayName: UserProfileDisplayNameSchema.exactOptional().openapi({
+      description: 'The name that is displayed as the friendly name for the user in AWS CodeStar.',
+    }),
+    emailAddress: EmailSchema.exactOptional().openapi({
+      description:
+        "The email address that is displayed as part of the user's profile in AWS CodeStar.",
+    }),
+    sshPublicKey: SshPublicKeySchema.exactOptional().openapi({
+      description:
+        'The SSH public key associated with the user in AWS CodeStar. This is the public portion of the public/private keypair the user can use to access project resources if a project owner allows the user remote access to those resources.',
+    }),
+    createdTimestamp: CreatedTimestampSchema.exactOptional().openapi({
+      description: 'The date the user profile was created, in timestamp format.',
+    }),
+    lastModifiedTimestamp: LastModifiedTimestampSchema.exactOptional().openapi({
+      description: 'The date the user profile was last modified, in timestamp format.',
+    }),
   })
   .openapi({ required: ['userArn'] })
   .openapi('UpdateUserProfileResult')
 
 const UpdateUserProfileRequestSchema = z
   .object({
-    userArn: UserArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name that will be displayed as the friendly name for the user in AWS CodeStar.',
-        }),
-    ),
-    displayName: UserProfileDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name that is displayed as the friendly name for the user in AWS CodeStar.',
-        }),
-    ).exactOptional(),
-    emailAddress: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The email address that is displayed as part of the user's profile in AWS CodeStar.",
-        }),
-    ).exactOptional(),
-    sshPublicKey: SshPublicKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The SSH public key associated with the user in AWS CodeStar. If a project owner allows the user remote access to project resources, this public key will be used along with the user's private key for SSH access.",
-        }),
-    ).exactOptional(),
+    userArn: UserArnSchema.openapi({
+      description:
+        'The name that will be displayed as the friendly name for the user in AWS CodeStar.',
+    }),
+    displayName: UserProfileDisplayNameSchema.exactOptional().openapi({
+      description: 'The name that is displayed as the friendly name for the user in AWS CodeStar.',
+    }),
+    emailAddress: EmailSchema.exactOptional().openapi({
+      description:
+        "The email address that is displayed as part of the user's profile in AWS CodeStar.",
+    }),
+    sshPublicKey: SshPublicKeySchema.exactOptional().openapi({
+      description:
+        "The SSH public key associated with the user in AWS CodeStar. If a project owner allows the user remote access to project resources, this public key will be used along with the user's private key for SSH access.",
+    }),
   })
   .openapi({ required: ['userArn'], title: 'UpdateUserProfileRequest' })
   .openapi('UpdateUserProfileRequest')

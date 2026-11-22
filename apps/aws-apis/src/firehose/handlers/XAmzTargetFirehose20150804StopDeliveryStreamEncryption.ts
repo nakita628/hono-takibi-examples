@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetFirehose20150804StopDeliveryStreamEncryptionHandler = app.openapi(
   postXAmzTargetFirehose20150804StopDeliveryStreamEncryptionRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

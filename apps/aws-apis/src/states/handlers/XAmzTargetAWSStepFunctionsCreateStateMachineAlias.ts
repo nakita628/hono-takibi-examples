@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSStepFunctionsCreateStateMachineAliasHandler = app.openapi(
   postXAmzTargetAWSStepFunctionsCreateStateMachineAliasRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

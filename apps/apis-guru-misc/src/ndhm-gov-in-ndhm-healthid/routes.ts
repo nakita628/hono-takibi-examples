@@ -173,7 +173,7 @@ const FileSchema: z.ZodType<FileType> = z
   )
   .openapi('File')
 
-const InputStreamSchema = z.object({}).openapi({ title: 'InputStream' }).openapi('InputStream')
+const InputStreamSchema = z.looseObject({}).openapi({ title: 'InputStream' }).openapi('InputStream')
 
 const URISchema = z
   .object({
@@ -201,7 +201,7 @@ const URISchema = z
 const URLSchema = z
   .object({
     authority: z.string().exactOptional(),
-    content: z.object({}).exactOptional(),
+    content: z.looseObject({}).exactOptional(),
     defaultPort: z.int32().exactOptional(),
     file: z.string().exactOptional(),
     host: z.string().exactOptional(),
@@ -651,7 +651,7 @@ const ResendOTPRequestSchema = z
 
 const ResponseEntitySchema = z
   .object({
-    body: z.object({}).exactOptional(),
+    body: z.looseObject({}).exactOptional(),
     statusCode: z
       .enum([
         '100 CONTINUE',
@@ -2303,7 +2303,7 @@ export const getV1HaTagsRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { '*/*': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { '*/*': { schema: z.looseObject({}) } } },
     401: { description: 'Unauthorized', content: {} },
     403: { description: 'Forbidden', content: {} },
     404: { description: 'Not Found', content: {} },
@@ -3055,7 +3055,7 @@ export const postV1HidBenefitSearchAadhaarRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { '*/*': { schema: z.array(z.object({})) } } },
+    200: { description: 'OK', content: { '*/*': { schema: z.array(z.looseObject({})) } } },
     201: { description: 'Created', content: {} },
     401: { description: 'Unauthorized', content: {} },
     403: { description: 'Forbidden', content: {} },
@@ -3436,7 +3436,7 @@ export const postV1RegistrationAadhaarSearchAadharRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { '*/*': { schema: z.array(z.object({})) } } },
+    200: { description: 'OK', content: { '*/*': { schema: z.array(z.looseObject({})) } } },
     201: { description: 'Created', content: {} },
     401: { description: 'Unauthorized', content: {} },
     403: { description: 'Forbidden', content: {} },
@@ -3738,7 +3738,7 @@ export const postV1SearchExistsByHealthIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { '*/*': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { '*/*': { schema: z.looseObject({}) } } },
     201: { description: 'Created', content: {} },
     401: { description: 'Unauthorized', content: {} },
     403: { description: 'Forbidden', content: {} },

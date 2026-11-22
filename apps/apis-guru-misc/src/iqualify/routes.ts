@@ -1410,7 +1410,7 @@ export const getRoute = createRoute({
   responses: {
     200: {
       description: 'Supported endpoints',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
 })

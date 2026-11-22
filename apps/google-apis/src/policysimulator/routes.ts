@@ -139,22 +139,28 @@ const GoogleIamV1PolicySchema = z
   })
   .openapi('GoogleIamV1Policy')
 
-const GoogleCloudPolicysimulatorV1ReplayConfigSchema = z
-  .object({
-    logSource: z
-      .enum(['LOG_SOURCE_UNSPECIFIED', 'RECENT_ACCESSES'])
-      .exactOptional()
-      .openapi({ description: 'The logs to use as input for the Replay.' }),
-    policyOverlay: z
-      .record(z.string(), GoogleIamV1PolicySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A mapping of the resources that you want to simulate policies for and the policies that you want to simulate. Keys are the full resource names for the resources. For example, `//cloudresourcemanager.googleapis.com/projects/my-project`. For examples of full resource names for Google Cloud services, see https://cloud.google.com/iam/help/troubleshooter/full-resource-names. Values are Policy objects representing the policies that you want to simulate. Replays automatically take into account any IAM policies inherited through the resource hierarchy, and any policies set on descendant resources. You do not need to include these policies in the policy overlay.',
-      }),
-  })
-  .openapi({ description: 'The configuration used for a Replay.', required: [] })
-  .openapi('GoogleCloudPolicysimulatorV1ReplayConfig')
+type GoogleCloudPolicysimulatorV1ReplayConfigType = {
+  logSource?: 'LOG_SOURCE_UNSPECIFIED' | 'RECENT_ACCESSES'
+  policyOverlay?: { [key: string]: z.infer<typeof GoogleIamV1PolicySchema> }
+}
+
+const GoogleCloudPolicysimulatorV1ReplayConfigSchema: z.ZodType<GoogleCloudPolicysimulatorV1ReplayConfigType> =
+  z
+    .object({
+      logSource: z
+        .enum(['LOG_SOURCE_UNSPECIFIED', 'RECENT_ACCESSES'])
+        .exactOptional()
+        .openapi({ description: 'The logs to use as input for the Replay.' }),
+      policyOverlay: z
+        .record(z.string(), GoogleIamV1PolicySchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'A mapping of the resources that you want to simulate policies for and the policies that you want to simulate. Keys are the full resource names for the resources. For example, `//cloudresourcemanager.googleapis.com/projects/my-project`. For examples of full resource names for Google Cloud services, see https://cloud.google.com/iam/help/troubleshooter/full-resource-names. Values are Policy objects representing the policies that you want to simulate. Replays automatically take into account any IAM policies inherited through the resource hierarchy, and any policies set on descendant resources. You do not need to include these policies in the policy overlay.',
+        }),
+    })
+    .openapi({ description: 'The configuration used for a Replay.', required: [] })
+    .openapi('GoogleCloudPolicysimulatorV1ReplayConfig')
 
 const GoogleTypeDateSchema = z
   .object({
@@ -221,30 +227,42 @@ const GoogleCloudPolicysimulatorV1ReplayResultsSummarySchema = z
   .openapi({ description: 'Summary statistics about the replayed log entries.', required: [] })
   .openapi('GoogleCloudPolicysimulatorV1ReplayResultsSummary')
 
-const GoogleCloudPolicysimulatorV1ReplaySchema = z
-  .object({
-    config: GoogleCloudPolicysimulatorV1ReplayConfigSchema.exactOptional().openapi({
-      description: 'Required. The configuration used for the `Replay`.',
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The resource name of the `Replay`, which has the following format: `{projects|folders|organizations}/{resource-id}/locations/global/replays/{replay-id}`, where `{resource-id}` is the ID of the project, folder, or organization that owns the Replay. Example: `projects/my-example-project/locations/global/replays/506a5f7f-38ce-4d7d-8e03-479ce1833c36`',
-        readOnly: true,
+type GoogleCloudPolicysimulatorV1ReplayType = {
+  config?: z.infer<typeof GoogleCloudPolicysimulatorV1ReplayConfigSchema>
+  name?: string
+  resultsSummary?: z.infer<typeof GoogleCloudPolicysimulatorV1ReplayResultsSummarySchema>
+  state?: 'STATE_UNSPECIFIED' | 'PENDING' | 'RUNNING' | 'SUCCEEDED' | 'FAILED'
+}
+
+const GoogleCloudPolicysimulatorV1ReplaySchema: z.ZodType<GoogleCloudPolicysimulatorV1ReplayType> =
+  z
+    .object({
+      config: GoogleCloudPolicysimulatorV1ReplayConfigSchema.exactOptional().openapi({
+        description: 'Required. The configuration used for the `Replay`.',
       }),
-    resultsSummary: GoogleCloudPolicysimulatorV1ReplayResultsSummarySchema.exactOptional().openapi({
-      description: 'Output only. Summary statistics about the replayed log entries.',
-      readOnly: true,
-    }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'PENDING', 'RUNNING', 'SUCCEEDED', 'FAILED'])
-      .exactOptional()
-      .openapi({ description: 'Output only. The current state of the `Replay`.', readOnly: true }),
-  })
-  .openapi({ description: 'A resource describing a `Replay`, or simulation.', required: [] })
-  .openapi('GoogleCloudPolicysimulatorV1Replay')
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. The resource name of the `Replay`, which has the following format: `{projects|folders|organizations}/{resource-id}/locations/global/replays/{replay-id}`, where `{resource-id}` is the ID of the project, folder, or organization that owns the Replay. Example: `projects/my-example-project/locations/global/replays/506a5f7f-38ce-4d7d-8e03-479ce1833c36`',
+          readOnly: true,
+        }),
+      resultsSummary:
+        GoogleCloudPolicysimulatorV1ReplayResultsSummarySchema.exactOptional().openapi({
+          description: 'Output only. Summary statistics about the replayed log entries.',
+          readOnly: true,
+        }),
+      state: z
+        .enum(['STATE_UNSPECIFIED', 'PENDING', 'RUNNING', 'SUCCEEDED', 'FAILED'])
+        .exactOptional()
+        .openapi({
+          description: 'Output only. The current state of the `Replay`.',
+          readOnly: true,
+        }),
+    })
+    .openapi({ description: 'A resource describing a `Replay`, or simulation.', required: [] })
+    .openapi('GoogleCloudPolicysimulatorV1Replay')
 
 const GoogleCloudPolicysimulatorV1ReplayOperationMetadataSchema = z
   .object({

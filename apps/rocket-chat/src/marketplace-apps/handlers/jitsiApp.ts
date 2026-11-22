@@ -3,7 +3,6 @@ import { postApiV1VideoConferenceJitsiUpdateTimeoutRoute } from '../routes'
 
 const app = new OpenAPIHono()
 
-export const jitsiAppHandler = app.openapi(
-  postApiV1VideoConferenceJitsiUpdateTimeoutRoute,
-  (c) => {},
-)
+export const jitsiAppHandler = app.openapi(postApiV1VideoConferenceJitsiUpdateTimeoutRoute, (c) => {
+  throw new Error('Not implemented')
+})

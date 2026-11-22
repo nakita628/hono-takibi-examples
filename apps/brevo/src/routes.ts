@@ -4490,7 +4490,7 @@ const SendTransacSmsSchema = z
                 "Template ID to send SMS with the template. When provided, overrides the content parameter. Mandatory if 'content' is not passed.",
               example: 123,
             }),
-          content: z.never().exactOptional(),
+          content: z.never().exactOptional().openapi({ not: {} }),
         })
         .openapi({ description: 'Send SMS using a template ID.', required: ['templateId'] }),
       z
@@ -4502,7 +4502,7 @@ const SendTransacSmsSchema = z
                 "Content of the message. If more than **160 characters** long, will be sent as multiple text messages. Mandatory if 'templateId' is not passed, ignored if 'templateId' is passed.\n",
               example: 'Enter this code:CCJJG8 to validate your account',
             }),
-          templateId: z.never().exactOptional(),
+          templateId: z.never().exactOptional().openapi({ not: {} }),
         })
         .openapi({ description: 'Send SMS using direct content.', required: ['content'] }),
     ]),
@@ -8183,6 +8183,7 @@ export const getOrganizationActivitiesRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', maximum: 100, minimum: 1, type: 'integer' },
           },
+          default: 10,
         }),
       offset: z
         .preprocess((val) => {
@@ -8202,6 +8203,7 @@ export const getOrganizationActivitiesRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
     }),
   },
@@ -8718,6 +8720,7 @@ export const getProcessesRoute = createRoute({
             schema: { default: 10, format: 'int64', maximum: 50, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 10,
         }),
       offset: z
         .preprocess((val) => {
@@ -8737,6 +8740,7 @@ export const getProcessesRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -11252,6 +11256,7 @@ export const getFeedsRoute = createRoute({
             required: false,
             schema: { default: 50, format: 'int64', maximum: 500, minimum: 1, type: 'integer' },
           },
+          default: 50,
         }),
       offset: z
         .preprocess((val) => {
@@ -11272,6 +11277,7 @@ export const getFeedsRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
     }),
   },
@@ -12778,6 +12784,7 @@ export const getObjectsObjectTypeAssociatedRecordsRoute = createRoute({
             required: false,
           },
           example: 0,
+          default: 0,
         }),
     }),
   },
@@ -12969,6 +12976,7 @@ export const getContactsRoute = createRoute({
             schema: { default: 50, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 50,
         }),
       offset: z
         .preprocess((val) => {
@@ -12988,6 +12996,7 @@ export const getContactsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       modifiedSince: z
         .string()
@@ -14292,6 +14301,7 @@ export const getContactsFoldersRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', maximum: 50, minimum: 0, type: 'integer' },
           },
+          default: 10,
         }),
       offset: z
         .preprocess((val) => {
@@ -14311,6 +14321,7 @@ export const getContactsFoldersRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -14590,6 +14601,7 @@ export const getContactsFoldersFolderIdListsRoute = createRoute({
             schema: { default: 10, format: 'int64', maximum: 50, minimum: 0, type: 'integer' },
             required: false,
           },
+          default: 10,
         }),
       offset: z
         .preprocess((val) => {
@@ -14609,6 +14621,7 @@ export const getContactsFoldersFolderIdListsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -14923,6 +14936,7 @@ export const getContactsListsRoute = createRoute({
             schema: { default: 10, format: 'int64', maximum: 50, minimum: 0, type: 'integer' },
             required: false,
           },
+          default: 10,
         }),
       offset: z
         .preprocess((val) => {
@@ -14942,6 +14956,7 @@ export const getContactsListsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -15448,6 +15463,7 @@ export const getContactsListsListIdContactsRoute = createRoute({
             schema: { default: 50, format: 'int64', maximum: 500, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 50,
         }),
       offset: z
         .preprocess((val) => {
@@ -15467,6 +15483,7 @@ export const getContactsListsListIdContactsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -15915,6 +15932,7 @@ export const getContactsSegmentsRoute = createRoute({
             schema: { default: 10, format: 'int64', maximum: 50, minimum: 0, type: 'integer' },
             required: false,
           },
+          default: 10,
         }),
       offset: z
         .preprocess((val) => {
@@ -15934,6 +15952,7 @@ export const getContactsSegmentsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -16075,6 +16094,7 @@ export const getContactsConsentGroupsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 10, maximum: 50, minimum: 0 },
             required: false,
           },
+          default: 10,
         }),
       offset: z
         .preprocess((val) => {
@@ -16094,6 +16114,7 @@ export const getContactsConsentGroupsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0, minimum: 0 },
             required: false,
           },
+          default: 0,
         }),
       id: z
         .preprocess((val) => {
@@ -18333,6 +18354,7 @@ export const getCategoriesRoute = createRoute({
             schema: { default: 50, format: 'int64', maximum: 100, type: 'integer' },
             required: false,
           },
+          default: 50,
         }),
       offset: z
         .preprocess((val) => {
@@ -18352,6 +18374,7 @@ export const getCategoriesRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -18770,6 +18793,7 @@ export const getCouponCollectionsRoute = createRoute({
             schema: { default: 50, format: 'int64', maximum: 100, minimum: 0, type: 'integer' },
             required: false,
           },
+          default: 50,
         }),
       offset: z
         .preprocess((val) => {
@@ -18789,6 +18813,7 @@ export const getCouponCollectionsRoute = createRoute({
             schema: { default: 0, format: 'int64', minimum: 0, type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -19566,6 +19591,7 @@ export const getOrdersRoute = createRoute({
             schema: { default: 50, format: 'int64', maximum: 100, type: 'integer' },
             required: false,
           },
+          default: 50,
         }),
       offset: z
         .preprocess((val) => {
@@ -19585,6 +19611,7 @@ export const getOrdersRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -20011,6 +20038,7 @@ export const getProductsRoute = createRoute({
             schema: { default: 50, format: 'int64', maximum: 1000, type: 'integer' },
             required: false,
           },
+          default: 50,
         }),
       offset: z
         .preprocess((val) => {
@@ -20030,6 +20058,7 @@ export const getProductsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -21491,6 +21520,7 @@ export const getInboundEventsRoute = createRoute({
             required: false,
             schema: { default: 100, format: 'int64', maximum: 500, minimum: 0, type: 'integer' },
           },
+          default: 100,
         }),
       offset: z
         .preprocess((val) => {
@@ -21510,6 +21540,7 @@ export const getInboundEventsRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -28374,6 +28405,7 @@ export const getEmailCampaignsRoute = createRoute({
             schema: { default: 50, format: 'int64', maximum: 100, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 50,
         }),
       offset: z
         .preprocess((val) => {
@@ -28393,6 +28425,7 @@ export const getEmailCampaignsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -30511,6 +30544,7 @@ export const getSmsCampaignsRoute = createRoute({
             schema: { default: 500, format: 'int64', maximum: 1000, minimum: 1, type: 'integer' },
             required: false,
           },
+          default: 500,
         }),
       offset: z
         .preprocess((val) => {
@@ -30530,6 +30564,7 @@ export const getSmsCampaignsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -31458,6 +31493,7 @@ export const getWhatsappCampaignsRoute = createRoute({
             schema: { default: 50, format: 'int64', maximum: 100, minimum: 0, type: 'integer' },
             required: false,
           },
+          default: 50,
         }),
       offset: z
         .preprocess((val) => {
@@ -31477,6 +31513,7 @@ export const getWhatsappCampaignsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -31963,6 +32000,7 @@ export const getWhatsappCampaignsTemplateListRoute = createRoute({
             schema: { default: 50, format: 'int64', maximum: 100, minimum: 0, type: 'integer' },
             required: false,
           },
+          default: 50,
         }),
       offset: z
         .preprocess((val) => {
@@ -31982,6 +32020,7 @@ export const getWhatsappCampaignsTemplateListRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -33684,6 +33723,7 @@ export const getCrmDealsRoute = createRoute({
             schema: { default: 50, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 50,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -34212,6 +34252,7 @@ export const getCrmFilesRoute = createRoute({
             required: false,
             schema: { default: 50, format: 'int64', type: 'integer' },
           },
+          default: 50,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -34517,6 +34558,7 @@ export const getCrmNotesRoute = createRoute({
             schema: { default: 50, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 50,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -34935,6 +34977,7 @@ export const getCrmTasksRoute = createRoute({
             schema: { default: 50, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 50,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -35440,6 +35483,7 @@ export const getWhatsappStatisticsEventsRoute = createRoute({
             schema: { default: 2500, format: 'int64', maximum: 10000, minimum: 0, type: 'integer' },
             required: false,
           },
+          default: 2500,
         }),
       offset: z
         .preprocess((val) => {
@@ -35459,6 +35503,7 @@ export const getWhatsappStatisticsEventsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       startDate: z
         .string()
@@ -35728,6 +35773,7 @@ export const getSmtpBlockedContactsRoute = createRoute({
             schema: { default: 50, format: 'int64', maximum: 100, minimum: 0, type: 'integer' },
             required: false,
           },
+          default: 50,
         }),
       offset: z
         .preprocess((val) => {
@@ -35747,6 +35793,7 @@ export const getSmtpBlockedContactsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       senders: z
         .preprocess(
@@ -36852,6 +36899,7 @@ export const getSmtpEmailStatusIdentifierRoute = createRoute({
             required: false,
             schema: { default: 100, format: 'int64', maximum: 500, minimum: 0, type: 'integer' },
           },
+          default: 100,
         }),
       offset: z
         .preprocess((val) => {
@@ -36873,6 +36921,7 @@ export const getSmtpEmailStatusIdentifierRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
     }),
   },
@@ -37070,6 +37119,7 @@ export const getSmtpEmailsRoute = createRoute({
             schema: { default: 500, format: 'int64', maximum: 1000, minimum: 0, type: 'integer' },
             required: false,
           },
+          default: 500,
         }),
       offset: z
         .preprocess((val) => {
@@ -37089,6 +37139,7 @@ export const getSmtpEmailsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
     }),
   },
@@ -37755,6 +37806,7 @@ export const getSmtpStatisticsEventsRoute = createRoute({
             schema: { default: 2500, format: 'int64', maximum: 5000, minimum: 0, type: 'integer' },
             required: false,
           },
+          default: 2500,
         }),
       offset: z
         .preprocess((val) => {
@@ -37774,6 +37826,7 @@ export const getSmtpStatisticsEventsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       startDate: z
         .string()
@@ -38113,6 +38166,7 @@ export const getSmtpStatisticsReportsRoute = createRoute({
             schema: { default: 10, format: 'int64', maximum: 30, minimum: 0, type: 'integer' },
             required: false,
           },
+          default: 10,
         }),
       offset: z
         .preprocess((val) => {
@@ -38132,6 +38186,7 @@ export const getSmtpStatisticsReportsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       startDate: z
         .string()
@@ -38657,6 +38712,7 @@ export const getSmtpTemplatesRoute = createRoute({
             schema: { default: 50, format: 'int64', maximum: 1000, minimum: 0, type: 'integer' },
             required: false,
           },
+          default: 50,
         }),
       offset: z
         .preprocess((val) => {
@@ -38676,6 +38732,7 @@ export const getSmtpTemplatesRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       sort: z
         .enum(['asc', 'desc'])
@@ -39662,6 +39719,7 @@ export const getTransactionalSMSStatisticsEventsRoute = createRoute({
             schema: { default: 50, format: 'int64', maximum: 100, minimum: 0, type: 'integer' },
             required: false,
           },
+          default: 50,
         }),
       startDate: z
         .string()
@@ -39707,6 +39765,7 @@ export const getTransactionalSMSStatisticsEventsRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       days: z
         .preprocess((val) => {
@@ -40266,6 +40325,7 @@ export const getTransactionalSMSTemplatesRoute = createRoute({
             schema: { default: 50, format: 'int64', maximum: 100, minimum: 0, type: 'integer' },
             required: false,
           },
+          default: 50,
         }),
       offset: z
         .preprocess((val) => {
@@ -40285,6 +40345,7 @@ export const getTransactionalSMSTemplatesRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       sort: z
         .enum(['asc', 'desc'])

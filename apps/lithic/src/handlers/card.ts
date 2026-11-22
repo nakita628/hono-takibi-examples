@@ -31,7 +31,9 @@ export const getV1CardsCardTokenSignalsRouteHandler: RouteHandler<
 
 export const getV1CardProgramsRouteHandler: RouteHandler<typeof getV1CardProgramsRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const getV1CardProgramsCardProgramTokenRouteHandler: RouteHandler<
   typeof getV1CardProgramsCardProgramTokenRoute

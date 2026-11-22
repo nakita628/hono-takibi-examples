@@ -3,7 +3,6 @@ import { getApiV1MetadataprofileSchemaRoute } from '../routes'
 
 const app = new OpenAPIHono()
 
-export const metadataProfileSchemaHandler = app.openapi(
-  getApiV1MetadataprofileSchemaRoute,
-  (c) => {},
-)
+export const metadataProfileSchemaHandler = app.openapi(getApiV1MetadataprofileSchemaRoute, (c) => {
+  throw new Error('Not implemented')
+})

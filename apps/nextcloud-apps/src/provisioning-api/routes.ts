@@ -793,6 +793,7 @@ export const getOcsV2PhpCloudGroupsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             required: false,
           },
+          default: 0,
         }),
     }),
     headers: z.object({
@@ -1257,6 +1258,7 @@ export const getOcsV2PhpCloudUsersRecentRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             required: false,
           },
+          default: 0,
         }),
       enabled: z
         .preprocess((val) => (val === 'null' ? null : val), z.stringbool().nullable())
@@ -2255,6 +2257,7 @@ export const getOcsV2PhpCloudGroupsDetailsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             required: false,
           },
+          default: 0,
         }),
     }),
     headers: z.object({
@@ -2493,6 +2496,7 @@ export const getOcsV2PhpCloudGroupsGroupIdUsersDetailsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             required: false,
           },
+          default: 0,
         }),
       enabled: z
         .preprocess((val) => (val === 'null' ? null : val), z.stringbool().nullable())
@@ -2640,6 +2644,7 @@ export const getOcsV2PhpCloudUsersRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             required: false,
           },
+          default: 0,
         }),
     }),
     headers: z.object({
@@ -2888,6 +2893,7 @@ export const getOcsV2PhpCloudUsersDetailsRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             required: false,
           },
+          default: 0,
         }),
       enabled: z
         .preprocess((val) => (val === 'null' ? null : val), z.stringbool().nullable())
@@ -3035,6 +3041,7 @@ export const getOcsV2PhpCloudUsersDisabledRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 0 },
             required: false,
           },
+          default: 0,
         }),
     }),
     headers: z.object({

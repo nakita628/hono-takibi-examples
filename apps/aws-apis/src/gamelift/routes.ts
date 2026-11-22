@@ -1,14 +1,240 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AcceptMatchOutputSchema = z.object({}).openapi('AcceptMatchOutput')
-
 const MatchmakingIdStringModelSchema = z
   .string()
   .regex(/[a-zA-Z0-9-\.]*/)
   .max(128)
   .openapi('MatchmakingIdStringModel')
 
+const MatchmakingConfigurationArnSchema = z
+  .string()
+  .regex(/^arn:.*:matchmakingconfiguration\/[a-zA-Z0-9-\.]*/)
+  .openapi({ description: 'Data type used for Matchmaking Configuration ARN.' })
+  .openapi('MatchmakingConfigurationArn')
+
+const MatchmakingConfigurationStatusSchema = z
+  .enum([
+    'CANCELLED',
+    'COMPLETED',
+    'FAILED',
+    'PLACING',
+    'QUEUED',
+    'REQUIRES_ACCEPTANCE',
+    'SEARCHING',
+    'TIMED_OUT',
+  ])
+  .openapi('MatchmakingConfigurationStatus')
+
+const StringModelSchema = z.string().openapi('StringModel')
+
+const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
+
 const NonZeroAndMaxStringSchema = z.string().min(1).max(1024).openapi('NonZeroAndMaxString')
+
+const PlayerAttributeStringSchema = z.string().min(1).max(100).openapi('PlayerAttributeString')
+
+const DoubleObjectSchema = z.float64().openapi('DoubleObject')
+
+const PlayerAttributeStringListSchema = z
+  .array(PlayerAttributeStringSchema)
+  .openapi('PlayerAttributeStringList')
+
+const PlayerAttributeStringDoubleMapSchema = z
+  .record(z.string(), DoubleObjectSchema)
+  .openapi('PlayerAttributeStringDoubleMap')
+
+const AttributeValueSchema = z
+  .object({
+    S: PlayerAttributeStringSchema.exactOptional().openapi({
+      description: 'For single string values. Maximum string length is 100 characters.',
+    }),
+    N: DoubleObjectSchema.exactOptional().openapi({
+      description: 'For number values, expressed as double.',
+    }),
+    SL: PlayerAttributeStringListSchema.exactOptional().openapi({
+      description:
+        'For a list of up to 100 strings. Maximum length for each string is 100 characters. Duplicate values are not recognized; all occurrences of the repeated value after the first of a repeated value are ignored.',
+    }),
+    SDM: PlayerAttributeStringDoubleMapSchema.exactOptional().openapi({
+      description:
+        'For a map of up to 10 data type:value pairs. Maximum length for each string value is 100 characters. ',
+    }),
+  })
+  .openapi({
+    description:
+      'Values for use in player attribute key-value pairs. This object lets you specify an attribute value using any of the valid data types: string, number, string array, or data map. Each <code>AttributeValue</code> object can use only one of the available properties.',
+    required: [],
+  })
+  .openapi('AttributeValue')
+
+const PlayerAttributeMapSchema = z
+  .record(z.string(), AttributeValueSchema)
+  .openapi('PlayerAttributeMap')
+
+const PositiveIntegerSchema = z.int().min(1).openapi('PositiveInteger')
+
+const LatencyMapSchema = z.record(z.string(), PositiveIntegerSchema).openapi('LatencyMap')
+
+const PlayerSchema = z
+  .object({
+    PlayerId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'A unique identifier for a player',
+    }),
+    PlayerAttributes: PlayerAttributeMapSchema.exactOptional().openapi({
+      description:
+        '<p>A collection of key:value pairs containing player information for use in matchmaking. Player attribute keys must match the <i>playerAttributes</i> used in a matchmaking rule set. Example: <code>"PlayerAttributes": {"skill": {"N": "23"}, "gameMode": {"S": "deathmatch"}}</code>.</p> <p>You can provide up to 10 <code>PlayerAttributes</code>.</p>',
+    }),
+    Team: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'Name of the team that the player is assigned to in a match. Team names are defined in a matchmaking rule set.',
+    }),
+    LatencyInMs: LatencyMapSchema.exactOptional().openapi({
+      description:
+        '<p>A set of values, expressed in milliseconds, that indicates the amount of latency that a player experiences when connected to @aws; Regions. If this property is present, FlexMatch considers placing the match only in Regions for which latency is reported. </p> <p>If a matchmaker has a rule that evaluates player latency, players must report latency in order to be matched. If no latency is reported in this scenario, FlexMatch assumes that no Regions are available to the player and the ticket is not matchable. </p>',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents a player in matchmaking. When starting a matchmaking request, a player has a player ID, attributes, and may have latency data. Team information is added after a match has been successfully completed.',
+    required: [],
+  })
+  .openapi('Player')
+
+const PlayerListSchema = z.array(PlayerSchema).openapi('PlayerList')
+
+const ArnStringModelSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9:\/-]+/)
+  .min(1)
+  .max(256)
+  .openapi('ArnStringModel')
+
+const IpAddressSchema = z
+  .string()
+  .regex(/^[0-9A-Fa-f\:\.]+/)
+  .min(1)
+  .max(128)
+  .openapi('IpAddress')
+
+const DnsNameSchema = z.string().openapi('DnsName')
+
+const PlayerSessionIdSchema = z
+  .string()
+  .regex(/^psess-\S+/)
+  .openapi('PlayerSessionId')
+
+const MatchedPlayerSessionSchema = z
+  .object({
+    PlayerId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'A unique identifier for a player ',
+    }),
+    PlayerSessionId: PlayerSessionIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for a player session',
+    }),
+  })
+  .openapi({
+    description:
+      "<p>Represents a new player session that is created as a result of a successful FlexMatch match. A successful match automatically creates new player sessions for every player ID in the original matchmaking request. </p> <p>When players connect to the match's game session, they must include both player ID and player session ID in order to claim their assigned player slot.</p>",
+    required: [],
+  })
+  .openapi('MatchedPlayerSession')
+
+const MatchedPlayerSessionListSchema = z
+  .array(MatchedPlayerSessionSchema)
+  .openapi('MatchedPlayerSessionList')
+
+const GameSessionConnectionInfoSchema = z
+  .object({
+    GameSessionArn: ArnStringModelSchema.exactOptional().openapi({
+      description: 'A unique identifier for the game session. Use the game session ID.',
+    }),
+    IpAddress: IpAddressSchema.exactOptional().openapi({
+      description:
+        'The IP address of the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number.',
+    }),
+    DnsName: DnsNameSchema.exactOptional().openapi({
+      description:
+        '<p>The DNS identifier assigned to the instance that is running the game session. Values have the following format:</p> <ul> <li> <p>TLS-enabled fleets: <code>&lt;unique identifier&gt;.&lt;region identifier&gt;.amazongamelift.com</code>.</p> </li> <li> <p>Non-TLS-enabled fleets: <code>ec2-&lt;unique identifier&gt;.compute.amazonaws.com</code>. (See <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing.html#concepts-public-addresses">Amazon EC2 Instance IP Addressing</a>.)</p> </li> </ul> <p>When connecting to a game session that is running on a TLS-enabled fleet, you must use the DNS name, not the IP address.</p>',
+    }),
+    Port: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The port number for the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number.',
+    }),
+    MatchedPlayerSessions: MatchedPlayerSessionListSchema.exactOptional().openapi({
+      description:
+        'A collection of player session IDs, one for each player ID that was included in the original matchmaking request. ',
+    }),
+  })
+  .openapi({
+    description:
+      'Connection information for a new game session that is created in response to a start matchmaking request. Once a match is made, the FlexMatch engine creates a new game session for it. This information, including the game session endpoint and player sessions for each player in the original matchmaking request, is added to the matchmaking ticket.',
+    required: [],
+  })
+  .openapi('GameSessionConnectionInfo')
+
+const WholeNumberSchema = z.int().min(0).openapi('WholeNumber')
+
+const MatchmakingTicketSchema = z
+  .object({
+    TicketId: MatchmakingIdStringModelSchema.exactOptional().openapi({
+      description: 'A unique identifier for a matchmaking ticket.',
+    }),
+    ConfigurationName: MatchmakingIdStringModelSchema.exactOptional().openapi({
+      description:
+        'Name of the matchmaking configuration that is used with this ticket. Matchmaking configurations determine how players are grouped into a match and how a new game session is created for the match.',
+    }),
+    ConfigurationArn: MatchmakingConfigurationArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) associated with the GameLift matchmaking configuration resource that is used with this ticket.',
+    }),
+    Status: MatchmakingConfigurationStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Current status of the matchmaking request.</p> <ul> <li> <p> <b>QUEUED</b> -- The matchmaking request has been received and is currently waiting to be processed.</p> </li> <li> <p> <b>SEARCHING</b> -- The matchmaking request is currently being processed. </p> </li> <li> <p> <b>REQUIRES_ACCEPTANCE</b> -- A match has been proposed and the players must accept the match. This status is used only with requests that use a matchmaking configuration with a player acceptance requirement.</p> </li> <li> <p> <b>PLACING</b> -- The FlexMatch engine has matched players and is in the process of placing a new game session for the match.</p> </li> <li> <p> <b>COMPLETED</b> -- Players have been matched and a game session is ready to host the players. A ticket in this state contains the necessary connection information for players.</p> </li> <li> <p> <b>FAILED</b> -- The matchmaking request was not completed.</p> </li> <li> <p> <b>CANCELLED</b> -- The matchmaking request was canceled. This may be the result of a <code>StopMatchmaking</code> operation or a proposed match that one or more players failed to accept.</p> </li> <li> <p> <b>TIMED_OUT</b> -- The matchmaking request was not successful within the duration specified in the matchmaking configuration. </p> </li> </ul> <note> <p>Matchmaking requests that fail to successfully complete (statuses FAILED, CANCELLED, TIMED_OUT) can be resubmitted as new requests with new ticket IDs.</p> </note>',
+    }),
+    StatusReason: StringModelSchema.exactOptional().openapi({
+      description:
+        'Code to explain the current status. For example, a status reason may indicate when a ticket has returned to <code>SEARCHING</code> status after a proposed match fails to receive player acceptances.',
+    }),
+    StatusMessage: StringModelSchema.exactOptional().openapi({
+      description: 'Additional information about the current status.',
+    }),
+    StartTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Time stamp indicating when this matchmaking request was received. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Time stamp indicating when the matchmaking request stopped being processed due to successful completion, timeout, or cancellation. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    Players: PlayerListSchema.exactOptional().openapi({
+      description:
+        'A set of <code>Player</code> objects, each representing a player to find matches for. Players are identified by a unique player ID and may include latency data for use during matchmaking. If the ticket is in status <code>COMPLETED</code>, the <code>Player</code> objects include the team the players were assigned to in the resulting match.',
+    }),
+    GameSessionConnectionInfo: GameSessionConnectionInfoSchema.exactOptional().openapi({
+      description:
+        'Connection information for a new game session. Once a match is made, the FlexMatch engine creates a new game session for it. This information is added to the matchmaking ticket, which you can be retrieve by calling <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeMatchmaking.html">DescribeMatchmaking</a> .',
+    }),
+    EstimatedWaitTime: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'Average amount of time (in seconds) that players are currently waiting for a match. If there is not enough recent data, this property may be empty.',
+    }),
+  })
+  .openapi({
+    description:
+      'Ticket generated to track the progress of a matchmaking request. Each ticket is uniquely identified by a ticket ID, supplied by the requester, when creating a matchmaking request.',
+    required: [],
+  })
+  .openapi('MatchmakingTicket')
+
+const MatchmakingTicketListSchema = z
+  .array(MatchmakingTicketSchema)
+  .openapi('MatchmakingTicketList')
+
+type DescribeMatchmakingOutputType = {
+  TicketList?: z.infer<typeof MatchmakingTicketListSchema> & unknown
+}
+
+const AcceptMatchOutputSchema = z.looseObject({}).openapi('AcceptMatchOutput')
 
 const StringListSchema = z.array(NonZeroAndMaxStringSchema).openapi('StringList')
 
@@ -16,25 +242,17 @@ const AcceptanceTypeSchema = z.enum(['ACCEPT', 'REJECT']).openapi('AcceptanceTyp
 
 const AcceptMatchInputSchema = z
   .object({
-    TicketId: MatchmakingIdStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a matchmaking ticket. The ticket must be in status <code>REQUIRES_ACCEPTANCE</code>; otherwise this request will fail.',
-        }),
-    ),
-    PlayerIds: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a player delivering the response. This parameter can include one or multiple player IDs.',
-        }),
-    ),
-    AcceptanceType: AcceptanceTypeSchema.and(
-      z.any().openapi({ description: 'Player response to the proposed match.' }),
-    ),
+    TicketId: MatchmakingIdStringModelSchema.openapi({
+      description:
+        'A unique identifier for a matchmaking ticket. The ticket must be in status <code>REQUIRES_ACCEPTANCE</code>; otherwise this request will fail.',
+    }),
+    PlayerIds: StringListSchema.openapi({
+      description:
+        'A unique identifier for a player delivering the response. This parameter can include one or multiple player IDs.',
+    }),
+    AcceptanceType: AcceptanceTypeSchema.openapi({
+      description: 'Player response to the proposed match.',
+    }),
   })
   .openapi({ required: ['TicketId', 'PlayerIds', 'AcceptanceType'], title: 'AcceptMatchInput' })
   .openapi('AcceptMatchInput')
@@ -94,98 +312,51 @@ const GameServerUtilizationStatusSchema = z
   .enum(['AVAILABLE', 'UTILIZED'])
   .openapi('GameServerUtilizationStatus')
 
-const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
-
 const GameServerSchema = z
   .object({
-    GameServerGroupName: GameServerGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the game server group where the game server is running.',
-        }),
-    ).exactOptional(),
-    GameServerGroupArn: GameServerGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN identifier for the game server group where the game server is located.',
-        }),
-    ).exactOptional(),
-    GameServerId: GameServerIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A custom string that uniquely identifies the game server. Game server IDs are developer-defined and are unique across all game server groups in an Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    InstanceId: GameServerInstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the instance where the game server is running. This ID is available in the instance metadata. EC2 instance IDs use a 17-character format, for example: <code>i-1234567890abcdef0</code>.',
-        }),
-    ).exactOptional(),
-    ConnectionInfo: GameServerConnectionInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The port and IP address that must be used to establish a client connection to the game server.',
-        }),
-    ).exactOptional(),
-    GameServerData: GameServerDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom game server properties, formatted as a single string value. This data is passed to a game client or service when it requests information on game servers.',
-        }),
-    ).exactOptional(),
-    ClaimStatus: GameServerClaimStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates when an available game server has been reserved for gameplay but has not yet started hosting a game. Once it is claimed, the game server remains in <code>CLAIMED</code> status for a maximum of one minute. During this time, game clients connect to the game server to start the game and trigger the game server to update its utilization status. After one minute, the game server claim status reverts to null.',
-        }),
-    ).exactOptional(),
-    UtilizationStatus: GameServerUtilizationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the game server is currently available for new games or is busy. Possible statuses include:</p> <ul> <li> <p> <code>AVAILABLE</code> - The game server is available to be claimed. A game server that has been claimed remains in this status until it reports game hosting activity. </p> </li> <li> <p> <code>UTILIZED</code> - The game server is currently hosting a game session with players. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    RegistrationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Timestamp that indicates when the game server registered. The format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    LastClaimTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Timestamp that indicates the last time the game server was claimed. The format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>). This value is used to calculate when a claimed game server\'s status should revert to null.',
-        }),
-    ).exactOptional(),
-    LastHealthCheckTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Timestamp that indicates the last time the game server was updated with health status. The format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>). After game server registration, this property is only changed when a game server update specifies a health check value.',
-        }),
-    ).exactOptional(),
+    GameServerGroupName: GameServerGroupNameSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the game server group where the game server is running.',
+    }),
+    GameServerGroupArn: GameServerGroupArnSchema.exactOptional().openapi({
+      description: 'The ARN identifier for the game server group where the game server is located.',
+    }),
+    GameServerId: GameServerIdSchema.exactOptional().openapi({
+      description:
+        'A custom string that uniquely identifies the game server. Game server IDs are developer-defined and are unique across all game server groups in an Amazon Web Services account.',
+    }),
+    InstanceId: GameServerInstanceIdSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for the instance where the game server is running. This ID is available in the instance metadata. EC2 instance IDs use a 17-character format, for example: <code>i-1234567890abcdef0</code>.',
+    }),
+    ConnectionInfo: GameServerConnectionInfoSchema.exactOptional().openapi({
+      description:
+        'The port and IP address that must be used to establish a client connection to the game server.',
+    }),
+    GameServerData: GameServerDataSchema.exactOptional().openapi({
+      description:
+        'A set of custom game server properties, formatted as a single string value. This data is passed to a game client or service when it requests information on game servers.',
+    }),
+    ClaimStatus: GameServerClaimStatusSchema.exactOptional().openapi({
+      description:
+        'Indicates when an available game server has been reserved for gameplay but has not yet started hosting a game. Once it is claimed, the game server remains in <code>CLAIMED</code> status for a maximum of one minute. During this time, game clients connect to the game server to start the game and trigger the game server to update its utilization status. After one minute, the game server claim status reverts to null.',
+    }),
+    UtilizationStatus: GameServerUtilizationStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether the game server is currently available for new games or is busy. Possible statuses include:</p> <ul> <li> <p> <code>AVAILABLE</code> - The game server is available to be claimed. A game server that has been claimed remains in this status until it reports game hosting activity. </p> </li> <li> <p> <code>UTILIZED</code> - The game server is currently hosting a game session with players. </p> </li> </ul>',
+    }),
+    RegistrationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Timestamp that indicates when the game server registered. The format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    LastClaimTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Timestamp that indicates the last time the game server was claimed. The format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>). This value is used to calculate when a claimed game server\'s status should revert to null.',
+    }),
+    LastHealthCheckTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Timestamp that indicates the last time the game server was updated with health status. The format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>). After game server registration, this property is only changed when a game server update specifies a health check value.',
+    }),
   })
   .openapi({
     description:
@@ -196,9 +367,9 @@ const GameServerSchema = z
 
 const ClaimGameServerOutputSchema = z
   .object({
-    GameServer: GameServerSchema.and(
-      z.any().openapi({ description: 'Object that describes the newly claimed game server.' }),
-    ).exactOptional(),
+    GameServer: GameServerSchema.exactOptional().openapi({
+      description: 'Object that describes the newly claimed game server.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ClaimGameServerOutput')
@@ -212,30 +383,18 @@ const GameServerGroupNameOrArnSchema = z
 
 const ClaimGameServerInputSchema = z
   .object({
-    GameServerGroupName: GameServerGroupNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the game server group where the game server is running. If you are not specifying a game server to claim, this value identifies where you want Amazon GameLift FleetIQ to look for an available game server to claim. ',
-        }),
-    ),
-    GameServerId: GameServerIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A custom string that uniquely identifies the game server to claim. If this parameter is left empty, Amazon GameLift FleetIQ searches for an available game server in the specified game server group.',
-        }),
-    ).exactOptional(),
-    GameServerData: GameServerDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom game server properties, formatted as a single string value. This data is passed to a game client or service when it requests information on game servers. ',
-        }),
-    ).exactOptional(),
+    GameServerGroupName: GameServerGroupNameOrArnSchema.openapi({
+      description:
+        'A unique identifier for the game server group where the game server is running. If you are not specifying a game server to claim, this value identifies where you want Amazon GameLift FleetIQ to look for an available game server to claim. ',
+    }),
+    GameServerId: GameServerIdSchema.exactOptional().openapi({
+      description:
+        'A custom string that uniquely identifies the game server to claim. If this parameter is left empty, Amazon GameLift FleetIQ searches for an available game server in the specified game server group.',
+    }),
+    GameServerData: GameServerDataSchema.exactOptional().openapi({
+      description:
+        'A set of custom game server properties, formatted as a single string value. This data is passed to a game client or service when it requests information on game servers. ',
+    }),
   })
   .openapi({ required: ['GameServerGroupName'], title: 'ClaimGameServerInput' })
   .openapi('ClaimGameServerInput')
@@ -274,27 +433,17 @@ const FleetIdSchema = z
 
 const RoutingStrategySchema = z
   .object({
-    Type: RoutingStrategyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of routing strategy for the alias.</p> <p>Possible routing types include the following:</p> <ul> <li> <p> <b>SIMPLE</b> - The alias resolves to one specific fleet. Use this type when routing to active fleets.</p> </li> <li> <p> <b>TERMINAL</b> - The alias does not resolve to a fleet but instead can be used to display a message to the user. A terminal alias throws a TerminalRoutingStrategyException with the message embedded.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    FleetId: FleetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet that the alias points to. This value is the fleet ID, not the fleet ARN.',
-        }),
-    ).exactOptional(),
-    Message: FreeTextSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The message text to be used with a terminal routing strategy.' }),
-    ).exactOptional(),
+    Type: RoutingStrategyTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of routing strategy for the alias.</p> <p>Possible routing types include the following:</p> <ul> <li> <p> <b>SIMPLE</b> - The alias resolves to one specific fleet. Use this type when routing to active fleets.</p> </li> <li> <p> <b>TERMINAL</b> - The alias does not resolve to a fleet but instead can be used to display a message to the user. A terminal alias throws a TerminalRoutingStrategyException with the message embedded.</p> </li> </ul>',
+    }),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the fleet that the alias points to. This value is the fleet ID, not the fleet ARN.',
+    }),
+    Message: FreeTextSchema.exactOptional().openapi({
+      description: 'The message text to be used with a terminal routing strategy.',
+    }),
   })
   .openapi({
     description:
@@ -305,56 +454,32 @@ const RoutingStrategySchema = z
 
 const AliasSchema = z
   .object({
-    AliasId: AliasIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the alias. Alias IDs are unique within a Region.',
-        }),
-    ).exactOptional(),
-    Name: NonBlankAndLengthConstraintStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with an alias. Alias names do not need to be unique.',
-        }),
-    ).exactOptional(),
-    AliasArn: AliasArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift alias resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::alias/alias-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>. In a GameLift alias ARN, the resource ID matches the alias ID value.',
-        }),
-    ).exactOptional(),
-    Description: FreeTextSchema.and(
-      z.any().openapi({ description: 'A human-readable description of an alias.' }),
-    ).exactOptional(),
-    RoutingStrategy: RoutingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The routing configuration, including routing type and fleet target, for the alias. ',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    LastUpdatedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that this data object was last modified. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
+    AliasId: AliasIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the alias. Alias IDs are unique within a Region.',
+    }),
+    Name: NonBlankAndLengthConstraintStringSchema.exactOptional().openapi({
+      description:
+        'A descriptive label that is associated with an alias. Alias names do not need to be unique.',
+    }),
+    AliasArn: AliasArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift alias resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::alias/alias-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>. In a GameLift alias ARN, the resource ID matches the alias ID value.',
+    }),
+    Description: FreeTextSchema.exactOptional().openapi({
+      description: 'A human-readable description of an alias.',
+    }),
+    RoutingStrategy: RoutingStrategySchema.exactOptional().openapi({
+      description:
+        'The routing configuration, including routing type and fleet target, for the alias. ',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    LastUpdatedTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time that this data object was last modified. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
   })
   .openapi({
     description:
@@ -365,9 +490,9 @@ const AliasSchema = z
 
 const CreateAliasOutputSchema = z
   .object({
-    Alias: AliasSchema.and(
-      z.any().openapi({ description: 'The newly created alias resource.' }),
-    ).exactOptional(),
+    Alias: AliasSchema.exactOptional().openapi({
+      description: 'The newly created alias resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateAliasOutput')
@@ -378,22 +503,14 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key for a developer-defined key value pair for tagging an Amazon Web Services resource. ',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value for a developer-defined key value pair for tagging an Amazon Web Services resource. ',
-        }),
-    ),
+    Key: TagKeySchema.openapi({
+      description:
+        'The key for a developer-defined key value pair for tagging an Amazon Web Services resource. ',
+    }),
+    Value: TagValueSchema.openapi({
+      description:
+        'The value for a developer-defined key value pair for tagging an Amazon Web Services resource. ',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -406,33 +523,21 @@ const TagListSchema = z.array(TagSchema).min(0).max(200).openapi('TagList')
 
 const CreateAliasInputSchema = z
   .object({
-    Name: NonBlankAndLengthConstraintStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with an alias. Alias names do not need to be unique.',
-        }),
-    ),
-    Description: NonZeroAndMaxStringSchema.and(
-      z.any().openapi({ description: 'A human-readable description of the alias.' }),
-    ).exactOptional(),
-    RoutingStrategy: RoutingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The routing configuration, including routing type and fleet target, for the alias. ',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of labels to assign to the new alias resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>.',
-        }),
-    ).exactOptional(),
+    Name: NonBlankAndLengthConstraintStringSchema.openapi({
+      description:
+        'A descriptive label that is associated with an alias. Alias names do not need to be unique.',
+    }),
+    Description: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'A human-readable description of the alias.',
+    }),
+    RoutingStrategy: RoutingStrategySchema.openapi({
+      description:
+        'The routing configuration, including routing type and fleet target, for the alias. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of labels to assign to the new alias resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>.',
+    }),
   })
   .openapi({ required: ['Name', 'RoutingStrategy'], title: 'CreateAliasInput' })
   .openapi('CreateAliasInput')
@@ -468,72 +573,40 @@ const ServerSdkVersionSchema = z
 
 const BuildSchema = z
   .object({
-    BuildId: BuildIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the build.' }),
-    ).exactOptional(),
-    BuildArn: BuildArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) assigned to a Amazon GameLift build resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::build/build-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>. In a GameLift build ARN, the resource ID matches the <i>BuildId</i> value.',
-        }),
-    ).exactOptional(),
-    Name: FreeTextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label associated with a build. Build names don\'t need to be unique. It can be set using <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_CreateBuild.html">CreateBuild</a> or <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/UpdateBuild">UpdateBuild</a>.',
-        }),
-    ).exactOptional(),
-    Version: FreeTextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Version information associated with a build or script. Version strings don't need to be unique.",
-        }),
-    ).exactOptional(),
-    Status: BuildStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Current status of the build.</p> <p>Possible build statuses include the following:</p> <ul> <li> <p> <b>INITIALIZED</b> -- A new build has been defined, but no files have been uploaded. You cannot create fleets for builds that are in this status. When a build is successfully created, the build status is set to this value. </p> </li> <li> <p> <b>READY</b> -- The game build has been successfully uploaded. You can now create new fleets for this build.</p> </li> <li> <p> <b>FAILED</b> -- The game build upload failed. You cannot create new fleets for this build. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    SizeOnDisk: PositiveLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'File size of the uploaded game build, expressed in bytes. When the build status is <code>INITIALIZED</code> or when using a custom Amazon S3 storage location, this value is 0.',
-        }),
-    ).exactOptional(),
-    OperatingSystem: OperatingSystemSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Operating system that the game server binaries are built to run on. This value determines the type of fleet resources that you can use for this build.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    ServerSdkVersion: ServerSdkVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon GameLift Server SDK version used to develop your game server.',
-        }),
-    ).exactOptional(),
+    BuildId: BuildIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the build.',
+    }),
+    BuildArn: BuildArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) assigned to a Amazon GameLift build resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::build/build-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>. In a GameLift build ARN, the resource ID matches the <i>BuildId</i> value.',
+    }),
+    Name: FreeTextSchema.exactOptional().openapi({
+      description:
+        'A descriptive label associated with a build. Build names don\'t need to be unique. It can be set using <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_CreateBuild.html">CreateBuild</a> or <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/UpdateBuild">UpdateBuild</a>.',
+    }),
+    Version: FreeTextSchema.exactOptional().openapi({
+      description:
+        "Version information associated with a build or script. Version strings don't need to be unique.",
+    }),
+    Status: BuildStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Current status of the build.</p> <p>Possible build statuses include the following:</p> <ul> <li> <p> <b>INITIALIZED</b> -- A new build has been defined, but no files have been uploaded. You cannot create fleets for builds that are in this status. When a build is successfully created, the build status is set to this value. </p> </li> <li> <p> <b>READY</b> -- The game build has been successfully uploaded. You can now create new fleets for this build.</p> </li> <li> <p> <b>FAILED</b> -- The game build upload failed. You cannot create new fleets for this build. </p> </li> </ul>',
+    }),
+    SizeOnDisk: PositiveLongSchema.exactOptional().openapi({
+      description:
+        'File size of the uploaded game build, expressed in bytes. When the build status is <code>INITIALIZED</code> or when using a custom Amazon S3 storage location, this value is 0.',
+    }),
+    OperatingSystem: OperatingSystemSchema.exactOptional().openapi({
+      description:
+        'Operating system that the game server binaries are built to run on. This value determines the type of fleet resources that you can use for this build.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    ServerSdkVersion: ServerSdkVersionSchema.exactOptional().openapi({
+      description: 'The Amazon GameLift Server SDK version used to develop your game server.',
+    }),
   })
   .openapi({
     description:
@@ -546,28 +619,16 @@ const NonEmptyStringSchema = z.string().min(1).openapi('NonEmptyString')
 
 const AwsCredentialsSchema = z
   .object({
-    AccessKeyId: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Temporary key allowing access to the Amazon GameLift S3 account.',
-        }),
-    ).exactOptional(),
-    SecretAccessKey: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Temporary secret key allowing access to the Amazon GameLift S3 account.',
-        }),
-    ).exactOptional(),
-    SessionToken: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Token used to associate a specific build ID with the files uploaded using these credentials.',
-        }),
-    ).exactOptional(),
+    AccessKeyId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'Temporary key allowing access to the Amazon GameLift S3 account.',
+    }),
+    SecretAccessKey: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'Temporary secret key allowing access to the Amazon GameLift S3 account.',
+    }),
+    SessionToken: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'Token used to associate a specific build ID with the files uploaded using these credentials.',
+    }),
   })
   .openapi({
     description:
@@ -578,37 +639,21 @@ const AwsCredentialsSchema = z
 
 const S3LocationSchema = z
   .object({
-    Bucket: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An Amazon S3 bucket identifier. Thename of the S3 bucket.</p> <note> <p>Amazon GameLift doesn't support uploading from Amazon S3 buckets with names that contain a dot (.).</p> </note>",
-        }),
-    ).exactOptional(),
-    Key: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the zip file that contains the build files or script files. ',
-        }),
-    ).exactOptional(),
-    RoleArn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) for an IAM role that allows Amazon GameLift to access the S3 bucket.',
-        }),
-    ).exactOptional(),
-    ObjectVersion: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the file, if object versioning is turned on for the bucket. Amazon GameLift uses this information when retrieving files from an S3 bucket that you own. Use this parameter to specify a specific version of the file. If not set, the latest version of the file is retrieved. ',
-        }),
-    ).exactOptional(),
+    Bucket: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        "<p>An Amazon S3 bucket identifier. Thename of the S3 bucket.</p> <note> <p>Amazon GameLift doesn't support uploading from Amazon S3 buckets with names that contain a dot (.).</p> </note>",
+    }),
+    Key: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The name of the zip file that contains the build files or script files. ',
+    }),
+    RoleArn: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) for an IAM role that allows Amazon GameLift to access the S3 bucket.',
+    }),
+    ObjectVersion: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'The version of the file, if object versioning is turned on for the bucket. Amazon GameLift uses this information when retrieving files from an S3 bucket that you own. Use this parameter to specify a specific version of the file. If not set, the latest version of the file is retrieved. ',
+    }),
   })
   .openapi({
     description:
@@ -619,84 +664,46 @@ const S3LocationSchema = z
 
 const CreateBuildOutputSchema = z
   .object({
-    Build: BuildSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The newly created build resource, including a unique build IDs and status. ',
-        }),
-    ).exactOptional(),
-    UploadCredentials: AwsCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This element is returned only when the operation is called without a storage location. It contains credentials to use when you are uploading a build file to an Amazon S3 bucket that is owned by Amazon GameLift. Credentials have a limited life span. To refresh these credentials, call <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_RequestUploadCredentials.html">RequestUploadCredentials</a>. ',
-        }),
-    ).exactOptional(),
-    StorageLocation: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon S3 location for your game build file, including bucket name and key.',
-        }),
-    ).exactOptional(),
+    Build: BuildSchema.exactOptional().openapi({
+      description: 'The newly created build resource, including a unique build IDs and status. ',
+    }),
+    UploadCredentials: AwsCredentialsSchema.exactOptional().openapi({
+      description:
+        'This element is returned only when the operation is called without a storage location. It contains credentials to use when you are uploading a build file to an Amazon S3 bucket that is owned by Amazon GameLift. Credentials have a limited life span. To refresh these credentials, call <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_RequestUploadCredentials.html">RequestUploadCredentials</a>. ',
+    }),
+    StorageLocation: S3LocationSchema.exactOptional().openapi({
+      description: 'Amazon S3 location for your game build file, including bucket name and key.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateBuildOutput')
 
 const CreateBuildInputSchema = z
   .object({
-    Name: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A descriptive label associated with a build. Build names don't need to be unique. You can change this value later. ",
-        }),
-    ).exactOptional(),
-    Version: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Version information associated with a build or script. Version strings don't need to be unique. You can change this value later. ",
-        }),
-    ).exactOptional(),
-    StorageLocation: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information indicating where your game build files are stored. Use this parameter only when creating a build with files stored in an Amazon S3 bucket that you own. The storage location must specify an Amazon S3 bucket name and key. The location must also specify a role ARN that you set up to allow Amazon GameLift to access your Amazon S3 bucket. The S3 bucket and your new build must be in the same Region.</p> <p>If a <code>StorageLocation</code> is specified, the size of your file can be found in your Amazon S3 bucket. Amazon GameLift will report a <code>SizeOnDisk</code> of 0. </p>',
-        }),
-    ).exactOptional(),
-    OperatingSystem: OperatingSystemSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The operating system that you built the game server binaries to run on. This value determines the type of fleet resources that you can use for this build. If your game build contains multiple executables, they all must run on the same operating system. If an operating system isn't specified when creating a build, Amazon GameLift uses the default value (WINDOWS_2012). This value can't be changed later.",
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of labels to assign to the new build resource. Tags are developer defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>. Once the resource is created, you can use <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_TagResource.html">TagResource</a>, <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_UntagResource.html">UntagResource</a>, and <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_ListTagsForResource.html">ListTagsForResource</a> to add, remove, and view tags. The maximum tag limit may be lower than stated. See the Amazon Web Services General Reference for actual tagging limits.',
-        }),
-    ).exactOptional(),
-    ServerSdkVersion: ServerSdkVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A server SDK version you used when integrating your game server build with Amazon GameLift. For more information see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/integration-custom-intro.html">Integrate games with custom game servers</a>. By default Amazon GameLift sets this value to <code>4.0.2</code>.',
-        }),
-    ).exactOptional(),
+    Name: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        "A descriptive label associated with a build. Build names don't need to be unique. You can change this value later. ",
+    }),
+    Version: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        "Version information associated with a build or script. Version strings don't need to be unique. You can change this value later. ",
+    }),
+    StorageLocation: S3LocationSchema.exactOptional().openapi({
+      description:
+        '<p>Information indicating where your game build files are stored. Use this parameter only when creating a build with files stored in an Amazon S3 bucket that you own. The storage location must specify an Amazon S3 bucket name and key. The location must also specify a role ARN that you set up to allow Amazon GameLift to access your Amazon S3 bucket. The S3 bucket and your new build must be in the same Region.</p> <p>If a <code>StorageLocation</code> is specified, the size of your file can be found in your Amazon S3 bucket. Amazon GameLift will report a <code>SizeOnDisk</code> of 0. </p>',
+    }),
+    OperatingSystem: OperatingSystemSchema.exactOptional().openapi({
+      description:
+        "The operating system that you built the game server binaries to run on. This value determines the type of fleet resources that you can use for this build. If your game build contains multiple executables, they all must run on the same operating system. If an operating system isn't specified when creating a build, Amazon GameLift uses the default value (WINDOWS_2012). This value can't be changed later.",
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of labels to assign to the new build resource. Tags are developer defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>. Once the resource is created, you can use <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_TagResource.html">TagResource</a>, <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_UntagResource.html">UntagResource</a>, and <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_ListTagsForResource.html">ListTagsForResource</a> to add, remove, and view tags. The maximum tag limit may be lower than stated. See the Amazon Web Services General Reference for actual tagging limits.',
+    }),
+    ServerSdkVersion: ServerSdkVersionSchema.exactOptional().openapi({
+      description:
+        'A server SDK version you used when integrating your game server build with Amazon GameLift. For more information see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/integration-custom-intro.html">Integrate games with custom game servers</a>. By default Amazon GameLift sets this value to <code>4.0.2</code>.',
+    }),
   })
   .openapi({ title: 'CreateBuildInput', required: [] })
   .openapi('CreateBuildInput')
@@ -870,25 +877,15 @@ const ProtectionPolicySchema = z
   .enum(['NoProtection', 'FullProtection'])
   .openapi('ProtectionPolicy')
 
-const WholeNumberSchema = z.int().min(0).openapi('WholeNumber')
-
 const ResourceCreationLimitPolicySchema = z
   .object({
-    NewGameSessionsPerCreator: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A policy that puts limits on the number of game sessions that a player can create within a specified span of time. With this policy, you can control players' ability to consume available resources.</p> <p>The policy is evaluated when a player tries to create a new game session. On receiving a <code>CreateGameSession</code> request, Amazon GameLift checks that the player (identified by <code>CreatorId</code>) has created fewer than game session limit in the specified time period.</p>",
-        }),
-    ).exactOptional(),
-    PolicyPeriodInMinutes: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time span used in evaluating the resource creation limit policy. ',
-        }),
-    ).exactOptional(),
+    NewGameSessionsPerCreator: WholeNumberSchema.exactOptional().openapi({
+      description:
+        "<p>A policy that puts limits on the number of game sessions that a player can create within a specified span of time. With this policy, you can control players' ability to consume available resources.</p> <p>The policy is evaluated when a player tries to create a new game session. On receiving a <code>CreateGameSession</code> request, Amazon GameLift checks that the player (identified by <code>CreatorId</code>) has created fewer than game session limit in the specified time period.</p>",
+    }),
+    PolicyPeriodInMinutes: WholeNumberSchema.exactOptional().openapi({
+      description: 'The time span used in evaluating the resource creation limit policy. ',
+    }),
   })
   .openapi({
     description:
@@ -909,14 +906,10 @@ const CertificateTypeSchema = z.enum(['DISABLED', 'GENERATED']).openapi('Certifi
 
 const CertificateConfigurationSchema = z
   .object({
-    CertificateType: CertificateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether a TLS/SSL certificate is generated for a fleet. </p> <p>Valid values include: </p> <ul> <li> <p> <b>GENERATED</b> - Generate a TLS/SSL certificate for this fleet.</p> </li> <li> <p> <b>DISABLED</b> - (default) Do not generate a TLS/SSL certificate for this fleet. </p> </li> </ul>',
-        }),
-    ),
+    CertificateType: CertificateTypeSchema.openapi({
+      description:
+        '<p>Indicates whether a TLS/SSL certificate is generated for a fleet. </p> <p>Valid values include: </p> <ul> <li> <p> <b>GENERATED</b> - Generate a TLS/SSL certificate for this fleet.</p> </li> <li> <p> <b>DISABLED</b> - (default) Do not generate a TLS/SSL certificate for this fleet. </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['CertificateType'],
@@ -936,14 +929,10 @@ const NonNegativeLimitedLengthDoubleSchema = z
 
 const AnywhereConfigurationSchema = z
   .object({
-    Cost: NonNegativeLimitedLengthDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The cost to run your fleet per hour. Amazon GameLift uses the provided cost of your fleet to balance usage in queues. For more information about queues, see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/queues-intro.html">Setting up queues</a> in the <i>Amazon GameLift Developer Guide</i>.',
-        }),
-    ),
+    Cost: NonNegativeLimitedLengthDoubleSchema.openapi({
+      description:
+        'The cost to run your fleet per hour. Amazon GameLift uses the provided cost of your fleet to balance usage in queues. For more information about queues, see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/queues-intro.html">Setting up queues</a> in the <i>Amazon GameLift Developer Guide</i>.',
+    }),
   })
   .openapi({
     required: ['Cost'],
@@ -953,174 +942,94 @@ const AnywhereConfigurationSchema = z
 
 const FleetAttributesSchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the fleet.' }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>. In a GameLift fleet ARN, the resource ID matches the <code>FleetId</code> value.',
-        }),
-    ).exactOptional(),
-    FleetType: FleetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to use On-Demand or Spot instances for this fleet. By default, this property is set to <code>ON_DEMAND</code>. Learn more about when to use <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-ec2-instances.html#gamelift-ec2-instances-spot"> On-Demand versus Spot Instances</a>. This property cannot be changed after the fleet is created.',
-        }),
-    ).exactOptional(),
-    InstanceType: EC2InstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon EC2 instance type that determines the computing resources of each instance in the fleet. Instance type defines the CPU, memory, storage, and networking capacity. See <a href="http://aws.amazon.com/ec2/instance-types/">Amazon Elastic Compute Cloud Instance Types</a> for detailed descriptions.',
-        }),
-    ).exactOptional(),
-    Description: NonZeroAndMaxStringSchema.and(
-      z.any().openapi({ description: 'A human-readable description of the fleet.' }),
-    ).exactOptional(),
-    Name: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with a fleet. Fleet names do not need to be unique.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    TerminationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp indicating when this data object was terminated. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    Status: FleetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Current status of the fleet. Possible fleet statuses include the following:</p> <ul> <li> <p> <b>NEW</b> -- A new fleet has been defined and desired instances is set to 1. </p> </li> <li> <p> <b>DOWNLOADING/VALIDATING/BUILDING/ACTIVATING</b> -- Amazon GameLift is setting up the new fleet, creating new instances with the game build or Realtime script and starting server processes.</p> </li> <li> <p> <b>ACTIVE</b> -- Hosts can now accept game sessions.</p> </li> <li> <p> <b>ERROR</b> -- An error occurred when downloading, validating, building, or activating the fleet.</p> </li> <li> <p> <b>DELETING</b> -- Hosts are responding to a delete fleet request.</p> </li> <li> <p> <b>TERMINATED</b> -- The fleet no longer exists.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    BuildId: BuildIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the build resource that is deployed on instances in this fleet.',
-        }),
-    ).exactOptional(),
-    BuildArn: BuildArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) associated with the Amazon GameLift build resource that is deployed on instances in this fleet. In a GameLift build ARN, the resource ID matches the <code>BuildId</code> value.',
-        }),
-    ).exactOptional(),
-    ScriptId: ScriptIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the Realtime script resource that is deployed on instances in this fleet.',
-        }),
-    ).exactOptional(),
-    ScriptArn: ScriptArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) associated with the GameLift script resource that is deployed on instances in this fleet. In a GameLift script ARN, the resource ID matches the <code>ScriptId</code> value.',
-        }),
-    ).exactOptional(),
-    ServerLaunchPath: LaunchPathStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <b>This parameter is no longer used.</b> Server launch paths are now defined using the fleet\'s <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/RuntimeConfiguration.html">RuntimeConfiguration</a> . Requests that use this parameter instead continue to be valid.',
-        }),
-    ).exactOptional(),
-    ServerLaunchParameters: LaunchParametersStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " <b>This parameter is no longer used.</b> Server launch parameters are now defined using the fleet's runtime configuration . Requests that use this parameter instead continue to be valid.",
-        }),
-    ).exactOptional(),
-    LogPaths: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <b>This parameter is no longer used.</b> Game session log paths are now defined using the Amazon GameLift server API <code>ProcessReady()</code> <code>logParameters</code>. See more information in the <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api-ref.html#gamelift-sdk-server-api-ref-dataypes-process">Server API Reference</a>. ',
-        }),
-    ).exactOptional(),
-    NewGameSessionProtectionPolicy: ProtectionPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of game session protection to set on all new instances that are started in the fleet.</p> <ul> <li> <p> <b>NoProtection</b> -- The game session can be terminated during a scale-down event.</p> </li> <li> <p> <b>FullProtection</b> -- If the game session is in an <code>ACTIVE</code> status, it cannot be terminated during a scale-down event.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    OperatingSystem: OperatingSystemSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The operating system of the fleet's computing resources. A fleet's operating system is determined by the OS of the build or script that is deployed on this fleet.",
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the fleet.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>. In a GameLift fleet ARN, the resource ID matches the <code>FleetId</code> value.',
+    }),
+    FleetType: FleetTypeSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to use On-Demand or Spot instances for this fleet. By default, this property is set to <code>ON_DEMAND</code>. Learn more about when to use <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-ec2-instances.html#gamelift-ec2-instances-spot"> On-Demand versus Spot Instances</a>. This property cannot be changed after the fleet is created.',
+    }),
+    InstanceType: EC2InstanceTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon EC2 instance type that determines the computing resources of each instance in the fleet. Instance type defines the CPU, memory, storage, and networking capacity. See <a href="http://aws.amazon.com/ec2/instance-types/">Amazon Elastic Compute Cloud Instance Types</a> for detailed descriptions.',
+    }),
+    Description: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'A human-readable description of the fleet.',
+    }),
+    Name: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A descriptive label that is associated with a fleet. Fleet names do not need to be unique.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    TerminationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp indicating when this data object was terminated. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    Status: FleetStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Current status of the fleet. Possible fleet statuses include the following:</p> <ul> <li> <p> <b>NEW</b> -- A new fleet has been defined and desired instances is set to 1. </p> </li> <li> <p> <b>DOWNLOADING/VALIDATING/BUILDING/ACTIVATING</b> -- Amazon GameLift is setting up the new fleet, creating new instances with the game build or Realtime script and starting server processes.</p> </li> <li> <p> <b>ACTIVE</b> -- Hosts can now accept game sessions.</p> </li> <li> <p> <b>ERROR</b> -- An error occurred when downloading, validating, building, or activating the fleet.</p> </li> <li> <p> <b>DELETING</b> -- Hosts are responding to a delete fleet request.</p> </li> <li> <p> <b>TERMINATED</b> -- The fleet no longer exists.</p> </li> </ul>',
+    }),
+    BuildId: BuildIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the build resource that is deployed on instances in this fleet.',
+    }),
+    BuildArn: BuildArnSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) associated with the Amazon GameLift build resource that is deployed on instances in this fleet. In a GameLift build ARN, the resource ID matches the <code>BuildId</code> value.',
+    }),
+    ScriptId: ScriptIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the Realtime script resource that is deployed on instances in this fleet.',
+    }),
+    ScriptArn: ScriptArnSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) associated with the GameLift script resource that is deployed on instances in this fleet. In a GameLift script ARN, the resource ID matches the <code>ScriptId</code> value.',
+    }),
+    ServerLaunchPath: LaunchPathStringModelSchema.exactOptional().openapi({
+      description:
+        ' <b>This parameter is no longer used.</b> Server launch paths are now defined using the fleet\'s <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/RuntimeConfiguration.html">RuntimeConfiguration</a> . Requests that use this parameter instead continue to be valid.',
+    }),
+    ServerLaunchParameters: LaunchParametersStringModelSchema.exactOptional().openapi({
+      description:
+        " <b>This parameter is no longer used.</b> Server launch parameters are now defined using the fleet's runtime configuration . Requests that use this parameter instead continue to be valid.",
+    }),
+    LogPaths: StringListSchema.exactOptional().openapi({
+      description:
+        ' <b>This parameter is no longer used.</b> Game session log paths are now defined using the Amazon GameLift server API <code>ProcessReady()</code> <code>logParameters</code>. See more information in the <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api-ref.html#gamelift-sdk-server-api-ref-dataypes-process">Server API Reference</a>. ',
+    }),
+    NewGameSessionProtectionPolicy: ProtectionPolicySchema.exactOptional().openapi({
+      description:
+        '<p>The type of game session protection to set on all new instances that are started in the fleet.</p> <ul> <li> <p> <b>NoProtection</b> -- The game session can be terminated during a scale-down event.</p> </li> <li> <p> <b>FullProtection</b> -- If the game session is in an <code>ACTIVE</code> status, it cannot be terminated during a scale-down event.</p> </li> </ul>',
+    }),
+    OperatingSystem: OperatingSystemSchema.exactOptional().openapi({
+      description:
+        "The operating system of the fleet's computing resources. A fleet's operating system is determined by the OS of the build or script that is deployed on this fleet.",
+    }),
     ResourceCreationLimitPolicy: ResourceCreationLimitPolicySchema.exactOptional(),
-    MetricGroups: MetricGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Name of a metric group that metrics for this fleet are added to. In Amazon CloudWatch, you can view aggregated metrics for fleets that are in a metric group. A fleet can be included in only one metric group at a time.',
-        }),
-    ).exactOptional(),
-    StoppedActions: FleetActionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of fleet activity that has been suspended using <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_StopFleetActions.html">StopFleetActions</a> . This includes fleet auto-scaling.',
-        }),
-    ).exactOptional(),
-    InstanceRoleArn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for an IAM role that manages access to your Amazon Web Services services. With an instance role ARN set, any application that runs on an instance in this fleet can assume the role, including install scripts, server processes, and daemons (background processes). Create a role or look up a role\'s ARN by using the <a href="https://console.aws.amazon.com/iam/">IAM dashboard</a> in the Amazon Web Services Management Console. Learn more about using on-box credentials for your game servers at <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-resources.html"> Access external resources from a game server</a>.',
-        }),
-    ).exactOptional(),
+    MetricGroups: MetricGroupListSchema.exactOptional().openapi({
+      description:
+        'Name of a metric group that metrics for this fleet are added to. In Amazon CloudWatch, you can view aggregated metrics for fleets that are in a metric group. A fleet can be included in only one metric group at a time.',
+    }),
+    StoppedActions: FleetActionListSchema.exactOptional().openapi({
+      description:
+        'A list of fleet activity that has been suspended using <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_StopFleetActions.html">StopFleetActions</a> . This includes fleet auto-scaling.',
+    }),
+    InstanceRoleArn: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for an IAM role that manages access to your Amazon Web Services services. With an instance role ARN set, any application that runs on an instance in this fleet can assume the role, including install scripts, server processes, and daemons (background processes). Create a role or look up a role\'s ARN by using the <a href="https://console.aws.amazon.com/iam/">IAM dashboard</a> in the Amazon Web Services Management Console. Learn more about using on-box credentials for your game servers at <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-resources.html"> Access external resources from a game server</a>.',
+    }),
     CertificateConfiguration: CertificateConfigurationSchema.exactOptional(),
-    ComputeType: ComputeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of compute resource used to host your game servers. You can use your own compute resources with Amazon GameLift Anywhere or use Amazon EC2 instances with managed Amazon GameLift.',
-        }),
-    ).exactOptional(),
+    ComputeType: ComputeTypeSchema.exactOptional().openapi({
+      description:
+        'The type of compute resource used to host your game servers. You can use your own compute resources with Amazon GameLift Anywhere or use Amazon EC2 instances with managed Amazon GameLift.',
+    }),
     AnywhereConfiguration: AnywhereConfigurationSchema.exactOptional(),
   })
   .openapi({
@@ -1139,17 +1048,13 @@ const LocationStringModelSchema = z
 
 const LocationStateSchema = z
   .object({
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fleet location, expressed as an Amazon Web Services Region code such as <code>us-west-2</code>. ',
-        }),
-    ).exactOptional(),
-    Status: FleetStatusSchema.and(
-      z.any().openapi({ description: 'The life-cycle status of a fleet location. ' }),
-    ).exactOptional(),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        'The fleet location, expressed as an Amazon Web Services Region code such as <code>us-west-2</code>. ',
+    }),
+    Status: FleetStatusSchema.exactOptional().openapi({
+      description: 'The life-cycle status of a fleet location. ',
+    }),
   })
   .openapi({
     description:
@@ -1162,22 +1067,14 @@ const LocationStateListSchema = z.array(LocationStateSchema).openapi('LocationSt
 
 const CreateFleetOutputSchema = z
   .object({
-    FleetAttributes: FleetAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The properties for the new fleet, including the current status. All fleets are placed in <code>NEW</code> status on creation. ',
-        }),
-    ).exactOptional(),
-    LocationStates: LocationStateListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The fleet's locations and life-cycle status of each location. For new fleets, the status of all locations is set to <code>NEW</code>. During fleet creation, Amazon GameLift updates each location status as instances are deployed there and prepared for game hosting. This list includes an entry for the fleet's home Region. For fleets with no remote locations, only one entry, representing the home Region, is returned.",
-        }),
-    ).exactOptional(),
+    FleetAttributes: FleetAttributesSchema.exactOptional().openapi({
+      description:
+        'The properties for the new fleet, including the current status. All fleets are placed in <code>NEW</code> status on creation. ',
+    }),
+    LocationStates: LocationStateListSchema.exactOptional().openapi({
+      description:
+        "The fleet's locations and life-cycle status of each location. For new fleets, the status of all locations is set to <code>NEW</code>. During fleet creation, Amazon GameLift updates each location status as instances are deployed there and prepared for game hosting. This list includes an entry for the fleet's home Region. For fleets with no remote locations, only one entry, representing the home Region, is returned.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateFleetOutput')
@@ -1203,33 +1100,21 @@ const IpProtocolSchema = z.enum(['TCP', 'UDP']).openapi('IpProtocol')
 
 const IpPermissionSchema = z
   .object({
-    FromPort: PortNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A starting value for a range of allowed port numbers.</p> <p>For fleets using Linux builds, only ports <code>22</code> and <code>1026-60000</code> are valid.</p> <p>For fleets using Windows builds, only ports <code>1026-60000</code> are valid.</p>',
-        }),
-    ),
-    ToPort: PortNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An ending value for a range of allowed port numbers. Port numbers are end-inclusive. This value must be equal to or greater than <code>FromPort</code>.</p> <p>For fleets using Linux builds, only ports <code>22</code> and <code>1026-60000</code> are valid.</p> <p>For fleets using Windows builds, only ports <code>1026-60000</code> are valid.</p>',
-        }),
-    ),
-    IpRange: NonBlankStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A range of allowed IP addresses. This value must be expressed in CIDR notation. Example: "<code>000.000.000.000/[subnet mask]</code>" or optionally the shortened version "<code>0.0.0.0/[subnet mask]</code>".',
-        }),
-    ),
-    Protocol: IpProtocolSchema.and(
-      z.any().openapi({ description: 'The network communication protocol used by the fleet.' }),
-    ),
+    FromPort: PortNumberSchema.openapi({
+      description:
+        '<p>A starting value for a range of allowed port numbers.</p> <p>For fleets using Linux builds, only ports <code>22</code> and <code>1026-60000</code> are valid.</p> <p>For fleets using Windows builds, only ports <code>1026-60000</code> are valid.</p>',
+    }),
+    ToPort: PortNumberSchema.openapi({
+      description:
+        '<p>An ending value for a range of allowed port numbers. Port numbers are end-inclusive. This value must be equal to or greater than <code>FromPort</code>.</p> <p>For fleets using Linux builds, only ports <code>22</code> and <code>1026-60000</code> are valid.</p> <p>For fleets using Windows builds, only ports <code>1026-60000</code> are valid.</p>',
+    }),
+    IpRange: NonBlankStringSchema.openapi({
+      description:
+        'A range of allowed IP addresses. This value must be expressed in CIDR notation. Example: "<code>000.000.000.000/[subnet mask]</code>" or optionally the shortened version "<code>0.0.0.0/[subnet mask]</code>".',
+    }),
+    Protocol: IpProtocolSchema.openapi({
+      description: 'The network communication protocol used by the fleet.',
+    }),
   })
   .openapi({
     required: ['FromPort', 'ToPort', 'IpRange', 'Protocol'],
@@ -1240,34 +1125,20 @@ const IpPermissionSchema = z
 
 const IpPermissionsListSchema = z.array(IpPermissionSchema).max(50).openapi('IpPermissionsList')
 
-const PositiveIntegerSchema = z.int().min(1).openapi('PositiveInteger')
-
 const ServerProcessSchema = z
   .object({
-    LaunchPath: LaunchPathStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The location of a game build executable or the Realtime script file that contains the <code>Init()</code> function. Game builds and Realtime scripts are installed on instances at the root: </p> <ul> <li> <p>Windows (custom game builds only): <code>C:\\game</code>. Example: "<code>C:\\game\\MyGame\\server.exe</code>" </p> </li> <li> <p>Linux: <code>/local/game</code>. Examples: "<code>/local/game/MyGame/server.exe</code>" or "<code>/local/game/MyRealtimeScript.js</code>"</p> </li> </ul>',
-        }),
-    ),
-    Parameters: LaunchParametersStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional list of parameters to pass to the server executable or Realtime script on launch.',
-        }),
-    ).exactOptional(),
-    ConcurrentExecutions: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of server processes using this configuration that run concurrently on each instance.',
-        }),
-    ),
+    LaunchPath: LaunchPathStringModelSchema.openapi({
+      description:
+        '<p>The location of a game build executable or the Realtime script file that contains the <code>Init()</code> function. Game builds and Realtime scripts are installed on instances at the root: </p> <ul> <li> <p>Windows (custom game builds only): <code>C:\\game</code>. Example: "<code>C:\\game\\MyGame\\server.exe</code>" </p> </li> <li> <p>Linux: <code>/local/game</code>. Examples: "<code>/local/game/MyGame/server.exe</code>" or "<code>/local/game/MyRealtimeScript.js</code>"</p> </li> </ul>',
+    }),
+    Parameters: LaunchParametersStringModelSchema.exactOptional().openapi({
+      description:
+        'An optional list of parameters to pass to the server executable or Realtime script on launch.',
+    }),
+    ConcurrentExecutions: PositiveIntegerSchema.openapi({
+      description:
+        'The number of server processes using this configuration that run concurrently on each instance.',
+    }),
   })
   .openapi({
     required: ['LaunchPath', 'ConcurrentExecutions'],
@@ -1296,30 +1167,20 @@ const GameSessionActivationTimeoutSecondsSchema = z
 
 const RuntimeConfigurationSchema = z
   .object({
-    ServerProcesses: ServerProcessListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of server process configurations that identify what server processes to run on each instance in a fleet.',
-        }),
-    ).exactOptional(),
-    MaxConcurrentGameSessionActivations: MaxConcurrentGameSessionActivationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of game sessions in status <code>ACTIVATING</code> to allow on an instance. This setting limits the instance resources that can be used for new game activations at any one time.',
-        }),
-    ).exactOptional(),
-    GameSessionActivationTimeoutSeconds: GameSessionActivationTimeoutSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum amount of time (in seconds) allowed to launch a new game session and have it report ready to host players. During this time, the game session is in status <code>ACTIVATING</code>. If the game session does not become active before the timeout, it is ended and the game session status is changed to <code>TERMINATED</code>.',
-        }),
-    ).exactOptional(),
+    ServerProcesses: ServerProcessListSchema.exactOptional().openapi({
+      description:
+        'A collection of server process configurations that identify what server processes to run on each instance in a fleet.',
+    }),
+    MaxConcurrentGameSessionActivations:
+      MaxConcurrentGameSessionActivationsSchema.exactOptional().openapi({
+        description:
+          'The number of game sessions in status <code>ACTIVATING</code> to allow on an instance. This setting limits the instance resources that can be used for new game activations at any one time.',
+      }),
+    GameSessionActivationTimeoutSeconds:
+      GameSessionActivationTimeoutSecondsSchema.exactOptional().openapi({
+        description:
+          'The maximum amount of time (in seconds) allowed to launch a new game session and have it report ready to host players. During this time, the game session is in status <code>ACTIVATING</code>. If the game session does not become active before the timeout, it is ended and the game session status is changed to <code>TERMINATED</code>.',
+      }),
   })
   .openapi({
     description:
@@ -1330,13 +1191,9 @@ const RuntimeConfigurationSchema = z
 
 const LocationConfigurationSchema = z
   .object({
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An Amazon Web Services Region code, such as <code>us-west-2</code>. ',
-        }),
-    ),
+    Location: LocationStringModelSchema.openapi({
+      description: 'An Amazon Web Services Region code, such as <code>us-west-2</code>. ',
+    }),
   })
   .openapi({
     required: ['Location'],
@@ -1353,172 +1210,92 @@ const LocationConfigurationListSchema = z
 
 const CreateFleetInputSchema = z
   .object({
-    Name: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with a fleet. Fleet names do not need to be unique.',
-        }),
-    ),
-    Description: NonZeroAndMaxStringSchema.and(
-      z.any().openapi({ description: 'A description for the fleet.' }),
-    ).exactOptional(),
-    BuildId: BuildIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for a custom game server build to be deployed on fleet instances. You can use either the build ID or ARN. The build must be uploaded to Amazon GameLift and in <code>READY</code> status. This fleet property cannot be changed later.',
-        }),
-    ).exactOptional(),
-    ScriptId: ScriptIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for a Realtime configuration script to be deployed on fleet instances. You can use either the script ID or ARN. Scripts must be uploaded to Amazon GameLift prior to creating the fleet. This fleet property cannot be changed later.',
-        }),
-    ).exactOptional(),
-    ServerLaunchPath: LaunchPathStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <b>This parameter is no longer used.</b> Specify a server launch path using the <code>RuntimeConfiguration</code> parameter. Requests that use this parameter instead continue to be valid.',
-        }),
-    ).exactOptional(),
-    ServerLaunchParameters: LaunchParametersStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <b>This parameter is no longer used.</b> Specify server launch parameters using the <code>RuntimeConfiguration</code> parameter. Requests that use this parameter instead continue to be valid.',
-        }),
-    ).exactOptional(),
-    LogPaths: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <b>This parameter is no longer used.</b> To specify where Amazon GameLift should store log files once a server process shuts down, use the Amazon GameLift server API <code>ProcessReady()</code> and specify one or more directory paths in <code>logParameters</code>. For more information, see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-initialize">Initialize the server process</a> in the <i>Amazon GameLift Developer Guide</i>. ',
-        }),
-    ).exactOptional(),
-    EC2InstanceType: EC2InstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon GameLift-supported Amazon EC2 instance type to use for all fleet instances. Instance type determines the computing resources that will be used to host your game servers, including CPU, memory, storage, and networking capacity. See <a href="http://aws.amazon.com/ec2/instance-types/">Amazon Elastic Compute Cloud Instance Types</a> for detailed descriptions of Amazon EC2 instance types.',
-        }),
-    ).exactOptional(),
-    EC2InboundPermissions: IpPermissionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The allowed IP address ranges and port settings that allow inbound traffic to access game sessions on this fleet. If the fleet is hosting a custom game build, this property must be set before players can connect to game sessions. For Realtime Servers fleets, Amazon GameLift automatically sets TCP and UDP ranges. ',
-        }),
-    ).exactOptional(),
-    NewGameSessionProtectionPolicy: ProtectionPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of termination protection for active game sessions on the fleet. By default, this property is set to <code>NoProtection</code>. You can also set game session protection for an individual game session by calling <a href="gamelift/latest/apireference/API_UpdateGameSession.html">UpdateGameSession</a>.</p> <ul> <li> <p> <b>NoProtection</b> - Game sessions can be terminated during active gameplay as a result of a scale-down event. </p> </li> <li> <p> <b>FullProtection</b> - Game sessions in <code>ACTIVE</code> status cannot be terminated during a scale-down event.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    RuntimeConfiguration: RuntimeConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Instructions for how to launch and maintain server processes on instances in the fleet. The runtime configuration defines one or more server process configurations, each identifying a build executable or Realtime script file and the number of processes of that type to run concurrently. </p> <note> <p>The <code>RuntimeConfiguration</code> parameter is required unless the fleet is being configured using the older parameters <code>ServerLaunchPath</code> and <code>ServerLaunchParameters</code>, which are still supported for backward compatibility.</p> </note>',
-        }),
-    ).exactOptional(),
-    ResourceCreationLimitPolicy: ResourceCreationLimitPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A policy that limits the number of game sessions that an individual player can create on instances in this fleet within a specified span of time.',
-        }),
-    ).exactOptional(),
-    MetricGroups: MetricGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an Amazon Web Services CloudWatch metric group to add this fleet to. A metric group is used to aggregate the metrics for multiple fleets. You can specify an existing metric group name or set a new name to create a new metric group. A fleet can be included in only one metric group at a time. ',
-        }),
-    ).exactOptional(),
-    PeerVpcAwsAccountId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used when peering your Amazon GameLift fleet with a VPC, the unique identifier for the Amazon Web Services account that owns the VPC. You can find your account ID in the Amazon Web Services Management Console under account settings. ',
-        }),
-    ).exactOptional(),
-    PeerVpcId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a VPC with resources to be accessed by your Amazon GameLift fleet. The VPC must be in the same Region as your fleet. To look up a VPC ID, use the <a href="https://console.aws.amazon.com/vpc/">VPC Dashboard</a> in the Amazon Web Services Management Console. Learn more about VPC peering in <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/vpc-peering.html">VPC Peering with Amazon GameLift Fleets</a>.',
-        }),
-    ).exactOptional(),
-    FleetType: FleetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to use On-Demand or Spot instances for this fleet. By default, this property is set to <code>ON_DEMAND</code>. Learn more about when to use <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-ec2-instances.html#gamelift-ec2-instances-spot"> On-Demand versus Spot Instances</a>. This property cannot be changed after the fleet is created.',
-        }),
-    ).exactOptional(),
-    InstanceRoleArn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for an IAM role that manages access to your Amazon Web Services services. With an instance role ARN set, any application that runs on an instance in this fleet can assume the role, including install scripts, server processes, and daemons (background processes). Create a role or look up a role\'s ARN by using the <a href="https://console.aws.amazon.com/iam/">IAM dashboard</a> in the Amazon Web Services Management Console. Learn more about using on-box credentials for your game servers at <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-resources.html"> Access external resources from a game server</a>. This property cannot be changed after the fleet is created.',
-        }),
-    ).exactOptional(),
-    CertificateConfiguration: CertificateConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Prompts Amazon GameLift to generate a TLS/SSL certificate for the fleet. Amazon GameLift uses the certificates to encrypt traffic between game clients and the game servers running on Amazon GameLift. By default, the <code>CertificateConfiguration</code> is <code>DISABLED</code>. You can\'t change this property after you create the fleet. </p> <p>Certificate Manager (ACM) certificates expire after 13 months. Certificate expiration can cause fleets to fail, preventing players from connecting to instances in the fleet. We recommend you replace fleets before 13 months, consider using fleet aliases for a smooth transition.</p> <note> <p>ACM isn\'t available in all Amazon Web Services regions. A fleet creation request with certificate generation enabled in an unsupported Region, fails with a 4xx error. For more information about the supported Regions, see <a href="https://docs.aws.amazon.com/acm/latest/userguide/acm-regions.html">Supported Regions</a> in the <i>Certificate Manager User Guide</i>.</p> </note>',
-        }),
-    ).exactOptional(),
-    Locations: LocationConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A set of remote locations to deploy additional instances to and manage as part of the fleet. This parameter can only be used when creating fleets in Amazon Web Services Regions that support multiple locations. You can add any Amazon GameLift-supported Amazon Web Services Region as a remote location, in the form of an Amazon Web Services Region code such as <code>us-west-2</code>. To create a fleet with instances in the home Region only, don't use this parameter. </p> <p>To use this parameter, Amazon GameLift requires you to use your home location in the request.</p>",
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of labels to assign to the new fleet resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>.',
-        }),
-    ).exactOptional(),
-    ComputeType: ComputeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of compute resource used to host your game servers. You can use your own compute resources with Amazon GameLift Anywhere or use Amazon EC2 instances with managed Amazon GameLift. By default, this property is set to <code>EC2</code>.',
-        }),
-    ).exactOptional(),
-    AnywhereConfiguration: AnywhereConfigurationSchema.and(
-      z.any().openapi({ description: 'Amazon GameLift Anywhere configuration options.' }),
-    ).exactOptional(),
+    Name: NonZeroAndMaxStringSchema.openapi({
+      description:
+        'A descriptive label that is associated with a fleet. Fleet names do not need to be unique.',
+    }),
+    Description: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'A description for the fleet.',
+    }),
+    BuildId: BuildIdOrArnSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for a custom game server build to be deployed on fleet instances. You can use either the build ID or ARN. The build must be uploaded to Amazon GameLift and in <code>READY</code> status. This fleet property cannot be changed later.',
+    }),
+    ScriptId: ScriptIdOrArnSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for a Realtime configuration script to be deployed on fleet instances. You can use either the script ID or ARN. Scripts must be uploaded to Amazon GameLift prior to creating the fleet. This fleet property cannot be changed later.',
+    }),
+    ServerLaunchPath: LaunchPathStringModelSchema.exactOptional().openapi({
+      description:
+        ' <b>This parameter is no longer used.</b> Specify a server launch path using the <code>RuntimeConfiguration</code> parameter. Requests that use this parameter instead continue to be valid.',
+    }),
+    ServerLaunchParameters: LaunchParametersStringModelSchema.exactOptional().openapi({
+      description:
+        ' <b>This parameter is no longer used.</b> Specify server launch parameters using the <code>RuntimeConfiguration</code> parameter. Requests that use this parameter instead continue to be valid.',
+    }),
+    LogPaths: StringListSchema.exactOptional().openapi({
+      description:
+        ' <b>This parameter is no longer used.</b> To specify where Amazon GameLift should store log files once a server process shuts down, use the Amazon GameLift server API <code>ProcessReady()</code> and specify one or more directory paths in <code>logParameters</code>. For more information, see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-initialize">Initialize the server process</a> in the <i>Amazon GameLift Developer Guide</i>. ',
+    }),
+    EC2InstanceType: EC2InstanceTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon GameLift-supported Amazon EC2 instance type to use for all fleet instances. Instance type determines the computing resources that will be used to host your game servers, including CPU, memory, storage, and networking capacity. See <a href="http://aws.amazon.com/ec2/instance-types/">Amazon Elastic Compute Cloud Instance Types</a> for detailed descriptions of Amazon EC2 instance types.',
+    }),
+    EC2InboundPermissions: IpPermissionsListSchema.exactOptional().openapi({
+      description:
+        'The allowed IP address ranges and port settings that allow inbound traffic to access game sessions on this fleet. If the fleet is hosting a custom game build, this property must be set before players can connect to game sessions. For Realtime Servers fleets, Amazon GameLift automatically sets TCP and UDP ranges. ',
+    }),
+    NewGameSessionProtectionPolicy: ProtectionPolicySchema.exactOptional().openapi({
+      description:
+        '<p>The status of termination protection for active game sessions on the fleet. By default, this property is set to <code>NoProtection</code>. You can also set game session protection for an individual game session by calling <a href="gamelift/latest/apireference/API_UpdateGameSession.html">UpdateGameSession</a>.</p> <ul> <li> <p> <b>NoProtection</b> - Game sessions can be terminated during active gameplay as a result of a scale-down event. </p> </li> <li> <p> <b>FullProtection</b> - Game sessions in <code>ACTIVE</code> status cannot be terminated during a scale-down event.</p> </li> </ul>',
+    }),
+    RuntimeConfiguration: RuntimeConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>Instructions for how to launch and maintain server processes on instances in the fleet. The runtime configuration defines one or more server process configurations, each identifying a build executable or Realtime script file and the number of processes of that type to run concurrently. </p> <note> <p>The <code>RuntimeConfiguration</code> parameter is required unless the fleet is being configured using the older parameters <code>ServerLaunchPath</code> and <code>ServerLaunchParameters</code>, which are still supported for backward compatibility.</p> </note>',
+    }),
+    ResourceCreationLimitPolicy: ResourceCreationLimitPolicySchema.exactOptional().openapi({
+      description:
+        'A policy that limits the number of game sessions that an individual player can create on instances in this fleet within a specified span of time.',
+    }),
+    MetricGroups: MetricGroupListSchema.exactOptional().openapi({
+      description:
+        'The name of an Amazon Web Services CloudWatch metric group to add this fleet to. A metric group is used to aggregate the metrics for multiple fleets. You can specify an existing metric group name or set a new name to create a new metric group. A fleet can be included in only one metric group at a time. ',
+    }),
+    PeerVpcAwsAccountId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'Used when peering your Amazon GameLift fleet with a VPC, the unique identifier for the Amazon Web Services account that owns the VPC. You can find your account ID in the Amazon Web Services Management Console under account settings. ',
+    }),
+    PeerVpcId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for a VPC with resources to be accessed by your Amazon GameLift fleet. The VPC must be in the same Region as your fleet. To look up a VPC ID, use the <a href="https://console.aws.amazon.com/vpc/">VPC Dashboard</a> in the Amazon Web Services Management Console. Learn more about VPC peering in <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/vpc-peering.html">VPC Peering with Amazon GameLift Fleets</a>.',
+    }),
+    FleetType: FleetTypeSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to use On-Demand or Spot instances for this fleet. By default, this property is set to <code>ON_DEMAND</code>. Learn more about when to use <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-ec2-instances.html#gamelift-ec2-instances-spot"> On-Demand versus Spot Instances</a>. This property cannot be changed after the fleet is created.',
+    }),
+    InstanceRoleArn: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for an IAM role that manages access to your Amazon Web Services services. With an instance role ARN set, any application that runs on an instance in this fleet can assume the role, including install scripts, server processes, and daemons (background processes). Create a role or look up a role\'s ARN by using the <a href="https://console.aws.amazon.com/iam/">IAM dashboard</a> in the Amazon Web Services Management Console. Learn more about using on-box credentials for your game servers at <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-resources.html"> Access external resources from a game server</a>. This property cannot be changed after the fleet is created.',
+    }),
+    CertificateConfiguration: CertificateConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>Prompts Amazon GameLift to generate a TLS/SSL certificate for the fleet. Amazon GameLift uses the certificates to encrypt traffic between game clients and the game servers running on Amazon GameLift. By default, the <code>CertificateConfiguration</code> is <code>DISABLED</code>. You can\'t change this property after you create the fleet. </p> <p>Certificate Manager (ACM) certificates expire after 13 months. Certificate expiration can cause fleets to fail, preventing players from connecting to instances in the fleet. We recommend you replace fleets before 13 months, consider using fleet aliases for a smooth transition.</p> <note> <p>ACM isn\'t available in all Amazon Web Services regions. A fleet creation request with certificate generation enabled in an unsupported Region, fails with a 4xx error. For more information about the supported Regions, see <a href="https://docs.aws.amazon.com/acm/latest/userguide/acm-regions.html">Supported Regions</a> in the <i>Certificate Manager User Guide</i>.</p> </note>',
+    }),
+    Locations: LocationConfigurationListSchema.exactOptional().openapi({
+      description:
+        "<p>A set of remote locations to deploy additional instances to and manage as part of the fleet. This parameter can only be used when creating fleets in Amazon Web Services Regions that support multiple locations. You can add any Amazon GameLift-supported Amazon Web Services Region as a remote location, in the form of an Amazon Web Services Region code such as <code>us-west-2</code>. To create a fleet with instances in the home Region only, don't use this parameter. </p> <p>To use this parameter, Amazon GameLift requires you to use your home location in the request.</p>",
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of labels to assign to the new fleet resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>.',
+    }),
+    ComputeType: ComputeTypeSchema.exactOptional().openapi({
+      description:
+        'The type of compute resource used to host your game servers. You can use your own compute resources with Amazon GameLift Anywhere or use Amazon EC2 instances with managed Amazon GameLift. By default, this property is set to <code>EC2</code>.',
+    }),
+    AnywhereConfiguration: AnywhereConfigurationSchema.exactOptional().openapi({
+      description: 'Amazon GameLift Anywhere configuration options.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreateFleetInput' })
   .openapi('CreateFleetInput')
@@ -1530,51 +1307,31 @@ const FleetIdOrArnSchema = z
 
 const CreateFleetLocationsOutputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the fleet that was updated with new locations.',
-        }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>. ',
-        }),
-    ).exactOptional(),
-    LocationStates: LocationStateListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The remote locations that are being added to the fleet, and the life-cycle status of each location. For new locations, the status is set to <code>NEW</code>. During location creation, Amazon GameLift updates each location's status as instances are deployed there and prepared for game hosting. This list does not include the fleet home Region or any remote locations that were already added to the fleet.",
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.exactOptional().openapi({
+      description: 'A unique identifier for the fleet that was updated with new locations.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>. ',
+    }),
+    LocationStates: LocationStateListSchema.exactOptional().openapi({
+      description:
+        "The remote locations that are being added to the fleet, and the life-cycle status of each location. For new locations, the status is set to <code>NEW</code>. During location creation, Amazon GameLift updates each location's status as instances are deployed there and prepared for game hosting. This list does not include the fleet home Region or any remote locations that were already added to the fleet.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateFleetLocationsOutput')
 
 const CreateFleetLocationsInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to add locations to. You can use either the fleet ID or ARN value.',
-        }),
-    ),
-    Locations: LocationConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of locations to deploy additional instances to and manage as part of the fleet. You can add any Amazon GameLift-supported Amazon Web Services Region as a remote location, in the form of an Amazon Web Services Region code such as <code>us-west-2</code>. ',
-        }),
-    ),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to add locations to. You can use either the fleet ID or ARN value.',
+    }),
+    Locations: LocationConfigurationListSchema.openapi({
+      description:
+        'A list of locations to deploy additional instances to and manage as part of the fleet. You can add any Amazon GameLift-supported Amazon Web Services Region as a remote location, in the form of an Amazon Web Services Region code such as <code>us-west-2</code>. ',
+    }),
   })
   .openapi({ required: ['FleetId', 'Locations'], title: 'CreateFleetLocationsInput' })
   .openapi('CreateFleetLocationsInput')
@@ -1690,17 +1447,13 @@ const WeightedCapacitySchema = z
 
 const InstanceDefinitionSchema = z
   .object({
-    InstanceType: GameServerGroupInstanceTypeSchema.and(
-      z.any().openapi({ description: 'An Amazon EC2 instance type designation.' }),
-    ),
-    WeightedCapacity: WeightedCapacitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Instance weighting that indicates how much this instance type contributes to the total capacity of a game server group. Instance weights are used by Amazon GameLift FleetIQ to calculate the instance type\'s cost per unit hour and better identify the most cost-effective options. For detailed information on weighting instance capacity, see <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-instance-weighting.html">Instance Weighting</a> in the <i>Amazon Elastic Compute Cloud Auto Scaling User Guide</i>. Default value is "1".',
-        }),
-    ).exactOptional(),
+    InstanceType: GameServerGroupInstanceTypeSchema.openapi({
+      description: 'An Amazon EC2 instance type designation.',
+    }),
+    WeightedCapacity: WeightedCapacitySchema.exactOptional().openapi({
+      description:
+        'Instance weighting that indicates how much this instance type contributes to the total capacity of a game server group. Instance weights are used by Amazon GameLift FleetIQ to calculate the instance type\'s cost per unit hour and better identify the most cost-effective options. For detailed information on weighting instance capacity, see <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-instance-weighting.html">Instance Weighting</a> in the <i>Amazon Elastic Compute Cloud Auto Scaling User Guide</i>. Default value is "1".',
+    }),
   })
   .openapi({
     required: ['InstanceType'],
@@ -1747,96 +1500,52 @@ const GameServerGroupActionsSchema = z
 
 const GameServerGroupSchema = z
   .object({
-    GameServerGroupName: GameServerGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A developer-defined identifier for the game server group. The name is unique for each Region in each Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    GameServerGroupArn: GameServerGroupArnSchema.and(
-      z.any().openapi({ description: 'A generated unique ID for the game server group.' }),
-    ).exactOptional(),
-    RoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) for an IAM role that allows Amazon GameLift to access your Amazon EC2 Auto Scaling groups.',
-        }),
-    ).exactOptional(),
-    InstanceDefinitions: InstanceDefinitionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The set of Amazon EC2 instance types that Amazon GameLift FleetIQ can use when balancing and automatically scaling instances in the corresponding Auto Scaling group. ',
-        }),
-    ).exactOptional(),
-    BalancingStrategy: BalancingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates how Amazon GameLift FleetIQ balances the use of Spot Instances and On-Demand Instances in the game server group. Method options include the following:</p> <ul> <li> <p> <code>SPOT_ONLY</code> - Only Spot Instances are used in the game server group. If Spot Instances are unavailable or not viable for game hosting, the game server group provides no hosting capacity until Spot Instances can again be used. Until then, no new instances are started, and the existing nonviable Spot Instances are terminated (after current gameplay ends) and are not replaced.</p> </li> <li> <p> <code>SPOT_PREFERRED</code> - (default value) Spot Instances are used whenever available in the game server group. If Spot Instances are unavailable, the game server group continues to provide hosting capacity by falling back to On-Demand Instances. Existing nonviable Spot Instances are terminated (after current gameplay ends) and are replaced with new On-Demand Instances.</p> </li> <li> <p> <code>ON_DEMAND_ONLY</code> - Only On-Demand Instances are used in the game server group. No Spot Instances are used, even when available, while this balancing strategy is in force.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    GameServerProtectionPolicy: GameServerProtectionPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether instances in the game server group are protected from early termination. Unprotected instances that have active game servers running might be terminated during a scale-down event, causing players to be dropped from the game. Protected instances cannot be terminated while there are active game servers running except in the event of a forced game server group deletion (see ). An exception to this is with Spot Instances, which can be terminated by Amazon Web Services regardless of protection status. ',
-        }),
-    ).exactOptional(),
-    AutoScalingGroupArn: AutoScalingGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A generated unique ID for the Amazon EC2 Auto Scaling group that is associated with this game server group.',
-        }),
-    ).exactOptional(),
-    Status: GameServerGroupStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current status of the game server group. Possible statuses include:</p> <ul> <li> <p> <code>NEW</code> - Amazon GameLift FleetIQ has validated the <code>CreateGameServerGroup()</code> request. </p> </li> <li> <p> <code>ACTIVATING</code> - Amazon GameLift FleetIQ is setting up a game server group, which includes creating an Auto Scaling group in your Amazon Web Services account. </p> </li> <li> <p> <code>ACTIVE</code> - The game server group has been successfully created. </p> </li> <li> <p> <code>DELETE_SCHEDULED</code> - A request to delete the game server group has been received. </p> </li> <li> <p> <code>DELETING</code> - Amazon GameLift FleetIQ has received a valid <code>DeleteGameServerGroup()</code> request and is processing it. Amazon GameLift FleetIQ must first complete and release hosts before it deletes the Auto Scaling group and the game server group. </p> </li> <li> <p> <code>DELETED</code> - The game server group has been successfully deleted. </p> </li> <li> <p> <code>ERROR</code> - The asynchronous processes of activating or deleting a game server group has failed, resulting in an error state.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    StatusReason: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional information about the current game server group status. This information might provide additional insight on groups that are in <code>ERROR</code> status.',
-        }),
-    ).exactOptional(),
-    SuspendedActions: GameServerGroupActionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of activities that are currently suspended for this game server group. If this property is empty, all activities are occurring.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    LastUpdatedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A timestamp that indicates when this game server group was last updated.',
-        }),
-    ).exactOptional(),
+    GameServerGroupName: GameServerGroupNameSchema.exactOptional().openapi({
+      description:
+        'A developer-defined identifier for the game server group. The name is unique for each Region in each Amazon Web Services account.',
+    }),
+    GameServerGroupArn: GameServerGroupArnSchema.exactOptional().openapi({
+      description: 'A generated unique ID for the game server group.',
+    }),
+    RoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) for an IAM role that allows Amazon GameLift to access your Amazon EC2 Auto Scaling groups.',
+    }),
+    InstanceDefinitions: InstanceDefinitionsSchema.exactOptional().openapi({
+      description:
+        'The set of Amazon EC2 instance types that Amazon GameLift FleetIQ can use when balancing and automatically scaling instances in the corresponding Auto Scaling group. ',
+    }),
+    BalancingStrategy: BalancingStrategySchema.exactOptional().openapi({
+      description:
+        '<p>Indicates how Amazon GameLift FleetIQ balances the use of Spot Instances and On-Demand Instances in the game server group. Method options include the following:</p> <ul> <li> <p> <code>SPOT_ONLY</code> - Only Spot Instances are used in the game server group. If Spot Instances are unavailable or not viable for game hosting, the game server group provides no hosting capacity until Spot Instances can again be used. Until then, no new instances are started, and the existing nonviable Spot Instances are terminated (after current gameplay ends) and are not replaced.</p> </li> <li> <p> <code>SPOT_PREFERRED</code> - (default value) Spot Instances are used whenever available in the game server group. If Spot Instances are unavailable, the game server group continues to provide hosting capacity by falling back to On-Demand Instances. Existing nonviable Spot Instances are terminated (after current gameplay ends) and are replaced with new On-Demand Instances.</p> </li> <li> <p> <code>ON_DEMAND_ONLY</code> - Only On-Demand Instances are used in the game server group. No Spot Instances are used, even when available, while this balancing strategy is in force.</p> </li> </ul>',
+    }),
+    GameServerProtectionPolicy: GameServerProtectionPolicySchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether instances in the game server group are protected from early termination. Unprotected instances that have active game servers running might be terminated during a scale-down event, causing players to be dropped from the game. Protected instances cannot be terminated while there are active game servers running except in the event of a forced game server group deletion (see ). An exception to this is with Spot Instances, which can be terminated by Amazon Web Services regardless of protection status. ',
+    }),
+    AutoScalingGroupArn: AutoScalingGroupArnSchema.exactOptional().openapi({
+      description:
+        'A generated unique ID for the Amazon EC2 Auto Scaling group that is associated with this game server group.',
+    }),
+    Status: GameServerGroupStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The current status of the game server group. Possible statuses include:</p> <ul> <li> <p> <code>NEW</code> - Amazon GameLift FleetIQ has validated the <code>CreateGameServerGroup()</code> request. </p> </li> <li> <p> <code>ACTIVATING</code> - Amazon GameLift FleetIQ is setting up a game server group, which includes creating an Auto Scaling group in your Amazon Web Services account. </p> </li> <li> <p> <code>ACTIVE</code> - The game server group has been successfully created. </p> </li> <li> <p> <code>DELETE_SCHEDULED</code> - A request to delete the game server group has been received. </p> </li> <li> <p> <code>DELETING</code> - Amazon GameLift FleetIQ has received a valid <code>DeleteGameServerGroup()</code> request and is processing it. Amazon GameLift FleetIQ must first complete and release hosts before it deletes the Auto Scaling group and the game server group. </p> </li> <li> <p> <code>DELETED</code> - The game server group has been successfully deleted. </p> </li> <li> <p> <code>ERROR</code> - The asynchronous processes of activating or deleting a game server group has failed, resulting in an error state.</p> </li> </ul>',
+    }),
+    StatusReason: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'Additional information about the current game server group status. This information might provide additional insight on groups that are in <code>ERROR</code> status.',
+    }),
+    SuspendedActions: GameServerGroupActionsSchema.exactOptional().openapi({
+      description:
+        'A list of activities that are currently suspended for this game server group. If this property is empty, all activities are occurring.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    LastUpdatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'A timestamp that indicates when this game server group was last updated.',
+    }),
   })
   .openapi({
     description:
@@ -1847,14 +1556,10 @@ const GameServerGroupSchema = z
 
 const CreateGameServerGroupOutputSchema = z
   .object({
-    GameServerGroup: GameServerGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The newly created game server group object, including the new ARN value for the Amazon GameLift FleetIQ game server group and the object's status. The Amazon EC2 Auto Scaling group ARN is initially null, since the group has not yet been created. This value is added once the game server group status reaches <code>ACTIVE</code>. ",
-        }),
-    ).exactOptional(),
+    GameServerGroup: GameServerGroupSchema.exactOptional().openapi({
+      description:
+        "The newly created game server group object, including the new ARN value for the Amazon GameLift FleetIQ game server group and the object's status. The Amazon EC2 Auto Scaling group ARN is initially null, since the group has not yet been created. This value is added once the game server group status reaches <code>ACTIVE</code>. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateGameServerGroupOutput')
@@ -1886,28 +1591,16 @@ const LaunchTemplateVersionSchema = z
 
 const LaunchTemplateSpecificationSchema = z
   .object({
-    LaunchTemplateId: LaunchTemplateIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for an existing Amazon EC2 launch template.',
-        }),
-    ).exactOptional(),
-    LaunchTemplateName: LaunchTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A readable identifier for an existing Amazon EC2 launch template. ',
-        }),
-    ).exactOptional(),
-    Version: LaunchTemplateVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the Amazon EC2 launch template to use. If no version is specified, the default version will be used. With Amazon EC2, you can specify a default version for a launch template. If none is set, the default is the first version created.',
-        }),
-    ).exactOptional(),
+    LaunchTemplateId: LaunchTemplateIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for an existing Amazon EC2 launch template.',
+    }),
+    LaunchTemplateName: LaunchTemplateNameSchema.exactOptional().openapi({
+      description: 'A readable identifier for an existing Amazon EC2 launch template. ',
+    }),
+    Version: LaunchTemplateVersionSchema.exactOptional().openapi({
+      description:
+        'The version of the Amazon EC2 launch template to use. If no version is specified, the default version will be used. With Amazon EC2, you can specify a default version for a launch template. If none is set, the default is the first version created.',
+    }),
   })
   .openapi({
     description:
@@ -1920,14 +1613,9 @@ const NonNegativeDoubleSchema = z.float64().min(0).openapi('NonNegativeDouble')
 
 const TargetTrackingConfigurationSchema = z
   .object({
-    TargetValue: NonNegativeDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Desired value to use with a game server group target-based scaling policy. ',
-        }),
-    ),
+    TargetValue: NonNegativeDoubleSchema.openapi({
+      description: 'Desired value to use with a game server group target-based scaling policy. ',
+    }),
   })
   .openapi({
     required: ['TargetValue'],
@@ -1938,22 +1626,14 @@ const TargetTrackingConfigurationSchema = z
 
 const GameServerGroupAutoScalingPolicySchema = z
   .object({
-    EstimatedInstanceWarmup: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Length of time, in seconds, it takes for a new instance to start new game server processes and register with Amazon GameLift FleetIQ. Specifying a warm-up time can be useful, particularly with game servers that take a long time to start up, because it avoids prematurely starting new instances. ',
-        }),
-    ).exactOptional(),
-    TargetTrackingConfiguration: TargetTrackingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Settings for a target-based scaling policy applied to Auto Scaling group. These settings are used to create a target-based policy that tracks the Amazon GameLift FleetIQ metric <code>"PercentUtilizedGameServers"</code> and specifies a target value for the metric. As player usage changes, the policy triggers to adjust the game server group capacity so that the metric returns to the target value. ',
-        }),
-    ),
+    EstimatedInstanceWarmup: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'Length of time, in seconds, it takes for a new instance to start new game server processes and register with Amazon GameLift FleetIQ. Specifying a warm-up time can be useful, particularly with game servers that take a long time to start up, because it avoids prematurely starting new instances. ',
+    }),
+    TargetTrackingConfiguration: TargetTrackingConfigurationSchema.openapi({
+      description:
+        'Settings for a target-based scaling policy applied to Auto Scaling group. These settings are used to create a target-based policy that tracks the Amazon GameLift FleetIQ metric <code>"PercentUtilizedGameServers"</code> and specifies a target value for the metric. As player usage changes, the policy triggers to adjust the game server group capacity so that the metric returns to the target value. ',
+    }),
   })
   .openapi({
     required: ['TargetTrackingConfiguration'],
@@ -1973,94 +1653,50 @@ const VpcSubnetsSchema = z.array(VpcSubnetSchema).min(1).max(20).openapi('VpcSub
 
 const CreateGameServerGroupInputSchema = z
   .object({
-    GameServerGroupName: GameServerGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier for the new game server group. This value is used to generate unique ARN identifiers for the Amazon EC2 Auto Scaling group and the Amazon GameLift FleetIQ game server group. The name must be unique per Region per Amazon Web Services account.',
-        }),
-    ),
-    RoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) for an IAM role that allows Amazon GameLift to access your Amazon EC2 Auto Scaling groups.',
-        }),
-    ),
-    MinSize: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum number of instances allowed in the Amazon EC2 Auto Scaling group. During automatic scaling events, Amazon GameLift FleetIQ and Amazon EC2 do not scale down the group below this minimum. In production, this value should be set to at least 1. After the Auto Scaling group is created, update this value directly in the Auto Scaling group using the Amazon Web Services console or APIs.',
-        }),
-    ),
-    MaxSize: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of instances allowed in the Amazon EC2 Auto Scaling group. During automatic scaling events, Amazon GameLift FleetIQ and EC2 do not scale up the group above this maximum. After the Auto Scaling group is created, update this value directly in the Auto Scaling group using the Amazon Web Services console or APIs.',
-        }),
-    ),
-    LaunchTemplate: LaunchTemplateSpecificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon EC2 launch template that contains configuration settings and game server code to be deployed to all instances in the game server group. You can specify the template using either the template name or ID. For help with creating a launch template, see <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-launch-template.html">Creating a Launch Template for an Auto Scaling Group</a> in the <i>Amazon Elastic Compute Cloud Auto Scaling User Guide</i>. After the Auto Scaling group is created, update this value directly in the Auto Scaling group using the Amazon Web Services console or APIs.</p> <note> <p>If you specify network interfaces in your launch template, you must explicitly set the property <code>AssociatePublicIpAddress</code> to "true". If no network interface is specified in the launch template, Amazon GameLift FleetIQ uses your account\'s default VPC.</p> </note>',
-        }),
-    ),
-    InstanceDefinitions: InstanceDefinitionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon EC2 instance types and sizes to use in the Auto Scaling group. The instance definitions must specify at least two different instance types that are supported by Amazon GameLift FleetIQ. For more information on instance types, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html">EC2 Instance Types</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. You can optionally specify capacity weighting for each instance type. If no weight value is specified for an instance type, it is set to the default value "1". For more information about capacity weighting, see <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-instance-weighting.html"> Instance Weighting for Amazon EC2 Auto Scaling</a> in the Amazon EC2 Auto Scaling User Guide.',
-        }),
-    ),
-    AutoScalingPolicy: GameServerGroupAutoScalingPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration settings to define a scaling policy for the Auto Scaling group that is optimized for game hosting. The scaling policy uses the metric <code>"PercentUtilizedGameServers"</code> to maintain a buffer of idle game servers that can immediately accommodate new games and players. After the Auto Scaling group is created, update this value directly in the Auto Scaling group using the Amazon Web Services console or APIs.',
-        }),
-    ).exactOptional(),
-    BalancingStrategy: BalancingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates how Amazon GameLift FleetIQ balances the use of Spot Instances and On-Demand Instances in the game server group. Method options include the following:</p> <ul> <li> <p> <code>SPOT_ONLY</code> - Only Spot Instances are used in the game server group. If Spot Instances are unavailable or not viable for game hosting, the game server group provides no hosting capacity until Spot Instances can again be used. Until then, no new instances are started, and the existing nonviable Spot Instances are terminated (after current gameplay ends) and are not replaced.</p> </li> <li> <p> <code>SPOT_PREFERRED</code> - (default value) Spot Instances are used whenever available in the game server group. If Spot Instances are unavailable, the game server group continues to provide hosting capacity by falling back to On-Demand Instances. Existing nonviable Spot Instances are terminated (after current gameplay ends) and are replaced with new On-Demand Instances.</p> </li> <li> <p> <code>ON_DEMAND_ONLY</code> - Only On-Demand Instances are used in the game server group. No Spot Instances are used, even when available, while this balancing strategy is in force.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    GameServerProtectionPolicy: GameServerProtectionPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether instances in the game server group are protected from early termination. Unprotected instances that have active game servers running might be terminated during a scale-down event, causing players to be dropped from the game. Protected instances cannot be terminated while there are active game servers running except in the event of a forced game server group deletion (see ). An exception to this is with Spot Instances, which can be terminated by Amazon Web Services regardless of protection status. This property is set to <code>NO_PROTECTION</code> by default.',
-        }),
-    ).exactOptional(),
-    VpcSubnets: VpcSubnetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of virtual private cloud (VPC) subnets to use with instances in the game server group. By default, all Amazon GameLift FleetIQ-supported Availability Zones are used. You can use this parameter to specify VPCs that you've set up. This property cannot be updated after the game server group is created, and the corresponding Auto Scaling group will always use the property value that is set with this request, even if the Auto Scaling group is updated directly.",
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of labels to assign to the new game server group resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources is useful for resource management, access management, and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>.',
-        }),
-    ).exactOptional(),
+    GameServerGroupName: GameServerGroupNameSchema.openapi({
+      description:
+        'An identifier for the new game server group. This value is used to generate unique ARN identifiers for the Amazon EC2 Auto Scaling group and the Amazon GameLift FleetIQ game server group. The name must be unique per Region per Amazon Web Services account.',
+    }),
+    RoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) for an IAM role that allows Amazon GameLift to access your Amazon EC2 Auto Scaling groups.',
+    }),
+    MinSize: WholeNumberSchema.openapi({
+      description:
+        'The minimum number of instances allowed in the Amazon EC2 Auto Scaling group. During automatic scaling events, Amazon GameLift FleetIQ and Amazon EC2 do not scale down the group below this minimum. In production, this value should be set to at least 1. After the Auto Scaling group is created, update this value directly in the Auto Scaling group using the Amazon Web Services console or APIs.',
+    }),
+    MaxSize: PositiveIntegerSchema.openapi({
+      description:
+        'The maximum number of instances allowed in the Amazon EC2 Auto Scaling group. During automatic scaling events, Amazon GameLift FleetIQ and EC2 do not scale up the group above this maximum. After the Auto Scaling group is created, update this value directly in the Auto Scaling group using the Amazon Web Services console or APIs.',
+    }),
+    LaunchTemplate: LaunchTemplateSpecificationSchema.openapi({
+      description:
+        '<p>The Amazon EC2 launch template that contains configuration settings and game server code to be deployed to all instances in the game server group. You can specify the template using either the template name or ID. For help with creating a launch template, see <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-launch-template.html">Creating a Launch Template for an Auto Scaling Group</a> in the <i>Amazon Elastic Compute Cloud Auto Scaling User Guide</i>. After the Auto Scaling group is created, update this value directly in the Auto Scaling group using the Amazon Web Services console or APIs.</p> <note> <p>If you specify network interfaces in your launch template, you must explicitly set the property <code>AssociatePublicIpAddress</code> to "true". If no network interface is specified in the launch template, Amazon GameLift FleetIQ uses your account\'s default VPC.</p> </note>',
+    }),
+    InstanceDefinitions: InstanceDefinitionsSchema.openapi({
+      description:
+        'The Amazon EC2 instance types and sizes to use in the Auto Scaling group. The instance definitions must specify at least two different instance types that are supported by Amazon GameLift FleetIQ. For more information on instance types, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html">EC2 Instance Types</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. You can optionally specify capacity weighting for each instance type. If no weight value is specified for an instance type, it is set to the default value "1". For more information about capacity weighting, see <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-instance-weighting.html"> Instance Weighting for Amazon EC2 Auto Scaling</a> in the Amazon EC2 Auto Scaling User Guide.',
+    }),
+    AutoScalingPolicy: GameServerGroupAutoScalingPolicySchema.exactOptional().openapi({
+      description:
+        'Configuration settings to define a scaling policy for the Auto Scaling group that is optimized for game hosting. The scaling policy uses the metric <code>"PercentUtilizedGameServers"</code> to maintain a buffer of idle game servers that can immediately accommodate new games and players. After the Auto Scaling group is created, update this value directly in the Auto Scaling group using the Amazon Web Services console or APIs.',
+    }),
+    BalancingStrategy: BalancingStrategySchema.exactOptional().openapi({
+      description:
+        '<p>Indicates how Amazon GameLift FleetIQ balances the use of Spot Instances and On-Demand Instances in the game server group. Method options include the following:</p> <ul> <li> <p> <code>SPOT_ONLY</code> - Only Spot Instances are used in the game server group. If Spot Instances are unavailable or not viable for game hosting, the game server group provides no hosting capacity until Spot Instances can again be used. Until then, no new instances are started, and the existing nonviable Spot Instances are terminated (after current gameplay ends) and are not replaced.</p> </li> <li> <p> <code>SPOT_PREFERRED</code> - (default value) Spot Instances are used whenever available in the game server group. If Spot Instances are unavailable, the game server group continues to provide hosting capacity by falling back to On-Demand Instances. Existing nonviable Spot Instances are terminated (after current gameplay ends) and are replaced with new On-Demand Instances.</p> </li> <li> <p> <code>ON_DEMAND_ONLY</code> - Only On-Demand Instances are used in the game server group. No Spot Instances are used, even when available, while this balancing strategy is in force.</p> </li> </ul>',
+    }),
+    GameServerProtectionPolicy: GameServerProtectionPolicySchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether instances in the game server group are protected from early termination. Unprotected instances that have active game servers running might be terminated during a scale-down event, causing players to be dropped from the game. Protected instances cannot be terminated while there are active game servers running except in the event of a forced game server group deletion (see ). An exception to this is with Spot Instances, which can be terminated by Amazon Web Services regardless of protection status. This property is set to <code>NO_PROTECTION</code> by default.',
+    }),
+    VpcSubnets: VpcSubnetsSchema.exactOptional().openapi({
+      description:
+        "A list of virtual private cloud (VPC) subnets to use with instances in the game server group. By default, all Amazon GameLift FleetIQ-supported Availability Zones are used. You can use this parameter to specify VPCs that you've set up. This property cannot be updated after the game server group is created, and the corresponding Auto Scaling group will always use the property value that is set with this request, even if the Auto Scaling group is updated directly.",
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of labels to assign to the new game server group resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources is useful for resource management, access management, and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>.',
+    }),
   })
   .openapi({
     required: [
@@ -2087,12 +1723,8 @@ const GamePropertyValueSchema = z.string().max(96).openapi('GamePropertyValue')
 
 const GamePropertySchema = z
   .object({
-    Key: GamePropertyKeySchema.and(
-      z.any().openapi({ description: 'The game property identifier.' }),
-    ),
-    Value: GamePropertyValueSchema.and(
-      z.any().openapi({ description: 'The game property value.' }),
-    ),
+    Key: GamePropertyKeySchema.openapi({ description: 'The game property identifier.' }),
+    Value: GamePropertyValueSchema.openapi({ description: 'The game property value.' }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -2102,15 +1734,6 @@ const GamePropertySchema = z
   .openapi('GameProperty')
 
 const GamePropertyListSchema = z.array(GamePropertySchema).max(16).openapi('GamePropertyList')
-
-const IpAddressSchema = z
-  .string()
-  .regex(/^[0-9A-Fa-f\:\.]+/)
-  .min(1)
-  .max(128)
-  .openapi('IpAddress')
-
-const DnsNameSchema = z.string().openapi('DnsName')
 
 const PlayerSessionCreationPolicySchema = z
   .enum(['ACCEPT_ALL', 'DENY_ALL'])
@@ -2122,151 +1745,79 @@ const MatchmakerDataSchema = z.string().min(1).max(390000).openapi('MatchmakerDa
 
 const GameSessionSchema = z
   .object({
-    GameSessionId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the game session. A game session ARN has the following format: <code>arn:aws:gamelift:&lt;region&gt;::gamesession/&lt;fleet ID&gt;/&lt;custom ID string or idempotency token&gt;</code>.',
-        }),
-    ).exactOptional(),
-    Name: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with a game session. Session names do not need to be unique.',
-        }),
-    ).exactOptional(),
-    FleetId: FleetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the fleet that the game session is running on.',
-        }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) associated with the GameLift fleet that this game session is running on. ',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    TerminationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp indicating when this data object was terminated. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    CurrentPlayerSessionCount: WholeNumberSchema.and(
-      z.any().openapi({ description: 'Number of players currently in the game session.' }),
-    ).exactOptional(),
-    MaximumPlayerSessionCount: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of players that can be connected simultaneously to the game session.',
-        }),
-    ).exactOptional(),
-    Status: GameSessionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Current status of the game session. A game session must have an <code>ACTIVE</code> status to have player sessions.',
-        }),
-    ).exactOptional(),
-    StatusReason: GameSessionStatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides additional information about game session status. <code>INTERRUPTED</code> indicates that the game session was hosted on a spot instance that was reclaimed, causing the active game session to be terminated.',
-        }),
-    ).exactOptional(),
-    GameProperties: GamePropertyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom properties for a game session, formatted as key:value pairs. These properties are passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>).',
-        }),
-    ).exactOptional(),
-    IpAddress: IpAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address of the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number.',
-        }),
-    ).exactOptional(),
-    DnsName: DnsNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The DNS identifier assigned to the instance that is running the game session. Values have the following format:</p> <ul> <li> <p>TLS-enabled fleets: <code>&lt;unique identifier&gt;.&lt;region identifier&gt;.amazongamelift.com</code>.</p> </li> <li> <p>Non-TLS-enabled fleets: <code>ec2-&lt;unique identifier&gt;.compute.amazonaws.com</code>. (See <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing.html#concepts-public-addresses">Amazon EC2 Instance IP Addressing</a>.)</p> </li> </ul> <p>When connecting to a game session that is running on a TLS-enabled fleet, you must use the DNS name, not the IP address.</p>',
-        }),
-    ).exactOptional(),
-    Port: PortNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The port number for the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number.',
-        }),
-    ).exactOptional(),
-    PlayerSessionCreationPolicy: PlayerSessionCreationPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether or not the game session is accepting new players.',
-        }),
-    ).exactOptional(),
-    CreatorId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a player. This ID is used to enforce a resource protection policy (if one exists), that limits the number of game sessions a player can create.',
-        }),
-    ).exactOptional(),
-    GameSessionData: LargeGameSessionDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom game session properties, formatted as a single string value. This data is passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>).',
-        }),
-    ).exactOptional(),
-    MatchmakerData: MatchmakerDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the matchmaking process that was used to create the game session. It is in JSON syntax, formatted as a string. In addition the matchmaking configuration used, it contains data on all players assigned to the match, including player attributes and team assignments. For more details on matchmaker data, see <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-server.html#match-server-data">Match Data</a>. Matchmaker data is useful when requesting match backfills, and is updated whenever new players are added during a successful backfill (see <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_StartMatchBackfill.html">StartMatchBackfill</a>). ',
-        }),
-    ).exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The fleet location where the game session is running. This value might specify the fleet's home Region or a remote location. Location is expressed as an Amazon Web Services Region code such as <code>us-west-2</code>. ",
-        }),
-    ).exactOptional(),
+    GameSessionId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the game session. A game session ARN has the following format: <code>arn:aws:gamelift:&lt;region&gt;::gamesession/&lt;fleet ID&gt;/&lt;custom ID string or idempotency token&gt;</code>.',
+    }),
+    Name: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A descriptive label that is associated with a game session. Session names do not need to be unique.',
+    }),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the fleet that the game session is running on.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) associated with the GameLift fleet that this game session is running on. ',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    TerminationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp indicating when this data object was terminated. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    CurrentPlayerSessionCount: WholeNumberSchema.exactOptional().openapi({
+      description: 'Number of players currently in the game session.',
+    }),
+    MaximumPlayerSessionCount: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The maximum number of players that can be connected simultaneously to the game session.',
+    }),
+    Status: GameSessionStatusSchema.exactOptional().openapi({
+      description:
+        'Current status of the game session. A game session must have an <code>ACTIVE</code> status to have player sessions.',
+    }),
+    StatusReason: GameSessionStatusReasonSchema.exactOptional().openapi({
+      description:
+        'Provides additional information about game session status. <code>INTERRUPTED</code> indicates that the game session was hosted on a spot instance that was reclaimed, causing the active game session to be terminated.',
+    }),
+    GameProperties: GamePropertyListSchema.exactOptional().openapi({
+      description:
+        'A set of custom properties for a game session, formatted as key:value pairs. These properties are passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>).',
+    }),
+    IpAddress: IpAddressSchema.exactOptional().openapi({
+      description:
+        'The IP address of the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number.',
+    }),
+    DnsName: DnsNameSchema.exactOptional().openapi({
+      description:
+        '<p>The DNS identifier assigned to the instance that is running the game session. Values have the following format:</p> <ul> <li> <p>TLS-enabled fleets: <code>&lt;unique identifier&gt;.&lt;region identifier&gt;.amazongamelift.com</code>.</p> </li> <li> <p>Non-TLS-enabled fleets: <code>ec2-&lt;unique identifier&gt;.compute.amazonaws.com</code>. (See <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing.html#concepts-public-addresses">Amazon EC2 Instance IP Addressing</a>.)</p> </li> </ul> <p>When connecting to a game session that is running on a TLS-enabled fleet, you must use the DNS name, not the IP address.</p>',
+    }),
+    Port: PortNumberSchema.exactOptional().openapi({
+      description:
+        'The port number for the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number.',
+    }),
+    PlayerSessionCreationPolicy: PlayerSessionCreationPolicySchema.exactOptional().openapi({
+      description: 'Indicates whether or not the game session is accepting new players.',
+    }),
+    CreatorId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for a player. This ID is used to enforce a resource protection policy (if one exists), that limits the number of game sessions a player can create.',
+    }),
+    GameSessionData: LargeGameSessionDataSchema.exactOptional().openapi({
+      description:
+        'A set of custom game session properties, formatted as a single string value. This data is passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>).',
+    }),
+    MatchmakerData: MatchmakerDataSchema.exactOptional().openapi({
+      description:
+        'Information about the matchmaking process that was used to create the game session. It is in JSON syntax, formatted as a string. In addition the matchmaking configuration used, it contains data on all players assigned to the match, including player attributes and team assignments. For more details on matchmaker data, see <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-server.html#match-server-data">Match Data</a>. Matchmaker data is useful when requesting match backfills, and is updated whenever new players are added during a successful backfill (see <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_StartMatchBackfill.html">StartMatchBackfill</a>). ',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        "The fleet location where the game session is running. This value might specify the fleet's home Region or a remote location. Location is expressed as an Amazon Web Services Region code such as <code>us-west-2</code>. ",
+    }),
   })
   .openapi({
     description:
@@ -2277,11 +1828,9 @@ const GameSessionSchema = z
 
 const CreateGameSessionOutputSchema = z
   .object({
-    GameSession: GameSessionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Object that describes the newly created game session record.' }),
-    ).exactOptional(),
+    GameSession: GameSessionSchema.exactOptional().openapi({
+      description: 'Object that describes the newly created game session record.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateGameSessionOutput')
@@ -2300,86 +1849,46 @@ const IdStringModelSchema = z
 
 const CreateGameSessionInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to create a game session in. You can use either the fleet ID or ARN value. Each request must reference either a fleet ID or alias ID, but not both.',
-        }),
-    ).exactOptional(),
-    AliasId: AliasIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the alias associated with the fleet to create a game session in. You can use either the alias ID or ARN value. Each request must reference either a fleet ID or alias ID, but not both.',
-        }),
-    ).exactOptional(),
-    MaximumPlayerSessionCount: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of players that can be connected simultaneously to the game session.',
-        }),
-    ),
-    Name: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with a game session. Session names do not need to be unique.',
-        }),
-    ).exactOptional(),
-    GameProperties: GamePropertyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom properties for a game session, formatted as key:value pairs. These properties are passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>).',
-        }),
-    ).exactOptional(),
-    CreatorId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A unique identifier for a player or entity creating the game session. </p> <p>If you add a resource creation limit policy to a fleet, the <code>CreateGameSession</code> operation requires a <code>CreatorId</code>. Amazon GameLift limits the number of game session creation requests with the same <code>CreatorId</code> in a specified time period.</p> <p>If you your fleet doesn't have a resource creation limit policy and you provide a <code>CreatorId</code> in your <code>CreateGameSession</code> requests, Amazon GameLift limits requests to one request per <code>CreatorId</code> per second.</p> <p>To not limit <code>CreateGameSession</code> requests with the same <code>CreatorId</code>, don't provide a <code>CreatorId</code> in your <code>CreateGameSession</code> request.</p>",
-        }),
-    ).exactOptional(),
-    GameSessionId: IdStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> <i>This parameter is deprecated. Use <code>IdempotencyToken</code> instead.</i> </p> <p>Custom string that uniquely identifies a request for a new game session. Maximum token length is 48 characters. If provided, this string is included in the new game session's ID.</p>",
-        }),
-    ).exactOptional(),
-    IdempotencyToken: IdStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Custom string that uniquely identifies the new game session request. This is useful for ensuring that game session requests with the same idempotency token are processed only once. Subsequent requests with the same string return the original <code>GameSession</code> object, with an updated status. Maximum token length is 48 characters. If provided, this string is included in the new game session's ID. A game session ARN has the following format: <code>arn:aws:gamelift:&lt;region&gt;::gamesession/&lt;fleet ID&gt;/&lt;custom ID string or idempotency token&gt;</code>. Idempotency tokens remain in use for 30 days after a game session has ended; game session objects are retained for this time period and then deleted.",
-        }),
-    ).exactOptional(),
-    GameSessionData: LargeGameSessionDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom game session properties, formatted as a single string value. This data is passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>).',
-        }),
-    ).exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A fleet's remote location to place the new game session in. If this parameter is not set, the new game session is placed in the fleet's home Region. Specify a remote location with an Amazon Web Services Region code such as <code>us-west-2</code>. ",
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the fleet to create a game session in. You can use either the fleet ID or ARN value. Each request must reference either a fleet ID or alias ID, but not both.',
+    }),
+    AliasId: AliasIdOrArnSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the alias associated with the fleet to create a game session in. You can use either the alias ID or ARN value. Each request must reference either a fleet ID or alias ID, but not both.',
+    }),
+    MaximumPlayerSessionCount: WholeNumberSchema.openapi({
+      description:
+        'The maximum number of players that can be connected simultaneously to the game session.',
+    }),
+    Name: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A descriptive label that is associated with a game session. Session names do not need to be unique.',
+    }),
+    GameProperties: GamePropertyListSchema.exactOptional().openapi({
+      description:
+        'A set of custom properties for a game session, formatted as key:value pairs. These properties are passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>).',
+    }),
+    CreatorId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        "<p>A unique identifier for a player or entity creating the game session. </p> <p>If you add a resource creation limit policy to a fleet, the <code>CreateGameSession</code> operation requires a <code>CreatorId</code>. Amazon GameLift limits the number of game session creation requests with the same <code>CreatorId</code> in a specified time period.</p> <p>If you your fleet doesn't have a resource creation limit policy and you provide a <code>CreatorId</code> in your <code>CreateGameSession</code> requests, Amazon GameLift limits requests to one request per <code>CreatorId</code> per second.</p> <p>To not limit <code>CreateGameSession</code> requests with the same <code>CreatorId</code>, don't provide a <code>CreatorId</code> in your <code>CreateGameSession</code> request.</p>",
+    }),
+    GameSessionId: IdStringModelSchema.exactOptional().openapi({
+      description:
+        "<p> <i>This parameter is deprecated. Use <code>IdempotencyToken</code> instead.</i> </p> <p>Custom string that uniquely identifies a request for a new game session. Maximum token length is 48 characters. If provided, this string is included in the new game session's ID.</p>",
+    }),
+    IdempotencyToken: IdStringModelSchema.exactOptional().openapi({
+      description:
+        "Custom string that uniquely identifies the new game session request. This is useful for ensuring that game session requests with the same idempotency token are processed only once. Subsequent requests with the same string return the original <code>GameSession</code> object, with an updated status. Maximum token length is 48 characters. If provided, this string is included in the new game session's ID. A game session ARN has the following format: <code>arn:aws:gamelift:&lt;region&gt;::gamesession/&lt;fleet ID&gt;/&lt;custom ID string or idempotency token&gt;</code>. Idempotency tokens remain in use for 30 days after a game session has ended; game session objects are retained for this time period and then deleted.",
+    }),
+    GameSessionData: LargeGameSessionDataSchema.exactOptional().openapi({
+      description:
+        'A set of custom game session properties, formatted as a single string value. This data is passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>).',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        "A fleet's remote location to place the new game session in. If this parameter is not set, the new game session is placed in the fleet's home Region. Specify a remote location with an Amazon Web Services Region code such as <code>us-west-2</code>. ",
+    }),
   })
   .openapi({ required: ['MaximumPlayerSessionCount'], title: 'CreateGameSessionInput' })
   .openapi('CreateGameSessionInput')
@@ -2408,22 +1917,14 @@ const GameSessionQueueArnSchema = z
 
 const PlayerLatencyPolicySchema = z
   .object({
-    MaximumIndividualPlayerLatencyMilliseconds: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum latency value that is allowed for any player, in milliseconds. All policies must have a value set for this property.',
-        }),
-    ).exactOptional(),
-    PolicyDurationSeconds: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The length of time, in seconds, that the policy is enforced while placing a new game session. A null value for this property means that the policy is enforced until the queue times out.',
-        }),
-    ).exactOptional(),
+    MaximumIndividualPlayerLatencyMilliseconds: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The maximum latency value that is allowed for any player, in milliseconds. All policies must have a value set for this property.',
+    }),
+    PolicyDurationSeconds: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The length of time, in seconds, that the policy is enforced while placing a new game session. A null value for this property means that the policy is enforced until the queue times out.',
+    }),
   })
   .openapi({
     description:
@@ -2436,23 +1937,12 @@ const PlayerLatencyPolicyListSchema = z
   .array(PlayerLatencyPolicySchema)
   .openapi('PlayerLatencyPolicyList')
 
-const ArnStringModelSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9:\/-]+/)
-  .min(1)
-  .max(256)
-  .openapi('ArnStringModel')
-
 const GameSessionQueueDestinationSchema = z
   .object({
-    DestinationArn: ArnStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that is assigned to fleet or fleet alias. ARNs, which include a fleet ID or alias ID and a Region name, provide a unique identifier across all Regions.',
-        }),
-    ).exactOptional(),
+    DestinationArn: ArnStringModelSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that is assigned to fleet or fleet alias. ARNs, which include a fleet ID or alias ID and a Region name, provide a unique identifier across all Regions.',
+    }),
   })
   .openapi({
     description:
@@ -2473,14 +1963,10 @@ const LocationListSchema = z
 
 const FilterConfigurationSchema = z
   .object({
-    AllowedLocations: LocationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of locations to allow game session placement in, in the form of Amazon Web Services Region codes such as <code>us-west-2</code>. ',
-        }),
-    ).exactOptional(),
+    AllowedLocations: LocationListSchema.exactOptional().openapi({
+      description:
+        ' A list of locations to allow game session placement in, in the form of Amazon Web Services Region codes such as <code>us-west-2</code>. ',
+    }),
   })
   .openapi({
     description:
@@ -2497,22 +1983,14 @@ const PriorityTypeListSchema = z.array(PriorityTypeSchema).min(1).max(4).openapi
 
 const PriorityConfigurationSchema = z
   .object({
-    PriorityOrder: PriorityTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The recommended sequence to use when prioritizing where to place new game sessions. Each type can only be listed once.</p> <ul> <li> <p> <code>LATENCY</code> -- FleetIQ prioritizes locations where the average player latency (provided in each game session request) is lowest. </p> </li> <li> <p> <code>COST</code> -- FleetIQ prioritizes destinations with the lowest current hosting costs. Cost is evaluated based on the location, instance type, and fleet type (Spot or On-Demand) for each destination in the queue.</p> </li> <li> <p> <code>DESTINATION</code> -- FleetIQ prioritizes based on the order that destinations are listed in the queue configuration.</p> </li> <li> <p> <code>LOCATION</code> -- FleetIQ prioritizes based on the provided order of locations, as defined in <code>LocationOrder</code>. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    LocationOrder: LocationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The prioritization order to use for fleet locations, when the <code>PriorityOrder</code> property includes <code>LOCATION</code>. Locations are identified by Amazon Web Services Region codes such as <code>us-west-2</code>. Each location can only be listed once. ',
-        }),
-    ).exactOptional(),
+    PriorityOrder: PriorityTypeListSchema.exactOptional().openapi({
+      description:
+        '<p>The recommended sequence to use when prioritizing where to place new game sessions. Each type can only be listed once.</p> <ul> <li> <p> <code>LATENCY</code> -- FleetIQ prioritizes locations where the average player latency (provided in each game session request) is lowest. </p> </li> <li> <p> <code>COST</code> -- FleetIQ prioritizes destinations with the lowest current hosting costs. Cost is evaluated based on the location, instance type, and fleet type (Spot or On-Demand) for each destination in the queue.</p> </li> <li> <p> <code>DESTINATION</code> -- FleetIQ prioritizes based on the order that destinations are listed in the queue configuration.</p> </li> <li> <p> <code>LOCATION</code> -- FleetIQ prioritizes based on the provided order of locations, as defined in <code>LocationOrder</code>. </p> </li> </ul>',
+    }),
+    LocationOrder: LocationListSchema.exactOptional().openapi({
+      description:
+        'The prioritization order to use for fleet locations, when the <code>PriorityOrder</code> property includes <code>LOCATION</code>. Locations are identified by Amazon Web Services Region codes such as <code>us-west-2</code>. Each location can only be listed once. ',
+    }),
   })
   .openapi({
     description:
@@ -2537,78 +2015,42 @@ const QueueSnsArnStringModelSchema = z
 
 const GameSessionQueueSchema = z
   .object({
-    Name: GameSessionQueueNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with game session queue. Queue names must be unique within each Region.',
-        }),
-    ).exactOptional(),
-    GameSessionQueueArn: GameSessionQueueArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift game session queue resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::gamesessionqueue/&lt;queue name&gt;</code>. In a Amazon GameLift game session queue ARN, the resource ID matches the <i>Name</i> value.',
-        }),
-    ).exactOptional(),
-    TimeoutInSeconds: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum time, in seconds, that a new game session placement request remains in the queue. When a request exceeds this time, the game session placement changes to a <code>TIMED_OUT</code> status.',
-        }),
-    ).exactOptional(),
-    PlayerLatencyPolicies: PlayerLatencyPolicyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of policies that act as a sliding cap on player latency. FleetIQ works to deliver low latency for most players in a game session. These policies ensure that no individual player can be placed into a game with unreasonably high latency. Use multiple policies to gradually relax latency requirements a step at a time. Multiple policies are applied based on their maximum allowed latency, starting with the lowest value. ',
-        }),
-    ).exactOptional(),
-    Destinations: GameSessionQueueDestinationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of fleets and/or fleet aliases that can be used to fulfill game session placement requests in the queue. Destinations are identified by either a fleet ARN or a fleet alias ARN, and are listed in order of placement preference.',
-        }),
-    ).exactOptional(),
-    FilterConfiguration: FilterConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of locations where a queue is allowed to place new game sessions. Locations are specified in the form of Amazon Web Services Region codes, such as <code>us-west-2</code>. If this parameter is not set, game sessions can be placed in any queue location. ',
-        }),
-    ).exactOptional(),
-    PriorityConfiguration: PriorityConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Custom settings to use when prioritizing destinations and locations for game session placements. This configuration replaces the FleetIQ default prioritization process. Priority types that are not explicitly named will be automatically applied at the end of the prioritization process. ',
-        }),
-    ).exactOptional(),
-    CustomEventData: QueueCustomEventDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Information that is added to all events that are related to this game session queue.',
-        }),
-    ).exactOptional(),
-    NotificationTarget: QueueSnsArnStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An SNS topic ARN that is set up to receive game session placement notifications. See <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/queue-notification.html"> Setting up notifications for game session placement</a>.',
-        }),
-    ).exactOptional(),
+    Name: GameSessionQueueNameSchema.exactOptional().openapi({
+      description:
+        'A descriptive label that is associated with game session queue. Queue names must be unique within each Region.',
+    }),
+    GameSessionQueueArn: GameSessionQueueArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift game session queue resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::gamesessionqueue/&lt;queue name&gt;</code>. In a Amazon GameLift game session queue ARN, the resource ID matches the <i>Name</i> value.',
+    }),
+    TimeoutInSeconds: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The maximum time, in seconds, that a new game session placement request remains in the queue. When a request exceeds this time, the game session placement changes to a <code>TIMED_OUT</code> status.',
+    }),
+    PlayerLatencyPolicies: PlayerLatencyPolicyListSchema.exactOptional().openapi({
+      description:
+        'A set of policies that act as a sliding cap on player latency. FleetIQ works to deliver low latency for most players in a game session. These policies ensure that no individual player can be placed into a game with unreasonably high latency. Use multiple policies to gradually relax latency requirements a step at a time. Multiple policies are applied based on their maximum allowed latency, starting with the lowest value. ',
+    }),
+    Destinations: GameSessionQueueDestinationListSchema.exactOptional().openapi({
+      description:
+        'A list of fleets and/or fleet aliases that can be used to fulfill game session placement requests in the queue. Destinations are identified by either a fleet ARN or a fleet alias ARN, and are listed in order of placement preference.',
+    }),
+    FilterConfiguration: FilterConfigurationSchema.exactOptional().openapi({
+      description:
+        'A list of locations where a queue is allowed to place new game sessions. Locations are specified in the form of Amazon Web Services Region codes, such as <code>us-west-2</code>. If this parameter is not set, game sessions can be placed in any queue location. ',
+    }),
+    PriorityConfiguration: PriorityConfigurationSchema.exactOptional().openapi({
+      description:
+        'Custom settings to use when prioritizing destinations and locations for game session placements. This configuration replaces the FleetIQ default prioritization process. Priority types that are not explicitly named will be automatically applied at the end of the prioritization process. ',
+    }),
+    CustomEventData: QueueCustomEventDataSchema.exactOptional().openapi({
+      description:
+        ' Information that is added to all events that are related to this game session queue.',
+    }),
+    NotificationTarget: QueueSnsArnStringModelSchema.exactOptional().openapi({
+      description:
+        'An SNS topic ARN that is set up to receive game session placement notifications. See <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/queue-notification.html"> Setting up notifications for game session placement</a>.',
+    }),
   })
   .openapi({
     description:
@@ -2619,89 +2061,51 @@ const GameSessionQueueSchema = z
 
 const CreateGameSessionQueueOutputSchema = z
   .object({
-    GameSessionQueue: GameSessionQueueSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that describes the newly created game session queue.' }),
-    ).exactOptional(),
+    GameSessionQueue: GameSessionQueueSchema.exactOptional().openapi({
+      description: 'An object that describes the newly created game session queue.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateGameSessionQueueOutput')
 
 const CreateGameSessionQueueInputSchema = z
   .object({
-    Name: GameSessionQueueNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with game session queue. Queue names must be unique within each Region.',
-        }),
-    ),
-    TimeoutInSeconds: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum time, in seconds, that a new game session placement request remains in the queue. When a request exceeds this time, the game session placement changes to a <code>TIMED_OUT</code> status.',
-        }),
-    ).exactOptional(),
-    PlayerLatencyPolicies: PlayerLatencyPolicyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of policies that act as a sliding cap on player latency. FleetIQ works to deliver low latency for most players in a game session. These policies ensure that no individual player can be placed into a game with unreasonably high latency. Use multiple policies to gradually relax latency requirements a step at a time. Multiple policies are applied based on their maximum allowed latency, starting with the lowest value.',
-        }),
-    ).exactOptional(),
-    Destinations: GameSessionQueueDestinationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of fleets and/or fleet aliases that can be used to fulfill game session placement requests in the queue. Destinations are identified by either a fleet ARN or a fleet alias ARN, and are listed in order of placement preference.',
-        }),
-    ).exactOptional(),
-    FilterConfiguration: FilterConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of locations where a queue is allowed to place new game sessions. Locations are specified in the form of Amazon Web Services Region codes, such as <code>us-west-2</code>. If this parameter is not set, game sessions can be placed in any queue location. ',
-        }),
-    ).exactOptional(),
-    PriorityConfiguration: PriorityConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Custom settings to use when prioritizing destinations and locations for game session placements. This configuration replaces the FleetIQ default prioritization process. Priority types that are not explicitly named will be automatically applied at the end of the prioritization process. ',
-        }),
-    ).exactOptional(),
-    CustomEventData: QueueCustomEventDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information to be added to all events that are related to this game session queue.',
-        }),
-    ).exactOptional(),
-    NotificationTarget: QueueSnsArnStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An SNS topic ARN that is set up to receive game session placement notifications. See <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/queue-notification.html"> Setting up notifications for game session placement</a>.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of labels to assign to the new game session queue resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>.',
-        }),
-    ).exactOptional(),
+    Name: GameSessionQueueNameSchema.openapi({
+      description:
+        'A descriptive label that is associated with game session queue. Queue names must be unique within each Region.',
+    }),
+    TimeoutInSeconds: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The maximum time, in seconds, that a new game session placement request remains in the queue. When a request exceeds this time, the game session placement changes to a <code>TIMED_OUT</code> status.',
+    }),
+    PlayerLatencyPolicies: PlayerLatencyPolicyListSchema.exactOptional().openapi({
+      description:
+        'A set of policies that act as a sliding cap on player latency. FleetIQ works to deliver low latency for most players in a game session. These policies ensure that no individual player can be placed into a game with unreasonably high latency. Use multiple policies to gradually relax latency requirements a step at a time. Multiple policies are applied based on their maximum allowed latency, starting with the lowest value.',
+    }),
+    Destinations: GameSessionQueueDestinationListSchema.exactOptional().openapi({
+      description:
+        'A list of fleets and/or fleet aliases that can be used to fulfill game session placement requests in the queue. Destinations are identified by either a fleet ARN or a fleet alias ARN, and are listed in order of placement preference.',
+    }),
+    FilterConfiguration: FilterConfigurationSchema.exactOptional().openapi({
+      description:
+        'A list of locations where a queue is allowed to place new game sessions. Locations are specified in the form of Amazon Web Services Region codes, such as <code>us-west-2</code>. If this parameter is not set, game sessions can be placed in any queue location. ',
+    }),
+    PriorityConfiguration: PriorityConfigurationSchema.exactOptional().openapi({
+      description:
+        'Custom settings to use when prioritizing destinations and locations for game session placements. This configuration replaces the FleetIQ default prioritization process. Priority types that are not explicitly named will be automatically applied at the end of the prioritization process. ',
+    }),
+    CustomEventData: QueueCustomEventDataSchema.exactOptional().openapi({
+      description:
+        'Information to be added to all events that are related to this game session queue.',
+    }),
+    NotificationTarget: QueueSnsArnStringModelSchema.exactOptional().openapi({
+      description:
+        'An SNS topic ARN that is set up to receive game session placement notifications. See <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/queue-notification.html"> Setting up notifications for game session placement</a>.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of labels to assign to the new game session queue resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreateGameSessionQueueInput' })
   .openapi('CreateGameSessionQueueInput')
@@ -2715,26 +2119,22 @@ const LocationArnModelSchema = z
 
 const LocationModelSchema = z
   .object({
-    LocationName: LocationStringModelSchema.and(
-      z.any().openapi({ description: "The location's name." }),
-    ).exactOptional(),
-    LocationArn: LocationArnModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift location resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::location/location-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
-        }),
-    ).exactOptional(),
+    LocationName: LocationStringModelSchema.exactOptional().openapi({
+      description: "The location's name.",
+    }),
+    LocationArn: LocationArnModelSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift location resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::location/location-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
+    }),
   })
   .openapi({ description: 'Properties of a location', required: [] })
   .openapi('LocationModel')
 
 const CreateLocationOutputSchema = z
   .object({
-    Location: LocationModelSchema.and(
-      z.any().openapi({ description: 'The details of the custom location you created.' }),
-    ).exactOptional(),
+    Location: LocationModelSchema.exactOptional().openapi({
+      description: 'The details of the custom location you created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateLocationOutput')
@@ -2748,26 +2148,16 @@ const CustomInputLocationStringModelSchema = z
 
 const CreateLocationInputSchema = z
   .object({
-    LocationName: CustomInputLocationStringModelSchema.and(
-      z.any().openapi({ description: 'A descriptive name for the custom location.' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of labels to assign to the new matchmaking configuration resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Rareference</i>.',
-        }),
-    ).exactOptional(),
+    LocationName: CustomInputLocationStringModelSchema.openapi({
+      description: 'A descriptive name for the custom location.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of labels to assign to the new matchmaking configuration resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Rareference</i>.',
+    }),
   })
   .openapi({ required: ['LocationName'], title: 'CreateLocationInput' })
   .openapi('CreateLocationInput')
-
-const MatchmakingConfigurationArnSchema = z
-  .string()
-  .regex(/^arn:.*:matchmakingconfiguration\/[a-zA-Z0-9-\.]*/)
-  .openapi({ description: 'Data type used for Matchmaking Configuration ARN.' })
-  .openapi('MatchmakingConfigurationArn')
 
 const QueueArnsListSchema = z.array(ArnStringModelSchema).openapi('QueueArnsList')
 
@@ -2808,140 +2198,71 @@ const FlexMatchModeSchema = z.enum(['STANDALONE', 'WITH_QUEUE']).openapi('FlexMa
 
 const MatchmakingConfigurationSchema = z
   .object({
-    Name: MatchmakingIdStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the matchmaking configuration. This name is used to identify the configuration associated with a matchmaking request or ticket.',
-        }),
-    ).exactOptional(),
-    ConfigurationArn: MatchmakingConfigurationArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift matchmaking configuration resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::matchmakingconfiguration/&lt;matchmaking configuration name&gt;</code>. In a Amazon GameLift configuration ARN, the resource ID matches the <i>Name</i> value.',
-        }),
-    ).exactOptional(),
-    Description: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A descriptive label that is associated with matchmaking configuration.',
-        }),
-    ).exactOptional(),
-    GameSessionQueueArns: QueueArnsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift game session queue resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::gamesessionqueue/&lt;queue name&gt;</code>. Queues can be located in any Region. Queues are used to start new Amazon GameLift-hosted game sessions for matches that are created with this matchmaking configuration. This property is not set when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
-        }),
-    ).exactOptional(),
-    RequestTimeoutSeconds: MatchmakingRequestTimeoutIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum duration, in seconds, that a matchmaking ticket can remain in process before timing out. Requests that fail due to timing out can be resubmitted as needed.',
-        }),
-    ).exactOptional(),
-    AcceptanceTimeoutSeconds: MatchmakingAcceptanceTimeoutIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The length of time (in seconds) to wait for players to accept a proposed match, if acceptance is required. If any player rejects the match or fails to accept before the timeout, the ticket continues to look for an acceptable match.',
-        }),
-    ).exactOptional(),
-    AcceptanceRequired: BooleanModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether a match that was created with this configuration must be accepted by the matched players. To require acceptance, set to TRUE. When this option is enabled, matchmaking tickets use the status <code>REQUIRES_ACCEPTANCE</code> to indicate when a completed potential match is waiting for player acceptance.',
-        }),
-    ).exactOptional(),
-    RuleSetName: MatchmakingIdStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the matchmaking rule set to use with this configuration. A matchmaking configuration can only use rule sets that are defined in the same Region.',
-        }),
-    ).exactOptional(),
-    RuleSetArn: MatchmakingRuleSetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) associated with the GameLift matchmaking rule set resource that this configuration uses.',
-        }),
-    ).exactOptional(),
-    NotificationTarget: SnsArnStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An SNS topic ARN that is set up to receive matchmaking notifications.',
-        }),
-    ).exactOptional(),
-    AdditionalPlayerCount: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The number of player slots in a match to keep open for future players. For example, if the configuration's rule set specifies a match for a single 12-person team, and the additional player count is set to 2, only 10 players are selected for the match. This parameter is not used when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.",
-        }),
-    ).exactOptional(),
-    CustomEventData: CustomEventDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information to attach to all events related to the matchmaking configuration. ',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    GameProperties: GamePropertyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom properties for a game session, formatted as key:value pairs. These properties are passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>). This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
-        }),
-    ).exactOptional(),
-    GameSessionData: GameSessionDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom game session properties, formatted as a single string value. This data is passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>). This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
-        }),
-    ).exactOptional(),
-    BackfillMode: BackfillModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The method used to backfill game sessions created with this matchmaking configuration. MANUAL indicates that the game makes backfill requests or does not use the match backfill feature. AUTOMATIC indicates that GameLift creates backfill requests whenever a game session has one or more open slots. Learn more about manual and automatic backfill in <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-backfill.html">Backfill existing games with FlexMatch</a>. Automatic backfill is not available when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
-        }),
-    ).exactOptional(),
-    FlexMatchMode: FlexMatchModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether this matchmaking configuration is being used with Amazon GameLift hosting or as a standalone matchmaking solution. </p> <ul> <li> <p> <b>STANDALONE</b> - FlexMatch forms matches and returns match information, including players and team assignments, in a <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-events.html#match-events-matchmakingsucceeded"> MatchmakingSucceeded</a> event.</p> </li> <li> <p> <b>WITH_QUEUE</b> - FlexMatch forms matches and uses the specified Amazon GameLift queue to start a game session for the match. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Name: MatchmakingIdStringModelSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the matchmaking configuration. This name is used to identify the configuration associated with a matchmaking request or ticket.',
+    }),
+    ConfigurationArn: MatchmakingConfigurationArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift matchmaking configuration resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::matchmakingconfiguration/&lt;matchmaking configuration name&gt;</code>. In a Amazon GameLift configuration ARN, the resource ID matches the <i>Name</i> value.',
+    }),
+    Description: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'A descriptive label that is associated with matchmaking configuration.',
+    }),
+    GameSessionQueueArns: QueueArnsListSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift game session queue resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::gamesessionqueue/&lt;queue name&gt;</code>. Queues can be located in any Region. Queues are used to start new Amazon GameLift-hosted game sessions for matches that are created with this matchmaking configuration. This property is not set when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
+    }),
+    RequestTimeoutSeconds: MatchmakingRequestTimeoutIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum duration, in seconds, that a matchmaking ticket can remain in process before timing out. Requests that fail due to timing out can be resubmitted as needed.',
+    }),
+    AcceptanceTimeoutSeconds: MatchmakingAcceptanceTimeoutIntegerSchema.exactOptional().openapi({
+      description:
+        'The length of time (in seconds) to wait for players to accept a proposed match, if acceptance is required. If any player rejects the match or fails to accept before the timeout, the ticket continues to look for an acceptable match.',
+    }),
+    AcceptanceRequired: BooleanModelSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether a match that was created with this configuration must be accepted by the matched players. To require acceptance, set to TRUE. When this option is enabled, matchmaking tickets use the status <code>REQUIRES_ACCEPTANCE</code> to indicate when a completed potential match is waiting for player acceptance.',
+    }),
+    RuleSetName: MatchmakingIdStringModelSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the matchmaking rule set to use with this configuration. A matchmaking configuration can only use rule sets that are defined in the same Region.',
+    }),
+    RuleSetArn: MatchmakingRuleSetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) associated with the GameLift matchmaking rule set resource that this configuration uses.',
+    }),
+    NotificationTarget: SnsArnStringModelSchema.exactOptional().openapi({
+      description: 'An SNS topic ARN that is set up to receive matchmaking notifications.',
+    }),
+    AdditionalPlayerCount: WholeNumberSchema.exactOptional().openapi({
+      description:
+        "The number of player slots in a match to keep open for future players. For example, if the configuration's rule set specifies a match for a single 12-person team, and the additional player count is set to 2, only 10 players are selected for the match. This parameter is not used when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.",
+    }),
+    CustomEventData: CustomEventDataSchema.exactOptional().openapi({
+      description: 'Information to attach to all events related to the matchmaking configuration. ',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    GameProperties: GamePropertyListSchema.exactOptional().openapi({
+      description:
+        'A set of custom properties for a game session, formatted as key:value pairs. These properties are passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>). This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
+    }),
+    GameSessionData: GameSessionDataSchema.exactOptional().openapi({
+      description:
+        'A set of custom game session properties, formatted as a single string value. This data is passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>). This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
+    }),
+    BackfillMode: BackfillModeSchema.exactOptional().openapi({
+      description:
+        'The method used to backfill game sessions created with this matchmaking configuration. MANUAL indicates that the game makes backfill requests or does not use the match backfill feature. AUTOMATIC indicates that GameLift creates backfill requests whenever a game session has one or more open slots. Learn more about manual and automatic backfill in <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-backfill.html">Backfill existing games with FlexMatch</a>. Automatic backfill is not available when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
+    }),
+    FlexMatchMode: FlexMatchModeSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether this matchmaking configuration is being used with Amazon GameLift hosting or as a standalone matchmaking solution. </p> <ul> <li> <p> <b>STANDALONE</b> - FlexMatch forms matches and returns match information, including players and team assignments, in a <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-events.html#match-events-matchmakingsucceeded"> MatchmakingSucceeded</a> event.</p> </li> <li> <p> <b>WITH_QUEUE</b> - FlexMatch forms matches and uses the specified Amazon GameLift queue to start a game session for the match. </p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -2952,13 +2273,9 @@ const MatchmakingConfigurationSchema = z
 
 const CreateMatchmakingConfigurationOutputSchema = z
   .object({
-    Configuration: MatchmakingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Object that describes the newly created matchmaking configuration.',
-        }),
-    ).exactOptional(),
+    Configuration: MatchmakingConfigurationSchema.exactOptional().openapi({
+      description: 'Object that describes the newly created matchmaking configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateMatchmakingConfigurationOutput')
@@ -2972,125 +2289,65 @@ const MatchmakingRuleSetNameSchema = z
 
 const CreateMatchmakingConfigurationInputSchema = z
   .object({
-    Name: MatchmakingIdStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the matchmaking configuration. This name is used to identify the configuration associated with a matchmaking request or ticket.',
-        }),
-    ),
-    Description: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A human-readable description of the matchmaking configuration. ',
-        }),
-    ).exactOptional(),
-    GameSessionQueueArns: QueueArnsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift game session queue resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::gamesessionqueue/&lt;queue name&gt;</code>. Queues can be located in any Region. Queues are used to start new Amazon GameLift-hosted game sessions for matches that are created with this matchmaking configuration. If <code>FlexMatchMode</code> is set to <code>STANDALONE</code>, do not set this parameter. ',
-        }),
-    ).exactOptional(),
-    RequestTimeoutSeconds: MatchmakingRequestTimeoutIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum duration, in seconds, that a matchmaking ticket can remain in process before timing out. Requests that fail due to timing out can be resubmitted as needed.',
-        }),
-    ),
-    AcceptanceTimeoutSeconds: MatchmakingAcceptanceTimeoutIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The length of time (in seconds) to wait for players to accept a proposed match, if acceptance is required. ',
-        }),
-    ).exactOptional(),
-    AcceptanceRequired: BooleanModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that determines whether a match that was created with this configuration must be accepted by the matched players. To require acceptance, set to <code>TRUE</code>. With this option enabled, matchmaking tickets use the status <code>REQUIRES_ACCEPTANCE</code> to indicate when a completed potential match is waiting for player acceptance. ',
-        }),
-    ),
-    RuleSetName: MatchmakingRuleSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the matchmaking rule set to use with this configuration. You can use either the rule set name or ARN value. A matchmaking configuration can only use rule sets that are defined in the same Region.',
-        }),
-    ),
-    NotificationTarget: SnsArnStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An SNS topic ARN that is set up to receive matchmaking notifications. See <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-notification.html"> Setting up notifications for matchmaking</a> for more information.',
-        }),
-    ).exactOptional(),
-    AdditionalPlayerCount: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The number of player slots in a match to keep open for future players. For example, if the configuration's rule set specifies a match for a single 12-person team, and the additional player count is set to 2, only 10 players are selected for the match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.",
-        }),
-    ).exactOptional(),
-    CustomEventData: CustomEventDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information to be added to all events related to this matchmaking configuration. ',
-        }),
-    ).exactOptional(),
-    GameProperties: GamePropertyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom properties for a game session, formatted as key:value pairs. These properties are passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>). This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
-        }),
-    ).exactOptional(),
-    GameSessionData: GameSessionDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom game session properties, formatted as a single string value. This data is passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>). This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
-        }),
-    ).exactOptional(),
-    BackfillMode: BackfillModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The method used to backfill game sessions that are created with this matchmaking configuration. Specify <code>MANUAL</code> when your game manages backfill requests manually or does not use the match backfill feature. Specify <code>AUTOMATIC</code> to have Amazon GameLift create a backfill request whenever a game session has one or more open slots. Learn more about manual and automatic backfill in <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-backfill.html"> Backfill Existing Games with FlexMatch</a>. Automatic backfill is not available when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
-        }),
-    ).exactOptional(),
-    FlexMatchMode: FlexMatchModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether this matchmaking configuration is being used with Amazon GameLift hosting or as a standalone matchmaking solution. </p> <ul> <li> <p> <b>STANDALONE</b> - FlexMatch forms matches and returns match information, including players and team assignments, in a <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-events.html#match-events-matchmakingsucceeded"> MatchmakingSucceeded</a> event.</p> </li> <li> <p> <b>WITH_QUEUE</b> - FlexMatch forms matches and uses the specified Amazon GameLift queue to start a game session for the match. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of labels to assign to the new matchmaking configuration resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>.',
-        }),
-    ).exactOptional(),
+    Name: MatchmakingIdStringModelSchema.openapi({
+      description:
+        'A unique identifier for the matchmaking configuration. This name is used to identify the configuration associated with a matchmaking request or ticket.',
+    }),
+    Description: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'A human-readable description of the matchmaking configuration. ',
+    }),
+    GameSessionQueueArns: QueueArnsListSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift game session queue resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::gamesessionqueue/&lt;queue name&gt;</code>. Queues can be located in any Region. Queues are used to start new Amazon GameLift-hosted game sessions for matches that are created with this matchmaking configuration. If <code>FlexMatchMode</code> is set to <code>STANDALONE</code>, do not set this parameter. ',
+    }),
+    RequestTimeoutSeconds: MatchmakingRequestTimeoutIntegerSchema.openapi({
+      description:
+        'The maximum duration, in seconds, that a matchmaking ticket can remain in process before timing out. Requests that fail due to timing out can be resubmitted as needed.',
+    }),
+    AcceptanceTimeoutSeconds: MatchmakingAcceptanceTimeoutIntegerSchema.exactOptional().openapi({
+      description:
+        'The length of time (in seconds) to wait for players to accept a proposed match, if acceptance is required. ',
+    }),
+    AcceptanceRequired: BooleanModelSchema.openapi({
+      description:
+        'A flag that determines whether a match that was created with this configuration must be accepted by the matched players. To require acceptance, set to <code>TRUE</code>. With this option enabled, matchmaking tickets use the status <code>REQUIRES_ACCEPTANCE</code> to indicate when a completed potential match is waiting for player acceptance. ',
+    }),
+    RuleSetName: MatchmakingRuleSetNameSchema.openapi({
+      description:
+        'A unique identifier for the matchmaking rule set to use with this configuration. You can use either the rule set name or ARN value. A matchmaking configuration can only use rule sets that are defined in the same Region.',
+    }),
+    NotificationTarget: SnsArnStringModelSchema.exactOptional().openapi({
+      description:
+        'An SNS topic ARN that is set up to receive matchmaking notifications. See <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-notification.html"> Setting up notifications for matchmaking</a> for more information.',
+    }),
+    AdditionalPlayerCount: WholeNumberSchema.exactOptional().openapi({
+      description:
+        "The number of player slots in a match to keep open for future players. For example, if the configuration's rule set specifies a match for a single 12-person team, and the additional player count is set to 2, only 10 players are selected for the match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.",
+    }),
+    CustomEventData: CustomEventDataSchema.exactOptional().openapi({
+      description:
+        'Information to be added to all events related to this matchmaking configuration. ',
+    }),
+    GameProperties: GamePropertyListSchema.exactOptional().openapi({
+      description:
+        'A set of custom properties for a game session, formatted as key:value pairs. These properties are passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>). This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
+    }),
+    GameSessionData: GameSessionDataSchema.exactOptional().openapi({
+      description:
+        'A set of custom game session properties, formatted as a single string value. This data is passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>). This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
+    }),
+    BackfillMode: BackfillModeSchema.exactOptional().openapi({
+      description:
+        'The method used to backfill game sessions that are created with this matchmaking configuration. Specify <code>MANUAL</code> when your game manages backfill requests manually or does not use the match backfill feature. Specify <code>AUTOMATIC</code> to have Amazon GameLift create a backfill request whenever a game session has one or more open slots. Learn more about manual and automatic backfill in <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-backfill.html"> Backfill Existing Games with FlexMatch</a>. Automatic backfill is not available when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
+    }),
+    FlexMatchMode: FlexMatchModeSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether this matchmaking configuration is being used with Amazon GameLift hosting or as a standalone matchmaking solution. </p> <ul> <li> <p> <b>STANDALONE</b> - FlexMatch forms matches and returns match information, including players and team assignments, in a <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-events.html#match-events-matchmakingsucceeded"> MatchmakingSucceeded</a> event.</p> </li> <li> <p> <b>WITH_QUEUE</b> - FlexMatch forms matches and uses the specified Amazon GameLift queue to start a game session for the match. </p> </li> </ul>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of labels to assign to the new matchmaking configuration resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>.',
+    }),
   })
   .openapi({
     required: ['Name', 'RequestTimeoutSeconds', 'AcceptanceRequired', 'RuleSetName'],
@@ -3102,33 +2359,21 @@ const RuleSetBodySchema = z.string().min(1).max(65535).openapi('RuleSetBody')
 
 const MatchmakingRuleSetSchema = z
   .object({
-    RuleSetName: MatchmakingIdStringModelSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the matchmaking rule set' }),
-    ).exactOptional(),
-    RuleSetArn: MatchmakingRuleSetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift matchmaking rule set resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::matchmakingruleset/&lt;ruleset name&gt;</code>. In a GameLift rule set ARN, the resource ID matches the <i>RuleSetName</i> value.',
-        }),
-    ).exactOptional(),
-    RuleSetBody: RuleSetBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of matchmaking rules, formatted as a JSON string. Comments are not allowed in JSON, but most elements support a description field.',
-        }),
-    ),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
+    RuleSetName: MatchmakingIdStringModelSchema.exactOptional().openapi({
+      description: 'A unique identifier for the matchmaking rule set',
+    }),
+    RuleSetArn: MatchmakingRuleSetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift matchmaking rule set resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::matchmakingruleset/&lt;ruleset name&gt;</code>. In a GameLift rule set ARN, the resource ID matches the <i>RuleSetName</i> value.',
+    }),
+    RuleSetBody: RuleSetBodySchema.openapi({
+      description:
+        'A collection of matchmaking rules, formatted as a JSON string. Comments are not allowed in JSON, but most elements support a description field.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
   })
   .openapi({
     required: ['RuleSetBody'],
@@ -3139,47 +2384,30 @@ const MatchmakingRuleSetSchema = z
 
 const CreateMatchmakingRuleSetOutputSchema = z
   .object({
-    RuleSet: MatchmakingRuleSetSchema.and(
-      z.any().openapi({ description: 'The newly created matchmaking rule set.' }),
-    ),
+    RuleSet: MatchmakingRuleSetSchema.openapi({
+      description: 'The newly created matchmaking rule set.',
+    }),
   })
   .openapi({ required: ['RuleSet'] })
   .openapi('CreateMatchmakingRuleSetOutput')
 
 const CreateMatchmakingRuleSetInputSchema = z
   .object({
-    Name: MatchmakingIdStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the matchmaking rule set. A matchmaking configuration identifies the rule set it uses by this name value. Note that the rule set name is different from the optional <code>name</code> field in the rule set body.',
-        }),
-    ),
-    RuleSetBody: RuleSetBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of matchmaking rules, formatted as a JSON string. Comments are not allowed in JSON, but most elements support a description field.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of labels to assign to the new matchmaking rule set resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>.',
-        }),
-    ).exactOptional(),
+    Name: MatchmakingIdStringModelSchema.openapi({
+      description:
+        'A unique identifier for the matchmaking rule set. A matchmaking configuration identifies the rule set it uses by this name value. Note that the rule set name is different from the optional <code>name</code> field in the rule set body.',
+    }),
+    RuleSetBody: RuleSetBodySchema.openapi({
+      description:
+        'A collection of matchmaking rules, formatted as a JSON string. Comments are not allowed in JSON, but most elements support a description field.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of labels to assign to the new matchmaking rule set resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>.',
+    }),
   })
   .openapi({ required: ['Name', 'RuleSetBody'], title: 'CreateMatchmakingRuleSetInput' })
   .openapi('CreateMatchmakingRuleSetInput')
-
-const PlayerSessionIdSchema = z
-  .string()
-  .regex(/^psess-\S+/)
-  .openapi('PlayerSessionId')
 
 const PlayerSessionStatusSchema = z
   .enum(['RESERVED', 'ACTIVE', 'COMPLETED', 'TIMEDOUT'])
@@ -3189,97 +2417,52 @@ const PlayerDataSchema = z.string().min(1).max(2048).openapi('PlayerData')
 
 const PlayerSessionSchema = z
   .object({
-    PlayerSessionId: PlayerSessionIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for a player session.' }),
-    ).exactOptional(),
-    PlayerId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a player that is associated with this player session.',
-        }),
-    ).exactOptional(),
-    GameSessionId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the game session that the player session is connected to.',
-        }),
-    ).exactOptional(),
-    FleetId: FleetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for the fleet that the player's game session is running on.",
-        }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) associated with the GameLift fleet that the player\'s game session is running on. ',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    TerminationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp indicating when this data object was terminated. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    Status: PlayerSessionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Current status of the player session.</p> <p>Possible player session statuses include the following:</p> <ul> <li> <p> <b>RESERVED</b> -- The player session request has been received, but the player has not yet connected to the server process and/or been validated. </p> </li> <li> <p> <b>ACTIVE</b> -- The player has been validated by the server process and is currently connected.</p> </li> <li> <p> <b>COMPLETED</b> -- The player connection has been dropped.</p> </li> <li> <p> <b>TIMEDOUT</b> -- A player session request was received, but the player did not connect and/or was not validated within the timeout limit (60 seconds).</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    IpAddress: IpAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address of the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number.',
-        }),
-    ).exactOptional(),
-    DnsName: DnsNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The DNS identifier assigned to the instance that is running the game session. Values have the following format:</p> <ul> <li> <p>TLS-enabled fleets: <code>&lt;unique identifier&gt;.&lt;region identifier&gt;.amazongamelift.com</code>.</p> </li> <li> <p>Non-TLS-enabled fleets: <code>ec2-&lt;unique identifier&gt;.compute.amazonaws.com</code>. (See <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing.html#concepts-public-addresses">Amazon EC2 Instance IP Addressing</a>.)</p> </li> </ul> <p>When connecting to a game session that is running on a TLS-enabled fleet, you must use the DNS name, not the IP address.</p>',
-        }),
-    ).exactOptional(),
-    Port: PortNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Port number for the game session. To connect to a Amazon GameLift server process, an app needs both the IP address and port number.',
-        }),
-    ).exactOptional(),
-    PlayerData: PlayerDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Developer-defined information related to a player. Amazon GameLift does not use this data, so it can be formatted as needed for use in the game. ',
-        }),
-    ).exactOptional(),
+    PlayerSessionId: PlayerSessionIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for a player session.',
+    }),
+    PlayerId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'A unique identifier for a player that is associated with this player session.',
+    }),
+    GameSessionId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the game session that the player session is connected to.',
+    }),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for the fleet that the player's game session is running on.",
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) associated with the GameLift fleet that the player\'s game session is running on. ',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    TerminationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp indicating when this data object was terminated. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    Status: PlayerSessionStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Current status of the player session.</p> <p>Possible player session statuses include the following:</p> <ul> <li> <p> <b>RESERVED</b> -- The player session request has been received, but the player has not yet connected to the server process and/or been validated. </p> </li> <li> <p> <b>ACTIVE</b> -- The player has been validated by the server process and is currently connected.</p> </li> <li> <p> <b>COMPLETED</b> -- The player connection has been dropped.</p> </li> <li> <p> <b>TIMEDOUT</b> -- A player session request was received, but the player did not connect and/or was not validated within the timeout limit (60 seconds).</p> </li> </ul>',
+    }),
+    IpAddress: IpAddressSchema.exactOptional().openapi({
+      description:
+        'The IP address of the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number.',
+    }),
+    DnsName: DnsNameSchema.exactOptional().openapi({
+      description:
+        '<p>The DNS identifier assigned to the instance that is running the game session. Values have the following format:</p> <ul> <li> <p>TLS-enabled fleets: <code>&lt;unique identifier&gt;.&lt;region identifier&gt;.amazongamelift.com</code>.</p> </li> <li> <p>Non-TLS-enabled fleets: <code>ec2-&lt;unique identifier&gt;.compute.amazonaws.com</code>. (See <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing.html#concepts-public-addresses">Amazon EC2 Instance IP Addressing</a>.)</p> </li> </ul> <p>When connecting to a game session that is running on a TLS-enabled fleet, you must use the DNS name, not the IP address.</p>',
+    }),
+    Port: PortNumberSchema.exactOptional().openapi({
+      description:
+        'Port number for the game session. To connect to a Amazon GameLift server process, an app needs both the IP address and port number.',
+    }),
+    PlayerData: PlayerDataSchema.exactOptional().openapi({
+      description:
+        'Developer-defined information related to a player. Amazon GameLift does not use this data, so it can be formatted as needed for use in the game. ',
+    }),
   })
   .openapi({
     description:
@@ -3290,37 +2473,25 @@ const PlayerSessionSchema = z
 
 const CreatePlayerSessionOutputSchema = z
   .object({
-    PlayerSession: PlayerSessionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Object that describes the newly created player session record.' }),
-    ).exactOptional(),
+    PlayerSession: PlayerSessionSchema.exactOptional().openapi({
+      description: 'Object that describes the newly created player session record.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreatePlayerSessionOutput')
 
 const CreatePlayerSessionInputSchema = z
   .object({
-    GameSessionId: ArnStringModelSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the game session to add a player to.' }),
-    ),
-    PlayerId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for a player. Player IDs are developer-defined.',
-        }),
-    ),
-    PlayerData: PlayerDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Developer-defined information related to a player. Amazon GameLift does not use this data, so it can be formatted as needed for use in the game.',
-        }),
-    ).exactOptional(),
+    GameSessionId: ArnStringModelSchema.openapi({
+      description: 'A unique identifier for the game session to add a player to.',
+    }),
+    PlayerId: NonZeroAndMaxStringSchema.openapi({
+      description: 'A unique identifier for a player. Player IDs are developer-defined.',
+    }),
+    PlayerData: PlayerDataSchema.exactOptional().openapi({
+      description:
+        'Developer-defined information related to a player. Amazon GameLift does not use this data, so it can be formatted as needed for use in the game.',
+    }),
   })
   .openapi({ required: ['GameSessionId', 'PlayerId'], title: 'CreatePlayerSessionInput' })
   .openapi('CreatePlayerSessionInput')
@@ -3333,13 +2504,9 @@ const PlayerSessionListSchema = z.array(PlayerSessionSchema).openapi('PlayerSess
 
 const CreatePlayerSessionsOutputSchema = z
   .object({
-    PlayerSessions: PlayerSessionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A collection of player session objects created for the added players.',
-        }),
-    ).exactOptional(),
+    PlayerSessions: PlayerSessionListSchema.exactOptional().openapi({
+      description: 'A collection of player session objects created for the added players.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreatePlayerSessionsOutput')
@@ -3350,79 +2517,49 @@ const PlayerDataMapSchema = z.record(z.string(), PlayerDataSchema).openapi('Play
 
 const CreatePlayerSessionsInputSchema = z
   .object({
-    GameSessionId: ArnStringModelSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the game session to add players to.' }),
-    ),
-    PlayerIds: PlayerIdListSchema.and(
-      z.any().openapi({ description: 'List of unique identifiers for the players to be added.' }),
-    ),
-    PlayerDataMap: PlayerDataMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Map of string pairs, each specifying a player ID and a set of developer-defined information related to the player. Amazon GameLift does not use this data, so it can be formatted as needed for use in the game. Any player data strings for player IDs that are not included in the <code>PlayerIds</code> parameter are ignored. ',
-        }),
-    ).exactOptional(),
+    GameSessionId: ArnStringModelSchema.openapi({
+      description: 'A unique identifier for the game session to add players to.',
+    }),
+    PlayerIds: PlayerIdListSchema.openapi({
+      description: 'List of unique identifiers for the players to be added.',
+    }),
+    PlayerDataMap: PlayerDataMapSchema.exactOptional().openapi({
+      description:
+        'Map of string pairs, each specifying a player ID and a set of developer-defined information related to the player. Amazon GameLift does not use this data, so it can be formatted as needed for use in the game. Any player data strings for player IDs that are not included in the <code>PlayerIds</code> parameter are ignored. ',
+    }),
   })
   .openapi({ required: ['GameSessionId', 'PlayerIds'], title: 'CreatePlayerSessionsInput' })
   .openapi('CreatePlayerSessionsInput')
 
 const ScriptSchema = z
   .object({
-    ScriptId: ScriptIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the Realtime script' }),
-    ).exactOptional(),
-    ScriptArn: ScriptArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift script resource and uniquely identifies it. ARNs are unique across all Regions. In a GameLift script ARN, the resource ID matches the <i>ScriptId</i> value.',
-        }),
-    ).exactOptional(),
-    Name: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A descriptive label that is associated with a script. Script names don't need to be unique.",
-        }),
-    ).exactOptional(),
-    Version: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Version information associated with a build or script. Version strings don't need to be unique.",
-        }),
-    ).exactOptional(),
-    SizeOnDisk: PositiveLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The file size of the uploaded Realtime script, expressed in bytes. When files are uploaded from an S3 location, this value remains at "0".',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    StorageLocation: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the Amazon S3 bucket where a zipped file containing your Realtime scripts is stored. The storage location must specify the Amazon S3 bucket name, the zip file name (the "key"), and a role ARN that allows Amazon GameLift to access the Amazon S3 storage location. The S3 bucket must be in the same Region where you want to create a new script. By default, Amazon GameLift uploads the latest version of the zip file; if you have S3 object versioning turned on, you can use the <code>ObjectVersion</code> parameter to specify an earlier version. ',
-        }),
-    ).exactOptional(),
+    ScriptId: ScriptIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the Realtime script',
+    }),
+    ScriptArn: ScriptArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift script resource and uniquely identifies it. ARNs are unique across all Regions. In a GameLift script ARN, the resource ID matches the <i>ScriptId</i> value.',
+    }),
+    Name: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        "A descriptive label that is associated with a script. Script names don't need to be unique.",
+    }),
+    Version: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        "Version information associated with a build or script. Version strings don't need to be unique.",
+    }),
+    SizeOnDisk: PositiveLongSchema.exactOptional().openapi({
+      description:
+        'The file size of the uploaded Realtime script, expressed in bytes. When files are uploaded from an S3 location, this value remains at "0".',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    StorageLocation: S3LocationSchema.exactOptional().openapi({
+      description:
+        'The location of the Amazon S3 bucket where a zipped file containing your Realtime scripts is stored. The storage location must specify the Amazon S3 bucket name, the zip file name (the "key"), and a role ARN that allows Amazon GameLift to access the Amazon S3 storage location. The S3 bucket must be in the same Region where you want to create a new script. By default, Amazon GameLift uploads the latest version of the zip file; if you have S3 object versioning turned on, you can use the <code>ObjectVersion</code> parameter to specify an earlier version. ',
+    }),
   })
   .openapi({
     description:
@@ -3433,14 +2570,10 @@ const ScriptSchema = z
 
 const CreateScriptOutputSchema = z
   .object({
-    Script: ScriptSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The newly created script record with a unique script ID and ARN. The new script's storage location reflects an Amazon S3 location: (1) If the script was uploaded from an S3 bucket under your account, the storage location reflects the information that was provided in the <i>CreateScript</i> request; (2) If the script file was uploaded from a local zip file, the storage location reflects an S3 location controls by the Amazon GameLift service.",
-        }),
-    ).exactOptional(),
+    Script: ScriptSchema.exactOptional().openapi({
+      description:
+        "The newly created script record with a unique script ID and ARN. The new script's storage location reflects an Amazon S3 location: (1) If the script was uploaded from an S3 bucket under your account, the storage location reflects the information that was provided in the <i>CreateScript</i> request; (2) If the script file was uploaded from a local zip file, the storage location reflects an S3 location controls by the Amazon GameLift service.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateScriptOutput')
@@ -3449,89 +2582,51 @@ const ZipBlobSchema = z.string().max(5000000).openapi('ZipBlob')
 
 const CreateScriptInputSchema = z
   .object({
-    Name: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with a script. Script names don\'t need to be unique. You can use <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateScript.html">UpdateScript</a> to change this value later. ',
-        }),
-    ).exactOptional(),
-    Version: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Version information associated with a build or script. Version strings don\'t need to be unique. You can use <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateScript.html">UpdateScript</a> to change this value later. ',
-        }),
-    ).exactOptional(),
-    StorageLocation: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the Amazon S3 bucket where a zipped file containing your Realtime scripts is stored. The storage location must specify the Amazon S3 bucket name, the zip file name (the "key"), and a role ARN that allows Amazon GameLift to access the Amazon S3 storage location. The S3 bucket must be in the same Region where you want to create a new script. By default, Amazon GameLift uploads the latest version of the zip file; if you have S3 object versioning turned on, you can use the <code>ObjectVersion</code> parameter to specify an earlier version. ',
-        }),
-    ).exactOptional(),
-    ZipFile: ZipBlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A data object containing your Realtime scripts and dependencies as a zip file. The zip file can have one or multiple files. Maximum size of a zip file is 5 MB.</p> <p>When using the Amazon Web Services CLI tool to create a script, this parameter is set to the zip file name. It must be prepended with the string "fileb://" to indicate that the file data is a binary object. For example: <code>--zip-file fileb://myRealtimeScript.zip</code>.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of labels to assign to the new script resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>. Once the resource is created, you can use <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_TagResource.html">TagResource</a>, <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_UntagResource.html">UntagResource</a>, and <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_ListTagsForResource.html">ListTagsForResource</a> to add, remove, and view tags. The maximum tag limit may be lower than stated. See the Amazon Web Services General Reference for actual tagging limits.',
-        }),
-    ).exactOptional(),
+    Name: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A descriptive label that is associated with a script. Script names don\'t need to be unique. You can use <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateScript.html">UpdateScript</a> to change this value later. ',
+    }),
+    Version: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'Version information associated with a build or script. Version strings don\'t need to be unique. You can use <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateScript.html">UpdateScript</a> to change this value later. ',
+    }),
+    StorageLocation: S3LocationSchema.exactOptional().openapi({
+      description:
+        'The location of the Amazon S3 bucket where a zipped file containing your Realtime scripts is stored. The storage location must specify the Amazon S3 bucket name, the zip file name (the "key"), and a role ARN that allows Amazon GameLift to access the Amazon S3 storage location. The S3 bucket must be in the same Region where you want to create a new script. By default, Amazon GameLift uploads the latest version of the zip file; if you have S3 object versioning turned on, you can use the <code>ObjectVersion</code> parameter to specify an earlier version. ',
+    }),
+    ZipFile: ZipBlobSchema.exactOptional().openapi({
+      description:
+        '<p>A data object containing your Realtime scripts and dependencies as a zip file. The zip file can have one or multiple files. Maximum size of a zip file is 5 MB.</p> <p>When using the Amazon Web Services CLI tool to create a script, this parameter is set to the zip file name. It must be prepended with the string "fileb://" to indicate that the file data is a binary object. For example: <code>--zip-file fileb://myRealtimeScript.zip</code>.</p>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of labels to assign to the new script resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>. Once the resource is created, you can use <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_TagResource.html">TagResource</a>, <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_UntagResource.html">UntagResource</a>, and <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_ListTagsForResource.html">ListTagsForResource</a> to add, remove, and view tags. The maximum tag limit may be lower than stated. See the Amazon Web Services General Reference for actual tagging limits.',
+    }),
   })
   .openapi({ title: 'CreateScriptInput', required: [] })
   .openapi('CreateScriptInput')
 
 const VpcPeeringAuthorizationSchema = z
   .object({
-    GameLiftAwsAccountId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the Amazon Web Services account that you use to manage your Amazon GameLift fleet. You can find your Account ID in the Amazon Web Services Management Console under account settings.',
-        }),
-    ).exactOptional(),
-    PeerVpcAwsAccountId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({ description: "The authorization's peer VPC Amazon Web Services account ID." }),
-    ).exactOptional(),
-    PeerVpcId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a VPC with resources to be accessed by your Amazon GameLift fleet. The VPC must be in the same Region as your fleet. To look up a VPC ID, use the <a href="https://console.aws.amazon.com/vpc/">VPC Dashboard</a> in the Amazon Web Services Management Console. Learn more about VPC peering in <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/vpc-peering.html">VPC Peering with Amazon GameLift Fleets</a>.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time stamp indicating when this authorization was issued. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    ExpirationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time stamp indicating when this authorization expires (24 hours after issuance). Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
+    GameLiftAwsAccountId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the Amazon Web Services account that you use to manage your Amazon GameLift fleet. You can find your Account ID in the Amazon Web Services Management Console under account settings.',
+    }),
+    PeerVpcAwsAccountId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: "The authorization's peer VPC Amazon Web Services account ID.",
+    }),
+    PeerVpcId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for a VPC with resources to be accessed by your Amazon GameLift fleet. The VPC must be in the same Region as your fleet. To look up a VPC ID, use the <a href="https://console.aws.amazon.com/vpc/">VPC Dashboard</a> in the Amazon Web Services Management Console. Learn more about VPC peering in <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/vpc-peering.html">VPC Peering with Amazon GameLift Fleets</a>.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Time stamp indicating when this authorization was issued. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    ExpirationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Time stamp indicating when this authorization expires (24 hours after issuance). Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
   })
   .openapi({
     description:
@@ -3542,35 +2637,23 @@ const VpcPeeringAuthorizationSchema = z
 
 const CreateVpcPeeringAuthorizationOutputSchema = z
   .object({
-    VpcPeeringAuthorization: VpcPeeringAuthorizationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details on the requested VPC peering authorization, including expiration.',
-        }),
-    ).exactOptional(),
+    VpcPeeringAuthorization: VpcPeeringAuthorizationSchema.exactOptional().openapi({
+      description: 'Details on the requested VPC peering authorization, including expiration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateVpcPeeringAuthorizationOutput')
 
 const CreateVpcPeeringAuthorizationInputSchema = z
   .object({
-    GameLiftAwsAccountId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the Amazon Web Services account that you use to manage your Amazon GameLift fleet. You can find your Account ID in the Amazon Web Services Management Console under account settings.',
-        }),
-    ),
-    PeerVpcId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a VPC with resources to be accessed by your Amazon GameLift fleet. The VPC must be in the same Region as your fleet. To look up a VPC ID, use the <a href="https://console.aws.amazon.com/vpc/">VPC Dashboard</a> in the Amazon Web Services Management Console. Learn more about VPC peering in <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/vpc-peering.html">VPC Peering with Amazon GameLift Fleets</a>.',
-        }),
-    ),
+    GameLiftAwsAccountId: NonZeroAndMaxStringSchema.openapi({
+      description:
+        'A unique identifier for the Amazon Web Services account that you use to manage your Amazon GameLift fleet. You can find your Account ID in the Amazon Web Services Management Console under account settings.',
+    }),
+    PeerVpcId: NonZeroAndMaxStringSchema.openapi({
+      description:
+        'A unique identifier for a VPC with resources to be accessed by your Amazon GameLift fleet. The VPC must be in the same Region as your fleet. To look up a VPC ID, use the <a href="https://console.aws.amazon.com/vpc/">VPC Dashboard</a> in the Amazon Web Services Management Console. Learn more about VPC peering in <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/vpc-peering.html">VPC Peering with Amazon GameLift Fleets</a>.',
+    }),
   })
   .openapi({
     required: ['GameLiftAwsAccountId', 'PeerVpcId'],
@@ -3579,35 +2662,23 @@ const CreateVpcPeeringAuthorizationInputSchema = z
   .openapi('CreateVpcPeeringAuthorizationInput')
 
 const CreateVpcPeeringConnectionOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('CreateVpcPeeringConnectionOutput')
 
 const CreateVpcPeeringConnectionInputSchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet. You can use either the fleet ID or ARN value. This tells Amazon GameLift which GameLift VPC to peer with. ',
-        }),
-    ),
-    PeerVpcAwsAccountId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the Amazon Web Services account with the VPC that you want to peer your Amazon GameLift fleet with. You can find your Account ID in the Amazon Web Services Management Console under account settings.',
-        }),
-    ),
-    PeerVpcId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a VPC with resources to be accessed by your Amazon GameLift fleet. The VPC must be in the same Region as your fleet. To look up a VPC ID, use the <a href="https://console.aws.amazon.com/vpc/">VPC Dashboard</a> in the Amazon Web Services Management Console. Learn more about VPC peering in <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/vpc-peering.html">VPC Peering with Amazon GameLift Fleets</a>.',
-        }),
-    ),
+    FleetId: FleetIdSchema.openapi({
+      description:
+        'A unique identifier for the fleet. You can use either the fleet ID or ARN value. This tells Amazon GameLift which GameLift VPC to peer with. ',
+    }),
+    PeerVpcAwsAccountId: NonZeroAndMaxStringSchema.openapi({
+      description:
+        'A unique identifier for the Amazon Web Services account with the VPC that you want to peer your Amazon GameLift fleet with. You can find your Account ID in the Amazon Web Services Management Console under account settings.',
+    }),
+    PeerVpcId: NonZeroAndMaxStringSchema.openapi({
+      description:
+        'A unique identifier for a VPC with resources to be accessed by your Amazon GameLift fleet. The VPC must be in the same Region as your fleet. To look up a VPC ID, use the <a href="https://console.aws.amazon.com/vpc/">VPC Dashboard</a> in the Amazon Web Services Management Console. Learn more about VPC peering in <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/vpc-peering.html">VPC Peering with Amazon GameLift Fleets</a>.',
+    }),
   })
   .openapi({
     required: ['FleetId', 'PeerVpcAwsAccountId', 'PeerVpcId'],
@@ -3617,108 +2688,72 @@ const CreateVpcPeeringConnectionInputSchema = z
 
 const DeleteAliasInputSchema = z
   .object({
-    AliasId: AliasIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier of the alias that you want to delete. You can use either the alias ID or ARN value.',
-        }),
-    ),
+    AliasId: AliasIdOrArnSchema.openapi({
+      description:
+        'A unique identifier of the alias that you want to delete. You can use either the alias ID or ARN value.',
+    }),
   })
   .openapi({ required: ['AliasId'], title: 'DeleteAliasInput' })
   .openapi('DeleteAliasInput')
 
 const DeleteBuildInputSchema = z
   .object({
-    BuildId: BuildIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the build to delete. You can use either the build ID or ARN value. ',
-        }),
-    ),
+    BuildId: BuildIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the build to delete. You can use either the build ID or ARN value. ',
+    }),
   })
   .openapi({ required: ['BuildId'], title: 'DeleteBuildInput' })
   .openapi('DeleteBuildInput')
 
 const DeleteFleetInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to be deleted. You can use either the fleet ID or ARN value.',
-        }),
-    ),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to be deleted. You can use either the fleet ID or ARN value.',
+    }),
   })
   .openapi({ required: ['FleetId'], title: 'DeleteFleetInput' })
   .openapi('DeleteFleetInput')
 
 const DeleteFleetLocationsOutputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet that location attributes are being deleted for.',
-        }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
-        }),
-    ).exactOptional(),
-    LocationStates: LocationStateListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The remote locations that are being deleted, with each location status set to <code>DELETING</code>.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the fleet that location attributes are being deleted for.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
+    }),
+    LocationStates: LocationStateListSchema.exactOptional().openapi({
+      description:
+        'The remote locations that are being deleted, with each location status set to <code>DELETING</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteFleetLocationsOutput')
 
 const DeleteFleetLocationsInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to delete locations for. You can use either the fleet ID or ARN value.',
-        }),
-    ),
-    Locations: LocationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of fleet locations to delete. Specify locations in the form of an Amazon Web Services Region code, such as <code>us-west-2</code>.',
-        }),
-    ),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to delete locations for. You can use either the fleet ID or ARN value.',
+    }),
+    Locations: LocationListSchema.openapi({
+      description:
+        'The list of fleet locations to delete. Specify locations in the form of an Amazon Web Services Region code, such as <code>us-west-2</code>.',
+    }),
   })
   .openapi({ required: ['FleetId', 'Locations'], title: 'DeleteFleetLocationsInput' })
   .openapi('DeleteFleetLocationsInput')
 
 const DeleteGameServerGroupOutputSchema = z
   .object({
-    GameServerGroup: GameServerGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the deleted game server group resource, with status updated to <code>DELETE_SCHEDULED</code>. ',
-        }),
-    ).exactOptional(),
+    GameServerGroup: GameServerGroupSchema.exactOptional().openapi({
+      description:
+        'An object that describes the deleted game server group resource, with status updated to <code>DELETE_SCHEDULED</code>. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteGameServerGroupOutput')
@@ -3729,27 +2764,19 @@ const GameServerGroupDeleteOptionSchema = z
 
 const DeleteGameServerGroupInputSchema = z
   .object({
-    GameServerGroupName: GameServerGroupNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the game server group. Use either the name or ARN value.',
-        }),
-    ),
-    DeleteOption: GameServerGroupDeleteOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of delete to perform. Options include the following:</p> <ul> <li> <p> <code>SAFE_DELETE</code> – (default) Terminates the game server group and Amazon EC2 Auto Scaling group only when it has no game servers that are in <code>UTILIZED</code> status.</p> </li> <li> <p> <code>FORCE_DELETE</code> – Terminates the game server group, including all active game servers regardless of their utilization status, and the Amazon EC2 Auto Scaling group. </p> </li> <li> <p> <code>RETAIN</code> – Does a safe delete of the game server group but retains the Amazon EC2 Auto Scaling group as is.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    GameServerGroupName: GameServerGroupNameOrArnSchema.openapi({
+      description:
+        'A unique identifier for the game server group. Use either the name or ARN value.',
+    }),
+    DeleteOption: GameServerGroupDeleteOptionSchema.exactOptional().openapi({
+      description:
+        '<p>The type of delete to perform. Options include the following:</p> <ul> <li> <p> <code>SAFE_DELETE</code> – (default) Terminates the game server group and Amazon EC2 Auto Scaling group only when it has no game servers that are in <code>UTILIZED</code> status.</p> </li> <li> <p> <code>FORCE_DELETE</code> – Terminates the game server group, including all active game servers regardless of their utilization status, and the Amazon EC2 Auto Scaling group. </p> </li> <li> <p> <code>RETAIN</code> – Does a safe delete of the game server group but retains the Amazon EC2 Auto Scaling group as is.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['GameServerGroupName'], title: 'DeleteGameServerGroupInput' })
   .openapi('DeleteGameServerGroupInput')
 
-const DeleteGameSessionQueueOutputSchema = z.object({}).openapi('DeleteGameSessionQueueOutput')
+const DeleteGameSessionQueueOutputSchema = z.looseObject({}).openapi('DeleteGameSessionQueueOutput')
 
 const GameSessionQueueNameOrArnSchema = z
   .string()
@@ -3760,19 +2787,15 @@ const GameSessionQueueNameOrArnSchema = z
 
 const DeleteGameSessionQueueInputSchema = z
   .object({
-    Name: GameSessionQueueNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with game session queue. Queue names must be unique within each Region. You can use either the queue ID or ARN value. ',
-        }),
-    ),
+    Name: GameSessionQueueNameOrArnSchema.openapi({
+      description:
+        'A descriptive label that is associated with game session queue. Queue names must be unique within each Region. You can use either the queue ID or ARN value. ',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DeleteGameSessionQueueInput' })
   .openapi('DeleteGameSessionQueueInput')
 
-const DeleteLocationOutputSchema = z.object({}).openapi('DeleteLocationOutput')
+const DeleteLocationOutputSchema = z.looseObject({}).openapi('DeleteLocationOutput')
 
 const CustomLocationNameOrArnModelSchema = z
   .string()
@@ -3783,15 +2806,15 @@ const CustomLocationNameOrArnModelSchema = z
 
 const DeleteLocationInputSchema = z
   .object({
-    LocationName: CustomLocationNameOrArnModelSchema.and(
-      z.any().openapi({ description: 'The location name of the custom location to be deleted.' }),
-    ),
+    LocationName: CustomLocationNameOrArnModelSchema.openapi({
+      description: 'The location name of the custom location to be deleted.',
+    }),
   })
   .openapi({ required: ['LocationName'], title: 'DeleteLocationInput' })
   .openapi('DeleteLocationInput')
 
 const DeleteMatchmakingConfigurationOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteMatchmakingConfigurationOutput')
 
 const MatchmakingConfigurationNameSchema = z
@@ -3803,92 +2826,66 @@ const MatchmakingConfigurationNameSchema = z
 
 const DeleteMatchmakingConfigurationInputSchema = z
   .object({
-    Name: MatchmakingConfigurationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the matchmaking configuration. You can use either the configuration name or ARN value.',
-        }),
-    ),
+    Name: MatchmakingConfigurationNameSchema.openapi({
+      description:
+        'A unique identifier for the matchmaking configuration. You can use either the configuration name or ARN value.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DeleteMatchmakingConfigurationInput' })
   .openapi('DeleteMatchmakingConfigurationInput')
 
-const DeleteMatchmakingRuleSetOutputSchema = z.object({}).openapi('DeleteMatchmakingRuleSetOutput')
+const DeleteMatchmakingRuleSetOutputSchema = z
+  .looseObject({})
+  .openapi('DeleteMatchmakingRuleSetOutput')
 
 const DeleteMatchmakingRuleSetInputSchema = z
   .object({
-    Name: MatchmakingRuleSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the matchmaking rule set to be deleted. (Note: The rule set name is different from the optional "name" field in the rule set body.) You can use either the rule set name or ARN value.',
-        }),
-    ),
+    Name: MatchmakingRuleSetNameSchema.openapi({
+      description:
+        'A unique identifier for the matchmaking rule set to be deleted. (Note: The rule set name is different from the optional "name" field in the rule set body.) You can use either the rule set name or ARN value.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DeleteMatchmakingRuleSetInput' })
   .openapi('DeleteMatchmakingRuleSetInput')
 
 const DeleteScalingPolicyInputSchema = z
   .object({
-    Name: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A descriptive label that is associated with a fleet's scaling policy. Policy names do not need to be unique.",
-        }),
-    ),
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to be deleted. You can use either the fleet ID or ARN value.',
-        }),
-    ),
+    Name: NonZeroAndMaxStringSchema.openapi({
+      description:
+        "A descriptive label that is associated with a fleet's scaling policy. Policy names do not need to be unique.",
+    }),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to be deleted. You can use either the fleet ID or ARN value.',
+    }),
   })
   .openapi({ required: ['Name', 'FleetId'], title: 'DeleteScalingPolicyInput' })
   .openapi('DeleteScalingPolicyInput')
 
 const DeleteScriptInputSchema = z
   .object({
-    ScriptId: ScriptIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the Realtime script to delete. You can use either the script ID or ARN value.',
-        }),
-    ),
+    ScriptId: ScriptIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the Realtime script to delete. You can use either the script ID or ARN value.',
+    }),
   })
   .openapi({ required: ['ScriptId'], title: 'DeleteScriptInput' })
   .openapi('DeleteScriptInput')
 
 const DeleteVpcPeeringAuthorizationOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteVpcPeeringAuthorizationOutput')
 
 const DeleteVpcPeeringAuthorizationInputSchema = z
   .object({
-    GameLiftAwsAccountId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the Amazon Web Services account that you use to manage your Amazon GameLift fleet. You can find your Account ID in the Amazon Web Services Management Console under account settings.',
-        }),
-    ),
-    PeerVpcId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a VPC with resources to be accessed by your Amazon GameLift fleet. The VPC must be in the same Region as your fleet. To look up a VPC ID, use the <a href="https://console.aws.amazon.com/vpc/">VPC Dashboard</a> in the Amazon Web Services Management Console. Learn more about VPC peering in <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/vpc-peering.html">VPC Peering with Amazon GameLift Fleets</a>.',
-        }),
-    ),
+    GameLiftAwsAccountId: NonZeroAndMaxStringSchema.openapi({
+      description:
+        'A unique identifier for the Amazon Web Services account that you use to manage your Amazon GameLift fleet. You can find your Account ID in the Amazon Web Services Management Console under account settings.',
+    }),
+    PeerVpcId: NonZeroAndMaxStringSchema.openapi({
+      description:
+        'A unique identifier for a VPC with resources to be accessed by your Amazon GameLift fleet. The VPC must be in the same Region as your fleet. To look up a VPC ID, use the <a href="https://console.aws.amazon.com/vpc/">VPC Dashboard</a> in the Amazon Web Services Management Console. Learn more about VPC peering in <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/vpc-peering.html">VPC Peering with Amazon GameLift Fleets</a>.',
+    }),
   })
   .openapi({
     required: ['GameLiftAwsAccountId', 'PeerVpcId'],
@@ -3897,22 +2894,18 @@ const DeleteVpcPeeringAuthorizationInputSchema = z
   .openapi('DeleteVpcPeeringAuthorizationInput')
 
 const DeleteVpcPeeringConnectionOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteVpcPeeringConnectionOutput')
 
 const DeleteVpcPeeringConnectionInputSchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet. This fleet specified must match the fleet referenced in the VPC peering connection record. You can use either the fleet ID or ARN value.',
-        }),
-    ),
-    VpcPeeringConnectionId: NonZeroAndMaxStringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for a VPC peering connection.' }),
-    ),
+    FleetId: FleetIdSchema.openapi({
+      description:
+        'A unique identifier for the fleet. This fleet specified must match the fleet referenced in the VPC peering connection record. You can use either the fleet ID or ARN value.',
+    }),
+    VpcPeeringConnectionId: NonZeroAndMaxStringSchema.openapi({
+      description: 'A unique identifier for a VPC peering connection.',
+    }),
   })
   .openapi({
     required: ['FleetId', 'VpcPeeringConnectionId'],
@@ -3920,7 +2913,7 @@ const DeleteVpcPeeringConnectionInputSchema = z
   })
   .openapi('DeleteVpcPeeringConnectionInput')
 
-const DeregisterComputeOutputSchema = z.object({}).openapi('DeregisterComputeOutput')
+const DeregisterComputeOutputSchema = z.looseObject({}).openapi('DeregisterComputeOutput')
 
 const ComputeNameOrArnSchema = z
   .string()
@@ -3930,38 +2923,25 @@ const ComputeNameOrArnSchema = z
 
 const DeregisterComputeInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '&gt;A unique identifier for the fleet the compute resource is registered to.',
-        }),
-    ),
-    ComputeName: ComputeNameOrArnSchema.and(
-      z.any().openapi({ description: 'The name of the compute resource you want to delete.' }),
-    ),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description: '&gt;A unique identifier for the fleet the compute resource is registered to.',
+    }),
+    ComputeName: ComputeNameOrArnSchema.openapi({
+      description: 'The name of the compute resource you want to delete.',
+    }),
   })
   .openapi({ required: ['FleetId', 'ComputeName'], title: 'DeregisterComputeInput' })
   .openapi('DeregisterComputeInput')
 
 const DeregisterGameServerInputSchema = z
   .object({
-    GameServerGroupName: GameServerGroupNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the game server group where the game server is running.',
-        }),
-    ),
-    GameServerId: GameServerIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A custom string that uniquely identifies the game server to deregister.',
-        }),
-    ),
+    GameServerGroupName: GameServerGroupNameOrArnSchema.openapi({
+      description:
+        'A unique identifier for the game server group where the game server is running.',
+    }),
+    GameServerId: GameServerIdSchema.openapi({
+      description: 'A custom string that uniquely identifies the game server to deregister.',
+    }),
   })
   .openapi({
     required: ['GameServerGroupName', 'GameServerId'],
@@ -3971,46 +2951,36 @@ const DeregisterGameServerInputSchema = z
 
 const DescribeAliasOutputSchema = z
   .object({
-    Alias: AliasSchema.and(
-      z.any().openapi({ description: 'The requested alias resource.' }),
-    ).exactOptional(),
+    Alias: AliasSchema.exactOptional().openapi({ description: 'The requested alias resource.' }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAliasOutput')
 
 const DescribeAliasInputSchema = z
   .object({
-    AliasId: AliasIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the fleet alias that you want to retrieve. You can use either the alias ID or ARN value. ',
-        }),
-    ),
+    AliasId: AliasIdOrArnSchema.openapi({
+      description:
+        'The unique identifier for the fleet alias that you want to retrieve. You can use either the alias ID or ARN value. ',
+    }),
   })
   .openapi({ required: ['AliasId'], title: 'DescribeAliasInput' })
   .openapi('DescribeAliasInput')
 
 const DescribeBuildOutputSchema = z
   .object({
-    Build: BuildSchema.and(
-      z.any().openapi({ description: 'Set of properties describing the requested build.' }),
-    ).exactOptional(),
+    Build: BuildSchema.exactOptional().openapi({
+      description: 'Set of properties describing the requested build.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeBuildOutput')
 
 const DescribeBuildInputSchema = z
   .object({
-    BuildId: BuildIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the build to retrieve properties for. You can use either the build ID or ARN value. ',
-        }),
-    ),
+    BuildId: BuildIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the build to retrieve properties for. You can use either the build ID or ARN value. ',
+    }),
   })
   .openapi({ required: ['BuildId'], title: 'DescribeBuildInput' })
   .openapi('DescribeBuildInput')
@@ -4038,96 +3008,51 @@ const GameLiftServiceSdkEndpointOutputSchema = z
 
 const ComputeSchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the fleet that the compute is registered to.',
-        }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the fleet that the compute is registered to.',
-        }),
-    ).exactOptional(),
-    ComputeName: ComputeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with the compute resource registered to your fleet.',
-        }),
-    ).exactOptional(),
-    ComputeArn: ComputeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN that is assigned to the compute resource and uniquely identifies it. ARNs are unique across locations.',
-        }),
-    ).exactOptional(),
-    IpAddress: IpAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address of the compute resource. Amazon GameLift requires the DNS name or IP address to manage your compute resource.',
-        }),
-    ).exactOptional(),
-    DnsName: DnsNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DNS name of the compute resource. Amazon GameLift requires the DNS name or IP address to manage your compute resource.',
-        }),
-    ).exactOptional(),
-    ComputeStatus: ComputeStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Current status of the compute. A compute must have an <code>ACTIVE</code> status to host game sessions.',
-        }),
-    ).exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom location you added to the fleet that this compute resource resides in.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    OperatingSystem: OperatingSystemSchema.and(
-      z.any().openapi({ description: 'The type of operating system on your compute resource.' }),
-    ).exactOptional(),
-    Type: EC2InstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The compute type that the fleet uses. A fleet can use Anywhere compute resources that you own, or use managed Amazon EC2 instances.',
-        }),
-    ).exactOptional(),
-    GameLiftServiceSdkEndpoint: GameLiftServiceSdkEndpointOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The endpoint connection details of the Amazon GameLift SDK endpoint that your game server connects to.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the fleet that the compute is registered to.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the fleet that the compute is registered to.',
+    }),
+    ComputeName: ComputeNameSchema.exactOptional().openapi({
+      description:
+        'A descriptive label that is associated with the compute resource registered to your fleet.',
+    }),
+    ComputeArn: ComputeArnSchema.exactOptional().openapi({
+      description:
+        'The ARN that is assigned to the compute resource and uniquely identifies it. ARNs are unique across locations.',
+    }),
+    IpAddress: IpAddressSchema.exactOptional().openapi({
+      description:
+        'The IP address of the compute resource. Amazon GameLift requires the DNS name or IP address to manage your compute resource.',
+    }),
+    DnsName: DnsNameSchema.exactOptional().openapi({
+      description:
+        'The DNS name of the compute resource. Amazon GameLift requires the DNS name or IP address to manage your compute resource.',
+    }),
+    ComputeStatus: ComputeStatusSchema.exactOptional().openapi({
+      description:
+        'Current status of the compute. A compute must have an <code>ACTIVE</code> status to host game sessions.',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        'The name of the custom location you added to the fleet that this compute resource resides in.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    OperatingSystem: OperatingSystemSchema.exactOptional().openapi({
+      description: 'The type of operating system on your compute resource.',
+    }),
+    Type: EC2InstanceTypeSchema.exactOptional().openapi({
+      description:
+        'The compute type that the fleet uses. A fleet can use Anywhere compute resources that you own, or use managed Amazon EC2 instances.',
+    }),
+    GameLiftServiceSdkEndpoint: GameLiftServiceSdkEndpointOutputSchema.exactOptional().openapi({
+      description:
+        'The endpoint connection details of the Amazon GameLift SDK endpoint that your game server connects to.',
+    }),
   })
   .openapi({
     description:
@@ -4138,71 +3063,43 @@ const ComputeSchema = z
 
 const DescribeComputeOutputSchema = z
   .object({
-    Compute: ComputeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The details of the compute resource you registered to the specified fleet.',
-        }),
-    ).exactOptional(),
+    Compute: ComputeSchema.exactOptional().openapi({
+      description: 'The details of the compute resource you registered to the specified fleet.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeComputeOutput')
 
 const DescribeComputeInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the fleet the compute is registered to.',
-        }),
-    ),
-    ComputeName: ComputeNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with the compute resource registered to your fleet.',
-        }),
-    ),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description: 'A unique identifier for the fleet the compute is registered to.',
+    }),
+    ComputeName: ComputeNameOrArnSchema.openapi({
+      description:
+        'A descriptive label that is associated with the compute resource registered to your fleet.',
+    }),
   })
   .openapi({ required: ['FleetId', 'ComputeName'], title: 'DescribeComputeInput' })
   .openapi('DescribeComputeInput')
 
 const EC2InstanceLimitSchema = z
   .object({
-    EC2InstanceType: EC2InstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an Amazon EC2 instance type. See <a href="http://aws.amazon.com/ec2/instance-types/">Amazon Elastic Compute Cloud Instance Types</a> for detailed descriptions. ',
-        }),
-    ).exactOptional(),
-    CurrentInstances: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of instances for the specified type and location that are currently being used by the Amazon Web Services account. ',
-        }),
-    ).exactOptional(),
-    InstanceLimit: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of instances that is allowed for the specified instance type and location.',
-        }),
-    ).exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An Amazon Web Services Region code, such as <code>us-west-2</code>. ',
-        }),
-    ).exactOptional(),
+    EC2InstanceType: EC2InstanceTypeSchema.exactOptional().openapi({
+      description:
+        'The name of an Amazon EC2 instance type. See <a href="http://aws.amazon.com/ec2/instance-types/">Amazon Elastic Compute Cloud Instance Types</a> for detailed descriptions. ',
+    }),
+    CurrentInstances: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The number of instances for the specified type and location that are currently being used by the Amazon Web Services account. ',
+    }),
+    InstanceLimit: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The number of instances that is allowed for the specified instance type and location.',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description: 'An Amazon Web Services Region code, such as <code>us-west-2</code>. ',
+    }),
   })
   .openapi({
     description:
@@ -4215,35 +3112,23 @@ const EC2InstanceLimitListSchema = z.array(EC2InstanceLimitSchema).openapi('EC2I
 
 const DescribeEC2InstanceLimitsOutputSchema = z
   .object({
-    EC2InstanceLimits: EC2InstanceLimitListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of instances for the specified instance type.',
-        }),
-    ).exactOptional(),
+    EC2InstanceLimits: EC2InstanceLimitListSchema.exactOptional().openapi({
+      description: 'The maximum number of instances for the specified instance type.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEC2InstanceLimitsOutput')
 
 const DescribeEC2InstanceLimitsInputSchema = z
   .object({
-    EC2InstanceType: EC2InstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Name of an Amazon EC2 instance type that is supported in Amazon GameLift. A fleet instance type determines the computing resources of each instance in the fleet, including CPU, memory, storage, and networking capacity. Do not specify a value for this parameter to retrieve limits for all instance types.',
-        }),
-    ).exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a remote location to request instance limits for, in the form of an Amazon Web Services Region code such as <code>us-west-2</code>.',
-        }),
-    ).exactOptional(),
+    EC2InstanceType: EC2InstanceTypeSchema.exactOptional().openapi({
+      description:
+        'Name of an Amazon EC2 instance type that is supported in Amazon GameLift. A fleet instance type determines the computing resources of each instance in the fleet, including CPU, memory, storage, and networking capacity. Do not specify a value for this parameter to retrieve limits for all instance types.',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        'The name of a remote location to request instance limits for, in the form of an Amazon Web Services Region code such as <code>us-west-2</code>.',
+    }),
   })
   .openapi({ title: 'DescribeEC2InstanceLimitsInput', required: [] })
   .openapi('DescribeEC2InstanceLimitsInput')
@@ -4252,22 +3137,14 @@ const FleetAttributesListSchema = z.array(FleetAttributesSchema).openapi('FleetA
 
 const DescribeFleetAttributesOutputSchema = z
   .object({
-    FleetAttributes: FleetAttributesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of objects containing attribute metadata for each requested fleet ID. Attribute objects are returned only for fleets that currently exist.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    FleetAttributes: FleetAttributesListSchema.exactOptional().openapi({
+      description:
+        'A collection of objects containing attribute metadata for each requested fleet ID. Attribute objects are returned only for fleets that currently exist.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFleetAttributesOutput')
@@ -4276,75 +3153,46 @@ const FleetIdOrArnListSchema = z.array(FleetIdOrArnSchema).min(1).openapi('Fleet
 
 const DescribeFleetAttributesInputSchema = z
   .object({
-    FleetIds: FleetIdOrArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of unique fleet identifiers to retrieve attributes for. You can use either the fleet ID or ARN value. To retrieve attributes for all current fleets, do not include this parameter. ',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages. This parameter is ignored when the request specifies one or a list of fleet IDs.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value. This parameter is ignored when the request specifies one or a list of fleet IDs.',
-        }),
-    ).exactOptional(),
+    FleetIds: FleetIdOrArnListSchema.exactOptional().openapi({
+      description:
+        'A list of unique fleet identifiers to retrieve attributes for. You can use either the fleet ID or ARN value. To retrieve attributes for all current fleets, do not include this parameter. ',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages. This parameter is ignored when the request specifies one or a list of fleet IDs.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value. This parameter is ignored when the request specifies one or a list of fleet IDs.',
+    }),
   })
   .openapi({ title: 'DescribeFleetAttributesInput', required: [] })
   .openapi('DescribeFleetAttributesInput')
 
 const EC2InstanceCountsSchema = z
   .object({
-    DESIRED: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Ideal number of active instances. GameLift will always try to maintain the desired number of instances. Capacity is scaled up or down by changing the desired instances. ',
-        }),
-    ).exactOptional(),
-    MINIMUM: WholeNumberSchema.and(
-      z.any().openapi({ description: 'The minimum instance count value allowed.' }),
-    ).exactOptional(),
-    MAXIMUM: WholeNumberSchema.and(
-      z.any().openapi({ description: 'The maximum instance count value allowed.' }),
-    ).exactOptional(),
-    PENDING: WholeNumberSchema.and(
-      z.any().openapi({ description: 'Number of instances that are starting but not yet active.' }),
-    ).exactOptional(),
-    ACTIVE: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Actual number of instances that are ready to host game sessions.',
-        }),
-    ).exactOptional(),
-    IDLE: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Number of active instances that are not currently hosting a game session.',
-        }),
-    ).exactOptional(),
-    TERMINATING: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Number of instances that are no longer active but haven't yet been terminated.",
-        }),
-    ).exactOptional(),
+    DESIRED: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'Ideal number of active instances. GameLift will always try to maintain the desired number of instances. Capacity is scaled up or down by changing the desired instances. ',
+    }),
+    MINIMUM: WholeNumberSchema.exactOptional().openapi({
+      description: 'The minimum instance count value allowed.',
+    }),
+    MAXIMUM: WholeNumberSchema.exactOptional().openapi({
+      description: 'The maximum instance count value allowed.',
+    }),
+    PENDING: WholeNumberSchema.exactOptional().openapi({
+      description: 'Number of instances that are starting but not yet active.',
+    }),
+    ACTIVE: WholeNumberSchema.exactOptional().openapi({
+      description: 'Actual number of instances that are ready to host game sessions.',
+    }),
+    IDLE: WholeNumberSchema.exactOptional().openapi({
+      description: 'Number of active instances that are not currently hosting a game session.',
+    }),
+    TERMINATING: WholeNumberSchema.exactOptional().openapi({
+      description: "Number of instances that are no longer active but haven't yet been terminated.",
+    }),
   })
   .openapi({
     description:
@@ -4355,38 +3203,22 @@ const EC2InstanceCountsSchema = z
 
 const FleetCapacitySchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the fleet associated with the location.',
-        }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
-        }),
-    ).exactOptional(),
-    InstanceType: EC2InstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon EC2 instance type that is used for all instances in a fleet. The instance type determines the computing resources in use, including CPU, memory, storage, and networking capacity. See <a href="http://aws.amazon.com/ec2/instance-types/">Amazon Elastic Compute Cloud Instance Types</a> for detailed descriptions.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the fleet associated with the location.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
+    }),
+    InstanceType: EC2InstanceTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon EC2 instance type that is used for all instances in a fleet. The instance type determines the computing resources in use, including CPU, memory, storage, and networking capacity. See <a href="http://aws.amazon.com/ec2/instance-types/">Amazon Elastic Compute Cloud Instance Types</a> for detailed descriptions.',
+    }),
     InstanceCounts: EC2InstanceCountsSchema.exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fleet location for the instance count information, expressed as an Amazon Web Services Region code, such as <code>us-west-2</code>. ',
-        }),
-    ).exactOptional(),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        'The fleet location for the instance count information, expressed as an Amazon Web Services Region code, such as <code>us-west-2</code>. ',
+    }),
   })
   .openapi({
     description:
@@ -4399,52 +3231,32 @@ const FleetCapacityListSchema = z.array(FleetCapacitySchema).openapi('FleetCapac
 
 const DescribeFleetCapacityOutputSchema = z
   .object({
-    FleetCapacity: FleetCapacityListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of objects that contains capacity information for each requested fleet ID. Capacity objects are returned only for fleets that currently exist.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    FleetCapacity: FleetCapacityListSchema.exactOptional().openapi({
+      description:
+        'A collection of objects that contains capacity information for each requested fleet ID. Capacity objects are returned only for fleets that currently exist.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFleetCapacityOutput')
 
 const DescribeFleetCapacityInputSchema = z
   .object({
-    FleetIds: FleetIdOrArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to retrieve capacity information for. You can use either the fleet ID or ARN value. Leave this parameter empty to retrieve capacity information for all fleets.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages. This parameter is ignored when the request specifies one or a list of fleet IDs.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value. This parameter is ignored when the request specifies one or a list of fleet IDs.',
-        }),
-    ).exactOptional(),
+    FleetIds: FleetIdOrArnListSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the fleet to retrieve capacity information for. You can use either the fleet ID or ARN value. Leave this parameter empty to retrieve capacity information for all fleets.',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages. This parameter is ignored when the request specifies one or a list of fleet IDs.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value. This parameter is ignored when the request specifies one or a list of fleet IDs.',
+    }),
   })
   .openapi({ title: 'DescribeFleetCapacityInput', required: [] })
   .openapi('DescribeFleetCapacityInput')
@@ -4490,41 +3302,27 @@ const EventCodeSchema = z
 
 const EventSchema = z
   .object({
-    EventId: NonZeroAndMaxStringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for a fleet event.' }),
-    ).exactOptional(),
-    ResourceId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for an event resource, such as a fleet ID.' }),
-    ).exactOptional(),
-    EventCode: EventCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The type of event being logged. </p> <p> <b>Fleet state transition events:</b> </p> <ul> <li> <p>FLEET_CREATED -- A fleet resource was successfully created with a status of <code>NEW</code>. Event messaging includes the fleet ID.</p> </li> <li> <p>FLEET_STATE_DOWNLOADING -- Fleet status changed from <code>NEW</code> to <code>DOWNLOADING</code>. The compressed build has started downloading to a fleet instance for installation.</p> </li> <li> <p>FLEET_STATE_VALIDATING -- Fleet status changed from <code>DOWNLOADING</code> to <code>VALIDATING</code>. Amazon GameLift has successfully downloaded the build and is now validating the build files.</p> </li> <li> <p>FLEET_STATE_BUILDING -- Fleet status changed from <code>VALIDATING</code> to <code>BUILDING</code>. Amazon GameLift has successfully verified the build files and is now running the installation scripts.</p> </li> <li> <p>FLEET_STATE_ACTIVATING -- Fleet status changed from <code>BUILDING</code> to <code>ACTIVATING</code>. Amazon GameLift is trying to launch an instance and test the connectivity between the build and the Amazon GameLift Service via the Server SDK.</p> </li> <li> <p>FLEET_STATE_ACTIVE -- The fleet's status changed from <code>ACTIVATING</code> to <code>ACTIVE</code>. The fleet is now ready to host game sessions.</p> </li> <li> <p>FLEET_STATE_ERROR -- The Fleet's status changed to <code>ERROR</code>. Describe the fleet event message for more details.</p> </li> </ul> <p> <b>Fleet creation events (ordered by fleet creation activity):</b> </p> <ul> <li> <p>FLEET_BINARY_DOWNLOAD_FAILED -- The build failed to download to the fleet instance.</p> </li> <li> <p>FLEET_CREATION_EXTRACTING_BUILD -- The game server build was successfully downloaded to an instance, and the build files are now being extracted from the uploaded build and saved to an instance. Failure at this stage prevents a fleet from moving to ACTIVE status. Logs for this stage display a list of the files that are extracted and saved on the instance. Access the logs by using the URL in <i>PreSignedLogUrl</i>.</p> </li> <li> <p>FLEET_CREATION_RUNNING_INSTALLER -- The game server build files were successfully extracted, and the GameLift is now running the build's install script (if one is included). Failure in this stage prevents a fleet from moving to ACTIVE status. Logs for this stage list the installation steps and whether or not the install completed successfully. Access the logs by using the URL in <i>PreSignedLogUrl</i>.</p> </li> <li> <p>FLEET_CREATION_VALIDATING_RUNTIME_CONFIG -- The build process was successful, and the GameLift is now verifying that the game server launch paths, which are specified in the fleet's runtime configuration, exist. If any listed launch path exists, Amazon GameLift tries to launch a game server process and waits for the process to report ready. Failures in this stage prevent a fleet from moving to <code>ACTIVE</code> status. Logs for this stage list the launch paths in the runtime configuration and indicate whether each is found. Access the logs by using the URL in <i>PreSignedLogUrl</i>.</p> </li> <li> <p>FLEET_VALIDATION_LAUNCH_PATH_NOT_FOUND -- Validation of the runtime configuration failed because the executable specified in a launch path does not exist on the instance.</p> </li> <li> <p>FLEET_VALIDATION_EXECUTABLE_RUNTIME_FAILURE -- Validation of the runtime configuration failed because the executable specified in a launch path failed to run on the fleet instance.</p> </li> <li> <p>FLEET_VALIDATION_TIMED_OUT -- Validation of the fleet at the end of creation timed out. Try fleet creation again.</p> </li> <li> <p>FLEET_ACTIVATION_FAILED -- The fleet failed to successfully complete one of the steps in the fleet activation process. This event code indicates that the game build was successfully downloaded to a fleet instance, built, and validated, but was not able to start a server process. For more information, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-debug.html#fleets-creating-debug-creation\">Debug Fleet Creation Issues</a>.</p> </li> <li> <p>FLEET_ACTIVATION_FAILED_NO_INSTANCES -- Fleet creation was not able to obtain any instances based on the input fleet attributes. Try again at a different time or choose a different combination of fleet attributes such as fleet type, instance type, etc.</p> </li> <li> <p>FLEET_INITIALIZATION_FAILED -- A generic exception occurred during fleet creation. Describe the fleet event message for more details.</p> </li> </ul> <p> <b>VPC peering events:</b> </p> <ul> <li> <p>FLEET_VPC_PEERING_SUCCEEDED -- A VPC peering connection has been established between the VPC for an Amazon GameLift fleet and a VPC in your Amazon Web Services account.</p> </li> <li> <p>FLEET_VPC_PEERING_FAILED -- A requested VPC peering connection has failed. Event details and status information provide additional detail. A common reason for peering failure is that the two VPCs have overlapping CIDR blocks of IPv4 addresses. To resolve this, change the CIDR block for the VPC in your Amazon Web Services account. For more information on VPC peering failures, see <a href=\"https://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide/invalid-peering-configurations.html\">https://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide/invalid-peering-configurations.html</a> </p> </li> <li> <p>FLEET_VPC_PEERING_DELETED -- A VPC peering connection has been successfully deleted.</p> </li> </ul> <p> <b>Spot instance events:</b> </p> <ul> <li> <p> INSTANCE_INTERRUPTED -- A spot instance was interrupted by EC2 with a two-minute notification.</p> </li> </ul> <p> <b>Server process events:</b> </p> <ul> <li> <p>SERVER_PROCESS_INVALID_PATH -- The game server executable or script could not be found based on the Fleet runtime configuration. Check that the launch path is correct based on the operating system of the Fleet.</p> </li> <li> <p>SERVER_PROCESS_SDK_INITIALIZATION_TIMEOUT -- The server process did not call InitSDK() within the time expected. Check your game session log to see why InitSDK() was not called in time.</p> </li> <li> <p>SERVER_PROCESS_PROCESS_READY_TIMEOUT -- The server process did not call ProcessReady() within the time expected after calling InitSDK(). Check your game session log to see why ProcessReady() was not called in time.</p> </li> <li> <p>SERVER_PROCESS_CRASHED -- The server process exited without calling ProcessEnding(). Check your game session log to see why ProcessEnding() was not called.</p> </li> <li> <p>SERVER_PROCESS_TERMINATED_UNHEALTHY -- The server process did not report a valid health check for too long and was therefore terminated by GameLift. Check your game session log to see if the thread became stuck processing a synchronous task for too long.</p> </li> <li> <p>SERVER_PROCESS_FORCE_TERMINATED -- The server process did not exit cleanly after OnProcessTerminate() was sent within the time expected. Check your game session log to see why termination took longer than expected.</p> </li> <li> <p>SERVER_PROCESS_PROCESS_EXIT_TIMEOUT -- The server process did not exit cleanly within the time expected after calling ProcessEnding(). Check your game session log to see why termination took longer than expected.</p> </li> </ul> <p> <b>Game session events:</b> </p> <ul> <li> <p>GAME_SESSION_ACTIVATION_TIMEOUT -- GameSession failed to activate within the expected time. Check your game session log to see why ActivateGameSession() took longer to complete than expected.</p> </li> </ul> <p> <b>Other fleet events:</b> </p> <ul> <li> <p>FLEET_SCALING_EVENT -- A change was made to the fleet's capacity settings (desired instances, minimum/maximum scaling limits). Event messaging includes the new capacity settings.</p> </li> <li> <p>FLEET_NEW_GAME_SESSION_PROTECTION_POLICY_UPDATED -- A change was made to the fleet's game session protection policy setting. Event messaging includes both the old and new policy setting. </p> </li> <li> <p>FLEET_DELETED -- A request to delete a fleet was initiated.</p> </li> <li> <p> GENERIC_EVENT -- An unspecified event has occurred.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    Message: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'Additional information related to the event.' }),
-    ).exactOptional(),
-    EventTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time stamp indicating when this event occurred. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    PreSignedLogUrl: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Location of stored logs with additional detail that is related to the event. This is useful for debugging issues. The URL is valid for 15 minutes. You can also access fleet creation logs through the Amazon GameLift console.',
-        }),
-    ).exactOptional(),
+    EventId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'A unique identifier for a fleet event.',
+    }),
+    ResourceId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'A unique identifier for an event resource, such as a fleet ID.',
+    }),
+    EventCode: EventCodeSchema.exactOptional().openapi({
+      description:
+        "<p>The type of event being logged. </p> <p> <b>Fleet state transition events:</b> </p> <ul> <li> <p>FLEET_CREATED -- A fleet resource was successfully created with a status of <code>NEW</code>. Event messaging includes the fleet ID.</p> </li> <li> <p>FLEET_STATE_DOWNLOADING -- Fleet status changed from <code>NEW</code> to <code>DOWNLOADING</code>. The compressed build has started downloading to a fleet instance for installation.</p> </li> <li> <p>FLEET_STATE_VALIDATING -- Fleet status changed from <code>DOWNLOADING</code> to <code>VALIDATING</code>. Amazon GameLift has successfully downloaded the build and is now validating the build files.</p> </li> <li> <p>FLEET_STATE_BUILDING -- Fleet status changed from <code>VALIDATING</code> to <code>BUILDING</code>. Amazon GameLift has successfully verified the build files and is now running the installation scripts.</p> </li> <li> <p>FLEET_STATE_ACTIVATING -- Fleet status changed from <code>BUILDING</code> to <code>ACTIVATING</code>. Amazon GameLift is trying to launch an instance and test the connectivity between the build and the Amazon GameLift Service via the Server SDK.</p> </li> <li> <p>FLEET_STATE_ACTIVE -- The fleet's status changed from <code>ACTIVATING</code> to <code>ACTIVE</code>. The fleet is now ready to host game sessions.</p> </li> <li> <p>FLEET_STATE_ERROR -- The Fleet's status changed to <code>ERROR</code>. Describe the fleet event message for more details.</p> </li> </ul> <p> <b>Fleet creation events (ordered by fleet creation activity):</b> </p> <ul> <li> <p>FLEET_BINARY_DOWNLOAD_FAILED -- The build failed to download to the fleet instance.</p> </li> <li> <p>FLEET_CREATION_EXTRACTING_BUILD -- The game server build was successfully downloaded to an instance, and the build files are now being extracted from the uploaded build and saved to an instance. Failure at this stage prevents a fleet from moving to ACTIVE status. Logs for this stage display a list of the files that are extracted and saved on the instance. Access the logs by using the URL in <i>PreSignedLogUrl</i>.</p> </li> <li> <p>FLEET_CREATION_RUNNING_INSTALLER -- The game server build files were successfully extracted, and the GameLift is now running the build's install script (if one is included). Failure in this stage prevents a fleet from moving to ACTIVE status. Logs for this stage list the installation steps and whether or not the install completed successfully. Access the logs by using the URL in <i>PreSignedLogUrl</i>.</p> </li> <li> <p>FLEET_CREATION_VALIDATING_RUNTIME_CONFIG -- The build process was successful, and the GameLift is now verifying that the game server launch paths, which are specified in the fleet's runtime configuration, exist. If any listed launch path exists, Amazon GameLift tries to launch a game server process and waits for the process to report ready. Failures in this stage prevent a fleet from moving to <code>ACTIVE</code> status. Logs for this stage list the launch paths in the runtime configuration and indicate whether each is found. Access the logs by using the URL in <i>PreSignedLogUrl</i>.</p> </li> <li> <p>FLEET_VALIDATION_LAUNCH_PATH_NOT_FOUND -- Validation of the runtime configuration failed because the executable specified in a launch path does not exist on the instance.</p> </li> <li> <p>FLEET_VALIDATION_EXECUTABLE_RUNTIME_FAILURE -- Validation of the runtime configuration failed because the executable specified in a launch path failed to run on the fleet instance.</p> </li> <li> <p>FLEET_VALIDATION_TIMED_OUT -- Validation of the fleet at the end of creation timed out. Try fleet creation again.</p> </li> <li> <p>FLEET_ACTIVATION_FAILED -- The fleet failed to successfully complete one of the steps in the fleet activation process. This event code indicates that the game build was successfully downloaded to a fleet instance, built, and validated, but was not able to start a server process. For more information, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-debug.html#fleets-creating-debug-creation\">Debug Fleet Creation Issues</a>.</p> </li> <li> <p>FLEET_ACTIVATION_FAILED_NO_INSTANCES -- Fleet creation was not able to obtain any instances based on the input fleet attributes. Try again at a different time or choose a different combination of fleet attributes such as fleet type, instance type, etc.</p> </li> <li> <p>FLEET_INITIALIZATION_FAILED -- A generic exception occurred during fleet creation. Describe the fleet event message for more details.</p> </li> </ul> <p> <b>VPC peering events:</b> </p> <ul> <li> <p>FLEET_VPC_PEERING_SUCCEEDED -- A VPC peering connection has been established between the VPC for an Amazon GameLift fleet and a VPC in your Amazon Web Services account.</p> </li> <li> <p>FLEET_VPC_PEERING_FAILED -- A requested VPC peering connection has failed. Event details and status information provide additional detail. A common reason for peering failure is that the two VPCs have overlapping CIDR blocks of IPv4 addresses. To resolve this, change the CIDR block for the VPC in your Amazon Web Services account. For more information on VPC peering failures, see <a href=\"https://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide/invalid-peering-configurations.html\">https://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide/invalid-peering-configurations.html</a> </p> </li> <li> <p>FLEET_VPC_PEERING_DELETED -- A VPC peering connection has been successfully deleted.</p> </li> </ul> <p> <b>Spot instance events:</b> </p> <ul> <li> <p> INSTANCE_INTERRUPTED -- A spot instance was interrupted by EC2 with a two-minute notification.</p> </li> </ul> <p> <b>Server process events:</b> </p> <ul> <li> <p>SERVER_PROCESS_INVALID_PATH -- The game server executable or script could not be found based on the Fleet runtime configuration. Check that the launch path is correct based on the operating system of the Fleet.</p> </li> <li> <p>SERVER_PROCESS_SDK_INITIALIZATION_TIMEOUT -- The server process did not call InitSDK() within the time expected. Check your game session log to see why InitSDK() was not called in time.</p> </li> <li> <p>SERVER_PROCESS_PROCESS_READY_TIMEOUT -- The server process did not call ProcessReady() within the time expected after calling InitSDK(). Check your game session log to see why ProcessReady() was not called in time.</p> </li> <li> <p>SERVER_PROCESS_CRASHED -- The server process exited without calling ProcessEnding(). Check your game session log to see why ProcessEnding() was not called.</p> </li> <li> <p>SERVER_PROCESS_TERMINATED_UNHEALTHY -- The server process did not report a valid health check for too long and was therefore terminated by GameLift. Check your game session log to see if the thread became stuck processing a synchronous task for too long.</p> </li> <li> <p>SERVER_PROCESS_FORCE_TERMINATED -- The server process did not exit cleanly after OnProcessTerminate() was sent within the time expected. Check your game session log to see why termination took longer than expected.</p> </li> <li> <p>SERVER_PROCESS_PROCESS_EXIT_TIMEOUT -- The server process did not exit cleanly within the time expected after calling ProcessEnding(). Check your game session log to see why termination took longer than expected.</p> </li> </ul> <p> <b>Game session events:</b> </p> <ul> <li> <p>GAME_SESSION_ACTIVATION_TIMEOUT -- GameSession failed to activate within the expected time. Check your game session log to see why ActivateGameSession() took longer to complete than expected.</p> </li> </ul> <p> <b>Other fleet events:</b> </p> <ul> <li> <p>FLEET_SCALING_EVENT -- A change was made to the fleet's capacity settings (desired instances, minimum/maximum scaling limits). Event messaging includes the new capacity settings.</p> </li> <li> <p>FLEET_NEW_GAME_SESSION_PROTECTION_POLICY_UPDATED -- A change was made to the fleet's game session protection policy setting. Event messaging includes both the old and new policy setting. </p> </li> <li> <p>FLEET_DELETED -- A request to delete a fleet was initiated.</p> </li> <li> <p> GENERIC_EVENT -- An unspecified event has occurred.</p> </li> </ul>",
+    }),
+    Message: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'Additional information related to the event.',
+    }),
+    EventTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Time stamp indicating when this event occurred. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    PreSignedLogUrl: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'Location of stored logs with additional detail that is related to the event. This is useful for debugging issues. The URL is valid for 15 minutes. You can also access fleet creation logs through the Amazon GameLift console.',
+    }),
   })
   .openapi({
     description:
@@ -4537,68 +3335,39 @@ const EventListSchema = z.array(EventSchema).openapi('EventList')
 
 const DescribeFleetEventsOutputSchema = z
   .object({
-    Events: EventListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of objects containing event log entries for the specified fleet.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    Events: EventListSchema.exactOptional().openapi({
+      description: 'A collection of objects containing event log entries for the specified fleet.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFleetEventsOutput')
 
 const DescribeFleetEventsInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to get event logs for. You can use either the fleet ID or ARN value.',
-        }),
-    ),
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The earliest date to retrieve event logs for. If no start time is specified, this call returns entries starting from when the fleet was created to the specified end time. Format is a number expressed in Unix time as milliseconds (ex: "1469498468.057").',
-        }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The most recent date to retrieve event logs for. If no end time is specified, this call returns entries from the specified start time up to the present. Format is a number expressed in Unix time as milliseconds (ex: "1469498468.057").',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to get event logs for. You can use either the fleet ID or ARN value.',
+    }),
+    StartTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The earliest date to retrieve event logs for. If no start time is specified, this call returns entries starting from when the fleet was created to the specified end time. Format is a number expressed in Unix time as milliseconds (ex: "1469498468.057").',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The most recent date to retrieve event logs for. If no end time is specified, this call returns entries from the specified start time up to the present. Format is a number expressed in Unix time as milliseconds (ex: "1469498468.057").',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
+    }),
   })
   .openapi({ required: ['FleetId'], title: 'DescribeFleetEventsInput' })
   .openapi('DescribeFleetEventsInput')
@@ -4607,24 +3376,16 @@ const LocationUpdateStatusSchema = z.literal('PENDING_UPDATE').openapi('Location
 
 const LocationAttributesSchema = z
   .object({
-    LocationState: LocationStateSchema.and(
-      z.any().openapi({ description: 'A fleet location and its current life-cycle state.' }),
-    ).exactOptional(),
-    StoppedActions: FleetActionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of fleet actions that have been suspended in the fleet location.',
-        }),
-    ).exactOptional(),
-    UpdateStatus: LocationUpdateStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of fleet activity updates to the location. The status <code>PENDING_UPDATE</code> indicates that <code>StopFleetActions</code> or <code>StartFleetActions</code> has been requested but the update has not yet been completed for the location.',
-        }),
-    ).exactOptional(),
+    LocationState: LocationStateSchema.exactOptional().openapi({
+      description: 'A fleet location and its current life-cycle state.',
+    }),
+    StoppedActions: FleetActionListSchema.exactOptional().openapi({
+      description: 'A list of fleet actions that have been suspended in the fleet location.',
+    }),
+    UpdateStatus: LocationUpdateStatusSchema.exactOptional().openapi({
+      description:
+        'The status of fleet activity updates to the location. The status <code>PENDING_UPDATE</code> indicates that <code>StopFleetActions</code> or <code>StartFleetActions</code> has been requested but the update has not yet been completed for the location.',
+    }),
   })
   .openapi({ description: 'Details about a location in a multi-location fleet.', required: [] })
   .openapi('LocationAttributes')
@@ -4635,172 +3396,99 @@ const LocationAttributesListSchema = z
 
 const DescribeFleetLocationAttributesOutputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet that location attributes were requested for.',
-        }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
-        }),
-    ).exactOptional(),
-    LocationAttributes: LocationAttributesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: " Location-specific information on the requested fleet's remote locations.",
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.exactOptional().openapi({
+      description: 'A unique identifier for the fleet that location attributes were requested for.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
+    }),
+    LocationAttributes: LocationAttributesListSchema.exactOptional().openapi({
+      description: " Location-specific information on the requested fleet's remote locations.",
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFleetLocationAttributesOutput')
 
 const DescribeFleetLocationAttributesInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to retrieve remote locations for. You can use either the fleet ID or ARN value.',
-        }),
-    ),
-    Locations: LocationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of fleet locations to retrieve information for. Specify locations in the form of an Amazon Web Services Region code, such as <code>us-west-2</code>.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages. This limit is not currently enforced.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to retrieve remote locations for. You can use either the fleet ID or ARN value.',
+    }),
+    Locations: LocationListSchema.exactOptional().openapi({
+      description:
+        'A list of fleet locations to retrieve information for. Specify locations in the form of an Amazon Web Services Region code, such as <code>us-west-2</code>.',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages. This limit is not currently enforced.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
+    }),
   })
   .openapi({ required: ['FleetId'], title: 'DescribeFleetLocationAttributesInput' })
   .openapi('DescribeFleetLocationAttributesInput')
 
 const DescribeFleetLocationCapacityOutputSchema = z
   .object({
-    FleetCapacity: FleetCapacitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Resource capacity information for the requested fleet location. Capacity objects are returned only for fleets and locations that currently exist.',
-        }),
-    ).exactOptional(),
+    FleetCapacity: FleetCapacitySchema.exactOptional().openapi({
+      description:
+        'Resource capacity information for the requested fleet location. Capacity objects are returned only for fleets and locations that currently exist.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFleetLocationCapacityOutput')
 
 const DescribeFleetLocationCapacityInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to request location capacity for. You can use either the fleet ID or ARN value.',
-        }),
-    ),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fleet location to retrieve capacity information for. Specify a location in the form of an Amazon Web Services Region code, such as <code>us-west-2</code>.',
-        }),
-    ),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to request location capacity for. You can use either the fleet ID or ARN value.',
+    }),
+    Location: LocationStringModelSchema.openapi({
+      description:
+        'The fleet location to retrieve capacity information for. Specify a location in the form of an Amazon Web Services Region code, such as <code>us-west-2</code>.',
+    }),
   })
   .openapi({ required: ['FleetId', 'Location'], title: 'DescribeFleetLocationCapacityInput' })
   .openapi('DescribeFleetLocationCapacityInput')
 
 const FleetUtilizationSchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the fleet associated with the location.',
-        }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
-        }),
-    ).exactOptional(),
-    ActiveServerProcessCount: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of server processes in <code>ACTIVE</code> status that are currently running across all instances in the fleet location. ',
-        }),
-    ).exactOptional(),
-    ActiveGameSessionCount: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of active game sessions that are currently being hosted across all instances in the fleet location.',
-        }),
-    ).exactOptional(),
-    CurrentPlayerSessionCount: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of active player sessions that are currently being hosted across all instances in the fleet location.',
-        }),
-    ).exactOptional(),
-    MaximumPlayerSessionCount: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of players allowed across all game sessions that are currently being hosted across all instances in the fleet location.',
-        }),
-    ).exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fleet location for the fleet utilization information, expressed as an Amazon Web Services Region code, such as <code>us-west-2</code>. ',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the fleet associated with the location.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
+    }),
+    ActiveServerProcessCount: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The number of server processes in <code>ACTIVE</code> status that are currently running across all instances in the fleet location. ',
+    }),
+    ActiveGameSessionCount: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The number of active game sessions that are currently being hosted across all instances in the fleet location.',
+    }),
+    CurrentPlayerSessionCount: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The number of active player sessions that are currently being hosted across all instances in the fleet location.',
+    }),
+    MaximumPlayerSessionCount: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The maximum number of players allowed across all game sessions that are currently being hosted across all instances in the fleet location.',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        'The fleet location for the fleet utilization information, expressed as an Amazon Web Services Region code, such as <code>us-west-2</code>. ',
+    }),
   })
   .openapi({
     description:
@@ -4811,94 +3499,62 @@ const FleetUtilizationSchema = z
 
 const DescribeFleetLocationUtilizationOutputSchema = z
   .object({
-    FleetUtilization: FleetUtilizationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Utilization information for the requested fleet location. Utilization objects are returned only for fleets and locations that currently exist.',
-        }),
-    ).exactOptional(),
+    FleetUtilization: FleetUtilizationSchema.exactOptional().openapi({
+      description:
+        'Utilization information for the requested fleet location. Utilization objects are returned only for fleets and locations that currently exist.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFleetLocationUtilizationOutput')
 
 const DescribeFleetLocationUtilizationInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to request location utilization for. You can use either the fleet ID or ARN value.',
-        }),
-    ),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fleet location to retrieve utilization information for. Specify a location in the form of an Amazon Web Services Region code, such as <code>us-west-2</code>.',
-        }),
-    ),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to request location utilization for. You can use either the fleet ID or ARN value.',
+    }),
+    Location: LocationStringModelSchema.openapi({
+      description:
+        'The fleet location to retrieve utilization information for. Specify a location in the form of an Amazon Web Services Region code, such as <code>us-west-2</code>.',
+    }),
   })
   .openapi({ required: ['FleetId', 'Location'], title: 'DescribeFleetLocationUtilizationInput' })
   .openapi('DescribeFleetLocationUtilizationInput')
 
 const DescribeFleetPortSettingsOutputSchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the fleet that was requested. ' }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
-        }),
-    ).exactOptional(),
-    InboundPermissions: IpPermissionsListSchema.and(
-      z.any().openapi({ description: 'The port settings for the requested fleet ID.' }),
-    ).exactOptional(),
-    UpdateStatus: LocationUpdateStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The current status of updates to the fleet's port settings in the requested fleet location. A status of <code>PENDING_UPDATE</code> indicates that an update was requested for the fleet but has not yet been completed for the location.",
-        }),
-    ).exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The requested fleet location, expressed as an Amazon Web Services Region code, such as <code>us-west-2</code>. ',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the fleet that was requested. ',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
+    }),
+    InboundPermissions: IpPermissionsListSchema.exactOptional().openapi({
+      description: 'The port settings for the requested fleet ID.',
+    }),
+    UpdateStatus: LocationUpdateStatusSchema.exactOptional().openapi({
+      description:
+        "The current status of updates to the fleet's port settings in the requested fleet location. A status of <code>PENDING_UPDATE</code> indicates that an update was requested for the fleet but has not yet been completed for the location.",
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        'The requested fleet location, expressed as an Amazon Web Services Region code, such as <code>us-west-2</code>. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFleetPortSettingsOutput')
 
 const DescribeFleetPortSettingsInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to retrieve port settings for. You can use either the fleet ID or ARN value.',
-        }),
-    ),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A remote location to check for status of port setting updates. Use the Amazon Web Services Region code format, such as <code>us-west-2</code>.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to retrieve port settings for. You can use either the fleet ID or ARN value.',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        'A remote location to check for status of port setting updates. Use the Amazon Web Services Region code format, such as <code>us-west-2</code>.',
+    }),
   })
   .openapi({ required: ['FleetId'], title: 'DescribeFleetPortSettingsInput' })
   .openapi('DescribeFleetPortSettingsInput')
@@ -4907,111 +3563,75 @@ const FleetUtilizationListSchema = z.array(FleetUtilizationSchema).openapi('Flee
 
 const DescribeFleetUtilizationOutputSchema = z
   .object({
-    FleetUtilization: FleetUtilizationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of objects containing utilization information for each requested fleet ID. Utilization objects are returned only for fleets that currently exist.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    FleetUtilization: FleetUtilizationListSchema.exactOptional().openapi({
+      description:
+        'A collection of objects containing utilization information for each requested fleet ID. Utilization objects are returned only for fleets that currently exist.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFleetUtilizationOutput')
 
 const DescribeFleetUtilizationInputSchema = z
   .object({
-    FleetIds: FleetIdOrArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to retrieve utilization data for. You can use either the fleet ID or ARN value. To retrieve attributes for all current fleets, do not include this parameter. ',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages. This parameter is ignored when the request specifies one or a list of fleet IDs.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value. This parameter is ignored when the request specifies one or a list of fleet IDs.',
-        }),
-    ).exactOptional(),
+    FleetIds: FleetIdOrArnListSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the fleet to retrieve utilization data for. You can use either the fleet ID or ARN value. To retrieve attributes for all current fleets, do not include this parameter. ',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages. This parameter is ignored when the request specifies one or a list of fleet IDs.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value. This parameter is ignored when the request specifies one or a list of fleet IDs.',
+    }),
   })
   .openapi({ title: 'DescribeFleetUtilizationInput', required: [] })
   .openapi('DescribeFleetUtilizationInput')
 
 const DescribeGameServerOutputSchema = z
   .object({
-    GameServer: GameServerSchema.and(
-      z.any().openapi({ description: 'Object that describes the requested game server.' }),
-    ).exactOptional(),
+    GameServer: GameServerSchema.exactOptional().openapi({
+      description: 'Object that describes the requested game server.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeGameServerOutput')
 
 const DescribeGameServerInputSchema = z
   .object({
-    GameServerGroupName: GameServerGroupNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the game server group where the game server is running.',
-        }),
-    ),
-    GameServerId: GameServerIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A custom string that uniquely identifies the game server information to be retrieved.',
-        }),
-    ),
+    GameServerGroupName: GameServerGroupNameOrArnSchema.openapi({
+      description:
+        'A unique identifier for the game server group where the game server is running.',
+    }),
+    GameServerId: GameServerIdSchema.openapi({
+      description:
+        'A custom string that uniquely identifies the game server information to be retrieved.',
+    }),
   })
   .openapi({ required: ['GameServerGroupName', 'GameServerId'], title: 'DescribeGameServerInput' })
   .openapi('DescribeGameServerInput')
 
 const DescribeGameServerGroupOutputSchema = z
   .object({
-    GameServerGroup: GameServerGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object with the property settings for the requested game server group resource. ',
-        }),
-    ).exactOptional(),
+    GameServerGroup: GameServerGroupSchema.exactOptional().openapi({
+      description:
+        'An object with the property settings for the requested game server group resource. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeGameServerGroupOutput')
 
 const DescribeGameServerGroupInputSchema = z
   .object({
-    GameServerGroupName: GameServerGroupNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the game server group. Use either the name or ARN value.',
-        }),
-    ),
+    GameServerGroupName: GameServerGroupNameOrArnSchema.openapi({
+      description:
+        'A unique identifier for the game server group. Use either the name or ARN value.',
+    }),
   })
   .openapi({ required: ['GameServerGroupName'], title: 'DescribeGameServerGroupInput' })
   .openapi('DescribeGameServerGroupInput')
@@ -5022,33 +3642,21 @@ const GameServerInstanceStatusSchema = z
 
 const GameServerInstanceSchema = z
   .object({
-    GameServerGroupName: GameServerGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A developer-defined identifier for the game server group that includes the game server instance. The name is unique for each Region in each Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    GameServerGroupArn: GameServerGroupArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A generated unique identifier for the game server group that includes the game server instance. ',
-        }),
-    ).exactOptional(),
-    InstanceId: GameServerInstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the instance where the game server is running. This ID is available in the instance metadata. EC2 instance IDs use a 17-character format, for example: <code>i-1234567890abcdef0</code>.',
-        }),
-    ).exactOptional(),
-    InstanceStatus: GameServerInstanceStatusSchema.and(
-      z.any().openapi({ description: 'Current status of the game server instance' }),
-    ).exactOptional(),
+    GameServerGroupName: GameServerGroupNameSchema.exactOptional().openapi({
+      description:
+        'A developer-defined identifier for the game server group that includes the game server instance. The name is unique for each Region in each Amazon Web Services account.',
+    }),
+    GameServerGroupArn: GameServerGroupArnSchema.exactOptional().openapi({
+      description:
+        'A generated unique identifier for the game server group that includes the game server instance. ',
+    }),
+    InstanceId: GameServerInstanceIdSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for the instance where the game server is running. This ID is available in the instance metadata. EC2 instance IDs use a 17-character format, for example: <code>i-1234567890abcdef0</code>.',
+    }),
+    InstanceStatus: GameServerInstanceStatusSchema.exactOptional().openapi({
+      description: 'Current status of the game server instance',
+    }),
   })
   .openapi({
     description:
@@ -5061,17 +3669,13 @@ const GameServerInstancesSchema = z.array(GameServerInstanceSchema).openapi('Gam
 
 const DescribeGameServerInstancesOutputSchema = z
   .object({
-    GameServerInstances: GameServerInstancesSchema.and(
-      z.any().openapi({ description: 'The collection of requested game server instances.' }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    GameServerInstances: GameServerInstancesSchema.exactOptional().openapi({
+      description: 'The collection of requested game server instances.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeGameServerInstancesOutput')
@@ -5084,55 +3688,35 @@ const GameServerInstanceIdsSchema = z
 
 const DescribeGameServerInstancesInputSchema = z
   .object({
-    GameServerGroupName: GameServerGroupNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the game server group. Use either the name or ARN value.',
-        }),
-    ),
-    InstanceIds: GameServerInstanceIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon EC2 instance IDs that you want to retrieve status on. Amazon EC2 instance IDs use a 17-character format, for example: <code>i-1234567890abcdef0</code>. To retrieve all instances in the game server group, leave this parameter empty. ',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
-        }),
-    ).exactOptional(),
+    GameServerGroupName: GameServerGroupNameOrArnSchema.openapi({
+      description:
+        'A unique identifier for the game server group. Use either the name or ARN value.',
+    }),
+    InstanceIds: GameServerInstanceIdsSchema.exactOptional().openapi({
+      description:
+        'The Amazon EC2 instance IDs that you want to retrieve status on. Amazon EC2 instance IDs use a 17-character format, for example: <code>i-1234567890abcdef0</code>. To retrieve all instances in the game server group, leave this parameter empty. ',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
+    }),
   })
   .openapi({ required: ['GameServerGroupName'], title: 'DescribeGameServerInstancesInput' })
   .openapi('DescribeGameServerInstancesInput')
 
 const GameSessionDetailSchema = z
   .object({
-    GameSession: GameSessionSchema.and(
-      z.any().openapi({ description: 'Object that describes a game session.' }),
-    ).exactOptional(),
-    ProtectionPolicy: ProtectionPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Current status of protection for the game session.</p> <ul> <li> <p> <b>NoProtection</b> -- The game session can be terminated during a scale-down event.</p> </li> <li> <p> <b>FullProtection</b> -- If the game session is in an <code>ACTIVE</code> status, it cannot be terminated during a scale-down event.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    GameSession: GameSessionSchema.exactOptional().openapi({
+      description: 'Object that describes a game session.',
+    }),
+    ProtectionPolicy: ProtectionPolicySchema.exactOptional().openapi({
+      description:
+        '<p>Current status of protection for the game session.</p> <ul> <li> <p> <b>NoProtection</b> -- The game session can be terminated during a scale-down event.</p> </li> <li> <p> <b>FullProtection</b> -- If the game session is in an <code>ACTIVE</code> status, it cannot be terminated during a scale-down event.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description: "A game session's properties plus the protection policy currently in force.",
@@ -5146,78 +3730,46 @@ const GameSessionDetailListSchema = z
 
 const DescribeGameSessionDetailsOutputSchema = z
   .object({
-    GameSessionDetails: GameSessionDetailListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A collection of properties for each game session that matches the request.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    GameSessionDetails: GameSessionDetailListSchema.exactOptional().openapi({
+      description: 'A collection of properties for each game session that matches the request.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeGameSessionDetailsOutput')
 
 const DescribeGameSessionDetailsInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to retrieve all game sessions active on the fleet. You can use either the fleet ID or ARN value.',
-        }),
-    ).exactOptional(),
-    GameSessionId: ArnStringModelSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the game session to retrieve. ' }),
-    ).exactOptional(),
-    AliasId: AliasIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the alias associated with the fleet to retrieve all game sessions for. You can use either the alias ID or ARN value.',
-        }),
-    ).exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A fleet location to get game session details for. You can specify a fleet's home Region or a remote location. Use the Amazon Web Services Region code format, such as <code>us-west-2</code>. ",
-        }),
-    ).exactOptional(),
-    StatusFilter: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Game session status to filter results on. Possible game session statuses include <code>ACTIVE</code>, <code>TERMINATED</code>, <code>ACTIVATING</code> and <code>TERMINATING</code> (the last two are transitory). ',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the fleet to retrieve all game sessions active on the fleet. You can use either the fleet ID or ARN value.',
+    }),
+    GameSessionId: ArnStringModelSchema.exactOptional().openapi({
+      description: 'A unique identifier for the game session to retrieve. ',
+    }),
+    AliasId: AliasIdOrArnSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the alias associated with the fleet to retrieve all game sessions for. You can use either the alias ID or ARN value.',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        "A fleet location to get game session details for. You can specify a fleet's home Region or a remote location. Use the Amazon Web Services Region code format, such as <code>us-west-2</code>. ",
+    }),
+    StatusFilter: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'Game session status to filter results on. Possible game session statuses include <code>ACTIVE</code>, <code>TERMINATED</code>, <code>ACTIVATING</code> and <code>TERMINATING</code> (the last two are transitory). ',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
+    }),
   })
   .openapi({ title: 'DescribeGameSessionDetailsInput', required: [] })
   .openapi('DescribeGameSessionDetailsInput')
@@ -5230,26 +3782,16 @@ const FloatSchema = z.float32().openapi('Float')
 
 const PlayerLatencySchema = z
   .object({
-    PlayerId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for a player associated with the latency data.',
-        }),
-    ).exactOptional(),
-    RegionIdentifier: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Name of the Region that is associated with the latency value.' }),
-    ).exactOptional(),
-    LatencyInMilliseconds: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amount of time that represents the time lag experienced by the player when connected to the specified Region.',
-        }),
-    ).exactOptional(),
+    PlayerId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'A unique identifier for a player associated with the latency data.',
+    }),
+    RegionIdentifier: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'Name of the Region that is associated with the latency value.',
+    }),
+    LatencyInMilliseconds: FloatSchema.exactOptional().openapi({
+      description:
+        'Amount of time that represents the time lag experienced by the player when connected to the specified Region.',
+    }),
   })
   .openapi({
     description:
@@ -5262,17 +3804,12 @@ const PlayerLatencyListSchema = z.array(PlayerLatencySchema).openapi('PlayerLate
 
 const PlacedPlayerSessionSchema = z
   .object({
-    PlayerId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a player that is associated with this player session.',
-        }),
-    ).exactOptional(),
-    PlayerSessionId: PlayerSessionIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for a player session.' }),
-    ).exactOptional(),
+    PlayerId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'A unique identifier for a player that is associated with this player session.',
+    }),
+    PlayerSessionId: PlayerSessionIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for a player session.',
+    }),
   })
   .openapi({
     description:
@@ -5287,145 +3824,76 @@ const PlacedPlayerSessionListSchema = z
 
 const GameSessionPlacementSchema = z
   .object({
-    PlacementId: IdStringModelSchema.and(
-      z.any().openapi({ description: 'A unique identifier for a game session placement.' }),
-    ).exactOptional(),
-    GameSessionQueueName: GameSessionQueueNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with game session queue. Queue names must be unique within each Region.',
-        }),
-    ).exactOptional(),
-    Status: GameSessionPlacementStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Current status of the game session placement request.</p> <ul> <li> <p> <b>PENDING</b> -- The placement request is currently in the queue waiting to be processed.</p> </li> <li> <p> <b>FULFILLED</b> -- A new game session and player sessions (if requested) have been successfully created. Values for <i>GameSessionArn</i> and <i>GameSessionRegion</i> are available. </p> </li> <li> <p> <b>CANCELLED</b> -- The placement request was canceled.</p> </li> <li> <p> <b>TIMED_OUT</b> -- A new game session was not successfully created before the time limit expired. You can resubmit the placement request as needed.</p> </li> <li> <p> <b>FAILED</b> -- Amazon GameLift is not able to complete the process of placing the game session. Common reasons are the game session terminated before the placement process was completed, or an unexpected internal error.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    GameProperties: GamePropertyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom properties for a game session, formatted as key:value pairs. These properties are passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>).',
-        }),
-    ).exactOptional(),
-    MaximumPlayerSessionCount: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of players that can be connected simultaneously to the game session.',
-        }),
-    ).exactOptional(),
-    GameSessionName: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with a game session. Session names do not need to be unique.',
-        }),
-    ).exactOptional(),
-    GameSessionId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the game session. This value is set once the new game session is placed (placement status is <code>FULFILLED</code>).',
-        }),
-    ).exactOptional(),
-    GameSessionArn: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier for the game session created by this placement request. This value is set once the new game session is placed (placement status is <code>FULFILLED</code>). This identifier is unique across all Regions. You can use this value as a <code>GameSessionId</code> value as needed.',
-        }),
-    ).exactOptional(),
-    GameSessionRegion: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Name of the Region where the game session created by this placement request is running. This value is set once the new game session is placed (placement status is <code>FULFILLED</code>).',
-        }),
-    ).exactOptional(),
-    PlayerLatencies: PlayerLatencyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of values, expressed in milliseconds, that indicates the amount of latency that a player experiences when connected to Amazon Web Services Regions.',
-        }),
-    ).exactOptional(),
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time stamp indicating when this request was placed in the queue. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time stamp indicating when this request was completed, canceled, or timed out.',
-        }),
-    ).exactOptional(),
-    IpAddress: IpAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address of the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number. This value is set once the new game session is placed (placement status is <code>FULFILLED</code>). ',
-        }),
-    ).exactOptional(),
-    DnsName: DnsNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The DNS identifier assigned to the instance that is running the game session. Values have the following format:</p> <ul> <li> <p>TLS-enabled fleets: <code>&lt;unique identifier&gt;.&lt;region identifier&gt;.amazongamelift.com</code>.</p> </li> <li> <p>Non-TLS-enabled fleets: <code>ec2-&lt;unique identifier&gt;.compute.amazonaws.com</code>. (See <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing.html#concepts-public-addresses">Amazon EC2 Instance IP Addressing</a>.)</p> </li> </ul> <p>When connecting to a game session that is running on a TLS-enabled fleet, you must use the DNS name, not the IP address.</p>',
-        }),
-    ).exactOptional(),
-    Port: PortNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The port number for the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number. This value is set once the new game session is placed (placement status is <code>FULFILLED</code>).',
-        }),
-    ).exactOptional(),
-    PlacedPlayerSessions: PlacedPlayerSessionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of information on player sessions created in response to the game session placement request. These player sessions are created only once a new game session is successfully placed (placement status is <code>FULFILLED</code>). This information includes the player ID (as provided in the placement request) and the corresponding player session ID.',
-        }),
-    ).exactOptional(),
-    GameSessionData: LargeGameSessionDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom game session properties, formatted as a single string value. This data is passed to a game server process in the <code>GameSession</code> object with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>).',
-        }),
-    ).exactOptional(),
-    MatchmakerData: MatchmakerDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information on the matchmaking process for this game. Data is in JSON syntax, formatted as a string. It identifies the matchmaking configuration used to create the match, and contains data on all players assigned to the match, including player attributes and team assignments. For more details on matchmaker data, see <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-server.html#match-server-data">Match Data</a>.',
-        }),
-    ).exactOptional(),
+    PlacementId: IdStringModelSchema.exactOptional().openapi({
+      description: 'A unique identifier for a game session placement.',
+    }),
+    GameSessionQueueName: GameSessionQueueNameSchema.exactOptional().openapi({
+      description:
+        'A descriptive label that is associated with game session queue. Queue names must be unique within each Region.',
+    }),
+    Status: GameSessionPlacementStateSchema.exactOptional().openapi({
+      description:
+        '<p>Current status of the game session placement request.</p> <ul> <li> <p> <b>PENDING</b> -- The placement request is currently in the queue waiting to be processed.</p> </li> <li> <p> <b>FULFILLED</b> -- A new game session and player sessions (if requested) have been successfully created. Values for <i>GameSessionArn</i> and <i>GameSessionRegion</i> are available. </p> </li> <li> <p> <b>CANCELLED</b> -- The placement request was canceled.</p> </li> <li> <p> <b>TIMED_OUT</b> -- A new game session was not successfully created before the time limit expired. You can resubmit the placement request as needed.</p> </li> <li> <p> <b>FAILED</b> -- Amazon GameLift is not able to complete the process of placing the game session. Common reasons are the game session terminated before the placement process was completed, or an unexpected internal error.</p> </li> </ul>',
+    }),
+    GameProperties: GamePropertyListSchema.exactOptional().openapi({
+      description:
+        'A set of custom properties for a game session, formatted as key:value pairs. These properties are passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>).',
+    }),
+    MaximumPlayerSessionCount: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The maximum number of players that can be connected simultaneously to the game session.',
+    }),
+    GameSessionName: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A descriptive label that is associated with a game session. Session names do not need to be unique.',
+    }),
+    GameSessionId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the game session. This value is set once the new game session is placed (placement status is <code>FULFILLED</code>).',
+    }),
+    GameSessionArn: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'Identifier for the game session created by this placement request. This value is set once the new game session is placed (placement status is <code>FULFILLED</code>). This identifier is unique across all Regions. You can use this value as a <code>GameSessionId</code> value as needed.',
+    }),
+    GameSessionRegion: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'Name of the Region where the game session created by this placement request is running. This value is set once the new game session is placed (placement status is <code>FULFILLED</code>).',
+    }),
+    PlayerLatencies: PlayerLatencyListSchema.exactOptional().openapi({
+      description:
+        'A set of values, expressed in milliseconds, that indicates the amount of latency that a player experiences when connected to Amazon Web Services Regions.',
+    }),
+    StartTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Time stamp indicating when this request was placed in the queue. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'Time stamp indicating when this request was completed, canceled, or timed out.',
+    }),
+    IpAddress: IpAddressSchema.exactOptional().openapi({
+      description:
+        'The IP address of the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number. This value is set once the new game session is placed (placement status is <code>FULFILLED</code>). ',
+    }),
+    DnsName: DnsNameSchema.exactOptional().openapi({
+      description:
+        '<p>The DNS identifier assigned to the instance that is running the game session. Values have the following format:</p> <ul> <li> <p>TLS-enabled fleets: <code>&lt;unique identifier&gt;.&lt;region identifier&gt;.amazongamelift.com</code>.</p> </li> <li> <p>Non-TLS-enabled fleets: <code>ec2-&lt;unique identifier&gt;.compute.amazonaws.com</code>. (See <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing.html#concepts-public-addresses">Amazon EC2 Instance IP Addressing</a>.)</p> </li> </ul> <p>When connecting to a game session that is running on a TLS-enabled fleet, you must use the DNS name, not the IP address.</p>',
+    }),
+    Port: PortNumberSchema.exactOptional().openapi({
+      description:
+        'The port number for the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number. This value is set once the new game session is placed (placement status is <code>FULFILLED</code>).',
+    }),
+    PlacedPlayerSessions: PlacedPlayerSessionListSchema.exactOptional().openapi({
+      description:
+        'A collection of information on player sessions created in response to the game session placement request. These player sessions are created only once a new game session is successfully placed (placement status is <code>FULFILLED</code>). This information includes the player ID (as provided in the placement request) and the corresponding player session ID.',
+    }),
+    GameSessionData: LargeGameSessionDataSchema.exactOptional().openapi({
+      description:
+        'A set of custom game session properties, formatted as a single string value. This data is passed to a game server process in the <code>GameSession</code> object with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>).',
+    }),
+    MatchmakerData: MatchmakerDataSchema.exactOptional().openapi({
+      description:
+        'Information on the matchmaking process for this game. Data is in JSON syntax, formatted as a string. It identifies the matchmaking configuration used to create the match, and contains data on all players assigned to the match, including player attributes and team assignments. For more details on matchmaker data, see <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-server.html#match-server-data">Match Data</a>.',
+    }),
   })
   .openapi({
     description:
@@ -5436,22 +3904,18 @@ const GameSessionPlacementSchema = z
 
 const DescribeGameSessionPlacementOutputSchema = z
   .object({
-    GameSessionPlacement: GameSessionPlacementSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Object that describes the requested game session placement.' }),
-    ).exactOptional(),
+    GameSessionPlacement: GameSessionPlacementSchema.exactOptional().openapi({
+      description: 'Object that describes the requested game session placement.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeGameSessionPlacementOutput')
 
 const DescribeGameSessionPlacementInputSchema = z
   .object({
-    PlacementId: IdStringModelSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for a game session placement to retrieve.' }),
-    ),
+    PlacementId: IdStringModelSchema.openapi({
+      description: 'A unique identifier for a game session placement to retrieve.',
+    }),
   })
   .openapi({ required: ['PlacementId'], title: 'DescribeGameSessionPlacementInput' })
   .openapi('DescribeGameSessionPlacementInput')
@@ -5460,21 +3924,13 @@ const GameSessionQueueListSchema = z.array(GameSessionQueueSchema).openapi('Game
 
 const DescribeGameSessionQueuesOutputSchema = z
   .object({
-    GameSessionQueues: GameSessionQueueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A collection of objects that describe the requested game session queues.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    GameSessionQueues: GameSessionQueueListSchema.exactOptional().openapi({
+      description: 'A collection of objects that describe the requested game session queues.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeGameSessionQueuesOutput')
@@ -5485,30 +3941,18 @@ const GameSessionQueueNameOrArnListSchema = z
 
 const DescribeGameSessionQueuesInputSchema = z
   .object({
-    Names: GameSessionQueueNameOrArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of queue names to retrieve information for. You can use either the queue ID or ARN value. To request settings for all queues, leave this parameter empty. ',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages. You can request up to 50 results.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
-        }),
-    ).exactOptional(),
+    Names: GameSessionQueueNameOrArnListSchema.exactOptional().openapi({
+      description:
+        'A list of queue names to retrieve information for. You can use either the queue ID or ARN value. To request settings for all queues, leave this parameter empty. ',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages. You can request up to 50 results.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
+    }),
   })
   .openapi({ title: 'DescribeGameSessionQueuesInput', required: [] })
   .openapi('DescribeGameSessionQueuesInput')
@@ -5517,78 +3961,46 @@ const GameSessionListSchema = z.array(GameSessionSchema).openapi('GameSessionLis
 
 const DescribeGameSessionsOutputSchema = z
   .object({
-    GameSessions: GameSessionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A collection of properties for each game session that matches the request.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    GameSessions: GameSessionListSchema.exactOptional().openapi({
+      description: 'A collection of properties for each game session that matches the request.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeGameSessionsOutput')
 
 const DescribeGameSessionsInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to retrieve game sessions for. You can use either the fleet ID or ARN value. ',
-        }),
-    ).exactOptional(),
-    GameSessionId: ArnStringModelSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the game session to retrieve. ' }),
-    ).exactOptional(),
-    AliasId: AliasIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the alias associated with the fleet to retrieve game sessions for. You can use either the alias ID or ARN value.',
-        }),
-    ).exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A fleet location to get game sessions for. You can specify a fleet's home Region or a remote location. Use the Amazon Web Services Region code format, such as <code>us-west-2</code>. ",
-        }),
-    ).exactOptional(),
-    StatusFilter: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Game session status to filter results on. You can filter on the following states: <code>ACTIVE</code>, <code>TERMINATED</code>, <code>ACTIVATING</code>, and <code>TERMINATING</code>. The last two are transitory and used for only very brief periods of time. ',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the fleet to retrieve game sessions for. You can use either the fleet ID or ARN value. ',
+    }),
+    GameSessionId: ArnStringModelSchema.exactOptional().openapi({
+      description: 'A unique identifier for the game session to retrieve. ',
+    }),
+    AliasId: AliasIdOrArnSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the alias associated with the fleet to retrieve game sessions for. You can use either the alias ID or ARN value.',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        "A fleet location to get game sessions for. You can specify a fleet's home Region or a remote location. Use the Amazon Web Services Region code format, such as <code>us-west-2</code>. ",
+    }),
+    StatusFilter: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'Game session status to filter results on. You can filter on the following states: <code>ACTIVE</code>, <code>TERMINATED</code>, <code>ACTIVATING</code>, and <code>TERMINATING</code>. The last two are transitory and used for only very brief periods of time. ',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
+    }),
   })
   .openapi({ title: 'DescribeGameSessionsInput', required: [] })
   .openapi('DescribeGameSessionsInput')
@@ -5602,68 +4014,42 @@ const InstanceStatusSchema = z.enum(['PENDING', 'ACTIVE', 'TERMINATING']).openap
 
 const InstanceSchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the fleet that the instance is in.' }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
-        }),
-    ).exactOptional(),
-    InstanceId: InstanceIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the instance.' }),
-    ).exactOptional(),
-    IpAddress: IpAddressSchema.and(
-      z.any().openapi({ description: 'IP address that is assigned to the instance.' }),
-    ).exactOptional(),
-    DnsName: DnsNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The DNS identifier assigned to the instance that is running the game session. Values have the following format:</p> <ul> <li> <p>TLS-enabled fleets: <code>&lt;unique identifier&gt;.&lt;region identifier&gt;.amazongamelift.com</code>.</p> </li> <li> <p>Non-TLS-enabled fleets: <code>ec2-&lt;unique identifier&gt;.compute.amazonaws.com</code>. (See <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing.html#concepts-public-addresses">Amazon EC2 Instance IP Addressing</a>.)</p> </li> </ul> <p>When connecting to a game session that is running on a TLS-enabled fleet, you must use the DNS name, not the IP address.</p>',
-        }),
-    ).exactOptional(),
-    OperatingSystem: OperatingSystemSchema.and(
-      z.any().openapi({ description: 'Operating system that is running on this instance. ' }),
-    ).exactOptional(),
-    Type: EC2InstanceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon EC2 instance type that defines the computing resources of this instance. ',
-        }),
-    ).exactOptional(),
-    Status: InstanceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Current status of the instance. Possible statuses include the following:</p> <ul> <li> <p> <b>PENDING</b> -- The instance is in the process of being created and launching server processes as defined in the fleet's run-time configuration. </p> </li> <li> <p> <b>ACTIVE</b> -- The instance has been successfully created and at least one server process has successfully launched and reported back to Amazon GameLift that it is ready to host a game session. The instance is now considered ready to host game sessions. </p> </li> <li> <p> <b>TERMINATING</b> -- The instance is in the process of shutting down. This may happen to reduce capacity during a scaling down event or to recycle resources in the event of a problem.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fleet location of the instance, expressed as an Amazon Web Services Region code, such as <code>us-west-2</code>. ',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the fleet that the instance is in.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
+    }),
+    InstanceId: InstanceIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the instance.',
+    }),
+    IpAddress: IpAddressSchema.exactOptional().openapi({
+      description: 'IP address that is assigned to the instance.',
+    }),
+    DnsName: DnsNameSchema.exactOptional().openapi({
+      description:
+        '<p>The DNS identifier assigned to the instance that is running the game session. Values have the following format:</p> <ul> <li> <p>TLS-enabled fleets: <code>&lt;unique identifier&gt;.&lt;region identifier&gt;.amazongamelift.com</code>.</p> </li> <li> <p>Non-TLS-enabled fleets: <code>ec2-&lt;unique identifier&gt;.compute.amazonaws.com</code>. (See <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing.html#concepts-public-addresses">Amazon EC2 Instance IP Addressing</a>.)</p> </li> </ul> <p>When connecting to a game session that is running on a TLS-enabled fleet, you must use the DNS name, not the IP address.</p>',
+    }),
+    OperatingSystem: OperatingSystemSchema.exactOptional().openapi({
+      description: 'Operating system that is running on this instance. ',
+    }),
+    Type: EC2InstanceTypeSchema.exactOptional().openapi({
+      description:
+        'Amazon EC2 instance type that defines the computing resources of this instance. ',
+    }),
+    Status: InstanceStatusSchema.exactOptional().openapi({
+      description:
+        "<p>Current status of the instance. Possible statuses include the following:</p> <ul> <li> <p> <b>PENDING</b> -- The instance is in the process of being created and launching server processes as defined in the fleet's run-time configuration. </p> </li> <li> <p> <b>ACTIVE</b> -- The instance has been successfully created and at least one server process has successfully launched and reported back to Amazon GameLift that it is ready to host a game session. The instance is now considered ready to host game sessions. </p> </li> <li> <p> <b>TERMINATING</b> -- The instance is in the process of shutting down. This may happen to reduce capacity during a scaling down event or to recycle resources in the event of a problem.</p> </li> </ul>",
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A time stamp indicating when this data object was created. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        'The fleet location of the instance, expressed as an Amazon Web Services Region code, such as <code>us-west-2</code>. ',
+    }),
   })
   .openapi({
     description:
@@ -5676,349 +4062,48 @@ const InstanceListSchema = z.array(InstanceSchema).openapi('InstanceList')
 
 const DescribeInstancesOutputSchema = z
   .object({
-    Instances: InstanceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A collection of objects containing properties for each instance returned.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    Instances: InstanceListSchema.exactOptional().openapi({
+      description: 'A collection of objects containing properties for each instance returned.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeInstancesOutput')
 
 const DescribeInstancesInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to retrieve instance information for. You can use either the fleet ID or ARN value.',
-        }),
-    ),
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for an instance to retrieve. Specify an instance ID or leave blank to retrieve all instances in the fleet.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
-        }),
-    ).exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a location to retrieve instance information for, in the form of an Amazon Web Services Region code such as <code>us-west-2</code>. ',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to retrieve instance information for. You can use either the fleet ID or ARN value.',
+    }),
+    InstanceId: InstanceIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for an instance to retrieve. Specify an instance ID or leave blank to retrieve all instances in the fleet.',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        'The name of a location to retrieve instance information for, in the form of an Amazon Web Services Region code such as <code>us-west-2</code>. ',
+    }),
   })
   .openapi({ required: ['FleetId'], title: 'DescribeInstancesInput' })
   .openapi('DescribeInstancesInput')
 
-const MatchmakingConfigurationStatusSchema = z
-  .enum([
-    'CANCELLED',
-    'COMPLETED',
-    'FAILED',
-    'PLACING',
-    'QUEUED',
-    'REQUIRES_ACCEPTANCE',
-    'SEARCHING',
-    'TIMED_OUT',
-  ])
-  .openapi('MatchmakingConfigurationStatus')
-
-const StringModelSchema = z.string().openapi('StringModel')
-
-const PlayerAttributeStringSchema = z.string().min(1).max(100).openapi('PlayerAttributeString')
-
-const DoubleObjectSchema = z.float64().openapi('DoubleObject')
-
-const PlayerAttributeStringListSchema = z
-  .array(PlayerAttributeStringSchema)
-  .openapi('PlayerAttributeStringList')
-
-const PlayerAttributeStringDoubleMapSchema = z
-  .record(z.string(), DoubleObjectSchema)
-  .openapi('PlayerAttributeStringDoubleMap')
-
-const AttributeValueSchema = z
+const DescribeMatchmakingOutputSchema: z.ZodType<DescribeMatchmakingOutputType> = z
   .object({
-    S: PlayerAttributeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'For single string values. Maximum string length is 100 characters.',
-        }),
-    ).exactOptional(),
-    N: DoubleObjectSchema.and(
-      z.any().openapi({ description: 'For number values, expressed as double.' }),
-    ).exactOptional(),
-    SL: PlayerAttributeStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For a list of up to 100 strings. Maximum length for each string is 100 characters. Duplicate values are not recognized; all occurrences of the repeated value after the first of a repeated value are ignored.',
-        }),
-    ).exactOptional(),
-    SDM: PlayerAttributeStringDoubleMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For a map of up to 10 data type:value pairs. Maximum length for each string value is 100 characters. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Values for use in player attribute key-value pairs. This object lets you specify an attribute value using any of the valid data types: string, number, string array, or data map. Each <code>AttributeValue</code> object can use only one of the available properties.',
-    required: [],
-  })
-  .openapi('AttributeValue')
-
-const PlayerAttributeMapSchema = z
-  .record(z.string(), AttributeValueSchema)
-  .openapi('PlayerAttributeMap')
-
-const LatencyMapSchema = z.record(z.string(), PositiveIntegerSchema).openapi('LatencyMap')
-
-const PlayerSchema = z
-  .object({
-    PlayerId: NonZeroAndMaxStringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for a player' }),
-    ).exactOptional(),
-    PlayerAttributes: PlayerAttributeMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A collection of key:value pairs containing player information for use in matchmaking. Player attribute keys must match the <i>playerAttributes</i> used in a matchmaking rule set. Example: <code>"PlayerAttributes": {"skill": {"N": "23"}, "gameMode": {"S": "deathmatch"}}</code>.</p> <p>You can provide up to 10 <code>PlayerAttributes</code>.</p>',
-        }),
-    ).exactOptional(),
-    Team: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Name of the team that the player is assigned to in a match. Team names are defined in a matchmaking rule set.',
-        }),
-    ).exactOptional(),
-    LatencyInMs: LatencyMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A set of values, expressed in milliseconds, that indicates the amount of latency that a player experiences when connected to @aws; Regions. If this property is present, FlexMatch considers placing the match only in Regions for which latency is reported. </p> <p>If a matchmaker has a rule that evaluates player latency, players must report latency in order to be matched. If no latency is reported in this scenario, FlexMatch assumes that no Regions are available to the player and the ticket is not matchable. </p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Represents a player in matchmaking. When starting a matchmaking request, a player has a player ID, attributes, and may have latency data. Team information is added after a match has been successfully completed.',
-    required: [],
-  })
-  .openapi('Player')
-
-const PlayerListSchema = z.array(PlayerSchema).openapi('PlayerList')
-
-const MatchedPlayerSessionSchema = z
-  .object({
-    PlayerId: NonZeroAndMaxStringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for a player ' }),
-    ).exactOptional(),
-    PlayerSessionId: PlayerSessionIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for a player session' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "<p>Represents a new player session that is created as a result of a successful FlexMatch match. A successful match automatically creates new player sessions for every player ID in the original matchmaking request. </p> <p>When players connect to the match's game session, they must include both player ID and player session ID in order to claim their assigned player slot.</p>",
-    required: [],
-  })
-  .openapi('MatchedPlayerSession')
-
-const MatchedPlayerSessionListSchema = z
-  .array(MatchedPlayerSessionSchema)
-  .openapi('MatchedPlayerSessionList')
-
-const GameSessionConnectionInfoSchema = z
-  .object({
-    GameSessionArn: ArnStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the game session. Use the game session ID.',
-        }),
-    ).exactOptional(),
-    IpAddress: IpAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address of the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number.',
-        }),
-    ).exactOptional(),
-    DnsName: DnsNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The DNS identifier assigned to the instance that is running the game session. Values have the following format:</p> <ul> <li> <p>TLS-enabled fleets: <code>&lt;unique identifier&gt;.&lt;region identifier&gt;.amazongamelift.com</code>.</p> </li> <li> <p>Non-TLS-enabled fleets: <code>ec2-&lt;unique identifier&gt;.compute.amazonaws.com</code>. (See <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing.html#concepts-public-addresses">Amazon EC2 Instance IP Addressing</a>.)</p> </li> </ul> <p>When connecting to a game session that is running on a TLS-enabled fleet, you must use the DNS name, not the IP address.</p>',
-        }),
-    ).exactOptional(),
-    Port: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The port number for the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number.',
-        }),
-    ).exactOptional(),
-    MatchedPlayerSessions: MatchedPlayerSessionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of player session IDs, one for each player ID that was included in the original matchmaking request. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Connection information for a new game session that is created in response to a start matchmaking request. Once a match is made, the FlexMatch engine creates a new game session for it. This information, including the game session endpoint and player sessions for each player in the original matchmaking request, is added to the matchmaking ticket.',
-    required: [],
-  })
-  .openapi('GameSessionConnectionInfo')
-
-const MatchmakingTicketSchema = z
-  .object({
-    TicketId: MatchmakingIdStringModelSchema.and(
-      z.any().openapi({ description: 'A unique identifier for a matchmaking ticket.' }),
-    ).exactOptional(),
-    ConfigurationName: MatchmakingIdStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Name of the matchmaking configuration that is used with this ticket. Matchmaking configurations determine how players are grouped into a match and how a new game session is created for the match.',
-        }),
-    ).exactOptional(),
-    ConfigurationArn: MatchmakingConfigurationArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) associated with the GameLift matchmaking configuration resource that is used with this ticket.',
-        }),
-    ).exactOptional(),
-    Status: MatchmakingConfigurationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Current status of the matchmaking request.</p> <ul> <li> <p> <b>QUEUED</b> -- The matchmaking request has been received and is currently waiting to be processed.</p> </li> <li> <p> <b>SEARCHING</b> -- The matchmaking request is currently being processed. </p> </li> <li> <p> <b>REQUIRES_ACCEPTANCE</b> -- A match has been proposed and the players must accept the match. This status is used only with requests that use a matchmaking configuration with a player acceptance requirement.</p> </li> <li> <p> <b>PLACING</b> -- The FlexMatch engine has matched players and is in the process of placing a new game session for the match.</p> </li> <li> <p> <b>COMPLETED</b> -- Players have been matched and a game session is ready to host the players. A ticket in this state contains the necessary connection information for players.</p> </li> <li> <p> <b>FAILED</b> -- The matchmaking request was not completed.</p> </li> <li> <p> <b>CANCELLED</b> -- The matchmaking request was canceled. This may be the result of a <code>StopMatchmaking</code> operation or a proposed match that one or more players failed to accept.</p> </li> <li> <p> <b>TIMED_OUT</b> -- The matchmaking request was not successful within the duration specified in the matchmaking configuration. </p> </li> </ul> <note> <p>Matchmaking requests that fail to successfully complete (statuses FAILED, CANCELLED, TIMED_OUT) can be resubmitted as new requests with new ticket IDs.</p> </note>',
-        }),
-    ).exactOptional(),
-    StatusReason: StringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Code to explain the current status. For example, a status reason may indicate when a ticket has returned to <code>SEARCHING</code> status after a proposed match fails to receive player acceptances.',
-        }),
-    ).exactOptional(),
-    StatusMessage: StringModelSchema.and(
-      z.any().openapi({ description: 'Additional information about the current status.' }),
-    ).exactOptional(),
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time stamp indicating when this matchmaking request was received. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time stamp indicating when the matchmaking request stopped being processed due to successful completion, timeout, or cancellation. Format is a number expressed in Unix time as milliseconds (for example <code>"1469498468.057"</code>).',
-        }),
-    ).exactOptional(),
-    Players: PlayerListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of <code>Player</code> objects, each representing a player to find matches for. Players are identified by a unique player ID and may include latency data for use during matchmaking. If the ticket is in status <code>COMPLETED</code>, the <code>Player</code> objects include the team the players were assigned to in the resulting match.',
-        }),
-    ).exactOptional(),
-    GameSessionConnectionInfo: GameSessionConnectionInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Connection information for a new game session. Once a match is made, the FlexMatch engine creates a new game session for it. This information is added to the matchmaking ticket, which you can be retrieve by calling <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeMatchmaking.html">DescribeMatchmaking</a> .',
-        }),
-    ).exactOptional(),
-    EstimatedWaitTime: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Average amount of time (in seconds) that players are currently waiting for a match. If there is not enough recent data, this property may be empty.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Ticket generated to track the progress of a matchmaking request. Each ticket is uniquely identified by a ticket ID, supplied by the requester, when creating a matchmaking request.',
-    required: [],
-  })
-  .openapi('MatchmakingTicket')
-
-const MatchmakingTicketListSchema = z
-  .array(MatchmakingTicketSchema)
-  .openapi('MatchmakingTicketList')
-
-const DescribeMatchmakingOutputSchema = z
-  .object({
-    TicketList: MatchmakingTicketListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A collection of existing matchmaking ticket objects matching the request.',
-        }),
-    ).exactOptional(),
+    TicketList: MatchmakingTicketListSchema.exactOptional().openapi({
+      description: 'A collection of existing matchmaking ticket objects matching the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeMatchmakingOutput')
@@ -6027,14 +4112,10 @@ const MatchmakingIdListSchema = z.array(MatchmakingIdStringModelSchema).openapi(
 
 const DescribeMatchmakingInputSchema = z
   .object({
-    TicketIds: MatchmakingIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a matchmaking ticket. You can include up to 10 ID values. ',
-        }),
-    ),
+    TicketIds: MatchmakingIdListSchema.openapi({
+      description:
+        'A unique identifier for a matchmaking ticket. You can include up to 10 ID values. ',
+    }),
   })
   .openapi({ required: ['TicketIds'], title: 'DescribeMatchmakingInput' })
   .openapi('DescribeMatchmakingInput')
@@ -6045,17 +4126,13 @@ const MatchmakingConfigurationListSchema = z
 
 const DescribeMatchmakingConfigurationsOutputSchema = z
   .object({
-    Configurations: MatchmakingConfigurationListSchema.and(
-      z.any().openapi({ description: 'A collection of requested matchmaking configurations.' }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    Configurations: MatchmakingConfigurationListSchema.exactOptional().openapi({
+      description: 'A collection of requested matchmaking configurations.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeMatchmakingConfigurationsOutput')
@@ -6066,38 +4143,22 @@ const MatchmakingConfigurationNameListSchema = z
 
 const DescribeMatchmakingConfigurationsInputSchema = z
   .object({
-    Names: MatchmakingConfigurationNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the matchmaking configuration(s) to retrieve. You can use either the configuration name or ARN value. To request all existing configurations, leave this parameter empty.',
-        }),
-    ).exactOptional(),
-    RuleSetName: MatchmakingRuleSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the matchmaking rule set. You can use either the rule set name or ARN value. Use this parameter to retrieve all matchmaking configurations that use this rule set.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages. This parameter is limited to 10.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
-        }),
-    ).exactOptional(),
+    Names: MatchmakingConfigurationNameListSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the matchmaking configuration(s) to retrieve. You can use either the configuration name or ARN value. To request all existing configurations, leave this parameter empty.',
+    }),
+    RuleSetName: MatchmakingRuleSetNameSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the matchmaking rule set. You can use either the rule set name or ARN value. Use this parameter to retrieve all matchmaking configurations that use this rule set.',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages. This parameter is limited to 10.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
+    }),
   })
   .openapi({ title: 'DescribeMatchmakingConfigurationsInput', required: [] })
   .openapi('DescribeMatchmakingConfigurationsInput')
@@ -6108,17 +4169,13 @@ const MatchmakingRuleSetListSchema = z
 
 const DescribeMatchmakingRuleSetsOutputSchema = z
   .object({
-    RuleSets: MatchmakingRuleSetListSchema.and(
-      z.any().openapi({ description: 'A collection of requested matchmaking rule set objects. ' }),
-    ),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    RuleSets: MatchmakingRuleSetListSchema.openapi({
+      description: 'A collection of requested matchmaking rule set objects. ',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: ['RuleSets'] })
   .openapi('DescribeMatchmakingRuleSetsOutput')
@@ -6133,127 +4190,79 @@ const RuleSetLimitSchema = z.int().min(1).max(10).openapi('RuleSetLimit')
 
 const DescribeMatchmakingRuleSetsInputSchema = z
   .object({
-    Names: MatchmakingRuleSetNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of one or more matchmaking rule set names to retrieve details for. (Note: The rule set name is different from the optional "name" field in the rule set body.) You can use either the rule set name or ARN value. ',
-        }),
-    ).exactOptional(),
-    Limit: RuleSetLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
-        }),
-    ).exactOptional(),
+    Names: MatchmakingRuleSetNameListSchema.exactOptional().openapi({
+      description:
+        'A list of one or more matchmaking rule set names to retrieve details for. (Note: The rule set name is different from the optional "name" field in the rule set body.) You can use either the rule set name or ARN value. ',
+    }),
+    Limit: RuleSetLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
+    }),
   })
   .openapi({ title: 'DescribeMatchmakingRuleSetsInput', required: [] })
   .openapi('DescribeMatchmakingRuleSetsInput')
 
 const DescribePlayerSessionsOutputSchema = z
   .object({
-    PlayerSessions: PlayerSessionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of objects containing properties for each player session that matches the request.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    PlayerSessions: PlayerSessionListSchema.exactOptional().openapi({
+      description:
+        'A collection of objects containing properties for each player session that matches the request.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribePlayerSessionsOutput')
 
 const DescribePlayerSessionsInputSchema = z
   .object({
-    GameSessionId: ArnStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the game session to retrieve player sessions for.',
-        }),
-    ).exactOptional(),
-    PlayerId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for a player to retrieve player sessions for.',
-        }),
-    ).exactOptional(),
-    PlayerSessionId: PlayerSessionIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for a player session to retrieve.' }),
-    ).exactOptional(),
-    PlayerSessionStatusFilter: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Player session status to filter results on. Note that when a PlayerSessionId or PlayerId is provided in a DescribePlayerSessions request, then the PlayerSessionStatusFilter has no effect on the response.</p> <p>Possible player session statuses include the following:</p> <ul> <li> <p> <b>RESERVED</b> -- The player session request has been received, but the player has not yet connected to the server process and/or been validated. </p> </li> <li> <p> <b>ACTIVE</b> -- The player has been validated by the server process and is currently connected.</p> </li> <li> <p> <b>COMPLETED</b> -- The player connection has been dropped.</p> </li> <li> <p> <b>TIMEDOUT</b> -- A player session request was received, but the player did not connect and/or was not validated within the timeout limit (60 seconds).</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages. If a player session ID is specified, this parameter is ignored.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value. If a player session ID is specified, this parameter is ignored.',
-        }),
-    ).exactOptional(),
+    GameSessionId: ArnStringModelSchema.exactOptional().openapi({
+      description: 'A unique identifier for the game session to retrieve player sessions for.',
+    }),
+    PlayerId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'A unique identifier for a player to retrieve player sessions for.',
+    }),
+    PlayerSessionId: PlayerSessionIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for a player session to retrieve.',
+    }),
+    PlayerSessionStatusFilter: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        '<p>Player session status to filter results on. Note that when a PlayerSessionId or PlayerId is provided in a DescribePlayerSessions request, then the PlayerSessionStatusFilter has no effect on the response.</p> <p>Possible player session statuses include the following:</p> <ul> <li> <p> <b>RESERVED</b> -- The player session request has been received, but the player has not yet connected to the server process and/or been validated. </p> </li> <li> <p> <b>ACTIVE</b> -- The player has been validated by the server process and is currently connected.</p> </li> <li> <p> <b>COMPLETED</b> -- The player connection has been dropped.</p> </li> <li> <p> <b>TIMEDOUT</b> -- A player session request was received, but the player did not connect and/or was not validated within the timeout limit (60 seconds).</p> </li> </ul>',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages. If a player session ID is specified, this parameter is ignored.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value. If a player session ID is specified, this parameter is ignored.',
+    }),
   })
   .openapi({ title: 'DescribePlayerSessionsInput', required: [] })
   .openapi('DescribePlayerSessionsInput')
 
 const DescribeRuntimeConfigurationOutputSchema = z
   .object({
-    RuntimeConfiguration: RuntimeConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Instructions that describe how server processes should be launched and maintained on each instance in the fleet.',
-        }),
-    ).exactOptional(),
+    RuntimeConfiguration: RuntimeConfigurationSchema.exactOptional().openapi({
+      description:
+        'Instructions that describe how server processes should be launched and maintained on each instance in the fleet.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRuntimeConfigurationOutput')
 
 const DescribeRuntimeConfigurationInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to get the runtime configuration for. You can use either the fleet ID or ARN value.',
-        }),
-    ),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to get the runtime configuration for. You can use either the fleet ID or ARN value.',
+    }),
   })
   .openapi({ required: ['FleetId'], title: 'DescribeRuntimeConfigurationInput' })
   .openapi('DescribeRuntimeConfigurationInput')
@@ -6308,14 +4317,10 @@ const PolicyTypeSchema = z.enum(['RuleBased', 'TargetBased']).openapi('PolicyTyp
 
 const TargetConfigurationSchema = z
   .object({
-    TargetValue: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Desired value to use with a target-based scaling policy. The value must be relevant for whatever metric the scaling policy is using. For example, in a policy using the metric PercentAvailableGameSessions, the target value should be the preferred size of the fleet's buffer (the percent of capacity that should be idle and ready for new game sessions).",
-        }),
-    ),
+    TargetValue: DoubleSchema.openapi({
+      description:
+        "Desired value to use with a target-based scaling policy. The value must be relevant for whatever metric the scaling policy is using. For example, in a policy using the metric PercentAvailableGameSessions, the target value should be the preferred size of the fleet's buffer (the percent of capacity that should be idle and ready for new game sessions).",
+    }),
   })
   .openapi({
     required: ['TargetValue'],
@@ -6326,106 +4331,57 @@ const TargetConfigurationSchema = z
 
 const ScalingPolicySchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet that is associated with this scaling policy.',
-        }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
-        }),
-    ).exactOptional(),
-    Name: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A descriptive label that is associated with a fleet's scaling policy. Policy names do not need to be unique.",
-        }),
-    ).exactOptional(),
-    Status: ScalingStatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Current status of the scaling policy. The scaling policy can be in force only when in an <code>ACTIVE</code> status. Scaling policies can be suspended for individual fleets. If the policy is suspended for a fleet, the policy status does not change.</p> <ul> <li> <p> <b>ACTIVE</b> -- The scaling policy can be used for auto-scaling a fleet.</p> </li> <li> <p> <b>UPDATE_REQUESTED</b> -- A request to update the scaling policy has been received.</p> </li> <li> <p> <b>UPDATING</b> -- A change is being made to the scaling policy.</p> </li> <li> <p> <b>DELETE_REQUESTED</b> -- A request to delete the scaling policy has been received.</p> </li> <li> <p> <b>DELETING</b> -- The scaling policy is being deleted.</p> </li> <li> <p> <b>DELETED</b> -- The scaling policy has been deleted.</p> </li> <li> <p> <b>ERROR</b> -- An error occurred in creating the policy. It should be removed and recreated.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ScalingAdjustment: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Amount of adjustment to make, based on the scaling adjustment type.',
-        }),
-    ).exactOptional(),
-    ScalingAdjustmentType: ScalingAdjustmentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The type of adjustment to make to a fleet's instance count.</p> <ul> <li> <p> <b>ChangeInCapacity</b> -- add (or subtract) the scaling adjustment value from the current instance count. Positive values scale up while negative values scale down.</p> </li> <li> <p> <b>ExactCapacity</b> -- set the instance count to the scaling adjustment value.</p> </li> <li> <p> <b>PercentChangeInCapacity</b> -- increase or reduce the current instance count by the scaling adjustment, read as a percentage. Positive values scale up while negative values scale down.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    ComparisonOperator: ComparisonOperatorTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Comparison operator to use when measuring a metric against the threshold value.',
-        }),
-    ).exactOptional(),
-    Threshold: DoubleSchema.and(
-      z.any().openapi({ description: 'Metric value used to trigger a scaling event.' }),
-    ).exactOptional(),
-    EvaluationPeriods: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Length of time (in minutes) the metric must be at or beyond the threshold before a scaling event is triggered.',
-        }),
-    ).exactOptional(),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Name of the Amazon GameLift-defined metric that is used to trigger a scaling adjustment. For detailed descriptions of fleet metrics, see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/monitoring-cloudwatch.html">Monitor Amazon GameLift with Amazon CloudWatch</a>. </p> <ul> <li> <p> <b>ActivatingGameSessions</b> -- Game sessions in the process of being created.</p> </li> <li> <p> <b>ActiveGameSessions</b> -- Game sessions that are currently running.</p> </li> <li> <p> <b>ActiveInstances</b> -- Fleet instances that are currently running at least one game session.</p> </li> <li> <p> <b>AvailableGameSessions</b> -- Additional game sessions that fleet could host simultaneously, given current capacity.</p> </li> <li> <p> <b>AvailablePlayerSessions</b> -- Empty player slots in currently active game sessions. This includes game sessions that are not currently accepting players. Reserved player slots are not included.</p> </li> <li> <p> <b>CurrentPlayerSessions</b> -- Player slots in active game sessions that are being used by a player or are reserved for a player. </p> </li> <li> <p> <b>IdleInstances</b> -- Active instances that are currently hosting zero game sessions. </p> </li> <li> <p> <b>PercentAvailableGameSessions</b> -- Unused percentage of the total number of game sessions that a fleet could host simultaneously, given current capacity. Use this metric for a target-based scaling policy.</p> </li> <li> <p> <b>PercentIdleInstances</b> -- Percentage of the total number of active instances that are hosting zero game sessions.</p> </li> <li> <p> <b>QueueDepth</b> -- Pending game session placement requests, in any queue, where the current fleet is the top-priority destination.</p> </li> <li> <p> <b>WaitTime</b> -- Current wait time for pending game session placement requests, in any queue, where the current fleet is the top-priority destination. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PolicyType: PolicyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The type of scaling policy to create. For a target-based policy, set the parameter <i>MetricName</i> to 'PercentAvailableGameSessions' and specify a <i>TargetConfiguration</i>. For a rule-based policy set the following parameters: <i>MetricName</i>, <i>ComparisonOperator</i>, <i>Threshold</i>, <i>EvaluationPeriods</i>, <i>ScalingAdjustmentType</i>, and <i>ScalingAdjustment</i>.",
-        }),
-    ).exactOptional(),
-    TargetConfiguration: TargetConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains settings for a target-based scaling policy.',
-        }),
-    ).exactOptional(),
-    UpdateStatus: LocationUpdateStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The current status of the fleet's scaling policies in a requested fleet location. The status <code>PENDING_UPDATE</code> indicates that an update was requested for the fleet but has not yet been completed for the location.",
-        }),
-    ).exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z.any().openapi({ description: ' The fleet location. ' }),
-    ).exactOptional(),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the fleet that is associated with this scaling policy.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
+    }),
+    Name: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        "A descriptive label that is associated with a fleet's scaling policy. Policy names do not need to be unique.",
+    }),
+    Status: ScalingStatusTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Current status of the scaling policy. The scaling policy can be in force only when in an <code>ACTIVE</code> status. Scaling policies can be suspended for individual fleets. If the policy is suspended for a fleet, the policy status does not change.</p> <ul> <li> <p> <b>ACTIVE</b> -- The scaling policy can be used for auto-scaling a fleet.</p> </li> <li> <p> <b>UPDATE_REQUESTED</b> -- A request to update the scaling policy has been received.</p> </li> <li> <p> <b>UPDATING</b> -- A change is being made to the scaling policy.</p> </li> <li> <p> <b>DELETE_REQUESTED</b> -- A request to delete the scaling policy has been received.</p> </li> <li> <p> <b>DELETING</b> -- The scaling policy is being deleted.</p> </li> <li> <p> <b>DELETED</b> -- The scaling policy has been deleted.</p> </li> <li> <p> <b>ERROR</b> -- An error occurred in creating the policy. It should be removed and recreated.</p> </li> </ul>',
+    }),
+    ScalingAdjustment: IntegerSchema.exactOptional().openapi({
+      description: 'Amount of adjustment to make, based on the scaling adjustment type.',
+    }),
+    ScalingAdjustmentType: ScalingAdjustmentTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The type of adjustment to make to a fleet's instance count.</p> <ul> <li> <p> <b>ChangeInCapacity</b> -- add (or subtract) the scaling adjustment value from the current instance count. Positive values scale up while negative values scale down.</p> </li> <li> <p> <b>ExactCapacity</b> -- set the instance count to the scaling adjustment value.</p> </li> <li> <p> <b>PercentChangeInCapacity</b> -- increase or reduce the current instance count by the scaling adjustment, read as a percentage. Positive values scale up while negative values scale down.</p> </li> </ul>",
+    }),
+    ComparisonOperator: ComparisonOperatorTypeSchema.exactOptional().openapi({
+      description:
+        'Comparison operator to use when measuring a metric against the threshold value.',
+    }),
+    Threshold: DoubleSchema.exactOptional().openapi({
+      description: 'Metric value used to trigger a scaling event.',
+    }),
+    EvaluationPeriods: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'Length of time (in minutes) the metric must be at or beyond the threshold before a scaling event is triggered.',
+    }),
+    MetricName: MetricNameSchema.exactOptional().openapi({
+      description:
+        '<p>Name of the Amazon GameLift-defined metric that is used to trigger a scaling adjustment. For detailed descriptions of fleet metrics, see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/monitoring-cloudwatch.html">Monitor Amazon GameLift with Amazon CloudWatch</a>. </p> <ul> <li> <p> <b>ActivatingGameSessions</b> -- Game sessions in the process of being created.</p> </li> <li> <p> <b>ActiveGameSessions</b> -- Game sessions that are currently running.</p> </li> <li> <p> <b>ActiveInstances</b> -- Fleet instances that are currently running at least one game session.</p> </li> <li> <p> <b>AvailableGameSessions</b> -- Additional game sessions that fleet could host simultaneously, given current capacity.</p> </li> <li> <p> <b>AvailablePlayerSessions</b> -- Empty player slots in currently active game sessions. This includes game sessions that are not currently accepting players. Reserved player slots are not included.</p> </li> <li> <p> <b>CurrentPlayerSessions</b> -- Player slots in active game sessions that are being used by a player or are reserved for a player. </p> </li> <li> <p> <b>IdleInstances</b> -- Active instances that are currently hosting zero game sessions. </p> </li> <li> <p> <b>PercentAvailableGameSessions</b> -- Unused percentage of the total number of game sessions that a fleet could host simultaneously, given current capacity. Use this metric for a target-based scaling policy.</p> </li> <li> <p> <b>PercentIdleInstances</b> -- Percentage of the total number of active instances that are hosting zero game sessions.</p> </li> <li> <p> <b>QueueDepth</b> -- Pending game session placement requests, in any queue, where the current fleet is the top-priority destination.</p> </li> <li> <p> <b>WaitTime</b> -- Current wait time for pending game session placement requests, in any queue, where the current fleet is the top-priority destination. </p> </li> </ul>',
+    }),
+    PolicyType: PolicyTypeSchema.exactOptional().openapi({
+      description:
+        "The type of scaling policy to create. For a target-based policy, set the parameter <i>MetricName</i> to 'PercentAvailableGameSessions' and specify a <i>TargetConfiguration</i>. For a rule-based policy set the following parameters: <i>MetricName</i>, <i>ComparisonOperator</i>, <i>Threshold</i>, <i>EvaluationPeriods</i>, <i>ScalingAdjustmentType</i>, and <i>ScalingAdjustment</i>.",
+    }),
+    TargetConfiguration: TargetConfigurationSchema.exactOptional().openapi({
+      description: 'An object that contains settings for a target-based scaling policy.',
+    }),
+    UpdateStatus: LocationUpdateStatusSchema.exactOptional().openapi({
+      description:
+        "The current status of the fleet's scaling policies in a requested fleet location. The status <code>PENDING_UPDATE</code> indicates that an update was requested for the fleet but has not yet been completed for the location.",
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description: ' The fleet location. ',
+    }),
   })
   .openapi({
     description:
@@ -6438,91 +4394,58 @@ const ScalingPolicyListSchema = z.array(ScalingPolicySchema).openapi('ScalingPol
 
 const DescribeScalingPoliciesOutputSchema = z
   .object({
-    ScalingPolicies: ScalingPolicyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of objects containing the scaling policies matching the request.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    ScalingPolicies: ScalingPolicyListSchema.exactOptional().openapi({
+      description: 'A collection of objects containing the scaling policies matching the request.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeScalingPoliciesOutput')
 
 const DescribeScalingPoliciesInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet for which to retrieve scaling policies. You can use either the fleet ID or ARN value.',
-        }),
-    ),
-    StatusFilter: ScalingStatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Scaling policy status to filter results on. A scaling policy is only in force when in an <code>ACTIVE</code> status.</p> <ul> <li> <p> <b>ACTIVE</b> -- The scaling policy is currently in force.</p> </li> <li> <p> <b>UPDATEREQUESTED</b> -- A request to update the scaling policy has been received.</p> </li> <li> <p> <b>UPDATING</b> -- A change is being made to the scaling policy.</p> </li> <li> <p> <b>DELETEREQUESTED</b> -- A request to delete the scaling policy has been received.</p> </li> <li> <p> <b>DELETING</b> -- The scaling policy is being deleted.</p> </li> <li> <p> <b>DELETED</b> -- The scaling policy has been deleted.</p> </li> <li> <p> <b>ERROR</b> -- An error occurred in creating the policy. It should be removed and recreated.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
-        }),
-    ).exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The fleet location. If you don't specify this value, the response contains the scaling policies of every location in the fleet. ",
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet for which to retrieve scaling policies. You can use either the fleet ID or ARN value.',
+    }),
+    StatusFilter: ScalingStatusTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Scaling policy status to filter results on. A scaling policy is only in force when in an <code>ACTIVE</code> status.</p> <ul> <li> <p> <b>ACTIVE</b> -- The scaling policy is currently in force.</p> </li> <li> <p> <b>UPDATEREQUESTED</b> -- A request to update the scaling policy has been received.</p> </li> <li> <p> <b>UPDATING</b> -- A change is being made to the scaling policy.</p> </li> <li> <p> <b>DELETEREQUESTED</b> -- A request to delete the scaling policy has been received.</p> </li> <li> <p> <b>DELETING</b> -- The scaling policy is being deleted.</p> </li> <li> <p> <b>DELETED</b> -- The scaling policy has been deleted.</p> </li> <li> <p> <b>ERROR</b> -- An error occurred in creating the policy. It should be removed and recreated.</p> </li> </ul>',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        " The fleet location. If you don't specify this value, the response contains the scaling policies of every location in the fleet. ",
+    }),
   })
   .openapi({ required: ['FleetId'], title: 'DescribeScalingPoliciesInput' })
   .openapi('DescribeScalingPoliciesInput')
 
 const DescribeScriptOutputSchema = z
   .object({
-    Script: ScriptSchema.and(
-      z.any().openapi({ description: 'A set of properties describing the requested script.' }),
-    ).exactOptional(),
+    Script: ScriptSchema.exactOptional().openapi({
+      description: 'A set of properties describing the requested script.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeScriptOutput')
 
 const DescribeScriptInputSchema = z
   .object({
-    ScriptId: ScriptIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the Realtime script to retrieve properties for. You can use either the script ID or ARN value.',
-        }),
-    ),
+    ScriptId: ScriptIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the Realtime script to retrieve properties for. You can use either the script ID or ARN value.',
+    }),
   })
   .openapi({ required: ['ScriptId'], title: 'DescribeScriptInput' })
   .openapi('DescribeScriptInput')
@@ -6533,33 +4456,27 @@ const VpcPeeringAuthorizationListSchema = z
 
 const DescribeVpcPeeringAuthorizationsOutputSchema = z
   .object({
-    VpcPeeringAuthorizations: VpcPeeringAuthorizationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of objects that describe all valid VPC peering operations for the current Amazon Web Services account.',
-        }),
-    ).exactOptional(),
+    VpcPeeringAuthorizations: VpcPeeringAuthorizationListSchema.exactOptional().openapi({
+      description:
+        'A collection of objects that describe all valid VPC peering operations for the current Amazon Web Services account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeVpcPeeringAuthorizationsOutput')
 
 const DescribeVpcPeeringAuthorizationsInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeVpcPeeringAuthorizationsInput' })
   .openapi('DescribeVpcPeeringAuthorizationsInput')
 
 const VpcPeeringConnectionStatusSchema = z
   .object({
-    Code: NonZeroAndMaxStringSchema.and(
-      z.any().openapi({ description: 'Code indicating the status of a VPC peering connection.' }),
-    ).exactOptional(),
-    Message: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Additional messaging associated with the connection status. ' }),
-    ).exactOptional(),
+    Code: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'Code indicating the status of a VPC peering connection.',
+    }),
+    Message: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'Additional messaging associated with the connection status. ',
+    }),
   })
   .openapi({
     description:
@@ -6570,62 +4487,34 @@ const VpcPeeringConnectionStatusSchema = z
 
 const VpcPeeringConnectionSchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet. This ID determines the ID of the Amazon GameLift VPC for your fleet.',
-        }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) associated with the GameLift fleet resource for this connection. ',
-        }),
-    ).exactOptional(),
-    IpV4CidrBlock: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'CIDR block of IPv4 addresses assigned to the VPC peering connection for the GameLift VPC. The peered VPC also has an IPv4 CIDR block associated with it; these blocks cannot overlap or the peering connection cannot be created. ',
-        }),
-    ).exactOptional(),
-    VpcPeeringConnectionId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier that is automatically assigned to the connection record. This ID is referenced in VPC peering connection events, and is used when deleting a connection.',
-        }),
-    ).exactOptional(),
-    Status: VpcPeeringConnectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status information about the connection. Status indicates if a connection is pending, successful, or failed.',
-        }),
-    ).exactOptional(),
-    PeerVpcId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a VPC with resources to be accessed by your Amazon GameLift fleet. The VPC must be in the same Region as your fleet. To look up a VPC ID, use the <a href="https://console.aws.amazon.com/vpc/">VPC Dashboard</a> in the Amazon Web Services Management Console. Learn more about VPC peering in <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/vpc-peering.html">VPC Peering with Amazon GameLift Fleets</a>.',
-        }),
-    ).exactOptional(),
-    GameLiftVpcId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the VPC that contains the Amazon GameLift fleet for this connection. This VPC is managed by Amazon GameLift and does not appear in your Amazon Web Services account. ',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the fleet. This ID determines the ID of the Amazon GameLift VPC for your fleet.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) associated with the GameLift fleet resource for this connection. ',
+    }),
+    IpV4CidrBlock: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'CIDR block of IPv4 addresses assigned to the VPC peering connection for the GameLift VPC. The peered VPC also has an IPv4 CIDR block associated with it; these blocks cannot overlap or the peering connection cannot be created. ',
+    }),
+    VpcPeeringConnectionId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier that is automatically assigned to the connection record. This ID is referenced in VPC peering connection events, and is used when deleting a connection.',
+    }),
+    Status: VpcPeeringConnectionStatusSchema.exactOptional().openapi({
+      description:
+        'The status information about the connection. Status indicates if a connection is pending, successful, or failed.',
+    }),
+    PeerVpcId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for a VPC with resources to be accessed by your Amazon GameLift fleet. The VPC must be in the same Region as your fleet. To look up a VPC ID, use the <a href="https://console.aws.amazon.com/vpc/">VPC Dashboard</a> in the Amazon Web Services Management Console. Learn more about VPC peering in <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/vpc-peering.html">VPC Peering with Amazon GameLift Fleets</a>.',
+    }),
+    GameLiftVpcId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the VPC that contains the Amazon GameLift fleet for this connection. This VPC is managed by Amazon GameLift and does not appear in your Amazon Web Services account. ',
+    }),
   })
   .openapi({
     description:
@@ -6640,83 +4529,54 @@ const VpcPeeringConnectionListSchema = z
 
 const DescribeVpcPeeringConnectionsOutputSchema = z
   .object({
-    VpcPeeringConnections: VpcPeeringConnectionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A collection of VPC peering connection records that match the request.',
-        }),
-    ).exactOptional(),
+    VpcPeeringConnections: VpcPeeringConnectionListSchema.exactOptional().openapi({
+      description: 'A collection of VPC peering connection records that match the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeVpcPeeringConnectionsOutput')
 
 const DescribeVpcPeeringConnectionsInputSchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet. You can use either the fleet ID or ARN value.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the fleet. You can use either the fleet ID or ARN value.',
+    }),
   })
   .openapi({ title: 'DescribeVpcPeeringConnectionsInput', required: [] })
   .openapi('DescribeVpcPeeringConnectionsInput')
 
 const GetComputeAccessOutputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z.any().openapi({ description: 'The fleet ID of compute resource.' }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
-        }),
-    ).exactOptional(),
-    ComputeName: ComputeNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the compute resource you requested credentials for.',
-        }),
-    ).exactOptional(),
-    ComputeArn: ComputeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift compute resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::compute/compute-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
-        }),
-    ).exactOptional(),
-    Credentials: AwsCredentialsSchema.and(
-      z.any().openapi({ description: 'The access credentials for the compute resource.' }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.exactOptional().openapi({
+      description: 'The fleet ID of compute resource.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
+    }),
+    ComputeName: ComputeNameOrArnSchema.exactOptional().openapi({
+      description: 'The name of the compute resource you requested credentials for.',
+    }),
+    ComputeArn: ComputeArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift compute resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::compute/compute-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
+    }),
+    Credentials: AwsCredentialsSchema.exactOptional().openapi({
+      description: 'The access credentials for the compute resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetComputeAccessOutput')
 
 const GetComputeAccessInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet that the compute resource is registered to.',
-        }),
-    ),
-    ComputeName: ComputeNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the compute resource you are requesting credentials for.',
-        }),
-    ),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description: 'A unique identifier for the fleet that the compute resource is registered to.',
+    }),
+    ComputeName: ComputeNameOrArnSchema.openapi({
+      description: 'The name of the compute resource you are requesting credentials for.',
+    }),
   })
   .openapi({ required: ['FleetId', 'ComputeName'], title: 'GetComputeAccessInput' })
   .openapi('GetComputeAccessInput')
@@ -6730,116 +4590,72 @@ const ComputeAuthTokenSchema = z
 
 const GetComputeAuthTokenOutputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the fleet that the compute is registered to.',
-        }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
-        }),
-    ).exactOptional(),
-    ComputeName: ComputeNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the compute resource you are requesting the authentication token for.',
-        }),
-    ).exactOptional(),
-    ComputeArn: ComputeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift compute resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::compute/compute-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code> ',
-        }),
-    ).exactOptional(),
-    AuthToken: ComputeAuthTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The authentication token that your game server uses to authenticate with Amazon GameLift.',
-        }),
-    ).exactOptional(),
-    ExpirationTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time until the authentication token is no longer valid. To continue using the compute resource for game server hosting, renew the authentication token by using this operation again.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.exactOptional().openapi({
+      description: 'A unique identifier for the fleet that the compute is registered to.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
+    }),
+    ComputeName: ComputeNameOrArnSchema.exactOptional().openapi({
+      description:
+        'The name of the compute resource you are requesting the authentication token for.',
+    }),
+    ComputeArn: ComputeArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift compute resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::compute/compute-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code> ',
+    }),
+    AuthToken: ComputeAuthTokenSchema.exactOptional().openapi({
+      description:
+        'The authentication token that your game server uses to authenticate with Amazon GameLift.',
+    }),
+    ExpirationTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The amount of time until the authentication token is no longer valid. To continue using the compute resource for game server hosting, renew the authentication token by using this operation again.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetComputeAuthTokenOutput')
 
 const GetComputeAuthTokenInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the fleet that the compute is registered to.',
-        }),
-    ),
-    ComputeName: ComputeNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the compute resource you are requesting the authentication token for.',
-        }),
-    ),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description: 'A unique identifier for the fleet that the compute is registered to.',
+    }),
+    ComputeName: ComputeNameOrArnSchema.openapi({
+      description:
+        'The name of the compute resource you are requesting the authentication token for.',
+    }),
   })
   .openapi({ required: ['FleetId', 'ComputeName'], title: 'GetComputeAuthTokenInput' })
   .openapi('GetComputeAuthTokenInput')
 
 const GetGameSessionLogUrlOutputSchema = z
   .object({
-    PreSignedUrl: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Location of the requested game session logs, available for download. This URL is valid for 15 minutes, after which S3 will reject any download request using this URL. You can request a new URL any time within the 14-day period that the logs are retained.',
-        }),
-    ).exactOptional(),
+    PreSignedUrl: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'Location of the requested game session logs, available for download. This URL is valid for 15 minutes, after which S3 will reject any download request using this URL. You can request a new URL any time within the 14-day period that the logs are retained.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetGameSessionLogUrlOutput')
 
 const GetGameSessionLogUrlInputSchema = z
   .object({
-    GameSessionId: ArnStringModelSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the game session to get logs for. ' }),
-    ),
+    GameSessionId: ArnStringModelSchema.openapi({
+      description: 'A unique identifier for the game session to get logs for. ',
+    }),
   })
   .openapi({ required: ['GameSessionId'], title: 'GetGameSessionLogUrlInput' })
   .openapi('GetGameSessionLogUrlInput')
 
 const InstanceCredentialsSchema = z
   .object({
-    UserName: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'User login string.' }),
-    ).exactOptional(),
-    Secret: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Secret string. For Windows instances, the secret is a password for use with Windows Remote Desktop. For Linux instances, it is a private key (which must be saved as a <code>.pem</code> file) for use with SSH.',
-        }),
-    ).exactOptional(),
+    UserName: NonEmptyStringSchema.exactOptional().openapi({ description: 'User login string.' }),
+    Secret: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'Secret string. For Windows instances, the secret is a password for use with Windows Remote Desktop. For Linux instances, it is a private key (which must be saved as a <code>.pem</code> file) for use with SSH.',
+    }),
   })
   .openapi({
     description: 'Set of credentials required to remotely access a fleet instance.',
@@ -6849,25 +4665,21 @@ const InstanceCredentialsSchema = z
 
 const InstanceAccessSchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the fleet containing the instance being accessed.',
-        }),
-    ).exactOptional(),
-    InstanceId: InstanceIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the instance being accessed.' }),
-    ).exactOptional(),
-    IpAddress: IpAddressSchema.and(
-      z.any().openapi({ description: 'IP address that is assigned to the instance.' }),
-    ).exactOptional(),
-    OperatingSystem: OperatingSystemSchema.and(
-      z.any().openapi({ description: 'Operating system that is running on the instance.' }),
-    ).exactOptional(),
-    Credentials: InstanceCredentialsSchema.and(
-      z.any().openapi({ description: 'Credentials required to access the instance.' }),
-    ).exactOptional(),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the fleet containing the instance being accessed.',
+    }),
+    InstanceId: InstanceIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the instance being accessed.',
+    }),
+    IpAddress: IpAddressSchema.exactOptional().openapi({
+      description: 'IP address that is assigned to the instance.',
+    }),
+    OperatingSystem: OperatingSystemSchema.exactOptional().openapi({
+      description: 'Operating system that is running on the instance.',
+    }),
+    Credentials: InstanceCredentialsSchema.exactOptional().openapi({
+      description: 'Credentials required to access the instance.',
+    }),
   })
   .openapi({
     description: 'Information required to remotely connect to a fleet instance. ',
@@ -6877,36 +4689,24 @@ const InstanceAccessSchema = z
 
 const GetInstanceAccessOutputSchema = z
   .object({
-    InstanceAccess: InstanceAccessSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The connection information for a fleet instance, including IP address and access credentials.',
-        }),
-    ).exactOptional(),
+    InstanceAccess: InstanceAccessSchema.exactOptional().openapi({
+      description:
+        'The connection information for a fleet instance, including IP address and access credentials.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetInstanceAccessOutput')
 
 const GetInstanceAccessInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet that contains the instance you want access to. You can use either the fleet ID or ARN value. The fleet can be in any of the following statuses: <code>ACTIVATING</code>, <code>ACTIVE</code>, or <code>ERROR</code>. Fleets with an <code>ERROR</code> status may be accessible for a short time before they are deleted.',
-        }),
-    ),
-    InstanceId: InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the instance you want to get access to. You can access an instance in any status.',
-        }),
-    ),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet that contains the instance you want access to. You can use either the fleet ID or ARN value. The fleet can be in any of the following statuses: <code>ACTIVATING</code>, <code>ACTIVE</code>, or <code>ERROR</code>. Fleets with an <code>ERROR</code> status may be accessible for a short time before they are deleted.',
+    }),
+    InstanceId: InstanceIdSchema.openapi({
+      description:
+        'A unique identifier for the instance you want to get access to. You can access an instance in any status.',
+    }),
   })
   .openapi({ required: ['FleetId', 'InstanceId'], title: 'GetInstanceAccessInput' })
   .openapi('GetInstanceAccessInput')
@@ -6915,59 +4715,35 @@ const AliasListSchema = z.array(AliasSchema).openapi('AliasList')
 
 const ListAliasesOutputSchema = z
   .object({
-    Aliases: AliasListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A collection of alias resources that match the request parameters.',
-        }),
-    ).exactOptional(),
-    NextToken: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    Aliases: AliasListSchema.exactOptional().openapi({
+      description: 'A collection of alias resources that match the request parameters.',
+    }),
+    NextToken: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAliasesOutput')
 
 const ListAliasesInputSchema = z
   .object({
-    RoutingStrategyType: RoutingStrategyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The routing type to filter results on. Use this parameter to retrieve only aliases with a certain routing type. To retrieve all aliases, leave this parameter empty.</p> <p>Possible routing types include the following:</p> <ul> <li> <p> <b>SIMPLE</b> -- The alias resolves to one specific fleet. Use this type when routing to active fleets.</p> </li> <li> <p> <b>TERMINAL</b> -- The alias does not resolve to a fleet but instead can be used to display a message to the user. A terminal alias throws a TerminalRoutingStrategyException with the <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_RoutingStrategy.html">RoutingStrategy</a> message embedded.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Name: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with an alias. Alias names do not need to be unique.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
-        }),
-    ).exactOptional(),
-    NextToken: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
-        }),
-    ).exactOptional(),
+    RoutingStrategyType: RoutingStrategyTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The routing type to filter results on. Use this parameter to retrieve only aliases with a certain routing type. To retrieve all aliases, leave this parameter empty.</p> <p>Possible routing types include the following:</p> <ul> <li> <p> <b>SIMPLE</b> -- The alias resolves to one specific fleet. Use this type when routing to active fleets.</p> </li> <li> <p> <b>TERMINAL</b> -- The alias does not resolve to a fleet but instead can be used to display a message to the user. A terminal alias throws a TerminalRoutingStrategyException with the <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_RoutingStrategy.html">RoutingStrategy</a> message embedded.</p> </li> </ul>',
+    }),
+    Name: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'A descriptive label that is associated with an alias. Alias names do not need to be unique.',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
+    }),
+    NextToken: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
+    }),
   })
   .openapi({ title: 'ListAliasesInput', required: [] })
   .openapi('ListAliasesInput')
@@ -6976,47 +4752,31 @@ const BuildListSchema = z.array(BuildSchema).openapi('BuildList')
 
 const ListBuildsOutputSchema = z
   .object({
-    Builds: BuildListSchema.and(
-      z.any().openapi({ description: 'A collection of build resources that match the request.' }),
-    ).exactOptional(),
-    NextToken: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    Builds: BuildListSchema.exactOptional().openapi({
+      description: 'A collection of build resources that match the request.',
+    }),
+    NextToken: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBuildsOutput')
 
 const ListBuildsInputSchema = z
   .object({
-    Status: BuildStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Build status to filter results by. To retrieve all builds, leave this parameter empty.</p> <p>Possible build statuses include the following:</p> <ul> <li> <p> <b>INITIALIZED</b> -- A new build has been defined, but no files have been uploaded. You cannot create fleets for builds that are in this status. When a build is successfully created, the build status is set to this value. </p> </li> <li> <p> <b>READY</b> -- The game build has been successfully uploaded. You can now create new fleets for this build.</p> </li> <li> <p> <b>FAILED</b> -- The game build upload failed. You cannot create new fleets for this build. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
-        }),
-    ).exactOptional(),
-    NextToken: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, don't specify a value.",
-        }),
-    ).exactOptional(),
+    Status: BuildStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Build status to filter results by. To retrieve all builds, leave this parameter empty.</p> <p>Possible build statuses include the following:</p> <ul> <li> <p> <b>INITIALIZED</b> -- A new build has been defined, but no files have been uploaded. You cannot create fleets for builds that are in this status. When a build is successfully created, the build status is set to this value. </p> </li> <li> <p> <b>READY</b> -- The game build has been successfully uploaded. You can now create new fleets for this build.</p> </li> <li> <p> <b>FAILED</b> -- The game build upload failed. You cannot create new fleets for this build. </p> </li> </ul>',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
+    }),
+    NextToken: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        "A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, don't specify a value.",
+    }),
   })
   .openapi({ title: 'ListBuildsInput', required: [] })
   .openapi('ListBuildsInput')
@@ -7025,58 +4785,33 @@ const ComputeListSchema = z.array(ComputeSchema).openapi('ComputeList')
 
 const ListComputeOutputSchema = z
   .object({
-    ComputeList: ComputeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of compute resources registered to the fleet you specified.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    ComputeList: ComputeListSchema.exactOptional().openapi({
+      description: 'A list of compute resources registered to the fleet you specified.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListComputeOutput')
 
 const ListComputeInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the fleet the compute resources are registered to.',
-        }),
-    ),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom location that the compute resources are assigned to.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description: 'A unique identifier for the fleet the compute resources are registered to.',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description: 'The name of the custom location that the compute resources are assigned to.',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
+    }),
   })
   .openapi({ required: ['FleetId'], title: 'ListComputeInput' })
   .openapi('ListComputeInput')
@@ -7085,55 +4820,35 @@ const FleetIdListSchema = z.array(FleetIdSchema).min(1).openapi('FleetIdList')
 
 const ListFleetsOutputSchema = z
   .object({
-    FleetIds: FleetIdListSchema.and(
-      z.any().openapi({ description: 'A set of fleet IDs that match the list request.' }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    FleetIds: FleetIdListSchema.exactOptional().openapi({
+      description: 'A set of fleet IDs that match the list request.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFleetsOutput')
 
 const ListFleetsInputSchema = z
   .object({
-    BuildId: BuildIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the build to request fleets for. Use this parameter to return only fleets using a specified build. Use either the build ID or ARN value.',
-        }),
-    ).exactOptional(),
-    ScriptId: ScriptIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the Realtime script to request fleets for. Use this parameter to return only fleets using a specified script. Use either the script ID or ARN value.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
-        }),
-    ).exactOptional(),
+    BuildId: BuildIdOrArnSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the build to request fleets for. Use this parameter to return only fleets using a specified build. Use either the build ID or ARN value.',
+    }),
+    ScriptId: ScriptIdOrArnSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the Realtime script to request fleets for. Use this parameter to return only fleets using a specified script. Use either the script ID or ARN value.',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
+    }),
   })
   .openapi({ title: 'ListFleetsInput', required: [] })
   .openapi('ListFleetsInput')
@@ -7142,34 +4857,26 @@ const GameServerGroupsSchema = z.array(GameServerGroupSchema).openapi('GameServe
 
 const ListGameServerGroupsOutputSchema = z
   .object({
-    GameServerGroups: GameServerGroupsSchema.and(
-      z.any().openapi({ description: "The game server groups' game server groups." }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the pagination token from a previous request to retrieve the next page of results.',
-        }),
-    ).exactOptional(),
+    GameServerGroups: GameServerGroupsSchema.exactOptional().openapi({
+      description: "The game server groups' game server groups.",
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'Specify the pagination token from a previous request to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListGameServerGroupsOutput')
 
 const ListGameServerGroupsInputSchema = z
   .object({
-    Limit: PositiveIntegerSchema.and(
-      z.any().openapi({ description: "The game server groups' limit." }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify the pagination token from a previous request to retrieve the next page of results.',
-        }),
-    ).exactOptional(),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description: "The game server groups' limit.",
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'Specify the pagination token from a previous request to retrieve the next page of results.',
+    }),
   })
   .openapi({ title: 'ListGameServerGroupsInput', required: [] })
   .openapi('ListGameServerGroupsInput')
@@ -7178,19 +4885,13 @@ const GameServersSchema = z.array(GameServerSchema).openapi('GameServers')
 
 const ListGameServersOutputSchema = z
   .object({
-    GameServers: GameServersSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A collection of game server objects that match the request.' }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    GameServers: GameServersSchema.exactOptional().openapi({
+      description: 'A collection of game server objects that match the request.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListGameServersOutput')
@@ -7199,38 +4900,22 @@ const SortOrderSchema = z.enum(['ASCENDING', 'DESCENDING']).openapi('SortOrder')
 
 const ListGameServersInputSchema = z
   .object({
-    GameServerGroupName: GameServerGroupNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier for the game server group to retrieve a list of game servers from. Use either the name or ARN value.',
-        }),
-    ),
-    SortOrder: SortOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates how to sort the returned data based on game server registration timestamp. Use <code>ASCENDING</code> to retrieve oldest game servers first, or use <code>DESCENDING</code> to retrieve newest game servers first. If this parameter is left empty, game servers are returned in no particular order.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
-        }),
-    ).exactOptional(),
+    GameServerGroupName: GameServerGroupNameOrArnSchema.openapi({
+      description:
+        'An identifier for the game server group to retrieve a list of game servers from. Use either the name or ARN value.',
+    }),
+    SortOrder: SortOrderSchema.exactOptional().openapi({
+      description:
+        'Indicates how to sort the returned data based on game server registration timestamp. Use <code>ASCENDING</code> to retrieve oldest game servers first, or use <code>DESCENDING</code> to retrieve newest game servers first. If this parameter is left empty, game servers are returned in no particular order.',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
+    }),
   })
   .openapi({ required: ['GameServerGroupName'], title: 'ListGameServersInput' })
   .openapi('ListGameServersInput')
@@ -7239,17 +4924,13 @@ const LocationModelListSchema = z.array(LocationModelSchema).openapi('LocationMo
 
 const ListLocationsOutputSchema = z
   .object({
-    Locations: LocationModelListSchema.and(
-      z.any().openapi({ description: 'A collection of locations.' }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    Locations: LocationModelListSchema.exactOptional().openapi({
+      description: 'A collection of locations.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLocationsOutput')
@@ -7266,29 +4947,17 @@ const ListLocationsLimitSchema = z.int().min(1).max(200).openapi('ListLocationsL
 
 const ListLocationsInputSchema = z
   .object({
-    Filters: LocationFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Filters the list for <code>AWS</code> or <code>CUSTOM</code> locations.',
-        }),
-    ).exactOptional(),
-    Limit: ListLocationsLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
-        }),
-    ).exactOptional(),
+    Filters: LocationFilterListSchema.exactOptional().openapi({
+      description: 'Filters the list for <code>AWS</code> or <code>CUSTOM</code> locations.',
+    }),
+    Limit: ListLocationsLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
+    }),
   })
   .openapi({ title: 'ListLocationsInput', required: [] })
   .openapi('ListLocationsInput')
@@ -7297,48 +4966,36 @@ const ScriptListSchema = z.array(ScriptSchema).openapi('ScriptList')
 
 const ListScriptsOutputSchema = z
   .object({
-    Scripts: ScriptListSchema.and(
-      z.any().openapi({ description: 'A set of properties describing the requested script.' }),
-    ).exactOptional(),
-    NextToken: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    Scripts: ScriptListSchema.exactOptional().openapi({
+      description: 'A set of properties describing the requested script.',
+    }),
+    NextToken: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListScriptsOutput')
 
 const ListScriptsInputSchema = z
   .object({
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
-        }),
-    ).exactOptional(),
-    NextToken: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, don't specify a value.",
-        }),
-    ).exactOptional(),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.',
+    }),
+    NextToken: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        "A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, don't specify a value.",
+    }),
   })
   .openapi({ title: 'ListScriptsInput', required: [] })
   .openapi('ListScriptsInput')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The collection of tags assigned to the resource. ' }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The collection of tags assigned to the resource. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -7347,120 +5004,72 @@ const AmazonResourceNameSchema = z.string().min(1).max(1011).openapi('AmazonReso
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that uniquely identifies the Amazon GameLift resource that you want to retrieve tags for. Amazon GameLift includes resource ARNs in the data object for the resource. You can retrieve the ARN by calling a <code>List</code> or <code>Describe</code> operation for the resource type. ',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that uniquely identifies the Amazon GameLift resource that you want to retrieve tags for. Amazon GameLift includes resource ARNs in the data object for the resource. You can retrieve the ARN by calling a <code>List</code> or <code>Describe</code> operation for the resource type. ',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const PutScalingPolicyOutputSchema = z
   .object({
-    Name: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A descriptive label that is associated with a fleet's scaling policy. Policy names do not need to be unique.",
-        }),
-    ).exactOptional(),
+    Name: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        "A descriptive label that is associated with a fleet's scaling policy. Policy names do not need to be unique.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutScalingPolicyOutput')
 
 const PutScalingPolicyInputSchema = z
   .object({
-    Name: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A descriptive label that is associated with a fleet's scaling policy. Policy names do not need to be unique. A fleet can have only one scaling policy with the same name.",
-        }),
-    ),
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to apply this policy to. You can use either the fleet ID or ARN value. The fleet cannot be in any of the following statuses: ERROR or DELETING.',
-        }),
-    ),
-    ScalingAdjustment: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Amount of adjustment to make, based on the scaling adjustment type.',
-        }),
-    ).exactOptional(),
-    ScalingAdjustmentType: ScalingAdjustmentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of adjustment to make to a fleet\'s instance count:</p> <ul> <li> <p> <b>ChangeInCapacity</b> -- add (or subtract) the scaling adjustment value from the current instance count. Positive values scale up while negative values scale down.</p> </li> <li> <p> <b>ExactCapacity</b> -- set the instance count to the scaling adjustment value.</p> </li> <li> <p> <b>PercentChangeInCapacity</b> -- increase or reduce the current instance count by the scaling adjustment, read as a percentage. Positive values scale up while negative values scale down; for example, a value of "-10" scales the fleet down by 10%.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Threshold: DoubleSchema.and(
-      z.any().openapi({ description: 'Metric value used to trigger a scaling event.' }),
-    ).exactOptional(),
-    ComparisonOperator: ComparisonOperatorTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Comparison operator to use when measuring the metric against the threshold value.',
-        }),
-    ).exactOptional(),
-    EvaluationPeriods: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Length of time (in minutes) the metric must be at or beyond the threshold before a scaling event is triggered.',
-        }),
-    ).exactOptional(),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Name of the Amazon GameLift-defined metric that is used to trigger a scaling adjustment. For detailed descriptions of fleet metrics, see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/monitoring-cloudwatch.html">Monitor Amazon GameLift with Amazon CloudWatch</a>. </p> <ul> <li> <p> <b>ActivatingGameSessions</b> -- Game sessions in the process of being created.</p> </li> <li> <p> <b>ActiveGameSessions</b> -- Game sessions that are currently running.</p> </li> <li> <p> <b>ActiveInstances</b> -- Fleet instances that are currently running at least one game session.</p> </li> <li> <p> <b>AvailableGameSessions</b> -- Additional game sessions that fleet could host simultaneously, given current capacity.</p> </li> <li> <p> <b>AvailablePlayerSessions</b> -- Empty player slots in currently active game sessions. This includes game sessions that are not currently accepting players. Reserved player slots are not included.</p> </li> <li> <p> <b>CurrentPlayerSessions</b> -- Player slots in active game sessions that are being used by a player or are reserved for a player. </p> </li> <li> <p> <b>IdleInstances</b> -- Active instances that are currently hosting zero game sessions. </p> </li> <li> <p> <b>PercentAvailableGameSessions</b> -- Unused percentage of the total number of game sessions that a fleet could host simultaneously, given current capacity. Use this metric for a target-based scaling policy.</p> </li> <li> <p> <b>PercentIdleInstances</b> -- Percentage of the total number of active instances that are hosting zero game sessions.</p> </li> <li> <p> <b>QueueDepth</b> -- Pending game session placement requests, in any queue, where the current fleet is the top-priority destination.</p> </li> <li> <p> <b>WaitTime</b> -- Current wait time for pending game session placement requests, in any queue, where the current fleet is the top-priority destination. </p> </li> </ul>',
-        }),
-    ),
-    PolicyType: PolicyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The type of scaling policy to create. For a target-based policy, set the parameter <i>MetricName</i> to 'PercentAvailableGameSessions' and specify a <i>TargetConfiguration</i>. For a rule-based policy set the following parameters: <i>MetricName</i>, <i>ComparisonOperator</i>, <i>Threshold</i>, <i>EvaluationPeriods</i>, <i>ScalingAdjustmentType</i>, and <i>ScalingAdjustment</i>.",
-        }),
-    ).exactOptional(),
-    TargetConfiguration: TargetConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains settings for a target-based scaling policy.',
-        }),
-    ).exactOptional(),
+    Name: NonZeroAndMaxStringSchema.openapi({
+      description:
+        "A descriptive label that is associated with a fleet's scaling policy. Policy names do not need to be unique. A fleet can have only one scaling policy with the same name.",
+    }),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to apply this policy to. You can use either the fleet ID or ARN value. The fleet cannot be in any of the following statuses: ERROR or DELETING.',
+    }),
+    ScalingAdjustment: IntegerSchema.exactOptional().openapi({
+      description: 'Amount of adjustment to make, based on the scaling adjustment type.',
+    }),
+    ScalingAdjustmentType: ScalingAdjustmentTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of adjustment to make to a fleet\'s instance count:</p> <ul> <li> <p> <b>ChangeInCapacity</b> -- add (or subtract) the scaling adjustment value from the current instance count. Positive values scale up while negative values scale down.</p> </li> <li> <p> <b>ExactCapacity</b> -- set the instance count to the scaling adjustment value.</p> </li> <li> <p> <b>PercentChangeInCapacity</b> -- increase or reduce the current instance count by the scaling adjustment, read as a percentage. Positive values scale up while negative values scale down; for example, a value of "-10" scales the fleet down by 10%.</p> </li> </ul>',
+    }),
+    Threshold: DoubleSchema.exactOptional().openapi({
+      description: 'Metric value used to trigger a scaling event.',
+    }),
+    ComparisonOperator: ComparisonOperatorTypeSchema.exactOptional().openapi({
+      description:
+        'Comparison operator to use when measuring the metric against the threshold value.',
+    }),
+    EvaluationPeriods: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'Length of time (in minutes) the metric must be at or beyond the threshold before a scaling event is triggered.',
+    }),
+    MetricName: MetricNameSchema.openapi({
+      description:
+        '<p>Name of the Amazon GameLift-defined metric that is used to trigger a scaling adjustment. For detailed descriptions of fleet metrics, see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/monitoring-cloudwatch.html">Monitor Amazon GameLift with Amazon CloudWatch</a>. </p> <ul> <li> <p> <b>ActivatingGameSessions</b> -- Game sessions in the process of being created.</p> </li> <li> <p> <b>ActiveGameSessions</b> -- Game sessions that are currently running.</p> </li> <li> <p> <b>ActiveInstances</b> -- Fleet instances that are currently running at least one game session.</p> </li> <li> <p> <b>AvailableGameSessions</b> -- Additional game sessions that fleet could host simultaneously, given current capacity.</p> </li> <li> <p> <b>AvailablePlayerSessions</b> -- Empty player slots in currently active game sessions. This includes game sessions that are not currently accepting players. Reserved player slots are not included.</p> </li> <li> <p> <b>CurrentPlayerSessions</b> -- Player slots in active game sessions that are being used by a player or are reserved for a player. </p> </li> <li> <p> <b>IdleInstances</b> -- Active instances that are currently hosting zero game sessions. </p> </li> <li> <p> <b>PercentAvailableGameSessions</b> -- Unused percentage of the total number of game sessions that a fleet could host simultaneously, given current capacity. Use this metric for a target-based scaling policy.</p> </li> <li> <p> <b>PercentIdleInstances</b> -- Percentage of the total number of active instances that are hosting zero game sessions.</p> </li> <li> <p> <b>QueueDepth</b> -- Pending game session placement requests, in any queue, where the current fleet is the top-priority destination.</p> </li> <li> <p> <b>WaitTime</b> -- Current wait time for pending game session placement requests, in any queue, where the current fleet is the top-priority destination. </p> </li> </ul>',
+    }),
+    PolicyType: PolicyTypeSchema.exactOptional().openapi({
+      description:
+        "The type of scaling policy to create. For a target-based policy, set the parameter <i>MetricName</i> to 'PercentAvailableGameSessions' and specify a <i>TargetConfiguration</i>. For a rule-based policy set the following parameters: <i>MetricName</i>, <i>ComparisonOperator</i>, <i>Threshold</i>, <i>EvaluationPeriods</i>, <i>ScalingAdjustmentType</i>, and <i>ScalingAdjustment</i>.",
+    }),
+    TargetConfiguration: TargetConfigurationSchema.exactOptional().openapi({
+      description: 'An object that contains settings for a target-based scaling policy.',
+    }),
   })
   .openapi({ required: ['Name', 'FleetId', 'MetricName'], title: 'PutScalingPolicyInput' })
   .openapi('PutScalingPolicyInput')
 
 const RegisterComputeOutputSchema = z
   .object({
-    Compute: ComputeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The details of the compute resource you registered to the specified fleet.',
-        }),
-    ).exactOptional(),
+    Compute: ComputeSchema.exactOptional().openapi({
+      description: 'The details of the compute resource you registered to the specified fleet.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RegisterComputeOutput')
@@ -7474,109 +5083,65 @@ const DnsNameInputSchema = z
 
 const RegisterComputeInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to register the compute to. You can use either the fleet ID or ARN value.',
-        }),
-    ),
-    ComputeName: ComputeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with the compute resource registered to your fleet.',
-        }),
-    ),
-    CertificatePath: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to the TLS certificate on your compute resource. The path and certificate are not validated by Amazon GameLift.',
-        }),
-    ).exactOptional(),
-    DnsName: DnsNameInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The DNS name of the compute resource. Amazon GameLift requires the DNS name or IP address to manage your compute resource.',
-        }),
-    ).exactOptional(),
-    IpAddress: IpAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address of the compute resource. Amazon GameLift requires the DNS name or IP address to manage your compute resource.',
-        }),
-    ).exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the custom location you added to the fleet you are registering this compute resource to.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to register the compute to. You can use either the fleet ID or ARN value.',
+    }),
+    ComputeName: ComputeNameSchema.openapi({
+      description:
+        'A descriptive label that is associated with the compute resource registered to your fleet.',
+    }),
+    CertificatePath: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'The path to the TLS certificate on your compute resource. The path and certificate are not validated by Amazon GameLift.',
+    }),
+    DnsName: DnsNameInputSchema.exactOptional().openapi({
+      description:
+        'The DNS name of the compute resource. Amazon GameLift requires the DNS name or IP address to manage your compute resource.',
+    }),
+    IpAddress: IpAddressSchema.exactOptional().openapi({
+      description:
+        'The IP address of the compute resource. Amazon GameLift requires the DNS name or IP address to manage your compute resource.',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        'The name of the custom location you added to the fleet you are registering this compute resource to.',
+    }),
   })
   .openapi({ required: ['FleetId', 'ComputeName'], title: 'RegisterComputeInput' })
   .openapi('RegisterComputeInput')
 
 const RegisterGameServerOutputSchema = z
   .object({
-    GameServer: GameServerSchema.and(
-      z.any().openapi({ description: 'Object that describes the newly registered game server.' }),
-    ).exactOptional(),
+    GameServer: GameServerSchema.exactOptional().openapi({
+      description: 'Object that describes the newly registered game server.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RegisterGameServerOutput')
 
 const RegisterGameServerInputSchema = z
   .object({
-    GameServerGroupName: GameServerGroupNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the game server group where the game server is running.',
-        }),
-    ),
-    GameServerId: GameServerIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A custom string that uniquely identifies the game server to register. Game server IDs are developer-defined and must be unique across all game server groups in your Amazon Web Services account.',
-        }),
-    ),
-    InstanceId: GameServerInstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the instance where the game server is running. This ID is available in the instance metadata. EC2 instance IDs use a 17-character format, for example: <code>i-1234567890abcdef0</code>.',
-        }),
-    ),
-    ConnectionInfo: GameServerConnectionInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information that is needed to make inbound client connections to the game server. This might include the IP address and port, DNS name, and other information.',
-        }),
-    ).exactOptional(),
-    GameServerData: GameServerDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom game server properties, formatted as a single string value. This data is passed to a game client or service when it requests information on game servers. ',
-        }),
-    ).exactOptional(),
+    GameServerGroupName: GameServerGroupNameOrArnSchema.openapi({
+      description:
+        'A unique identifier for the game server group where the game server is running.',
+    }),
+    GameServerId: GameServerIdSchema.openapi({
+      description:
+        'A custom string that uniquely identifies the game server to register. Game server IDs are developer-defined and must be unique across all game server groups in your Amazon Web Services account.',
+    }),
+    InstanceId: GameServerInstanceIdSchema.openapi({
+      description:
+        'The unique identifier for the instance where the game server is running. This ID is available in the instance metadata. EC2 instance IDs use a 17-character format, for example: <code>i-1234567890abcdef0</code>.',
+    }),
+    ConnectionInfo: GameServerConnectionInfoSchema.exactOptional().openapi({
+      description:
+        'Information that is needed to make inbound client connections to the game server. This might include the IP address and port, DNS name, and other information.',
+    }),
+    GameServerData: GameServerDataSchema.exactOptional().openapi({
+      description:
+        'A set of custom game server properties, formatted as a single string value. This data is passed to a game client or service when it requests information on game servers. ',
+    }),
   })
   .openapi({
     required: ['GameServerGroupName', 'GameServerId', 'InstanceId'],
@@ -7586,97 +5151,69 @@ const RegisterGameServerInputSchema = z
 
 const RequestUploadCredentialsOutputSchema = z
   .object({
-    UploadCredentials: AwsCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Web Services credentials required when uploading a game build to the storage location. These credentials have a limited lifespan and are valid only for the build they were issued for.',
-        }),
-    ).exactOptional(),
-    StorageLocation: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Amazon S3 path and key, identifying where the game build files are stored.',
-        }),
-    ).exactOptional(),
+    UploadCredentials: AwsCredentialsSchema.exactOptional().openapi({
+      description:
+        'Amazon Web Services credentials required when uploading a game build to the storage location. These credentials have a limited lifespan and are valid only for the build they were issued for.',
+    }),
+    StorageLocation: S3LocationSchema.exactOptional().openapi({
+      description: 'Amazon S3 path and key, identifying where the game build files are stored.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RequestUploadCredentialsOutput')
 
 const RequestUploadCredentialsInputSchema = z
   .object({
-    BuildId: BuildIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the build to get credentials for. You can use either the build ID or ARN value. ',
-        }),
-    ),
+    BuildId: BuildIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the build to get credentials for. You can use either the build ID or ARN value. ',
+    }),
   })
   .openapi({ required: ['BuildId'], title: 'RequestUploadCredentialsInput' })
   .openapi('RequestUploadCredentialsInput')
 
 const ResolveAliasOutputSchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z.any().openapi({ description: 'The fleet identifier that the alias is pointing to.' }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) associated with the GameLift fleet resource that this alias points to. ',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description: 'The fleet identifier that the alias is pointing to.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) associated with the GameLift fleet resource that this alias points to. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ResolveAliasOutput')
 
 const ResolveAliasInputSchema = z
   .object({
-    AliasId: AliasIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the alias that you want to retrieve a fleet ID for. You can use either the alias ID or ARN value.',
-        }),
-    ),
+    AliasId: AliasIdOrArnSchema.openapi({
+      description:
+        'The unique identifier of the alias that you want to retrieve a fleet ID for. You can use either the alias ID or ARN value.',
+    }),
   })
   .openapi({ required: ['AliasId'], title: 'ResolveAliasInput' })
   .openapi('ResolveAliasInput')
 
 const ResumeGameServerGroupOutputSchema = z
   .object({
-    GameServerGroup: GameServerGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the game server group resource, with the <code>SuspendedActions</code> property updated to reflect the resumed activity.',
-        }),
-    ).exactOptional(),
+    GameServerGroup: GameServerGroupSchema.exactOptional().openapi({
+      description:
+        'An object that describes the game server group resource, with the <code>SuspendedActions</code> property updated to reflect the resumed activity.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ResumeGameServerGroupOutput')
 
 const ResumeGameServerGroupInputSchema = z
   .object({
-    GameServerGroupName: GameServerGroupNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the game server group. Use either the name or ARN value.',
-        }),
-    ),
-    ResumeActions: GameServerGroupActionsSchema.and(
-      z.any().openapi({ description: 'The activity to resume for this game server group.' }),
-    ),
+    GameServerGroupName: GameServerGroupNameOrArnSchema.openapi({
+      description:
+        'A unique identifier for the game server group. Use either the name or ARN value.',
+    }),
+    ResumeActions: GameServerGroupActionsSchema.openapi({
+      description: 'The activity to resume for this game server group.',
+    }),
   })
   .openapi({
     required: ['GameServerGroupName', 'ResumeActions'],
@@ -7686,161 +5223,101 @@ const ResumeGameServerGroupInputSchema = z
 
 const SearchGameSessionsOutputSchema = z
   .object({
-    GameSessions: GameSessionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of objects containing game session properties for each session that matches the request.',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
-        }),
-    ).exactOptional(),
+    GameSessions: GameSessionListSchema.exactOptional().openapi({
+      description:
+        'A collection of objects containing game session properties for each session that matches the request.',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates where to resume retrieving results on the next call to this operation. If no token is returned, these results represent the end of the list.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchGameSessionsOutput')
 
 const SearchGameSessionsInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to search for active game sessions. You can use either the fleet ID or ARN value. Each request must reference either a fleet ID or alias ID, but not both.',
-        }),
-    ).exactOptional(),
-    AliasId: AliasIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the alias associated with the fleet to search for active game sessions. You can use either the alias ID or ARN value. Each request must reference either a fleet ID or alias ID, but not both.',
-        }),
-    ).exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A fleet location to search for game sessions. You can specify a fleet's home Region or a remote location. Use the Amazon Web Services Region code format, such as <code>us-west-2</code>. ",
-        }),
-    ).exactOptional(),
-    FilterExpression: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>String containing the search criteria for the session search. If no filter expression is included, the request returns results for all game sessions in the fleet that are in <code>ACTIVE</code> status.</p> <p>A filter expression can contain one or multiple conditions. Each condition consists of the following:</p> <ul> <li> <p> <b>Operand</b> -- Name of a game session attribute. Valid values are <code>gameSessionName</code>, <code>gameSessionId</code>, <code>gameSessionProperties</code>, <code>maximumSessions</code>, <code>creationTimeMillis</code>, <code>playerSessionCount</code>, <code>hasAvailablePlayerSessions</code>.</p> </li> <li> <p> <b>Comparator</b> -- Valid comparators are: <code>=</code>, <code>&lt;&gt;</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>. </p> </li> <li> <p> <b>Value</b> -- Value to be searched for. Values may be numbers, boolean values (true/false) or strings depending on the operand. String values are case sensitive and must be enclosed in single quotes. Special characters must be escaped. Boolean and string values can only be used with the comparators <code>=</code> and <code>&lt;&gt;</code>. For example, the following filter expression searches on <code>gameSessionName</code>: "<code>FilterExpression": "gameSessionName = \'Matt\\\\\'s Awesome Game 1\'"</code>. </p> </li> </ul> <p>To chain multiple conditions in a single expression, use the logical keywords <code>AND</code>, <code>OR</code>, and <code>NOT</code> and parentheses as needed. For example: <code>x AND y AND NOT z</code>, <code>NOT (x OR y)</code>.</p> <p>Session search evaluates conditions from left to right using the following precedence rules:</p> <ol> <li> <p> <code>=</code>, <code>&lt;&gt;</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code> </p> </li> <li> <p>Parentheses</p> </li> <li> <p>NOT</p> </li> <li> <p>AND</p> </li> <li> <p>OR</p> </li> </ol> <p>For example, this filter expression retrieves game sessions hosting at least ten players that have an open player slot: <code>"maximumSessions&gt;=10 AND hasAvailablePlayerSessions=true"</code>. </p>',
-        }),
-    ).exactOptional(),
-    SortExpression: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Instructions on how to sort the search results. If no sort expression is included, the request returns results in random order. A sort expression consists of the following elements:</p> <ul> <li> <p> <b>Operand</b> -- Name of a game session attribute. Valid values are <code>gameSessionName</code>, <code>gameSessionId</code>, <code>gameSessionProperties</code>, <code>maximumSessions</code>, <code>creationTimeMillis</code>, <code>playerSessionCount</code>, <code>hasAvailablePlayerSessions</code>.</p> </li> <li> <p> <b>Order</b> -- Valid sort orders are <code>ASC</code> (ascending) and <code>DESC</code> (descending).</p> </li> </ul> <p>For example, this sort expression returns the oldest active sessions first: <code>"SortExpression": "creationTimeMillis ASC"</code>. Results with a null value for the sort operand are returned at the end of the list.</p>',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages. The maximum number of results returned is 20, even if this value is not set or is set higher than 20. ',
-        }),
-    ).exactOptional(),
-    NextToken: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the fleet to search for active game sessions. You can use either the fleet ID or ARN value. Each request must reference either a fleet ID or alias ID, but not both.',
+    }),
+    AliasId: AliasIdOrArnSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the alias associated with the fleet to search for active game sessions. You can use either the alias ID or ARN value. Each request must reference either a fleet ID or alias ID, but not both.',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        "A fleet location to search for game sessions. You can specify a fleet's home Region or a remote location. Use the Amazon Web Services Region code format, such as <code>us-west-2</code>. ",
+    }),
+    FilterExpression: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        '<p>String containing the search criteria for the session search. If no filter expression is included, the request returns results for all game sessions in the fleet that are in <code>ACTIVE</code> status.</p> <p>A filter expression can contain one or multiple conditions. Each condition consists of the following:</p> <ul> <li> <p> <b>Operand</b> -- Name of a game session attribute. Valid values are <code>gameSessionName</code>, <code>gameSessionId</code>, <code>gameSessionProperties</code>, <code>maximumSessions</code>, <code>creationTimeMillis</code>, <code>playerSessionCount</code>, <code>hasAvailablePlayerSessions</code>.</p> </li> <li> <p> <b>Comparator</b> -- Valid comparators are: <code>=</code>, <code>&lt;&gt;</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>. </p> </li> <li> <p> <b>Value</b> -- Value to be searched for. Values may be numbers, boolean values (true/false) or strings depending on the operand. String values are case sensitive and must be enclosed in single quotes. Special characters must be escaped. Boolean and string values can only be used with the comparators <code>=</code> and <code>&lt;&gt;</code>. For example, the following filter expression searches on <code>gameSessionName</code>: "<code>FilterExpression": "gameSessionName = \'Matt\\\\\'s Awesome Game 1\'"</code>. </p> </li> </ul> <p>To chain multiple conditions in a single expression, use the logical keywords <code>AND</code>, <code>OR</code>, and <code>NOT</code> and parentheses as needed. For example: <code>x AND y AND NOT z</code>, <code>NOT (x OR y)</code>.</p> <p>Session search evaluates conditions from left to right using the following precedence rules:</p> <ol> <li> <p> <code>=</code>, <code>&lt;&gt;</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code> </p> </li> <li> <p>Parentheses</p> </li> <li> <p>NOT</p> </li> <li> <p>AND</p> </li> <li> <p>OR</p> </li> </ol> <p>For example, this filter expression retrieves game sessions hosting at least ten players that have an open player slot: <code>"maximumSessions&gt;=10 AND hasAvailablePlayerSessions=true"</code>. </p>',
+    }),
+    SortExpression: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        '<p>Instructions on how to sort the search results. If no sort expression is included, the request returns results in random order. A sort expression consists of the following elements:</p> <ul> <li> <p> <b>Operand</b> -- Name of a game session attribute. Valid values are <code>gameSessionName</code>, <code>gameSessionId</code>, <code>gameSessionProperties</code>, <code>maximumSessions</code>, <code>creationTimeMillis</code>, <code>playerSessionCount</code>, <code>hasAvailablePlayerSessions</code>.</p> </li> <li> <p> <b>Order</b> -- Valid sort orders are <code>ASC</code> (ascending) and <code>DESC</code> (descending).</p> </li> </ul> <p>For example, this sort expression returns the oldest active sessions first: <code>"SortExpression": "creationTimeMillis ASC"</code>. Results with a null value for the sort operand are returned at the end of the list.</p>',
+    }),
+    Limit: PositiveIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages. The maximum number of results returned is 20, even if this value is not set or is set higher than 20. ',
+    }),
+    NextToken: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A token that indicates the start of the next sequential page of results. Use the token that is returned with a previous call to this operation. To start at the beginning of the result set, do not specify a value.',
+    }),
   })
   .openapi({ title: 'SearchGameSessionsInput', required: [] })
   .openapi('SearchGameSessionsInput')
 
 const StartFleetActionsOutputSchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the fleet to restart actions on.' }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the fleet to restart actions on.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartFleetActionsOutput')
 
 const StartFleetActionsInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to restart actions on. You can use either the fleet ID or ARN value.',
-        }),
-    ),
-    Actions: FleetActionListSchema.and(
-      z.any().openapi({ description: 'List of actions to restart on the fleet.' }),
-    ),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fleet location to restart fleet actions for. Specify a location in the form of an Amazon Web Services Region code, such as <code>us-west-2</code>.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to restart actions on. You can use either the fleet ID or ARN value.',
+    }),
+    Actions: FleetActionListSchema.openapi({
+      description: 'List of actions to restart on the fleet.',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        'The fleet location to restart fleet actions for. Specify a location in the form of an Amazon Web Services Region code, such as <code>us-west-2</code>.',
+    }),
   })
   .openapi({ required: ['FleetId', 'Actions'], title: 'StartFleetActionsInput' })
   .openapi('StartFleetActionsInput')
 
 const StartGameSessionPlacementOutputSchema = z
   .object({
-    GameSessionPlacement: GameSessionPlacementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Object that describes the newly created game session placement. This object includes all the information provided in the request, as well as start/end time stamps and placement status. ',
-        }),
-    ).exactOptional(),
+    GameSessionPlacement: GameSessionPlacementSchema.exactOptional().openapi({
+      description:
+        'Object that describes the newly created game session placement. This object includes all the information provided in the request, as well as start/end time stamps and placement status. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartGameSessionPlacementOutput')
 
 const DesiredPlayerSessionSchema = z
   .object({
-    PlayerId: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for a player to associate with the player session.',
-        }),
-    ).exactOptional(),
-    PlayerData: PlayerDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Developer-defined information related to a player. Amazon GameLift does not use this data, so it can be formatted as needed for use in the game.',
-        }),
-    ).exactOptional(),
+    PlayerId: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'A unique identifier for a player to associate with the player session.',
+    }),
+    PlayerData: PlayerDataSchema.exactOptional().openapi({
+      description:
+        'Developer-defined information related to a player. Amazon GameLift does not use this data, so it can be formatted as needed for use in the game.',
+    }),
   })
   .openapi({
     description:
@@ -7855,69 +5332,37 @@ const DesiredPlayerSessionListSchema = z
 
 const StartGameSessionPlacementInputSchema = z
   .object({
-    PlacementId: IdStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier to assign to the new game session placement. This value is developer-defined. The value must be unique across all Regions and cannot be reused.',
-        }),
-    ),
-    GameSessionQueueName: GameSessionQueueNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Name of the queue to use to place the new game session. You can use either the queue name or ARN value. ',
-        }),
-    ),
-    GameProperties: GamePropertyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom properties for a game session, formatted as key:value pairs. These properties are passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>).',
-        }),
-    ).exactOptional(),
-    MaximumPlayerSessionCount: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of players that can be connected simultaneously to the game session.',
-        }),
-    ),
-    GameSessionName: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with a game session. Session names do not need to be unique.',
-        }),
-    ).exactOptional(),
-    PlayerLatencies: PlayerLatencyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of values, expressed in milliseconds, that indicates the amount of latency that a player experiences when connected to Amazon Web Services Regions. This information is used to try to place the new game session where it can offer the best possible gameplay experience for the players. ',
-        }),
-    ).exactOptional(),
-    DesiredPlayerSessions: DesiredPlayerSessionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Set of information on each player to create a player session for.',
-        }),
-    ).exactOptional(),
-    GameSessionData: LargeGameSessionDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom game session properties, formatted as a single string value. This data is passed to a game server process in the <code>GameSession</code> object with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>).',
-        }),
-    ).exactOptional(),
+    PlacementId: IdStringModelSchema.openapi({
+      description:
+        'A unique identifier to assign to the new game session placement. This value is developer-defined. The value must be unique across all Regions and cannot be reused.',
+    }),
+    GameSessionQueueName: GameSessionQueueNameOrArnSchema.openapi({
+      description:
+        'Name of the queue to use to place the new game session. You can use either the queue name or ARN value. ',
+    }),
+    GameProperties: GamePropertyListSchema.exactOptional().openapi({
+      description:
+        'A set of custom properties for a game session, formatted as key:value pairs. These properties are passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>).',
+    }),
+    MaximumPlayerSessionCount: WholeNumberSchema.openapi({
+      description:
+        'The maximum number of players that can be connected simultaneously to the game session.',
+    }),
+    GameSessionName: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A descriptive label that is associated with a game session. Session names do not need to be unique.',
+    }),
+    PlayerLatencies: PlayerLatencyListSchema.exactOptional().openapi({
+      description:
+        'A set of values, expressed in milliseconds, that indicates the amount of latency that a player experiences when connected to Amazon Web Services Regions. This information is used to try to place the new game session where it can offer the best possible gameplay experience for the players. ',
+    }),
+    DesiredPlayerSessions: DesiredPlayerSessionListSchema.exactOptional().openapi({
+      description: 'Set of information on each player to create a player session for.',
+    }),
+    GameSessionData: LargeGameSessionDataSchema.exactOptional().openapi({
+      description:
+        'A set of custom game session properties, formatted as a single string value. This data is passed to a game server process in the <code>GameSession</code> object with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>).',
+    }),
   })
   .openapi({
     required: ['PlacementId', 'GameSessionQueueName', 'MaximumPlayerSessionCount'],
@@ -7927,203 +5372,143 @@ const StartGameSessionPlacementInputSchema = z
 
 const StartMatchBackfillOutputSchema = z
   .object({
-    MatchmakingTicket: MatchmakingTicketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Ticket representing the backfill matchmaking request. This object includes the information in the request, ticket status, and match results as generated during the matchmaking process.',
-        }),
-    ).exactOptional(),
+    MatchmakingTicket: MatchmakingTicketSchema.exactOptional().openapi({
+      description:
+        'Ticket representing the backfill matchmaking request. This object includes the information in the request, ticket status, and match results as generated during the matchmaking process.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartMatchBackfillOutput')
 
 const StartMatchBackfillInputSchema = z
   .object({
-    TicketId: MatchmakingIdStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a matchmaking ticket. If no ticket ID is specified here, Amazon GameLift will generate one in the form of a UUID. Use this identifier to track the match backfill ticket status and retrieve match results.',
-        }),
-    ).exactOptional(),
-    ConfigurationName: MatchmakingConfigurationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Name of the matchmaker to use for this request. You can use either the configuration name or ARN value. The ARN of the matchmaker that was used with the original game session is listed in the <code>GameSession</code> object, <code>MatchmakerData</code> property.',
-        }),
-    ),
-    GameSessionArn: ArnStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the game session. Use the game session ID. When using FlexMatch as a standalone matchmaking solution, this parameter is not needed. ',
-        }),
-    ).exactOptional(),
-    Players: PlayerListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Match information on all players that are currently assigned to the game session. This information is used by the matchmaker to find new players and add them to the existing game.</p> <p>You can include up to 199 <code>Players</code> in a <code>StartMatchBackfill</code> request.</p> <ul> <li> <p>PlayerID, PlayerAttributes, Team -- This information is maintained in the <code>GameSession</code> object, <code>MatchmakerData</code> property, for all players who are currently assigned to the game session. The matchmaker data is in JSON syntax, formatted as a string. For more details, see <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-server.html#match-server-data"> Match Data</a>. </p> <p>The backfill request must specify the team membership for every player. Do not specify team if you are not using backfill.</p> </li> <li> <p>LatencyInMs -- If the matchmaker uses player latency, include a latency value, in milliseconds, for the Region that the game session is currently in. Do not include latency values for any other Region.</p> </li> </ul>',
-        }),
-    ),
+    TicketId: MatchmakingIdStringModelSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for a matchmaking ticket. If no ticket ID is specified here, Amazon GameLift will generate one in the form of a UUID. Use this identifier to track the match backfill ticket status and retrieve match results.',
+    }),
+    ConfigurationName: MatchmakingConfigurationNameSchema.openapi({
+      description:
+        'Name of the matchmaker to use for this request. You can use either the configuration name or ARN value. The ARN of the matchmaker that was used with the original game session is listed in the <code>GameSession</code> object, <code>MatchmakerData</code> property.',
+    }),
+    GameSessionArn: ArnStringModelSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the game session. Use the game session ID. When using FlexMatch as a standalone matchmaking solution, this parameter is not needed. ',
+    }),
+    Players: PlayerListSchema.openapi({
+      description:
+        '<p>Match information on all players that are currently assigned to the game session. This information is used by the matchmaker to find new players and add them to the existing game.</p> <p>You can include up to 199 <code>Players</code> in a <code>StartMatchBackfill</code> request.</p> <ul> <li> <p>PlayerID, PlayerAttributes, Team -- This information is maintained in the <code>GameSession</code> object, <code>MatchmakerData</code> property, for all players who are currently assigned to the game session. The matchmaker data is in JSON syntax, formatted as a string. For more details, see <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-server.html#match-server-data"> Match Data</a>. </p> <p>The backfill request must specify the team membership for every player. Do not specify team if you are not using backfill.</p> </li> <li> <p>LatencyInMs -- If the matchmaker uses player latency, include a latency value, in milliseconds, for the Region that the game session is currently in. Do not include latency values for any other Region.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['ConfigurationName', 'Players'], title: 'StartMatchBackfillInput' })
   .openapi('StartMatchBackfillInput')
 
 const StartMatchmakingOutputSchema = z
   .object({
-    MatchmakingTicket: MatchmakingTicketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Ticket representing the matchmaking request. This object include the information included in the request, ticket status, and match results as generated during the matchmaking process.',
-        }),
-    ).exactOptional(),
+    MatchmakingTicket: MatchmakingTicketSchema.exactOptional().openapi({
+      description:
+        'Ticket representing the matchmaking request. This object include the information included in the request, ticket status, and match results as generated during the matchmaking process.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartMatchmakingOutput')
 
 const StartMatchmakingInputSchema = z
   .object({
-    TicketId: MatchmakingIdStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a matchmaking ticket. If no ticket ID is specified here, Amazon GameLift will generate one in the form of a UUID. Use this identifier to track the matchmaking ticket status and retrieve match results.',
-        }),
-    ).exactOptional(),
-    ConfigurationName: MatchmakingConfigurationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Name of the matchmaking configuration to use for this request. Matchmaking configurations must exist in the same Region as this request. You can use either the configuration name or ARN value.',
-        }),
-    ),
-    Players: PlayerListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information on each player to be matched. This information must include a player ID, and may contain player attributes and latency data to be used in the matchmaking process. After a successful match, <code>Player</code> objects contain the name of the team the player is assigned to.</p> <p>You can include up to 10 <code>Players</code> in a <code>StartMatchmaking</code> request.</p>',
-        }),
-    ),
+    TicketId: MatchmakingIdStringModelSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for a matchmaking ticket. If no ticket ID is specified here, Amazon GameLift will generate one in the form of a UUID. Use this identifier to track the matchmaking ticket status and retrieve match results.',
+    }),
+    ConfigurationName: MatchmakingConfigurationNameSchema.openapi({
+      description:
+        'Name of the matchmaking configuration to use for this request. Matchmaking configurations must exist in the same Region as this request. You can use either the configuration name or ARN value.',
+    }),
+    Players: PlayerListSchema.openapi({
+      description:
+        '<p>Information on each player to be matched. This information must include a player ID, and may contain player attributes and latency data to be used in the matchmaking process. After a successful match, <code>Player</code> objects contain the name of the team the player is assigned to.</p> <p>You can include up to 10 <code>Players</code> in a <code>StartMatchmaking</code> request.</p>',
+    }),
   })
   .openapi({ required: ['ConfigurationName', 'Players'], title: 'StartMatchmakingInput' })
   .openapi('StartMatchmakingInput')
 
 const StopFleetActionsOutputSchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the fleet to stop actions on.' }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the fleet to stop actions on.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopFleetActionsOutput')
 
 const StopFleetActionsInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to stop actions on. You can use either the fleet ID or ARN value.',
-        }),
-    ),
-    Actions: FleetActionListSchema.and(
-      z.any().openapi({ description: 'List of actions to suspend on the fleet. ' }),
-    ),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fleet location to stop fleet actions for. Specify a location in the form of an Amazon Web Services Region code, such as <code>us-west-2</code>.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to stop actions on. You can use either the fleet ID or ARN value.',
+    }),
+    Actions: FleetActionListSchema.openapi({
+      description: 'List of actions to suspend on the fleet. ',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        'The fleet location to stop fleet actions for. Specify a location in the form of an Amazon Web Services Region code, such as <code>us-west-2</code>.',
+    }),
   })
   .openapi({ required: ['FleetId', 'Actions'], title: 'StopFleetActionsInput' })
   .openapi('StopFleetActionsInput')
 
 const StopGameSessionPlacementOutputSchema = z
   .object({
-    GameSessionPlacement: GameSessionPlacementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Object that describes the canceled game session placement, with <code>CANCELLED</code> status and an end time stamp. ',
-        }),
-    ).exactOptional(),
+    GameSessionPlacement: GameSessionPlacementSchema.exactOptional().openapi({
+      description:
+        'Object that describes the canceled game session placement, with <code>CANCELLED</code> status and an end time stamp. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopGameSessionPlacementOutput')
 
 const StopGameSessionPlacementInputSchema = z
   .object({
-    PlacementId: IdStringModelSchema.and(
-      z.any().openapi({ description: 'A unique identifier for a game session placement to stop.' }),
-    ),
+    PlacementId: IdStringModelSchema.openapi({
+      description: 'A unique identifier for a game session placement to stop.',
+    }),
   })
   .openapi({ required: ['PlacementId'], title: 'StopGameSessionPlacementInput' })
   .openapi('StopGameSessionPlacementInput')
 
-const StopMatchmakingOutputSchema = z.object({}).openapi('StopMatchmakingOutput')
+const StopMatchmakingOutputSchema = z.looseObject({}).openapi('StopMatchmakingOutput')
 
 const StopMatchmakingInputSchema = z
   .object({
-    TicketId: MatchmakingIdStringModelSchema.and(
-      z.any().openapi({ description: 'A unique identifier for a matchmaking ticket.' }),
-    ),
+    TicketId: MatchmakingIdStringModelSchema.openapi({
+      description: 'A unique identifier for a matchmaking ticket.',
+    }),
   })
   .openapi({ required: ['TicketId'], title: 'StopMatchmakingInput' })
   .openapi('StopMatchmakingInput')
 
 const SuspendGameServerGroupOutputSchema = z
   .object({
-    GameServerGroup: GameServerGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the game server group resource, with the <code>SuspendedActions</code> property updated to reflect the suspended activity.',
-        }),
-    ).exactOptional(),
+    GameServerGroup: GameServerGroupSchema.exactOptional().openapi({
+      description:
+        'An object that describes the game server group resource, with the <code>SuspendedActions</code> property updated to reflect the suspended activity.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SuspendGameServerGroupOutput')
 
 const SuspendGameServerGroupInputSchema = z
   .object({
-    GameServerGroupName: GameServerGroupNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the game server group. Use either the name or ARN value.',
-        }),
-    ),
-    SuspendActions: GameServerGroupActionsSchema.and(
-      z.any().openapi({ description: 'The activity to suspend for this game server group.' }),
-    ),
+    GameServerGroupName: GameServerGroupNameOrArnSchema.openapi({
+      description:
+        'A unique identifier for the game server group. Use either the name or ARN value.',
+    }),
+    SuspendActions: GameServerGroupActionsSchema.openapi({
+      description: 'The activity to suspend for this game server group.',
+    }),
   })
   .openapi({
     required: ['GameServerGroupName', 'SuspendActions'],
@@ -8131,327 +5516,215 @@ const SuspendGameServerGroupInputSchema = z
   })
   .openapi('SuspendGameServerGroupInput')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that uniquely identifies the Amazon GameLift resource that you want to assign tags to. Amazon GameLift includes resource ARNs in the data object for the resource. You can retrieve the ARN by calling a <code>List</code> or <code>Describe</code> operation for the resource type. ',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of one or more tags to assign to the specified Amazon GameLift resource. Tags are developer-defined and structured as key-value pairs. The maximum tag limit may be lower than stated. See <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> for tagging limits.',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that uniquely identifies the Amazon GameLift resource that you want to assign tags to. Amazon GameLift includes resource ARNs in the data object for the resource. You can retrieve the ARN by calling a <code>List</code> or <code>Describe</code> operation for the resource type. ',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        'A list of one or more tags to assign to the specified Amazon GameLift resource. Tags are developer-defined and structured as key-value pairs. The maximum tag limit may be lower than stated. See <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html"> Tagging Amazon Web Services Resources</a> for tagging limits.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that uniquely identifies the Amazon GameLift resource that you want to remove tags from. Amazon GameLift includes resource ARNs in the data object for the resource. You can retrieve the ARN by calling a <code>List</code> or <code>Describe</code> operation for the resource type. ',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of one or more tag keys to remove from the specified Amazon GameLift resource. ',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that uniquely identifies the Amazon GameLift resource that you want to remove tags from. Amazon GameLift includes resource ARNs in the data object for the resource. You can retrieve the ARN by calling a <code>List</code> or <code>Describe</code> operation for the resource type. ',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description:
+        'A list of one or more tag keys to remove from the specified Amazon GameLift resource. ',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateAliasOutputSchema = z
   .object({
-    Alias: AliasSchema.and(
-      z.any().openapi({ description: 'The updated alias resource.' }),
-    ).exactOptional(),
+    Alias: AliasSchema.exactOptional().openapi({ description: 'The updated alias resource.' }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAliasOutput')
 
 const UpdateAliasInputSchema = z
   .object({
-    AliasId: AliasIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the alias that you want to update. You can use either the alias ID or ARN value.',
-        }),
-    ),
-    Name: NonBlankAndLengthConstraintStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with an alias. Alias names do not need to be unique.',
-        }),
-    ).exactOptional(),
-    Description: NonZeroAndMaxStringSchema.and(
-      z.any().openapi({ description: 'A human-readable description of the alias.' }),
-    ).exactOptional(),
-    RoutingStrategy: RoutingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The routing configuration, including routing type and fleet target, for the alias.',
-        }),
-    ).exactOptional(),
+    AliasId: AliasIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the alias that you want to update. You can use either the alias ID or ARN value.',
+    }),
+    Name: NonBlankAndLengthConstraintStringSchema.exactOptional().openapi({
+      description:
+        'A descriptive label that is associated with an alias. Alias names do not need to be unique.',
+    }),
+    Description: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'A human-readable description of the alias.',
+    }),
+    RoutingStrategy: RoutingStrategySchema.exactOptional().openapi({
+      description:
+        'The routing configuration, including routing type and fleet target, for the alias.',
+    }),
   })
   .openapi({ required: ['AliasId'], title: 'UpdateAliasInput' })
   .openapi('UpdateAliasInput')
 
 const UpdateBuildOutputSchema = z
   .object({
-    Build: BuildSchema.and(
-      z.any().openapi({ description: 'The updated build resource.' }),
-    ).exactOptional(),
+    Build: BuildSchema.exactOptional().openapi({ description: 'The updated build resource.' }),
   })
   .openapi({ required: [] })
   .openapi('UpdateBuildOutput')
 
 const UpdateBuildInputSchema = z
   .object({
-    BuildId: BuildIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the build to update. You can use either the build ID or ARN value. ',
-        }),
-    ),
-    Name: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A descriptive label associated with a build. Build names don't need to be unique. ",
-        }),
-    ).exactOptional(),
-    Version: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Version information associated with a build or script. Version strings don't need to be unique.",
-        }),
-    ).exactOptional(),
+    BuildId: BuildIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the build to update. You can use either the build ID or ARN value. ',
+    }),
+    Name: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        "A descriptive label associated with a build. Build names don't need to be unique. ",
+    }),
+    Version: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        "Version information associated with a build or script. Version strings don't need to be unique.",
+    }),
   })
   .openapi({ required: ['BuildId'], title: 'UpdateBuildInput' })
   .openapi('UpdateBuildInput')
 
 const UpdateFleetAttributesOutputSchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the fleet that was updated.' }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the fleet that was updated.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateFleetAttributesOutput')
 
 const UpdateFleetAttributesInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to update attribute metadata for. You can use either the fleet ID or ARN value.',
-        }),
-    ),
-    Name: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with a fleet. Fleet names do not need to be unique.',
-        }),
-    ).exactOptional(),
-    Description: NonZeroAndMaxStringSchema.and(
-      z.any().openapi({ description: 'A human-readable description of a fleet.' }),
-    ).exactOptional(),
-    NewGameSessionProtectionPolicy: ProtectionPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The game session protection policy to apply to all new instances created in this fleet. Instances that already exist are not affected. You can set protection for individual instances using <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateGameSession.html">UpdateGameSession</a> .</p> <ul> <li> <p> <b>NoProtection</b> -- The game session can be terminated during a scale-down event.</p> </li> <li> <p> <b>FullProtection</b> -- If the game session is in an <code>ACTIVE</code> status, it cannot be terminated during a scale-down event.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ResourceCreationLimitPolicy: ResourceCreationLimitPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Policy settings that limit the number of game sessions an individual player can create over a span of time. ',
-        }),
-    ).exactOptional(),
-    MetricGroups: MetricGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a metric group to add this fleet to. Use a metric group in Amazon CloudWatch to aggregate the metrics from multiple fleets. Provide an existing metric group name, or create a new metric group by providing a new name. A fleet can only be in one metric group at a time.',
-        }),
-    ).exactOptional(),
-    AnywhereConfiguration: AnywhereConfigurationSchema.and(
-      z.any().openapi({ description: 'Amazon GameLift Anywhere configuration options.' }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to update attribute metadata for. You can use either the fleet ID or ARN value.',
+    }),
+    Name: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A descriptive label that is associated with a fleet. Fleet names do not need to be unique.',
+    }),
+    Description: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'A human-readable description of a fleet.',
+    }),
+    NewGameSessionProtectionPolicy: ProtectionPolicySchema.exactOptional().openapi({
+      description:
+        '<p>The game session protection policy to apply to all new instances created in this fleet. Instances that already exist are not affected. You can set protection for individual instances using <a href="https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateGameSession.html">UpdateGameSession</a> .</p> <ul> <li> <p> <b>NoProtection</b> -- The game session can be terminated during a scale-down event.</p> </li> <li> <p> <b>FullProtection</b> -- If the game session is in an <code>ACTIVE</code> status, it cannot be terminated during a scale-down event.</p> </li> </ul>',
+    }),
+    ResourceCreationLimitPolicy: ResourceCreationLimitPolicySchema.exactOptional().openapi({
+      description:
+        'Policy settings that limit the number of game sessions an individual player can create over a span of time. ',
+    }),
+    MetricGroups: MetricGroupListSchema.exactOptional().openapi({
+      description:
+        'The name of a metric group to add this fleet to. Use a metric group in Amazon CloudWatch to aggregate the metrics from multiple fleets. Provide an existing metric group name, or create a new metric group by providing a new name. A fleet can only be in one metric group at a time.',
+    }),
+    AnywhereConfiguration: AnywhereConfigurationSchema.exactOptional().openapi({
+      description: 'Amazon GameLift Anywhere configuration options.',
+    }),
   })
   .openapi({ required: ['FleetId'], title: 'UpdateFleetAttributesInput' })
   .openapi('UpdateFleetAttributesInput')
 
 const UpdateFleetCapacityOutputSchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the fleet that was updated.' }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>. ',
-        }),
-    ).exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The remote location being updated, expressed as an Amazon Web Services Region code, such as <code>us-west-2</code>.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the fleet that was updated.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>. ',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        'The remote location being updated, expressed as an Amazon Web Services Region code, such as <code>us-west-2</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateFleetCapacityOutput')
 
 const UpdateFleetCapacityInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to update capacity settings for. You can use either the fleet ID or ARN value.',
-        }),
-    ),
-    DesiredInstances: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Amazon EC2 instances you want to maintain in the specified fleet location. This value must fall between the minimum and maximum size limits.',
-        }),
-    ).exactOptional(),
-    MinSize: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum number of instances that are allowed in the specified fleet location. If this parameter is not set, the default is 0.',
-        }),
-    ).exactOptional(),
-    MaxSize: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of instances that are allowed in the specified fleet location. If this parameter is not set, the default is 1.',
-        }),
-    ).exactOptional(),
-    Location: LocationStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a remote location to update fleet capacity settings for, in the form of an Amazon Web Services Region code such as <code>us-west-2</code>.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to update capacity settings for. You can use either the fleet ID or ARN value.',
+    }),
+    DesiredInstances: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The number of Amazon EC2 instances you want to maintain in the specified fleet location. This value must fall between the minimum and maximum size limits.',
+    }),
+    MinSize: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The minimum number of instances that are allowed in the specified fleet location. If this parameter is not set, the default is 0.',
+    }),
+    MaxSize: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The maximum number of instances that are allowed in the specified fleet location. If this parameter is not set, the default is 1.',
+    }),
+    Location: LocationStringModelSchema.exactOptional().openapi({
+      description:
+        'The name of a remote location to update fleet capacity settings for, in the form of an Amazon Web Services Region code such as <code>us-west-2</code>.',
+    }),
   })
   .openapi({ required: ['FleetId'], title: 'UpdateFleetCapacityInput' })
   .openapi('UpdateFleetCapacityInput')
 
 const UpdateFleetPortSettingsOutputSchema = z
   .object({
-    FleetId: FleetIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the fleet that was updated.' }),
-    ).exactOptional(),
-    FleetArn: FleetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the fleet that was updated.',
+    }),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateFleetPortSettingsOutput')
 
 const UpdateFleetPortSettingsInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to update port settings for. You can use either the fleet ID or ARN value.',
-        }),
-    ),
-    InboundPermissionAuthorizations: IpPermissionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A collection of port settings to be added to the fleet resource.',
-        }),
-    ).exactOptional(),
-    InboundPermissionRevocations: IpPermissionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A collection of port settings to be removed from the fleet resource.',
-        }),
-    ).exactOptional(),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to update port settings for. You can use either the fleet ID or ARN value.',
+    }),
+    InboundPermissionAuthorizations: IpPermissionsListSchema.exactOptional().openapi({
+      description: 'A collection of port settings to be added to the fleet resource.',
+    }),
+    InboundPermissionRevocations: IpPermissionsListSchema.exactOptional().openapi({
+      description: 'A collection of port settings to be removed from the fleet resource.',
+    }),
   })
   .openapi({ required: ['FleetId'], title: 'UpdateFleetPortSettingsInput' })
   .openapi('UpdateFleetPortSettingsInput')
 
 const UpdateGameServerOutputSchema = z
   .object({
-    GameServer: GameServerSchema.and(
-      z.any().openapi({ description: 'Object that describes the newly updated game server.' }),
-    ).exactOptional(),
+    GameServer: GameServerSchema.exactOptional().openapi({
+      description: 'Object that describes the newly updated game server.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateGameServerOutput')
@@ -8460,394 +5733,234 @@ const GameServerHealthCheckSchema = z.literal('HEALTHY').openapi('GameServerHeal
 
 const UpdateGameServerInputSchema = z
   .object({
-    GameServerGroupName: GameServerGroupNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the game server group where the game server is running.',
-        }),
-    ),
-    GameServerId: GameServerIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A custom string that uniquely identifies the game server to update.',
-        }),
-    ),
-    GameServerData: GameServerDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom game server properties, formatted as a single string value. This data is passed to a game client or service when it requests information on game servers. ',
-        }),
-    ).exactOptional(),
-    UtilizationStatus: GameServerUtilizationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the game server is available or is currently hosting gameplay.',
-        }),
-    ).exactOptional(),
-    HealthCheck: GameServerHealthCheckSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Indicates health status of the game server. A request that includes this parameter updates the game server's <i>LastHealthCheckTime</i> timestamp. ",
-        }),
-    ).exactOptional(),
+    GameServerGroupName: GameServerGroupNameOrArnSchema.openapi({
+      description:
+        'A unique identifier for the game server group where the game server is running.',
+    }),
+    GameServerId: GameServerIdSchema.openapi({
+      description: 'A custom string that uniquely identifies the game server to update.',
+    }),
+    GameServerData: GameServerDataSchema.exactOptional().openapi({
+      description:
+        'A set of custom game server properties, formatted as a single string value. This data is passed to a game client or service when it requests information on game servers. ',
+    }),
+    UtilizationStatus: GameServerUtilizationStatusSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the game server is available or is currently hosting gameplay.',
+    }),
+    HealthCheck: GameServerHealthCheckSchema.exactOptional().openapi({
+      description:
+        "Indicates health status of the game server. A request that includes this parameter updates the game server's <i>LastHealthCheckTime</i> timestamp. ",
+    }),
   })
   .openapi({ required: ['GameServerGroupName', 'GameServerId'], title: 'UpdateGameServerInput' })
   .openapi('UpdateGameServerInput')
 
 const UpdateGameServerGroupOutputSchema = z
   .object({
-    GameServerGroup: GameServerGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes the game server group resource with updated properties. ',
-        }),
-    ).exactOptional(),
+    GameServerGroup: GameServerGroupSchema.exactOptional().openapi({
+      description:
+        'An object that describes the game server group resource with updated properties. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateGameServerGroupOutput')
 
 const UpdateGameServerGroupInputSchema = z
   .object({
-    GameServerGroupName: GameServerGroupNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the game server group. Use either the name or ARN value.',
-        }),
-    ),
-    RoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) for an IAM role that allows Amazon GameLift to access your Amazon EC2 Auto Scaling groups.',
-        }),
-    ).exactOptional(),
-    InstanceDefinitions: InstanceDefinitionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An updated list of Amazon EC2 instance types to use in the Auto Scaling group. The instance definitions must specify at least two different instance types that are supported by Amazon GameLift FleetIQ. This updated list replaces the entire current list of instance definitions for the game server group. For more information on instance types, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html">EC2 Instance Types</a> in the <i>Amazon EC2 User Guide</i>. You can optionally specify capacity weighting for each instance type. If no weight value is specified for an instance type, it is set to the default value "1". For more information about capacity weighting, see <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-instance-weighting.html"> Instance Weighting for Amazon EC2 Auto Scaling</a> in the Amazon EC2 Auto Scaling User Guide.',
-        }),
-    ).exactOptional(),
-    GameServerProtectionPolicy: GameServerProtectionPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether instances in the game server group are protected from early termination. Unprotected instances that have active game servers running might be terminated during a scale-down event, causing players to be dropped from the game. Protected instances cannot be terminated while there are active game servers running except in the event of a forced game server group deletion (see ). An exception to this is with Spot Instances, which can be terminated by Amazon Web Services regardless of protection status. This property is set to <code>NO_PROTECTION</code> by default.',
-        }),
-    ).exactOptional(),
-    BalancingStrategy: BalancingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates how Amazon GameLift FleetIQ balances the use of Spot Instances and On-Demand Instances in the game server group. Method options include the following:</p> <ul> <li> <p> <code>SPOT_ONLY</code> - Only Spot Instances are used in the game server group. If Spot Instances are unavailable or not viable for game hosting, the game server group provides no hosting capacity until Spot Instances can again be used. Until then, no new instances are started, and the existing nonviable Spot Instances are terminated (after current gameplay ends) and are not replaced.</p> </li> <li> <p> <code>SPOT_PREFERRED</code> - (default value) Spot Instances are used whenever available in the game server group. If Spot Instances are unavailable, the game server group continues to provide hosting capacity by falling back to On-Demand Instances. Existing nonviable Spot Instances are terminated (after current gameplay ends) and are replaced with new On-Demand Instances.</p> </li> <li> <p> <code>ON_DEMAND_ONLY</code> - Only On-Demand Instances are used in the game server group. No Spot Instances are used, even when available, while this balancing strategy is in force.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    GameServerGroupName: GameServerGroupNameOrArnSchema.openapi({
+      description:
+        'A unique identifier for the game server group. Use either the name or ARN value.',
+    }),
+    RoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) for an IAM role that allows Amazon GameLift to access your Amazon EC2 Auto Scaling groups.',
+    }),
+    InstanceDefinitions: InstanceDefinitionsSchema.exactOptional().openapi({
+      description:
+        'An updated list of Amazon EC2 instance types to use in the Auto Scaling group. The instance definitions must specify at least two different instance types that are supported by Amazon GameLift FleetIQ. This updated list replaces the entire current list of instance definitions for the game server group. For more information on instance types, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html">EC2 Instance Types</a> in the <i>Amazon EC2 User Guide</i>. You can optionally specify capacity weighting for each instance type. If no weight value is specified for an instance type, it is set to the default value "1". For more information about capacity weighting, see <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-instance-weighting.html"> Instance Weighting for Amazon EC2 Auto Scaling</a> in the Amazon EC2 Auto Scaling User Guide.',
+    }),
+    GameServerProtectionPolicy: GameServerProtectionPolicySchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether instances in the game server group are protected from early termination. Unprotected instances that have active game servers running might be terminated during a scale-down event, causing players to be dropped from the game. Protected instances cannot be terminated while there are active game servers running except in the event of a forced game server group deletion (see ). An exception to this is with Spot Instances, which can be terminated by Amazon Web Services regardless of protection status. This property is set to <code>NO_PROTECTION</code> by default.',
+    }),
+    BalancingStrategy: BalancingStrategySchema.exactOptional().openapi({
+      description:
+        '<p>Indicates how Amazon GameLift FleetIQ balances the use of Spot Instances and On-Demand Instances in the game server group. Method options include the following:</p> <ul> <li> <p> <code>SPOT_ONLY</code> - Only Spot Instances are used in the game server group. If Spot Instances are unavailable or not viable for game hosting, the game server group provides no hosting capacity until Spot Instances can again be used. Until then, no new instances are started, and the existing nonviable Spot Instances are terminated (after current gameplay ends) and are not replaced.</p> </li> <li> <p> <code>SPOT_PREFERRED</code> - (default value) Spot Instances are used whenever available in the game server group. If Spot Instances are unavailable, the game server group continues to provide hosting capacity by falling back to On-Demand Instances. Existing nonviable Spot Instances are terminated (after current gameplay ends) and are replaced with new On-Demand Instances.</p> </li> <li> <p> <code>ON_DEMAND_ONLY</code> - Only On-Demand Instances are used in the game server group. No Spot Instances are used, even when available, while this balancing strategy is in force.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['GameServerGroupName'], title: 'UpdateGameServerGroupInput' })
   .openapi('UpdateGameServerGroupInput')
 
 const UpdateGameSessionOutputSchema = z
   .object({
-    GameSession: GameSessionSchema.and(
-      z.any().openapi({ description: 'The updated game session properties.' }),
-    ).exactOptional(),
+    GameSession: GameSessionSchema.exactOptional().openapi({
+      description: 'The updated game session properties.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateGameSessionOutput')
 
 const UpdateGameSessionInputSchema = z
   .object({
-    GameSessionId: ArnStringModelSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the game session to update. ' }),
-    ),
-    MaximumPlayerSessionCount: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of players that can be connected simultaneously to the game session.',
-        }),
-    ).exactOptional(),
-    Name: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with a game session. Session names do not need to be unique.',
-        }),
-    ).exactOptional(),
-    PlayerSessionCreationPolicy: PlayerSessionCreationPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A policy that determines whether the game session is accepting new players.',
-        }),
-    ).exactOptional(),
-    ProtectionPolicy: ProtectionPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Game session protection policy to apply to this game session only.</p> <ul> <li> <p> <b>NoProtection</b> -- The game session can be terminated during a scale-down event.</p> </li> <li> <p> <b>FullProtection</b> -- If the game session is in an <code>ACTIVE</code> status, it cannot be terminated during a scale-down event.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    GameSessionId: ArnStringModelSchema.openapi({
+      description: 'A unique identifier for the game session to update. ',
+    }),
+    MaximumPlayerSessionCount: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The maximum number of players that can be connected simultaneously to the game session.',
+    }),
+    Name: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        'A descriptive label that is associated with a game session. Session names do not need to be unique.',
+    }),
+    PlayerSessionCreationPolicy: PlayerSessionCreationPolicySchema.exactOptional().openapi({
+      description: 'A policy that determines whether the game session is accepting new players.',
+    }),
+    ProtectionPolicy: ProtectionPolicySchema.exactOptional().openapi({
+      description:
+        '<p>Game session protection policy to apply to this game session only.</p> <ul> <li> <p> <b>NoProtection</b> -- The game session can be terminated during a scale-down event.</p> </li> <li> <p> <b>FullProtection</b> -- If the game session is in an <code>ACTIVE</code> status, it cannot be terminated during a scale-down event.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['GameSessionId'], title: 'UpdateGameSessionInput' })
   .openapi('UpdateGameSessionInput')
 
 const UpdateGameSessionQueueOutputSchema = z
   .object({
-    GameSessionQueue: GameSessionQueueSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that describes the newly updated game session queue.' }),
-    ).exactOptional(),
+    GameSessionQueue: GameSessionQueueSchema.exactOptional().openapi({
+      description: 'An object that describes the newly updated game session queue.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateGameSessionQueueOutput')
 
 const UpdateGameSessionQueueInputSchema = z
   .object({
-    Name: GameSessionQueueNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A descriptive label that is associated with game session queue. Queue names must be unique within each Region. You can use either the queue ID or ARN value. ',
-        }),
-    ),
-    TimeoutInSeconds: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum time, in seconds, that a new game session placement request remains in the queue. When a request exceeds this time, the game session placement changes to a <code>TIMED_OUT</code> status.',
-        }),
-    ).exactOptional(),
-    PlayerLatencyPolicies: PlayerLatencyPolicyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of policies that act as a sliding cap on player latency. FleetIQ works to deliver low latency for most players in a game session. These policies ensure that no individual player can be placed into a game with unreasonably high latency. Use multiple policies to gradually relax latency requirements a step at a time. Multiple policies are applied based on their maximum allowed latency, starting with the lowest value. When updating policies, provide a complete collection of policies.',
-        }),
-    ).exactOptional(),
-    Destinations: GameSessionQueueDestinationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of fleets and/or fleet aliases that can be used to fulfill game session placement requests in the queue. Destinations are identified by either a fleet ARN or a fleet alias ARN, and are listed in order of placement preference. When updating this list, provide a complete list of destinations.',
-        }),
-    ).exactOptional(),
-    FilterConfiguration: FilterConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of locations where a queue is allowed to place new game sessions. Locations are specified in the form of Amazon Web Services Region codes, such as <code>us-west-2</code>. If this parameter is not set, game sessions can be placed in any queue location. To remove an existing filter configuration, pass in an empty set.',
-        }),
-    ).exactOptional(),
-    PriorityConfiguration: PriorityConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Custom settings to use when prioritizing destinations and locations for game session placements. This configuration replaces the FleetIQ default prioritization process. Priority types that are not explicitly named will be automatically applied at the end of the prioritization process. To remove an existing priority configuration, pass in an empty set.',
-        }),
-    ).exactOptional(),
-    CustomEventData: QueueCustomEventDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information to be added to all events that are related to this game session queue.',
-        }),
-    ).exactOptional(),
-    NotificationTarget: QueueSnsArnStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An SNS topic ARN that is set up to receive game session placement notifications. See <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/queue-notification.html"> Setting up notifications for game session placement</a>.',
-        }),
-    ).exactOptional(),
+    Name: GameSessionQueueNameOrArnSchema.openapi({
+      description:
+        'A descriptive label that is associated with game session queue. Queue names must be unique within each Region. You can use either the queue ID or ARN value. ',
+    }),
+    TimeoutInSeconds: WholeNumberSchema.exactOptional().openapi({
+      description:
+        'The maximum time, in seconds, that a new game session placement request remains in the queue. When a request exceeds this time, the game session placement changes to a <code>TIMED_OUT</code> status.',
+    }),
+    PlayerLatencyPolicies: PlayerLatencyPolicyListSchema.exactOptional().openapi({
+      description:
+        'A set of policies that act as a sliding cap on player latency. FleetIQ works to deliver low latency for most players in a game session. These policies ensure that no individual player can be placed into a game with unreasonably high latency. Use multiple policies to gradually relax latency requirements a step at a time. Multiple policies are applied based on their maximum allowed latency, starting with the lowest value. When updating policies, provide a complete collection of policies.',
+    }),
+    Destinations: GameSessionQueueDestinationListSchema.exactOptional().openapi({
+      description:
+        'A list of fleets and/or fleet aliases that can be used to fulfill game session placement requests in the queue. Destinations are identified by either a fleet ARN or a fleet alias ARN, and are listed in order of placement preference. When updating this list, provide a complete list of destinations.',
+    }),
+    FilterConfiguration: FilterConfigurationSchema.exactOptional().openapi({
+      description:
+        'A list of locations where a queue is allowed to place new game sessions. Locations are specified in the form of Amazon Web Services Region codes, such as <code>us-west-2</code>. If this parameter is not set, game sessions can be placed in any queue location. To remove an existing filter configuration, pass in an empty set.',
+    }),
+    PriorityConfiguration: PriorityConfigurationSchema.exactOptional().openapi({
+      description:
+        'Custom settings to use when prioritizing destinations and locations for game session placements. This configuration replaces the FleetIQ default prioritization process. Priority types that are not explicitly named will be automatically applied at the end of the prioritization process. To remove an existing priority configuration, pass in an empty set.',
+    }),
+    CustomEventData: QueueCustomEventDataSchema.exactOptional().openapi({
+      description:
+        'Information to be added to all events that are related to this game session queue.',
+    }),
+    NotificationTarget: QueueSnsArnStringModelSchema.exactOptional().openapi({
+      description:
+        'An SNS topic ARN that is set up to receive game session placement notifications. See <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/queue-notification.html"> Setting up notifications for game session placement</a>.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'UpdateGameSessionQueueInput' })
   .openapi('UpdateGameSessionQueueInput')
 
 const UpdateMatchmakingConfigurationOutputSchema = z
   .object({
-    Configuration: MatchmakingConfigurationSchema.and(
-      z.any().openapi({ description: 'The updated matchmaking configuration.' }),
-    ).exactOptional(),
+    Configuration: MatchmakingConfigurationSchema.exactOptional().openapi({
+      description: 'The updated matchmaking configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateMatchmakingConfigurationOutput')
 
 const UpdateMatchmakingConfigurationInputSchema = z
   .object({
-    Name: MatchmakingConfigurationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the matchmaking configuration to update. You can use either the configuration name or ARN value. ',
-        }),
-    ),
-    Description: NonZeroAndMaxStringSchema.and(
-      z.any().openapi({ description: 'A description for the matchmaking configuration.' }),
-    ).exactOptional(),
-    GameSessionQueueArns: QueueArnsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift game session queue resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::gamesessionqueue/&lt;queue name&gt;</code>. Queues can be located in any Region. Queues are used to start new Amazon GameLift-hosted game sessions for matches that are created with this matchmaking configuration. If <code>FlexMatchMode</code> is set to <code>STANDALONE</code>, do not set this parameter.',
-        }),
-    ).exactOptional(),
-    RequestTimeoutSeconds: MatchmakingRequestTimeoutIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum duration, in seconds, that a matchmaking ticket can remain in process before timing out. Requests that fail due to timing out can be resubmitted as needed.',
-        }),
-    ).exactOptional(),
-    AcceptanceTimeoutSeconds: MatchmakingAcceptanceTimeoutIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The length of time (in seconds) to wait for players to accept a proposed match, if acceptance is required.',
-        }),
-    ).exactOptional(),
-    AcceptanceRequired: BooleanModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that indicates whether a match that was created with this configuration must be accepted by the matched players. To require acceptance, set to TRUE. With this option enabled, matchmaking tickets use the status <code>REQUIRES_ACCEPTANCE</code> to indicate when a completed potential match is waiting for player acceptance. ',
-        }),
-    ).exactOptional(),
-    RuleSetName: MatchmakingRuleSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the matchmaking rule set to use with this configuration. You can use either the rule set name or ARN value. A matchmaking configuration can only use rule sets that are defined in the same Region.',
-        }),
-    ).exactOptional(),
-    NotificationTarget: SnsArnStringModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An SNS topic ARN that is set up to receive matchmaking notifications. See <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-notification.html"> Setting up notifications for matchmaking</a> for more information.',
-        }),
-    ).exactOptional(),
-    AdditionalPlayerCount: WholeNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The number of player slots in a match to keep open for future players. For example, if the configuration's rule set specifies a match for a single 12-person team, and the additional player count is set to 2, only 10 players are selected for the match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.",
-        }),
-    ).exactOptional(),
-    CustomEventData: CustomEventDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information to add to all events related to the matchmaking configuration. ',
-        }),
-    ).exactOptional(),
-    GameProperties: GamePropertyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom properties for a game session, formatted as key:value pairs. These properties are passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>). This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
-        }),
-    ).exactOptional(),
-    GameSessionData: GameSessionDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of custom game session properties, formatted as a single string value. This data is passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>). This information is added to the game session that is created for a successful match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
-        }),
-    ).exactOptional(),
-    BackfillMode: BackfillModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The method that is used to backfill game sessions created with this matchmaking configuration. Specify MANUAL when your game manages backfill requests manually or does not use the match backfill feature. Specify AUTOMATIC to have GameLift create a match backfill request whenever a game session has one or more open slots. Learn more about manual and automatic backfill in <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-backfill.html">Backfill Existing Games with FlexMatch</a>. Automatic backfill is not available when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
-        }),
-    ).exactOptional(),
-    FlexMatchMode: FlexMatchModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether this matchmaking configuration is being used with Amazon GameLift hosting or as a standalone matchmaking solution. </p> <ul> <li> <p> <b>STANDALONE</b> - FlexMatch forms matches and returns match information, including players and team assignments, in a <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-events.html#match-events-matchmakingsucceeded"> MatchmakingSucceeded</a> event.</p> </li> <li> <p> <b>WITH_QUEUE</b> - FlexMatch forms matches and uses the specified Amazon GameLift queue to start a game session for the match. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Name: MatchmakingConfigurationNameSchema.openapi({
+      description:
+        'A unique identifier for the matchmaking configuration to update. You can use either the configuration name or ARN value. ',
+    }),
+    Description: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description: 'A description for the matchmaking configuration.',
+    }),
+    GameSessionQueueArns: QueueArnsListSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html">ARN</a>) that is assigned to a Amazon GameLift game session queue resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::gamesessionqueue/&lt;queue name&gt;</code>. Queues can be located in any Region. Queues are used to start new Amazon GameLift-hosted game sessions for matches that are created with this matchmaking configuration. If <code>FlexMatchMode</code> is set to <code>STANDALONE</code>, do not set this parameter.',
+    }),
+    RequestTimeoutSeconds: MatchmakingRequestTimeoutIntegerSchema.exactOptional().openapi({
+      description:
+        'The maximum duration, in seconds, that a matchmaking ticket can remain in process before timing out. Requests that fail due to timing out can be resubmitted as needed.',
+    }),
+    AcceptanceTimeoutSeconds: MatchmakingAcceptanceTimeoutIntegerSchema.exactOptional().openapi({
+      description:
+        'The length of time (in seconds) to wait for players to accept a proposed match, if acceptance is required.',
+    }),
+    AcceptanceRequired: BooleanModelSchema.exactOptional().openapi({
+      description:
+        'A flag that indicates whether a match that was created with this configuration must be accepted by the matched players. To require acceptance, set to TRUE. With this option enabled, matchmaking tickets use the status <code>REQUIRES_ACCEPTANCE</code> to indicate when a completed potential match is waiting for player acceptance. ',
+    }),
+    RuleSetName: MatchmakingRuleSetNameSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the matchmaking rule set to use with this configuration. You can use either the rule set name or ARN value. A matchmaking configuration can only use rule sets that are defined in the same Region.',
+    }),
+    NotificationTarget: SnsArnStringModelSchema.exactOptional().openapi({
+      description:
+        'An SNS topic ARN that is set up to receive matchmaking notifications. See <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-notification.html"> Setting up notifications for matchmaking</a> for more information.',
+    }),
+    AdditionalPlayerCount: WholeNumberSchema.exactOptional().openapi({
+      description:
+        "The number of player slots in a match to keep open for future players. For example, if the configuration's rule set specifies a match for a single 12-person team, and the additional player count is set to 2, only 10 players are selected for the match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.",
+    }),
+    CustomEventData: CustomEventDataSchema.exactOptional().openapi({
+      description: 'Information to add to all events related to the matchmaking configuration. ',
+    }),
+    GameProperties: GamePropertyListSchema.exactOptional().openapi({
+      description:
+        'A set of custom properties for a game session, formatted as key:value pairs. These properties are passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>). This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
+    }),
+    GameSessionData: GameSessionDataSchema.exactOptional().openapi({
+      description:
+        'A set of custom game session properties, formatted as a single string value. This data is passed to a game server process with a request to start a new game session (see <a href="https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession">Start a Game Session</a>). This information is added to the game session that is created for a successful match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
+    }),
+    BackfillMode: BackfillModeSchema.exactOptional().openapi({
+      description:
+        'The method that is used to backfill game sessions created with this matchmaking configuration. Specify MANUAL when your game manages backfill requests manually or does not use the match backfill feature. Specify AUTOMATIC to have GameLift create a match backfill request whenever a game session has one or more open slots. Learn more about manual and automatic backfill in <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-backfill.html">Backfill Existing Games with FlexMatch</a>. Automatic backfill is not available when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.',
+    }),
+    FlexMatchMode: FlexMatchModeSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether this matchmaking configuration is being used with Amazon GameLift hosting or as a standalone matchmaking solution. </p> <ul> <li> <p> <b>STANDALONE</b> - FlexMatch forms matches and returns match information, including players and team assignments, in a <a href="https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-events.html#match-events-matchmakingsucceeded"> MatchmakingSucceeded</a> event.</p> </li> <li> <p> <b>WITH_QUEUE</b> - FlexMatch forms matches and uses the specified Amazon GameLift queue to start a game session for the match. </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['Name'], title: 'UpdateMatchmakingConfigurationInput' })
   .openapi('UpdateMatchmakingConfigurationInput')
 
 const UpdateRuntimeConfigurationOutputSchema = z
   .object({
-    RuntimeConfiguration: RuntimeConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The runtime configuration currently in use by all instances in the fleet. If the update was successful, all property changes are shown. ',
-        }),
-    ).exactOptional(),
+    RuntimeConfiguration: RuntimeConfigurationSchema.exactOptional().openapi({
+      description:
+        'The runtime configuration currently in use by all instances in the fleet. If the update was successful, all property changes are shown. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRuntimeConfigurationOutput')
 
 const UpdateRuntimeConfigurationInputSchema = z
   .object({
-    FleetId: FleetIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the fleet to update runtime configuration for. You can use either the fleet ID or ARN value.',
-        }),
-    ),
-    RuntimeConfiguration: RuntimeConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Instructions for launching server processes on each instance in the fleet. Server processes run either a custom game build executable or a Realtime Servers script. The runtime configuration lists the types of server processes to run on an instance, how to launch them, and the number of processes to run concurrently.',
-        }),
-    ),
+    FleetId: FleetIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the fleet to update runtime configuration for. You can use either the fleet ID or ARN value.',
+    }),
+    RuntimeConfiguration: RuntimeConfigurationSchema.openapi({
+      description:
+        'Instructions for launching server processes on each instance in the fleet. Server processes run either a custom game build executable or a Realtime Servers script. The runtime configuration lists the types of server processes to run on an instance, how to launch them, and the number of processes to run concurrently.',
+    }),
   })
   .openapi({
     required: ['FleetId', 'RuntimeConfiguration'],
@@ -8857,82 +5970,54 @@ const UpdateRuntimeConfigurationInputSchema = z
 
 const UpdateScriptOutputSchema = z
   .object({
-    Script: ScriptSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The newly created script record with a unique script ID. The new script's storage location reflects an Amazon S3 location: (1) If the script was uploaded from an S3 bucket under your account, the storage location reflects the information that was provided in the <i>CreateScript</i> request; (2) If the script file was uploaded from a local zip file, the storage location reflects an S3 location controls by the Amazon GameLift service.",
-        }),
-    ).exactOptional(),
+    Script: ScriptSchema.exactOptional().openapi({
+      description:
+        "The newly created script record with a unique script ID. The new script's storage location reflects an Amazon S3 location: (1) If the script was uploaded from an S3 bucket under your account, the storage location reflects the information that was provided in the <i>CreateScript</i> request; (2) If the script file was uploaded from a local zip file, the storage location reflects an S3 location controls by the Amazon GameLift service.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateScriptOutput')
 
 const UpdateScriptInputSchema = z
   .object({
-    ScriptId: ScriptIdOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the Realtime script to update. You can use either the script ID or ARN value.',
-        }),
-    ),
-    Name: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A descriptive label that is associated with a script. Script names don't need to be unique.",
-        }),
-    ).exactOptional(),
-    Version: NonZeroAndMaxStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Version information associated with a build or script. Version strings don't need to be unique.",
-        }),
-    ).exactOptional(),
-    StorageLocation: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the Amazon S3 bucket where a zipped file containing your Realtime scripts is stored. The storage location must specify the Amazon S3 bucket name, the zip file name (the "key"), and a role ARN that allows Amazon GameLift to access the Amazon S3 storage location. The S3 bucket must be in the same Region where you want to create a new script. By default, Amazon GameLift uploads the latest version of the zip file; if you have S3 object versioning turned on, you can use the <code>ObjectVersion</code> parameter to specify an earlier version. ',
-        }),
-    ).exactOptional(),
-    ZipFile: ZipBlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A data object containing your Realtime scripts and dependencies as a zip file. The zip file can have one or multiple files. Maximum size of a zip file is 5 MB.</p> <p>When using the Amazon Web Services CLI tool to create a script, this parameter is set to the zip file name. It must be prepended with the string "fileb://" to indicate that the file data is a binary object. For example: <code>--zip-file fileb://myRealtimeScript.zip</code>.</p>',
-        }),
-    ).exactOptional(),
+    ScriptId: ScriptIdOrArnSchema.openapi({
+      description:
+        'A unique identifier for the Realtime script to update. You can use either the script ID or ARN value.',
+    }),
+    Name: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        "A descriptive label that is associated with a script. Script names don't need to be unique.",
+    }),
+    Version: NonZeroAndMaxStringSchema.exactOptional().openapi({
+      description:
+        "Version information associated with a build or script. Version strings don't need to be unique.",
+    }),
+    StorageLocation: S3LocationSchema.exactOptional().openapi({
+      description:
+        'The location of the Amazon S3 bucket where a zipped file containing your Realtime scripts is stored. The storage location must specify the Amazon S3 bucket name, the zip file name (the "key"), and a role ARN that allows Amazon GameLift to access the Amazon S3 storage location. The S3 bucket must be in the same Region where you want to create a new script. By default, Amazon GameLift uploads the latest version of the zip file; if you have S3 object versioning turned on, you can use the <code>ObjectVersion</code> parameter to specify an earlier version. ',
+    }),
+    ZipFile: ZipBlobSchema.exactOptional().openapi({
+      description:
+        '<p>A data object containing your Realtime scripts and dependencies as a zip file. The zip file can have one or multiple files. Maximum size of a zip file is 5 MB.</p> <p>When using the Amazon Web Services CLI tool to create a script, this parameter is set to the zip file name. It must be prepended with the string "fileb://" to indicate that the file data is a binary object. For example: <code>--zip-file fileb://myRealtimeScript.zip</code>.</p>',
+    }),
   })
   .openapi({ required: ['ScriptId'], title: 'UpdateScriptInput' })
   .openapi('UpdateScriptInput')
 
 const ValidateMatchmakingRuleSetOutputSchema = z
   .object({
-    Valid: BooleanModelSchema.and(
-      z.any().openapi({ description: 'A response indicating whether the rule set is valid.' }),
-    ).exactOptional(),
+    Valid: BooleanModelSchema.exactOptional().openapi({
+      description: 'A response indicating whether the rule set is valid.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ValidateMatchmakingRuleSetOutput')
 
 const ValidateMatchmakingRuleSetInputSchema = z
   .object({
-    RuleSetBody: RuleSetBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A collection of matchmaking rules to validate, formatted as a JSON string.',
-        }),
-    ),
+    RuleSetBody: RuleSetBodySchema.openapi({
+      description: 'A collection of matchmaking rules to validate, formatted as a JSON string.',
+    }),
   })
   .openapi({ required: ['RuleSetBody'], title: 'ValidateMatchmakingRuleSetInput' })
   .openapi('ValidateMatchmakingRuleSetInput')

@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetLogs20140328DescribeMetricFiltersHandler = app.openapi(
   postXAmzTargetLogs20140328DescribeMetricFiltersRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

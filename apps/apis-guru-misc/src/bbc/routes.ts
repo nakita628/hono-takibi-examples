@@ -608,14 +608,28 @@ const ReferenceAttributesSchema = z
   .openapi({ required: ['href', 'result_type'] })
   .openapi('ReferenceAttributes')
 
-const ReferenceSchema = ReferenceAttributesSchema.and(
-  z
-    .looseObject({
-      href_deprecated: z.boolean().exactOptional(),
-      result_type_deprecated: z.boolean().exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('Reference')
+const ReferenceSchema = (() => {
+  const Schema = ReferenceAttributesSchema.and(
+    z
+      .looseObject({
+        href_deprecated: z.boolean().exactOptional(),
+        result_type_deprecated: z.boolean().exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['href', 'result_type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('Reference')
 
 const GenreSchema = z
   .strictObject({
@@ -667,18 +681,30 @@ const DeprecationAttributesSchema = z
 
 const ImageLinkSchema = z
   .strictObject({
-    image: z.union([
-      DeprecationAttributesSchema,
-      z
-        .object({
-          image: z
-            .strictObject({ pid: PidSchema.exactOptional(), template_url: z.string() })
-            .openapi({ required: ['template_url'] }),
-          pid: PidSchema.exactOptional(),
-          template_url: z.string(),
-        })
-        .openapi({ required: ['template_url', 'image'] }),
-    ]),
+    image: (() => {
+      const Schema = z.union([
+        DeprecationAttributesSchema,
+        z
+          .object({
+            image: z
+              .strictObject({ pid: PidSchema.exactOptional(), template_url: z.string() })
+              .openapi({ required: ['template_url'] }),
+            pid: PidSchema.exactOptional(),
+            template_url: z.string(),
+          })
+          .openapi({ required: ['template_url', 'image'] }),
+      ])
+      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+        ;((ctx) => {
+          const o = ctx.value
+          if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+          for (const k of Object.keys(o)) {
+            ctx.issues.push({ code: 'custom', path: [k], input: o })
+          }
+        })(ctx)
+        return val
+      }, Schema)
+    })().openapi({ additionalProperties: false }),
   })
   .openapi({ required: ['image'] })
   .openapi('ImageLink')
@@ -1138,9 +1164,26 @@ const PidReferenceSchema = z
   .openapi({ required: ['pid', 'result_type'] })
   .openapi('PidReference')
 
-const DeprecatedReferenceElementSchema = ReferenceAttributesSchema.and(
-  DeprecationAttributesSchema,
-).openapi('DeprecatedReferenceElement')
+const DeprecatedReferenceElementSchema = (() => {
+  const Schema = ReferenceAttributesSchema.and(DeprecationAttributesSchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['href', 'result_type'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['deprecated', 'deprecated_since', 'replaced_by'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('DeprecatedReferenceElement')
 
 const GenreGroupsTypeSchema = DeprecatedReferenceElementSchema.and(
   z
@@ -1912,18 +1955,32 @@ const IsRepeatSchema = z.boolean().openapi('IsRepeat')
 
 const IsSimulcastSchema = z.boolean().openapi('IsSimulcast')
 
-const BroadcastTimeSchema = DateRangeSchema.and(
-  z
-    .looseObject({
-      duration: z
-        .string()
-        .regex(
-          /^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$/,
-        )
-        .exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('BroadcastTime')
+const BroadcastTimeSchema = (() => {
+  const Schema = DateRangeSchema.and(
+    z
+      .looseObject({
+        duration: z
+          .string()
+          .regex(
+            /^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$/,
+          )
+          .exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['end', 'start'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('BroadcastTime')
 
 const TxTimeSchema = z
   .strictObject({

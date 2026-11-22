@@ -30,12 +30,10 @@ const ChecksumStringSchema = z
 
 const ChecksumSchema = z
   .object({
-    Type: ChecksumTypeSchema.and(
-      z.any().openapi({ description: 'The type of the checksum.' }),
-    ).exactOptional(),
-    Sum: ChecksumStringSchema.and(
-      z.any().openapi({ description: 'The checksum of the model.' }),
-    ).exactOptional(),
+    Type: ChecksumTypeSchema.exactOptional().openapi({ description: 'The type of the checksum.' }),
+    Sum: ChecksumStringSchema.exactOptional().openapi({
+      description: 'The checksum of the model.',
+    }),
   })
   .openapi({
     description: 'Information about the checksum of a model deployed on a device.',
@@ -47,18 +45,18 @@ const ModelStateSchema = z.enum(['DEPLOY', 'UNDEPLOY']).openapi('ModelState')
 
 const DefinitionSchema = z
   .object({
-    ModelHandle: EntityNameSchema.and(
-      z.any().openapi({ description: 'The unique model handle.' }),
-    ).exactOptional(),
-    S3Url: S3UriSchema.and(
-      z.any().openapi({ description: 'The absolute S3 location of the model.' }),
-    ).exactOptional(),
-    Checksum: ChecksumSchema.and(
-      z.any().openapi({ description: 'The checksum information of the model.' }),
-    ).exactOptional(),
-    State: ModelStateSchema.and(
-      z.any().openapi({ description: 'The desired state of the model.' }),
-    ).exactOptional(),
+    ModelHandle: EntityNameSchema.exactOptional().openapi({
+      description: 'The unique model handle.',
+    }),
+    S3Url: S3UriSchema.exactOptional().openapi({
+      description: 'The absolute S3 location of the model.',
+    }),
+    Checksum: ChecksumSchema.exactOptional().openapi({
+      description: 'The checksum information of the model.',
+    }),
+    State: ModelStateSchema.exactOptional().openapi({
+      description: 'The desired state of the model.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('Definition')
@@ -67,23 +65,18 @@ const DefinitionsSchema = z.array(DefinitionSchema).openapi('Definitions')
 
 const EdgeDeploymentSchema = z
   .object({
-    DeploymentName: EntityNameSchema.and(
-      z.any().openapi({ description: 'The name and unique ID of the deployment.' }),
-    ).exactOptional(),
-    Type: DeploymentTypeSchema.and(
-      z.any().openapi({ description: 'The type of the deployment.' }),
-    ).exactOptional(),
-    FailureHandlingPolicy: FailureHandlingPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines whether to rollback to previous configuration if deployment fails.',
-        }),
-    ).exactOptional(),
-    Definitions: DefinitionsSchema.and(
-      z.any().openapi({ description: 'Returns a list of Definition objects.' }),
-    ).exactOptional(),
+    DeploymentName: EntityNameSchema.exactOptional().openapi({
+      description: 'The name and unique ID of the deployment.',
+    }),
+    Type: DeploymentTypeSchema.exactOptional().openapi({
+      description: 'The type of the deployment.',
+    }),
+    FailureHandlingPolicy: FailureHandlingPolicySchema.exactOptional().openapi({
+      description: 'Determines whether to rollback to previous configuration if deployment fails.',
+    }),
+    Definitions: DefinitionsSchema.exactOptional().openapi({
+      description: 'Returns a list of Definition objects.',
+    }),
   })
   .openapi({
     description:
@@ -96,14 +89,9 @@ const EdgeDeploymentsSchema = z.array(EdgeDeploymentSchema).openapi('EdgeDeploym
 
 const GetDeploymentsResultSchema = z
   .object({
-    Deployments: EdgeDeploymentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns a list of the configurations of the active deployments on the device.',
-        }),
-    ).exactOptional(),
+    Deployments: EdgeDeploymentsSchema.exactOptional().openapi({
+      description: 'Returns a list of the configurations of the active deployments on the device.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDeploymentsResult')
@@ -116,22 +104,13 @@ const CacheTTLSecondsSchema = z.string().min(1).max(1000).openapi('CacheTTLSecon
 
 const GetDeviceRegistrationResultSchema = z
   .object({
-    DeviceRegistration: DeviceRegistrationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes if the device is currently registered with SageMaker Edge Manager.',
-        }),
-    ).exactOptional(),
-    CacheTTL: CacheTTLSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time, in seconds, that the registration status is stored on the device’s cache before it is refreshed.',
-        }),
-    ).exactOptional(),
+    DeviceRegistration: DeviceRegistrationSchema.exactOptional().openapi({
+      description: 'Describes if the device is currently registered with SageMaker Edge Manager.',
+    }),
+    CacheTTL: CacheTTLSecondsSchema.exactOptional().openapi({
+      description:
+        'The amount of time, in seconds, that the registration status is stored on the device’s cache before it is refreshed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDeviceRegistrationResult')
@@ -156,18 +135,16 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const EdgeMetricSchema = z
   .object({
-    Dimension: DimensionSchema.and(
-      z.any().openapi({ description: 'The dimension of metrics published.' }),
-    ).exactOptional(),
-    MetricName: MetricSchema.and(
-      z.any().openapi({ description: 'Returns the name of the metric.' }),
-    ).exactOptional(),
-    Value: ValueSchema.and(
-      z.any().openapi({ description: 'Returns the value of the metric.' }),
-    ).exactOptional(),
-    Timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'Timestamp of when the metric was requested.' }),
-    ).exactOptional(),
+    Dimension: DimensionSchema.exactOptional().openapi({
+      description: 'The dimension of metrics published.',
+    }),
+    MetricName: MetricSchema.exactOptional().openapi({
+      description: 'Returns the name of the metric.',
+    }),
+    Value: ValueSchema.exactOptional().openapi({ description: 'Returns the value of the metric.' }),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description: 'Timestamp of when the metric was requested.',
+    }),
   })
   .openapi({ description: 'Information required for edge device metrics.', required: [] })
   .openapi('EdgeMetric')
@@ -190,21 +167,19 @@ const EdgeMetricsSchema = z.array(EdgeMetricSchema).openapi('EdgeMetrics')
 
 const ModelSchema = z
   .object({
-    ModelName: ModelNameSchema.and(
-      z.any().openapi({ description: 'The name of the model.' }),
-    ).exactOptional(),
-    ModelVersion: VersionSchema.and(
-      z.any().openapi({ description: 'The version of the model.' }),
-    ).exactOptional(),
-    LatestSampleTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of the last data sample taken.' }),
-    ).exactOptional(),
-    LatestInference: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of the last inference that was made.' }),
-    ).exactOptional(),
-    ModelMetrics: EdgeMetricsSchema.and(
-      z.any().openapi({ description: 'Information required for model metrics.' }),
-    ).exactOptional(),
+    ModelName: ModelNameSchema.exactOptional().openapi({ description: 'The name of the model.' }),
+    ModelVersion: VersionSchema.exactOptional().openapi({
+      description: 'The version of the model.',
+    }),
+    LatestSampleTime: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of the last data sample taken.',
+    }),
+    LatestInference: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of the last inference that was made.',
+    }),
+    ModelMetrics: EdgeMetricsSchema.exactOptional().openapi({
+      description: 'Information required for model metrics.',
+    }),
   })
   .openapi({
     description:
@@ -219,32 +194,28 @@ const DeploymentStatusSchema = z.enum(['SUCCESS', 'FAIL']).openapi('DeploymentSt
 
 const DeploymentModelSchema = z
   .object({
-    ModelHandle: EntityNameSchema.and(
-      z.any().openapi({ description: 'The unique handle of the model.' }),
-    ).exactOptional(),
-    ModelName: ModelNameSchema.and(
-      z.any().openapi({ description: 'The name of the model.' }),
-    ).exactOptional(),
-    ModelVersion: VersionSchema.and(
-      z.any().openapi({ description: 'The version of the model.' }),
-    ).exactOptional(),
-    DesiredState: ModelStateSchema.and(
-      z.any().openapi({ description: 'The desired state of the model.' }),
-    ).exactOptional(),
-    State: ModelStateSchema.and(
-      z.any().openapi({ description: 'Returns the current state of the model.' }),
-    ).exactOptional(),
-    Status: DeploymentStatusSchema.and(
-      z.any().openapi({ description: 'Returns the deployment status of the model.' }),
-    ).exactOptional(),
-    StatusReason: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Returns the error message for the deployment status result.' }),
-    ).exactOptional(),
-    RollbackFailureReason: StringSchema.and(
-      z.any().openapi({ description: 'Returns the error message if there is a rollback.' }),
-    ).exactOptional(),
+    ModelHandle: EntityNameSchema.exactOptional().openapi({
+      description: 'The unique handle of the model.',
+    }),
+    ModelName: ModelNameSchema.exactOptional().openapi({ description: 'The name of the model.' }),
+    ModelVersion: VersionSchema.exactOptional().openapi({
+      description: 'The version of the model.',
+    }),
+    DesiredState: ModelStateSchema.exactOptional().openapi({
+      description: 'The desired state of the model.',
+    }),
+    State: ModelStateSchema.exactOptional().openapi({
+      description: 'Returns the current state of the model.',
+    }),
+    Status: DeploymentStatusSchema.exactOptional().openapi({
+      description: 'Returns the deployment status of the model.',
+    }),
+    StatusReason: StringSchema.exactOptional().openapi({
+      description: 'Returns the error message for the deployment status result.',
+    }),
+    RollbackFailureReason: StringSchema.exactOptional().openapi({
+      description: 'Returns the error message if there is a rollback.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('DeploymentModel')
@@ -253,31 +224,25 @@ const DeploymentModelsSchema = z.array(DeploymentModelSchema).openapi('Deploymen
 
 const DeploymentResultSchema = z
   .object({
-    DeploymentName: EntityNameSchema.and(
-      z.any().openapi({ description: 'The name and unique ID of the deployment.' }),
-    ).exactOptional(),
-    DeploymentStatus: EntityNameSchema.and(
-      z.any().openapi({ description: 'Returns the bucket error code.' }),
-    ).exactOptional(),
-    DeploymentStatusMessage: StringSchema.and(
-      z.any().openapi({ description: 'Returns the detailed error message.' }),
-    ).exactOptional(),
-    DeploymentStartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp of when the deployment was started on the agent.' }),
-    ).exactOptional(),
-    DeploymentEndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp of when the deployment was ended, and the agent got the deployment results.',
-        }),
-    ).exactOptional(),
-    DeploymentModels: DeploymentModelsSchema.and(
-      z.any().openapi({ description: 'Returns a list of models deployed on the agent.' }),
-    ).exactOptional(),
+    DeploymentName: EntityNameSchema.exactOptional().openapi({
+      description: 'The name and unique ID of the deployment.',
+    }),
+    DeploymentStatus: EntityNameSchema.exactOptional().openapi({
+      description: 'Returns the bucket error code.',
+    }),
+    DeploymentStatusMessage: StringSchema.exactOptional().openapi({
+      description: 'Returns the detailed error message.',
+    }),
+    DeploymentStartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the deployment was started on the agent.',
+    }),
+    DeploymentEndTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The timestamp of when the deployment was ended, and the agent got the deployment results.',
+    }),
+    DeploymentModels: DeploymentModelsSchema.exactOptional().openapi({
+      description: 'Returns a list of models deployed on the agent.',
+    }),
   })
   .openapi({
     description:
@@ -302,34 +267,25 @@ const DeviceNameSchema = z
 
 const GetDeploymentsRequestSchema = z
   .object({
-    DeviceName: DeviceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique name of the device you want to get the configuration of active deployments from.',
-        }),
-    ),
-    DeviceFleetName: DeviceFleetNameSchema.and(
-      z.any().openapi({ description: 'The name of the fleet that the device belongs to.' }),
-    ),
+    DeviceName: DeviceNameSchema.openapi({
+      description:
+        'The unique name of the device you want to get the configuration of active deployments from.',
+    }),
+    DeviceFleetName: DeviceFleetNameSchema.openapi({
+      description: 'The name of the fleet that the device belongs to.',
+    }),
   })
   .openapi({ required: ['DeviceName', 'DeviceFleetName'], title: 'GetDeploymentsRequest' })
   .openapi('GetDeploymentsRequest')
 
 const GetDeviceRegistrationRequestSchema = z
   .object({
-    DeviceName: DeviceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique name of the device you want to get the registration status from.',
-        }),
-    ),
-    DeviceFleetName: DeviceFleetNameSchema.and(
-      z.any().openapi({ description: 'The name of the fleet that the device belongs to.' }),
-    ),
+    DeviceName: DeviceNameSchema.openapi({
+      description: 'The unique name of the device you want to get the registration status from.',
+    }),
+    DeviceFleetName: DeviceFleetNameSchema.openapi({
+      description: 'The name of the fleet that the device belongs to.',
+    }),
   })
   .openapi({ required: ['DeviceName', 'DeviceFleetName'], title: 'GetDeviceRegistrationRequest' })
   .openapi('GetDeviceRegistrationRequest')
@@ -338,29 +294,21 @@ const ModelsSchema = z.array(ModelSchema).openapi('Models')
 
 const SendHeartbeatRequestSchema = z
   .object({
-    AgentMetrics: EdgeMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For internal use. Returns a list of SageMaker Edge Manager agent operating metrics.',
-        }),
-    ).exactOptional(),
-    Models: ModelsSchema.and(
-      z.any().openapi({ description: 'Returns a list of models deployed on the the device.' }),
-    ).exactOptional(),
-    AgentVersion: VersionSchema.and(
-      z.any().openapi({ description: 'Returns the version of the agent.' }),
-    ),
-    DeviceName: DeviceNameSchema.and(
-      z.any().openapi({ description: 'The unique name of the device.' }),
-    ),
-    DeviceFleetName: DeviceFleetNameSchema.and(
-      z.any().openapi({ description: 'The name of the fleet that the device belongs to.' }),
-    ),
-    DeploymentResult: DeploymentResultSchema.and(
-      z.any().openapi({ description: 'Returns the result of a deployment on the device.' }),
-    ).exactOptional(),
+    AgentMetrics: EdgeMetricsSchema.exactOptional().openapi({
+      description:
+        'For internal use. Returns a list of SageMaker Edge Manager agent operating metrics.',
+    }),
+    Models: ModelsSchema.exactOptional().openapi({
+      description: 'Returns a list of models deployed on the the device.',
+    }),
+    AgentVersion: VersionSchema.openapi({ description: 'Returns the version of the agent.' }),
+    DeviceName: DeviceNameSchema.openapi({ description: 'The unique name of the device.' }),
+    DeviceFleetName: DeviceFleetNameSchema.openapi({
+      description: 'The name of the fleet that the device belongs to.',
+    }),
+    DeploymentResult: DeploymentResultSchema.exactOptional().openapi({
+      description: 'Returns the result of a deployment on the device.',
+    }),
   })
   .openapi({
     required: ['AgentVersion', 'DeviceName', 'DeviceFleetName'],
@@ -599,36 +547,25 @@ export const postSendHeartbeatRoute = createRoute({
                 .openapi({ description: 'The name of the fleet that the device belongs to.' }),
               DeploymentResult: z
                 .object({
-                  DeploymentName: EntityNameSchema.and(
-                    z.any().openapi({ description: 'The name and unique ID of the deployment.' }),
-                  ).exactOptional(),
-                  DeploymentStatus: EntityNameSchema.and(
-                    z.any().openapi({ description: 'Returns the bucket error code.' }),
-                  ).exactOptional(),
-                  DeploymentStatusMessage: StringSchema.and(
-                    z.any().openapi({ description: 'Returns the detailed error message.' }),
-                  ).exactOptional(),
-                  DeploymentStartTime: TimestampSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The timestamp of when the deployment was started on the agent.',
-                      }),
-                  ).exactOptional(),
-                  DeploymentEndTime: TimestampSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The timestamp of when the deployment was ended, and the agent got the deployment results.',
-                      }),
-                  ).exactOptional(),
-                  DeploymentModels: DeploymentModelsSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Returns a list of models deployed on the agent.' }),
-                  ).exactOptional(),
+                  DeploymentName: EntityNameSchema.exactOptional().openapi({
+                    description: 'The name and unique ID of the deployment.',
+                  }),
+                  DeploymentStatus: EntityNameSchema.exactOptional().openapi({
+                    description: 'Returns the bucket error code.',
+                  }),
+                  DeploymentStatusMessage: StringSchema.exactOptional().openapi({
+                    description: 'Returns the detailed error message.',
+                  }),
+                  DeploymentStartTime: TimestampSchema.exactOptional().openapi({
+                    description: 'The timestamp of when the deployment was started on the agent.',
+                  }),
+                  DeploymentEndTime: TimestampSchema.exactOptional().openapi({
+                    description:
+                      'The timestamp of when the deployment was ended, and the agent got the deployment results.',
+                  }),
+                  DeploymentModels: DeploymentModelsSchema.exactOptional().openapi({
+                    description: 'Returns a list of models deployed on the agent.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetLogs20140328GetLogGroupFieldsHandler = app.openapi(
   postXAmzTargetLogs20140328GetLogGroupFieldsRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

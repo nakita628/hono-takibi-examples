@@ -1,50 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const CustomMachineTypeSchema = z
-  .object({
-    machineSeries: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The machine series. Only certain [machine series](https://cloud.google.com/compute/docs/general-purpose-machines#custom_machine_types) support custom configurations. For example: "n1".',
-      }),
-    memorySizeGb: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Memory size of the VM in GB (2^30 bytes). Must be an increment of 0.25 (256 MB). Each [machine series](https://cloud.google.com/compute/docs/machine-types#machine_type_comparison) has limitations on allowed values for the ratio of memory-to-vCPU count.',
-      }),
-    virtualCpuCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The number of vCPUs. The allowed values depend on the [machine series](https://cloud.google.com/compute/docs/machine-types#machine_type_comparison).',
-      }),
-  })
-  .openapi({ description: 'Specification of a custom machine type.', required: [] })
-  .openapi('CustomMachineType')
-
-const PredefinedMachineTypeSchema = z
-  .object({
-    machineType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [machine type](https://cloud.google.com/compute/docs/machine-types). For example: "n1-standard1".',
-      }),
-  })
-  .openapi({ description: 'Specification of a predefined machine type.', required: [] })
-  .openapi('PredefinedMachineType')
-
-type MachineTypeType = {
-  customMachineType?: z.infer<typeof CustomMachineTypeSchema>
-  predefinedMachineType?: z.infer<typeof PredefinedMachineTypeSchema>
-}
-
 const EstimationTimePointSchema = z
   .object({
     estimationTimeFrameOffset: z
@@ -105,6 +60,454 @@ const UsageSchema = z
   })
   .openapi({ description: 'An amount of usage over a time frame.', required: [] })
   .openapi('Usage')
+
+const VlanAttachmentSchema = z
+  .object({
+    bandwidth: z
+      .enum([
+        'BANDWIDTH_UNSPECIFIED',
+        'BANDWIDTH_BPS_50M',
+        'BANDWIDTH_BPS_100M',
+        'BANDWIDTH_BPS_200M',
+        'BANDWIDTH_BPS_300M',
+        'BANDWIDTH_BPS_400M',
+        'BANDWIDTH_BPS_500M',
+        'BANDWIDTH_BPS_1G',
+        'BANDWIDTH_BPS_2G',
+        'BANDWIDTH_BPS_5G',
+        'BANDWIDTH_BPS_10G',
+        'BANDWIDTH_BPS_20G',
+        'BANDWIDTH_BPS_50G',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Capacities in the [pricing table](https://cloud.google.com/vpc/network-pricing#interconnect-pricing) Examples of capacity are: 50/100/200/300/400/500-Mbps, 1/2/5/10/20/50-Gbps.',
+      }),
+    vlanCount: UsageSchema.exactOptional().openapi({
+      description:
+        'VLAN usage. This is specified as a unitless quantity which indicates the number of VLAN attachment used in interconnect.',
+    }),
+  })
+  .openapi({ description: 'VLAN attachment for cloud interconnect.', required: [] })
+  .openapi('VlanAttachment')
+
+type CloudInterconnectWorkloadType = {
+  interconnectAttachments?: z.infer<typeof VlanAttachmentSchema>[]
+  interconnectType?:
+    | 'INTERCONNECT_TYPE_UNSPECIFIED'
+    | 'INTERCONNECT_TYPE_DEDICATED'
+    | 'INTERCONNECT_TYPE_PARTNER'
+  linkType?: 'LINK_TYPE_UNSPECIFIED' | 'LINK_TYPE_ETHERNET_10G_LR' | 'LINK_TYPE_ETHERNET_100G_LR'
+  provisionedLinkCount?: z.infer<typeof UsageSchema>
+}
+
+const GuestAcceleratorSchema = z
+  .object({
+    acceleratorCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The number of the guest accelerator cards exposed to each instance.',
+      }),
+    acceleratorType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The type of the guest accelerator cards. For example: "nvidia-tesla-t4".',
+      }),
+  })
+  .openapi({
+    description: 'Specification of a set of guest accelerators attached to a machine.',
+    required: [],
+  })
+  .openapi('GuestAccelerator')
+
+const CustomMachineTypeSchema = z
+  .object({
+    machineSeries: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The machine series. Only certain [machine series](https://cloud.google.com/compute/docs/general-purpose-machines#custom_machine_types) support custom configurations. For example: "n1".',
+      }),
+    memorySizeGb: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Memory size of the VM in GB (2^30 bytes). Must be an increment of 0.25 (256 MB). Each [machine series](https://cloud.google.com/compute/docs/machine-types#machine_type_comparison) has limitations on allowed values for the ratio of memory-to-vCPU count.',
+      }),
+    virtualCpuCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The number of vCPUs. The allowed values depend on the [machine series](https://cloud.google.com/compute/docs/machine-types#machine_type_comparison).',
+      }),
+  })
+  .openapi({ description: 'Specification of a custom machine type.', required: [] })
+  .openapi('CustomMachineType')
+
+const PredefinedMachineTypeSchema = z
+  .object({
+    machineType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [machine type](https://cloud.google.com/compute/docs/machine-types). For example: "n1-standard1".',
+      }),
+  })
+  .openapi({ description: 'Specification of a predefined machine type.', required: [] })
+  .openapi('PredefinedMachineType')
+
+const MachineTypeSchema = z
+  .object({
+    customMachineType: CustomMachineTypeSchema.exactOptional(),
+    predefinedMachineType: PredefinedMachineTypeSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Specification of machine series, memory, and number of vCPUs.',
+    required: [],
+  })
+  .openapi('MachineType')
+
+const PersistentDiskSchema = z
+  .object({
+    diskSize: UsageSchema.exactOptional().openapi({
+      description: 'Specifies the size of disk. Must be at least 10 GB.',
+    }),
+    diskType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [disk type](https://cloud.google.com/compute/docs/disks#disk-types). For example: "pd-standard".',
+      }),
+    provisionedIops: UsageSchema.exactOptional().openapi({
+      description:
+        'Indicates how many IOPS to provision for the disk for extreme persistent disks. This sets the number of I/O operations per second that the disk can handle. Values must be between 10,000 and 120,000.',
+    }),
+    scope: z
+      .enum(['SCOPE_UNSPECIFIED', 'SCOPE_ZONAL', 'SCOPE_REGIONAL'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The geographic scope of the disk. Defaults to `SCOPE_ZONAL` if not specified.',
+      }),
+  })
+  .openapi({ description: 'Specification of a persistent disk attached to a VM.', required: [] })
+  .openapi('PersistentDisk')
+
+type ComputeVmWorkloadType = {
+  enableConfidentialCompute?: boolean
+  guestAccelerator?: z.infer<typeof GuestAcceleratorSchema>
+  instancesRunning?: z.infer<typeof UsageSchema>
+  licenses?: string[]
+  machineType?: z.infer<typeof MachineTypeSchema>
+  persistentDisks?: z.infer<typeof PersistentDiskSchema>[]
+  preemptible?: boolean
+  region?: string
+}
+
+const MoneySchema = z
+  .object({
+    currencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The three-letter currency code defined in ISO 4217.' }),
+    nanos: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.',
+      }),
+    units: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
+      }),
+  })
+  .openapi({ description: 'Represents an amount of money with its currency type.', required: [] })
+  .openapi('Money')
+
+const CreditEstimateSchema = z
+  .object({
+    creditAmount: MoneySchema.exactOptional().openapi({
+      description: 'The estimated credit amount.',
+    }),
+    creditDescription: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The credit description.' }),
+    creditType: z.string().exactOptional().openapi({ description: 'The credit type.' }),
+  })
+  .openapi({ description: 'An estimated credit applied to the costs on a SKU.', required: [] })
+  .openapi('CreditEstimate')
+
+const CostEstimateSchema = z
+  .object({
+    creditEstimates: z
+      .array(CreditEstimateSchema)
+      .exactOptional()
+      .openapi({ description: 'The estimated credits applied.' }),
+    netCostEstimate: MoneySchema.exactOptional().openapi({
+      description: 'The estimated net cost after applying credits.',
+    }),
+    preCreditCostEstimate: MoneySchema.exactOptional().openapi({
+      description: 'The estimated cost prior to applying credits.',
+    }),
+  })
+  .openapi({ description: 'An estimated cost.', required: [] })
+  .openapi('CostEstimate')
+
+const SkuCostEstimateSchema = z
+  .object({
+    costEstimate: CostEstimateSchema.exactOptional().openapi({
+      description: 'The estimated cost for the usage on this SKU.',
+    }),
+    sku: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name for the SKU. Example: "services/DA34-426B-A397/skus/AA95-CD31-42FE" More information about the SKU can be found in the `skus` field of the `CostEstimationResult`.',
+      }),
+    usageAmount: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The amount of usage on this SKU.' }),
+    usageUnit: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unit for the usage on this SKU.' }),
+  })
+  .openapi({ description: 'Estimated cost for usage on a SKU.', required: [] })
+  .openapi('SkuCostEstimate')
+
+const CommitmentCostEstimateSchema = z
+  .object({
+    commitmentTotalCostEstimate: CostEstimateSchema.exactOptional().openapi({
+      description: 'Total estimated costs for the commitment.',
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the commitment, as specified in the `CostScenario`.' }),
+    skuCostEstimates: z
+      .array(SkuCostEstimateSchema)
+      .exactOptional()
+      .openapi({ description: 'Estimated costs for each SKU in the commitment.' }),
+  })
+  .openapi({ description: 'Estimated cost for a commitment.', required: [] })
+  .openapi('CommitmentCostEstimate')
+
+const WorkloadCostEstimateSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the workload, as specified in the `CostScenario`.' }),
+    skuCostEstimates: z
+      .array(SkuCostEstimateSchema)
+      .exactOptional()
+      .openapi({ description: 'Estimated costs for each SKU in the workload.' }),
+    workloadTotalCostEstimate: CostEstimateSchema.exactOptional().openapi({
+      description: 'Total estimated costs for the workload.',
+    }),
+  })
+  .openapi({ description: 'Estimated cost for a workload.', required: [] })
+  .openapi('WorkloadCostEstimate')
+
+type SegmentCostEstimateType = {
+  commitmentCostEstimates?: z.infer<typeof CommitmentCostEstimateSchema>[]
+  segmentStartTime?: z.infer<typeof EstimationTimePointSchema>
+  segmentTotalCostEstimate?: z.infer<typeof CostEstimateSchema>
+  workloadCostEstimates?: z.infer<typeof WorkloadCostEstimateSchema>[]
+}
+
+const SegmentCostEstimateSchema: z.ZodType<SegmentCostEstimateType> = z
+  .object({
+    commitmentCostEstimates: z
+      .array(CommitmentCostEstimateSchema)
+      .exactOptional()
+      .openapi({ description: 'Estimated costs for each commitment.' }),
+    segmentStartTime: EstimationTimePointSchema.exactOptional().openapi({
+      description: 'Timestamp for the start of the segment.',
+    }),
+    segmentTotalCostEstimate: CostEstimateSchema.exactOptional().openapi({
+      description: 'Total estimated costs for the time segment.',
+    }),
+    workloadCostEstimates: z
+      .array(WorkloadCostEstimateSchema)
+      .exactOptional()
+      .openapi({ description: 'Estimated costs for each workload.' }),
+  })
+  .openapi({ description: 'Workload cost estimates for a single time segment.', required: [] })
+  .openapi('SegmentCostEstimate')
+
+const RateTierSchema = z
+  .object({
+    price: MoneySchema.exactOptional().openapi({ description: 'The price for this tier.' }),
+    startAmount: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'The magnitude of usage in which the tier interval begins. Example: "From 100 GiBi the price is $1 per byte" implies `start_amount` = 100',
+      }),
+  })
+  .openapi({ description: 'Pricing details for a service tier.', required: [] })
+  .openapi('RateTier')
+
+const RateSchema = z
+  .object({
+    tiers: z.array(RateTierSchema).exactOptional().openapi({ description: 'The service tiers.' }),
+    unit: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The SKU's pricing unit. For example, if the tier price is $1 per 1000000 Bytes, then this field will show 'By'. The `start_amount` field in each tier will be in this unit.",
+      }),
+    unitCount: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          "The SKU's count for the pricing unit. For example, if the tier price is $1 per 1000000 Bytes, then this column will show 1000000.",
+      }),
+  })
+  .openapi({ description: 'A SKU price consisting of tiered rates.', required: [] })
+  .openapi('Rate')
+
+const PriceSchema = z
+  .object({
+    effectiveTime: EstimationTimePointSchema.exactOptional().openapi({
+      description: 'The timestamp within the estimation time frame when the price was set.',
+    }),
+    priceType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of price. Possible values: "RATE"' }),
+    rate: RateSchema.exactOptional().openapi({ description: 'A set of tiered rates.' }),
+  })
+  .openapi({ description: 'The price of a SKU at a point int time.', required: [] })
+  .openapi('Price')
+
+const SkuSchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The display name for the SKU. Example: A2 Instance Core running in Americas',
+      }),
+    prices: z
+      .array(PriceSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A timeline of prices for a SKU in chronological order. Note: The API currently only supports using a constant price for the entire estimation time frame so this list will contain a single value.',
+      }),
+    sku: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name for the SKU. Example: "services/DA34-426B-A397/skus/AA95-CD31-42FE"',
+      }),
+  })
+  .openapi({ description: 'Information about SKUs appearing in the cost estimate.', required: [] })
+  .openapi('Sku')
+
+type CostEstimationResultType = {
+  currencyCode?: string
+  segmentCostEstimates?: z.infer<typeof SegmentCostEstimateSchema>[]
+  skus?: z.infer<typeof SkuSchema>[]
+}
+
+const VmResourceBasedCudSchema = z
+  .object({
+    guestAccelerator: GuestAcceleratorSchema.exactOptional().openapi({
+      description: 'Guest accelerator, known as GPU.',
+    }),
+    machineSeries: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The machine series for CUD. For example: "n1" for general purpose N1 machine type commitments. "n2" for general purpose N2 machine type commitments. "e2" for general purpose E2 machine type commitments. "n2d" for general purpose N2D machine type commitments. "t2d" for general purpose T2D machine type commitments. "c2"/"c2d" for compute-optimized commitments. "m1"/"m2" for the memory-optimized commitments. "a2\' for the accelerator-optimized commitments.',
+      }),
+    memorySizeGb: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Memory size of the VM in GB (2^30 bytes). Must be an increment of 0.25 (256 MB).',
+      }),
+    plan: z
+      .enum(['COMMITMENT_PLAN_UNSPECIFIED', 'TWELVE_MONTH', 'THIRTY_SIX_MONTH'])
+      .exactOptional()
+      .openapi({ description: 'Commitment usage plan.' }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The region where the VM runs. For example: "us-central1"' }),
+    virtualCpuCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of vCPUs. The number of vCPUs must be an integer of 0 or more and can be even or odd.',
+      }),
+  })
+  .openapi({
+    description: 'Specifies a resource-based committed use discount (CUD).',
+    required: [],
+  })
+  .openapi('VmResourceBasedCud')
+
+const CommitmentSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. A name for this commitment. All commitments in a CostScenario must have unique names. Each name may be at most 128 characters long.',
+      }),
+    vmResourceBasedCud: VmResourceBasedCudSchema.exactOptional().openapi({
+      description: 'A resource-based committed use discount (CUD).',
+    }),
+  })
+  .openapi({
+    description:
+      'Commitments give you the ability to pay a recurring fee in exchange for a benefit, such as a discount for your use. For example, this object might contain details of a [spend-based committed use discount (CUD)](https://cloud.google.com/docs/cuds#spend_based_commitments). Within a CostScenario, adding a commitment includes the cost of the commitment and any discounts.',
+    required: [],
+  })
+  .openapi('Commitment')
+
+const ScenarioConfigSchema = z
+  .object({
+    estimateDuration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time frame for the estimate. Workloads must specify usage for this duration. Duration must be at least 1 hour (3,600 seconds) and at most 10 years (315,360,000 seconds). The calculations for years and months are based on a 730-hour (2,628,000-second) month. For durations longer than one month (2,628,000 seconds), the duration is rounded up to the next month, so the estimate shows you the costs for full months. For example, a duration of 3,232,800 seconds (roughly 5 weeks) is rounded up to 2 months.',
+      }),
+  })
+  .openapi({
+    description: 'Configuration for a CostScenario. Specifies how costs are calculated.',
+    required: [],
+  })
+  .openapi('ScenarioConfig')
 
 const CloudCdnEgressWorkloadSchema = z
   .object({
@@ -213,38 +616,7 @@ const CloudInterconnectEgressWorkloadSchema = z
   })
   .openapi('CloudInterconnectEgressWorkload')
 
-const VlanAttachmentSchema = z
-  .object({
-    bandwidth: z
-      .enum([
-        'BANDWIDTH_UNSPECIFIED',
-        'BANDWIDTH_BPS_50M',
-        'BANDWIDTH_BPS_100M',
-        'BANDWIDTH_BPS_200M',
-        'BANDWIDTH_BPS_300M',
-        'BANDWIDTH_BPS_400M',
-        'BANDWIDTH_BPS_500M',
-        'BANDWIDTH_BPS_1G',
-        'BANDWIDTH_BPS_2G',
-        'BANDWIDTH_BPS_5G',
-        'BANDWIDTH_BPS_10G',
-        'BANDWIDTH_BPS_20G',
-        'BANDWIDTH_BPS_50G',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Capacities in the [pricing table](https://cloud.google.com/vpc/network-pricing#interconnect-pricing) Examples of capacity are: 50/100/200/300/400/500-Mbps, 1/2/5/10/20/50-Gbps.',
-      }),
-    vlanCount: UsageSchema.exactOptional().openapi({
-      description:
-        'VLAN usage. This is specified as a unitless quantity which indicates the number of VLAN attachment used in interconnect.',
-    }),
-  })
-  .openapi({ description: 'VLAN attachment for cloud interconnect.', required: [] })
-  .openapi('VlanAttachment')
-
-const CloudInterconnectWorkloadSchema = z
+const CloudInterconnectWorkloadSchema: z.ZodType<CloudInterconnectWorkloadType> = z
   .object({
     interconnectAttachments: z
       .array(VlanAttachmentSchema)
@@ -381,69 +753,7 @@ const CloudStorageWorkloadSchema = z
   .openapi({ description: 'Specifies usage of Cloud Storage resources.', required: [] })
   .openapi('CloudStorageWorkload')
 
-const GuestAcceleratorSchema = z
-  .object({
-    acceleratorCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The number of the guest accelerator cards exposed to each instance.',
-      }),
-    acceleratorType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The type of the guest accelerator cards. For example: "nvidia-tesla-t4".',
-      }),
-  })
-  .openapi({
-    description: 'Specification of a set of guest accelerators attached to a machine.',
-    required: [],
-  })
-  .openapi('GuestAccelerator')
-
-const MachineTypeSchema: z.ZodType<MachineTypeType> = z
-  .lazy(() =>
-    z
-      .object({
-        customMachineType: CustomMachineTypeSchema.exactOptional(),
-        predefinedMachineType: PredefinedMachineTypeSchema.exactOptional(),
-      })
-      .openapi({
-        description: 'Specification of machine series, memory, and number of vCPUs.',
-        required: [],
-      }),
-  )
-  .openapi('MachineType')
-
-const PersistentDiskSchema = z
-  .object({
-    diskSize: UsageSchema.exactOptional().openapi({
-      description: 'Specifies the size of disk. Must be at least 10 GB.',
-    }),
-    diskType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [disk type](https://cloud.google.com/compute/docs/disks#disk-types). For example: "pd-standard".',
-      }),
-    provisionedIops: UsageSchema.exactOptional().openapi({
-      description:
-        'Indicates how many IOPS to provision for the disk for extreme persistent disks. This sets the number of I/O operations per second that the disk can handle. Values must be between 10,000 and 120,000.',
-    }),
-    scope: z
-      .enum(['SCOPE_UNSPECIFIED', 'SCOPE_ZONAL', 'SCOPE_REGIONAL'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The geographic scope of the disk. Defaults to `SCOPE_ZONAL` if not specified.',
-      }),
-  })
-  .openapi({ description: 'Specification of a persistent disk attached to a VM.', required: [] })
-  .openapi('PersistentDisk')
-
-const ComputeVmWorkloadSchema = z
+const ComputeVmWorkloadSchema: z.ZodType<ComputeVmWorkloadType> = z
   .object({
     enableConfidentialCompute: z
       .boolean()
@@ -593,365 +903,60 @@ type WorkloadType = {
   vmToVmEgressWorkload?: z.infer<typeof VmToVmEgressWorkloadSchema>
 }
 
-const VmResourceBasedCudSchema = z
+const WorkloadSchema: z.ZodType<WorkloadType> = z
   .object({
-    guestAccelerator: GuestAcceleratorSchema.exactOptional().openapi({
-      description: 'Guest accelerator, known as GPU.',
+    cloudCdnEgressWorkload: CloudCdnEgressWorkloadSchema.exactOptional().openapi({
+      description: 'Usage on Google Cloud CDN Egress.',
     }),
-    machineSeries: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The machine series for CUD. For example: "n1" for general purpose N1 machine type commitments. "n2" for general purpose N2 machine type commitments. "e2" for general purpose E2 machine type commitments. "n2d" for general purpose N2D machine type commitments. "t2d" for general purpose T2D machine type commitments. "c2"/"c2d" for compute-optimized commitments. "m1"/"m2" for the memory-optimized commitments. "a2\' for the accelerator-optimized commitments.',
-      }),
-    memorySizeGb: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Memory size of the VM in GB (2^30 bytes). Must be an increment of 0.25 (256 MB).',
-      }),
-    plan: z
-      .enum(['COMMITMENT_PLAN_UNSPECIFIED', 'TWELVE_MONTH', 'THIRTY_SIX_MONTH'])
-      .exactOptional()
-      .openapi({ description: 'Commitment usage plan.' }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The region where the VM runs. For example: "us-central1"' }),
-    virtualCpuCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of vCPUs. The number of vCPUs must be an integer of 0 or more and can be even or odd.',
-      }),
-  })
-  .openapi({
-    description: 'Specifies a resource-based committed use discount (CUD).',
-    required: [],
-  })
-  .openapi('VmResourceBasedCud')
-
-const CommitmentSchema = z
-  .object({
+    cloudCdnWorkload: CloudCdnWorkloadSchema.exactOptional().openapi({
+      description: 'Usage on Google Cloud CDN.',
+    }),
+    cloudInterconnectEgressWorkload: CloudInterconnectEgressWorkloadSchema.exactOptional().openapi({
+      description: 'Usage on Google Cloud Interconnect Egress.',
+    }),
+    cloudInterconnectWorkload: CloudInterconnectWorkloadSchema.exactOptional().openapi({
+      description: 'Usage on Google Cloud Interconnect.',
+    }),
+    cloudStorageEgressWorkload: CloudStorageEgressWorkloadSchema.exactOptional().openapi({
+      description: 'Usage on a cloud storage egress.',
+    }),
+    cloudStorageWorkload: CloudStorageWorkloadSchema.exactOptional().openapi({
+      description: 'Usage on Google Cloud Storage.',
+    }),
+    computeVmWorkload: ComputeVmWorkloadSchema.exactOptional().openapi({
+      description: 'Usage of a Google Compute Engine Virtual Machine.',
+    }),
     name: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Required. A name for this commitment. All commitments in a CostScenario must have unique names. Each name may be at most 128 characters long.',
+          'Required. A name for this workload. All workloads in a `CostScenario` must have a unique `name`. Each `name` may be at most 128 characters long.',
       }),
-    vmResourceBasedCud: VmResourceBasedCudSchema.exactOptional().openapi({
-      description: 'A resource-based committed use discount (CUD).',
+    premiumTierEgressWorkload: PremiumTierEgressWorkloadSchema.exactOptional().openapi({
+      description: 'Usage on Premium Tier Internet Egress.',
+    }),
+    standardTierEgressWorkload: StandardTierEgressWorkloadSchema.exactOptional().openapi({
+      description: 'Usage on Standard Tier Internet Egress.',
+    }),
+    vmToVmEgressWorkload: VmToVmEgressWorkloadSchema.exactOptional().openapi({
+      description: 'Usage on Vm to Vm Egress.',
     }),
   })
   .openapi({
     description:
-      'Commitments give you the ability to pay a recurring fee in exchange for a benefit, such as a discount for your use. For example, this object might contain details of a [spend-based committed use discount (CUD)](https://cloud.google.com/docs/cuds#spend_based_commitments). Within a CostScenario, adding a commitment includes the cost of the commitment and any discounts.',
+      'Specifies usage on a single Google Cloud product over a time frame. Each Google Cloud product has its own message, containing specific product configuration parameters of the product usage amounts along each dimension in which the product is billed.',
     required: [],
   })
-  .openapi('Commitment')
-
-const MoneySchema = z
-  .object({
-    currencyCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The three-letter currency code defined in ISO 4217.' }),
-    nanos: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.',
-      }),
-    units: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
-      }),
-  })
-  .openapi({ description: 'Represents an amount of money with its currency type.', required: [] })
-  .openapi('Money')
-
-const CreditEstimateSchema = z
-  .object({
-    creditAmount: MoneySchema.exactOptional().openapi({
-      description: 'The estimated credit amount.',
-    }),
-    creditDescription: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The credit description.' }),
-    creditType: z.string().exactOptional().openapi({ description: 'The credit type.' }),
-  })
-  .openapi({ description: 'An estimated credit applied to the costs on a SKU.', required: [] })
-  .openapi('CreditEstimate')
-
-const CostEstimateSchema = z
-  .object({
-    creditEstimates: z
-      .array(CreditEstimateSchema)
-      .exactOptional()
-      .openapi({ description: 'The estimated credits applied.' }),
-    netCostEstimate: MoneySchema.exactOptional().openapi({
-      description: 'The estimated net cost after applying credits.',
-    }),
-    preCreditCostEstimate: MoneySchema.exactOptional().openapi({
-      description: 'The estimated cost prior to applying credits.',
-    }),
-  })
-  .openapi({ description: 'An estimated cost.', required: [] })
-  .openapi('CostEstimate')
-
-const SkuCostEstimateSchema = z
-  .object({
-    costEstimate: CostEstimateSchema.exactOptional().openapi({
-      description: 'The estimated cost for the usage on this SKU.',
-    }),
-    sku: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name for the SKU. Example: "services/DA34-426B-A397/skus/AA95-CD31-42FE" More information about the SKU can be found in the `skus` field of the `CostEstimationResult`.',
-      }),
-    usageAmount: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The amount of usage on this SKU.' }),
-    usageUnit: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unit for the usage on this SKU.' }),
-  })
-  .openapi({ description: 'Estimated cost for usage on a SKU.', required: [] })
-  .openapi('SkuCostEstimate')
-
-const CommitmentCostEstimateSchema = z
-  .object({
-    commitmentTotalCostEstimate: CostEstimateSchema.exactOptional().openapi({
-      description: 'Total estimated costs for the commitment.',
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the commitment, as specified in the `CostScenario`.' }),
-    skuCostEstimates: z
-      .array(SkuCostEstimateSchema)
-      .exactOptional()
-      .openapi({ description: 'Estimated costs for each SKU in the commitment.' }),
-  })
-  .openapi({ description: 'Estimated cost for a commitment.', required: [] })
-  .openapi('CommitmentCostEstimate')
-
-const WorkloadCostEstimateSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the workload, as specified in the `CostScenario`.' }),
-    skuCostEstimates: z
-      .array(SkuCostEstimateSchema)
-      .exactOptional()
-      .openapi({ description: 'Estimated costs for each SKU in the workload.' }),
-    workloadTotalCostEstimate: CostEstimateSchema.exactOptional().openapi({
-      description: 'Total estimated costs for the workload.',
-    }),
-  })
-  .openapi({ description: 'Estimated cost for a workload.', required: [] })
-  .openapi('WorkloadCostEstimate')
-
-const SegmentCostEstimateSchema = z
-  .object({
-    commitmentCostEstimates: z
-      .array(CommitmentCostEstimateSchema)
-      .exactOptional()
-      .openapi({ description: 'Estimated costs for each commitment.' }),
-    segmentStartTime: EstimationTimePointSchema.exactOptional().openapi({
-      description: 'Timestamp for the start of the segment.',
-    }),
-    segmentTotalCostEstimate: CostEstimateSchema.exactOptional().openapi({
-      description: 'Total estimated costs for the time segment.',
-    }),
-    workloadCostEstimates: z
-      .array(WorkloadCostEstimateSchema)
-      .exactOptional()
-      .openapi({ description: 'Estimated costs for each workload.' }),
-  })
-  .openapi({ description: 'Workload cost estimates for a single time segment.', required: [] })
-  .openapi('SegmentCostEstimate')
-
-const RateTierSchema = z
-  .object({
-    price: MoneySchema.exactOptional().openapi({ description: 'The price for this tier.' }),
-    startAmount: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The magnitude of usage in which the tier interval begins. Example: "From 100 GiBi the price is $1 per byte" implies `start_amount` = 100',
-      }),
-  })
-  .openapi({ description: 'Pricing details for a service tier.', required: [] })
-  .openapi('RateTier')
-
-const RateSchema = z
-  .object({
-    tiers: z.array(RateTierSchema).exactOptional().openapi({ description: 'The service tiers.' }),
-    unit: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The SKU's pricing unit. For example, if the tier price is $1 per 1000000 Bytes, then this field will show 'By'. The `start_amount` field in each tier will be in this unit.",
-      }),
-    unitCount: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          "The SKU's count for the pricing unit. For example, if the tier price is $1 per 1000000 Bytes, then this column will show 1000000.",
-      }),
-  })
-  .openapi({ description: 'A SKU price consisting of tiered rates.', required: [] })
-  .openapi('Rate')
-
-const PriceSchema = z
-  .object({
-    effectiveTime: EstimationTimePointSchema.exactOptional().openapi({
-      description: 'The timestamp within the estimation time frame when the price was set.',
-    }),
-    priceType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The type of price. Possible values: "RATE"' }),
-    rate: RateSchema.exactOptional().openapi({ description: 'A set of tiered rates.' }),
-  })
-  .openapi({ description: 'The price of a SKU at a point int time.', required: [] })
-  .openapi('Price')
-
-const SkuSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The display name for the SKU. Example: A2 Instance Core running in Americas',
-      }),
-    prices: z
-      .array(PriceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A timeline of prices for a SKU in chronological order. Note: The API currently only supports using a constant price for the entire estimation time frame so this list will contain a single value.',
-      }),
-    sku: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name for the SKU. Example: "services/DA34-426B-A397/skus/AA95-CD31-42FE"',
-      }),
-  })
-  .openapi({ description: 'Information about SKUs appearing in the cost estimate.', required: [] })
-  .openapi('Sku')
-
-const CostEstimationResultSchema = z
-  .object({
-    currencyCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The ISO 4217 currency code for the cost estimate.' }),
-    segmentCostEstimates: z
-      .array(SegmentCostEstimateSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Required. Estimated costs for each idealized month of a `CostScenario`.',
-      }),
-    skus: z
-      .array(SkuSchema)
-      .exactOptional()
-      .openapi({ description: 'Required. Information about SKUs used in the estimate.' }),
-  })
-  .openapi({
-    description: 'The result of a estimating the costs of a `CostScenario`.',
-    required: [],
-  })
-  .openapi('CostEstimationResult')
-
-const ScenarioConfigSchema = z
-  .object({
-    estimateDuration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time frame for the estimate. Workloads must specify usage for this duration. Duration must be at least 1 hour (3,600 seconds) and at most 10 years (315,360,000 seconds). The calculations for years and months are based on a 730-hour (2,628,000-second) month. For durations longer than one month (2,628,000 seconds), the duration is rounded up to the next month, so the estimate shows you the costs for full months. For example, a duration of 3,232,800 seconds (roughly 5 weeks) is rounded up to 2 months.',
-      }),
-  })
-  .openapi({
-    description: 'Configuration for a CostScenario. Specifies how costs are calculated.',
-    required: [],
-  })
-  .openapi('ScenarioConfig')
-
-const WorkloadSchema: z.ZodType<WorkloadType> = z
-  .lazy(() =>
-    z
-      .object({
-        cloudCdnEgressWorkload: CloudCdnEgressWorkloadSchema.exactOptional().openapi({
-          description: 'Usage on Google Cloud CDN Egress.',
-        }),
-        cloudCdnWorkload: CloudCdnWorkloadSchema.exactOptional().openapi({
-          description: 'Usage on Google Cloud CDN.',
-        }),
-        cloudInterconnectEgressWorkload:
-          CloudInterconnectEgressWorkloadSchema.exactOptional().openapi({
-            description: 'Usage on Google Cloud Interconnect Egress.',
-          }),
-        cloudInterconnectWorkload: CloudInterconnectWorkloadSchema.exactOptional().openapi({
-          description: 'Usage on Google Cloud Interconnect.',
-        }),
-        cloudStorageEgressWorkload: CloudStorageEgressWorkloadSchema.exactOptional().openapi({
-          description: 'Usage on a cloud storage egress.',
-        }),
-        cloudStorageWorkload: CloudStorageWorkloadSchema.exactOptional().openapi({
-          description: 'Usage on Google Cloud Storage.',
-        }),
-        computeVmWorkload: ComputeVmWorkloadSchema.exactOptional().openapi({
-          description: 'Usage of a Google Compute Engine Virtual Machine.',
-        }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Required. A name for this workload. All workloads in a `CostScenario` must have a unique `name`. Each `name` may be at most 128 characters long.',
-          }),
-        premiumTierEgressWorkload: PremiumTierEgressWorkloadSchema.exactOptional().openapi({
-          description: 'Usage on Premium Tier Internet Egress.',
-        }),
-        standardTierEgressWorkload: StandardTierEgressWorkloadSchema.exactOptional().openapi({
-          description: 'Usage on Standard Tier Internet Egress.',
-        }),
-        vmToVmEgressWorkload: VmToVmEgressWorkloadSchema.exactOptional().openapi({
-          description: 'Usage on Vm to Vm Egress.',
-        }),
-      })
-      .openapi({
-        description:
-          'Specifies usage on a single Google Cloud product over a time frame. Each Google Cloud product has its own message, containing specific product configuration parameters of the product usage amounts along each dimension in which the product is billed.',
-        required: [],
-      }),
-  )
   .openapi('Workload')
 
-const CostScenarioSchema = z
+type CostScenarioType = {
+  commitments?: z.infer<typeof CommitmentSchema>[]
+  scenarioConfig?: z.infer<typeof ScenarioConfigSchema>
+  workloads?: z.infer<typeof WorkloadSchema>[]
+}
+
+const CostScenarioSchema: z.ZodType<CostScenarioType> = z
   .object({
     commitments: z
       .array(CommitmentSchema)
@@ -978,41 +983,84 @@ const CostScenarioSchema = z
   })
   .openapi('CostScenario')
 
-const EstimateCostScenarioForBillingAccountRequestSchema = z
-  .object({
-    costScenario: CostScenarioSchema.exactOptional().openapi({
-      description: 'The scenario to estimate costs for.',
-    }),
-  })
-  .openapi({ description: 'Request for EstimateCostScenarioForBillingAccount.', required: [] })
-  .openapi('EstimateCostScenarioForBillingAccountRequest')
+type EstimateCostScenarioForBillingAccountRequestType = {
+  costScenario?: z.infer<typeof CostScenarioSchema>
+}
 
-const EstimateCostScenarioForBillingAccountResponseSchema = z
+const CostEstimationResultSchema: z.ZodType<CostEstimationResultType> = z
   .object({
-    costEstimationResult: CostEstimationResultSchema.exactOptional().openapi({
-      description: 'The result of the cost estimation.',
-    }),
+    currencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The ISO 4217 currency code for the cost estimate.' }),
+    segmentCostEstimates: z
+      .array(SegmentCostEstimateSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Required. Estimated costs for each idealized month of a `CostScenario`.',
+      }),
+    skus: z
+      .array(SkuSchema)
+      .exactOptional()
+      .openapi({ description: 'Required. Information about SKUs used in the estimate.' }),
   })
-  .openapi({ description: 'Response for EstimateCostScenarioForBillingAccount', required: [] })
-  .openapi('EstimateCostScenarioForBillingAccountResponse')
+  .openapi({
+    description: 'The result of a estimating the costs of a `CostScenario`.',
+    required: [],
+  })
+  .openapi('CostEstimationResult')
 
-const EstimateCostScenarioWithListPriceRequestSchema = z
-  .object({
-    costScenario: CostScenarioSchema.exactOptional().openapi({
-      description: 'The scenario to estimate costs for.',
-    }),
-  })
-  .openapi({ description: 'Request for EstimateCostScenarioWithListPrice.', required: [] })
-  .openapi('EstimateCostScenarioWithListPriceRequest')
+type EstimateCostScenarioForBillingAccountResponseType = {
+  costEstimationResult?: z.infer<typeof CostEstimationResultSchema>
+}
 
-const EstimateCostScenarioWithListPriceResponseSchema = z
-  .object({
-    costEstimationResult: CostEstimationResultSchema.exactOptional().openapi({
-      description: 'The result of the cost estimation.',
-    }),
-  })
-  .openapi({ description: 'Response for EstimateCostScenarioWithListPrice', required: [] })
-  .openapi('EstimateCostScenarioWithListPriceResponse')
+type EstimateCostScenarioWithListPriceRequestType = {
+  costScenario?: z.infer<typeof CostScenarioSchema>
+}
+
+type EstimateCostScenarioWithListPriceResponseType = {
+  costEstimationResult?: z.infer<typeof CostEstimationResultSchema>
+}
+
+const EstimateCostScenarioForBillingAccountRequestSchema: z.ZodType<EstimateCostScenarioForBillingAccountRequestType> =
+  z
+    .object({
+      costScenario: CostScenarioSchema.exactOptional().openapi({
+        description: 'The scenario to estimate costs for.',
+      }),
+    })
+    .openapi({ description: 'Request for EstimateCostScenarioForBillingAccount.', required: [] })
+    .openapi('EstimateCostScenarioForBillingAccountRequest')
+
+const EstimateCostScenarioForBillingAccountResponseSchema: z.ZodType<EstimateCostScenarioForBillingAccountResponseType> =
+  z
+    .object({
+      costEstimationResult: CostEstimationResultSchema.exactOptional().openapi({
+        description: 'The result of the cost estimation.',
+      }),
+    })
+    .openapi({ description: 'Response for EstimateCostScenarioForBillingAccount', required: [] })
+    .openapi('EstimateCostScenarioForBillingAccountResponse')
+
+const EstimateCostScenarioWithListPriceRequestSchema: z.ZodType<EstimateCostScenarioWithListPriceRequestType> =
+  z
+    .object({
+      costScenario: CostScenarioSchema.exactOptional().openapi({
+        description: 'The scenario to estimate costs for.',
+      }),
+    })
+    .openapi({ description: 'Request for EstimateCostScenarioWithListPrice.', required: [] })
+    .openapi('EstimateCostScenarioWithListPriceRequest')
+
+const EstimateCostScenarioWithListPriceResponseSchema: z.ZodType<EstimateCostScenarioWithListPriceResponseType> =
+  z
+    .object({
+      costEstimationResult: CostEstimationResultSchema.exactOptional().openapi({
+        description: 'The result of the cost estimation.',
+      }),
+    })
+    .openapi({ description: 'Response for EstimateCostScenarioWithListPrice', required: [] })
+    .openapi('EstimateCostScenarioWithListPriceResponse')
 
 const XgafvParamsSchema = z
   .enum(['1', '2'])

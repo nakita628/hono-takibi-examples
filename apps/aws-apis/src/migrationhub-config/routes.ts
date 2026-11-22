@@ -24,17 +24,13 @@ const TargetIdSchema = z
 
 const TargetSchema = z
   .object({
-    Type: TargetTypeSchema.and(
-      z.any().openapi({ description: 'The target type is always an <code>ACCOUNT</code>.' }),
-    ),
-    Id: TargetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>TargetID</code> is a 12-character identifier of the <code>ACCOUNT</code> for which the control was created. (This must be the current account.) ',
-        }),
-    ).exactOptional(),
+    Type: TargetTypeSchema.openapi({
+      description: 'The target type is always an <code>ACCOUNT</code>.',
+    }),
+    Id: TargetIdSchema.exactOptional().openapi({
+      description:
+        'The <code>TargetID</code> is a 12-character identifier of the <code>ACCOUNT</code> for which the control was created. (This must be the current account.) ',
+    }),
   })
   .openapi({
     required: ['Type'],
@@ -47,38 +43,22 @@ const RequestedTimeSchema = z.iso.datetime({ offset: true }).openapi('RequestedT
 
 const HomeRegionControlSchema = z
   .object({
-    ControlId: ControlIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier that\'s generated for each home region control. It\'s always a string that begins with "hrc-" followed by 12 lowercase letters and numbers.',
-        }),
-    ).exactOptional(),
-    HomeRegion: HomeRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS Region that\'s been set as home region. For example, "us-west-2" or "eu-central-1" are valid home regions.',
-        }),
-    ).exactOptional(),
-    Target: TargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The target parameter specifies the identifier to which the home region is applied, which is always an <code>ACCOUNT</code>. It applies the home region to the current <code>ACCOUNT</code>.',
-        }),
-    ).exactOptional(),
-    RequestedTime: RequestedTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A timestamp representing the time when the customer called <code>CreateHomeregionControl</code> and set the home region for the account.',
-        }),
-    ).exactOptional(),
+    ControlId: ControlIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier that\'s generated for each home region control. It\'s always a string that begins with "hrc-" followed by 12 lowercase letters and numbers.',
+    }),
+    HomeRegion: HomeRegionSchema.exactOptional().openapi({
+      description:
+        'The AWS Region that\'s been set as home region. For example, "us-west-2" or "eu-central-1" are valid home regions.',
+    }),
+    Target: TargetSchema.exactOptional().openapi({
+      description:
+        'The target parameter specifies the identifier to which the home region is applied, which is always an <code>ACCOUNT</code>. It applies the home region to the current <code>ACCOUNT</code>.',
+    }),
+    RequestedTime: RequestedTimeSchema.exactOptional().openapi({
+      description:
+        'A timestamp representing the time when the customer called <code>CreateHomeregionControl</code> and set the home region for the account.',
+    }),
   })
   .openapi({
     description:
@@ -89,14 +69,10 @@ const HomeRegionControlSchema = z
 
 const CreateHomeRegionControlResultSchema = z
   .object({
-    HomeRegionControl: HomeRegionControlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "This object is the <code>HomeRegionControl</code> object that's returned by a successful call to <code>CreateHomeRegionControl</code>.",
-        }),
-    ).exactOptional(),
+    HomeRegionControl: HomeRegionControlSchema.exactOptional().openapi({
+      description:
+        "This object is the <code>HomeRegionControl</code> object that's returned by a successful call to <code>CreateHomeRegionControl</code>.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateHomeRegionControlResult')
@@ -105,25 +81,17 @@ const DryRunSchema = z.boolean().openapi('DryRun')
 
 const CreateHomeRegionControlRequestSchema = z
   .object({
-    HomeRegion: HomeRegionSchema.and(
-      z.any().openapi({ description: 'The name of the home region of the calling account.' }),
-    ),
-    Target: TargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The account for which this command sets up a home region control. The <code>Target</code> is always of type <code>ACCOUNT</code>.',
-        }),
-    ),
-    DryRun: DryRunSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional Boolean flag to indicate whether any effect should take place. It tests whether the caller has permission to make the call.',
-        }),
-    ).exactOptional(),
+    HomeRegion: HomeRegionSchema.openapi({
+      description: 'The name of the home region of the calling account.',
+    }),
+    Target: TargetSchema.openapi({
+      description:
+        'The account for which this command sets up a home region control. The <code>Target</code> is always of type <code>ACCOUNT</code>.',
+    }),
+    DryRun: DryRunSchema.exactOptional().openapi({
+      description:
+        'Optional Boolean flag to indicate whether any effect should take place. It tests whether the caller has permission to make the call.',
+    }),
   })
   .openapi({ required: ['HomeRegion', 'Target'], title: 'CreateHomeRegionControlRequest' })
   .openapi('CreateHomeRegionControlRequest')
@@ -154,21 +122,13 @@ const TokenSchema = z
 
 const DescribeHomeRegionControlsResultSchema = z
   .object({
-    HomeRegionControls: HomeRegionControlsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array that contains your <code>HomeRegionControl</code> objects.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a <code>NextToken</code> was returned by a previous call, more results are available. To retrieve the next page of results, make the call again using the returned token in <code>NextToken</code>.',
-        }),
-    ).exactOptional(),
+    HomeRegionControls: HomeRegionControlsSchema.exactOptional().openapi({
+      description: 'An array that contains your <code>HomeRegionControl</code> objects.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'If a <code>NextToken</code> was returned by a previous call, more results are available. To retrieve the next page of results, make the call again using the returned token in <code>NextToken</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeHomeRegionControlsResult')
@@ -181,53 +141,39 @@ const DescribeHomeRegionControlsMaxResultsSchema = z
 
 const DescribeHomeRegionControlsRequestSchema = z
   .object({
-    ControlId: ControlIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ControlID</code> is a unique identifier string of your <code>HomeRegionControl</code> object.',
-        }),
-    ).exactOptional(),
-    HomeRegion: HomeRegionSchema.and(
-      z.any().openapi({ description: "The name of the home region you'd like to view." }),
-    ).exactOptional(),
-    Target: TargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The target parameter specifies the identifier to which the home region is applied, which is always of type <code>ACCOUNT</code>. It applies the home region to the current <code>ACCOUNT</code>.',
-        }),
-    ).exactOptional(),
-    MaxResults: DescribeHomeRegionControlsMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of filtering results to display per page. ' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a <code>NextToken</code> was returned by a previous call, more results are available. To retrieve the next page of results, make the call again using the returned token in <code>NextToken</code>.',
-        }),
-    ).exactOptional(),
+    ControlId: ControlIdSchema.exactOptional().openapi({
+      description:
+        'The <code>ControlID</code> is a unique identifier string of your <code>HomeRegionControl</code> object.',
+    }),
+    HomeRegion: HomeRegionSchema.exactOptional().openapi({
+      description: "The name of the home region you'd like to view.",
+    }),
+    Target: TargetSchema.exactOptional().openapi({
+      description:
+        'The target parameter specifies the identifier to which the home region is applied, which is always of type <code>ACCOUNT</code>. It applies the home region to the current <code>ACCOUNT</code>.',
+    }),
+    MaxResults: DescribeHomeRegionControlsMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of filtering results to display per page. ',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'If a <code>NextToken</code> was returned by a previous call, more results are available. To retrieve the next page of results, make the call again using the returned token in <code>NextToken</code>.',
+    }),
   })
   .openapi({ title: 'DescribeHomeRegionControlsRequest', required: [] })
   .openapi('DescribeHomeRegionControlsRequest')
 
 const GetHomeRegionResultSchema = z
   .object({
-    HomeRegion: HomeRegionSchema.and(
-      z.any().openapi({ description: 'The name of the home region of the calling account.' }),
-    ).exactOptional(),
+    HomeRegion: HomeRegionSchema.exactOptional().openapi({
+      description: 'The name of the home region of the calling account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetHomeRegionResult')
 
 const GetHomeRegionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetHomeRegionRequest' })
   .openapi('GetHomeRegionRequest')
 

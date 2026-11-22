@@ -1170,9 +1170,60 @@ const BaseSearchParamsWithoutQuerySchema = z
   .openapi({ required: [] })
   .openapi('BaseSearchParamsWithoutQuery')
 
-const BaseSearchParamsSchema = SearchParamsQuerySchema.and(
-  BaseSearchParamsWithoutQuerySchema,
-).openapi('BaseSearchParams')
+const BaseSearchParamsSchema = (() => {
+  const Schema = SearchParamsQuerySchema.and(BaseSearchParamsWithoutQuerySchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['query'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'similarQuery',
+            'filters',
+            'facetFilters',
+            'optionalFilters',
+            'numericFilters',
+            'tagFilters',
+            'sumOrFiltersScores',
+            'restrictSearchableAttributes',
+            'facets',
+            'facetingAfterDistinct',
+            'page',
+            'offset',
+            'length',
+            'aroundLatLng',
+            'aroundLatLngViaIP',
+            'aroundRadius',
+            'aroundPrecision',
+            'minimumAroundRadius',
+            'insideBoundingBox',
+            'insidePolygon',
+            'naturalLanguages',
+            'ruleContexts',
+            'personalizationImpact',
+            'userToken',
+            'getRankingInfo',
+            'synonyms',
+            'clickAnalytics',
+            'analytics',
+            'analyticsTags',
+            'percentileComputation',
+            'enableABTest',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('BaseSearchParams')
 
 const IndexSettingsAsSearchParamsSchema: z.ZodType<IndexSettingsAsSearchParamsType> = z
   .strictObject({
@@ -1271,10 +1322,73 @@ const SearchParamsStringSchema = z
   })
   .openapi('SearchParamsString')
 
-const SearchParamsObjectSchema: z.ZodType<SearchParamsObjectType> = BaseSearchParamsSchema.and(
-  IndexSettingsAsSearchParamsSchema,
-)
-  .and(SearchParamsAllowReRankingSchema)
+const SearchParamsObjectSchema: z.ZodType<SearchParamsObjectType> = (() => {
+  const Schema = BaseSearchParamsSchema.and(IndexSettingsAsSearchParamsSchema).and(
+    SearchParamsAllowReRankingSchema,
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'attributesToRetrieve',
+            'ranking',
+            'relevancyStrictness',
+            'attributesToHighlight',
+            'attributesToSnippet',
+            'highlightPreTag',
+            'highlightPostTag',
+            'snippetEllipsisText',
+            'restrictHighlightAndSnippetArrays',
+            'hitsPerPage',
+            'minWordSizefor1Typo',
+            'minWordSizefor2Typos',
+            'typoTolerance',
+            'allowTyposOnNumericTokens',
+            'disableTypoToleranceOnAttributes',
+            'ignorePlurals',
+            'removeStopWords',
+            'queryLanguages',
+            'decompoundQuery',
+            'enableRules',
+            'enablePersonalization',
+            'queryType',
+            'removeWordsIfNoResults',
+            'mode',
+            'semanticSearch',
+            'advancedSyntax',
+            'optionalWords',
+            'disableExactOnAttributes',
+            'exactOnSingleWordQuery',
+            'alternativesAsExact',
+            'advancedSyntaxFeatures',
+            'distinct',
+            'replaceSynonymsInHighlight',
+            'minProximity',
+            'responseFields',
+            'maxValuesPerFacet',
+            'sortFacetValuesBy',
+            'attributeCriteriaComputedByMinProximity',
+            'attributeCriteriaComputedBy',
+            'renderingContent',
+            'enableReRanking',
+            'reRankingApplyFilter',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['allowReRankingOnPersonalization'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     title: 'Search parameters as object',
     description: 'Each parameter value, including the `query` must not be larger than 512 bytes.',
@@ -2109,11 +2223,21 @@ type SearchResponsePartialType = z.infer<typeof BaseSearchResponseSchema> &
     extensions?: z.infer<typeof ResponseExtensionsSchema>
   }
 
-const SearchResponseSchema: z.ZodType<SearchResponseType> = BaseSearchResponseSchema.and(
-  SearchPaginationSchema,
-)
-  .and(SearchHitsSchema)
-  .openapi('SearchResponse')
+const SearchResponseSchema: z.ZodType<SearchResponseType> = (() => {
+  const Schema = BaseSearchResponseSchema.and(SearchPaginationSchema).and(SearchHitsSchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['page', 'nbHits', 'nbPages', 'hitsPerPage'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('SearchResponse')
 
 const SearchForFacetValuesResponseSchema = z
   .strictObject({
@@ -2147,35 +2271,47 @@ const SearchForFacetValuesResponseSchema = z
   })
   .openapi('SearchForFacetValuesResponse')
 
-const SearchResponsePartialSchema: z.ZodType<SearchResponsePartialType> =
-  BaseSearchResponseSchema.and(SearchPaginationSchema)
-    .and(
-      z
-        .looseObject({
-          hits: z
-            .array(HitSchema)
-            .exactOptional()
-            .openapi({
-              description:
-                'Search results (hits).\n\nHits are records from your index that match the search criteria, augmented with additional attributes, such as, for highlighting.\n',
-            }),
-          query: QuerySchema.exactOptional(),
-          params: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL-encoded string of all search parameters.',
-              example: 'query=a&hitsPerPage=20',
-            }),
-          extensions: ResponseExtensionsSchema.exactOptional(),
-        })
-        .openapi({ required: [] }),
-    )
-    .openapi({
-      description:
-        'Partial search response returned when the `responseFields` parameter excludes\nfields like `hits`. Contains all possible search response properties but\nnone are required, so it acts as an unconditional fallback during oneOf\ndeserialization.\n',
-    })
-    .openapi('SearchResponsePartial')
+const SearchResponsePartialSchema: z.ZodType<SearchResponsePartialType> = (() => {
+  const Schema = BaseSearchResponseSchema.and(SearchPaginationSchema).and(
+    z
+      .looseObject({
+        hits: z
+          .array(HitSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'Search results (hits).\n\nHits are records from your index that match the search criteria, augmented with additional attributes, such as, for highlighting.\n',
+          }),
+        query: QuerySchema.exactOptional(),
+        params: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL-encoded string of all search parameters.',
+            example: 'query=a&hitsPerPage=20',
+          }),
+        extensions: ResponseExtensionsSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['page', 'nbHits', 'nbPages', 'hitsPerPage'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({
+    description:
+      'Partial search response returned when the `responseFields` parameter excludes\nfields like `hits`. Contains all possible search response properties but\nnone are required, so it acts as an unconditional fallback during oneOf\ndeserialization.\n',
+  })
+  .openapi('SearchResponsePartial')
 
 type SearchResultType =
   | z.infer<typeof SearchResponseSchema>
@@ -2199,8 +2335,21 @@ const CursorSchema = z
 type BrowseParamsObjectType = z.infer<typeof SearchParamsObjectSchema> &
   z.infer<typeof CursorSchema>
 
-const BrowseParamsObjectSchema: z.ZodType<BrowseParamsObjectType> =
-  SearchParamsObjectSchema.and(CursorSchema).openapi('BrowseParamsObject')
+const BrowseParamsObjectSchema: z.ZodType<BrowseParamsObjectType> = (() => {
+  const Schema = SearchParamsObjectSchema.and(CursorSchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['cursor'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('BrowseParamsObject')
 
 type BrowseParamsType =
   | z.infer<typeof BrowseParamsObjectSchema>
@@ -2424,9 +2573,94 @@ const BaseIndexSettingsSchema = z
 type IndexSettingsType = z.infer<typeof BaseIndexSettingsSchema> &
   z.infer<typeof IndexSettingsAsSearchParamsSchema>
 
-const IndexSettingsSchema: z.ZodType<IndexSettingsType> = BaseIndexSettingsSchema.and(
-  IndexSettingsAsSearchParamsSchema,
-)
+const IndexSettingsSchema: z.ZodType<IndexSettingsType> = (() => {
+  const Schema = BaseIndexSettingsSchema.and(IndexSettingsAsSearchParamsSchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'attributesForFaceting',
+            'replicas',
+            'paginationLimitedTo',
+            'unretrievableAttributes',
+            'disableTypoToleranceOnWords',
+            'attributesToTransliterate',
+            'camelCaseAttributes',
+            'decompoundedAttributes',
+            'indexLanguages',
+            'disablePrefixOnAttributes',
+            'allowCompressionOfIntegerArray',
+            'numericAttributesForFiltering',
+            'separatorsToIndex',
+            'searchableAttributes',
+            'userData',
+            'customNormalization',
+            'attributeForDistinct',
+            'maxFacetHits',
+            'keepDiacriticsOnCharacters',
+            'customRanking',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'attributesToRetrieve',
+            'ranking',
+            'relevancyStrictness',
+            'attributesToHighlight',
+            'attributesToSnippet',
+            'highlightPreTag',
+            'highlightPostTag',
+            'snippetEllipsisText',
+            'restrictHighlightAndSnippetArrays',
+            'hitsPerPage',
+            'minWordSizefor1Typo',
+            'minWordSizefor2Typos',
+            'typoTolerance',
+            'allowTyposOnNumericTokens',
+            'disableTypoToleranceOnAttributes',
+            'ignorePlurals',
+            'removeStopWords',
+            'queryLanguages',
+            'decompoundQuery',
+            'enableRules',
+            'enablePersonalization',
+            'queryType',
+            'removeWordsIfNoResults',
+            'mode',
+            'semanticSearch',
+            'advancedSyntax',
+            'optionalWords',
+            'disableExactOnAttributes',
+            'exactOnSingleWordQuery',
+            'alternativesAsExact',
+            'advancedSyntaxFeatures',
+            'distinct',
+            'replaceSynonymsInHighlight',
+            'minProximity',
+            'responseFields',
+            'maxValuesPerFacet',
+            'sortFacetValuesBy',
+            'attributeCriteriaComputedByMinProximity',
+            'attributeCriteriaComputedBy',
+            'renderingContent',
+            'enableReRanking',
+            'reRankingApplyFilter',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({ description: 'Index settings.' })
   .openapi('IndexSettings')
 
@@ -2550,11 +2784,124 @@ type ConsequenceParamsType = z.infer<typeof BaseSearchParamsWithoutQuerySchema> 
   z.infer<typeof ParamsSchema> &
   z.infer<typeof SearchParamsAllowReRankingSchema>
 
-const ConsequenceParamsSchema: z.ZodType<ConsequenceParamsType> =
-  BaseSearchParamsWithoutQuerySchema.and(IndexSettingsAsSearchParamsSchema)
+const ConsequenceParamsSchema: z.ZodType<ConsequenceParamsType> = (() => {
+  const Schema = BaseSearchParamsWithoutQuerySchema.and(IndexSettingsAsSearchParamsSchema)
     .and(ParamsSchema)
     .and(SearchParamsAllowReRankingSchema)
-    .openapi('ConsequenceParams')
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'similarQuery',
+            'filters',
+            'facetFilters',
+            'optionalFilters',
+            'numericFilters',
+            'tagFilters',
+            'sumOrFiltersScores',
+            'restrictSearchableAttributes',
+            'facets',
+            'facetingAfterDistinct',
+            'page',
+            'offset',
+            'length',
+            'aroundLatLng',
+            'aroundLatLngViaIP',
+            'aroundRadius',
+            'aroundPrecision',
+            'minimumAroundRadius',
+            'insideBoundingBox',
+            'insidePolygon',
+            'naturalLanguages',
+            'ruleContexts',
+            'personalizationImpact',
+            'userToken',
+            'getRankingInfo',
+            'synonyms',
+            'clickAnalytics',
+            'analytics',
+            'analyticsTags',
+            'percentileComputation',
+            'enableABTest',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'attributesToRetrieve',
+            'ranking',
+            'relevancyStrictness',
+            'attributesToHighlight',
+            'attributesToSnippet',
+            'highlightPreTag',
+            'highlightPostTag',
+            'snippetEllipsisText',
+            'restrictHighlightAndSnippetArrays',
+            'hitsPerPage',
+            'minWordSizefor1Typo',
+            'minWordSizefor2Typos',
+            'typoTolerance',
+            'allowTyposOnNumericTokens',
+            'disableTypoToleranceOnAttributes',
+            'ignorePlurals',
+            'removeStopWords',
+            'queryLanguages',
+            'decompoundQuery',
+            'enableRules',
+            'enablePersonalization',
+            'queryType',
+            'removeWordsIfNoResults',
+            'mode',
+            'semanticSearch',
+            'advancedSyntax',
+            'optionalWords',
+            'disableExactOnAttributes',
+            'exactOnSingleWordQuery',
+            'alternativesAsExact',
+            'advancedSyntaxFeatures',
+            'distinct',
+            'replaceSynonymsInHighlight',
+            'minProximity',
+            'responseFields',
+            'maxValuesPerFacet',
+            'sortFacetValuesBy',
+            'attributeCriteriaComputedByMinProximity',
+            'attributeCriteriaComputedBy',
+            'renderingContent',
+            'enableReRanking',
+            'reRankingApplyFilter',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'query',
+            'automaticFacetFilters',
+            'automaticOptionalFacetFilters',
+            'renderingContent',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['allowReRankingOnPersonalization'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('ConsequenceParams')
 
 const PromotePositionSchema = z
   .int()
@@ -2840,12 +3187,28 @@ const BrowseParamsSchema: z.ZodType<BrowseParamsType> = z
   ])
   .openapi('BrowseParams')
 
-const BrowseResponseSchema: z.ZodType<BrowseResponseType> = BaseSearchResponseSchema.and(
-  BrowsePaginationSchema,
-)
-  .and(SearchHitsSchema)
-  .and(CursorSchema)
-  .openapi('BrowseResponse')
+const BrowseResponseSchema: z.ZodType<BrowseResponseType> = (() => {
+  const Schema = BaseSearchResponseSchema.and(BrowsePaginationSchema)
+    .and(SearchHitsSchema)
+    .and(CursorSchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['page', 'nbHits', 'nbPages', 'hitsPerPage'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (!['cursor'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('BrowseResponse')
 
 const CreatedAtSchema = z
   .string()
@@ -2981,8 +3344,21 @@ const BatchResponseSchema = z
   .openapi({ required: ['taskID', 'objectIDs'] })
   .openapi('BatchResponse')
 
-const SettingsResponseSchema: z.ZodType<SettingsResponseType> =
-  IndexSettingsSchema.and(WithPrimarySchema).openapi('SettingsResponse')
+const SettingsResponseSchema: z.ZodType<SettingsResponseType> = (() => {
+  const Schema = IndexSettingsSchema.and(WithPrimarySchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['primary'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('SettingsResponse')
 
 const SynonymTypeSchema = z
   .enum([
@@ -3197,8 +3573,37 @@ const ApiKeySchema = z
   .openapi({ description: 'API key object.', required: ['acl'] })
   .openapi('ApiKey')
 
-const GetApiKeyResponseSchema =
-  BaseGetApiKeyResponseSchema.and(ApiKeySchema).openapi('GetApiKeyResponse')
+const GetApiKeyResponseSchema = (() => {
+  const Schema = BaseGetApiKeyResponseSchema.and(ApiKeySchema)
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['value', 'createdAt'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'acl',
+            'description',
+            'indexes',
+            'maxHitsPerQuery',
+            'maxQueriesPerIPPerHour',
+            'queryParameters',
+            'referers',
+            'validity',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('GetApiKeyResponse')
 
 const AddApiKeyResponseSchema = z
   .strictObject({ key: KeyStringSchema, createdAt: CreatedAtSchema })
@@ -7006,981 +7411,1106 @@ export const getBrowseObjectsRoute = createRoute({
             schema: { type: 'string' },
           },
         }),
-      browseParams: SearchParamsQuerySchema.and(
-        z
-          .strictObject({
-            similarQuery: SimilarQuerySchema.exactOptional(),
-            filters: FiltersSchema.exactOptional(),
-            facetFilters: FacetFiltersSchema.exactOptional(),
-            optionalFilters: OptionalFiltersSchema.exactOptional(),
-            numericFilters: NumericFiltersSchema.exactOptional(),
-            tagFilters: TagFiltersSchema.exactOptional(),
-            sumOrFiltersScores: z
-              .preprocess(
-                ((read) => (val: unknown) => {
-                  const result = read.safeParse(val)
-                  return result.success ? result.data : val
-                })(z.stringbool()),
-                SumOrFiltersScoresSchema,
-              )
-              .exactOptional(),
-            restrictSearchableAttributes: RestrictSearchableAttributesSchema.exactOptional(),
-            facets: z
-              .array(z.string())
-              .default([])
-              .exactOptional()
-              .openapi({
-                description:
-                  'Facets for which to retrieve facet values that match the search criteria and the number of matching facet values.\nTo retrieve all facets, use the wildcard character `*`.\nFor more information, see [facets](https://www.algolia.com/doc/guides/managing-results/refine-results/faceting/#contextual-facet-values-and-counts).\n',
-                example: ['*'],
-                'x-categories': ['Faceting'],
-              }),
-            facetingAfterDistinct: z
-              .preprocess(
-                ((read) => (val: unknown) => {
-                  const result = read.safeParse(val)
-                  return result.success ? result.data : val
-                })(z.stringbool()),
-                FacetingAfterDistinctSchema,
-              )
-              .exactOptional(),
-            page: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'string' &&
-                  /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                  (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                    ? Number(val)
-                    : val,
-                PageSchema,
-              )
-              .exactOptional(),
-            offset: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'string' &&
-                  /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                  (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                    ? Number(val)
-                    : val,
-                z.int(),
-              )
-              .exactOptional()
-              .openapi({
-                description: 'Position of the first hit to retrieve.',
-                'x-categories': ['Pagination'],
-              }),
-            length: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'string' &&
-                  /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                  (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                    ? Number(val)
-                    : val,
-                LengthSchema,
-              )
-              .exactOptional(),
-            aroundLatLng: AroundLatLngSchema.exactOptional(),
-            aroundLatLngViaIP: z
-              .preprocess(
-                ((read) => (val: unknown) => {
-                  const result = read.safeParse(val)
-                  return result.success ? result.data : val
-                })(z.stringbool()),
-                AroundLatLngViaIPSchema,
-              )
-              .exactOptional(),
-            aroundRadius: ((schema) =>
-              z.union([
-                z.preprocess(
-                  (val) =>
-                    typeof val === 'string' &&
-                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                      ? Number(val)
-                      : val,
-                  schema,
-                ),
-                schema,
-              ]))(AroundRadiusSchema).exactOptional(),
-            aroundPrecision: z
-              .xor([
-                z
-                  .preprocess(
-                    (val) =>
-                      typeof val === 'string' &&
-                      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                        ? Number(val)
-                        : val,
-                    z.int(),
-                  )
-                  .default(10)
-                  .openapi({
-                    description:
-                      'Distance in meters to group results by similar distances.\n\nFor example, if you set `aroundPrecision` to 100, records wihin 100 meters to the central coordinate are considered to have the same distance,\nas are records between 100 and 199 meters.\n',
-                  }),
-                z
-                  .array(
-                    z
-                      .object({
-                        from: z
-                          .preprocess(
-                            (val) =>
-                              typeof val === 'string' &&
-                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                                ? Number(val)
-                                : val,
-                            z.int(),
-                          )
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'Lower boundary of a range in meters. The Geo ranking criterion considers all records within the range to be equal.',
-                            example: 20,
-                          }),
-                        value: z
-                          .preprocess(
-                            (val) =>
-                              typeof val === 'string' &&
-                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                                ? Number(val)
-                                : val,
-                            z.int(),
-                          )
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'Upper boundary of a range in meters. The Geo ranking criterion considers all records within the range to be equal.',
-                          }),
-                      })
-                      .openapi({
-                        title: 'range',
-                        description:
-                          'Range object with lower and upper values in meters to define custom ranges.',
-                        required: [],
-                      }),
-                  )
-                  .openapi({ title: 'range objects' }),
-              ])
-              .exactOptional()
-              .openapi({
-                description:
-                  'Precision of a coordinate-based search in meters to group results with similar distances.\n\nThe Geo ranking criterion considers all matches within the same range of distances to be equal.\n',
-                'x-categories': ['Geo-Search'],
-              }),
-            minimumAroundRadius: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'string' &&
-                  /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                  (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                    ? Number(val)
-                    : val,
-                MinimumAroundRadiusSchema,
-              )
-              .exactOptional(),
-            insideBoundingBox: z
-              .xor([
-                z.string(),
-                z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-                z
-                  .array(
-                    z
-                      .array(
-                        z.preprocess(
-                          (val) =>
-                            typeof val === 'string' &&
-                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                              ? Number(val)
-                              : val,
-                          z.float64(),
-                        ),
-                      )
-                      .length(4),
-                  )
-                  .openapi({
-                    description:
-                      'Coordinates for a rectangular area in which to search.\n\nEach bounding box is defined by the two opposite points of its diagonal, and expressed as latitude and longitude pair:\n`[p1 lat, p1 long, p2 lat, p2 long]`.\nProvide multiple bounding boxes as nested arrays.\nFor more information, see [rectangular area](https://www.algolia.com/doc/guides/managing-results/refine-results/geolocation/#filtering-inside-rectangular-or-polygonal-areas).\n',
-                    example: [
-                      [47.3165, 4.9665, 47.3424, 5.0201],
-                      [40.9234, 2.1185, 38.643, 1.9916],
-                    ],
-                    'x-categories': ['Geo-Search'],
-                  }),
-              ])
-              .exactOptional(),
-            insidePolygon: z
-              .array(
-                z
-                  .array(
-                    z.preprocess(
+      browseParams: (() => {
+        const Schema = (() => {
+          const Schema = (() => {
+            const Schema = SearchParamsQuerySchema.and(
+              z
+                .strictObject({
+                  similarQuery: SimilarQuerySchema.exactOptional(),
+                  filters: FiltersSchema.exactOptional(),
+                  facetFilters: FacetFiltersSchema.exactOptional(),
+                  optionalFilters: OptionalFiltersSchema.exactOptional(),
+                  numericFilters: NumericFiltersSchema.exactOptional(),
+                  tagFilters: TagFiltersSchema.exactOptional(),
+                  sumOrFiltersScores: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      SumOrFiltersScoresSchema,
+                    )
+                    .exactOptional(),
+                  restrictSearchableAttributes: RestrictSearchableAttributesSchema.exactOptional(),
+                  facets: z
+                    .array(z.string())
+                    .default([])
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Facets for which to retrieve facet values that match the search criteria and the number of matching facet values.\nTo retrieve all facets, use the wildcard character `*`.\nFor more information, see [facets](https://www.algolia.com/doc/guides/managing-results/refine-results/faceting/#contextual-facet-values-and-counts).\n',
+                      example: ['*'],
+                      'x-categories': ['Faceting'],
+                    }),
+                  facetingAfterDistinct: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      FacetingAfterDistinctSchema,
+                    )
+                    .exactOptional(),
+                  page: z
+                    .preprocess(
                       (val) =>
                         typeof val === 'string' &&
                         /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
                         (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
                           ? Number(val)
                           : val,
-                      z.float64(),
-                    ),
-                  )
-                  .min(6)
-                  .max(20000),
-              )
-              .exactOptional()
-              .openapi({
-                description:
-                  'Coordinates of a polygon in which to search.\n\nPolygons are defined by 3 to 10,000 points. Each point is represented by its latitude and longitude.\nProvide multiple polygons as nested arrays.\nFor more information, see [filtering inside polygons](https://www.algolia.com/doc/guides/managing-results/refine-results/geolocation/#filtering-inside-rectangular-or-polygonal-areas).\nThis parameter is ignored if you also specify `insideBoundingBox`.\n',
-                example: [
-                  [47.3165, 4.9665, 47.3424, 5.0201, 47.32, 4.9],
-                  [40.9234, 2.1185, 38.643, 1.9916, 39.2587, 2.0104],
-                ],
-                'x-categories': ['Geo-Search'],
-              }),
-            naturalLanguages: NaturalLanguagesSchema.exactOptional(),
-            ruleContexts: RuleContextsSchema.exactOptional(),
-            personalizationImpact: z
-              .preprocess(
-                (val) =>
-                  typeof val === 'string' &&
-                  /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                  (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                    ? Number(val)
-                    : val,
-                PersonalizationImpactSchema,
-              )
-              .exactOptional(),
-            userToken: UserTokenSchema.exactOptional(),
-            getRankingInfo: z
-              .preprocess(
-                ((read) => (val: unknown) => {
-                  const result = read.safeParse(val)
-                  return result.success ? result.data : val
-                })(z.stringbool()),
-                GetRankingInfoSchema,
-              )
-              .exactOptional(),
-            synonyms: z
-              .preprocess(
-                ((read) => (val: unknown) => {
-                  const result = read.safeParse(val)
-                  return result.success ? result.data : val
-                })(z.stringbool()),
-                SynonymsSchema,
-              )
-              .exactOptional(),
-            clickAnalytics: z
-              .preprocess(
-                ((read) => (val: unknown) => {
-                  const result = read.safeParse(val)
-                  return result.success ? result.data : val
-                })(z.stringbool()),
-                ClickAnalyticsSchema,
-              )
-              .exactOptional(),
-            analytics: z
-              .preprocess(
-                ((read) => (val: unknown) => {
-                  const result = read.safeParse(val)
-                  return result.success ? result.data : val
-                })(z.stringbool()),
-                AnalyticsSchema,
-              )
-              .exactOptional(),
-            analyticsTags: AnalyticsTagsSchema.exactOptional().openapi({
-              'x-categories': ['Analytics'],
-            }),
-            percentileComputation: z
-              .preprocess(
-                ((read) => (val: unknown) => {
-                  const result = read.safeParse(val)
-                  return result.success ? result.data : val
-                })(z.stringbool()),
-                PercentileComputationSchema,
-              )
-              .exactOptional(),
-            enableABTest: z
-              .preprocess(
-                ((read) => (val: unknown) => {
-                  const result = read.safeParse(val)
-                  return result.success ? result.data : val
-                })(z.stringbool()),
-                EnableABTestSchema,
-              )
-              .exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-        .and(
-          z
-            .strictObject({
-              attributesToRetrieve: AttributesToRetrieveSchema.exactOptional(),
-              ranking: z
-                .array(z.string())
-                .default([
-                  'typo',
-                  'geo',
-                  'words',
-                  'filters',
-                  'proximity',
-                  'attribute',
-                  'exact',
-                  'custom',
-                ])
-                .exactOptional()
-                .openapi({
-                  description:
-                    'Determines the order in which Algolia returns your results.\n\nBy default, each entry corresponds to a [ranking criteria](https://www.algolia.com/doc/guides/managing-results/relevance-overview/in-depth/ranking-criteria).\nThe tie-breaking algorithm sequentially applies each criterion in the order they\'re specified.\nIf you configure a replica index for [sorting by an attribute](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/how-to/sort-by-attribute),\nyou put the sorting attribute at the top of the list.\n\n**Modifiers**\n\n- `asc("ATTRIBUTE")`.\n  Sort the index by the values of an attribute, in ascending order.\n- `desc("ATTRIBUTE")`.\n  Sort the index by the values of an attribute, in descending order.\n\nBefore you modify the default setting,\ntest your changes in the dashboard,\nand by [A/B testing](https://www.algolia.com/doc/guides/ab-testing/what-is-ab-testing).\n',
-                  'x-categories': ['Ranking'],
-                }),
-              relevancyStrictness: z
-                .preprocess(
-                  (val) =>
-                    typeof val === 'string' &&
-                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                      ? Number(val)
-                      : val,
-                  RelevancyStrictnessSchema,
-                )
-                .exactOptional(),
-              attributesToHighlight: AttributesToHighlightSchema.exactOptional(),
-              attributesToSnippet: AttributesToSnippetSchema.exactOptional(),
-              highlightPreTag: HighlightPreTagSchema.exactOptional(),
-              highlightPostTag: HighlightPostTagSchema.exactOptional(),
-              snippetEllipsisText: SnippetEllipsisTextSchema.exactOptional(),
-              restrictHighlightAndSnippetArrays: z
-                .preprocess(
-                  ((read) => (val: unknown) => {
-                    const result = read.safeParse(val)
-                    return result.success ? result.data : val
-                  })(z.stringbool()),
-                  RestrictHighlightAndSnippetArraysSchema,
-                )
-                .exactOptional(),
-              hitsPerPage: z
-                .preprocess(
-                  (val) =>
-                    typeof val === 'string' &&
-                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                      ? Number(val)
-                      : val,
-                  HitsPerPageSchema,
-                )
-                .exactOptional(),
-              minWordSizefor1Typo: z
-                .preprocess(
-                  (val) =>
-                    typeof val === 'string' &&
-                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                      ? Number(val)
-                      : val,
-                  MinWordSizefor1TypoSchema,
-                )
-                .exactOptional(),
-              minWordSizefor2Typos: z
-                .preprocess(
-                  (val) =>
-                    typeof val === 'string' &&
-                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                      ? Number(val)
-                      : val,
-                  MinWordSizefor2TyposSchema,
-                )
-                .exactOptional(),
-              typoTolerance: ((schema) =>
-                z.union([
-                  z.preprocess(
-                    ((read) => (val: unknown) => {
-                      const result = read.safeParse(val)
-                      return result.success ? result.data : val
-                    })(z.stringbool()),
-                    schema,
-                  ),
-                  schema,
-                ]))(TypoToleranceSchema).exactOptional(),
-              allowTyposOnNumericTokens: z
-                .preprocess(
-                  ((read) => (val: unknown) => {
-                    const result = read.safeParse(val)
-                    return result.success ? result.data : val
-                  })(z.stringbool()),
-                  AllowTyposOnNumericTokensSchema,
-                )
-                .exactOptional(),
-              disableTypoToleranceOnAttributes:
-                DisableTypoToleranceOnAttributesSchema.exactOptional(),
-              ignorePlurals: z
-                .xor([
-                  z
-                    .array(SupportedLanguageSchema)
+                      PageSchema,
+                    )
+                    .exactOptional(),
+                  offset: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'string' &&
+                        /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                        (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                          ? Number(val)
+                          : val,
+                      z.int(),
+                    )
+                    .exactOptional()
+                    .openapi({
+                      description: 'Position of the first hit to retrieve.',
+                      'x-categories': ['Pagination'],
+                    }),
+                  length: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'string' &&
+                        /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                        (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                          ? Number(val)
+                          : val,
+                      LengthSchema,
+                    )
+                    .exactOptional(),
+                  aroundLatLng: AroundLatLngSchema.exactOptional(),
+                  aroundLatLngViaIP: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      AroundLatLngViaIPSchema,
+                    )
+                    .exactOptional(),
+                  aroundRadius: ((schema) =>
+                    z.union([
+                      z.preprocess(
+                        (val) =>
+                          typeof val === 'string' &&
+                          /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                          (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                            ? Number(val)
+                            : val,
+                        schema,
+                      ),
+                      schema,
+                    ]))(AroundRadiusSchema).exactOptional(),
+                  aroundPrecision: z
+                    .xor([
+                      z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'string' &&
+                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                              ? Number(val)
+                              : val,
+                          z.int(),
+                        )
+                        .default(10)
+                        .openapi({
+                          description:
+                            'Distance in meters to group results by similar distances.\n\nFor example, if you set `aroundPrecision` to 100, records wihin 100 meters to the central coordinate are considered to have the same distance,\nas are records between 100 and 199 meters.\n',
+                        }),
+                      z
+                        .array(
+                          z
+                            .object({
+                              from: z
+                                .preprocess(
+                                  (val) =>
+                                    typeof val === 'string' &&
+                                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                      ? Number(val)
+                                      : val,
+                                  z.int(),
+                                )
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Lower boundary of a range in meters. The Geo ranking criterion considers all records within the range to be equal.',
+                                  example: 20,
+                                }),
+                              value: z
+                                .preprocess(
+                                  (val) =>
+                                    typeof val === 'string' &&
+                                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                      ? Number(val)
+                                      : val,
+                                  z.int(),
+                                )
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Upper boundary of a range in meters. The Geo ranking criterion considers all records within the range to be equal.',
+                                }),
+                            })
+                            .openapi({
+                              title: 'range',
+                              description:
+                                'Range object with lower and upper values in meters to define custom ranges.',
+                              required: [],
+                            }),
+                        )
+                        .openapi({ title: 'range objects' }),
+                    ])
+                    .exactOptional()
                     .openapi({
                       description:
-                        'ISO code for languages for which this feature should be active.\nThis overrides languages you set with `queryLanguages`.\n',
+                        'Precision of a coordinate-based search in meters to group results with similar distances.\n\nThe Geo ranking criterion considers all matches within the same range of distances to be equal.\n',
+                      'x-categories': ['Geo-Search'],
                     }),
-                  BooleanStringSchema,
-                  z
-                    .stringbool()
-                    .default(false)
+                  minimumAroundRadius: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'string' &&
+                        /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                        (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                          ? Number(val)
+                          : val,
+                      MinimumAroundRadiusSchema,
+                    )
+                    .exactOptional(),
+                  insideBoundingBox: z
+                    .xor([
+                      z.string(),
+                      z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+                      z
+                        .array(
+                          z
+                            .array(
+                              z.preprocess(
+                                (val) =>
+                                  typeof val === 'string' &&
+                                  /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                                  (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                    ? Number(val)
+                                    : val,
+                                z.float64(),
+                              ),
+                            )
+                            .length(4),
+                        )
+                        .openapi({
+                          description:
+                            'Coordinates for a rectangular area in which to search.\n\nEach bounding box is defined by the two opposite points of its diagonal, and expressed as latitude and longitude pair:\n`[p1 lat, p1 long, p2 lat, p2 long]`.\nProvide multiple bounding boxes as nested arrays.\nFor more information, see [rectangular area](https://www.algolia.com/doc/guides/managing-results/refine-results/geolocation/#filtering-inside-rectangular-or-polygonal-areas).\n',
+                          example: [
+                            [47.3165, 4.9665, 47.3424, 5.0201],
+                            [40.9234, 2.1185, 38.643, 1.9916],
+                          ],
+                          'x-categories': ['Geo-Search'],
+                        }),
+                    ])
+                    .exactOptional(),
+                  insidePolygon: z
+                    .array(
+                      z
+                        .array(
+                          z.preprocess(
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            z.float64(),
+                          ),
+                        )
+                        .min(6)
+                        .max(20000),
+                    )
+                    .exactOptional()
                     .openapi({
                       description:
-                        "If true, `ignorePlurals` is active for all languages included in `queryLanguages`, or for all supported languages, if `queryLanguges` is empty.\nIf false, singulars, plurals, and other declensions won't be considered equivalent.\n",
+                        'Coordinates of a polygon in which to search.\n\nPolygons are defined by 3 to 10,000 points. Each point is represented by its latitude and longitude.\nProvide multiple polygons as nested arrays.\nFor more information, see [filtering inside polygons](https://www.algolia.com/doc/guides/managing-results/refine-results/geolocation/#filtering-inside-rectangular-or-polygonal-areas).\nThis parameter is ignored if you also specify `insideBoundingBox`.\n',
+                      example: [
+                        [47.3165, 4.9665, 47.3424, 5.0201, 47.32, 4.9],
+                        [40.9234, 2.1185, 38.643, 1.9916, 39.2587, 2.0104],
+                      ],
+                      'x-categories': ['Geo-Search'],
                     }),
-                ])
-                .exactOptional()
-                .openapi({
-                  description:
-                    'Treat singular, plurals, and other forms of declensions as equivalent.\nOnly use this feature for the languages used in your index.\n',
-                  example: ['ca', 'es'],
-                  'x-categories': ['Languages'],
-                }),
-              removeStopWords: z
-                .xor([
-                  z
-                    .array(SupportedLanguageSchema)
-                    .openapi({
-                      description:
-                        'ISO code for languages for which stop words should be removed. This overrides languages you set in `queryLanguges`.',
-                    }),
-                  z
-                    .stringbool()
-                    .default(false)
-                    .openapi({
-                      description:
-                        'If true, stop words are removed for all languages you included in `queryLanguages`, or for all supported languages, if `queryLanguages` is empty.\nIf false, stop words are not removed.\n',
-                    }),
-                ])
-                .exactOptional()
-                .openapi({
-                  description:
-                    'Removes stop words from the search query.\n\nStop words are common words like articles, conjunctions, prepositions, or pronouns that have little or no meaning on their own.\nIn English, "the", "a", or "and" are stop words.\n\nOnly use this feature for the languages used in your index.\n',
-                  example: ['ca', 'es'],
-                  'x-categories': ['Languages'],
-                }),
-              queryLanguages: QueryLanguagesSchema.exactOptional(),
-              decompoundQuery: z
-                .preprocess(
-                  ((read) => (val: unknown) => {
-                    const result = read.safeParse(val)
-                    return result.success ? result.data : val
-                  })(z.stringbool()),
-                  DecompoundQuerySchema,
-                )
-                .exactOptional(),
-              enableRules: z
-                .preprocess(
-                  ((read) => (val: unknown) => {
-                    const result = read.safeParse(val)
-                    return result.success ? result.data : val
-                  })(z.stringbool()),
-                  EnableRulesSchema,
-                )
-                .exactOptional(),
-              enablePersonalization: z
-                .preprocess(
-                  ((read) => (val: unknown) => {
-                    const result = read.safeParse(val)
-                    return result.success ? result.data : val
-                  })(z.stringbool()),
-                  EnablePersonalizationSchema,
-                )
-                .exactOptional(),
-              queryType: QueryTypeSchema.exactOptional(),
-              removeWordsIfNoResults: RemoveWordsIfNoResultsSchema.exactOptional(),
-              mode: ModeSchema.exactOptional(),
-              semanticSearch: SemanticSearchSchema.exactOptional(),
-              advancedSyntax: z
-                .preprocess(
-                  ((read) => (val: unknown) => {
-                    const result = read.safeParse(val)
-                    return result.success ? result.data : val
-                  })(z.stringbool()),
-                  AdvancedSyntaxSchema,
-                )
-                .exactOptional(),
-              optionalWords: OptionalWordsSchema.exactOptional(),
-              disableExactOnAttributes: DisableExactOnAttributesSchema.exactOptional(),
-              exactOnSingleWordQuery: ExactOnSingleWordQuerySchema.exactOptional(),
-              alternativesAsExact: IndexSettingsAlternativesAsExactSchema.exactOptional(),
-              advancedSyntaxFeatures: IndexSettingsAdvancedSyntaxFeaturesSchema.exactOptional(),
-              distinct: ((schema) =>
-                z.union([
-                  z.preprocess(
-                    (val) =>
-                      typeof val === 'string' &&
-                      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                        ? Number(val)
-                        : val,
-                    schema,
-                  ),
-                  z.preprocess(
-                    ((read) => (val: unknown) => {
-                      const result = read.safeParse(val)
-                      return result.success ? result.data : val
-                    })(z.stringbool()),
-                    schema,
-                  ),
-                ]))(DistinctSchema).exactOptional(),
-              replaceSynonymsInHighlight: z
-                .preprocess(
-                  ((read) => (val: unknown) => {
-                    const result = read.safeParse(val)
-                    return result.success ? result.data : val
-                  })(z.stringbool()),
-                  ReplaceSynonymsInHighlightSchema,
-                )
-                .exactOptional(),
-              minProximity: z
-                .preprocess(
-                  (val) =>
-                    typeof val === 'string' &&
-                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                      ? Number(val)
-                      : val,
-                  MinProximitySchema,
-                )
-                .exactOptional(),
-              responseFields: ResponseFieldsSchema.exactOptional(),
-              maxValuesPerFacet: z
-                .preprocess(
-                  (val) =>
-                    typeof val === 'string' &&
-                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                      ? Number(val)
-                      : val,
-                  MaxValuesPerFacetSchema,
-                )
-                .exactOptional(),
-              sortFacetValuesBy: SortFacetValuesBySchema.exactOptional(),
-              attributeCriteriaComputedByMinProximity: z
-                .preprocess(
-                  ((read) => (val: unknown) => {
-                    const result = read.safeParse(val)
-                    return result.success ? result.data : val
-                  })(z.stringbool()),
-                  AttributeCriteriaComputedByMinProximitySchema,
-                )
-                .exactOptional(),
-              attributeCriteriaComputedBy: AttributeCriteriaComputedBySchema.exactOptional(),
-              renderingContent: z
+                  naturalLanguages: NaturalLanguagesSchema.exactOptional(),
+                  ruleContexts: RuleContextsSchema.exactOptional(),
+                  personalizationImpact: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'string' &&
+                        /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                        (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                          ? Number(val)
+                          : val,
+                      PersonalizationImpactSchema,
+                    )
+                    .exactOptional(),
+                  userToken: UserTokenSchema.exactOptional(),
+                  getRankingInfo: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      GetRankingInfoSchema,
+                    )
+                    .exactOptional(),
+                  synonyms: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      SynonymsSchema,
+                    )
+                    .exactOptional(),
+                  clickAnalytics: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      ClickAnalyticsSchema,
+                    )
+                    .exactOptional(),
+                  analytics: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      AnalyticsSchema,
+                    )
+                    .exactOptional(),
+                  analyticsTags: AnalyticsTagsSchema.exactOptional().openapi({
+                    'x-categories': ['Analytics'],
+                  }),
+                  percentileComputation: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      PercentileComputationSchema,
+                    )
+                    .exactOptional(),
+                  enableABTest: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      EnableABTestSchema,
+                    )
+                    .exactOptional(),
+                })
+                .openapi({ required: [] }),
+            )
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  if (!['query'].includes(k)) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o })
+                  }
+                }
+                for (const k of Object.keys(o)) {
+                  if (
+                    ![
+                      'similarQuery',
+                      'filters',
+                      'facetFilters',
+                      'optionalFilters',
+                      'numericFilters',
+                      'tagFilters',
+                      'sumOrFiltersScores',
+                      'restrictSearchableAttributes',
+                      'facets',
+                      'facetingAfterDistinct',
+                      'page',
+                      'offset',
+                      'length',
+                      'aroundLatLng',
+                      'aroundLatLngViaIP',
+                      'aroundRadius',
+                      'aroundPrecision',
+                      'minimumAroundRadius',
+                      'insideBoundingBox',
+                      'insidePolygon',
+                      'naturalLanguages',
+                      'ruleContexts',
+                      'personalizationImpact',
+                      'userToken',
+                      'getRankingInfo',
+                      'synonyms',
+                      'clickAnalytics',
+                      'analytics',
+                      'analyticsTags',
+                      'percentileComputation',
+                      'enableABTest',
+                    ].includes(k)
+                  ) {
+                    ctx.issues.push({ code: 'custom', path: [k], input: o })
+                  }
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })()
+            .and(
+              z
                 .strictObject({
-                  facetOrdering: FacetOrderingSchema.exactOptional(),
-                  redirect: RedirectURLSchema.exactOptional(),
-                  widgets: z
+                  attributesToRetrieve: AttributesToRetrieveSchema.exactOptional(),
+                  ranking: z
+                    .array(z.string())
+                    .default([
+                      'typo',
+                      'geo',
+                      'words',
+                      'filters',
+                      'proximity',
+                      'attribute',
+                      'exact',
+                      'custom',
+                    ])
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Determines the order in which Algolia returns your results.\n\nBy default, each entry corresponds to a [ranking criteria](https://www.algolia.com/doc/guides/managing-results/relevance-overview/in-depth/ranking-criteria).\nThe tie-breaking algorithm sequentially applies each criterion in the order they\'re specified.\nIf you configure a replica index for [sorting by an attribute](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/how-to/sort-by-attribute),\nyou put the sorting attribute at the top of the list.\n\n**Modifiers**\n\n- `asc("ATTRIBUTE")`.\n  Sort the index by the values of an attribute, in ascending order.\n- `desc("ATTRIBUTE")`.\n  Sort the index by the values of an attribute, in descending order.\n\nBefore you modify the default setting,\ntest your changes in the dashboard,\nand by [A/B testing](https://www.algolia.com/doc/guides/ab-testing/what-is-ab-testing).\n',
+                      'x-categories': ['Ranking'],
+                    }),
+                  relevancyStrictness: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'string' &&
+                        /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                        (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                          ? Number(val)
+                          : val,
+                      RelevancyStrictnessSchema,
+                    )
+                    .exactOptional(),
+                  attributesToHighlight: AttributesToHighlightSchema.exactOptional(),
+                  attributesToSnippet: AttributesToSnippetSchema.exactOptional(),
+                  highlightPreTag: HighlightPreTagSchema.exactOptional(),
+                  highlightPostTag: HighlightPostTagSchema.exactOptional(),
+                  snippetEllipsisText: SnippetEllipsisTextSchema.exactOptional(),
+                  restrictHighlightAndSnippetArrays: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      RestrictHighlightAndSnippetArraysSchema,
+                    )
+                    .exactOptional(),
+                  hitsPerPage: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'string' &&
+                        /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                        (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                          ? Number(val)
+                          : val,
+                      HitsPerPageSchema,
+                    )
+                    .exactOptional(),
+                  minWordSizefor1Typo: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'string' &&
+                        /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                        (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                          ? Number(val)
+                          : val,
+                      MinWordSizefor1TypoSchema,
+                    )
+                    .exactOptional(),
+                  minWordSizefor2Typos: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'string' &&
+                        /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                        (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                          ? Number(val)
+                          : val,
+                      MinWordSizefor2TyposSchema,
+                    )
+                    .exactOptional(),
+                  typoTolerance: ((schema) =>
+                    z.union([
+                      z.preprocess(
+                        ((read) => (val: unknown) => {
+                          const result = read.safeParse(val)
+                          return result.success ? result.data : val
+                        })(z.stringbool()),
+                        schema,
+                      ),
+                      schema,
+                    ]))(TypoToleranceSchema).exactOptional(),
+                  allowTyposOnNumericTokens: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      AllowTyposOnNumericTokensSchema,
+                    )
+                    .exactOptional(),
+                  disableTypoToleranceOnAttributes:
+                    DisableTypoToleranceOnAttributesSchema.exactOptional(),
+                  ignorePlurals: z
+                    .xor([
+                      z
+                        .array(SupportedLanguageSchema)
+                        .openapi({
+                          description:
+                            'ISO code for languages for which this feature should be active.\nThis overrides languages you set with `queryLanguages`.\n',
+                        }),
+                      BooleanStringSchema,
+                      z
+                        .stringbool()
+                        .default(false)
+                        .openapi({
+                          description:
+                            "If true, `ignorePlurals` is active for all languages included in `queryLanguages`, or for all supported languages, if `queryLanguges` is empty.\nIf false, singulars, plurals, and other declensions won't be considered equivalent.\n",
+                        }),
+                    ])
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Treat singular, plurals, and other forms of declensions as equivalent.\nOnly use this feature for the languages used in your index.\n',
+                      example: ['ca', 'es'],
+                      'x-categories': ['Languages'],
+                    }),
+                  removeStopWords: z
+                    .xor([
+                      z
+                        .array(SupportedLanguageSchema)
+                        .openapi({
+                          description:
+                            'ISO code for languages for which stop words should be removed. This overrides languages you set in `queryLanguges`.',
+                        }),
+                      z
+                        .stringbool()
+                        .default(false)
+                        .openapi({
+                          description:
+                            'If true, stop words are removed for all languages you included in `queryLanguages`, or for all supported languages, if `queryLanguages` is empty.\nIf false, stop words are not removed.\n',
+                        }),
+                    ])
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Removes stop words from the search query.\n\nStop words are common words like articles, conjunctions, prepositions, or pronouns that have little or no meaning on their own.\nIn English, "the", "a", or "and" are stop words.\n\nOnly use this feature for the languages used in your index.\n',
+                      example: ['ca', 'es'],
+                      'x-categories': ['Languages'],
+                    }),
+                  queryLanguages: QueryLanguagesSchema.exactOptional(),
+                  decompoundQuery: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      DecompoundQuerySchema,
+                    )
+                    .exactOptional(),
+                  enableRules: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      EnableRulesSchema,
+                    )
+                    .exactOptional(),
+                  enablePersonalization: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      EnablePersonalizationSchema,
+                    )
+                    .exactOptional(),
+                  queryType: QueryTypeSchema.exactOptional(),
+                  removeWordsIfNoResults: RemoveWordsIfNoResultsSchema.exactOptional(),
+                  mode: ModeSchema.exactOptional(),
+                  semanticSearch: SemanticSearchSchema.exactOptional(),
+                  advancedSyntax: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      AdvancedSyntaxSchema,
+                    )
+                    .exactOptional(),
+                  optionalWords: OptionalWordsSchema.exactOptional(),
+                  disableExactOnAttributes: DisableExactOnAttributesSchema.exactOptional(),
+                  exactOnSingleWordQuery: ExactOnSingleWordQuerySchema.exactOptional(),
+                  alternativesAsExact: IndexSettingsAlternativesAsExactSchema.exactOptional(),
+                  advancedSyntaxFeatures: IndexSettingsAdvancedSyntaxFeaturesSchema.exactOptional(),
+                  distinct: ((schema) =>
+                    z.union([
+                      z.preprocess(
+                        (val) =>
+                          typeof val === 'string' &&
+                          /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                          (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                            ? Number(val)
+                            : val,
+                        schema,
+                      ),
+                      z.preprocess(
+                        ((read) => (val: unknown) => {
+                          const result = read.safeParse(val)
+                          return result.success ? result.data : val
+                        })(z.stringbool()),
+                        schema,
+                      ),
+                    ]))(DistinctSchema).exactOptional(),
+                  replaceSynonymsInHighlight: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      ReplaceSynonymsInHighlightSchema,
+                    )
+                    .exactOptional(),
+                  minProximity: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'string' &&
+                        /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                        (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                          ? Number(val)
+                          : val,
+                      MinProximitySchema,
+                    )
+                    .exactOptional(),
+                  responseFields: ResponseFieldsSchema.exactOptional(),
+                  maxValuesPerFacet: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'string' &&
+                        /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                        (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                          ? Number(val)
+                          : val,
+                      MaxValuesPerFacetSchema,
+                    )
+                    .exactOptional(),
+                  sortFacetValuesBy: SortFacetValuesBySchema.exactOptional(),
+                  attributeCriteriaComputedByMinProximity: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      AttributeCriteriaComputedByMinProximitySchema,
+                    )
+                    .exactOptional(),
+                  attributeCriteriaComputedBy: AttributeCriteriaComputedBySchema.exactOptional(),
+                  renderingContent: z
                     .strictObject({
-                      banners: BannersSchema.exactOptional(),
-                      resultCard: z
+                      facetOrdering: FacetOrderingSchema.exactOptional(),
+                      redirect: RedirectURLSchema.exactOptional(),
+                      widgets: z
                         .strictObject({
-                          enabled: z
-                            .stringbool()
+                          banners: BannersSchema.exactOptional(),
+                          resultCard: z
+                            .strictObject({
+                              enabled: z
+                                .stringbool()
+                                .exactOptional()
+                                .openapi({
+                                  description:
+                                    'Whether to show the Result Card for the current search.',
+                                }),
+                            })
                             .exactOptional()
                             .openapi({
                               description:
-                                'Whether to show the Result Card for the current search.',
+                                'Agent Studio Result Card to display for a given search.',
+                              required: [],
                             }),
                         })
                         .exactOptional()
                         .openapi({
-                          description: 'Agent Studio Result Card to display for a given search.',
+                          description:
+                            'Widgets returned from any rules that are applied to the current search.',
                           required: [],
                         }),
                     })
                     .exactOptional()
                     .openapi({
                       description:
-                        'Widgets returned from any rules that are applied to the current search.',
+                        'Extra data that can be used in the search UI.\n\nYou can use this to control aspects of your search UI, such as the order of facet names and values\nwithout changing your frontend code.\n',
+                      'x-categories': ['Advanced'],
                       required: [],
                     }),
+                  enableReRanking: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      EnableReRankingSchema,
+                    )
+                    .exactOptional(),
+                  reRankingApplyFilter: z
+                    .xor([
+                      ReRankingApplyFilterSchema,
+                      z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+                    ])
+                    .exactOptional(),
                 })
-                .exactOptional()
-                .openapi({
-                  description:
-                    'Extra data that can be used in the search UI.\n\nYou can use this to control aspects of your search UI, such as the order of facet names and values\nwithout changing your frontend code.\n',
-                  'x-categories': ['Advanced'],
-                  required: [],
-                }),
-              enableReRanking: z
-                .preprocess(
-                  ((read) => (val: unknown) => {
-                    const result = read.safeParse(val)
-                    return result.success ? result.data : val
-                  })(z.stringbool()),
-                  EnableReRankingSchema,
-                )
-                .exactOptional(),
-              reRankingApplyFilter: z
-                .xor([
-                  ReRankingApplyFilterSchema,
-                  z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-                ])
-                .exactOptional(),
-            })
-            .openapi({ required: [] }),
-        )
-        .and(
-          z
-            .strictObject({
-              allowReRankingOnPersonalization: z
-                .preprocess(
-                  ((read) => (val: unknown) => {
-                    const result = read.safeParse(val)
-                    return result.success ? result.data : val
-                  })(z.stringbool()),
-                  AllowReRankingOnPersonalizationSchema,
-                )
-                .exactOptional(),
-            })
-            .openapi({ required: [] }),
-        )
-        .openapi({
-          title: 'Search parameters as object',
-          description:
-            'Each parameter value, including the `query` must not be larger than 512 bytes.',
-        })
-        .and(CursorSchema)
-        .openapi({
-          param: {
-            in: 'query',
-            name: 'browseParams',
-            description: 'Browse parameters.',
-            required: true,
-            schema: {
-              allOf: [
-                {
-                  title: 'Search parameters as object',
-                  description:
-                    'Each parameter value, including the `query` must not be larger than 512 bytes.',
-                  allOf: [
-                    {
-                      allOf: [
-                        { $ref: '#/components/schemas/searchParamsQuery' },
-                        {
-                          type: 'object',
-                          additionalProperties: false,
-                          properties: {
-                            similarQuery: { $ref: '#/components/schemas/similarQuery' },
-                            filters: { $ref: '#/components/schemas/filters' },
-                            facetFilters: { $ref: '#/components/schemas/facetFilters' },
-                            optionalFilters: { $ref: '#/components/schemas/optionalFilters' },
-                            numericFilters: { $ref: '#/components/schemas/numericFilters' },
-                            tagFilters: { $ref: '#/components/schemas/tagFilters' },
-                            sumOrFiltersScores: { $ref: '#/components/schemas/sumOrFiltersScores' },
-                            restrictSearchableAttributes: {
-                              $ref: '#/components/schemas/restrictSearchableAttributes',
-                            },
-                            facets: {
-                              type: 'array',
-                              items: { type: 'string' },
-                              description:
-                                'Facets for which to retrieve facet values that match the search criteria and the number of matching facet values.\nTo retrieve all facets, use the wildcard character `*`.\nFor more information, see [facets](https://www.algolia.com/doc/guides/managing-results/refine-results/faceting/#contextual-facet-values-and-counts).\n',
-                              default: [],
-                              example: ['*'],
-                              'x-categories': ['Faceting'],
-                            },
-                            facetingAfterDistinct: {
-                              $ref: '#/components/schemas/facetingAfterDistinct',
-                            },
-                            page: { $ref: '#/components/schemas/page' },
-                            offset: {
-                              type: 'integer',
-                              description: 'Position of the first hit to retrieve.',
-                              'x-categories': ['Pagination'],
-                            },
-                            length: { $ref: '#/components/schemas/length' },
-                            aroundLatLng: { $ref: '#/components/schemas/aroundLatLng' },
-                            aroundLatLngViaIP: { $ref: '#/components/schemas/aroundLatLngViaIP' },
-                            aroundRadius: { $ref: '#/components/schemas/aroundRadius' },
-                            aroundPrecision: {
-                              description:
-                                'Precision of a coordinate-based search in meters to group results with similar distances.\n\nThe Geo ranking criterion considers all matches within the same range of distances to be equal.\n',
-                              oneOf: [
-                                {
-                                  type: 'integer',
-                                  default: 10,
-                                  description:
-                                    'Distance in meters to group results by similar distances.\n\nFor example, if you set `aroundPrecision` to 100, records wihin 100 meters to the central coordinate are considered to have the same distance,\nas are records between 100 and 199 meters.\n',
-                                },
-                                {
-                                  title: 'range objects',
-                                  type: 'array',
-                                  items: {
-                                    title: 'range',
-                                    type: 'object',
-                                    description:
-                                      'Range object with lower and upper values in meters to define custom ranges.',
-                                    properties: {
-                                      from: {
-                                        type: 'integer',
-                                        description:
-                                          'Lower boundary of a range in meters. The Geo ranking criterion considers all records within the range to be equal.',
-                                        example: 20,
-                                      },
-                                      value: {
-                                        type: 'integer',
-                                        description:
-                                          'Upper boundary of a range in meters. The Geo ranking criterion considers all records within the range to be equal.',
-                                      },
-                                    },
-                                  },
-                                },
-                              ],
-                              'x-categories': ['Geo-Search'],
-                            },
-                            minimumAroundRadius: {
-                              $ref: '#/components/schemas/minimumAroundRadius',
-                            },
-                            insideBoundingBox: {
-                              oneOf: [
-                                { type: 'string' },
-                                { type: 'null' },
-                                {
-                                  type: 'array',
-                                  items: {
-                                    type: 'array',
-                                    minItems: 4,
-                                    maxItems: 4,
-                                    items: { type: 'number', format: 'double' },
-                                  },
-                                  description:
-                                    'Coordinates for a rectangular area in which to search.\n\nEach bounding box is defined by the two opposite points of its diagonal, and expressed as latitude and longitude pair:\n`[p1 lat, p1 long, p2 lat, p2 long]`.\nProvide multiple bounding boxes as nested arrays.\nFor more information, see [rectangular area](https://www.algolia.com/doc/guides/managing-results/refine-results/geolocation/#filtering-inside-rectangular-or-polygonal-areas).\n',
-                                  example: [
-                                    [47.3165, 4.9665, 47.3424, 5.0201],
-                                    [40.9234, 2.1185, 38.643, 1.9916],
-                                  ],
-                                  'x-categories': ['Geo-Search'],
-                                },
-                              ],
-                            },
-                            insidePolygon: {
-                              type: 'array',
-                              items: {
+                .openapi({ required: [] }),
+            )
+            .and(
+              z
+                .strictObject({
+                  allowReRankingOnPersonalization: z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      AllowReRankingOnPersonalizationSchema,
+                    )
+                    .exactOptional(),
+                })
+                .openapi({ required: [] }),
+            )
+          return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+            ;((ctx) => {
+              const o = ctx.value
+              if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+              for (const k of Object.keys(o)) {
+                if (
+                  ![
+                    'attributesToRetrieve',
+                    'ranking',
+                    'relevancyStrictness',
+                    'attributesToHighlight',
+                    'attributesToSnippet',
+                    'highlightPreTag',
+                    'highlightPostTag',
+                    'snippetEllipsisText',
+                    'restrictHighlightAndSnippetArrays',
+                    'hitsPerPage',
+                    'minWordSizefor1Typo',
+                    'minWordSizefor2Typos',
+                    'typoTolerance',
+                    'allowTyposOnNumericTokens',
+                    'disableTypoToleranceOnAttributes',
+                    'ignorePlurals',
+                    'removeStopWords',
+                    'queryLanguages',
+                    'decompoundQuery',
+                    'enableRules',
+                    'enablePersonalization',
+                    'queryType',
+                    'removeWordsIfNoResults',
+                    'mode',
+                    'semanticSearch',
+                    'advancedSyntax',
+                    'optionalWords',
+                    'disableExactOnAttributes',
+                    'exactOnSingleWordQuery',
+                    'alternativesAsExact',
+                    'advancedSyntaxFeatures',
+                    'distinct',
+                    'replaceSynonymsInHighlight',
+                    'minProximity',
+                    'responseFields',
+                    'maxValuesPerFacet',
+                    'sortFacetValuesBy',
+                    'attributeCriteriaComputedByMinProximity',
+                    'attributeCriteriaComputedBy',
+                    'renderingContent',
+                    'enableReRanking',
+                    'reRankingApplyFilter',
+                  ].includes(k)
+                ) {
+                  ctx.issues.push({ code: 'custom', path: [k], input: o })
+                }
+              }
+              for (const k of Object.keys(o)) {
+                if (!['allowReRankingOnPersonalization'].includes(k)) {
+                  ctx.issues.push({ code: 'custom', path: [k], input: o })
+                }
+              }
+            })(ctx)
+            return val
+          }, Schema)
+        })()
+          .openapi({
+            title: 'Search parameters as object',
+            description:
+              'Each parameter value, including the `query` must not be larger than 512 bytes.',
+          })
+          .and(CursorSchema)
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (!['cursor'].includes(k)) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })().openapi({
+        param: {
+          in: 'query',
+          name: 'browseParams',
+          description: 'Browse parameters.',
+          required: true,
+          schema: {
+            allOf: [
+              {
+                title: 'Search parameters as object',
+                description:
+                  'Each parameter value, including the `query` must not be larger than 512 bytes.',
+                allOf: [
+                  {
+                    allOf: [
+                      { $ref: '#/components/schemas/searchParamsQuery' },
+                      {
+                        type: 'object',
+                        additionalProperties: false,
+                        properties: {
+                          similarQuery: { $ref: '#/components/schemas/similarQuery' },
+                          filters: { $ref: '#/components/schemas/filters' },
+                          facetFilters: { $ref: '#/components/schemas/facetFilters' },
+                          optionalFilters: { $ref: '#/components/schemas/optionalFilters' },
+                          numericFilters: { $ref: '#/components/schemas/numericFilters' },
+                          tagFilters: { $ref: '#/components/schemas/tagFilters' },
+                          sumOrFiltersScores: { $ref: '#/components/schemas/sumOrFiltersScores' },
+                          restrictSearchableAttributes: {
+                            $ref: '#/components/schemas/restrictSearchableAttributes',
+                          },
+                          facets: {
+                            type: 'array',
+                            items: { type: 'string' },
+                            description:
+                              'Facets for which to retrieve facet values that match the search criteria and the number of matching facet values.\nTo retrieve all facets, use the wildcard character `*`.\nFor more information, see [facets](https://www.algolia.com/doc/guides/managing-results/refine-results/faceting/#contextual-facet-values-and-counts).\n',
+                            default: [],
+                            example: ['*'],
+                            'x-categories': ['Faceting'],
+                          },
+                          facetingAfterDistinct: {
+                            $ref: '#/components/schemas/facetingAfterDistinct',
+                          },
+                          page: { $ref: '#/components/schemas/page' },
+                          offset: {
+                            type: 'integer',
+                            description: 'Position of the first hit to retrieve.',
+                            'x-categories': ['Pagination'],
+                          },
+                          length: { $ref: '#/components/schemas/length' },
+                          aroundLatLng: { $ref: '#/components/schemas/aroundLatLng' },
+                          aroundLatLngViaIP: { $ref: '#/components/schemas/aroundLatLngViaIP' },
+                          aroundRadius: { $ref: '#/components/schemas/aroundRadius' },
+                          aroundPrecision: {
+                            description:
+                              'Precision of a coordinate-based search in meters to group results with similar distances.\n\nThe Geo ranking criterion considers all matches within the same range of distances to be equal.\n',
+                            oneOf: [
+                              {
+                                type: 'integer',
+                                default: 10,
+                                description:
+                                  'Distance in meters to group results by similar distances.\n\nFor example, if you set `aroundPrecision` to 100, records wihin 100 meters to the central coordinate are considered to have the same distance,\nas are records between 100 and 199 meters.\n',
+                              },
+                              {
+                                title: 'range objects',
                                 type: 'array',
-                                minItems: 6,
-                                maxItems: 20000,
-                                items: { type: 'number', format: 'double' },
-                              },
-                              description:
-                                'Coordinates of a polygon in which to search.\n\nPolygons are defined by 3 to 10,000 points. Each point is represented by its latitude and longitude.\nProvide multiple polygons as nested arrays.\nFor more information, see [filtering inside polygons](https://www.algolia.com/doc/guides/managing-results/refine-results/geolocation/#filtering-inside-rectangular-or-polygonal-areas).\nThis parameter is ignored if you also specify `insideBoundingBox`.\n',
-                              example: [
-                                [47.3165, 4.9665, 47.3424, 5.0201, 47.32, 4.9],
-                                [40.9234, 2.1185, 38.643, 1.9916, 39.2587, 2.0104],
-                              ],
-                              'x-categories': ['Geo-Search'],
-                            },
-                            naturalLanguages: { $ref: '#/components/schemas/naturalLanguages' },
-                            ruleContexts: { $ref: '#/components/schemas/ruleContexts' },
-                            personalizationImpact: {
-                              $ref: '#/components/schemas/personalizationImpact',
-                            },
-                            userToken: { $ref: '#/components/schemas/userToken' },
-                            getRankingInfo: { $ref: '#/components/schemas/getRankingInfo' },
-                            synonyms: { $ref: '#/components/schemas/synonyms' },
-                            clickAnalytics: { $ref: '#/components/schemas/clickAnalytics' },
-                            analytics: { $ref: '#/components/schemas/analytics' },
-                            analyticsTags: {
-                              $ref: '#/components/schemas/analyticsTags',
-                              'x-categories': ['Analytics'],
-                            },
-                            percentileComputation: {
-                              $ref: '#/components/schemas/percentileComputation',
-                            },
-                            enableABTest: { $ref: '#/components/schemas/enableABTest' },
-                          },
-                        },
-                      ],
-                    },
-                    {
-                      type: 'object',
-                      additionalProperties: false,
-                      properties: {
-                        attributesToRetrieve: { $ref: '#/components/schemas/attributesToRetrieve' },
-                        ranking: {
-                          type: 'array',
-                          items: { type: 'string' },
-                          description:
-                            'Determines the order in which Algolia returns your results.\n\nBy default, each entry corresponds to a [ranking criteria](https://www.algolia.com/doc/guides/managing-results/relevance-overview/in-depth/ranking-criteria).\nThe tie-breaking algorithm sequentially applies each criterion in the order they\'re specified.\nIf you configure a replica index for [sorting by an attribute](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/how-to/sort-by-attribute),\nyou put the sorting attribute at the top of the list.\n\n**Modifiers**\n\n- `asc("ATTRIBUTE")`.\n  Sort the index by the values of an attribute, in ascending order.\n- `desc("ATTRIBUTE")`.\n  Sort the index by the values of an attribute, in descending order.\n\nBefore you modify the default setting,\ntest your changes in the dashboard,\nand by [A/B testing](https://www.algolia.com/doc/guides/ab-testing/what-is-ab-testing).\n',
-                          default: [
-                            'typo',
-                            'geo',
-                            'words',
-                            'filters',
-                            'proximity',
-                            'attribute',
-                            'exact',
-                            'custom',
-                          ],
-                          'x-categories': ['Ranking'],
-                        },
-                        relevancyStrictness: { $ref: '#/components/schemas/relevancyStrictness' },
-                        attributesToHighlight: {
-                          $ref: '#/components/schemas/attributesToHighlight',
-                        },
-                        attributesToSnippet: { $ref: '#/components/schemas/attributesToSnippet' },
-                        highlightPreTag: { $ref: '#/components/schemas/highlightPreTag' },
-                        highlightPostTag: { $ref: '#/components/schemas/highlightPostTag' },
-                        snippetEllipsisText: { $ref: '#/components/schemas/snippetEllipsisText' },
-                        restrictHighlightAndSnippetArrays: {
-                          $ref: '#/components/schemas/restrictHighlightAndSnippetArrays',
-                        },
-                        hitsPerPage: { $ref: '#/components/schemas/hitsPerPage' },
-                        minWordSizefor1Typo: { $ref: '#/components/schemas/minWordSizefor1Typo' },
-                        minWordSizefor2Typos: { $ref: '#/components/schemas/minWordSizefor2Typos' },
-                        typoTolerance: { $ref: '#/components/schemas/typoTolerance' },
-                        allowTyposOnNumericTokens: {
-                          $ref: '#/components/schemas/allowTyposOnNumericTokens',
-                        },
-                        disableTypoToleranceOnAttributes: {
-                          $ref: '#/components/schemas/disableTypoToleranceOnAttributes',
-                        },
-                        ignorePlurals: {
-                          description:
-                            'Treat singular, plurals, and other forms of declensions as equivalent.\nOnly use this feature for the languages used in your index.\n',
-                          example: ['ca', 'es'],
-                          oneOf: [
-                            {
-                              type: 'array',
-                              description:
-                                'ISO code for languages for which this feature should be active.\nThis overrides languages you set with `queryLanguages`.\n',
-                              items: { $ref: '#/components/schemas/supportedLanguage' },
-                            },
-                            { $ref: '#/components/schemas/booleanString' },
-                            {
-                              type: 'boolean',
-                              description:
-                                "If true, `ignorePlurals` is active for all languages included in `queryLanguages`, or for all supported languages, if `queryLanguges` is empty.\nIf false, singulars, plurals, and other declensions won't be considered equivalent.\n",
-                              default: false,
-                            },
-                          ],
-                          'x-categories': ['Languages'],
-                        },
-                        removeStopWords: {
-                          description:
-                            'Removes stop words from the search query.\n\nStop words are common words like articles, conjunctions, prepositions, or pronouns that have little or no meaning on their own.\nIn English, "the", "a", or "and" are stop words.\n\nOnly use this feature for the languages used in your index.\n',
-                          example: ['ca', 'es'],
-                          oneOf: [
-                            {
-                              type: 'array',
-                              description:
-                                'ISO code for languages for which stop words should be removed. This overrides languages you set in `queryLanguges`.',
-                              items: { $ref: '#/components/schemas/supportedLanguage' },
-                            },
-                            {
-                              type: 'boolean',
-                              default: false,
-                              description:
-                                'If true, stop words are removed for all languages you included in `queryLanguages`, or for all supported languages, if `queryLanguages` is empty.\nIf false, stop words are not removed.\n',
-                            },
-                          ],
-                          'x-categories': ['Languages'],
-                        },
-                        queryLanguages: { $ref: '#/components/schemas/queryLanguages' },
-                        decompoundQuery: { $ref: '#/components/schemas/decompoundQuery' },
-                        enableRules: { $ref: '#/components/schemas/enableRules' },
-                        enablePersonalization: {
-                          $ref: '#/components/schemas/enablePersonalization',
-                        },
-                        queryType: { $ref: '#/components/schemas/queryType' },
-                        removeWordsIfNoResults: {
-                          $ref: '#/components/schemas/removeWordsIfNoResults',
-                        },
-                        mode: { $ref: '#/components/schemas/mode' },
-                        semanticSearch: { $ref: '#/components/schemas/semanticSearch' },
-                        advancedSyntax: { $ref: '#/components/schemas/advancedSyntax' },
-                        optionalWords: { $ref: '#/components/schemas/optionalWords' },
-                        disableExactOnAttributes: {
-                          $ref: '#/components/schemas/disableExactOnAttributes',
-                        },
-                        exactOnSingleWordQuery: {
-                          $ref: '#/components/schemas/exactOnSingleWordQuery',
-                        },
-                        alternativesAsExact: {
-                          $ref: '#/components/schemas/IndexSettings_alternativesAsExact',
-                        },
-                        advancedSyntaxFeatures: {
-                          $ref: '#/components/schemas/IndexSettings_advancedSyntaxFeatures',
-                        },
-                        distinct: { $ref: '#/components/schemas/distinct' },
-                        replaceSynonymsInHighlight: {
-                          $ref: '#/components/schemas/replaceSynonymsInHighlight',
-                        },
-                        minProximity: { $ref: '#/components/schemas/minProximity' },
-                        responseFields: { $ref: '#/components/schemas/responseFields' },
-                        maxValuesPerFacet: { $ref: '#/components/schemas/maxValuesPerFacet' },
-                        sortFacetValuesBy: { $ref: '#/components/schemas/sortFacetValuesBy' },
-                        attributeCriteriaComputedByMinProximity: {
-                          $ref: '#/components/schemas/attributeCriteriaComputedByMinProximity',
-                        },
-                        attributeCriteriaComputedBy: {
-                          $ref: '#/components/schemas/attributeCriteriaComputedBy',
-                        },
-                        renderingContent: {
-                          description:
-                            'Extra data that can be used in the search UI.\n\nYou can use this to control aspects of your search UI, such as the order of facet names and values\nwithout changing your frontend code.\n',
-                          type: 'object',
-                          additionalProperties: false,
-                          properties: {
-                            facetOrdering: { $ref: '#/components/schemas/facetOrdering' },
-                            redirect: { $ref: '#/components/schemas/redirectURL' },
-                            widgets: {
-                              description:
-                                'Widgets returned from any rules that are applied to the current search.',
-                              type: 'object',
-                              additionalProperties: false,
-                              properties: {
-                                banners: { $ref: '#/components/schemas/banners' },
-                                resultCard: {
-                                  description:
-                                    'Agent Studio Result Card to display for a given search.',
+                                items: {
+                                  title: 'range',
                                   type: 'object',
-                                  additionalProperties: false,
+                                  description:
+                                    'Range object with lower and upper values in meters to define custom ranges.',
                                   properties: {
-                                    enabled: {
-                                      type: 'boolean',
+                                    from: {
+                                      type: 'integer',
                                       description:
-                                        'Whether to show the Result Card for the current search.',
+                                        'Lower boundary of a range in meters. The Geo ranking criterion considers all records within the range to be equal.',
+                                      example: 20,
                                     },
+                                    value: {
+                                      type: 'integer',
+                                      description:
+                                        'Upper boundary of a range in meters. The Geo ranking criterion considers all records within the range to be equal.',
+                                    },
+                                  },
+                                },
+                              },
+                            ],
+                            'x-categories': ['Geo-Search'],
+                          },
+                          minimumAroundRadius: { $ref: '#/components/schemas/minimumAroundRadius' },
+                          insideBoundingBox: {
+                            oneOf: [
+                              { type: 'string' },
+                              { type: 'null' },
+                              {
+                                type: 'array',
+                                items: {
+                                  type: 'array',
+                                  minItems: 4,
+                                  maxItems: 4,
+                                  items: { type: 'number', format: 'double' },
+                                },
+                                description:
+                                  'Coordinates for a rectangular area in which to search.\n\nEach bounding box is defined by the two opposite points of its diagonal, and expressed as latitude and longitude pair:\n`[p1 lat, p1 long, p2 lat, p2 long]`.\nProvide multiple bounding boxes as nested arrays.\nFor more information, see [rectangular area](https://www.algolia.com/doc/guides/managing-results/refine-results/geolocation/#filtering-inside-rectangular-or-polygonal-areas).\n',
+                                example: [
+                                  [47.3165, 4.9665, 47.3424, 5.0201],
+                                  [40.9234, 2.1185, 38.643, 1.9916],
+                                ],
+                                'x-categories': ['Geo-Search'],
+                              },
+                            ],
+                          },
+                          insidePolygon: {
+                            type: 'array',
+                            items: {
+                              type: 'array',
+                              minItems: 6,
+                              maxItems: 20000,
+                              items: { type: 'number', format: 'double' },
+                            },
+                            description:
+                              'Coordinates of a polygon in which to search.\n\nPolygons are defined by 3 to 10,000 points. Each point is represented by its latitude and longitude.\nProvide multiple polygons as nested arrays.\nFor more information, see [filtering inside polygons](https://www.algolia.com/doc/guides/managing-results/refine-results/geolocation/#filtering-inside-rectangular-or-polygonal-areas).\nThis parameter is ignored if you also specify `insideBoundingBox`.\n',
+                            example: [
+                              [47.3165, 4.9665, 47.3424, 5.0201, 47.32, 4.9],
+                              [40.9234, 2.1185, 38.643, 1.9916, 39.2587, 2.0104],
+                            ],
+                            'x-categories': ['Geo-Search'],
+                          },
+                          naturalLanguages: { $ref: '#/components/schemas/naturalLanguages' },
+                          ruleContexts: { $ref: '#/components/schemas/ruleContexts' },
+                          personalizationImpact: {
+                            $ref: '#/components/schemas/personalizationImpact',
+                          },
+                          userToken: { $ref: '#/components/schemas/userToken' },
+                          getRankingInfo: { $ref: '#/components/schemas/getRankingInfo' },
+                          synonyms: { $ref: '#/components/schemas/synonyms' },
+                          clickAnalytics: { $ref: '#/components/schemas/clickAnalytics' },
+                          analytics: { $ref: '#/components/schemas/analytics' },
+                          analyticsTags: {
+                            $ref: '#/components/schemas/analyticsTags',
+                            'x-categories': ['Analytics'],
+                          },
+                          percentileComputation: {
+                            $ref: '#/components/schemas/percentileComputation',
+                          },
+                          enableABTest: { $ref: '#/components/schemas/enableABTest' },
+                        },
+                      },
+                    ],
+                  },
+                  {
+                    type: 'object',
+                    additionalProperties: false,
+                    properties: {
+                      attributesToRetrieve: { $ref: '#/components/schemas/attributesToRetrieve' },
+                      ranking: {
+                        type: 'array',
+                        items: { type: 'string' },
+                        description:
+                          'Determines the order in which Algolia returns your results.\n\nBy default, each entry corresponds to a [ranking criteria](https://www.algolia.com/doc/guides/managing-results/relevance-overview/in-depth/ranking-criteria).\nThe tie-breaking algorithm sequentially applies each criterion in the order they\'re specified.\nIf you configure a replica index for [sorting by an attribute](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/how-to/sort-by-attribute),\nyou put the sorting attribute at the top of the list.\n\n**Modifiers**\n\n- `asc("ATTRIBUTE")`.\n  Sort the index by the values of an attribute, in ascending order.\n- `desc("ATTRIBUTE")`.\n  Sort the index by the values of an attribute, in descending order.\n\nBefore you modify the default setting,\ntest your changes in the dashboard,\nand by [A/B testing](https://www.algolia.com/doc/guides/ab-testing/what-is-ab-testing).\n',
+                        default: [
+                          'typo',
+                          'geo',
+                          'words',
+                          'filters',
+                          'proximity',
+                          'attribute',
+                          'exact',
+                          'custom',
+                        ],
+                        'x-categories': ['Ranking'],
+                      },
+                      relevancyStrictness: { $ref: '#/components/schemas/relevancyStrictness' },
+                      attributesToHighlight: { $ref: '#/components/schemas/attributesToHighlight' },
+                      attributesToSnippet: { $ref: '#/components/schemas/attributesToSnippet' },
+                      highlightPreTag: { $ref: '#/components/schemas/highlightPreTag' },
+                      highlightPostTag: { $ref: '#/components/schemas/highlightPostTag' },
+                      snippetEllipsisText: { $ref: '#/components/schemas/snippetEllipsisText' },
+                      restrictHighlightAndSnippetArrays: {
+                        $ref: '#/components/schemas/restrictHighlightAndSnippetArrays',
+                      },
+                      hitsPerPage: { $ref: '#/components/schemas/hitsPerPage' },
+                      minWordSizefor1Typo: { $ref: '#/components/schemas/minWordSizefor1Typo' },
+                      minWordSizefor2Typos: { $ref: '#/components/schemas/minWordSizefor2Typos' },
+                      typoTolerance: { $ref: '#/components/schemas/typoTolerance' },
+                      allowTyposOnNumericTokens: {
+                        $ref: '#/components/schemas/allowTyposOnNumericTokens',
+                      },
+                      disableTypoToleranceOnAttributes: {
+                        $ref: '#/components/schemas/disableTypoToleranceOnAttributes',
+                      },
+                      ignorePlurals: {
+                        description:
+                          'Treat singular, plurals, and other forms of declensions as equivalent.\nOnly use this feature for the languages used in your index.\n',
+                        example: ['ca', 'es'],
+                        oneOf: [
+                          {
+                            type: 'array',
+                            description:
+                              'ISO code for languages for which this feature should be active.\nThis overrides languages you set with `queryLanguages`.\n',
+                            items: { $ref: '#/components/schemas/supportedLanguage' },
+                          },
+                          { $ref: '#/components/schemas/booleanString' },
+                          {
+                            type: 'boolean',
+                            description:
+                              "If true, `ignorePlurals` is active for all languages included in `queryLanguages`, or for all supported languages, if `queryLanguges` is empty.\nIf false, singulars, plurals, and other declensions won't be considered equivalent.\n",
+                            default: false,
+                          },
+                        ],
+                        'x-categories': ['Languages'],
+                      },
+                      removeStopWords: {
+                        description:
+                          'Removes stop words from the search query.\n\nStop words are common words like articles, conjunctions, prepositions, or pronouns that have little or no meaning on their own.\nIn English, "the", "a", or "and" are stop words.\n\nOnly use this feature for the languages used in your index.\n',
+                        example: ['ca', 'es'],
+                        oneOf: [
+                          {
+                            type: 'array',
+                            description:
+                              'ISO code for languages for which stop words should be removed. This overrides languages you set in `queryLanguges`.',
+                            items: { $ref: '#/components/schemas/supportedLanguage' },
+                          },
+                          {
+                            type: 'boolean',
+                            default: false,
+                            description:
+                              'If true, stop words are removed for all languages you included in `queryLanguages`, or for all supported languages, if `queryLanguages` is empty.\nIf false, stop words are not removed.\n',
+                          },
+                        ],
+                        'x-categories': ['Languages'],
+                      },
+                      queryLanguages: { $ref: '#/components/schemas/queryLanguages' },
+                      decompoundQuery: { $ref: '#/components/schemas/decompoundQuery' },
+                      enableRules: { $ref: '#/components/schemas/enableRules' },
+                      enablePersonalization: { $ref: '#/components/schemas/enablePersonalization' },
+                      queryType: { $ref: '#/components/schemas/queryType' },
+                      removeWordsIfNoResults: {
+                        $ref: '#/components/schemas/removeWordsIfNoResults',
+                      },
+                      mode: { $ref: '#/components/schemas/mode' },
+                      semanticSearch: { $ref: '#/components/schemas/semanticSearch' },
+                      advancedSyntax: { $ref: '#/components/schemas/advancedSyntax' },
+                      optionalWords: { $ref: '#/components/schemas/optionalWords' },
+                      disableExactOnAttributes: {
+                        $ref: '#/components/schemas/disableExactOnAttributes',
+                      },
+                      exactOnSingleWordQuery: {
+                        $ref: '#/components/schemas/exactOnSingleWordQuery',
+                      },
+                      alternativesAsExact: {
+                        $ref: '#/components/schemas/IndexSettings_alternativesAsExact',
+                      },
+                      advancedSyntaxFeatures: {
+                        $ref: '#/components/schemas/IndexSettings_advancedSyntaxFeatures',
+                      },
+                      distinct: { $ref: '#/components/schemas/distinct' },
+                      replaceSynonymsInHighlight: {
+                        $ref: '#/components/schemas/replaceSynonymsInHighlight',
+                      },
+                      minProximity: { $ref: '#/components/schemas/minProximity' },
+                      responseFields: { $ref: '#/components/schemas/responseFields' },
+                      maxValuesPerFacet: { $ref: '#/components/schemas/maxValuesPerFacet' },
+                      sortFacetValuesBy: { $ref: '#/components/schemas/sortFacetValuesBy' },
+                      attributeCriteriaComputedByMinProximity: {
+                        $ref: '#/components/schemas/attributeCriteriaComputedByMinProximity',
+                      },
+                      attributeCriteriaComputedBy: {
+                        $ref: '#/components/schemas/attributeCriteriaComputedBy',
+                      },
+                      renderingContent: {
+                        description:
+                          'Extra data that can be used in the search UI.\n\nYou can use this to control aspects of your search UI, such as the order of facet names and values\nwithout changing your frontend code.\n',
+                        type: 'object',
+                        additionalProperties: false,
+                        properties: {
+                          facetOrdering: { $ref: '#/components/schemas/facetOrdering' },
+                          redirect: { $ref: '#/components/schemas/redirectURL' },
+                          widgets: {
+                            description:
+                              'Widgets returned from any rules that are applied to the current search.',
+                            type: 'object',
+                            additionalProperties: false,
+                            properties: {
+                              banners: { $ref: '#/components/schemas/banners' },
+                              resultCard: {
+                                description:
+                                  'Agent Studio Result Card to display for a given search.',
+                                type: 'object',
+                                additionalProperties: false,
+                                properties: {
+                                  enabled: {
+                                    type: 'boolean',
+                                    description:
+                                      'Whether to show the Result Card for the current search.',
                                   },
                                 },
                               },
                             },
                           },
-                          'x-categories': ['Advanced'],
                         },
-                        enableReRanking: { $ref: '#/components/schemas/enableReRanking' },
-                        reRankingApplyFilter: {
-                          oneOf: [
-                            { $ref: '#/components/schemas/reRankingApplyFilter' },
-                            { type: 'null' },
-                          ],
-                        },
+                        'x-categories': ['Advanced'],
+                      },
+                      enableReRanking: { $ref: '#/components/schemas/enableReRanking' },
+                      reRankingApplyFilter: {
+                        oneOf: [
+                          { $ref: '#/components/schemas/reRankingApplyFilter' },
+                          { type: 'null' },
+                        ],
                       },
                     },
-                    {
-                      type: 'object',
-                      additionalProperties: false,
-                      properties: {
-                        allowReRankingOnPersonalization: {
-                          $ref: '#/components/schemas/allowReRankingOnPersonalization',
-                        },
+                  },
+                  {
+                    type: 'object',
+                    additionalProperties: false,
+                    properties: {
+                      allowReRankingOnPersonalization: {
+                        $ref: '#/components/schemas/allowReRankingOnPersonalization',
                       },
                     },
-                  ],
-                },
-                { $ref: '#/components/schemas/cursor' },
-              ],
-            },
+                  },
+                ],
+              },
+              { $ref: '#/components/schemas/cursor' },
+            ],
           },
-        }),
+        },
+      }),
     }),
   },
   responses: { 204: { description: 'No content.' }, 400: IndexNotFoundResponse },
@@ -8043,111 +8573,62 @@ export const getGenerateSecuredApiKeyRoute = createRoute({
             }),
           restrictions: z
             .strictObject({
-              searchParams: SearchParamsQuerySchema.and(
-                z
-                  .strictObject({
-                    similarQuery: SimilarQuerySchema.exactOptional(),
-                    filters: FiltersSchema.exactOptional(),
-                    facetFilters: FacetFiltersSchema.exactOptional(),
-                    optionalFilters: OptionalFiltersSchema.exactOptional(),
-                    numericFilters: NumericFiltersSchema.exactOptional(),
-                    tagFilters: TagFiltersSchema.exactOptional(),
-                    sumOrFiltersScores: z
-                      .preprocess(
-                        ((read) => (val: unknown) => {
-                          const result = read.safeParse(val)
-                          return result.success ? result.data : val
-                        })(z.stringbool()),
-                        SumOrFiltersScoresSchema,
-                      )
-                      .exactOptional(),
-                    restrictSearchableAttributes:
-                      RestrictSearchableAttributesSchema.exactOptional(),
-                    facets: z
-                      .preprocess(
-                        (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                        z.array(z.string()),
-                      )
-                      .default([])
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Facets for which to retrieve facet values that match the search criteria and the number of matching facet values.\nTo retrieve all facets, use the wildcard character `*`.\nFor more information, see [facets](https://www.algolia.com/doc/guides/managing-results/refine-results/faceting/#contextual-facet-values-and-counts).\n',
-                        example: ['*'],
-                        'x-categories': ['Faceting'],
-                      }),
-                    facetingAfterDistinct: z
-                      .preprocess(
-                        ((read) => (val: unknown) => {
-                          const result = read.safeParse(val)
-                          return result.success ? result.data : val
-                        })(z.stringbool()),
-                        FacetingAfterDistinctSchema,
-                      )
-                      .exactOptional(),
-                    page: z
-                      .preprocess(
-                        (val) =>
-                          typeof val === 'string' &&
-                          /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                          (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                            ? Number(val)
-                            : val,
-                        PageSchema,
-                      )
-                      .exactOptional(),
-                    offset: z
-                      .preprocess(
-                        (val) =>
-                          typeof val === 'string' &&
-                          /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                          (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                            ? Number(val)
-                            : val,
-                        z.int(),
-                      )
-                      .exactOptional()
-                      .openapi({
-                        description: 'Position of the first hit to retrieve.',
-                        'x-categories': ['Pagination'],
-                      }),
-                    length: z
-                      .preprocess(
-                        (val) =>
-                          typeof val === 'string' &&
-                          /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                          (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                            ? Number(val)
-                            : val,
-                        LengthSchema,
-                      )
-                      .exactOptional(),
-                    aroundLatLng: AroundLatLngSchema.exactOptional(),
-                    aroundLatLngViaIP: z
-                      .preprocess(
-                        ((read) => (val: unknown) => {
-                          const result = read.safeParse(val)
-                          return result.success ? result.data : val
-                        })(z.stringbool()),
-                        AroundLatLngViaIPSchema,
-                      )
-                      .exactOptional(),
-                    aroundRadius: ((schema) =>
-                      z.union([
-                        z.preprocess(
-                          (val) =>
-                            typeof val === 'string' &&
-                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                              ? Number(val)
-                              : val,
-                          schema,
-                        ),
-                        schema,
-                      ]))(AroundRadiusSchema).exactOptional(),
-                    aroundPrecision: z
-                      .xor([
-                        z
+              searchParams: (() => {
+                const Schema = (() => {
+                  const Schema = SearchParamsQuerySchema.and(
+                    z
+                      .strictObject({
+                        similarQuery: SimilarQuerySchema.exactOptional(),
+                        filters: FiltersSchema.exactOptional(),
+                        facetFilters: FacetFiltersSchema.exactOptional(),
+                        optionalFilters: OptionalFiltersSchema.exactOptional(),
+                        numericFilters: NumericFiltersSchema.exactOptional(),
+                        tagFilters: TagFiltersSchema.exactOptional(),
+                        sumOrFiltersScores: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            SumOrFiltersScoresSchema,
+                          )
+                          .exactOptional(),
+                        restrictSearchableAttributes:
+                          RestrictSearchableAttributesSchema.exactOptional(),
+                        facets: z
+                          .preprocess(
+                            (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                            z.array(z.string()),
+                          )
+                          .default([])
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'Facets for which to retrieve facet values that match the search criteria and the number of matching facet values.\nTo retrieve all facets, use the wildcard character `*`.\nFor more information, see [facets](https://www.algolia.com/doc/guides/managing-results/refine-results/faceting/#contextual-facet-values-and-counts).\n',
+                            example: ['*'],
+                            'x-categories': ['Faceting'],
+                          }),
+                        facetingAfterDistinct: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            FacetingAfterDistinctSchema,
+                          )
+                          .exactOptional(),
+                        page: z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            PageSchema,
+                          )
+                          .exactOptional(),
+                        offset: z
                           .preprocess(
                             (val) =>
                               typeof val === 'string' &&
@@ -8157,81 +8638,172 @@ export const getGenerateSecuredApiKeyRoute = createRoute({
                                 : val,
                             z.int(),
                           )
-                          .default(10)
+                          .exactOptional()
+                          .openapi({
+                            description: 'Position of the first hit to retrieve.',
+                            'x-categories': ['Pagination'],
+                          }),
+                        length: z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            LengthSchema,
+                          )
+                          .exactOptional(),
+                        aroundLatLng: AroundLatLngSchema.exactOptional(),
+                        aroundLatLngViaIP: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            AroundLatLngViaIPSchema,
+                          )
+                          .exactOptional(),
+                        aroundRadius: ((schema) =>
+                          z.union([
+                            z.preprocess(
+                              (val) =>
+                                typeof val === 'string' &&
+                                /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                                (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                  ? Number(val)
+                                  : val,
+                              schema,
+                            ),
+                            schema,
+                          ]))(AroundRadiusSchema).exactOptional(),
+                        aroundPrecision: z
+                          .xor([
+                            z
+                              .preprocess(
+                                (val) =>
+                                  typeof val === 'string' &&
+                                  /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                                  (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                    ? Number(val)
+                                    : val,
+                                z.int(),
+                              )
+                              .default(10)
+                              .openapi({
+                                description:
+                                  'Distance in meters to group results by similar distances.\n\nFor example, if you set `aroundPrecision` to 100, records wihin 100 meters to the central coordinate are considered to have the same distance,\nas are records between 100 and 199 meters.\n',
+                              }),
+                            z
+                              .preprocess(
+                                (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                                z.array(
+                                  z
+                                    .object({
+                                      from: z
+                                        .preprocess(
+                                          (val) =>
+                                            typeof val === 'string' &&
+                                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                                            (!/^-?\d+$/.test(val) ||
+                                              Number.isSafeInteger(Number(val)))
+                                              ? Number(val)
+                                              : val,
+                                          z.int(),
+                                        )
+                                        .exactOptional()
+                                        .openapi({
+                                          description:
+                                            'Lower boundary of a range in meters. The Geo ranking criterion considers all records within the range to be equal.',
+                                          example: 20,
+                                        }),
+                                      value: z
+                                        .preprocess(
+                                          (val) =>
+                                            typeof val === 'string' &&
+                                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                                            (!/^-?\d+$/.test(val) ||
+                                              Number.isSafeInteger(Number(val)))
+                                              ? Number(val)
+                                              : val,
+                                          z.int(),
+                                        )
+                                        .exactOptional()
+                                        .openapi({
+                                          description:
+                                            'Upper boundary of a range in meters. The Geo ranking criterion considers all records within the range to be equal.',
+                                        }),
+                                    })
+                                    .openapi({
+                                      title: 'range',
+                                      description:
+                                        'Range object with lower and upper values in meters to define custom ranges.',
+                                      required: [],
+                                    }),
+                                ),
+                              )
+                              .openapi({ title: 'range objects' }),
+                          ])
+                          .exactOptional()
                           .openapi({
                             description:
-                              'Distance in meters to group results by similar distances.\n\nFor example, if you set `aroundPrecision` to 100, records wihin 100 meters to the central coordinate are considered to have the same distance,\nas are records between 100 and 199 meters.\n',
+                              'Precision of a coordinate-based search in meters to group results with similar distances.\n\nThe Geo ranking criterion considers all matches within the same range of distances to be equal.\n',
+                            'x-categories': ['Geo-Search'],
                           }),
-                        z
+                        minimumAroundRadius: z
                           .preprocess(
-                            (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                            z.array(
-                              z
-                                .object({
-                                  from: z
-                                    .preprocess(
-                                      (val) =>
-                                        typeof val === 'string' &&
-                                        /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                                        (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                                          ? Number(val)
-                                          : val,
-                                      z.int(),
-                                    )
-                                    .exactOptional()
-                                    .openapi({
-                                      description:
-                                        'Lower boundary of a range in meters. The Geo ranking criterion considers all records within the range to be equal.',
-                                      example: 20,
-                                    }),
-                                  value: z
-                                    .preprocess(
-                                      (val) =>
-                                        typeof val === 'string' &&
-                                        /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                                        (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                                          ? Number(val)
-                                          : val,
-                                      z.int(),
-                                    )
-                                    .exactOptional()
-                                    .openapi({
-                                      description:
-                                        'Upper boundary of a range in meters. The Geo ranking criterion considers all records within the range to be equal.',
-                                    }),
-                                })
-                                .openapi({
-                                  title: 'range',
-                                  description:
-                                    'Range object with lower and upper values in meters to define custom ranges.',
-                                  required: [],
-                                }),
-                            ),
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            MinimumAroundRadiusSchema,
                           )
-                          .openapi({ title: 'range objects' }),
-                      ])
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Precision of a coordinate-based search in meters to group results with similar distances.\n\nThe Geo ranking criterion considers all matches within the same range of distances to be equal.\n',
-                        'x-categories': ['Geo-Search'],
-                      }),
-                    minimumAroundRadius: z
-                      .preprocess(
-                        (val) =>
-                          typeof val === 'string' &&
-                          /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                          (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                            ? Number(val)
-                            : val,
-                        MinimumAroundRadiusSchema,
-                      )
-                      .exactOptional(),
-                    insideBoundingBox: z
-                      .xor([
-                        z.string(),
-                        z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-                        z
+                          .exactOptional(),
+                        insideBoundingBox: z
+                          .xor([
+                            z.string(),
+                            z.preprocess(
+                              (val) => (val === 'null' ? null : val),
+                              z.null().nullable(),
+                            ),
+                            z
+                              .preprocess(
+                                (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                                z.array(
+                                  z.preprocess(
+                                    (val) =>
+                                      val === undefined || Array.isArray(val) ? val : [val],
+                                    z
+                                      .array(
+                                        z.preprocess(
+                                          (val) =>
+                                            typeof val === 'string' &&
+                                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                                            (!/^-?\d+$/.test(val) ||
+                                              Number.isSafeInteger(Number(val)))
+                                              ? Number(val)
+                                              : val,
+                                          z.float64(),
+                                        ),
+                                      )
+                                      .length(4),
+                                  ),
+                                ),
+                              )
+                              .openapi({
+                                description:
+                                  'Coordinates for a rectangular area in which to search.\n\nEach bounding box is defined by the two opposite points of its diagonal, and expressed as latitude and longitude pair:\n`[p1 lat, p1 long, p2 lat, p2 long]`.\nProvide multiple bounding boxes as nested arrays.\nFor more information, see [rectangular area](https://www.algolia.com/doc/guides/managing-results/refine-results/geolocation/#filtering-inside-rectangular-or-polygonal-areas).\n',
+                                example: [
+                                  [47.3165, 4.9665, 47.3424, 5.0201],
+                                  [40.9234, 2.1185, 38.643, 1.9916],
+                                ],
+                                'x-categories': ['Geo-Search'],
+                              }),
+                          ])
+                          .exactOptional(),
+                        insidePolygon: z
                           .preprocess(
                             (val) => (val === undefined || Array.isArray(val) ? val : [val]),
                             z.array(
@@ -8249,485 +8821,570 @@ export const getGenerateSecuredApiKeyRoute = createRoute({
                                       z.float64(),
                                     ),
                                   )
-                                  .length(4),
+                                  .min(6)
+                                  .max(20000),
                               ),
                             ),
                           )
+                          .exactOptional()
                           .openapi({
                             description:
-                              'Coordinates for a rectangular area in which to search.\n\nEach bounding box is defined by the two opposite points of its diagonal, and expressed as latitude and longitude pair:\n`[p1 lat, p1 long, p2 lat, p2 long]`.\nProvide multiple bounding boxes as nested arrays.\nFor more information, see [rectangular area](https://www.algolia.com/doc/guides/managing-results/refine-results/geolocation/#filtering-inside-rectangular-or-polygonal-areas).\n',
+                              'Coordinates of a polygon in which to search.\n\nPolygons are defined by 3 to 10,000 points. Each point is represented by its latitude and longitude.\nProvide multiple polygons as nested arrays.\nFor more information, see [filtering inside polygons](https://www.algolia.com/doc/guides/managing-results/refine-results/geolocation/#filtering-inside-rectangular-or-polygonal-areas).\nThis parameter is ignored if you also specify `insideBoundingBox`.\n',
                             example: [
-                              [47.3165, 4.9665, 47.3424, 5.0201],
-                              [40.9234, 2.1185, 38.643, 1.9916],
+                              [47.3165, 4.9665, 47.3424, 5.0201, 47.32, 4.9],
+                              [40.9234, 2.1185, 38.643, 1.9916, 39.2587, 2.0104],
                             ],
                             'x-categories': ['Geo-Search'],
                           }),
-                      ])
-                      .exactOptional(),
-                    insidePolygon: z
-                      .preprocess(
-                        (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                        z.array(
-                          z.preprocess(
-                            (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                            z
-                              .array(
-                                z.preprocess(
-                                  (val) =>
-                                    typeof val === 'string' &&
-                                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                                      ? Number(val)
-                                      : val,
-                                  z.float64(),
-                                ),
-                              )
-                              .min(6)
-                              .max(20000),
-                          ),
-                        ),
-                      )
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Coordinates of a polygon in which to search.\n\nPolygons are defined by 3 to 10,000 points. Each point is represented by its latitude and longitude.\nProvide multiple polygons as nested arrays.\nFor more information, see [filtering inside polygons](https://www.algolia.com/doc/guides/managing-results/refine-results/geolocation/#filtering-inside-rectangular-or-polygonal-areas).\nThis parameter is ignored if you also specify `insideBoundingBox`.\n',
-                        example: [
-                          [47.3165, 4.9665, 47.3424, 5.0201, 47.32, 4.9],
-                          [40.9234, 2.1185, 38.643, 1.9916, 39.2587, 2.0104],
-                        ],
-                        'x-categories': ['Geo-Search'],
-                      }),
-                    naturalLanguages: NaturalLanguagesSchema.exactOptional(),
-                    ruleContexts: RuleContextsSchema.exactOptional(),
-                    personalizationImpact: z
-                      .preprocess(
-                        (val) =>
-                          typeof val === 'string' &&
-                          /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                          (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                            ? Number(val)
-                            : val,
-                        PersonalizationImpactSchema,
-                      )
-                      .exactOptional(),
-                    userToken: UserTokenSchema.exactOptional(),
-                    getRankingInfo: z
-                      .preprocess(
-                        ((read) => (val: unknown) => {
-                          const result = read.safeParse(val)
-                          return result.success ? result.data : val
-                        })(z.stringbool()),
-                        GetRankingInfoSchema,
-                      )
-                      .exactOptional(),
-                    synonyms: z
-                      .preprocess(
-                        ((read) => (val: unknown) => {
-                          const result = read.safeParse(val)
-                          return result.success ? result.data : val
-                        })(z.stringbool()),
-                        SynonymsSchema,
-                      )
-                      .exactOptional(),
-                    clickAnalytics: z
-                      .preprocess(
-                        ((read) => (val: unknown) => {
-                          const result = read.safeParse(val)
-                          return result.success ? result.data : val
-                        })(z.stringbool()),
-                        ClickAnalyticsSchema,
-                      )
-                      .exactOptional(),
-                    analytics: z
-                      .preprocess(
-                        ((read) => (val: unknown) => {
-                          const result = read.safeParse(val)
-                          return result.success ? result.data : val
-                        })(z.stringbool()),
-                        AnalyticsSchema,
-                      )
-                      .exactOptional(),
-                    analyticsTags: AnalyticsTagsSchema.exactOptional().openapi({
-                      'x-categories': ['Analytics'],
-                    }),
-                    percentileComputation: z
-                      .preprocess(
-                        ((read) => (val: unknown) => {
-                          const result = read.safeParse(val)
-                          return result.success ? result.data : val
-                        })(z.stringbool()),
-                        PercentileComputationSchema,
-                      )
-                      .exactOptional(),
-                    enableABTest: z
-                      .preprocess(
-                        ((read) => (val: unknown) => {
-                          const result = read.safeParse(val)
-                          return result.success ? result.data : val
-                        })(z.stringbool()),
-                        EnableABTestSchema,
-                      )
-                      .exactOptional(),
-                  })
-                  .openapi({ required: [] }),
-              )
-                .and(
-                  z
-                    .strictObject({
-                      attributesToRetrieve: AttributesToRetrieveSchema.exactOptional(),
-                      ranking: z
-                        .preprocess(
-                          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                          z.array(z.string()),
-                        )
-                        .default([
-                          'typo',
-                          'geo',
-                          'words',
-                          'filters',
-                          'proximity',
-                          'attribute',
-                          'exact',
-                          'custom',
-                        ])
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'Determines the order in which Algolia returns your results.\n\nBy default, each entry corresponds to a [ranking criteria](https://www.algolia.com/doc/guides/managing-results/relevance-overview/in-depth/ranking-criteria).\nThe tie-breaking algorithm sequentially applies each criterion in the order they\'re specified.\nIf you configure a replica index for [sorting by an attribute](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/how-to/sort-by-attribute),\nyou put the sorting attribute at the top of the list.\n\n**Modifiers**\n\n- `asc("ATTRIBUTE")`.\n  Sort the index by the values of an attribute, in ascending order.\n- `desc("ATTRIBUTE")`.\n  Sort the index by the values of an attribute, in descending order.\n\nBefore you modify the default setting,\ntest your changes in the dashboard,\nand by [A/B testing](https://www.algolia.com/doc/guides/ab-testing/what-is-ab-testing).\n',
-                          'x-categories': ['Ranking'],
-                        }),
-                      relevancyStrictness: z
-                        .preprocess(
-                          (val) =>
-                            typeof val === 'string' &&
-                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                              ? Number(val)
-                              : val,
-                          RelevancyStrictnessSchema,
-                        )
-                        .exactOptional(),
-                      attributesToHighlight: AttributesToHighlightSchema.exactOptional(),
-                      attributesToSnippet: AttributesToSnippetSchema.exactOptional(),
-                      highlightPreTag: HighlightPreTagSchema.exactOptional(),
-                      highlightPostTag: HighlightPostTagSchema.exactOptional(),
-                      snippetEllipsisText: SnippetEllipsisTextSchema.exactOptional(),
-                      restrictHighlightAndSnippetArrays: z
-                        .preprocess(
-                          ((read) => (val: unknown) => {
-                            const result = read.safeParse(val)
-                            return result.success ? result.data : val
-                          })(z.stringbool()),
-                          RestrictHighlightAndSnippetArraysSchema,
-                        )
-                        .exactOptional(),
-                      hitsPerPage: z
-                        .preprocess(
-                          (val) =>
-                            typeof val === 'string' &&
-                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                              ? Number(val)
-                              : val,
-                          HitsPerPageSchema,
-                        )
-                        .exactOptional(),
-                      minWordSizefor1Typo: z
-                        .preprocess(
-                          (val) =>
-                            typeof val === 'string' &&
-                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                              ? Number(val)
-                              : val,
-                          MinWordSizefor1TypoSchema,
-                        )
-                        .exactOptional(),
-                      minWordSizefor2Typos: z
-                        .preprocess(
-                          (val) =>
-                            typeof val === 'string' &&
-                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                              ? Number(val)
-                              : val,
-                          MinWordSizefor2TyposSchema,
-                        )
-                        .exactOptional(),
-                      typoTolerance: ((schema) =>
-                        z.union([
-                          z.preprocess(
-                            ((read) => (val: unknown) => {
-                              const result = read.safeParse(val)
-                              return result.success ? result.data : val
-                            })(z.stringbool()),
-                            schema,
-                          ),
-                          schema,
-                        ]))(TypoToleranceSchema).exactOptional(),
-                      allowTyposOnNumericTokens: z
-                        .preprocess(
-                          ((read) => (val: unknown) => {
-                            const result = read.safeParse(val)
-                            return result.success ? result.data : val
-                          })(z.stringbool()),
-                          AllowTyposOnNumericTokensSchema,
-                        )
-                        .exactOptional(),
-                      disableTypoToleranceOnAttributes:
-                        DisableTypoToleranceOnAttributesSchema.exactOptional(),
-                      ignorePlurals: z
-                        .xor([
-                          z
-                            .preprocess(
-                              (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                              z.array(SupportedLanguageSchema),
-                            )
-                            .openapi({
-                              description:
-                                'ISO code for languages for which this feature should be active.\nThis overrides languages you set with `queryLanguages`.\n',
-                            }),
-                          BooleanStringSchema,
-                          z
-                            .preprocess(
-                              ((read) => (val: unknown) => {
-                                const result = read.safeParse(val)
-                                return result.success ? result.data : val
-                              })(z.stringbool()),
-                              z.boolean(),
-                            )
-                            .default(false)
-                            .openapi({
-                              description:
-                                "If true, `ignorePlurals` is active for all languages included in `queryLanguages`, or for all supported languages, if `queryLanguges` is empty.\nIf false, singulars, plurals, and other declensions won't be considered equivalent.\n",
-                            }),
-                        ])
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'Treat singular, plurals, and other forms of declensions as equivalent.\nOnly use this feature for the languages used in your index.\n',
-                          example: ['ca', 'es'],
-                          'x-categories': ['Languages'],
-                        }),
-                      removeStopWords: z
-                        .xor([
-                          z
-                            .preprocess(
-                              (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                              z.array(SupportedLanguageSchema),
-                            )
-                            .openapi({
-                              description:
-                                'ISO code for languages for which stop words should be removed. This overrides languages you set in `queryLanguges`.',
-                            }),
-                          z
-                            .preprocess(
-                              ((read) => (val: unknown) => {
-                                const result = read.safeParse(val)
-                                return result.success ? result.data : val
-                              })(z.stringbool()),
-                              z.boolean(),
-                            )
-                            .default(false)
-                            .openapi({
-                              description:
-                                'If true, stop words are removed for all languages you included in `queryLanguages`, or for all supported languages, if `queryLanguages` is empty.\nIf false, stop words are not removed.\n',
-                            }),
-                        ])
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'Removes stop words from the search query.\n\nStop words are common words like articles, conjunctions, prepositions, or pronouns that have little or no meaning on their own.\nIn English, "the", "a", or "and" are stop words.\n\nOnly use this feature for the languages used in your index.\n',
-                          example: ['ca', 'es'],
-                          'x-categories': ['Languages'],
-                        }),
-                      queryLanguages: QueryLanguagesSchema.exactOptional(),
-                      decompoundQuery: z
-                        .preprocess(
-                          ((read) => (val: unknown) => {
-                            const result = read.safeParse(val)
-                            return result.success ? result.data : val
-                          })(z.stringbool()),
-                          DecompoundQuerySchema,
-                        )
-                        .exactOptional(),
-                      enableRules: z
-                        .preprocess(
-                          ((read) => (val: unknown) => {
-                            const result = read.safeParse(val)
-                            return result.success ? result.data : val
-                          })(z.stringbool()),
-                          EnableRulesSchema,
-                        )
-                        .exactOptional(),
-                      enablePersonalization: z
-                        .preprocess(
-                          ((read) => (val: unknown) => {
-                            const result = read.safeParse(val)
-                            return result.success ? result.data : val
-                          })(z.stringbool()),
-                          EnablePersonalizationSchema,
-                        )
-                        .exactOptional(),
-                      queryType: QueryTypeSchema.exactOptional(),
-                      removeWordsIfNoResults: RemoveWordsIfNoResultsSchema.exactOptional(),
-                      mode: ModeSchema.exactOptional(),
-                      semanticSearch: SemanticSearchSchema.exactOptional(),
-                      advancedSyntax: z
-                        .preprocess(
-                          ((read) => (val: unknown) => {
-                            const result = read.safeParse(val)
-                            return result.success ? result.data : val
-                          })(z.stringbool()),
-                          AdvancedSyntaxSchema,
-                        )
-                        .exactOptional(),
-                      optionalWords: OptionalWordsSchema.exactOptional(),
-                      disableExactOnAttributes: DisableExactOnAttributesSchema.exactOptional(),
-                      exactOnSingleWordQuery: ExactOnSingleWordQuerySchema.exactOptional(),
-                      alternativesAsExact: IndexSettingsAlternativesAsExactSchema.exactOptional(),
-                      advancedSyntaxFeatures:
-                        IndexSettingsAdvancedSyntaxFeaturesSchema.exactOptional(),
-                      distinct: ((schema) =>
-                        z.union([
-                          z.preprocess(
+                        naturalLanguages: NaturalLanguagesSchema.exactOptional(),
+                        ruleContexts: RuleContextsSchema.exactOptional(),
+                        personalizationImpact: z
+                          .preprocess(
                             (val) =>
                               typeof val === 'string' &&
                               /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
                               (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
                                 ? Number(val)
                                 : val,
-                            schema,
-                          ),
-                          z.preprocess(
+                            PersonalizationImpactSchema,
+                          )
+                          .exactOptional(),
+                        userToken: UserTokenSchema.exactOptional(),
+                        getRankingInfo: z
+                          .preprocess(
                             ((read) => (val: unknown) => {
                               const result = read.safeParse(val)
                               return result.success ? result.data : val
                             })(z.stringbool()),
-                            schema,
-                          ),
-                        ]))(DistinctSchema).exactOptional(),
-                      replaceSynonymsInHighlight: z
-                        .preprocess(
-                          ((read) => (val: unknown) => {
-                            const result = read.safeParse(val)
-                            return result.success ? result.data : val
-                          })(z.stringbool()),
-                          ReplaceSynonymsInHighlightSchema,
-                        )
-                        .exactOptional(),
-                      minProximity: z
-                        .preprocess(
-                          (val) =>
-                            typeof val === 'string' &&
-                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                              ? Number(val)
-                              : val,
-                          MinProximitySchema,
-                        )
-                        .exactOptional(),
-                      responseFields: ResponseFieldsSchema.exactOptional(),
-                      maxValuesPerFacet: z
-                        .preprocess(
-                          (val) =>
-                            typeof val === 'string' &&
-                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                              ? Number(val)
-                              : val,
-                          MaxValuesPerFacetSchema,
-                        )
-                        .exactOptional(),
-                      sortFacetValuesBy: SortFacetValuesBySchema.exactOptional(),
-                      attributeCriteriaComputedByMinProximity: z
-                        .preprocess(
-                          ((read) => (val: unknown) => {
-                            const result = read.safeParse(val)
-                            return result.success ? result.data : val
-                          })(z.stringbool()),
-                          AttributeCriteriaComputedByMinProximitySchema,
-                        )
-                        .exactOptional(),
-                      attributeCriteriaComputedBy:
-                        AttributeCriteriaComputedBySchema.exactOptional(),
-                      renderingContent: z
-                        .strictObject({
-                          facetOrdering: FacetOrderingSchema.exactOptional(),
-                          redirect: RedirectURLSchema.exactOptional(),
-                          widgets: z
-                            .strictObject({
-                              banners: BannersSchema.exactOptional(),
-                              resultCard: z
-                                .strictObject({
-                                  enabled: z
-                                    .preprocess(
-                                      ((read) => (val: unknown) => {
-                                        const result = read.safeParse(val)
-                                        return result.success ? result.data : val
-                                      })(z.stringbool()),
-                                      z.boolean(),
-                                    )
-                                    .exactOptional()
-                                    .openapi({
-                                      description:
-                                        'Whether to show the Result Card for the current search.',
-                                    }),
-                                })
-                                .exactOptional()
-                                .openapi({
-                                  description:
-                                    'Agent Studio Result Card to display for a given search.',
-                                  required: [],
-                                }),
-                            })
-                            .exactOptional()
-                            .openapi({
-                              description:
-                                'Widgets returned from any rules that are applied to the current search.',
-                              required: [],
-                            }),
-                        })
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'Extra data that can be used in the search UI.\n\nYou can use this to control aspects of your search UI, such as the order of facet names and values\nwithout changing your frontend code.\n',
-                          'x-categories': ['Advanced'],
-                          required: [],
+                            GetRankingInfoSchema,
+                          )
+                          .exactOptional(),
+                        synonyms: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            SynonymsSchema,
+                          )
+                          .exactOptional(),
+                        clickAnalytics: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            ClickAnalyticsSchema,
+                          )
+                          .exactOptional(),
+                        analytics: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            AnalyticsSchema,
+                          )
+                          .exactOptional(),
+                        analyticsTags: AnalyticsTagsSchema.exactOptional().openapi({
+                          'x-categories': ['Analytics'],
                         }),
-                      enableReRanking: z
-                        .preprocess(
-                          ((read) => (val: unknown) => {
-                            const result = read.safeParse(val)
-                            return result.success ? result.data : val
-                          })(z.stringbool()),
-                          EnableReRankingSchema,
-                        )
-                        .exactOptional(),
-                      reRankingApplyFilter: z
-                        .xor([
-                          ReRankingApplyFilterSchema,
-                          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-                        ])
-                        .exactOptional(),
-                    })
-                    .openapi({ required: [] }),
-                )
-                .and(
-                  z
-                    .strictObject({
-                      allowReRankingOnPersonalization: z
-                        .preprocess(
-                          ((read) => (val: unknown) => {
-                            const result = read.safeParse(val)
-                            return result.success ? result.data : val
-                          })(z.stringbool()),
-                          AllowReRankingOnPersonalizationSchema,
-                        )
-                        .exactOptional(),
-                    })
-                    .openapi({ required: [] }),
-                )
+                        percentileComputation: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            PercentileComputationSchema,
+                          )
+                          .exactOptional(),
+                        enableABTest: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            EnableABTestSchema,
+                          )
+                          .exactOptional(),
+                      })
+                      .openapi({ required: [] }),
+                  )
+                  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                    ;((ctx) => {
+                      const o = ctx.value
+                      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                      for (const k of Object.keys(o)) {
+                        if (!['query'].includes(k)) {
+                          ctx.issues.push({ code: 'custom', path: [k], input: o })
+                        }
+                      }
+                      for (const k of Object.keys(o)) {
+                        if (
+                          ![
+                            'similarQuery',
+                            'filters',
+                            'facetFilters',
+                            'optionalFilters',
+                            'numericFilters',
+                            'tagFilters',
+                            'sumOrFiltersScores',
+                            'restrictSearchableAttributes',
+                            'facets',
+                            'facetingAfterDistinct',
+                            'page',
+                            'offset',
+                            'length',
+                            'aroundLatLng',
+                            'aroundLatLngViaIP',
+                            'aroundRadius',
+                            'aroundPrecision',
+                            'minimumAroundRadius',
+                            'insideBoundingBox',
+                            'insidePolygon',
+                            'naturalLanguages',
+                            'ruleContexts',
+                            'personalizationImpact',
+                            'userToken',
+                            'getRankingInfo',
+                            'synonyms',
+                            'clickAnalytics',
+                            'analytics',
+                            'analyticsTags',
+                            'percentileComputation',
+                            'enableABTest',
+                          ].includes(k)
+                        ) {
+                          ctx.issues.push({ code: 'custom', path: [k], input: o })
+                        }
+                      }
+                    })(ctx)
+                    return val
+                  }, Schema)
+                })()
+                  .and(
+                    z
+                      .strictObject({
+                        attributesToRetrieve: AttributesToRetrieveSchema.exactOptional(),
+                        ranking: z
+                          .preprocess(
+                            (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                            z.array(z.string()),
+                          )
+                          .default([
+                            'typo',
+                            'geo',
+                            'words',
+                            'filters',
+                            'proximity',
+                            'attribute',
+                            'exact',
+                            'custom',
+                          ])
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'Determines the order in which Algolia returns your results.\n\nBy default, each entry corresponds to a [ranking criteria](https://www.algolia.com/doc/guides/managing-results/relevance-overview/in-depth/ranking-criteria).\nThe tie-breaking algorithm sequentially applies each criterion in the order they\'re specified.\nIf you configure a replica index for [sorting by an attribute](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/how-to/sort-by-attribute),\nyou put the sorting attribute at the top of the list.\n\n**Modifiers**\n\n- `asc("ATTRIBUTE")`.\n  Sort the index by the values of an attribute, in ascending order.\n- `desc("ATTRIBUTE")`.\n  Sort the index by the values of an attribute, in descending order.\n\nBefore you modify the default setting,\ntest your changes in the dashboard,\nand by [A/B testing](https://www.algolia.com/doc/guides/ab-testing/what-is-ab-testing).\n',
+                            'x-categories': ['Ranking'],
+                          }),
+                        relevancyStrictness: z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            RelevancyStrictnessSchema,
+                          )
+                          .exactOptional(),
+                        attributesToHighlight: AttributesToHighlightSchema.exactOptional(),
+                        attributesToSnippet: AttributesToSnippetSchema.exactOptional(),
+                        highlightPreTag: HighlightPreTagSchema.exactOptional(),
+                        highlightPostTag: HighlightPostTagSchema.exactOptional(),
+                        snippetEllipsisText: SnippetEllipsisTextSchema.exactOptional(),
+                        restrictHighlightAndSnippetArrays: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            RestrictHighlightAndSnippetArraysSchema,
+                          )
+                          .exactOptional(),
+                        hitsPerPage: z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            HitsPerPageSchema,
+                          )
+                          .exactOptional(),
+                        minWordSizefor1Typo: z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            MinWordSizefor1TypoSchema,
+                          )
+                          .exactOptional(),
+                        minWordSizefor2Typos: z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            MinWordSizefor2TyposSchema,
+                          )
+                          .exactOptional(),
+                        typoTolerance: ((schema) =>
+                          z.union([
+                            z.preprocess(
+                              ((read) => (val: unknown) => {
+                                const result = read.safeParse(val)
+                                return result.success ? result.data : val
+                              })(z.stringbool()),
+                              schema,
+                            ),
+                            schema,
+                          ]))(TypoToleranceSchema).exactOptional(),
+                        allowTyposOnNumericTokens: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            AllowTyposOnNumericTokensSchema,
+                          )
+                          .exactOptional(),
+                        disableTypoToleranceOnAttributes:
+                          DisableTypoToleranceOnAttributesSchema.exactOptional(),
+                        ignorePlurals: z
+                          .xor([
+                            z
+                              .preprocess(
+                                (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                                z.array(SupportedLanguageSchema),
+                              )
+                              .openapi({
+                                description:
+                                  'ISO code for languages for which this feature should be active.\nThis overrides languages you set with `queryLanguages`.\n',
+                              }),
+                            BooleanStringSchema,
+                            z
+                              .preprocess(
+                                ((read) => (val: unknown) => {
+                                  const result = read.safeParse(val)
+                                  return result.success ? result.data : val
+                                })(z.stringbool()),
+                                z.boolean(),
+                              )
+                              .default(false)
+                              .openapi({
+                                description:
+                                  "If true, `ignorePlurals` is active for all languages included in `queryLanguages`, or for all supported languages, if `queryLanguges` is empty.\nIf false, singulars, plurals, and other declensions won't be considered equivalent.\n",
+                              }),
+                          ])
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'Treat singular, plurals, and other forms of declensions as equivalent.\nOnly use this feature for the languages used in your index.\n',
+                            example: ['ca', 'es'],
+                            'x-categories': ['Languages'],
+                          }),
+                        removeStopWords: z
+                          .xor([
+                            z
+                              .preprocess(
+                                (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                                z.array(SupportedLanguageSchema),
+                              )
+                              .openapi({
+                                description:
+                                  'ISO code for languages for which stop words should be removed. This overrides languages you set in `queryLanguges`.',
+                              }),
+                            z
+                              .preprocess(
+                                ((read) => (val: unknown) => {
+                                  const result = read.safeParse(val)
+                                  return result.success ? result.data : val
+                                })(z.stringbool()),
+                                z.boolean(),
+                              )
+                              .default(false)
+                              .openapi({
+                                description:
+                                  'If true, stop words are removed for all languages you included in `queryLanguages`, or for all supported languages, if `queryLanguages` is empty.\nIf false, stop words are not removed.\n',
+                              }),
+                          ])
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'Removes stop words from the search query.\n\nStop words are common words like articles, conjunctions, prepositions, or pronouns that have little or no meaning on their own.\nIn English, "the", "a", or "and" are stop words.\n\nOnly use this feature for the languages used in your index.\n',
+                            example: ['ca', 'es'],
+                            'x-categories': ['Languages'],
+                          }),
+                        queryLanguages: QueryLanguagesSchema.exactOptional(),
+                        decompoundQuery: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            DecompoundQuerySchema,
+                          )
+                          .exactOptional(),
+                        enableRules: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            EnableRulesSchema,
+                          )
+                          .exactOptional(),
+                        enablePersonalization: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            EnablePersonalizationSchema,
+                          )
+                          .exactOptional(),
+                        queryType: QueryTypeSchema.exactOptional(),
+                        removeWordsIfNoResults: RemoveWordsIfNoResultsSchema.exactOptional(),
+                        mode: ModeSchema.exactOptional(),
+                        semanticSearch: SemanticSearchSchema.exactOptional(),
+                        advancedSyntax: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            AdvancedSyntaxSchema,
+                          )
+                          .exactOptional(),
+                        optionalWords: OptionalWordsSchema.exactOptional(),
+                        disableExactOnAttributes: DisableExactOnAttributesSchema.exactOptional(),
+                        exactOnSingleWordQuery: ExactOnSingleWordQuerySchema.exactOptional(),
+                        alternativesAsExact: IndexSettingsAlternativesAsExactSchema.exactOptional(),
+                        advancedSyntaxFeatures:
+                          IndexSettingsAdvancedSyntaxFeaturesSchema.exactOptional(),
+                        distinct: ((schema) =>
+                          z.union([
+                            z.preprocess(
+                              (val) =>
+                                typeof val === 'string' &&
+                                /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                                (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                  ? Number(val)
+                                  : val,
+                              schema,
+                            ),
+                            z.preprocess(
+                              ((read) => (val: unknown) => {
+                                const result = read.safeParse(val)
+                                return result.success ? result.data : val
+                              })(z.stringbool()),
+                              schema,
+                            ),
+                          ]))(DistinctSchema).exactOptional(),
+                        replaceSynonymsInHighlight: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            ReplaceSynonymsInHighlightSchema,
+                          )
+                          .exactOptional(),
+                        minProximity: z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            MinProximitySchema,
+                          )
+                          .exactOptional(),
+                        responseFields: ResponseFieldsSchema.exactOptional(),
+                        maxValuesPerFacet: z
+                          .preprocess(
+                            (val) =>
+                              typeof val === 'string' &&
+                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                ? Number(val)
+                                : val,
+                            MaxValuesPerFacetSchema,
+                          )
+                          .exactOptional(),
+                        sortFacetValuesBy: SortFacetValuesBySchema.exactOptional(),
+                        attributeCriteriaComputedByMinProximity: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            AttributeCriteriaComputedByMinProximitySchema,
+                          )
+                          .exactOptional(),
+                        attributeCriteriaComputedBy:
+                          AttributeCriteriaComputedBySchema.exactOptional(),
+                        renderingContent: z
+                          .strictObject({
+                            facetOrdering: FacetOrderingSchema.exactOptional(),
+                            redirect: RedirectURLSchema.exactOptional(),
+                            widgets: z
+                              .strictObject({
+                                banners: BannersSchema.exactOptional(),
+                                resultCard: z
+                                  .strictObject({
+                                    enabled: z
+                                      .preprocess(
+                                        ((read) => (val: unknown) => {
+                                          const result = read.safeParse(val)
+                                          return result.success ? result.data : val
+                                        })(z.stringbool()),
+                                        z.boolean(),
+                                      )
+                                      .exactOptional()
+                                      .openapi({
+                                        description:
+                                          'Whether to show the Result Card for the current search.',
+                                      }),
+                                  })
+                                  .exactOptional()
+                                  .openapi({
+                                    description:
+                                      'Agent Studio Result Card to display for a given search.',
+                                    required: [],
+                                  }),
+                              })
+                              .exactOptional()
+                              .openapi({
+                                description:
+                                  'Widgets returned from any rules that are applied to the current search.',
+                                required: [],
+                              }),
+                          })
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'Extra data that can be used in the search UI.\n\nYou can use this to control aspects of your search UI, such as the order of facet names and values\nwithout changing your frontend code.\n',
+                            'x-categories': ['Advanced'],
+                            required: [],
+                          }),
+                        enableReRanking: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            EnableReRankingSchema,
+                          )
+                          .exactOptional(),
+                        reRankingApplyFilter: z
+                          .xor([
+                            ReRankingApplyFilterSchema,
+                            z.preprocess(
+                              (val) => (val === 'null' ? null : val),
+                              z.null().nullable(),
+                            ),
+                          ])
+                          .exactOptional(),
+                      })
+                      .openapi({ required: [] }),
+                  )
+                  .and(
+                    z
+                      .strictObject({
+                        allowReRankingOnPersonalization: z
+                          .preprocess(
+                            ((read) => (val: unknown) => {
+                              const result = read.safeParse(val)
+                              return result.success ? result.data : val
+                            })(z.stringbool()),
+                            AllowReRankingOnPersonalizationSchema,
+                          )
+                          .exactOptional(),
+                      })
+                      .openapi({ required: [] }),
+                  )
+                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                  ;((ctx) => {
+                    const o = ctx.value
+                    if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                    for (const k of Object.keys(o)) {
+                      if (
+                        ![
+                          'attributesToRetrieve',
+                          'ranking',
+                          'relevancyStrictness',
+                          'attributesToHighlight',
+                          'attributesToSnippet',
+                          'highlightPreTag',
+                          'highlightPostTag',
+                          'snippetEllipsisText',
+                          'restrictHighlightAndSnippetArrays',
+                          'hitsPerPage',
+                          'minWordSizefor1Typo',
+                          'minWordSizefor2Typos',
+                          'typoTolerance',
+                          'allowTyposOnNumericTokens',
+                          'disableTypoToleranceOnAttributes',
+                          'ignorePlurals',
+                          'removeStopWords',
+                          'queryLanguages',
+                          'decompoundQuery',
+                          'enableRules',
+                          'enablePersonalization',
+                          'queryType',
+                          'removeWordsIfNoResults',
+                          'mode',
+                          'semanticSearch',
+                          'advancedSyntax',
+                          'optionalWords',
+                          'disableExactOnAttributes',
+                          'exactOnSingleWordQuery',
+                          'alternativesAsExact',
+                          'advancedSyntaxFeatures',
+                          'distinct',
+                          'replaceSynonymsInHighlight',
+                          'minProximity',
+                          'responseFields',
+                          'maxValuesPerFacet',
+                          'sortFacetValuesBy',
+                          'attributeCriteriaComputedByMinProximity',
+                          'attributeCriteriaComputedBy',
+                          'renderingContent',
+                          'enableReRanking',
+                          'reRankingApplyFilter',
+                        ].includes(k)
+                      ) {
+                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                      }
+                    }
+                    for (const k of Object.keys(o)) {
+                      if (!['allowReRankingOnPersonalization'].includes(k)) {
+                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                      }
+                    }
+                  })(ctx)
+                  return val
+                }, Schema)
+              })()
                 .exactOptional()
                 .openapi({
                   title: 'Search parameters as object',

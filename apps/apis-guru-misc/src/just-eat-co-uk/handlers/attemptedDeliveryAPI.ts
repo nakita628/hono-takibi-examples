@@ -1,11 +1,15 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  postTenantOrdersOrderIdQueriesAttempteddeliveryRoute,
   postTenantOrdersOrderIdQueriesAttempteddeliveryResolutionRedeliverorderRoute,
+  postTenantOrdersOrderIdQueriesAttempteddeliveryRoute,
 } from '../routes'
 
 const app = new OpenAPIHono()
 
 export const attemptedDeliveryAPIHandler = app
-  .openapi(postTenantOrdersOrderIdQueriesAttempteddeliveryRoute, (c) => {})
-  .openapi(postTenantOrdersOrderIdQueriesAttempteddeliveryResolutionRedeliverorderRoute, (c) => {})
+  .openapi(postTenantOrdersOrderIdQueriesAttempteddeliveryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postTenantOrdersOrderIdQueriesAttempteddeliveryResolutionRedeliverorderRoute, (c) => {
+    throw new Error('Not implemented')
+  })

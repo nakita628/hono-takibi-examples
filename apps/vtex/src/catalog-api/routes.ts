@@ -18271,17 +18271,9 @@ export const getApiCatalogSystemPvtProductsGetProductAndSkuIdsRoute = createRout
               data: z
                 .object({
                   'Product ID': z
-                    .object({
-                      'SKU ID.': z
-                        .int()
-                        .exactOptional()
-                        .openapi({ description: 'Product SKU ID.' }),
-                    })
+                    .array(z.any())
                     .exactOptional()
-                    .openapi({
-                      description: 'Array with SKU IDs of a certain product.',
-                      required: [],
-                    }),
+                    .openapi({ description: 'Array with SKU IDs of a certain product.' }),
                 })
                 .exactOptional()
                 .openapi({

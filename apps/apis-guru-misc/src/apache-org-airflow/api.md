@@ -213,7 +213,7 @@ fulfilling the request.
 
 Base URLs:
 
-* <a href="https://api.apis.guru/api/v1">https://api.apis.guru/api/v1</a> - Apache Airflow Stable API.
+* <a href="/api/v1">/api/v1</a> - Apache Airflow Stable API.
 
 * <a href="https://apache.local">https://apache.local</a>
 

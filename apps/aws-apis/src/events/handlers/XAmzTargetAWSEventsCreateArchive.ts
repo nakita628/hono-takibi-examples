@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSEventsCreateArchiveHandler = app.openapi(
   postXAmzTargetAWSEventsCreateArchiveRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

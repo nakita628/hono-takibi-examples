@@ -45,7 +45,7 @@ const GameSchema = z
   .object({
     added: z.int().exactOptional().openapi({ readOnly: true, title: 'Added' }),
     added_by_status: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ readOnly: true, title: 'Added by status' }),
     background_image: z
@@ -99,7 +99,7 @@ const GameSchema = z
       .openapi({ description: 'in hours', readOnly: true, title: 'Playtime' }),
     rating: z.number().openapi({ title: 'Rating' }),
     rating_top: z.int().exactOptional().openapi({ readOnly: true, title: 'Rating top' }),
-    ratings: z.object({}).exactOptional().openapi({ readOnly: true, title: 'Ratings' }),
+    ratings: z.looseObject({}).exactOptional().openapi({ readOnly: true, title: 'Ratings' }),
     ratings_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Ratings count' }),
     released: z.iso.date().exactOptional().openapi({ readOnly: true, title: 'Released' }),
     reviews_text_count: z
@@ -162,7 +162,7 @@ const GameSingleSchema = z
       .openapi({ readOnly: true, title: 'Achievements count' }),
     added: z.int().exactOptional().openapi({ readOnly: true, title: 'Added' }),
     added_by_status: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ readOnly: true, title: 'Added by status' }),
     additions_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Additions count' }),
@@ -260,9 +260,9 @@ const GameSingleSchema = z
       .openapi({ description: 'in hours', readOnly: true, title: 'Playtime' }),
     rating: z.number().openapi({ title: 'Rating' }),
     rating_top: z.int().exactOptional().openapi({ readOnly: true, title: 'Rating top' }),
-    ratings: z.object({}).exactOptional().openapi({ readOnly: true, title: 'Ratings' }),
+    ratings: z.looseObject({}).exactOptional().openapi({ readOnly: true, title: 'Ratings' }),
     ratings_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Ratings count' }),
-    reactions: z.object({}).exactOptional().openapi({ readOnly: true, title: 'Reactions' }),
+    reactions: z.looseObject({}).exactOptional().openapi({ readOnly: true, title: 'Reactions' }),
     reddit_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Reddit count' }),
     reddit_description: z
       .string()
@@ -368,7 +368,7 @@ const GenreSingleSchema = z
 
 const MovieSchema = z
   .object({
-    data: z.object({}).exactOptional().openapi({ readOnly: true, title: 'Data' }),
+    data: z.looseObject({}).exactOptional().openapi({ readOnly: true, title: 'Data' }),
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
     name: z.string().min(1).exactOptional().openapi({ readOnly: true, title: 'Name' }),
     preview: z.url().exactOptional().openapi({ readOnly: true, title: 'Preview' }),
@@ -745,7 +745,7 @@ const YoutubeSchema = z
     id: z.int().exactOptional().openapi({ readOnly: true, title: 'ID' }),
     like_count: z.int().exactOptional().openapi({ readOnly: true, title: 'Like count' }),
     name: z.string().min(1).exactOptional().openapi({ readOnly: true, title: 'Name' }),
-    thumbnails: z.object({}).exactOptional().openapi({ readOnly: true, title: 'Thumbnails' }),
+    thumbnails: z.looseObject({}).exactOptional().openapi({ readOnly: true, title: 'Thumbnails' }),
     view_count: z.int().exactOptional().openapi({ readOnly: true, title: 'View count' }),
   })
   .openapi({ required: [] })

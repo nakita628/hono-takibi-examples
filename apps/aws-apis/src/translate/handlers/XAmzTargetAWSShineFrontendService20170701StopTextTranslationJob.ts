@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSShineFrontendService20170701StopTextTranslationJobHandler = app.openapi(
   postXAmzTargetAWSShineFrontendService20170701StopTextTranslationJobRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

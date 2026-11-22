@@ -1,50 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const GoogleCloudPaymentsResellerSubscriptionV1AmountSchema = z
-  .object({
-    amountMicros: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Amount in micros (1_000_000 micros = 1 currency unit)' }),
-    currencyCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Currency codes in accordance with [ISO-4217 Currency Codes] (https://en.wikipedia.org/wiki/ISO_4217). For example, USD.',
-      }),
-  })
-  .openapi({ description: 'Describes the amount unit including the currency code.', required: [] })
-  .openapi('GoogleCloudPaymentsResellerSubscriptionV1Amount')
-
-const GoogleCloudPaymentsResellerSubscriptionV1CancelSubscriptionRequestSchema = z
-  .object({
-    cancelImmediately: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If true, Google will cancel the subscription immediately, and may or may not (based on the contract) issue a prorated refund for the remainder of the billing cycle. Otherwise, Google defers the cancelation at renewal_time, and will not issue a refund.',
-      }),
-    cancellationReason: z
-      .enum([
-        'CANCELLATION_REASON_UNSPECIFIED',
-        'CANCELLATION_REASON_FRAUD',
-        'CANCELLATION_REASON_REMORSE',
-        'CANCELLATION_REASON_ACCIDENTAL_PURCHASE',
-        'CANCELLATION_REASON_PAST_DUE',
-        'CANCELLATION_REASON_ACCOUNT_CLOSED',
-        'CANCELLATION_REASON_UPGRADE_DOWNGRADE',
-        'CANCELLATION_REASON_USER_DELINQUENCY',
-        'CANCELLATION_REASON_SYSTEM_ERROR',
-        'CANCELLATION_REASON_OTHER',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Specifies the reason for the cancellation.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GoogleCloudPaymentsResellerSubscriptionV1CancelSubscriptionRequest')
-
 const GoogleCloudPaymentsResellerSubscriptionV1SubscriptionCancellationDetailsSchema = z
   .object({
     reason: z
@@ -68,6 +23,23 @@ const GoogleCloudPaymentsResellerSubscriptionV1SubscriptionCancellationDetailsSc
     required: [],
   })
   .openapi('GoogleCloudPaymentsResellerSubscriptionV1SubscriptionCancellationDetails')
+
+const GoogleCloudPaymentsResellerSubscriptionV1AmountSchema = z
+  .object({
+    amountMicros: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Amount in micros (1_000_000 micros = 1 currency unit)' }),
+    currencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Currency codes in accordance with [ISO-4217 Currency Codes] (https://en.wikipedia.org/wiki/ISO_4217). For example, USD.',
+      }),
+  })
+  .openapi({ description: 'Describes the amount unit including the currency code.', required: [] })
+  .openapi('GoogleCloudPaymentsResellerSubscriptionV1Amount')
 
 const GoogleCloudPaymentsResellerSubscriptionV1DurationSchema = z
   .object({
@@ -385,181 +357,261 @@ const GoogleCloudPaymentsResellerSubscriptionV1SubscriptionUpgradeDowngradeDetai
   })
   .openapi('GoogleCloudPaymentsResellerSubscriptionV1SubscriptionUpgradeDowngradeDetails')
 
-const GoogleCloudPaymentsResellerSubscriptionV1SubscriptionSchema = z
-  .object({
-    cancellationDetails:
-      GoogleCloudPaymentsResellerSubscriptionV1SubscriptionCancellationDetailsSchema.exactOptional().openapi(
-        {
+type GoogleCloudPaymentsResellerSubscriptionV1SubscriptionType = {
+  cancellationDetails?: z.infer<
+    typeof GoogleCloudPaymentsResellerSubscriptionV1SubscriptionCancellationDetailsSchema
+  >
+  createTime?: string
+  cycleEndTime?: string
+  endUserEntitled?: boolean
+  freeTrialEndTime?: string
+  lineItems?: z.infer<typeof GoogleCloudPaymentsResellerSubscriptionV1SubscriptionLineItemSchema>[]
+  name?: string
+  partnerUserToken?: string
+  processingState?:
+    | 'PROCESSING_STATE_UNSPECIFIED'
+    | 'PROCESSING_STATE_CANCELLING'
+    | 'PROCESSING_STATE_RECURRING'
+  products?: string[]
+  promotionSpecs?: z.infer<
+    typeof GoogleCloudPaymentsResellerSubscriptionV1SubscriptionPromotionSpecSchema
+  >[]
+  promotions?: string[]
+  redirectUri?: string
+  renewalTime?: string
+  serviceLocation?: z.infer<typeof GoogleCloudPaymentsResellerSubscriptionV1LocationSchema>
+  state?:
+    | 'STATE_UNSPECIFIED'
+    | 'STATE_CREATED'
+    | 'STATE_ACTIVE'
+    | 'STATE_CANCELLED'
+    | 'STATE_IN_GRACE_PERIOD'
+    | 'STATE_CANCEL_AT_END_OF_CYCLE'
+    | 'STATE_SUSPENDED'
+  updateTime?: string
+  upgradeDowngradeDetails?: z.infer<
+    typeof GoogleCloudPaymentsResellerSubscriptionV1SubscriptionUpgradeDowngradeDetailsSchema
+  >
+}
+
+const GoogleCloudPaymentsResellerSubscriptionV1SubscriptionSchema: z.ZodType<GoogleCloudPaymentsResellerSubscriptionV1SubscriptionType> =
+  z
+    .object({
+      cancellationDetails:
+        GoogleCloudPaymentsResellerSubscriptionV1SubscriptionCancellationDetailsSchema.exactOptional().openapi(
+          {
+            description:
+              'Output only. Describes the details of a cancelled subscription. Only applicable to subscription of state `STATE_CANCELLED`.',
+            readOnly: true,
+          },
+        ),
+      createTime: z
+        .string()
+        .exactOptional()
+        .openapi({
           description:
-            'Output only. Describes the details of a cancelled subscription. Only applicable to subscription of state `STATE_CANCELLED`.',
+            'Output only. System generated timestamp when the subscription is created. UTC timezone.',
           readOnly: true,
-        },
-      ),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. System generated timestamp when the subscription is created. UTC timezone.',
-        readOnly: true,
-      }),
-    cycleEndTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The time at which the subscription is expected to be extended, in ISO 8061 format. UTC timezone. For example: "2019-08-31T17:28:54.564Z"',
-        readOnly: true,
-      }),
-    endUserEntitled: z
+        }),
+      cycleEndTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. The time at which the subscription is expected to be extended, in ISO 8061 format. UTC timezone. For example: "2019-08-31T17:28:54.564Z"',
+          readOnly: true,
+        }),
+      endUserEntitled: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description: 'Output only. Indicates if the subscription is entitled to the end user.',
+          readOnly: true,
+        }),
+      freeTrialEndTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. End of the free trial period, in ISO 8061 format. For example, "2019-08-31T17:28:54.564Z". It will be set the same as createTime if no free trial promotion is specified.',
+          readOnly: true,
+        }),
+      lineItems: z
+        .array(GoogleCloudPaymentsResellerSubscriptionV1SubscriptionLineItemSchema)
+        .exactOptional()
+        .openapi({ description: 'Required. The line items of the subscription.' }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Resource name of the subscription. It will have the format of "partners/{partner_id}/subscriptions/{subscription_id}". This is available for authorizeAddon, but otherwise is response only.',
+        }),
+      partnerUserToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. Identifier of the end-user in partner’s system. The value is restricted to 63 ASCII characters at the maximum.',
+        }),
+      processingState: z
+        .enum([
+          'PROCESSING_STATE_UNSPECIFIED',
+          'PROCESSING_STATE_CANCELLING',
+          'PROCESSING_STATE_RECURRING',
+        ])
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. Describes the processing state of the subscription. See more details at [the lifecycle of a subscription](/payments/reseller/subscription/reference/index/Receive.Notifications#payments-subscription-lifecycle).',
+          readOnly: true,
+        }),
+      products: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            "Required. Deprecated: consider using `line_items` as the input. Required. Resource name that identifies the purchased products. The format will be 'partners/{partner_id}/products/{product_id}'.",
+        }),
+      promotionSpecs: z
+        .array(GoogleCloudPaymentsResellerSubscriptionV1SubscriptionPromotionSpecSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Subscription-level promotions. Only free trial is supported on this level. It determines the first renewal time of the subscription to be the end of the free trial period. Specify the promotion resource name only when used as input.',
+        }),
+      promotions: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            "Optional. Deprecated: consider using the top-level `promotion_specs` as the input. Optional. Resource name that identifies one or more promotions that can be applied on the product. A typical promotion for a subscription is Free trial. The format will be 'partners/{partner_id}/promotions/{promotion_id}'.",
+        }),
+      redirectUri: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. The place where partners should redirect the end-user to after creation. This field might also be populated when creation failed. However, Partners should always prepare a default URL to redirect the user in case this field is empty.',
+          readOnly: true,
+        }),
+      renewalTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. The time at which the subscription is expected to be renewed by Google - a new charge will be incurred and the service entitlement will be renewed. A non-immediate cancellation will take place at this time too, before which, the service entitlement for the end user will remain valid. UTC timezone in ISO 8061 format. For example: "2019-08-31T17:28:54.564Z"',
+          readOnly: true,
+        }),
+      serviceLocation:
+        GoogleCloudPaymentsResellerSubscriptionV1LocationSchema.exactOptional().openapi({
+          description:
+            'Required. The location that the service is provided as indicated by the partner.',
+        }),
+      state: z
+        .enum([
+          'STATE_UNSPECIFIED',
+          'STATE_CREATED',
+          'STATE_ACTIVE',
+          'STATE_CANCELLED',
+          'STATE_IN_GRACE_PERIOD',
+          'STATE_CANCEL_AT_END_OF_CYCLE',
+          'STATE_SUSPENDED',
+        ])
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. Describes the state of the subscription. See more details at [the lifecycle of a subscription](/payments/reseller/subscription/reference/index/Receive.Notifications#payments-subscription-lifecycle).',
+          readOnly: true,
+        }),
+      updateTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. System generated timestamp when the subscription is most recently updated. UTC timezone.',
+          readOnly: true,
+        }),
+      upgradeDowngradeDetails:
+        GoogleCloudPaymentsResellerSubscriptionV1SubscriptionUpgradeDowngradeDetailsSchema.exactOptional().openapi(
+          {
+            description:
+              'Optional. Details about the previous subscription that this new subscription upgrades/downgrades from. Only populated if this subscription is an upgrade/downgrade from another subscription.',
+          },
+        ),
+    })
+    .openapi({ description: 'A Subscription resource managed by 3P Partners.', required: [] })
+    .openapi('GoogleCloudPaymentsResellerSubscriptionV1Subscription')
+
+type GoogleCloudPaymentsResellerSubscriptionV1CancelSubscriptionResponseType = {
+  subscription?: z.infer<typeof GoogleCloudPaymentsResellerSubscriptionV1SubscriptionSchema>
+}
+
+type GoogleCloudPaymentsResellerSubscriptionV1EntitleSubscriptionResponseType = {
+  subscription?: z.infer<typeof GoogleCloudPaymentsResellerSubscriptionV1SubscriptionSchema>
+}
+
+type GoogleCloudPaymentsResellerSubscriptionV1UndoCancelSubscriptionResponseType = {
+  subscription?: z.infer<typeof GoogleCloudPaymentsResellerSubscriptionV1SubscriptionSchema>
+}
+
+const GoogleCloudPaymentsResellerSubscriptionV1CancelSubscriptionRequestSchema = z
+  .object({
+    cancelImmediately: z
       .boolean()
       .exactOptional()
       .openapi({
-        description: 'Output only. Indicates if the subscription is entitled to the end user.',
-        readOnly: true,
-      }),
-    freeTrialEndTime: z
-      .string()
-      .exactOptional()
-      .openapi({
         description:
-          'Output only. End of the free trial period, in ISO 8061 format. For example, "2019-08-31T17:28:54.564Z". It will be set the same as createTime if no free trial promotion is specified.',
-        readOnly: true,
+          'Optional. If true, Google will cancel the subscription immediately, and may or may not (based on the contract) issue a prorated refund for the remainder of the billing cycle. Otherwise, Google defers the cancelation at renewal_time, and will not issue a refund.',
       }),
-    lineItems: z
-      .array(GoogleCloudPaymentsResellerSubscriptionV1SubscriptionLineItemSchema)
-      .exactOptional()
-      .openapi({ description: 'Required. The line items of the subscription.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Resource name of the subscription. It will have the format of "partners/{partner_id}/subscriptions/{subscription_id}". This is available for authorizeAddon, but otherwise is response only.',
-      }),
-    partnerUserToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Identifier of the end-user in partner’s system. The value is restricted to 63 ASCII characters at the maximum.',
-      }),
-    processingState: z
+    cancellationReason: z
       .enum([
-        'PROCESSING_STATE_UNSPECIFIED',
-        'PROCESSING_STATE_CANCELLING',
-        'PROCESSING_STATE_RECURRING',
+        'CANCELLATION_REASON_UNSPECIFIED',
+        'CANCELLATION_REASON_FRAUD',
+        'CANCELLATION_REASON_REMORSE',
+        'CANCELLATION_REASON_ACCIDENTAL_PURCHASE',
+        'CANCELLATION_REASON_PAST_DUE',
+        'CANCELLATION_REASON_ACCOUNT_CLOSED',
+        'CANCELLATION_REASON_UPGRADE_DOWNGRADE',
+        'CANCELLATION_REASON_USER_DELINQUENCY',
+        'CANCELLATION_REASON_SYSTEM_ERROR',
+        'CANCELLATION_REASON_OTHER',
       ])
       .exactOptional()
-      .openapi({
-        description:
-          'Output only. Describes the processing state of the subscription. See more details at [the lifecycle of a subscription](/payments/reseller/subscription/reference/index/Receive.Notifications#payments-subscription-lifecycle).',
-        readOnly: true,
-      }),
-    products: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. Deprecated: consider using `line_items` as the input. Required. Resource name that identifies the purchased products. The format will be 'partners/{partner_id}/products/{product_id}'.",
-      }),
-    promotionSpecs: z
-      .array(GoogleCloudPaymentsResellerSubscriptionV1SubscriptionPromotionSpecSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Subscription-level promotions. Only free trial is supported on this level. It determines the first renewal time of the subscription to be the end of the free trial period. Specify the promotion resource name only when used as input.',
-      }),
-    promotions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. Deprecated: consider using the top-level `promotion_specs` as the input. Optional. Resource name that identifies one or more promotions that can be applied on the product. A typical promotion for a subscription is Free trial. The format will be 'partners/{partner_id}/promotions/{promotion_id}'.",
-      }),
-    redirectUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The place where partners should redirect the end-user to after creation. This field might also be populated when creation failed. However, Partners should always prepare a default URL to redirect the user in case this field is empty.',
-        readOnly: true,
-      }),
-    renewalTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The time at which the subscription is expected to be renewed by Google - a new charge will be incurred and the service entitlement will be renewed. A non-immediate cancellation will take place at this time too, before which, the service entitlement for the end user will remain valid. UTC timezone in ISO 8061 format. For example: "2019-08-31T17:28:54.564Z"',
-        readOnly: true,
-      }),
-    serviceLocation:
-      GoogleCloudPaymentsResellerSubscriptionV1LocationSchema.exactOptional().openapi({
-        description:
-          'Required. The location that the service is provided as indicated by the partner.',
-      }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'STATE_CREATED',
-        'STATE_ACTIVE',
-        'STATE_CANCELLED',
-        'STATE_IN_GRACE_PERIOD',
-        'STATE_CANCEL_AT_END_OF_CYCLE',
-        'STATE_SUSPENDED',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Describes the state of the subscription. See more details at [the lifecycle of a subscription](/payments/reseller/subscription/reference/index/Receive.Notifications#payments-subscription-lifecycle).',
-        readOnly: true,
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. System generated timestamp when the subscription is most recently updated. UTC timezone.',
-        readOnly: true,
-      }),
-    upgradeDowngradeDetails:
-      GoogleCloudPaymentsResellerSubscriptionV1SubscriptionUpgradeDowngradeDetailsSchema.exactOptional().openapi(
-        {
-          description:
-            'Optional. Details about the previous subscription that this new subscription upgrades/downgrades from. Only populated if this subscription is an upgrade/downgrade from another subscription.',
-        },
-      ),
-  })
-  .openapi({ description: 'A Subscription resource managed by 3P Partners.', required: [] })
-  .openapi('GoogleCloudPaymentsResellerSubscriptionV1Subscription')
-
-const GoogleCloudPaymentsResellerSubscriptionV1CancelSubscriptionResponseSchema = z
-  .object({
-    subscription:
-      GoogleCloudPaymentsResellerSubscriptionV1SubscriptionSchema.exactOptional().openapi({
-        description: 'The cancelled subscription resource.',
-      }),
+      .openapi({ description: 'Specifies the reason for the cancellation.' }),
   })
   .openapi({ required: [] })
-  .openapi('GoogleCloudPaymentsResellerSubscriptionV1CancelSubscriptionResponse')
+  .openapi('GoogleCloudPaymentsResellerSubscriptionV1CancelSubscriptionRequest')
+
+const GoogleCloudPaymentsResellerSubscriptionV1CancelSubscriptionResponseSchema: z.ZodType<GoogleCloudPaymentsResellerSubscriptionV1CancelSubscriptionResponseType> =
+  z
+    .object({
+      subscription:
+        GoogleCloudPaymentsResellerSubscriptionV1SubscriptionSchema.exactOptional().openapi({
+          description: 'The cancelled subscription resource.',
+        }),
+    })
+    .openapi({ required: [] })
+    .openapi('GoogleCloudPaymentsResellerSubscriptionV1CancelSubscriptionResponse')
 
 const GoogleCloudPaymentsResellerSubscriptionV1EntitleSubscriptionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Partner request for entitling the previously provisioned subscription to an end user. The end user identity is inferred from the request OAuth context.',
   })
   .openapi('GoogleCloudPaymentsResellerSubscriptionV1EntitleSubscriptionRequest')
 
-const GoogleCloudPaymentsResellerSubscriptionV1EntitleSubscriptionResponseSchema = z
-  .object({
-    subscription:
-      GoogleCloudPaymentsResellerSubscriptionV1SubscriptionSchema.exactOptional().openapi({
-        description: 'The subscription that has user linked to it.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('GoogleCloudPaymentsResellerSubscriptionV1EntitleSubscriptionResponse')
+const GoogleCloudPaymentsResellerSubscriptionV1EntitleSubscriptionResponseSchema: z.ZodType<GoogleCloudPaymentsResellerSubscriptionV1EntitleSubscriptionResponseType> =
+  z
+    .object({
+      subscription:
+        GoogleCloudPaymentsResellerSubscriptionV1SubscriptionSchema.exactOptional().openapi({
+          description: 'The subscription that has user linked to it.',
+        }),
+    })
+    .openapi({ required: [] })
+    .openapi('GoogleCloudPaymentsResellerSubscriptionV1EntitleSubscriptionResponse')
 
 const GoogleCloudPaymentsResellerSubscriptionV1ExtensionSchema = z
   .object({
@@ -863,22 +915,23 @@ const GoogleCloudPaymentsResellerSubscriptionV1ListPromotionsResponseSchema = z
   .openapi('GoogleCloudPaymentsResellerSubscriptionV1ListPromotionsResponse')
 
 const GoogleCloudPaymentsResellerSubscriptionV1UndoCancelSubscriptionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request to revoke a cancellation request.' })
   .openapi('GoogleCloudPaymentsResellerSubscriptionV1UndoCancelSubscriptionRequest')
 
-const GoogleCloudPaymentsResellerSubscriptionV1UndoCancelSubscriptionResponseSchema = z
-  .object({
-    subscription:
-      GoogleCloudPaymentsResellerSubscriptionV1SubscriptionSchema.exactOptional().openapi({
-        description: 'The updated subscription resource.',
-      }),
-  })
-  .openapi({
-    description: 'Response that contains the updated subscription resource.',
-    required: [],
-  })
-  .openapi('GoogleCloudPaymentsResellerSubscriptionV1UndoCancelSubscriptionResponse')
+const GoogleCloudPaymentsResellerSubscriptionV1UndoCancelSubscriptionResponseSchema: z.ZodType<GoogleCloudPaymentsResellerSubscriptionV1UndoCancelSubscriptionResponseType> =
+  z
+    .object({
+      subscription:
+        GoogleCloudPaymentsResellerSubscriptionV1SubscriptionSchema.exactOptional().openapi({
+          description: 'The updated subscription resource.',
+        }),
+    })
+    .openapi({
+      description: 'Response that contains the updated subscription resource.',
+      required: [],
+    })
+    .openapi('GoogleCloudPaymentsResellerSubscriptionV1UndoCancelSubscriptionResponse')
 
 const XgafvParamsSchema = z
   .enum(['1', '2'])

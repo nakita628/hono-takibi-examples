@@ -3,7 +3,9 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/iotsitewise/2019-12-02/openapi.yaml',
   output: './src/iotsitewise/routes.ts',
-  template: {},
+  // template: { routeHandler: true }: the default template exports each handler file under its tag or first
+  // path segment, and one here starts with a digit, which is not an identifier (nakita628/hono-takibi#506).
+  template: { routeHandler: true },
   type: { output: './src/iotsitewise/types.ts' },
   client: { output: './src/iotsitewise/client.ts', baseUrl: '/' },
   rpc: { output: './src/iotsitewise/rpc.ts', parseResponse: true },

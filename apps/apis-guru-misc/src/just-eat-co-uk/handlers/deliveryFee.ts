@@ -3,4 +3,6 @@ import { getDeliveryFeesTenantRoute } from '../routes'
 
 const app = new OpenAPIHono()
 
-export const deliveryFeeHandler = app.openapi(getDeliveryFeesTenantRoute, (c) => {})
+export const deliveryFeeHandler = app.openapi(getDeliveryFeesTenantRoute, (c) => {
+  throw new Error('Not implemented')
+})

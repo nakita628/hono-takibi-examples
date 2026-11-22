@@ -952,11 +952,11 @@ const ConfigurationAuditLogSchema = z
         example: 'CREATE',
       }),
     old: z
-      .union([z.string(), z.number(), z.int(), z.boolean(), z.array(z.any()), z.object({})])
+      .union([z.string(), z.number(), z.int(), z.boolean(), z.array(z.any()), z.looseObject({})])
       .exactOptional()
       .openapi({ description: 'The value of `target.property`` prior to the event.' }),
     new: z
-      .union([z.string(), z.number(), z.int(), z.boolean(), z.array(z.any()), z.object({})])
+      .union([z.string(), z.number(), z.int(), z.boolean(), z.array(z.any()), z.looseObject({})])
       .exactOptional()
       .openapi({ description: 'The value of `target.property` after the event.' }),
     actionDetails: z
@@ -1566,6 +1566,14 @@ const KeyCapabilitiesSchema = z
                 description:
                   "tags are the tags that will be set on devices registered with this key.\nLearn about tags at https://tailscale.com/docs/features/tags.\n\nWhether tags are required or optional depends on the owner of the auth key:\n- When creating an auth key owned by the tailnet (using OAuth), it must have tags. The auth tags specified for that new auth key must exactly match the tags that are on the OAuth client used to create that auth key (or they must be tags that are owned by the tags that are on the OAuth client used to create the auth key).\n- When creating an auth key owned by a user (using a user's access token), tags are optional.\n",
                 example: ['tag:example'],
+              }),
+            nodeAttributes: z
+              .record(z.string(), z.xor([z.string(), z.int(), z.boolean()]))
+              .exactOptional()
+              .openapi({
+                description:
+                  'nodeAttributes are custom device posture attributes that will be set on devices registered with this key.\nAttribute keys must be in the `custom:` namespace, and values must be strings, integers, or booleans.\nAt most 100 attributes may be set.\nLearn about device posture attributes at https://tailscale.com/docs/features/device-posture.\n\nCreating an auth key with node attributes requires permission to write device posture attributes.\n',
+                example: { 'custom:environment': 'production', 'custom:rack': 12 },
               }),
           })
           .exactOptional()
@@ -4980,7 +4988,7 @@ export const postTailnetTailnetKeysRoute = createRoute({
   tags: ['Keys'],
   summary: 'Create an auth key or trust credential',
   description:
-    'Creates a new [auth key](https://tailscale.com/docs/features/access-control/auth-keys), or [trust credential](https://tailscale.com/docs/reference/trust-credentials) in the specified tailnet.\nTrust credentials include [OAuth clients](https://tailscale.com/docs/features/oauth-clients) and [federated identities](https://tailscale.com/docs/features/workload-identity-federation).\nThe key will be associated with the user who owns the API access token used to make this call,\nor, if the call is made with an access token derived from an OAuth client or federated identity, the key will be owned by the tailnet.\n\nReturns a JSON object with the generated key.\nThe key should be recorded and kept safe and secure because it wields the capabilities or scopes specified in the request.\nThe identity of the key is embedded in the key itself and can be used to perform operations on the key (e.g., revoking it or retrieving information about it).\nThe full key can no longer be retrieved after the initial response.\n\nOAuth Scope: `auth_keys` grants access to create machine auth keys.\n\nOAuth Scope: `oauth_keys` grants access to create OAuth clients.\n\nOAuth Scope: `federated_keys` grants access to created federated identities.\n',
+    'Creates a new [auth key](https://tailscale.com/docs/features/access-control/auth-keys), or [trust credential](https://tailscale.com/docs/reference/trust-credentials) in the specified tailnet.\nTrust credentials include [OAuth clients](https://tailscale.com/docs/features/oauth-clients) and [federated identities](https://tailscale.com/docs/features/workload-identity-federation).\nThe key will be associated with the user who owns the API access token used to make this call,\nor, if the call is made with an access token derived from an OAuth client or federated identity, the key will be owned by the tailnet.\n\nReturns a JSON object with the generated key.\nThe key should be recorded and kept safe and secure because it wields the capabilities or scopes specified in the request.\nThe identity of the key is embedded in the key itself and can be used to perform operations on the key (e.g., revoking it or retrieving information about it).\nThe full key can no longer be retrieved after the initial response.\n\nOAuth Scope: `auth_keys` grants access to create machine auth keys. If you include `nodeAttributes` in the request body, you must also have `devices:posture_attributes`.\n\nOAuth Scope: `oauth_keys` grants access to create OAuth clients.\n\nOAuth Scope: `federated_keys` grants access to created federated identities.\n',
   operationId: 'createKey',
   request: {
     params: z.object({ tailnet: TailnetParamsSchema }),
@@ -5261,7 +5269,7 @@ export const getTailnetTailnetAclRoute = createRoute({
       description: 'Successful operation.',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             exampleJSONPolicyFile: ExampleJSONPolicyFileExample,
             exampleWithDetails: {
@@ -5319,7 +5327,7 @@ export const postTailnetTailnetAclRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { exampleJSONPolicyFile: ExampleJSONPolicyFileExample },
         },
         'application/hujson': {
@@ -5334,7 +5342,7 @@ export const postTailnetTailnetAclRoute = createRoute({
       description: 'Successful operation.',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { exampleJSONPolicyFile: ExampleJSONPolicyFileExample },
         },
         'application/hujson': {
@@ -5415,7 +5423,7 @@ export const postTailnetTailnetAclPreviewRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: { exampleJSONPolicyFile: ExampleJSONPolicyFileExample },
         },
         'application/hujson': {
@@ -5589,7 +5597,7 @@ export const postTailnetTailnetAclValidateRoute = createRoute({
             .object({
               message: z.string().exactOptional().openapi({ example: 'test(s) failed' }),
               data: z
-                .array(z.object({}))
+                .array(z.looseObject({}))
                 .exactOptional()
                 .openapi({
                   example: [
@@ -6338,7 +6346,7 @@ export const getTailnetTailnetSettingsRoute = createRoute({
   tags: ['TailnetSettings'],
   summary: 'Get tailnet settings',
   description:
-    'Retrieve the settings for a specific tailnet.\n\nOAuth Scope: `feature_settings:read` - required to view all settings except those governed by the below scopes.\n\nOAuth Scope: `logs:network:read` - required to view the `networkFlowLoggingOn` setting.\n\nOAuth Scope: `networking_settings:read` - required to view the `httpsCertificates` setting.\n\nOAuth Scope: `policy_file:read` - required to view the `aclsExternallyManagedOn` & `aclsExternalLink` settings.\n',
+    'Retrieve the settings for a specific tailnet.\n\nOAuth Scope: `feature_settings:read` - required to view all settings except those governed by the below scopes.\n\nOAuth Scope: `logs:network:read` - required to view the `networkFlowLoggingOn` setting.\n\nOAuth Scope: `networking_settings:read` - required to view the `httpsEnabled` setting.\n\nOAuth Scope: `policy_file:read` - required to view the `aclsExternallyManagedOn` & `aclsExternalLink` settings.\n',
   operationId: 'getTailnetSettings',
   request: { params: z.object({ tailnet: TailnetParamsSchema }) },
   responses: {
@@ -6358,7 +6366,7 @@ export const patchTailnetTailnetSettingsRoute = createRoute({
   tags: ['TailnetSettings'],
   summary: 'Update tailnet settings',
   description:
-    'Update the settings for a specific tailnet.\n\nOAuth Scope: `feature_settings` - required to update all settings except those governed by the below scopes.\n\nOAuth Scope: `logs:network` - required to update the `networkFlowLoggingOn` setting.\n\nOAuth Scope: `networking_settings` - required to update the `httpsCertificates` setting.\n\nOAuth Scope: `policy_file` - required to update the `aclsExternallyManagedOn` & `aclsExternalLink` settings.\n',
+    'Update the settings for a specific tailnet.\n\nOAuth Scope: `feature_settings` - required to update all settings except those governed by the below scopes.\n\nOAuth Scope: `logs:network` - required to update the `networkFlowLoggingOn` setting.\n\nOAuth Scope: `networking_settings` - required to update the `httpsEnabled` setting.\n\nOAuth Scope: `policy_file` - required to update the `aclsExternallyManagedOn` & `aclsExternalLink` settings.\n',
   operationId: 'updateTailnetSettings',
   request: {
     params: z.object({ tailnet: TailnetParamsSchema }),

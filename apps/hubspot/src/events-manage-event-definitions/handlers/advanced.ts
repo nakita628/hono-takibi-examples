@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const advancedHandler = app.openapi(
   postEvents202609EventDefinitionsEventNamePropertyRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

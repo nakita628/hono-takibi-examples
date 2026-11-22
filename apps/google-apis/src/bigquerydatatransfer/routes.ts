@@ -20,7 +20,7 @@ type DataSourceParameterType = {
 }
 
 const CheckValidCredsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A request to determine whether the user has valid credentials. This method is used to limit the number of OAuth popups in the user interface. The user id is inferred from the API call context. If the data source has the Google+ authorization type, this method returns false, as it cannot be determined whether the credentials are already valid merely based on the user id.',
@@ -250,7 +250,7 @@ const EmailPreferencesSchema = z
   .openapi('EmailPreferences')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

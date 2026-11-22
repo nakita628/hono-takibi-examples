@@ -1,90 +1,12 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const BucketNameSchema = z.string().openapi('BucketName')
-
-const KeySchema = z.string().openapi('Key')
-
-const VersionSchema = z.string().openapi('Version')
-
-const S3SourceSchema = z
-  .object({
-    bucketName: BucketNameSchema.and(z.any().openapi({ description: 'Name of the S3 bucket.' })),
-    key: KeySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Key name of the bucket object that contains your unsigned code.',
-        }),
-    ),
-    version: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Version of your source image in your version enabled S3 bucket.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['bucketName', 'key', 'version'],
-    description: 'Information about the S3 bucket where you saved your unsigned code.',
-  })
-  .openapi('S3Source')
-
-type SourceType = { s3?: z.infer<typeof S3SourceSchema> & { [key: string]: unknown } }
-
-const S3SignedObjectSchema = z
-  .object({
-    bucketName: BucketNameSchema.and(
-      z.any().openapi({ description: 'Name of the S3 bucket.' }),
-    ).exactOptional(),
-    key: KeySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Key name that uniquely identifies a signed code image in your bucket.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The S3 bucket name and key where code signing saved your signed code image.',
-    required: [],
-  })
-  .openapi('S3SignedObject')
-
-type SignedObjectType = { s3?: z.infer<typeof S3SignedObjectSchema> & { [key: string]: unknown } }
-
-const PrefixSchema = z.string().openapi('Prefix')
-
-const S3DestinationSchema = z
-  .object({
-    bucketName: BucketNameSchema.and(
-      z.any().openapi({ description: 'Name of the S3 bucket.' }),
-    ).exactOptional(),
-    prefix: PrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon S3 prefix that you can use to limit responses to those that begin with the specified prefix.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The name and prefix of the S3 bucket where code signing saves your signed objects.',
-    required: [],
-  })
-  .openapi('S3Destination')
-
-type DestinationType = { s3?: z.infer<typeof S3DestinationSchema> & { [key: string]: unknown } }
-
 const StringSchema = z.string().openapi('String')
 
 const AddProfilePermissionResponseSchema = z
   .object({
-    revisionId: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the current profile revision.' }),
-    ).exactOptional(),
+    revisionId: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the current profile revision.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AddProfilePermissionResponse')
@@ -105,34 +27,49 @@ const InternalServiceErrorExceptionSchema = z.any().openapi('InternalServiceErro
 
 const JobIdSchema = z.string().openapi('JobId')
 
-const SourceSchema: z.ZodType<SourceType> = z
-  .lazy(() =>
-    z
-      .object({
-        s3: S3SourceSchema.and(
-          z.any().openapi({ description: 'The <code>S3Source</code> object.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'An <code>S3Source</code> object that contains information about the S3 bucket where you saved your unsigned code.',
-        required: [],
-      }),
-  )
+const BucketNameSchema = z.string().openapi('BucketName')
+
+const KeySchema = z.string().openapi('Key')
+
+const VersionSchema = z.string().openapi('Version')
+
+const S3SourceSchema = z
+  .object({
+    bucketName: BucketNameSchema.openapi({ description: 'Name of the S3 bucket.' }),
+    key: KeySchema.openapi({
+      description: 'Key name of the bucket object that contains your unsigned code.',
+    }),
+    version: VersionSchema.openapi({
+      description: 'Version of your source image in your version enabled S3 bucket.',
+    }),
+  })
+  .openapi({
+    required: ['bucketName', 'key', 'version'],
+    description: 'Information about the S3 bucket where you saved your unsigned code.',
+  })
+  .openapi('S3Source')
+
+const SourceSchema = z
+  .object({
+    s3: S3SourceSchema.exactOptional().openapi({
+      description: 'The <code>S3Source</code> object.',
+    }),
+  })
+  .openapi({
+    description:
+      'An <code>S3Source</code> object that contains information about the S3 bucket where you saved your unsigned code.',
+    required: [],
+  })
   .openapi('Source')
 
 const CertificateArnSchema = z.string().openapi('CertificateArn')
 
 const SigningMaterialSchema = z
   .object({
-    certificateArn: CertificateArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the certificates that is used to sign your code.',
-        }),
-    ),
+    certificateArn: CertificateArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the certificates that is used to sign your code.',
+    }),
   })
   .openapi({
     required: ['certificateArn'],
@@ -163,22 +100,14 @@ const HashAlgorithmSchema = z.enum(['SHA1', 'SHA256']).openapi('HashAlgorithm')
 
 const SigningConfigurationOverridesSchema = z
   .object({
-    encryptionAlgorithm: EncryptionAlgorithmSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A specified override of the default encryption algorithm that is used in a code signing job.',
-        }),
-    ).exactOptional(),
-    hashAlgorithm: HashAlgorithmSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A specified override of the default hash algorithm that is used in a code signing job.',
-        }),
-    ).exactOptional(),
+    encryptionAlgorithm: EncryptionAlgorithmSchema.exactOptional().openapi({
+      description:
+        'A specified override of the default encryption algorithm that is used in a code signing job.',
+    }),
+    hashAlgorithm: HashAlgorithmSchema.exactOptional().openapi({
+      description:
+        'A specified override of the default hash algorithm that is used in a code signing job.',
+    }),
   })
   .openapi({
     description:
@@ -191,22 +120,14 @@ const ImageFormatSchema = z.enum(['JSON', 'JSONEmbedded', 'JSONDetached']).opena
 
 const SigningPlatformOverridesSchema = z
   .object({
-    signingConfiguration: SigningConfigurationOverridesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A signing configuration that overrides the default encryption or hash algorithm of a signing job.',
-        }),
-    ).exactOptional(),
-    signingImageFormat: ImageFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A signed image is a JSON object. When overriding the default signing platform configuration, a customer can select either of two signing formats, <code>JSONEmbedded</code> or <code>JSONDetached</code>. (A third format value, <code>JSON</code>, is reserved for future use.) With <code>JSONEmbedded</code>, the signing image has the payload embedded in it. With <code>JSONDetached</code>, the payload is not be embedded in the signing image.',
-        }),
-    ).exactOptional(),
+    signingConfiguration: SigningConfigurationOverridesSchema.exactOptional().openapi({
+      description:
+        'A signing configuration that overrides the default encryption or hash algorithm of a signing job.',
+    }),
+    signingImageFormat: ImageFormatSchema.exactOptional().openapi({
+      description:
+        'A signed image is a JSON object. When overriding the default signing platform configuration, a customer can select either of two signing formats, <code>JSONEmbedded</code> or <code>JSONDetached</code>. (A third format value, <code>JSON</code>, is reserved for future use.) With <code>JSONEmbedded</code>, the signing image has the payload embedded in it. With <code>JSONDetached</code>, the payload is not be embedded in the signing image.',
+    }),
   })
   .openapi({
     description:
@@ -231,33 +152,41 @@ const StatusReasonSchema = z.string().openapi('StatusReason')
 
 const SigningJobRevocationRecordSchema = z
   .object({
-    reason: StringSchema.and(
-      z.any().openapi({ description: 'A caller-supplied reason for revocation.' }),
-    ).exactOptional(),
-    revokedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time of revocation.' }),
-    ).exactOptional(),
-    revokedBy: StringSchema.and(
-      z.any().openapi({ description: 'The identity of the revoker.' }),
-    ).exactOptional(),
+    reason: StringSchema.exactOptional().openapi({
+      description: 'A caller-supplied reason for revocation.',
+    }),
+    revokedAt: TimestampSchema.exactOptional().openapi({ description: 'The time of revocation.' }),
+    revokedBy: StringSchema.exactOptional().openapi({
+      description: 'The identity of the revoker.',
+    }),
   })
   .openapi({ description: 'Revocation information for a signing job.', required: [] })
   .openapi('SigningJobRevocationRecord')
 
-const SignedObjectSchema: z.ZodType<SignedObjectType> = z
-  .lazy(() =>
-    z
-      .object({
-        s3: S3SignedObjectSchema.and(
-          z.any().openapi({ description: 'The <code>S3SignedObject</code>.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'Points to an <code>S3SignedObject</code> object that contains information about your signed code image.',
-        required: [],
-      }),
-  )
+const S3SignedObjectSchema = z
+  .object({
+    bucketName: BucketNameSchema.exactOptional().openapi({ description: 'Name of the S3 bucket.' }),
+    key: KeySchema.exactOptional().openapi({
+      description: 'Key name that uniquely identifies a signed code image in your bucket.',
+    }),
+  })
+  .openapi({
+    description: 'The S3 bucket name and key where code signing saved your signed code image.',
+    required: [],
+  })
+  .openapi('S3SignedObject')
+
+const SignedObjectSchema = z
+  .object({
+    s3: S3SignedObjectSchema.exactOptional().openapi({
+      description: 'The <code>S3SignedObject</code>.',
+    }),
+  })
+  .openapi({
+    description:
+      'Points to an <code>S3SignedObject</code> object that contains information about your signed code image.',
+    required: [],
+  })
   .openapi('SignedObject')
 
 const AccountIdSchema = z
@@ -268,110 +197,67 @@ const AccountIdSchema = z
 
 const DescribeSigningJobResponseSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The ID of the signing job on output.' }),
-    ).exactOptional(),
-    source: SourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The object that contains the name of your S3 bucket or your raw code.',
-        }),
-    ).exactOptional(),
-    signingMaterial: SigningMaterialSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of your code signing certificate.',
-        }),
-    ).exactOptional(),
-    platformId: PlatformIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The microcontroller platform to which your signed code image will be distributed.',
-        }),
-    ).exactOptional(),
-    platformDisplayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A human-readable name for the signing platform associated with the signing job.',
-        }),
-    ).exactOptional(),
-    profileName: ProfileNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the profile that initiated the signing operation.' }),
-    ).exactOptional(),
-    profileVersion: ProfileVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version of the signing profile used to initiate the signing job.',
-        }),
-    ).exactOptional(),
-    overrides: SigningPlatformOverridesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of any overrides that were applied to the signing operation.',
-        }),
-    ).exactOptional(),
-    signingParameters: SigningParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Map of user-assigned key-value pairs used during signing. These values contain any information that you specified for use in your signing job. ',
-        }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'Date and time that the signing job was created.' }),
-    ).exactOptional(),
-    completedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'Date and time that the signing job was completed.' }),
-    ).exactOptional(),
-    signatureExpiresAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Thr expiration timestamp for the signature generated by the signing job.',
-        }),
-    ).exactOptional(),
-    requestedBy: RequestedBySchema.and(
-      z.any().openapi({ description: 'The IAM principal that requested the signing job.' }),
-    ).exactOptional(),
-    status: SigningStatusSchema.and(
-      z.any().openapi({ description: 'Status of the signing job.' }),
-    ).exactOptional(),
-    statusReason: StatusReasonSchema.and(
-      z.any().openapi({ description: 'String value that contains the status reason.' }),
-    ).exactOptional(),
-    revocationRecord: SigningJobRevocationRecordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A revocation record if the signature generated by the signing job has been revoked. Contains a timestamp and the ID of the IAM entity that revoked the signature.',
-        }),
-    ).exactOptional(),
-    signedObject: SignedObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Name of the S3 bucket where the signed code image is saved by code signing.',
-        }),
-    ).exactOptional(),
-    jobOwner: AccountIdSchema.and(
-      z.any().openapi({ description: 'The AWS account ID of the job owner.' }),
-    ).exactOptional(),
-    jobInvoker: AccountIdSchema.and(
-      z.any().openapi({ description: 'The IAM entity that initiated the signing job.' }),
-    ).exactOptional(),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description: 'The ID of the signing job on output.',
+    }),
+    source: SourceSchema.exactOptional().openapi({
+      description: 'The object that contains the name of your S3 bucket or your raw code.',
+    }),
+    signingMaterial: SigningMaterialSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of your code signing certificate.',
+    }),
+    platformId: PlatformIdSchema.exactOptional().openapi({
+      description:
+        'The microcontroller platform to which your signed code image will be distributed.',
+    }),
+    platformDisplayName: DisplayNameSchema.exactOptional().openapi({
+      description:
+        'A human-readable name for the signing platform associated with the signing job.',
+    }),
+    profileName: ProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the profile that initiated the signing operation.',
+    }),
+    profileVersion: ProfileVersionSchema.exactOptional().openapi({
+      description: 'The version of the signing profile used to initiate the signing job.',
+    }),
+    overrides: SigningPlatformOverridesSchema.exactOptional().openapi({
+      description: 'A list of any overrides that were applied to the signing operation.',
+    }),
+    signingParameters: SigningParametersSchema.exactOptional().openapi({
+      description:
+        'Map of user-assigned key-value pairs used during signing. These values contain any information that you specified for use in your signing job. ',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'Date and time that the signing job was created.',
+    }),
+    completedAt: TimestampSchema.exactOptional().openapi({
+      description: 'Date and time that the signing job was completed.',
+    }),
+    signatureExpiresAt: TimestampSchema.exactOptional().openapi({
+      description: 'Thr expiration timestamp for the signature generated by the signing job.',
+    }),
+    requestedBy: RequestedBySchema.exactOptional().openapi({
+      description: 'The IAM principal that requested the signing job.',
+    }),
+    status: SigningStatusSchema.exactOptional().openapi({
+      description: 'Status of the signing job.',
+    }),
+    statusReason: StatusReasonSchema.exactOptional().openapi({
+      description: 'String value that contains the status reason.',
+    }),
+    revocationRecord: SigningJobRevocationRecordSchema.exactOptional().openapi({
+      description:
+        'A revocation record if the signature generated by the signing job has been revoked. Contains a timestamp and the ID of the IAM entity that revoked the signature.',
+    }),
+    signedObject: SignedObjectSchema.exactOptional().openapi({
+      description: 'Name of the S3 bucket where the signed code image is saved by code signing.',
+    }),
+    jobOwner: AccountIdSchema.exactOptional().openapi({
+      description: 'The AWS account ID of the job owner.',
+    }),
+    jobInvoker: AccountIdSchema.exactOptional().openapi({
+      description: 'The IAM entity that initiated the signing job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSigningJobResponse')
@@ -384,21 +270,13 @@ const EncryptionAlgorithmsSchema = z
 
 const EncryptionAlgorithmOptionsSchema = z
   .object({
-    allowedValues: EncryptionAlgorithmsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The set of accepted encryption algorithms that are allowed in a code signing job.',
-        }),
-    ),
-    defaultValue: EncryptionAlgorithmSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The default encryption algorithm that is used by a code signing job.',
-        }),
-    ),
+    allowedValues: EncryptionAlgorithmsSchema.openapi({
+      description:
+        'The set of accepted encryption algorithms that are allowed in a code signing job.',
+    }),
+    defaultValue: EncryptionAlgorithmSchema.openapi({
+      description: 'The default encryption algorithm that is used by a code signing job.',
+    }),
   })
   .openapi({
     required: ['allowedValues', 'defaultValue'],
@@ -410,18 +288,12 @@ const HashAlgorithmsSchema = z.array(HashAlgorithmSchema).openapi('HashAlgorithm
 
 const HashAlgorithmOptionsSchema = z
   .object({
-    allowedValues: HashAlgorithmsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The set of accepted hash algorithms allowed in a code signing job.',
-        }),
-    ),
-    defaultValue: HashAlgorithmSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The default hash algorithm that is used in a code signing job.' }),
-    ),
+    allowedValues: HashAlgorithmsSchema.openapi({
+      description: 'The set of accepted hash algorithms allowed in a code signing job.',
+    }),
+    defaultValue: HashAlgorithmSchema.openapi({
+      description: 'The default hash algorithm that is used in a code signing job.',
+    }),
   })
   .openapi({
     required: ['allowedValues', 'defaultValue'],
@@ -431,21 +303,12 @@ const HashAlgorithmOptionsSchema = z
 
 const SigningConfigurationSchema = z
   .object({
-    encryptionAlgorithmOptions: EncryptionAlgorithmOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The encryption algorithm options that are available for a code signing job.',
-        }),
-    ),
-    hashAlgorithmOptions: HashAlgorithmOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The hash algorithm options that are available for a code signing job.',
-        }),
-    ),
+    encryptionAlgorithmOptions: EncryptionAlgorithmOptionsSchema.openapi({
+      description: 'The encryption algorithm options that are available for a code signing job.',
+    }),
+    hashAlgorithmOptions: HashAlgorithmOptionsSchema.openapi({
+      description: 'The hash algorithm options that are available for a code signing job.',
+    }),
   })
   .openapi({
     required: ['encryptionAlgorithmOptions', 'hashAlgorithmOptions'],
@@ -457,12 +320,12 @@ const ImageFormatsSchema = z.array(ImageFormatSchema).openapi('ImageFormats')
 
 const SigningImageFormatSchema = z
   .object({
-    supportedFormats: ImageFormatsSchema.and(
-      z.any().openapi({ description: 'The supported formats of a code signing image.' }),
-    ),
-    defaultFormat: ImageFormatSchema.and(
-      z.any().openapi({ description: 'The default format of a code signing image.' }),
-    ),
+    supportedFormats: ImageFormatsSchema.openapi({
+      description: 'The supported formats of a code signing image.',
+    }),
+    defaultFormat: ImageFormatSchema.openapi({
+      description: 'The default format of a code signing image.',
+    }),
   })
   .openapi({
     required: ['supportedFormats', 'defaultFormat'],
@@ -476,55 +339,35 @@ const BoolSchema = z.boolean().openapi('Bool')
 
 const GetSigningPlatformResponseSchema = z
   .object({
-    platformId: PlatformIdSchema.and(
-      z.any().openapi({ description: 'The ID of the target signing platform.' }),
-    ).exactOptional(),
-    displayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The display name of the target signing platform.' }),
-    ).exactOptional(),
-    partner: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of partner entities that use the target signing platform.',
-        }),
-    ).exactOptional(),
-    target: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The validation template that is used by the target signing platform.',
-        }),
-    ).exactOptional(),
-    category: CategorySchema.and(
-      z.any().openapi({ description: 'The category type of the target signing platform.' }),
-    ).exactOptional(),
-    signingConfiguration: SigningConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of configurations applied to the target platform at signing.',
-        }),
-    ).exactOptional(),
-    signingImageFormat: SigningImageFormatSchema.and(
-      z.any().openapi({ description: "The format of the target platform's signing image." }),
-    ).exactOptional(),
-    maxSizeInMB: MaxSizeInMBSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum size (in MB) of the payload that can be signed by the target platform.',
-        }),
-    ).exactOptional(),
-    revocationSupported: BoolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag indicating whether signatures generated for the signing platform can be revoked.',
-        }),
-    ).exactOptional(),
+    platformId: PlatformIdSchema.exactOptional().openapi({
+      description: 'The ID of the target signing platform.',
+    }),
+    displayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The display name of the target signing platform.',
+    }),
+    partner: StringSchema.exactOptional().openapi({
+      description: 'A list of partner entities that use the target signing platform.',
+    }),
+    target: StringSchema.exactOptional().openapi({
+      description: 'The validation template that is used by the target signing platform.',
+    }),
+    category: CategorySchema.exactOptional().openapi({
+      description: 'The category type of the target signing platform.',
+    }),
+    signingConfiguration: SigningConfigurationSchema.exactOptional().openapi({
+      description: 'A list of configurations applied to the target platform at signing.',
+    }),
+    signingImageFormat: SigningImageFormatSchema.exactOptional().openapi({
+      description: "The format of the target platform's signing image.",
+    }),
+    maxSizeInMB: MaxSizeInMBSchema.exactOptional().openapi({
+      description:
+        'The maximum size (in MB) of the payload that can be signed by the target platform.',
+    }),
+    revocationSupported: BoolSchema.exactOptional().openapi({
+      description:
+        'A flag indicating whether signatures generated for the signing platform can be revoked.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSigningPlatformResponse')
@@ -533,15 +376,15 @@ const ArnSchema = z.string().min(20).max(2048).openapi('Arn')
 
 const SigningProfileRevocationRecordSchema = z
   .object({
-    revocationEffectiveFrom: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when revocation becomes effective.' }),
-    ).exactOptional(),
-    revokedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the signing profile was revoked.' }),
-    ).exactOptional(),
-    revokedBy: StringSchema.and(
-      z.any().openapi({ description: 'The identity of the revoker.' }),
-    ).exactOptional(),
+    revocationEffectiveFrom: TimestampSchema.exactOptional().openapi({
+      description: 'The time when revocation becomes effective.',
+    }),
+    revokedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the signing profile was revoked.',
+    }),
+    revokedBy: StringSchema.exactOptional().openapi({
+      description: 'The identity of the revoker.',
+    }),
   })
   .openapi({ description: 'Revocation information for a signing profile.', required: [] })
   .openapi('SigningProfileRevocationRecord')
@@ -552,14 +395,12 @@ const ValidityTypeSchema = z.enum(['DAYS', 'MONTHS', 'YEARS']).openapi('Validity
 
 const SignatureValidityPeriodSchema = z
   .object({
-    value: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The numerical value of the time unit for signature validity.' }),
-    ).exactOptional(),
-    type: ValidityTypeSchema.and(
-      z.any().openapi({ description: 'The time unit for signature validity.' }),
-    ).exactOptional(),
+    value: IntegerSchema.exactOptional().openapi({
+      description: 'The numerical value of the time unit for signature validity.',
+    }),
+    type: ValidityTypeSchema.exactOptional().openapi({
+      description: 'The time unit for signature validity.',
+    }),
   })
   .openapi({ description: 'The validity period for a signing job.', required: [] })
   .openapi('SignatureValidityPeriod')
@@ -580,68 +421,48 @@ const TagMapSchema = z
 
 const GetSigningProfileResponseSchema = z
   .object({
-    profileName: ProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the target signing profile.' }),
-    ).exactOptional(),
-    profileVersion: ProfileVersionSchema.and(
-      z.any().openapi({ description: 'The current version of the signing profile.' }),
-    ).exactOptional(),
-    profileVersionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The signing profile ARN, including the profile version.' }),
-    ).exactOptional(),
+    profileName: ProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the target signing profile.',
+    }),
+    profileVersion: ProfileVersionSchema.exactOptional().openapi({
+      description: 'The current version of the signing profile.',
+    }),
+    profileVersionArn: ArnSchema.exactOptional().openapi({
+      description: 'The signing profile ARN, including the profile version.',
+    }),
     revocationRecord: SigningProfileRevocationRecordSchema.exactOptional(),
-    signingMaterial: SigningMaterialSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the certificate that the target profile uses for signing operations.',
-        }),
-    ).exactOptional(),
-    platformId: PlatformIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the platform that is used by the target signing profile.',
-        }),
-    ).exactOptional(),
-    platformDisplayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A human-readable name for the signing platform associated with the signing profile.',
-        }),
-    ).exactOptional(),
+    signingMaterial: SigningMaterialSchema.exactOptional().openapi({
+      description:
+        'The ARN of the certificate that the target profile uses for signing operations.',
+    }),
+    platformId: PlatformIdSchema.exactOptional().openapi({
+      description: 'The ID of the platform that is used by the target signing profile.',
+    }),
+    platformDisplayName: DisplayNameSchema.exactOptional().openapi({
+      description:
+        'A human-readable name for the signing platform associated with the signing profile.',
+    }),
     signatureValidityPeriod: SignatureValidityPeriodSchema.exactOptional(),
-    overrides: SigningPlatformOverridesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of overrides applied by the target signing profile for signing operations.',
-        }),
-    ).exactOptional(),
-    signingParameters: SigningParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map of key-value pairs for signing operations that is attached to the target signing profile.',
-        }),
-    ).exactOptional(),
-    status: SigningProfileStatusSchema.and(
-      z.any().openapi({ description: 'The status of the target signing profile.' }),
-    ).exactOptional(),
-    statusReason: StringSchema.and(
-      z.any().openapi({ description: 'Reason for the status of the target signing profile.' }),
-    ).exactOptional(),
-    arn: String2Schema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the signing profile.' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'A list of tags associated with the signing profile.' }),
-    ).exactOptional(),
+    overrides: SigningPlatformOverridesSchema.exactOptional().openapi({
+      description:
+        'A list of overrides applied by the target signing profile for signing operations.',
+    }),
+    signingParameters: SigningParametersSchema.exactOptional().openapi({
+      description:
+        'A map of key-value pairs for signing operations that is attached to the target signing profile.',
+    }),
+    status: SigningProfileStatusSchema.exactOptional().openapi({
+      description: 'The status of the target signing profile.',
+    }),
+    statusReason: StringSchema.exactOptional().openapi({
+      description: 'Reason for the status of the target signing profile.',
+    }),
+    arn: String2Schema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the signing profile.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'A list of tags associated with the signing profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSigningProfileResponse')
@@ -650,28 +471,18 @@ const PolicySizeBytesSchema = z.int().openapi('PolicySizeBytes')
 
 const PermissionSchema = z
   .object({
-    action: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An AWS Signer action permitted as part of cross-account permissions.',
-        }),
-    ).exactOptional(),
-    principal: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The AWS principal that has been granted a cross-account permission.',
-        }),
-    ).exactOptional(),
-    statementId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for a cross-account permission statement.' }),
-    ).exactOptional(),
-    profileVersion: ProfileVersionSchema.and(
-      z.any().openapi({ description: 'The signing profile version that a permission applies to.' }),
-    ).exactOptional(),
+    action: StringSchema.exactOptional().openapi({
+      description: 'An AWS Signer action permitted as part of cross-account permissions.',
+    }),
+    principal: StringSchema.exactOptional().openapi({
+      description: 'The AWS principal that has been granted a cross-account permission.',
+    }),
+    statementId: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for a cross-account permission statement.',
+    }),
+    profileVersion: ProfileVersionSchema.exactOptional().openapi({
+      description: 'The signing profile version that a permission applies to.',
+    }),
   })
   .openapi({ description: 'A cross-account permission for a signing profile.', required: [] })
   .openapi('Permission')
@@ -680,93 +491,67 @@ const PermissionsSchema = z.array(PermissionSchema).openapi('Permissions')
 
 const ListProfilePermissionsResponseSchema = z
   .object({
-    revisionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for the current revision of profile permissions.',
-        }),
-    ).exactOptional(),
-    policySizeBytes: PolicySizeBytesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Total size of the policy associated with the Signing Profile in bytes.',
-        }),
-    ).exactOptional(),
-    permissions: PermissionsSchema.and(
-      z.any().openapi({ description: 'List of permissions associated with the Signing Profile.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z.any().openapi({ description: 'String for specifying the next set of paginated results.' }),
-    ).exactOptional(),
+    revisionId: StringSchema.exactOptional().openapi({
+      description: 'The identifier for the current revision of profile permissions.',
+    }),
+    policySizeBytes: PolicySizeBytesSchema.exactOptional().openapi({
+      description: 'Total size of the policy associated with the Signing Profile in bytes.',
+    }),
+    permissions: PermissionsSchema.exactOptional().openapi({
+      description: 'List of permissions associated with the Signing Profile.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'String for specifying the next set of paginated results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListProfilePermissionsResponse')
 
 const SigningJobSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The ID of the signing job.' }),
-    ).exactOptional(),
-    source: SourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A <code>Source</code> that contains information about a signing job's code image source.",
-        }),
-    ).exactOptional(),
-    signedObject: SignedObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A <code>SignedObject</code> structure that contains information about a signing job's signed code image.",
-        }),
-    ).exactOptional(),
-    signingMaterial: SigningMaterialSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>SigningMaterial</code> object that contains the Amazon Resource Name (ARN) of the certificate used for the signing job.',
-        }),
-    ).exactOptional(),
-    createdAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the signing job was created.' }),
-    ).exactOptional(),
-    status: SigningStatusSchema.and(
-      z.any().openapi({ description: 'The status of the signing job.' }),
-    ).exactOptional(),
-    isRevoked: BoolSchema.and(
-      z.any().openapi({ description: 'Indicates whether the signing job is revoked.' }),
-    ).exactOptional(),
-    profileName: ProfileNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the signing profile that created a signing job.' }),
-    ).exactOptional(),
-    profileVersion: ProfileVersionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The version of the signing profile that created a signing job.' }),
-    ).exactOptional(),
-    platformId: PlatformIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for a signing platform.' }),
-    ).exactOptional(),
-    platformDisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The name of a signing platform.' }),
-    ).exactOptional(),
-    signatureExpiresAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the signature of a signing job expires.' }),
-    ).exactOptional(),
-    jobOwner: AccountIdSchema.and(
-      z.any().openapi({ description: 'The AWS account ID of the job owner.' }),
-    ).exactOptional(),
-    jobInvoker: AccountIdSchema.and(
-      z.any().openapi({ description: 'The AWS account ID of the job invoker.' }),
-    ).exactOptional(),
+    jobId: JobIdSchema.exactOptional().openapi({ description: 'The ID of the signing job.' }),
+    source: SourceSchema.exactOptional().openapi({
+      description:
+        "A <code>Source</code> that contains information about a signing job's code image source.",
+    }),
+    signedObject: SignedObjectSchema.exactOptional().openapi({
+      description:
+        "A <code>SignedObject</code> structure that contains information about a signing job's signed code image.",
+    }),
+    signingMaterial: SigningMaterialSchema.exactOptional().openapi({
+      description:
+        'A <code>SigningMaterial</code> object that contains the Amazon Resource Name (ARN) of the certificate used for the signing job.',
+    }),
+    createdAt: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the signing job was created.',
+    }),
+    status: SigningStatusSchema.exactOptional().openapi({
+      description: 'The status of the signing job.',
+    }),
+    isRevoked: BoolSchema.exactOptional().openapi({
+      description: 'Indicates whether the signing job is revoked.',
+    }),
+    profileName: ProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the signing profile that created a signing job.',
+    }),
+    profileVersion: ProfileVersionSchema.exactOptional().openapi({
+      description: 'The version of the signing profile that created a signing job.',
+    }),
+    platformId: PlatformIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for a signing platform.',
+    }),
+    platformDisplayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The name of a signing platform.',
+    }),
+    signatureExpiresAt: TimestampSchema.exactOptional().openapi({
+      description: 'The time when the signature of a signing job expires.',
+    }),
+    jobOwner: AccountIdSchema.exactOptional().openapi({
+      description: 'The AWS account ID of the job owner.',
+    }),
+    jobInvoker: AccountIdSchema.exactOptional().openapi({
+      description: 'The AWS account ID of the job invoker.',
+    }),
   })
   .openapi({ description: 'Contains information about a signing job.', required: [] })
   .openapi('SigningJob')
@@ -777,59 +562,45 @@ const NextTokenSchema = z.string().openapi('NextToken')
 
 const ListSigningJobsResponseSchema = z
   .object({
-    jobs: SigningJobsSchema.and(
-      z.any().openapi({ description: 'A list of your signing jobs.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'String for specifying the next set of paginated results.' }),
-    ).exactOptional(),
+    jobs: SigningJobsSchema.exactOptional().openapi({
+      description: 'A list of your signing jobs.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'String for specifying the next set of paginated results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSigningJobsResponse')
 
 const SigningPlatformSchema = z
   .object({
-    platformId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of a code signing; platform.' }),
-    ).exactOptional(),
-    displayName: StringSchema.and(
-      z.any().openapi({ description: 'The display name of a code signing platform.' }),
-    ).exactOptional(),
-    partner: StringSchema.and(
-      z.any().openapi({ description: 'Any partner entities linked to a code signing platform.' }),
-    ).exactOptional(),
-    target: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The types of targets that can be signed by a code signing platform.',
-        }),
-    ).exactOptional(),
-    category: CategorySchema.and(
-      z.any().openapi({ description: 'The category of a code signing platform.' }),
-    ).exactOptional(),
-    signingConfiguration: SigningConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration of a code signing platform. This includes the designated hash algorithm and encryption algorithm of a signing platform.',
-        }),
-    ).exactOptional(),
+    platformId: StringSchema.exactOptional().openapi({
+      description: 'The ID of a code signing; platform.',
+    }),
+    displayName: StringSchema.exactOptional().openapi({
+      description: 'The display name of a code signing platform.',
+    }),
+    partner: StringSchema.exactOptional().openapi({
+      description: 'Any partner entities linked to a code signing platform.',
+    }),
+    target: StringSchema.exactOptional().openapi({
+      description: 'The types of targets that can be signed by a code signing platform.',
+    }),
+    category: CategorySchema.exactOptional().openapi({
+      description: 'The category of a code signing platform.',
+    }),
+    signingConfiguration: SigningConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration of a code signing platform. This includes the designated hash algorithm and encryption algorithm of a signing platform.',
+    }),
     signingImageFormat: SigningImageFormatSchema.exactOptional(),
-    maxSizeInMB: MaxSizeInMBSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum size (in MB) of code that can be signed by a code signing platform.',
-        }),
-    ).exactOptional(),
-    revocationSupported: BoolSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether revocation is supported for the platform.' }),
-    ).exactOptional(),
+    maxSizeInMB: MaxSizeInMBSchema.exactOptional().openapi({
+      description:
+        'The maximum size (in MB) of code that can be signed by a code signing platform.',
+    }),
+    revocationSupported: BoolSchema.exactOptional().openapi({
+      description: 'Indicates whether revocation is supported for the platform.',
+    }),
   })
   .openapi({
     description:
@@ -842,75 +613,51 @@ const SigningPlatformsSchema = z.array(SigningPlatformSchema).openapi('SigningPl
 
 const ListSigningPlatformsResponseSchema = z
   .object({
-    platforms: SigningPlatformsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of all platforms that match the request parameters.' }),
-    ).exactOptional(),
-    nextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Value for specifying the next set of paginated results to return.',
-        }),
-    ).exactOptional(),
+    platforms: SigningPlatformsSchema.exactOptional().openapi({
+      description: 'A list of all platforms that match the request parameters.',
+    }),
+    nextToken: StringSchema.exactOptional().openapi({
+      description: 'Value for specifying the next set of paginated results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSigningPlatformsResponse')
 
 const SigningProfileSchema = z
   .object({
-    profileName: ProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the signing profile.' }),
-    ).exactOptional(),
-    profileVersion: ProfileVersionSchema.and(
-      z.any().openapi({ description: 'The version of a signing profile.' }),
-    ).exactOptional(),
-    profileVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of a signing profile, including the profile version.' }),
-    ).exactOptional(),
-    signingMaterial: SigningMaterialSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ACM certificate that is available for use by a signing profile.',
-        }),
-    ).exactOptional(),
-    signatureValidityPeriod: SignatureValidityPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The validity period for a signing job created using this signing profile.',
-        }),
-    ).exactOptional(),
-    platformId: PlatformIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of a platform that is available for use by a signing profile.',
-        }),
-    ).exactOptional(),
-    platformDisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The name of the signing platform.' }),
-    ).exactOptional(),
-    signingParameters: SigningParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The parameters that are available for use by a code signing user.',
-        }),
-    ).exactOptional(),
-    status: SigningProfileStatusSchema.and(
-      z.any().openapi({ description: 'The status of a code signing profile.' }),
-    ).exactOptional(),
-    arn: String2Schema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the signing profile.' }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'A list of tags associated with the signing profile.' }),
-    ).exactOptional(),
+    profileName: ProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the signing profile.',
+    }),
+    profileVersion: ProfileVersionSchema.exactOptional().openapi({
+      description: 'The version of a signing profile.',
+    }),
+    profileVersionArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of a signing profile, including the profile version.',
+    }),
+    signingMaterial: SigningMaterialSchema.exactOptional().openapi({
+      description: 'The ACM certificate that is available for use by a signing profile.',
+    }),
+    signatureValidityPeriod: SignatureValidityPeriodSchema.exactOptional().openapi({
+      description: 'The validity period for a signing job created using this signing profile.',
+    }),
+    platformId: PlatformIdSchema.exactOptional().openapi({
+      description: 'The ID of a platform that is available for use by a signing profile.',
+    }),
+    platformDisplayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The name of the signing platform.',
+    }),
+    signingParameters: SigningParametersSchema.exactOptional().openapi({
+      description: 'The parameters that are available for use by a code signing user.',
+    }),
+    status: SigningProfileStatusSchema.exactOptional().openapi({
+      description: 'The status of a code signing profile.',
+    }),
+    arn: String2Schema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the signing profile.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'A list of tags associated with the signing profile.',
+    }),
   })
   .openapi({
     description:
@@ -923,30 +670,22 @@ const SigningProfilesSchema = z.array(SigningProfileSchema).openapi('SigningProf
 
 const ListSigningProfilesResponseSchema = z
   .object({
-    profiles: SigningProfilesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of profiles that are available in the AWS account. This includes profiles with the status of <code>CANCELED</code> if the <code>includeCanceled</code> parameter is set to <code>true</code>.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Value for specifying the next set of paginated results to return.',
-        }),
-    ).exactOptional(),
+    profiles: SigningProfilesSchema.exactOptional().openapi({
+      description:
+        'A list of profiles that are available in the AWS account. This includes profiles with the status of <code>CANCELED</code> if the <code>includeCanceled</code> parameter is set to <code>true</code>.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'Value for specifying the next set of paginated results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSigningProfilesResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'A list of tags associated with the signing profile.' }),
-    ).exactOptional(),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'A list of tags associated with the signing profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -957,51 +696,60 @@ const NotFoundExceptionSchema = z.any().openapi('NotFoundException')
 
 const PutSigningProfileResponseSchema = z
   .object({
-    arn: String2Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the signing profile created.' }),
-    ).exactOptional(),
-    profileVersion: ProfileVersionSchema.and(
-      z.any().openapi({ description: 'The version of the signing profile being created.' }),
-    ).exactOptional(),
-    profileVersionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The signing profile ARN, including the profile version.' }),
-    ).exactOptional(),
+    arn: String2Schema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the signing profile created.',
+    }),
+    profileVersion: ProfileVersionSchema.exactOptional().openapi({
+      description: 'The version of the signing profile being created.',
+    }),
+    profileVersionArn: ArnSchema.exactOptional().openapi({
+      description: 'The signing profile ARN, including the profile version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutSigningProfileResponse')
 
 const RemoveProfilePermissionResponseSchema = z
   .object({
-    revisionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An identifier for the current revision of the profile permissions.',
-        }),
-    ).exactOptional(),
+    revisionId: StringSchema.exactOptional().openapi({
+      description: 'An identifier for the current revision of the profile permissions.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RemoveProfilePermissionResponse')
 
 const StartSigningJobResponseSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The ID of your signing job.' }),
-    ).exactOptional(),
-    jobOwner: AccountIdSchema.and(
-      z.any().openapi({ description: 'The AWS account ID of the signing job owner.' }),
-    ).exactOptional(),
+    jobId: JobIdSchema.exactOptional().openapi({ description: 'The ID of your signing job.' }),
+    jobOwner: AccountIdSchema.exactOptional().openapi({
+      description: 'The AWS account ID of the signing job owner.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartSigningJobResponse')
 
+const PrefixSchema = z.string().openapi('Prefix')
+
+const S3DestinationSchema = z
+  .object({
+    bucketName: BucketNameSchema.exactOptional().openapi({ description: 'Name of the S3 bucket.' }),
+    prefix: PrefixSchema.exactOptional().openapi({
+      description:
+        'An Amazon S3 prefix that you can use to limit responses to those that begin with the specified prefix.',
+    }),
+  })
+  .openapi({
+    description:
+      'The name and prefix of the S3 bucket where code signing saves your signed objects.',
+    required: [],
+  })
+  .openapi('S3Destination')
+
 const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z
   .string()
@@ -1012,34 +760,22 @@ const TagKeySchema = z
 
 const AddProfilePermissionRequestSchema = z
   .object({
-    profileVersion: ProfileVersionSchema.and(
-      z.any().openapi({ description: 'The version of the signing profile.' }),
-    ).exactOptional(),
-    action: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The AWS Signer action permitted as part of cross-account permissions.',
-        }),
-    ),
-    principal: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS principal receiving cross-account permissions. This may be an IAM role or another AWS account ID.',
-        }),
-    ),
-    revisionId: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the current profile revision.' }),
-    ).exactOptional(),
-    statementId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the cross-account permission statement.',
-        }),
-    ),
+    profileVersion: ProfileVersionSchema.exactOptional().openapi({
+      description: 'The version of the signing profile.',
+    }),
+    action: StringSchema.openapi({
+      description: 'The AWS Signer action permitted as part of cross-account permissions.',
+    }),
+    principal: StringSchema.openapi({
+      description:
+        'The AWS principal receiving cross-account permissions. This may be an IAM role or another AWS account ID.',
+    }),
+    revisionId: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the current profile revision.',
+    }),
+    statementId: StringSchema.openapi({
+      description: 'A unique identifier for the cross-account permission statement.',
+    }),
   })
   .openapi({
     required: ['action', 'principal', 'statementId'],
@@ -1048,122 +784,99 @@ const AddProfilePermissionRequestSchema = z
   .openapi('AddProfilePermissionRequest')
 
 const CancelSigningProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CancelSigningProfileRequest' })
   .openapi('CancelSigningProfileRequest')
 
 const ClientRequestTokenSchema = z.string().openapi('ClientRequestToken')
 
 const DescribeSigningJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeSigningJobRequest' })
   .openapi('DescribeSigningJobRequest')
 
-const DestinationSchema: z.ZodType<DestinationType> = z
-  .lazy(() =>
-    z
-      .object({
-        s3: S3DestinationSchema.and(
-          z.any().openapi({ description: 'The <code>S3Destination</code> object.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'Points to an <code>S3Destination</code> object that contains information about your S3 bucket.',
-        required: [],
-      }),
-  )
+const DestinationSchema = z
+  .object({
+    s3: S3DestinationSchema.exactOptional().openapi({
+      description: 'The <code>S3Destination</code> object.',
+    }),
+  })
+  .openapi({
+    description:
+      'Points to an <code>S3Destination</code> object that contains information about your S3 bucket.',
+    required: [],
+  })
   .openapi('Destination')
 
 const GetSigningPlatformRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSigningPlatformRequest' })
   .openapi('GetSigningPlatformRequest')
 
 const GetSigningProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSigningProfileRequest' })
   .openapi('GetSigningProfileRequest')
 
 const ListProfilePermissionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListProfilePermissionsRequest' })
   .openapi('ListProfilePermissionsRequest')
 
 const MaxResultsSchema = z.int().min(1).max(25).openapi('MaxResults')
 
 const ListSigningJobsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSigningJobsRequest' })
   .openapi('ListSigningJobsRequest')
 
 const ListSigningPlatformsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSigningPlatformsRequest' })
   .openapi('ListSigningPlatformsRequest')
 
 const StatusesSchema = z.array(SigningProfileStatusSchema).openapi('Statuses')
 
 const ListSigningProfilesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSigningProfilesRequest' })
   .openapi('ListSigningProfilesRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const PutSigningProfileRequestSchema = z
   .object({
-    signingMaterial: SigningMaterialSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The AWS Certificate Manager certificate that will be used to sign code with the new signing profile.',
-        }),
-    ).exactOptional(),
-    signatureValidityPeriod: SignatureValidityPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default validity period override for any signature generated using this signing profile. If unspecified, the default is 135 months.',
-        }),
-    ).exactOptional(),
-    platformId: PlatformIdSchema.and(
-      z.any().openapi({ description: 'The ID of the signing platform to be created.' }),
-    ),
-    overrides: SigningPlatformOverridesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A subfield of <code>platform</code>. This specifies any different configuration options that you want to apply to the chosen platform (such as a different <code>hash-algorithm</code> or <code>signing-algorithm</code>).',
-        }),
-    ).exactOptional(),
-    signingParameters: SigningParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Map of key-value pairs for signing. These can include any information that you want to use during signing.',
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Tags to be associated with the signing profile that is being created.',
-        }),
-    ).exactOptional(),
+    signingMaterial: SigningMaterialSchema.exactOptional().openapi({
+      description:
+        'The AWS Certificate Manager certificate that will be used to sign code with the new signing profile.',
+    }),
+    signatureValidityPeriod: SignatureValidityPeriodSchema.exactOptional().openapi({
+      description:
+        'The default validity period override for any signature generated using this signing profile. If unspecified, the default is 135 months.',
+    }),
+    platformId: PlatformIdSchema.openapi({
+      description: 'The ID of the signing platform to be created.',
+    }),
+    overrides: SigningPlatformOverridesSchema.exactOptional().openapi({
+      description:
+        'A subfield of <code>platform</code>. This specifies any different configuration options that you want to apply to the chosen platform (such as a different <code>hash-algorithm</code> or <code>signing-algorithm</code>).',
+    }),
+    signingParameters: SigningParametersSchema.exactOptional().openapi({
+      description:
+        'Map of key-value pairs for signing. These can include any information that you want to use during signing.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'Tags to be associated with the signing profile that is being created.',
+    }),
   })
   .openapi({ required: ['platformId'], title: 'PutSigningProfileRequest' })
   .openapi('PutSigningProfileRequest')
 
 const RemoveProfilePermissionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RemoveProfilePermissionRequest' })
   .openapi('RemoveProfilePermissionRequest')
 
@@ -1171,32 +884,28 @@ const RevocationReasonStringSchema = z.string().min(1).max(500).openapi('Revocat
 
 const RevokeSignatureRequestSchema = z
   .object({
-    jobOwner: AccountIdSchema.and(
-      z.any().openapi({ description: 'AWS account ID of the job owner.' }),
-    ).exactOptional(),
-    reason: RevocationReasonStringSchema.and(
-      z.any().openapi({ description: 'The reason for revoking the signing job.' }),
-    ),
+    jobOwner: AccountIdSchema.exactOptional().openapi({
+      description: 'AWS account ID of the job owner.',
+    }),
+    reason: RevocationReasonStringSchema.openapi({
+      description: 'The reason for revoking the signing job.',
+    }),
   })
   .openapi({ required: ['reason'], title: 'RevokeSignatureRequest' })
   .openapi('RevokeSignatureRequest')
 
 const RevokeSigningProfileRequestSchema = z
   .object({
-    profileVersion: ProfileVersionSchema.and(
-      z.any().openapi({ description: 'The version of the signing profile to be revoked.' }),
-    ),
-    reason: RevocationReasonStringSchema.and(
-      z.any().openapi({ description: 'The reason for revoking a signing profile.' }),
-    ),
-    effectiveTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A timestamp for when revocation of a Signing Profile should become effective. Signatures generated using the signing profile after this timestamp are not trusted.',
-        }),
-    ),
+    profileVersion: ProfileVersionSchema.openapi({
+      description: 'The version of the signing profile to be revoked.',
+    }),
+    reason: RevocationReasonStringSchema.openapi({
+      description: 'The reason for revoking a signing profile.',
+    }),
+    effectiveTime: TimestampSchema.openapi({
+      description:
+        'A timestamp for when revocation of a Signing Profile should become effective. Signatures generated using the signing profile after this timestamp are not trusted.',
+    }),
   })
   .openapi({
     required: ['profileVersion', 'reason', 'effectiveTime'],
@@ -1208,36 +917,22 @@ const SigningParameterKeySchema = z.string().openapi('SigningParameterKey')
 
 const StartSigningJobRequestSchema = z
   .object({
-    source: SourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 bucket that contains the object to sign or a BLOB that contains your raw code.',
-        }),
-    ),
-    destination: DestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 bucket in which to save your signed object. The destination contains the name of your bucket and an optional prefix.',
-        }),
-    ),
-    profileName: ProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the signing profile.' }),
-    ),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'String that identifies the signing request. All calls after the first that use this token return the same response as the first call.',
-        }),
-    ),
-    profileOwner: AccountIdSchema.and(
-      z.any().openapi({ description: 'The AWS account ID of the signing profile owner.' }),
-    ).exactOptional(),
+    source: SourceSchema.openapi({
+      description:
+        'The S3 bucket that contains the object to sign or a BLOB that contains your raw code.',
+    }),
+    destination: DestinationSchema.openapi({
+      description:
+        'The S3 bucket in which to save your signed object. The destination contains the name of your bucket and an optional prefix.',
+    }),
+    profileName: ProfileNameSchema.openapi({ description: 'The name of the signing profile.' }),
+    clientRequestToken: ClientRequestTokenSchema.openapi({
+      description:
+        'String that identifies the signing request. All calls after the first that use this token return the same response as the first call.',
+    }),
+    profileOwner: AccountIdSchema.exactOptional().openapi({
+      description: 'The AWS account ID of the signing profile owner.',
+    }),
   })
   .openapi({
     required: ['source', 'destination', 'profileName', 'clientRequestToken'],
@@ -1249,17 +944,15 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(200).openapi('TagKeyLi
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'One or more tags to be associated with the signing profile.' }),
-    ),
+    tags: TagMapSchema.openapi({
+      description: 'One or more tags to be associated with the signing profile.',
+    }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
@@ -1626,14 +1319,10 @@ export const putSigningProfilesProfileNameRoute = createRoute({
             .object({
               signingMaterial: z
                 .object({
-                  certificateArn: CertificateArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Resource Name (ARN) of the certificates that is used to sign your code.',
-                      }),
-                  ).exactOptional(),
+                  certificateArn: CertificateArnSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon Resource Name (ARN) of the certificates that is used to sign your code.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -1642,16 +1331,12 @@ export const putSigningProfilesProfileNameRoute = createRoute({
                 }),
               signatureValidityPeriod: z
                 .object({
-                  value: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The numerical value of the time unit for signature validity.',
-                      }),
-                  ).exactOptional(),
-                  type: ValidityTypeSchema.and(
-                    z.any().openapi({ description: 'The time unit for signature validity.' }),
-                  ).exactOptional(),
+                  value: IntegerSchema.exactOptional().openapi({
+                    description: 'The numerical value of the time unit for signature validity.',
+                  }),
+                  type: ValidityTypeSchema.exactOptional().openapi({
+                    description: 'The time unit for signature validity.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'The validity period for a signing job.', required: [] }),
@@ -1660,22 +1345,16 @@ export const putSigningProfilesProfileNameRoute = createRoute({
                 .openapi({ description: 'The ID of the signing platform to be created.' }),
               overrides: z
                 .object({
-                  signingConfiguration: SigningConfigurationOverridesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A signing configuration that overrides the default encryption or hash algorithm of a signing job.',
-                      }),
-                  ).exactOptional(),
-                  signingImageFormat: ImageFormatSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A signed image is a JSON object. When overriding the default signing platform configuration, a customer can select either of two signing formats, <code>JSONEmbedded</code> or <code>JSONDetached</code>. (A third format value, <code>JSON</code>, is reserved for future use.) With <code>JSONEmbedded</code>, the signing image has the payload embedded in it. With <code>JSONDetached</code>, the payload is not be embedded in the signing image.',
-                      }),
-                  ).exactOptional(),
+                  signingConfiguration: SigningConfigurationOverridesSchema.exactOptional().openapi(
+                    {
+                      description:
+                        'A signing configuration that overrides the default encryption or hash algorithm of a signing job.',
+                    },
+                  ),
+                  signingImageFormat: ImageFormatSchema.exactOptional().openapi({
+                    description:
+                      'A signed image is a JSON object. When overriding the default signing platform configuration, a customer can select either of two signing formats, <code>JSONEmbedded</code> or <code>JSONDetached</code>. (A third format value, <code>JSON</code>, is reserved for future use.) With <code>JSONEmbedded</code>, the signing image has the payload embedded in it. With <code>JSONDetached</code>, the payload is not be embedded in the signing image.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2085,9 +1764,9 @@ export const postSigningJobsRoute = createRoute({
             .object({
               source: z
                 .object({
-                  s3: S3SourceSchema.and(
-                    z.any().openapi({ description: 'The <code>S3Source</code> object.' }),
-                  ).exactOptional(),
+                  s3: S3SourceSchema.exactOptional().openapi({
+                    description: 'The <code>S3Source</code> object.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -2096,9 +1775,9 @@ export const postSigningJobsRoute = createRoute({
                 }),
               destination: z
                 .object({
-                  s3: S3DestinationSchema.and(
-                    z.any().openapi({ description: 'The <code>S3Destination</code> object.' }),
-                  ).exactOptional(),
+                  s3: S3DestinationSchema.exactOptional().openapi({
+                    description: 'The <code>S3Destination</code> object.',
+                  }),
                 })
                 .openapi({
                   description:

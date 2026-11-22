@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAmazonAthenaDeleteWorkGroupHandler = app.openapi(
   postXAmzTargetAmazonAthenaDeleteWorkGroupRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

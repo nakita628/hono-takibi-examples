@@ -21,7 +21,9 @@ export const oidcHandler = app
   })
   .openapi(
     deleteEnterprisesEnterpriseActionsOidcCustomizationPropertiesRepoCustomPropertyNameRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(getOrgsOrgActionsOidcCustomizationPropertiesRepoRoute, (c) => {
     throw new Error('Not implemented')

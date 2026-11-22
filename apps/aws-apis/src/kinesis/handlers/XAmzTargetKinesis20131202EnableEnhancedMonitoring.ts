@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetKinesis20131202EnableEnhancedMonitoringHandler = app.openapi(
   postXAmzTargetKinesis20131202EnableEnhancedMonitoringRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

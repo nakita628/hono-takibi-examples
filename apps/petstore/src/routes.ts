@@ -991,23 +991,17 @@ export const getUserLoginRoute = createRoute({
         'application/json': { schema: z.string() },
       },
       headers: z.object({
-        'X-Rate-Limit': {
-          description: 'calls per hour allowed by the user',
-          schema: z
-            .int32()
-            .exactOptional()
-            .openapi({
-              description: 'calls per hour allowed by the user',
-              param: { required: false },
-            }),
-        },
-        'X-Expires-After': {
-          description: 'date in UTC when token expires',
-          schema: z.iso
-            .datetime({ offset: true })
-            .exactOptional()
-            .openapi({ description: 'date in UTC when token expires', param: { required: false } }),
-        },
+        'X-Rate-Limit': z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description: 'calls per hour allowed by the user',
+            param: { required: false },
+          }),
+        'X-Expires-After': z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({ description: 'date in UTC when token expires', param: { required: false } }),
       }),
     },
     400: { description: 'Invalid username/password supplied' },

@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetLogs20140328DescribeQueryDefinitionsHandler = app.openapi(
   postXAmzTargetLogs20140328DescribeQueryDefinitionsRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

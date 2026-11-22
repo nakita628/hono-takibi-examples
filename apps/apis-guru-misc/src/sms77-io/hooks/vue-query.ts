@@ -1,0 +1,993 @@
+import { useQuery, useMutation, mutationOptions } from '@tanstack/vue-query'
+import type {
+  UseQueryOptions,
+  QueryFunctionContext,
+  UseMutationOptions,
+  DefaultError,
+  QueryClient,
+} from '@tanstack/vue-query'
+import { computed, toValue } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getAnalyticsKey() {
+  return ['analytics'] as const
+}
+
+export function getBalanceKey() {
+  return ['balance'] as const
+}
+
+export function getContactsKey() {
+  return ['contacts'] as const
+}
+
+export function getHooksKey() {
+  return ['hooks'] as const
+}
+
+export function getLookupKey() {
+  return ['lookup'] as const
+}
+
+export function getPricingKey() {
+  return ['pricing'] as const
+}
+
+export function getSmsKey() {
+  return ['sms'] as const
+}
+
+export function getStatusKey() {
+  return ['status'] as const
+}
+
+export function getValidateForVoiceKey() {
+  return ['validate_for_voice'] as const
+}
+
+export function getVoiceKey() {
+  return ['voice'] as const
+}
+
+export function getAnalyticsQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.analytics.$get>>,
+) {
+  return ['analytics', '/analytics', toValue(args)] as const
+}
+
+export function getAnalyticsQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.analytics.$get>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getAnalyticsQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.analytics.$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useAnalytics<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.analytics.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.analytics.$get>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.analytics.$get>>>>
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.analytics.$get>>>>
+          >,
+          ReturnType<typeof getAnalyticsQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.analytics.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getAnalyticsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getAnalyticsQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.analytics.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getBalanceQueryKey() {
+  return ['balance', '/balance'] as const
+}
+
+export function getBalanceQueryOptions(options?: ClientRequestOptions) {
+  return {
+    queryKey: getBalanceQueryKey(),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.balance.$get(undefined, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useBalance<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.balance.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.balance.$get>>>>
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.balance.$get>>>>
+          >,
+          ReturnType<typeof getBalanceQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.balance.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getBalanceQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: getBalanceQueryKey(),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.balance.$get(undefined, {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getContactsQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.contacts.$get>>,
+) {
+  return ['contacts', '/contacts', toValue(args)] as const
+}
+
+export function getContactsQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.contacts.$get>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getContactsQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.contacts.$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useContacts<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.contacts.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.contacts.$get>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.contacts.$get>>>>
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.contacts.$get>>>>
+          >,
+          ReturnType<typeof getContactsQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.contacts.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getContactsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getContactsQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.contacts.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostContactsMutationKey() {
+  return ['contacts', '/contacts', 'POST'] as const
+}
+
+export function getPostContactsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.contacts.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.contacts.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostContactsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.contacts.$post>) {
+      return parseResponse(client.contacts.$post(args, options))
+    },
+  })
+}
+
+export function usePostContacts<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.contacts.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.contacts.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostContactsMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getHooksQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.hooks.$get>>,
+) {
+  return ['hooks', '/hooks', toValue(args)] as const
+}
+
+export function getHooksQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.hooks.$get>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getHooksQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.hooks.$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useHooks<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.hooks.$get>>>>>,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.hooks.$get>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.hooks.$get>>>>>,
+          TError,
+          TData,
+          Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.hooks.$get>>>>>,
+          ReturnType<typeof getHooksQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.hooks.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getHooksQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getHooksQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.hooks.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostHooksMutationKey() {
+  return ['hooks', '/hooks', 'POST'] as const
+}
+
+export function getPostHooksMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.hooks.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.hooks.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostHooksMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.hooks.$post>) {
+      return parseResponse(client.hooks.$post(args, options))
+    },
+  })
+}
+
+export function usePostHooks<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.hooks.$post>>>>>,
+          TError,
+          InferRequestType<typeof client.hooks.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostHooksMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostLookupMutationKey() {
+  return ['lookup', '/lookup', 'POST'] as const
+}
+
+export function getPostLookupMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.lookup.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.lookup.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostLookupMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.lookup.$post>) {
+      return parseResponse(client.lookup.$post(args, options))
+    },
+  })
+}
+
+export function usePostLookup<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.lookup.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.lookup.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostLookupMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostLookupCnamMutationKey() {
+  return ['lookup', '/lookup/cnam', 'POST'] as const
+}
+
+export function getPostLookupCnamMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.lookup.cnam.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.lookup.cnam.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostLookupCnamMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.lookup.cnam.$post>) {
+      return parseResponse(client.lookup.cnam.$post(args, options))
+    },
+  })
+}
+
+export function usePostLookupCnam<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.lookup.cnam.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.lookup.cnam.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostLookupCnamMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostLookupFormatMutationKey() {
+  return ['lookup', '/lookup/format', 'POST'] as const
+}
+
+export function getPostLookupFormatMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.lookup.format.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.lookup.format.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostLookupFormatMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.lookup.format.$post>) {
+      return parseResponse(client.lookup.format.$post(args, options))
+    },
+  })
+}
+
+export function usePostLookupFormat<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.lookup.format.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.lookup.format.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostLookupFormatMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostLookupHlrMutationKey() {
+  return ['lookup', '/lookup/hlr', 'POST'] as const
+}
+
+export function getPostLookupHlrMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.lookup.hlr.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.lookup.hlr.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostLookupHlrMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.lookup.hlr.$post>) {
+      return parseResponse(client.lookup.hlr.$post(args, options))
+    },
+  })
+}
+
+export function usePostLookupHlr<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.lookup.hlr.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.lookup.hlr.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostLookupHlrMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostLookupMnpMutationKey() {
+  return ['lookup', '/lookup/mnp', 'POST'] as const
+}
+
+export function getPostLookupMnpMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.lookup.mnp.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.lookup.mnp.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostLookupMnpMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.lookup.mnp.$post>) {
+      return parseResponse(client.lookup.mnp.$post(args, options))
+    },
+  })
+}
+
+export function usePostLookupMnp<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.lookup.mnp.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.lookup.mnp.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostLookupMnpMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPricingQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.pricing.$get>>,
+) {
+  return ['pricing', '/pricing', toValue(args)] as const
+}
+
+export function getPricingQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.pricing.$get>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getPricingQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.pricing.$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function usePricing<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.pricing.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.pricing.$get>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.pricing.$get>>>>
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.pricing.$get>>>>
+          >,
+          ReturnType<typeof getPricingQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.pricing.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getPricingQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getPricingQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.pricing.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostSmsMutationKey() {
+  return ['sms', '/sms', 'POST'] as const
+}
+
+export function getPostSmsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.sms.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.sms.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostSmsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.sms.$post>) {
+      return parseResponse(client.sms.$post(args, options))
+    },
+  })
+}
+
+export function usePostSms<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.sms.$post>>>>>,
+          TError,
+          InferRequestType<typeof client.sms.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostSmsMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getStatusQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.status.$get>>,
+) {
+  return ['status', '/status', toValue(args)] as const
+}
+
+export function getStatusQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.status.$get>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getStatusQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.status.$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useStatus<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.status.$get>>>>>,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.status.$get>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.status.$get>>>>>,
+          TError,
+          TData,
+          Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.status.$get>>>>>,
+          ReturnType<typeof getStatusQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.status.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getStatusQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getStatusQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.status.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostValidateForVoiceMutationKey() {
+  return ['validate_for_voice', '/validate_for_voice', 'POST'] as const
+}
+
+export function getPostValidateForVoiceMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.validate_for_voice.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.validate_for_voice.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostValidateForVoiceMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.validate_for_voice.$post>) {
+      return parseResponse(client.validate_for_voice.$post(args, options))
+    },
+  })
+}
+
+export function usePostValidateForVoice<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<typeof client.validate_for_voice.$post>>>
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.validate_for_voice.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostValidateForVoiceMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostVoiceMutationKey() {
+  return ['voice', '/voice', 'POST'] as const
+}
+
+export function getPostVoiceMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.voice.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.voice.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostVoiceMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.voice.$post>) {
+      return parseResponse(client.voice.$post(args, options))
+    },
+  })
+}
+
+export function usePostVoice<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.voice.$post>>>>>,
+          TError,
+          InferRequestType<typeof client.voice.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostVoiceMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}

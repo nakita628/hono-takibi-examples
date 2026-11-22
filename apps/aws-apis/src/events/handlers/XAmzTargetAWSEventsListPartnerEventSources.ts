@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSEventsListPartnerEventSourcesHandler = app.openapi(
   postXAmzTargetAWSEventsListPartnerEventSourcesRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

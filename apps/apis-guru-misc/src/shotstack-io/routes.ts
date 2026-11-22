@@ -1,160 +1,251 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AssetResponseAttributesSchema = z
+const ShotstackDestinationSchema = z
   .object({
-    created: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The time the asset was created.',
-        example: '2021-06-30T09:42:29.446Z',
-      }),
-    filename: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The asset file name.',
-        example: '2abd5c11-0f3d-4c6d-ba20-235fc9b8e8b7.mp4',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The unique id of the hosted asset in UUID format.',
-        example: 'a4482cbf-e321-42a2-ac8b-947d26886840',
-      }),
-    owner: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The owner id of the render task.', example: '5ca6hu7s9k' }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The region the asset is hosted, currently only `au` (Australia).',
-        example: 'au',
-      }),
-    renderId: z
-      .string()
+    exclude: z
+      .boolean()
+      .default(false)
       .exactOptional()
       .openapi({
         description:
-          'The original render id that created the asset in UUID format. Multiple assets can share the same render id.',
-        example: '2abd5c11-0f3d-4c6d-ba20-235fc9b8e8b7',
+          'Set to `true` to opt-out from the Shotstack hosting and CDN service. All files must be downloaded within 24 hours of rendering.',
+        example: false,
       }),
-    status: z
-      .enum(['importing', 'ready', 'failed', 'deleted'])
-      .exactOptional()
+    provider: z
+      .string()
+      .default('shotstack')
       .openapi({
         description:
-          'The status of the asset. <ul>\n  <li>`importing` - the asset is being copied to the hosting service</li>\n  <li>`ready` - the asset is ready to be served to users</li>\n  <li>`failed` - the asset failed to copy or delete</li>\n  <li>`deleted` - the asset has been deleted</li>\n</ul>',
-        example: 'ready',
-      }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The time the asset status was last updated.',
-        example: '2021-06-30T09:42:30.168Z',
-      }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The asset file name.',
-        example:
-          'https://cdn.shotstack.io/au/v1/5ca6hu7s9k/2abd5c11-0f3d-4c6d-ba20-235fc9b8e8b7.mp4',
+          'The destination to send rendered assets to - set to `shotstack` for Shotstack hosting and CDN.',
+        example: 'shotstack',
       }),
   })
-  .openapi({ description: 'The list of asset attributes and their values.', required: [] })
-  .openapi('AssetResponseAttributes')
+  .openapi({
+    description:
+      'Send rendered assets to the Shotstack hosting and CDN service. This destination is enabled by default.',
+    required: ['provider'],
+  })
+  .openapi('ShotstackDestination')
 
-const AssetResponseDataSchema = z
+const PosterSchema = z
   .object({
-    attributes: AssetResponseAttributesSchema.exactOptional().openapi({
-      description: 'The asset attributes including render id, url, filename, file size, etc...',
+    capture: z
+      .number()
+      .openapi({
+        description:
+          'The point on the timeline in seconds to capture a single frame to use as the poster image.',
+        example: 1,
+      }),
+  })
+  .openapi({
+    description:
+      'Generate a poster image for the video at a specific point from the timeline. The poster image size will match the size of the output video.',
+    required: ['capture'],
+  })
+  .openapi('Poster')
+
+const RangeSchema = z
+  .object({
+    length: z
+      .float32()
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'The length of the portion of the video or audio to render - i.e. render 6 seconds of the video.',
+        example: 6,
+      }),
+    start: z
+      .float32()
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          'The point on the timeline, in seconds, to start the render from - i.e. start at second 3.',
+        example: 3,
+      }),
+  })
+  .openapi({
+    description:
+      'Specify a time range to render, i.e. to render only a portion of a video or audio file. Omit this setting to  export the entire video. Range can also be used to render a frame at a specific time point - setting a range and output format as `jpg` will output a single frame image at the range `start` point.',
+    required: [],
+  })
+  .openapi('Range')
+
+const SizeSchema = z
+  .object({
+    height: z
+      .int()
+      .min(0)
+      .max(4096)
+      .exactOptional()
+      .openapi({
+        description:
+          'Set a custom height for the video or image file. Value must be divisible by 2. Maximum video height is 1920px, maximum image height is 4096px.',
+        example: 800,
+      }),
+    width: z
+      .int()
+      .min(0)
+      .max(4096)
+      .exactOptional()
+      .openapi({
+        description:
+          'Set a custom width for the video or image file. Value must be divisible by 2. Maximum video width is 1920px, maximum image width is 4096px.',
+        example: 1200,
+      }),
+  })
+  .openapi({
+    description:
+      'Set a custom size for a video or image. When using a custom size omit the `resolution` and `aspectRatio`. Custom sizes must be divisible by 2 based on the encoder specifications.',
+    required: [],
+  })
+  .openapi('Size')
+
+const ThumbnailSchema = z
+  .object({
+    capture: z
+      .number()
+      .openapi({
+        description:
+          'The point on the timeline in seconds to capture a single frame to use as the thumbnail image.',
+        example: 1,
+      }),
+    scale: z
+      .number()
+      .openapi({
+        description:
+          'Scale the thumbnail size to a fraction of the viewport size - i.e. setting the scale to 0.5 will scale  the thumbnail to half the size of the viewport.',
+        example: 0.3,
+      }),
+  })
+  .openapi({
+    description:
+      'Generate a thumbnail image for the video or image at a specific point from the timeline.',
+    required: ['capture', 'scale'],
+  })
+  .openapi('Thumbnail')
+
+const OutputSchema = z
+  .object({
+    aspectRatio: z
+      .enum(['16:9', '9:16', '1:1', '4:5', '4:3'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The aspect ratio (shape) of the video or image. Useful for social media output formats. Options are: <ul>\n  <li>`16:9` - regular landscape/horizontal aspect ratio (default)</li>\n  <li>`9:16` - vertical/portrait aspect ratio</li>\n  <li>`1:1` - square aspect ratio</li>\n  <li>`4:5` - short vertical/portrait aspect ratio</li>\n  <li>`4:3` - legacy TV aspect ratio</li>\n</ul>',
+        example: '16:9',
+      }),
+    destinations: z
+      .array(z.union([ShotstackDestinationSchema]))
+      .exactOptional()
+      .openapi({
+        description:
+          'A destination is a location where output files can be sent to for serving or hosting. By default all rendered assets are automatically sent to the Shotstack hosting destination. [DestinationShotstack](/#tocs_shotstackdestination) is currently the only option with plans to add more in the future such as S3, YouTube, Vimeo and Mux. If you do not require hosting you can opt-out using the  `exclude` property.',
+      }),
+    format: z
+      .enum(['mp4', 'gif', 'mp3', 'jpg', 'png', 'bmp'])
+      .openapi({
+        description:
+          'The output format and type of media file to generate. <ul>\n  <li>`mp4` - mp4 video file</li>\n  <li>`gif` - animated gif</li>\n  <li>`jpg` - jpg image file</li>\n  <li>`png` - png image file</li>\n  <li>`bmp` - bmp image file</li>\n  <li>`mp3` - mp3 audio file (audio only)</li>\n</ul>',
+        example: 'mp4',
+      }),
+    fps: z
+      .union([z.literal(12), z.literal(15), z.literal(24), z.literal(25), z.literal(30)])
+      .default(25)
+      .exactOptional()
+      .openapi({
+        description:
+          'Override the default frames per second. Useful for when the source footage is recorded at 30fps, i.e. on  mobile devices. Lower frame rates can be used to add cinematic quality (24fps) or to create smaller file size/faster render times or animated gifs (12 or 15fps). Default is 25fps. <ul>\n  <li>`12` - 12fps</li>\n  <li>`15` - 15fps</li>\n  <li>`24` - 24fps</li>\n  <li>`25` - 25fps</li>\n  <li>`30` - 30fps</li>\n</ul>',
+        example: 25,
+      }),
+    poster: PosterSchema.exactOptional().openapi({
+      description: 'Generate a poster image from a specific point on the timeline.',
     }),
-    type: z
-      .string()
+    quality: z
+      .enum(['low', 'medium', 'high'])
+      .default('medium')
       .exactOptional()
       .openapi({
-        description: 'The type of resource, in this case it is an assets.',
-        example: 'asset',
+        description:
+          'Adjust the output quality of the video, image or audio. Adjusting quality affects  render speed, download speeds and storage requirements due to file size. The default `medium` provides the most optimized choice for all three  factors. <ul>\n  <li>`low` - slightly reduced quality, smaller file size</li>\n  <li>`medium` - optimized quality, render speeds and file size</li>\n  <li>`high` - slightly increased quality, larger file size</li>\n</ul>',
+        example: 'medium',
+      }),
+    range: RangeSchema.exactOptional(),
+    resolution: z
+      .enum(['preview', 'mobile', 'sd', 'hd', '1080'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The output resolution of the video or image. <ul>\n  <li>`preview` - 512px x 288px @ 15fps</li>\n  <li>`mobile` - 640px x 360px @ 25fps</li>\n  <li>`sd` - 1024px x 576px @ 25fps</li>\n  <li>`hd` - 1280px x 720px @ 25fps</li>\n  <li>`1080` - 1920px x 1080px @ 25fps</li>\n</ul>',
+        example: 'sd',
+      }),
+    scaleTo: z
+      .enum(['preview', 'mobile', 'sd', 'hd', '1080'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Override the resolution and scale the video or image to render at a different size. When using scaleTo the asset should be edited at the resolution dimensions, i.e. use font sizes that look best at HD, then use scaleTo to output the file at SD and the text will be scaled to the correct size. This is useful if you want to create multiple asset sizes. <ul>\n  <li>`preview` - 512px x 288px @ 15fps</li>\n  <li>`mobile` - 640px x 360px @ 25fps</li>\n  <li>`sd` - 1024px x 576px @25fps</li>\n  <li>`hd` - 1280px x 720px @25fps</li>\n  <li>`1080` - 1920px x 1080px @25fps</li>\n</ul>',
+      }),
+    size: SizeSchema.exactOptional(),
+    thumbnail: ThumbnailSchema.exactOptional().openapi({
+      description: 'Generate a thumbnail image from a specific point on the timeline.',
+    }),
+  })
+  .openapi({
+    description: 'The output format, render range and type of media to generate.',
+    required: ['format'],
+  })
+  .openapi('Output')
+
+const FontSchema = z
+  .object({
+    src: z
+      .string()
+      .openapi({
+        description:
+          'The URL of the font file. The URL must be publicly accessible or include credentials.',
+        example: 'https://s3-ap-northeast-1.amazonaws.com/my-bucket/open-sans.ttf',
       }),
   })
   .openapi({
-    description: 'The type of resource (an asset) and attributes of the asset.',
-    required: [],
-  })
-  .openapi('AssetResponseData')
-
-const AssetRenderResponseSchema = z
-  .object({
-    data: z
-      .array(AssetResponseDataSchema)
-      .exactOptional()
-      .openapi({ description: 'An array of asset resources grouped by render id.' }),
-  })
-  .openapi({
     description:
-      'The response returned by the Serve API [get asset by render id](#get-asset-by-render-id) request. The response  is an array of asset resources, including video, image, audio, thumbnail and poster image. The response follows  the [json:api](https://jsonapi.org/) specification.',
-    required: [],
+      'Download a custom font to use with the HTML asset type, using the font name in the CSS or font tag. See our [custom fonts](https://shotstack.io/learn/html-custom-fonts/) getting started guide for more details.',
+    required: ['src'],
   })
-  .openapi('AssetRenderResponse')
+  .openapi('Font')
 
-const AssetResponseSchema = z
-  .object({
-    data: AssetResponseDataSchema.exactOptional().openapi({ description: 'An asset resource.' }),
-  })
-  .openapi({
-    description:
-      'The response returned by the Serve API [get asset](#get-asset) request. Includes details of a hosted video, image, audio file, thumbnail or poster image. The response follows the [json:api](https://jsonapi.org/) specification.',
-    required: [],
-  })
-  .openapi('AssetResponse')
-
-const AudioAssetSchema = z
+const SoundtrackSchema = z
   .object({
     effect: z
       .enum(['fadeIn', 'fadeOut', 'fadeInFadeOut'])
       .exactOptional()
       .openapi({
         description:
-          'The effect to apply to the audio asset <ul>\n  <li>`fadeIn` - fade volume in only</li>\n  <li>`fadeOut` - fade volume out only</li>\n  <li>`fadeInFadeOut` - fade volume in and out</li>\n</ul>',
+          'The effect to apply to the audio file <ul>\n  <li>`fadeIn` - fade volume in only</li>\n  <li>`fadeOut` - fade volume out only</li>\n  <li>`fadeInFadeOut` - fade volume in and out</li>\n</ul>',
       }),
     src: z
       .string()
       .openapi({
         description:
-          'The audio source URL. The URL must be publicly accessible or include credentials.',
-        example: 'https://s3-ap-northeast-1.amazonaws.com/my-bucket/sound.mp3',
+          'The URL of the mp3 audio file. The URL must be publicly accessible or include credentials.',
+        example: 'https://s3-ap-northeast-1.amazonaws.com/my-bucket/music.mp3',
       }),
-    trim: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'The start trim point of the audio clip, in seconds (defaults to 0). Audio will start from the in trim point. The audio will play until the file ends or the Clip length is reached.',
-      }),
-    type: z
-      .string()
-      .default('audio')
-      .openapi({ description: 'The type of asset - set to `audio` for audio assets.' }),
     volume: z
       .number()
       .default(1)
       .exactOptional()
       .openapi({
         description:
-          'Set the volume for the audio clip between 0 and 1 where 0 is muted and 1 is full volume (defaults to 1).',
+          'Set the volume for the soundtrack between 0 and 1 where 0 is muted and 1 is full volume (defaults to 1).',
       }),
   })
   .openapi({
     description:
-      'The AudioAsset is used to add sound effects and audio at specific intervals on the timeline. The src must be a publicly accessible URL to an audio resource such  as an mp3 file.',
-    required: ['type', 'src'],
+      'A music or audio file in mp3 format that plays for the duration of the rendered video or the length of the audio file, which ever is shortest.',
+    required: ['src'],
   })
-  .openapi('AudioAsset')
+  .openapi('Soundtrack')
 
 const CropSchema = z
   .object({
@@ -433,6 +524,49 @@ const HtmlAssetSchema = z
   })
   .openapi('HtmlAsset')
 
+const AudioAssetSchema = z
+  .object({
+    effect: z
+      .enum(['fadeIn', 'fadeOut', 'fadeInFadeOut'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The effect to apply to the audio asset <ul>\n  <li>`fadeIn` - fade volume in only</li>\n  <li>`fadeOut` - fade volume out only</li>\n  <li>`fadeInFadeOut` - fade volume in and out</li>\n</ul>',
+      }),
+    src: z
+      .string()
+      .openapi({
+        description:
+          'The audio source URL. The URL must be publicly accessible or include credentials.',
+        example: 'https://s3-ap-northeast-1.amazonaws.com/my-bucket/sound.mp3',
+      }),
+    trim: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The start trim point of the audio clip, in seconds (defaults to 0). Audio will start from the in trim point. The audio will play until the file ends or the Clip length is reached.',
+      }),
+    type: z
+      .string()
+      .default('audio')
+      .openapi({ description: 'The type of asset - set to `audio` for audio assets.' }),
+    volume: z
+      .number()
+      .default(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'Set the volume for the audio clip between 0 and 1 where 0 is muted and 1 is full volume (defaults to 1).',
+      }),
+  })
+  .openapi({
+    description:
+      'The AudioAsset is used to add sound effects and audio at specific intervals on the timeline. The src must be a publicly accessible URL to an audio resource such  as an mp3 file.',
+    required: ['type', 'src'],
+  })
+  .openapi('AudioAsset')
+
 const LumaAssetSchema = z
   .object({
     src: z
@@ -701,253 +835,6 @@ const ClipSchema = z
   })
   .openapi('Clip')
 
-const ShotstackDestinationSchema = z
-  .object({
-    exclude: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        description:
-          'Set to `true` to opt-out from the Shotstack hosting and CDN service. All files must be downloaded within 24 hours of rendering.',
-        example: false,
-      }),
-    provider: z
-      .string()
-      .default('shotstack')
-      .openapi({
-        description:
-          'The destination to send rendered assets to - set to `shotstack` for Shotstack hosting and CDN.',
-        example: 'shotstack',
-      }),
-  })
-  .openapi({
-    description:
-      'Send rendered assets to the Shotstack hosting and CDN service. This destination is enabled by default.',
-    required: ['provider'],
-  })
-  .openapi('ShotstackDestination')
-
-const PosterSchema = z
-  .object({
-    capture: z
-      .number()
-      .openapi({
-        description:
-          'The point on the timeline in seconds to capture a single frame to use as the poster image.',
-        example: 1,
-      }),
-  })
-  .openapi({
-    description:
-      'Generate a poster image for the video at a specific point from the timeline. The poster image size will match the size of the output video.',
-    required: ['capture'],
-  })
-  .openapi('Poster')
-
-const RangeSchema = z
-  .object({
-    length: z
-      .float32()
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'The length of the portion of the video or audio to render - i.e. render 6 seconds of the video.',
-        example: 6,
-      }),
-    start: z
-      .float32()
-      .min(0)
-      .exactOptional()
-      .openapi({
-        description:
-          'The point on the timeline, in seconds, to start the render from - i.e. start at second 3.',
-        example: 3,
-      }),
-  })
-  .openapi({
-    description:
-      'Specify a time range to render, i.e. to render only a portion of a video or audio file. Omit this setting to  export the entire video. Range can also be used to render a frame at a specific time point - setting a range and output format as `jpg` will output a single frame image at the range `start` point.',
-    required: [],
-  })
-  .openapi('Range')
-
-const SizeSchema = z
-  .object({
-    height: z
-      .int()
-      .min(0)
-      .max(4096)
-      .exactOptional()
-      .openapi({
-        description:
-          'Set a custom height for the video or image file. Value must be divisible by 2. Maximum video height is 1920px, maximum image height is 4096px.',
-        example: 800,
-      }),
-    width: z
-      .int()
-      .min(0)
-      .max(4096)
-      .exactOptional()
-      .openapi({
-        description:
-          'Set a custom width for the video or image file. Value must be divisible by 2. Maximum video width is 1920px, maximum image width is 4096px.',
-        example: 1200,
-      }),
-  })
-  .openapi({
-    description:
-      'Set a custom size for a video or image. When using a custom size omit the `resolution` and `aspectRatio`. Custom sizes must be divisible by 2 based on the encoder specifications.',
-    required: [],
-  })
-  .openapi('Size')
-
-const ThumbnailSchema = z
-  .object({
-    capture: z
-      .number()
-      .openapi({
-        description:
-          'The point on the timeline in seconds to capture a single frame to use as the thumbnail image.',
-        example: 1,
-      }),
-    scale: z
-      .number()
-      .openapi({
-        description:
-          'Scale the thumbnail size to a fraction of the viewport size - i.e. setting the scale to 0.5 will scale  the thumbnail to half the size of the viewport.',
-        example: 0.3,
-      }),
-  })
-  .openapi({
-    description:
-      'Generate a thumbnail image for the video or image at a specific point from the timeline.',
-    required: ['capture', 'scale'],
-  })
-  .openapi('Thumbnail')
-
-const OutputSchema = z
-  .object({
-    aspectRatio: z
-      .enum(['16:9', '9:16', '1:1', '4:5', '4:3'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The aspect ratio (shape) of the video or image. Useful for social media output formats. Options are: <ul>\n  <li>`16:9` - regular landscape/horizontal aspect ratio (default)</li>\n  <li>`9:16` - vertical/portrait aspect ratio</li>\n  <li>`1:1` - square aspect ratio</li>\n  <li>`4:5` - short vertical/portrait aspect ratio</li>\n  <li>`4:3` - legacy TV aspect ratio</li>\n</ul>',
-        example: '16:9',
-      }),
-    destinations: z
-      .array(z.union([ShotstackDestinationSchema]))
-      .exactOptional()
-      .openapi({
-        description:
-          'A destination is a location where output files can be sent to for serving or hosting. By default all rendered assets are automatically sent to the Shotstack hosting destination. [DestinationShotstack](/#tocs_shotstackdestination) is currently the only option with plans to add more in the future such as S3, YouTube, Vimeo and Mux. If you do not require hosting you can opt-out using the  `exclude` property.',
-      }),
-    format: z
-      .enum(['mp4', 'gif', 'mp3', 'jpg', 'png', 'bmp'])
-      .openapi({
-        description:
-          'The output format and type of media file to generate. <ul>\n  <li>`mp4` - mp4 video file</li>\n  <li>`gif` - animated gif</li>\n  <li>`jpg` - jpg image file</li>\n  <li>`png` - png image file</li>\n  <li>`bmp` - bmp image file</li>\n  <li>`mp3` - mp3 audio file (audio only)</li>\n</ul>',
-        example: 'mp4',
-      }),
-    fps: z
-      .union([z.literal(12), z.literal(15), z.literal(24), z.literal(25), z.literal(30)])
-      .default(25)
-      .exactOptional()
-      .openapi({
-        description:
-          'Override the default frames per second. Useful for when the source footage is recorded at 30fps, i.e. on  mobile devices. Lower frame rates can be used to add cinematic quality (24fps) or to create smaller file size/faster render times or animated gifs (12 or 15fps). Default is 25fps. <ul>\n  <li>`12` - 12fps</li>\n  <li>`15` - 15fps</li>\n  <li>`24` - 24fps</li>\n  <li>`25` - 25fps</li>\n  <li>`30` - 30fps</li>\n</ul>',
-        example: 25,
-      }),
-    poster: PosterSchema.exactOptional().openapi({
-      description: 'Generate a poster image from a specific point on the timeline.',
-    }),
-    quality: z
-      .enum(['low', 'medium', 'high'])
-      .default('medium')
-      .exactOptional()
-      .openapi({
-        description:
-          'Adjust the output quality of the video, image or audio. Adjusting quality affects  render speed, download speeds and storage requirements due to file size. The default `medium` provides the most optimized choice for all three  factors. <ul>\n  <li>`low` - slightly reduced quality, smaller file size</li>\n  <li>`medium` - optimized quality, render speeds and file size</li>\n  <li>`high` - slightly increased quality, larger file size</li>\n</ul>',
-        example: 'medium',
-      }),
-    range: RangeSchema.exactOptional(),
-    resolution: z
-      .enum(['preview', 'mobile', 'sd', 'hd', '1080'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The output resolution of the video or image. <ul>\n  <li>`preview` - 512px x 288px @ 15fps</li>\n  <li>`mobile` - 640px x 360px @ 25fps</li>\n  <li>`sd` - 1024px x 576px @ 25fps</li>\n  <li>`hd` - 1280px x 720px @ 25fps</li>\n  <li>`1080` - 1920px x 1080px @ 25fps</li>\n</ul>',
-        example: 'sd',
-      }),
-    scaleTo: z
-      .enum(['preview', 'mobile', 'sd', 'hd', '1080'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Override the resolution and scale the video or image to render at a different size. When using scaleTo the asset should be edited at the resolution dimensions, i.e. use font sizes that look best at HD, then use scaleTo to output the file at SD and the text will be scaled to the correct size. This is useful if you want to create multiple asset sizes. <ul>\n  <li>`preview` - 512px x 288px @ 15fps</li>\n  <li>`mobile` - 640px x 360px @ 25fps</li>\n  <li>`sd` - 1024px x 576px @25fps</li>\n  <li>`hd` - 1280px x 720px @25fps</li>\n  <li>`1080` - 1920px x 1080px @25fps</li>\n</ul>',
-      }),
-    size: SizeSchema.exactOptional(),
-    thumbnail: ThumbnailSchema.exactOptional().openapi({
-      description: 'Generate a thumbnail image from a specific point on the timeline.',
-    }),
-  })
-  .openapi({
-    description: 'The output format, render range and type of media to generate.',
-    required: ['format'],
-  })
-  .openapi('Output')
-
-const FontSchema = z
-  .object({
-    src: z
-      .string()
-      .openapi({
-        description:
-          'The URL of the font file. The URL must be publicly accessible or include credentials.',
-        example: 'https://s3-ap-northeast-1.amazonaws.com/my-bucket/open-sans.ttf',
-      }),
-  })
-  .openapi({
-    description:
-      'Download a custom font to use with the HTML asset type, using the font name in the CSS or font tag. See our [custom fonts](https://shotstack.io/learn/html-custom-fonts/) getting started guide for more details.',
-    required: ['src'],
-  })
-  .openapi('Font')
-
-const SoundtrackSchema = z
-  .object({
-    effect: z
-      .enum(['fadeIn', 'fadeOut', 'fadeInFadeOut'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The effect to apply to the audio file <ul>\n  <li>`fadeIn` - fade volume in only</li>\n  <li>`fadeOut` - fade volume out only</li>\n  <li>`fadeInFadeOut` - fade volume in and out</li>\n</ul>',
-      }),
-    src: z
-      .string()
-      .openapi({
-        description:
-          'The URL of the mp3 audio file. The URL must be publicly accessible or include credentials.',
-        example: 'https://s3-ap-northeast-1.amazonaws.com/my-bucket/music.mp3',
-      }),
-    volume: z
-      .number()
-      .default(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'Set the volume for the soundtrack between 0 and 1 where 0 is muted and 1 is full volume (defaults to 1).',
-      }),
-  })
-  .openapi({
-    description:
-      'A music or audio file in mp3 format that plays for the duration of the rendered video or the length of the audio file, which ever is shortest.',
-    required: ['src'],
-  })
-  .openapi('Soundtrack')
-
 const TrackSchema = z
   .object({
     clips: z
@@ -1004,7 +891,14 @@ const TimelineSchema = z
   })
   .openapi('Timeline')
 
-const EditSchema = z
+type EditType = {
+  callback?: string
+  disk?: 'local' | 'mount'
+  output: z.infer<typeof OutputSchema>
+  timeline: z.infer<typeof TimelineSchema>
+}
+
+const EditSchema: z.ZodType<EditType> = z
   .object({
     callback: z
       .string()
@@ -1032,50 +926,23 @@ const EditSchema = z
   })
   .openapi('Edit')
 
-const QueuedResponseDataSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({
-        description: 'The id of the render task in UUID format.',
-        example: '2abd5c11-0f3d-4c6d-ba20-235fc9b8e8b7',
-      }),
-    message: z
-      .string()
-      .openapi({
-        description: 'Success response message or error details.',
-        example: 'Render Successfully Queued',
-      }),
-  })
-  .openapi({
-    description: 'The response data returned with the [QueuedResponse](#tocs_queuedresponse).',
-    required: ['message', 'id'],
-  })
-  .openapi('QueuedResponseData')
+type RenderResponseDataType = {
+  created: string
+  data: z.infer<typeof EditSchema>
+  duration?: number
+  error?: string
+  id: string
+  owner: string
+  plan?: string
+  poster?: string
+  renderTime?: number
+  status: 'queued' | 'fetching' | 'rendering' | 'saving' | 'done' | 'failed'
+  thumbnail?: string
+  updated: string
+  url?: string
+}
 
-const QueuedResponseSchema = z
-  .object({
-    message: z
-      .string()
-      .openapi({
-        description: '`Created`, `Bad Request` or an error message.',
-        example: 'Created',
-      }),
-    response: QueuedResponseDataSchema.openapi({
-      description: '`QueuedResponseData` or an error message.',
-    }),
-    success: z
-      .boolean()
-      .openapi({ description: '`true` if successfully queued, else `false`.', example: true }),
-  })
-  .openapi({
-    description:
-      'The response received after a [render request](#render-asset) is submitted. The render task is queued for rendering and a unique render id is returned.',
-    required: ['success', 'message', 'response'],
-  })
-  .openapi('QueuedResponse')
-
-const RenderResponseDataSchema = z
+const RenderResponseDataSchema: z.ZodType<RenderResponseDataType> = z
   .object({
     created: z
       .string()
@@ -1163,7 +1030,169 @@ const RenderResponseDataSchema = z
   })
   .openapi('RenderResponseData')
 
-const RenderResponseSchema = z
+type RenderResponseType = {
+  message: string
+  response: z.infer<typeof RenderResponseDataSchema>
+  success: boolean
+}
+
+const AssetResponseAttributesSchema = z
+  .object({
+    created: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The time the asset was created.',
+        example: '2021-06-30T09:42:29.446Z',
+      }),
+    filename: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The asset file name.',
+        example: '2abd5c11-0f3d-4c6d-ba20-235fc9b8e8b7.mp4',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The unique id of the hosted asset in UUID format.',
+        example: 'a4482cbf-e321-42a2-ac8b-947d26886840',
+      }),
+    owner: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The owner id of the render task.', example: '5ca6hu7s9k' }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The region the asset is hosted, currently only `au` (Australia).',
+        example: 'au',
+      }),
+    renderId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The original render id that created the asset in UUID format. Multiple assets can share the same render id.',
+        example: '2abd5c11-0f3d-4c6d-ba20-235fc9b8e8b7',
+      }),
+    status: z
+      .enum(['importing', 'ready', 'failed', 'deleted'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The status of the asset. <ul>\n  <li>`importing` - the asset is being copied to the hosting service</li>\n  <li>`ready` - the asset is ready to be served to users</li>\n  <li>`failed` - the asset failed to copy or delete</li>\n  <li>`deleted` - the asset has been deleted</li>\n</ul>',
+        example: 'ready',
+      }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The time the asset status was last updated.',
+        example: '2021-06-30T09:42:30.168Z',
+      }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The asset file name.',
+        example:
+          'https://cdn.shotstack.io/au/v1/5ca6hu7s9k/2abd5c11-0f3d-4c6d-ba20-235fc9b8e8b7.mp4',
+      }),
+  })
+  .openapi({ description: 'The list of asset attributes and their values.', required: [] })
+  .openapi('AssetResponseAttributes')
+
+const AssetResponseDataSchema = z
+  .object({
+    attributes: AssetResponseAttributesSchema.exactOptional().openapi({
+      description: 'The asset attributes including render id, url, filename, file size, etc...',
+    }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The type of resource, in this case it is an assets.',
+        example: 'asset',
+      }),
+  })
+  .openapi({
+    description: 'The type of resource (an asset) and attributes of the asset.',
+    required: [],
+  })
+  .openapi('AssetResponseData')
+
+const AssetRenderResponseSchema = z
+  .object({
+    data: z
+      .array(AssetResponseDataSchema)
+      .exactOptional()
+      .openapi({ description: 'An array of asset resources grouped by render id.' }),
+  })
+  .openapi({
+    description:
+      'The response returned by the Serve API [get asset by render id](#get-asset-by-render-id) request. The response  is an array of asset resources, including video, image, audio, thumbnail and poster image. The response follows  the [json:api](https://jsonapi.org/) specification.',
+    required: [],
+  })
+  .openapi('AssetRenderResponse')
+
+const AssetResponseSchema = z
+  .object({
+    data: AssetResponseDataSchema.exactOptional().openapi({ description: 'An asset resource.' }),
+  })
+  .openapi({
+    description:
+      'The response returned by the Serve API [get asset](#get-asset) request. Includes details of a hosted video, image, audio file, thumbnail or poster image. The response follows the [json:api](https://jsonapi.org/) specification.',
+    required: [],
+  })
+  .openapi('AssetResponse')
+
+const QueuedResponseDataSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({
+        description: 'The id of the render task in UUID format.',
+        example: '2abd5c11-0f3d-4c6d-ba20-235fc9b8e8b7',
+      }),
+    message: z
+      .string()
+      .openapi({
+        description: 'Success response message or error details.',
+        example: 'Render Successfully Queued',
+      }),
+  })
+  .openapi({
+    description: 'The response data returned with the [QueuedResponse](#tocs_queuedresponse).',
+    required: ['message', 'id'],
+  })
+  .openapi('QueuedResponseData')
+
+const QueuedResponseSchema = z
+  .object({
+    message: z
+      .string()
+      .openapi({
+        description: '`Created`, `Bad Request` or an error message.',
+        example: 'Created',
+      }),
+    response: QueuedResponseDataSchema.openapi({
+      description: '`QueuedResponseData` or an error message.',
+    }),
+    success: z
+      .boolean()
+      .openapi({ description: '`true` if successfully queued, else `false`.', example: true }),
+  })
+  .openapi({
+    description:
+      'The response received after a [render request](#render-asset) is submitted. The render task is queued for rendering and a unique render id is returned.',
+    required: ['success', 'message', 'response'],
+  })
+  .openapi('QueuedResponse')
+
+const RenderResponseSchema: z.ZodType<RenderResponseType> = z
   .object({
     message: z.string().openapi({ description: '`OK` or an error message.', example: 'OK' }),
     response: RenderResponseDataSchema.openapi({

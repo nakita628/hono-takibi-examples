@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodePipeline20150709EnableStageTransitionHandler = app.openapi(
   postXAmzTargetCodePipeline20150709EnableStageTransitionRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

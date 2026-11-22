@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetLogs20140328PutDataProtectionPolicyHandler = app.openapi(
   postXAmzTargetLogs20140328PutDataProtectionPolicyRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

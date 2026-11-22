@@ -1,5 +1,356 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const GoogleCloudDatalabelingV1beta1OperatorMetadataSchema = z
+  .object({
+    comments: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Comments from contributors.' }),
+    labelVotes: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The total number of contributors that choose this label.' }),
+    score: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Confidence score corresponding to a label. For examle, if 3 contributors have answered the question and 2 of them agree on the final label, the confidence score will be 0.67 (2/3).',
+      }),
+    totalVotes: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The total number of contributors that answer this question.' }),
+  })
+  .openapi({
+    description: 'General information useful for labels coming from contributors.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1OperatorMetadata')
+
+const GoogleCloudDatalabelingV1beta1AnnotationMetadataSchema = z
+  .object({
+    operatorMetadata: GoogleCloudDatalabelingV1beta1OperatorMetadataSchema.exactOptional().openapi({
+      description: 'Metadata related to human labeling.',
+    }),
+  })
+  .openapi({ description: 'Additional information associated with the annotation.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1AnnotationMetadata')
+
+const GoogleCloudDatalabelingV1beta1AnnotationSpecSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. User-provided description of the annotation specification. The description can be up to 10,000 characters long.',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Required. The display name of the AnnotationSpec. Maximum of 64 characters.',
+      }),
+    index: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. This is the integer index of the AnnotationSpec. The index for the whole AnnotationSpecSet is sequential starting from 0. For example, an AnnotationSpecSet with classes `dog` and `cat`, might contain one AnnotationSpec with `{ display_name: "dog", index: 0 }` and one AnnotationSpec with `{ display_name: "cat", index: 1 }`. This is especially useful for model training as it encodes the string labels into numeric values.',
+      }),
+  })
+  .openapi({
+    description:
+      'Container of information related to one possible annotation that can be used in a labeling task. For example, an image classification task where images are labeled as `dog` or `cat` must reference an AnnotationSpec for `dog` and an AnnotationSpec for `cat`.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1AnnotationSpec')
+
+const GoogleCloudDatalabelingV1beta1VertexSchema = z
+  .object({
+    x: z.int32().exactOptional().openapi({ description: 'X coordinate.' }),
+    y: z.int32().exactOptional().openapi({ description: 'Y coordinate.' }),
+  })
+  .openapi({
+    description:
+      'A vertex represents a 2D point in the image. NOTE: the vertex coordinates are in the same scale as the original image.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1Vertex')
+
+const GoogleCloudDatalabelingV1beta1BoundingPolySchema = z
+  .object({
+    vertices: z
+      .array(GoogleCloudDatalabelingV1beta1VertexSchema)
+      .exactOptional()
+      .openapi({ description: 'The bounding polygon vertices.' }),
+  })
+  .openapi({ description: 'A bounding polygon in the image.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1BoundingPoly')
+
+const GoogleCloudDatalabelingV1beta1NormalizedVertexSchema = z
+  .object({
+    x: z.float32().exactOptional().openapi({ description: 'X coordinate.' }),
+    y: z.float32().exactOptional().openapi({ description: 'Y coordinate.' }),
+  })
+  .openapi({
+    description:
+      'A vertex represents a 2D point in the image. NOTE: the normalized vertex coordinates are relative to the original image and range from 0 to 1.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1NormalizedVertex')
+
+const GoogleCloudDatalabelingV1beta1NormalizedBoundingPolySchema = z
+  .object({
+    normalizedVertices: z
+      .array(GoogleCloudDatalabelingV1beta1NormalizedVertexSchema)
+      .exactOptional()
+      .openapi({ description: 'The bounding polygon normalized vertices.' }),
+  })
+  .openapi({ description: 'Normalized bounding polygon.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1NormalizedBoundingPoly')
+
+const GoogleCloudDatalabelingV1beta1ImageBoundingPolyAnnotationSchema = z
+  .object({
+    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
+      description: 'Label of object in this bounding polygon.',
+    }),
+    boundingPoly: GoogleCloudDatalabelingV1beta1BoundingPolySchema.exactOptional(),
+    normalizedBoundingPoly:
+      GoogleCloudDatalabelingV1beta1NormalizedBoundingPolySchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Image bounding poly annotation. It represents a polygon including bounding box in the image.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1ImageBoundingPolyAnnotation')
+
+const GoogleCloudDatalabelingV1beta1ImageClassificationAnnotationSchema = z
+  .object({
+    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
+      description: 'Label of image.',
+    }),
+  })
+  .openapi({ description: 'Image classification annotation definition.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1ImageClassificationAnnotation')
+
+const GoogleCloudDatalabelingV1beta1NormalizedPolylineSchema = z
+  .object({
+    normalizedVertices: z
+      .array(GoogleCloudDatalabelingV1beta1NormalizedVertexSchema)
+      .exactOptional()
+      .openapi({ description: 'The normalized polyline vertices.' }),
+  })
+  .openapi({ description: 'Normalized polyline.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1NormalizedPolyline')
+
+const GoogleCloudDatalabelingV1beta1PolylineSchema = z
+  .object({
+    vertices: z
+      .array(GoogleCloudDatalabelingV1beta1VertexSchema)
+      .exactOptional()
+      .openapi({ description: 'The polyline vertices.' }),
+  })
+  .openapi({ description: 'A line with multiple line segments.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1Polyline')
+
+const GoogleCloudDatalabelingV1beta1ImagePolylineAnnotationSchema = z
+  .object({
+    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
+      description: 'Label of this polyline.',
+    }),
+    normalizedPolyline: GoogleCloudDatalabelingV1beta1NormalizedPolylineSchema.exactOptional(),
+    polyline: GoogleCloudDatalabelingV1beta1PolylineSchema.exactOptional(),
+  })
+  .openapi({ description: 'A polyline for the image annotation.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1ImagePolylineAnnotation')
+
+const GoogleCloudDatalabelingV1beta1ImageSegmentationAnnotationSchema = z
+  .object({
+    annotationColors: z
+      .record(z.string(), GoogleCloudDatalabelingV1beta1AnnotationSpecSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The mapping between rgb color and annotation spec. The key is the rgb color represented in format of rgb(0, 0, 0). The value is the AnnotationSpec.',
+      }),
+    imageBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "A byte string of a full image's color map." }),
+    mimeType: z.string().exactOptional().openapi({ description: 'Image format.' }),
+  })
+  .openapi({ description: 'Image segmentation annotation.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1ImageSegmentationAnnotation')
+
+const GoogleCloudDatalabelingV1beta1TextClassificationAnnotationSchema = z
+  .object({
+    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
+      description: 'Label of the text.',
+    }),
+  })
+  .openapi({ description: 'Text classification annotation.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1TextClassificationAnnotation')
+
+const GoogleCloudDatalabelingV1beta1SequentialSegmentSchema = z
+  .object({
+    end: z.int32().exactOptional().openapi({ description: 'End position (exclusive).' }),
+    start: z.int32().exactOptional().openapi({ description: 'Start position (inclusive).' }),
+  })
+  .openapi({
+    description: 'Start and end position in a sequence (e.g. text segment).',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1SequentialSegment')
+
+const GoogleCloudDatalabelingV1beta1TextEntityExtractionAnnotationSchema = z
+  .object({
+    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
+      description: 'Label of the text entities.',
+    }),
+    sequentialSegment:
+      GoogleCloudDatalabelingV1beta1SequentialSegmentSchema.exactOptional().openapi({
+        description: 'Position of the entity.',
+      }),
+  })
+  .openapi({ description: 'Text entity extraction annotation.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1TextEntityExtractionAnnotation')
+
+const GoogleCloudDatalabelingV1beta1TimeSegmentSchema = z
+  .object({
+    endTimeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'End of the time segment (exclusive), represented as the duration since the example start.',
+      }),
+    startTimeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Start of the time segment (inclusive), represented as the duration since the example start.',
+      }),
+  })
+  .openapi({
+    description: 'A time period inside of an example that has a time dimension (e.g. video).',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1TimeSegment')
+
+const GoogleCloudDatalabelingV1beta1VideoClassificationAnnotationSchema = z
+  .object({
+    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
+      description: 'Label of the segment specified by time_segment.',
+    }),
+    timeSegment: GoogleCloudDatalabelingV1beta1TimeSegmentSchema.exactOptional().openapi({
+      description: 'The time segment of the video to which the annotation applies.',
+    }),
+  })
+  .openapi({ description: 'Video classification annotation.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1VideoClassificationAnnotation')
+
+const GoogleCloudDatalabelingV1beta1VideoEventAnnotationSchema = z
+  .object({
+    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
+      description: 'Label of the event in this annotation.',
+    }),
+    timeSegment: GoogleCloudDatalabelingV1beta1TimeSegmentSchema.exactOptional().openapi({
+      description: 'The time segment of the video to which the annotation applies.',
+    }),
+  })
+  .openapi({ description: 'Video event annotation.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1VideoEventAnnotation')
+
+const GoogleCloudDatalabelingV1beta1ObjectTrackingFrameSchema = z
+  .object({
+    boundingPoly: GoogleCloudDatalabelingV1beta1BoundingPolySchema.exactOptional(),
+    normalizedBoundingPoly:
+      GoogleCloudDatalabelingV1beta1NormalizedBoundingPolySchema.exactOptional(),
+    timeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The time offset of this frame relative to the beginning of the video.',
+      }),
+  })
+  .openapi({
+    description: 'Video frame level annotation for object detection and tracking.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1ObjectTrackingFrame')
+
+const GoogleCloudDatalabelingV1beta1VideoObjectTrackingAnnotationSchema = z
+  .object({
+    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
+      description: 'Label of the object tracked in this annotation.',
+    }),
+    objectTrackingFrames: z
+      .array(GoogleCloudDatalabelingV1beta1ObjectTrackingFrameSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of frames where this object track appears.' }),
+    timeSegment: GoogleCloudDatalabelingV1beta1TimeSegmentSchema.exactOptional().openapi({
+      description: 'The time segment of the video to which object tracking applies.',
+    }),
+  })
+  .openapi({ description: 'Video object tracking annotation.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1VideoObjectTrackingAnnotation')
+
+const GoogleCloudDatalabelingV1beta1AnnotationValueSchema = z
+  .object({
+    imageBoundingPolyAnnotation:
+      GoogleCloudDatalabelingV1beta1ImageBoundingPolyAnnotationSchema.exactOptional().openapi({
+        description:
+          'Annotation value for image bounding box, oriented bounding box and polygon cases.',
+      }),
+    imageClassificationAnnotation:
+      GoogleCloudDatalabelingV1beta1ImageClassificationAnnotationSchema.exactOptional().openapi({
+        description: 'Annotation value for image classification case.',
+      }),
+    imagePolylineAnnotation:
+      GoogleCloudDatalabelingV1beta1ImagePolylineAnnotationSchema.exactOptional().openapi({
+        description:
+          'Annotation value for image polyline cases. Polyline here is different from BoundingPoly. It is formed by line segments connected to each other but not closed form(Bounding Poly). The line segments can cross each other.',
+      }),
+    imageSegmentationAnnotation:
+      GoogleCloudDatalabelingV1beta1ImageSegmentationAnnotationSchema.exactOptional().openapi({
+        description: 'Annotation value for image segmentation.',
+      }),
+    textClassificationAnnotation:
+      GoogleCloudDatalabelingV1beta1TextClassificationAnnotationSchema.exactOptional().openapi({
+        description: 'Annotation value for text classification case.',
+      }),
+    textEntityExtractionAnnotation:
+      GoogleCloudDatalabelingV1beta1TextEntityExtractionAnnotationSchema.exactOptional().openapi({
+        description: 'Annotation value for text entity extraction case.',
+      }),
+    videoClassificationAnnotation:
+      GoogleCloudDatalabelingV1beta1VideoClassificationAnnotationSchema.exactOptional().openapi({
+        description: 'Annotation value for video classification case.',
+      }),
+    videoEventAnnotation:
+      GoogleCloudDatalabelingV1beta1VideoEventAnnotationSchema.exactOptional().openapi({
+        description: 'Annotation value for video event case.',
+      }),
+    videoObjectTrackingAnnotation:
+      GoogleCloudDatalabelingV1beta1VideoObjectTrackingAnnotationSchema.exactOptional().openapi({
+        description: 'Annotation value for video object detection and tracking case.',
+      }),
+  })
+  .openapi({ description: 'Annotation value for an example.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1AnnotationValue')
+
+type GoogleCloudDatalabelingV1beta1AnnotationType = {
+  annotationMetadata?: z.infer<typeof GoogleCloudDatalabelingV1beta1AnnotationMetadataSchema>
+  annotationSentiment?: 'ANNOTATION_SENTIMENT_UNSPECIFIED' | 'NEGATIVE' | 'POSITIVE'
+  annotationSource?: 'ANNOTATION_SOURCE_UNSPECIFIED' | 'OPERATOR'
+  annotationValue?: z.infer<typeof GoogleCloudDatalabelingV1beta1AnnotationValueSchema>
+  name?: string
+}
+
 const GoogleRpcStatusSchema = z
   .object({
     code: z
@@ -38,6 +389,894 @@ const GoogleRpcStatusSchema = z
     required: [],
   })
   .openapi('GoogleRpcStatus')
+
+const GoogleCloudDatalabelingV1beta1AttemptSchema = z
+  .object({
+    attemptTime: z.string().exactOptional(),
+    partialFailures: z
+      .array(GoogleRpcStatusSchema)
+      .exactOptional()
+      .openapi({ description: 'Details of errors that occurred.' }),
+  })
+  .openapi({ description: 'Records a failed evaluation job run.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1Attempt')
+
+const GoogleCloudDatalabelingV1beta1BoundingPolyConfigSchema = z
+  .object({
+    annotationSpecSet: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Annotation spec set resource name.' }),
+    instructionMessage: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. Instruction message showed on contributors UI.' }),
+  })
+  .openapi({
+    description: 'Config for image bounding poly (and bounding box) human labeling task.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1BoundingPolyConfig')
+
+const GoogleCloudDatalabelingV1beta1BoundingBoxEvaluationOptionsSchema = z
+  .object({
+    iouThreshold: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Minimum [intersection-over-union (IOU)](/vision/automl/object-detection/docs/evaluate#intersection-over-union) required for 2 bounding boxes to be considered a match. This must be a number between 0 and 1.',
+      }),
+  })
+  .openapi({ description: 'Options regarding evaluation between bounding boxes.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1BoundingBoxEvaluationOptions')
+
+const GoogleCloudDatalabelingV1beta1EvaluationConfigSchema = z
+  .object({
+    boundingBoxEvaluationOptions:
+      GoogleCloudDatalabelingV1beta1BoundingBoxEvaluationOptionsSchema.exactOptional().openapi({
+        description:
+          'Only specify this field if the related model performs image object detection (`IMAGE_BOUNDING_BOX_ANNOTATION`). Describes how to evaluate bounding boxes.',
+      }),
+  })
+  .openapi({
+    description:
+      'Configuration details used for calculating evaluation metrics and creating an Evaluation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1EvaluationConfig')
+
+const GoogleCloudDatalabelingV1beta1EvaluationJobAlertConfigSchema = z
+  .object({
+    email: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. An email address to send alerts to.' }),
+    minAcceptableMeanAveragePrecision: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required. A number between 0 and 1 that describes a minimum mean average precision threshold. When the evaluation job runs, if it calculates that your model version's predictions from the recent interval have meanAveragePrecision below this threshold, then it sends an alert to your specified email.",
+      }),
+  })
+  .openapi({
+    description:
+      'Provides details for how an evaluation job sends email alerts based on the results of a run.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1EvaluationJobAlertConfig')
+
+const GoogleCloudDatalabelingV1beta1HumanAnnotationConfigSchema = z
+  .object({
+    annotatedDatasetDescription: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A human-readable description for AnnotatedDataset. The description can be up to 10000 characters long.',
+      }),
+    annotatedDatasetDisplayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. A human-readable name for AnnotatedDataset defined by users. Maximum of 64 characters .',
+      }),
+    contributorEmails: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. If you want your own labeling contributors to manage and work on this labeling request, you can set these contributors here. We will give them access to the question types in crowdcompute. Note that these emails must be registered in crowdcompute worker UI: https://crowd-compute.appspot.com/',
+      }),
+    instruction: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Instruction resource name.' }),
+    labelGroup: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A human-readable label used to logically group labeling tasks. This string must match the regular expression `[a-zA-Z\\\\d_-]{0,128}`.',
+      }),
+    languageCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The Language of this question, as a [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt). Default value is en-US. Only need to set this when task is language related. For example, French text classification.',
+      }),
+    questionDuration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Maximum duration for contributors to answer a question. Maximum is 3600 seconds. Default is 3600 seconds.',
+      }),
+    replicaCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Replication of questions. Each question will be sent to up to this number of contributors to label. Aggregated answers will be returned. Default is set to 1. For image related labeling, valid values are 1, 3, 5.',
+      }),
+    userEmailAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Email of the user who started the labeling task and should be notified by email. If empty no notification will be sent.',
+      }),
+  })
+  .openapi({
+    description: 'Configuration for how human labeling task should be done.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1HumanAnnotationConfig')
+
+const GoogleCloudDatalabelingV1beta1ImageClassificationConfigSchema = z
+  .object({
+    allowMultiLabel: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. If allow_multi_label is true, contributors are able to choose multiple labels for one image.',
+      }),
+    annotationSpecSet: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Annotation spec set resource name.' }),
+    answerAggregationType: z
+      .enum([
+        'STRING_AGGREGATION_TYPE_UNSPECIFIED',
+        'MAJORITY_VOTE',
+        'UNANIMOUS_VOTE',
+        'NO_AGGREGATION',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Optional. The type of how to aggregate answers.' }),
+  })
+  .openapi({ description: 'Config for image classification human labeling task.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1ImageClassificationConfig')
+
+const GoogleCloudDatalabelingV1beta1BigQuerySourceSchema = z
+  .object({
+    inputUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. BigQuery URI to a table, up to 2,000 characters long. If you specify the URI of a table that does not exist, Data Labeling Service creates a table at the URI with the correct schema when you create your EvaluationJob. If you specify the URI of a table that already exists, it must have the [correct schema](/ml-engine/docs/continuous-evaluation/create-job#table-schema). Provide the table URI in the following format: "bq://{your_project_id}/ {your_dataset_name}/{your_table_name}" [Learn more](/ml-engine/docs/continuous-evaluation/create-job#table-schema).',
+      }),
+  })
+  .openapi({
+    description:
+      'The BigQuery location for input data. If used in an EvaluationJob, this is where the service saves the prediction input and output sampled from the model version.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1BigQuerySource')
+
+const GoogleCloudDatalabelingV1beta1ClassificationMetadataSchema = z
+  .object({
+    isMultiLabel: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the classification task is multi-label or not.' }),
+  })
+  .openapi({ description: 'Metadata for classification annotations.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1ClassificationMetadata')
+
+const GoogleCloudDatalabelingV1beta1GcsSourceSchema = z
+  .object({
+    inputUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The input URI of source file. This must be a Cloud Storage path (`gs://...`).',
+      }),
+    mimeType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Required. The format of the source file. Only "text/csv" is supported.',
+      }),
+  })
+  .openapi({ description: 'Source of the Cloud Storage file to be imported.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1GcsSource')
+
+const GoogleCloudDatalabelingV1beta1TextMetadataSchema = z
+  .object({
+    languageCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The language of this text, as a [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt). Default value is en-US.',
+      }),
+  })
+  .openapi({ description: 'Metadata for the text.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1TextMetadata')
+
+const GoogleCloudDatalabelingV1beta1InputConfigSchema = z
+  .object({
+    annotationType: z
+      .enum([
+        'ANNOTATION_TYPE_UNSPECIFIED',
+        'IMAGE_CLASSIFICATION_ANNOTATION',
+        'IMAGE_BOUNDING_BOX_ANNOTATION',
+        'IMAGE_ORIENTED_BOUNDING_BOX_ANNOTATION',
+        'IMAGE_BOUNDING_POLY_ANNOTATION',
+        'IMAGE_POLYLINE_ANNOTATION',
+        'IMAGE_SEGMENTATION_ANNOTATION',
+        'VIDEO_SHOTS_CLASSIFICATION_ANNOTATION',
+        'VIDEO_OBJECT_TRACKING_ANNOTATION',
+        'VIDEO_OBJECT_DETECTION_ANNOTATION',
+        'VIDEO_EVENT_ANNOTATION',
+        'TEXT_CLASSIFICATION_ANNOTATION',
+        'TEXT_ENTITY_EXTRACTION_ANNOTATION',
+        'GENERAL_CLASSIFICATION_ANNOTATION',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The type of annotation to be performed on this data. You must specify this field if you are using this InputConfig in an EvaluationJob.',
+      }),
+    bigquerySource: GoogleCloudDatalabelingV1beta1BigQuerySourceSchema.exactOptional().openapi({
+      description:
+        'Source located in BigQuery. You must specify this field if you are using this InputConfig in an EvaluationJob.',
+    }),
+    classificationMetadata:
+      GoogleCloudDatalabelingV1beta1ClassificationMetadataSchema.exactOptional().openapi({
+        description:
+          'Optional. Metadata about annotations for the input. You must specify this field if you are using this InputConfig in an EvaluationJob for a model version that performs classification.',
+      }),
+    dataType: z
+      .enum(['DATA_TYPE_UNSPECIFIED', 'IMAGE', 'VIDEO', 'TEXT', 'GENERAL_DATA'])
+      .exactOptional()
+      .openapi({
+        description: 'Required. Data type must be specifed when user tries to import data.',
+      }),
+    gcsSource: GoogleCloudDatalabelingV1beta1GcsSourceSchema.exactOptional().openapi({
+      description: 'Source located in Cloud Storage.',
+    }),
+    textMetadata: GoogleCloudDatalabelingV1beta1TextMetadataSchema.exactOptional().openapi({
+      description: 'Required for text import, as language code must be specified.',
+    }),
+  })
+  .openapi({
+    description: 'The configuration of input data, including data type, location, etc.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1InputConfig')
+
+const GoogleCloudDatalabelingV1beta1SentimentConfigSchema = z
+  .object({
+    enableLabelSentimentSelection: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, contributors will have the option to select sentiment of the label they selected, to mark it as negative or positive label. Default is false.',
+      }),
+  })
+  .openapi({ description: 'Config for setting up sentiments.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1SentimentConfig')
+
+const GoogleCloudDatalabelingV1beta1TextClassificationConfigSchema = z
+  .object({
+    allowMultiLabel: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. If allow_multi_label is true, contributors are able to choose multiple labels for one text segment.',
+      }),
+    annotationSpecSet: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Annotation spec set resource name.' }),
+    sentimentConfig: GoogleCloudDatalabelingV1beta1SentimentConfigSchema.exactOptional().openapi({
+      description:
+        'Optional. Configs for sentiment selection. We deprecate sentiment analysis in data labeling side as it is incompatible with uCAIP.',
+    }),
+  })
+  .openapi({ description: 'Config for text classification human labeling task.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1TextClassificationConfig')
+
+const GoogleCloudDatalabelingV1beta1EvaluationJobConfigSchema = z
+  .object({
+    bigqueryImportKeys: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Prediction keys that tell Data Labeling Service where to find the data for evaluation in your BigQuery table. When the service samples prediction input and output from your model version and saves it to BigQuery, the data gets stored as JSON strings in the BigQuery table. These keys tell Data Labeling Service how to parse the JSON. You can provide the following entries in this field: * `data_json_key`: the data key for prediction input. You must provide either this key or `reference_json_key`. * `reference_json_key`: the data reference key for prediction input. You must provide either this key or `data_json_key`. * `label_json_key`: the label key for prediction output. Required. * `label_score_json_key`: the score key for prediction output. Required. * `bounding_box_json_key`: the bounding box key for prediction output. Required if your model version perform image object detection. Learn [how to configure prediction keys](/ml-engine/docs/continuous-evaluation/create-job#prediction-keys).',
+      }),
+    boundingPolyConfig:
+      GoogleCloudDatalabelingV1beta1BoundingPolyConfigSchema.exactOptional().openapi({
+        description:
+          'Specify this field if your model version performs image object detection (bounding box detection). `annotationSpecSet` in this configuration must match EvaluationJob.annotationSpecSet.',
+      }),
+    evaluationConfig: GoogleCloudDatalabelingV1beta1EvaluationConfigSchema.exactOptional().openapi({
+      description:
+        'Required. Details for calculating evaluation metrics and creating Evaulations. If your model version performs image object detection, you must specify the `boundingBoxEvaluationOptions` field within this configuration. Otherwise, provide an empty object for this configuration.',
+    }),
+    evaluationJobAlertConfig:
+      GoogleCloudDatalabelingV1beta1EvaluationJobAlertConfigSchema.exactOptional().openapi({
+        description:
+          'Optional. Configuration details for evaluation job alerts. Specify this field if you want to receive email alerts if the evaluation job finds that your predictions have low mean average precision during a run.',
+      }),
+    exampleCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The maximum number of predictions to sample and save to BigQuery during each evaluation interval. This limit overrides `example_sample_percentage`: even if the service has not sampled enough predictions to fulfill `example_sample_perecentage` during an interval, it stops sampling predictions when it meets this limit.',
+      }),
+    exampleSamplePercentage: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Fraction of predictions to sample and save to BigQuery during each evaluation interval. For example, 0.1 means 10% of predictions served by your model version get saved to BigQuery.',
+      }),
+    humanAnnotationConfig:
+      GoogleCloudDatalabelingV1beta1HumanAnnotationConfigSchema.exactOptional().openapi({
+        description:
+          'Optional. Details for human annotation of your data. If you set labelMissingGroundTruth to `true` for this evaluation job, then you must specify this field. If you plan to provide your own ground truth labels, then omit this field. Note that you must create an Instruction resource before you can specify this field. Provide the name of the instruction resource in the `instruction` field within this configuration.',
+      }),
+    imageClassificationConfig:
+      GoogleCloudDatalabelingV1beta1ImageClassificationConfigSchema.exactOptional().openapi({
+        description:
+          'Specify this field if your model version performs image classification or general classification. `annotationSpecSet` in this configuration must match EvaluationJob.annotationSpecSet. `allowMultiLabel` in this configuration must match `classificationMetadata.isMultiLabel` in input_config.',
+      }),
+    inputConfig: GoogleCloudDatalabelingV1beta1InputConfigSchema.exactOptional().openapi({
+      description:
+        'Rquired. Details for the sampled prediction input. Within this configuration, there are requirements for several fields: * `dataType` must be one of `IMAGE`, `TEXT`, or `GENERAL_DATA`. * `annotationType` must be one of `IMAGE_CLASSIFICATION_ANNOTATION`, `TEXT_CLASSIFICATION_ANNOTATION`, `GENERAL_CLASSIFICATION_ANNOTATION`, or `IMAGE_BOUNDING_BOX_ANNOTATION` (image object detection). * If your machine learning model performs classification, you must specify `classificationMetadata.isMultiLabel`. * You must specify `bigquerySource` (not `gcsSource`).',
+    }),
+    textClassificationConfig:
+      GoogleCloudDatalabelingV1beta1TextClassificationConfigSchema.exactOptional().openapi({
+        description:
+          'Specify this field if your model version performs text classification. `annotationSpecSet` in this configuration must match EvaluationJob.annotationSpecSet. `allowMultiLabel` in this configuration must match `classificationMetadata.isMultiLabel` in input_config.',
+      }),
+  })
+  .openapi({
+    description:
+      'Configures specific details of how a continuous evaluation job works. Provide this configuration when you create an EvaluationJob.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1EvaluationJobConfig')
+
+const GoogleCloudDatalabelingV1beta1EvaluationJobSchema = z
+  .object({
+    annotationSpecSet: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Name of the AnnotationSpecSet describing all the labels that your machine learning model outputs. You must create this resource before you create an evaluation job and provide its name in the following format: "projects/{project_id}/annotationSpecSets/{annotation_spec_set_id}"',
+      }),
+    attempts: z
+      .array(GoogleCloudDatalabelingV1beta1AttemptSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Every time the evaluation job runs and an error occurs, the failed attempt is appended to this array.',
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Timestamp of when this evaluation job was created.' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Description of the job. The description can be up to 25,000 characters long.',
+      }),
+    evaluationJobConfig:
+      GoogleCloudDatalabelingV1beta1EvaluationJobConfigSchema.exactOptional().openapi({
+        description: 'Required. Configuration details for the evaluation job.',
+      }),
+    labelMissingGroundTruth: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required. Whether you want Data Labeling Service to provide ground truth labels for prediction input. If you want the service to assign human labelers to annotate your data, set this to `true`. If you want to provide your own ground truth labels in the evaluation job's BigQuery table, set this to `false`.",
+      }),
+    modelVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The [AI Platform Prediction model version](/ml-engine/docs/prediction-overview) to be evaluated. Prediction input and output is sampled from this model version. When creating an evaluation job, specify the model version in the following format: "projects/{project_id}/models/{model_name}/versions/{version_name}" There can only be one evaluation job per model version.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. After you create a job, Data Labeling Service assigns a name to the job with the following format: "projects/{project_id}/evaluationJobs/ {evaluation_job_id}"',
+      }),
+    schedule: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Describes the interval at which the job runs. This interval must be at least 1 day, and it is rounded to the nearest day. For example, if you specify a 50-hour interval, the job runs every 2 days. You can provide the schedule in [crontab format](/scheduler/docs/configuring/cron-job-schedules) or in an [English-like format](/appengine/docs/standard/python/config/cronref#schedule_format). Regardless of what you specify, the job will run at 10:00 AM UTC. Only the interval from this schedule is used, not the specific time of day.',
+      }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'SCHEDULED', 'RUNNING', 'PAUSED', 'STOPPED'])
+      .exactOptional()
+      .openapi({ description: 'Output only. Describes the current state of the job.' }),
+  })
+  .openapi({
+    description:
+      'Defines an evaluation job that runs periodically to generate Evaluations. [Creating an evaluation job](/ml-engine/docs/continuous-evaluation/create-job) is the starting point for using continuous evaluation.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1EvaluationJob')
+
+type GoogleCloudDatalabelingV1beta1CreateEvaluationJobRequestType = {
+  job?: z.infer<typeof GoogleCloudDatalabelingV1beta1EvaluationJobSchema>
+}
+
+const GoogleCloudDatalabelingV1beta1ConfusionMatrixEntrySchema = z
+  .object({
+    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
+      description: 'The annotation spec of a predicted label.',
+    }),
+    itemCount: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Number of items predicted to have this label. (The ground truth label for these items is the `Row.annotationSpec` of this entry's parent.)",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1ConfusionMatrixEntry')
+
+const GoogleCloudDatalabelingV1beta1RowSchema = z
+  .object({
+    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
+      description: 'The annotation spec of the ground truth label for this row.',
+    }),
+    entries: z
+      .array(GoogleCloudDatalabelingV1beta1ConfusionMatrixEntrySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of the confusion matrix entries. One entry for each possible predicted label.',
+      }),
+  })
+  .openapi({
+    description:
+      'A row in the confusion matrix. Each entry in this row has the same ground truth label.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1Row')
+
+const GoogleCloudDatalabelingV1beta1ConfusionMatrixSchema = z
+  .object({ row: z.array(GoogleCloudDatalabelingV1beta1RowSchema).exactOptional() })
+  .openapi({
+    description:
+      'Confusion matrix of the model running the classification. Only applicable when the metrics entry aggregates multiple labels. Not applicable when the entry is for a single label.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1ConfusionMatrix')
+
+const GoogleCloudDatalabelingV1beta1ConfidenceMetricsEntrySchema = z
+  .object({
+    confidenceThreshold: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Threshold used for this entry. For classification tasks, this is a classification threshold: a predicted label is categorized as positive or negative (in the context of this point on the PR curve) based on whether the label's score meets this threshold. For image object detection (bounding box) tasks, this is the [intersection-over-union (IOU)](/vision/automl/object-detection/docs/evaluate#intersection-over-union) threshold for the context of this point on the PR curve.",
+      }),
+    f1Score: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'Harmonic mean of recall and precision.' }),
+    f1ScoreAt1: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'The harmonic mean of recall_at1 and precision_at1.' }),
+    f1ScoreAt5: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'The harmonic mean of recall_at5 and precision_at5.' }),
+    precision: z.float32().exactOptional().openapi({ description: 'Precision value.' }),
+    precisionAt1: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'Precision value for entries with label that has highest score.' }),
+    precisionAt5: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description: 'Precision value for entries with label that has highest 5 scores.',
+      }),
+    recall: z.float32().exactOptional().openapi({ description: 'Recall value.' }),
+    recallAt1: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'Recall value for entries with label that has highest score.' }),
+    recallAt5: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'Recall value for entries with label that has highest 5 scores.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1ConfidenceMetricsEntry')
+
+const GoogleCloudDatalabelingV1beta1PrCurveSchema = z
+  .object({
+    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
+      description:
+        'The annotation spec of the label for which the precision-recall curve calculated. If this field is empty, that means the precision-recall curve is an aggregate curve for all labels.',
+    }),
+    areaUnderCurve: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Area under the precision-recall curve. Not to be confused with area under a receiver operating characteristic (ROC) curve.',
+      }),
+    confidenceMetricsEntries: z
+      .array(GoogleCloudDatalabelingV1beta1ConfidenceMetricsEntrySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Entries that make up the precision-recall graph. Each entry is a "point" on the graph drawn for a different `confidence_threshold`.',
+      }),
+    meanAveragePrecision: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'Mean average prcision of this curve.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1PrCurve')
+
+const GoogleCloudDatalabelingV1beta1ClassificationMetricsSchema = z
+  .object({
+    confusionMatrix: GoogleCloudDatalabelingV1beta1ConfusionMatrixSchema.exactOptional().openapi({
+      description: 'Confusion matrix of predicted labels vs. ground truth labels.',
+    }),
+    prCurve: GoogleCloudDatalabelingV1beta1PrCurveSchema.exactOptional().openapi({
+      description:
+        'Precision-recall curve based on ground truth labels, predicted labels, and scores for the predicted labels.',
+    }),
+  })
+  .openapi({ description: 'Metrics calculated for a classification model.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1ClassificationMetrics')
+
+const GoogleCloudDatalabelingV1beta1ObjectDetectionMetricsSchema = z
+  .object({
+    prCurve: GoogleCloudDatalabelingV1beta1PrCurveSchema.exactOptional().openapi({
+      description: 'Precision-recall curve.',
+    }),
+  })
+  .openapi({
+    description: 'Metrics calculated for an image object detection (bounding box) model.',
+    required: [],
+  })
+  .openapi('GoogleCloudDatalabelingV1beta1ObjectDetectionMetrics')
+
+type GoogleCloudDatalabelingV1beta1EvaluationMetricsType = {
+  classificationMetrics?: z.infer<typeof GoogleCloudDatalabelingV1beta1ClassificationMetricsSchema>
+  objectDetectionMetrics?: z.infer<
+    typeof GoogleCloudDatalabelingV1beta1ObjectDetectionMetricsSchema
+  >
+}
+
+const GoogleCloudDatalabelingV1beta1EvaluationMetricsSchema: z.ZodType<GoogleCloudDatalabelingV1beta1EvaluationMetricsType> =
+  z
+    .object({
+      classificationMetrics:
+        GoogleCloudDatalabelingV1beta1ClassificationMetricsSchema.exactOptional(),
+      objectDetectionMetrics:
+        GoogleCloudDatalabelingV1beta1ObjectDetectionMetricsSchema.exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('GoogleCloudDatalabelingV1beta1EvaluationMetrics')
+
+type GoogleCloudDatalabelingV1beta1EvaluationType = {
+  annotationType?:
+    | 'ANNOTATION_TYPE_UNSPECIFIED'
+    | 'IMAGE_CLASSIFICATION_ANNOTATION'
+    | 'IMAGE_BOUNDING_BOX_ANNOTATION'
+    | 'IMAGE_ORIENTED_BOUNDING_BOX_ANNOTATION'
+    | 'IMAGE_BOUNDING_POLY_ANNOTATION'
+    | 'IMAGE_POLYLINE_ANNOTATION'
+    | 'IMAGE_SEGMENTATION_ANNOTATION'
+    | 'VIDEO_SHOTS_CLASSIFICATION_ANNOTATION'
+    | 'VIDEO_OBJECT_TRACKING_ANNOTATION'
+    | 'VIDEO_OBJECT_DETECTION_ANNOTATION'
+    | 'VIDEO_EVENT_ANNOTATION'
+    | 'TEXT_CLASSIFICATION_ANNOTATION'
+    | 'TEXT_ENTITY_EXTRACTION_ANNOTATION'
+    | 'GENERAL_CLASSIFICATION_ANNOTATION'
+  config?: z.infer<typeof GoogleCloudDatalabelingV1beta1EvaluationConfigSchema>
+  createTime?: string
+  evaluatedItemCount?: string
+  evaluationJobRunTime?: string
+  evaluationMetrics?: z.infer<typeof GoogleCloudDatalabelingV1beta1EvaluationMetricsSchema>
+  name?: string
+}
+
+const GoogleCloudDatalabelingV1beta1AnnotationSchema: z.ZodType<GoogleCloudDatalabelingV1beta1AnnotationType> =
+  z
+    .object({
+      annotationMetadata:
+        GoogleCloudDatalabelingV1beta1AnnotationMetadataSchema.exactOptional().openapi({
+          description:
+            'Output only. Annotation metadata, including information like votes for labels.',
+        }),
+      annotationSentiment: z
+        .enum(['ANNOTATION_SENTIMENT_UNSPECIFIED', 'NEGATIVE', 'POSITIVE'])
+        .exactOptional()
+        .openapi({ description: 'Output only. Sentiment for this annotation.' }),
+      annotationSource: z
+        .enum(['ANNOTATION_SOURCE_UNSPECIFIED', 'OPERATOR'])
+        .exactOptional()
+        .openapi({ description: 'Output only. The source of the annotation.' }),
+      annotationValue: GoogleCloudDatalabelingV1beta1AnnotationValueSchema.exactOptional().openapi({
+        description:
+          'Output only. This is the actual annotation value, e.g classification, bounding box values are stored here.',
+      }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. Unique name of this annotation, format is: projects/{project_id}/datasets/{dataset_id}/annotatedDatasets/{annotated_dataset}/examples/{example_id}/annotations/{annotation_id}',
+        }),
+    })
+    .openapi({
+      description:
+        'Annotation for Example. Each example may have one or more annotations. For example in image classification problem, each image might have one or more labels. We call labels binded with this image an Annotation.',
+      required: [],
+    })
+    .openapi('GoogleCloudDatalabelingV1beta1Annotation')
+
+const GoogleCloudDatalabelingV1beta1ImagePayloadSchema = z
+  .object({
+    imageThumbnail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A byte string of a thumbnail image.' }),
+    imageUri: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Image uri from the user bucket.' }),
+    mimeType: z.string().exactOptional().openapi({ description: 'Image format.' }),
+    signedUri: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Signed uri of the image file in the service bucket.' }),
+  })
+  .openapi({ description: 'Container of information about an image.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1ImagePayload')
+
+const GoogleCloudDatalabelingV1beta1TextPayloadSchema = z
+  .object({ textContent: z.string().exactOptional().openapi({ description: 'Text content.' }) })
+  .openapi({ description: 'Container of information about a piece of text.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1TextPayload')
+
+const GoogleCloudDatalabelingV1beta1VideoThumbnailSchema = z
+  .object({
+    thumbnail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A byte string of the video frame.' }),
+    timeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time offset relative to the beginning of the video, corresponding to the video frame where the thumbnail has been extracted from.',
+      }),
+  })
+  .openapi({ description: 'Container of information of a video thumbnail.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1VideoThumbnail')
+
+const GoogleCloudDatalabelingV1beta1VideoPayloadSchema = z
+  .object({
+    frameRate: z.float32().exactOptional().openapi({ description: 'FPS of the video.' }),
+    mimeType: z.string().exactOptional().openapi({ description: 'Video format.' }),
+    signedUri: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Signed uri of the video file in the service bucket.' }),
+    videoThumbnails: z
+      .array(GoogleCloudDatalabelingV1beta1VideoThumbnailSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of video thumbnails.' }),
+    videoUri: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Video uri from the user bucket.' }),
+  })
+  .openapi({ description: 'Container of information of a video.', required: [] })
+  .openapi('GoogleCloudDatalabelingV1beta1VideoPayload')
+
+type GoogleCloudDatalabelingV1beta1ExampleType = {
+  annotations?: z.infer<typeof GoogleCloudDatalabelingV1beta1AnnotationSchema>[]
+  imagePayload?: z.infer<typeof GoogleCloudDatalabelingV1beta1ImagePayloadSchema>
+  name?: string
+  textPayload?: z.infer<typeof GoogleCloudDatalabelingV1beta1TextPayloadSchema>
+  videoPayload?: z.infer<typeof GoogleCloudDatalabelingV1beta1VideoPayloadSchema>
+}
+
+const GoogleCloudDatalabelingV1beta1ExampleSchema: z.ZodType<GoogleCloudDatalabelingV1beta1ExampleType> =
+  z
+    .object({
+      annotations: z
+        .array(GoogleCloudDatalabelingV1beta1AnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. Annotations for the piece of data in Example. One piece of data can have multiple annotations.',
+        }),
+      imagePayload: GoogleCloudDatalabelingV1beta1ImagePayloadSchema.exactOptional().openapi({
+        description: 'The image payload, a container of the image bytes/uri.',
+      }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. Name of the example, in format of: projects/{project_id}/datasets/{dataset_id}/annotatedDatasets/ {annotated_dataset_id}/examples/{example_id}',
+        }),
+      textPayload: GoogleCloudDatalabelingV1beta1TextPayloadSchema.exactOptional().openapi({
+        description: 'The text payload, a container of the text content.',
+      }),
+      videoPayload: GoogleCloudDatalabelingV1beta1VideoPayloadSchema.exactOptional().openapi({
+        description: 'The video payload, a container of the video uri.',
+      }),
+    })
+    .openapi({
+      description:
+        'An Example is a piece of data and its annotation. For example, an image with label "house".',
+      required: [],
+    })
+    .openapi('GoogleCloudDatalabelingV1beta1Example')
+
+type GoogleCloudDatalabelingV1beta1ExampleComparisonType = {
+  groundTruthExample?: z.infer<typeof GoogleCloudDatalabelingV1beta1ExampleSchema>
+  modelCreatedExamples?: z.infer<typeof GoogleCloudDatalabelingV1beta1ExampleSchema>[]
+}
+
+type GoogleCloudDatalabelingV1beta1ListEvaluationJobsResponseType = {
+  evaluationJobs?: z.infer<typeof GoogleCloudDatalabelingV1beta1EvaluationJobSchema>[]
+  nextPageToken?: string
+}
+
+type GoogleCloudDatalabelingV1beta1ListExamplesResponseType = {
+  examples?: z.infer<typeof GoogleCloudDatalabelingV1beta1ExampleSchema>[]
+  nextPageToken?: string
+}
+
+const GoogleCloudDatalabelingV1beta1EvaluationSchema: z.ZodType<GoogleCloudDatalabelingV1beta1EvaluationType> =
+  z
+    .object({
+      annotationType: z
+        .enum([
+          'ANNOTATION_TYPE_UNSPECIFIED',
+          'IMAGE_CLASSIFICATION_ANNOTATION',
+          'IMAGE_BOUNDING_BOX_ANNOTATION',
+          'IMAGE_ORIENTED_BOUNDING_BOX_ANNOTATION',
+          'IMAGE_BOUNDING_POLY_ANNOTATION',
+          'IMAGE_POLYLINE_ANNOTATION',
+          'IMAGE_SEGMENTATION_ANNOTATION',
+          'VIDEO_SHOTS_CLASSIFICATION_ANNOTATION',
+          'VIDEO_OBJECT_TRACKING_ANNOTATION',
+          'VIDEO_OBJECT_DETECTION_ANNOTATION',
+          'VIDEO_EVENT_ANNOTATION',
+          'TEXT_CLASSIFICATION_ANNOTATION',
+          'TEXT_ENTITY_EXTRACTION_ANNOTATION',
+          'GENERAL_CLASSIFICATION_ANNOTATION',
+        ])
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. Type of task that the model version being evaluated performs, as defined in the evaluationJobConfig.inputConfig.annotationType field of the evaluation job that created this evaluation.',
+        }),
+      config: GoogleCloudDatalabelingV1beta1EvaluationConfigSchema.exactOptional().openapi({
+        description:
+          'Output only. Options used in the evaluation job that created this evaluation.',
+      }),
+      createTime: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Output only. Timestamp for when this evaluation was created.' }),
+      evaluatedItemCount: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. The number of items in the ground truth dataset that were used for this evaluation. Only populated when the evaulation is for certain AnnotationTypes.',
+        }),
+      evaluationJobRunTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. Timestamp for when the evaluation job that created this evaluation ran.',
+        }),
+      evaluationMetrics:
+        GoogleCloudDatalabelingV1beta1EvaluationMetricsSchema.exactOptional().openapi({
+          description: 'Output only. Metrics comparing predictions to ground truth labels.',
+        }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. Resource name of an evaluation. The name has the following format: "projects/{project_id}/datasets/{dataset_id}/evaluations/ {evaluation_id}\'',
+        }),
+    })
+    .openapi({
+      description:
+        "Describes an evaluation between a machine learning model's predictions and ground truth labels. Created when an EvaluationJob runs successfully.",
+      required: [],
+    })
+    .openapi('GoogleCloudDatalabelingV1beta1Evaluation')
+
+type GoogleCloudDatalabelingV1beta1SearchEvaluationsResponseType = {
+  evaluations?: z.infer<typeof GoogleCloudDatalabelingV1beta1EvaluationSchema>[]
+  nextPageToken?: string
+}
+
+const GoogleCloudDatalabelingV1beta1ExampleComparisonSchema: z.ZodType<GoogleCloudDatalabelingV1beta1ExampleComparisonType> =
+  z
+    .object({
+      groundTruthExample: GoogleCloudDatalabelingV1beta1ExampleSchema.exactOptional().openapi({
+        description: 'The ground truth output for the input.',
+      }),
+      modelCreatedExamples: z
+        .array(GoogleCloudDatalabelingV1beta1ExampleSchema)
+        .exactOptional()
+        .openapi({ description: 'Predictions by the model for the input.' }),
+    })
+    .openapi({
+      description:
+        'Example comparisons comparing ground truth output and predictions for a specific input.',
+      required: [],
+    })
+    .openapi('GoogleCloudDatalabelingV1beta1ExampleComparison')
+
+type GoogleCloudDatalabelingV1beta1SearchExampleComparisonsResponseType = {
+  exampleComparisons?: z.infer<typeof GoogleCloudDatalabelingV1beta1ExampleComparisonSchema>[]
+  nextPageToken?: string
+}
 
 const GoogleCloudDatalabelingV1alpha1CreateInstructionMetadataSchema = z
   .object({
@@ -516,23 +1755,6 @@ const GoogleCloudDatalabelingV1beta1LabelStatsSchema = z
   .openapi({ description: 'Statistics about annotation specs.', required: [] })
   .openapi('GoogleCloudDatalabelingV1beta1LabelStats')
 
-const GoogleCloudDatalabelingV1beta1BoundingPolyConfigSchema = z
-  .object({
-    annotationSpecSet: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Annotation spec set resource name.' }),
-    instructionMessage: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. Instruction message showed on contributors UI.' }),
-  })
-  .openapi({
-    description: 'Config for image bounding poly (and bounding box) human labeling task.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1BoundingPolyConfig')
-
 const GoogleCloudDatalabelingV1beta1EventConfigSchema = z
   .object({
     annotationSpecSets: z
@@ -559,101 +1781,6 @@ const GoogleCloudDatalabelingV1beta1EventConfigSchema = z
   })
   .openapi({ description: 'Config for video event human labeling task.', required: [] })
   .openapi('GoogleCloudDatalabelingV1beta1EventConfig')
-
-const GoogleCloudDatalabelingV1beta1HumanAnnotationConfigSchema = z
-  .object({
-    annotatedDatasetDescription: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A human-readable description for AnnotatedDataset. The description can be up to 10000 characters long.',
-      }),
-    annotatedDatasetDisplayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. A human-readable name for AnnotatedDataset defined by users. Maximum of 64 characters .',
-      }),
-    contributorEmails: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If you want your own labeling contributors to manage and work on this labeling request, you can set these contributors here. We will give them access to the question types in crowdcompute. Note that these emails must be registered in crowdcompute worker UI: https://crowd-compute.appspot.com/',
-      }),
-    instruction: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Instruction resource name.' }),
-    labelGroup: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A human-readable label used to logically group labeling tasks. This string must match the regular expression `[a-zA-Z\\\\d_-]{0,128}`.',
-      }),
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The Language of this question, as a [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt). Default value is en-US. Only need to set this when task is language related. For example, French text classification.',
-      }),
-    questionDuration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Maximum duration for contributors to answer a question. Maximum is 3600 seconds. Default is 3600 seconds.',
-      }),
-    replicaCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Replication of questions. Each question will be sent to up to this number of contributors to label. Aggregated answers will be returned. Default is set to 1. For image related labeling, valid values are 1, 3, 5.',
-      }),
-    userEmailAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Email of the user who started the labeling task and should be notified by email. If empty no notification will be sent.',
-      }),
-  })
-  .openapi({
-    description: 'Configuration for how human labeling task should be done.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1HumanAnnotationConfig')
-
-const GoogleCloudDatalabelingV1beta1ImageClassificationConfigSchema = z
-  .object({
-    allowMultiLabel: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If allow_multi_label is true, contributors are able to choose multiple labels for one image.',
-      }),
-    annotationSpecSet: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Annotation spec set resource name.' }),
-    answerAggregationType: z
-      .enum([
-        'STRING_AGGREGATION_TYPE_UNSPECIFIED',
-        'MAJORITY_VOTE',
-        'UNANIMOUS_VOTE',
-        'NO_AGGREGATION',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Optional. The type of how to aggregate answers.' }),
-  })
-  .openapi({ description: 'Config for image classification human labeling task.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1ImageClassificationConfig')
 
 const GoogleCloudDatalabelingV1beta1ObjectDetectionConfigSchema = z
   .object({
@@ -729,40 +1856,6 @@ const GoogleCloudDatalabelingV1beta1SegmentationConfigSchema = z
   })
   .openapi({ description: 'Config for image segmentation', required: [] })
   .openapi('GoogleCloudDatalabelingV1beta1SegmentationConfig')
-
-const GoogleCloudDatalabelingV1beta1SentimentConfigSchema = z
-  .object({
-    enableLabelSentimentSelection: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set to true, contributors will have the option to select sentiment of the label they selected, to mark it as negative or positive label. Default is false.',
-      }),
-  })
-  .openapi({ description: 'Config for setting up sentiments.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1SentimentConfig')
-
-const GoogleCloudDatalabelingV1beta1TextClassificationConfigSchema = z
-  .object({
-    allowMultiLabel: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If allow_multi_label is true, contributors are able to choose multiple labels for one text segment.',
-      }),
-    annotationSpecSet: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Annotation spec set resource name.' }),
-    sentimentConfig: GoogleCloudDatalabelingV1beta1SentimentConfigSchema.exactOptional().openapi({
-      description:
-        'Optional. Configs for sentiment selection. We deprecate sentiment analysis in data labeling side as it is incompatible with uCAIP.',
-    }),
-  })
-  .openapi({ description: 'Config for text classification human labeling task.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1TextClassificationConfig')
 
 const GoogleCloudDatalabelingV1beta1TextEntityExtractionConfigSchema = z
   .object({
@@ -949,383 +2042,6 @@ const GoogleCloudDatalabelingV1beta1AnnotatedDatasetSchema = z
   })
   .openapi('GoogleCloudDatalabelingV1beta1AnnotatedDataset')
 
-const GoogleCloudDatalabelingV1beta1OperatorMetadataSchema = z
-  .object({
-    comments: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Comments from contributors.' }),
-    labelVotes: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The total number of contributors that choose this label.' }),
-    score: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Confidence score corresponding to a label. For examle, if 3 contributors have answered the question and 2 of them agree on the final label, the confidence score will be 0.67 (2/3).',
-      }),
-    totalVotes: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The total number of contributors that answer this question.' }),
-  })
-  .openapi({
-    description: 'General information useful for labels coming from contributors.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1OperatorMetadata')
-
-const GoogleCloudDatalabelingV1beta1AnnotationMetadataSchema = z
-  .object({
-    operatorMetadata: GoogleCloudDatalabelingV1beta1OperatorMetadataSchema.exactOptional().openapi({
-      description: 'Metadata related to human labeling.',
-    }),
-  })
-  .openapi({ description: 'Additional information associated with the annotation.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1AnnotationMetadata')
-
-const GoogleCloudDatalabelingV1beta1AnnotationSpecSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. User-provided description of the annotation specification. The description can be up to 10,000 characters long.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. The display name of the AnnotationSpec. Maximum of 64 characters.',
-      }),
-    index: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. This is the integer index of the AnnotationSpec. The index for the whole AnnotationSpecSet is sequential starting from 0. For example, an AnnotationSpecSet with classes `dog` and `cat`, might contain one AnnotationSpec with `{ display_name: "dog", index: 0 }` and one AnnotationSpec with `{ display_name: "cat", index: 1 }`. This is especially useful for model training as it encodes the string labels into numeric values.',
-      }),
-  })
-  .openapi({
-    description:
-      'Container of information related to one possible annotation that can be used in a labeling task. For example, an image classification task where images are labeled as `dog` or `cat` must reference an AnnotationSpec for `dog` and an AnnotationSpec for `cat`.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1AnnotationSpec')
-
-const GoogleCloudDatalabelingV1beta1VertexSchema = z
-  .object({
-    x: z.int32().exactOptional().openapi({ description: 'X coordinate.' }),
-    y: z.int32().exactOptional().openapi({ description: 'Y coordinate.' }),
-  })
-  .openapi({
-    description:
-      'A vertex represents a 2D point in the image. NOTE: the vertex coordinates are in the same scale as the original image.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1Vertex')
-
-const GoogleCloudDatalabelingV1beta1BoundingPolySchema = z
-  .object({
-    vertices: z
-      .array(GoogleCloudDatalabelingV1beta1VertexSchema)
-      .exactOptional()
-      .openapi({ description: 'The bounding polygon vertices.' }),
-  })
-  .openapi({ description: 'A bounding polygon in the image.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1BoundingPoly')
-
-const GoogleCloudDatalabelingV1beta1NormalizedVertexSchema = z
-  .object({
-    x: z.float32().exactOptional().openapi({ description: 'X coordinate.' }),
-    y: z.float32().exactOptional().openapi({ description: 'Y coordinate.' }),
-  })
-  .openapi({
-    description:
-      'A vertex represents a 2D point in the image. NOTE: the normalized vertex coordinates are relative to the original image and range from 0 to 1.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1NormalizedVertex')
-
-const GoogleCloudDatalabelingV1beta1NormalizedBoundingPolySchema = z
-  .object({
-    normalizedVertices: z
-      .array(GoogleCloudDatalabelingV1beta1NormalizedVertexSchema)
-      .exactOptional()
-      .openapi({ description: 'The bounding polygon normalized vertices.' }),
-  })
-  .openapi({ description: 'Normalized bounding polygon.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1NormalizedBoundingPoly')
-
-const GoogleCloudDatalabelingV1beta1ImageBoundingPolyAnnotationSchema = z
-  .object({
-    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
-      description: 'Label of object in this bounding polygon.',
-    }),
-    boundingPoly: GoogleCloudDatalabelingV1beta1BoundingPolySchema.exactOptional(),
-    normalizedBoundingPoly:
-      GoogleCloudDatalabelingV1beta1NormalizedBoundingPolySchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Image bounding poly annotation. It represents a polygon including bounding box in the image.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1ImageBoundingPolyAnnotation')
-
-const GoogleCloudDatalabelingV1beta1ImageClassificationAnnotationSchema = z
-  .object({
-    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
-      description: 'Label of image.',
-    }),
-  })
-  .openapi({ description: 'Image classification annotation definition.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1ImageClassificationAnnotation')
-
-const GoogleCloudDatalabelingV1beta1NormalizedPolylineSchema = z
-  .object({
-    normalizedVertices: z
-      .array(GoogleCloudDatalabelingV1beta1NormalizedVertexSchema)
-      .exactOptional()
-      .openapi({ description: 'The normalized polyline vertices.' }),
-  })
-  .openapi({ description: 'Normalized polyline.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1NormalizedPolyline')
-
-const GoogleCloudDatalabelingV1beta1PolylineSchema = z
-  .object({
-    vertices: z
-      .array(GoogleCloudDatalabelingV1beta1VertexSchema)
-      .exactOptional()
-      .openapi({ description: 'The polyline vertices.' }),
-  })
-  .openapi({ description: 'A line with multiple line segments.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1Polyline')
-
-const GoogleCloudDatalabelingV1beta1ImagePolylineAnnotationSchema = z
-  .object({
-    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
-      description: 'Label of this polyline.',
-    }),
-    normalizedPolyline: GoogleCloudDatalabelingV1beta1NormalizedPolylineSchema.exactOptional(),
-    polyline: GoogleCloudDatalabelingV1beta1PolylineSchema.exactOptional(),
-  })
-  .openapi({ description: 'A polyline for the image annotation.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1ImagePolylineAnnotation')
-
-const GoogleCloudDatalabelingV1beta1ImageSegmentationAnnotationSchema = z
-  .object({
-    annotationColors: z
-      .record(z.string(), GoogleCloudDatalabelingV1beta1AnnotationSpecSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The mapping between rgb color and annotation spec. The key is the rgb color represented in format of rgb(0, 0, 0). The value is the AnnotationSpec.',
-      }),
-    imageBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "A byte string of a full image's color map." }),
-    mimeType: z.string().exactOptional().openapi({ description: 'Image format.' }),
-  })
-  .openapi({ description: 'Image segmentation annotation.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1ImageSegmentationAnnotation')
-
-const GoogleCloudDatalabelingV1beta1TextClassificationAnnotationSchema = z
-  .object({
-    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
-      description: 'Label of the text.',
-    }),
-  })
-  .openapi({ description: 'Text classification annotation.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1TextClassificationAnnotation')
-
-const GoogleCloudDatalabelingV1beta1SequentialSegmentSchema = z
-  .object({
-    end: z.int32().exactOptional().openapi({ description: 'End position (exclusive).' }),
-    start: z.int32().exactOptional().openapi({ description: 'Start position (inclusive).' }),
-  })
-  .openapi({
-    description: 'Start and end position in a sequence (e.g. text segment).',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1SequentialSegment')
-
-const GoogleCloudDatalabelingV1beta1TextEntityExtractionAnnotationSchema = z
-  .object({
-    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
-      description: 'Label of the text entities.',
-    }),
-    sequentialSegment:
-      GoogleCloudDatalabelingV1beta1SequentialSegmentSchema.exactOptional().openapi({
-        description: 'Position of the entity.',
-      }),
-  })
-  .openapi({ description: 'Text entity extraction annotation.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1TextEntityExtractionAnnotation')
-
-const GoogleCloudDatalabelingV1beta1TimeSegmentSchema = z
-  .object({
-    endTimeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'End of the time segment (exclusive), represented as the duration since the example start.',
-      }),
-    startTimeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Start of the time segment (inclusive), represented as the duration since the example start.',
-      }),
-  })
-  .openapi({
-    description: 'A time period inside of an example that has a time dimension (e.g. video).',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1TimeSegment')
-
-const GoogleCloudDatalabelingV1beta1VideoClassificationAnnotationSchema = z
-  .object({
-    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
-      description: 'Label of the segment specified by time_segment.',
-    }),
-    timeSegment: GoogleCloudDatalabelingV1beta1TimeSegmentSchema.exactOptional().openapi({
-      description: 'The time segment of the video to which the annotation applies.',
-    }),
-  })
-  .openapi({ description: 'Video classification annotation.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1VideoClassificationAnnotation')
-
-const GoogleCloudDatalabelingV1beta1VideoEventAnnotationSchema = z
-  .object({
-    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
-      description: 'Label of the event in this annotation.',
-    }),
-    timeSegment: GoogleCloudDatalabelingV1beta1TimeSegmentSchema.exactOptional().openapi({
-      description: 'The time segment of the video to which the annotation applies.',
-    }),
-  })
-  .openapi({ description: 'Video event annotation.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1VideoEventAnnotation')
-
-const GoogleCloudDatalabelingV1beta1ObjectTrackingFrameSchema = z
-  .object({
-    boundingPoly: GoogleCloudDatalabelingV1beta1BoundingPolySchema.exactOptional(),
-    normalizedBoundingPoly:
-      GoogleCloudDatalabelingV1beta1NormalizedBoundingPolySchema.exactOptional(),
-    timeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The time offset of this frame relative to the beginning of the video.',
-      }),
-  })
-  .openapi({
-    description: 'Video frame level annotation for object detection and tracking.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1ObjectTrackingFrame')
-
-const GoogleCloudDatalabelingV1beta1VideoObjectTrackingAnnotationSchema = z
-  .object({
-    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
-      description: 'Label of the object tracked in this annotation.',
-    }),
-    objectTrackingFrames: z
-      .array(GoogleCloudDatalabelingV1beta1ObjectTrackingFrameSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of frames where this object track appears.' }),
-    timeSegment: GoogleCloudDatalabelingV1beta1TimeSegmentSchema.exactOptional().openapi({
-      description: 'The time segment of the video to which object tracking applies.',
-    }),
-  })
-  .openapi({ description: 'Video object tracking annotation.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1VideoObjectTrackingAnnotation')
-
-const GoogleCloudDatalabelingV1beta1AnnotationValueSchema = z
-  .object({
-    imageBoundingPolyAnnotation:
-      GoogleCloudDatalabelingV1beta1ImageBoundingPolyAnnotationSchema.exactOptional().openapi({
-        description:
-          'Annotation value for image bounding box, oriented bounding box and polygon cases.',
-      }),
-    imageClassificationAnnotation:
-      GoogleCloudDatalabelingV1beta1ImageClassificationAnnotationSchema.exactOptional().openapi({
-        description: 'Annotation value for image classification case.',
-      }),
-    imagePolylineAnnotation:
-      GoogleCloudDatalabelingV1beta1ImagePolylineAnnotationSchema.exactOptional().openapi({
-        description:
-          'Annotation value for image polyline cases. Polyline here is different from BoundingPoly. It is formed by line segments connected to each other but not closed form(Bounding Poly). The line segments can cross each other.',
-      }),
-    imageSegmentationAnnotation:
-      GoogleCloudDatalabelingV1beta1ImageSegmentationAnnotationSchema.exactOptional().openapi({
-        description: 'Annotation value for image segmentation.',
-      }),
-    textClassificationAnnotation:
-      GoogleCloudDatalabelingV1beta1TextClassificationAnnotationSchema.exactOptional().openapi({
-        description: 'Annotation value for text classification case.',
-      }),
-    textEntityExtractionAnnotation:
-      GoogleCloudDatalabelingV1beta1TextEntityExtractionAnnotationSchema.exactOptional().openapi({
-        description: 'Annotation value for text entity extraction case.',
-      }),
-    videoClassificationAnnotation:
-      GoogleCloudDatalabelingV1beta1VideoClassificationAnnotationSchema.exactOptional().openapi({
-        description: 'Annotation value for video classification case.',
-      }),
-    videoEventAnnotation:
-      GoogleCloudDatalabelingV1beta1VideoEventAnnotationSchema.exactOptional().openapi({
-        description: 'Annotation value for video event case.',
-      }),
-    videoObjectTrackingAnnotation:
-      GoogleCloudDatalabelingV1beta1VideoObjectTrackingAnnotationSchema.exactOptional().openapi({
-        description: 'Annotation value for video object detection and tracking case.',
-      }),
-  })
-  .openapi({ description: 'Annotation value for an example.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1AnnotationValue')
-
-const GoogleCloudDatalabelingV1beta1AnnotationSchema = z
-  .object({
-    annotationMetadata:
-      GoogleCloudDatalabelingV1beta1AnnotationMetadataSchema.exactOptional().openapi({
-        description:
-          'Output only. Annotation metadata, including information like votes for labels.',
-      }),
-    annotationSentiment: z
-      .enum(['ANNOTATION_SENTIMENT_UNSPECIFIED', 'NEGATIVE', 'POSITIVE'])
-      .exactOptional()
-      .openapi({ description: 'Output only. Sentiment for this annotation.' }),
-    annotationSource: z
-      .enum(['ANNOTATION_SOURCE_UNSPECIFIED', 'OPERATOR'])
-      .exactOptional()
-      .openapi({ description: 'Output only. The source of the annotation.' }),
-    annotationValue: GoogleCloudDatalabelingV1beta1AnnotationValueSchema.exactOptional().openapi({
-      description:
-        'Output only. This is the actual annotation value, e.g classification, bounding box values are stored here.',
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Unique name of this annotation, format is: projects/{project_id}/datasets/{dataset_id}/annotatedDatasets/{annotated_dataset}/examples/{example_id}/annotations/{annotation_id}',
-      }),
-  })
-  .openapi({
-    description:
-      'Annotation for Example. Each example may have one or more annotations. For example in image classification problem, each image might have one or more labels. We call labels binded with this image an Annotation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1Annotation')
-
 const GoogleCloudDatalabelingV1beta1AnnotationSpecSetSchema = z
   .object({
     annotationSpecs: z
@@ -1371,188 +2087,6 @@ const GoogleCloudDatalabelingV1beta1AnnotationSpecSetSchema = z
   })
   .openapi('GoogleCloudDatalabelingV1beta1AnnotationSpecSet')
 
-const GoogleCloudDatalabelingV1beta1AttemptSchema = z
-  .object({
-    attemptTime: z.string().exactOptional(),
-    partialFailures: z
-      .array(GoogleRpcStatusSchema)
-      .exactOptional()
-      .openapi({ description: 'Details of errors that occurred.' }),
-  })
-  .openapi({ description: 'Records a failed evaluation job run.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1Attempt')
-
-const GoogleCloudDatalabelingV1beta1BigQuerySourceSchema = z
-  .object({
-    inputUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. BigQuery URI to a table, up to 2,000 characters long. If you specify the URI of a table that does not exist, Data Labeling Service creates a table at the URI with the correct schema when you create your EvaluationJob. If you specify the URI of a table that already exists, it must have the [correct schema](/ml-engine/docs/continuous-evaluation/create-job#table-schema). Provide the table URI in the following format: "bq://{your_project_id}/ {your_dataset_name}/{your_table_name}" [Learn more](/ml-engine/docs/continuous-evaluation/create-job#table-schema).',
-      }),
-  })
-  .openapi({
-    description:
-      'The BigQuery location for input data. If used in an EvaluationJob, this is where the service saves the prediction input and output sampled from the model version.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1BigQuerySource')
-
-const GoogleCloudDatalabelingV1beta1BoundingBoxEvaluationOptionsSchema = z
-  .object({
-    iouThreshold: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Minimum [intersection-over-union (IOU)](/vision/automl/object-detection/docs/evaluate#intersection-over-union) required for 2 bounding boxes to be considered a match. This must be a number between 0 and 1.',
-      }),
-  })
-  .openapi({ description: 'Options regarding evaluation between bounding boxes.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1BoundingBoxEvaluationOptions')
-
-const GoogleCloudDatalabelingV1beta1ClassificationMetadataSchema = z
-  .object({
-    isMultiLabel: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the classification task is multi-label or not.' }),
-  })
-  .openapi({ description: 'Metadata for classification annotations.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1ClassificationMetadata')
-
-const GoogleCloudDatalabelingV1beta1ConfusionMatrixEntrySchema = z
-  .object({
-    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
-      description: 'The annotation spec of a predicted label.',
-    }),
-    itemCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Number of items predicted to have this label. (The ground truth label for these items is the `Row.annotationSpec` of this entry's parent.)",
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1ConfusionMatrixEntry')
-
-const GoogleCloudDatalabelingV1beta1RowSchema = z
-  .object({
-    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
-      description: 'The annotation spec of the ground truth label for this row.',
-    }),
-    entries: z
-      .array(GoogleCloudDatalabelingV1beta1ConfusionMatrixEntrySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of the confusion matrix entries. One entry for each possible predicted label.',
-      }),
-  })
-  .openapi({
-    description:
-      'A row in the confusion matrix. Each entry in this row has the same ground truth label.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1Row')
-
-const GoogleCloudDatalabelingV1beta1ConfusionMatrixSchema = z
-  .object({ row: z.array(GoogleCloudDatalabelingV1beta1RowSchema).exactOptional() })
-  .openapi({
-    description:
-      'Confusion matrix of the model running the classification. Only applicable when the metrics entry aggregates multiple labels. Not applicable when the entry is for a single label.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1ConfusionMatrix')
-
-const GoogleCloudDatalabelingV1beta1ConfidenceMetricsEntrySchema = z
-  .object({
-    confidenceThreshold: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Threshold used for this entry. For classification tasks, this is a classification threshold: a predicted label is categorized as positive or negative (in the context of this point on the PR curve) based on whether the label's score meets this threshold. For image object detection (bounding box) tasks, this is the [intersection-over-union (IOU)](/vision/automl/object-detection/docs/evaluate#intersection-over-union) threshold for the context of this point on the PR curve.",
-      }),
-    f1Score: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'Harmonic mean of recall and precision.' }),
-    f1ScoreAt1: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'The harmonic mean of recall_at1 and precision_at1.' }),
-    f1ScoreAt5: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'The harmonic mean of recall_at5 and precision_at5.' }),
-    precision: z.float32().exactOptional().openapi({ description: 'Precision value.' }),
-    precisionAt1: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'Precision value for entries with label that has highest score.' }),
-    precisionAt5: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description: 'Precision value for entries with label that has highest 5 scores.',
-      }),
-    recall: z.float32().exactOptional().openapi({ description: 'Recall value.' }),
-    recallAt1: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'Recall value for entries with label that has highest score.' }),
-    recallAt5: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'Recall value for entries with label that has highest 5 scores.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1ConfidenceMetricsEntry')
-
-const GoogleCloudDatalabelingV1beta1PrCurveSchema = z
-  .object({
-    annotationSpec: GoogleCloudDatalabelingV1beta1AnnotationSpecSchema.exactOptional().openapi({
-      description:
-        'The annotation spec of the label for which the precision-recall curve calculated. If this field is empty, that means the precision-recall curve is an aggregate curve for all labels.',
-    }),
-    areaUnderCurve: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Area under the precision-recall curve. Not to be confused with area under a receiver operating characteristic (ROC) curve.',
-      }),
-    confidenceMetricsEntries: z
-      .array(GoogleCloudDatalabelingV1beta1ConfidenceMetricsEntrySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Entries that make up the precision-recall graph. Each entry is a "point" on the graph drawn for a different `confidence_threshold`.',
-      }),
-    meanAveragePrecision: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'Mean average prcision of this curve.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1PrCurve')
-
-const GoogleCloudDatalabelingV1beta1ClassificationMetricsSchema = z
-  .object({
-    confusionMatrix: GoogleCloudDatalabelingV1beta1ConfusionMatrixSchema.exactOptional().openapi({
-      description: 'Confusion matrix of predicted labels vs. ground truth labels.',
-    }),
-    prCurve: GoogleCloudDatalabelingV1beta1PrCurveSchema.exactOptional().openapi({
-      description:
-        'Precision-recall curve based on ground truth labels, predicted labels, and scores for the predicted labels.',
-    }),
-  })
-  .openapi({ description: 'Metrics calculated for a classification model.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1ClassificationMetrics')
-
 const GoogleCloudDatalabelingV1beta1CreateAnnotationSpecSetRequestSchema = z
   .object({
     annotationSpecSet:
@@ -1563,90 +2097,6 @@ const GoogleCloudDatalabelingV1beta1CreateAnnotationSpecSetRequestSchema = z
   })
   .openapi({ description: 'Request message for CreateAnnotationSpecSet.', required: [] })
   .openapi('GoogleCloudDatalabelingV1beta1CreateAnnotationSpecSetRequest')
-
-const GoogleCloudDatalabelingV1beta1GcsSourceSchema = z
-  .object({
-    inputUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The input URI of source file. This must be a Cloud Storage path (`gs://...`).',
-      }),
-    mimeType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. The format of the source file. Only "text/csv" is supported.',
-      }),
-  })
-  .openapi({ description: 'Source of the Cloud Storage file to be imported.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1GcsSource')
-
-const GoogleCloudDatalabelingV1beta1TextMetadataSchema = z
-  .object({
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The language of this text, as a [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt). Default value is en-US.',
-      }),
-  })
-  .openapi({ description: 'Metadata for the text.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1TextMetadata')
-
-const GoogleCloudDatalabelingV1beta1InputConfigSchema = z
-  .object({
-    annotationType: z
-      .enum([
-        'ANNOTATION_TYPE_UNSPECIFIED',
-        'IMAGE_CLASSIFICATION_ANNOTATION',
-        'IMAGE_BOUNDING_BOX_ANNOTATION',
-        'IMAGE_ORIENTED_BOUNDING_BOX_ANNOTATION',
-        'IMAGE_BOUNDING_POLY_ANNOTATION',
-        'IMAGE_POLYLINE_ANNOTATION',
-        'IMAGE_SEGMENTATION_ANNOTATION',
-        'VIDEO_SHOTS_CLASSIFICATION_ANNOTATION',
-        'VIDEO_OBJECT_TRACKING_ANNOTATION',
-        'VIDEO_OBJECT_DETECTION_ANNOTATION',
-        'VIDEO_EVENT_ANNOTATION',
-        'TEXT_CLASSIFICATION_ANNOTATION',
-        'TEXT_ENTITY_EXTRACTION_ANNOTATION',
-        'GENERAL_CLASSIFICATION_ANNOTATION',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The type of annotation to be performed on this data. You must specify this field if you are using this InputConfig in an EvaluationJob.',
-      }),
-    bigquerySource: GoogleCloudDatalabelingV1beta1BigQuerySourceSchema.exactOptional().openapi({
-      description:
-        'Source located in BigQuery. You must specify this field if you are using this InputConfig in an EvaluationJob.',
-    }),
-    classificationMetadata:
-      GoogleCloudDatalabelingV1beta1ClassificationMetadataSchema.exactOptional().openapi({
-        description:
-          'Optional. Metadata about annotations for the input. You must specify this field if you are using this InputConfig in an EvaluationJob for a model version that performs classification.',
-      }),
-    dataType: z
-      .enum(['DATA_TYPE_UNSPECIFIED', 'IMAGE', 'VIDEO', 'TEXT', 'GENERAL_DATA'])
-      .exactOptional()
-      .openapi({
-        description: 'Required. Data type must be specifed when user tries to import data.',
-      }),
-    gcsSource: GoogleCloudDatalabelingV1beta1GcsSourceSchema.exactOptional().openapi({
-      description: 'Source located in Cloud Storage.',
-    }),
-    textMetadata: GoogleCloudDatalabelingV1beta1TextMetadataSchema.exactOptional().openapi({
-      description: 'Required for text import, as language code must be specified.',
-    }),
-  })
-  .openapi({
-    description: 'The configuration of input data, including data type, location, etc.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1InputConfig')
 
 const GoogleCloudDatalabelingV1beta1DatasetSchema = z
   .object({
@@ -1716,185 +2166,15 @@ const GoogleCloudDatalabelingV1beta1CreateDatasetRequestSchema = z
   .openapi({ description: 'Request message for CreateDataset.', required: [] })
   .openapi('GoogleCloudDatalabelingV1beta1CreateDatasetRequest')
 
-const GoogleCloudDatalabelingV1beta1EvaluationConfigSchema = z
-  .object({
-    boundingBoxEvaluationOptions:
-      GoogleCloudDatalabelingV1beta1BoundingBoxEvaluationOptionsSchema.exactOptional().openapi({
-        description:
-          'Only specify this field if the related model performs image object detection (`IMAGE_BOUNDING_BOX_ANNOTATION`). Describes how to evaluate bounding boxes.',
+const GoogleCloudDatalabelingV1beta1CreateEvaluationJobRequestSchema: z.ZodType<GoogleCloudDatalabelingV1beta1CreateEvaluationJobRequestType> =
+  z
+    .object({
+      job: GoogleCloudDatalabelingV1beta1EvaluationJobSchema.exactOptional().openapi({
+        description: 'Required. The evaluation job to create.',
       }),
-  })
-  .openapi({
-    description:
-      'Configuration details used for calculating evaluation metrics and creating an Evaluation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1EvaluationConfig')
-
-const GoogleCloudDatalabelingV1beta1EvaluationJobAlertConfigSchema = z
-  .object({
-    email: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. An email address to send alerts to.' }),
-    minAcceptableMeanAveragePrecision: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. A number between 0 and 1 that describes a minimum mean average precision threshold. When the evaluation job runs, if it calculates that your model version's predictions from the recent interval have meanAveragePrecision below this threshold, then it sends an alert to your specified email.",
-      }),
-  })
-  .openapi({
-    description:
-      'Provides details for how an evaluation job sends email alerts based on the results of a run.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1EvaluationJobAlertConfig')
-
-const GoogleCloudDatalabelingV1beta1EvaluationJobConfigSchema = z
-  .object({
-    bigqueryImportKeys: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Prediction keys that tell Data Labeling Service where to find the data for evaluation in your BigQuery table. When the service samples prediction input and output from your model version and saves it to BigQuery, the data gets stored as JSON strings in the BigQuery table. These keys tell Data Labeling Service how to parse the JSON. You can provide the following entries in this field: * `data_json_key`: the data key for prediction input. You must provide either this key or `reference_json_key`. * `reference_json_key`: the data reference key for prediction input. You must provide either this key or `data_json_key`. * `label_json_key`: the label key for prediction output. Required. * `label_score_json_key`: the score key for prediction output. Required. * `bounding_box_json_key`: the bounding box key for prediction output. Required if your model version perform image object detection. Learn [how to configure prediction keys](/ml-engine/docs/continuous-evaluation/create-job#prediction-keys).',
-      }),
-    boundingPolyConfig:
-      GoogleCloudDatalabelingV1beta1BoundingPolyConfigSchema.exactOptional().openapi({
-        description:
-          'Specify this field if your model version performs image object detection (bounding box detection). `annotationSpecSet` in this configuration must match EvaluationJob.annotationSpecSet.',
-      }),
-    evaluationConfig: GoogleCloudDatalabelingV1beta1EvaluationConfigSchema.exactOptional().openapi({
-      description:
-        'Required. Details for calculating evaluation metrics and creating Evaulations. If your model version performs image object detection, you must specify the `boundingBoxEvaluationOptions` field within this configuration. Otherwise, provide an empty object for this configuration.',
-    }),
-    evaluationJobAlertConfig:
-      GoogleCloudDatalabelingV1beta1EvaluationJobAlertConfigSchema.exactOptional().openapi({
-        description:
-          'Optional. Configuration details for evaluation job alerts. Specify this field if you want to receive email alerts if the evaluation job finds that your predictions have low mean average precision during a run.',
-      }),
-    exampleCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The maximum number of predictions to sample and save to BigQuery during each evaluation interval. This limit overrides `example_sample_percentage`: even if the service has not sampled enough predictions to fulfill `example_sample_perecentage` during an interval, it stops sampling predictions when it meets this limit.',
-      }),
-    exampleSamplePercentage: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Fraction of predictions to sample and save to BigQuery during each evaluation interval. For example, 0.1 means 10% of predictions served by your model version get saved to BigQuery.',
-      }),
-    humanAnnotationConfig:
-      GoogleCloudDatalabelingV1beta1HumanAnnotationConfigSchema.exactOptional().openapi({
-        description:
-          'Optional. Details for human annotation of your data. If you set labelMissingGroundTruth to `true` for this evaluation job, then you must specify this field. If you plan to provide your own ground truth labels, then omit this field. Note that you must create an Instruction resource before you can specify this field. Provide the name of the instruction resource in the `instruction` field within this configuration.',
-      }),
-    imageClassificationConfig:
-      GoogleCloudDatalabelingV1beta1ImageClassificationConfigSchema.exactOptional().openapi({
-        description:
-          'Specify this field if your model version performs image classification or general classification. `annotationSpecSet` in this configuration must match EvaluationJob.annotationSpecSet. `allowMultiLabel` in this configuration must match `classificationMetadata.isMultiLabel` in input_config.',
-      }),
-    inputConfig: GoogleCloudDatalabelingV1beta1InputConfigSchema.exactOptional().openapi({
-      description:
-        'Rquired. Details for the sampled prediction input. Within this configuration, there are requirements for several fields: * `dataType` must be one of `IMAGE`, `TEXT`, or `GENERAL_DATA`. * `annotationType` must be one of `IMAGE_CLASSIFICATION_ANNOTATION`, `TEXT_CLASSIFICATION_ANNOTATION`, `GENERAL_CLASSIFICATION_ANNOTATION`, or `IMAGE_BOUNDING_BOX_ANNOTATION` (image object detection). * If your machine learning model performs classification, you must specify `classificationMetadata.isMultiLabel`. * You must specify `bigquerySource` (not `gcsSource`).',
-    }),
-    textClassificationConfig:
-      GoogleCloudDatalabelingV1beta1TextClassificationConfigSchema.exactOptional().openapi({
-        description:
-          'Specify this field if your model version performs text classification. `annotationSpecSet` in this configuration must match EvaluationJob.annotationSpecSet. `allowMultiLabel` in this configuration must match `classificationMetadata.isMultiLabel` in input_config.',
-      }),
-  })
-  .openapi({
-    description:
-      'Configures specific details of how a continuous evaluation job works. Provide this configuration when you create an EvaluationJob.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1EvaluationJobConfig')
-
-const GoogleCloudDatalabelingV1beta1EvaluationJobSchema = z
-  .object({
-    annotationSpecSet: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Name of the AnnotationSpecSet describing all the labels that your machine learning model outputs. You must create this resource before you create an evaluation job and provide its name in the following format: "projects/{project_id}/annotationSpecSets/{annotation_spec_set_id}"',
-      }),
-    attempts: z
-      .array(GoogleCloudDatalabelingV1beta1AttemptSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Every time the evaluation job runs and an error occurs, the failed attempt is appended to this array.',
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Timestamp of when this evaluation job was created.' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Description of the job. The description can be up to 25,000 characters long.',
-      }),
-    evaluationJobConfig:
-      GoogleCloudDatalabelingV1beta1EvaluationJobConfigSchema.exactOptional().openapi({
-        description: 'Required. Configuration details for the evaluation job.',
-      }),
-    labelMissingGroundTruth: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. Whether you want Data Labeling Service to provide ground truth labels for prediction input. If you want the service to assign human labelers to annotate your data, set this to `true`. If you want to provide your own ground truth labels in the evaluation job's BigQuery table, set this to `false`.",
-      }),
-    modelVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The [AI Platform Prediction model version](/ml-engine/docs/prediction-overview) to be evaluated. Prediction input and output is sampled from this model version. When creating an evaluation job, specify the model version in the following format: "projects/{project_id}/models/{model_name}/versions/{version_name}" There can only be one evaluation job per model version.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. After you create a job, Data Labeling Service assigns a name to the job with the following format: "projects/{project_id}/evaluationJobs/ {evaluation_job_id}"',
-      }),
-    schedule: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Describes the interval at which the job runs. This interval must be at least 1 day, and it is rounded to the nearest day. For example, if you specify a 50-hour interval, the job runs every 2 days. You can provide the schedule in [crontab format](/scheduler/docs/configuring/cron-job-schedules) or in an [English-like format](/appengine/docs/standard/python/config/cronref#schedule_format). Regardless of what you specify, the job will run at 10:00 AM UTC. Only the interval from this schedule is used, not the specific time of day.',
-      }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'SCHEDULED', 'RUNNING', 'PAUSED', 'STOPPED'])
-      .exactOptional()
-      .openapi({ description: 'Output only. Describes the current state of the job.' }),
-  })
-  .openapi({
-    description:
-      'Defines an evaluation job that runs periodically to generate Evaluations. [Creating an evaluation job](/ml-engine/docs/continuous-evaluation/create-job) is the starting point for using continuous evaluation.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1EvaluationJob')
-
-const GoogleCloudDatalabelingV1beta1CreateEvaluationJobRequestSchema = z
-  .object({
-    job: GoogleCloudDatalabelingV1beta1EvaluationJobSchema.exactOptional().openapi({
-      description: 'Required. The evaluation job to create.',
-    }),
-  })
-  .openapi({ description: 'Request message for CreateEvaluationJob.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1CreateEvaluationJobRequest')
+    })
+    .openapi({ description: 'Request message for CreateEvaluationJob.', required: [] })
+    .openapi('GoogleCloudDatalabelingV1beta1CreateEvaluationJobRequest')
 
 const GoogleCloudDatalabelingV1beta1CreateInstructionMetadataSchema = z
   .object({
@@ -2009,67 +2289,6 @@ const GoogleCloudDatalabelingV1beta1CreateInstructionRequestSchema = z
   .openapi({ description: 'Request message for CreateInstruction.', required: [] })
   .openapi('GoogleCloudDatalabelingV1beta1CreateInstructionRequest')
 
-const GoogleCloudDatalabelingV1beta1ImagePayloadSchema = z
-  .object({
-    imageThumbnail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A byte string of a thumbnail image.' }),
-    imageUri: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Image uri from the user bucket.' }),
-    mimeType: z.string().exactOptional().openapi({ description: 'Image format.' }),
-    signedUri: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Signed uri of the image file in the service bucket.' }),
-  })
-  .openapi({ description: 'Container of information about an image.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1ImagePayload')
-
-const GoogleCloudDatalabelingV1beta1TextPayloadSchema = z
-  .object({ textContent: z.string().exactOptional().openapi({ description: 'Text content.' }) })
-  .openapi({ description: 'Container of information about a piece of text.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1TextPayload')
-
-const GoogleCloudDatalabelingV1beta1VideoThumbnailSchema = z
-  .object({
-    thumbnail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A byte string of the video frame.' }),
-    timeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time offset relative to the beginning of the video, corresponding to the video frame where the thumbnail has been extracted from.',
-      }),
-  })
-  .openapi({ description: 'Container of information of a video thumbnail.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1VideoThumbnail')
-
-const GoogleCloudDatalabelingV1beta1VideoPayloadSchema = z
-  .object({
-    frameRate: z.float32().exactOptional().openapi({ description: 'FPS of the video.' }),
-    mimeType: z.string().exactOptional().openapi({ description: 'Video format.' }),
-    signedUri: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Signed uri of the video file in the service bucket.' }),
-    videoThumbnails: z
-      .array(GoogleCloudDatalabelingV1beta1VideoThumbnailSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of video thumbnails.' }),
-    videoUri: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Video uri from the user bucket.' }),
-  })
-  .openapi({ description: 'Container of information of a video.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1VideoPayload')
-
 const GoogleCloudDatalabelingV1beta1DataItemSchema = z
   .object({
     imagePayload: GoogleCloudDatalabelingV1beta1ImagePayloadSchema.exactOptional().openapi({
@@ -2094,142 +2313,6 @@ const GoogleCloudDatalabelingV1beta1DataItemSchema = z
     required: [],
   })
   .openapi('GoogleCloudDatalabelingV1beta1DataItem')
-
-const GoogleCloudDatalabelingV1beta1ObjectDetectionMetricsSchema = z
-  .object({
-    prCurve: GoogleCloudDatalabelingV1beta1PrCurveSchema.exactOptional().openapi({
-      description: 'Precision-recall curve.',
-    }),
-  })
-  .openapi({
-    description: 'Metrics calculated for an image object detection (bounding box) model.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1ObjectDetectionMetrics')
-
-const GoogleCloudDatalabelingV1beta1EvaluationMetricsSchema = z
-  .object({
-    classificationMetrics:
-      GoogleCloudDatalabelingV1beta1ClassificationMetricsSchema.exactOptional(),
-    objectDetectionMetrics:
-      GoogleCloudDatalabelingV1beta1ObjectDetectionMetricsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1EvaluationMetrics')
-
-const GoogleCloudDatalabelingV1beta1EvaluationSchema = z
-  .object({
-    annotationType: z
-      .enum([
-        'ANNOTATION_TYPE_UNSPECIFIED',
-        'IMAGE_CLASSIFICATION_ANNOTATION',
-        'IMAGE_BOUNDING_BOX_ANNOTATION',
-        'IMAGE_ORIENTED_BOUNDING_BOX_ANNOTATION',
-        'IMAGE_BOUNDING_POLY_ANNOTATION',
-        'IMAGE_POLYLINE_ANNOTATION',
-        'IMAGE_SEGMENTATION_ANNOTATION',
-        'VIDEO_SHOTS_CLASSIFICATION_ANNOTATION',
-        'VIDEO_OBJECT_TRACKING_ANNOTATION',
-        'VIDEO_OBJECT_DETECTION_ANNOTATION',
-        'VIDEO_EVENT_ANNOTATION',
-        'TEXT_CLASSIFICATION_ANNOTATION',
-        'TEXT_ENTITY_EXTRACTION_ANNOTATION',
-        'GENERAL_CLASSIFICATION_ANNOTATION',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Type of task that the model version being evaluated performs, as defined in the evaluationJobConfig.inputConfig.annotationType field of the evaluation job that created this evaluation.',
-      }),
-    config: GoogleCloudDatalabelingV1beta1EvaluationConfigSchema.exactOptional().openapi({
-      description: 'Output only. Options used in the evaluation job that created this evaluation.',
-    }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Timestamp for when this evaluation was created.' }),
-    evaluatedItemCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The number of items in the ground truth dataset that were used for this evaluation. Only populated when the evaulation is for certain AnnotationTypes.',
-      }),
-    evaluationJobRunTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Timestamp for when the evaluation job that created this evaluation ran.',
-      }),
-    evaluationMetrics:
-      GoogleCloudDatalabelingV1beta1EvaluationMetricsSchema.exactOptional().openapi({
-        description: 'Output only. Metrics comparing predictions to ground truth labels.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Resource name of an evaluation. The name has the following format: "projects/{project_id}/datasets/{dataset_id}/evaluations/ {evaluation_id}\'',
-      }),
-  })
-  .openapi({
-    description:
-      "Describes an evaluation between a machine learning model's predictions and ground truth labels. Created when an EvaluationJob runs successfully.",
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1Evaluation')
-
-const GoogleCloudDatalabelingV1beta1ExampleSchema = z
-  .object({
-    annotations: z
-      .array(GoogleCloudDatalabelingV1beta1AnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Annotations for the piece of data in Example. One piece of data can have multiple annotations.',
-      }),
-    imagePayload: GoogleCloudDatalabelingV1beta1ImagePayloadSchema.exactOptional().openapi({
-      description: 'The image payload, a container of the image bytes/uri.',
-    }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Name of the example, in format of: projects/{project_id}/datasets/{dataset_id}/annotatedDatasets/ {annotated_dataset_id}/examples/{example_id}',
-      }),
-    textPayload: GoogleCloudDatalabelingV1beta1TextPayloadSchema.exactOptional().openapi({
-      description: 'The text payload, a container of the text content.',
-    }),
-    videoPayload: GoogleCloudDatalabelingV1beta1VideoPayloadSchema.exactOptional().openapi({
-      description: 'The video payload, a container of the video uri.',
-    }),
-  })
-  .openapi({
-    description:
-      'An Example is a piece of data and its annotation. For example, an image with label "house".',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1Example')
-
-const GoogleCloudDatalabelingV1beta1ExampleComparisonSchema = z
-  .object({
-    groundTruthExample: GoogleCloudDatalabelingV1beta1ExampleSchema.exactOptional().openapi({
-      description: 'The ground truth output for the input.',
-    }),
-    modelCreatedExamples: z
-      .array(GoogleCloudDatalabelingV1beta1ExampleSchema)
-      .exactOptional()
-      .openapi({ description: 'Predictions by the model for the input.' }),
-  })
-  .openapi({
-    description:
-      'Example comparisons comparing ground truth output and predictions for a specific input.',
-    required: [],
-  })
-  .openapi('GoogleCloudDatalabelingV1beta1ExampleComparison')
 
 const GoogleCloudDatalabelingV1beta1ExportDataOperationMetadataSchema = z
   .object({
@@ -2365,12 +2448,12 @@ const GoogleCloudDatalabelingV1beta1ExportDataRequestSchema = z
   .openapi('GoogleCloudDatalabelingV1beta1ExportDataRequest')
 
 const GoogleCloudDatalabelingV1beta1OperatorFeedbackMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata describing the feedback from the operator.' })
   .openapi('GoogleCloudDatalabelingV1beta1OperatorFeedbackMetadata')
 
 const GoogleCloudDatalabelingV1beta1RequesterFeedbackMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata describing the feedback from the labeling task requester.' })
   .openapi('GoogleCloudDatalabelingV1beta1RequesterFeedbackMetadata')
 
@@ -2864,33 +2947,35 @@ const GoogleCloudDatalabelingV1beta1ListDatasetsResponseSchema = z
   .openapi({ description: 'Results of listing datasets within a project.', required: [] })
   .openapi('GoogleCloudDatalabelingV1beta1ListDatasetsResponse')
 
-const GoogleCloudDatalabelingV1beta1ListEvaluationJobsResponseSchema = z
-  .object({
-    evaluationJobs: z
-      .array(GoogleCloudDatalabelingV1beta1EvaluationJobSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of evaluation jobs to return.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A token to retrieve next page of results.' }),
-  })
-  .openapi({ description: 'Results for listing evaluation jobs.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1ListEvaluationJobsResponse')
+const GoogleCloudDatalabelingV1beta1ListEvaluationJobsResponseSchema: z.ZodType<GoogleCloudDatalabelingV1beta1ListEvaluationJobsResponseType> =
+  z
+    .object({
+      evaluationJobs: z
+        .array(GoogleCloudDatalabelingV1beta1EvaluationJobSchema)
+        .exactOptional()
+        .openapi({ description: 'The list of evaluation jobs to return.' }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'A token to retrieve next page of results.' }),
+    })
+    .openapi({ description: 'Results for listing evaluation jobs.', required: [] })
+    .openapi('GoogleCloudDatalabelingV1beta1ListEvaluationJobsResponse')
 
-const GoogleCloudDatalabelingV1beta1ListExamplesResponseSchema = z
-  .object({
-    examples: z
-      .array(GoogleCloudDatalabelingV1beta1ExampleSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of examples to return.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A token to retrieve next page of results.' }),
-  })
-  .openapi({ description: 'Results of listing Examples in and annotated dataset.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1ListExamplesResponse')
+const GoogleCloudDatalabelingV1beta1ListExamplesResponseSchema: z.ZodType<GoogleCloudDatalabelingV1beta1ListExamplesResponseType> =
+  z
+    .object({
+      examples: z
+        .array(GoogleCloudDatalabelingV1beta1ExampleSchema)
+        .exactOptional()
+        .openapi({ description: 'The list of examples to return.' }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'A token to retrieve next page of results.' }),
+    })
+    .openapi({ description: 'Results of listing Examples in and annotated dataset.', required: [] })
+    .openapi('GoogleCloudDatalabelingV1beta1ListExamplesResponse')
 
 const GoogleCloudDatalabelingV1beta1ListFeedbackMessagesResponseSchema = z
   .object({
@@ -2935,28 +3020,29 @@ const GoogleCloudDatalabelingV1beta1ListInstructionsResponseSchema = z
   .openapi('GoogleCloudDatalabelingV1beta1ListInstructionsResponse')
 
 const GoogleCloudDatalabelingV1beta1PauseEvaluationJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for PauseEvaluationJob.' })
   .openapi('GoogleCloudDatalabelingV1beta1PauseEvaluationJobRequest')
 
 const GoogleCloudDatalabelingV1beta1ResumeEvaluationJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message ResumeEvaluationJob.' })
   .openapi('GoogleCloudDatalabelingV1beta1ResumeEvaluationJobRequest')
 
-const GoogleCloudDatalabelingV1beta1SearchEvaluationsResponseSchema = z
-  .object({
-    evaluations: z
-      .array(GoogleCloudDatalabelingV1beta1EvaluationSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of evaluations matching the search.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A token to retrieve next page of results.' }),
-  })
-  .openapi({ description: 'Results of searching evaluations.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1SearchEvaluationsResponse')
+const GoogleCloudDatalabelingV1beta1SearchEvaluationsResponseSchema: z.ZodType<GoogleCloudDatalabelingV1beta1SearchEvaluationsResponseType> =
+  z
+    .object({
+      evaluations: z
+        .array(GoogleCloudDatalabelingV1beta1EvaluationSchema)
+        .exactOptional()
+        .openapi({ description: 'The list of evaluations matching the search.' }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'A token to retrieve next page of results.' }),
+    })
+    .openapi({ description: 'Results of searching evaluations.', required: [] })
+    .openapi('GoogleCloudDatalabelingV1beta1SearchEvaluationsResponse')
 
 const GoogleCloudDatalabelingV1beta1SearchExampleComparisonsRequestSchema = z
   .object({
@@ -2978,19 +3064,20 @@ const GoogleCloudDatalabelingV1beta1SearchExampleComparisonsRequestSchema = z
   .openapi({ description: 'Request message of SearchExampleComparisons.', required: [] })
   .openapi('GoogleCloudDatalabelingV1beta1SearchExampleComparisonsRequest')
 
-const GoogleCloudDatalabelingV1beta1SearchExampleComparisonsResponseSchema = z
-  .object({
-    exampleComparisons: z
-      .array(GoogleCloudDatalabelingV1beta1ExampleComparisonSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of example comparisons matching the search criteria.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A token to retrieve next page of results.' }),
-  })
-  .openapi({ description: 'Results of searching example comparisons.', required: [] })
-  .openapi('GoogleCloudDatalabelingV1beta1SearchExampleComparisonsResponse')
+const GoogleCloudDatalabelingV1beta1SearchExampleComparisonsResponseSchema: z.ZodType<GoogleCloudDatalabelingV1beta1SearchExampleComparisonsResponseType> =
+  z
+    .object({
+      exampleComparisons: z
+        .array(GoogleCloudDatalabelingV1beta1ExampleComparisonSchema)
+        .exactOptional()
+        .openapi({ description: 'A list of example comparisons matching the search criteria.' }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'A token to retrieve next page of results.' }),
+    })
+    .openapi({ description: 'Results of searching example comparisons.', required: [] })
+    .openapi('GoogleCloudDatalabelingV1beta1SearchExampleComparisonsResponse')
 
 const GoogleCloudDatalabelingV1p1alpha1CreateInstructionMetadataSchema = z
   .object({
@@ -4033,7 +4120,7 @@ const GoogleLongrunningListOperationsResponseSchema = z
   .openapi('GoogleLongrunningListOperationsResponse')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

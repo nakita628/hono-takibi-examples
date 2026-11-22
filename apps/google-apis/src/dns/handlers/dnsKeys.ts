@@ -12,5 +12,7 @@ export const dnsKeysHandler = app
   })
   .openapi(
     getDnsV2ProjectsProjectLocationsLocationManagedZonesManagedZoneDnsKeysDnsKeyIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

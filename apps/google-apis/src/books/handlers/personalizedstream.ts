@@ -3,7 +3,6 @@ import { getBooksV1PersonalizedstreamGetRoute } from '../routes'
 
 const app = new OpenAPIHono()
 
-export const personalizedstreamHandler = app.openapi(
-  getBooksV1PersonalizedstreamGetRoute,
-  (c) => {},
-)
+export const personalizedstreamHandler = app.openapi(getBooksV1PersonalizedstreamGetRoute, (c) => {
+  throw new Error('Not implemented')
+})

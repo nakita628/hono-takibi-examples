@@ -48,17 +48,15 @@ export const resourcesHandler = app
   .openapi(postAdminDirectoryV1CustomerCustomerResourcesCalendarsRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    deleteAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRoute,
-    (c) => {},
-  )
+  .openapi(deleteAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(getAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    patchAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRoute,
-    (c) => {},
-  )
+  .openapi(patchAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(putAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRoute, (c) => {
     throw new Error('Not implemented')
   })

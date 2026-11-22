@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodeBuild20161006UpdateProjectVisibilityHandler = app.openapi(
   postXAmzTargetCodeBuild20161006UpdateProjectVisibilityRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

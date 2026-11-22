@@ -1348,6 +1348,7 @@ export const postCommunicationPreferences202609LinksGenerateRoute = createRoute(
             schema: { type: 'integer', format: 'int64', example: null, default: 0 },
           },
           example: null,
+          default: 0,
         }),
     }),
     body: {

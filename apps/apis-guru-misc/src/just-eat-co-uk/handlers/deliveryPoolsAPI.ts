@@ -1,29 +1,51 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  getDeliveryPoolsRoute,
-  postDeliveryPoolsRoute,
+  deleteDeliveryPoolsDeliveryPoolIdRestaurantsRoute,
   deleteDeliveryPoolsDeliveryPoolIdRoute,
-  getDeliveryPoolsDeliveryPoolIdRoute,
-  patchDeliveryPoolsDeliveryPoolIdRoute,
-  putDeliveryPoolsDeliveryPoolIdRoute,
   getDeliveryPoolsDeliveryPoolIdAvailabilityRelativeRoute,
+  getDeliveryPoolsDeliveryPoolIdRoute,
+  getDeliveryPoolsRoute,
+  patchDeliveryPoolsDeliveryPoolIdRoute,
+  postDeliveryPoolsRoute,
   putDeliveryPoolsDeliveryPoolIdAvailabilityRelativeRoute,
   putDeliveryPoolsDeliveryPoolIdHoursRoute,
-  deleteDeliveryPoolsDeliveryPoolIdRestaurantsRoute,
   putDeliveryPoolsDeliveryPoolIdRestaurantsRoute,
+  putDeliveryPoolsDeliveryPoolIdRoute,
 } from '../routes'
 
 const app = new OpenAPIHono()
 
 export const deliveryPoolsAPIHandler = app
-  .openapi(getDeliveryPoolsRoute, (c) => {})
-  .openapi(postDeliveryPoolsRoute, (c) => {})
-  .openapi(deleteDeliveryPoolsDeliveryPoolIdRoute, (c) => {})
-  .openapi(getDeliveryPoolsDeliveryPoolIdRoute, (c) => {})
-  .openapi(patchDeliveryPoolsDeliveryPoolIdRoute, (c) => {})
-  .openapi(putDeliveryPoolsDeliveryPoolIdRoute, (c) => {})
-  .openapi(getDeliveryPoolsDeliveryPoolIdAvailabilityRelativeRoute, (c) => {})
-  .openapi(putDeliveryPoolsDeliveryPoolIdAvailabilityRelativeRoute, (c) => {})
-  .openapi(putDeliveryPoolsDeliveryPoolIdHoursRoute, (c) => {})
-  .openapi(deleteDeliveryPoolsDeliveryPoolIdRestaurantsRoute, (c) => {})
-  .openapi(putDeliveryPoolsDeliveryPoolIdRestaurantsRoute, (c) => {})
+  .openapi(getDeliveryPoolsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postDeliveryPoolsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteDeliveryPoolsDeliveryPoolIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getDeliveryPoolsDeliveryPoolIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(patchDeliveryPoolsDeliveryPoolIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putDeliveryPoolsDeliveryPoolIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getDeliveryPoolsDeliveryPoolIdAvailabilityRelativeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putDeliveryPoolsDeliveryPoolIdAvailabilityRelativeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putDeliveryPoolsDeliveryPoolIdHoursRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(deleteDeliveryPoolsDeliveryPoolIdRestaurantsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putDeliveryPoolsDeliveryPoolIdRestaurantsRoute, (c) => {
+    throw new Error('Not implemented')
+  })

@@ -3,7 +3,6 @@ import { getApiV3LanguageprofileSchemaRoute } from '../routes'
 
 const app = new OpenAPIHono()
 
-export const languageProfileSchemaHandler = app.openapi(
-  getApiV3LanguageprofileSchemaRoute,
-  (c) => {},
-)
+export const languageProfileSchemaHandler = app.openapi(getApiV3LanguageprofileSchemaRoute, (c) => {
+  throw new Error('Not implemented')
+})

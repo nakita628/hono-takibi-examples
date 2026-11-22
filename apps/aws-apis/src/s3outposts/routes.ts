@@ -9,9 +9,9 @@ const EndpointArnSchema = z
 
 const CreateEndpointResultSchema = z
   .object({
-    EndpointArn: EndpointArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the endpoint.' }),
-    ).exactOptional(),
+    EndpointArn: EndpointArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the endpoint.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateEndpointResult')
@@ -47,9 +47,9 @@ const NetworkInterfaceIdSchema = z.string().openapi('NetworkInterfaceId')
 
 const NetworkInterfaceSchema = z
   .object({
-    NetworkInterfaceId: NetworkInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The ID for the network interface.' }),
-    ).exactOptional(),
+    NetworkInterfaceId: NetworkInterfaceIdSchema.exactOptional().openapi({
+      description: 'The ID for the network interface.',
+    }),
   })
   .openapi({ description: 'The container for the network interface.', required: [] })
   .openapi('NetworkInterface')
@@ -83,21 +83,13 @@ const MessageSchema = z.string().openapi('Message')
 
 const FailedReasonSchema = z
   .object({
-    ErrorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The failure code, if any, for a create or delete endpoint operation.',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional error details describing the endpoint failure and recommended action.',
-        }),
-    ).exactOptional(),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({
+      description: 'The failure code, if any, for a create or delete endpoint operation.',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description:
+        'Additional error details describing the endpoint failure and recommended action.',
+    }),
   })
   .openapi({
     description: 'The failure reason, if any, for a create or delete endpoint operation.',
@@ -107,55 +99,40 @@ const FailedReasonSchema = z
 
 const EndpointSchema = z
   .object({
-    EndpointArn: EndpointArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the endpoint.' }),
-    ).exactOptional(),
-    OutpostsId: OutpostIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Outposts.' }),
-    ).exactOptional(),
-    CidrBlock: CidrBlockSchema.and(
-      z.any().openapi({ description: 'The VPC CIDR committed by this endpoint.' }),
-    ).exactOptional(),
-    Status: EndpointStatusSchema.and(
-      z.any().openapi({ description: 'The status of the endpoint.' }),
-    ).exactOptional(),
-    CreationTime: CreationTimeSchema.and(
-      z.any().openapi({ description: 'The time the endpoint was created.' }),
-    ).exactOptional(),
-    NetworkInterfaces: NetworkInterfacesSchema.and(
-      z.any().openapi({ description: 'The network interface of the endpoint.' }),
-    ).exactOptional(),
-    VpcId: VpcIdSchema.and(
-      z.any().openapi({ description: 'The ID of the VPC used for the endpoint.' }),
-    ).exactOptional(),
-    SubnetId: SubnetIdSchema.and(
-      z.any().openapi({ description: 'The ID of the subnet used for the endpoint.' }),
-    ).exactOptional(),
-    SecurityGroupId: SecurityGroupIdSchema.and(
-      z.any().openapi({ description: 'The ID of the security group used for the endpoint.' }),
-    ).exactOptional(),
-    AccessType: EndpointAccessTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of connectivity used to access the Amazon S3 on Outposts endpoint.',
-        }),
-    ).exactOptional(),
-    CustomerOwnedIpv4Pool: CustomerOwnedIpv4PoolSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the customer-owned IPv4 address pool used for the endpoint.',
-        }),
-    ).exactOptional(),
-    FailedReason: FailedReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The failure reason, if any, for a create or delete endpoint operation.',
-        }),
-    ).exactOptional(),
+    EndpointArn: EndpointArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the endpoint.',
+    }),
+    OutpostsId: OutpostIdSchema.exactOptional().openapi({ description: 'The ID of the Outposts.' }),
+    CidrBlock: CidrBlockSchema.exactOptional().openapi({
+      description: 'The VPC CIDR committed by this endpoint.',
+    }),
+    Status: EndpointStatusSchema.exactOptional().openapi({
+      description: 'The status of the endpoint.',
+    }),
+    CreationTime: CreationTimeSchema.exactOptional().openapi({
+      description: 'The time the endpoint was created.',
+    }),
+    NetworkInterfaces: NetworkInterfacesSchema.exactOptional().openapi({
+      description: 'The network interface of the endpoint.',
+    }),
+    VpcId: VpcIdSchema.exactOptional().openapi({
+      description: 'The ID of the VPC used for the endpoint.',
+    }),
+    SubnetId: SubnetIdSchema.exactOptional().openapi({
+      description: 'The ID of the subnet used for the endpoint.',
+    }),
+    SecurityGroupId: SecurityGroupIdSchema.exactOptional().openapi({
+      description: 'The ID of the security group used for the endpoint.',
+    }),
+    AccessType: EndpointAccessTypeSchema.exactOptional().openapi({
+      description: 'The type of connectivity used to access the Amazon S3 on Outposts endpoint.',
+    }),
+    CustomerOwnedIpv4Pool: CustomerOwnedIpv4PoolSchema.exactOptional().openapi({
+      description: 'The ID of the customer-owned IPv4 address pool used for the endpoint.',
+    }),
+    FailedReason: FailedReasonSchema.exactOptional().openapi({
+      description: 'The failure reason, if any, for a create or delete endpoint operation.',
+    }),
   })
   .openapi({
     description:
@@ -175,19 +152,13 @@ const NextTokenSchema = z
 
 const ListEndpointsResultSchema = z
   .object({
-    Endpoints: EndpointsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of endpoints associated with the specified Outpost.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the number of endpoints associated with the specified Outpost exceeds <code>MaxResults</code>, you can include this value in subsequent calls to this operation to retrieve more results.',
-        }),
-    ).exactOptional(),
+    Endpoints: EndpointsSchema.exactOptional().openapi({
+      description: 'The list of endpoints associated with the specified Outpost.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the number of endpoints associated with the specified Outpost exceeds <code>MaxResults</code>, you can include this value in subsequent calls to this operation to retrieve more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEndpointsResult')
@@ -208,27 +179,19 @@ const CapacityInBytesSchema = z.int().openapi('CapacityInBytes')
 
 const OutpostSchema = z
   .object({
-    OutpostArn: OutpostArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the unique Amazon Resource Name (ARN) for the outpost.',
-        }),
-    ).exactOptional(),
-    OutpostId: OutpostIdSchema.and(
-      z.any().openapi({ description: 'Specifies the unique identifier for the outpost.' }),
-    ).exactOptional(),
-    OwnerId: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns the Amazon Web Services account ID of the outpost owner. Useful for comparing owned versus shared outposts.',
-        }),
-    ).exactOptional(),
-    CapacityInBytes: CapacityInBytesSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 capacity of the outpost in bytes.' }),
-    ).exactOptional(),
+    OutpostArn: OutpostArnSchema.exactOptional().openapi({
+      description: 'Specifies the unique Amazon Resource Name (ARN) for the outpost.',
+    }),
+    OutpostId: OutpostIdSchema.exactOptional().openapi({
+      description: 'Specifies the unique identifier for the outpost.',
+    }),
+    OwnerId: AwsAccountIdSchema.exactOptional().openapi({
+      description:
+        'Returns the Amazon Web Services account ID of the outpost owner. Useful for comparing owned versus shared outposts.',
+    }),
+    CapacityInBytes: CapacityInBytesSchema.exactOptional().openapi({
+      description: 'The Amazon S3 capacity of the outpost in bytes.',
+    }),
   })
   .openapi({ description: 'Contains the details for the Outpost object.', required: [] })
   .openapi('Outpost')
@@ -237,78 +200,50 @@ const OutpostsSchema = z.array(OutpostSchema).openapi('Outposts')
 
 const ListOutpostsWithS3ResultSchema = z
   .object({
-    Outposts: OutpostsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Returns the list of Outposts that have the following characteristics:</p> <ul> <li> <p>outposts that have S3 provisioned</p> </li> <li> <p>outposts that are <code>Active</code> (not pending any provisioning nor decommissioned)</p> </li> <li> <p>outposts to which the the calling Amazon Web Services account has access</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns a token that you can use to call <code>ListOutpostsWithS3</code> again and receive additional results, if there are any.',
-        }),
-    ).exactOptional(),
+    Outposts: OutpostsSchema.exactOptional().openapi({
+      description:
+        '<p>Returns the list of Outposts that have the following characteristics:</p> <ul> <li> <p>outposts that have S3 provisioned</p> </li> <li> <p>outposts that are <code>Active</code> (not pending any provisioning nor decommissioned)</p> </li> <li> <p>outposts to which the the calling Amazon Web Services account has access</p> </li> </ul>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Returns a token that you can use to call <code>ListOutpostsWithS3</code> again and receive additional results, if there are any.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListOutpostsWithS3Result')
 
 const ListSharedEndpointsResultSchema = z
   .object({
-    Endpoints: EndpointsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of endpoints associated with the specified Outpost that have been shared by Amazon Web Services Resource Access Manager (RAM).',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the number of endpoints associated with the specified Outpost exceeds <code>MaxResults</code>, you can include this value in subsequent calls to this operation to retrieve more results.',
-        }),
-    ).exactOptional(),
+    Endpoints: EndpointsSchema.exactOptional().openapi({
+      description:
+        'The list of endpoints associated with the specified Outpost that have been shared by Amazon Web Services Resource Access Manager (RAM).',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the number of endpoints associated with the specified Outpost exceeds <code>MaxResults</code>, you can include this value in subsequent calls to this operation to retrieve more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSharedEndpointsResult')
 
 const CreateEndpointRequestSchema = z
   .object({
-    OutpostId: OutpostIdSchema.and(z.any().openapi({ description: 'The ID of the Outposts. ' })),
-    SubnetId: SubnetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the subnet in the selected VPC. The endpoint subnet must belong to the Outpost that has Amazon S3 on Outposts provisioned.',
-        }),
-    ),
-    SecurityGroupId: SecurityGroupIdSchema.and(
-      z.any().openapi({ description: 'The ID of the security group to use with the endpoint.' }),
-    ),
-    AccessType: EndpointAccessTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of access for the network connectivity for the Amazon S3 on Outposts endpoint. To use the Amazon Web Services VPC, choose <code>Private</code>. To use the endpoint with an on-premises network, choose <code>CustomerOwnedIp</code>. If you choose <code>CustomerOwnedIp</code>, you must also provide the customer-owned IP address pool (CoIP pool).</p> <note> <p> <code>Private</code> is the default access type value.</p> </note>',
-        }),
-    ).exactOptional(),
-    CustomerOwnedIpv4Pool: CustomerOwnedIpv4PoolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the customer-owned IPv4 address pool (CoIP pool) for the endpoint. IP addresses are allocated from this pool for the endpoint.',
-        }),
-    ).exactOptional(),
+    OutpostId: OutpostIdSchema.openapi({ description: 'The ID of the Outposts. ' }),
+    SubnetId: SubnetIdSchema.openapi({
+      description:
+        'The ID of the subnet in the selected VPC. The endpoint subnet must belong to the Outpost that has Amazon S3 on Outposts provisioned.',
+    }),
+    SecurityGroupId: SecurityGroupIdSchema.openapi({
+      description: 'The ID of the security group to use with the endpoint.',
+    }),
+    AccessType: EndpointAccessTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of access for the network connectivity for the Amazon S3 on Outposts endpoint. To use the Amazon Web Services VPC, choose <code>Private</code>. To use the endpoint with an on-premises network, choose <code>CustomerOwnedIp</code>. If you choose <code>CustomerOwnedIp</code>, you must also provide the customer-owned IP address pool (CoIP pool).</p> <note> <p> <code>Private</code> is the default access type value.</p> </note>',
+    }),
+    CustomerOwnedIpv4Pool: CustomerOwnedIpv4PoolSchema.exactOptional().openapi({
+      description:
+        'The ID of the customer-owned IPv4 address pool (CoIP pool) for the endpoint. IP addresses are allocated from this pool for the endpoint.',
+    }),
   })
   .openapi({
     required: ['OutpostId', 'SubnetId', 'SecurityGroupId'],
@@ -322,24 +257,24 @@ const EndpointIdSchema = z
   .openapi('EndpointId')
 
 const DeleteEndpointRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteEndpointRequest' })
   .openapi('DeleteEndpointRequest')
 
 const MaxResultsSchema = z.int().min(0).max(100).openapi('MaxResults')
 
 const ListEndpointsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListEndpointsRequest' })
   .openapi('ListEndpointsRequest')
 
 const ListOutpostsWithS3RequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListOutpostsWithS3Request' })
   .openapi('ListOutpostsWithS3Request')
 
 const ListSharedEndpointsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSharedEndpointsRequest' })
   .openapi('ListSharedEndpointsRequest')
 

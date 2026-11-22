@@ -1,12 +1,12 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const ActivateBiddingFunctionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request to activate a bidding function.' })
   .openapi('ActivateBiddingFunctionRequest')
 
 const ArchiveBiddingFunctionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A request to archive a bidding function.' })
   .openapi('ArchiveBiddingFunctionRequest')
 

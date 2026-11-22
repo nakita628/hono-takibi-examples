@@ -1,226 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-type ParameterType = {
-  key?: string
-  list?: ParameterType[]
-  map?: ParameterType[]
-  type?:
-    | 'typeUnspecified'
-    | 'template'
-    | 'integer'
-    | 'boolean'
-    | 'list'
-    | 'map'
-    | 'triggerReference'
-    | 'tagReference'
-  value?: string
-}
-
-const ParameterSchema: z.ZodType<ParameterType> = z
-  .lazy(() =>
-    z
-      .object({
-        key: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values. @mutable tagmanager.accounts.containers.workspaces.variables.create @mutable tagmanager.accounts.containers.workspaces.variables.update @mutable tagmanager.accounts.containers.workspaces.triggers.create @mutable tagmanager.accounts.containers.workspaces.triggers.update @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
-          }),
-        list: z
-          .array(ParameterSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              "This list parameter's parameters (keys will be ignored). @mutable tagmanager.accounts.containers.workspaces.variables.create @mutable tagmanager.accounts.containers.workspaces.variables.update @mutable tagmanager.accounts.containers.workspaces.triggers.create @mutable tagmanager.accounts.containers.workspaces.triggers.update @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update",
-          }),
-        map: z
-          .array(ParameterSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              "This map parameter's parameters (must have keys; keys must be unique). @mutable tagmanager.accounts.containers.workspaces.variables.create @mutable tagmanager.accounts.containers.workspaces.variables.update @mutable tagmanager.accounts.containers.workspaces.triggers.create @mutable tagmanager.accounts.containers.workspaces.triggers.update @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update",
-          }),
-        type: z
-          .enum([
-            'typeUnspecified',
-            'template',
-            'integer',
-            'boolean',
-            'list',
-            'map',
-            'triggerReference',
-            'tagReference',
-          ])
-          .exactOptional()
-          .openapi({
-            description:
-              "The parameter type. Valid values are: - boolean: The value represents a boolean, represented as 'true' or 'false' - integer: The value represents a 64-bit signed integer value, in base 10 - list: A list of parameters should be specified - map: A map of parameters should be specified - template: The value represents any text; this can include variable references (even variable references that might return non-string types) - trigger_reference: The value represents a trigger, represented as the trigger id - tag_reference: The value represents a tag, represented as the tag name @mutable tagmanager.accounts.containers.workspaces.variables.create @mutable tagmanager.accounts.containers.workspaces.variables.update @mutable tagmanager.accounts.containers.workspaces.triggers.create @mutable tagmanager.accounts.containers.workspaces.triggers.update @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update",
-          }),
-        value: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'A parameter\'s value (may contain variable references such as "{{myVariable}}") as appropriate to the specified type. @mutable tagmanager.accounts.containers.workspaces.variables.create @mutable tagmanager.accounts.containers.workspaces.variables.update @mutable tagmanager.accounts.containers.workspaces.triggers.create @mutable tagmanager.accounts.containers.workspaces.triggers.update @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
-          }),
-      })
-      .openapi({ description: 'Represents a Google Tag Manager Parameter.', required: [] }),
-  )
-  .openapi('Parameter')
-
-const TagConsentSettingSchema = z
-  .object({
-    consentStatus: z
-      .enum(['notSet', 'notNeeded', 'needed'])
-      .exactOptional()
-      .openapi({
-        description:
-          "The tag's consent status. If set to NEEDED, the runtime will check that the consent types specified by the consent_type field have been granted.",
-      }),
-    consentType: ParameterSchema.exactOptional().openapi({
-      description:
-        'The type of consents to check for during tag firing if in the consent NEEDED state. This parameter must be of type LIST where each list item is of type STRING.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('TagConsentSetting')
-
-const SetupTagSchema = z
-  .object({
-    stopOnSetupFailure: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, fire the main tag if and only if the setup tag fires successfully. If false, fire the main tag regardless of setup tag firing status.',
-      }),
-    tagName: z.string().exactOptional().openapi({ description: 'The name of the setup tag.' }),
-  })
-  .openapi({
-    description:
-      'Represents a reference to atag that fires before another tag in order to set up dependencies.',
-    required: [],
-  })
-  .openapi('SetupTag')
-
-const TeardownTagSchema = z
-  .object({
-    stopTeardownOnFailure: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, fire the teardown tag if and only if the main tag fires successfully. If false, fire the teardown tag regardless of main tag firing status.',
-      }),
-    tagName: z.string().exactOptional().openapi({ description: 'The name of the teardown tag.' }),
-  })
-  .openapi({
-    description:
-      'Represents a tag that fires after another tag in order to tear down dependencies.',
-    required: [],
-  })
-  .openapi('TeardownTag')
-
-type TagType = {
-  accountId?: string
-  blockingRuleId?: string[]
-  blockingTriggerId?: string[]
-  consentSettings?: z.infer<typeof TagConsentSettingSchema>
-  containerId?: string
-  fingerprint?: string
-  firingRuleId?: string[]
-  firingTriggerId?: string[]
-  liveOnly?: boolean
-  monitoringMetadata?: z.infer<typeof ParameterSchema>
-  monitoringMetadataTagNameKey?: string
-  name?: string
-  notes?: string
-  parameter?: z.infer<typeof ParameterSchema>[]
-  parentFolderId?: string
-  path?: string
-  paused?: boolean
-  priority?: z.infer<typeof ParameterSchema>
-  scheduleEndMs?: string
-  scheduleStartMs?: string
-  setupTag?: z.infer<typeof SetupTagSchema>[]
-  tagFiringOption?: 'tagFiringOptionUnspecified' | 'unlimited' | 'oncePerEvent' | 'oncePerLoad'
-  tagId?: string
-  tagManagerUrl?: string
-  teardownTag?: z.infer<typeof TeardownTagSchema>[]
-  type?: string
-  workspaceId?: string
-}
-
-const AccountFeaturesSchema = z
-  .object({
-    supportMultipleContainers: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether this Account supports multiple Containers.' }),
-    supportUserPermissions: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether this Account supports user permissions managed by GTM.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('AccountFeatures')
-
-const AccountSchema = z
-  .object({
-    accountId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Account ID uniquely identifies the GTM Account.' }),
-    features: AccountFeaturesSchema.exactOptional().openapi({
-      description: 'Read-only Account feature set',
-    }),
-    fingerprint: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The fingerprint of the GTM Account as computed at storage time. This value is recomputed whenever the account is modified.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Account display name. @mutable tagmanager.accounts.create @mutable tagmanager.accounts.update',
-      }),
-    path: z.string().exactOptional().openapi({ description: "GTM Account's API relative path." }),
-    shareData: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the account shares data anonymously with Google and others. This flag enables benchmarking by sharing your data in an anonymous form. Google will remove all identifiable information about your website, combine the data with hundreds of other anonymous sites and report aggregate trends in the benchmarking service. @mutable tagmanager.accounts.create @mutable tagmanager.accounts.update',
-      }),
-    tagManagerUrl: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Auto generated link to the tag manager UI' }),
-  })
-  .openapi({ description: 'Represents a Google Tag Manager Account.', required: [] })
-  .openapi('Account')
-
-const AccountAccessSchema = z
-  .object({
-    permission: z
-      .enum(['accountPermissionUnspecified', 'noAccess', 'user', 'admin'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the user has no access, user access, or admin access to an account. @mutable tagmanager.accounts.permissions.create @mutable tagmanager.accounts.permissions.update',
-      }),
-  })
-  .openapi({
-    description: 'Defines the Google Tag Manager Account access permissions.',
-    required: [],
-  })
-  .openapi('AccountAccess')
-
 const BuiltInVariableSchema = z
   .object({
     accountId: z.string().exactOptional().openapi({ description: 'GTM Account ID.' }),
@@ -366,6 +145,59 @@ const BuiltInVariableSchema = z
   })
   .openapi('BuiltInVariable')
 
+const ParameterSchema: z.ZodType<ParameterType> = z
+  .lazy(() =>
+    z
+      .object({
+        key: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values. @mutable tagmanager.accounts.containers.workspaces.variables.create @mutable tagmanager.accounts.containers.workspaces.variables.update @mutable tagmanager.accounts.containers.workspaces.triggers.create @mutable tagmanager.accounts.containers.workspaces.triggers.update @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
+          }),
+        list: z
+          .array(ParameterSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              "This list parameter's parameters (keys will be ignored). @mutable tagmanager.accounts.containers.workspaces.variables.create @mutable tagmanager.accounts.containers.workspaces.variables.update @mutable tagmanager.accounts.containers.workspaces.triggers.create @mutable tagmanager.accounts.containers.workspaces.triggers.update @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update",
+          }),
+        map: z
+          .array(ParameterSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              "This map parameter's parameters (must have keys; keys must be unique). @mutable tagmanager.accounts.containers.workspaces.variables.create @mutable tagmanager.accounts.containers.workspaces.variables.update @mutable tagmanager.accounts.containers.workspaces.triggers.create @mutable tagmanager.accounts.containers.workspaces.triggers.update @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update",
+          }),
+        type: z
+          .enum([
+            'typeUnspecified',
+            'template',
+            'integer',
+            'boolean',
+            'list',
+            'map',
+            'triggerReference',
+            'tagReference',
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              "The parameter type. Valid values are: - boolean: The value represents a boolean, represented as 'true' or 'false' - integer: The value represents a 64-bit signed integer value, in base 10 - list: A list of parameters should be specified - map: A map of parameters should be specified - template: The value represents any text; this can include variable references (even variable references that might return non-string types) - trigger_reference: The value represents a trigger, represented as the trigger id - tag_reference: The value represents a tag, represented as the tag name @mutable tagmanager.accounts.containers.workspaces.variables.create @mutable tagmanager.accounts.containers.workspaces.variables.update @mutable tagmanager.accounts.containers.workspaces.triggers.create @mutable tagmanager.accounts.containers.workspaces.triggers.update @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update",
+          }),
+        value: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A parameter\'s value (may contain variable references such as "{{myVariable}}") as appropriate to the specified type. @mutable tagmanager.accounts.containers.workspaces.variables.create @mutable tagmanager.accounts.containers.workspaces.variables.update @mutable tagmanager.accounts.containers.workspaces.triggers.create @mutable tagmanager.accounts.containers.workspaces.triggers.update @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
+          }),
+      })
+      .openapi({ description: 'Represents a Google Tag Manager Parameter.', required: [] }),
+  )
+  .openapi('Parameter')
+
 const ClientSchema = z
   .object({
     accountId: z.string().exactOptional().openapi({ description: 'GTM Account ID.' }),
@@ -426,39 +258,6 @@ const ClientSchema = z
   })
   .openapi({ required: [] })
   .openapi('Client')
-
-const ConditionSchema = z
-  .object({
-    parameter: z
-      .array(ParameterSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "A list of named parameters (key/value), depending on the condition's type. Notes: - For binary operators, include parameters named arg0 and arg1 for specifying the left and right operands, respectively. - At this time, the left operand (arg0) must be a reference to a variable. - For case-insensitive Regex matching, include a boolean parameter named ignore_case that is set to true. If not specified or set to any other value, the matching will be case sensitive. - To negate an operator, include a boolean parameter named negate boolean parameter that is set to true. @mutable tagmanager.accounts.containers.workspaces.triggers.create @mutable tagmanager.accounts.containers.workspaces.triggers.update",
-      }),
-    type: z
-      .enum([
-        'conditionTypeUnspecified',
-        'equals',
-        'contains',
-        'startsWith',
-        'endsWith',
-        'matchRegex',
-        'greater',
-        'greaterOrEquals',
-        'less',
-        'lessOrEquals',
-        'cssSelector',
-        'urlMatches',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of operator for this condition. @mutable tagmanager.accounts.containers.workspaces.triggers.create @mutable tagmanager.accounts.containers.workspaces.triggers.update',
-      }),
-  })
-  .openapi({ description: 'Represents a predicate.', required: [] })
-  .openapi('Condition')
 
 const ContainerFeaturesSchema = z
   .object({
@@ -598,29 +397,6 @@ const ContainerSchema = z
     required: [],
   })
   .openapi('Container')
-
-const ContainerAccessSchema = z
-  .object({
-    containerId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'GTM Container ID. @mutable tagmanager.accounts.permissions.create @mutable tagmanager.accounts.permissions.update',
-      }),
-    permission: z
-      .enum(['containerPermissionUnspecified', 'noAccess', 'read', 'edit', 'approve', 'publish'])
-      .exactOptional()
-      .openapi({
-        description:
-          'List of Container permissions. @mutable tagmanager.accounts.permissions.create @mutable tagmanager.accounts.permissions.update',
-      }),
-  })
-  .openapi({
-    description: 'Defines the Google Tag Manager Container access permissions.',
-    required: [],
-  })
-  .openapi('ContainerAccess')
 
 const GalleryReferenceSchema = z
   .object({
@@ -786,149 +562,232 @@ const GtagConfigSchema = z
   .openapi({ description: 'Represents a Google tag configuration.', required: [] })
   .openapi('GtagConfig')
 
-const TagSchema: z.ZodType<TagType> = z
-  .lazy(() =>
-    z
-      .object({
-        accountId: z.string().exactOptional().openapi({ description: 'GTM Account ID.' }),
-        blockingRuleId: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'Blocking rule IDs. If any of the listed rules evaluate to true, the tag will not fire. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
-          }),
-        blockingTriggerId: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'Blocking trigger IDs. If any of the listed triggers evaluate to true, the tag will not fire. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
-          }),
-        consentSettings: TagConsentSettingSchema.exactOptional().openapi({
-          description:
-            'Consent settings of a tag. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
-        }),
-        containerId: z.string().exactOptional().openapi({ description: 'GTM Container ID.' }),
-        fingerprint: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The fingerprint of the GTM Tag as computed at storage time. This value is recomputed whenever the tag is modified.',
-          }),
-        firingRuleId: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'Firing rule IDs. A tag will fire when any of the listed rules are true and all of its blockingRuleIds (if any specified) are false. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
-          }),
-        firingTriggerId: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'Firing trigger IDs. A tag will fire when any of the listed triggers are true and all of its blockingTriggerIds (if any specified) are false. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
-          }),
-        liveOnly: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'If set to true, this tag will only fire in the live environment (e.g. not in preview or debug mode). @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
-          }),
-        monitoringMetadata: ParameterSchema.exactOptional().openapi({
-          description:
-            'A map of key-value pairs of tag metadata to be included in the event data for tag monitoring. Notes: - This parameter must be type MAP. - Each parameter in the map are type TEMPLATE, however cannot contain variable references. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
-        }),
-        monitoringMetadataTagNameKey: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'If non-empty, then the tag display name will be included in the monitoring metadata map using the key specified. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
-          }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Tag display name. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
-          }),
-        notes: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'User notes on how to apply this tag in the container. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
-          }),
-        parameter: z
-          .array(ParameterSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              "The tag's parameters. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update",
-          }),
-        parentFolderId: z.string().exactOptional().openapi({ description: 'Parent folder id.' }),
-        path: z.string().exactOptional().openapi({ description: "GTM Tag's API relative path." }),
-        paused: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Indicates whether the tag is paused, which prevents the tag from firing. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
-          }),
-        priority: ParameterSchema.exactOptional().openapi({
-          description:
-            "User defined numeric priority of the tag. Tags are fired asynchronously in order of priority. Tags with higher numeric value fire first. A tag's priority can be a positive or negative value. The default value is 0. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update",
-        }),
-        scheduleEndMs: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The end timestamp in milliseconds to schedule a tag. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
-          }),
-        scheduleStartMs: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The start timestamp in milliseconds to schedule a tag. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
-          }),
-        setupTag: z
-          .array(SetupTagSchema)
-          .exactOptional()
-          .openapi({ description: 'The list of setup tags. Currently we only allow one.' }),
-        tagFiringOption: z
-          .enum(['tagFiringOptionUnspecified', 'unlimited', 'oncePerEvent', 'oncePerLoad'])
-          .exactOptional()
-          .openapi({ description: 'Option to fire this tag.' }),
-        tagId: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The Tag ID uniquely identifies the GTM Tag.' }),
-        tagManagerUrl: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Auto generated link to the tag manager UI' }),
-        teardownTag: z
-          .array(TeardownTagSchema)
-          .exactOptional()
-          .openapi({ description: 'The list of teardown tags. Currently we only allow one.' }),
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'GTM Tag Type. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
-          }),
-        workspaceId: z.string().exactOptional().openapi({ description: 'GTM Workspace ID.' }),
-      })
-      .openapi({ description: 'Represents a Google Tag Manager Tag.', required: [] }),
-  )
+const TagConsentSettingSchema = z
+  .object({
+    consentStatus: z
+      .enum(['notSet', 'notNeeded', 'needed'])
+      .exactOptional()
+      .openapi({
+        description:
+          "The tag's consent status. If set to NEEDED, the runtime will check that the consent types specified by the consent_type field have been granted.",
+      }),
+    consentType: ParameterSchema.exactOptional().openapi({
+      description:
+        'The type of consents to check for during tag firing if in the consent NEEDED state. This parameter must be of type LIST where each list item is of type STRING.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('TagConsentSetting')
+
+const SetupTagSchema = z
+  .object({
+    stopOnSetupFailure: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, fire the main tag if and only if the setup tag fires successfully. If false, fire the main tag regardless of setup tag firing status.',
+      }),
+    tagName: z.string().exactOptional().openapi({ description: 'The name of the setup tag.' }),
+  })
+  .openapi({
+    description:
+      'Represents a reference to atag that fires before another tag in order to set up dependencies.',
+    required: [],
+  })
+  .openapi('SetupTag')
+
+const TeardownTagSchema = z
+  .object({
+    stopTeardownOnFailure: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, fire the teardown tag if and only if the main tag fires successfully. If false, fire the teardown tag regardless of main tag firing status.',
+      }),
+    tagName: z.string().exactOptional().openapi({ description: 'The name of the teardown tag.' }),
+  })
+  .openapi({
+    description:
+      'Represents a tag that fires after another tag in order to tear down dependencies.',
+    required: [],
+  })
+  .openapi('TeardownTag')
+
+const TagSchema = z
+  .object({
+    accountId: z.string().exactOptional().openapi({ description: 'GTM Account ID.' }),
+    blockingRuleId: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Blocking rule IDs. If any of the listed rules evaluate to true, the tag will not fire. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
+      }),
+    blockingTriggerId: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Blocking trigger IDs. If any of the listed triggers evaluate to true, the tag will not fire. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
+      }),
+    consentSettings: TagConsentSettingSchema.exactOptional().openapi({
+      description:
+        'Consent settings of a tag. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
+    }),
+    containerId: z.string().exactOptional().openapi({ description: 'GTM Container ID.' }),
+    fingerprint: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The fingerprint of the GTM Tag as computed at storage time. This value is recomputed whenever the tag is modified.',
+      }),
+    firingRuleId: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Firing rule IDs. A tag will fire when any of the listed rules are true and all of its blockingRuleIds (if any specified) are false. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
+      }),
+    firingTriggerId: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Firing trigger IDs. A tag will fire when any of the listed triggers are true and all of its blockingTriggerIds (if any specified) are false. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
+      }),
+    liveOnly: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set to true, this tag will only fire in the live environment (e.g. not in preview or debug mode). @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
+      }),
+    monitoringMetadata: ParameterSchema.exactOptional().openapi({
+      description:
+        'A map of key-value pairs of tag metadata to be included in the event data for tag monitoring. Notes: - This parameter must be type MAP. - Each parameter in the map are type TEMPLATE, however cannot contain variable references. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
+    }),
+    monitoringMetadataTagNameKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If non-empty, then the tag display name will be included in the monitoring metadata map using the key specified. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Tag display name. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
+      }),
+    notes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'User notes on how to apply this tag in the container. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
+      }),
+    parameter: z
+      .array(ParameterSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "The tag's parameters. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update",
+      }),
+    parentFolderId: z.string().exactOptional().openapi({ description: 'Parent folder id.' }),
+    path: z.string().exactOptional().openapi({ description: "GTM Tag's API relative path." }),
+    paused: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the tag is paused, which prevents the tag from firing. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
+      }),
+    priority: ParameterSchema.exactOptional().openapi({
+      description:
+        "User defined numeric priority of the tag. Tags are fired asynchronously in order of priority. Tags with higher numeric value fire first. A tag's priority can be a positive or negative value. The default value is 0. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update",
+    }),
+    scheduleEndMs: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The end timestamp in milliseconds to schedule a tag. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
+      }),
+    scheduleStartMs: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The start timestamp in milliseconds to schedule a tag. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
+      }),
+    setupTag: z
+      .array(SetupTagSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of setup tags. Currently we only allow one.' }),
+    tagFiringOption: z
+      .enum(['tagFiringOptionUnspecified', 'unlimited', 'oncePerEvent', 'oncePerLoad'])
+      .exactOptional()
+      .openapi({ description: 'Option to fire this tag.' }),
+    tagId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Tag ID uniquely identifies the GTM Tag.' }),
+    tagManagerUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Auto generated link to the tag manager UI' }),
+    teardownTag: z
+      .array(TeardownTagSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of teardown tags. Currently we only allow one.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'GTM Tag Type. @mutable tagmanager.accounts.containers.workspaces.tags.create @mutable tagmanager.accounts.containers.workspaces.tags.update',
+      }),
+    workspaceId: z.string().exactOptional().openapi({ description: 'GTM Workspace ID.' }),
+  })
+  .openapi({ description: 'Represents a Google Tag Manager Tag.', required: [] })
   .openapi('Tag')
+
+const ConditionSchema = z
+  .object({
+    parameter: z
+      .array(ParameterSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "A list of named parameters (key/value), depending on the condition's type. Notes: - For binary operators, include parameters named arg0 and arg1 for specifying the left and right operands, respectively. - At this time, the left operand (arg0) must be a reference to a variable. - For case-insensitive Regex matching, include a boolean parameter named ignore_case that is set to true. If not specified or set to any other value, the matching will be case sensitive. - To negate an operator, include a boolean parameter named negate boolean parameter that is set to true. @mutable tagmanager.accounts.containers.workspaces.triggers.create @mutable tagmanager.accounts.containers.workspaces.triggers.update",
+      }),
+    type: z
+      .enum([
+        'conditionTypeUnspecified',
+        'equals',
+        'contains',
+        'startsWith',
+        'endsWith',
+        'matchRegex',
+        'greater',
+        'greaterOrEquals',
+        'less',
+        'lessOrEquals',
+        'cssSelector',
+        'urlMatches',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of operator for this condition. @mutable tagmanager.accounts.containers.workspaces.triggers.create @mutable tagmanager.accounts.containers.workspaces.triggers.update',
+      }),
+  })
+  .openapi({ description: 'Represents a predicate.', required: [] })
+  .openapi('Condition')
 
 const TriggerSchema = z
   .object({
@@ -1304,7 +1163,29 @@ const ZoneSchema = z
   .openapi({ description: "Represents a Google Tag Manager Zone's contents.", required: [] })
   .openapi('Zone')
 
-const ContainerVersionSchema = z
+type ContainerVersionType = {
+  accountId?: string
+  builtInVariable?: z.infer<typeof BuiltInVariableSchema>[]
+  client?: z.infer<typeof ClientSchema>[]
+  container?: z.infer<typeof ContainerSchema>
+  containerId?: string
+  containerVersionId?: string
+  customTemplate?: z.infer<typeof CustomTemplateSchema>[]
+  deleted?: boolean
+  description?: string
+  fingerprint?: string
+  folder?: z.infer<typeof FolderSchema>[]
+  gtagConfig?: z.infer<typeof GtagConfigSchema>[]
+  name?: string
+  path?: string
+  tag?: z.infer<typeof TagSchema>[]
+  tagManagerUrl?: string
+  trigger?: z.infer<typeof TriggerSchema>[]
+  variable?: z.infer<typeof VariableSchema>[]
+  zone?: z.infer<typeof ZoneSchema>[]
+}
+
+const ContainerVersionSchema: z.ZodType<ContainerVersionType> = z
   .object({
     accountId: z.string().exactOptional().openapi({ description: 'GTM Account ID.' }),
     builtInVariable: z
@@ -1398,6 +1279,220 @@ const ContainerVersionSchema = z
   .openapi({ description: 'Represents a Google Tag Manager Container Version.', required: [] })
   .openapi('ContainerVersion')
 
+const SyncStatusSchema = z
+  .object({
+    mergeConflict: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Synchornization operation detected a merge conflict.' }),
+    syncError: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'An error occurred during the synchronization operation.' }),
+  })
+  .openapi({ description: 'The status of a workspace after synchronization.', required: [] })
+  .openapi('SyncStatus')
+
+type CreateContainerVersionResponseType = {
+  compilerError?: boolean
+  containerVersion?: z.infer<typeof ContainerVersionSchema>
+  newWorkspacePath?: string
+  syncStatus?: z.infer<typeof SyncStatusSchema>
+}
+
+type FolderEntitiesType = {
+  nextPageToken?: string
+  tag?: z.infer<typeof TagSchema>[]
+  trigger?: z.infer<typeof TriggerSchema>[]
+  variable?: z.infer<typeof VariableSchema>[]
+}
+
+const EntitySchema = z
+  .object({
+    changeStatus: z
+      .enum(['changeStatusUnspecified', 'none', 'added', 'deleted', 'updated'])
+      .exactOptional()
+      .openapi({ description: 'Represents how the entity has been changed in the workspace.' }),
+    client: ClientSchema.exactOptional().openapi({
+      description: 'The client being represented by the entity.',
+    }),
+    folder: FolderSchema.exactOptional().openapi({
+      description: 'The folder being represented by the entity.',
+    }),
+    tag: TagSchema.exactOptional().openapi({
+      description: 'The tag being represented by the entity.',
+    }),
+    trigger: TriggerSchema.exactOptional().openapi({
+      description: 'The trigger being represented by the entity.',
+    }),
+    variable: VariableSchema.exactOptional().openapi({
+      description: 'The variable being represented by the entity.',
+    }),
+  })
+  .openapi({
+    description:
+      'A workspace entity that may represent a tag, trigger, variable, or folder in addition to its status in the workspace.',
+    required: [],
+  })
+  .openapi('Entity')
+
+type MergeConflictType = {
+  entityInBaseVersion?: z.infer<typeof EntitySchema>
+  entityInWorkspace?: z.infer<typeof EntitySchema>
+}
+
+const MergeConflictSchema: z.ZodType<MergeConflictType> = z
+  .object({
+    entityInBaseVersion: EntitySchema.exactOptional().openapi({
+      description:
+        'The base version entity (since the latest sync operation) that has conflicting changes compared to the workspace. If this field is missing, it means the workspace entity is deleted from the base version.',
+    }),
+    entityInWorkspace: EntitySchema.exactOptional().openapi({
+      description:
+        'The workspace entity that has conflicting changes compared to the base version. If an entity is deleted in a workspace, it will still appear with a deleted change status.',
+    }),
+  })
+  .openapi({ description: 'Represents a merge conflict.', required: [] })
+  .openapi('MergeConflict')
+
+type GetWorkspaceStatusResponseType = {
+  mergeConflict?: z.infer<typeof MergeConflictSchema>[]
+  workspaceChange?: z.infer<typeof EntitySchema>[]
+}
+
+type ListTriggersResponseType = {
+  nextPageToken?: string
+  trigger?: z.infer<typeof TriggerSchema>[]
+}
+
+type ListZonesResponseType = { nextPageToken?: string; zone?: z.infer<typeof ZoneSchema>[] }
+
+type ParameterType = {
+  key?: string
+  list?: ParameterType[]
+  map?: ParameterType[]
+  type?:
+    | 'typeUnspecified'
+    | 'template'
+    | 'integer'
+    | 'boolean'
+    | 'list'
+    | 'map'
+    | 'triggerReference'
+    | 'tagReference'
+  value?: string
+}
+
+type PublishContainerVersionResponseType = {
+  compilerError?: boolean
+  containerVersion?: z.infer<typeof ContainerVersionSchema>
+}
+
+type QuickPreviewResponseType = {
+  compilerError?: boolean
+  containerVersion?: z.infer<typeof ContainerVersionSchema>
+  syncStatus?: z.infer<typeof SyncStatusSchema>
+}
+
+type RevertZoneResponseType = { zone?: z.infer<typeof ZoneSchema> }
+
+type SyncWorkspaceResponseType = {
+  mergeConflict?: z.infer<typeof MergeConflictSchema>[]
+  syncStatus?: z.infer<typeof SyncStatusSchema>
+}
+
+const AccountFeaturesSchema = z
+  .object({
+    supportMultipleContainers: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether this Account supports multiple Containers.' }),
+    supportUserPermissions: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether this Account supports user permissions managed by GTM.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('AccountFeatures')
+
+const AccountSchema = z
+  .object({
+    accountId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Account ID uniquely identifies the GTM Account.' }),
+    features: AccountFeaturesSchema.exactOptional().openapi({
+      description: 'Read-only Account feature set',
+    }),
+    fingerprint: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The fingerprint of the GTM Account as computed at storage time. This value is recomputed whenever the account is modified.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Account display name. @mutable tagmanager.accounts.create @mutable tagmanager.accounts.update',
+      }),
+    path: z.string().exactOptional().openapi({ description: "GTM Account's API relative path." }),
+    shareData: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the account shares data anonymously with Google and others. This flag enables benchmarking by sharing your data in an anonymous form. Google will remove all identifiable information about your website, combine the data with hundreds of other anonymous sites and report aggregate trends in the benchmarking service. @mutable tagmanager.accounts.create @mutable tagmanager.accounts.update',
+      }),
+    tagManagerUrl: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Auto generated link to the tag manager UI' }),
+  })
+  .openapi({ description: 'Represents a Google Tag Manager Account.', required: [] })
+  .openapi('Account')
+
+const AccountAccessSchema = z
+  .object({
+    permission: z
+      .enum(['accountPermissionUnspecified', 'noAccess', 'user', 'admin'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the user has no access, user access, or admin access to an account. @mutable tagmanager.accounts.permissions.create @mutable tagmanager.accounts.permissions.update',
+      }),
+  })
+  .openapi({
+    description: 'Defines the Google Tag Manager Account access permissions.',
+    required: [],
+  })
+  .openapi('AccountAccess')
+
+const ContainerAccessSchema = z
+  .object({
+    containerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'GTM Container ID. @mutable tagmanager.accounts.permissions.create @mutable tagmanager.accounts.permissions.update',
+      }),
+    permission: z
+      .enum(['containerPermissionUnspecified', 'noAccess', 'read', 'edit', 'approve', 'publish'])
+      .exactOptional()
+      .openapi({
+        description:
+          'List of Container permissions. @mutable tagmanager.accounts.permissions.create @mutable tagmanager.accounts.permissions.update',
+      }),
+  })
+  .openapi({
+    description: 'Defines the Google Tag Manager Container access permissions.',
+    required: [],
+  })
+  .openapi('ContainerAccess')
+
 const ContainerVersionHeaderSchema = z
   .object({
     accountId: z.string().exactOptional().openapi({ description: 'GTM Account ID.' }),
@@ -1490,21 +1585,7 @@ const CreateContainerVersionRequestVersionOptionsSchema = z
   .openapi({ description: 'Options for new container versions.', required: [] })
   .openapi('CreateContainerVersionRequestVersionOptions')
 
-const SyncStatusSchema = z
-  .object({
-    mergeConflict: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Synchornization operation detected a merge conflict.' }),
-    syncError: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'An error occurred during the synchronization operation.' }),
-  })
-  .openapi({ description: 'The status of a workspace after synchronization.', required: [] })
-  .openapi('SyncStatus')
-
-const CreateContainerVersionResponseSchema = z
+const CreateContainerVersionResponseSchema: z.ZodType<CreateContainerVersionResponseType> = z
   .object({
     compilerError: z.boolean().exactOptional().openapi({ description: 'Compiler errors or not.' }),
     containerVersion: ContainerVersionSchema.exactOptional().openapi({
@@ -1550,35 +1631,6 @@ const DestinationSchema = z
   })
   .openapi({ description: 'Represents a Google Tag Destination.', required: [] })
   .openapi('Destination')
-
-const EntitySchema = z
-  .object({
-    changeStatus: z
-      .enum(['changeStatusUnspecified', 'none', 'added', 'deleted', 'updated'])
-      .exactOptional()
-      .openapi({ description: 'Represents how the entity has been changed in the workspace.' }),
-    client: ClientSchema.exactOptional().openapi({
-      description: 'The client being represented by the entity.',
-    }),
-    folder: FolderSchema.exactOptional().openapi({
-      description: 'The folder being represented by the entity.',
-    }),
-    tag: TagSchema.exactOptional().openapi({
-      description: 'The tag being represented by the entity.',
-    }),
-    trigger: TriggerSchema.exactOptional().openapi({
-      description: 'The trigger being represented by the entity.',
-    }),
-    variable: VariableSchema.exactOptional().openapi({
-      description: 'The variable being represented by the entity.',
-    }),
-  })
-  .openapi({
-    description:
-      'A workspace entity that may represent a tag, trigger, variable, or folder in addition to its status in the workspace.',
-    required: [],
-  })
-  .openapi('Entity')
 
 const EnvironmentSchema = z
   .object({
@@ -1659,7 +1711,7 @@ const EnvironmentSchema = z
   })
   .openapi('Environment')
 
-const FolderEntitiesSchema = z
+const FolderEntitiesSchema: z.ZodType<FolderEntitiesType> = z
   .object({
     nextPageToken: z
       .string()
@@ -1691,21 +1743,7 @@ const GetContainerSnippetResponseSchema = z
   .openapi({ required: [] })
   .openapi('GetContainerSnippetResponse')
 
-const MergeConflictSchema = z
-  .object({
-    entityInBaseVersion: EntitySchema.exactOptional().openapi({
-      description:
-        'The base version entity (since the latest sync operation) that has conflicting changes compared to the workspace. If this field is missing, it means the workspace entity is deleted from the base version.',
-    }),
-    entityInWorkspace: EntitySchema.exactOptional().openapi({
-      description:
-        'The workspace entity that has conflicting changes compared to the base version. If an entity is deleted in a workspace, it will still appear with a deleted change status.',
-    }),
-  })
-  .openapi({ description: 'Represents a merge conflict.', required: [] })
-  .openapi('MergeConflict')
-
-const GetWorkspaceStatusResponseSchema = z
+const GetWorkspaceStatusResponseSchema: z.ZodType<GetWorkspaceStatusResponseType> = z
   .object({
     mergeConflict: z
       .array(MergeConflictSchema)
@@ -1877,7 +1915,7 @@ const ListTemplatesResponseSchema = z
   .openapi({ required: [] })
   .openapi('ListTemplatesResponse')
 
-const ListTriggersResponseSchema = z
+const ListTriggersResponseSchema: z.ZodType<ListTriggersResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -2005,7 +2043,7 @@ const ListWorkspacesResponseSchema = z
   .openapi({ description: 'A list of workspaces in a container.', required: [] })
   .openapi('ListWorkspacesResponse')
 
-const ListZonesResponseSchema = z
+const ListZonesResponseSchema: z.ZodType<ListZonesResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -2019,7 +2057,7 @@ const ListZonesResponseSchema = z
   .openapi({ required: [] })
   .openapi('ListZonesResponse')
 
-const PublishContainerVersionResponseSchema = z
+const PublishContainerVersionResponseSchema: z.ZodType<PublishContainerVersionResponseType> = z
   .object({
     compilerError: z.boolean().exactOptional().openapi({ description: 'Compiler errors or not.' }),
     containerVersion: ContainerVersionSchema.exactOptional().openapi({
@@ -2029,7 +2067,7 @@ const PublishContainerVersionResponseSchema = z
   .openapi({ description: 'Publish container version response.', required: [] })
   .openapi('PublishContainerVersionResponse')
 
-const QuickPreviewResponseSchema = z
+const QuickPreviewResponseSchema: z.ZodType<QuickPreviewResponseType> = z
   .object({
     compilerError: z
       .boolean()
@@ -2119,7 +2157,7 @@ const RevertVariableResponseSchema = z
   .openapi({ description: 'The result of reverting a variable in a workspace.', required: [] })
   .openapi('RevertVariableResponse')
 
-const RevertZoneResponseSchema = z
+const RevertZoneResponseSchema: z.ZodType<RevertZoneResponseType> = z
   .object({
     zone: ZoneSchema.exactOptional().openapi({
       description:
@@ -2129,7 +2167,7 @@ const RevertZoneResponseSchema = z
   .openapi({ description: 'The result of reverting a zone in a workspace.', required: [] })
   .openapi('RevertZoneResponse')
 
-const SyncWorkspaceResponseSchema = z
+const SyncWorkspaceResponseSchema: z.ZodType<SyncWorkspaceResponseType> = z
   .object({
     mergeConflict: z
       .array(MergeConflictSchema)

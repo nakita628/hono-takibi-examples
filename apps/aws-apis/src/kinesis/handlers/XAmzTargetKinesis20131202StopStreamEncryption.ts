@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetKinesis20131202StopStreamEncryptionHandler = app.openapi(
   postXAmzTargetKinesis20131202StopStreamEncryptionRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

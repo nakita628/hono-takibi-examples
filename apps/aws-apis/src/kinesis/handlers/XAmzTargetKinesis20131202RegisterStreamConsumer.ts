@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetKinesis20131202RegisterStreamConsumerHandler = app.openapi(
   postXAmzTargetKinesis20131202RegisterStreamConsumerRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

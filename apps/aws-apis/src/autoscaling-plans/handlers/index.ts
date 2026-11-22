@@ -1,0 +1,6 @@
+export * from './XAmzTargetAnyScaleScalingPlannerFrontendServiceCreateScalingPlan'
+export * from './XAmzTargetAnyScaleScalingPlannerFrontendServiceDeleteScalingPlan'
+export * from './XAmzTargetAnyScaleScalingPlannerFrontendServiceDescribeScalingPlanResources'
+export * from './XAmzTargetAnyScaleScalingPlannerFrontendServiceDescribeScalingPlans'
+export * from './XAmzTargetAnyScaleScalingPlannerFrontendServiceGetScalingPlanResourceForecastData'
+export * from './XAmzTargetAnyScaleScalingPlannerFrontendServiceUpdateScalingPlan'

@@ -1,0 +1,999 @@
+import { useQuery, useMutation, mutationOptions } from '@tanstack/vue-query'
+import type {
+  UseQueryOptions,
+  QueryFunctionContext,
+  UseMutationOptions,
+  DefaultError,
+  QueryClient,
+} from '@tanstack/vue-query'
+import { computed, toValue } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getV1Key() {
+  return ['v1'] as const
+}
+
+export function getPostV1PhotoMutationKey() {
+  return ['v1', '/v1/photo', 'POST'] as const
+}
+
+export function getPostV1PhotoMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.photo.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.v1.photo.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1PhotoMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.v1.photo.$post>) {
+      return parseResponse(client.v1.photo.$post(args, options))
+    },
+  })
+}
+
+export function usePostV1Photo<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.photo.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.v1.photo.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1PhotoMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPutV1PhotoIdMutationKey() {
+  return ['v1', '/v1/photo/:id', 'PUT'] as const
+}
+
+export function getPutV1PhotoIdMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.v1.photo)[':id']['$put']>>>>
+    >,
+    TError,
+    InferRequestType<(typeof client.v1.photo)[':id']['$put']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPutV1PhotoIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1.photo)[':id']['$put']>) {
+      return parseResponse(client.v1.photo[':id'].$put(args, options))
+    },
+  })
+}
+
+export function usePutV1PhotoId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.v1.photo)[':id']['$put']>>>
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1.photo)[':id']['$put']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPutV1PhotoIdMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1PhotoPhotoIdQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1.photo)[':photoId']['$get']>>,
+) {
+  return ['v1', '/v1/photo/:photoId', toValue(args)] as const
+}
+
+export function getV1PhotoPhotoIdQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1.photo)[':photoId']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1PhotoPhotoIdQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1.photo[':photoId'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1PhotoPhotoId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.v1.photo)[':photoId']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1.photo)[':photoId']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1.photo)[':photoId']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1.photo)[':photoId']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getV1PhotoPhotoIdQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1.photo)[':photoId']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1PhotoPhotoIdQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1PhotoPhotoIdQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1.photo[':photoId'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteV1PhotoPhotoIdMutationKey() {
+  return ['v1', '/v1/photo/:photoId', 'DELETE'] as const
+}
+
+export function getDeleteV1PhotoPhotoIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1.photo)[':photoId']['$delete']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1.photo)[':photoId']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteV1PhotoPhotoIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1.photo)[':photoId']['$delete']>) {
+      return parseResponse(client.v1.photo[':photoId'].$delete(args, options))
+    },
+  })
+}
+
+export function useDeleteV1PhotoPhotoId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1.photo)[':photoId']['$delete']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1.photo)[':photoId']['$delete']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getDeleteV1PhotoPhotoIdMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1PhotoStartUploadMutationKey() {
+  return ['v1', '/v1/photo:startUpload', 'POST'] as const
+}
+
+export function getPostV1PhotoStartUploadMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)['photo:startUpload']['$post']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)['photo:startUpload']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1PhotoStartUploadMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)['photo:startUpload']['$post']>) {
+      return parseResponse(client.v1['photo:startUpload'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1PhotoStartUpload<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)['photo:startUpload']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)['photo:startUpload']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1PhotoStartUploadMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1PhotoSequenceMutationKey() {
+  return ['v1', '/v1/photoSequence', 'POST'] as const
+}
+
+export function getPostV1PhotoSequenceMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.photoSequence.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.v1.photoSequence.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1PhotoSequenceMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.v1.photoSequence.$post>) {
+      return parseResponse(client.v1.photoSequence.$post(args, options))
+    },
+  })
+}
+
+export function usePostV1PhotoSequence<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<typeof client.v1.photoSequence.$post>>>
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.v1.photoSequence.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1PhotoSequenceMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1PhotoSequenceSequenceIdQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1.photoSequence)[':sequenceId']['$get']>>,
+) {
+  return ['v1', '/v1/photoSequence/:sequenceId', toValue(args)] as const
+}
+
+export function getV1PhotoSequenceSequenceIdQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1.photoSequence)[':sequenceId']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1PhotoSequenceSequenceIdQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1.photoSequence[':sequenceId'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1PhotoSequenceSequenceId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.v1.photoSequence)[':sequenceId']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1.photoSequence)[':sequenceId']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1.photoSequence)[':sequenceId']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1.photoSequence)[':sequenceId']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getV1PhotoSequenceSequenceIdQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1.photoSequence)[':sequenceId']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1PhotoSequenceSequenceIdQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1PhotoSequenceSequenceIdQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1.photoSequence[':sequenceId'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteV1PhotoSequenceSequenceIdMutationKey() {
+  return ['v1', '/v1/photoSequence/:sequenceId', 'DELETE'] as const
+}
+
+export function getDeleteV1PhotoSequenceSequenceIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1.photoSequence)[':sequenceId']['$delete']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1.photoSequence)[':sequenceId']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteV1PhotoSequenceSequenceIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1.photoSequence)[':sequenceId']['$delete']>,
+    ) {
+      return parseResponse(client.v1.photoSequence[':sequenceId'].$delete(args, options))
+    },
+  })
+}
+
+export function useDeleteV1PhotoSequenceSequenceId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1.photoSequence)[':sequenceId']['$delete']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1.photoSequence)[':sequenceId']['$delete']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getDeleteV1PhotoSequenceSequenceIdMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1PhotoSequenceStartUploadMutationKey() {
+  return ['v1', '/v1/photoSequence:startUpload', 'POST'] as const
+}
+
+export function getPostV1PhotoSequenceStartUploadMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)['photoSequence:startUpload']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)['photoSequence:startUpload']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1PhotoSequenceStartUploadMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)['photoSequence:startUpload']['$post']>,
+    ) {
+      return parseResponse(client.v1['photoSequence:startUpload'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1PhotoSequenceStartUpload<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)['photoSequence:startUpload']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)['photoSequence:startUpload']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1PhotoSequenceStartUploadMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1PhotoSequencesQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.v1.photoSequences.$get>>,
+) {
+  return ['v1', '/v1/photoSequences', toValue(args)] as const
+}
+
+export function getV1PhotoSequencesQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.v1.photoSequences.$get>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1PhotoSequencesQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1.photoSequences.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1PhotoSequences<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.photoSequences.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.v1.photoSequences.$get>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<typeof client.v1.photoSequences.$get>>>
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<typeof client.v1.photoSequences.$get>>>
+            >
+          >,
+          ReturnType<typeof getV1PhotoSequencesQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.photoSequences.$get>>>>
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1PhotoSequencesQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1PhotoSequencesQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1.photoSequences.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getV1PhotosQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.v1.photos.$get>>,
+) {
+  return ['v1', '/v1/photos', toValue(args)] as const
+}
+
+export function getV1PhotosQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.v1.photos.$get>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1PhotosQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1.photos.$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useV1Photos<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.photos.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.v1.photos.$get>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.photos.$get>>>>
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.photos.$get>>>>
+          >,
+          ReturnType<typeof getV1PhotosQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.photos.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getV1PhotosQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1PhotosQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1.photos.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1PhotosBatchDeleteMutationKey() {
+  return ['v1', '/v1/photos:batchDelete', 'POST'] as const
+}
+
+export function getPostV1PhotosBatchDeleteMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)['photos:batchDelete']['$post']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)['photos:batchDelete']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1PhotosBatchDeleteMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)['photos:batchDelete']['$post']>) {
+      return parseResponse(client.v1['photos:batchDelete'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1PhotosBatchDelete<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)['photos:batchDelete']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)['photos:batchDelete']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1PhotosBatchDeleteMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1PhotosBatchGetQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)['photos:batchGet']['$get']>>,
+) {
+  return ['v1', '/v1/photos:batchGet', toValue(args)] as const
+}
+
+export function getV1PhotosBatchGetQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)['photos:batchGet']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1PhotosBatchGetQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1['photos:batchGet'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1PhotosBatchGet<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.v1)['photos:batchGet']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)['photos:batchGet']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)['photos:batchGet']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)['photos:batchGet']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getV1PhotosBatchGetQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)['photos:batchGet']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1PhotosBatchGetQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1PhotosBatchGetQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1['photos:batchGet'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1PhotosBatchUpdateMutationKey() {
+  return ['v1', '/v1/photos:batchUpdate', 'POST'] as const
+}
+
+export function getPostV1PhotosBatchUpdateMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)['photos:batchUpdate']['$post']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)['photos:batchUpdate']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1PhotosBatchUpdateMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)['photos:batchUpdate']['$post']>) {
+      return parseResponse(client.v1['photos:batchUpdate'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1PhotosBatchUpdate<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)['photos:batchUpdate']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)['photos:batchUpdate']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1PhotosBatchUpdateMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}

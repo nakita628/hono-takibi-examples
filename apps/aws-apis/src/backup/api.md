@@ -9305,12 +9305,12 @@ Contains metadata about a backup plan.
 ]
 ```
 
-<h2 id="tocS_Boolean">Boolean</h2>
+<h2 id="tocS_Boolean2">Boolean2</h2>
 <!-- backwards compatibility -->
-<a id="schemaboolean-1"></a>
-<a id="schema_Boolean"></a>
-<a id="tocSboolean-1"></a>
-<a id="tocsboolean-1"></a>
+<a id="schemaboolean2"></a>
+<a id="schema_Boolean2"></a>
+<a id="tocSboolean2"></a>
+<a id="tocsboolean2"></a>
 
 ```json
 true
@@ -9567,12 +9567,12 @@ Contains metadata about a backup vault.
 ]
 ```
 
-<h2 id="tocS_long">long</h2>
+<h2 id="tocS_long2">long2</h2>
 <!-- backwards compatibility -->
-<a id="schemalong-1"></a>
-<a id="schema_long"></a>
-<a id="tocSlong-1"></a>
-<a id="tocslong-1"></a>
+<a id="schemalong2"></a>
+<a id="schema_long2"></a>
+<a id="tocSlong2"></a>
+<a id="tocslong2"></a>
 
 ```json
 0

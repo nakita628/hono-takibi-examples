@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const spectatorV5Handler = app.openapi(
   getLolSpectatorV5ActiveGamesBySummonerEncryptedPUUIDRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

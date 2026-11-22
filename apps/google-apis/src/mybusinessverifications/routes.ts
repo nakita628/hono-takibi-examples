@@ -380,7 +380,7 @@ const ListVerificationsResponseSchema = z
   .openapi('ListVerificationsResponse')
 
 const ResolveOwnershipConflictSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Indicates that the location duplicates another location that is in good standing.',
@@ -468,7 +468,7 @@ const VerifyLocationResponseSchema = z
   .openapi('VerifyLocationResponse')
 
 const WaitForVoiceOfMerchantSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Indicates that the location will gain voice of merchant after passing review.',
   })

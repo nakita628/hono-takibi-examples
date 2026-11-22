@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetTranscribeDeleteMedicalVocabularyHandler = app.openapi(
   postXAmzTargetTranscribeDeleteMedicalVocabularyRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

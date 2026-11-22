@@ -7,5 +7,9 @@ import {
 const app = new OpenAPIHono()
 
 export const publiclyAccessibleHandler = app
-  .openapi(getRestaurantsTenantRestaurantIdOrdertimesRoute, (c) => {})
-  .openapi(putRestaurantsTenantRestaurantIdOrdertimesDayOfWeekServiceTypeRoute, (c) => {})
+  .openapi(getRestaurantsTenantRestaurantIdOrdertimesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putRestaurantsTenantRestaurantIdOrdertimesDayOfWeekServiceTypeRoute, (c) => {
+    throw new Error('Not implemented')
+  })

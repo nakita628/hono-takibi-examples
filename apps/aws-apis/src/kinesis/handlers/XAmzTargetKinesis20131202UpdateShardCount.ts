@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetKinesis20131202UpdateShardCountHandler = app.openapi(
   postXAmzTargetKinesis20131202UpdateShardCountRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

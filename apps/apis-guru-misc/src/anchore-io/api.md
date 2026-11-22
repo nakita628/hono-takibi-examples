@@ -6,7 +6,7 @@ This is the Anchore Engine API. Provides the primary external API for users of t
 
 Base URLs:
 
-* <a href="https://api.apis.guru/">https://api.apis.guru/</a>
+* <a href="/">/</a>
 
 * <a href="http://anchore.local">http://anchore.local</a>
 

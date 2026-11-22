@@ -16,5 +16,7 @@ export const changesHandler = app
   })
   .openapi(
     getDnsV2ProjectsProjectLocationsLocationManagedZonesManagedZoneChangesChangeIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

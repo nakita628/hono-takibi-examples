@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSShineFrontendService20170701ImportTerminologyHandler = app.openapi(
   postXAmzTargetAWSShineFrontendService20170701ImportTerminologyRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

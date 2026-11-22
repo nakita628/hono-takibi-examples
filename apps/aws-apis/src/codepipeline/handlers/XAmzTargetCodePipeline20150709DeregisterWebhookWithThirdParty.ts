@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodePipeline20150709DeregisterWebhookWithThirdPartyHandler = app.openapi(
   postXAmzTargetCodePipeline20150709DeregisterWebhookWithThirdPartyRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

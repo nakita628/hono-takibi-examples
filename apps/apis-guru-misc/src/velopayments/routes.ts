@@ -1,5 +1,843 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const CreatePayeeAddressV3Schema = z
+  .object({
+    city: z.string().min(2).max(50).openapi({ example: 'Key West' }),
+    country: z
+      .string()
+      .length(2)
+      .openapi({ description: '2 letter ISO 3166-1 country code', example: 'US' }),
+    countyOrProvince: z
+      .string()
+      .min(2)
+      .max(50)
+      .nullable()
+      .exactOptional()
+      .openapi({ example: 'FL' }),
+    line1: z.string().min(1).max(100).openapi({ example: '500 Duval St' }),
+    line2: z.string().min(0).max(100).nullable().exactOptional(),
+    line3: z.string().min(0).max(100).nullable().exactOptional(),
+    line4: z.string().min(0).max(100).nullable().exactOptional(),
+    zipOrPostcode: z
+      .string()
+      .min(2)
+      .max(60)
+      .nullable()
+      .exactOptional()
+      .openapi({ example: '33945' }),
+  })
+  .openapi({
+    example: {
+      city: 'Key West',
+      country: 'US',
+      countyOrProvince: 'FL',
+      line1: '500 Duval St',
+      line2: 'line2',
+      line3: 'line3',
+      line4: 'line4',
+      zipOrPostcode: '33945',
+    },
+    required: ['city', 'country', 'line1'],
+  })
+  .openapi('CreatePayeeAddressV3')
+
+const ChallengeV3Schema = z
+  .object({
+    description: z.string().min(1).max(255).openapi({ example: 'challenge description' }),
+    value: z.string().min(3).max(20).openapi({ example: 'challenge test' }),
+  })
+  .openapi({
+    example: { description: 'challenge description', value: 'challenge test' },
+    required: ['description', 'value'],
+  })
+  .openapi('ChallengeV3')
+
+const CompanyV3Schema = z
+  .object({
+    name: z.string().min(3).max(40).openapi({ example: 'ABC Group Plc' }),
+    operatingName: z
+      .string()
+      .min(1)
+      .max(100)
+      .nullable()
+      .exactOptional()
+      .openapi({ example: 'ABC Co' }),
+    taxId: z
+      .string()
+      .min(6)
+      .max(30)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Company Tax Id must be between 6 and 30 characters long',
+        example: '123123123',
+      }),
+  })
+  .nullable()
+  .openapi({
+    example: { name: 'ABC Group Plc', operatingName: 'ABC Co', taxId: '123123123' },
+    required: ['name'],
+  })
+  .openapi('CompanyV3')
+
+const CreateIndividualV3NameSchema = z
+  .object({
+    firstName: z.string().min(1).max(40).openapi({ example: 'Bob' }),
+    lastName: z.string().min(1).max(40).openapi({ example: 'Smith' }),
+    otherNames: z.string().min(1).max(40).exactOptional().openapi({ example: 'H' }),
+    title: z.string().min(1).max(10).exactOptional().openapi({ example: 'Mr' }),
+  })
+  .openapi({
+    example: { firstName: 'Bob', lastName: 'Smith', otherNames: 'H', title: 'Mr' },
+    required: ['firstName', 'lastName'],
+  })
+  .openapi('CreateIndividualV3Name')
+
+const CreateIndividualV3Schema = z
+  .object({
+    dateOfBirth: z.iso
+      .date()
+      .openapi({
+        description: 'Must not be date in future. Example - 1970-05-20',
+        example: '1970-05-20',
+      }),
+    name: CreateIndividualV3NameSchema,
+    nationalIdentification: z
+      .string()
+      .min(6)
+      .max(30)
+      .exactOptional()
+      .openapi({ example: 'SA211123K' }),
+  })
+  .openapi({
+    example: {
+      dateOfBirth: '1970-05-20T00:00:00.000+0000',
+      name: { firstName: 'Bob', lastName: 'Smith', otherNames: 'H', title: 'Mr' },
+      nationalIdentification: 'SA211123K',
+    },
+    required: ['dateOfBirth', 'name'],
+  })
+  .openapi('CreateIndividualV3')
+
+const CreatePaymentChannelV3Schema = z
+  .object({
+    accountName: z.string().openapi({ example: 'My account' }),
+    accountNumber: z
+      .string()
+      .min(6)
+      .max(17)
+      .exactOptional()
+      .openapi({
+        description: 'Either routing number and account number or only iban must be set',
+        example: 'XXXXXX5678',
+      }),
+    countryCode: z
+      .string()
+      .regex(/^[A-Z]{2}$/)
+      .length(2)
+      .openapi({
+        description:
+          'Valid ISO 3166 2 character country code. See the <a href="https://www.iso.org/iso-3166-country-codes.html" target="_blank" a>ISO specification</a> for details.',
+        example: 'US',
+        title: 'ISO 3166 2 Character Country Code',
+      }),
+    currency: z
+      .string()
+      .regex(/^[A-Z]{3}$/)
+      .length(3)
+      .openapi({
+        description:
+          'Valid ISO 4217 3 letter currency code. See the <a href="https://www.iso.org/iso-4217-currency-codes.html" target="_blank" a>ISO specification</a> for details.',
+        example: 'USD',
+        title: 'ISO Currency Code',
+      }),
+    iban: z
+      .string()
+      .regex(/^[A-Za-z0-9]+$/)
+      .min(15)
+      .max(34)
+      .exactOptional()
+      .openapi({
+        description: 'Must match the regular expression ```^[A-Za-z0-9]+$```.',
+        example: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1234',
+        title: 'IBAN - International Bank Account Number',
+      }),
+    paymentChannelName: z.string().exactOptional().openapi({ example: 'My Payment Channel' }),
+    routingNumber: z
+      .string()
+      .length(9)
+      .exactOptional()
+      .openapi({
+        description: 'Either routing number and account number or only iban must be set',
+        example: 'XXXXX6789',
+      }),
+  })
+  .openapi({
+    example: {
+      accountName: 'My account',
+      accountNumber: 'XXXXXX5678',
+      countryCode: 'US',
+      currency: 'USD',
+      iban: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1234',
+      paymentChannelName: 'My Payment Channel',
+      routingNumber: 'XXXXX6789',
+    },
+    required: ['accountName', 'countryCode', 'currency'],
+  })
+  .openapi('CreatePaymentChannelV3')
+
+const PayableIssueV3Schema = z
+  .object({
+    code: z.string().openapi({ example: '3' }),
+    message: z.string().openapi({ example: 'payee-disabled' }),
+  })
+  .openapi({
+    description: 'payable issues for the payee and payor combination',
+    example: { code: '3', message: 'payee-disabled' },
+    required: ['code', 'message'],
+  })
+  .openapi('PayableIssueV3')
+
+const PayeePayorRefV3Schema = z
+  .object({
+    invitationStatus: z.string().exactOptional(),
+    invitationStatusTimestamp: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp when the invitation status is updated',
+        example: '2019-01-20T09:00:00Z',
+      }),
+    payableIssues: z
+      .array(PayableIssueV3Schema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates any conditions which prevent the payee from being payable for this payor',
+      }),
+    payableStatus: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if the payee is payable for this payor' }),
+    paymentChannelId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ example: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3' }),
+    payorId: z.uuid().exactOptional().openapi({ example: 'ba08877f-9d96-41e4-9c26-44a872d856ae' }),
+    remoteId: z.string().exactOptional().openapi({ example: 'uniqueIdForRemoteEntity' }),
+  })
+  .openapi({
+    example: {
+      invitationStatus: 'invitationStatus',
+      invitationStatusTimestamp: '2019-01-20T09:00:00Z',
+      payableIssues: [
+        { code: '3', message: 'payee-disabled' },
+        { code: '3', message: 'payee-disabled' },
+      ],
+      payableStatus: true,
+      paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
+      payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
+      remoteId: 'uniqueIdForRemoteEntity',
+    },
+    required: [],
+  })
+  .openapi('PayeePayorRefV3')
+
+const FailedPayeeV3Schema = z
+  .object({
+    address: CreatePayeeAddressV3Schema.exactOptional(),
+    challenge: ChallengeV3Schema.exactOptional(),
+    company: CompanyV3Schema.exactOptional(),
+    email: z.email().exactOptional().openapi({ example: 'bob@example.com' }),
+    individual: CreateIndividualV3Schema.exactOptional(),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An IETF BCP 47 language code which has been configured for use within this Velo environment.<BR>\nSee the /v1/supportedLanguages endpoint to list the available codes for an environment.\n',
+        example: 'en-US',
+      }),
+    payeeId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ example: '2aa5d7e0-2ecb-403f-8494-1865ed0454e9', readOnly: true }),
+    paymentChannel: CreatePaymentChannelV3Schema.exactOptional(),
+    payorRefs: z
+      .array(PayeePayorRefV3Schema)
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    remoteId: z.string().exactOptional().openapi({ example: 'Remote ID' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Type of Payee. One of the following values: Individual, Company' }),
+  })
+  .openapi({
+    example: {
+      address: {
+        city: 'Key West',
+        country: 'US',
+        countyOrProvince: 'FL',
+        line1: '500 Duval St',
+        line2: 'line2',
+        line3: 'line3',
+        line4: 'line4',
+        zipOrPostcode: '33945',
+      },
+      challenge: { description: 'challenge description', value: 'challenge test' },
+      company: { name: 'ABC Group Plc', operatingName: 'ABC Co', taxId: '123123123' },
+      email: 'bob@example.com',
+      individual: {
+        dateOfBirth: '1970-05-20T00:00:00.000+0000',
+        name: { firstName: 'Bob', lastName: 'Smith', otherNames: 'H', title: 'Mr' },
+        nationalIdentification: 'SA211123K',
+      },
+      language: 'en-US',
+      payeeId: '2aa5d7e0-2ecb-403f-8494-1865ed0454e9',
+      paymentChannel: {
+        accountName: 'My account',
+        accountNumber: 'XXXXXX5678',
+        countryCode: 'US',
+        currency: 'USD',
+        iban: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1234',
+        paymentChannelName: 'My Payment Channel',
+        routingNumber: 'XXXXX6789',
+      },
+      payorRefs: [
+        {
+          invitationStatus: 'invitationStatus',
+          invitationStatusTimestamp: '2019-01-20T09:00:00Z',
+          payableIssues: [
+            { code: '3', message: 'payee-disabled' },
+            { code: '3', message: 'payee-disabled' },
+          ],
+          payableStatus: true,
+          paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
+          payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
+          remoteId: 'uniqueIdForRemoteEntity',
+        },
+        {
+          invitationStatus: 'invitationStatus',
+          invitationStatusTimestamp: '2019-01-20T09:00:00Z',
+          payableIssues: [
+            { code: '3', message: 'payee-disabled' },
+            { code: '3', message: 'payee-disabled' },
+          ],
+          payableStatus: true,
+          paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
+          payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
+          remoteId: 'uniqueIdForRemoteEntity',
+        },
+      ],
+      remoteId: 'Remote ID',
+      type: 'type',
+    },
+    required: [],
+  })
+  .openapi('FailedPayeeV3')
+
+const FailedSubmissionV3Schema = z
+  .object({
+    failedSubmission: FailedPayeeV3Schema.exactOptional(),
+    failureMessage: z.string().exactOptional().openapi({ example: 'failure reason' }),
+  })
+  .openapi({
+    example: {
+      failedSubmission: {
+        address: {
+          city: 'Key West',
+          country: 'US',
+          countyOrProvince: 'FL',
+          line1: '500 Duval St',
+          line2: 'line2',
+          line3: 'line3',
+          line4: 'line4',
+          zipOrPostcode: '33945',
+        },
+        challenge: { description: 'challenge description', value: 'challenge test' },
+        company: { name: 'ABC Group Plc', operatingName: 'ABC Co', taxId: '123123123' },
+        email: 'bob@example.com',
+        individual: {
+          dateOfBirth: '1970-05-20T00:00:00.000+0000',
+          name: { firstName: 'Bob', lastName: 'Smith', otherNames: 'H', title: 'Mr' },
+          nationalIdentification: 'SA211123K',
+        },
+        language: 'en-US',
+        payeeId: '2aa5d7e0-2ecb-403f-8494-1865ed0454e9',
+        paymentChannel: {
+          accountName: 'My account',
+          accountNumber: 'XXXXXX5678',
+          countryCode: 'US',
+          currency: 'USD',
+          iban: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1234',
+          paymentChannelName: 'My Payment Channel',
+          routingNumber: 'XXXXX6789',
+        },
+        payorRefs: [
+          {
+            invitationStatus: 'invitationStatus',
+            invitationStatusTimestamp: '2019-01-20T09:00:00Z',
+            payableIssues: [
+              { code: '3', message: 'payee-disabled' },
+              { code: '3', message: 'payee-disabled' },
+            ],
+            payableStatus: true,
+            paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
+            payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
+            remoteId: 'uniqueIdForRemoteEntity',
+          },
+          {
+            invitationStatus: 'invitationStatus',
+            invitationStatusTimestamp: '2019-01-20T09:00:00Z',
+            payableIssues: [
+              { code: '3', message: 'payee-disabled' },
+              { code: '3', message: 'payee-disabled' },
+            ],
+            payableStatus: true,
+            paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
+            payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
+            remoteId: 'uniqueIdForRemoteEntity',
+          },
+        ],
+        remoteId: 'Remote ID',
+        type: 'type',
+      },
+      failureMessage: 'failure reason',
+    },
+    required: [],
+  })
+  .openapi('FailedSubmissionV3')
+
+type QueryBatchResponseV3Type = {
+  failureCount?: bigint
+  failures?: z.infer<typeof FailedSubmissionV3Schema>[]
+  pendingCount?: bigint
+  status?: string
+}
+
+const CreatePayeeAddressV4Schema = z
+  .object({
+    city: z.string().min(2).max(50).openapi({ example: 'Key West' }),
+    country: z
+      .string()
+      .regex(/^[A-Z]{2}$/)
+      .length(2)
+      .openapi({
+        description:
+          'Valid ISO 3166 2 character country code. See the <a href="https://www.iso.org/iso-3166-country-codes.html" target="_blank" a>ISO specification</a> for details.',
+        example: 'US',
+        title: 'ISO 3166 2 Character Country Code',
+      }),
+    countyOrProvince: z
+      .string()
+      .min(2)
+      .max(50)
+      .nullable()
+      .exactOptional()
+      .openapi({ example: 'FL' }),
+    line1: z.string().min(1).max(100).openapi({ example: '500 Duval St' }),
+    line2: z.string().min(0).max(100).nullable().exactOptional(),
+    line3: z.string().min(0).max(100).nullable().exactOptional(),
+    line4: z.string().min(0).max(100).nullable().exactOptional(),
+    zipOrPostcode: z
+      .string()
+      .min(2)
+      .max(60)
+      .nullable()
+      .exactOptional()
+      .openapi({ example: '33945' }),
+  })
+  .openapi({
+    example: {
+      city: 'Key West',
+      country: 'US',
+      countyOrProvince: 'FL',
+      line1: '500 Duval St',
+      line2: 'line2',
+      line3: 'line3',
+      line4: 'line4',
+      zipOrPostcode: '33945',
+    },
+    required: ['city', 'country', 'line1'],
+  })
+  .openapi('CreatePayeeAddressV4')
+
+const ChallengeV4Schema = z
+  .object({
+    description: z.string().min(1).max(255).openapi({ example: 'challenge description' }),
+    value: z
+      .string()
+      .min(3)
+      .max(20)
+      .openapi({
+        description: 'The value that the user will be asked to verify when they onboard',
+        example: '11984567',
+      }),
+  })
+  .openapi({
+    description:
+      '<p>Used to override the default challenge presented to the payee when they onboard</p>\n<p>Not used after the payee has onboarded</p>\n',
+    example: { description: 'challenge description', value: '11984567' },
+    required: ['description', 'value'],
+  })
+  .openapi('ChallengeV4')
+
+const CompanyV4Schema = z
+  .object({
+    name: z.string().min(3).max(40).openapi({ example: 'ABC Group Plc' }),
+    operatingName: z
+      .string()
+      .min(1)
+      .max(100)
+      .nullable()
+      .exactOptional()
+      .openapi({ example: 'ABC Co' }),
+    taxId: z
+      .string()
+      .min(6)
+      .max(30)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Company Tax Id must be between 6 and 30 characters long',
+        example: '123123123',
+      }),
+  })
+  .nullable()
+  .openapi({
+    example: { name: 'ABC Group Plc', operatingName: 'ABC Co', taxId: '123123123' },
+    required: ['name'],
+  })
+  .openapi('CompanyV4')
+
+const CreateIndividualV4Schema = z
+  .object({
+    dateOfBirth: z.iso
+      .date()
+      .openapi({
+        description: 'Must not be date in future. Example - 1970-05-20',
+        example: '1970-05-20',
+      }),
+    name: CreateIndividualV3NameSchema,
+    nationalIdentification: z
+      .string()
+      .min(6)
+      .max(30)
+      .exactOptional()
+      .openapi({ example: 'SA211123K' }),
+  })
+  .openapi({
+    example: {
+      dateOfBirth: '1970-05-20T00:00:00.000+0000',
+      name: { firstName: 'Bob', lastName: 'Smith', otherNames: 'H', title: 'Mr' },
+      nationalIdentification: 'SA211123K',
+    },
+    required: ['dateOfBirth', 'name'],
+  })
+  .openapi('CreateIndividualV4')
+
+const CreatePaymentChannelV4Schema = z
+  .object({
+    accountName: z.string().openapi({ example: 'My account' }),
+    accountNumber: z
+      .string()
+      .min(6)
+      .max(17)
+      .exactOptional()
+      .openapi({
+        description: 'Either routing number and account number or only iban must be set',
+        example: 'XXXXXX5678',
+      }),
+    countryCode: z
+      .string()
+      .regex(/^[A-Z]{2}$/)
+      .length(2)
+      .openapi({
+        description:
+          'Valid ISO 3166 2 character country code. See the <a href="https://www.iso.org/iso-3166-country-codes.html" target="_blank" a>ISO specification</a> for details.',
+        example: 'US',
+        title: 'ISO 3166 2 Character Country Code',
+      }),
+    currency: z
+      .string()
+      .regex(/^[A-Z]{3}$/)
+      .length(3)
+      .openapi({
+        description:
+          'Valid ISO 4217 3 letter currency code. See the <a href="https://www.iso.org/iso-4217-currency-codes.html" target="_blank" a>ISO specification</a> for details.',
+        example: 'USD',
+        title: 'ISO Currency Code',
+      }),
+    iban: z
+      .string()
+      .regex(/^[A-Za-z0-9]+$/)
+      .min(15)
+      .max(34)
+      .exactOptional()
+      .openapi({
+        description: 'Must match the regular expression ```^[A-Za-z0-9]+$```.',
+        example: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1234',
+        title: 'IBAN - International Bank Account Number',
+      }),
+    paymentChannelName: z.string().exactOptional().openapi({ example: 'My Payment Channel' }),
+    routingNumber: z
+      .string()
+      .length(9)
+      .exactOptional()
+      .openapi({
+        description: 'Either routing number and account number or only iban must be set',
+        example: 'XXXXX6789',
+      }),
+  })
+  .openapi({
+    example: {
+      accountName: 'My account',
+      accountNumber: 'XXXXXX5678',
+      countryCode: 'US',
+      currency: 'USD',
+      iban: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1234',
+      paymentChannelName: 'My Payment Channel',
+      routingNumber: 'XXXXX6789',
+    },
+    required: ['accountName', 'countryCode', 'currency'],
+  })
+  .openapi('CreatePaymentChannelV4')
+
+const PayableIssueV4Schema = z
+  .object({
+    code: z.string().openapi({ example: '3' }),
+    message: z.string().openapi({ example: 'payee-disabled' }),
+  })
+  .openapi({
+    description: 'payable issues for the payee and payor combination',
+    example: { code: '3', message: 'payee-disabled' },
+    required: ['code', 'message'],
+  })
+  .openapi('PayableIssueV4')
+
+const PayeePayorRefV4Schema = z
+  .object({
+    invitationStatus: z.string().exactOptional(),
+    invitationStatusTimestamp: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'The timestamp when the invitation status is updated',
+        example: '2019-01-20T09:00:00Z',
+      }),
+    payableIssues: z
+      .array(PayableIssueV4Schema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates any conditions which prevent the payee from being payable for this payor',
+      }),
+    payableStatus: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Indicates if the payee is payable for this payor' }),
+    paymentChannelId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ example: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3' }),
+    payorId: z.uuid().exactOptional().openapi({ example: 'ba08877f-9d96-41e4-9c26-44a872d856ae' }),
+    remoteId: z.string().exactOptional().openapi({ example: 'uniqueIdForRemoteEntity' }),
+  })
+  .openapi({
+    example: {
+      invitationStatus: 'invitationStatus',
+      invitationStatusTimestamp: '2019-01-20T09:00:00Z',
+      payableIssues: [
+        { code: '3', message: 'payee-disabled' },
+        { code: '3', message: 'payee-disabled' },
+      ],
+      payableStatus: true,
+      paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
+      payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
+      remoteId: 'uniqueIdForRemoteEntity',
+    },
+    required: [],
+  })
+  .openapi('PayeePayorRefV4')
+
+const FailedPayeeV4Schema = z
+  .object({
+    address: CreatePayeeAddressV4Schema.exactOptional(),
+    challenge: ChallengeV4Schema.exactOptional(),
+    company: CompanyV4Schema.exactOptional(),
+    email: z.email().exactOptional().openapi({ example: 'bob@example.com' }),
+    individual: CreateIndividualV4Schema.exactOptional(),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An IETF BCP 47 language code which has been configured for use within this Velo environment.<BR>\nSee the /v1/supportedLanguages endpoint to list the available codes for an environment.\n',
+        example: 'en-US',
+      }),
+    payeeId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ example: '2aa5d7e0-2ecb-403f-8494-1865ed0454e9', readOnly: true }),
+    paymentChannel: CreatePaymentChannelV4Schema.exactOptional(),
+    payorRefs: z
+      .array(PayeePayorRefV4Schema)
+      .nullable()
+      .exactOptional()
+      .openapi({ readOnly: true }),
+    remoteId: z.string().exactOptional().openapi({ example: 'Remote ID' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Type of Payee. One of the following values: Individual, Company' }),
+  })
+  .openapi({
+    example: {
+      address: {
+        city: 'Key West',
+        country: 'US',
+        countyOrProvince: 'FL',
+        line1: '500 Duval St',
+        line2: 'line2',
+        line3: 'line3',
+        line4: 'line4',
+        zipOrPostcode: '33945',
+      },
+      challenge: { description: 'challenge description', value: '11984567' },
+      company: { name: 'ABC Group Plc', operatingName: 'ABC Co', taxId: '123123123' },
+      email: 'bob@example.com',
+      individual: {
+        dateOfBirth: '1970-05-20T00:00:00.000+0000',
+        name: { firstName: 'Bob', lastName: 'Smith', otherNames: 'H', title: 'Mr' },
+        nationalIdentification: 'SA211123K',
+      },
+      language: 'en-US',
+      payeeId: '2aa5d7e0-2ecb-403f-8494-1865ed0454e9',
+      paymentChannel: {
+        accountName: 'My account',
+        accountNumber: 'XXXXXX5678',
+        countryCode: 'US',
+        currency: 'USD',
+        iban: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1234',
+        paymentChannelName: 'My Payment Channel',
+        routingNumber: 'XXXXX6789',
+      },
+      payorRefs: [
+        {
+          invitationStatus: 'invitationStatus',
+          invitationStatusTimestamp: '2019-01-20T09:00:00Z',
+          payableIssues: [
+            { code: '3', message: 'payee-disabled' },
+            { code: '3', message: 'payee-disabled' },
+          ],
+          payableStatus: true,
+          paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
+          payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
+          remoteId: 'uniqueIdForRemoteEntity',
+        },
+        {
+          invitationStatus: 'invitationStatus',
+          invitationStatusTimestamp: '2019-01-20T09:00:00Z',
+          payableIssues: [
+            { code: '3', message: 'payee-disabled' },
+            { code: '3', message: 'payee-disabled' },
+          ],
+          payableStatus: true,
+          paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
+          payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
+          remoteId: 'uniqueIdForRemoteEntity',
+        },
+      ],
+      remoteId: 'Remote ID',
+      type: 'type',
+    },
+    required: [],
+  })
+  .openapi('FailedPayeeV4')
+
+const FailedSubmissionV4Schema = z
+  .object({
+    failedSubmission: FailedPayeeV4Schema.exactOptional(),
+    failureMessage: z.string().exactOptional().openapi({ example: 'failure reason' }),
+  })
+  .openapi({
+    example: {
+      failedSubmission: {
+        address: {
+          city: 'Key West',
+          country: 'US',
+          countyOrProvince: 'FL',
+          line1: '500 Duval St',
+          line2: 'line2',
+          line3: 'line3',
+          line4: 'line4',
+          zipOrPostcode: '33945',
+        },
+        challenge: { description: 'challenge description', value: '11984567' },
+        company: { name: 'ABC Group Plc', operatingName: 'ABC Co', taxId: '123123123' },
+        email: 'bob@example.com',
+        individual: {
+          dateOfBirth: '1970-05-20T00:00:00.000+0000',
+          name: { firstName: 'Bob', lastName: 'Smith', otherNames: 'H', title: 'Mr' },
+          nationalIdentification: 'SA211123K',
+        },
+        language: 'en-US',
+        payeeId: '2aa5d7e0-2ecb-403f-8494-1865ed0454e9',
+        paymentChannel: {
+          accountName: 'My account',
+          accountNumber: 'XXXXXX5678',
+          countryCode: 'US',
+          currency: 'USD',
+          iban: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1234',
+          paymentChannelName: 'My Payment Channel',
+          routingNumber: 'XXXXX6789',
+        },
+        payorRefs: [
+          {
+            invitationStatus: 'invitationStatus',
+            invitationStatusTimestamp: '2019-01-20T09:00:00Z',
+            payableIssues: [
+              { code: '3', message: 'payee-disabled' },
+              { code: '3', message: 'payee-disabled' },
+            ],
+            payableStatus: true,
+            paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
+            payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
+            remoteId: 'uniqueIdForRemoteEntity',
+          },
+          {
+            invitationStatus: 'invitationStatus',
+            invitationStatusTimestamp: '2019-01-20T09:00:00Z',
+            payableIssues: [
+              { code: '3', message: 'payee-disabled' },
+              { code: '3', message: 'payee-disabled' },
+            ],
+            payableStatus: true,
+            paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
+            payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
+            remoteId: 'uniqueIdForRemoteEntity',
+          },
+        ],
+        remoteId: 'Remote ID',
+        type: 'type',
+      },
+      failureMessage: 'failure reason',
+    },
+    required: [],
+  })
+  .openapi('FailedSubmissionV4')
+
+type QueryBatchResponseV4Type = {
+  failureCount?: bigint
+  failures?: z.infer<typeof FailedSubmissionV4Schema>[]
+  pendingCount?: bigint
+  status?: string
+}
+
 const AcceptedPaymentV3Schema = z
   .object({
     amount: z
@@ -372,93 +1210,6 @@ const CategorySchema = z
   .openapi({ description: 'The notification category.  One of "payment", "payee", "debit".' })
   .openapi('Category')
 
-const ChallengeV3Schema = z
-  .object({
-    description: z.string().min(1).max(255).openapi({ example: 'challenge description' }),
-    value: z.string().min(3).max(20).openapi({ example: 'challenge test' }),
-  })
-  .openapi({
-    example: { description: 'challenge description', value: 'challenge test' },
-    required: ['description', 'value'],
-  })
-  .openapi('ChallengeV3')
-
-const ChallengeV4Schema = z
-  .object({
-    description: z.string().min(1).max(255).openapi({ example: 'challenge description' }),
-    value: z
-      .string()
-      .min(3)
-      .max(20)
-      .openapi({
-        description: 'The value that the user will be asked to verify when they onboard',
-        example: '11984567',
-      }),
-  })
-  .openapi({
-    description:
-      '<p>Used to override the default challenge presented to the payee when they onboard</p>\n<p>Not used after the payee has onboarded</p>\n',
-    example: { description: 'challenge description', value: '11984567' },
-    required: ['description', 'value'],
-  })
-  .openapi('ChallengeV4')
-
-const CompanyV3Schema = z
-  .object({
-    name: z.string().min(3).max(40).openapi({ example: 'ABC Group Plc' }),
-    operatingName: z
-      .string()
-      .min(1)
-      .max(100)
-      .nullable()
-      .exactOptional()
-      .openapi({ example: 'ABC Co' }),
-    taxId: z
-      .string()
-      .min(6)
-      .max(30)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Company Tax Id must be between 6 and 30 characters long',
-        example: '123123123',
-      }),
-  })
-  .nullable()
-  .openapi({
-    example: { name: 'ABC Group Plc', operatingName: 'ABC Co', taxId: '123123123' },
-    required: ['name'],
-  })
-  .openapi('CompanyV3')
-
-const CompanyV4Schema = z
-  .object({
-    name: z.string().min(3).max(40).openapi({ example: 'ABC Group Plc' }),
-    operatingName: z
-      .string()
-      .min(1)
-      .max(100)
-      .nullable()
-      .exactOptional()
-      .openapi({ example: 'ABC Co' }),
-    taxId: z
-      .string()
-      .min(6)
-      .max(30)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Company Tax Id must be between 6 and 30 characters long',
-        example: '123123123',
-      }),
-  })
-  .nullable()
-  .openapi({
-    example: { name: 'ABC Group Plc', operatingName: 'ABC Co', taxId: '123123123' },
-    required: ['name'],
-  })
-  .openapi('CompanyV4')
-
 const CreateFundingAccountRequestV2Schema = z
   .object({
     accountName: z
@@ -504,284 +1255,6 @@ const CreateFundingAccountRequestV2Schema = z
     required: ['name', 'payorId', 'type'],
   })
   .openapi('CreateFundingAccountRequestV2')
-
-const CreateIndividualV3NameSchema = z
-  .object({
-    firstName: z.string().min(1).max(40).openapi({ example: 'Bob' }),
-    lastName: z.string().min(1).max(40).openapi({ example: 'Smith' }),
-    otherNames: z.string().min(1).max(40).exactOptional().openapi({ example: 'H' }),
-    title: z.string().min(1).max(10).exactOptional().openapi({ example: 'Mr' }),
-  })
-  .openapi({
-    example: { firstName: 'Bob', lastName: 'Smith', otherNames: 'H', title: 'Mr' },
-    required: ['firstName', 'lastName'],
-  })
-  .openapi('CreateIndividualV3Name')
-
-const CreateIndividualV3Schema = z
-  .object({
-    dateOfBirth: z.iso
-      .date()
-      .openapi({
-        description: 'Must not be date in future. Example - 1970-05-20',
-        example: '1970-05-20',
-      }),
-    name: CreateIndividualV3NameSchema,
-    nationalIdentification: z
-      .string()
-      .min(6)
-      .max(30)
-      .exactOptional()
-      .openapi({ example: 'SA211123K' }),
-  })
-  .openapi({
-    example: {
-      dateOfBirth: '1970-05-20T00:00:00.000+0000',
-      name: { firstName: 'Bob', lastName: 'Smith', otherNames: 'H', title: 'Mr' },
-      nationalIdentification: 'SA211123K',
-    },
-    required: ['dateOfBirth', 'name'],
-  })
-  .openapi('CreateIndividualV3')
-
-const CreateIndividualV4Schema = z
-  .object({
-    dateOfBirth: z.iso
-      .date()
-      .openapi({
-        description: 'Must not be date in future. Example - 1970-05-20',
-        example: '1970-05-20',
-      }),
-    name: CreateIndividualV3NameSchema,
-    nationalIdentification: z
-      .string()
-      .min(6)
-      .max(30)
-      .exactOptional()
-      .openapi({ example: 'SA211123K' }),
-  })
-  .openapi({
-    example: {
-      dateOfBirth: '1970-05-20T00:00:00.000+0000',
-      name: { firstName: 'Bob', lastName: 'Smith', otherNames: 'H', title: 'Mr' },
-      nationalIdentification: 'SA211123K',
-    },
-    required: ['dateOfBirth', 'name'],
-  })
-  .openapi('CreateIndividualV4')
-
-const CreatePayeeAddressV3Schema = z
-  .object({
-    city: z.string().min(2).max(50).openapi({ example: 'Key West' }),
-    country: z
-      .string()
-      .length(2)
-      .openapi({ description: '2 letter ISO 3166-1 country code', example: 'US' }),
-    countyOrProvince: z
-      .string()
-      .min(2)
-      .max(50)
-      .nullable()
-      .exactOptional()
-      .openapi({ example: 'FL' }),
-    line1: z.string().min(1).max(100).openapi({ example: '500 Duval St' }),
-    line2: z.string().min(0).max(100).nullable().exactOptional(),
-    line3: z.string().min(0).max(100).nullable().exactOptional(),
-    line4: z.string().min(0).max(100).nullable().exactOptional(),
-    zipOrPostcode: z
-      .string()
-      .min(2)
-      .max(60)
-      .nullable()
-      .exactOptional()
-      .openapi({ example: '33945' }),
-  })
-  .openapi({
-    example: {
-      city: 'Key West',
-      country: 'US',
-      countyOrProvince: 'FL',
-      line1: '500 Duval St',
-      line2: 'line2',
-      line3: 'line3',
-      line4: 'line4',
-      zipOrPostcode: '33945',
-    },
-    required: ['city', 'country', 'line1'],
-  })
-  .openapi('CreatePayeeAddressV3')
-
-const CreatePayeeAddressV4Schema = z
-  .object({
-    city: z.string().min(2).max(50).openapi({ example: 'Key West' }),
-    country: z
-      .string()
-      .regex(/^[A-Z]{2}$/)
-      .length(2)
-      .openapi({
-        description:
-          'Valid ISO 3166 2 character country code. See the <a href="https://www.iso.org/iso-3166-country-codes.html" target="_blank" a>ISO specification</a> for details.',
-        example: 'US',
-        title: 'ISO 3166 2 Character Country Code',
-      }),
-    countyOrProvince: z
-      .string()
-      .min(2)
-      .max(50)
-      .nullable()
-      .exactOptional()
-      .openapi({ example: 'FL' }),
-    line1: z.string().min(1).max(100).openapi({ example: '500 Duval St' }),
-    line2: z.string().min(0).max(100).nullable().exactOptional(),
-    line3: z.string().min(0).max(100).nullable().exactOptional(),
-    line4: z.string().min(0).max(100).nullable().exactOptional(),
-    zipOrPostcode: z
-      .string()
-      .min(2)
-      .max(60)
-      .nullable()
-      .exactOptional()
-      .openapi({ example: '33945' }),
-  })
-  .openapi({
-    example: {
-      city: 'Key West',
-      country: 'US',
-      countyOrProvince: 'FL',
-      line1: '500 Duval St',
-      line2: 'line2',
-      line3: 'line3',
-      line4: 'line4',
-      zipOrPostcode: '33945',
-    },
-    required: ['city', 'country', 'line1'],
-  })
-  .openapi('CreatePayeeAddressV4')
-
-const CreatePaymentChannelV3Schema = z
-  .object({
-    accountName: z.string().openapi({ example: 'My account' }),
-    accountNumber: z
-      .string()
-      .min(6)
-      .max(17)
-      .exactOptional()
-      .openapi({
-        description: 'Either routing number and account number or only iban must be set',
-        example: 'XXXXXX5678',
-      }),
-    countryCode: z
-      .string()
-      .regex(/^[A-Z]{2}$/)
-      .length(2)
-      .openapi({
-        description:
-          'Valid ISO 3166 2 character country code. See the <a href="https://www.iso.org/iso-3166-country-codes.html" target="_blank" a>ISO specification</a> for details.',
-        example: 'US',
-        title: 'ISO 3166 2 Character Country Code',
-      }),
-    currency: z
-      .string()
-      .regex(/^[A-Z]{3}$/)
-      .length(3)
-      .openapi({
-        description:
-          'Valid ISO 4217 3 letter currency code. See the <a href="https://www.iso.org/iso-4217-currency-codes.html" target="_blank" a>ISO specification</a> for details.',
-        example: 'USD',
-        title: 'ISO Currency Code',
-      }),
-    iban: z
-      .string()
-      .regex(/^[A-Za-z0-9]+$/)
-      .min(15)
-      .max(34)
-      .exactOptional()
-      .openapi({
-        description: 'Must match the regular expression ```^[A-Za-z0-9]+$```.',
-        example: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1234',
-        title: 'IBAN - International Bank Account Number',
-      }),
-    paymentChannelName: z.string().exactOptional().openapi({ example: 'My Payment Channel' }),
-    routingNumber: z
-      .string()
-      .length(9)
-      .exactOptional()
-      .openapi({
-        description: 'Either routing number and account number or only iban must be set',
-        example: 'XXXXX6789',
-      }),
-  })
-  .openapi({
-    example: {
-      accountName: 'My account',
-      accountNumber: 'XXXXXX5678',
-      countryCode: 'US',
-      currency: 'USD',
-      iban: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1234',
-      paymentChannelName: 'My Payment Channel',
-      routingNumber: 'XXXXX6789',
-    },
-    required: ['accountName', 'countryCode', 'currency'],
-  })
-  .openapi('CreatePaymentChannelV3')
-
-const PayableIssueV3Schema = z
-  .object({
-    code: z.string().openapi({ example: '3' }),
-    message: z.string().openapi({ example: 'payee-disabled' }),
-  })
-  .openapi({
-    description: 'payable issues for the payee and payor combination',
-    example: { code: '3', message: 'payee-disabled' },
-    required: ['code', 'message'],
-  })
-  .openapi('PayableIssueV3')
-
-const PayeePayorRefV3Schema = z
-  .object({
-    invitationStatus: z.string().exactOptional(),
-    invitationStatusTimestamp: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp when the invitation status is updated',
-        example: '2019-01-20T09:00:00Z',
-      }),
-    payableIssues: z
-      .array(PayableIssueV3Schema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates any conditions which prevent the payee from being payable for this payor',
-      }),
-    payableStatus: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates if the payee is payable for this payor' }),
-    paymentChannelId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ example: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3' }),
-    payorId: z.uuid().exactOptional().openapi({ example: 'ba08877f-9d96-41e4-9c26-44a872d856ae' }),
-    remoteId: z.string().exactOptional().openapi({ example: 'uniqueIdForRemoteEntity' }),
-  })
-  .openapi({
-    example: {
-      invitationStatus: 'invitationStatus',
-      invitationStatusTimestamp: '2019-01-20T09:00:00Z',
-      payableIssues: [
-        { code: '3', message: 'payee-disabled' },
-        { code: '3', message: 'payee-disabled' },
-      ],
-      payableStatus: true,
-      paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
-      payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
-      remoteId: 'uniqueIdForRemoteEntity',
-    },
-    required: [],
-  })
-  .openapi('PayeePayorRefV3')
 
 const CreatePayeeV3Schema = z
   .object({
@@ -876,73 +1349,6 @@ const CreatePayeeV3Schema = z
     required: ['address', 'email', 'remoteId', 'type'],
   })
   .openapi('CreatePayeeV3')
-
-const CreatePaymentChannelV4Schema = z
-  .object({
-    accountName: z.string().openapi({ example: 'My account' }),
-    accountNumber: z
-      .string()
-      .min(6)
-      .max(17)
-      .exactOptional()
-      .openapi({
-        description: 'Either routing number and account number or only iban must be set',
-        example: 'XXXXXX5678',
-      }),
-    countryCode: z
-      .string()
-      .regex(/^[A-Z]{2}$/)
-      .length(2)
-      .openapi({
-        description:
-          'Valid ISO 3166 2 character country code. See the <a href="https://www.iso.org/iso-3166-country-codes.html" target="_blank" a>ISO specification</a> for details.',
-        example: 'US',
-        title: 'ISO 3166 2 Character Country Code',
-      }),
-    currency: z
-      .string()
-      .regex(/^[A-Z]{3}$/)
-      .length(3)
-      .openapi({
-        description:
-          'Valid ISO 4217 3 letter currency code. See the <a href="https://www.iso.org/iso-4217-currency-codes.html" target="_blank" a>ISO specification</a> for details.',
-        example: 'USD',
-        title: 'ISO Currency Code',
-      }),
-    iban: z
-      .string()
-      .regex(/^[A-Za-z0-9]+$/)
-      .min(15)
-      .max(34)
-      .exactOptional()
-      .openapi({
-        description: 'Must match the regular expression ```^[A-Za-z0-9]+$```.',
-        example: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1234',
-        title: 'IBAN - International Bank Account Number',
-      }),
-    paymentChannelName: z.string().exactOptional().openapi({ example: 'My Payment Channel' }),
-    routingNumber: z
-      .string()
-      .length(9)
-      .exactOptional()
-      .openapi({
-        description: 'Either routing number and account number or only iban must be set',
-        example: 'XXXXX6789',
-      }),
-  })
-  .openapi({
-    example: {
-      accountName: 'My account',
-      accountNumber: 'XXXXXX5678',
-      countryCode: 'US',
-      currency: 'USD',
-      iban: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1234',
-      paymentChannelName: 'My Payment Channel',
-      routingNumber: 'XXXXX6789',
-    },
-    required: ['accountName', 'countryCode', 'currency'],
-  })
-  .openapi('CreatePaymentChannelV4')
 
 const PayeeTypeEnumSchema = z
   .enum(['Individual', 'Company'])
@@ -1821,7 +2227,7 @@ const DebitStatusChangedSchema = DebitEventSchema.and(DebitStatusChangedAllOfSch
 const ErrorDataSchema = z
   .object({
     content: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Object containing typed error data specific to the API' }),
     description: z
@@ -1931,398 +2337,6 @@ const ErrorResponseSchema = z
     required: [],
   })
   .openapi('ErrorResponse')
-
-const FailedPayeeV3Schema = z
-  .object({
-    address: CreatePayeeAddressV3Schema.exactOptional(),
-    challenge: ChallengeV3Schema.exactOptional(),
-    company: CompanyV3Schema.exactOptional(),
-    email: z.email().exactOptional().openapi({ example: 'bob@example.com' }),
-    individual: CreateIndividualV3Schema.exactOptional(),
-    language: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An IETF BCP 47 language code which has been configured for use within this Velo environment.<BR>\nSee the /v1/supportedLanguages endpoint to list the available codes for an environment.\n',
-        example: 'en-US',
-      }),
-    payeeId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ example: '2aa5d7e0-2ecb-403f-8494-1865ed0454e9', readOnly: true }),
-    paymentChannel: CreatePaymentChannelV3Schema.exactOptional(),
-    payorRefs: z
-      .array(PayeePayorRefV3Schema)
-      .nullable()
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    remoteId: z.string().exactOptional().openapi({ example: 'Remote ID' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Type of Payee. One of the following values: Individual, Company' }),
-  })
-  .openapi({
-    example: {
-      address: {
-        city: 'Key West',
-        country: 'US',
-        countyOrProvince: 'FL',
-        line1: '500 Duval St',
-        line2: 'line2',
-        line3: 'line3',
-        line4: 'line4',
-        zipOrPostcode: '33945',
-      },
-      challenge: { description: 'challenge description', value: 'challenge test' },
-      company: { name: 'ABC Group Plc', operatingName: 'ABC Co', taxId: '123123123' },
-      email: 'bob@example.com',
-      individual: {
-        dateOfBirth: '1970-05-20T00:00:00.000+0000',
-        name: { firstName: 'Bob', lastName: 'Smith', otherNames: 'H', title: 'Mr' },
-        nationalIdentification: 'SA211123K',
-      },
-      language: 'en-US',
-      payeeId: '2aa5d7e0-2ecb-403f-8494-1865ed0454e9',
-      paymentChannel: {
-        accountName: 'My account',
-        accountNumber: 'XXXXXX5678',
-        countryCode: 'US',
-        currency: 'USD',
-        iban: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1234',
-        paymentChannelName: 'My Payment Channel',
-        routingNumber: 'XXXXX6789',
-      },
-      payorRefs: [
-        {
-          invitationStatus: 'invitationStatus',
-          invitationStatusTimestamp: '2019-01-20T09:00:00Z',
-          payableIssues: [
-            { code: '3', message: 'payee-disabled' },
-            { code: '3', message: 'payee-disabled' },
-          ],
-          payableStatus: true,
-          paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
-          payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
-          remoteId: 'uniqueIdForRemoteEntity',
-        },
-        {
-          invitationStatus: 'invitationStatus',
-          invitationStatusTimestamp: '2019-01-20T09:00:00Z',
-          payableIssues: [
-            { code: '3', message: 'payee-disabled' },
-            { code: '3', message: 'payee-disabled' },
-          ],
-          payableStatus: true,
-          paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
-          payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
-          remoteId: 'uniqueIdForRemoteEntity',
-        },
-      ],
-      remoteId: 'Remote ID',
-      type: 'type',
-    },
-    required: [],
-  })
-  .openapi('FailedPayeeV3')
-
-const PayableIssueV4Schema = z
-  .object({
-    code: z.string().openapi({ example: '3' }),
-    message: z.string().openapi({ example: 'payee-disabled' }),
-  })
-  .openapi({
-    description: 'payable issues for the payee and payor combination',
-    example: { code: '3', message: 'payee-disabled' },
-    required: ['code', 'message'],
-  })
-  .openapi('PayableIssueV4')
-
-const PayeePayorRefV4Schema = z
-  .object({
-    invitationStatus: z.string().exactOptional(),
-    invitationStatusTimestamp: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The timestamp when the invitation status is updated',
-        example: '2019-01-20T09:00:00Z',
-      }),
-    payableIssues: z
-      .array(PayableIssueV4Schema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates any conditions which prevent the payee from being payable for this payor',
-      }),
-    payableStatus: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Indicates if the payee is payable for this payor' }),
-    paymentChannelId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ example: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3' }),
-    payorId: z.uuid().exactOptional().openapi({ example: 'ba08877f-9d96-41e4-9c26-44a872d856ae' }),
-    remoteId: z.string().exactOptional().openapi({ example: 'uniqueIdForRemoteEntity' }),
-  })
-  .openapi({
-    example: {
-      invitationStatus: 'invitationStatus',
-      invitationStatusTimestamp: '2019-01-20T09:00:00Z',
-      payableIssues: [
-        { code: '3', message: 'payee-disabled' },
-        { code: '3', message: 'payee-disabled' },
-      ],
-      payableStatus: true,
-      paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
-      payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
-      remoteId: 'uniqueIdForRemoteEntity',
-    },
-    required: [],
-  })
-  .openapi('PayeePayorRefV4')
-
-const FailedPayeeV4Schema = z
-  .object({
-    address: CreatePayeeAddressV4Schema.exactOptional(),
-    challenge: ChallengeV4Schema.exactOptional(),
-    company: CompanyV4Schema.exactOptional(),
-    email: z.email().exactOptional().openapi({ example: 'bob@example.com' }),
-    individual: CreateIndividualV4Schema.exactOptional(),
-    language: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An IETF BCP 47 language code which has been configured for use within this Velo environment.<BR>\nSee the /v1/supportedLanguages endpoint to list the available codes for an environment.\n',
-        example: 'en-US',
-      }),
-    payeeId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ example: '2aa5d7e0-2ecb-403f-8494-1865ed0454e9', readOnly: true }),
-    paymentChannel: CreatePaymentChannelV4Schema.exactOptional(),
-    payorRefs: z
-      .array(PayeePayorRefV4Schema)
-      .nullable()
-      .exactOptional()
-      .openapi({ readOnly: true }),
-    remoteId: z.string().exactOptional().openapi({ example: 'Remote ID' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Type of Payee. One of the following values: Individual, Company' }),
-  })
-  .openapi({
-    example: {
-      address: {
-        city: 'Key West',
-        country: 'US',
-        countyOrProvince: 'FL',
-        line1: '500 Duval St',
-        line2: 'line2',
-        line3: 'line3',
-        line4: 'line4',
-        zipOrPostcode: '33945',
-      },
-      challenge: { description: 'challenge description', value: '11984567' },
-      company: { name: 'ABC Group Plc', operatingName: 'ABC Co', taxId: '123123123' },
-      email: 'bob@example.com',
-      individual: {
-        dateOfBirth: '1970-05-20T00:00:00.000+0000',
-        name: { firstName: 'Bob', lastName: 'Smith', otherNames: 'H', title: 'Mr' },
-        nationalIdentification: 'SA211123K',
-      },
-      language: 'en-US',
-      payeeId: '2aa5d7e0-2ecb-403f-8494-1865ed0454e9',
-      paymentChannel: {
-        accountName: 'My account',
-        accountNumber: 'XXXXXX5678',
-        countryCode: 'US',
-        currency: 'USD',
-        iban: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1234',
-        paymentChannelName: 'My Payment Channel',
-        routingNumber: 'XXXXX6789',
-      },
-      payorRefs: [
-        {
-          invitationStatus: 'invitationStatus',
-          invitationStatusTimestamp: '2019-01-20T09:00:00Z',
-          payableIssues: [
-            { code: '3', message: 'payee-disabled' },
-            { code: '3', message: 'payee-disabled' },
-          ],
-          payableStatus: true,
-          paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
-          payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
-          remoteId: 'uniqueIdForRemoteEntity',
-        },
-        {
-          invitationStatus: 'invitationStatus',
-          invitationStatusTimestamp: '2019-01-20T09:00:00Z',
-          payableIssues: [
-            { code: '3', message: 'payee-disabled' },
-            { code: '3', message: 'payee-disabled' },
-          ],
-          payableStatus: true,
-          paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
-          payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
-          remoteId: 'uniqueIdForRemoteEntity',
-        },
-      ],
-      remoteId: 'Remote ID',
-      type: 'type',
-    },
-    required: [],
-  })
-  .openapi('FailedPayeeV4')
-
-const FailedSubmissionV3Schema = z
-  .object({
-    failedSubmission: FailedPayeeV3Schema.exactOptional(),
-    failureMessage: z.string().exactOptional().openapi({ example: 'failure reason' }),
-  })
-  .openapi({
-    example: {
-      failedSubmission: {
-        address: {
-          city: 'Key West',
-          country: 'US',
-          countyOrProvince: 'FL',
-          line1: '500 Duval St',
-          line2: 'line2',
-          line3: 'line3',
-          line4: 'line4',
-          zipOrPostcode: '33945',
-        },
-        challenge: { description: 'challenge description', value: 'challenge test' },
-        company: { name: 'ABC Group Plc', operatingName: 'ABC Co', taxId: '123123123' },
-        email: 'bob@example.com',
-        individual: {
-          dateOfBirth: '1970-05-20T00:00:00.000+0000',
-          name: { firstName: 'Bob', lastName: 'Smith', otherNames: 'H', title: 'Mr' },
-          nationalIdentification: 'SA211123K',
-        },
-        language: 'en-US',
-        payeeId: '2aa5d7e0-2ecb-403f-8494-1865ed0454e9',
-        paymentChannel: {
-          accountName: 'My account',
-          accountNumber: 'XXXXXX5678',
-          countryCode: 'US',
-          currency: 'USD',
-          iban: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1234',
-          paymentChannelName: 'My Payment Channel',
-          routingNumber: 'XXXXX6789',
-        },
-        payorRefs: [
-          {
-            invitationStatus: 'invitationStatus',
-            invitationStatusTimestamp: '2019-01-20T09:00:00Z',
-            payableIssues: [
-              { code: '3', message: 'payee-disabled' },
-              { code: '3', message: 'payee-disabled' },
-            ],
-            payableStatus: true,
-            paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
-            payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
-            remoteId: 'uniqueIdForRemoteEntity',
-          },
-          {
-            invitationStatus: 'invitationStatus',
-            invitationStatusTimestamp: '2019-01-20T09:00:00Z',
-            payableIssues: [
-              { code: '3', message: 'payee-disabled' },
-              { code: '3', message: 'payee-disabled' },
-            ],
-            payableStatus: true,
-            paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
-            payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
-            remoteId: 'uniqueIdForRemoteEntity',
-          },
-        ],
-        remoteId: 'Remote ID',
-        type: 'type',
-      },
-      failureMessage: 'failure reason',
-    },
-    required: [],
-  })
-  .openapi('FailedSubmissionV3')
-
-const FailedSubmissionV4Schema = z
-  .object({
-    failedSubmission: FailedPayeeV4Schema.exactOptional(),
-    failureMessage: z.string().exactOptional().openapi({ example: 'failure reason' }),
-  })
-  .openapi({
-    example: {
-      failedSubmission: {
-        address: {
-          city: 'Key West',
-          country: 'US',
-          countyOrProvince: 'FL',
-          line1: '500 Duval St',
-          line2: 'line2',
-          line3: 'line3',
-          line4: 'line4',
-          zipOrPostcode: '33945',
-        },
-        challenge: { description: 'challenge description', value: '11984567' },
-        company: { name: 'ABC Group Plc', operatingName: 'ABC Co', taxId: '123123123' },
-        email: 'bob@example.com',
-        individual: {
-          dateOfBirth: '1970-05-20T00:00:00.000+0000',
-          name: { firstName: 'Bob', lastName: 'Smith', otherNames: 'H', title: 'Mr' },
-          nationalIdentification: 'SA211123K',
-        },
-        language: 'en-US',
-        payeeId: '2aa5d7e0-2ecb-403f-8494-1865ed0454e9',
-        paymentChannel: {
-          accountName: 'My account',
-          accountNumber: 'XXXXXX5678',
-          countryCode: 'US',
-          currency: 'USD',
-          iban: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1234',
-          paymentChannelName: 'My Payment Channel',
-          routingNumber: 'XXXXX6789',
-        },
-        payorRefs: [
-          {
-            invitationStatus: 'invitationStatus',
-            invitationStatusTimestamp: '2019-01-20T09:00:00Z',
-            payableIssues: [
-              { code: '3', message: 'payee-disabled' },
-              { code: '3', message: 'payee-disabled' },
-            ],
-            payableStatus: true,
-            paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
-            payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
-            remoteId: 'uniqueIdForRemoteEntity',
-          },
-          {
-            invitationStatus: 'invitationStatus',
-            invitationStatusTimestamp: '2019-01-20T09:00:00Z',
-            payableIssues: [
-              { code: '3', message: 'payee-disabled' },
-              { code: '3', message: 'payee-disabled' },
-            ],
-            payableStatus: true,
-            paymentChannelId: '70faaff7-2c32-4b44-b27f-f0b6c484e6f3',
-            payorId: 'ba08877f-9d96-41e4-9c26-44a872d856ae',
-            remoteId: 'uniqueIdForRemoteEntity',
-          },
-        ],
-        remoteId: 'Remote ID',
-        type: 'type',
-      },
-      failureMessage: 'failure reason',
-    },
-    required: [],
-  })
-  .openapi('FailedSubmissionV4')
 
 const FundingAccountResponseV2Schema = z
   .object({
@@ -6600,15 +6614,15 @@ const PayeeEventSchema = SourceEventSchema.and(PayeeEventAllOfSchema)
   .openapi({ description: 'Base type for all Payee Events' })
   .openapi('PayeeEvent')
 
-const OnboardingStatusChangedSchema = PayeeEventSchema.and(z.object({}))
+const OnboardingStatusChangedSchema = PayeeEventSchema.and(z.looseObject({}))
   .openapi({ description: 'Base type for all onboarding status changed events' })
   .openapi('OnboardingStatusChanged')
 
-const PayableStatusChangedSchema = PayeeEventSchema.and(z.object({}))
+const PayableStatusChangedSchema = PayeeEventSchema.and(z.looseObject({}))
   .openapi({ description: 'Base type for all payable status changed events' })
   .openapi('PayableStatusChanged')
 
-const PayeeDetailsChangedSchema = PayeeEventSchema.and(z.object({}))
+const PayeeDetailsChangedSchema = PayeeEventSchema.and(z.looseObject({}))
   .openapi({ description: 'Base type for all payee details changed events' })
   .openapi('PayeeDetailsChanged')
 
@@ -6661,6 +6675,7 @@ const NotificationSchema = z
       .openapi({
         description: 'One of the available set of source event payloads',
         discriminator: {
+          propertyName: 'sourceType',
           mapping: {
             debit_status_changed: '#/components/schemas/DebitStatusChanged',
             onboarding_status_changed: '#/components/schemas/OnboardingStatusChanged',
@@ -6670,7 +6685,6 @@ const NotificationSchema = z
             payment_status_changed: '#/components/schemas/PaymentStatusChanged',
             ping: '#/components/schemas/Ping',
           },
-          propertyName: 'sourceType',
         },
         example: {
           createdAt: '2020-06-18T15:09:42Z',
@@ -9978,7 +9992,7 @@ const PostInstructFxStatusSchema = z
   })
   .openapi('PostInstructFxStatus')
 
-const QueryBatchResponseV3Schema = z
+const QueryBatchResponseV3Schema: z.ZodType<QueryBatchResponseV3Type> = z
   .object({
     failureCount: z
       .preprocess(
@@ -10146,7 +10160,7 @@ const QueryBatchResponseV3Schema = z
   })
   .openapi('QueryBatchResponseV3')
 
-const QueryBatchResponseV4Schema = z
+const QueryBatchResponseV4Schema: z.ZodType<QueryBatchResponseV4Type> = z
   .object({
     failureCount: z
       .preprocess(
@@ -11365,22 +11379,14 @@ export const postV1AuthenticateRoute = createRoute({
       description: 'Valid Authenication response',
       content: { 'application/json': { schema: AuthResponseSchema } },
       headers: z.object({
-        'Cache-Control': {
-          description: 'Ensure clients do not cache request',
-          required: true,
-          schema: z
-            .string()
-            .default('no-store')
-            .openapi({ description: 'Ensure clients do not cache request' }),
-        },
-        Pragma: {
-          description: 'Ensure clients do not cache request',
-          required: true,
-          schema: z
-            .string()
-            .default('no-cache')
-            .openapi({ description: 'Ensure clients do not cache request' }),
-        },
+        'Cache-Control': z
+          .string()
+          .default('no-store')
+          .openapi({ description: 'Ensure clients do not cache request' }),
+        Pragma: z
+          .string()
+          .default('no-cache')
+          .openapi({ description: 'Ensure clients do not cache request' }),
       }),
     },
   },
@@ -11972,17 +11978,14 @@ export const postV1PayorLinksRoute = createRoute({
     201: {
       description: 'HTTP Creeated',
       headers: z.object({
-        Location: {
-          description: 'URI to location of created resource',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URI to location of created resource',
-              param: { required: false },
-              example: 'http://example.com/resourcepath/123123123',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URI to location of created resource',
+            param: { required: false },
+            example: 'http://example.com/resourcepath/123123123',
+          }),
       }),
     },
     400: {
@@ -12074,18 +12077,15 @@ export const postV1PayorsPayorIdApplicationsRoute = createRoute({
     201: {
       description: 'Success',
       headers: z.object({
-        Location: {
-          description: 'location',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'location',
-              param: { required: false },
-              example:
-                '<p>HTTP/1.1 201 Created</p>\n<p>Location: https://api.sandbox.velopayments.com/v1/payors/2e144160-e87f-4976-b577-6087e683f419/applications/8701c174-b64a-476a-ab1a-4af27f09f0b8</p>\n',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'location',
+            param: { required: false },
+            example:
+              '<p>HTTP/1.1 201 Created</p>\n<p>Location: https://api.sandbox.velopayments.com/v1/payors/2e144160-e87f-4976-b577-6087e683f419/applications/8701c174-b64a-476a-ab1a-4af27f09f0b8</p>\n',
+          }),
       }),
     },
     400: {
@@ -12512,13 +12512,10 @@ export const postV1WebhooksRoute = createRoute({
     201: {
       description: 'Webhook Created',
       headers: z.object({
-        Location: {
-          description: 'Reference to Webhook object',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Reference to Webhook object', param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Reference to Webhook object', param: { required: false } }),
       }),
     },
     400: {
@@ -12897,25 +12894,18 @@ export const postV2FundingAccountsRoute = createRoute({
     202: {
       description: 'Funding Account Creation Request Accepted',
       headers: z.object({
-        Location: {
-          description: 'Reference to status object',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'Reference to status object', param: { required: false } }),
-        },
-        'Retry-After': {
-          description:
-            'How long the user agent should wait before making a follow-up request (seconds)',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'How long the user agent should wait before making a follow-up request (seconds)',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ description: 'Reference to status object', param: { required: false } }),
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'How long the user agent should wait before making a follow-up request (seconds)',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -16046,20 +16036,15 @@ export const postV3PayoutsRoute = createRoute({
     202: {
       description: 'Successful submission of the payout',
       headers: z.object({
-        Location: {
-          description: 'Reference to created payout',
-          example:
-            '<p>HTTP/1.1 202 Accepted</p>\n<p>Location: https://api.sandbox.velopayments.com/v3/payouts/04a3299d-afcf-42fb-a8b2-76097daf2b1b</p>\n',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({
-              description: 'Reference to created payout',
-              example:
-                '<p>HTTP/1.1 202 Accepted</p>\n<p>Location: https://api.sandbox.velopayments.com/v3/payouts/04a3299d-afcf-42fb-a8b2-76097daf2b1b</p>\n',
-              param: { required: false },
-            }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({
+            description: 'Reference to created payout',
+            example:
+              '<p>HTTP/1.1 202 Accepted</p>\n<p>Location: https://api.sandbox.velopayments.com/v3/payouts/04a3299d-afcf-42fb-a8b2-76097daf2b1b</p>\n',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -16797,18 +16782,15 @@ export const postV3SourceAccountsSourceAccountIdFundingRequestRoute = createRout
     202: {
       description: 'Request Accepted',
       headers: z.object({
-        Location: {
-          description: 'Reference to created Funding Request',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Reference to created Funding Request',
-              param: { required: false },
-              example:
-                'https://api.sandbox.velopayments.com/v1/fundings/8c1a8e1c-0147-4d8c-9f92-b696e1515750',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Reference to created Funding Request',
+            param: { required: false },
+            example:
+              'https://api.sandbox.velopayments.com/v1/fundings/8c1a8e1c-0147-4d8c-9f92-b696e1515750',
+          }),
       }),
     },
     400: {
@@ -17185,18 +17167,16 @@ export const postV4PayeesRoute = createRoute({
       description: 'HTTP Created. Body created only on CSV requests',
       content: { 'application/json': { schema: CreatePayeesCSVResponseV4Schema } },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description:
-                'A url pointing to the location of the batch. This can be used to get the status of the batch',
-              example:
-                'https://api.sandbox.velopayments.com/v4/payees/batch/dbe7df3a-6b75-4bcb-97c5-45d25f828267',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description:
+              'A url pointing to the location of the batch. This can be used to get the status of the batch',
+            example:
+              'https://api.sandbox.velopayments.com/v4/payees/batch/dbe7df3a-6b75-4bcb-97c5-45d25f828267',
+          }),
       }),
     },
     400: {

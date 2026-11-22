@@ -299,25 +299,79 @@ const MySqlConnectionProfileSchema = z
   })
   .openapi('MySqlConnectionProfile')
 
-type ConnectionProfileType = {
-  cloudsql?: z.infer<typeof CloudSqlConnectionProfileSchema>
-  createTime?: string
-  displayName?: string
-  error?: z.infer<typeof StatusSchema>
-  labels?: { [key: string]: string }
-  mysql?: z.infer<typeof MySqlConnectionProfileSchema>
-  name?: string
-  provider?: 'DATABASE_PROVIDER_UNSPECIFIED' | 'CLOUDSQL' | 'RDS'
-  state?:
-    | 'STATE_UNSPECIFIED'
-    | 'DRAFT'
-    | 'CREATING'
-    | 'READY'
-    | 'UPDATING'
-    | 'DELETING'
-    | 'DELETED'
-    | 'FAILED'
-  updateTime?: string
+const ConnectionProfileSchema = z
+  .object({
+    cloudsql: CloudSqlConnectionProfileSchema.exactOptional().openapi({
+      description: 'A CloudSQL database connection profile.',
+    }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The timestamp when the resource was created. A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. Example: "2014-10-02T15:01:23.045123456Z".',
+        readOnly: true,
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The connection profile display name.' }),
+    error: StatusSchema.exactOptional().openapi({
+      description: 'Output only. The error details in case of state FAILED.',
+      readOnly: true,
+    }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource labels for connection profile to use to annotate any related underlying resources such as Compute Engine VMs. An object containing a list of "key": "value" pairs. Example: `{ "name": "wrench", "mass": "1.3kg", "count": "3" }`.',
+      }),
+    mysql: MySqlConnectionProfileSchema.exactOptional().openapi({
+      description: 'A MySQL database connection profile.',
+    }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of this connection profile resource in the form of projects/{project}/locations/{location}/connectionProfiles/{connectionProfile}.',
+      }),
+    provider: z
+      .enum(['DATABASE_PROVIDER_UNSPECIFIED', 'CLOUDSQL', 'RDS'])
+      .exactOptional()
+      .openapi({ description: 'The database provider.' }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'DRAFT',
+        'CREATING',
+        'READY',
+        'UPDATING',
+        'DELETING',
+        'DELETED',
+        'FAILED',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'The current connection profile state (e.g. DRAFT, READY, or FAILED).',
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The timestamp when the resource was last updated. A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. Example: "2014-10-02T15:01:23.045123456Z".',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'A connection profile definition.', required: [] })
+  .openapi('ConnectionProfile')
+
+type ListConnectionProfilesResponseType = {
+  connectionProfiles?: z.infer<typeof ConnectionProfileSchema>[]
+  nextPageToken?: string
+  unreachable?: string[]
 }
 
 const AuditLogConfigSchema = z
@@ -425,81 +479,9 @@ const BindingSchema = z
   .openapi('Binding')
 
 const CancelOperationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request message for Operations.CancelOperation.' })
   .openapi('CancelOperationRequest')
-
-const ConnectionProfileSchema: z.ZodType<ConnectionProfileType> = z
-  .lazy(() =>
-    z
-      .object({
-        cloudsql: CloudSqlConnectionProfileSchema.exactOptional().openapi({
-          description: 'A CloudSQL database connection profile.',
-        }),
-        createTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The timestamp when the resource was created. A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. Example: "2014-10-02T15:01:23.045123456Z".',
-            readOnly: true,
-          }),
-        displayName: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The connection profile display name.' }),
-        error: StatusSchema.exactOptional().openapi({
-          description: 'Output only. The error details in case of state FAILED.',
-          readOnly: true,
-        }),
-        labels: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'The resource labels for connection profile to use to annotate any related underlying resources such as Compute Engine VMs. An object containing a list of "key": "value" pairs. Example: `{ "name": "wrench", "mass": "1.3kg", "count": "3" }`.',
-          }),
-        mysql: MySqlConnectionProfileSchema.exactOptional().openapi({
-          description: 'A MySQL database connection profile.',
-        }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The name of this connection profile resource in the form of projects/{project}/locations/{location}/connectionProfiles/{connectionProfile}.',
-          }),
-        provider: z
-          .enum(['DATABASE_PROVIDER_UNSPECIFIED', 'CLOUDSQL', 'RDS'])
-          .exactOptional()
-          .openapi({ description: 'The database provider.' }),
-        state: z
-          .enum([
-            'STATE_UNSPECIFIED',
-            'DRAFT',
-            'CREATING',
-            'READY',
-            'UPDATING',
-            'DELETING',
-            'DELETED',
-            'FAILED',
-          ])
-          .exactOptional()
-          .openapi({
-            description: 'The current connection profile state (e.g. DRAFT, READY, or FAILED).',
-          }),
-        updateTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The timestamp when the resource was last updated. A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. Example: "2014-10-02T15:01:23.045123456Z".',
-            readOnly: true,
-          }),
-      })
-      .openapi({ description: 'A connection profile definition.', required: [] }),
-  )
-  .openapi('ConnectionProfile')
 
 const DatabaseTypeSchema = z
   .object({
@@ -516,7 +498,7 @@ const DatabaseTypeSchema = z
   .openapi('DatabaseType')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -624,7 +606,7 @@ const GoogleCloudClouddmsV1beta1OperationMetadataSchema = z
   .openapi({ description: 'Represents the metadata of the long-running operation.', required: [] })
   .openapi('GoogleCloudClouddmsV1beta1OperationMetadata')
 
-const ListConnectionProfilesResponseSchema = z
+const ListConnectionProfilesResponseSchema: z.ZodType<ListConnectionProfilesResponseType> = z
   .object({
     connectionProfiles: z
       .array(ConnectionProfileSchema)
@@ -745,7 +727,7 @@ const ReverseSshConnectivitySchema = z
   .openapi('ReverseSshConnectivity')
 
 const StaticIpConnectivitySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "The source database will allow incoming connections from the destination database's public IP. You can retrieve the Cloud SQL instance's public IP from the Cloud SQL console or using Cloud SQL APIs. No additional configuration is required.",
@@ -1072,17 +1054,17 @@ const PolicySchema = z
   .openapi('Policy')
 
 const PromoteMigrationJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Request message for 'PromoteMigrationJob' request." })
   .openapi('PromoteMigrationJobRequest')
 
 const RestartMigrationJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Request message for 'RestartMigrationJob' request." })
   .openapi('RestartMigrationJobRequest')
 
 const ResumeMigrationJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Request message for 'ResumeMigrationJob' request." })
   .openapi('ResumeMigrationJobRequest')
 
@@ -1111,12 +1093,12 @@ const SshScriptSchema = z
   .openapi('SshScript')
 
 const StartMigrationJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Request message for 'StartMigrationJob' request." })
   .openapi('StartMigrationJobRequest')
 
 const StopMigrationJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Request message for 'StopMigrationJob' request." })
   .openapi('StopMigrationJobRequest')
 
@@ -1146,7 +1128,7 @@ const TestIamPermissionsResponseSchema = z
   .openapi('TestIamPermissionsResponse')
 
 const VerifyMigrationJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "Request message for 'VerifyMigrationJob' request." })
   .openapi('VerifyMigrationJobRequest')
 

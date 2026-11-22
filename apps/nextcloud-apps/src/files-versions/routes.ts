@@ -56,6 +56,7 @@ export const getIndexPhpAppsFilesVersionsPreviewRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 44 },
             required: false,
           },
+          default: 44,
         }),
       y: z
         .preprocess((val) => {
@@ -75,6 +76,7 @@ export const getIndexPhpAppsFilesVersionsPreviewRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 44 },
             required: false,
           },
+          default: 44,
         }),
       version: z
         .string()

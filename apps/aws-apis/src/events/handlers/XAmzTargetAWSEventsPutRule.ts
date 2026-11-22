@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSEventsPutRuleHandler = app.openapi(
   postXAmzTargetAWSEventsPutRuleRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

@@ -13,66 +13,13 @@ const DirectoryObjectSchema = z
     objectId: z.string().exactOptional().openapi({ description: 'The object ID.', readOnly: true }),
     objectType: z.string().openapi({ description: 'The object type.' }),
   })
-  .catchall(z.object({}))
+  .catchall(z.looseObject({}))
   .openapi({
     description: 'Represents an Azure Active Directory object.',
     discriminator: { propertyName: 'objectType' },
     required: ['objectType'],
   })
   .openapi('DirectoryObject')
-
-type ApplicationType = z.infer<typeof DirectoryObjectSchema>
-
-const ADGroupSchema = DirectoryObjectSchema.and(
-  z
-    .object({
-      displayName: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The display name of the group.' }),
-      mail: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The primary email address of the group.' }),
-      mailEnabled: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          description:
-            'Whether the group is mail-enabled. Must be false. This is because only pure security groups can be created using the Graph API.',
-        }),
-      mailNickname: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The mail alias for the group. ' }),
-      securityEnabled: z
-        .boolean()
-        .exactOptional()
-        .openapi({ description: 'Whether the group is security-enable.' }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description: 'Active Directory group information.',
-    'x-ms-discriminator-value': 'Group',
-  })
-  .openapi('ADGroup')
-
-const AddOwnerParametersSchema = z
-  .object({
-    url: z
-      .string()
-      .openapi({
-        description:
-          'A owner object URL, such as "https://graph.windows.net/0b1f9851-1bf0-433f-aec3-cb9272f093dc/directoryObjects/f260bbc4-c254-447b-94cf-293b5ec434dd", where "0b1f9851-1bf0-433f-aec3-cb9272f093dc" is the tenantId and "f260bbc4-c254-447b-94cf-293b5ec434dd" is the objectId of the owner (user, application, servicePrincipal, group) to be added.',
-      }),
-  })
-  .catchall(z.object({}))
-  .openapi({
-    description: 'Request parameters for adding a owner to an application.',
-    required: ['url'],
-  })
-  .openapi('AddOwnerParameters')
 
 const AppRoleSchema = z
   .object({
@@ -118,232 +65,6 @@ const AppRoleSchema = z
   })
   .openapi({ required: [] })
   .openapi('AppRole')
-
-const AppRoleAssignmentSchema = DirectoryObjectSchema.and(
-  z
-    .object({
-      id: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'The role id that was assigned to the principal. This role must be declared by the target resource application resourceId in its appRoles property.',
-        }),
-      principalDisplayName: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The display name of the principal that was granted the access.' }),
-      principalId: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'The unique identifier (objectId) for the principal being granted the access.',
-        }),
-      principalType: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'The type of principal. This can either be "User", "Group" or "ServicePrincipal".',
-        }),
-      resourceDisplayName: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'The display name of the resource to which the assignment was made.',
-        }),
-      resourceId: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'The unique identifier (objectId) for the target resource (service principal) for which the assignment was made.',
-        }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    description: 'AppRoleAssignment information.',
-    'x-ms-discriminator-value': 'AppRoleAssignment',
-  })
-  .openapi('AppRoleAssignment')
-
-const AppRoleAssignmentListResultSchema = z
-  .object({
-    'odata.nextLink': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The URL to get the next set of results.' }),
-    value: z
-      .array(AppRoleAssignmentSchema)
-      .exactOptional()
-      .openapi({ description: 'A collection of AppRoleAssignment.' }),
-  })
-  .openapi({ description: 'AppRoleAssignment list operation result.', required: [] })
-  .openapi('AppRoleAssignmentListResult')
-
-const ApplicationSchema: z.ZodType<ApplicationType> = z
-  .lazy(() =>
-    DirectoryObjectSchema.and(
-      z
-        .object({
-          allowGuestsSignIn: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description:
-                'A property on the application to indicate if the application accepts other IDPs or not or partially accepts.',
-            }),
-          allowPassthroughUsers: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description:
-                'Indicates that the application supports pass through users who have no presence in the resource tenant.',
-            }),
-          appId: z.string().exactOptional().openapi({ description: 'The application ID.' }),
-          appLogoUrl: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The url for the application logo image stored in a CDN.' }),
-          appPermissions: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({ description: 'The application permissions.' }),
-          appRoles: z
-            .array(AppRoleSchema)
-            .exactOptional()
-            .openapi({
-              description:
-                'The collection of application roles that an application may declare. These roles can be assigned to users, groups or service principals.',
-            }),
-          availableToOtherTenants: z
-            .boolean()
-            .exactOptional()
-            .openapi({ description: 'Whether the application is available to other tenants.' }),
-          displayName: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The display name of the application.' }),
-          errorUrl: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'A URL provided by the author of the application to report errors when using the application.',
-            }),
-          groupMembershipClaims: GroupMembershipClaimsSchema.exactOptional(),
-          homepage: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The home page of the application.' }),
-          identifierUris: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({ description: 'A collection of URIs for the application.' }),
-          informationalUrls: InformationalUrlSchema.exactOptional(),
-          isDeviceOnlyAuthSupported: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies whether this application supports device authentication without a user. The default is false.',
-            }),
-          keyCredentials: z
-            .array(KeyCredentialSchema)
-            .exactOptional()
-            .openapi({ description: 'A collection of KeyCredential objects.' }),
-          knownClientApplications: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({
-              description:
-                'Client applications that are tied to this resource application. Consent to any of the known client applications will result in implicit consent to the resource application through a combined consent dialog (showing the OAuth permission scopes required by the client and the resource).',
-            }),
-          logoutUrl: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'the url of the logout page' }),
-          oauth2AllowImplicitFlow: z
-            .boolean()
-            .exactOptional()
-            .openapi({ description: 'Whether to allow implicit grant flow for OAuth2' }),
-          oauth2AllowUrlPathMatching: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies whether during a token Request Azure AD will allow path matching of the redirect URI against the applications collection of replyURLs. The default is false.',
-            }),
-          oauth2Permissions: z
-            .array(OAuth2PermissionSchema)
-            .exactOptional()
-            .openapi({
-              description:
-                'The collection of OAuth 2.0 permission scopes that the web API (resource) application exposes to client applications. These permission scopes may be granted to client applications during consent.',
-            }),
-          oauth2RequirePostResponse: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies whether, as part of OAuth 2.0 token requests, Azure AD will allow POST requests, as opposed to GET requests. The default is false, which specifies that only GET requests will be allowed.',
-            }),
-          optionalClaims: OptionalClaimsSchema.exactOptional(),
-          orgRestrictions: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({ description: 'A list of tenants allowed to access application.' }),
-          passwordCredentials: z
-            .array(PasswordCredentialSchema)
-            .exactOptional()
-            .openapi({ description: 'A collection of PasswordCredential objects' }),
-          preAuthorizedApplications: z
-            .array(PreAuthorizedApplicationSchema)
-            .exactOptional()
-            .openapi({ description: 'list of pre-authorized applications.' }),
-          publicClient: z
-            .boolean()
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies whether this application is a public client (such as an installed application running on a mobile device). Default is false.',
-            }),
-          publisherDomain: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Reliable domain which can be used to identify an application.',
-            }),
-          replyUrls: z
-            .array(z.string())
-            .exactOptional()
-            .openapi({ description: 'A collection of reply URLs for the application.' }),
-          requiredResourceAccess: z
-            .array(RequiredResourceAccessSchema)
-            .exactOptional()
-            .openapi({
-              description:
-                'Specifies resources that this application requires access to and the set of OAuth permission scopes and application roles that it needs under each of those resources. This pre-configuration of required resource access drives the consent experience.',
-            }),
-          samlMetadataUrl: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The URL to the SAML metadata for the application.' }),
-          signInAudience: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Audience for signing in to the application (AzureADMyOrganization, AzureADAllOrganizations, AzureADAndMicrosoftAccounts).',
-            }),
-          wwwHomepage: z.string().exactOptional().openapi({ description: 'The primary Web page.' }),
-        })
-        .openapi({ required: [] }),
-    ).openapi({ description: 'Active Directory application information.' }),
-  )
-  .openapi('Application')
 
 const GroupMembershipClaimsSchema = z
   .enum(['None', 'SecurityGroup', 'All'])
@@ -392,8 +113,8 @@ const KeyCredentialSchema = z
       .openapi({ description: "Usage. Acceptable values are 'Verify' and 'Sign'." }),
     value: z.string().exactOptional().openapi({ description: 'Key value.' }),
   })
-  .catchall(z.object({}))
-  .openapi({ description: 'Active Directory Key Credential information.' })
+  .catchall(z.looseObject({}))
+  .openapi({ description: 'Active Directory Key Credential information.', required: [] })
   .openapi('KeyCredential')
 
 const OAuth2PermissionSchema = z
@@ -462,7 +183,7 @@ const OAuth2PermissionSchema = z
 
 const OptionalClaimSchema = z
   .object({
-    additionalProperties: z.object({}).exactOptional(),
+    additionalProperties: z.looseObject({}).exactOptional(),
     essential: z.boolean().exactOptional().openapi({ description: 'Is this a required claim.' }),
     name: z.string().exactOptional().openapi({ description: 'Claim name.' }),
     source: z.string().exactOptional().openapi({ description: 'Claim source.' }),
@@ -502,8 +223,8 @@ const PasswordCredentialSchema = z
       .openapi({ description: 'Start date.' }),
     value: z.string().exactOptional().openapi({ description: 'Key value.' }),
   })
-  .catchall(z.object({}))
-  .openapi({ description: 'Active Directory Password Credential information.' })
+  .catchall(z.looseObject({}))
+  .openapi({ description: 'Active Directory Password Credential information.', required: [] })
   .openapi('PasswordCredential')
 
 const PreAuthorizedApplicationExtensionSchema = z
@@ -576,7 +297,7 @@ const ResourceAccessSchema = z
           'Specifies whether the id property references an OAuth2Permission or an AppRole. Possible values are "scope" or "role".',
       }),
   })
-  .catchall(z.object({}))
+  .catchall(z.looseObject({}))
   .openapi({
     description:
       'Specifies an OAuth 2.0 permission scope or an app role that an application requires. The resourceAccess property of the RequiredResourceAccess type is a collection of ResourceAccess.',
@@ -600,13 +321,288 @@ const RequiredResourceAccessSchema = z
           'The unique identifier for the resource that the application requires access to. This should be equal to the appId declared on the target resource application.',
       }),
   })
-  .catchall(z.object({}))
+  .catchall(z.looseObject({}))
   .openapi({
     description:
       'Specifies the set of OAuth 2.0 permission scopes and app roles under the specified resource that an application requires access to. The specified OAuth 2.0 permission scopes may be requested by client applications (through the requiredResourceAccess collection) when calling a resource application. The requiredResourceAccess property of the Application entity is a collection of RequiredResourceAccess.',
     required: ['resourceAccess'],
   })
   .openapi('RequiredResourceAccess')
+
+const ApplicationSchema = DirectoryObjectSchema.and(
+  z
+    .object({
+      allowGuestsSignIn: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'A property on the application to indicate if the application accepts other IDPs or not or partially accepts.',
+        }),
+      allowPassthroughUsers: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates that the application supports pass through users who have no presence in the resource tenant.',
+        }),
+      appId: z.string().exactOptional().openapi({ description: 'The application ID.' }),
+      appLogoUrl: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The url for the application logo image stored in a CDN.' }),
+      appPermissions: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({ description: 'The application permissions.' }),
+      appRoles: z
+        .array(AppRoleSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The collection of application roles that an application may declare. These roles can be assigned to users, groups or service principals.',
+        }),
+      availableToOtherTenants: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'Whether the application is available to other tenants.' }),
+      displayName: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The display name of the application.' }),
+      errorUrl: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A URL provided by the author of the application to report errors when using the application.',
+        }),
+      groupMembershipClaims: GroupMembershipClaimsSchema.exactOptional(),
+      homepage: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The home page of the application.' }),
+      identifierUris: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({ description: 'A collection of URIs for the application.' }),
+      informationalUrls: InformationalUrlSchema.exactOptional(),
+      isDeviceOnlyAuthSupported: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Specifies whether this application supports device authentication without a user. The default is false.',
+        }),
+      keyCredentials: z
+        .array(KeyCredentialSchema)
+        .exactOptional()
+        .openapi({ description: 'A collection of KeyCredential objects.' }),
+      knownClientApplications: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Client applications that are tied to this resource application. Consent to any of the known client applications will result in implicit consent to the resource application through a combined consent dialog (showing the OAuth permission scopes required by the client and the resource).',
+        }),
+      logoutUrl: z.string().exactOptional().openapi({ description: 'the url of the logout page' }),
+      oauth2AllowImplicitFlow: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'Whether to allow implicit grant flow for OAuth2' }),
+      oauth2AllowUrlPathMatching: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Specifies whether during a token Request Azure AD will allow path matching of the redirect URI against the applications collection of replyURLs. The default is false.',
+        }),
+      oauth2Permissions: z
+        .array(OAuth2PermissionSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The collection of OAuth 2.0 permission scopes that the web API (resource) application exposes to client applications. These permission scopes may be granted to client applications during consent.',
+        }),
+      oauth2RequirePostResponse: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Specifies whether, as part of OAuth 2.0 token requests, Azure AD will allow POST requests, as opposed to GET requests. The default is false, which specifies that only GET requests will be allowed.',
+        }),
+      optionalClaims: OptionalClaimsSchema.exactOptional(),
+      orgRestrictions: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({ description: 'A list of tenants allowed to access application.' }),
+      passwordCredentials: z
+        .array(PasswordCredentialSchema)
+        .exactOptional()
+        .openapi({ description: 'A collection of PasswordCredential objects' }),
+      preAuthorizedApplications: z
+        .array(PreAuthorizedApplicationSchema)
+        .exactOptional()
+        .openapi({ description: 'list of pre-authorized applications.' }),
+      publicClient: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Specifies whether this application is a public client (such as an installed application running on a mobile device). Default is false.',
+        }),
+      publisherDomain: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Reliable domain which can be used to identify an application.' }),
+      replyUrls: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({ description: 'A collection of reply URLs for the application.' }),
+      requiredResourceAccess: z
+        .array(RequiredResourceAccessSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Specifies resources that this application requires access to and the set of OAuth permission scopes and application roles that it needs under each of those resources. This pre-configuration of required resource access drives the consent experience.',
+        }),
+      samlMetadataUrl: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The URL to the SAML metadata for the application.' }),
+      signInAudience: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Audience for signing in to the application (AzureADMyOrganization, AzureADAllOrganizations, AzureADAndMicrosoftAccounts).',
+        }),
+      wwwHomepage: z.string().exactOptional().openapi({ description: 'The primary Web page.' }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({ description: 'Active Directory application information.' })
+  .openapi('Application')
+
+type ApplicationListResultType = {
+  'odata.nextLink'?: string
+  value?: z.infer<typeof ApplicationSchema>[]
+}
+
+const ADGroupSchema = DirectoryObjectSchema.and(
+  z
+    .object({
+      displayName: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The display name of the group.' }),
+      mail: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The primary email address of the group.' }),
+      mailEnabled: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Whether the group is mail-enabled. Must be false. This is because only pure security groups can be created using the Graph API.',
+        }),
+      mailNickname: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The mail alias for the group. ' }),
+      securityEnabled: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'Whether the group is security-enable.' }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    description: 'Active Directory group information.',
+    'x-ms-discriminator-value': 'Group',
+  })
+  .openapi('ADGroup')
+
+const AddOwnerParametersSchema = z
+  .object({
+    url: z
+      .string()
+      .openapi({
+        description:
+          'A owner object URL, such as "https://graph.windows.net/0b1f9851-1bf0-433f-aec3-cb9272f093dc/directoryObjects/f260bbc4-c254-447b-94cf-293b5ec434dd", where "0b1f9851-1bf0-433f-aec3-cb9272f093dc" is the tenantId and "f260bbc4-c254-447b-94cf-293b5ec434dd" is the objectId of the owner (user, application, servicePrincipal, group) to be added.',
+      }),
+  })
+  .catchall(z.looseObject({}))
+  .openapi({
+    description: 'Request parameters for adding a owner to an application.',
+    required: ['url'],
+  })
+  .openapi('AddOwnerParameters')
+
+const AppRoleAssignmentSchema = DirectoryObjectSchema.and(
+  z
+    .object({
+      id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The role id that was assigned to the principal. This role must be declared by the target resource application resourceId in its appRoles property.',
+        }),
+      principalDisplayName: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The display name of the principal that was granted the access.' }),
+      principalId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The unique identifier (objectId) for the principal being granted the access.',
+        }),
+      principalType: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The type of principal. This can either be "User", "Group" or "ServicePrincipal".',
+        }),
+      resourceDisplayName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'The display name of the resource to which the assignment was made.',
+        }),
+      resourceId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The unique identifier (objectId) for the target resource (service principal) for which the assignment was made.',
+        }),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    description: 'AppRoleAssignment information.',
+    'x-ms-discriminator-value': 'AppRoleAssignment',
+  })
+  .openapi('AppRoleAssignment')
+
+const AppRoleAssignmentListResultSchema = z
+  .object({
+    'odata.nextLink': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL to get the next set of results.' }),
+    value: z
+      .array(AppRoleAssignmentSchema)
+      .exactOptional()
+      .openapi({ description: 'A collection of AppRoleAssignment.' }),
+  })
+  .openapi({ description: 'AppRoleAssignment list operation result.', required: [] })
+  .openapi('AppRoleAssignmentListResult')
 
 const ApplicationBaseSchema = z
   .object({
@@ -771,7 +767,7 @@ const ApplicationCreateParametersSchema = ApplicationBaseSchema.and(
   })
   .openapi('ApplicationCreateParameters')
 
-const ApplicationListResultSchema = z
+const ApplicationListResultSchema: z.ZodType<ApplicationListResultType> = z
   .object({
     'odata.nextLink': z
       .string()
@@ -812,7 +808,7 @@ const CheckGroupMembershipParametersSchema = z
           'The object ID of the contact, group, user, or service principal to check for membership in the specified group.',
       }),
   })
-  .catchall(z.object({}))
+  .catchall(z.looseObject({}))
   .openapi({
     description: 'Request parameters for IsMemberOf API call.',
     required: ['groupId', 'memberId'],
@@ -829,8 +825,8 @@ const CheckGroupMembershipResultSchema = z
           'True if the specified user, group, contact, or service principal has either direct or transitive membership in the specified group; otherwise, false.',
       }),
   })
-  .catchall(z.object({}))
-  .openapi({ description: 'Server response for IsMemberOf API call' })
+  .catchall(z.looseObject({}))
+  .openapi({ description: 'Server response for IsMemberOf API call', required: [] })
   .openapi('CheckGroupMembershipResult')
 
 const DirectoryObjectListResultSchema = z
@@ -863,7 +859,7 @@ const DomainSchema = z
       .openapi({ description: "if this domain's ownership is verified.", readOnly: true }),
     name: z.string().openapi({ description: 'the domain name.' }),
   })
-  .catchall(z.object({}))
+  .catchall(z.looseObject({}))
   .openapi({ description: 'Active Directory Domain information.', required: ['name'] })
   .openapi('Domain')
 
@@ -899,8 +895,8 @@ const GetObjectsParametersSchema = z
       .exactOptional()
       .openapi({ description: 'The requested object types.' }),
   })
-  .catchall(z.object({}))
-  .openapi({ description: 'Request parameters for the GetObjectsByObjectIds API.' })
+  .catchall(z.looseObject({}))
+  .openapi({ description: 'Request parameters for the GetObjectsByObjectIds API.', required: [] })
   .openapi('GetObjectsParameters')
 
 const OdataErrorSchema = z
@@ -925,7 +921,7 @@ const GroupAddMemberParametersSchema = z
           'A member object URL, such as "https://graph.windows.net/0b1f9851-1bf0-433f-aec3-cb9272f093dc/directoryObjects/f260bbc4-c254-447b-94cf-293b5ec434dd", where "0b1f9851-1bf0-433f-aec3-cb9272f093dc" is the tenantId and "f260bbc4-c254-447b-94cf-293b5ec434dd" is the objectId of the member (user, application, servicePrincipal, group) to be added.',
       }),
   })
-  .catchall(z.object({}))
+  .catchall(z.looseObject({}))
   .openapi({ description: 'Request parameters for adding a member to a group.', required: ['url'] })
   .openapi('GroupAddMemberParameters')
 
@@ -946,7 +942,7 @@ const GroupCreateParametersSchema = z
           'Whether the group is a security group. Must be true. This is because only pure security groups can be created using the Graph API.',
       }),
   })
-  .catchall(z.object({}))
+  .catchall(z.looseObject({}))
   .openapi({
     description: 'Request parameters for creating a new group.',
     required: ['displayName', 'mailEnabled', 'mailNickname', 'securityEnabled'],
@@ -962,7 +958,7 @@ const GroupGetMemberGroupsParametersSchema = z
           'If true, only membership in security-enabled groups should be checked. Otherwise, membership in all groups should be checked.',
       }),
   })
-  .catchall(z.object({}))
+  .catchall(z.looseObject({}))
   .openapi({
     description: 'Request parameters for GetMemberGroups API call.',
     required: ['securityEnabledOnly'],
@@ -1115,7 +1111,7 @@ const PasswordProfileSchema = z
       .openapi({ description: 'Whether to force a password change on next login.' }),
     password: z.string().openapi({ description: 'Password' }),
   })
-  .catchall(z.object({}))
+  .catchall(z.looseObject({}))
   .openapi({ description: 'The password profile associated with a user.', required: ['password'] })
   .openapi('PasswordProfile')
 
@@ -1344,10 +1340,11 @@ const SignInNameSchema = z
           "The sign-in used by the local account. Must be unique across the company/tenant. For example, 'johnc@example.com'.",
       }),
   })
-  .catchall(z.object({}))
+  .catchall(z.looseObject({}))
   .openapi({
     description:
       'Contains information about a sign-in name of a local account user in an Azure Active Directory B2C tenant.',
+    required: [],
   })
   .openapi('SignInName')
 
@@ -1444,7 +1441,8 @@ const UserBaseSchema = z
         'x-ms-enum': { modelAsString: true, name: 'UserType' },
       }),
   })
-  .catchall(z.object({}))
+  .catchall(z.looseObject({}))
+  .openapi({ required: [] })
   .openapi('UserBase')
 
 const UserCreateParametersSchema = UserBaseSchema.and(
@@ -1496,7 +1494,7 @@ const UserGetMemberGroupsParametersSchema = z
           'If true, only membership in security-enabled groups should be checked. Otherwise, membership in all groups should be checked.',
       }),
   })
-  .catchall(z.object({}))
+  .catchall(z.looseObject({}))
   .openapi({
     description: 'Request parameters for GetMemberGroups API call.',
     required: ['securityEnabledOnly'],

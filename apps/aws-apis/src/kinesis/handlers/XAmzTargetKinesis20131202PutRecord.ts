@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetKinesis20131202PutRecordHandler = app.openapi(
   postXAmzTargetKinesis20131202PutRecordRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

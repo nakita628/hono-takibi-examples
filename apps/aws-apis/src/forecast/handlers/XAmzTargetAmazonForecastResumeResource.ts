@@ -1,0 +1,11 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetAmazonForecastResumeResourceRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const XAmzTargetAmazonForecastResumeResourceHandler = app.openapi(
+  postXAmzTargetAmazonForecastResumeResourceRoute,
+  (c) => {
+    throw new Error('Not implemented')
+  },
+)

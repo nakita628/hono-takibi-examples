@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetSecretsmanagerUpdateSecretHandler = app.openapi(
   postXAmzTargetSecretsmanagerUpdateSecretRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

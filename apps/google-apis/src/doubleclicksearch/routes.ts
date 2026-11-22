@@ -248,7 +248,7 @@ const ConversionListSchema = z
   .openapi('ConversionList')
 
 const IdMappingFileSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'File returned to https://developers.google.com/search-ads/v2/reference/reports/getIdMappingFile.',

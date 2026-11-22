@@ -1,25 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const SnsArnSchema = z.string().min(0).max(1000).openapi('SnsArn')
-
-const ChatbotSnsConfigurationSetSchema = z
-  .array(SnsArnSchema)
-  .min(1)
-  .max(5)
-  .openapi('ChatbotSnsConfigurationSet')
-
-const EmptyChatChannelSchema = z
-  .object({})
-  .openapi({
-    description: 'Used to remove the chat channel from an incident record or response plan.',
-  })
-  .openapi('EmptyChatChannel')
-
-type ChatChannelType = {
-  chatbotSns?: z.infer<typeof ChatbotSnsConfigurationSetSchema> & { [key: string]: unknown }
-  empty?: z.infer<typeof EmptyChatChannelSchema> & { [key: string]: unknown }
-}
-
 const ArnSchema = z
   .string()
   .regex(/^arn:aws(-cn|-us-gov)?:[a-z0-9-]*:[a-z0-9-]*:([0-9]{12})?:.+$/)
@@ -29,9 +9,9 @@ const ArnSchema = z
 
 const CreateReplicationSetOutputSchema = z
   .object({
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the replication set. ' }),
-    ),
+    arn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the replication set. ',
+    }),
   })
   .openapi({ required: ['arn'] })
   .openapi('CreateReplicationSetOutput')
@@ -40,11 +20,9 @@ const SseKmsKeySchema = z.string().min(0).max(2048).openapi('SseKmsKey')
 
 const RegionMapInputValueSchema = z
   .object({
-    sseKmsKeyId: SseKmsKeySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The KMS key used to encrypt the data in your replication set.' }),
-    ).exactOptional(),
+    sseKmsKeyId: SseKmsKeySchema.exactOptional().openapi({
+      description: 'The KMS key used to encrypt the data in your replication set.',
+    }),
   })
   .openapi({
     description:
@@ -74,9 +52,7 @@ const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
 
 const CreateResponsePlanOutputSchema = z
   .object({
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the response plan.' }),
-    ),
+    arn: ArnSchema.openapi({ description: 'The Amazon Resource Name (ARN) of the response plan.' }),
   })
   .openapi({ required: ['arn'] })
   .openapi('CreateResponsePlanOutput')
@@ -98,14 +74,10 @@ const VariableTypeSchema = z
 
 const DynamicSsmParameterValueSchema = z
   .object({
-    variable: VariableTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Variable dynamic parameters. A parameter value is determined when an incident is created.',
-        }),
-    ).exactOptional(),
+    variable: VariableTypeSchema.exactOptional().openapi({
+      description:
+        'Variable dynamic parameters. A parameter value is determined when an incident is created.',
+    }),
   })
   .openapi({ description: 'The dynamic SSM parameter value.', required: [] })
   .openapi('DynamicSsmParameterValue')
@@ -147,43 +119,27 @@ const SsmTargetAccountSchema = z
 
 const SsmAutomationSchema = z
   .object({
-    documentName: SsmAutomationDocumentNameStringSchema.and(
-      z.any().openapi({ description: "The automation document's name." }),
-    ),
-    documentVersion: SsmAutomationDocumentVersionStringSchema.and(
-      z.any().openapi({ description: "The automation document's version to use when running." }),
-    ).exactOptional(),
-    dynamicParameters: DynamicSsmParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key-value pair to resolve dynamic parameter values when processing a Systems Manager Automation runbook.',
-        }),
-    ).exactOptional(),
-    parameters: SsmParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The key-value pair parameters to use when running the automation document.',
-        }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the role that the automation document will assume when running commands.',
-        }),
-    ),
-    targetAccount: SsmTargetAccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The account that the automation document will be run in. This can be in either the management account or an application account.',
-        }),
-    ).exactOptional(),
+    documentName: SsmAutomationDocumentNameStringSchema.openapi({
+      description: "The automation document's name.",
+    }),
+    documentVersion: SsmAutomationDocumentVersionStringSchema.exactOptional().openapi({
+      description: "The automation document's version to use when running.",
+    }),
+    dynamicParameters: DynamicSsmParametersSchema.exactOptional().openapi({
+      description:
+        'The key-value pair to resolve dynamic parameter values when processing a Systems Manager Automation runbook.',
+    }),
+    parameters: SsmParametersSchema.exactOptional().openapi({
+      description: 'The key-value pair parameters to use when running the automation document.',
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the role that the automation document will assume when running commands.',
+    }),
+    targetAccount: SsmTargetAccountSchema.exactOptional().openapi({
+      description:
+        'The account that the automation document will be run in. This can be in either the management account or an application account.',
+    }),
   })
   .openapi({
     required: ['documentName', 'roleArn'],
@@ -194,14 +150,10 @@ const SsmAutomationSchema = z
 
 const ActionSchema = z
   .object({
-    ssmAutomation: SsmAutomationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Systems Manager automation document to start as the runbook at the beginning of the incident.',
-        }),
-    ).exactOptional(),
+    ssmAutomation: SsmAutomationSchema.exactOptional().openapi({
+      description:
+        'The Systems Manager automation document to start as the runbook at the beginning of the incident.',
+    }),
   })
   .openapi({
     description:
@@ -209,6 +161,21 @@ const ActionSchema = z
     required: [],
   })
   .openapi('Action')
+
+const SnsArnSchema = z.string().min(0).max(1000).openapi('SnsArn')
+
+const ChatbotSnsConfigurationSetSchema = z
+  .array(SnsArnSchema)
+  .min(1)
+  .max(5)
+  .openapi('ChatbotSnsConfigurationSet')
+
+const EmptyChatChannelSchema = z
+  .looseObject({})
+  .openapi({
+    description: 'Used to remove the chat channel from an incident record or response plan.',
+  })
+  .openapi('EmptyChatChannel')
 
 const SsmContactsArnSchema = z
   .string()
@@ -229,9 +196,9 @@ const TagMapSchema = z
 
 const NotificationTargetItemSchema = z
   .object({
-    snsTopicArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the SNS topic.' }),
-    ).exactOptional(),
+    snsTopicArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the SNS topic.',
+    }),
   })
   .openapi({
     description: 'The SNS targets that are notified when updates are made to an incident.',
@@ -263,14 +230,10 @@ const PagerDutyIncidentConfigurationServiceIdStringSchema = z
 
 const PagerDutyIncidentConfigurationSchema = z
   .object({
-    serviceId: PagerDutyIncidentConfigurationServiceIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the PagerDuty service that the response plan associates with an incident when it launches.',
-        }),
-    ),
+    serviceId: PagerDutyIncidentConfigurationServiceIdStringSchema.openapi({
+      description:
+        'The ID of the PagerDuty service that the response plan associates with an incident when it launches.',
+    }),
   })
   .openapi({
     required: ['serviceId'],
@@ -286,24 +249,16 @@ const PagerDutyConfigurationSecretIdStringSchema = z
 
 const PagerDutyConfigurationSchema = z
   .object({
-    name: PagerDutyConfigurationNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the PagerDuty configuration.' }),
-    ),
-    pagerDutyIncidentConfiguration: PagerDutyIncidentConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details about the PagerDuty service associated with the configuration.',
-        }),
-    ),
-    secretId: PagerDutyConfigurationSecretIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services Secrets Manager secret that stores your PagerDuty key, either a General Access REST API Key or User Token REST API Key, and other user credentials.',
-        }),
-    ),
+    name: PagerDutyConfigurationNameStringSchema.openapi({
+      description: 'The name of the PagerDuty configuration.',
+    }),
+    pagerDutyIncidentConfiguration: PagerDutyIncidentConfigurationSchema.openapi({
+      description: 'Details about the PagerDuty service associated with the configuration.',
+    }),
+    secretId: PagerDutyConfigurationSecretIdStringSchema.openapi({
+      description:
+        'The ID of the Amazon Web Services Secrets Manager secret that stores your PagerDuty key, either a General Access REST API Key or User Token REST API Key, and other user credentials.',
+    }),
   })
   .openapi({
     required: ['name', 'pagerDutyIncidentConfiguration', 'secretId'],
@@ -313,14 +268,10 @@ const PagerDutyConfigurationSchema = z
 
 const IntegrationSchema = z
   .object({
-    pagerDutyConfiguration: PagerDutyConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the PagerDuty service where the response plan creates an incident.',
-        }),
-    ).exactOptional(),
+    pagerDutyConfiguration: PagerDutyConfigurationSchema.exactOptional().openapi({
+      description:
+        'Information about the PagerDuty service where the response plan creates an incident.',
+    }),
   })
   .openapi({
     description: 'Information about third-party services integrated into a response plan.',
@@ -334,14 +285,10 @@ const UUIDSchema = z.string().min(0).max(50).openapi('UUID')
 
 const CreateTimelineEventOutputSchema = z
   .object({
-    eventId: UUIDSchema.and(
-      z.any().openapi({ description: 'The ID of the event for easy reference later. ' }),
-    ),
-    incidentRecordArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the incident record that you added the event to.' }),
-    ),
+    eventId: UUIDSchema.openapi({ description: 'The ID of the event for easy reference later. ' }),
+    incidentRecordArn: ArnSchema.openapi({
+      description: 'The ARN of the incident record that you added the event to.',
+    }),
   })
   .openapi({ required: ['eventId', 'incidentRecordArn'] })
   .openapi('CreateTimelineEventOutput')
@@ -357,22 +304,14 @@ const GeneratedIdSchema = z
 
 const EventReferenceSchema = z
   .object({
-    relatedItemId: GeneratedIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of a <code>RelatedItem</code> referenced in a <code>TimelineEvent</code>.',
-        }),
-    ).exactOptional(),
-    resource: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an Amazon Web Services resource referenced in a <code>TimelineEvent</code>.',
-        }),
-    ).exactOptional(),
+    relatedItemId: GeneratedIdSchema.exactOptional().openapi({
+      description:
+        'The ID of a <code>RelatedItem</code> referenced in a <code>TimelineEvent</code>.',
+    }),
+    resource: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an Amazon Web Services resource referenced in a <code>TimelineEvent</code>.',
+    }),
   })
   .openapi({
     description:
@@ -381,21 +320,21 @@ const EventReferenceSchema = z
   })
   .openapi('EventReference')
 
-const DeleteIncidentRecordOutputSchema = z.object({}).openapi('DeleteIncidentRecordOutput')
+const DeleteIncidentRecordOutputSchema = z.looseObject({}).openapi('DeleteIncidentRecordOutput')
 
-const DeleteReplicationSetOutputSchema = z.object({}).openapi('DeleteReplicationSetOutput')
+const DeleteReplicationSetOutputSchema = z.looseObject({}).openapi('DeleteReplicationSetOutput')
 
-const DeleteResourcePolicyOutputSchema = z.object({}).openapi('DeleteResourcePolicyOutput')
+const DeleteResourcePolicyOutputSchema = z.looseObject({}).openapi('DeleteResourcePolicyOutput')
 
-const DeleteResponsePlanOutputSchema = z.object({}).openapi('DeleteResponsePlanOutput')
+const DeleteResponsePlanOutputSchema = z.looseObject({}).openapi('DeleteResponsePlanOutput')
 
-const DeleteTimelineEventOutputSchema = z.object({}).openapi('DeleteTimelineEventOutput')
+const DeleteTimelineEventOutputSchema = z.looseObject({}).openapi('DeleteTimelineEventOutput')
 
 const AutomationExecutionSchema = z
   .object({
-    ssmExecutionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the automation process.' }),
-    ).exactOptional(),
+    ssmExecutionArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the automation process.',
+    }),
   })
   .openapi({
     description:
@@ -410,32 +349,20 @@ const AutomationExecutionSetSchema = z
   .max(100)
   .openapi('AutomationExecutionSet')
 
-const ChatChannelSchema: z.ZodType<ChatChannelType> = z
-  .lazy(() =>
-    z
-      .object({
-        chatbotSns: ChatbotSnsConfigurationSetSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The Amazon SNS targets that Chatbot uses to notify the chat channel of updates to an incident. You can also make updates to the incident through the chat channel by using the Amazon SNS topics. ',
-            }),
-        ).exactOptional(),
-        empty: EmptyChatChannelSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Used to remove the chat channel from an incident record or response plan.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description: 'The Chatbot chat channel used for collaboration during an incident.',
-        required: [],
-      }),
-  )
+const ChatChannelSchema = z
+  .object({
+    chatbotSns: ChatbotSnsConfigurationSetSchema.exactOptional().openapi({
+      description:
+        'The Amazon SNS targets that Chatbot uses to notify the chat channel of updates to an incident. You can also make updates to the incident through the chat channel by using the Amazon SNS topics. ',
+    }),
+    empty: EmptyChatChannelSchema.exactOptional().openapi({
+      description: 'Used to remove the chat channel from an incident record or response plan.',
+    }),
+  })
+  .openapi({
+    description: 'The Chatbot chat channel used for collaboration during an incident.',
+    required: [],
+  })
   .openapi('ChatChannel')
 
 const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
@@ -446,28 +373,18 @@ const IncidentSourceSchema = z.string().min(0).max(50).openapi('IncidentSource')
 
 const IncidentRecordSourceSchema = z
   .object({
-    createdBy: ArnSchema.and(
-      z.any().openapi({ description: 'The principal that started the incident.' }),
-    ),
-    invokedBy: ServicePrincipalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The service principal that assumed the role specified in <code>createdBy</code>. If no service principal assumed the role this will be left blank.',
-        }),
-    ).exactOptional(),
-    resourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The resource that caused the incident to be created.' }),
-    ).exactOptional(),
-    source: IncidentSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The service that started the incident. This can be manually created from Incident Manager, automatically created using an Amazon CloudWatch alarm, or Amazon EventBridge event.',
-        }),
-    ),
+    createdBy: ArnSchema.openapi({ description: 'The principal that started the incident.' }),
+    invokedBy: ServicePrincipalSchema.exactOptional().openapi({
+      description:
+        'The service principal that assumed the role specified in <code>createdBy</code>. If no service principal assumed the role this will be left blank.',
+    }),
+    resourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The resource that caused the incident to be created.',
+    }),
+    source: IncidentSourceSchema.openapi({
+      description:
+        'The service that started the incident. This can be manually created from Incident Manager, automatically created using an Amazon CloudWatch alarm, or Amazon EventBridge event.',
+    }),
   })
   .openapi({
     required: ['createdBy', 'source'],
@@ -479,77 +396,47 @@ const IncidentRecordStatusSchema = z.enum(['OPEN', 'RESOLVED']).openapi('Inciden
 
 const IncidentRecordSchema = z
   .object({
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the incident record.' }),
-    ),
-    automationExecutions: AutomationExecutionSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The runbook, or automation document, that's run at the beginning of the incident.",
-        }),
-    ).exactOptional(),
-    chatChannel: ChatChannelSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The chat channel used for collaboration during an incident.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time that Incident Manager created the incident record.' }),
-    ),
-    dedupeString: DedupeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string Incident Manager uses to prevent duplicate incidents from being created by the same incident in the same account.',
-        }),
-    ),
-    impact: ImpactSchema.and(
-      z.any().openapi({ description: 'The impact of the incident on customers and applications.' }),
-    ),
-    incidentRecordSource: IncidentRecordSourceSchema.and(
-      z.any().openapi({ description: 'Details about the action that started the incident.' }),
-    ),
-    lastModifiedBy: ArnSchema.and(
-      z.any().openapi({ description: 'Who modified the incident most recently.' }),
-    ),
-    lastModifiedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time at which the incident was most recently modified.' }),
-    ),
-    notificationTargets: NotificationTargetSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon SNS targets that are notified when updates are made to an incident.',
-        }),
-    ).exactOptional(),
-    resolvedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time at which the incident was resolved. This appears as a timeline event.',
-        }),
-    ).exactOptional(),
-    status: IncidentRecordStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the incident.' }),
-    ),
-    summary: IncidentSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The summary of the incident. The summary is a brief synopsis of what occurred, what's currently happening, and context of the incident.",
-        }),
-    ).exactOptional(),
-    title: IncidentTitleSchema.and(z.any().openapi({ description: 'The title of the incident.' })),
+    arn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the incident record.',
+    }),
+    automationExecutions: AutomationExecutionSetSchema.exactOptional().openapi({
+      description:
+        "The runbook, or automation document, that's run at the beginning of the incident.",
+    }),
+    chatChannel: ChatChannelSchema.exactOptional().openapi({
+      description: 'The chat channel used for collaboration during an incident.',
+    }),
+    creationTime: TimestampSchema.openapi({
+      description: 'The time that Incident Manager created the incident record.',
+    }),
+    dedupeString: DedupeStringSchema.openapi({
+      description:
+        'The string Incident Manager uses to prevent duplicate incidents from being created by the same incident in the same account.',
+    }),
+    impact: ImpactSchema.openapi({
+      description: 'The impact of the incident on customers and applications.',
+    }),
+    incidentRecordSource: IncidentRecordSourceSchema.openapi({
+      description: 'Details about the action that started the incident.',
+    }),
+    lastModifiedBy: ArnSchema.openapi({ description: 'Who modified the incident most recently.' }),
+    lastModifiedTime: TimestampSchema.openapi({
+      description: 'The time at which the incident was most recently modified.',
+    }),
+    notificationTargets: NotificationTargetSetSchema.exactOptional().openapi({
+      description: 'The Amazon SNS targets that are notified when updates are made to an incident.',
+    }),
+    resolvedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the incident was resolved. This appears as a timeline event.',
+    }),
+    status: IncidentRecordStatusSchema.openapi({
+      description: 'The current status of the incident.',
+    }),
+    summary: IncidentSummarySchema.exactOptional().openapi({
+      description:
+        "The summary of the incident. The summary is a brief synopsis of what occurred, what's currently happening, and context of the incident.",
+    }),
+    title: IncidentTitleSchema.openapi({ description: 'The title of the incident.' }),
   })
   .openapi({
     required: [
@@ -569,9 +456,9 @@ const IncidentRecordSchema = z
 
 const GetIncidentRecordOutputSchema = z
   .object({
-    incidentRecord: IncidentRecordSchema.and(
-      z.any().openapi({ description: 'Details the structure of the incident record.' }),
-    ),
+    incidentRecord: IncidentRecordSchema.openapi({
+      description: 'Details the structure of the incident record.',
+    }),
   })
   .openapi({ required: ['incidentRecord'] })
   .openapi('GetIncidentRecordOutput')
@@ -586,36 +473,20 @@ const StringSchema = z.string().openapi('String')
 
 const RegionInfoSchema = z
   .object({
-    sseKmsKeyId: SseKmsKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the KMS key used to encrypt the data in this Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
-    status: RegionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status of the Amazon Web Services Region in the replication set.',
-        }),
-    ),
-    statusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information displayed about the status of the Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
-    statusUpdateDateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The most recent date and time that Incident Manager updated the Amazon Web Services Region's status.",
-        }),
-    ),
+    sseKmsKeyId: SseKmsKeySchema.exactOptional().openapi({
+      description:
+        'The ID of the KMS key used to encrypt the data in this Amazon Web Services Region.',
+    }),
+    status: RegionStatusSchema.openapi({
+      description: 'The status of the Amazon Web Services Region in the replication set.',
+    }),
+    statusMessage: StringSchema.exactOptional().openapi({
+      description: 'Information displayed about the status of the Amazon Web Services Region.',
+    }),
+    statusUpdateDateTime: TimestampSchema.openapi({
+      description:
+        "The most recent date and time that Incident Manager updated the Amazon Web Services Region's status.",
+    }),
   })
   .openapi({
     required: ['status', 'statusUpdateDateTime'],
@@ -631,45 +502,27 @@ const ReplicationSetStatusSchema = z
 
 const ReplicationSetSchema = z
   .object({
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the replication set.' }),
-    ).exactOptional(),
-    createdBy: ArnSchema.and(
-      z.any().openapi({ description: 'Details about who created the replication set.' }),
-    ),
-    createdTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the replication set was created.' }),
-    ),
-    deletionProtected: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Determines if the replication set deletion protection is enabled or not. If deletion protection is enabled, you can't delete the last Amazon Web Services Region in the replication set. ",
-        }),
-    ),
-    lastModifiedBy: ArnSchema.and(
-      z.any().openapi({ description: 'Who last modified the replication set.' }),
-    ),
-    lastModifiedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the replication set was last updated.' }),
-    ),
-    regionMap: RegionInfoMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The map between each Amazon Web Services Region in your replication set and the KMS key that's used to encrypt the data in that Region.",
-        }),
-    ),
-    status: ReplicationSetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The status of the replication set. If the replication set is still pending, you can't use Incident Manager functionality.",
-        }),
-    ),
+    arn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the replication set.',
+    }),
+    createdBy: ArnSchema.openapi({ description: 'Details about who created the replication set.' }),
+    createdTime: TimestampSchema.openapi({ description: 'When the replication set was created.' }),
+    deletionProtected: BooleanSchema.openapi({
+      description:
+        "Determines if the replication set deletion protection is enabled or not. If deletion protection is enabled, you can't delete the last Amazon Web Services Region in the replication set. ",
+    }),
+    lastModifiedBy: ArnSchema.openapi({ description: 'Who last modified the replication set.' }),
+    lastModifiedTime: TimestampSchema.openapi({
+      description: 'When the replication set was last updated.',
+    }),
+    regionMap: RegionInfoMapSchema.openapi({
+      description:
+        "The map between each Amazon Web Services Region in your replication set and the KMS key that's used to encrypt the data in that Region.",
+    }),
+    status: ReplicationSetStatusSchema.openapi({
+      description:
+        "The status of the replication set. If the replication set is still pending, you can't use Incident Manager functionality.",
+    }),
   })
   .openapi({
     required: [
@@ -688,9 +541,9 @@ const ReplicationSetSchema = z
 
 const GetReplicationSetOutputSchema = z
   .object({
-    replicationSet: ReplicationSetSchema.and(
-      z.any().openapi({ description: 'Details of the replication set.' }),
-    ),
+    replicationSet: ReplicationSetSchema.openapi({
+      description: 'Details of the replication set.',
+    }),
   })
   .openapi({ required: ['replicationSet'] })
   .openapi('GetReplicationSetOutput')
@@ -703,19 +556,13 @@ const PolicyIdSchema = z.string().min(0).max(256).openapi('PolicyId')
 
 const ResourcePolicySchema = z
   .object({
-    policyDocument: PolicySchema.and(
-      z.any().openapi({ description: 'The JSON blob that describes the policy.' }),
-    ),
-    policyId: PolicyIdSchema.and(
-      z.any().openapi({ description: 'The ID of the resource policy.' }),
-    ),
-    ramResourceShareRegion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services Region that policy allows resources to be used in.',
-        }),
-    ),
+    policyDocument: PolicySchema.openapi({
+      description: 'The JSON blob that describes the policy.',
+    }),
+    policyId: PolicyIdSchema.openapi({ description: 'The ID of the resource policy.' }),
+    ramResourceShareRegion: StringSchema.openapi({
+      description: 'The Amazon Web Services Region that policy allows resources to be used in.',
+    }),
   })
   .openapi({
     required: ['policyDocument', 'policyId', 'ramResourceShareRegion'],
@@ -732,18 +579,12 @@ const ResourcePolicyListSchema = z
 
 const GetResourcePoliciesOutputSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
-    resourcePolicies: ResourcePolicyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details about the resource policy attached to the response plan.',
-        }),
-    ),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
+    resourcePolicies: ResourcePolicyListSchema.openapi({
+      description: 'Details about the resource policy attached to the response plan.',
+    }),
   })
   .openapi({ required: ['resourcePolicies'] })
   .openapi('GetResourcePoliciesOutput')
@@ -756,46 +597,25 @@ const EngagementSetSchema = z.array(SsmContactsArnSchema).min(0).max(5).openapi(
 
 const IncidentTemplateSchema = z
   .object({
-    dedupeString: DedupeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used to stop Incident Manager from creating multiple incident records for the same incident. ',
-        }),
-    ).exactOptional(),
-    impact: ImpactSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The impact of the incident on your customers and applications. ',
-        }),
-    ),
-    incidentTags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to assign to the template. When the <code>StartIncident</code> API action is called, Incident Manager assigns the tags specified in the template to the incident.',
-        }),
-    ).exactOptional(),
-    notificationTargets: NotificationTargetSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon SNS targets that are notified when updates are made to an incident.',
-        }),
-    ).exactOptional(),
-    summary: IncidentSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The summary of the incident. The summary is a brief synopsis of what occurred, what's currently happening, and context.",
-        }),
-    ).exactOptional(),
-    title: IncidentTitleSchema.and(z.any().openapi({ description: 'The title of the incident. ' })),
+    dedupeString: DedupeStringSchema.exactOptional().openapi({
+      description:
+        'Used to stop Incident Manager from creating multiple incident records for the same incident. ',
+    }),
+    impact: ImpactSchema.openapi({
+      description: 'The impact of the incident on your customers and applications. ',
+    }),
+    incidentTags: TagMapSchema.exactOptional().openapi({
+      description:
+        'Tags to assign to the template. When the <code>StartIncident</code> API action is called, Incident Manager assigns the tags specified in the template to the incident.',
+    }),
+    notificationTargets: NotificationTargetSetSchema.exactOptional().openapi({
+      description: 'The Amazon SNS targets that are notified when updates are made to an incident.',
+    }),
+    summary: IncidentSummarySchema.exactOptional().openapi({
+      description:
+        "The summary of the incident. The summary is a brief synopsis of what occurred, what's currently happening, and context.",
+    }),
+    title: IncidentTitleSchema.openapi({ description: 'The title of the incident. ' }),
   })
   .openapi({
     required: ['impact', 'title'],
@@ -815,57 +635,30 @@ const ResponsePlanNameSchema = z
 
 const GetResponsePlanOutputSchema = z
   .object({
-    actions: ActionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The actions that this response plan takes at the beginning of the incident.',
-        }),
-    ).exactOptional(),
-    arn: ArnSchema.and(z.any().openapi({ description: 'The ARN of the response plan.' })),
-    chatChannel: ChatChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Chatbot chat channel used for collaboration during an incident.',
-        }),
-    ).exactOptional(),
-    displayName: ResponsePlanDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The long format name of the response plan. Can contain spaces.' }),
-    ).exactOptional(),
-    engagements: EngagementSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the contacts and escalation plans that the response plan engages during an incident.',
-        }),
-    ).exactOptional(),
-    incidentTemplate: IncidentTemplateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details used to create the incident when using this response plan.',
-        }),
-    ),
-    integrations: IntegrationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about third-party services integrated into the Incident Manager response plan.',
-        }),
-    ).exactOptional(),
-    name: ResponsePlanNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The short format name of the response plan. The name can't contain spaces.",
-        }),
-    ),
+    actions: ActionsListSchema.exactOptional().openapi({
+      description: 'The actions that this response plan takes at the beginning of the incident.',
+    }),
+    arn: ArnSchema.openapi({ description: 'The ARN of the response plan.' }),
+    chatChannel: ChatChannelSchema.exactOptional().openapi({
+      description: 'The Chatbot chat channel used for collaboration during an incident.',
+    }),
+    displayName: ResponsePlanDisplayNameSchema.exactOptional().openapi({
+      description: 'The long format name of the response plan. Can contain spaces.',
+    }),
+    engagements: EngagementSetSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the contacts and escalation plans that the response plan engages during an incident.',
+    }),
+    incidentTemplate: IncidentTemplateSchema.openapi({
+      description: 'Details used to create the incident when using this response plan.',
+    }),
+    integrations: IntegrationsSchema.exactOptional().openapi({
+      description:
+        'Information about third-party services integrated into the Incident Manager response plan.',
+    }),
+    name: ResponsePlanNameSchema.openapi({
+      description: "The short format name of the response plan. The name can't contain spaces.",
+    }),
   })
   .openapi({ required: ['arn', 'incidentTemplate', 'name'] })
   .openapi('GetResponsePlanOutput')
@@ -882,35 +675,22 @@ const TimelineEventTypeSchema = z.string().min(0).max(100).openapi('TimelineEven
 
 const TimelineEventSchema = z
   .object({
-    eventData: EventDataSchema.and(
-      z.any().openapi({ description: 'A short description of the event.' }),
-    ),
-    eventId: UUIDSchema.and(z.any().openapi({ description: 'The ID of the timeline event.' })),
-    eventReferences: EventReferenceListSchema.and(
-      z.any().openapi({ description: 'A list of references in a <code>TimelineEvent</code>.' }),
-    ).exactOptional(),
-    eventTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the event occurred.' }),
-    ),
-    eventType: TimelineEventTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of event that occurred. Currently Incident Manager supports only the <code>Custom Event</code> type.',
-        }),
-    ),
-    eventUpdatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the timeline event was last updated.' }),
-    ),
-    incidentRecordArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the incident that the event occurred during.',
-        }),
-    ),
+    eventData: EventDataSchema.openapi({ description: 'A short description of the event.' }),
+    eventId: UUIDSchema.openapi({ description: 'The ID of the timeline event.' }),
+    eventReferences: EventReferenceListSchema.exactOptional().openapi({
+      description: 'A list of references in a <code>TimelineEvent</code>.',
+    }),
+    eventTime: TimestampSchema.openapi({ description: 'The time that the event occurred.' }),
+    eventType: TimelineEventTypeSchema.openapi({
+      description:
+        'The type of event that occurred. Currently Incident Manager supports only the <code>Custom Event</code> type.',
+    }),
+    eventUpdatedTime: TimestampSchema.openapi({
+      description: 'The time that the timeline event was last updated.',
+    }),
+    incidentRecordArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the incident that the event occurred during.',
+    }),
   })
   .openapi({
     required: [
@@ -927,41 +707,31 @@ const TimelineEventSchema = z
 
 const GetTimelineEventOutputSchema = z
   .object({
-    event: TimelineEventSchema.and(
-      z.any().openapi({ description: 'Details about the timeline event.' }),
-    ),
+    event: TimelineEventSchema.openapi({ description: 'Details about the timeline event.' }),
   })
   .openapi({ required: ['event'] })
   .openapi('GetTimelineEventOutput')
 
 const IncidentRecordSummarySchema = z
   .object({
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the incident.' }),
-    ),
-    creationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the incident was created.' }),
-    ),
-    impact: ImpactSchema.and(
-      z.any().openapi({ description: 'Defines the impact to customers and applications.' }),
-    ),
-    incidentRecordSource: IncidentRecordSourceSchema.and(
-      z.any().openapi({ description: 'What caused Incident Manager to create the incident.' }),
-    ),
-    resolvedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the incident was resolved.' }),
-    ).exactOptional(),
-    status: IncidentRecordStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the incident.' }),
-    ),
-    title: IncidentTitleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The title of the incident. This value is either provided by the response plan or overwritten on creation.',
-        }),
-    ),
+    arn: ArnSchema.openapi({ description: 'The Amazon Resource Name (ARN) of the incident.' }),
+    creationTime: TimestampSchema.openapi({ description: 'The time the incident was created.' }),
+    impact: ImpactSchema.openapi({
+      description: 'Defines the impact to customers and applications.',
+    }),
+    incidentRecordSource: IncidentRecordSourceSchema.openapi({
+      description: 'What caused Incident Manager to create the incident.',
+    }),
+    resolvedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the incident was resolved.',
+    }),
+    status: IncidentRecordStatusSchema.openapi({
+      description: 'The current status of the incident.',
+    }),
+    title: IncidentTitleSchema.openapi({
+      description:
+        'The title of the incident. This value is either provided by the response plan or overwritten on creation.',
+    }),
   })
   .openapi({
     required: ['arn', 'creationTime', 'impact', 'incidentRecordSource', 'status', 'title'],
@@ -977,14 +747,12 @@ const IncidentRecordSummaryListSchema = z
 
 const ListIncidentRecordsOutputSchema = z
   .object({
-    incidentRecordSummaries: IncidentRecordSummaryListSchema.and(
-      z.any().openapi({ description: 'The details of each listed incident record.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
+    incidentRecordSummaries: IncidentRecordSummaryListSchema.openapi({
+      description: 'The details of each listed incident record.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
   })
   .openapi({ required: ['incidentRecordSummaries'] })
   .openapi('ListIncidentRecordsOutput')
@@ -999,12 +767,12 @@ const StringListSchema = z.array(StringListMemberStringSchema).min(0).max(100).o
 
 const AttributeValueListSchema = z
   .object({
-    integerValues: IntegerListSchema.and(
-      z.any().openapi({ description: 'The list of integer values that the filter matches.' }),
-    ).exactOptional(),
-    stringValues: StringListSchema.and(
-      z.any().openapi({ description: 'The list of string values that the filter matches.' }),
-    ).exactOptional(),
+    integerValues: IntegerListSchema.exactOptional().openapi({
+      description: 'The list of integer values that the filter matches.',
+    }),
+    stringValues: StringListSchema.exactOptional().openapi({
+      description: 'The list of string values that the filter matches.',
+    }),
   })
   .openapi({
     description: 'Use the AttributeValueList to filter by string or integer values.',
@@ -1014,15 +782,15 @@ const AttributeValueListSchema = z
 
 const ConditionSchema = z
   .object({
-    after: TimestampSchema.and(
-      z.any().openapi({ description: 'After the specified timestamp.' }),
-    ).exactOptional(),
-    before: TimestampSchema.and(
-      z.any().openapi({ description: 'Before the specified timestamp' }),
-    ).exactOptional(),
-    equals: AttributeValueListSchema.and(
-      z.any().openapi({ description: 'The value is equal to the provided string or integer. ' }),
-    ).exactOptional(),
+    after: TimestampSchema.exactOptional().openapi({
+      description: 'After the specified timestamp.',
+    }),
+    before: TimestampSchema.exactOptional().openapi({
+      description: 'Before the specified timestamp',
+    }),
+    equals: AttributeValueListSchema.exactOptional().openapi({
+      description: 'The value is equal to the provided string or integer. ',
+    }),
   })
   .openapi({
     description:
@@ -1035,17 +803,11 @@ const FilterKeyStringSchema = z.string().min(0).max(50).openapi('FilterKeyString
 
 const FilterSchema = z
   .object({
-    condition: ConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The condition accepts before or after a specified time, equal to a string, or equal to an integer.',
-        }),
-    ),
-    key: FilterKeyStringSchema.and(
-      z.any().openapi({ description: "The key that you're filtering on." }),
-    ),
+    condition: ConditionSchema.openapi({
+      description:
+        'The condition accepts before or after a specified time, equal to a string, or equal to an integer.',
+    }),
+    key: FilterKeyStringSchema.openapi({ description: "The key that you're filtering on." }),
   })
   .openapi({
     required: ['condition', 'key'],
@@ -1083,30 +845,18 @@ const PagerDutyIncidentDetailSecretIdStringSchema = z
 
 const PagerDutyIncidentDetailSchema = z
   .object({
-    autoResolve: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to resolve the PagerDuty incident when you resolve the associated Incident Manager incident.',
-        }),
-    ).exactOptional(),
-    id: PagerDutyIncidentDetailIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the incident associated with the PagerDuty service for the response plan.',
-        }),
-    ),
-    secretId: PagerDutyIncidentDetailSecretIdStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services Secrets Manager secret that stores your PagerDuty key, either a General Access REST API Key or User Token REST API Key, and other user credentials.',
-        }),
-    ).exactOptional(),
+    autoResolve: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to resolve the PagerDuty incident when you resolve the associated Incident Manager incident.',
+    }),
+    id: PagerDutyIncidentDetailIdStringSchema.openapi({
+      description:
+        'The ID of the incident associated with the PagerDuty service for the response plan.',
+    }),
+    secretId: PagerDutyIncidentDetailSecretIdStringSchema.exactOptional().openapi({
+      description:
+        'The ID of the Amazon Web Services Secrets Manager secret that stores your PagerDuty key, either a General Access REST API Key or User Token REST API Key, and other user credentials.',
+    }),
   })
   .openapi({
     required: ['id'],
@@ -1119,44 +869,27 @@ const UrlSchema = z.string().min(0).max(1000).openapi('Url')
 
 const ItemValueSchema = z
   .object({
-    arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the related item, if the related item is an Amazon resource.',
-        }),
-    ).exactOptional(),
-    metricDefinition: MetricDefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metric definition, if the related item is a metric in Amazon CloudWatch.',
-        }),
-    ).exactOptional(),
-    pagerDutyIncidentDetail: PagerDutyIncidentDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details about an incident that is associated with a PagerDuty incident.',
-        }),
-    ).exactOptional(),
-    url: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The URL, if the related item is a non-Amazon Web Services resource.',
-        }),
-    ).exactOptional(),
+    arn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the related item, if the related item is an Amazon resource.',
+    }),
+    metricDefinition: MetricDefinitionSchema.exactOptional().openapi({
+      description: 'The metric definition, if the related item is a metric in Amazon CloudWatch.',
+    }),
+    pagerDutyIncidentDetail: PagerDutyIncidentDetailSchema.exactOptional().openapi({
+      description: 'Details about an incident that is associated with a PagerDuty incident.',
+    }),
+    url: UrlSchema.exactOptional().openapi({
+      description: 'The URL, if the related item is a non-Amazon Web Services resource.',
+    }),
   })
   .openapi({ description: 'Describes a related item.', required: [] })
   .openapi('ItemValue')
 
 const ItemIdentifierSchema = z
   .object({
-    type: ItemTypeSchema.and(z.any().openapi({ description: 'The type of related item. ' })),
-    value: ItemValueSchema.and(z.any().openapi({ description: 'Details about the related item.' })),
+    type: ItemTypeSchema.openapi({ description: 'The type of related item. ' }),
+    value: ItemValueSchema.openapi({ description: 'Details about the related item.' }),
   })
   .openapi({ required: ['type', 'value'], description: 'Details and type of a related item.' })
   .openapi('ItemIdentifier')
@@ -1165,20 +898,14 @@ const RelatedItemTitleStringSchema = z.string().min(0).max(200).openapi('Related
 
 const RelatedItemSchema = z
   .object({
-    generatedId: GeneratedIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A unique ID for a <code>RelatedItem</code>.</p> <important> <p>Don't specify this parameter when you add a <code>RelatedItem</code> by using the <a>UpdateRelatedItems</a> API action.</p> </important>",
-        }),
-    ).exactOptional(),
-    identifier: ItemIdentifierSchema.and(
-      z.any().openapi({ description: 'Details about the related item.' }),
-    ),
-    title: RelatedItemTitleStringSchema.and(
-      z.any().openapi({ description: 'The title of the related item.' }),
-    ).exactOptional(),
+    generatedId: GeneratedIdSchema.exactOptional().openapi({
+      description:
+        "<p>A unique ID for a <code>RelatedItem</code>.</p> <important> <p>Don't specify this parameter when you add a <code>RelatedItem</code> by using the <a>UpdateRelatedItems</a> API action.</p> </important>",
+    }),
+    identifier: ItemIdentifierSchema.openapi({ description: 'Details about the related item.' }),
+    title: RelatedItemTitleStringSchema.exactOptional().openapi({
+      description: 'The title of the related item.',
+    }),
   })
   .openapi({
     required: ['identifier'],
@@ -1190,14 +917,12 @@ const RelatedItemListSchema = z.array(RelatedItemSchema).min(0).max(100).openapi
 
 const ListRelatedItemsOutputSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
-    relatedItems: RelatedItemListSchema.and(
-      z.any().openapi({ description: 'Details about each related item.' }),
-    ),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
+    relatedItems: RelatedItemListSchema.openapi({
+      description: 'Details about each related item.',
+    }),
   })
   .openapi({ required: ['relatedItems'] })
   .openapi('ListRelatedItemsOutput')
@@ -1206,35 +931,25 @@ const ReplicationSetArnListSchema = z.array(ArnSchema).openapi('ReplicationSetAr
 
 const ListReplicationSetsOutputSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
-    replicationSetArns: ReplicationSetArnListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the list replication set.' }),
-    ),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
+    replicationSetArns: ReplicationSetArnListSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the list replication set.',
+    }),
   })
   .openapi({ required: ['replicationSetArns'] })
   .openapi('ListReplicationSetsOutput')
 
 const ResponsePlanSummarySchema = z
   .object({
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the response plan.' }),
-    ),
-    displayName: ResponsePlanDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The human readable name of the response plan. This can include spaces.',
-        }),
-    ).exactOptional(),
-    name: ResponsePlanNameSchema.and(
-      z.any().openapi({ description: "The name of the response plan. This can't include spaces." }),
-    ),
+    arn: ArnSchema.openapi({ description: 'The Amazon Resource Name (ARN) of the response plan.' }),
+    displayName: ResponsePlanDisplayNameSchema.exactOptional().openapi({
+      description: 'The human readable name of the response plan. This can include spaces.',
+    }),
+    name: ResponsePlanNameSchema.openapi({
+      description: "The name of the response plan. This can't include spaces.",
+    }),
   })
   .openapi({
     required: ['arn', 'name'],
@@ -1250,54 +965,37 @@ const ResponsePlanSummaryListSchema = z
 
 const ListResponsePlansOutputSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
-    responsePlanSummaries: ResponsePlanSummaryListSchema.and(
-      z.any().openapi({ description: 'Details of each response plan.' }),
-    ),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
+    responsePlanSummaries: ResponsePlanSummaryListSchema.openapi({
+      description: 'Details of each response plan.',
+    }),
   })
   .openapi({ required: ['responsePlanSummaries'] })
   .openapi('ListResponsePlansOutput')
 
 const ListTagsForResourceResponseSchema = z
-  .object({
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'A list of tags for the response plan.' }),
-    ),
-  })
+  .object({ tags: TagMapSchema.openapi({ description: 'A list of tags for the response plan.' }) })
   .openapi({ required: ['tags'] })
   .openapi('ListTagsForResourceResponse')
 
 const EventSummarySchema = z
   .object({
-    eventId: UUIDSchema.and(z.any().openapi({ description: 'The timeline event ID.' })),
-    eventReferences: EventReferenceListSchema.and(
-      z.any().openapi({ description: 'A list of references in a <code>TimelineEvent</code>.' }),
-    ).exactOptional(),
-    eventTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the event occurred.' }),
-    ),
-    eventType: TimelineEventTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of event. The timeline event must be <code>Custom Event</code>.',
-        }),
-    ),
-    eventUpdatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the timeline event was last updated.' }),
-    ),
-    incidentRecordArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the incident that the event happened during.',
-        }),
-    ),
+    eventId: UUIDSchema.openapi({ description: 'The timeline event ID.' }),
+    eventReferences: EventReferenceListSchema.exactOptional().openapi({
+      description: 'A list of references in a <code>TimelineEvent</code>.',
+    }),
+    eventTime: TimestampSchema.openapi({ description: 'The time that the event occurred.' }),
+    eventType: TimelineEventTypeSchema.openapi({
+      description: 'The type of event. The timeline event must be <code>Custom Event</code>.',
+    }),
+    eventUpdatedTime: TimestampSchema.openapi({
+      description: 'The time that the timeline event was last updated.',
+    }),
+    incidentRecordArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the incident that the event happened during.',
+    }),
   })
   .openapi({
     required: ['eventId', 'eventTime', 'eventType', 'eventUpdatedTime', 'incidentRecordArn'],
@@ -1313,43 +1011,35 @@ const EventSummaryListSchema = z
 
 const ListTimelineEventsOutputSchema = z
   .object({
-    eventSummaries: EventSummaryListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Details about each event that occurred during the incident.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
+    eventSummaries: EventSummaryListSchema.openapi({
+      description: 'Details about each event that occurred during the incident.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
   })
   .openapi({ required: ['eventSummaries'] })
   .openapi('ListTimelineEventsOutput')
 
 const PutResourcePolicyOutputSchema = z
-  .object({
-    policyId: PolicyIdSchema.and(
-      z.any().openapi({ description: 'The ID of the resource policy.' }),
-    ),
-  })
+  .object({ policyId: PolicyIdSchema.openapi({ description: 'The ID of the resource policy.' }) })
   .openapi({ required: ['policyId'] })
   .openapi('PutResourcePolicyOutput')
 
 const StartIncidentOutputSchema = z
   .object({
-    incidentRecordArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the newly created incident record.' }),
-    ),
+    incidentRecordArn: ArnSchema.openapi({
+      description: 'The ARN of the newly created incident record.',
+    }),
   })
   .openapi({ required: ['incidentRecordArn'] })
   .openapi('StartIncidentOutput')
 
 const RawDataSchema = z.string().min(0).max(10000).openapi('RawData')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z
   .string()
@@ -1358,28 +1048,26 @@ const TagKeySchema = z
   .max(128)
   .openapi('TagKey')
 
-const UpdateDeletionProtectionOutputSchema = z.object({}).openapi('UpdateDeletionProtectionOutput')
+const UpdateDeletionProtectionOutputSchema = z
+  .looseObject({})
+  .openapi('UpdateDeletionProtectionOutput')
 
-const UpdateIncidentRecordOutputSchema = z.object({}).openapi('UpdateIncidentRecordOutput')
+const UpdateIncidentRecordOutputSchema = z.looseObject({}).openapi('UpdateIncidentRecordOutput')
 
-const UpdateRelatedItemsOutputSchema = z.object({}).openapi('UpdateRelatedItemsOutput')
+const UpdateRelatedItemsOutputSchema = z.looseObject({}).openapi('UpdateRelatedItemsOutput')
 
-const UpdateReplicationSetOutputSchema = z.object({}).openapi('UpdateReplicationSetOutput')
+const UpdateReplicationSetOutputSchema = z.looseObject({}).openapi('UpdateReplicationSetOutput')
 
 const RegionNameSchema = z.string().min(0).max(20).openapi('RegionName')
 
 const AddRegionActionSchema = z
   .object({
-    regionName: RegionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services Region name to add to the replication set.',
-        }),
-    ),
-    sseKmsKeyId: SseKmsKeySchema.and(
-      z.any().openapi({ description: 'The KMS key ID to use to encrypt your replication set.' }),
-    ).exactOptional(),
+    regionName: RegionNameSchema.openapi({
+      description: 'The Amazon Web Services Region name to add to the replication set.',
+    }),
+    sseKmsKeyId: SseKmsKeySchema.exactOptional().openapi({
+      description: 'The KMS key ID to use to encrypt your replication set.',
+    }),
   })
   .openapi({
     required: ['regionName'],
@@ -1390,14 +1078,10 @@ const AddRegionActionSchema = z
 
 const DeleteRegionActionSchema = z
   .object({
-    regionName: RegionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the Amazon Web Services Region you're deleting from the replication set.",
-        }),
-    ),
+    regionName: RegionNameSchema.openapi({
+      description:
+        "The name of the Amazon Web Services Region you're deleting from the replication set.",
+    }),
   })
   .openapi({
     required: ['regionName'],
@@ -1408,29 +1092,21 @@ const DeleteRegionActionSchema = z
 
 const UpdateReplicationSetActionSchema = z
   .object({
-    addRegionAction: AddRegionActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Details about the Amazon Web Services Region that you're adding to the replication set.",
-        }),
-    ).exactOptional(),
-    deleteRegionAction: DeleteRegionActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Details about the Amazon Web Services Region that you're deleting to the replication set.",
-        }),
-    ).exactOptional(),
+    addRegionAction: AddRegionActionSchema.exactOptional().openapi({
+      description:
+        "Details about the Amazon Web Services Region that you're adding to the replication set.",
+    }),
+    deleteRegionAction: DeleteRegionActionSchema.exactOptional().openapi({
+      description:
+        "Details about the Amazon Web Services Region that you're deleting to the replication set.",
+    }),
   })
   .openapi({ description: 'Details used when updating the replication set.', required: [] })
   .openapi('UpdateReplicationSetAction')
 
-const UpdateResponsePlanOutputSchema = z.object({}).openapi('UpdateResponsePlanOutput')
+const UpdateResponsePlanOutputSchema = z.looseObject({}).openapi('UpdateResponsePlanOutput')
 
-const UpdateTimelineEventOutputSchema = z.object({}).openapi('UpdateTimelineEventOutput')
+const UpdateTimelineEventOutputSchema = z.looseObject({}).openapi('UpdateTimelineEventOutput')
 
 const ClientTokenSchema = z.string().min(0).max(128).openapi('ClientToken')
 
@@ -1442,136 +1118,76 @@ const RegionMapInputSchema = z
 
 const CreateReplicationSetInputSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that ensures that the operation is called only once with the specified details.',
-        }),
-    ).exactOptional(),
-    regions: RegionMapInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Regions that Incident Manager replicates your data to. You can have up to three Regions in your replication set.',
-        }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'A list of tags to add to the replication set.' }),
-    ).exactOptional(),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A token that ensures that the operation is called only once with the specified details.',
+    }),
+    regions: RegionMapInputSchema.openapi({
+      description:
+        'The Regions that Incident Manager replicates your data to. You can have up to three Regions in your replication set.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'A list of tags to add to the replication set.',
+    }),
   })
   .openapi({ required: ['regions'], title: 'CreateReplicationSetInput' })
   .openapi('CreateReplicationSetInput')
 
 const CreateResponsePlanInputSchema = z
   .object({
-    actions: ActionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The actions that the response plan starts at the beginning of an incident.',
-        }),
-    ).exactOptional(),
-    chatChannel: ChatChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Chatbot chat channel used for collaboration during an incident.',
-        }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token ensuring that the operation is called only once with the specified details.',
-        }),
-    ).exactOptional(),
-    displayName: ResponsePlanDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The long format of the response plan name. This field can contain spaces.',
-        }),
-    ).exactOptional(),
-    engagements: EngagementSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the contacts and escalation plans that the response plan engages during an incident.',
-        }),
-    ).exactOptional(),
-    incidentTemplate: IncidentTemplateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details used to create an incident when using this response plan.',
-        }),
-    ),
-    integrations: IntegrationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about third-party services integrated into the response plan.',
-        }),
-    ).exactOptional(),
-    name: ResponsePlanNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The short format name of the response plan. Can't include spaces.",
-        }),
-    ),
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'A list of tags that you are adding to the response plan.' }),
-    ).exactOptional(),
+    actions: ActionsListSchema.exactOptional().openapi({
+      description: 'The actions that the response plan starts at the beginning of an incident.',
+    }),
+    chatChannel: ChatChannelSchema.exactOptional().openapi({
+      description: 'The Chatbot chat channel used for collaboration during an incident.',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A token ensuring that the operation is called only once with the specified details.',
+    }),
+    displayName: ResponsePlanDisplayNameSchema.exactOptional().openapi({
+      description: 'The long format of the response plan name. This field can contain spaces.',
+    }),
+    engagements: EngagementSetSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the contacts and escalation plans that the response plan engages during an incident.',
+    }),
+    incidentTemplate: IncidentTemplateSchema.openapi({
+      description: 'Details used to create an incident when using this response plan.',
+    }),
+    integrations: IntegrationsSchema.exactOptional().openapi({
+      description: 'Information about third-party services integrated into the response plan.',
+    }),
+    name: ResponsePlanNameSchema.openapi({
+      description: "The short format name of the response plan. Can't include spaces.",
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'A list of tags that you are adding to the response plan.',
+    }),
   })
   .openapi({ required: ['incidentTemplate', 'name'], title: 'CreateResponsePlanInput' })
   .openapi('CreateResponsePlanInput')
 
 const CreateTimelineEventInputSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that ensures that a client calls the action only once with the specified details.',
-        }),
-    ).exactOptional(),
-    eventData: EventDataSchema.and(
-      z.any().openapi({ description: 'A short description of the event.' }),
-    ),
-    eventReferences: EventReferenceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Adds one or more references to the <code>TimelineEvent</code>. A reference is an Amazon Web Services resource involved or associated with the incident. To specify a reference, enter its Amazon Resource Name (ARN). You can also specify a related item associated with a resource. For example, to specify an Amazon DynamoDB (DynamoDB) table as a resource, use the table's ARN. You can also specify an Amazon CloudWatch metric associated with the DynamoDB table as a related item.",
-        }),
-    ).exactOptional(),
-    eventTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the event occurred.' }),
-    ),
-    eventType: TimelineEventTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of event. You can create timeline events of type <code>Custom Event</code>.',
-        }),
-    ),
-    incidentRecordArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the incident record that the action adds the incident to.',
-        }),
-    ),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A token that ensures that a client calls the action only once with the specified details.',
+    }),
+    eventData: EventDataSchema.openapi({ description: 'A short description of the event.' }),
+    eventReferences: EventReferenceListSchema.exactOptional().openapi({
+      description:
+        "Adds one or more references to the <code>TimelineEvent</code>. A reference is an Amazon Web Services resource involved or associated with the incident. To specify a reference, enter its Amazon Resource Name (ARN). You can also specify a related item associated with a resource. For example, to specify an Amazon DynamoDB (DynamoDB) table as a resource, use the table's ARN. You can also specify an Amazon CloudWatch metric associated with the DynamoDB table as a related item.",
+    }),
+    eventTime: TimestampSchema.openapi({ description: 'The time that the event occurred.' }),
+    eventType: TimelineEventTypeSchema.openapi({
+      description:
+        'The type of event. You can create timeline events of type <code>Custom Event</code>.',
+    }),
+    incidentRecordArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the incident record that the action adds the incident to.',
+    }),
   })
   .openapi({
     required: ['eventData', 'eventTime', 'eventType', 'incidentRecordArn'],
@@ -1581,66 +1197,48 @@ const CreateTimelineEventInputSchema = z
 
 const DeleteIncidentRecordInputSchema = z
   .object({
-    arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the incident record you are deleting.',
-        }),
-    ),
+    arn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the incident record you are deleting.',
+    }),
   })
   .openapi({ required: ['arn'], title: 'DeleteIncidentRecordInput' })
   .openapi('DeleteIncidentRecordInput')
 
 const DeleteReplicationSetInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteReplicationSetInput' })
   .openapi('DeleteReplicationSetInput')
 
 const DeleteResourcePolicyInputSchema = z
   .object({
-    policyId: PolicyIdSchema.and(
-      z.any().openapi({ description: "The ID of the resource policy you're deleting." }),
-    ),
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of the resource you're deleting the policy from.",
-        }),
-    ),
+    policyId: PolicyIdSchema.openapi({
+      description: "The ID of the resource policy you're deleting.",
+    }),
+    resourceArn: ArnSchema.openapi({
+      description:
+        "The Amazon Resource Name (ARN) of the resource you're deleting the policy from.",
+    }),
   })
   .openapi({ required: ['policyId', 'resourceArn'], title: 'DeleteResourcePolicyInput' })
   .openapi('DeleteResourcePolicyInput')
 
 const DeleteResponsePlanInputSchema = z
   .object({
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the response plan.' }),
-    ),
+    arn: ArnSchema.openapi({ description: 'The Amazon Resource Name (ARN) of the response plan.' }),
   })
   .openapi({ required: ['arn'], title: 'DeleteResponsePlanInput' })
   .openapi('DeleteResponsePlanInput')
 
 const DeleteTimelineEventInputSchema = z
   .object({
-    eventId: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the event to update. You can use <code>ListTimelineEvents</code> to find an event's ID.",
-        }),
-    ),
-    incidentRecordArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the incident that includes the timeline event.',
-        }),
-    ),
+    eventId: UUIDSchema.openapi({
+      description:
+        "The ID of the event to update. You can use <code>ListTimelineEvents</code> to find an event's ID.",
+    }),
+    incidentRecordArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the incident that includes the timeline event.',
+    }),
   })
   .openapi({ required: ['eventId', 'incidentRecordArn'], title: 'DeleteTimelineEventInput' })
   .openapi('DeleteTimelineEventInput')
@@ -1654,12 +1252,12 @@ const DynamicSsmParametersKeyStringSchema = z
 const FilterListSchema = z.array(FilterSchema).min(0).max(5).openapi('FilterList')
 
 const GetIncidentRecordInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetIncidentRecordInput' })
   .openapi('GetIncidentRecordInput')
 
 const GetReplicationSetInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetReplicationSetInput' })
   .openapi('GetReplicationSetInput')
 
@@ -1667,107 +1265,84 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const GetResourcePoliciesInputSchema = z
   .object({
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of resource policies to display for each page of results.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of resource policies to display for each page of results.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
   })
   .openapi({ title: 'GetResourcePoliciesInput', required: [] })
   .openapi('GetResourcePoliciesInput')
 
 const GetResponsePlanInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetResponsePlanInput' })
   .openapi('GetResponsePlanInput')
 
 const GetTimelineEventInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetTimelineEventInput' })
   .openapi('GetTimelineEventInput')
 
 const ListIncidentRecordsInputSchema = z
   .object({
-    filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Filters the list of incident records you want to search through. You can filter on the following keys:</p> <ul> <li> <p> <code>creationTime</code> </p> </li> <li> <p> <code>impact</code> </p> </li> <li> <p> <code>status</code> </p> </li> <li> <p> <code>createdBy</code> </p> </li> </ul> <p>Note the following when when you use Filters:</p> <ul> <li> <p>If you don't specify a Filter, the response includes all incident records.</p> </li> <li> <p>If you specify more than one filter in a single request, the response returns incident records that match all filters.</p> </li> <li> <p>If you specify a filter with more than one value, the response returns incident records that match any of the values provided.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results per page.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
+    filters: FilterListSchema.exactOptional().openapi({
+      description:
+        "<p>Filters the list of incident records you want to search through. You can filter on the following keys:</p> <ul> <li> <p> <code>creationTime</code> </p> </li> <li> <p> <code>impact</code> </p> </li> <li> <p> <code>status</code> </p> </li> <li> <p> <code>createdBy</code> </p> </li> </ul> <p>Note the following when when you use Filters:</p> <ul> <li> <p>If you don't specify a Filter, the response includes all incident records.</p> </li> <li> <p>If you specify more than one filter in a single request, the response returns incident records that match all filters.</p> </li> <li> <p>If you specify a filter with more than one value, the response returns incident records that match any of the values provided.</p> </li> </ul>",
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results per page.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
   })
   .openapi({ title: 'ListIncidentRecordsInput', required: [] })
   .openapi('ListIncidentRecordsInput')
 
 const ListRelatedItemsInputSchema = z
   .object({
-    incidentRecordArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the incident record containing the listed related items.',
-        }),
-    ),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of related items per page.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
+    incidentRecordArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the incident record containing the listed related items.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of related items per page.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
   })
   .openapi({ required: ['incidentRecordArn'], title: 'ListRelatedItemsInput' })
   .openapi('ListRelatedItemsInput')
 
 const ListReplicationSetsInputSchema = z
   .object({
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results per page. ' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results per page. ',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
   })
   .openapi({ title: 'ListReplicationSetsInput', required: [] })
   .openapi('ListReplicationSetsInput')
 
 const ListResponsePlansInputSchema = z
   .object({
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of response plans per page.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of response plans per page.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
   })
   .openapi({ title: 'ListResponsePlansInput', required: [] })
   .openapi('ListResponsePlansInput')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -1777,68 +1352,50 @@ const SortOrderSchema = z.enum(['ASCENDING', 'DESCENDING']).openapi('SortOrder')
 
 const ListTimelineEventsInputSchema = z
   .object({
-    filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Filters the timeline events based on the provided conditional values. You can filter timeline events with the following keys:</p> <ul> <li> <p> <code>eventTime</code> </p> </li> <li> <p> <code>eventType</code> </p> </li> </ul> <p>Note the following when deciding how to use Filters:</p> <ul> <li> <p>If you don't specify a Filter, the response includes all timeline events.</p> </li> <li> <p>If you specify more than one filter in a single request, the response returns timeline events that match all filters.</p> </li> <li> <p>If you specify a filter with more than one value, the response returns timeline events that match any of the values provided.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    incidentRecordArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the incident that includes the timeline event.',
-        }),
-    ),
-    maxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results per page.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
-    sortBy: TimelineEventSortSchema.and(
-      z.any().openapi({ description: 'Sort timeline events by the specified key value pair.' }),
-    ).exactOptional(),
-    sortOrder: SortOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sorts the order of timeline events by the value specified in the <code>sortBy</code> field.',
-        }),
-    ).exactOptional(),
+    filters: FilterListSchema.exactOptional().openapi({
+      description:
+        "<p>Filters the timeline events based on the provided conditional values. You can filter timeline events with the following keys:</p> <ul> <li> <p> <code>eventTime</code> </p> </li> <li> <p> <code>eventType</code> </p> </li> </ul> <p>Note the following when deciding how to use Filters:</p> <ul> <li> <p>If you don't specify a Filter, the response includes all timeline events.</p> </li> <li> <p>If you specify more than one filter in a single request, the response returns timeline events that match all filters.</p> </li> <li> <p>If you specify a filter with more than one value, the response returns timeline events that match any of the values provided.</p> </li> </ul>",
+    }),
+    incidentRecordArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the incident that includes the timeline event.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results per page.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
+    sortBy: TimelineEventSortSchema.exactOptional().openapi({
+      description: 'Sort timeline events by the specified key value pair.',
+    }),
+    sortOrder: SortOrderSchema.exactOptional().openapi({
+      description:
+        'Sorts the order of timeline events by the value specified in the <code>sortBy</code> field.',
+    }),
   })
   .openapi({ required: ['incidentRecordArn'], title: 'ListTimelineEventsInput' })
   .openapi('ListTimelineEventsInput')
 
 const PutResourcePolicyInputSchema = z
   .object({
-    policy: PolicySchema.and(z.any().openapi({ description: 'Details of the resource policy.' })),
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the response plan to add the resource policy to.',
-        }),
-    ),
+    policy: PolicySchema.openapi({ description: 'Details of the resource policy.' }),
+    resourceArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the response plan to add the resource policy to.',
+    }),
   })
   .openapi({ required: ['policy', 'resourceArn'], title: 'PutResourcePolicyInput' })
   .openapi('PutResourcePolicyInput')
 
 const RelatedItemsUpdateSchema = z
   .object({
-    itemToAdd: RelatedItemSchema.and(
-      z.any().openapi({ description: "Details about the related item you're adding." }),
-    ).exactOptional(),
-    itemToRemove: ItemIdentifierSchema.and(
-      z.any().openapi({ description: "Details about the related item you're deleting." }),
-    ).exactOptional(),
+    itemToAdd: RelatedItemSchema.exactOptional().openapi({
+      description: "Details about the related item you're adding.",
+    }),
+    itemToRemove: ItemIdentifierSchema.exactOptional().openapi({
+      description: "Details about the related item you're deleting.",
+    }),
   })
   .openapi({ description: "Details about the related item you're adding.", required: [] })
   .openapi('RelatedItemsUpdate')
@@ -1847,32 +1404,18 @@ const SsmParametersKeyStringSchema = z.string().min(1).max(50).openapi('SsmParam
 
 const TriggerDetailsSchema = z
   .object({
-    rawData: RawDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Raw data passed from either Amazon EventBridge, Amazon CloudWatch, or Incident Manager when an incident is created.',
-        }),
-    ).exactOptional(),
-    source: IncidentSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifies the service that sourced the event. All events sourced from within Amazon Web Services begin with "<code>aws.</code>" Customer-generated events can have any value here, as long as it doesn\'t begin with "<code>aws.</code>" We recommend the use of Java package-name style reverse domain-name strings. ',
-        }),
-    ),
-    timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the incident was detected.' }),
-    ),
-    triggerArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the source that detected the incident.',
-        }),
-    ).exactOptional(),
+    rawData: RawDataSchema.exactOptional().openapi({
+      description:
+        'Raw data passed from either Amazon EventBridge, Amazon CloudWatch, or Incident Manager when an incident is created.',
+    }),
+    source: IncidentSourceSchema.openapi({
+      description:
+        'Identifies the service that sourced the event. All events sourced from within Amazon Web Services begin with "<code>aws.</code>" Customer-generated events can have any value here, as long as it doesn\'t begin with "<code>aws.</code>" We recommend the use of Java package-name style reverse domain-name strings. ',
+    }),
+    timestamp: TimestampSchema.openapi({ description: 'The time that the incident was detected.' }),
+    triggerArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the source that detected the incident.',
+    }),
   })
   .openapi({
     required: ['source', 'timestamp'],
@@ -1882,53 +1425,29 @@ const TriggerDetailsSchema = z
 
 const StartIncidentInputSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token ensuring that the operation is called only once with the specified details.',
-        }),
-    ).exactOptional(),
-    impact: ImpactSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Defines the impact to the customers. Providing an impact overwrites the impact provided by a response plan.</p> <p class="title"> <b>Possible impacts:</b> </p> <ul> <li> <p> <code>1</code> - Critical impact, this typically relates to full application failure that impacts many to all customers. </p> </li> <li> <p> <code>2</code> - High impact, partial application failure with impact to many customers.</p> </li> <li> <p> <code>3</code> - Medium impact, the application is providing reduced service to customers.</p> </li> <li> <p> <code>4</code> - Low impact, customer might aren\'t impacted by the problem yet.</p> </li> <li> <p> <code>5</code> - No impact, customers aren\'t currently impacted but urgent action is needed to avoid impact.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    relatedItems: RelatedItemListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Add related items to the incident for other responders to use. Related items are Amazon Web Services resources, external links, or files uploaded to an Amazon S3 bucket. ',
-        }),
-    ).exactOptional(),
-    responsePlanArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the response plan that pre-defines summary, chat channels, Amazon SNS topics, runbooks, title, and impact of the incident. ',
-        }),
-    ),
-    title: IncidentTitleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provide a title for the incident. Providing a title overwrites the title provided by the response plan. ',
-        }),
-    ).exactOptional(),
-    triggerDetails: TriggerDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details of what created the incident record in Incident Manager.',
-        }),
-    ).exactOptional(),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A token ensuring that the operation is called only once with the specified details.',
+    }),
+    impact: ImpactSchema.exactOptional().openapi({
+      description:
+        '<p>Defines the impact to the customers. Providing an impact overwrites the impact provided by a response plan.</p> <p class="title"> <b>Possible impacts:</b> </p> <ul> <li> <p> <code>1</code> - Critical impact, this typically relates to full application failure that impacts many to all customers. </p> </li> <li> <p> <code>2</code> - High impact, partial application failure with impact to many customers.</p> </li> <li> <p> <code>3</code> - Medium impact, the application is providing reduced service to customers.</p> </li> <li> <p> <code>4</code> - Low impact, customer might aren\'t impacted by the problem yet.</p> </li> <li> <p> <code>5</code> - No impact, customers aren\'t currently impacted but urgent action is needed to avoid impact.</p> </li> </ul>',
+    }),
+    relatedItems: RelatedItemListSchema.exactOptional().openapi({
+      description:
+        'Add related items to the incident for other responders to use. Related items are Amazon Web Services resources, external links, or files uploaded to an Amazon S3 bucket. ',
+    }),
+    responsePlanArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the response plan that pre-defines summary, chat channels, Amazon SNS topics, runbooks, title, and impact of the incident. ',
+    }),
+    title: IncidentTitleSchema.exactOptional().openapi({
+      description:
+        'Provide a title for the incident. Providing a title overwrites the title provided by the response plan. ',
+    }),
+    triggerDetails: TriggerDetailsSchema.exactOptional().openapi({
+      description: 'Details of what created the incident record in Incident Manager.',
+    }),
   })
   .openapi({ required: ['responsePlanArn'], title: 'StartIncidentInput' })
   .openapi('StartIncidentInput')
@@ -1943,129 +1462,79 @@ const TagMapUpdateSchema = z
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'A list of tags to add to the response plan.' }),
-    ),
+    tags: TagMapSchema.openapi({ description: 'A list of tags to add to the response plan.' }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateDeletionProtectionInputSchema = z
   .object({
-    arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the replication set to update.',
-        }),
-    ),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that ensures that the operation is called only once with the specified details.',
-        }),
-    ).exactOptional(),
-    deletionProtected: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies if deletion protection is turned on or off in your account. ',
-        }),
-    ),
+    arn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the replication set to update.',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A token that ensures that the operation is called only once with the specified details.',
+    }),
+    deletionProtected: BooleanSchema.openapi({
+      description: 'Specifies if deletion protection is turned on or off in your account. ',
+    }),
   })
   .openapi({ required: ['arn', 'deletionProtected'], title: 'UpdateDeletionProtectionInput' })
   .openapi('UpdateDeletionProtectionInput')
 
 const UpdateIncidentRecordInputSchema = z
   .object({
-    arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the incident record you are updating.',
-        }),
-    ),
-    chatChannel: ChatChannelSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Chatbot chat channel where responders can collaborate.' }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that ensures that a client calls the operation only once with the specified details.',
-        }),
-    ).exactOptional(),
-    impact: ImpactSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Defines the impact of the incident to customers and applications. If you provide an impact for an incident, it overwrites the impact provided by the response plan.</p> <p class="title"> <b>Possible impacts:</b> </p> <ul> <li> <p> <code>1</code> - Critical impact, full application failure that impacts many to all customers. </p> </li> <li> <p> <code>2</code> - High impact, partial application failure with impact to many customers.</p> </li> <li> <p> <code>3</code> - Medium impact, the application is providing reduced service to customers.</p> </li> <li> <p> <code>4</code> - Low impact, customer aren\'t impacted by the problem yet.</p> </li> <li> <p> <code>5</code> - No impact, customers aren\'t currently impacted but urgent action is needed to avoid impact.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    notificationTargets: NotificationTargetSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon SNS targets that Incident Manager notifies when a client updates an incident.</p> <p>Using multiple SNS topics creates redundancy in the event that a Region is down during the incident.</p>',
-        }),
-    ).exactOptional(),
-    status: IncidentRecordStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the incident. Possible statuses are <code>Open</code> or <code>Resolved</code>.',
-        }),
-    ).exactOptional(),
-    summary: IncidentSummarySchema.and(
-      z
-        .any()
-        .openapi({ description: 'A longer description of what occurred during the incident.' }),
-    ).exactOptional(),
-    title: IncidentTitleSchema.and(
-      z.any().openapi({ description: 'A brief description of the incident.' }),
-    ).exactOptional(),
+    arn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the incident record you are updating.',
+    }),
+    chatChannel: ChatChannelSchema.exactOptional().openapi({
+      description: 'The Chatbot chat channel where responders can collaborate.',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A token that ensures that a client calls the operation only once with the specified details.',
+    }),
+    impact: ImpactSchema.exactOptional().openapi({
+      description:
+        '<p>Defines the impact of the incident to customers and applications. If you provide an impact for an incident, it overwrites the impact provided by the response plan.</p> <p class="title"> <b>Possible impacts:</b> </p> <ul> <li> <p> <code>1</code> - Critical impact, full application failure that impacts many to all customers. </p> </li> <li> <p> <code>2</code> - High impact, partial application failure with impact to many customers.</p> </li> <li> <p> <code>3</code> - Medium impact, the application is providing reduced service to customers.</p> </li> <li> <p> <code>4</code> - Low impact, customer aren\'t impacted by the problem yet.</p> </li> <li> <p> <code>5</code> - No impact, customers aren\'t currently impacted but urgent action is needed to avoid impact.</p> </li> </ul>',
+    }),
+    notificationTargets: NotificationTargetSetSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon SNS targets that Incident Manager notifies when a client updates an incident.</p> <p>Using multiple SNS topics creates redundancy in the event that a Region is down during the incident.</p>',
+    }),
+    status: IncidentRecordStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the incident. Possible statuses are <code>Open</code> or <code>Resolved</code>.',
+    }),
+    summary: IncidentSummarySchema.exactOptional().openapi({
+      description: 'A longer description of what occurred during the incident.',
+    }),
+    title: IncidentTitleSchema.exactOptional().openapi({
+      description: 'A brief description of the incident.',
+    }),
   })
   .openapi({ required: ['arn'], title: 'UpdateIncidentRecordInput' })
   .openapi('UpdateIncidentRecordInput')
 
 const UpdateRelatedItemsInputSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that ensures that a client calls the operation only once with the specified details.',
-        }),
-    ).exactOptional(),
-    incidentRecordArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the incident record that contains the related items that you update.',
-        }),
-    ),
-    relatedItemsUpdate: RelatedItemsUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details about the item that you are add to, or delete from, an incident.',
-        }),
-    ),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A token that ensures that a client calls the operation only once with the specified details.',
+    }),
+    incidentRecordArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the incident record that contains the related items that you update.',
+    }),
+    relatedItemsUpdate: RelatedItemsUpdateSchema.openapi({
+      description: 'Details about the item that you are add to, or delete from, an incident.',
+    }),
   })
   .openapi({
     required: ['incidentRecordArn', 'relatedItemsUpdate'],
@@ -2080,178 +1549,98 @@ const UpdateReplicationSetInputActionsListSchema = z
 
 const UpdateReplicationSetInputSchema = z
   .object({
-    actions: UpdateReplicationSetInputActionsListSchema.and(
-      z.any().openapi({ description: 'An action to add or delete a Region.' }),
-    ),
-    arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The Amazon Resource Name (ARN) of the replication set you're updating.",
-        }),
-    ),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that ensures that the operation is called only once with the specified details.',
-        }),
-    ).exactOptional(),
+    actions: UpdateReplicationSetInputActionsListSchema.openapi({
+      description: 'An action to add or delete a Region.',
+    }),
+    arn: ArnSchema.openapi({
+      description: "The Amazon Resource Name (ARN) of the replication set you're updating.",
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A token that ensures that the operation is called only once with the specified details.',
+    }),
   })
   .openapi({ required: ['actions', 'arn'], title: 'UpdateReplicationSetInput' })
   .openapi('UpdateReplicationSetInput')
 
 const UpdateResponsePlanInputSchema = z
   .object({
-    actions: ActionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The actions that this response plan takes at the beginning of an incident.',
-        }),
-    ).exactOptional(),
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the response plan.' }),
-    ),
-    chatChannel: ChatChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Chatbot chat channel used for collaboration during an incident.</p> <p>Use the empty structure to remove the chat channel from the response plan.</p>',
-        }),
-    ).exactOptional(),
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token ensuring that the operation is called only once with the specified details.',
-        }),
-    ).exactOptional(),
-    displayName: ResponsePlanDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The long format name of the response plan. The display name can't contain spaces.",
-        }),
-    ).exactOptional(),
-    engagements: EngagementSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the contacts and escalation plans that the response plan engages during an incident.',
-        }),
-    ).exactOptional(),
-    incidentTemplateDedupeString: DedupeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string Incident Manager uses to prevent duplicate incidents from being created by the same incident in the same account.',
-        }),
-    ).exactOptional(),
-    incidentTemplateImpact: ImpactSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Defines the impact to the customers. Providing an impact overwrites the impact provided by a response plan.</p> <p class="title"> <b>Possible impacts:</b> </p> <ul> <li> <p> <code>5</code> - Severe impact</p> </li> <li> <p> <code>4</code> - High impact</p> </li> <li> <p> <code>3</code> - Medium impact</p> </li> <li> <p> <code>2</code> - Low impact</p> </li> <li> <p> <code>1</code> - No impact</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    incidentTemplateNotificationTargets: NotificationTargetSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon SNS targets that are notified when updates are made to an incident.',
-        }),
-    ).exactOptional(),
-    incidentTemplateSummary: IncidentSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A brief summary of the incident. This typically contains what has happened, what's currently happening, and next steps.",
-        }),
-    ).exactOptional(),
-    incidentTemplateTags: TagMapUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tags to assign to the template. When the <code>StartIncident</code> API action is called, Incident Manager assigns the tags specified in the template to the incident. To call this action, you must also have permission to call the <code>TagResource</code> API action for the incident record resource.',
-        }),
-    ).exactOptional(),
-    incidentTemplateTitle: IncidentTitleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The short format name of the incident. The title can't contain spaces.",
-        }),
-    ).exactOptional(),
-    integrations: IntegrationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about third-party services integrated into the response plan.',
-        }),
-    ).exactOptional(),
+    actions: ActionsListSchema.exactOptional().openapi({
+      description: 'The actions that this response plan takes at the beginning of an incident.',
+    }),
+    arn: ArnSchema.openapi({ description: 'The Amazon Resource Name (ARN) of the response plan.' }),
+    chatChannel: ChatChannelSchema.exactOptional().openapi({
+      description:
+        '<p>The Chatbot chat channel used for collaboration during an incident.</p> <p>Use the empty structure to remove the chat channel from the response plan.</p>',
+    }),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A token ensuring that the operation is called only once with the specified details.',
+    }),
+    displayName: ResponsePlanDisplayNameSchema.exactOptional().openapi({
+      description:
+        "The long format name of the response plan. The display name can't contain spaces.",
+    }),
+    engagements: EngagementSetSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the contacts and escalation plans that the response plan engages during an incident.',
+    }),
+    incidentTemplateDedupeString: DedupeStringSchema.exactOptional().openapi({
+      description:
+        'The string Incident Manager uses to prevent duplicate incidents from being created by the same incident in the same account.',
+    }),
+    incidentTemplateImpact: ImpactSchema.exactOptional().openapi({
+      description:
+        '<p>Defines the impact to the customers. Providing an impact overwrites the impact provided by a response plan.</p> <p class="title"> <b>Possible impacts:</b> </p> <ul> <li> <p> <code>5</code> - Severe impact</p> </li> <li> <p> <code>4</code> - High impact</p> </li> <li> <p> <code>3</code> - Medium impact</p> </li> <li> <p> <code>2</code> - Low impact</p> </li> <li> <p> <code>1</code> - No impact</p> </li> </ul>',
+    }),
+    incidentTemplateNotificationTargets: NotificationTargetSetSchema.exactOptional().openapi({
+      description: 'The Amazon SNS targets that are notified when updates are made to an incident.',
+    }),
+    incidentTemplateSummary: IncidentSummarySchema.exactOptional().openapi({
+      description:
+        "A brief summary of the incident. This typically contains what has happened, what's currently happening, and next steps.",
+    }),
+    incidentTemplateTags: TagMapUpdateSchema.exactOptional().openapi({
+      description:
+        'Tags to assign to the template. When the <code>StartIncident</code> API action is called, Incident Manager assigns the tags specified in the template to the incident. To call this action, you must also have permission to call the <code>TagResource</code> API action for the incident record resource.',
+    }),
+    incidentTemplateTitle: IncidentTitleSchema.exactOptional().openapi({
+      description: "The short format name of the incident. The title can't contain spaces.",
+    }),
+    integrations: IntegrationsSchema.exactOptional().openapi({
+      description: 'Information about third-party services integrated into the response plan.',
+    }),
   })
   .openapi({ required: ['arn'], title: 'UpdateResponsePlanInput' })
   .openapi('UpdateResponsePlanInput')
 
 const UpdateTimelineEventInputSchema = z
   .object({
-    clientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that ensures that a client calls the operation only once with the specified details.',
-        }),
-    ).exactOptional(),
-    eventData: EventDataSchema.and(
-      z.any().openapi({ description: 'A short description of the event.' }),
-    ).exactOptional(),
-    eventId: UUIDSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the event to update. You can use <code>ListTimelineEvents</code> to find an event's ID.",
-        }),
-    ),
-    eventReferences: EventReferenceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Updates all existing references in a <code>TimelineEvent</code>. A reference is an Amazon Web Services resource involved or associated with the incident. To specify a reference, enter its Amazon Resource Name (ARN). You can also specify a related item associated with that resource. For example, to specify an Amazon DynamoDB (DynamoDB) table as a resource, use its ARN. You can also specify an Amazon CloudWatch metric associated with the DynamoDB table as a related item.</p> <important> <p>This update action overrides all existing references. If you want to keep existing references, you must specify them in the call. If you don't, this action removes any existing references and enters only new references.</p> </important>",
-        }),
-    ).exactOptional(),
-    eventTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time that the event occurred.' }),
-    ).exactOptional(),
-    eventType: TimelineEventTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of event. You can update events of type <code>Custom Event</code>.',
-        }),
-    ).exactOptional(),
-    incidentRecordArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the incident that includes the timeline event.',
-        }),
-    ),
+    clientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A token that ensures that a client calls the operation only once with the specified details.',
+    }),
+    eventData: EventDataSchema.exactOptional().openapi({
+      description: 'A short description of the event.',
+    }),
+    eventId: UUIDSchema.openapi({
+      description:
+        "The ID of the event to update. You can use <code>ListTimelineEvents</code> to find an event's ID.",
+    }),
+    eventReferences: EventReferenceListSchema.exactOptional().openapi({
+      description:
+        "<p>Updates all existing references in a <code>TimelineEvent</code>. A reference is an Amazon Web Services resource involved or associated with the incident. To specify a reference, enter its Amazon Resource Name (ARN). You can also specify a related item associated with that resource. For example, to specify an Amazon DynamoDB (DynamoDB) table as a resource, use its ARN. You can also specify an Amazon CloudWatch metric associated with the DynamoDB table as a related item.</p> <important> <p>This update action overrides all existing references. If you want to keep existing references, you must specify them in the call. If you don't, this action removes any existing references and enters only new references.</p> </important>",
+    }),
+    eventTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time that the event occurred.',
+    }),
+    eventType: TimelineEventTypeSchema.exactOptional().openapi({
+      description: 'The type of event. You can update events of type <code>Custom Event</code>.',
+    }),
+    incidentRecordArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the incident that includes the timeline event.',
+    }),
   })
   .openapi({ required: ['eventId', 'incidentRecordArn'], title: 'UpdateTimelineEventInput' })
   .openapi('UpdateTimelineEventInput')
@@ -2443,22 +1832,14 @@ export const postCreateResponsePlanRoute = createRoute({
                 }),
               chatChannel: z
                 .object({
-                  chatbotSns: ChatbotSnsConfigurationSetSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon SNS targets that Chatbot uses to notify the chat channel of updates to an incident. You can also make updates to the incident through the chat channel by using the Amazon SNS topics. ',
-                      }),
-                  ).exactOptional(),
-                  empty: EmptyChatChannelSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Used to remove the chat channel from an incident record or response plan.',
-                      }),
-                  ).exactOptional(),
+                  chatbotSns: ChatbotSnsConfigurationSetSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon SNS targets that Chatbot uses to notify the chat channel of updates to an incident. You can also make updates to the incident through the chat channel by using the Amazon SNS topics. ',
+                  }),
+                  empty: EmptyChatChannelSchema.exactOptional().openapi({
+                    description:
+                      'Used to remove the chat channel from an incident record or response plan.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -2495,49 +1876,28 @@ export const postCreateResponsePlanRoute = createRoute({
                 }),
               incidentTemplate: z
                 .object({
-                  dedupeString: DedupeStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Used to stop Incident Manager from creating multiple incident records for the same incident. ',
-                      }),
-                  ).exactOptional(),
-                  impact: ImpactSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The impact of the incident on your customers and applications. ',
-                      }),
-                  ).exactOptional(),
-                  incidentTags: TagMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Tags to assign to the template. When the <code>StartIncident</code> API action is called, Incident Manager assigns the tags specified in the template to the incident.',
-                      }),
-                  ).exactOptional(),
-                  notificationTargets: NotificationTargetSetSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon SNS targets that are notified when updates are made to an incident.',
-                      }),
-                  ).exactOptional(),
-                  summary: IncidentSummarySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The summary of the incident. The summary is a brief synopsis of what occurred, what's currently happening, and context.",
-                      }),
-                  ).exactOptional(),
-                  title: IncidentTitleSchema.and(
-                    z.any().openapi({ description: 'The title of the incident. ' }),
-                  ).exactOptional(),
+                  dedupeString: DedupeStringSchema.exactOptional().openapi({
+                    description:
+                      'Used to stop Incident Manager from creating multiple incident records for the same incident. ',
+                  }),
+                  impact: ImpactSchema.exactOptional().openapi({
+                    description: 'The impact of the incident on your customers and applications. ',
+                  }),
+                  incidentTags: TagMapSchema.exactOptional().openapi({
+                    description:
+                      'Tags to assign to the template. When the <code>StartIncident</code> API action is called, Incident Manager assigns the tags specified in the template to the incident.',
+                  }),
+                  notificationTargets: NotificationTargetSetSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon SNS targets that are notified when updates are made to an incident.',
+                  }),
+                  summary: IncidentSummarySchema.exactOptional().openapi({
+                    description:
+                      "The summary of the incident. The summary is a brief synopsis of what occurred, what's currently happening, and context.",
+                  }),
+                  title: IncidentTitleSchema.exactOptional().openapi({
+                    description: 'The title of the incident. ',
+                  }),
                 })
                 .openapi({
                   description:
@@ -4207,33 +3567,21 @@ export const postStartIncidentRoute = createRoute({
                 }),
               triggerDetails: z
                 .object({
-                  rawData: RawDataSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Raw data passed from either Amazon EventBridge, Amazon CloudWatch, or Incident Manager when an incident is created.',
-                      }),
-                  ).exactOptional(),
-                  source: IncidentSourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Identifies the service that sourced the event. All events sourced from within Amazon Web Services begin with "<code>aws.</code>" Customer-generated events can have any value here, as long as it doesn\'t begin with "<code>aws.</code>" We recommend the use of Java package-name style reverse domain-name strings. ',
-                      }),
-                  ).exactOptional(),
-                  timestamp: TimestampSchema.and(
-                    z.any().openapi({ description: 'The time that the incident was detected.' }),
-                  ).exactOptional(),
-                  triggerArn: ArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Resource Name (ARN) of the source that detected the incident.',
-                      }),
-                  ).exactOptional(),
+                  rawData: RawDataSchema.exactOptional().openapi({
+                    description:
+                      'Raw data passed from either Amazon EventBridge, Amazon CloudWatch, or Incident Manager when an incident is created.',
+                  }),
+                  source: IncidentSourceSchema.exactOptional().openapi({
+                    description:
+                      'Identifies the service that sourced the event. All events sourced from within Amazon Web Services begin with "<code>aws.</code>" Customer-generated events can have any value here, as long as it doesn\'t begin with "<code>aws.</code>" We recommend the use of Java package-name style reverse domain-name strings. ',
+                  }),
+                  timestamp: TimestampSchema.exactOptional().openapi({
+                    description: 'The time that the incident was detected.',
+                  }),
+                  triggerArn: ArnSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon Resource Name (ARN) of the source that detected the incident.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4474,22 +3822,14 @@ export const postUpdateIncidentRecordRoute = createRoute({
                 }),
               chatChannel: z
                 .object({
-                  chatbotSns: ChatbotSnsConfigurationSetSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon SNS targets that Chatbot uses to notify the chat channel of updates to an incident. You can also make updates to the incident through the chat channel by using the Amazon SNS topics. ',
-                      }),
-                  ).exactOptional(),
-                  empty: EmptyChatChannelSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Used to remove the chat channel from an incident record or response plan.',
-                      }),
-                  ).exactOptional(),
+                  chatbotSns: ChatbotSnsConfigurationSetSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon SNS targets that Chatbot uses to notify the chat channel of updates to an incident. You can also make updates to the incident through the chat channel by using the Amazon SNS topics. ',
+                  }),
+                  empty: EmptyChatChannelSchema.exactOptional().openapi({
+                    description:
+                      'Used to remove the chat channel from an incident record or response plan.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4624,16 +3964,12 @@ export const postUpdateRelatedItemsRoute = createRoute({
                 }),
               relatedItemsUpdate: z
                 .object({
-                  itemToAdd: RelatedItemSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: "Details about the related item you're adding." }),
-                  ).exactOptional(),
-                  itemToRemove: ItemIdentifierSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: "Details about the related item you're deleting." }),
-                  ).exactOptional(),
+                  itemToAdd: RelatedItemSchema.exactOptional().openapi({
+                    description: "Details about the related item you're adding.",
+                  }),
+                  itemToRemove: ItemIdentifierSchema.exactOptional().openapi({
+                    description: "Details about the related item you're deleting.",
+                  }),
                 })
                 .openapi({
                   description: "Details about the related item you're adding.",
@@ -4796,22 +4132,14 @@ export const postUpdateResponsePlanRoute = createRoute({
                 .openapi({ description: 'The Amazon Resource Name (ARN) of the response plan.' }),
               chatChannel: z
                 .object({
-                  chatbotSns: ChatbotSnsConfigurationSetSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon SNS targets that Chatbot uses to notify the chat channel of updates to an incident. You can also make updates to the incident through the chat channel by using the Amazon SNS topics. ',
-                      }),
-                  ).exactOptional(),
-                  empty: EmptyChatChannelSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Used to remove the chat channel from an incident record or response plan.',
-                      }),
-                  ).exactOptional(),
+                  chatbotSns: ChatbotSnsConfigurationSetSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon SNS targets that Chatbot uses to notify the chat channel of updates to an incident. You can also make updates to the incident through the chat channel by using the Amazon SNS topics. ',
+                  }),
+                  empty: EmptyChatChannelSchema.exactOptional().openapi({
+                    description:
+                      'Used to remove the chat channel from an incident record or response plan.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

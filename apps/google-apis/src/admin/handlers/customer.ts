@@ -10,12 +10,13 @@ const app = new OpenAPIHono()
 export const customerHandler = app
   .openapi(
     getAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdCommandsCommandIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
-  .openapi(
-    postAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdIssueCommandRoute,
-    (c) => {},
-  )
+  .openapi(postAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdIssueCommandRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(postAdminDirectoryV1CustomerCustomerIdDevicesChromeosBatchChangeStatusRoute, (c) => {
     throw new Error('Not implemented')
   })

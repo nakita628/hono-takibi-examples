@@ -401,48 +401,63 @@ const ByocSpecSchema = z
   })
   .openapi('ByocSpec')
 
-const IndexSpecSchema = z
-  .xor([
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'serverless')) {
-            ctx.addIssue({ code: 'custom' })
+const IndexSpecSchema = (() => {
+  const Schema = z
+    .xor([
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'serverless')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['serverless'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'pod')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['serverless'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'pod')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['pod'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'byoc')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['pod'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'byoc')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
+        })
+        .openapi({ required: ['byoc'] }),
+    ])
+    .and(
+      z
+        .object({
+          serverless: ServerlessSpecSchema.exactOptional(),
+          pod: PodSpecSchema.exactOptional(),
+          byoc: ByocSpecSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['serverless', 'pod', 'byoc'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
         }
-      })
-      .openapi({ required: ['byoc'] }),
-  ])
-  .and(
-    z
-      .object({
-        serverless: ServerlessSpecSchema.exactOptional(),
-        pod: PodSpecSchema.exactOptional(),
-        byoc: ByocSpecSchema.exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description:
       'The spec object defines how the index should be deployed.\n\nFor serverless indexes, you set only the [cloud and region](http://docs.pinecone.io/guides/index-data/create-an-index#cloud-regions) where the index should be hosted. For pod-based indexes, you set the [environment](http://docs.pinecone.io/guides/indexes/pods/understanding-pod-based-indexes#pod-environments) where the index should be hosted, the [pod type and size](http://docs.pinecone.io/guides/indexes/pods/understanding-pod-based-indexes#pod-types) to use, and other index characteristics. For [BYOC indexes](http://docs.pinecone.io/guides/production/bring-your-own-cloud), you set the environment name provided to you during onboarding.\n',

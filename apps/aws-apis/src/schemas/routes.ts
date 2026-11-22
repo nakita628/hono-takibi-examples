@@ -13,32 +13,27 @@ const TagsSchema = z
 
 const CreateDiscovererResponseSchema = z
   .object({
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the discoverer.' }),
-    ).exactOptional(),
-    DiscovererArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the discoverer.' }),
-    ).exactOptional(),
-    DiscovererId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the discoverer.' }),
-    ).exactOptional(),
-    SourceArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the event bus.' }),
-    ).exactOptional(),
-    State: DiscovererStateSchema.and(
-      z.any().openapi({ description: 'The state of the discoverer.' }),
-    ).exactOptional(),
-    CrossAccount: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Status if the discoverer will discover schemas from events sent from another account.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'Tags associated with the resource.' }),
-    ).exactOptional(),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the discoverer.',
+    }),
+    DiscovererArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the discoverer.',
+    }),
+    DiscovererId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the discoverer.',
+    }),
+    SourceArn: StringSchema.exactOptional().openapi({ description: 'The ARN of the event bus.' }),
+    State: DiscovererStateSchema.exactOptional().openapi({
+      description: 'The state of the discoverer.',
+    }),
+    CrossAccount: BooleanSchema.exactOptional().openapi({
+      description:
+        'The Status if the discoverer will discover schemas from events sent from another account.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tags associated with the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDiscovererResponse')
@@ -57,18 +52,17 @@ const ConflictExceptionSchema = z.any().openapi('ConflictException')
 
 const CreateRegistryResponseSchema = z
   .object({
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the registry.' }),
-    ).exactOptional(),
-    RegistryArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the registry.' }),
-    ).exactOptional(),
-    RegistryName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the registry.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'Tags associated with the registry.' }),
-    ).exactOptional(),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the registry.',
+    }),
+    RegistryArn: StringSchema.exactOptional().openapi({ description: 'The ARN of the registry.' }),
+    RegistryName: StringSchema.exactOptional().openapi({
+      description: 'The name of the registry.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tags associated with the registry.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRegistryResponse')
@@ -77,28 +71,22 @@ const TimestampIso8601Schema = z.iso.datetime({ offset: true }).openapi('Timesta
 
 const CreateSchemaResponseSchema = z
   .object({
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the schema.' }),
-    ).exactOptional(),
-    LastModified: TimestampIso8601Schema.and(
-      z.any().openapi({ description: 'The date and time that schema was modified.' }),
-    ).exactOptional(),
-    SchemaArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the schema.' }),
-    ).exactOptional(),
-    SchemaName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the schema.' }),
-    ).exactOptional(),
-    SchemaVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version number of the schema' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
-    Type: StringSchema.and(
-      z.any().openapi({ description: 'The type of the schema.' }),
-    ).exactOptional(),
-    VersionCreatedDate: TimestampIso8601Schema.and(
-      z.any().openapi({ description: 'The date the schema version was created.' }),
-    ).exactOptional(),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the schema.',
+    }),
+    LastModified: TimestampIso8601Schema.exactOptional().openapi({
+      description: 'The date and time that schema was modified.',
+    }),
+    SchemaArn: StringSchema.exactOptional().openapi({ description: 'The ARN of the schema.' }),
+    SchemaName: StringSchema.exactOptional().openapi({ description: 'The name of the schema.' }),
+    SchemaVersion: StringSchema.exactOptional().openapi({
+      description: 'The version number of the schema',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
+    Type: StringSchema.exactOptional().openapi({ description: 'The type of the schema.' }),
+    VersionCreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      description: 'The date the schema version was created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateSchemaResponse')
@@ -111,18 +99,18 @@ const CodeGenerationStatusSchema = z
 
 const DescribeCodeBindingResponseSchema = z
   .object({
-    CreationDate: TimestampIso8601Schema.and(
-      z.any().openapi({ description: 'The time and date that the code binding was created.' }),
-    ).exactOptional(),
-    LastModified: TimestampIso8601Schema.and(
-      z.any().openapi({ description: 'The date and time that code bindings were modified.' }),
-    ).exactOptional(),
-    SchemaVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version number of the schema.' }),
-    ).exactOptional(),
-    Status: CodeGenerationStatusSchema.and(
-      z.any().openapi({ description: 'The current status of code binding generation.' }),
-    ).exactOptional(),
+    CreationDate: TimestampIso8601Schema.exactOptional().openapi({
+      description: 'The time and date that the code binding was created.',
+    }),
+    LastModified: TimestampIso8601Schema.exactOptional().openapi({
+      description: 'The date and time that code bindings were modified.',
+    }),
+    SchemaVersion: StringSchema.exactOptional().openapi({
+      description: 'The version number of the schema.',
+    }),
+    Status: CodeGenerationStatusSchema.exactOptional().openapi({
+      description: 'The current status of code binding generation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeCodeBindingResponse')
@@ -131,83 +119,72 @@ const TooManyRequestsExceptionSchema = z.any().openapi('TooManyRequestsException
 
 const DescribeDiscovererResponseSchema = z
   .object({
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the discoverer.' }),
-    ).exactOptional(),
-    DiscovererArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the discoverer.' }),
-    ).exactOptional(),
-    DiscovererId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the discoverer.' }),
-    ).exactOptional(),
-    SourceArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the event bus.' }),
-    ).exactOptional(),
-    State: DiscovererStateSchema.and(
-      z.any().openapi({ description: 'The state of the discoverer.' }),
-    ).exactOptional(),
-    CrossAccount: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Status if the discoverer will discover schemas from events sent from another account.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'Tags associated with the resource.' }),
-    ).exactOptional(),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the discoverer.',
+    }),
+    DiscovererArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the discoverer.',
+    }),
+    DiscovererId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the discoverer.',
+    }),
+    SourceArn: StringSchema.exactOptional().openapi({ description: 'The ARN of the event bus.' }),
+    State: DiscovererStateSchema.exactOptional().openapi({
+      description: 'The state of the discoverer.',
+    }),
+    CrossAccount: BooleanSchema.exactOptional().openapi({
+      description:
+        'The Status if the discoverer will discover schemas from events sent from another account.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tags associated with the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDiscovererResponse')
 
 const DescribeRegistryResponseSchema = z
   .object({
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the registry.' }),
-    ).exactOptional(),
-    RegistryArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the registry.' }),
-    ).exactOptional(),
-    RegistryName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the registry.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'Tags associated with the registry.' }),
-    ).exactOptional(),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the registry.',
+    }),
+    RegistryArn: StringSchema.exactOptional().openapi({ description: 'The ARN of the registry.' }),
+    RegistryName: StringSchema.exactOptional().openapi({
+      description: 'The name of the registry.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tags associated with the registry.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRegistryResponse')
 
 const DescribeSchemaResponseSchema = z
   .object({
-    Content: StringSchema.and(
-      z.any().openapi({ description: 'The source of the schema definition.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the schema.' }),
-    ).exactOptional(),
-    LastModified: TimestampIso8601Schema.and(
-      z.any().openapi({ description: 'The date and time that schema was modified.' }),
-    ).exactOptional(),
-    SchemaArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the schema.' }),
-    ).exactOptional(),
-    SchemaName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the schema.' }),
-    ).exactOptional(),
-    SchemaVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version number of the schema' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'Tags associated with the resource.' }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z.any().openapi({ description: 'The type of the schema.' }),
-    ).exactOptional(),
-    VersionCreatedDate: TimestampIso8601Schema.and(
-      z.any().openapi({ description: 'The date the schema version was created.' }),
-    ).exactOptional(),
+    Content: StringSchema.exactOptional().openapi({
+      description: 'The source of the schema definition.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the schema.',
+    }),
+    LastModified: TimestampIso8601Schema.exactOptional().openapi({
+      description: 'The date and time that schema was modified.',
+    }),
+    SchemaArn: StringSchema.exactOptional().openapi({ description: 'The ARN of the schema.' }),
+    SchemaName: StringSchema.exactOptional().openapi({ description: 'The name of the schema.' }),
+    SchemaVersion: StringSchema.exactOptional().openapi({
+      description: 'The version number of the schema',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tags associated with the resource.',
+    }),
+    Type: StringSchema.exactOptional().openapi({ description: 'The type of the schema.' }),
+    VersionCreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      description: 'The date the schema version was created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSchemaResponse')
@@ -232,9 +209,9 @@ const GetCodeBindingSourceResponseSchema = z
 
 const GetDiscoveredSchemaResponseSchema = z
   .object({
-    Content: StringSchema.and(
-      z.any().openapi({ description: 'The source of the schema definition.' }),
-    ).exactOptional(),
+    Content: StringSchema.exactOptional().openapi({
+      description: 'The source of the schema definition.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDiscoveredSchemaResponse')
@@ -247,41 +224,32 @@ const GetDiscoveredSchemaVersionItemInputSchema = z
 
 const GetResourcePolicyResponseSchema = z
   .object({
-    Policy: StringSchema.and(
-      z.any().openapi({ description: 'The resource-based policy.' }),
-    ).exactOptional(),
-    RevisionId: StringSchema.and(
-      z.any().openapi({ description: 'The revision ID.' }),
-    ).exactOptional(),
+    Policy: StringSchema.exactOptional().openapi({ description: 'The resource-based policy.' }),
+    RevisionId: StringSchema.exactOptional().openapi({ description: 'The revision ID.' }),
   })
   .openapi({ required: [] })
   .openapi('GetResourcePolicyResponse')
 
 const DiscovererSummarySchema = z
   .object({
-    DiscovererArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the discoverer.' }),
-    ).exactOptional(),
-    DiscovererId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the discoverer.' }),
-    ).exactOptional(),
-    SourceArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the event bus.' }),
-    ).exactOptional(),
-    State: DiscovererStateSchema.and(
-      z.any().openapi({ description: 'The state of the discoverer.' }),
-    ).exactOptional(),
-    CrossAccount: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Status if the discoverer will discover schemas from events sent from another account.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'Tags associated with the resource.' }),
-    ).exactOptional(),
+    DiscovererArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the discoverer.',
+    }),
+    DiscovererId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the discoverer.',
+    }),
+    SourceArn: StringSchema.exactOptional().openapi({ description: 'The ARN of the event bus.' }),
+    State: DiscovererStateSchema.exactOptional().openapi({
+      description: 'The state of the discoverer.',
+    }),
+    CrossAccount: BooleanSchema.exactOptional().openapi({
+      description:
+        'The Status if the discoverer will discover schemas from events sent from another account.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tags associated with the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DiscovererSummary')
@@ -292,32 +260,27 @@ const ListOfDiscovererSummarySchema = z
 
 const ListDiscoverersResponseSchema = z
   .object({
-    Discoverers: ListOfDiscovererSummarySchema.and(
-      z.any().openapi({ description: 'An array of DiscovererSummary information.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.',
-        }),
-    ).exactOptional(),
+    Discoverers: ListOfDiscovererSummarySchema.exactOptional().openapi({
+      description: 'An array of DiscovererSummary information.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDiscoverersResponse')
 
 const RegistrySummarySchema = z
   .object({
-    RegistryArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the registry.' }),
-    ).exactOptional(),
-    RegistryName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the registry.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'Tags associated with the registry.' }),
-    ).exactOptional(),
+    RegistryArn: StringSchema.exactOptional().openapi({ description: 'The ARN of the registry.' }),
+    RegistryName: StringSchema.exactOptional().openapi({
+      description: 'The name of the registry.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tags associated with the registry.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RegistrySummary')
@@ -326,17 +289,13 @@ const ListOfRegistrySummarySchema = z.array(RegistrySummarySchema).openapi('List
 
 const ListRegistriesResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.',
-        }),
-    ).exactOptional(),
-    Registries: ListOfRegistrySummarySchema.and(
-      z.any().openapi({ description: 'An array of registry summaries.' }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.',
+    }),
+    Registries: ListOfRegistrySummarySchema.exactOptional().openapi({
+      description: 'An array of registry summaries.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRegistriesResponse')
@@ -345,16 +304,14 @@ const TypeSchema = z.enum(['OpenApi3', 'JSONSchemaDraft4']).openapi('Type')
 
 const SchemaVersionSummarySchema = z
   .object({
-    SchemaArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the schema version.' }),
-    ).exactOptional(),
-    SchemaName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the schema.' }),
-    ).exactOptional(),
-    SchemaVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version number of the schema.' }),
-    ).exactOptional(),
-    Type: TypeSchema.and(z.any().openapi({ description: 'The type of schema.' })).exactOptional(),
+    SchemaArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the schema version.',
+    }),
+    SchemaName: StringSchema.exactOptional().openapi({ description: 'The name of the schema.' }),
+    SchemaVersion: StringSchema.exactOptional().openapi({
+      description: 'The version number of the schema.',
+    }),
+    Type: TypeSchema.exactOptional().openapi({ description: 'The type of schema.' }),
   })
   .openapi({ required: [] })
   .openapi('SchemaVersionSummary')
@@ -365,17 +322,13 @@ const ListOfSchemaVersionSummarySchema = z
 
 const ListSchemaVersionsResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.',
-        }),
-    ).exactOptional(),
-    SchemaVersions: ListOfSchemaVersionSummarySchema.and(
-      z.any().openapi({ description: 'An array of schema version summaries.' }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.',
+    }),
+    SchemaVersions: ListOfSchemaVersionSummarySchema.exactOptional().openapi({
+      description: 'An array of schema version summaries.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSchemaVersionsResponse')
@@ -384,21 +337,18 @@ const LongSchema = z.int().openapi('Long')
 
 const SchemaSummarySchema = z
   .object({
-    LastModified: TimestampIso8601Schema.and(
-      z.any().openapi({ description: 'The date and time that schema was modified.' }),
-    ).exactOptional(),
-    SchemaArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the schema.' }),
-    ).exactOptional(),
-    SchemaName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the schema.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'Tags associated with the schema.' }),
-    ).exactOptional(),
-    VersionCount: LongSchema.and(
-      z.any().openapi({ description: 'The number of versions available for the schema.' }),
-    ).exactOptional(),
+    LastModified: TimestampIso8601Schema.exactOptional().openapi({
+      description: 'The date and time that schema was modified.',
+    }),
+    SchemaArn: StringSchema.exactOptional().openapi({ description: 'The ARN of the schema.' }),
+    SchemaName: StringSchema.exactOptional().openapi({ description: 'The name of the schema.' }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tags associated with the schema.',
+    }),
+    VersionCount: LongSchema.exactOptional().openapi({
+      description: 'The number of versions available for the schema.',
+    }),
   })
   .openapi({ description: 'A summary of schema details.', required: [] })
   .openapi('SchemaSummary')
@@ -407,40 +357,36 @@ const ListOfSchemaSummarySchema = z.array(SchemaSummarySchema).openapi('ListOfSc
 
 const ListSchemasResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.',
-        }),
-    ).exactOptional(),
-    Schemas: ListOfSchemaSummarySchema.and(
-      z.any().openapi({ description: 'An array of schema summaries.' }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.',
+    }),
+    Schemas: ListOfSchemaSummarySchema.exactOptional().openapi({
+      description: 'An array of schema summaries.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSchemasResponse')
 
 const ListTagsForResourceResponseSchema = z
-  .object({ Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional() })
+  .object({ Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }) })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const PutCodeBindingResponseSchema = z
   .object({
-    CreationDate: TimestampIso8601Schema.and(
-      z.any().openapi({ description: 'The time and date that the code binding was created.' }),
-    ).exactOptional(),
-    LastModified: TimestampIso8601Schema.and(
-      z.any().openapi({ description: 'The date and time that code bindings were modified.' }),
-    ).exactOptional(),
-    SchemaVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version number of the schema.' }),
-    ).exactOptional(),
-    Status: CodeGenerationStatusSchema.and(
-      z.any().openapi({ description: 'The current status of code binding generation.' }),
-    ).exactOptional(),
+    CreationDate: TimestampIso8601Schema.exactOptional().openapi({
+      description: 'The time and date that the code binding was created.',
+    }),
+    LastModified: TimestampIso8601Schema.exactOptional().openapi({
+      description: 'The date and time that code bindings were modified.',
+    }),
+    SchemaVersion: StringSchema.exactOptional().openapi({
+      description: 'The version number of the schema.',
+    }),
+    Status: CodeGenerationStatusSchema.exactOptional().openapi({
+      description: 'The current status of code binding generation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutCodeBindingResponse')
@@ -449,12 +395,10 @@ const GoneExceptionSchema = z.any().openapi('GoneException')
 
 const PutResourcePolicyResponseSchema = z
   .object({
-    Policy: StringSchema.and(
-      z.any().openapi({ description: 'The resource-based policy.' }),
-    ).exactOptional(),
-    RevisionId: StringSchema.and(
-      z.any().openapi({ description: 'The revision ID of the policy.' }),
-    ).exactOptional(),
+    Policy: StringSchema.exactOptional().openapi({ description: 'The resource-based policy.' }),
+    RevisionId: StringSchema.exactOptional().openapi({
+      description: 'The revision ID of the policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutResourcePolicyResponse')
@@ -463,13 +407,13 @@ const PreconditionFailedExceptionSchema = z.any().openapi('PreconditionFailedExc
 
 const SearchSchemaVersionSummarySchema = z
   .object({
-    CreatedDate: TimestampIso8601Schema.and(
-      z.any().openapi({ description: 'The date the schema version was created.' }),
-    ).exactOptional(),
-    SchemaVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version number of the schema' }),
-    ).exactOptional(),
-    Type: TypeSchema.and(z.any().openapi({ description: 'The type of schema.' })).exactOptional(),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      description: 'The date the schema version was created.',
+    }),
+    SchemaVersion: StringSchema.exactOptional().openapi({
+      description: 'The version number of the schema',
+    }),
+    Type: TypeSchema.exactOptional().openapi({ description: 'The type of schema.' }),
   })
   .openapi({ required: [] })
   .openapi('SearchSchemaVersionSummary')
@@ -480,18 +424,14 @@ const ListOfSearchSchemaVersionSummarySchema = z
 
 const SearchSchemaSummarySchema = z
   .object({
-    RegistryName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the registry.' }),
-    ).exactOptional(),
-    SchemaArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the schema.' }),
-    ).exactOptional(),
-    SchemaName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the schema.' }),
-    ).exactOptional(),
-    SchemaVersions: ListOfSearchSchemaVersionSummarySchema.and(
-      z.any().openapi({ description: 'An array of schema version summaries.' }),
-    ).exactOptional(),
+    RegistryName: StringSchema.exactOptional().openapi({
+      description: 'The name of the registry.',
+    }),
+    SchemaArn: StringSchema.exactOptional().openapi({ description: 'The ARN of the schema.' }),
+    SchemaName: StringSchema.exactOptional().openapi({ description: 'The name of the schema.' }),
+    SchemaVersions: ListOfSearchSchemaVersionSummarySchema.exactOptional().openapi({
+      description: 'An array of schema version summaries.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchSchemaSummary')
@@ -502,119 +442,103 @@ const ListOfSearchSchemaSummarySchema = z
 
 const SearchSchemasResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.',
-        }),
-    ).exactOptional(),
-    Schemas: ListOfSearchSchemaSummarySchema.and(
-      z.any().openapi({ description: 'An array of SearchSchemaSummary information.' }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The token that specifies the next page of results to return. To request the first page, leave NextToken empty. The token will expire in 24 hours, and cannot be shared with other accounts.',
+    }),
+    Schemas: ListOfSearchSchemaSummarySchema.exactOptional().openapi({
+      description: 'An array of SearchSchemaSummary information.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchSchemasResponse')
 
 const StartDiscovererResponseSchema = z
   .object({
-    DiscovererId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the discoverer.' }),
-    ).exactOptional(),
-    State: DiscovererStateSchema.and(
-      z.any().openapi({ description: 'The state of the discoverer.' }),
-    ).exactOptional(),
+    DiscovererId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the discoverer.',
+    }),
+    State: DiscovererStateSchema.exactOptional().openapi({
+      description: 'The state of the discoverer.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartDiscovererResponse')
 
 const StopDiscovererResponseSchema = z
   .object({
-    DiscovererId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the discoverer.' }),
-    ).exactOptional(),
-    State: DiscovererStateSchema.and(
-      z.any().openapi({ description: 'The state of the discoverer.' }),
-    ).exactOptional(),
+    DiscovererId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the discoverer.',
+    }),
+    State: DiscovererStateSchema.exactOptional().openapi({
+      description: 'The state of the discoverer.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopDiscovererResponse')
 
 const UpdateDiscovererResponseSchema = z
   .object({
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the discoverer.' }),
-    ).exactOptional(),
-    DiscovererArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the discoverer.' }),
-    ).exactOptional(),
-    DiscovererId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the discoverer.' }),
-    ).exactOptional(),
-    SourceArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the event bus.' }),
-    ).exactOptional(),
-    State: DiscovererStateSchema.and(
-      z.any().openapi({ description: 'The state of the discoverer.' }),
-    ).exactOptional(),
-    CrossAccount: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Status if the discoverer will discover schemas from events sent from another account.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'Tags associated with the resource.' }),
-    ).exactOptional(),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the discoverer.',
+    }),
+    DiscovererArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the discoverer.',
+    }),
+    DiscovererId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the discoverer.',
+    }),
+    SourceArn: StringSchema.exactOptional().openapi({ description: 'The ARN of the event bus.' }),
+    State: DiscovererStateSchema.exactOptional().openapi({
+      description: 'The state of the discoverer.',
+    }),
+    CrossAccount: BooleanSchema.exactOptional().openapi({
+      description:
+        'The Status if the discoverer will discover schemas from events sent from another account.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tags associated with the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateDiscovererResponse')
 
 const UpdateRegistryResponseSchema = z
   .object({
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the registry.' }),
-    ).exactOptional(),
-    RegistryArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the registry.' }),
-    ).exactOptional(),
-    RegistryName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the registry.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'Tags associated with the registry.' }),
-    ).exactOptional(),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the registry.',
+    }),
+    RegistryArn: StringSchema.exactOptional().openapi({ description: 'The ARN of the registry.' }),
+    RegistryName: StringSchema.exactOptional().openapi({
+      description: 'The name of the registry.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tags associated with the registry.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRegistryResponse')
 
 const UpdateSchemaResponseSchema = z
   .object({
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the schema.' }),
-    ).exactOptional(),
-    LastModified: TimestampIso8601Schema.and(
-      z.any().openapi({ description: 'The date and time that schema was modified.' }),
-    ).exactOptional(),
-    SchemaArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the schema.' }),
-    ).exactOptional(),
-    SchemaName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the schema.' }),
-    ).exactOptional(),
-    SchemaVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version number of the schema' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
-    Type: StringSchema.and(
-      z.any().openapi({ description: 'The type of the schema.' }),
-    ).exactOptional(),
-    VersionCreatedDate: TimestampIso8601Schema.and(
-      z.any().openapi({ description: 'The date the schema version was created.' }),
-    ).exactOptional(),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the schema.',
+    }),
+    LastModified: TimestampIso8601Schema.exactOptional().openapi({
+      description: 'The date and time that schema was modified.',
+    }),
+    SchemaArn: StringSchema.exactOptional().openapi({ description: 'The ARN of the schema.' }),
+    SchemaName: StringSchema.exactOptional().openapi({ description: 'The name of the schema.' }),
+    SchemaVersion: StringSchema.exactOptional().openapi({
+      description: 'The version number of the schema',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
+    Type: StringSchema.exactOptional().openapi({ description: 'The type of the schema.' }),
+    VersionCreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      description: 'The date the schema version was created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateSchemaResponse')
@@ -625,37 +549,31 @@ const StringMin20Max1600Schema = z.string().min(20).max(1600).openapi('StringMin
 
 const CreateDiscovererRequestSchema = z
   .object({
-    Description: StringMin0Max256Schema.and(
-      z.any().openapi({ description: 'A description for the discoverer.' }),
-    ).exactOptional(),
-    SourceArn: StringMin20Max1600Schema.and(
-      z.any().openapi({ description: 'The ARN of the event bus.' }),
-    ),
-    CrossAccount: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Support discovery of schemas in events sent to the bus from another account. (default: true).',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'Tags associated with the resource.' }),
-    ).exactOptional(),
+    Description: StringMin0Max256Schema.exactOptional().openapi({
+      description: 'A description for the discoverer.',
+    }),
+    SourceArn: StringMin20Max1600Schema.openapi({ description: 'The ARN of the event bus.' }),
+    CrossAccount: BooleanSchema.exactOptional().openapi({
+      description:
+        'Support discovery of schemas in events sent to the bus from another account. (default: true).',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tags associated with the resource.',
+    }),
   })
   .openapi({ required: ['SourceArn'], title: 'CreateDiscovererRequest', description: '' })
   .openapi('CreateDiscovererRequest')
 
 const CreateRegistryRequestSchema = z
   .object({
-    Description: StringMin0Max256Schema.and(
-      z.any().openapi({ description: 'A description of the registry to be created.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'tags' }, description: 'Tags to associate with the registry.' }),
-    ).exactOptional(),
+    Description: StringMin0Max256Schema.exactOptional().openapi({
+      description: 'A description of the registry to be created.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tags to associate with the registry.',
+    }),
   })
   .openapi({ title: 'CreateRegistryRequest', required: [] })
   .openapi('CreateRegistryRequest')
@@ -664,72 +582,73 @@ const StringMin1Max100000Schema = z.string().min(1).max(100000).openapi('StringM
 
 const CreateSchemaRequestSchema = z
   .object({
-    Content: StringMin1Max100000Schema.and(
-      z.any().openapi({ description: 'The source of the schema definition.' }),
-    ),
-    Description: StringMin0Max256Schema.and(
-      z.any().openapi({ description: 'A description of the schema.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'Tags associated with the schema.' }),
-    ).exactOptional(),
-    Type: TypeSchema.and(z.any().openapi({ description: 'The type of schema.' })),
+    Content: StringMin1Max100000Schema.openapi({
+      description: 'The source of the schema definition.',
+    }),
+    Description: StringMin0Max256Schema.exactOptional().openapi({
+      description: 'A description of the schema.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tags associated with the schema.',
+    }),
+    Type: TypeSchema.openapi({ description: 'The type of schema.' }),
   })
   .openapi({ required: ['Type', 'Content'], title: 'CreateSchemaRequest' })
   .openapi('CreateSchemaRequest')
 
 const DeleteDiscovererRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDiscovererRequest' })
   .openapi('DeleteDiscovererRequest')
 
 const DeleteRegistryRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteRegistryRequest' })
   .openapi('DeleteRegistryRequest')
 
 const DeleteResourcePolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteResourcePolicyRequest' })
   .openapi('DeleteResourcePolicyRequest')
 
 const DeleteSchemaRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteSchemaRequest' })
   .openapi('DeleteSchemaRequest')
 
 const DeleteSchemaVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteSchemaVersionRequest' })
   .openapi('DeleteSchemaVersionRequest')
 
 const DescribeCodeBindingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeCodeBindingRequest' })
   .openapi('DescribeCodeBindingRequest')
 
 const DescribeDiscovererRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDiscovererRequest' })
   .openapi('DescribeDiscovererRequest')
 
 const DescribeRegistryRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeRegistryRequest' })
   .openapi('DescribeRegistryRequest')
 
 const DescribeSchemaRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeSchemaRequest' })
   .openapi('DescribeSchemaRequest')
 
 const ExportSchemaRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ExportSchemaRequest' })
   .openapi('ExportSchemaRequest')
 
 const GetCodeBindingSourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetCodeBindingSourceRequest' })
   .openapi('GetCodeBindingSourceRequest')
 
@@ -741,62 +660,58 @@ const ListOfGetDiscoveredSchemaVersionItemInputSchema = z
 
 const GetDiscoveredSchemaRequestSchema = z
   .object({
-    Events: ListOfGetDiscoveredSchemaVersionItemInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of strings where each string is a JSON event. These are the events that were used to generate the schema. The array includes a single type of event and has a maximum size of 10 events.',
-        }),
-    ),
-    Type: TypeSchema.and(z.any().openapi({ description: 'The type of event.' })),
+    Events: ListOfGetDiscoveredSchemaVersionItemInputSchema.openapi({
+      description:
+        'An array of strings where each string is a JSON event. These are the events that were used to generate the schema. The array includes a single type of event and has a maximum size of 10 events.',
+    }),
+    Type: TypeSchema.openapi({ description: 'The type of event.' }),
   })
   .openapi({ required: ['Type', 'Events'], title: 'GetDiscoveredSchemaRequest' })
   .openapi('GetDiscoveredSchemaRequest')
 
 const GetResourcePolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetResourcePolicyRequest' })
   .openapi('GetResourcePolicyRequest')
 
 const IntegerSchema = z.int().openapi('Integer')
 
 const ListDiscoverersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDiscoverersRequest' })
   .openapi('ListDiscoverersRequest')
 
 const ListRegistriesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRegistriesRequest' })
   .openapi('ListRegistriesRequest')
 
 const ListSchemaVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSchemaVersionsRequest' })
   .openapi('ListSchemaVersionsRequest')
 
 const ListSchemasRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSchemasRequest' })
   .openapi('ListSchemasRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const PutCodeBindingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'PutCodeBindingRequest' })
   .openapi('PutCodeBindingRequest')
 
 const PutResourcePolicyRequestSchema = z
   .object({
-    Policy: StringSchema.and(z.any().openapi({ description: 'The resource-based policy.' })),
-    RevisionId: StringSchema.and(
-      z.any().openapi({ description: 'The revision ID of the policy.' }),
-    ).exactOptional(),
+    Policy: StringSchema.openapi({ description: 'The resource-based policy.' }),
+    RevisionId: StringSchema.exactOptional().openapi({
+      description: 'The revision ID of the policy.',
+    }),
   })
   .openapi({
     required: ['Policy'],
@@ -806,25 +721,26 @@ const PutResourcePolicyRequestSchema = z
   .openapi('PutResourcePolicyRequest')
 
 const SearchSchemasRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'SearchSchemasRequest' })
   .openapi('SearchSchemasRequest')
 
 const StartDiscovererRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StartDiscovererRequest' })
   .openapi('StartDiscovererRequest')
 
 const StopDiscovererRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StopDiscovererRequest' })
   .openapi('StopDiscovererRequest')
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'Tags associated with the resource.' }),
-    ),
+    Tags: TagsSchema.openapi({
+      xml: { name: 'tags' },
+      description: 'Tags associated with the resource.',
+    }),
   })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest', description: '' })
   .openapi('TagResourceRequest')
@@ -832,32 +748,28 @@ const TagResourceRequestSchema = z
 const ListOfStringSchema = z.array(StringSchema).openapi('ListOfString')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateDiscovererRequestSchema = z
   .object({
-    Description: StringMin0Max256Schema.and(
-      z.any().openapi({ description: 'The description of the discoverer to update.' }),
-    ).exactOptional(),
-    CrossAccount: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Support discovery of schemas in events sent to the bus from another account. (default: true)',
-        }),
-    ).exactOptional(),
+    Description: StringMin0Max256Schema.exactOptional().openapi({
+      description: 'The description of the discoverer to update.',
+    }),
+    CrossAccount: BooleanSchema.exactOptional().openapi({
+      description:
+        'Support discovery of schemas in events sent to the bus from another account. (default: true)',
+    }),
   })
   .openapi({ title: 'UpdateDiscovererRequest', required: [] })
   .openapi('UpdateDiscovererRequest')
 
 const UpdateRegistryRequestSchema = z
   .object({
-    Description: StringMin0Max256Schema.and(
-      z.any().openapi({ description: 'The description of the registry to update.' }),
-    ).exactOptional(),
+    Description: StringMin0Max256Schema.exactOptional().openapi({
+      description: 'The description of the registry to update.',
+    }),
   })
   .openapi({ title: 'UpdateRegistryRequest', description: 'Updates the registry.', required: [] })
   .openapi('UpdateRegistryRequest')
@@ -866,18 +778,18 @@ const StringMin0Max36Schema = z.string().min(0).max(36).openapi('StringMin0Max36
 
 const UpdateSchemaRequestSchema = z
   .object({
-    ClientTokenId: StringMin0Max36Schema.and(
-      z.any().openapi({ description: 'The ID of the client token.' }),
-    ).exactOptional(),
-    Content: StringMin1Max100000Schema.and(
-      z.any().openapi({ description: 'The source of the schema definition.' }),
-    ).exactOptional(),
-    Description: StringMin0Max256Schema.and(
-      z.any().openapi({ description: 'The description of the schema.' }),
-    ).exactOptional(),
-    Type: TypeSchema.and(
-      z.any().openapi({ description: 'The schema type for the events schema.' }),
-    ).exactOptional(),
+    ClientTokenId: StringMin0Max36Schema.exactOptional().openapi({
+      description: 'The ID of the client token.',
+    }),
+    Content: StringMin1Max100000Schema.exactOptional().openapi({
+      description: 'The source of the schema definition.',
+    }),
+    Description: StringMin0Max256Schema.exactOptional().openapi({
+      description: 'The description of the schema.',
+    }),
+    Type: TypeSchema.exactOptional().openapi({
+      description: 'The schema type for the events schema.',
+    }),
   })
   .openapi({ title: 'UpdateSchemaRequest', required: [] })
   .openapi('UpdateSchemaRequest')

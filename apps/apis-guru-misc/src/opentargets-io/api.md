@@ -53,7 +53,7 @@ Please [get in touch](mailto:support@targetvalidation.org) and send your suggest
 
 Base URLs:
 
-* <a href="https://api.apis.guru//platform-api.opentargets.io/v3">https://api.apis.guru//platform-api.opentargets.io/v3</a>
+* <a href="//platform-api.opentargets.io/v3">//platform-api.opentargets.io/v3</a>
 
 Email: <a href="mailto:support@targetvalidation.org">Open Targets Platform team</a> 
 License: <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache 2.0</a>

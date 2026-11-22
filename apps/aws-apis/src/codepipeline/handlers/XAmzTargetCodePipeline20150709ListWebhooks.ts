@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetCodePipeline20150709ListWebhooksHandler = app.openapi(
   postXAmzTargetCodePipeline20150709ListWebhooksRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

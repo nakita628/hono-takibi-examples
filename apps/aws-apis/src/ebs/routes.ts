@@ -4,9 +4,7 @@ const StatusSchema = z.enum(['completed', 'pending', 'error']).openapi('Status')
 
 const CompleteSnapshotResponseSchema = z
   .object({
-    Status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the snapshot.' }),
-    ).exactOptional(),
+    Status: StatusSchema.exactOptional().openapi({ description: 'The status of the snapshot.' }),
   })
   .openapi({ required: [] })
   .openapi('CompleteSnapshotResponse')
@@ -27,9 +25,9 @@ const BlockDataSchema = z.string().openapi('BlockData')
 
 const GetSnapshotBlockResponseSchema = z
   .object({
-    BlockData: BlockDataSchema.and(
-      z.any().openapi({ description: 'The data content of the block.' }),
-    ).exactOptional(),
+    BlockData: BlockDataSchema.exactOptional().openapi({
+      description: 'The data content of the block.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSnapshotBlockResponse')
@@ -44,25 +42,15 @@ const BlockTokenSchema = z
 
 const ChangedBlockSchema = z
   .object({
-    BlockIndex: BlockIndexSchema.and(
-      z.any().openapi({ description: 'The block index.' }),
-    ).exactOptional(),
-    FirstBlockToken: BlockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The block token for the block index of the <code>FirstSnapshotId</code> specified in the <code>ListChangedBlocks</code> operation. This value is absent if the first snapshot does not have the changed block that is on the second snapshot.',
-        }),
-    ).exactOptional(),
-    SecondBlockToken: BlockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The block token for the block index of the <code>SecondSnapshotId</code> specified in the <code>ListChangedBlocks</code> operation.',
-        }),
-    ).exactOptional(),
+    BlockIndex: BlockIndexSchema.exactOptional().openapi({ description: 'The block index.' }),
+    FirstBlockToken: BlockTokenSchema.exactOptional().openapi({
+      description:
+        'The block token for the block index of the <code>FirstSnapshotId</code> specified in the <code>ListChangedBlocks</code> operation. This value is absent if the first snapshot does not have the changed block that is on the second snapshot.',
+    }),
+    SecondBlockToken: BlockTokenSchema.exactOptional().openapi({
+      description:
+        'The block token for the block index of the <code>SecondSnapshotId</code> specified in the <code>ListChangedBlocks</code> operation.',
+    }),
   })
   .openapi({
     description:
@@ -87,42 +75,32 @@ const PageTokenSchema = z
 
 const ListChangedBlocksResponseSchema = z
   .object({
-    ChangedBlocks: ChangedBlocksSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects containing information about the changed blocks.',
-        }),
-    ).exactOptional(),
-    ExpiryTime: TimeStampSchema.and(
-      z.any().openapi({ description: 'The time when the <code>BlockToken</code> expires.' }),
-    ).exactOptional(),
-    VolumeSize: VolumeSizeSchema.and(
-      z.any().openapi({ description: 'The size of the volume in GB.' }),
-    ).exactOptional(),
-    BlockSize: BlockSizeSchema.and(
-      z.any().openapi({ description: 'The size of the blocks in the snapshot, in bytes.' }),
-    ).exactOptional(),
-    NextToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    ChangedBlocks: ChangedBlocksSchema.exactOptional().openapi({
+      description: 'An array of objects containing information about the changed blocks.',
+    }),
+    ExpiryTime: TimeStampSchema.exactOptional().openapi({
+      description: 'The time when the <code>BlockToken</code> expires.',
+    }),
+    VolumeSize: VolumeSizeSchema.exactOptional().openapi({
+      description: 'The size of the volume in GB.',
+    }),
+    BlockSize: BlockSizeSchema.exactOptional().openapi({
+      description: 'The size of the blocks in the snapshot, in bytes.',
+    }),
+    NextToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListChangedBlocksResponse')
 
 const BlockSchema = z
   .object({
-    BlockIndex: BlockIndexSchema.and(
-      z.any().openapi({ description: 'The block index.' }),
-    ).exactOptional(),
-    BlockToken: BlockTokenSchema.and(
-      z.any().openapi({ description: 'The block token for the block index.' }),
-    ).exactOptional(),
+    BlockIndex: BlockIndexSchema.exactOptional().openapi({ description: 'The block index.' }),
+    BlockToken: BlockTokenSchema.exactOptional().openapi({
+      description: 'The block token for the block index.',
+    }),
   })
   .openapi({
     description: 'A block of data in an Amazon Elastic Block Store snapshot.',
@@ -134,33 +112,27 @@ const BlocksSchema = z.array(BlockSchema).openapi('Blocks')
 
 const ListSnapshotBlocksResponseSchema = z
   .object({
-    Blocks: BlocksSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of objects containing information about the blocks.' }),
-    ).exactOptional(),
-    ExpiryTime: TimeStampSchema.and(
-      z.any().openapi({ description: 'The time when the <code>BlockToken</code> expires.' }),
-    ).exactOptional(),
-    VolumeSize: VolumeSizeSchema.and(
-      z.any().openapi({ description: 'The size of the volume in GB.' }),
-    ).exactOptional(),
-    BlockSize: BlockSizeSchema.and(
-      z.any().openapi({ description: 'The size of the blocks in the snapshot, in bytes.' }),
-    ).exactOptional(),
-    NextToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    Blocks: BlocksSchema.exactOptional().openapi({
+      description: 'An array of objects containing information about the blocks.',
+    }),
+    ExpiryTime: TimeStampSchema.exactOptional().openapi({
+      description: 'The time when the <code>BlockToken</code> expires.',
+    }),
+    VolumeSize: VolumeSizeSchema.exactOptional().openapi({
+      description: 'The size of the volume in GB.',
+    }),
+    BlockSize: BlockSizeSchema.exactOptional().openapi({
+      description: 'The size of the blocks in the snapshot, in bytes.',
+    }),
+    NextToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSnapshotBlocksResponse')
 
-const PutSnapshotBlockResponseSchema = z.object({}).openapi('PutSnapshotBlockResponse')
+const PutSnapshotBlockResponseSchema = z.looseObject({}).openapi('PutSnapshotBlockResponse')
 
 const DescriptionSchema = z
   .string()
@@ -191,10 +163,8 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: 'The key of the tag.' })).exactOptional(),
-    Value: TagValueSchema.and(
-      z.any().openapi({ description: 'The value of the tag.' }),
-    ).exactOptional(),
+    Key: TagKeySchema.exactOptional().openapi({ description: 'The key of the tag.' }),
+    Value: TagValueSchema.exactOptional().openapi({ description: 'The value of the tag.' }),
   })
   .openapi({ description: 'Describes a tag.', required: [] })
   .openapi('Tag')
@@ -210,46 +180,36 @@ const KmsKeyArnSchema = z
 
 const StartSnapshotResponseSchema = z
   .object({
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the snapshot.' }),
-    ).exactOptional(),
-    SnapshotId: SnapshotIdSchema.and(
-      z.any().openapi({ description: 'The ID of the snapshot.' }),
-    ).exactOptional(),
-    OwnerId: OwnerIdSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services account ID of the snapshot owner.' }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the snapshot.' }),
-    ).exactOptional(),
-    StartTime: TimeStampSchema.and(
-      z.any().openapi({ description: 'The timestamp when the snapshot was created.' }),
-    ).exactOptional(),
-    VolumeSize: VolumeSizeSchema.and(
-      z.any().openapi({ description: 'The size of the volume, in GiB.' }),
-    ).exactOptional(),
-    BlockSize: BlockSizeSchema.and(
-      z.any().openapi({ description: 'The size of the blocks in the snapshot, in bytes.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags applied to the snapshot. You can specify up to 50 tags per snapshot. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html"> Tagging your Amazon EC2 resources</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.',
-        }),
-    ).exactOptional(),
-    ParentSnapshotId: SnapshotIdSchema.and(
-      z.any().openapi({ description: 'The ID of the parent snapshot.' }),
-    ).exactOptional(),
-    KmsKeyArn: KmsKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Key Management Service (KMS) key used to encrypt the snapshot.',
-        }),
-    ).exactOptional(),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the snapshot.',
+    }),
+    SnapshotId: SnapshotIdSchema.exactOptional().openapi({
+      description: 'The ID of the snapshot.',
+    }),
+    OwnerId: OwnerIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID of the snapshot owner.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({ description: 'The status of the snapshot.' }),
+    StartTime: TimeStampSchema.exactOptional().openapi({
+      description: 'The timestamp when the snapshot was created.',
+    }),
+    VolumeSize: VolumeSizeSchema.exactOptional().openapi({
+      description: 'The size of the volume, in GiB.',
+    }),
+    BlockSize: BlockSizeSchema.exactOptional().openapi({
+      description: 'The size of the blocks in the snapshot, in bytes.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'The tags applied to the snapshot. You can specify up to 50 tags per snapshot. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html"> Tagging your Amazon EC2 resources</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.',
+    }),
+    ParentSnapshotId: SnapshotIdSchema.exactOptional().openapi({
+      description: 'The ID of the parent snapshot.',
+    }),
+    KmsKeyArn: KmsKeyArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Key Management Service (KMS) key used to encrypt the snapshot.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartSnapshotResponse')
@@ -273,14 +233,14 @@ const ChecksumAggregationMethodSchema = z.literal('LINEAR').openapi('ChecksumAgg
 const ChecksumAlgorithmSchema = z.literal('SHA256').openapi('ChecksumAlgorithm')
 
 const CompleteSnapshotRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CompleteSnapshotRequest' })
   .openapi('CompleteSnapshotRequest')
 
 const DataLengthSchema = z.int().openapi('DataLength')
 
 const GetSnapshotBlockRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSnapshotBlockRequest' })
   .openapi('GetSnapshotBlockRequest')
 
@@ -293,12 +253,12 @@ const IdempotencyTokenSchema = z
 const MaxResultsSchema = z.int().min(100).max(10000).openapi('MaxResults')
 
 const ListChangedBlocksRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListChangedBlocksRequest' })
   .openapi('ListChangedBlocksRequest')
 
 const ListSnapshotBlocksRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSnapshotBlocksRequest' })
   .openapi('ListSnapshotBlocksRequest')
 
@@ -306,14 +266,10 @@ const ProgressSchema = z.int().min(0).max(100).openapi('Progress')
 
 const PutSnapshotBlockRequestSchema = z
   .object({
-    BlockData: BlockDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The data to write to the block.</p> <p>The block data is not signed as part of the Signature Version 4 signing process. As a result, you must generate and provide a Base64-encoded SHA256 checksum for the block data using the <b>x-amz-Checksum</b> header. Also, you must specify the checksum algorithm using the <b>x-amz-Checksum-Algorithm</b> header. The checksum that you provide is part of the Signature Version 4 signing process. It is validated against a checksum generated by Amazon EBS to ensure the validity and authenticity of the data. If the checksums do not correspond, the request fails. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-accessing-snapshot.html#ebsapis-using-checksums"> Using checksums with the EBS direct APIs</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>',
-        }),
-    ),
+    BlockData: BlockDataSchema.openapi({
+      description:
+        '<p>The data to write to the block.</p> <p>The block data is not signed as part of the Signature Version 4 signing process. As a result, you must generate and provide a Base64-encoded SHA256 checksum for the block data using the <b>x-amz-Checksum</b> header. Also, you must specify the checksum algorithm using the <b>x-amz-Checksum-Algorithm</b> header. The checksum that you provide is part of the Signature Version 4 signing process. It is validated against a checksum generated by Amazon EBS to ensure the validity and authenticity of the data. If the checksums do not correspond, the request fails. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-accessing-snapshot.html#ebsapis-using-checksums"> Using checksums with the EBS direct APIs</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>',
+    }),
   })
   .openapi({ required: ['BlockData'], title: 'PutSnapshotBlockRequest' })
   .openapi('PutSnapshotBlockRequest')
@@ -322,60 +278,34 @@ const TimeoutSchema = z.int().min(10).max(4320).openapi('Timeout')
 
 const StartSnapshotRequestSchema = z
   .object({
-    VolumeSize: VolumeSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size of the volume, in GiB. The maximum size is <code>65536</code> GiB (64 TiB).',
-        }),
-    ),
-    ParentSnapshotId: SnapshotIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the parent snapshot. If there is no parent snapshot, or if you are creating the first snapshot for an on-premises volume, omit this parameter.</p> <p>You can\'t specify <b>ParentSnapshotId</b> and <b>Encrypted</b> in the same request. If you specify both parameters, the request fails with <code>ValidationException</code>.</p> <p>The encryption status of the snapshot depends on the values that you specify for <b>Encrypted</b>, <b>KmsKeyArn</b>, and <b>ParentSnapshotId</b>, and whether your Amazon Web Services account is enabled for <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html#encryption-by-default"> encryption by default</a>. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebsapis-using-encryption.html"> Using encryption</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> <important> <p>If you specify an encrypted parent snapshot, you must have permission to use the KMS key that was used to encrypt the parent snapshot. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebsapi-permissions.html#ebsapi-kms-permissions"> Permissions to use Key Management Service keys</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </important>',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags to apply to the snapshot.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the snapshot.' }),
-    ).exactOptional(),
-    ClientToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully. The subsequent retries with the same client token return the result from the original successful request and they have no additional effect.</p> <p>If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-direct-api-idempotency.html"> Idempotency for StartSnapshot API</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    Encrypted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether to encrypt the snapshot.</p> <p>You can\'t specify <b>Encrypted</b> and <b> ParentSnapshotId</b> in the same request. If you specify both parameters, the request fails with <code>ValidationException</code>.</p> <p>The encryption status of the snapshot depends on the values that you specify for <b>Encrypted</b>, <b>KmsKeyArn</b>, and <b>ParentSnapshotId</b>, and whether your Amazon Web Services account is enabled for <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html#encryption-by-default"> encryption by default</a>. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebsapis-using-encryption.html"> Using encryption</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> <important> <p>To create an encrypted snapshot, you must have permission to use the KMS key. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebsapi-permissions.html#ebsapi-kms-permissions"> Permissions to use Key Management Service keys</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </important>',
-        }),
-    ).exactOptional(),
-    KmsKeyArn: KmsKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the Key Management Service (KMS) key to be used to encrypt the snapshot.</p> <p>The encryption status of the snapshot depends on the values that you specify for <b>Encrypted</b>, <b>KmsKeyArn</b>, and <b>ParentSnapshotId</b>, and whether your Amazon Web Services account is enabled for <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html#encryption-by-default"> encryption by default</a>. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebsapis-using-encryption.html"> Using encryption</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> <important> <p>To create an encrypted snapshot, you must have permission to use the KMS key. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebsapi-permissions.html#ebsapi-kms-permissions"> Permissions to use Key Management Service keys</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </important>',
-        }),
-    ).exactOptional(),
-    Timeout: TimeoutSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The amount of time (in minutes) after which the snapshot is automatically cancelled if:</p> <ul> <li> <p>No blocks are written to the snapshot.</p> </li> <li> <p>The snapshot is not completed after writing the last block of data.</p> </li> </ul> <p>If no value is specified, the timeout defaults to <code>60</code> minutes.</p>',
-        }),
-    ).exactOptional(),
+    VolumeSize: VolumeSizeSchema.openapi({
+      description:
+        'The size of the volume, in GiB. The maximum size is <code>65536</code> GiB (64 TiB).',
+    }),
+    ParentSnapshotId: SnapshotIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the parent snapshot. If there is no parent snapshot, or if you are creating the first snapshot for an on-premises volume, omit this parameter.</p> <p>You can\'t specify <b>ParentSnapshotId</b> and <b>Encrypted</b> in the same request. If you specify both parameters, the request fails with <code>ValidationException</code>.</p> <p>The encryption status of the snapshot depends on the values that you specify for <b>Encrypted</b>, <b>KmsKeyArn</b>, and <b>ParentSnapshotId</b>, and whether your Amazon Web Services account is enabled for <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html#encryption-by-default"> encryption by default</a>. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebsapis-using-encryption.html"> Using encryption</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> <important> <p>If you specify an encrypted parent snapshot, you must have permission to use the KMS key that was used to encrypt the parent snapshot. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebsapi-permissions.html#ebsapi-kms-permissions"> Permissions to use Key Management Service keys</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </important>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ description: 'The tags to apply to the snapshot.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description for the snapshot.',
+    }),
+    ClientToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        '<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully. The subsequent retries with the same client token return the result from the original successful request and they have no additional effect.</p> <p>If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-direct-api-idempotency.html"> Idempotency for StartSnapshot API</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>',
+    }),
+    Encrypted: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether to encrypt the snapshot.</p> <p>You can\'t specify <b>Encrypted</b> and <b> ParentSnapshotId</b> in the same request. If you specify both parameters, the request fails with <code>ValidationException</code>.</p> <p>The encryption status of the snapshot depends on the values that you specify for <b>Encrypted</b>, <b>KmsKeyArn</b>, and <b>ParentSnapshotId</b>, and whether your Amazon Web Services account is enabled for <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html#encryption-by-default"> encryption by default</a>. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebsapis-using-encryption.html"> Using encryption</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> <important> <p>To create an encrypted snapshot, you must have permission to use the KMS key. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebsapi-permissions.html#ebsapi-kms-permissions"> Permissions to use Key Management Service keys</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </important>',
+    }),
+    KmsKeyArn: KmsKeyArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the Key Management Service (KMS) key to be used to encrypt the snapshot.</p> <p>The encryption status of the snapshot depends on the values that you specify for <b>Encrypted</b>, <b>KmsKeyArn</b>, and <b>ParentSnapshotId</b>, and whether your Amazon Web Services account is enabled for <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html#encryption-by-default"> encryption by default</a>. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebsapis-using-encryption.html"> Using encryption</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> <important> <p>To create an encrypted snapshot, you must have permission to use the KMS key. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebsapi-permissions.html#ebsapi-kms-permissions"> Permissions to use Key Management Service keys</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </important>',
+    }),
+    Timeout: TimeoutSchema.exactOptional().openapi({
+      description:
+        '<p>The amount of time (in minutes) after which the snapshot is automatically cancelled if:</p> <ul> <li> <p>No blocks are written to the snapshot.</p> </li> <li> <p>The snapshot is not completed after writing the last block of data.</p> </li> </ul> <p>If no value is specified, the timeout defaults to <code>60</code> minutes.</p>',
+    }),
   })
   .openapi({ required: ['VolumeSize'], title: 'StartSnapshotRequest' })
   .openapi('StartSnapshotRequest')

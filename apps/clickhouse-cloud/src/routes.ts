@@ -15547,32 +15547,10 @@ const PgPitrRestoreTargetPropertySchema = z.iso
   .openapi('PgPitrRestoreTargetProperty')
 
 const PgPasswordSchema = z
-  .unknown()
-  .superRefine((val, ctx) => {
-    if (typeof val === 'string') {
-      if (!new RegExp('[a-z]').test(val)) {
-        ctx.addIssue({ code: 'custom' })
-      }
-    }
-  })
-  .and(
-    z.unknown().superRefine((val, ctx) => {
-      if (typeof val === 'string') {
-        if (!new RegExp('[A-Z]').test(val)) {
-          ctx.addIssue({ code: 'custom' })
-        }
-      }
-    }),
-  )
-  .and(
-    z.unknown().superRefine((val, ctx) => {
-      if (typeof val === 'string') {
-        if (!new RegExp('[0-9]').test(val)) {
-          ctx.addIssue({ code: 'custom' })
-        }
-      }
-    }),
-  )
+  .string()
+  .regex(/[a-z]/)
+  .and(z.string().regex(/[A-Z]/))
+  .and(z.string().regex(/[0-9]/))
   .openapi({
     title: 'Password',
     description:

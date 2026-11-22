@@ -20,5 +20,7 @@ export const messagesHandler = app
   })
   .openapi(
     getConversationsConversations202609ThreadsThreadIdMessagesMessageIdOriginalContentRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

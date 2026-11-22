@@ -1,0 +1,8 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postCreateAnomalyDetectorRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const CreateAnomalyDetectorHandler = app.openapi(postCreateAnomalyDetectorRoute, (c) => {
+  throw new Error('Not implemented')
+})

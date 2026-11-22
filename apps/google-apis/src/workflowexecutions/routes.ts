@@ -1,10 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const CancelExecutionRequestSchema = z
-  .object({})
-  .openapi({ description: 'Request for the CancelExecution method.' })
-  .openapi('CancelExecutionRequest')
-
 const PositionSchema = z
   .object({
     column: z
@@ -177,7 +172,17 @@ const ExecutionSchema = z
   })
   .openapi('Execution')
 
-const ListExecutionsResponseSchema = z
+type ListExecutionsResponseType = {
+  executions?: z.infer<typeof ExecutionSchema>[]
+  nextPageToken?: string
+}
+
+const CancelExecutionRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'Request for the CancelExecution method.' })
+  .openapi('CancelExecutionRequest')
+
+const ListExecutionsResponseSchema: z.ZodType<ListExecutionsResponseType> = z
   .object({
     executions: z
       .array(ExecutionSchema)

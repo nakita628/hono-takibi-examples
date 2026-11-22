@@ -48,7 +48,7 @@ const DailyQualityResponseSchema = z
   .openapi({ required: [] })
   .openapi('DailyQualityResponse')
 
-const ObjectSchema = z.object({}).openapi('Object')
+const ObjectSchema = z.looseObject({}).openapi('Object')
 
 const OverallQualityResponseSchema = z
   .object({

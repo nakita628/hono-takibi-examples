@@ -36,7 +36,7 @@ export const getApiV2ListFederationsRoute = createRoute({
       description: 'Bad request, check response for detailed errors.',
       content: {
         'application/json': {
-          schema: z.object({ errors: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ errors: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -93,7 +93,7 @@ export const getApiV2ListMarketsRoute = createRoute({
       description: 'Bad request, check response for detailed errors.',
       content: {
         'application/json': {
-          schema: z.object({ errors: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ errors: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -197,7 +197,7 @@ export const getApiV2PerformanceStatsRoute = createRoute({
       description: 'Bad request, check response for detailed errors.',
       content: {
         'application/json': {
-          schema: z.object({ errors: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ errors: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -233,7 +233,7 @@ export const getApiV2PredictionsRoute = createRoute({
       description: 'Bad request, check response for detailed errors.',
       content: {
         'application/json': {
-          schema: z.object({ errors: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ errors: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },
@@ -274,7 +274,7 @@ export const getApiV2PredictionsIdRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ data: z.array(z.object({})).exactOptional() })
+            .object({ data: z.array(z.looseObject({})).exactOptional() })
             .openapi({ required: [] }),
         },
       },
@@ -283,7 +283,7 @@ export const getApiV2PredictionsIdRoute = createRoute({
       description: 'Bad request, check response for detailed errors.',
       content: {
         'application/json': {
-          schema: z.object({ errors: z.object({}).exactOptional() }).openapi({ required: [] }),
+          schema: z.object({ errors: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         },
       },
     },

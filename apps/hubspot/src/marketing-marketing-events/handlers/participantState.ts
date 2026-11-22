@@ -12,15 +12,21 @@ const app = new OpenAPIHono()
 export const participantStateHandler = app
   .openapi(
     getMarketingMarketingEvents202609ParticipationsContactsContactIdentifierBreakdownRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     getMarketingMarketingEvents202609ParticipationsExternalAccountIdExternalEventIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     getMarketingMarketingEvents202609ParticipationsExternalAccountIdExternalEventIdBreakdownRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(getMarketingMarketingEvents202609ParticipationsMarketingEventIdRoute, (c) => {
     throw new Error('Not implemented')

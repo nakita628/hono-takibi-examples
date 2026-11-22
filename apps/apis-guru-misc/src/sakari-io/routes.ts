@@ -110,7 +110,10 @@ const TagSchema = z
 
 const ContactRequestSchema = ContactIdentifiersSchema.and(
   z
-    .object({ attributes: z.object({}).exactOptional(), tags: z.array(TagSchema).exactOptional() })
+    .object({
+      attributes: z.looseObject({}).exactOptional(),
+      tags: z.array(TagSchema).exactOptional(),
+    })
     .openapi({ required: [] }),
 ).openapi('ContactRequest')
 
@@ -307,7 +310,7 @@ const SendMessagesRequestSchema = z
       .openapi({ description: 'List of conversation ids to send messages to' }),
     filters: z
       .object({
-        attributes: z.array(z.object({})).exactOptional(),
+        attributes: z.array(z.looseObject({})).exactOptional(),
         tags: z.array(z.string()).exactOptional(),
       })
       .exactOptional()

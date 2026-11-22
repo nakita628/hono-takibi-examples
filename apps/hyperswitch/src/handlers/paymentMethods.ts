@@ -13,7 +13,9 @@ import type {
 
 export const postPaymentMethodsRouteHandler: RouteHandler<typeof postPaymentMethodsRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const getAccountPaymentMethodsRouteHandler: RouteHandler<
   typeof getAccountPaymentMethodsRoute

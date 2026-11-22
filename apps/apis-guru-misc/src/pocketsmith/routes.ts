@@ -1,5 +1,19 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+type CategoryType = {
+  children?: CategoryType[]
+  colour?: string
+  created_at?: string
+  id?: number
+  is_bill?: boolean
+  is_transfer?: boolean
+  parent_id?: number
+  refund_behaviour?: 'debits_are_deductions' | 'credits_are_refunds' | null
+  roll_up?: boolean
+  title?: string
+  updated_at?: string
+}
+
 const ScenarioSchema = z
   .object({
     achieve_date: z
@@ -213,152 +227,101 @@ const TransactionAccountSchema = z
   .openapi({ required: [] })
   .openapi('TransactionAccount')
 
-type AccountType = {
-  created_at?: string
-  currency_code?: string
-  current_balance?: number
-  current_balance_date?: string
-  current_balance_exchange_rate?: number
-  current_balance_in_base_currency?: number
-  id?: number
-  is_net_worth?: boolean
-  primary_scenario?: z.infer<typeof ScenarioSchema>
-  primary_transaction_account?: z.infer<typeof TransactionAccountSchema>
-  safe_balance?: number
-  safe_balance_in_base_currency?: number
-  scenarios?: z.infer<typeof ScenarioSchema>[]
-  title?: string
-  transaction_accounts?: z.infer<typeof TransactionAccountSchema>[]
-  type?:
-    | 'bank'
-    | 'credits'
-    | 'cash'
-    | 'stocks'
-    | 'mortgage'
-    | 'loans'
-    | 'vehicle'
-    | 'property'
-    | 'insurance'
-    | 'other_asset'
-    | 'other_liability'
-  updated_at?: string
-}
-
-type CategoryType = {
-  children?: CategoryType[]
-  colour?: string
-  created_at?: string
-  id?: number
-  is_bill?: boolean
-  is_transfer?: boolean
-  parent_id?: number
-  refund_behaviour?: 'debits_are_deductions' | 'credits_are_refunds' | null
-  roll_up?: boolean
-  title?: string
-  updated_at?: string
-}
-
-const AccountSchema: z.ZodType<AccountType> = z
-  .lazy(() =>
-    z
-      .object({
-        created_at: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'When the account was created.', example: '2018-02-27' }),
-        currency_code: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The currency code for the account.', example: 'NZD' }),
-        current_balance: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'The current balance of the account.', example: 2694.39 }),
-        current_balance_date: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The date of the current balance.', example: '2018-02-27' }),
-        current_balance_exchange_rate: z
-          .number()
-          .exactOptional()
-          .openapi({
-            description:
-              "The exchange rate between the account's currency and the user's base currency, when different. If the currencies are the same, null is returned.",
-            example: 1.5,
-          }),
-        current_balance_in_base_currency: z
-          .number()
-          .exactOptional()
-          .openapi({
-            description: "The current balance of the account in the user's base currency.",
-            example: 4041.59,
-          }),
-        id: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'The unique identifier of the account.', example: 42 }),
-        is_net_worth: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether the account is a net worth asset.', example: false }),
-        primary_scenario: ScenarioSchema.exactOptional(),
-        primary_transaction_account: TransactionAccountSchema.exactOptional(),
-        safe_balance: z
-          .number()
-          .exactOptional()
-          .openapi({
-            description:
-              'The current safe balance, if safe balance is activated on the account. If safe balance is not activated, then null is returned.',
-            example: 2694.39,
-          }),
-        safe_balance_in_base_currency: z
-          .number()
-          .exactOptional()
-          .openapi({
-            description:
-              "The current safe balance in the user's base currency, if safe balance is activated on the account. If safe balance is not activated, then null is returned.",
-            example: 4041.59,
-          }),
-        scenarios: z
-          .array(ScenarioSchema)
-          .exactOptional()
-          .openapi({
-            description: 'All scenarios that compose the account, including the primary.',
-          }),
-        title: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The title of the account.', example: 'Bank of Foo' }),
-        transaction_accounts: z
-          .array(TransactionAccountSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'All transaction accounts that compose the account, including the primary.',
-          }),
-        type: z
-          .enum([
-            'bank',
-            'credits',
-            'cash',
-            'stocks',
-            'mortgage',
-            'loans',
-            'vehicle',
-            'property',
-            'insurance',
-            'other_asset',
-            'other_liability',
-          ])
-          .exactOptional()
-          .openapi({ description: 'The type of the account.', example: 'bank' }),
-        updated_at: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'When the account was last updated.', example: '2018-02-27' }),
-      })
-      .openapi({ required: [] }),
-  )
+const AccountSchema = z
+  .object({
+    created_at: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'When the account was created.', example: '2018-02-27' }),
+    currency_code: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The currency code for the account.', example: 'NZD' }),
+    current_balance: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The current balance of the account.', example: 2694.39 }),
+    current_balance_date: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The date of the current balance.', example: '2018-02-27' }),
+    current_balance_exchange_rate: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          "The exchange rate between the account's currency and the user's base currency, when different. If the currencies are the same, null is returned.",
+        example: 1.5,
+      }),
+    current_balance_in_base_currency: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description: "The current balance of the account in the user's base currency.",
+        example: 4041.59,
+      }),
+    id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier of the account.', example: 42 }),
+    is_net_worth: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the account is a net worth asset.', example: false }),
+    primary_scenario: ScenarioSchema.exactOptional(),
+    primary_transaction_account: TransactionAccountSchema.exactOptional(),
+    safe_balance: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'The current safe balance, if safe balance is activated on the account. If safe balance is not activated, then null is returned.',
+        example: 2694.39,
+      }),
+    safe_balance_in_base_currency: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          "The current safe balance in the user's base currency, if safe balance is activated on the account. If safe balance is not activated, then null is returned.",
+        example: 4041.59,
+      }),
+    scenarios: z
+      .array(ScenarioSchema)
+      .exactOptional()
+      .openapi({ description: 'All scenarios that compose the account, including the primary.' }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The title of the account.', example: 'Bank of Foo' }),
+    transaction_accounts: z
+      .array(TransactionAccountSchema)
+      .exactOptional()
+      .openapi({
+        description: 'All transaction accounts that compose the account, including the primary.',
+      }),
+    type: z
+      .enum([
+        'bank',
+        'credits',
+        'cash',
+        'stocks',
+        'mortgage',
+        'loans',
+        'vehicle',
+        'property',
+        'insurance',
+        'other_asset',
+        'other_liability',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of the account.', example: 'bank' }),
+    updated_at: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'When the account was last updated.', example: '2018-02-27' }),
+  })
+  .openapi({ required: [] })
   .openapi('Account')
 
 const AttachmentSchema = z

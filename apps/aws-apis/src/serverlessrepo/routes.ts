@@ -10,114 +10,66 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const ParameterDefinitionSchema = z
   .object({
-    AllowedPattern: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'allowedPattern' },
-          description:
-            'A regular expression that represents the patterns to allow for String types.',
-        }),
-    ).exactOptional(),
-    AllowedValues: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'allowedValues' },
-          description: 'An array containing the list of values allowed for the parameter.',
-        }),
-    ).exactOptional(),
-    ConstraintDescription: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'constraintDescription' },
-          description:
-            '<p>A string that explains a constraint when the constraint is violated. For example, without a constraint description,\n a parameter that has an allowed pattern of [A-Za-z0-9]+ displays the following error message when the user\n specifies an invalid value:</p><p>\n Malformed input-Parameter MyParameter must match pattern [A-Za-z0-9]+\n </p><p>By adding a constraint description, such as "must contain only uppercase and lowercase letters and numbers," you can display\n the following customized error message:</p><p>\n Malformed input-Parameter MyParameter must contain only uppercase and lowercase letters and numbers.\n </p>',
-        }),
-    ).exactOptional(),
-    DefaultValue: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'defaultValue' },
-          description:
-            'A value of the appropriate type for the template to use if no value is specified when a stack is created.\n If you define constraints for the parameter, you must specify a value that adheres to those constraints.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'A string of up to 4,000 characters that describes the parameter.',
-        }),
-    ).exactOptional(),
-    MaxLength: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxLength' },
-          description:
-            'An integer value that determines the largest number of characters that you want to allow for String types.',
-        }),
-    ).exactOptional(),
-    MaxValue: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxValue' },
-          description:
-            'A numeric value that determines the largest numeric value that you want to allow for Number types.',
-        }),
-    ).exactOptional(),
-    MinLength: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'minLength' },
-          description:
-            'An integer value that determines the smallest number of characters that you want to allow for String types.',
-        }),
-    ).exactOptional(),
-    MinValue: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'minValue' },
-          description:
-            'A numeric value that determines the smallest numeric value that you want to allow for Number types.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the parameter.' }),
-    ),
-    NoEcho: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'noEcho' },
-          description:
-            'Whether to mask the parameter value whenever anyone makes a call that describes the stack. If you set the\n value to true, the parameter value is masked with asterisks (*****).',
-        }),
-    ).exactOptional(),
-    ReferencedByResources: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'referencedByResources' },
-          description: 'A list of AWS SAM resources that use this parameter.',
-        }),
-    ),
-    Type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'type' },
-          description:
-            '<p>The type of the parameter.</p><p>Valid values: String | Number | List&lt;Number> | CommaDelimitedList\n </p><p>\n String: A literal string.</p><p>For example, users can specify "MyUserName".</p><p>\n Number: An integer or float. AWS CloudFormation validates the parameter value as a number. However, when you use the\n parameter elsewhere in your template (for example, by using the Ref intrinsic function), the parameter value becomes a string.</p><p>For example, users might specify "8888".</p><p>\n List&lt;Number>: An array of integers or floats that are separated by commas. AWS CloudFormation validates the parameter value as numbers. However, when\n you use the parameter elsewhere in your template (for example, by using the Ref intrinsic function), the parameter value becomes a list of strings.</p><p>For example, users might specify "80,20", and then Ref results in ["80","20"].</p><p>\n CommaDelimitedList: An array of literal strings that are separated by commas. The total number of strings should be one more than the total number of commas.\n Also, each member string is space-trimmed.</p><p>For example, users might specify "test,dev,prod", and then Ref results in ["test","dev","prod"].</p>',
-        }),
-    ).exactOptional(),
+    AllowedPattern: StringSchema.exactOptional().openapi({
+      xml: { name: 'allowedPattern' },
+      description: 'A regular expression that represents the patterns to allow for String types.',
+    }),
+    AllowedValues: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'allowedValues' },
+      description: 'An array containing the list of values allowed for the parameter.',
+    }),
+    ConstraintDescription: StringSchema.exactOptional().openapi({
+      xml: { name: 'constraintDescription' },
+      description:
+        '<p>A string that explains a constraint when the constraint is violated. For example, without a constraint description,\n a parameter that has an allowed pattern of [A-Za-z0-9]+ displays the following error message when the user\n specifies an invalid value:</p><p>\n Malformed input-Parameter MyParameter must match pattern [A-Za-z0-9]+\n </p><p>By adding a constraint description, such as "must contain only uppercase and lowercase letters and numbers," you can display\n the following customized error message:</p><p>\n Malformed input-Parameter MyParameter must contain only uppercase and lowercase letters and numbers.\n </p>',
+    }),
+    DefaultValue: StringSchema.exactOptional().openapi({
+      xml: { name: 'defaultValue' },
+      description:
+        'A value of the appropriate type for the template to use if no value is specified when a stack is created.\n If you define constraints for the parameter, you must specify a value that adheres to those constraints.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A string of up to 4,000 characters that describes the parameter.',
+    }),
+    MaxLength: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxLength' },
+      description:
+        'An integer value that determines the largest number of characters that you want to allow for String types.',
+    }),
+    MaxValue: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxValue' },
+      description:
+        'A numeric value that determines the largest numeric value that you want to allow for Number types.',
+    }),
+    MinLength: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'minLength' },
+      description:
+        'An integer value that determines the smallest number of characters that you want to allow for String types.',
+    }),
+    MinValue: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'minValue' },
+      description:
+        'A numeric value that determines the smallest numeric value that you want to allow for Number types.',
+    }),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the parameter.',
+    }),
+    NoEcho: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'noEcho' },
+      description:
+        'Whether to mask the parameter value whenever anyone makes a call that describes the stack. If you set the\n value to true, the parameter value is masked with asterisks (*****).',
+    }),
+    ReferencedByResources: ListOfStringSchema.openapi({
+      xml: { name: 'referencedByResources' },
+      description: 'A list of AWS SAM resources that use this parameter.',
+    }),
+    Type: StringSchema.exactOptional().openapi({
+      xml: { name: 'type' },
+      description:
+        '<p>The type of the parameter.</p><p>Valid values: String | Number | List&lt;Number> | CommaDelimitedList\n </p><p>\n String: A literal string.</p><p>For example, users can specify "MyUserName".</p><p>\n Number: An integer or float. AWS CloudFormation validates the parameter value as a number. However, when you use the\n parameter elsewhere in your template (for example, by using the Ref intrinsic function), the parameter value becomes a string.</p><p>For example, users might specify "8888".</p><p>\n List&lt;Number>: An array of integers or floats that are separated by commas. AWS CloudFormation validates the parameter value as numbers. However, when\n you use the parameter elsewhere in your template (for example, by using the Ref intrinsic function), the parameter value becomes a list of strings.</p><p>For example, users might specify "80,20", and then Ref results in ["80","20"].</p><p>\n CommaDelimitedList: An array of literal strings that are separated by commas. The total number of strings should be one more than the total number of commas.\n Also, each member string is space-trimmed.</p><p>For example, users might specify "test,dev,prod", and then Ref results in ["test","dev","prod"].</p>',
+    }),
   })
   .openapi({
     required: ['ReferencedByResources', 'Name'],
@@ -143,83 +95,47 @@ const ListOfCapabilitySchema = z.array(CapabilitySchema).openapi('ListOfCapabili
 
 const VersionSchema = z
   .object({
-    ApplicationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'applicationId' },
-          description: 'The application Amazon Resource Name (ARN).',
-        }),
-    ),
-    CreationTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'creationTime' },
-          description: 'The date and time this resource was created.',
-        }),
-    ),
-    ParameterDefinitions: ListOfParameterDefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'parameterDefinitions' },
-          description: 'An array of parameter types supported by the application.',
-        }),
-    ),
-    RequiredCapabilities: ListOfCapabilitySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requiredCapabilities' },
-          description:
-            '<p>A list of values that you must specify before you can deploy certain applications.\n Some applications might include resources that can affect permissions in your AWS\n account, for example, by creating new AWS Identity and Access Management (IAM) users.\n For those applications, you must explicitly acknowledge their capabilities by\n specifying this parameter.</p><p>The only valid values are CAPABILITY_IAM, CAPABILITY_NAMED_IAM,\n CAPABILITY_RESOURCE_POLICY, and CAPABILITY_AUTO_EXPAND.</p><p>The following resources require you to specify CAPABILITY_IAM or\n CAPABILITY_NAMED_IAM:\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html">AWS::IAM::Group</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html">AWS::IAM::InstanceProfile</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html">AWS::IAM::Policy</a>, and\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html">AWS::IAM::Role</a>.\n If the application contains IAM resources, you can specify either CAPABILITY_IAM\n or CAPABILITY_NAMED_IAM. If the application contains IAM resources\n with custom names, you must specify CAPABILITY_NAMED_IAM.</p><p>The following resources require you to specify CAPABILITY_RESOURCE_POLICY:\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html">AWS::Lambda::Permission</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html">AWS::IAM:Policy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-applicationautoscaling-scalingpolicy.html">AWS::ApplicationAutoScaling::ScalingPolicy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-policy.html">AWS::S3::BucketPolicy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sqs-policy.html">AWS::SQS::QueuePolicy</a>, and\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sns-policy.html">AWS::SNS::TopicPolicy</a>.</p><p>Applications that contain one or more nested applications require you to specify\n CAPABILITY_AUTO_EXPAND.</p><p>If your application template contains any of the above resources, we recommend that you review\n all permissions associated with the application before deploying. If you don\'t specify\n this parameter for an application that requires capabilities, the call will fail.</p>',
-        }),
-    ),
-    ResourcesSupported: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourcesSupported' },
-          description:
-            'Whether all of the AWS resources contained in this application are supported in the region\n in which it is being retrieved.',
-        }),
-    ),
-    SemanticVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'semanticVersion' },
-          description:
-            '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
-        }),
-    ),
-    SourceCodeArchiveUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceCodeArchiveUrl' },
-          description:
-            '<p>A link to the S3 object that contains the ZIP archive of the source code for this version of your application.</p><p>Maximum size 50 MB</p>',
-        }),
-    ).exactOptional(),
-    SourceCodeUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceCodeUrl' },
-          description:
-            'A link to a public repository for the source code of your application, for example the URL of a specific GitHub commit.',
-        }),
-    ).exactOptional(),
-    TemplateUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateUrl' },
-          description: 'A link to the packaged AWS SAM template of your application.',
-        }),
-    ),
+    ApplicationId: StringSchema.openapi({
+      xml: { name: 'applicationId' },
+      description: 'The application Amazon Resource Name (ARN).',
+    }),
+    CreationTime: StringSchema.openapi({
+      xml: { name: 'creationTime' },
+      description: 'The date and time this resource was created.',
+    }),
+    ParameterDefinitions: ListOfParameterDefinitionSchema.openapi({
+      xml: { name: 'parameterDefinitions' },
+      description: 'An array of parameter types supported by the application.',
+    }),
+    RequiredCapabilities: ListOfCapabilitySchema.openapi({
+      xml: { name: 'requiredCapabilities' },
+      description:
+        '<p>A list of values that you must specify before you can deploy certain applications.\n Some applications might include resources that can affect permissions in your AWS\n account, for example, by creating new AWS Identity and Access Management (IAM) users.\n For those applications, you must explicitly acknowledge their capabilities by\n specifying this parameter.</p><p>The only valid values are CAPABILITY_IAM, CAPABILITY_NAMED_IAM,\n CAPABILITY_RESOURCE_POLICY, and CAPABILITY_AUTO_EXPAND.</p><p>The following resources require you to specify CAPABILITY_IAM or\n CAPABILITY_NAMED_IAM:\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html">AWS::IAM::Group</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html">AWS::IAM::InstanceProfile</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html">AWS::IAM::Policy</a>, and\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html">AWS::IAM::Role</a>.\n If the application contains IAM resources, you can specify either CAPABILITY_IAM\n or CAPABILITY_NAMED_IAM. If the application contains IAM resources\n with custom names, you must specify CAPABILITY_NAMED_IAM.</p><p>The following resources require you to specify CAPABILITY_RESOURCE_POLICY:\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html">AWS::Lambda::Permission</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html">AWS::IAM:Policy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-applicationautoscaling-scalingpolicy.html">AWS::ApplicationAutoScaling::ScalingPolicy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-policy.html">AWS::S3::BucketPolicy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sqs-policy.html">AWS::SQS::QueuePolicy</a>, and\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sns-policy.html">AWS::SNS::TopicPolicy</a>.</p><p>Applications that contain one or more nested applications require you to specify\n CAPABILITY_AUTO_EXPAND.</p><p>If your application template contains any of the above resources, we recommend that you review\n all permissions associated with the application before deploying. If you don\'t specify\n this parameter for an application that requires capabilities, the call will fail.</p>',
+    }),
+    ResourcesSupported: BooleanSchema.openapi({
+      xml: { name: 'resourcesSupported' },
+      description:
+        'Whether all of the AWS resources contained in this application are supported in the region\n in which it is being retrieved.',
+    }),
+    SemanticVersion: StringSchema.openapi({
+      xml: { name: 'semanticVersion' },
+      description:
+        '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
+    }),
+    SourceCodeArchiveUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceCodeArchiveUrl' },
+      description:
+        '<p>A link to the S3 object that contains the ZIP archive of the source code for this version of your application.</p><p>Maximum size 50 MB</p>',
+    }),
+    SourceCodeUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceCodeUrl' },
+      description:
+        'A link to a public repository for the source code of your application, for example the URL of a specific GitHub commit.',
+    }),
+    TemplateUrl: StringSchema.openapi({
+      xml: { name: 'templateUrl' },
+      description: 'A link to the packaged AWS SAM template of your application.',
+    }),
   })
   .openapi({
     required: [
@@ -237,119 +153,67 @@ const VersionSchema = z
 
 const CreateApplicationResponseSchema = z
   .object({
-    ApplicationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'applicationId' },
-          description: 'The application Amazon Resource Name (ARN).',
-        }),
-    ).exactOptional(),
-    Author: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'author' },
-          description:
-            '<p>The name of the author publishing the app.</p><p>Minimum length=1. Maximum length=127.</p><p>Pattern "^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$";</p>',
-        }),
-    ).exactOptional(),
-    CreationTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'creationTime' },
-          description: 'The date and time this resource was created.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            '<p>The description of the application.</p><p>Minimum length=1. Maximum length=256</p>',
-        }),
-    ).exactOptional(),
-    HomePageUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'homePageUrl' },
-          description:
-            'A URL with more information about the application, for example the location of your GitHub repository for the application.',
-        }),
-    ).exactOptional(),
-    IsVerifiedAuthor: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'isVerifiedAuthor' },
-          description:
-            "Whether the author of this application has been verified. This means means that AWS has made a good faith review, as a reasonable and prudent service provider, of the information provided by the requester and has confirmed that the requester's identity is as claimed.",
-        }),
-    ).exactOptional(),
-    Labels: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'labels' },
-          description:
-            '<p>Labels to improve discovery of apps in search results.</p><p>Minimum length=1. Maximum length=127. Maximum number of labels: 10</p><p>Pattern: "^[a-zA-Z0-9+\\\\-_:\\\\/@]+$";</p>',
-        }),
-    ).exactOptional(),
-    LicenseUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'licenseUrl' },
-          description:
-            '<p>A link to a license file of the app that matches the spdxLicenseID value of your application.</p><p>Maximum size 5 MB</p>',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            '<p>The name of the application.</p><p>Minimum length=1. Maximum length=140</p><p>Pattern: "[a-zA-Z0-9\\\\-]+";</p>',
-        }),
-    ).exactOptional(),
-    ReadmeUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'readmeUrl' },
-          description:
-            '<p>A link to the readme file in Markdown language that contains a more detailed description of the application and how it works.</p><p>Maximum size 5 MB</p>',
-        }),
-    ).exactOptional(),
-    SpdxLicenseId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'spdxLicenseId' },
-          description: 'A valid identifier from https://spdx.org/licenses/.',
-        }),
-    ).exactOptional(),
-    VerifiedAuthorUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'verifiedAuthorUrl' },
-          description:
-            'The URL to the public profile of a verified author. This URL is submitted by the author.',
-        }),
-    ).exactOptional(),
-    Version: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'version' },
-          description: 'Version information about the application.',
-        }),
-    ).exactOptional(),
+    ApplicationId: StringSchema.exactOptional().openapi({
+      xml: { name: 'applicationId' },
+      description: 'The application Amazon Resource Name (ARN).',
+    }),
+    Author: StringSchema.exactOptional().openapi({
+      xml: { name: 'author' },
+      description:
+        '<p>The name of the author publishing the app.</p><p>Minimum length=1. Maximum length=127.</p><p>Pattern "^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$";</p>',
+    }),
+    CreationTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'creationTime' },
+      description: 'The date and time this resource was created.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        '<p>The description of the application.</p><p>Minimum length=1. Maximum length=256</p>',
+    }),
+    HomePageUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'homePageUrl' },
+      description:
+        'A URL with more information about the application, for example the location of your GitHub repository for the application.',
+    }),
+    IsVerifiedAuthor: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'isVerifiedAuthor' },
+      description:
+        "Whether the author of this application has been verified. This means means that AWS has made a good faith review, as a reasonable and prudent service provider, of the information provided by the requester and has confirmed that the requester's identity is as claimed.",
+    }),
+    Labels: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'labels' },
+      description:
+        '<p>Labels to improve discovery of apps in search results.</p><p>Minimum length=1. Maximum length=127. Maximum number of labels: 10</p><p>Pattern: "^[a-zA-Z0-9+\\\\-_:\\\\/@]+$";</p>',
+    }),
+    LicenseUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'licenseUrl' },
+      description:
+        '<p>A link to a license file of the app that matches the spdxLicenseID value of your application.</p><p>Maximum size 5 MB</p>',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description:
+        '<p>The name of the application.</p><p>Minimum length=1. Maximum length=140</p><p>Pattern: "[a-zA-Z0-9\\\\-]+";</p>',
+    }),
+    ReadmeUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'readmeUrl' },
+      description:
+        '<p>A link to the readme file in Markdown language that contains a more detailed description of the application and how it works.</p><p>Maximum size 5 MB</p>',
+    }),
+    SpdxLicenseId: StringSchema.exactOptional().openapi({
+      xml: { name: 'spdxLicenseId' },
+      description: 'A valid identifier from https://spdx.org/licenses/.',
+    }),
+    VerifiedAuthorUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'verifiedAuthorUrl' },
+      description:
+        'The URL to the public profile of a verified author. This URL is submitted by the author.',
+    }),
+    Version: VersionSchema.exactOptional().openapi({
+      xml: { name: 'version' },
+      description: 'Version information about the application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateApplicationResponse')
@@ -366,165 +230,102 @@ const ForbiddenExceptionSchema = z.any().openapi('ForbiddenException')
 
 const CreateApplicationVersionResponseSchema = z
   .object({
-    ApplicationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'applicationId' },
-          description: 'The application Amazon Resource Name (ARN).',
-        }),
-    ).exactOptional(),
-    CreationTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'creationTime' },
-          description: 'The date and time this resource was created.',
-        }),
-    ).exactOptional(),
-    ParameterDefinitions: ListOfParameterDefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'parameterDefinitions' },
-          description: 'An array of parameter types supported by the application.',
-        }),
-    ).exactOptional(),
-    RequiredCapabilities: ListOfCapabilitySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requiredCapabilities' },
-          description:
-            '<p>A list of values that you must specify before you can deploy certain applications.\n Some applications might include resources that can affect permissions in your AWS\n account, for example, by creating new AWS Identity and Access Management (IAM) users.\n For those applications, you must explicitly acknowledge their capabilities by\n specifying this parameter.</p><p>The only valid values are CAPABILITY_IAM, CAPABILITY_NAMED_IAM,\n CAPABILITY_RESOURCE_POLICY, and CAPABILITY_AUTO_EXPAND.</p><p>The following resources require you to specify CAPABILITY_IAM or\n CAPABILITY_NAMED_IAM:\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html">AWS::IAM::Group</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html">AWS::IAM::InstanceProfile</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html">AWS::IAM::Policy</a>, and\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html">AWS::IAM::Role</a>.\n If the application contains IAM resources, you can specify either CAPABILITY_IAM\n or CAPABILITY_NAMED_IAM. If the application contains IAM resources\n with custom names, you must specify CAPABILITY_NAMED_IAM.</p><p>The following resources require you to specify CAPABILITY_RESOURCE_POLICY:\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html">AWS::Lambda::Permission</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html">AWS::IAM:Policy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-applicationautoscaling-scalingpolicy.html">AWS::ApplicationAutoScaling::ScalingPolicy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-policy.html">AWS::S3::BucketPolicy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sqs-policy.html">AWS::SQS::QueuePolicy</a>, and\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sns-policy.html">AWS::SNS::TopicPolicy</a>.</p><p>Applications that contain one or more nested applications require you to specify\n CAPABILITY_AUTO_EXPAND.</p><p>If your application template contains any of the above resources, we recommend that you review\n all permissions associated with the application before deploying. If you don\'t specify\n this parameter for an application that requires capabilities, the call will fail.</p>',
-        }),
-    ).exactOptional(),
-    ResourcesSupported: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourcesSupported' },
-          description:
-            'Whether all of the AWS resources contained in this application are supported in the region\n in which it is being retrieved.',
-        }),
-    ).exactOptional(),
-    SemanticVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'semanticVersion' },
-          description:
-            '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
-        }),
-    ).exactOptional(),
-    SourceCodeArchiveUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceCodeArchiveUrl' },
-          description:
-            '<p>A link to the S3 object that contains the ZIP archive of the source code for this version of your application.</p><p>Maximum size 50 MB</p>',
-        }),
-    ).exactOptional(),
-    SourceCodeUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceCodeUrl' },
-          description:
-            'A link to a public repository for the source code of your application, for example the URL of a specific GitHub commit.',
-        }),
-    ).exactOptional(),
-    TemplateUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateUrl' },
-          description: 'A link to the packaged AWS SAM template of your application.',
-        }),
-    ).exactOptional(),
+    ApplicationId: StringSchema.exactOptional().openapi({
+      xml: { name: 'applicationId' },
+      description: 'The application Amazon Resource Name (ARN).',
+    }),
+    CreationTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'creationTime' },
+      description: 'The date and time this resource was created.',
+    }),
+    ParameterDefinitions: ListOfParameterDefinitionSchema.exactOptional().openapi({
+      xml: { name: 'parameterDefinitions' },
+      description: 'An array of parameter types supported by the application.',
+    }),
+    RequiredCapabilities: ListOfCapabilitySchema.exactOptional().openapi({
+      xml: { name: 'requiredCapabilities' },
+      description:
+        '<p>A list of values that you must specify before you can deploy certain applications.\n Some applications might include resources that can affect permissions in your AWS\n account, for example, by creating new AWS Identity and Access Management (IAM) users.\n For those applications, you must explicitly acknowledge their capabilities by\n specifying this parameter.</p><p>The only valid values are CAPABILITY_IAM, CAPABILITY_NAMED_IAM,\n CAPABILITY_RESOURCE_POLICY, and CAPABILITY_AUTO_EXPAND.</p><p>The following resources require you to specify CAPABILITY_IAM or\n CAPABILITY_NAMED_IAM:\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html">AWS::IAM::Group</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html">AWS::IAM::InstanceProfile</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html">AWS::IAM::Policy</a>, and\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html">AWS::IAM::Role</a>.\n If the application contains IAM resources, you can specify either CAPABILITY_IAM\n or CAPABILITY_NAMED_IAM. If the application contains IAM resources\n with custom names, you must specify CAPABILITY_NAMED_IAM.</p><p>The following resources require you to specify CAPABILITY_RESOURCE_POLICY:\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html">AWS::Lambda::Permission</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html">AWS::IAM:Policy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-applicationautoscaling-scalingpolicy.html">AWS::ApplicationAutoScaling::ScalingPolicy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-policy.html">AWS::S3::BucketPolicy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sqs-policy.html">AWS::SQS::QueuePolicy</a>, and\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sns-policy.html">AWS::SNS::TopicPolicy</a>.</p><p>Applications that contain one or more nested applications require you to specify\n CAPABILITY_AUTO_EXPAND.</p><p>If your application template contains any of the above resources, we recommend that you review\n all permissions associated with the application before deploying. If you don\'t specify\n this parameter for an application that requires capabilities, the call will fail.</p>',
+    }),
+    ResourcesSupported: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'resourcesSupported' },
+      description:
+        'Whether all of the AWS resources contained in this application are supported in the region\n in which it is being retrieved.',
+    }),
+    SemanticVersion: StringSchema.exactOptional().openapi({
+      xml: { name: 'semanticVersion' },
+      description:
+        '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
+    }),
+    SourceCodeArchiveUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceCodeArchiveUrl' },
+      description:
+        '<p>A link to the S3 object that contains the ZIP archive of the source code for this version of your application.</p><p>Maximum size 50 MB</p>',
+    }),
+    SourceCodeUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceCodeUrl' },
+      description:
+        'A link to a public repository for the source code of your application, for example the URL of a specific GitHub commit.',
+    }),
+    TemplateUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'templateUrl' },
+      description: 'A link to the packaged AWS SAM template of your application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateApplicationVersionResponse')
 
 const CreateCloudFormationChangeSetResponseSchema = z
   .object({
-    ApplicationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'applicationId' },
-          description: 'The application Amazon Resource Name (ARN).',
-        }),
-    ).exactOptional(),
-    ChangeSetId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'changeSetId' },
-          description:
-            '<p>The Amazon Resource Name (ARN) of the change set.</p><p>Length constraints: Minimum length of 1.</p><p>Pattern: ARN:[-a-zA-Z0-9:/]*</p>',
-        }),
-    ).exactOptional(),
-    SemanticVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'semanticVersion' },
-          description:
-            '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
-        }),
-    ).exactOptional(),
-    StackId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'stackId' }, description: 'The unique ID of the stack.' }),
-    ).exactOptional(),
+    ApplicationId: StringSchema.exactOptional().openapi({
+      xml: { name: 'applicationId' },
+      description: 'The application Amazon Resource Name (ARN).',
+    }),
+    ChangeSetId: StringSchema.exactOptional().openapi({
+      xml: { name: 'changeSetId' },
+      description:
+        '<p>The Amazon Resource Name (ARN) of the change set.</p><p>Length constraints: Minimum length of 1.</p><p>Pattern: ARN:[-a-zA-Z0-9:/]*</p>',
+    }),
+    SemanticVersion: StringSchema.exactOptional().openapi({
+      xml: { name: 'semanticVersion' },
+      description:
+        '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
+    }),
+    StackId: StringSchema.exactOptional().openapi({
+      xml: { name: 'stackId' },
+      description: 'The unique ID of the stack.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateCloudFormationChangeSetResponse')
 
 const ParameterValueSchema = z
   .object({
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            "The key associated with the parameter. If you don't specify a key and value for a particular parameter, AWS CloudFormation\n uses the default value that is specified in your template.",
-        }),
-    ),
-    Value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'value' },
-          description: 'The input value associated with the parameter.',
-        }),
-    ),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description:
+        "The key associated with the parameter. If you don't specify a key and value for a particular parameter, AWS CloudFormation\n uses the default value that is specified in your template.",
+    }),
+    Value: StringSchema.openapi({
+      xml: { name: 'value' },
+      description: 'The input value associated with the parameter.',
+    }),
   })
   .openapi({ required: ['Value', 'Name'], description: 'Parameter value of the application.' })
   .openapi('ParameterValue')
 
 const RollbackTriggerSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description:
-            'This property corresponds to the content of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/RollbackTrigger">RollbackTrigger</a>\n </i> Data Type.',
-        }),
-    ),
-    Type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'type' },
-          description:
-            'This property corresponds to the content of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/RollbackTrigger">RollbackTrigger</a>\n </i> Data Type.',
-        }),
-    ),
+    Arn: StringSchema.openapi({
+      xml: { name: 'arn' },
+      description:
+        'This property corresponds to the content of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/RollbackTrigger">RollbackTrigger</a>\n </i> Data Type.',
+    }),
+    Type: StringSchema.openapi({
+      xml: { name: 'type' },
+      description:
+        'This property corresponds to the content of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/RollbackTrigger">RollbackTrigger</a>\n </i> Data Type.',
+    }),
   })
   .openapi({
     required: ['Type', 'Arn'],
@@ -537,24 +338,16 @@ const ListOfRollbackTriggerSchema = z.array(RollbackTriggerSchema).openapi('List
 
 const TagSchema = z
   .object({
-    Key: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'key' },
-          description:
-            'This property corresponds to the content of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/Tag">Tag</a>\n </i> Data Type.',
-        }),
-    ),
-    Value: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'value' },
-          description:
-            'This property corresponds to the content of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/Tag">\n Tag</a>\n </i>\n Data Type.',
-        }),
-    ),
+    Key: StringSchema.openapi({
+      xml: { name: 'key' },
+      description:
+        'This property corresponds to the content of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/Tag">Tag</a>\n </i> Data Type.',
+    }),
+    Value: StringSchema.openapi({
+      xml: { name: 'value' },
+      description:
+        'This property corresponds to the content of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/Tag">\n Tag</a>\n </i>\n Data Type.',
+    }),
   })
   .openapi({
     required: ['Value', 'Key'],
@@ -567,67 +360,39 @@ const StatusSchema = z.enum(['PREPARING', 'ACTIVE', 'EXPIRED']).openapi('Status'
 
 const CreateCloudFormationTemplateResponseSchema = z
   .object({
-    ApplicationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'applicationId' },
-          description: 'The application Amazon Resource Name (ARN).',
-        }),
-    ).exactOptional(),
-    CreationTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'creationTime' },
-          description: 'The date and time this resource was created.',
-        }),
-    ).exactOptional(),
-    ExpirationTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'expirationTime' },
-          description:
-            'The date and time this template expires. Templates\n expire 1 hour after creation.',
-        }),
-    ).exactOptional(),
-    SemanticVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'semanticVersion' },
-          description:
-            '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description:
-            '<p>Status of the template creation workflow.</p><p>Possible values: PREPARING | ACTIVE | EXPIRED\n </p>',
-        }),
-    ).exactOptional(),
-    TemplateId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateId' },
-          description:
-            '<p>The UUID returned by CreateCloudFormationTemplate.</p><p>Pattern: [0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}</p>',
-        }),
-    ).exactOptional(),
-    TemplateUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateUrl' },
-          description:
-            'A link to the template that can be used to deploy the application using\n AWS CloudFormation.',
-        }),
-    ).exactOptional(),
+    ApplicationId: StringSchema.exactOptional().openapi({
+      xml: { name: 'applicationId' },
+      description: 'The application Amazon Resource Name (ARN).',
+    }),
+    CreationTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'creationTime' },
+      description: 'The date and time this resource was created.',
+    }),
+    ExpirationTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'expirationTime' },
+      description:
+        'The date and time this template expires. Templates\n expire 1 hour after creation.',
+    }),
+    SemanticVersion: StringSchema.exactOptional().openapi({
+      xml: { name: 'semanticVersion' },
+      description:
+        '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description:
+        '<p>Status of the template creation workflow.</p><p>Possible values: PREPARING | ACTIVE | EXPIRED\n </p>',
+    }),
+    TemplateId: StringSchema.exactOptional().openapi({
+      xml: { name: 'templateId' },
+      description:
+        '<p>The UUID returned by CreateCloudFormationTemplate.</p><p>Pattern: [0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}</p>',
+    }),
+    TemplateUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'templateUrl' },
+      description:
+        'A link to the template that can be used to deploy the application using\n AWS CloudFormation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateCloudFormationTemplateResponse')
@@ -636,156 +401,91 @@ const NotFoundExceptionSchema = z.any().openapi('NotFoundException')
 
 const GetApplicationResponseSchema = z
   .object({
-    ApplicationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'applicationId' },
-          description: 'The application Amazon Resource Name (ARN).',
-        }),
-    ).exactOptional(),
-    Author: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'author' },
-          description:
-            '<p>The name of the author publishing the app.</p><p>Minimum length=1. Maximum length=127.</p><p>Pattern "^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$";</p>',
-        }),
-    ).exactOptional(),
-    CreationTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'creationTime' },
-          description: 'The date and time this resource was created.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            '<p>The description of the application.</p><p>Minimum length=1. Maximum length=256</p>',
-        }),
-    ).exactOptional(),
-    HomePageUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'homePageUrl' },
-          description:
-            'A URL with more information about the application, for example the location of your GitHub repository for the application.',
-        }),
-    ).exactOptional(),
-    IsVerifiedAuthor: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'isVerifiedAuthor' },
-          description:
-            "Whether the author of this application has been verified. This means means that AWS has made a good faith review, as a reasonable and prudent service provider, of the information provided by the requester and has confirmed that the requester's identity is as claimed.",
-        }),
-    ).exactOptional(),
-    Labels: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'labels' },
-          description:
-            '<p>Labels to improve discovery of apps in search results.</p><p>Minimum length=1. Maximum length=127. Maximum number of labels: 10</p><p>Pattern: "^[a-zA-Z0-9+\\\\-_:\\\\/@]+$";</p>',
-        }),
-    ).exactOptional(),
-    LicenseUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'licenseUrl' },
-          description:
-            '<p>A link to a license file of the app that matches the spdxLicenseID value of your application.</p><p>Maximum size 5 MB</p>',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            '<p>The name of the application.</p><p>Minimum length=1. Maximum length=140</p><p>Pattern: "[a-zA-Z0-9\\\\-]+";</p>',
-        }),
-    ).exactOptional(),
-    ReadmeUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'readmeUrl' },
-          description:
-            '<p>A link to the readme file in Markdown language that contains a more detailed description of the application and how it works.</p><p>Maximum size 5 MB</p>',
-        }),
-    ).exactOptional(),
-    SpdxLicenseId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'spdxLicenseId' },
-          description: 'A valid identifier from https://spdx.org/licenses/.',
-        }),
-    ).exactOptional(),
-    VerifiedAuthorUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'verifiedAuthorUrl' },
-          description:
-            'The URL to the public profile of a verified author. This URL is submitted by the author.',
-        }),
-    ).exactOptional(),
-    Version: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'version' },
-          description: 'Version information about the application.',
-        }),
-    ).exactOptional(),
+    ApplicationId: StringSchema.exactOptional().openapi({
+      xml: { name: 'applicationId' },
+      description: 'The application Amazon Resource Name (ARN).',
+    }),
+    Author: StringSchema.exactOptional().openapi({
+      xml: { name: 'author' },
+      description:
+        '<p>The name of the author publishing the app.</p><p>Minimum length=1. Maximum length=127.</p><p>Pattern "^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$";</p>',
+    }),
+    CreationTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'creationTime' },
+      description: 'The date and time this resource was created.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        '<p>The description of the application.</p><p>Minimum length=1. Maximum length=256</p>',
+    }),
+    HomePageUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'homePageUrl' },
+      description:
+        'A URL with more information about the application, for example the location of your GitHub repository for the application.',
+    }),
+    IsVerifiedAuthor: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'isVerifiedAuthor' },
+      description:
+        "Whether the author of this application has been verified. This means means that AWS has made a good faith review, as a reasonable and prudent service provider, of the information provided by the requester and has confirmed that the requester's identity is as claimed.",
+    }),
+    Labels: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'labels' },
+      description:
+        '<p>Labels to improve discovery of apps in search results.</p><p>Minimum length=1. Maximum length=127. Maximum number of labels: 10</p><p>Pattern: "^[a-zA-Z0-9+\\\\-_:\\\\/@]+$";</p>',
+    }),
+    LicenseUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'licenseUrl' },
+      description:
+        '<p>A link to a license file of the app that matches the spdxLicenseID value of your application.</p><p>Maximum size 5 MB</p>',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description:
+        '<p>The name of the application.</p><p>Minimum length=1. Maximum length=140</p><p>Pattern: "[a-zA-Z0-9\\\\-]+";</p>',
+    }),
+    ReadmeUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'readmeUrl' },
+      description:
+        '<p>A link to the readme file in Markdown language that contains a more detailed description of the application and how it works.</p><p>Maximum size 5 MB</p>',
+    }),
+    SpdxLicenseId: StringSchema.exactOptional().openapi({
+      xml: { name: 'spdxLicenseId' },
+      description: 'A valid identifier from https://spdx.org/licenses/.',
+    }),
+    VerifiedAuthorUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'verifiedAuthorUrl' },
+      description:
+        'The URL to the public profile of a verified author. This URL is submitted by the author.',
+    }),
+    Version: VersionSchema.exactOptional().openapi({
+      xml: { name: 'version' },
+      description: 'Version information about the application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetApplicationResponse')
 
 const ApplicationPolicyStatementSchema = z
   .object({
-    Actions: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'actions' },
-          description:
-            'For the list of actions supported for this operation, see <a href="https://docs.aws.amazon.com/serverlessrepo/latest/devguide/access-control-resource-based.html#application-permissions">Application \n Permissions</a>.',
-        }),
-    ),
-    PrincipalOrgIDs: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'principalOrgIDs' },
-          description:
-            'An array of PrinciplalOrgIDs, which corresponds to AWS IAM <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#principal-org-id">aws:PrincipalOrgID</a> global condition key.',
-        }),
-    ).exactOptional(),
-    Principals: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'principals' },
-          description: 'An array of AWS account IDs, or * to make the application public.',
-        }),
-    ),
-    StatementId: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'statementId' }, description: 'A unique ID for the statement.' }),
-    ).exactOptional(),
+    Actions: ListOfStringSchema.openapi({
+      xml: { name: 'actions' },
+      description:
+        'For the list of actions supported for this operation, see <a href="https://docs.aws.amazon.com/serverlessrepo/latest/devguide/access-control-resource-based.html#application-permissions">Application \n Permissions</a>.',
+    }),
+    PrincipalOrgIDs: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'principalOrgIDs' },
+      description:
+        'An array of PrinciplalOrgIDs, which corresponds to AWS IAM <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#principal-org-id">aws:PrincipalOrgID</a> global condition key.',
+    }),
+    Principals: ListOfStringSchema.openapi({
+      xml: { name: 'principals' },
+      description: 'An array of AWS account IDs, or * to make the application public.',
+    }),
+    StatementId: StringSchema.exactOptional().openapi({
+      xml: { name: 'statementId' },
+      description: 'A unique ID for the statement.',
+    }),
   })
   .openapi({
     required: ['Principals', 'Actions'],
@@ -799,103 +499,63 @@ const ListOfApplicationPolicyStatementSchema = z
 
 const GetApplicationPolicyResponseSchema = z
   .object({
-    Statements: ListOfApplicationPolicyStatementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'statements' },
-          description: 'An array of policy statements applied to the application.',
-        }),
-    ).exactOptional(),
+    Statements: ListOfApplicationPolicyStatementSchema.exactOptional().openapi({
+      xml: { name: 'statements' },
+      description: 'An array of policy statements applied to the application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetApplicationPolicyResponse')
 
 const GetCloudFormationTemplateResponseSchema = z
   .object({
-    ApplicationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'applicationId' },
-          description: 'The application Amazon Resource Name (ARN).',
-        }),
-    ).exactOptional(),
-    CreationTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'creationTime' },
-          description: 'The date and time this resource was created.',
-        }),
-    ).exactOptional(),
-    ExpirationTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'expirationTime' },
-          description:
-            'The date and time this template expires. Templates\n expire 1 hour after creation.',
-        }),
-    ).exactOptional(),
-    SemanticVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'semanticVersion' },
-          description:
-            '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description:
-            '<p>Status of the template creation workflow.</p><p>Possible values: PREPARING | ACTIVE | EXPIRED\n </p>',
-        }),
-    ).exactOptional(),
-    TemplateId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateId' },
-          description:
-            '<p>The UUID returned by CreateCloudFormationTemplate.</p><p>Pattern: [0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}</p>',
-        }),
-    ).exactOptional(),
-    TemplateUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateUrl' },
-          description:
-            'A link to the template that can be used to deploy the application using\n AWS CloudFormation.',
-        }),
-    ).exactOptional(),
+    ApplicationId: StringSchema.exactOptional().openapi({
+      xml: { name: 'applicationId' },
+      description: 'The application Amazon Resource Name (ARN).',
+    }),
+    CreationTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'creationTime' },
+      description: 'The date and time this resource was created.',
+    }),
+    ExpirationTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'expirationTime' },
+      description:
+        'The date and time this template expires. Templates\n expire 1 hour after creation.',
+    }),
+    SemanticVersion: StringSchema.exactOptional().openapi({
+      xml: { name: 'semanticVersion' },
+      description:
+        '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description:
+        '<p>Status of the template creation workflow.</p><p>Possible values: PREPARING | ACTIVE | EXPIRED\n </p>',
+    }),
+    TemplateId: StringSchema.exactOptional().openapi({
+      xml: { name: 'templateId' },
+      description:
+        '<p>The UUID returned by CreateCloudFormationTemplate.</p><p>Pattern: [0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}</p>',
+    }),
+    TemplateUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'templateUrl' },
+      description:
+        'A link to the template that can be used to deploy the application using\n AWS CloudFormation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCloudFormationTemplateResponse')
 
 const ApplicationDependencySummarySchema = z
   .object({
-    ApplicationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'applicationId' },
-          description: 'The Amazon Resource Name (ARN) of the nested application.',
-        }),
-    ),
-    SemanticVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'semanticVersion' },
-          description: 'The semantic version of the nested application.',
-        }),
-    ),
+    ApplicationId: StringSchema.openapi({
+      xml: { name: 'applicationId' },
+      description: 'The Amazon Resource Name (ARN) of the nested application.',
+    }),
+    SemanticVersion: StringSchema.openapi({
+      xml: { name: 'semanticVersion' },
+      description: 'The semantic version of the nested application.',
+    }),
   })
   .openapi({
     required: ['ApplicationId', 'SemanticVersion'],
@@ -909,62 +569,38 @@ const ListOfApplicationDependencySummarySchema = z
 
 const ListApplicationDependenciesResponseSchema = z
   .object({
-    Dependencies: ListOfApplicationDependencySummarySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dependencies' },
-          description: 'An array of application summaries nested in the application.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description: 'The token to request the next page of results.',
-        }),
-    ).exactOptional(),
+    Dependencies: ListOfApplicationDependencySummarySchema.exactOptional().openapi({
+      xml: { name: 'dependencies' },
+      description: 'An array of application summaries nested in the application.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description: 'The token to request the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListApplicationDependenciesResponse')
 
 const VersionSummarySchema = z
   .object({
-    ApplicationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'applicationId' },
-          description: 'The application Amazon Resource Name (ARN).',
-        }),
-    ),
-    CreationTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'creationTime' },
-          description: 'The date and time this resource was created.',
-        }),
-    ),
-    SemanticVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'semanticVersion' },
-          description:
-            '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
-        }),
-    ),
-    SourceCodeUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceCodeUrl' },
-          description:
-            'A link to a public repository for the source code of your application, for example the URL of a specific GitHub commit.',
-        }),
-    ).exactOptional(),
+    ApplicationId: StringSchema.openapi({
+      xml: { name: 'applicationId' },
+      description: 'The application Amazon Resource Name (ARN).',
+    }),
+    CreationTime: StringSchema.openapi({
+      xml: { name: 'creationTime' },
+      description: 'The date and time this resource was created.',
+    }),
+    SemanticVersion: StringSchema.openapi({
+      xml: { name: 'semanticVersion' },
+      description:
+        '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
+    }),
+    SourceCodeUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceCodeUrl' },
+      description:
+        'A link to a public repository for the source code of your application, for example the URL of a specific GitHub commit.',
+    }),
   })
   .openapi({
     required: ['CreationTime', 'ApplicationId', 'SemanticVersion'],
@@ -976,98 +612,58 @@ const ListOfVersionSummarySchema = z.array(VersionSummarySchema).openapi('ListOf
 
 const ListApplicationVersionsResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description: 'The token to request the next page of results.',
-        }),
-    ).exactOptional(),
-    Versions: ListOfVersionSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'versions' },
-          description: 'An array of version summaries for the application.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description: 'The token to request the next page of results.',
+    }),
+    Versions: ListOfVersionSummarySchema.exactOptional().openapi({
+      xml: { name: 'versions' },
+      description: 'An array of version summaries for the application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListApplicationVersionsResponse')
 
 const ApplicationSummarySchema = z
   .object({
-    ApplicationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'applicationId' },
-          description: 'The application Amazon Resource Name (ARN).',
-        }),
-    ),
-    Author: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'author' },
-          description:
-            '<p>The name of the author publishing the app.</p><p>Minimum length=1. Maximum length=127.</p><p>Pattern "^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$";</p>',
-        }),
-    ),
-    CreationTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'creationTime' },
-          description: 'The date and time this resource was created.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            '<p>The description of the application.</p><p>Minimum length=1. Maximum length=256</p>',
-        }),
-    ),
-    HomePageUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'homePageUrl' },
-          description:
-            'A URL with more information about the application, for example the location of your GitHub repository for the application.',
-        }),
-    ).exactOptional(),
-    Labels: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'labels' },
-          description:
-            '<p>Labels to improve discovery of apps in search results.</p><p>Minimum length=1. Maximum length=127. Maximum number of labels: 10</p><p>Pattern: "^[a-zA-Z0-9+\\\\-_:\\\\/@]+$";</p>',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            '<p>The name of the application.</p><p>Minimum length=1. Maximum length=140</p><p>Pattern: "[a-zA-Z0-9\\\\-]+";</p>',
-        }),
-    ),
-    SpdxLicenseId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'spdxLicenseId' },
-          description:
-            'A valid identifier from <a href="https://spdx.org/licenses/">https://spdx.org/licenses/</a>.',
-        }),
-    ).exactOptional(),
+    ApplicationId: StringSchema.openapi({
+      xml: { name: 'applicationId' },
+      description: 'The application Amazon Resource Name (ARN).',
+    }),
+    Author: StringSchema.openapi({
+      xml: { name: 'author' },
+      description:
+        '<p>The name of the author publishing the app.</p><p>Minimum length=1. Maximum length=127.</p><p>Pattern "^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$";</p>',
+    }),
+    CreationTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'creationTime' },
+      description: 'The date and time this resource was created.',
+    }),
+    Description: StringSchema.openapi({
+      xml: { name: 'description' },
+      description:
+        '<p>The description of the application.</p><p>Minimum length=1. Maximum length=256</p>',
+    }),
+    HomePageUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'homePageUrl' },
+      description:
+        'A URL with more information about the application, for example the location of your GitHub repository for the application.',
+    }),
+    Labels: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'labels' },
+      description:
+        '<p>Labels to improve discovery of apps in search results.</p><p>Minimum length=1. Maximum length=127. Maximum number of labels: 10</p><p>Pattern: "^[a-zA-Z0-9+\\\\-_:\\\\/@]+$";</p>',
+    }),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description:
+        '<p>The name of the application.</p><p>Minimum length=1. Maximum length=140</p><p>Pattern: "[a-zA-Z0-9\\\\-]+";</p>',
+    }),
+    SpdxLicenseId: StringSchema.exactOptional().openapi({
+      xml: { name: 'spdxLicenseId' },
+      description:
+        'A valid identifier from <a href="https://spdx.org/licenses/">https://spdx.org/licenses/</a>.',
+    }),
   })
   .openapi({
     required: ['Description', 'Author', 'ApplicationId', 'Name'],
@@ -1081,336 +677,196 @@ const ListOfApplicationSummarySchema = z
 
 const ListApplicationsResponseSchema = z
   .object({
-    Applications: ListOfApplicationSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'applications' },
-          description: 'An array of application summaries.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description: 'The token to request the next page of results.',
-        }),
-    ).exactOptional(),
+    Applications: ListOfApplicationSummarySchema.exactOptional().openapi({
+      xml: { name: 'applications' },
+      description: 'An array of application summaries.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description: 'The token to request the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListApplicationsResponse')
 
 const PutApplicationPolicyResponseSchema = z
   .object({
-    Statements: ListOfApplicationPolicyStatementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'statements' },
-          description: 'An array of policy statements applied to the application.',
-        }),
-    ).exactOptional(),
+    Statements: ListOfApplicationPolicyStatementSchema.exactOptional().openapi({
+      xml: { name: 'statements' },
+      description: 'An array of policy statements applied to the application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutApplicationPolicyResponse')
 
 const UpdateApplicationResponseSchema = z
   .object({
-    ApplicationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'applicationId' },
-          description: 'The application Amazon Resource Name (ARN).',
-        }),
-    ).exactOptional(),
-    Author: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'author' },
-          description:
-            '<p>The name of the author publishing the app.</p><p>Minimum length=1. Maximum length=127.</p><p>Pattern "^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$";</p>',
-        }),
-    ).exactOptional(),
-    CreationTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'creationTime' },
-          description: 'The date and time this resource was created.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            '<p>The description of the application.</p><p>Minimum length=1. Maximum length=256</p>',
-        }),
-    ).exactOptional(),
-    HomePageUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'homePageUrl' },
-          description:
-            'A URL with more information about the application, for example the location of your GitHub repository for the application.',
-        }),
-    ).exactOptional(),
-    IsVerifiedAuthor: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'isVerifiedAuthor' },
-          description:
-            "Whether the author of this application has been verified. This means means that AWS has made a good faith review, as a reasonable and prudent service provider, of the information provided by the requester and has confirmed that the requester's identity is as claimed.",
-        }),
-    ).exactOptional(),
-    Labels: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'labels' },
-          description:
-            '<p>Labels to improve discovery of apps in search results.</p><p>Minimum length=1. Maximum length=127. Maximum number of labels: 10</p><p>Pattern: "^[a-zA-Z0-9+\\\\-_:\\\\/@]+$";</p>',
-        }),
-    ).exactOptional(),
-    LicenseUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'licenseUrl' },
-          description:
-            '<p>A link to a license file of the app that matches the spdxLicenseID value of your application.</p><p>Maximum size 5 MB</p>',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            '<p>The name of the application.</p><p>Minimum length=1. Maximum length=140</p><p>Pattern: "[a-zA-Z0-9\\\\-]+";</p>',
-        }),
-    ).exactOptional(),
-    ReadmeUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'readmeUrl' },
-          description:
-            '<p>A link to the readme file in Markdown language that contains a more detailed description of the application and how it works.</p><p>Maximum size 5 MB</p>',
-        }),
-    ).exactOptional(),
-    SpdxLicenseId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'spdxLicenseId' },
-          description: 'A valid identifier from https://spdx.org/licenses/.',
-        }),
-    ).exactOptional(),
-    VerifiedAuthorUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'verifiedAuthorUrl' },
-          description:
-            'The URL to the public profile of a verified author. This URL is submitted by the author.',
-        }),
-    ).exactOptional(),
-    Version: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'version' },
-          description: 'Version information about the application.',
-        }),
-    ).exactOptional(),
+    ApplicationId: StringSchema.exactOptional().openapi({
+      xml: { name: 'applicationId' },
+      description: 'The application Amazon Resource Name (ARN).',
+    }),
+    Author: StringSchema.exactOptional().openapi({
+      xml: { name: 'author' },
+      description:
+        '<p>The name of the author publishing the app.</p><p>Minimum length=1. Maximum length=127.</p><p>Pattern "^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$";</p>',
+    }),
+    CreationTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'creationTime' },
+      description: 'The date and time this resource was created.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        '<p>The description of the application.</p><p>Minimum length=1. Maximum length=256</p>',
+    }),
+    HomePageUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'homePageUrl' },
+      description:
+        'A URL with more information about the application, for example the location of your GitHub repository for the application.',
+    }),
+    IsVerifiedAuthor: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'isVerifiedAuthor' },
+      description:
+        "Whether the author of this application has been verified. This means means that AWS has made a good faith review, as a reasonable and prudent service provider, of the information provided by the requester and has confirmed that the requester's identity is as claimed.",
+    }),
+    Labels: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'labels' },
+      description:
+        '<p>Labels to improve discovery of apps in search results.</p><p>Minimum length=1. Maximum length=127. Maximum number of labels: 10</p><p>Pattern: "^[a-zA-Z0-9+\\\\-_:\\\\/@]+$";</p>',
+    }),
+    LicenseUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'licenseUrl' },
+      description:
+        '<p>A link to a license file of the app that matches the spdxLicenseID value of your application.</p><p>Maximum size 5 MB</p>',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description:
+        '<p>The name of the application.</p><p>Minimum length=1. Maximum length=140</p><p>Pattern: "[a-zA-Z0-9\\\\-]+";</p>',
+    }),
+    ReadmeUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'readmeUrl' },
+      description:
+        '<p>A link to the readme file in Markdown language that contains a more detailed description of the application and how it works.</p><p>Maximum size 5 MB</p>',
+    }),
+    SpdxLicenseId: StringSchema.exactOptional().openapi({
+      xml: { name: 'spdxLicenseId' },
+      description: 'A valid identifier from https://spdx.org/licenses/.',
+    }),
+    VerifiedAuthorUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'verifiedAuthorUrl' },
+      description:
+        'The URL to the public profile of a verified author. This URL is submitted by the author.',
+    }),
+    Version: VersionSchema.exactOptional().openapi({
+      xml: { name: 'version' },
+      description: 'Version information about the application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateApplicationResponse')
 
 const CreateApplicationRequestSchema = z
   .object({
-    Author: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'author' },
-          description:
-            '<p>The name of the author publishing the app.</p><p>Minimum length=1. Maximum length=127.</p><p>Pattern "^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$";</p>',
-        }),
-    ),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            '<p>The description of the application.</p><p>Minimum length=1. Maximum length=256</p>',
-        }),
-    ),
-    HomePageUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'homePageUrl' },
-          description:
-            'A URL with more information about the application, for example the location of your GitHub repository for the application.',
-        }),
-    ).exactOptional(),
-    Labels: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'labels' },
-          description:
-            '<p>Labels to improve discovery of apps in search results.</p><p>Minimum length=1. Maximum length=127. Maximum number of labels: 10</p><p>Pattern: "^[a-zA-Z0-9+\\\\-_:\\\\/@]+$";</p>',
-        }),
-    ).exactOptional(),
-    LicenseBody: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'licenseBody' },
-          description:
-            '<p>A local text file that contains the license of the app that matches the spdxLicenseID value of your application.\n The file has the format file://&lt;path>/&lt;filename>.</p><p>Maximum size 5 MB</p><p>You can specify only one of licenseBody and licenseUrl; otherwise, an error results.</p>',
-        }),
-    ).exactOptional(),
-    LicenseUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'licenseUrl' },
-          description:
-            '<p>A link to the S3 object that contains the license of the app that matches the spdxLicenseID value of your application.</p><p>Maximum size 5 MB</p><p>You can specify only one of licenseBody and licenseUrl; otherwise, an error results.</p>',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description:
-            '<p>The name of the application that you want to publish.</p><p>Minimum length=1. Maximum length=140</p><p>Pattern: "[a-zA-Z0-9\\\\-]+";</p>',
-        }),
-    ),
-    ReadmeBody: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'readmeBody' },
-          description:
-            '<p>A local text readme file in Markdown language that contains a more detailed description of the application and how it works.\n The file has the format file://&lt;path>/&lt;filename>.</p><p>Maximum size 5 MB</p><p>You can specify only one of readmeBody and readmeUrl; otherwise, an error results.</p>',
-        }),
-    ).exactOptional(),
-    ReadmeUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'readmeUrl' },
-          description:
-            '<p>A link to the S3 object in Markdown language that contains a more detailed description of the application and how it works.</p><p>Maximum size 5 MB</p><p>You can specify only one of readmeBody and readmeUrl; otherwise, an error results.</p>',
-        }),
-    ).exactOptional(),
-    SemanticVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'semanticVersion' },
-          description:
-            '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
-        }),
-    ).exactOptional(),
-    SourceCodeArchiveUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceCodeArchiveUrl' },
-          description:
-            '<p>A link to the S3 object that contains the ZIP archive of the source code for this version of your application.</p><p>Maximum size 50 MB</p>',
-        }),
-    ).exactOptional(),
-    SourceCodeUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceCodeUrl' },
-          description:
-            'A link to a public repository for the source code of your application, for example the URL of a specific GitHub commit.',
-        }),
-    ).exactOptional(),
-    SpdxLicenseId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'spdxLicenseId' },
-          description:
-            'A valid identifier from <a href="https://spdx.org/licenses/">https://spdx.org/licenses/</a>.',
-        }),
-    ).exactOptional(),
-    TemplateBody: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateBody' },
-          description:
-            '<p>The local raw packaged AWS SAM template file of your application.\n The file has the format file://&lt;path>/&lt;filename>.</p><p>You can specify only one of templateBody and templateUrl; otherwise an error results.</p>',
-        }),
-    ).exactOptional(),
-    TemplateUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateUrl' },
-          description:
-            '<p>A link to the S3 object containing the packaged AWS SAM template of your application.</p><p>You can specify only one of templateBody and templateUrl; otherwise an error results.</p>',
-        }),
-    ).exactOptional(),
+    Author: StringSchema.openapi({
+      xml: { name: 'author' },
+      description:
+        '<p>The name of the author publishing the app.</p><p>Minimum length=1. Maximum length=127.</p><p>Pattern "^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$";</p>',
+    }),
+    Description: StringSchema.openapi({
+      xml: { name: 'description' },
+      description:
+        '<p>The description of the application.</p><p>Minimum length=1. Maximum length=256</p>',
+    }),
+    HomePageUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'homePageUrl' },
+      description:
+        'A URL with more information about the application, for example the location of your GitHub repository for the application.',
+    }),
+    Labels: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'labels' },
+      description:
+        '<p>Labels to improve discovery of apps in search results.</p><p>Minimum length=1. Maximum length=127. Maximum number of labels: 10</p><p>Pattern: "^[a-zA-Z0-9+\\\\-_:\\\\/@]+$";</p>',
+    }),
+    LicenseBody: StringSchema.exactOptional().openapi({
+      xml: { name: 'licenseBody' },
+      description:
+        '<p>A local text file that contains the license of the app that matches the spdxLicenseID value of your application.\n The file has the format file://&lt;path>/&lt;filename>.</p><p>Maximum size 5 MB</p><p>You can specify only one of licenseBody and licenseUrl; otherwise, an error results.</p>',
+    }),
+    LicenseUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'licenseUrl' },
+      description:
+        '<p>A link to the S3 object that contains the license of the app that matches the spdxLicenseID value of your application.</p><p>Maximum size 5 MB</p><p>You can specify only one of licenseBody and licenseUrl; otherwise, an error results.</p>',
+    }),
+    Name: StringSchema.openapi({
+      xml: { name: 'name' },
+      description:
+        '<p>The name of the application that you want to publish.</p><p>Minimum length=1. Maximum length=140</p><p>Pattern: "[a-zA-Z0-9\\\\-]+";</p>',
+    }),
+    ReadmeBody: StringSchema.exactOptional().openapi({
+      xml: { name: 'readmeBody' },
+      description:
+        '<p>A local text readme file in Markdown language that contains a more detailed description of the application and how it works.\n The file has the format file://&lt;path>/&lt;filename>.</p><p>Maximum size 5 MB</p><p>You can specify only one of readmeBody and readmeUrl; otherwise, an error results.</p>',
+    }),
+    ReadmeUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'readmeUrl' },
+      description:
+        '<p>A link to the S3 object in Markdown language that contains a more detailed description of the application and how it works.</p><p>Maximum size 5 MB</p><p>You can specify only one of readmeBody and readmeUrl; otherwise, an error results.</p>',
+    }),
+    SemanticVersion: StringSchema.exactOptional().openapi({
+      xml: { name: 'semanticVersion' },
+      description:
+        '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
+    }),
+    SourceCodeArchiveUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceCodeArchiveUrl' },
+      description:
+        '<p>A link to the S3 object that contains the ZIP archive of the source code for this version of your application.</p><p>Maximum size 50 MB</p>',
+    }),
+    SourceCodeUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceCodeUrl' },
+      description:
+        'A link to a public repository for the source code of your application, for example the URL of a specific GitHub commit.',
+    }),
+    SpdxLicenseId: StringSchema.exactOptional().openapi({
+      xml: { name: 'spdxLicenseId' },
+      description:
+        'A valid identifier from <a href="https://spdx.org/licenses/">https://spdx.org/licenses/</a>.',
+    }),
+    TemplateBody: StringSchema.exactOptional().openapi({
+      xml: { name: 'templateBody' },
+      description:
+        '<p>The local raw packaged AWS SAM template file of your application.\n The file has the format file://&lt;path>/&lt;filename>.</p><p>You can specify only one of templateBody and templateUrl; otherwise an error results.</p>',
+    }),
+    TemplateUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'templateUrl' },
+      description:
+        '<p>A link to the S3 object containing the packaged AWS SAM template of your application.</p><p>You can specify only one of templateBody and templateUrl; otherwise an error results.</p>',
+    }),
   })
   .openapi({ required: ['Description', 'Name', 'Author'], title: 'CreateApplicationRequest' })
   .openapi('CreateApplicationRequest')
 
 const CreateApplicationVersionRequestSchema = z
   .object({
-    SourceCodeArchiveUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceCodeArchiveUrl' },
-          description:
-            '<p>A link to the S3 object that contains the ZIP archive of the source code for this version of your application.</p><p>Maximum size 50 MB</p>',
-        }),
-    ).exactOptional(),
-    SourceCodeUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sourceCodeUrl' },
-          description:
-            'A link to a public repository for the source code of your application, for example the URL of a specific GitHub commit.',
-        }),
-    ).exactOptional(),
-    TemplateBody: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateBody' },
-          description: 'The raw packaged AWS SAM template of your application.',
-        }),
-    ).exactOptional(),
-    TemplateUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateUrl' },
-          description: 'A link to the packaged AWS SAM template of your application.',
-        }),
-    ).exactOptional(),
+    SourceCodeArchiveUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceCodeArchiveUrl' },
+      description:
+        '<p>A link to the S3 object that contains the ZIP archive of the source code for this version of your application.</p><p>Maximum size 50 MB</p>',
+    }),
+    SourceCodeUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'sourceCodeUrl' },
+      description:
+        'A link to a public repository for the source code of your application, for example the URL of a specific GitHub commit.',
+    }),
+    TemplateBody: StringSchema.exactOptional().openapi({
+      xml: { name: 'templateBody' },
+      description: 'The raw packaged AWS SAM template of your application.',
+    }),
+    TemplateUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'templateUrl' },
+      description: 'A link to the packaged AWS SAM template of your application.',
+    }),
   })
   .openapi({ title: 'CreateApplicationVersionRequest', required: [] })
   .openapi('CreateApplicationVersionRequest')
@@ -1419,24 +875,16 @@ const ListOfParameterValueSchema = z.array(ParameterValueSchema).openapi('ListOf
 
 const RollbackConfigurationSchema = z
   .object({
-    MonitoringTimeInMinutes: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'monitoringTimeInMinutes' },
-          description:
-            'This property corresponds to the content of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/RollbackConfiguration">RollbackConfiguration</a>\n </i> Data Type.',
-        }),
-    ).exactOptional(),
-    RollbackTriggers: ListOfRollbackTriggerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'rollbackTriggers' },
-          description:
-            'This property corresponds to the content of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/RollbackConfiguration">RollbackConfiguration</a>\n </i> Data Type.',
-        }),
-    ).exactOptional(),
+    MonitoringTimeInMinutes: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'monitoringTimeInMinutes' },
+      description:
+        'This property corresponds to the content of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/RollbackConfiguration">RollbackConfiguration</a>\n </i> Data Type.',
+    }),
+    RollbackTriggers: ListOfRollbackTriggerSchema.exactOptional().openapi({
+      xml: { name: 'rollbackTriggers' },
+      description:
+        'This property corresponds to the content of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/RollbackConfiguration">RollbackConfiguration</a>\n </i> Data Type.',
+    }),
   })
   .openapi({
     description:
@@ -1449,253 +897,169 @@ const ListOfTagSchema = z.array(TagSchema).openapi('ListOfTag')
 
 const CreateCloudFormationChangeSetRequestSchema = z
   .object({
-    Capabilities: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'capabilities' },
-          description:
-            '<p>A list of values that you must specify before you can deploy certain applications.\n Some applications might include resources that can affect permissions in your AWS\n account, for example, by creating new AWS Identity and Access Management (IAM) users.\n For those applications, you must explicitly acknowledge their capabilities by\n specifying this parameter.</p><p>The only valid values are CAPABILITY_IAM, CAPABILITY_NAMED_IAM,\n CAPABILITY_RESOURCE_POLICY, and CAPABILITY_AUTO_EXPAND.</p><p>The following resources require you to specify CAPABILITY_IAM or\n CAPABILITY_NAMED_IAM:\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html">AWS::IAM::Group</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html">AWS::IAM::InstanceProfile</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html">AWS::IAM::Policy</a>, and\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html">AWS::IAM::Role</a>.\n If the application contains IAM resources, you can specify either CAPABILITY_IAM\n or CAPABILITY_NAMED_IAM. If the application contains IAM resources\n with custom names, you must specify CAPABILITY_NAMED_IAM.</p><p>The following resources require you to specify CAPABILITY_RESOURCE_POLICY:\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html">AWS::Lambda::Permission</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html">AWS::IAM:Policy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-applicationautoscaling-scalingpolicy.html">AWS::ApplicationAutoScaling::ScalingPolicy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-policy.html">AWS::S3::BucketPolicy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sqs-policy.html">AWS::SQS::QueuePolicy</a>, and\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sns-policy.html">AWS::SNS:TopicPolicy</a>.</p><p>Applications that contain one or more nested applications require you to specify\n CAPABILITY_AUTO_EXPAND.</p><p>If your application template contains any of the above resources, we recommend that you review\n all permissions associated with the application before deploying. If you don\'t specify\n this parameter for an application that requires capabilities, the call will fail.</p>',
-        }),
-    ).exactOptional(),
-    ChangeSetName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'changeSetName' },
-          description:
-            'This property corresponds to the parameter of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet">CreateChangeSet</a>\n </i> API.',
-        }),
-    ).exactOptional(),
-    ClientToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'clientToken' },
-          description:
-            'This property corresponds to the parameter of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet">CreateChangeSet</a>\n </i> API.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            'This property corresponds to the parameter of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet">CreateChangeSet</a>\n </i> API.',
-        }),
-    ).exactOptional(),
-    NotificationArns: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'notificationArns' },
-          description:
-            'This property corresponds to the parameter of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet">CreateChangeSet</a>\n </i> API.',
-        }),
-    ).exactOptional(),
-    ParameterOverrides: ListOfParameterValueSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'parameterOverrides' },
-          description: 'A list of parameter values for the parameters of the application.',
-        }),
-    ).exactOptional(),
-    ResourceTypes: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceTypes' },
-          description:
-            'This property corresponds to the parameter of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet">CreateChangeSet</a>\n </i> API.',
-        }),
-    ).exactOptional(),
-    RollbackConfiguration: RollbackConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'rollbackConfiguration' },
-          description:
-            'This property corresponds to the parameter of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet">CreateChangeSet</a>\n </i> API.',
-        }),
-    ).exactOptional(),
-    SemanticVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'semanticVersion' },
-          description:
-            '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
-        }),
-    ).exactOptional(),
-    StackName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'stackName' },
-          description:
-            'This property corresponds to the parameter of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet">CreateChangeSet</a>\n </i> API.',
-        }),
-    ),
-    Tags: ListOfTagSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'This property corresponds to the parameter of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet">CreateChangeSet</a>\n </i> API.',
-        }),
-    ).exactOptional(),
-    TemplateId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateId' },
-          description:
-            '<p>The UUID returned by CreateCloudFormationTemplate.</p><p>Pattern: [0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}</p>',
-        }),
-    ).exactOptional(),
+    Capabilities: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'capabilities' },
+      description:
+        '<p>A list of values that you must specify before you can deploy certain applications.\n Some applications might include resources that can affect permissions in your AWS\n account, for example, by creating new AWS Identity and Access Management (IAM) users.\n For those applications, you must explicitly acknowledge their capabilities by\n specifying this parameter.</p><p>The only valid values are CAPABILITY_IAM, CAPABILITY_NAMED_IAM,\n CAPABILITY_RESOURCE_POLICY, and CAPABILITY_AUTO_EXPAND.</p><p>The following resources require you to specify CAPABILITY_IAM or\n CAPABILITY_NAMED_IAM:\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html">AWS::IAM::Group</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html">AWS::IAM::InstanceProfile</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html">AWS::IAM::Policy</a>, and\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html">AWS::IAM::Role</a>.\n If the application contains IAM resources, you can specify either CAPABILITY_IAM\n or CAPABILITY_NAMED_IAM. If the application contains IAM resources\n with custom names, you must specify CAPABILITY_NAMED_IAM.</p><p>The following resources require you to specify CAPABILITY_RESOURCE_POLICY:\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html">AWS::Lambda::Permission</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html">AWS::IAM:Policy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-applicationautoscaling-scalingpolicy.html">AWS::ApplicationAutoScaling::ScalingPolicy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-policy.html">AWS::S3::BucketPolicy</a>,\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sqs-policy.html">AWS::SQS::QueuePolicy</a>, and\n <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sns-policy.html">AWS::SNS:TopicPolicy</a>.</p><p>Applications that contain one or more nested applications require you to specify\n CAPABILITY_AUTO_EXPAND.</p><p>If your application template contains any of the above resources, we recommend that you review\n all permissions associated with the application before deploying. If you don\'t specify\n this parameter for an application that requires capabilities, the call will fail.</p>',
+    }),
+    ChangeSetName: StringSchema.exactOptional().openapi({
+      xml: { name: 'changeSetName' },
+      description:
+        'This property corresponds to the parameter of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet">CreateChangeSet</a>\n </i> API.',
+    }),
+    ClientToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'clientToken' },
+      description:
+        'This property corresponds to the parameter of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet">CreateChangeSet</a>\n </i> API.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        'This property corresponds to the parameter of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet">CreateChangeSet</a>\n </i> API.',
+    }),
+    NotificationArns: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'notificationArns' },
+      description:
+        'This property corresponds to the parameter of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet">CreateChangeSet</a>\n </i> API.',
+    }),
+    ParameterOverrides: ListOfParameterValueSchema.exactOptional().openapi({
+      xml: { name: 'parameterOverrides' },
+      description: 'A list of parameter values for the parameters of the application.',
+    }),
+    ResourceTypes: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'resourceTypes' },
+      description:
+        'This property corresponds to the parameter of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet">CreateChangeSet</a>\n </i> API.',
+    }),
+    RollbackConfiguration: RollbackConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'rollbackConfiguration' },
+      description:
+        'This property corresponds to the parameter of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet">CreateChangeSet</a>\n </i> API.',
+    }),
+    SemanticVersion: StringSchema.exactOptional().openapi({
+      xml: { name: 'semanticVersion' },
+      description:
+        '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
+    }),
+    StackName: StringSchema.openapi({
+      xml: { name: 'stackName' },
+      description:
+        'This property corresponds to the parameter of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet">CreateChangeSet</a>\n </i> API.',
+    }),
+    Tags: ListOfTagSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        'This property corresponds to the parameter of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet">CreateChangeSet</a>\n </i> API.',
+    }),
+    TemplateId: StringSchema.exactOptional().openapi({
+      xml: { name: 'templateId' },
+      description:
+        '<p>The UUID returned by CreateCloudFormationTemplate.</p><p>Pattern: [0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}</p>',
+    }),
   })
   .openapi({ required: ['StackName'], title: 'CreateCloudFormationChangeSetRequest' })
   .openapi('CreateCloudFormationChangeSetRequest')
 
 const CreateCloudFormationTemplateRequestSchema = z
   .object({
-    SemanticVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'semanticVersion' },
-          description:
-            '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
-        }),
-    ).exactOptional(),
+    SemanticVersion: StringSchema.exactOptional().openapi({
+      xml: { name: 'semanticVersion' },
+      description:
+        '<p>The semantic version of the application:</p><p>\n <a href="https://semver.org/">https://semver.org/</a>\n </p>',
+    }),
   })
   .openapi({ title: 'CreateCloudFormationTemplateRequest', required: [] })
   .openapi('CreateCloudFormationTemplateRequest')
 
 const DeleteApplicationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteApplicationRequest' })
   .openapi('DeleteApplicationRequest')
 
 const GetApplicationPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetApplicationPolicyRequest' })
   .openapi('GetApplicationPolicyRequest')
 
 const GetApplicationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetApplicationRequest' })
   .openapi('GetApplicationRequest')
 
 const GetCloudFormationTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetCloudFormationTemplateRequest' })
   .openapi('GetCloudFormationTemplateRequest')
 
 const MaxItemsSchema = z.int().min(1).max(100).openapi('MaxItems')
 
 const ListApplicationDependenciesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListApplicationDependenciesRequest' })
   .openapi('ListApplicationDependenciesRequest')
 
 const ListApplicationVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListApplicationVersionsRequest' })
   .openapi('ListApplicationVersionsRequest')
 
 const ListApplicationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListApplicationsRequest' })
   .openapi('ListApplicationsRequest')
 
 const PutApplicationPolicyRequestSchema = z
   .object({
-    Statements: ListOfApplicationPolicyStatementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'statements' },
-          description: 'An array of policy statements applied to the application.',
-        }),
-    ),
+    Statements: ListOfApplicationPolicyStatementSchema.openapi({
+      xml: { name: 'statements' },
+      description: 'An array of policy statements applied to the application.',
+    }),
   })
   .openapi({ required: ['Statements'], title: 'PutApplicationPolicyRequest' })
   .openapi('PutApplicationPolicyRequest')
 
 const UnshareApplicationRequestSchema = z
   .object({
-    OrganizationId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'organizationId' },
-          description: 'The AWS Organization ID to unshare the application from.',
-        }),
-    ),
+    OrganizationId: StringSchema.openapi({
+      xml: { name: 'organizationId' },
+      description: 'The AWS Organization ID to unshare the application from.',
+    }),
   })
   .openapi({ required: ['OrganizationId'], title: 'UnshareApplicationRequest' })
   .openapi('UnshareApplicationRequest')
 
 const UpdateApplicationRequestSchema = z
   .object({
-    Author: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'author' },
-          description:
-            '<p>The name of the author publishing the app.</p><p>Minimum length=1. Maximum length=127.</p><p>Pattern "^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$";</p>',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            '<p>The description of the application.</p><p>Minimum length=1. Maximum length=256</p>',
-        }),
-    ).exactOptional(),
-    HomePageUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'homePageUrl' },
-          description:
-            'A URL with more information about the application, for example the location of your GitHub repository for the application.',
-        }),
-    ).exactOptional(),
-    Labels: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'labels' },
-          description:
-            '<p>Labels to improve discovery of apps in search results.</p><p>Minimum length=1. Maximum length=127. Maximum number of labels: 10</p><p>Pattern: "^[a-zA-Z0-9+\\\\-_:\\\\/@]+$";</p>',
-        }),
-    ).exactOptional(),
-    ReadmeBody: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'readmeBody' },
-          description:
-            '<p>A text readme file in Markdown language that contains a more detailed description of the application and how it works.</p><p>Maximum size 5 MB</p>',
-        }),
-    ).exactOptional(),
-    ReadmeUrl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'readmeUrl' },
-          description:
-            '<p>A link to the readme file in Markdown language that contains a more detailed description of the application and how it works.</p><p>Maximum size 5 MB</p>',
-        }),
-    ).exactOptional(),
+    Author: StringSchema.exactOptional().openapi({
+      xml: { name: 'author' },
+      description:
+        '<p>The name of the author publishing the app.</p><p>Minimum length=1. Maximum length=127.</p><p>Pattern "^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$";</p>',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        '<p>The description of the application.</p><p>Minimum length=1. Maximum length=256</p>',
+    }),
+    HomePageUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'homePageUrl' },
+      description:
+        'A URL with more information about the application, for example the location of your GitHub repository for the application.',
+    }),
+    Labels: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'labels' },
+      description:
+        '<p>Labels to improve discovery of apps in search results.</p><p>Minimum length=1. Maximum length=127. Maximum number of labels: 10</p><p>Pattern: "^[a-zA-Z0-9+\\\\-_:\\\\/@]+$";</p>',
+    }),
+    ReadmeBody: StringSchema.exactOptional().openapi({
+      xml: { name: 'readmeBody' },
+      description:
+        '<p>A text readme file in Markdown language that contains a more detailed description of the application and how it works.</p><p>Maximum size 5 MB</p>',
+    }),
+    ReadmeUrl: StringSchema.exactOptional().openapi({
+      xml: { name: 'readmeUrl' },
+      description:
+        '<p>A link to the readme file in Markdown language that contains a more detailed description of the application and how it works.</p><p>Maximum size 5 MB</p>',
+    }),
   })
   .openapi({ title: 'UpdateApplicationRequest', required: [] })
   .openapi('UpdateApplicationRequest')
@@ -2214,24 +1578,16 @@ export const postApplicationsApplicationIdChangesetsRoute = createRoute({
                 }),
               rollbackConfiguration: z
                 .object({
-                  MonitoringTimeInMinutes: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'monitoringTimeInMinutes' },
-                        description:
-                          'This property corresponds to the content of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/RollbackConfiguration">RollbackConfiguration</a>\n </i> Data Type.',
-                      }),
-                  ).exactOptional(),
-                  RollbackTriggers: ListOfRollbackTriggerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'rollbackTriggers' },
-                        description:
-                          'This property corresponds to the content of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/RollbackConfiguration">RollbackConfiguration</a>\n </i> Data Type.',
-                      }),
-                  ).exactOptional(),
+                  MonitoringTimeInMinutes: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'monitoringTimeInMinutes' },
+                    description:
+                      'This property corresponds to the content of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/RollbackConfiguration">RollbackConfiguration</a>\n </i> Data Type.',
+                  }),
+                  RollbackTriggers: ListOfRollbackTriggerSchema.exactOptional().openapi({
+                    xml: { name: 'rollbackTriggers' },
+                    description:
+                      'This property corresponds to the content of the same name for the <i>AWS CloudFormation <a href="https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/RollbackConfiguration">RollbackConfiguration</a>\n </i> Data Type.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

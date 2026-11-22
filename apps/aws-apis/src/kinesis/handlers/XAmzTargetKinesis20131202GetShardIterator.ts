@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetKinesis20131202GetShardIteratorHandler = app.openapi(
   postXAmzTargetKinesis20131202GetShardIteratorRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

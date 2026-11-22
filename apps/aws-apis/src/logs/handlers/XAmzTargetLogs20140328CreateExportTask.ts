@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetLogs20140328CreateExportTaskHandler = app.openapi(
   postXAmzTargetLogs20140328CreateExportTaskRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

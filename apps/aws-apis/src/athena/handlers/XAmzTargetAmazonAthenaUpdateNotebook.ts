@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAmazonAthenaUpdateNotebookHandler = app.openapi(
   postXAmzTargetAmazonAthenaUpdateNotebookRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

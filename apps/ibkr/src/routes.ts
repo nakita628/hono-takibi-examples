@@ -7578,23 +7578,23 @@ const IsaTransferInstructionSchema = z
     authorizationType: z
       .xor([
         z
-          .any()
+          .string()
           .openapi({
             description: 'Authorize IB to sell all your investments and transfers as cash',
           }),
         z
-          .any()
+          .string()
           .openapi({
             description:
               'Authorize IB to transfer eligible investments, sell ineligible investments and transfers as cash',
           }),
         z
-          .any()
+          .string()
           .openapi({
             description:
               'Expect IB to further consult with you on ineligible investments. Note that this might add significant delays to the transfer',
           }),
-        z.any().openapi({ description: 'Current ISA contains cash only' }),
+        z.string().openapi({ description: 'Current ISA contains cash only' }),
       ])
       .openapi({
         description: 'How the ISA transfer should be authorized/handled.',
@@ -39794,6 +39794,7 @@ export const getV1ApiIserverContractConidAlgosRoute = createRoute({
           },
           description:
             'Whether or not to add algo descriptions to response. Set to 1 for yes, 0 for no.',
+          default: 0,
         }),
       addParams: z
         .preprocess(
@@ -39824,6 +39825,7 @@ export const getV1ApiIserverContractConidAlgosRoute = createRoute({
             },
           },
           description: 'Whether or not to show algo parameters. Set to 1 for yes, 0 for no.',
+          default: 0,
         }),
     }),
   },
@@ -40550,6 +40552,7 @@ export const getV1ApiIserverMarketdataHistoryRoute = createRoute({
             explode: false,
             schema: { type: 'integer', format: 'int64', default: -1, enum: [-1, 1] },
           },
+          default: -1,
         }),
       source: z
         .string()
@@ -41748,6 +41751,7 @@ export const getV1ApiPortfolioSubaccounts2Route = createRoute({
           },
           description: 'Number of accounts to return per page.',
           example: 2,
+          default: 20,
         }),
     }),
   },

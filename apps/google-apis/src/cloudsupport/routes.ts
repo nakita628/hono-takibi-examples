@@ -1,259 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const Blobstore2InfoSchema = z
-  .object({
-    blobGeneration: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    blobId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    downloadReadHandle: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    readToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    uploadMetadataContainer: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-  })
-  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
-  .openapi('Blobstore2Info')
-
-const ObjectIdSchema = z
-  .object({
-    bucketName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    generation: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    objectName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-  })
-  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
-  .openapi('ObjectId')
-
-const CompositeMediaSchema = z
-  .object({
-    blobRef: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    blobstore2Info: Blobstore2InfoSchema.exactOptional().openapi({
-      description: '# gdata.* are outside protos with mising documentation',
-    }),
-    cosmoBinaryReference: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    crc32cHash: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    inline: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    length: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    md5Hash: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    objectId: ObjectIdSchema.exactOptional().openapi({
-      description: '# gdata.* are outside protos with mising documentation',
-    }),
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    referenceType: z
-      .enum(['PATH', 'BLOB_REF', 'INLINE', 'BIGSTORE_REF', 'COSMO_BINARY_REFERENCE'])
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    sha1Hash: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-  })
-  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
-  .openapi('CompositeMedia')
-
-const ContentTypeInfoSchema = z
-  .object({
-    bestGuess: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    fromBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    fromFileName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    fromHeader: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    fromUrlPath: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-  })
-  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
-  .openapi('ContentTypeInfo')
-
-const DiffChecksumsResponseSchema = z
-  .object({
-    checksumsLocation: CompositeMediaSchema.exactOptional().openapi({
-      description: '# gdata.* are outside protos with mising documentation',
-    }),
-    chunkSizeBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    objectLocation: CompositeMediaSchema.exactOptional().openapi({
-      description: '# gdata.* are outside protos with mising documentation',
-    }),
-    objectSizeBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    objectVersion: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-  })
-  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
-  .openapi('DiffChecksumsResponse')
-
-const DiffDownloadResponseSchema = z
-  .object({
-    objectLocation: CompositeMediaSchema.exactOptional().openapi({
-      description: '# gdata.* are outside protos with mising documentation',
-    }),
-  })
-  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
-  .openapi('DiffDownloadResponse')
-
-const DiffUploadRequestSchema = z
-  .object({
-    checksumsInfo: CompositeMediaSchema.exactOptional().openapi({
-      description: '# gdata.* are outside protos with mising documentation',
-    }),
-    objectInfo: CompositeMediaSchema.exactOptional().openapi({
-      description: '# gdata.* are outside protos with mising documentation',
-    }),
-    objectVersion: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-  })
-  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
-  .openapi('DiffUploadRequest')
-
-const DiffUploadResponseSchema = z
-  .object({
-    objectVersion: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    originalObject: CompositeMediaSchema.exactOptional().openapi({
-      description: '# gdata.* are outside protos with mising documentation',
-    }),
-  })
-  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
-  .openapi('DiffUploadResponse')
-
-const DiffVersionResponseSchema = z
-  .object({
-    objectSizeBytes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    objectVersion: z
-      .string()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-  })
-  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
-  .openapi('DiffVersionResponse')
-
-const DownloadParametersSchema = z
-  .object({
-    allowGzipCompression: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-    ignoreRange: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-  })
-  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
-  .openapi('DownloadParameters')
-
-type MediaType = {
-  algorithm?: string
-  bigstoreObjectRef?: string
-  blobRef?: string
-  blobstore2Info?: z.infer<typeof Blobstore2InfoSchema>
-  compositeMedia?: z.infer<typeof CompositeMediaSchema>[]
-  contentType?: string
-  contentTypeInfo?: z.infer<typeof ContentTypeInfoSchema>
-  cosmoBinaryReference?: string
-  crc32cHash?: number
-  diffChecksumsResponse?: z.infer<typeof DiffChecksumsResponseSchema>
-  diffDownloadResponse?: z.infer<typeof DiffDownloadResponseSchema>
-  diffUploadRequest?: z.infer<typeof DiffUploadRequestSchema>
-  diffUploadResponse?: z.infer<typeof DiffUploadResponseSchema>
-  diffVersionResponse?: z.infer<typeof DiffVersionResponseSchema>
-  downloadParameters?: z.infer<typeof DownloadParametersSchema>
-  filename?: string
-  hash?: string
-  hashVerified?: boolean
-  inline?: string
-  isPotentialRetry?: boolean
-  length?: string
-  md5Hash?: string
-  mediaId?: string
-  objectId?: z.infer<typeof ObjectIdSchema>
-  path?: string
-  referenceType?:
-    | 'PATH'
-    | 'BLOB_REF'
-    | 'INLINE'
-    | 'GET_MEDIA'
-    | 'COMPOSITE_MEDIA'
-    | 'BIGSTORE_REF'
-    | 'DIFF_VERSION_RESPONSE'
-    | 'DIFF_CHECKSUMS_RESPONSE'
-    | 'DIFF_DOWNLOAD_RESPONSE'
-    | 'DIFF_UPLOAD_REQUEST'
-    | 'DIFF_UPLOAD_RESPONSE'
-    | 'COSMO_BINARY_REFERENCE'
-    | 'ARBITRARY_BYTES'
-  sha1Hash?: string
-  sha256Hash?: string
-  timestamp?: string
-  token?: string
-}
-
 const ActorSchema = z
   .object({
     displayName: z
@@ -327,6 +73,32 @@ const AttachmentSchema = z
   })
   .openapi({ description: 'Represents a file attached to a support case.', required: [] })
   .openapi('Attachment')
+
+const Blobstore2InfoSchema = z
+  .object({
+    blobGeneration: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    blobId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    downloadReadHandle: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    readToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    uploadMetadataContainer: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+  })
+  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
+  .openapi('Blobstore2Info')
 
 const CaseClassificationSchema = z
   .object({
@@ -437,7 +209,7 @@ const CaseSchema = z
   .openapi('Case')
 
 const CloseCaseRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request message for the CloseCase endpoint.' })
   .openapi('CloseCaseRequest')
 
@@ -477,6 +249,98 @@ const CommentSchema = z
   .openapi({ description: 'A comment associated with a support case.', required: [] })
   .openapi('Comment')
 
+const ObjectIdSchema = z
+  .object({
+    bucketName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    generation: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    objectName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+  })
+  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
+  .openapi('ObjectId')
+
+const CompositeMediaSchema = z
+  .object({
+    blobRef: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    blobstore2Info: Blobstore2InfoSchema.exactOptional().openapi({
+      description: '# gdata.* are outside protos with mising documentation',
+    }),
+    cosmoBinaryReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    crc32cHash: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    inline: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    length: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    md5Hash: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    objectId: ObjectIdSchema.exactOptional().openapi({
+      description: '# gdata.* are outside protos with mising documentation',
+    }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    referenceType: z
+      .enum(['PATH', 'BLOB_REF', 'INLINE', 'BIGSTORE_REF', 'COSMO_BINARY_REFERENCE'])
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    sha1Hash: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+  })
+  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
+  .openapi('CompositeMedia')
+
+const ContentTypeInfoSchema = z
+  .object({
+    bestGuess: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    fromBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    fromFileName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    fromHeader: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    fromUrlPath: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+  })
+  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
+  .openapi('ContentTypeInfo')
+
 const CreateAttachmentRequestSchema = z
   .object({
     attachment: AttachmentSchema.exactOptional().openapi({
@@ -485,6 +349,96 @@ const CreateAttachmentRequestSchema = z
   })
   .openapi({ description: 'The request message for the CreateAttachment endpoint.', required: [] })
   .openapi('CreateAttachmentRequest')
+
+const DiffChecksumsResponseSchema = z
+  .object({
+    checksumsLocation: CompositeMediaSchema.exactOptional().openapi({
+      description: '# gdata.* are outside protos with mising documentation',
+    }),
+    chunkSizeBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    objectLocation: CompositeMediaSchema.exactOptional().openapi({
+      description: '# gdata.* are outside protos with mising documentation',
+    }),
+    objectSizeBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    objectVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+  })
+  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
+  .openapi('DiffChecksumsResponse')
+
+const DiffDownloadResponseSchema = z
+  .object({
+    objectLocation: CompositeMediaSchema.exactOptional().openapi({
+      description: '# gdata.* are outside protos with mising documentation',
+    }),
+  })
+  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
+  .openapi('DiffDownloadResponse')
+
+const DiffUploadRequestSchema = z
+  .object({
+    checksumsInfo: CompositeMediaSchema.exactOptional().openapi({
+      description: '# gdata.* are outside protos with mising documentation',
+    }),
+    objectInfo: CompositeMediaSchema.exactOptional().openapi({
+      description: '# gdata.* are outside protos with mising documentation',
+    }),
+    objectVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+  })
+  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
+  .openapi('DiffUploadRequest')
+
+const DiffUploadResponseSchema = z
+  .object({
+    objectVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    originalObject: CompositeMediaSchema.exactOptional().openapi({
+      description: '# gdata.* are outside protos with mising documentation',
+    }),
+  })
+  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
+  .openapi('DiffUploadResponse')
+
+const DiffVersionResponseSchema = z
+  .object({
+    objectSizeBytes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    objectVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+  })
+  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
+  .openapi('DiffVersionResponse')
+
+const DownloadParametersSchema = z
+  .object({
+    allowGzipCompression: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    ignoreRange: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+  })
+  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
+  .openapi('DownloadParameters')
 
 const EscalationSchema = z
   .object({
@@ -566,141 +520,135 @@ const ListCommentsResponseSchema = z
   .openapi({ description: 'The response message for the ListComments endpoint.', required: [] })
   .openapi('ListCommentsResponse')
 
-const MediaSchema: z.ZodType<MediaType> = z
-  .lazy(() =>
-    z
-      .object({
-        algorithm: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        bigstoreObjectRef: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        blobRef: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        blobstore2Info: Blobstore2InfoSchema.exactOptional().openapi({
-          description: '# gdata.* are outside protos with mising documentation',
-        }),
-        compositeMedia: z
-          .array(CompositeMediaSchema)
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        contentType: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        contentTypeInfo: ContentTypeInfoSchema.exactOptional().openapi({
-          description: '# gdata.* are outside protos with mising documentation',
-        }),
-        cosmoBinaryReference: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        crc32cHash: z
-          .uint32()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        diffChecksumsResponse: DiffChecksumsResponseSchema.exactOptional().openapi({
-          description: '# gdata.* are outside protos with mising documentation',
-        }),
-        diffDownloadResponse: DiffDownloadResponseSchema.exactOptional().openapi({
-          description: '# gdata.* are outside protos with mising documentation',
-        }),
-        diffUploadRequest: DiffUploadRequestSchema.exactOptional().openapi({
-          description: '# gdata.* are outside protos with mising documentation',
-        }),
-        diffUploadResponse: DiffUploadResponseSchema.exactOptional().openapi({
-          description: '# gdata.* are outside protos with mising documentation',
-        }),
-        diffVersionResponse: DiffVersionResponseSchema.exactOptional().openapi({
-          description: '# gdata.* are outside protos with mising documentation',
-        }),
-        downloadParameters: DownloadParametersSchema.exactOptional().openapi({
-          description: '# gdata.* are outside protos with mising documentation',
-        }),
-        filename: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        hash: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        hashVerified: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        inline: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        isPotentialRetry: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        length: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        md5Hash: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        mediaId: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        objectId: ObjectIdSchema.exactOptional().openapi({
-          description: '# gdata.* are outside protos with mising documentation',
-        }),
-        path: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        referenceType: z
-          .enum([
-            'PATH',
-            'BLOB_REF',
-            'INLINE',
-            'GET_MEDIA',
-            'COMPOSITE_MEDIA',
-            'BIGSTORE_REF',
-            'DIFF_VERSION_RESPONSE',
-            'DIFF_CHECKSUMS_RESPONSE',
-            'DIFF_DOWNLOAD_RESPONSE',
-            'DIFF_UPLOAD_REQUEST',
-            'DIFF_UPLOAD_RESPONSE',
-            'COSMO_BINARY_REFERENCE',
-            'ARBITRARY_BYTES',
-          ])
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        sha1Hash: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        sha256Hash: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        timestamp: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-        token: z
-          .string()
-          .exactOptional()
-          .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
-      })
-      .openapi({
-        description: '# gdata.* are outside protos with mising documentation',
-        required: [],
-      }),
-  )
+const MediaSchema = z
+  .object({
+    algorithm: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    bigstoreObjectRef: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    blobRef: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    blobstore2Info: Blobstore2InfoSchema.exactOptional().openapi({
+      description: '# gdata.* are outside protos with mising documentation',
+    }),
+    compositeMedia: z
+      .array(CompositeMediaSchema)
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    contentType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    contentTypeInfo: ContentTypeInfoSchema.exactOptional().openapi({
+      description: '# gdata.* are outside protos with mising documentation',
+    }),
+    cosmoBinaryReference: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    crc32cHash: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    diffChecksumsResponse: DiffChecksumsResponseSchema.exactOptional().openapi({
+      description: '# gdata.* are outside protos with mising documentation',
+    }),
+    diffDownloadResponse: DiffDownloadResponseSchema.exactOptional().openapi({
+      description: '# gdata.* are outside protos with mising documentation',
+    }),
+    diffUploadRequest: DiffUploadRequestSchema.exactOptional().openapi({
+      description: '# gdata.* are outside protos with mising documentation',
+    }),
+    diffUploadResponse: DiffUploadResponseSchema.exactOptional().openapi({
+      description: '# gdata.* are outside protos with mising documentation',
+    }),
+    diffVersionResponse: DiffVersionResponseSchema.exactOptional().openapi({
+      description: '# gdata.* are outside protos with mising documentation',
+    }),
+    downloadParameters: DownloadParametersSchema.exactOptional().openapi({
+      description: '# gdata.* are outside protos with mising documentation',
+    }),
+    filename: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    hash: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    hashVerified: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    inline: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    isPotentialRetry: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    length: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    md5Hash: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    mediaId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    objectId: ObjectIdSchema.exactOptional().openapi({
+      description: '# gdata.* are outside protos with mising documentation',
+    }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    referenceType: z
+      .enum([
+        'PATH',
+        'BLOB_REF',
+        'INLINE',
+        'GET_MEDIA',
+        'COMPOSITE_MEDIA',
+        'BIGSTORE_REF',
+        'DIFF_VERSION_RESPONSE',
+        'DIFF_CHECKSUMS_RESPONSE',
+        'DIFF_DOWNLOAD_RESPONSE',
+        'DIFF_UPLOAD_REQUEST',
+        'DIFF_UPLOAD_RESPONSE',
+        'COSMO_BINARY_REFERENCE',
+        'ARBITRARY_BYTES',
+      ])
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    sha1Hash: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    sha256Hash: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    timestamp: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+    token: z
+      .string()
+      .exactOptional()
+      .openapi({ description: '# gdata.* are outside protos with mising documentation' }),
+  })
+  .openapi({ description: '# gdata.* are outside protos with mising documentation', required: [] })
   .openapi('Media')
 
 const SearchCaseClassificationsResponseSchema = z

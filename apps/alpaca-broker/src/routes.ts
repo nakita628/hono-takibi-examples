@@ -490,26 +490,50 @@ const FullTransferSchema = z
   .object({ type: z.literal('FULL') })
   .openapi({ required: ['type'] })
   .and(
-    z.looseObject({}).refine(
-      (val) =>
-        !z
-          .object({ cash: z.array(z.any()).min(1) })
-          .openapi({ required: ['cash'] })
-          .safeParse(val).success,
-    ),
+    z
+      .looseObject({})
+      .refine(
+        (val) =>
+          !z
+            .object({ cash: z.array(z.any()).min(1) })
+            .openapi({ required: ['cash'] })
+            .safeParse(val).success,
+      )
+      .openapi({
+        not: {
+          properties: { cash: { minItems: 1, type: 'array' } },
+          required: ['cash'],
+          type: 'object',
+        },
+      }),
   )
   .and(
-    z.looseObject({}).refine(
-      (val) =>
-        !z
-          .object({
-            securities: z
-              .object({ equities: z.array(z.any()).min(1) })
-              .openapi({ required: ['equities'] }),
-          })
-          .openapi({ required: ['securities'] })
-          .safeParse(val).success,
-    ),
+    z
+      .looseObject({})
+      .refine(
+        (val) =>
+          !z
+            .object({
+              securities: z
+                .object({ equities: z.array(z.any()).min(1) })
+                .openapi({ required: ['equities'] }),
+            })
+            .openapi({ required: ['securities'] })
+            .safeParse(val).success,
+      )
+      .openapi({
+        not: {
+          properties: {
+            securities: {
+              properties: { equities: { minItems: 1, type: 'array' } },
+              required: ['equities'],
+              type: 'object',
+            },
+          },
+          required: ['securities'],
+          type: 'object',
+        },
+      }),
   )
   .openapi({
     description:
@@ -533,13 +557,22 @@ const PartialTransferSchema = z
     type: z.literal('PARTIAL'),
   })
   .superRefine((o, ctx) => {
-    const If = z.looseObject({}).refine(
-      (val) =>
-        !z
-          .object({ cash: z.array(z.any()).min(1) })
-          .openapi({ required: ['cash'] })
-          .safeParse(val).success,
-    )
+    const If = z
+      .looseObject({})
+      .refine(
+        (val) =>
+          !z
+            .object({ cash: z.array(z.any()).min(1) })
+            .openapi({ required: ['cash'] })
+            .safeParse(val).success,
+      )
+      .openapi({
+        not: {
+          properties: { cash: { minItems: 1, type: 'array' } },
+          required: ['cash'],
+          type: 'object',
+        },
+      })
     const ifOk = If.safeParse(o).success
     const Branch = ifOk
       ? z

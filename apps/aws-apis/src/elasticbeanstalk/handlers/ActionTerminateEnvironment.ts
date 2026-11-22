@@ -1,0 +1,12 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { getActionTerminateEnvironmentRoute, postActionTerminateEnvironmentRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const ActionTerminateEnvironmentHandler = app
+  .openapi(getActionTerminateEnvironmentRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postActionTerminateEnvironmentRoute, (c) => {
+    throw new Error('Not implemented')
+  })

@@ -281,7 +281,7 @@ const ChangeLogEntrySchema = z
         readOnly: true,
       }),
     messageProperties: z
-      .record(z.string(), z.object({}))
+      .record(z.string(), z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -3776,8 +3776,8 @@ export const patchApiV1CollectionsId4nRoute = createRoute({
     200: {
       description: 'OK',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     204: { description: 'No Content' },
@@ -5409,8 +5409,8 @@ export const patchApiV1GuidsId4nRoute = createRoute({
     200: {
       description: 'OK',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     204: { description: 'No Content' },
@@ -7424,8 +7424,8 @@ export const putApiV1MicrostorageId4nOrganizationRoute = createRoute({
     200: {
       description: 'OK',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     202: { description: 'Accepted' },
@@ -11815,8 +11815,8 @@ export const putApiV1TransfersId4nSendInfoRoute = createRoute({
     200: {
       description: 'OK',
       content: {
-        'application/json': { schema: z.object({}) },
-        'application/xml': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
+        'application/xml': { schema: z.looseObject({}) },
       },
     },
     202: { description: 'Accepted' },

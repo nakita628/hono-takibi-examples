@@ -1,4 +1,4 @@
-<h1 id="netlifys-api-documentation">Netlify's API documentation v2.63.0</h1>
+<h1 id="netlifys-api-documentation">Netlify's API documentation v2.63.1</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -10081,6 +10081,168 @@ To perform this operation, you must be authenticated by means of one of the foll
 netlifyAuth
 </aside>
 
+<h1 id="netlifys-api-documentation-identityuser">identityUser</h1>
+
+## Get an Identity user
+
+<a id="opIdgetIdentityUser"></a>
+
+> Code samples
+
+```bash
+curl https://api.netlify.com/api/v1/sites/string/identity/string/users/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /sites/{site_id}/identity/{identity_id}/users/{user_id}`
+
+Returns one Identity user by ID. Agent runner tokens receive only the user's ID, email, confirmation, invitation, sign-in, password-reset and email-change timestamps, and the `provider` and `roles` fields of `app_metadata`.
+
+<h3 id="get-an-identity-user-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|site_id|path|string|true|none|
+|identity_id|path|string|true|The site's Identity instance ID, returned as `identity_instance_id` by `getSite`.|
+|user_id|path|string|true|The Identity user's UUID.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "string",
+  "email": "string",
+  "aud": "string",
+  "role": "string",
+  "confirmed_at": "string",
+  "invited_at": "string",
+  "confirmation_sent_at": "string",
+  "recovery_sent_at": "string",
+  "email_change_sent_at": "string",
+  "last_sign_in_at": "string",
+  "app_metadata": {
+    "provider": "string",
+    "roles": [
+      "string"
+    ]
+  },
+  "user_metadata": {},
+  "created_at": "string",
+  "updated_at": "string"
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="get-an-identity-user-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[identityUser](#schemaidentityuser)|
+|default|Default|error|[error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+netlifyAuth
+</aside>
+
+## Look up an Identity user by email
+
+<a id="opIdlookupIdentityUser"></a>
+
+> Code samples
+
+```bash
+curl https://api.netlify.com/api/v1/sites/string/identity/string/users/lookup \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "email": "string"
+  }'
+```
+
+`POST /sites/{site_id}/identity/{identity_id}/users/lookup`
+
+Returns the one Identity user with this exact email. Matching ignores case and trailing spaces. Partial matches and pagination are not supported, and an unknown email returns 404. Agent runner tokens receive the same restricted fields as `getIdentityUser`.
+
+> Body parameter
+
+```json
+{
+  "email": "string"
+}
+```
+
+<h3 id="look-up-an-identity-user-by-email-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|site_id|path|string|true|none|
+|identity_id|path|string|true|The site's Identity instance ID, returned as `identity_instance_id` by `getSite`.|
+|body|body|object|true|none|
+|» email|body|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "id": "string",
+  "email": "string",
+  "aud": "string",
+  "role": "string",
+  "confirmed_at": "string",
+  "invited_at": "string",
+  "confirmation_sent_at": "string",
+  "recovery_sent_at": "string",
+  "email_change_sent_at": "string",
+  "last_sign_in_at": "string",
+  "app_metadata": {
+    "provider": "string",
+    "roles": [
+      "string"
+    ]
+  },
+  "user_metadata": {},
+  "created_at": "string",
+  "updated_at": "string"
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="look-up-an-identity-user-by-email-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[identityUser](#schemaidentityuser)|
+|default|Default|error|[error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+netlifyAuth
+</aside>
+
 <h1 id="netlifys-api-documentation-function">function</h1>
 
 ## Search a site's functions
@@ -16527,6 +16689,56 @@ Environment variable value model definition
 |submission_count|integer(int32)|false|none|none|
 |fields|[object]|false|none|none|
 |created_at|string(dateTime)|false|none|none|
+
+<h2 id="tocS_identityUser">identityUser</h2>
+<!-- backwards compatibility -->
+<a id="schemaidentityuser"></a>
+<a id="schema_identityUser"></a>
+<a id="tocSidentityuser"></a>
+<a id="tocsidentityuser"></a>
+
+```json
+{
+  "id": "string",
+  "email": "string",
+  "aud": "string",
+  "role": "string",
+  "confirmed_at": "string",
+  "invited_at": "string",
+  "confirmation_sent_at": "string",
+  "recovery_sent_at": "string",
+  "email_change_sent_at": "string",
+  "last_sign_in_at": "string",
+  "app_metadata": {
+    "provider": "string",
+    "roles": [
+      "string"
+    ]
+  },
+  "user_metadata": {},
+  "created_at": "string",
+  "updated_at": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|none|none|
+|email|string|false|none|none|
+|aud|string|false|none|none|
+|role|string|false|none|none|
+|confirmed_at|string(dateTime)|false|none|none|
+|invited_at|string(dateTime)|false|none|none|
+|confirmation_sent_at|string(dateTime)|false|none|none|
+|recovery_sent_at|string(dateTime)|false|none|none|
+|email_change_sent_at|string(dateTime)|false|none|none|
+|last_sign_in_at|string(dateTime)|false|none|none|
+|app_metadata|object|false|none|none|
+|user_metadata|object|false|none|none|
+|created_at|string(dateTime)|false|none|none|
+|updated_at|string(dateTime)|false|none|none|
 
 <h2 id="tocS_hookType">hookType</h2>
 <!-- backwards compatibility -->

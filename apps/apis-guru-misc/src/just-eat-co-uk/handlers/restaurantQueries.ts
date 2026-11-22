@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const restaurantQueriesHandler = app.openapi(
   postOrdersTenantOrderIdRestaurantqueriesCompensationRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

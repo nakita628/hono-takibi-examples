@@ -1,5 +1,188 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const DateDetailsSchema = z
+  .object({
+    hasTime: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether the date column includes time.' }),
+  })
+  .openapi({ description: 'Details about a date column.', required: [] })
+  .openapi('DateDetails')
+
+const LabeledItemSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Internal id associated with the item.' }),
+    name: z.string().exactOptional().openapi({ description: 'Display string as entered by user.' }),
+  })
+  .openapi({ description: 'A single item in a labeled column.', required: [] })
+  .openapi('LabeledItem')
+
+const LookupDetailsSchema = z
+  .object({
+    relationshipColumn: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the relationship column associated with the lookup.' }),
+    relationshipColumnId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the relationship column.' }),
+  })
+  .openapi({
+    description:
+      'Details about a lookup column whose value comes from the associated relationship.',
+    required: [],
+  })
+  .openapi('LookupDetails')
+
+const RelationshipDetailsSchema = z
+  .object({
+    linkedTable: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the table this relationship is linked to.' }),
+  })
+  .openapi({ description: 'Details about a relationship column.', required: [] })
+  .openapi('RelationshipDetails')
+
+const ColumnDescriptionSchema = z
+  .object({
+    dataType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Data type of the column Supported types are auto_id, boolean, boolean_list, creator, create_timestamp, date, dropdown, location, integer, integer_list, number, number_list, person, person_list, tags, check_list, text, text_list, update_timestamp, updater, relationship, file_attachment_list. These types directly map to the column types supported on Tables website.',
+      }),
+    dateDetails: DateDetailsSchema.exactOptional().openapi({
+      description: 'Optional. Additional details about a date column.',
+    }),
+    id: z.string().exactOptional().openapi({ description: 'Internal id for a column.' }),
+    labels: z
+      .array(LabeledItemSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Range of labeled values for the column. Some columns like tags and drop-downs limit the values to a set of possible values. We return the range of values in such cases to help clients implement better user data validation.',
+      }),
+    lookupDetails: LookupDetailsSchema.exactOptional().openapi({
+      description:
+        'Optional. Indicates that this is a lookup column whose value is derived from the relationship column specified in the details. Lookup columns can not be updated directly. To change the value you must update the associated relationship column.',
+    }),
+    multipleValuesDisallowed: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Indicates whether or not multiple values are allowed for array types where such a restriction is possible.',
+      }),
+    name: z.string().exactOptional().openapi({ description: 'column name' }),
+    readonly: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. Indicates that values for the column cannot be set by the user.',
+      }),
+    relationshipDetails: RelationshipDetailsSchema.exactOptional().openapi({
+      description:
+        'Optional. Additional details about a relationship column. Specified when data_type is relationship.',
+    }),
+  })
+  .openapi({ description: 'Details on a column in the table.', required: [] })
+  .openapi('ColumnDescription')
+
+const SavedViewSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Internal id associated with the saved view.' }),
+    name: z.string().exactOptional().openapi({ description: 'Display name of the saved view.' }),
+  })
+  .openapi({ description: 'A saved view of a table. NextId: 3', required: [] })
+  .openapi('SavedView')
+
+const TableSchema = z
+  .object({
+    columns: z
+      .array(ColumnDescriptionSchema)
+      .exactOptional()
+      .openapi({
+        description: 'List of columns in this table. Order of columns matches the display order.',
+      }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time when the table was created.' }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The human readable title of the table.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The resource name of the table. Table names have the form `tables/{table}`.',
+      }),
+    savedViews: z
+      .array(SavedViewSchema)
+      .exactOptional()
+      .openapi({ description: 'Saved views for this table.' }),
+    timeZone: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time zone of the table. IANA Time Zone Database time zone, e.g. "America/New_York".',
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Time when the table was last updated excluding updates to individual rows',
+      }),
+  })
+  .openapi({ description: 'A single table. NextId: 8', required: [] })
+  .openapi('Table')
+
+const WorkspaceSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time when the workspace was created.' }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The human readable title of the workspace.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the workspace. Workspace names have the form `workspaces/{workspace}`.',
+      }),
+    tables: z
+      .array(TableSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of tables in the workspace.' }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time when the workspace was last updated.' }),
+  })
+  .openapi({ description: 'A single workspace.', required: [] })
+  .openapi('Workspace')
+
+type ListWorkspacesResponseType = {
+  nextPageToken?: string
+  workspaces?: z.infer<typeof WorkspaceSchema>[]
+}
+
 const RowSchema = z
   .object({
     createTime: z
@@ -120,103 +303,8 @@ const BatchUpdateRowsResponseSchema = z
   .openapi({ description: 'Response message for TablesService.BatchUpdateRows.', required: [] })
   .openapi('BatchUpdateRowsResponse')
 
-const DateDetailsSchema = z
-  .object({
-    hasTime: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the date column includes time.' }),
-  })
-  .openapi({ description: 'Details about a date column.', required: [] })
-  .openapi('DateDetails')
-
-const LabeledItemSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Internal id associated with the item.' }),
-    name: z.string().exactOptional().openapi({ description: 'Display string as entered by user.' }),
-  })
-  .openapi({ description: 'A single item in a labeled column.', required: [] })
-  .openapi('LabeledItem')
-
-const LookupDetailsSchema = z
-  .object({
-    relationshipColumn: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the relationship column associated with the lookup.' }),
-    relationshipColumnId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The id of the relationship column.' }),
-  })
-  .openapi({
-    description:
-      'Details about a lookup column whose value comes from the associated relationship.',
-    required: [],
-  })
-  .openapi('LookupDetails')
-
-const RelationshipDetailsSchema = z
-  .object({
-    linkedTable: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the table this relationship is linked to.' }),
-  })
-  .openapi({ description: 'Details about a relationship column.', required: [] })
-  .openapi('RelationshipDetails')
-
-const ColumnDescriptionSchema = z
-  .object({
-    dataType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Data type of the column Supported types are auto_id, boolean, boolean_list, creator, create_timestamp, date, dropdown, location, integer, integer_list, number, number_list, person, person_list, tags, check_list, text, text_list, update_timestamp, updater, relationship, file_attachment_list. These types directly map to the column types supported on Tables website.',
-      }),
-    dateDetails: DateDetailsSchema.exactOptional().openapi({
-      description: 'Optional. Additional details about a date column.',
-    }),
-    id: z.string().exactOptional().openapi({ description: 'Internal id for a column.' }),
-    labels: z
-      .array(LabeledItemSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Range of labeled values for the column. Some columns like tags and drop-downs limit the values to a set of possible values. We return the range of values in such cases to help clients implement better user data validation.',
-      }),
-    lookupDetails: LookupDetailsSchema.exactOptional().openapi({
-      description:
-        'Optional. Indicates that this is a lookup column whose value is derived from the relationship column specified in the details. Lookup columns can not be updated directly. To change the value you must update the associated relationship column.',
-    }),
-    multipleValuesDisallowed: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Indicates whether or not multiple values are allowed for array types where such a restriction is possible.',
-      }),
-    name: z.string().exactOptional().openapi({ description: 'column name' }),
-    readonly: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. Indicates that values for the column cannot be set by the user.',
-      }),
-    relationshipDetails: RelationshipDetailsSchema.exactOptional().openapi({
-      description:
-        'Optional. Additional details about a relationship column. Specified when data_type is relationship.',
-    }),
-  })
-  .openapi({ description: 'Details on a column in the table.', required: [] })
-  .openapi('ColumnDescription')
-
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -240,60 +328,6 @@ const ListRowsResponseSchema = z
   .openapi({ description: 'Response message for TablesService.ListRows.', required: [] })
   .openapi('ListRowsResponse')
 
-const SavedViewSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Internal id associated with the saved view.' }),
-    name: z.string().exactOptional().openapi({ description: 'Display name of the saved view.' }),
-  })
-  .openapi({ description: 'A saved view of a table. NextId: 3', required: [] })
-  .openapi('SavedView')
-
-const TableSchema = z
-  .object({
-    columns: z
-      .array(ColumnDescriptionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'List of columns in this table. Order of columns matches the display order.',
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time when the table was created.' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The human readable title of the table.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The resource name of the table. Table names have the form `tables/{table}`.',
-      }),
-    savedViews: z
-      .array(SavedViewSchema)
-      .exactOptional()
-      .openapi({ description: 'Saved views for this table.' }),
-    timeZone: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The time zone of the table. IANA Time Zone Database time zone, e.g. "America/New_York".',
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Time when the table was last updated excluding updates to individual rows',
-      }),
-  })
-  .openapi({ description: 'A single table. NextId: 8', required: [] })
-  .openapi('Table')
-
 const ListTablesResponseSchema = z
   .object({
     nextPageToken: z
@@ -308,36 +342,7 @@ const ListTablesResponseSchema = z
   .openapi({ description: 'Response message for TablesService.ListTables.', required: [] })
   .openapi('ListTablesResponse')
 
-const WorkspaceSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time when the workspace was created.' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The human readable title of the workspace.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the workspace. Workspace names have the form `workspaces/{workspace}`.',
-      }),
-    tables: z
-      .array(TableSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of tables in the workspace.' }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time when the workspace was last updated.' }),
-  })
-  .openapi({ description: 'A single workspace.', required: [] })
-  .openapi('Workspace')
-
-const ListWorkspacesResponseSchema = z
+const ListWorkspacesResponseSchema: z.ZodType<ListWorkspacesResponseType> = z
   .object({
     nextPageToken: z
       .string()

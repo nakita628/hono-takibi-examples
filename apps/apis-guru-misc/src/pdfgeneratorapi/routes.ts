@@ -123,8 +123,8 @@ const TemplateDefinitionSchema = z
   .object({
     dataSettings: z
       .object({
-        filterBy: z.array(z.object({})).exactOptional(),
-        sortBy: z.array(z.object({})).exactOptional(),
+        filterBy: z.array(z.looseObject({})).exactOptional(),
+        sortBy: z.array(z.looseObject({})).exactOptional(),
       })
       .exactOptional()
       .openapi({ description: 'Defines filter and sort option for root data set.', required: [] }),
@@ -1018,7 +1018,7 @@ export const postTemplatesTemplateIdEditorRoute = createRoute({
         'Data used to generate the PDF. This can be JSON encoded string or a public URL to your JSON file.',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ example: { id: 12312, name: 'Sample Data' } }),
+          schema: z.looseObject({}).openapi({ example: { id: 12312, name: 'Sample Data' } }),
         },
       },
       required: true,

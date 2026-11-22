@@ -1,0 +1,8007 @@
+import { createQuery, createMutation, queryOptions, mutationOptions } from '@tanstack/solid-query'
+import type {
+  UndefinedInitialDataOptions,
+  CreateMutationOptions,
+  DefaultError,
+  QueryClient,
+} from '@tanstack/solid-query'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getAppClientsKey() {
+  return ['appClients'] as const
+}
+
+export function getAssetsKey() {
+  return ['assets'] as const
+}
+
+export function getDatasetsKey() {
+  return ['datasets'] as const
+}
+
+export function getDeploymentEnvironmentsKey() {
+  return ['deploymentEnvironments'] as const
+}
+
+export function getDocumentsKey() {
+  return ['documents'] as const
+}
+
+export function getLogsKey() {
+  return ['logs'] as const
+}
+
+export function getModelsKey() {
+  return ['models'] as const
+}
+
+export function getOrganizationsKey() {
+  return ['organizations'] as const
+}
+
+export function getPaymentMethodsKey() {
+  return ['paymentMethods'] as const
+}
+
+export function getPlansKey() {
+  return ['plans'] as const
+}
+
+export function getPredictionsKey() {
+  return ['predictions'] as const
+}
+
+export function getProfilesKey() {
+  return ['profiles'] as const
+}
+
+export function getSecretsKey() {
+  return ['secrets'] as const
+}
+
+export function getSignupKey() {
+  return ['signup'] as const
+}
+
+export function getTransitionsKey() {
+  return ['transitions'] as const
+}
+
+export function getUsersKey() {
+  return ['users'] as const
+}
+
+export function getWorkflowsKey() {
+  return ['workflows'] as const
+}
+
+export function getAppClientsQueryKey(args: InferRequestType<typeof client.appClients.$get>) {
+  return ['appClients', '/appClients', args] as const
+}
+
+export function getAppClientsQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.appClients.$get>>>>
+  >,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.appClients.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.appClients.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getAppClientsQueryKey>
+  >({
+    queryKey: getAppClientsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.appClients.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createAppClients<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.appClients.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.appClients.$get>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.appClients.$get>>>>
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getAppClientsQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getAppClientsQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostAppClientsMutationKey() {
+  return ['appClients', '/appClients', 'POST'] as const
+}
+
+export function getPostAppClientsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.appClients.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.appClients.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAppClientsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.appClients.$post>) {
+      return parseResponse(client.appClients.$post(args, options))
+    },
+  })
+}
+
+export function createPostAppClients<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.appClients.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.appClients.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAppClientsMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsAppClientsMutationKey() {
+  return ['appClients', '/appClients', 'OPTIONS'] as const
+}
+
+export function getOptionsAppClientsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.appClients.$options>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.appClients.$options>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsAppClientsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.appClients.$options>) {
+      return parseResponse(client.appClients.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsAppClients<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.appClients.$options>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.appClients.$options>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsAppClientsMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteAppClientsAppClientIdMutationKey() {
+  return ['appClients', '/appClients/:appClientId', 'DELETE'] as const
+}
+
+export function getDeleteAppClientsAppClientIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.appClients)[':appClientId']['$delete']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.appClients)[':appClientId']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteAppClientsAppClientIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.appClients)[':appClientId']['$delete']>,
+    ) {
+      return parseResponse(client.appClients[':appClientId'].$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteAppClientsAppClientId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.appClients)[':appClientId']['$delete']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.appClients)[':appClientId']['$delete']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteAppClientsAppClientIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsAppClientsAppClientIdMutationKey() {
+  return ['appClients', '/appClients/:appClientId', 'OPTIONS'] as const
+}
+
+export function getOptionsAppClientsAppClientIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.appClients)[':appClientId']['$options']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.appClients)[':appClientId']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsAppClientsAppClientIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.appClients)[':appClientId']['$options']>,
+    ) {
+      return parseResponse(client.appClients[':appClientId'].$options(args, options))
+    },
+  })
+}
+
+export function createOptionsAppClientsAppClientId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.appClients)[':appClientId']['$options']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.appClients)[':appClientId']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsAppClientsAppClientIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchAppClientsAppClientIdMutationKey() {
+  return ['appClients', '/appClients/:appClientId', 'PATCH'] as const
+}
+
+export function getPatchAppClientsAppClientIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.appClients)[':appClientId']['$patch']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.appClients)[':appClientId']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchAppClientsAppClientIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.appClients)[':appClientId']['$patch']>) {
+      return parseResponse(client.appClients[':appClientId'].$patch(args, options))
+    },
+  })
+}
+
+export function createPatchAppClientsAppClientId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.appClients)[':appClientId']['$patch']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.appClients)[':appClientId']['$patch']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchAppClientsAppClientIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getAssetsQueryKey(args: InferRequestType<typeof client.assets.$get>) {
+  return ['assets', '/assets', args] as const
+}
+
+export function getAssetsQueryOptions<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.assets.$get>>>>>,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.assets.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.assets.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getAssetsQueryKey>
+  >({
+    queryKey: getAssetsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.assets.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createAssets<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.assets.$get>>>>>,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.assets.$get>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.assets.$get>>>>>,
+          TError,
+          TData,
+          ReturnType<typeof getAssetsQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getAssetsQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostAssetsMutationKey() {
+  return ['assets', '/assets', 'POST'] as const
+}
+
+export function getPostAssetsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.assets.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.assets.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAssetsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.assets.$post>) {
+      return parseResponse(client.assets.$post(args, options))
+    },
+  })
+}
+
+export function createPostAssets<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.assets.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.assets.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAssetsMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsAssetsMutationKey() {
+  return ['assets', '/assets', 'OPTIONS'] as const
+}
+
+export function getOptionsAssetsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.assets.$options>>>>>,
+    TError,
+    InferRequestType<typeof client.assets.$options>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsAssetsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.assets.$options>) {
+      return parseResponse(client.assets.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsAssets<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.assets.$options>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.assets.$options>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsAssetsMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getAssetsAssetIdQueryKey(
+  args: InferRequestType<(typeof client.assets)[':assetId']['$get']>,
+) {
+  return ['assets', '/assets/:assetId', args] as const
+}
+
+export function getAssetsAssetIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.assets)[':assetId']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.assets)[':assetId']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.assets)[':assetId']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getAssetsAssetIdQueryKey>
+  >({
+    queryKey: getAssetsAssetIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.assets[':assetId'].$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createAssetsAssetId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.assets)[':assetId']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.assets)[':assetId']['$get']>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.assets)[':assetId']['$get']>>>
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getAssetsAssetIdQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getAssetsAssetIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getDeleteAssetsAssetIdMutationKey() {
+  return ['assets', '/assets/:assetId', 'DELETE'] as const
+}
+
+export function getDeleteAssetsAssetIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.assets)[':assetId']['$delete']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.assets)[':assetId']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteAssetsAssetIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.assets)[':assetId']['$delete']>) {
+      return parseResponse(client.assets[':assetId'].$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteAssetsAssetId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.assets)[':assetId']['$delete']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.assets)[':assetId']['$delete']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteAssetsAssetIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsAssetsAssetIdMutationKey() {
+  return ['assets', '/assets/:assetId', 'OPTIONS'] as const
+}
+
+export function getOptionsAssetsAssetIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.assets)[':assetId']['$options']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.assets)[':assetId']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsAssetsAssetIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.assets)[':assetId']['$options']>) {
+      return parseResponse(client.assets[':assetId'].$options(args, options))
+    },
+  })
+}
+
+export function createOptionsAssetsAssetId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.assets)[':assetId']['$options']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.assets)[':assetId']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsAssetsAssetIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchAssetsAssetIdMutationKey() {
+  return ['assets', '/assets/:assetId', 'PATCH'] as const
+}
+
+export function getPatchAssetsAssetIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.assets)[':assetId']['$patch']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.assets)[':assetId']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchAssetsAssetIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.assets)[':assetId']['$patch']>) {
+      return parseResponse(client.assets[':assetId'].$patch(args, options))
+    },
+  })
+}
+
+export function createPatchAssetsAssetId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.assets)[':assetId']['$patch']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.assets)[':assetId']['$patch']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchAssetsAssetIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDatasetsQueryKey(args: InferRequestType<typeof client.datasets.$get>) {
+  return ['datasets', '/datasets', args] as const
+}
+
+export function getDatasetsQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.datasets.$get>>>>
+  >,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.datasets.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.datasets.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getDatasetsQueryKey>
+  >({
+    queryKey: getDatasetsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.datasets.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createDatasets<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.datasets.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.datasets.$get>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.datasets.$get>>>>
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getDatasetsQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getDatasetsQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostDatasetsMutationKey() {
+  return ['datasets', '/datasets', 'POST'] as const
+}
+
+export function getPostDatasetsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.datasets.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.datasets.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostDatasetsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.datasets.$post>) {
+      return parseResponse(client.datasets.$post(args, options))
+    },
+  })
+}
+
+export function createPostDatasets<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.datasets.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.datasets.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostDatasetsMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsDatasetsMutationKey() {
+  return ['datasets', '/datasets', 'OPTIONS'] as const
+}
+
+export function getOptionsDatasetsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.datasets.$options>>>>>,
+    TError,
+    InferRequestType<typeof client.datasets.$options>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsDatasetsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.datasets.$options>) {
+      return parseResponse(client.datasets.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsDatasets<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.datasets.$options>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.datasets.$options>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsDatasetsMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDatasetsDatasetIdQueryKey(
+  args: InferRequestType<(typeof client.datasets)[':datasetId']['$get']>,
+) {
+  return ['datasets', '/datasets/:datasetId', args] as const
+}
+
+export function getDatasetsDatasetIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.datasets)[':datasetId']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.datasets)[':datasetId']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.datasets)[':datasetId']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getDatasetsDatasetIdQueryKey>
+  >({
+    queryKey: getDatasetsDatasetIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.datasets[':datasetId'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createDatasetsDatasetId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.datasets)[':datasetId']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.datasets)[':datasetId']['$get']>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.datasets)[':datasetId']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getDatasetsDatasetIdQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getDatasetsDatasetIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getDeleteDatasetsDatasetIdMutationKey() {
+  return ['datasets', '/datasets/:datasetId', 'DELETE'] as const
+}
+
+export function getDeleteDatasetsDatasetIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.datasets)[':datasetId']['$delete']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.datasets)[':datasetId']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteDatasetsDatasetIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.datasets)[':datasetId']['$delete']>) {
+      return parseResponse(client.datasets[':datasetId'].$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteDatasetsDatasetId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.datasets)[':datasetId']['$delete']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.datasets)[':datasetId']['$delete']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteDatasetsDatasetIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsDatasetsDatasetIdMutationKey() {
+  return ['datasets', '/datasets/:datasetId', 'OPTIONS'] as const
+}
+
+export function getOptionsDatasetsDatasetIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.datasets)[':datasetId']['$options']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.datasets)[':datasetId']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsDatasetsDatasetIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.datasets)[':datasetId']['$options']>) {
+      return parseResponse(client.datasets[':datasetId'].$options(args, options))
+    },
+  })
+}
+
+export function createOptionsDatasetsDatasetId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.datasets)[':datasetId']['$options']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.datasets)[':datasetId']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsDatasetsDatasetIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchDatasetsDatasetIdMutationKey() {
+  return ['datasets', '/datasets/:datasetId', 'PATCH'] as const
+}
+
+export function getPatchDatasetsDatasetIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.datasets)[':datasetId']['$patch']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.datasets)[':datasetId']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchDatasetsDatasetIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.datasets)[':datasetId']['$patch']>) {
+      return parseResponse(client.datasets[':datasetId'].$patch(args, options))
+    },
+  })
+}
+
+export function createPatchDatasetsDatasetId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.datasets)[':datasetId']['$patch']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.datasets)[':datasetId']['$patch']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchDatasetsDatasetIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeploymentEnvironmentsQueryKey(
+  args: InferRequestType<typeof client.deploymentEnvironments.$get>,
+) {
+  return ['deploymentEnvironments', '/deploymentEnvironments', args] as const
+}
+
+export function getDeploymentEnvironmentsQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.deploymentEnvironments.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<typeof client.deploymentEnvironments.$get>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<typeof client.deploymentEnvironments.$get>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getDeploymentEnvironmentsQueryKey>
+  >({
+    queryKey: getDeploymentEnvironmentsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.deploymentEnvironments.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createDeploymentEnvironments<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.deploymentEnvironments.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.deploymentEnvironments.$get>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<typeof client.deploymentEnvironments.$get>>>
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getDeploymentEnvironmentsQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getDeploymentEnvironmentsQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getOptionsDeploymentEnvironmentsMutationKey() {
+  return ['deploymentEnvironments', '/deploymentEnvironments', 'OPTIONS'] as const
+}
+
+export function getOptionsDeploymentEnvironmentsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<typeof client.deploymentEnvironments.$options>>>
+      >
+    >,
+    TError,
+    InferRequestType<typeof client.deploymentEnvironments.$options>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsDeploymentEnvironmentsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.deploymentEnvironments.$options>) {
+      return parseResponse(client.deploymentEnvironments.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsDeploymentEnvironments<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.deploymentEnvironments.$options>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.deploymentEnvironments.$options>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsDeploymentEnvironmentsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeploymentEnvironmentsDeploymentEnvironmentIdQueryKey(
+  args: InferRequestType<
+    (typeof client.deploymentEnvironments)[':deploymentEnvironmentId']['$get']
+  >,
+) {
+  return [
+    'deploymentEnvironments',
+    '/deploymentEnvironments/:deploymentEnvironmentId',
+    args,
+  ] as const
+}
+
+export function getDeploymentEnvironmentsDeploymentEnvironmentIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.deploymentEnvironments)[':deploymentEnvironmentId']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.deploymentEnvironments)[':deploymentEnvironmentId']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.deploymentEnvironments)[':deploymentEnvironmentId']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getDeploymentEnvironmentsDeploymentEnvironmentIdQueryKey>
+  >({
+    queryKey: getDeploymentEnvironmentsDeploymentEnvironmentIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.deploymentEnvironments[':deploymentEnvironmentId'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createDeploymentEnvironmentsDeploymentEnvironmentId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.deploymentEnvironments)[':deploymentEnvironmentId']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.deploymentEnvironments)[':deploymentEnvironmentId']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.deploymentEnvironments)[':deploymentEnvironmentId']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getDeploymentEnvironmentsDeploymentEnvironmentIdQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getDeploymentEnvironmentsDeploymentEnvironmentIdQueryOptions<TData, TError>(
+        args(),
+        clientOptions,
+      ),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getOptionsDeploymentEnvironmentsDeploymentEnvironmentIdMutationKey() {
+  return [
+    'deploymentEnvironments',
+    '/deploymentEnvironments/:deploymentEnvironmentId',
+    'OPTIONS',
+  ] as const
+}
+
+export function getOptionsDeploymentEnvironmentsDeploymentEnvironmentIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.deploymentEnvironments)[':deploymentEnvironmentId']['$options']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.deploymentEnvironments)[':deploymentEnvironmentId']['$options']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsDeploymentEnvironmentsDeploymentEnvironmentIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.deploymentEnvironments)[':deploymentEnvironmentId']['$options']
+      >,
+    ) {
+      return parseResponse(
+        client.deploymentEnvironments[':deploymentEnvironmentId'].$options(args, options),
+      )
+    },
+  })
+}
+
+export function createOptionsDeploymentEnvironmentsDeploymentEnvironmentId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.deploymentEnvironments)[':deploymentEnvironmentId']['$options']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.deploymentEnvironments)[':deploymentEnvironmentId']['$options']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsDeploymentEnvironmentsDeploymentEnvironmentIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDocumentsQueryKey(args: InferRequestType<typeof client.documents.$get>) {
+  return ['documents', '/documents', args] as const
+}
+
+export function getDocumentsQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.documents.$get>>>>
+  >,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.documents.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.documents.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getDocumentsQueryKey>
+  >({
+    queryKey: getDocumentsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.documents.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createDocuments<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.documents.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.documents.$get>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.documents.$get>>>>
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getDocumentsQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getDocumentsQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostDocumentsMutationKey() {
+  return ['documents', '/documents', 'POST'] as const
+}
+
+export function getPostDocumentsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.documents.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.documents.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostDocumentsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.documents.$post>) {
+      return parseResponse(client.documents.$post(args, options))
+    },
+  })
+}
+
+export function createPostDocuments<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.documents.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.documents.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostDocumentsMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteDocumentsMutationKey() {
+  return ['documents', '/documents', 'DELETE'] as const
+}
+
+export function getDeleteDocumentsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.documents.$delete>>>>>,
+    TError,
+    InferRequestType<typeof client.documents.$delete>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteDocumentsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.documents.$delete>) {
+      return parseResponse(client.documents.$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteDocuments<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.documents.$delete>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.documents.$delete>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteDocumentsMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsDocumentsMutationKey() {
+  return ['documents', '/documents', 'OPTIONS'] as const
+}
+
+export function getOptionsDocumentsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.documents.$options>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.documents.$options>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsDocumentsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.documents.$options>) {
+      return parseResponse(client.documents.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsDocuments<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.documents.$options>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.documents.$options>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsDocumentsMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDocumentsDocumentIdQueryKey(
+  args: InferRequestType<(typeof client.documents)[':documentId']['$get']>,
+) {
+  return ['documents', '/documents/:documentId', args] as const
+}
+
+export function getDocumentsDocumentIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.documents)[':documentId']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.documents)[':documentId']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.documents)[':documentId']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getDocumentsDocumentIdQueryKey>
+  >({
+    queryKey: getDocumentsDocumentIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.documents[':documentId'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createDocumentsDocumentId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.documents)[':documentId']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.documents)[':documentId']['$get']>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.documents)[':documentId']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getDocumentsDocumentIdQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getDocumentsDocumentIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getDeleteDocumentsDocumentIdMutationKey() {
+  return ['documents', '/documents/:documentId', 'DELETE'] as const
+}
+
+export function getDeleteDocumentsDocumentIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.documents)[':documentId']['$delete']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.documents)[':documentId']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteDocumentsDocumentIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.documents)[':documentId']['$delete']>) {
+      return parseResponse(client.documents[':documentId'].$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteDocumentsDocumentId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.documents)[':documentId']['$delete']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.documents)[':documentId']['$delete']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteDocumentsDocumentIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsDocumentsDocumentIdMutationKey() {
+  return ['documents', '/documents/:documentId', 'OPTIONS'] as const
+}
+
+export function getOptionsDocumentsDocumentIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.documents)[':documentId']['$options']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.documents)[':documentId']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsDocumentsDocumentIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.documents)[':documentId']['$options']>) {
+      return parseResponse(client.documents[':documentId'].$options(args, options))
+    },
+  })
+}
+
+export function createOptionsDocumentsDocumentId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.documents)[':documentId']['$options']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.documents)[':documentId']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsDocumentsDocumentIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchDocumentsDocumentIdMutationKey() {
+  return ['documents', '/documents/:documentId', 'PATCH'] as const
+}
+
+export function getPatchDocumentsDocumentIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.documents)[':documentId']['$patch']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.documents)[':documentId']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchDocumentsDocumentIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.documents)[':documentId']['$patch']>) {
+      return parseResponse(client.documents[':documentId'].$patch(args, options))
+    },
+  })
+}
+
+export function createPatchDocumentsDocumentId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.documents)[':documentId']['$patch']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.documents)[':documentId']['$patch']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchDocumentsDocumentIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getLogsQueryKey(args: InferRequestType<typeof client.logs.$get>) {
+  return ['logs', '/logs', args] as const
+}
+
+export function getLogsQueryOptions<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.logs.$get>>>>>,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.logs.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.logs.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getLogsQueryKey>
+  >({
+    queryKey: getLogsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.logs.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createLogs<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.logs.$get>>>>>,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.logs.$get>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.logs.$get>>>>>,
+          TError,
+          TData,
+          ReturnType<typeof getLogsQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getLogsQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getOptionsLogsMutationKey() {
+  return ['logs', '/logs', 'OPTIONS'] as const
+}
+
+export function getOptionsLogsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.logs.$options>>>>>,
+    TError,
+    InferRequestType<typeof client.logs.$options>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsLogsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.logs.$options>) {
+      return parseResponse(client.logs.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsLogs<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.logs.$options>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.logs.$options>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsLogsMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getLogsLogIdQueryKey(
+  args: InferRequestType<(typeof client.logs)[':logId']['$get']>,
+) {
+  return ['logs', '/logs/:logId', args] as const
+}
+
+export function getLogsLogIdQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.logs)[':logId']['$get']>>>>
+  >,
+  TError = DefaultError,
+>(args: InferRequestType<(typeof client.logs)[':logId']['$get']>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.logs)[':logId']['$get']>>>>
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getLogsLogIdQueryKey>
+  >({
+    queryKey: getLogsLogIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.logs[':logId'].$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createLogsLogId<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.logs)[':logId']['$get']>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.logs)[':logId']['$get']>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.logs)[':logId']['$get']>>>
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getLogsLogIdQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getLogsLogIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getOptionsLogsLogIdMutationKey() {
+  return ['logs', '/logs/:logId', 'OPTIONS'] as const
+}
+
+export function getOptionsLogsLogIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.logs)[':logId']['$options']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.logs)[':logId']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsLogsLogIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.logs)[':logId']['$options']>) {
+      return parseResponse(client.logs[':logId'].$options(args, options))
+    },
+  })
+}
+
+export function createOptionsLogsLogId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.logs)[':logId']['$options']>>>
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.logs)[':logId']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsLogsLogIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getModelsQueryKey(args: InferRequestType<typeof client.models.$get>) {
+  return ['models', '/models', args] as const
+}
+
+export function getModelsQueryOptions<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.models.$get>>>>>,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.models.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.models.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getModelsQueryKey>
+  >({
+    queryKey: getModelsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.models.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createModels<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.models.$get>>>>>,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.models.$get>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.models.$get>>>>>,
+          TError,
+          TData,
+          ReturnType<typeof getModelsQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getModelsQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostModelsMutationKey() {
+  return ['models', '/models', 'POST'] as const
+}
+
+export function getPostModelsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.models.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.models.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostModelsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.models.$post>) {
+      return parseResponse(client.models.$post(args, options))
+    },
+  })
+}
+
+export function createPostModels<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.models.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.models.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostModelsMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsModelsMutationKey() {
+  return ['models', '/models', 'OPTIONS'] as const
+}
+
+export function getOptionsModelsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.models.$options>>>>>,
+    TError,
+    InferRequestType<typeof client.models.$options>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsModelsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.models.$options>) {
+      return parseResponse(client.models.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsModels<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.models.$options>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.models.$options>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsModelsMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getModelsModelIdQueryKey(
+  args: InferRequestType<(typeof client.models)[':modelId']['$get']>,
+) {
+  return ['models', '/models/:modelId', args] as const
+}
+
+export function getModelsModelIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.models)[':modelId']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.models)[':modelId']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.models)[':modelId']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getModelsModelIdQueryKey>
+  >({
+    queryKey: getModelsModelIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.models[':modelId'].$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createModelsModelId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.models)[':modelId']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.models)[':modelId']['$get']>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.models)[':modelId']['$get']>>>
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getModelsModelIdQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getModelsModelIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getDeleteModelsModelIdMutationKey() {
+  return ['models', '/models/:modelId', 'DELETE'] as const
+}
+
+export function getDeleteModelsModelIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.models)[':modelId']['$delete']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.models)[':modelId']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteModelsModelIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.models)[':modelId']['$delete']>) {
+      return parseResponse(client.models[':modelId'].$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteModelsModelId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.models)[':modelId']['$delete']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.models)[':modelId']['$delete']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteModelsModelIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsModelsModelIdMutationKey() {
+  return ['models', '/models/:modelId', 'OPTIONS'] as const
+}
+
+export function getOptionsModelsModelIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.models)[':modelId']['$options']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.models)[':modelId']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsModelsModelIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.models)[':modelId']['$options']>) {
+      return parseResponse(client.models[':modelId'].$options(args, options))
+    },
+  })
+}
+
+export function createOptionsModelsModelId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.models)[':modelId']['$options']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.models)[':modelId']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsModelsModelIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchModelsModelIdMutationKey() {
+  return ['models', '/models/:modelId', 'PATCH'] as const
+}
+
+export function getPatchModelsModelIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.models)[':modelId']['$patch']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.models)[':modelId']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchModelsModelIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.models)[':modelId']['$patch']>) {
+      return parseResponse(client.models[':modelId'].$patch(args, options))
+    },
+  })
+}
+
+export function createPatchModelsModelId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.models)[':modelId']['$patch']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.models)[':modelId']['$patch']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchModelsModelIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getModelsModelIdDataBundlesQueryKey(
+  args: InferRequestType<(typeof client.models)[':modelId']['dataBundles']['$get']>,
+) {
+  return ['models', '/models/:modelId/dataBundles', args] as const
+}
+
+export function getModelsModelIdDataBundlesQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.models)[':modelId']['dataBundles']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.models)[':modelId']['dataBundles']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.models)[':modelId']['dataBundles']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getModelsModelIdDataBundlesQueryKey>
+  >({
+    queryKey: getModelsModelIdDataBundlesQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.models[':modelId'].dataBundles.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createModelsModelIdDataBundles<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.models)[':modelId']['dataBundles']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.models)[':modelId']['dataBundles']['$get']>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.models)[':modelId']['dataBundles']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getModelsModelIdDataBundlesQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getModelsModelIdDataBundlesQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPostModelsModelIdDataBundlesMutationKey() {
+  return ['models', '/models/:modelId/dataBundles', 'POST'] as const
+}
+
+export function getPostModelsModelIdDataBundlesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.models)[':modelId']['dataBundles']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.models)[':modelId']['dataBundles']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostModelsModelIdDataBundlesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.models)[':modelId']['dataBundles']['$post']>,
+    ) {
+      return parseResponse(client.models[':modelId'].dataBundles.$post(args, options))
+    },
+  })
+}
+
+export function createPostModelsModelIdDataBundles<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.models)[':modelId']['dataBundles']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.models)[':modelId']['dataBundles']['$post']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostModelsModelIdDataBundlesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsModelsModelIdDataBundlesMutationKey() {
+  return ['models', '/models/:modelId/dataBundles', 'OPTIONS'] as const
+}
+
+export function getOptionsModelsModelIdDataBundlesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.models)[':modelId']['dataBundles']['$options']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.models)[':modelId']['dataBundles']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsModelsModelIdDataBundlesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.models)[':modelId']['dataBundles']['$options']>,
+    ) {
+      return parseResponse(client.models[':modelId'].dataBundles.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsModelsModelIdDataBundles<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.models)[':modelId']['dataBundles']['$options']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.models)[':modelId']['dataBundles']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsModelsModelIdDataBundlesMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteModelsModelIdDataBundlesDataBundleIdMutationKey() {
+  return ['models', '/models/:modelId/dataBundles/:dataBundleId', 'DELETE'] as const
+}
+
+export function getDeleteModelsModelIdDataBundlesDataBundleIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.models)[':modelId']['dataBundles'][':dataBundleId']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.models)[':modelId']['dataBundles'][':dataBundleId']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteModelsModelIdDataBundlesDataBundleIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.models)[':modelId']['dataBundles'][':dataBundleId']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.models[':modelId'].dataBundles[':dataBundleId'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteModelsModelIdDataBundlesDataBundleId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.models)[':modelId']['dataBundles'][':dataBundleId']['$delete']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.models)[':modelId']['dataBundles'][':dataBundleId']['$delete']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteModelsModelIdDataBundlesDataBundleIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsModelsModelIdDataBundlesDataBundleIdMutationKey() {
+  return ['models', '/models/:modelId/dataBundles/:dataBundleId', 'OPTIONS'] as const
+}
+
+export function getOptionsModelsModelIdDataBundlesDataBundleIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.models)[':modelId']['dataBundles'][':dataBundleId']['$options']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.models)[':modelId']['dataBundles'][':dataBundleId']['$options']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsModelsModelIdDataBundlesDataBundleIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.models)[':modelId']['dataBundles'][':dataBundleId']['$options']
+      >,
+    ) {
+      return parseResponse(
+        client.models[':modelId'].dataBundles[':dataBundleId'].$options(args, options),
+      )
+    },
+  })
+}
+
+export function createOptionsModelsModelIdDataBundlesDataBundleId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.models)[':modelId']['dataBundles'][':dataBundleId']['$options']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.models)[':modelId']['dataBundles'][':dataBundleId']['$options']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsModelsModelIdDataBundlesDataBundleIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchModelsModelIdDataBundlesDataBundleIdMutationKey() {
+  return ['models', '/models/:modelId/dataBundles/:dataBundleId', 'PATCH'] as const
+}
+
+export function getPatchModelsModelIdDataBundlesDataBundleIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.models)[':modelId']['dataBundles'][':dataBundleId']['$patch']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.models)[':modelId']['dataBundles'][':dataBundleId']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchModelsModelIdDataBundlesDataBundleIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.models)[':modelId']['dataBundles'][':dataBundleId']['$patch']
+      >,
+    ) {
+      return parseResponse(
+        client.models[':modelId'].dataBundles[':dataBundleId'].$patch(args, options),
+      )
+    },
+  })
+}
+
+export function createPatchModelsModelIdDataBundlesDataBundleId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.models)[':modelId']['dataBundles'][':dataBundleId']['$patch']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.models)[':modelId']['dataBundles'][':dataBundleId']['$patch']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchModelsModelIdDataBundlesDataBundleIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getModelsModelIdTrainingsQueryKey(
+  args: InferRequestType<(typeof client.models)[':modelId']['trainings']['$get']>,
+) {
+  return ['models', '/models/:modelId/trainings', args] as const
+}
+
+export function getModelsModelIdTrainingsQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.models)[':modelId']['trainings']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.models)[':modelId']['trainings']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.models)[':modelId']['trainings']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getModelsModelIdTrainingsQueryKey>
+  >({
+    queryKey: getModelsModelIdTrainingsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.models[':modelId'].trainings.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createModelsModelIdTrainings<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.models)[':modelId']['trainings']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.models)[':modelId']['trainings']['$get']>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.models)[':modelId']['trainings']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getModelsModelIdTrainingsQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getModelsModelIdTrainingsQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPostModelsModelIdTrainingsMutationKey() {
+  return ['models', '/models/:modelId/trainings', 'POST'] as const
+}
+
+export function getPostModelsModelIdTrainingsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.models)[':modelId']['trainings']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.models)[':modelId']['trainings']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostModelsModelIdTrainingsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.models)[':modelId']['trainings']['$post']>,
+    ) {
+      return parseResponse(client.models[':modelId'].trainings.$post(args, options))
+    },
+  })
+}
+
+export function createPostModelsModelIdTrainings<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.models)[':modelId']['trainings']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.models)[':modelId']['trainings']['$post']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostModelsModelIdTrainingsMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsModelsModelIdTrainingsMutationKey() {
+  return ['models', '/models/:modelId/trainings', 'OPTIONS'] as const
+}
+
+export function getOptionsModelsModelIdTrainingsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.models)[':modelId']['trainings']['$options']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.models)[':modelId']['trainings']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsModelsModelIdTrainingsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.models)[':modelId']['trainings']['$options']>,
+    ) {
+      return parseResponse(client.models[':modelId'].trainings.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsModelsModelIdTrainings<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.models)[':modelId']['trainings']['$options']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.models)[':modelId']['trainings']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsModelsModelIdTrainingsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsModelsModelIdTrainingsTrainingIdMutationKey() {
+  return ['models', '/models/:modelId/trainings/:trainingId', 'OPTIONS'] as const
+}
+
+export function getOptionsModelsModelIdTrainingsTrainingIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.models)[':modelId']['trainings'][':trainingId']['$options']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.models)[':modelId']['trainings'][':trainingId']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsModelsModelIdTrainingsTrainingIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.models)[':modelId']['trainings'][':trainingId']['$options']
+      >,
+    ) {
+      return parseResponse(
+        client.models[':modelId'].trainings[':trainingId'].$options(args, options),
+      )
+    },
+  })
+}
+
+export function createOptionsModelsModelIdTrainingsTrainingId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.models)[':modelId']['trainings'][':trainingId']['$options']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.models)[':modelId']['trainings'][':trainingId']['$options']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsModelsModelIdTrainingsTrainingIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchModelsModelIdTrainingsTrainingIdMutationKey() {
+  return ['models', '/models/:modelId/trainings/:trainingId', 'PATCH'] as const
+}
+
+export function getPatchModelsModelIdTrainingsTrainingIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.models)[':modelId']['trainings'][':trainingId']['$patch']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.models)[':modelId']['trainings'][':trainingId']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchModelsModelIdTrainingsTrainingIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.models)[':modelId']['trainings'][':trainingId']['$patch']
+      >,
+    ) {
+      return parseResponse(client.models[':modelId'].trainings[':trainingId'].$patch(args, options))
+    },
+  })
+}
+
+export function createPatchModelsModelIdTrainingsTrainingId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.models)[':modelId']['trainings'][':trainingId']['$patch']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.models)[':modelId']['trainings'][':trainingId']['$patch']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchModelsModelIdTrainingsTrainingIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOrganizationsQueryKey(args: InferRequestType<typeof client.organizations.$get>) {
+  return ['organizations', '/organizations', args] as const
+}
+
+export function getOrganizationsQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.organizations.$get>>>>
+  >,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.organizations.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.organizations.$get>>>>
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getOrganizationsQueryKey>
+  >({
+    queryKey: getOrganizationsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.organizations.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createOrganizations<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.organizations.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.organizations.$get>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.organizations.$get>>>>
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getOrganizationsQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getOrganizationsQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostOrganizationsMutationKey() {
+  return ['organizations', '/organizations', 'POST'] as const
+}
+
+export function getPostOrganizationsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.organizations.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.organizations.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostOrganizationsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.organizations.$post>) {
+      return parseResponse(client.organizations.$post(args, options))
+    },
+  })
+}
+
+export function createPostOrganizations<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.organizations.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.organizations.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostOrganizationsMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsOrganizationsMutationKey() {
+  return ['organizations', '/organizations', 'OPTIONS'] as const
+}
+
+export function getOptionsOrganizationsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.organizations.$options>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.organizations.$options>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsOrganizationsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.organizations.$options>) {
+      return parseResponse(client.organizations.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsOrganizations<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<typeof client.organizations.$options>>>
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.organizations.$options>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsOrganizationsMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOrganizationsOrganizationIdQueryKey(
+  args: InferRequestType<(typeof client.organizations)[':organizationId']['$get']>,
+) {
+  return ['organizations', '/organizations/:organizationId', args] as const
+}
+
+export function getOrganizationsOrganizationIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.organizations)[':organizationId']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.organizations)[':organizationId']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.organizations)[':organizationId']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getOrganizationsOrganizationIdQueryKey>
+  >({
+    queryKey: getOrganizationsOrganizationIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.organizations[':organizationId'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createOrganizationsOrganizationId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.organizations)[':organizationId']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.organizations)[':organizationId']['$get']>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.organizations)[':organizationId']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getOrganizationsOrganizationIdQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getOrganizationsOrganizationIdQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getOptionsOrganizationsOrganizationIdMutationKey() {
+  return ['organizations', '/organizations/:organizationId', 'OPTIONS'] as const
+}
+
+export function getOptionsOrganizationsOrganizationIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.organizations)[':organizationId']['$options']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.organizations)[':organizationId']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsOrganizationsOrganizationIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.organizations)[':organizationId']['$options']>,
+    ) {
+      return parseResponse(client.organizations[':organizationId'].$options(args, options))
+    },
+  })
+}
+
+export function createOptionsOrganizationsOrganizationId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.organizations)[':organizationId']['$options']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.organizations)[':organizationId']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsOrganizationsOrganizationIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchOrganizationsOrganizationIdMutationKey() {
+  return ['organizations', '/organizations/:organizationId', 'PATCH'] as const
+}
+
+export function getPatchOrganizationsOrganizationIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.organizations)[':organizationId']['$patch']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.organizations)[':organizationId']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchOrganizationsOrganizationIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.organizations)[':organizationId']['$patch']>,
+    ) {
+      return parseResponse(client.organizations[':organizationId'].$patch(args, options))
+    },
+  })
+}
+
+export function createPatchOrganizationsOrganizationId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.organizations)[':organizationId']['$patch']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.organizations)[':organizationId']['$patch']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchOrganizationsOrganizationIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPaymentMethodsQueryKey(
+  args: InferRequestType<typeof client.paymentMethods.$get>,
+) {
+  return ['paymentMethods', '/paymentMethods', args] as const
+}
+
+export function getPaymentMethodsQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.paymentMethods.$get>>>>
+  >,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.paymentMethods.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.paymentMethods.$get>>>>
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getPaymentMethodsQueryKey>
+  >({
+    queryKey: getPaymentMethodsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.paymentMethods.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createPaymentMethods<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.paymentMethods.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.paymentMethods.$get>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.paymentMethods.$get>>>>
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getPaymentMethodsQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getPaymentMethodsQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostPaymentMethodsMutationKey() {
+  return ['paymentMethods', '/paymentMethods', 'POST'] as const
+}
+
+export function getPostPaymentMethodsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.paymentMethods.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.paymentMethods.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostPaymentMethodsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.paymentMethods.$post>) {
+      return parseResponse(client.paymentMethods.$post(args, options))
+    },
+  })
+}
+
+export function createPostPaymentMethods<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<typeof client.paymentMethods.$post>>>
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.paymentMethods.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostPaymentMethodsMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsPaymentMethodsMutationKey() {
+  return ['paymentMethods', '/paymentMethods', 'OPTIONS'] as const
+}
+
+export function getOptionsPaymentMethodsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.paymentMethods.$options>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.paymentMethods.$options>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsPaymentMethodsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.paymentMethods.$options>) {
+      return parseResponse(client.paymentMethods.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsPaymentMethods<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<typeof client.paymentMethods.$options>>>
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.paymentMethods.$options>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsPaymentMethodsMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPaymentMethodsPaymentMethodIdQueryKey(
+  args: InferRequestType<(typeof client.paymentMethods)[':paymentMethodId']['$get']>,
+) {
+  return ['paymentMethods', '/paymentMethods/:paymentMethodId', args] as const
+}
+
+export function getPaymentMethodsPaymentMethodIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.paymentMethods)[':paymentMethodId']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.paymentMethods)[':paymentMethodId']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.paymentMethods)[':paymentMethodId']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getPaymentMethodsPaymentMethodIdQueryKey>
+  >({
+    queryKey: getPaymentMethodsPaymentMethodIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.paymentMethods[':paymentMethodId'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createPaymentMethodsPaymentMethodId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.paymentMethods)[':paymentMethodId']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.paymentMethods)[':paymentMethodId']['$get']>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.paymentMethods)[':paymentMethodId']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getPaymentMethodsPaymentMethodIdQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getPaymentMethodsPaymentMethodIdQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getDeletePaymentMethodsPaymentMethodIdMutationKey() {
+  return ['paymentMethods', '/paymentMethods/:paymentMethodId', 'DELETE'] as const
+}
+
+export function getDeletePaymentMethodsPaymentMethodIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.paymentMethods)[':paymentMethodId']['$delete']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.paymentMethods)[':paymentMethodId']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeletePaymentMethodsPaymentMethodIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.paymentMethods)[':paymentMethodId']['$delete']>,
+    ) {
+      return parseResponse(client.paymentMethods[':paymentMethodId'].$delete(args, options))
+    },
+  })
+}
+
+export function createDeletePaymentMethodsPaymentMethodId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.paymentMethods)[':paymentMethodId']['$delete']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.paymentMethods)[':paymentMethodId']['$delete']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeletePaymentMethodsPaymentMethodIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsPaymentMethodsPaymentMethodIdMutationKey() {
+  return ['paymentMethods', '/paymentMethods/:paymentMethodId', 'OPTIONS'] as const
+}
+
+export function getOptionsPaymentMethodsPaymentMethodIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.paymentMethods)[':paymentMethodId']['$options']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.paymentMethods)[':paymentMethodId']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsPaymentMethodsPaymentMethodIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.paymentMethods)[':paymentMethodId']['$options']>,
+    ) {
+      return parseResponse(client.paymentMethods[':paymentMethodId'].$options(args, options))
+    },
+  })
+}
+
+export function createOptionsPaymentMethodsPaymentMethodId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.paymentMethods)[':paymentMethodId']['$options']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.paymentMethods)[':paymentMethodId']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsPaymentMethodsPaymentMethodIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchPaymentMethodsPaymentMethodIdMutationKey() {
+  return ['paymentMethods', '/paymentMethods/:paymentMethodId', 'PATCH'] as const
+}
+
+export function getPatchPaymentMethodsPaymentMethodIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.paymentMethods)[':paymentMethodId']['$patch']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.paymentMethods)[':paymentMethodId']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchPaymentMethodsPaymentMethodIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.paymentMethods)[':paymentMethodId']['$patch']>,
+    ) {
+      return parseResponse(client.paymentMethods[':paymentMethodId'].$patch(args, options))
+    },
+  })
+}
+
+export function createPatchPaymentMethodsPaymentMethodId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.paymentMethods)[':paymentMethodId']['$patch']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.paymentMethods)[':paymentMethodId']['$patch']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchPaymentMethodsPaymentMethodIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPlansQueryKey(args: InferRequestType<typeof client.plans.$get>) {
+  return ['plans', '/plans', args] as const
+}
+
+export function getPlansQueryOptions<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.plans.$get>>>>>,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.plans.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.plans.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getPlansQueryKey>
+  >({
+    queryKey: getPlansQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.plans.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createPlans<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.plans.$get>>>>>,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.plans.$get>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.plans.$get>>>>>,
+          TError,
+          TData,
+          ReturnType<typeof getPlansQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getPlansQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getOptionsPlansMutationKey() {
+  return ['plans', '/plans', 'OPTIONS'] as const
+}
+
+export function getOptionsPlansMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.plans.$options>>>>>,
+    TError,
+    InferRequestType<typeof client.plans.$options>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsPlansMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.plans.$options>) {
+      return parseResponse(client.plans.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsPlans<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.plans.$options>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.plans.$options>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsPlansMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPlansPlanIdQueryKey(
+  args: InferRequestType<(typeof client.plans)[':planId']['$get']>,
+) {
+  return ['plans', '/plans/:planId', args] as const
+}
+
+export function getPlansPlanIdQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.plans)[':planId']['$get']>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.plans)[':planId']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.plans)[':planId']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getPlansPlanIdQueryKey>
+  >({
+    queryKey: getPlansPlanIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.plans[':planId'].$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createPlansPlanId<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.plans)[':planId']['$get']>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.plans)[':planId']['$get']>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.plans)[':planId']['$get']>>>
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getPlansPlanIdQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getPlansPlanIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getOptionsPlansPlanIdMutationKey() {
+  return ['plans', '/plans/:planId', 'OPTIONS'] as const
+}
+
+export function getOptionsPlansPlanIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.plans)[':planId']['$options']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.plans)[':planId']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsPlansPlanIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.plans)[':planId']['$options']>) {
+      return parseResponse(client.plans[':planId'].$options(args, options))
+    },
+  })
+}
+
+export function createOptionsPlansPlanId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.plans)[':planId']['$options']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.plans)[':planId']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsPlansPlanIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPredictionsQueryKey(args: InferRequestType<typeof client.predictions.$get>) {
+  return ['predictions', '/predictions', args] as const
+}
+
+export function getPredictionsQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.predictions.$get>>>>
+  >,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.predictions.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.predictions.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getPredictionsQueryKey>
+  >({
+    queryKey: getPredictionsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.predictions.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createPredictions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.predictions.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.predictions.$get>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.predictions.$get>>>>
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getPredictionsQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getPredictionsQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostPredictionsMutationKey() {
+  return ['predictions', '/predictions', 'POST'] as const
+}
+
+export function getPostPredictionsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.predictions.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.predictions.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostPredictionsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.predictions.$post>) {
+      return parseResponse(client.predictions.$post(args, options))
+    },
+  })
+}
+
+export function createPostPredictions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.predictions.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.predictions.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostPredictionsMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsPredictionsMutationKey() {
+  return ['predictions', '/predictions', 'OPTIONS'] as const
+}
+
+export function getOptionsPredictionsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.predictions.$options>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.predictions.$options>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsPredictionsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.predictions.$options>) {
+      return parseResponse(client.predictions.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsPredictions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<typeof client.predictions.$options>>>
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.predictions.$options>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsPredictionsMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getProfilesProfileIdQueryKey(
+  args: InferRequestType<(typeof client.profiles)[':profileId']['$get']>,
+) {
+  return ['profiles', '/profiles/:profileId', args] as const
+}
+
+export function getProfilesProfileIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.profiles)[':profileId']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.profiles)[':profileId']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.profiles)[':profileId']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getProfilesProfileIdQueryKey>
+  >({
+    queryKey: getProfilesProfileIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.profiles[':profileId'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createProfilesProfileId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.profiles)[':profileId']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.profiles)[':profileId']['$get']>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.profiles)[':profileId']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getProfilesProfileIdQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getProfilesProfileIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getOptionsProfilesProfileIdMutationKey() {
+  return ['profiles', '/profiles/:profileId', 'OPTIONS'] as const
+}
+
+export function getOptionsProfilesProfileIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.profiles)[':profileId']['$options']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.profiles)[':profileId']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsProfilesProfileIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.profiles)[':profileId']['$options']>) {
+      return parseResponse(client.profiles[':profileId'].$options(args, options))
+    },
+  })
+}
+
+export function createOptionsProfilesProfileId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.profiles)[':profileId']['$options']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.profiles)[':profileId']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsProfilesProfileIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchProfilesProfileIdMutationKey() {
+  return ['profiles', '/profiles/:profileId', 'PATCH'] as const
+}
+
+export function getPatchProfilesProfileIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.profiles)[':profileId']['$patch']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.profiles)[':profileId']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchProfilesProfileIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.profiles)[':profileId']['$patch']>) {
+      return parseResponse(client.profiles[':profileId'].$patch(args, options))
+    },
+  })
+}
+
+export function createPatchProfilesProfileId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.profiles)[':profileId']['$patch']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.profiles)[':profileId']['$patch']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchProfilesProfileIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getSecretsQueryKey(args: InferRequestType<typeof client.secrets.$get>) {
+  return ['secrets', '/secrets', args] as const
+}
+
+export function getSecretsQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.secrets.$get>>>>
+  >,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.secrets.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.secrets.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getSecretsQueryKey>
+  >({
+    queryKey: getSecretsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.secrets.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createSecrets<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.secrets.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.secrets.$get>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.secrets.$get>>>>
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getSecretsQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getSecretsQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostSecretsMutationKey() {
+  return ['secrets', '/secrets', 'POST'] as const
+}
+
+export function getPostSecretsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.secrets.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.secrets.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostSecretsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.secrets.$post>) {
+      return parseResponse(client.secrets.$post(args, options))
+    },
+  })
+}
+
+export function createPostSecrets<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.secrets.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.secrets.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostSecretsMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsSecretsMutationKey() {
+  return ['secrets', '/secrets', 'OPTIONS'] as const
+}
+
+export function getOptionsSecretsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.secrets.$options>>>>>,
+    TError,
+    InferRequestType<typeof client.secrets.$options>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsSecretsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.secrets.$options>) {
+      return parseResponse(client.secrets.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsSecrets<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.secrets.$options>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.secrets.$options>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsSecretsMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteSecretsSecretIdMutationKey() {
+  return ['secrets', '/secrets/:secretId', 'DELETE'] as const
+}
+
+export function getDeleteSecretsSecretIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.secrets)[':secretId']['$delete']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.secrets)[':secretId']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteSecretsSecretIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.secrets)[':secretId']['$delete']>) {
+      return parseResponse(client.secrets[':secretId'].$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteSecretsSecretId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.secrets)[':secretId']['$delete']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.secrets)[':secretId']['$delete']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteSecretsSecretIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsSecretsSecretIdMutationKey() {
+  return ['secrets', '/secrets/:secretId', 'OPTIONS'] as const
+}
+
+export function getOptionsSecretsSecretIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.secrets)[':secretId']['$options']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.secrets)[':secretId']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsSecretsSecretIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.secrets)[':secretId']['$options']>) {
+      return parseResponse(client.secrets[':secretId'].$options(args, options))
+    },
+  })
+}
+
+export function createOptionsSecretsSecretId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.secrets)[':secretId']['$options']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.secrets)[':secretId']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsSecretsSecretIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchSecretsSecretIdMutationKey() {
+  return ['secrets', '/secrets/:secretId', 'PATCH'] as const
+}
+
+export function getPatchSecretsSecretIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.secrets)[':secretId']['$patch']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.secrets)[':secretId']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchSecretsSecretIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.secrets)[':secretId']['$patch']>) {
+      return parseResponse(client.secrets[':secretId'].$patch(args, options))
+    },
+  })
+}
+
+export function createPatchSecretsSecretId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.secrets)[':secretId']['$patch']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.secrets)[':secretId']['$patch']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchSecretsSecretIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostSignupMutationKey() {
+  return ['signup', '/signup', 'POST'] as const
+}
+
+export function getPostSignupMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.signup.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.signup.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostSignupMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.signup.$post>) {
+      return parseResponse(client.signup.$post(args, options))
+    },
+  })
+}
+
+export function createPostSignup<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.signup.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.signup.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostSignupMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsSignupMutationKey() {
+  return ['signup', '/signup', 'OPTIONS'] as const
+}
+
+export function getOptionsSignupMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.signup.$options>>>>>,
+    TError,
+    InferRequestType<typeof client.signup.$options>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsSignupMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.signup.$options>) {
+      return parseResponse(client.signup.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsSignup<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.signup.$options>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.signup.$options>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsSignupMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getTransitionsQueryKey(args: InferRequestType<typeof client.transitions.$get>) {
+  return ['transitions', '/transitions', args] as const
+}
+
+export function getTransitionsQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.transitions.$get>>>>
+  >,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.transitions.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.transitions.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getTransitionsQueryKey>
+  >({
+    queryKey: getTransitionsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.transitions.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createTransitions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.transitions.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.transitions.$get>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.transitions.$get>>>>
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getTransitionsQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getTransitionsQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostTransitionsMutationKey() {
+  return ['transitions', '/transitions', 'POST'] as const
+}
+
+export function getPostTransitionsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.transitions.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.transitions.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostTransitionsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.transitions.$post>) {
+      return parseResponse(client.transitions.$post(args, options))
+    },
+  })
+}
+
+export function createPostTransitions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.transitions.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.transitions.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostTransitionsMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsTransitionsMutationKey() {
+  return ['transitions', '/transitions', 'OPTIONS'] as const
+}
+
+export function getOptionsTransitionsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.transitions.$options>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.transitions.$options>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsTransitionsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.transitions.$options>) {
+      return parseResponse(client.transitions.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsTransitions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<typeof client.transitions.$options>>>
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.transitions.$options>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsTransitionsMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getTransitionsTransitionIdQueryKey(
+  args: InferRequestType<(typeof client.transitions)[':transitionId']['$get']>,
+) {
+  return ['transitions', '/transitions/:transitionId', args] as const
+}
+
+export function getTransitionsTransitionIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.transitions)[':transitionId']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.transitions)[':transitionId']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.transitions)[':transitionId']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getTransitionsTransitionIdQueryKey>
+  >({
+    queryKey: getTransitionsTransitionIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.transitions[':transitionId'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createTransitionsTransitionId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.transitions)[':transitionId']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.transitions)[':transitionId']['$get']>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.transitions)[':transitionId']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getTransitionsTransitionIdQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getTransitionsTransitionIdQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getDeleteTransitionsTransitionIdMutationKey() {
+  return ['transitions', '/transitions/:transitionId', 'DELETE'] as const
+}
+
+export function getDeleteTransitionsTransitionIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.transitions)[':transitionId']['$delete']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.transitions)[':transitionId']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteTransitionsTransitionIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.transitions)[':transitionId']['$delete']>,
+    ) {
+      return parseResponse(client.transitions[':transitionId'].$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteTransitionsTransitionId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.transitions)[':transitionId']['$delete']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.transitions)[':transitionId']['$delete']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteTransitionsTransitionIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsTransitionsTransitionIdMutationKey() {
+  return ['transitions', '/transitions/:transitionId', 'OPTIONS'] as const
+}
+
+export function getOptionsTransitionsTransitionIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.transitions)[':transitionId']['$options']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.transitions)[':transitionId']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsTransitionsTransitionIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.transitions)[':transitionId']['$options']>,
+    ) {
+      return parseResponse(client.transitions[':transitionId'].$options(args, options))
+    },
+  })
+}
+
+export function createOptionsTransitionsTransitionId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.transitions)[':transitionId']['$options']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.transitions)[':transitionId']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsTransitionsTransitionIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchTransitionsTransitionIdMutationKey() {
+  return ['transitions', '/transitions/:transitionId', 'PATCH'] as const
+}
+
+export function getPatchTransitionsTransitionIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.transitions)[':transitionId']['$patch']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.transitions)[':transitionId']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchTransitionsTransitionIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.transitions)[':transitionId']['$patch']>,
+    ) {
+      return parseResponse(client.transitions[':transitionId'].$patch(args, options))
+    },
+  })
+}
+
+export function createPatchTransitionsTransitionId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.transitions)[':transitionId']['$patch']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.transitions)[':transitionId']['$patch']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchTransitionsTransitionIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getTransitionsTransitionIdExecutionsQueryKey(
+  args: InferRequestType<(typeof client.transitions)[':transitionId']['executions']['$get']>,
+) {
+  return ['transitions', '/transitions/:transitionId/executions', args] as const
+}
+
+export function getTransitionsTransitionIdExecutionsQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.transitions)[':transitionId']['executions']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.transitions)[':transitionId']['executions']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.transitions)[':transitionId']['executions']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getTransitionsTransitionIdExecutionsQueryKey>
+  >({
+    queryKey: getTransitionsTransitionIdExecutionsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.transitions[':transitionId'].executions.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createTransitionsTransitionIdExecutions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.transitions)[':transitionId']['executions']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.transitions)[':transitionId']['executions']['$get']>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.transitions)[':transitionId']['executions']['$get']>
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getTransitionsTransitionIdExecutionsQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getTransitionsTransitionIdExecutionsQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPostTransitionsTransitionIdExecutionsMutationKey() {
+  return ['transitions', '/transitions/:transitionId/executions', 'POST'] as const
+}
+
+export function getPostTransitionsTransitionIdExecutionsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.transitions)[':transitionId']['executions']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.transitions)[':transitionId']['executions']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostTransitionsTransitionIdExecutionsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.transitions)[':transitionId']['executions']['$post']>,
+    ) {
+      return parseResponse(client.transitions[':transitionId'].executions.$post(args, options))
+    },
+  })
+}
+
+export function createPostTransitionsTransitionIdExecutions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.transitions)[':transitionId']['executions']['$post']>
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.transitions)[':transitionId']['executions']['$post']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostTransitionsTransitionIdExecutionsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsTransitionsTransitionIdExecutionsMutationKey() {
+  return ['transitions', '/transitions/:transitionId/executions', 'OPTIONS'] as const
+}
+
+export function getOptionsTransitionsTransitionIdExecutionsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.transitions)[':transitionId']['executions']['$options']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.transitions)[':transitionId']['executions']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsTransitionsTransitionIdExecutionsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.transitions)[':transitionId']['executions']['$options']
+      >,
+    ) {
+      return parseResponse(client.transitions[':transitionId'].executions.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsTransitionsTransitionIdExecutions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.transitions)[':transitionId']['executions']['$options']>
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.transitions)[':transitionId']['executions']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsTransitionsTransitionIdExecutionsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getTransitionsTransitionIdExecutionsExecutionIdQueryKey(
+  args: InferRequestType<
+    (typeof client.transitions)[':transitionId']['executions'][':executionId']['$get']
+  >,
+) {
+  return ['transitions', '/transitions/:transitionId/executions/:executionId', args] as const
+}
+
+export function getTransitionsTransitionIdExecutionsExecutionIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.transitions)[':transitionId']['executions'][':executionId']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.transitions)[':transitionId']['executions'][':executionId']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.transitions)[':transitionId']['executions'][':executionId']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getTransitionsTransitionIdExecutionsExecutionIdQueryKey>
+  >({
+    queryKey: getTransitionsTransitionIdExecutionsExecutionIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.transitions[':transitionId'].executions[':executionId'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createTransitionsTransitionIdExecutionsExecutionId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.transitions)[':transitionId']['executions'][':executionId']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.transitions)[':transitionId']['executions'][':executionId']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.transitions)[':transitionId']['executions'][':executionId']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getTransitionsTransitionIdExecutionsExecutionIdQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getTransitionsTransitionIdExecutionsExecutionIdQueryOptions<TData, TError>(
+        args(),
+        clientOptions,
+      ),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getOptionsTransitionsTransitionIdExecutionsExecutionIdMutationKey() {
+  return ['transitions', '/transitions/:transitionId/executions/:executionId', 'OPTIONS'] as const
+}
+
+export function getOptionsTransitionsTransitionIdExecutionsExecutionIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.transitions)[':transitionId']['executions'][':executionId']['$options']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.transitions)[':transitionId']['executions'][':executionId']['$options']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsTransitionsTransitionIdExecutionsExecutionIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.transitions)[':transitionId']['executions'][':executionId']['$options']
+      >,
+    ) {
+      return parseResponse(
+        client.transitions[':transitionId'].executions[':executionId'].$options(args, options),
+      )
+    },
+  })
+}
+
+export function createOptionsTransitionsTransitionIdExecutionsExecutionId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.transitions)[':transitionId']['executions'][':executionId']['$options']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.transitions)[':transitionId']['executions'][':executionId']['$options']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsTransitionsTransitionIdExecutionsExecutionIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchTransitionsTransitionIdExecutionsExecutionIdMutationKey() {
+  return ['transitions', '/transitions/:transitionId/executions/:executionId', 'PATCH'] as const
+}
+
+export function getPatchTransitionsTransitionIdExecutionsExecutionIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.transitions)[':transitionId']['executions'][':executionId']['$patch']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.transitions)[':transitionId']['executions'][':executionId']['$patch']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchTransitionsTransitionIdExecutionsExecutionIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.transitions)[':transitionId']['executions'][':executionId']['$patch']
+      >,
+    ) {
+      return parseResponse(
+        client.transitions[':transitionId'].executions[':executionId'].$patch(args, options),
+      )
+    },
+  })
+}
+
+export function createPatchTransitionsTransitionIdExecutionsExecutionId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.transitions)[':transitionId']['executions'][':executionId']['$patch']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.transitions)[':transitionId']['executions'][':executionId']['$patch']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchTransitionsTransitionIdExecutionsExecutionIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostTransitionsTransitionIdExecutionsExecutionIdHeartbeatsMutationKey() {
+  return [
+    'transitions',
+    '/transitions/:transitionId/executions/:executionId/heartbeats',
+    'POST',
+  ] as const
+}
+
+export function getPostTransitionsTransitionIdExecutionsExecutionIdHeartbeatsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    | Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<
+                (typeof client.transitions)[':transitionId']['executions'][':executionId']['heartbeats']['$post']
+              >
+            >
+          >
+        >
+      >
+    | undefined,
+    TError,
+    InferRequestType<
+      (typeof client.transitions)[':transitionId']['executions'][':executionId']['heartbeats']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostTransitionsTransitionIdExecutionsExecutionIdHeartbeatsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.transitions)[':transitionId']['executions'][':executionId']['heartbeats']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.transitions[':transitionId'].executions[':executionId'].heartbeats.$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function createPostTransitionsTransitionIdExecutionsExecutionIdHeartbeats<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          | Awaited<
+              ReturnType<
+                typeof parseResponse<
+                  Awaited<
+                    ReturnType<
+                      (typeof client.transitions)[':transitionId']['executions'][':executionId']['heartbeats']['$post']
+                    >
+                  >
+                >
+              >
+            >
+          | undefined,
+          TError,
+          InferRequestType<
+            (typeof client.transitions)[':transitionId']['executions'][':executionId']['heartbeats']['$post']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults =
+      getPostTransitionsTransitionIdExecutionsExecutionIdHeartbeatsMutationOptions<
+        TError,
+        TOnMutateResult
+      >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsTransitionsTransitionIdExecutionsExecutionIdHeartbeatsMutationKey() {
+  return [
+    'transitions',
+    '/transitions/:transitionId/executions/:executionId/heartbeats',
+    'OPTIONS',
+  ] as const
+}
+
+export function getOptionsTransitionsTransitionIdExecutionsExecutionIdHeartbeatsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.transitions)[':transitionId']['executions'][':executionId']['heartbeats']['$options']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.transitions)[':transitionId']['executions'][':executionId']['heartbeats']['$options']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsTransitionsTransitionIdExecutionsExecutionIdHeartbeatsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.transitions)[':transitionId']['executions'][':executionId']['heartbeats']['$options']
+      >,
+    ) {
+      return parseResponse(
+        client.transitions[':transitionId'].executions[':executionId'].heartbeats.$options(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function createOptionsTransitionsTransitionIdExecutionsExecutionIdHeartbeats<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.transitions)[':transitionId']['executions'][':executionId']['heartbeats']['$options']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.transitions)[':transitionId']['executions'][':executionId']['heartbeats']['$options']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults =
+      getOptionsTransitionsTransitionIdExecutionsExecutionIdHeartbeatsMutationOptions<
+        TError,
+        TOnMutateResult
+      >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getUsersQueryKey(args: InferRequestType<typeof client.users.$get>) {
+  return ['users', '/users', args] as const
+}
+
+export function getUsersQueryOptions<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.users.$get>>>>>,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.users.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.users.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getUsersQueryKey>
+  >({
+    queryKey: getUsersQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.users.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createUsers<
+  TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.users.$get>>>>>,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.users.$get>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.users.$get>>>>>,
+          TError,
+          TData,
+          ReturnType<typeof getUsersQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getUsersQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostUsersMutationKey() {
+  return ['users', '/users', 'POST'] as const
+}
+
+export function getPostUsersMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.users.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.users.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostUsersMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.users.$post>) {
+      return parseResponse(client.users.$post(args, options))
+    },
+  })
+}
+
+export function createPostUsers<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.users.$post>>>>>,
+          TError,
+          InferRequestType<typeof client.users.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostUsersMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsUsersMutationKey() {
+  return ['users', '/users', 'OPTIONS'] as const
+}
+
+export function getOptionsUsersMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.users.$options>>>>>,
+    TError,
+    InferRequestType<typeof client.users.$options>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsUsersMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.users.$options>) {
+      return parseResponse(client.users.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsUsers<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.users.$options>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.users.$options>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsUsersMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getUsersUserIdQueryKey(
+  args: InferRequestType<(typeof client.users)[':userId']['$get']>,
+) {
+  return ['users', '/users/:userId', args] as const
+}
+
+export function getUsersUserIdQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.users)[':userId']['$get']>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.users)[':userId']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.users)[':userId']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getUsersUserIdQueryKey>
+  >({
+    queryKey: getUsersUserIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.users[':userId'].$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createUsersUserId<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.users)[':userId']['$get']>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.users)[':userId']['$get']>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.users)[':userId']['$get']>>>
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getUsersUserIdQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getUsersUserIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getDeleteUsersUserIdMutationKey() {
+  return ['users', '/users/:userId', 'DELETE'] as const
+}
+
+export function getDeleteUsersUserIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.users)[':userId']['$delete']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.users)[':userId']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteUsersUserIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.users)[':userId']['$delete']>) {
+      return parseResponse(client.users[':userId'].$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteUsersUserId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.users)[':userId']['$delete']>>>
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.users)[':userId']['$delete']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteUsersUserIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsUsersUserIdMutationKey() {
+  return ['users', '/users/:userId', 'OPTIONS'] as const
+}
+
+export function getOptionsUsersUserIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.users)[':userId']['$options']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.users)[':userId']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsUsersUserIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.users)[':userId']['$options']>) {
+      return parseResponse(client.users[':userId'].$options(args, options))
+    },
+  })
+}
+
+export function createOptionsUsersUserId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.users)[':userId']['$options']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.users)[':userId']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsUsersUserIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchUsersUserIdMutationKey() {
+  return ['users', '/users/:userId', 'PATCH'] as const
+}
+
+export function getPatchUsersUserIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.users)[':userId']['$patch']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.users)[':userId']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchUsersUserIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.users)[':userId']['$patch']>) {
+      return parseResponse(client.users[':userId'].$patch(args, options))
+    },
+  })
+}
+
+export function createPatchUsersUserId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.users)[':userId']['$patch']>>>
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.users)[':userId']['$patch']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchUsersUserIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getWorkflowsQueryKey(args: InferRequestType<typeof client.workflows.$get>) {
+  return ['workflows', '/workflows', args] as const
+}
+
+export function getWorkflowsQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.workflows.$get>>>>
+  >,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.workflows.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.workflows.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getWorkflowsQueryKey>
+  >({
+    queryKey: getWorkflowsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.workflows.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createWorkflows<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.workflows.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.workflows.$get>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.workflows.$get>>>>
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getWorkflowsQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getWorkflowsQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getPostWorkflowsMutationKey() {
+  return ['workflows', '/workflows', 'POST'] as const
+}
+
+export function getPostWorkflowsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.workflows.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.workflows.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostWorkflowsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.workflows.$post>) {
+      return parseResponse(client.workflows.$post(args, options))
+    },
+  })
+}
+
+export function createPostWorkflows<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.workflows.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.workflows.$post>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostWorkflowsMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsWorkflowsMutationKey() {
+  return ['workflows', '/workflows', 'OPTIONS'] as const
+}
+
+export function getOptionsWorkflowsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.workflows.$options>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.workflows.$options>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsWorkflowsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.workflows.$options>) {
+      return parseResponse(client.workflows.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsWorkflows<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.workflows.$options>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.workflows.$options>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsWorkflowsMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getWorkflowsWorkflowIdQueryKey(
+  args: InferRequestType<(typeof client.workflows)[':workflowId']['$get']>,
+) {
+  return ['workflows', '/workflows/:workflowId', args] as const
+}
+
+export function getWorkflowsWorkflowIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.workflows)[':workflowId']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.workflows)[':workflowId']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.workflows)[':workflowId']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getWorkflowsWorkflowIdQueryKey>
+  >({
+    queryKey: getWorkflowsWorkflowIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.workflows[':workflowId'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createWorkflowsWorkflowId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.workflows)[':workflowId']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.workflows)[':workflowId']['$get']>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.workflows)[':workflowId']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getWorkflowsWorkflowIdQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getWorkflowsWorkflowIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getDeleteWorkflowsWorkflowIdMutationKey() {
+  return ['workflows', '/workflows/:workflowId', 'DELETE'] as const
+}
+
+export function getDeleteWorkflowsWorkflowIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.workflows)[':workflowId']['$delete']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.workflows)[':workflowId']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteWorkflowsWorkflowIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.workflows)[':workflowId']['$delete']>) {
+      return parseResponse(client.workflows[':workflowId'].$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteWorkflowsWorkflowId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.workflows)[':workflowId']['$delete']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.workflows)[':workflowId']['$delete']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteWorkflowsWorkflowIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsWorkflowsWorkflowIdMutationKey() {
+  return ['workflows', '/workflows/:workflowId', 'OPTIONS'] as const
+}
+
+export function getOptionsWorkflowsWorkflowIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.workflows)[':workflowId']['$options']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.workflows)[':workflowId']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsWorkflowsWorkflowIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.workflows)[':workflowId']['$options']>) {
+      return parseResponse(client.workflows[':workflowId'].$options(args, options))
+    },
+  })
+}
+
+export function createOptionsWorkflowsWorkflowId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.workflows)[':workflowId']['$options']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.workflows)[':workflowId']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsWorkflowsWorkflowIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchWorkflowsWorkflowIdMutationKey() {
+  return ['workflows', '/workflows/:workflowId', 'PATCH'] as const
+}
+
+export function getPatchWorkflowsWorkflowIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.workflows)[':workflowId']['$patch']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.workflows)[':workflowId']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchWorkflowsWorkflowIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.workflows)[':workflowId']['$patch']>) {
+      return parseResponse(client.workflows[':workflowId'].$patch(args, options))
+    },
+  })
+}
+
+export function createPatchWorkflowsWorkflowId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.workflows)[':workflowId']['$patch']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.workflows)[':workflowId']['$patch']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchWorkflowsWorkflowIdMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getWorkflowsWorkflowIdExecutionsQueryKey(
+  args: InferRequestType<(typeof client.workflows)[':workflowId']['executions']['$get']>,
+) {
+  return ['workflows', '/workflows/:workflowId/executions', args] as const
+}
+
+export function getWorkflowsWorkflowIdExecutionsQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.workflows)[':workflowId']['executions']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.workflows)[':workflowId']['executions']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.workflows)[':workflowId']['executions']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getWorkflowsWorkflowIdExecutionsQueryKey>
+  >({
+    queryKey: getWorkflowsWorkflowIdExecutionsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.workflows[':workflowId'].executions.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createWorkflowsWorkflowIdExecutions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.workflows)[':workflowId']['executions']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.workflows)[':workflowId']['executions']['$get']>,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.workflows)[':workflowId']['executions']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getWorkflowsWorkflowIdExecutionsQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getWorkflowsWorkflowIdExecutionsQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPostWorkflowsWorkflowIdExecutionsMutationKey() {
+  return ['workflows', '/workflows/:workflowId/executions', 'POST'] as const
+}
+
+export function getPostWorkflowsWorkflowIdExecutionsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.workflows)[':workflowId']['executions']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.workflows)[':workflowId']['executions']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostWorkflowsWorkflowIdExecutionsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.workflows)[':workflowId']['executions']['$post']>,
+    ) {
+      return parseResponse(client.workflows[':workflowId'].executions.$post(args, options))
+    },
+  })
+}
+
+export function createPostWorkflowsWorkflowIdExecutions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.workflows)[':workflowId']['executions']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.workflows)[':workflowId']['executions']['$post']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostWorkflowsWorkflowIdExecutionsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsWorkflowsWorkflowIdExecutionsMutationKey() {
+  return ['workflows', '/workflows/:workflowId/executions', 'OPTIONS'] as const
+}
+
+export function getOptionsWorkflowsWorkflowIdExecutionsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.workflows)[':workflowId']['executions']['$options']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.workflows)[':workflowId']['executions']['$options']>,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsWorkflowsWorkflowIdExecutionsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.workflows)[':workflowId']['executions']['$options']>,
+    ) {
+      return parseResponse(client.workflows[':workflowId'].executions.$options(args, options))
+    },
+  })
+}
+
+export function createOptionsWorkflowsWorkflowIdExecutions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.workflows)[':workflowId']['executions']['$options']>
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.workflows)[':workflowId']['executions']['$options']>,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsWorkflowsWorkflowIdExecutionsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getWorkflowsWorkflowIdExecutionsExecutionIdQueryKey(
+  args: InferRequestType<
+    (typeof client.workflows)[':workflowId']['executions'][':executionId']['$get']
+  >,
+) {
+  return ['workflows', '/workflows/:workflowId/executions/:executionId', args] as const
+}
+
+export function getWorkflowsWorkflowIdExecutionsExecutionIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.workflows)[':workflowId']['executions'][':executionId']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.workflows)[':workflowId']['executions'][':executionId']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.workflows)[':workflowId']['executions'][':executionId']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getWorkflowsWorkflowIdExecutionsExecutionIdQueryKey>
+  >({
+    queryKey: getWorkflowsWorkflowIdExecutionsExecutionIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.workflows[':workflowId'].executions[':executionId'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createWorkflowsWorkflowIdExecutionsExecutionId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.workflows)[':workflowId']['executions'][':executionId']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.workflows)[':workflowId']['executions'][':executionId']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      ReturnType<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.workflows)[':workflowId']['executions'][':executionId']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          ReturnType<typeof getWorkflowsWorkflowIdExecutionsExecutionIdQueryKey>
+        >
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getWorkflowsWorkflowIdExecutionsExecutionIdQueryOptions<TData, TError>(
+        args(),
+        clientOptions,
+      ),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getDeleteWorkflowsWorkflowIdExecutionsExecutionIdMutationKey() {
+  return ['workflows', '/workflows/:workflowId/executions/:executionId', 'DELETE'] as const
+}
+
+export function getDeleteWorkflowsWorkflowIdExecutionsExecutionIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.workflows)[':workflowId']['executions'][':executionId']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.workflows)[':workflowId']['executions'][':executionId']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteWorkflowsWorkflowIdExecutionsExecutionIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.workflows)[':workflowId']['executions'][':executionId']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.workflows[':workflowId'].executions[':executionId'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteWorkflowsWorkflowIdExecutionsExecutionId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.workflows)[':workflowId']['executions'][':executionId']['$delete']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.workflows)[':workflowId']['executions'][':executionId']['$delete']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteWorkflowsWorkflowIdExecutionsExecutionIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOptionsWorkflowsWorkflowIdExecutionsExecutionIdMutationKey() {
+  return ['workflows', '/workflows/:workflowId/executions/:executionId', 'OPTIONS'] as const
+}
+
+export function getOptionsWorkflowsWorkflowIdExecutionsExecutionIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.workflows)[':workflowId']['executions'][':executionId']['$options']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.workflows)[':workflowId']['executions'][':executionId']['$options']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getOptionsWorkflowsWorkflowIdExecutionsExecutionIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.workflows)[':workflowId']['executions'][':executionId']['$options']
+      >,
+    ) {
+      return parseResponse(
+        client.workflows[':workflowId'].executions[':executionId'].$options(args, options),
+      )
+    },
+  })
+}
+
+export function createOptionsWorkflowsWorkflowIdExecutionsExecutionId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.workflows)[':workflowId']['executions'][':executionId']['$options']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.workflows)[':workflowId']['executions'][':executionId']['$options']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getOptionsWorkflowsWorkflowIdExecutionsExecutionIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchWorkflowsWorkflowIdExecutionsExecutionIdMutationKey() {
+  return ['workflows', '/workflows/:workflowId/executions/:executionId', 'PATCH'] as const
+}
+
+export function getPatchWorkflowsWorkflowIdExecutionsExecutionIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.workflows)[':workflowId']['executions'][':executionId']['$patch']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.workflows)[':workflowId']['executions'][':executionId']['$patch']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchWorkflowsWorkflowIdExecutionsExecutionIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.workflows)[':workflowId']['executions'][':executionId']['$patch']
+      >,
+    ) {
+      return parseResponse(
+        client.workflows[':workflowId'].executions[':executionId'].$patch(args, options),
+      )
+    },
+  })
+}
+
+export function createPatchWorkflowsWorkflowIdExecutionsExecutionId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      ReturnType<
+        CreateMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.workflows)[':workflowId']['executions'][':executionId']['$patch']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.workflows)[':workflowId']['executions'][':executionId']['$patch']
+          >,
+          TOnMutateResult
+        >
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchWorkflowsWorkflowIdExecutionsExecutionIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}

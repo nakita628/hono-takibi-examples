@@ -73,7 +73,7 @@ const CreateAnswerRequestSchema = z
           'The ID of an uploaded file that contains documents to search over. See [upload file](/docs/api-reference/files/upload) for how to upload a file of the desired format and purpose.\n\nYou should specify either `documents` or a `file`, but not both.\n',
       }),
     logit_bias: z
-      .object({})
+      .looseObject({})
       .nullable()
       .default(null)
       .exactOptional()
@@ -224,7 +224,7 @@ const CreateChatCompletionRequestSchema = z
           "Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.\n\n[See more information about frequency and presence penalties.](/docs/api-reference/parameter-details)\n",
       }),
     logit_bias: z
-      .object({})
+      .looseObject({})
       .nullable()
       .default(null)
       .exactOptional()
@@ -396,7 +396,7 @@ const CreateClassificationRequestSchema = z
         example: ['Positive', 'Negative'],
       }),
     logit_bias: z
-      .object({})
+      .looseObject({})
       .nullable()
       .default(null)
       .exactOptional()
@@ -542,7 +542,7 @@ const CreateCompletionRequestSchema = z
           "Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.\n\n[See more information about frequency and presence penalties.](/docs/api-reference/parameter-details)\n",
       }),
     logit_bias: z
-      .object({})
+      .looseObject({})
       .nullable()
       .default(null)
       .exactOptional()
@@ -700,7 +700,7 @@ const CreateCompletionResponseSchema = z
               text_offset: z.array(z.int()).exactOptional(),
               token_logprobs: z.array(z.number()).exactOptional(),
               tokens: z.array(z.string()).exactOptional(),
-              top_logprobs: z.array(z.object({})).exactOptional(),
+              top_logprobs: z.array(z.looseObject({})).exactOptional(),
             })
             .nullable()
             .exactOptional()
@@ -795,7 +795,7 @@ const CreateEditResponseSchema = z
               text_offset: z.array(z.int()).exactOptional(),
               token_logprobs: z.array(z.number()).exactOptional(),
               tokens: z.array(z.string()).exactOptional(),
-              top_logprobs: z.array(z.object({})).exactOptional(),
+              top_logprobs: z.array(z.looseObject({})).exactOptional(),
             })
             .nullable()
             .exactOptional()
@@ -1456,7 +1456,7 @@ const OpenAIFileSchema = z
     object: z.string(),
     purpose: z.string(),
     status: z.string().exactOptional(),
-    status_details: z.object({}).nullable().exactOptional(),
+    status_details: z.looseObject({}).nullable().exactOptional(),
   })
   .openapi({
     required: ['id', 'object', 'bytes', 'created_at', 'filename', 'purpose'],
@@ -1469,7 +1469,7 @@ const FineTuneSchema = z
     created_at: z.int(),
     events: z.array(FineTuneEventSchema).exactOptional(),
     fine_tuned_model: z.string().nullable(),
-    hyperparams: z.object({}),
+    hyperparams: z.looseObject({}),
     id: z.string(),
     model: z.string(),
     object: z.string(),

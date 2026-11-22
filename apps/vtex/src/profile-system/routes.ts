@@ -87,7 +87,7 @@ const SchemaSchema = z
         '{fieldName}': z
           .object({
             items: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
@@ -338,7 +338,7 @@ export const postApiStorageProfileSystemProfilesRoute = createRoute({
       description: 'Created',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             document: {
               birthDate: '1925-11-17',
@@ -377,7 +377,7 @@ export const putApiStorageProfileSystemProfilesSchemaRoute = createRoute({
   responses: {
     201: {
       description: 'Created',
-      content: { 'application/json': { schema: z.object({}), example: {} } },
+      content: { 'application/json': { schema: z.looseObject({}), example: {} } },
     },
   },
 })
@@ -475,7 +475,7 @@ export const patchApiStorageProfileSystemProfilesProfileIdRoute = createRoute({
       description: 'OK',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             document: {
               birthDate: '17/11/1992',
@@ -565,7 +565,7 @@ export const postApiStorageProfileSystemProfilesProfileIdAddressesRoute = create
       description: 'Created',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             document: {
               administrativeAreaLevel1: 'RJ',
@@ -657,7 +657,7 @@ export const getApiStorageProfileSystemProfilesProfileIdAddressesAddressIdRoute 
       description: 'OK',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             document: {
               administrativeAreaLevel1: 'RJ',
@@ -736,7 +736,7 @@ export const patchApiStorageProfileSystemProfilesProfileIdAddressesAddressIdRout
       description: 'OK',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             document: {
               administrativeAreaLevel1: 'RJ',
@@ -782,7 +782,7 @@ export const getApiStorageProfileSystemProfilesProfileIdAddressesAddressIdUnmask
         description: 'OK',
         content: {
           'application/json': {
-            schema: z.object({}),
+            schema: z.looseObject({}),
             example: {
               document: {
                 administrativeAreaLevel1: 'RJ',
@@ -833,7 +833,7 @@ export const getApiStorageProfileSystemProfilesProfileIdAddressesAddressIdVersio
         description: 'OK',
         content: {
           'application/json': {
-            schema: z.object({}),
+            schema: z.looseObject({}),
             example: {
               document: {
                 administrativeAreaLevel1: 'RJ',
@@ -883,7 +883,7 @@ export const getApiStorageProfileSystemProfilesProfileIdAddressesAddressIdVersio
         description: 'OK',
         content: {
           'application/json': {
-            schema: z.object({}),
+            schema: z.looseObject({}),
             example: {
               document: {
                 administrativeAreaLevel1: 'RJ',
@@ -948,7 +948,7 @@ export const postApiStorageProfileSystemProfilesProfileIdPurchaseInfoRoute = cre
   responses: {
     201: {
       description: 'Created',
-      content: { 'application/json': { schema: z.object({}), example: {} } },
+      content: { 'application/json': { schema: z.looseObject({}), example: {} } },
     },
   },
 })
@@ -986,7 +986,7 @@ export const patchApiStorageProfileSystemProfilesProfileIdPurchaseInfoRoute = cr
   responses: {
     200: {
       description: 'OK',
-      content: { 'application/json': { schema: z.object({}), example: {} } },
+      content: { 'application/json': { schema: z.looseObject({}), example: {} } },
     },
   },
 })
@@ -1008,7 +1008,7 @@ export const getApiStorageProfileSystemProfilesProfileIdPurchaseInfoUnmaskRoute 
       description: 'OK',
       content: {
         'application/json': {
-          schema: z.array(z.object({})),
+          schema: z.array(z.looseObject({})),
           example: [
             {
               document: {
@@ -1192,7 +1192,7 @@ export const postApiStorageProfileSystemProspectsRoute = createRoute({
   responses: {
     201: {
       description: 'Created',
-      content: { 'application/json': { schema: z.object({}), example: {} } },
+      content: { 'application/json': { schema: z.looseObject({}), example: {} } },
     },
   },
 })
@@ -1248,7 +1248,7 @@ export const patchApiStorageProfileSystemProspectsProspectIdRoute = createRoute(
   responses: {
     200: {
       description: 'OK',
-      content: { 'application/json': { schema: z.object({}), example: {} } },
+      content: { 'application/json': { schema: z.looseObject({}), example: {} } },
     },
   },
 })

@@ -12,7 +12,9 @@ export const postRefundsRouteHandler: RouteHandler<typeof postRefundsRoute> = as
 
 export const getRefundsRefundIdRouteHandler: RouteHandler<typeof getRefundsRefundIdRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const postRefundsRefundIdRouteHandler: RouteHandler<
   typeof postRefundsRefundIdRoute
@@ -20,6 +22,6 @@ export const postRefundsRefundIdRouteHandler: RouteHandler<
   throw new Error('Not implemented')
 }
 
-export const postRefundsListRouteHandler: RouteHandler<typeof postRefundsListRoute> = async (
-  c,
-) => {}
+export const postRefundsListRouteHandler: RouteHandler<typeof postRefundsListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

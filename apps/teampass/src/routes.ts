@@ -932,96 +932,123 @@ const SecureSendNoteSchema = z
   })
   .openapi('SecureSendNote')
 
-const SecureSendCreateBodySchema = z
-  .unknown()
-  .superRefine((val, ctx) => {
-    {
-      const ifOk = z
-        .object({ type: z.literal('note') })
-        .openapi({ required: ['type'] })
-        .safeParse(val).success
-      if (ifOk) {
-        const Schema = z
-          .unknown()
-          .superRefine((val, ctx) => {
-            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-              if (!Object.hasOwn(val, 'note')) {
-                ctx.addIssue({ code: 'custom' })
+const SecureSendCreateBodySchema = (() => {
+  const Schema = z
+    .unknown()
+    .superRefine((val, ctx) => {
+      {
+        const ifOk = z
+          .object({ type: z.literal('note') })
+          .openapi({ required: ['type'] })
+          .safeParse(val).success
+        if (ifOk) {
+          const Schema = z
+            .unknown()
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'note')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
               }
-            }
-          })
-          .openapi({ required: ['note'] })
-        if (!Schema.safeParse(val).success) {
-          ctx.addIssue({ code: 'custom' })
+            })
+            .openapi({ required: ['note'] })
+          if (!Schema.safeParse(val).success) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+        if (!ifOk) {
+          const Schema = z
+            .unknown()
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'item_id')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
+            .openapi({ required: ['item_id'] })
+          if (!Schema.safeParse(val).success) {
+            ctx.addIssue({ code: 'custom' })
+          }
         }
       }
-      if (!ifOk) {
-        const Schema = z
-          .unknown()
-          .superRefine((val, ctx) => {
-            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-              if (!Object.hasOwn(val, 'item_id')) {
-                ctx.addIssue({ code: 'custom' })
-              }
-            }
-          })
-          .openapi({ required: ['item_id'] })
-        if (!Schema.safeParse(val).success) {
-          ctx.addIssue({ code: 'custom' })
+    })
+    .and(
+      z
+        .object({
+          type: z.enum(['item', 'note']).default('item').exactOptional(),
+          item_id: z
+            .int()
+            .min(1)
+            .exactOptional()
+            .openapi({ description: 'Item to share (item sends only)' }),
+          note: SecureSendNoteSchema.exactOptional(),
+          days: z
+            .int()
+            .min(1)
+            .exactOptional()
+            .openapi({
+              description: 'Validity in days, capped by policy days.max (default: the maximum)',
+            }),
+          views: z
+            .int()
+            .min(1)
+            .exactOptional()
+            .openapi({ description: 'Allowed views, capped by policy views.max (default 1)' }),
+          passphrase: z
+            .string()
+            .max(1024)
+            .exactOptional()
+            .openapi({
+              description:
+                'Optional recipient passphrase (at most 1024 bytes); required when policy require_passphrase is true',
+            }),
+          include_totp: z
+            .boolean()
+            .default(false)
+            .exactOptional()
+            .openapi({
+              description:
+                "Copy the item's enabled TOTP into the snapshot; ignored for read-only accounts (item sends only)",
+            }),
+          public_address: z
+            .boolean()
+            .default(false)
+            .exactOptional()
+            .openapi({ description: 'Build the link on the public Secure Send address' }),
+          recipient_email: z
+            .email()
+            .exactOptional()
+            .openapi({ description: 'Also send the link by email from the instance mailbox' }),
+        })
+        .openapi({ required: [] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'type',
+            'item_id',
+            'note',
+            'days',
+            'views',
+            'passphrase',
+            'include_totp',
+            'public_address',
+            'recipient_email',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
         }
       }
-    }
-  })
-  .and(
-    z
-      .object({
-        type: z.enum(['item', 'note']).default('item').exactOptional(),
-        item_id: z
-          .int()
-          .min(1)
-          .exactOptional()
-          .openapi({ description: 'Item to share (item sends only)' }),
-        note: SecureSendNoteSchema.exactOptional(),
-        days: z
-          .int()
-          .min(1)
-          .exactOptional()
-          .openapi({
-            description: 'Validity in days, capped by policy days.max (default: the maximum)',
-          }),
-        views: z
-          .int()
-          .min(1)
-          .exactOptional()
-          .openapi({ description: 'Allowed views, capped by policy views.max (default 1)' }),
-        passphrase: z
-          .string()
-          .max(1024)
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional recipient passphrase (at most 1024 bytes); required when policy require_passphrase is true',
-          }),
-        include_totp: z
-          .boolean()
-          .default(false)
-          .exactOptional()
-          .openapi({
-            description:
-              "Copy the item's enabled TOTP into the snapshot; ignored for read-only accounts (item sends only)",
-          }),
-        public_address: z
-          .boolean()
-          .default(false)
-          .exactOptional()
-          .openapi({ description: 'Build the link on the public Secure Send address' }),
-        recipient_email: z
-          .email()
-          .exactOptional()
-          .openapi({ description: 'Also send the link by email from the instance mailbox' }),
-      })
-      .openapi({ required: [] }),
-  )
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description:
       'Unknown members are refused (400). A null optional member counts as omitted. An item send needs item_id and refuses note; a note send needs note and refuses item_id and include_totp.',

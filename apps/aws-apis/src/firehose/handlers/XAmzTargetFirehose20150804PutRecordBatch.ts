@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetFirehose20150804PutRecordBatchHandler = app.openapi(
   postXAmzTargetFirehose20150804PutRecordBatchRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

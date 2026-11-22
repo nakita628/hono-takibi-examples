@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const enterpriseConfigurationsHandler = app.openapi(
   getEnterpriseConfigurationsEnterpriseIdRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

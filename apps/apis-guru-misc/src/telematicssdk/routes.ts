@@ -2520,143 +2520,103 @@ export const getMobilesdkStageTrackGetTrackV1Route = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'BYPASS' }),
-        },
-        'CF-Ray': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '633820de9d14fc59-ZAG' }),
-        },
-        Code: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '200' }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'gzip' }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Sun, 21 Mar 2021 15:14:10 GMT' }),
-        },
-        EnableLogging: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'False' }),
-        },
-        EnableRealTimeLocation: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'True' }),
-        },
-        EnableTracking: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'True' }),
-        },
-        'Expect-CT': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-            }),
-        },
-        NEL: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: '{"max_age":604800,"report_to":"cf-nel"}',
-            }),
-        },
-        'Report-To': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report?s=4ka2UbB0epflCObPWEfxiXOhQbA1wgGjZ5w20n9DNC2yMaTXQeYnHY0ERv99xuIYgN%2FUUd%2B%2B%2FORytMdksAJ0zIeDopw5iMC8%2Br33ohj0p6SpXJ0Z6o9ORedE0bM%3D"}]}',
-            }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: '.Stackify.Rum=235f2fd7-7e8d-461e-8af4-1bd98ab87785; path=/',
-            }),
-        },
-        'Transfer-Encoding': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
-        },
-        'X-Powered-By': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'ASP.NET' }),
-        },
-        'X-StackifyID': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'V2|235f2fd7-7e8d-461e-8af4-1bd98ab87785|C51476|CD11',
-            }),
-        },
-        'cf-apo-via': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'origin,host' }),
-        },
-        'cf-request-id': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '08f6f2df1c0000fc5925991000000001' }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'BYPASS' }),
+        'CF-Ray': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '633820de9d14fc59-ZAG' }),
+        Code: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '200' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'gzip' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Sun, 21 Mar 2021 15:14:10 GMT' }),
+        EnableLogging: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'False' }),
+        EnableRealTimeLocation: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'True' }),
+        EnableTracking: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'True' }),
+        'Expect-CT': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+          }),
+        NEL: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: '{"max_age":604800,"report_to":"cf-nel"}',
+          }),
+        'Report-To': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report?s=4ka2UbB0epflCObPWEfxiXOhQbA1wgGjZ5w20n9DNC2yMaTXQeYnHY0ERv99xuIYgN%2FUUd%2B%2B%2FORytMdksAJ0zIeDopw5iMC8%2Br33ohj0p6SpXJ0Z6o9ORedE0bM%3D"}]}',
+          }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: '.Stackify.Rum=235f2fd7-7e8d-461e-8af4-1bd98ab87785; path=/',
+          }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Accept-Encoding' }),
+        'X-Powered-By': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'ASP.NET' }),
+        'X-StackifyID': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: 'V2|235f2fd7-7e8d-461e-8af4-1bd98ab87785|C51476|CD11',
+          }),
+        'cf-apo-via': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'origin,host' }),
+        'cf-request-id': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '08f6f2df1c0000fc5925991000000001' }),
       }),
     },
   },
@@ -2762,45 +2722,33 @@ export const getStatisticsV1ScoringsConsolidatedRoute = createRoute({
       description: 'Success',
       content: {},
       headers: z.object({
-        'Content-Length': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '357' }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Tue, 30 Mar 2021 15:21:30 GMT' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Microsoft-IIS/10.0' }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=2592000' }),
-        },
-        'X-Powered-By': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'ASP.NET' }),
-        },
-        'X-StackifyID': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'V2|9c8bce0d-f463-4e72-8e6f-29c60487c651|C51476|CD11',
-            }),
-        },
+        'Content-Length': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '357' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Tue, 30 Mar 2021 15:21:30 GMT' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Microsoft-IIS/10.0' }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=2592000' }),
+        'X-Powered-By': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'ASP.NET' }),
+        'X-StackifyID': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: 'V2|9c8bce0d-f463-4e72-8e6f-29c60487c651|C51476|CD11',
+          }),
       }),
     },
   },
@@ -2993,45 +2941,33 @@ export const getStatisticsV1ScoringsConsolidatedDailyRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Length': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '704' }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Tue, 30 Mar 2021 15:24:20 GMT' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Microsoft-IIS/10.0' }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=2592000' }),
-        },
-        'X-Powered-By': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'ASP.NET' }),
-        },
-        'X-StackifyID': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'V2|ec14616f-98c2-4f93-a834-44f2210ea79e|C51476|CD11',
-            }),
-        },
+        'Content-Length': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '704' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Tue, 30 Mar 2021 15:24:20 GMT' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Microsoft-IIS/10.0' }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=2592000' }),
+        'X-Powered-By': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'ASP.NET' }),
+        'X-StackifyID': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: 'V2|ec14616f-98c2-4f93-a834-44f2210ea79e|C51476|CD11',
+          }),
       }),
     },
   },
@@ -3124,45 +3060,33 @@ export const getStatisticsV1ScoringsIndividualIndexRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Length': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '397' }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Tue, 23 Mar 2021 14:46:46 GMT' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Microsoft-IIS/10.0' }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=2592000' }),
-        },
-        'X-Powered-By': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'ASP.NET' }),
-        },
-        'X-StackifyID': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'V2|cb7ff840-46a9-4bf4-85b0-7e78f513f05d|C51476|CD11',
-            }),
-        },
+        'Content-Length': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '397' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Tue, 23 Mar 2021 14:46:46 GMT' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Microsoft-IIS/10.0' }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=2592000' }),
+        'X-Powered-By': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'ASP.NET' }),
+        'X-StackifyID': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: 'V2|cb7ff840-46a9-4bf4-85b0-7e78f513f05d|C51476|CD11',
+          }),
       }),
     },
   },
@@ -3344,45 +3268,33 @@ export const getStatisticsV1ScoringsIndividualDailyRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Length': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '2277' }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Tue, 23 Mar 2021 14:49:18 GMT' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Microsoft-IIS/10.0' }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=2592000' }),
-        },
-        'X-Powered-By': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'ASP.NET' }),
-        },
-        'X-StackifyID': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'V2|d0a12fe9-6d40-4c53-a9f6-3b36dcd388f3|C51476|CD11',
-            }),
-        },
+        'Content-Length': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '2277' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Tue, 23 Mar 2021 14:49:18 GMT' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Microsoft-IIS/10.0' }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=2592000' }),
+        'X-Powered-By': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'ASP.NET' }),
+        'X-StackifyID': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: 'V2|d0a12fe9-6d40-4c53-a9f6-3b36dcd388f3|C51476|CD11',
+          }),
       }),
     },
   },
@@ -3488,45 +3400,33 @@ export const getStatisticsV1StatisticsConsolidatedRoute = createRoute({
       description: 'Success',
       content: {},
       headers: z.object({
-        'Content-Length': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1032' }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Tue, 30 Mar 2021 14:54:32 GMT' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Microsoft-IIS/10.0' }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=2592000' }),
-        },
-        'X-Powered-By': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'ASP.NET' }),
-        },
-        'X-StackifyID': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'V2|169f7565-24c7-4b0e-b5a2-db35c017b3ef|C51476|CD11',
-            }),
-        },
+        'Content-Length': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1032' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Tue, 30 Mar 2021 14:54:32 GMT' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Microsoft-IIS/10.0' }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=2592000' }),
+        'X-Powered-By': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'ASP.NET' }),
+        'X-StackifyID': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: 'V2|169f7565-24c7-4b0e-b5a2-db35c017b3ef|C51476|CD11',
+          }),
       }),
     },
   },
@@ -3632,45 +3532,33 @@ export const getStatisticsV1StatisticsConsolidatedDailyRoute = createRoute({
       description: 'Success',
       content: {},
       headers: z.object({
-        'Content-Length': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1987' }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Tue, 30 Mar 2021 15:04:45 GMT' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Microsoft-IIS/10.0' }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=2592000' }),
-        },
-        'X-Powered-By': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'ASP.NET' }),
-        },
-        'X-StackifyID': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'V2|9245ff7b-9b0a-40a5-82d2-7c6d81a425f0|C51476|CD11',
-            }),
-        },
+        'Content-Length': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1987' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Tue, 30 Mar 2021 15:04:45 GMT' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Microsoft-IIS/10.0' }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=2592000' }),
+        'X-Powered-By': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'ASP.NET' }),
+        'X-StackifyID': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: 'V2|9245ff7b-9b0a-40a5-82d2-7c6d81a425f0|C51476|CD11',
+          }),
       }),
     },
   },
@@ -3825,45 +3713,33 @@ export const getStatisticsV1StatisticsIndividualIndexRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Length': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '990' }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Sun, 21 Mar 2021 15:09:02 GMT' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Microsoft-IIS/10.0' }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=2592000' }),
-        },
-        'X-Powered-By': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'ASP.NET' }),
-        },
-        'X-StackifyID': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'V2|91fcbf2c-86d9-4aeb-bad3-4e05af6dee4e|C51476|CD11',
-            }),
-        },
+        'Content-Length': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '990' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Sun, 21 Mar 2021 15:09:02 GMT' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Microsoft-IIS/10.0' }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=2592000' }),
+        'X-Powered-By': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'ASP.NET' }),
+        'X-StackifyID': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: 'V2|91fcbf2c-86d9-4aeb-bad3-4e05af6dee4e|C51476|CD11',
+          }),
       }),
     },
   },
@@ -4155,45 +4031,33 @@ export const getStatisticsV1StatisticsIndividualDailyIndexRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Length': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '4697' }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Sun, 21 Mar 2021 15:10:34 GMT' }),
-        },
-        Server: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Microsoft-IIS/10.0' }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=2592000' }),
-        },
-        'X-Powered-By': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'ASP.NET' }),
-        },
-        'X-StackifyID': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'V2|3e7c749f-f8d0-4175-b94e-4aaf3a3f3236|C51476|CD11',
-            }),
-        },
+        'Content-Length': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '4697' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Sun, 21 Mar 2021 15:10:34 GMT' }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Microsoft-IIS/10.0' }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=2592000' }),
+        'X-Powered-By': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'ASP.NET' }),
+        'X-StackifyID': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: 'V2|3e7c749f-f8d0-4175-b94e-4aaf3a3f3236|C51476|CD11',
+          }),
       }),
     },
   },

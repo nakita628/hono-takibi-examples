@@ -1277,7 +1277,7 @@ export const putApiDataentitiesAcronymDocumentsRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             Boolean: true,
             Currency: 2.5,
@@ -1349,7 +1349,7 @@ export const postApiDataentitiesAcronymDocumentsRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             Boolean: true,
             Currency: 2.5,
@@ -1433,7 +1433,7 @@ export const patchApiDataentitiesAcronymDocumentsRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: { Boolean: true, id: '4e4c55ac-e491-11e6-94f4-0ac138d2d42e' },
         },
       },
@@ -1579,7 +1579,7 @@ export const putApiDataentitiesAcronymDocumentsIdRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             Boolean: true,
             Currency: 2.5,
@@ -1729,7 +1729,7 @@ export const patchApiDataentitiesAcronymDocumentsIdRoute = createRoute({
     }),
     body: {
       description: '',
-      content: { 'application/json': { schema: z.object({}), example: { Boolean: false } } },
+      content: { 'application/json': { schema: z.looseObject({}), example: { Boolean: false } } },
       required: true,
     },
   },

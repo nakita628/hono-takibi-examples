@@ -7657,44 +7657,59 @@ const CreateDirectMessagesByConversationIdAttachmentsSchema = z
   .openapi({ required: ['media_id'] })
   .openapi('CreateDirectMessagesByConversationIdAttachments')
 
-const CreateDirectMessagesByConversationIdRequestSchema = z
-  .union([
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'text')) {
-            ctx.addIssue({ code: 'custom' })
+const CreateDirectMessagesByConversationIdRequestSchema = (() => {
+  const Schema = z
+    .union([
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'text')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['text'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'attachments')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['text'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'attachments')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
+        })
+        .openapi({ required: ['attachments'] }),
+    ])
+    .and(
+      z
+        .object({
+          attachments: z
+            .array(CreateDirectMessagesByConversationIdAttachmentsSchema)
+            .exactOptional()
+            .openapi({ description: 'Attachments to include with the message.' }),
+          text: z
+            .string()
+            .min(1)
+            .exactOptional()
+            .openapi({ description: 'Text of the Direct Message.' }),
+        })
+        .openapi({ required: [] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['attachments', 'text'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
         }
-      })
-      .openapi({ required: ['attachments'] }),
-  ])
-  .and(
-    z
-      .object({
-        attachments: z
-          .array(CreateDirectMessagesByConversationIdAttachmentsSchema)
-          .exactOptional()
-          .openapi({ description: 'Attachments to include with the message.' }),
-        text: z
-          .string()
-          .min(1)
-          .exactOptional()
-          .openapi({ description: 'Text of the Direct Message.' }),
-      })
-      .openapi({ required: [] }),
-  )
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({ description: 'At least one of `text`, `attachments` is required.' })
   .openapi('CreateDirectMessagesByConversationIdRequest')
 
@@ -7726,44 +7741,59 @@ const CreateDirectMessagesByParticipantIdAttachmentsSchema = z
   .openapi({ required: ['media_id'] })
   .openapi('CreateDirectMessagesByParticipantIdAttachments')
 
-const CreateDirectMessagesByParticipantIdRequestSchema = z
-  .union([
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'text')) {
-            ctx.addIssue({ code: 'custom' })
+const CreateDirectMessagesByParticipantIdRequestSchema = (() => {
+  const Schema = z
+    .union([
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'text')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['text'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'attachments')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['text'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'attachments')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
+        })
+        .openapi({ required: ['attachments'] }),
+    ])
+    .and(
+      z
+        .object({
+          attachments: z
+            .array(CreateDirectMessagesByParticipantIdAttachmentsSchema)
+            .exactOptional()
+            .openapi({ description: 'Attachments to include with the message.' }),
+          text: z
+            .string()
+            .min(1)
+            .exactOptional()
+            .openapi({ description: 'Text of the Direct Message.' }),
+        })
+        .openapi({ required: [] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['attachments', 'text'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
         }
-      })
-      .openapi({ required: ['attachments'] }),
-  ])
-  .and(
-    z
-      .object({
-        attachments: z
-          .array(CreateDirectMessagesByParticipantIdAttachmentsSchema)
-          .exactOptional()
-          .openapi({ description: 'Attachments to include with the message.' }),
-        text: z
-          .string()
-          .min(1)
-          .exactOptional()
-          .openapi({ description: 'Text of the Direct Message.' }),
-      })
-      .openapi({ required: [] }),
-  )
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({ description: 'At least one of `text`, `attachments` is required.' })
   .openapi('CreateDirectMessagesByParticipantIdRequest')
 
@@ -16931,59 +16961,83 @@ const UpdateChatConversationScreenCaptureDetectionActionSignaturesSchema = z
   .openapi({ required: ['message_id', 'encoded_message_event_detail', 'message_event_signature'] })
   .openapi('UpdateChatConversationScreenCaptureDetectionActionSignatures')
 
-const UpdateChatConversationScreenCaptureRequestSchema = z
-  .union([
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'blocking')) {
-            ctx.addIssue({ code: 'custom' })
+const UpdateChatConversationScreenCaptureRequestSchema = (() => {
+  const Schema = z
+    .union([
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'blocking')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['blocking'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'detection')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['blocking'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'detection')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
+        })
+        .openapi({ required: ['detection'] }),
+    ])
+    .and(
+      z
+        .object({
+          blocking: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Whether participants are prevented from taking screenshots.',
+            }),
+          blocking_action_signatures: z
+            .array(UpdateChatConversationScreenCaptureBlockingActionSignaturesSchema)
+            .exactOptional()
+            .openapi({
+              description:
+                'Signatures for the screenshot blocking change, forwarded in the order they are sent.',
+            }),
+          detection: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Whether participants are notified when someone takes a screenshot.',
+            }),
+          detection_action_signatures: z
+            .array(UpdateChatConversationScreenCaptureDetectionActionSignaturesSchema)
+            .exactOptional()
+            .openapi({
+              description:
+                'Signatures for the screenshot detection change, forwarded in the order they are sent.',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'blocking',
+            'blocking_action_signatures',
+            'detection',
+            'detection_action_signatures',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
         }
-      })
-      .openapi({ required: ['detection'] }),
-  ])
-  .and(
-    z
-      .object({
-        blocking: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether participants are prevented from taking screenshots.' }),
-        blocking_action_signatures: z
-          .array(UpdateChatConversationScreenCaptureBlockingActionSignaturesSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Signatures for the screenshot blocking change, forwarded in the order they are sent.',
-          }),
-        detection: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Whether participants are notified when someone takes a screenshot.',
-          }),
-        detection_action_signatures: z
-          .array(UpdateChatConversationScreenCaptureDetectionActionSignaturesSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Signatures for the screenshot detection change, forwarded in the order they are sent.',
-          }),
-      })
-      .openapi({ required: [] }),
-  )
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({ description: 'At least one of `blocking`, `detection` is required.' })
   .openapi('UpdateChatConversationScreenCaptureRequest')
 
@@ -17153,112 +17207,138 @@ const UpdateChatGroupAdminSettingsActionSignaturesSchema = z
   .openapi({ required: ['message_id', 'encoded_message_event_detail', 'message_event_signature'] })
   .openapi('UpdateChatGroupAdminSettingsActionSignatures')
 
-const UpdateChatGroupAdminSettingsRequestSchema = z
-  .union([
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'add_member')) {
-            ctx.addIssue({ code: 'custom' })
+const UpdateChatGroupAdminSettingsRequestSchema = (() => {
+  const Schema = z
+    .union([
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'add_member')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['add_member'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'edit_group_info')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['add_member'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'edit_group_info')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['edit_group_info'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'send_message')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['edit_group_info'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'send_message')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['send_message'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'start_call')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['send_message'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'start_call')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['start_call'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'edit_message_ttl')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['start_call'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'edit_message_ttl')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['edit_message_ttl'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'block_screen_capture')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['edit_message_ttl'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'block_screen_capture')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
+        })
+        .openapi({ required: ['block_screen_capture'] }),
+    ])
+    .and(
+      z
+        .object({
+          action_signatures: z
+            .array(UpdateChatGroupAdminSettingsActionSignaturesSchema)
+            .exactOptional()
+            .openapi({
+              description: 'Signatures for this action, forwarded in the order they are sent.',
+            }),
+          add_member: z
+            .boolean()
+            .exactOptional()
+            .openapi({ description: 'When true, only admins can add members.' }),
+          block_screen_capture: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description:
+                'When true, only admins can change screen capture blocking. Through the API, only admins can change screen capture in a group, whatever this setting says.',
+            }),
+          edit_group_info: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description:
+                'When true, only admins can edit the group name, avatar, and description.',
+            }),
+          edit_message_ttl: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'When true, only admins can change the disappearing-message timer.',
+            }),
+          send_message: z
+            .boolean()
+            .exactOptional()
+            .openapi({ description: 'When true, only admins can send messages.' }),
+          start_call: z
+            .boolean()
+            .exactOptional()
+            .openapi({ description: 'When true, only admins can start calls.' }),
+        })
+        .openapi({ required: [] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'action_signatures',
+            'add_member',
+            'block_screen_capture',
+            'edit_group_info',
+            'edit_message_ttl',
+            'send_message',
+            'start_call',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
         }
-      })
-      .openapi({ required: ['block_screen_capture'] }),
-  ])
-  .and(
-    z
-      .object({
-        action_signatures: z
-          .array(UpdateChatGroupAdminSettingsActionSignaturesSchema)
-          .exactOptional()
-          .openapi({
-            description: 'Signatures for this action, forwarded in the order they are sent.',
-          }),
-        add_member: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'When true, only admins can add members.' }),
-        block_screen_capture: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'When true, only admins can change screen capture blocking. Through the API, only admins can change screen capture in a group, whatever this setting says.',
-          }),
-        edit_group_info: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'When true, only admins can edit the group name, avatar, and description.',
-          }),
-        edit_message_ttl: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'When true, only admins can change the disappearing-message timer.',
-          }),
-        send_message: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'When true, only admins can send messages.' }),
-        start_call: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'When true, only admins can start calls.' }),
-      })
-      .openapi({ required: [] }),
-  )
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description:
       'At least one of `add_member`, `edit_group_info`, `send_message`, `start_call`, `edit_message_ttl`, `block_screen_capture` is required.',
@@ -17411,96 +17491,119 @@ const UpdateChatSettingsAvSettingsSchema = z
   .openapi({ required: [] })
   .openapi('UpdateChatSettingsAvSettings')
 
-const UpdateChatSettingsRequestSchema = z
-  .union([
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'allow_dms_from')) {
-            ctx.addIssue({ code: 'custom' })
+const UpdateChatSettingsRequestSchema = (() => {
+  const Schema = z
+    .union([
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'allow_dms_from')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['allow_dms_from'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'always_allow_dms_from_subscribers')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['allow_dms_from'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'always_allow_dms_from_subscribers')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['always_allow_dms_from_subscribers'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'dm_quality_filter')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['always_allow_dms_from_subscribers'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'dm_quality_filter')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['dm_quality_filter'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'dm_receipt_settings')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['dm_quality_filter'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'dm_receipt_settings')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['dm_receipt_settings'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'av_settings')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['dm_receipt_settings'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'av_settings')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['av_settings'] }),
-  ])
-  .and(
-    z
-      .object({
-        allow_dms_from: z
-          .enum(['all', 'verified', 'following'])
-          .exactOptional()
-          .openapi({
-            description:
-              "Who can send the user messages: `all` (anyone), `verified` (verified accounts only), or `following` (accounts the user follows). A bot may get a 400 for choosing `following` when it doesn't already have it, and an org-only bot for choosing `verified`.",
+        })
+        .openapi({ required: ['av_settings'] }),
+    ])
+    .and(
+      z
+        .object({
+          allow_dms_from: z
+            .enum(['all', 'verified', 'following'])
+            .exactOptional()
+            .openapi({
+              description:
+                "Who can send the user messages: `all` (anyone), `verified` (verified accounts only), or `following` (accounts the user follows). A bot may get a 400 for choosing `following` when it doesn't already have it, and an org-only bot for choosing `verified`.",
+            }),
+          always_allow_dms_from_subscribers: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description:
+                "Whether the user's subscribers can always message them regardless of allow_dms_from.",
+            }),
+          av_settings: UpdateChatSettingsAvSettingsSchema.exactOptional().openapi({
+            description: 'Audio and video call settings.',
           }),
-        always_allow_dms_from_subscribers: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              "Whether the user's subscribers can always message them regardless of allow_dms_from.",
-          }),
-        av_settings: UpdateChatSettingsAvSettingsSchema.exactOptional().openapi({
-          description: 'Audio and video call settings.',
-        }),
-        dm_quality_filter: z
-          .enum(['enabled', 'disabled'])
-          .exactOptional()
-          .openapi({
-            description:
-              'Low-quality message request filter: `enabled` (low-quality requests go to a separate folder) or `disabled` (all requests stay in the main inbox).',
-          }),
-        dm_receipt_settings: z
-          .enum(['all_enabled', 'all_disabled'])
-          .exactOptional()
-          .openapi({
-            description:
-              'Read receipts: `all_enabled` (send and receive read receipts) or `all_disabled` (neither).',
-          }),
-      })
-      .openapi({ required: [] }),
-  )
+          dm_quality_filter: z
+            .enum(['enabled', 'disabled'])
+            .exactOptional()
+            .openapi({
+              description:
+                'Low-quality message request filter: `enabled` (low-quality requests go to a separate folder) or `disabled` (all requests stay in the main inbox).',
+            }),
+          dm_receipt_settings: z
+            .enum(['all_enabled', 'all_disabled'])
+            .exactOptional()
+            .openapi({
+              description:
+                'Read receipts: `all_enabled` (send and receive read receipts) or `all_disabled` (neither).',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'allow_dms_from',
+            'always_allow_dms_from_subscribers',
+            'av_settings',
+            'dm_quality_filter',
+            'dm_receipt_settings',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description:
       'At least one of `allow_dms_from`, `always_allow_dms_from_subscribers`, `dm_quality_filter`, `dm_receipt_settings`, `av_settings` is required.',
@@ -17896,151 +17999,183 @@ const UpdateScheduledBroadcastResponseSchema = z
   .openapi({ required: [] })
   .openapi('UpdateScheduledBroadcastResponse')
 
-const UpdateScheduledCallRequestSchema = z
-  .union([
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'start_time')) {
-            ctx.addIssue({ code: 'custom' })
+const UpdateScheduledCallRequestSchema = (() => {
+  const Schema = z
+    .union([
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'start_time')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['start_time'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'duration_minutes')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['start_time'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'duration_minutes')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['duration_minutes'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'title')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['duration_minutes'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'title')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['title'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'description')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['title'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'description')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['description'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'invitee_ids')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['description'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'invitee_ids')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['invitee_ids'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'recurrence')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['invitee_ids'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'recurrence')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
-        }
-      })
-      .openapi({ required: ['recurrence'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'time_zone')) {
-            ctx.addIssue({ code: 'custom' })
+        })
+        .openapi({ required: ['recurrence'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'time_zone')) {
+              ctx.addIssue({ code: 'custom' })
+            }
           }
+        })
+        .openapi({ required: ['time_zone'] }),
+    ])
+    .and(
+      z
+        .object({
+          description: z
+            .string()
+            .max(1000)
+            .exactOptional()
+            .openapi({ description: 'What the call is about.' }),
+          duration_minutes: z
+            .int()
+            .min(1)
+            .max(44640)
+            .exactOptional()
+            .openapi({ description: 'How long the call lasts, in minutes.' }),
+          invitee_ids: z
+            .array(z.string().regex(/^[0-9]{1,19}$/))
+            .min(1)
+            .max(100)
+            .exactOptional()
+            .openapi({
+              description:
+                'Everyone to invite: replaces the invite list. At most 25 of them may be people not invited yet.',
+            }),
+          notify_invitees: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description: 'Whether invitees get an email about the change. Defaults to true.',
+            }),
+          occurrence_start_time: z
+            .string()
+            .regex(
+              /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):[0-5]\d:[0-5]\d(\.\d{1,9})?(Z|[+-]([01]\d|2[0-3]):[0-5]\d)$/,
+            )
+            .exactOptional()
+            .openapi({
+              description:
+                'Start of the occurrence that scope this or this_and_following refers to (RFC 3339).',
+            }),
+          recurrence: z
+            .string()
+            .min(1)
+            .max(500)
+            .exactOptional()
+            .openapi({
+              description: 'RFC 5545 RRULE to repeat the call by, such as FREQ=WEEKLY;BYDAY=MO.',
+            }),
+          scope: z
+            .enum(['all', 'this', 'this_and_following'])
+            .exactOptional()
+            .openapi({
+              description:
+                'Which occurrences of a recurring call: all (the default without occurrence_start_time), this (the default with it), or this_and_following.',
+            }),
+          start_time: z
+            .string()
+            .regex(
+              /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):[0-5]\d:[0-5]\d(\.\d{1,9})?(Z|[+-]([01]\d|2[0-3]):[0-5]\d)$/,
+            )
+            .exactOptional()
+            .openapi({
+              description: 'When the call (or the chosen occurrence) starts now (RFC 3339).',
+            }),
+          time_zone: z
+            .string()
+            .max(64)
+            .exactOptional()
+            .openapi({ description: 'IANA time zone the recurrence follows.' }),
+          title: z
+            .string()
+            .max(100)
+            .exactOptional()
+            .openapi({ description: 'Title invitees see.' }),
+        })
+        .openapi({ required: [] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'description',
+            'duration_minutes',
+            'invitee_ids',
+            'notify_invitees',
+            'occurrence_start_time',
+            'recurrence',
+            'scope',
+            'start_time',
+            'time_zone',
+            'title',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
         }
-      })
-      .openapi({ required: ['time_zone'] }),
-  ])
-  .and(
-    z
-      .object({
-        description: z
-          .string()
-          .max(1000)
-          .exactOptional()
-          .openapi({ description: 'What the call is about.' }),
-        duration_minutes: z
-          .int()
-          .min(1)
-          .max(44640)
-          .exactOptional()
-          .openapi({ description: 'How long the call lasts, in minutes.' }),
-        invitee_ids: z
-          .array(z.string().regex(/^[0-9]{1,19}$/))
-          .min(1)
-          .max(100)
-          .exactOptional()
-          .openapi({
-            description:
-              'Everyone to invite: replaces the invite list. At most 25 of them may be people not invited yet.',
-          }),
-        notify_invitees: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Whether invitees get an email about the change. Defaults to true.',
-          }),
-        occurrence_start_time: z
-          .string()
-          .regex(
-            /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):[0-5]\d:[0-5]\d(\.\d{1,9})?(Z|[+-]([01]\d|2[0-3]):[0-5]\d)$/,
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              'Start of the occurrence that scope this or this_and_following refers to (RFC 3339).',
-          }),
-        recurrence: z
-          .string()
-          .min(1)
-          .max(500)
-          .exactOptional()
-          .openapi({
-            description: 'RFC 5545 RRULE to repeat the call by, such as FREQ=WEEKLY;BYDAY=MO.',
-          }),
-        scope: z
-          .enum(['all', 'this', 'this_and_following'])
-          .exactOptional()
-          .openapi({
-            description:
-              'Which occurrences of a recurring call: all (the default without occurrence_start_time), this (the default with it), or this_and_following.',
-          }),
-        start_time: z
-          .string()
-          .regex(
-            /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):[0-5]\d:[0-5]\d(\.\d{1,9})?(Z|[+-]([01]\d|2[0-3]):[0-5]\d)$/,
-          )
-          .exactOptional()
-          .openapi({
-            description: 'When the call (or the chosen occurrence) starts now (RFC 3339).',
-          }),
-        time_zone: z
-          .string()
-          .max(64)
-          .exactOptional()
-          .openapi({ description: 'IANA time zone the recurrence follows.' }),
-        title: z.string().max(100).exactOptional().openapi({ description: 'Title invitees see.' }),
-      })
-      .openapi({ required: [] }),
-  )
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({
     description:
       'At least one of `start_time`, `duration_minutes`, `title`, `description`, `invitee_ids`, `recurrence`, `time_zone` is required.',

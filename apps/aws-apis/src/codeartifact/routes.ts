@@ -30,9 +30,9 @@ const DescriptionSchema = z
 
 const UpstreamRepositoryInfoSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: ' The name of an upstream repository. ' }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: ' The name of an upstream repository. ',
+    }),
   })
   .openapi({ description: ' Information about an upstream repository. ', required: [] })
   .openapi('UpstreamRepositoryInfo')
@@ -56,29 +56,17 @@ const ExternalConnectionStatusSchema = z.literal('Available').openapi('ExternalC
 
 const RepositoryExternalConnectionInfoSchema = z
   .object({
-    externalConnectionName: ExternalConnectionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The name of the external connection associated with a repository. ',
-        }),
-    ).exactOptional(),
-    packageFormat: PackageFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> The package format associated with a repository's external connection. The valid package formats are: </p> <ul> <li> <p> <code>npm</code>: A Node Package Manager (npm) package. </p> </li> <li> <p> <code>pypi</code>: A Python Package Index (PyPI) package. </p> </li> <li> <p> <code>maven</code>: A Maven package that contains compiled code in a distributable format, such as a JAR file. </p> </li> <li> <p> <code>nuget</code>: A NuGet package. </p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    status: ExternalConnectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The status of the external connection of a repository. There is one valid value, <code>Available</code>. ',
-        }),
-    ).exactOptional(),
+    externalConnectionName: ExternalConnectionNameSchema.exactOptional().openapi({
+      description: ' The name of the external connection associated with a repository. ',
+    }),
+    packageFormat: PackageFormatSchema.exactOptional().openapi({
+      description:
+        "<p> The package format associated with a repository's external connection. The valid package formats are: </p> <ul> <li> <p> <code>npm</code>: A Node Package Manager (npm) package. </p> </li> <li> <p> <code>pypi</code>: A Python Package Index (PyPI) package. </p> </li> <li> <p> <code>maven</code>: A Maven package that contains compiled code in a distributable format, such as a JAR file. </p> </li> <li> <p> <code>nuget</code>: A NuGet package. </p> </li> </ul>",
+    }),
+    status: ExternalConnectionStatusSchema.exactOptional().openapi({
+      description:
+        ' The status of the external connection of a repository. There is one valid value, <code>Available</code>. ',
+    }),
   })
   .openapi({
     description: ' Contains information about the external connection of a repository. ',
@@ -94,56 +82,36 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const RepositoryDescriptionSchema = z
   .object({
-    name: RepositoryNameSchema.and(
-      z.any().openapi({ description: ' The name of the repository. ' }),
-    ).exactOptional(),
-    administratorAccount: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The 12-digit account number of the Amazon Web Services account that manages the repository. ',
-        }),
-    ).exactOptional(),
-    domainName: DomainNameSchema.and(
-      z.any().openapi({ description: ' The name of the domain that contains the repository. ' }),
-    ).exactOptional(),
-    domainOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The 12-digit account number of the Amazon Web Services account that owns the domain that contains the repository. It does not include dashes or spaces. ',
-        }),
-    ).exactOptional(),
-    arn: ArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) of the repository. ' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: ' A text description of the repository. ' }),
-    ).exactOptional(),
-    upstreams: UpstreamRepositoryInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of upstream repositories to associate with the repository. The order of the upstream repositories in the list determines their priority order when CodeArtifact looks for a requested package version. For more information, see <a href="https://docs.aws.amazon.com/codeartifact/latest/ug/repos-upstream.html">Working with upstream repositories</a>. ',
-        }),
-    ).exactOptional(),
-    externalConnections: RepositoryExternalConnectionInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' An array of external connections associated with the repository. ',
-        }),
-    ).exactOptional(),
-    createdTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A timestamp that represents the date and time the repository was created.',
-        }),
-    ).exactOptional(),
+    name: RepositoryNameSchema.exactOptional().openapi({
+      description: ' The name of the repository. ',
+    }),
+    administratorAccount: AccountIdSchema.exactOptional().openapi({
+      description:
+        ' The 12-digit account number of the Amazon Web Services account that manages the repository. ',
+    }),
+    domainName: DomainNameSchema.exactOptional().openapi({
+      description: ' The name of the domain that contains the repository. ',
+    }),
+    domainOwner: AccountIdSchema.exactOptional().openapi({
+      description:
+        ' The 12-digit account number of the Amazon Web Services account that owns the domain that contains the repository. It does not include dashes or spaces. ',
+    }),
+    arn: ArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the repository. ',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: ' A text description of the repository. ',
+    }),
+    upstreams: UpstreamRepositoryInfoListSchema.exactOptional().openapi({
+      description:
+        ' A list of upstream repositories to associate with the repository. The order of the upstream repositories in the list determines their priority order when CodeArtifact looks for a requested package version. For more information, see <a href="https://docs.aws.amazon.com/codeartifact/latest/ug/repos-upstream.html">Working with upstream repositories</a>. ',
+    }),
+    externalConnections: RepositoryExternalConnectionInfoListSchema.exactOptional().openapi({
+      description: ' An array of external connections associated with the repository. ',
+    }),
+    createdTime: TimestampSchema.exactOptional().openapi({
+      description: 'A timestamp that represents the date and time the repository was created.',
+    }),
   })
   .openapi({
     description:
@@ -154,13 +122,9 @@ const RepositoryDescriptionSchema = z
 
 const AssociateExternalConnectionResultSchema = z
   .object({
-    repository: RepositoryDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Information about the connected repository after processing the request. ',
-        }),
-    ).exactOptional(),
+    repository: RepositoryDescriptionSchema.exactOptional().openapi({
+      description: ' Information about the connected repository after processing the request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateExternalConnectionResult')
@@ -187,12 +151,12 @@ const PackageVersionStatusSchema = z
 
 const SuccessfulPackageVersionInfoSchema = z
   .object({
-    revision: StringSchema.and(
-      z.any().openapi({ description: ' The revision of a package version. ' }),
-    ).exactOptional(),
-    status: PackageVersionStatusSchema.and(
-      z.any().openapi({ description: ' The status of a package version. ' }),
-    ).exactOptional(),
+    revision: StringSchema.exactOptional().openapi({
+      description: ' The revision of a package version. ',
+    }),
+    status: PackageVersionStatusSchema.exactOptional().openapi({
+      description: ' The status of a package version. ',
+    }),
   })
   .openapi({
     description: ' Contains the revision and status of a package version. ',
@@ -219,17 +183,13 @@ const ErrorMessageSchema = z.string().openapi('ErrorMessage')
 
 const PackageVersionErrorSchema = z
   .object({
-    errorCode: PackageVersionErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The error code associated with the error. Valid error codes are: </p> <ul> <li> <p> <code>ALREADY_EXISTS</code> </p> </li> <li> <p> <code>MISMATCHED_REVISION</code> </p> </li> <li> <p> <code>MISMATCHED_STATUS</code> </p> </li> <li> <p> <code>NOT_ALLOWED</code> </p> </li> <li> <p> <code>NOT_FOUND</code> </p> </li> <li> <p> <code>SKIPPED</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: ' The error message associated with the error. ' }),
-    ).exactOptional(),
+    errorCode: PackageVersionErrorCodeSchema.exactOptional().openapi({
+      description:
+        '<p> The error code associated with the error. Valid error codes are: </p> <ul> <li> <p> <code>ALREADY_EXISTS</code> </p> </li> <li> <p> <code>MISMATCHED_REVISION</code> </p> </li> <li> <p> <code>MISMATCHED_STATUS</code> </p> </li> <li> <p> <code>NOT_ALLOWED</code> </p> </li> <li> <p> <code>NOT_FOUND</code> </p> </li> <li> <p> <code>SKIPPED</code> </p> </li> </ul>',
+    }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: ' The error message associated with the error. ',
+    }),
   })
   .openapi({ description: 'l An error associated with package. ', required: [] })
   .openapi('PackageVersionError')
@@ -240,22 +200,14 @@ const PackageVersionErrorMapSchema = z
 
 const CopyPackageVersionsResultSchema = z
   .object({
-    successfulVersions: SuccessfulPackageVersionInfoMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of the package versions that were successfully copied to your repository. ',
-        }),
-    ).exactOptional(),
-    failedVersions: PackageVersionErrorMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> A map of package versions that failed to copy and their error codes. The possible error codes are in the <code>PackageVersionError</code> data type. They are: </p> <ul> <li> <p> <code>ALREADY_EXISTS</code> </p> </li> <li> <p> <code>MISMATCHED_REVISION</code> </p> </li> <li> <p> <code>MISMATCHED_STATUS</code> </p> </li> <li> <p> <code>NOT_ALLOWED</code> </p> </li> <li> <p> <code>NOT_FOUND</code> </p> </li> <li> <p> <code>SKIPPED</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    successfulVersions: SuccessfulPackageVersionInfoMapSchema.exactOptional().openapi({
+      description:
+        ' A list of the package versions that were successfully copied to your repository. ',
+    }),
+    failedVersions: PackageVersionErrorMapSchema.exactOptional().openapi({
+      description:
+        '<p> A map of package versions that failed to copy and their error codes. The possible error codes are in the <code>PackageVersionError</code> data type. They are: </p> <ul> <li> <p> <code>ALREADY_EXISTS</code> </p> </li> <li> <p> <code>MISMATCHED_REVISION</code> </p> </li> <li> <p> <code>MISMATCHED_STATUS</code> </p> </li> <li> <p> <code>NOT_ALLOWED</code> </p> </li> <li> <p> <code>NOT_FOUND</code> </p> </li> <li> <p> <code>SKIPPED</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CopyPackageVersionsResult')
@@ -282,48 +234,32 @@ const LongSchema = z.int().openapi('Long')
 
 const DomainDescriptionSchema = z
   .object({
-    name: DomainNameSchema.and(
-      z.any().openapi({ description: ' The name of the domain. ' }),
-    ).exactOptional(),
-    owner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The Amazon Web Services account ID that owns the domain. ' }),
-    ).exactOptional(),
-    arn: ArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) of the domain. ' }),
-    ).exactOptional(),
-    status: DomainStatusSchema.and(
-      z.any().openapi({ description: ' The current status of a domain. ' }),
-    ).exactOptional(),
-    createdTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A timestamp that represents the date and time the domain was created. ',
-        }),
-    ).exactOptional(),
-    encryptionKey: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The ARN of an Key Management Service (KMS) key associated with a domain. ',
-        }),
-    ).exactOptional(),
-    repositoryCount: IntegerSchema.and(
-      z.any().openapi({ description: ' The number of repositories in the domain. ' }),
-    ).exactOptional(),
-    assetSizeBytes: LongSchema.and(
-      z.any().openapi({ description: ' The total size of all assets in the domain. ' }),
-    ).exactOptional(),
-    s3BucketArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon S3 bucket that is used to store package assets in the domain.',
-        }),
-    ).exactOptional(),
+    name: DomainNameSchema.exactOptional().openapi({ description: ' The name of the domain. ' }),
+    owner: AccountIdSchema.exactOptional().openapi({
+      description: ' The Amazon Web Services account ID that owns the domain. ',
+    }),
+    arn: ArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the domain. ',
+    }),
+    status: DomainStatusSchema.exactOptional().openapi({
+      description: ' The current status of a domain. ',
+    }),
+    createdTime: TimestampSchema.exactOptional().openapi({
+      description: ' A timestamp that represents the date and time the domain was created. ',
+    }),
+    encryptionKey: ArnSchema.exactOptional().openapi({
+      description: ' The ARN of an Key Management Service (KMS) key associated with a domain. ',
+    }),
+    repositoryCount: IntegerSchema.exactOptional().openapi({
+      description: ' The number of repositories in the domain. ',
+    }),
+    assetSizeBytes: LongSchema.exactOptional().openapi({
+      description: ' The total size of all assets in the domain. ',
+    }),
+    s3BucketArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon S3 bucket that is used to store package assets in the domain.',
+    }),
   })
   .openapi({
     description:
@@ -334,14 +270,9 @@ const DomainDescriptionSchema = z
 
 const CreateDomainResultSchema = z
   .object({
-    domain: DomainDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Contains information about the created domain after processing the request. ',
-        }),
-    ).exactOptional(),
+    domain: DomainDescriptionSchema.exactOptional().openapi({
+      description: ' Contains information about the created domain after processing the request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDomainResult')
@@ -362,8 +293,8 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    key: TagKeySchema.and(z.any().openapi({ description: 'The tag key.' })),
-    value: TagValueSchema.and(z.any().openapi({ description: 'The tag value.' })),
+    key: TagKeySchema.openapi({ description: 'The tag key.' }),
+    value: TagValueSchema.openapi({ description: 'The tag value.' }),
   })
   .openapi({
     required: ['key', 'value'],
@@ -374,22 +305,18 @@ const TagSchema = z
 
 const CreateRepositoryResultSchema = z
   .object({
-    repository: RepositoryDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Information about the created repository after processing the request. ',
-        }),
-    ).exactOptional(),
+    repository: RepositoryDescriptionSchema.exactOptional().openapi({
+      description: ' Information about the created repository after processing the request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRepositoryResult')
 
 const UpstreamRepositorySchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: ' The name of an upstream repository. ' }),
-    ),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: ' The name of an upstream repository. ',
+    }),
   })
   .openapi({
     required: ['repositoryName'],
@@ -400,14 +327,9 @@ const UpstreamRepositorySchema = z
 
 const DeleteDomainResultSchema = z
   .object({
-    domain: DomainDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Contains information about the deleted domain after processing the request. ',
-        }),
-    ).exactOptional(),
+    domain: DomainDescriptionSchema.exactOptional().openapi({
+      description: ' Contains information about the deleted domain after processing the request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteDomainResult')
@@ -423,17 +345,15 @@ const PolicyDocumentSchema = z
 
 const ResourcePolicySchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The ARN of the resource associated with the resource policy ' }),
-    ).exactOptional(),
-    revision: PolicyRevisionSchema.and(
-      z.any().openapi({ description: ' The current revision of the resource policy. ' }),
-    ).exactOptional(),
-    document: PolicyDocumentSchema.and(
-      z.any().openapi({ description: ' The resource policy formatted in JSON. ' }),
-    ).exactOptional(),
+    resourceArn: ArnSchema.exactOptional().openapi({
+      description: ' The ARN of the resource associated with the resource policy ',
+    }),
+    revision: PolicyRevisionSchema.exactOptional().openapi({
+      description: ' The current revision of the resource policy. ',
+    }),
+    document: PolicyDocumentSchema.exactOptional().openapi({
+      description: ' The resource policy formatted in JSON. ',
+    }),
   })
   .openapi({
     description:
@@ -444,14 +364,9 @@ const ResourcePolicySchema = z
 
 const DeleteDomainPermissionsPolicyResultSchema = z
   .object({
-    policy: ResourcePolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Information about the deleted resource policy after processing the request. ',
-        }),
-    ).exactOptional(),
+    policy: ResourcePolicySchema.exactOptional().openapi({
+      description: ' Information about the deleted resource policy after processing the request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteDomainPermissionsPolicyResult')
@@ -476,22 +391,14 @@ const AllowUpstreamSchema = z.enum(['ALLOW', 'BLOCK']).openapi('AllowUpstream')
 
 const PackageOriginRestrictionsSchema = z
   .object({
-    publish: AllowPublishSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The package origin configuration that determines if new versions of the package can be published directly to the repository.',
-        }),
-    ),
-    upstream: AllowUpstreamSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The package origin configuration that determines if new versions of the package can be added to the repository from an external connection or upstream source.',
-        }),
-    ),
+    publish: AllowPublishSchema.openapi({
+      description:
+        'The package origin configuration that determines if new versions of the package can be published directly to the repository.',
+    }),
+    upstream: AllowUpstreamSchema.openapi({
+      description:
+        'The package origin configuration that determines if new versions of the package can be added to the repository from an external connection or upstream source.',
+    }),
   })
   .openapi({
     required: ['publish', 'upstream'],
@@ -502,14 +409,10 @@ const PackageOriginRestrictionsSchema = z
 
 const PackageOriginConfigurationSchema = z
   .object({
-    restrictions: PackageOriginRestrictionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>PackageOriginRestrictions</code> object that contains information about the upstream and publish package origin configuration for the package.',
-        }),
-    ).exactOptional(),
+    restrictions: PackageOriginRestrictionsSchema.exactOptional().openapi({
+      description:
+        'A <code>PackageOriginRestrictions</code> object that contains information about the upstream and publish package origin configuration for the package.',
+    }),
   })
   .openapi({
     description: 'Details about the package origin configuration of a package.',
@@ -519,28 +422,20 @@ const PackageOriginConfigurationSchema = z
 
 const PackageSummarySchema = z
   .object({
-    format: PackageFormatSchema.and(
-      z.any().openapi({ description: ' The format of the package. ' }),
-    ).exactOptional(),
-    namespace: PackageNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The namespace of the package. The package component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet packages do not contain a corresponding component, packages of those formats do not have a namespace. </p> </li> <li> <p> The namespace of a generic package is its <code>namespace</code>. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    package: PackageNameSchema.and(
-      z.any().openapi({ description: ' The name of the package. ' }),
-    ).exactOptional(),
-    originConfiguration: PackageOriginConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageOriginConfiguration.html">PackageOriginConfiguration</a> object that contains a <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageOriginRestrictions.html">PackageOriginRestrictions</a> object that contains information about the upstream and publish package origin restrictions.',
-        }),
-    ).exactOptional(),
+    format: PackageFormatSchema.exactOptional().openapi({
+      description: ' The format of the package. ',
+    }),
+    namespace: PackageNamespaceSchema.exactOptional().openapi({
+      description:
+        '<p>The namespace of the package. The package component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet packages do not contain a corresponding component, packages of those formats do not have a namespace. </p> </li> <li> <p> The namespace of a generic package is its <code>namespace</code>. </p> </li> </ul>',
+    }),
+    package: PackageNameSchema.exactOptional().openapi({
+      description: ' The name of the package. ',
+    }),
+    originConfiguration: PackageOriginConfigurationSchema.exactOptional().openapi({
+      description:
+        'A <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageOriginConfiguration.html">PackageOriginConfiguration</a> object that contains a <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageOriginRestrictions.html">PackageOriginRestrictions</a> object that contains information about the upstream and publish package origin restrictions.',
+    }),
   })
   .openapi({
     description: ' Details about a package, including its format, namespace, and name. ',
@@ -555,48 +450,32 @@ const DeletePackageResultSchema = z
 
 const DeletePackageVersionsResultSchema = z
   .object({
-    successfulVersions: SuccessfulPackageVersionInfoMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of the package versions that were successfully deleted. The status of every successful version will be <code>Deleted</code>. ',
-        }),
-    ).exactOptional(),
-    failedVersions: PackageVersionErrorMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> A <code>PackageVersionError</code> object that contains a map of errors codes for the deleted package that failed. The possible error codes are: </p> <ul> <li> <p> <code>ALREADY_EXISTS</code> </p> </li> <li> <p> <code>MISMATCHED_REVISION</code> </p> </li> <li> <p> <code>MISMATCHED_STATUS</code> </p> </li> <li> <p> <code>NOT_ALLOWED</code> </p> </li> <li> <p> <code>NOT_FOUND</code> </p> </li> <li> <p> <code>SKIPPED</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    successfulVersions: SuccessfulPackageVersionInfoMapSchema.exactOptional().openapi({
+      description:
+        ' A list of the package versions that were successfully deleted. The status of every successful version will be <code>Deleted</code>. ',
+    }),
+    failedVersions: PackageVersionErrorMapSchema.exactOptional().openapi({
+      description:
+        '<p> A <code>PackageVersionError</code> object that contains a map of errors codes for the deleted package that failed. The possible error codes are: </p> <ul> <li> <p> <code>ALREADY_EXISTS</code> </p> </li> <li> <p> <code>MISMATCHED_REVISION</code> </p> </li> <li> <p> <code>MISMATCHED_STATUS</code> </p> </li> <li> <p> <code>NOT_ALLOWED</code> </p> </li> <li> <p> <code>NOT_FOUND</code> </p> </li> <li> <p> <code>SKIPPED</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeletePackageVersionsResult')
 
 const DeleteRepositoryResultSchema = z
   .object({
-    repository: RepositoryDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Information about the deleted repository after processing the request. ',
-        }),
-    ).exactOptional(),
+    repository: RepositoryDescriptionSchema.exactOptional().openapi({
+      description: ' Information about the deleted repository after processing the request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteRepositoryResult')
 
 const DeleteRepositoryPermissionsPolicyResultSchema = z
   .object({
-    policy: ResourcePolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Information about the deleted policy after processing the request. ',
-        }),
-    ).exactOptional(),
+    policy: ResourcePolicySchema.exactOptional().openapi({
+      description: ' Information about the deleted policy after processing the request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteRepositoryPermissionsPolicyResult')
@@ -608,37 +487,27 @@ const DescribeDomainResultSchema = z
 
 const PackageDescriptionSchema = z
   .object({
-    format: PackageFormatSchema.and(
-      z.any().openapi({ description: 'A format that specifies the type of the package.' }),
-    ).exactOptional(),
-    namespace: PackageNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The namespace of the package. The package component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet packages do not contain a corresponding component, packages of those formats do not have a namespace. </p> </li> <li> <p> The namespace of a generic package is its <code>namespace</code>. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    name: PackageNameSchema.and(
-      z.any().openapi({ description: 'The name of the package.' }),
-    ).exactOptional(),
-    originConfiguration: PackageOriginConfigurationSchema.and(
-      z.any().openapi({ description: 'The package origin configuration for the package.' }),
-    ).exactOptional(),
+    format: PackageFormatSchema.exactOptional().openapi({
+      description: 'A format that specifies the type of the package.',
+    }),
+    namespace: PackageNamespaceSchema.exactOptional().openapi({
+      description:
+        '<p>The namespace of the package. The package component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet packages do not contain a corresponding component, packages of those formats do not have a namespace. </p> </li> <li> <p> The namespace of a generic package is its <code>namespace</code>. </p> </li> </ul>',
+    }),
+    name: PackageNameSchema.exactOptional().openapi({ description: 'The name of the package.' }),
+    originConfiguration: PackageOriginConfigurationSchema.exactOptional().openapi({
+      description: 'The package origin configuration for the package.',
+    }),
   })
   .openapi({ description: 'Details about a package.', required: [] })
   .openapi('PackageDescription')
 
 const DescribePackageResultSchema = z
   .object({
-    package: PackageDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageDescription.html">PackageDescription</a> object that contains information about the requested package.',
-        }),
-    ),
+    package: PackageDescriptionSchema.openapi({
+      description:
+        'A <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageDescription.html">PackageDescription</a> object that contains information about the requested package.',
+    }),
   })
   .openapi({ required: ['package'] })
   .openapi('DescribePackageResult')
@@ -647,12 +516,8 @@ const String255Schema = z.string().min(1).max(255).openapi('String255')
 
 const LicenseInfoSchema = z
   .object({
-    name: StringSchema.and(
-      z.any().openapi({ description: ' Name of the license. ' }),
-    ).exactOptional(),
-    url: StringSchema.and(
-      z.any().openapi({ description: ' The URL for license data. ' }),
-    ).exactOptional(),
+    name: StringSchema.exactOptional().openapi({ description: ' Name of the license. ' }),
+    url: StringSchema.exactOptional().openapi({ description: ' The URL for license data. ' }),
   })
   .openapi({ description: ' Details of the license data. ', required: [] })
   .openapi('LicenseInfo')
@@ -661,20 +526,12 @@ const LicenseInfoListSchema = z.array(LicenseInfoSchema).openapi('LicenseInfoLis
 
 const DomainEntryPointSchema = z
   .object({
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository that a package was originally published to.',
-        }),
-    ).exactOptional(),
-    externalConnectionName: ExternalConnectionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the external connection that a package was ingested from.',
-        }),
-    ).exactOptional(),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The name of the repository that a package was originally published to.',
+    }),
+    externalConnectionName: ExternalConnectionNameSchema.exactOptional().openapi({
+      description: 'The name of the external connection that a package was ingested from.',
+    }),
   })
   .openapi({
     description:
@@ -689,22 +546,14 @@ const PackageVersionOriginTypeSchema = z
 
 const PackageVersionOriginSchema = z
   .object({
-    domainEntryPoint: DomainEntryPointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_DomainEntryPoint.html">DomainEntryPoint</a> object that contains information about from which repository or external connection the package version was added to the domain.',
-        }),
-    ).exactOptional(),
-    originType: PackageVersionOriginTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes how the package version was originally added to the domain. An <code>INTERNAL</code> origin type means the package version was published directly to a repository in the domain. An <code>EXTERNAL</code> origin type means the package version was ingested from an external connection.',
-        }),
-    ).exactOptional(),
+    domainEntryPoint: DomainEntryPointSchema.exactOptional().openapi({
+      description:
+        'A <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_DomainEntryPoint.html">DomainEntryPoint</a> object that contains information about from which repository or external connection the package version was added to the domain.',
+    }),
+    originType: PackageVersionOriginTypeSchema.exactOptional().openapi({
+      description:
+        'Describes how the package version was originally added to the domain. An <code>INTERNAL</code> origin type means the package version was published directly to a repository in the domain. An <code>EXTERNAL</code> origin type means the package version was ingested from an external connection.',
+    }),
   })
   .openapi({
     description: 'Information about how a package version was added to a repository.',
@@ -714,169 +563,115 @@ const PackageVersionOriginSchema = z
 
 const PackageVersionDescriptionSchema = z
   .object({
-    format: PackageFormatSchema.and(
-      z.any().openapi({ description: ' The format of the package version. ' }),
-    ).exactOptional(),
-    namespace: PackageNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The namespace of the package version. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> <li> <p> The namespace of a generic package is its <code>namespace</code>. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    packageName: PackageNameSchema.and(
-      z.any().openapi({ description: ' The name of the requested package. ' }),
-    ).exactOptional(),
-    displayName: String255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The name of the package that is displayed. The <code>displayName</code> varies depending on the package version's format. For example, if an npm package is named <code>ui</code>, is in the namespace <code>vue</code>, and has the format <code>npm</code>, then the <code>displayName</code> is <code>@vue/ui</code>. ",
-        }),
-    ).exactOptional(),
-    version: PackageVersionSchema.and(
-      z.any().openapi({ description: ' The version of the package. ' }),
-    ).exactOptional(),
-    summary: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " A summary of the package version. The summary is extracted from the package. The information in and detail level of the summary depends on the package version's format. ",
-        }),
-    ).exactOptional(),
-    homePage: StringSchema.and(
-      z.any().openapi({ description: ' The homepage associated with the package. ' }),
-    ).exactOptional(),
-    sourceCodeRepository: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The repository for the source code in the package version, or the source code used to build it. ',
-        }),
-    ).exactOptional(),
-    publishedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A timestamp that contains the date and time the package version was published. ',
-        }),
-    ).exactOptional(),
-    licenses: LicenseInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Information about licenses associated with the package version. ',
-        }),
-    ).exactOptional(),
-    revision: PackageVersionRevisionSchema.and(
-      z.any().openapi({ description: ' The revision of the package version. ' }),
-    ).exactOptional(),
-    status: PackageVersionStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: ' A string that contains the status of the package version. ' }),
-    ).exactOptional(),
-    origin: PackageVersionOriginSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageVersionOrigin.html">PackageVersionOrigin</a> object that contains information about how the package version was added to the repository.',
-        }),
-    ).exactOptional(),
+    format: PackageFormatSchema.exactOptional().openapi({
+      description: ' The format of the package version. ',
+    }),
+    namespace: PackageNamespaceSchema.exactOptional().openapi({
+      description:
+        '<p>The namespace of the package version. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> <li> <p> The namespace of a generic package is its <code>namespace</code>. </p> </li> </ul>',
+    }),
+    packageName: PackageNameSchema.exactOptional().openapi({
+      description: ' The name of the requested package. ',
+    }),
+    displayName: String255Schema.exactOptional().openapi({
+      description:
+        " The name of the package that is displayed. The <code>displayName</code> varies depending on the package version's format. For example, if an npm package is named <code>ui</code>, is in the namespace <code>vue</code>, and has the format <code>npm</code>, then the <code>displayName</code> is <code>@vue/ui</code>. ",
+    }),
+    version: PackageVersionSchema.exactOptional().openapi({
+      description: ' The version of the package. ',
+    }),
+    summary: StringSchema.exactOptional().openapi({
+      description:
+        " A summary of the package version. The summary is extracted from the package. The information in and detail level of the summary depends on the package version's format. ",
+    }),
+    homePage: StringSchema.exactOptional().openapi({
+      description: ' The homepage associated with the package. ',
+    }),
+    sourceCodeRepository: StringSchema.exactOptional().openapi({
+      description:
+        ' The repository for the source code in the package version, or the source code used to build it. ',
+    }),
+    publishedTime: TimestampSchema.exactOptional().openapi({
+      description:
+        ' A timestamp that contains the date and time the package version was published. ',
+    }),
+    licenses: LicenseInfoListSchema.exactOptional().openapi({
+      description: ' Information about licenses associated with the package version. ',
+    }),
+    revision: PackageVersionRevisionSchema.exactOptional().openapi({
+      description: ' The revision of the package version. ',
+    }),
+    status: PackageVersionStatusSchema.exactOptional().openapi({
+      description: ' A string that contains the status of the package version. ',
+    }),
+    origin: PackageVersionOriginSchema.exactOptional().openapi({
+      description:
+        'A <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageVersionOrigin.html">PackageVersionOrigin</a> object that contains information about how the package version was added to the repository.',
+    }),
   })
   .openapi({ description: ' Details about a package version. ', required: [] })
   .openapi('PackageVersionDescription')
 
 const DescribePackageVersionResultSchema = z
   .object({
-    packageVersion: PackageVersionDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageVersionDescription.html">PackageVersionDescription</a> object that contains information about the requested package version. ',
-        }),
-    ),
+    packageVersion: PackageVersionDescriptionSchema.openapi({
+      description:
+        ' A <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageVersionDescription.html">PackageVersionDescription</a> object that contains information about the requested package version. ',
+    }),
   })
   .openapi({ required: ['packageVersion'] })
   .openapi('DescribePackageVersionResult')
 
 const DescribeRepositoryResultSchema = z
   .object({
-    repository: RepositoryDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>RepositoryDescription</code> object that contains the requested repository information. ',
-        }),
-    ).exactOptional(),
+    repository: RepositoryDescriptionSchema.exactOptional().openapi({
+      description:
+        ' A <code>RepositoryDescription</code> object that contains the requested repository information. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRepositoryResult')
 
 const DisassociateExternalConnectionResultSchema = z
   .object({
-    repository: RepositoryDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The repository associated with the removed external connection. ',
-        }),
-    ).exactOptional(),
+    repository: RepositoryDescriptionSchema.exactOptional().openapi({
+      description: ' The repository associated with the removed external connection. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateExternalConnectionResult')
 
 const DisposePackageVersionsResultSchema = z
   .object({
-    successfulVersions: SuccessfulPackageVersionInfoMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A list of the package versions that were successfully disposed. ',
-        }),
-    ).exactOptional(),
-    failedVersions: PackageVersionErrorMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> A <code>PackageVersionError</code> object that contains a map of errors codes for the disposed package versions that failed. The possible error codes are: </p> <ul> <li> <p> <code>ALREADY_EXISTS</code> </p> </li> <li> <p> <code>MISMATCHED_REVISION</code> </p> </li> <li> <p> <code>MISMATCHED_STATUS</code> </p> </li> <li> <p> <code>NOT_ALLOWED</code> </p> </li> <li> <p> <code>NOT_FOUND</code> </p> </li> <li> <p> <code>SKIPPED</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    successfulVersions: SuccessfulPackageVersionInfoMapSchema.exactOptional().openapi({
+      description: ' A list of the package versions that were successfully disposed. ',
+    }),
+    failedVersions: PackageVersionErrorMapSchema.exactOptional().openapi({
+      description:
+        '<p> A <code>PackageVersionError</code> object that contains a map of errors codes for the disposed package versions that failed. The possible error codes are: </p> <ul> <li> <p> <code>ALREADY_EXISTS</code> </p> </li> <li> <p> <code>MISMATCHED_REVISION</code> </p> </li> <li> <p> <code>MISMATCHED_STATUS</code> </p> </li> <li> <p> <code>NOT_ALLOWED</code> </p> </li> <li> <p> <code>NOT_FOUND</code> </p> </li> <li> <p> <code>SKIPPED</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisposePackageVersionsResult')
 
 const GetAuthorizationTokenResultSchema = z
   .object({
-    authorizationToken: StringSchema.and(
-      z.any().openapi({ description: ' The returned authentication token. ' }),
-    ).exactOptional(),
-    expiration: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A timestamp that specifies the date and time the authorization token expires. ',
-        }),
-    ).exactOptional(),
+    authorizationToken: StringSchema.exactOptional().openapi({
+      description: ' The returned authentication token. ',
+    }),
+    expiration: TimestampSchema.exactOptional().openapi({
+      description:
+        ' A timestamp that specifies the date and time the authorization token expires. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAuthorizationTokenResult')
 
 const GetDomainPermissionsPolicyResultSchema = z
   .object({
-    policy: ResourcePolicySchema.and(
-      z.any().openapi({ description: ' The returned resource policy. ' }),
-    ).exactOptional(),
+    policy: ResourcePolicySchema.exactOptional().openapi({
+      description: ' The returned resource policy. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDomainPermissionsPolicyResult')
@@ -885,101 +680,73 @@ const AssetSchema = z.string().openapi('Asset')
 
 const GetPackageVersionAssetResultSchema = z
   .object({
-    asset: AssetSchema.and(
-      z.any().openapi({ description: ' The binary file, or asset, that is downloaded.' }),
-    ).exactOptional(),
+    asset: AssetSchema.exactOptional().openapi({
+      description: ' The binary file, or asset, that is downloaded.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPackageVersionAssetResult')
 
 const GetPackageVersionReadmeResultSchema = z
   .object({
-    format: PackageFormatSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The format of the package with the requested readme file. ' }),
-    ).exactOptional(),
-    namespace: PackageNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The namespace of the package version with the requested readme file. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    package: PackageNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The name of the package that contains the returned readme file. ',
-        }),
-    ).exactOptional(),
-    version: PackageVersionSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The version of the package with the requested readme file. ' }),
-    ).exactOptional(),
-    versionRevision: PackageVersionRevisionSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The current revision associated with the package version. ' }),
-    ).exactOptional(),
-    readme: StringSchema.and(
-      z.any().openapi({ description: ' The text of the returned readme file. ' }),
-    ).exactOptional(),
+    format: PackageFormatSchema.exactOptional().openapi({
+      description: ' The format of the package with the requested readme file. ',
+    }),
+    namespace: PackageNamespaceSchema.exactOptional().openapi({
+      description:
+        '<p>The namespace of the package version with the requested readme file. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>',
+    }),
+    package: PackageNameSchema.exactOptional().openapi({
+      description: ' The name of the package that contains the returned readme file. ',
+    }),
+    version: PackageVersionSchema.exactOptional().openapi({
+      description: ' The version of the package with the requested readme file. ',
+    }),
+    versionRevision: PackageVersionRevisionSchema.exactOptional().openapi({
+      description: ' The current revision associated with the package version. ',
+    }),
+    readme: StringSchema.exactOptional().openapi({
+      description: ' The text of the returned readme file. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPackageVersionReadmeResult')
 
 const GetRepositoryEndpointResultSchema = z
   .object({
-    repositoryEndpoint: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: ' A string that specifies the URL of the returned endpoint. ' }),
-    ).exactOptional(),
+    repositoryEndpoint: StringSchema.exactOptional().openapi({
+      description: ' A string that specifies the URL of the returned endpoint. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRepositoryEndpointResult')
 
 const GetRepositoryPermissionsPolicyResultSchema = z
   .object({
-    policy: ResourcePolicySchema.and(
-      z.any().openapi({ description: ' The returned resource policy. ' }),
-    ).exactOptional(),
+    policy: ResourcePolicySchema.exactOptional().openapi({
+      description: ' The returned resource policy. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRepositoryPermissionsPolicyResult')
 
 const DomainSummarySchema = z
   .object({
-    name: DomainNameSchema.and(
-      z.any().openapi({ description: ' The name of the domain. ' }),
-    ).exactOptional(),
-    owner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. ',
-        }),
-    ).exactOptional(),
-    arn: ArnSchema.and(
-      z.any().openapi({ description: ' The ARN of the domain. ' }),
-    ).exactOptional(),
-    status: DomainStatusSchema.and(
-      z.any().openapi({ description: ' A string that contains the status of the domain. ' }),
-    ).exactOptional(),
-    createdTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A timestamp that contains the date and time the domain was created. ',
-        }),
-    ).exactOptional(),
-    encryptionKey: ArnSchema.and(
-      z.any().openapi({ description: ' The key used to encrypt the domain. ' }),
-    ).exactOptional(),
+    name: DomainNameSchema.exactOptional().openapi({ description: ' The name of the domain. ' }),
+    owner: AccountIdSchema.exactOptional().openapi({
+      description:
+        ' The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. ',
+    }),
+    arn: ArnSchema.exactOptional().openapi({ description: ' The ARN of the domain. ' }),
+    status: DomainStatusSchema.exactOptional().openapi({
+      description: ' A string that contains the status of the domain. ',
+    }),
+    createdTime: TimestampSchema.exactOptional().openapi({
+      description: ' A timestamp that contains the date and time the domain was created. ',
+    }),
+    encryptionKey: ArnSchema.exactOptional().openapi({
+      description: ' The key used to encrypt the domain. ',
+    }),
   })
   .openapi({
     description:
@@ -994,22 +761,14 @@ const PaginationTokenSchema = z.string().regex(/\S+/).min(1).max(2000).openapi('
 
 const ListDomainsResultSchema = z
   .object({
-    domains: DomainSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The returned list of <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_DomainSummary.html">DomainSummary</a> objects. ',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results. ',
-        }),
-    ).exactOptional(),
+    domains: DomainSummaryListSchema.exactOptional().openapi({
+      description:
+        ' The returned list of <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_DomainSummary.html">DomainSummary</a> objects. ',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        ' The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDomainsResult')
@@ -1034,13 +793,11 @@ const AssetHashesSchema = z.record(z.string(), HashValueSchema).openapi('AssetHa
 
 const AssetSummarySchema = z
   .object({
-    name: AssetNameSchema.and(z.any().openapi({ description: ' The name of the asset. ' })),
-    size: LongOptionalSchema.and(
-      z.any().openapi({ description: ' The size of the asset. ' }),
-    ).exactOptional(),
-    hashes: AssetHashesSchema.and(
-      z.any().openapi({ description: ' The hashes of the asset. ' }),
-    ).exactOptional(),
+    name: AssetNameSchema.openapi({ description: ' The name of the asset. ' }),
+    size: LongOptionalSchema.exactOptional().openapi({ description: ' The size of the asset. ' }),
+    hashes: AssetHashesSchema.exactOptional().openapi({
+      description: ' The hashes of the asset. ',
+    }),
   })
   .openapi({ required: ['name'], description: ' Contains details about a package version asset. ' })
   .openapi('AssetSummary')
@@ -1049,91 +806,52 @@ const AssetSummaryListSchema = z.array(AssetSummarySchema).openapi('AssetSummary
 
 const ListPackageVersionAssetsResultSchema = z
   .object({
-    format: PackageFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The format of the package that contains the requested package version assets. ',
-        }),
-    ).exactOptional(),
-    namespace: PackageNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The namespace of the package version that contains the requested package version assets. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    package: PackageNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the package that contains the requested package version assets. ',
-        }),
-    ).exactOptional(),
-    version: PackageVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The version of the package associated with the requested assets. ',
-        }),
-    ).exactOptional(),
-    versionRevision: PackageVersionRevisionSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The current revision associated with the package version. ' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If there are additional results, this is the token for the next set of results. ',
-        }),
-    ).exactOptional(),
-    assets: AssetSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The returned list of <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_AssetSummary.html">AssetSummary</a> objects. ',
-        }),
-    ).exactOptional(),
+    format: PackageFormatSchema.exactOptional().openapi({
+      description:
+        ' The format of the package that contains the requested package version assets. ',
+    }),
+    namespace: PackageNamespaceSchema.exactOptional().openapi({
+      description:
+        '<p>The namespace of the package version that contains the requested package version assets. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>',
+    }),
+    package: PackageNameSchema.exactOptional().openapi({
+      description: ' The name of the package that contains the requested package version assets. ',
+    }),
+    version: PackageVersionSchema.exactOptional().openapi({
+      description: ' The version of the package associated with the requested assets. ',
+    }),
+    versionRevision: PackageVersionRevisionSchema.exactOptional().openapi({
+      description: ' The current revision associated with the package version. ',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        ' If there are additional results, this is the token for the next set of results. ',
+    }),
+    assets: AssetSummaryListSchema.exactOptional().openapi({
+      description:
+        ' The returned list of <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_AssetSummary.html">AssetSummary</a> objects. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPackageVersionAssetsResult')
 
 const PackageDependencySchema = z
   .object({
-    namespace: PackageNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The namespace of the package that this package depends on. The package component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet packages do not contain a corresponding component, packages of those formats do not have a namespace. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    package: PackageNameSchema.and(
-      z.any().openapi({ description: ' The name of the package that this package depends on. ' }),
-    ).exactOptional(),
-    dependencyType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> The type of a package dependency. The possible values depend on the package type.</p> <ul> <li> <p>npm: <code>regular</code>, <code>dev</code>, <code>peer</code>, <code>optional</code> </p> </li> <li> <p>maven: <code>optional</code>, <code>parent</code>, <code>compile</code>, <code>runtime</code>, <code>test</code>, <code>system</code>, <code>provided</code>.</p> <note> <p>Note that <code>parent</code> is not a regular Maven dependency type; instead this is extracted from the <code>&lt;parent&gt;</code> element if one is defined in the package version's POM file.</p> </note> </li> <li> <p>nuget: The <code>dependencyType</code> field is never set for NuGet packages.</p> </li> <li> <p>pypi: <code>Requires-Dist</code> </p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    versionRequirement: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The required version, or version range, of the package that this package depends on. The version format is specific to the package type. For example, the following are possible valid required versions: <code>1.2.3</code>, <code>^2.3.4</code>, or <code>4.x</code>. ',
-        }),
-    ).exactOptional(),
+    namespace: PackageNamespaceSchema.exactOptional().openapi({
+      description:
+        '<p>The namespace of the package that this package depends on. The package component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet packages do not contain a corresponding component, packages of those formats do not have a namespace. </p> </li> </ul>',
+    }),
+    package: PackageNameSchema.exactOptional().openapi({
+      description: ' The name of the package that this package depends on. ',
+    }),
+    dependencyType: StringSchema.exactOptional().openapi({
+      description:
+        "<p> The type of a package dependency. The possible values depend on the package type.</p> <ul> <li> <p>npm: <code>regular</code>, <code>dev</code>, <code>peer</code>, <code>optional</code> </p> </li> <li> <p>maven: <code>optional</code>, <code>parent</code>, <code>compile</code>, <code>runtime</code>, <code>test</code>, <code>system</code>, <code>provided</code>.</p> <note> <p>Note that <code>parent</code> is not a regular Maven dependency type; instead this is extracted from the <code>&lt;parent&gt;</code> element if one is defined in the package version's POM file.</p> </note> </li> <li> <p>nuget: The <code>dependencyType</code> field is never set for NuGet packages.</p> </li> <li> <p>pypi: <code>Requires-Dist</code> </p> </li> </ul>",
+    }),
+    versionRequirement: StringSchema.exactOptional().openapi({
+      description:
+        ' The required version, or version range, of the package that this package depends on. The version format is specific to the package type. For example, the following are possible valid required versions: <code>1.2.3</code>, <code>^2.3.4</code>, or <code>4.x</code>. ',
+    }),
   })
   .openapi({ description: ' Details about a package dependency. ', required: [] })
   .openapi('PackageDependency')
@@ -1144,84 +862,52 @@ const PackageDependencyListSchema = z
 
 const ListPackageVersionDependenciesResultSchema = z
   .object({
-    format: PackageFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A format that specifies the type of the package that contains the returned dependencies. ',
-        }),
-    ).exactOptional(),
-    namespace: PackageNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The namespace of the package version that contains the returned dependencies. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    package: PackageNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the package that contains the returned package versions dependencies. ',
-        }),
-    ).exactOptional(),
-    version: PackageVersionSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The version of the package that is specified in the request. ' }),
-    ).exactOptional(),
-    versionRevision: PackageVersionRevisionSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The current revision associated with the package version. ' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results. ',
-        }),
-    ).exactOptional(),
-    dependencies: PackageDependencyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The returned list of <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageDependency.html">PackageDependency</a> objects. ',
-        }),
-    ).exactOptional(),
+    format: PackageFormatSchema.exactOptional().openapi({
+      description:
+        ' A format that specifies the type of the package that contains the returned dependencies. ',
+    }),
+    namespace: PackageNamespaceSchema.exactOptional().openapi({
+      description:
+        '<p>The namespace of the package version that contains the returned dependencies. The package version component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package version is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package version is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet package versions do not contain a corresponding component, package versions of those formats do not have a namespace. </p> </li> </ul>',
+    }),
+    package: PackageNameSchema.exactOptional().openapi({
+      description:
+        ' The name of the package that contains the returned package versions dependencies. ',
+    }),
+    version: PackageVersionSchema.exactOptional().openapi({
+      description: ' The version of the package that is specified in the request. ',
+    }),
+    versionRevision: PackageVersionRevisionSchema.exactOptional().openapi({
+      description: ' The current revision associated with the package version. ',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        ' The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results. ',
+    }),
+    dependencies: PackageDependencyListSchema.exactOptional().openapi({
+      description:
+        ' The returned list of <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageDependency.html">PackageDependency</a> objects. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPackageVersionDependenciesResult')
 
 const PackageVersionSummarySchema = z
   .object({
-    version: PackageVersionSchema.and(
-      z.any().openapi({ description: ' Information about a package version. ' }),
-    ),
-    revision: PackageVersionRevisionSchema.and(
-      z.any().openapi({ description: ' The revision associated with a package version. ' }),
-    ).exactOptional(),
-    status: PackageVersionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A string that contains the status of the package version. It can be one of the following: ',
-        }),
-    ),
-    origin: PackageVersionOriginSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageVersionOrigin.html">PackageVersionOrigin</a> object that contains information about how the package version was added to the repository.',
-        }),
-    ).exactOptional(),
+    version: PackageVersionSchema.openapi({
+      description: ' Information about a package version. ',
+    }),
+    revision: PackageVersionRevisionSchema.exactOptional().openapi({
+      description: ' The revision associated with a package version. ',
+    }),
+    status: PackageVersionStatusSchema.openapi({
+      description:
+        ' A string that contains the status of the package version. It can be one of the following: ',
+    }),
+    origin: PackageVersionOriginSchema.exactOptional().openapi({
+      description:
+        'A <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageVersionOrigin.html">PackageVersionOrigin</a> object that contains information about how the package version was added to the repository.',
+    }),
   })
   .openapi({
     required: ['version', 'status'],
@@ -1236,44 +922,28 @@ const PackageVersionSummaryListSchema = z
 
 const ListPackageVersionsResultSchema = z
   .object({
-    defaultDisplayVersion: PackageVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> The default package version to display. This depends on the package format: </p> <ul> <li> <p> For Maven and PyPI packages, it's the most recently published package version. </p> </li> <li> <p> For npm packages, it's the version referenced by the <code>latest</code> tag. If the <code>latest</code> tag is not set, it's the most recently published package version. </p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    format: PackageFormatSchema.and(
-      z.any().openapi({ description: ' A format of the package. ' }),
-    ).exactOptional(),
-    namespace: PackageNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The namespace of the package that contains the requested package versions. The package component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet packages do not contain a corresponding component, packages of those formats do not have a namespace. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    package: PackageNameSchema.and(
-      z.any().openapi({ description: ' The name of the package. ' }),
-    ).exactOptional(),
-    versions: PackageVersionSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The returned list of <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageVersionSummary.html">PackageVersionSummary</a> objects. ',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If there are additional results, this is the token for the next set of results. ',
-        }),
-    ).exactOptional(),
+    defaultDisplayVersion: PackageVersionSchema.exactOptional().openapi({
+      description:
+        "<p> The default package version to display. This depends on the package format: </p> <ul> <li> <p> For Maven and PyPI packages, it's the most recently published package version. </p> </li> <li> <p> For npm packages, it's the version referenced by the <code>latest</code> tag. If the <code>latest</code> tag is not set, it's the most recently published package version. </p> </li> </ul>",
+    }),
+    format: PackageFormatSchema.exactOptional().openapi({
+      description: ' A format of the package. ',
+    }),
+    namespace: PackageNamespaceSchema.exactOptional().openapi({
+      description:
+        '<p>The namespace of the package that contains the requested package versions. The package component that specifies its namespace depends on its type. For example:</p> <ul> <li> <p> The namespace of a Maven package is its <code>groupId</code>. </p> </li> <li> <p> The namespace of an npm package is its <code>scope</code>. </p> </li> <li> <p> Python and NuGet packages do not contain a corresponding component, packages of those formats do not have a namespace. </p> </li> </ul>',
+    }),
+    package: PackageNameSchema.exactOptional().openapi({
+      description: ' The name of the package. ',
+    }),
+    versions: PackageVersionSummaryListSchema.exactOptional().openapi({
+      description:
+        ' The returned list of <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageVersionSummary.html">PackageVersionSummary</a> objects. ',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        ' If there are additional results, this is the token for the next set of results. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPackageVersionsResult')
@@ -1282,62 +952,40 @@ const PackageSummaryListSchema = z.array(PackageSummarySchema).openapi('PackageS
 
 const ListPackagesResultSchema = z
   .object({
-    packages: PackageSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The list of returned <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageSummary.html">PackageSummary</a> objects. ',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If there are additional results, this is the token for the next set of results. ',
-        }),
-    ).exactOptional(),
+    packages: PackageSummaryListSchema.exactOptional().openapi({
+      description:
+        ' The list of returned <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageSummary.html">PackageSummary</a> objects. ',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        ' If there are additional results, this is the token for the next set of results. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPackagesResult')
 
 const RepositorySummarySchema = z
   .object({
-    name: RepositoryNameSchema.and(
-      z.any().openapi({ description: ' The name of the repository. ' }),
-    ).exactOptional(),
-    administratorAccount: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The Amazon Web Services account ID that manages the repository. ',
-        }),
-    ).exactOptional(),
-    domainName: DomainNameSchema.and(
-      z.any().openapi({ description: ' The name of the domain that contains the repository. ' }),
-    ).exactOptional(),
-    domainOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. ',
-        }),
-    ).exactOptional(),
-    arn: ArnSchema.and(
-      z.any().openapi({ description: ' The ARN of the repository. ' }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the repository. ' }),
-    ).exactOptional(),
-    createdTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A timestamp that represents the date and time the repository was created.',
-        }),
-    ).exactOptional(),
+    name: RepositoryNameSchema.exactOptional().openapi({
+      description: ' The name of the repository. ',
+    }),
+    administratorAccount: AccountIdSchema.exactOptional().openapi({
+      description: ' The Amazon Web Services account ID that manages the repository. ',
+    }),
+    domainName: DomainNameSchema.exactOptional().openapi({
+      description: ' The name of the domain that contains the repository. ',
+    }),
+    domainOwner: AccountIdSchema.exactOptional().openapi({
+      description:
+        ' The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. ',
+    }),
+    arn: ArnSchema.exactOptional().openapi({ description: ' The ARN of the repository. ' }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: ' The description of the repository. ',
+    }),
+    createdTime: TimestampSchema.exactOptional().openapi({
+      description: 'A timestamp that represents the date and time the repository was created.',
+    }),
   })
   .openapi({
     description:
@@ -1352,39 +1000,27 @@ const RepositorySummaryListSchema = z
 
 const ListRepositoriesResultSchema = z
   .object({
-    repositories: RepositorySummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The returned list of <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_RepositorySummary.html">RepositorySummary</a> objects. ',
-        }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If there are additional results, this is the token for the next set of results. ',
-        }),
-    ).exactOptional(),
+    repositories: RepositorySummaryListSchema.exactOptional().openapi({
+      description:
+        ' The returned list of <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_RepositorySummary.html">RepositorySummary</a> objects. ',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        ' If there are additional results, this is the token for the next set of results. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRepositoriesResult')
 
 const ListRepositoriesInDomainResultSchema = z
   .object({
-    repositories: RepositorySummaryListSchema.and(
-      z.any().openapi({ description: ' The returned list of repositories. ' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If there are additional results, this is the token for the next set of results. ',
-        }),
-    ).exactOptional(),
+    repositories: RepositorySummaryListSchema.exactOptional().openapi({
+      description: ' The returned list of repositories. ',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        ' If there are additional results, this is the token for the next set of results. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRepositoriesInDomainResult')
@@ -1393,131 +1029,97 @@ const TagListSchema = z.array(TagSchema).min(0).max(200).openapi('TagList')
 
 const ListTagsForResourceResultSchema = z
   .object({
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of tag key and value pairs associated with the specified resource.',
-        }),
-    ).exactOptional(),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'A list of tag key and value pairs associated with the specified resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResult')
 
 const PublishPackageVersionResultSchema = z
   .object({
-    format: PackageFormatSchema.and(
-      z.any().openapi({ description: 'The format of the package version.' }),
-    ).exactOptional(),
-    namespace: PackageNamespaceSchema.and(
-      z.any().openapi({ description: 'The namespace of the package version.' }),
-    ).exactOptional(),
-    package: PackageNameSchema.and(
-      z.any().openapi({ description: 'The name of the package.' }),
-    ).exactOptional(),
-    version: PackageVersionSchema.and(
-      z.any().openapi({ description: 'The version of the package.' }),
-    ).exactOptional(),
-    versionRevision: PackageVersionRevisionSchema.and(
-      z.any().openapi({ description: 'The revision of the package version.' }),
-    ).exactOptional(),
-    status: PackageVersionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that contains the status of the package version. For more information, see <a href="https://docs.aws.amazon.com/codeartifact/latest/ug/packages-overview.html#package-version-status.html#package-version-status">Package version status</a> in the <i>CodeArtifact User Guide</i>.',
-        }),
-    ).exactOptional(),
-    asset: AssetSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_AssetSummary.html">AssetSummary</a> for the published asset.',
-        }),
-    ).exactOptional(),
+    format: PackageFormatSchema.exactOptional().openapi({
+      description: 'The format of the package version.',
+    }),
+    namespace: PackageNamespaceSchema.exactOptional().openapi({
+      description: 'The namespace of the package version.',
+    }),
+    package: PackageNameSchema.exactOptional().openapi({ description: 'The name of the package.' }),
+    version: PackageVersionSchema.exactOptional().openapi({
+      description: 'The version of the package.',
+    }),
+    versionRevision: PackageVersionRevisionSchema.exactOptional().openapi({
+      description: 'The revision of the package version.',
+    }),
+    status: PackageVersionStatusSchema.exactOptional().openapi({
+      description:
+        'A string that contains the status of the package version. For more information, see <a href="https://docs.aws.amazon.com/codeartifact/latest/ug/packages-overview.html#package-version-status.html#package-version-status">Package version status</a> in the <i>CodeArtifact User Guide</i>.',
+    }),
+    asset: AssetSummarySchema.exactOptional().openapi({
+      description:
+        'An <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_AssetSummary.html">AssetSummary</a> for the published asset.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PublishPackageVersionResult')
 
 const PutDomainPermissionsPolicyResultSchema = z
   .object({
-    policy: ResourcePolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The resource policy that was set after processing the request. ',
-        }),
-    ).exactOptional(),
+    policy: ResourcePolicySchema.exactOptional().openapi({
+      description: ' The resource policy that was set after processing the request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutDomainPermissionsPolicyResult')
 
 const PutPackageOriginConfigurationResultSchema = z
   .object({
-    originConfiguration: PackageOriginConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageOriginConfiguration.html">PackageOriginConfiguration</a> object that describes the origin configuration set for the package. It contains a <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageOriginRestrictions.html">PackageOriginRestrictions</a> object that describes how new versions of the package can be introduced to the repository.',
-        }),
-    ).exactOptional(),
+    originConfiguration: PackageOriginConfigurationSchema.exactOptional().openapi({
+      description:
+        'A <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageOriginConfiguration.html">PackageOriginConfiguration</a> object that describes the origin configuration set for the package. It contains a <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageOriginRestrictions.html">PackageOriginRestrictions</a> object that describes how new versions of the package can be introduced to the repository.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutPackageOriginConfigurationResult')
 
 const PutRepositoryPermissionsPolicyResultSchema = z
   .object({
-    policy: ResourcePolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The resource policy that was set after processing the request. ',
-        }),
-    ).exactOptional(),
+    policy: ResourcePolicySchema.exactOptional().openapi({
+      description: ' The resource policy that was set after processing the request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutRepositoryPermissionsPolicyResult')
 
-const TagResourceResultSchema = z.object({}).openapi('TagResourceResult')
+const TagResourceResultSchema = z.looseObject({}).openapi('TagResourceResult')
 
-const UntagResourceResultSchema = z.object({}).openapi('UntagResourceResult')
+const UntagResourceResultSchema = z.looseObject({}).openapi('UntagResourceResult')
 
 const UpdatePackageVersionsStatusResultSchema = z
   .object({
-    successfulVersions: SuccessfulPackageVersionInfoMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of <code>PackageVersionError</code> objects, one for each package version with a status that failed to update. ',
-        }),
-    ).exactOptional(),
-    failedVersions: PackageVersionErrorMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of <code>SuccessfulPackageVersionInfo</code> objects, one for each package version with a status that successfully updated. ',
-        }),
-    ).exactOptional(),
+    successfulVersions: SuccessfulPackageVersionInfoMapSchema.exactOptional().openapi({
+      description:
+        ' A list of <code>PackageVersionError</code> objects, one for each package version with a status that failed to update. ',
+    }),
+    failedVersions: PackageVersionErrorMapSchema.exactOptional().openapi({
+      description:
+        ' A list of <code>SuccessfulPackageVersionInfo</code> objects, one for each package version with a status that successfully updated. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdatePackageVersionsStatusResult')
 
 const UpdateRepositoryResultSchema = z
   .object({
-    repository: RepositoryDescriptionSchema.and(
-      z.any().openapi({ description: ' The updated repository. ' }),
-    ).exactOptional(),
+    repository: RepositoryDescriptionSchema.exactOptional().openapi({
+      description: ' The updated repository. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRepositoryResult')
 
 const AssociateExternalConnectionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'AssociateExternalConnectionRequest' })
   .openapi('AssociateExternalConnectionRequest')
 
@@ -1540,55 +1142,35 @@ const PackageVersionRevisionMapSchema = z
 
 const CopyPackageVersionsRequestSchema = z
   .object({
-    versions: PackageVersionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The versions of the package to be copied. </p> <note> <p> You must specify <code>versions</code> or <code>versionRevisions</code>. You cannot specify both. </p> </note>',
-        }),
-    ).exactOptional(),
-    versionRevisions: PackageVersionRevisionMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> A list of key-value pairs. The keys are package versions and the values are package version revisions. A <code>CopyPackageVersion</code> operation succeeds if the specified versions in the source repository match the specified package version revision. </p> <note> <p> You must specify <code>versions</code> or <code>versionRevisions</code>. You cannot specify both. </p> </note>',
-        }),
-    ).exactOptional(),
-    allowOverwrite: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Set to true to overwrite a package version that already exists in the destination repository. If set to false and the package version already exists in the destination repository, the package version is returned in the <code>failedVersions</code> field of the response with an <code>ALREADY_EXISTS</code> error code. ',
-        }),
-    ).exactOptional(),
-    includeFromUpstream: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Set to true to copy packages from repositories that are upstream from the source repository to the destination repository. The default setting is false. For more information, see <a href="https://docs.aws.amazon.com/codeartifact/latest/ug/repos-upstream.html">Working with upstream repositories</a>. ',
-        }),
-    ).exactOptional(),
+    versions: PackageVersionListSchema.exactOptional().openapi({
+      description:
+        '<p> The versions of the package to be copied. </p> <note> <p> You must specify <code>versions</code> or <code>versionRevisions</code>. You cannot specify both. </p> </note>',
+    }),
+    versionRevisions: PackageVersionRevisionMapSchema.exactOptional().openapi({
+      description:
+        '<p> A list of key-value pairs. The keys are package versions and the values are package version revisions. A <code>CopyPackageVersion</code> operation succeeds if the specified versions in the source repository match the specified package version revision. </p> <note> <p> You must specify <code>versions</code> or <code>versionRevisions</code>. You cannot specify both. </p> </note>',
+    }),
+    allowOverwrite: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        ' Set to true to overwrite a package version that already exists in the destination repository. If set to false and the package version already exists in the destination repository, the package version is returned in the <code>failedVersions</code> field of the response with an <code>ALREADY_EXISTS</code> error code. ',
+    }),
+    includeFromUpstream: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        ' Set to true to copy packages from repositories that are upstream from the source repository to the destination repository. The default setting is false. For more information, see <a href="https://docs.aws.amazon.com/codeartifact/latest/ug/repos-upstream.html">Working with upstream repositories</a>. ',
+    }),
   })
   .openapi({ title: 'CopyPackageVersionsRequest', required: [] })
   .openapi('CopyPackageVersionsRequest')
 
 const CreateDomainRequestSchema = z
   .object({
-    encryptionKey: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The encryption key for the domain. This is used to encrypt content stored in a domain. An encryption key can be a key ID, a key Amazon Resource Name (ARN), a key alias, or a key alias ARN. To specify an <code>encryptionKey</code>, your IAM role must have <code>kms:DescribeKey</code> and <code>kms:CreateGrant</code> permissions on the encryption key that is used. For more information, see <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestSyntax">DescribeKey</a> in the <i>Key Management Service API Reference</i> and <a href="https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html">Key Management Service API Permissions Reference</a> in the <i>Key Management Service Developer Guide</i>. </p> <important> <p> CodeArtifact supports only symmetric CMKs. Do not associate an asymmetric CMK with your domain. For more information, see <a href="https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html">Using symmetric and asymmetric keys</a> in the <i>Key Management Service Developer Guide</i>. </p> </important>',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'One or more tag key-value pairs for the domain.' }),
-    ).exactOptional(),
+    encryptionKey: ArnSchema.exactOptional().openapi({
+      description:
+        '<p> The encryption key for the domain. This is used to encrypt content stored in a domain. An encryption key can be a key ID, a key Amazon Resource Name (ARN), a key alias, or a key alias ARN. To specify an <code>encryptionKey</code>, your IAM role must have <code>kms:DescribeKey</code> and <code>kms:CreateGrant</code> permissions on the encryption key that is used. For more information, see <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestSyntax">DescribeKey</a> in the <i>Key Management Service API Reference</i> and <a href="https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html">Key Management Service API Permissions Reference</a> in the <i>Key Management Service Developer Guide</i>. </p> <important> <p> CodeArtifact supports only symmetric CMKs. Do not associate an asymmetric CMK with your domain. For more information, see <a href="https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html">Using symmetric and asymmetric keys</a> in the <i>Key Management Service Developer Guide</i>. </p> </important>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'One or more tag key-value pairs for the domain.',
+    }),
   })
   .openapi({ title: 'CreateDomainRequest', required: [] })
   .openapi('CreateDomainRequest')
@@ -1599,134 +1181,124 @@ const UpstreamRepositoryListSchema = z
 
 const CreateRepositoryRequestSchema = z
   .object({
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: ' A description of the created repository. ' }),
-    ).exactOptional(),
-    upstreams: UpstreamRepositoryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of upstream repositories to associate with the repository. The order of the upstream repositories in the list determines their priority order when CodeArtifact looks for a requested package version. For more information, see <a href="https://docs.aws.amazon.com/codeartifact/latest/ug/repos-upstream.html">Working with upstream repositories</a>. ',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'One or more tag key-value pairs for the repository.' }),
-    ).exactOptional(),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: ' A description of the created repository. ',
+    }),
+    upstreams: UpstreamRepositoryListSchema.exactOptional().openapi({
+      description:
+        ' A list of upstream repositories to associate with the repository. The order of the upstream repositories in the list determines their priority order when CodeArtifact looks for a requested package version. For more information, see <a href="https://docs.aws.amazon.com/codeartifact/latest/ug/repos-upstream.html">Working with upstream repositories</a>. ',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'One or more tag key-value pairs for the repository.',
+    }),
   })
   .openapi({ title: 'CreateRepositoryRequest', required: [] })
   .openapi('CreateRepositoryRequest')
 
 const DeleteDomainPermissionsPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDomainPermissionsPolicyRequest' })
   .openapi('DeleteDomainPermissionsPolicyRequest')
 
 const DeleteDomainRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDomainRequest' })
   .openapi('DeleteDomainRequest')
 
 const DeletePackageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeletePackageRequest' })
   .openapi('DeletePackageRequest')
 
 const DeletePackageVersionsRequestSchema = z
   .object({
-    versions: PackageVersionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' An array of strings that specify the versions of the package to delete. ',
-        }),
-    ),
-    expectedStatus: PackageVersionStatusSchema.and(
-      z.any().openapi({ description: ' The expected status of the package version to delete. ' }),
-    ).exactOptional(),
+    versions: PackageVersionListSchema.openapi({
+      description: ' An array of strings that specify the versions of the package to delete. ',
+    }),
+    expectedStatus: PackageVersionStatusSchema.exactOptional().openapi({
+      description: ' The expected status of the package version to delete. ',
+    }),
   })
   .openapi({ required: ['versions'], title: 'DeletePackageVersionsRequest' })
   .openapi('DeletePackageVersionsRequest')
 
 const DeleteRepositoryPermissionsPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteRepositoryPermissionsPolicyRequest' })
   .openapi('DeleteRepositoryPermissionsPolicyRequest')
 
 const DeleteRepositoryRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteRepositoryRequest' })
   .openapi('DeleteRepositoryRequest')
 
 const DescribeDomainRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDomainRequest' })
   .openapi('DescribeDomainRequest')
 
 const DescribePackageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribePackageRequest' })
   .openapi('DescribePackageRequest')
 
 const DescribePackageVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribePackageVersionRequest' })
   .openapi('DescribePackageVersionRequest')
 
 const DescribeRepositoryRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeRepositoryRequest' })
   .openapi('DescribeRepositoryRequest')
 
 const DisassociateExternalConnectionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateExternalConnectionRequest' })
   .openapi('DisassociateExternalConnectionRequest')
 
 const DisposePackageVersionsRequestSchema = z
   .object({
-    versions: PackageVersionListSchema.and(
-      z.any().openapi({ description: ' The versions of the package you want to dispose. ' }),
-    ),
-    versionRevisions: PackageVersionRevisionMapSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The revisions of the package versions you want to dispose. ' }),
-    ).exactOptional(),
-    expectedStatus: PackageVersionStatusSchema.and(
-      z.any().openapi({ description: ' The expected status of the package version to dispose. ' }),
-    ).exactOptional(),
+    versions: PackageVersionListSchema.openapi({
+      description: ' The versions of the package you want to dispose. ',
+    }),
+    versionRevisions: PackageVersionRevisionMapSchema.exactOptional().openapi({
+      description: ' The revisions of the package versions you want to dispose. ',
+    }),
+    expectedStatus: PackageVersionStatusSchema.exactOptional().openapi({
+      description: ' The expected status of the package version to dispose. ',
+    }),
   })
   .openapi({ required: ['versions'], title: 'DisposePackageVersionsRequest' })
   .openapi('DisposePackageVersionsRequest')
 
 const GetAuthorizationTokenRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAuthorizationTokenRequest' })
   .openapi('GetAuthorizationTokenRequest')
 
 const GetDomainPermissionsPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDomainPermissionsPolicyRequest' })
   .openapi('GetDomainPermissionsPolicyRequest')
 
 const GetPackageVersionAssetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetPackageVersionAssetRequest' })
   .openapi('GetPackageVersionAssetRequest')
 
 const GetPackageVersionReadmeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetPackageVersionReadmeRequest' })
   .openapi('GetPackageVersionReadmeRequest')
 
 const GetRepositoryEndpointRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetRepositoryEndpointRequest' })
   .openapi('GetRepositoryEndpointRequest')
 
 const GetRepositoryPermissionsPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetRepositoryPermissionsPolicyRequest' })
   .openapi('GetRepositoryPermissionsPolicyRequest')
 
@@ -1736,17 +1308,13 @@ const ListDomainsMaxResultsSchema = z.int().min(1).max(1000).openapi('ListDomain
 
 const ListDomainsRequestSchema = z
   .object({
-    maxResults: ListDomainsMaxResultsSchema.and(
-      z.any().openapi({ description: ' The maximum number of results to return per page. ' }),
-    ).exactOptional(),
-    nextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results. ',
-        }),
-    ).exactOptional(),
+    maxResults: ListDomainsMaxResultsSchema.exactOptional().openapi({
+      description: ' The maximum number of results to return per page. ',
+    }),
+    nextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        ' The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results. ',
+    }),
   })
   .openapi({ title: 'ListDomainsRequest', required: [] })
   .openapi('ListDomainsRequest')
@@ -1758,12 +1326,12 @@ const ListPackageVersionAssetsMaxResultsSchema = z
   .openapi('ListPackageVersionAssetsMaxResults')
 
 const ListPackageVersionAssetsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPackageVersionAssetsRequest' })
   .openapi('ListPackageVersionAssetsRequest')
 
 const ListPackageVersionDependenciesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPackageVersionDependenciesRequest' })
   .openapi('ListPackageVersionDependenciesRequest')
 
@@ -1776,14 +1344,14 @@ const ListPackageVersionsMaxResultsSchema = z
 const PackageVersionSortTypeSchema = z.literal('PUBLISHED_TIME').openapi('PackageVersionSortType')
 
 const ListPackageVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPackageVersionsRequest' })
   .openapi('ListPackageVersionsRequest')
 
 const ListPackagesMaxResultsSchema = z.int().min(1).max(1000).openapi('ListPackagesMaxResults')
 
 const ListPackagesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPackagesRequest' })
   .openapi('ListPackagesRequest')
 
@@ -1794,7 +1362,7 @@ const ListRepositoriesInDomainMaxResultsSchema = z
   .openapi('ListRepositoriesInDomainMaxResults')
 
 const ListRepositoriesInDomainRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRepositoriesInDomainRequest' })
   .openapi('ListRepositoriesInDomainRequest')
 
@@ -1805,12 +1373,12 @@ const ListRepositoriesMaxResultsSchema = z
   .openapi('ListRepositoriesMaxResults')
 
 const ListRepositoriesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRepositoriesRequest' })
   .openapi('ListRepositoriesRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -1822,80 +1390,52 @@ const SHA256Schema = z
 
 const PublishPackageVersionRequestSchema = z
   .object({
-    assetContent: AssetSchema.and(
-      z.any().openapi({ description: 'The content of the asset to publish.' }),
-    ),
+    assetContent: AssetSchema.openapi({ description: 'The content of the asset to publish.' }),
   })
   .openapi({ required: ['assetContent'], title: 'PublishPackageVersionRequest' })
   .openapi('PublishPackageVersionRequest')
 
 const PutDomainPermissionsPolicyRequestSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The name of the domain on which to set the resource policy. ' }),
-    ),
-    domainOwner: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. ',
-        }),
-    ).exactOptional(),
-    policyRevision: PolicyRevisionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The current revision of the resource policy to be set. This revision is used for optimistic locking, which prevents others from overwriting your changes to the domain's resource policy. ",
-        }),
-    ).exactOptional(),
-    policyDocument: PolicyDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A valid displayable JSON Aspen policy string to be set as the access control resource policy on the provided domain. ',
-        }),
-    ),
+    domain: DomainNameSchema.openapi({
+      description: ' The name of the domain on which to set the resource policy. ',
+    }),
+    domainOwner: AccountIdSchema.exactOptional().openapi({
+      description:
+        ' The 12-digit account number of the Amazon Web Services account that owns the domain. It does not include dashes or spaces. ',
+    }),
+    policyRevision: PolicyRevisionSchema.exactOptional().openapi({
+      description:
+        " The current revision of the resource policy to be set. This revision is used for optimistic locking, which prevents others from overwriting your changes to the domain's resource policy. ",
+    }),
+    policyDocument: PolicyDocumentSchema.openapi({
+      description:
+        ' A valid displayable JSON Aspen policy string to be set as the access control resource policy on the provided domain. ',
+    }),
   })
   .openapi({ required: ['domain', 'policyDocument'], title: 'PutDomainPermissionsPolicyRequest' })
   .openapi('PutDomainPermissionsPolicyRequest')
 
 const PutPackageOriginConfigurationRequestSchema = z
   .object({
-    restrictions: PackageOriginRestrictionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageOriginRestrictions.html">PackageOriginRestrictions</a> object that contains information about the <code>upstream</code> and <code>publish</code> package origin restrictions. The <code>upstream</code> restriction determines if new package versions can be ingested or retained from external connections or upstream repositories. The <code>publish</code> restriction determines if new package versions can be published directly to the repository.</p> <p>You must include both the desired <code>upstream</code> and <code>publish</code> restrictions.</p>',
-        }),
-    ),
+    restrictions: PackageOriginRestrictionsSchema.openapi({
+      description:
+        '<p>A <a href="https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_PackageOriginRestrictions.html">PackageOriginRestrictions</a> object that contains information about the <code>upstream</code> and <code>publish</code> package origin restrictions. The <code>upstream</code> restriction determines if new package versions can be ingested or retained from external connections or upstream repositories. The <code>publish</code> restriction determines if new package versions can be published directly to the repository.</p> <p>You must include both the desired <code>upstream</code> and <code>publish</code> restrictions.</p>',
+    }),
   })
   .openapi({ required: ['restrictions'], title: 'PutPackageOriginConfigurationRequest' })
   .openapi('PutPackageOriginConfigurationRequest')
 
 const PutRepositoryPermissionsPolicyRequestSchema = z
   .object({
-    policyRevision: PolicyRevisionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Sets the revision of the resource policy that specifies permissions to access the repository. This revision is used for optimistic locking, which prevents others from overwriting your changes to the repository's resource policy. ",
-        }),
-    ).exactOptional(),
-    policyDocument: PolicyDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A valid displayable JSON Aspen policy string to be set as the access control resource policy on the provided repository. ',
-        }),
-    ),
+    policyRevision: PolicyRevisionSchema.exactOptional().openapi({
+      description:
+        " Sets the revision of the resource policy that specifies permissions to access the repository. This revision is used for optimistic locking, which prevents others from overwriting your changes to the repository's resource policy. ",
+    }),
+    policyDocument: PolicyDocumentSchema.openapi({
+      description:
+        ' A valid displayable JSON Aspen policy string to be set as the access control resource policy on the provided repository. ',
+    }),
   })
   .openapi({ required: ['policyDocument'], title: 'PutRepositoryPermissionsPolicyRequest' })
   .openapi('PutRepositoryPermissionsPolicyRequest')
@@ -1904,74 +1444,52 @@ const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyLi
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags you want to modify or add to the resource.' }),
-    ),
+    tags: TagListSchema.openapi({
+      description: 'The tags you want to modify or add to the resource.',
+    }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
   .object({
-    tagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tag key for each tag that you want to remove from the resource.',
-        }),
-    ),
+    tagKeys: TagKeyListSchema.openapi({
+      description: 'The tag key for each tag that you want to remove from the resource.',
+    }),
   })
   .openapi({ required: ['tagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdatePackageVersionsStatusRequestSchema = z
   .object({
-    versions: PackageVersionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An array of strings that specify the versions of the package with the statuses to update. ',
-        }),
-    ),
-    versionRevisions: PackageVersionRevisionMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A map of package versions and package version revisions. The map <code>key</code> is the package version (for example, <code>3.5.2</code>), and the map <code>value</code> is the package version revision. ',
-        }),
-    ).exactOptional(),
-    expectedStatus: PackageVersionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The package version’s expected status before it is updated. If <code>expectedStatus</code> is provided, the package version's status is updated only if its status at the time <code>UpdatePackageVersionsStatus</code> is called matches <code>expectedStatus</code>. ",
-        }),
-    ).exactOptional(),
-    targetStatus: PackageVersionStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The status you want to change the package version status to. ' }),
-    ),
+    versions: PackageVersionListSchema.openapi({
+      description:
+        ' An array of strings that specify the versions of the package with the statuses to update. ',
+    }),
+    versionRevisions: PackageVersionRevisionMapSchema.exactOptional().openapi({
+      description:
+        ' A map of package versions and package version revisions. The map <code>key</code> is the package version (for example, <code>3.5.2</code>), and the map <code>value</code> is the package version revision. ',
+    }),
+    expectedStatus: PackageVersionStatusSchema.exactOptional().openapi({
+      description:
+        " The package version’s expected status before it is updated. If <code>expectedStatus</code> is provided, the package version's status is updated only if its status at the time <code>UpdatePackageVersionsStatus</code> is called matches <code>expectedStatus</code>. ",
+    }),
+    targetStatus: PackageVersionStatusSchema.openapi({
+      description: ' The status you want to change the package version status to. ',
+    }),
   })
   .openapi({ required: ['versions', 'targetStatus'], title: 'UpdatePackageVersionsStatusRequest' })
   .openapi('UpdatePackageVersionsStatusRequest')
 
 const UpdateRepositoryRequestSchema = z
   .object({
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: ' An updated repository description. ' }),
-    ).exactOptional(),
-    upstreams: UpstreamRepositoryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of upstream repositories to associate with the repository. The order of the upstream repositories in the list determines their priority order when CodeArtifact looks for a requested package version. For more information, see <a href="https://docs.aws.amazon.com/codeartifact/latest/ug/repos-upstream.html">Working with upstream repositories</a>. ',
-        }),
-    ).exactOptional(),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: ' An updated repository description. ',
+    }),
+    upstreams: UpstreamRepositoryListSchema.exactOptional().openapi({
+      description:
+        ' A list of upstream repositories to associate with the repository. The order of the upstream repositories in the list determines their priority order when CodeArtifact looks for a requested package version. For more information, see <a href="https://docs.aws.amazon.com/codeartifact/latest/ug/repos-upstream.html">Working with upstream repositories</a>. ',
+    }),
   })
   .openapi({ title: 'UpdateRepositoryRequest', required: [] })
   .openapi('UpdateRepositoryRequest')
@@ -3698,22 +3216,14 @@ export const postV1PackageDomainRepositoryFormatPackageRoute = createRoute({
             .object({
               restrictions: z
                 .object({
-                  publish: AllowPublishSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The package origin configuration that determines if new versions of the package can be published directly to the repository.',
-                      }),
-                  ).exactOptional(),
-                  upstream: AllowUpstreamSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The package origin configuration that determines if new versions of the package can be added to the repository from an external connection or upstream source.',
-                      }),
-                  ).exactOptional(),
+                  publish: AllowPublishSchema.exactOptional().openapi({
+                    description:
+                      'The package origin configuration that determines if new versions of the package can be published directly to the repository.',
+                  }),
+                  upstream: AllowUpstreamSchema.exactOptional().openapi({
+                    description:
+                      'The package origin configuration that determines if new versions of the package can be added to the repository from an external connection or upstream source.',
+                  }),
                 })
                 .openapi({
                   description:

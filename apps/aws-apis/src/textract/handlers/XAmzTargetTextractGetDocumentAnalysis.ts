@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetTextractGetDocumentAnalysisHandler = app.openapi(
   postXAmzTargetTextractGetDocumentAnalysisRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

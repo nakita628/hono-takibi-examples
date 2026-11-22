@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSShineFrontendService20170701ListLanguagesHandler = app.openapi(
   postXAmzTargetAWSShineFrontendService20170701ListLanguagesRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

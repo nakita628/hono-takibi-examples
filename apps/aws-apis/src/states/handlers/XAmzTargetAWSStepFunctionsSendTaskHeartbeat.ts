@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSStepFunctionsSendTaskHeartbeatHandler = app.openapi(
   postXAmzTargetAWSStepFunctionsSendTaskHeartbeatRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

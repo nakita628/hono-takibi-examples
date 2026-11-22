@@ -51,10 +51,8 @@ const TagValueSchema = z.string().max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z.any().openapi({ description: "Tag key. The key can't start with aws:." }),
-    ),
-    Value: TagValueSchema.and(z.any().openapi({ description: 'Value of the tag key.' })),
+    Key: TagKeySchema.openapi({ description: "Tag key. The key can't start with aws:." }),
+    Value: TagValueSchema.openapi({ description: 'Value of the tag key.' }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -67,65 +65,37 @@ const TagsSchema = z.array(TagSchema).openapi('Tags')
 
 const ActivateGatewayInputSchema = z
   .object({
-    ActivationKey: ActivationKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Your gateway activation key. You can obtain the activation key by sending an HTTP GET request with redirects enabled to the gateway IP address (port 80). The redirect URL returned in the response provides you the activation key for your gateway in the query string parameter <code>activationKey</code>. It may also include other activation-related parameters, however, these are merely defaults -- the arguments you pass to the <code>ActivateGateway</code> API call determine the actual configuration of your gateway.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/storagegateway/latest/userguide/get-activation-key.html">Getting activation key</a> in the <i>Storage Gateway User Guide</i>.</p>',
-        }),
-    ),
-    GatewayName: GatewayNameSchema.and(
-      z.any().openapi({ description: 'The name you configured for your gateway.' }),
-    ),
-    GatewayTimezone: GatewayTimezoneSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the time zone you want to set for the gateway. The time zone is of the format "GMT-hr:mm" or "GMT+hr:mm". For example, GMT-4:00 indicates the time is 4 hours behind GMT. GMT+2:00 indicates the time is 2 hours ahead of GMT. The time zone is used, for example, for scheduling snapshots and your gateway\'s maintenance schedule.',
-        }),
-    ),
-    GatewayRegion: RegionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that indicates the Amazon Web Services Region where you want to store your data. The gateway Amazon Web Services Region specified must be the same Amazon Web Services Region as the Amazon Web Services Region in your <code>Host</code> header in the request. For more information about available Amazon Web Services Regions and endpoints for Storage Gateway, see <a href="https://docs.aws.amazon.com/general/latest/gr/sg.html"> Storage Gateway endpoints and quotas</a> in the <i>Amazon Web Services General Reference</i>.</p> <p>Valid Values: See <a href="https://docs.aws.amazon.com/general/latest/gr/sg.html"> Storage Gateway endpoints and quotas</a> in the <i>Amazon Web Services General Reference</i>. </p>',
-        }),
-    ),
-    GatewayType: GatewayTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that defines the type of gateway to activate. The type specified is critical to all later functions of the gateway and cannot be changed after activation. The default value is <code>CACHED</code>.</p> <p>Valid Values: <code>STORED</code> | <code>CACHED</code> | <code>VTL</code> | <code>VTL_SNOW</code> | <code>FILE_S3</code> | <code>FILE_FSX_SMB</code> </p>',
-        }),
-    ).exactOptional(),
-    TapeDriveType: TapeDriveTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The value that indicates the type of tape drive to use for tape gateway. This field is optional.</p> <p>Valid Values: <code>IBM-ULT3580-TD5</code> </p>',
-        }),
-    ).exactOptional(),
-    MediumChangerType: MediumChangerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The value that indicates the type of medium changer to use for tape gateway. This field is optional.</p> <p>Valid Values: <code>STK-L700</code> | <code>AWS-Gateway-VTL</code> | <code>IBM-03584L32-0402</code> </p>',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of up to 50 tags that you can assign to the gateway. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers that can be represented in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256 characters.</p> </note>",
-        }),
-    ).exactOptional(),
+    ActivationKey: ActivationKeySchema.openapi({
+      description:
+        '<p>Your gateway activation key. You can obtain the activation key by sending an HTTP GET request with redirects enabled to the gateway IP address (port 80). The redirect URL returned in the response provides you the activation key for your gateway in the query string parameter <code>activationKey</code>. It may also include other activation-related parameters, however, these are merely defaults -- the arguments you pass to the <code>ActivateGateway</code> API call determine the actual configuration of your gateway.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/storagegateway/latest/userguide/get-activation-key.html">Getting activation key</a> in the <i>Storage Gateway User Guide</i>.</p>',
+    }),
+    GatewayName: GatewayNameSchema.openapi({
+      description: 'The name you configured for your gateway.',
+    }),
+    GatewayTimezone: GatewayTimezoneSchema.openapi({
+      description:
+        'A value that indicates the time zone you want to set for the gateway. The time zone is of the format "GMT-hr:mm" or "GMT+hr:mm". For example, GMT-4:00 indicates the time is 4 hours behind GMT. GMT+2:00 indicates the time is 2 hours ahead of GMT. The time zone is used, for example, for scheduling snapshots and your gateway\'s maintenance schedule.',
+    }),
+    GatewayRegion: RegionIdSchema.openapi({
+      description:
+        '<p>A value that indicates the Amazon Web Services Region where you want to store your data. The gateway Amazon Web Services Region specified must be the same Amazon Web Services Region as the Amazon Web Services Region in your <code>Host</code> header in the request. For more information about available Amazon Web Services Regions and endpoints for Storage Gateway, see <a href="https://docs.aws.amazon.com/general/latest/gr/sg.html"> Storage Gateway endpoints and quotas</a> in the <i>Amazon Web Services General Reference</i>.</p> <p>Valid Values: See <a href="https://docs.aws.amazon.com/general/latest/gr/sg.html"> Storage Gateway endpoints and quotas</a> in the <i>Amazon Web Services General Reference</i>. </p>',
+    }),
+    GatewayType: GatewayTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A value that defines the type of gateway to activate. The type specified is critical to all later functions of the gateway and cannot be changed after activation. The default value is <code>CACHED</code>.</p> <p>Valid Values: <code>STORED</code> | <code>CACHED</code> | <code>VTL</code> | <code>VTL_SNOW</code> | <code>FILE_S3</code> | <code>FILE_FSX_SMB</code> </p>',
+    }),
+    TapeDriveType: TapeDriveTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The value that indicates the type of tape drive to use for tape gateway. This field is optional.</p> <p>Valid Values: <code>IBM-ULT3580-TD5</code> </p>',
+    }),
+    MediumChangerType: MediumChangerTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The value that indicates the type of medium changer to use for tape gateway. This field is optional.</p> <p>Valid Values: <code>STK-L700</code> | <code>AWS-Gateway-VTL</code> | <code>IBM-03584L32-0402</code> </p>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        "<p>A list of up to 50 tags that you can assign to the gateway. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers that can be represented in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256 characters.</p> </note>",
+    }),
   })
   .openapi({
     required: ['ActivationKey', 'GatewayName', 'GatewayTimezone', 'GatewayRegion'],
@@ -154,14 +124,10 @@ const DiskIdsSchema = z.array(DiskIdSchema).openapi('DiskIds')
 const AddCacheInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    DiskIds: DiskIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of strings that identify disks that are to be configured as working storage. Each string has a minimum length of 1 and maximum length of 300. You can get the disk IDs from the <a>ListLocalDisks</a> API.',
-        }),
-    ),
+    DiskIds: DiskIdsSchema.openapi({
+      description:
+        'An array of strings that identify disks that are to be configured as working storage. Each string has a minimum length of 1 and maximum length of 300. You can get the disk IDs from the <a>ListLocalDisks</a> API.',
+    }),
   })
   .openapi({ required: ['GatewayARN', 'DiskIds'], title: 'AddCacheInput' })
   .openapi('AddCacheInput')
@@ -170,13 +136,9 @@ const ResourceARNSchema = z.string().min(50).max(500).openapi('ResourceARN')
 
 const AddTagsToResourceOutputSchema = z
   .object({
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the resource you want to add tags to.',
-        }),
-    ).exactOptional(),
+    ResourceARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource you want to add tags to.',
+    }),
   })
   .openapi({
     example: { ResourceARN: 'arn:aws:storagegateway:us-east-1:111122223333:gateway/sgw-11A2222B' },
@@ -187,21 +149,13 @@ const AddTagsToResourceOutputSchema = z
 
 const AddTagsToResourceInputSchema = z
   .object({
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the resource you want to add tags to.',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The key-value pair that represents the tag you want to add to the resource. The value can be an empty string.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
-        }),
-    ),
+    ResourceARN: ResourceARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource you want to add tags to.',
+    }),
+    Tags: TagsSchema.openapi({
+      description:
+        "<p>The key-value pair that represents the tag you want to add to the resource. The value can be an empty string.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
+    }),
   })
   .openapi({
     required: ['ResourceARN', 'Tags'],
@@ -221,14 +175,10 @@ const AddUploadBufferOutputSchema = z
 const AddUploadBufferInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    DiskIds: DiskIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of strings that identify disks that are to be configured as working storage. Each string has a minimum length of 1 and maximum length of 300. You can get the disk IDs from the <a>ListLocalDisks</a> API.',
-        }),
-    ),
+    DiskIds: DiskIdsSchema.openapi({
+      description:
+        'An array of strings that identify disks that are to be configured as working storage. Each string has a minimum length of 1 and maximum length of 300. You can get the disk IDs from the <a>ListLocalDisks</a> API.',
+    }),
   })
   .openapi({ required: ['GatewayARN', 'DiskIds'], title: 'AddUploadBufferInput' })
   .openapi('AddUploadBufferInput')
@@ -246,14 +196,10 @@ const AddWorkingStorageOutputSchema = z
 const AddWorkingStorageInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    DiskIds: DiskIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of strings that identify disks that are to be configured as working storage. Each string has a minimum length of 1 and maximum length of 300. You can get the disk IDs from the <a>ListLocalDisks</a> API.',
-        }),
-    ),
+    DiskIds: DiskIdsSchema.openapi({
+      description:
+        'An array of strings that identify disks that are to be configured as working storage. Each string has a minimum length of 1 and maximum length of 300. You can get the disk IDs from the <a>ListLocalDisks</a> API.',
+    }),
   })
   .openapi({
     required: ['GatewayARN', 'DiskIds'],
@@ -272,14 +218,10 @@ const TapeARNSchema = z
 
 const AssignTapePoolOutputSchema = z
   .object({
-    TapeARN: TapeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique Amazon Resource Names (ARN) of the virtual tape that was added to the tape pool.',
-        }),
-    ).exactOptional(),
+    TapeARN: TapeARNSchema.exactOptional().openapi({
+      description:
+        'The unique Amazon Resource Names (ARN) of the virtual tape that was added to the tape pool.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssignTapePoolOutput')
@@ -290,30 +232,18 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const AssignTapePoolInputSchema = z
   .object({
-    TapeARN: TapeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique Amazon Resource Name (ARN) of the virtual tape that you want to add to the tape pool.',
-        }),
-    ),
-    PoolId: PoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.',
-        }),
-    ),
-    BypassGovernanceRetention: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Set permissions to bypass governance retention. If the lock type of the archived tape is <code>Governance</code>, the tape's archived age is not older than <code>RetentionLockInDays</code>, and the user does not already have <code>BypassGovernanceRetention</code>, setting this to TRUE enables the user to bypass the retention lock. This parameter is set to true by default for calls from the console.</p> <p>Valid values: <code>TRUE</code> | <code>FALSE</code> </p>",
-        }),
-    ).exactOptional(),
+    TapeARN: TapeARNSchema.openapi({
+      description:
+        'The unique Amazon Resource Name (ARN) of the virtual tape that you want to add to the tape pool.',
+    }),
+    PoolId: PoolIdSchema.openapi({
+      description:
+        'The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.',
+    }),
+    BypassGovernanceRetention: BooleanSchema.exactOptional().openapi({
+      description:
+        "<p>Set permissions to bypass governance retention. If the lock type of the archived tape is <code>Governance</code>, the tape's archived age is not older than <code>RetentionLockInDays</code>, and the user does not already have <code>BypassGovernanceRetention</code>, setting this to TRUE enables the user to bypass the retention lock. This parameter is set to true by default for calls from the console.</p> <p>Valid values: <code>TRUE</code> | <code>FALSE</code> </p>",
+    }),
   })
   .openapi({ required: ['TapeARN', 'PoolId'], title: 'AssignTapePoolInput' })
   .openapi('AssignTapePoolInput')
@@ -326,9 +256,9 @@ const FileSystemAssociationARNSchema = z
 
 const AssociateFileSystemOutputSchema = z
   .object({
-    FileSystemAssociationARN: FileSystemAssociationARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the newly created file system association.' }),
-    ).exactOptional(),
+    FileSystemAssociationARN: FileSystemAssociationARNSchema.exactOptional().openapi({
+      description: 'The ARN of the newly created file system association.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateFileSystemOutput')
@@ -357,14 +287,10 @@ const CacheStaleTimeoutInSecondsSchema = z.int().openapi('CacheStaleTimeoutInSec
 
 const CacheAttributesSchema = z
   .object({
-    CacheStaleTimeoutInSeconds: CacheStaleTimeoutInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Refreshes a file share's cache by using Time To Live (TTL). TTL is the length of time since the last refresh after which access to the directory would cause the file gateway to first refresh that directory's contents from the Amazon S3 bucket or Amazon FSx file system. The TTL duration is in seconds.</p> <p>Valid Values:0, 300 to 2,592,000 seconds (5 minutes to 30 days)</p>",
-        }),
-    ).exactOptional(),
+    CacheStaleTimeoutInSeconds: CacheStaleTimeoutInSecondsSchema.exactOptional().openapi({
+      description:
+        "<p>Refreshes a file share's cache by using Time To Live (TTL). TTL is the length of time since the last refresh after which access to the directory would cause the file gateway to first refresh that directory's contents from the Amazon S3 bucket or Amazon FSx file system. The TTL duration is in seconds.</p> <p>Valid Values:0, 300 to 2,592,000 seconds (5 minutes to 30 days)</p>",
+    }),
   })
   .openapi({
     description: 'The refresh cache information for the file share or FSx file systems.',
@@ -383,14 +309,10 @@ const IpAddressListSchema = z.array(IPV4AddressSchema).min(0).max(1).openapi('Ip
 
 const EndpointNetworkConfigurationSchema = z
   .object({
-    IpAddresses: IpAddressListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of gateway IP addresses on which the associated Amazon FSx file system is available.</p> <note> <p>If multiple file systems are associated with this gateway, this field is required.</p> </note>',
-        }),
-    ).exactOptional(),
+    IpAddresses: IpAddressListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of gateway IP addresses on which the associated Amazon FSx file system is available.</p> <note> <p>If multiple file systems are associated with this gateway, this field is required.</p> </note>',
+    }),
   })
   .openapi({
     description:
@@ -401,58 +323,34 @@ const EndpointNetworkConfigurationSchema = z
 
 const AssociateFileSystemInputSchema = z
   .object({
-    UserName: DomainUserNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user name of the user credential that has permission to access the root share D$ of the Amazon FSx file system. The user account must belong to the Amazon FSx delegated admin user group.',
-        }),
-    ),
-    Password: DomainUserPasswordSchema.and(
-      z.any().openapi({ description: 'The password of the user credential.' }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string value that you supply that is used by the FSx File Gateway to ensure idempotent file system association creation.',
-        }),
-    ),
+    UserName: DomainUserNameSchema.openapi({
+      description:
+        'The user name of the user credential that has permission to access the root share D$ of the Amazon FSx file system. The user account must belong to the Amazon FSx delegated admin user group.',
+    }),
+    Password: DomainUserPasswordSchema.openapi({
+      description: 'The password of the user credential.',
+    }),
+    ClientToken: ClientTokenSchema.openapi({
+      description:
+        'A unique string value that you supply that is used by the FSx File Gateway to ensure idempotent file system association creation.',
+    }),
     GatewayARN: GatewayARNSchema,
-    LocationARN: FileSystemLocationARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon FSx file system to associate with the FSx File Gateway.',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of up to 50 tags that can be assigned to the file system association. Each tag is a key-value pair.',
-        }),
-    ).exactOptional(),
-    AuditDestinationARN: AuditDestinationARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the storage used for the audit logs.',
-        }),
-    ).exactOptional(),
+    LocationARN: FileSystemLocationARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon FSx file system to associate with the FSx File Gateway.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of up to 50 tags that can be assigned to the file system association. Each tag is a key-value pair.',
+    }),
+    AuditDestinationARN: AuditDestinationARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the storage used for the audit logs.',
+    }),
     CacheAttributes: CacheAttributesSchema.exactOptional(),
-    EndpointNetworkConfiguration: EndpointNetworkConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies the network configuration information for the gateway associated with the Amazon FSx file system.</p> <note> <p>If multiple file systems are associated with this gateway, this parameter's <code>IpAddresses</code> field is required.</p> </note>",
-        }),
-    ).exactOptional(),
+    EndpointNetworkConfiguration: EndpointNetworkConfigurationSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies the network configuration information for the gateway associated with the Amazon FSx file system.</p> <note> <p>If multiple file systems are associated with this gateway, this parameter's <code>IpAddresses</code> field is required.</p> </note>",
+    }),
   })
   .openapi({
     required: ['UserName', 'Password', 'ClientToken', 'GatewayARN', 'LocationARN'],
@@ -466,22 +364,13 @@ const TargetARNSchema = z.string().min(50).max(800).openapi('TargetARN')
 
 const AttachVolumeOutputSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the volume that was attached to the gateway.',
-        }),
-    ).exactOptional(),
-    TargetARN: TargetARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the volume target, which includes the iSCSI name for the initiator that was used to connect to the target.',
-        }),
-    ).exactOptional(),
+    VolumeARN: VolumeARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the volume that was attached to the gateway.',
+    }),
+    TargetARN: TargetARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the volume target, which includes the iSCSI name for the initiator that was used to connect to the target.',
+    }),
   })
   .openapi({ description: 'AttachVolumeOutput', required: [] })
   .openapi('AttachVolumeOutput')
@@ -500,46 +389,26 @@ const NetworkInterfaceIdSchema = z
 
 const AttachVolumeInputSchema = z
   .object({
-    GatewayARN: GatewayARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the gateway that you want to attach the volume to.',
-        }),
-    ),
-    TargetName: TargetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the iSCSI target used by an initiator to connect to a volume and used as a suffix for the target ARN. For example, specifying <code>TargetName</code> as <i>myvolume</i> results in the target ARN of <code>arn:aws:storagegateway:us-east-2:111122223333:gateway/sgw-12A3456B/target/iqn.1997-05.com.amazon:myvolume</code>. The target name must be unique across all volumes on a gateway.</p> <p>If you don't specify a value, Storage Gateway uses the value that was previously used for this volume as the new target name.</p>",
-        }),
-    ).exactOptional(),
-    VolumeARN: VolumeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the volume to attach to the specified gateway.',
-        }),
-    ),
-    NetworkInterfaceId: NetworkInterfaceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The network interface of the gateway on which to expose the iSCSI target. Only IPv4 addresses are accepted. Use <a>DescribeGatewayInformation</a> to get a list of the network interfaces available on a gateway.</p> <p>Valid Values: A valid IP address.</p>',
-        }),
-    ),
-    DiskId: DiskIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique device ID or other distinguishing data that identifies the local disk used to create the volume. This value is only required when you are attaching a stored volume.',
-        }),
-    ).exactOptional(),
+    GatewayARN: GatewayARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the gateway that you want to attach the volume to.',
+    }),
+    TargetName: TargetNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the iSCSI target used by an initiator to connect to a volume and used as a suffix for the target ARN. For example, specifying <code>TargetName</code> as <i>myvolume</i> results in the target ARN of <code>arn:aws:storagegateway:us-east-2:111122223333:gateway/sgw-12A3456B/target/iqn.1997-05.com.amazon:myvolume</code>. The target name must be unique across all volumes on a gateway.</p> <p>If you don't specify a value, Storage Gateway uses the value that was previously used for this volume as the new target name.</p>",
+    }),
+    VolumeARN: VolumeARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the volume to attach to the specified gateway.',
+    }),
+    NetworkInterfaceId: NetworkInterfaceIdSchema.openapi({
+      description:
+        '<p>The network interface of the gateway on which to expose the iSCSI target. Only IPv4 addresses are accepted. Use <a>DescribeGatewayInformation</a> to get a list of the network interfaces available on a gateway.</p> <p>Valid Values: A valid IP address.</p>',
+    }),
+    DiskId: DiskIdSchema.exactOptional().openapi({
+      description:
+        'The unique device ID or other distinguishing data that identifies the local disk used to create the volume. This value is only required when you are attaching a stored volume.',
+    }),
   })
   .openapi({
     required: ['GatewayARN', 'VolumeARN', 'NetworkInterfaceId'],
@@ -550,14 +419,10 @@ const AttachVolumeInputSchema = z
 
 const CancelArchivalOutputSchema = z
   .object({
-    TapeARN: TapeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the virtual tape for which archiving was canceled.',
-        }),
-    ).exactOptional(),
+    TapeARN: TapeARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the virtual tape for which archiving was canceled.',
+    }),
   })
   .openapi({
     example: { TapeARN: 'arn:aws:storagegateway:us-east-1:999999999999:tape/AMZN01A2A4' },
@@ -569,14 +434,10 @@ const CancelArchivalOutputSchema = z
 const CancelArchivalInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    TapeARN: TapeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the virtual tape you want to cancel archiving for.',
-        }),
-    ),
+    TapeARN: TapeARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the virtual tape you want to cancel archiving for.',
+    }),
   })
   .openapi({
     required: ['GatewayARN', 'TapeARN'],
@@ -587,14 +448,10 @@ const CancelArchivalInputSchema = z
 
 const CancelRetrievalOutputSchema = z
   .object({
-    TapeARN: TapeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the virtual tape for which retrieval was canceled.',
-        }),
-    ).exactOptional(),
+    TapeARN: TapeARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the virtual tape for which retrieval was canceled.',
+    }),
   })
   .openapi({
     example: { TapeARN: 'arn:aws:storagegateway:us-east-1:999999999999:tape/AMZN01A2A4' },
@@ -606,14 +463,10 @@ const CancelRetrievalOutputSchema = z
 const CancelRetrievalInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    TapeARN: TapeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the virtual tape you want to cancel retrieval for.',
-        }),
-    ),
+    TapeARN: TapeARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the virtual tape you want to cancel retrieval for.',
+    }),
   })
   .openapi({
     required: ['GatewayARN', 'TapeARN'],
@@ -624,17 +477,13 @@ const CancelRetrievalInputSchema = z
 
 const CreateCachediSCSIVolumeOutputSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the configured volume.' }),
-    ).exactOptional(),
-    TargetARN: TargetARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the volume target, which includes the iSCSI name that initiators can use to connect to the target.',
-        }),
-    ).exactOptional(),
+    VolumeARN: VolumeARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the configured volume.',
+    }),
+    TargetARN: TargetARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the volume target, which includes the iSCSI name that initiators can use to connect to the target.',
+    }),
   })
   .openapi({
     example: {
@@ -672,73 +521,39 @@ const KMSKeySchema = z
 const CreateCachediSCSIVolumeInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    VolumeSizeInBytes: LongSchema.and(
-      z.any().openapi({ description: 'The size of the volume in bytes.' }),
-    ),
-    SnapshotId: SnapshotIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The snapshot ID (e.g. "snap-1122aabb") of the snapshot to restore as the new cached volume. Specify this field if you want to create the iSCSI storage volume from a snapshot; otherwise, do not include this field. To list snapshots for your account use <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeSnapshots.html">DescribeSnapshots</a> in the <i>Amazon Elastic Compute Cloud API Reference</i>.',
-        }),
-    ).exactOptional(),
-    TargetName: TargetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the iSCSI target used by an initiator to connect to a volume and used as a suffix for the target ARN. For example, specifying <code>TargetName</code> as <i>myvolume</i> results in the target ARN of <code>arn:aws:storagegateway:us-east-2:111122223333:gateway/sgw-12A3456B/target/iqn.1997-05.com.amazon:myvolume</code>. The target name must be unique across all volumes on a gateway.</p> <p>If you don't specify a value, Storage Gateway uses the value that was previously used for this volume as the new target name.</p>",
-        }),
-    ),
-    SourceVolumeARN: VolumeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ARN for an existing volume. Specifying this ARN makes the new volume into an exact copy of the specified existing volume's latest recovery point. The <code>VolumeSizeInBytes</code> value for this new volume must be equal to or larger than the size of the existing volume, in bytes.",
-        }),
-    ).exactOptional(),
-    NetworkInterfaceId: NetworkInterfaceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The network interface of the gateway on which to expose the iSCSI target. Only IPv4 addresses are accepted. Use <a>DescribeGatewayInformation</a> to get a list of the network interfaces available on a gateway.</p> <p>Valid Values: A valid IP address.</p>',
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier that you use to retry a request. If you retry a request, use the same <code>ClientToken</code> you specified in the initial request.',
-        }),
-    ),
-    KMSEncrypted: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    KMSKey: KMSKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value can only be set when <code>KMSEncrypted</code> is <code>true</code>. Optional.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of up to 50 tags that you can assign to a cached volume. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers that you can represent in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256 characters.</p> </note>",
-        }),
-    ).exactOptional(),
+    VolumeSizeInBytes: LongSchema.openapi({ description: 'The size of the volume in bytes.' }),
+    SnapshotId: SnapshotIdSchema.exactOptional().openapi({
+      description:
+        'The snapshot ID (e.g. "snap-1122aabb") of the snapshot to restore as the new cached volume. Specify this field if you want to create the iSCSI storage volume from a snapshot; otherwise, do not include this field. To list snapshots for your account use <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeSnapshots.html">DescribeSnapshots</a> in the <i>Amazon Elastic Compute Cloud API Reference</i>.',
+    }),
+    TargetName: TargetNameSchema.openapi({
+      description:
+        "<p>The name of the iSCSI target used by an initiator to connect to a volume and used as a suffix for the target ARN. For example, specifying <code>TargetName</code> as <i>myvolume</i> results in the target ARN of <code>arn:aws:storagegateway:us-east-2:111122223333:gateway/sgw-12A3456B/target/iqn.1997-05.com.amazon:myvolume</code>. The target name must be unique across all volumes on a gateway.</p> <p>If you don't specify a value, Storage Gateway uses the value that was previously used for this volume as the new target name.</p>",
+    }),
+    SourceVolumeARN: VolumeARNSchema.exactOptional().openapi({
+      description:
+        "The ARN for an existing volume. Specifying this ARN makes the new volume into an exact copy of the specified existing volume's latest recovery point. The <code>VolumeSizeInBytes</code> value for this new volume must be equal to or larger than the size of the existing volume, in bytes.",
+    }),
+    NetworkInterfaceId: NetworkInterfaceIdSchema.openapi({
+      description:
+        '<p>The network interface of the gateway on which to expose the iSCSI target. Only IPv4 addresses are accepted. Use <a>DescribeGatewayInformation</a> to get a list of the network interfaces available on a gateway.</p> <p>Valid Values: A valid IP address.</p>',
+    }),
+    ClientToken: ClientTokenSchema.openapi({
+      description:
+        'A unique identifier that you use to retry a request. If you retry a request, use the same <code>ClientToken</code> you specified in the initial request.',
+    }),
+    KMSEncrypted: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    KMSKey: KMSKeySchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value can only be set when <code>KMSEncrypted</code> is <code>true</code>. Optional.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        "<p>A list of up to 50 tags that you can assign to a cached volume. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers that you can represent in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256 characters.</p> </note>",
+    }),
   })
   .openapi({
     required: [
@@ -761,13 +576,9 @@ const FileShareARNSchema = z
 
 const CreateNFSFileShareOutputSchema = z
   .object({
-    FileShareARN: FileShareARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the newly created file share.',
-        }),
-    ).exactOptional(),
+    FileShareARN: FileShareARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the newly created file share.',
+    }),
   })
   .openapi({ description: 'CreateNFSFileShareOutput', required: [] })
   .openapi('CreateNFSFileShareOutput')
@@ -783,38 +594,22 @@ const PermissionIdSchema = z.int().min(0).max(4294967294).openapi('PermissionId'
 
 const NFSFileShareDefaultsSchema = z
   .object({
-    FileMode: PermissionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Unix file mode in the form "nnnn". For example, <code>0666</code> represents the default file mode inside the file share. The default value is <code>0666</code>.',
-        }),
-    ).exactOptional(),
-    DirectoryMode: PermissionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Unix directory mode in the form "nnnn". For example, <code>0666</code> represents the default access mode for all directories inside the file share. The default value is <code>0777</code>.',
-        }),
-    ).exactOptional(),
-    GroupId: PermissionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default group ID for the file share (unless the files have another group ID specified). The default value is <code>nfsnobody</code>.',
-        }),
-    ).exactOptional(),
-    OwnerId: PermissionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default owner ID for files in the file share (unless the files have another owner ID specified). The default value is <code>nfsnobody</code>.',
-        }),
-    ).exactOptional(),
+    FileMode: PermissionModeSchema.exactOptional().openapi({
+      description:
+        'The Unix file mode in the form "nnnn". For example, <code>0666</code> represents the default file mode inside the file share. The default value is <code>0666</code>.',
+    }),
+    DirectoryMode: PermissionModeSchema.exactOptional().openapi({
+      description:
+        'The Unix directory mode in the form "nnnn". For example, <code>0666</code> represents the default access mode for all directories inside the file share. The default value is <code>0777</code>.',
+    }),
+    GroupId: PermissionIdSchema.exactOptional().openapi({
+      description:
+        'The default group ID for the file share (unless the files have another group ID specified). The default value is <code>nfsnobody</code>.',
+    }),
+    OwnerId: PermissionIdSchema.exactOptional().openapi({
+      description:
+        'The default owner ID for files in the file share (unless the files have another owner ID specified). The default value is <code>nfsnobody</code>.',
+    }),
   })
   .openapi({
     description:
@@ -912,163 +707,87 @@ const DNSHostNameSchema = z
 
 const CreateNFSFileShareInputSchema = z
   .object({
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string value that you supply that is used by S3 File Gateway to ensure idempotent file share creation.',
-        }),
-    ),
-    NFSFileShareDefaults: NFSFileShareDefaultsSchema.and(
-      z.any().openapi({ description: 'File share default values. Optional.' }),
-    ).exactOptional(),
-    GatewayARN: GatewayARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the S3 File Gateway on which you want to create a file share.',
-        }),
-    ),
-    KMSEncrypted: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    KMSKey: KMSKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value can only be set when <code>KMSEncrypted</code> is <code>true</code>. Optional.',
-        }),
-    ).exactOptional(),
-    Role: RoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Identity and Access Management (IAM) role that an S3 File Gateway assumes when it accesses the underlying storage.',
-        }),
-    ),
-    LocationARN: LocationARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A custom ARN for the backend storage used for storing data for file shares. It includes a resource ARN with an optional prefix concatenation. The prefix must end with a forward slash (/).</p> <note> <p>You can specify LocationARN as a bucket ARN, access point ARN or access point alias, as shown in the following examples.</p> <p>Bucket ARN:</p> <p> <code>arn:aws:s3:::my-bucket/prefix/</code> </p> <p>Access point ARN:</p> <p> <code>arn:aws:s3:region:account-id:accesspoint/access-point-name/prefix/</code> </p> <p>If you specify an access point, the bucket policy must be configured to delegate access control to the access point. For information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-policies.html#access-points-delegating-control">Delegating access control to access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>Access point alias:</p> <p> <code>test-ap-ab123cdef4gehijklmn5opqrstuvuse1a-s3alias</code> </p> </note>',
-        }),
-    ),
-    DefaultStorageClass: StorageClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>',
-        }),
-    ).exactOptional(),
-    ObjectACL: ObjectACLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that sets the access control list (ACL) permission for objects in the S3 bucket that a S3 File Gateway puts objects into. The default value is <code>private</code>.',
-        }),
-    ).exactOptional(),
-    ClientList: FileShareClientListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of clients that are allowed to access the S3 File Gateway. The list must contain either valid IP addresses or valid CIDR blocks.',
-        }),
-    ).exactOptional(),
-    Squash: SquashSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that maps a user to anonymous user.</p> <p>Valid values are the following:</p> <ul> <li> <p> <code>RootSquash</code>: Only root is mapped to anonymous user.</p> </li> <li> <p> <code>NoSquash</code>: No one is mapped to anonymous user.</p> </li> <li> <p> <code>AllSquash</code>: Everyone is mapped to anonymous user.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ReadOnly: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that sets the write status of a file share. Set this value to <code>true</code> to set the write status to read-only, otherwise set to <code>false</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    GuessMIMETypeEnabled: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that enables guessing of the MIME type for uploaded objects based on file extensions. Set this value to <code>true</code> to enable MIME type guessing, otherwise set to <code>false</code>. The default value is <code>true</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    RequesterPays: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that sets who pays the cost of the request and the cost associated with data download from the S3 bucket. If this value is set to <code>true</code>, the requester pays the costs; otherwise, the S3 bucket owner pays. However, the S3 bucket owner always pays the cost of storing data.</p> <note> <p> <code>RequesterPays</code> is a configuration for the S3 bucket that backs the file share, so make sure that the configuration on the file share is the same as the S3 bucket configuration.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of up to 50 tags that can be assigned to the NFS file share. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
-        }),
-    ).exactOptional(),
-    FileShareName: FileShareNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the file share. Optional.</p> <note> <p> <code>FileShareName</code> must be set if an S3 prefix name is set in <code>LocationARN</code>, or if an access point or access point alias is used.</p> </note>',
-        }),
-    ).exactOptional(),
-    CacheAttributes: CacheAttributesSchema.and(
-      z.any().openapi({ description: 'Specifies refresh cache information for the file share.' }),
-    ).exactOptional(),
-    NotificationPolicy: NotificationPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The notification policy of the file share. <code>SettlingTimeInSeconds</code> controls the number of seconds to wait after the last point in time a client wrote to a file before generating an <code>ObjectUploaded</code> notification. Because clients can make many small writes to files, it\'s best to set this parameter for as long as possible to avoid generating multiple notifications for the same file in a small time period.</p> <note> <p> <code>SettlingTimeInSeconds</code> has no effect on the timing of the object uploading to Amazon S3, only the timing of the notification.</p> </note> <p>The following example sets <code>NotificationPolicy</code> on with <code>SettlingTimeInSeconds</code> set to 60.</p> <p> <code>{\\"Upload\\": {\\"SettlingTimeInSeconds\\": 60}}</code> </p> <p>The following example sets <code>NotificationPolicy</code> off.</p> <p> <code>{}</code> </p>',
-        }),
-    ).exactOptional(),
-    VPCEndpointDNSName: DNSHostNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the DNS name for the VPC endpoint that the NFS file share uses to connect to Amazon S3.</p> <note> <p>This parameter is required for NFS file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.</p> </note>',
-        }),
-    ).exactOptional(),
-    BucketRegion: RegionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the Region of the S3 bucket where the NFS file share stores files.</p> <note> <p>This parameter is required for NFS file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.</p> </note>',
-        }),
-    ).exactOptional(),
-    AuditDestinationARN: AuditDestinationARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the storage used for audit logs.',
-        }),
-    ).exactOptional(),
+    ClientToken: ClientTokenSchema.openapi({
+      description:
+        'A unique string value that you supply that is used by S3 File Gateway to ensure idempotent file share creation.',
+    }),
+    NFSFileShareDefaults: NFSFileShareDefaultsSchema.exactOptional().openapi({
+      description: 'File share default values. Optional.',
+    }),
+    GatewayARN: GatewayARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the S3 File Gateway on which you want to create a file share.',
+    }),
+    KMSEncrypted: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    KMSKey: KMSKeySchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value can only be set when <code>KMSEncrypted</code> is <code>true</code>. Optional.',
+    }),
+    Role: RoleSchema.openapi({
+      description:
+        'The ARN of the Identity and Access Management (IAM) role that an S3 File Gateway assumes when it accesses the underlying storage.',
+    }),
+    LocationARN: LocationARNSchema.openapi({
+      description:
+        '<p>A custom ARN for the backend storage used for storing data for file shares. It includes a resource ARN with an optional prefix concatenation. The prefix must end with a forward slash (/).</p> <note> <p>You can specify LocationARN as a bucket ARN, access point ARN or access point alias, as shown in the following examples.</p> <p>Bucket ARN:</p> <p> <code>arn:aws:s3:::my-bucket/prefix/</code> </p> <p>Access point ARN:</p> <p> <code>arn:aws:s3:region:account-id:accesspoint/access-point-name/prefix/</code> </p> <p>If you specify an access point, the bucket policy must be configured to delegate access control to the access point. For information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-policies.html#access-points-delegating-control">Delegating access control to access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>Access point alias:</p> <p> <code>test-ap-ab123cdef4gehijklmn5opqrstuvuse1a-s3alias</code> </p> </note>',
+    }),
+    DefaultStorageClass: StorageClassSchema.exactOptional().openapi({
+      description:
+        '<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>',
+    }),
+    ObjectACL: ObjectACLSchema.exactOptional().openapi({
+      description:
+        'A value that sets the access control list (ACL) permission for objects in the S3 bucket that a S3 File Gateway puts objects into. The default value is <code>private</code>.',
+    }),
+    ClientList: FileShareClientListSchema.exactOptional().openapi({
+      description:
+        'The list of clients that are allowed to access the S3 File Gateway. The list must contain either valid IP addresses or valid CIDR blocks.',
+    }),
+    Squash: SquashSchema.exactOptional().openapi({
+      description:
+        '<p>A value that maps a user to anonymous user.</p> <p>Valid values are the following:</p> <ul> <li> <p> <code>RootSquash</code>: Only root is mapped to anonymous user.</p> </li> <li> <p> <code>NoSquash</code>: No one is mapped to anonymous user.</p> </li> <li> <p> <code>AllSquash</code>: Everyone is mapped to anonymous user.</p> </li> </ul>',
+    }),
+    ReadOnly: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that sets the write status of a file share. Set this value to <code>true</code> to set the write status to read-only, otherwise set to <code>false</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    GuessMIMETypeEnabled: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that enables guessing of the MIME type for uploaded objects based on file extensions. Set this value to <code>true</code> to enable MIME type guessing, otherwise set to <code>false</code>. The default value is <code>true</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    RequesterPays: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that sets who pays the cost of the request and the cost associated with data download from the S3 bucket. If this value is set to <code>true</code>, the requester pays the costs; otherwise, the S3 bucket owner pays. However, the S3 bucket owner always pays the cost of storing data.</p> <note> <p> <code>RequesterPays</code> is a configuration for the S3 bucket that backs the file share, so make sure that the configuration on the file share is the same as the S3 bucket configuration.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        "<p>A list of up to 50 tags that can be assigned to the NFS file share. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
+    }),
+    FileShareName: FileShareNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the file share. Optional.</p> <note> <p> <code>FileShareName</code> must be set if an S3 prefix name is set in <code>LocationARN</code>, or if an access point or access point alias is used.</p> </note>',
+    }),
+    CacheAttributes: CacheAttributesSchema.exactOptional().openapi({
+      description: 'Specifies refresh cache information for the file share.',
+    }),
+    NotificationPolicy: NotificationPolicySchema.exactOptional().openapi({
+      description:
+        '<p>The notification policy of the file share. <code>SettlingTimeInSeconds</code> controls the number of seconds to wait after the last point in time a client wrote to a file before generating an <code>ObjectUploaded</code> notification. Because clients can make many small writes to files, it\'s best to set this parameter for as long as possible to avoid generating multiple notifications for the same file in a small time period.</p> <note> <p> <code>SettlingTimeInSeconds</code> has no effect on the timing of the object uploading to Amazon S3, only the timing of the notification.</p> </note> <p>The following example sets <code>NotificationPolicy</code> on with <code>SettlingTimeInSeconds</code> set to 60.</p> <p> <code>{\\"Upload\\": {\\"SettlingTimeInSeconds\\": 60}}</code> </p> <p>The following example sets <code>NotificationPolicy</code> off.</p> <p> <code>{}</code> </p>',
+    }),
+    VPCEndpointDNSName: DNSHostNameSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the DNS name for the VPC endpoint that the NFS file share uses to connect to Amazon S3.</p> <note> <p>This parameter is required for NFS file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.</p> </note>',
+    }),
+    BucketRegion: RegionIdSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the Region of the S3 bucket where the NFS file share stores files.</p> <note> <p>This parameter is required for NFS file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.</p> </note>',
+    }),
+    AuditDestinationARN: AuditDestinationARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the storage used for audit logs.',
+    }),
   })
   .openapi({
     required: ['ClientToken', 'GatewayARN', 'Role', 'LocationARN'],
@@ -1079,13 +798,9 @@ const CreateNFSFileShareInputSchema = z
 
 const CreateSMBFileShareOutputSchema = z
   .object({
-    FileShareARN: FileShareARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the newly created file share.',
-        }),
-    ).exactOptional(),
+    FileShareARN: FileShareARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the newly created file share.',
+    }),
   })
   .openapi({ description: 'CreateSMBFileShareOutput', required: [] })
   .openapi('CreateSMBFileShareOutput')
@@ -1110,207 +825,107 @@ const CaseSensitivitySchema = z
 
 const CreateSMBFileShareInputSchema = z
   .object({
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string value that you supply that is used by S3 File Gateway to ensure idempotent file share creation.',
-        }),
-    ),
-    GatewayARN: GatewayARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the S3 File Gateway on which you want to create a file share.',
-        }),
-    ),
-    KMSEncrypted: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    KMSKey: KMSKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value can only be set when <code>KMSEncrypted</code> is <code>true</code>. Optional.',
-        }),
-    ).exactOptional(),
-    Role: RoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Identity and Access Management (IAM) role that an S3 File Gateway assumes when it accesses the underlying storage.',
-        }),
-    ),
-    LocationARN: LocationARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A custom ARN for the backend storage used for storing data for file shares. It includes a resource ARN with an optional prefix concatenation. The prefix must end with a forward slash (/).</p> <note> <p>You can specify LocationARN as a bucket ARN, access point ARN or access point alias, as shown in the following examples.</p> <p>Bucket ARN:</p> <p> <code>arn:aws:s3:::my-bucket/prefix/</code> </p> <p>Access point ARN:</p> <p> <code>arn:aws:s3:region:account-id:accesspoint/access-point-name/prefix/</code> </p> <p>If you specify an access point, the bucket policy must be configured to delegate access control to the access point. For information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-policies.html#access-points-delegating-control">Delegating access control to access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>Access point alias:</p> <p> <code>test-ap-ab123cdef4gehijklmn5opqrstuvuse1a-s3alias</code> </p> </note>',
-        }),
-    ),
-    DefaultStorageClass: StorageClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>',
-        }),
-    ).exactOptional(),
-    ObjectACL: ObjectACLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that sets the access control list (ACL) permission for objects in the S3 bucket that a S3 File Gateway puts objects into. The default value is <code>private</code>.',
-        }),
-    ).exactOptional(),
-    ReadOnly: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that sets the write status of a file share. Set this value to <code>true</code> to set the write status to read-only, otherwise set to <code>false</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    GuessMIMETypeEnabled: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that enables guessing of the MIME type for uploaded objects based on file extensions. Set this value to <code>true</code> to enable MIME type guessing, otherwise set to <code>false</code>. The default value is <code>true</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    RequesterPays: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that sets who pays the cost of the request and the cost associated with data download from the S3 bucket. If this value is set to <code>true</code>, the requester pays the costs; otherwise, the S3 bucket owner pays. However, the S3 bucket owner always pays the cost of storing data.</p> <note> <p> <code>RequesterPays</code> is a configuration for the S3 bucket that backs the file share, so make sure that the configuration on the file share is the same as the S3 bucket configuration.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    SMBACLEnabled: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set this value to <code>true</code> to enable access control list (ACL) on the SMB file share. Set it to <code>false</code> to map file and directory permissions to the POSIX permissions.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/storagegateway/latest/userguide/smb-acl.html">Using Microsoft Windows ACLs to control access to an SMB file share</a> in the <i>Storage Gateway User Guide</i>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    AccessBasedEnumeration: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The files and folders on this share will only be visible to users with read access.',
-        }),
-    ).exactOptional(),
-    AdminUserList: UserListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of users or groups in the Active Directory that will be granted administrator privileges on the file share. These users can do all file operations as the super-user. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>.</p> <important> <p>Use this option very carefully, because any user in this list can do anything they like on the file share, regardless of file permissions.</p> </important>',
-        }),
-    ).exactOptional(),
-    ValidUserList: UserListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of users or groups in the Active Directory that are allowed to access the file <a href=""/> share. A group must be prefixed with the @ character. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>. Can only be set if Authentication is set to <code>ActiveDirectory</code>.',
-        }),
-    ).exactOptional(),
-    InvalidUserList: UserListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of users or groups in the Active Directory that are not allowed to access the file share. A group must be prefixed with the @ character. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>. Can only be set if Authentication is set to <code>ActiveDirectory</code>.',
-        }),
-    ).exactOptional(),
-    AuditDestinationARN: AuditDestinationARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the storage used for audit logs.',
-        }),
-    ).exactOptional(),
-    Authentication: AuthenticationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The authentication method that users use to access the file share. The default is <code>ActiveDirectory</code>.</p> <p>Valid Values: <code>ActiveDirectory</code> | <code>GuestAccess</code> </p>',
-        }),
-    ).exactOptional(),
-    CaseSensitivity: CaseSensitivitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The case of an object name in an Amazon S3 bucket. For <code>ClientSpecified</code>, the client determines the case sensitivity. For <code>CaseSensitive</code>, the gateway determines the case sensitivity. The default value is <code>ClientSpecified</code>.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of up to 50 tags that can be assigned to the NFS file share. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
-        }),
-    ).exactOptional(),
-    FileShareName: FileShareNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the file share. Optional.</p> <note> <p> <code>FileShareName</code> must be set if an S3 prefix name is set in <code>LocationARN</code>, or if an access point or access point alias is used.</p> </note>',
-        }),
-    ).exactOptional(),
-    CacheAttributes: CacheAttributesSchema.and(
-      z.any().openapi({ description: 'Specifies refresh cache information for the file share.' }),
-    ).exactOptional(),
-    NotificationPolicy: NotificationPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The notification policy of the file share. <code>SettlingTimeInSeconds</code> controls the number of seconds to wait after the last point in time a client wrote to a file before generating an <code>ObjectUploaded</code> notification. Because clients can make many small writes to files, it\'s best to set this parameter for as long as possible to avoid generating multiple notifications for the same file in a small time period.</p> <note> <p> <code>SettlingTimeInSeconds</code> has no effect on the timing of the object uploading to Amazon S3, only the timing of the notification.</p> </note> <p>The following example sets <code>NotificationPolicy</code> on with <code>SettlingTimeInSeconds</code> set to 60.</p> <p> <code>{\\"Upload\\": {\\"SettlingTimeInSeconds\\": 60}}</code> </p> <p>The following example sets <code>NotificationPolicy</code> off.</p> <p> <code>{}</code> </p>',
-        }),
-    ).exactOptional(),
-    VPCEndpointDNSName: DNSHostNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the DNS name for the VPC endpoint that the SMB file share uses to connect to Amazon S3.</p> <note> <p>This parameter is required for SMB file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.</p> </note>',
-        }),
-    ).exactOptional(),
-    BucketRegion: RegionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the Region of the S3 bucket where the SMB file share stores files.</p> <note> <p>This parameter is required for SMB file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.</p> </note>',
-        }),
-    ).exactOptional(),
-    OplocksEnabled: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether opportunistic locking is enabled for the SMB file share.</p> <note> <p>Enabling opportunistic locking on case-sensitive shares is not recommended for workloads that involve access to files with the same name in different case.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
+    ClientToken: ClientTokenSchema.openapi({
+      description:
+        'A unique string value that you supply that is used by S3 File Gateway to ensure idempotent file share creation.',
+    }),
+    GatewayARN: GatewayARNSchema.openapi({
+      description: 'The ARN of the S3 File Gateway on which you want to create a file share.',
+    }),
+    KMSEncrypted: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    KMSKey: KMSKeySchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value can only be set when <code>KMSEncrypted</code> is <code>true</code>. Optional.',
+    }),
+    Role: RoleSchema.openapi({
+      description:
+        'The ARN of the Identity and Access Management (IAM) role that an S3 File Gateway assumes when it accesses the underlying storage.',
+    }),
+    LocationARN: LocationARNSchema.openapi({
+      description:
+        '<p>A custom ARN for the backend storage used for storing data for file shares. It includes a resource ARN with an optional prefix concatenation. The prefix must end with a forward slash (/).</p> <note> <p>You can specify LocationARN as a bucket ARN, access point ARN or access point alias, as shown in the following examples.</p> <p>Bucket ARN:</p> <p> <code>arn:aws:s3:::my-bucket/prefix/</code> </p> <p>Access point ARN:</p> <p> <code>arn:aws:s3:region:account-id:accesspoint/access-point-name/prefix/</code> </p> <p>If you specify an access point, the bucket policy must be configured to delegate access control to the access point. For information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-policies.html#access-points-delegating-control">Delegating access control to access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>Access point alias:</p> <p> <code>test-ap-ab123cdef4gehijklmn5opqrstuvuse1a-s3alias</code> </p> </note>',
+    }),
+    DefaultStorageClass: StorageClassSchema.exactOptional().openapi({
+      description:
+        '<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>',
+    }),
+    ObjectACL: ObjectACLSchema.exactOptional().openapi({
+      description:
+        'A value that sets the access control list (ACL) permission for objects in the S3 bucket that a S3 File Gateway puts objects into. The default value is <code>private</code>.',
+    }),
+    ReadOnly: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that sets the write status of a file share. Set this value to <code>true</code> to set the write status to read-only, otherwise set to <code>false</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    GuessMIMETypeEnabled: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that enables guessing of the MIME type for uploaded objects based on file extensions. Set this value to <code>true</code> to enable MIME type guessing, otherwise set to <code>false</code>. The default value is <code>true</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    RequesterPays: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that sets who pays the cost of the request and the cost associated with data download from the S3 bucket. If this value is set to <code>true</code>, the requester pays the costs; otherwise, the S3 bucket owner pays. However, the S3 bucket owner always pays the cost of storing data.</p> <note> <p> <code>RequesterPays</code> is a configuration for the S3 bucket that backs the file share, so make sure that the configuration on the file share is the same as the S3 bucket configuration.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    SMBACLEnabled: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>Set this value to <code>true</code> to enable access control list (ACL) on the SMB file share. Set it to <code>false</code> to map file and directory permissions to the POSIX permissions.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/storagegateway/latest/userguide/smb-acl.html">Using Microsoft Windows ACLs to control access to an SMB file share</a> in the <i>Storage Gateway User Guide</i>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    AccessBasedEnumeration: Boolean2Schema.exactOptional().openapi({
+      description:
+        'The files and folders on this share will only be visible to users with read access.',
+    }),
+    AdminUserList: UserListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of users or groups in the Active Directory that will be granted administrator privileges on the file share. These users can do all file operations as the super-user. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>.</p> <important> <p>Use this option very carefully, because any user in this list can do anything they like on the file share, regardless of file permissions.</p> </important>',
+    }),
+    ValidUserList: UserListSchema.exactOptional().openapi({
+      description:
+        'A list of users or groups in the Active Directory that are allowed to access the file <a href=""/> share. A group must be prefixed with the @ character. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>. Can only be set if Authentication is set to <code>ActiveDirectory</code>.',
+    }),
+    InvalidUserList: UserListSchema.exactOptional().openapi({
+      description:
+        'A list of users or groups in the Active Directory that are not allowed to access the file share. A group must be prefixed with the @ character. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>. Can only be set if Authentication is set to <code>ActiveDirectory</code>.',
+    }),
+    AuditDestinationARN: AuditDestinationARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the storage used for audit logs.',
+    }),
+    Authentication: AuthenticationSchema.exactOptional().openapi({
+      description:
+        '<p>The authentication method that users use to access the file share. The default is <code>ActiveDirectory</code>.</p> <p>Valid Values: <code>ActiveDirectory</code> | <code>GuestAccess</code> </p>',
+    }),
+    CaseSensitivity: CaseSensitivitySchema.exactOptional().openapi({
+      description:
+        'The case of an object name in an Amazon S3 bucket. For <code>ClientSpecified</code>, the client determines the case sensitivity. For <code>CaseSensitive</code>, the gateway determines the case sensitivity. The default value is <code>ClientSpecified</code>.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        "<p>A list of up to 50 tags that can be assigned to the NFS file share. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
+    }),
+    FileShareName: FileShareNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the file share. Optional.</p> <note> <p> <code>FileShareName</code> must be set if an S3 prefix name is set in <code>LocationARN</code>, or if an access point or access point alias is used.</p> </note>',
+    }),
+    CacheAttributes: CacheAttributesSchema.exactOptional().openapi({
+      description: 'Specifies refresh cache information for the file share.',
+    }),
+    NotificationPolicy: NotificationPolicySchema.exactOptional().openapi({
+      description:
+        '<p>The notification policy of the file share. <code>SettlingTimeInSeconds</code> controls the number of seconds to wait after the last point in time a client wrote to a file before generating an <code>ObjectUploaded</code> notification. Because clients can make many small writes to files, it\'s best to set this parameter for as long as possible to avoid generating multiple notifications for the same file in a small time period.</p> <note> <p> <code>SettlingTimeInSeconds</code> has no effect on the timing of the object uploading to Amazon S3, only the timing of the notification.</p> </note> <p>The following example sets <code>NotificationPolicy</code> on with <code>SettlingTimeInSeconds</code> set to 60.</p> <p> <code>{\\"Upload\\": {\\"SettlingTimeInSeconds\\": 60}}</code> </p> <p>The following example sets <code>NotificationPolicy</code> off.</p> <p> <code>{}</code> </p>',
+    }),
+    VPCEndpointDNSName: DNSHostNameSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the DNS name for the VPC endpoint that the SMB file share uses to connect to Amazon S3.</p> <note> <p>This parameter is required for SMB file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.</p> </note>',
+    }),
+    BucketRegion: RegionIdSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the Region of the S3 bucket where the SMB file share stores files.</p> <note> <p>This parameter is required for SMB file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.</p> </note>',
+    }),
+    OplocksEnabled: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether opportunistic locking is enabled for the SMB file share.</p> <note> <p>Enabling opportunistic locking on case-sensitive shares is not recommended for workloads that involve access to files with the same name in different case.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
   })
   .openapi({
     required: ['ClientToken', 'GatewayARN', 'Role', 'LocationARN'],
@@ -1321,22 +936,13 @@ const CreateSMBFileShareInputSchema = z
 
 const CreateSnapshotOutputSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the volume of which the snapshot was taken.',
-        }),
-    ).exactOptional(),
-    SnapshotId: SnapshotIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The snapshot ID that is used to refer to the snapshot in future operations such as describing snapshots (Amazon Elastic Compute Cloud API <code>DescribeSnapshots</code>) or creating a volume from a snapshot (<a>CreateStorediSCSIVolume</a>).',
-        }),
-    ).exactOptional(),
+    VolumeARN: VolumeARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the volume of which the snapshot was taken.',
+    }),
+    SnapshotId: SnapshotIdSchema.exactOptional().openapi({
+      description:
+        'The snapshot ID that is used to refer to the snapshot in future operations such as describing snapshots (Amazon Elastic Compute Cloud API <code>DescribeSnapshots</code>) or creating a volume from a snapshot (<a>CreateStorediSCSIVolume</a>).',
+    }),
   })
   .openapi({
     example: {
@@ -1353,30 +959,18 @@ const SnapshotDescriptionSchema = z.string().min(1).max(255).openapi('SnapshotDe
 
 const CreateSnapshotInputSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the volume. Use the <a>ListVolumes</a> operation to return a list of gateway volumes.',
-        }),
-    ),
-    SnapshotDescription: SnapshotDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Textual description of the snapshot that appears in the Amazon EC2 console, Elastic Block Store snapshots panel in the <b>Description</b> field, and in the Storage Gateway snapshot <b>Details</b> pane, <b>Description</b> field.',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of up to 50 tags that can be assigned to a snapshot. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
-        }),
-    ).exactOptional(),
+    VolumeARN: VolumeARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the volume. Use the <a>ListVolumes</a> operation to return a list of gateway volumes.',
+    }),
+    SnapshotDescription: SnapshotDescriptionSchema.openapi({
+      description:
+        'Textual description of the snapshot that appears in the Amazon EC2 console, Elastic Block Store snapshots panel in the <b>Description</b> field, and in the Storage Gateway snapshot <b>Details</b> pane, <b>Description</b> field.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        "<p>A list of up to 50 tags that can be assigned to a snapshot. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
+    }),
   })
   .openapi({
     required: ['VolumeARN', 'SnapshotDescription'],
@@ -1392,20 +986,16 @@ const StringSchema = z.string().openapi('String')
 
 const CreateSnapshotFromVolumeRecoveryPointOutputSchema = z
   .object({
-    SnapshotId: SnapshotIdSchema.and(
-      z.any().openapi({ description: 'The ID of the snapshot.' }),
-    ).exactOptional(),
-    VolumeARN: VolumeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the iSCSI volume target. Use the <a>DescribeStorediSCSIVolumes</a> operation to return to retrieve the TargetARN for specified VolumeARN.',
-        }),
-    ).exactOptional(),
-    VolumeRecoveryPointTime: StringSchema.and(
-      z.any().openapi({ description: 'The time the volume was created from the recovery point.' }),
-    ).exactOptional(),
+    SnapshotId: SnapshotIdSchema.exactOptional().openapi({
+      description: 'The ID of the snapshot.',
+    }),
+    VolumeARN: VolumeARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the iSCSI volume target. Use the <a>DescribeStorediSCSIVolumes</a> operation to return to retrieve the TargetARN for specified VolumeARN.',
+    }),
+    VolumeRecoveryPointTime: StringSchema.exactOptional().openapi({
+      description: 'The time the volume was created from the recovery point.',
+    }),
   })
   .openapi({
     example: {
@@ -1420,30 +1010,18 @@ const CreateSnapshotFromVolumeRecoveryPointOutputSchema = z
 
 const CreateSnapshotFromVolumeRecoveryPointInputSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the iSCSI volume target. Use the <a>DescribeStorediSCSIVolumes</a> operation to return to retrieve the TargetARN for specified VolumeARN.',
-        }),
-    ),
-    SnapshotDescription: SnapshotDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Textual description of the snapshot that appears in the Amazon EC2 console, Elastic Block Store snapshots panel in the <b>Description</b> field, and in the Storage Gateway snapshot <b>Details</b> pane, <b>Description</b> field.',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of up to 50 tags that can be assigned to a snapshot. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
-        }),
-    ).exactOptional(),
+    VolumeARN: VolumeARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the iSCSI volume target. Use the <a>DescribeStorediSCSIVolumes</a> operation to return to retrieve the TargetARN for specified VolumeARN.',
+    }),
+    SnapshotDescription: SnapshotDescriptionSchema.openapi({
+      description:
+        'Textual description of the snapshot that appears in the Amazon EC2 console, Elastic Block Store snapshots panel in the <b>Description</b> field, and in the Storage Gateway snapshot <b>Details</b> pane, <b>Description</b> field.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        "<p>A list of up to 50 tags that can be assigned to a snapshot. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
+    }),
   })
   .openapi({
     required: ['VolumeARN', 'SnapshotDescription'],
@@ -1453,20 +1031,16 @@ const CreateSnapshotFromVolumeRecoveryPointInputSchema = z
 
 const CreateStorediSCSIVolumeOutputSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the configured volume.' }),
-    ).exactOptional(),
-    VolumeSizeInBytes: LongSchema.and(
-      z.any().openapi({ description: 'The size of the volume in bytes.' }),
-    ).exactOptional(),
-    TargetARN: TargetARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the volume target, which includes the iSCSI name that initiators can use to connect to the target.',
-        }),
-    ).exactOptional(),
+    VolumeARN: VolumeARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the configured volume.',
+    }),
+    VolumeSizeInBytes: LongSchema.exactOptional().openapi({
+      description: 'The size of the volume in bytes.',
+    }),
+    TargetARN: TargetARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the volume target, which includes the iSCSI name that initiators can use to connect to the target.',
+    }),
   })
   .openapi({
     example: {
@@ -1484,70 +1058,38 @@ const CreateStorediSCSIVolumeOutputSchema = z
 const CreateStorediSCSIVolumeInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    DiskId: DiskIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the gateway local disk that is configured as a stored volume. Use <a href="https://docs.aws.amazon.com/storagegateway/latest/userguide/API_ListLocalDisks.html">ListLocalDisks</a> to list disk IDs for a gateway.',
-        }),
-    ),
-    SnapshotId: SnapshotIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The snapshot ID (e.g., "snap-1122aabb") of the snapshot to restore as the new stored volume. Specify this field if you want to create the iSCSI storage volume from a snapshot; otherwise, do not include this field. To list snapshots for your account use <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeSnapshots.html">DescribeSnapshots</a> in the <i>Amazon Elastic Compute Cloud API Reference</i>.',
-        }),
-    ).exactOptional(),
-    PreserveExistingData: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to <code>true</code> if you want to preserve the data on the local disk. Otherwise, set to <code>false</code> to create an empty volume.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ),
-    TargetName: TargetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the iSCSI target used by an initiator to connect to a volume and used as a suffix for the target ARN. For example, specifying <code>TargetName</code> as <i>myvolume</i> results in the target ARN of <code>arn:aws:storagegateway:us-east-2:111122223333:gateway/sgw-12A3456B/target/iqn.1997-05.com.amazon:myvolume</code>. The target name must be unique across all volumes on a gateway.</p> <p>If you don't specify a value, Storage Gateway uses the value that was previously used for this volume as the new target name.</p>",
-        }),
-    ),
-    NetworkInterfaceId: NetworkInterfaceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The network interface of the gateway on which to expose the iSCSI target. Only IPv4 addresses are accepted. Use <a>DescribeGatewayInformation</a> to get a list of the network interfaces available on a gateway.</p> <p>Valid Values: A valid IP address.</p>',
-        }),
-    ),
-    KMSEncrypted: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    KMSKey: KMSKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value can only be set when <code>KMSEncrypted</code> is <code>true</code>. Optional.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of up to 50 tags that can be assigned to a stored volume. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
-        }),
-    ).exactOptional(),
+    DiskId: DiskIdSchema.openapi({
+      description:
+        'The unique identifier for the gateway local disk that is configured as a stored volume. Use <a href="https://docs.aws.amazon.com/storagegateway/latest/userguide/API_ListLocalDisks.html">ListLocalDisks</a> to list disk IDs for a gateway.',
+    }),
+    SnapshotId: SnapshotIdSchema.exactOptional().openapi({
+      description:
+        'The snapshot ID (e.g., "snap-1122aabb") of the snapshot to restore as the new stored volume. Specify this field if you want to create the iSCSI storage volume from a snapshot; otherwise, do not include this field. To list snapshots for your account use <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeSnapshots.html">DescribeSnapshots</a> in the <i>Amazon Elastic Compute Cloud API Reference</i>.',
+    }),
+    PreserveExistingData: BooleanSchema.openapi({
+      description:
+        '<p>Set to <code>true</code> if you want to preserve the data on the local disk. Otherwise, set to <code>false</code> to create an empty volume.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    TargetName: TargetNameSchema.openapi({
+      description:
+        "<p>The name of the iSCSI target used by an initiator to connect to a volume and used as a suffix for the target ARN. For example, specifying <code>TargetName</code> as <i>myvolume</i> results in the target ARN of <code>arn:aws:storagegateway:us-east-2:111122223333:gateway/sgw-12A3456B/target/iqn.1997-05.com.amazon:myvolume</code>. The target name must be unique across all volumes on a gateway.</p> <p>If you don't specify a value, Storage Gateway uses the value that was previously used for this volume as the new target name.</p>",
+    }),
+    NetworkInterfaceId: NetworkInterfaceIdSchema.openapi({
+      description:
+        '<p>The network interface of the gateway on which to expose the iSCSI target. Only IPv4 addresses are accepted. Use <a>DescribeGatewayInformation</a> to get a list of the network interfaces available on a gateway.</p> <p>Valid Values: A valid IP address.</p>',
+    }),
+    KMSEncrypted: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    KMSKey: KMSKeySchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value can only be set when <code>KMSEncrypted</code> is <code>true</code>. Optional.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        "<p>A list of up to 50 tags that can be assigned to a stored volume. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
+    }),
   })
   .openapi({
     required: ['GatewayARN', 'DiskId', 'PreserveExistingData', 'TargetName', 'NetworkInterfaceId'],
@@ -1561,14 +1103,10 @@ const PoolARNSchema = z.string().min(50).max(500).openapi('PoolARN')
 
 const CreateTapePoolOutputSchema = z
   .object({
-    PoolARN: PoolARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique Amazon Resource Name (ARN) that represents the custom tape pool. Use the <a>ListTapePools</a> operation to return a list of tape pools for your account and Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
+    PoolARN: PoolARNSchema.exactOptional().openapi({
+      description:
+        'The unique Amazon Resource Name (ARN) that represents the custom tape pool. Use the <a>ListTapePools</a> operation to return a list of tape pools for your account and Amazon Web Services Region.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateTapePoolOutput')
@@ -1590,55 +1128,33 @@ const RetentionLockTimeInDaysSchema = z.int().min(0).max(36500).openapi('Retenti
 
 const CreateTapePoolInputSchema = z
   .object({
-    PoolName: PoolNameSchema.and(
-      z.any().openapi({ description: 'The name of the new custom tape pool.' }),
-    ),
-    StorageClass: TapeStorageClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The storage class that is associated with the new custom pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.',
-        }),
-    ),
-    RetentionLockType: RetentionLockTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tape retention lock can be configured in two modes. When configured in governance mode, Amazon Web Services accounts with specific IAM permissions are authorized to remove the tape retention lock from archived virtual tapes. When configured in compliance mode, the tape retention lock cannot be removed by any user, including the root Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    RetentionLockTimeInDays: RetentionLockTimeInDaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tape retention lock time is set in days. Tape retention lock can be enabled for up to 100 years (36,500 days).',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of up to 50 tags that can be assigned to tape pool. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
-        }),
-    ).exactOptional(),
+    PoolName: PoolNameSchema.openapi({ description: 'The name of the new custom tape pool.' }),
+    StorageClass: TapeStorageClassSchema.openapi({
+      description:
+        'The storage class that is associated with the new custom pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.',
+    }),
+    RetentionLockType: RetentionLockTypeSchema.exactOptional().openapi({
+      description:
+        'Tape retention lock can be configured in two modes. When configured in governance mode, Amazon Web Services accounts with specific IAM permissions are authorized to remove the tape retention lock from archived virtual tapes. When configured in compliance mode, the tape retention lock cannot be removed by any user, including the root Amazon Web Services account.',
+    }),
+    RetentionLockTimeInDays: RetentionLockTimeInDaysSchema.exactOptional().openapi({
+      description:
+        'Tape retention lock time is set in days. Tape retention lock can be enabled for up to 100 years (36,500 days).',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        "<p>A list of up to 50 tags that can be assigned to tape pool. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
+    }),
   })
   .openapi({ required: ['PoolName', 'StorageClass'], title: 'CreateTapePoolInput' })
   .openapi('CreateTapePoolInput')
 
 const CreateTapeWithBarcodeOutputSchema = z
   .object({
-    TapeARN: TapeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique Amazon Resource Name (ARN) that represents the virtual tape that was created.',
-        }),
-    ).exactOptional(),
+    TapeARN: TapeARNSchema.exactOptional().openapi({
+      description:
+        'A unique Amazon Resource Name (ARN) that represents the virtual tape that was created.',
+    }),
   })
   .openapi({
     example: { TapeARN: 'arn:aws:storagegateway:us-east-1:999999999999:tape/TEST12345' },
@@ -1658,70 +1174,38 @@ const TapeBarcodeSchema = z
 
 const CreateTapeWithBarcodeInputSchema = z
   .object({
-    GatewayARN: GatewayARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique Amazon Resource Name (ARN) that represents the gateway to associate the virtual tape with. Use the <a>ListGateways</a> operation to return a list of gateways for your account and Amazon Web Services Region.',
-        }),
-    ),
-    TapeSizeInBytes: TapeSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The size, in bytes, of the virtual tape that you want to create.</p> <note> <p>The size must be aligned by gigabyte (1024*1024*1024 bytes).</p> </note>',
-        }),
-    ),
-    TapeBarcode: TapeBarcodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The barcode that you want to assign to the tape.</p> <note> <p>Barcodes cannot be reused. This includes barcodes used for tapes that have been deleted.</p> </note>',
-        }),
-    ),
-    KMSEncrypted: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    KMSKey: KMSKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value can only be set when <code>KMSEncrypted</code> is <code>true</code>. Optional.',
-        }),
-    ).exactOptional(),
-    PoolId: PoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Deep Archive) that corresponds to the pool.',
-        }),
-    ).exactOptional(),
-    Worm: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to <code>TRUE</code> if the tape you are creating is to be configured as a write-once-read-many (WORM) tape.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of up to 50 tags that can be assigned to a virtual tape that has a barcode. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
-        }),
-    ).exactOptional(),
+    GatewayARN: GatewayARNSchema.openapi({
+      description:
+        'The unique Amazon Resource Name (ARN) that represents the gateway to associate the virtual tape with. Use the <a>ListGateways</a> operation to return a list of gateways for your account and Amazon Web Services Region.',
+    }),
+    TapeSizeInBytes: TapeSizeSchema.openapi({
+      description:
+        '<p>The size, in bytes, of the virtual tape that you want to create.</p> <note> <p>The size must be aligned by gigabyte (1024*1024*1024 bytes).</p> </note>',
+    }),
+    TapeBarcode: TapeBarcodeSchema.openapi({
+      description:
+        '<p>The barcode that you want to assign to the tape.</p> <note> <p>Barcodes cannot be reused. This includes barcodes used for tapes that have been deleted.</p> </note>',
+    }),
+    KMSEncrypted: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    KMSKey: KMSKeySchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value can only be set when <code>KMSEncrypted</code> is <code>true</code>. Optional.',
+    }),
+    PoolId: PoolIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Deep Archive) that corresponds to the pool.',
+    }),
+    Worm: BooleanSchema.exactOptional().openapi({
+      description:
+        'Set to <code>TRUE</code> if the tape you are creating is to be configured as a write-once-read-many (WORM) tape.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        "<p>A list of up to 50 tags that can be assigned to a virtual tape that has a barcode. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
+    }),
   })
   .openapi({
     required: ['GatewayARN', 'TapeSizeInBytes', 'TapeBarcode'],
@@ -1740,14 +1224,10 @@ const TapeARNsSchema = z
 
 const CreateTapesOutputSchema = z
   .object({
-    TapeARNs: TapeARNsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of unique Amazon Resource Names (ARNs) that represents the virtual tapes that were created.',
-        }),
-    ).exactOptional(),
+    TapeARNs: TapeARNsSchema.exactOptional().openapi({
+      description:
+        'A list of unique Amazon Resource Names (ARNs) that represents the virtual tapes that were created.',
+    }),
   })
   .openapi({
     example: {
@@ -1773,81 +1253,45 @@ const TapeBarcodePrefixSchema = z
 
 const CreateTapesInputSchema = z
   .object({
-    GatewayARN: GatewayARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique Amazon Resource Name (ARN) that represents the gateway to associate the virtual tapes with. Use the <a>ListGateways</a> operation to return a list of gateways for your account and Amazon Web Services Region.',
-        }),
-    ),
-    TapeSizeInBytes: TapeSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The size, in bytes, of the virtual tapes that you want to create.</p> <note> <p>The size must be aligned by gigabyte (1024*1024*1024 bytes).</p> </note>',
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique identifier that you use to retry a request. If you retry a request, use the same <code>ClientToken</code> you specified in the initial request.</p> <note> <p>Using the same <code>ClientToken</code> prevents creating the tape multiple times.</p> </note>',
-        }),
-    ),
-    NumTapesToCreate: NumTapesToCreateSchema.and(
-      z.any().openapi({ description: 'The number of virtual tapes that you want to create.' }),
-    ),
-    TapeBarcodePrefix: TapeBarcodePrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A prefix that you append to the barcode of the virtual tape you are creating. This prefix makes the barcode unique.</p> <note> <p>The prefix must be 1-4 characters in length and must be one of the uppercase letters from A to Z.</p> </note>',
-        }),
-    ),
-    KMSEncrypted: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    KMSKey: KMSKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value can only be set when <code>KMSEncrypted</code> is <code>true</code>. Optional.',
-        }),
-    ).exactOptional(),
-    PoolId: PoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.',
-        }),
-    ).exactOptional(),
-    Worm: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to <code>TRUE</code> if the tape you are creating is to be configured as a write-once-read-many (WORM) tape.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of up to 50 tags that can be assigned to a virtual tape. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
-        }),
-    ).exactOptional(),
+    GatewayARN: GatewayARNSchema.openapi({
+      description:
+        'The unique Amazon Resource Name (ARN) that represents the gateway to associate the virtual tapes with. Use the <a>ListGateways</a> operation to return a list of gateways for your account and Amazon Web Services Region.',
+    }),
+    TapeSizeInBytes: TapeSizeSchema.openapi({
+      description:
+        '<p>The size, in bytes, of the virtual tapes that you want to create.</p> <note> <p>The size must be aligned by gigabyte (1024*1024*1024 bytes).</p> </note>',
+    }),
+    ClientToken: ClientTokenSchema.openapi({
+      description:
+        '<p>A unique identifier that you use to retry a request. If you retry a request, use the same <code>ClientToken</code> you specified in the initial request.</p> <note> <p>Using the same <code>ClientToken</code> prevents creating the tape multiple times.</p> </note>',
+    }),
+    NumTapesToCreate: NumTapesToCreateSchema.openapi({
+      description: 'The number of virtual tapes that you want to create.',
+    }),
+    TapeBarcodePrefix: TapeBarcodePrefixSchema.openapi({
+      description:
+        '<p>A prefix that you append to the barcode of the virtual tape you are creating. This prefix makes the barcode unique.</p> <note> <p>The prefix must be 1-4 characters in length and must be one of the uppercase letters from A to Z.</p> </note>',
+    }),
+    KMSEncrypted: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    KMSKey: KMSKeySchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value can only be set when <code>KMSEncrypted</code> is <code>true</code>. Optional.',
+    }),
+    PoolId: PoolIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.',
+    }),
+    Worm: BooleanSchema.exactOptional().openapi({
+      description:
+        'Set to <code>TRUE</code> if the tape you are creating is to be configured as a write-once-read-many (WORM) tape.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        "<p>A list of up to 50 tags that can be assigned to a virtual tape. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
+    }),
   })
   .openapi({
     required: [
@@ -1887,14 +1331,10 @@ const BandwidthTypeSchema = z.string().min(3).max(25).openapi('BandwidthType')
 const DeleteBandwidthRateLimitInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    BandwidthType: BandwidthTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One of the BandwidthType values that indicates the gateway bandwidth rate limit to delete.</p> <p>Valid Values: <code>UPLOAD</code> | <code>DOWNLOAD</code> | <code>ALL</code> </p>',
-        }),
-    ),
+    BandwidthType: BandwidthTypeSchema.openapi({
+      description:
+        '<p>One of the BandwidthType values that indicates the gateway bandwidth rate limit to delete.</p> <p>Valid Values: <code>UPLOAD</code> | <code>DOWNLOAD</code> | <code>ALL</code> </p>',
+    }),
   })
   .openapi({
     required: ['GatewayARN', 'BandwidthType'],
@@ -1913,12 +1353,12 @@ const IqnNameSchema = z
 
 const DeleteChapCredentialsOutputSchema = z
   .object({
-    TargetARN: TargetARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the target.' }),
-    ).exactOptional(),
-    InitiatorName: IqnNameSchema.and(
-      z.any().openapi({ description: 'The iSCSI initiator that connects to the target.' }),
-    ).exactOptional(),
+    TargetARN: TargetARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the target.',
+    }),
+    InitiatorName: IqnNameSchema.exactOptional().openapi({
+      description: 'The iSCSI initiator that connects to the target.',
+    }),
   })
   .openapi({
     example: {
@@ -1933,17 +1373,13 @@ const DeleteChapCredentialsOutputSchema = z
 
 const DeleteChapCredentialsInputSchema = z
   .object({
-    TargetARN: TargetARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the iSCSI volume target. Use the <a>DescribeStorediSCSIVolumes</a> operation to return to retrieve the TargetARN for specified VolumeARN.',
-        }),
-    ),
-    InitiatorName: IqnNameSchema.and(
-      z.any().openapi({ description: 'The iSCSI initiator that connects to the target.' }),
-    ),
+    TargetARN: TargetARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the iSCSI volume target. Use the <a>DescribeStorediSCSIVolumes</a> operation to return to retrieve the TargetARN for specified VolumeARN.',
+    }),
+    InitiatorName: IqnNameSchema.openapi({
+      description: 'The iSCSI initiator that connects to the target.',
+    }),
   })
   .openapi({
     required: ['TargetARN', 'InitiatorName'],
@@ -1955,30 +1391,22 @@ const DeleteChapCredentialsInputSchema = z
 
 const DeleteFileShareOutputSchema = z
   .object({
-    FileShareARN: FileShareARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the deleted file share.' }),
-    ).exactOptional(),
+    FileShareARN: FileShareARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the deleted file share.',
+    }),
   })
   .openapi({ description: 'DeleteFileShareOutput', required: [] })
   .openapi('DeleteFileShareOutput')
 
 const DeleteFileShareInputSchema = z
   .object({
-    FileShareARN: FileShareARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the file share to be deleted.',
-        }),
-    ),
-    ForceDelete: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If this value is set to <code>true</code>, the operation deletes a file share immediately and aborts all data uploads to Amazon Web Services. Otherwise, the file share is not deleted until all data is uploaded to Amazon Web Services. This process aborts the data upload process, and the file share enters the <code>FORCE_DELETING</code> status.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
+    FileShareARN: FileShareARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the file share to be deleted.',
+    }),
+    ForceDelete: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>If this value is set to <code>true</code>, the operation deletes a file share immediately and aborts all data uploads to Amazon Web Services. Otherwise, the file share is not deleted until all data is uploaded to Amazon Web Services. This process aborts the data upload process, and the file share enters the <code>FORCE_DELETING</code> status.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
   })
   .openapi({
     required: ['FileShareARN'],
@@ -2007,9 +1435,9 @@ const DeleteGatewayInputSchema = z
 
 const DeleteSnapshotScheduleOutputSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z.any().openapi({ description: 'The volume which snapshot schedule was deleted.' }),
-    ).exactOptional(),
+    VolumeARN: VolumeARNSchema.exactOptional().openapi({
+      description: 'The volume which snapshot schedule was deleted.',
+    }),
   })
   .openapi({
     example: {
@@ -2022,20 +1450,18 @@ const DeleteSnapshotScheduleOutputSchema = z
 
 const DeleteSnapshotScheduleInputSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z.any().openapi({ description: 'The volume which snapshot schedule to delete.' }),
-    ),
+    VolumeARN: VolumeARNSchema.openapi({
+      description: 'The volume which snapshot schedule to delete.',
+    }),
   })
   .openapi({ required: ['VolumeARN'], title: 'DeleteSnapshotScheduleInput' })
   .openapi('DeleteSnapshotScheduleInput')
 
 const DeleteTapeOutputSchema = z
   .object({
-    TapeARN: TapeARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the deleted virtual tape.' }),
-    ).exactOptional(),
+    TapeARN: TapeARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the deleted virtual tape.',
+    }),
   })
   .openapi({
     example: { TapeARN: 'arn:aws:storagegateway:us-east-1:204469490176:tape/TEST05A2A0' },
@@ -2046,27 +1472,17 @@ const DeleteTapeOutputSchema = z
 
 const DeleteTapeInputSchema = z
   .object({
-    GatewayARN: GatewayARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique Amazon Resource Name (ARN) of the gateway that the virtual tape to delete is associated with. Use the <a>ListGateways</a> operation to return a list of gateways for your account and Amazon Web Services Region.',
-        }),
-    ),
-    TapeARN: TapeARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the virtual tape to delete.' }),
-    ),
-    BypassGovernanceRetention: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Set to <code>TRUE</code> to delete an archived tape that belongs to a custom pool with tape retention lock. Only archived tapes with tape retention lock set to <code>governance</code> can be deleted. Archived tapes with tape retention lock set to <code>compliance</code> can't be deleted.",
-        }),
-    ).exactOptional(),
+    GatewayARN: GatewayARNSchema.openapi({
+      description:
+        'The unique Amazon Resource Name (ARN) of the gateway that the virtual tape to delete is associated with. Use the <a>ListGateways</a> operation to return a list of gateways for your account and Amazon Web Services Region.',
+    }),
+    TapeARN: TapeARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the virtual tape to delete.',
+    }),
+    BypassGovernanceRetention: BooleanSchema.exactOptional().openapi({
+      description:
+        "Set to <code>TRUE</code> to delete an archived tape that belongs to a custom pool with tape retention lock. Only archived tapes with tape retention lock set to <code>governance</code> can be deleted. Archived tapes with tape retention lock set to <code>compliance</code> can't be deleted.",
+    }),
   })
   .openapi({
     required: ['GatewayARN', 'TapeARN'],
@@ -2077,14 +1493,10 @@ const DeleteTapeInputSchema = z
 
 const DeleteTapeArchiveOutputSchema = z
   .object({
-    TapeARN: TapeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the virtual tape that was deleted from the virtual tape shelf (VTS).',
-        }),
-    ).exactOptional(),
+    TapeARN: TapeARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the virtual tape that was deleted from the virtual tape shelf (VTS).',
+    }),
   })
   .openapi({
     example: { TapeARN: 'arn:aws:storagegateway:us-east-1:204469490176:tape/TEST05A2A0' },
@@ -2095,22 +1507,14 @@ const DeleteTapeArchiveOutputSchema = z
 
 const DeleteTapeArchiveInputSchema = z
   .object({
-    TapeARN: TapeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the virtual tape to delete from the virtual tape shelf (VTS).',
-        }),
-    ),
-    BypassGovernanceRetention: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Set to <code>TRUE</code> to delete an archived tape that belongs to a custom pool with tape retention lock. Only archived tapes with tape retention lock set to <code>governance</code> can be deleted. Archived tapes with tape retention lock set to <code>compliance</code> can't be deleted.",
-        }),
-    ).exactOptional(),
+    TapeARN: TapeARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the virtual tape to delete from the virtual tape shelf (VTS).',
+    }),
+    BypassGovernanceRetention: BooleanSchema.exactOptional().openapi({
+      description:
+        "Set to <code>TRUE</code> to delete an archived tape that belongs to a custom pool with tape retention lock. Only archived tapes with tape retention lock set to <code>governance</code> can be deleted. Archived tapes with tape retention lock set to <code>compliance</code> can't be deleted.",
+    }),
   })
   .openapi({
     required: ['TapeARN'],
@@ -2121,40 +1525,28 @@ const DeleteTapeArchiveInputSchema = z
 
 const DeleteTapePoolOutputSchema = z
   .object({
-    PoolARN: PoolARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the custom tape pool being deleted.',
-        }),
-    ).exactOptional(),
+    PoolARN: PoolARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the custom tape pool being deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteTapePoolOutput')
 
 const DeleteTapePoolInputSchema = z
   .object({
-    PoolARN: PoolARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the custom tape pool to delete.',
-        }),
-    ),
+    PoolARN: PoolARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the custom tape pool to delete.',
+    }),
   })
   .openapi({ required: ['PoolARN'], title: 'DeleteTapePoolInput' })
   .openapi('DeleteTapePoolInput')
 
 const DeleteVolumeOutputSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the storage volume that was deleted. It is the same ARN you provided in the request.',
-        }),
-    ).exactOptional(),
+    VolumeARN: VolumeARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the storage volume that was deleted. It is the same ARN you provided in the request.',
+    }),
   })
   .openapi({
     example: {
@@ -2169,14 +1561,10 @@ const DeleteVolumeOutputSchema = z
 
 const DeleteVolumeInputSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the volume. Use the <a>ListVolumes</a> operation to return a list of gateway volumes.',
-        }),
-    ),
+    VolumeARN: VolumeARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the volume. Use the <a>ListVolumes</a> operation to return a list of gateway volumes.',
+    }),
   })
   .openapi({
     required: ['VolumeARN'],
@@ -2194,22 +1582,14 @@ const TimeSchema = z.iso.datetime({ offset: true }).openapi('Time')
 const DescribeAvailabilityMonitorTestOutputSchema = z
   .object({
     GatewayARN: GatewayARNSchema.exactOptional(),
-    Status: AvailabilityMonitorTestStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The status of the high availability monitoring test. If a test hasn't been performed, the value of this field is null.",
-        }),
-    ).exactOptional(),
-    StartTime: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time the high availability monitoring test was started. If a test hasn't been performed, the value of this field is null.",
-        }),
-    ).exactOptional(),
+    Status: AvailabilityMonitorTestStatusSchema.exactOptional().openapi({
+      description:
+        "The status of the high availability monitoring test. If a test hasn't been performed, the value of this field is null.",
+    }),
+    StartTime: TimeSchema.exactOptional().openapi({
+      description:
+        "The time the high availability monitoring test was started. If a test hasn't been performed, the value of this field is null.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAvailabilityMonitorTestOutput')
@@ -2226,22 +1606,14 @@ const BandwidthDownloadRateLimitSchema = z.int().min(102400).openapi('BandwidthD
 const DescribeBandwidthRateLimitOutputSchema = z
   .object({
     GatewayARN: GatewayARNSchema.exactOptional(),
-    AverageUploadRateLimitInBitsPerSec: BandwidthUploadRateLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The average upload bandwidth rate limit in bits per second. This field does not appear in the response if the upload rate limit is not set.',
-        }),
-    ).exactOptional(),
-    AverageDownloadRateLimitInBitsPerSec: BandwidthDownloadRateLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The average download bandwidth rate limit in bits per second. This field does not appear in the response if the download rate limit is not set.',
-        }),
-    ).exactOptional(),
+    AverageUploadRateLimitInBitsPerSec: BandwidthUploadRateLimitSchema.exactOptional().openapi({
+      description:
+        'The average upload bandwidth rate limit in bits per second. This field does not appear in the response if the upload rate limit is not set.',
+    }),
+    AverageDownloadRateLimitInBitsPerSec: BandwidthDownloadRateLimitSchema.exactOptional().openapi({
+      description:
+        'The average download bandwidth rate limit in bits per second. This field does not appear in the response if the download rate limit is not set.',
+    }),
   })
   .openapi({
     example: {
@@ -2273,60 +1645,32 @@ const DaysOfWeekSchema = z.array(DayOfWeekSchema).min(1).max(7).openapi('DaysOfW
 
 const BandwidthRateLimitIntervalSchema = z
   .object({
-    StartHourOfDay: HourOfDaySchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The hour of the day to start the bandwidth rate limit interval. ',
-        }),
-    ),
-    StartMinuteOfHour: MinuteOfHourSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The minute of the hour to start the bandwidth rate limit interval. The interval begins at the start of that minute. To begin an interval exactly at the start of the hour, use the value <code>0</code>. ',
-        }),
-    ),
-    EndHourOfDay: HourOfDaySchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The hour of the day to end the bandwidth rate limit interval. ',
-        }),
-    ),
-    EndMinuteOfHour: MinuteOfHourSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The minute of the hour to end the bandwidth rate limit interval. </p> <important> <p> The bandwidth rate limit interval ends at the end of the minute. To end an interval at the end of an hour, use the value <code>59</code>. </p> </important>',
-        }),
-    ),
-    DaysOfWeek: DaysOfWeekSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The days of the week component of the bandwidth rate limit interval, represented as ordinal numbers from 0 to 6, where 0 represents Sunday and 6 represents Saturday. ',
-        }),
-    ),
-    AverageUploadRateLimitInBitsPerSec: BandwidthUploadRateLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The average upload rate limit component of the bandwidth rate limit interval, in bits per second. This field does not appear in the response if the upload rate limit is not set. ',
-        }),
-    ).exactOptional(),
-    AverageDownloadRateLimitInBitsPerSec: BandwidthDownloadRateLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The average download rate limit component of the bandwidth rate limit interval, in bits per second. This field does not appear in the response if the download rate limit is not set. ',
-        }),
-    ).exactOptional(),
+    StartHourOfDay: HourOfDaySchema.openapi({
+      description: ' The hour of the day to start the bandwidth rate limit interval. ',
+    }),
+    StartMinuteOfHour: MinuteOfHourSchema.openapi({
+      description:
+        ' The minute of the hour to start the bandwidth rate limit interval. The interval begins at the start of that minute. To begin an interval exactly at the start of the hour, use the value <code>0</code>. ',
+    }),
+    EndHourOfDay: HourOfDaySchema.openapi({
+      description: ' The hour of the day to end the bandwidth rate limit interval. ',
+    }),
+    EndMinuteOfHour: MinuteOfHourSchema.openapi({
+      description:
+        '<p> The minute of the hour to end the bandwidth rate limit interval. </p> <important> <p> The bandwidth rate limit interval ends at the end of the minute. To end an interval at the end of an hour, use the value <code>59</code>. </p> </important>',
+    }),
+    DaysOfWeek: DaysOfWeekSchema.openapi({
+      description:
+        ' The days of the week component of the bandwidth rate limit interval, represented as ordinal numbers from 0 to 6, where 0 represents Sunday and 6 represents Saturday. ',
+    }),
+    AverageUploadRateLimitInBitsPerSec: BandwidthUploadRateLimitSchema.exactOptional().openapi({
+      description:
+        ' The average upload rate limit component of the bandwidth rate limit interval, in bits per second. This field does not appear in the response if the upload rate limit is not set. ',
+    }),
+    AverageDownloadRateLimitInBitsPerSec: BandwidthDownloadRateLimitSchema.exactOptional().openapi({
+      description:
+        ' The average download rate limit component of the bandwidth rate limit interval, in bits per second. This field does not appear in the response if the download rate limit is not set. ',
+    }),
   })
   .openapi({
     required: [
@@ -2350,14 +1694,10 @@ const BandwidthRateLimitIntervalsSchema = z
 const DescribeBandwidthRateLimitScheduleOutputSchema = z
   .object({
     GatewayARN: GatewayARNSchema.exactOptional(),
-    BandwidthRateLimitIntervals: BandwidthRateLimitIntervalsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An array that contains the bandwidth rate limit intervals for a tape or volume gateway. ',
-        }),
-    ).exactOptional(),
+    BandwidthRateLimitIntervals: BandwidthRateLimitIntervalsSchema.exactOptional().openapi({
+      description:
+        ' An array that contains the bandwidth rate limit intervals for a tape or volume gateway. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeBandwidthRateLimitScheduleOutput')
@@ -2372,49 +1712,29 @@ const DoubleSchema = z.float64().openapi('Double')
 const DescribeCacheOutputSchema = z
   .object({
     GatewayARN: GatewayARNSchema.exactOptional(),
-    DiskIds: DiskIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of strings that identify disks that are to be configured as working storage. Each string has a minimum length of 1 and maximum length of 300. You can get the disk IDs from the <a>ListLocalDisks</a> API.',
-        }),
-    ).exactOptional(),
-    CacheAllocatedInBytes: LongSchema.and(
-      z.any().openapi({ description: 'The amount of cache in bytes allocated to a gateway.' }),
-    ).exactOptional(),
-    CacheUsedPercentage: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Percent use of the gateway's cache storage. This metric applies only to the gateway-cached volume setup. The sample is taken at the end of the reporting period.",
-        }),
-    ).exactOptional(),
-    CacheDirtyPercentage: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The file share's contribution to the overall percentage of the gateway's cache that has not been persisted to Amazon Web Services. The sample is taken at the end of the reporting period.",
-        }),
-    ).exactOptional(),
-    CacheHitPercentage: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Percent of application read operations from the file shares that are served from cache. The sample is taken at the end of the reporting period.',
-        }),
-    ).exactOptional(),
-    CacheMissPercentage: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Percent of application read operations from the file shares that are not served from cache. The sample is taken at the end of the reporting period.',
-        }),
-    ).exactOptional(),
+    DiskIds: DiskIdsSchema.exactOptional().openapi({
+      description:
+        'An array of strings that identify disks that are to be configured as working storage. Each string has a minimum length of 1 and maximum length of 300. You can get the disk IDs from the <a>ListLocalDisks</a> API.',
+    }),
+    CacheAllocatedInBytes: LongSchema.exactOptional().openapi({
+      description: 'The amount of cache in bytes allocated to a gateway.',
+    }),
+    CacheUsedPercentage: DoubleSchema.exactOptional().openapi({
+      description:
+        "Percent use of the gateway's cache storage. This metric applies only to the gateway-cached volume setup. The sample is taken at the end of the reporting period.",
+    }),
+    CacheDirtyPercentage: DoubleSchema.exactOptional().openapi({
+      description:
+        "The file share's contribution to the overall percentage of the gateway's cache that has not been persisted to Amazon Web Services. The sample is taken at the end of the reporting period.",
+    }),
+    CacheHitPercentage: DoubleSchema.exactOptional().openapi({
+      description:
+        'Percent of application read operations from the file shares that are served from cache. The sample is taken at the end of the reporting period.',
+    }),
+    CacheMissPercentage: DoubleSchema.exactOptional().openapi({
+      description:
+        'Percent of application read operations from the file shares that are not served from cache. The sample is taken at the end of the reporting period.',
+    }),
   })
   .openapi({
     example: {
@@ -2451,23 +1771,21 @@ const PositiveIntObjectSchema = z.int().min(1).openapi('PositiveIntObject')
 
 const VolumeiSCSIAttributesSchema = z
   .object({
-    TargetARN: TargetARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the volume target.' }),
-    ).exactOptional(),
-    NetworkInterfaceId: NetworkInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The network interface identifier.' }),
-    ).exactOptional(),
-    NetworkInterfacePort: IntegerSchema.and(
-      z.any().openapi({ description: 'The port used to communicate with iSCSI targets.' }),
-    ).exactOptional(),
-    LunNumber: PositiveIntObjectSchema.and(
-      z.any().openapi({ description: 'The logical disk number.' }),
-    ).exactOptional(),
-    ChapEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether mutual CHAP is enabled for the iSCSI target.' }),
-    ).exactOptional(),
+    TargetARN: TargetARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the volume target.',
+    }),
+    NetworkInterfaceId: NetworkInterfaceIdSchema.exactOptional().openapi({
+      description: 'The network interface identifier.',
+    }),
+    NetworkInterfacePort: IntegerSchema.exactOptional().openapi({
+      description: 'The port used to communicate with iSCSI targets.',
+    }),
+    LunNumber: PositiveIntObjectSchema.exactOptional().openapi({
+      description: 'The logical disk number.',
+    }),
+    ChapEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether mutual CHAP is enabled for the iSCSI target.',
+    }),
   })
   .openapi({ description: 'Lists iSCSI information about a volume.', required: [] })
   .openapi('VolumeiSCSIAttributes')
@@ -2478,88 +1796,51 @@ const VolumeUsedInBytesSchema = z.int().openapi('VolumeUsedInBytes')
 
 const CachediSCSIVolumeSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the storage volume.' }),
-    ).exactOptional(),
-    VolumeId: VolumeIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the volume, e.g., vol-AE4B946D.' }),
-    ).exactOptional(),
-    VolumeType: VolumeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One of the VolumeType enumeration values that describes the type of the volume.',
-        }),
-    ).exactOptional(),
-    VolumeStatus: VolumeStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One of the VolumeStatus values that indicates the state of the storage volume.',
-        }),
-    ).exactOptional(),
-    VolumeAttachmentStatus: VolumeAttachmentStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates whether a storage volume is attached to or detached from a gateway. For more information, see <a href="https://docs.aws.amazon.com/storagegateway/latest/userguide/managing-volumes.html#attach-detach-volume">Moving your volumes to a different gateway</a>.',
-        }),
-    ).exactOptional(),
-    VolumeSizeInBytes: LongSchema.and(
-      z.any().openapi({ description: 'The size, in bytes, of the volume capacity.' }),
-    ).exactOptional(),
-    VolumeProgress: DoubleObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the percentage complete if the volume is restoring or bootstrapping that represents the percent of data transferred. This field does not appear in the response if the cached volume is not restoring or bootstrapping.',
-        }),
-    ).exactOptional(),
-    SourceSnapshotId: SnapshotIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the cached volume was created from a snapshot, this field contains the snapshot ID used, e.g., snap-78e22663. Otherwise, this field is not included.',
-        }),
-    ).exactOptional(),
-    VolumeiSCSIAttributes: VolumeiSCSIAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <a>VolumeiSCSIAttributes</a> object that represents a collection of iSCSI attributes for one stored volume.',
-        }),
-    ).exactOptional(),
-    CreatedDate: CreatedDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date the volume was created. Volumes created prior to March 28, 2017 don’t have this timestamp.',
-        }),
-    ).exactOptional(),
-    VolumeUsedInBytes: VolumeUsedInBytesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The size of the data stored on the volume in bytes. This value is calculated based on the number of blocks that are touched, instead of the actual amount of data written. This value can be useful for sequential write patterns but less accurate for random write patterns. <code>VolumeUsedInBytes</code> is different from the compressed size of the volume, which is the value that is used to calculate your bill.</p> <note> <p>This value is not available for volumes created prior to May 13, 2015, until you store data on the volume.</p> <p>If you use a delete tool that overwrites the data on your volume with random data, your usage will not be reduced. This is because the random data is not compressible. If you want to reduce the amount of billed storage on your volume, we recommend overwriting your files with zeros to compress the data to a negligible amount of actual storage.</p> </note>',
-        }),
-    ).exactOptional(),
+    VolumeARN: VolumeARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the storage volume.',
+    }),
+    VolumeId: VolumeIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the volume, e.g., vol-AE4B946D.',
+    }),
+    VolumeType: VolumeTypeSchema.exactOptional().openapi({
+      description:
+        'One of the VolumeType enumeration values that describes the type of the volume.',
+    }),
+    VolumeStatus: VolumeStatusSchema.exactOptional().openapi({
+      description: 'One of the VolumeStatus values that indicates the state of the storage volume.',
+    }),
+    VolumeAttachmentStatus: VolumeAttachmentStatusSchema.exactOptional().openapi({
+      description:
+        'A value that indicates whether a storage volume is attached to or detached from a gateway. For more information, see <a href="https://docs.aws.amazon.com/storagegateway/latest/userguide/managing-volumes.html#attach-detach-volume">Moving your volumes to a different gateway</a>.',
+    }),
+    VolumeSizeInBytes: LongSchema.exactOptional().openapi({
+      description: 'The size, in bytes, of the volume capacity.',
+    }),
+    VolumeProgress: DoubleObjectSchema.exactOptional().openapi({
+      description:
+        'Represents the percentage complete if the volume is restoring or bootstrapping that represents the percent of data transferred. This field does not appear in the response if the cached volume is not restoring or bootstrapping.',
+    }),
+    SourceSnapshotId: SnapshotIdSchema.exactOptional().openapi({
+      description:
+        'If the cached volume was created from a snapshot, this field contains the snapshot ID used, e.g., snap-78e22663. Otherwise, this field is not included.',
+    }),
+    VolumeiSCSIAttributes: VolumeiSCSIAttributesSchema.exactOptional().openapi({
+      description:
+        'An <a>VolumeiSCSIAttributes</a> object that represents a collection of iSCSI attributes for one stored volume.',
+    }),
+    CreatedDate: CreatedDateSchema.exactOptional().openapi({
+      description:
+        'The date the volume was created. Volumes created prior to March 28, 2017 don’t have this timestamp.',
+    }),
+    VolumeUsedInBytes: VolumeUsedInBytesSchema.exactOptional().openapi({
+      description:
+        '<p>The size of the data stored on the volume in bytes. This value is calculated based on the number of blocks that are touched, instead of the actual amount of data written. This value can be useful for sequential write patterns but less accurate for random write patterns. <code>VolumeUsedInBytes</code> is different from the compressed size of the volume, which is the value that is used to calculate your bill.</p> <note> <p>This value is not available for volumes created prior to May 13, 2015, until you store data on the volume.</p> <p>If you use a delete tool that overwrites the data on your volume with random data, your usage will not be reduced. This is because the random data is not compressible. If you want to reduce the amount of billed storage on your volume, we recommend overwriting your files with zeros to compress the data to a negligible amount of actual storage.</p> </note>',
+    }),
     KMSKey: KMSKeySchema.exactOptional(),
-    TargetName: TargetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the iSCSI target used by an initiator to connect to a volume and used as a suffix for the target ARN. For example, specifying <code>TargetName</code> as <i>myvolume</i> results in the target ARN of <code>arn:aws:storagegateway:us-east-2:111122223333:gateway/sgw-12A3456B/target/iqn.1997-05.com.amazon:myvolume</code>. The target name must be unique across all volumes on a gateway.</p> <p>If you don't specify a value, Storage Gateway uses the value that was previously used for this volume as the new target name.</p>",
-        }),
-    ).exactOptional(),
+    TargetName: TargetNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the iSCSI target used by an initiator to connect to a volume and used as a suffix for the target ARN. For example, specifying <code>TargetName</code> as <i>myvolume</i> results in the target ARN of <code>arn:aws:storagegateway:us-east-2:111122223333:gateway/sgw-12A3456B/target/iqn.1997-05.com.amazon:myvolume</code>. The target name must be unique across all volumes on a gateway.</p> <p>If you don't specify a value, Storage Gateway uses the value that was previously used for this volume as the new target name.</p>",
+    }),
   })
   .openapi({ description: 'Describes an iSCSI cached volume.', required: [] })
   .openapi('CachediSCSIVolume')
@@ -2568,14 +1849,10 @@ const CachediSCSIVolumesSchema = z.array(CachediSCSIVolumeSchema).openapi('Cache
 
 const DescribeCachediSCSIVolumesOutputSchema = z
   .object({
-    CachediSCSIVolumes: CachediSCSIVolumesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects where each object contains metadata about one cached volume.',
-        }),
-    ).exactOptional(),
+    CachediSCSIVolumes: CachediSCSIVolumesSchema.exactOptional().openapi({
+      description:
+        'An array of objects where each object contains metadata about one cached volume.',
+    }),
   })
   .openapi({
     example: {
@@ -2607,14 +1884,10 @@ const VolumeARNsSchema = z.array(VolumeARNSchema).openapi('VolumeARNs')
 
 const DescribeCachediSCSIVolumesInputSchema = z
   .object({
-    VolumeARNs: VolumeARNsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of strings where each string represents the Amazon Resource Name (ARN) of a cached volume. All of the specified cached volumes must be from the same gateway. Use <a>ListVolumes</a> to get volume ARNs for a gateway.',
-        }),
-    ),
+    VolumeARNs: VolumeARNsSchema.openapi({
+      description:
+        'An array of strings where each string represents the Amazon Resource Name (ARN) of a cached volume. All of the specified cached volumes must be from the same gateway. Use <a>ListVolumes</a> to get volume ARNs for a gateway.',
+    }),
   })
   .openapi({ required: ['VolumeARNs'], title: 'DescribeCachediSCSIVolumesInput' })
   .openapi('DescribeCachediSCSIVolumesInput')
@@ -2623,33 +1896,21 @@ const ChapSecretSchema = z.string().min(1).max(100).openapi('ChapSecret')
 
 const ChapInfoSchema = z
   .object({
-    TargetARN: TargetARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the volume.</p> <p>Valid Values: 50 to 500 lowercase letters, numbers, periods (.), and hyphens (-).</p>',
-        }),
-    ).exactOptional(),
-    SecretToAuthenticateInitiator: ChapSecretSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The secret key that the initiator (for example, the Windows client) must provide to participate in mutual CHAP with the target.',
-        }),
-    ).exactOptional(),
-    InitiatorName: IqnNameSchema.and(
-      z.any().openapi({ description: 'The iSCSI initiator that connects to the target.' }),
-    ).exactOptional(),
-    SecretToAuthenticateTarget: ChapSecretSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The secret key that the target must provide to participate in mutual CHAP with the initiator (e.g., Windows client).',
-        }),
-    ).exactOptional(),
+    TargetARN: TargetARNSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the volume.</p> <p>Valid Values: 50 to 500 lowercase letters, numbers, periods (.), and hyphens (-).</p>',
+    }),
+    SecretToAuthenticateInitiator: ChapSecretSchema.exactOptional().openapi({
+      description:
+        'The secret key that the initiator (for example, the Windows client) must provide to participate in mutual CHAP with the target.',
+    }),
+    InitiatorName: IqnNameSchema.exactOptional().openapi({
+      description: 'The iSCSI initiator that connects to the target.',
+    }),
+    SecretToAuthenticateTarget: ChapSecretSchema.exactOptional().openapi({
+      description:
+        'The secret key that the target must provide to participate in mutual CHAP with the initiator (e.g., Windows client).',
+    }),
   })
   .openapi({
     description:
@@ -2662,14 +1923,10 @@ const ChapCredentialsSchema = z.array(ChapInfoSchema).openapi('ChapCredentials')
 
 const DescribeChapCredentialsOutputSchema = z
   .object({
-    ChapCredentials: ChapCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of <a>ChapInfo</a> objects that represent CHAP credentials. Each object in the array contains CHAP credential information for one target-initiator pair. If no CHAP credentials are set, an empty array is returned. CHAP credential information is provided in a JSON object with the following fields:</p> <ul> <li> <p> <b>InitiatorName</b>: The iSCSI initiator that connects to the target.</p> </li> <li> <p> <b>SecretToAuthenticateInitiator</b>: The secret key that the initiator (for example, the Windows client) must provide to participate in mutual CHAP with the target.</p> </li> <li> <p> <b>SecretToAuthenticateTarget</b>: The secret key that the target must provide to participate in mutual CHAP with the initiator (e.g. Windows client).</p> </li> <li> <p> <b>TargetARN</b>: The Amazon Resource Name (ARN) of the storage volume.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ChapCredentials: ChapCredentialsSchema.exactOptional().openapi({
+      description:
+        '<p>An array of <a>ChapInfo</a> objects that represent CHAP credentials. Each object in the array contains CHAP credential information for one target-initiator pair. If no CHAP credentials are set, an empty array is returned. CHAP credential information is provided in a JSON object with the following fields:</p> <ul> <li> <p> <b>InitiatorName</b>: The iSCSI initiator that connects to the target.</p> </li> <li> <p> <b>SecretToAuthenticateInitiator</b>: The secret key that the initiator (for example, the Windows client) must provide to participate in mutual CHAP with the target.</p> </li> <li> <p> <b>SecretToAuthenticateTarget</b>: The secret key that the target must provide to participate in mutual CHAP with the initiator (e.g. Windows client).</p> </li> <li> <p> <b>TargetARN</b>: The Amazon Resource Name (ARN) of the storage volume.</p> </li> </ul>',
+    }),
   })
   .openapi({
     example: {
@@ -2690,14 +1947,10 @@ const DescribeChapCredentialsOutputSchema = z
 
 const DescribeChapCredentialsInputSchema = z
   .object({
-    TargetARN: TargetARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the iSCSI volume target. Use the <a>DescribeStorediSCSIVolumes</a> operation to return to retrieve the TargetARN for specified VolumeARN.',
-        }),
-    ),
+    TargetARN: TargetARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the iSCSI volume target. Use the <a>DescribeStorediSCSIVolumes</a> operation to return to retrieve the TargetARN for specified VolumeARN.',
+    }),
   })
   .openapi({
     required: ['TargetARN'],
@@ -2719,11 +1972,9 @@ const FileSystemAssociationSyncErrorCodeSchema = z
 
 const FileSystemAssociationStatusDetailSchema = z
   .object({
-    ErrorCode: FileSystemAssociationSyncErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The error code for a given file system association status.' }),
-    ).exactOptional(),
+    ErrorCode: FileSystemAssociationSyncErrorCodeSchema.exactOptional().openapi({
+      description: 'The error code for a given file system association status.',
+    }),
   })
   .openapi({ description: 'Detailed information on file system association status.', required: [] })
   .openapi('FileSystemAssociationStatusDetail')
@@ -2734,60 +1985,35 @@ const FileSystemAssociationStatusDetailsSchema = z
 
 const FileSystemAssociationInfoSchema = z
   .object({
-    FileSystemAssociationARN: FileSystemAssociationARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the file system association.' }),
-    ).exactOptional(),
-    LocationARN: FileSystemLocationARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the backend Amazon FSx file system used for storing file data. For information, see <a href="https://docs.aws.amazon.com/fsx/latest/APIReference/API_FileSystem.html">FileSystem</a> in the <i>Amazon FSx API Reference</i>.',
-        }),
-    ).exactOptional(),
-    FileSystemAssociationStatus: FileSystemAssociationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the file system association. Valid Values: <code>AVAILABLE</code> | <code>CREATING</code> | <code>DELETING</code> | <code>FORCE_DELETING</code> | <code>UPDATING</code> | <code>ERROR</code> ',
-        }),
-    ).exactOptional(),
-    AuditDestinationARN: AuditDestinationARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the storage used for the audit logs.',
-        }),
-    ).exactOptional(),
+    FileSystemAssociationARN: FileSystemAssociationARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the file system association.',
+    }),
+    LocationARN: FileSystemLocationARNSchema.exactOptional().openapi({
+      description:
+        'The ARN of the backend Amazon FSx file system used for storing file data. For information, see <a href="https://docs.aws.amazon.com/fsx/latest/APIReference/API_FileSystem.html">FileSystem</a> in the <i>Amazon FSx API Reference</i>.',
+    }),
+    FileSystemAssociationStatus: FileSystemAssociationStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the file system association. Valid Values: <code>AVAILABLE</code> | <code>CREATING</code> | <code>DELETING</code> | <code>FORCE_DELETING</code> | <code>UPDATING</code> | <code>ERROR</code> ',
+    }),
+    AuditDestinationARN: AuditDestinationARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the storage used for the audit logs.',
+    }),
     GatewayARN: GatewayARNSchema.exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of up to 50 tags assigned to the SMB file share, sorted alphabetically by key name. Each tag is a key-value pair.',
-        }),
-    ).exactOptional(),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of up to 50 tags assigned to the SMB file share, sorted alphabetically by key name. Each tag is a key-value pair.',
+    }),
     CacheAttributes: CacheAttributesSchema.exactOptional(),
-    EndpointNetworkConfiguration: EndpointNetworkConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies network configuration information for the gateway associated with the Amazon FSx file system.</p> <note> <p>If multiple file systems are associated with this gateway, this parameter's <code>IpAddresses</code> field is required.</p> </note>",
-        }),
-    ).exactOptional(),
-    FileSystemAssociationStatusDetails: FileSystemAssociationStatusDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array containing the FileSystemAssociationStatusDetail data type, which provides detailed information on file system association status.',
-        }),
-    ).exactOptional(),
+    EndpointNetworkConfiguration: EndpointNetworkConfigurationSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies network configuration information for the gateway associated with the Amazon FSx file system.</p> <note> <p>If multiple file systems are associated with this gateway, this parameter's <code>IpAddresses</code> field is required.</p> </note>",
+    }),
+    FileSystemAssociationStatusDetails:
+      FileSystemAssociationStatusDetailsSchema.exactOptional().openapi({
+        description:
+          'An array containing the FileSystemAssociationStatusDetail data type, which provides detailed information on file system association status.',
+      }),
   })
   .openapi({
     description:
@@ -2802,14 +2028,10 @@ const FileSystemAssociationInfoListSchema = z
 
 const DescribeFileSystemAssociationsOutputSchema = z
   .object({
-    FileSystemAssociationInfoList: FileSystemAssociationInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array containing the <code>FileSystemAssociationInfo</code> data type of each file system association to be described. ',
-        }),
-    ).exactOptional(),
+    FileSystemAssociationInfoList: FileSystemAssociationInfoListSchema.exactOptional().openapi({
+      description:
+        'An array containing the <code>FileSystemAssociationInfo</code> data type of each file system association to be described. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFileSystemAssociationsOutput')
@@ -2822,14 +2044,10 @@ const FileSystemAssociationARNListSchema = z
 
 const DescribeFileSystemAssociationsInputSchema = z
   .object({
-    FileSystemAssociationARNList: FileSystemAssociationARNListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array containing the Amazon Resource Name (ARN) of each file system association to be described.',
-        }),
-    ),
+    FileSystemAssociationARNList: FileSystemAssociationARNListSchema.openapi({
+      description:
+        'An array containing the Amazon Resource Name (ARN) of each file system association to be described.',
+    }),
   })
   .openapi({
     required: ['FileSystemAssociationARNList'],
@@ -2843,29 +2061,17 @@ const GatewayStateSchema = z.string().min(2).max(25).openapi('GatewayState')
 
 const NetworkInterfaceSchema = z
   .object({
-    Ipv4Address: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Internet Protocol version 4 (IPv4) address of the interface.',
-        }),
-    ).exactOptional(),
-    MacAddress: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Media Access Control (MAC) address of the interface.</p> <note> <p>This is currently unsupported and will not be returned in output.</p> </note>',
-        }),
-    ).exactOptional(),
-    Ipv6Address: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Internet Protocol version 6 (IPv6) address of the interface. <i>Currently not supported</i>.',
-        }),
-    ).exactOptional(),
+    Ipv4Address: StringSchema.exactOptional().openapi({
+      description: 'The Internet Protocol version 4 (IPv4) address of the interface.',
+    }),
+    MacAddress: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Media Access Control (MAC) address of the interface.</p> <note> <p>This is currently unsupported and will not be returned in output.</p> </note>',
+    }),
+    Ipv6Address: StringSchema.exactOptional().openapi({
+      description:
+        'The Internet Protocol version 6 (IPv6) address of the interface. <i>Currently not supported</i>.',
+    }),
   })
   .openapi({ description: "Describes a gateway's network interface.", required: [] })
   .openapi('NetworkInterface')
@@ -2909,144 +2115,78 @@ const HostEnvironmentIdSchema = z.string().min(1).max(1024).openapi('HostEnviron
 const DescribeGatewayInformationOutputSchema = z
   .object({
     GatewayARN: GatewayARNSchema.exactOptional(),
-    GatewayId: GatewayIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier assigned to your gateway during activation. This ID becomes part of the gateway Amazon Resource Name (ARN), which you use as input for other operations.',
-        }),
-    ).exactOptional(),
-    GatewayName: StringSchema.and(
-      z.any().openapi({ description: 'The name you configured for your gateway.' }),
-    ).exactOptional(),
-    GatewayTimezone: GatewayTimezoneSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A value that indicates the time zone configured for the gateway.',
-        }),
-    ).exactOptional(),
-    GatewayState: GatewayStateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A value that indicates the operating state of the gateway.' }),
-    ).exactOptional(),
-    GatewayNetworkInterfaces: GatewayNetworkInterfacesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a>NetworkInterface</a> array that contains descriptions of the gateway network interfaces.',
-        }),
-    ).exactOptional(),
-    GatewayType: GatewayTypeSchema.and(
-      z.any().openapi({ description: 'The type of the gateway.' }),
-    ).exactOptional(),
-    NextUpdateAvailabilityDate: NextUpdateAvailabilityDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date on which an update to the gateway is available. This date is in the time zone of the gateway. If the gateway is not available for an update this field is not returned in the response.',
-        }),
-    ).exactOptional(),
-    LastSoftwareUpdate: LastSoftwareUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date on which the last software update was applied to the gateway. If the gateway has never been updated, this field does not return a value in the response. This only only exist and returns once it have been chosen and set by the SGW service, based on the OS version of the gateway VM',
-        }),
-    ).exactOptional(),
-    Ec2InstanceId: Ec2InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Amazon EC2 instance that was used to launch the gateway.',
-        }),
-    ).exactOptional(),
-    Ec2InstanceRegion: Ec2InstanceRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services Region where the Amazon EC2 instance is located.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of up to 50 tags assigned to the gateway, sorted alphabetically by key name. Each tag is a key-value pair. For a gateway with more than 10 tags assigned, you can view all tags using the <code>ListTagsForResource</code> API operation.',
-        }),
-    ).exactOptional(),
-    VPCEndpoint: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration settings for the virtual private cloud (VPC) endpoint for your gateway.',
-        }),
-    ).exactOptional(),
-    CloudWatchLogGroupARN: CloudWatchLogGroupARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon CloudWatch log group that is used to monitor events in the gateway. This field only only exist and returns once it have been chosen and set by the SGW service, based on the OS version of the gateway VM',
-        }),
-    ).exactOptional(),
-    HostEnvironment: HostEnvironmentSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of hardware or software platform on which the gateway is running.',
-        }),
-    ).exactOptional(),
-    EndpointType: EndpointTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of endpoint for your gateway.</p> <p>Valid Values: <code>STANDARD</code> | <code>FIPS</code> </p>',
-        }),
-    ).exactOptional(),
-    SoftwareUpdatesEndDate: SoftwareUpdatesEndDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Date after which this gateway will not receive software updates for new features.',
-        }),
-    ).exactOptional(),
-    DeprecationDate: DeprecationDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Date after which this gateway will not receive software updates for new features and bug fixes.',
-        }),
-    ).exactOptional(),
-    GatewayCapacity: GatewayCapacitySchema.and(
-      z.any().openapi({ description: "Specifies the size of the gateway's metadata cache." }),
-    ).exactOptional(),
-    SupportedGatewayCapacities: SupportedGatewayCapacitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the metadata cache sizes that the gateway can support based on its current hardware specifications.',
-        }),
-    ).exactOptional(),
-    HostEnvironmentId: HostEnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the specific instance of the host platform running the gateway. This value is only available for certain host environments, and its format depends on the host environment type.',
-        }),
-    ).exactOptional(),
+    GatewayId: GatewayIdSchema.exactOptional().openapi({
+      description:
+        'The unique identifier assigned to your gateway during activation. This ID becomes part of the gateway Amazon Resource Name (ARN), which you use as input for other operations.',
+    }),
+    GatewayName: StringSchema.exactOptional().openapi({
+      description: 'The name you configured for your gateway.',
+    }),
+    GatewayTimezone: GatewayTimezoneSchema.exactOptional().openapi({
+      description: 'A value that indicates the time zone configured for the gateway.',
+    }),
+    GatewayState: GatewayStateSchema.exactOptional().openapi({
+      description: 'A value that indicates the operating state of the gateway.',
+    }),
+    GatewayNetworkInterfaces: GatewayNetworkInterfacesSchema.exactOptional().openapi({
+      description:
+        'A <a>NetworkInterface</a> array that contains descriptions of the gateway network interfaces.',
+    }),
+    GatewayType: GatewayTypeSchema.exactOptional().openapi({
+      description: 'The type of the gateway.',
+    }),
+    NextUpdateAvailabilityDate: NextUpdateAvailabilityDateSchema.exactOptional().openapi({
+      description:
+        'The date on which an update to the gateway is available. This date is in the time zone of the gateway. If the gateway is not available for an update this field is not returned in the response.',
+    }),
+    LastSoftwareUpdate: LastSoftwareUpdateSchema.exactOptional().openapi({
+      description:
+        'The date on which the last software update was applied to the gateway. If the gateway has never been updated, this field does not return a value in the response. This only only exist and returns once it have been chosen and set by the SGW service, based on the OS version of the gateway VM',
+    }),
+    Ec2InstanceId: Ec2InstanceIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon EC2 instance that was used to launch the gateway.',
+    }),
+    Ec2InstanceRegion: Ec2InstanceRegionSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region where the Amazon EC2 instance is located.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of up to 50 tags assigned to the gateway, sorted alphabetically by key name. Each tag is a key-value pair. For a gateway with more than 10 tags assigned, you can view all tags using the <code>ListTagsForResource</code> API operation.',
+    }),
+    VPCEndpoint: StringSchema.exactOptional().openapi({
+      description:
+        'The configuration settings for the virtual private cloud (VPC) endpoint for your gateway.',
+    }),
+    CloudWatchLogGroupARN: CloudWatchLogGroupARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon CloudWatch log group that is used to monitor events in the gateway. This field only only exist and returns once it have been chosen and set by the SGW service, based on the OS version of the gateway VM',
+    }),
+    HostEnvironment: HostEnvironmentSchema.exactOptional().openapi({
+      description: 'The type of hardware or software platform on which the gateway is running.',
+    }),
+    EndpointType: EndpointTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of endpoint for your gateway.</p> <p>Valid Values: <code>STANDARD</code> | <code>FIPS</code> </p>',
+    }),
+    SoftwareUpdatesEndDate: SoftwareUpdatesEndDateSchema.exactOptional().openapi({
+      description:
+        'Date after which this gateway will not receive software updates for new features.',
+    }),
+    DeprecationDate: DeprecationDateSchema.exactOptional().openapi({
+      description:
+        'Date after which this gateway will not receive software updates for new features and bug fixes.',
+    }),
+    GatewayCapacity: GatewayCapacitySchema.exactOptional().openapi({
+      description: "Specifies the size of the gateway's metadata cache.",
+    }),
+    SupportedGatewayCapacities: SupportedGatewayCapacitiesSchema.exactOptional().openapi({
+      description:
+        'A list of the metadata cache sizes that the gateway can support based on its current hardware specifications.',
+    }),
+    HostEnvironmentId: HostEnvironmentIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the specific instance of the host platform running the gateway. This value is only available for certain host environments, and its format depends on the host environment type.',
+    }),
   })
   .openapi({
     example: {
@@ -3079,46 +2219,26 @@ const DayOfMonthSchema = z.int().min(1).max(28).openapi('DayOfMonth')
 const DescribeMaintenanceStartTimeOutputSchema = z
   .object({
     GatewayARN: GatewayARNSchema.exactOptional(),
-    HourOfDay: HourOfDaySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The hour component of the maintenance start time represented as <i>hh</i>, where <i>hh</i> is the hour (0 to 23). The hour of the day is in the time zone of the gateway.',
-        }),
-    ).exactOptional(),
-    MinuteOfHour: MinuteOfHourSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minute component of the maintenance start time represented as <i>mm</i>, where <i>mm</i> is the minute (0 to 59). The minute of the hour is in the time zone of the gateway.',
-        }),
-    ).exactOptional(),
-    DayOfWeek: DayOfWeekSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ordinal number between 0 and 6 that represents the day of the week, where 0 represents Sunday and 6 represents Saturday. The day of week is in the time zone of the gateway.',
-        }),
-    ).exactOptional(),
-    DayOfMonth: DayOfMonthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The day of the month component of the maintenance start time represented as an ordinal number from 1 to 28, where 1 represents the first day of the month and 28 represents the last day of the month.',
-        }),
-    ).exactOptional(),
-    Timezone: GatewayTimezoneSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates the time zone that is set for the gateway. The start time and day of week specified should be in the time zone of the gateway.',
-        }),
-    ).exactOptional(),
+    HourOfDay: HourOfDaySchema.exactOptional().openapi({
+      description:
+        'The hour component of the maintenance start time represented as <i>hh</i>, where <i>hh</i> is the hour (0 to 23). The hour of the day is in the time zone of the gateway.',
+    }),
+    MinuteOfHour: MinuteOfHourSchema.exactOptional().openapi({
+      description:
+        'The minute component of the maintenance start time represented as <i>mm</i>, where <i>mm</i> is the minute (0 to 59). The minute of the hour is in the time zone of the gateway.',
+    }),
+    DayOfWeek: DayOfWeekSchema.exactOptional().openapi({
+      description:
+        'An ordinal number between 0 and 6 that represents the day of the week, where 0 represents Sunday and 6 represents Saturday. The day of week is in the time zone of the gateway.',
+    }),
+    DayOfMonth: DayOfMonthSchema.exactOptional().openapi({
+      description:
+        'The day of the month component of the maintenance start time represented as an ordinal number from 1 to 28, where 1 represents the first day of the month and 28 represents the last day of the month.',
+    }),
+    Timezone: GatewayTimezoneSchema.exactOptional().openapi({
+      description:
+        'A value that indicates the time zone that is set for the gateway. The start time and day of week specified should be in the time zone of the gateway.',
+    }),
   })
   .openapi({
     example: {
@@ -3174,103 +2294,59 @@ const NFSFileShareInfoSchema = z
     FileShareId: FileShareIdSchema.exactOptional(),
     FileShareStatus: FileShareStatusSchema.exactOptional(),
     GatewayARN: GatewayARNSchema.exactOptional(),
-    KMSEncrypted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
+    KMSEncrypted: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
     KMSKey: KMSKeySchema.exactOptional(),
     Path: PathSchema.exactOptional(),
     Role: RoleSchema.exactOptional(),
     LocationARN: LocationARNSchema.exactOptional(),
-    DefaultStorageClass: StorageClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>',
-        }),
-    ).exactOptional(),
+    DefaultStorageClass: StorageClassSchema.exactOptional().openapi({
+      description:
+        '<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>',
+    }),
     ObjectACL: ObjectACLSchema.exactOptional(),
     ClientList: FileShareClientListSchema.exactOptional(),
     Squash: SquashSchema.exactOptional(),
-    ReadOnly: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that sets the write status of a file share. Set this value to <code>true</code> to set the write status to read-only, otherwise set to <code>false</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    GuessMIMETypeEnabled: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that enables guessing of the MIME type for uploaded objects based on file extensions. Set this value to <code>true</code> to enable MIME type guessing, otherwise set to <code>false</code>. The default value is <code>true</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    RequesterPays: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that sets who pays the cost of the request and the cost associated with data download from the S3 bucket. If this value is set to <code>true</code>, the requester pays the costs; otherwise, the S3 bucket owner pays. However, the S3 bucket owner always pays the cost of storing data.</p> <note> <p> <code>RequesterPays</code> is a configuration for the S3 bucket that backs the file share, so make sure that the configuration on the file share is the same as the S3 bucket configuration.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of up to 50 tags assigned to the NFS file share, sorted alphabetically by key name. Each tag is a key-value pair. For a gateway with more than 10 tags assigned, you can view all tags using the <code>ListTagsForResource</code> API operation.',
-        }),
-    ).exactOptional(),
-    FileShareName: FileShareNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the file share. Optional.</p> <note> <p> <code>FileShareName</code> must be set if an S3 prefix name is set in <code>LocationARN</code>, or if an access point or access point alias is used.</p> </note>',
-        }),
-    ).exactOptional(),
-    CacheAttributes: CacheAttributesSchema.and(
-      z.any().openapi({ description: 'Refresh cache information for the file share.' }),
-    ).exactOptional(),
-    NotificationPolicy: NotificationPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The notification policy of the file share. <code>SettlingTimeInSeconds</code> controls the number of seconds to wait after the last point in time a client wrote to a file before generating an <code>ObjectUploaded</code> notification. Because clients can make many small writes to files, it\'s best to set this parameter for as long as possible to avoid generating multiple notifications for the same file in a small time period.</p> <note> <p> <code>SettlingTimeInSeconds</code> has no effect on the timing of the object uploading to Amazon S3, only the timing of the notification.</p> </note> <p>The following example sets <code>NotificationPolicy</code> on with <code>SettlingTimeInSeconds</code> set to 60.</p> <p> <code>{\\"Upload\\": {\\"SettlingTimeInSeconds\\": 60}}</code> </p> <p>The following example sets <code>NotificationPolicy</code> off.</p> <p> <code>{}</code> </p>',
-        }),
-    ).exactOptional(),
-    VPCEndpointDNSName: DNSHostNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the DNS name for the VPC endpoint that the NFS file share uses to connect to Amazon S3.</p> <note> <p>This parameter is required for NFS file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.</p> </note>',
-        }),
-    ).exactOptional(),
-    BucketRegion: RegionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the Region of the S3 bucket where the NFS file share stores files.</p> <note> <p>This parameter is required for NFS file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.</p> </note>',
-        }),
-    ).exactOptional(),
-    AuditDestinationARN: AuditDestinationARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the storage used for audit logs.',
-        }),
-    ).exactOptional(),
+    ReadOnly: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that sets the write status of a file share. Set this value to <code>true</code> to set the write status to read-only, otherwise set to <code>false</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    GuessMIMETypeEnabled: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that enables guessing of the MIME type for uploaded objects based on file extensions. Set this value to <code>true</code> to enable MIME type guessing, otherwise set to <code>false</code>. The default value is <code>true</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    RequesterPays: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that sets who pays the cost of the request and the cost associated with data download from the S3 bucket. If this value is set to <code>true</code>, the requester pays the costs; otherwise, the S3 bucket owner pays. However, the S3 bucket owner always pays the cost of storing data.</p> <note> <p> <code>RequesterPays</code> is a configuration for the S3 bucket that backs the file share, so make sure that the configuration on the file share is the same as the S3 bucket configuration.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of up to 50 tags assigned to the NFS file share, sorted alphabetically by key name. Each tag is a key-value pair. For a gateway with more than 10 tags assigned, you can view all tags using the <code>ListTagsForResource</code> API operation.',
+    }),
+    FileShareName: FileShareNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the file share. Optional.</p> <note> <p> <code>FileShareName</code> must be set if an S3 prefix name is set in <code>LocationARN</code>, or if an access point or access point alias is used.</p> </note>',
+    }),
+    CacheAttributes: CacheAttributesSchema.exactOptional().openapi({
+      description: 'Refresh cache information for the file share.',
+    }),
+    NotificationPolicy: NotificationPolicySchema.exactOptional().openapi({
+      description:
+        '<p>The notification policy of the file share. <code>SettlingTimeInSeconds</code> controls the number of seconds to wait after the last point in time a client wrote to a file before generating an <code>ObjectUploaded</code> notification. Because clients can make many small writes to files, it\'s best to set this parameter for as long as possible to avoid generating multiple notifications for the same file in a small time period.</p> <note> <p> <code>SettlingTimeInSeconds</code> has no effect on the timing of the object uploading to Amazon S3, only the timing of the notification.</p> </note> <p>The following example sets <code>NotificationPolicy</code> on with <code>SettlingTimeInSeconds</code> set to 60.</p> <p> <code>{\\"Upload\\": {\\"SettlingTimeInSeconds\\": 60}}</code> </p> <p>The following example sets <code>NotificationPolicy</code> off.</p> <p> <code>{}</code> </p>',
+    }),
+    VPCEndpointDNSName: DNSHostNameSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the DNS name for the VPC endpoint that the NFS file share uses to connect to Amazon S3.</p> <note> <p>This parameter is required for NFS file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.</p> </note>',
+    }),
+    BucketRegion: RegionIdSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the Region of the S3 bucket where the NFS file share stores files.</p> <note> <p>This parameter is required for NFS file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.</p> </note>',
+    }),
+    AuditDestinationARN: AuditDestinationARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the storage used for audit logs.',
+    }),
   })
   .openapi({
     description:
@@ -3283,13 +2359,9 @@ const NFSFileShareInfoListSchema = z.array(NFSFileShareInfoSchema).openapi('NFSF
 
 const DescribeNFSFileSharesOutputSchema = z
   .object({
-    NFSFileShareInfoList: NFSFileShareInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array containing a description for each requested file share.',
-        }),
-    ).exactOptional(),
+    NFSFileShareInfoList: NFSFileShareInfoListSchema.exactOptional().openapi({
+      description: 'An array containing a description for each requested file share.',
+    }),
   })
   .openapi({ description: 'DescribeNFSFileSharesOutput', required: [] })
   .openapi('DescribeNFSFileSharesOutput')
@@ -3302,14 +2374,10 @@ const FileShareARNListSchema = z
 
 const DescribeNFSFileSharesInputSchema = z
   .object({
-    FileShareARNList: FileShareARNListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array containing the Amazon Resource Name (ARN) of each file share to be described.',
-        }),
-    ),
+    FileShareARNList: FileShareARNListSchema.openapi({
+      description:
+        'An array containing the Amazon Resource Name (ARN) of each file share to be described.',
+    }),
   })
   .openapi({
     required: ['FileShareARNList'],
@@ -3324,163 +2392,87 @@ const SMBFileShareInfoSchema = z
     FileShareId: FileShareIdSchema.exactOptional(),
     FileShareStatus: FileShareStatusSchema.exactOptional(),
     GatewayARN: GatewayARNSchema.exactOptional(),
-    KMSEncrypted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
+    KMSEncrypted: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
     KMSKey: KMSKeySchema.exactOptional(),
-    Path: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The file share path used by the SMB client to identify the mount point.',
-        }),
-    ).exactOptional(),
+    Path: PathSchema.exactOptional().openapi({
+      description: 'The file share path used by the SMB client to identify the mount point.',
+    }),
     Role: RoleSchema.exactOptional(),
     LocationARN: LocationARNSchema.exactOptional(),
-    DefaultStorageClass: StorageClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>',
-        }),
-    ).exactOptional(),
+    DefaultStorageClass: StorageClassSchema.exactOptional().openapi({
+      description:
+        '<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>',
+    }),
     ObjectACL: ObjectACLSchema.exactOptional(),
-    ReadOnly: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that sets the write status of a file share. Set this value to <code>true</code> to set the write status to read-only, otherwise set to <code>false</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    GuessMIMETypeEnabled: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that enables guessing of the MIME type for uploaded objects based on file extensions. Set this value to <code>true</code> to enable MIME type guessing, otherwise set to <code>false</code>. The default value is <code>true</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    RequesterPays: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that sets who pays the cost of the request and the cost associated with data download from the S3 bucket. If this value is set to <code>true</code>, the requester pays the costs; otherwise, the S3 bucket owner pays. However, the S3 bucket owner always pays the cost of storing data.</p> <note> <p> <code>RequesterPays</code> is a configuration for the S3 bucket that backs the file share, so make sure that the configuration on the file share is the same as the S3 bucket configuration.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    SMBACLEnabled: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If this value is set to <code>true</code>, it indicates that access control list (ACL) is enabled on the SMB file share. If it is set to <code>false</code>, it indicates that file and directory permissions are mapped to the POSIX permission.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/storagegateway/latest/userguide/smb-acl.html">Using Microsoft Windows ACLs to control access to an SMB file share</a> in the <i>Storage Gateway User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    AccessBasedEnumeration: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether <code>AccessBasedEnumeration</code> is enabled.',
-        }),
-    ).exactOptional(),
-    AdminUserList: UserListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of users or groups in the Active Directory that have administrator rights to the file share. A group must be prefixed with the @ character. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>. Can only be set if Authentication is set to <code>ActiveDirectory</code>.',
-        }),
-    ).exactOptional(),
-    ValidUserList: UserListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of users or groups in the Active Directory that are allowed to access the file share. A group must be prefixed with the @ character. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>. Can only be set if Authentication is set to <code>ActiveDirectory</code>.',
-        }),
-    ).exactOptional(),
-    InvalidUserList: UserListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of users or groups in the Active Directory that are not allowed to access the file share. A group must be prefixed with the @ character. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>. Can only be set if Authentication is set to <code>ActiveDirectory</code>.',
-        }),
-    ).exactOptional(),
-    AuditDestinationARN: AuditDestinationARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the storage used for audit logs.',
-        }),
-    ).exactOptional(),
+    ReadOnly: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that sets the write status of a file share. Set this value to <code>true</code> to set the write status to read-only, otherwise set to <code>false</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    GuessMIMETypeEnabled: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that enables guessing of the MIME type for uploaded objects based on file extensions. Set this value to <code>true</code> to enable MIME type guessing, otherwise set to <code>false</code>. The default value is <code>true</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    RequesterPays: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that sets who pays the cost of the request and the cost associated with data download from the S3 bucket. If this value is set to <code>true</code>, the requester pays the costs; otherwise, the S3 bucket owner pays. However, the S3 bucket owner always pays the cost of storing data.</p> <note> <p> <code>RequesterPays</code> is a configuration for the S3 bucket that backs the file share, so make sure that the configuration on the file share is the same as the S3 bucket configuration.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    SMBACLEnabled: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>If this value is set to <code>true</code>, it indicates that access control list (ACL) is enabled on the SMB file share. If it is set to <code>false</code>, it indicates that file and directory permissions are mapped to the POSIX permission.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/storagegateway/latest/userguide/smb-acl.html">Using Microsoft Windows ACLs to control access to an SMB file share</a> in the <i>Storage Gateway User Guide</i>.</p>',
+    }),
+    AccessBasedEnumeration: Boolean2Schema.exactOptional().openapi({
+      description: 'Indicates whether <code>AccessBasedEnumeration</code> is enabled.',
+    }),
+    AdminUserList: UserListSchema.exactOptional().openapi({
+      description:
+        'A list of users or groups in the Active Directory that have administrator rights to the file share. A group must be prefixed with the @ character. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>. Can only be set if Authentication is set to <code>ActiveDirectory</code>.',
+    }),
+    ValidUserList: UserListSchema.exactOptional().openapi({
+      description:
+        'A list of users or groups in the Active Directory that are allowed to access the file share. A group must be prefixed with the @ character. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>. Can only be set if Authentication is set to <code>ActiveDirectory</code>.',
+    }),
+    InvalidUserList: UserListSchema.exactOptional().openapi({
+      description:
+        'A list of users or groups in the Active Directory that are not allowed to access the file share. A group must be prefixed with the @ character. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>. Can only be set if Authentication is set to <code>ActiveDirectory</code>.',
+    }),
+    AuditDestinationARN: AuditDestinationARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the storage used for audit logs.',
+    }),
     Authentication: AuthenticationSchema.exactOptional(),
-    CaseSensitivity: CaseSensitivitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The case of an object name in an Amazon S3 bucket. For <code>ClientSpecified</code>, the client determines the case sensitivity. For <code>CaseSensitive</code>, the gateway determines the case sensitivity. The default value is <code>ClientSpecified</code>.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of up to 50 tags assigned to the SMB file share, sorted alphabetically by key name. Each tag is a key-value pair. For a gateway with more than 10 tags assigned, you can view all tags using the <code>ListTagsForResource</code> API operation.',
-        }),
-    ).exactOptional(),
-    FileShareName: FileShareNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the file share. Optional.</p> <note> <p> <code>FileShareName</code> must be set if an S3 prefix name is set in <code>LocationARN</code>, or if an access point or access point alias is used.</p> </note>',
-        }),
-    ).exactOptional(),
-    CacheAttributes: CacheAttributesSchema.and(
-      z.any().openapi({ description: 'Refresh cache information for the file share.' }),
-    ).exactOptional(),
-    NotificationPolicy: NotificationPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The notification policy of the file share. <code>SettlingTimeInSeconds</code> controls the number of seconds to wait after the last point in time a client wrote to a file before generating an <code>ObjectUploaded</code> notification. Because clients can make many small writes to files, it\'s best to set this parameter for as long as possible to avoid generating multiple notifications for the same file in a small time period.</p> <note> <p> <code>SettlingTimeInSeconds</code> has no effect on the timing of the object uploading to Amazon S3, only the timing of the notification.</p> </note> <p>The following example sets <code>NotificationPolicy</code> on with <code>SettlingTimeInSeconds</code> set to 60.</p> <p> <code>{\\"Upload\\": {\\"SettlingTimeInSeconds\\": 60}}</code> </p> <p>The following example sets <code>NotificationPolicy</code> off.</p> <p> <code>{}</code> </p>',
-        }),
-    ).exactOptional(),
-    VPCEndpointDNSName: DNSHostNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the DNS name for the VPC endpoint that the SMB file share uses to connect to Amazon S3.</p> <note> <p>This parameter is required for SMB file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.</p> </note>',
-        }),
-    ).exactOptional(),
-    BucketRegion: RegionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the Region of the S3 bucket where the SMB file share stores files.</p> <note> <p>This parameter is required for SMB file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.</p> </note>',
-        }),
-    ).exactOptional(),
-    OplocksEnabled: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether opportunistic locking is enabled for the SMB file share.</p> <note> <p>Enabling opportunistic locking on case-sensitive shares is not recommended for workloads that involve access to files with the same name in different case.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
+    CaseSensitivity: CaseSensitivitySchema.exactOptional().openapi({
+      description:
+        'The case of an object name in an Amazon S3 bucket. For <code>ClientSpecified</code>, the client determines the case sensitivity. For <code>CaseSensitive</code>, the gateway determines the case sensitivity. The default value is <code>ClientSpecified</code>.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of up to 50 tags assigned to the SMB file share, sorted alphabetically by key name. Each tag is a key-value pair. For a gateway with more than 10 tags assigned, you can view all tags using the <code>ListTagsForResource</code> API operation.',
+    }),
+    FileShareName: FileShareNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the file share. Optional.</p> <note> <p> <code>FileShareName</code> must be set if an S3 prefix name is set in <code>LocationARN</code>, or if an access point or access point alias is used.</p> </note>',
+    }),
+    CacheAttributes: CacheAttributesSchema.exactOptional().openapi({
+      description: 'Refresh cache information for the file share.',
+    }),
+    NotificationPolicy: NotificationPolicySchema.exactOptional().openapi({
+      description:
+        '<p>The notification policy of the file share. <code>SettlingTimeInSeconds</code> controls the number of seconds to wait after the last point in time a client wrote to a file before generating an <code>ObjectUploaded</code> notification. Because clients can make many small writes to files, it\'s best to set this parameter for as long as possible to avoid generating multiple notifications for the same file in a small time period.</p> <note> <p> <code>SettlingTimeInSeconds</code> has no effect on the timing of the object uploading to Amazon S3, only the timing of the notification.</p> </note> <p>The following example sets <code>NotificationPolicy</code> on with <code>SettlingTimeInSeconds</code> set to 60.</p> <p> <code>{\\"Upload\\": {\\"SettlingTimeInSeconds\\": 60}}</code> </p> <p>The following example sets <code>NotificationPolicy</code> off.</p> <p> <code>{}</code> </p>',
+    }),
+    VPCEndpointDNSName: DNSHostNameSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the DNS name for the VPC endpoint that the SMB file share uses to connect to Amazon S3.</p> <note> <p>This parameter is required for SMB file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.</p> </note>',
+    }),
+    BucketRegion: RegionIdSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the Region of the S3 bucket where the SMB file share stores files.</p> <note> <p>This parameter is required for SMB file shares that connect to Amazon S3 through a VPC endpoint, a VPC access point, or an access point alias that points to a VPC access point.</p> </note>',
+    }),
+    OplocksEnabled: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether opportunistic locking is enabled for the SMB file share.</p> <note> <p>Enabling opportunistic locking on case-sensitive shares is not recommended for workloads that involve access to files with the same name in different case.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
   })
   .openapi({
     description:
@@ -3493,27 +2485,19 @@ const SMBFileShareInfoListSchema = z.array(SMBFileShareInfoSchema).openapi('SMBF
 
 const DescribeSMBFileSharesOutputSchema = z
   .object({
-    SMBFileShareInfoList: SMBFileShareInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array containing a description for each requested file share.',
-        }),
-    ).exactOptional(),
+    SMBFileShareInfoList: SMBFileShareInfoListSchema.exactOptional().openapi({
+      description: 'An array containing a description for each requested file share.',
+    }),
   })
   .openapi({ description: 'DescribeSMBFileSharesOutput', required: [] })
   .openapi('DescribeSMBFileSharesOutput')
 
 const DescribeSMBFileSharesInputSchema = z
   .object({
-    FileShareARNList: FileShareARNListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array containing the Amazon Resource Name (ARN) of each file share to be described.',
-        }),
-    ),
+    FileShareARNList: FileShareARNListSchema.openapi({
+      description:
+        'An array containing the Amazon Resource Name (ARN) of each file share to be described.',
+    }),
   })
   .openapi({
     required: ['FileShareARNList'],
@@ -3547,14 +2531,10 @@ const SMBSecurityStrategySchema = z
 
 const SMBLocalGroupsSchema = z
   .object({
-    GatewayAdmins: UserListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of Active Directory users and groups that have local Gateway Admin permissions. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>DOMAIN\\group1</code>, and <code>group1</code>.</p> <p>Gateway Admins can use the Shared Folders Microsoft Management Console snap-in to force-close files that are open and locked.</p>',
-        }),
-    ).exactOptional(),
+    GatewayAdmins: UserListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of Active Directory users and groups that have local Gateway Admin permissions. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>DOMAIN\\group1</code>, and <code>group1</code>.</p> <p>Gateway Admins can use the Shared Folders Microsoft Management Console snap-in to force-close files that are open and locked.</p>',
+    }),
   })
   .openapi({
     description:
@@ -3566,49 +2546,29 @@ const SMBLocalGroupsSchema = z
 const DescribeSMBSettingsOutputSchema = z
   .object({
     GatewayARN: GatewayARNSchema.exactOptional(),
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain that the gateway is joined to.' }),
-    ).exactOptional(),
-    ActiveDirectoryStatus: ActiveDirectoryStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates the status of a gateway that is a member of the Active Directory domain.</p> <ul> <li> <p> <code>ACCESS_DENIED</code>: Indicates that the <code>JoinDomain</code> operation failed due to an authentication error.</p> </li> <li> <p> <code>DETACHED</code>: Indicates that gateway is not joined to a domain.</p> </li> <li> <p> <code>JOINED</code>: Indicates that the gateway has successfully joined a domain.</p> </li> <li> <p> <code>JOINING</code>: Indicates that a <code>JoinDomain</code> operation is in progress.</p> </li> <li> <p> <code>NETWORK_ERROR</code>: Indicates that <code>JoinDomain</code> operation failed due to a network or connectivity error.</p> </li> <li> <p> <code>TIMEOUT</code>: Indicates that the <code>JoinDomain</code> operation failed because the operation didn't complete within the allotted time.</p> </li> <li> <p> <code>UNKNOWN_ERROR</code>: Indicates that the <code>JoinDomain</code> operation failed due to another type of error.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    SMBGuestPasswordSet: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>This value is <code>true</code> if a password for the guest user <code>smbguest</code> is set, otherwise <code>false</code>. Only supported for S3 File Gateways.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    SMBSecurityStrategy: SMBSecurityStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of security strategy that was specified for file gateway.</p> <ul> <li> <p> <code>ClientSpecified</code>: If you use this option, requests are established based on what is negotiated by the client. This option is recommended when you want to maximize compatibility across different clients in your environment. Only supported for S3 File Gateways.</p> </li> <li> <p> <code>MandatorySigning</code>: If you use this option, file gateway only allows connections from SMBv2 or SMBv3 clients that have signing enabled. This option works with SMB clients on Microsoft Windows Vista, Windows Server 2008 or newer.</p> </li> <li> <p> <code>MandatoryEncryption</code>: If you use this option, file gateway only allows connections from SMBv3 clients that have encryption enabled. This option is highly recommended for environments that handle sensitive data. This option works with SMB clients on Microsoft Windows 8, Windows Server 2012 or newer.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    FileSharesVisible: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The shares on this gateway appear when listing shares. Only supported for S3 File Gateways. ',
-        }),
-    ).exactOptional(),
-    SMBLocalGroups: SMBLocalGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of Active Directory users and groups that have special permissions for SMB file shares on the gateway.',
-        }),
-    ).exactOptional(),
+    DomainName: DomainNameSchema.exactOptional().openapi({
+      description: 'The name of the domain that the gateway is joined to.',
+    }),
+    ActiveDirectoryStatus: ActiveDirectoryStatusSchema.exactOptional().openapi({
+      description:
+        "<p>Indicates the status of a gateway that is a member of the Active Directory domain.</p> <ul> <li> <p> <code>ACCESS_DENIED</code>: Indicates that the <code>JoinDomain</code> operation failed due to an authentication error.</p> </li> <li> <p> <code>DETACHED</code>: Indicates that gateway is not joined to a domain.</p> </li> <li> <p> <code>JOINED</code>: Indicates that the gateway has successfully joined a domain.</p> </li> <li> <p> <code>JOINING</code>: Indicates that a <code>JoinDomain</code> operation is in progress.</p> </li> <li> <p> <code>NETWORK_ERROR</code>: Indicates that <code>JoinDomain</code> operation failed due to a network or connectivity error.</p> </li> <li> <p> <code>TIMEOUT</code>: Indicates that the <code>JoinDomain</code> operation failed because the operation didn't complete within the allotted time.</p> </li> <li> <p> <code>UNKNOWN_ERROR</code>: Indicates that the <code>JoinDomain</code> operation failed due to another type of error.</p> </li> </ul>",
+    }),
+    SMBGuestPasswordSet: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>This value is <code>true</code> if a password for the guest user <code>smbguest</code> is set, otherwise <code>false</code>. Only supported for S3 File Gateways.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    SMBSecurityStrategy: SMBSecurityStrategySchema.exactOptional().openapi({
+      description:
+        '<p>The type of security strategy that was specified for file gateway.</p> <ul> <li> <p> <code>ClientSpecified</code>: If you use this option, requests are established based on what is negotiated by the client. This option is recommended when you want to maximize compatibility across different clients in your environment. Only supported for S3 File Gateways.</p> </li> <li> <p> <code>MandatorySigning</code>: If you use this option, file gateway only allows connections from SMBv2 or SMBv3 clients that have signing enabled. This option works with SMB clients on Microsoft Windows Vista, Windows Server 2008 or newer.</p> </li> <li> <p> <code>MandatoryEncryption</code>: If you use this option, file gateway only allows connections from SMBv3 clients that have encryption enabled. This option is highly recommended for environments that handle sensitive data. This option works with SMB clients on Microsoft Windows 8, Windows Server 2012 or newer.</p> </li> </ul>',
+    }),
+    FileSharesVisible: Boolean2Schema.exactOptional().openapi({
+      description:
+        'The shares on this gateway appear when listing shares. Only supported for S3 File Gateways. ',
+    }),
+    SMBLocalGroups: SMBLocalGroupsSchema.exactOptional().openapi({
+      description:
+        'A list of Active Directory users and groups that have special permissions for SMB file shares on the gateway.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSMBSettingsOutput')
@@ -3624,39 +2584,27 @@ const DescriptionSchema = z.string().min(1).max(255).openapi('Description')
 
 const DescribeSnapshotScheduleOutputSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the volume that was specified in the request.',
-        }),
-    ).exactOptional(),
-    StartAt: HourOfDaySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The hour of the day at which the snapshot schedule begins represented as <i>hh</i>, where <i>hh</i> is the hour (0 to 23). The hour of the day is in the time zone of the gateway.',
-        }),
-    ).exactOptional(),
-    RecurrenceInHours: RecurrenceInHoursSchema.and(
-      z.any().openapi({ description: 'The number of hours between snapshots.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The snapshot description.' }),
-    ).exactOptional(),
-    Timezone: GatewayTimezoneSchema.and(
-      z.any().openapi({ description: 'A value that indicates the time zone of the gateway.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of up to 50 tags assigned to the snapshot schedule, sorted alphabetically by key name. Each tag is a key-value pair. For a gateway with more than 10 tags assigned, you can view all tags using the <code>ListTagsForResource</code> API operation.',
-        }),
-    ).exactOptional(),
+    VolumeARN: VolumeARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the volume that was specified in the request.',
+    }),
+    StartAt: HourOfDaySchema.exactOptional().openapi({
+      description:
+        'The hour of the day at which the snapshot schedule begins represented as <i>hh</i>, where <i>hh</i> is the hour (0 to 23). The hour of the day is in the time zone of the gateway.',
+    }),
+    RecurrenceInHours: RecurrenceInHoursSchema.exactOptional().openapi({
+      description: 'The number of hours between snapshots.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The snapshot description.',
+    }),
+    Timezone: GatewayTimezoneSchema.exactOptional().openapi({
+      description: 'A value that indicates the time zone of the gateway.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of up to 50 tags assigned to the snapshot schedule, sorted alphabetically by key name. Each tag is a key-value pair. For a gateway with more than 10 tags assigned, you can view all tags using the <code>ListTagsForResource</code> API operation.',
+    }),
   })
   .openapi({
     example: {
@@ -3673,14 +2621,10 @@ const DescribeSnapshotScheduleOutputSchema = z
 
 const DescribeSnapshotScheduleInputSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the volume. Use the <a>ListVolumes</a> operation to return a list of gateway volumes.',
-        }),
-    ),
+    VolumeARN: VolumeARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the volume. Use the <a>ListVolumes</a> operation to return a list of gateway volumes.',
+    }),
   })
   .openapi({
     required: ['VolumeARN'],
@@ -3692,104 +2636,58 @@ const DescribeSnapshotScheduleInputSchema = z
 
 const StorediSCSIVolumeSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the storage volume.' }),
-    ).exactOptional(),
-    VolumeId: VolumeIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the volume, e.g., vol-AE4B946D.' }),
-    ).exactOptional(),
-    VolumeType: VolumeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One of the VolumeType enumeration values describing the type of the volume.',
-        }),
-    ).exactOptional(),
-    VolumeStatus: VolumeStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One of the VolumeStatus values that indicates the state of the storage volume.',
-        }),
-    ).exactOptional(),
-    VolumeAttachmentStatus: VolumeAttachmentStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates whether a storage volume is attached to, detached from, or is in the process of detaching from a gateway. For more information, see <a href="https://docs.aws.amazon.com/storagegateway/latest/userguide/managing-volumes.html#attach-detach-volume">Moving your volumes to a different gateway</a>.',
-        }),
-    ).exactOptional(),
-    VolumeSizeInBytes: LongSchema.and(
-      z.any().openapi({ description: 'The size of the volume in bytes.' }),
-    ).exactOptional(),
-    VolumeProgress: DoubleObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the percentage complete if the volume is restoring or bootstrapping that represents the percent of data transferred. This field does not appear in the response if the stored volume is not restoring or bootstrapping.',
-        }),
-    ).exactOptional(),
-    VolumeDiskId: DiskIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the local disk that was specified in the <a>CreateStorediSCSIVolume</a> operation.',
-        }),
-    ).exactOptional(),
-    SourceSnapshotId: SnapshotIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the stored volume was created from a snapshot, this field contains the snapshot ID used, e.g. snap-78e22663. Otherwise, this field is not included.',
-        }),
-    ).exactOptional(),
-    PreservedExistingData: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates if when the stored volume was created, existing data on the underlying local disk was preserved.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    VolumeiSCSIAttributes: VolumeiSCSIAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <a>VolumeiSCSIAttributes</a> object that represents a collection of iSCSI attributes for one stored volume.',
-        }),
-    ).exactOptional(),
-    CreatedDate: CreatedDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date the volume was created. Volumes created prior to March 28, 2017 don’t have this timestamp.',
-        }),
-    ).exactOptional(),
-    VolumeUsedInBytes: VolumeUsedInBytesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The size of the data stored on the volume in bytes. This value is calculated based on the number of blocks that are touched, instead of the actual amount of data written. This value can be useful for sequential write patterns but less accurate for random write patterns. <code>VolumeUsedInBytes</code> is different from the compressed size of the volume, which is the value that is used to calculate your bill.</p> <note> <p>This value is not available for volumes created prior to May 13, 2015, until you store data on the volume.</p> </note>',
-        }),
-    ).exactOptional(),
+    VolumeARN: VolumeARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the storage volume.',
+    }),
+    VolumeId: VolumeIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the volume, e.g., vol-AE4B946D.',
+    }),
+    VolumeType: VolumeTypeSchema.exactOptional().openapi({
+      description: 'One of the VolumeType enumeration values describing the type of the volume.',
+    }),
+    VolumeStatus: VolumeStatusSchema.exactOptional().openapi({
+      description: 'One of the VolumeStatus values that indicates the state of the storage volume.',
+    }),
+    VolumeAttachmentStatus: VolumeAttachmentStatusSchema.exactOptional().openapi({
+      description:
+        'A value that indicates whether a storage volume is attached to, detached from, or is in the process of detaching from a gateway. For more information, see <a href="https://docs.aws.amazon.com/storagegateway/latest/userguide/managing-volumes.html#attach-detach-volume">Moving your volumes to a different gateway</a>.',
+    }),
+    VolumeSizeInBytes: LongSchema.exactOptional().openapi({
+      description: 'The size of the volume in bytes.',
+    }),
+    VolumeProgress: DoubleObjectSchema.exactOptional().openapi({
+      description:
+        'Represents the percentage complete if the volume is restoring or bootstrapping that represents the percent of data transferred. This field does not appear in the response if the stored volume is not restoring or bootstrapping.',
+    }),
+    VolumeDiskId: DiskIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the local disk that was specified in the <a>CreateStorediSCSIVolume</a> operation.',
+    }),
+    SourceSnapshotId: SnapshotIdSchema.exactOptional().openapi({
+      description:
+        'If the stored volume was created from a snapshot, this field contains the snapshot ID used, e.g. snap-78e22663. Otherwise, this field is not included.',
+    }),
+    PreservedExistingData: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates if when the stored volume was created, existing data on the underlying local disk was preserved.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    VolumeiSCSIAttributes: VolumeiSCSIAttributesSchema.exactOptional().openapi({
+      description:
+        'An <a>VolumeiSCSIAttributes</a> object that represents a collection of iSCSI attributes for one stored volume.',
+    }),
+    CreatedDate: CreatedDateSchema.exactOptional().openapi({
+      description:
+        'The date the volume was created. Volumes created prior to March 28, 2017 don’t have this timestamp.',
+    }),
+    VolumeUsedInBytes: VolumeUsedInBytesSchema.exactOptional().openapi({
+      description:
+        '<p>The size of the data stored on the volume in bytes. This value is calculated based on the number of blocks that are touched, instead of the actual amount of data written. This value can be useful for sequential write patterns but less accurate for random write patterns. <code>VolumeUsedInBytes</code> is different from the compressed size of the volume, which is the value that is used to calculate your bill.</p> <note> <p>This value is not available for volumes created prior to May 13, 2015, until you store data on the volume.</p> </note>',
+    }),
     KMSKey: KMSKeySchema.exactOptional(),
-    TargetName: TargetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the iSCSI target used by an initiator to connect to a volume and used as a suffix for the target ARN. For example, specifying <code>TargetName</code> as <i>myvolume</i> results in the target ARN of <code>arn:aws:storagegateway:us-east-2:111122223333:gateway/sgw-12A3456B/target/iqn.1997-05.com.amazon:myvolume</code>. The target name must be unique across all volumes on a gateway.</p> <p>If you don't specify a value, Storage Gateway uses the value that was previously used for this volume as the new target name.</p>",
-        }),
-    ).exactOptional(),
+    TargetName: TargetNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the iSCSI target used by an initiator to connect to a volume and used as a suffix for the target ARN. For example, specifying <code>TargetName</code> as <i>myvolume</i> results in the target ARN of <code>arn:aws:storagegateway:us-east-2:111122223333:gateway/sgw-12A3456B/target/iqn.1997-05.com.amazon:myvolume</code>. The target name must be unique across all volumes on a gateway.</p> <p>If you don't specify a value, Storage Gateway uses the value that was previously used for this volume as the new target name.</p>",
+    }),
   })
   .openapi({ description: 'Describes an iSCSI stored volume.', required: [] })
   .openapi('StorediSCSIVolume')
@@ -3798,14 +2696,10 @@ const StorediSCSIVolumesSchema = z.array(StorediSCSIVolumeSchema).openapi('Store
 
 const DescribeStorediSCSIVolumesOutputSchema = z
   .object({
-    StorediSCSIVolumes: StorediSCSIVolumesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes a single unit of output from <a>DescribeStorediSCSIVolumes</a>. The following fields are returned:</p> <ul> <li> <p> <code>ChapEnabled</code>: Indicates whether mutual CHAP is enabled for the iSCSI target.</p> </li> <li> <p> <code>LunNumber</code>: The logical disk number.</p> </li> <li> <p> <code>NetworkInterfaceId</code>: The network interface ID of the stored volume that initiator use to map the stored volume as an iSCSI target.</p> </li> <li> <p> <code>NetworkInterfacePort</code>: The port used to communicate with iSCSI targets.</p> </li> <li> <p> <code>PreservedExistingData</code>: Indicates when the stored volume was created, existing data on the underlying local disk was preserved.</p> </li> <li> <p> <code>SourceSnapshotId</code>: If the stored volume was created from a snapshot, this field contains the snapshot ID used, e.g. <code>snap-1122aabb</code>. Otherwise, this field is not included.</p> </li> <li> <p> <code>StorediSCSIVolumes</code>: An array of StorediSCSIVolume objects where each object contains metadata about one stored volume.</p> </li> <li> <p> <code>TargetARN</code>: The Amazon Resource Name (ARN) of the volume target.</p> </li> <li> <p> <code>VolumeARN</code>: The Amazon Resource Name (ARN) of the stored volume.</p> </li> <li> <p> <code>VolumeDiskId</code>: The disk ID of the local disk that was specified in the <a>CreateStorediSCSIVolume</a> operation.</p> </li> <li> <p> <code>VolumeId</code>: The unique identifier of the storage volume, e.g. <code>vol-1122AABB</code>.</p> </li> <li> <p> <code>VolumeiSCSIAttributes</code>: An <a>VolumeiSCSIAttributes</a> object that represents a collection of iSCSI attributes for one stored volume.</p> </li> <li> <p> <code>VolumeProgress</code>: Represents the percentage complete if the volume is restoring or bootstrapping that represents the percent of data transferred. This field does not appear in the response if the stored volume is not restoring or bootstrapping.</p> </li> <li> <p> <code>VolumeSizeInBytes</code>: The size of the volume in bytes.</p> </li> <li> <p> <code>VolumeStatus</code>: One of the <code>VolumeStatus</code> values that indicates the state of the volume.</p> </li> <li> <p> <code>VolumeType</code>: One of the enumeration values describing the type of the volume. Currently, only <code>STORED</code> volumes are supported.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StorediSCSIVolumes: StorediSCSIVolumesSchema.exactOptional().openapi({
+      description:
+        '<p>Describes a single unit of output from <a>DescribeStorediSCSIVolumes</a>. The following fields are returned:</p> <ul> <li> <p> <code>ChapEnabled</code>: Indicates whether mutual CHAP is enabled for the iSCSI target.</p> </li> <li> <p> <code>LunNumber</code>: The logical disk number.</p> </li> <li> <p> <code>NetworkInterfaceId</code>: The network interface ID of the stored volume that initiator use to map the stored volume as an iSCSI target.</p> </li> <li> <p> <code>NetworkInterfacePort</code>: The port used to communicate with iSCSI targets.</p> </li> <li> <p> <code>PreservedExistingData</code>: Indicates when the stored volume was created, existing data on the underlying local disk was preserved.</p> </li> <li> <p> <code>SourceSnapshotId</code>: If the stored volume was created from a snapshot, this field contains the snapshot ID used, e.g. <code>snap-1122aabb</code>. Otherwise, this field is not included.</p> </li> <li> <p> <code>StorediSCSIVolumes</code>: An array of StorediSCSIVolume objects where each object contains metadata about one stored volume.</p> </li> <li> <p> <code>TargetARN</code>: The Amazon Resource Name (ARN) of the volume target.</p> </li> <li> <p> <code>VolumeARN</code>: The Amazon Resource Name (ARN) of the stored volume.</p> </li> <li> <p> <code>VolumeDiskId</code>: The disk ID of the local disk that was specified in the <a>CreateStorediSCSIVolume</a> operation.</p> </li> <li> <p> <code>VolumeId</code>: The unique identifier of the storage volume, e.g. <code>vol-1122AABB</code>.</p> </li> <li> <p> <code>VolumeiSCSIAttributes</code>: An <a>VolumeiSCSIAttributes</a> object that represents a collection of iSCSI attributes for one stored volume.</p> </li> <li> <p> <code>VolumeProgress</code>: Represents the percentage complete if the volume is restoring or bootstrapping that represents the percent of data transferred. This field does not appear in the response if the stored volume is not restoring or bootstrapping.</p> </li> <li> <p> <code>VolumeSizeInBytes</code>: The size of the volume in bytes.</p> </li> <li> <p> <code>VolumeStatus</code>: One of the <code>VolumeStatus</code> values that indicates the state of the volume.</p> </li> <li> <p> <code>VolumeType</code>: One of the enumeration values describing the type of the volume. Currently, only <code>STORED</code> volumes are supported.</p> </li> </ul>',
+    }),
   })
   .openapi({
     example: {
@@ -3835,14 +2729,10 @@ const DescribeStorediSCSIVolumesOutputSchema = z
 
 const DescribeStorediSCSIVolumesInputSchema = z
   .object({
-    VolumeARNs: VolumeARNsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of strings where each string represents the Amazon Resource Name (ARN) of a stored volume. All of the specified stored volumes must be from the same gateway. Use <a>ListVolumes</a> to get volume ARNs for a gateway.',
-        }),
-    ),
+    VolumeARNs: VolumeARNsSchema.openapi({
+      description:
+        'An array of strings where each string represents the Amazon Resource Name (ARN) of a stored volume. All of the specified stored volumes must be from the same gateway. Use <a>ListVolumes</a> to get volume ARNs for a gateway.',
+    }),
   })
   .openapi({
     required: ['VolumeARNs'],
@@ -3858,80 +2748,50 @@ const TapeUsageSchema = z.int().openapi('TapeUsage')
 
 const TapeArchiveSchema = z
   .object({
-    TapeARN: TapeARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of an archived virtual tape.' }),
-    ).exactOptional(),
-    TapeBarcode: TapeBarcodeSchema.and(
-      z.any().openapi({ description: 'The barcode that identifies the archived virtual tape.' }),
-    ).exactOptional(),
-    TapeCreatedDate: TimeSchema.and(
-      z.any().openapi({ description: 'The date the virtual tape was created.' }),
-    ).exactOptional(),
-    TapeSizeInBytes: TapeSizeSchema.and(
-      z.any().openapi({ description: 'The size, in bytes, of the archived virtual tape.' }),
-    ).exactOptional(),
-    CompletionTime: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The time that the archiving of the virtual tape was completed.</p> <p>The default timestamp format is in the ISO8601 extended YYYY-MM-DD'T'HH:MM:SS'Z' format.</p>",
-        }),
-    ).exactOptional(),
-    RetrievedTo: GatewayARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the tape gateway that the virtual tape is being retrieved to.</p> <p>The virtual tape is retrieved from the virtual tape shelf (VTS).</p>',
-        }),
-    ).exactOptional(),
-    TapeStatus: TapeArchiveStatusSchema.and(
-      z.any().openapi({ description: 'The current state of the archived virtual tape.' }),
-    ).exactOptional(),
-    TapeUsedInBytes: TapeUsageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The size, in bytes, of data stored on the virtual tape.</p> <note> <p>This value is not available for tapes created prior to May 13, 2015.</p> </note>',
-        }),
-    ).exactOptional(),
+    TapeARN: TapeARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of an archived virtual tape.',
+    }),
+    TapeBarcode: TapeBarcodeSchema.exactOptional().openapi({
+      description: 'The barcode that identifies the archived virtual tape.',
+    }),
+    TapeCreatedDate: TimeSchema.exactOptional().openapi({
+      description: 'The date the virtual tape was created.',
+    }),
+    TapeSizeInBytes: TapeSizeSchema.exactOptional().openapi({
+      description: 'The size, in bytes, of the archived virtual tape.',
+    }),
+    CompletionTime: TimeSchema.exactOptional().openapi({
+      description:
+        "<p>The time that the archiving of the virtual tape was completed.</p> <p>The default timestamp format is in the ISO8601 extended YYYY-MM-DD'T'HH:MM:SS'Z' format.</p>",
+    }),
+    RetrievedTo: GatewayARNSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the tape gateway that the virtual tape is being retrieved to.</p> <p>The virtual tape is retrieved from the virtual tape shelf (VTS).</p>',
+    }),
+    TapeStatus: TapeArchiveStatusSchema.exactOptional().openapi({
+      description: 'The current state of the archived virtual tape.',
+    }),
+    TapeUsedInBytes: TapeUsageSchema.exactOptional().openapi({
+      description:
+        '<p>The size, in bytes, of data stored on the virtual tape.</p> <note> <p>This value is not available for tapes created prior to May 13, 2015.</p> </note>',
+    }),
     KMSKey: KMSKeySchema.exactOptional(),
-    PoolId: PoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the pool that was used to archive the tape. The tapes in this pool are archived in the S3 storage class that is associated with the pool.',
-        }),
-    ).exactOptional(),
-    Worm: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to <code>true</code> if the archived tape is stored as write-once-read-many (WORM).',
-        }),
-    ).exactOptional(),
-    RetentionStartDate: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the archived tape is subject to tape retention lock, the date that the archived tape started being retained.',
-        }),
-    ).exactOptional(),
-    PoolEntryDate: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The time that the tape entered the custom tape pool.</p> <p>The default timestamp format is in the ISO8601 extended YYYY-MM-DD'T'HH:MM:SS'Z' format.</p>",
-        }),
-    ).exactOptional(),
+    PoolId: PoolIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the pool that was used to archive the tape. The tapes in this pool are archived in the S3 storage class that is associated with the pool.',
+    }),
+    Worm: BooleanSchema.exactOptional().openapi({
+      description:
+        'Set to <code>true</code> if the archived tape is stored as write-once-read-many (WORM).',
+    }),
+    RetentionStartDate: TimeSchema.exactOptional().openapi({
+      description:
+        'If the archived tape is subject to tape retention lock, the date that the archived tape started being retained.',
+    }),
+    PoolEntryDate: TimeSchema.exactOptional().openapi({
+      description:
+        "<p>The time that the tape entered the custom tape pool.</p> <p>The default timestamp format is in the ISO8601 extended YYYY-MM-DD'T'HH:MM:SS'Z' format.</p>",
+    }),
   })
   .openapi({
     description: 'Represents a virtual tape that is archived in the virtual tape shelf (VTS).',
@@ -3945,22 +2805,14 @@ const MarkerSchema = z.string().min(1).max(1000).openapi('Marker')
 
 const DescribeTapeArchivesOutputSchema = z
   .object({
-    TapeArchives: TapeArchivesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of virtual tape objects in the virtual tape shelf (VTS). The description includes of the Amazon Resource Name (ARN) of the virtual tapes. The information returned includes the Amazon Resource Names (ARNs) of the tapes, size of the tapes, status of the tapes, progress of the description, and tape barcode.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque string that indicates the position at which the virtual tapes that were fetched for description ended. Use this marker in your next request to fetch the next set of virtual tapes in the virtual tape shelf (VTS). If there are no more virtual tapes to describe, this field does not appear in the response.',
-        }),
-    ).exactOptional(),
+    TapeArchives: TapeArchivesSchema.exactOptional().openapi({
+      description:
+        'An array of virtual tape objects in the virtual tape shelf (VTS). The description includes of the Amazon Resource Name (ARN) of the virtual tapes. The information returned includes the Amazon Resource Names (ARNs) of the tapes, size of the tapes, status of the tapes, progress of the description, and tape barcode.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'An opaque string that indicates the position at which the virtual tapes that were fetched for description ended. Use this marker in your next request to fetch the next set of virtual tapes in the virtual tape shelf (VTS). If there are no more virtual tapes to describe, this field does not appear in the response.',
+    }),
   })
   .openapi({
     example: {
@@ -3989,30 +2841,18 @@ const DescribeTapeArchivesOutputSchema = z
 
 const DescribeTapeArchivesInputSchema = z
   .object({
-    TapeARNs: TapeARNsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies one or more unique Amazon Resource Names (ARNs) that represent the virtual tapes you want to describe.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque string that indicates the position at which to begin describing virtual tapes.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies that the number of virtual tapes described be limited to the specified number.',
-        }),
-    ).exactOptional(),
+    TapeARNs: TapeARNsSchema.exactOptional().openapi({
+      description:
+        'Specifies one or more unique Amazon Resource Names (ARNs) that represent the virtual tapes you want to describe.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'An opaque string that indicates the position at which to begin describing virtual tapes.',
+    }),
+    Limit: PositiveIntObjectSchema.exactOptional().openapi({
+      description:
+        'Specifies that the number of virtual tapes described be limited to the specified number.',
+    }),
   })
   .openapi({
     title: 'DescribeTapeArchivesInput',
@@ -4025,23 +2865,19 @@ const TapeRecoveryPointStatusSchema = z.string().openapi('TapeRecoveryPointStatu
 
 const TapeRecoveryPointInfoSchema = z
   .object({
-    TapeARN: TapeARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the virtual tape.' }),
-    ).exactOptional(),
-    TapeRecoveryPointTime: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The time when the point-in-time view of the virtual tape was replicated for later recovery.</p> <p>The default timestamp format of the tape recovery point time is in the ISO8601 extended YYYY-MM-DD'T'HH:MM:SS'Z' format.</p>",
-        }),
-    ).exactOptional(),
-    TapeSizeInBytes: TapeSizeSchema.and(
-      z.any().openapi({ description: 'The size, in bytes, of the virtual tapes to recover.' }),
-    ).exactOptional(),
-    TapeStatus: TapeRecoveryPointStatusSchema.and(
-      z.any().openapi({ description: 'The status of the virtual tapes.' }),
-    ).exactOptional(),
+    TapeARN: TapeARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the virtual tape.',
+    }),
+    TapeRecoveryPointTime: TimeSchema.exactOptional().openapi({
+      description:
+        "<p>The time when the point-in-time view of the virtual tape was replicated for later recovery.</p> <p>The default timestamp format of the tape recovery point time is in the ISO8601 extended YYYY-MM-DD'T'HH:MM:SS'Z' format.</p>",
+    }),
+    TapeSizeInBytes: TapeSizeSchema.exactOptional().openapi({
+      description: 'The size, in bytes, of the virtual tapes to recover.',
+    }),
+    TapeStatus: TapeRecoveryPointStatusSchema.exactOptional().openapi({
+      description: 'The status of the virtual tapes.',
+    }),
   })
   .openapi({ description: 'Describes a recovery point.', required: [] })
   .openapi('TapeRecoveryPointInfo')
@@ -4053,22 +2889,14 @@ const TapeRecoveryPointInfosSchema = z
 const DescribeTapeRecoveryPointsOutputSchema = z
   .object({
     GatewayARN: GatewayARNSchema.exactOptional(),
-    TapeRecoveryPointInfos: TapeRecoveryPointInfosSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of TapeRecoveryPointInfos that are available for the specified gateway.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An opaque string that indicates the position at which the virtual tape recovery points that were listed for description ended.</p> <p>Use this marker in your next request to list the next set of virtual tape recovery points in the list. If there are no more recovery points to describe, this field does not appear in the response.</p>',
-        }),
-    ).exactOptional(),
+    TapeRecoveryPointInfos: TapeRecoveryPointInfosSchema.exactOptional().openapi({
+      description:
+        'An array of TapeRecoveryPointInfos that are available for the specified gateway.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        '<p>An opaque string that indicates the position at which the virtual tape recovery points that were listed for description ended.</p> <p>Use this marker in your next request to list the next set of virtual tape recovery points in the list. If there are no more recovery points to describe, this field does not appear in the response.</p>',
+    }),
   })
   .openapi({
     example: {
@@ -4091,22 +2919,14 @@ const DescribeTapeRecoveryPointsOutputSchema = z
 const DescribeTapeRecoveryPointsInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque string that indicates the position at which to begin describing the virtual tape recovery points.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies that the number of virtual tape recovery points that are described be limited to the specified number.',
-        }),
-    ).exactOptional(),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'An opaque string that indicates the position at which to begin describing the virtual tape recovery points.',
+    }),
+    Limit: PositiveIntObjectSchema.exactOptional().openapi({
+      description:
+        'Specifies that the number of virtual tape recovery points that are described be limited to the specified number.',
+    }),
   })
   .openapi({
     required: ['GatewayARN'],
@@ -4121,72 +2941,48 @@ const VTLDeviceARNSchema = z.string().min(50).max(500).openapi('VTLDeviceARN')
 
 const TapeSchema = z
   .object({
-    TapeARN: TapeARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the virtual tape.' }),
-    ).exactOptional(),
-    TapeBarcode: TapeBarcodeSchema.and(
-      z.any().openapi({ description: 'The barcode that identifies a specific virtual tape.' }),
-    ).exactOptional(),
-    TapeCreatedDate: TimeSchema.and(
-      z.any().openapi({ description: 'The date the virtual tape was created.' }),
-    ).exactOptional(),
-    TapeSizeInBytes: TapeSizeSchema.and(
-      z.any().openapi({ description: 'The size, in bytes, of the virtual tape capacity.' }),
-    ).exactOptional(),
-    TapeStatus: TapeStatusSchema.and(
-      z.any().openapi({ description: 'The current state of the virtual tape.' }),
-    ).exactOptional(),
-    VTLDevice: VTLDeviceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The virtual tape library (VTL) device that the virtual tape is associated with.',
-        }),
-    ).exactOptional(),
-    Progress: DoubleObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For archiving virtual tapes, indicates how much data remains to be uploaded before archiving is complete.</p> <p>Range: 0 (not started) to 100 (complete).</p>',
-        }),
-    ).exactOptional(),
-    TapeUsedInBytes: TapeUsageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The size, in bytes, of data stored on the virtual tape.</p> <note> <p>This value is not available for tapes created prior to May 13, 2015.</p> </note>',
-        }),
-    ).exactOptional(),
+    TapeARN: TapeARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the virtual tape.',
+    }),
+    TapeBarcode: TapeBarcodeSchema.exactOptional().openapi({
+      description: 'The barcode that identifies a specific virtual tape.',
+    }),
+    TapeCreatedDate: TimeSchema.exactOptional().openapi({
+      description: 'The date the virtual tape was created.',
+    }),
+    TapeSizeInBytes: TapeSizeSchema.exactOptional().openapi({
+      description: 'The size, in bytes, of the virtual tape capacity.',
+    }),
+    TapeStatus: TapeStatusSchema.exactOptional().openapi({
+      description: 'The current state of the virtual tape.',
+    }),
+    VTLDevice: VTLDeviceARNSchema.exactOptional().openapi({
+      description:
+        'The virtual tape library (VTL) device that the virtual tape is associated with.',
+    }),
+    Progress: DoubleObjectSchema.exactOptional().openapi({
+      description:
+        '<p>For archiving virtual tapes, indicates how much data remains to be uploaded before archiving is complete.</p> <p>Range: 0 (not started) to 100 (complete).</p>',
+    }),
+    TapeUsedInBytes: TapeUsageSchema.exactOptional().openapi({
+      description:
+        '<p>The size, in bytes, of data stored on the virtual tape.</p> <note> <p>This value is not available for tapes created prior to May 13, 2015.</p> </note>',
+    }),
     KMSKey: KMSKeySchema.exactOptional(),
-    PoolId: PoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the pool that contains tapes that will be archived. The tapes in this pool are archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.',
-        }),
-    ).exactOptional(),
-    Worm: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the tape is archived as write-once-read-many (WORM), this value is <code>true</code>.',
-        }),
-    ).exactOptional(),
-    RetentionStartDate: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date that the tape is first archived with tape retention lock enabled.',
-        }),
-    ).exactOptional(),
-    PoolEntryDate: TimeSchema.and(
-      z.any().openapi({ description: 'The date that the tape enters a custom tape pool.' }),
-    ).exactOptional(),
+    PoolId: PoolIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the pool that contains tapes that will be archived. The tapes in this pool are archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.',
+    }),
+    Worm: BooleanSchema.exactOptional().openapi({
+      description:
+        'If the tape is archived as write-once-read-many (WORM), this value is <code>true</code>.',
+    }),
+    RetentionStartDate: TimeSchema.exactOptional().openapi({
+      description: 'The date that the tape is first archived with tape retention lock enabled.',
+    }),
+    PoolEntryDate: TimeSchema.exactOptional().openapi({
+      description: 'The date that the tape enters a custom tape pool.',
+    }),
   })
   .openapi({ description: 'Describes a virtual tape object.', required: [] })
   .openapi('Tape')
@@ -4195,17 +2991,13 @@ const TapesSchema = z.array(TapeSchema).openapi('Tapes')
 
 const DescribeTapesOutputSchema = z
   .object({
-    Tapes: TapesSchema.and(
-      z.any().openapi({ description: 'An array of virtual tape descriptions.' }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An opaque string that can be used as part of a subsequent <code>DescribeTapes</code> call to retrieve the next page of results.</p> <p>If a response does not contain a marker, then there are no more results to be retrieved.</p>',
-        }),
-    ).exactOptional(),
+    Tapes: TapesSchema.exactOptional().openapi({
+      description: 'An array of virtual tape descriptions.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        '<p>An opaque string that can be used as part of a subsequent <code>DescribeTapes</code> call to retrieve the next page of results.</p> <p>If a response does not contain a marker, then there are no more results to be retrieved.</p>',
+    }),
   })
   .openapi({
     example: {
@@ -4233,30 +3025,18 @@ const DescribeTapesOutputSchema = z
 const DescribeTapesInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    TapeARNs: TapeARNsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies one or more unique Amazon Resource Names (ARNs) that represent the virtual tapes you want to describe. If this parameter is not specified, Tape gateway returns a description of all virtual tapes associated with the specified gateway.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A marker value, obtained in a previous call to <code>DescribeTapes</code>. This marker indicates which page of results to retrieve.</p> <p>If not specified, the first page of results is retrieved.</p>',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies that the number of virtual tapes described be limited to the specified number.</p> <note> <p>Amazon Web Services may impose its own limit, if this field is not set.</p> </note>',
-        }),
-    ).exactOptional(),
+    TapeARNs: TapeARNsSchema.exactOptional().openapi({
+      description:
+        'Specifies one or more unique Amazon Resource Names (ARNs) that represent the virtual tapes you want to describe. If this parameter is not specified, Tape gateway returns a description of all virtual tapes associated with the specified gateway.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        '<p>A marker value, obtained in a previous call to <code>DescribeTapes</code>. This marker indicates which page of results to retrieve.</p> <p>If not specified, the first page of results is retrieved.</p>',
+    }),
+    Limit: PositiveIntObjectSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies that the number of virtual tapes described be limited to the specified number.</p> <note> <p>Amazon Web Services may impose its own limit, if this field is not set.</p> </note>',
+    }),
   })
   .openapi({
     required: ['GatewayARN'],
@@ -4268,28 +3048,16 @@ const DescribeTapesInputSchema = z
 const DescribeUploadBufferOutputSchema = z
   .object({
     GatewayARN: GatewayARNSchema.exactOptional(),
-    DiskIds: DiskIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of the gateway's local disk IDs that are configured as working storage. Each local disk ID is specified as a string (minimum length of 1 and maximum length of 300). If no local disks are configured as working storage, then the DiskIds array is empty.",
-        }),
-    ).exactOptional(),
-    UploadBufferUsedInBytes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The total number of bytes being used in the gateway's upload buffer.",
-        }),
-    ).exactOptional(),
-    UploadBufferAllocatedInBytes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The total number of bytes allocated in the gateway's as upload buffer.",
-        }),
-    ).exactOptional(),
+    DiskIds: DiskIdsSchema.exactOptional().openapi({
+      description:
+        "An array of the gateway's local disk IDs that are configured as working storage. Each local disk ID is specified as a string (minimum length of 1 and maximum length of 300). If no local disks are configured as working storage, then the DiskIds array is empty.",
+    }),
+    UploadBufferUsedInBytes: LongSchema.exactOptional().openapi({
+      description: "The total number of bytes being used in the gateway's upload buffer.",
+    }),
+    UploadBufferAllocatedInBytes: LongSchema.exactOptional().openapi({
+      description: "The total number of bytes allocated in the gateway's as upload buffer.",
+    }),
   })
   .openapi({
     example: {
@@ -4315,63 +3083,41 @@ const VTLDeviceProductIdentifierSchema = z.string().openapi('VTLDeviceProductIde
 
 const DeviceiSCSIAttributesSchema = z
   .object({
-    TargetARN: TargetARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the unique Amazon Resource Name (ARN) that encodes the iSCSI qualified name(iqn) of a tape drive or media changer target.',
-        }),
-    ).exactOptional(),
-    NetworkInterfaceId: NetworkInterfaceIdSchema.and(
-      z.any().openapi({ description: 'The network interface identifier of the VTL device.' }),
-    ).exactOptional(),
-    NetworkInterfacePort: IntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The port used to communicate with iSCSI VTL device targets.' }),
-    ).exactOptional(),
-    ChapEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether mutual CHAP is enabled for the iSCSI target.' }),
-    ).exactOptional(),
+    TargetARN: TargetARNSchema.exactOptional().openapi({
+      description:
+        'Specifies the unique Amazon Resource Name (ARN) that encodes the iSCSI qualified name(iqn) of a tape drive or media changer target.',
+    }),
+    NetworkInterfaceId: NetworkInterfaceIdSchema.exactOptional().openapi({
+      description: 'The network interface identifier of the VTL device.',
+    }),
+    NetworkInterfacePort: IntegerSchema.exactOptional().openapi({
+      description: 'The port used to communicate with iSCSI VTL device targets.',
+    }),
+    ChapEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether mutual CHAP is enabled for the iSCSI target.',
+    }),
   })
   .openapi({ description: 'Lists iSCSI information about a VTL device.', required: [] })
   .openapi('DeviceiSCSIAttributes')
 
 const VTLDeviceSchema = z
   .object({
-    VTLDeviceARN: VTLDeviceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the unique Amazon Resource Name (ARN) of the device (tape drive or media changer).',
-        }),
-    ).exactOptional(),
-    VTLDeviceType: VTLDeviceTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the type of device that the VTL device emulates.' }),
-    ).exactOptional(),
-    VTLDeviceVendor: VTLDeviceVendorSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the vendor of the device that the VTL device object emulates.',
-        }),
-    ).exactOptional(),
-    VTLDeviceProductIdentifier: VTLDeviceProductIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the model number of device that the VTL device emulates.',
-        }),
-    ).exactOptional(),
-    DeviceiSCSIAttributes: DeviceiSCSIAttributesSchema.and(
-      z.any().openapi({ description: 'A list of iSCSI information about a VTL device.' }),
-    ).exactOptional(),
+    VTLDeviceARN: VTLDeviceARNSchema.exactOptional().openapi({
+      description:
+        'Specifies the unique Amazon Resource Name (ARN) of the device (tape drive or media changer).',
+    }),
+    VTLDeviceType: VTLDeviceTypeSchema.exactOptional().openapi({
+      description: 'Specifies the type of device that the VTL device emulates.',
+    }),
+    VTLDeviceVendor: VTLDeviceVendorSchema.exactOptional().openapi({
+      description: 'Specifies the vendor of the device that the VTL device object emulates.',
+    }),
+    VTLDeviceProductIdentifier: VTLDeviceProductIdentifierSchema.exactOptional().openapi({
+      description: 'Specifies the model number of device that the VTL device emulates.',
+    }),
+    DeviceiSCSIAttributes: DeviceiSCSIAttributesSchema.exactOptional().openapi({
+      description: 'A list of iSCSI information about a VTL device.',
+    }),
   })
   .openapi({
     description: 'Represents a device object associated with a tape gateway.',
@@ -4384,22 +3130,14 @@ const VTLDevicesSchema = z.array(VTLDeviceSchema).openapi('VTLDevices')
 const DescribeVTLDevicesOutputSchema = z
   .object({
     GatewayARN: GatewayARNSchema.exactOptional(),
-    VTLDevices: VTLDevicesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of VTL device objects composed of the Amazon Resource Name (ARN) of the VTL devices.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque string that indicates the position at which the VTL devices that were fetched for description ended. Use the marker in your next request to fetch the next set of VTL devices in the list. If there are no more VTL devices to describe, this field does not appear in the response.',
-        }),
-    ).exactOptional(),
+    VTLDevices: VTLDevicesSchema.exactOptional().openapi({
+      description:
+        'An array of VTL device objects composed of the Amazon Resource Name (ARN) of the VTL devices.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'An opaque string that indicates the position at which the VTL devices that were fetched for description ended. Use the marker in your next request to fetch the next set of VTL devices in the list. If there are no more VTL devices to describe, this field does not appear in the response.',
+    }),
   })
   .openapi({
     example: {
@@ -4460,30 +3198,18 @@ const VTLDeviceARNsSchema = z.array(VTLDeviceARNSchema).openapi('VTLDeviceARNs')
 const DescribeVTLDevicesInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    VTLDeviceARNs: VTLDeviceARNsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of strings, where each string represents the Amazon Resource Name (ARN) of a VTL device.</p> <note> <p>All of the specified VTL devices must be from the same gateway. If no VTL devices are specified, the result will contain all devices on the specified gateway.</p> </note>',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque string that indicates the position at which to begin describing the VTL devices.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies that the number of VTL devices described be limited to the specified number.',
-        }),
-    ).exactOptional(),
+    VTLDeviceARNs: VTLDeviceARNsSchema.exactOptional().openapi({
+      description:
+        '<p>An array of strings, where each string represents the Amazon Resource Name (ARN) of a VTL device.</p> <note> <p>All of the specified VTL devices must be from the same gateway. If no VTL devices are specified, the result will contain all devices on the specified gateway.</p> </note>',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'An opaque string that indicates the position at which to begin describing the VTL devices.',
+    }),
+    Limit: PositiveIntObjectSchema.exactOptional().openapi({
+      description:
+        'Specifies that the number of VTL devices described be limited to the specified number.',
+    }),
   })
   .openapi({
     required: ['GatewayARN'],
@@ -4495,30 +3221,18 @@ const DescribeVTLDevicesInputSchema = z
 const DescribeWorkingStorageOutputSchema = z
   .object({
     GatewayARN: GatewayARNSchema.exactOptional(),
-    DiskIds: DiskIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of the gateway's local disk IDs that are configured as working storage. Each local disk ID is specified as a string (minimum length of 1 and maximum length of 300). If no local disks are configured as working storage, then the DiskIds array is empty.",
-        }),
-    ).exactOptional(),
-    WorkingStorageUsedInBytes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total working storage in bytes in use by the gateway. If no working storage is configured for the gateway, this field returns 0.',
-        }),
-    ).exactOptional(),
-    WorkingStorageAllocatedInBytes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total working storage in bytes allocated for the gateway. If no working storage is configured for the gateway, this field returns 0.',
-        }),
-    ).exactOptional(),
+    DiskIds: DiskIdsSchema.exactOptional().openapi({
+      description:
+        "An array of the gateway's local disk IDs that are configured as working storage. Each local disk ID is specified as a string (minimum length of 1 and maximum length of 300). If no local disks are configured as working storage, then the DiskIds array is empty.",
+    }),
+    WorkingStorageUsedInBytes: LongSchema.exactOptional().openapi({
+      description:
+        'The total working storage in bytes in use by the gateway. If no working storage is configured for the gateway, this field returns 0.',
+    }),
+    WorkingStorageAllocatedInBytes: LongSchema.exactOptional().openapi({
+      description:
+        'The total working storage in bytes allocated for the gateway. If no working storage is configured for the gateway, this field returns 0.',
+    }),
   })
   .openapi({
     example: {
@@ -4543,34 +3257,22 @@ const DescribeWorkingStorageInputSchema = z
 
 const DetachVolumeOutputSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the volume that was detached.',
-        }),
-    ).exactOptional(),
+    VolumeARN: VolumeARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the volume that was detached.',
+    }),
   })
   .openapi({ description: 'AttachVolumeOutput', required: [] })
   .openapi('DetachVolumeOutput')
 
 const DetachVolumeInputSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the volume to detach from the gateway.',
-        }),
-    ),
-    ForceDetach: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to <code>true</code> to forcibly remove the iSCSI connection of the target volume and detach the volume. The default is <code>false</code>. If this value is set to <code>false</code>, you must manually disconnect the iSCSI connection from the target volume.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
+    VolumeARN: VolumeARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the volume to detach from the gateway.',
+    }),
+    ForceDetach: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>Set to <code>true</code> to forcibly remove the iSCSI connection of the target volume and detach the volume. The default is <code>false</code>. If this value is set to <code>false</code>, you must manually disconnect the iSCSI connection from the target volume.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
   })
   .openapi({
     required: ['VolumeARN'],
@@ -4581,11 +3283,9 @@ const DetachVolumeInputSchema = z
 
 const DisableGatewayOutputSchema = z
   .object({
-    GatewayARN: GatewayARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique Amazon Resource Name (ARN) of the disabled gateway.' }),
-    ).exactOptional(),
+    GatewayARN: GatewayARNSchema.exactOptional().openapi({
+      description: 'The unique Amazon Resource Name (ARN) of the disabled gateway.',
+    }),
   })
   .openapi({
     example: { GatewayARN: 'arn:aws:storagegateway:us-east-1:111122223333:gateway/sgw-12A3456B' },
@@ -4605,57 +3305,35 @@ const DisableGatewayInputSchema = z
 
 const DisassociateFileSystemOutputSchema = z
   .object({
-    FileSystemAssociationARN: FileSystemAssociationARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the deleted file system association.',
-        }),
-    ).exactOptional(),
+    FileSystemAssociationARN: FileSystemAssociationARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the deleted file system association.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateFileSystemOutput')
 
 const DisassociateFileSystemInputSchema = z
   .object({
-    FileSystemAssociationARN: FileSystemAssociationARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the file system association to be deleted.',
-        }),
-    ),
-    ForceDelete: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this value is set to true, the operation disassociates an Amazon FSx file system immediately. It ends all data uploads to the file system, and the file system association enters the <code>FORCE_DELETING</code> status. If this value is set to false, the Amazon FSx file system does not disassociate until all data is uploaded.',
-        }),
-    ).exactOptional(),
+    FileSystemAssociationARN: FileSystemAssociationARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the file system association to be deleted.',
+    }),
+    ForceDelete: BooleanSchema.exactOptional().openapi({
+      description:
+        'If this value is set to true, the operation disassociates an Amazon FSx file system immediately. It ends all data uploads to the file system, and the file system association enters the <code>FORCE_DELETING</code> status. If this value is set to false, the Amazon FSx file system does not disassociate until all data is uploaded.',
+    }),
   })
   .openapi({ required: ['FileSystemAssociationARN'], title: 'DisassociateFileSystemInput' })
   .openapi('DisassociateFileSystemInput')
 
 const JoinDomainOutputSchema = z
   .object({
-    GatewayARN: GatewayARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique Amazon Resource Name (ARN) of the gateway that joined the domain.',
-        }),
-    ).exactOptional(),
-    ActiveDirectoryStatus: ActiveDirectoryStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates the status of the gateway as a member of the Active Directory domain.</p> <ul> <li> <p> <code>ACCESS_DENIED</code>: Indicates that the <code>JoinDomain</code> operation failed due to an authentication error.</p> </li> <li> <p> <code>DETACHED</code>: Indicates that gateway is not joined to a domain.</p> </li> <li> <p> <code>JOINED</code>: Indicates that the gateway has successfully joined a domain.</p> </li> <li> <p> <code>JOINING</code>: Indicates that a <code>JoinDomain</code> operation is in progress.</p> </li> <li> <p> <code>NETWORK_ERROR</code>: Indicates that <code>JoinDomain</code> operation failed due to a network or connectivity error.</p> </li> <li> <p> <code>TIMEOUT</code>: Indicates that the <code>JoinDomain</code> operation failed because the operation didn't complete within the allotted time.</p> </li> <li> <p> <code>UNKNOWN_ERROR</code>: Indicates that the <code>JoinDomain</code> operation failed due to another type of error.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    GatewayARN: GatewayARNSchema.exactOptional().openapi({
+      description: 'The unique Amazon Resource Name (ARN) of the gateway that joined the domain.',
+    }),
+    ActiveDirectoryStatus: ActiveDirectoryStatusSchema.exactOptional().openapi({
+      description:
+        "<p>Indicates the status of the gateway as a member of the Active Directory domain.</p> <ul> <li> <p> <code>ACCESS_DENIED</code>: Indicates that the <code>JoinDomain</code> operation failed due to an authentication error.</p> </li> <li> <p> <code>DETACHED</code>: Indicates that gateway is not joined to a domain.</p> </li> <li> <p> <code>JOINED</code>: Indicates that the gateway has successfully joined a domain.</p> </li> <li> <p> <code>JOINING</code>: Indicates that a <code>JoinDomain</code> operation is in progress.</p> </li> <li> <p> <code>NETWORK_ERROR</code>: Indicates that <code>JoinDomain</code> operation failed due to a network or connectivity error.</p> </li> <li> <p> <code>TIMEOUT</code>: Indicates that the <code>JoinDomain</code> operation failed because the operation didn't complete within the allotted time.</p> </li> <li> <p> <code>UNKNOWN_ERROR</code>: Indicates that the <code>JoinDomain</code> operation failed due to another type of error.</p> </li> </ul>",
+    }),
   })
   .openapi({ description: 'JoinDomainOutput', required: [] })
   .openapi('JoinDomainOutput')
@@ -4675,57 +3353,33 @@ const TimeoutInSecondsSchema = z.int().min(0).max(3600).openapi('TimeoutInSecond
 
 const JoinDomainInputSchema = z
   .object({
-    GatewayARN: GatewayARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the gateway. Use the <code>ListGateways</code> operation to return a list of gateways for your account and Amazon Web Services Region.',
-        }),
-    ),
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain that you want the gateway to join.' }),
-    ),
-    OrganizationalUnit: OrganizationalUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The organizational unit (OU) is a container in an Active Directory that can hold users, groups, computers, and other OUs and this parameter specifies the OU that the gateway will join within the AD domain.',
-        }),
-    ).exactOptional(),
-    DomainControllers: HostsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of IPv4 addresses, NetBIOS names, or host names of your domain server. If you need to specify the port number include it after the colon (“:”). For example, <code>mydc.mydomain.com:389</code>.',
-        }),
-    ).exactOptional(),
-    TimeoutInSeconds: TimeoutInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the time in seconds, in which the <code>JoinDomain</code> operation must complete. The default is 20 seconds.',
-        }),
-    ).exactOptional(),
-    UserName: DomainUserNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets the user name of user who has permission to add the gateway to the Active Directory domain. The domain user account should be enabled to join computers to the domain. For example, you can use the domain administrator account or an account with delegated permissions to join computers to the domain.',
-        }),
-    ),
-    Password: DomainUserPasswordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets the password of the user who has permission to add the gateway to the Active Directory domain.',
-        }),
-    ),
+    GatewayARN: GatewayARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the gateway. Use the <code>ListGateways</code> operation to return a list of gateways for your account and Amazon Web Services Region.',
+    }),
+    DomainName: DomainNameSchema.openapi({
+      description: 'The name of the domain that you want the gateway to join.',
+    }),
+    OrganizationalUnit: OrganizationalUnitSchema.exactOptional().openapi({
+      description:
+        'The organizational unit (OU) is a container in an Active Directory that can hold users, groups, computers, and other OUs and this parameter specifies the OU that the gateway will join within the AD domain.',
+    }),
+    DomainControllers: HostsSchema.exactOptional().openapi({
+      description:
+        'List of IPv4 addresses, NetBIOS names, or host names of your domain server. If you need to specify the port number include it after the colon (“:”). For example, <code>mydc.mydomain.com:389</code>.',
+    }),
+    TimeoutInSeconds: TimeoutInSecondsSchema.exactOptional().openapi({
+      description:
+        'Specifies the time in seconds, in which the <code>JoinDomain</code> operation must complete. The default is 20 seconds.',
+    }),
+    UserName: DomainUserNameSchema.openapi({
+      description:
+        'Sets the user name of user who has permission to add the gateway to the Active Directory domain. The domain user account should be enabled to join computers to the domain. For example, you can use the domain administrator account or an account with delegated permissions to join computers to the domain.',
+    }),
+    Password: DomainUserPasswordSchema.openapi({
+      description:
+        'Sets the password of the user who has permission to add the gateway to the Active Directory domain.',
+    }),
   })
   .openapi({
     required: ['GatewayARN', 'DomainName', 'UserName', 'Password'],
@@ -4738,41 +3392,25 @@ const MinimumNumTapesSchema = z.int().min(1).max(10).openapi('MinimumNumTapes')
 
 const AutomaticTapeCreationRuleSchema = z
   .object({
-    TapeBarcodePrefix: TapeBarcodePrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A prefix that you append to the barcode of the virtual tape that you are creating. This prefix makes the barcode unique.</p> <note> <p>The prefix must be 1-4 characters in length and must be one of the uppercase letters from A to Z.</p> </note>',
-        }),
-    ),
-    PoolId: PoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the Amazon S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.',
-        }),
-    ),
-    TapeSizeInBytes: TapeSizeSchema.and(
-      z.any().openapi({ description: 'The size, in bytes, of the virtual tape capacity.' }),
-    ),
-    MinimumNumTapes: MinimumNumTapesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum number of available virtual tapes that the gateway maintains at all times. If the number of tapes on the gateway goes below this value, the gateway creates as many new tapes as are needed to have <code>MinimumNumTapes</code> on the gateway. For more information about automatic tape creation, see <a href="https://docs.aws.amazon.com/storagegateway/latest/userguide/GettingStartedCreateTapes.html#CreateTapesAutomatically">Creating Tapes Automatically</a>.',
-        }),
-    ),
-    Worm: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to <code>true</code> to indicate that tapes are to be archived as write-once-read-many (WORM). Set to <code>false</code> when WORM is not enabled for tapes.',
-        }),
-    ).exactOptional(),
+    TapeBarcodePrefix: TapeBarcodePrefixSchema.openapi({
+      description:
+        '<p>A prefix that you append to the barcode of the virtual tape that you are creating. This prefix makes the barcode unique.</p> <note> <p>The prefix must be 1-4 characters in length and must be one of the uppercase letters from A to Z.</p> </note>',
+    }),
+    PoolId: PoolIdSchema.openapi({
+      description:
+        'The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the Amazon S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.',
+    }),
+    TapeSizeInBytes: TapeSizeSchema.openapi({
+      description: 'The size, in bytes, of the virtual tape capacity.',
+    }),
+    MinimumNumTapes: MinimumNumTapesSchema.openapi({
+      description:
+        'The minimum number of available virtual tapes that the gateway maintains at all times. If the number of tapes on the gateway goes below this value, the gateway creates as many new tapes as are needed to have <code>MinimumNumTapes</code> on the gateway. For more information about automatic tape creation, see <a href="https://docs.aws.amazon.com/storagegateway/latest/userguide/GettingStartedCreateTapes.html#CreateTapesAutomatically">Creating Tapes Automatically</a>.',
+    }),
+    Worm: BooleanSchema.exactOptional().openapi({
+      description:
+        'Set to <code>true</code> to indicate that tapes are to be archived as write-once-read-many (WORM). Set to <code>false</code> when WORM is not enabled for tapes.',
+    }),
   })
   .openapi({
     required: ['TapeBarcodePrefix', 'PoolId', 'TapeSizeInBytes', 'MinimumNumTapes'],
@@ -4789,14 +3427,10 @@ const AutomaticTapeCreationRulesSchema = z
 
 const AutomaticTapeCreationPolicyInfoSchema = z
   .object({
-    AutomaticTapeCreationRules: AutomaticTapeCreationRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An automatic tape creation policy consists of a list of automatic tape creation rules. This returns the rules that determine when and how to automatically create new tapes.',
-        }),
-    ).exactOptional(),
+    AutomaticTapeCreationRules: AutomaticTapeCreationRulesSchema.exactOptional().openapi({
+      description:
+        'An automatic tape creation policy consists of a list of automatic tape creation rules. This returns the rules that determine when and how to automatically create new tapes.',
+    }),
     GatewayARN: GatewayARNSchema.exactOptional(),
   })
   .openapi({
@@ -4812,14 +3446,11 @@ const AutomaticTapeCreationPolicyInfosSchema = z
 
 const ListAutomaticTapeCreationPoliciesOutputSchema = z
   .object({
-    AutomaticTapeCreationPolicyInfos: AutomaticTapeCreationPolicyInfosSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Gets a listing of information about the gateway's automatic tape creation policies, including the automatic tape creation rules and the gateway that is using the policies.",
-        }),
-    ).exactOptional(),
+    AutomaticTapeCreationPolicyInfos:
+      AutomaticTapeCreationPolicyInfosSchema.exactOptional().openapi({
+        description:
+          "Gets a listing of information about the gateway's automatic tape creation policies, including the automatic tape creation rules and the gateway that is using the policies.",
+      }),
   })
   .openapi({ required: [] })
   .openapi('ListAutomaticTapeCreationPoliciesOutput')
@@ -4849,59 +3480,35 @@ const FileShareInfoListSchema = z.array(FileShareInfoSchema).openapi('FileShareI
 
 const ListFileSharesOutputSchema = z
   .object({
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the request includes <code>Marker</code>, the response returns that value in this field.',
-        }),
-    ).exactOptional(),
-    NextMarker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a value is present, there are more file shares to return. In a subsequent request, use <code>NextMarker</code> as the value for <code>Marker</code> to retrieve the next set of file shares.',
-        }),
-    ).exactOptional(),
-    FileShareInfoList: FileShareInfoListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "An array of information about the S3 File Gateway's file shares.",
-        }),
-    ).exactOptional(),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'If the request includes <code>Marker</code>, the response returns that value in this field.',
+    }),
+    NextMarker: MarkerSchema.exactOptional().openapi({
+      description:
+        'If a value is present, there are more file shares to return. In a subsequent request, use <code>NextMarker</code> as the value for <code>Marker</code> to retrieve the next set of file shares.',
+    }),
+    FileShareInfoList: FileShareInfoListSchema.exactOptional().openapi({
+      description: "An array of information about the S3 File Gateway's file shares.",
+    }),
   })
   .openapi({ description: 'ListFileShareOutput', required: [] })
   .openapi('ListFileSharesOutput')
 
 const ListFileSharesInputSchema = z
   .object({
-    GatewayARN: GatewayARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the gateway whose file shares you want to list. If this field is not present, all file shares under your account are listed.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of file shares to return in the response. The value must be an integer with a value greater than zero. Optional.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Opaque pagination token returned from a previous ListFileShares operation. If present, <code>Marker</code> specifies where to continue the list from after a previous call to ListFileShares. Optional.',
-        }),
-    ).exactOptional(),
+    GatewayARN: GatewayARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the gateway whose file shares you want to list. If this field is not present, all file shares under your account are listed.',
+    }),
+    Limit: PositiveIntObjectSchema.exactOptional().openapi({
+      description:
+        'The maximum number of file shares to return in the response. The value must be an integer with a value greater than zero. Optional.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'Opaque pagination token returned from a previous ListFileShares operation. If present, <code>Marker</code> specifies where to continue the list from after a previous call to ListFileShares. Optional.',
+    }),
   })
   .openapi({ title: 'ListFileSharesInput', description: 'ListFileShareInput', required: [] })
   .openapi('ListFileSharesInput')
@@ -4910,22 +3517,16 @@ const FileSystemAssociationIdSchema = z.string().min(10).max(30).openapi('FileSy
 
 const FileSystemAssociationSummarySchema = z
   .object({
-    FileSystemAssociationId: FileSystemAssociationIdSchema.and(
-      z.any().openapi({ description: 'The ID of the file system association.' }),
-    ).exactOptional(),
-    FileSystemAssociationARN: FileSystemAssociationARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the file system association.' }),
-    ).exactOptional(),
-    FileSystemAssociationStatus: FileSystemAssociationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the file share. Valid Values: <code>AVAILABLE</code> | <code>CREATING</code> | <code>DELETING</code> | <code>FORCE_DELETING</code> | <code>UPDATING</code> | <code>ERROR</code> ',
-        }),
-    ).exactOptional(),
+    FileSystemAssociationId: FileSystemAssociationIdSchema.exactOptional().openapi({
+      description: 'The ID of the file system association.',
+    }),
+    FileSystemAssociationARN: FileSystemAssociationARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the file system association.',
+    }),
+    FileSystemAssociationStatus: FileSystemAssociationStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the file share. Valid Values: <code>AVAILABLE</code> | <code>CREATING</code> | <code>DELETING</code> | <code>FORCE_DELETING</code> | <code>UPDATING</code> | <code>ERROR</code> ',
+    }),
     GatewayARN: GatewayARNSchema.exactOptional(),
   })
   .openapi({
@@ -4941,30 +3542,19 @@ const FileSystemAssociationSummaryListSchema = z
 
 const ListFileSystemAssociationsOutputSchema = z
   .object({
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the request includes <code>Marker</code>, the response returns that value in this field.',
-        }),
-    ).exactOptional(),
-    NextMarker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a value is present, there are more file system associations to return. In a subsequent request, use <code>NextMarker</code> as the value for <code>Marker</code> to retrieve the next set of file system associations.',
-        }),
-    ).exactOptional(),
-    FileSystemAssociationSummaryList: FileSystemAssociationSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of information about the Amazon FSx gateway's file system associations.",
-        }),
-    ).exactOptional(),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'If the request includes <code>Marker</code>, the response returns that value in this field.',
+    }),
+    NextMarker: MarkerSchema.exactOptional().openapi({
+      description:
+        'If a value is present, there are more file system associations to return. In a subsequent request, use <code>NextMarker</code> as the value for <code>Marker</code> to retrieve the next set of file system associations.',
+    }),
+    FileSystemAssociationSummaryList:
+      FileSystemAssociationSummaryListSchema.exactOptional().openapi({
+        description:
+          "An array of information about the Amazon FSx gateway's file system associations.",
+      }),
   })
   .openapi({ required: [] })
   .openapi('ListFileSystemAssociationsOutput')
@@ -4972,22 +3562,14 @@ const ListFileSystemAssociationsOutputSchema = z
 const ListFileSystemAssociationsInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema.exactOptional(),
-    Limit: PositiveIntObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of file system associations to return in the response. If present, <code>Limit</code> must be an integer with a value greater than zero. Optional.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Opaque pagination token returned from a previous <code>ListFileSystemAssociations</code> operation. If present, <code>Marker</code> specifies where to continue the list from after a previous call to <code>ListFileSystemAssociations</code>. Optional.',
-        }),
-    ).exactOptional(),
+    Limit: PositiveIntObjectSchema.exactOptional().openapi({
+      description:
+        'The maximum number of file system associations to return in the response. If present, <code>Limit</code> must be an integer with a value greater than zero. Optional.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'Opaque pagination token returned from a previous <code>ListFileSystemAssociations</code> operation. If present, <code>Marker</code> specifies where to continue the list from after a previous call to <code>ListFileSystemAssociations</code>. Optional.',
+    }),
   })
   .openapi({ title: 'ListFileSystemAssociationsInput', required: [] })
   .openapi('ListFileSystemAssociationsInput')
@@ -4996,65 +3578,35 @@ const GatewayOperationalStateSchema = z.string().min(2).max(25).openapi('Gateway
 
 const GatewayInfoSchema = z
   .object({
-    GatewayId: GatewayIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier assigned to your gateway during activation. This ID becomes part of the gateway Amazon Resource Name (ARN), which you use as input for other operations.',
-        }),
-    ).exactOptional(),
-    GatewayARN: GatewayARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the gateway. Use the <a>ListGateways</a> operation to return a list of gateways for your account and Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
-    GatewayType: GatewayTypeSchema.and(
-      z.any().openapi({ description: 'The type of the gateway.' }),
-    ).exactOptional(),
-    GatewayOperationalState: GatewayOperationalStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the gateway.</p> <p>Valid Values: <code>DISABLED</code> | <code>ACTIVE</code> </p>',
-        }),
-    ).exactOptional(),
-    GatewayName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the gateway.' }),
-    ).exactOptional(),
-    Ec2InstanceId: Ec2InstanceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Amazon EC2 instance that was used to launch the gateway.',
-        }),
-    ).exactOptional(),
-    Ec2InstanceRegion: Ec2InstanceRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services Region where the Amazon EC2 instance is located.',
-        }),
-    ).exactOptional(),
-    HostEnvironment: HostEnvironmentSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of hardware or software platform on which the gateway is running.',
-        }),
-    ).exactOptional(),
-    HostEnvironmentId: HostEnvironmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the specific instance of the host platform running the gateway. This value is only available for certain host environments, and its format depends on the host environment type.',
-        }),
-    ).exactOptional(),
+    GatewayId: GatewayIdSchema.exactOptional().openapi({
+      description:
+        'The unique identifier assigned to your gateway during activation. This ID becomes part of the gateway Amazon Resource Name (ARN), which you use as input for other operations.',
+    }),
+    GatewayARN: GatewayARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the gateway. Use the <a>ListGateways</a> operation to return a list of gateways for your account and Amazon Web Services Region.',
+    }),
+    GatewayType: GatewayTypeSchema.exactOptional().openapi({
+      description: 'The type of the gateway.',
+    }),
+    GatewayOperationalState: GatewayOperationalStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the gateway.</p> <p>Valid Values: <code>DISABLED</code> | <code>ACTIVE</code> </p>',
+    }),
+    GatewayName: StringSchema.exactOptional().openapi({ description: 'The name of the gateway.' }),
+    Ec2InstanceId: Ec2InstanceIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon EC2 instance that was used to launch the gateway.',
+    }),
+    Ec2InstanceRegion: Ec2InstanceRegionSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region where the Amazon EC2 instance is located.',
+    }),
+    HostEnvironment: HostEnvironmentSchema.exactOptional().openapi({
+      description: 'The type of hardware or software platform on which the gateway is running.',
+    }),
+    HostEnvironmentId: HostEnvironmentIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the specific instance of the host platform running the gateway. This value is only available for certain host environments, and its format depends on the host environment type.',
+    }),
   })
   .openapi({ description: 'Describes a gateway object.', required: [] })
   .openapi('GatewayInfo')
@@ -5063,17 +3615,13 @@ const GatewaysSchema = z.array(GatewayInfoSchema).openapi('Gateways')
 
 const ListGatewaysOutputSchema = z
   .object({
-    Gateways: GatewaysSchema.and(
-      z.any().openapi({ description: 'An array of <a>GatewayInfo</a> objects.' }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use the marker in your next request to fetch the next set of gateways in the list. If there are no more gateways to list, this field does not appear in the response.',
-        }),
-    ).exactOptional(),
+    Gateways: GatewaysSchema.exactOptional().openapi({
+      description: 'An array of <a>GatewayInfo</a> objects.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'Use the marker in your next request to fetch the next set of gateways in the list. If there are no more gateways to list, this field does not appear in the response.',
+    }),
   })
   .openapi({
     example: {
@@ -5089,22 +3637,14 @@ const ListGatewaysOutputSchema = z
 
 const ListGatewaysInputSchema = z
   .object({
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque string that indicates the position at which to begin the returned list of gateways.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies that the list of gateways returned be limited to the specified number of items.',
-        }),
-    ).exactOptional(),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'An opaque string that indicates the position at which to begin the returned list of gateways.',
+    }),
+    Limit: PositiveIntObjectSchema.exactOptional().openapi({
+      description:
+        'Specifies that the list of gateways returned be limited to the specified number of items.',
+    }),
   })
   .openapi({
     title: 'ListGatewaysInput',
@@ -5135,42 +3675,27 @@ const DiskAttributeListSchema = z
 
 const DiskSchema = z
   .object({
-    DiskId: DiskIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique device ID or other distinguishing data that identifies a local disk.',
-        }),
-    ).exactOptional(),
-    DiskPath: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The path of a local disk in the gateway virtual machine (VM).' }),
-    ).exactOptional(),
-    DiskNode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The device node of a local disk as assigned by the virtualization environment.',
-        }),
-    ).exactOptional(),
-    DiskStatus: StringSchema.and(
-      z.any().openapi({ description: 'A value that represents the status of a local disk.' }),
-    ).exactOptional(),
-    DiskSizeInBytes: LongSchema.and(
-      z.any().openapi({ description: 'The local disk size in bytes.' }),
-    ).exactOptional(),
+    DiskId: DiskIdSchema.exactOptional().openapi({
+      description:
+        'The unique device ID or other distinguishing data that identifies a local disk.',
+    }),
+    DiskPath: StringSchema.exactOptional().openapi({
+      description: 'The path of a local disk in the gateway virtual machine (VM).',
+    }),
+    DiskNode: StringSchema.exactOptional().openapi({
+      description: 'The device node of a local disk as assigned by the virtualization environment.',
+    }),
+    DiskStatus: StringSchema.exactOptional().openapi({
+      description: 'A value that represents the status of a local disk.',
+    }),
+    DiskSizeInBytes: LongSchema.exactOptional().openapi({
+      description: 'The local disk size in bytes.',
+    }),
     DiskAllocationType: DiskAllocationTypeSchema.exactOptional(),
-    DiskAllocationResource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The iSCSI qualified name (IQN) that is defined for a disk. This field is not included in the response if the local disk is not defined as an iSCSI target. The format of this field is <i>targetIqn::LUNNumber::region-volumeId</i>.',
-        }),
-    ).exactOptional(),
+    DiskAllocationResource: StringSchema.exactOptional().openapi({
+      description:
+        'The iSCSI qualified name (IQN) that is defined for a disk. This field is not included in the response if the local disk is not defined as an iSCSI target. The format of this field is <i>targetIqn::LUNNumber::region-volumeId</i>.',
+    }),
     DiskAttributeList: DiskAttributeListSchema.exactOptional(),
   })
   .openapi({ description: "Represents a gateway's local disk.", required: [] })
@@ -5181,14 +3706,10 @@ const DisksSchema = z.array(DiskSchema).openapi('Disks')
 const ListLocalDisksOutputSchema = z
   .object({
     GatewayARN: GatewayARNSchema.exactOptional(),
-    Disks: DisksSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A JSON object containing the following fields:</p> <ul> <li> <p> <a>ListLocalDisksOutput$Disks</a> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Disks: DisksSchema.exactOptional().openapi({
+      description:
+        '<p>A JSON object containing the following fields:</p> <ul> <li> <p> <a>ListLocalDisksOutput$Disks</a> </p> </li> </ul>',
+    }),
   })
   .openapi({
     example: {
@@ -5228,27 +3749,17 @@ const ListLocalDisksInputSchema = z
 
 const ListTagsForResourceOutputSchema = z
   .object({
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource for which you want to list tags.',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque string that indicates the position at which to stop returning the list of tags.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array that contains the tags for the specified resource.' }),
-    ).exactOptional(),
+    ResourceARN: ResourceARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource for which you want to list tags.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'An opaque string that indicates the position at which to stop returning the list of tags.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'An array that contains the tags for the specified resource.',
+    }),
   })
   .openapi({
     example: {
@@ -5263,30 +3774,18 @@ const ListTagsForResourceOutputSchema = z
 
 const ListTagsForResourceInputSchema = z
   .object({
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource for which you want to list tags.',
-        }),
-    ),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An opaque string that indicates the position at which to begin returning the list of tags.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies that the list of tags returned be limited to the specified number of items.',
-        }),
-    ).exactOptional(),
+    ResourceARN: ResourceARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource for which you want to list tags.',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'An opaque string that indicates the position at which to begin returning the list of tags.',
+    }),
+    Limit: PositiveIntObjectSchema.exactOptional().openapi({
+      description:
+        'Specifies that the list of tags returned be limited to the specified number of items.',
+    }),
   })
   .openapi({
     required: ['ResourceARN'],
@@ -5299,54 +3798,30 @@ const PoolStatusSchema = z.enum(['ACTIVE', 'DELETED']).openapi('PoolStatus')
 
 const PoolInfoSchema = z
   .object({
-    PoolARN: PoolARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the custom tape pool. Use the <a>ListTapePools</a> operation to return a list of custom tape pools for your account and Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
-    PoolName: PoolNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the custom tape pool. <code>PoolName</code> can use all ASCII characters, except '/' and '\\'.",
-        }),
-    ).exactOptional(),
-    StorageClass: TapeStorageClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The storage class that is associated with the custom pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.',
-        }),
-    ).exactOptional(),
-    RetentionLockType: RetentionLockTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tape retention lock type, which can be configured in two modes. When configured in governance mode, Amazon Web Services accounts with specific IAM permissions are authorized to remove the tape retention lock from archived virtual tapes. When configured in compliance mode, the tape retention lock cannot be removed by any user, including the root Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    RetentionLockTimeInDays: RetentionLockTimeInDaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Tape retention lock time is set in days. Tape retention lock can be enabled for up to 100 years (36,500 days).',
-        }),
-    ).exactOptional(),
-    PoolStatus: PoolStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Status of the custom tape pool. Pool can be <code>ACTIVE</code> or <code>DELETED</code>.',
-        }),
-    ).exactOptional(),
+    PoolARN: PoolARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the custom tape pool. Use the <a>ListTapePools</a> operation to return a list of custom tape pools for your account and Amazon Web Services Region.',
+    }),
+    PoolName: PoolNameSchema.exactOptional().openapi({
+      description:
+        "The name of the custom tape pool. <code>PoolName</code> can use all ASCII characters, except '/' and '\\'.",
+    }),
+    StorageClass: TapeStorageClassSchema.exactOptional().openapi({
+      description:
+        'The storage class that is associated with the custom pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.',
+    }),
+    RetentionLockType: RetentionLockTypeSchema.exactOptional().openapi({
+      description:
+        'Tape retention lock type, which can be configured in two modes. When configured in governance mode, Amazon Web Services accounts with specific IAM permissions are authorized to remove the tape retention lock from archived virtual tapes. When configured in compliance mode, the tape retention lock cannot be removed by any user, including the root Amazon Web Services account.',
+    }),
+    RetentionLockTimeInDays: RetentionLockTimeInDaysSchema.exactOptional().openapi({
+      description:
+        'Tape retention lock time is set in days. Tape retention lock can be enabled for up to 100 years (36,500 days).',
+    }),
+    PoolStatus: PoolStatusSchema.exactOptional().openapi({
+      description:
+        'Status of the custom tape pool. Pool can be <code>ACTIVE</code> or <code>DELETED</code>.',
+    }),
   })
   .openapi({ description: 'Describes a custom tape pool.', required: [] })
   .openapi('PoolInfo')
@@ -5355,22 +3830,14 @@ const PoolInfosSchema = z.array(PoolInfoSchema).openapi('PoolInfos')
 
 const ListTapePoolsOutputSchema = z
   .object({
-    PoolInfos: PoolInfosSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>PoolInfo</code> objects, where each object describes a single custom tape pool. If there are no custom tape pools, the <code>PoolInfos</code> is an empty array. ',
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that indicates the position at which to begin the returned list of tape pools. Use the marker in your next request to continue pagination of tape pools. If there are no more tape pools to list, this element does not appear in the response body. ',
-        }),
-    ).exactOptional(),
+    PoolInfos: PoolInfosSchema.exactOptional().openapi({
+      description:
+        'An array of <code>PoolInfo</code> objects, where each object describes a single custom tape pool. If there are no custom tape pools, the <code>PoolInfos</code> is an empty array. ',
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'A string that indicates the position at which to begin the returned list of tape pools. Use the marker in your next request to continue pagination of tape pools. If there are no more tape pools to list, this element does not appear in the response body. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTapePoolsOutput')
@@ -5379,77 +3846,50 @@ const PoolARNsSchema = z.array(PoolARNSchema).openapi('PoolARNs')
 
 const ListTapePoolsInputSchema = z
   .object({
-    PoolARNs: PoolARNsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of each of the custom tape pools you want to list. If you don't specify a custom tape pool ARN, the response lists all custom tape pools. ",
-        }),
-    ).exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that indicates the position at which to begin the returned list of tape pools.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional number limit for the tape pools in the list returned by this call.',
-        }),
-    ).exactOptional(),
+    PoolARNs: PoolARNsSchema.exactOptional().openapi({
+      description:
+        "The Amazon Resource Name (ARN) of each of the custom tape pools you want to list. If you don't specify a custom tape pool ARN, the response lists all custom tape pools. ",
+    }),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'A string that indicates the position at which to begin the returned list of tape pools.',
+    }),
+    Limit: PositiveIntObjectSchema.exactOptional().openapi({
+      description: 'An optional number limit for the tape pools in the list returned by this call.',
+    }),
   })
   .openapi({ title: 'ListTapePoolsInput', required: [] })
   .openapi('ListTapePoolsInput')
 
 const TapeInfoSchema = z
   .object({
-    TapeARN: TapeARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of a virtual tape.' }),
-    ).exactOptional(),
-    TapeBarcode: TapeBarcodeSchema.and(
-      z.any().openapi({ description: 'The barcode that identifies a specific virtual tape.' }),
-    ).exactOptional(),
-    TapeSizeInBytes: TapeSizeSchema.and(
-      z.any().openapi({ description: 'The size, in bytes, of a virtual tape.' }),
-    ).exactOptional(),
-    TapeStatus: TapeStatusSchema.and(
-      z.any().openapi({ description: 'The status of the tape.' }),
-    ).exactOptional(),
-    GatewayARN: GatewayARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the gateway. Use the <a>ListGateways</a> operation to return a list of gateways for your account and Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
-    PoolId: PoolIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.',
-        }),
-    ).exactOptional(),
-    RetentionStartDate: TimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date that the tape became subject to tape retention lock.' }),
-    ).exactOptional(),
-    PoolEntryDate: TimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date that the tape entered the custom tape pool with tape retention lock enabled.',
-        }),
-    ).exactOptional(),
+    TapeARN: TapeARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of a virtual tape.',
+    }),
+    TapeBarcode: TapeBarcodeSchema.exactOptional().openapi({
+      description: 'The barcode that identifies a specific virtual tape.',
+    }),
+    TapeSizeInBytes: TapeSizeSchema.exactOptional().openapi({
+      description: 'The size, in bytes, of a virtual tape.',
+    }),
+    TapeStatus: TapeStatusSchema.exactOptional().openapi({
+      description: 'The status of the tape.',
+    }),
+    GatewayARN: GatewayARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the gateway. Use the <a>ListGateways</a> operation to return a list of gateways for your account and Amazon Web Services Region.',
+    }),
+    PoolId: PoolIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the pool that you want to add your tape to for archiving. The tape in this pool is archived in the S3 storage class that is associated with the pool. When you use your backup application to eject the tape, the tape is archived directly into the storage class (S3 Glacier or S3 Glacier Deep Archive) that corresponds to the pool.',
+    }),
+    RetentionStartDate: TimeSchema.exactOptional().openapi({
+      description: 'The date that the tape became subject to tape retention lock.',
+    }),
+    PoolEntryDate: TimeSchema.exactOptional().openapi({
+      description:
+        'The date that the tape entered the custom tape pool with tape retention lock enabled.',
+    }),
   })
   .openapi({ description: 'Describes a virtual tape.', required: [] })
   .openapi('TapeInfo')
@@ -5465,14 +3905,10 @@ const TapeInfosSchema = z
 const ListTapesOutputSchema = z
   .object({
     TapeInfos: TapeInfosSchema.exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that indicates the position at which to begin returning the next list of tapes. Use the marker in your next request to continue pagination of tapes. If there are no more tapes to list, this element does not appear in the response body.',
-        }),
-    ).exactOptional(),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'A string that indicates the position at which to begin returning the next list of tapes. Use the marker in your next request to continue pagination of tapes. If there are no more tapes to list, this element does not appear in the response body.',
+    }),
   })
   .openapi({
     description:
@@ -5484,21 +3920,13 @@ const ListTapesOutputSchema = z
 const ListTapesInputSchema = z
   .object({
     TapeARNs: TapeARNsSchema.exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that indicates the position at which to begin the returned list of tapes.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An optional number limit for the tapes in the list returned by this call.',
-        }),
-    ).exactOptional(),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'A string that indicates the position at which to begin the returned list of tapes.',
+    }),
+    Limit: PositiveIntObjectSchema.exactOptional().openapi({
+      description: 'An optional number limit for the tapes in the list returned by this call.',
+    }),
   })
   .openapi({
     title: 'ListTapesInput',
@@ -5514,28 +3942,20 @@ const InitiatorsSchema = z.array(InitiatorSchema).openapi('Initiators')
 
 const ListVolumeInitiatorsOutputSchema = z
   .object({
-    Initiators: InitiatorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The host names and port numbers of all iSCSI initiators that are connected to the gateway.',
-        }),
-    ).exactOptional(),
+    Initiators: InitiatorsSchema.exactOptional().openapi({
+      description:
+        'The host names and port numbers of all iSCSI initiators that are connected to the gateway.',
+    }),
   })
   .openapi({ description: 'ListVolumeInitiatorsOutput', required: [] })
   .openapi('ListVolumeInitiatorsOutput')
 
 const ListVolumeInitiatorsInputSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the volume. Use the <a>ListVolumes</a> operation to return a list of gateway volumes for the gateway.',
-        }),
-    ),
+    VolumeARN: VolumeARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the volume. Use the <a>ListVolumes</a> operation to return a list of gateway volumes for the gateway.',
+    }),
   })
   .openapi({
     required: ['VolumeARN'],
@@ -5546,23 +3966,19 @@ const ListVolumeInitiatorsInputSchema = z
 
 const VolumeRecoveryPointInfoSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the volume target.' }),
-    ).exactOptional(),
-    VolumeSizeInBytes: LongSchema.and(
-      z.any().openapi({ description: 'The size of the volume in bytes.' }),
-    ).exactOptional(),
-    VolumeUsageInBytes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The size of the data stored on the volume in bytes.</p> <note> <p>This value is not available for volumes created prior to May 13, 2015, until you store data on the volume.</p> </note>',
-        }),
-    ).exactOptional(),
-    VolumeRecoveryPointTime: StringSchema.and(
-      z.any().openapi({ description: 'The time the recovery point was taken.' }),
-    ).exactOptional(),
+    VolumeARN: VolumeARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the volume target.',
+    }),
+    VolumeSizeInBytes: LongSchema.exactOptional().openapi({
+      description: 'The size of the volume in bytes.',
+    }),
+    VolumeUsageInBytes: LongSchema.exactOptional().openapi({
+      description:
+        '<p>The size of the data stored on the volume in bytes.</p> <note> <p>This value is not available for volumes created prior to May 13, 2015, until you store data on the volume.</p> </note>',
+    }),
+    VolumeRecoveryPointTime: StringSchema.exactOptional().openapi({
+      description: 'The time the recovery point was taken.',
+    }),
   })
   .openapi({ description: 'Describes a storage volume recovery point object.', required: [] })
   .openapi('VolumeRecoveryPointInfo')
@@ -5574,9 +3990,9 @@ const VolumeRecoveryPointInfosSchema = z
 const ListVolumeRecoveryPointsOutputSchema = z
   .object({
     GatewayARN: GatewayARNSchema.exactOptional(),
-    VolumeRecoveryPointInfos: VolumeRecoveryPointInfosSchema.and(
-      z.any().openapi({ description: 'An array of <a>VolumeRecoveryPointInfo</a> objects.' }),
-    ).exactOptional(),
+    VolumeRecoveryPointInfos: VolumeRecoveryPointInfosSchema.exactOptional().openapi({
+      description: 'An array of <a>VolumeRecoveryPointInfo</a> objects.',
+    }),
   })
   .openapi({
     example: {
@@ -5601,55 +4017,29 @@ const ListVolumeRecoveryPointsInputSchema = z
 
 const VolumeInfoSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the storage volume. For example, the following is a valid ARN:</p> <p> <code>arn:aws:storagegateway:us-east-2:111122223333:gateway/sgw-12A3456B/volume/vol-1122AABB</code> </p> <p>Valid Values: 50 to 500 lowercase letters, numbers, periods (.), and hyphens (-).</p>',
-        }),
-    ).exactOptional(),
-    VolumeId: VolumeIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier assigned to the volume. This ID becomes part of the volume Amazon Resource Name (ARN), which you use as input for other operations.</p> <p>Valid Values: 50 to 500 lowercase letters, numbers, periods (.), and hyphens (-).</p>',
-        }),
-    ).exactOptional(),
+    VolumeARN: VolumeARNSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the storage volume. For example, the following is a valid ARN:</p> <p> <code>arn:aws:storagegateway:us-east-2:111122223333:gateway/sgw-12A3456B/volume/vol-1122AABB</code> </p> <p>Valid Values: 50 to 500 lowercase letters, numbers, periods (.), and hyphens (-).</p>',
+    }),
+    VolumeId: VolumeIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier assigned to the volume. This ID becomes part of the volume Amazon Resource Name (ARN), which you use as input for other operations.</p> <p>Valid Values: 50 to 500 lowercase letters, numbers, periods (.), and hyphens (-).</p>',
+    }),
     GatewayARN: GatewayARNSchema.exactOptional(),
-    GatewayId: GatewayIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier assigned to your gateway during activation. This ID becomes part of the gateway Amazon Resource Name (ARN), which you use as input for other operations.</p> <p>Valid Values: 50 to 500 lowercase letters, numbers, periods (.), and hyphens (-).</p>',
-        }),
-    ).exactOptional(),
-    VolumeType: VolumeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One of the VolumeType enumeration values describing the type of the volume.',
-        }),
-    ).exactOptional(),
-    VolumeSizeInBytes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The size of the volume in bytes.</p> <p>Valid Values: 50 to 500 lowercase letters, numbers, periods (.), and hyphens (-).</p>',
-        }),
-    ).exactOptional(),
-    VolumeAttachmentStatus: VolumeAttachmentStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One of the VolumeStatus values that indicates the state of the storage volume.',
-        }),
-    ).exactOptional(),
+    GatewayId: GatewayIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier assigned to your gateway during activation. This ID becomes part of the gateway Amazon Resource Name (ARN), which you use as input for other operations.</p> <p>Valid Values: 50 to 500 lowercase letters, numbers, periods (.), and hyphens (-).</p>',
+    }),
+    VolumeType: VolumeTypeSchema.exactOptional().openapi({
+      description: 'One of the VolumeType enumeration values describing the type of the volume.',
+    }),
+    VolumeSizeInBytes: LongSchema.exactOptional().openapi({
+      description:
+        '<p>The size of the volume in bytes.</p> <p>Valid Values: 50 to 500 lowercase letters, numbers, periods (.), and hyphens (-).</p>',
+    }),
+    VolumeAttachmentStatus: VolumeAttachmentStatusSchema.exactOptional().openapi({
+      description: 'One of the VolumeStatus values that indicates the state of the storage volume.',
+    }),
   })
   .openapi({ description: 'Describes a storage volume object.', required: [] })
   .openapi('VolumeInfo')
@@ -5659,22 +4049,14 @@ const VolumeInfosSchema = z.array(VolumeInfoSchema).openapi('VolumeInfos')
 const ListVolumesOutputSchema = z
   .object({
     GatewayARN: GatewayARNSchema.exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use the marker in your next request to continue pagination of iSCSI volumes. If there are no more volumes to list, this field does not appear in the response body.',
-        }),
-    ).exactOptional(),
-    VolumeInfos: VolumeInfosSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <a>VolumeInfo</a> objects, where each object describes an iSCSI volume. If no volumes are defined for the gateway, then <code>VolumeInfos</code> is an empty array "[]".',
-        }),
-    ).exactOptional(),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'Use the marker in your next request to continue pagination of iSCSI volumes. If there are no more volumes to list, this field does not appear in the response body.',
+    }),
+    VolumeInfos: VolumeInfosSchema.exactOptional().openapi({
+      description:
+        'An array of <a>VolumeInfo</a> objects, where each object describes an iSCSI volume. If no volumes are defined for the gateway, then <code>VolumeInfos</code> is an empty array "[]".',
+    }),
   })
   .openapi({
     example: {
@@ -5710,22 +4092,14 @@ const ListVolumesOutputSchema = z
 const ListVolumesInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema.exactOptional(),
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that indicates the position at which to begin the returned list of volumes. Obtain the marker from the response of a previous List iSCSI Volumes request.',
-        }),
-    ).exactOptional(),
-    Limit: PositiveIntObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies that the list of volumes returned be limited to the specified number of items.',
-        }),
-    ).exactOptional(),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'A string that indicates the position at which to begin the returned list of volumes. Obtain the marker from the response of a previous List iSCSI Volumes request.',
+    }),
+    Limit: PositiveIntObjectSchema.exactOptional().openapi({
+      description:
+        'Specifies that the list of volumes returned be limited to the specified number of items.',
+    }),
   })
   .openapi({
     title: 'ListVolumesInput',
@@ -5772,29 +4146,17 @@ const FolderListSchema = z.array(FolderSchema).min(1).max(50).openapi('FolderLis
 
 const RefreshCacheInputSchema = z
   .object({
-    FileShareARN: FileShareARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the file share you want to refresh.',
-        }),
-    ),
-    FolderList: FolderListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A comma-separated list of the paths of folders to refresh in the cache. The default is [<code>"/"</code>]. The default refreshes objects and folders at the root of the Amazon S3 bucket. If <code>Recursive</code> is set to <code>true</code>, the entire S3 bucket that the file share has access to is refreshed.',
-        }),
-    ).exactOptional(),
-    Recursive: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A value that specifies whether to recursively refresh folders in the cache. The refresh includes folders that were in the cache the last time the gateway listed the folder's contents. If this value set to <code>true</code>, each folder that is listed in <code>FolderList</code> is recursively updated. Otherwise, subfolders listed in <code>FolderList</code> are not refreshed. Only objects that are in folders listed directly under <code>FolderList</code> are found and used for the update. The default is <code>true</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>",
-        }),
-    ).exactOptional(),
+    FileShareARN: FileShareARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the file share you want to refresh.',
+    }),
+    FolderList: FolderListSchema.exactOptional().openapi({
+      description:
+        'A comma-separated list of the paths of folders to refresh in the cache. The default is [<code>"/"</code>]. The default refreshes objects and folders at the root of the Amazon S3 bucket. If <code>Recursive</code> is set to <code>true</code>, the entire S3 bucket that the file share has access to is refreshed.',
+    }),
+    Recursive: Boolean2Schema.exactOptional().openapi({
+      description:
+        "<p>A value that specifies whether to recursively refresh folders in the cache. The refresh includes folders that were in the cache the last time the gateway listed the folder's contents. If this value set to <code>true</code>, each folder that is listed in <code>FolderList</code> is recursively updated. Otherwise, subfolders listed in <code>FolderList</code> are not refreshed. Only objects that are in folders listed directly under <code>FolderList</code> are found and used for the update. The default is <code>true</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>",
+    }),
   })
   .openapi({
     required: ['FileShareARN'],
@@ -5805,14 +4167,10 @@ const RefreshCacheInputSchema = z
 
 const RemoveTagsFromResourceOutputSchema = z
   .object({
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource that the tags were removed from.',
-        }),
-    ).exactOptional(),
+    ResourceARN: ResourceARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource that the tags were removed from.',
+    }),
   })
   .openapi({
     example: { ResourceARN: 'arn:aws:storagegateway:us-east-1:111122223333:gateway/sgw-11A2222B' },
@@ -5825,22 +4183,14 @@ const TagKeysSchema = z.array(TagKeySchema).openapi('TagKeys')
 
 const RemoveTagsFromResourceInputSchema = z
   .object({
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource you want to remove the tags from.',
-        }),
-    ),
-    TagKeys: TagKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The keys of the tags you want to remove from the specified resource. A tag is composed of a key-value pair.',
-        }),
-    ),
+    ResourceARN: ResourceARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource you want to remove the tags from.',
+    }),
+    TagKeys: TagKeysSchema.openapi({
+      description:
+        'The keys of the tags you want to remove from the specified resource. A tag is composed of a key-value pair.',
+    }),
   })
   .openapi({
     required: ['ResourceARN', 'TagKeys'],
@@ -5864,11 +4214,9 @@ const ResetCacheInputSchema = z
 
 const RetrieveTapeArchiveOutputSchema = z
   .object({
-    TapeARN: TapeARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the retrieved virtual tape.' }),
-    ).exactOptional(),
+    TapeARN: TapeARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the retrieved virtual tape.',
+    }),
   })
   .openapi({
     example: { TapeARN: 'arn:aws:storagegateway:us-east-1:999999999999:tape/TEST0AA2AF' },
@@ -5879,22 +4227,14 @@ const RetrieveTapeArchiveOutputSchema = z
 
 const RetrieveTapeArchiveInputSchema = z
   .object({
-    TapeARN: TapeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the virtual tape you want to retrieve from the virtual tape shelf (VTS).',
-        }),
-    ),
-    GatewayARN: GatewayARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the gateway you want to retrieve the virtual tape to. Use the <a>ListGateways</a> operation to return a list of gateways for your account and Amazon Web Services Region.</p> <p>You retrieve archived virtual tapes to only one gateway and the gateway must be a tape gateway.</p>',
-        }),
-    ),
+    TapeARN: TapeARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the virtual tape you want to retrieve from the virtual tape shelf (VTS).',
+    }),
+    GatewayARN: GatewayARNSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the gateway you want to retrieve the virtual tape to. Use the <a>ListGateways</a> operation to return a list of gateways for your account and Amazon Web Services Region.</p> <p>You retrieve archived virtual tapes to only one gateway and the gateway must be a tape gateway.</p>',
+    }),
   })
   .openapi({
     required: ['TapeARN', 'GatewayARN'],
@@ -5905,14 +4245,10 @@ const RetrieveTapeArchiveInputSchema = z
 
 const RetrieveTapeRecoveryPointOutputSchema = z
   .object({
-    TapeARN: TapeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the virtual tape for which the recovery point was retrieved.',
-        }),
-    ).exactOptional(),
+    TapeARN: TapeARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the virtual tape for which the recovery point was retrieved.',
+    }),
   })
   .openapi({
     example: { TapeARN: 'arn:aws:storagegateway:us-east-1:999999999999:tape/TEST0AA2AF' },
@@ -5923,14 +4259,10 @@ const RetrieveTapeRecoveryPointOutputSchema = z
 
 const RetrieveTapeRecoveryPointInputSchema = z
   .object({
-    TapeARN: TapeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the virtual tape for which you want to retrieve the recovery point.',
-        }),
-    ),
+    TapeARN: TapeARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the virtual tape for which you want to retrieve the recovery point.',
+    }),
     GatewayARN: GatewayARNSchema,
   })
   .openapi({
@@ -5958,9 +4290,9 @@ const LocalConsolePasswordSchema = z
 const SetLocalConsolePasswordInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    LocalConsolePassword: LocalConsolePasswordSchema.and(
-      z.any().openapi({ description: 'The password you want to set for your VM local console.' }),
-    ),
+    LocalConsolePassword: LocalConsolePasswordSchema.openapi({
+      description: 'The password you want to set for your VM local console.',
+    }),
   })
   .openapi({
     required: ['GatewayARN', 'LocalConsolePassword'],
@@ -5983,17 +4315,13 @@ const SMBGuestPasswordSchema = z
 
 const SetSMBGuestPasswordInputSchema = z
   .object({
-    GatewayARN: GatewayARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the S3 File Gateway the SMB file share is associated with.',
-        }),
-    ),
-    Password: SMBGuestPasswordSchema.and(
-      z.any().openapi({ description: 'The password that you want to set for your SMB server.' }),
-    ),
+    GatewayARN: GatewayARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the S3 File Gateway the SMB file share is associated with.',
+    }),
+    Password: SMBGuestPasswordSchema.openapi({
+      description: 'The password that you want to set for your SMB server.',
+    }),
   })
   .openapi({
     required: ['GatewayARN', 'Password'],
@@ -6058,14 +4386,10 @@ const UpdateAutomaticTapeCreationPolicyOutputSchema = z
 
 const UpdateAutomaticTapeCreationPolicyInputSchema = z
   .object({
-    AutomaticTapeCreationRules: AutomaticTapeCreationRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An automatic tape creation policy consists of a list of automatic tape creation rules. The rules determine when and how to automatically create new tapes.',
-        }),
-    ),
+    AutomaticTapeCreationRules: AutomaticTapeCreationRulesSchema.openapi({
+      description:
+        'An automatic tape creation policy consists of a list of automatic tape creation rules. The rules determine when and how to automatically create new tapes.',
+    }),
     GatewayARN: GatewayARNSchema,
   })
   .openapi({
@@ -6087,16 +4411,12 @@ const UpdateBandwidthRateLimitOutputSchema = z
 const UpdateBandwidthRateLimitInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    AverageUploadRateLimitInBitsPerSec: BandwidthUploadRateLimitSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The average upload bandwidth rate limit in bits per second.' }),
-    ).exactOptional(),
-    AverageDownloadRateLimitInBitsPerSec: BandwidthDownloadRateLimitSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The average download bandwidth rate limit in bits per second.' }),
-    ).exactOptional(),
+    AverageUploadRateLimitInBitsPerSec: BandwidthUploadRateLimitSchema.exactOptional().openapi({
+      description: 'The average upload bandwidth rate limit in bits per second.',
+    }),
+    AverageDownloadRateLimitInBitsPerSec: BandwidthDownloadRateLimitSchema.exactOptional().openapi({
+      description: 'The average download bandwidth rate limit in bits per second.',
+    }),
   })
   .openapi({
     required: ['GatewayARN'],
@@ -6114,14 +4434,10 @@ const UpdateBandwidthRateLimitScheduleOutputSchema = z
 const UpdateBandwidthRateLimitScheduleInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    BandwidthRateLimitIntervals: BandwidthRateLimitIntervalsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An array containing bandwidth rate limit schedule intervals for a gateway. When no bandwidth rate limit intervals have been scheduled, the array is empty. ',
-        }),
-    ),
+    BandwidthRateLimitIntervals: BandwidthRateLimitIntervalsSchema.openapi({
+      description:
+        ' An array containing bandwidth rate limit schedule intervals for a gateway. When no bandwidth rate limit intervals have been scheduled, the array is empty. ',
+    }),
   })
   .openapi({
     required: ['GatewayARN', 'BandwidthRateLimitIntervals'],
@@ -6131,22 +4447,14 @@ const UpdateBandwidthRateLimitScheduleInputSchema = z
 
 const UpdateChapCredentialsOutputSchema = z
   .object({
-    TargetARN: TargetARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the target. This is the same target specified in the request.',
-        }),
-    ).exactOptional(),
-    InitiatorName: IqnNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The iSCSI initiator that connects to the target. This is the same initiator name specified in the request.',
-        }),
-    ).exactOptional(),
+    TargetARN: TargetARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the target. This is the same target specified in the request.',
+    }),
+    InitiatorName: IqnNameSchema.exactOptional().openapi({
+      description:
+        'The iSCSI initiator that connects to the target. This is the same initiator name specified in the request.',
+    }),
   })
   .openapi({
     example: {
@@ -6161,33 +4469,21 @@ const UpdateChapCredentialsOutputSchema = z
 
 const UpdateChapCredentialsInputSchema = z
   .object({
-    TargetARN: TargetARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the iSCSI volume target. Use the <a>DescribeStorediSCSIVolumes</a> operation to return the TargetARN for specified VolumeARN.',
-        }),
-    ),
-    SecretToAuthenticateInitiator: ChapSecretSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The secret key that the initiator (for example, the Windows client) must provide to participate in mutual CHAP with the target.</p> <note> <p>The secret key must be between 12 and 16 bytes when encoded in UTF-8.</p> </note>',
-        }),
-    ),
-    InitiatorName: IqnNameSchema.and(
-      z.any().openapi({ description: 'The iSCSI initiator that connects to the target.' }),
-    ),
-    SecretToAuthenticateTarget: ChapSecretSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The secret key that the target must provide to participate in mutual CHAP with the initiator (e.g. Windows client).</p> <p>Byte constraints: Minimum bytes of 12. Maximum bytes of 16.</p> <note> <p>The secret key must be between 12 and 16 bytes when encoded in UTF-8.</p> </note>',
-        }),
-    ).exactOptional(),
+    TargetARN: TargetARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the iSCSI volume target. Use the <a>DescribeStorediSCSIVolumes</a> operation to return the TargetARN for specified VolumeARN.',
+    }),
+    SecretToAuthenticateInitiator: ChapSecretSchema.openapi({
+      description:
+        '<p>The secret key that the initiator (for example, the Windows client) must provide to participate in mutual CHAP with the target.</p> <note> <p>The secret key must be between 12 and 16 bytes when encoded in UTF-8.</p> </note>',
+    }),
+    InitiatorName: IqnNameSchema.openapi({
+      description: 'The iSCSI initiator that connects to the target.',
+    }),
+    SecretToAuthenticateTarget: ChapSecretSchema.exactOptional().openapi({
+      description:
+        '<p>The secret key that the target must provide to participate in mutual CHAP with the initiator (e.g. Windows client).</p> <p>Byte constraints: Minimum bytes of 12. Maximum bytes of 16.</p> <note> <p>The secret key must be between 12 and 16 bytes when encoded in UTF-8.</p> </note>',
+    }),
   })
   .openapi({
     required: ['TargetARN', 'SecretToAuthenticateInitiator', 'InitiatorName'],
@@ -6199,41 +4495,29 @@ const UpdateChapCredentialsInputSchema = z
 
 const UpdateFileSystemAssociationOutputSchema = z
   .object({
-    FileSystemAssociationARN: FileSystemAssociationARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the updated file system association.' }),
-    ).exactOptional(),
+    FileSystemAssociationARN: FileSystemAssociationARNSchema.exactOptional().openapi({
+      description: 'The ARN of the updated file system association.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateFileSystemAssociationOutput')
 
 const UpdateFileSystemAssociationInputSchema = z
   .object({
-    FileSystemAssociationARN: FileSystemAssociationARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the file system association that you want to update.',
-        }),
-    ),
-    UserName: DomainUserNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user name of the user credential that has permission to access the root share D$ of the Amazon FSx file system. The user account must belong to the Amazon FSx delegated admin user group.',
-        }),
-    ).exactOptional(),
-    Password: DomainUserPasswordSchema.and(
-      z.any().openapi({ description: 'The password of the user credential.' }),
-    ).exactOptional(),
-    AuditDestinationARN: AuditDestinationARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the storage used for the audit logs.',
-        }),
-    ).exactOptional(),
+    FileSystemAssociationARN: FileSystemAssociationARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the file system association that you want to update.',
+    }),
+    UserName: DomainUserNameSchema.exactOptional().openapi({
+      description:
+        'The user name of the user credential that has permission to access the root share D$ of the Amazon FSx file system. The user account must belong to the Amazon FSx delegated admin user group.',
+    }),
+    Password: DomainUserPasswordSchema.exactOptional().openapi({
+      description: 'The password of the user credential.',
+    }),
+    AuditDestinationARN: AuditDestinationARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the storage used for the audit logs.',
+    }),
     CacheAttributes: CacheAttributesSchema.exactOptional(),
   })
   .openapi({ required: ['FileSystemAssociationARN'], title: 'UpdateFileSystemAssociationInput' })
@@ -6242,9 +4526,9 @@ const UpdateFileSystemAssociationInputSchema = z
 const UpdateGatewayInformationOutputSchema = z
   .object({
     GatewayARN: GatewayARNSchema.exactOptional(),
-    GatewayName: StringSchema.and(
-      z.any().openapi({ description: 'The name you configured for your gateway.' }),
-    ).exactOptional(),
+    GatewayName: StringSchema.exactOptional().openapi({
+      description: 'The name you configured for your gateway.',
+    }),
   })
   .openapi({
     example: {
@@ -6261,20 +4545,16 @@ const UpdateGatewayInformationInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
     GatewayName: GatewayNameSchema.exactOptional(),
-    GatewayTimezone: GatewayTimezoneSchema.and(
-      z.any().openapi({ description: 'A value that indicates the time zone of the gateway.' }),
-    ).exactOptional(),
-    CloudWatchLogGroupARN: CloudWatchLogGroupARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the Amazon CloudWatch log group that you want to use to monitor and log events in the gateway.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html">What is Amazon CloudWatch Logs?</a> </p>',
-        }),
-    ).exactOptional(),
-    GatewayCapacity: GatewayCapacitySchema.and(
-      z.any().openapi({ description: "Specifies the size of the gateway's metadata cache." }),
-    ).exactOptional(),
+    GatewayTimezone: GatewayTimezoneSchema.exactOptional().openapi({
+      description: 'A value that indicates the time zone of the gateway.',
+    }),
+    CloudWatchLogGroupARN: CloudWatchLogGroupARNSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the Amazon CloudWatch log group that you want to use to monitor and log events in the gateway.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html">What is Amazon CloudWatch Logs?</a> </p>',
+    }),
+    GatewayCapacity: GatewayCapacitySchema.exactOptional().openapi({
+      description: "Specifies the size of the gateway's metadata cache.",
+    }),
   })
   .openapi({ required: ['GatewayARN'], title: 'UpdateGatewayInformationInput' })
   .openapi('UpdateGatewayInformationInput')
@@ -6312,38 +4592,22 @@ const UpdateMaintenanceStartTimeOutputSchema = z
 const UpdateMaintenanceStartTimeInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    HourOfDay: HourOfDaySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The hour component of the maintenance start time represented as <i>hh</i>, where <i>hh</i> is the hour (00 to 23). The hour of the day is in the time zone of the gateway.',
-        }),
-    ),
-    MinuteOfHour: MinuteOfHourSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minute component of the maintenance start time represented as <i>mm</i>, where <i>mm</i> is the minute (00 to 59). The minute of the hour is in the time zone of the gateway.',
-        }),
-    ),
-    DayOfWeek: DayOfWeekSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The day of the week component of the maintenance start time week represented as an ordinal number from 0 to 6, where 0 represents Sunday and 6 Saturday.',
-        }),
-    ).exactOptional(),
-    DayOfMonth: DayOfMonthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The day of the month component of the maintenance start time represented as an ordinal number from 1 to 28, where 1 represents the first day of the month and 28 represents the last day of the month.',
-        }),
-    ).exactOptional(),
+    HourOfDay: HourOfDaySchema.openapi({
+      description:
+        'The hour component of the maintenance start time represented as <i>hh</i>, where <i>hh</i> is the hour (00 to 23). The hour of the day is in the time zone of the gateway.',
+    }),
+    MinuteOfHour: MinuteOfHourSchema.openapi({
+      description:
+        'The minute component of the maintenance start time represented as <i>mm</i>, where <i>mm</i> is the minute (00 to 59). The minute of the hour is in the time zone of the gateway.',
+    }),
+    DayOfWeek: DayOfWeekSchema.exactOptional().openapi({
+      description:
+        'The day of the week component of the maintenance start time week represented as an ordinal number from 0 to 6, where 0 represents Sunday and 6 Saturday.',
+    }),
+    DayOfMonth: DayOfMonthSchema.exactOptional().openapi({
+      description:
+        'The day of the month component of the maintenance start time represented as an ordinal number from 1 to 28, where 1 represents the first day of the month and 28 represents the last day of the month.',
+    }),
   })
   .openapi({
     required: ['GatewayARN', 'HourOfDay', 'MinuteOfHour'],
@@ -6355,123 +4619,71 @@ const UpdateMaintenanceStartTimeInputSchema = z
 
 const UpdateNFSFileShareOutputSchema = z
   .object({
-    FileShareARN: FileShareARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the updated file share.' }),
-    ).exactOptional(),
+    FileShareARN: FileShareARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the updated file share.',
+    }),
   })
   .openapi({ description: 'UpdateNFSFileShareOutput', required: [] })
   .openapi('UpdateNFSFileShareOutput')
 
 const UpdateNFSFileShareInputSchema = z
   .object({
-    FileShareARN: FileShareARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the file share to be updated.',
-        }),
-    ),
-    KMSEncrypted: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    KMSKey: KMSKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value can only be set when <code>KMSEncrypted</code> is <code>true</code>. Optional.',
-        }),
-    ).exactOptional(),
-    NFSFileShareDefaults: NFSFileShareDefaultsSchema.and(
-      z.any().openapi({ description: 'The default values for the file share. Optional.' }),
-    ).exactOptional(),
-    DefaultStorageClass: StorageClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>',
-        }),
-    ).exactOptional(),
-    ObjectACL: ObjectACLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that sets the access control list (ACL) permission for objects in the S3 bucket that a S3 File Gateway puts objects into. The default value is <code>private</code>.',
-        }),
-    ).exactOptional(),
-    ClientList: FileShareClientListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of clients that are allowed to access the S3 File Gateway. The list must contain either valid IP addresses or valid CIDR blocks.',
-        }),
-    ).exactOptional(),
-    Squash: SquashSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The user mapped to anonymous user.</p> <p>Valid values are the following:</p> <ul> <li> <p> <code>RootSquash</code>: Only root is mapped to anonymous user.</p> </li> <li> <p> <code>NoSquash</code>: No one is mapped to anonymous user.</p> </li> <li> <p> <code>AllSquash</code>: Everyone is mapped to anonymous user.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ReadOnly: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that sets the write status of a file share. Set this value to <code>true</code> to set the write status to read-only, otherwise set to <code>false</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    GuessMIMETypeEnabled: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that enables guessing of the MIME type for uploaded objects based on file extensions. Set this value to <code>true</code> to enable MIME type guessing, otherwise set to <code>false</code>. The default value is <code>true</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    RequesterPays: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that sets who pays the cost of the request and the cost associated with data download from the S3 bucket. If this value is set to <code>true</code>, the requester pays the costs; otherwise, the S3 bucket owner pays. However, the S3 bucket owner always pays the cost of storing data.</p> <note> <p> <code>RequesterPays</code> is a configuration for the S3 bucket that backs the file share, so make sure that the configuration on the file share is the same as the S3 bucket configuration.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    FileShareName: FileShareNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the file share. Optional.</p> <note> <p> <code>FileShareName</code> must be set if an S3 prefix name is set in <code>LocationARN</code>, or if an access point or access point alias is used.</p> </note>',
-        }),
-    ).exactOptional(),
-    CacheAttributes: CacheAttributesSchema.and(
-      z.any().openapi({ description: 'Specifies refresh cache information for the file share.' }),
-    ).exactOptional(),
-    NotificationPolicy: NotificationPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The notification policy of the file share. <code>SettlingTimeInSeconds</code> controls the number of seconds to wait after the last point in time a client wrote to a file before generating an <code>ObjectUploaded</code> notification. Because clients can make many small writes to files, it\'s best to set this parameter for as long as possible to avoid generating multiple notifications for the same file in a small time period.</p> <note> <p> <code>SettlingTimeInSeconds</code> has no effect on the timing of the object uploading to Amazon S3, only the timing of the notification.</p> </note> <p>The following example sets <code>NotificationPolicy</code> on with <code>SettlingTimeInSeconds</code> set to 60.</p> <p> <code>{\\"Upload\\": {\\"SettlingTimeInSeconds\\": 60}}</code> </p> <p>The following example sets <code>NotificationPolicy</code> off.</p> <p> <code>{}</code> </p>',
-        }),
-    ).exactOptional(),
-    AuditDestinationARN: AuditDestinationARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the storage used for audit logs.',
-        }),
-    ).exactOptional(),
+    FileShareARN: FileShareARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the file share to be updated.',
+    }),
+    KMSEncrypted: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    KMSKey: KMSKeySchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value can only be set when <code>KMSEncrypted</code> is <code>true</code>. Optional.',
+    }),
+    NFSFileShareDefaults: NFSFileShareDefaultsSchema.exactOptional().openapi({
+      description: 'The default values for the file share. Optional.',
+    }),
+    DefaultStorageClass: StorageClassSchema.exactOptional().openapi({
+      description:
+        '<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>',
+    }),
+    ObjectACL: ObjectACLSchema.exactOptional().openapi({
+      description:
+        'A value that sets the access control list (ACL) permission for objects in the S3 bucket that a S3 File Gateway puts objects into. The default value is <code>private</code>.',
+    }),
+    ClientList: FileShareClientListSchema.exactOptional().openapi({
+      description:
+        'The list of clients that are allowed to access the S3 File Gateway. The list must contain either valid IP addresses or valid CIDR blocks.',
+    }),
+    Squash: SquashSchema.exactOptional().openapi({
+      description:
+        '<p>The user mapped to anonymous user.</p> <p>Valid values are the following:</p> <ul> <li> <p> <code>RootSquash</code>: Only root is mapped to anonymous user.</p> </li> <li> <p> <code>NoSquash</code>: No one is mapped to anonymous user.</p> </li> <li> <p> <code>AllSquash</code>: Everyone is mapped to anonymous user.</p> </li> </ul>',
+    }),
+    ReadOnly: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that sets the write status of a file share. Set this value to <code>true</code> to set the write status to read-only, otherwise set to <code>false</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    GuessMIMETypeEnabled: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that enables guessing of the MIME type for uploaded objects based on file extensions. Set this value to <code>true</code> to enable MIME type guessing, otherwise set to <code>false</code>. The default value is <code>true</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    RequesterPays: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that sets who pays the cost of the request and the cost associated with data download from the S3 bucket. If this value is set to <code>true</code>, the requester pays the costs; otherwise, the S3 bucket owner pays. However, the S3 bucket owner always pays the cost of storing data.</p> <note> <p> <code>RequesterPays</code> is a configuration for the S3 bucket that backs the file share, so make sure that the configuration on the file share is the same as the S3 bucket configuration.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    FileShareName: FileShareNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the file share. Optional.</p> <note> <p> <code>FileShareName</code> must be set if an S3 prefix name is set in <code>LocationARN</code>, or if an access point or access point alias is used.</p> </note>',
+    }),
+    CacheAttributes: CacheAttributesSchema.exactOptional().openapi({
+      description: 'Specifies refresh cache information for the file share.',
+    }),
+    NotificationPolicy: NotificationPolicySchema.exactOptional().openapi({
+      description:
+        '<p>The notification policy of the file share. <code>SettlingTimeInSeconds</code> controls the number of seconds to wait after the last point in time a client wrote to a file before generating an <code>ObjectUploaded</code> notification. Because clients can make many small writes to files, it\'s best to set this parameter for as long as possible to avoid generating multiple notifications for the same file in a small time period.</p> <note> <p> <code>SettlingTimeInSeconds</code> has no effect on the timing of the object uploading to Amazon S3, only the timing of the notification.</p> </note> <p>The following example sets <code>NotificationPolicy</code> on with <code>SettlingTimeInSeconds</code> set to 60.</p> <p> <code>{\\"Upload\\": {\\"SettlingTimeInSeconds\\": 60}}</code> </p> <p>The following example sets <code>NotificationPolicy</code> off.</p> <p> <code>{}</code> </p>',
+    }),
+    AuditDestinationARN: AuditDestinationARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the storage used for audit logs.',
+    }),
   })
   .openapi({
     required: ['FileShareARN'],
@@ -6482,163 +4694,88 @@ const UpdateNFSFileShareInputSchema = z
 
 const UpdateSMBFileShareOutputSchema = z
   .object({
-    FileShareARN: FileShareARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the updated SMB file share.' }),
-    ).exactOptional(),
+    FileShareARN: FileShareARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the updated SMB file share.',
+    }),
   })
   .openapi({ description: 'UpdateSMBFileShareOutput', required: [] })
   .openapi('UpdateSMBFileShareOutput')
 
 const UpdateSMBFileShareInputSchema = z
   .object({
-    FileShareARN: FileShareARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the SMB file share that you want to update.',
-        }),
-    ),
-    KMSEncrypted: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    KMSKey: KMSKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value can only be set when <code>KMSEncrypted</code> is <code>true</code>. Optional.',
-        }),
-    ).exactOptional(),
-    DefaultStorageClass: StorageClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>',
-        }),
-    ).exactOptional(),
-    ObjectACL: ObjectACLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that sets the access control list (ACL) permission for objects in the S3 bucket that a S3 File Gateway puts objects into. The default value is <code>private</code>.',
-        }),
-    ).exactOptional(),
-    ReadOnly: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that sets the write status of a file share. Set this value to <code>true</code> to set write status to read-only, otherwise set to <code>false</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    GuessMIMETypeEnabled: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that enables guessing of the MIME type for uploaded objects based on file extensions. Set this value to <code>true</code> to enable MIME type guessing, otherwise set to <code>false</code>. The default value is <code>true</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    RequesterPays: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that sets who pays the cost of the request and the cost associated with data download from the S3 bucket. If this value is set to <code>true</code>, the requester pays the costs; otherwise, the S3 bucket owner pays. However, the S3 bucket owner always pays the cost of storing data.</p> <note> <p> <code>RequesterPays</code> is a configuration for the S3 bucket that backs the file share, so make sure that the configuration on the file share is the same as the S3 bucket configuration.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    SMBACLEnabled: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set this value to <code>true</code> to enable access control list (ACL) on the SMB file share. Set it to <code>false</code> to map file and directory permissions to the POSIX permissions.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/storagegateway/latest/userguide/smb-acl.html">Using Microsoft Windows ACLs to control access to an SMB file share</a> in the <i>Storage Gateway User Guide</i>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    AccessBasedEnumeration: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The files and folders on this share will only be visible to users with read access.',
-        }),
-    ).exactOptional(),
-    AdminUserList: UserListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of users or groups in the Active Directory that have administrator rights to the file share. A group must be prefixed with the @ character. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>. Can only be set if Authentication is set to <code>ActiveDirectory</code>.',
-        }),
-    ).exactOptional(),
-    ValidUserList: UserListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of users or groups in the Active Directory that are allowed to access the file share. A group must be prefixed with the @ character. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>. Can only be set if Authentication is set to <code>ActiveDirectory</code>.',
-        }),
-    ).exactOptional(),
-    InvalidUserList: UserListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of users or groups in the Active Directory that are not allowed to access the file share. A group must be prefixed with the @ character. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>. Can only be set if Authentication is set to <code>ActiveDirectory</code>.',
-        }),
-    ).exactOptional(),
-    AuditDestinationARN: AuditDestinationARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the storage used for audit logs.',
-        }),
-    ).exactOptional(),
-    CaseSensitivity: CaseSensitivitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The case of an object name in an Amazon S3 bucket. For <code>ClientSpecified</code>, the client determines the case sensitivity. For <code>CaseSensitive</code>, the gateway determines the case sensitivity. The default value is <code>ClientSpecified</code>.',
-        }),
-    ).exactOptional(),
-    FileShareName: FileShareNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the file share. Optional.</p> <note> <p> <code>FileShareName</code> must be set if an S3 prefix name is set in <code>LocationARN</code>, or if an access point or access point alias is used.</p> </note>',
-        }),
-    ).exactOptional(),
-    CacheAttributes: CacheAttributesSchema.and(
-      z.any().openapi({ description: 'Specifies refresh cache information for the file share.' }),
-    ).exactOptional(),
-    NotificationPolicy: NotificationPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The notification policy of the file share. <code>SettlingTimeInSeconds</code> controls the number of seconds to wait after the last point in time a client wrote to a file before generating an <code>ObjectUploaded</code> notification. Because clients can make many small writes to files, it\'s best to set this parameter for as long as possible to avoid generating multiple notifications for the same file in a small time period.</p> <note> <p> <code>SettlingTimeInSeconds</code> has no effect on the timing of the object uploading to Amazon S3, only the timing of the notification.</p> </note> <p>The following example sets <code>NotificationPolicy</code> on with <code>SettlingTimeInSeconds</code> set to 60.</p> <p> <code>{\\"Upload\\": {\\"SettlingTimeInSeconds\\": 60}}</code> </p> <p>The following example sets <code>NotificationPolicy</code> off.</p> <p> <code>{}</code> </p>',
-        }),
-    ).exactOptional(),
-    OplocksEnabled: Boolean2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether opportunistic locking is enabled for the SMB file share.</p> <note> <p>Enabling opportunistic locking on case-sensitive shares is not recommended for workloads that involve access to files with the same name in different case.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
+    FileShareARN: FileShareARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the SMB file share that you want to update.',
+    }),
+    KMSEncrypted: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>Set to <code>true</code> to use Amazon S3 server-side encryption with your own KMS key, or <code>false</code> to use a key managed by Amazon S3. Optional.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    KMSKey: KMSKeySchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric CMKs. This value can only be set when <code>KMSEncrypted</code> is <code>true</code>. Optional.',
+    }),
+    DefaultStorageClass: StorageClassSchema.exactOptional().openapi({
+      description:
+        '<p>The default storage class for objects put into an Amazon S3 bucket by the S3 File Gateway. The default value is <code>S3_STANDARD</code>. Optional.</p> <p>Valid Values: <code>S3_STANDARD</code> | <code>S3_INTELLIGENT_TIERING</code> | <code>S3_STANDARD_IA</code> | <code>S3_ONEZONE_IA</code> </p>',
+    }),
+    ObjectACL: ObjectACLSchema.exactOptional().openapi({
+      description:
+        'A value that sets the access control list (ACL) permission for objects in the S3 bucket that a S3 File Gateway puts objects into. The default value is <code>private</code>.',
+    }),
+    ReadOnly: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that sets the write status of a file share. Set this value to <code>true</code> to set write status to read-only, otherwise set to <code>false</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    GuessMIMETypeEnabled: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that enables guessing of the MIME type for uploaded objects based on file extensions. Set this value to <code>true</code> to enable MIME type guessing, otherwise set to <code>false</code>. The default value is <code>true</code>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    RequesterPays: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>A value that sets who pays the cost of the request and the cost associated with data download from the S3 bucket. If this value is set to <code>true</code>, the requester pays the costs; otherwise, the S3 bucket owner pays. However, the S3 bucket owner always pays the cost of storing data.</p> <note> <p> <code>RequesterPays</code> is a configuration for the S3 bucket that backs the file share, so make sure that the configuration on the file share is the same as the S3 bucket configuration.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    SMBACLEnabled: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>Set this value to <code>true</code> to enable access control list (ACL) on the SMB file share. Set it to <code>false</code> to map file and directory permissions to the POSIX permissions.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/storagegateway/latest/userguide/smb-acl.html">Using Microsoft Windows ACLs to control access to an SMB file share</a> in the <i>Storage Gateway User Guide</i>.</p> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
+    AccessBasedEnumeration: Boolean2Schema.exactOptional().openapi({
+      description:
+        'The files and folders on this share will only be visible to users with read access.',
+    }),
+    AdminUserList: UserListSchema.exactOptional().openapi({
+      description:
+        'A list of users or groups in the Active Directory that have administrator rights to the file share. A group must be prefixed with the @ character. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>. Can only be set if Authentication is set to <code>ActiveDirectory</code>.',
+    }),
+    ValidUserList: UserListSchema.exactOptional().openapi({
+      description:
+        'A list of users or groups in the Active Directory that are allowed to access the file share. A group must be prefixed with the @ character. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>. Can only be set if Authentication is set to <code>ActiveDirectory</code>.',
+    }),
+    InvalidUserList: UserListSchema.exactOptional().openapi({
+      description:
+        'A list of users or groups in the Active Directory that are not allowed to access the file share. A group must be prefixed with the @ character. Acceptable formats include: <code>DOMAIN\\User1</code>, <code>user1</code>, <code>@group1</code>, and <code>@DOMAIN\\group1</code>. Can only be set if Authentication is set to <code>ActiveDirectory</code>.',
+    }),
+    AuditDestinationARN: AuditDestinationARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the storage used for audit logs.',
+    }),
+    CaseSensitivity: CaseSensitivitySchema.exactOptional().openapi({
+      description:
+        'The case of an object name in an Amazon S3 bucket. For <code>ClientSpecified</code>, the client determines the case sensitivity. For <code>CaseSensitive</code>, the gateway determines the case sensitivity. The default value is <code>ClientSpecified</code>.',
+    }),
+    FileShareName: FileShareNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the file share. Optional.</p> <note> <p> <code>FileShareName</code> must be set if an S3 prefix name is set in <code>LocationARN</code>, or if an access point or access point alias is used.</p> </note>',
+    }),
+    CacheAttributes: CacheAttributesSchema.exactOptional().openapi({
+      description: 'Specifies refresh cache information for the file share.',
+    }),
+    NotificationPolicy: NotificationPolicySchema.exactOptional().openapi({
+      description:
+        '<p>The notification policy of the file share. <code>SettlingTimeInSeconds</code> controls the number of seconds to wait after the last point in time a client wrote to a file before generating an <code>ObjectUploaded</code> notification. Because clients can make many small writes to files, it\'s best to set this parameter for as long as possible to avoid generating multiple notifications for the same file in a small time period.</p> <note> <p> <code>SettlingTimeInSeconds</code> has no effect on the timing of the object uploading to Amazon S3, only the timing of the notification.</p> </note> <p>The following example sets <code>NotificationPolicy</code> on with <code>SettlingTimeInSeconds</code> set to 60.</p> <p> <code>{\\"Upload\\": {\\"SettlingTimeInSeconds\\": 60}}</code> </p> <p>The following example sets <code>NotificationPolicy</code> off.</p> <p> <code>{}</code> </p>',
+    }),
+    OplocksEnabled: Boolean2Schema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether opportunistic locking is enabled for the SMB file share.</p> <note> <p>Enabling opportunistic locking on case-sensitive shares is not recommended for workloads that involve access to files with the same name in different case.</p> </note> <p>Valid Values: <code>true</code> | <code>false</code> </p>',
+    }),
   })
   .openapi({
     required: ['FileShareARN'],
@@ -6655,9 +4792,9 @@ const UpdateSMBFileShareVisibilityOutputSchema = z
 const UpdateSMBFileShareVisibilityInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    FileSharesVisible: Boolean2Schema.and(
-      z.any().openapi({ description: 'The shares on this gateway appear when listing shares.' }),
-    ),
+    FileSharesVisible: Boolean2Schema.openapi({
+      description: 'The shares on this gateway appear when listing shares.',
+    }),
   })
   .openapi({
     required: ['GatewayARN', 'FileSharesVisible'],
@@ -6673,14 +4810,10 @@ const UpdateSMBLocalGroupsOutputSchema = z
 const UpdateSMBLocalGroupsInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    SMBLocalGroups: SMBLocalGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of Active Directory users and groups that you want to grant special permissions for SMB file shares on the gateway.',
-        }),
-    ),
+    SMBLocalGroups: SMBLocalGroupsSchema.openapi({
+      description:
+        'A list of Active Directory users and groups that you want to grant special permissions for SMB file shares on the gateway.',
+    }),
   })
   .openapi({ required: ['GatewayARN', 'SMBLocalGroups'], title: 'UpdateSMBLocalGroupsInput' })
   .openapi('UpdateSMBLocalGroupsInput')
@@ -6693,14 +4826,10 @@ const UpdateSMBSecurityStrategyOutputSchema = z
 const UpdateSMBSecurityStrategyInputSchema = z
   .object({
     GatewayARN: GatewayARNSchema,
-    SMBSecurityStrategy: SMBSecurityStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the type of security strategy.</p> <p>ClientSpecified: if you use this option, requests are established based on what is negotiated by the client. This option is recommended when you want to maximize compatibility across different clients in your environment. Supported only in S3 File Gateway.</p> <p>MandatorySigning: if you use this option, file gateway only allows connections from SMBv2 or SMBv3 clients that have signing enabled. This option works with SMB clients on Microsoft Windows Vista, Windows Server 2008 or newer.</p> <p>MandatoryEncryption: if you use this option, file gateway only allows connections from SMBv3 clients that have encryption enabled. This option is highly recommended for environments that handle sensitive data. This option works with SMB clients on Microsoft Windows 8, Windows Server 2012 or newer.</p>',
-        }),
-    ),
+    SMBSecurityStrategy: SMBSecurityStrategySchema.openapi({
+      description:
+        '<p>Specifies the type of security strategy.</p> <p>ClientSpecified: if you use this option, requests are established based on what is negotiated by the client. This option is recommended when you want to maximize compatibility across different clients in your environment. Supported only in S3 File Gateway.</p> <p>MandatorySigning: if you use this option, file gateway only allows connections from SMBv2 or SMBv3 clients that have signing enabled. This option works with SMB clients on Microsoft Windows Vista, Windows Server 2008 or newer.</p> <p>MandatoryEncryption: if you use this option, file gateway only allows connections from SMBv3 clients that have encryption enabled. This option is highly recommended for environments that handle sensitive data. This option works with SMB clients on Microsoft Windows 8, Windows Server 2012 or newer.</p>',
+    }),
   })
   .openapi({
     required: ['GatewayARN', 'SMBSecurityStrategy'],
@@ -6710,14 +4839,10 @@ const UpdateSMBSecurityStrategyInputSchema = z
 
 const UpdateSnapshotScheduleOutputSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the volume. Use the <a>ListVolumes</a> operation to return a list of gateway volumes.',
-        }),
-    ).exactOptional(),
+    VolumeARN: VolumeARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the volume. Use the <a>ListVolumes</a> operation to return a list of gateway volumes.',
+    }),
   })
   .openapi({
     example: {
@@ -6732,45 +4857,24 @@ const UpdateSnapshotScheduleOutputSchema = z
 
 const UpdateSnapshotScheduleInputSchema = z
   .object({
-    VolumeARN: VolumeARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the volume. Use the <a>ListVolumes</a> operation to return a list of gateway volumes.',
-        }),
-    ),
-    StartAt: HourOfDaySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The hour of the day at which the snapshot schedule begins represented as <i>hh</i>, where <i>hh</i> is the hour (0 to 23). The hour of the day is in the time zone of the gateway.',
-        }),
-    ),
-    RecurrenceInHours: RecurrenceInHoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Frequency of snapshots. Specify the number of hours between snapshots.',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional description of the snapshot that overwrites the existing description.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of up to 50 tags that can be assigned to a snapshot. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
-        }),
-    ).exactOptional(),
+    VolumeARN: VolumeARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the volume. Use the <a>ListVolumes</a> operation to return a list of gateway volumes.',
+    }),
+    StartAt: HourOfDaySchema.openapi({
+      description:
+        'The hour of the day at which the snapshot schedule begins represented as <i>hh</i>, where <i>hh</i> is the hour (0 to 23). The hour of the day is in the time zone of the gateway.',
+    }),
+    RecurrenceInHours: RecurrenceInHoursSchema.openapi({
+      description: 'Frequency of snapshots. Specify the number of hours between snapshots.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Optional description of the snapshot that overwrites the existing description.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        "<p>A list of up to 50 tags that can be assigned to a snapshot. Each tag is a key-value pair.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. The maximum length of a tag's key is 128 characters, and the maximum length for a tag's value is 256.</p> </note>",
+    }),
   })
   .openapi({
     required: ['VolumeARN', 'StartAt', 'RecurrenceInHours'],
@@ -6782,13 +4886,9 @@ const UpdateSnapshotScheduleInputSchema = z
 
 const UpdateVTLDeviceTypeOutputSchema = z
   .object({
-    VTLDeviceARN: VTLDeviceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the medium changer you have selected.',
-        }),
-    ).exactOptional(),
+    VTLDeviceARN: VTLDeviceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the medium changer you have selected.',
+    }),
   })
   .openapi({
     example: {
@@ -6804,21 +4904,13 @@ const DeviceTypeSchema = z.string().min(2).max(50).openapi('DeviceType')
 
 const UpdateVTLDeviceTypeInputSchema = z
   .object({
-    VTLDeviceARN: VTLDeviceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the medium changer you want to select.',
-        }),
-    ),
-    DeviceType: DeviceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of medium changer you want to select.</p> <p>Valid Values: <code>STK-L700</code> | <code>AWS-Gateway-VTL</code> | <code>IBM-03584L32-0402</code> </p>',
-        }),
-    ),
+    VTLDeviceARN: VTLDeviceARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the medium changer you want to select.',
+    }),
+    DeviceType: DeviceTypeSchema.openapi({
+      description:
+        '<p>The type of medium changer you want to select.</p> <p>Valid Values: <code>STK-L700</code> | <code>AWS-Gateway-VTL</code> | <code>IBM-03584L32-0402</code> </p>',
+    }),
   })
   .openapi({ required: ['VTLDeviceARN', 'DeviceType'], title: 'UpdateVTLDeviceTypeInput' })
   .openapi('UpdateVTLDeviceTypeInput')

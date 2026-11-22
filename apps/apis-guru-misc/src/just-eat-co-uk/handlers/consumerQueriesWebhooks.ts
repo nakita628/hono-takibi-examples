@@ -4,5 +4,9 @@ import { postLateOrderCompensationQueryRoute, postLateOrderQueryRoute } from '..
 const app = new OpenAPIHono()
 
 export const consumerQueriesWebhooksHandler = app
-  .openapi(postLateOrderCompensationQueryRoute, (c) => {})
-  .openapi(postLateOrderQueryRoute, (c) => {})
+  .openapi(postLateOrderCompensationQueryRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postLateOrderQueryRoute, (c) => {
+    throw new Error('Not implemented')
+  })

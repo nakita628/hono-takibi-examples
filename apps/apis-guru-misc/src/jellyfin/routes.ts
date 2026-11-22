@@ -69725,6 +69725,7 @@ export const getVideosItemIdMediaSourceIdSubtitlesIndexStreamFormatRoute = creat
             required: false,
           },
           description: 'Optional. The start position of the subtitle in ticks.',
+          default: 0,
         }),
     }),
   },

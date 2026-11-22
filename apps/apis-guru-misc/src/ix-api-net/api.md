@@ -13,7 +13,7 @@ Providing invalid filter values should yield a validation error.
 
 Base URLs:
 
-* <a href="https://api.apis.guru/api/v2">https://api.apis.guru/api/v2</a>
+* <a href="/api/v2">/api/v2</a>
 
 Web: <a href="https://ix-api.net">https://ix-api.net</a> 
 

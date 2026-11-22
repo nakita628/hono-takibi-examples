@@ -1,51 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-type RegisteredInterestType = {
-  childInterests?: RegisteredInterestType[] | null
-  createdWhen?: string | null
-  deletedWhen?: string | null
-  id?: number
-  interest?: string | null
-  isCorrection?: boolean
-  lastAmendedWhen?: string | null
-}
-
-const GovernmentDepartmentSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    imageUrl: z.string().nullable().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    url: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GovernmentDepartment')
-
-const AnsweringBodySchema = z
-  .strictObject({
-    department: GovernmentDepartmentSchema.exactOptional(),
-    id: z.int32().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    shortName: z.string().nullable().exactOptional(),
-    target: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AnsweringBody')
-
-const BiographyExperienceSchema = z
-  .strictObject({
-    endMonth: z.int32().nullable().exactOptional(),
-    endYear: z.int32().nullable().exactOptional(),
-    id: z.int32().exactOptional(),
-    organisation: z.string().nullable().exactOptional(),
-    startMonth: z.int32().nullable().exactOptional(),
-    startYear: z.int32().nullable().exactOptional(),
-    title: z.string().nullable().exactOptional(),
-    type: z.string().nullable().exactOptional(),
-    typeId: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BiographyExperience')
-
 const LinkSchema = z
   .strictObject({
     href: z.string().nullable().exactOptional(),
@@ -55,28 +9,7 @@ const LinkSchema = z
   .openapi({ required: [] })
   .openapi('Link')
 
-const BiographyExperienceListItemSchema = z
-  .strictObject({
-    links: z.array(LinkSchema).nullable().exactOptional(),
-    value: z.array(BiographyExperienceSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BiographyExperienceListItem')
-
 const HouseSchema = z.union([z.literal(1), z.literal(2)]).openapi('House')
-
-const BiographyItemSchema = z
-  .strictObject({
-    additionalInfo: z.string().nullable().exactOptional(),
-    additionalInfoLink: z.string().nullable().exactOptional(),
-    endDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    house: HouseSchema.exactOptional(),
-    id: z.int32().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    startDate: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BiographyItem')
 
 const MemberStatusSchema = z
   .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)])
@@ -178,17 +111,177 @@ const ConstituencyItemSchema = z
   .openapi({ required: [] })
   .openapi('ConstituencyItem')
 
-const ConstituencyMembersServiceSearchResultSchema = z
+type ConstituencyMembersServiceSearchResultType = {
+  items?: z.infer<typeof ConstituencyItemSchema>[] | null
+  links?: z.infer<typeof LinkSchema>[] | null
+  resultContext?: string | null
+  skip?: number
+  take?: number
+  totalResults?: number
+}
+
+const GovernmentDepartmentSchema = z
   .strictObject({
-    items: z.array(ConstituencyItemSchema).nullable().exactOptional(),
-    links: z.array(LinkSchema).nullable().exactOptional(),
-    resultContext: z.string().nullable().exactOptional(),
-    skip: z.int32().exactOptional(),
-    take: z.int32().exactOptional(),
-    totalResults: z.int32().exactOptional(),
+    id: z.int32().exactOptional(),
+    imageUrl: z.string().nullable().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    url: z.string().nullable().exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('ConstituencyMembersServiceSearchResult')
+  .openapi('GovernmentDepartment')
+
+const GovernmentOppositionPostHolderSchema = z
+  .strictObject({
+    endDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    isPaid: z.boolean().exactOptional(),
+    layingMinisterName: z.string().nullable().exactOptional(),
+    member: MemberItemSchema.exactOptional(),
+    startDate: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GovernmentOppositionPostHolder')
+
+const PostTypeSchema = z.union([z.literal(0), z.literal(1), z.literal(2)]).openapi('PostType')
+
+const GovernmentOppositionPostSchema = z
+  .strictObject({
+    createdWhen: z.iso.datetime({ offset: true }).exactOptional(),
+    governmentDepartments: z.array(GovernmentDepartmentSchema).nullable().exactOptional(),
+    hansardName: z.string().nullable().exactOptional(),
+    id: z.int32().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    order: z.int32().exactOptional(),
+    postHolders: z.array(GovernmentOppositionPostHolderSchema).nullable().exactOptional(),
+    type: PostTypeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GovernmentOppositionPost')
+
+type GovernmentOppositionPostItemType = {
+  links?: z.infer<typeof LinkSchema>[] | null
+  value?: z.infer<typeof GovernmentOppositionPostSchema>
+}
+
+const RegisteredInterestSchema: z.ZodType<RegisteredInterestType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        childInterests: z.array(RegisteredInterestSchema).nullable().exactOptional(),
+        createdWhen: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+        deletedWhen: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+        id: z.int32().exactOptional(),
+        interest: z.string().nullable().exactOptional(),
+        isCorrection: z.boolean().exactOptional(),
+        lastAmendedWhen: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('RegisteredInterest')
+
+const RegisteredInterestCategorySchema = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    interests: z.array(RegisteredInterestSchema).nullable().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    sortOrder: z.int32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RegisteredInterestCategory')
+
+const MembersInterestsSchema = z
+  .strictObject({
+    interestCategories: z.array(RegisteredInterestCategorySchema).nullable().exactOptional(),
+    member: MemberSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MembersInterests')
+
+const MembersInterestsItemSchema = z
+  .strictObject({
+    links: z.array(LinkSchema).nullable().exactOptional(),
+    value: MembersInterestsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MembersInterestsItem')
+
+type MembersInterestsMembersServiceSearchResultType = {
+  items?: z.infer<typeof MembersInterestsItemSchema>[] | null
+  links?: z.infer<typeof LinkSchema>[] | null
+  resultContext?: string | null
+  skip?: number
+  take?: number
+  totalResults?: number
+}
+
+type RegisteredInterestType = {
+  childInterests?: RegisteredInterestType[] | null
+  createdWhen?: string | null
+  deletedWhen?: string | null
+  id?: number
+  interest?: string | null
+  isCorrection?: boolean
+  lastAmendedWhen?: string | null
+}
+
+const AnsweringBodySchema = z
+  .strictObject({
+    department: GovernmentDepartmentSchema.exactOptional(),
+    id: z.int32().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    shortName: z.string().nullable().exactOptional(),
+    target: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AnsweringBody')
+
+const BiographyExperienceSchema = z
+  .strictObject({
+    endMonth: z.int32().nullable().exactOptional(),
+    endYear: z.int32().nullable().exactOptional(),
+    id: z.int32().exactOptional(),
+    organisation: z.string().nullable().exactOptional(),
+    startMonth: z.int32().nullable().exactOptional(),
+    startYear: z.int32().nullable().exactOptional(),
+    title: z.string().nullable().exactOptional(),
+    type: z.string().nullable().exactOptional(),
+    typeId: z.int32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('BiographyExperience')
+
+const BiographyExperienceListItemSchema = z
+  .strictObject({
+    links: z.array(LinkSchema).nullable().exactOptional(),
+    value: z.array(BiographyExperienceSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('BiographyExperienceListItem')
+
+const BiographyItemSchema = z
+  .strictObject({
+    additionalInfo: z.string().nullable().exactOptional(),
+    additionalInfoLink: z.string().nullable().exactOptional(),
+    endDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    house: HouseSchema.exactOptional(),
+    id: z.int32().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    startDate: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('BiographyItem')
+
+const ConstituencyMembersServiceSearchResultSchema: z.ZodType<ConstituencyMembersServiceSearchResultType> =
+  z
+    .strictObject({
+      items: z.array(ConstituencyItemSchema).nullable().exactOptional(),
+      links: z.array(LinkSchema).nullable().exactOptional(),
+      resultContext: z.string().nullable().exactOptional(),
+      skip: z.int32().exactOptional(),
+      take: z.int32().exactOptional(),
+      totalResults: z.int32().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('ConstituencyMembersServiceSearchResult')
 
 const ConstituencyRepresentationListItemSchema = z
   .strictObject({
@@ -356,34 +449,7 @@ const GenericReferenceDataSchema = z
   .openapi({ required: [] })
   .openapi('GenericReferenceData')
 
-const GovernmentOppositionPostHolderSchema = z
-  .strictObject({
-    endDate: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    isPaid: z.boolean().exactOptional(),
-    layingMinisterName: z.string().nullable().exactOptional(),
-    member: MemberItemSchema.exactOptional(),
-    startDate: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GovernmentOppositionPostHolder')
-
-const PostTypeSchema = z.union([z.literal(0), z.literal(1), z.literal(2)]).openapi('PostType')
-
-const GovernmentOppositionPostSchema = z
-  .strictObject({
-    createdWhen: z.iso.datetime({ offset: true }).exactOptional(),
-    governmentDepartments: z.array(GovernmentDepartmentSchema).nullable().exactOptional(),
-    hansardName: z.string().nullable().exactOptional(),
-    id: z.int32().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    order: z.int32().exactOptional(),
-    postHolders: z.array(GovernmentOppositionPostHolderSchema).nullable().exactOptional(),
-    type: PostTypeSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GovernmentOppositionPost')
-
-const GovernmentOppositionPostItemSchema = z
+const GovernmentOppositionPostItemSchema: z.ZodType<GovernmentOppositionPostItemType> = z
   .strictObject({
     links: z.array(LinkSchema).nullable().exactOptional(),
     value: GovernmentOppositionPostSchema.exactOptional(),
@@ -563,59 +629,18 @@ const MemberMembersServiceSearchResultSchema = z
   .openapi({ required: [] })
   .openapi('MemberMembersServiceSearchResult')
 
-const RegisteredInterestSchema: z.ZodType<RegisteredInterestType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        childInterests: z.array(RegisteredInterestSchema).nullable().exactOptional(),
-        createdWhen: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-        deletedWhen: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-        id: z.int32().exactOptional(),
-        interest: z.string().nullable().exactOptional(),
-        isCorrection: z.boolean().exactOptional(),
-        lastAmendedWhen: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('RegisteredInterest')
-
-const RegisteredInterestCategorySchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    interests: z.array(RegisteredInterestSchema).nullable().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    sortOrder: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RegisteredInterestCategory')
-
-const MembersInterestsSchema = z
-  .strictObject({
-    interestCategories: z.array(RegisteredInterestCategorySchema).nullable().exactOptional(),
-    member: MemberSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MembersInterests')
-
-const MembersInterestsItemSchema = z
-  .strictObject({
-    links: z.array(LinkSchema).nullable().exactOptional(),
-    value: MembersInterestsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MembersInterestsItem')
-
-const MembersInterestsMembersServiceSearchResultSchema = z
-  .strictObject({
-    items: z.array(MembersInterestsItemSchema).nullable().exactOptional(),
-    links: z.array(LinkSchema).nullable().exactOptional(),
-    resultContext: z.string().nullable().exactOptional(),
-    skip: z.int32().exactOptional(),
-    take: z.int32().exactOptional(),
-    totalResults: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MembersInterestsMembersServiceSearchResult')
+const MembersInterestsMembersServiceSearchResultSchema: z.ZodType<MembersInterestsMembersServiceSearchResultType> =
+  z
+    .strictObject({
+      items: z.array(MembersInterestsItemSchema).nullable().exactOptional(),
+      links: z.array(LinkSchema).nullable().exactOptional(),
+      resultContext: z.string().nullable().exactOptional(),
+      skip: z.int32().exactOptional(),
+      take: z.int32().exactOptional(),
+      totalResults: z.int32().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('MembersInterestsMembersServiceSearchResult')
 
 const StaffSchema = z
   .strictObject({

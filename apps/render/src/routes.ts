@@ -57,6 +57,7 @@ const AuditLogSchema = z
         'ChangeWorkspacePrivacyEvent',
         'CreateBuildSourceEvent',
         'DeleteBuildSourceEvent',
+        'UpdateBuildSourceEvent',
         'CreateCronJobEvent',
         'CreateEnvVarsEvent',
         'CreateEnvironmentEvent',
@@ -118,6 +119,7 @@ const AuditLogSchema = z
         'UpdateOrgPaymentMethodEvent',
         'UpdateOtelIntegrationEvent',
         'UpdateSSOConnectionEvent',
+        'UpdateServiceBuildSourceEvent',
         'UpdateServiceNameEvent',
         'UpdateWebhookEvent',
         'UpdateWorkspacePaymentMethodEvent',
@@ -1238,9 +1240,7 @@ const WorkflowVersionWithCursorSchema = z
           'ready',
         ]),
       })
-      .openapi({
-        required: ['id', 'workflowId', 'name', 'image', 'createdAt', 'updatedAt', 'status'],
-      }),
+      .openapi({ required: ['id', 'workflowId', 'name', 'createdAt', 'status'] }),
     cursor: CursorSchema,
   })
   .openapi({ required: ['workflowVersion', 'cursor'] })
@@ -1301,6 +1301,13 @@ const WorkflowWithCursorSchema = z
           .openapi({
             description:
               'Controls autodeploy behavior. "commit" deploys when a commit is pushed to the branch. "checksPass" waits for CI checks to pass before deploying. "off" disables autodeploy.',
+          }),
+        defaultVersionId: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'ID of the workflow version that new task runs use by default. Omitted until a version has been registered.',
           }),
       })
       .openapi({
@@ -1648,9 +1655,7 @@ const NotificationOverrideWithCursorSchema = z
         previewNotificationsEnabled: z.enum(['default', 'false', 'true']),
         notificationsToSend: z.enum(['default', 'none', 'failure', 'all']),
       })
-      .openapi({
-        required: ['type', 'serviceId', 'previewNotificationsEnabled', 'notificationsToSend'],
-      }),
+      .openapi({ required: ['serviceId', 'previewNotificationsEnabled', 'notificationsToSend'] }),
     cursor: CursorSchema,
   })
   .openapi({ required: ['override', 'cursor'] })
@@ -1836,11 +1841,14 @@ const ErrorCodeSchema = z
     'invalid_cursor',
     'invalid_limit',
     'invalid_snapshot_name',
+    'invalid_sandbox_name',
     'sandbox_group_suspended',
     'sandbox_group_limit_reached',
+    'default_sandbox_group_not_deletable',
     'invalid_sandbox_plan',
     'invalid_timeout_seconds',
     'build_source_region_mismatch',
+    'image_in_use',
   ])
   .openapi({
     description:
@@ -1871,11 +1879,14 @@ const ErrorCodeSchema = z
       'ErrorCodeInvalidCursor',
       'ErrorCodeInvalidLimit',
       'ErrorCodeInvalidSnapshotName',
+      'ErrorCodeInvalidSandboxName',
       'ErrorCodeSandboxGroupSuspended',
       'ErrorCodeSandboxGroupLimitReached',
+      'ErrorCodeDefaultSandboxGroupNotDeletable',
       'ErrorCodeInvalidSandboxPlan',
       'ErrorCodeInvalidTimeoutSeconds',
       'ErrorCodeBuildSourceRegionMismatch',
+      'ErrorCodeImageInUse',
     ],
     'x-enum-descriptions': [
       "The scoped API token does not satisfy the endpoint's minimum scope requirements.",
@@ -1903,11 +1914,14 @@ const ErrorCodeSchema = z
       'A list request passed a cursor that is malformed or not visible to the caller.',
       "A list request passed a limit that is not a positive integer within the route's maximum.",
       'A snapshot name is empty, longer than 64 characters, or starts with snp-.',
+      'A sandbox name is longer than 64 characters or starts with sbx-.',
       'A create, connect, or snapshot request named a sandbox whose group is suspended.',
       'A sandbox group create, or a sandbox create that needs a new default group, for an owner already at its sandbox group limit.',
+      "A delete of the owner's default sandbox group.",
       'A sandbox create asked for a plan that does not exist or is not offered.',
-      "A sandbox create asked for a timeoutSeconds below 0 or above the workspace plan's maximum.",
+      'A sandbox create asked for a timeoutSeconds below 0 or above the maximum.',
       'A service create or update linked a git-backed Build Source in a different region than the service.',
+      'A sandbox image delete named a build that sandboxes or snapshots still boot from; the message lists them.',
     ],
   })
   .openapi('ErrorCode')
@@ -2535,8 +2549,23 @@ const SecretFileSchema = z
 
 const EnvGroupSchema = EnvGroupMetaSchema.and(
   z
-    .object({ envVars: z.array(EnvVarSchema), secretFiles: z.array(SecretFileSchema) })
-    .openapi({ required: ['envVars', 'secretFiles'] }),
+    .object({
+      envVars: z
+        .array(EnvVarSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "Omitted if the caller doesn't have the permission to read the environment group's secret values.",
+        }),
+      secretFiles: z
+        .array(SecretFileSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "Omitted if the caller doesn't have the permission to read the environment group's secret values.",
+        }),
+    })
+    .openapi({ required: [] }),
 ).openapi('EnvGroup')
 
 const SecretFileWithCursorSchema = z
@@ -2850,7 +2879,6 @@ const PostgresDetailSchema = z
       'highAvailabilityEnabled',
       'name',
       'owner',
-      'project',
       'plan',
       'region',
       'readReplicas',
@@ -2889,6 +2917,589 @@ const CronJobRunSchema = z
   .openapi({ description: 'A run of a cron job', required: ['id', 'status'] })
   .openapi('CronJobRun')
 
+const SandboxWithCursorSchema = z
+  .object({
+    sandbox: z
+      .object({
+        id: z
+          .string()
+          .regex(/^sbx-[0-9a-v]{25}$/)
+          .openapi({
+            description: 'The ID of the sandbox.',
+            example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+          }),
+        name: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'The label set when the sandbox was created.' }),
+        sandboxGroupId: z
+          .string()
+          .regex(/^sbg-[0-9a-v]{20}$/)
+          .openapi({
+            description: 'The ID of the sandbox group.',
+            example: 'sbg-cph1rs3idesc73a2b2mg',
+          })
+          .exactOptional()
+          .openapi({ description: 'The ID of the sandbox group this sandbox belongs to.' }),
+        status: z
+          .enum([
+            'creating',
+            'running',
+            'suspending',
+            'suspended',
+            'resuming',
+            'errored',
+            'terminated',
+          ])
+          .openapi({ description: "The sandbox's current status." }),
+        plan: z
+          .union([
+            z
+              .enum(['starter', 'standard', 'pro', '1c-2g', '2c-4g', '4c-8g', '8c-16g'])
+              .openapi({
+                'x-enum-varnames': [
+                  'Starter',
+                  'Standard',
+                  'Pro',
+                  'SandboxPlan1c2g',
+                  'SandboxPlan2c4g',
+                  'SandboxPlan4c8g',
+                  'SandboxPlan8c16g',
+                ],
+                description:
+                  'The compute plan for the sandbox. The `starter`, `standard`, and `pro` plans are deprecated.',
+              }),
+            z.string(),
+          ])
+          .openapi({
+            'x-go-type': 'SandboxPlan',
+            description: "The sandbox's compute plan. See `sandboxPlan` for known values.",
+          }),
+        networkPolicy: z
+          .object({
+            type: z
+              .enum(['allow-all', 'deny-all', 'allow-list'])
+              .openapi({
+                description:
+                  'How Render handles outbound traffic from the sandbox. The `allow-list` policy requires `rules`.',
+              })
+              .openapi({
+                description:
+                  'How Render handles outbound traffic from the sandbox. The `allow-list` policy requires `rules`.',
+              }),
+            default: z
+              .enum(['allow-all', 'deny-all', 'allow-list'])
+              .openapi({
+                description:
+                  'How Render handles outbound traffic from the sandbox. The `allow-list` policy requires `rules`.',
+              })
+              .exactOptional()
+              .openapi({
+                deprecated: true,
+                description:
+                  'A deprecated alias for `type`, returned with the same value. Read `type` instead.',
+              }),
+            rules: z
+              .array(
+                z
+                  .object({
+                    domain: z
+                      .string()
+                      .max(253)
+                      .openapi({
+                        description:
+                          'The hostname this rule allows, up to 253 characters. Matching is exact: `foo.local` does not match `api.foo.local`. Use a separate rule or `*.foo.local` for subdomains. A wildcard is allowed only as the leftmost label.\n',
+                        example: '*.bar.local',
+                      }),
+                    protocol: z
+                      .literal('https')
+                      .default('https')
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The protocol allowed for this destination. Defaults to `https`. The `allow-list` policy blocks outbound traffic that uses other protocols.',
+                      }),
+                  })
+                  .openapi({
+                    description:
+                      'A destination that sandboxes can access when the network policy is `allow-list`.',
+                    required: ['domain'],
+                  }),
+              )
+              .max(100)
+              .exactOptional()
+              .openapi({
+                description:
+                  'Destinations the sandbox may reach, present when `type` is `allow-list` and absent otherwise. Each domain may be listed once.\n',
+              }),
+          })
+          .openapi({
+            description: 'The policy that controls outbound traffic from the sandbox.',
+            required: ['type'],
+          }),
+        region: z
+          .string()
+          .openapi({ description: 'The Render region where the sandbox runs.', example: 'oregon' }),
+        timeoutSeconds: z
+          .int()
+          .openapi({
+            description:
+              'The maximum time the sandbox can run continuously, in seconds. The sandbox terminates when this time elapses. If the sandbox is suspended and later resumed, this timeout restarts. A value of 0 disables the runtime timeout.\n',
+            example: 86400,
+          }),
+        idleTimeoutSeconds: z
+          .int()
+          .openapi({
+            description:
+              'The number of seconds of inactivity before Render suspends the sandbox. A value of 0 disables automatic idle suspension.',
+            example: 900,
+          }),
+        createdAt: z.iso
+          .datetime({ offset: true })
+          .openapi({
+            description: 'The timestamp when the sandbox was created, in ISO 8601 format.',
+            example: '2026-04-01T18:30:00Z',
+          }),
+        terminatedAt: z.iso
+          .datetime({ offset: true })
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The timestamp when the sandbox was terminated, in ISO 8601 format. Null if the sandbox has not been terminated.',
+          }),
+      })
+      .openapi({
+        description:
+          'An isolated compute environment for running code, executing commands, and transferring files.',
+        required: [
+          'id',
+          'status',
+          'plan',
+          'networkPolicy',
+          'region',
+          'timeoutSeconds',
+          'idleTimeoutSeconds',
+          'createdAt',
+        ],
+      }),
+    cursor: CursorSchema,
+  })
+  .openapi({
+    description: 'A sandbox with a cursor for fetching the next page of results.',
+    required: ['sandbox', 'cursor'],
+  })
+  .openapi('SandboxWithCursor')
+
+const ExecutionWithCursorSchema = z
+  .object({
+    execution: z
+      .object({
+        id: z
+          .string()
+          .regex(/^exe-[0-9a-v]{20}$/)
+          .openapi({
+            description: 'The ID of the sandbox execution.',
+            example: 'exe-cph1rs3idesc73a2b2mg',
+          }),
+        sandboxId: z
+          .string()
+          .regex(/^sbx-[0-9a-v]{25}$/)
+          .openapi({
+            description: 'The ID of the sandbox.',
+            example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+          }),
+        type: z
+          .enum(['runs', 'files'])
+          .openapi({ description: 'Whether the execution is a command run or a file transfer.' }),
+        operation: z
+          .enum(['sync', 'stream', 'upload', 'download'])
+          .openapi({
+            description:
+              'The command run or file transfer operation authorized by the connect token.',
+          }),
+        command: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The command run in the sandbox, or the target path for a file transfer. Command text may be redacted or truncated. Omitted if you do not have permission to view execution commands.\n',
+          }),
+        userId: z
+          .string()
+          .openapi({
+            description: 'The ID of the user the execution token was created for.',
+            example: 'usr-cph1rs3idesc73a2b2mg',
+          }),
+        startedAt: z.iso
+          .datetime({ offset: true })
+          .openapi({
+            description: 'The timestamp when the execution token was created, in ISO 8601 format.',
+            example: '2026-08-01T10:00:00Z',
+          }),
+        stoppedAt: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({
+            description:
+              'The timestamp when the execution stopped, in ISO 8601 format. Omitted until a result is available.',
+            example: '2026-08-01T10:05:00Z',
+          }),
+        exitCode: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'The execution exit code. Omitted until a result is available.',
+            example: 0,
+          }),
+      })
+      .openapi({
+        description:
+          'A record of a command run or file transfer in a sandbox. `startedAt` records when the connect token was created. The command can appear while the execution is running. `stoppedAt` and `exitCode` are omitted until Render receives the result or finalizes the execution when the sandbox stops.\n',
+        required: ['id', 'sandboxId', 'type', 'operation', 'userId', 'startedAt'],
+      }),
+    cursor: CursorSchema,
+  })
+  .openapi({
+    description: 'A sandbox execution with a cursor for fetching the next page of results.',
+    required: ['execution', 'cursor'],
+  })
+  .openapi('ExecutionWithCursor')
+
+const SandboxSnapshotWithCursorSchema = z
+  .object({
+    snapshot: z
+      .object({
+        id: z
+          .string()
+          .regex(/^snp-[0-9a-v]{20}$/)
+          .openapi({
+            description: 'The ID of the sandbox snapshot.',
+            example: 'snp-cph1rs3idesc73a2b2mg',
+          }),
+        sandboxGroupId: z
+          .string()
+          .regex(/^sbg-[0-9a-v]{20}$/)
+          .openapi({
+            description: 'The ID of the sandbox group.',
+            example: 'sbg-cph1rs3idesc73a2b2mg',
+          }),
+        sourceSandboxId: z
+          .string()
+          .regex(/^sbx-[0-9a-v]{25}$/)
+          .openapi({
+            description: 'The ID of the sandbox.',
+            example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+          })
+          .openapi({
+            description:
+              'The ID of the sandbox this snapshot was captured from, recorded for reference.',
+          }),
+        name: z
+          .string()
+          .min(1)
+          .max(64)
+          .openapi({
+            example: 'gold',
+            description:
+              'A case-sensitive name for snapshots in a sandbox group, up to 64 characters. Must not start with `snp-`. Multiple snapshots can share a name. When creating a sandbox by snapshot name, Render uses the most recently created snapshot with that name that is `available` and unexpired.\n',
+          })
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The name assigned when the snapshot was created. Cannot be changed. Null if no name was provided.',
+          }),
+        kind: z
+          .enum(['filesystem', 'runtime'])
+          .openapi({
+            description:
+              'The state to capture. A `filesystem` snapshot captures the writable filesystem and can be restored to any plan. A `runtime` snapshot also captures memory and CPU state and must be restored to the source sandbox plan.\n',
+          }),
+        status: z
+          .enum(['creating', 'available', 'failed'])
+          .openapi({ description: "The snapshot's current status." }),
+        plan: z
+          .union([
+            z
+              .enum(['starter', 'standard', 'pro', '1c-2g', '2c-4g', '4c-8g', '8c-16g'])
+              .openapi({
+                'x-enum-varnames': [
+                  'Starter',
+                  'Standard',
+                  'Pro',
+                  'SandboxPlan1c2g',
+                  'SandboxPlan2c4g',
+                  'SandboxPlan4c8g',
+                  'SandboxPlan8c16g',
+                ],
+                description:
+                  'The compute plan for the sandbox. The `starter`, `standard`, and `pro` plans are deprecated.',
+              }),
+            z.string(),
+          ])
+          .openapi({
+            'x-go-type': 'SandboxPlan',
+            description:
+              "The source sandbox's compute plan when the snapshot was captured. See `sandboxPlan` for known values.",
+          }),
+        requestedAt: z.iso
+          .datetime({ offset: true })
+          .openapi({
+            description: 'The timestamp when the snapshot was requested, in ISO 8601 format.',
+          }),
+        capturedAt: z.iso
+          .datetime({ offset: true })
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The timestamp when capture completed, in ISO 8601 format. Null until the snapshot is `available`.',
+          }),
+        expiresAt: z.iso
+          .datetime({ offset: true })
+          .openapi({
+            description:
+              'The timestamp after which the snapshot can no longer be retrieved or restored, in ISO 8601 format. Each time you create a sandbox from this snapshot, Render resets its expiration to `ttlSeconds` seconds after that use. For snapshots with no expiration (`ttlSeconds: 0`), this is `9999-12-31T23:59:59Z`.\n',
+          }),
+        ttlSeconds: z
+          .int()
+          .min(0)
+          .exactOptional()
+          .openapi({
+            'x-go-name': 'TTLSeconds',
+            description:
+              "The snapshot's lifetime after its last use, in seconds. A value of 0 means the snapshot does not expire. If omitted, Render's default snapshot lifetime applies.\n",
+          }),
+        sizeBytes: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .nullable()
+          .exactOptional()
+          .openapi({
+            type: ['integer', 'null'],
+            format: 'int64',
+            description:
+              'The size of the snapshot, in bytes. Null until the snapshot is `available`.',
+          }),
+        error: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description: 'The reason the snapshot failed. Null unless its status is `failed`.',
+          }),
+      })
+      .openapi({
+        description:
+          'A saved filesystem or runtime state that can be used to create another sandbox.',
+        required: [
+          'id',
+          'sandboxGroupId',
+          'sourceSandboxId',
+          'kind',
+          'status',
+          'plan',
+          'requestedAt',
+          'expiresAt',
+        ],
+      }),
+    cursor: CursorSchema,
+  })
+  .openapi({
+    description: 'A sandbox snapshot with a cursor for fetching the next page of results.',
+    required: ['snapshot', 'cursor'],
+  })
+  .openapi('SandboxSnapshotWithCursor')
+
+const SandboxBuildWithCursorSchema = z
+  .object({
+    build: z
+      .object({
+        id: z
+          .string()
+          .regex(/^sbb-[0-9a-v]{20}$/)
+          .openapi({
+            description: 'The ID of the sandbox build.',
+            example: 'sbb-cph1rs3idesc73a2b2mg',
+          }),
+        sandboxGroupId: z
+          .string()
+          .regex(/^sbg-[0-9a-v]{20}$/)
+          .openapi({
+            description: 'The ID of the sandbox group.',
+            example: 'sbg-cph1rs3idesc73a2b2mg',
+          }),
+        name: z
+          .string()
+          .openapi({
+            description:
+              'The name used to select this image when creating a sandbox. Multiple builds can share a name.',
+          }),
+        source: z
+          .object({
+            repository: z
+              .string()
+              .openapi({
+                description: 'The registry and repository path containing the source image.',
+                example: 'docker.io/library',
+              }),
+            image: z
+              .string()
+              .openapi({ description: 'The name of the source image.', example: 'python' }),
+            reference: z
+              .string()
+              .openapi({
+                description: 'The tag or digest identifying the source image version.',
+                example: '3.13',
+              }),
+          })
+          .openapi({
+            description: 'The source container image used for this build.',
+            required: ['repository', 'image', 'reference'],
+          }),
+        sourceDigest: z
+          .string()
+          .openapi({
+            description: 'The digest of the source image converted by this build.',
+            example: 'sha256:c19d4a1...',
+          }),
+        status: z
+          .enum(['pending', 'running', 'succeeded', 'failed'])
+          .openapi({ description: "The sandbox build's current status." }),
+        failureReason: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'A description of why the build failed. Null unless the status is `failed`. May include error text from the image registry. When displaying errors, use `failureCode` to select the main message and show this value as additional detail.\n',
+          }),
+        failureCode: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'A machine-readable reason the build failed. Null unless the status is `failed`. See `sandboxBuildFailureCode` for known codes. Treat unrecognized codes as `internal_error`.\n',
+            example: 'image_pull_failed',
+          }),
+        createdAt: z.iso
+          .datetime({ offset: true })
+          .openapi({
+            description: 'The timestamp when the sandbox build was created, in ISO 8601 format.',
+          }),
+        finishedAt: z.iso
+          .datetime({ offset: true })
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'The timestamp when the build succeeded or failed, in ISO 8601 format. Null while the build is pending or running.',
+          }),
+      })
+      .openapi({
+        description:
+          'A build that converts a container image into an image that sandboxes can use.',
+        required: ['id', 'sandboxGroupId', 'name', 'source', 'sourceDigest', 'status', 'createdAt'],
+      }),
+    cursor: CursorSchema,
+  })
+  .openapi({
+    description: 'A sandbox build with a cursor for fetching the next page of results.',
+    required: ['build', 'cursor'],
+  })
+  .openapi('SandboxBuildWithCursor')
+
+const SandboxGroupWithCursorSchema = z
+  .object({
+    sandboxGroup: z
+      .object({
+        id: z
+          .string()
+          .regex(/^sbg-[0-9a-v]{20}$/)
+          .openapi({
+            description: 'The ID of the sandbox group.',
+            example: 'sbg-cph1rs3idesc73a2b2mg',
+          }),
+        ownerId: z
+          .string()
+          .openapi({
+            description: 'The ID of the workspace this group belongs to.',
+            example: 'tea-cph1rs3idesc73a2b2mg',
+          }),
+        name: z.string().openapi({ description: "The sandbox group's name.", example: 'Default' }),
+        region: z
+          .string()
+          .openapi({
+            description: "The Render region where the group's sandboxes run.",
+            example: 'oregon',
+          }),
+        isDefault: z
+          .boolean()
+          .openapi({
+            description:
+              "Whether this is the workspace's default sandbox group. Create requests that omit `sandboxGroupId` use this group.",
+          }),
+        environmentId: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              "The ID of the environment that contains this group. Null if the group isn't in a project. To move a group, add it to or remove it from an environment with `/environments/{environmentId}/resources`.",
+          }),
+        concurrencyLimit: z
+          .int()
+          .min(1)
+          .openapi({
+            description:
+              "The maximum number of active sandboxes allowed in this group, capped by Render's limit for the workspace.",
+          }),
+        createdAt: z.iso
+          .datetime({ offset: true })
+          .openapi({
+            description: 'The timestamp when the sandbox group was created, in ISO 8601 format.',
+            example: '2026-07-02T18:30:00Z',
+          }),
+        updatedAt: z.iso
+          .datetime({ offset: true })
+          .openapi({
+            description:
+              'The timestamp when the sandbox group was last updated, in ISO 8601 format.',
+            example: '2026-07-02T18:30:00Z',
+          }),
+      })
+      .openapi({
+        description:
+          'A group of sandboxes in a workspace that share a region, concurrency limit, and credentials.',
+        required: [
+          'id',
+          'ownerId',
+          'name',
+          'region',
+          'isDefault',
+          'concurrencyLimit',
+          'createdAt',
+          'updatedAt',
+        ],
+      }),
+    cursor: CursorSchema,
+  })
+  .openapi({
+    description: 'A sandbox group with a cursor for fetching the next page of results.',
+    required: ['sandboxGroup', 'cursor'],
+  })
+  .openapi('SandboxGroupWithCursor')
+
 const BlueprintWithCursorSchema = z
   .object({
     blueprint: z
@@ -2897,6 +3508,9 @@ const BlueprintWithCursorSchema = z
           .string()
           .regex(/^exs-[0-9a-z]{20}$/)
           .openapi({ example: 'exs-cph1rs3idesc73a2b2mg' }),
+        ownerId: z
+          .string()
+          .openapi({ description: 'ID of the workspace that owns this Blueprint.' }),
         name: z.string(),
         status: z
           .enum(['created', 'paused', 'in_sync', 'syncing', 'error'])
@@ -2919,7 +3533,9 @@ const BlueprintWithCursorSchema = z
           }),
         lastSync: z.iso.datetime({ offset: true }).exactOptional(),
       })
-      .openapi({ required: ['id', 'name', 'status', 'autoSync', 'repo', 'branch', 'path'] }),
+      .openapi({
+        required: ['id', 'ownerId', 'name', 'status', 'autoSync', 'repo', 'branch', 'path'],
+      }),
     cursor: CursorSchema,
   })
   .openapi({ description: 'A Blueprint with a cursor', required: ['blueprint', 'cursor'] })
@@ -3609,7 +4225,7 @@ const ServiceEventWithCursorSchema = z
             z
               .object({ fromURI: z.string(), toURI: z.string() })
               .openapi({ title: 'Maintenance Mode URI Updated', required: ['fromURI', 'toURI'] }),
-            z.object({}).openapi({ title: 'Maintenance Ended' }),
+            z.looseObject({}).openapi({ title: 'Maintenance Ended' }),
             z
               .object({
                 trigger: z
@@ -3772,7 +4388,7 @@ const ServiceEventWithCursorSchema = z
                 title: 'Pre Deploy Started',
                 required: ['deployCommandExecutionId', 'deployId'],
               }),
-            z.object({}).openapi({ title: 'Server Available' }),
+            z.looseObject({}).openapi({ title: 'Server Available' }),
             z
               .object({
                 instanceID: z
@@ -3824,12 +4440,12 @@ const ServiceEventWithCursorSchema = z
                   .openapi({ required: ['evicted'] }),
               })
               .openapi({ title: 'Server Failed', required: [] }),
-            z.object({}).openapi({ title: 'Server Hardware Failure' }),
+            z.looseObject({}).openapi({ title: 'Server Hardware Failure' }),
             z
               .object({ triggeredByUser: z.string().nullable() })
               .openapi({ title: 'Server Restarted', required: ['triggeredByUser'] }),
-            z.object({}).openapi({ title: 'Service Resumed' }),
-            z.object({}).openapi({ title: 'Service Suspended' }),
+            z.looseObject({}).openapi({ title: 'Service Resumed' }),
+            z.looseObject({}).openapi({ title: 'Service Suspended' }),
             z
               .object({
                 actor: z.string(),
@@ -3854,7 +4470,7 @@ const ServiceEventWithCursorSchema = z
                   }),
               })
               .openapi({ title: 'Suspender Removed', required: ['actor'] }),
-            z.object({}).openapi({ title: 'Zero Downtime Redeploy Ended' }),
+            z.looseObject({}).openapi({ title: 'Zero Downtime Redeploy Ended' }),
             z
               .object({ trigger: z.string() })
               .openapi({ title: 'Zero Downtime Redeploy Started', required: ['trigger'] }),
@@ -4237,6 +4853,8 @@ const TaskRunWithCursorSchema = z
           'failed',
           'canceled',
           'paused',
+          'suspended',
+          'sleeping',
         ]),
         startedAt: z.iso.datetime({ offset: true }).exactOptional(),
         completedAt: z.iso.datetime({ offset: true }).exactOptional(),
@@ -4266,6 +4884,8 @@ const TaskRunWithCursorSchema = z
                 'failed',
                 'canceled',
                 'paused',
+                'suspended',
+                'sleeping',
               ]),
               enqueuedAt: z.iso.datetime({ offset: true }).exactOptional(),
               startedAt: z.iso.datetime({ offset: true }),
@@ -4290,8 +4910,69 @@ const TaskRunWithCursorSchema = z
   .openapi({ required: ['taskRun', 'cursor'] })
   .openapi('TaskRunWithCursor')
 
+const FlowWithCursorSchema = z
+  .object({
+    flow: z
+      .object({
+        id: z.string().openapi({ example: 'flw-d0hp8fs9c44c73a6f1qg' }),
+        name: z.string(),
+        createdAt: z.iso.datetime({ offset: true }),
+        workflowId: z.string().exactOptional(),
+        workflowVersionId: z.string().exactOptional(),
+      })
+      .openapi({ required: ['id', 'name', 'createdAt'] }),
+    cursor: CursorSchema,
+  })
+  .openapi({ required: ['flow', 'cursor'] })
+  .openapi('FlowWithCursor')
+
+const FlowRunWithCursorSchema = z
+  .object({
+    flowRun: z
+      .object({
+        id: z.string().openapi({ example: 'frn-d0hp8fs9c44c73a6f1qg' }),
+        flowId: z.string().openapi({ example: 'flw-d0hp8fs9c44c73a6f1qg' }),
+        status: z
+          .enum([
+            'pending',
+            'running',
+            'succeeded',
+            'failed',
+            'canceled',
+            'paused',
+            'suspended',
+            'sleeping',
+          ])
+          .openapi({
+            description: 'The status of a flow run.',
+            'x-enum-varnames': [
+              'FlowRunStatusPending',
+              'FlowRunStatusRunning',
+              'FlowRunStatusSucceeded',
+              'FlowRunStatusFailed',
+              'FlowRunStatusCanceled',
+              'FlowRunStatusPaused',
+              'FlowRunStatusSuspended',
+              'FlowRunStatusSleeping',
+            ],
+          }),
+        startedAt: z.iso.datetime({ offset: true }).exactOptional(),
+        completedAt: z.iso.datetime({ offset: true }).exactOptional(),
+      })
+      .openapi({ required: ['id', 'flowId', 'status'] }),
+    cursor: CursorSchema,
+  })
+  .openapi({ required: ['flowRun', 'cursor'] })
+  .openapi('FlowRunWithCursor')
+
 const _400BadRequestResponse = {
   description: 'The request could not be understood by the server.',
+  content: { 'application/json': { schema: ErrorSchema } },
+}
+
+const _400MetricsBadRequestResponse = {
+  description:
+    "The request could not be understood by the server. The error body's\noptional `code` field identifies specific failures that clients can\nhandle machine-readably.\n\nError codes:\n- `too_many_resources`: the project or environment named by the\n  `project` or `environment` filter contains more resources than a\n  single query supports (maximum 50)\n- `multiple_regions`: the queried resources span more than one region\n",
   content: { 'application/json': { schema: ErrorSchema } },
 }
 
@@ -4338,57 +5019,44 @@ const _413RequestEntityTooLargeResponse = {
 
 const _429RateLimitResponse = {
   description:
-    'Rate limit has been surpassed.\n\nRate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and\n`RateLimit-Reset` on successful responses so clients can track their remaining quota.\n',
+    'Rate limit has been surpassed.\n\nRate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.\n',
   content: {
     'application/json': { schema: ErrorSchema, example: { message: 'rate limit exceeded' } },
   },
   headers: z.object({
-    'Retry-After': {
-      description: 'Seconds to wait before retrying the request.',
-      schema: z
-        .int()
-        .exactOptional()
-        .openapi({
-          description: 'Seconds to wait before retrying the request.',
-          param: { required: false },
-          example: 30,
-        }),
-    },
-    'RateLimit-Limit': {
-      description: 'Maximum number of requests allowed in the current window.',
-      schema: z
-        .int()
-        .exactOptional()
-        .openapi({
-          description: 'Maximum number of requests allowed in the current window.',
-          param: { required: false },
-          example: 100,
-        }),
-    },
-    'RateLimit-Remaining': {
-      description:
-        'Number of requests remaining in the current window. Always `0` for this response.',
-      schema: z
-        .int()
-        .exactOptional()
-        .openapi({
-          description:
-            'Number of requests remaining in the current window. Always `0` for this response.',
-          param: { required: false },
-          example: 0,
-        }),
-    },
-    'RateLimit-Reset': {
-      description: 'Seconds until the current rate limit window resets.',
-      schema: z
-        .int()
-        .exactOptional()
-        .openapi({
-          description: 'Seconds until the current rate limit window resets.',
-          param: { required: false },
-          example: 30,
-        }),
-    },
+    'Retry-After': z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Seconds to wait before retrying the request.',
+        param: { required: false },
+        example: 30,
+      }),
+    'RateLimit-Limit': z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Maximum number of requests allowed in the current window.',
+        param: { required: false },
+        example: 100,
+      }),
+    'RateLimit-Remaining': z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.',
+        param: { required: false },
+        example: 0,
+      }),
+    'RateLimit-Reset': z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Seconds until the current rate limit window resets.',
+        param: { required: false },
+        example: 30,
+      }),
   }),
 }
 
@@ -4400,6 +5068,85 @@ const _500InternalServerErrorResponse = {
 const _503ServiceUnavailableResponse = {
   description: 'Server currently unavailable.',
   content: { 'application/json': { schema: ErrorSchema } },
+}
+
+const _400SandboxGroupBadRequestResponse = {
+  description:
+    'The request is invalid.\n\n- `invalid_sandbox_group_id`: The group ID is malformed.\n',
+  content: { 'application/json': { schema: ErrorSchema } },
+}
+
+const _400SandboxBuildBadRequestResponse = {
+  description:
+    'The request is invalid.\n\n- `invalid_sandbox_group_id`: The group ID is malformed.\n- The build ID is malformed.\n',
+  content: { 'application/json': { schema: ErrorSchema } },
+}
+
+const _400SandboxSnapshotBadRequestResponse = {
+  description:
+    'The request is invalid.\n\n- `invalid_sandbox_group_id`: The group ID is malformed.\n- `invalid_snapshot_id`: The snapshot ID is malformed.\n',
+  content: { 'application/json': { schema: ErrorSchema } },
+}
+
+const _404SandboxBuildNotFoundResponse = {
+  description:
+    'The requested resource was not found.\n\n- `build_not_found`: The build does not exist or belongs to another sandbox group.\n',
+  content: { 'application/json': { schema: ErrorSchema } },
+}
+
+const _409SandboxGroupSuspendedResponse = {
+  description:
+    'The current state of the resource conflicts with this request.\n\n- `sandbox_group_suspended`: The group is suspended.\n',
+  content: { 'application/json': { schema: ErrorSchema } },
+}
+
+const _409SandboxConnectConflictResponse = {
+  description:
+    'The current state of the resource conflicts with this request.\n\n- `sandbox_not_running`: The sandbox is terminated or errored.\n- `sandbox_group_suspended`: The sandbox group is suspended.\n',
+  content: { 'application/json': { schema: ErrorSchema } },
+}
+
+const _429SandboxCredentialRateLimitOrConflictResponse = {
+  description:
+    'Rate limit has been surpassed.\n\nRate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.\n\nTemporary conflicts while applying credential changes can also cause this response.\n',
+  content: {
+    'application/json': { schema: ErrorSchema, example: { message: 'rate limit exceeded' } },
+  },
+  headers: z.object({
+    'Retry-After': z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Seconds to wait before retrying the request.',
+        param: { required: false },
+        example: 30,
+      }),
+    'RateLimit-Limit': z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Maximum number of requests allowed in the current window.',
+        param: { required: false },
+        example: 100,
+      }),
+    'RateLimit-Remaining': z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.',
+        param: { required: false },
+        example: 0,
+      }),
+    'RateLimit-Reset': z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: 'Seconds until the current rate limit window resets.',
+        param: { required: false },
+        example: 30,
+      }),
+  }),
 }
 
 const Logs200ResponseResponse = {
@@ -4445,6 +5192,7 @@ const Logs200ResponseResponse = {
                           'task',
                           'taskRun',
                           'sandbox',
+                          'build',
                           'type',
                           'text',
                           'path',
@@ -5471,6 +6219,9 @@ export const getBlueprintsBlueprintIdRoute = createRoute({
                 .string()
                 .regex(/^exs-[0-9a-z]{20}$/)
                 .openapi({ example: 'exs-cph1rs3idesc73a2b2mg' }),
+              ownerId: z
+                .string()
+                .openapi({ description: 'ID of the workspace that owns this Blueprint.' }),
               name: z.string(),
               status: z
                 .enum(['created', 'paused', 'in_sync', 'syncing', 'error'])
@@ -5519,7 +6270,17 @@ export const getBlueprintsBlueprintIdRoute = createRoute({
               ),
             })
             .openapi({
-              required: ['id', 'name', 'status', 'autoSync', 'repo', 'branch', 'path', 'resources'],
+              required: [
+                'id',
+                'ownerId',
+                'name',
+                'status',
+                'autoSync',
+                'repo',
+                'branch',
+                'path',
+                'resources',
+              ],
             }),
         },
       },
@@ -5650,6 +6411,9 @@ export const patchBlueprintsBlueprintIdRoute = createRoute({
                 .string()
                 .regex(/^exs-[0-9a-z]{20}$/)
                 .openapi({ example: 'exs-cph1rs3idesc73a2b2mg' }),
+              ownerId: z
+                .string()
+                .openapi({ description: 'ID of the workspace that owns this Blueprint.' }),
               name: z.string(),
               status: z
                 .enum(['created', 'paused', 'in_sync', 'syncing', 'error'])
@@ -5672,7 +6436,9 @@ export const patchBlueprintsBlueprintIdRoute = createRoute({
                 }),
               lastSync: z.iso.datetime({ offset: true }).exactOptional(),
             })
-            .openapi({ required: ['id', 'name', 'status', 'autoSync', 'repo', 'branch', 'path'] }),
+            .openapi({
+              required: ['id', 'ownerId', 'name', 'status', 'autoSync', 'repo', 'branch', 'path'],
+            }),
         },
       },
     },
@@ -10105,7 +10871,7 @@ export const getEventsEventIdRoute = createRoute({
                         title: 'Maintenance Mode URI Updated',
                         required: ['fromURI', 'toURI'],
                       }),
-                    z.object({}).openapi({ title: 'Maintenance Ended' }),
+                    z.looseObject({}).openapi({ title: 'Maintenance Ended' }),
                     z
                       .object({
                         trigger: z
@@ -10281,7 +11047,7 @@ export const getEventsEventIdRoute = createRoute({
                         title: 'Pre Deploy Started',
                         required: ['deployCommandExecutionId', 'deployId'],
                       }),
-                    z.object({}).openapi({ title: 'Server Available' }),
+                    z.looseObject({}).openapi({ title: 'Server Available' }),
                     z
                       .object({
                         instanceID: z
@@ -10335,12 +11101,12 @@ export const getEventsEventIdRoute = createRoute({
                           .openapi({ required: ['evicted'] }),
                       })
                       .openapi({ title: 'Server Failed', required: [] }),
-                    z.object({}).openapi({ title: 'Server Hardware Failure' }),
+                    z.looseObject({}).openapi({ title: 'Server Hardware Failure' }),
                     z
                       .object({ triggeredByUser: z.string().nullable() })
                       .openapi({ title: 'Server Restarted', required: ['triggeredByUser'] }),
-                    z.object({}).openapi({ title: 'Service Resumed' }),
-                    z.object({}).openapi({ title: 'Service Suspended' }),
+                    z.looseObject({}).openapi({ title: 'Service Resumed' }),
+                    z.looseObject({}).openapi({ title: 'Service Suspended' }),
                     z
                       .object({
                         actor: z.string(),
@@ -10365,7 +11131,7 @@ export const getEventsEventIdRoute = createRoute({
                           }),
                       })
                       .openapi({ title: 'Suspender Removed', required: ['actor'] }),
-                    z.object({}).openapi({ title: 'Zero Downtime Redeploy Ended' }),
+                    z.looseObject({}).openapi({ title: 'Zero Downtime Redeploy Ended' }),
                     z
                       .object({ trigger: z.string() })
                       .openapi({ title: 'Zero Downtime Redeploy Started', required: ['trigger'] }),
@@ -10478,10 +11244,10 @@ export const getEventsEventIdRoute = createRoute({
                   .openapi({ title: 'Service Event Details' }),
                 z
                   .xor([
-                    z.object({}).openapi({ title: 'Postgres Available' }),
-                    z.object({}).openapi({ title: 'Postgres Backup Completed' }),
-                    z.object({}).openapi({ title: 'Postgres Backup Failed' }),
-                    z.object({}).openapi({ title: 'Postgres Backup Started' }),
+                    z.looseObject({}).openapi({ title: 'Postgres Available' }),
+                    z.looseObject({}).openapi({ title: 'Postgres Backup Completed' }),
+                    z.looseObject({}).openapi({ title: 'Postgres Backup Failed' }),
+                    z.looseObject({}).openapi({ title: 'Postgres Backup Started' }),
                     z
                       .object({ leaderId: z.string().exactOptional() })
                       .openapi({ title: 'Postgres Cluster Leader Changed', required: [] }),
@@ -10566,7 +11332,7 @@ export const getEventsEventIdRoute = createRoute({
                           }),
                       })
                       .openapi({ title: 'Postgres Restarted', required: [] }),
-                    z.object({}).openapi({ title: 'Postgres Unavailable' }),
+                    z.looseObject({}).openapi({ title: 'Postgres Unavailable' }),
                     z
                       .object({ fromVersion: z.string(), toVersion: z.string() })
                       .openapi({
@@ -10595,22 +11361,22 @@ export const getEventsEventIdRoute = createRoute({
                         title: 'Postgres Upgrade Succeeded',
                         required: ['fromVersion', 'toVersion'],
                       }),
-                    z.object({}).openapi({ title: 'Postgres PITR Checkpoint Started' }),
-                    z.object({}).openapi({ title: 'Postgres PITR Checkpoint Failed' }),
-                    z.object({}).openapi({ title: 'Postgres PITR Checkpoint Completed' }),
-                    z.object({}).openapi({ title: 'Postgres Read Replica Stale' }),
+                    z.looseObject({}).openapi({ title: 'Postgres PITR Checkpoint Started' }),
+                    z.looseObject({}).openapi({ title: 'Postgres PITR Checkpoint Failed' }),
+                    z.looseObject({}).openapi({ title: 'Postgres PITR Checkpoint Completed' }),
+                    z.looseObject({}).openapi({ title: 'Postgres Read Replica Stale' }),
                   ])
                   .openapi({ title: 'Postgres Event Details' }),
                 z
                   .xor([
-                    z.object({}).openapi({ title: 'Key Value Available' }),
+                    z.looseObject({}).openapi({ title: 'Key Value Available' }),
                     z
                       .object({ reason: z.string(), message: z.string() })
                       .openapi({
                         title: 'Key Value Config Restart',
                         required: ['reason', 'message'],
                       }),
-                    z.object({}).openapi({ title: 'Key Value Unhealthy' }),
+                    z.looseObject({}).openapi({ title: 'Key Value Unhealthy' }),
                   ])
                   .openapi({ title: 'Key Value Event Details' }),
               ]),
@@ -10673,14 +11439,54 @@ export const getLogsRoute = createRoute({
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
           z.array(z.string()),
         )
+        .exactOptional()
         .openapi({
           param: {
             name: 'resource',
             in: 'query',
-            required: true,
+            required: false,
             description:
-              'Filter logs by their resource. A resource is the id of a server, cronjob, job, postgres, redis, workflow, or sandbox group.',
+              'Filter logs by their resource. A resource is the id of a server, cronjob, job, postgres, redis, workflow, or sandbox group. Required unless `project` is provided.',
             schema: { type: 'array', items: { type: 'string' } },
+          },
+        }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to return logs for. The query covers the project's services, cron jobs, Postgres databases, and Key Value instances. Combine with `resource` to narrow the query to specific resources in the project.",
+            schema: { type: 'string' },
+          },
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              'The ID of an environment in the project to return logs for. Requires `project`.',
+            schema: { type: 'string' },
+          },
+        }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to return logs for, such as `oregon`. Requires `project`. Required when the project's or environment's resources are in more than one region.",
+            schema: { type: 'string' },
           },
         }),
       instance: z
@@ -10789,6 +11595,22 @@ export const getLogsRoute = createRoute({
             in: 'query',
             required: false,
             description: 'Filter logs by sandbox ID.',
+            schema: { type: 'array', items: { type: 'string' } },
+          },
+        }),
+      build: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'build',
+            in: 'query',
+            required: false,
+            description:
+              'Filter logs by build ID, such as a service build or a sandbox image build.',
             schema: { type: 'array', items: { type: 'string' } },
           },
         }),
@@ -10861,7 +11683,11 @@ export const getLogsRoute = createRoute({
   },
   responses: {
     200: Logs200ResponseResponse,
-    400: _400BadRequestResponse,
+    400: {
+      description:
+        "Bad request. The error body's optional `code` field identifies\nspecific failures that clients can handle machine-readably.\n\nError codes:\n- `multiple_regions`: the project's or environment's resources\n  are in more than one region; provide `region` to query one\n- `too_many_resources`: the project or environment has more\n  resources than a single query supports; provide `resource`\n  to narrow the query\n",
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
     401: _401UnauthorizedResponse,
     403: _403ForbiddenResponse,
     404: _404NotFoundResponse,
@@ -10915,14 +11741,54 @@ export const getLogsSubscribeRoute = createRoute({
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
           z.array(z.string()),
         )
+        .exactOptional()
         .openapi({
           param: {
             name: 'resource',
             in: 'query',
-            required: true,
+            required: false,
             description:
-              'Filter logs by their resource. A resource is the id of a server, cronjob, job, postgres, redis, workflow, or sandbox group.',
+              'Filter logs by their resource. A resource is the id of a server, cronjob, job, postgres, redis, workflow, or sandbox group. Required unless `project` is provided.',
             schema: { type: 'array', items: { type: 'string' } },
+          },
+        }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to return logs for. The query covers the project's services, cron jobs, Postgres databases, and Key Value instances. Combine with `resource` to narrow the query to specific resources in the project.",
+            schema: { type: 'string' },
+          },
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              'The ID of an environment in the project to return logs for. Requires `project`.',
+            schema: { type: 'string' },
+          },
+        }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to return logs for, such as `oregon`. Requires `project`. Required when the project's or environment's resources are in more than one region.",
+            schema: { type: 'string' },
           },
         }),
       instance: z
@@ -11031,6 +11897,22 @@ export const getLogsSubscribeRoute = createRoute({
             in: 'query',
             required: false,
             description: 'Filter logs by sandbox ID.',
+            schema: { type: 'array', items: { type: 'string' } },
+          },
+        }),
+      build: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'build',
+            in: 'query',
+            required: false,
+            description:
+              'Filter logs by build ID, such as a service build or a sandbox image build.',
             schema: { type: 'array', items: { type: 'string' } },
           },
         }),
@@ -11130,6 +12012,7 @@ export const getLogsSubscribeRoute = createRoute({
                         'task',
                         'taskRun',
                         'sandbox',
+                        'build',
                         'type',
                         'text',
                         'path',
@@ -11148,7 +12031,11 @@ export const getLogsSubscribeRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: {
+      description:
+        "Bad request. The error body's optional `code` field identifies\nspecific failures that clients can handle machine-readably.\n\nError codes:\n- `multiple_regions`: the project's or environment's resources\n  are in more than one region; provide `region` to query one\n- `too_many_resources`: the project or environment has more\n  resources than a single query supports; provide `resource`\n  to narrow the query\n",
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
     401: _401UnauthorizedResponse,
     403: _403ForbiddenResponse,
     404: _404NotFoundResponse,
@@ -11215,14 +12102,54 @@ export const getLogsValuesRoute = createRoute({
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
           z.array(z.string()),
         )
+        .exactOptional()
         .openapi({
           param: {
             name: 'resource',
             in: 'query',
-            required: true,
+            required: false,
             description:
-              'Filter logs by their resource. A resource is the id of a server, cronjob, job, postgres, redis, workflow, or sandbox group.',
+              'Filter logs by their resource. A resource is the id of a server, cronjob, job, postgres, redis, workflow, or sandbox group. Required unless `project` is provided.',
             schema: { type: 'array', items: { type: 'string' } },
+          },
+        }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to return logs for. The query covers the project's services, cron jobs, Postgres databases, and Key Value instances. Combine with `resource` to narrow the query to specific resources in the project.",
+            schema: { type: 'string' },
+          },
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              'The ID of an environment in the project to return logs for. Requires `project`.',
+            schema: { type: 'string' },
+          },
+        }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to return logs for, such as `oregon`. Requires `project`. Required when the project's or environment's resources are in more than one region.",
+            schema: { type: 'string' },
           },
         }),
       instance: z
@@ -11334,6 +12261,22 @@ export const getLogsValuesRoute = createRoute({
             schema: { type: 'array', items: { type: 'string' } },
           },
         }),
+      build: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'build',
+            in: 'query',
+            required: false,
+            description:
+              'Filter logs by build ID, such as a service build or a sandbox image build.',
+            schema: { type: 'array', items: { type: 'string' } },
+          },
+        }),
       level: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
@@ -11403,7 +12346,11 @@ export const getLogsValuesRoute = createRoute({
   },
   responses: {
     200: LogsValues200ResponseResponse,
-    400: _400BadRequestResponse,
+    400: {
+      description:
+        "Bad request. The error body's optional `code` field identifies\nspecific failures that clients can handle machine-readably.\n\nError codes:\n- `multiple_regions`: the project's or environment's resources\n  are in more than one region; provide `region` to query one\n- `too_many_resources`: the project or environment has more\n  resources than a single query supports; provide `resource`\n  to narrow the query\n",
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
     401: _401UnauthorizedResponse,
     403: _403ForbiddenResponse,
     404: _404NotFoundResponse,
@@ -12096,6 +13043,34 @@ export const getMetricsCpuRoute = createRoute({
           },
           example: 'srv-xxxxx',
         }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
       instance: z
         .string()
         .exactOptional()
@@ -12121,6 +13096,20 @@ export const getMetricsCpuRoute = createRoute({
             description: 'The aggregation method to apply to multiple time series',
             schema: { type: 'string', enum: ['AVG', 'MAX', 'MIN'] },
           },
+        }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
         }),
     }),
   },
@@ -12157,7 +13146,7 @@ export const getMetricsCpuRoute = createRoute({
                         })
                         .openapi({
                           description: 'A time series datapoint value',
-                          required: ['timestamp', 'value', 'unit'],
+                          required: ['timestamp', 'value'],
                         }),
                     )
                     .openapi({ description: 'The values of the time series' }),
@@ -12172,7 +13161,8 @@ export const getMetricsCpuRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: _400MetricsBadRequestResponse,
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -12238,6 +13228,34 @@ export const getMetricsCpuLimitRoute = createRoute({
           },
           example: 'srv-xxxxx',
         }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
       instance: z
         .string()
         .exactOptional()
@@ -12251,6 +13269,20 @@ export const getMetricsCpuLimitRoute = createRoute({
             schema: { type: 'string', example: 'srv-xxxxx-yyyy' },
           },
           example: 'srv-xxxxx-yyyy',
+        }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
         }),
     }),
   },
@@ -12287,7 +13319,7 @@ export const getMetricsCpuLimitRoute = createRoute({
                         })
                         .openapi({
                           description: 'A time series datapoint value',
-                          required: ['timestamp', 'value', 'unit'],
+                          required: ['timestamp', 'value'],
                         }),
                     )
                     .openapi({ description: 'The values of the time series' }),
@@ -12302,7 +13334,8 @@ export const getMetricsCpuLimitRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: _400MetricsBadRequestResponse,
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -12368,6 +13401,34 @@ export const getMetricsCpuTargetRoute = createRoute({
           },
           example: 'srv-xxxxx',
         }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
       instance: z
         .string()
         .exactOptional()
@@ -12381,6 +13442,20 @@ export const getMetricsCpuTargetRoute = createRoute({
             schema: { type: 'string', example: 'srv-xxxxx-yyyy' },
           },
           example: 'srv-xxxxx-yyyy',
+        }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
         }),
     }),
   },
@@ -12417,7 +13492,7 @@ export const getMetricsCpuTargetRoute = createRoute({
                         })
                         .openapi({
                           description: 'A time series datapoint value',
-                          required: ['timestamp', 'value', 'unit'],
+                          required: ['timestamp', 'value'],
                         }),
                     )
                     .openapi({ description: 'The values of the time series' }),
@@ -12432,7 +13507,8 @@ export const getMetricsCpuTargetRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: _400MetricsBadRequestResponse,
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -12498,6 +13574,34 @@ export const getMetricsMemoryRoute = createRoute({
           },
           example: 'srv-xxxxx',
         }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
       instance: z
         .string()
         .exactOptional()
@@ -12511,6 +13615,20 @@ export const getMetricsMemoryRoute = createRoute({
             schema: { type: 'string', example: 'srv-xxxxx-yyyy' },
           },
           example: 'srv-xxxxx-yyyy',
+        }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
         }),
     }),
   },
@@ -12547,7 +13665,7 @@ export const getMetricsMemoryRoute = createRoute({
                         })
                         .openapi({
                           description: 'A time series datapoint value',
-                          required: ['timestamp', 'value', 'unit'],
+                          required: ['timestamp', 'value'],
                         }),
                     )
                     .openapi({ description: 'The values of the time series' }),
@@ -12562,7 +13680,8 @@ export const getMetricsMemoryRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: _400MetricsBadRequestResponse,
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -12628,6 +13747,34 @@ export const getMetricsMemoryLimitRoute = createRoute({
           },
           example: 'srv-xxxxx',
         }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
       instance: z
         .string()
         .exactOptional()
@@ -12641,6 +13788,20 @@ export const getMetricsMemoryLimitRoute = createRoute({
             schema: { type: 'string', example: 'srv-xxxxx-yyyy' },
           },
           example: 'srv-xxxxx-yyyy',
+        }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
         }),
     }),
   },
@@ -12677,7 +13838,7 @@ export const getMetricsMemoryLimitRoute = createRoute({
                         })
                         .openapi({
                           description: 'A time series datapoint value',
-                          required: ['timestamp', 'value', 'unit'],
+                          required: ['timestamp', 'value'],
                         }),
                     )
                     .openapi({ description: 'The values of the time series' }),
@@ -12692,7 +13853,8 @@ export const getMetricsMemoryLimitRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: _400MetricsBadRequestResponse,
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -12758,6 +13920,34 @@ export const getMetricsMemoryTargetRoute = createRoute({
           },
           example: 'srv-xxxxx',
         }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
       instance: z
         .string()
         .exactOptional()
@@ -12771,6 +13961,20 @@ export const getMetricsMemoryTargetRoute = createRoute({
             schema: { type: 'string', example: 'srv-xxxxx-yyyy' },
           },
           example: 'srv-xxxxx-yyyy',
+        }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
         }),
     }),
   },
@@ -12807,7 +14011,7 @@ export const getMetricsMemoryTargetRoute = createRoute({
                         })
                         .openapi({
                           description: 'A time series datapoint value',
-                          required: ['timestamp', 'value', 'unit'],
+                          required: ['timestamp', 'value'],
                         }),
                     )
                     .openapi({ description: 'The values of the time series' }),
@@ -12822,7 +14026,8 @@ export const getMetricsMemoryTargetRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: _400MetricsBadRequestResponse,
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -12888,6 +14093,34 @@ export const getMetricsHttpRequestsRoute = createRoute({
           },
           example: 'srv-xxxxx',
         }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
       host: z
         .string()
         .exactOptional()
@@ -12928,6 +14161,20 @@ export const getMetricsHttpRequestsRoute = createRoute({
             schema: { type: 'string', enum: ['statusCode', 'host'] },
           },
         }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
+        }),
     }),
   },
   responses: {
@@ -12963,7 +14210,7 @@ export const getMetricsHttpRequestsRoute = createRoute({
                         })
                         .openapi({
                           description: 'A time series datapoint value',
-                          required: ['timestamp', 'value', 'unit'],
+                          required: ['timestamp', 'value'],
                         }),
                     )
                     .openapi({ description: 'The values of the time series' }),
@@ -12978,7 +14225,8 @@ export const getMetricsHttpRequestsRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: _400MetricsBadRequestResponse,
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -13044,6 +14292,34 @@ export const getMetricsHttpLatencyRoute = createRoute({
           },
           example: 'srv-xxxxx',
         }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
       host: z
         .string()
         .exactOptional()
@@ -13094,6 +14370,20 @@ export const getMetricsHttpLatencyRoute = createRoute({
           },
           example: 0.99,
         }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
+        }),
     }),
   },
   responses: {
@@ -13129,7 +14419,7 @@ export const getMetricsHttpLatencyRoute = createRoute({
                         })
                         .openapi({
                           description: 'A time series datapoint value',
-                          required: ['timestamp', 'value', 'unit'],
+                          required: ['timestamp', 'value'],
                         }),
                     )
                     .openapi({ description: 'The values of the time series' }),
@@ -13144,7 +14434,8 @@ export const getMetricsHttpLatencyRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: _400MetricsBadRequestResponse,
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -13188,6 +14479,48 @@ export const getMetricsBandwidthRoute = createRoute({
           },
           example: 'srv-xxxxx',
         }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
+        }),
     }),
   },
   responses: {
@@ -13223,7 +14556,7 @@ export const getMetricsBandwidthRoute = createRoute({
                         })
                         .openapi({
                           description: 'A time series datapoint value',
-                          required: ['timestamp', 'value', 'unit'],
+                          required: ['timestamp', 'value'],
                         }),
                     )
                     .openapi({ description: 'The values of the time series' }),
@@ -13238,7 +14571,8 @@ export const getMetricsBandwidthRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: _400MetricsBadRequestResponse,
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -13282,6 +14616,48 @@ export const getMetricsBandwidthSourcesRoute = createRoute({
             required: false,
           },
           example: 'srv-xxxxx',
+        }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
         }),
     }),
   },
@@ -13352,7 +14728,7 @@ export const getMetricsBandwidthSourcesRoute = createRoute({
     },
     400: {
       description:
-        "Bad request, such as a time range that predates traffic source\ndata availability. The error body's optional `code` field\nidentifies specific failures that clients can handle\nmachine-readably.\n\nError codes:\n- `too_many_resources`: the query requests more resources than\n  the breakdown supports (maximum 30)\n",
+        "Bad request, such as a time range that predates traffic source\ndata availability. The error body's optional `code` field\nidentifies specific failures that clients can handle\nmachine-readably.\n\nError codes:\n- `too_many_resources`: the query requests more resources than\n  the breakdown supports (maximum 30), whether they are named\n  with `resource` or come from a `project` or `environment`\n  filter\n- `multiple_regions`: the queried resources span more than one\n  region\n",
       content: {
         'application/json': {
           schema: ErrorSchema,
@@ -13360,6 +14736,7 @@ export const getMetricsBandwidthSourcesRoute = createRoute({
         },
       },
     },
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -13425,6 +14802,48 @@ export const getMetricsDiskUsageRoute = createRoute({
           },
           example: 'srv-xxxxx',
         }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
+        }),
     }),
   },
   responses: {
@@ -13460,7 +14879,7 @@ export const getMetricsDiskUsageRoute = createRoute({
                         })
                         .openapi({
                           description: 'A time series datapoint value',
-                          required: ['timestamp', 'value', 'unit'],
+                          required: ['timestamp', 'value'],
                         }),
                     )
                     .openapi({ description: 'The values of the time series' }),
@@ -13475,7 +14894,8 @@ export const getMetricsDiskUsageRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: _400MetricsBadRequestResponse,
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -13541,6 +14961,48 @@ export const getMetricsDiskCapacityRoute = createRoute({
           },
           example: 'srv-xxxxx',
         }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
+        }),
     }),
   },
   responses: {
@@ -13576,7 +15038,7 @@ export const getMetricsDiskCapacityRoute = createRoute({
                         })
                         .openapi({
                           description: 'A time series datapoint value',
-                          required: ['timestamp', 'value', 'unit'],
+                          required: ['timestamp', 'value'],
                         }),
                     )
                     .openapi({ description: 'The values of the time series' }),
@@ -13591,7 +15053,8 @@ export const getMetricsDiskCapacityRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: _400MetricsBadRequestResponse,
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -13657,6 +15120,48 @@ export const getMetricsInstanceCountRoute = createRoute({
           },
           example: 'srv-xxxxx',
         }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
+        }),
     }),
   },
   responses: {
@@ -13692,7 +15197,7 @@ export const getMetricsInstanceCountRoute = createRoute({
                         })
                         .openapi({
                           description: 'A time series datapoint value',
-                          required: ['timestamp', 'value', 'unit'],
+                          required: ['timestamp', 'value'],
                         }),
                     )
                     .openapi({ description: 'The values of the time series' }),
@@ -13707,7 +15212,8 @@ export const getMetricsInstanceCountRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: _400MetricsBadRequestResponse,
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -13760,6 +15266,48 @@ export const getMetricsActiveConnectionsRoute = createRoute({
           },
           example: 'dpg-xxxxx,red-xxxxx',
         }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
+        }),
     }),
   },
   responses: {
@@ -13795,7 +15343,7 @@ export const getMetricsActiveConnectionsRoute = createRoute({
                         })
                         .openapi({
                           description: 'A time series datapoint value',
-                          required: ['timestamp', 'value', 'unit'],
+                          required: ['timestamp', 'value'],
                         }),
                     )
                     .openapi({ description: 'The values of the time series' }),
@@ -13810,7 +15358,8 @@ export const getMetricsActiveConnectionsRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: _400MetricsBadRequestResponse,
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -13862,6 +15411,48 @@ export const getMetricsReplicationLagRoute = createRoute({
           },
           example: 'dpg-xxxxx',
         }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
+        }),
     }),
   },
   responses: {
@@ -13897,7 +15488,7 @@ export const getMetricsReplicationLagRoute = createRoute({
                         })
                         .openapi({
                           description: 'A time series datapoint value',
-                          required: ['timestamp', 'value', 'unit'],
+                          required: ['timestamp', 'value'],
                         }),
                     )
                     .openapi({ description: 'The values of the time series' }),
@@ -13912,7 +15503,8 @@ export const getMetricsReplicationLagRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: _400MetricsBadRequestResponse,
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -13978,6 +15570,48 @@ export const getMetricsFiltersApplicationRoute = createRoute({
           },
           example: 'srv-xxxxx',
         }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
+        }),
     }),
   },
   responses: {
@@ -14003,7 +15637,8 @@ export const getMetricsFiltersApplicationRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: _400MetricsBadRequestResponse,
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -14069,6 +15704,34 @@ export const getMetricsFiltersHttpRoute = createRoute({
           },
           example: 'srv-xxxxx',
         }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
       host: z
         .string()
         .exactOptional()
@@ -14097,6 +15760,20 @@ export const getMetricsFiltersHttpRoute = createRoute({
           },
           example: '200',
         }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
+        }),
     }),
   },
   responses: {
@@ -14122,7 +15799,8 @@ export const getMetricsFiltersHttpRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: _400MetricsBadRequestResponse,
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -14189,6 +15867,34 @@ export const getMetricsFiltersPathRoute = createRoute({
           },
           example: 'srv-xxxxx',
         }),
+      project: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'project',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of a project to query. The query covers the resources in the project that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the project. Only one project can be provided. A project that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'prj-xxxxx' },
+          },
+          example: 'prj-xxxxx',
+        }),
+      environment: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'environment',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of an environment to query. The query covers the resources in the environment that you can view, so `resource` is optional when this is provided. If `resource` is also provided, the query covers only those resources, and each must belong to the environment. Only one environment can be provided. If `project` is also provided, the environment must belong to that project. An environment that doesn't exist or that you can't access returns a 404.",
+            schema: { type: 'string', example: 'evm-xxxxx' },
+          },
+          example: 'evm-xxxxx',
+        }),
       host: z
         .string()
         .exactOptional()
@@ -14231,6 +15937,20 @@ export const getMetricsFiltersPathRoute = createRoute({
           },
           example: '/graphql',
         }),
+      region: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description:
+              "The region to query when querying by `project` or `environment`. Required when the project's or environment's resources are in more than one region",
+            schema: { type: 'string', example: 'oregon' },
+          },
+          example: 'oregon',
+        }),
     }),
   },
   responses: {
@@ -14247,7 +15967,8 @@ export const getMetricsFiltersPathRoute = createRoute({
         },
       },
     },
-    400: _400BadRequestResponse,
+    400: _400MetricsBadRequestResponse,
+    404: _404NotFoundResponse,
     500: _500InternalServerErrorResponse,
   },
 })
@@ -14334,7 +16055,7 @@ export const getMetricsTaskRunsQueuedRoute = createRoute({
                         })
                         .openapi({
                           description: 'A time series datapoint value',
-                          required: ['timestamp', 'value', 'unit'],
+                          required: ['timestamp', 'value'],
                         }),
                     )
                     .openapi({ description: 'The values of the time series' }),
@@ -14462,7 +16183,7 @@ export const getMetricsTaskRunsCompletedRoute = createRoute({
                         })
                         .openapi({
                           description: 'A time series datapoint value',
-                          required: ['timestamp', 'value', 'unit'],
+                          required: ['timestamp', 'value'],
                         }),
                     )
                     .openapi({ description: 'The values of the time series' }),
@@ -16146,7 +17867,7 @@ export const postEnvironmentsEnvironmentIdResourcesRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { 'application/json': { schema: EnvironmentSchema } } },
+    201: { description: 'Created', content: { 'application/json': { schema: EnvironmentSchema } } },
     400: _400BadRequestResponse,
     401: _401UnauthorizedResponse,
     404: _404NotFoundResponse,
@@ -17647,6 +19368,24 @@ export const postBuildSourcesBuildSourceIdBuildsRoute = createRoute({
           param: { name: 'buildSourceId', in: 'path', required: true, schema: { type: 'string' } },
         }),
     }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              clearCache: z
+                .enum(['clear', 'do_not_clear'])
+                .default('do_not_clear')
+                .exactOptional()
+                .openapi({
+                  description:
+                    "If `clear`, Render clears the build source's build cache before building. This can be useful if you're experiencing issues with your build.",
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
   },
   responses: {
     201: {
@@ -19145,6 +20884,13 @@ export const postWorkflowsRoute = createRoute({
                   description:
                     'Controls autodeploy behavior. "commit" deploys when a commit is pushed to the branch. "checksPass" waits for CI checks to pass before deploying. "off" disables autodeploy.',
                 }),
+              defaultVersionId: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'ID of the workflow version that new task runs use by default. Omitted until a version has been registered.',
+                }),
             })
             .openapi({
               required: [
@@ -19251,6 +20997,13 @@ export const getWorkflowsWorkflowIdRoute = createRoute({
                 .openapi({
                   description:
                     'Controls autodeploy behavior. "commit" deploys when a commit is pushed to the branch. "checksPass" waits for CI checks to pass before deploying. "off" disables autodeploy.',
+                }),
+              defaultVersionId: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'ID of the workflow version that new task runs use by default. Omitted until a version has been registered.',
                 }),
             })
             .openapi({
@@ -19458,6 +21211,13 @@ export const patchWorkflowsWorkflowIdRoute = createRoute({
                   description:
                     'Controls autodeploy behavior. "commit" deploys when a commit is pushed to the branch. "checksPass" waits for CI checks to pass before deploying. "off" disables autodeploy.',
                 }),
+              defaultVersionId: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'ID of the workflow version that new task runs use by default. Omitted until a version has been registered.',
+                }),
             })
             .openapi({
               required: [
@@ -19585,9 +21345,7 @@ export const getWorkflowversionsWorkflowVersionIdRoute = createRoute({
                 'ready',
               ]),
             })
-            .openapi({
-              required: ['id', 'workflowId', 'name', 'image', 'createdAt', 'updatedAt', 'status'],
-            }),
+            .openapi({ required: ['id', 'workflowId', 'name', 'createdAt', 'status'] }),
         },
       },
     },
@@ -19888,6 +21646,8 @@ export const postTaskRunsRoute = createRoute({
                 'failed',
                 'canceled',
                 'paused',
+                'suspended',
+                'sleeping',
               ]),
               startedAt: z.iso.datetime({ offset: true }).exactOptional(),
               completedAt: z.iso.datetime({ offset: true }).exactOptional(),
@@ -19917,6 +21677,8 @@ export const postTaskRunsRoute = createRoute({
                       'failed',
                       'canceled',
                       'paused',
+                      'suspended',
+                      'sleeping',
                     ]),
                     enqueuedAt: z.iso.datetime({ offset: true }).exactOptional(),
                     startedAt: z.iso.datetime({ offset: true }),
@@ -20011,39 +21773,30 @@ export const getTaskRunsEventsRoute = createRoute({
         },
       },
       headers: z.object({
-        'Content-Type': {
-          description: 'Always `text/event-stream; charset=utf-8`',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Always `text/event-stream; charset=utf-8`',
-              param: { required: false },
-              example: 'text/event-stream; charset=utf-8',
-            }),
-        },
-        'Cache-Control': {
-          description: 'SSE responses should be non-cacheable.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'SSE responses should be non-cacheable.',
-              param: { required: false },
-              example: 'no-cache, no-transform',
-            }),
-        },
-        Connection: {
-          description: 'Keep-alive for streaming.',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Keep-alive for streaming.',
-              param: { required: false },
-              example: 'keep-alive',
-            }),
-        },
+        'Content-Type': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Always `text/event-stream; charset=utf-8`',
+            param: { required: false },
+            example: 'text/event-stream; charset=utf-8',
+          }),
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'SSE responses should be non-cacheable.',
+            param: { required: false },
+            example: 'no-cache, no-transform',
+          }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Keep-alive for streaming.',
+            param: { required: false },
+            example: 'keep-alive',
+          }),
       }),
     },
     400: _400BadRequestResponse,
@@ -20095,6 +21848,8 @@ export const getTaskRunsTaskRunIdRoute = createRoute({
                 'failed',
                 'canceled',
                 'paused',
+                'suspended',
+                'sleeping',
               ]),
               results: z.array(z.any()),
               error: z
@@ -20145,6 +21900,8 @@ export const getTaskRunsTaskRunIdRoute = createRoute({
                       'failed',
                       'canceled',
                       'paused',
+                      'suspended',
+                      'sleeping',
                     ]),
                     enqueuedAt: z.iso.datetime({ offset: true }).exactOptional(),
                     startedAt: z.iso.datetime({ offset: true }),
@@ -20212,6 +21969,5542 @@ export const deleteTaskRunsTaskRunIdRoute = createRoute({
     401: _401UnauthorizedResponse,
     403: _403ForbiddenResponse,
     404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getFlowsRoute = createRoute({
+  method: 'get',
+  path: '/flows',
+  tags: ['Workflow Flows'],
+  summary: 'List flows',
+  description:
+    'List workflow flows that match the provided filters. If no filters are provided, all flow definitions accessible by the authenticated user are returned.',
+  operationId: 'listFlows',
+  request: {
+    query: z.object({
+      ownerId: OwnerIdParamParamsSchema,
+      flowSlug: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'flowSlug',
+            in: 'query',
+            description:
+              'An array of flow slugs in the format workflow-slug/flow-name. An optional version can be appended (workflow-slug/flow-name:version). If no version is provided, the latest version is used.',
+            example: ['my-workflow-slug/my-flow', 'my-workflow-slug/my-flow:SHA123'],
+            schema: { type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+      workflowVersionId: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'workflowVersionId',
+            in: 'query',
+            description: 'An array of workflow version IDs',
+            schema: { type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+      workflowId: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'workflowId',
+            in: 'query',
+            description: 'An array of workflow IDs',
+            schema: { type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+      cursor: CursorParamParamsSchema,
+      limit: LimitParamParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'List of flows',
+      content: { 'application/json': { schema: z.array(FlowWithCursorSchema) } },
+    },
+    400: _400BadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getFlowsFlowIdRoute = createRoute({
+  method: 'get',
+  path: '/flows/{flowId}',
+  tags: ['Workflow Flows'],
+  summary: 'Retrieve flow',
+  description: 'Retrieve the workflow flow with the provided ID.',
+  operationId: 'getFlow',
+  request: {
+    params: z.object({
+      flowId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'flowId',
+            in: 'path',
+            description: 'The ID of the flow',
+            example: 'flw-d0hp8fs9c44c73a6f1qg',
+            schema: { type: 'string' },
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Flow details',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z.string().openapi({ example: 'flw-d0hp8fs9c44c73a6f1qg' }),
+              name: z.string(),
+              createdAt: z.iso.datetime({ offset: true }),
+              workflowId: z.string().exactOptional(),
+              workflowVersionId: z.string().exactOptional(),
+            })
+            .openapi({ required: ['id', 'name', 'createdAt'] }),
+        },
+      },
+    },
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getFlowRunsRoute = createRoute({
+  method: 'get',
+  path: '/flow-runs',
+  tags: ['Workflow Flows'],
+  summary: 'List flow runs',
+  description:
+    'List flow runs that match the provided filters. If no filters are provided, all flow runs accessible by the authenticated user are returned.',
+  operationId: 'listFlowRuns',
+  request: {
+    query: z.object({
+      cursor: CursorParamParamsSchema,
+      limit: LimitParamParamsSchema,
+      flowSlug: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'flowSlug',
+            in: 'query',
+            description:
+              'An array of flow slugs in the format workflow-slug/flow-name. An optional version can be appended (workflow-slug/flow-name:version). If no version is provided, the latest version is used.',
+            example: ['my-workflow-slug/my-flow', 'my-workflow-slug/my-flow:SHA123'],
+            schema: { type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+      flowId: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'flowId',
+            in: 'query',
+            description: 'An array of flow IDs',
+            schema: { type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+      status: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(
+            z
+              .enum([
+                'pending',
+                'running',
+                'succeeded',
+                'failed',
+                'canceled',
+                'paused',
+                'suspended',
+                'sleeping',
+              ])
+              .openapi({
+                description: 'The status of a flow run.',
+                'x-enum-varnames': [
+                  'FlowRunStatusPending',
+                  'FlowRunStatusRunning',
+                  'FlowRunStatusSucceeded',
+                  'FlowRunStatusFailed',
+                  'FlowRunStatusCanceled',
+                  'FlowRunStatusPaused',
+                  'FlowRunStatusSuspended',
+                  'FlowRunStatusSleeping',
+                ],
+              }),
+          ),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'status',
+            in: 'query',
+            description: 'An array of flow run statuses to filter on',
+            schema: {
+              type: 'array',
+              items: {
+                description: 'The status of a flow run.',
+                type: 'string',
+                enum: [
+                  'pending',
+                  'running',
+                  'succeeded',
+                  'failed',
+                  'canceled',
+                  'paused',
+                  'suspended',
+                  'sleeping',
+                ],
+                'x-enum-varnames': [
+                  'FlowRunStatusPending',
+                  'FlowRunStatusRunning',
+                  'FlowRunStatusSucceeded',
+                  'FlowRunStatusFailed',
+                  'FlowRunStatusCanceled',
+                  'FlowRunStatusPaused',
+                  'FlowRunStatusSuspended',
+                  'FlowRunStatusSleeping',
+                ],
+              },
+            },
+            required: false,
+          },
+        }),
+      ownerId: OwnerIdParamParamsSchema,
+      workflowVersionId: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'workflowVersionId',
+            in: 'query',
+            description: 'An array of workflow version IDs',
+            schema: { type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+      workflowId: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'workflowId',
+            in: 'query',
+            description: 'An array of workflow IDs',
+            schema: { type: 'array', items: { type: 'string' } },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'List of flow runs',
+      content: { 'application/json': { schema: z.array(FlowRunWithCursorSchema) } },
+    },
+    400: _400BadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const postFlowRunsRoute = createRoute({
+  method: 'post',
+  path: '/flow-runs',
+  tags: ['Workflow Flows'],
+  summary: 'Start flow run',
+  description:
+    'Starts a run of the workflow flow with the provided slug, passing the provided input data.',
+  operationId: 'startFlowRun',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              flow: z
+                .string()
+                .regex(/\S/)
+                .openapi({
+                  description:
+                    'A flow slug in the format workflow-slug/flow-name. An optional version can be appended (workflow-slug/flow-name:version). If no version is provided, the latest version is used. Cannot be blank.',
+                  example: 'my-workflow-slug/my-flow',
+                }),
+              input: z
+                .xor([
+                  z
+                    .array(z.any())
+                    .openapi({ description: 'Positional arguments passed to the flow function' }),
+                  z
+                    .record(z.string(), z.any())
+                    .openapi({
+                      description:
+                        'Named parameters passed to the flow function as keyword arguments',
+                    }),
+                ])
+                .openapi({
+                  description:
+                    'Input data for a flow. Can be either an array (for positional arguments) or an object (for named parameters).',
+                }),
+              idempotencyKey: z
+                .string()
+                .min(1)
+                .max(255)
+                .exactOptional()
+                .openapi({
+                  description:
+                    "A client-generated key that makes starting a task run safe to retry. Repeating a request with the same key within 24 hours returns the task run that the first request started instead of starting another one; the repeated request's input is ignored. Keys are scoped to a workflow. Omit the key to always start a new run.",
+                  example: '6b2f1f7a-6a0e-4f6f-9d1a-2b1d0d5f6c11',
+                }),
+            })
+            .openapi({ required: ['flow', 'input'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    202: {
+      description: 'Flow run started',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z.string().openapi({ example: 'frn-d0hp8fs9c44c73a6f1qg' }),
+              flowId: z.string().openapi({ example: 'flw-d0hp8fs9c44c73a6f1qg' }),
+              status: z
+                .enum([
+                  'pending',
+                  'running',
+                  'succeeded',
+                  'failed',
+                  'canceled',
+                  'paused',
+                  'suspended',
+                  'sleeping',
+                ])
+                .openapi({
+                  description: 'The status of a flow run.',
+                  'x-enum-varnames': [
+                    'FlowRunStatusPending',
+                    'FlowRunStatusRunning',
+                    'FlowRunStatusSucceeded',
+                    'FlowRunStatusFailed',
+                    'FlowRunStatusCanceled',
+                    'FlowRunStatusPaused',
+                    'FlowRunStatusSuspended',
+                    'FlowRunStatusSleeping',
+                  ],
+                }),
+              startedAt: z.iso.datetime({ offset: true }).exactOptional(),
+              completedAt: z.iso.datetime({ offset: true }).exactOptional(),
+            })
+            .openapi({ required: ['id', 'flowId', 'status'] }),
+        },
+      },
+    },
+    400: _400BadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getFlowRunsFlowRunIdRoute = createRoute({
+  method: 'get',
+  path: '/flow-runs/{flowRunId}',
+  tags: ['Workflow Flows'],
+  summary: 'Retrieve flow run',
+  description: 'Retrieve the flow run with the provided ID, including its input and results.',
+  operationId: 'getFlowRun',
+  request: {
+    params: z.object({
+      flowRunId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'flowRunId',
+            in: 'path',
+            description: 'The ID of the flow run',
+            example: 'frn-d0hp8fs9c44c73a6f1qg',
+            schema: { type: 'string' },
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Flow run details',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z.string().openapi({ example: 'frn-d0hp8fs9c44c73a6f1qg' }),
+              flowId: z.string().openapi({ example: 'flw-d0hp8fs9c44c73a6f1qg' }),
+              status: z
+                .enum([
+                  'pending',
+                  'running',
+                  'succeeded',
+                  'failed',
+                  'canceled',
+                  'paused',
+                  'suspended',
+                  'sleeping',
+                ])
+                .openapi({
+                  description: 'The status of a flow run.',
+                  'x-enum-varnames': [
+                    'FlowRunStatusPending',
+                    'FlowRunStatusRunning',
+                    'FlowRunStatusSucceeded',
+                    'FlowRunStatusFailed',
+                    'FlowRunStatusCanceled',
+                    'FlowRunStatusPaused',
+                    'FlowRunStatusSuspended',
+                    'FlowRunStatusSleeping',
+                  ],
+                }),
+              startedAt: z.iso.datetime({ offset: true }).exactOptional(),
+              completedAt: z.iso.datetime({ offset: true }).exactOptional(),
+              input: z
+                .xor([
+                  z
+                    .array(z.any())
+                    .openapi({ description: 'Positional arguments passed to the flow function' }),
+                  z
+                    .record(z.string(), z.any())
+                    .openapi({
+                      description:
+                        'Named parameters passed to the flow function as keyword arguments',
+                    }),
+                ])
+                .openapi({
+                  description:
+                    'Input data for a flow. Can be either an array (for positional arguments) or an object (for named parameters).',
+                }),
+              results: z.array(z.any()),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Error message if the flow run failed.' }),
+              errorDetails: z
+                .object({
+                  code: z.enum([
+                    'flow_determinism_error',
+                    'flow_step_limit_exceeded',
+                    'flow_payload_too_large',
+                    'flow_history_too_large',
+                  ]),
+                  message: z.string(),
+                  seq: z.int().exactOptional(),
+                  subKey: z.string().exactOptional(),
+                  flowAttempt: z.int().exactOptional(),
+                  kind: z.enum(['input_hash', 'type', 'unknown_type']).exactOptional(),
+                  expected: z.string().exactOptional(),
+                  actual: z.string().exactOptional(),
+                  limit: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'number' && Number.isSafeInteger(val)
+                          ? BigInt(val)
+                          : typeof val === 'string' && /^-?\d+$/.test(val)
+                            ? BigInt(val)
+                            : val,
+                      z.int64(),
+                    )
+                    .exactOptional()
+                    .openapi({ type: 'integer', format: 'int64' }),
+                  value: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'number' && Number.isSafeInteger(val)
+                          ? BigInt(val)
+                          : typeof val === 'string' && /^-?\d+$/.test(val)
+                            ? BigInt(val)
+                            : val,
+                      z.int64(),
+                    )
+                    .exactOptional()
+                    .openapi({ type: 'integer', format: 'int64' }),
+                })
+                .exactOptional()
+                .openapi({ required: ['code', 'message'] }),
+              attempts: z
+                .array(
+                  z
+                    .object({
+                      attempt: z.int().openapi({ description: 'The 0-indexed attempt number.' }),
+                      status: z
+                        .enum([
+                          'pending',
+                          'running',
+                          'succeeded',
+                          'failed',
+                          'canceled',
+                          'paused',
+                          'suspended',
+                          'sleeping',
+                        ])
+                        .openapi({
+                          description: 'The status of a flow run.',
+                          'x-enum-varnames': [
+                            'FlowRunStatusPending',
+                            'FlowRunStatusRunning',
+                            'FlowRunStatusSucceeded',
+                            'FlowRunStatusFailed',
+                            'FlowRunStatusCanceled',
+                            'FlowRunStatusPaused',
+                            'FlowRunStatusSuspended',
+                            'FlowRunStatusSleeping',
+                          ],
+                        }),
+                      startedAt: z.iso.datetime({ offset: true }).exactOptional(),
+                      completedAt: z.iso.datetime({ offset: true }).exactOptional(),
+                      error: z
+                        .string()
+                        .exactOptional()
+                        .openapi({ description: 'Error message if the attempt failed.' }),
+                    })
+                    .openapi({ required: ['attempt', 'status'] }),
+                )
+                .openapi({
+                  description:
+                    "The flow run's attempts. A flow run gets a new attempt when it resumes after its process is interrupted; it replays completed steps instead of rerunning them.",
+                }),
+            })
+            .openapi({ required: ['id', 'flowId', 'status', 'input', 'results', 'attempts'] }),
+        },
+      },
+    },
+    400: _400BadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const deleteFlowRunsFlowRunIdRoute = createRoute({
+  method: 'delete',
+  path: '/flow-runs/{flowRunId}',
+  tags: ['Workflow Flows'],
+  summary: 'Cancel flow run',
+  description: 'Cancel a running flow run with the provided ID.',
+  operationId: 'cancelFlowRun',
+  request: {
+    params: z.object({
+      flowRunId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'flowRunId',
+            in: 'path',
+            description: 'The ID of the flow run',
+            example: 'frn-d0hp8fs9c44c73a6f1qg',
+            schema: { type: 'string' },
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'Flow run canceled' },
+    400: _400BadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getFlowRunsFlowRunIdStepsRoute = createRoute({
+  method: 'get',
+  path: '/flow-runs/{flowRunId}/steps',
+  tags: ['Workflow Flows'],
+  summary: 'List flow run steps',
+  description:
+    'List the steps a flow run has recorded, in the order the flow started them. A page can hold fewer than `limit` steps and still have more after it, so page until `hasMore` is false.',
+  operationId: 'listFlowRunSteps',
+  request: {
+    params: z.object({
+      flowRunId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'flowRunId',
+            in: 'path',
+            description: 'The ID of the flow run',
+            example: 'frn-d0hp8fs9c44c73a6f1qg',
+            schema: { type: 'string' },
+            required: true,
+          },
+        }),
+    }),
+    query: z.object({ cursor: CursorParamParamsSchema, limit: LimitParamParamsSchema }),
+  },
+  responses: {
+    200: {
+      description: 'Page of flow run steps',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              steps: z.array(
+                z
+                  .object({
+                    seq: z
+                      .int()
+                      .min(0)
+                      .openapi({
+                        description:
+                          "The step's position in the flow run. Steps are numbered densely in the order the flow started them.",
+                      }),
+                    stepKey: z.string().openapi({ description: "The SDK's key for the step." }),
+                    name: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          "For inline steps, the function's name. For detached steps, the task's registered name. Omitted for sleep steps.",
+                      }),
+                    type: z
+                      .enum(['inline', 'detached', 'sleep'])
+                      .openapi({
+                        description:
+                          "The kind of step. `inline` runs a function inside the flow's process and retries in place. `detached` runs a registered task as its own task run. `sleep` is a durable sleep.",
+                        'x-enum-varnames': [
+                          'FlowRunStepTypeInline',
+                          'FlowRunStepTypeDetached',
+                          'FlowRunStepTypeSleep',
+                        ],
+                      }),
+                    status: z
+                      .enum(['running', 'succeeded', 'failed'])
+                      .openapi({
+                        description:
+                          '`running` until the step records an outcome, then `succeeded` or `failed`.',
+                        'x-enum-varnames': [
+                          'FlowRunStepStatusRunning',
+                          'FlowRunStepStatusSucceeded',
+                          'FlowRunStepStatusFailed',
+                        ],
+                      }),
+                    startedAt: z.iso.datetime({ offset: true }),
+                    completedAt: z.iso.datetime({ offset: true }).exactOptional(),
+                    wakeAt: z.iso
+                      .datetime({ offset: true })
+                      .exactOptional()
+                      .openapi({ description: 'For sleep steps, when the sleep ends.' }),
+                    childTaskRunId: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description: 'For detached steps, the ID of the task run the step started.',
+                        example: 'trn-d0hp8fs9c44c73a6f1qg',
+                      }),
+                  })
+                  .openapi({ required: ['seq', 'stepKey', 'type', 'status', 'startedAt'] }),
+              ),
+              cursor: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Pass as the `cursor` query parameter to fetch the next page. Absent on the last page.',
+                }),
+              hasMore: z
+                .boolean()
+                .openapi({ description: 'Whether another page of steps follows this one.' }),
+            })
+            .openapi({ required: ['steps', 'hasMore'] }),
+        },
+      },
+    },
+    400: _400BadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getFlowRunsFlowRunIdStepsStepSeqRoute = createRoute({
+  method: 'get',
+  path: '/flow-runs/{flowRunId}/steps/{stepSeq}',
+  tags: ['Workflow Flows'],
+  summary: 'Retrieve flow run step',
+  description:
+    'Retrieve a single step of a flow run, including its input, result and error. A sequence number can cover more than one step, so pass the `stepKey` the step listing reported to address one of those.',
+  operationId: 'getFlowRunStep',
+  request: {
+    params: z.object({
+      flowRunId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'flowRunId',
+            in: 'path',
+            description: 'The ID of the flow run',
+            example: 'frn-d0hp8fs9c44c73a6f1qg',
+            schema: { type: 'string' },
+            required: true,
+          },
+        }),
+      stepSeq: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0),
+        )
+        .openapi({
+          param: {
+            name: 'stepSeq',
+            in: 'path',
+            description: 'The sequence number of the step within its flow run',
+            schema: { type: 'integer', minimum: 0 },
+            required: true,
+          },
+        }),
+    }),
+    query: z.object({
+      stepKey: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'stepKey',
+            in: 'query',
+            description:
+              "The SDK's key for the step, as `stepKey` reports it in the step listing. Steps that share a sequence number are told apart by it. Omit it for a step the SDK recorded without one.",
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+      includeAttempts: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'includeAttempts',
+            schema: { type: 'boolean' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Flow run step details',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              failedAttempts: z
+                .array(
+                  z
+                    .object({
+                      attempt: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64().min(0n).max(4294967295n),
+                        )
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          minimum: 0,
+                          maximum: 4294967295,
+                        }),
+                      flowAttempt: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64().min(0n).max(4294967295n),
+                        )
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          minimum: 0,
+                          maximum: 4294967295,
+                        }),
+                      startedAt: z.iso.datetime({ offset: true }),
+                      completedAt: z.iso.datetime({ offset: true }),
+                      retryAt: z.iso.datetime({ offset: true }).exactOptional(),
+                    })
+                    .openapi({ required: ['attempt', 'flowAttempt', 'startedAt', 'completedAt'] }),
+                )
+                .exactOptional(),
+              seq: z
+                .int()
+                .min(0)
+                .openapi({
+                  description:
+                    "The step's position in the flow run. Steps are numbered densely in the order the flow started them.",
+                }),
+              stepKey: z.string().openapi({ description: "The SDK's key for the step." }),
+              name: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "For inline steps, the function's name. For detached steps, the task's registered name. Omitted for sleep steps.",
+                }),
+              type: z
+                .enum(['inline', 'detached', 'sleep'])
+                .openapi({
+                  description:
+                    "The kind of step. `inline` runs a function inside the flow's process and retries in place. `detached` runs a registered task as its own task run. `sleep` is a durable sleep.",
+                  'x-enum-varnames': [
+                    'FlowRunStepTypeInline',
+                    'FlowRunStepTypeDetached',
+                    'FlowRunStepTypeSleep',
+                  ],
+                }),
+              status: z
+                .enum(['running', 'succeeded', 'failed'])
+                .openapi({
+                  description:
+                    '`running` until the step records an outcome, then `succeeded` or `failed`.',
+                  'x-enum-varnames': [
+                    'FlowRunStepStatusRunning',
+                    'FlowRunStepStatusSucceeded',
+                    'FlowRunStepStatusFailed',
+                  ],
+                }),
+              startedAt: z.iso.datetime({ offset: true }),
+              completedAt: z.iso.datetime({ offset: true }).exactOptional(),
+              wakeAt: z.iso
+                .datetime({ offset: true })
+                .exactOptional()
+                .openapi({ description: 'For sleep steps, when the sleep ends.' }),
+              childTaskRunId: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description: 'For detached steps, the ID of the task run the step started.',
+                  example: 'trn-d0hp8fs9c44c73a6f1qg',
+                }),
+              input: z
+                .any()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The step's input. For detached steps, the input of the child task run.",
+                }),
+              result: z
+                .any()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The step's result. Present only when the step succeeded; null when the step returned no value.",
+                  'x-go-type': 'json.RawMessage',
+                }),
+              error: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Error message if the step failed.' }),
+            })
+            .openapi({ required: ['seq', 'stepKey', 'type', 'status', 'startedAt'] }),
+        },
+      },
+    },
+    400: _400BadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getFlowRunsFlowRunIdStepsStepSeqAttemptsAttemptRoute = createRoute({
+  method: 'get',
+  path: '/flow-runs/{flowRunId}/steps/{stepSeq}/attempts/{attempt}',
+  tags: ['Workflow Flows'],
+  summary: 'Retrieve recorded failed step attempt',
+  operationId: 'getFlowRunStepAttempt',
+  request: {
+    params: z.object({
+      flowRunId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'flowRunId',
+            in: 'path',
+            description: 'The ID of the flow run',
+            example: 'frn-d0hp8fs9c44c73a6f1qg',
+            schema: { type: 'string' },
+            required: true,
+          },
+        }),
+      stepSeq: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(0),
+        )
+        .openapi({
+          param: {
+            name: 'stepSeq',
+            in: 'path',
+            description: 'The sequence number of the step within its flow run',
+            schema: { type: 'integer', minimum: 0 },
+            required: true,
+          },
+        }),
+      attempt: z
+        .preprocess((val) => {
+          if (typeof val !== 'string' || !/^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val))
+            return val
+          if (/^-?\d+$/.test(val)) return BigInt(val)
+          const num = Number(val)
+          return Number.isSafeInteger(num) ? BigInt(num) : val
+        }, z.int64().min(0n).max(4294967295n))
+        .openapi({
+          param: {
+            in: 'path',
+            name: 'attempt',
+            required: true,
+            schema: { type: 'integer', format: 'int64', minimum: 0, maximum: 4294967295 },
+          },
+        }),
+    }),
+    query: z.object({
+      stepKey: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'stepKey',
+            in: 'query',
+            description:
+              "The SDK's key for the step, as `stepKey` reports it in the step listing. Steps that share a sequence number are told apart by it. Omit it for a step the SDK recorded without one.",
+            schema: { type: 'string' },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Flow run step details',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              attempt: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(0n).max(4294967295n),
+                )
+                .openapi({ type: 'integer', format: 'int64', minimum: 0, maximum: 4294967295 }),
+              flowAttempt: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(0n).max(4294967295n),
+                )
+                .openapi({ type: 'integer', format: 'int64', minimum: 0, maximum: 4294967295 }),
+              startedAt: z.iso.datetime({ offset: true }),
+              completedAt: z.iso.datetime({ offset: true }),
+              retryAt: z.iso.datetime({ offset: true }).exactOptional(),
+            })
+            .openapi({ required: ['attempt', 'flowAttempt', 'startedAt', 'completedAt'] })
+            .and(z.object({ error: z.string() }).openapi({ required: ['error'] })),
+        },
+      },
+    },
+    400: _400BadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getSandboxesRoute = createRoute({
+  method: 'get',
+  path: '/sandboxes',
+  tags: ['Sandboxes'],
+  summary: 'List sandboxes',
+  description:
+    'List sandboxes in a workspace. Each request must specify one workspace. Sandboxes run in the region of their sandbox group.\n',
+  operationId: 'list-sandboxes',
+  request: {
+    query: z.object({
+      ownerId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'ownerId',
+            in: 'query',
+            required: true,
+            description: 'The ID of the workspace whose sandboxes to return.',
+            schema: { type: 'string' },
+          },
+        }),
+      sandboxGroupId: z
+        .string()
+        .regex(/^sbg-[0-9a-v]{20}$/)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'sandboxGroupId',
+            in: 'query',
+            description:
+              'Filter for sandboxes in this group. The group must belong to the workspace specified by `ownerId`.',
+            schema: {
+              description: 'The ID of the sandbox group.',
+              type: 'string',
+              pattern: '^sbg-[0-9a-v]{20}$',
+              example: 'sbg-cph1rs3idesc73a2b2mg',
+            },
+            required: false,
+          },
+          description: 'The ID of the sandbox group.',
+          example: 'sbg-cph1rs3idesc73a2b2mg',
+        }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'name',
+            in: 'query',
+            required: false,
+            description:
+              'Filter for sandboxes with exactly this name. Names are not unique, so multiple sandboxes can match.',
+            schema: { type: 'string' },
+          },
+        }),
+      cursor: CursorParamParamsSchema,
+      limit: LimitParamParamsSchema,
+      status: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(
+            z
+              .enum([
+                'creating',
+                'running',
+                'suspending',
+                'suspended',
+                'resuming',
+                'errored',
+                'terminated',
+              ])
+              .openapi({ description: "The sandbox's current status." }),
+          ),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'status',
+            in: 'query',
+            required: false,
+            description:
+              'Filter for sandboxes with the specified statuses. By default, returns all statuses except `terminated`. Include `terminated` explicitly to return terminated sandboxes.\n',
+            schema: {
+              type: 'array',
+              items: {
+                description: "The sandbox's current status.",
+                type: 'string',
+                enum: [
+                  'creating',
+                  'running',
+                  'suspending',
+                  'suspended',
+                  'resuming',
+                  'errored',
+                  'terminated',
+                ],
+              },
+            },
+            style: 'form',
+            explode: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: { 'application/json': { schema: z.array(SandboxWithCursorSchema) } },
+    },
+    400: _400BadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const postSandboxesRoute = createRoute({
+  method: 'post',
+  path: '/sandboxes',
+  tags: ['Sandboxes'],
+  summary: 'Create sandbox',
+  description:
+    'Create a sandbox and return its initial state. The sandbox might still be starting when the response is returned. To use a saved snapshot or custom image, provide `snapshotId`, `snapshotName`, `buildId`, or `buildName`.\n',
+  operationId: 'create-sandbox',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ownerId: z
+                .string()
+                .openapi({ description: 'The ID of the workspace the sandbox belongs to.' }),
+              sandboxGroupId: z
+                .string()
+                .regex(/^sbg-[0-9a-v]{20}$/)
+                .openapi({
+                  description: 'The ID of the sandbox group.',
+                  example: 'sbg-cph1rs3idesc73a2b2mg',
+                })
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The ID of the sandbox group to create the sandbox in. Defaults to the workspace's default group.",
+                }),
+              name: z
+                .string()
+                .max(64)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A label for the sandbox, such as `my-agent`, up to 64 characters. Names do not have to be unique; use the sandbox ID to identify a specific sandbox. Must not start with `sbx-`.\n',
+                }),
+              networkPolicy: z
+                .object({
+                  type: z
+                    .enum(['allow-all', 'deny-all', 'allow-list'])
+                    .openapi({
+                      description:
+                        'How Render handles outbound traffic from the sandbox. The `allow-list` policy requires `rules`.',
+                    })
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        "How Render handles outbound traffic from the sandbox. The `allow-list` policy requires `rules`. Required unless `default` is provided. If `networkPolicy` is omitted, defaults to `allow-all`, or to the source sandbox's policy when creating a sandbox from a snapshot.\n",
+                    }),
+                  default: z
+                    .enum(['allow-all', 'deny-all', 'allow-list'])
+                    .openapi({
+                      description:
+                        'How Render handles outbound traffic from the sandbox. The `allow-list` policy requires `rules`.',
+                    })
+                    .exactOptional()
+                    .openapi({
+                      deprecated: true,
+                      description: 'A deprecated alias for `type`. Use `type` instead.',
+                    }),
+                  rules: z
+                    .array(
+                      z
+                        .object({
+                          domain: z
+                            .string()
+                            .max(253)
+                            .openapi({
+                              description:
+                                'The hostname this rule allows, up to 253 characters. Matching is exact: `foo.local` does not match `api.foo.local`. Use a separate rule or `*.foo.local` for subdomains. A wildcard is allowed only as the leftmost label.\n',
+                              example: '*.bar.local',
+                            }),
+                          protocol: z
+                            .literal('https')
+                            .default('https')
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                'The protocol allowed for this destination. Defaults to `https`. The `allow-list` policy blocks outbound traffic that uses other protocols.',
+                            }),
+                        })
+                        .openapi({
+                          description:
+                            'A destination that sandboxes can access when the network policy is `allow-list`.',
+                          required: ['domain'],
+                        }),
+                    )
+                    .max(100)
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Destinations the sandbox may reach, required when the policy is `allow-list` and rejected otherwise. Each domain may be listed once.\n',
+                    }),
+                })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The outbound traffic policy to apply to the sandbox. Provide `type` or its deprecated alias `default`. If both are provided, they must match.\n',
+                  required: [],
+                }),
+              plan: z
+                .union([
+                  z
+                    .enum(['starter', 'standard', 'pro', '1c-2g', '2c-4g', '4c-8g', '8c-16g'])
+                    .openapi({
+                      'x-enum-varnames': [
+                        'Starter',
+                        'Standard',
+                        'Pro',
+                        'SandboxPlan1c2g',
+                        'SandboxPlan2c4g',
+                        'SandboxPlan4c8g',
+                        'SandboxPlan8c16g',
+                      ],
+                      description:
+                        'The compute plan for the sandbox. The `starter`, `standard`, and `pro` plans are deprecated.',
+                    }),
+                  z.string(),
+                ])
+                .exactOptional()
+                .openapi({
+                  'x-go-type': 'SandboxPlan',
+                  description:
+                    'The compute plan for the sandbox. See `sandboxPlan` for known values.',
+                }),
+              timeoutSeconds: z
+                .int()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The maximum time the sandbox can run continuously, in seconds. The sandbox terminates when this time elapses. If the sandbox is suspended and later resumed, this timeout restarts.\n\nUse 0 to disable the runtime timeout. Positive values must be between 60 and 2592000 (30 days). Defaults to 86400, or to the source sandbox's runtime timeout when creating a sandbox from a snapshot.\n",
+                }),
+              idleTimeoutSeconds: z
+                .int()
+                .min(0)
+                .max(86400)
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The number of seconds of inactivity before Render suspends the sandbox. Use 0 to disable automatic idle suspension. Positive values must be between 300 and 86400. Defaults to 900, or to the source sandbox's idle timeout when creating a sandbox from a snapshot.\n",
+                }),
+              env: z
+                .record(z.string(), z.string())
+                .exactOptional()
+                .openapi({
+                  description: 'The environment variables to set when creating the sandbox.',
+                }),
+              snapshotId: z
+                .string()
+                .regex(/^snp-[0-9a-v]{20}$/)
+                .openapi({
+                  description: 'The ID of the sandbox snapshot.',
+                  example: 'snp-cph1rs3idesc73a2b2mg',
+                })
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The ID of the snapshot to create the sandbox from instead of the base image. The snapshot must be `available` and belong to the same sandbox group. For a `runtime` snapshot, `plan` must match the snapshot's plan. The new sandbox inherits the source sandbox's network policy, timeout, and idle timeout. Provide `networkPolicy`, `timeoutSeconds`, or `idleTimeoutSeconds` to override these settings.\n",
+                }),
+              snapshotName: z
+                .string()
+                .min(1)
+                .max(64)
+                .openapi({
+                  example: 'gold',
+                  description:
+                    'A case-sensitive name for snapshots in a sandbox group, up to 64 characters. Must not start with `snp-`. Multiple snapshots can share a name. When creating a sandbox by snapshot name, Render uses the most recently created snapshot with that name that is `available` and unexpired.\n',
+                })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The name of the snapshot to create the sandbox from. Uses the most recently created snapshot with this name in the sandbox group that is `available` and unexpired. Cannot be combined with `snapshotId`. The same restore requirements as `snapshotId` apply.\n',
+                }),
+              buildId: z
+                .string()
+                .regex(/^sbb-[0-9a-v]{20}$/)
+                .openapi({
+                  description: 'The ID of the sandbox build.',
+                  example: 'sbb-cph1rs3idesc73a2b2mg',
+                })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The ID of the build to create the sandbox from instead of the base image. The build must have succeeded and belong to the same sandbox group. Cannot be combined with `buildName`, `snapshotId`, or `snapshotName`.\n',
+                }),
+              buildName: z
+                .string()
+                .min(1)
+                .max(255)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The name of the build to create the sandbox from instead of the base image. Uses the newest successful build with this name in the sandbox group. Cannot be combined with `buildId`, `snapshotId`, or `snapshotName`.\n',
+                }),
+            })
+            .openapi({
+              description:
+                'The sandbox to create, including its compute plan, network policy, and optional source build or snapshot.',
+              required: ['ownerId'],
+            }),
+          example: {
+            ownerId: 'tea-cph1rs3idesc73a2b2mg',
+            networkPolicy: { type: 'deny-all' },
+            plan: 'standard',
+            timeoutSeconds: 7200,
+            idleTimeoutSeconds: 900,
+          },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'The sandbox was created. Returns its initial state.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .regex(/^sbx-[0-9a-v]{25}$/)
+                .openapi({
+                  description: 'The ID of the sandbox.',
+                  example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+                }),
+              name: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({ description: 'The label set when the sandbox was created.' }),
+              sandboxGroupId: z
+                .string()
+                .regex(/^sbg-[0-9a-v]{20}$/)
+                .openapi({
+                  description: 'The ID of the sandbox group.',
+                  example: 'sbg-cph1rs3idesc73a2b2mg',
+                })
+                .exactOptional()
+                .openapi({ description: 'The ID of the sandbox group this sandbox belongs to.' }),
+              status: z
+                .enum([
+                  'creating',
+                  'running',
+                  'suspending',
+                  'suspended',
+                  'resuming',
+                  'errored',
+                  'terminated',
+                ])
+                .openapi({ description: "The sandbox's current status." }),
+              plan: z
+                .union([
+                  z
+                    .enum(['starter', 'standard', 'pro', '1c-2g', '2c-4g', '4c-8g', '8c-16g'])
+                    .openapi({
+                      'x-enum-varnames': [
+                        'Starter',
+                        'Standard',
+                        'Pro',
+                        'SandboxPlan1c2g',
+                        'SandboxPlan2c4g',
+                        'SandboxPlan4c8g',
+                        'SandboxPlan8c16g',
+                      ],
+                      description:
+                        'The compute plan for the sandbox. The `starter`, `standard`, and `pro` plans are deprecated.',
+                    }),
+                  z.string(),
+                ])
+                .openapi({
+                  'x-go-type': 'SandboxPlan',
+                  description: "The sandbox's compute plan. See `sandboxPlan` for known values.",
+                }),
+              networkPolicy: z
+                .object({
+                  type: z
+                    .enum(['allow-all', 'deny-all', 'allow-list'])
+                    .openapi({
+                      description:
+                        'How Render handles outbound traffic from the sandbox. The `allow-list` policy requires `rules`.',
+                    })
+                    .openapi({
+                      description:
+                        'How Render handles outbound traffic from the sandbox. The `allow-list` policy requires `rules`.',
+                    }),
+                  default: z
+                    .enum(['allow-all', 'deny-all', 'allow-list'])
+                    .openapi({
+                      description:
+                        'How Render handles outbound traffic from the sandbox. The `allow-list` policy requires `rules`.',
+                    })
+                    .exactOptional()
+                    .openapi({
+                      deprecated: true,
+                      description:
+                        'A deprecated alias for `type`, returned with the same value. Read `type` instead.',
+                    }),
+                  rules: z
+                    .array(
+                      z
+                        .object({
+                          domain: z
+                            .string()
+                            .max(253)
+                            .openapi({
+                              description:
+                                'The hostname this rule allows, up to 253 characters. Matching is exact: `foo.local` does not match `api.foo.local`. Use a separate rule or `*.foo.local` for subdomains. A wildcard is allowed only as the leftmost label.\n',
+                              example: '*.bar.local',
+                            }),
+                          protocol: z
+                            .literal('https')
+                            .default('https')
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                'The protocol allowed for this destination. Defaults to `https`. The `allow-list` policy blocks outbound traffic that uses other protocols.',
+                            }),
+                        })
+                        .openapi({
+                          description:
+                            'A destination that sandboxes can access when the network policy is `allow-list`.',
+                          required: ['domain'],
+                        }),
+                    )
+                    .max(100)
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Destinations the sandbox may reach, present when `type` is `allow-list` and absent otherwise. Each domain may be listed once.\n',
+                    }),
+                })
+                .openapi({
+                  description: 'The policy that controls outbound traffic from the sandbox.',
+                  required: ['type'],
+                }),
+              region: z
+                .string()
+                .openapi({
+                  description: 'The Render region where the sandbox runs.',
+                  example: 'oregon',
+                }),
+              timeoutSeconds: z
+                .int()
+                .openapi({
+                  description:
+                    'The maximum time the sandbox can run continuously, in seconds. The sandbox terminates when this time elapses. If the sandbox is suspended and later resumed, this timeout restarts. A value of 0 disables the runtime timeout.\n',
+                  example: 86400,
+                }),
+              idleTimeoutSeconds: z
+                .int()
+                .openapi({
+                  description:
+                    'The number of seconds of inactivity before Render suspends the sandbox. A value of 0 disables automatic idle suspension.',
+                  example: 900,
+                }),
+              createdAt: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description: 'The timestamp when the sandbox was created, in ISO 8601 format.',
+                  example: '2026-04-01T18:30:00Z',
+                }),
+              terminatedAt: z.iso
+                .datetime({ offset: true })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The timestamp when the sandbox was terminated, in ISO 8601 format. Null if the sandbox has not been terminated.',
+                }),
+            })
+            .openapi({
+              description:
+                'An isolated compute environment for running code, executing commands, and transferring files.',
+              required: [
+                'id',
+                'status',
+                'plan',
+                'networkPolicy',
+                'region',
+                'timeoutSeconds',
+                'idleTimeoutSeconds',
+                'createdAt',
+              ],
+            })
+            .and(z.looseObject({})),
+          example: {
+            id: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+            status: 'creating',
+            plan: 'standard',
+            networkPolicy: { type: 'deny-all', default: 'deny-all' },
+            region: 'oregon',
+            timeoutSeconds: 7200,
+            idleTimeoutSeconds: 900,
+            createdAt: '2026-04-01T18:30:00Z',
+            terminatedAt: null,
+          },
+        },
+      },
+    },
+    400: {
+      description:
+        "The request is invalid.\n\n- `invalid_snapshot_name`: `snapshotName` is malformed.\n- Both `snapshotId` and `snapshotName` are provided. No error code is returned.\n- `invalid_sandbox_name`: `name` exceeds 64 characters or starts with `sbx-`.\n- `sandbox_group_limit_reached`: The workspace has no default sandbox group and has reached its sandbox group limit.\n- `invalid_sandbox_plan`: The plan is not supported. The error message lists accepted plans.\n- `invalid_timeout_seconds`: A nonzero `timeoutSeconds` is outside the range of 60 to the workspace's maximum, which defaults to 2592000 (30 days).\n",
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: {
+      description:
+        'The requested resource was not found.\n\n- `snapshot_not_found`: The snapshot ID does not exist or no available snapshot in the group has the specified name.\n- `build_not_found`: The specified build does not belong to the sandbox group, or no build in the group has the specified name.\n',
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    409: {
+      description:
+        'The current state of the resource conflicts with this request.\n\n- `snapshot_not_available`: The snapshot is not `available`. This also applies to snapshots selected by name.\n- `snapshot_plan_mismatch`: A runtime snapshot requires a different compute plan. This also applies to snapshots selected by name.\n- `sandbox_group_suspended`: The sandbox group is suspended.\n- `build_not_succeeded`: The specified build has not succeeded, or no build with the specified name has succeeded.\n',
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getSandboxGroupsRoute = createRoute({
+  method: 'get',
+  path: '/sandbox-groups',
+  tags: ['Sandboxes'],
+  summary: 'List sandbox groups',
+  description:
+    "List sandbox groups in a workspace, newest first. Returns up to 20 groups by default, with a maximum of 100. To fetch the next page, pass the last result's cursor as `cursor`. Continue until the response is empty.\n",
+  operationId: 'list-sandbox-groups',
+  request: {
+    query: z.object({
+      ownerId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'ownerId',
+            in: 'query',
+            required: true,
+            description: 'The ID of the workspace whose sandbox groups to return.',
+            schema: { type: 'string' },
+          },
+        }),
+      cursor: CursorParamParamsSchema,
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int().min(1).max(100),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            in: 'query',
+            description:
+              'The maximum number of sandbox groups to return, between 1 and 100. Defaults to 20.',
+            schema: { type: 'integer', minimum: 1, maximum: 100 },
+            required: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: { 'application/json': { schema: z.array(SandboxGroupWithCursorSchema) } },
+    },
+    400: _400BadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const postSandboxGroupsRoute = createRoute({
+  method: 'post',
+  path: '/sandbox-groups',
+  tags: ['Sandboxes'],
+  summary: 'Create sandbox group',
+  description: 'Create a sandbox group. The first group in a workspace becomes its default.',
+  operationId: 'create-sandbox-group',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              ownerId: z
+                .string()
+                .openapi({
+                  description: 'The ID of the workspace to create the sandbox group in.',
+                  example: 'tea-cph1rs3idesc73a2b2mg',
+                }),
+              name: z
+                .string()
+                .openapi({
+                  description: "The sandbox group's name. Must be unique within the workspace.",
+                  example: 'CI agents',
+                }),
+              region: z
+                .string()
+                .default('oregon')
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The Render region where the group's sandboxes run. Defaults to `oregon`.",
+                  example: 'oregon',
+                }),
+              environmentId: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The ID of an environment in the workspace to create the group in. If you omit it, the group isn't in a project. Creating a group in a protected environment requires an admin.",
+                  example: 'evm-cph1rs3idesc73a2b2mg',
+                }),
+            })
+            .openapi({
+              description: 'The sandbox group to create.',
+              required: ['ownerId', 'name'],
+            }),
+          example: { ownerId: 'tea-cph1rs3idesc73a2b2mg', name: 'CI agents' },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'Sandbox group created.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .regex(/^sbg-[0-9a-v]{20}$/)
+                .openapi({
+                  description: 'The ID of the sandbox group.',
+                  example: 'sbg-cph1rs3idesc73a2b2mg',
+                }),
+              ownerId: z
+                .string()
+                .openapi({
+                  description: 'The ID of the workspace this group belongs to.',
+                  example: 'tea-cph1rs3idesc73a2b2mg',
+                }),
+              name: z
+                .string()
+                .openapi({ description: "The sandbox group's name.", example: 'Default' }),
+              region: z
+                .string()
+                .openapi({
+                  description: "The Render region where the group's sandboxes run.",
+                  example: 'oregon',
+                }),
+              isDefault: z
+                .boolean()
+                .openapi({
+                  description:
+                    "Whether this is the workspace's default sandbox group. Create requests that omit `sandboxGroupId` use this group.",
+                }),
+              environmentId: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The ID of the environment that contains this group. Null if the group isn't in a project. To move a group, add it to or remove it from an environment with `/environments/{environmentId}/resources`.",
+                }),
+              concurrencyLimit: z
+                .int()
+                .min(1)
+                .openapi({
+                  description:
+                    "The maximum number of active sandboxes allowed in this group, capped by Render's limit for the workspace.",
+                }),
+              createdAt: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description:
+                    'The timestamp when the sandbox group was created, in ISO 8601 format.',
+                  example: '2026-07-02T18:30:00Z',
+                }),
+              updatedAt: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description:
+                    'The timestamp when the sandbox group was last updated, in ISO 8601 format.',
+                  example: '2026-07-02T18:30:00Z',
+                }),
+            })
+            .openapi({
+              description:
+                'A group of sandboxes in a workspace that share a region, concurrency limit, and credentials.',
+              required: [
+                'id',
+                'ownerId',
+                'name',
+                'region',
+                'isDefault',
+                'concurrencyLimit',
+                'createdAt',
+                'updatedAt',
+              ],
+            }),
+          example: {
+            id: 'sbg-cph1rs3idesc73a2b2mg',
+            ownerId: 'tea-cph1rs3idesc73a2b2mg',
+            name: 'CI agents',
+            region: 'oregon',
+            isDefault: false,
+            environmentId: null,
+            concurrencyLimit: 10,
+            createdAt: '2026-07-02T18:30:00Z',
+            updatedAt: '2026-07-02T18:30:00Z',
+          },
+        },
+      },
+    },
+    400: _400BadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    409: {
+      description:
+        'The current state of the resource conflicts with this request.\n\n- Another group in the workspace has the specified name.\n',
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getSandboxesSandboxIdRoute = createRoute({
+  method: 'get',
+  path: '/sandboxes/{sandboxId}',
+  tags: ['Sandboxes'],
+  summary: 'Retrieve sandbox',
+  description: 'Retrieve the sandbox with the provided ID.',
+  operationId: 'retrieve-sandbox',
+  request: {
+    params: z.object({
+      sandboxId: z
+        .string()
+        .regex(/^sbx-[0-9a-v]{25}$/)
+        .openapi({
+          param: {
+            name: 'sandboxId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox.',
+            schema: {
+              description: 'The ID of the sandbox.',
+              type: 'string',
+              pattern: '^sbx-[0-9a-v]{25}$',
+              example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox.',
+          example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+        }),
+    }),
+    query: z.object({
+      ownerId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'ownerId',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of the workspace the sandbox belongs to. If provided, it must match the sandbox's workspace. If omitted, Render determines the workspace from the sandbox ID.",
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .regex(/^sbx-[0-9a-v]{25}$/)
+                .openapi({
+                  description: 'The ID of the sandbox.',
+                  example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+                }),
+              name: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({ description: 'The label set when the sandbox was created.' }),
+              sandboxGroupId: z
+                .string()
+                .regex(/^sbg-[0-9a-v]{20}$/)
+                .openapi({
+                  description: 'The ID of the sandbox group.',
+                  example: 'sbg-cph1rs3idesc73a2b2mg',
+                })
+                .exactOptional()
+                .openapi({ description: 'The ID of the sandbox group this sandbox belongs to.' }),
+              status: z
+                .enum([
+                  'creating',
+                  'running',
+                  'suspending',
+                  'suspended',
+                  'resuming',
+                  'errored',
+                  'terminated',
+                ])
+                .openapi({ description: "The sandbox's current status." }),
+              plan: z
+                .union([
+                  z
+                    .enum(['starter', 'standard', 'pro', '1c-2g', '2c-4g', '4c-8g', '8c-16g'])
+                    .openapi({
+                      'x-enum-varnames': [
+                        'Starter',
+                        'Standard',
+                        'Pro',
+                        'SandboxPlan1c2g',
+                        'SandboxPlan2c4g',
+                        'SandboxPlan4c8g',
+                        'SandboxPlan8c16g',
+                      ],
+                      description:
+                        'The compute plan for the sandbox. The `starter`, `standard`, and `pro` plans are deprecated.',
+                    }),
+                  z.string(),
+                ])
+                .openapi({
+                  'x-go-type': 'SandboxPlan',
+                  description: "The sandbox's compute plan. See `sandboxPlan` for known values.",
+                }),
+              networkPolicy: z
+                .object({
+                  type: z
+                    .enum(['allow-all', 'deny-all', 'allow-list'])
+                    .openapi({
+                      description:
+                        'How Render handles outbound traffic from the sandbox. The `allow-list` policy requires `rules`.',
+                    })
+                    .openapi({
+                      description:
+                        'How Render handles outbound traffic from the sandbox. The `allow-list` policy requires `rules`.',
+                    }),
+                  default: z
+                    .enum(['allow-all', 'deny-all', 'allow-list'])
+                    .openapi({
+                      description:
+                        'How Render handles outbound traffic from the sandbox. The `allow-list` policy requires `rules`.',
+                    })
+                    .exactOptional()
+                    .openapi({
+                      deprecated: true,
+                      description:
+                        'A deprecated alias for `type`, returned with the same value. Read `type` instead.',
+                    }),
+                  rules: z
+                    .array(
+                      z
+                        .object({
+                          domain: z
+                            .string()
+                            .max(253)
+                            .openapi({
+                              description:
+                                'The hostname this rule allows, up to 253 characters. Matching is exact: `foo.local` does not match `api.foo.local`. Use a separate rule or `*.foo.local` for subdomains. A wildcard is allowed only as the leftmost label.\n',
+                              example: '*.bar.local',
+                            }),
+                          protocol: z
+                            .literal('https')
+                            .default('https')
+                            .exactOptional()
+                            .openapi({
+                              description:
+                                'The protocol allowed for this destination. Defaults to `https`. The `allow-list` policy blocks outbound traffic that uses other protocols.',
+                            }),
+                        })
+                        .openapi({
+                          description:
+                            'A destination that sandboxes can access when the network policy is `allow-list`.',
+                          required: ['domain'],
+                        }),
+                    )
+                    .max(100)
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Destinations the sandbox may reach, present when `type` is `allow-list` and absent otherwise. Each domain may be listed once.\n',
+                    }),
+                })
+                .openapi({
+                  description: 'The policy that controls outbound traffic from the sandbox.',
+                  required: ['type'],
+                }),
+              region: z
+                .string()
+                .openapi({
+                  description: 'The Render region where the sandbox runs.',
+                  example: 'oregon',
+                }),
+              timeoutSeconds: z
+                .int()
+                .openapi({
+                  description:
+                    'The maximum time the sandbox can run continuously, in seconds. The sandbox terminates when this time elapses. If the sandbox is suspended and later resumed, this timeout restarts. A value of 0 disables the runtime timeout.\n',
+                  example: 86400,
+                }),
+              idleTimeoutSeconds: z
+                .int()
+                .openapi({
+                  description:
+                    'The number of seconds of inactivity before Render suspends the sandbox. A value of 0 disables automatic idle suspension.',
+                  example: 900,
+                }),
+              createdAt: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description: 'The timestamp when the sandbox was created, in ISO 8601 format.',
+                  example: '2026-04-01T18:30:00Z',
+                }),
+              terminatedAt: z.iso
+                .datetime({ offset: true })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The timestamp when the sandbox was terminated, in ISO 8601 format. Null if the sandbox has not been terminated.',
+                }),
+            })
+            .openapi({
+              description:
+                'An isolated compute environment for running code, executing commands, and transferring files.',
+              required: [
+                'id',
+                'status',
+                'plan',
+                'networkPolicy',
+                'region',
+                'timeoutSeconds',
+                'idleTimeoutSeconds',
+                'createdAt',
+              ],
+            })
+            .and(z.looseObject({})),
+        },
+      },
+    },
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getSandboxesSandboxIdExecsRoute = createRoute({
+  method: 'get',
+  path: '/sandboxes/{sandboxId}/execs',
+  tags: ['Sandboxes'],
+  summary: 'List executions',
+  description: 'List execution records for the sandbox, ordered by start time, newest first.',
+  operationId: 'list-sandbox-executions',
+  request: {
+    params: z.object({
+      sandboxId: z
+        .string()
+        .regex(/^sbx-[0-9a-v]{25}$/)
+        .openapi({
+          param: {
+            name: 'sandboxId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox.',
+            schema: {
+              description: 'The ID of the sandbox.',
+              type: 'string',
+              pattern: '^sbx-[0-9a-v]{25}$',
+              example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox.',
+          example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+        }),
+    }),
+    query: z.object({
+      ownerId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'ownerId',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of the workspace the sandbox belongs to. If provided, it must match the sandbox's workspace. If omitted, Render determines the workspace from the sandbox ID.",
+            schema: { type: 'string' },
+          },
+        }),
+      cursor: CursorParamParamsSchema,
+      limit: LimitParamParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: { 'application/json': { schema: z.array(ExecutionWithCursorSchema) } },
+    },
+    400: _400BadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getSandboxesSandboxIdExecsExecIdRoute = createRoute({
+  method: 'get',
+  path: '/sandboxes/{sandboxId}/execs/{execId}',
+  tags: ['Sandboxes'],
+  summary: 'Retrieve execution',
+  description: 'Retrieve one execution record for the sandbox.',
+  operationId: 'retrieve-sandbox-execution',
+  request: {
+    params: z.object({
+      sandboxId: z
+        .string()
+        .regex(/^sbx-[0-9a-v]{25}$/)
+        .openapi({
+          param: {
+            name: 'sandboxId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox.',
+            schema: {
+              description: 'The ID of the sandbox.',
+              type: 'string',
+              pattern: '^sbx-[0-9a-v]{25}$',
+              example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox.',
+          example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+        }),
+      execId: z
+        .string()
+        .regex(/^exe-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'execId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox execution.',
+            schema: {
+              description: 'The ID of the sandbox execution.',
+              type: 'string',
+              pattern: '^exe-[0-9a-v]{20}$',
+              example: 'exe-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox execution.',
+          example: 'exe-cph1rs3idesc73a2b2mg',
+        }),
+    }),
+    query: z.object({
+      ownerId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'ownerId',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of the workspace the sandbox belongs to. If provided, it must match the sandbox's workspace. If omitted, Render determines the workspace from the sandbox ID.",
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .regex(/^exe-[0-9a-v]{20}$/)
+                .openapi({
+                  description: 'The ID of the sandbox execution.',
+                  example: 'exe-cph1rs3idesc73a2b2mg',
+                }),
+              sandboxId: z
+                .string()
+                .regex(/^sbx-[0-9a-v]{25}$/)
+                .openapi({
+                  description: 'The ID of the sandbox.',
+                  example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+                }),
+              type: z
+                .enum(['runs', 'files'])
+                .openapi({
+                  description: 'Whether the execution is a command run or a file transfer.',
+                }),
+              operation: z
+                .enum(['sync', 'stream', 'upload', 'download'])
+                .openapi({
+                  description:
+                    'The command run or file transfer operation authorized by the connect token.',
+                }),
+              command: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The command run in the sandbox, or the target path for a file transfer. Command text may be redacted or truncated. Omitted if you do not have permission to view execution commands.\n',
+                }),
+              userId: z
+                .string()
+                .openapi({
+                  description: 'The ID of the user the execution token was created for.',
+                  example: 'usr-cph1rs3idesc73a2b2mg',
+                }),
+              startedAt: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description:
+                    'The timestamp when the execution token was created, in ISO 8601 format.',
+                  example: '2026-08-01T10:00:00Z',
+                }),
+              stoppedAt: z.iso
+                .datetime({ offset: true })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The timestamp when the execution stopped, in ISO 8601 format. Omitted until a result is available.',
+                  example: '2026-08-01T10:05:00Z',
+                }),
+              exitCode: z
+                .int()
+                .exactOptional()
+                .openapi({
+                  description: 'The execution exit code. Omitted until a result is available.',
+                  example: 0,
+                }),
+            })
+            .openapi({
+              description:
+                'A record of a command run or file transfer in a sandbox. `startedAt` records when the connect token was created. The command can appear while the execution is running. `stoppedAt` and `exitCode` are omitted until Render receives the result or finalizes the execution when the sandbox stops.\n',
+              required: ['id', 'sandboxId', 'type', 'operation', 'userId', 'startedAt'],
+            }),
+        },
+      },
+    },
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const postSandboxesSandboxIdTerminateRoute = createRoute({
+  method: 'post',
+  path: '/sandboxes/{sandboxId}/terminate',
+  tags: ['Sandboxes'],
+  summary: 'Terminate sandbox',
+  description:
+    'Terminate the sandbox with the provided ID. Returns HTTP 204 even if the sandbox is already terminated. You can also terminate a sandbox while it is starting (`creating`).\n',
+  operationId: 'terminate-sandbox',
+  request: {
+    params: z.object({
+      sandboxId: z
+        .string()
+        .regex(/^sbx-[0-9a-v]{25}$/)
+        .openapi({
+          param: {
+            name: 'sandboxId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox.',
+            schema: {
+              description: 'The ID of the sandbox.',
+              type: 'string',
+              pattern: '^sbx-[0-9a-v]{25}$',
+              example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox.',
+          example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+        }),
+    }),
+    query: z.object({
+      ownerId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'ownerId',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of the workspace the sandbox belongs to. If provided, it must match the sandbox's workspace. If omitted, Render determines the workspace from the sandbox ID.",
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'The sandbox was terminated or was already terminated.' },
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const postSandboxesSandboxIdSuspendRoute = createRoute({
+  method: 'post',
+  path: '/sandboxes/{sandboxId}/suspend',
+  tags: ['Sandboxes'],
+  summary: 'Suspend sandbox',
+  description:
+    'Suspend the running sandbox with the provided ID. Returns HTTP 202 after the sandbox starts suspending, or if it is already `suspending` or `suspended`. Retrieve the sandbox until its status is `suspended`. Open commands and connections end. The next connection resumes the sandbox.\n',
+  operationId: 'suspend-sandbox',
+  request: {
+    params: z.object({
+      sandboxId: z
+        .string()
+        .regex(/^sbx-[0-9a-v]{25}$/)
+        .openapi({
+          param: {
+            name: 'sandboxId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox.',
+            schema: {
+              description: 'The ID of the sandbox.',
+              type: 'string',
+              pattern: '^sbx-[0-9a-v]{25}$',
+              example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox.',
+          example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+        }),
+    }),
+    query: z.object({
+      ownerId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'ownerId',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of the workspace the sandbox belongs to. If provided, it must match the sandbox's workspace. If omitted, Render determines the workspace from the sandbox ID.",
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    202: { description: 'The sandbox is suspending or is already suspended.' },
+    400: _400BadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    409: {
+      description:
+        'The current state of the resource conflicts with this request.\n\n- `sandbox_not_running`: The sandbox is not `running`, `suspending`, or `suspended`.\n',
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const postSandboxesSandboxIdSnapshotsRoute = createRoute({
+  method: 'post',
+  path: '/sandboxes/{sandboxId}/snapshots',
+  tags: ['Sandboxes'],
+  summary: 'Create sandbox snapshot',
+  description:
+    'Capture a snapshot of a running sandbox. Returns HTTP 202 with the snapshot in `creating` status. Retrieve the snapshot until its status is `available` or `failed`. The sandbox continues running, with a brief pause when capturing a runtime snapshot.\n',
+  operationId: 'create-sandbox-snapshot',
+  request: {
+    params: z.object({
+      sandboxId: z
+        .string()
+        .regex(/^sbx-[0-9a-v]{25}$/)
+        .openapi({
+          param: {
+            name: 'sandboxId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox.',
+            schema: {
+              description: 'The ID of the sandbox.',
+              type: 'string',
+              pattern: '^sbx-[0-9a-v]{25}$',
+              example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox.',
+          example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+        }),
+    }),
+    query: z.object({
+      ownerId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'ownerId',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of the workspace the sandbox belongs to. If provided, it must match the sandbox's workspace. If omitted, Render determines the workspace from the sandbox ID.",
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              kind: z
+                .enum(['filesystem', 'runtime'])
+                .openapi({
+                  description:
+                    'The state to capture. A `filesystem` snapshot captures the writable filesystem and can be restored to any plan. A `runtime` snapshot also captures memory and CPU state and must be restored to the source sandbox plan.\n',
+                })
+                .default('runtime')
+                .exactOptional()
+                .openapi({
+                  description: 'The state to capture in the snapshot. Defaults to `runtime`.',
+                }),
+              name: z
+                .string()
+                .min(1)
+                .max(64)
+                .exactOptional()
+                .openapi({
+                  example: 'gold',
+                  description:
+                    'A case-sensitive name for snapshots in a sandbox group, up to 64 characters. Must not start with `snp-`. Multiple snapshots can share a name. When creating a sandbox by snapshot name, Render uses the most recently created snapshot with that name that is `available` and unexpired.\n',
+                }),
+              ttlSeconds: z
+                .int()
+                .min(0)
+                .exactOptional()
+                .openapi({
+                  'x-go-name': 'TTLSeconds',
+                  description:
+                    "The snapshot's lifetime after its last use, in seconds. Creating a sandbox from this snapshot resets its remaining lifetime to this duration. Use 0 to keep the snapshot until you delete it. Defaults to Render's snapshot lifetime. Cannot be combined with `expiresAt`.\n",
+                }),
+              expiresAt: z.iso
+                .datetime({ offset: true })
+                .exactOptional()
+                .openapi({
+                  deprecated: true,
+                  'x-deprecated-reason': 'Use ttlSeconds instead.',
+                  description:
+                    'The expiration timestamp, in ISO 8601 format. Deprecated; use `ttlSeconds` instead. Must be in the future. Render sets the snapshot lifetime to the duration between the request and this timestamp.\n',
+                }),
+            })
+            .openapi({
+              description: 'The settings for the sandbox snapshot to capture.',
+              required: [],
+            }),
+        },
+      },
+    },
+  },
+  responses: {
+    202: {
+      description: 'The snapshot capture was accepted. Returns the snapshot in `creating` status.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .regex(/^snp-[0-9a-v]{20}$/)
+                .openapi({
+                  description: 'The ID of the sandbox snapshot.',
+                  example: 'snp-cph1rs3idesc73a2b2mg',
+                }),
+              sandboxGroupId: z
+                .string()
+                .regex(/^sbg-[0-9a-v]{20}$/)
+                .openapi({
+                  description: 'The ID of the sandbox group.',
+                  example: 'sbg-cph1rs3idesc73a2b2mg',
+                }),
+              sourceSandboxId: z
+                .string()
+                .regex(/^sbx-[0-9a-v]{25}$/)
+                .openapi({
+                  description: 'The ID of the sandbox.',
+                  example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+                })
+                .openapi({
+                  description:
+                    'The ID of the sandbox this snapshot was captured from, recorded for reference.',
+                }),
+              name: z
+                .string()
+                .min(1)
+                .max(64)
+                .openapi({
+                  example: 'gold',
+                  description:
+                    'A case-sensitive name for snapshots in a sandbox group, up to 64 characters. Must not start with `snp-`. Multiple snapshots can share a name. When creating a sandbox by snapshot name, Render uses the most recently created snapshot with that name that is `available` and unexpired.\n',
+                })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The name assigned when the snapshot was created. Cannot be changed. Null if no name was provided.',
+                }),
+              kind: z
+                .enum(['filesystem', 'runtime'])
+                .openapi({
+                  description:
+                    'The state to capture. A `filesystem` snapshot captures the writable filesystem and can be restored to any plan. A `runtime` snapshot also captures memory and CPU state and must be restored to the source sandbox plan.\n',
+                }),
+              status: z
+                .enum(['creating', 'available', 'failed'])
+                .openapi({ description: "The snapshot's current status." }),
+              plan: z
+                .union([
+                  z
+                    .enum(['starter', 'standard', 'pro', '1c-2g', '2c-4g', '4c-8g', '8c-16g'])
+                    .openapi({
+                      'x-enum-varnames': [
+                        'Starter',
+                        'Standard',
+                        'Pro',
+                        'SandboxPlan1c2g',
+                        'SandboxPlan2c4g',
+                        'SandboxPlan4c8g',
+                        'SandboxPlan8c16g',
+                      ],
+                      description:
+                        'The compute plan for the sandbox. The `starter`, `standard`, and `pro` plans are deprecated.',
+                    }),
+                  z.string(),
+                ])
+                .openapi({
+                  'x-go-type': 'SandboxPlan',
+                  description:
+                    "The source sandbox's compute plan when the snapshot was captured. See `sandboxPlan` for known values.",
+                }),
+              requestedAt: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description: 'The timestamp when the snapshot was requested, in ISO 8601 format.',
+                }),
+              capturedAt: z.iso
+                .datetime({ offset: true })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The timestamp when capture completed, in ISO 8601 format. Null until the snapshot is `available`.',
+                }),
+              expiresAt: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description:
+                    'The timestamp after which the snapshot can no longer be retrieved or restored, in ISO 8601 format. Each time you create a sandbox from this snapshot, Render resets its expiration to `ttlSeconds` seconds after that use. For snapshots with no expiration (`ttlSeconds: 0`), this is `9999-12-31T23:59:59Z`.\n',
+                }),
+              ttlSeconds: z
+                .int()
+                .min(0)
+                .exactOptional()
+                .openapi({
+                  'x-go-name': 'TTLSeconds',
+                  description:
+                    "The snapshot's lifetime after its last use, in seconds. A value of 0 means the snapshot does not expire. If omitted, Render's default snapshot lifetime applies.\n",
+                }),
+              sizeBytes: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  type: ['integer', 'null'],
+                  format: 'int64',
+                  description:
+                    'The size of the snapshot, in bytes. Null until the snapshot is `available`.',
+                }),
+              error: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The reason the snapshot failed. Null unless its status is `failed`.',
+                }),
+            })
+            .openapi({
+              description:
+                'A saved filesystem or runtime state that can be used to create another sandbox.',
+              required: [
+                'id',
+                'sandboxGroupId',
+                'sourceSandboxId',
+                'kind',
+                'status',
+                'plan',
+                'requestedAt',
+                'expiresAt',
+              ],
+            }),
+        },
+      },
+    },
+    400: {
+      description: 'The request is invalid.\n\n- `invalid_snapshot_name`: `name` is malformed.\n',
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    409: {
+      description:
+        'The current state of the resource conflicts with this request.\n\n- `sandbox_not_running`: The sandbox is not `running`.\n- `sandbox_group_suspended`: The sandbox group is suspended.\n',
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getSandboxGroupsSandboxGroupIdRoute = createRoute({
+  method: 'get',
+  path: '/sandbox-groups/{sandboxGroupId}',
+  tags: ['Sandboxes'],
+  summary: 'Retrieve sandbox group',
+  description: 'Retrieve a sandbox group by ID.',
+  operationId: 'retrieve-sandbox-group',
+  request: {
+    params: z.object({
+      sandboxGroupId: z
+        .string()
+        .regex(/^sbg-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'sandboxGroupId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox group.',
+            schema: {
+              description: 'The ID of the sandbox group.',
+              type: 'string',
+              pattern: '^sbg-[0-9a-v]{20}$',
+              example: 'sbg-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox group.',
+          example: 'sbg-cph1rs3idesc73a2b2mg',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .regex(/^sbg-[0-9a-v]{20}$/)
+                .openapi({
+                  description: 'The ID of the sandbox group.',
+                  example: 'sbg-cph1rs3idesc73a2b2mg',
+                }),
+              ownerId: z
+                .string()
+                .openapi({
+                  description: 'The ID of the workspace this group belongs to.',
+                  example: 'tea-cph1rs3idesc73a2b2mg',
+                }),
+              name: z
+                .string()
+                .openapi({ description: "The sandbox group's name.", example: 'Default' }),
+              region: z
+                .string()
+                .openapi({
+                  description: "The Render region where the group's sandboxes run.",
+                  example: 'oregon',
+                }),
+              isDefault: z
+                .boolean()
+                .openapi({
+                  description:
+                    "Whether this is the workspace's default sandbox group. Create requests that omit `sandboxGroupId` use this group.",
+                }),
+              environmentId: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The ID of the environment that contains this group. Null if the group isn't in a project. To move a group, add it to or remove it from an environment with `/environments/{environmentId}/resources`.",
+                }),
+              concurrencyLimit: z
+                .int()
+                .min(1)
+                .openapi({
+                  description:
+                    "The maximum number of active sandboxes allowed in this group, capped by Render's limit for the workspace.",
+                }),
+              createdAt: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description:
+                    'The timestamp when the sandbox group was created, in ISO 8601 format.',
+                  example: '2026-07-02T18:30:00Z',
+                }),
+              updatedAt: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description:
+                    'The timestamp when the sandbox group was last updated, in ISO 8601 format.',
+                  example: '2026-07-02T18:30:00Z',
+                }),
+            })
+            .openapi({
+              description:
+                'A group of sandboxes in a workspace that share a region, concurrency limit, and credentials.',
+              required: [
+                'id',
+                'ownerId',
+                'name',
+                'region',
+                'isDefault',
+                'concurrencyLimit',
+                'createdAt',
+                'updatedAt',
+              ],
+            }),
+        },
+      },
+    },
+    400: _400SandboxGroupBadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const patchSandboxGroupsSandboxGroupIdRoute = createRoute({
+  method: 'patch',
+  path: '/sandbox-groups/{sandboxGroupId}',
+  tags: ['Sandboxes'],
+  summary: 'Update sandbox group',
+  description:
+    "Update a sandbox group's concurrency limit. The response contains the effective limit after applying Render's limit for the workspace.\n",
+  operationId: 'update-sandbox-group',
+  request: {
+    params: z.object({
+      sandboxGroupId: z
+        .string()
+        .regex(/^sbg-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'sandboxGroupId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox group.',
+            schema: {
+              description: 'The ID of the sandbox group.',
+              type: 'string',
+              pattern: '^sbg-[0-9a-v]{20}$',
+              example: 'sbg-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox group.',
+          example: 'sbg-cph1rs3idesc73a2b2mg',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              concurrencyLimit: z
+                .int()
+                .min(1)
+                .openapi({
+                  description:
+                    "The maximum number of active sandboxes allowed in this group. Must be at least 1. Render caps this value at the workspace's limit and returns the effective limit. Lowering the limit does not stop existing sandboxes.\n",
+                  example: 10,
+                }),
+            })
+            .openapi({
+              description: "The sandbox group's concurrency settings to update.",
+              required: ['concurrencyLimit'],
+            }),
+          example: { concurrencyLimit: 10 },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Sandbox group updated.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .regex(/^sbg-[0-9a-v]{20}$/)
+                .openapi({
+                  description: 'The ID of the sandbox group.',
+                  example: 'sbg-cph1rs3idesc73a2b2mg',
+                }),
+              ownerId: z
+                .string()
+                .openapi({
+                  description: 'The ID of the workspace this group belongs to.',
+                  example: 'tea-cph1rs3idesc73a2b2mg',
+                }),
+              name: z
+                .string()
+                .openapi({ description: "The sandbox group's name.", example: 'Default' }),
+              region: z
+                .string()
+                .openapi({
+                  description: "The Render region where the group's sandboxes run.",
+                  example: 'oregon',
+                }),
+              isDefault: z
+                .boolean()
+                .openapi({
+                  description:
+                    "Whether this is the workspace's default sandbox group. Create requests that omit `sandboxGroupId` use this group.",
+                }),
+              environmentId: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    "The ID of the environment that contains this group. Null if the group isn't in a project. To move a group, add it to or remove it from an environment with `/environments/{environmentId}/resources`.",
+                }),
+              concurrencyLimit: z
+                .int()
+                .min(1)
+                .openapi({
+                  description:
+                    "The maximum number of active sandboxes allowed in this group, capped by Render's limit for the workspace.",
+                }),
+              createdAt: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description:
+                    'The timestamp when the sandbox group was created, in ISO 8601 format.',
+                  example: '2026-07-02T18:30:00Z',
+                }),
+              updatedAt: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description:
+                    'The timestamp when the sandbox group was last updated, in ISO 8601 format.',
+                  example: '2026-07-02T18:30:00Z',
+                }),
+            })
+            .openapi({
+              description:
+                'A group of sandboxes in a workspace that share a region, concurrency limit, and credentials.',
+              required: [
+                'id',
+                'ownerId',
+                'name',
+                'region',
+                'isDefault',
+                'concurrencyLimit',
+                'createdAt',
+                'updatedAt',
+              ],
+            }),
+        },
+      },
+    },
+    400: {
+      description:
+        'The request is invalid.\n\n- `invalid_sandbox_group_id`: The group ID is malformed.\n- `concurrencyLimit` is omitted or below 1.\n',
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    409: _409ConflictResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getSandboxGroupsSandboxGroupIdCredentialsRoute = createRoute({
+  method: 'get',
+  path: '/sandbox-groups/{sandboxGroupId}/credentials',
+  tags: ['Sandboxes'],
+  summary: 'List sandbox group credentials',
+  description:
+    'List credentials in the sandbox group, sorted by credential ID. Returns credential settings and metadata. These endpoints do not return secret values, including to admins.\n',
+  operationId: 'list-sandbox-group-credentials',
+  request: {
+    params: z.object({
+      sandboxGroupId: z
+        .string()
+        .regex(/^sbg-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'sandboxGroupId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox group.',
+            schema: {
+              description: 'The ID of the sandbox group.',
+              type: 'string',
+              pattern: '^sbg-[0-9a-v]{20}$',
+              example: 'sbg-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox group.',
+          example: 'sbg-cph1rs3idesc73a2b2mg',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .array(
+              z
+                .object({
+                  id: z
+                    .string()
+                    .regex(/^[A-Za-z0-9._~-]+$/)
+                    .min(1)
+                    .openapi({
+                      description:
+                        'The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.\n',
+                      example: 'my-inference-key',
+                    }),
+                  domain: z
+                    .string()
+                    .openapi({
+                      description:
+                        'The destination hostname to match for credential injection. Must be a public DNS hostname. Render normalizes it to lowercase and matches it exactly. IP addresses, ports, wildcards, and local or internal hostnames are not supported.\n',
+                      example: 'api.render.com',
+                    }),
+                  version: z
+                    .object({
+                      id: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64().min(1n),
+                        )
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          minimum: 1,
+                          description:
+                            'The ID of the credential version. Each new version receives a higher ID, including versions created by a restore.',
+                        }),
+                      updatedAt: z.iso
+                        .datetime({ offset: true })
+                        .openapi({
+                          description:
+                            'The timestamp when this credential version was created, in ISO 8601 format.',
+                        }),
+                      updatedBy: z
+                        .string()
+                        .openapi({
+                          description:
+                            'The ID of the authenticated identity that created this credential version.',
+                        }),
+                      fingerprint: z
+                        .string()
+                        .regex(/^[0-9a-f]{64}$/)
+                        .openapi({
+                          description:
+                            'A fingerprint of the routing settings, injection settings, and secret value. Matching fingerprints identify equivalent credential configurations within the same sandbox group. Fingerprints cannot be compared across groups.\n',
+                        }),
+                      restoredFromVersionId: z
+                        .preprocess(
+                          (val) =>
+                            typeof val === 'number' && Number.isSafeInteger(val)
+                              ? BigInt(val)
+                              : typeof val === 'string' && /^-?\d+$/.test(val)
+                                ? BigInt(val)
+                                : val,
+                          z.int64().min(1n),
+                        )
+                        .exactOptional()
+                        .openapi({
+                          type: 'integer',
+                          format: 'int64',
+                          minimum: 1,
+                          description:
+                            'The ID of the credential version restored to create this version. Omitted for versions created by a create or update request.',
+                        }),
+                    })
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Metadata for a credential version. These endpoints do not return secret values.',
+                      required: ['id', 'updatedAt', 'updatedBy', 'fingerprint'],
+                    }),
+                  enabled: z
+                    .boolean()
+                    .openapi({ description: 'Whether this credential is enabled for injection.' }),
+                  methods: z
+                    .array(z.string())
+                    .openapi({
+                      description:
+                        'The HTTP methods to match for credential injection. Supported methods are GET, HEAD, POST, PUT, PATCH, DELETE, and OPTIONS, normalized to uppercase. An empty list matches any method.\n',
+                    }),
+                  paths: z
+                    .array(z.string())
+                    .openapi({
+                      description:
+                        'The request path patterns to match for credential injection. Each pattern must match the entire absolute path. Use `*` for one nonempty path segment or `**` for one or more segments. Wildcards must occupy whole segments. For example, `/a/*` matches `/a/b`, and `/a/**` also matches `/a/b/c`. Neither matches `/a`. Patterns do not support query strings, fragments, or escaping. Request query strings do not affect matching. An empty list matches any path.\n',
+                    }),
+                  injection: z
+                    .object({
+                      type: z
+                        .enum(['header', 'basic', 'cookie', 'query'])
+                        .openapi({
+                          description:
+                            'How Render adds the credential to a matching request. For `basic`, the value after applying `template` must have the form `username:password`. Do not provide `name`.\n',
+                        }),
+                      name: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'The header, cookie, or query parameter to set. Required for `header`, `cookie`, and `query`. Headers that control routing or connection behavior cannot be used.\n',
+                        }),
+                      template: z
+                        .string()
+                        .exactOptional()
+                        .openapi({
+                          description:
+                            'A template containing 1–5 occurrences of `${SECRET}`, such as `Bearer ${SECRET}`. Render replaces each occurrence with the secret value. Omit to use the secret value without a template.\n',
+                          example: 'Bearer ${SECRET}',
+                        }),
+                    })
+                    .openapi({
+                      description:
+                        'Settings for injecting the secret value into matching outbound HTTPS requests.',
+                      required: ['type'],
+                    }),
+                })
+                .openapi({
+                  description:
+                    'A credential configured for injection into matching outbound HTTPS requests from sandboxes in one sandbox group. Each credential stores its own secret value. These endpoints do not return secret values, including to admins.\n\nCredential injection supports HTTPS requests on port 443. Avoid overlapping credential configurations for the same hostname. Multiple matching credentials are not combined.\n',
+                  required: ['id', 'domain', 'enabled', 'methods', 'paths', 'injection'],
+                }),
+            )
+            .max(25),
+        },
+      },
+    },
+    400: _400SandboxGroupBadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const postSandboxGroupsSandboxGroupIdCredentialsRoute = createRoute({
+  method: 'post',
+  path: '/sandbox-groups/{sandboxGroupId}/credentials',
+  tags: ['Sandboxes'],
+  summary: 'Create sandbox group credential',
+  description:
+    'Configure a credential for injection into matching outbound HTTPS requests from sandboxes in this group. Requires an admin. You assign the credential ID.\n\nEach group supports up to 25 credentials. Current credential settings and secret values have a combined serialized size limit of 200 KiB (204800 bytes). Render retains the current configuration and three distinct prior configurations per credential, with a total storage limit of 1 MiB including version metadata.\n\nThe response confirms the configuration was saved. It does not confirm that credential injection is active for a particular sandbox.\n',
+  operationId: 'create-sandbox-group-credential',
+  request: {
+    params: z.object({
+      sandboxGroupId: z
+        .string()
+        .regex(/^sbg-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'sandboxGroupId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox group.',
+            schema: {
+              description: 'The ID of the sandbox group.',
+              type: 'string',
+              pattern: '^sbg-[0-9a-v]{20}$',
+              example: 'sbg-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox group.',
+          example: 'sbg-cph1rs3idesc73a2b2mg',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .regex(/^[A-Za-z0-9._~-]+$/)
+                .min(1)
+                .openapi({
+                  description:
+                    'The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.\n',
+                  example: 'my-inference-key',
+                }),
+              domain: z
+                .string()
+                .openapi({
+                  description:
+                    'The destination hostname to match for credential injection. Must be a public DNS hostname. Render normalizes it to lowercase and matches it exactly. IP addresses, ports, wildcards, and local or internal hostnames are not supported.\n',
+                }),
+              value: z
+                .string()
+                .max(5120)
+                .openapi({
+                  description: 'The secret value to store, up to 5 KiB (5120 UTF-8 bytes).',
+                }),
+              enabled: z
+                .boolean()
+                .default(true)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Whether this credential is enabled for injection. Defaults to `true`.',
+                }),
+              methods: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The HTTP methods to match for credential injection. Supported methods are GET, HEAD, POST, PUT, PATCH, DELETE, and OPTIONS, normalized to uppercase. Omit or provide an empty list to match any method.\n',
+                }),
+              paths: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The request path patterns to match for credential injection. Each pattern must match the entire absolute path. Use `*` for one nonempty path segment or `**` for one or more segments. Wildcards must occupy whole segments. For example, `/a/*` matches `/a/b`, and `/a/**` also matches `/a/b/c`. Neither matches `/a`. Patterns do not support query strings, fragments, or escaping. Request query strings do not affect matching. Omit or provide an empty list to match any path.\n',
+                }),
+              injection: z
+                .object({
+                  type: z
+                    .enum(['header', 'basic', 'cookie', 'query'])
+                    .openapi({
+                      description:
+                        'How Render adds the credential to a matching request. For `basic`, the value after applying `template` must have the form `username:password`. Do not provide `name`.\n',
+                    }),
+                  name: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The header, cookie, or query parameter to set. Required for `header`, `cookie`, and `query`. Headers that control routing or connection behavior cannot be used.\n',
+                    }),
+                  template: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'A template containing 1–5 occurrences of `${SECRET}`, such as `Bearer ${SECRET}`. Render replaces each occurrence with the secret value. Omit to use the secret value without a template.\n',
+                      example: 'Bearer ${SECRET}',
+                    }),
+                })
+                .openapi({
+                  description:
+                    'Settings for injecting the secret value into matching outbound HTTPS requests.',
+                  required: ['type'],
+                }),
+            })
+            .openapi({
+              description:
+                'The credential configuration to create, including request matching and injection settings.',
+              required: ['id', 'domain', 'value', 'injection'],
+            }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'The credential configuration was saved.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .regex(/^[A-Za-z0-9._~-]+$/)
+                .min(1)
+                .openapi({
+                  description:
+                    'The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.\n',
+                  example: 'my-inference-key',
+                }),
+              domain: z
+                .string()
+                .openapi({
+                  description:
+                    'The destination hostname to match for credential injection. Must be a public DNS hostname. Render normalizes it to lowercase and matches it exactly. IP addresses, ports, wildcards, and local or internal hostnames are not supported.\n',
+                  example: 'api.render.com',
+                }),
+              version: z
+                .object({
+                  id: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'number' && Number.isSafeInteger(val)
+                          ? BigInt(val)
+                          : typeof val === 'string' && /^-?\d+$/.test(val)
+                            ? BigInt(val)
+                            : val,
+                      z.int64().min(1n),
+                    )
+                    .openapi({
+                      type: 'integer',
+                      format: 'int64',
+                      minimum: 1,
+                      description:
+                        'The ID of the credential version. Each new version receives a higher ID, including versions created by a restore.',
+                    }),
+                  updatedAt: z.iso
+                    .datetime({ offset: true })
+                    .openapi({
+                      description:
+                        'The timestamp when this credential version was created, in ISO 8601 format.',
+                    }),
+                  updatedBy: z
+                    .string()
+                    .openapi({
+                      description:
+                        'The ID of the authenticated identity that created this credential version.',
+                    }),
+                  fingerprint: z
+                    .string()
+                    .regex(/^[0-9a-f]{64}$/)
+                    .openapi({
+                      description:
+                        'A fingerprint of the routing settings, injection settings, and secret value. Matching fingerprints identify equivalent credential configurations within the same sandbox group. Fingerprints cannot be compared across groups.\n',
+                    }),
+                  restoredFromVersionId: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'number' && Number.isSafeInteger(val)
+                          ? BigInt(val)
+                          : typeof val === 'string' && /^-?\d+$/.test(val)
+                            ? BigInt(val)
+                            : val,
+                      z.int64().min(1n),
+                    )
+                    .exactOptional()
+                    .openapi({
+                      type: 'integer',
+                      format: 'int64',
+                      minimum: 1,
+                      description:
+                        'The ID of the credential version restored to create this version. Omitted for versions created by a create or update request.',
+                    }),
+                })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Metadata for a credential version. These endpoints do not return secret values.',
+                  required: ['id', 'updatedAt', 'updatedBy', 'fingerprint'],
+                }),
+              enabled: z
+                .boolean()
+                .openapi({ description: 'Whether this credential is enabled for injection.' }),
+              methods: z
+                .array(z.string())
+                .openapi({
+                  description:
+                    'The HTTP methods to match for credential injection. Supported methods are GET, HEAD, POST, PUT, PATCH, DELETE, and OPTIONS, normalized to uppercase. An empty list matches any method.\n',
+                }),
+              paths: z
+                .array(z.string())
+                .openapi({
+                  description:
+                    'The request path patterns to match for credential injection. Each pattern must match the entire absolute path. Use `*` for one nonempty path segment or `**` for one or more segments. Wildcards must occupy whole segments. For example, `/a/*` matches `/a/b`, and `/a/**` also matches `/a/b/c`. Neither matches `/a`. Patterns do not support query strings, fragments, or escaping. Request query strings do not affect matching. An empty list matches any path.\n',
+                }),
+              injection: z
+                .object({
+                  type: z
+                    .enum(['header', 'basic', 'cookie', 'query'])
+                    .openapi({
+                      description:
+                        'How Render adds the credential to a matching request. For `basic`, the value after applying `template` must have the form `username:password`. Do not provide `name`.\n',
+                    }),
+                  name: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The header, cookie, or query parameter to set. Required for `header`, `cookie`, and `query`. Headers that control routing or connection behavior cannot be used.\n',
+                    }),
+                  template: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'A template containing 1–5 occurrences of `${SECRET}`, such as `Bearer ${SECRET}`. Render replaces each occurrence with the secret value. Omit to use the secret value without a template.\n',
+                      example: 'Bearer ${SECRET}',
+                    }),
+                })
+                .openapi({
+                  description:
+                    'Settings for injecting the secret value into matching outbound HTTPS requests.',
+                  required: ['type'],
+                }),
+            })
+            .openapi({
+              description:
+                'A credential configured for injection into matching outbound HTTPS requests from sandboxes in one sandbox group. Each credential stores its own secret value. These endpoints do not return secret values, including to admins.\n\nCredential injection supports HTTPS requests on port 443. Avoid overlapping credential configurations for the same hostname. Multiple matching credentials are not combined.\n',
+              required: ['id', 'domain', 'enabled', 'methods', 'paths', 'injection'],
+            }),
+        },
+      },
+    },
+    400: _400SandboxGroupBadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    409: _409ConflictResponse,
+    429: _429SandboxCredentialRateLimitOrConflictResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getSandboxGroupsSandboxGroupIdCredentialsCredentialIdRoute = createRoute({
+  method: 'get',
+  path: '/sandbox-groups/{sandboxGroupId}/credentials/{credentialId}',
+  tags: ['Sandboxes'],
+  summary: 'Retrieve sandbox group credential',
+  description:
+    'Retrieve the settings and metadata for a credential in this sandbox group. These endpoints do not return secret values, including to admins.\n',
+  operationId: 'retrieve-sandbox-group-credential',
+  request: {
+    params: z.object({
+      sandboxGroupId: z
+        .string()
+        .regex(/^sbg-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'sandboxGroupId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox group.',
+            schema: {
+              description: 'The ID of the sandbox group.',
+              type: 'string',
+              pattern: '^sbg-[0-9a-v]{20}$',
+              example: 'sbg-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox group.',
+          example: 'sbg-cph1rs3idesc73a2b2mg',
+        }),
+      credentialId: z
+        .string()
+        .regex(/^[A-Za-z0-9._~-]+$/)
+        .min(1)
+        .openapi({
+          param: {
+            name: 'credentialId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the credential. Must be unique within this sandbox group.',
+            schema: {
+              type: 'string',
+              minLength: 1,
+              pattern: '^[A-Za-z0-9._~-]+$',
+              description:
+                'The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.\n',
+              example: 'my-inference-key',
+            },
+          },
+          description:
+            'The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.\n',
+          example: 'my-inference-key',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .regex(/^[A-Za-z0-9._~-]+$/)
+                .min(1)
+                .openapi({
+                  description:
+                    'The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.\n',
+                  example: 'my-inference-key',
+                }),
+              domain: z
+                .string()
+                .openapi({
+                  description:
+                    'The destination hostname to match for credential injection. Must be a public DNS hostname. Render normalizes it to lowercase and matches it exactly. IP addresses, ports, wildcards, and local or internal hostnames are not supported.\n',
+                  example: 'api.render.com',
+                }),
+              version: z
+                .object({
+                  id: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'number' && Number.isSafeInteger(val)
+                          ? BigInt(val)
+                          : typeof val === 'string' && /^-?\d+$/.test(val)
+                            ? BigInt(val)
+                            : val,
+                      z.int64().min(1n),
+                    )
+                    .openapi({
+                      type: 'integer',
+                      format: 'int64',
+                      minimum: 1,
+                      description:
+                        'The ID of the credential version. Each new version receives a higher ID, including versions created by a restore.',
+                    }),
+                  updatedAt: z.iso
+                    .datetime({ offset: true })
+                    .openapi({
+                      description:
+                        'The timestamp when this credential version was created, in ISO 8601 format.',
+                    }),
+                  updatedBy: z
+                    .string()
+                    .openapi({
+                      description:
+                        'The ID of the authenticated identity that created this credential version.',
+                    }),
+                  fingerprint: z
+                    .string()
+                    .regex(/^[0-9a-f]{64}$/)
+                    .openapi({
+                      description:
+                        'A fingerprint of the routing settings, injection settings, and secret value. Matching fingerprints identify equivalent credential configurations within the same sandbox group. Fingerprints cannot be compared across groups.\n',
+                    }),
+                  restoredFromVersionId: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'number' && Number.isSafeInteger(val)
+                          ? BigInt(val)
+                          : typeof val === 'string' && /^-?\d+$/.test(val)
+                            ? BigInt(val)
+                            : val,
+                      z.int64().min(1n),
+                    )
+                    .exactOptional()
+                    .openapi({
+                      type: 'integer',
+                      format: 'int64',
+                      minimum: 1,
+                      description:
+                        'The ID of the credential version restored to create this version. Omitted for versions created by a create or update request.',
+                    }),
+                })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Metadata for a credential version. These endpoints do not return secret values.',
+                  required: ['id', 'updatedAt', 'updatedBy', 'fingerprint'],
+                }),
+              enabled: z
+                .boolean()
+                .openapi({ description: 'Whether this credential is enabled for injection.' }),
+              methods: z
+                .array(z.string())
+                .openapi({
+                  description:
+                    'The HTTP methods to match for credential injection. Supported methods are GET, HEAD, POST, PUT, PATCH, DELETE, and OPTIONS, normalized to uppercase. An empty list matches any method.\n',
+                }),
+              paths: z
+                .array(z.string())
+                .openapi({
+                  description:
+                    'The request path patterns to match for credential injection. Each pattern must match the entire absolute path. Use `*` for one nonempty path segment or `**` for one or more segments. Wildcards must occupy whole segments. For example, `/a/*` matches `/a/b`, and `/a/**` also matches `/a/b/c`. Neither matches `/a`. Patterns do not support query strings, fragments, or escaping. Request query strings do not affect matching. An empty list matches any path.\n',
+                }),
+              injection: z
+                .object({
+                  type: z
+                    .enum(['header', 'basic', 'cookie', 'query'])
+                    .openapi({
+                      description:
+                        'How Render adds the credential to a matching request. For `basic`, the value after applying `template` must have the form `username:password`. Do not provide `name`.\n',
+                    }),
+                  name: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The header, cookie, or query parameter to set. Required for `header`, `cookie`, and `query`. Headers that control routing or connection behavior cannot be used.\n',
+                    }),
+                  template: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'A template containing 1–5 occurrences of `${SECRET}`, such as `Bearer ${SECRET}`. Render replaces each occurrence with the secret value. Omit to use the secret value without a template.\n',
+                      example: 'Bearer ${SECRET}',
+                    }),
+                })
+                .openapi({
+                  description:
+                    'Settings for injecting the secret value into matching outbound HTTPS requests.',
+                  required: ['type'],
+                }),
+            })
+            .openapi({
+              description:
+                'A credential configured for injection into matching outbound HTTPS requests from sandboxes in one sandbox group. Each credential stores its own secret value. These endpoints do not return secret values, including to admins.\n\nCredential injection supports HTTPS requests on port 443. Avoid overlapping credential configurations for the same hostname. Multiple matching credentials are not combined.\n',
+              required: ['id', 'domain', 'enabled', 'methods', 'paths', 'injection'],
+            }),
+        },
+      },
+    },
+    400: _400SandboxGroupBadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const deleteSandboxGroupsSandboxGroupIdCredentialsCredentialIdRoute = createRoute({
+  method: 'delete',
+  path: '/sandbox-groups/{sandboxGroupId}/credentials/{credentialId}',
+  tags: ['Sandboxes'],
+  summary: 'Delete sandbox group credential',
+  description:
+    'Delete a credential from the sandbox group. Requires an admin. Repeated delete requests are accepted, including if the credential is already absent.\n',
+  operationId: 'delete-sandbox-group-credential',
+  request: {
+    params: z.object({
+      sandboxGroupId: z
+        .string()
+        .regex(/^sbg-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'sandboxGroupId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox group.',
+            schema: {
+              description: 'The ID of the sandbox group.',
+              type: 'string',
+              pattern: '^sbg-[0-9a-v]{20}$',
+              example: 'sbg-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox group.',
+          example: 'sbg-cph1rs3idesc73a2b2mg',
+        }),
+      credentialId: z
+        .string()
+        .regex(/^[A-Za-z0-9._~-]+$/)
+        .min(1)
+        .openapi({
+          param: {
+            name: 'credentialId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the credential. Must be unique within this sandbox group.',
+            schema: {
+              type: 'string',
+              minLength: 1,
+              pattern: '^[A-Za-z0-9._~-]+$',
+              description:
+                'The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.\n',
+              example: 'my-inference-key',
+            },
+          },
+          description:
+            'The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.\n',
+          example: 'my-inference-key',
+        }),
+    }),
+  },
+  responses: {
+    202: { description: 'The credential deletion was accepted.' },
+    400: _400SandboxGroupBadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    409: _409ConflictResponse,
+    429: _429SandboxCredentialRateLimitOrConflictResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const patchSandboxGroupsSandboxGroupIdCredentialsCredentialIdRoute = createRoute({
+  method: 'patch',
+  path: '/sandbox-groups/{sandboxGroupId}/credentials/{credentialId}',
+  tags: ['Sandboxes'],
+  summary: 'Update sandbox group credential',
+  description:
+    'Update a credential. Developers can change `injection`, `methods`, `paths`, and `enabled`. Changing `domain` or `value` requires an admin.\n\nOmitted top-level fields keep their current values. Providing `injection` replaces the entire object. Its `template` defaults to `${SECRET}` when omitted. An empty `methods` or `paths` list removes that filter. Providing `value` creates a new version. The combined serialized size of current credential settings and secret values in the group must remain within 200 KiB (204800 bytes).\n\nThe response confirms the configuration was saved. It does not confirm that credential injection is active for a particular sandbox.\n',
+  operationId: 'update-sandbox-group-credential',
+  request: {
+    params: z.object({
+      sandboxGroupId: z
+        .string()
+        .regex(/^sbg-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'sandboxGroupId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox group.',
+            schema: {
+              description: 'The ID of the sandbox group.',
+              type: 'string',
+              pattern: '^sbg-[0-9a-v]{20}$',
+              example: 'sbg-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox group.',
+          example: 'sbg-cph1rs3idesc73a2b2mg',
+        }),
+      credentialId: z
+        .string()
+        .regex(/^[A-Za-z0-9._~-]+$/)
+        .min(1)
+        .openapi({
+          param: {
+            name: 'credentialId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the credential. Must be unique within this sandbox group.',
+            schema: {
+              type: 'string',
+              minLength: 1,
+              pattern: '^[A-Za-z0-9._~-]+$',
+              description:
+                'The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.\n',
+              example: 'my-inference-key',
+            },
+          },
+          description:
+            'The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.\n',
+          example: 'my-inference-key',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              value: z
+                .string()
+                .max(5120)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The replacement secret value, up to 5 KiB (5120 UTF-8 bytes). Requires an admin. Omit to preserve the current value.',
+                }),
+              domain: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The destination hostname to match for credential injection. Must be a public DNS hostname. Render normalizes it to lowercase and matches it exactly. IP addresses, ports, wildcards, and local or internal hostnames are not supported. Omit to preserve the current hostname.\n',
+                }),
+              enabled: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Whether this credential is enabled for injection. Omit to preserve the current setting.',
+                }),
+              methods: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The HTTP methods to match for credential injection. Supported methods are GET, HEAD, POST, PUT, PATCH, DELETE, and OPTIONS, normalized to uppercase. An empty list matches any method. Omit to preserve the current filter.\n',
+                }),
+              paths: z
+                .array(z.string())
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The request path patterns to match for credential injection. Each pattern must match the entire absolute path. Use `*` for one nonempty path segment or `**` for one or more segments. Wildcards must occupy whole segments. For example, `/a/*` matches `/a/b`, and `/a/**` also matches `/a/b/c`. Neither matches `/a`. Patterns do not support query strings, fragments, or escaping. Request query strings do not affect matching. An empty list matches any path. Omit to preserve the current filter.\n',
+                }),
+              injection: z
+                .object({
+                  type: z
+                    .enum(['header', 'basic', 'cookie', 'query'])
+                    .openapi({
+                      description:
+                        'How Render adds the credential to a matching request. For `basic`, the value after applying `template` must have the form `username:password`. Do not provide `name`.\n',
+                    }),
+                  name: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The header, cookie, or query parameter to set. Required for `header`, `cookie`, and `query`. Headers that control routing or connection behavior cannot be used.\n',
+                    }),
+                  template: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'A template containing 1–5 occurrences of `${SECRET}`, such as `Bearer ${SECRET}`. Render replaces each occurrence with the secret value. Omit to use the secret value without a template.\n',
+                      example: 'Bearer ${SECRET}',
+                    }),
+                })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Settings for injecting the secret value into matching outbound HTTPS requests.',
+                  required: ['type'],
+                }),
+            })
+            .openapi({
+              description:
+                'The credential settings to update. Omitted top-level fields keep their current values. Providing `injection` replaces the entire object. Its `template` defaults to `${SECRET}` when omitted. Empty `methods` or `paths` lists remove those filters. Developers can update `injection`, `methods`, `paths`, and `enabled`. Changing `domain` or `value` requires an admin.\n\nChanges to routing, injection, or enabled state create a new version. Setting `value` creates a new version even if the secret value is unchanged. The credential ID cannot be changed.\n',
+              required: [],
+            }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The credential configuration was saved.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .regex(/^[A-Za-z0-9._~-]+$/)
+                .min(1)
+                .openapi({
+                  description:
+                    'The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.\n',
+                  example: 'my-inference-key',
+                }),
+              domain: z
+                .string()
+                .openapi({
+                  description:
+                    'The destination hostname to match for credential injection. Must be a public DNS hostname. Render normalizes it to lowercase and matches it exactly. IP addresses, ports, wildcards, and local or internal hostnames are not supported.\n',
+                  example: 'api.render.com',
+                }),
+              version: z
+                .object({
+                  id: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'number' && Number.isSafeInteger(val)
+                          ? BigInt(val)
+                          : typeof val === 'string' && /^-?\d+$/.test(val)
+                            ? BigInt(val)
+                            : val,
+                      z.int64().min(1n),
+                    )
+                    .openapi({
+                      type: 'integer',
+                      format: 'int64',
+                      minimum: 1,
+                      description:
+                        'The ID of the credential version. Each new version receives a higher ID, including versions created by a restore.',
+                    }),
+                  updatedAt: z.iso
+                    .datetime({ offset: true })
+                    .openapi({
+                      description:
+                        'The timestamp when this credential version was created, in ISO 8601 format.',
+                    }),
+                  updatedBy: z
+                    .string()
+                    .openapi({
+                      description:
+                        'The ID of the authenticated identity that created this credential version.',
+                    }),
+                  fingerprint: z
+                    .string()
+                    .regex(/^[0-9a-f]{64}$/)
+                    .openapi({
+                      description:
+                        'A fingerprint of the routing settings, injection settings, and secret value. Matching fingerprints identify equivalent credential configurations within the same sandbox group. Fingerprints cannot be compared across groups.\n',
+                    }),
+                  restoredFromVersionId: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'number' && Number.isSafeInteger(val)
+                          ? BigInt(val)
+                          : typeof val === 'string' && /^-?\d+$/.test(val)
+                            ? BigInt(val)
+                            : val,
+                      z.int64().min(1n),
+                    )
+                    .exactOptional()
+                    .openapi({
+                      type: 'integer',
+                      format: 'int64',
+                      minimum: 1,
+                      description:
+                        'The ID of the credential version restored to create this version. Omitted for versions created by a create or update request.',
+                    }),
+                })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Metadata for a credential version. These endpoints do not return secret values.',
+                  required: ['id', 'updatedAt', 'updatedBy', 'fingerprint'],
+                }),
+              enabled: z
+                .boolean()
+                .openapi({ description: 'Whether this credential is enabled for injection.' }),
+              methods: z
+                .array(z.string())
+                .openapi({
+                  description:
+                    'The HTTP methods to match for credential injection. Supported methods are GET, HEAD, POST, PUT, PATCH, DELETE, and OPTIONS, normalized to uppercase. An empty list matches any method.\n',
+                }),
+              paths: z
+                .array(z.string())
+                .openapi({
+                  description:
+                    'The request path patterns to match for credential injection. Each pattern must match the entire absolute path. Use `*` for one nonempty path segment or `**` for one or more segments. Wildcards must occupy whole segments. For example, `/a/*` matches `/a/b`, and `/a/**` also matches `/a/b/c`. Neither matches `/a`. Patterns do not support query strings, fragments, or escaping. Request query strings do not affect matching. An empty list matches any path.\n',
+                }),
+              injection: z
+                .object({
+                  type: z
+                    .enum(['header', 'basic', 'cookie', 'query'])
+                    .openapi({
+                      description:
+                        'How Render adds the credential to a matching request. For `basic`, the value after applying `template` must have the form `username:password`. Do not provide `name`.\n',
+                    }),
+                  name: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The header, cookie, or query parameter to set. Required for `header`, `cookie`, and `query`. Headers that control routing or connection behavior cannot be used.\n',
+                    }),
+                  template: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'A template containing 1–5 occurrences of `${SECRET}`, such as `Bearer ${SECRET}`. Render replaces each occurrence with the secret value. Omit to use the secret value without a template.\n',
+                      example: 'Bearer ${SECRET}',
+                    }),
+                })
+                .openapi({
+                  description:
+                    'Settings for injecting the secret value into matching outbound HTTPS requests.',
+                  required: ['type'],
+                }),
+            })
+            .openapi({
+              description:
+                'A credential configured for injection into matching outbound HTTPS requests from sandboxes in one sandbox group. Each credential stores its own secret value. These endpoints do not return secret values, including to admins.\n\nCredential injection supports HTTPS requests on port 443. Avoid overlapping credential configurations for the same hostname. Multiple matching credentials are not combined.\n',
+              required: ['id', 'domain', 'enabled', 'methods', 'paths', 'injection'],
+            }),
+        },
+      },
+    },
+    400: _400SandboxGroupBadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: {
+      description:
+        "You do not have permissions for the requested resource. If a scoped API token does not satisfy the endpoint's minimum scope requirements, the response has code insufficient_token_scope and its message lists all minimum required scopes. Broader scopes that include their permissions also satisfy the requirements. Passing this check does not guarantee access to the requested resource or to conditional operations.\n\nChanging `domain` or `value` requires an admin.\n",
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    404: _404NotFoundResponse,
+    409: _409ConflictResponse,
+    429: _429SandboxCredentialRateLimitOrConflictResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getSandboxGroupsSandboxGroupIdCredentialsCredentialIdVersionsRoute = createRoute({
+  method: 'get',
+  path: '/sandbox-groups/{sandboxGroupId}/credentials/{credentialId}/versions',
+  tags: ['Sandboxes'],
+  summary: 'List sandbox credential versions',
+  description:
+    'List retained credential versions, newest version ID first. Versions with identical settings and secret values share a fingerprint.\n\nRender retains the current configuration and the three distinct prior configurations most recently active. When an older configuration is removed, all versions that refer to it are also removed. These endpoints do not return secret values.\n',
+  operationId: 'list-sandbox-group-credential-versions',
+  request: {
+    params: z.object({
+      sandboxGroupId: z
+        .string()
+        .regex(/^sbg-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'sandboxGroupId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox group.',
+            schema: {
+              description: 'The ID of the sandbox group.',
+              type: 'string',
+              pattern: '^sbg-[0-9a-v]{20}$',
+              example: 'sbg-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox group.',
+          example: 'sbg-cph1rs3idesc73a2b2mg',
+        }),
+      credentialId: z
+        .string()
+        .regex(/^[A-Za-z0-9._~-]+$/)
+        .min(1)
+        .openapi({
+          param: {
+            name: 'credentialId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the credential. Must be unique within this sandbox group.',
+            schema: {
+              type: 'string',
+              minLength: 1,
+              pattern: '^[A-Za-z0-9._~-]+$',
+              description:
+                'The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.\n',
+              example: 'my-inference-key',
+            },
+          },
+          description:
+            'The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.\n',
+          example: 'my-inference-key',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z.array(
+            z
+              .object({
+                id: z
+                  .preprocess(
+                    (val) =>
+                      typeof val === 'number' && Number.isSafeInteger(val)
+                        ? BigInt(val)
+                        : typeof val === 'string' && /^-?\d+$/.test(val)
+                          ? BigInt(val)
+                          : val,
+                    z.int64().min(1n),
+                  )
+                  .openapi({
+                    type: 'integer',
+                    format: 'int64',
+                    minimum: 1,
+                    description:
+                      'The ID of the credential version. Each new version receives a higher ID, including versions created by a restore.',
+                  }),
+                updatedAt: z.iso
+                  .datetime({ offset: true })
+                  .openapi({
+                    description:
+                      'The timestamp when this credential version was created, in ISO 8601 format.',
+                  }),
+                updatedBy: z
+                  .string()
+                  .openapi({
+                    description:
+                      'The ID of the authenticated identity that created this credential version.',
+                  }),
+                fingerprint: z
+                  .string()
+                  .regex(/^[0-9a-f]{64}$/)
+                  .openapi({
+                    description:
+                      'A fingerprint of the routing settings, injection settings, and secret value. Matching fingerprints identify equivalent credential configurations within the same sandbox group. Fingerprints cannot be compared across groups.\n',
+                  }),
+                restoredFromVersionId: z
+                  .preprocess(
+                    (val) =>
+                      typeof val === 'number' && Number.isSafeInteger(val)
+                        ? BigInt(val)
+                        : typeof val === 'string' && /^-?\d+$/.test(val)
+                          ? BigInt(val)
+                          : val,
+                    z.int64().min(1n),
+                  )
+                  .exactOptional()
+                  .openapi({
+                    type: 'integer',
+                    format: 'int64',
+                    minimum: 1,
+                    description:
+                      'The ID of the credential version restored to create this version. Omitted for versions created by a create or update request.',
+                  }),
+              })
+              .openapi({
+                description:
+                  'Metadata for a credential version. These endpoints do not return secret values.',
+                required: ['id', 'updatedAt', 'updatedBy', 'fingerprint'],
+              }),
+          ),
+        },
+      },
+    },
+    400: _400BadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    409: _409ConflictResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const postSandboxGroupsSandboxGroupIdCredentialsCredentialIdRestoreRoute = createRoute({
+  method: 'post',
+  path: '/sandbox-groups/{sandboxGroupId}/credentials/{credentialId}/restore',
+  tags: ['Sandboxes'],
+  summary: 'Restore sandbox credential configuration',
+  description:
+    'Restore a retained credential version, including its routing settings, injection settings, and secret value, as a new current version. Requires an admin.\n\nThe new version has a higher ID, records who restored it and when, and identifies the source in `restoredFromVersionId`. Its fingerprint matches the source version. Render retains the current configuration and the three distinct prior configurations most recently active. Removing an older configuration also removes all versions that refer to it.\n\nThe response confirms the configuration was saved. It does not confirm that credential injection is active for a particular sandbox.\n\nThese endpoints do not return secret values.\n',
+  operationId: 'restore-sandbox-group-credential',
+  request: {
+    params: z.object({
+      sandboxGroupId: z
+        .string()
+        .regex(/^sbg-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'sandboxGroupId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox group.',
+            schema: {
+              description: 'The ID of the sandbox group.',
+              type: 'string',
+              pattern: '^sbg-[0-9a-v]{20}$',
+              example: 'sbg-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox group.',
+          example: 'sbg-cph1rs3idesc73a2b2mg',
+        }),
+      credentialId: z
+        .string()
+        .regex(/^[A-Za-z0-9._~-]+$/)
+        .min(1)
+        .openapi({
+          param: {
+            name: 'credentialId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the credential. Must be unique within this sandbox group.',
+            schema: {
+              type: 'string',
+              minLength: 1,
+              pattern: '^[A-Za-z0-9._~-]+$',
+              description:
+                'The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.\n',
+              example: 'my-inference-key',
+            },
+          },
+          description:
+            'The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.\n',
+          example: 'my-inference-key',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              versionId: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64().min(1n),
+                )
+                .openapi({
+                  type: 'integer',
+                  format: 'int64',
+                  minimum: 1,
+                  description:
+                    'The ID of a retained credential version to restore as a new current version.',
+                }),
+            })
+            .openapi({
+              description: 'The retained credential version to restore.',
+              required: ['versionId'],
+            }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The credential configuration was saved.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .regex(/^[A-Za-z0-9._~-]+$/)
+                .min(1)
+                .openapi({
+                  description:
+                    'The case-sensitive ID you assign to the credential, unique within its sandbox group. Use only letters, numbers, periods, underscores, tildes, and hyphens. The names `.` and `..` and IDs starting with `rnd-` are reserved.\n',
+                  example: 'my-inference-key',
+                }),
+              domain: z
+                .string()
+                .openapi({
+                  description:
+                    'The destination hostname to match for credential injection. Must be a public DNS hostname. Render normalizes it to lowercase and matches it exactly. IP addresses, ports, wildcards, and local or internal hostnames are not supported.\n',
+                  example: 'api.render.com',
+                }),
+              version: z
+                .object({
+                  id: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'number' && Number.isSafeInteger(val)
+                          ? BigInt(val)
+                          : typeof val === 'string' && /^-?\d+$/.test(val)
+                            ? BigInt(val)
+                            : val,
+                      z.int64().min(1n),
+                    )
+                    .openapi({
+                      type: 'integer',
+                      format: 'int64',
+                      minimum: 1,
+                      description:
+                        'The ID of the credential version. Each new version receives a higher ID, including versions created by a restore.',
+                    }),
+                  updatedAt: z.iso
+                    .datetime({ offset: true })
+                    .openapi({
+                      description:
+                        'The timestamp when this credential version was created, in ISO 8601 format.',
+                    }),
+                  updatedBy: z
+                    .string()
+                    .openapi({
+                      description:
+                        'The ID of the authenticated identity that created this credential version.',
+                    }),
+                  fingerprint: z
+                    .string()
+                    .regex(/^[0-9a-f]{64}$/)
+                    .openapi({
+                      description:
+                        'A fingerprint of the routing settings, injection settings, and secret value. Matching fingerprints identify equivalent credential configurations within the same sandbox group. Fingerprints cannot be compared across groups.\n',
+                    }),
+                  restoredFromVersionId: z
+                    .preprocess(
+                      (val) =>
+                        typeof val === 'number' && Number.isSafeInteger(val)
+                          ? BigInt(val)
+                          : typeof val === 'string' && /^-?\d+$/.test(val)
+                            ? BigInt(val)
+                            : val,
+                      z.int64().min(1n),
+                    )
+                    .exactOptional()
+                    .openapi({
+                      type: 'integer',
+                      format: 'int64',
+                      minimum: 1,
+                      description:
+                        'The ID of the credential version restored to create this version. Omitted for versions created by a create or update request.',
+                    }),
+                })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Metadata for a credential version. These endpoints do not return secret values.',
+                  required: ['id', 'updatedAt', 'updatedBy', 'fingerprint'],
+                }),
+              enabled: z
+                .boolean()
+                .openapi({ description: 'Whether this credential is enabled for injection.' }),
+              methods: z
+                .array(z.string())
+                .openapi({
+                  description:
+                    'The HTTP methods to match for credential injection. Supported methods are GET, HEAD, POST, PUT, PATCH, DELETE, and OPTIONS, normalized to uppercase. An empty list matches any method.\n',
+                }),
+              paths: z
+                .array(z.string())
+                .openapi({
+                  description:
+                    'The request path patterns to match for credential injection. Each pattern must match the entire absolute path. Use `*` for one nonempty path segment or `**` for one or more segments. Wildcards must occupy whole segments. For example, `/a/*` matches `/a/b`, and `/a/**` also matches `/a/b/c`. Neither matches `/a`. Patterns do not support query strings, fragments, or escaping. Request query strings do not affect matching. An empty list matches any path.\n',
+                }),
+              injection: z
+                .object({
+                  type: z
+                    .enum(['header', 'basic', 'cookie', 'query'])
+                    .openapi({
+                      description:
+                        'How Render adds the credential to a matching request. For `basic`, the value after applying `template` must have the form `username:password`. Do not provide `name`.\n',
+                    }),
+                  name: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The header, cookie, or query parameter to set. Required for `header`, `cookie`, and `query`. Headers that control routing or connection behavior cannot be used.\n',
+                    }),
+                  template: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'A template containing 1–5 occurrences of `${SECRET}`, such as `Bearer ${SECRET}`. Render replaces each occurrence with the secret value. Omit to use the secret value without a template.\n',
+                      example: 'Bearer ${SECRET}',
+                    }),
+                })
+                .openapi({
+                  description:
+                    'Settings for injecting the secret value into matching outbound HTTPS requests.',
+                  required: ['type'],
+                }),
+            })
+            .openapi({
+              description:
+                'A credential configured for injection into matching outbound HTTPS requests from sandboxes in one sandbox group. Each credential stores its own secret value. These endpoints do not return secret values, including to admins.\n\nCredential injection supports HTTPS requests on port 443. Avoid overlapping credential configurations for the same hostname. Multiple matching credentials are not combined.\n',
+              required: ['id', 'domain', 'enabled', 'methods', 'paths', 'injection'],
+            }),
+        },
+      },
+    },
+    400: _400BadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    409: _409ConflictResponse,
+    429: _429SandboxCredentialRateLimitOrConflictResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getSandboxGroupsSandboxGroupIdBuildsRoute = createRoute({
+  method: 'get',
+  path: '/sandbox-groups/{sandboxGroupId}/builds',
+  tags: ['Sandboxes'],
+  summary: 'List sandbox builds',
+  description: 'List builds in a sandbox group, newest first.',
+  operationId: 'list-sandbox-builds',
+  request: {
+    params: z.object({
+      sandboxGroupId: z
+        .string()
+        .regex(/^sbg-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'sandboxGroupId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox group.',
+            schema: {
+              description: 'The ID of the sandbox group.',
+              type: 'string',
+              pattern: '^sbg-[0-9a-v]{20}$',
+              example: 'sbg-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox group.',
+          example: 'sbg-cph1rs3idesc73a2b2mg',
+        }),
+    }),
+    query: z.object({
+      cursor: CursorParamParamsSchema,
+      limit: LimitParamParamsSchema,
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'name',
+            in: 'query',
+            required: false,
+            description: 'Filter for builds with exactly this image name.',
+            schema: { type: 'string' },
+          },
+        }),
+      status: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(
+            z
+              .enum(['pending', 'running', 'succeeded', 'failed'])
+              .openapi({ description: "The sandbox build's current status." }),
+          ),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'status',
+            in: 'query',
+            required: false,
+            description: 'Filter for builds with the specified statuses.',
+            schema: {
+              type: 'array',
+              items: {
+                description: "The sandbox build's current status.",
+                type: 'string',
+                enum: ['pending', 'running', 'succeeded', 'failed'],
+              },
+            },
+            style: 'form',
+            explode: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: { 'application/json': { schema: z.array(SandboxBuildWithCursorSchema) } },
+    },
+    400: {
+      description:
+        'The request is invalid.\n\n- `invalid_sandbox_group_id`: The group ID is malformed.\n- `invalid_status`: A requested build status is not supported.\n- `invalid_cursor`: The cursor is malformed.\n- `invalid_limit`: The limit is outside the range 1–100.\n',
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const postSandboxGroupsSandboxGroupIdBuildsRoute = createRoute({
+  method: 'post',
+  path: '/sandbox-groups/{sandboxGroupId}/builds',
+  tags: ['Sandboxes'],
+  summary: 'Create sandbox build',
+  description:
+    'Start converting an OCI container image into an image that sandboxes can use. New builds run asynchronously. Retrieve the build until its status is `succeeded` or `failed`. After it succeeds, provide its ID as `buildId` when creating a sandbox.\n\nIf the group already has a pending, running, or succeeded build for the same name and image digest, Render returns that build. Retrying a failed build starts a new build.\n',
+  operationId: 'create-sandbox-build',
+  request: {
+    params: z.object({
+      sandboxGroupId: z
+        .string()
+        .regex(/^sbg-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'sandboxGroupId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox group.',
+            schema: {
+              description: 'The ID of the sandbox group.',
+              type: 'string',
+              pattern: '^sbg-[0-9a-v]{20}$',
+              example: 'sbg-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox group.',
+          example: 'sbg-cph1rs3idesc73a2b2mg',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              name: z
+                .string()
+                .min(1)
+                .max(255)
+                .openapi({
+                  description:
+                    "The name used to select this image when creating a sandbox, between 1 and 255 characters. Can't start with `sbb-`, the prefix reserved for build IDs. Multiple builds can share a name.",
+                }),
+              sourceImage: z
+                .string()
+                .openapi({
+                  description: 'The container image to convert, specified by tag or digest.',
+                  example: 'python:3.13',
+                }),
+              registryCredential: z
+                .object({
+                  username: z
+                    .string()
+                    .openapi({
+                      description: 'The username used to authenticate with the image registry.',
+                    }),
+                  password: z
+                    .string()
+                    .openapi({
+                      description: 'The password used to authenticate with the image registry.',
+                    }),
+                })
+                .exactOptional()
+                .openapi({
+                  required: ['username', 'password'],
+                  description:
+                    'Credentials used to pull `sourceImage` from a private registry for this build.',
+                }),
+            })
+            .openapi({
+              description: 'The source container image and settings for the sandbox build.',
+              required: ['name', 'sourceImage'],
+            }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description:
+        'The build was created, or a matching build was returned. Conversion may still be in progress.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .regex(/^sbb-[0-9a-v]{20}$/)
+                .openapi({
+                  description: 'The ID of the sandbox build.',
+                  example: 'sbb-cph1rs3idesc73a2b2mg',
+                }),
+              sandboxGroupId: z
+                .string()
+                .regex(/^sbg-[0-9a-v]{20}$/)
+                .openapi({
+                  description: 'The ID of the sandbox group.',
+                  example: 'sbg-cph1rs3idesc73a2b2mg',
+                }),
+              name: z
+                .string()
+                .openapi({
+                  description:
+                    'The name used to select this image when creating a sandbox. Multiple builds can share a name.',
+                }),
+              source: z
+                .object({
+                  repository: z
+                    .string()
+                    .openapi({
+                      description: 'The registry and repository path containing the source image.',
+                      example: 'docker.io/library',
+                    }),
+                  image: z
+                    .string()
+                    .openapi({ description: 'The name of the source image.', example: 'python' }),
+                  reference: z
+                    .string()
+                    .openapi({
+                      description: 'The tag or digest identifying the source image version.',
+                      example: '3.13',
+                    }),
+                })
+                .openapi({
+                  description: 'The source container image used for this build.',
+                  required: ['repository', 'image', 'reference'],
+                }),
+              sourceDigest: z
+                .string()
+                .openapi({
+                  description: 'The digest of the source image converted by this build.',
+                  example: 'sha256:c19d4a1...',
+                }),
+              status: z
+                .enum(['pending', 'running', 'succeeded', 'failed'])
+                .openapi({ description: "The sandbox build's current status." }),
+              failureReason: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A description of why the build failed. Null unless the status is `failed`. May include error text from the image registry. When displaying errors, use `failureCode` to select the main message and show this value as additional detail.\n',
+                }),
+              failureCode: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A machine-readable reason the build failed. Null unless the status is `failed`. See `sandboxBuildFailureCode` for known codes. Treat unrecognized codes as `internal_error`.\n',
+                  example: 'image_pull_failed',
+                }),
+              createdAt: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description:
+                    'The timestamp when the sandbox build was created, in ISO 8601 format.',
+                }),
+              finishedAt: z.iso
+                .datetime({ offset: true })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The timestamp when the build succeeded or failed, in ISO 8601 format. Null while the build is pending or running.',
+                }),
+            })
+            .openapi({
+              description:
+                'A build that converts a container image into an image that sandboxes can use.',
+              required: [
+                'id',
+                'sandboxGroupId',
+                'name',
+                'source',
+                'sourceDigest',
+                'status',
+                'createdAt',
+              ],
+            }),
+        },
+      },
+    },
+    400: {
+      description:
+        'The request is invalid.\n\n- `invalid_sandbox_group_id`: The group ID is malformed.\n- The image is invalid or the image registry cannot serve it. The error message explains the problem.\n',
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    409: _409SandboxGroupSuspendedResponse,
+    429: {
+      description:
+        'Rate limit has been surpassed.\n\nRate-limited endpoints also return `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` on successful responses so clients can track their remaining quota.\n\nThe group has reached its limit for pending and running builds. The error message includes the limit.\n',
+      content: {
+        'application/json': { schema: ErrorSchema, example: { message: 'rate limit exceeded' } },
+      },
+      headers: z.object({
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Seconds to wait before retrying the request.',
+            param: { required: false },
+            example: 30,
+          }),
+        'RateLimit-Limit': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Maximum number of requests allowed in the current window.',
+            param: { required: false },
+            example: 100,
+          }),
+        'RateLimit-Remaining': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'Number of requests remaining in the current window. `0` when the request rate limit is exceeded; may be nonzero for capacity limits or temporary conflicts.',
+            param: { required: false },
+            example: 0,
+          }),
+        'RateLimit-Reset': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Seconds until the current rate limit window resets.',
+            param: { required: false },
+            example: 30,
+          }),
+      }),
+    },
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getSandboxGroupsSandboxGroupIdBuildsBuildIdRoute = createRoute({
+  method: 'get',
+  path: '/sandbox-groups/{sandboxGroupId}/builds/{buildId}',
+  tags: ['Sandboxes'],
+  summary: 'Retrieve sandbox build',
+  description: 'Retrieve a build by ID.',
+  operationId: 'retrieve-sandbox-build',
+  request: {
+    params: z.object({
+      sandboxGroupId: z
+        .string()
+        .regex(/^sbg-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'sandboxGroupId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox group.',
+            schema: {
+              description: 'The ID of the sandbox group.',
+              type: 'string',
+              pattern: '^sbg-[0-9a-v]{20}$',
+              example: 'sbg-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox group.',
+          example: 'sbg-cph1rs3idesc73a2b2mg',
+        }),
+      buildId: z
+        .string()
+        .regex(/^sbb-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'buildId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox build.',
+            schema: {
+              description: 'The ID of the sandbox build.',
+              type: 'string',
+              pattern: '^sbb-[0-9a-v]{20}$',
+              example: 'sbb-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox build.',
+          example: 'sbb-cph1rs3idesc73a2b2mg',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .regex(/^sbb-[0-9a-v]{20}$/)
+                .openapi({
+                  description: 'The ID of the sandbox build.',
+                  example: 'sbb-cph1rs3idesc73a2b2mg',
+                }),
+              sandboxGroupId: z
+                .string()
+                .regex(/^sbg-[0-9a-v]{20}$/)
+                .openapi({
+                  description: 'The ID of the sandbox group.',
+                  example: 'sbg-cph1rs3idesc73a2b2mg',
+                }),
+              name: z
+                .string()
+                .openapi({
+                  description:
+                    'The name used to select this image when creating a sandbox. Multiple builds can share a name.',
+                }),
+              source: z
+                .object({
+                  repository: z
+                    .string()
+                    .openapi({
+                      description: 'The registry and repository path containing the source image.',
+                      example: 'docker.io/library',
+                    }),
+                  image: z
+                    .string()
+                    .openapi({ description: 'The name of the source image.', example: 'python' }),
+                  reference: z
+                    .string()
+                    .openapi({
+                      description: 'The tag or digest identifying the source image version.',
+                      example: '3.13',
+                    }),
+                })
+                .openapi({
+                  description: 'The source container image used for this build.',
+                  required: ['repository', 'image', 'reference'],
+                }),
+              sourceDigest: z
+                .string()
+                .openapi({
+                  description: 'The digest of the source image converted by this build.',
+                  example: 'sha256:c19d4a1...',
+                }),
+              status: z
+                .enum(['pending', 'running', 'succeeded', 'failed'])
+                .openapi({ description: "The sandbox build's current status." }),
+              failureReason: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A description of why the build failed. Null unless the status is `failed`. May include error text from the image registry. When displaying errors, use `failureCode` to select the main message and show this value as additional detail.\n',
+                }),
+              failureCode: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A machine-readable reason the build failed. Null unless the status is `failed`. See `sandboxBuildFailureCode` for known codes. Treat unrecognized codes as `internal_error`.\n',
+                  example: 'image_pull_failed',
+                }),
+              createdAt: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description:
+                    'The timestamp when the sandbox build was created, in ISO 8601 format.',
+                }),
+              finishedAt: z.iso
+                .datetime({ offset: true })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The timestamp when the build succeeded or failed, in ISO 8601 format. Null while the build is pending or running.',
+                }),
+            })
+            .openapi({
+              description:
+                'A build that converts a container image into an image that sandboxes can use.',
+              required: [
+                'id',
+                'sandboxGroupId',
+                'name',
+                'source',
+                'sourceDigest',
+                'status',
+                'createdAt',
+              ],
+            }),
+        },
+      },
+    },
+    400: _400SandboxBuildBadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404SandboxBuildNotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const deleteSandboxGroupsSandboxGroupIdBuildsBuildIdRoute = createRoute({
+  method: 'delete',
+  path: '/sandbox-groups/{sandboxGroupId}/builds/{buildId}',
+  tags: ['Sandboxes'],
+  summary: 'Delete sandbox build',
+  description:
+    'Delete a build of a sandbox image. The build no longer appears in lists and cannot be retrieved or used to create sandboxes, including by image name. Repeated requests to delete the build return HTTP 204.\n',
+  operationId: 'delete-sandbox-build',
+  request: {
+    params: z.object({
+      sandboxGroupId: z
+        .string()
+        .regex(/^sbg-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'sandboxGroupId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox group.',
+            schema: {
+              description: 'The ID of the sandbox group.',
+              type: 'string',
+              pattern: '^sbg-[0-9a-v]{20}$',
+              example: 'sbg-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox group.',
+          example: 'sbg-cph1rs3idesc73a2b2mg',
+        }),
+      buildId: z
+        .string()
+        .regex(/^sbb-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'buildId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox build.',
+            schema: {
+              description: 'The ID of the sandbox build.',
+              type: 'string',
+              pattern: '^sbb-[0-9a-v]{20}$',
+              example: 'sbb-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox build.',
+          example: 'sbb-cph1rs3idesc73a2b2mg',
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'The build was deleted or was already deleted.' },
+    400: _400SandboxBuildBadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404SandboxBuildNotFoundResponse,
+    409: {
+      description:
+        'The current state of the resource conflicts with this request.\n\n- `image_in_use`: Sandboxes that have not terminated or errored, or unexpired snapshots that have not failed, still depend on this build. This includes suspended sandboxes and snapshots of sandboxes restored from earlier snapshots of the build. The error message lists up to 10 dependencies. Terminate the sandboxes and delete the snapshots, or wait for them to expire, before retrying.\n',
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getSandboxGroupsSandboxGroupIdSnapshotsRoute = createRoute({
+  method: 'get',
+  path: '/sandbox-groups/{sandboxGroupId}/snapshots',
+  tags: ['Sandboxes'],
+  summary: 'List sandbox snapshots',
+  description:
+    'List snapshots in a sandbox group, newest first. Excludes expired and deleted snapshots.\n',
+  operationId: 'list-sandbox-snapshots',
+  request: {
+    params: z.object({
+      sandboxGroupId: z
+        .string()
+        .regex(/^sbg-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'sandboxGroupId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox group.',
+            schema: {
+              description: 'The ID of the sandbox group.',
+              type: 'string',
+              pattern: '^sbg-[0-9a-v]{20}$',
+              example: 'sbg-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox group.',
+          example: 'sbg-cph1rs3idesc73a2b2mg',
+        }),
+    }),
+    query: z.object({
+      ownerId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'ownerId',
+            in: 'query',
+            required: true,
+            description: 'The ID of the workspace whose snapshots to return.',
+            schema: { type: 'string' },
+          },
+        }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'name',
+            in: 'query',
+            required: false,
+            description:
+              'Filter for snapshots with exactly this name. Multiple snapshots can share a name; results include each version, newest first. When creating a sandbox with `snapshotName`, Render uses the most recently created snapshot with that name that is `available` and unexpired.\n',
+            schema: { type: 'string' },
+          },
+        }),
+      cursor: CursorParamParamsSchema,
+      limit: LimitParamParamsSchema,
+      status: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(
+            z
+              .enum(['creating', 'available', 'failed'])
+              .openapi({ description: "The snapshot's current status." }),
+          ),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'status',
+            in: 'query',
+            required: false,
+            description: 'Filter for snapshots with the specified statuses.',
+            schema: {
+              type: 'array',
+              items: {
+                description: "The snapshot's current status.",
+                type: 'string',
+                enum: ['creating', 'available', 'failed'],
+              },
+            },
+            style: 'form',
+            explode: false,
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: { 'application/json': { schema: z.array(SandboxSnapshotWithCursorSchema) } },
+    },
+    400: {
+      description:
+        'The request is invalid.\n\n- `invalid_sandbox_group_id`: The group ID is malformed.\n- `invalid_owner_id`: The workspace ID is missing or repeated.\n- `invalid_status`: A requested snapshot status is not supported.\n- `invalid_cursor`: The cursor is malformed or unknown.\n- `invalid_limit`: The limit is outside the range 1–100.\n',
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const getSandboxGroupsSandboxGroupIdSnapshotsSnapshotIdRoute = createRoute({
+  method: 'get',
+  path: '/sandbox-groups/{sandboxGroupId}/snapshots/{snapshotId}',
+  tags: ['Sandboxes'],
+  summary: 'Retrieve sandbox snapshot',
+  description: 'Retrieve a snapshot by ID.',
+  operationId: 'retrieve-sandbox-snapshot',
+  request: {
+    params: z.object({
+      sandboxGroupId: z
+        .string()
+        .regex(/^sbg-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'sandboxGroupId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox group.',
+            schema: {
+              description: 'The ID of the sandbox group.',
+              type: 'string',
+              pattern: '^sbg-[0-9a-v]{20}$',
+              example: 'sbg-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox group.',
+          example: 'sbg-cph1rs3idesc73a2b2mg',
+        }),
+      snapshotId: z
+        .string()
+        .regex(/^snp-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'snapshotId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox snapshot.',
+            schema: {
+              description: 'The ID of the sandbox snapshot.',
+              type: 'string',
+              pattern: '^snp-[0-9a-v]{20}$',
+              example: 'snp-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox snapshot.',
+          example: 'snp-cph1rs3idesc73a2b2mg',
+        }),
+    }),
+    query: z.object({
+      ownerId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'ownerId',
+            in: 'query',
+            required: false,
+            description: 'The ID of the workspace the sandbox group belongs to.',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              id: z
+                .string()
+                .regex(/^snp-[0-9a-v]{20}$/)
+                .openapi({
+                  description: 'The ID of the sandbox snapshot.',
+                  example: 'snp-cph1rs3idesc73a2b2mg',
+                }),
+              sandboxGroupId: z
+                .string()
+                .regex(/^sbg-[0-9a-v]{20}$/)
+                .openapi({
+                  description: 'The ID of the sandbox group.',
+                  example: 'sbg-cph1rs3idesc73a2b2mg',
+                }),
+              sourceSandboxId: z
+                .string()
+                .regex(/^sbx-[0-9a-v]{25}$/)
+                .openapi({
+                  description: 'The ID of the sandbox.',
+                  example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+                })
+                .openapi({
+                  description:
+                    'The ID of the sandbox this snapshot was captured from, recorded for reference.',
+                }),
+              name: z
+                .string()
+                .min(1)
+                .max(64)
+                .openapi({
+                  example: 'gold',
+                  description:
+                    'A case-sensitive name for snapshots in a sandbox group, up to 64 characters. Must not start with `snp-`. Multiple snapshots can share a name. When creating a sandbox by snapshot name, Render uses the most recently created snapshot with that name that is `available` and unexpired.\n',
+                })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The name assigned when the snapshot was created. Cannot be changed. Null if no name was provided.',
+                }),
+              kind: z
+                .enum(['filesystem', 'runtime'])
+                .openapi({
+                  description:
+                    'The state to capture. A `filesystem` snapshot captures the writable filesystem and can be restored to any plan. A `runtime` snapshot also captures memory and CPU state and must be restored to the source sandbox plan.\n',
+                }),
+              status: z
+                .enum(['creating', 'available', 'failed'])
+                .openapi({ description: "The snapshot's current status." }),
+              plan: z
+                .union([
+                  z
+                    .enum(['starter', 'standard', 'pro', '1c-2g', '2c-4g', '4c-8g', '8c-16g'])
+                    .openapi({
+                      'x-enum-varnames': [
+                        'Starter',
+                        'Standard',
+                        'Pro',
+                        'SandboxPlan1c2g',
+                        'SandboxPlan2c4g',
+                        'SandboxPlan4c8g',
+                        'SandboxPlan8c16g',
+                      ],
+                      description:
+                        'The compute plan for the sandbox. The `starter`, `standard`, and `pro` plans are deprecated.',
+                    }),
+                  z.string(),
+                ])
+                .openapi({
+                  'x-go-type': 'SandboxPlan',
+                  description:
+                    "The source sandbox's compute plan when the snapshot was captured. See `sandboxPlan` for known values.",
+                }),
+              requestedAt: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description: 'The timestamp when the snapshot was requested, in ISO 8601 format.',
+                }),
+              capturedAt: z.iso
+                .datetime({ offset: true })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The timestamp when capture completed, in ISO 8601 format. Null until the snapshot is `available`.',
+                }),
+              expiresAt: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description:
+                    'The timestamp after which the snapshot can no longer be retrieved or restored, in ISO 8601 format. Each time you create a sandbox from this snapshot, Render resets its expiration to `ttlSeconds` seconds after that use. For snapshots with no expiration (`ttlSeconds: 0`), this is `9999-12-31T23:59:59Z`.\n',
+                }),
+              ttlSeconds: z
+                .int()
+                .min(0)
+                .exactOptional()
+                .openapi({
+                  'x-go-name': 'TTLSeconds',
+                  description:
+                    "The snapshot's lifetime after its last use, in seconds. A value of 0 means the snapshot does not expire. If omitted, Render's default snapshot lifetime applies.\n",
+                }),
+              sizeBytes: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'number' && Number.isSafeInteger(val)
+                      ? BigInt(val)
+                      : typeof val === 'string' && /^-?\d+$/.test(val)
+                        ? BigInt(val)
+                        : val,
+                  z.int64(),
+                )
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  type: ['integer', 'null'],
+                  format: 'int64',
+                  description:
+                    'The size of the snapshot, in bytes. Null until the snapshot is `available`.',
+                }),
+              error: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The reason the snapshot failed. Null unless its status is `failed`.',
+                }),
+            })
+            .openapi({
+              description:
+                'A saved filesystem or runtime state that can be used to create another sandbox.',
+              required: [
+                'id',
+                'sandboxGroupId',
+                'sourceSandboxId',
+                'kind',
+                'status',
+                'plan',
+                'requestedAt',
+                'expiresAt',
+              ],
+            }),
+        },
+      },
+    },
+    400: _400SandboxSnapshotBadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: {
+      description:
+        'The requested resource was not found.\n\n- The snapshot is deleted, expired, or belongs to another sandbox group.\n',
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const deleteSandboxGroupsSandboxGroupIdSnapshotsSnapshotIdRoute = createRoute({
+  method: 'delete',
+  path: '/sandbox-groups/{sandboxGroupId}/snapshots/{snapshotId}',
+  tags: ['Sandboxes'],
+  summary: 'Delete sandbox snapshot',
+  description:
+    'Delete a snapshot. Sandboxes created from it are not affected. Returns HTTP 204 if the snapshot is already deleted or expired.\n',
+  operationId: 'delete-sandbox-snapshot',
+  request: {
+    params: z.object({
+      sandboxGroupId: z
+        .string()
+        .regex(/^sbg-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'sandboxGroupId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox group.',
+            schema: {
+              description: 'The ID of the sandbox group.',
+              type: 'string',
+              pattern: '^sbg-[0-9a-v]{20}$',
+              example: 'sbg-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox group.',
+          example: 'sbg-cph1rs3idesc73a2b2mg',
+        }),
+      snapshotId: z
+        .string()
+        .regex(/^snp-[0-9a-v]{20}$/)
+        .openapi({
+          param: {
+            name: 'snapshotId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox snapshot.',
+            schema: {
+              description: 'The ID of the sandbox snapshot.',
+              type: 'string',
+              pattern: '^snp-[0-9a-v]{20}$',
+              example: 'snp-cph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox snapshot.',
+          example: 'snp-cph1rs3idesc73a2b2mg',
+        }),
+    }),
+    query: z.object({
+      ownerId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'ownerId',
+            in: 'query',
+            required: false,
+            description: 'The ID of the workspace the sandbox group belongs to.',
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'The snapshot was deleted, was already deleted, or has expired.' },
+    400: _400SandboxSnapshotBadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: {
+      description:
+        'The requested resource was not found.\n\n- The snapshot belongs to another sandbox group.\n',
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    409: {
+      description:
+        'The current state of the resource conflicts with this request.\n\n- `snapshot_creating`: Capture is still in progress.\n',
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const postSandboxesSandboxIdRunsOperationTokenRoute = createRoute({
+  method: 'post',
+  path: '/sandboxes/{sandboxId}/runs/{operation}/token',
+  tags: ['Sandboxes'],
+  summary: 'Create a connect token for a sandbox run',
+  description:
+    'Create a short-lived connect token for a command run in this sandbox. Send the command to the URL in the response, using the token as the bearer token. The token authorizes only the requested operation.\n',
+  operationId: 'connect-sandbox-run',
+  request: {
+    params: z.object({
+      sandboxId: z
+        .string()
+        .regex(/^sbx-[0-9a-v]{25}$/)
+        .openapi({
+          param: {
+            name: 'sandboxId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox.',
+            schema: {
+              description: 'The ID of the sandbox.',
+              type: 'string',
+              pattern: '^sbx-[0-9a-v]{25}$',
+              example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox.',
+          example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+        }),
+      operation: z
+        .enum(['sync', 'stream'])
+        .openapi({
+          param: {
+            name: 'operation',
+            in: 'path',
+            required: true,
+            description:
+              'The command run operation to authorize. Use `sync` for a buffered response or `stream` for server-sent events.',
+            schema: { type: 'string', enum: ['sync', 'stream'] },
+          },
+        }),
+    }),
+    query: z.object({
+      ownerId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'ownerId',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of the workspace the sandbox belongs to. If provided, it must match the sandbox's workspace. If omitted, Render determines the workspace from the sandbox ID.",
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    201: {
+      description: 'The connect token was created.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              executionId: z
+                .string()
+                .openapi({
+                  description: 'The ID of the sandbox execution.',
+                  example: 'exe-cph1rs3idesc73a2b2mg',
+                }),
+              token: z
+                .string()
+                .openapi({
+                  description:
+                    'A short-lived bearer token that authorizes only the requested operation on this sandbox.',
+                }),
+              uri: z
+                .url()
+                .openapi({
+                  description:
+                    'The URL to send the authorized command run or file transfer request to.',
+                  example: 'https://sbx-abc123.oregon.sandbox.onrender.com/runs/stream',
+                }),
+              method: z
+                .string()
+                .openapi({
+                  description: 'The HTTP method to use when sending the request to `uri`.',
+                  example: 'POST',
+                }),
+              expiresAt: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description:
+                    'The timestamp when the token expires, in ISO 8601 format. Start the authorized operation before this time.',
+                  example: '2026-07-10T12:00:00Z',
+                }),
+            })
+            .openapi({
+              description:
+                'A short-lived connect token and the URL to use it with. Send the request to `uri` using `method`, with `token` as the bearer token. Include a request body if the operation requires one.\n',
+              required: ['executionId', 'token', 'uri', 'method', 'expiresAt'],
+            }),
+        },
+      },
+    },
+    400: _400BadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    409: _409SandboxConnectConflictResponse,
+    429: _429RateLimitResponse,
+    500: _500InternalServerErrorResponse,
+    503: _503ServiceUnavailableResponse,
+  },
+})
+
+export const postSandboxesSandboxIdFilesOperationTokenRoute = createRoute({
+  method: 'post',
+  path: '/sandboxes/{sandboxId}/files/{operation}/token',
+  tags: ['Sandboxes'],
+  summary: 'Mint a connect token for a sandbox file transfer',
+  description:
+    'Create a short-lived connect token for a file upload or download. Transfer the file directly to or from the URL in the response, using the token as the bearer token. The token authorizes only the specified sandbox, operation, and path. Its expiration time is returned in `expiresAt`.\n\nUse `application/octet-stream` for a single file or `application/x-tar` for a directory archive. For gzip compression, also set `Content-Encoding: gzip`. Directory downloads return `application/x-tar` with `Content-Encoding: gzip`.\n',
+  operationId: 'connect-sandbox-files',
+  request: {
+    params: z.object({
+      sandboxId: z
+        .string()
+        .regex(/^sbx-[0-9a-v]{25}$/)
+        .openapi({
+          param: {
+            name: 'sandboxId',
+            in: 'path',
+            required: true,
+            description: 'The ID of the sandbox.',
+            schema: {
+              description: 'The ID of the sandbox.',
+              type: 'string',
+              pattern: '^sbx-[0-9a-v]{25}$',
+              example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+            },
+          },
+          description: 'The ID of the sandbox.',
+          example: 'sbx-1cd4gcph1rs3idesc73a2b2mg',
+        }),
+      operation: z
+        .enum(['upload', 'download'])
+        .openapi({
+          param: {
+            name: 'operation',
+            in: 'path',
+            required: true,
+            description:
+              'The file transfer operation to authorize. Use `upload` to send a file or tar archive with HTTP PUT, or `download` to retrieve a file or directory archive with HTTP GET.',
+            schema: { type: 'string', enum: ['upload', 'download'] },
+          },
+        }),
+    }),
+    query: z.object({
+      ownerId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'ownerId',
+            in: 'query',
+            required: false,
+            description:
+              "The ID of the workspace the sandbox belongs to. If provided, it must match the sandbox's workspace. If omitted, Render determines the workspace from the sandbox ID.",
+            schema: { type: 'string' },
+          },
+        }),
+      path: z
+        .string()
+        .openapi({
+          param: {
+            name: 'path',
+            in: 'query',
+            description:
+              "The file or directory path the token authorizes. For archive uploads, this is the directory to extract into. For downloads, it is the file or directory to retrieve.\n\nRelative paths are resolved from the image's `WORKDIR`, or the home directory if no `WORKDIR` is set. Use `.` for that working directory. Absolute paths are resolved from the sandbox filesystem root.\n",
+            schema: { type: 'string' },
+            required: true,
+          },
+        }),
+    }),
+  },
+  responses: {
+    201: {
+      description: 'The connect token was created.',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              executionId: z
+                .string()
+                .openapi({
+                  description: 'The ID of the sandbox execution.',
+                  example: 'exe-cph1rs3idesc73a2b2mg',
+                }),
+              token: z
+                .string()
+                .openapi({
+                  description:
+                    'A short-lived bearer token that authorizes only the requested operation on this sandbox.',
+                }),
+              uri: z
+                .url()
+                .openapi({
+                  description:
+                    'The URL to send the authorized command run or file transfer request to.',
+                  example: 'https://sbx-abc123.oregon.sandbox.onrender.com/runs/stream',
+                }),
+              method: z
+                .string()
+                .openapi({
+                  description: 'The HTTP method to use when sending the request to `uri`.',
+                  example: 'POST',
+                }),
+              expiresAt: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description:
+                    'The timestamp when the token expires, in ISO 8601 format. Start the authorized operation before this time.',
+                  example: '2026-07-10T12:00:00Z',
+                }),
+            })
+            .openapi({
+              description:
+                'A short-lived connect token and the URL to use it with. Send the request to `uri` using `method`, with `token` as the bearer token. Include a request body if the operation requires one.\n',
+              required: ['executionId', 'token', 'uri', 'method', 'expiresAt'],
+            }),
+        },
+      },
+    },
+    400: _400BadRequestResponse,
+    401: _401UnauthorizedResponse,
+    403: _403ForbiddenResponse,
+    404: _404NotFoundResponse,
+    409: _409SandboxConnectConflictResponse,
     429: _429RateLimitResponse,
     500: _500InternalServerErrorResponse,
     503: _503ServiceUnavailableResponse,

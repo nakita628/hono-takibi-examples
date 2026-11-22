@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const DeleteEventsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response message for deleting error events.' })
   .openapi('DeleteEventsResponse')
 
@@ -362,7 +362,7 @@ const ListGroupStatsResponseSchema = z
   .openapi('ListGroupStatsResponse')
 
 const ReportErrorEventResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Response for reporting an individual error event. Data may be added to this message in the future.',

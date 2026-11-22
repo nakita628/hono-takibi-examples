@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAWSEventsDeauthorizeConnectionHandler = app.openapi(
   postXAmzTargetAWSEventsDeauthorizeConnectionRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

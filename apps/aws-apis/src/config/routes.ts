@@ -1,14 +1,182 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ResourceEvaluationStatusSchema = z
-  .enum(['IN_PROGRESS', 'FAILED', 'SUCCEEDED'])
-  .openapi('ResourceEvaluationStatus')
+const StringSchema = z.string().openapi('String')
+
+const ConfigRuleNameSchema = z
+  .string()
+  .regex(/.*\S.*/)
+  .min(1)
+  .max(128)
+  .openapi('ConfigRuleName')
+
+const RemediationTargetTypeSchema = z.literal('SSM_DOCUMENT').openapi('RemediationTargetType')
+
+const StringWithCharLimit256Schema = z.string().min(1).max(256).openapi('StringWithCharLimit256')
+
+const ResourceValueTypeSchema = z.literal('RESOURCE_ID').openapi('ResourceValueType')
+
+const ResourceValueSchema = z
+  .object({
+    Value: ResourceValueTypeSchema.openapi({ description: 'The value is a resource ID.' }),
+  })
+  .openapi({ required: ['Value'], description: 'The dynamic value of the resource.' })
+  .openapi('ResourceValue')
+
+const StaticParameterValuesSchema = z
+  .array(StringWithCharLimit256Schema)
+  .min(0)
+  .max(25)
+  .openapi('StaticParameterValues')
+
+const StaticValueSchema = z
+  .object({
+    Values: StaticParameterValuesSchema.openapi({
+      description: 'A list of values. For example, the ARN of the assumed role. ',
+    }),
+  })
+  .openapi({ required: ['Values'], description: 'The static value of the resource.' })
+  .openapi('StaticValue')
+
+const RemediationParameterValueSchema = z
+  .object({
+    ResourceValue: ResourceValueSchema.exactOptional().openapi({
+      description: 'The value is dynamic and changes at run-time.',
+    }),
+    StaticValue: StaticValueSchema.exactOptional().openapi({
+      description: 'The value is static and does not change at run-time.',
+    }),
+  })
+  .openapi({
+    description:
+      'The value is either a dynamic (resource) value or a static value. You must select either a dynamic value or a static value.',
+    required: [],
+  })
+  .openapi('RemediationParameterValue')
+
+const RemediationParametersSchema = z
+  .record(z.string(), RemediationParameterValueSchema)
+  .refine((val) => Object.keys(val).length >= 0)
+  .refine((val) => Object.keys(val).length <= 25)
+  .openapi('RemediationParameters')
+
+const BooleanSchema = z.boolean().openapi('Boolean')
+
+const PercentageSchema = z.int().min(1).max(100).openapi('Percentage')
+
+const SsmControlsSchema = z
+  .object({
+    ConcurrentExecutionRatePercentage: PercentageSchema.exactOptional().openapi({
+      description:
+        'The maximum percentage of remediation actions allowed to run in parallel on the non-compliant resources for that specific rule. You can specify a percentage, such as 10%. The default value is 10. ',
+    }),
+    ErrorPercentage: PercentageSchema.exactOptional().openapi({
+      description:
+        'The percentage of errors that are allowed before SSM stops running automations on non-compliant resources for that specific rule. You can specify a percentage of errors, for example 10%. If you do not specifiy a percentage, the default is 50%. For example, if you set the ErrorPercentage to 40% for 10 non-compliant resources, then SSM stops running the automations when the fifth error is received. ',
+    }),
+  })
+  .openapi({
+    description: 'Amazon Web Services Systems Manager (SSM) specific remediation controls.',
+    required: [],
+  })
+  .openapi('SsmControls')
+
+const ExecutionControlsSchema = z
+  .object({
+    SsmControls: SsmControlsSchema.exactOptional().openapi({
+      description: 'A SsmControls object.',
+    }),
+  })
+  .openapi({
+    description: 'The controls that Config uses for executing remediations.',
+    required: [],
+  })
+  .openapi('ExecutionControls')
+
+const AutoRemediationAttemptsSchema = z.int().min(1).max(25).openapi('AutoRemediationAttempts')
+
+const AutoRemediationAttemptSecondsSchema = z
+  .int()
+  .min(1)
+  .max(2678000)
+  .openapi('AutoRemediationAttemptSeconds')
 
 const StringWithCharLimit1024Schema = z.string().min(1).max(1024).openapi('StringWithCharLimit1024')
 
-type EvaluationStatusType = {
-  Status: z.infer<typeof ResourceEvaluationStatusSchema> & { [key: string]: unknown }
-  FailureReason?: z.infer<typeof StringWithCharLimit1024Schema> & { [key: string]: unknown }
+const RemediationConfigurationSchema = z
+  .object({
+    ConfigRuleName: ConfigRuleNameSchema.openapi({ description: 'The name of the Config rule.' }),
+    TargetType: RemediationTargetTypeSchema.openapi({
+      description:
+        'The type of the target. Target executes remediation. For example, SSM document.',
+    }),
+    TargetId: StringWithCharLimit256Schema.openapi({
+      description: 'Target ID is the name of the SSM document.',
+    }),
+    TargetVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Version of the target. For example, version of the SSM document.</p> <note> <p>If you make backward incompatible changes to the SSM document, you must call PutRemediationConfiguration API again to ensure the remediations can run.</p> </note>',
+    }),
+    Parameters: RemediationParametersSchema.exactOptional().openapi({
+      description: 'An object of the RemediationParameterValue.',
+    }),
+    ResourceType: StringSchema.exactOptional().openapi({ description: 'The type of a resource. ' }),
+    Automatic: BooleanSchema.exactOptional().openapi({
+      description: 'The remediation is triggered automatically.',
+    }),
+    ExecutionControls: ExecutionControlsSchema.exactOptional().openapi({
+      description: 'An ExecutionControls object.',
+    }),
+    MaximumAutomaticAttempts: AutoRemediationAttemptsSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of failed attempts for auto-remediation. If you do not select a number, the default is 5.</p> <p>For example, if you specify MaximumAutomaticAttempts as 5 with RetryAttemptSeconds as 50 seconds, Config will put a RemediationException on your behalf for the failing resource after the 5th failed attempt within 50 seconds.</p>',
+    }),
+    RetryAttemptSeconds: AutoRemediationAttemptSecondsSchema.exactOptional().openapi({
+      description:
+        '<p>Maximum time in seconds that Config runs auto-remediation. If you do not select a number, the default is 60 seconds. </p> <p>For example, if you specify RetryAttemptSeconds as 50 seconds and MaximumAutomaticAttempts as 5, Config will run auto-remediations 5 times within 50 seconds before throwing an exception.</p>',
+    }),
+    Arn: StringWithCharLimit1024Schema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of remediation configuration.',
+    }),
+    CreatedByService: StringWithCharLimit1024Schema.exactOptional().openapi({
+      description: 'Name of the service that owns the service-linked rule, if applicable.',
+    }),
+  })
+  .openapi({
+    required: ['ConfigRuleName', 'TargetType', 'TargetId'],
+    description:
+      'An object that represents the details about the remediation configuration that includes the remediation action, parameters, and data to execute the action.',
+  })
+  .openapi('RemediationConfiguration')
+
+const RemediationConfigurationsSchema = z
+  .array(RemediationConfigurationSchema)
+  .min(0)
+  .max(25)
+  .openapi('RemediationConfigurations')
+
+const FailedRemediationBatchSchema = z
+  .object({
+    FailureMessage: StringSchema.exactOptional().openapi({
+      description: 'Returns a failure message. For example, the resource is already compliant.',
+    }),
+    FailedItems: RemediationConfigurationsSchema.exactOptional().openapi({
+      description: 'Returns remediation configurations of the failed items.',
+    }),
+  })
+  .openapi({
+    description: 'List of each of the failed remediations with specific reasons.',
+    required: [],
+  })
+  .openapi('FailedRemediationBatch')
+
+type FailedRemediationBatchesType = z.infer<typeof FailedRemediationBatchSchema>[]
+
+const FailedRemediationBatchesSchema: z.ZodType<FailedRemediationBatchesType> = z
+  .array(FailedRemediationBatchSchema)
+  .openapi('FailedRemediationBatches')
+
+type PutRemediationConfigurationsResponseType = {
+  FailedBatches?: z.infer<typeof FailedRemediationBatchesSchema> & unknown
 }
 
 const VersionSchema = z.string().openapi('Version')
@@ -335,67 +503,51 @@ const SupplementaryConfigurationSchema = z
 
 const BaseConfigurationItemSchema = z
   .object({
-    version: VersionSchema.and(
-      z.any().openapi({ description: 'The version number of the resource configuration.' }),
-    ).exactOptional(),
-    accountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The 12-digit Amazon Web Services account ID associated with the resource.',
-        }),
-    ).exactOptional(),
-    configurationItemCaptureTime: ConfigurationItemCaptureTimeSchema.and(
-      z.any().openapi({ description: 'The time when the configuration recording was initiated.' }),
-    ).exactOptional(),
-    configurationItemStatus: ConfigurationItemStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The configuration item status. The valid values are:</p> <ul> <li> <p>OK – The resource configuration has been updated</p> </li> <li> <p>ResourceDiscovered – The resource was newly discovered</p> </li> <li> <p>ResourceNotRecorded – The resource was discovered but its configuration was not recorded since the recorder excludes the recording of resources of this type</p> </li> <li> <p>ResourceDeleted – The resource was deleted</p> </li> <li> <p>ResourceDeletedNotRecorded – The resource was deleted but its configuration was not recorded since the recorder excludes the recording of resources of this type</p> </li> </ul> <note> <p>The CIs do not incur any cost.</p> </note>',
-        }),
-    ).exactOptional(),
-    configurationStateId: ConfigurationStateIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that indicates the ordering of the configuration items of a resource.',
-        }),
-    ).exactOptional(),
-    arn: ARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource.' }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of Amazon Web Services resource.' }),
-    ).exactOptional(),
-    resourceId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the resource (for example., sg-xxxxxx).' }),
-    ).exactOptional(),
-    resourceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The custom name of the resource, if available.' }),
-    ).exactOptional(),
-    awsRegion: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The region where the resource resides.' }),
-    ).exactOptional(),
-    availabilityZone: AvailabilityZoneSchema.and(
-      z.any().openapi({ description: 'The Availability Zone associated with the resource.' }),
-    ).exactOptional(),
-    resourceCreationTime: ResourceCreationTimeSchema.and(
-      z.any().openapi({ description: 'The time stamp when the resource was created.' }),
-    ).exactOptional(),
-    configuration: ConfigurationSchema.and(
-      z.any().openapi({ description: 'The description of the resource configuration.' }),
-    ).exactOptional(),
-    supplementaryConfiguration: SupplementaryConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration attributes that Config returns for certain resource types to supplement the information returned for the configuration parameter.',
-        }),
-    ).exactOptional(),
+    version: VersionSchema.exactOptional().openapi({
+      description: 'The version number of the resource configuration.',
+    }),
+    accountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The 12-digit Amazon Web Services account ID associated with the resource.',
+    }),
+    configurationItemCaptureTime: ConfigurationItemCaptureTimeSchema.exactOptional().openapi({
+      description: 'The time when the configuration recording was initiated.',
+    }),
+    configurationItemStatus: ConfigurationItemStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The configuration item status. The valid values are:</p> <ul> <li> <p>OK – The resource configuration has been updated</p> </li> <li> <p>ResourceDiscovered – The resource was newly discovered</p> </li> <li> <p>ResourceNotRecorded – The resource was discovered but its configuration was not recorded since the recorder excludes the recording of resources of this type</p> </li> <li> <p>ResourceDeleted – The resource was deleted</p> </li> <li> <p>ResourceDeletedNotRecorded – The resource was deleted but its configuration was not recorded since the recorder excludes the recording of resources of this type</p> </li> </ul> <note> <p>The CIs do not incur any cost.</p> </note>',
+    }),
+    configurationStateId: ConfigurationStateIdSchema.exactOptional().openapi({
+      description:
+        'An identifier that indicates the ordering of the configuration items of a resource.',
+    }),
+    arn: ARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of Amazon Web Services resource.',
+    }),
+    resourceId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the resource (for example., sg-xxxxxx).',
+    }),
+    resourceName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The custom name of the resource, if available.',
+    }),
+    awsRegion: AwsRegionSchema.exactOptional().openapi({
+      description: 'The region where the resource resides.',
+    }),
+    availabilityZone: AvailabilityZoneSchema.exactOptional().openapi({
+      description: 'The Availability Zone associated with the resource.',
+    }),
+    resourceCreationTime: ResourceCreationTimeSchema.exactOptional().openapi({
+      description: 'The time stamp when the resource was created.',
+    }),
+    configuration: ConfigurationSchema.exactOptional().openapi({
+      description: 'The description of the resource configuration.',
+    }),
+    supplementaryConfiguration: SupplementaryConfigurationSchema.exactOptional().openapi({
+      description:
+        'Configuration attributes that Config returns for certain resource types to supplement the information returned for the configuration parameter.',
+    }),
   })
   .openapi({ description: 'The detailed configuration of a specified resource.', required: [] })
   .openapi('BaseConfigurationItem')
@@ -406,21 +558,21 @@ const BaseConfigurationItemsSchema = z
 
 const AggregateResourceIdentifierSchema = z
   .object({
-    SourceAccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The 12-digit account ID of the source account.' }),
-    ),
-    SourceRegion: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The source region where data is aggregated.' }),
-    ),
-    ResourceId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Amazon Web Services resource.' }),
-    ),
-    ResourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the Amazon Web Services resource.' }),
-    ),
-    ResourceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon Web Services resource.' }),
-    ).exactOptional(),
+    SourceAccountId: AccountIdSchema.openapi({
+      description: 'The 12-digit account ID of the source account.',
+    }),
+    SourceRegion: AwsRegionSchema.openapi({
+      description: 'The source region where data is aggregated.',
+    }),
+    ResourceId: ResourceIdSchema.openapi({
+      description: 'The ID of the Amazon Web Services resource.',
+    }),
+    ResourceType: ResourceTypeSchema.openapi({
+      description: 'The type of the Amazon Web Services resource.',
+    }),
+    ResourceName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the Amazon Web Services resource.',
+    }),
   })
   .openapi({
     required: ['SourceAccountId', 'SourceRegion', 'ResourceId', 'ResourceType'],
@@ -435,21 +587,15 @@ const UnprocessedResourceIdentifierListSchema = z
 
 const BatchGetAggregateResourceConfigResponseSchema = z
   .object({
-    BaseConfigurationItems: BaseConfigurationItemsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list that contains the current configuration of one or more resources.',
-        }),
-    ).exactOptional(),
-    UnprocessedResourceIdentifiers: UnprocessedResourceIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of resource identifiers that were not processed with current scope. The list is empty if all the resources are processed.',
-        }),
-    ).exactOptional(),
+    BaseConfigurationItems: BaseConfigurationItemsSchema.exactOptional().openapi({
+      description: 'A list that contains the current configuration of one or more resources.',
+    }),
+    UnprocessedResourceIdentifiers: UnprocessedResourceIdentifierListSchema.exactOptional().openapi(
+      {
+        description:
+          'A list of resource identifiers that were not processed with current scope. The list is empty if all the resources are processed.',
+      },
+    ),
   })
   .openapi({ required: [] })
   .openapi('BatchGetAggregateResourceConfigResponse')
@@ -469,12 +615,12 @@ const ResourceIdentifiersListSchema = z
 
 const BatchGetAggregateResourceConfigRequestSchema = z
   .object({
-    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration aggregator.' }),
-    ),
-    ResourceIdentifiers: ResourceIdentifiersListSchema.and(
-      z.any().openapi({ description: 'A list of aggregate ResourceIdentifiers objects. ' }),
-    ),
+    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.openapi({
+      description: 'The name of the configuration aggregator.',
+    }),
+    ResourceIdentifiers: ResourceIdentifiersListSchema.openapi({
+      description: 'A list of aggregate ResourceIdentifiers objects. ',
+    }),
   })
   .openapi({
     required: ['ConfigurationAggregatorName', 'ResourceIdentifiers'],
@@ -490,10 +636,10 @@ const NoSuchConfigurationAggregatorExceptionSchema = z
 
 const ResourceKeySchema = z
   .object({
-    resourceType: ResourceTypeSchema.and(z.any().openapi({ description: 'The resource type.' })),
-    resourceId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the resource (for example., sg-xxxxxx). ' }),
-    ),
+    resourceType: ResourceTypeSchema.openapi({ description: 'The resource type.' }),
+    resourceId: ResourceIdSchema.openapi({
+      description: 'The ID of the resource (for example., sg-xxxxxx). ',
+    }),
   })
   .openapi({
     required: ['resourceType', 'resourceId'],
@@ -506,35 +652,23 @@ const ResourceKeysSchema = z.array(ResourceKeySchema).min(1).max(100).openapi('R
 
 const BatchGetResourceConfigResponseSchema = z
   .object({
-    baseConfigurationItems: BaseConfigurationItemsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list that contains the current configuration of one or more resources.',
-        }),
-    ).exactOptional(),
-    unprocessedResourceKeys: ResourceKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of resource keys that were not processed with the current response. The unprocessesResourceKeys value is in the same form as ResourceKeys, so the value can be directly provided to a subsequent BatchGetResourceConfig operation. If there are no unprocessed resource keys, the response contains an empty unprocessedResourceKeys list. ',
-        }),
-    ).exactOptional(),
+    baseConfigurationItems: BaseConfigurationItemsSchema.exactOptional().openapi({
+      description: 'A list that contains the current configuration of one or more resources.',
+    }),
+    unprocessedResourceKeys: ResourceKeysSchema.exactOptional().openapi({
+      description:
+        'A list of resource keys that were not processed with the current response. The unprocessesResourceKeys value is in the same form as ResourceKeys, so the value can be directly provided to a subsequent BatchGetResourceConfig operation. If there are no unprocessed resource keys, the response contains an empty unprocessedResourceKeys list. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchGetResourceConfigResponse')
 
 const BatchGetResourceConfigRequestSchema = z
   .object({
-    resourceKeys: ResourceKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of resource keys to be processed with the current request. Each element in the list consists of the resource type and resource ID.',
-        }),
-    ),
+    resourceKeys: ResourceKeysSchema.openapi({
+      description:
+        'A list of resource keys to be processed with the current request. Each element in the list consists of the resource type and resource ID.',
+    }),
   })
   .openapi({ required: ['resourceKeys'], title: 'BatchGetResourceConfigRequest' })
   .openapi('BatchGetResourceConfigRequest')
@@ -545,16 +679,12 @@ const NoAvailableConfigurationRecorderExceptionSchema = z
 
 const DeleteAggregationAuthorizationRequestSchema = z
   .object({
-    AuthorizedAccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The 12-digit account ID of the account authorized to aggregate data.',
-        }),
-    ),
-    AuthorizedAwsRegion: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The region authorized to collect aggregated data.' }),
-    ),
+    AuthorizedAccountId: AccountIdSchema.openapi({
+      description: 'The 12-digit account ID of the account authorized to aggregate data.',
+    }),
+    AuthorizedAwsRegion: AwsRegionSchema.openapi({
+      description: 'The region authorized to collect aggregated data.',
+    }),
   })
   .openapi({
     required: ['AuthorizedAccountId', 'AuthorizedAwsRegion'],
@@ -564,18 +694,11 @@ const DeleteAggregationAuthorizationRequestSchema = z
 
 const InvalidParameterValueExceptionSchema = z.any().openapi('InvalidParameterValueException')
 
-const ConfigRuleNameSchema = z
-  .string()
-  .regex(/.*\S.*/)
-  .min(1)
-  .max(128)
-  .openapi('ConfigRuleName')
-
 const DeleteConfigRuleRequestSchema = z
   .object({
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the Config rule that you want to delete.' }),
-    ),
+    ConfigRuleName: ConfigRuleNameSchema.openapi({
+      description: 'The name of the Config rule that you want to delete.',
+    }),
   })
   .openapi({ required: ['ConfigRuleName'], title: 'DeleteConfigRuleRequest', description: '<p/>' })
   .openapi('DeleteConfigRuleRequest')
@@ -586,9 +709,9 @@ const ResourceInUseExceptionSchema = z.any().openapi('ResourceInUseException')
 
 const DeleteConfigurationAggregatorRequestSchema = z
   .object({
-    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration aggregator.' }),
-    ),
+    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.openapi({
+      description: 'The name of the configuration aggregator.',
+    }),
   })
   .openapi({
     required: ['ConfigurationAggregatorName'],
@@ -600,14 +723,10 @@ const RecorderNameSchema = z.string().min(1).max(256).openapi('RecorderName')
 
 const DeleteConfigurationRecorderRequestSchema = z
   .object({
-    ConfigurationRecorderName: RecorderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the configuration recorder to be deleted. You can retrieve the name of your configuration recorder by using the <code>DescribeConfigurationRecorders</code> action.',
-        }),
-    ),
+    ConfigurationRecorderName: RecorderNameSchema.openapi({
+      description:
+        'The name of the configuration recorder to be deleted. You can retrieve the name of your configuration recorder by using the <code>DescribeConfigurationRecorders</code> action.',
+    }),
   })
   .openapi({
     required: ['ConfigurationRecorderName'],
@@ -629,9 +748,9 @@ const ConformancePackNameSchema = z
 
 const DeleteConformancePackRequestSchema = z
   .object({
-    ConformancePackName: ConformancePackNameSchema.and(
-      z.any().openapi({ description: 'Name of the conformance pack you want to delete.' }),
-    ),
+    ConformancePackName: ConformancePackNameSchema.openapi({
+      description: 'Name of the conformance pack you want to delete.',
+    }),
   })
   .openapi({ required: ['ConformancePackName'], title: 'DeleteConformancePackRequest' })
   .openapi('DeleteConformancePackRequest')
@@ -642,9 +761,9 @@ const ChannelNameSchema = z.string().min(1).max(256).openapi('ChannelName')
 
 const DeleteDeliveryChannelRequestSchema = z
   .object({
-    DeliveryChannelName: ChannelNameSchema.and(
-      z.any().openapi({ description: 'The name of the delivery channel to delete.' }),
-    ),
+    DeliveryChannelName: ChannelNameSchema.openapi({
+      description: 'The name of the delivery channel to delete.',
+    }),
   })
   .openapi({
     required: ['DeliveryChannelName'],
@@ -661,7 +780,7 @@ const LastDeliveryChannelDeleteFailedExceptionSchema = z
   .openapi('LastDeliveryChannelDeleteFailedException')
 
 const DeleteEvaluationResultsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'The output when you delete the evaluation results for the specified Config rule.',
   })
@@ -671,14 +790,10 @@ const StringWithCharLimit64Schema = z.string().min(1).max(64).openapi('StringWit
 
 const DeleteEvaluationResultsRequestSchema = z
   .object({
-    ConfigRuleName: StringWithCharLimit64Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Config rule for which you want to delete the evaluation results.',
-        }),
-    ),
+    ConfigRuleName: StringWithCharLimit64Schema.openapi({
+      description:
+        'The name of the Config rule for which you want to delete the evaluation results.',
+    }),
   })
   .openapi({
     required: ['ConfigRuleName'],
@@ -696,11 +811,9 @@ const OrganizationConfigRuleNameSchema = z
 
 const DeleteOrganizationConfigRuleRequestSchema = z
   .object({
-    OrganizationConfigRuleName: OrganizationConfigRuleNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of organization Config rule that you want to delete.' }),
-    ),
+    OrganizationConfigRuleName: OrganizationConfigRuleNameSchema.openapi({
+      description: 'The name of organization Config rule that you want to delete.',
+    }),
   })
   .openapi({
     required: ['OrganizationConfigRuleName'],
@@ -723,13 +836,9 @@ const OrganizationConformancePackNameSchema = z
 
 const DeleteOrganizationConformancePackRequestSchema = z
   .object({
-    OrganizationConformancePackName: OrganizationConformancePackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of organization conformance pack that you want to delete.',
-        }),
-    ),
+    OrganizationConformancePackName: OrganizationConformancePackNameSchema.openapi({
+      description: 'The name of organization conformance pack that you want to delete.',
+    }),
   })
   .openapi({
     required: ['OrganizationConformancePackName'],
@@ -743,16 +852,12 @@ const NoSuchOrganizationConformancePackExceptionSchema = z
 
 const DeletePendingAggregationRequestRequestSchema = z
   .object({
-    RequesterAccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The 12-digit account ID of the account requesting to aggregate data.',
-        }),
-    ),
-    RequesterAwsRegion: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The region requesting to aggregate data.' }),
-    ),
+    RequesterAccountId: AccountIdSchema.openapi({
+      description: 'The 12-digit account ID of the account requesting to aggregate data.',
+    }),
+    RequesterAwsRegion: AwsRegionSchema.openapi({
+      description: 'The region requesting to aggregate data.',
+    }),
   })
   .openapi({
     required: ['RequesterAccountId', 'RequesterAwsRegion'],
@@ -761,24 +866,16 @@ const DeletePendingAggregationRequestRequestSchema = z
   .openapi('DeletePendingAggregationRequestRequest')
 
 const DeleteRemediationConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteRemediationConfigurationResponse')
-
-const StringSchema = z.string().openapi('String')
 
 const DeleteRemediationConfigurationRequestSchema = z
   .object({
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Config rule for which you want to delete remediation configuration.',
-        }),
-    ),
-    ResourceType: StringSchema.and(
-      z.any().openapi({ description: 'The type of a resource.' }),
-    ).exactOptional(),
+    ConfigRuleName: ConfigRuleNameSchema.openapi({
+      description:
+        'The name of the Config rule for which you want to delete remediation configuration.',
+    }),
+    ResourceType: StringSchema.exactOptional().openapi({ description: 'The type of a resource.' }),
   })
   .openapi({ required: ['ConfigRuleName'], title: 'DeleteRemediationConfigurationRequest' })
   .openapi('DeleteRemediationConfigurationRequest')
@@ -791,16 +888,14 @@ const RemediationInProgressExceptionSchema = z.any().openapi('RemediationInProgr
 
 const InsufficientPermissionsExceptionSchema = z.any().openapi('InsufficientPermissionsException')
 
-const StringWithCharLimit256Schema = z.string().min(1).max(256).openapi('StringWithCharLimit256')
-
 const RemediationExceptionResourceKeySchema = z
   .object({
-    ResourceType: StringWithCharLimit256Schema.and(
-      z.any().openapi({ description: 'The type of a resource.' }),
-    ).exactOptional(),
-    ResourceId: StringWithCharLimit1024Schema.and(
-      z.any().openapi({ description: 'The ID of the resource (for example., sg-xxxxxx).' }),
-    ).exactOptional(),
+    ResourceType: StringWithCharLimit256Schema.exactOptional().openapi({
+      description: 'The type of a resource.',
+    }),
+    ResourceId: StringWithCharLimit1024Schema.exactOptional().openapi({
+      description: 'The ID of the resource (for example., sg-xxxxxx).',
+    }),
   })
   .openapi({
     description:
@@ -817,21 +912,13 @@ const RemediationExceptionResourceKeysSchema = z
 
 const FailedDeleteRemediationExceptionsBatchSchema = z
   .object({
-    FailureMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns a failure message for delete remediation exception. For example, Config creates an exception due to an internal error.',
-        }),
-    ).exactOptional(),
-    FailedItems: RemediationExceptionResourceKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Returns remediation exception resource key object of the failed items.',
-        }),
-    ).exactOptional(),
+    FailureMessage: StringSchema.exactOptional().openapi({
+      description:
+        'Returns a failure message for delete remediation exception. For example, Config creates an exception due to an internal error.',
+    }),
+    FailedItems: RemediationExceptionResourceKeysSchema.exactOptional().openapi({
+      description: 'Returns remediation exception resource key object of the failed items.',
+    }),
   })
   .openapi({
     description: 'List of each of the failed delete remediation exceptions with specific reasons.',
@@ -845,36 +932,24 @@ const FailedDeleteRemediationExceptionsBatchesSchema = z
 
 const DeleteRemediationExceptionsResponseSchema = z
   .object({
-    FailedBatches: FailedDeleteRemediationExceptionsBatchesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns a list of failed delete remediation exceptions batch objects. Each object in the batch consists of a list of failed items and failure messages.',
-        }),
-    ).exactOptional(),
+    FailedBatches: FailedDeleteRemediationExceptionsBatchesSchema.exactOptional().openapi({
+      description:
+        'Returns a list of failed delete remediation exceptions batch objects. Each object in the batch consists of a list of failed items and failure messages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteRemediationExceptionsResponse')
 
 const DeleteRemediationExceptionsRequestSchema = z
   .object({
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Config rule for which you want to delete remediation exception configuration.',
-        }),
-    ),
-    ResourceKeys: RemediationExceptionResourceKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An exception list of resource exception keys to be processed with the current request. Config adds exception for each resource key. For example, Config adds 3 exceptions for 3 resource keys. ',
-        }),
-    ),
+    ConfigRuleName: ConfigRuleNameSchema.openapi({
+      description:
+        'The name of the Config rule for which you want to delete remediation exception configuration.',
+    }),
+    ResourceKeys: RemediationExceptionResourceKeysSchema.openapi({
+      description:
+        'An exception list of resource exception keys to be processed with the current request. Config adds exception for each resource key. For example, Config adds 3 exceptions for 3 resource keys. ',
+    }),
   })
   .openapi({
     required: ['ConfigRuleName', 'ResourceKeys'],
@@ -890,12 +965,8 @@ const ResourceTypeStringSchema = z.string().min(1).max(196).openapi('ResourceTyp
 
 const DeleteResourceConfigRequestSchema = z
   .object({
-    ResourceType: ResourceTypeStringSchema.and(
-      z.any().openapi({ description: 'The type of the resource.' }),
-    ),
-    ResourceId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'Unique identifier of the resource.' }),
-    ),
+    ResourceType: ResourceTypeStringSchema.openapi({ description: 'The type of the resource.' }),
+    ResourceId: ResourceIdSchema.openapi({ description: 'Unique identifier of the resource.' }),
   })
   .openapi({ required: ['ResourceType', 'ResourceId'], title: 'DeleteResourceConfigRequest' })
   .openapi('DeleteResourceConfigRequest')
@@ -913,9 +984,9 @@ const RetentionConfigurationNameSchema = z
 
 const DeleteRetentionConfigurationRequestSchema = z
   .object({
-    RetentionConfigurationName: RetentionConfigurationNameSchema.and(
-      z.any().openapi({ description: 'The name of the retention configuration to delete.' }),
-    ),
+    RetentionConfigurationName: RetentionConfigurationNameSchema.openapi({
+      description: 'The name of the retention configuration to delete.',
+    }),
   })
   .openapi({
     required: ['RetentionConfigurationName'],
@@ -927,7 +998,7 @@ const NoSuchRetentionConfigurationExceptionSchema = z
   .any()
   .openapi('NoSuchRetentionConfigurationException')
 
-const DeleteStoredQueryResponseSchema = z.object({}).openapi('DeleteStoredQueryResponse')
+const DeleteStoredQueryResponseSchema = z.looseObject({}).openapi('DeleteStoredQueryResponse')
 
 const QueryNameSchema = z
   .string()
@@ -938,9 +1009,9 @@ const QueryNameSchema = z
 
 const DeleteStoredQueryRequestSchema = z
   .object({
-    QueryName: QueryNameSchema.and(
-      z.any().openapi({ description: 'The name of the query that you want to delete.' }),
-    ),
+    QueryName: QueryNameSchema.openapi({
+      description: 'The name of the query that you want to delete.',
+    }),
   })
   .openapi({ required: ['QueryName'], title: 'DeleteStoredQueryRequest' })
   .openapi('DeleteStoredQueryRequest')
@@ -949,9 +1020,9 @@ const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundExcepti
 
 const DeliverConfigSnapshotResponseSchema = z
   .object({
-    configSnapshotId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the snapshot that is being created.' }),
-    ).exactOptional(),
+    configSnapshotId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the snapshot that is being created.',
+    }),
   })
   .openapi({
     description: 'The output for the <a>DeliverConfigSnapshot</a> action, in JSON format.',
@@ -961,13 +1032,9 @@ const DeliverConfigSnapshotResponseSchema = z
 
 const DeliverConfigSnapshotRequestSchema = z
   .object({
-    deliveryChannelName: ChannelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the delivery channel through which the snapshot is delivered.',
-        }),
-    ),
+    deliveryChannelName: ChannelNameSchema.openapi({
+      description: 'The name of the delivery channel through which the snapshot is delivered.',
+    }),
   })
   .openapi({
     required: ['deliveryChannelName'],
@@ -982,21 +1049,15 @@ const ComplianceTypeSchema = z
 
 const IntegerSchema = z.int().openapi('Integer')
 
-const BooleanSchema = z.boolean().openapi('Boolean')
-
 const ComplianceContributorCountSchema = z
   .object({
-    CappedCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Amazon Web Services resources or Config rules responsible for the current compliance of the item.',
-        }),
-    ).exactOptional(),
-    CapExceeded: BooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether the maximum count is reached.' }),
-    ).exactOptional(),
+    CappedCount: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of Amazon Web Services resources or Config rules responsible for the current compliance of the item.',
+    }),
+    CapExceeded: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether the maximum count is reached.',
+    }),
   })
   .openapi({
     description:
@@ -1007,22 +1068,14 @@ const ComplianceContributorCountSchema = z
 
 const ComplianceSchema = z
   .object({
-    ComplianceType: ComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether an Amazon Web Services resource or Config rule is compliant.</p> <p>A resource is compliant if it complies with all of the Config rules that evaluate it. A resource is noncompliant if it does not comply with one or more of these rules.</p> <p>A rule is compliant if all of the resources that the rule evaluates comply with it. A rule is noncompliant if any of these resources do not comply.</p> <p>Config returns the <code>INSUFFICIENT_DATA</code> value when no evaluation results are available for the Amazon Web Services resource or Config rule.</p> <p>For the <code>Compliance</code> data type, Config supports only <code>COMPLIANT</code>, <code>NON_COMPLIANT</code>, and <code>INSUFFICIENT_DATA</code> values. Config does not support the <code>NOT_APPLICABLE</code> value for the <code>Compliance</code> data type.</p>',
-        }),
-    ).exactOptional(),
-    ComplianceContributorCount: ComplianceContributorCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Amazon Web Services resources or Config rules that cause a result of <code>NON_COMPLIANT</code>, up to a maximum number.',
-        }),
-    ).exactOptional(),
+    ComplianceType: ComplianceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether an Amazon Web Services resource or Config rule is compliant.</p> <p>A resource is compliant if it complies with all of the Config rules that evaluate it. A resource is noncompliant if it does not comply with one or more of these rules.</p> <p>A rule is compliant if all of the resources that the rule evaluates comply with it. A rule is noncompliant if any of these resources do not comply.</p> <p>Config returns the <code>INSUFFICIENT_DATA</code> value when no evaluation results are available for the Amazon Web Services resource or Config rule.</p> <p>For the <code>Compliance</code> data type, Config supports only <code>COMPLIANT</code>, <code>NON_COMPLIANT</code>, and <code>INSUFFICIENT_DATA</code> values. Config does not support the <code>NOT_APPLICABLE</code> value for the <code>Compliance</code> data type.</p>',
+    }),
+    ComplianceContributorCount: ComplianceContributorCountSchema.exactOptional().openapi({
+      description:
+        'The number of Amazon Web Services resources or Config rules that cause a result of <code>NON_COMPLIANT</code>, up to a maximum number.',
+    }),
   })
   .openapi({
     description:
@@ -1033,23 +1086,19 @@ const ComplianceSchema = z
 
 const AggregateComplianceByConfigRuleSchema = z
   .object({
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the Config rule.' }),
-    ).exactOptional(),
-    Compliance: ComplianceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether an Amazon Web Services resource or Config rule is compliant and provides the number of contributors that affect the compliance.',
-        }),
-    ).exactOptional(),
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The 12-digit account ID of the source account.' }),
-    ).exactOptional(),
-    AwsRegion: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The source region from where the data is aggregated.' }),
-    ).exactOptional(),
+    ConfigRuleName: ConfigRuleNameSchema.exactOptional().openapi({
+      description: 'The name of the Config rule.',
+    }),
+    Compliance: ComplianceSchema.exactOptional().openapi({
+      description:
+        'Indicates whether an Amazon Web Services resource or Config rule is compliant and provides the number of contributors that affect the compliance.',
+    }),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The 12-digit account ID of the source account.',
+    }),
+    AwsRegion: AwsRegionSchema.exactOptional().openapi({
+      description: 'The source region from where the data is aggregated.',
+    }),
   })
   .openapi({
     description:
@@ -1066,40 +1115,33 @@ const NextTokenSchema = z.string().openapi('NextToken')
 
 const DescribeAggregateComplianceByConfigRulesResponseSchema = z
   .object({
-    AggregateComplianceByConfigRules: AggregateComplianceByConfigRuleListSchema.and(
-      z.any().openapi({ description: 'Returns a list of AggregateComplianceByConfigRule object.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    AggregateComplianceByConfigRules:
+      AggregateComplianceByConfigRuleListSchema.exactOptional().openapi({
+        description: 'Returns a list of AggregateComplianceByConfigRule object.',
+      }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAggregateComplianceByConfigRulesResponse')
 
 const ConfigRuleComplianceFiltersSchema = z
   .object({
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the Config rule.' }),
-    ).exactOptional(),
-    ComplianceType: ComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The rule compliance status.</p> <p>For the <code>ConfigRuleComplianceFilters</code> data type, Config supports only <code>COMPLIANT</code> and <code>NON_COMPLIANT</code>. Config does not support the <code>NOT_APPLICABLE</code> and the <code>INSUFFICIENT_DATA</code> values.</p>',
-        }),
-    ).exactOptional(),
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The 12-digit account ID of the source account. ' }),
-    ).exactOptional(),
-    AwsRegion: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The source region where the data is aggregated. ' }),
-    ).exactOptional(),
+    ConfigRuleName: ConfigRuleNameSchema.exactOptional().openapi({
+      description: 'The name of the Config rule.',
+    }),
+    ComplianceType: ComplianceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The rule compliance status.</p> <p>For the <code>ConfigRuleComplianceFilters</code> data type, Config supports only <code>COMPLIANT</code> and <code>NON_COMPLIANT</code>. Config does not support the <code>NOT_APPLICABLE</code> and the <code>INSUFFICIENT_DATA</code> values.</p>',
+    }),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The 12-digit account ID of the source account. ',
+    }),
+    AwsRegion: AwsRegionSchema.exactOptional().openapi({
+      description: 'The source region where the data is aggregated. ',
+    }),
   })
   .openapi({
     description:
@@ -1112,30 +1154,20 @@ const GroupByAPILimitSchema = z.int().min(0).max(1000).openapi('GroupByAPILimit'
 
 const DescribeAggregateComplianceByConfigRulesRequestSchema = z
   .object({
-    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration aggregator.' }),
-    ),
-    Filters: ConfigRuleComplianceFiltersSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Filters the results by ConfigRuleComplianceFilters object. ' }),
-    ).exactOptional(),
-    Limit: GroupByAPILimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of evaluation results returned on each page. The default is maximum. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.openapi({
+      description: 'The name of the configuration aggregator.',
+    }),
+    Filters: ConfigRuleComplianceFiltersSchema.exactOptional().openapi({
+      description: 'Filters the results by ConfigRuleComplianceFilters object. ',
+    }),
+    Limit: GroupByAPILimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of evaluation results returned on each page. The default is maximum. If you specify 0, Config uses the default.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({
     required: ['ConfigurationAggregatorName'],
@@ -1153,23 +1185,19 @@ const ConformancePackComplianceTypeSchema = z
 
 const AggregateConformancePackComplianceSchema = z
   .object({
-    ComplianceType: ConformancePackComplianceTypeSchema.and(
-      z.any().openapi({ description: 'The compliance status of the conformance pack.' }),
-    ).exactOptional(),
-    CompliantRuleCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of compliant Config Rules.' }),
-    ).exactOptional(),
-    NonCompliantRuleCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of noncompliant Config Rules.' }),
-    ).exactOptional(),
-    TotalRuleCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Total number of compliant rules, noncompliant rules, and the rules that do not have any applicable resources to evaluate upon resulting in insufficient data.',
-        }),
-    ).exactOptional(),
+    ComplianceType: ConformancePackComplianceTypeSchema.exactOptional().openapi({
+      description: 'The compliance status of the conformance pack.',
+    }),
+    CompliantRuleCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of compliant Config Rules.',
+    }),
+    NonCompliantRuleCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of noncompliant Config Rules.',
+    }),
+    TotalRuleCount: IntegerSchema.exactOptional().openapi({
+      description:
+        'Total number of compliant rules, noncompliant rules, and the rules that do not have any applicable resources to evaluate upon resulting in insufficient data.',
+    }),
   })
   .openapi({
     description:
@@ -1180,26 +1208,18 @@ const AggregateConformancePackComplianceSchema = z
 
 const AggregateComplianceByConformancePackSchema = z
   .object({
-    ConformancePackName: ConformancePackNameSchema.and(
-      z.any().openapi({ description: 'The name of the conformance pack.' }),
-    ).exactOptional(),
-    Compliance: AggregateConformancePackComplianceSchema.and(
-      z.any().openapi({ description: 'The compliance status of the conformance pack.' }),
-    ).exactOptional(),
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The 12-digit Amazon Web Services account ID of the source account.',
-        }),
-    ).exactOptional(),
-    AwsRegion: AwsRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The source Amazon Web Services Region from where the data is aggregated.',
-        }),
-    ).exactOptional(),
+    ConformancePackName: ConformancePackNameSchema.exactOptional().openapi({
+      description: 'The name of the conformance pack.',
+    }),
+    Compliance: AggregateConformancePackComplianceSchema.exactOptional().openapi({
+      description: 'The compliance status of the conformance pack.',
+    }),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The 12-digit Amazon Web Services account ID of the source account.',
+    }),
+    AwsRegion: AwsRegionSchema.exactOptional().openapi({
+      description: 'The source Amazon Web Services Region from where the data is aggregated.',
+    }),
   })
   .openapi({
     description:
@@ -1214,47 +1234,32 @@ const AggregateComplianceByConformancePackListSchema = z
 
 const DescribeAggregateComplianceByConformancePacksResponseSchema = z
   .object({
-    AggregateComplianceByConformancePacks: AggregateComplianceByConformancePackListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Returns the <code>AggregateComplianceByConformancePack</code> object.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    AggregateComplianceByConformancePacks:
+      AggregateComplianceByConformancePackListSchema.exactOptional().openapi({
+        description: 'Returns the <code>AggregateComplianceByConformancePack</code> object.',
+      }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAggregateComplianceByConformancePacksResponse')
 
 const AggregateConformancePackComplianceFiltersSchema = z
   .object({
-    ConformancePackName: ConformancePackNameSchema.and(
-      z.any().openapi({ description: 'The name of the conformance pack.' }),
-    ).exactOptional(),
-    ComplianceType: ConformancePackComplianceTypeSchema.and(
-      z.any().openapi({ description: 'The compliance status of the conformance pack.' }),
-    ).exactOptional(),
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The 12-digit Amazon Web Services account ID of the source account.',
-        }),
-    ).exactOptional(),
-    AwsRegion: AwsRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The source Amazon Web Services Region from where the data is aggregated.',
-        }),
-    ).exactOptional(),
+    ConformancePackName: ConformancePackNameSchema.exactOptional().openapi({
+      description: 'The name of the conformance pack.',
+    }),
+    ComplianceType: ConformancePackComplianceTypeSchema.exactOptional().openapi({
+      description: 'The compliance status of the conformance pack.',
+    }),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The 12-digit Amazon Web Services account ID of the source account.',
+    }),
+    AwsRegion: AwsRegionSchema.exactOptional().openapi({
+      description: 'The source Amazon Web Services Region from where the data is aggregated.',
+    }),
   })
   .openapi({
     description:
@@ -1267,33 +1272,21 @@ const LimitSchema = z.int().min(0).max(100).openapi('Limit')
 
 const DescribeAggregateComplianceByConformancePacksRequestSchema = z
   .object({
-    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration aggregator.' }),
-    ),
-    Filters: AggregateConformancePackComplianceFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the result by <code>AggregateConformancePackComplianceFilters</code> object.',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of conformance packs compliance details returned on each page. The default is maximum. If you specify 0, Config uses the default. ',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.openapi({
+      description: 'The name of the configuration aggregator.',
+    }),
+    Filters: AggregateConformancePackComplianceFiltersSchema.exactOptional().openapi({
+      description:
+        'Filters the result by <code>AggregateConformancePackComplianceFilters</code> object.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of conformance packs compliance details returned on each page. The default is maximum. If you specify 0, Config uses the default. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({
     required: ['ConfigurationAggregatorName'],
@@ -1305,24 +1298,18 @@ const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
 
 const AggregationAuthorizationSchema = z
   .object({
-    AggregationAuthorizationArn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the aggregation object.' }),
-    ).exactOptional(),
-    AuthorizedAccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The 12-digit account ID of the account authorized to aggregate data.',
-        }),
-    ).exactOptional(),
-    AuthorizedAwsRegion: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The region authorized to collect aggregated data.' }),
-    ).exactOptional(),
-    CreationTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time stamp when the aggregation authorization was created.' }),
-    ).exactOptional(),
+    AggregationAuthorizationArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the aggregation object.',
+    }),
+    AuthorizedAccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The 12-digit account ID of the account authorized to aggregate data.',
+    }),
+    AuthorizedAwsRegion: AwsRegionSchema.exactOptional().openapi({
+      description: 'The region authorized to collect aggregated data.',
+    }),
+    CreationTime: DateSchema.exactOptional().openapi({
+      description: 'The time stamp when the aggregation authorization was created.',
+    }),
   })
   .openapi({
     description:
@@ -1337,56 +1324,40 @@ const AggregationAuthorizationListSchema = z
 
 const DescribeAggregationAuthorizationsResponseSchema = z
   .object({
-    AggregationAuthorizations: AggregationAuthorizationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns a list of authorizations granted to various aggregator accounts and regions.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    AggregationAuthorizations: AggregationAuthorizationListSchema.exactOptional().openapi({
+      description:
+        'Returns a list of authorizations granted to various aggregator accounts and regions.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAggregationAuthorizationsResponse')
 
 const DescribeAggregationAuthorizationsRequestSchema = z
   .object({
-    Limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of AggregationAuthorizations returned on each page. The default is maximum. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    Limit: LimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of AggregationAuthorizations returned on each page. The default is maximum. If you specify 0, Config uses the default.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ title: 'DescribeAggregationAuthorizationsRequest', required: [] })
   .openapi('DescribeAggregationAuthorizationsRequest')
 
 const ComplianceByConfigRuleSchema = z
   .object({
-    ConfigRuleName: StringWithCharLimit64Schema.and(
-      z.any().openapi({ description: 'The name of the Config rule.' }),
-    ).exactOptional(),
-    Compliance: ComplianceSchema.and(
-      z.any().openapi({ description: 'Indicates whether the Config rule is compliant.' }),
-    ).exactOptional(),
+    ConfigRuleName: StringWithCharLimit64Schema.exactOptional().openapi({
+      description: 'The name of the Config rule.',
+    }),
+    Compliance: ComplianceSchema.exactOptional().openapi({
+      description: 'Indicates whether the Config rule is compliant.',
+    }),
   })
   .openapi({
     description:
@@ -1401,21 +1372,13 @@ const ComplianceByConfigRulesSchema = z
 
 const DescribeComplianceByConfigRuleResponseSchema = z
   .object({
-    ComplianceByConfigRules: ComplianceByConfigRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether each of the specified Config rules is compliant.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string that you use in a subsequent request to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ComplianceByConfigRules: ComplianceByConfigRulesSchema.exactOptional().openapi({
+      description: 'Indicates whether each of the specified Config rules is compliant.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The string that you use in a subsequent request to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('DescribeComplianceByConfigRuleResponse')
@@ -1430,24 +1393,16 @@ const ComplianceTypesSchema = z.array(ComplianceTypeSchema).min(0).max(3).openap
 
 const DescribeComplianceByConfigRuleRequestSchema = z
   .object({
-    ConfigRuleNames: ConfigRuleNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specify one or more Config rule names to filter the results by rule.',
-        }),
-    ).exactOptional(),
-    ComplianceTypes: ComplianceTypesSchema.and(
-      z.any().openapi({ description: 'Filters the results by compliance.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConfigRuleNames: ConfigRuleNamesSchema.exactOptional().openapi({
+      description: 'Specify one or more Config rule names to filter the results by rule.',
+    }),
+    ComplianceTypes: ComplianceTypesSchema.exactOptional().openapi({
+      description: 'Filters the results by compliance.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ title: 'DescribeComplianceByConfigRuleRequest', description: '<p/>', required: [] })
   .openapi('DescribeComplianceByConfigRuleRequest')
@@ -1456,26 +1411,16 @@ const BaseResourceIdSchema = z.string().min(1).max(768).openapi('BaseResourceId'
 
 const ComplianceByResourceSchema = z
   .object({
-    ResourceType: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of the Amazon Web Services resource that was evaluated.',
-        }),
-    ).exactOptional(),
-    ResourceId: BaseResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the Amazon Web Services resource that was evaluated.' }),
-    ).exactOptional(),
-    Compliance: ComplianceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the Amazon Web Services resource complies with all of the Config rules that evaluated it.',
-        }),
-    ).exactOptional(),
+    ResourceType: StringWithCharLimit256Schema.exactOptional().openapi({
+      description: 'The type of the Amazon Web Services resource that was evaluated.',
+    }),
+    ResourceId: BaseResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services resource that was evaluated.',
+    }),
+    Compliance: ComplianceSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the Amazon Web Services resource complies with all of the Config rules that evaluated it.',
+    }),
   })
   .openapi({
     description:
@@ -1490,160 +1435,98 @@ const ComplianceByResourcesSchema = z
 
 const DescribeComplianceByResourceResponseSchema = z
   .object({
-    ComplianceByResources: ComplianceByResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the specified Amazon Web Services resource complies with all of the Config rules that evaluate it.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string that you use in a subsequent request to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ComplianceByResources: ComplianceByResourcesSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the specified Amazon Web Services resource complies with all of the Config rules that evaluate it.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The string that you use in a subsequent request to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('DescribeComplianceByResourceResponse')
 
 const DescribeComplianceByResourceRequestSchema = z
   .object({
-    ResourceType: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The types of Amazon Web Services resources for which you want compliance information (for example, <code>AWS::EC2::Instance</code>). For this action, you can specify that the resource type is an Amazon Web Services account by specifying <code>AWS::::Account</code>.',
-        }),
-    ).exactOptional(),
-    ResourceId: BaseResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services resource for which you want compliance information. You can specify only one resource ID. If you specify a resource ID, you must also specify a type for <code>ResourceType</code>.',
-        }),
-    ).exactOptional(),
-    ComplianceTypes: ComplianceTypesSchema.and(
-      z.any().openapi({ description: 'Filters the results by compliance.' }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of evaluation results returned on each page. The default is 10. You cannot specify a number greater than 100. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ResourceType: StringWithCharLimit256Schema.exactOptional().openapi({
+      description:
+        'The types of Amazon Web Services resources for which you want compliance information (for example, <code>AWS::EC2::Instance</code>). For this action, you can specify that the resource type is an Amazon Web Services account by specifying <code>AWS::::Account</code>.',
+    }),
+    ResourceId: BaseResourceIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the Amazon Web Services resource for which you want compliance information. You can specify only one resource ID. If you specify a resource ID, you must also specify a type for <code>ResourceType</code>.',
+    }),
+    ComplianceTypes: ComplianceTypesSchema.exactOptional().openapi({
+      description: 'Filters the results by compliance.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of evaluation results returned on each page. The default is 10. You cannot specify a number greater than 100. If you specify 0, Config uses the default.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ title: 'DescribeComplianceByResourceRequest', description: '<p/>', required: [] })
   .openapi('DescribeComplianceByResourceRequest')
 
 const ConfigRuleEvaluationStatusSchema = z
   .object({
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the Config rule.' }),
-    ).exactOptional(),
-    ConfigRuleArn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the Config rule.' }),
-    ).exactOptional(),
-    ConfigRuleId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the Config rule.' }),
-    ).exactOptional(),
-    LastSuccessfulInvocationTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that Config last successfully invoked the Config rule to evaluate your Amazon Web Services resources.',
-        }),
-    ).exactOptional(),
-    LastFailedInvocationTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that Config last failed to invoke the Config rule to evaluate your Amazon Web Services resources.',
-        }),
-    ).exactOptional(),
-    LastSuccessfulEvaluationTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that Config last successfully evaluated your Amazon Web Services resources against the rule.',
-        }),
-    ).exactOptional(),
-    LastFailedEvaluationTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that Config last failed to evaluate your Amazon Web Services resources against the rule.',
-        }),
-    ).exactOptional(),
-    FirstActivatedTime: DateSchema.and(
-      z.any().openapi({ description: 'The time that you first activated the Config rule.' }),
-    ).exactOptional(),
-    LastDeactivatedTime: DateSchema.and(
-      z.any().openapi({ description: 'The time that you last turned off the Config rule.' }),
-    ).exactOptional(),
-    LastErrorCode: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The error code that Config returned when the rule last failed.' }),
-    ).exactOptional(),
-    LastErrorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The error message that Config returned when the rule last failed.',
-        }),
-    ).exactOptional(),
-    FirstEvaluationStarted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether Config has evaluated your resources against the rule at least once.</p> <ul> <li> <p> <code>true</code> - Config has evaluated your Amazon Web Services resources against the rule at least once.</p> </li> <li> <p> <code>false</code> - Config has not finished evaluating your Amazon Web Services resources against the rule at least once.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    LastDebugLogDeliveryStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the last attempted delivery of a debug log for your Config Custom Policy rules. Either <code>Successful</code> or <code>Failed</code>.',
-        }),
-    ).exactOptional(),
-    LastDebugLogDeliveryStatusReason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason Config was not able to deliver a debug log. This is for the last failed attempt to retrieve a debug log for your Config Custom Policy rules.',
-        }),
-    ).exactOptional(),
-    LastDebugLogDeliveryTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time Config last attempted to deliver a debug log for your Config Custom Policy rules.',
-        }),
-    ).exactOptional(),
+    ConfigRuleName: ConfigRuleNameSchema.exactOptional().openapi({
+      description: 'The name of the Config rule.',
+    }),
+    ConfigRuleArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the Config rule.',
+    }),
+    ConfigRuleId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the Config rule.',
+    }),
+    LastSuccessfulInvocationTime: DateSchema.exactOptional().openapi({
+      description:
+        'The time that Config last successfully invoked the Config rule to evaluate your Amazon Web Services resources.',
+    }),
+    LastFailedInvocationTime: DateSchema.exactOptional().openapi({
+      description:
+        'The time that Config last failed to invoke the Config rule to evaluate your Amazon Web Services resources.',
+    }),
+    LastSuccessfulEvaluationTime: DateSchema.exactOptional().openapi({
+      description:
+        'The time that Config last successfully evaluated your Amazon Web Services resources against the rule.',
+    }),
+    LastFailedEvaluationTime: DateSchema.exactOptional().openapi({
+      description:
+        'The time that Config last failed to evaluate your Amazon Web Services resources against the rule.',
+    }),
+    FirstActivatedTime: DateSchema.exactOptional().openapi({
+      description: 'The time that you first activated the Config rule.',
+    }),
+    LastDeactivatedTime: DateSchema.exactOptional().openapi({
+      description: 'The time that you last turned off the Config rule.',
+    }),
+    LastErrorCode: StringSchema.exactOptional().openapi({
+      description: 'The error code that Config returned when the rule last failed.',
+    }),
+    LastErrorMessage: StringSchema.exactOptional().openapi({
+      description: 'The error message that Config returned when the rule last failed.',
+    }),
+    FirstEvaluationStarted: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether Config has evaluated your resources against the rule at least once.</p> <ul> <li> <p> <code>true</code> - Config has evaluated your Amazon Web Services resources against the rule at least once.</p> </li> <li> <p> <code>false</code> - Config has not finished evaluating your Amazon Web Services resources against the rule at least once.</p> </li> </ul>',
+    }),
+    LastDebugLogDeliveryStatus: StringSchema.exactOptional().openapi({
+      description:
+        'The status of the last attempted delivery of a debug log for your Config Custom Policy rules. Either <code>Successful</code> or <code>Failed</code>.',
+    }),
+    LastDebugLogDeliveryStatusReason: StringSchema.exactOptional().openapi({
+      description:
+        'The reason Config was not able to deliver a debug log. This is for the last failed attempt to retrieve a debug log for your Config Custom Policy rules.',
+    }),
+    LastDebugLogDeliveryTime: DateSchema.exactOptional().openapi({
+      description:
+        'The time Config last attempted to deliver a debug log for your Config Custom Policy rules.',
+    }),
   })
   .openapi({
     description:
@@ -1658,17 +1541,13 @@ const ConfigRuleEvaluationStatusListSchema = z
 
 const DescribeConfigRuleEvaluationStatusResponseSchema = z
   .object({
-    ConfigRulesEvaluationStatus: ConfigRuleEvaluationStatusListSchema.and(
-      z.any().openapi({ description: 'Status information about your Config managed rules.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string that you use in a subsequent request to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConfigRulesEvaluationStatus: ConfigRuleEvaluationStatusListSchema.exactOptional().openapi({
+      description: 'Status information about your Config managed rules.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The string that you use in a subsequent request to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('DescribeConfigRuleEvaluationStatusResponse')
@@ -1677,30 +1556,18 @@ const RuleLimitSchema = z.int().min(0).max(50).openapi('RuleLimit')
 
 const DescribeConfigRuleEvaluationStatusRequestSchema = z
   .object({
-    ConfigRuleNames: ConfigRuleNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Config managed rules for which you want status information. If you do not specify any names, Config returns status information for all Config managed rules that you use.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
-    Limit: RuleLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of rule evaluation results that you want returned.</p> <p>This parameter is required if the rule limit for your account is more than the default of 150 rules.</p> <p>For information about requesting a rule limit increase, see <a href="http://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html#limits_config">Config Limits</a> in the <i>Amazon Web Services General Reference Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    ConfigRuleNames: ConfigRuleNamesSchema.exactOptional().openapi({
+      description:
+        'The name of the Config managed rules for which you want status information. If you do not specify any names, Config returns status information for all Config managed rules that you use.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
+    Limit: RuleLimitSchema.exactOptional().openapi({
+      description:
+        '<p>The number of rule evaluation results that you want returned.</p> <p>This parameter is required if the rule limit for your account is more than the default of 150 rules.</p> <p>For information about requesting a rule limit increase, see <a href="http://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html#limits_config">Config Limits</a> in the <i>Amazon Web Services General Reference Guide</i>.</p>',
+    }),
   })
   .openapi({
     title: 'DescribeConfigRuleEvaluationStatusRequest',
@@ -1725,38 +1592,22 @@ const StringWithCharLimit128Schema = z.string().min(1).max(128).openapi('StringW
 
 const ScopeSchema = z
   .object({
-    ComplianceResourceTypes: ComplianceResourceTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource types of only those Amazon Web Services resources that you want to trigger an evaluation for the rule. You can only specify one type if you also specify a resource ID for <code>ComplianceResourceId</code>.',
-        }),
-    ).exactOptional(),
-    TagKey: StringWithCharLimit128Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag key that is applied to only those Amazon Web Services resources that you want to trigger an evaluation for the rule.',
-        }),
-    ).exactOptional(),
-    TagValue: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag value applied to only those Amazon Web Services resources that you want to trigger an evaluation for the rule. If you specify a value for <code>TagValue</code>, you must also specify a value for <code>TagKey</code>.',
-        }),
-    ).exactOptional(),
-    ComplianceResourceId: BaseResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the only Amazon Web Services resource that you want to trigger an evaluation for the rule. If you specify a resource ID, you must specify one resource type for <code>ComplianceResourceTypes</code>.',
-        }),
-    ).exactOptional(),
+    ComplianceResourceTypes: ComplianceResourceTypesSchema.exactOptional().openapi({
+      description:
+        'The resource types of only those Amazon Web Services resources that you want to trigger an evaluation for the rule. You can only specify one type if you also specify a resource ID for <code>ComplianceResourceId</code>.',
+    }),
+    TagKey: StringWithCharLimit128Schema.exactOptional().openapi({
+      description:
+        'The tag key that is applied to only those Amazon Web Services resources that you want to trigger an evaluation for the rule.',
+    }),
+    TagValue: StringWithCharLimit256Schema.exactOptional().openapi({
+      description:
+        'The tag value applied to only those Amazon Web Services resources that you want to trigger an evaluation for the rule. If you specify a value for <code>TagValue</code>, you must also specify a value for <code>TagKey</code>.',
+    }),
+    ComplianceResourceId: BaseResourceIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the only Amazon Web Services resource that you want to trigger an evaluation for the rule. If you specify a resource ID, you must specify one resource type for <code>ComplianceResourceTypes</code>.',
+    }),
   })
   .openapi({
     description:
@@ -1784,30 +1635,18 @@ const MaximumExecutionFrequencySchema = z
 
 const SourceDetailSchema = z
   .object({
-    EventSource: EventSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The source of the event, such as an Amazon Web Services service, that triggers Config to evaluate your Amazon Web Services resources.',
-        }),
-    ).exactOptional(),
-    MessageType: MessageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of notification that triggers Config to run an evaluation for a rule. You can specify the following notification types:</p> <ul> <li> <p> <code>ConfigurationItemChangeNotification</code> - Triggers an evaluation when Config delivers a configuration item as a result of a resource change.</p> </li> <li> <p> <code>OversizedConfigurationItemChangeNotification</code> - Triggers an evaluation when Config delivers an oversized configuration item. Config may generate this notification type when a resource changes and the notification exceeds the maximum size allowed by Amazon SNS.</p> </li> <li> <p> <code>ScheduledNotification</code> - Triggers a periodic evaluation at the frequency specified for <code>MaximumExecutionFrequency</code>.</p> </li> <li> <p> <code>ConfigurationSnapshotDeliveryCompleted</code> - Triggers a periodic evaluation when Config delivers a configuration snapshot.</p> </li> </ul> <p>If you want your custom rule to be triggered by configuration changes, specify two SourceDetail objects, one for <code>ConfigurationItemChangeNotification</code> and one for <code>OversizedConfigurationItemChangeNotification</code>.</p>',
-        }),
-    ).exactOptional(),
-    MaximumExecutionFrequency: MaximumExecutionFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The frequency at which you want Config to run evaluations for a custom rule with a periodic trigger. If you specify a value for <code>MaximumExecutionFrequency</code>, then <code>MessageType</code> must use the <code>ScheduledNotification</code> value.</p> <note> <p>By default, rules with a periodic trigger are evaluated every 24 hours. To change the frequency, specify a valid value for the <code>MaximumExecutionFrequency</code> parameter.</p> <p>Based on the valid value you choose, Config runs evaluations once for each valid value. For example, if you choose <code>Three_Hours</code>, Config runs evaluations once every three hours. In this case, <code>Three_Hours</code> is the frequency of this rule. </p> </note>',
-        }),
-    ).exactOptional(),
+    EventSource: EventSourceSchema.exactOptional().openapi({
+      description:
+        'The source of the event, such as an Amazon Web Services service, that triggers Config to evaluate your Amazon Web Services resources.',
+    }),
+    MessageType: MessageTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of notification that triggers Config to run an evaluation for a rule. You can specify the following notification types:</p> <ul> <li> <p> <code>ConfigurationItemChangeNotification</code> - Triggers an evaluation when Config delivers a configuration item as a result of a resource change.</p> </li> <li> <p> <code>OversizedConfigurationItemChangeNotification</code> - Triggers an evaluation when Config delivers an oversized configuration item. Config may generate this notification type when a resource changes and the notification exceeds the maximum size allowed by Amazon SNS.</p> </li> <li> <p> <code>ScheduledNotification</code> - Triggers a periodic evaluation at the frequency specified for <code>MaximumExecutionFrequency</code>.</p> </li> <li> <p> <code>ConfigurationSnapshotDeliveryCompleted</code> - Triggers a periodic evaluation when Config delivers a configuration snapshot.</p> </li> </ul> <p>If you want your custom rule to be triggered by configuration changes, specify two SourceDetail objects, one for <code>ConfigurationItemChangeNotification</code> and one for <code>OversizedConfigurationItemChangeNotification</code>.</p>',
+    }),
+    MaximumExecutionFrequency: MaximumExecutionFrequencySchema.exactOptional().openapi({
+      description:
+        '<p>The frequency at which you want Config to run evaluations for a custom rule with a periodic trigger. If you specify a value for <code>MaximumExecutionFrequency</code>, then <code>MessageType</code> must use the <code>ScheduledNotification</code> value.</p> <note> <p>By default, rules with a periodic trigger are evaluated every 24 hours. To change the frequency, specify a valid value for the <code>MaximumExecutionFrequency</code> parameter.</p> <p>Based on the valid value you choose, Config runs evaluations once for each valid value. For example, if you choose <code>Three_Hours</code>, Config runs evaluations once every three hours. In this case, <code>Three_Hours</code> is the frequency of this rule. </p> </note>',
+    }),
   })
   .openapi({
     description:
@@ -1829,30 +1668,17 @@ const PolicyTextSchema = z.string().min(0).max(10000).openapi('PolicyText')
 
 const CustomPolicyDetailsSchema = z
   .object({
-    PolicyRuntime: PolicyRuntimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The runtime system for your Config Custom Policy rule. Guard is a policy-as-code language that allows you to write policies that are enforced by Config Custom Policy rules. For more information about Guard, see the <a href="https://github.com/aws-cloudformation/cloudformation-guard">Guard GitHub Repository</a>.',
-        }),
-    ),
-    PolicyText: PolicyTextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The policy definition containing the logic for your Config Custom Policy rule.',
-        }),
-    ),
-    EnableDebugLogDelivery: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The boolean expression for enabling debug logging for your Config Custom Policy rule. The default value is <code>false</code>.',
-        }),
-    ).exactOptional(),
+    PolicyRuntime: PolicyRuntimeSchema.openapi({
+      description:
+        'The runtime system for your Config Custom Policy rule. Guard is a policy-as-code language that allows you to write policies that are enforced by Config Custom Policy rules. For more information about Guard, see the <a href="https://github.com/aws-cloudformation/cloudformation-guard">Guard GitHub Repository</a>.',
+    }),
+    PolicyText: PolicyTextSchema.openapi({
+      description: 'The policy definition containing the logic for your Config Custom Policy rule.',
+    }),
+    EnableDebugLogDelivery: BooleanSchema.exactOptional().openapi({
+      description:
+        'The boolean expression for enabling debug logging for your Config Custom Policy rule. The default value is <code>false</code>.',
+    }),
   })
   .openapi({
     required: ['PolicyRuntime', 'PolicyText'],
@@ -1863,38 +1689,22 @@ const CustomPolicyDetailsSchema = z
 
 const SourceSchema = z
   .object({
-    Owner: OwnerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether Amazon Web Services or the customer owns and manages the Config rule.</p> <p>Config Managed Rules are predefined rules owned by Amazon Web Services. For more information, see <a href="https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html">Config Managed Rules</a> in the <i>Config developer guide</i>.</p> <p>Config Custom Rules are rules that you can develop either with Guard (<code>CUSTOM_POLICY</code>) or Lambda (<code>CUSTOM_LAMBDA</code>). For more information, see <a href="https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_develop-rules.html">Config Custom Rules </a> in the <i>Config developer guide</i>.</p>',
-        }),
-    ),
-    SourceIdentifier: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For Config Managed rules, a predefined identifier from a list. For example, <code>IAM_PASSWORD_POLICY</code> is a managed rule. To reference a managed rule, see <a href="https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html">List of Config Managed Rules</a>.</p> <p>For Config Custom Lambda rules, the identifier is the Amazon Resource Name (ARN) of the rule\'s Lambda function, such as <code>arn:aws:lambda:us-east-2:123456789012:function:custom_rule_name</code>.</p> <p>For Config Custom Policy rules, this field will be ignored.</p>',
-        }),
-    ).exactOptional(),
-    SourceDetails: SourceDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Provides the source and the message types that cause Config to evaluate your Amazon Web Services resources against a rule. It also provides the frequency with which you want Config to run evaluations for the rule if the trigger type is periodic.</p> <p>If the owner is set to <code>CUSTOM_POLICY</code>, the only acceptable values for the Config rule trigger message type are <code>ConfigurationItemChangeNotification</code> and <code>OversizedConfigurationItemChangeNotification</code>.</p>',
-        }),
-    ).exactOptional(),
-    CustomPolicyDetails: CustomPolicyDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the runtime system, policy definition, and whether debug logging is enabled. Required when owner is set to <code>CUSTOM_POLICY</code>.',
-        }),
-    ).exactOptional(),
+    Owner: OwnerSchema.openapi({
+      description:
+        '<p>Indicates whether Amazon Web Services or the customer owns and manages the Config rule.</p> <p>Config Managed Rules are predefined rules owned by Amazon Web Services. For more information, see <a href="https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html">Config Managed Rules</a> in the <i>Config developer guide</i>.</p> <p>Config Custom Rules are rules that you can develop either with Guard (<code>CUSTOM_POLICY</code>) or Lambda (<code>CUSTOM_LAMBDA</code>). For more information, see <a href="https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_develop-rules.html">Config Custom Rules </a> in the <i>Config developer guide</i>.</p>',
+    }),
+    SourceIdentifier: StringWithCharLimit256Schema.exactOptional().openapi({
+      description:
+        '<p>For Config Managed rules, a predefined identifier from a list. For example, <code>IAM_PASSWORD_POLICY</code> is a managed rule. To reference a managed rule, see <a href="https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html">List of Config Managed Rules</a>.</p> <p>For Config Custom Lambda rules, the identifier is the Amazon Resource Name (ARN) of the rule\'s Lambda function, such as <code>arn:aws:lambda:us-east-2:123456789012:function:custom_rule_name</code>.</p> <p>For Config Custom Policy rules, this field will be ignored.</p>',
+    }),
+    SourceDetails: SourceDetailsSchema.exactOptional().openapi({
+      description:
+        '<p>Provides the source and the message types that cause Config to evaluate your Amazon Web Services resources against a rule. It also provides the frequency with which you want Config to run evaluations for the rule if the trigger type is periodic.</p> <p>If the owner is set to <code>CUSTOM_POLICY</code>, the only acceptable values for the Config rule trigger message type are <code>ConfigurationItemChangeNotification</code> and <code>OversizedConfigurationItemChangeNotification</code>.</p>',
+    }),
+    CustomPolicyDetails: CustomPolicyDetailsSchema.exactOptional().openapi({
+      description:
+        'Provides the runtime system, policy definition, and whether debug logging is enabled. Required when owner is set to <code>CUSTOM_POLICY</code>.',
+    }),
   })
   .openapi({
     required: ['Owner'],
@@ -1911,13 +1721,9 @@ const EvaluationModeSchema = z.enum(['DETECTIVE', 'PROACTIVE']).openapi('Evaluat
 
 const EvaluationModeConfigurationSchema = z
   .object({
-    Mode: EvaluationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The mode of an evaluation. The valid values are Detective or Proactive.',
-        }),
-    ).exactOptional(),
+    Mode: EvaluationModeSchema.exactOptional().openapi({
+      description: 'The mode of an evaluation. The valid values are Detective or Proactive.',
+    }),
   })
   .openapi({
     description:
@@ -1930,79 +1736,46 @@ const EvaluationModesSchema = z.array(EvaluationModeConfigurationSchema).openapi
 
 const ConfigRuleSchema = z
   .object({
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name that you assign to the Config rule. The name is required if you are adding a new rule.',
-        }),
-    ).exactOptional(),
-    ConfigRuleArn: StringWithCharLimit256Schema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the Config rule.' }),
-    ).exactOptional(),
-    ConfigRuleId: StringWithCharLimit64Schema.and(
-      z.any().openapi({ description: 'The ID of the Config rule.' }),
-    ).exactOptional(),
-    Description: EmptiableStringWithCharLimit256Schema.and(
-      z.any().openapi({ description: 'The description that you provide for the Config rule.' }),
-    ).exactOptional(),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Defines which resources can trigger an evaluation for the rule. The scope can include one or more resource types, a combination of one resource type and one resource ID, or a combination of a tag key and value. Specify a scope to constrain the resources that can trigger an evaluation for the rule. If you do not specify a scope, evaluations are triggered when any resource in the recording group changes.</p> <note> <p>The scope can be empty. </p> </note>',
-        }),
-    ).exactOptional(),
-    Source: SourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the rule owner (<code>Amazon Web Services</code> for managed rules, <code>CUSTOM_POLICY</code> for Custom Policy rules, and <code>CUSTOM_LAMBDA</code> for Custom Lambda rules), the rule identifier, and the notifications that cause the function to evaluate your Amazon Web Services resources.',
-        }),
-    ),
-    InputParameters: StringWithCharLimit1024Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string, in JSON format, that is passed to the Config rule Lambda function.',
-        }),
-    ).exactOptional(),
-    MaximumExecutionFrequency: MaximumExecutionFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum frequency with which Config runs evaluations for a rule. You can specify a value for <code>MaximumExecutionFrequency</code> when:</p> <ul> <li> <p>This is for an Config managed rule that is triggered at a periodic frequency.</p> </li> <li> <p>Your custom rule is triggered when Config delivers the configuration snapshot. For more information, see <a>ConfigSnapshotDeliveryProperties</a>.</p> </li> </ul> <note> <p>By default, rules with a periodic trigger are evaluated every 24 hours. To change the frequency, specify a valid value for the <code>MaximumExecutionFrequency</code> parameter.</p> </note>',
-        }),
-    ).exactOptional(),
-    ConfigRuleState: ConfigRuleStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the Config rule is active or is currently being deleted by Config. It can also indicate the evaluation status for the Config rule.</p> <p>Config sets the state of the rule to <code>EVALUATING</code> temporarily after you use the <code>StartConfigRulesEvaluation</code> request to evaluate your resources against the Config rule.</p> <p>Config sets the state of the rule to <code>DELETING_RESULTS</code> temporarily after you use the <code>DeleteEvaluationResults</code> request to delete the current evaluation results for the Config rule.</p> <p>Config temporarily sets the state of a rule to <code>DELETING</code> after you use the <code>DeleteConfigRule</code> request to delete the rule. After Config deletes the rule, the rule and all of its evaluations are erased and are no longer available.</p>',
-        }),
-    ).exactOptional(),
-    CreatedBy: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Service principal name of the service that created the rule.</p> <note> <p>The field is populated only if the service-linked rule is created by a service. The field is empty if you create your own rule.</p> </note>',
-        }),
-    ).exactOptional(),
-    EvaluationModes: EvaluationModesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The modes the Config rule can be evaluated in. The valid values are distinct objects. By default, the value is Detective evaluation mode only.',
-        }),
-    ).exactOptional(),
+    ConfigRuleName: ConfigRuleNameSchema.exactOptional().openapi({
+      description:
+        'The name that you assign to the Config rule. The name is required if you are adding a new rule.',
+    }),
+    ConfigRuleArn: StringWithCharLimit256Schema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the Config rule.',
+    }),
+    ConfigRuleId: StringWithCharLimit64Schema.exactOptional().openapi({
+      description: 'The ID of the Config rule.',
+    }),
+    Description: EmptiableStringWithCharLimit256Schema.exactOptional().openapi({
+      description: 'The description that you provide for the Config rule.',
+    }),
+    Scope: ScopeSchema.exactOptional().openapi({
+      description:
+        '<p>Defines which resources can trigger an evaluation for the rule. The scope can include one or more resource types, a combination of one resource type and one resource ID, or a combination of a tag key and value. Specify a scope to constrain the resources that can trigger an evaluation for the rule. If you do not specify a scope, evaluations are triggered when any resource in the recording group changes.</p> <note> <p>The scope can be empty. </p> </note>',
+    }),
+    Source: SourceSchema.openapi({
+      description:
+        'Provides the rule owner (<code>Amazon Web Services</code> for managed rules, <code>CUSTOM_POLICY</code> for Custom Policy rules, and <code>CUSTOM_LAMBDA</code> for Custom Lambda rules), the rule identifier, and the notifications that cause the function to evaluate your Amazon Web Services resources.',
+    }),
+    InputParameters: StringWithCharLimit1024Schema.exactOptional().openapi({
+      description: 'A string, in JSON format, that is passed to the Config rule Lambda function.',
+    }),
+    MaximumExecutionFrequency: MaximumExecutionFrequencySchema.exactOptional().openapi({
+      description:
+        '<p>The maximum frequency with which Config runs evaluations for a rule. You can specify a value for <code>MaximumExecutionFrequency</code> when:</p> <ul> <li> <p>This is for an Config managed rule that is triggered at a periodic frequency.</p> </li> <li> <p>Your custom rule is triggered when Config delivers the configuration snapshot. For more information, see <a>ConfigSnapshotDeliveryProperties</a>.</p> </li> </ul> <note> <p>By default, rules with a periodic trigger are evaluated every 24 hours. To change the frequency, specify a valid value for the <code>MaximumExecutionFrequency</code> parameter.</p> </note>',
+    }),
+    ConfigRuleState: ConfigRuleStateSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether the Config rule is active or is currently being deleted by Config. It can also indicate the evaluation status for the Config rule.</p> <p>Config sets the state of the rule to <code>EVALUATING</code> temporarily after you use the <code>StartConfigRulesEvaluation</code> request to evaluate your resources against the Config rule.</p> <p>Config sets the state of the rule to <code>DELETING_RESULTS</code> temporarily after you use the <code>DeleteEvaluationResults</code> request to delete the current evaluation results for the Config rule.</p> <p>Config temporarily sets the state of a rule to <code>DELETING</code> after you use the <code>DeleteConfigRule</code> request to delete the rule. After Config deletes the rule, the rule and all of its evaluations are erased and are no longer available.</p>',
+    }),
+    CreatedBy: StringWithCharLimit256Schema.exactOptional().openapi({
+      description:
+        '<p>Service principal name of the service that created the rule.</p> <note> <p>The field is populated only if the service-linked rule is created by a service. The field is empty if you create your own rule.</p> </note>',
+    }),
+    EvaluationModes: EvaluationModesSchema.exactOptional().openapi({
+      description:
+        'The modes the Config rule can be evaluated in. The valid values are distinct objects. By default, the value is Detective evaluation mode only.',
+    }),
   })
   .openapi({
     required: ['Source'],
@@ -2015,30 +1788,22 @@ const ConfigRulesSchema = z.array(ConfigRuleSchema).openapi('ConfigRules')
 
 const DescribeConfigRulesResponseSchema = z
   .object({
-    ConfigRules: ConfigRulesSchema.and(
-      z.any().openapi({ description: 'The details about your Config rules.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string that you use in a subsequent request to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConfigRules: ConfigRulesSchema.exactOptional().openapi({
+      description: 'The details about your Config rules.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The string that you use in a subsequent request to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('DescribeConfigRulesResponse')
 
 const DescribeConfigRulesFiltersSchema = z
   .object({
-    EvaluationMode: EvaluationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The mode of an evaluation. The valid values are Detective or Proactive.',
-        }),
-    ).exactOptional(),
+    EvaluationMode: EvaluationModeSchema.exactOptional().openapi({
+      description: 'The mode of an evaluation. The valid values are Detective or Proactive.',
+    }),
   })
   .openapi({
     description:
@@ -2049,30 +1814,18 @@ const DescribeConfigRulesFiltersSchema = z
 
 const DescribeConfigRulesRequestSchema = z
   .object({
-    ConfigRuleNames: ConfigRuleNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of the Config rules for which you want details. If you do not specify any names, Config returns details for all your rules.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
-    Filters: DescribeConfigRulesFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns a list of Detective or Proactive Config rules. By default, this API returns an unfiltered list. For more information on Detective or Proactive Config rules, see <a href="https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config-rules.html"> <b>Evaluation Mode</b> </a> in the Config Developer Guide.',
-        }),
-    ).exactOptional(),
+    ConfigRuleNames: ConfigRuleNamesSchema.exactOptional().openapi({
+      description:
+        'The names of the Config rules for which you want details. If you do not specify any names, Config returns details for all your rules.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
+    Filters: DescribeConfigRulesFiltersSchema.exactOptional().openapi({
+      description:
+        'Returns a list of Detective or Proactive Config rules. By default, this API returns an unfiltered list. For more information on Detective or Proactive Config rules, see <a href="https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config-rules.html"> <b>Evaluation Mode</b> </a> in the Config Developer Guide.',
+    }),
   })
   .openapi({ title: 'DescribeConfigRulesRequest', description: '<p/>', required: [] })
   .openapi('DescribeConfigRulesRequest')
@@ -2087,42 +1840,30 @@ const AggregatedSourceStatusTypeSchema = z
 
 const AggregatedSourceStatusSchema = z
   .object({
-    SourceId: StringSchema.and(
-      z.any().openapi({ description: 'The source account ID or an organization.' }),
-    ).exactOptional(),
-    SourceType: AggregatedSourceTypeSchema.and(
-      z.any().openapi({ description: 'The source account or an organization.' }),
-    ).exactOptional(),
-    AwsRegion: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The region authorized to collect aggregated data.' }),
-    ).exactOptional(),
-    LastUpdateStatus: AggregatedSourceStatusTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters the last updated status type.</p> <ul> <li> <p>Valid value FAILED indicates errors while moving data.</p> </li> <li> <p>Valid value SUCCEEDED indicates the data was successfully moved.</p> </li> <li> <p>Valid value OUTDATED indicates the data is not the most recent.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    LastUpdateTime: DateSchema.and(
-      z.any().openapi({ description: 'The time of the last update.' }),
-    ).exactOptional(),
-    LastErrorCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error code that Config returned when the source account aggregation last failed.',
-        }),
-    ).exactOptional(),
-    LastErrorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The message indicating that the source account aggregation failed due to an error.',
-        }),
-    ).exactOptional(),
+    SourceId: StringSchema.exactOptional().openapi({
+      description: 'The source account ID or an organization.',
+    }),
+    SourceType: AggregatedSourceTypeSchema.exactOptional().openapi({
+      description: 'The source account or an organization.',
+    }),
+    AwsRegion: AwsRegionSchema.exactOptional().openapi({
+      description: 'The region authorized to collect aggregated data.',
+    }),
+    LastUpdateStatus: AggregatedSourceStatusTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Filters the last updated status type.</p> <ul> <li> <p>Valid value FAILED indicates errors while moving data.</p> </li> <li> <p>Valid value SUCCEEDED indicates the data was successfully moved.</p> </li> <li> <p>Valid value OUTDATED indicates the data is not the most recent.</p> </li> </ul>',
+    }),
+    LastUpdateTime: DateSchema.exactOptional().openapi({
+      description: 'The time of the last update.',
+    }),
+    LastErrorCode: StringSchema.exactOptional().openapi({
+      description:
+        'The error code that Config returned when the source account aggregation last failed.',
+    }),
+    LastErrorMessage: StringSchema.exactOptional().openapi({
+      description:
+        'The message indicating that the source account aggregation failed due to an error.',
+    }),
   })
   .openapi({
     description: 'The current sync status between the source and the aggregator account.',
@@ -2136,17 +1877,13 @@ const AggregatedSourceStatusListSchema = z
 
 const DescribeConfigurationAggregatorSourcesStatusResponseSchema = z
   .object({
-    AggregatedSourceStatusList: AggregatedSourceStatusListSchema.and(
-      z.any().openapi({ description: 'Returns an AggregatedSourceStatus object. ' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    AggregatedSourceStatusList: AggregatedSourceStatusListSchema.exactOptional().openapi({
+      description: 'Returns an AggregatedSourceStatus object. ',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeConfigurationAggregatorSourcesStatusResponse')
@@ -2158,33 +1895,21 @@ const AggregatedSourceStatusTypeListSchema = z
 
 const DescribeConfigurationAggregatorSourcesStatusRequestSchema = z
   .object({
-    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration aggregator.' }),
-    ),
-    UpdateStatus: AggregatedSourceStatusTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters the status type.</p> <ul> <li> <p>Valid value FAILED indicates errors while moving data.</p> </li> <li> <p>Valid value SUCCEEDED indicates the data was successfully moved.</p> </li> <li> <p>Valid value OUTDATED indicates the data is not the most recent.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of AggregatorSourceStatus returned on each page. The default is maximum. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
+    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.openapi({
+      description: 'The name of the configuration aggregator.',
+    }),
+    UpdateStatus: AggregatedSourceStatusTypeListSchema.exactOptional().openapi({
+      description:
+        '<p>Filters the status type.</p> <ul> <li> <p>Valid value FAILED indicates errors while moving data.</p> </li> <li> <p>Valid value SUCCEEDED indicates the data was successfully moved.</p> </li> <li> <p>Valid value OUTDATED indicates the data is not the most recent.</p> </li> </ul>',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of AggregatorSourceStatus returned on each page. The default is maximum. If you specify 0, Config uses the default.',
+    }),
   })
   .openapi({
     required: ['ConfigurationAggregatorName'],
@@ -2206,17 +1931,15 @@ const AggregatorRegionListSchema = z.array(StringSchema).min(1).openapi('Aggrega
 
 const AccountAggregationSourceSchema = z
   .object({
-    AccountIds: AccountAggregationSourceAccountListSchema.and(
-      z.any().openapi({ description: 'The 12-digit account ID of the account being aggregated. ' }),
-    ),
-    AllAwsRegions: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'If true, aggregate existing Config regions and future regions.' }),
-    ).exactOptional(),
-    AwsRegions: AggregatorRegionListSchema.and(
-      z.any().openapi({ description: 'The source regions being aggregated.' }),
-    ).exactOptional(),
+    AccountIds: AccountAggregationSourceAccountListSchema.openapi({
+      description: 'The 12-digit account ID of the account being aggregated. ',
+    }),
+    AllAwsRegions: BooleanSchema.exactOptional().openapi({
+      description: 'If true, aggregate existing Config regions and future regions.',
+    }),
+    AwsRegions: AggregatorRegionListSchema.exactOptional().openapi({
+      description: 'The source regions being aggregated.',
+    }),
   })
   .openapi({ required: ['AccountIds'], description: 'A collection of accounts and regions.' })
   .openapi('AccountAggregationSource')
@@ -2229,22 +1952,16 @@ const AccountAggregationSourceListSchema = z
 
 const OrganizationAggregationSourceSchema = z
   .object({
-    RoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'ARN of the IAM role used to retrieve Amazon Web Services Organization details associated with the aggregator account.',
-        }),
-    ),
-    AwsRegions: AggregatorRegionListSchema.and(
-      z.any().openapi({ description: 'The source regions being aggregated.' }),
-    ).exactOptional(),
-    AllAwsRegions: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'If true, aggregate existing Config regions and future regions.' }),
-    ).exactOptional(),
+    RoleArn: StringSchema.openapi({
+      description:
+        'ARN of the IAM role used to retrieve Amazon Web Services Organization details associated with the aggregator account.',
+    }),
+    AwsRegions: AggregatorRegionListSchema.exactOptional().openapi({
+      description: 'The source regions being aggregated.',
+    }),
+    AllAwsRegions: BooleanSchema.exactOptional().openapi({
+      description: 'If true, aggregate existing Config regions and future regions.',
+    }),
   })
   .openapi({
     required: ['RoleArn'],
@@ -2255,39 +1972,27 @@ const OrganizationAggregationSourceSchema = z
 
 const ConfigurationAggregatorSchema = z
   .object({
-    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.and(
-      z.any().openapi({ description: 'The name of the aggregator.' }),
-    ).exactOptional(),
-    ConfigurationAggregatorArn: ConfigurationAggregatorArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the aggregator.' }),
-    ).exactOptional(),
-    AccountAggregationSources: AccountAggregationSourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides a list of source accounts and regions to be aggregated.',
-        }),
-    ).exactOptional(),
-    OrganizationAggregationSource: OrganizationAggregationSourceSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Provides an organization and list of regions to be aggregated.' }),
-    ).exactOptional(),
-    CreationTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time stamp when the configuration aggregator was created.' }),
-    ).exactOptional(),
-    LastUpdatedTime: DateSchema.and(
-      z.any().openapi({ description: 'The time of the last update.' }),
-    ).exactOptional(),
-    CreatedBy: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Amazon Web Services service that created the configuration aggregator.',
-        }),
-    ).exactOptional(),
+    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.exactOptional().openapi({
+      description: 'The name of the aggregator.',
+    }),
+    ConfigurationAggregatorArn: ConfigurationAggregatorArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the aggregator.',
+    }),
+    AccountAggregationSources: AccountAggregationSourceListSchema.exactOptional().openapi({
+      description: 'Provides a list of source accounts and regions to be aggregated.',
+    }),
+    OrganizationAggregationSource: OrganizationAggregationSourceSchema.exactOptional().openapi({
+      description: 'Provides an organization and list of regions to be aggregated.',
+    }),
+    CreationTime: DateSchema.exactOptional().openapi({
+      description: 'The time stamp when the configuration aggregator was created.',
+    }),
+    LastUpdatedTime: DateSchema.exactOptional().openapi({
+      description: 'The time of the last update.',
+    }),
+    CreatedBy: StringWithCharLimit256Schema.exactOptional().openapi({
+      description: 'Amazon Web Services service that created the configuration aggregator.',
+    }),
   })
   .openapi({
     description:
@@ -2302,17 +2007,13 @@ const ConfigurationAggregatorListSchema = z
 
 const DescribeConfigurationAggregatorsResponseSchema = z
   .object({
-    ConfigurationAggregators: ConfigurationAggregatorListSchema.and(
-      z.any().openapi({ description: 'Returns a ConfigurationAggregators object.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConfigurationAggregators: ConfigurationAggregatorListSchema.exactOptional().openapi({
+      description: 'Returns a ConfigurationAggregators object.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeConfigurationAggregatorsResponse')
@@ -2325,25 +2026,17 @@ const ConfigurationAggregatorNameListSchema = z
 
 const DescribeConfigurationAggregatorsRequestSchema = z
   .object({
-    ConfigurationAggregatorNames: ConfigurationAggregatorNameListSchema.and(
-      z.any().openapi({ description: 'The name of the configuration aggregators.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of configuration aggregators returned on each page. The default is maximum. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
+    ConfigurationAggregatorNames: ConfigurationAggregatorNameListSchema.exactOptional().openapi({
+      description: 'The name of the configuration aggregators.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of configuration aggregators returned on each page. The default is maximum. If you specify 0, Config uses the default.',
+    }),
   })
   .openapi({ title: 'DescribeConfigurationAggregatorsRequest', required: [] })
   .openapi('DescribeConfigurationAggregatorsRequest')
@@ -2352,43 +2045,31 @@ const RecorderStatusSchema = z.enum(['Pending', 'Success', 'Failure']).openapi('
 
 const ConfigurationRecorderStatusSchema = z
   .object({
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the configuration recorder.' }),
-    ).exactOptional(),
-    lastStartTime: DateSchema.and(
-      z.any().openapi({ description: 'The time the recorder was last started.' }),
-    ).exactOptional(),
-    lastStopTime: DateSchema.and(
-      z.any().openapi({ description: 'The time the recorder was last stopped.' }),
-    ).exactOptional(),
-    recording: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies whether or not the recorder is currently recording.' }),
-    ).exactOptional(),
-    lastStatus: RecorderStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status of the latest recording event processed by the recorder.',
-        }),
-    ).exactOptional(),
-    lastErrorCode: StringSchema.and(
-      z.any().openapi({ description: 'The latest error code from when the recorder last failed.' }),
-    ).exactOptional(),
-    lastErrorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The latest error message from when the recorder last failed.' }),
-    ).exactOptional(),
-    lastStatusChangeTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the latest change in status of an recording event processed by the recorder.',
-        }),
-    ).exactOptional(),
+    name: StringSchema.exactOptional().openapi({
+      description: 'The name of the configuration recorder.',
+    }),
+    lastStartTime: DateSchema.exactOptional().openapi({
+      description: 'The time the recorder was last started.',
+    }),
+    lastStopTime: DateSchema.exactOptional().openapi({
+      description: 'The time the recorder was last stopped.',
+    }),
+    recording: BooleanSchema.exactOptional().openapi({
+      description: 'Specifies whether or not the recorder is currently recording.',
+    }),
+    lastStatus: RecorderStatusSchema.exactOptional().openapi({
+      description: 'The status of the latest recording event processed by the recorder.',
+    }),
+    lastErrorCode: StringSchema.exactOptional().openapi({
+      description: 'The latest error code from when the recorder last failed.',
+    }),
+    lastErrorMessage: StringSchema.exactOptional().openapi({
+      description: 'The latest error message from when the recorder last failed.',
+    }),
+    lastStatusChangeTime: DateSchema.exactOptional().openapi({
+      description:
+        'The time of the latest change in status of an recording event processed by the recorder.',
+    }),
   })
   .openapi({
     description:
@@ -2403,9 +2084,9 @@ const ConfigurationRecorderStatusListSchema = z
 
 const DescribeConfigurationRecorderStatusResponseSchema = z
   .object({
-    ConfigurationRecordersStatus: ConfigurationRecorderStatusListSchema.and(
-      z.any().openapi({ description: 'A list that contains status of the specified recorders.' }),
-    ).exactOptional(),
+    ConfigurationRecordersStatus: ConfigurationRecorderStatusListSchema.exactOptional().openapi({
+      description: 'A list that contains status of the specified recorders.',
+    }),
   })
   .openapi({
     description:
@@ -2420,14 +2101,10 @@ const ConfigurationRecorderNameListSchema = z
 
 const DescribeConfigurationRecorderStatusRequestSchema = z
   .object({
-    ConfigurationRecorderNames: ConfigurationRecorderNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name(s) of the configuration recorder. If the name is not specified, the action returns the current status of all the configuration recorders associated with the account.',
-        }),
-    ).exactOptional(),
+    ConfigurationRecorderNames: ConfigurationRecorderNameListSchema.exactOptional().openapi({
+      description:
+        'The name(s) of the configuration recorder. If the name is not specified, the action returns the current status of all the configuration recorders associated with the account.',
+    }),
   })
   .openapi({
     title: 'DescribeConfigurationRecorderStatusRequest',
@@ -2444,30 +2121,18 @@ const ResourceTypeListSchema = z.array(ResourceTypeSchema).openapi('ResourceType
 
 const RecordingGroupSchema = z
   .object({
-    allSupported: AllSupportedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether Config records configuration changes for every supported type of regional resource.</p> <p>If you set this option to <code>true</code>, when Config adds support for a new type of regional resource, it starts recording resources of that type automatically.</p> <p>If you set this option to <code>true</code>, you cannot enumerate a list of <code>resourceTypes</code>.</p>',
-        }),
-    ).exactOptional(),
-    includeGlobalResourceTypes: IncludeGlobalResourceTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether Config includes all supported types of global resources (for example, IAM resources) with the resources that it records.</p> <p>Before you can set this option to <code>true</code>, you must set the <code>allSupported</code> option to <code>true</code>.</p> <p>If you set this option to <code>true</code>, when Config adds support for a new type of global resource, it starts recording resources of that type automatically.</p> <p>The configuration details for any global resource are the same in all regions. To prevent duplicate configuration items, you should consider customizing Config in only one region to record global resources.</p>',
-        }),
-    ).exactOptional(),
-    resourceTypes: ResourceTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A comma-separated list that specifies the types of Amazon Web Services resources for which Config records configuration changes (for example, <code>AWS::EC2::Instance</code> or <code>AWS::CloudTrail::Trail</code>).</p> <p>To record all configuration changes, you must set the <code>allSupported</code> option to <code>true</code>.</p> <p>If you set the <code>AllSupported</code> option to false and populate the <code>ResourceTypes</code> option with values, when Config adds support for a new type of resource, it will not record resources of that type unless you manually add that type to your recording group.</p> <p>For a list of valid <code>resourceTypes</code> values, see the <b>resourceType Value</b> column in <a href="https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html#supported-resources">Supported Amazon Web Services resource Types</a>.</p>',
-        }),
-    ).exactOptional(),
+    allSupported: AllSupportedSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether Config records configuration changes for every supported type of regional resource.</p> <p>If you set this option to <code>true</code>, when Config adds support for a new type of regional resource, it starts recording resources of that type automatically.</p> <p>If you set this option to <code>true</code>, you cannot enumerate a list of <code>resourceTypes</code>.</p>',
+    }),
+    includeGlobalResourceTypes: IncludeGlobalResourceTypesSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether Config includes all supported types of global resources (for example, IAM resources) with the resources that it records.</p> <p>Before you can set this option to <code>true</code>, you must set the <code>allSupported</code> option to <code>true</code>.</p> <p>If you set this option to <code>true</code>, when Config adds support for a new type of global resource, it starts recording resources of that type automatically.</p> <p>The configuration details for any global resource are the same in all regions. To prevent duplicate configuration items, you should consider customizing Config in only one region to record global resources.</p>',
+    }),
+    resourceTypes: ResourceTypeListSchema.exactOptional().openapi({
+      description:
+        '<p>A comma-separated list that specifies the types of Amazon Web Services resources for which Config records configuration changes (for example, <code>AWS::EC2::Instance</code> or <code>AWS::CloudTrail::Trail</code>).</p> <p>To record all configuration changes, you must set the <code>allSupported</code> option to <code>true</code>.</p> <p>If you set the <code>AllSupported</code> option to false and populate the <code>ResourceTypes</code> option with values, when Config adds support for a new type of resource, it will not record resources of that type unless you manually add that type to your recording group.</p> <p>For a list of valid <code>resourceTypes</code> values, see the <b>resourceType Value</b> column in <a href="https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html#supported-resources">Supported Amazon Web Services resource Types</a>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -2478,30 +2143,18 @@ const RecordingGroupSchema = z
 
 const ConfigurationRecorderSchema = z
   .object({
-    name: RecorderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the recorder. By default, Config automatically assigns the name "default" when creating the configuration recorder. You cannot change the assigned name.',
-        }),
-    ).exactOptional(),
-    roleARN: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Amazon Resource Name (ARN) of the IAM role used to describe the Amazon Web Services resources associated with the account.</p> <note> <p>While the API model does not require this field, the server will reject a request without a defined roleARN for the configuration recorder.</p> </note>',
-        }),
-    ).exactOptional(),
-    recordingGroup: RecordingGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the types of Amazon Web Services resources for which Config records configuration changes.',
-        }),
-    ).exactOptional(),
+    name: RecorderNameSchema.exactOptional().openapi({
+      description:
+        'The name of the recorder. By default, Config automatically assigns the name "default" when creating the configuration recorder. You cannot change the assigned name.',
+    }),
+    roleARN: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Amazon Resource Name (ARN) of the IAM role used to describe the Amazon Web Services resources associated with the account.</p> <note> <p>While the API model does not require this field, the server will reject a request without a defined roleARN for the configuration recorder.</p> </note>',
+    }),
+    recordingGroup: RecordingGroupSchema.exactOptional().openapi({
+      description:
+        'Specifies the types of Amazon Web Services resources for which Config records configuration changes.',
+    }),
   })
   .openapi({
     description:
@@ -2516,14 +2169,10 @@ const ConfigurationRecorderListSchema = z
 
 const DescribeConfigurationRecordersResponseSchema = z
   .object({
-    ConfigurationRecorders: ConfigurationRecorderListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list that contains the descriptions of the specified configuration recorders.',
-        }),
-    ).exactOptional(),
+    ConfigurationRecorders: ConfigurationRecorderListSchema.exactOptional().openapi({
+      description:
+        'A list that contains the descriptions of the specified configuration recorders.',
+    }),
   })
   .openapi({
     description: 'The output for the <a>DescribeConfigurationRecorders</a> action.',
@@ -2533,9 +2182,9 @@ const DescribeConfigurationRecordersResponseSchema = z
 
 const DescribeConfigurationRecordersRequestSchema = z
   .object({
-    ConfigurationRecorderNames: ConfigurationRecorderNameListSchema.and(
-      z.any().openapi({ description: 'A list of configuration recorder names.' }),
-    ).exactOptional(),
+    ConfigurationRecorderNames: ConfigurationRecorderNameListSchema.exactOptional().openapi({
+      description: 'A list of configuration recorder names.',
+    }),
   })
   .openapi({
     title: 'DescribeConfigurationRecordersRequest',
@@ -2552,20 +2201,16 @@ const ControlsListSchema = z
 
 const ConformancePackRuleComplianceSchema = z
   .object({
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z.any().openapi({ description: 'Name of the Config rule.' }),
-    ).exactOptional(),
-    ComplianceType: ConformancePackComplianceTypeSchema.and(
-      z.any().openapi({ description: 'Compliance of the Config rule.' }),
-    ).exactOptional(),
-    Controls: ControlsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Controls for the conformance pack. A control is a process to prevent or detect problems while meeting objectives. A control can align with a specific compliance regime or map to internal controls defined by an organization.',
-        }),
-    ).exactOptional(),
+    ConfigRuleName: ConfigRuleNameSchema.exactOptional().openapi({
+      description: 'Name of the Config rule.',
+    }),
+    ComplianceType: ConformancePackComplianceTypeSchema.exactOptional().openapi({
+      description: 'Compliance of the Config rule.',
+    }),
+    Controls: ControlsListSchema.exactOptional().openapi({
+      description:
+        'Controls for the conformance pack. A control is a process to prevent or detect problems while meeting objectives. A control can align with a specific compliance regime or map to internal controls defined by an organization.',
+    }),
   })
   .openapi({
     description:
@@ -2582,24 +2227,16 @@ const ConformancePackRuleComplianceListSchema = z
 
 const DescribeConformancePackComplianceResponseSchema = z
   .object({
-    ConformancePackName: ConformancePackNameSchema.and(
-      z.any().openapi({ description: 'Name of the conformance pack.' }),
-    ),
-    ConformancePackRuleComplianceList: ConformancePackRuleComplianceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Returns a list of <code>ConformancePackRuleCompliance</code> objects.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConformancePackName: ConformancePackNameSchema.openapi({
+      description: 'Name of the conformance pack.',
+    }),
+    ConformancePackRuleComplianceList: ConformancePackRuleComplianceListSchema.openapi({
+      description: 'Returns a list of <code>ConformancePackRuleCompliance</code> objects.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: ['ConformancePackName', 'ConformancePackRuleComplianceList'] })
   .openapi('DescribeConformancePackComplianceResponse')
@@ -2612,17 +2249,13 @@ const ConformancePackConfigRuleNamesSchema = z
 
 const ConformancePackComplianceFiltersSchema = z
   .object({
-    ConfigRuleNames: ConformancePackConfigRuleNamesSchema.and(
-      z.any().openapi({ description: 'Filters the results by Config rule names.' }),
-    ).exactOptional(),
-    ComplianceType: ConformancePackComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters the results by compliance.</p> <p>The allowed values are <code>COMPLIANT</code> and <code>NON_COMPLIANT</code>. <code>INSUFFICIENT_DATA</code> is not supported.</p>',
-        }),
-    ).exactOptional(),
+    ConfigRuleNames: ConformancePackConfigRuleNamesSchema.exactOptional().openapi({
+      description: 'Filters the results by Config rule names.',
+    }),
+    ComplianceType: ConformancePackComplianceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Filters the results by compliance.</p> <p>The allowed values are <code>COMPLIANT</code> and <code>NON_COMPLIANT</code>. <code>INSUFFICIENT_DATA</code> is not supported.</p>',
+    }),
   })
   .openapi({
     description: 'Filters the conformance pack by compliance types and Config rule names.',
@@ -2638,28 +2271,20 @@ const DescribeConformancePackComplianceLimitSchema = z
 
 const DescribeConformancePackComplianceRequestSchema = z
   .object({
-    ConformancePackName: ConformancePackNameSchema.and(
-      z.any().openapi({ description: 'Name of the conformance pack.' }),
-    ),
-    Filters: ConformancePackComplianceFiltersSchema.and(
-      z.any().openapi({ description: 'A <code>ConformancePackComplianceFilters</code> object.' }),
-    ).exactOptional(),
-    Limit: DescribeConformancePackComplianceLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of Config rules within a conformance pack are returned on each page.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConformancePackName: ConformancePackNameSchema.openapi({
+      description: 'Name of the conformance pack.',
+    }),
+    Filters: ConformancePackComplianceFiltersSchema.exactOptional().openapi({
+      description: 'A <code>ConformancePackComplianceFilters</code> object.',
+    }),
+    Limit: DescribeConformancePackComplianceLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of Config rules within a conformance pack are returned on each page.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: ['ConformancePackName'], title: 'DescribeConformancePackComplianceRequest' })
   .openapi('DescribeConformancePackComplianceRequest')
@@ -2692,43 +2317,31 @@ const ConformancePackStatusReasonSchema = z
 
 const ConformancePackStatusDetailSchema = z
   .object({
-    ConformancePackName: ConformancePackNameSchema.and(
-      z.any().openapi({ description: 'Name of the conformance pack.' }),
-    ),
-    ConformancePackId: ConformancePackIdSchema.and(
-      z.any().openapi({ description: 'ID of the conformance pack.' }),
-    ),
-    ConformancePackArn: ConformancePackArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of comformance pack.' }),
-    ),
-    ConformancePackState: ConformancePackStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates deployment status of conformance pack.</p> <p>Config sets the state of the conformance pack to:</p> <ul> <li> <p>CREATE_IN_PROGRESS when a conformance pack creation is in progress for an account.</p> </li> <li> <p>CREATE_COMPLETE when a conformance pack has been successfully created in your account.</p> </li> <li> <p>CREATE_FAILED when a conformance pack creation failed in your account.</p> </li> <li> <p>DELETE_IN_PROGRESS when a conformance pack deletion is in progress. </p> </li> <li> <p>DELETE_FAILED when a conformance pack deletion failed in your account.</p> </li> </ul>',
-        }),
-    ),
-    StackArn: StackArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of CloudFormation stack. ' }),
-    ),
-    ConformancePackStatusReason: ConformancePackStatusReasonSchema.and(
-      z.any().openapi({ description: 'The reason of conformance pack creation failure.' }),
-    ).exactOptional(),
-    LastUpdateRequestedTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Last time when conformation pack creation and update was requested.',
-        }),
-    ),
-    LastUpdateCompletedTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Last time when conformation pack creation and update was successful.',
-        }),
-    ).exactOptional(),
+    ConformancePackName: ConformancePackNameSchema.openapi({
+      description: 'Name of the conformance pack.',
+    }),
+    ConformancePackId: ConformancePackIdSchema.openapi({
+      description: 'ID of the conformance pack.',
+    }),
+    ConformancePackArn: ConformancePackArnSchema.openapi({
+      description: 'Amazon Resource Name (ARN) of comformance pack.',
+    }),
+    ConformancePackState: ConformancePackStateSchema.openapi({
+      description:
+        '<p>Indicates deployment status of conformance pack.</p> <p>Config sets the state of the conformance pack to:</p> <ul> <li> <p>CREATE_IN_PROGRESS when a conformance pack creation is in progress for an account.</p> </li> <li> <p>CREATE_COMPLETE when a conformance pack has been successfully created in your account.</p> </li> <li> <p>CREATE_FAILED when a conformance pack creation failed in your account.</p> </li> <li> <p>DELETE_IN_PROGRESS when a conformance pack deletion is in progress. </p> </li> <li> <p>DELETE_FAILED when a conformance pack deletion failed in your account.</p> </li> </ul>',
+    }),
+    StackArn: StackArnSchema.openapi({
+      description: 'Amazon Resource Name (ARN) of CloudFormation stack. ',
+    }),
+    ConformancePackStatusReason: ConformancePackStatusReasonSchema.exactOptional().openapi({
+      description: 'The reason of conformance pack creation failure.',
+    }),
+    LastUpdateRequestedTime: DateSchema.openapi({
+      description: 'Last time when conformation pack creation and update was requested.',
+    }),
+    LastUpdateCompletedTime: DateSchema.exactOptional().openapi({
+      description: 'Last time when conformation pack creation and update was successful.',
+    }),
   })
   .openapi({
     required: [
@@ -2751,19 +2364,13 @@ const ConformancePackStatusDetailsListSchema = z
 
 const DescribeConformancePackStatusResponseSchema = z
   .object({
-    ConformancePackStatusDetails: ConformancePackStatusDetailsListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of <code>ConformancePackStatusDetail</code> objects.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConformancePackStatusDetails: ConformancePackStatusDetailsListSchema.exactOptional().openapi({
+      description: 'A list of <code>ConformancePackStatusDetail</code> objects.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeConformancePackStatusResponse')
@@ -2778,24 +2385,16 @@ const PageSizeLimitSchema = z.int().min(0).max(20).openapi('PageSizeLimit')
 
 const DescribeConformancePackStatusRequestSchema = z
   .object({
-    ConformancePackNames: ConformancePackNamesListSchema.and(
-      z.any().openapi({ description: 'Comma-separated list of conformance pack names.' }),
-    ).exactOptional(),
-    Limit: PageSizeLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of conformance packs status returned on each page.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConformancePackNames: ConformancePackNamesListSchema.exactOptional().openapi({
+      description: 'Comma-separated list of conformance pack names.',
+    }),
+    Limit: PageSizeLimitSchema.exactOptional().openapi({
+      description: 'The maximum number of conformance packs status returned on each page.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
+    }),
   })
   .openapi({ title: 'DescribeConformancePackStatusRequest', required: [] })
   .openapi('DescribeConformancePackStatusRequest')
@@ -2810,12 +2409,10 @@ const ParameterValueSchema = z.string().min(0).max(4096).openapi('ParameterValue
 
 const ConformancePackInputParameterSchema = z
   .object({
-    ParameterName: ParameterNameSchema.and(
-      z.any().openapi({ description: 'One part of a key-value pair.' }),
-    ),
-    ParameterValue: ParameterValueSchema.and(
-      z.any().openapi({ description: 'Another part of the key-value pair. ' }),
-    ),
+    ParameterName: ParameterNameSchema.openapi({ description: 'One part of a key-value pair.' }),
+    ParameterValue: ParameterValueSchema.openapi({
+      description: 'Another part of the key-value pair. ',
+    }),
   })
   .openapi({
     required: ['ParameterName', 'ParameterValue'],
@@ -2842,22 +2439,14 @@ const SSMDocumentVersionSchema = z
 
 const TemplateSSMDocumentDetailsSchema = z
   .object({
-    DocumentName: SSMDocumentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or Amazon Resource Name (ARN) of the SSM document to use to create a conformance pack. If you use the document name, Config checks only your account and Amazon Web Services Region for the SSM document. If you want to use an SSM document from another Region or account, you must provide the ARN.',
-        }),
-    ),
-    DocumentVersion: SSMDocumentVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The version of the SSM document to use to create a conformance pack. By default, Config uses the latest version.</p> <note> <p>This field is optional.</p> </note>',
-        }),
-    ).exactOptional(),
+    DocumentName: SSMDocumentNameSchema.openapi({
+      description:
+        'The name or Amazon Resource Name (ARN) of the SSM document to use to create a conformance pack. If you use the document name, Config checks only your account and Amazon Web Services Region for the SSM document. If you want to use an SSM document from another Region or account, you must provide the ARN.',
+    }),
+    DocumentVersion: SSMDocumentVersionSchema.exactOptional().openapi({
+      description:
+        '<p>The version of the SSM document to use to create a conformance pack. By default, Config uses the latest version.</p> <note> <p>This field is optional.</p> </note>',
+    }),
   })
   .openapi({
     required: ['DocumentName'],
@@ -2868,54 +2457,36 @@ const TemplateSSMDocumentDetailsSchema = z
 
 const ConformancePackDetailSchema = z
   .object({
-    ConformancePackName: ConformancePackNameSchema.and(
-      z.any().openapi({ description: 'Name of the conformance pack.' }),
-    ),
-    ConformancePackArn: ConformancePackArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the conformance pack.' }),
-    ),
-    ConformancePackId: ConformancePackIdSchema.and(
-      z.any().openapi({ description: 'ID of the conformance pack.' }),
-    ),
-    DeliveryS3Bucket: DeliveryS3BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Amazon S3 bucket where Config stores conformance pack templates. </p> <note> <p>This field is optional.</p> </note>',
-        }),
-    ).exactOptional(),
-    DeliveryS3KeyPrefix: DeliveryS3KeyPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The prefix for the Amazon S3 bucket.</p> <note> <p>This field is optional.</p> </note>',
-        }),
-    ).exactOptional(),
-    ConformancePackInputParameters: ConformancePackInputParametersSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of <code>ConformancePackInputParameter</code> objects.' }),
-    ).exactOptional(),
-    LastUpdateRequestedTime: DateSchema.and(
-      z.any().openapi({ description: 'The last time a conformation pack update was requested. ' }),
-    ).exactOptional(),
-    CreatedBy: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services service that created the conformance pack.',
-        }),
-    ).exactOptional(),
-    TemplateSSMDocumentDetails: TemplateSSMDocumentDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains the name or Amazon Resource Name (ARN) of the Amazon Web Services Systems Manager document (SSM document) and the version of the SSM document that is used to create a conformance pack.',
-        }),
-    ).exactOptional(),
+    ConformancePackName: ConformancePackNameSchema.openapi({
+      description: 'Name of the conformance pack.',
+    }),
+    ConformancePackArn: ConformancePackArnSchema.openapi({
+      description: 'Amazon Resource Name (ARN) of the conformance pack.',
+    }),
+    ConformancePackId: ConformancePackIdSchema.openapi({
+      description: 'ID of the conformance pack.',
+    }),
+    DeliveryS3Bucket: DeliveryS3BucketSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the Amazon S3 bucket where Config stores conformance pack templates. </p> <note> <p>This field is optional.</p> </note>',
+    }),
+    DeliveryS3KeyPrefix: DeliveryS3KeyPrefixSchema.exactOptional().openapi({
+      description:
+        '<p>The prefix for the Amazon S3 bucket.</p> <note> <p>This field is optional.</p> </note>',
+    }),
+    ConformancePackInputParameters: ConformancePackInputParametersSchema.exactOptional().openapi({
+      description: 'A list of <code>ConformancePackInputParameter</code> objects.',
+    }),
+    LastUpdateRequestedTime: DateSchema.exactOptional().openapi({
+      description: 'The last time a conformation pack update was requested. ',
+    }),
+    CreatedBy: StringWithCharLimit256Schema.exactOptional().openapi({
+      description: 'The Amazon Web Services service that created the conformance pack.',
+    }),
+    TemplateSSMDocumentDetails: TemplateSSMDocumentDetailsSchema.exactOptional().openapi({
+      description:
+        'An object that contains the name or Amazon Resource Name (ARN) of the Amazon Web Services Systems Manager document (SSM document) and the version of the SSM document that is used to create a conformance pack.',
+    }),
   })
   .openapi({
     required: ['ConformancePackName', 'ConformancePackArn', 'ConformancePackId'],
@@ -2932,46 +2503,30 @@ const ConformancePackDetailListSchema = z
 
 const DescribeConformancePacksResponseSchema = z
   .object({
-    ConformancePackDetails: ConformancePackDetailListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Returns a list of <code>ConformancePackDetail</code> objects.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConformancePackDetails: ConformancePackDetailListSchema.exactOptional().openapi({
+      description: 'Returns a list of <code>ConformancePackDetail</code> objects.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeConformancePacksResponse')
 
 const DescribeConformancePacksRequestSchema = z
   .object({
-    ConformancePackNames: ConformancePackNamesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Comma-separated list of conformance pack names for which you want details. If you do not specify any names, Config returns details for all your conformance packs. ',
-        }),
-    ).exactOptional(),
-    Limit: PageSizeLimitSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of conformance packs returned on each page.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConformancePackNames: ConformancePackNamesListSchema.exactOptional().openapi({
+      description:
+        'Comma-separated list of conformance pack names for which you want details. If you do not specify any names, Config returns details for all your conformance packs. ',
+    }),
+    Limit: PageSizeLimitSchema.exactOptional().openapi({
+      description: 'The maximum number of conformance packs returned on each page.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
+    }),
   })
   .openapi({ title: 'DescribeConformancePacksRequest', required: [] })
   .openapi('DescribeConformancePacksRequest')
@@ -2982,24 +2537,24 @@ const DeliveryStatusSchema = z
 
 const ConfigExportDeliveryInfoSchema = z
   .object({
-    lastStatus: DeliveryStatusSchema.and(
-      z.any().openapi({ description: 'Status of the last attempted delivery.' }),
-    ).exactOptional(),
-    lastErrorCode: StringSchema.and(
-      z.any().openapi({ description: 'The error code from the last attempted delivery.' }),
-    ).exactOptional(),
-    lastErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'The error message from the last attempted delivery.' }),
-    ).exactOptional(),
-    lastAttemptTime: DateSchema.and(
-      z.any().openapi({ description: 'The time of the last attempted delivery.' }),
-    ).exactOptional(),
-    lastSuccessfulTime: DateSchema.and(
-      z.any().openapi({ description: 'The time of the last successful delivery.' }),
-    ).exactOptional(),
-    nextDeliveryTime: DateSchema.and(
-      z.any().openapi({ description: 'The time that the next delivery occurs.' }),
-    ).exactOptional(),
+    lastStatus: DeliveryStatusSchema.exactOptional().openapi({
+      description: 'Status of the last attempted delivery.',
+    }),
+    lastErrorCode: StringSchema.exactOptional().openapi({
+      description: 'The error code from the last attempted delivery.',
+    }),
+    lastErrorMessage: StringSchema.exactOptional().openapi({
+      description: 'The error message from the last attempted delivery.',
+    }),
+    lastAttemptTime: DateSchema.exactOptional().openapi({
+      description: 'The time of the last attempted delivery.',
+    }),
+    lastSuccessfulTime: DateSchema.exactOptional().openapi({
+      description: 'The time of the last successful delivery.',
+    }),
+    nextDeliveryTime: DateSchema.exactOptional().openapi({
+      description: 'The time that the next delivery occurs.',
+    }),
   })
   .openapi({
     description:
@@ -3010,23 +2565,19 @@ const ConfigExportDeliveryInfoSchema = z
 
 const ConfigStreamDeliveryInfoSchema = z
   .object({
-    lastStatus: DeliveryStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Status of the last attempted delivery.</p> <p> <b>Note</b> Providing an SNS topic on a <a href="https://docs.aws.amazon.com/config/latest/APIReference/API_DeliveryChannel.html">DeliveryChannel</a> for Config is optional. If the SNS delivery is turned off, the last status will be <b>Not_Applicable</b>.</p>',
-        }),
-    ).exactOptional(),
-    lastErrorCode: StringSchema.and(
-      z.any().openapi({ description: 'The error code from the last attempted delivery.' }),
-    ).exactOptional(),
-    lastErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'The error message from the last attempted delivery.' }),
-    ).exactOptional(),
-    lastStatusChangeTime: DateSchema.and(
-      z.any().openapi({ description: 'The time from the last status change.' }),
-    ).exactOptional(),
+    lastStatus: DeliveryStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Status of the last attempted delivery.</p> <p> <b>Note</b> Providing an SNS topic on a <a href="https://docs.aws.amazon.com/config/latest/APIReference/API_DeliveryChannel.html">DeliveryChannel</a> for Config is optional. If the SNS delivery is turned off, the last status will be <b>Not_Applicable</b>.</p>',
+    }),
+    lastErrorCode: StringSchema.exactOptional().openapi({
+      description: 'The error code from the last attempted delivery.',
+    }),
+    lastErrorMessage: StringSchema.exactOptional().openapi({
+      description: 'The error message from the last attempted delivery.',
+    }),
+    lastStatusChangeTime: DateSchema.exactOptional().openapi({
+      description: 'The time from the last status change.',
+    }),
   })
   .openapi({
     description:
@@ -3037,33 +2588,21 @@ const ConfigStreamDeliveryInfoSchema = z
 
 const DeliveryChannelStatusSchema = z
   .object({
-    name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the delivery channel.' }),
-    ).exactOptional(),
-    configSnapshotDeliveryInfo: ConfigExportDeliveryInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing the status of the delivery of the snapshot to the specified Amazon S3 bucket.',
-        }),
-    ).exactOptional(),
-    configHistoryDeliveryInfo: ConfigExportDeliveryInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list that contains the status of the delivery of the configuration history to the specified Amazon S3 bucket.',
-        }),
-    ).exactOptional(),
-    configStreamDeliveryInfo: ConfigStreamDeliveryInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing the status of the delivery of the configuration stream notification to the specified Amazon SNS topic.',
-        }),
-    ).exactOptional(),
+    name: StringSchema.exactOptional().openapi({
+      description: 'The name of the delivery channel.',
+    }),
+    configSnapshotDeliveryInfo: ConfigExportDeliveryInfoSchema.exactOptional().openapi({
+      description:
+        'A list containing the status of the delivery of the snapshot to the specified Amazon S3 bucket.',
+    }),
+    configHistoryDeliveryInfo: ConfigExportDeliveryInfoSchema.exactOptional().openapi({
+      description:
+        'A list that contains the status of the delivery of the configuration history to the specified Amazon S3 bucket.',
+    }),
+    configStreamDeliveryInfo: ConfigStreamDeliveryInfoSchema.exactOptional().openapi({
+      description:
+        'A list containing the status of the delivery of the configuration stream notification to the specified Amazon SNS topic.',
+    }),
   })
   .openapi({
     description:
@@ -3078,13 +2617,9 @@ const DeliveryChannelStatusListSchema = z
 
 const DescribeDeliveryChannelStatusResponseSchema = z
   .object({
-    DeliveryChannelsStatus: DeliveryChannelStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list that contains the status of a specified delivery channel.',
-        }),
-    ).exactOptional(),
+    DeliveryChannelsStatus: DeliveryChannelStatusListSchema.exactOptional().openapi({
+      description: 'A list that contains the status of a specified delivery channel.',
+    }),
   })
   .openapi({
     description: 'The output for the <a>DescribeDeliveryChannelStatus</a> action.',
@@ -3096,9 +2631,9 @@ const DeliveryChannelNameListSchema = z.array(ChannelNameSchema).openapi('Delive
 
 const DescribeDeliveryChannelStatusRequestSchema = z
   .object({
-    DeliveryChannelNames: DeliveryChannelNameListSchema.and(
-      z.any().openapi({ description: 'A list of delivery channel names.' }),
-    ).exactOptional(),
+    DeliveryChannelNames: DeliveryChannelNameListSchema.exactOptional().openapi({
+      description: 'A list of delivery channel names.',
+    }),
   })
   .openapi({
     title: 'DescribeDeliveryChannelStatusRequest',
@@ -3109,13 +2644,9 @@ const DescribeDeliveryChannelStatusRequestSchema = z
 
 const ConfigSnapshotDeliveryPropertiesSchema = z
   .object({
-    deliveryFrequency: MaximumExecutionFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The frequency with which Config delivers configuration snapshots.',
-        }),
-    ).exactOptional(),
+    deliveryFrequency: MaximumExecutionFrequencySchema.exactOptional().openapi({
+      description: 'The frequency with which Config delivers configuration snapshots.',
+    }),
   })
   .openapi({
     description:
@@ -3126,49 +2657,30 @@ const ConfigSnapshotDeliveryPropertiesSchema = z
 
 const DeliveryChannelSchema = z
   .object({
-    name: ChannelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the delivery channel. By default, Config assigns the name "default" when creating the delivery channel. To change the delivery channel name, you must use the DeleteDeliveryChannel action to delete your current delivery channel, and then you must use the PutDeliveryChannel command to create a delivery channel that has the desired name.',
-        }),
-    ).exactOptional(),
-    s3BucketName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Amazon S3 bucket to which Config delivers configuration snapshots and configuration history files.</p> <p>If you specify a bucket that belongs to another Amazon Web Services account, that bucket must have policies that grant access permissions to Config. For more information, see <a href="https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-policy.html">Permissions for the Amazon S3 Bucket</a> in the <i>Config Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    s3KeyPrefix: StringSchema.and(
-      z.any().openapi({ description: 'The prefix for the specified Amazon S3 bucket.' }),
-    ).exactOptional(),
-    s3KmsKeyArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Key Management Service (KMS ) KMS key (KMS key) used to encrypt objects delivered by Config. Must belong to the same Region as the destination S3 bucket.',
-        }),
-    ).exactOptional(),
-    snsTopicARN: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the Amazon SNS topic to which Config sends notifications about configuration changes.</p> <p>If you choose a topic from another account, the topic must have policies that grant access permissions to Config. For more information, see <a href="https://docs.aws.amazon.com/config/latest/developerguide/sns-topic-policy.html">Permissions for the Amazon SNS Topic</a> in the <i>Config Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    configSnapshotDeliveryProperties: ConfigSnapshotDeliveryPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The options for how often Config delivers configuration snapshots to the Amazon S3 bucket.',
-        }),
-    ).exactOptional(),
+    name: ChannelNameSchema.exactOptional().openapi({
+      description:
+        'The name of the delivery channel. By default, Config assigns the name "default" when creating the delivery channel. To change the delivery channel name, you must use the DeleteDeliveryChannel action to delete your current delivery channel, and then you must use the PutDeliveryChannel command to create a delivery channel that has the desired name.',
+    }),
+    s3BucketName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the Amazon S3 bucket to which Config delivers configuration snapshots and configuration history files.</p> <p>If you specify a bucket that belongs to another Amazon Web Services account, that bucket must have policies that grant access permissions to Config. For more information, see <a href="https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-policy.html">Permissions for the Amazon S3 Bucket</a> in the <i>Config Developer Guide</i>.</p>',
+    }),
+    s3KeyPrefix: StringSchema.exactOptional().openapi({
+      description: 'The prefix for the specified Amazon S3 bucket.',
+    }),
+    s3KmsKeyArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Key Management Service (KMS ) KMS key (KMS key) used to encrypt objects delivered by Config. Must belong to the same Region as the destination S3 bucket.',
+    }),
+    snsTopicARN: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the Amazon SNS topic to which Config sends notifications about configuration changes.</p> <p>If you choose a topic from another account, the topic must have policies that grant access permissions to Config. For more information, see <a href="https://docs.aws.amazon.com/config/latest/developerguide/sns-topic-policy.html">Permissions for the Amazon SNS Topic</a> in the <i>Config Developer Guide</i>.</p>',
+    }),
+    configSnapshotDeliveryProperties:
+      ConfigSnapshotDeliveryPropertiesSchema.exactOptional().openapi({
+        description:
+          'The options for how often Config delivers configuration snapshots to the Amazon S3 bucket.',
+      }),
   })
   .openapi({
     description:
@@ -3181,13 +2693,9 @@ const DeliveryChannelListSchema = z.array(DeliveryChannelSchema).openapi('Delive
 
 const DescribeDeliveryChannelsResponseSchema = z
   .object({
-    DeliveryChannels: DeliveryChannelListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list that contains the descriptions of the specified delivery channel.',
-        }),
-    ).exactOptional(),
+    DeliveryChannels: DeliveryChannelListSchema.exactOptional().openapi({
+      description: 'A list that contains the descriptions of the specified delivery channel.',
+    }),
   })
   .openapi({
     description: 'The output for the <a>DescribeDeliveryChannels</a> action.',
@@ -3197,9 +2705,9 @@ const DescribeDeliveryChannelsResponseSchema = z
 
 const DescribeDeliveryChannelsRequestSchema = z
   .object({
-    DeliveryChannelNames: DeliveryChannelNameListSchema.and(
-      z.any().openapi({ description: 'A list of delivery channel names.' }),
-    ).exactOptional(),
+    DeliveryChannelNames: DeliveryChannelNameListSchema.exactOptional().openapi({
+      description: 'A list of delivery channel names.',
+    }),
   })
   .openapi({
     title: 'DescribeDeliveryChannelsRequest',
@@ -3224,36 +2732,24 @@ const OrganizationRuleStatusSchema = z
 
 const OrganizationConfigRuleStatusSchema = z
   .object({
-    OrganizationConfigRuleName: OrganizationConfigRuleNameSchema.and(
-      z.any().openapi({ description: 'The name that you assign to organization Config rule.' }),
-    ),
-    OrganizationRuleStatus: OrganizationRuleStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates deployment status of an organization Config rule. When management account calls PutOrganizationConfigRule action for the first time, Config rule status is created in all the member accounts. When management account calls PutOrganizationConfigRule action for the second time, Config rule status is updated in all the member accounts. Additionally, Config rule status is updated when one or more member accounts join or leave an organization. Config rule status is deleted when the management account deletes OrganizationConfigRule in all the member accounts and disables service access for <code>config-multiaccountsetup.amazonaws.com</code>.</p> <p>Config sets the state of the rule to:</p> <ul> <li> <p> <code>CREATE_SUCCESSFUL</code> when an organization Config rule has been successfully created in all the member accounts. </p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> when an organization Config rule creation is in progress.</p> </li> <li> <p> <code>CREATE_FAILED</code> when an organization Config rule creation failed in one or more member accounts within that organization.</p> </li> <li> <p> <code>DELETE_FAILED</code> when an organization Config rule deletion failed in one or more member accounts within that organization.</p> </li> <li> <p> <code>DELETE_IN_PROGRESS</code> when an organization Config rule deletion is in progress.</p> </li> <li> <p> <code>DELETE_SUCCESSFUL</code> when an organization Config rule has been successfully deleted from all the member accounts.</p> </li> <li> <p> <code>UPDATE_SUCCESSFUL</code> when an organization Config rule has been successfully updated in all the member accounts.</p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> when an organization Config rule update is in progress.</p> </li> <li> <p> <code>UPDATE_FAILED</code> when an organization Config rule update failed in one or more member accounts within that organization.</p> </li> </ul>',
-        }),
-    ),
-    ErrorCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An error code that is returned when organization Config rule creation or deletion has failed.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An error message indicating that organization Config rule creation or deletion failed due to an error.',
-        }),
-    ).exactOptional(),
-    LastUpdateTime: DateSchema.and(
-      z.any().openapi({ description: 'The timestamp of the last update.' }),
-    ).exactOptional(),
+    OrganizationConfigRuleName: OrganizationConfigRuleNameSchema.openapi({
+      description: 'The name that you assign to organization Config rule.',
+    }),
+    OrganizationRuleStatus: OrganizationRuleStatusSchema.openapi({
+      description:
+        '<p>Indicates deployment status of an organization Config rule. When management account calls PutOrganizationConfigRule action for the first time, Config rule status is created in all the member accounts. When management account calls PutOrganizationConfigRule action for the second time, Config rule status is updated in all the member accounts. Additionally, Config rule status is updated when one or more member accounts join or leave an organization. Config rule status is deleted when the management account deletes OrganizationConfigRule in all the member accounts and disables service access for <code>config-multiaccountsetup.amazonaws.com</code>.</p> <p>Config sets the state of the rule to:</p> <ul> <li> <p> <code>CREATE_SUCCESSFUL</code> when an organization Config rule has been successfully created in all the member accounts. </p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> when an organization Config rule creation is in progress.</p> </li> <li> <p> <code>CREATE_FAILED</code> when an organization Config rule creation failed in one or more member accounts within that organization.</p> </li> <li> <p> <code>DELETE_FAILED</code> when an organization Config rule deletion failed in one or more member accounts within that organization.</p> </li> <li> <p> <code>DELETE_IN_PROGRESS</code> when an organization Config rule deletion is in progress.</p> </li> <li> <p> <code>DELETE_SUCCESSFUL</code> when an organization Config rule has been successfully deleted from all the member accounts.</p> </li> <li> <p> <code>UPDATE_SUCCESSFUL</code> when an organization Config rule has been successfully updated in all the member accounts.</p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> when an organization Config rule update is in progress.</p> </li> <li> <p> <code>UPDATE_FAILED</code> when an organization Config rule update failed in one or more member accounts within that organization.</p> </li> </ul>',
+    }),
+    ErrorCode: StringSchema.exactOptional().openapi({
+      description:
+        'An error code that is returned when organization Config rule creation or deletion has failed.',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description:
+        'An error message indicating that organization Config rule creation or deletion failed due to an error.',
+    }),
+    LastUpdateTime: DateSchema.exactOptional().openapi({
+      description: 'The timestamp of the last update.',
+    }),
   })
   .openapi({
     required: ['OrganizationConfigRuleName', 'OrganizationRuleStatus'],
@@ -3267,19 +2763,13 @@ const OrganizationConfigRuleStatusesSchema = z
 
 const DescribeOrganizationConfigRuleStatusesResponseSchema = z
   .object({
-    OrganizationConfigRuleStatuses: OrganizationConfigRuleStatusesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of <code>OrganizationConfigRuleStatus</code> objects.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    OrganizationConfigRuleStatuses: OrganizationConfigRuleStatusesSchema.exactOptional().openapi({
+      description: 'A list of <code>OrganizationConfigRuleStatus</code> objects.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeOrganizationConfigRuleStatusesResponse')
@@ -3294,30 +2784,18 @@ const CosmosPageLimitSchema = z.int().min(0).max(100).openapi('CosmosPageLimit')
 
 const DescribeOrganizationConfigRuleStatusesRequestSchema = z
   .object({
-    OrganizationConfigRuleNames: OrganizationConfigRuleNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of organization Config rules for which you want status details. If you do not specify any names, Config returns details for all your organization Config rules.',
-        }),
-    ).exactOptional(),
-    Limit: CosmosPageLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of <code>OrganizationConfigRuleStatuses</code> returned on each page. If you do no specify a number, Config uses the default. The default is 100.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    OrganizationConfigRuleNames: OrganizationConfigRuleNamesSchema.exactOptional().openapi({
+      description:
+        'The names of organization Config rules for which you want status details. If you do not specify any names, Config returns details for all your organization Config rules.',
+    }),
+    Limit: CosmosPageLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of <code>OrganizationConfigRuleStatuses</code> returned on each page. If you do no specify a number, Config uses the default. The default is 100.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
+    }),
   })
   .openapi({ title: 'DescribeOrganizationConfigRuleStatusesRequest', required: [] })
   .openapi('DescribeOrganizationConfigRuleStatusesRequest')
@@ -3340,65 +2818,35 @@ const StringWithCharLimit768Schema = z.string().min(1).max(768).openapi('StringW
 
 const OrganizationManagedRuleMetadataSchema = z
   .object({
-    Description: StringWithCharLimit256Min0Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The description that you provide for your organization Config rule.',
-        }),
-    ).exactOptional(),
-    RuleIdentifier: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For organization config managed rules, a predefined identifier from a list. For example, <code>IAM_PASSWORD_POLICY</code> is a managed rule. To reference a managed rule, see <a href="https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html">Using Config managed rules</a>.',
-        }),
-    ),
-    InputParameters: StringWithCharLimit2048Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string, in JSON format, that is passed to your organization Config rule Lambda function.',
-        }),
-    ).exactOptional(),
-    MaximumExecutionFrequency: MaximumExecutionFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum frequency with which Config runs evaluations for a rule. This is for an Config managed rule that is triggered at a periodic frequency.</p> <note> <p>By default, rules with a periodic trigger are evaluated every 24 hours. To change the frequency, specify a valid value for the <code>MaximumExecutionFrequency</code> parameter.</p> </note>',
-        }),
-    ).exactOptional(),
-    ResourceTypesScope: ResourceTypesScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of the Amazon Web Services resource that was evaluated.',
-        }),
-    ).exactOptional(),
-    ResourceIdScope: StringWithCharLimit768Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the Amazon Web Services resource that was evaluated.' }),
-    ).exactOptional(),
-    TagKeyScope: StringWithCharLimit128Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that make up a tag. A key is a general label that acts like a category for more specific tag values. ',
-        }),
-    ).exactOptional(),
-    TagValueScope: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key).',
-        }),
-    ).exactOptional(),
+    Description: StringWithCharLimit256Min0Schema.exactOptional().openapi({
+      description: 'The description that you provide for your organization Config rule.',
+    }),
+    RuleIdentifier: StringWithCharLimit256Schema.openapi({
+      description:
+        'For organization config managed rules, a predefined identifier from a list. For example, <code>IAM_PASSWORD_POLICY</code> is a managed rule. To reference a managed rule, see <a href="https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html">Using Config managed rules</a>.',
+    }),
+    InputParameters: StringWithCharLimit2048Schema.exactOptional().openapi({
+      description:
+        'A string, in JSON format, that is passed to your organization Config rule Lambda function.',
+    }),
+    MaximumExecutionFrequency: MaximumExecutionFrequencySchema.exactOptional().openapi({
+      description:
+        '<p>The maximum frequency with which Config runs evaluations for a rule. This is for an Config managed rule that is triggered at a periodic frequency.</p> <note> <p>By default, rules with a periodic trigger are evaluated every 24 hours. To change the frequency, specify a valid value for the <code>MaximumExecutionFrequency</code> parameter.</p> </note>',
+    }),
+    ResourceTypesScope: ResourceTypesScopeSchema.exactOptional().openapi({
+      description: 'The type of the Amazon Web Services resource that was evaluated.',
+    }),
+    ResourceIdScope: StringWithCharLimit768Schema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services resource that was evaluated.',
+    }),
+    TagKeyScope: StringWithCharLimit128Schema.exactOptional().openapi({
+      description:
+        'One part of a key-value pair that make up a tag. A key is a general label that acts like a category for more specific tag values. ',
+    }),
+    TagValueScope: StringWithCharLimit256Schema.exactOptional().openapi({
+      description:
+        'The optional part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key).',
+    }),
   })
   .openapi({
     required: ['RuleIdentifier'],
@@ -3421,68 +2869,38 @@ const OrganizationConfigRuleTriggerTypesSchema = z
 
 const OrganizationCustomRuleMetadataSchema = z
   .object({
-    Description: StringWithCharLimit256Min0Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The description that you provide for your organization Config rule.',
-        }),
-    ).exactOptional(),
-    LambdaFunctionArn: StringWithCharLimit256Schema.and(
-      z.any().openapi({ description: 'The lambda function ARN.' }),
-    ),
-    OrganizationConfigRuleTriggerTypes: OrganizationConfigRuleTriggerTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of notification that triggers Config to run an evaluation for a rule. You can specify the following notification types:</p> <ul> <li> <p> <code>ConfigurationItemChangeNotification</code> - Triggers an evaluation when Config delivers a configuration item as a result of a resource change.</p> </li> <li> <p> <code>OversizedConfigurationItemChangeNotification</code> - Triggers an evaluation when Config delivers an oversized configuration item. Config may generate this notification type when a resource changes and the notification exceeds the maximum size allowed by Amazon SNS.</p> </li> <li> <p> <code>ScheduledNotification</code> - Triggers a periodic evaluation at the frequency specified for <code>MaximumExecutionFrequency</code>.</p> </li> </ul>',
-        }),
-    ),
-    InputParameters: StringWithCharLimit2048Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string, in JSON format, that is passed to your organization Config rule Lambda function.',
-        }),
-    ).exactOptional(),
-    MaximumExecutionFrequency: MaximumExecutionFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum frequency with which Config runs evaluations for a rule. Your custom rule is triggered when Config delivers the configuration snapshot. For more information, see <a>ConfigSnapshotDeliveryProperties</a>.</p> <note> <p>By default, rules with a periodic trigger are evaluated every 24 hours. To change the frequency, specify a valid value for the <code>MaximumExecutionFrequency</code> parameter.</p> </note>',
-        }),
-    ).exactOptional(),
-    ResourceTypesScope: ResourceTypesScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of the Amazon Web Services resource that was evaluated.',
-        }),
-    ).exactOptional(),
-    ResourceIdScope: StringWithCharLimit768Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the Amazon Web Services resource that was evaluated.' }),
-    ).exactOptional(),
-    TagKeyScope: StringWithCharLimit128Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that make up a tag. A key is a general label that acts like a category for more specific tag values. ',
-        }),
-    ).exactOptional(),
-    TagValueScope: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key). ',
-        }),
-    ).exactOptional(),
+    Description: StringWithCharLimit256Min0Schema.exactOptional().openapi({
+      description: 'The description that you provide for your organization Config rule.',
+    }),
+    LambdaFunctionArn: StringWithCharLimit256Schema.openapi({
+      description: 'The lambda function ARN.',
+    }),
+    OrganizationConfigRuleTriggerTypes: OrganizationConfigRuleTriggerTypesSchema.openapi({
+      description:
+        '<p>The type of notification that triggers Config to run an evaluation for a rule. You can specify the following notification types:</p> <ul> <li> <p> <code>ConfigurationItemChangeNotification</code> - Triggers an evaluation when Config delivers a configuration item as a result of a resource change.</p> </li> <li> <p> <code>OversizedConfigurationItemChangeNotification</code> - Triggers an evaluation when Config delivers an oversized configuration item. Config may generate this notification type when a resource changes and the notification exceeds the maximum size allowed by Amazon SNS.</p> </li> <li> <p> <code>ScheduledNotification</code> - Triggers a periodic evaluation at the frequency specified for <code>MaximumExecutionFrequency</code>.</p> </li> </ul>',
+    }),
+    InputParameters: StringWithCharLimit2048Schema.exactOptional().openapi({
+      description:
+        'A string, in JSON format, that is passed to your organization Config rule Lambda function.',
+    }),
+    MaximumExecutionFrequency: MaximumExecutionFrequencySchema.exactOptional().openapi({
+      description:
+        '<p>The maximum frequency with which Config runs evaluations for a rule. Your custom rule is triggered when Config delivers the configuration snapshot. For more information, see <a>ConfigSnapshotDeliveryProperties</a>.</p> <note> <p>By default, rules with a periodic trigger are evaluated every 24 hours. To change the frequency, specify a valid value for the <code>MaximumExecutionFrequency</code> parameter.</p> </note>',
+    }),
+    ResourceTypesScope: ResourceTypesScopeSchema.exactOptional().openapi({
+      description: 'The type of the Amazon Web Services resource that was evaluated.',
+    }),
+    ResourceIdScope: StringWithCharLimit768Schema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services resource that was evaluated.',
+    }),
+    TagKeyScope: StringWithCharLimit128Schema.exactOptional().openapi({
+      description:
+        'One part of a key-value pair that make up a tag. A key is a general label that acts like a category for more specific tag values. ',
+    }),
+    TagValueScope: StringWithCharLimit256Schema.exactOptional().openapi({
+      description:
+        'The optional part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key). ',
+    }),
   })
   .openapi({
     required: ['LambdaFunctionArn', 'OrganizationConfigRuleTriggerTypes'],
@@ -3509,82 +2927,45 @@ const DebugLogDeliveryAccountsSchema = z
 
 const OrganizationCustomPolicyRuleMetadataNoPolicySchema = z
   .object({
-    Description: StringWithCharLimit256Min0Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description that you provide for your organization Config Custom Policy rule.',
-        }),
-    ).exactOptional(),
-    OrganizationConfigRuleTriggerTypes: OrganizationConfigRuleTriggerTypeNoSNsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of notification that triggers Config to run an evaluation for a rule. For Config Custom Policy rules, Config supports change triggered notification types:</p> <ul> <li> <p> <code>ConfigurationItemChangeNotification</code> - Triggers an evaluation when Config delivers a configuration item as a result of a resource change.</p> </li> <li> <p> <code>OversizedConfigurationItemChangeNotification</code> - Triggers an evaluation when Config delivers an oversized configuration item. Config may generate this notification type when a resource changes and the notification exceeds the maximum size allowed by Amazon SNS.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    InputParameters: StringWithCharLimit2048Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string, in JSON format, that is passed to your organization Config Custom Policy rule.',
-        }),
-    ).exactOptional(),
-    MaximumExecutionFrequency: MaximumExecutionFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum frequency with which Config runs evaluations for a rule. Your Config Custom Policy rule is triggered when Config delivers the configuration snapshot. For more information, see <a>ConfigSnapshotDeliveryProperties</a>.',
-        }),
-    ).exactOptional(),
-    ResourceTypesScope: ResourceTypesScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of the Amazon Web Services resource that was evaluated.',
-        }),
-    ).exactOptional(),
-    ResourceIdScope: StringWithCharLimit768Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the Amazon Web Services resource that was evaluated.' }),
-    ).exactOptional(),
-    TagKeyScope: StringWithCharLimit128Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that make up a tag. A key is a general label that acts like a category for more specific tag values.',
-        }),
-    ).exactOptional(),
-    TagValueScope: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key).',
-        }),
-    ).exactOptional(),
-    PolicyRuntime: PolicyRuntimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The runtime system for your organization Config Custom Policy rules. Guard is a policy-as-code language that allows you to write policies that are enforced by Config Custom Policy rules. For more information about Guard, see the <a href="https://github.com/aws-cloudformation/cloudformation-guard">Guard GitHub Repository</a>.',
-        }),
-    ).exactOptional(),
-    DebugLogDeliveryAccounts: DebugLogDeliveryAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of accounts that you can enable debug logging for your organization Config Custom Policy rule. List is null when debug logging is enabled for all accounts.',
-        }),
-    ).exactOptional(),
+    Description: StringWithCharLimit256Min0Schema.exactOptional().openapi({
+      description:
+        'The description that you provide for your organization Config Custom Policy rule.',
+    }),
+    OrganizationConfigRuleTriggerTypes:
+      OrganizationConfigRuleTriggerTypeNoSNsSchema.exactOptional().openapi({
+        description:
+          '<p>The type of notification that triggers Config to run an evaluation for a rule. For Config Custom Policy rules, Config supports change triggered notification types:</p> <ul> <li> <p> <code>ConfigurationItemChangeNotification</code> - Triggers an evaluation when Config delivers a configuration item as a result of a resource change.</p> </li> <li> <p> <code>OversizedConfigurationItemChangeNotification</code> - Triggers an evaluation when Config delivers an oversized configuration item. Config may generate this notification type when a resource changes and the notification exceeds the maximum size allowed by Amazon SNS.</p> </li> </ul>',
+      }),
+    InputParameters: StringWithCharLimit2048Schema.exactOptional().openapi({
+      description:
+        'A string, in JSON format, that is passed to your organization Config Custom Policy rule.',
+    }),
+    MaximumExecutionFrequency: MaximumExecutionFrequencySchema.exactOptional().openapi({
+      description:
+        'The maximum frequency with which Config runs evaluations for a rule. Your Config Custom Policy rule is triggered when Config delivers the configuration snapshot. For more information, see <a>ConfigSnapshotDeliveryProperties</a>.',
+    }),
+    ResourceTypesScope: ResourceTypesScopeSchema.exactOptional().openapi({
+      description: 'The type of the Amazon Web Services resource that was evaluated.',
+    }),
+    ResourceIdScope: StringWithCharLimit768Schema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services resource that was evaluated.',
+    }),
+    TagKeyScope: StringWithCharLimit128Schema.exactOptional().openapi({
+      description:
+        'One part of a key-value pair that make up a tag. A key is a general label that acts like a category for more specific tag values.',
+    }),
+    TagValueScope: StringWithCharLimit256Schema.exactOptional().openapi({
+      description:
+        'The optional part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key).',
+    }),
+    PolicyRuntime: PolicyRuntimeSchema.exactOptional().openapi({
+      description:
+        'The runtime system for your organization Config Custom Policy rules. Guard is a policy-as-code language that allows you to write policies that are enforced by Config Custom Policy rules. For more information about Guard, see the <a href="https://github.com/aws-cloudformation/cloudformation-guard">Guard GitHub Repository</a>.',
+    }),
+    DebugLogDeliveryAccounts: DebugLogDeliveryAccountsSchema.exactOptional().openapi({
+      description:
+        'A list of accounts that you can enable debug logging for your organization Config Custom Policy rule. List is null when debug logging is enabled for all accounts.',
+    }),
   })
   .openapi({
     description:
@@ -3595,36 +2976,29 @@ const OrganizationCustomPolicyRuleMetadataNoPolicySchema = z
 
 const OrganizationConfigRuleSchema = z
   .object({
-    OrganizationConfigRuleName: OrganizationConfigRuleNameSchema.and(
-      z.any().openapi({ description: 'The name that you assign to organization Config rule.' }),
-    ),
-    OrganizationConfigRuleArn: StringWithCharLimit256Schema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of organization Config rule.' }),
-    ),
-    OrganizationManagedRuleMetadata: OrganizationManagedRuleMetadataSchema.and(
-      z.any().openapi({ description: 'An <code>OrganizationManagedRuleMetadata</code> object.' }),
-    ).exactOptional(),
-    OrganizationCustomRuleMetadata: OrganizationCustomRuleMetadataSchema.and(
-      z.any().openapi({ description: 'An <code>OrganizationCustomRuleMetadata</code> object.' }),
-    ).exactOptional(),
-    ExcludedAccounts: ExcludedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A comma-separated list of accounts excluded from organization Config rule.',
-        }),
-    ).exactOptional(),
-    LastUpdateTime: DateSchema.and(
-      z.any().openapi({ description: 'The timestamp of the last update.' }),
-    ).exactOptional(),
-    OrganizationCustomPolicyRuleMetadata: OrganizationCustomPolicyRuleMetadataNoPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An object that specifies metadata for your organization's Config Custom Policy rule. The metadata includes the runtime system in use, which accounts have debug logging enabled, and other custom rule metadata, such as resource type, resource ID of Amazon Web Services resource, and organization trigger types that initiate Config to evaluate Amazon Web Services resources against a rule.",
-        }),
-    ).exactOptional(),
+    OrganizationConfigRuleName: OrganizationConfigRuleNameSchema.openapi({
+      description: 'The name that you assign to organization Config rule.',
+    }),
+    OrganizationConfigRuleArn: StringWithCharLimit256Schema.openapi({
+      description: 'Amazon Resource Name (ARN) of organization Config rule.',
+    }),
+    OrganizationManagedRuleMetadata: OrganizationManagedRuleMetadataSchema.exactOptional().openapi({
+      description: 'An <code>OrganizationManagedRuleMetadata</code> object.',
+    }),
+    OrganizationCustomRuleMetadata: OrganizationCustomRuleMetadataSchema.exactOptional().openapi({
+      description: 'An <code>OrganizationCustomRuleMetadata</code> object.',
+    }),
+    ExcludedAccounts: ExcludedAccountsSchema.exactOptional().openapi({
+      description: 'A comma-separated list of accounts excluded from organization Config rule.',
+    }),
+    LastUpdateTime: DateSchema.exactOptional().openapi({
+      description: 'The timestamp of the last update.',
+    }),
+    OrganizationCustomPolicyRuleMetadata:
+      OrganizationCustomPolicyRuleMetadataNoPolicySchema.exactOptional().openapi({
+        description:
+          "An object that specifies metadata for your organization's Config Custom Policy rule. The metadata includes the runtime system in use, which accounts have debug logging enabled, and other custom rule metadata, such as resource type, resource ID of Amazon Web Services resource, and organization trigger types that initiate Config to evaluate Amazon Web Services resources against a rule.",
+      }),
   })
   .openapi({
     required: ['OrganizationConfigRuleName', 'OrganizationConfigRuleArn'],
@@ -3639,49 +3013,31 @@ const OrganizationConfigRulesSchema = z
 
 const DescribeOrganizationConfigRulesResponseSchema = z
   .object({
-    OrganizationConfigRules: OrganizationConfigRulesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Returns a list of <code>OrganizationConfigRule</code> objects.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    OrganizationConfigRules: OrganizationConfigRulesSchema.exactOptional().openapi({
+      description: 'Returns a list of <code>OrganizationConfigRule</code> objects.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeOrganizationConfigRulesResponse')
 
 const DescribeOrganizationConfigRulesRequestSchema = z
   .object({
-    OrganizationConfigRuleNames: OrganizationConfigRuleNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of organization Config rules for which you want details. If you do not specify any names, Config returns details for all your organization Config rules.',
-        }),
-    ).exactOptional(),
-    Limit: CosmosPageLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of organization Config rules returned on each page. If you do no specify a number, Config uses the default. The default is 100.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    OrganizationConfigRuleNames: OrganizationConfigRuleNamesSchema.exactOptional().openapi({
+      description:
+        'The names of organization Config rules for which you want details. If you do not specify any names, Config returns details for all your organization Config rules.',
+    }),
+    Limit: CosmosPageLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of organization Config rules returned on each page. If you do no specify a number, Config uses the default. The default is 100.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
+    }),
   })
   .openapi({ title: 'DescribeOrganizationConfigRulesRequest', required: [] })
   .openapi('DescribeOrganizationConfigRulesRequest')
@@ -3702,38 +3058,24 @@ const OrganizationResourceStatusSchema = z
 
 const OrganizationConformancePackStatusSchema = z
   .object({
-    OrganizationConformancePackName: OrganizationConformancePackNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name that you assign to organization conformance pack.' }),
-    ),
-    Status: OrganizationResourceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates deployment status of an organization conformance pack. When management account calls PutOrganizationConformancePack for the first time, conformance pack status is created in all the member accounts. When management account calls PutOrganizationConformancePack for the second time, conformance pack status is updated in all the member accounts. Additionally, conformance pack status is updated when one or more member accounts join or leave an organization. Conformance pack status is deleted when the management account deletes OrganizationConformancePack in all the member accounts and disables service access for <code>config-multiaccountsetup.amazonaws.com</code>.</p> <p>Config sets the state of the conformance pack to:</p> <ul> <li> <p> <code>CREATE_SUCCESSFUL</code> when an organization conformance pack has been successfully created in all the member accounts. </p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> when an organization conformance pack creation is in progress.</p> </li> <li> <p> <code>CREATE_FAILED</code> when an organization conformance pack creation failed in one or more member accounts within that organization.</p> </li> <li> <p> <code>DELETE_FAILED</code> when an organization conformance pack deletion failed in one or more member accounts within that organization.</p> </li> <li> <p> <code>DELETE_IN_PROGRESS</code> when an organization conformance pack deletion is in progress.</p> </li> <li> <p> <code>DELETE_SUCCESSFUL</code> when an organization conformance pack has been successfully deleted from all the member accounts.</p> </li> <li> <p> <code>UPDATE_SUCCESSFUL</code> when an organization conformance pack has been successfully updated in all the member accounts.</p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> when an organization conformance pack update is in progress.</p> </li> <li> <p> <code>UPDATE_FAILED</code> when an organization conformance pack update failed in one or more member accounts within that organization.</p> </li> </ul>',
-        }),
-    ),
-    ErrorCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An error code that is returned when organization conformance pack creation or deletion has failed in a member account. ',
-        }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An error message indicating that organization conformance pack creation or deletion failed due to an error. ',
-        }),
-    ).exactOptional(),
-    LastUpdateTime: DateSchema.and(
-      z.any().openapi({ description: 'The timestamp of the last update.' }),
-    ).exactOptional(),
+    OrganizationConformancePackName: OrganizationConformancePackNameSchema.openapi({
+      description: 'The name that you assign to organization conformance pack.',
+    }),
+    Status: OrganizationResourceStatusSchema.openapi({
+      description:
+        '<p>Indicates deployment status of an organization conformance pack. When management account calls PutOrganizationConformancePack for the first time, conformance pack status is created in all the member accounts. When management account calls PutOrganizationConformancePack for the second time, conformance pack status is updated in all the member accounts. Additionally, conformance pack status is updated when one or more member accounts join or leave an organization. Conformance pack status is deleted when the management account deletes OrganizationConformancePack in all the member accounts and disables service access for <code>config-multiaccountsetup.amazonaws.com</code>.</p> <p>Config sets the state of the conformance pack to:</p> <ul> <li> <p> <code>CREATE_SUCCESSFUL</code> when an organization conformance pack has been successfully created in all the member accounts. </p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> when an organization conformance pack creation is in progress.</p> </li> <li> <p> <code>CREATE_FAILED</code> when an organization conformance pack creation failed in one or more member accounts within that organization.</p> </li> <li> <p> <code>DELETE_FAILED</code> when an organization conformance pack deletion failed in one or more member accounts within that organization.</p> </li> <li> <p> <code>DELETE_IN_PROGRESS</code> when an organization conformance pack deletion is in progress.</p> </li> <li> <p> <code>DELETE_SUCCESSFUL</code> when an organization conformance pack has been successfully deleted from all the member accounts.</p> </li> <li> <p> <code>UPDATE_SUCCESSFUL</code> when an organization conformance pack has been successfully updated in all the member accounts.</p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> when an organization conformance pack update is in progress.</p> </li> <li> <p> <code>UPDATE_FAILED</code> when an organization conformance pack update failed in one or more member accounts within that organization.</p> </li> </ul>',
+    }),
+    ErrorCode: StringSchema.exactOptional().openapi({
+      description:
+        'An error code that is returned when organization conformance pack creation or deletion has failed in a member account. ',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description:
+        'An error message indicating that organization conformance pack creation or deletion failed due to an error. ',
+    }),
+    LastUpdateTime: DateSchema.exactOptional().openapi({
+      description: 'The timestamp of the last update.',
+    }),
   })
   .openapi({
     required: ['OrganizationConformancePackName', 'Status'],
@@ -3747,21 +3089,14 @@ const OrganizationConformancePackStatusesSchema = z
 
 const DescribeOrganizationConformancePackStatusesResponseSchema = z
   .object({
-    OrganizationConformancePackStatuses: OrganizationConformancePackStatusesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of <code>OrganizationConformancePackStatus</code> objects. ',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The nextToken string returned on a previous page that you use to get the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    OrganizationConformancePackStatuses:
+      OrganizationConformancePackStatusesSchema.exactOptional().openapi({
+        description: 'A list of <code>OrganizationConformancePackStatus</code> objects. ',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The nextToken string returned on a previous page that you use to get the next page of results in a paginated response. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeOrganizationConformancePackStatusesResponse')
@@ -3774,78 +3109,49 @@ const OrganizationConformancePackNamesSchema = z
 
 const DescribeOrganizationConformancePackStatusesRequestSchema = z
   .object({
-    OrganizationConformancePackNames: OrganizationConformancePackNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of organization conformance packs for which you want status details. If you do not specify any names, Config returns details for all your organization conformance packs. ',
-        }),
-    ).exactOptional(),
-    Limit: CosmosPageLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of OrganizationConformancePackStatuses returned on each page. If you do no specify a number, Config uses the default. The default is 100. ',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The nextToken string returned on a previous page that you use to get the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    OrganizationConformancePackNames:
+      OrganizationConformancePackNamesSchema.exactOptional().openapi({
+        description:
+          'The names of organization conformance packs for which you want status details. If you do not specify any names, Config returns details for all your organization conformance packs. ',
+      }),
+    Limit: CosmosPageLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of OrganizationConformancePackStatuses returned on each page. If you do no specify a number, Config uses the default. The default is 100. ',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The nextToken string returned on a previous page that you use to get the next page of results in a paginated response. ',
+    }),
   })
   .openapi({ title: 'DescribeOrganizationConformancePackStatusesRequest', required: [] })
   .openapi('DescribeOrganizationConformancePackStatusesRequest')
 
 const OrganizationConformancePackSchema = z
   .object({
-    OrganizationConformancePackName: OrganizationConformancePackNameSchema.and(
-      z.any().openapi({ description: 'The name you assign to an organization conformance pack.' }),
-    ),
-    OrganizationConformancePackArn: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({ description: 'Amazon Resource Name (ARN) of organization conformance pack.' }),
-    ),
-    DeliveryS3Bucket: DeliveryS3BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Amazon S3 bucket where Config stores conformance pack templates. </p> <note> <p>This field is optional.</p> </note>',
-        }),
-    ).exactOptional(),
-    DeliveryS3KeyPrefix: DeliveryS3KeyPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Any folder structure you want to add to an Amazon S3 bucket.</p> <note> <p>This field is optional.</p> </note>',
-        }),
-    ).exactOptional(),
-    ConformancePackInputParameters: ConformancePackInputParametersSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of <code>ConformancePackInputParameter</code> objects.' }),
-    ).exactOptional(),
-    ExcludedAccounts: ExcludedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A comma-separated list of accounts excluded from organization conformance pack.',
-        }),
-    ).exactOptional(),
-    LastUpdateTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Last time when organization conformation pack was updated.' }),
-    ),
+    OrganizationConformancePackName: OrganizationConformancePackNameSchema.openapi({
+      description: 'The name you assign to an organization conformance pack.',
+    }),
+    OrganizationConformancePackArn: StringWithCharLimit256Schema.openapi({
+      description: 'Amazon Resource Name (ARN) of organization conformance pack.',
+    }),
+    DeliveryS3Bucket: DeliveryS3BucketSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the Amazon S3 bucket where Config stores conformance pack templates. </p> <note> <p>This field is optional.</p> </note>',
+    }),
+    DeliveryS3KeyPrefix: DeliveryS3KeyPrefixSchema.exactOptional().openapi({
+      description:
+        '<p>Any folder structure you want to add to an Amazon S3 bucket.</p> <note> <p>This field is optional.</p> </note>',
+    }),
+    ConformancePackInputParameters: ConformancePackInputParametersSchema.exactOptional().openapi({
+      description: 'A list of <code>ConformancePackInputParameter</code> objects.',
+    }),
+    ExcludedAccounts: ExcludedAccountsSchema.exactOptional().openapi({
+      description:
+        'A comma-separated list of accounts excluded from organization conformance pack.',
+    }),
+    LastUpdateTime: DateSchema.openapi({
+      description: 'Last time when organization conformation pack was updated.',
+    }),
   })
   .openapi({
     required: [
@@ -3864,60 +3170,43 @@ const OrganizationConformancePacksSchema = z
 
 const DescribeOrganizationConformancePacksResponseSchema = z
   .object({
-    OrganizationConformancePacks: OrganizationConformancePacksSchema.and(
-      z.any().openapi({ description: 'Returns a list of OrganizationConformancePacks objects.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    OrganizationConformancePacks: OrganizationConformancePacksSchema.exactOptional().openapi({
+      description: 'Returns a list of OrganizationConformancePacks objects.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeOrganizationConformancePacksResponse')
 
 const DescribeOrganizationConformancePacksRequestSchema = z
   .object({
-    OrganizationConformancePackNames: OrganizationConformancePackNamesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name that you assign to an organization conformance pack.' }),
-    ).exactOptional(),
-    Limit: CosmosPageLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of organization config packs returned on each page. If you do no specify a number, Config uses the default. The default is 100.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    OrganizationConformancePackNames:
+      OrganizationConformancePackNamesSchema.exactOptional().openapi({
+        description: 'The name that you assign to an organization conformance pack.',
+      }),
+    Limit: CosmosPageLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of organization config packs returned on each page. If you do no specify a number, Config uses the default. The default is 100.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ title: 'DescribeOrganizationConformancePacksRequest', required: [] })
   .openapi('DescribeOrganizationConformancePacksRequest')
 
 const PendingAggregationRequestSchema = z
   .object({
-    RequesterAccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The 12-digit account ID of the account requesting to aggregate data.',
-        }),
-    ).exactOptional(),
-    RequesterAwsRegion: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The region requesting to aggregate data. ' }),
-    ).exactOptional(),
+    RequesterAccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The 12-digit account ID of the account requesting to aggregate data.',
+    }),
+    RequesterAwsRegion: AwsRegionSchema.exactOptional().openapi({
+      description: 'The region requesting to aggregate data. ',
+    }),
   })
   .openapi({
     description:
@@ -3932,17 +3221,13 @@ const PendingAggregationRequestListSchema = z
 
 const DescribePendingAggregationRequestsResponseSchema = z
   .object({
-    PendingAggregationRequests: PendingAggregationRequestListSchema.and(
-      z.any().openapi({ description: 'Returns a PendingAggregationRequests object.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    PendingAggregationRequests: PendingAggregationRequestListSchema.exactOptional().openapi({
+      description: 'Returns a PendingAggregationRequests object.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribePendingAggregationRequestsResponse')
@@ -3955,241 +3240,50 @@ const DescribePendingAggregationRequestsLimitSchema = z
 
 const DescribePendingAggregationRequestsRequestSchema = z
   .object({
-    Limit: DescribePendingAggregationRequestsLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of evaluation results returned on each page. The default is maximum. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    Limit: DescribePendingAggregationRequestsLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of evaluation results returned on each page. The default is maximum. If you specify 0, Config uses the default.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ title: 'DescribePendingAggregationRequestsRequest', required: [] })
   .openapi('DescribePendingAggregationRequestsRequest')
 
-const RemediationTargetTypeSchema = z.literal('SSM_DOCUMENT').openapi('RemediationTargetType')
-
-const ResourceValueTypeSchema = z.literal('RESOURCE_ID').openapi('ResourceValueType')
-
-const ResourceValueSchema = z
-  .object({
-    Value: ResourceValueTypeSchema.and(
-      z.any().openapi({ description: 'The value is a resource ID.' }),
-    ),
-  })
-  .openapi({ required: ['Value'], description: 'The dynamic value of the resource.' })
-  .openapi('ResourceValue')
-
-const StaticParameterValuesSchema = z
-  .array(StringWithCharLimit256Schema)
-  .min(0)
-  .max(25)
-  .openapi('StaticParameterValues')
-
-const StaticValueSchema = z
-  .object({
-    Values: StaticParameterValuesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of values. For example, the ARN of the assumed role. ' }),
-    ),
-  })
-  .openapi({ required: ['Values'], description: 'The static value of the resource.' })
-  .openapi('StaticValue')
-
-const RemediationParameterValueSchema = z
-  .object({
-    ResourceValue: ResourceValueSchema.and(
-      z.any().openapi({ description: 'The value is dynamic and changes at run-time.' }),
-    ).exactOptional(),
-    StaticValue: StaticValueSchema.and(
-      z.any().openapi({ description: 'The value is static and does not change at run-time.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The value is either a dynamic (resource) value or a static value. You must select either a dynamic value or a static value.',
-    required: [],
-  })
-  .openapi('RemediationParameterValue')
-
-const RemediationParametersSchema = z
-  .record(z.string(), RemediationParameterValueSchema)
-  .refine((val) => Object.keys(val).length >= 0)
-  .refine((val) => Object.keys(val).length <= 25)
-  .openapi('RemediationParameters')
-
-const PercentageSchema = z.int().min(1).max(100).openapi('Percentage')
-
-const SsmControlsSchema = z
-  .object({
-    ConcurrentExecutionRatePercentage: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum percentage of remediation actions allowed to run in parallel on the non-compliant resources for that specific rule. You can specify a percentage, such as 10%. The default value is 10. ',
-        }),
-    ).exactOptional(),
-    ErrorPercentage: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of errors that are allowed before SSM stops running automations on non-compliant resources for that specific rule. You can specify a percentage of errors, for example 10%. If you do not specifiy a percentage, the default is 50%. For example, if you set the ErrorPercentage to 40% for 10 non-compliant resources, then SSM stops running the automations when the fifth error is received. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Amazon Web Services Systems Manager (SSM) specific remediation controls.',
-    required: [],
-  })
-  .openapi('SsmControls')
-
-const ExecutionControlsSchema = z
-  .object({
-    SsmControls: SsmControlsSchema.and(
-      z.any().openapi({ description: 'A SsmControls object.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The controls that Config uses for executing remediations.',
-    required: [],
-  })
-  .openapi('ExecutionControls')
-
-const AutoRemediationAttemptsSchema = z.int().min(1).max(25).openapi('AutoRemediationAttempts')
-
-const AutoRemediationAttemptSecondsSchema = z
-  .int()
-  .min(1)
-  .max(2678000)
-  .openapi('AutoRemediationAttemptSeconds')
-
-const RemediationConfigurationSchema = z
-  .object({
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the Config rule.' }),
-    ),
-    TargetType: RemediationTargetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the target. Target executes remediation. For example, SSM document.',
-        }),
-    ),
-    TargetId: StringWithCharLimit256Schema.and(
-      z.any().openapi({ description: 'Target ID is the name of the SSM document.' }),
-    ),
-    TargetVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Version of the target. For example, version of the SSM document.</p> <note> <p>If you make backward incompatible changes to the SSM document, you must call PutRemediationConfiguration API again to ensure the remediations can run.</p> </note>',
-        }),
-    ).exactOptional(),
-    Parameters: RemediationParametersSchema.and(
-      z.any().openapi({ description: 'An object of the RemediationParameterValue.' }),
-    ).exactOptional(),
-    ResourceType: StringSchema.and(
-      z.any().openapi({ description: 'The type of a resource. ' }),
-    ).exactOptional(),
-    Automatic: BooleanSchema.and(
-      z.any().openapi({ description: 'The remediation is triggered automatically.' }),
-    ).exactOptional(),
-    ExecutionControls: ExecutionControlsSchema.and(
-      z.any().openapi({ description: 'An ExecutionControls object.' }),
-    ).exactOptional(),
-    MaximumAutomaticAttempts: AutoRemediationAttemptsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of failed attempts for auto-remediation. If you do not select a number, the default is 5.</p> <p>For example, if you specify MaximumAutomaticAttempts as 5 with RetryAttemptSeconds as 50 seconds, Config will put a RemediationException on your behalf for the failing resource after the 5th failed attempt within 50 seconds.</p>',
-        }),
-    ).exactOptional(),
-    RetryAttemptSeconds: AutoRemediationAttemptSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Maximum time in seconds that Config runs auto-remediation. If you do not select a number, the default is 60 seconds. </p> <p>For example, if you specify RetryAttemptSeconds as 50 seconds and MaximumAutomaticAttempts as 5, Config will run auto-remediations 5 times within 50 seconds before throwing an exception.</p>',
-        }),
-    ).exactOptional(),
-    Arn: StringWithCharLimit1024Schema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of remediation configuration.' }),
-    ).exactOptional(),
-    CreatedByService: StringWithCharLimit1024Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Name of the service that owns the service-linked rule, if applicable.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['ConfigRuleName', 'TargetType', 'TargetId'],
-    description:
-      'An object that represents the details about the remediation configuration that includes the remediation action, parameters, and data to execute the action.',
-  })
-  .openapi('RemediationConfiguration')
-
-const RemediationConfigurationsSchema = z
-  .array(RemediationConfigurationSchema)
-  .min(0)
-  .max(25)
-  .openapi('RemediationConfigurations')
-
 const DescribeRemediationConfigurationsResponseSchema = z
   .object({
-    RemediationConfigurations: RemediationConfigurationsSchema.and(
-      z.any().openapi({ description: 'Returns a remediation configuration object.' }),
-    ).exactOptional(),
+    RemediationConfigurations: RemediationConfigurationsSchema.exactOptional().openapi({
+      description: 'Returns a remediation configuration object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRemediationConfigurationsResponse')
 
 const DescribeRemediationConfigurationsRequestSchema = z
   .object({
-    ConfigRuleNames: ConfigRuleNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of Config rule names of remediation configurations for which you want details. ',
-        }),
-    ),
+    ConfigRuleNames: ConfigRuleNamesSchema.openapi({
+      description:
+        'A list of Config rule names of remediation configurations for which you want details. ',
+    }),
   })
   .openapi({ required: ['ConfigRuleNames'], title: 'DescribeRemediationConfigurationsRequest' })
   .openapi('DescribeRemediationConfigurationsRequest')
 
 const RemediationExceptionSchema = z
   .object({
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the Config rule.' }),
-    ),
-    ResourceType: StringWithCharLimit256Schema.and(
-      z.any().openapi({ description: 'The type of a resource.' }),
-    ),
-    ResourceId: StringWithCharLimit1024Schema.and(
-      z.any().openapi({ description: 'The ID of the resource (for example., sg-xxxxxx).' }),
-    ),
-    Message: StringWithCharLimit1024Schema.and(
-      z.any().openapi({ description: 'An explanation of an remediation exception.' }),
-    ).exactOptional(),
-    ExpirationTime: DateSchema.and(
-      z.any().openapi({ description: 'The time when the remediation exception will be deleted.' }),
-    ).exactOptional(),
+    ConfigRuleName: ConfigRuleNameSchema.openapi({ description: 'The name of the Config rule.' }),
+    ResourceType: StringWithCharLimit256Schema.openapi({ description: 'The type of a resource.' }),
+    ResourceId: StringWithCharLimit1024Schema.openapi({
+      description: 'The ID of the resource (for example., sg-xxxxxx).',
+    }),
+    Message: StringWithCharLimit1024Schema.exactOptional().openapi({
+      description: 'An explanation of an remediation exception.',
+    }),
+    ExpirationTime: DateSchema.exactOptional().openapi({
+      description: 'The time when the remediation exception will be deleted.',
+    }),
   })
   .openapi({
     required: ['ConfigRuleName', 'ResourceType', 'ResourceId'],
@@ -4206,50 +3300,32 @@ const RemediationExceptionsSchema = z
 
 const DescribeRemediationExceptionsResponseSchema = z
   .object({
-    RemediationExceptions: RemediationExceptionsSchema.and(
-      z.any().openapi({ description: 'Returns a list of remediation exception objects.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    RemediationExceptions: RemediationExceptionsSchema.exactOptional().openapi({
+      description: 'Returns a list of remediation exception objects.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRemediationExceptionsResponse')
 
 const DescribeRemediationExceptionsRequestSchema = z
   .object({
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the Config rule.' }),
-    ),
-    ResourceKeys: RemediationExceptionResourceKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An exception list of resource exception keys to be processed with the current request. Config adds exception for each resource key. For example, Config adds 3 exceptions for 3 resource keys. ',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of RemediationExceptionResourceKey returned on each page. The default is 25. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConfigRuleName: ConfigRuleNameSchema.openapi({ description: 'The name of the Config rule.' }),
+    ResourceKeys: RemediationExceptionResourceKeysSchema.exactOptional().openapi({
+      description:
+        'An exception list of resource exception keys to be processed with the current request. Config adds exception for each resource key. For example, Config adds 3 exceptions for 3 resource keys. ',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of RemediationExceptionResourceKey returned on each page. The default is 25. If you specify 0, Config uses the default.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: ['ConfigRuleName'], title: 'DescribeRemediationExceptionsRequest' })
   .openapi('DescribeRemediationExceptionsRequest')
@@ -4264,23 +3340,19 @@ const RemediationExecutionStepStateSchema = z
 
 const RemediationExecutionStepSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The details of the step.' }),
-    ).exactOptional(),
-    State: RemediationExecutionStepStateSchema.and(
-      z.any().openapi({ description: 'The valid status of the step.' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An error message if the step was interrupted during execution.' }),
-    ).exactOptional(),
-    StartTime: DateSchema.and(
-      z.any().openapi({ description: 'The time when the step started.' }),
-    ).exactOptional(),
-    StopTime: DateSchema.and(
-      z.any().openapi({ description: 'The time when the step stopped.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The details of the step.' }),
+    State: RemediationExecutionStepStateSchema.exactOptional().openapi({
+      description: 'The valid status of the step.',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description: 'An error message if the step was interrupted during execution.',
+    }),
+    StartTime: DateSchema.exactOptional().openapi({
+      description: 'The time when the step started.',
+    }),
+    StopTime: DateSchema.exactOptional().openapi({
+      description: 'The time when the step stopped.',
+    }),
   })
   .openapi({ description: 'Name of the step from the SSM document.', required: [] })
   .openapi('RemediationExecutionStep')
@@ -4292,18 +3364,18 @@ const RemediationExecutionStepsSchema = z
 const RemediationExecutionStatusSchema = z
   .object({
     ResourceKey: ResourceKeySchema.exactOptional(),
-    State: RemediationExecutionStateSchema.and(
-      z.any().openapi({ description: 'ENUM of the values.' }),
-    ).exactOptional(),
-    StepDetails: RemediationExecutionStepsSchema.and(
-      z.any().openapi({ description: 'Details of every step.' }),
-    ).exactOptional(),
-    InvocationTime: DateSchema.and(
-      z.any().openapi({ description: 'Start time when the remediation was executed.' }),
-    ).exactOptional(),
-    LastUpdatedTime: DateSchema.and(
-      z.any().openapi({ description: 'The time when the remediation execution was last updated.' }),
-    ).exactOptional(),
+    State: RemediationExecutionStateSchema.exactOptional().openapi({
+      description: 'ENUM of the values.',
+    }),
+    StepDetails: RemediationExecutionStepsSchema.exactOptional().openapi({
+      description: 'Details of every step.',
+    }),
+    InvocationTime: DateSchema.exactOptional().openapi({
+      description: 'Start time when the remediation was executed.',
+    }),
+    LastUpdatedTime: DateSchema.exactOptional().openapi({
+      description: 'The time when the remediation execution was last updated.',
+    }),
   })
   .openapi({
     description:
@@ -4318,50 +3390,32 @@ const RemediationExecutionStatusesSchema = z
 
 const DescribeRemediationExecutionStatusResponseSchema = z
   .object({
-    RemediationExecutionStatuses: RemediationExecutionStatusesSchema.and(
-      z.any().openapi({ description: 'Returns a list of remediation execution statuses objects.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    RemediationExecutionStatuses: RemediationExecutionStatusesSchema.exactOptional().openapi({
+      description: 'Returns a list of remediation execution statuses objects.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRemediationExecutionStatusResponse')
 
 const DescribeRemediationExecutionStatusRequestSchema = z
   .object({
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z.any().openapi({ description: 'A list of Config rule names.' }),
-    ),
-    ResourceKeys: ResourceKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of resource keys to be processed with the current request. Each element in the list consists of the resource type and resource ID. ',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of RemediationExecutionStatuses returned on each page. The default is maximum. If you specify 0, Config uses the default. ',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConfigRuleName: ConfigRuleNameSchema.openapi({ description: 'A list of Config rule names.' }),
+    ResourceKeys: ResourceKeysSchema.exactOptional().openapi({
+      description:
+        'A list of resource keys to be processed with the current request. Each element in the list consists of the resource type and resource ID. ',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of RemediationExecutionStatuses returned on each page. The default is maximum. If you specify 0, Config uses the default. ',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: ['ConfigRuleName'], title: 'DescribeRemediationExecutionStatusRequest' })
   .openapi('DescribeRemediationExecutionStatusRequest')
@@ -4370,17 +3424,13 @@ const RetentionPeriodInDaysSchema = z.int().min(30).max(2557).openapi('Retention
 
 const RetentionConfigurationSchema = z
   .object({
-    Name: RetentionConfigurationNameSchema.and(
-      z.any().openapi({ description: 'The name of the retention configuration object.' }),
-    ),
-    RetentionPeriodInDays: RetentionPeriodInDaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Number of days Config stores your historical information.</p> <note> <p>Currently, only applicable to the configuration item history.</p> </note>',
-        }),
-    ),
+    Name: RetentionConfigurationNameSchema.openapi({
+      description: 'The name of the retention configuration object.',
+    }),
+    RetentionPeriodInDays: RetentionPeriodInDaysSchema.openapi({
+      description:
+        '<p>Number of days Config stores your historical information.</p> <note> <p>Currently, only applicable to the configuration item history.</p> </note>',
+    }),
   })
   .openapi({
     required: ['Name', 'RetentionPeriodInDays'],
@@ -4395,17 +3445,13 @@ const RetentionConfigurationListSchema = z
 
 const DescribeRetentionConfigurationsResponseSchema = z
   .object({
-    RetentionConfigurations: RetentionConfigurationListSchema.and(
-      z.any().openapi({ description: 'Returns a retention configuration object.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    RetentionConfigurations: RetentionConfigurationListSchema.exactOptional().openapi({
+      description: 'Returns a retention configuration object.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRetentionConfigurationsResponse')
@@ -4418,48 +3464,32 @@ const RetentionConfigurationNameListSchema = z
 
 const DescribeRetentionConfigurationsRequestSchema = z
   .object({
-    RetentionConfigurationNames: RetentionConfigurationNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of names of retention configurations for which you want details. If you do not specify a name, Config returns details for all the retention configurations for that account.</p> <note> <p>Currently, Config supports only one retention configuration per region in your account.</p> </note>',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    RetentionConfigurationNames: RetentionConfigurationNameListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of names of retention configurations for which you want details. If you do not specify a name, Config returns details for all the retention configurations for that account.</p> <note> <p>Currently, Config supports only one retention configuration per region in your account.</p> </note>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
+    }),
   })
   .openapi({ title: 'DescribeRetentionConfigurationsRequest', required: [] })
   .openapi('DescribeRetentionConfigurationsRequest')
 
 const EvaluationResultQualifierSchema = z
   .object({
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the Config rule that was used in the evaluation.' }),
-    ).exactOptional(),
-    ResourceType: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of Amazon Web Services resource that was evaluated.' }),
-    ).exactOptional(),
-    ResourceId: BaseResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the evaluated Amazon Web Services resource.' }),
-    ).exactOptional(),
-    EvaluationMode: EvaluationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The mode of an evaluation. The valid values are Detective or Proactive.',
-        }),
-    ).exactOptional(),
+    ConfigRuleName: ConfigRuleNameSchema.exactOptional().openapi({
+      description: 'The name of the Config rule that was used in the evaluation.',
+    }),
+    ResourceType: StringWithCharLimit256Schema.exactOptional().openapi({
+      description: 'The type of Amazon Web Services resource that was evaluated.',
+    }),
+    ResourceId: BaseResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the evaluated Amazon Web Services resource.',
+    }),
+    EvaluationMode: EvaluationModeSchema.exactOptional().openapi({
+      description: 'The mode of an evaluation. The valid values are Detective or Proactive.',
+    }),
   })
   .openapi({
     description:
@@ -4472,68 +3502,46 @@ const ResourceEvaluationIdSchema = z.string().min(1).max(128).openapi('ResourceE
 
 const EvaluationResultIdentifierSchema = z
   .object({
-    EvaluationResultQualifier: EvaluationResultQualifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifies an Config rule used to evaluate an Amazon Web Services resource, and provides the type and ID of the evaluated resource.',
-        }),
-    ).exactOptional(),
-    OrderingTimestamp: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the event that triggered the evaluation of your Amazon Web Services resources. The time can indicate when Config delivered a configuration item change notification, or it can indicate when Config delivered the configuration snapshot, depending on which event triggered the evaluation.',
-        }),
-    ).exactOptional(),
-    ResourceEvaluationId: ResourceEvaluationIdSchema.and(
-      z.any().openapi({ description: 'A Unique ID for an evaluation result.' }),
-    ).exactOptional(),
+    EvaluationResultQualifier: EvaluationResultQualifierSchema.exactOptional().openapi({
+      description:
+        'Identifies an Config rule used to evaluate an Amazon Web Services resource, and provides the type and ID of the evaluated resource.',
+    }),
+    OrderingTimestamp: DateSchema.exactOptional().openapi({
+      description:
+        'The time of the event that triggered the evaluation of your Amazon Web Services resources. The time can indicate when Config delivered a configuration item change notification, or it can indicate when Config delivered the configuration snapshot, depending on which event triggered the evaluation.',
+    }),
+    ResourceEvaluationId: ResourceEvaluationIdSchema.exactOptional().openapi({
+      description: 'A Unique ID for an evaluation result.',
+    }),
   })
   .openapi({ description: 'Uniquely identifies an evaluation result.', required: [] })
   .openapi('EvaluationResultIdentifier')
 
 const AggregateEvaluationResultSchema = z
   .object({
-    EvaluationResultIdentifier: EvaluationResultIdentifierSchema.and(
-      z.any().openapi({ description: 'Uniquely identifies the evaluation result.' }),
-    ).exactOptional(),
-    ComplianceType: ComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The resource compliance status.</p> <p>For the <code>AggregationEvaluationResult</code> data type, Config supports only the <code>COMPLIANT</code> and <code>NON_COMPLIANT</code>. Config does not support the <code>NOT_APPLICABLE</code> and <code>INSUFFICIENT_DATA</code> value.</p>',
-        }),
-    ).exactOptional(),
-    ResultRecordedTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time when Config recorded the aggregate evaluation result.' }),
-    ).exactOptional(),
-    ConfigRuleInvokedTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the Config rule evaluated the Amazon Web Services resource.',
-        }),
-    ).exactOptional(),
-    Annotation: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Supplementary information about how the agrregate evaluation determined the compliance.',
-        }),
-    ).exactOptional(),
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The 12-digit account ID of the source account.' }),
-    ).exactOptional(),
-    AwsRegion: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The source region from where the data is aggregated.' }),
-    ).exactOptional(),
+    EvaluationResultIdentifier: EvaluationResultIdentifierSchema.exactOptional().openapi({
+      description: 'Uniquely identifies the evaluation result.',
+    }),
+    ComplianceType: ComplianceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The resource compliance status.</p> <p>For the <code>AggregationEvaluationResult</code> data type, Config supports only the <code>COMPLIANT</code> and <code>NON_COMPLIANT</code>. Config does not support the <code>NOT_APPLICABLE</code> and <code>INSUFFICIENT_DATA</code> value.</p>',
+    }),
+    ResultRecordedTime: DateSchema.exactOptional().openapi({
+      description: 'The time when Config recorded the aggregate evaluation result.',
+    }),
+    ConfigRuleInvokedTime: DateSchema.exactOptional().openapi({
+      description: 'The time when the Config rule evaluated the Amazon Web Services resource.',
+    }),
+    Annotation: StringWithCharLimit256Schema.exactOptional().openapi({
+      description:
+        'Supplementary information about how the agrregate evaluation determined the compliance.',
+    }),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The 12-digit account ID of the source account.',
+    }),
+    AwsRegion: AwsRegionSchema.exactOptional().openapi({
+      description: 'The source region from where the data is aggregated.',
+    }),
   })
   .openapi({
     description:
@@ -4548,63 +3556,43 @@ const AggregateEvaluationResultListSchema = z
 
 const GetAggregateComplianceDetailsByConfigRuleResponseSchema = z
   .object({
-    AggregateEvaluationResults: AggregateEvaluationResultListSchema.and(
-      z.any().openapi({ description: 'Returns an AggregateEvaluationResults object.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    AggregateEvaluationResults: AggregateEvaluationResultListSchema.exactOptional().openapi({
+      description: 'Returns an AggregateEvaluationResults object.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAggregateComplianceDetailsByConfigRuleResponse')
 
 const GetAggregateComplianceDetailsByConfigRuleRequestSchema = z
   .object({
-    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration aggregator.' }),
-    ),
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Config rule for which you want compliance information.',
-        }),
-    ),
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The 12-digit account ID of the source account.' }),
-    ),
-    AwsRegion: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The source region from where the data is aggregated.' }),
-    ),
-    ComplianceType: ComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The resource compliance status.</p> <note> <p>For the <code>GetAggregateComplianceDetailsByConfigRuleRequest</code> data type, Config supports only the <code>COMPLIANT</code> and <code>NON_COMPLIANT</code>. Config does not support the <code>NOT_APPLICABLE</code> and <code>INSUFFICIENT_DATA</code> values.</p> </note>',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of evaluation results returned on each page. The default is 50. You cannot specify a number greater than 100. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.openapi({
+      description: 'The name of the configuration aggregator.',
+    }),
+    ConfigRuleName: ConfigRuleNameSchema.openapi({
+      description: 'The name of the Config rule for which you want compliance information.',
+    }),
+    AccountId: AccountIdSchema.openapi({
+      description: 'The 12-digit account ID of the source account.',
+    }),
+    AwsRegion: AwsRegionSchema.openapi({
+      description: 'The source region from where the data is aggregated.',
+    }),
+    ComplianceType: ComplianceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The resource compliance status.</p> <note> <p>For the <code>GetAggregateComplianceDetailsByConfigRuleRequest</code> data type, Config supports only the <code>COMPLIANT</code> and <code>NON_COMPLIANT</code>. Config does not support the <code>NOT_APPLICABLE</code> and <code>INSUFFICIENT_DATA</code> values.</p> </note>',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of evaluation results returned on each page. The default is 50. You cannot specify a number greater than 100. If you specify 0, Config uses the default.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({
     required: ['ConfigurationAggregatorName', 'ConfigRuleName', 'AccountId', 'AwsRegion'],
@@ -4614,25 +3602,17 @@ const GetAggregateComplianceDetailsByConfigRuleRequestSchema = z
 
 const ComplianceSummarySchema = z
   .object({
-    CompliantResourceCount: ComplianceContributorCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Config rules or Amazon Web Services resources that are compliant, up to a maximum of 25 for rules and 100 for resources.',
-        }),
-    ).exactOptional(),
-    NonCompliantResourceCount: ComplianceContributorCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Config rules or Amazon Web Services resources that are noncompliant, up to a maximum of 25 for rules and 100 for resources.',
-        }),
-    ).exactOptional(),
-    ComplianceSummaryTimestamp: DateSchema.and(
-      z.any().openapi({ description: 'The time that Config created the compliance summary.' }),
-    ).exactOptional(),
+    CompliantResourceCount: ComplianceContributorCountSchema.exactOptional().openapi({
+      description:
+        'The number of Config rules or Amazon Web Services resources that are compliant, up to a maximum of 25 for rules and 100 for resources.',
+    }),
+    NonCompliantResourceCount: ComplianceContributorCountSchema.exactOptional().openapi({
+      description:
+        'The number of Config rules or Amazon Web Services resources that are noncompliant, up to a maximum of 25 for rules and 100 for resources.',
+    }),
+    ComplianceSummaryTimestamp: DateSchema.exactOptional().openapi({
+      description: 'The time that Config created the compliance summary.',
+    }),
   })
   .openapi({
     description:
@@ -4643,16 +3623,12 @@ const ComplianceSummarySchema = z
 
 const AggregateComplianceCountSchema = z
   .object({
-    GroupName: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The 12-digit account ID or region based on the GroupByKey value.',
-        }),
-    ).exactOptional(),
-    ComplianceSummary: ComplianceSummarySchema.and(
-      z.any().openapi({ description: 'The number of compliant and noncompliant Config rules.' }),
-    ).exactOptional(),
+    GroupName: StringWithCharLimit256Schema.exactOptional().openapi({
+      description: 'The 12-digit account ID or region based on the GroupByKey value.',
+    }),
+    ComplianceSummary: ComplianceSummarySchema.exactOptional().openapi({
+      description: 'The number of compliant and noncompliant Config rules.',
+    }),
   })
   .openapi({
     description:
@@ -4667,32 +3643,28 @@ const AggregateComplianceCountListSchema = z
 
 const GetAggregateConfigRuleComplianceSummaryResponseSchema = z
   .object({
-    GroupByKey: StringWithCharLimit256Schema.and(
-      z.any().openapi({ description: 'Groups the result based on ACCOUNT_ID or AWS_REGION.' }),
-    ).exactOptional(),
-    AggregateComplianceCounts: AggregateComplianceCountListSchema.and(
-      z.any().openapi({ description: 'Returns a list of AggregateComplianceCounts object.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    GroupByKey: StringWithCharLimit256Schema.exactOptional().openapi({
+      description: 'Groups the result based on ACCOUNT_ID or AWS_REGION.',
+    }),
+    AggregateComplianceCounts: AggregateComplianceCountListSchema.exactOptional().openapi({
+      description: 'Returns a list of AggregateComplianceCounts object.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAggregateConfigRuleComplianceSummaryResponse')
 
 const ConfigRuleComplianceSummaryFiltersSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The 12-digit account ID of the source account.' }),
-    ).exactOptional(),
-    AwsRegion: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The source region where the data is aggregated.' }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The 12-digit account ID of the source account.',
+    }),
+    AwsRegion: AwsRegionSchema.exactOptional().openapi({
+      description: 'The source region where the data is aggregated.',
+    }),
   })
   .openapi({
     description: 'Filters the results based on the account IDs and regions.',
@@ -4706,36 +3678,23 @@ const ConfigRuleComplianceSummaryGroupKeySchema = z
 
 const GetAggregateConfigRuleComplianceSummaryRequestSchema = z
   .object({
-    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration aggregator.' }),
-    ),
-    Filters: ConfigRuleComplianceSummaryFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the results based on the ConfigRuleComplianceSummaryFilters object.',
-        }),
-    ).exactOptional(),
-    GroupByKey: ConfigRuleComplianceSummaryGroupKeySchema.and(
-      z.any().openapi({ description: 'Groups the result based on ACCOUNT_ID or AWS_REGION.' }),
-    ).exactOptional(),
-    Limit: GroupByAPILimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of evaluation results returned on each page. The default is 1000. You cannot specify a number greater than 1000. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.openapi({
+      description: 'The name of the configuration aggregator.',
+    }),
+    Filters: ConfigRuleComplianceSummaryFiltersSchema.exactOptional().openapi({
+      description: 'Filters the results based on the ConfigRuleComplianceSummaryFilters object.',
+    }),
+    GroupByKey: ConfigRuleComplianceSummaryGroupKeySchema.exactOptional().openapi({
+      description: 'Groups the result based on ACCOUNT_ID or AWS_REGION.',
+    }),
+    Limit: GroupByAPILimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of evaluation results returned on each page. The default is 1000. You cannot specify a number greater than 1000. If you specify 0, Config uses the default.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({
     required: ['ConfigurationAggregatorName'],
@@ -4745,12 +3704,12 @@ const GetAggregateConfigRuleComplianceSummaryRequestSchema = z
 
 const AggregateConformancePackComplianceCountSchema = z
   .object({
-    CompliantConformancePackCount: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of compliant conformance packs.' }),
-    ).exactOptional(),
-    NonCompliantConformancePackCount: IntegerSchema.and(
-      z.any().openapi({ description: 'Number of noncompliant conformance packs.' }),
-    ).exactOptional(),
+    CompliantConformancePackCount: IntegerSchema.exactOptional().openapi({
+      description: 'Number of compliant conformance packs.',
+    }),
+    NonCompliantConformancePackCount: IntegerSchema.exactOptional().openapi({
+      description: 'Number of noncompliant conformance packs.',
+    }),
   })
   .openapi({
     description: 'The number of conformance packs that are compliant and noncompliant.',
@@ -4760,21 +3719,13 @@ const AggregateConformancePackComplianceCountSchema = z
 
 const AggregateConformancePackComplianceSummarySchema = z
   .object({
-    ComplianceSummary: AggregateConformancePackComplianceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Returns an <code>AggregateConformancePackComplianceCount</code> object. ',
-        }),
-    ).exactOptional(),
-    GroupName: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Groups the result based on Amazon Web Services account ID or Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
+    ComplianceSummary: AggregateConformancePackComplianceCountSchema.exactOptional().openapi({
+      description: 'Returns an <code>AggregateConformancePackComplianceCount</code> object. ',
+    }),
+    GroupName: StringWithCharLimit256Schema.exactOptional().openapi({
+      description:
+        'Groups the result based on Amazon Web Services account ID or Amazon Web Services Region.',
+    }),
   })
   .openapi({
     description: 'Provides a summary of compliance based on either account ID or region. ',
@@ -4789,50 +3740,30 @@ const AggregateConformancePackComplianceSummaryListSchema = z
 const GetAggregateConformancePackComplianceSummaryResponseSchema = z
   .object({
     AggregateConformancePackComplianceSummaries:
-      AggregateConformancePackComplianceSummaryListSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'Returns a list of <code>AggregateConformancePackComplianceSummary</code> object.',
-          }),
-      ).exactOptional(),
-    GroupByKey: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Groups the result based on Amazon Web Services account ID or Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+      AggregateConformancePackComplianceSummaryListSchema.exactOptional().openapi({
+        description:
+          'Returns a list of <code>AggregateConformancePackComplianceSummary</code> object.',
+      }),
+    GroupByKey: StringWithCharLimit256Schema.exactOptional().openapi({
+      description:
+        'Groups the result based on Amazon Web Services account ID or Amazon Web Services Region.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAggregateConformancePackComplianceSummaryResponse')
 
 const AggregateConformancePackComplianceSummaryFiltersSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The 12-digit Amazon Web Services account ID of the source account.',
-        }),
-    ).exactOptional(),
-    AwsRegion: AwsRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The source Amazon Web Services Region from where the data is aggregated.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The 12-digit Amazon Web Services account ID of the source account.',
+    }),
+    AwsRegion: AwsRegionSchema.exactOptional().openapi({
+      description: 'The source Amazon Web Services Region from where the data is aggregated.',
+    }),
   })
   .openapi({ description: 'Filters the results based on account ID and region. ', required: [] })
   .openapi('AggregateConformancePackComplianceSummaryFilters')
@@ -4843,41 +3774,25 @@ const AggregateConformancePackComplianceSummaryGroupKeySchema = z
 
 const GetAggregateConformancePackComplianceSummaryRequestSchema = z
   .object({
-    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration aggregator.' }),
-    ),
-    Filters: AggregateConformancePackComplianceSummaryFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the results based on the <code>AggregateConformancePackComplianceSummaryFilters</code> object.',
-        }),
-    ).exactOptional(),
-    GroupByKey: AggregateConformancePackComplianceSummaryGroupKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Groups the result based on Amazon Web Services account ID or Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results returned on each page. The default is maximum. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.openapi({
+      description: 'The name of the configuration aggregator.',
+    }),
+    Filters: AggregateConformancePackComplianceSummaryFiltersSchema.exactOptional().openapi({
+      description:
+        'Filters the results based on the <code>AggregateConformancePackComplianceSummaryFilters</code> object.',
+    }),
+    GroupByKey: AggregateConformancePackComplianceSummaryGroupKeySchema.exactOptional().openapi({
+      description:
+        'Groups the result based on Amazon Web Services account ID or Amazon Web Services Region.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results returned on each page. The default is maximum. If you specify 0, Config uses the default.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({
     required: ['ConfigurationAggregatorName'],
@@ -4889,17 +3804,11 @@ const LongSchema = z.int().openapi('Long')
 
 const GroupedResourceCountSchema = z
   .object({
-    GroupName: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the group that can be region, account ID, or resource type. For example, region1, region2 if the region was chosen as <code>GroupByKey</code>.',
-        }),
-    ),
-    ResourceCount: LongSchema.and(
-      z.any().openapi({ description: 'The number of resources in the group.' }),
-    ),
+    GroupName: StringWithCharLimit256Schema.openapi({
+      description:
+        'The name of the group that can be region, account ID, or resource type. For example, region1, region2 if the region was chosen as <code>GroupByKey</code>.',
+    }),
+    ResourceCount: LongSchema.openapi({ description: 'The number of resources in the group.' }),
   })
   .openapi({
     required: ['GroupName', 'ResourceCount'],
@@ -4913,48 +3822,36 @@ const GroupedResourceCountListSchema = z
 
 const GetAggregateDiscoveredResourceCountsResponseSchema = z
   .object({
-    TotalDiscoveredResources: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of resources that are present in an aggregator with the filters that you provide.',
-        }),
-    ),
-    GroupByKey: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key passed into the request object. If <code>GroupByKey</code> is not provided, the result will be empty.',
-        }),
-    ).exactOptional(),
-    GroupedResourceCounts: GroupedResourceCountListSchema.and(
-      z.any().openapi({ description: 'Returns a list of GroupedResourceCount objects.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    TotalDiscoveredResources: LongSchema.openapi({
+      description:
+        'The total number of resources that are present in an aggregator with the filters that you provide.',
+    }),
+    GroupByKey: StringWithCharLimit256Schema.exactOptional().openapi({
+      description:
+        'The key passed into the request object. If <code>GroupByKey</code> is not provided, the result will be empty.',
+    }),
+    GroupedResourceCounts: GroupedResourceCountListSchema.exactOptional().openapi({
+      description: 'Returns a list of GroupedResourceCount objects.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: ['TotalDiscoveredResources'] })
   .openapi('GetAggregateDiscoveredResourceCountsResponse')
 
 const ResourceCountFiltersSchema = z
   .object({
-    ResourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the Amazon Web Services resource.' }),
-    ).exactOptional(),
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The 12-digit ID of the account.' }),
-    ).exactOptional(),
-    Region: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The region where the account is located.' }),
-    ).exactOptional(),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of the Amazon Web Services resource.',
+    }),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The 12-digit ID of the account.',
+    }),
+    Region: AwsRegionSchema.exactOptional().openapi({
+      description: 'The region where the account is located.',
+    }),
   })
   .openapi({
     description: 'Filters the resource count based on account ID, region, and resource type.',
@@ -4968,35 +3865,23 @@ const ResourceCountGroupKeySchema = z
 
 const GetAggregateDiscoveredResourceCountsRequestSchema = z
   .object({
-    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration aggregator.' }),
-    ),
-    Filters: ResourceCountFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Filters the results based on the <code>ResourceCountFilters</code> object.',
-        }),
-    ).exactOptional(),
-    GroupByKey: ResourceCountGroupKeySchema.and(
-      z.any().openapi({ description: 'The key to group the resource counts.' }),
-    ).exactOptional(),
-    Limit: GroupByAPILimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of <a>GroupedResourceCount</a> objects returned on each page. The default is 1000. You cannot specify a number greater than 1000. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.openapi({
+      description: 'The name of the configuration aggregator.',
+    }),
+    Filters: ResourceCountFiltersSchema.exactOptional().openapi({
+      description: 'Filters the results based on the <code>ResourceCountFilters</code> object.',
+    }),
+    GroupByKey: ResourceCountGroupKeySchema.exactOptional().openapi({
+      description: 'The key to group the resource counts.',
+    }),
+    Limit: GroupByAPILimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of <a>GroupedResourceCount</a> objects returned on each page. The default is 1000. You cannot specify a number greater than 1000. If you specify 0, Config uses the default.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
+    }),
   })
   .openapi({
     required: ['ConfigurationAggregatorName'],
@@ -5018,22 +3903,18 @@ const RelationshipNameSchema = z.string().openapi('RelationshipName')
 
 const RelationshipSchema = z
   .object({
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The resource type of the related resource.' }),
-    ).exactOptional(),
-    resourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the related resource (for example, <code>sg-xxxxxx</code>).',
-        }),
-    ).exactOptional(),
-    resourceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The custom name of the related resource, if available.' }),
-    ).exactOptional(),
-    relationshipName: RelationshipNameSchema.and(
-      z.any().openapi({ description: 'The type of relationship with the related resource.' }),
-    ).exactOptional(),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The resource type of the related resource.',
+    }),
+    resourceId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the related resource (for example, <code>sg-xxxxxx</code>).',
+    }),
+    resourceName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The custom name of the related resource, if available.',
+    }),
+    relationshipName: RelationshipNameSchema.exactOptional().openapi({
+      description: 'The type of relationship with the related resource.',
+    }),
   })
   .openapi({
     description: 'The relationship of the related resource to the main resource.',
@@ -5045,91 +3926,65 @@ const RelationshipListSchema = z.array(RelationshipSchema).openapi('Relationship
 
 const ConfigurationItemSchema = z
   .object({
-    version: VersionSchema.and(
-      z.any().openapi({ description: 'The version number of the resource configuration.' }),
-    ).exactOptional(),
-    accountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The 12-digit Amazon Web Services account ID associated with the resource.',
-        }),
-    ).exactOptional(),
-    configurationItemCaptureTime: ConfigurationItemCaptureTimeSchema.and(
-      z.any().openapi({ description: 'The time when the configuration recording was initiated.' }),
-    ).exactOptional(),
-    configurationItemStatus: ConfigurationItemStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The configuration item status. The valid values are:</p> <ul> <li> <p>OK – The resource configuration has been updated</p> </li> <li> <p>ResourceDiscovered – The resource was newly discovered</p> </li> <li> <p>ResourceNotRecorded – The resource was discovered but its configuration was not recorded since the recorder excludes the recording of resources of this type</p> </li> <li> <p>ResourceDeleted – The resource was deleted</p> </li> <li> <p>ResourceDeletedNotRecorded – The resource was deleted but its configuration was not recorded since the recorder excludes the recording of resources of this type</p> </li> </ul> <note> <p>The CIs do not incur any cost.</p> </note>',
-        }),
-    ).exactOptional(),
-    configurationStateId: ConfigurationStateIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier that indicates the ordering of the configuration items of a resource.',
-        }),
-    ).exactOptional(),
-    configurationItemMD5Hash: ConfigurationItemMD5HashSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Unique MD5 hash that represents the configuration item's state.</p> <p>You can use MD5 hash to compare the states of two or more configuration items that are associated with the same resource.</p>",
-        }),
-    ).exactOptional(),
-    arn: ARNSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) associated with the resource.' }),
-    ).exactOptional(),
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of Amazon Web Services resource.' }),
-    ).exactOptional(),
-    resourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the resource (for example, <code>sg-xxxxxx</code>).' }),
-    ).exactOptional(),
-    resourceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The custom name of the resource, if available.' }),
-    ).exactOptional(),
-    awsRegion: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The region where the resource resides.' }),
-    ).exactOptional(),
-    availabilityZone: AvailabilityZoneSchema.and(
-      z.any().openapi({ description: 'The Availability Zone associated with the resource.' }),
-    ).exactOptional(),
-    resourceCreationTime: ResourceCreationTimeSchema.and(
-      z.any().openapi({ description: 'The time stamp when the resource was created.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'A mapping of key value tags associated with the resource.' }),
-    ).exactOptional(),
-    relatedEvents: RelatedEventListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of CloudTrail event IDs.</p> <p>A populated field indicates that the current configuration was initiated by the events recorded in the CloudTrail log. For more information about CloudTrail, see <a href="https://docs.aws.amazon.com/awscloudtrail/latest/userguide/what_is_cloud_trail_top_level.html">What Is CloudTrail</a>.</p> <p>An empty field indicates that the current configuration was not initiated by any event. As of Version 1.3, the relatedEvents field is empty. You can access the <a href="https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_LookupEvents.html">LookupEvents API</a> in the <i>CloudTrail API Reference</i> to retrieve the events for the resource.</p>',
-        }),
-    ).exactOptional(),
-    relationships: RelationshipListSchema.and(
-      z.any().openapi({ description: 'A list of related Amazon Web Services resources.' }),
-    ).exactOptional(),
-    configuration: ConfigurationSchema.and(
-      z.any().openapi({ description: 'The description of the resource configuration.' }),
-    ).exactOptional(),
-    supplementaryConfiguration: SupplementaryConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration attributes that Config returns for certain resource types to supplement the information returned for the <code>configuration</code> parameter.',
-        }),
-    ).exactOptional(),
+    version: VersionSchema.exactOptional().openapi({
+      description: 'The version number of the resource configuration.',
+    }),
+    accountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The 12-digit Amazon Web Services account ID associated with the resource.',
+    }),
+    configurationItemCaptureTime: ConfigurationItemCaptureTimeSchema.exactOptional().openapi({
+      description: 'The time when the configuration recording was initiated.',
+    }),
+    configurationItemStatus: ConfigurationItemStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The configuration item status. The valid values are:</p> <ul> <li> <p>OK – The resource configuration has been updated</p> </li> <li> <p>ResourceDiscovered – The resource was newly discovered</p> </li> <li> <p>ResourceNotRecorded – The resource was discovered but its configuration was not recorded since the recorder excludes the recording of resources of this type</p> </li> <li> <p>ResourceDeleted – The resource was deleted</p> </li> <li> <p>ResourceDeletedNotRecorded – The resource was deleted but its configuration was not recorded since the recorder excludes the recording of resources of this type</p> </li> </ul> <note> <p>The CIs do not incur any cost.</p> </note>',
+    }),
+    configurationStateId: ConfigurationStateIdSchema.exactOptional().openapi({
+      description:
+        'An identifier that indicates the ordering of the configuration items of a resource.',
+    }),
+    configurationItemMD5Hash: ConfigurationItemMD5HashSchema.exactOptional().openapi({
+      description:
+        "<p>Unique MD5 hash that represents the configuration item's state.</p> <p>You can use MD5 hash to compare the states of two or more configuration items that are associated with the same resource.</p>",
+    }),
+    arn: ARNSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) associated with the resource.',
+    }),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of Amazon Web Services resource.',
+    }),
+    resourceId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the resource (for example, <code>sg-xxxxxx</code>).',
+    }),
+    resourceName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The custom name of the resource, if available.',
+    }),
+    awsRegion: AwsRegionSchema.exactOptional().openapi({
+      description: 'The region where the resource resides.',
+    }),
+    availabilityZone: AvailabilityZoneSchema.exactOptional().openapi({
+      description: 'The Availability Zone associated with the resource.',
+    }),
+    resourceCreationTime: ResourceCreationTimeSchema.exactOptional().openapi({
+      description: 'The time stamp when the resource was created.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'A mapping of key value tags associated with the resource.',
+    }),
+    relatedEvents: RelatedEventListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of CloudTrail event IDs.</p> <p>A populated field indicates that the current configuration was initiated by the events recorded in the CloudTrail log. For more information about CloudTrail, see <a href="https://docs.aws.amazon.com/awscloudtrail/latest/userguide/what_is_cloud_trail_top_level.html">What Is CloudTrail</a>.</p> <p>An empty field indicates that the current configuration was not initiated by any event. As of Version 1.3, the relatedEvents field is empty. You can access the <a href="https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_LookupEvents.html">LookupEvents API</a> in the <i>CloudTrail API Reference</i> to retrieve the events for the resource.</p>',
+    }),
+    relationships: RelationshipListSchema.exactOptional().openapi({
+      description: 'A list of related Amazon Web Services resources.',
+    }),
+    configuration: ConfigurationSchema.exactOptional().openapi({
+      description: 'The description of the resource configuration.',
+    }),
+    supplementaryConfiguration: SupplementaryConfigurationSchema.exactOptional().openapi({
+      description:
+        'Configuration attributes that Config returns for certain resource types to supplement the information returned for the <code>configuration</code> parameter.',
+    }),
   })
   .openapi({
     description: 'A list that contains detailed configurations of a specified resource.',
@@ -5139,21 +3994,21 @@ const ConfigurationItemSchema = z
 
 const GetAggregateResourceConfigResponseSchema = z
   .object({
-    ConfigurationItem: ConfigurationItemSchema.and(
-      z.any().openapi({ description: 'Returns a <code>ConfigurationItem</code> object.' }),
-    ).exactOptional(),
+    ConfigurationItem: ConfigurationItemSchema.exactOptional().openapi({
+      description: 'Returns a <code>ConfigurationItem</code> object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAggregateResourceConfigResponse')
 
 const GetAggregateResourceConfigRequestSchema = z
   .object({
-    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration aggregator.' }),
-    ),
-    ResourceIdentifier: AggregateResourceIdentifierSchema.and(
-      z.any().openapi({ description: 'An object that identifies aggregate resource.' }),
-    ),
+    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.openapi({
+      description: 'The name of the configuration aggregator.',
+    }),
+    ResourceIdentifier: AggregateResourceIdentifierSchema.openapi({
+      description: 'An object that identifies aggregate resource.',
+    }),
   })
   .openapi({
     required: ['ConfigurationAggregatorName', 'ResourceIdentifier'],
@@ -5169,43 +4024,26 @@ const ResourceNotDiscoveredExceptionSchema = z.any().openapi('ResourceNotDiscove
 
 const EvaluationResultSchema = z
   .object({
-    EvaluationResultIdentifier: EvaluationResultIdentifierSchema.and(
-      z.any().openapi({ description: 'Uniquely identifies the evaluation result.' }),
-    ).exactOptional(),
-    ComplianceType: ComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the Amazon Web Services resource complies with the Config rule that evaluated it.</p> <p>For the <code>EvaluationResult</code> data type, Config supports only the <code>COMPLIANT</code>, <code>NON_COMPLIANT</code>, and <code>NOT_APPLICABLE</code> values. Config does not support the <code>INSUFFICIENT_DATA</code> value for the <code>EvaluationResult</code> data type.</p>',
-        }),
-    ).exactOptional(),
-    ResultRecordedTime: DateSchema.and(
-      z.any().openapi({ description: 'The time when Config recorded the evaluation result.' }),
-    ).exactOptional(),
-    ConfigRuleInvokedTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the Config rule evaluated the Amazon Web Services resource.',
-        }),
-    ).exactOptional(),
-    Annotation: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Supplementary information about how the evaluation determined the compliance.',
-        }),
-    ).exactOptional(),
-    ResultToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An encrypted token that associates an evaluation with an Config rule. The token identifies the rule, the Amazon Web Services resource being evaluated, and the event that triggered the evaluation.',
-        }),
-    ).exactOptional(),
+    EvaluationResultIdentifier: EvaluationResultIdentifierSchema.exactOptional().openapi({
+      description: 'Uniquely identifies the evaluation result.',
+    }),
+    ComplianceType: ComplianceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether the Amazon Web Services resource complies with the Config rule that evaluated it.</p> <p>For the <code>EvaluationResult</code> data type, Config supports only the <code>COMPLIANT</code>, <code>NON_COMPLIANT</code>, and <code>NOT_APPLICABLE</code> values. Config does not support the <code>INSUFFICIENT_DATA</code> value for the <code>EvaluationResult</code> data type.</p>',
+    }),
+    ResultRecordedTime: DateSchema.exactOptional().openapi({
+      description: 'The time when Config recorded the evaluation result.',
+    }),
+    ConfigRuleInvokedTime: DateSchema.exactOptional().openapi({
+      description: 'The time when the Config rule evaluated the Amazon Web Services resource.',
+    }),
+    Annotation: StringWithCharLimit256Schema.exactOptional().openapi({
+      description: 'Supplementary information about how the evaluation determined the compliance.',
+    }),
+    ResultToken: StringSchema.exactOptional().openapi({
+      description:
+        'An encrypted token that associates an evaluation with an Config rule. The token identifies the rule, the Amazon Web Services resource being evaluated, and the event that triggered the evaluation.',
+    }),
   })
   .openapi({
     description:
@@ -5218,59 +4056,35 @@ const EvaluationResultsSchema = z.array(EvaluationResultSchema).openapi('Evaluat
 
 const GetComplianceDetailsByConfigRuleResponseSchema = z
   .object({
-    EvaluationResults: EvaluationResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the Amazon Web Services resource complies with the specified Config rule.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string that you use in a subsequent request to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    EvaluationResults: EvaluationResultsSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the Amazon Web Services resource complies with the specified Config rule.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The string that you use in a subsequent request to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('GetComplianceDetailsByConfigRuleResponse')
 
 const GetComplianceDetailsByConfigRuleRequestSchema = z
   .object({
-    ConfigRuleName: StringWithCharLimit64Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Config rule for which you want compliance information.',
-        }),
-    ),
-    ComplianceTypes: ComplianceTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters the results by compliance.</p> <p> <code>INSUFFICIENT_DATA</code> is a valid <code>ComplianceType</code> that is returned when an Config rule cannot be evaluated. However, <code>INSUFFICIENT_DATA</code> cannot be used as a <code>ComplianceType</code> for filtering results.</p>',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of evaluation results returned on each page. The default is 10. You cannot specify a number greater than 100. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConfigRuleName: StringWithCharLimit64Schema.openapi({
+      description: 'The name of the Config rule for which you want compliance information.',
+    }),
+    ComplianceTypes: ComplianceTypesSchema.exactOptional().openapi({
+      description:
+        '<p>Filters the results by compliance.</p> <p> <code>INSUFFICIENT_DATA</code> is a valid <code>ComplianceType</code> that is returned when an Config rule cannot be evaluated. However, <code>INSUFFICIENT_DATA</code> cannot be used as a <code>ComplianceType</code> for filtering results.</p>',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of evaluation results returned on each page. The default is 10. You cannot specify a number greater than 100. If you specify 0, Config uses the default.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({
     required: ['ConfigRuleName'],
@@ -5281,99 +4095,63 @@ const GetComplianceDetailsByConfigRuleRequestSchema = z
 
 const GetComplianceDetailsByResourceResponseSchema = z
   .object({
-    EvaluationResults: EvaluationResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the specified Amazon Web Services resource complies each Config rule.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string that you use in a subsequent request to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    EvaluationResults: EvaluationResultsSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the specified Amazon Web Services resource complies each Config rule.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The string that you use in a subsequent request to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('GetComplianceDetailsByResourceResponse')
 
 const GetComplianceDetailsByResourceRequestSchema = z
   .object({
-    ResourceType: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the Amazon Web Services resource for which you want compliance information.',
-        }),
-    ).exactOptional(),
-    ResourceId: BaseResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services resource for which you want compliance information.',
-        }),
-    ).exactOptional(),
-    ComplianceTypes: ComplianceTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters the results by compliance.</p> <p> <code>INSUFFICIENT_DATA</code> is a valid <code>ComplianceType</code> that is returned when an Config rule cannot be evaluated. However, <code>INSUFFICIENT_DATA</code> cannot be used as a <code>ComplianceType</code> for filtering results.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
-    ResourceEvaluationId: ResourceEvaluationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique ID of Amazon Web Services resource execution for which you want to retrieve evaluation results. </p> <note> <p>You need to only provide either a <code>ResourceEvaluationID</code> or a <code>ResourceID </code>and <code>ResourceType</code>.</p> </note>',
-        }),
-    ).exactOptional(),
+    ResourceType: StringWithCharLimit256Schema.exactOptional().openapi({
+      description:
+        'The type of the Amazon Web Services resource for which you want compliance information.',
+    }),
+    ResourceId: BaseResourceIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the Amazon Web Services resource for which you want compliance information.',
+    }),
+    ComplianceTypes: ComplianceTypesSchema.exactOptional().openapi({
+      description:
+        '<p>Filters the results by compliance.</p> <p> <code>INSUFFICIENT_DATA</code> is a valid <code>ComplianceType</code> that is returned when an Config rule cannot be evaluated. However, <code>INSUFFICIENT_DATA</code> cannot be used as a <code>ComplianceType</code> for filtering results.</p>',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
+    ResourceEvaluationId: ResourceEvaluationIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique ID of Amazon Web Services resource execution for which you want to retrieve evaluation results. </p> <note> <p>You need to only provide either a <code>ResourceEvaluationID</code> or a <code>ResourceID </code>and <code>ResourceType</code>.</p> </note>',
+    }),
   })
   .openapi({ title: 'GetComplianceDetailsByResourceRequest', description: '<p/>', required: [] })
   .openapi('GetComplianceDetailsByResourceRequest')
 
 const GetComplianceSummaryByConfigRuleResponseSchema = z
   .object({
-    ComplianceSummary: ComplianceSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Config rules that are compliant and the number that are noncompliant, up to a maximum of 25 for each.',
-        }),
-    ).exactOptional(),
+    ComplianceSummary: ComplianceSummarySchema.exactOptional().openapi({
+      description:
+        'The number of Config rules that are compliant and the number that are noncompliant, up to a maximum of 25 for each.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('GetComplianceSummaryByConfigRuleResponse')
 
 const ComplianceSummaryByResourceTypeSchema = z
   .object({
-    ResourceType: StringWithCharLimit256Schema.and(
-      z.any().openapi({ description: 'The type of Amazon Web Services resource.' }),
-    ).exactOptional(),
-    ComplianceSummary: ComplianceSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Amazon Web Services resources that are compliant or noncompliant, up to a maximum of 100 for each.',
-        }),
-    ).exactOptional(),
+    ResourceType: StringWithCharLimit256Schema.exactOptional().openapi({
+      description: 'The type of Amazon Web Services resource.',
+    }),
+    ComplianceSummary: ComplianceSummarySchema.exactOptional().openapi({
+      description:
+        'The number of Amazon Web Services resources that are compliant or noncompliant, up to a maximum of 100 for each.',
+    }),
   })
   .openapi({
     description:
@@ -5388,14 +4166,11 @@ const ComplianceSummariesByResourceTypeSchema = z
 
 const GetComplianceSummaryByResourceTypeResponseSchema = z
   .object({
-    ComplianceSummariesByResourceType: ComplianceSummariesByResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of resources that are compliant and the number that are noncompliant. If one or more resource types were provided with the request, the numbers are returned for each resource type. The maximum number returned is 100.',
-        }),
-    ).exactOptional(),
+    ComplianceSummariesByResourceType:
+      ComplianceSummariesByResourceTypeSchema.exactOptional().openapi({
+        description:
+          'The number of resources that are compliant and the number that are noncompliant. If one or more resource types were provided with the request, the numbers are returned for each resource type. The maximum number returned is 100.',
+      }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('GetComplianceSummaryByResourceTypeResponse')
@@ -5408,14 +4183,10 @@ const ResourceTypesSchema = z
 
 const GetComplianceSummaryByResourceTypeRequestSchema = z
   .object({
-    ResourceTypes: ResourceTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify one or more resource types to get the number of resources that are compliant and the number that are noncompliant for each resource type.</p> <p>For this request, you can specify an Amazon Web Services resource type such as <code>AWS::EC2::Instance</code>. You can specify that the resource type is an Amazon Web Services account by specifying <code>AWS::::Account</code>.</p>',
-        }),
-    ).exactOptional(),
+    ResourceTypes: ResourceTypesSchema.exactOptional().openapi({
+      description:
+        '<p>Specify one or more resource types to get the number of resources that are compliant and the number that are noncompliant for each resource type.</p> <p>For this request, you can specify an Amazon Web Services resource type such as <code>AWS::EC2::Instance</code>. You can specify that the resource type is an Amazon Web Services account by specifying <code>AWS::::Account</code>.</p>',
+    }),
   })
   .openapi({
     title: 'GetComplianceSummaryByResourceTypeRequest',
@@ -5428,33 +4199,20 @@ const AnnotationSchema = z.string().min(0).max(256).openapi('Annotation')
 
 const ConformancePackEvaluationResultSchema = z
   .object({
-    ComplianceType: ConformancePackComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The compliance type. The allowed values are <code>COMPLIANT</code> and <code>NON_COMPLIANT</code>. <code>INSUFFICIENT_DATA</code> is not supported.',
-        }),
-    ),
+    ComplianceType: ConformancePackComplianceTypeSchema.openapi({
+      description:
+        'The compliance type. The allowed values are <code>COMPLIANT</code> and <code>NON_COMPLIANT</code>. <code>INSUFFICIENT_DATA</code> is not supported.',
+    }),
     EvaluationResultIdentifier: EvaluationResultIdentifierSchema,
-    ConfigRuleInvokedTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when Config rule evaluated Amazon Web Services resource.',
-        }),
-    ),
-    ResultRecordedTime: DateSchema.and(
-      z.any().openapi({ description: 'The time when Config recorded the evaluation result. ' }),
-    ),
-    Annotation: AnnotationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Supplementary information about how the evaluation determined the compliance. ',
-        }),
-    ).exactOptional(),
+    ConfigRuleInvokedTime: DateSchema.openapi({
+      description: 'The time when Config rule evaluated Amazon Web Services resource.',
+    }),
+    ResultRecordedTime: DateSchema.openapi({
+      description: 'The time when Config recorded the evaluation result. ',
+    }),
+    Annotation: AnnotationSchema.exactOptional().openapi({
+      description: 'Supplementary information about how the evaluation determined the compliance. ',
+    }),
   })
   .openapi({
     required: [
@@ -5476,24 +4234,17 @@ const ConformancePackRuleEvaluationResultsListSchema = z
 
 const GetConformancePackComplianceDetailsResponseSchema = z
   .object({
-    ConformancePackName: ConformancePackNameSchema.and(
-      z.any().openapi({ description: 'Name of the conformance pack.' }),
-    ),
-    ConformancePackRuleEvaluationResults: ConformancePackRuleEvaluationResultsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Returns a list of <code>ConformancePackEvaluationResult</code> objects.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConformancePackName: ConformancePackNameSchema.openapi({
+      description: 'Name of the conformance pack.',
+    }),
+    ConformancePackRuleEvaluationResults:
+      ConformancePackRuleEvaluationResultsListSchema.exactOptional().openapi({
+        description: 'Returns a list of <code>ConformancePackEvaluationResult</code> objects.',
+      }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: ['ConformancePackName'] })
   .openapi('GetConformancePackComplianceDetailsResponse')
@@ -5506,33 +4257,21 @@ const ConformancePackComplianceResourceIdsSchema = z
 
 const ConformancePackEvaluationFiltersSchema = z
   .object({
-    ConfigRuleNames: ConformancePackConfigRuleNamesSchema.and(
-      z.any().openapi({ description: 'Filters the results by Config rule names.' }),
-    ).exactOptional(),
-    ComplianceType: ConformancePackComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters the results by compliance.</p> <p>The allowed values are <code>COMPLIANT</code> and <code>NON_COMPLIANT</code>. <code>INSUFFICIENT_DATA</code> is not supported.</p>',
-        }),
-    ).exactOptional(),
-    ResourceType: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the results by the resource type (for example, <code>"AWS::EC2::Instance"</code>). ',
-        }),
-    ).exactOptional(),
-    ResourceIds: ConformancePackComplianceResourceIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters the results by resource IDs.</p> <note> <p>This is valid only when you provide resource type. If there is no resource type, you will see an error.</p> </note>',
-        }),
-    ).exactOptional(),
+    ConfigRuleNames: ConformancePackConfigRuleNamesSchema.exactOptional().openapi({
+      description: 'Filters the results by Config rule names.',
+    }),
+    ComplianceType: ConformancePackComplianceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Filters the results by compliance.</p> <p>The allowed values are <code>COMPLIANT</code> and <code>NON_COMPLIANT</code>. <code>INSUFFICIENT_DATA</code> is not supported.</p>',
+    }),
+    ResourceType: StringWithCharLimit256Schema.exactOptional().openapi({
+      description:
+        'Filters the results by the resource type (for example, <code>"AWS::EC2::Instance"</code>). ',
+    }),
+    ResourceIds: ConformancePackComplianceResourceIdsSchema.exactOptional().openapi({
+      description:
+        '<p>Filters the results by resource IDs.</p> <note> <p>This is valid only when you provide resource type. If there is no resource type, you will see an error.</p> </note>',
+    }),
   })
   .openapi({
     description:
@@ -5549,28 +4288,20 @@ const GetConformancePackComplianceDetailsLimitSchema = z
 
 const GetConformancePackComplianceDetailsRequestSchema = z
   .object({
-    ConformancePackName: ConformancePackNameSchema.and(
-      z.any().openapi({ description: 'Name of the conformance pack.' }),
-    ),
-    Filters: ConformancePackEvaluationFiltersSchema.and(
-      z.any().openapi({ description: 'A <code>ConformancePackEvaluationFilters</code> object.' }),
-    ).exactOptional(),
-    Limit: GetConformancePackComplianceDetailsLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of evaluation results returned on each page. If you do no specify a number, Config uses the default. The default is 100.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConformancePackName: ConformancePackNameSchema.openapi({
+      description: 'Name of the conformance pack.',
+    }),
+    Filters: ConformancePackEvaluationFiltersSchema.exactOptional().openapi({
+      description: 'A <code>ConformancePackEvaluationFilters</code> object.',
+    }),
+    Limit: GetConformancePackComplianceDetailsLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of evaluation results returned on each page. If you do no specify a number, Config uses the default. The default is 100.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response.',
+    }),
   })
   .openapi({
     required: ['ConformancePackName'],
@@ -5580,12 +4311,12 @@ const GetConformancePackComplianceDetailsRequestSchema = z
 
 const ConformancePackComplianceSummarySchema = z
   .object({
-    ConformancePackName: ConformancePackNameSchema.and(
-      z.any().openapi({ description: 'The name of the conformance pack name.' }),
-    ),
-    ConformancePackComplianceStatus: ConformancePackComplianceTypeSchema.and(
-      z.any().openapi({ description: 'The status of the conformance pack.' }),
-    ),
+    ConformancePackName: ConformancePackNameSchema.openapi({
+      description: 'The name of the conformance pack name.',
+    }),
+    ConformancePackComplianceStatus: ConformancePackComplianceTypeSchema.openapi({
+      description: 'The status of the conformance pack.',
+    }),
   })
   .openapi({
     required: ['ConformancePackName', 'ConformancePackComplianceStatus'],
@@ -5601,21 +4332,14 @@ const ConformancePackComplianceSummaryListSchema = z
 
 const GetConformancePackComplianceSummaryResponseSchema = z
   .object({
-    ConformancePackComplianceSummaryList: ConformancePackComplianceSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of <code>ConformancePackComplianceSummary</code> objects. ',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConformancePackComplianceSummaryList:
+      ConformancePackComplianceSummaryListSchema.exactOptional().openapi({
+        description: 'A list of <code>ConformancePackComplianceSummary</code> objects. ',
+      }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetConformancePackComplianceSummaryResponse')
@@ -5628,22 +4352,16 @@ const ConformancePackNamesToSummarizeListSchema = z
 
 const GetConformancePackComplianceSummaryRequestSchema = z
   .object({
-    ConformancePackNames: ConformancePackNamesToSummarizeListSchema.and(
-      z.any().openapi({ description: 'Names of conformance packs.' }),
-    ),
-    Limit: PageSizeLimitSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of conformance packs returned on each page.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConformancePackNames: ConformancePackNamesToSummarizeListSchema.openapi({
+      description: 'Names of conformance packs.',
+    }),
+    Limit: PageSizeLimitSchema.exactOptional().openapi({
+      description: 'The maximum number of conformance packs returned on each page.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({
     required: ['ConformancePackNames'],
@@ -5653,39 +4371,28 @@ const GetConformancePackComplianceSummaryRequestSchema = z
 
 const GetCustomRulePolicyResponseSchema = z
   .object({
-    PolicyText: PolicyTextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The policy definition containing the logic for your Config Custom Policy rule.',
-        }),
-    ).exactOptional(),
+    PolicyText: PolicyTextSchema.exactOptional().openapi({
+      description: 'The policy definition containing the logic for your Config Custom Policy rule.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCustomRulePolicyResponse')
 
 const GetCustomRulePolicyRequestSchema = z
   .object({
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of your Config Custom Policy rule.' }),
-    ).exactOptional(),
+    ConfigRuleName: ConfigRuleNameSchema.exactOptional().openapi({
+      description: 'The name of your Config Custom Policy rule.',
+    }),
   })
   .openapi({ title: 'GetCustomRulePolicyRequest', required: [] })
   .openapi('GetCustomRulePolicyRequest')
 
 const ResourceCountSchema = z
   .object({
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The resource type (for example, <code>"AWS::EC2::Instance"</code>).',
-        }),
-    ).exactOptional(),
-    count: LongSchema.and(
-      z.any().openapi({ description: 'The number of resources.' }),
-    ).exactOptional(),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The resource type (for example, <code>"AWS::EC2::Instance"</code>).',
+    }),
+    count: LongSchema.exactOptional().openapi({ description: 'The number of resources.' }),
   })
   .openapi({
     description: 'An object that contains the resource type and the number of resources.',
@@ -5697,60 +4404,36 @@ const ResourceCountsSchema = z.array(ResourceCountSchema).openapi('ResourceCount
 
 const GetDiscoveredResourceCountsResponseSchema = z
   .object({
-    totalDiscoveredResources: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The total number of resources that Config is recording in the region for your account. If you specify resource types in the request, Config returns only the total number of resources for those resource types.</p> <p class="title"> <b>Example</b> </p> <ol> <li> <p>Config is recording three resource types in the US East (Ohio) Region for your account: 25 EC2 instances, 20 IAM users, and 15 S3 buckets, for a total of 60 resources.</p> </li> <li> <p>You make a call to the <code>GetDiscoveredResourceCounts</code> action and specify the resource type, <code>"AWS::EC2::Instances"</code>, in the request.</p> </li> <li> <p>Config returns 25 for <code>totalDiscoveredResources</code>.</p> </li> </ol>',
-        }),
-    ).exactOptional(),
-    resourceCounts: ResourceCountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of <code>ResourceCount</code> objects. Each object is listed in descending order by the number of resources.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string that you use in a subsequent request to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    totalDiscoveredResources: LongSchema.exactOptional().openapi({
+      description:
+        '<p>The total number of resources that Config is recording in the region for your account. If you specify resource types in the request, Config returns only the total number of resources for those resource types.</p> <p class="title"> <b>Example</b> </p> <ol> <li> <p>Config is recording three resource types in the US East (Ohio) Region for your account: 25 EC2 instances, 20 IAM users, and 15 S3 buckets, for a total of 60 resources.</p> </li> <li> <p>You make a call to the <code>GetDiscoveredResourceCounts</code> action and specify the resource type, <code>"AWS::EC2::Instances"</code>, in the request.</p> </li> <li> <p>Config returns 25 for <code>totalDiscoveredResources</code>.</p> </li> </ol>',
+    }),
+    resourceCounts: ResourceCountsSchema.exactOptional().openapi({
+      description:
+        'The list of <code>ResourceCount</code> objects. Each object is listed in descending order by the number of resources.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The string that you use in a subsequent request to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDiscoveredResourceCountsResponse')
 
 const GetDiscoveredResourceCountsRequestSchema = z
   .object({
-    resourceTypes: ResourceTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The comma-separated list that specifies the resource types that you want Config to return (for example, <code>"AWS::EC2::Instance"</code>, <code>"AWS::IAM::User"</code>).</p> <p>If a value for <code>resourceTypes</code> is not specified, Config returns all resource types that Config is recording in the region for your account.</p> <note> <p>If the configuration recorder is turned off, Config returns an empty list of <a>ResourceCount</a> objects. If the configuration recorder is not recording a specific resource type (for example, S3 buckets), that resource type is not returned in the list of <a>ResourceCount</a> objects.</p> </note>',
-        }),
-    ).exactOptional(),
-    limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of <a>ResourceCount</a> objects returned on each page. The default is 100. You cannot specify a number greater than 100. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    resourceTypes: ResourceTypesSchema.exactOptional().openapi({
+      description:
+        '<p>The comma-separated list that specifies the resource types that you want Config to return (for example, <code>"AWS::EC2::Instance"</code>, <code>"AWS::IAM::User"</code>).</p> <p>If a value for <code>resourceTypes</code> is not specified, Config returns all resource types that Config is recording in the region for your account.</p> <note> <p>If the configuration recorder is turned off, Config returns an empty list of <a>ResourceCount</a> objects. If the configuration recorder is not recording a specific resource type (for example, S3 buckets), that resource type is not returned in the list of <a>ResourceCount</a> objects.</p> </note>',
+    }),
+    limit: LimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of <a>ResourceCount</a> objects returned on each page. The default is 100. You cannot specify a number greater than 100. If you specify 0, Config uses the default.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ title: 'GetDiscoveredResourceCountsRequest', required: [] })
   .openapi('GetDiscoveredResourceCountsRequest')
@@ -5771,39 +4454,27 @@ const MemberAccountRuleStatusSchema = z
 
 const MemberAccountStatusSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The 12-digit account ID of a member account.' }),
-    ),
-    ConfigRuleName: StringWithCharLimit64Schema.and(
-      z.any().openapi({ description: 'The name of Config rule deployed in the member account.' }),
-    ),
-    MemberAccountRuleStatus: MemberAccountRuleStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates deployment status for Config rule in the member account. When management account calls <code>PutOrganizationConfigRule</code> action for the first time, Config rule status is created in the member account. When management account calls <code>PutOrganizationConfigRule</code> action for the second time, Config rule status is updated in the member account. Config rule status is deleted when the management account deletes <code>OrganizationConfigRule</code> and disables service access for <code>config-multiaccountsetup.amazonaws.com</code>. </p> <p> Config sets the state of the rule to:</p> <ul> <li> <p> <code>CREATE_SUCCESSFUL</code> when Config rule has been created in the member account. </p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> when Config rule is being created in the member account.</p> </li> <li> <p> <code>CREATE_FAILED</code> when Config rule creation has failed in the member account.</p> </li> <li> <p> <code>DELETE_FAILED</code> when Config rule deletion has failed in the member account.</p> </li> <li> <p> <code>DELETE_IN_PROGRESS</code> when Config rule is being deleted in the member account.</p> </li> <li> <p> <code>DELETE_SUCCESSFUL</code> when Config rule has been deleted in the member account. </p> </li> <li> <p> <code>UPDATE_SUCCESSFUL</code> when Config rule has been updated in the member account.</p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> when Config rule is being updated in the member account.</p> </li> <li> <p> <code>UPDATE_FAILED</code> when Config rule deletion has failed in the member account.</p> </li> </ul>',
-        }),
-    ),
-    ErrorCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An error code that is returned when Config rule creation or deletion failed in the member account.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An error message indicating that Config rule account creation or deletion has failed due to an error in the member account.',
-        }),
-    ).exactOptional(),
-    LastUpdateTime: DateSchema.and(
-      z.any().openapi({ description: 'The timestamp of the last status update.' }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.openapi({
+      description: 'The 12-digit account ID of a member account.',
+    }),
+    ConfigRuleName: StringWithCharLimit64Schema.openapi({
+      description: 'The name of Config rule deployed in the member account.',
+    }),
+    MemberAccountRuleStatus: MemberAccountRuleStatusSchema.openapi({
+      description:
+        '<p>Indicates deployment status for Config rule in the member account. When management account calls <code>PutOrganizationConfigRule</code> action for the first time, Config rule status is created in the member account. When management account calls <code>PutOrganizationConfigRule</code> action for the second time, Config rule status is updated in the member account. Config rule status is deleted when the management account deletes <code>OrganizationConfigRule</code> and disables service access for <code>config-multiaccountsetup.amazonaws.com</code>. </p> <p> Config sets the state of the rule to:</p> <ul> <li> <p> <code>CREATE_SUCCESSFUL</code> when Config rule has been created in the member account. </p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> when Config rule is being created in the member account.</p> </li> <li> <p> <code>CREATE_FAILED</code> when Config rule creation has failed in the member account.</p> </li> <li> <p> <code>DELETE_FAILED</code> when Config rule deletion has failed in the member account.</p> </li> <li> <p> <code>DELETE_IN_PROGRESS</code> when Config rule is being deleted in the member account.</p> </li> <li> <p> <code>DELETE_SUCCESSFUL</code> when Config rule has been deleted in the member account. </p> </li> <li> <p> <code>UPDATE_SUCCESSFUL</code> when Config rule has been updated in the member account.</p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> when Config rule is being updated in the member account.</p> </li> <li> <p> <code>UPDATE_FAILED</code> when Config rule deletion has failed in the member account.</p> </li> </ul>',
+    }),
+    ErrorCode: StringSchema.exactOptional().openapi({
+      description:
+        'An error code that is returned when Config rule creation or deletion failed in the member account.',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description:
+        'An error message indicating that Config rule account creation or deletion has failed due to an error in the member account.',
+    }),
+    LastUpdateTime: DateSchema.exactOptional().openapi({
+      description: 'The timestamp of the last status update.',
+    }),
   })
   .openapi({
     required: ['AccountId', 'ConfigRuleName', 'MemberAccountRuleStatus'],
@@ -5818,38 +4489,27 @@ const OrganizationConfigRuleDetailedStatusSchema = z
 
 const GetOrganizationConfigRuleDetailedStatusResponseSchema = z
   .object({
-    OrganizationConfigRuleDetailedStatus: OrganizationConfigRuleDetailedStatusSchema.and(
-      z.any().openapi({ description: 'A list of <code>MemberAccountStatus</code> objects.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    OrganizationConfigRuleDetailedStatus:
+      OrganizationConfigRuleDetailedStatusSchema.exactOptional().openapi({
+        description: 'A list of <code>MemberAccountStatus</code> objects.',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetOrganizationConfigRuleDetailedStatusResponse')
 
 const StatusDetailFiltersSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The 12-digit account ID of the member account within an organization.',
-        }),
-    ).exactOptional(),
-    MemberAccountRuleStatus: MemberAccountRuleStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates deployment status for Config rule in the member account. When management account calls <code>PutOrganizationConfigRule</code> action for the first time, Config rule status is created in the member account. When management account calls <code>PutOrganizationConfigRule</code> action for the second time, Config rule status is updated in the member account. Config rule status is deleted when the management account deletes <code>OrganizationConfigRule</code> and disables service access for <code>config-multiaccountsetup.amazonaws.com</code>. </p> <p>Config sets the state of the rule to:</p> <ul> <li> <p> <code>CREATE_SUCCESSFUL</code> when Config rule has been created in the member account.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> when Config rule is being created in the member account.</p> </li> <li> <p> <code>CREATE_FAILED</code> when Config rule creation has failed in the member account.</p> </li> <li> <p> <code>DELETE_FAILED</code> when Config rule deletion has failed in the member account.</p> </li> <li> <p> <code>DELETE_IN_PROGRESS</code> when Config rule is being deleted in the member account.</p> </li> <li> <p> <code>DELETE_SUCCESSFUL</code> when Config rule has been deleted in the member account.</p> </li> <li> <p> <code>UPDATE_SUCCESSFUL</code> when Config rule has been updated in the member account.</p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> when Config rule is being updated in the member account.</p> </li> <li> <p> <code>UPDATE_FAILED</code> when Config rule deletion has failed in the member account.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The 12-digit account ID of the member account within an organization.',
+    }),
+    MemberAccountRuleStatus: MemberAccountRuleStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates deployment status for Config rule in the member account. When management account calls <code>PutOrganizationConfigRule</code> action for the first time, Config rule status is created in the member account. When management account calls <code>PutOrganizationConfigRule</code> action for the second time, Config rule status is updated in the member account. Config rule status is deleted when the management account deletes <code>OrganizationConfigRule</code> and disables service access for <code>config-multiaccountsetup.amazonaws.com</code>. </p> <p>Config sets the state of the rule to:</p> <ul> <li> <p> <code>CREATE_SUCCESSFUL</code> when Config rule has been created in the member account.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> when Config rule is being created in the member account.</p> </li> <li> <p> <code>CREATE_FAILED</code> when Config rule creation has failed in the member account.</p> </li> <li> <p> <code>DELETE_FAILED</code> when Config rule deletion has failed in the member account.</p> </li> <li> <p> <code>DELETE_IN_PROGRESS</code> when Config rule is being deleted in the member account.</p> </li> <li> <p> <code>DELETE_SUCCESSFUL</code> when Config rule has been deleted in the member account.</p> </li> <li> <p> <code>UPDATE_SUCCESSFUL</code> when Config rule has been updated in the member account.</p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> when Config rule is being updated in the member account.</p> </li> <li> <p> <code>UPDATE_FAILED</code> when Config rule deletion has failed in the member account.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -5860,33 +4520,21 @@ const StatusDetailFiltersSchema = z
 
 const GetOrganizationConfigRuleDetailedStatusRequestSchema = z
   .object({
-    OrganizationConfigRuleName: OrganizationConfigRuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of your organization Config rule for which you want status details for member accounts.',
-        }),
-    ),
-    Filters: StatusDetailFiltersSchema.and(
-      z.any().openapi({ description: 'A <code>StatusDetailFilters</code> object.' }),
-    ).exactOptional(),
-    Limit: CosmosPageLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of <code>OrganizationConfigRuleDetailedStatus</code> returned on each page. If you do not specify a number, Config uses the default. The default is 100.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    OrganizationConfigRuleName: OrganizationConfigRuleNameSchema.openapi({
+      description:
+        'The name of your organization Config rule for which you want status details for member accounts.',
+    }),
+    Filters: StatusDetailFiltersSchema.exactOptional().openapi({
+      description: 'A <code>StatusDetailFilters</code> object.',
+    }),
+    Limit: CosmosPageLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of <code>OrganizationConfigRuleDetailedStatus</code> returned on each page. If you do not specify a number, Config uses the default. The default is 100.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
+    }),
   })
   .openapi({
     required: ['OrganizationConfigRuleName'],
@@ -5910,41 +4558,27 @@ const OrganizationResourceDetailedStatusSchema = z
 
 const OrganizationConformancePackDetailedStatusSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The 12-digit account ID of a member account.' }),
-    ),
-    ConformancePackName: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of conformance pack deployed in the member account.' }),
-    ),
-    Status: OrganizationResourceDetailedStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates deployment status for conformance pack in a member account. When management account calls <code>PutOrganizationConformancePack</code> action for the first time, conformance pack status is created in the member account. When management account calls <code>PutOrganizationConformancePack</code> action for the second time, conformance pack status is updated in the member account. Conformance pack status is deleted when the management account deletes <code>OrganizationConformancePack</code> and disables service access for <code>config-multiaccountsetup.amazonaws.com</code>. </p> <p> Config sets the state of the conformance pack to:</p> <ul> <li> <p> <code>CREATE_SUCCESSFUL</code> when conformance pack has been created in the member account. </p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> when conformance pack is being created in the member account.</p> </li> <li> <p> <code>CREATE_FAILED</code> when conformance pack creation has failed in the member account.</p> </li> <li> <p> <code>DELETE_FAILED</code> when conformance pack deletion has failed in the member account.</p> </li> <li> <p> <code>DELETE_IN_PROGRESS</code> when conformance pack is being deleted in the member account.</p> </li> <li> <p> <code>DELETE_SUCCESSFUL</code> when conformance pack has been deleted in the member account. </p> </li> <li> <p> <code>UPDATE_SUCCESSFUL</code> when conformance pack has been updated in the member account.</p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> when conformance pack is being updated in the member account.</p> </li> <li> <p> <code>UPDATE_FAILED</code> when conformance pack deletion has failed in the member account.</p> </li> </ul>',
-        }),
-    ),
-    ErrorCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An error code that is returned when conformance pack creation or deletion failed in the member account. ',
-        }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An error message indicating that conformance pack account creation or deletion has failed due to an error in the member account. ',
-        }),
-    ).exactOptional(),
-    LastUpdateTime: DateSchema.and(
-      z.any().openapi({ description: 'The timestamp of the last status update.' }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.openapi({
+      description: 'The 12-digit account ID of a member account.',
+    }),
+    ConformancePackName: StringWithCharLimit256Schema.openapi({
+      description: 'The name of conformance pack deployed in the member account.',
+    }),
+    Status: OrganizationResourceDetailedStatusSchema.openapi({
+      description:
+        '<p>Indicates deployment status for conformance pack in a member account. When management account calls <code>PutOrganizationConformancePack</code> action for the first time, conformance pack status is created in the member account. When management account calls <code>PutOrganizationConformancePack</code> action for the second time, conformance pack status is updated in the member account. Conformance pack status is deleted when the management account deletes <code>OrganizationConformancePack</code> and disables service access for <code>config-multiaccountsetup.amazonaws.com</code>. </p> <p> Config sets the state of the conformance pack to:</p> <ul> <li> <p> <code>CREATE_SUCCESSFUL</code> when conformance pack has been created in the member account. </p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> when conformance pack is being created in the member account.</p> </li> <li> <p> <code>CREATE_FAILED</code> when conformance pack creation has failed in the member account.</p> </li> <li> <p> <code>DELETE_FAILED</code> when conformance pack deletion has failed in the member account.</p> </li> <li> <p> <code>DELETE_IN_PROGRESS</code> when conformance pack is being deleted in the member account.</p> </li> <li> <p> <code>DELETE_SUCCESSFUL</code> when conformance pack has been deleted in the member account. </p> </li> <li> <p> <code>UPDATE_SUCCESSFUL</code> when conformance pack has been updated in the member account.</p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> when conformance pack is being updated in the member account.</p> </li> <li> <p> <code>UPDATE_FAILED</code> when conformance pack deletion has failed in the member account.</p> </li> </ul>',
+    }),
+    ErrorCode: StringSchema.exactOptional().openapi({
+      description:
+        'An error code that is returned when conformance pack creation or deletion failed in the member account. ',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description:
+        'An error message indicating that conformance pack account creation or deletion has failed due to an error in the member account. ',
+    }),
+    LastUpdateTime: DateSchema.exactOptional().openapi({
+      description: 'The timestamp of the last status update.',
+    }),
   })
   .openapi({
     required: ['AccountId', 'ConformancePackName', 'Status'],
@@ -5960,43 +4594,26 @@ const OrganizationConformancePackDetailedStatusesSchema = z
 const GetOrganizationConformancePackDetailedStatusResponseSchema = z
   .object({
     OrganizationConformancePackDetailedStatuses:
-      OrganizationConformancePackDetailedStatusesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'A list of <code>OrganizationConformancePackDetailedStatus</code> objects. ',
-          }),
-      ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The nextToken string returned on a previous page that you use to get the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+      OrganizationConformancePackDetailedStatusesSchema.exactOptional().openapi({
+        description: 'A list of <code>OrganizationConformancePackDetailedStatus</code> objects. ',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The nextToken string returned on a previous page that you use to get the next page of results in a paginated response. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetOrganizationConformancePackDetailedStatusResponse')
 
 const OrganizationResourceDetailedStatusFiltersSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The 12-digit account ID of the member account within an organization.',
-        }),
-    ).exactOptional(),
-    Status: OrganizationResourceDetailedStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates deployment status for conformance pack in a member account. When management account calls <code>PutOrganizationConformancePack</code> action for the first time, conformance pack status is created in the member account. When management account calls <code>PutOrganizationConformancePack</code> action for the second time, conformance pack status is updated in the member account. Conformance pack status is deleted when the management account deletes <code>OrganizationConformancePack</code> and disables service access for <code>config-multiaccountsetup.amazonaws.com</code>. </p> <p> Config sets the state of the conformance pack to:</p> <ul> <li> <p> <code>CREATE_SUCCESSFUL</code> when conformance pack has been created in the member account. </p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> when conformance pack is being created in the member account.</p> </li> <li> <p> <code>CREATE_FAILED</code> when conformance pack creation has failed in the member account.</p> </li> <li> <p> <code>DELETE_FAILED</code> when conformance pack deletion has failed in the member account.</p> </li> <li> <p> <code>DELETE_IN_PROGRESS</code> when conformance pack is being deleted in the member account.</p> </li> <li> <p> <code>DELETE_SUCCESSFUL</code> when conformance pack has been deleted in the member account. </p> </li> <li> <p> <code>UPDATE_SUCCESSFUL</code> when conformance pack has been updated in the member account.</p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> when conformance pack is being updated in the member account.</p> </li> <li> <p> <code>UPDATE_FAILED</code> when conformance pack deletion has failed in the member account.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The 12-digit account ID of the member account within an organization.',
+    }),
+    Status: OrganizationResourceDetailedStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates deployment status for conformance pack in a member account. When management account calls <code>PutOrganizationConformancePack</code> action for the first time, conformance pack status is created in the member account. When management account calls <code>PutOrganizationConformancePack</code> action for the second time, conformance pack status is updated in the member account. Conformance pack status is deleted when the management account deletes <code>OrganizationConformancePack</code> and disables service access for <code>config-multiaccountsetup.amazonaws.com</code>. </p> <p> Config sets the state of the conformance pack to:</p> <ul> <li> <p> <code>CREATE_SUCCESSFUL</code> when conformance pack has been created in the member account. </p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> when conformance pack is being created in the member account.</p> </li> <li> <p> <code>CREATE_FAILED</code> when conformance pack creation has failed in the member account.</p> </li> <li> <p> <code>DELETE_FAILED</code> when conformance pack deletion has failed in the member account.</p> </li> <li> <p> <code>DELETE_IN_PROGRESS</code> when conformance pack is being deleted in the member account.</p> </li> <li> <p> <code>DELETE_SUCCESSFUL</code> when conformance pack has been deleted in the member account. </p> </li> <li> <p> <code>UPDATE_SUCCESSFUL</code> when conformance pack has been updated in the member account.</p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> when conformance pack is being updated in the member account.</p> </li> <li> <p> <code>UPDATE_FAILED</code> when conformance pack deletion has failed in the member account.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -6007,37 +4624,21 @@ const OrganizationResourceDetailedStatusFiltersSchema = z
 
 const GetOrganizationConformancePackDetailedStatusRequestSchema = z
   .object({
-    OrganizationConformancePackName: OrganizationConformancePackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of organization conformance pack for which you want status details for member accounts.',
-        }),
-    ),
-    Filters: OrganizationResourceDetailedStatusFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An <code>OrganizationResourceDetailedStatusFilters</code> object.',
-        }),
-    ).exactOptional(),
-    Limit: CosmosPageLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of <code>OrganizationConformancePackDetailedStatuses</code> returned on each page. If you do not specify a number, Config uses the default. The default is 100. ',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The nextToken string returned on a previous page that you use to get the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    OrganizationConformancePackName: OrganizationConformancePackNameSchema.openapi({
+      description:
+        'The name of organization conformance pack for which you want status details for member accounts.',
+    }),
+    Filters: OrganizationResourceDetailedStatusFiltersSchema.exactOptional().openapi({
+      description: 'An <code>OrganizationResourceDetailedStatusFilters</code> object.',
+    }),
+    Limit: CosmosPageLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of <code>OrganizationConformancePackDetailedStatuses</code> returned on each page. If you do not specify a number, Config uses the default. The default is 100. ',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The nextToken string returned on a previous page that you use to get the next page of results in a paginated response. ',
+    }),
   })
   .openapi({
     required: ['OrganizationConformancePackName'],
@@ -6047,23 +4648,19 @@ const GetOrganizationConformancePackDetailedStatusRequestSchema = z
 
 const GetOrganizationCustomRulePolicyResponseSchema = z
   .object({
-    PolicyText: PolicyTextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The policy definition containing the logic for your organization Config Custom Policy rule.',
-        }),
-    ).exactOptional(),
+    PolicyText: PolicyTextSchema.exactOptional().openapi({
+      description:
+        'The policy definition containing the logic for your organization Config Custom Policy rule.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetOrganizationCustomRulePolicyResponse')
 
 const GetOrganizationCustomRulePolicyRequestSchema = z
   .object({
-    OrganizationConfigRuleName: OrganizationConfigRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of your organization Config Custom Policy rule. ' }),
-    ),
+    OrganizationConfigRuleName: OrganizationConfigRuleNameSchema.openapi({
+      description: 'The name of your organization Config Custom Policy rule. ',
+    }),
   })
   .openapi({
     required: ['OrganizationConfigRuleName'],
@@ -6077,21 +4674,13 @@ const ConfigurationItemListSchema = z
 
 const GetResourceConfigHistoryResponseSchema = z
   .object({
-    configurationItems: ConfigurationItemListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list that contains the configuration history of one or more resources.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string that you use in a subsequent request to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    configurationItems: ConfigurationItemListSchema.exactOptional().openapi({
+      description: 'A list that contains the configuration history of one or more resources.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The string that you use in a subsequent request to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({
     description: 'The output for the <a>GetResourceConfigHistory</a> action.',
@@ -6107,52 +4696,30 @@ const ChronologicalOrderSchema = z.enum(['Reverse', 'Forward']).openapi('Chronol
 
 const GetResourceConfigHistoryRequestSchema = z
   .object({
-    resourceType: ResourceTypeSchema.and(z.any().openapi({ description: 'The resource type.' })),
-    resourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the resource (for example., <code>sg-xxxxxx</code>).' }),
-    ),
-    laterTime: LaterTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time stamp that indicates a later time. If not specified, current time is taken.',
-        }),
-    ).exactOptional(),
-    earlierTime: EarlierTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time stamp that indicates an earlier time. If not specified, the action returns paginated results that contain configuration items that start when the first configuration item was recorded.',
-        }),
-    ).exactOptional(),
-    chronologicalOrder: ChronologicalOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The chronological order for configuration items listed. By default, the results are listed in reverse chronological order.',
-        }),
-    ).exactOptional(),
-    limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of configuration items returned on each page. The default is 10. You cannot specify a number greater than 100. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    resourceType: ResourceTypeSchema.openapi({ description: 'The resource type.' }),
+    resourceId: ResourceIdSchema.openapi({
+      description: 'The ID of the resource (for example., <code>sg-xxxxxx</code>).',
+    }),
+    laterTime: LaterTimeSchema.exactOptional().openapi({
+      description:
+        'The time stamp that indicates a later time. If not specified, current time is taken.',
+    }),
+    earlierTime: EarlierTimeSchema.exactOptional().openapi({
+      description:
+        'The time stamp that indicates an earlier time. If not specified, the action returns paginated results that contain configuration items that start when the first configuration item was recorded.',
+    }),
+    chronologicalOrder: ChronologicalOrderSchema.exactOptional().openapi({
+      description:
+        'The chronological order for configuration items listed. By default, the results are listed in reverse chronological order.',
+    }),
+    limit: LimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of configuration items returned on each page. The default is 10. You cannot specify a number greater than 100. If you specify 0, Config uses the default.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({
     required: ['resourceType', 'resourceId'],
@@ -6163,24 +4730,21 @@ const GetResourceConfigHistoryRequestSchema = z
 
 const InvalidTimeRangeExceptionSchema = z.any().openapi('InvalidTimeRangeException')
 
-const EvaluationStatusSchema: z.ZodType<EvaluationStatusType> = z
-  .lazy(() =>
-    z
-      .object({
-        Status: ResourceEvaluationStatusSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The status of an execution. The valid values are In_Progress, Succeeded or Failed. ',
-            }),
-        ),
-        FailureReason: StringWithCharLimit1024Schema.and(
-          z.any().openapi({ description: 'An explanation for failed execution status.' }),
-        ).exactOptional(),
-      })
-      .openapi({ required: ['Status'], description: 'Returns status details of an evaluation.' }),
-  )
+const ResourceEvaluationStatusSchema = z
+  .enum(['IN_PROGRESS', 'FAILED', 'SUCCEEDED'])
+  .openapi('ResourceEvaluationStatus')
+
+const EvaluationStatusSchema = z
+  .object({
+    Status: ResourceEvaluationStatusSchema.openapi({
+      description:
+        'The status of an execution. The valid values are In_Progress, Succeeded or Failed. ',
+    }),
+    FailureReason: StringWithCharLimit1024Schema.exactOptional().openapi({
+      description: 'An explanation for failed execution status.',
+    }),
+  })
+  .openapi({ required: ['Status'], description: 'Returns status details of an evaluation.' })
   .openapi('EvaluationStatus')
 
 const EvaluationContextIdentifierSchema = z
@@ -6191,13 +4755,9 @@ const EvaluationContextIdentifierSchema = z
 
 const EvaluationContextSchema = z
   .object({
-    EvaluationContextIdentifier: EvaluationContextIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique EvaluationContextIdentifier ID for an EvaluationContext.',
-        }),
-    ).exactOptional(),
+    EvaluationContextIdentifier: EvaluationContextIdentifierSchema.exactOptional().openapi({
+      description: 'A unique EvaluationContextIdentifier ID for an EvaluationContext.',
+    }),
   })
   .openapi({
     description:
@@ -6214,28 +4774,20 @@ const ResourceConfigurationSchemaTypeSchema = z
 
 const ResourceDetailsSchema = z
   .object({
-    ResourceId: BaseResourceIdSchema.and(
-      z.any().openapi({ description: 'A unique resource ID for an evaluation.' }),
-    ),
-    ResourceType: StringWithCharLimit256Schema.and(
-      z.any().openapi({ description: 'The type of resource being evaluated.' }),
-    ),
-    ResourceConfiguration: ResourceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource definition to be evaluated as per the resource configuration schema type.',
-        }),
-    ),
-    ResourceConfigurationSchemaType: ResourceConfigurationSchemaTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The schema type of the resource configuration.</p> <note> <p>You can find the <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-schema.html">Resource type schema</a>, or <code>CFN_RESOURCE_SCHEMA</code>, in "<i>Amazon Web Services public extensions</i>" within the CloudFormation registry or with the following CLI commmand: <code>aws cloudformation describe-type --type-name "AWS::S3::Bucket" --type RESOURCE</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry.html#registry-view">Managing extensions through the CloudFormation registry</a> and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services resource and property types reference</a> in the CloudFormation User Guide.</p> </note>',
-        }),
-    ).exactOptional(),
+    ResourceId: BaseResourceIdSchema.openapi({
+      description: 'A unique resource ID for an evaluation.',
+    }),
+    ResourceType: StringWithCharLimit256Schema.openapi({
+      description: 'The type of resource being evaluated.',
+    }),
+    ResourceConfiguration: ResourceConfigurationSchema.openapi({
+      description:
+        'The resource definition to be evaluated as per the resource configuration schema type.',
+    }),
+    ResourceConfigurationSchemaType: ResourceConfigurationSchemaTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The schema type of the resource configuration.</p> <note> <p>You can find the <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-schema.html">Resource type schema</a>, or <code>CFN_RESOURCE_SCHEMA</code>, in "<i>Amazon Web Services public extensions</i>" within the CloudFormation registry or with the following CLI commmand: <code>aws cloudformation describe-type --type-name "AWS::S3::Bucket" --type RESOURCE</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry.html#registry-view">Managing extensions through the CloudFormation registry</a> and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services resource and property types reference</a> in the CloudFormation User Guide.</p> </note>',
+    }),
   })
   .openapi({
     required: ['ResourceId', 'ResourceType', 'ResourceConfiguration'],
@@ -6245,56 +4797,40 @@ const ResourceDetailsSchema = z
 
 const GetResourceEvaluationSummaryResponseSchema = z
   .object({
-    ResourceEvaluationId: ResourceEvaluationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique <code>ResourceEvaluationId</code> of Amazon Web Services resource execution for which you want to retrieve the evaluation summary.',
-        }),
-    ).exactOptional(),
-    EvaluationMode: EvaluationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists results of the mode that you requested to retrieve the resource evaluation summary. The valid values are Detective or Proactive.',
-        }),
-    ).exactOptional(),
-    EvaluationStatus: EvaluationStatusSchema.and(
-      z.any().openapi({ description: 'Returns an <code>EvaluationStatus</code> object.' }),
-    ).exactOptional(),
-    EvaluationStartTimestamp: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start timestamp when Config rule starts evaluating compliance for the provided resource details.',
-        }),
-    ).exactOptional(),
-    Compliance: ComplianceTypeSchema.and(
-      z.any().openapi({ description: 'The compliance status of the resource evaluation summary.' }),
-    ).exactOptional(),
-    EvaluationContext: EvaluationContextSchema.and(
-      z.any().openapi({ description: 'Returns an <code>EvaluationContext</code> object.' }),
-    ).exactOptional(),
-    ResourceDetails: ResourceDetailsSchema.and(
-      z.any().openapi({ description: 'Returns a <code>ResourceDetails</code> object.' }),
-    ).exactOptional(),
+    ResourceEvaluationId: ResourceEvaluationIdSchema.exactOptional().openapi({
+      description:
+        'The unique <code>ResourceEvaluationId</code> of Amazon Web Services resource execution for which you want to retrieve the evaluation summary.',
+    }),
+    EvaluationMode: EvaluationModeSchema.exactOptional().openapi({
+      description:
+        'Lists results of the mode that you requested to retrieve the resource evaluation summary. The valid values are Detective or Proactive.',
+    }),
+    EvaluationStatus: EvaluationStatusSchema.exactOptional().openapi({
+      description: 'Returns an <code>EvaluationStatus</code> object.',
+    }),
+    EvaluationStartTimestamp: DateSchema.exactOptional().openapi({
+      description:
+        'The start timestamp when Config rule starts evaluating compliance for the provided resource details.',
+    }),
+    Compliance: ComplianceTypeSchema.exactOptional().openapi({
+      description: 'The compliance status of the resource evaluation summary.',
+    }),
+    EvaluationContext: EvaluationContextSchema.exactOptional().openapi({
+      description: 'Returns an <code>EvaluationContext</code> object.',
+    }),
+    ResourceDetails: ResourceDetailsSchema.exactOptional().openapi({
+      description: 'Returns a <code>ResourceDetails</code> object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResourceEvaluationSummaryResponse')
 
 const GetResourceEvaluationSummaryRequestSchema = z
   .object({
-    ResourceEvaluationId: ResourceEvaluationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique <code>ResourceEvaluationId</code> of Amazon Web Services resource execution for which you want to retrieve the evaluation summary.',
-        }),
-    ),
+    ResourceEvaluationId: ResourceEvaluationIdSchema.openapi({
+      description:
+        'The unique <code>ResourceEvaluationId</code> of Amazon Web Services resource execution for which you want to retrieve the evaluation summary.',
+    }),
   })
   .openapi({ required: ['ResourceEvaluationId'], title: 'GetResourceEvaluationSummaryRequest' })
   .openapi('GetResourceEvaluationSummaryRequest')
@@ -6326,46 +4862,34 @@ const QueryExpressionSchema = z
 
 const StoredQuerySchema = z
   .object({
-    QueryId: QueryIdSchema.and(
-      z.any().openapi({ description: 'The ID of the query.' }),
-    ).exactOptional(),
-    QueryArn: QueryArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Resource Name (ARN) of the query. For example, arn:partition:service:region:account-id:resource-type/resource-name/resource-id.',
-        }),
-    ).exactOptional(),
-    QueryName: QueryNameSchema.and(z.any().openapi({ description: 'The name of the query.' })),
-    Description: QueryDescriptionSchema.and(
-      z.any().openapi({ description: 'A unique description for the query.' }),
-    ).exactOptional(),
-    Expression: QueryExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The expression of the query. For example, <code>SELECT resourceId, resourceType, supplementaryConfiguration.BucketVersioningConfiguration.status WHERE resourceType = 'AWS::S3::Bucket' AND supplementaryConfiguration.BucketVersioningConfiguration.status = 'Off'.</code> ",
-        }),
-    ).exactOptional(),
+    QueryId: QueryIdSchema.exactOptional().openapi({ description: 'The ID of the query.' }),
+    QueryArn: QueryArnSchema.exactOptional().openapi({
+      description:
+        'Amazon Resource Name (ARN) of the query. For example, arn:partition:service:region:account-id:resource-type/resource-name/resource-id.',
+    }),
+    QueryName: QueryNameSchema.openapi({ description: 'The name of the query.' }),
+    Description: QueryDescriptionSchema.exactOptional().openapi({
+      description: 'A unique description for the query.',
+    }),
+    Expression: QueryExpressionSchema.exactOptional().openapi({
+      description:
+        "The expression of the query. For example, <code>SELECT resourceId, resourceType, supplementaryConfiguration.BucketVersioningConfiguration.status WHERE resourceType = 'AWS::S3::Bucket' AND supplementaryConfiguration.BucketVersioningConfiguration.status = 'Off'.</code> ",
+    }),
   })
   .openapi({ required: ['QueryName'], description: 'Provides the details of a stored query.' })
   .openapi('StoredQuery')
 
 const GetStoredQueryResponseSchema = z
   .object({
-    StoredQuery: StoredQuerySchema.and(
-      z.any().openapi({ description: 'Returns a <code>StoredQuery</code> object.' }),
-    ).exactOptional(),
+    StoredQuery: StoredQuerySchema.exactOptional().openapi({
+      description: 'Returns a <code>StoredQuery</code> object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetStoredQueryResponse')
 
 const GetStoredQueryRequestSchema = z
-  .object({
-    QueryName: QueryNameSchema.and(z.any().openapi({ description: 'The name of the query.' })),
-  })
+  .object({ QueryName: QueryNameSchema.openapi({ description: 'The name of the query.' }) })
   .openapi({ required: ['QueryName'], title: 'GetStoredQueryRequest' })
   .openapi('GetStoredQueryRequest')
 
@@ -6375,37 +4899,29 @@ const DiscoveredResourceIdentifierListSchema = z
 
 const ListAggregateDiscoveredResourcesResponseSchema = z
   .object({
-    ResourceIdentifiers: DiscoveredResourceIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Returns a list of <code>ResourceIdentifiers</code> objects.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ResourceIdentifiers: DiscoveredResourceIdentifierListSchema.exactOptional().openapi({
+      description: 'Returns a list of <code>ResourceIdentifiers</code> objects.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAggregateDiscoveredResourcesResponse')
 
 const ResourceFiltersSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The 12-digit source account ID.' }),
-    ).exactOptional(),
-    ResourceId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the resource.' }),
-    ).exactOptional(),
-    ResourceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ).exactOptional(),
-    Region: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The source region.' }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The 12-digit source account ID.',
+    }),
+    ResourceId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the resource.',
+    }),
+    ResourceName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the resource.',
+    }),
+    Region: AwsRegionSchema.exactOptional().openapi({ description: 'The source region.' }),
   })
   .openapi({
     description:
@@ -6416,39 +4932,23 @@ const ResourceFiltersSchema = z
 
 const ListAggregateDiscoveredResourcesRequestSchema = z
   .object({
-    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration aggregator. ' }),
-    ),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of resources that you want Config to list in the response.',
-        }),
-    ),
-    Filters: ResourceFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Filters the results based on the <code>ResourceFilters</code> object.',
-        }),
-    ).exactOptional(),
-    Limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of resource identifiers returned on each page. You cannot specify a number greater than 100. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.openapi({
+      description: 'The name of the configuration aggregator. ',
+    }),
+    ResourceType: ResourceTypeSchema.openapi({
+      description: 'The type of resources that you want Config to list in the response.',
+    }),
+    Filters: ResourceFiltersSchema.exactOptional().openapi({
+      description: 'Filters the results based on the <code>ResourceFilters</code> object.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of resource identifiers returned on each page. You cannot specify a number greater than 100. If you specify 0, Config uses the default.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({
     required: ['ConfigurationAggregatorName', 'ResourceType'],
@@ -6462,24 +4962,16 @@ const LastUpdatedTimeSchema = z.iso.datetime({ offset: true }).openapi('LastUpda
 
 const ConformancePackComplianceScoreSchema = z
   .object({
-    Score: ComplianceScoreSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Compliance score for the conformance pack. Conformance packs with no evaluation results will have a compliance score of <code>INSUFFICIENT_DATA</code>.',
-        }),
-    ).exactOptional(),
-    ConformancePackName: ConformancePackNameSchema.and(
-      z.any().openapi({ description: 'The name of the conformance pack.' }),
-    ).exactOptional(),
-    LastUpdatedTime: LastUpdatedTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time that the conformance pack compliance score was last updated.',
-        }),
-    ).exactOptional(),
+    Score: ComplianceScoreSchema.exactOptional().openapi({
+      description:
+        'Compliance score for the conformance pack. Conformance packs with no evaluation results will have a compliance score of <code>INSUFFICIENT_DATA</code>.',
+    }),
+    ConformancePackName: ConformancePackNameSchema.exactOptional().openapi({
+      description: 'The name of the conformance pack.',
+    }),
+    LastUpdatedTime: LastUpdatedTimeSchema.exactOptional().openapi({
+      description: 'The time that the conformance pack compliance score was last updated.',
+    }),
   })
   .openapi({
     description:
@@ -6494,19 +4986,13 @@ const ConformancePackComplianceScoresSchema = z
 
 const ListConformancePackComplianceScoresResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string that you can use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
-    ConformancePackComplianceScores: ConformancePackComplianceScoresSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of <code>ConformancePackComplianceScore</code> objects.' }),
-    ),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string that you can use to get the next page of results in a paginated response.',
+    }),
+    ConformancePackComplianceScores: ConformancePackComplianceScoresSchema.openapi({
+      description: 'A list of <code>ConformancePackComplianceScore</code> objects.',
+    }),
   })
   .openapi({ required: ['ConformancePackComplianceScores'] })
   .openapi('ListConformancePackComplianceScoresResponse')
@@ -6519,14 +5005,10 @@ const ConformancePackNameFilterSchema = z
 
 const ConformancePackComplianceScoresFiltersSchema = z
   .object({
-    ConformancePackNames: ConformancePackNameFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of the conformance packs whose compliance scores you want to include in the conformance pack compliance score result set. You can include up to 25 conformance packs in the <code>ConformancePackNames</code> array of strings, each with a character limit of 256 characters for the conformance pack name.',
-        }),
-    ),
+    ConformancePackNames: ConformancePackNameFilterSchema.openapi({
+      description:
+        'The names of the conformance packs whose compliance scores you want to include in the conformance pack compliance score result set. You can include up to 25 conformance packs in the <code>ConformancePackNames</code> array of strings, each with a character limit of 256 characters for the conformance pack name.',
+    }),
   })
   .openapi({
     required: ['ConformancePackNames'],
@@ -6540,46 +5022,26 @@ const SortBySchema = z.literal('SCORE').openapi('SortBy')
 
 const ListConformancePackComplianceScoresRequestSchema = z
   .object({
-    Filters: ConformancePackComplianceScoresFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the results based on the <code>ConformancePackComplianceScoresFilters</code>.',
-        }),
-    ).exactOptional(),
-    SortOrder: SortOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Determines the order in which conformance pack compliance scores are sorted. Either in ascending or descending order.</p> <p>By default, conformance pack compliance scores are sorted in alphabetical order by name of the conformance pack. Conformance pack compliance scores are sorted in reverse alphabetical order if you enter <code>DESCENDING</code>.</p> <p>You can sort conformance pack compliance scores by the numerical value of the compliance score by entering <code>SCORE</code> in the <code>SortBy</code> action. When compliance scores are sorted by <code>SCORE</code>, conformance packs with a compliance score of <code>INSUFFICIENT_DATA</code> will be last when sorting by ascending order and first when sorting by descending order.</p>',
-        }),
-    ).exactOptional(),
-    SortBy: SortBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Sorts your conformance pack compliance scores in either ascending or descending order, depending on <code>SortOrder</code>.</p> <p>By default, conformance pack compliance scores are sorted in alphabetical order by name of the conformance pack. Enter <code>SCORE</code>, to sort conformance pack compliance scores by the numerical value of the compliance score.</p>',
-        }),
-    ).exactOptional(),
-    Limit: PageSizeLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of conformance pack compliance scores returned on each page.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string in a prior request that you can use to get the paginated response for the next set of conformance pack compliance scores.',
-        }),
-    ).exactOptional(),
+    Filters: ConformancePackComplianceScoresFiltersSchema.exactOptional().openapi({
+      description:
+        'Filters the results based on the <code>ConformancePackComplianceScoresFilters</code>.',
+    }),
+    SortOrder: SortOrderSchema.exactOptional().openapi({
+      description:
+        '<p>Determines the order in which conformance pack compliance scores are sorted. Either in ascending or descending order.</p> <p>By default, conformance pack compliance scores are sorted in alphabetical order by name of the conformance pack. Conformance pack compliance scores are sorted in reverse alphabetical order if you enter <code>DESCENDING</code>.</p> <p>You can sort conformance pack compliance scores by the numerical value of the compliance score by entering <code>SCORE</code> in the <code>SortBy</code> action. When compliance scores are sorted by <code>SCORE</code>, conformance packs with a compliance score of <code>INSUFFICIENT_DATA</code> will be last when sorting by ascending order and first when sorting by descending order.</p>',
+    }),
+    SortBy: SortBySchema.exactOptional().openapi({
+      description:
+        '<p>Sorts your conformance pack compliance scores in either ascending or descending order, depending on <code>SortOrder</code>.</p> <p>By default, conformance pack compliance scores are sorted in alphabetical order by name of the conformance pack. Enter <code>SCORE</code>, to sort conformance pack compliance scores by the numerical value of the compliance score.</p>',
+    }),
+    Limit: PageSizeLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of conformance pack compliance scores returned on each page.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string in a prior request that you can use to get the paginated response for the next set of conformance pack compliance scores.',
+    }),
   })
   .openapi({ title: 'ListConformancePackComplianceScoresRequest', required: [] })
   .openapi('ListConformancePackComplianceScoresRequest')
@@ -6588,20 +5050,18 @@ const ResourceDeletionTimeSchema = z.iso.datetime({ offset: true }).openapi('Res
 
 const ResourceIdentifierSchema = z
   .object({
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of resource.' }),
-    ).exactOptional(),
-    resourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the resource (for example, <code>sg-xxxxxx</code>).' }),
-    ).exactOptional(),
-    resourceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The custom name of the resource (if available).' }),
-    ).exactOptional(),
-    resourceDeletionTime: ResourceDeletionTimeSchema.and(
-      z.any().openapi({ description: 'The time that the resource was deleted.' }),
-    ).exactOptional(),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of resource.',
+    }),
+    resourceId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the resource (for example, <code>sg-xxxxxx</code>).',
+    }),
+    resourceName: ResourceNameSchema.exactOptional().openapi({
+      description: 'The custom name of the resource (if available).',
+    }),
+    resourceDeletionTime: ResourceDeletionTimeSchema.exactOptional().openapi({
+      description: 'The time that the resource was deleted.',
+    }),
   })
   .openapi({
     description:
@@ -6616,22 +5076,14 @@ const ResourceIdentifierListSchema = z
 
 const ListDiscoveredResourcesResponseSchema = z
   .object({
-    resourceIdentifiers: ResourceIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The details that identify a resource that is discovered by Config, including the resource type, ID, and (if available) the custom resource name.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string that you use in a subsequent request to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    resourceIdentifiers: ResourceIdentifierListSchema.exactOptional().openapi({
+      description:
+        'The details that identify a resource that is discovered by Config, including the resource type, ID, and (if available) the custom resource name.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The string that you use in a subsequent request to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('ListDiscoveredResourcesResponse')
@@ -6640,53 +5092,29 @@ const ResourceIdListSchema = z.array(ResourceIdSchema).openapi('ResourceIdList')
 
 const ListDiscoveredResourcesRequestSchema = z
   .object({
-    resourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of resources that you want Config to list in the response.',
-        }),
-    ),
-    resourceIds: ResourceIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IDs of only those resources that you want Config to list in the response. If you do not specify this parameter, Config lists all resources of the specified type that it has discovered. You can list a minimum of 1 resourceID and a maximum of 20 resourceIds.',
-        }),
-    ).exactOptional(),
-    resourceName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The custom name of only those resources that you want Config to list in the response. If you do not specify this parameter, Config lists all resources of the specified type that it has discovered.',
-        }),
-    ).exactOptional(),
-    limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of resource identifiers returned on each page. The default is 100. You cannot specify a number greater than 100. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
-    includeDeletedResources: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether Config includes deleted resources in the results. By default, deleted resources are not included.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    resourceType: ResourceTypeSchema.openapi({
+      description: 'The type of resources that you want Config to list in the response.',
+    }),
+    resourceIds: ResourceIdListSchema.exactOptional().openapi({
+      description:
+        'The IDs of only those resources that you want Config to list in the response. If you do not specify this parameter, Config lists all resources of the specified type that it has discovered. You can list a minimum of 1 resourceID and a maximum of 20 resourceIds.',
+    }),
+    resourceName: ResourceNameSchema.exactOptional().openapi({
+      description:
+        'The custom name of only those resources that you want Config to list in the response. If you do not specify this parameter, Config lists all resources of the specified type that it has discovered.',
+    }),
+    limit: LimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of resource identifiers returned on each page. The default is 100. You cannot specify a number greater than 100. If you specify 0, Config uses the default.',
+    }),
+    includeDeletedResources: BooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies whether Config includes deleted resources in the results. By default, deleted resources are not included.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({
     required: ['resourceType'],
@@ -6697,19 +5125,15 @@ const ListDiscoveredResourcesRequestSchema = z
 
 const ResourceEvaluationSchema = z
   .object({
-    ResourceEvaluationId: ResourceEvaluationIdSchema.and(
-      z.any().openapi({ description: 'The ResourceEvaluationId of a evaluation.' }),
-    ).exactOptional(),
-    EvaluationMode: EvaluationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The mode of an evaluation. The valid values are Detective or Proactive.',
-        }),
-    ).exactOptional(),
-    EvaluationStartTimestamp: DateSchema.and(
-      z.any().openapi({ description: 'The starting time of an execution.' }),
-    ).exactOptional(),
+    ResourceEvaluationId: ResourceEvaluationIdSchema.exactOptional().openapi({
+      description: 'The ResourceEvaluationId of a evaluation.',
+    }),
+    EvaluationMode: EvaluationModeSchema.exactOptional().openapi({
+      description: 'The mode of an evaluation. The valid values are Detective or Proactive.',
+    }),
+    EvaluationStartTimestamp: DateSchema.exactOptional().openapi({
+      description: 'The starting time of an execution.',
+    }),
   })
   .openapi({ description: 'Returns details of a resource evaluation.', required: [] })
   .openapi('ResourceEvaluation')
@@ -6718,33 +5142,25 @@ const ResourceEvaluationsSchema = z.array(ResourceEvaluationSchema).openapi('Res
 
 const ListResourceEvaluationsResponseSchema = z
   .object({
-    ResourceEvaluations: ResourceEvaluationsSchema.and(
-      z.any().openapi({ description: 'Returns a <code>ResourceEvaluations</code> object.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    ResourceEvaluations: ResourceEvaluationsSchema.exactOptional().openapi({
+      description: 'Returns a <code>ResourceEvaluations</code> object.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResourceEvaluationsResponse')
 
 const TimeWindowSchema = z
   .object({
-    StartTime: DateSchema.and(
-      z.any().openapi({ description: 'The start time of an execution.' }),
-    ).exactOptional(),
-    EndTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The end time of an execution. The end time must be after the start date.',
-        }),
-    ).exactOptional(),
+    StartTime: DateSchema.exactOptional().openapi({
+      description: 'The start time of an execution.',
+    }),
+    EndTime: DateSchema.exactOptional().openapi({
+      description: 'The end time of an execution. The end time must be after the start date.',
+    }),
   })
   .openapi({
     description: 'Filters evaluation results based on start and end times.',
@@ -6754,25 +5170,17 @@ const TimeWindowSchema = z
 
 const ResourceEvaluationFiltersSchema = z
   .object({
-    EvaluationMode: EvaluationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters all resource evaluations results based on an evaluation mode. the valid value for this API is <code>Proactive</code>.',
-        }),
-    ).exactOptional(),
-    TimeWindow: TimeWindowSchema.and(
-      z.any().openapi({ description: 'Returns a <code>TimeWindow</code> object.' }),
-    ).exactOptional(),
-    EvaluationContextIdentifier: EvaluationContextIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters evaluations for a given infrastructure deployment. For example: CFN Stack.',
-        }),
-    ).exactOptional(),
+    EvaluationMode: EvaluationModeSchema.exactOptional().openapi({
+      description:
+        'Filters all resource evaluations results based on an evaluation mode. the valid value for this API is <code>Proactive</code>.',
+    }),
+    TimeWindow: TimeWindowSchema.exactOptional().openapi({
+      description: 'Returns a <code>TimeWindow</code> object.',
+    }),
+    EvaluationContextIdentifier: EvaluationContextIdentifierSchema.exactOptional().openapi({
+      description:
+        'Filters evaluations for a given infrastructure deployment. For example: CFN Stack.',
+    }),
   })
   .openapi({
     description: 'Returns details of a resource evaluation based on the selected filter.',
@@ -6788,44 +5196,32 @@ const ListResourceEvaluationsPageItemLimitSchema = z
 
 const ListResourceEvaluationsRequestSchema = z
   .object({
-    Filters: ResourceEvaluationFiltersSchema.and(
-      z.any().openapi({ description: 'Returns a <code>ResourceEvaluationFilters</code> object.' }),
-    ).exactOptional(),
-    Limit: ListResourceEvaluationsPageItemLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of evaluations returned on each page. The default is 10. You cannot specify a number greater than 100. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
+    Filters: ResourceEvaluationFiltersSchema.exactOptional().openapi({
+      description: 'Returns a <code>ResourceEvaluationFilters</code> object.',
+    }),
+    Limit: ListResourceEvaluationsPageItemLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of evaluations returned on each page. The default is 10. You cannot specify a number greater than 100. If you specify 0, Config uses the default.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.',
+    }),
   })
   .openapi({ title: 'ListResourceEvaluationsRequest', required: [] })
   .openapi('ListResourceEvaluationsRequest')
 
 const StoredQueryMetadataSchema = z
   .object({
-    QueryId: QueryIdSchema.and(z.any().openapi({ description: 'The ID of the query. ' })),
-    QueryArn: QueryArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Resource Name (ARN) of the query. For example, arn:partition:service:region:account-id:resource-type/resource-name/resource-id.',
-        }),
-    ),
-    QueryName: QueryNameSchema.and(z.any().openapi({ description: 'The name of the query.' })),
-    Description: QueryDescriptionSchema.and(
-      z.any().openapi({ description: 'A unique description for the query.' }),
-    ).exactOptional(),
+    QueryId: QueryIdSchema.openapi({ description: 'The ID of the query. ' }),
+    QueryArn: QueryArnSchema.openapi({
+      description:
+        'Amazon Resource Name (ARN) of the query. For example, arn:partition:service:region:account-id:resource-type/resource-name/resource-id.',
+    }),
+    QueryName: QueryNameSchema.openapi({ description: 'The name of the query.' }),
+    Description: QueryDescriptionSchema.exactOptional().openapi({
+      description: 'A unique description for the query.',
+    }),
   })
   .openapi({
     required: ['QueryId', 'QueryArn', 'QueryName'],
@@ -6839,38 +5235,26 @@ const StoredQueryMetadataListSchema = z
 
 const ListStoredQueriesResponseSchema = z
   .object({
-    StoredQueryMetadata: StoredQueryMetadataListSchema.and(
-      z.any().openapi({ description: 'A list of <code>StoredQueryMetadata</code> objects.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the previous paginated request didn't return all of the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>. ",
-        }),
-    ).exactOptional(),
+    StoredQueryMetadata: StoredQueryMetadataListSchema.exactOptional().openapi({
+      description: 'A list of <code>StoredQueryMetadata</code> objects.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        "If the previous paginated request didn't return all of the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStoredQueriesResponse')
 
 const ListStoredQueriesRequestSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The nextToken string returned in a previous request that you use to request the next page of results in a paginated response.',
-        }),
-    ).exactOptional(),
-    MaxResults: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to be returned with a single call.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'The nextToken string returned in a previous request that you use to request the next page of results in a paginated response.',
+    }),
+    MaxResults: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of results to be returned with a single call.',
+    }),
   })
   .openapi({ title: 'ListStoredQueriesRequest', required: [] })
   .openapi('ListStoredQueriesRequest')
@@ -6881,22 +5265,14 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that make up a tag. A key is a general label that acts like a category for more specific tag values.',
-        }),
-    ).exactOptional(),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key).',
-        }),
-    ).exactOptional(),
+    Key: TagKeySchema.exactOptional().openapi({
+      description:
+        'One part of a key-value pair that make up a tag. A key is a general label that acts like a category for more specific tag values.',
+    }),
+    Value: TagValueSchema.exactOptional().openapi({
+      description:
+        'The optional part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key).',
+    }),
   })
   .openapi({
     description:
@@ -6909,17 +5285,11 @@ const TagListSchema = z.array(TagSchema).min(1).max(50).openapi('TagList')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags for the resource.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'The tags for the resource.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -6928,39 +5298,27 @@ const AmazonResourceNameSchema = z.string().min(1).max(1000).openapi('AmazonReso
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. Currently, the supported resources are <code>ConfigRule</code>, <code>ConfigurationAggregator</code> and <code>AggregatorAuthorization</code>.',
-        }),
-    ),
-    Limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of tags returned on each page. The limit maximum is 50. You cannot specify a number greater than 50. If you specify 0, Config uses the default. ',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    ResourceArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. Currently, the supported resources are <code>ConfigRule</code>, <code>ConfigurationAggregator</code> and <code>AggregatorAuthorization</code>.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of tags returned on each page. The limit maximum is 50. You cannot specify a number greater than 50. If you specify 0, Config uses the default. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response. ',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const PutAggregationAuthorizationResponseSchema = z
   .object({
-    AggregationAuthorization: AggregationAuthorizationSchema.and(
-      z.any().openapi({ description: 'Returns an AggregationAuthorization object. ' }),
-    ).exactOptional(),
+    AggregationAuthorization: AggregationAuthorizationSchema.exactOptional().openapi({
+      description: 'Returns an AggregationAuthorization object. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutAggregationAuthorizationResponse')
@@ -6969,19 +5327,13 @@ const TagsListSchema = z.array(TagSchema).min(0).max(50).openapi('TagsList')
 
 const PutAggregationAuthorizationRequestSchema = z
   .object({
-    AuthorizedAccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The 12-digit account ID of the account authorized to aggregate data.',
-        }),
-    ),
-    AuthorizedAwsRegion: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The region authorized to collect aggregated data.' }),
-    ),
-    Tags: TagsListSchema.and(
-      z.any().openapi({ description: 'An array of tag object.' }),
-    ).exactOptional(),
+    AuthorizedAccountId: AccountIdSchema.openapi({
+      description: 'The 12-digit account ID of the account authorized to aggregate data.',
+    }),
+    AuthorizedAwsRegion: AwsRegionSchema.openapi({
+      description: 'The region authorized to collect aggregated data.',
+    }),
+    Tags: TagsListSchema.exactOptional().openapi({ description: 'An array of tag object.' }),
   })
   .openapi({
     required: ['AuthorizedAccountId', 'AuthorizedAwsRegion'],
@@ -6991,12 +5343,10 @@ const PutAggregationAuthorizationRequestSchema = z
 
 const PutConfigRuleRequestSchema = z
   .object({
-    ConfigRule: ConfigRuleSchema.and(
-      z.any().openapi({ description: 'The rule that you want to add to your account.' }),
-    ),
-    Tags: TagsListSchema.and(
-      z.any().openapi({ description: 'An array of tag object.' }),
-    ).exactOptional(),
+    ConfigRule: ConfigRuleSchema.openapi({
+      description: 'The rule that you want to add to your account.',
+    }),
+    Tags: TagsListSchema.exactOptional().openapi({ description: 'An array of tag object.' }),
   })
   .openapi({ required: ['ConfigRule'], title: 'PutConfigRuleRequest' })
   .openapi('PutConfigRuleRequest')
@@ -7007,27 +5357,25 @@ const MaxNumberOfConfigRulesExceededExceptionSchema = z
 
 const PutConfigurationAggregatorResponseSchema = z
   .object({
-    ConfigurationAggregator: ConfigurationAggregatorSchema.and(
-      z.any().openapi({ description: 'Returns a ConfigurationAggregator object.' }),
-    ).exactOptional(),
+    ConfigurationAggregator: ConfigurationAggregatorSchema.exactOptional().openapi({
+      description: 'Returns a ConfigurationAggregator object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutConfigurationAggregatorResponse')
 
 const PutConfigurationAggregatorRequestSchema = z
   .object({
-    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration aggregator.' }),
-    ),
-    AccountAggregationSources: AccountAggregationSourceListSchema.and(
-      z.any().openapi({ description: 'A list of AccountAggregationSource object. ' }),
-    ).exactOptional(),
-    OrganizationAggregationSource: OrganizationAggregationSourceSchema.and(
-      z.any().openapi({ description: 'An OrganizationAggregationSource object.' }),
-    ).exactOptional(),
-    Tags: TagsListSchema.and(
-      z.any().openapi({ description: 'An array of tag object.' }),
-    ).exactOptional(),
+    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.openapi({
+      description: 'The name of the configuration aggregator.',
+    }),
+    AccountAggregationSources: AccountAggregationSourceListSchema.exactOptional().openapi({
+      description: 'A list of AccountAggregationSource object. ',
+    }),
+    OrganizationAggregationSource: OrganizationAggregationSourceSchema.exactOptional().openapi({
+      description: 'An OrganizationAggregationSource object.',
+    }),
+    Tags: TagsListSchema.exactOptional().openapi({ description: 'An array of tag object.' }),
   })
   .openapi({
     required: ['ConfigurationAggregatorName'],
@@ -7047,14 +5395,10 @@ const OrganizationAllFeaturesNotEnabledExceptionSchema = z
 
 const PutConfigurationRecorderRequestSchema = z
   .object({
-    ConfigurationRecorder: ConfigurationRecorderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration recorder object that records each configuration change made to the resources.',
-        }),
-    ),
+    ConfigurationRecorder: ConfigurationRecorderSchema.openapi({
+      description:
+        'The configuration recorder object that records each configuration change made to the resources.',
+    }),
   })
   .openapi({
     required: ['ConfigurationRecorder'],
@@ -7075,9 +5419,9 @@ const InvalidRecordingGroupExceptionSchema = z.any().openapi('InvalidRecordingGr
 
 const PutConformancePackResponseSchema = z
   .object({
-    ConformancePackArn: ConformancePackArnSchema.and(
-      z.any().openapi({ description: 'ARN of the conformance pack.' }),
-    ).exactOptional(),
+    ConformancePackArn: ConformancePackArnSchema.exactOptional().openapi({
+      description: 'ARN of the conformance pack.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutConformancePackResponse')
@@ -7093,56 +5437,32 @@ const TemplateBodySchema = z.string().min(1).max(51200).openapi('TemplateBody')
 
 const PutConformancePackRequestSchema = z
   .object({
-    ConformancePackName: ConformancePackNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique name of the conformance pack you want to deploy.' }),
-    ),
-    TemplateS3Uri: TemplateS3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The location of the file containing the template body (<code>s3://bucketname/prefix</code>). The uri must point to a conformance pack template (max size: 300 KB) that is located in an Amazon S3 bucket in the same Region as the conformance pack. </p> <note> <p>You must have access to read Amazon S3 bucket.</p> </note>',
-        }),
-    ).exactOptional(),
-    TemplateBody: TemplateBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A string containing the full conformance pack template body. The structure containing the template body has a minimum length of 1 byte and a maximum length of 51,200 bytes.</p> <note> <p>You can use a YAML template with two resource types: Config rule (<code>AWS::Config::ConfigRule</code>) and remediation action (<code>AWS::Config::RemediationConfiguration</code>).</p> </note>',
-        }),
-    ).exactOptional(),
-    DeliveryS3Bucket: DeliveryS3BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Amazon S3 bucket where Config stores conformance pack templates.</p> <note> <p>This field is optional.</p> </note>',
-        }),
-    ).exactOptional(),
-    DeliveryS3KeyPrefix: DeliveryS3KeyPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The prefix for the Amazon S3 bucket. </p> <note> <p>This field is optional.</p> </note>',
-        }),
-    ).exactOptional(),
-    ConformancePackInputParameters: ConformancePackInputParametersSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of <code>ConformancePackInputParameter</code> objects.' }),
-    ).exactOptional(),
-    TemplateSSMDocumentDetails: TemplateSSMDocumentDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object of type <code>TemplateSSMDocumentDetails</code>, which contains the name or the Amazon Resource Name (ARN) of the Amazon Web Services Systems Manager document (SSM document) and the version of the SSM document that is used to create a conformance pack.',
-        }),
-    ).exactOptional(),
+    ConformancePackName: ConformancePackNameSchema.openapi({
+      description: 'The unique name of the conformance pack you want to deploy.',
+    }),
+    TemplateS3Uri: TemplateS3UriSchema.exactOptional().openapi({
+      description:
+        '<p>The location of the file containing the template body (<code>s3://bucketname/prefix</code>). The uri must point to a conformance pack template (max size: 300 KB) that is located in an Amazon S3 bucket in the same Region as the conformance pack. </p> <note> <p>You must have access to read Amazon S3 bucket.</p> </note>',
+    }),
+    TemplateBody: TemplateBodySchema.exactOptional().openapi({
+      description:
+        '<p>A string containing the full conformance pack template body. The structure containing the template body has a minimum length of 1 byte and a maximum length of 51,200 bytes.</p> <note> <p>You can use a YAML template with two resource types: Config rule (<code>AWS::Config::ConfigRule</code>) and remediation action (<code>AWS::Config::RemediationConfiguration</code>).</p> </note>',
+    }),
+    DeliveryS3Bucket: DeliveryS3BucketSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the Amazon S3 bucket where Config stores conformance pack templates.</p> <note> <p>This field is optional.</p> </note>',
+    }),
+    DeliveryS3KeyPrefix: DeliveryS3KeyPrefixSchema.exactOptional().openapi({
+      description:
+        '<p>The prefix for the Amazon S3 bucket. </p> <note> <p>This field is optional.</p> </note>',
+    }),
+    ConformancePackInputParameters: ConformancePackInputParametersSchema.exactOptional().openapi({
+      description: 'A list of <code>ConformancePackInputParameter</code> objects.',
+    }),
+    TemplateSSMDocumentDetails: TemplateSSMDocumentDetailsSchema.exactOptional().openapi({
+      description:
+        'An object of type <code>TemplateSSMDocumentDetails</code>, which contains the name or the Amazon Resource Name (ARN) of the Amazon Web Services Systems Manager document (SSM document) and the version of the SSM document that is used to create a conformance pack.',
+    }),
   })
   .openapi({ required: ['ConformancePackName'], title: 'PutConformancePackRequest' })
   .openapi('PutConformancePackRequest')
@@ -7157,14 +5477,10 @@ const MaxNumberOfConformancePacksExceededExceptionSchema = z
 
 const PutDeliveryChannelRequestSchema = z
   .object({
-    DeliveryChannel: DeliveryChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration delivery channel object that delivers the configuration information to an Amazon S3 bucket and to an Amazon SNS topic.',
-        }),
-    ),
+    DeliveryChannel: DeliveryChannelSchema.openapi({
+      description:
+        'The configuration delivery channel object that delivers the configuration information to an Amazon S3 bucket and to an Amazon SNS topic.',
+    }),
   })
   .openapi({
     required: ['DeliveryChannel'],
@@ -7197,40 +5513,23 @@ const OrderingTimestampSchema = z.iso.datetime({ offset: true }).openapi('Orderi
 
 const EvaluationSchema = z
   .object({
-    ComplianceResourceType: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of Amazon Web Services resource that was evaluated.' }),
-    ),
-    ComplianceResourceId: BaseResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the Amazon Web Services resource that was evaluated.' }),
-    ),
-    ComplianceType: ComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the Amazon Web Services resource complies with the Config rule that it was evaluated against.</p> <p>For the <code>Evaluation</code> data type, Config supports only the <code>COMPLIANT</code>, <code>NON_COMPLIANT</code>, and <code>NOT_APPLICABLE</code> values. Config does not support the <code>INSUFFICIENT_DATA</code> value for this data type.</p> <p>Similarly, Config does not accept <code>INSUFFICIENT_DATA</code> as the value for <code>ComplianceType</code> from a <code>PutEvaluations</code> request. For example, an Lambda function for a custom Config rule cannot pass an <code>INSUFFICIENT_DATA</code> value to Config.</p>',
-        }),
-    ),
-    Annotation: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Supplementary information about how the evaluation determined the compliance.',
-        }),
-    ).exactOptional(),
-    OrderingTimestamp: OrderingTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the event in Config that triggered the evaluation. For event-based evaluations, the time indicates when Config created the configuration item that triggered the evaluation. For periodic evaluations, the time indicates when Config triggered the evaluation at the frequency that you specified (for example, every 24 hours).',
-        }),
-    ),
+    ComplianceResourceType: StringWithCharLimit256Schema.openapi({
+      description: 'The type of Amazon Web Services resource that was evaluated.',
+    }),
+    ComplianceResourceId: BaseResourceIdSchema.openapi({
+      description: 'The ID of the Amazon Web Services resource that was evaluated.',
+    }),
+    ComplianceType: ComplianceTypeSchema.openapi({
+      description:
+        '<p>Indicates whether the Amazon Web Services resource complies with the Config rule that it was evaluated against.</p> <p>For the <code>Evaluation</code> data type, Config supports only the <code>COMPLIANT</code>, <code>NON_COMPLIANT</code>, and <code>NOT_APPLICABLE</code> values. Config does not support the <code>INSUFFICIENT_DATA</code> value for this data type.</p> <p>Similarly, Config does not accept <code>INSUFFICIENT_DATA</code> as the value for <code>ComplianceType</code> from a <code>PutEvaluations</code> request. For example, an Lambda function for a custom Config rule cannot pass an <code>INSUFFICIENT_DATA</code> value to Config.</p>',
+    }),
+    Annotation: StringWithCharLimit256Schema.exactOptional().openapi({
+      description: 'Supplementary information about how the evaluation determined the compliance.',
+    }),
+    OrderingTimestamp: OrderingTimestampSchema.openapi({
+      description:
+        'The time of the event in Config that triggered the evaluation. For event-based evaluations, the time indicates when Config created the configuration item that triggered the evaluation. For periodic evaluations, the time indicates when Config triggered the evaluation at the frequency that you specified (for example, every 24 hours).',
+    }),
   })
   .openapi({
     required: [
@@ -7248,84 +5547,58 @@ const EvaluationsSchema = z.array(EvaluationSchema).min(0).max(100).openapi('Eva
 
 const PutEvaluationsResponseSchema = z
   .object({
-    FailedEvaluations: EvaluationsSchema.and(
-      z.any().openapi({ description: 'Requests that failed because of a client or server error.' }),
-    ).exactOptional(),
+    FailedEvaluations: EvaluationsSchema.exactOptional().openapi({
+      description: 'Requests that failed because of a client or server error.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('PutEvaluationsResponse')
 
 const PutEvaluationsRequestSchema = z
   .object({
-    Evaluations: EvaluationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The assessments that the Lambda function performs. Each evaluation identifies an Amazon Web Services resource and indicates whether it complies with the Config rule that invokes the Lambda function.',
-        }),
-    ).exactOptional(),
-    ResultToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An encrypted token that associates an evaluation with an Config rule. Identifies the rule and the event that triggered the evaluation.',
-        }),
-    ),
-    TestMode: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Use this parameter to specify a test run for <code>PutEvaluations</code>. You can verify whether your Lambda function will deliver evaluation results to Config. No updates occur to your existing evaluations, and evaluation results are not sent to Config.</p> <note> <p>When <code>TestMode</code> is <code>true</code>, <code>PutEvaluations</code> doesn't require a valid value for the <code>ResultToken</code> parameter, but the value cannot be null.</p> </note>",
-        }),
-    ).exactOptional(),
+    Evaluations: EvaluationsSchema.exactOptional().openapi({
+      description:
+        'The assessments that the Lambda function performs. Each evaluation identifies an Amazon Web Services resource and indicates whether it complies with the Config rule that invokes the Lambda function.',
+    }),
+    ResultToken: StringSchema.openapi({
+      description:
+        'An encrypted token that associates an evaluation with an Config rule. Identifies the rule and the event that triggered the evaluation.',
+    }),
+    TestMode: BooleanSchema.exactOptional().openapi({
+      description:
+        "<p>Use this parameter to specify a test run for <code>PutEvaluations</code>. You can verify whether your Lambda function will deliver evaluation results to Config. No updates occur to your existing evaluations, and evaluation results are not sent to Config.</p> <note> <p>When <code>TestMode</code> is <code>true</code>, <code>PutEvaluations</code> doesn't require a valid value for the <code>ResultToken</code> parameter, but the value cannot be null.</p> </note>",
+    }),
   })
   .openapi({ required: ['ResultToken'], title: 'PutEvaluationsRequest', description: '<p/>' })
   .openapi('PutEvaluationsRequest')
 
 const InvalidResultTokenExceptionSchema = z.any().openapi('InvalidResultTokenException')
 
-const PutExternalEvaluationResponseSchema = z.object({}).openapi('PutExternalEvaluationResponse')
+const PutExternalEvaluationResponseSchema = z
+  .looseObject({})
+  .openapi('PutExternalEvaluationResponse')
 
 const ExternalEvaluationSchema = z
   .object({
-    ComplianceResourceType: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The evaluated compliance resource type. Config accepts <code>AWS::::Account</code> resource type.',
-        }),
-    ),
-    ComplianceResourceId: BaseResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The evaluated compliance resource ID. Config accepts only Amazon Web Services account ID.',
-        }),
-    ),
-    ComplianceType: ComplianceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The compliance of the Amazon Web Services resource. The valid values are <code>COMPLIANT, NON_COMPLIANT, </code> and <code>NOT_APPLICABLE</code>.',
-        }),
-    ),
-    Annotation: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Supplementary information about the reason of compliance. For example, this task was completed on a specific date.',
-        }),
-    ).exactOptional(),
-    OrderingTimestamp: OrderingTimestampSchema.and(
-      z.any().openapi({ description: 'The time when the compliance was recorded. ' }),
-    ),
+    ComplianceResourceType: StringWithCharLimit256Schema.openapi({
+      description:
+        'The evaluated compliance resource type. Config accepts <code>AWS::::Account</code> resource type.',
+    }),
+    ComplianceResourceId: BaseResourceIdSchema.openapi({
+      description:
+        'The evaluated compliance resource ID. Config accepts only Amazon Web Services account ID.',
+    }),
+    ComplianceType: ComplianceTypeSchema.openapi({
+      description:
+        'The compliance of the Amazon Web Services resource. The valid values are <code>COMPLIANT, NON_COMPLIANT, </code> and <code>NOT_APPLICABLE</code>.',
+    }),
+    Annotation: StringWithCharLimit256Schema.exactOptional().openapi({
+      description:
+        'Supplementary information about the reason of compliance. For example, this task was completed on a specific date.',
+    }),
+    OrderingTimestamp: OrderingTimestampSchema.openapi({
+      description: 'The time when the compliance was recorded. ',
+    }),
   })
   .openapi({
     required: [
@@ -7341,17 +5614,11 @@ const ExternalEvaluationSchema = z
 
 const PutExternalEvaluationRequestSchema = z
   .object({
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the Config rule.' }),
-    ),
-    ExternalEvaluation: ExternalEvaluationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>ExternalEvaluation</code> object that provides details about compliance.',
-        }),
-    ),
+    ConfigRuleName: ConfigRuleNameSchema.openapi({ description: 'The name of the Config rule.' }),
+    ExternalEvaluation: ExternalEvaluationSchema.openapi({
+      description:
+        'An <code>ExternalEvaluation</code> object that provides details about compliance.',
+    }),
   })
   .openapi({
     required: ['ConfigRuleName', 'ExternalEvaluation'],
@@ -7361,101 +5628,58 @@ const PutExternalEvaluationRequestSchema = z
 
 const PutOrganizationConfigRuleResponseSchema = z
   .object({
-    OrganizationConfigRuleArn: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of an organization Config rule.' }),
-    ).exactOptional(),
+    OrganizationConfigRuleArn: StringWithCharLimit256Schema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of an organization Config rule.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutOrganizationConfigRuleResponse')
 
 const OrganizationCustomPolicyRuleMetadataSchema = z
   .object({
-    Description: StringWithCharLimit256Min0Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description that you provide for your organization Config Custom Policy rule.',
-        }),
-    ).exactOptional(),
-    OrganizationConfigRuleTriggerTypes: OrganizationConfigRuleTriggerTypeNoSNsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of notification that initiates Config to run an evaluation for a rule. For Config Custom Policy rules, Config supports change-initiated notification types:</p> <ul> <li> <p> <code>ConfigurationItemChangeNotification</code> - Initiates an evaluation when Config delivers a configuration item as a result of a resource change.</p> </li> <li> <p> <code>OversizedConfigurationItemChangeNotification</code> - Initiates an evaluation when Config delivers an oversized configuration item. Config may generate this notification type when a resource changes and the notification exceeds the maximum size allowed by Amazon SNS.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    InputParameters: StringWithCharLimit2048Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string, in JSON format, that is passed to your organization Config Custom Policy rule.',
-        }),
-    ).exactOptional(),
-    MaximumExecutionFrequency: MaximumExecutionFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum frequency with which Config runs evaluations for a rule. Your Config Custom Policy rule is triggered when Config delivers the configuration snapshot. For more information, see <a>ConfigSnapshotDeliveryProperties</a>.',
-        }),
-    ).exactOptional(),
-    ResourceTypesScope: ResourceTypesScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of the Amazon Web Services resource that was evaluated.',
-        }),
-    ).exactOptional(),
-    ResourceIdScope: StringWithCharLimit768Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the Amazon Web Services resource that was evaluated.' }),
-    ).exactOptional(),
-    TagKeyScope: StringWithCharLimit128Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that make up a tag. A key is a general label that acts like a category for more specific tag values.',
-        }),
-    ).exactOptional(),
-    TagValueScope: StringWithCharLimit256Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key).',
-        }),
-    ).exactOptional(),
-    PolicyRuntime: PolicyRuntimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The runtime system for your organization Config Custom Policy rules. Guard is a policy-as-code language that allows you to write policies that are enforced by Config Custom Policy rules. For more information about Guard, see the <a href="https://github.com/aws-cloudformation/cloudformation-guard">Guard GitHub Repository</a>.',
-        }),
-    ),
-    PolicyText: PolicyTextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The policy definition containing the logic for your organization Config Custom Policy rule.',
-        }),
-    ),
-    DebugLogDeliveryAccounts: DebugLogDeliveryAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of accounts that you can enable debug logging for your organization Config Custom Policy rule. List is null when debug logging is enabled for all accounts.',
-        }),
-    ).exactOptional(),
+    Description: StringWithCharLimit256Min0Schema.exactOptional().openapi({
+      description:
+        'The description that you provide for your organization Config Custom Policy rule.',
+    }),
+    OrganizationConfigRuleTriggerTypes:
+      OrganizationConfigRuleTriggerTypeNoSNsSchema.exactOptional().openapi({
+        description:
+          '<p>The type of notification that initiates Config to run an evaluation for a rule. For Config Custom Policy rules, Config supports change-initiated notification types:</p> <ul> <li> <p> <code>ConfigurationItemChangeNotification</code> - Initiates an evaluation when Config delivers a configuration item as a result of a resource change.</p> </li> <li> <p> <code>OversizedConfigurationItemChangeNotification</code> - Initiates an evaluation when Config delivers an oversized configuration item. Config may generate this notification type when a resource changes and the notification exceeds the maximum size allowed by Amazon SNS.</p> </li> </ul>',
+      }),
+    InputParameters: StringWithCharLimit2048Schema.exactOptional().openapi({
+      description:
+        'A string, in JSON format, that is passed to your organization Config Custom Policy rule.',
+    }),
+    MaximumExecutionFrequency: MaximumExecutionFrequencySchema.exactOptional().openapi({
+      description:
+        'The maximum frequency with which Config runs evaluations for a rule. Your Config Custom Policy rule is triggered when Config delivers the configuration snapshot. For more information, see <a>ConfigSnapshotDeliveryProperties</a>.',
+    }),
+    ResourceTypesScope: ResourceTypesScopeSchema.exactOptional().openapi({
+      description: 'The type of the Amazon Web Services resource that was evaluated.',
+    }),
+    ResourceIdScope: StringWithCharLimit768Schema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services resource that was evaluated.',
+    }),
+    TagKeyScope: StringWithCharLimit128Schema.exactOptional().openapi({
+      description:
+        'One part of a key-value pair that make up a tag. A key is a general label that acts like a category for more specific tag values.',
+    }),
+    TagValueScope: StringWithCharLimit256Schema.exactOptional().openapi({
+      description:
+        'The optional part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key).',
+    }),
+    PolicyRuntime: PolicyRuntimeSchema.openapi({
+      description:
+        'The runtime system for your organization Config Custom Policy rules. Guard is a policy-as-code language that allows you to write policies that are enforced by Config Custom Policy rules. For more information about Guard, see the <a href="https://github.com/aws-cloudformation/cloudformation-guard">Guard GitHub Repository</a>.',
+    }),
+    PolicyText: PolicyTextSchema.openapi({
+      description:
+        'The policy definition containing the logic for your organization Config Custom Policy rule.',
+    }),
+    DebugLogDeliveryAccounts: DebugLogDeliveryAccountsSchema.exactOptional().openapi({
+      description:
+        'A list of accounts that you can enable debug logging for your organization Config Custom Policy rule. List is null when debug logging is enabled for all accounts.',
+    }),
   })
   .openapi({
     required: ['PolicyRuntime', 'PolicyText'],
@@ -7466,41 +5690,26 @@ const OrganizationCustomPolicyRuleMetadataSchema = z
 
 const PutOrganizationConfigRuleRequestSchema = z
   .object({
-    OrganizationConfigRuleName: OrganizationConfigRuleNameSchema.and(
-      z.any().openapi({ description: 'The name that you assign to an organization Config rule.' }),
-    ),
-    OrganizationManagedRuleMetadata: OrganizationManagedRuleMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>OrganizationManagedRuleMetadata</code> object. This object specifies organization managed rule metadata such as resource type and ID of Amazon Web Services resource along with the rule identifier. It also provides the frequency with which you want Config to run evaluations for the rule if the trigger type is periodic.',
-        }),
-    ).exactOptional(),
-    OrganizationCustomRuleMetadata: OrganizationCustomRuleMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>OrganizationCustomRuleMetadata</code> object. This object specifies organization custom rule metadata such as resource type, resource ID of Amazon Web Services resource, Lambda function ARN, and organization trigger types that trigger Config to evaluate your Amazon Web Services resources against a rule. It also provides the frequency with which you want Config to run evaluations for the rule if the trigger type is periodic.',
-        }),
-    ).exactOptional(),
-    ExcludedAccounts: ExcludedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A comma-separated list of accounts that you want to exclude from an organization Config rule.',
-        }),
-    ).exactOptional(),
-    OrganizationCustomPolicyRuleMetadata: OrganizationCustomPolicyRuleMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An <code>OrganizationCustomPolicyRuleMetadata</code> object. This object specifies metadata for your organization's Config Custom Policy rule. The metadata includes the runtime system in use, which accounts have debug logging enabled, and other custom rule metadata, such as resource type, resource ID of Amazon Web Services resource, and organization trigger types that initiate Config to evaluate Amazon Web Services resources against a rule.",
-        }),
-    ).exactOptional(),
+    OrganizationConfigRuleName: OrganizationConfigRuleNameSchema.openapi({
+      description: 'The name that you assign to an organization Config rule.',
+    }),
+    OrganizationManagedRuleMetadata: OrganizationManagedRuleMetadataSchema.exactOptional().openapi({
+      description:
+        'An <code>OrganizationManagedRuleMetadata</code> object. This object specifies organization managed rule metadata such as resource type and ID of Amazon Web Services resource along with the rule identifier. It also provides the frequency with which you want Config to run evaluations for the rule if the trigger type is periodic.',
+    }),
+    OrganizationCustomRuleMetadata: OrganizationCustomRuleMetadataSchema.exactOptional().openapi({
+      description:
+        'An <code>OrganizationCustomRuleMetadata</code> object. This object specifies organization custom rule metadata such as resource type, resource ID of Amazon Web Services resource, Lambda function ARN, and organization trigger types that trigger Config to evaluate your Amazon Web Services resources against a rule. It also provides the frequency with which you want Config to run evaluations for the rule if the trigger type is periodic.',
+    }),
+    ExcludedAccounts: ExcludedAccountsSchema.exactOptional().openapi({
+      description:
+        'A comma-separated list of accounts that you want to exclude from an organization Config rule.',
+    }),
+    OrganizationCustomPolicyRuleMetadata:
+      OrganizationCustomPolicyRuleMetadataSchema.exactOptional().openapi({
+        description:
+          "An <code>OrganizationCustomPolicyRuleMetadata</code> object. This object specifies metadata for your organization's Config Custom Policy rule. The metadata includes the runtime system in use, which accounts have debug logging enabled, and other custom rule metadata, such as resource type, resource ID of Amazon Web Services resource, and organization trigger types that initiate Config to evaluate Amazon Web Services resources against a rule.",
+      }),
   })
   .openapi({ required: ['OrganizationConfigRuleName'], title: 'PutOrganizationConfigRuleRequest' })
   .openapi('PutOrganizationConfigRuleRequest')
@@ -7511,65 +5720,41 @@ const MaxNumberOfOrganizationConfigRulesExceededExceptionSchema = z
 
 const PutOrganizationConformancePackResponseSchema = z
   .object({
-    OrganizationConformancePackArn: StringWithCharLimit256Schema.and(
-      z.any().openapi({ description: 'ARN of the organization conformance pack.' }),
-    ).exactOptional(),
+    OrganizationConformancePackArn: StringWithCharLimit256Schema.exactOptional().openapi({
+      description: 'ARN of the organization conformance pack.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutOrganizationConformancePackResponse')
 
 const PutOrganizationConformancePackRequestSchema = z
   .object({
-    OrganizationConformancePackName: OrganizationConformancePackNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Name of the organization conformance pack you want to create.' }),
-    ),
-    TemplateS3Uri: TemplateS3UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Location of file containing the template body. The uri must point to the conformance pack template (max size: 300 KB).</p> <note> <p>You must have access to read Amazon S3 bucket.</p> </note>',
-        }),
-    ).exactOptional(),
-    TemplateBody: TemplateBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string containing full conformance pack template body. Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes.',
-        }),
-    ).exactOptional(),
-    DeliveryS3Bucket: DeliveryS3BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Amazon S3 bucket where Config stores conformance pack templates.</p> <note> <p>This field is optional. If used, it must be prefixed with <code>awsconfigconforms</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    DeliveryS3KeyPrefix: DeliveryS3KeyPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The prefix for the Amazon S3 bucket.</p> <note> <p>This field is optional.</p> </note>',
-        }),
-    ).exactOptional(),
-    ConformancePackInputParameters: ConformancePackInputParametersSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of <code>ConformancePackInputParameter</code> objects.' }),
-    ).exactOptional(),
-    ExcludedAccounts: ExcludedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of Amazon Web Services accounts to be excluded from an organization conformance pack while deploying a conformance pack.',
-        }),
-    ).exactOptional(),
+    OrganizationConformancePackName: OrganizationConformancePackNameSchema.openapi({
+      description: 'Name of the organization conformance pack you want to create.',
+    }),
+    TemplateS3Uri: TemplateS3UriSchema.exactOptional().openapi({
+      description:
+        '<p>Location of file containing the template body. The uri must point to the conformance pack template (max size: 300 KB).</p> <note> <p>You must have access to read Amazon S3 bucket.</p> </note>',
+    }),
+    TemplateBody: TemplateBodySchema.exactOptional().openapi({
+      description:
+        'A string containing full conformance pack template body. Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes.',
+    }),
+    DeliveryS3Bucket: DeliveryS3BucketSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the Amazon S3 bucket where Config stores conformance pack templates.</p> <note> <p>This field is optional. If used, it must be prefixed with <code>awsconfigconforms</code>.</p> </note>',
+    }),
+    DeliveryS3KeyPrefix: DeliveryS3KeyPrefixSchema.exactOptional().openapi({
+      description:
+        '<p>The prefix for the Amazon S3 bucket.</p> <note> <p>This field is optional.</p> </note>',
+    }),
+    ConformancePackInputParameters: ConformancePackInputParametersSchema.exactOptional().openapi({
+      description: 'A list of <code>ConformancePackInputParameter</code> objects.',
+    }),
+    ExcludedAccounts: ExcludedAccountsSchema.exactOptional().openapi({
+      description:
+        'A list of Amazon Web Services accounts to be excluded from an organization conformance pack while deploying a conformance pack.',
+    }),
   })
   .openapi({
     required: ['OrganizationConformancePackName'],
@@ -7585,43 +5770,21 @@ const OrganizationConformancePackTemplateValidationExceptionSchema = z
   .any()
   .openapi('OrganizationConformancePackTemplateValidationException')
 
-const FailedRemediationBatchSchema = z
-  .object({
-    FailureMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Returns a failure message. For example, the resource is already compliant.',
-        }),
-    ).exactOptional(),
-    FailedItems: RemediationConfigurationsSchema.and(
-      z.any().openapi({ description: 'Returns remediation configurations of the failed items.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'List of each of the failed remediations with specific reasons.',
-    required: [],
-  })
-  .openapi('FailedRemediationBatch')
-
-const FailedRemediationBatchesSchema = z
-  .array(FailedRemediationBatchSchema)
-  .openapi('FailedRemediationBatches')
-
-const PutRemediationConfigurationsResponseSchema = z
-  .object({
-    FailedBatches: FailedRemediationBatchesSchema.and(
-      z.any().openapi({ description: 'Returns a list of failed remediation batch objects.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('PutRemediationConfigurationsResponse')
+const PutRemediationConfigurationsResponseSchema: z.ZodType<PutRemediationConfigurationsResponseType> =
+  z
+    .object({
+      FailedBatches: FailedRemediationBatchesSchema.exactOptional().openapi({
+        description: 'Returns a list of failed remediation batch objects.',
+      }),
+    })
+    .openapi({ required: [] })
+    .openapi('PutRemediationConfigurationsResponse')
 
 const PutRemediationConfigurationsRequestSchema = z
   .object({
-    RemediationConfigurations: RemediationConfigurationsSchema.and(
-      z.any().openapi({ description: 'A list of remediation configuration objects.' }),
-    ),
+    RemediationConfigurations: RemediationConfigurationsSchema.openapi({
+      description: 'A list of remediation configuration objects.',
+    }),
   })
   .openapi({
     required: ['RemediationConfigurations'],
@@ -7631,20 +5794,12 @@ const PutRemediationConfigurationsRequestSchema = z
 
 const FailedRemediationExceptionBatchSchema = z
   .object({
-    FailureMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Returns a failure message. For example, the auto-remediation has failed.',
-        }),
-    ).exactOptional(),
-    FailedItems: RemediationExceptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Returns remediation exception resource key object of the failed items.',
-        }),
-    ).exactOptional(),
+    FailureMessage: StringSchema.exactOptional().openapi({
+      description: 'Returns a failure message. For example, the auto-remediation has failed.',
+    }),
+    FailedItems: RemediationExceptionsSchema.exactOptional().openapi({
+      description: 'Returns remediation exception resource key object of the failed items.',
+    }),
   })
   .openapi({
     description: 'List of each of the failed remediation exceptions with specific reasons.',
@@ -7658,46 +5813,30 @@ const FailedRemediationExceptionBatchesSchema = z
 
 const PutRemediationExceptionsResponseSchema = z
   .object({
-    FailedBatches: FailedRemediationExceptionBatchesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns a list of failed remediation exceptions batch objects. Each object in the batch consists of a list of failed items and failure messages.',
-        }),
-    ).exactOptional(),
+    FailedBatches: FailedRemediationExceptionBatchesSchema.exactOptional().openapi({
+      description:
+        'Returns a list of failed remediation exceptions batch objects. Each object in the batch consists of a list of failed items and failure messages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutRemediationExceptionsResponse')
 
 const PutRemediationExceptionsRequestSchema = z
   .object({
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Config rule for which you want to create remediation exception.',
-        }),
-    ),
-    ResourceKeys: RemediationExceptionResourceKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An exception list of resource exception keys to be processed with the current request. Config adds exception for each resource key. For example, Config adds 3 exceptions for 3 resource keys. ',
-        }),
-    ),
-    Message: StringWithCharLimit1024Schema.and(
-      z.any().openapi({ description: 'The message contains an explanation of the exception.' }),
-    ).exactOptional(),
-    ExpirationTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The exception is automatically deleted after the expiration date.',
-        }),
-    ).exactOptional(),
+    ConfigRuleName: ConfigRuleNameSchema.openapi({
+      description:
+        'The name of the Config rule for which you want to create remediation exception.',
+    }),
+    ResourceKeys: RemediationExceptionResourceKeysSchema.openapi({
+      description:
+        'An exception list of resource exception keys to be processed with the current request. Config adds exception for each resource key. For example, Config adds 3 exceptions for 3 resource keys. ',
+    }),
+    Message: StringWithCharLimit1024Schema.exactOptional().openapi({
+      description: 'The message contains an explanation of the exception.',
+    }),
+    ExpirationTime: DateSchema.exactOptional().openapi({
+      description: 'The exception is automatically deleted after the expiration date.',
+    }),
   })
   .openapi({
     required: ['ConfigRuleName', 'ResourceKeys'],
@@ -7714,43 +5853,25 @@ const SchemaVersionIdSchema = z
 
 const PutResourceConfigRequestSchema = z
   .object({
-    ResourceType: ResourceTypeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of the resource. The custom resource type must be registered with CloudFormation. </p> <note> <p>You cannot use the organization names “amzn”, “amazon”, “alexa”, “custom” with custom resource types. It is the first part of the ResourceType up to the first ::.</p> </note>',
-        }),
-    ),
-    SchemaVersionId: SchemaVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Version of the schema registered for the ResourceType in CloudFormation.',
-        }),
-    ),
-    ResourceId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'Unique identifier of the resource.' }),
-    ),
-    ResourceName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'Name of the resource.' }),
-    ).exactOptional(),
-    Configuration: ConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The configuration object of the resource in valid JSON format. It must match the schema registered with CloudFormation.</p> <note> <p>The configuration JSON must not exceed 64 KB.</p> </note>',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Tags associated with the resource.</p> <note> <p>This field is not to be confused with the Amazon Web Services-wide tag feature for Amazon Web Services resources. Tags for <code>PutResourceConfig</code> are tags that you supply for the configuration items of your custom resources.</p> </note>',
-        }),
-    ).exactOptional(),
+    ResourceType: ResourceTypeStringSchema.openapi({
+      description:
+        '<p>The type of the resource. The custom resource type must be registered with CloudFormation. </p> <note> <p>You cannot use the organization names “amzn”, “amazon”, “alexa”, “custom” with custom resource types. It is the first part of the ResourceType up to the first ::.</p> </note>',
+    }),
+    SchemaVersionId: SchemaVersionIdSchema.openapi({
+      description: 'Version of the schema registered for the ResourceType in CloudFormation.',
+    }),
+    ResourceId: ResourceIdSchema.openapi({ description: 'Unique identifier of the resource.' }),
+    ResourceName: ResourceNameSchema.exactOptional().openapi({
+      description: 'Name of the resource.',
+    }),
+    Configuration: ConfigurationSchema.openapi({
+      description:
+        '<p>The configuration object of the resource in valid JSON format. It must match the schema registered with CloudFormation.</p> <note> <p>The configuration JSON must not exceed 64 KB.</p> </note>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>Tags associated with the resource.</p> <note> <p>This field is not to be confused with the Amazon Web Services-wide tag feature for Amazon Web Services resources. Tags for <code>PutResourceConfig</code> are tags that you supply for the configuration items of your custom resources.</p> </note>',
+    }),
   })
   .openapi({
     required: ['ResourceType', 'SchemaVersionId', 'ResourceId', 'Configuration'],
@@ -7764,23 +5885,19 @@ const MaxActiveResourcesExceededExceptionSchema = z
 
 const PutRetentionConfigurationResponseSchema = z
   .object({
-    RetentionConfiguration: RetentionConfigurationSchema.and(
-      z.any().openapi({ description: 'Returns a retention configuration object.' }),
-    ).exactOptional(),
+    RetentionConfiguration: RetentionConfigurationSchema.exactOptional().openapi({
+      description: 'Returns a retention configuration object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutRetentionConfigurationResponse')
 
 const PutRetentionConfigurationRequestSchema = z
   .object({
-    RetentionPeriodInDays: RetentionPeriodInDaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Number of days Config stores your historical information.</p> <note> <p>Currently, only applicable to the configuration item history.</p> </note>',
-        }),
-    ),
+    RetentionPeriodInDays: RetentionPeriodInDaysSchema.openapi({
+      description:
+        '<p>Number of days Config stores your historical information.</p> <note> <p>Currently, only applicable to the configuration item history.</p> </note>',
+    }),
   })
   .openapi({ required: ['RetentionPeriodInDays'], title: 'PutRetentionConfigurationRequest' })
   .openapi('PutRetentionConfigurationRequest')
@@ -7791,31 +5908,23 @@ const MaxNumberOfRetentionConfigurationsExceededExceptionSchema = z
 
 const PutStoredQueryResponseSchema = z
   .object({
-    QueryArn: QueryArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Resource Name (ARN) of the query. For example, arn:partition:service:region:account-id:resource-type/resource-name/resource-id.',
-        }),
-    ).exactOptional(),
+    QueryArn: QueryArnSchema.exactOptional().openapi({
+      description:
+        'Amazon Resource Name (ARN) of the query. For example, arn:partition:service:region:account-id:resource-type/resource-name/resource-id.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutStoredQueryResponse')
 
 const PutStoredQueryRequestSchema = z
   .object({
-    StoredQuery: StoredQuerySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of <code>StoredQuery</code> objects. The mandatory fields are <code>QueryName</code> and <code>Expression</code>.</p> <note> <p>When you are creating a query, you must provide a query name and an expression. When you are updating a query, you must provide a query name but updating the description is optional.</p> </note>',
-        }),
-    ),
-    Tags: TagsListSchema.and(
-      z.any().openapi({ description: 'A list of <code>Tags</code> object.' }),
-    ).exactOptional(),
+    StoredQuery: StoredQuerySchema.openapi({
+      description:
+        '<p>A list of <code>StoredQuery</code> objects. The mandatory fields are <code>QueryName</code> and <code>Expression</code>.</p> <note> <p>When you are creating a query, you must provide a query name and an expression. When you are updating a query, you must provide a query name but updating the description is optional.</p> </note>',
+    }),
+    Tags: TagsListSchema.exactOptional().openapi({
+      description: 'A list of <code>Tags</code> object.',
+    }),
   })
   .openapi({ required: ['StoredQuery'], title: 'PutStoredQueryRequest' })
   .openapi('PutStoredQueryRequest')
@@ -7831,11 +5940,7 @@ const ResultsSchema = z.array(StringSchema).openapi('Results')
 const FieldNameSchema = z.string().openapi('FieldName')
 
 const FieldInfoSchema = z
-  .object({
-    Name: FieldNameSchema.and(
-      z.any().openapi({ description: 'Name of the field.' }),
-    ).exactOptional(),
-  })
+  .object({ Name: FieldNameSchema.exactOptional().openapi({ description: 'Name of the field.' }) })
   .openapi({ description: 'Details about the fields such as name of the field.', required: [] })
   .openapi('FieldInfo')
 
@@ -7843,27 +5948,23 @@ const FieldInfoListSchema = z.array(FieldInfoSchema).openapi('FieldInfoList')
 
 const QueryInfoSchema = z
   .object({
-    SelectFields: FieldInfoListSchema.and(
-      z.any().openapi({ description: 'Returns a <code>FieldInfo</code> object.' }),
-    ).exactOptional(),
+    SelectFields: FieldInfoListSchema.exactOptional().openapi({
+      description: 'Returns a <code>FieldInfo</code> object.',
+    }),
   })
   .openapi({ description: 'Details about the query.', required: [] })
   .openapi('QueryInfo')
 
 const SelectAggregateResourceConfigResponseSchema = z
   .object({
-    Results: ResultsSchema.and(
-      z.any().openapi({ description: 'Returns the results for the SQL query.' }),
-    ).exactOptional(),
+    Results: ResultsSchema.exactOptional().openapi({
+      description: 'Returns the results for the SQL query.',
+    }),
     QueryInfo: QueryInfoSchema.exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The nextToken string returned in a previous request that you use to request the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The nextToken string returned in a previous request that you use to request the next page of results in a paginated response. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SelectAggregateResourceConfigResponse')
@@ -7872,33 +5973,21 @@ const ExpressionSchema = z.string().min(1).max(4096).openapi('Expression')
 
 const SelectAggregateResourceConfigRequestSchema = z
   .object({
-    Expression: ExpressionSchema.and(
-      z.any().openapi({ description: 'The SQL query SELECT command. ' }),
-    ),
-    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration aggregator.' }),
-    ),
-    Limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of query results returned on each page. ' }),
-    ).exactOptional(),
-    MaxResults: LimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of query results returned on each page. Config also allows the Limit request parameter.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The nextToken string returned in a previous request that you use to request the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    Expression: ExpressionSchema.openapi({ description: 'The SQL query SELECT command. ' }),
+    ConfigurationAggregatorName: ConfigurationAggregatorNameSchema.openapi({
+      description: 'The name of the configuration aggregator.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of query results returned on each page. ',
+    }),
+    MaxResults: LimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of query results returned on each page. Config also allows the Limit request parameter.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The nextToken string returned in a previous request that you use to request the next page of results in a paginated response. ',
+    }),
   })
   .openapi({
     required: ['Expression', 'ConfigurationAggregatorName'],
@@ -7910,48 +5999,38 @@ const InvalidExpressionExceptionSchema = z.any().openapi('InvalidExpressionExcep
 
 const SelectResourceConfigResponseSchema = z
   .object({
-    Results: ResultsSchema.and(
-      z.any().openapi({ description: 'Returns the results for the SQL query.' }),
-    ).exactOptional(),
-    QueryInfo: QueryInfoSchema.and(
-      z.any().openapi({ description: 'Returns the <code>QueryInfo</code> object.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    Results: ResultsSchema.exactOptional().openapi({
+      description: 'Returns the results for the SQL query.',
+    }),
+    QueryInfo: QueryInfoSchema.exactOptional().openapi({
+      description: 'Returns the <code>QueryInfo</code> object.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SelectResourceConfigResponse')
 
 const SelectResourceConfigRequestSchema = z
   .object({
-    Expression: ExpressionSchema.and(
-      z.any().openapi({ description: 'The SQL query <code>SELECT</code> command.' }),
-    ),
-    Limit: LimitSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of query results returned on each page. ' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response. ',
-        }),
-    ).exactOptional(),
+    Expression: ExpressionSchema.openapi({
+      description: 'The SQL query <code>SELECT</code> command.',
+    }),
+    Limit: LimitSchema.exactOptional().openapi({
+      description: 'The maximum number of query results returned on each page. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> string returned in a previous request that you use to request the next page of results in a paginated response. ',
+    }),
   })
   .openapi({ required: ['Expression'], title: 'SelectResourceConfigRequest' })
   .openapi('SelectResourceConfigRequest')
 
 const StartConfigRulesEvaluationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'The output when you start the evaluation for the specified Config rule.',
   })
@@ -7965,27 +6044,19 @@ const ReevaluateConfigRuleNamesSchema = z
 
 const StartConfigRulesEvaluationRequestSchema = z
   .object({
-    ConfigRuleNames: ReevaluateConfigRuleNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of names of Config rules that you want to run evaluations for.',
-        }),
-    ).exactOptional(),
+    ConfigRuleNames: ReevaluateConfigRuleNamesSchema.exactOptional().openapi({
+      description: 'The list of names of Config rules that you want to run evaluations for.',
+    }),
   })
   .openapi({ title: 'StartConfigRulesEvaluationRequest', description: '<p/>', required: [] })
   .openapi('StartConfigRulesEvaluationRequest')
 
 const StartConfigurationRecorderRequestSchema = z
   .object({
-    ConfigurationRecorderName: RecorderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the recorder object that records each configuration change made to the resources.',
-        }),
-    ),
+    ConfigurationRecorderName: RecorderNameSchema.openapi({
+      description:
+        'The name of the recorder object that records each configuration change made to the resources.',
+    }),
   })
   .openapi({
     required: ['ConfigurationRecorderName'],
@@ -8000,43 +6071,27 @@ const NoAvailableDeliveryChannelExceptionSchema = z
 
 const StartRemediationExecutionResponseSchema = z
   .object({
-    FailureMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Returns a failure message. For example, the resource is already compliant.',
-        }),
-    ).exactOptional(),
-    FailedItems: ResourceKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For resources that have failed to start execution, the API returns a resource key object.',
-        }),
-    ).exactOptional(),
+    FailureMessage: StringSchema.exactOptional().openapi({
+      description: 'Returns a failure message. For example, the resource is already compliant.',
+    }),
+    FailedItems: ResourceKeysSchema.exactOptional().openapi({
+      description:
+        'For resources that have failed to start execution, the API returns a resource key object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartRemediationExecutionResponse')
 
 const StartRemediationExecutionRequestSchema = z
   .object({
-    ConfigRuleName: ConfigRuleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of names of Config rules that you want to run remediation execution for.',
-        }),
-    ),
-    ResourceKeys: ResourceKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of resource keys to be processed with the current request. Each element in the list consists of the resource type and resource ID. ',
-        }),
-    ),
+    ConfigRuleName: ConfigRuleNameSchema.openapi({
+      description:
+        'The list of names of Config rules that you want to run remediation execution for.',
+    }),
+    ResourceKeys: ResourceKeysSchema.openapi({
+      description:
+        'A list of resource keys to be processed with the current request. Each element in the list consists of the resource type and resource ID. ',
+    }),
   })
   .openapi({
     required: ['ConfigRuleName', 'ResourceKeys'],
@@ -8046,13 +6101,9 @@ const StartRemediationExecutionRequestSchema = z
 
 const StartResourceEvaluationResponseSchema = z
   .object({
-    ResourceEvaluationId: ResourceEvaluationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique ResourceEvaluationId that is associated with a single execution.',
-        }),
-    ).exactOptional(),
+    ResourceEvaluationId: ResourceEvaluationIdSchema.exactOptional().openapi({
+      description: 'A unique ResourceEvaluationId that is associated with a single execution.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartResourceEvaluationResponse')
@@ -8063,36 +6114,24 @@ const ClientTokenSchema = z.string().min(64).max(256).openapi('ClientToken')
 
 const StartResourceEvaluationRequestSchema = z
   .object({
-    ResourceDetails: ResourceDetailsSchema.and(
-      z.any().openapi({ description: 'Returns a <code>ResourceDetails</code> object.' }),
-    ),
-    EvaluationContext: EvaluationContextSchema.and(
-      z.any().openapi({ description: 'Returns an <code>EvaluationContext</code> object.' }),
-    ).exactOptional(),
-    EvaluationMode: EvaluationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The mode of an evaluation. The valid values for this API are <code>DETECTIVE</code> and <code>PROACTIVE</code>.',
-        }),
-    ),
-    EvaluationTimeout: EvaluationTimeoutSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timeout for an evaluation. The default is 900 seconds. You cannot specify a number greater than 3600. If you specify 0, Config uses the default.',
-        }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A client token is a unique, case-sensitive string of up to 64 ASCII characters. To make an idempotent API request using one of these actions, specify a client token in the request.</p> <note> <p>Avoid reusing the same client token for other API requests. If you retry a request that completed successfully using the same client token and the same parameters, the retry succeeds without performing any further actions. If you retry a successful request using the same client token, but one or more of the parameters are different, other than the Region or Availability Zone, the retry fails with an IdempotentParameterMismatch error.</p> </note>',
-        }),
-    ).exactOptional(),
+    ResourceDetails: ResourceDetailsSchema.openapi({
+      description: 'Returns a <code>ResourceDetails</code> object.',
+    }),
+    EvaluationContext: EvaluationContextSchema.exactOptional().openapi({
+      description: 'Returns an <code>EvaluationContext</code> object.',
+    }),
+    EvaluationMode: EvaluationModeSchema.openapi({
+      description:
+        'The mode of an evaluation. The valid values for this API are <code>DETECTIVE</code> and <code>PROACTIVE</code>.',
+    }),
+    EvaluationTimeout: EvaluationTimeoutSchema.exactOptional().openapi({
+      description:
+        'The timeout for an evaluation. The default is 900 seconds. You cannot specify a number greater than 3600. If you specify 0, Config uses the default.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        '<p>A client token is a unique, case-sensitive string of up to 64 ASCII characters. To make an idempotent API request using one of these actions, specify a client token in the request.</p> <note> <p>Avoid reusing the same client token for other API requests. If you retry a request that completed successfully using the same client token and the same parameters, the retry succeeds without performing any further actions. If you retry a successful request using the same client token, but one or more of the parameters are different, other than the Region or Availability Zone, the retry fails with an IdempotentParameterMismatch error.</p> </note>',
+    }),
   })
   .openapi({
     required: ['ResourceDetails', 'EvaluationMode'],
@@ -8104,14 +6143,10 @@ const IdempotentParameterMismatchSchema = z.any().openapi('IdempotentParameterMi
 
 const StopConfigurationRecorderRequestSchema = z
   .object({
-    ConfigurationRecorderName: RecorderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the recorder object that records each configuration change made to the resources.',
-        }),
-    ),
+    ConfigurationRecorderName: RecorderNameSchema.openapi({
+      description:
+        'The name of the recorder object that records each configuration change made to the resources.',
+    }),
   })
   .openapi({
     required: ['ConfigurationRecorderName'],
@@ -8122,15 +6157,11 @@ const StopConfigurationRecorderRequestSchema = z
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. Currently, the supported resources are <code>ConfigRule</code>, <code>ConfigurationAggregator</code> and <code>AggregatorAuthorization</code>.',
-        }),
-    ),
-    Tags: TagListSchema.and(z.any().openapi({ description: 'An array of tag object.' })),
+    ResourceArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. Currently, the supported resources are <code>ConfigRule</code>, <code>ConfigurationAggregator</code> and <code>AggregatorAuthorization</code>.',
+    }),
+    Tags: TagListSchema.openapi({ description: 'An array of tag object.' }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
@@ -8139,17 +6170,11 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyLis
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. Currently, the supported resources are <code>ConfigRule</code>, <code>ConfigurationAggregator</code> and <code>AggregatorAuthorization</code>.',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The keys of the tags to be removed.' }),
-    ),
+    ResourceArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. Currently, the supported resources are <code>ConfigRule</code>, <code>ConfigurationAggregator</code> and <code>AggregatorAuthorization</code>.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({ description: 'The keys of the tags to be removed.' }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')

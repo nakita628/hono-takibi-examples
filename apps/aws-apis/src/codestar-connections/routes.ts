@@ -13,8 +13,8 @@ const TagValueSchema = z.string().regex(/.*/).min(0).max(256).openapi('TagValue'
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: "The tag's key." })),
-    Value: TagValueSchema.and(z.any().openapi({ description: "The tag's value." })),
+    Key: TagKeySchema.openapi({ description: "The tag's key." }),
+    Value: TagValueSchema.openapi({ description: "The tag's value." }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -27,17 +27,13 @@ const TagListSchema = z.array(TagSchema).min(0).max(200).openapi('TagList')
 
 const CreateConnectionOutputSchema = z
   .object({
-    ConnectionArn: ConnectionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the connection to be created. The ARN is used as the connection reference when the connection is shared between AWS services.</p> <note> <p>The ARN is never reused if the connection is deleted.</p> </note>',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'Specifies the tags applied to the resource.' }),
-    ).exactOptional(),
+    ConnectionArn: ConnectionArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the connection to be created. The ARN is used as the connection reference when the connection is shared between AWS services.</p> <note> <p>The ARN is never reused if the connection is deleted.</p> </note>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'Specifies the tags applied to the resource.',
+    }),
   })
   .openapi({ required: ['ConnectionArn'] })
   .openapi('CreateConnectionOutput')
@@ -62,33 +58,21 @@ const HostArnSchema = z
 
 const CreateConnectionInputSchema = z
   .object({
-    ProviderType: ProviderTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the external provider where your third-party code repository is configured.',
-        }),
-    ).exactOptional(),
-    ConnectionName: ConnectionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the connection to be created. The name must be unique in the calling AWS account.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The key-value pair to use when tagging the resource.' }),
-    ).exactOptional(),
-    HostArn: HostArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the host associated with the connection to be created.',
-        }),
-    ).exactOptional(),
+    ProviderType: ProviderTypeSchema.exactOptional().openapi({
+      description:
+        'The name of the external provider where your third-party code repository is configured.',
+    }),
+    ConnectionName: ConnectionNameSchema.openapi({
+      description:
+        'The name of the connection to be created. The name must be unique in the calling AWS account.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The key-value pair to use when tagging the resource.',
+    }),
+    HostArn: HostArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the host associated with the connection to be created.',
+    }),
   })
   .openapi({ required: ['ConnectionName'], title: 'CreateConnectionInput' })
   .openapi('CreateConnectionInput')
@@ -101,9 +85,9 @@ const ResourceUnavailableExceptionSchema = z.any().openapi('ResourceUnavailableE
 
 const CreateHostOutputSchema = z
   .object({
-    HostArn: HostArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the host to be created.' }),
-    ).exactOptional(),
+    HostArn: HostArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the host to be created.',
+    }),
     Tags: TagListSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -151,38 +135,22 @@ const TlsCertificateSchema = z
 
 const VpcConfigurationSchema = z
   .object({
-    VpcId: VpcIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon VPC connected to the infrastructure where your provider type is installed.',
-        }),
-    ),
-    SubnetIds: SubnetIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the subnet or subnets associated with the Amazon VPC connected to the infrastructure where your provider type is installed.',
-        }),
-    ),
-    SecurityGroupIds: SecurityGroupIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the security group or security groups associated with the Amazon VPC connected to the infrastructure where your provider type is installed.',
-        }),
-    ),
-    TlsCertificate: TlsCertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the Transport Layer Security (TLS) certificate associated with the infrastructure where your provider type is installed.',
-        }),
-    ).exactOptional(),
+    VpcId: VpcIdSchema.openapi({
+      description:
+        'The ID of the Amazon VPC connected to the infrastructure where your provider type is installed.',
+    }),
+    SubnetIds: SubnetIdsSchema.openapi({
+      description:
+        'The ID of the subnet or subnets associated with the Amazon VPC connected to the infrastructure where your provider type is installed.',
+    }),
+    SecurityGroupIds: SecurityGroupIdsSchema.openapi({
+      description:
+        'The ID of the security group or security groups associated with the Amazon VPC connected to the infrastructure where your provider type is installed.',
+    }),
+    TlsCertificate: TlsCertificateSchema.exactOptional().openapi({
+      description:
+        'The value of the Transport Layer Security (TLS) certificate associated with the infrastructure where your provider type is installed.',
+    }),
   })
   .openapi({
     required: ['VpcId', 'SubnetIds', 'SecurityGroupIds'],
@@ -192,66 +160,46 @@ const VpcConfigurationSchema = z
 
 const CreateHostInputSchema = z
   .object({
-    Name: HostNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the host to be created. The name must be unique in the calling AWS account.',
-        }),
-    ),
-    ProviderType: ProviderTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the installed provider to be associated with your connection. The host resource represents the infrastructure where your provider type is installed. The valid provider type is GitHub Enterprise Server.',
-        }),
-    ),
-    ProviderEndpoint: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The endpoint of the infrastructure to be represented by the host after it is created.',
-        }),
-    ),
-    VpcConfiguration: VpcConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The VPC configuration to be provisioned for the host. A VPC must be configured and the infrastructure to be represented by the host must already be connected to the VPC.',
-        }),
-    ).exactOptional(),
+    Name: HostNameSchema.openapi({
+      description:
+        'The name of the host to be created. The name must be unique in the calling AWS account.',
+    }),
+    ProviderType: ProviderTypeSchema.openapi({
+      description:
+        'The name of the installed provider to be associated with your connection. The host resource represents the infrastructure where your provider type is installed. The valid provider type is GitHub Enterprise Server.',
+    }),
+    ProviderEndpoint: UrlSchema.openapi({
+      description:
+        'The endpoint of the infrastructure to be represented by the host after it is created.',
+    }),
+    VpcConfiguration: VpcConfigurationSchema.exactOptional().openapi({
+      description:
+        'The VPC configuration to be provisioned for the host. A VPC must be configured and the infrastructure to be represented by the host must already be connected to the VPC.',
+    }),
     Tags: TagListSchema.exactOptional(),
   })
   .openapi({ required: ['Name', 'ProviderType', 'ProviderEndpoint'], title: 'CreateHostInput' })
   .openapi('CreateHostInput')
 
-const DeleteConnectionOutputSchema = z.object({}).openapi('DeleteConnectionOutput')
+const DeleteConnectionOutputSchema = z.looseObject({}).openapi('DeleteConnectionOutput')
 
 const DeleteConnectionInputSchema = z
   .object({
-    ConnectionArn: ConnectionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the connection to be deleted.</p> <note> <p>The ARN is never reused if the connection is deleted.</p> </note>',
-        }),
-    ),
+    ConnectionArn: ConnectionArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the connection to be deleted.</p> <note> <p>The ARN is never reused if the connection is deleted.</p> </note>',
+    }),
   })
   .openapi({ required: ['ConnectionArn'], title: 'DeleteConnectionInput' })
   .openapi('DeleteConnectionInput')
 
-const DeleteHostOutputSchema = z.object({}).openapi('DeleteHostOutput')
+const DeleteHostOutputSchema = z.looseObject({}).openapi('DeleteHostOutput')
 
 const DeleteHostInputSchema = z
   .object({
-    HostArn: HostArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the host to be deleted.' }),
-    ),
+    HostArn: HostArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the host to be deleted.',
+    }),
   })
   .openapi({ required: ['HostArn'], title: 'DeleteHostInput' })
   .openapi('DeleteHostInput')
@@ -266,48 +214,28 @@ const ConnectionStatusSchema = z.enum(['PENDING', 'AVAILABLE', 'ERROR']).openapi
 
 const ConnectionSchema = z
   .object({
-    ConnectionName: ConnectionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the connection. Connection names must be unique in an AWS user account.',
-        }),
-    ).exactOptional(),
-    ConnectionArn: ConnectionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the connection. The ARN is used as the connection reference when the connection is shared between AWS services.</p> <note> <p>The ARN is never reused if the connection is deleted.</p> </note>',
-        }),
-    ).exactOptional(),
-    ProviderType: ProviderTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the external provider where your third-party code repository is configured.',
-        }),
-    ).exactOptional(),
-    OwnerAccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the external provider where your third-party code repository is configured. For Bitbucket, this is the account ID of the owner of the Bitbucket repository.',
-        }),
-    ).exactOptional(),
-    ConnectionStatus: ConnectionStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the connection. ' }),
-    ).exactOptional(),
-    HostArn: HostArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the host associated with the connection.',
-        }),
-    ).exactOptional(),
+    ConnectionName: ConnectionNameSchema.exactOptional().openapi({
+      description:
+        'The name of the connection. Connection names must be unique in an AWS user account.',
+    }),
+    ConnectionArn: ConnectionArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the connection. The ARN is used as the connection reference when the connection is shared between AWS services.</p> <note> <p>The ARN is never reused if the connection is deleted.</p> </note>',
+    }),
+    ProviderType: ProviderTypeSchema.exactOptional().openapi({
+      description:
+        'The name of the external provider where your third-party code repository is configured.',
+    }),
+    OwnerAccountId: AccountIdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the external provider where your third-party code repository is configured. For Bitbucket, this is the account ID of the owner of the Bitbucket repository.',
+    }),
+    ConnectionStatus: ConnectionStatusSchema.exactOptional().openapi({
+      description: 'The current status of the connection. ',
+    }),
+    HostArn: HostArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the host associated with the connection.',
+    }),
   })
   .openapi({
     description:
@@ -318,22 +246,18 @@ const ConnectionSchema = z
 
 const GetConnectionOutputSchema = z
   .object({
-    Connection: ConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The connection details, such as status, owner, and provider type.',
-        }),
-    ).exactOptional(),
+    Connection: ConnectionSchema.exactOptional().openapi({
+      description: 'The connection details, such as status, owner, and provider type.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetConnectionOutput')
 
 const GetConnectionInputSchema = z
   .object({
-    ConnectionArn: ConnectionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of a connection.' }),
-    ),
+    ConnectionArn: ConnectionArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of a connection.',
+    }),
   })
   .openapi({ required: ['ConnectionArn'], title: 'GetConnectionInput' })
   .openapi('GetConnectionInput')
@@ -342,38 +266,30 @@ const HostStatusSchema = z.string().regex(/.*/).min(1).max(64).openapi('HostStat
 
 const GetHostOutputSchema = z
   .object({
-    Name: HostNameSchema.and(
-      z.any().openapi({ description: 'The name of the requested host.' }),
-    ).exactOptional(),
-    Status: HostStatusSchema.and(
-      z.any().openapi({ description: 'The status of the requested host.' }),
-    ).exactOptional(),
-    ProviderType: ProviderTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The provider type of the requested host, such as GitHub Enterprise Server.',
-        }),
-    ).exactOptional(),
-    ProviderEndpoint: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The endpoint of the infrastructure represented by the requested host.',
-        }),
-    ).exactOptional(),
-    VpcConfiguration: VpcConfigurationSchema.and(
-      z.any().openapi({ description: 'The VPC configuration of the requested host.' }),
-    ).exactOptional(),
+    Name: HostNameSchema.exactOptional().openapi({
+      description: 'The name of the requested host.',
+    }),
+    Status: HostStatusSchema.exactOptional().openapi({
+      description: 'The status of the requested host.',
+    }),
+    ProviderType: ProviderTypeSchema.exactOptional().openapi({
+      description: 'The provider type of the requested host, such as GitHub Enterprise Server.',
+    }),
+    ProviderEndpoint: UrlSchema.exactOptional().openapi({
+      description: 'The endpoint of the infrastructure represented by the requested host.',
+    }),
+    VpcConfiguration: VpcConfigurationSchema.exactOptional().openapi({
+      description: 'The VPC configuration of the requested host.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetHostOutput')
 
 const GetHostInputSchema = z
   .object({
-    HostArn: HostArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the requested host.' }),
-    ),
+    HostArn: HostArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the requested host.',
+    }),
   })
   .openapi({ required: ['HostArn'], title: 'GetHostInput' })
   .openapi('GetHostInput')
@@ -384,22 +300,14 @@ const NextTokenSchema = z.string().regex(/.*/).min(1).max(1024).openapi('NextTok
 
 const ListConnectionsOutputSchema = z
   .object({
-    Connections: ConnectionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of connections and the details for each connection, such as status, owner, and provider type.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that can be used in the next <code>ListConnections</code> call. To view all items in the list, continue to call this operation with each subsequent token until no more <code>nextToken</code> values are returned.',
-        }),
-    ).exactOptional(),
+    Connections: ConnectionListSchema.exactOptional().openapi({
+      description:
+        'A list of connections and the details for each connection, such as status, owner, and provider type.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that can be used in the next <code>ListConnections</code> call. To view all items in the list, continue to call this operation with each subsequent token until no more <code>nextToken</code> values are returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListConnectionsOutput')
@@ -408,37 +316,21 @@ const MaxResultsSchema = z.int().min(0).max(100).openapi('MaxResults')
 
 const ListConnectionsInputSchema = z
   .object({
-    ProviderTypeFilter: ProviderTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters the list of connections to those associated with a specified provider, such as Bitbucket.',
-        }),
-    ).exactOptional(),
-    HostArnFilter: HostArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Filters the list of connections to those associated with a specified host.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that was returned from the previous <code>ListConnections</code> call, which can be used to return the next set of connections in the list.',
-        }),
-    ).exactOptional(),
+    ProviderTypeFilter: ProviderTypeSchema.exactOptional().openapi({
+      description:
+        'Filters the list of connections to those associated with a specified provider, such as Bitbucket.',
+    }),
+    HostArnFilter: HostArnSchema.exactOptional().openapi({
+      description: 'Filters the list of connections to those associated with a specified host.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token that was returned from the previous <code>ListConnections</code> call, which can be used to return the next set of connections in the list.',
+    }),
   })
   .openapi({ title: 'ListConnectionsInput', required: [] })
   .openapi('ListConnectionsInput')
@@ -447,41 +339,27 @@ const HostStatusMessageSchema = z.string().openapi('HostStatusMessage')
 
 const HostSchema = z
   .object({
-    Name: HostNameSchema.and(
-      z.any().openapi({ description: 'The name of the host.' }),
-    ).exactOptional(),
-    HostArn: HostArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the host.' }),
-    ).exactOptional(),
-    ProviderType: ProviderTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the installed provider to be associated with your connection. The host resource represents the infrastructure where your provider type is installed. The valid provider type is GitHub Enterprise Server.',
-        }),
-    ).exactOptional(),
-    ProviderEndpoint: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The endpoint of the infrastructure where your provider type is installed.',
-        }),
-    ).exactOptional(),
-    VpcConfiguration: VpcConfigurationSchema.and(
-      z.any().openapi({ description: 'The VPC configuration provisioned for the host.' }),
-    ).exactOptional(),
-    Status: HostStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the host, such as PENDING, AVAILABLE, VPC_CONFIG_DELETING, VPC_CONFIG_INITIALIZING, and VPC_CONFIG_FAILED_INITIALIZATION.',
-        }),
-    ).exactOptional(),
-    StatusMessage: HostStatusMessageSchema.and(
-      z.any().openapi({ description: 'The status description for the host.' }),
-    ).exactOptional(),
+    Name: HostNameSchema.exactOptional().openapi({ description: 'The name of the host.' }),
+    HostArn: HostArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the host.',
+    }),
+    ProviderType: ProviderTypeSchema.exactOptional().openapi({
+      description:
+        'The name of the installed provider to be associated with your connection. The host resource represents the infrastructure where your provider type is installed. The valid provider type is GitHub Enterprise Server.',
+    }),
+    ProviderEndpoint: UrlSchema.exactOptional().openapi({
+      description: 'The endpoint of the infrastructure where your provider type is installed.',
+    }),
+    VpcConfiguration: VpcConfigurationSchema.exactOptional().openapi({
+      description: 'The VPC configuration provisioned for the host.',
+    }),
+    Status: HostStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the host, such as PENDING, AVAILABLE, VPC_CONFIG_DELETING, VPC_CONFIG_INITIALIZING, and VPC_CONFIG_FAILED_INITIALIZATION.',
+    }),
+    StatusMessage: HostStatusMessageSchema.exactOptional().openapi({
+      description: 'The status description for the host.',
+    }),
   })
   .openapi({
     description:
@@ -494,57 +372,37 @@ const HostListSchema = z.array(HostSchema).openapi('HostList')
 
 const ListHostsOutputSchema = z
   .object({
-    Hosts: HostListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of hosts and the details for each host, such as status, endpoint, and provider type.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that can be used in the next <code>ListHosts</code> call. To view all items in the list, continue to call this operation with each subsequent token until no more <code>nextToken</code> values are returned.',
-        }),
-    ).exactOptional(),
+    Hosts: HostListSchema.exactOptional().openapi({
+      description:
+        'A list of hosts and the details for each host, such as status, endpoint, and provider type.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that can be used in the next <code>ListHosts</code> call. To view all items in the list, continue to call this operation with each subsequent token until no more <code>nextToken</code> values are returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListHostsOutput')
 
 const ListHostsInputSchema = z
   .object({
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that was returned from the previous <code>ListHosts</code> call, which can be used to return the next set of hosts in the list.',
-        }),
-    ).exactOptional(),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token that was returned from the previous <code>ListHosts</code> call, which can be used to return the next set of hosts in the list.',
+    }),
   })
   .openapi({ title: 'ListHostsInput', required: [] })
   .openapi('ListHostsInput')
 
 const ListTagsForResourceOutputSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of tag key and value pairs associated with the specified resource.',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'A list of tag key and value pairs associated with the specified resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceOutput')
@@ -558,77 +416,59 @@ const AmazonResourceNameSchema = z
 
 const ListTagsForResourceInputSchema = z
   .object({
-    ResourceArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource for which you want to get information about tags, if any.',
-        }),
-    ),
+    ResourceArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource for which you want to get information about tags, if any.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceInput' })
   .openapi('ListTagsForResourceInput')
 
-const TagResourceOutputSchema = z.object({}).openapi('TagResourceOutput')
+const TagResourceOutputSchema = z.looseObject({}).openapi('TagResourceOutput')
 
 const TagResourceInputSchema = z
   .object({
-    ResourceArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource to which you want to add or update tags.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags you want to modify or add to the resource.' }),
-    ),
+    ResourceArn: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource to which you want to add or update tags.',
+    }),
+    Tags: TagListSchema.openapi({
+      description: 'The tags you want to modify or add to the resource.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceInput' })
   .openapi('TagResourceInput')
 
-const UntagResourceOutputSchema = z.object({}).openapi('UntagResourceOutput')
+const UntagResourceOutputSchema = z.looseObject({}).openapi('UntagResourceOutput')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyList')
 
 const UntagResourceInputSchema = z
   .object({
-    ResourceArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the resource to remove tags from.',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of keys for the tags to be removed from the resource.' }),
-    ),
+    ResourceArn: AmazonResourceNameSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource to remove tags from.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: 'The list of keys for the tags to be removed from the resource.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceInput' })
   .openapi('UntagResourceInput')
 
-const UpdateHostOutputSchema = z.object({}).openapi('UpdateHostOutput')
+const UpdateHostOutputSchema = z.looseObject({}).openapi('UpdateHostOutput')
 
 const UpdateHostInputSchema = z
   .object({
-    HostArn: HostArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the host to be updated.' }),
-    ),
-    ProviderEndpoint: UrlSchema.and(
-      z.any().openapi({ description: 'The URL or endpoint of the host to be updated.' }),
-    ).exactOptional(),
-    VpcConfiguration: VpcConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The VPC configuration of the host to be updated. A VPC must be configured and the infrastructure to be represented by the host must already be connected to the VPC.',
-        }),
-    ).exactOptional(),
+    HostArn: HostArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the host to be updated.',
+    }),
+    ProviderEndpoint: UrlSchema.exactOptional().openapi({
+      description: 'The URL or endpoint of the host to be updated.',
+    }),
+    VpcConfiguration: VpcConfigurationSchema.exactOptional().openapi({
+      description:
+        'The VPC configuration of the host to be updated. A VPC must be configured and the infrastructure to be represented by the host must already be connected to the VPC.',
+    }),
   })
   .openapi({ required: ['HostArn'], title: 'UpdateHostInput' })
   .openapi('UpdateHostInput')

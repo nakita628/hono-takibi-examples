@@ -1,96 +1,127 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const StateTerritoryCodeSchema = z
-  .enum([
-    'AL',
-    'AK',
-    'AS',
-    'AR',
-    'AZ',
-    'CA',
-    'CO',
-    'CT',
-    'DE',
-    'DC',
-    'FL',
-    'GA',
-    'GU',
-    'HI',
-    'ID',
-    'IL',
-    'IN',
-    'IA',
-    'KS',
-    'KY',
-    'LA',
-    'ME',
-    'MD',
-    'MA',
-    'MI',
-    'MN',
-    'MS',
-    'MO',
-    'MT',
-    'NE',
-    'NV',
-    'NH',
-    'NJ',
-    'NM',
-    'NY',
-    'NC',
-    'ND',
-    'OH',
-    'OK',
-    'OR',
-    'PA',
-    'PR',
-    'RI',
-    'SC',
-    'SD',
-    'TN',
-    'TX',
-    'UT',
-    'VT',
-    'VI',
-    'VA',
-    'WA',
-    'WV',
-    'WI',
-    'WY',
-    'MP',
-    'PW',
-    'FM',
-    'MH',
+const JsonLdContextSchema = z.union([z.array(z.any()), z.looseObject({})]).openapi('JsonLdContext')
+
+const GeoJsonCoordinateSchema = z
+  .array(z.number())
+  .min(2)
+  .openapi({
+    description:
+      'A GeoJSON coordinate. Please refer to IETF RFC 7946 for information on the GeoJSON format.',
+  })
+  .openapi('GeoJsonCoordinate')
+
+const GeoJsonBoundingBoxSchema = z
+  .array(z.number())
+  .min(4)
+  .openapi({
+    description:
+      'A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on the GeoJSON format.',
+  })
+  .openapi('GeoJsonBoundingBox')
+
+const GeoJsonLineStringSchema = z
+  .array(GeoJsonCoordinateSchema)
+  .min(2)
+  .openapi({
+    description:
+      'A GeoJSON line string. Please refer to IETF RFC 7946 for information on the GeoJSON format.',
+  })
+  .openapi('GeoJsonLineString')
+
+const GeoJsonPolygonSchema = z
+  .array(z.array(GeoJsonCoordinateSchema).min(4))
+  .openapi({
+    description:
+      'A GeoJSON polygon. Please refer to IETF RFC 7946 for information on the GeoJSON format.',
+  })
+  .openapi('GeoJsonPolygon')
+
+const GeoJsonGeometrySchema = z
+  .xor([
+    z
+      .object({
+        type: z.literal('Point'),
+        coordinates: GeoJsonCoordinateSchema,
+        bbox: GeoJsonBoundingBoxSchema.exactOptional(),
+      })
+      .openapi({ title: 'GeoJSON Point', required: ['type', 'coordinates'] }),
+    z
+      .object({
+        type: z.literal('LineString'),
+        coordinates: GeoJsonLineStringSchema,
+        bbox: GeoJsonBoundingBoxSchema.exactOptional(),
+      })
+      .openapi({ title: 'GeoJSON LineString', required: ['type', 'coordinates'] }),
+    z
+      .object({
+        type: z.literal('Polygon'),
+        coordinates: GeoJsonPolygonSchema,
+        bbox: GeoJsonBoundingBoxSchema.exactOptional(),
+      })
+      .openapi({ title: 'GeoJSON Polygon', required: ['type', 'coordinates'] }),
+    z
+      .object({
+        type: z.literal('MultiPoint'),
+        coordinates: z.array(GeoJsonCoordinateSchema),
+        bbox: GeoJsonBoundingBoxSchema.exactOptional(),
+      })
+      .openapi({ title: 'GeoJSON MultiPoint', required: ['type', 'coordinates'] }),
+    z
+      .object({
+        type: z.literal('MultiLineString'),
+        coordinates: z.array(GeoJsonLineStringSchema),
+        bbox: GeoJsonBoundingBoxSchema.exactOptional(),
+      })
+      .openapi({ title: 'GeoJSON MultiLineString', required: ['type', 'coordinates'] }),
+    z
+      .object({
+        type: z.literal('MultiPolygon'),
+        coordinates: z.array(GeoJsonPolygonSchema),
+        bbox: GeoJsonBoundingBoxSchema.exactOptional(),
+      })
+      .openapi({ title: 'GeoJSON MultiPolygon', required: ['type', 'coordinates'] }),
+    z.null().nullable(),
   ])
-  .openapi('StateTerritoryCode')
-
-const MarineAreaCodeSchema = z
-  .enum(['AM', 'AN', 'GM', 'LC', 'LE', 'LH', 'LM', 'LO', 'LS', 'PH', 'PK', 'PM', 'PS', 'PZ', 'SL'])
   .openapi({
     description:
-      'Marine area code as defined in NWS Directive 10-302:\n* AM: Western North Atlantic Ocean and along U.S. East Coast south of Currituck Beach Light NC following the coastline into Gulf of Mexico to Ocean Reef FL including the Caribbean\n* AN: Western North Atlantic Ocean and along U.S. East Coast from Canadian border south to Currituck Beach Light NC\n* GM: Gulf of Mexico and along the U.S. Gulf Coast from the Mexican border to Ocean Reef FL\n* LC: Lake St. Clair\n* LE: Lake Erie\n* LH: Lake Huron\n* LM: Lake Michigan\n* LO: Lake Ontario\n* LS: Lake Superior\n* PH: Central Pacific Ocean including Hawaiian waters\n* PK: North Pacific Ocean near Alaska and along Alaska coastline including the Bering Sea and the Gulf of Alaska\n* PM: Western Pacific Ocean including Mariana Island waters\n* PS: South Central Pacific Ocean including American Samoa waters\n* PZ: Eastern North Pacific Ocean and along U.S. West Coast from Canadian border to Mexican border\n* SL: St. Lawrence River above St. Regis\n',
+      'A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format.',
   })
-  .openapi('MarineAreaCode')
+  .openapi('GeoJsonGeometry')
 
-type AreaCodeType = z.infer<typeof StateTerritoryCodeSchema> | z.infer<typeof MarineAreaCodeSchema>
-
-const LandRegionCodeSchema = z
-  .enum(['AR', 'CR', 'ER', 'PR', 'SR', 'WR'])
+const GeoJsonFeatureSchema = z
+  .strictObject({
+    '@context': JsonLdContextSchema.exactOptional(),
+    id: z.url().exactOptional(),
+    type: z.literal('Feature'),
+    geometry: GeoJsonGeometrySchema,
+    properties: z.looseObject({}),
+  })
   .openapi({
+    required: ['type', 'geometry', 'properties'],
     description:
-      'Land region code. These correspond to the six NWS regional headquarters:\n* AR: Alaska Region\n* CR: Central Region\n* ER: Eastern Region\n* PR: Pacific Region\n* SR: Southern Region\n* WR: Western Region\n',
+      'A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format.',
   })
-  .openapi('LandRegionCode')
+  .openapi('GeoJsonFeature')
 
-const MarineRegionCodeSchema = z
-  .enum(['AL', 'AT', 'GL', 'GM', 'PA', 'PI'])
+type GeoJsonFeatureCollectionType = {
+  '@context'?: z.infer<typeof JsonLdContextSchema>
+  type: 'FeatureCollection'
+  features: z.infer<typeof GeoJsonFeatureSchema>[]
+}
+
+const GeoJsonFeatureCollectionSchema: z.ZodType<GeoJsonFeatureCollectionType> = z
+  .object({
+    '@context': JsonLdContextSchema.exactOptional(),
+    type: z.literal('FeatureCollection'),
+    features: z.array(GeoJsonFeatureSchema),
+  })
   .openapi({
+    required: ['type', 'features'],
     description:
-      'Marine region code. These are groups of marine areas combined.\n* AL: Alaska waters (PK)\n* AT: Atlantic Ocean (AM, AN)\n* GL: Great Lakes (LC, LE, LH, LM, LO, LS, SL)\n* GM: Gulf of Mexico (GM)\n* PA: Eastern Pacific Ocean and U.S. West Coast (PZ)\n* PI: Central and Western Pacific (PH, PM, PS)\n',
+      'A GeoJSON feature collection. Please refer to IETF RFC 7946 for information on the GeoJSON format.',
   })
-  .openapi('MarineRegionCode')
-
-type RegionCodeType = z.infer<typeof LandRegionCodeSchema> | z.infer<typeof MarineRegionCodeSchema>
+  .openapi('GeoJsonFeatureCollection')
 
 const AlertIdSchema = z
   .string()
@@ -347,6 +378,10 @@ const ActiveAlertCollectionSchema = z
   .openapi({ required: [] })
   .openapi('ActiveAlertCollection')
 
+type ActiveAlertCollectionGeoJsonType = z.infer<typeof GeoJsonFeatureCollectionSchema> & {
+  features?: { properties?: z.infer<typeof AlertSchema> }[]
+} & z.infer<typeof ActiveAlertCollectionSchema>
+
 const PaginationInfoSchema = z
   .strictObject({ next: z.url().openapi({ description: 'A link to the next page of records' }) })
   .openapi({
@@ -370,403 +405,9 @@ const AlertCollectionSchema = z
   .openapi({ required: [] })
   .openapi('AlertCollection')
 
-const JsonLdContextSchema = z.union([z.array(z.any()), z.object({})]).openapi('JsonLdContext')
-
-const GeoJsonCoordinateSchema = z
-  .array(z.number())
-  .min(2)
-  .openapi({
-    description:
-      'A GeoJSON coordinate. Please refer to IETF RFC 7946 for information on the GeoJSON format.',
-  })
-  .openapi('GeoJsonCoordinate')
-
-const GeoJsonBoundingBoxSchema = z
-  .array(z.number())
-  .min(4)
-  .openapi({
-    description:
-      'A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on the GeoJSON format.',
-  })
-  .openapi('GeoJsonBoundingBox')
-
-const GeoJsonLineStringSchema = z
-  .array(GeoJsonCoordinateSchema)
-  .min(2)
-  .openapi({
-    description:
-      'A GeoJSON line string. Please refer to IETF RFC 7946 for information on the GeoJSON format.',
-  })
-  .openapi('GeoJsonLineString')
-
-const GeoJsonPolygonSchema = z
-  .array(z.array(GeoJsonCoordinateSchema).min(4))
-  .openapi({
-    description:
-      'A GeoJSON polygon. Please refer to IETF RFC 7946 for information on the GeoJSON format.',
-  })
-  .openapi('GeoJsonPolygon')
-
-const GeoJsonGeometrySchema = z
-  .xor([
-    z
-      .object({
-        type: z.literal('Point'),
-        coordinates: GeoJsonCoordinateSchema,
-        bbox: GeoJsonBoundingBoxSchema.exactOptional(),
-      })
-      .openapi({ title: 'GeoJSON Point', required: ['type', 'coordinates'] }),
-    z
-      .object({
-        type: z.literal('LineString'),
-        coordinates: GeoJsonLineStringSchema,
-        bbox: GeoJsonBoundingBoxSchema.exactOptional(),
-      })
-      .openapi({ title: 'GeoJSON LineString', required: ['type', 'coordinates'] }),
-    z
-      .object({
-        type: z.literal('Polygon'),
-        coordinates: GeoJsonPolygonSchema,
-        bbox: GeoJsonBoundingBoxSchema.exactOptional(),
-      })
-      .openapi({ title: 'GeoJSON Polygon', required: ['type', 'coordinates'] }),
-    z
-      .object({
-        type: z.literal('MultiPoint'),
-        coordinates: z.array(GeoJsonCoordinateSchema),
-        bbox: GeoJsonBoundingBoxSchema.exactOptional(),
-      })
-      .openapi({ title: 'GeoJSON MultiPoint', required: ['type', 'coordinates'] }),
-    z
-      .object({
-        type: z.literal('MultiLineString'),
-        coordinates: z.array(GeoJsonLineStringSchema),
-        bbox: GeoJsonBoundingBoxSchema.exactOptional(),
-      })
-      .openapi({ title: 'GeoJSON MultiLineString', required: ['type', 'coordinates'] }),
-    z
-      .object({
-        type: z.literal('MultiPolygon'),
-        coordinates: z.array(GeoJsonPolygonSchema),
-        bbox: GeoJsonBoundingBoxSchema.exactOptional(),
-      })
-      .openapi({ title: 'GeoJSON MultiPolygon', required: ['type', 'coordinates'] }),
-    z.null().nullable(),
-  ])
-  .openapi({
-    description:
-      'A GeoJSON geometry object. Please refer to IETF RFC 7946 for information on the GeoJSON format.',
-  })
-  .openapi('GeoJsonGeometry')
-
-const GeoJsonFeatureSchema = z
-  .strictObject({
-    '@context': JsonLdContextSchema.exactOptional(),
-    id: z.url().exactOptional(),
-    type: z.literal('Feature'),
-    geometry: GeoJsonGeometrySchema,
-    properties: z.object({}),
-  })
-  .openapi({
-    required: ['type', 'geometry', 'properties'],
-    description:
-      'A GeoJSON feature. Please refer to IETF RFC 7946 for information on the GeoJSON format.',
-  })
-  .openapi('GeoJsonFeature')
-
-const GeoJsonFeatureCollectionSchema = z
-  .object({
-    '@context': JsonLdContextSchema.exactOptional(),
-    type: z.literal('FeatureCollection'),
-    features: z.array(GeoJsonFeatureSchema),
-  })
-  .openapi({
-    required: ['type', 'features'],
-    description:
-      'A GeoJSON feature collection. Please refer to IETF RFC 7946 for information on the GeoJSON format.',
-  })
-  .openapi('GeoJsonFeatureCollection')
-
-const ActiveAlertCollectionGeoJsonSchema = GeoJsonFeatureCollectionSchema.and(
-  z
-    .object({
-      features: z
-        .array(z.object({ properties: AlertSchema.exactOptional() }).openapi({ required: [] }))
-        .exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
-  .and(ActiveAlertCollectionSchema)
-  .openapi('ActiveAlertCollectionGeoJson')
-
-const AlertCollectionGeoJsonSchema = GeoJsonFeatureCollectionSchema.and(
-  z
-    .object({
-      features: z
-        .array(z.object({ properties: AlertSchema.exactOptional() }).openapi({ required: [] }))
-        .exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
-  .and(AlertCollectionSchema)
-  .openapi('AlertCollectionGeoJson')
-
-const ActiveAlertCollectionJsonLdSchema = ActiveAlertCollectionSchema.and(
-  z
-    .object({
-      '@context': JsonLdContextSchema.exactOptional(),
-      '@graph': z.array(AlertSchema).exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('ActiveAlertCollectionJsonLd')
-
-const AlertCollectionJsonLdSchema = AlertCollectionSchema.and(
-  z
-    .object({
-      '@context': JsonLdContextSchema.exactOptional(),
-      '@graph': z.array(AlertSchema).exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('AlertCollectionJsonLd')
-
-const AlertCapSchema = z.object({}).openapi('AlertCap')
-
-const AlertGeoJsonSchema = GeoJsonFeatureSchema.and(
-  z.object({ properties: AlertSchema.exactOptional() }).openapi({ required: [] }),
-).openapi('AlertGeoJson')
-
-const AlertJsonLdSchema = z
-  .object({ '@graph': z.array(AlertSchema).exactOptional() })
-  .openapi({ required: [] })
-  .openapi('AlertJsonLd')
-
-const AlertXMLParameterSchema = z
-  .object({ valueName: z.string().exactOptional(), value: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('AlertXMLParameter')
-
-const AlertAtomEntrySchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
-    published: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
-    author: z
-      .object({ name: z.string().exactOptional() })
-      .exactOptional()
-      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' }, required: [] }),
-    summary: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
-    event: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
-    sent: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
-    effective: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
-    expires: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
-    status: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
-    msgType: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
-    category: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
-    urgency: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
-    severity: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
-    certainty: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
-    areaDesc: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
-    polygon: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
-    geocode: z
-      .array(AlertXMLParameterSchema)
-      .exactOptional()
-      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
-    parameter: z
-      .array(AlertXMLParameterSchema)
-      .exactOptional()
-      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
-  })
-  .openapi({
-    description: 'An alert entry in an Atom feed',
-    xml: { name: 'entry', namespace: 'http://www.w3.org/2005/Atom' },
-    required: [],
-  })
-  .openapi('AlertAtomEntry')
-
-const AlertAtomFeedSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
-    generator: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
-    updated: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
-    author: z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
-      })
-      .exactOptional()
-      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' }, required: [] }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
-    entry: z
-      .array(AlertAtomEntrySchema)
-      .exactOptional()
-      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
-  })
-  .openapi({
-    description: 'An alert feed in Atom format',
-    xml: { name: 'feed', namespace: 'http://www.w3.org/2005/Atom' },
-    required: [],
-  })
-  .openapi('AlertAtomFeed')
-
-const AreaCodeSchema: z.ZodType<AreaCodeType> = z
-  .lazy(() =>
-    z
-      .xor([StateTerritoryCodeSchema, MarineAreaCodeSchema])
-      .openapi({ description: 'State/territory codes and marine area codes' }),
-  )
-  .openapi('AreaCode')
-
-const AstronomicalDataSchema = z
-  .object({
-    sunrise: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The timestamp of sunrise, defined as when the sun angle is 90°35' from vertical.\n",
-      }),
-    sunset: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "The timestamp of sunset, defined as when the sun angle is 90°35' from vertical.\n",
-      }),
-    transit: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The timestamp when the sun reaches its zenith.\n' }),
-    civilTwilightBegin: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The timestamp of the onset of civil twilight, defined as when the sun angle is 96° from vertical. This is the beginning of civil dawn and lasts until sunrise.\n',
-      }),
-    civilTwilightEnd: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The timestamp of the end of civil twilight, defined as when the sun angle is 96° from vertical. This is the end of civil dusk, which begins at sunset.\n',
-      }),
-    nauticalTwilightBegin: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The timestamp of the onset of nautical twilight, defined as when the sun angle is 102° from vertical. This is the beginning of nautical dawn and lasts until the civil dawn.\n',
-      }),
-    nauticalTwilightEnd: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The timestamp of the end of nautical twilight, defined as when the sun angle is 102° from vertical. This is the end of nautical dusk, which begins at the end of civil twilight.\n',
-      }),
-    astronomicalTwilightBegin: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The timestamp of the onset of astronomical twilight, defined as when the sun angle is 108° from vertical. This is the beginning of astronomical dawn and lasts until the nautical dawn.\n',
-      }),
-    astronomicalTwilightEnd: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The timestamp of the end of astronomical twilight, defined as when the sun angle is 108° from vertical. This is the end of astronomical dusk, which begins at the end of nautical twilight.\n',
-      }),
-  })
-  .openapi({
-    description:
-      'An object representing sunrise, sunset, and twilight information for a location.\n',
-    required: [],
-  })
-  .openapi('AstronomicalData')
-
-const ATSUIdentifierSchema = z
-  .string()
-  .regex(/^[A-Z]{3,4}$/)
-  .openapi({ description: 'ATSU Identifier' })
-  .openapi('ATSUIdentifier')
-
-const BinaryFileSchema = z
-  .file()
-  .openapi({ type: 'string', format: 'binary' })
-  .openapi('BinaryFile')
+type AlertCollectionGeoJsonType = z.infer<typeof GeoJsonFeatureCollectionSchema> & {
+  features?: { properties?: z.infer<typeof AlertSchema> }[]
+} & z.infer<typeof AlertCollectionSchema>
 
 const NWSCenterWeatherServiceUnitIdSchema = z
   .enum([
@@ -810,61 +451,9 @@ const CenterWeatherAdvisorySchema = z
   .openapi({ required: [] })
   .openapi('CenterWeatherAdvisory')
 
-const CenterWeatherAdvisoryCollectionGeoJsonSchema = GeoJsonFeatureCollectionSchema.and(
-  z
-    .object({
-      features: z
-        .array(
-          z
-            .object({ properties: CenterWeatherAdvisorySchema.exactOptional() })
-            .openapi({ required: [] }),
-        )
-        .exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('CenterWeatherAdvisoryCollectionGeoJson')
-
-const CenterWeatherAdvisoryGeoJsonSchema = GeoJsonFeatureSchema.and(
-  z.object({ properties: CenterWeatherAdvisorySchema.exactOptional() }).openapi({ required: [] }),
-).openapi('CenterWeatherAdvisoryGeoJson')
-
-const OfficeSchema = z
-  .strictObject({
-    '@context': JsonLdContextSchema.exactOptional(),
-    '@type': z.literal('GovernmentOrganization').exactOptional(),
-    '@id': z.url().exactOptional(),
-    id: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    address: z
-      .strictObject({
-        '@type': z.literal('PostalAddress').exactOptional(),
-        streetAddress: z.string().exactOptional(),
-        addressLocality: z.string().exactOptional(),
-        addressRegion: z.string().exactOptional(),
-        postalCode: z.string().exactOptional(),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    telephone: z.string().exactOptional(),
-    faxNumber: z.string().exactOptional(),
-    email: z.string().exactOptional(),
-    sameAs: z.url().exactOptional(),
-    nwsRegion: z.string().exactOptional(),
-    parentOrganization: z.url().exactOptional(),
-    responsibleCounties: z.array(z.url()).exactOptional(),
-    responsibleForecastZones: z.array(z.url()).exactOptional(),
-    responsibleFireZones: z.array(z.url()).exactOptional(),
-    approvedObservationStations: z.array(z.url()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Office')
-
-const CenterWeatherServiceUnitJsonLdSchema = OfficeSchema.openapi('CenterWeatherServiceUnitJsonLd')
-
-const DateSchema = z.iso
-  .date()
-  .openapi({ description: 'Date (in YYYY-MM-DD format).' })
-  .openapi('Date')
+type CenterWeatherAdvisoryCollectionGeoJsonType = z.infer<typeof GeoJsonFeatureCollectionSchema> & {
+  features?: { properties?: z.infer<typeof CenterWeatherAdvisorySchema> }[]
+}
 
 const GeometryStringSchema = z
   .string()
@@ -1093,12 +682,905 @@ const GridpointSchema = z
   .openapi({
     description:
       'Raw forecast data for a 2.5km grid square.\nThis is a list of all potential data layers that may appear. Some layers may not be present in all areas.\n* temperature\n* dewpoint\n* maxTemperature\n* minTemperature\n* relativeHumidity\n* apparentTemperature\n* heatIndex\n* windChill\n* wetBulbGlobeTemperature\n* skyCover\n* windDirection\n* windSpeed\n* windGust\n* weather\n* hazards: Watch and advisory products in effect\n* heatRisk\n* probabilityOfPrecipitation\n* quantitativePrecipitation\n* iceAccumulation\n* snowfallAmount\n* snowLevel\n* ceilingHeight\n* visibility\n* transportWindSpeed\n* transportWindDirection\n* mixingHeight\n* hainesIndex\n* lightningActivityLevel\n* twentyFootWindSpeed\n* twentyFootWindDirection\n* waveHeight\n* wavePeriod\n* waveDirection\n* primarySwellHeight\n* primarySwellDirection\n* secondarySwellHeight\n* secondarySwellDirection\n* wavePeriod2\n* windWaveHeight\n* dispersionIndex\n* pressure: Barometric pressure\n* probabilityOfTropicalStormWinds\n* probabilityOfHurricaneWinds\n* potentialOf15mphWinds\n* potentialOf25mphWinds\n* potentialOf35mphWinds\n* potentialOf45mphWinds\n* potentialOf20mphWindGusts\n* potentialOf30mphWindGusts\n* potentialOf40mphWindGusts\n* potentialOf50mphWindGusts\n* potentialOf60mphWindGusts\n* grasslandFireDangerIndex\n* probabilityOfThunder\n* davisStabilityIndex\n* atmosphericDispersionIndex\n* lowVisibilityOccurrenceRiskIndex\n* stability\n* redFlagThreatIndex\n',
+    required: [],
   })
   .openapi('Gridpoint')
 
-const GridpointGeoJsonSchema = GeoJsonFeatureSchema.and(
-  z.object({ properties: GridpointSchema.exactOptional() }).openapi({ required: [] }),
-).openapi('GridpointGeoJson')
+type GridpointGeoJsonType = z.infer<typeof GeoJsonFeatureSchema> & {
+  properties?: z.infer<typeof GridpointSchema>
+}
+
+const MetarPhenomenonSchema = z
+  .strictObject({
+    intensity: z.enum(['light', 'heavy']).nullable(),
+    modifier: z
+      .enum(['patches', 'blowing', 'low_drifting', 'freezing', 'shallow', 'partial', 'showers'])
+      .nullable(),
+    weather: z.enum([
+      'fog_mist',
+      'dust_storm',
+      'dust',
+      'drizzle',
+      'funnel_cloud',
+      'fog',
+      'smoke',
+      'hail',
+      'snow_pellets',
+      'haze',
+      'ice_crystals',
+      'ice_pellets',
+      'dust_whirls',
+      'spray',
+      'rain',
+      'sand',
+      'snow_grains',
+      'snow',
+      'squalls',
+      'sand_storm',
+      'thunderstorms',
+      'unknown',
+      'volcanic_ash',
+    ]),
+    rawString: z.string(),
+    inVicinity: z.boolean().exactOptional(),
+  })
+  .openapi({
+    required: ['intensity', 'modifier', 'weather', 'rawString'],
+    description: 'An object representing a decoded METAR phenomenon string.',
+  })
+  .openapi('MetarPhenomenon')
+
+const MetarSkyCoverageSchema = z
+  .enum(['OVC', 'BKN', 'SCT', 'FEW', 'SKC', 'CLR', 'VV'])
+  .openapi('MetarSkyCoverage')
+
+const ObservationSchema = z
+  .strictObject({
+    '@context': JsonLdContextSchema.exactOptional(),
+    geometry: GeometryStringSchema.exactOptional(),
+    '@id': z.url().exactOptional(),
+    '@type': z.literal('wx:ObservationStation').exactOptional(),
+    elevation: QuantitativeValueSchema.exactOptional(),
+    station: z.url().exactOptional(),
+    stationId: z.string().exactOptional(),
+    stationName: z.string().exactOptional(),
+    timestamp: z.iso.datetime({ offset: true }).exactOptional(),
+    rawMessage: z.string().exactOptional(),
+    textDescription: z.string().exactOptional(),
+    icon: z.url().nullable().exactOptional().openapi({ deprecated: true }),
+    presentWeather: z.array(MetarPhenomenonSchema).exactOptional(),
+    temperature: QuantitativeValueSchema.exactOptional(),
+    dewpoint: QuantitativeValueSchema.exactOptional(),
+    windDirection: QuantitativeValueSchema.exactOptional(),
+    windSpeed: QuantitativeValueSchema.exactOptional(),
+    windGust: QuantitativeValueSchema.exactOptional(),
+    barometricPressure: QuantitativeValueSchema.exactOptional(),
+    seaLevelPressure: QuantitativeValueSchema.exactOptional(),
+    visibility: QuantitativeValueSchema.exactOptional(),
+    maxTemperatureLast24Hours: QuantitativeValueSchema.exactOptional(),
+    minTemperatureLast24Hours: QuantitativeValueSchema.exactOptional(),
+    precipitationLastHour: QuantitativeValueSchema.exactOptional(),
+    precipitationLast3Hours: QuantitativeValueSchema.exactOptional(),
+    precipitationLast6Hours: QuantitativeValueSchema.exactOptional(),
+    relativeHumidity: QuantitativeValueSchema.exactOptional(),
+    windChill: QuantitativeValueSchema.exactOptional(),
+    heatIndex: QuantitativeValueSchema.exactOptional(),
+    cloudLayers: z
+      .array(
+        z
+          .strictObject({ base: QuantitativeValueSchema, amount: MetarSkyCoverageSchema })
+          .openapi({ required: ['base', 'amount'] }),
+      )
+      .nullable()
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Observation')
+
+type ObservationCollectionGeoJsonType = z.infer<typeof GeoJsonFeatureCollectionSchema> & {
+  features?: { properties?: z.infer<typeof ObservationSchema> }[]
+  pagination?: z.infer<typeof PaginationInfoSchema>
+}
+
+const ObservationStationSchema = z
+  .strictObject({
+    '@context': JsonLdContextSchema.exactOptional(),
+    geometry: GeometryStringSchema.exactOptional(),
+    '@id': z.url().exactOptional(),
+    '@type': z.literal('wx:ObservationStation').exactOptional(),
+    elevation: QuantitativeValueSchema.exactOptional(),
+    stationIdentifier: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    timeZone: z.string().exactOptional(),
+    provider: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The data provider for this station. E.g., "ASOS," "MesoWest," etc.',
+      }),
+    subProvider: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The sub-provider of for this station. E.g., "FAA," "DOT," etc.' }),
+    forecast: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'A link to the NWS public forecast zone containing this station.' }),
+    county: z
+      .url()
+      .exactOptional()
+      .openapi({ description: 'A link to the NWS county zone containing this station.' }),
+    fireWeatherZone: z
+      .url()
+      .exactOptional()
+      .openapi({
+        description: 'A link to the NWS fire weather forecast zone containing this station.',
+      }),
+    distance: QuantitativeValueSchema.exactOptional(),
+    bearing: QuantitativeValueSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ObservationStation')
+
+type ObservationStationCollectionGeoJsonType = z.infer<typeof GeoJsonFeatureCollectionSchema> & {
+  features?: { properties?: z.infer<typeof ObservationStationSchema> }[]
+  observationStations?: string[]
+  pagination?: z.infer<typeof PaginationInfoSchema>
+}
+
+const NWSForecastOfficeIdSchema = z
+  .enum([
+    'AKQ',
+    'ALY',
+    'BGM',
+    'BOX',
+    'BTV',
+    'BUF',
+    'CAE',
+    'CAR',
+    'CHS',
+    'CLE',
+    'CTP',
+    'GSP',
+    'GYX',
+    'ILM',
+    'ILN',
+    'LWX',
+    'MHX',
+    'OKX',
+    'PBZ',
+    'PHI',
+    'RAH',
+    'RLX',
+    'RNK',
+    'ABQ',
+    'AMA',
+    'BMX',
+    'BRO',
+    'CRP',
+    'EPZ',
+    'EWX',
+    'FFC',
+    'FWD',
+    'HGX',
+    'HUN',
+    'JAN',
+    'JAX',
+    'KEY',
+    'LCH',
+    'LIX',
+    'LUB',
+    'LZK',
+    'MAF',
+    'MEG',
+    'MFL',
+    'MLB',
+    'MOB',
+    'MRX',
+    'OHX',
+    'OUN',
+    'SHV',
+    'SJT',
+    'SJU',
+    'TAE',
+    'TBW',
+    'TSA',
+    'ABR',
+    'APX',
+    'ARX',
+    'BIS',
+    'BOU',
+    'CYS',
+    'DDC',
+    'DLH',
+    'DMX',
+    'DTX',
+    'DVN',
+    'EAX',
+    'FGF',
+    'FSD',
+    'GID',
+    'GJT',
+    'GLD',
+    'GRB',
+    'GRR',
+    'ICT',
+    'ILX',
+    'IND',
+    'IWX',
+    'JKL',
+    'LBF',
+    'LMK',
+    'LOT',
+    'LSX',
+    'MKX',
+    'MPX',
+    'MQT',
+    'OAX',
+    'PAH',
+    'PUB',
+    'RIW',
+    'SGF',
+    'TOP',
+    'UNR',
+    'BOI',
+    'BYZ',
+    'EKA',
+    'FGZ',
+    'GGW',
+    'HNX',
+    'LKN',
+    'LOX',
+    'MFR',
+    'MSO',
+    'MTR',
+    'OTX',
+    'PDT',
+    'PIH',
+    'PQR',
+    'PSR',
+    'REV',
+    'SEW',
+    'SGX',
+    'SLC',
+    'STO',
+    'TFX',
+    'TWC',
+    'VEF',
+    'AER',
+    'AFC',
+    'AFG',
+    'AJK',
+    'ALU',
+    'GUM',
+    'HPA',
+    'HFO',
+    'PPG',
+    'PQE',
+    'PQW',
+    'STU',
+    'NH1',
+    'NH2',
+    'ONA',
+    'ONP',
+  ])
+  .openapi({ description: 'Three-letter identifier for a NWS office.' })
+  .openapi('NWSForecastOfficeId')
+
+const RelativeLocationSchema = z
+  .object({
+    city: z.string().exactOptional(),
+    state: z.string().exactOptional(),
+    distance: QuantitativeValueSchema.exactOptional(),
+    bearing: QuantitativeValueSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RelativeLocation')
+
+const RelativeLocationGeoJsonSchema = (() => {
+  const Schema = GeoJsonFeatureSchema.and(
+    z.object({ properties: RelativeLocationSchema.exactOptional() }).openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['@context', 'id', 'type', 'geometry', 'properties'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('RelativeLocationGeoJson')
+
+const RelativeLocationJsonLdSchema = RelativeLocationSchema.and(
+  z.object({ geometry: GeometryStringSchema }).openapi({ required: ['geometry'] }),
+).openapi('RelativeLocationJsonLd')
+
+const AstronomicalDataSchema = z
+  .object({
+    sunrise: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The timestamp of sunrise, defined as when the sun angle is 90°35' from vertical.\n",
+      }),
+    sunset: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "The timestamp of sunset, defined as when the sun angle is 90°35' from vertical.\n",
+      }),
+    transit: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The timestamp when the sun reaches its zenith.\n' }),
+    civilTwilightBegin: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The timestamp of the onset of civil twilight, defined as when the sun angle is 96° from vertical. This is the beginning of civil dawn and lasts until sunrise.\n',
+      }),
+    civilTwilightEnd: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The timestamp of the end of civil twilight, defined as when the sun angle is 96° from vertical. This is the end of civil dusk, which begins at sunset.\n',
+      }),
+    nauticalTwilightBegin: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The timestamp of the onset of nautical twilight, defined as when the sun angle is 102° from vertical. This is the beginning of nautical dawn and lasts until the civil dawn.\n',
+      }),
+    nauticalTwilightEnd: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The timestamp of the end of nautical twilight, defined as when the sun angle is 102° from vertical. This is the end of nautical dusk, which begins at the end of civil twilight.\n',
+      }),
+    astronomicalTwilightBegin: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The timestamp of the onset of astronomical twilight, defined as when the sun angle is 108° from vertical. This is the beginning of astronomical dawn and lasts until the nautical dawn.\n',
+      }),
+    astronomicalTwilightEnd: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The timestamp of the end of astronomical twilight, defined as when the sun angle is 108° from vertical. This is the end of astronomical dusk, which begins at the end of nautical twilight.\n',
+      }),
+  })
+  .openapi({
+    description:
+      'An object representing sunrise, sunset, and twilight information for a location.\n',
+    required: [],
+  })
+  .openapi('AstronomicalData')
+
+const PointSchema = z
+  .object({
+    '@context': JsonLdContextSchema.exactOptional(),
+    geometry: GeometryStringSchema.exactOptional(),
+    '@id': z.url().exactOptional(),
+    '@type': z.literal('wx:Point').exactOptional(),
+    cwa: NWSForecastOfficeIdSchema.exactOptional(),
+    type: z
+      .enum(['land', 'marine'])
+      .exactOptional()
+      .openapi({ description: 'Whether the specific point is on land or marine' }),
+    forecastOffice: z.url().exactOptional(),
+    gridId: NWSForecastOfficeIdSchema.exactOptional(),
+    gridX: z.int().min(0).exactOptional(),
+    gridY: z.int().min(0).exactOptional(),
+    forecast: z.url().exactOptional(),
+    forecastHourly: z.url().exactOptional(),
+    forecastGridData: z.url().exactOptional(),
+    observationStations: z.url().exactOptional(),
+    relativeLocation: z
+      .xor([RelativeLocationGeoJsonSchema, RelativeLocationJsonLdSchema])
+      .exactOptional(),
+    forecastZone: z.url().exactOptional(),
+    county: z.url().exactOptional(),
+    fireWeatherZone: z.url().exactOptional(),
+    timeZone: z.string().exactOptional(),
+    radarStation: z.string().exactOptional(),
+    astronomicalData: AstronomicalDataSchema.exactOptional(),
+    nwr: z
+      .object({
+        transmitter: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'Transmitter callsign' }),
+        sameCode: z
+          .string()
+          .exactOptional()
+          .openapi({ description: "The SAME code of this point's county" }),
+        areaBroadcast: z
+          .url()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'A link to the area NWR broadcast from this transmitter' }),
+        pointBroadcast: z
+          .url()
+          .nullable()
+          .exactOptional()
+          .openapi({ description: 'A link to the local NWR broadcast for this point' }),
+      })
+      .exactOptional()
+      .openapi({ description: 'NOAA Weather Radio metadata for this point', required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('Point')
+
+type PointGeoJsonType = z.infer<typeof GeoJsonFeatureSchema> & {
+  properties?: z.infer<typeof PointSchema>
+}
+
+const ATSUIdentifierSchema = z
+  .string()
+  .regex(/^[A-Z]{3,4}$/)
+  .openapi({ description: 'ATSU Identifier' })
+  .openapi('ATSUIdentifier')
+
+const SigmetSchema = z
+  .strictObject({
+    id: z.url().exactOptional(),
+    issueTime: z.iso.datetime({ offset: true }).exactOptional(),
+    fir: z.string().nullable().exactOptional(),
+    atsu: ATSUIdentifierSchema.exactOptional(),
+    sequence: z.string().nullable().exactOptional(),
+    phenomenon: z.url().nullable().exactOptional(),
+    start: z.iso.datetime({ offset: true }).exactOptional(),
+    end: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Sigmet')
+
+const SigmetGeoJsonSchema = (() => {
+  const Schema = GeoJsonFeatureSchema.and(
+    z.object({ properties: SigmetSchema.exactOptional() }).openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['@context', 'id', 'type', 'geometry', 'properties'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('SigmetGeoJson')
+
+type SigmetCollectionGeoJsonType = z.infer<typeof GeoJsonFeatureCollectionSchema> & {
+  features?: z.infer<typeof SigmetGeoJsonSchema>[]
+}
+
+const NWSZoneTypeSchema = z
+  .enum(['land', 'marine', 'forecast', 'public', 'coastal', 'offshore', 'fire', 'county'])
+  .openapi('NWSZoneType')
+
+const StateTerritoryCodeSchema = z
+  .enum([
+    'AL',
+    'AK',
+    'AS',
+    'AR',
+    'AZ',
+    'CA',
+    'CO',
+    'CT',
+    'DE',
+    'DC',
+    'FL',
+    'GA',
+    'GU',
+    'HI',
+    'ID',
+    'IL',
+    'IN',
+    'IA',
+    'KS',
+    'KY',
+    'LA',
+    'ME',
+    'MD',
+    'MA',
+    'MI',
+    'MN',
+    'MS',
+    'MO',
+    'MT',
+    'NE',
+    'NV',
+    'NH',
+    'NJ',
+    'NM',
+    'NY',
+    'NC',
+    'ND',
+    'OH',
+    'OK',
+    'OR',
+    'PA',
+    'PR',
+    'RI',
+    'SC',
+    'SD',
+    'TN',
+    'TX',
+    'UT',
+    'VT',
+    'VI',
+    'VA',
+    'WA',
+    'WV',
+    'WI',
+    'WY',
+    'MP',
+    'PW',
+    'FM',
+    'MH',
+  ])
+  .openapi('StateTerritoryCode')
+
+const ZoneSchema = z
+  .strictObject({
+    '@context': JsonLdContextSchema.exactOptional(),
+    geometry: GeometryStringSchema.exactOptional(),
+    '@id': z.url().exactOptional(),
+    '@type': z.literal('wx:Zone').exactOptional(),
+    id: NWSZoneIDSchema.exactOptional(),
+    type: NWSZoneTypeSchema.exactOptional(),
+    name: z.string().exactOptional(),
+    effectiveDate: z.iso.datetime({ offset: true }).exactOptional(),
+    expirationDate: z.iso.datetime({ offset: true }).exactOptional(),
+    state: z.xor([StateTerritoryCodeSchema, z.literal(''), z.null().nullable()]).exactOptional(),
+    forecastOffice: z.url().exactOptional(),
+    gridIdentifier: z.string().exactOptional(),
+    awipsLocationIdentifier: z.string().exactOptional(),
+    cwa: z.array(NWSForecastOfficeIdSchema).exactOptional().openapi({ deprecated: true }),
+    forecastOffices: z.array(z.url()).exactOptional().openapi({ deprecated: true }),
+    timeZone: z.array(z.string()).exactOptional(),
+    observationStations: z.array(z.url()).exactOptional(),
+    radarStation: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Zone')
+
+type ZoneCollectionGeoJsonType = z.infer<typeof GeoJsonFeatureCollectionSchema> & {
+  features?: { properties?: z.infer<typeof ZoneSchema> }[]
+}
+
+const ActiveAlertCollectionGeoJsonSchema: z.ZodType<ActiveAlertCollectionGeoJsonType> =
+  GeoJsonFeatureCollectionSchema.and(
+    z
+      .object({
+        features: z
+          .array(z.object({ properties: AlertSchema.exactOptional() }).openapi({ required: [] }))
+          .exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+    .and(ActiveAlertCollectionSchema)
+    .openapi('ActiveAlertCollectionGeoJson')
+
+const AlertCollectionGeoJsonSchema: z.ZodType<AlertCollectionGeoJsonType> =
+  GeoJsonFeatureCollectionSchema.and(
+    z
+      .object({
+        features: z
+          .array(z.object({ properties: AlertSchema.exactOptional() }).openapi({ required: [] }))
+          .exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+    .and(AlertCollectionSchema)
+    .openapi('AlertCollectionGeoJson')
+
+const ActiveAlertCollectionJsonLdSchema = ActiveAlertCollectionSchema.and(
+  z
+    .object({
+      '@context': JsonLdContextSchema.exactOptional(),
+      '@graph': z.array(AlertSchema).exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('ActiveAlertCollectionJsonLd')
+
+const AlertCollectionJsonLdSchema = AlertCollectionSchema.and(
+  z
+    .object({
+      '@context': JsonLdContextSchema.exactOptional(),
+      '@graph': z.array(AlertSchema).exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('AlertCollectionJsonLd')
+
+const AlertCapSchema = z.looseObject({}).openapi('AlertCap')
+
+const AlertGeoJsonSchema = (() => {
+  const Schema = GeoJsonFeatureSchema.and(
+    z.object({ properties: AlertSchema.exactOptional() }).openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['@context', 'id', 'type', 'geometry', 'properties'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('AlertGeoJson')
+
+const AlertJsonLdSchema = z
+  .object({ '@graph': z.array(AlertSchema).exactOptional() })
+  .openapi({ required: [] })
+  .openapi('AlertJsonLd')
+
+const AlertXMLParameterSchema = z
+  .object({ valueName: z.string().exactOptional(), value: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('AlertXMLParameter')
+
+const AlertAtomEntrySchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
+    published: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
+    author: z
+      .object({ name: z.string().exactOptional() })
+      .exactOptional()
+      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' }, required: [] }),
+    summary: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
+    event: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
+    sent: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
+    effective: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
+    expires: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
+    status: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
+    msgType: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
+    category: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
+    urgency: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
+    severity: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
+    certainty: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
+    areaDesc: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
+    polygon: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
+    geocode: z
+      .array(AlertXMLParameterSchema)
+      .exactOptional()
+      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
+    parameter: z
+      .array(AlertXMLParameterSchema)
+      .exactOptional()
+      .openapi({ xml: { namespace: 'urn:oasis:names:tc:emergency:cap:1.2' } }),
+  })
+  .openapi({
+    description: 'An alert entry in an Atom feed',
+    xml: { name: 'entry', namespace: 'http://www.w3.org/2005/Atom' },
+    required: [],
+  })
+  .openapi('AlertAtomEntry')
+
+const AlertAtomFeedSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
+    generator: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
+    updated: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
+    author: z
+      .object({
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
+      })
+      .exactOptional()
+      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' }, required: [] }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
+    entry: z
+      .array(AlertAtomEntrySchema)
+      .exactOptional()
+      .openapi({ xml: { namespace: 'http://www.w3.org/2005/Atom' } }),
+  })
+  .openapi({
+    description: 'An alert feed in Atom format',
+    xml: { name: 'feed', namespace: 'http://www.w3.org/2005/Atom' },
+    required: [],
+  })
+  .openapi('AlertAtomFeed')
+
+const MarineAreaCodeSchema = z
+  .enum(['AM', 'AN', 'GM', 'LC', 'LE', 'LH', 'LM', 'LO', 'LS', 'PH', 'PK', 'PM', 'PS', 'PZ', 'SL'])
+  .openapi({
+    description:
+      'Marine area code as defined in NWS Directive 10-302:\n* AM: Western North Atlantic Ocean and along U.S. East Coast south of Currituck Beach Light NC following the coastline into Gulf of Mexico to Ocean Reef FL including the Caribbean\n* AN: Western North Atlantic Ocean and along U.S. East Coast from Canadian border south to Currituck Beach Light NC\n* GM: Gulf of Mexico and along the U.S. Gulf Coast from the Mexican border to Ocean Reef FL\n* LC: Lake St. Clair\n* LE: Lake Erie\n* LH: Lake Huron\n* LM: Lake Michigan\n* LO: Lake Ontario\n* LS: Lake Superior\n* PH: Central Pacific Ocean including Hawaiian waters\n* PK: North Pacific Ocean near Alaska and along Alaska coastline including the Bering Sea and the Gulf of Alaska\n* PM: Western Pacific Ocean including Mariana Island waters\n* PS: South Central Pacific Ocean including American Samoa waters\n* PZ: Eastern North Pacific Ocean and along U.S. West Coast from Canadian border to Mexican border\n* SL: St. Lawrence River above St. Regis\n',
+  })
+  .openapi('MarineAreaCode')
+
+const AreaCodeSchema = z
+  .xor([StateTerritoryCodeSchema, MarineAreaCodeSchema])
+  .openapi({ description: 'State/territory codes and marine area codes' })
+  .openapi('AreaCode')
+
+const BinaryFileSchema = z
+  .file()
+  .openapi({ type: 'string', format: 'binary' })
+  .openapi('BinaryFile')
+
+const CenterWeatherAdvisoryCollectionGeoJsonSchema: z.ZodType<CenterWeatherAdvisoryCollectionGeoJsonType> =
+  GeoJsonFeatureCollectionSchema.and(
+    z
+      .object({
+        features: z
+          .array(
+            z
+              .object({ properties: CenterWeatherAdvisorySchema.exactOptional() })
+              .openapi({ required: [] }),
+          )
+          .exactOptional(),
+      })
+      .openapi({ required: [] }),
+  ).openapi('CenterWeatherAdvisoryCollectionGeoJson')
+
+const CenterWeatherAdvisoryGeoJsonSchema = (() => {
+  const Schema = GeoJsonFeatureSchema.and(
+    z.object({ properties: CenterWeatherAdvisorySchema.exactOptional() }).openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['@context', 'id', 'type', 'geometry', 'properties'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('CenterWeatherAdvisoryGeoJson')
+
+const OfficeSchema = z
+  .strictObject({
+    '@context': JsonLdContextSchema.exactOptional(),
+    '@type': z.literal('GovernmentOrganization').exactOptional(),
+    '@id': z.url().exactOptional(),
+    id: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    address: z
+      .strictObject({
+        '@type': z.literal('PostalAddress').exactOptional(),
+        streetAddress: z.string().exactOptional(),
+        addressLocality: z.string().exactOptional(),
+        addressRegion: z.string().exactOptional(),
+        postalCode: z.string().exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    telephone: z.string().exactOptional(),
+    faxNumber: z.string().exactOptional(),
+    email: z.string().exactOptional(),
+    sameAs: z.url().exactOptional(),
+    nwsRegion: z.string().exactOptional(),
+    parentOrganization: z.url().exactOptional(),
+    responsibleCounties: z.array(z.url()).exactOptional(),
+    responsibleForecastZones: z.array(z.url()).exactOptional(),
+    responsibleFireZones: z.array(z.url()).exactOptional(),
+    approvedObservationStations: z.array(z.url()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Office')
+
+const CenterWeatherServiceUnitJsonLdSchema = OfficeSchema.openapi('CenterWeatherServiceUnitJsonLd')
+
+const DateSchema = z.iso
+  .date()
+  .openapi({ description: 'Date (in YYYY-MM-DD format).' })
+  .openapi('Date')
+
+const GridpointGeoJsonSchema: z.ZodType<GridpointGeoJsonType> = (() => {
+  const Schema = GeoJsonFeatureSchema.and(
+    z.object({ properties: GridpointSchema.exactOptional() }).openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['@context', 'id', 'type', 'geometry', 'properties'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('GridpointGeoJson')
 
 const GridpointJsonLdSchema = GridpointSchema.openapi('GridpointJsonLd')
 
@@ -1398,25 +1880,107 @@ const GridpointHourlyForecastSchema = z
   .openapi({ description: 'An hourly forecast for a 2.5km grid square.', required: [] })
   .openapi('GridpointHourlyForecast')
 
-const Gridpoint12hForecastGeoJsonSchema = GeoJsonFeatureSchema.and(
-  z.object({ properties: Gridpoint12hForecastSchema.exactOptional() }).openapi({ required: [] }),
-).openapi('Gridpoint12hForecastGeoJson')
+const Gridpoint12hForecastGeoJsonSchema = (() => {
+  const Schema = GeoJsonFeatureSchema.and(
+    z.object({ properties: Gridpoint12hForecastSchema.exactOptional() }).openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['@context', 'id', 'type', 'geometry', 'properties'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('Gridpoint12hForecastGeoJson')
 
-const GridpointHourlyForecastGeoJsonSchema = GeoJsonFeatureSchema.and(
-  z.object({ properties: GridpointHourlyForecastSchema.exactOptional() }).openapi({ required: [] }),
-).openapi('GridpointHourlyForecastGeoJson')
+const GridpointHourlyForecastGeoJsonSchema = (() => {
+  const Schema = GeoJsonFeatureSchema.and(
+    z
+      .object({ properties: GridpointHourlyForecastSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['@context', 'id', 'type', 'geometry', 'properties'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('GridpointHourlyForecastGeoJson')
 
-const Gridpoint12hForecastJsonLdSchema = Gridpoint12hForecastSchema.and(
-  z
-    .object({ '@context': JsonLdContextSchema, geometry: GeometryStringSchema })
-    .openapi({ required: ['@context', 'geometry'] }),
-).openapi('Gridpoint12hForecastJsonLd')
+const Gridpoint12hForecastJsonLdSchema = (() => {
+  const Schema = Gridpoint12hForecastSchema.and(
+    z
+      .object({ '@context': JsonLdContextSchema, geometry: GeometryStringSchema })
+      .openapi({ required: ['@context', 'geometry'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            '@context',
+            'geometry',
+            'units',
+            'forecastGenerator',
+            'generatedAt',
+            'updateTime',
+            'validTimes',
+            'elevation',
+            'periods',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('Gridpoint12hForecastJsonLd')
 
-const GridpointHourlyForecastJsonLdSchema = GridpointHourlyForecastSchema.and(
-  z
-    .object({ '@context': JsonLdContextSchema, geometry: GeometryStringSchema })
-    .openapi({ required: ['@context', 'geometry'] }),
-).openapi('GridpointHourlyForecastJsonLd')
+const GridpointHourlyForecastJsonLdSchema = (() => {
+  const Schema = GridpointHourlyForecastSchema.and(
+    z
+      .object({ '@context': JsonLdContextSchema, geometry: GeometryStringSchema })
+      .openapi({ required: ['@context', 'geometry'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            '@context',
+            'geometry',
+            'units',
+            'forecastGenerator',
+            'generatedAt',
+            'updateTime',
+            'validTimes',
+            'elevation',
+            'periods',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('GridpointHourlyForecastJsonLd')
 
 const ISO8601DurationSchema = z
   .string()
@@ -1424,49 +1988,21 @@ const ISO8601DurationSchema = z
   .openapi({ description: 'A time duration in ISO 8601 format.', examples: ['P2DT12H'] })
   .openapi('ISO8601Duration')
 
-const MetarPhenomenonSchema = z
-  .strictObject({
-    intensity: z.enum(['light', 'heavy']).nullable(),
-    modifier: z
-      .enum(['patches', 'blowing', 'low_drifting', 'freezing', 'shallow', 'partial', 'showers'])
-      .nullable(),
-    weather: z.enum([
-      'fog_mist',
-      'dust_storm',
-      'dust',
-      'drizzle',
-      'funnel_cloud',
-      'fog',
-      'smoke',
-      'hail',
-      'snow_pellets',
-      'haze',
-      'ice_crystals',
-      'ice_pellets',
-      'dust_whirls',
-      'spray',
-      'rain',
-      'sand',
-      'snow_grains',
-      'snow',
-      'squalls',
-      'sand_storm',
-      'thunderstorms',
-      'unknown',
-      'volcanic_ash',
-    ]),
-    rawString: z.string(),
-    inVicinity: z.boolean().exactOptional(),
-  })
+const LandRegionCodeSchema = z
+  .enum(['AR', 'CR', 'ER', 'PR', 'SR', 'WR'])
   .openapi({
-    required: ['intensity', 'modifier', 'weather', 'rawString'],
-    description: 'An object representing a decoded METAR phenomenon string.',
+    description:
+      'Land region code. These correspond to the six NWS regional headquarters:\n* AR: Alaska Region\n* CR: Central Region\n* ER: Eastern Region\n* PR: Pacific Region\n* SR: Southern Region\n* WR: Western Region\n',
   })
-  .openapi('MetarPhenomenon')
+  .openapi('LandRegionCode')
 
-const MetarSkyCoverageSchema = z
-  .enum(['OVC', 'BKN', 'SCT', 'FEW', 'SKC', 'CLR', 'VV'])
-  .openapi('MetarSkyCoverage')
+const MarineRegionCodeSchema = z
+  .enum(['AL', 'AT', 'GL', 'GM', 'PA', 'PI'])
+  .openapi({
+    description:
+      'Marine region code. These are groups of marine areas combined.\n* AL: Alaska waters (PK)\n* AT: Atlantic Ocean (AM, AN)\n* GL: Great Lakes (LC, LE, LH, LM, LO, LS, SL)\n* GM: Gulf of Mexico (GM)\n* PA: Eastern Pacific Ocean and U.S. West Coast (PZ)\n* PI: Central and Western Pacific (PH, PM, PS)\n',
+  })
+  .openapi('MarineRegionCode')
 
 const NWSConnectDocumentMetadataSchema = z
   .object({
@@ -1500,145 +2036,6 @@ const NWSConnectDocumentMetadataSchema = z
   .openapi({ description: 'Metadata for an NWS Connect document.', required: [] })
   .openapi('NWSConnectDocumentMetadata')
 
-const NWSForecastOfficeIdSchema = z
-  .enum([
-    'AKQ',
-    'ALY',
-    'BGM',
-    'BOX',
-    'BTV',
-    'BUF',
-    'CAE',
-    'CAR',
-    'CHS',
-    'CLE',
-    'CTP',
-    'GSP',
-    'GYX',
-    'ILM',
-    'ILN',
-    'LWX',
-    'MHX',
-    'OKX',
-    'PBZ',
-    'PHI',
-    'RAH',
-    'RLX',
-    'RNK',
-    'ABQ',
-    'AMA',
-    'BMX',
-    'BRO',
-    'CRP',
-    'EPZ',
-    'EWX',
-    'FFC',
-    'FWD',
-    'HGX',
-    'HUN',
-    'JAN',
-    'JAX',
-    'KEY',
-    'LCH',
-    'LIX',
-    'LUB',
-    'LZK',
-    'MAF',
-    'MEG',
-    'MFL',
-    'MLB',
-    'MOB',
-    'MRX',
-    'OHX',
-    'OUN',
-    'SHV',
-    'SJT',
-    'SJU',
-    'TAE',
-    'TBW',
-    'TSA',
-    'ABR',
-    'APX',
-    'ARX',
-    'BIS',
-    'BOU',
-    'CYS',
-    'DDC',
-    'DLH',
-    'DMX',
-    'DTX',
-    'DVN',
-    'EAX',
-    'FGF',
-    'FSD',
-    'GID',
-    'GJT',
-    'GLD',
-    'GRB',
-    'GRR',
-    'ICT',
-    'ILX',
-    'IND',
-    'IWX',
-    'JKL',
-    'LBF',
-    'LMK',
-    'LOT',
-    'LSX',
-    'MKX',
-    'MPX',
-    'MQT',
-    'OAX',
-    'PAH',
-    'PUB',
-    'RIW',
-    'SGF',
-    'TOP',
-    'UNR',
-    'BOI',
-    'BYZ',
-    'EKA',
-    'FGZ',
-    'GGW',
-    'HNX',
-    'LKN',
-    'LOX',
-    'MFR',
-    'MSO',
-    'MTR',
-    'OTX',
-    'PDT',
-    'PIH',
-    'PQR',
-    'PSR',
-    'REV',
-    'SEW',
-    'SGX',
-    'SLC',
-    'STO',
-    'TFX',
-    'TWC',
-    'VEF',
-    'AER',
-    'AFC',
-    'AFG',
-    'AJK',
-    'ALU',
-    'GUM',
-    'HPA',
-    'HFO',
-    'PPG',
-    'PQE',
-    'PQW',
-    'STU',
-    'NH1',
-    'NH2',
-    'ONA',
-    'ONP',
-  ])
-  .openapi({ description: 'Three-letter identifier for a NWS office.' })
-  .openapi('NWSForecastOfficeId')
-
 const NWSNationalHQIdSchema = z
   .literal('NWS')
   .openapi({ description: 'Three-letter identifier for NWS National HQ.' })
@@ -1653,71 +2050,39 @@ const NWSOfficeIdSchema = z
   .xor([NWSForecastOfficeIdSchema, NWSRegionalHQIdSchema, NWSNationalHQIdSchema])
   .openapi('NWSOfficeId')
 
-const NWSZoneTypeSchema = z
-  .enum(['land', 'marine', 'forecast', 'public', 'coastal', 'offshore', 'fire', 'county'])
-  .openapi('NWSZoneType')
-
-const ObservationSchema = z
-  .strictObject({
-    '@context': JsonLdContextSchema.exactOptional(),
-    geometry: GeometryStringSchema.exactOptional(),
-    '@id': z.url().exactOptional(),
-    '@type': z.literal('wx:ObservationStation').exactOptional(),
-    elevation: QuantitativeValueSchema.exactOptional(),
-    station: z.url().exactOptional(),
-    stationId: z.string().exactOptional(),
-    stationName: z.string().exactOptional(),
-    timestamp: z.iso.datetime({ offset: true }).exactOptional(),
-    rawMessage: z.string().exactOptional(),
-    textDescription: z.string().exactOptional(),
-    icon: z.url().nullable().exactOptional().openapi({ deprecated: true }),
-    presentWeather: z.array(MetarPhenomenonSchema).exactOptional(),
-    temperature: QuantitativeValueSchema.exactOptional(),
-    dewpoint: QuantitativeValueSchema.exactOptional(),
-    windDirection: QuantitativeValueSchema.exactOptional(),
-    windSpeed: QuantitativeValueSchema.exactOptional(),
-    windGust: QuantitativeValueSchema.exactOptional(),
-    barometricPressure: QuantitativeValueSchema.exactOptional(),
-    seaLevelPressure: QuantitativeValueSchema.exactOptional(),
-    visibility: QuantitativeValueSchema.exactOptional(),
-    maxTemperatureLast24Hours: QuantitativeValueSchema.exactOptional(),
-    minTemperatureLast24Hours: QuantitativeValueSchema.exactOptional(),
-    precipitationLastHour: QuantitativeValueSchema.exactOptional(),
-    precipitationLast3Hours: QuantitativeValueSchema.exactOptional(),
-    precipitationLast6Hours: QuantitativeValueSchema.exactOptional(),
-    relativeHumidity: QuantitativeValueSchema.exactOptional(),
-    windChill: QuantitativeValueSchema.exactOptional(),
-    heatIndex: QuantitativeValueSchema.exactOptional(),
-    cloudLayers: z
-      .array(
-        z
-          .strictObject({ base: QuantitativeValueSchema, amount: MetarSkyCoverageSchema })
-          .openapi({ required: ['base', 'amount'] }),
-      )
-      .nullable()
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Observation')
-
-const ObservationGeoJsonSchema = GeoJsonFeatureSchema.and(
-  z.object({ properties: ObservationSchema.exactOptional() }).openapi({ required: [] }),
-).openapi('ObservationGeoJson')
+const ObservationGeoJsonSchema = (() => {
+  const Schema = GeoJsonFeatureSchema.and(
+    z.object({ properties: ObservationSchema.exactOptional() }).openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['@context', 'id', 'type', 'geometry', 'properties'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('ObservationGeoJson')
 
 const ObservationJsonLdSchema = ObservationSchema.openapi('ObservationJsonLd')
 
-const ObservationCollectionGeoJsonSchema = GeoJsonFeatureCollectionSchema.and(
-  z
-    .object({
-      features: z
-        .array(
-          z.object({ properties: ObservationSchema.exactOptional() }).openapi({ required: [] }),
-        )
-        .exactOptional(),
-      pagination: PaginationInfoSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('ObservationCollectionGeoJson')
+const ObservationCollectionGeoJsonSchema: z.ZodType<ObservationCollectionGeoJsonType> =
+  GeoJsonFeatureCollectionSchema.and(
+    z
+      .object({
+        features: z
+          .array(
+            z.object({ properties: ObservationSchema.exactOptional() }).openapi({ required: [] }),
+          )
+          .exactOptional(),
+        pagination: PaginationInfoSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  ).openapi('ObservationCollectionGeoJson')
 
 const ObservationCollectionJsonLdSchema = z
   .strictObject({
@@ -1728,71 +2093,78 @@ const ObservationCollectionJsonLdSchema = z
   .openapi({ required: [] })
   .openapi('ObservationCollectionJsonLd')
 
-const ObservationStationSchema = z
-  .strictObject({
-    '@context': JsonLdContextSchema.exactOptional(),
-    geometry: GeometryStringSchema.exactOptional(),
-    '@id': z.url().exactOptional(),
-    '@type': z.literal('wx:ObservationStation').exactOptional(),
-    elevation: QuantitativeValueSchema.exactOptional(),
-    stationIdentifier: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    timeZone: z.string().exactOptional(),
-    provider: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The data provider for this station. E.g., "ASOS," "MesoWest," etc.',
-      }),
-    subProvider: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The sub-provider of for this station. E.g., "FAA," "DOT," etc.' }),
-    forecast: z
-      .url()
-      .exactOptional()
-      .openapi({ description: 'A link to the NWS public forecast zone containing this station.' }),
-    county: z
-      .url()
-      .exactOptional()
-      .openapi({ description: 'A link to the NWS county zone containing this station.' }),
-    fireWeatherZone: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description: 'A link to the NWS fire weather forecast zone containing this station.',
-      }),
-    distance: QuantitativeValueSchema.exactOptional(),
-    bearing: QuantitativeValueSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ObservationStation')
+const ObservationStationGeoJsonSchema = (() => {
+  const Schema = GeoJsonFeatureSchema.and(
+    z.object({ properties: ObservationStationSchema.exactOptional() }).openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['@context', 'id', 'type', 'geometry', 'properties'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('ObservationStationGeoJson')
 
-const ObservationStationGeoJsonSchema = GeoJsonFeatureSchema.and(
-  z.object({ properties: ObservationStationSchema.exactOptional() }).openapi({ required: [] }),
-).openapi('ObservationStationGeoJson')
+const ObservationStationJsonLdSchema = (() => {
+  const Schema = ObservationStationSchema.and(
+    z
+      .object({ '@context': JsonLdContextSchema, geometry: GeometryStringSchema })
+      .openapi({ required: ['@context', 'geometry'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            '@context',
+            'geometry',
+            '@id',
+            '@type',
+            'elevation',
+            'stationIdentifier',
+            'name',
+            'timeZone',
+            'provider',
+            'subProvider',
+            'forecast',
+            'county',
+            'fireWeatherZone',
+            'distance',
+            'bearing',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('ObservationStationJsonLd')
 
-const ObservationStationJsonLdSchema = ObservationStationSchema.and(
-  z
-    .object({ '@context': JsonLdContextSchema, geometry: GeometryStringSchema })
-    .openapi({ required: ['@context', 'geometry'] }),
-).openapi('ObservationStationJsonLd')
-
-const ObservationStationCollectionGeoJsonSchema = GeoJsonFeatureCollectionSchema.and(
-  z
-    .object({
-      features: z
-        .array(
-          z
-            .object({ properties: ObservationStationSchema.exactOptional() })
-            .openapi({ required: [] }),
-        )
-        .exactOptional(),
-      observationStations: z.array(z.url()).exactOptional(),
-      pagination: PaginationInfoSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('ObservationStationCollectionGeoJson')
+const ObservationStationCollectionGeoJsonSchema: z.ZodType<ObservationStationCollectionGeoJsonType> =
+  GeoJsonFeatureCollectionSchema.and(
+    z
+      .object({
+        features: z
+          .array(
+            z
+              .object({ properties: ObservationStationSchema.exactOptional() })
+              .openapi({ required: [] }),
+          )
+          .exactOptional(),
+        observationStations: z.array(z.url()).exactOptional(),
+        pagination: PaginationInfoSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  ).openapi('ObservationStationCollectionGeoJson')
 
 const ObservationStationCollectionJsonLdSchema = z
   .strictObject({
@@ -1830,26 +2202,74 @@ const OfficeHeadlineCollectionSchema = z
 
 const OfficeWeatherStorySchema = NWSConnectDocumentMetadataSchema.and(
   z
-    .object({
-      altText: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Alternative text description of the content of the image for assistive technology.',
-        }),
-      order: z
-        .int()
-        .min(1)
-        .max(7)
-        .exactOptional()
-        .openapi({
-          description:
-            'The order in which a weather story should be displayed. Unique for each object.',
-        }),
-    })
-    .openapi({ required: [] }),
+    .looseObject({})
+    .openapi({
+      required: [
+        'startTime',
+        'endTime',
+        'updateTime',
+        'title',
+        'description',
+        'altText',
+        'priority',
+        'order',
+        'download',
+      ],
+    }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'startTime')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'endTime')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'updateTime')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'title')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'description')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'altText')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'priority')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'order')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'download')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        altText: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Alternative text description of the content of the image for assistive technology.',
+          }),
+        order: z
+          .int()
+          .min(1)
+          .max(7)
+          .exactOptional()
+          .openapi({
+            description:
+              'The order in which a weather story should be displayed. Unique for each object.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     required: [
       'startTime',
@@ -1869,83 +2289,23 @@ const OfficeWeatherStoryCollectionSchema = z
   .array(OfficeWeatherStorySchema)
   .openapi('OfficeWeatherStoryCollection')
 
-const RelativeLocationSchema = z
-  .object({
-    city: z.string().exactOptional(),
-    state: z.string().exactOptional(),
-    distance: QuantitativeValueSchema.exactOptional(),
-    bearing: QuantitativeValueSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RelativeLocation')
-
-const RelativeLocationGeoJsonSchema = GeoJsonFeatureSchema.and(
-  z.object({ properties: RelativeLocationSchema.exactOptional() }).openapi({ required: [] }),
-).openapi('RelativeLocationGeoJson')
-
-const RelativeLocationJsonLdSchema = RelativeLocationSchema.and(
-  z.object({ geometry: GeometryStringSchema }).openapi({ required: ['geometry'] }),
-).openapi('RelativeLocationJsonLd')
-
-const PointSchema = z
-  .object({
-    '@context': JsonLdContextSchema.exactOptional(),
-    geometry: GeometryStringSchema.exactOptional(),
-    '@id': z.url().exactOptional(),
-    '@type': z.literal('wx:Point').exactOptional(),
-    cwa: NWSForecastOfficeIdSchema.exactOptional(),
-    type: z
-      .enum(['land', 'marine'])
-      .exactOptional()
-      .openapi({ description: 'Whether the specific point is on land or marine' }),
-    forecastOffice: z.url().exactOptional(),
-    gridId: NWSForecastOfficeIdSchema.exactOptional(),
-    gridX: z.int().min(0).exactOptional(),
-    gridY: z.int().min(0).exactOptional(),
-    forecast: z.url().exactOptional(),
-    forecastHourly: z.url().exactOptional(),
-    forecastGridData: z.url().exactOptional(),
-    observationStations: z.url().exactOptional(),
-    relativeLocation: z
-      .xor([RelativeLocationGeoJsonSchema, RelativeLocationJsonLdSchema])
-      .exactOptional(),
-    forecastZone: z.url().exactOptional(),
-    county: z.url().exactOptional(),
-    fireWeatherZone: z.url().exactOptional(),
-    timeZone: z.string().exactOptional(),
-    radarStation: z.string().exactOptional(),
-    astronomicalData: AstronomicalDataSchema.exactOptional(),
-    nwr: z
-      .object({
-        transmitter: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'Transmitter callsign' }),
-        sameCode: z
-          .string()
-          .exactOptional()
-          .openapi({ description: "The SAME code of this point's county" }),
-        areaBroadcast: z
-          .url()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'A link to the area NWR broadcast from this transmitter' }),
-        pointBroadcast: z
-          .url()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'A link to the local NWR broadcast for this point' }),
-      })
-      .exactOptional()
-      .openapi({ description: 'NOAA Weather Radio metadata for this point', required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('Point')
-
-const PointGeoJsonSchema = GeoJsonFeatureSchema.and(
-  z.object({ properties: PointSchema.exactOptional() }).openapi({ required: [] }),
-).openapi('PointGeoJson')
+const PointGeoJsonSchema: z.ZodType<PointGeoJsonType> = (() => {
+  const Schema = GeoJsonFeatureSchema.and(
+    z.object({ properties: PointSchema.exactOptional() }).openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['@context', 'id', 'type', 'geometry', 'properties'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('PointGeoJson')
 
 const PointJsonLdSchema = PointSchema.and(
   z
@@ -2011,31 +2371,12 @@ const ProblemDetailSchema = z
   })
   .openapi('ProblemDetail')
 
-const RegionCodeSchema: z.ZodType<RegionCodeType> = z
-  .lazy(() => z.xor([LandRegionCodeSchema, MarineRegionCodeSchema]))
-  .openapi('RegionCode')
+const RegionCodeSchema = z.xor([LandRegionCodeSchema, MarineRegionCodeSchema]).openapi('RegionCode')
 
-const SigmetSchema = z
-  .strictObject({
-    id: z.url().exactOptional(),
-    issueTime: z.iso.datetime({ offset: true }).exactOptional(),
-    fir: z.string().nullable().exactOptional(),
-    atsu: ATSUIdentifierSchema.exactOptional(),
-    sequence: z.string().nullable().exactOptional(),
-    phenomenon: z.url().nullable().exactOptional(),
-    start: z.iso.datetime({ offset: true }).exactOptional(),
-    end: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Sigmet')
-
-const SigmetGeoJsonSchema = GeoJsonFeatureSchema.and(
-  z.object({ properties: SigmetSchema.exactOptional() }).openapi({ required: [] }),
-).openapi('SigmetGeoJson')
-
-const SigmetCollectionGeoJsonSchema = GeoJsonFeatureCollectionSchema.and(
-  z.object({ features: z.array(SigmetGeoJsonSchema).exactOptional() }).openapi({ required: [] }),
-).openapi('SigmetCollectionGeoJson')
+const SigmetCollectionGeoJsonSchema: z.ZodType<SigmetCollectionGeoJsonType> =
+  GeoJsonFeatureCollectionSchema.and(
+    z.object({ features: z.array(SigmetGeoJsonSchema).exactOptional() }).openapi({ required: [] }),
+  ).openapi('SigmetCollectionGeoJson')
 
 const SigmetSequenceNumberSchema = z.string().openapi('SigmetSequenceNumber')
 
@@ -2090,45 +2431,36 @@ const TimeSchema = z
   .openapi({ description: 'A time (in HHMM format). This is always specified in UTC (Zulu) time.' })
   .openapi('Time')
 
-const ZoneSchema = z
-  .strictObject({
-    '@context': JsonLdContextSchema.exactOptional(),
-    geometry: GeometryStringSchema.exactOptional(),
-    '@id': z.url().exactOptional(),
-    '@type': z.literal('wx:Zone').exactOptional(),
-    id: NWSZoneIDSchema.exactOptional(),
-    type: NWSZoneTypeSchema.exactOptional(),
-    name: z.string().exactOptional(),
-    effectiveDate: z.iso.datetime({ offset: true }).exactOptional(),
-    expirationDate: z.iso.datetime({ offset: true }).exactOptional(),
-    state: z.xor([StateTerritoryCodeSchema, z.literal(''), z.null().nullable()]).exactOptional(),
-    forecastOffice: z.url().exactOptional(),
-    gridIdentifier: z.string().exactOptional(),
-    awipsLocationIdentifier: z.string().exactOptional(),
-    cwa: z.array(NWSForecastOfficeIdSchema).exactOptional().openapi({ deprecated: true }),
-    forecastOffices: z.array(z.url()).exactOptional().openapi({ deprecated: true }),
-    timeZone: z.array(z.string()).exactOptional(),
-    observationStations: z.array(z.url()).exactOptional(),
-    radarStation: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Zone')
-
-const ZoneGeoJsonSchema = GeoJsonFeatureSchema.and(
-  z.object({ properties: ZoneSchema.exactOptional() }).openapi({ required: [] }),
-).openapi('ZoneGeoJson')
+const ZoneGeoJsonSchema = (() => {
+  const Schema = GeoJsonFeatureSchema.and(
+    z.object({ properties: ZoneSchema.exactOptional() }).openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['@context', 'id', 'type', 'geometry', 'properties'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('ZoneGeoJson')
 
 const ZoneJsonLdSchema = ZoneSchema.openapi('ZoneJsonLd')
 
-const ZoneCollectionGeoJsonSchema = GeoJsonFeatureCollectionSchema.and(
-  z
-    .object({
-      features: z
-        .array(z.object({ properties: ZoneSchema.exactOptional() }).openapi({ required: [] }))
-        .exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('ZoneCollectionGeoJson')
+const ZoneCollectionGeoJsonSchema: z.ZodType<ZoneCollectionGeoJsonType> =
+  GeoJsonFeatureCollectionSchema.and(
+    z
+      .object({
+        features: z
+          .array(z.object({ properties: ZoneSchema.exactOptional() }).openapi({ required: [] }))
+          .exactOptional(),
+      })
+      .openapi({ required: [] }),
+  ).openapi('ZoneCollectionGeoJson')
 
 const ZoneCollectionJsonLdSchema = z
   .strictObject({
@@ -2173,9 +2505,23 @@ const ZoneForecastSchema = z
   .openapi({ description: 'An object representing a zone area forecast.', required: [] })
   .openapi('ZoneForecast')
 
-const ZoneForecastGeoJsonSchema = GeoJsonFeatureSchema.and(
-  z.object({ properties: ZoneForecastSchema.exactOptional() }).openapi({ required: [] }),
-).openapi('ZoneForecastGeoJson')
+const ZoneForecastGeoJsonSchema = (() => {
+  const Schema = GeoJsonFeatureSchema.and(
+    z.object({ properties: ZoneForecastSchema.exactOptional() }).openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['@context', 'id', 'type', 'geometry', 'properties'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('ZoneForecastGeoJson')
 
 const ZoneForecastJsonLdSchema = ZoneForecastSchema.openapi('ZoneForecastJsonLd')
 

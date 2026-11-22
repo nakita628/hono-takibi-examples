@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAmazonAthenaGetSessionStatusHandler = app.openapi(
   postXAmzTargetAmazonAthenaGetSessionStatusRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

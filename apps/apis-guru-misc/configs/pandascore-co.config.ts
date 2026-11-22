@@ -4,7 +4,7 @@ export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/pandascore.co/2.23.1/openapi.yaml',
   output: './src/pandascore-co/routes.ts',
   template: {},
-  type: { output: './src/pandascore-co/types.ts' },
+  // No type output: enum values that are objects are written as `[object Object]` and the run aborts (nakita628/hono-takibi#504).
   client: { output: './src/pandascore-co/client.ts', baseUrl: '/' },
   rpc: { output: './src/pandascore-co/rpc.ts', parseResponse: true },
   swr: { output: './src/pandascore-co/hooks/swr.ts' },

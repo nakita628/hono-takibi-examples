@@ -11,7 +11,9 @@ const app = new OpenAPIHono()
 export const channelAccountsHandler = app
   .openapi(
     patchConversationsCustomChannels202609ChannelIdChannelAccountStagingTokensAccountTokenRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(getConversationsCustomChannels202609ChannelIdChannelAccountsRoute, (c) => {
     throw new Error('Not implemented')
@@ -21,5 +23,7 @@ export const channelAccountsHandler = app
   })
   .openapi(
     patchConversationsCustomChannels202609ChannelIdChannelAccountsChannelAccountIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

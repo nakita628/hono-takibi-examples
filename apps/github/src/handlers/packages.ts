@@ -107,11 +107,12 @@ export const packagesHandler = app
   .openapi(getUsersUsernamePackagesPackageTypePackageNameVersionsPackageVersionIdRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    deleteUsersUsernamePackagesPackageTypePackageNameVersionsPackageVersionIdRoute,
-    (c) => {},
-  )
+  .openapi(deleteUsersUsernamePackagesPackageTypePackageNameVersionsPackageVersionIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(
     postUsersUsernamePackagesPackageTypePackageNameVersionsPackageVersionIdRestoreRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

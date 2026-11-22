@@ -10,8 +10,18 @@ import {
 const app = new OpenAPIHono()
 
 export const orderAcceptanceWebhooksHandler = app
-  .openapi(postAcceptanceRequestedRoute, (c) => {})
-  .openapi(postOrderAcceptedRoute, (c) => {})
-  .openapi(postOrderCancelledRoute, (c) => {})
-  .openapi(postOrderRejectedRoute, (c) => {})
-  .openapi(putRedeliveryRequestedRoute, (c) => {})
+  .openapi(postAcceptanceRequestedRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrderAcceptedRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrderCancelledRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postOrderRejectedRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(putRedeliveryRequestedRoute, (c) => {
+    throw new Error('Not implemented')
+  })

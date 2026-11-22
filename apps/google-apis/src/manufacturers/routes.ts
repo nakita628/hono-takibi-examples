@@ -552,36 +552,6 @@ const AttributesSchema = z
   })
   .openapi('Attributes')
 
-const CertificationSchema = z
-  .object({
-    authority: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Name of the certification body.' }),
-    link: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. A URL link to the certification.' }),
-    logo: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. A URL link to the certification logo.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Name of the certification.' }),
-    validUntil: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. The expiration date (UTC).' }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. A custom value of the certification.' }),
-  })
-  .openapi({ description: 'Description of a certification.', required: [] })
-  .openapi('Certification')
-
 const DestinationStatusSchema = z
   .object({
     destination: z
@@ -595,14 +565,6 @@ const DestinationStatusSchema = z
   })
   .openapi({ description: 'The destination status.', required: [] })
   .openapi('DestinationStatus')
-
-const EmptySchema = z
-  .object({})
-  .openapi({
-    description:
-      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
-  })
-  .openapi('Empty')
 
 const IssueSchema = z
   .object({
@@ -647,6 +609,102 @@ const IssueSchema = z
   })
   .openapi({ description: 'Product issue.', required: [] })
   .openapi('Issue')
+
+const ProductSchema = z
+  .object({
+    attributes: AttributesSchema.exactOptional().openapi({
+      description:
+        'Attributes of the product uploaded to the Manufacturer Center. Manually edited attributes are taken into account.',
+    }),
+    contentLanguage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The content language of the product as a two-letter ISO 639-1 language code (for example, en).',
+      }),
+    destinationStatuses: z
+      .array(DestinationStatusSchema)
+      .exactOptional()
+      .openapi({ description: 'The status of the destinations.' }),
+    issues: z
+      .array(IssueSchema)
+      .exactOptional()
+      .openapi({ description: 'A server-generated list of issues associated with the product.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name in the format `{target_country}:{content_language}:{product_id}`. `target_country` - The target country of the product as a CLDR territory code (for example, US). `content_language` - The content language of the product as a two-letter ISO 639-1 language code (for example, en). `product_id` - The ID of the product. For more information, see https://support.google.com/manufacturers/answer/6124116#id.',
+      }),
+    parent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Parent ID in the format `accounts/{account_id}`. `account_id` - The ID of the Manufacturer Center account.',
+      }),
+    productId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the product. For more information, see https://support.google.com/manufacturers/answer/6124116#id.',
+      }),
+    targetCountry: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The target country of the product as a CLDR territory code (for example, US).',
+      }),
+  })
+  .openapi({ description: 'Product data.', required: [] })
+  .openapi('Product')
+
+type ListProductsResponseType = {
+  nextPageToken?: string
+  products?: z.infer<typeof ProductSchema>[]
+}
+
+const CertificationSchema = z
+  .object({
+    authority: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Name of the certification body.' }),
+    link: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. A URL link to the certification.' }),
+    logo: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. A URL link to the certification logo.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Name of the certification.' }),
+    validUntil: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. The expiration date (UTC).' }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. A custom value of the certification.' }),
+  })
+  .openapi({ description: 'Description of a certification.', required: [] })
+  .openapi('Certification')
+
+const EmptySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
+  })
+  .openapi('Empty')
 
 const ProductCertificationSchema = z
   .object({
@@ -732,60 +790,7 @@ const ListProductCertificationsResponseSchema = z
   .openapi({ description: 'Response for ListProductCertifications method.', required: [] })
   .openapi('ListProductCertificationsResponse')
 
-const ProductSchema = z
-  .object({
-    attributes: AttributesSchema.exactOptional().openapi({
-      description:
-        'Attributes of the product uploaded to the Manufacturer Center. Manually edited attributes are taken into account.',
-    }),
-    contentLanguage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The content language of the product as a two-letter ISO 639-1 language code (for example, en).',
-      }),
-    destinationStatuses: z
-      .array(DestinationStatusSchema)
-      .exactOptional()
-      .openapi({ description: 'The status of the destinations.' }),
-    issues: z
-      .array(IssueSchema)
-      .exactOptional()
-      .openapi({ description: 'A server-generated list of issues associated with the product.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name in the format `{target_country}:{content_language}:{product_id}`. `target_country` - The target country of the product as a CLDR territory code (for example, US). `content_language` - The content language of the product as a two-letter ISO 639-1 language code (for example, en). `product_id` - The ID of the product. For more information, see https://support.google.com/manufacturers/answer/6124116#id.',
-      }),
-    parent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Parent ID in the format `accounts/{account_id}`. `account_id` - The ID of the Manufacturer Center account.',
-      }),
-    productId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the product. For more information, see https://support.google.com/manufacturers/answer/6124116#id.',
-      }),
-    targetCountry: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The target country of the product as a CLDR territory code (for example, US).',
-      }),
-  })
-  .openapi({ description: 'Product data.', required: [] })
-  .openapi('Product')
-
-const ListProductsResponseSchema = z
+const ListProductsResponseSchema: z.ZodType<ListProductsResponseType> = z
   .object({
     nextPageToken: z
       .string()

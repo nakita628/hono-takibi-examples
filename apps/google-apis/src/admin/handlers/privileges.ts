@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const privilegesHandler = app.openapi(
   getAdminDirectoryV1CustomerCustomerRolesALLPrivilegesRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

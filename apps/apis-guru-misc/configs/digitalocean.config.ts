@@ -3,7 +3,9 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/digitalocean.com/2.0/openapi.yaml',
   output: './src/digitalocean/routes.ts',
-  template: {},
+  // template: { routeHandler: true }: the default template exports each handler file under its tag or first
+  // path segment, and one here starts with a digit, which is not an identifier (nakita628/hono-takibi#506).
+  template: { routeHandler: true },
   type: { output: './src/digitalocean/types.ts' },
   client: { output: './src/digitalocean/client.ts', baseUrl: '/' },
   rpc: { output: './src/digitalocean/rpc.ts', parseResponse: true },

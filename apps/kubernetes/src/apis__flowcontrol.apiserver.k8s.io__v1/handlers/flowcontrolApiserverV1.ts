@@ -87,10 +87,9 @@ export const flowcontrolApiserverV1Handler = app
   .openapi(getApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameStatusRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    patchApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameStatusRoute,
-    (c) => {},
-  )
+  .openapi(patchApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameStatusRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(putApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameStatusRoute, (c) => {
     throw new Error('Not implemented')
   })

@@ -1,11 +1,11 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const AssociateServiceQuotaTemplateResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateServiceQuotaTemplateResponse')
 
 const AssociateServiceQuotaTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'AssociateServiceQuotaTemplateRequest' })
   .openapi('AssociateServiceQuotaTemplateRequest')
 
@@ -32,7 +32,7 @@ const TemplatesNotAvailableInRegionExceptionSchema = z
 const NoAvailableOrganizationExceptionSchema = z.any().openapi('NoAvailableOrganizationException')
 
 const DeleteServiceQuotaIncreaseRequestFromTemplateResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteServiceQuotaIncreaseRequestFromTemplateResponse')
 
 const ServiceCodeSchema = z
@@ -58,9 +58,9 @@ const AwsRegionSchema = z
 
 const DeleteServiceQuotaIncreaseRequestFromTemplateRequestSchema = z
   .object({
-    ServiceCode: ServiceCodeSchema.and(z.any().openapi({ description: 'The service identifier.' })),
-    QuotaCode: QuotaCodeSchema.and(z.any().openapi({ description: 'The quota identifier.' })),
-    AwsRegion: AwsRegionSchema.and(z.any().openapi({ description: 'The AWS Region.' })),
+    ServiceCode: ServiceCodeSchema.openapi({ description: 'The service identifier.' }),
+    QuotaCode: QuotaCodeSchema.openapi({ description: 'The quota identifier.' }),
+    AwsRegion: AwsRegionSchema.openapi({ description: 'The AWS Region.' }),
   })
   .openapi({
     required: ['ServiceCode', 'QuotaCode', 'AwsRegion'],
@@ -73,11 +73,11 @@ const NoSuchResourceExceptionSchema = z.any().openapi('NoSuchResourceException')
 const IllegalArgumentExceptionSchema = z.any().openapi('IllegalArgumentException')
 
 const DisassociateServiceQuotaTemplateResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateServiceQuotaTemplateResponse')
 
 const DisassociateServiceQuotaTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateServiceQuotaTemplateRequest' })
   .openapi('DisassociateServiceQuotaTemplateRequest')
 
@@ -119,28 +119,19 @@ const StatisticSchema = z
 
 const MetricInfoSchema = z
   .object({
-    MetricNamespace: QuotaMetricNamespaceSchema.and(
-      z.any().openapi({ description: 'The namespace of the metric.' }),
-    ).exactOptional(),
-    MetricName: QuotaMetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric.' }),
-    ).exactOptional(),
-    MetricDimensions: MetricDimensionsMapDefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metric dimension. This is a name/value pair that is part of the identity of a metric.',
-        }),
-    ).exactOptional(),
-    MetricStatisticRecommendation: StatisticSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metric statistic that we recommend you use when determining quota usage.',
-        }),
-    ).exactOptional(),
+    MetricNamespace: QuotaMetricNamespaceSchema.exactOptional().openapi({
+      description: 'The namespace of the metric.',
+    }),
+    MetricName: QuotaMetricNameSchema.exactOptional().openapi({
+      description: 'The name of the metric.',
+    }),
+    MetricDimensions: MetricDimensionsMapDefinitionSchema.exactOptional().openapi({
+      description:
+        'The metric dimension. This is a name/value pair that is part of the identity of a metric.',
+    }),
+    MetricStatisticRecommendation: StatisticSchema.exactOptional().openapi({
+      description: 'The metric statistic that we recommend you use when determining quota usage.',
+    }),
   })
   .openapi({
     description: 'Information about the CloudWatch metric that reflects quota usage.',
@@ -156,12 +147,8 @@ const PeriodUnitSchema = z
 
 const QuotaPeriodSchema = z
   .object({
-    PeriodValue: PeriodValueSchema.and(
-      z.any().openapi({ description: 'The value.' }),
-    ).exactOptional(),
-    PeriodUnit: PeriodUnitSchema.and(
-      z.any().openapi({ description: 'The time unit.' }),
-    ).exactOptional(),
+    PeriodValue: PeriodValueSchema.exactOptional().openapi({ description: 'The value.' }),
+    PeriodUnit: PeriodUnitSchema.exactOptional().openapi({ description: 'The time unit.' }),
   })
   .openapi({ description: 'Information about the quota period.', required: [] })
   .openapi('QuotaPeriod')
@@ -179,76 +166,58 @@ const ErrorMessageSchema = z.string().openapi('ErrorMessage')
 
 const ErrorReasonSchema = z
   .object({
-    ErrorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Service Quotas returns the following error values:</p> <ul> <li> <p> <code>DEPENDENCY_ACCESS_DENIED_ERROR</code> - The caller does not have the required permissions to complete the action. To resolve the error, you must have permission to access the service or quota.</p> </li> <li> <p> <code>DEPENDENCY_THROTTLING_ERROR</code> - The service is throttling Service Quotas.</p> </li> <li> <p> <code>DEPENDENCY_SERVICE_ERROR</code> - The service is not available.</p> </li> <li> <p> <code>SERVICE_QUOTA_NOT_AVAILABLE_ERROR</code> - There was an error in Service Quotas.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ErrorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({
+      description:
+        '<p>Service Quotas returns the following error values:</p> <ul> <li> <p> <code>DEPENDENCY_ACCESS_DENIED_ERROR</code> - The caller does not have the required permissions to complete the action. To resolve the error, you must have permission to access the service or quota.</p> </li> <li> <p> <code>DEPENDENCY_THROTTLING_ERROR</code> - The service is throttling Service Quotas.</p> </li> <li> <p> <code>DEPENDENCY_SERVICE_ERROR</code> - The service is not available.</p> </li> <li> <p> <code>SERVICE_QUOTA_NOT_AVAILABLE_ERROR</code> - There was an error in Service Quotas.</p> </li> </ul>',
+    }),
+    ErrorMessage: ErrorMessageSchema.exactOptional().openapi({ description: 'The error message.' }),
   })
   .openapi({ description: 'An error that explains why an action did not succeed.', required: [] })
   .openapi('ErrorReason')
 
 const ServiceQuotaSchema = z
   .object({
-    ServiceCode: ServiceCodeSchema.and(
-      z.any().openapi({ description: 'The service identifier.' }),
-    ).exactOptional(),
-    ServiceName: ServiceNameSchema.and(
-      z.any().openapi({ description: 'The service name.' }),
-    ).exactOptional(),
-    QuotaArn: QuotaArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the quota.' }),
-    ).exactOptional(),
-    QuotaCode: QuotaCodeSchema.and(
-      z.any().openapi({ description: 'The quota identifier.' }),
-    ).exactOptional(),
-    QuotaName: QuotaNameSchema.and(
-      z.any().openapi({ description: 'The quota name.' }),
-    ).exactOptional(),
-    Value: QuotaValueSchema.and(
-      z.any().openapi({ description: 'The quota value.' }),
-    ).exactOptional(),
-    Unit: QuotaUnitSchema.and(
-      z.any().openapi({ description: 'The unit of measurement.' }),
-    ).exactOptional(),
-    Adjustable: QuotaAdjustableSchema.and(
-      z.any().openapi({ description: 'Indicates whether the quota value can be increased.' }),
-    ).exactOptional(),
-    GlobalQuota: GlobalQuotaSchema.and(
-      z.any().openapi({ description: 'Indicates whether the quota is global.' }),
-    ).exactOptional(),
-    UsageMetric: MetricInfoSchema.and(
-      z.any().openapi({ description: 'Information about the measurement.' }),
-    ).exactOptional(),
-    Period: QuotaPeriodSchema.and(
-      z.any().openapi({ description: 'The period of time.' }),
-    ).exactOptional(),
-    ErrorReason: ErrorReasonSchema.and(
-      z.any().openapi({ description: 'The error code and error reason.' }),
-    ).exactOptional(),
+    ServiceCode: ServiceCodeSchema.exactOptional().openapi({
+      description: 'The service identifier.',
+    }),
+    ServiceName: ServiceNameSchema.exactOptional().openapi({ description: 'The service name.' }),
+    QuotaArn: QuotaArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the quota.',
+    }),
+    QuotaCode: QuotaCodeSchema.exactOptional().openapi({ description: 'The quota identifier.' }),
+    QuotaName: QuotaNameSchema.exactOptional().openapi({ description: 'The quota name.' }),
+    Value: QuotaValueSchema.exactOptional().openapi({ description: 'The quota value.' }),
+    Unit: QuotaUnitSchema.exactOptional().openapi({ description: 'The unit of measurement.' }),
+    Adjustable: QuotaAdjustableSchema.exactOptional().openapi({
+      description: 'Indicates whether the quota value can be increased.',
+    }),
+    GlobalQuota: GlobalQuotaSchema.exactOptional().openapi({
+      description: 'Indicates whether the quota is global.',
+    }),
+    UsageMetric: MetricInfoSchema.exactOptional().openapi({
+      description: 'Information about the measurement.',
+    }),
+    Period: QuotaPeriodSchema.exactOptional().openapi({ description: 'The period of time.' }),
+    ErrorReason: ErrorReasonSchema.exactOptional().openapi({
+      description: 'The error code and error reason.',
+    }),
   })
   .openapi({ description: 'Information about a quota.', required: [] })
   .openapi('ServiceQuota')
 
 const GetAWSDefaultServiceQuotaResponseSchema = z
   .object({
-    Quota: ServiceQuotaSchema.and(
-      z.any().openapi({ description: 'Information about the quota.' }),
-    ).exactOptional(),
+    Quota: ServiceQuotaSchema.exactOptional().openapi({
+      description: 'Information about the quota.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAWSDefaultServiceQuotaResponse')
 
 const GetAWSDefaultServiceQuotaRequestSchema = z
   .object({
-    ServiceCode: ServiceCodeSchema.and(z.any().openapi({ description: 'The service identifier.' })),
-    QuotaCode: QuotaCodeSchema.and(z.any().openapi({ description: 'The quota identifier.' })),
+    ServiceCode: ServiceCodeSchema.openapi({ description: 'The service identifier.' }),
+    QuotaCode: QuotaCodeSchema.openapi({ description: 'The quota identifier.' }),
   })
   .openapi({ required: ['ServiceCode', 'QuotaCode'], title: 'GetAWSDefaultServiceQuotaRequest' })
   .openapi('GetAWSDefaultServiceQuotaRequest')
@@ -259,20 +228,17 @@ const ServiceQuotaTemplateAssociationStatusSchema = z
 
 const GetAssociationForServiceQuotaTemplateResponseSchema = z
   .object({
-    ServiceQuotaTemplateAssociationStatus: ServiceQuotaTemplateAssociationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The association status. If the status is <code>ASSOCIATED</code>, the quota increase requests in the template are automatically applied to new accounts in your organization.',
-        }),
-    ).exactOptional(),
+    ServiceQuotaTemplateAssociationStatus:
+      ServiceQuotaTemplateAssociationStatusSchema.exactOptional().openapi({
+        description:
+          'The association status. If the status is <code>ASSOCIATED</code>, the quota increase requests in the template are automatically applied to new accounts in your organization.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('GetAssociationForServiceQuotaTemplateResponse')
 
 const GetAssociationForServiceQuotaTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAssociationForServiceQuotaTemplateRequest' })
   .openapi('GetAssociationForServiceQuotaTemplateRequest')
 
@@ -295,136 +261,111 @@ const RequesterSchema = z.string().openapi('Requester')
 
 const RequestedServiceQuotaChangeSchema = z
   .object({
-    Id: RequestIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier.' }),
-    ).exactOptional(),
-    CaseId: CustomerServiceEngagementIdSchema.and(
-      z.any().openapi({ description: 'The case ID.' }),
-    ).exactOptional(),
-    ServiceCode: ServiceCodeSchema.and(
-      z.any().openapi({ description: 'The service identifier.' }),
-    ).exactOptional(),
-    ServiceName: ServiceNameSchema.and(
-      z.any().openapi({ description: 'The service name.' }),
-    ).exactOptional(),
-    QuotaCode: QuotaCodeSchema.and(
-      z.any().openapi({ description: 'The quota identifier.' }),
-    ).exactOptional(),
-    QuotaName: QuotaNameSchema.and(
-      z.any().openapi({ description: 'The quota name.' }),
-    ).exactOptional(),
-    DesiredValue: QuotaValueSchema.and(
-      z.any().openapi({ description: 'The new, increased value for the quota.' }),
-    ).exactOptional(),
-    Status: RequestStatusSchema.and(
-      z.any().openapi({ description: 'The state of the quota increase request.' }),
-    ).exactOptional(),
-    Created: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the quota increase request was received and the case ID was created.',
-        }),
-    ).exactOptional(),
-    LastUpdated: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time of the most recent change.' }),
-    ).exactOptional(),
-    Requester: RequesterSchema.and(
-      z.any().openapi({ description: 'The IAM identity of the requester.' }),
-    ).exactOptional(),
-    QuotaArn: QuotaArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the quota.' }),
-    ).exactOptional(),
-    GlobalQuota: GlobalQuotaSchema.and(
-      z.any().openapi({ description: 'Indicates whether the quota is global.' }),
-    ).exactOptional(),
-    Unit: QuotaUnitSchema.and(
-      z.any().openapi({ description: 'The unit of measurement.' }),
-    ).exactOptional(),
+    Id: RequestIdSchema.exactOptional().openapi({ description: 'The unique identifier.' }),
+    CaseId: CustomerServiceEngagementIdSchema.exactOptional().openapi({
+      description: 'The case ID.',
+    }),
+    ServiceCode: ServiceCodeSchema.exactOptional().openapi({
+      description: 'The service identifier.',
+    }),
+    ServiceName: ServiceNameSchema.exactOptional().openapi({ description: 'The service name.' }),
+    QuotaCode: QuotaCodeSchema.exactOptional().openapi({ description: 'The quota identifier.' }),
+    QuotaName: QuotaNameSchema.exactOptional().openapi({ description: 'The quota name.' }),
+    DesiredValue: QuotaValueSchema.exactOptional().openapi({
+      description: 'The new, increased value for the quota.',
+    }),
+    Status: RequestStatusSchema.exactOptional().openapi({
+      description: 'The state of the quota increase request.',
+    }),
+    Created: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the quota increase request was received and the case ID was created.',
+    }),
+    LastUpdated: DateTimeSchema.exactOptional().openapi({
+      description: 'The date and time of the most recent change.',
+    }),
+    Requester: RequesterSchema.exactOptional().openapi({
+      description: 'The IAM identity of the requester.',
+    }),
+    QuotaArn: QuotaArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the quota.',
+    }),
+    GlobalQuota: GlobalQuotaSchema.exactOptional().openapi({
+      description: 'Indicates whether the quota is global.',
+    }),
+    Unit: QuotaUnitSchema.exactOptional().openapi({ description: 'The unit of measurement.' }),
   })
   .openapi({ description: 'Information about a quota increase request.', required: [] })
   .openapi('RequestedServiceQuotaChange')
 
 const GetRequestedServiceQuotaChangeResponseSchema = z
   .object({
-    RequestedQuota: RequestedServiceQuotaChangeSchema.and(
-      z.any().openapi({ description: 'Information about the quota increase request.' }),
-    ).exactOptional(),
+    RequestedQuota: RequestedServiceQuotaChangeSchema.exactOptional().openapi({
+      description: 'Information about the quota increase request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRequestedServiceQuotaChangeResponse')
 
 const GetRequestedServiceQuotaChangeRequestSchema = z
   .object({
-    RequestId: RequestIdSchema.and(
-      z.any().openapi({ description: 'The ID of the quota increase request.' }),
-    ),
+    RequestId: RequestIdSchema.openapi({ description: 'The ID of the quota increase request.' }),
   })
   .openapi({ required: ['RequestId'], title: 'GetRequestedServiceQuotaChangeRequest' })
   .openapi('GetRequestedServiceQuotaChangeRequest')
 
 const GetServiceQuotaResponseSchema = z
   .object({
-    Quota: ServiceQuotaSchema.and(
-      z.any().openapi({ description: 'Information about the quota.' }),
-    ).exactOptional(),
+    Quota: ServiceQuotaSchema.exactOptional().openapi({
+      description: 'Information about the quota.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetServiceQuotaResponse')
 
 const GetServiceQuotaRequestSchema = z
   .object({
-    ServiceCode: ServiceCodeSchema.and(z.any().openapi({ description: 'The service identifier.' })),
-    QuotaCode: QuotaCodeSchema.and(z.any().openapi({ description: 'The quota identifier.' })),
+    ServiceCode: ServiceCodeSchema.openapi({ description: 'The service identifier.' }),
+    QuotaCode: QuotaCodeSchema.openapi({ description: 'The quota identifier.' }),
   })
   .openapi({ required: ['ServiceCode', 'QuotaCode'], title: 'GetServiceQuotaRequest' })
   .openapi('GetServiceQuotaRequest')
 
 const ServiceQuotaIncreaseRequestInTemplateSchema = z
   .object({
-    ServiceCode: ServiceCodeSchema.and(
-      z.any().openapi({ description: 'The service identifier.' }),
-    ).exactOptional(),
-    ServiceName: ServiceNameSchema.and(
-      z.any().openapi({ description: 'The service name.' }),
-    ).exactOptional(),
-    QuotaCode: QuotaCodeSchema.and(
-      z.any().openapi({ description: 'The quota identifier.' }),
-    ).exactOptional(),
-    QuotaName: QuotaNameSchema.and(
-      z.any().openapi({ description: 'The quota name.' }),
-    ).exactOptional(),
-    DesiredValue: QuotaValueSchema.and(
-      z.any().openapi({ description: 'The new, increased value of the quota.' }),
-    ).exactOptional(),
-    AwsRegion: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The AWS Region.' }),
-    ).exactOptional(),
-    Unit: QuotaUnitSchema.and(
-      z.any().openapi({ description: 'The unit of measurement.' }),
-    ).exactOptional(),
-    GlobalQuota: GlobalQuotaSchema.and(
-      z.any().openapi({ description: 'Indicates whether the quota is global.' }),
-    ).exactOptional(),
+    ServiceCode: ServiceCodeSchema.exactOptional().openapi({
+      description: 'The service identifier.',
+    }),
+    ServiceName: ServiceNameSchema.exactOptional().openapi({ description: 'The service name.' }),
+    QuotaCode: QuotaCodeSchema.exactOptional().openapi({ description: 'The quota identifier.' }),
+    QuotaName: QuotaNameSchema.exactOptional().openapi({ description: 'The quota name.' }),
+    DesiredValue: QuotaValueSchema.exactOptional().openapi({
+      description: 'The new, increased value of the quota.',
+    }),
+    AwsRegion: AwsRegionSchema.exactOptional().openapi({ description: 'The AWS Region.' }),
+    Unit: QuotaUnitSchema.exactOptional().openapi({ description: 'The unit of measurement.' }),
+    GlobalQuota: GlobalQuotaSchema.exactOptional().openapi({
+      description: 'Indicates whether the quota is global.',
+    }),
   })
   .openapi({ description: 'Information about a quota increase request.', required: [] })
   .openapi('ServiceQuotaIncreaseRequestInTemplate')
 
 const GetServiceQuotaIncreaseRequestFromTemplateResponseSchema = z
   .object({
-    ServiceQuotaIncreaseRequestInTemplate: ServiceQuotaIncreaseRequestInTemplateSchema.and(
-      z.any().openapi({ description: 'Information about the quota increase request.' }),
-    ).exactOptional(),
+    ServiceQuotaIncreaseRequestInTemplate:
+      ServiceQuotaIncreaseRequestInTemplateSchema.exactOptional().openapi({
+        description: 'Information about the quota increase request.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('GetServiceQuotaIncreaseRequestFromTemplateResponse')
 
 const GetServiceQuotaIncreaseRequestFromTemplateRequestSchema = z
   .object({
-    ServiceCode: ServiceCodeSchema.and(z.any().openapi({ description: 'The service identifier.' })),
-    QuotaCode: QuotaCodeSchema.and(z.any().openapi({ description: 'The quota identifier.' })),
-    AwsRegion: AwsRegionSchema.and(z.any().openapi({ description: 'The AWS Region.' })),
+    ServiceCode: ServiceCodeSchema.openapi({ description: 'The service identifier.' }),
+    QuotaCode: QuotaCodeSchema.openapi({ description: 'The quota identifier.' }),
+    AwsRegion: AwsRegionSchema.openapi({ description: 'The AWS Region.' }),
   })
   .openapi({
     required: ['ServiceCode', 'QuotaCode', 'AwsRegion'],
@@ -444,17 +385,13 @@ const ServiceQuotaListDefinitionSchema = z
 
 const ListAWSDefaultServiceQuotasResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
-    Quotas: ServiceQuotaListDefinitionSchema.and(
-      z.any().openapi({ description: 'Information about the quotas.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
+    }),
+    Quotas: ServiceQuotaListDefinitionSchema.exactOptional().openapi({
+      description: 'Information about the quotas.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAWSDefaultServiceQuotasResponse')
@@ -463,18 +400,14 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListAWSDefaultServiceQuotasRequestSchema = z
   .object({
-    ServiceCode: ServiceCodeSchema.and(z.any().openapi({ description: 'The service identifier.' })),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.',
-        }),
-    ).exactOptional(),
+    ServiceCode: ServiceCodeSchema.openapi({ description: 'The service identifier.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.',
+    }),
   })
   .openapi({ required: ['ServiceCode'], title: 'ListAWSDefaultServiceQuotasRequest' })
   .openapi('ListAWSDefaultServiceQuotasRequest')
@@ -487,79 +420,63 @@ const RequestedServiceQuotaChangeHistoryListDefinitionSchema = z
 
 const ListRequestedServiceQuotaChangeHistoryResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
-    RequestedQuotas: RequestedServiceQuotaChangeHistoryListDefinitionSchema.and(
-      z.any().openapi({ description: 'Information about the quota increase requests.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
+    }),
+    RequestedQuotas: RequestedServiceQuotaChangeHistoryListDefinitionSchema.exactOptional().openapi(
+      { description: 'Information about the quota increase requests.' },
+    ),
   })
   .openapi({ required: [] })
   .openapi('ListRequestedServiceQuotaChangeHistoryResponse')
 
 const ListRequestedServiceQuotaChangeHistoryRequestSchema = z
   .object({
-    ServiceCode: ServiceCodeSchema.and(
-      z.any().openapi({ description: 'The service identifier.' }),
-    ).exactOptional(),
-    Status: RequestStatusSchema.and(
-      z.any().openapi({ description: 'The status of the quota increase request.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.',
-        }),
-    ).exactOptional(),
+    ServiceCode: ServiceCodeSchema.exactOptional().openapi({
+      description: 'The service identifier.',
+    }),
+    Status: RequestStatusSchema.exactOptional().openapi({
+      description: 'The status of the quota increase request.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.',
+    }),
   })
   .openapi({ title: 'ListRequestedServiceQuotaChangeHistoryRequest', required: [] })
   .openapi('ListRequestedServiceQuotaChangeHistoryRequest')
 
 const ListRequestedServiceQuotaChangeHistoryByQuotaResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
-    RequestedQuotas: RequestedServiceQuotaChangeHistoryListDefinitionSchema.and(
-      z.any().openapi({ description: 'Information about the quota increase requests.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
+    }),
+    RequestedQuotas: RequestedServiceQuotaChangeHistoryListDefinitionSchema.exactOptional().openapi(
+      { description: 'Information about the quota increase requests.' },
+    ),
   })
   .openapi({ required: [] })
   .openapi('ListRequestedServiceQuotaChangeHistoryByQuotaResponse')
 
 const ListRequestedServiceQuotaChangeHistoryByQuotaRequestSchema = z
   .object({
-    ServiceCode: ServiceCodeSchema.and(z.any().openapi({ description: 'The service identifier.' })),
-    QuotaCode: QuotaCodeSchema.and(z.any().openapi({ description: 'The quota identifier.' })),
-    Status: RequestStatusSchema.and(
-      z.any().openapi({ description: 'The status value of the quota increase request.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.',
-        }),
-    ).exactOptional(),
+    ServiceCode: ServiceCodeSchema.openapi({ description: 'The service identifier.' }),
+    QuotaCode: QuotaCodeSchema.openapi({ description: 'The quota identifier.' }),
+    Status: RequestStatusSchema.exactOptional().openapi({
+      description: 'The status value of the quota increase request.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.',
+    }),
   })
   .openapi({
     required: ['ServiceCode', 'QuotaCode'],
@@ -573,87 +490,68 @@ const ServiceQuotaIncreaseRequestInTemplateListSchema = z
 
 const ListServiceQuotaIncreaseRequestsInTemplateResponseSchema = z
   .object({
-    ServiceQuotaIncreaseRequestInTemplateList: ServiceQuotaIncreaseRequestInTemplateListSchema.and(
-      z.any().openapi({ description: 'Information about the quota increase requests.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    ServiceQuotaIncreaseRequestInTemplateList:
+      ServiceQuotaIncreaseRequestInTemplateListSchema.exactOptional().openapi({
+        description: 'Information about the quota increase requests.',
+      }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListServiceQuotaIncreaseRequestsInTemplateResponse')
 
 const ListServiceQuotaIncreaseRequestsInTemplateRequestSchema = z
   .object({
-    ServiceCode: ServiceCodeSchema.and(
-      z.any().openapi({ description: 'The service identifier.' }),
-    ).exactOptional(),
-    AwsRegion: AwsRegionSchema.and(
-      z.any().openapi({ description: 'The AWS Region.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.',
-        }),
-    ).exactOptional(),
+    ServiceCode: ServiceCodeSchema.exactOptional().openapi({
+      description: 'The service identifier.',
+    }),
+    AwsRegion: AwsRegionSchema.exactOptional().openapi({ description: 'The AWS Region.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.',
+    }),
   })
   .openapi({ title: 'ListServiceQuotaIncreaseRequestsInTemplateRequest', required: [] })
   .openapi('ListServiceQuotaIncreaseRequestsInTemplateRequest')
 
 const ListServiceQuotasResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
-    Quotas: ServiceQuotaListDefinitionSchema.and(
-      z.any().openapi({ description: 'Information about the quotas.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
+    }),
+    Quotas: ServiceQuotaListDefinitionSchema.exactOptional().openapi({
+      description: 'Information about the quotas.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListServiceQuotasResponse')
 
 const ListServiceQuotasRequestSchema = z
   .object({
-    ServiceCode: ServiceCodeSchema.and(z.any().openapi({ description: 'The service identifier.' })),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.',
-        }),
-    ).exactOptional(),
+    ServiceCode: ServiceCodeSchema.openapi({ description: 'The service identifier.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.',
+    }),
   })
   .openapi({ required: ['ServiceCode'], title: 'ListServiceQuotasRequest' })
   .openapi('ListServiceQuotasRequest')
 
 const ServiceInfoSchema = z
   .object({
-    ServiceCode: ServiceCodeSchema.and(
-      z.any().openapi({ description: 'The service identifier.' }),
-    ).exactOptional(),
-    ServiceName: ServiceNameSchema.and(
-      z.any().openapi({ description: 'The service name.' }),
-    ).exactOptional(),
+    ServiceCode: ServiceCodeSchema.exactOptional().openapi({
+      description: 'The service identifier.',
+    }),
+    ServiceName: ServiceNameSchema.exactOptional().openapi({ description: 'The service name.' }),
   })
   .openapi({ description: 'Information about a service.', required: [] })
   .openapi('ServiceInfo')
@@ -664,34 +562,26 @@ const ServiceInfoListDefinitionSchema = z
 
 const ListServicesResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
-    Services: ServiceInfoListDefinitionSchema.and(
-      z.any().openapi({ description: 'Information about the services.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to retrieve the next page of results. This value is null when there are no more results to return.',
+    }),
+    Services: ServiceInfoListDefinitionSchema.exactOptional().openapi({
+      description: 'Information about the services.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListServicesResponse')
 
 const ListServicesRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.',
+    }),
   })
   .openapi({ title: 'ListServicesRequest', required: [] })
   .openapi('ListServicesRequest')
@@ -712,22 +602,14 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that contains a tag key. The string length should be between 1 and 128 characters. Valid characters include a-z, A-Z, 0-9, space, and the special characters _ - . : / = + @.',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that contains an optional tag value. The string length should be between 0 and 256 characters. Valid characters include a-z, A-Z, 0-9, space, and the special characters _ - . : / = + @.',
-        }),
-    ),
+    Key: TagKeySchema.openapi({
+      description:
+        'A string that contains a tag key. The string length should be between 1 and 128 characters. Valid characters include a-z, A-Z, 0-9, space, and the special characters _ - . : / = + @.',
+    }),
+    Value: TagValueSchema.openapi({
+      description:
+        'A string that contains an optional tag value. The string length should be between 0 and 256 characters. Valid characters include a-z, A-Z, 0-9, space, and the special characters _ - . : / = + @.',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -739,11 +621,9 @@ const OutputTagsSchema = z.array(TagSchema).max(200).openapi('OutputTags')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: OutputTagsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A complex data type that contains zero or more tag elements.' }),
-    ).exactOptional(),
+    Tags: OutputTagsSchema.exactOptional().openapi({
+      description: 'A complex data type that contains zero or more tag elements.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -757,35 +637,32 @@ const AmazonResourceNameSchema = z
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the applied quota for which you want to list tags. You can get this information by using the Service Quotas console, or by listing the quotas using the <a href="https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-service-quotas.html">list-service-quotas</a> AWS CLI command or the <a href="https://docs.aws.amazon.com/servicequotas/2019-06-24/apireference/API_ListServiceQuotas.html">ListServiceQuotas</a> AWS API operation.',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the applied quota for which you want to list tags. You can get this information by using the Service Quotas console, or by listing the quotas using the <a href="https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-service-quotas.html">list-service-quotas</a> AWS CLI command or the <a href="https://docs.aws.amazon.com/servicequotas/2019-06-24/apireference/API_ListServiceQuotas.html">ListServiceQuotas</a> AWS API operation.',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const PutServiceQuotaIncreaseRequestIntoTemplateResponseSchema = z
   .object({
-    ServiceQuotaIncreaseRequestInTemplate: ServiceQuotaIncreaseRequestInTemplateSchema.and(
-      z.any().openapi({ description: 'Information about the quota increase request.' }),
-    ).exactOptional(),
+    ServiceQuotaIncreaseRequestInTemplate:
+      ServiceQuotaIncreaseRequestInTemplateSchema.exactOptional().openapi({
+        description: 'Information about the quota increase request.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('PutServiceQuotaIncreaseRequestIntoTemplateResponse')
 
 const PutServiceQuotaIncreaseRequestIntoTemplateRequestSchema = z
   .object({
-    QuotaCode: QuotaCodeSchema.and(z.any().openapi({ description: 'The quota identifier.' })),
-    ServiceCode: ServiceCodeSchema.and(z.any().openapi({ description: 'The service identifier.' })),
-    AwsRegion: AwsRegionSchema.and(z.any().openapi({ description: 'The AWS Region.' })),
-    DesiredValue: QuotaValueSchema.and(
-      z.any().openapi({ description: 'The new, increased value for the quota.' }),
-    ),
+    QuotaCode: QuotaCodeSchema.openapi({ description: 'The quota identifier.' }),
+    ServiceCode: ServiceCodeSchema.openapi({ description: 'The service identifier.' }),
+    AwsRegion: AwsRegionSchema.openapi({ description: 'The AWS Region.' }),
+    DesiredValue: QuotaValueSchema.openapi({
+      description: 'The new, increased value for the quota.',
+    }),
   })
   .openapi({
     required: ['QuotaCode', 'ServiceCode', 'AwsRegion', 'DesiredValue'],
@@ -797,20 +674,20 @@ const QuotaExceededExceptionSchema = z.any().openapi('QuotaExceededException')
 
 const RequestServiceQuotaIncreaseResponseSchema = z
   .object({
-    RequestedQuota: RequestedServiceQuotaChangeSchema.and(
-      z.any().openapi({ description: 'Information about the quota increase request.' }),
-    ).exactOptional(),
+    RequestedQuota: RequestedServiceQuotaChangeSchema.exactOptional().openapi({
+      description: 'Information about the quota increase request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RequestServiceQuotaIncreaseResponse')
 
 const RequestServiceQuotaIncreaseRequestSchema = z
   .object({
-    ServiceCode: ServiceCodeSchema.and(z.any().openapi({ description: 'The service identifier.' })),
-    QuotaCode: QuotaCodeSchema.and(z.any().openapi({ description: 'The quota identifier.' })),
-    DesiredValue: QuotaValueSchema.and(
-      z.any().openapi({ description: 'The new, increased value for the quota.' }),
-    ),
+    ServiceCode: ServiceCodeSchema.openapi({ description: 'The service identifier.' }),
+    QuotaCode: QuotaCodeSchema.openapi({ description: 'The quota identifier.' }),
+    DesiredValue: QuotaValueSchema.openapi({
+      description: 'The new, increased value for the quota.',
+    }),
   })
   .openapi({
     required: ['ServiceCode', 'QuotaCode', 'DesiredValue'],
@@ -822,23 +699,19 @@ const ResourceAlreadyExistsExceptionSchema = z.any().openapi('ResourceAlreadyExi
 
 const InvalidResourceStateExceptionSchema = z.any().openapi('InvalidResourceStateException')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const InputTagsSchema = z.array(TagSchema).min(1).openapi('InputTags')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the applied quota. You can get this information by using the Service Quotas console, or by listing the quotas using the <a href="https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-service-quotas.html">list-service-quotas</a> AWS CLI command or the <a href="https://docs.aws.amazon.com/servicequotas/2019-06-24/apireference/API_ListServiceQuotas.html">ListServiceQuotas</a> AWS API operation.',
-        }),
-    ),
-    Tags: InputTagsSchema.and(
-      z.any().openapi({ description: 'The tags that you want to add to the resource.' }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the applied quota. You can get this information by using the Service Quotas console, or by listing the quotas using the <a href="https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-service-quotas.html">list-service-quotas</a> AWS CLI command or the <a href="https://docs.aws.amazon.com/servicequotas/2019-06-24/apireference/API_ListServiceQuotas.html">ListServiceQuotas</a> AWS API operation.',
+    }),
+    Tags: InputTagsSchema.openapi({
+      description: 'The tags that you want to add to the resource.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
@@ -847,27 +720,19 @@ const TooManyTagsExceptionSchema = z.any().openapi('TooManyTagsException')
 
 const TagPolicyViolationExceptionSchema = z.any().openapi('TagPolicyViolationException')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const InputTagKeysSchema = z.array(TagKeySchema).openapi('InputTagKeys')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the applied quota that you want to untag. You can get this information by using the Service Quotas console, or by listing the quotas using the <a href="https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-service-quotas.html">list-service-quotas</a> AWS CLI command or the <a href="https://docs.aws.amazon.com/servicequotas/2019-06-24/apireference/API_ListServiceQuotas.html">ListServiceQuotas</a> AWS API operation.',
-        }),
-    ),
-    TagKeys: InputTagKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The keys of the tags that you want to remove from the resource.',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the applied quota that you want to untag. You can get this information by using the Service Quotas console, or by listing the quotas using the <a href="https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-service-quotas.html">list-service-quotas</a> AWS CLI command or the <a href="https://docs.aws.amazon.com/servicequotas/2019-06-24/apireference/API_ListServiceQuotas.html">ListServiceQuotas</a> AWS API operation.',
+    }),
+    TagKeys: InputTagKeysSchema.openapi({
+      description: 'The keys of the tags that you want to remove from the resource.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')

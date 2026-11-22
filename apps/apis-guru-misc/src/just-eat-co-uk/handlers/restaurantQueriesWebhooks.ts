@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const restaurantQueriesWebhooksHandler = app.openapi(
   postOrderEligibleForRestaurantCompensationRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

@@ -30,87 +30,49 @@ const Rfc3339TimeStringSchema = z.string().min(20).max(40).openapi('Rfc3339TimeS
 
 const FirewallRuleGroupAssociationSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The identifier for the association.' }),
-    ).exactOptional(),
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the firewall rule group association.',
-        }),
-    ).exactOptional(),
-    FirewallRuleGroupId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the firewall rule group. ' }),
-    ).exactOptional(),
-    VpcId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier of the VPC that is associated with the rule group. ',
-        }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the association.' }),
-    ).exactOptional(),
-    Priority: PrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The setting that determines the processing order of the rule group among the rule groups that are associated with a single VPC. DNS Firewall filters VPC traffic starting from rule group with the lowest numeric priority setting. ',
-        }),
-    ).exactOptional(),
-    MutationProtection: MutationProtectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If enabled, this setting disallows modification or removal of the association, to help prevent against accidentally altering DNS firewall protections. ',
-        }),
-    ).exactOptional(),
-    ManagedOwnerName: ServicePrincipleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The owner of the association, used only for associations that are not managed by you. If you use Firewall Manager to manage your DNS Firewalls, then this reports Firewall Manager as the managed owner.',
-        }),
-    ).exactOptional(),
-    Status: FirewallRuleGroupAssociationStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the association.' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Additional information about the status of the response, if available.',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: CreatorRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string defined by you to identify the request. This allows you to retry failed requests without the risk of running the operation twice. This can be any unique string, for example, a timestamp. ',
-        }),
-    ).exactOptional(),
-    CreationTime: Rfc3339TimeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the association was created, in Unix time format and Coordinated Universal Time (UTC). ',
-        }),
-    ).exactOptional(),
-    ModificationTime: Rfc3339TimeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the association was last modified, in Unix time format and Coordinated Universal Time (UTC).',
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({
+      description: 'The identifier for the association.',
+    }),
+    Arn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the firewall rule group association.',
+    }),
+    FirewallRuleGroupId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the firewall rule group. ',
+    }),
+    VpcId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the VPC that is associated with the rule group. ',
+    }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the association.' }),
+    Priority: PrioritySchema.exactOptional().openapi({
+      description:
+        'The setting that determines the processing order of the rule group among the rule groups that are associated with a single VPC. DNS Firewall filters VPC traffic starting from rule group with the lowest numeric priority setting. ',
+    }),
+    MutationProtection: MutationProtectionStatusSchema.exactOptional().openapi({
+      description:
+        'If enabled, this setting disallows modification or removal of the association, to help prevent against accidentally altering DNS firewall protections. ',
+    }),
+    ManagedOwnerName: ServicePrincipleSchema.exactOptional().openapi({
+      description:
+        'The owner of the association, used only for associations that are not managed by you. If you use Firewall Manager to manage your DNS Firewalls, then this reports Firewall Manager as the managed owner.',
+    }),
+    Status: FirewallRuleGroupAssociationStatusSchema.exactOptional().openapi({
+      description: 'The current status of the association.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'Additional information about the status of the response, if available.',
+    }),
+    CreatorRequestId: CreatorRequestIdSchema.exactOptional().openapi({
+      description:
+        'A unique string defined by you to identify the request. This allows you to retry failed requests without the risk of running the operation twice. This can be any unique string, for example, a timestamp. ',
+    }),
+    CreationTime: Rfc3339TimeStringSchema.exactOptional().openapi({
+      description:
+        'The date and time that the association was created, in Unix time format and Coordinated Universal Time (UTC). ',
+    }),
+    ModificationTime: Rfc3339TimeStringSchema.exactOptional().openapi({
+      description:
+        'The date and time that the association was last modified, in Unix time format and Coordinated Universal Time (UTC).',
+    }),
   })
   .openapi({
     description:
@@ -121,14 +83,10 @@ const FirewallRuleGroupAssociationSchema = z
 
 const AssociateFirewallRuleGroupResponseSchema = z
   .object({
-    FirewallRuleGroupAssociation: FirewallRuleGroupAssociationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The association that you just created. The association has an ID that you can use to identify it in other requests, like update and delete.',
-        }),
-    ).exactOptional(),
+    FirewallRuleGroupAssociation: FirewallRuleGroupAssociationSchema.exactOptional().openapi({
+      description:
+        'The association that you just created. The association has an ID that you can use to identify it in other requests, like update and delete.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateFirewallRuleGroupResponse')
@@ -139,22 +97,14 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name for the tag. For example, if you want to associate Resolver resources with the account IDs of your customers for billing purposes, the value of <code>Key</code> might be <code>account-id</code>.',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The value for the tag. For example, if <code>Key</code> is <code>account-id</code>, then <code>Value</code> might be the ID of the customer account that you're creating the resource for.",
-        }),
-    ),
+    Key: TagKeySchema.openapi({
+      description:
+        'The name for the tag. For example, if you want to associate Resolver resources with the account IDs of your customers for billing purposes, the value of <code>Key</code> might be <code>account-id</code>.',
+    }),
+    Value: TagValueSchema.openapi({
+      description:
+        "The value for the tag. For example, if <code>Key</code> is <code>account-id</code>, then <code>Value</code> might be the ID of the customer account that you're creating the resource for.",
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -167,56 +117,32 @@ const TagListSchema = z.array(TagSchema).max(200).openapi('TagList')
 
 const AssociateFirewallRuleGroupRequestSchema = z
   .object({
-    CreatorRequestId: CreatorRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and that allows failed requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string, for example, a date/time stamp. ',
-        }),
-    ),
-    FirewallRuleGroupId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the firewall rule group. ' }),
-    ),
-    VpcId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the VPC that you want to associate with the rule group. ',
-        }),
-    ),
-    Priority: PrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The setting that determines the processing order of the rule group among the rule groups that you associate with the specified VPC. DNS Firewall filters VPC traffic starting from the rule group with the lowest numeric priority setting. </p> <p>You must specify a unique priority for each rule group that you associate with a single VPC. To make it easier to insert rule groups later, leave space between the numbers, for example, use 101, 200, and so on. You can change the priority setting for a rule group association after you create it.</p> <p>The allowed values for <code>Priority</code> are between 100 and 9900.</p>',
-        }),
-    ),
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A name that lets you identify the association, to manage and use it.',
-        }),
-    ),
-    MutationProtection: MutationProtectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If enabled, this setting disallows modification or removal of the association, to help prevent against accidentally altering DNS firewall protections. When you create the association, the default setting is <code>DISABLED</code>. ',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the tag keys and values that you want to associate with the rule group association. ',
-        }),
-    ).exactOptional(),
+    CreatorRequestId: CreatorRequestIdSchema.openapi({
+      description:
+        'A unique string that identifies the request and that allows failed requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string, for example, a date/time stamp. ',
+    }),
+    FirewallRuleGroupId: ResourceIdSchema.openapi({
+      description: 'The unique identifier of the firewall rule group. ',
+    }),
+    VpcId: ResourceIdSchema.openapi({
+      description:
+        'The unique identifier of the VPC that you want to associate with the rule group. ',
+    }),
+    Priority: PrioritySchema.openapi({
+      description:
+        '<p>The setting that determines the processing order of the rule group among the rule groups that you associate with the specified VPC. DNS Firewall filters VPC traffic starting from the rule group with the lowest numeric priority setting. </p> <p>You must specify a unique priority for each rule group that you associate with a single VPC. To make it easier to insert rule groups later, leave space between the numbers, for example, use 101, 200, and so on. You can change the priority setting for a rule group association after you create it.</p> <p>The allowed values for <code>Priority</code> are between 100 and 9900.</p>',
+    }),
+    Name: NameSchema.openapi({
+      description: 'A name that lets you identify the association, to manage and use it.',
+    }),
+    MutationProtection: MutationProtectionStatusSchema.exactOptional().openapi({
+      description:
+        'If enabled, this setting disallows modification or removal of the association, to help prevent against accidentally altering DNS firewall protections. When you create the association, the default setting is <code>DISABLED</code>. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of the tag keys and values that you want to associate with the rule group association. ',
+    }),
   })
   .openapi({
     required: ['CreatorRequestId', 'FirewallRuleGroupId', 'VpcId', 'Priority', 'Name'],
@@ -256,91 +182,52 @@ const ResolverEndpointTypeSchema = z
 
 const ResolverEndpointSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Resolver endpoint.' }),
-    ).exactOptional(),
-    CreatorRequestId: CreatorRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request that created the Resolver endpoint. The <code>CreatorRequestId</code> allows failed requests to be retried without the risk of running the operation twice.',
-        }),
-    ).exactOptional(),
-    Arn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) for the Resolver endpoint.' }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name that you assigned to the Resolver endpoint when you submitted a <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverEndpoint.html">CreateResolverEndpoint</a> request.',
-        }),
-    ).exactOptional(),
-    SecurityGroupIds: SecurityGroupIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of one or more security groups that control access to this VPC. The security group must include one or more inbound rules (for inbound endpoints) or outbound rules (for outbound endpoints). Inbound and outbound rules must allow TCP and UDP access. For inbound access, open port 53. For outbound access, open the port that you're using for DNS queries on your network.",
-        }),
-    ).exactOptional(),
-    Direction: ResolverEndpointDirectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the Resolver endpoint allows inbound or outbound DNS queries:</p> <ul> <li> <p> <code>INBOUND</code>: allows DNS queries to your VPC from your network</p> </li> <li> <p> <code>OUTBOUND</code>: allows DNS queries from your VPC to your network</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    IpAddressCount: IpAddressCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of IP addresses that the Resolver endpoint can use for DNS queries.',
-        }),
-    ).exactOptional(),
-    HostVPCId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the VPC that you want to create the Resolver endpoint in.',
-        }),
-    ).exactOptional(),
-    Status: ResolverEndpointStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A code that specifies the current status of the Resolver endpoint. Valid values include the following:</p> <ul> <li> <p> <code>CREATING</code>: Resolver is creating and configuring one or more Amazon VPC network interfaces for this endpoint.</p> </li> <li> <p> <code>OPERATIONAL</code>: The Amazon VPC network interfaces for this endpoint are correctly configured and able to pass inbound or outbound DNS queries between your network and Resolver.</p> </li> <li> <p> <code>UPDATING</code>: Resolver is associating or disassociating one or more network interfaces with this endpoint.</p> </li> <li> <p> <code>AUTO_RECOVERING</code>: Resolver is trying to recover one or more of the network interfaces that are associated with this endpoint. During the recovery process, the endpoint functions with limited capacity because of the limit on the number of DNS queries per IP address (per network interface). For the current limit, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/DNSLimitations.html#limits-api-entities-resolver\">Limits on Route 53 Resolver</a>.</p> </li> <li> <p> <code>ACTION_NEEDED</code>: This endpoint is unhealthy, and Resolver can't automatically recover it. To resolve the problem, we recommend that you check each IP address that you associated with the endpoint. For each IP address that isn't available, add another IP address and then delete the IP address that isn't available. (An endpoint must always include at least two IP addresses.) A status of <code>ACTION_NEEDED</code> can have a variety of causes. Here are two common causes:</p> <ul> <li> <p>One or more of the network interfaces that are associated with the endpoint were deleted using Amazon VPC.</p> </li> <li> <p>The network interface couldn't be created for some reason that's outside the control of Resolver.</p> </li> </ul> </li> <li> <p> <code>DELETING</code>: Resolver is deleting this endpoint and the associated network interfaces.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A detailed description of the status of the Resolver endpoint.' }),
-    ).exactOptional(),
-    CreationTime: Rfc3339TimeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the endpoint was created, in Unix time format and Coordinated Universal Time (UTC).',
-        }),
-    ).exactOptional(),
-    ModificationTime: Rfc3339TimeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the endpoint was last modified, in Unix time format and Coordinated Universal Time (UTC).',
-        }),
-    ).exactOptional(),
-    ResolverEndpointType: ResolverEndpointTypeSchema.and(
-      z.any().openapi({ description: ' The Resolver endpoint IP address type. ' }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the Resolver endpoint.',
+    }),
+    CreatorRequestId: CreatorRequestIdSchema.exactOptional().openapi({
+      description:
+        'A unique string that identifies the request that created the Resolver endpoint. The <code>CreatorRequestId</code> allows failed requests to be retried without the risk of running the operation twice.',
+    }),
+    Arn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) for the Resolver endpoint.',
+    }),
+    Name: NameSchema.exactOptional().openapi({
+      description:
+        'The name that you assigned to the Resolver endpoint when you submitted a <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverEndpoint.html">CreateResolverEndpoint</a> request.',
+    }),
+    SecurityGroupIds: SecurityGroupIdsSchema.exactOptional().openapi({
+      description:
+        "The ID of one or more security groups that control access to this VPC. The security group must include one or more inbound rules (for inbound endpoints) or outbound rules (for outbound endpoints). Inbound and outbound rules must allow TCP and UDP access. For inbound access, open port 53. For outbound access, open the port that you're using for DNS queries on your network.",
+    }),
+    Direction: ResolverEndpointDirectionSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether the Resolver endpoint allows inbound or outbound DNS queries:</p> <ul> <li> <p> <code>INBOUND</code>: allows DNS queries to your VPC from your network</p> </li> <li> <p> <code>OUTBOUND</code>: allows DNS queries from your VPC to your network</p> </li> </ul>',
+    }),
+    IpAddressCount: IpAddressCountSchema.exactOptional().openapi({
+      description: 'The number of IP addresses that the Resolver endpoint can use for DNS queries.',
+    }),
+    HostVPCId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the VPC that you want to create the Resolver endpoint in.',
+    }),
+    Status: ResolverEndpointStatusSchema.exactOptional().openapi({
+      description:
+        "<p>A code that specifies the current status of the Resolver endpoint. Valid values include the following:</p> <ul> <li> <p> <code>CREATING</code>: Resolver is creating and configuring one or more Amazon VPC network interfaces for this endpoint.</p> </li> <li> <p> <code>OPERATIONAL</code>: The Amazon VPC network interfaces for this endpoint are correctly configured and able to pass inbound or outbound DNS queries between your network and Resolver.</p> </li> <li> <p> <code>UPDATING</code>: Resolver is associating or disassociating one or more network interfaces with this endpoint.</p> </li> <li> <p> <code>AUTO_RECOVERING</code>: Resolver is trying to recover one or more of the network interfaces that are associated with this endpoint. During the recovery process, the endpoint functions with limited capacity because of the limit on the number of DNS queries per IP address (per network interface). For the current limit, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/DNSLimitations.html#limits-api-entities-resolver\">Limits on Route 53 Resolver</a>.</p> </li> <li> <p> <code>ACTION_NEEDED</code>: This endpoint is unhealthy, and Resolver can't automatically recover it. To resolve the problem, we recommend that you check each IP address that you associated with the endpoint. For each IP address that isn't available, add another IP address and then delete the IP address that isn't available. (An endpoint must always include at least two IP addresses.) A status of <code>ACTION_NEEDED</code> can have a variety of causes. Here are two common causes:</p> <ul> <li> <p>One or more of the network interfaces that are associated with the endpoint were deleted using Amazon VPC.</p> </li> <li> <p>The network interface couldn't be created for some reason that's outside the control of Resolver.</p> </li> </ul> </li> <li> <p> <code>DELETING</code>: Resolver is deleting this endpoint and the associated network interfaces.</p> </li> </ul>",
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'A detailed description of the status of the Resolver endpoint.',
+    }),
+    CreationTime: Rfc3339TimeStringSchema.exactOptional().openapi({
+      description:
+        'The date and time that the endpoint was created, in Unix time format and Coordinated Universal Time (UTC).',
+    }),
+    ModificationTime: Rfc3339TimeStringSchema.exactOptional().openapi({
+      description:
+        'The date and time that the endpoint was last modified, in Unix time format and Coordinated Universal Time (UTC).',
+    }),
+    ResolverEndpointType: ResolverEndpointTypeSchema.exactOptional().openapi({
+      description: ' The Resolver endpoint IP address type. ',
+    }),
   })
   .openapi({
     description:
@@ -351,14 +238,9 @@ const ResolverEndpointSchema = z
 
 const AssociateResolverEndpointIpAddressResponseSchema = z
   .object({
-    ResolverEndpoint: ResolverEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The response to an <code>AssociateResolverEndpointIpAddress</code> request.',
-        }),
-    ).exactOptional(),
+    ResolverEndpoint: ResolverEndpointSchema.exactOptional().openapi({
+      description: 'The response to an <code>AssociateResolverEndpointIpAddress</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateResolverEndpointIpAddressResponse')
@@ -371,26 +253,16 @@ const Ipv6Schema = z.string().min(7).max(39).openapi('Ipv6')
 
 const IpAddressUpdateSchema = z
   .object({
-    IpId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <i>Only when removing an IP address from a Resolver endpoint</i>: The ID of the IP address that you want to remove. To get this ID, use <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html">GetResolverEndpoint</a>.',
-        }),
-    ).exactOptional(),
-    SubnetId: SubnetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the subnet that includes the IP address that you want to update. To get this ID, use <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html">GetResolverEndpoint</a>.',
-        }),
-    ).exactOptional(),
-    Ip: IpSchema.and(z.any().openapi({ description: 'The new IPv4 address.' })).exactOptional(),
-    Ipv6: Ipv6Schema.and(
-      z.any().openapi({ description: ' The new IPv6 address. ' }),
-    ).exactOptional(),
+    IpId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        ' <i>Only when removing an IP address from a Resolver endpoint</i>: The ID of the IP address that you want to remove. To get this ID, use <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html">GetResolverEndpoint</a>.',
+    }),
+    SubnetId: SubnetIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the subnet that includes the IP address that you want to update. To get this ID, use <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html">GetResolverEndpoint</a>.',
+    }),
+    Ip: IpSchema.exactOptional().openapi({ description: 'The new IPv4 address.' }),
+    Ipv6: Ipv6Schema.exactOptional().openapi({ description: ' The new IPv6 address. ' }),
   })
   .openapi({
     description:
@@ -401,22 +273,13 @@ const IpAddressUpdateSchema = z
 
 const AssociateResolverEndpointIpAddressRequestSchema = z
   .object({
-    ResolverEndpointId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Resolver endpoint that you want to associate IP addresses with.',
-        }),
-    ),
-    IpAddress: IpAddressUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Either the IPv4 address that you want to add to a Resolver endpoint or a subnet ID. If you specify a subnet ID, Resolver chooses an IP address for you from the available IPs in the specified subnet.',
-        }),
-    ),
+    ResolverEndpointId: ResourceIdSchema.openapi({
+      description: 'The ID of the Resolver endpoint that you want to associate IP addresses with.',
+    }),
+    IpAddress: IpAddressUpdateSchema.openapi({
+      description:
+        'Either the IPv4 address that you want to add to a Resolver endpoint or a subnet ID. If you specify a subnet ID, Resolver chooses an IP address for you from the available IPs in the specified subnet.',
+    }),
   })
   .openapi({
     required: ['ResolverEndpointId', 'IpAddress'],
@@ -444,56 +307,32 @@ const ResolverQueryLogConfigAssociationErrorMessageSchema = z
 
 const ResolverQueryLogConfigAssociationSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the query logging association.' }),
-    ).exactOptional(),
-    ResolverQueryLogConfigId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the query logging configuration that a VPC is associated with.',
-        }),
-    ).exactOptional(),
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon VPC that is associated with the query logging configuration.',
-        }),
-    ).exactOptional(),
-    Status: ResolverQueryLogConfigAssociationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the specified query logging association. Valid values include the following:</p> <ul> <li> <p> <code>CREATING</code>: Resolver is creating an association between an Amazon VPC and a query logging configuration.</p> </li> <li> <p> <code>CREATED</code>: The association between an Amazon VPC and a query logging configuration was successfully created. Resolver is logging queries that originate in the specified VPC.</p> </li> <li> <p> <code>DELETING</code>: Resolver is deleting this query logging association.</p> </li> <li> <p> <code>FAILED</code>: Resolver either couldn't create or couldn't delete the query logging association.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    Error: ResolverQueryLogConfigAssociationErrorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>If the value of <code>Status</code> is <code>FAILED</code>, the value of <code>Error</code> indicates the cause:</p> <ul> <li> <p> <code>DESTINATION_NOT_FOUND</code>: The specified destination (for example, an Amazon S3 bucket) was deleted.</p> </li> <li> <p> <code>ACCESS_DENIED</code>: Permissions don't allow sending logs to the destination.</p> </li> </ul> <p>If the value of <code>Status</code> is a value other than <code>FAILED</code>, <code>Error</code> is null. </p>",
-        }),
-    ).exactOptional(),
-    ErrorMessage: ResolverQueryLogConfigAssociationErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains additional information about the error. If the value or <code>Error</code> is null, the value of <code>ErrorMessage</code> also is null.',
-        }),
-    ).exactOptional(),
-    CreationTime: Rfc3339TimeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the VPC was associated with the query logging configuration, in Unix time format and Coordinated Universal Time (UTC).',
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the query logging association.',
+    }),
+    ResolverQueryLogConfigId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the query logging configuration that a VPC is associated with.',
+    }),
+    ResourceId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the Amazon VPC that is associated with the query logging configuration.',
+    }),
+    Status: ResolverQueryLogConfigAssociationStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The status of the specified query logging association. Valid values include the following:</p> <ul> <li> <p> <code>CREATING</code>: Resolver is creating an association between an Amazon VPC and a query logging configuration.</p> </li> <li> <p> <code>CREATED</code>: The association between an Amazon VPC and a query logging configuration was successfully created. Resolver is logging queries that originate in the specified VPC.</p> </li> <li> <p> <code>DELETING</code>: Resolver is deleting this query logging association.</p> </li> <li> <p> <code>FAILED</code>: Resolver either couldn't create or couldn't delete the query logging association.</p> </li> </ul>",
+    }),
+    Error: ResolverQueryLogConfigAssociationErrorSchema.exactOptional().openapi({
+      description:
+        "<p>If the value of <code>Status</code> is <code>FAILED</code>, the value of <code>Error</code> indicates the cause:</p> <ul> <li> <p> <code>DESTINATION_NOT_FOUND</code>: The specified destination (for example, an Amazon S3 bucket) was deleted.</p> </li> <li> <p> <code>ACCESS_DENIED</code>: Permissions don't allow sending logs to the destination.</p> </li> </ul> <p>If the value of <code>Status</code> is a value other than <code>FAILED</code>, <code>Error</code> is null. </p>",
+    }),
+    ErrorMessage: ResolverQueryLogConfigAssociationErrorMessageSchema.exactOptional().openapi({
+      description:
+        'Contains additional information about the error. If the value or <code>Error</code> is null, the value of <code>ErrorMessage</code> also is null.',
+    }),
+    CreationTime: Rfc3339TimeStringSchema.exactOptional().openapi({
+      description:
+        'The date and time that the VPC was associated with the query logging configuration, in Unix time format and Coordinated Universal Time (UTC).',
+    }),
   })
   .openapi({
     description:
@@ -504,36 +343,25 @@ const ResolverQueryLogConfigAssociationSchema = z
 
 const AssociateResolverQueryLogConfigResponseSchema = z
   .object({
-    ResolverQueryLogConfigAssociation: ResolverQueryLogConfigAssociationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A complex type that contains settings for a specified association between an Amazon VPC and a query logging configuration.',
-        }),
-    ).exactOptional(),
+    ResolverQueryLogConfigAssociation:
+      ResolverQueryLogConfigAssociationSchema.exactOptional().openapi({
+        description:
+          'A complex type that contains settings for a specified association between an Amazon VPC and a query logging configuration.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('AssociateResolverQueryLogConfigResponse')
 
 const AssociateResolverQueryLogConfigRequestSchema = z
   .object({
-    ResolverQueryLogConfigId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the query logging configuration that you want to associate a VPC with.',
-        }),
-    ),
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of an Amazon VPC that you want this query logging configuration to log queries for.</p> <note> <p>The VPCs and the query logging configuration must be in the same Region.</p> </note>',
-        }),
-    ),
+    ResolverQueryLogConfigId: ResourceIdSchema.openapi({
+      description:
+        'The ID of the query logging configuration that you want to associate a VPC with.',
+    }),
+    ResourceId: ResourceIdSchema.openapi({
+      description:
+        '<p>The ID of an Amazon VPC that you want this query logging configuration to log queries for.</p> <note> <p>The VPCs and the query logging configuration must be in the same Region.</p> </note>',
+    }),
   })
   .openapi({
     required: ['ResolverQueryLogConfigId', 'ResourceId'],
@@ -547,48 +375,28 @@ const ResolverRuleAssociationStatusSchema = z
 
 const ResolverRuleAssociationSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the association between a Resolver rule and a VPC. Resolver assigns this value when you submit an <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_AssociateResolverRule.html">AssociateResolverRule</a> request.',
-        }),
-    ).exactOptional(),
-    ResolverRuleId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Resolver rule that you associated with the VPC that is specified by <code>VPCId</code>.',
-        }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of an association between a Resolver rule and a VPC.' }),
-    ).exactOptional(),
-    VPCId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the VPC that you associated the Resolver rule with.' }),
-    ).exactOptional(),
-    Status: ResolverRuleAssociationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A code that specifies the current status of the association between a Resolver rule and a VPC.',
-        }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A detailed description of the status of the association between a Resolver rule and a VPC.',
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the association between a Resolver rule and a VPC. Resolver assigns this value when you submit an <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_AssociateResolverRule.html">AssociateResolverRule</a> request.',
+    }),
+    ResolverRuleId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the Resolver rule that you associated with the VPC that is specified by <code>VPCId</code>.',
+    }),
+    Name: NameSchema.exactOptional().openapi({
+      description: 'The name of an association between a Resolver rule and a VPC.',
+    }),
+    VPCId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the VPC that you associated the Resolver rule with.',
+    }),
+    Status: ResolverRuleAssociationStatusSchema.exactOptional().openapi({
+      description:
+        'A code that specifies the current status of the association between a Resolver rule and a VPC.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description:
+        'A detailed description of the status of the association between a Resolver rule and a VPC.',
+    }),
   })
   .openapi({
     description:
@@ -599,43 +407,27 @@ const ResolverRuleAssociationSchema = z
 
 const AssociateResolverRuleResponseSchema = z
   .object({
-    ResolverRuleAssociation: ResolverRuleAssociationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the <code>AssociateResolverRule</code> request, including the status of the request.',
-        }),
-    ).exactOptional(),
+    ResolverRuleAssociation: ResolverRuleAssociationSchema.exactOptional().openapi({
+      description:
+        'Information about the <code>AssociateResolverRule</code> request, including the status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateResolverRuleResponse')
 
 const AssociateResolverRuleRequestSchema = z
   .object({
-    ResolverRuleId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Resolver rule that you want to associate with the VPC. To list the existing Resolver rules, use <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRules.html">ListResolverRules</a>.',
-        }),
-    ),
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A name for the association that you're creating between a Resolver rule and a VPC.",
-        }),
-    ).exactOptional(),
-    VPCId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the VPC that you want to associate the Resolver rule with.',
-        }),
-    ),
+    ResolverRuleId: ResourceIdSchema.openapi({
+      description:
+        'The ID of the Resolver rule that you want to associate with the VPC. To list the existing Resolver rules, use <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRules.html">ListResolverRules</a>.',
+    }),
+    Name: NameSchema.exactOptional().openapi({
+      description:
+        "A name for the association that you're creating between a Resolver rule and a VPC.",
+    }),
+    VPCId: ResourceIdSchema.openapi({
+      description: 'The ID of the VPC that you want to associate the Resolver rule with.',
+    }),
   })
   .openapi({ required: ['ResolverRuleId', 'VPCId'], title: 'AssociateResolverRuleRequest' })
   .openapi('AssociateResolverRuleRequest')
@@ -650,66 +442,36 @@ const FirewallDomainListStatusSchema = z
 
 const FirewallDomainListSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the domain list. ' }),
-    ).exactOptional(),
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the firewall domain list.' }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the domain list. ' }),
-    ).exactOptional(),
-    DomainCount: UnsignedSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of domain names that are specified in the domain list.',
-        }),
-    ).exactOptional(),
-    Status: FirewallDomainListStatusSchema.and(
-      z.any().openapi({ description: 'The status of the domain list. ' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Additional information about the status of the list, if available.',
-        }),
-    ).exactOptional(),
-    ManagedOwnerName: ServicePrincipleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The owner of the list, used only for lists that are not managed by you. For example, the managed domain list <code>AWSManagedDomainsMalwareDomainList</code> has the managed owner name <code>Route 53 Resolver DNS Firewall</code>.',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: CreatorRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string defined by you to identify the request. This allows you to retry failed requests without the risk of running the operation twice. This can be any unique string, for example, a timestamp. ',
-        }),
-    ).exactOptional(),
-    CreationTime: Rfc3339TimeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the domain list was created, in Unix time format and Coordinated Universal Time (UTC). ',
-        }),
-    ).exactOptional(),
-    ModificationTime: Rfc3339TimeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the domain list was last modified, in Unix time format and Coordinated Universal Time (UTC). ',
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({ description: 'The ID of the domain list. ' }),
+    Arn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the firewall domain list.',
+    }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the domain list. ' }),
+    DomainCount: UnsignedSchema.exactOptional().openapi({
+      description: 'The number of domain names that are specified in the domain list.',
+    }),
+    Status: FirewallDomainListStatusSchema.exactOptional().openapi({
+      description: 'The status of the domain list. ',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'Additional information about the status of the list, if available.',
+    }),
+    ManagedOwnerName: ServicePrincipleSchema.exactOptional().openapi({
+      description:
+        'The owner of the list, used only for lists that are not managed by you. For example, the managed domain list <code>AWSManagedDomainsMalwareDomainList</code> has the managed owner name <code>Route 53 Resolver DNS Firewall</code>.',
+    }),
+    CreatorRequestId: CreatorRequestIdSchema.exactOptional().openapi({
+      description:
+        'A unique string defined by you to identify the request. This allows you to retry failed requests without the risk of running the operation twice. This can be any unique string, for example, a timestamp. ',
+    }),
+    CreationTime: Rfc3339TimeStringSchema.exactOptional().openapi({
+      description:
+        'The date and time that the domain list was created, in Unix time format and Coordinated Universal Time (UTC). ',
+    }),
+    ModificationTime: Rfc3339TimeStringSchema.exactOptional().openapi({
+      description:
+        'The date and time that the domain list was last modified, in Unix time format and Coordinated Universal Time (UTC). ',
+    }),
   })
   .openapi({
     description:
@@ -720,38 +482,26 @@ const FirewallDomainListSchema = z
 
 const CreateFirewallDomainListResponseSchema = z
   .object({
-    FirewallDomainList: FirewallDomainListSchema.and(
-      z.any().openapi({ description: 'The domain list that you just created.' }),
-    ).exactOptional(),
+    FirewallDomainList: FirewallDomainListSchema.exactOptional().openapi({
+      description: 'The domain list that you just created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateFirewallDomainListResponse')
 
 const CreateFirewallDomainListRequestSchema = z
   .object({
-    CreatorRequestId: CreatorRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and that allows you to retry failed requests without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string, for example, a date/time stamp. ',
-        }),
-    ),
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A name that lets you identify the domain list to manage and use it.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the tag keys and values that you want to associate with the domain list. ',
-        }),
-    ).exactOptional(),
+    CreatorRequestId: CreatorRequestIdSchema.openapi({
+      description:
+        'A unique string that identifies the request and that allows you to retry failed requests without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string, for example, a date/time stamp. ',
+    }),
+    Name: NameSchema.openapi({
+      description: 'A name that lets you identify the domain list to manage and use it.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of the tag keys and values that you want to associate with the domain list. ',
+    }),
   })
   .openapi({ required: ['CreatorRequestId', 'Name'], title: 'CreateFirewallDomainListRequest' })
   .openapi('CreateFirewallDomainListRequest')
@@ -766,98 +516,58 @@ const BlockOverrideDnsTypeSchema = z.literal('CNAME').openapi('BlockOverrideDnsT
 
 const FirewallRuleSchema = z
   .object({
-    FirewallRuleGroupId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique identifier of the firewall rule group of the rule. ' }),
-    ).exactOptional(),
-    FirewallDomainListId: ResourceIdSchema.and(
-      z.any().openapi({ description: "The ID of the domain list that's used in the rule. " }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the rule. ' }),
-    ).exactOptional(),
-    Priority: PrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The priority of the rule in the rule group. This value must be unique within the rule group. DNS Firewall processes the rules in a rule group by order of priority, starting from the lowest setting.',
-        }),
-    ).exactOptional(),
-    Action: ActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through.</p> </li> <li> <p> <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. If this is specified, additional handling details are provided in the rule's <code>BlockResponse</code> setting. </p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    BlockResponse: BlockResponseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The way that you want DNS Firewall to block the request. Used for the rule action setting <code>BLOCK</code>.</p> <ul> <li> <p> <code>NODATA</code> - Respond indicating that the query was successful, but no response is available for it.</p> </li> <li> <p> <code>NXDOMAIN</code> - Respond indicating that the domain name that's in the query doesn't exist.</p> </li> <li> <p> <code>OVERRIDE</code> - Provide a custom override in the response. This option requires custom handling details in the rule's <code>BlockOverride*</code> settings. </p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    BlockOverrideDomain: BlockOverrideDomainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The custom DNS record to send back in response to the query. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.',
-        }),
-    ).exactOptional(),
-    BlockOverrideDnsType: BlockOverrideDnsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The DNS record's type. This determines the format of the record value that you provided in <code>BlockOverrideDomain</code>. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.",
-        }),
-    ).exactOptional(),
-    BlockOverrideTtl: UnsignedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The recommended amount of time, in seconds, for the DNS resolver or web browser to cache the provided override record. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: CreatorRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string defined by you to identify the request. This allows you to retry failed requests without the risk of executing the operation twice. This can be any unique string, for example, a timestamp. ',
-        }),
-    ).exactOptional(),
-    CreationTime: Rfc3339TimeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the rule was created, in Unix time format and Coordinated Universal Time (UTC). ',
-        }),
-    ).exactOptional(),
-    ModificationTime: Rfc3339TimeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the rule was last modified, in Unix time format and Coordinated Universal Time (UTC).',
-        }),
-    ).exactOptional(),
+    FirewallRuleGroupId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the firewall rule group of the rule. ',
+    }),
+    FirewallDomainListId: ResourceIdSchema.exactOptional().openapi({
+      description: "The ID of the domain list that's used in the rule. ",
+    }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the rule. ' }),
+    Priority: PrioritySchema.exactOptional().openapi({
+      description:
+        'The priority of the rule in the rule group. This value must be unique within the rule group. DNS Firewall processes the rules in a rule group by order of priority, starting from the lowest setting.',
+    }),
+    Action: ActionSchema.exactOptional().openapi({
+      description:
+        "<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through.</p> </li> <li> <p> <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. If this is specified, additional handling details are provided in the rule's <code>BlockResponse</code> setting. </p> </li> </ul>",
+    }),
+    BlockResponse: BlockResponseSchema.exactOptional().openapi({
+      description:
+        "<p>The way that you want DNS Firewall to block the request. Used for the rule action setting <code>BLOCK</code>.</p> <ul> <li> <p> <code>NODATA</code> - Respond indicating that the query was successful, but no response is available for it.</p> </li> <li> <p> <code>NXDOMAIN</code> - Respond indicating that the domain name that's in the query doesn't exist.</p> </li> <li> <p> <code>OVERRIDE</code> - Provide a custom override in the response. This option requires custom handling details in the rule's <code>BlockOverride*</code> settings. </p> </li> </ul>",
+    }),
+    BlockOverrideDomain: BlockOverrideDomainSchema.exactOptional().openapi({
+      description:
+        'The custom DNS record to send back in response to the query. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.',
+    }),
+    BlockOverrideDnsType: BlockOverrideDnsTypeSchema.exactOptional().openapi({
+      description:
+        "The DNS record's type. This determines the format of the record value that you provided in <code>BlockOverrideDomain</code>. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.",
+    }),
+    BlockOverrideTtl: UnsignedSchema.exactOptional().openapi({
+      description:
+        'The recommended amount of time, in seconds, for the DNS resolver or web browser to cache the provided override record. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.',
+    }),
+    CreatorRequestId: CreatorRequestIdSchema.exactOptional().openapi({
+      description:
+        'A unique string defined by you to identify the request. This allows you to retry failed requests without the risk of executing the operation twice. This can be any unique string, for example, a timestamp. ',
+    }),
+    CreationTime: Rfc3339TimeStringSchema.exactOptional().openapi({
+      description:
+        'The date and time that the rule was created, in Unix time format and Coordinated Universal Time (UTC). ',
+    }),
+    ModificationTime: Rfc3339TimeStringSchema.exactOptional().openapi({
+      description:
+        'The date and time that the rule was last modified, in Unix time format and Coordinated Universal Time (UTC).',
+    }),
   })
   .openapi({ description: 'A single firewall rule in a rule group.', required: [] })
   .openapi('FirewallRule')
 
 const CreateFirewallRuleResponseSchema = z
   .object({
-    FirewallRule: FirewallRuleSchema.and(
-      z.any().openapi({ description: 'The firewall rule that you just created. ' }),
-    ).exactOptional(),
+    FirewallRule: FirewallRuleSchema.exactOptional().openapi({
+      description: 'The firewall rule that you just created. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateFirewallRuleResponse')
@@ -866,78 +576,44 @@ const BlockOverrideTtlSchema = z.int().min(0).max(604800).openapi('BlockOverride
 
 const CreateFirewallRuleRequestSchema = z
   .object({
-    CreatorRequestId: CreatorRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and that allows you to retry failed requests without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string, for example, a date/time stamp. ',
-        }),
-    ),
-    FirewallRuleGroupId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the firewall rule group where you want to create the rule. ',
-        }),
-    ),
-    FirewallDomainListId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the domain list that you want to use in the rule. ' }),
-    ),
-    Priority: PrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The setting that determines the processing order of the rule in the rule group. DNS Firewall processes the rules in a rule group by order of priority, starting from the lowest setting.</p> <p>You must specify a unique priority for each rule in a rule group. To make it easier to insert rules later, leave space between the numbers, for example, use 100, 200, and so on. You can change the priority setting for the rules in a rule group at any time.</p>',
-        }),
-    ),
-    Action: ActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through.</p> </li> <li> <p> <code>ALERT</code> - Permit the request and send metrics and logs to Cloud Watch.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. This option requires additional details in the rule's <code>BlockResponse</code>. </p> </li> </ul>",
-        }),
-    ),
-    BlockResponse: BlockResponseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The way that you want DNS Firewall to block the request, used with the rule action setting <code>BLOCK</code>. </p> <ul> <li> <p> <code>NODATA</code> - Respond indicating that the query was successful, but no response is available for it.</p> </li> <li> <p> <code>NXDOMAIN</code> - Respond indicating that the domain name that's in the query doesn't exist.</p> </li> <li> <p> <code>OVERRIDE</code> - Provide a custom override in the response. This option requires custom handling details in the rule's <code>BlockOverride*</code> settings. </p> </li> </ul> <p>This setting is required if the rule action setting is <code>BLOCK</code>.</p>",
-        }),
-    ).exactOptional(),
-    BlockOverrideDomain: BlockOverrideDomainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The custom DNS record to send back in response to the query. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p> <p>This setting is required if the <code>BlockResponse</code> setting is <code>OVERRIDE</code>.</p>',
-        }),
-    ).exactOptional(),
-    BlockOverrideDnsType: BlockOverrideDnsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The DNS record's type. This determines the format of the record value that you provided in <code>BlockOverrideDomain</code>. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p> <p>This setting is required if the <code>BlockResponse</code> setting is <code>OVERRIDE</code>.</p>",
-        }),
-    ).exactOptional(),
-    BlockOverrideTtl: BlockOverrideTtlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The recommended amount of time, in seconds, for the DNS resolver or web browser to cache the provided override record. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p> <p>This setting is required if the <code>BlockResponse</code> setting is <code>OVERRIDE</code>.</p>',
-        }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'A name that lets you identify the rule in the rule group.' }),
-    ),
+    CreatorRequestId: CreatorRequestIdSchema.openapi({
+      description:
+        'A unique string that identifies the request and that allows you to retry failed requests without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string, for example, a date/time stamp. ',
+    }),
+    FirewallRuleGroupId: ResourceIdSchema.openapi({
+      description:
+        'The unique identifier of the firewall rule group where you want to create the rule. ',
+    }),
+    FirewallDomainListId: ResourceIdSchema.openapi({
+      description: 'The ID of the domain list that you want to use in the rule. ',
+    }),
+    Priority: PrioritySchema.openapi({
+      description:
+        '<p>The setting that determines the processing order of the rule in the rule group. DNS Firewall processes the rules in a rule group by order of priority, starting from the lowest setting.</p> <p>You must specify a unique priority for each rule in a rule group. To make it easier to insert rules later, leave space between the numbers, for example, use 100, 200, and so on. You can change the priority setting for the rules in a rule group at any time.</p>',
+    }),
+    Action: ActionSchema.openapi({
+      description:
+        "<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through.</p> </li> <li> <p> <code>ALERT</code> - Permit the request and send metrics and logs to Cloud Watch.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. This option requires additional details in the rule's <code>BlockResponse</code>. </p> </li> </ul>",
+    }),
+    BlockResponse: BlockResponseSchema.exactOptional().openapi({
+      description:
+        "<p>The way that you want DNS Firewall to block the request, used with the rule action setting <code>BLOCK</code>. </p> <ul> <li> <p> <code>NODATA</code> - Respond indicating that the query was successful, but no response is available for it.</p> </li> <li> <p> <code>NXDOMAIN</code> - Respond indicating that the domain name that's in the query doesn't exist.</p> </li> <li> <p> <code>OVERRIDE</code> - Provide a custom override in the response. This option requires custom handling details in the rule's <code>BlockOverride*</code> settings. </p> </li> </ul> <p>This setting is required if the rule action setting is <code>BLOCK</code>.</p>",
+    }),
+    BlockOverrideDomain: BlockOverrideDomainSchema.exactOptional().openapi({
+      description:
+        '<p>The custom DNS record to send back in response to the query. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p> <p>This setting is required if the <code>BlockResponse</code> setting is <code>OVERRIDE</code>.</p>',
+    }),
+    BlockOverrideDnsType: BlockOverrideDnsTypeSchema.exactOptional().openapi({
+      description:
+        "<p>The DNS record's type. This determines the format of the record value that you provided in <code>BlockOverrideDomain</code>. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p> <p>This setting is required if the <code>BlockResponse</code> setting is <code>OVERRIDE</code>.</p>",
+    }),
+    BlockOverrideTtl: BlockOverrideTtlSchema.exactOptional().openapi({
+      description:
+        '<p>The recommended amount of time, in seconds, for the DNS resolver or web browser to cache the provided override record. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p> <p>This setting is required if the <code>BlockResponse</code> setting is <code>OVERRIDE</code>.</p>',
+    }),
+    Name: NameSchema.openapi({
+      description: 'A name that lets you identify the rule in the rule group.',
+    }),
   })
   .openapi({
     required: [
@@ -964,68 +640,40 @@ const ShareStatusSchema = z
 
 const FirewallRuleGroupSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the rule group. ' }),
-    ).exactOptional(),
-    Arn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) of the rule group.' }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the rule group.' }),
-    ).exactOptional(),
-    RuleCount: UnsignedSchema.and(
-      z.any().openapi({ description: 'The number of rules in the rule group.' }),
-    ).exactOptional(),
-    Status: FirewallRuleGroupStatusSchema.and(
-      z.any().openapi({ description: 'The status of the domain list. ' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Additional information about the status of the rule group, if available.',
-        }),
-    ).exactOptional(),
-    OwnerId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID for the account that created the rule group. When a rule group is shared with your account, this is the account that has shared the rule group with you. ',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: CreatorRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string defined by you to identify the request. This allows you to retry failed requests without the risk of running the operation twice. This can be any unique string, for example, a timestamp. ',
-        }),
-    ).exactOptional(),
-    ShareStatus: ShareStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether the rule group is shared with other Amazon Web Services accounts, or was shared with the current account by another Amazon Web Services account. Sharing is configured through Resource Access Manager (RAM).',
-        }),
-    ).exactOptional(),
-    CreationTime: Rfc3339TimeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the rule group was created, in Unix time format and Coordinated Universal Time (UTC). ',
-        }),
-    ).exactOptional(),
-    ModificationTime: Rfc3339TimeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the rule group was last modified, in Unix time format and Coordinated Universal Time (UTC).',
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({ description: 'The ID of the rule group. ' }),
+    Arn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the rule group.',
+    }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the rule group.' }),
+    RuleCount: UnsignedSchema.exactOptional().openapi({
+      description: 'The number of rules in the rule group.',
+    }),
+    Status: FirewallRuleGroupStatusSchema.exactOptional().openapi({
+      description: 'The status of the domain list. ',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'Additional information about the status of the rule group, if available.',
+    }),
+    OwnerId: AccountIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID for the account that created the rule group. When a rule group is shared with your account, this is the account that has shared the rule group with you. ',
+    }),
+    CreatorRequestId: CreatorRequestIdSchema.exactOptional().openapi({
+      description:
+        'A unique string defined by you to identify the request. This allows you to retry failed requests without the risk of running the operation twice. This can be any unique string, for example, a timestamp. ',
+    }),
+    ShareStatus: ShareStatusSchema.exactOptional().openapi({
+      description:
+        'Whether the rule group is shared with other Amazon Web Services accounts, or was shared with the current account by another Amazon Web Services account. Sharing is configured through Resource Access Manager (RAM).',
+    }),
+    CreationTime: Rfc3339TimeStringSchema.exactOptional().openapi({
+      description:
+        'The date and time that the rule group was created, in Unix time format and Coordinated Universal Time (UTC). ',
+    }),
+    ModificationTime: Rfc3339TimeStringSchema.exactOptional().openapi({
+      description:
+        'The date and time that the rule group was last modified, in Unix time format and Coordinated Universal Time (UTC).',
+    }),
   })
   .openapi({
     description:
@@ -1036,69 +684,51 @@ const FirewallRuleGroupSchema = z
 
 const CreateFirewallRuleGroupResponseSchema = z
   .object({
-    FirewallRuleGroup: FirewallRuleGroupSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A collection of rules used to filter DNS network traffic. ' }),
-    ).exactOptional(),
+    FirewallRuleGroup: FirewallRuleGroupSchema.exactOptional().openapi({
+      description: 'A collection of rules used to filter DNS network traffic. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateFirewallRuleGroupResponse')
 
 const CreateFirewallRuleGroupRequestSchema = z
   .object({
-    CreatorRequestId: CreatorRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string defined by you to identify the request. This allows you to retry failed requests without the risk of running the operation twice. This can be any unique string, for example, a timestamp. ',
-        }),
-    ),
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A name that lets you identify the rule group, to manage and use it.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the tag keys and values that you want to associate with the rule group. ',
-        }),
-    ).exactOptional(),
+    CreatorRequestId: CreatorRequestIdSchema.openapi({
+      description:
+        'A unique string defined by you to identify the request. This allows you to retry failed requests without the risk of running the operation twice. This can be any unique string, for example, a timestamp. ',
+    }),
+    Name: NameSchema.openapi({
+      description: 'A name that lets you identify the rule group, to manage and use it.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of the tag keys and values that you want to associate with the rule group. ',
+    }),
   })
   .openapi({ required: ['CreatorRequestId', 'Name'], title: 'CreateFirewallRuleGroupRequest' })
   .openapi('CreateFirewallRuleGroupRequest')
 
 const CreateResolverEndpointResponseSchema = z
   .object({
-    ResolverEndpoint: ResolverEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the <code>CreateResolverEndpoint</code> request, including the status of the request.',
-        }),
-    ).exactOptional(),
+    ResolverEndpoint: ResolverEndpointSchema.exactOptional().openapi({
+      description:
+        'Information about the <code>CreateResolverEndpoint</code> request, including the status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateResolverEndpointResponse')
 
 const IpAddressRequestSchema = z
   .object({
-    SubnetId: SubnetIdSchema.and(
-      z.any().openapi({ description: 'The ID of the subnet that contains the IP address. ' }),
-    ),
-    Ip: IpSchema.and(
-      z.any().openapi({ description: 'The IPv4 address that you want to use for DNS queries.' }),
-    ).exactOptional(),
-    Ipv6: Ipv6Schema.and(
-      z.any().openapi({ description: ' The IPv6 address that you want to use for DNS queries. ' }),
-    ).exactOptional(),
+    SubnetId: SubnetIdSchema.openapi({
+      description: 'The ID of the subnet that contains the IP address. ',
+    }),
+    Ip: IpSchema.exactOptional().openapi({
+      description: 'The IPv4 address that you want to use for DNS queries.',
+    }),
+    Ipv6: Ipv6Schema.exactOptional().openapi({
+      description: ' The IPv6 address that you want to use for DNS queries. ',
+    }),
   })
   .openapi({
     required: ['SubnetId'],
@@ -1115,62 +745,34 @@ const IpAddressesRequestSchema = z
 
 const CreateResolverEndpointRequestSchema = z
   .object({
-    CreatorRequestId: CreatorRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and that allows failed requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string, for example, a date/time stamp. ',
-        }),
-    ),
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A friendly name that lets you easily find a configuration in the Resolver dashboard in the Route 53 console.',
-        }),
-    ).exactOptional(),
-    SecurityGroupIds: SecurityGroupIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of one or more security groups that you want to use to control access to this VPC. The security group that you specify must include one or more inbound rules (for inbound Resolver endpoints) or outbound rules (for outbound Resolver endpoints). Inbound and outbound rules must allow TCP and UDP access. For inbound access, open port 53. For outbound access, open the port that you're using for DNS queries on your network.",
-        }),
-    ),
-    Direction: ResolverEndpointDirectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the applicable value:</p> <ul> <li> <p> <code>INBOUND</code>: Resolver forwards DNS queries to the DNS service for a VPC from your network</p> </li> <li> <p> <code>OUTBOUND</code>: Resolver forwards DNS queries from the DNS service for a VPC to your network</p> </li> </ul>',
-        }),
-    ),
-    IpAddresses: IpAddressesRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The subnets and IP addresses in your VPC that DNS queries originate from (for outbound endpoints) or that you forward DNS queries to (for inbound endpoints). The subnet ID uniquely identifies a VPC. ',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the tag keys and values that you want to associate with the endpoint.',
-        }),
-    ).exactOptional(),
-    ResolverEndpointType: ResolverEndpointTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' For the endpoint type you can choose either IPv4, IPv6. or dual-stack. A dual-stack endpoint means that it will resolve via both IPv4 and IPv6. This endpoint type is applied to all IP addresses. ',
-        }),
-    ).exactOptional(),
+    CreatorRequestId: CreatorRequestIdSchema.openapi({
+      description:
+        'A unique string that identifies the request and that allows failed requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string, for example, a date/time stamp. ',
+    }),
+    Name: NameSchema.exactOptional().openapi({
+      description:
+        'A friendly name that lets you easily find a configuration in the Resolver dashboard in the Route 53 console.',
+    }),
+    SecurityGroupIds: SecurityGroupIdsSchema.openapi({
+      description:
+        "The ID of one or more security groups that you want to use to control access to this VPC. The security group that you specify must include one or more inbound rules (for inbound Resolver endpoints) or outbound rules (for outbound Resolver endpoints). Inbound and outbound rules must allow TCP and UDP access. For inbound access, open port 53. For outbound access, open the port that you're using for DNS queries on your network.",
+    }),
+    Direction: ResolverEndpointDirectionSchema.openapi({
+      description:
+        '<p>Specify the applicable value:</p> <ul> <li> <p> <code>INBOUND</code>: Resolver forwards DNS queries to the DNS service for a VPC from your network</p> </li> <li> <p> <code>OUTBOUND</code>: Resolver forwards DNS queries from the DNS service for a VPC to your network</p> </li> </ul>',
+    }),
+    IpAddresses: IpAddressesRequestSchema.openapi({
+      description:
+        'The subnets and IP addresses in your VPC that DNS queries originate from (for outbound endpoints) or that you forward DNS queries to (for inbound endpoints). The subnet ID uniquely identifies a VPC. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of the tag keys and values that you want to associate with the endpoint.',
+    }),
+    ResolverEndpointType: ResolverEndpointTypeSchema.exactOptional().openapi({
+      description:
+        ' For the endpoint type you can choose either IPv4, IPv6. or dual-stack. A dual-stack endpoint means that it will resolve via both IPv4 and IPv6. This endpoint type is applied to all IP addresses. ',
+    }),
   })
   .openapi({
     required: ['CreatorRequestId', 'SecurityGroupIds', 'Direction', 'IpAddresses'],
@@ -1195,71 +797,42 @@ const DestinationArnSchema = z.string().min(1).max(600).openapi('DestinationArn'
 
 const ResolverQueryLogConfigSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID for the query logging configuration.' }),
-    ).exactOptional(),
-    OwnerId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID for the account that created the query logging configuration. ',
-        }),
-    ).exactOptional(),
-    Status: ResolverQueryLogConfigStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the specified query logging configuration. Valid values include the following:</p> <ul> <li> <p> <code>CREATING</code>: Resolver is creating the query logging configuration.</p> </li> <li> <p> <code>CREATED</code>: The query logging configuration was successfully created. Resolver is logging queries that originate in the specified VPC.</p> </li> <li> <p> <code>DELETING</code>: Resolver is deleting this query logging configuration.</p> </li> <li> <p> <code>FAILED</code>: Resolver can't deliver logs to the location that is specified in the query logging configuration. Here are two common causes:</p> <ul> <li> <p>The specified destination (for example, an Amazon S3 bucket) was deleted.</p> </li> <li> <p>Permissions don't allow sending logs to the destination.</p> </li> </ul> </li> </ul>",
-        }),
-    ).exactOptional(),
-    ShareStatus: ShareStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An indication of whether the query logging configuration is shared with other Amazon Web Services accounts, or was shared with the current account by another Amazon Web Services account. Sharing is configured through Resource Access Manager (RAM).',
-        }),
-    ).exactOptional(),
-    AssociationCount: CountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of VPCs that are associated with the query logging configuration.',
-        }),
-    ).exactOptional(),
-    Arn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the query logging configuration.' }),
-    ).exactOptional(),
-    Name: ResolverQueryLogConfigNameSchema.and(
-      z.any().openapi({ description: 'The name of the query logging configuration. ' }),
-    ).exactOptional(),
-    DestinationArn: DestinationArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the resource that you want Resolver to send query logs: an Amazon S3 bucket, a CloudWatch Logs log group, or a Kinesis Data Firehose delivery stream.',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: CreatorRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request that created the query logging configuration. The <code>CreatorRequestId</code> allows failed requests to be retried without the risk of running the operation twice.',
-        }),
-    ).exactOptional(),
-    CreationTime: Rfc3339TimeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the query logging configuration was created, in Unix time format and Coordinated Universal Time (UTC).',
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID for the query logging configuration.',
+    }),
+    OwnerId: AccountIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID for the account that created the query logging configuration. ',
+    }),
+    Status: ResolverQueryLogConfigStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The status of the specified query logging configuration. Valid values include the following:</p> <ul> <li> <p> <code>CREATING</code>: Resolver is creating the query logging configuration.</p> </li> <li> <p> <code>CREATED</code>: The query logging configuration was successfully created. Resolver is logging queries that originate in the specified VPC.</p> </li> <li> <p> <code>DELETING</code>: Resolver is deleting this query logging configuration.</p> </li> <li> <p> <code>FAILED</code>: Resolver can't deliver logs to the location that is specified in the query logging configuration. Here are two common causes:</p> <ul> <li> <p>The specified destination (for example, an Amazon S3 bucket) was deleted.</p> </li> <li> <p>Permissions don't allow sending logs to the destination.</p> </li> </ul> </li> </ul>",
+    }),
+    ShareStatus: ShareStatusSchema.exactOptional().openapi({
+      description:
+        'An indication of whether the query logging configuration is shared with other Amazon Web Services accounts, or was shared with the current account by another Amazon Web Services account. Sharing is configured through Resource Access Manager (RAM).',
+    }),
+    AssociationCount: CountSchema.exactOptional().openapi({
+      description: 'The number of VPCs that are associated with the query logging configuration.',
+    }),
+    Arn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN for the query logging configuration.',
+    }),
+    Name: ResolverQueryLogConfigNameSchema.exactOptional().openapi({
+      description: 'The name of the query logging configuration. ',
+    }),
+    DestinationArn: DestinationArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the resource that you want Resolver to send query logs: an Amazon S3 bucket, a CloudWatch Logs log group, or a Kinesis Data Firehose delivery stream.',
+    }),
+    CreatorRequestId: CreatorRequestIdSchema.exactOptional().openapi({
+      description:
+        'A unique string that identifies the request that created the query logging configuration. The <code>CreatorRequestId</code> allows failed requests to be retried without the risk of running the operation twice.',
+    }),
+    CreationTime: Rfc3339TimeStringSchema.exactOptional().openapi({
+      description:
+        'The date and time that the query logging configuration was created, in Unix time format and Coordinated Universal Time (UTC).',
+    }),
   })
   .openapi({
     description:
@@ -1270,51 +843,31 @@ const ResolverQueryLogConfigSchema = z
 
 const CreateResolverQueryLogConfigResponseSchema = z
   .object({
-    ResolverQueryLogConfig: ResolverQueryLogConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the <code>CreateResolverQueryLogConfig</code> request, including the status of the request.',
-        }),
-    ).exactOptional(),
+    ResolverQueryLogConfig: ResolverQueryLogConfigSchema.exactOptional().openapi({
+      description:
+        'Information about the <code>CreateResolverQueryLogConfig</code> request, including the status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateResolverQueryLogConfigResponse')
 
 const CreateResolverQueryLogConfigRequestSchema = z
   .object({
-    Name: ResolverQueryLogConfigNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name that you want to give the query logging configuration.',
-        }),
-    ),
-    DestinationArn: DestinationArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the resource that you want Resolver to send query logs. You can send query logs to an S3 bucket, a CloudWatch Logs log group, or a Kinesis Data Firehose delivery stream. Examples of valid values include the following:</p> <ul> <li> <p> <b>S3 bucket</b>: </p> <p> <code>arn:aws:s3:::examplebucket</code> </p> <p>You can optionally append a file prefix to the end of the ARN.</p> <p> <code>arn:aws:s3:::examplebucket/development/</code> </p> </li> <li> <p> <b>CloudWatch Logs log group</b>: </p> <p> <code>arn:aws:logs:us-west-1:123456789012:log-group:/mystack-testgroup-12ABC1AB12A1:*</code> </p> </li> <li> <p> <b>Kinesis Data Firehose delivery stream</b>:</p> <p> <code>arn:aws:kinesis:us-east-2:0123456789:stream/my_stream_name</code> </p> </li> </ul>',
-        }),
-    ),
-    CreatorRequestId: CreatorRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and that allows failed requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string, for example, a date/time stamp. ',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the tag keys and values that you want to associate with the query logging configuration.',
-        }),
-    ).exactOptional(),
+    Name: ResolverQueryLogConfigNameSchema.openapi({
+      description: 'The name that you want to give the query logging configuration.',
+    }),
+    DestinationArn: DestinationArnSchema.openapi({
+      description:
+        '<p>The ARN of the resource that you want Resolver to send query logs. You can send query logs to an S3 bucket, a CloudWatch Logs log group, or a Kinesis Data Firehose delivery stream. Examples of valid values include the following:</p> <ul> <li> <p> <b>S3 bucket</b>: </p> <p> <code>arn:aws:s3:::examplebucket</code> </p> <p>You can optionally append a file prefix to the end of the ARN.</p> <p> <code>arn:aws:s3:::examplebucket/development/</code> </p> </li> <li> <p> <b>CloudWatch Logs log group</b>: </p> <p> <code>arn:aws:logs:us-west-1:123456789012:log-group:/mystack-testgroup-12ABC1AB12A1:*</code> </p> </li> <li> <p> <b>Kinesis Data Firehose delivery stream</b>:</p> <p> <code>arn:aws:kinesis:us-east-2:0123456789:stream/my_stream_name</code> </p> </li> </ul>',
+    }),
+    CreatorRequestId: CreatorRequestIdSchema.openapi({
+      description:
+        'A unique string that identifies the request and that allows failed requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string, for example, a date/time stamp. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of the tag keys and values that you want to associate with the query logging configuration.',
+    }),
   })
   .openapi({
     required: ['Name', 'DestinationArn', 'CreatorRequestId'],
@@ -1334,21 +887,15 @@ const PortSchema = z.int().min(0).max(65535).openapi('Port')
 
 const TargetAddressSchema = z
   .object({
-    Ip: IpSchema.and(
-      z.any().openapi({ description: 'One IPv4 address that you want to forward DNS queries to.' }),
-    ).exactOptional(),
-    Port: PortSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The port at <code>Ip</code> that you want to forward DNS queries to.',
-        }),
-    ).exactOptional(),
-    Ipv6: Ipv6Schema.and(
-      z
-        .any()
-        .openapi({ description: ' One IPv6 address that you want to forward DNS queries to. ' }),
-    ).exactOptional(),
+    Ip: IpSchema.exactOptional().openapi({
+      description: 'One IPv4 address that you want to forward DNS queries to.',
+    }),
+    Port: PortSchema.exactOptional().openapi({
+      description: 'The port at <code>Ip</code> that you want to forward DNS queries to.',
+    }),
+    Ipv6: Ipv6Schema.exactOptional().openapi({
+      description: ' One IPv6 address that you want to forward DNS queries to. ',
+    }),
   })
   .openapi({
     description:
@@ -1361,104 +908,58 @@ const TargetListSchema = z.array(TargetAddressSchema).min(1).openapi('TargetList
 
 const ResolverRuleSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID that Resolver assigned to the Resolver rule when you created it.',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: CreatorRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that you specified when you created the Resolver rule. <code>CreatorRequestId</code> identifies the request and allows failed requests to be retried without the risk of running the operation twice. ',
-        }),
-    ).exactOptional(),
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN (Amazon Resource Name) for the Resolver rule specified by <code>Id</code>.',
-        }),
-    ).exactOptional(),
-    DomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'DNS queries for this domain name are forwarded to the IP addresses that are specified in <code>TargetIps</code>. If a query matches multiple Resolver rules (example.com and www.example.com), the query is routed using the Resolver rule that contains the most specific domain name (www.example.com).',
-        }),
-    ).exactOptional(),
-    Status: ResolverRuleStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A code that specifies the current status of the Resolver rule.' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z.any().openapi({ description: 'A detailed description of the status of a Resolver rule.' }),
-    ).exactOptional(),
-    RuleType: RuleTypeOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When you want to forward DNS queries for specified domain name to resolvers on your network, specify <code>FORWARD</code>.</p> <p>When you have a forwarding rule to forward DNS queries for a domain to your network and you want Resolver to process queries for a subdomain of that domain, specify <code>SYSTEM</code>.</p> <p>For example, to forward DNS queries for example.com to resolvers on your network, you create a rule and specify <code>FORWARD</code> for <code>RuleType</code>. To then have Resolver process queries for apex.example.com, you create a rule and specify <code>SYSTEM</code> for <code>RuleType</code>.</p> <p>Currently, only Resolver can create rules that have a value of <code>RECURSIVE</code> for <code>RuleType</code>.</p>',
-        }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name for the Resolver rule, which you specified when you created the Resolver rule.',
-        }),
-    ).exactOptional(),
-    TargetIps: TargetListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that contains the IP addresses and ports that an outbound endpoint forwards DNS queries to. Typically, these are the IP addresses of DNS resolvers on your network. Specify IPv4 addresses. IPv6 is not supported.',
-        }),
-    ).exactOptional(),
-    ResolverEndpointId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the endpoint that the rule is associated with.' }),
-    ).exactOptional(),
-    OwnerId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When a rule is shared with another Amazon Web Services account, the account ID of the account that the rule is shared with.',
-        }),
-    ).exactOptional(),
-    ShareStatus: ShareStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether the rule is shared and, if so, whether the current account is sharing the rule with another account, or another account is sharing the rule with the current account.',
-        }),
-    ).exactOptional(),
-    CreationTime: Rfc3339TimeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the Resolver rule was created, in Unix time format and Coordinated Universal Time (UTC).',
-        }),
-    ).exactOptional(),
-    ModificationTime: Rfc3339TimeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the Resolver rule was last updated, in Unix time format and Coordinated Universal Time (UTC).',
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID that Resolver assigned to the Resolver rule when you created it.',
+    }),
+    CreatorRequestId: CreatorRequestIdSchema.exactOptional().openapi({
+      description:
+        'A unique string that you specified when you created the Resolver rule. <code>CreatorRequestId</code> identifies the request and allows failed requests to be retried without the risk of running the operation twice. ',
+    }),
+    Arn: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARN (Amazon Resource Name) for the Resolver rule specified by <code>Id</code>.',
+    }),
+    DomainName: DomainNameSchema.exactOptional().openapi({
+      description:
+        'DNS queries for this domain name are forwarded to the IP addresses that are specified in <code>TargetIps</code>. If a query matches multiple Resolver rules (example.com and www.example.com), the query is routed using the Resolver rule that contains the most specific domain name (www.example.com).',
+    }),
+    Status: ResolverRuleStatusSchema.exactOptional().openapi({
+      description: 'A code that specifies the current status of the Resolver rule.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'A detailed description of the status of a Resolver rule.',
+    }),
+    RuleType: RuleTypeOptionSchema.exactOptional().openapi({
+      description:
+        '<p>When you want to forward DNS queries for specified domain name to resolvers on your network, specify <code>FORWARD</code>.</p> <p>When you have a forwarding rule to forward DNS queries for a domain to your network and you want Resolver to process queries for a subdomain of that domain, specify <code>SYSTEM</code>.</p> <p>For example, to forward DNS queries for example.com to resolvers on your network, you create a rule and specify <code>FORWARD</code> for <code>RuleType</code>. To then have Resolver process queries for apex.example.com, you create a rule and specify <code>SYSTEM</code> for <code>RuleType</code>.</p> <p>Currently, only Resolver can create rules that have a value of <code>RECURSIVE</code> for <code>RuleType</code>.</p>',
+    }),
+    Name: NameSchema.exactOptional().openapi({
+      description:
+        'The name for the Resolver rule, which you specified when you created the Resolver rule.',
+    }),
+    TargetIps: TargetListSchema.exactOptional().openapi({
+      description:
+        'An array that contains the IP addresses and ports that an outbound endpoint forwards DNS queries to. Typically, these are the IP addresses of DNS resolvers on your network. Specify IPv4 addresses. IPv6 is not supported.',
+    }),
+    ResolverEndpointId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the endpoint that the rule is associated with.',
+    }),
+    OwnerId: AccountIdSchema.exactOptional().openapi({
+      description:
+        'When a rule is shared with another Amazon Web Services account, the account ID of the account that the rule is shared with.',
+    }),
+    ShareStatus: ShareStatusSchema.exactOptional().openapi({
+      description:
+        'Whether the rule is shared and, if so, whether the current account is sharing the rule with another account, or another account is sharing the rule with the current account.',
+    }),
+    CreationTime: Rfc3339TimeStringSchema.exactOptional().openapi({
+      description:
+        'The date and time that the Resolver rule was created, in Unix time format and Coordinated Universal Time (UTC).',
+    }),
+    ModificationTime: Rfc3339TimeStringSchema.exactOptional().openapi({
+      description:
+        'The date and time that the Resolver rule was last updated, in Unix time format and Coordinated Universal Time (UTC).',
+    }),
   })
   .openapi({
     description:
@@ -1469,76 +970,44 @@ const ResolverRuleSchema = z
 
 const CreateResolverRuleResponseSchema = z
   .object({
-    ResolverRule: ResolverRuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the <code>CreateResolverRule</code> request, including the status of the request.',
-        }),
-    ).exactOptional(),
+    ResolverRule: ResolverRuleSchema.exactOptional().openapi({
+      description:
+        'Information about the <code>CreateResolverRule</code> request, including the status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateResolverRuleResponse')
 
 const CreateResolverRuleRequestSchema = z
   .object({
-    CreatorRequestId: CreatorRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string that identifies the request and that allows failed requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string, for example, a date/time stamp. ',
-        }),
-    ),
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A friendly name that lets you easily find a rule in the Resolver dashboard in the Route 53 console.',
-        }),
-    ).exactOptional(),
-    RuleType: RuleTypeOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When you want to forward DNS queries for specified domain name to resolvers on your network, specify <code>FORWARD</code>.</p> <p>When you have a forwarding rule to forward DNS queries for a domain to your network and you want Resolver to process queries for a subdomain of that domain, specify <code>SYSTEM</code>.</p> <p>For example, to forward DNS queries for example.com to resolvers on your network, you create a rule and specify <code>FORWARD</code> for <code>RuleType</code>. To then have Resolver process queries for apex.example.com, you create a rule and specify <code>SYSTEM</code> for <code>RuleType</code>.</p> <p>Currently, only Resolver can create rules that have a value of <code>RECURSIVE</code> for <code>RuleType</code>.</p>',
-        }),
-    ),
-    DomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'DNS queries for this domain name are forwarded to the IP addresses that you specify in <code>TargetIps</code>. If a query matches multiple Resolver rules (example.com and www.example.com), outbound DNS queries are routed using the Resolver rule that contains the most specific domain name (www.example.com).',
-        }),
-    ),
-    TargetIps: TargetListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IPs that you want Resolver to forward DNS queries to. You can specify only IPv4 addresses. Separate IP addresses with a space.</p> <p> <code>TargetIps</code> is available only when the value of <code>Rule type</code> is <code>FORWARD</code>.</p>',
-        }),
-    ).exactOptional(),
-    ResolverEndpointId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the outbound Resolver endpoint that you want to use to route DNS queries to the IP addresses that you specify in <code>TargetIps</code>.',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the tag keys and values that you want to associate with the endpoint.',
-        }),
-    ).exactOptional(),
+    CreatorRequestId: CreatorRequestIdSchema.openapi({
+      description:
+        'A unique string that identifies the request and that allows failed requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string, for example, a date/time stamp. ',
+    }),
+    Name: NameSchema.exactOptional().openapi({
+      description:
+        'A friendly name that lets you easily find a rule in the Resolver dashboard in the Route 53 console.',
+    }),
+    RuleType: RuleTypeOptionSchema.openapi({
+      description:
+        '<p>When you want to forward DNS queries for specified domain name to resolvers on your network, specify <code>FORWARD</code>.</p> <p>When you have a forwarding rule to forward DNS queries for a domain to your network and you want Resolver to process queries for a subdomain of that domain, specify <code>SYSTEM</code>.</p> <p>For example, to forward DNS queries for example.com to resolvers on your network, you create a rule and specify <code>FORWARD</code> for <code>RuleType</code>. To then have Resolver process queries for apex.example.com, you create a rule and specify <code>SYSTEM</code> for <code>RuleType</code>.</p> <p>Currently, only Resolver can create rules that have a value of <code>RECURSIVE</code> for <code>RuleType</code>.</p>',
+    }),
+    DomainName: DomainNameSchema.openapi({
+      description:
+        'DNS queries for this domain name are forwarded to the IP addresses that you specify in <code>TargetIps</code>. If a query matches multiple Resolver rules (example.com and www.example.com), outbound DNS queries are routed using the Resolver rule that contains the most specific domain name (www.example.com).',
+    }),
+    TargetIps: TargetListSchema.exactOptional().openapi({
+      description:
+        '<p>The IPs that you want Resolver to forward DNS queries to. You can specify only IPv4 addresses. Separate IP addresses with a space.</p> <p> <code>TargetIps</code> is available only when the value of <code>Rule type</code> is <code>FORWARD</code>.</p>',
+    }),
+    ResolverEndpointId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the outbound Resolver endpoint that you want to use to route DNS queries to the IP addresses that you specify in <code>TargetIps</code>.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of the tag keys and values that you want to associate with the endpoint.',
+    }),
   })
   .openapi({
     required: ['CreatorRequestId', 'RuleType', 'DomainName'],
@@ -1548,46 +1017,40 @@ const CreateResolverRuleRequestSchema = z
 
 const DeleteFirewallDomainListResponseSchema = z
   .object({
-    FirewallDomainList: FirewallDomainListSchema.and(
-      z.any().openapi({ description: 'The domain list that you just deleted. ' }),
-    ).exactOptional(),
+    FirewallDomainList: FirewallDomainListSchema.exactOptional().openapi({
+      description: 'The domain list that you just deleted. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteFirewallDomainListResponse')
 
 const DeleteFirewallDomainListRequestSchema = z
   .object({
-    FirewallDomainListId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the domain list that you want to delete. ' }),
-    ),
+    FirewallDomainListId: ResourceIdSchema.openapi({
+      description: 'The ID of the domain list that you want to delete. ',
+    }),
   })
   .openapi({ required: ['FirewallDomainListId'], title: 'DeleteFirewallDomainListRequest' })
   .openapi('DeleteFirewallDomainListRequest')
 
 const DeleteFirewallRuleResponseSchema = z
   .object({
-    FirewallRule: FirewallRuleSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The specification for the firewall rule that you just deleted.' }),
-    ).exactOptional(),
+    FirewallRule: FirewallRuleSchema.exactOptional().openapi({
+      description: 'The specification for the firewall rule that you just deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteFirewallRuleResponse')
 
 const DeleteFirewallRuleRequestSchema = z
   .object({
-    FirewallRuleGroupId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the firewall rule group that you want to delete the rule from. ',
-        }),
-    ),
-    FirewallDomainListId: ResourceIdSchema.and(
-      z.any().openapi({ description: "The ID of the domain list that's used in the rule. " }),
-    ),
+    FirewallRuleGroupId: ResourceIdSchema.openapi({
+      description:
+        'The unique identifier of the firewall rule group that you want to delete the rule from. ',
+    }),
+    FirewallDomainListId: ResourceIdSchema.openapi({
+      description: "The ID of the domain list that's used in the rule. ",
+    }),
   })
   .openapi({
     required: ['FirewallRuleGroupId', 'FirewallDomainListId'],
@@ -1597,97 +1060,75 @@ const DeleteFirewallRuleRequestSchema = z
 
 const DeleteFirewallRuleGroupResponseSchema = z
   .object({
-    FirewallRuleGroup: FirewallRuleGroupSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A collection of rules used to filter DNS network traffic. ' }),
-    ).exactOptional(),
+    FirewallRuleGroup: FirewallRuleGroupSchema.exactOptional().openapi({
+      description: 'A collection of rules used to filter DNS network traffic. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteFirewallRuleGroupResponse')
 
 const DeleteFirewallRuleGroupRequestSchema = z
   .object({
-    FirewallRuleGroupId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier of the firewall rule group that you want to delete. ',
-        }),
-    ),
+    FirewallRuleGroupId: ResourceIdSchema.openapi({
+      description: 'The unique identifier of the firewall rule group that you want to delete. ',
+    }),
   })
   .openapi({ required: ['FirewallRuleGroupId'], title: 'DeleteFirewallRuleGroupRequest' })
   .openapi('DeleteFirewallRuleGroupRequest')
 
 const DeleteResolverEndpointResponseSchema = z
   .object({
-    ResolverEndpoint: ResolverEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the <code>DeleteResolverEndpoint</code> request, including the status of the request.',
-        }),
-    ).exactOptional(),
+    ResolverEndpoint: ResolverEndpointSchema.exactOptional().openapi({
+      description:
+        'Information about the <code>DeleteResolverEndpoint</code> request, including the status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteResolverEndpointResponse')
 
 const DeleteResolverEndpointRequestSchema = z
   .object({
-    ResolverEndpointId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Resolver endpoint that you want to delete.' }),
-    ),
+    ResolverEndpointId: ResourceIdSchema.openapi({
+      description: 'The ID of the Resolver endpoint that you want to delete.',
+    }),
   })
   .openapi({ required: ['ResolverEndpointId'], title: 'DeleteResolverEndpointRequest' })
   .openapi('DeleteResolverEndpointRequest')
 
 const DeleteResolverQueryLogConfigResponseSchema = z
   .object({
-    ResolverQueryLogConfig: ResolverQueryLogConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the query logging configuration that you deleted, including the status of the request.',
-        }),
-    ).exactOptional(),
+    ResolverQueryLogConfig: ResolverQueryLogConfigSchema.exactOptional().openapi({
+      description:
+        'Information about the query logging configuration that you deleted, including the status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteResolverQueryLogConfigResponse')
 
 const DeleteResolverQueryLogConfigRequestSchema = z
   .object({
-    ResolverQueryLogConfigId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the query logging configuration that you want to delete.',
-        }),
-    ),
+    ResolverQueryLogConfigId: ResourceIdSchema.openapi({
+      description: 'The ID of the query logging configuration that you want to delete.',
+    }),
   })
   .openapi({ required: ['ResolverQueryLogConfigId'], title: 'DeleteResolverQueryLogConfigRequest' })
   .openapi('DeleteResolverQueryLogConfigRequest')
 
 const DeleteResolverRuleResponseSchema = z
   .object({
-    ResolverRule: ResolverRuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the <code>DeleteResolverRule</code> request, including the status of the request.',
-        }),
-    ).exactOptional(),
+    ResolverRule: ResolverRuleSchema.exactOptional().openapi({
+      description:
+        'Information about the <code>DeleteResolverRule</code> request, including the status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteResolverRuleResponse')
 
 const DeleteResolverRuleRequestSchema = z
   .object({
-    ResolverRuleId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Resolver rule that you want to delete.' }),
-    ),
+    ResolverRuleId: ResourceIdSchema.openapi({
+      description: 'The ID of the Resolver rule that you want to delete.',
+    }),
   })
   .openapi({ required: ['ResolverRuleId'], title: 'DeleteResolverRuleRequest' })
   .openapi('DeleteResolverRuleRequest')
@@ -1696,22 +1137,18 @@ const ResourceInUseExceptionSchema = z.any().openapi('ResourceInUseException')
 
 const DisassociateFirewallRuleGroupResponseSchema = z
   .object({
-    FirewallRuleGroupAssociation: FirewallRuleGroupAssociationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The firewall rule group association that you just removed. ' }),
-    ).exactOptional(),
+    FirewallRuleGroupAssociation: FirewallRuleGroupAssociationSchema.exactOptional().openapi({
+      description: 'The firewall rule group association that you just removed. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateFirewallRuleGroupResponse')
 
 const DisassociateFirewallRuleGroupRequestSchema = z
   .object({
-    FirewallRuleGroupAssociationId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the <a>FirewallRuleGroupAssociation</a>. ' }),
-    ),
+    FirewallRuleGroupAssociationId: ResourceIdSchema.openapi({
+      description: 'The identifier of the <a>FirewallRuleGroupAssociation</a>. ',
+    }),
   })
   .openapi({
     required: ['FirewallRuleGroupAssociationId'],
@@ -1721,35 +1158,22 @@ const DisassociateFirewallRuleGroupRequestSchema = z
 
 const DisassociateResolverEndpointIpAddressResponseSchema = z
   .object({
-    ResolverEndpoint: ResolverEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The response to an <code>DisassociateResolverEndpointIpAddress</code> request.',
-        }),
-    ).exactOptional(),
+    ResolverEndpoint: ResolverEndpointSchema.exactOptional().openapi({
+      description: 'The response to an <code>DisassociateResolverEndpointIpAddress</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateResolverEndpointIpAddressResponse')
 
 const DisassociateResolverEndpointIpAddressRequestSchema = z
   .object({
-    ResolverEndpointId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Resolver endpoint that you want to disassociate an IP address from.',
-        }),
-    ),
-    IpAddress: IpAddressUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The IPv4 address that you want to remove from a Resolver endpoint.',
-        }),
-    ),
+    ResolverEndpointId: ResourceIdSchema.openapi({
+      description:
+        'The ID of the Resolver endpoint that you want to disassociate an IP address from.',
+    }),
+    IpAddress: IpAddressUpdateSchema.openapi({
+      description: 'The IPv4 address that you want to remove from a Resolver endpoint.',
+    }),
   })
   .openapi({
     required: ['ResolverEndpointId', 'IpAddress'],
@@ -1759,36 +1183,25 @@ const DisassociateResolverEndpointIpAddressRequestSchema = z
 
 const DisassociateResolverQueryLogConfigResponseSchema = z
   .object({
-    ResolverQueryLogConfigAssociation: ResolverQueryLogConfigAssociationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A complex type that contains settings for the association that you deleted between an Amazon VPC and a query logging configuration.',
-        }),
-    ).exactOptional(),
+    ResolverQueryLogConfigAssociation:
+      ResolverQueryLogConfigAssociationSchema.exactOptional().openapi({
+        description:
+          'A complex type that contains settings for the association that you deleted between an Amazon VPC and a query logging configuration.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateResolverQueryLogConfigResponse')
 
 const DisassociateResolverQueryLogConfigRequestSchema = z
   .object({
-    ResolverQueryLogConfigId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the query logging configuration that you want to disassociate a specified VPC from.',
-        }),
-    ),
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon VPC that you want to disassociate from a specified query logging configuration.',
-        }),
-    ),
+    ResolverQueryLogConfigId: ResourceIdSchema.openapi({
+      description:
+        'The ID of the query logging configuration that you want to disassociate a specified VPC from.',
+    }),
+    ResourceId: ResourceIdSchema.openapi({
+      description:
+        'The ID of the Amazon VPC that you want to disassociate from a specified query logging configuration.',
+    }),
   })
   .openapi({
     required: ['ResolverQueryLogConfigId', 'ResourceId'],
@@ -1798,35 +1211,23 @@ const DisassociateResolverQueryLogConfigRequestSchema = z
 
 const DisassociateResolverRuleResponseSchema = z
   .object({
-    ResolverRuleAssociation: ResolverRuleAssociationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the <code>DisassociateResolverRule</code> request, including the status of the request.',
-        }),
-    ).exactOptional(),
+    ResolverRuleAssociation: ResolverRuleAssociationSchema.exactOptional().openapi({
+      description:
+        'Information about the <code>DisassociateResolverRule</code> request, including the status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateResolverRuleResponse')
 
 const DisassociateResolverRuleRequestSchema = z
   .object({
-    VPCId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the VPC that you want to disassociate the Resolver rule from.',
-        }),
-    ),
-    ResolverRuleId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Resolver rule that you want to disassociate from the specified VPC.',
-        }),
-    ),
+    VPCId: ResourceIdSchema.openapi({
+      description: 'The ID of the VPC that you want to disassociate the Resolver rule from.',
+    }),
+    ResolverRuleId: ResourceIdSchema.openapi({
+      description:
+        'The ID of the Resolver rule that you want to disassociate from the specified VPC.',
+    }),
   })
   .openapi({ required: ['VPCId', 'ResolverRuleId'], title: 'DisassociateResolverRuleRequest' })
   .openapi('DisassociateResolverRuleRequest')
@@ -1837,30 +1238,20 @@ const FirewallFailOpenStatusSchema = z
 
 const FirewallConfigSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the firewall configuration.' }),
-    ).exactOptional(),
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the VPC that this firewall configuration applies to.' }),
-    ).exactOptional(),
-    OwnerId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID of the owner of the VPC that this firewall configuration applies to.',
-        }),
-    ).exactOptional(),
-    FirewallFailOpen: FirewallFailOpenStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Determines how DNS Firewall operates during failures, for example when all traffic that is sent to DNS Firewall fails to receive a reply. </p> <ul> <li> <p>By default, fail open is disabled, which means the failure mode is closed. This approach favors security over availability. DNS Firewall returns a failure error when it is unable to properly evaluate a query. </p> </li> <li> <p>If you enable this option, the failure mode is open. This approach favors availability over security. DNS Firewall allows queries to proceed if it is unable to properly evaluate them. </p> </li> </ul> <p>This behavior is only enforced for VPCs that have at least one DNS Firewall rule group association. </p>',
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the firewall configuration.',
+    }),
+    ResourceId: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the VPC that this firewall configuration applies to.',
+    }),
+    OwnerId: AccountIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID of the owner of the VPC that this firewall configuration applies to.',
+    }),
+    FirewallFailOpen: FirewallFailOpenStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Determines how DNS Firewall operates during failures, for example when all traffic that is sent to DNS Firewall fails to receive a reply. </p> <ul> <li> <p>By default, fail open is disabled, which means the failure mode is closed. This approach favors security over availability. DNS Firewall returns a failure error when it is unable to properly evaluate a query. </p> </li> <li> <p>If you enable this option, the failure mode is open. This approach favors availability over security. DNS Firewall allows queries to proceed if it is unable to properly evaluate them. </p> </li> </ul> <p>This behavior is only enforced for VPCs that have at least one DNS Firewall rule group association. </p>',
+    }),
   })
   .openapi({
     description:
@@ -1871,85 +1262,71 @@ const FirewallConfigSchema = z
 
 const GetFirewallConfigResponseSchema = z
   .object({
-    FirewallConfig: FirewallConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration of the firewall behavior provided by DNS Firewall for a single VPC from AmazonVPC. ',
-        }),
-    ).exactOptional(),
+    FirewallConfig: FirewallConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration of the firewall behavior provided by DNS Firewall for a single VPC from AmazonVPC. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetFirewallConfigResponse')
 
 const GetFirewallConfigRequestSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the VPC from Amazon VPC that the configuration is for.',
-        }),
-    ),
+    ResourceId: ResourceIdSchema.openapi({
+      description: 'The ID of the VPC from Amazon VPC that the configuration is for.',
+    }),
   })
   .openapi({ required: ['ResourceId'], title: 'GetFirewallConfigRequest' })
   .openapi('GetFirewallConfigRequest')
 
 const GetFirewallDomainListResponseSchema = z
   .object({
-    FirewallDomainList: FirewallDomainListSchema.and(
-      z.any().openapi({ description: 'The domain list that you requested. ' }),
-    ).exactOptional(),
+    FirewallDomainList: FirewallDomainListSchema.exactOptional().openapi({
+      description: 'The domain list that you requested. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetFirewallDomainListResponse')
 
 const GetFirewallDomainListRequestSchema = z
   .object({
-    FirewallDomainListId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the domain list. ' }),
-    ),
+    FirewallDomainListId: ResourceIdSchema.openapi({ description: 'The ID of the domain list. ' }),
   })
   .openapi({ required: ['FirewallDomainListId'], title: 'GetFirewallDomainListRequest' })
   .openapi('GetFirewallDomainListRequest')
 
 const GetFirewallRuleGroupResponseSchema = z
   .object({
-    FirewallRuleGroup: FirewallRuleGroupSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A collection of rules used to filter DNS network traffic. ' }),
-    ).exactOptional(),
+    FirewallRuleGroup: FirewallRuleGroupSchema.exactOptional().openapi({
+      description: 'A collection of rules used to filter DNS network traffic. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetFirewallRuleGroupResponse')
 
 const GetFirewallRuleGroupRequestSchema = z
   .object({
-    FirewallRuleGroupId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the firewall rule group. ' }),
-    ),
+    FirewallRuleGroupId: ResourceIdSchema.openapi({
+      description: 'The unique identifier of the firewall rule group. ',
+    }),
   })
   .openapi({ required: ['FirewallRuleGroupId'], title: 'GetFirewallRuleGroupRequest' })
   .openapi('GetFirewallRuleGroupRequest')
 
 const GetFirewallRuleGroupAssociationResponseSchema = z
   .object({
-    FirewallRuleGroupAssociation: FirewallRuleGroupAssociationSchema.and(
-      z.any().openapi({ description: 'The association that you requested. ' }),
-    ).exactOptional(),
+    FirewallRuleGroupAssociation: FirewallRuleGroupAssociationSchema.exactOptional().openapi({
+      description: 'The association that you requested. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetFirewallRuleGroupAssociationResponse')
 
 const GetFirewallRuleGroupAssociationRequestSchema = z
   .object({
-    FirewallRuleGroupAssociationId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the <a>FirewallRuleGroupAssociation</a>. ' }),
-    ),
+    FirewallRuleGroupAssociationId: ResourceIdSchema.openapi({
+      description: 'The identifier of the <a>FirewallRuleGroupAssociation</a>. ',
+    }),
   })
   .openapi({
     required: ['FirewallRuleGroupAssociationId'],
@@ -1961,23 +1338,17 @@ const FirewallRuleGroupPolicySchema = z.string().max(30000).openapi('FirewallRul
 
 const GetFirewallRuleGroupPolicyResponseSchema = z
   .object({
-    FirewallRuleGroupPolicy: FirewallRuleGroupPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Identity and Access Management (Amazon Web Services IAM) policy for sharing the specified rule group. You can use the policy to share the rule group using Resource Access Manager (RAM). ',
-        }),
-    ).exactOptional(),
+    FirewallRuleGroupPolicy: FirewallRuleGroupPolicySchema.exactOptional().openapi({
+      description:
+        'The Identity and Access Management (Amazon Web Services IAM) policy for sharing the specified rule group. You can use the policy to share the rule group using Resource Access Manager (RAM). ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetFirewallRuleGroupPolicyResponse')
 
 const GetFirewallRuleGroupPolicyRequestSchema = z
   .object({
-    Arn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) for the rule group.' }),
-    ),
+    Arn: ArnSchema.openapi({ description: 'The ARN (Amazon Resource Name) for the rule group.' }),
   })
   .openapi({ required: ['Arn'], title: 'GetFirewallRuleGroupPolicyRequest' })
   .openapi('GetFirewallRuleGroupPolicyRequest')
@@ -1995,30 +1366,20 @@ const ResolverAutodefinedReverseStatusSchema = z
 
 const ResolverConfigSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'ID for the Resolver configuration.' }),
-    ).exactOptional(),
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the Amazon Virtual Private Cloud VPC that you're configuring Resolver for.",
-        }),
-    ).exactOptional(),
-    OwnerId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The owner account ID of the Amazon Virtual Private Cloud VPC.' }),
-    ).exactOptional(),
-    AutodefinedReverse: ResolverAutodefinedReverseStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The status of whether or not the Resolver will create autodefined rules for reverse DNS lookups. This is enabled by default. The status can be one of following:</p> <ul> <li> <p> <b>ENABLING:</b> Autodefined rules for reverse DNS lookups are being enabled but are not complete.</p> </li> <li> <p> <b>ENABLED:</b> Autodefined rules for reverse DNS lookups are enabled.</p> </li> <li> <p> <b>DISABLING:</b> Autodefined rules for reverse DNS lookups are being disabled but are not complete.</p> </li> <li> <p> <b>DISABLED:</b> Autodefined rules for reverse DNS lookups are disabled.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({
+      description: 'ID for the Resolver configuration.',
+    }),
+    ResourceId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        "The ID of the Amazon Virtual Private Cloud VPC that you're configuring Resolver for.",
+    }),
+    OwnerId: AccountIdSchema.exactOptional().openapi({
+      description: 'The owner account ID of the Amazon Virtual Private Cloud VPC.',
+    }),
+    AutodefinedReverse: ResolverAutodefinedReverseStatusSchema.exactOptional().openapi({
+      description:
+        '<p> The status of whether or not the Resolver will create autodefined rules for reverse DNS lookups. This is enabled by default. The status can be one of following:</p> <ul> <li> <p> <b>ENABLING:</b> Autodefined rules for reverse DNS lookups are being enabled but are not complete.</p> </li> <li> <p> <b>ENABLED:</b> Autodefined rules for reverse DNS lookups are enabled.</p> </li> <li> <p> <b>DISABLING:</b> Autodefined rules for reverse DNS lookups are being disabled but are not complete.</p> </li> <li> <p> <b>DISABLED:</b> Autodefined rules for reverse DNS lookups are disabled.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -2029,27 +1390,19 @@ const ResolverConfigSchema = z
 
 const GetResolverConfigResponseSchema = z
   .object({
-    ResolverConfig: ResolverConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the behavior configuration of Route 53 Resolver behavior for the VPC you specified in the <code>GetResolverConfig</code> request.',
-        }),
-    ).exactOptional(),
+    ResolverConfig: ResolverConfigSchema.exactOptional().openapi({
+      description:
+        'Information about the behavior configuration of Route 53 Resolver behavior for the VPC you specified in the <code>GetResolverConfig</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResolverConfigResponse')
 
 const GetResolverConfigRequestSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Resource ID of the Amazon VPC that you want to get information about.',
-        }),
-    ),
+    ResourceId: ResourceIdSchema.openapi({
+      description: 'Resource ID of the Amazon VPC that you want to get information about.',
+    }),
   })
   .openapi({ required: ['ResourceId'], title: 'GetResolverConfigRequest' })
   .openapi('GetResolverConfigRequest')
@@ -2067,33 +1420,21 @@ const ResolverDNSSECValidationStatusSchema = z
 
 const ResolverDnssecConfigSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID for a configuration for DNSSEC validation.' }),
-    ).exactOptional(),
-    OwnerId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The owner account ID of the virtual private cloud (VPC) for a configuration for DNSSEC validation.',
-        }),
-    ).exactOptional(),
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the virtual private cloud (VPC) that you're configuring the DNSSEC validation status for.",
-        }),
-    ).exactOptional(),
-    ValidationStatus: ResolverDNSSECValidationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The validation status for a DNSSEC configuration. The status can be one of the following:</p> <ul> <li> <p> <b>ENABLING:</b> DNSSEC validation is being enabled but is not complete.</p> </li> <li> <p> <b>ENABLED:</b> DNSSEC validation is enabled.</p> </li> <li> <p> <b>DISABLING:</b> DNSSEC validation is being disabled but is not complete.</p> </li> <li> <p> <b>DISABLED</b> DNSSEC validation is disabled.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID for a configuration for DNSSEC validation.',
+    }),
+    OwnerId: AccountIdSchema.exactOptional().openapi({
+      description:
+        'The owner account ID of the virtual private cloud (VPC) for a configuration for DNSSEC validation.',
+    }),
+    ResourceId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        "The ID of the virtual private cloud (VPC) that you're configuring the DNSSEC validation status for.",
+    }),
+    ValidationStatus: ResolverDNSSECValidationStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The validation status for a DNSSEC configuration. The status can be one of the following:</p> <ul> <li> <p> <b>ENABLING:</b> DNSSEC validation is being enabled but is not complete.</p> </li> <li> <p> <b>ENABLED:</b> DNSSEC validation is enabled.</p> </li> <li> <p> <b>DISABLING:</b> DNSSEC validation is being disabled but is not complete.</p> </li> <li> <p> <b>DISABLED</b> DNSSEC validation is disabled.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -2104,108 +1445,78 @@ const ResolverDnssecConfigSchema = z
 
 const GetResolverDnssecConfigResponseSchema = z
   .object({
-    ResolverDNSSECConfig: ResolverDnssecConfigSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The information about a configuration for DNSSEC validation.' }),
-    ).exactOptional(),
+    ResolverDNSSECConfig: ResolverDnssecConfigSchema.exactOptional().openapi({
+      description: 'The information about a configuration for DNSSEC validation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResolverDnssecConfigResponse')
 
 const GetResolverDnssecConfigRequestSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the virtual private cloud (VPC) for the DNSSEC validation status.',
-        }),
-    ),
+    ResourceId: ResourceIdSchema.openapi({
+      description: 'The ID of the virtual private cloud (VPC) for the DNSSEC validation status.',
+    }),
   })
   .openapi({ required: ['ResourceId'], title: 'GetResolverDnssecConfigRequest' })
   .openapi('GetResolverDnssecConfigRequest')
 
 const GetResolverEndpointResponseSchema = z
   .object({
-    ResolverEndpoint: ResolverEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the Resolver endpoint that you specified in a <code>GetResolverEndpoint</code> request.',
-        }),
-    ).exactOptional(),
+    ResolverEndpoint: ResolverEndpointSchema.exactOptional().openapi({
+      description:
+        'Information about the Resolver endpoint that you specified in a <code>GetResolverEndpoint</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResolverEndpointResponse')
 
 const GetResolverEndpointRequestSchema = z
   .object({
-    ResolverEndpointId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Resolver endpoint that you want to get information about.',
-        }),
-    ),
+    ResolverEndpointId: ResourceIdSchema.openapi({
+      description: 'The ID of the Resolver endpoint that you want to get information about.',
+    }),
   })
   .openapi({ required: ['ResolverEndpointId'], title: 'GetResolverEndpointRequest' })
   .openapi('GetResolverEndpointRequest')
 
 const GetResolverQueryLogConfigResponseSchema = z
   .object({
-    ResolverQueryLogConfig: ResolverQueryLogConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the Resolver query logging configuration that you specified in a <code>GetQueryLogConfig</code> request.',
-        }),
-    ).exactOptional(),
+    ResolverQueryLogConfig: ResolverQueryLogConfigSchema.exactOptional().openapi({
+      description:
+        'Information about the Resolver query logging configuration that you specified in a <code>GetQueryLogConfig</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResolverQueryLogConfigResponse')
 
 const GetResolverQueryLogConfigRequestSchema = z
   .object({
-    ResolverQueryLogConfigId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Resolver query logging configuration that you want to get information about.',
-        }),
-    ),
+    ResolverQueryLogConfigId: ResourceIdSchema.openapi({
+      description:
+        'The ID of the Resolver query logging configuration that you want to get information about.',
+    }),
   })
   .openapi({ required: ['ResolverQueryLogConfigId'], title: 'GetResolverQueryLogConfigRequest' })
   .openapi('GetResolverQueryLogConfigRequest')
 
 const GetResolverQueryLogConfigAssociationResponseSchema = z
   .object({
-    ResolverQueryLogConfigAssociation: ResolverQueryLogConfigAssociationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the Resolver query logging configuration association that you specified in a <code>GetQueryLogConfigAssociation</code> request.',
-        }),
-    ).exactOptional(),
+    ResolverQueryLogConfigAssociation:
+      ResolverQueryLogConfigAssociationSchema.exactOptional().openapi({
+        description:
+          'Information about the Resolver query logging configuration association that you specified in a <code>GetQueryLogConfigAssociation</code> request.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('GetResolverQueryLogConfigAssociationResponse')
 
 const GetResolverQueryLogConfigAssociationRequestSchema = z
   .object({
-    ResolverQueryLogConfigAssociationId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Resolver query logging configuration association that you want to get information about.',
-        }),
-    ),
+    ResolverQueryLogConfigAssociationId: ResourceIdSchema.openapi({
+      description:
+        'The ID of the Resolver query logging configuration association that you want to get information about.',
+    }),
   })
   .openapi({
     required: ['ResolverQueryLogConfigAssociationId'],
@@ -2220,28 +1531,20 @@ const ResolverQueryLogConfigPolicySchema = z
 
 const GetResolverQueryLogConfigPolicyResponseSchema = z
   .object({
-    ResolverQueryLogConfigPolicy: ResolverQueryLogConfigPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the query logging policy for the query logging configuration that you specified in a <code>GetResolverQueryLogConfigPolicy</code> request.',
-        }),
-    ).exactOptional(),
+    ResolverQueryLogConfigPolicy: ResolverQueryLogConfigPolicySchema.exactOptional().openapi({
+      description:
+        'Information about the query logging policy for the query logging configuration that you specified in a <code>GetResolverQueryLogConfigPolicy</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResolverQueryLogConfigPolicyResponse')
 
 const GetResolverQueryLogConfigPolicyRequestSchema = z
   .object({
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the query logging configuration that you want to get the query logging policy for.',
-        }),
-    ),
+    Arn: ArnSchema.openapi({
+      description:
+        'The ARN of the query logging configuration that you want to get the query logging policy for.',
+    }),
   })
   .openapi({ required: ['Arn'], title: 'GetResolverQueryLogConfigPolicyRequest' })
   .openapi('GetResolverQueryLogConfigPolicyRequest')
@@ -2250,55 +1553,39 @@ const UnknownResourceExceptionSchema = z.any().openapi('UnknownResourceException
 
 const GetResolverRuleResponseSchema = z
   .object({
-    ResolverRule: ResolverRuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the Resolver rule that you specified in a <code>GetResolverRule</code> request.',
-        }),
-    ).exactOptional(),
+    ResolverRule: ResolverRuleSchema.exactOptional().openapi({
+      description:
+        'Information about the Resolver rule that you specified in a <code>GetResolverRule</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResolverRuleResponse')
 
 const GetResolverRuleRequestSchema = z
   .object({
-    ResolverRuleId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Resolver rule that you want to get information about.',
-        }),
-    ),
+    ResolverRuleId: ResourceIdSchema.openapi({
+      description: 'The ID of the Resolver rule that you want to get information about.',
+    }),
   })
   .openapi({ required: ['ResolverRuleId'], title: 'GetResolverRuleRequest' })
   .openapi('GetResolverRuleRequest')
 
 const GetResolverRuleAssociationResponseSchema = z
   .object({
-    ResolverRuleAssociation: ResolverRuleAssociationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the Resolver rule association that you specified in a <code>GetResolverRuleAssociation</code> request.',
-        }),
-    ).exactOptional(),
+    ResolverRuleAssociation: ResolverRuleAssociationSchema.exactOptional().openapi({
+      description:
+        'Information about the Resolver rule association that you specified in a <code>GetResolverRuleAssociation</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResolverRuleAssociationResponse')
 
 const GetResolverRuleAssociationRequestSchema = z
   .object({
-    ResolverRuleAssociationId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Resolver rule association that you want to get information about.',
-        }),
-    ),
+    ResolverRuleAssociationId: ResourceIdSchema.openapi({
+      description:
+        'The ID of the Resolver rule association that you want to get information about.',
+    }),
   })
   .openapi({ required: ['ResolverRuleAssociationId'], title: 'GetResolverRuleAssociationRequest' })
   .openapi('GetResolverRuleAssociationRequest')
@@ -2307,54 +1594,35 @@ const ResolverRulePolicySchema = z.string().max(30000).openapi('ResolverRulePoli
 
 const GetResolverRulePolicyResponseSchema = z
   .object({
-    ResolverRulePolicy: ResolverRulePolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Resolver rule policy for the rule that you specified in a <code>GetResolverRulePolicy</code> request.',
-        }),
-    ).exactOptional(),
+    ResolverRulePolicy: ResolverRulePolicySchema.exactOptional().openapi({
+      description:
+        'The Resolver rule policy for the rule that you specified in a <code>GetResolverRulePolicy</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResolverRulePolicyResponse')
 
 const GetResolverRulePolicyRequestSchema = z
   .object({
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Resolver rule that you want to get the Resolver rule policy for.',
-        }),
-    ),
+    Arn: ArnSchema.openapi({
+      description: 'The ID of the Resolver rule that you want to get the Resolver rule policy for.',
+    }),
   })
   .openapi({ required: ['Arn'], title: 'GetResolverRulePolicyRequest' })
   .openapi('GetResolverRulePolicyRequest')
 
 const ImportFirewallDomainsResponseSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Id of the firewall domain list that DNS Firewall just updated.',
-        }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the domain list. ' }),
-    ).exactOptional(),
-    Status: FirewallDomainListStatusSchema.and(
-      z.any().openapi({ description: 'Status of the import request.' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Additional information about the status of the list, if available.',
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({
+      description: 'The Id of the firewall domain list that DNS Firewall just updated.',
+    }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the domain list. ' }),
+    Status: FirewallDomainListStatusSchema.exactOptional().openapi({
+      description: 'Status of the import request.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'Additional information about the status of the list, if available.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ImportFirewallDomainsResponse')
@@ -2367,30 +1635,17 @@ const DomainListFileUrlSchema = z.string().min(1).max(1024).openapi('DomainListF
 
 const ImportFirewallDomainsRequestSchema = z
   .object({
-    FirewallDomainListId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the domain list that you want to modify with the import operation.',
-        }),
-    ),
-    Operation: FirewallDomainImportOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'What you want DNS Firewall to do with the domains that are listed in the file. This must be set to <code>REPLACE</code>, which updates the domain list to exactly match the list in the file. ',
-        }),
-    ),
-    DomainFileUrl: DomainListFileUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The fully qualified URL or URI of the file stored in Amazon Simple Storage Service (Amazon S3) that contains the list of domains to import.</p> <p>The file must be in an S3 bucket that's in the same Region as your DNS Firewall. The file must be a text file and must contain a single domain per line.</p>",
-        }),
-    ),
+    FirewallDomainListId: ResourceIdSchema.openapi({
+      description: 'The ID of the domain list that you want to modify with the import operation.',
+    }),
+    Operation: FirewallDomainImportOperationSchema.openapi({
+      description:
+        'What you want DNS Firewall to do with the domains that are listed in the file. This must be set to <code>REPLACE</code>, which updates the domain list to exactly match the list in the file. ',
+    }),
+    DomainFileUrl: DomainListFileUrlSchema.openapi({
+      description:
+        "<p>The fully qualified URL or URI of the file stored in Amazon Simple Storage Service (Amazon S3) that contains the list of domains to import.</p> <p>The file must be in an S3 bucket that's in the same Region as your DNS Firewall. The file must be a text file and must contain a single domain per line.</p>",
+    }),
   })
   .openapi({
     required: ['FirewallDomainListId', 'Operation', 'DomainFileUrl'],
@@ -2404,22 +1659,14 @@ const FirewallConfigListSchema = z.array(FirewallConfigSchema).openapi('Firewall
 
 const ListFirewallConfigsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.',
-        }),
-    ).exactOptional(),
-    FirewallConfigs: FirewallConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configurations for the firewall behavior provided by DNS Firewall for VPCs from Amazon Virtual Private Cloud (Amazon VPC). ',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.',
+    }),
+    FirewallConfigs: FirewallConfigListSchema.exactOptional().openapi({
+      description:
+        'The configurations for the firewall behavior provided by DNS Firewall for VPCs from Amazon Virtual Private Cloud (Amazon VPC). ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFirewallConfigsResponse')
@@ -2432,57 +1679,33 @@ const ListFirewallConfigsMaxResultSchema = z
 
 const ListFirewallConfigsRequestSchema = z
   .object({
-    MaxResults: ListFirewallConfigsMaxResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of objects that you want Resolver to return for this request. If more objects are available, in the response, Resolver provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p> <p>If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 objects. </p>",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For the first call to this list request, omit this value.</p> <p>When you request a list of objects, Resolver returns at most the number of objects specified in <code>MaxResults</code>. If more objects are available for retrieval, Resolver returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.</p>',
-        }),
-    ).exactOptional(),
+    MaxResults: ListFirewallConfigsMaxResultSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum number of objects that you want Resolver to return for this request. If more objects are available, in the response, Resolver provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p> <p>If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 objects. </p>",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>For the first call to this list request, omit this value.</p> <p>When you request a list of objects, Resolver returns at most the number of objects specified in <code>MaxResults</code>. If more objects are available for retrieval, Resolver returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.</p>',
+    }),
   })
   .openapi({ title: 'ListFirewallConfigsRequest', required: [] })
   .openapi('ListFirewallConfigsRequest')
 
 const FirewallDomainListMetadataSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the domain list. ' }),
-    ).exactOptional(),
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the firewall domain list metadata.',
-        }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the domain list. ' }),
-    ).exactOptional(),
-    CreatorRequestId: CreatorRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string defined by you to identify the request. This allows you to retry failed requests without the risk of running the operation twice. This can be any unique string, for example, a timestamp. ',
-        }),
-    ).exactOptional(),
-    ManagedOwnerName: ServicePrincipleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The owner of the list, used only for lists that are not managed by you. For example, the managed domain list <code>AWSManagedDomainsMalwareDomainList</code> has the managed owner name <code>Route 53 Resolver DNS Firewall</code>.',
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({ description: 'The ID of the domain list. ' }),
+    Arn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the firewall domain list metadata.',
+    }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the domain list. ' }),
+    CreatorRequestId: CreatorRequestIdSchema.exactOptional().openapi({
+      description:
+        'A unique string defined by you to identify the request. This allows you to retry failed requests without the risk of running the operation twice. This can be any unique string, for example, a timestamp. ',
+    }),
+    ManagedOwnerName: ServicePrincipleSchema.exactOptional().openapi({
+      description:
+        'The owner of the list, used only for lists that are not managed by you. For example, the managed domain list <code>AWSManagedDomainsMalwareDomainList</code> has the managed owner name <code>Route 53 Resolver DNS Firewall</code>.',
+    }),
   })
   .openapi({
     description:
@@ -2497,22 +1720,14 @@ const FirewallDomainListMetadataListSchema = z
 
 const ListFirewallDomainListsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.',
-        }),
-    ).exactOptional(),
-    FirewallDomainLists: FirewallDomainListMetadataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of the domain lists that you have defined. </p> <p>This might be a partial list of the domain lists that you've defined. For information, see <code>MaxResults</code>. </p>",
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.',
+    }),
+    FirewallDomainLists: FirewallDomainListMetadataListSchema.exactOptional().openapi({
+      description:
+        "<p>A list of the domain lists that you have defined. </p> <p>This might be a partial list of the domain lists that you've defined. For information, see <code>MaxResults</code>. </p>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFirewallDomainListsResponse')
@@ -2521,22 +1736,14 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListFirewallDomainListsRequestSchema = z
   .object({
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of objects that you want Resolver to return for this request. If more objects are available, in the response, Resolver provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p> <p>If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 objects. </p>",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For the first call to this list request, omit this value.</p> <p>When you request a list of objects, Resolver returns at most the number of objects specified in <code>MaxResults</code>. If more objects are available for retrieval, Resolver returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.</p>',
-        }),
-    ).exactOptional(),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum number of objects that you want Resolver to return for this request. If more objects are available, in the response, Resolver provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p> <p>If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 objects. </p>",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>For the first call to this list request, omit this value.</p> <p>When you request a list of objects, Resolver returns at most the number of objects specified in <code>MaxResults</code>. If more objects are available for retrieval, Resolver returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.</p>',
+    }),
   })
   .openapi({ title: 'ListFirewallDomainListsRequest', required: [] })
   .openapi('ListFirewallDomainListsRequest')
@@ -2547,22 +1754,14 @@ const FirewallDomainsSchema = z.array(FirewallDomainNameSchema).openapi('Firewal
 
 const ListFirewallDomainsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.',
-        }),
-    ).exactOptional(),
-    Domains: FirewallDomainsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of the domains in the firewall domain list. </p> <p>This might be a partial list of the domains that you've defined in the domain list. For information, see <code>MaxResults</code>. </p>",
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.',
+    }),
+    Domains: FirewallDomainsSchema.exactOptional().openapi({
+      description:
+        "<p>A list of the domains in the firewall domain list. </p> <p>This might be a partial list of the domains that you've defined in the domain list. For information, see <code>MaxResults</code>. </p>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFirewallDomainsResponse')
@@ -2571,27 +1770,17 @@ const ListDomainMaxResultsSchema = z.int().min(1).max(5000).openapi('ListDomainM
 
 const ListFirewallDomainsRequestSchema = z
   .object({
-    FirewallDomainListId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the domain list whose domains you want to retrieve. ' }),
-    ),
-    MaxResults: ListDomainMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of objects that you want Resolver to return for this request. If more objects are available, in the response, Resolver provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p> <p>If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 objects. </p>",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For the first call to this list request, omit this value.</p> <p>When you request a list of objects, Resolver returns at most the number of objects specified in <code>MaxResults</code>. If more objects are available for retrieval, Resolver returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.</p>',
-        }),
-    ).exactOptional(),
+    FirewallDomainListId: ResourceIdSchema.openapi({
+      description: 'The ID of the domain list whose domains you want to retrieve. ',
+    }),
+    MaxResults: ListDomainMaxResultsSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum number of objects that you want Resolver to return for this request. If more objects are available, in the response, Resolver provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p> <p>If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 objects. </p>",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>For the first call to this list request, omit this value.</p> <p>When you request a list of objects, Resolver returns at most the number of objects specified in <code>MaxResults</code>. If more objects are available for retrieval, Resolver returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.</p>',
+    }),
   })
   .openapi({ required: ['FirewallDomainListId'], title: 'ListFirewallDomainsRequest' })
   .openapi('ListFirewallDomainsRequest')
@@ -2602,115 +1791,67 @@ const FirewallRuleGroupAssociationsSchema = z
 
 const ListFirewallRuleGroupAssociationsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.',
-        }),
-    ).exactOptional(),
-    FirewallRuleGroupAssociations: FirewallRuleGroupAssociationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of your firewall rule group associations.</p> <p>This might be a partial list of the associations that you have defined. For information, see <code>MaxResults</code>. </p>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.',
+    }),
+    FirewallRuleGroupAssociations: FirewallRuleGroupAssociationsSchema.exactOptional().openapi({
+      description:
+        '<p>A list of your firewall rule group associations.</p> <p>This might be a partial list of the associations that you have defined. For information, see <code>MaxResults</code>. </p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFirewallRuleGroupAssociationsResponse')
 
 const ListFirewallRuleGroupAssociationsRequestSchema = z
   .object({
-    FirewallRuleGroupId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the firewall rule group that you want to retrieve the associations for. Leave this blank to retrieve associations for any rule group. ',
-        }),
-    ).exactOptional(),
-    VpcId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the VPC that you want to retrieve the associations for. Leave this blank to retrieve associations for any VPC. ',
-        }),
-    ).exactOptional(),
-    Priority: PrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The setting that determines the processing order of the rule group among the rule groups that are associated with a single VPC. DNS Firewall filters VPC traffic starting from the rule group with the lowest numeric priority setting. ',
-        }),
-    ).exactOptional(),
-    Status: FirewallRuleGroupAssociationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The association <code>Status</code> setting that you want DNS Firewall to filter on for the list. If you don't specify this, then DNS Firewall returns all associations, regardless of status.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of objects that you want Resolver to return for this request. If more objects are available, in the response, Resolver provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p> <p>If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 objects. </p>",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For the first call to this list request, omit this value.</p> <p>When you request a list of objects, Resolver returns at most the number of objects specified in <code>MaxResults</code>. If more objects are available for retrieval, Resolver returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.</p>',
-        }),
-    ).exactOptional(),
+    FirewallRuleGroupId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The unique identifier of the firewall rule group that you want to retrieve the associations for. Leave this blank to retrieve associations for any rule group. ',
+    }),
+    VpcId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The unique identifier of the VPC that you want to retrieve the associations for. Leave this blank to retrieve associations for any VPC. ',
+    }),
+    Priority: PrioritySchema.exactOptional().openapi({
+      description:
+        'The setting that determines the processing order of the rule group among the rule groups that are associated with a single VPC. DNS Firewall filters VPC traffic starting from the rule group with the lowest numeric priority setting. ',
+    }),
+    Status: FirewallRuleGroupAssociationStatusSchema.exactOptional().openapi({
+      description:
+        "The association <code>Status</code> setting that you want DNS Firewall to filter on for the list. If you don't specify this, then DNS Firewall returns all associations, regardless of status.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum number of objects that you want Resolver to return for this request. If more objects are available, in the response, Resolver provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p> <p>If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 objects. </p>",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>For the first call to this list request, omit this value.</p> <p>When you request a list of objects, Resolver returns at most the number of objects specified in <code>MaxResults</code>. If more objects are available for retrieval, Resolver returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.</p>',
+    }),
   })
   .openapi({ title: 'ListFirewallRuleGroupAssociationsRequest', required: [] })
   .openapi('ListFirewallRuleGroupAssociationsRequest')
 
 const FirewallRuleGroupMetadataSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the rule group. ' }),
-    ).exactOptional(),
-    Arn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) of the rule group.' }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the rule group.' }),
-    ).exactOptional(),
-    OwnerId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID for the account that created the rule group. When a rule group is shared with your account, this is the account that has shared the rule group with you. ',
-        }),
-    ).exactOptional(),
-    CreatorRequestId: CreatorRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique string defined by you to identify the request. This allows you to retry failed requests without the risk of running the operation twice. This can be any unique string, for example, a timestamp. ',
-        }),
-    ).exactOptional(),
-    ShareStatus: ShareStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether the rule group is shared with other Amazon Web Services accounts, or was shared with the current account by another Amazon Web Services account. Sharing is configured through Resource Access Manager (RAM).',
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({ description: 'The ID of the rule group. ' }),
+    Arn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the rule group.',
+    }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the rule group.' }),
+    OwnerId: AccountIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID for the account that created the rule group. When a rule group is shared with your account, this is the account that has shared the rule group with you. ',
+    }),
+    CreatorRequestId: CreatorRequestIdSchema.exactOptional().openapi({
+      description:
+        'A unique string defined by you to identify the request. This allows you to retry failed requests without the risk of running the operation twice. This can be any unique string, for example, a timestamp. ',
+    }),
+    ShareStatus: ShareStatusSchema.exactOptional().openapi({
+      description:
+        'Whether the rule group is shared with other Amazon Web Services accounts, or was shared with the current account by another Amazon Web Services account. Sharing is configured through Resource Access Manager (RAM).',
+    }),
   })
   .openapi({
     description:
@@ -2725,44 +1866,28 @@ const FirewallRuleGroupMetadataListSchema = z
 
 const ListFirewallRuleGroupsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.',
-        }),
-    ).exactOptional(),
-    FirewallRuleGroups: FirewallRuleGroupMetadataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of your firewall rule groups.</p> <p>This might be a partial list of the rule groups that you have defined. For information, see <code>MaxResults</code>. </p>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.',
+    }),
+    FirewallRuleGroups: FirewallRuleGroupMetadataListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of your firewall rule groups.</p> <p>This might be a partial list of the rule groups that you have defined. For information, see <code>MaxResults</code>. </p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFirewallRuleGroupsResponse')
 
 const ListFirewallRuleGroupsRequestSchema = z
   .object({
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of objects that you want Resolver to return for this request. If more objects are available, in the response, Resolver provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p> <p>If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 objects. </p>",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For the first call to this list request, omit this value.</p> <p>When you request a list of objects, Resolver returns at most the number of objects specified in <code>MaxResults</code>. If more objects are available for retrieval, Resolver returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.</p>',
-        }),
-    ).exactOptional(),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum number of objects that you want Resolver to return for this request. If more objects are available, in the response, Resolver provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p> <p>If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 objects. </p>",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>For the first call to this list request, omit this value.</p> <p>When you request a list of objects, Resolver returns at most the number of objects specified in <code>MaxResults</code>. If more objects are available for retrieval, Resolver returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.</p>',
+    }),
   })
   .openapi({ title: 'ListFirewallRuleGroupsRequest', required: [] })
   .openapi('ListFirewallRuleGroupsRequest')
@@ -2771,68 +1896,40 @@ const FirewallRulesSchema = z.array(FirewallRuleSchema).openapi('FirewallRules')
 
 const ListFirewallRulesResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.',
-        }),
-    ).exactOptional(),
-    FirewallRules: FirewallRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of the rules that you have defined. </p> <p>This might be a partial list of the firewall rules that you've defined. For information, see <code>MaxResults</code>. </p>",
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If objects are still available for retrieval, Resolver returns this token in the response. To retrieve the next batch of objects, provide this token in your next request.',
+    }),
+    FirewallRules: FirewallRulesSchema.exactOptional().openapi({
+      description:
+        "<p>A list of the rules that you have defined. </p> <p>This might be a partial list of the firewall rules that you've defined. For information, see <code>MaxResults</code>. </p>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFirewallRulesResponse')
 
 const ListFirewallRulesRequestSchema = z
   .object({
-    FirewallRuleGroupId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the firewall rule group that you want to retrieve the rules for. ',
-        }),
-    ),
-    Priority: PrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Optional additional filter for the rules to retrieve.</p> <p>The setting that determines the processing order of the rules in a rule group. DNS Firewall processes the rules in a rule group by order of priority, starting from the lowest setting.</p>',
-        }),
-    ).exactOptional(),
-    Action: ActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Optional additional filter for the rules to retrieve.</p> <p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through.</p> </li> <li> <p> <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. If this is specified, additional handling details are provided in the rule's <code>BlockResponse</code> setting. </p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of objects that you want Resolver to return for this request. If more objects are available, in the response, Resolver provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p> <p>If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 objects. </p>",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For the first call to this list request, omit this value.</p> <p>When you request a list of objects, Resolver returns at most the number of objects specified in <code>MaxResults</code>. If more objects are available for retrieval, Resolver returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.</p>',
-        }),
-    ).exactOptional(),
+    FirewallRuleGroupId: ResourceIdSchema.openapi({
+      description:
+        'The unique identifier of the firewall rule group that you want to retrieve the rules for. ',
+    }),
+    Priority: PrioritySchema.exactOptional().openapi({
+      description:
+        '<p>Optional additional filter for the rules to retrieve.</p> <p>The setting that determines the processing order of the rules in a rule group. DNS Firewall processes the rules in a rule group by order of priority, starting from the lowest setting.</p>',
+    }),
+    Action: ActionSchema.exactOptional().openapi({
+      description:
+        "<p>Optional additional filter for the rules to retrieve.</p> <p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through.</p> </li> <li> <p> <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. If this is specified, additional handling details are provided in the rule's <code>BlockResponse</code> setting. </p> </li> </ul>",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum number of objects that you want Resolver to return for this request. If more objects are available, in the response, Resolver provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p> <p>If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 objects. </p>",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>For the first call to this list request, omit this value.</p> <p>When you request a list of objects, Resolver returns at most the number of objects specified in <code>MaxResults</code>. If more objects are available for retrieval, Resolver returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token that was returned for the prior request in your next request.</p>',
+    }),
   })
   .openapi({ required: ['FirewallRuleGroupId'], title: 'ListFirewallRulesRequest' })
   .openapi('ListFirewallRulesRequest')
@@ -2841,22 +1938,14 @@ const ResolverConfigListSchema = z.array(ResolverConfigSchema).openapi('Resolver
 
 const ListResolverConfigsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>If a response includes the last of the Resolver configurations that are associated with the current Amazon Web Services account, <code>NextToken</code> doesn't appear in the response.</p> <p>If a response doesn't include the last of the configurations, you can get more configurations by submitting another <code>ListResolverConfigs</code> request. Get the value of <code>NextToken</code> that Amazon Route 53 returned in the previous response and include it in <code>NextToken</code> in the next request.</p>",
-        }),
-    ).exactOptional(),
-    ResolverConfigs: ResolverConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that contains one <code>ResolverConfigs</code> element for each Resolver configuration that is associated with the current Amazon Web Services account.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "<p>If a response includes the last of the Resolver configurations that are associated with the current Amazon Web Services account, <code>NextToken</code> doesn't appear in the response.</p> <p>If a response doesn't include the last of the configurations, you can get more configurations by submitting another <code>ListResolverConfigs</code> request. Get the value of <code>NextToken</code> that Amazon Route 53 returned in the previous response and include it in <code>NextToken</code> in the next request.</p>",
+    }),
+    ResolverConfigs: ResolverConfigListSchema.exactOptional().openapi({
+      description:
+        'An array that contains one <code>ResolverConfigs</code> element for each Resolver configuration that is associated with the current Amazon Web Services account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResolverConfigsResponse')
@@ -2869,22 +1958,14 @@ const ListResolverConfigsMaxResultSchema = z
 
 const ListResolverConfigsRequestSchema = z
   .object({
-    MaxResults: ListResolverConfigsMaxResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of Resolver configurations that you want to return in the response to a <code>ListResolverConfigs</code> request. If you don't specify a value for <code>MaxResults</code>, up to 100 Resolver configurations are returned.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>(Optional) If the current Amazon Web Services account has more than <code>MaxResults</code> Resolver configurations, use <code>NextToken</code> to get the second and subsequent pages of results.</p> <p>For the first <code>ListResolverConfigs</code> request, omit this value.</p> <p>For the second and subsequent requests, get the value of <code>NextToken</code> from the previous response and specify that value for <code>NextToken</code> in the request.</p>',
-        }),
-    ).exactOptional(),
+    MaxResults: ListResolverConfigsMaxResultSchema.exactOptional().openapi({
+      description:
+        "The maximum number of Resolver configurations that you want to return in the response to a <code>ListResolverConfigs</code> request. If you don't specify a value for <code>MaxResults</code>, up to 100 Resolver configurations are returned.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>(Optional) If the current Amazon Web Services account has more than <code>MaxResults</code> Resolver configurations, use <code>NextToken</code> to get the second and subsequent pages of results.</p> <p>For the first <code>ListResolverConfigs</code> request, omit this value.</p> <p>For the second and subsequent requests, get the value of <code>NextToken</code> from the previous response and specify that value for <code>NextToken</code> in the request.</p>',
+    }),
   })
   .openapi({ title: 'ListResolverConfigsRequest', required: [] })
   .openapi('ListResolverConfigsRequest')
@@ -2897,22 +1978,14 @@ const ResolverDnssecConfigListSchema = z
 
 const ListResolverDnssecConfigsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If a response includes the last of the DNSSEC configurations that are associated with the current Amazon Web Services account, <code>NextToken</code> doesn\'t appear in the response.</p> <p>If a response doesn\'t include the last of the configurations, you can get more configurations by submitting another <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_ListResolverDnssecConfigs.html">ListResolverDnssecConfigs</a> request. Get the value of <code>NextToken</code> that Amazon Route 53 returned in the previous response and include it in <code>NextToken</code> in the next request.</p>',
-        }),
-    ).exactOptional(),
-    ResolverDnssecConfigs: ResolverDnssecConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that contains one <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_ResolverDnssecConfig.html">ResolverDnssecConfig</a> element for each configuration for DNSSEC validation that is associated with the current Amazon Web Services account.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If a response includes the last of the DNSSEC configurations that are associated with the current Amazon Web Services account, <code>NextToken</code> doesn\'t appear in the response.</p> <p>If a response doesn\'t include the last of the configurations, you can get more configurations by submitting another <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_ListResolverDnssecConfigs.html">ListResolverDnssecConfigs</a> request. Get the value of <code>NextToken</code> that Amazon Route 53 returned in the previous response and include it in <code>NextToken</code> in the next request.</p>',
+    }),
+    ResolverDnssecConfigs: ResolverDnssecConfigListSchema.exactOptional().openapi({
+      description:
+        'An array that contains one <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_ResolverDnssecConfig.html">ResolverDnssecConfig</a> element for each configuration for DNSSEC validation that is associated with the current Amazon Web Services account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResolverDnssecConfigsResponse')
@@ -2925,22 +1998,14 @@ const FilterValuesSchema = z.array(FilterValueSchema).openapi('FilterValues')
 
 const FilterSchema = z
   .object({
-    Name: FilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the parameter that you want to use to filter objects.</p> <p>The valid values for <code>Name</code> depend on the action that you\'re including the filter in, <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverEndpoints.html">ListResolverEndpoints</a>, <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRules.html">ListResolverRules</a>, <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRuleAssociations.html">ListResolverRuleAssociations</a>, <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverQueryLogConfigs.html">ListResolverQueryLogConfigs</a>, or <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverQueryLogConfigAssociations.html">ListResolverQueryLogConfigAssociations</a>.</p> <note> <p>In early versions of Resolver, values for <code>Name</code> were listed as uppercase, with underscore (_) delimiters. For example, <code>CreatorRequestId</code> was originally listed as <code>CREATOR_REQUEST_ID</code>. Uppercase values for <code>Name</code> are still supported.</p> </note> <p> <b>ListResolverEndpoints</b> </p> <p>Valid values for <code>Name</code> include the following:</p> <ul> <li> <p> <code>CreatorRequestId</code>: The value that you specified when you created the Resolver endpoint.</p> </li> <li> <p> <code>Direction</code>: Whether you want to return inbound or outbound Resolver endpoints. If you specify <code>DIRECTION</code> for <code>Name</code>, specify <code>INBOUND</code> or <code>OUTBOUND</code> for <code>Values</code>.</p> </li> <li> <p> <code>HostVPCId</code>: The ID of the VPC that inbound DNS queries pass through on the way from your network to your VPCs in a region, or the VPC that outbound queries pass through on the way from your VPCs to your network. In a <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverEndpoint.html">CreateResolverEndpoint</a> request, <code>SubnetId</code> indirectly identifies the VPC. In a <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html">GetResolverEndpoint</a> request, the VPC ID for a Resolver endpoint is returned in the <code>HostVPCId</code> element. </p> </li> <li> <p> <code>IpAddressCount</code>: The number of IP addresses that you have associated with the Resolver endpoint.</p> </li> <li> <p> <code>Name</code>: The name of the Resolver endpoint.</p> </li> <li> <p> <code>SecurityGroupIds</code>: The IDs of the VPC security groups that you specified when you created the Resolver endpoint.</p> </li> <li> <p> <code>Status</code>: The status of the Resolver endpoint. If you specify <code>Status</code> for <code>Name</code>, specify one of the following status codes for <code>Values</code>: <code>CREATING</code>, <code>OPERATIONAL</code>, <code>UPDATING</code>, <code>AUTO_RECOVERING</code>, <code>ACTION_NEEDED</code>, or <code>DELETING</code>. For more information, see <code>Status</code> in <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ResolverEndpoint.html">ResolverEndpoint</a>.</p> </li> </ul> <p> <b>ListResolverRules</b> </p> <p>Valid values for <code>Name</code> include the following:</p> <ul> <li> <p> <code>CreatorRequestId</code>: The value that you specified when you created the Resolver rule.</p> </li> <li> <p> <code>DomainName</code>: The domain name for which Resolver is forwarding DNS queries to your network. In the value that you specify for <code>Values</code>, include a trailing dot (.) after the domain name. For example, if the domain name is example.com, specify the following value. Note the "." after <code>com</code>:</p> <p> <code>example.com.</code> </p> </li> <li> <p> <code>Name</code>: The name of the Resolver rule.</p> </li> <li> <p> <code>ResolverEndpointId</code>: The ID of the Resolver endpoint that the Resolver rule is associated with.</p> <note> <p>You can filter on the Resolver endpoint only for rules that have a value of <code>FORWARD</code> for <code>RuleType</code>.</p> </note> </li> <li> <p> <code>Status</code>: The status of the Resolver rule. If you specify <code>Status</code> for <code>Name</code>, specify one of the following status codes for <code>Values</code>: <code>COMPLETE</code>, <code>DELETING</code>, <code>UPDATING</code>, or <code>FAILED</code>.</p> </li> <li> <p> <code>Type</code>: The type of the Resolver rule. If you specify <code>TYPE</code> for <code>Name</code>, specify <code>FORWARD</code> or <code>SYSTEM</code> for <code>Values</code>.</p> </li> </ul> <p> <b>ListResolverRuleAssociations</b> </p> <p>Valid values for <code>Name</code> include the following:</p> <ul> <li> <p> <code>Name</code>: The name of the Resolver rule association.</p> </li> <li> <p> <code>ResolverRuleId</code>: The ID of the Resolver rule that is associated with one or more VPCs.</p> </li> <li> <p> <code>Status</code>: The status of the Resolver rule association. If you specify <code>Status</code> for <code>Name</code>, specify one of the following status codes for <code>Values</code>: <code>CREATING</code>, <code>COMPLETE</code>, <code>DELETING</code>, or <code>FAILED</code>.</p> </li> <li> <p> <code>VPCId</code>: The ID of the VPC that the Resolver rule is associated with.</p> </li> </ul> <p> <b>ListResolverQueryLogConfigs</b> </p> <p>Valid values for <code>Name</code> include the following:</p> <ul> <li> <p> <code>Arn</code>: The ARN for the query logging configuration.</p> </li> <li> <p> <code>AssociationCount</code>: The number of VPCs that are associated with the query logging configuration.</p> </li> <li> <p> <code>CreationTime</code>: The date and time that the query logging configuration was created, in Unix time format and Coordinated Universal Time (UTC). </p> </li> <li> <p> <code>CreatorRequestId</code>: A unique string that identifies the request that created the query logging configuration.</p> </li> <li> <p> <code>Destination</code>: The Amazon Web Services service that you want to forward query logs to. Valid values include the following:</p> <ul> <li> <p> <code>S3</code> </p> </li> <li> <p> <code>CloudWatchLogs</code> </p> </li> <li> <p> <code>KinesisFirehose</code> </p> </li> </ul> </li> <li> <p> <code>DestinationArn</code>: The ARN of the location that Resolver is sending query logs to. This value can be the ARN for an S3 bucket, a CloudWatch Logs log group, or a Kinesis Data Firehose delivery stream.</p> </li> <li> <p> <code>Id</code>: The ID of the query logging configuration</p> </li> <li> <p> <code>Name</code>: The name of the query logging configuration</p> </li> <li> <p> <code>OwnerId</code>: The Amazon Web Services account ID for the account that created the query logging configuration.</p> </li> <li> <p> <code>ShareStatus</code>: An indication of whether the query logging configuration is shared with other Amazon Web Services accounts, or was shared with the current account by another Amazon Web Services account. Valid values include: <code>NOT_SHARED</code>, <code>SHARED_WITH_ME</code>, or <code>SHARED_BY_ME</code>.</p> </li> <li> <p> <code>Status</code>: The status of the query logging configuration. If you specify <code>Status</code> for <code>Name</code>, specify the applicable status code for <code>Values</code>: <code>CREATING</code>, <code>CREATED</code>, <code>DELETING</code>, or <code>FAILED</code>. For more information, see <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ResolverQueryLogConfig.html#Route53Resolver-Type-route53resolver_ResolverQueryLogConfig-Status">Status</a>. </p> </li> </ul> <p> <b>ListResolverQueryLogConfigAssociations</b> </p> <p>Valid values for <code>Name</code> include the following:</p> <ul> <li> <p> <code>CreationTime</code>: The date and time that the VPC was associated with the query logging configuration, in Unix time format and Coordinated Universal Time (UTC).</p> </li> <li> <p> <code>Error</code>: If the value of <code>Status</code> is <code>FAILED</code>, specify the cause: <code>DESTINATION_NOT_FOUND</code> or <code>ACCESS_DENIED</code>.</p> </li> <li> <p> <code>Id</code>: The ID of the query logging association.</p> </li> <li> <p> <code>ResolverQueryLogConfigId</code>: The ID of the query logging configuration that a VPC is associated with.</p> </li> <li> <p> <code>ResourceId</code>: The ID of the Amazon VPC that is associated with the query logging configuration.</p> </li> <li> <p> <code>Status</code>: The status of the query logging association. If you specify <code>Status</code> for <code>Name</code>, specify the applicable status code for <code>Values</code>: <code>CREATING</code>, <code>CREATED</code>, <code>DELETING</code>, or <code>FAILED</code>. For more information, see <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ResolverQueryLogConfigAssociation.html#Route53Resolver-Type-route53resolver_ResolverQueryLogConfigAssociation-Status">Status</a>. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Values: FilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "When you're using a <code>List</code> operation and you want the operation to return a subset of objects, such as Resolver endpoints or Resolver rules, the value of the parameter that you want to use to filter objects. For example, to list only inbound Resolver endpoints, specify <code>Direction</code> for <code>Name</code> and specify <code>INBOUND</code> for <code>Values</code>.",
-        }),
-    ).exactOptional(),
+    Name: FilterNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the parameter that you want to use to filter objects.</p> <p>The valid values for <code>Name</code> depend on the action that you\'re including the filter in, <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverEndpoints.html">ListResolverEndpoints</a>, <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRules.html">ListResolverRules</a>, <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRuleAssociations.html">ListResolverRuleAssociations</a>, <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverQueryLogConfigs.html">ListResolverQueryLogConfigs</a>, or <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverQueryLogConfigAssociations.html">ListResolverQueryLogConfigAssociations</a>.</p> <note> <p>In early versions of Resolver, values for <code>Name</code> were listed as uppercase, with underscore (_) delimiters. For example, <code>CreatorRequestId</code> was originally listed as <code>CREATOR_REQUEST_ID</code>. Uppercase values for <code>Name</code> are still supported.</p> </note> <p> <b>ListResolverEndpoints</b> </p> <p>Valid values for <code>Name</code> include the following:</p> <ul> <li> <p> <code>CreatorRequestId</code>: The value that you specified when you created the Resolver endpoint.</p> </li> <li> <p> <code>Direction</code>: Whether you want to return inbound or outbound Resolver endpoints. If you specify <code>DIRECTION</code> for <code>Name</code>, specify <code>INBOUND</code> or <code>OUTBOUND</code> for <code>Values</code>.</p> </li> <li> <p> <code>HostVPCId</code>: The ID of the VPC that inbound DNS queries pass through on the way from your network to your VPCs in a region, or the VPC that outbound queries pass through on the way from your VPCs to your network. In a <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverEndpoint.html">CreateResolverEndpoint</a> request, <code>SubnetId</code> indirectly identifies the VPC. In a <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html">GetResolverEndpoint</a> request, the VPC ID for a Resolver endpoint is returned in the <code>HostVPCId</code> element. </p> </li> <li> <p> <code>IpAddressCount</code>: The number of IP addresses that you have associated with the Resolver endpoint.</p> </li> <li> <p> <code>Name</code>: The name of the Resolver endpoint.</p> </li> <li> <p> <code>SecurityGroupIds</code>: The IDs of the VPC security groups that you specified when you created the Resolver endpoint.</p> </li> <li> <p> <code>Status</code>: The status of the Resolver endpoint. If you specify <code>Status</code> for <code>Name</code>, specify one of the following status codes for <code>Values</code>: <code>CREATING</code>, <code>OPERATIONAL</code>, <code>UPDATING</code>, <code>AUTO_RECOVERING</code>, <code>ACTION_NEEDED</code>, or <code>DELETING</code>. For more information, see <code>Status</code> in <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ResolverEndpoint.html">ResolverEndpoint</a>.</p> </li> </ul> <p> <b>ListResolverRules</b> </p> <p>Valid values for <code>Name</code> include the following:</p> <ul> <li> <p> <code>CreatorRequestId</code>: The value that you specified when you created the Resolver rule.</p> </li> <li> <p> <code>DomainName</code>: The domain name for which Resolver is forwarding DNS queries to your network. In the value that you specify for <code>Values</code>, include a trailing dot (.) after the domain name. For example, if the domain name is example.com, specify the following value. Note the "." after <code>com</code>:</p> <p> <code>example.com.</code> </p> </li> <li> <p> <code>Name</code>: The name of the Resolver rule.</p> </li> <li> <p> <code>ResolverEndpointId</code>: The ID of the Resolver endpoint that the Resolver rule is associated with.</p> <note> <p>You can filter on the Resolver endpoint only for rules that have a value of <code>FORWARD</code> for <code>RuleType</code>.</p> </note> </li> <li> <p> <code>Status</code>: The status of the Resolver rule. If you specify <code>Status</code> for <code>Name</code>, specify one of the following status codes for <code>Values</code>: <code>COMPLETE</code>, <code>DELETING</code>, <code>UPDATING</code>, or <code>FAILED</code>.</p> </li> <li> <p> <code>Type</code>: The type of the Resolver rule. If you specify <code>TYPE</code> for <code>Name</code>, specify <code>FORWARD</code> or <code>SYSTEM</code> for <code>Values</code>.</p> </li> </ul> <p> <b>ListResolverRuleAssociations</b> </p> <p>Valid values for <code>Name</code> include the following:</p> <ul> <li> <p> <code>Name</code>: The name of the Resolver rule association.</p> </li> <li> <p> <code>ResolverRuleId</code>: The ID of the Resolver rule that is associated with one or more VPCs.</p> </li> <li> <p> <code>Status</code>: The status of the Resolver rule association. If you specify <code>Status</code> for <code>Name</code>, specify one of the following status codes for <code>Values</code>: <code>CREATING</code>, <code>COMPLETE</code>, <code>DELETING</code>, or <code>FAILED</code>.</p> </li> <li> <p> <code>VPCId</code>: The ID of the VPC that the Resolver rule is associated with.</p> </li> </ul> <p> <b>ListResolverQueryLogConfigs</b> </p> <p>Valid values for <code>Name</code> include the following:</p> <ul> <li> <p> <code>Arn</code>: The ARN for the query logging configuration.</p> </li> <li> <p> <code>AssociationCount</code>: The number of VPCs that are associated with the query logging configuration.</p> </li> <li> <p> <code>CreationTime</code>: The date and time that the query logging configuration was created, in Unix time format and Coordinated Universal Time (UTC). </p> </li> <li> <p> <code>CreatorRequestId</code>: A unique string that identifies the request that created the query logging configuration.</p> </li> <li> <p> <code>Destination</code>: The Amazon Web Services service that you want to forward query logs to. Valid values include the following:</p> <ul> <li> <p> <code>S3</code> </p> </li> <li> <p> <code>CloudWatchLogs</code> </p> </li> <li> <p> <code>KinesisFirehose</code> </p> </li> </ul> </li> <li> <p> <code>DestinationArn</code>: The ARN of the location that Resolver is sending query logs to. This value can be the ARN for an S3 bucket, a CloudWatch Logs log group, or a Kinesis Data Firehose delivery stream.</p> </li> <li> <p> <code>Id</code>: The ID of the query logging configuration</p> </li> <li> <p> <code>Name</code>: The name of the query logging configuration</p> </li> <li> <p> <code>OwnerId</code>: The Amazon Web Services account ID for the account that created the query logging configuration.</p> </li> <li> <p> <code>ShareStatus</code>: An indication of whether the query logging configuration is shared with other Amazon Web Services accounts, or was shared with the current account by another Amazon Web Services account. Valid values include: <code>NOT_SHARED</code>, <code>SHARED_WITH_ME</code>, or <code>SHARED_BY_ME</code>.</p> </li> <li> <p> <code>Status</code>: The status of the query logging configuration. If you specify <code>Status</code> for <code>Name</code>, specify the applicable status code for <code>Values</code>: <code>CREATING</code>, <code>CREATED</code>, <code>DELETING</code>, or <code>FAILED</code>. For more information, see <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ResolverQueryLogConfig.html#Route53Resolver-Type-route53resolver_ResolverQueryLogConfig-Status">Status</a>. </p> </li> </ul> <p> <b>ListResolverQueryLogConfigAssociations</b> </p> <p>Valid values for <code>Name</code> include the following:</p> <ul> <li> <p> <code>CreationTime</code>: The date and time that the VPC was associated with the query logging configuration, in Unix time format and Coordinated Universal Time (UTC).</p> </li> <li> <p> <code>Error</code>: If the value of <code>Status</code> is <code>FAILED</code>, specify the cause: <code>DESTINATION_NOT_FOUND</code> or <code>ACCESS_DENIED</code>.</p> </li> <li> <p> <code>Id</code>: The ID of the query logging association.</p> </li> <li> <p> <code>ResolverQueryLogConfigId</code>: The ID of the query logging configuration that a VPC is associated with.</p> </li> <li> <p> <code>ResourceId</code>: The ID of the Amazon VPC that is associated with the query logging configuration.</p> </li> <li> <p> <code>Status</code>: The status of the query logging association. If you specify <code>Status</code> for <code>Name</code>, specify the applicable status code for <code>Values</code>: <code>CREATING</code>, <code>CREATED</code>, <code>DELETING</code>, or <code>FAILED</code>. For more information, see <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ResolverQueryLogConfigAssociation.html#Route53Resolver-Type-route53resolver_ResolverQueryLogConfigAssociation-Status">Status</a>. </p> </li> </ul>',
+    }),
+    Values: FilterValuesSchema.exactOptional().openapi({
+      description:
+        "When you're using a <code>List</code> operation and you want the operation to return a subset of objects, such as Resolver endpoints or Resolver rules, the value of the parameter that you want to use to filter objects. For example, to list only inbound Resolver endpoints, specify <code>Direction</code> for <code>Name</code> and specify <code>INBOUND</code> for <code>Values</code>.",
+    }),
   })
   .openapi({
     description:
@@ -2953,25 +2018,17 @@ const FiltersSchema = z.array(FilterSchema).openapi('Filters')
 
 const ListResolverDnssecConfigsRequestSchema = z
   .object({
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " <i>Optional</i>: An integer that specifies the maximum number of DNSSEC configuration results that you want Amazon Route 53 to return. If you don't specify a value for <code>MaxResults</code>, Route 53 returns up to 100 configuration per page.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>(Optional) If the current Amazon Web Services account has more than <code>MaxResults</code> DNSSEC configurations, use <code>NextToken</code> to get the second and subsequent pages of results.</p> <p>For the first <code>ListResolverDnssecConfigs</code> request, omit this value.</p> <p>For the second and subsequent requests, get the value of <code>NextToken</code> from the previous response and specify that value for <code>NextToken</code> in the request.</p>',
-        }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z.any().openapi({ description: 'An optional specification to return a subset of objects.' }),
-    ).exactOptional(),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        " <i>Optional</i>: An integer that specifies the maximum number of DNSSEC configuration results that you want Amazon Route 53 to return. If you don't specify a value for <code>MaxResults</code>, Route 53 returns up to 100 configuration per page.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>(Optional) If the current Amazon Web Services account has more than <code>MaxResults</code> DNSSEC configurations, use <code>NextToken</code> to get the second and subsequent pages of results.</p> <p>For the first <code>ListResolverDnssecConfigs</code> request, omit this value.</p> <p>For the second and subsequent requests, get the value of <code>NextToken</code> from the previous response and specify that value for <code>NextToken</code> in the request.</p>',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description: 'An optional specification to return a subset of objects.',
+    }),
   })
   .openapi({ title: 'ListResolverDnssecConfigsRequest', required: [] })
   .openapi('ListResolverDnssecConfigsRequest')
@@ -2994,55 +2051,29 @@ const IpAddressStatusSchema = z
 
 const IpAddressResponseSchema = z
   .object({
-    IpId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of one IP address.' }),
-    ).exactOptional(),
-    SubnetId: SubnetIdSchema.and(
-      z.any().openapi({ description: 'The ID of one subnet.' }),
-    ).exactOptional(),
-    Ip: IpSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'One IPv4 address that the Resolver endpoint uses for DNS queries.',
-        }),
-    ).exactOptional(),
-    Ipv6: Ipv6Schema.and(
-      z
-        .any()
-        .openapi({
-          description: ' One IPv6 address that the Resolver endpoint uses for DNS queries. ',
-        }),
-    ).exactOptional(),
-    Status: IpAddressStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A status code that gives the current status of the request.' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A message that provides additional information about the status of the request.',
-        }),
-    ).exactOptional(),
-    CreationTime: Rfc3339TimeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the IP address was created, in Unix time format and Coordinated Universal Time (UTC).',
-        }),
-    ).exactOptional(),
-    ModificationTime: Rfc3339TimeStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the IP address was last modified, in Unix time format and Coordinated Universal Time (UTC).',
-        }),
-    ).exactOptional(),
+    IpId: ResourceIdSchema.exactOptional().openapi({ description: 'The ID of one IP address.' }),
+    SubnetId: SubnetIdSchema.exactOptional().openapi({ description: 'The ID of one subnet.' }),
+    Ip: IpSchema.exactOptional().openapi({
+      description: 'One IPv4 address that the Resolver endpoint uses for DNS queries.',
+    }),
+    Ipv6: Ipv6Schema.exactOptional().openapi({
+      description: ' One IPv6 address that the Resolver endpoint uses for DNS queries. ',
+    }),
+    Status: IpAddressStatusSchema.exactOptional().openapi({
+      description: 'A status code that gives the current status of the request.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description:
+        'A message that provides additional information about the status of the request.',
+    }),
+    CreationTime: Rfc3339TimeStringSchema.exactOptional().openapi({
+      description:
+        'The date and time that the IP address was created, in Unix time format and Coordinated Universal Time (UTC).',
+    }),
+    ModificationTime: Rfc3339TimeStringSchema.exactOptional().openapi({
+      description:
+        'The date and time that the IP address was last modified, in Unix time format and Coordinated Universal Time (UTC).',
+    }),
   })
   .openapi({
     description:
@@ -3055,58 +2086,34 @@ const IpAddressesResponseSchema = z.array(IpAddressResponseSchema).openapi('IpAd
 
 const ListResolverEndpointIpAddressesResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the specified endpoint has more than <code>MaxResults</code> IP addresses, you can submit another <code>ListResolverEndpointIpAddresses</code> request to get the next group of IP addresses. In the next request, specify the value of <code>NextToken</code> from the previous response. ',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value that you specified for <code>MaxResults</code> in the request.',
-        }),
-    ).exactOptional(),
-    IpAddresses: IpAddressesResponseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the IP addresses in your VPC that DNS queries originate from (for outbound endpoints) or that you forward DNS queries to (for inbound endpoints).',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the specified endpoint has more than <code>MaxResults</code> IP addresses, you can submit another <code>ListResolverEndpointIpAddresses</code> request to get the next group of IP addresses. In the next request, specify the value of <code>NextToken</code> from the previous response. ',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The value that you specified for <code>MaxResults</code> in the request.',
+    }),
+    IpAddresses: IpAddressesResponseSchema.exactOptional().openapi({
+      description:
+        'Information about the IP addresses in your VPC that DNS queries originate from (for outbound endpoints) or that you forward DNS queries to (for inbound endpoints).',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResolverEndpointIpAddressesResponse')
 
 const ListResolverEndpointIpAddressesRequestSchema = z
   .object({
-    ResolverEndpointId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Resolver endpoint that you want to get IP addresses for.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of IP addresses that you want to return in the response to a <code>ListResolverEndpointIpAddresses</code> request. If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 IP addresses. ",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For the first <code>ListResolverEndpointIpAddresses</code> request, omit this value.</p> <p>If the specified Resolver endpoint has more than <code>MaxResults</code> IP addresses, you can submit another <code>ListResolverEndpointIpAddresses</code> request to get the next group of IP addresses. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>',
-        }),
-    ).exactOptional(),
+    ResolverEndpointId: ResourceIdSchema.openapi({
+      description: 'The ID of the Resolver endpoint that you want to get IP addresses for.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of IP addresses that you want to return in the response to a <code>ListResolverEndpointIpAddresses</code> request. If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 IP addresses. ",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>For the first <code>ListResolverEndpointIpAddresses</code> request, omit this value.</p> <p>If the specified Resolver endpoint has more than <code>MaxResults</code> IP addresses, you can submit another <code>ListResolverEndpointIpAddresses</code> request to get the next group of IP addresses. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>',
+    }),
   })
   .openapi({ required: ['ResolverEndpointId'], title: 'ListResolverEndpointIpAddressesRequest' })
   .openapi('ListResolverEndpointIpAddressesRequest')
@@ -3115,59 +2122,35 @@ const ResolverEndpointsSchema = z.array(ResolverEndpointSchema).openapi('Resolve
 
 const ListResolverEndpointsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If more than <code>MaxResults</code> IP addresses match the specified criteria, you can submit another <code>ListResolverEndpoint</code> request to get the next group of results. In the next request, specify the value of <code>NextToken</code> from the previous response. ',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value that you specified for <code>MaxResults</code> in the request.',
-        }),
-    ).exactOptional(),
-    ResolverEndpoints: ResolverEndpointsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Resolver endpoints that were created by using the current Amazon Web Services account, and that match the specified filters, if any.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If more than <code>MaxResults</code> IP addresses match the specified criteria, you can submit another <code>ListResolverEndpoint</code> request to get the next group of results. In the next request, specify the value of <code>NextToken</code> from the previous response. ',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The value that you specified for <code>MaxResults</code> in the request.',
+    }),
+    ResolverEndpoints: ResolverEndpointsSchema.exactOptional().openapi({
+      description:
+        'The Resolver endpoints that were created by using the current Amazon Web Services account, and that match the specified filters, if any.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResolverEndpointsResponse')
 
 const ListResolverEndpointsRequestSchema = z
   .object({
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of Resolver endpoints that you want to return in the response to a <code>ListResolverEndpoints</code> request. If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 Resolver endpoints. ",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For the first <code>ListResolverEndpoints</code> request, omit this value.</p> <p>If you have more than <code>MaxResults</code> Resolver endpoints, you can submit another <code>ListResolverEndpoints</code> request to get the next group of Resolver endpoints. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>',
-        }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional specification to return a subset of Resolver endpoints, such as all inbound Resolver endpoints.</p> <note> <p>If you submit a second or subsequent <code>ListResolverEndpoints</code> request and specify the <code>NextToken</code> parameter, you must use the same values for <code>Filters</code>, if any, as in the previous request.</p> </note>',
-        }),
-    ).exactOptional(),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of Resolver endpoints that you want to return in the response to a <code>ListResolverEndpoints</code> request. If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 Resolver endpoints. ",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>For the first <code>ListResolverEndpoints</code> request, omit this value.</p> <p>If you have more than <code>MaxResults</code> Resolver endpoints, you can submit another <code>ListResolverEndpoints</code> request to get the next group of Resolver endpoints. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>An optional specification to return a subset of Resolver endpoints, such as all inbound Resolver endpoints.</p> <note> <p>If you submit a second or subsequent <code>ListResolverEndpoints</code> request and specify the <code>NextToken</code> parameter, you must use the same values for <code>Filters</code>, if any, as in the previous request.</p> </note>',
+    }),
   })
   .openapi({ title: 'ListResolverEndpointsRequest', required: [] })
   .openapi('ListResolverEndpointsRequest')
@@ -3178,38 +2161,23 @@ const ResolverQueryLogConfigAssociationListSchema = z
 
 const ListResolverQueryLogConfigAssociationsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are more than <code>MaxResults</code> query logging associations, you can submit another <code>ListResolverQueryLogConfigAssociations</code> request to get the next group of associations. In the next request, specify the value of <code>NextToken</code> from the previous response. ',
-        }),
-    ).exactOptional(),
-    TotalCount: CountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of query logging associations that were created by the current account in the specified Region. This count can differ from the number of associations that are returned in a <code>ListResolverQueryLogConfigAssociations</code> response, depending on the values that you specify in the request.',
-        }),
-    ).exactOptional(),
-    TotalFilteredCount: CountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of query logging associations that were created by the current account in the specified Region and that match the filters that were specified in the <code>ListResolverQueryLogConfigAssociations</code> request. For the total number of associations that were created by the current account in the specified Region, see <code>TotalCount</code>.',
-        }),
-    ).exactOptional(),
-    ResolverQueryLogConfigAssociations: ResolverQueryLogConfigAssociationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list that contains one <code>ResolverQueryLogConfigAssociations</code> element for each query logging association that matches the values that you specified for <code>Filter</code>.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are more than <code>MaxResults</code> query logging associations, you can submit another <code>ListResolverQueryLogConfigAssociations</code> request to get the next group of associations. In the next request, specify the value of <code>NextToken</code> from the previous response. ',
+    }),
+    TotalCount: CountSchema.exactOptional().openapi({
+      description:
+        'The total number of query logging associations that were created by the current account in the specified Region. This count can differ from the number of associations that are returned in a <code>ListResolverQueryLogConfigAssociations</code> response, depending on the values that you specify in the request.',
+    }),
+    TotalFilteredCount: CountSchema.exactOptional().openapi({
+      description:
+        'The total number of query logging associations that were created by the current account in the specified Region and that match the filters that were specified in the <code>ListResolverQueryLogConfigAssociations</code> request. For the total number of associations that were created by the current account in the specified Region, see <code>TotalCount</code>.',
+    }),
+    ResolverQueryLogConfigAssociations:
+      ResolverQueryLogConfigAssociationListSchema.exactOptional().openapi({
+        description:
+          'A list that contains one <code>ResolverQueryLogConfigAssociations</code> element for each query logging association that matches the values that you specified for <code>Filter</code>.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('ListResolverQueryLogConfigAssociationsResponse')
@@ -3220,46 +2188,26 @@ const SortOrderSchema = z.enum(['ASCENDING', 'DESCENDING']).openapi('SortOrder')
 
 const ListResolverQueryLogConfigAssociationsRequestSchema = z
   .object({
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of query logging associations that you want to return in the response to a <code>ListResolverQueryLogConfigAssociations</code> request. If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 query logging associations. ",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For the first <code>ListResolverQueryLogConfigAssociations</code> request, omit this value.</p> <p>If there are more than <code>MaxResults</code> query logging associations that match the values that you specify for <code>Filters</code>, you can submit another <code>ListResolverQueryLogConfigAssociations</code> request to get the next group of associations. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>',
-        }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional specification to return a subset of query logging associations.</p> <note> <p>If you submit a second or subsequent <code>ListResolverQueryLogConfigAssociations</code> request and specify the <code>NextToken</code> parameter, you must use the same values for <code>Filters</code>, if any, as in the previous request.</p> </note>',
-        }),
-    ).exactOptional(),
-    SortBy: SortByKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The element that you want Resolver to sort query logging associations by. </p> <note> <p>If you submit a second or subsequent <code>ListResolverQueryLogConfigAssociations</code> request and specify the <code>NextToken</code> parameter, you must use the same value for <code>SortBy</code>, if any, as in the previous request.</p> </note> <p>Valid values include the following elements:</p> <ul> <li> <p> <code>CreationTime</code>: The ID of the query logging association.</p> </li> <li> <p> <code>Error</code>: If the value of <code>Status</code> is <code>FAILED</code>, the value of <code>Error</code> indicates the cause: </p> <ul> <li> <p> <code>DESTINATION_NOT_FOUND</code>: The specified destination (for example, an Amazon S3 bucket) was deleted.</p> </li> <li> <p> <code>ACCESS_DENIED</code>: Permissions don't allow sending logs to the destination.</p> </li> </ul> <p>If <code>Status</code> is a value other than <code>FAILED</code>, <code>ERROR</code> is null.</p> </li> <li> <p> <code>Id</code>: The ID of the query logging association</p> </li> <li> <p> <code>ResolverQueryLogConfigId</code>: The ID of the query logging configuration</p> </li> <li> <p> <code>ResourceId</code>: The ID of the VPC that is associated with the query logging configuration</p> </li> <li> <p> <code>Status</code>: The current status of the configuration. Valid values include the following:</p> <ul> <li> <p> <code>CREATING</code>: Resolver is creating an association between an Amazon VPC and a query logging configuration.</p> </li> <li> <p> <code>CREATED</code>: The association between an Amazon VPC and a query logging configuration was successfully created. Resolver is logging queries that originate in the specified VPC.</p> </li> <li> <p> <code>DELETING</code>: Resolver is deleting this query logging association.</p> </li> <li> <p> <code>FAILED</code>: Resolver either couldn't create or couldn't delete the query logging association. Here are two common causes:</p> <ul> <li> <p>The specified destination (for example, an Amazon S3 bucket) was deleted.</p> </li> <li> <p>Permissions don't allow sending logs to the destination.</p> </li> </ul> </li> </ul> </li> </ul>",
-        }),
-    ).exactOptional(),
-    SortOrder: SortOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If you specified a value for <code>SortBy</code>, the order that you want query logging associations to be listed in, <code>ASCENDING</code> or <code>DESCENDING</code>.</p> <note> <p>If you submit a second or subsequent <code>ListResolverQueryLogConfigAssociations</code> request and specify the <code>NextToken</code> parameter, you must use the same value for <code>SortOrder</code>, if any, as in the previous request.</p> </note>',
-        }),
-    ).exactOptional(),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of query logging associations that you want to return in the response to a <code>ListResolverQueryLogConfigAssociations</code> request. If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 query logging associations. ",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>For the first <code>ListResolverQueryLogConfigAssociations</code> request, omit this value.</p> <p>If there are more than <code>MaxResults</code> query logging associations that match the values that you specify for <code>Filters</code>, you can submit another <code>ListResolverQueryLogConfigAssociations</code> request to get the next group of associations. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>An optional specification to return a subset of query logging associations.</p> <note> <p>If you submit a second or subsequent <code>ListResolverQueryLogConfigAssociations</code> request and specify the <code>NextToken</code> parameter, you must use the same values for <code>Filters</code>, if any, as in the previous request.</p> </note>',
+    }),
+    SortBy: SortByKeySchema.exactOptional().openapi({
+      description:
+        "<p>The element that you want Resolver to sort query logging associations by. </p> <note> <p>If you submit a second or subsequent <code>ListResolverQueryLogConfigAssociations</code> request and specify the <code>NextToken</code> parameter, you must use the same value for <code>SortBy</code>, if any, as in the previous request.</p> </note> <p>Valid values include the following elements:</p> <ul> <li> <p> <code>CreationTime</code>: The ID of the query logging association.</p> </li> <li> <p> <code>Error</code>: If the value of <code>Status</code> is <code>FAILED</code>, the value of <code>Error</code> indicates the cause: </p> <ul> <li> <p> <code>DESTINATION_NOT_FOUND</code>: The specified destination (for example, an Amazon S3 bucket) was deleted.</p> </li> <li> <p> <code>ACCESS_DENIED</code>: Permissions don't allow sending logs to the destination.</p> </li> </ul> <p>If <code>Status</code> is a value other than <code>FAILED</code>, <code>ERROR</code> is null.</p> </li> <li> <p> <code>Id</code>: The ID of the query logging association</p> </li> <li> <p> <code>ResolverQueryLogConfigId</code>: The ID of the query logging configuration</p> </li> <li> <p> <code>ResourceId</code>: The ID of the VPC that is associated with the query logging configuration</p> </li> <li> <p> <code>Status</code>: The current status of the configuration. Valid values include the following:</p> <ul> <li> <p> <code>CREATING</code>: Resolver is creating an association between an Amazon VPC and a query logging configuration.</p> </li> <li> <p> <code>CREATED</code>: The association between an Amazon VPC and a query logging configuration was successfully created. Resolver is logging queries that originate in the specified VPC.</p> </li> <li> <p> <code>DELETING</code>: Resolver is deleting this query logging association.</p> </li> <li> <p> <code>FAILED</code>: Resolver either couldn't create or couldn't delete the query logging association. Here are two common causes:</p> <ul> <li> <p>The specified destination (for example, an Amazon S3 bucket) was deleted.</p> </li> <li> <p>Permissions don't allow sending logs to the destination.</p> </li> </ul> </li> </ul> </li> </ul>",
+    }),
+    SortOrder: SortOrderSchema.exactOptional().openapi({
+      description:
+        '<p>If you specified a value for <code>SortBy</code>, the order that you want query logging associations to be listed in, <code>ASCENDING</code> or <code>DESCENDING</code>.</p> <note> <p>If you submit a second or subsequent <code>ListResolverQueryLogConfigAssociations</code> request and specify the <code>NextToken</code> parameter, you must use the same value for <code>SortOrder</code>, if any, as in the previous request.</p> </note>',
+    }),
   })
   .openapi({ title: 'ListResolverQueryLogConfigAssociationsRequest', required: [] })
   .openapi('ListResolverQueryLogConfigAssociationsRequest')
@@ -3270,84 +2218,48 @@ const ResolverQueryLogConfigListSchema = z
 
 const ListResolverQueryLogConfigsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are more than <code>MaxResults</code> query logging configurations, you can submit another <code>ListResolverQueryLogConfigs</code> request to get the next group of configurations. In the next request, specify the value of <code>NextToken</code> from the previous response. ',
-        }),
-    ).exactOptional(),
-    TotalCount: CountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of query logging configurations that were created by the current account in the specified Region. This count can differ from the number of query logging configurations that are returned in a <code>ListResolverQueryLogConfigs</code> response, depending on the values that you specify in the request.',
-        }),
-    ).exactOptional(),
-    TotalFilteredCount: CountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of query logging configurations that were created by the current account in the specified Region and that match the filters that were specified in the <code>ListResolverQueryLogConfigs</code> request. For the total number of query logging configurations that were created by the current account in the specified Region, see <code>TotalCount</code>.',
-        }),
-    ).exactOptional(),
-    ResolverQueryLogConfigs: ResolverQueryLogConfigListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list that contains one <code>ResolverQueryLogConfig</code> element for each query logging configuration that matches the values that you specified for <code>Filter</code>.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are more than <code>MaxResults</code> query logging configurations, you can submit another <code>ListResolverQueryLogConfigs</code> request to get the next group of configurations. In the next request, specify the value of <code>NextToken</code> from the previous response. ',
+    }),
+    TotalCount: CountSchema.exactOptional().openapi({
+      description:
+        'The total number of query logging configurations that were created by the current account in the specified Region. This count can differ from the number of query logging configurations that are returned in a <code>ListResolverQueryLogConfigs</code> response, depending on the values that you specify in the request.',
+    }),
+    TotalFilteredCount: CountSchema.exactOptional().openapi({
+      description:
+        'The total number of query logging configurations that were created by the current account in the specified Region and that match the filters that were specified in the <code>ListResolverQueryLogConfigs</code> request. For the total number of query logging configurations that were created by the current account in the specified Region, see <code>TotalCount</code>.',
+    }),
+    ResolverQueryLogConfigs: ResolverQueryLogConfigListSchema.exactOptional().openapi({
+      description:
+        'A list that contains one <code>ResolverQueryLogConfig</code> element for each query logging configuration that matches the values that you specified for <code>Filter</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResolverQueryLogConfigsResponse')
 
 const ListResolverQueryLogConfigsRequestSchema = z
   .object({
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of query logging configurations that you want to return in the response to a <code>ListResolverQueryLogConfigs</code> request. If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 query logging configurations. ",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For the first <code>ListResolverQueryLogConfigs</code> request, omit this value.</p> <p>If there are more than <code>MaxResults</code> query logging configurations that match the values that you specify for <code>Filters</code>, you can submit another <code>ListResolverQueryLogConfigs</code> request to get the next group of configurations. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>',
-        }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional specification to return a subset of query logging configurations.</p> <note> <p>If you submit a second or subsequent <code>ListResolverQueryLogConfigs</code> request and specify the <code>NextToken</code> parameter, you must use the same values for <code>Filters</code>, if any, as in the previous request.</p> </note>',
-        }),
-    ).exactOptional(),
-    SortBy: SortByKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The element that you want Resolver to sort query logging configurations by. </p> <note> <p>If you submit a second or subsequent <code>ListResolverQueryLogConfigs</code> request and specify the <code>NextToken</code> parameter, you must use the same value for <code>SortBy</code>, if any, as in the previous request.</p> </note> <p>Valid values include the following elements:</p> <ul> <li> <p> <code>Arn</code>: The ARN of the query logging configuration</p> </li> <li> <p> <code>AssociationCount</code>: The number of VPCs that are associated with the specified configuration </p> </li> <li> <p> <code>CreationTime</code>: The date and time that Resolver returned when the configuration was created</p> </li> <li> <p> <code>CreatorRequestId</code>: The value that was specified for <code>CreatorRequestId</code> when the configuration was created</p> </li> <li> <p> <code>DestinationArn</code>: The location that logs are sent to</p> </li> <li> <p> <code>Id</code>: The ID of the configuration</p> </li> <li> <p> <code>Name</code>: The name of the configuration</p> </li> <li> <p> <code>OwnerId</code>: The Amazon Web Services account number of the account that created the configuration</p> </li> <li> <p> <code>ShareStatus</code>: Whether the configuration is shared with other Amazon Web Services accounts or shared with the current account by another Amazon Web Services account. Sharing is configured through Resource Access Manager (RAM).</p> </li> <li> <p> <code>Status</code>: The current status of the configuration. Valid values include the following:</p> <ul> <li> <p> <code>CREATING</code>: Resolver is creating the query logging configuration.</p> </li> <li> <p> <code>CREATED</code>: The query logging configuration was successfully created. Resolver is logging queries that originate in the specified VPC.</p> </li> <li> <p> <code>DELETING</code>: Resolver is deleting this query logging configuration.</p> </li> <li> <p> <code>FAILED</code>: Resolver either couldn't create or couldn't delete the query logging configuration. Here are two common causes:</p> <ul> <li> <p>The specified destination (for example, an Amazon S3 bucket) was deleted.</p> </li> <li> <p>Permissions don't allow sending logs to the destination.</p> </li> </ul> </li> </ul> </li> </ul>",
-        }),
-    ).exactOptional(),
-    SortOrder: SortOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If you specified a value for <code>SortBy</code>, the order that you want query logging configurations to be listed in, <code>ASCENDING</code> or <code>DESCENDING</code>.</p> <note> <p>If you submit a second or subsequent <code>ListResolverQueryLogConfigs</code> request and specify the <code>NextToken</code> parameter, you must use the same value for <code>SortOrder</code>, if any, as in the previous request.</p> </note>',
-        }),
-    ).exactOptional(),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of query logging configurations that you want to return in the response to a <code>ListResolverQueryLogConfigs</code> request. If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 query logging configurations. ",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>For the first <code>ListResolverQueryLogConfigs</code> request, omit this value.</p> <p>If there are more than <code>MaxResults</code> query logging configurations that match the values that you specify for <code>Filters</code>, you can submit another <code>ListResolverQueryLogConfigs</code> request to get the next group of configurations. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>An optional specification to return a subset of query logging configurations.</p> <note> <p>If you submit a second or subsequent <code>ListResolverQueryLogConfigs</code> request and specify the <code>NextToken</code> parameter, you must use the same values for <code>Filters</code>, if any, as in the previous request.</p> </note>',
+    }),
+    SortBy: SortByKeySchema.exactOptional().openapi({
+      description:
+        "<p>The element that you want Resolver to sort query logging configurations by. </p> <note> <p>If you submit a second or subsequent <code>ListResolverQueryLogConfigs</code> request and specify the <code>NextToken</code> parameter, you must use the same value for <code>SortBy</code>, if any, as in the previous request.</p> </note> <p>Valid values include the following elements:</p> <ul> <li> <p> <code>Arn</code>: The ARN of the query logging configuration</p> </li> <li> <p> <code>AssociationCount</code>: The number of VPCs that are associated with the specified configuration </p> </li> <li> <p> <code>CreationTime</code>: The date and time that Resolver returned when the configuration was created</p> </li> <li> <p> <code>CreatorRequestId</code>: The value that was specified for <code>CreatorRequestId</code> when the configuration was created</p> </li> <li> <p> <code>DestinationArn</code>: The location that logs are sent to</p> </li> <li> <p> <code>Id</code>: The ID of the configuration</p> </li> <li> <p> <code>Name</code>: The name of the configuration</p> </li> <li> <p> <code>OwnerId</code>: The Amazon Web Services account number of the account that created the configuration</p> </li> <li> <p> <code>ShareStatus</code>: Whether the configuration is shared with other Amazon Web Services accounts or shared with the current account by another Amazon Web Services account. Sharing is configured through Resource Access Manager (RAM).</p> </li> <li> <p> <code>Status</code>: The current status of the configuration. Valid values include the following:</p> <ul> <li> <p> <code>CREATING</code>: Resolver is creating the query logging configuration.</p> </li> <li> <p> <code>CREATED</code>: The query logging configuration was successfully created. Resolver is logging queries that originate in the specified VPC.</p> </li> <li> <p> <code>DELETING</code>: Resolver is deleting this query logging configuration.</p> </li> <li> <p> <code>FAILED</code>: Resolver either couldn't create or couldn't delete the query logging configuration. Here are two common causes:</p> <ul> <li> <p>The specified destination (for example, an Amazon S3 bucket) was deleted.</p> </li> <li> <p>Permissions don't allow sending logs to the destination.</p> </li> </ul> </li> </ul> </li> </ul>",
+    }),
+    SortOrder: SortOrderSchema.exactOptional().openapi({
+      description:
+        '<p>If you specified a value for <code>SortBy</code>, the order that you want query logging configurations to be listed in, <code>ASCENDING</code> or <code>DESCENDING</code>.</p> <note> <p>If you submit a second or subsequent <code>ListResolverQueryLogConfigs</code> request and specify the <code>NextToken</code> parameter, you must use the same value for <code>SortOrder</code>, if any, as in the previous request.</p> </note>',
+    }),
   })
   .openapi({ title: 'ListResolverQueryLogConfigsRequest', required: [] })
   .openapi('ListResolverQueryLogConfigsRequest')
@@ -3358,59 +2270,35 @@ const ResolverRuleAssociationsSchema = z
 
 const ListResolverRuleAssociationsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If more than <code>MaxResults</code> rule associations match the specified criteria, you can submit another <code>ListResolverRuleAssociation</code> request to get the next group of results. In the next request, specify the value of <code>NextToken</code> from the previous response. ',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value that you specified for <code>MaxResults</code> in the request.',
-        }),
-    ).exactOptional(),
-    ResolverRuleAssociations: ResolverRuleAssociationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The associations that were created between Resolver rules and VPCs using the current Amazon Web Services account, and that match the specified filters, if any.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If more than <code>MaxResults</code> rule associations match the specified criteria, you can submit another <code>ListResolverRuleAssociation</code> request to get the next group of results. In the next request, specify the value of <code>NextToken</code> from the previous response. ',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The value that you specified for <code>MaxResults</code> in the request.',
+    }),
+    ResolverRuleAssociations: ResolverRuleAssociationsSchema.exactOptional().openapi({
+      description:
+        'The associations that were created between Resolver rules and VPCs using the current Amazon Web Services account, and that match the specified filters, if any.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResolverRuleAssociationsResponse')
 
 const ListResolverRuleAssociationsRequestSchema = z
   .object({
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of rule associations that you want to return in the response to a <code>ListResolverRuleAssociations</code> request. If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 rule associations. ",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For the first <code>ListResolverRuleAssociation</code> request, omit this value.</p> <p>If you have more than <code>MaxResults</code> rule associations, you can submit another <code>ListResolverRuleAssociation</code> request to get the next group of rule associations. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>',
-        }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional specification to return a subset of Resolver rules, such as Resolver rules that are associated with the same VPC ID.</p> <note> <p>If you submit a second or subsequent <code>ListResolverRuleAssociations</code> request and specify the <code>NextToken</code> parameter, you must use the same values for <code>Filters</code>, if any, as in the previous request.</p> </note>',
-        }),
-    ).exactOptional(),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of rule associations that you want to return in the response to a <code>ListResolverRuleAssociations</code> request. If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 rule associations. ",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>For the first <code>ListResolverRuleAssociation</code> request, omit this value.</p> <p>If you have more than <code>MaxResults</code> rule associations, you can submit another <code>ListResolverRuleAssociation</code> request to get the next group of rule associations. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>An optional specification to return a subset of Resolver rules, such as Resolver rules that are associated with the same VPC ID.</p> <note> <p>If you submit a second or subsequent <code>ListResolverRuleAssociations</code> request and specify the <code>NextToken</code> parameter, you must use the same values for <code>Filters</code>, if any, as in the previous request.</p> </note>',
+    }),
   })
   .openapi({ title: 'ListResolverRuleAssociationsRequest', required: [] })
   .openapi('ListResolverRuleAssociationsRequest')
@@ -3419,111 +2307,67 @@ const ResolverRulesSchema = z.array(ResolverRuleSchema).openapi('ResolverRules')
 
 const ListResolverRulesResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If more than <code>MaxResults</code> Resolver rules match the specified criteria, you can submit another <code>ListResolverRules</code> request to get the next group of results. In the next request, specify the value of <code>NextToken</code> from the previous response. ',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value that you specified for <code>MaxResults</code> in the request.',
-        }),
-    ).exactOptional(),
-    ResolverRules: ResolverRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Resolver rules that were created using the current Amazon Web Services account and that match the specified filters, if any.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If more than <code>MaxResults</code> Resolver rules match the specified criteria, you can submit another <code>ListResolverRules</code> request to get the next group of results. In the next request, specify the value of <code>NextToken</code> from the previous response. ',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The value that you specified for <code>MaxResults</code> in the request.',
+    }),
+    ResolverRules: ResolverRulesSchema.exactOptional().openapi({
+      description:
+        'The Resolver rules that were created using the current Amazon Web Services account and that match the specified filters, if any.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResolverRulesResponse')
 
 const ListResolverRulesRequestSchema = z
   .object({
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of Resolver rules that you want to return in the response to a <code>ListResolverRules</code> request. If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 Resolver rules.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For the first <code>ListResolverRules</code> request, omit this value.</p> <p>If you have more than <code>MaxResults</code> Resolver rules, you can submit another <code>ListResolverRules</code> request to get the next group of Resolver rules. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>',
-        }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional specification to return a subset of Resolver rules, such as all Resolver rules that are associated with the same Resolver endpoint.</p> <note> <p>If you submit a second or subsequent <code>ListResolverRules</code> request and specify the <code>NextToken</code> parameter, you must use the same values for <code>Filters</code>, if any, as in the previous request.</p> </note>',
-        }),
-    ).exactOptional(),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of Resolver rules that you want to return in the response to a <code>ListResolverRules</code> request. If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 Resolver rules.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>For the first <code>ListResolverRules</code> request, omit this value.</p> <p>If you have more than <code>MaxResults</code> Resolver rules, you can submit another <code>ListResolverRules</code> request to get the next group of Resolver rules. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>An optional specification to return a subset of Resolver rules, such as all Resolver rules that are associated with the same Resolver endpoint.</p> <note> <p>If you submit a second or subsequent <code>ListResolverRules</code> request and specify the <code>NextToken</code> parameter, you must use the same values for <code>Filters</code>, if any, as in the previous request.</p> </note>',
+    }),
   })
   .openapi({ title: 'ListResolverRulesRequest', required: [] })
   .openapi('ListResolverRulesRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags that are associated with the resource that you specified in the <code>ListTagsForResource</code> request.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If more than <code>MaxResults</code> tags match the specified criteria, you can submit another <code>ListTagsForResource</code> request to get the next group of results. In the next request, specify the value of <code>NextToken</code> from the previous response. ',
-        }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The tags that are associated with the resource that you specified in the <code>ListTagsForResource</code> request.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If more than <code>MaxResults</code> tags match the specified criteria, you can submit another <code>ListTagsForResource</code> request to get the next group of results. In the next request, specify the value of <code>NextToken</code> from the previous response. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the resource that you want to list tags for.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of tags that you want to return in the response to a <code>ListTagsForResource</code> request. If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 tags.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For the first <code>ListTagsForResource</code> request, omit this value.</p> <p>If you have more than <code>MaxResults</code> tags, you can submit another <code>ListTagsForResource</code> request to get the next group of tags for the resource. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>',
-        }),
-    ).exactOptional(),
+    ResourceArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the resource that you want to list tags for.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of tags that you want to return in the response to a <code>ListTagsForResource</code> request. If you don't specify a value for <code>MaxResults</code>, Resolver returns up to 100 tags.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>For the first <code>ListTagsForResource</code> request, omit this value.</p> <p>If you have more than <code>MaxResults</code> tags, you can submit another <code>ListTagsForResource</code> request to get the next group of tags for the resource. In the next request, specify the value of <code>NextToken</code> from the previous response. </p>',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
@@ -3531,29 +2375,19 @@ const ListTagsForResourceRequestSchema = z
 const BooleanSchema = z.boolean().openapi('Boolean')
 
 const PutFirewallRuleGroupPolicyResponseSchema = z
-  .object({
-    ReturnValue: BooleanSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-  })
+  .object({ ReturnValue: BooleanSchema.exactOptional().openapi({ description: '<p/>' }) })
   .openapi({ required: [] })
   .openapi('PutFirewallRuleGroupPolicyResponse')
 
 const PutFirewallRuleGroupPolicyRequestSchema = z
   .object({
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN (Amazon Resource Name) for the rule group that you want to share.',
-        }),
-    ),
-    FirewallRuleGroupPolicy: FirewallRuleGroupPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Identity and Access Management (Amazon Web Services IAM) policy to attach to the rule group.',
-        }),
-    ),
+    Arn: ArnSchema.openapi({
+      description: 'The ARN (Amazon Resource Name) for the rule group that you want to share.',
+    }),
+    FirewallRuleGroupPolicy: FirewallRuleGroupPolicySchema.openapi({
+      description:
+        'The Identity and Access Management (Amazon Web Services IAM) policy to attach to the rule group.',
+    }),
   })
   .openapi({
     required: ['Arn', 'FirewallRuleGroupPolicy'],
@@ -3563,14 +2397,10 @@ const PutFirewallRuleGroupPolicyRequestSchema = z
 
 const PutResolverQueryLogConfigPolicyResponseSchema = z
   .object({
-    ReturnValue: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether the <code>PutResolverQueryLogConfigPolicy</code> request was successful.',
-        }),
-    ).exactOptional(),
+    ReturnValue: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether the <code>PutResolverQueryLogConfigPolicy</code> request was successful.',
+    }),
   })
   .openapi({
     description: 'The response to a <code>PutResolverQueryLogConfigPolicy</code> request.',
@@ -3580,22 +2410,14 @@ const PutResolverQueryLogConfigPolicyResponseSchema = z
 
 const PutResolverQueryLogConfigPolicyRequestSchema = z
   .object({
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the account that you want to share rules with.',
-        }),
-    ),
-    ResolverQueryLogConfigPolicy: ResolverQueryLogConfigPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An Identity and Access Management policy statement that lists the query logging configurations that you want to share with another Amazon Web Services account and the operations that you want the account to be able to perform. You can specify the following operations in the <code>Actions</code> section of the statement:</p> <ul> <li> <p> <code>route53resolver:AssociateResolverQueryLogConfig</code> </p> </li> <li> <p> <code>route53resolver:DisassociateResolverQueryLogConfig</code> </p> </li> <li> <p> <code>route53resolver:ListResolverQueryLogConfigAssociations</code> </p> </li> <li> <p> <code>route53resolver:ListResolverQueryLogConfigs</code> </p> </li> </ul> <p>In the <code>Resource</code> section of the statement, you specify the ARNs for the query logging configurations that you want to share with the account that you specified in <code>Arn</code>. </p>',
-        }),
-    ),
+    Arn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the account that you want to share rules with.',
+    }),
+    ResolverQueryLogConfigPolicy: ResolverQueryLogConfigPolicySchema.openapi({
+      description:
+        '<p>An Identity and Access Management policy statement that lists the query logging configurations that you want to share with another Amazon Web Services account and the operations that you want the account to be able to perform. You can specify the following operations in the <code>Actions</code> section of the statement:</p> <ul> <li> <p> <code>route53resolver:AssociateResolverQueryLogConfig</code> </p> </li> <li> <p> <code>route53resolver:DisassociateResolverQueryLogConfig</code> </p> </li> <li> <p> <code>route53resolver:ListResolverQueryLogConfigAssociations</code> </p> </li> <li> <p> <code>route53resolver:ListResolverQueryLogConfigs</code> </p> </li> </ul> <p>In the <code>Resource</code> section of the statement, you specify the ARNs for the query logging configurations that you want to share with the account that you specified in <code>Arn</code>. </p>',
+    }),
   })
   .openapi({
     required: ['Arn', 'ResolverQueryLogConfigPolicy'],
@@ -3607,13 +2429,9 @@ const InvalidPolicyDocumentSchema = z.any().openapi('InvalidPolicyDocument')
 
 const PutResolverRulePolicyResponseSchema = z
   .object({
-    ReturnValue: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the <code>PutResolverRulePolicy</code> request was successful.',
-        }),
-    ).exactOptional(),
+    ReturnValue: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the <code>PutResolverRulePolicy</code> request was successful.',
+    }),
   })
   .openapi({
     description: 'The response to a <code>PutResolverRulePolicy</code> request.',
@@ -3623,123 +2441,87 @@ const PutResolverRulePolicyResponseSchema = z
 
 const PutResolverRulePolicyRequestSchema = z
   .object({
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the rule that you want to share with another account.',
-        }),
-    ),
-    ResolverRulePolicy: ResolverRulePolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An Identity and Access Management policy statement that lists the rules that you want to share with another Amazon Web Services account and the operations that you want the account to be able to perform. You can specify the following operations in the <code>Action</code> section of the statement:</p> <ul> <li> <p> <code>route53resolver:GetResolverRule</code> </p> </li> <li> <p> <code>route53resolver:AssociateResolverRule</code> </p> </li> <li> <p> <code>route53resolver:DisassociateResolverRule</code> </p> </li> <li> <p> <code>route53resolver:ListResolverRules</code> </p> </li> <li> <p> <code>route53resolver:ListResolverRuleAssociations</code> </p> </li> </ul> <p>In the <code>Resource</code> section of the statement, specify the ARN for the rule that you want to share with another account. Specify the same ARN that you specified in <code>Arn</code>.</p>',
-        }),
-    ),
+    Arn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the rule that you want to share with another account.',
+    }),
+    ResolverRulePolicy: ResolverRulePolicySchema.openapi({
+      description:
+        '<p>An Identity and Access Management policy statement that lists the rules that you want to share with another Amazon Web Services account and the operations that you want the account to be able to perform. You can specify the following operations in the <code>Action</code> section of the statement:</p> <ul> <li> <p> <code>route53resolver:GetResolverRule</code> </p> </li> <li> <p> <code>route53resolver:AssociateResolverRule</code> </p> </li> <li> <p> <code>route53resolver:DisassociateResolverRule</code> </p> </li> <li> <p> <code>route53resolver:ListResolverRules</code> </p> </li> <li> <p> <code>route53resolver:ListResolverRuleAssociations</code> </p> </li> </ul> <p>In the <code>Resource</code> section of the statement, specify the ARN for the rule that you want to share with another account. Specify the same ARN that you specified in <code>Arn</code>.</p>',
+    }),
   })
   .openapi({ required: ['Arn', 'ResolverRulePolicy'], title: 'PutResolverRulePolicyRequest' })
   .openapi('PutResolverRulePolicyRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the resource that you want to add tags to. To get the ARN for a resource, use the applicable <code>Get</code> or <code>List</code> command: </p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html">GetResolverEndpoint</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverRule.html">GetResolverRule</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverRuleAssociation.html">GetResolverRuleAssociation</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverEndpoints.html">ListResolverEndpoints</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRuleAssociations.html">ListResolverRuleAssociations</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRules.html">ListResolverRules</a> </p> </li> </ul>',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags that you want to add to the specified resource.' }),
-    ),
+    ResourceArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the resource that you want to add tags to. To get the ARN for a resource, use the applicable <code>Get</code> or <code>List</code> command: </p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html">GetResolverEndpoint</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverRule.html">GetResolverRule</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverRuleAssociation.html">GetResolverRuleAssociation</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverEndpoints.html">ListResolverEndpoints</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRuleAssociations.html">ListResolverRuleAssociations</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRules.html">ListResolverRules</a> </p> </li> </ul>',
+    }),
+    Tags: TagListSchema.openapi({
+      description: 'The tags that you want to add to the specified resource.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const InvalidTagExceptionSchema = z.any().openapi('InvalidTagException')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).max(200).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the resource that you want to remove tags from. To get the ARN for a resource, use the applicable <code>Get</code> or <code>List</code> command: </p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html">GetResolverEndpoint</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverRule.html">GetResolverRule</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverRuleAssociation.html">GetResolverRuleAssociation</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverEndpoints.html">ListResolverEndpoints</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRuleAssociations.html">ListResolverRuleAssociations</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRules.html">ListResolverRules</a> </p> </li> </ul>',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tags that you want to remove to the specified resource.' }),
-    ),
+    ResourceArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the resource that you want to remove tags from. To get the ARN for a resource, use the applicable <code>Get</code> or <code>List</code> command: </p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html">GetResolverEndpoint</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverRule.html">GetResolverRule</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverRuleAssociation.html">GetResolverRuleAssociation</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverEndpoints.html">ListResolverEndpoints</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRuleAssociations.html">ListResolverRuleAssociations</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRules.html">ListResolverRules</a> </p> </li> </ul>',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: 'The tags that you want to remove to the specified resource.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateFirewallConfigResponseSchema = z
   .object({
-    FirewallConfig: FirewallConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration of the firewall behavior provided by DNS Firewall for a single VPC. ',
-        }),
-    ).exactOptional(),
+    FirewallConfig: FirewallConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration of the firewall behavior provided by DNS Firewall for a single VPC. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateFirewallConfigResponse')
 
 const UpdateFirewallConfigRequestSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the VPC that the configuration is for.' }),
-    ),
-    FirewallFailOpen: FirewallFailOpenStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Determines how Route 53 Resolver handles queries during failures, for example when all traffic that is sent to DNS Firewall fails to receive a reply. </p> <ul> <li> <p>By default, fail open is disabled, which means the failure mode is closed. This approach favors security over availability. DNS Firewall blocks queries that it is unable to evaluate properly. </p> </li> <li> <p>If you enable this option, the failure mode is open. This approach favors availability over security. DNS Firewall allows queries to proceed if it is unable to properly evaluate them. </p> </li> </ul> <p>This behavior is only enforced for VPCs that have at least one DNS Firewall rule group association. </p>',
-        }),
-    ),
+    ResourceId: ResourceIdSchema.openapi({
+      description: 'The ID of the VPC that the configuration is for.',
+    }),
+    FirewallFailOpen: FirewallFailOpenStatusSchema.openapi({
+      description:
+        '<p>Determines how Route 53 Resolver handles queries during failures, for example when all traffic that is sent to DNS Firewall fails to receive a reply. </p> <ul> <li> <p>By default, fail open is disabled, which means the failure mode is closed. This approach favors security over availability. DNS Firewall blocks queries that it is unable to evaluate properly. </p> </li> <li> <p>If you enable this option, the failure mode is open. This approach favors availability over security. DNS Firewall allows queries to proceed if it is unable to properly evaluate them. </p> </li> </ul> <p>This behavior is only enforced for VPCs that have at least one DNS Firewall rule group association. </p>',
+    }),
   })
   .openapi({ required: ['ResourceId', 'FirewallFailOpen'], title: 'UpdateFirewallConfigRequest' })
   .openapi('UpdateFirewallConfigRequest')
 
 const UpdateFirewallDomainsResponseSchema = z
   .object({
-    Id: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the firewall domain list that DNS Firewall just updated.',
-        }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the domain list. ' }),
-    ).exactOptional(),
-    Status: FirewallDomainListStatusSchema.and(
-      z.any().openapi({ description: 'Status of the <code>UpdateFirewallDomains</code> request.' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Additional information about the status of the list, if available.',
-        }),
-    ).exactOptional(),
+    Id: ResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the firewall domain list that DNS Firewall just updated.',
+    }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the domain list. ' }),
+    Status: FirewallDomainListStatusSchema.exactOptional().openapi({
+      description: 'Status of the <code>UpdateFirewallDomains</code> request.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'Additional information about the status of the list, if available.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateFirewallDomainsResponse')
@@ -3750,27 +2532,17 @@ const FirewallDomainUpdateOperationSchema = z
 
 const UpdateFirewallDomainsRequestSchema = z
   .object({
-    FirewallDomainListId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the domain list whose domains you want to update. ' }),
-    ),
-    Operation: FirewallDomainUpdateOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>What you want DNS Firewall to do with the domains that you are providing: </p> <ul> <li> <p> <code>ADD</code> - Add the domains to the ones that are already in the domain list. </p> </li> <li> <p> <code>REMOVE</code> - Search the domain list for the domains and remove them from the list.</p> </li> <li> <p> <code>REPLACE</code> - Update the domain list to exactly match the list that you are providing. </p> </li> </ul>',
-        }),
-    ),
-    Domains: FirewallDomainsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of domains to use in the update operation.</p> <important> <p>There is a limit of 1000 domains per request.</p> </important> <p>Each domain specification in your domain list must satisfy the following requirements: </p> <ul> <li> <p>It can optionally start with <code>*</code> (asterisk).</p> </li> <li> <p>With the exception of the optional starting asterisk, it must only contain the following characters: <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>-</code> (hyphen).</p> </li> <li> <p>It must be from 1-255 characters in length. </p> </li> </ul>',
-        }),
-    ),
+    FirewallDomainListId: ResourceIdSchema.openapi({
+      description: 'The ID of the domain list whose domains you want to update. ',
+    }),
+    Operation: FirewallDomainUpdateOperationSchema.openapi({
+      description:
+        '<p>What you want DNS Firewall to do with the domains that you are providing: </p> <ul> <li> <p> <code>ADD</code> - Add the domains to the ones that are already in the domain list. </p> </li> <li> <p> <code>REMOVE</code> - Search the domain list for the domains and remove them from the list.</p> </li> <li> <p> <code>REPLACE</code> - Update the domain list to exactly match the list that you are providing. </p> </li> </ul>',
+    }),
+    Domains: FirewallDomainsSchema.openapi({
+      description:
+        '<p>A list of domains to use in the update operation.</p> <important> <p>There is a limit of 1000 domains per request.</p> </important> <p>Each domain specification in your domain list must satisfy the following requirements: </p> <ul> <li> <p>It can optionally start with <code>*</code> (asterisk).</p> </li> <li> <p>With the exception of the optional starting asterisk, it must only contain the following characters: <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>-</code> (hyphen).</p> </li> <li> <p>It must be from 1-255 characters in length. </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['FirewallDomainListId', 'Operation', 'Domains'],
@@ -3780,74 +2552,46 @@ const UpdateFirewallDomainsRequestSchema = z
 
 const UpdateFirewallRuleResponseSchema = z
   .object({
-    FirewallRule: FirewallRuleSchema.and(
-      z.any().openapi({ description: 'The firewall rule that you just updated. ' }),
-    ).exactOptional(),
+    FirewallRule: FirewallRuleSchema.exactOptional().openapi({
+      description: 'The firewall rule that you just updated. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateFirewallRuleResponse')
 
 const UpdateFirewallRuleRequestSchema = z
   .object({
-    FirewallRuleGroupId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier of the firewall rule group for the rule. ',
-        }),
-    ),
-    FirewallDomainListId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the domain list to use in the rule. ' }),
-    ),
-    Priority: PrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The setting that determines the processing order of the rule in the rule group. DNS Firewall processes the rules in a rule group by order of priority, starting from the lowest setting.</p> <p>You must specify a unique priority for each rule in a rule group. To make it easier to insert rules later, leave space between the numbers, for example, use 100, 200, and so on. You can change the priority setting for the rules in a rule group at any time.</p>',
-        }),
-    ).exactOptional(),
-    Action: ActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through.</p> </li> <li> <p> <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. This option requires additional details in the rule's <code>BlockResponse</code>. </p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    BlockResponse: BlockResponseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The way that you want DNS Firewall to block the request. Used for the rule action setting <code>BLOCK</code>.</p> <ul> <li> <p> <code>NODATA</code> - Respond indicating that the query was successful, but no response is available for it.</p> </li> <li> <p> <code>NXDOMAIN</code> - Respond indicating that the domain name that's in the query doesn't exist.</p> </li> <li> <p> <code>OVERRIDE</code> - Provide a custom override in the response. This option requires custom handling details in the rule's <code>BlockOverride*</code> settings. </p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    BlockOverrideDomain: BlockOverrideDomainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The custom DNS record to send back in response to the query. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.',
-        }),
-    ).exactOptional(),
-    BlockOverrideDnsType: BlockOverrideDnsTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The DNS record's type. This determines the format of the record value that you provided in <code>BlockOverrideDomain</code>. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.",
-        }),
-    ).exactOptional(),
-    BlockOverrideTtl: BlockOverrideTtlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The recommended amount of time, in seconds, for the DNS resolver or web browser to cache the provided override record. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.',
-        }),
-    ).exactOptional(),
-    Name: NameSchema.and(z.any().openapi({ description: 'The name of the rule.' })).exactOptional(),
+    FirewallRuleGroupId: ResourceIdSchema.openapi({
+      description: 'The unique identifier of the firewall rule group for the rule. ',
+    }),
+    FirewallDomainListId: ResourceIdSchema.openapi({
+      description: 'The ID of the domain list to use in the rule. ',
+    }),
+    Priority: PrioritySchema.exactOptional().openapi({
+      description:
+        '<p>The setting that determines the processing order of the rule in the rule group. DNS Firewall processes the rules in a rule group by order of priority, starting from the lowest setting.</p> <p>You must specify a unique priority for each rule in a rule group. To make it easier to insert rules later, leave space between the numbers, for example, use 100, 200, and so on. You can change the priority setting for the rules in a rule group at any time.</p>',
+    }),
+    Action: ActionSchema.exactOptional().openapi({
+      description:
+        "<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through.</p> </li> <li> <p> <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. This option requires additional details in the rule's <code>BlockResponse</code>. </p> </li> </ul>",
+    }),
+    BlockResponse: BlockResponseSchema.exactOptional().openapi({
+      description:
+        "<p>The way that you want DNS Firewall to block the request. Used for the rule action setting <code>BLOCK</code>.</p> <ul> <li> <p> <code>NODATA</code> - Respond indicating that the query was successful, but no response is available for it.</p> </li> <li> <p> <code>NXDOMAIN</code> - Respond indicating that the domain name that's in the query doesn't exist.</p> </li> <li> <p> <code>OVERRIDE</code> - Provide a custom override in the response. This option requires custom handling details in the rule's <code>BlockOverride*</code> settings. </p> </li> </ul>",
+    }),
+    BlockOverrideDomain: BlockOverrideDomainSchema.exactOptional().openapi({
+      description:
+        'The custom DNS record to send back in response to the query. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.',
+    }),
+    BlockOverrideDnsType: BlockOverrideDnsTypeSchema.exactOptional().openapi({
+      description:
+        "The DNS record's type. This determines the format of the record value that you provided in <code>BlockOverrideDomain</code>. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.",
+    }),
+    BlockOverrideTtl: BlockOverrideTtlSchema.exactOptional().openapi({
+      description:
+        'The recommended amount of time, in seconds, for the DNS resolver or web browser to cache the provided override record. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.',
+    }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the rule.' }),
   })
   .openapi({
     required: ['FirewallRuleGroupId', 'FirewallDomainListId'],
@@ -3857,39 +2601,29 @@ const UpdateFirewallRuleRequestSchema = z
 
 const UpdateFirewallRuleGroupAssociationResponseSchema = z
   .object({
-    FirewallRuleGroupAssociation: FirewallRuleGroupAssociationSchema.and(
-      z.any().openapi({ description: 'The association that you just updated. ' }),
-    ).exactOptional(),
+    FirewallRuleGroupAssociation: FirewallRuleGroupAssociationSchema.exactOptional().openapi({
+      description: 'The association that you just updated. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateFirewallRuleGroupAssociationResponse')
 
 const UpdateFirewallRuleGroupAssociationRequestSchema = z
   .object({
-    FirewallRuleGroupAssociationId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the <a>FirewallRuleGroupAssociation</a>. ' }),
-    ),
-    Priority: PrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The setting that determines the processing order of the rule group among the rule groups that you associate with the specified VPC. DNS Firewall filters VPC traffic starting from the rule group with the lowest numeric priority setting. </p> <p>You must specify a unique priority for each rule group that you associate with a single VPC. To make it easier to insert rule groups later, leave space between the numbers, for example, use 100, 200, and so on. You can change the priority setting for a rule group association after you create it.</p>',
-        }),
-    ).exactOptional(),
-    MutationProtection: MutationProtectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If enabled, this setting disallows modification or removal of the association, to help prevent against accidentally altering DNS firewall protections. ',
-        }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the rule group association.' }),
-    ).exactOptional(),
+    FirewallRuleGroupAssociationId: ResourceIdSchema.openapi({
+      description: 'The identifier of the <a>FirewallRuleGroupAssociation</a>. ',
+    }),
+    Priority: PrioritySchema.exactOptional().openapi({
+      description:
+        '<p>The setting that determines the processing order of the rule group among the rule groups that you associate with the specified VPC. DNS Firewall filters VPC traffic starting from the rule group with the lowest numeric priority setting. </p> <p>You must specify a unique priority for each rule group that you associate with a single VPC. To make it easier to insert rule groups later, leave space between the numbers, for example, use 100, 200, and so on. You can change the priority setting for a rule group association after you create it.</p>',
+    }),
+    MutationProtection: MutationProtectionStatusSchema.exactOptional().openapi({
+      description:
+        'If enabled, this setting disallows modification or removal of the association, to help prevent against accidentally altering DNS firewall protections. ',
+    }),
+    Name: NameSchema.exactOptional().openapi({
+      description: 'The name of the rule group association.',
+    }),
   })
   .openapi({
     required: ['FirewallRuleGroupAssociationId'],
@@ -3899,13 +2633,9 @@ const UpdateFirewallRuleGroupAssociationRequestSchema = z
 
 const UpdateResolverConfigResponseSchema = z
   .object({
-    ResolverConfig: ResolverConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array that contains settings for the specified Resolver configuration.',
-        }),
-    ).exactOptional(),
+    ResolverConfig: ResolverConfigSchema.exactOptional().openapi({
+      description: 'An array that contains settings for the specified Resolver configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateResolverConfigResponse')
@@ -3916,22 +2646,14 @@ const AutodefinedReverseFlagSchema = z
 
 const UpdateResolverConfigRequestSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Resource ID of the Amazon VPC that you want to update the Resolver configuration for.',
-        }),
-    ),
-    AutodefinedReverseFlag: AutodefinedReverseFlagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether or not the Resolver will create autodefined rules for reverse DNS lookups. This is enabled by default. Disabling this option will also affect EC2-Classic instances using ClassicLink. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html">ClassicLink</a> in the <i>Amazon EC2 guide</i>.</p> <important> <p>We are retiring EC2-Classic on August 15, 2022. We recommend that you migrate from EC2-Classic to a VPC. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html">Migrate from EC2-Classic to a VPC</a> in the <i>Amazon EC2 guide</i> and the blog <a href="http://aws.amazon.com/blogs/aws/ec2-classic-is-retiring-heres-how-to-prepare/">EC2-Classic Networking is Retiring – Here’s How to Prepare</a>.</p> </important> <note> <p>It can take some time for the status change to be completed.</p> </note> <p/>',
-        }),
-    ),
+    ResourceId: ResourceIdSchema.openapi({
+      description:
+        'Resource ID of the Amazon VPC that you want to update the Resolver configuration for.',
+    }),
+    AutodefinedReverseFlag: AutodefinedReverseFlagSchema.openapi({
+      description:
+        '<p>Indicates whether or not the Resolver will create autodefined rules for reverse DNS lookups. This is enabled by default. Disabling this option will also affect EC2-Classic instances using ClassicLink. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html">ClassicLink</a> in the <i>Amazon EC2 guide</i>.</p> <important> <p>We are retiring EC2-Classic on August 15, 2022. We recommend that you migrate from EC2-Classic to a VPC. For more information, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html">Migrate from EC2-Classic to a VPC</a> in the <i>Amazon EC2 guide</i> and the blog <a href="http://aws.amazon.com/blogs/aws/ec2-classic-is-retiring-heres-how-to-prepare/">EC2-Classic Networking is Retiring – Here’s How to Prepare</a>.</p> </important> <note> <p>It can take some time for the status change to be completed.</p> </note> <p/>',
+    }),
   })
   .openapi({
     required: ['ResourceId', 'AutodefinedReverseFlag'],
@@ -3941,14 +2663,9 @@ const UpdateResolverConfigRequestSchema = z
 
 const UpdateResolverDnssecConfigResponseSchema = z
   .object({
-    ResolverDNSSECConfig: ResolverDnssecConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A complex type that contains settings for the specified DNSSEC configuration.',
-        }),
-    ).exactOptional(),
+    ResolverDNSSECConfig: ResolverDnssecConfigSchema.exactOptional().openapi({
+      description: 'A complex type that contains settings for the specified DNSSEC configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateResolverDnssecConfigResponse')
@@ -3959,52 +2676,35 @@ const ValidationSchema = z
 
 const UpdateResolverDnssecConfigRequestSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the virtual private cloud (VPC) that you're updating the DNSSEC validation status for.",
-        }),
-    ),
-    Validation: ValidationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new value that you are specifying for DNSSEC validation for the VPC. The value can be <code>ENABLE</code> or <code>DISABLE</code>. Be aware that it can take time for a validation status change to be completed.',
-        }),
-    ),
+    ResourceId: ResourceIdSchema.openapi({
+      description:
+        "The ID of the virtual private cloud (VPC) that you're updating the DNSSEC validation status for.",
+    }),
+    Validation: ValidationSchema.openapi({
+      description:
+        'The new value that you are specifying for DNSSEC validation for the VPC. The value can be <code>ENABLE</code> or <code>DISABLE</code>. Be aware that it can take time for a validation status change to be completed.',
+    }),
   })
   .openapi({ required: ['ResourceId', 'Validation'], title: 'UpdateResolverDnssecConfigRequest' })
   .openapi('UpdateResolverDnssecConfigRequest')
 
 const UpdateResolverEndpointResponseSchema = z
   .object({
-    ResolverEndpoint: ResolverEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The response to an <code>UpdateResolverEndpoint</code> request.',
-        }),
-    ).exactOptional(),
+    ResolverEndpoint: ResolverEndpointSchema.exactOptional().openapi({
+      description: 'The response to an <code>UpdateResolverEndpoint</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateResolverEndpointResponse')
 
 const UpdateIpAddressSchema = z
   .object({
-    IpId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ID of the IP address, specified by the <code>ResolverEndpointId</code>. ',
-        }),
-    ),
-    Ipv6: Ipv6Schema.and(
-      z.any().openapi({ description: ' The IPv6 address that you want to use for DNS queries. ' }),
-    ),
+    IpId: ResourceIdSchema.openapi({
+      description: ' The ID of the IP address, specified by the <code>ResolverEndpointId</code>. ',
+    }),
+    Ipv6: Ipv6Schema.openapi({
+      description: ' The IPv6 address that you want to use for DNS queries. ',
+    }),
   })
   .openapi({
     required: ['IpId', 'Ipv6'],
@@ -4021,70 +2721,46 @@ const UpdateIpAddressesSchema = z
 
 const UpdateResolverEndpointRequestSchema = z
   .object({
-    ResolverEndpointId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Resolver endpoint that you want to update.' }),
-    ),
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the Resolver endpoint that you want to update.' }),
-    ).exactOptional(),
-    ResolverEndpointType: ResolverEndpointTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the endpoint type for what type of IP address the endpoint uses to forward DNS queries. ',
-        }),
-    ).exactOptional(),
-    UpdateIpAddresses: UpdateIpAddressesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Updates the Resolver endpoint type to IpV4, Ipv6, or dual-stack. ',
-        }),
-    ).exactOptional(),
+    ResolverEndpointId: ResourceIdSchema.openapi({
+      description: 'The ID of the Resolver endpoint that you want to update.',
+    }),
+    Name: NameSchema.exactOptional().openapi({
+      description: 'The name of the Resolver endpoint that you want to update.',
+    }),
+    ResolverEndpointType: ResolverEndpointTypeSchema.exactOptional().openapi({
+      description:
+        ' Specifies the endpoint type for what type of IP address the endpoint uses to forward DNS queries. ',
+    }),
+    UpdateIpAddresses: UpdateIpAddressesSchema.exactOptional().openapi({
+      description: ' Updates the Resolver endpoint type to IpV4, Ipv6, or dual-stack. ',
+    }),
   })
   .openapi({ required: ['ResolverEndpointId'], title: 'UpdateResolverEndpointRequest' })
   .openapi('UpdateResolverEndpointRequest')
 
 const UpdateResolverRuleResponseSchema = z
   .object({
-    ResolverRule: ResolverRuleSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The response to an <code>UpdateResolverRule</code> request.' }),
-    ).exactOptional(),
+    ResolverRule: ResolverRuleSchema.exactOptional().openapi({
+      description: 'The response to an <code>UpdateResolverRule</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateResolverRuleResponse')
 
 const ResolverRuleConfigSchema = z
   .object({
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new name for the Resolver rule. The name that you specify appears in the Resolver dashboard in the Route 53 console. ',
-        }),
-    ).exactOptional(),
-    TargetIps: TargetListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For DNS queries that originate in your VPC, the new IP addresses that you want to route outbound DNS queries to.',
-        }),
-    ).exactOptional(),
-    ResolverEndpointId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the new outbound Resolver endpoint that you want to use to route DNS queries to the IP addresses that you specify in <code>TargetIps</code>.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.exactOptional().openapi({
+      description:
+        'The new name for the Resolver rule. The name that you specify appears in the Resolver dashboard in the Route 53 console. ',
+    }),
+    TargetIps: TargetListSchema.exactOptional().openapi({
+      description:
+        'For DNS queries that originate in your VPC, the new IP addresses that you want to route outbound DNS queries to.',
+    }),
+    ResolverEndpointId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the new outbound Resolver endpoint that you want to use to route DNS queries to the IP addresses that you specify in <code>TargetIps</code>.',
+    }),
   })
   .openapi({
     description:
@@ -4095,12 +2771,12 @@ const ResolverRuleConfigSchema = z
 
 const UpdateResolverRuleRequestSchema = z
   .object({
-    ResolverRuleId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Resolver rule that you want to update.' }),
-    ),
-    Config: ResolverRuleConfigSchema.and(
-      z.any().openapi({ description: 'The new settings for the Resolver rule.' }),
-    ),
+    ResolverRuleId: ResourceIdSchema.openapi({
+      description: 'The ID of the Resolver rule that you want to update.',
+    }),
+    Config: ResolverRuleConfigSchema.openapi({
+      description: 'The new settings for the Resolver rule.',
+    }),
   })
   .openapi({ required: ['ResolverRuleId', 'Config'], title: 'UpdateResolverRuleRequest' })
   .openapi('UpdateResolverRuleRequest')

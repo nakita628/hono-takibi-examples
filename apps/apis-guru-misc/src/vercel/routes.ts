@@ -11849,8 +11849,8 @@ export const postV2DomainsDomainRecordsRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .union([
+          schema: (() => {
+            const Operand = z.union([
               z
                 .strictObject({
                   name: z
@@ -12123,7 +12123,7 @@ export const postV2DomainsDomainRecordsRoute = createRoute({
                 })
                 .openapi({ required: ['type', 'name'] }),
             ])
-            .and(
+            const Schema = Operand.and(
               z
                 .object({
                   type: z
@@ -12134,7 +12134,68 @@ export const postV2DomainsDomainRecordsRoute = createRoute({
                 })
                 .openapi({ required: ['type'] }),
             )
-            .openapi({ required: ['type'] }),
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              const reported = ctx.issues.length
+              try {
+                ;((ctx) => {
+                  const o = ctx.value
+                  if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                  {
+                    const result = Operand.safeParse(o)
+                    if (
+                      !result.success &&
+                      result.error.issues.every(
+                        (issue) => issue.code === 'unrecognized_keys' && issue.path.length === 0,
+                      )
+                    ) {
+                      for (const issue of result.error.issues) {
+                        if (issue.code === 'unrecognized_keys') {
+                          for (const k of issue.keys) {
+                            ctx.issues.push({
+                              code: 'custom',
+                              path: [k],
+                              input: o,
+                              message: issue.message,
+                            })
+                          }
+                        }
+                      }
+                    }
+                  }
+                })(ctx)
+              } catch (error) {
+                if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                ctx.issues.length = reported
+                return (async (ctx) => {
+                  const o = ctx.value
+                  if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                  {
+                    const result = await Operand.safeParseAsync(o)
+                    if (
+                      !result.success &&
+                      result.error.issues.every(
+                        (issue) => issue.code === 'unrecognized_keys' && issue.path.length === 0,
+                      )
+                    ) {
+                      for (const issue of result.error.issues) {
+                        if (issue.code === 'unrecognized_keys') {
+                          for (const k of issue.keys) {
+                            ctx.issues.push({
+                              code: 'custom',
+                              path: [k],
+                              input: o,
+                              message: issue.message,
+                            })
+                          }
+                        }
+                      }
+                    }
+                  }
+                })(ctx).then(() => val)
+              }
+              return val
+            }, Schema)
+          })().openapi({ required: ['type'] }),
         },
       },
     },
@@ -14948,83 +15009,101 @@ export const postV4DomainsRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.xor([
-            z
-              .strictObject({
-                method: z
-                  .string()
-                  .openapi({
-                    description: 'The domain operation to perform.',
-                    examples: ['move-in'],
-                  }),
-                name: z
-                  .string()
-                  .openapi({
-                    description: 'The domain name you want to add.',
-                    examples: ['example.com'],
-                  }),
-                token: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'The move-in token from Move Requested email.',
-                    examples: ['fdhfr820ad#@FAdlj$$'],
-                  }),
-              })
-              .openapi({ required: ['method', 'name'] }),
-            z
-              .strictObject({
-                authCode: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'The authorization code assigned to the domain.',
-                    examples: ['fdhfr820ad#@FAdlj$$'],
-                  }),
-                expectedPrice: z
-                  .number()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The price you expect to be charged for the required 1 year renewal.',
-                    examples: [8],
-                  }),
-                method: z
-                  .string()
-                  .openapi({
-                    description: 'The domain operation to perform.',
-                    examples: ['transfer-in'],
-                  }),
-                name: z
-                  .string()
-                  .openapi({
-                    description: 'The domain name you want to add.',
-                    examples: ['example.com'],
-                  }),
-              })
-              .openapi({ required: ['method', 'name'] }),
-            z
-              .strictObject({
-                cdnEnabled: z
-                  .boolean()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Whether the domain has the Vercel Edge Network enabled or not.',
-                    examples: [true],
-                  }),
-                method: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The domain operation to perform.', examples: ['add'] }),
-                name: z
-                  .string()
-                  .openapi({
-                    description: 'The domain name you want to add.',
-                    examples: ['example.com'],
-                  }),
-              })
-              .openapi({ required: ['name'] }),
-          ]),
+          schema: z
+            .xor([
+              z
+                .strictObject({
+                  method: z
+                    .string()
+                    .openapi({
+                      description: 'The domain operation to perform.',
+                      examples: ['move-in'],
+                    }),
+                  name: z
+                    .string()
+                    .openapi({
+                      description: 'The domain name you want to add.',
+                      examples: ['example.com'],
+                    }),
+                  token: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description: 'The move-in token from Move Requested email.',
+                      examples: ['fdhfr820ad#@FAdlj$$'],
+                    }),
+                })
+                .openapi({ required: ['method', 'name'] }),
+              z
+                .strictObject({
+                  authCode: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description: 'The authorization code assigned to the domain.',
+                      examples: ['fdhfr820ad#@FAdlj$$'],
+                    }),
+                  expectedPrice: z
+                    .number()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The price you expect to be charged for the required 1 year renewal.',
+                      examples: [8],
+                    }),
+                  method: z
+                    .string()
+                    .openapi({
+                      description: 'The domain operation to perform.',
+                      examples: ['transfer-in'],
+                    }),
+                  name: z
+                    .string()
+                    .openapi({
+                      description: 'The domain name you want to add.',
+                      examples: ['example.com'],
+                    }),
+                })
+                .openapi({ required: ['method', 'name'] }),
+              z
+                .strictObject({
+                  cdnEnabled: z
+                    .boolean()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Whether the domain has the Vercel Edge Network enabled or not.',
+                      examples: [true],
+                    }),
+                  method: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description: 'The domain operation to perform.',
+                      examples: ['add'],
+                    }),
+                  name: z
+                    .string()
+                    .openapi({
+                      description: 'The domain name you want to add.',
+                      examples: ['example.com'],
+                    }),
+                })
+                .openapi({ required: ['name'] }),
+            ])
+            .and(
+              z
+                .object({
+                  method: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The domain operation to perform. It can be either `add` or `transfer-in`.',
+                      examples: ['transfer-in'],
+                    }),
+                })
+                .openapi({ required: [] }),
+            ),
         },
       },
     },

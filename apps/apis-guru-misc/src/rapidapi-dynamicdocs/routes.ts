@@ -144,7 +144,7 @@ export const postTemplatesTemplateTokenCompileRoute = createRoute({
       description: 'Post the dynamic data for the template to compile the document PDF.',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             'Example of dynamic data for the simple report template': {
               value: {
@@ -178,7 +178,7 @@ export const postTemplatesTemplateTokenCompileRoute = createRoute({
       description: 'Document Status URL Created',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             'Document Status URL': {
               value: {

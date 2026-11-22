@@ -25,7 +25,9 @@ export const basicHandler = app
   })
   .openapi(
     getCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(postCrmAssociations202609UsageHighUsageReportUserIdRoute, (c) => {
     throw new Error('Not implemented')
@@ -41,7 +43,9 @@ export const basicHandler = app
   })
   .openapi(
     deleteCrmAssociations202609FromObjectTypeToObjectTypeLabelsAssociationTypeIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(getCrmObjects202609ObjectTypeRoute, (c) => {
     throw new Error('Not implemented')
@@ -64,7 +68,6 @@ export const basicHandler = app
   .openapi(putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute,
-    (c) => {},
-  )
+  .openapi(deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })

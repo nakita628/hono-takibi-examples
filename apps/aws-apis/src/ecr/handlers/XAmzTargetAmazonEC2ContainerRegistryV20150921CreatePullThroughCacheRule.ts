@@ -6,5 +6,7 @@ const app = new OpenAPIHono()
 export const XAmzTargetAmazonEC2ContainerRegistryV20150921CreatePullThroughCacheRuleHandler =
   app.openapi(
     postXAmzTargetAmazonEC2ContainerRegistryV20150921CreatePullThroughCacheRuleRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

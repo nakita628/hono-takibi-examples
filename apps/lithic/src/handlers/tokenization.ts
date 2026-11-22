@@ -75,7 +75,9 @@ export const postV1TokenizationsTokenizationTokenPaymentCredentialsRouteHandler:
 
 export const getV1TokenizationsRouteHandler: RouteHandler<typeof getV1TokenizationsRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const getV1TokenizationsTokenizationTokenRouteHandler: RouteHandler<
   typeof getV1TokenizationsTokenizationTokenRoute

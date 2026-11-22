@@ -1,5 +1,172 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const ErrorSchema = z
+  .object({
+    code: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'See the https://developers.facebook.com/docs/whatsapp/api/errors for more information.',
+      }),
+    details: z.string().exactOptional().openapi({ description: 'error detail' }),
+    href: z.string().exactOptional().openapi({ description: 'location for error detail' }),
+    title: z.string().exactOptional().openapi({ description: 'error title' }),
+  })
+  .openapi({
+    description: '',
+    example: { code: 1234, details: 'optional-detailed-error-message', title: 'error-code-title' },
+    title: 'Error',
+    required: [],
+  })
+  .openapi('Error')
+
+const MetaSchema = z
+  .object({
+    api_status: z.enum(['deprecated', 'experimental', 'stable']).exactOptional(),
+    version: z.string().exactOptional(),
+  })
+  .openapi({
+    description: 'Contains generic information such as WhatsApp Business API Client version.',
+    example: { api_status: 'stable', version: 'whatsapp-business-api-client-version' },
+    title: 'Meta',
+    required: [],
+  })
+  .openapi('Meta')
+
+const ResponseSchema = z
+  .object({
+    errors: z
+      .array(ErrorSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Only returned with a failed request. Contains an array of error objects that are present when there is an error. ',
+      }),
+    meta: MetaSchema.exactOptional(),
+  })
+  .openapi({
+    description: '',
+    example: {
+      errors: [
+        { code: 1234, details: 'optional-detailed-error-message', title: 'error-code-title' },
+      ],
+      meta: { api_status: 'deprecated', version: 'whatsapp-business-api-client-version' },
+    },
+    title: 'Response',
+    required: [],
+  })
+  .openapi('Response')
+
+const ConfigBearerSchema = z
+  .object({ bearer: z.string() })
+  .openapi({ example: { bearer: '<Bearer Auth Token>' }, required: ['bearer'], title: 'Config' })
+  .openapi('ConfigBearer')
+
+const BasicSchema = z
+  .object({ password: z.string().exactOptional(), username: z.string().exactOptional() })
+  .openapi({
+    description: '',
+    example: { password: 'your-password', username: 'your-username' },
+    title: 'Root Type for Basic',
+    required: [],
+  })
+  .openapi('Basic')
+
+const ConfigBasicSchema = z
+  .object({ basic: BasicSchema.exactOptional() })
+  .openapi({
+    example: { basic: { password: 'your-password', username: 'your-username' } },
+    title: 'Config',
+    required: [],
+  })
+  .openapi('ConfigBasic')
+
+const ConfigSchema = z
+  .xor([ConfigBearerSchema, ConfigBasicSchema])
+  .openapi({ title: 'Config' })
+  .openapi('Config')
+
+const MediaProviderSchema = z
+  .object({
+    config: ConfigSchema.exactOptional(),
+    name: z.string().exactOptional().openapi({ description: 'The name for the provider' }),
+    type: z.string().exactOptional().openapi({ description: 'The type of provider' }),
+  })
+  .openapi({
+    example: { config: { bearer: '<Bearer Auth Token>' }, name: '<Provider Name>', type: 'www' },
+    title: 'Update-Media-Providers-Request',
+    required: [],
+  })
+  .openapi('MediaProvider')
+
+const MediaProviderSettingsApplicationMediaSchema = z
+  .object({ providers: z.array(MediaProviderSchema).exactOptional() })
+  .openapi({
+    description: '',
+    example: {
+      providers: [
+        {
+          config: { basic: { password: 'your-password', username: 'your-username' } },
+          name: 'your-first-provider',
+          type: 'www',
+        },
+        { config: { bearer: 'your-bearer-token' }, name: 'your-second-provider', type: 'www' },
+      ],
+    },
+    title: 'Root Type for Settings-Application-Media',
+    required: [],
+  })
+  .openapi('MediaProviderSettingsApplicationMedia')
+
+const MediaProviderSettingsApplicationSchema = z
+  .object({ media: MediaProviderSettingsApplicationMediaSchema.exactOptional() })
+  .openapi({
+    description: '',
+    example: {
+      media: {
+        providers: [
+          {
+            config: { basic: { password: 'your-password', username: 'your-username' } },
+            name: 'your-first-provider',
+            type: 'www',
+          },
+          { config: { bearer: 'your-bearer-token' }, name: 'your-second-provider', type: 'www' },
+        ],
+      },
+    },
+    title: 'Root Type for Settings-Application',
+    required: [],
+  })
+  .openapi('MediaProviderSettingsApplication')
+
+const MediaProviderSettingsSchema = z
+  .object({ application: MediaProviderSettingsApplicationSchema.exactOptional() })
+  .openapi({
+    description: '',
+    example: {
+      application: {
+        media: {
+          providers: [
+            {
+              config: { basic: { password: 'your-password', username: 'your-username' } },
+              name: 'your-first-provider',
+              type: 'www',
+            },
+            { config: { bearer: 'your-bearer-token' }, name: 'your-second-provider', type: 'www' },
+          ],
+        },
+      },
+    },
+    title: 'Root Type for Settings',
+    required: [],
+  })
+  .openapi('MediaProviderSettings')
+
+type GetMediaProvidersResponseType = z.infer<typeof ResponseSchema> & {
+  settings?: z.infer<typeof MediaProviderSettingsSchema>
+}
+
 const AddressSchema = z
   .object({
     city: z.string().openapi({ description: 'City name' }),
@@ -214,16 +381,6 @@ const BackupSettingsResponseSchema = z
   })
   .openapi('BackupSettingsResponse')
 
-const BasicSchema = z
-  .object({ password: z.string().exactOptional(), username: z.string().exactOptional() })
-  .openapi({
-    description: '',
-    example: { password: 'your-password', username: 'your-username' },
-    title: 'Root Type for Basic',
-    required: [],
-  })
-  .openapi('Basic')
-
 const BusinessProfileSchema = z
   .object({
     address: z
@@ -353,64 +510,6 @@ const CheckContactRequestBodySchema = z
   })
   .openapi('CheckContactRequestBody')
 
-const ErrorSchema = z
-  .object({
-    code: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'See the https://developers.facebook.com/docs/whatsapp/api/errors for more information.',
-      }),
-    details: z.string().exactOptional().openapi({ description: 'error detail' }),
-    href: z.string().exactOptional().openapi({ description: 'location for error detail' }),
-    title: z.string().exactOptional().openapi({ description: 'error title' }),
-  })
-  .openapi({
-    description: '',
-    example: { code: 1234, details: 'optional-detailed-error-message', title: 'error-code-title' },
-    title: 'Error',
-    required: [],
-  })
-  .openapi('Error')
-
-const MetaSchema = z
-  .object({
-    api_status: z.enum(['deprecated', 'experimental', 'stable']).exactOptional(),
-    version: z.string().exactOptional(),
-  })
-  .openapi({
-    description: 'Contains generic information such as WhatsApp Business API Client version.',
-    example: { api_status: 'stable', version: 'whatsapp-business-api-client-version' },
-    title: 'Meta',
-    required: [],
-  })
-  .openapi('Meta')
-
-const ResponseSchema = z
-  .object({
-    errors: z
-      .array(ErrorSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Only returned with a failed request. Contains an array of error objects that are present when there is an error. ',
-      }),
-    meta: MetaSchema.exactOptional(),
-  })
-  .openapi({
-    description: '',
-    example: {
-      errors: [
-        { code: 1234, details: 'optional-detailed-error-message', title: 'error-code-title' },
-      ],
-      meta: { api_status: 'deprecated', version: 'whatsapp-business-api-client-version' },
-    },
-    title: 'Response',
-    required: [],
-  })
-  .openapi('Response')
-
 const CheckContactResponseSchema = ResponseSchema.and(
   z.object({ contacts: z.array(CheckContactSchema).exactOptional() }).openapi({ required: [] }),
 )
@@ -470,25 +569,6 @@ const CheckHealthResponseSchema = z
     required: [],
   })
   .openapi('CheckHealthResponse')
-
-const ConfigBearerSchema = z
-  .object({ bearer: z.string() })
-  .openapi({ example: { bearer: '<Bearer Auth Token>' }, required: ['bearer'], title: 'Config' })
-  .openapi('ConfigBearer')
-
-const ConfigBasicSchema = z
-  .object({ basic: BasicSchema.exactOptional() })
-  .openapi({
-    example: { basic: { password: 'your-password', username: 'your-username' } },
-    title: 'Config',
-    required: [],
-  })
-  .openapi('ConfigBasic')
-
-const ConfigSchema = z
-  .xor([ConfigBearerSchema, ConfigBasicSchema])
-  .openapi({ title: 'Config' })
-  .openapi('Config')
 
 const EmailSchema = z
   .object({ email: z.string(), type: z.string() })
@@ -819,110 +899,35 @@ const GetBusinessProfileResponseSchema = ResponseSchema.and(
   })
   .openapi('GetBusinessProfileResponse')
 
-const MediaProviderSchema = z
-  .object({
-    config: ConfigSchema.exactOptional(),
-    name: z.string().exactOptional().openapi({ description: 'The name for the provider' }),
-    type: z.string().exactOptional().openapi({ description: 'The type of provider' }),
-  })
-  .openapi({
-    example: { config: { bearer: '<Bearer Auth Token>' }, name: '<Provider Name>', type: 'www' },
-    title: 'Update-Media-Providers-Request',
-    required: [],
-  })
-  .openapi('MediaProvider')
-
-const MediaProviderSettingsApplicationMediaSchema = z
-  .object({ providers: z.array(MediaProviderSchema).exactOptional() })
-  .openapi({
-    description: '',
-    example: {
-      providers: [
-        {
-          config: { basic: { password: 'your-password', username: 'your-username' } },
-          name: 'your-first-provider',
-          type: 'www',
-        },
-        { config: { bearer: 'your-bearer-token' }, name: 'your-second-provider', type: 'www' },
-      ],
-    },
-    title: 'Root Type for Settings-Application-Media',
-    required: [],
-  })
-  .openapi('MediaProviderSettingsApplicationMedia')
-
-const MediaProviderSettingsApplicationSchema = z
-  .object({ media: MediaProviderSettingsApplicationMediaSchema.exactOptional() })
-  .openapi({
-    description: '',
-    example: {
-      media: {
-        providers: [
-          {
-            config: { basic: { password: 'your-password', username: 'your-username' } },
-            name: 'your-first-provider',
-            type: 'www',
-          },
-          { config: { bearer: 'your-bearer-token' }, name: 'your-second-provider', type: 'www' },
-        ],
-      },
-    },
-    title: 'Root Type for Settings-Application',
-    required: [],
-  })
-  .openapi('MediaProviderSettingsApplication')
-
-const MediaProviderSettingsSchema = z
-  .object({ application: MediaProviderSettingsApplicationSchema.exactOptional() })
-  .openapi({
-    description: '',
-    example: {
-      application: {
-        media: {
-          providers: [
-            {
-              config: { basic: { password: 'your-password', username: 'your-username' } },
-              name: 'your-first-provider',
-              type: 'www',
+const GetMediaProvidersResponseSchema: z.ZodType<GetMediaProvidersResponseType> =
+  ResponseSchema.and(
+    z.object({ settings: MediaProviderSettingsSchema.exactOptional() }).openapi({ required: [] }),
+  )
+    .openapi({
+      description: '',
+      example: {
+        settings: {
+          application: {
+            media: {
+              providers: [
+                {
+                  config: { basic: { password: 'your-password', username: 'your-username' } },
+                  name: 'your-first-provider',
+                  type: 'www',
+                },
+                {
+                  config: { bearer: 'your-bearer-token' },
+                  name: 'your-second-provider',
+                  type: 'www',
+                },
+              ],
             },
-            { config: { bearer: 'your-bearer-token' }, name: 'your-second-provider', type: 'www' },
-          ],
-        },
-      },
-    },
-    title: 'Root Type for Settings',
-    required: [],
-  })
-  .openapi('MediaProviderSettings')
-
-const GetMediaProvidersResponseSchema = ResponseSchema.and(
-  z.object({ settings: MediaProviderSettingsSchema.exactOptional() }).openapi({ required: [] }),
-)
-  .openapi({
-    description: '',
-    example: {
-      settings: {
-        application: {
-          media: {
-            providers: [
-              {
-                config: { basic: { password: 'your-password', username: 'your-username' } },
-                name: 'your-first-provider',
-                type: 'www',
-              },
-              {
-                config: { bearer: 'your-bearer-token' },
-                name: 'your-second-provider',
-                type: 'www',
-              },
-            ],
           },
         },
       },
-    },
-    title: 'Root Type for Get-Media-Providers-Response',
-  })
-  .openapi('GetMediaProvidersResponse')
+      title: 'Root Type for Get-Media-Providers-Response',
+    })
+    .openapi('GetMediaProvidersResponse')
 
 const ProfileAboutSchema = z
   .object({
@@ -1474,7 +1479,7 @@ const SendMessageRequestBodySchema = z
         description:
           'When recipient_type is individual, this field is the WhatsApp ID (phone number) returned from contacts endpoint. When recipient_type is group, this field is the WhatsApp group ID.',
       }),
-    ttl: z.object({}).exactOptional(),
+    ttl: z.looseObject({}).exactOptional(),
     type: MessageTypeSchema.exactOptional(),
     video: VideoSchema.exactOptional(),
   })
@@ -2820,7 +2825,7 @@ export const getMetricsRoute = createRoute({
     200: {
       description: '',
       content: {
-        'application/json': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
         'text/plain': { schema: z.string() },
       },
     },
@@ -3188,7 +3193,7 @@ export const getStatsAppRoute = createRoute({
     200: {
       description: '',
       content: {
-        'application/json': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
         'text/plain': { schema: z.string() },
       },
     },
@@ -3222,7 +3227,7 @@ export const getStatsDbRoute = createRoute({
     200: {
       description: '',
       content: {
-        'application/json': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
         'text/plain': { schema: z.string() },
       },
     },
@@ -3236,7 +3241,7 @@ export const getSupportRoute = createRoute({
   summary: 'Get-Support-Info',
   operationId: 'GetSupportInfo',
   responses: {
-    200: { description: '', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: '', content: { 'application/json': { schema: z.looseObject({}) } } },
   },
 })
 

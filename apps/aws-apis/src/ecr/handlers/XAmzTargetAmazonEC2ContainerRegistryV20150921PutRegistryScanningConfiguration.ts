@@ -6,5 +6,7 @@ const app = new OpenAPIHono()
 export const XAmzTargetAmazonEC2ContainerRegistryV20150921PutRegistryScanningConfigurationHandler =
   app.openapi(
     postXAmzTargetAmazonEC2ContainerRegistryV20150921PutRegistryScanningConfigurationRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

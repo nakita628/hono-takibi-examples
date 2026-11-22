@@ -1,294 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const StackNameSchema = z
-  .string()
-  .regex(/^[a-zA-Z*]+[a-zA-Z0-9-]*$/)
-  .min(1)
-  .max(128)
-  .openapi('StackName')
-
-const CostEstimationStackNamesSchema = z
-  .array(StackNameSchema)
-  .length(1)
-  .openapi('CostEstimationStackNames')
-
-const CloudFormationCostEstimationResourceCollectionFilterSchema = z
-  .object({
-    StackNames: CostEstimationStackNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of CloudFormation stack names. Its size is fixed at 1 item.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Information about an Amazon Web Services CloudFormation stack used to create a monthly cost estimate for DevOps Guru to analyze Amazon Web Services resources. The maximum number of stacks you can specify for a cost estimate is one. The estimate created is for the cost to analyze the Amazon Web Services resources defined by the stack. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacks.html">Stacks</a> in the <i>Amazon Web Services CloudFormation User Guide</i>.',
-    required: [],
-  })
-  .openapi('CloudFormationCostEstimationResourceCollectionFilter')
-
-const AppBoundaryKeySchema = z
-  .string()
-  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*)$/u)
-  .min(1)
-  .max(128)
-  .openapi('AppBoundaryKey')
-
-const TagValueSchema = z
-  .string()
-  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*|\*)$/u)
-  .min(0)
-  .max(256)
-  .openapi('TagValue')
-
-const CostEstimationTagValuesSchema = z
-  .array(TagValueSchema)
-  .length(1)
-  .openapi('CostEstimationTagValues')
-
-const TagCostEstimationResourceCollectionFilterSchema = z
-  .object({
-    AppBoundaryKey: AppBoundaryKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An Amazon Web Services tag <i>key</i> that is used to identify the Amazon Web Services resources that DevOps Guru analyzes. All Amazon Web Services resources in your account and Region tagged with this <i>key</i> make up your DevOps Guru application and analysis boundary.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
-        }),
-    ),
-    TagValues: CostEstimationTagValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The values in an Amazon Web Services tag collection.</p> <p>The tag's <i>value</i> is an optional field used to associate a string with the tag <i>key</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). The <i>key</i> and <i>value</i> are the tag's <i>key</i> pair. Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive. You can specify a maximum of 256 characters for a tag value.</p>",
-        }),
-    ),
-  })
-  .openapi({
-    required: ['AppBoundaryKey', 'TagValues'],
-    description:
-      'Information about a collection of Amazon Web Services resources that are identified by an Amazon Web Services tag. This collection of resources is used to create a monthly cost estimate for DevOps Guru to analyze Amazon Web Services resources. The maximum number of tags you can specify for a cost estimate is one. The estimate created is for the cost to analyze the Amazon Web Services resources defined by the tag. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacks.html">Stacks</a> in the <i>Amazon Web Services CloudFormation User Guide</i>.',
-  })
-  .openapi('TagCostEstimationResourceCollectionFilter')
-
-const TagCostEstimationResourceCollectionFiltersSchema = z
-  .array(TagCostEstimationResourceCollectionFilterSchema)
-  .openapi('TagCostEstimationResourceCollectionFilters')
-
-type CostEstimationResourceCollectionFilterType = {
-  CloudFormation?: z.infer<typeof CloudFormationCostEstimationResourceCollectionFilterSchema> & {
-    [key: string]: unknown
-  }
-  Tags?: z.infer<typeof TagCostEstimationResourceCollectionFiltersSchema> & {
-    [key: string]: unknown
-  }
-}
-
-const NotificationChannelIdSchema = z
-  .string()
-  .regex(/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/)
-  .length(36)
-  .openapi('NotificationChannelId')
-
-const AddNotificationChannelResponseSchema = z
-  .object({
-    Id: NotificationChannelIdSchema.and(
-      z.any().openapi({ description: ' The ID of the added notification channel. ' }),
-    ),
-  })
-  .openapi({ required: ['Id'] })
-  .openapi('AddNotificationChannelResponse')
-
-const TopicArnSchema = z
-  .string()
-  .regex(/^arn:aws[a-z0-9-]*:sns:[a-z0-9-]+:\d{12}:[^:]+$/)
-  .min(36)
-  .max(1024)
-  .openapi('TopicArn')
-
-const SnsChannelConfigSchema = z
-  .object({
-    TopicArn: TopicArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Name (ARN) of an Amazon Simple Notification Service topic. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p> Contains the Amazon Resource Name (ARN) of an Amazon Simple Notification Service topic. </p> <p>If you use an Amazon SNS topic in another account, you must attach a policy to it that grants DevOps Guru permission to it notifications. DevOps Guru adds the required policy on your behalf to send notifications using Amazon SNS in your account. DevOps Guru only supports standard SNS topics. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/sns-required-permissions.html">Permissions for cross account Amazon SNS topics</a>.</p> <p>If you use an Amazon SNS topic in another account, you must attach a policy to it that grants DevOps Guru permission to it notifications. DevOps Guru adds the required policy on your behalf to send notifications using Amazon SNS in your account. For more information, see Permissions for cross account Amazon SNS topics.</p> <p>If you use an Amazon SNS topic that is encrypted by an Amazon Web Services Key Management Service customer-managed key (CMK), then you must add permissions to the CMK. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/sns-kms-permissions.html">Permissions for Amazon Web Services KMS–encrypted Amazon SNS topics</a>.</p>',
-    required: [],
-  })
-  .openapi('SnsChannelConfig')
-
-const InsightSeveritySchema = z.enum(['LOW', 'MEDIUM', 'HIGH']).openapi('InsightSeverity')
-
-const InsightSeveritiesSchema = z
-  .array(InsightSeveritySchema)
-  .min(0)
-  .max(3)
-  .openapi('InsightSeverities')
-
-const NotificationMessageTypeSchema = z
-  .enum([
-    'NEW_INSIGHT',
-    'CLOSED_INSIGHT',
-    'NEW_ASSOCIATION',
-    'SEVERITY_UPGRADED',
-    'NEW_RECOMMENDATION',
-  ])
-  .openapi('NotificationMessageType')
-
-const NotificationMessageTypesSchema = z
-  .array(NotificationMessageTypeSchema)
-  .min(0)
-  .max(5)
-  .openapi('NotificationMessageTypes')
-
-const NotificationFilterConfigSchema = z
-  .object({
-    Severities: InsightSeveritiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The severity levels that you want to receive notifications for. For example, you can choose to receive notifications only for insights with <code>HIGH</code> and <code>MEDIUM</code> severity levels. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a>. ',
-        }),
-    ).exactOptional(),
-    MessageTypes: NotificationMessageTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The events that you want to receive notifications for. For example, you can choose to receive notifications only when the severity level is upgraded or a new insight is created. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      ' The filter configurations for the Amazon SNS notification topic you use with DevOps Guru. You can choose to specify which events or message types to receive notifications for. You can also choose to specify which severity levels to receive notifications for. ',
-    required: [],
-  })
-  .openapi('NotificationFilterConfig')
-
-const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
-
-const ConflictExceptionSchema = z.any().openapi('ConflictException')
-
-const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
-
-const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
-
-const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceededException')
-
-const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
-
-const ValidationExceptionSchema = z.any().openapi('ValidationException')
-
-const DeleteInsightResponseSchema = z.object({}).openapi('DeleteInsightResponse')
-
-const NumOpenReactiveInsightsSchema = z.int().openapi('NumOpenReactiveInsights')
-
-const NumOpenProactiveInsightsSchema = z.int().openapi('NumOpenProactiveInsights')
-
-const NumMetricsAnalyzedSchema = z.int().openapi('NumMetricsAnalyzed')
-
-const ResourceHoursSchema = z.int().openapi('ResourceHours')
-
-const AnalyzedResourceCountSchema = z.int().openapi('AnalyzedResourceCount')
-
-const DescribeAccountHealthResponseSchema = z
-  .object({
-    OpenReactiveInsights: NumOpenReactiveInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An integer that specifies the number of open reactive insights in your Amazon Web Services account. ',
-        }),
-    ),
-    OpenProactiveInsights: NumOpenProactiveInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An integer that specifies the number of open proactive insights in your Amazon Web Services account. ',
-        }),
-    ),
-    MetricsAnalyzed: NumMetricsAnalyzedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An integer that specifies the number of metrics that have been analyzed in your Amazon Web Services account. ',
-        }),
-    ),
-    ResourceHours: ResourceHoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Amazon DevOps Guru resource analysis hours billed to the current Amazon Web Services account in the last hour. ',
-        }),
-    ),
-    AnalyzedResourceCount: AnalyzedResourceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Number of resources that DevOps Guru is monitoring in your Amazon Web Services account. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['OpenReactiveInsights', 'OpenProactiveInsights', 'MetricsAnalyzed', 'ResourceHours'],
-  })
-  .openapi('DescribeAccountHealthResponse')
-
-const NumReactiveInsightsSchema = z.int().openapi('NumReactiveInsights')
-
-const NumProactiveInsightsSchema = z.int().openapi('NumProactiveInsights')
-
-const MeanTimeToRecoverInMillisecondsSchema = z.int().openapi('MeanTimeToRecoverInMilliseconds')
-
-const DescribeAccountOverviewResponseSchema = z
-  .object({
-    ReactiveInsights: NumReactiveInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An integer that specifies the number of open reactive insights in your Amazon Web Services account that were created during the time range passed in. ',
-        }),
-    ),
-    ProactiveInsights: NumProactiveInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An integer that specifies the number of open proactive insights in your Amazon Web Services account that were created during the time range passed in. ',
-        }),
-    ),
-    MeanTimeToRecoverInMilliseconds: MeanTimeToRecoverInMillisecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Mean Time to Recover (MTTR) for all closed insights that were created during the time range passed in. ',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['ReactiveInsights', 'ProactiveInsights', 'MeanTimeToRecoverInMilliseconds'],
-  })
-  .openapi('DescribeAccountOverviewResponse')
-
 const AnomalyIdSchema = z
   .string()
   .regex(/^[\w~.-]*$/)
@@ -304,12 +15,12 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const AnomalyTimeRangeSchema = z
   .object({
-    StartTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when the anomalous behavior started. ' }),
-    ),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when the anomalous behavior ended. ' }),
-    ).exactOptional(),
+    StartTime: TimestampSchema.openapi({
+      description: ' The time when the anomalous behavior started. ',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: ' The time when the anomalous behavior ended. ',
+    }),
   })
   .openapi({
     required: ['StartTime'],
@@ -320,12 +31,10 @@ const AnomalyTimeRangeSchema = z
 
 const AnomalyReportedTimeRangeSchema = z
   .object({
-    OpenTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when an anomaly is opened. ' }),
-    ),
-    CloseTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when an anomaly is closed. ' }),
-    ).exactOptional(),
+    OpenTime: TimestampSchema.openapi({ description: ' The time when an anomaly is opened. ' }),
+    CloseTime: TimestampSchema.exactOptional().openapi({
+      description: ' The time when an anomaly is closed. ',
+    }),
   })
   .openapi({
     required: ['OpenTime'],
@@ -336,21 +45,13 @@ const AnomalyReportedTimeRangeSchema = z
 
 const PredictionTimeRangeSchema = z
   .object({
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The time range during which a metric limit is expected to be exceeded. This applies to proactive insights only. ',
-        }),
-    ),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The time when the behavior in a proactive insight is expected to end. ',
-        }),
-    ).exactOptional(),
+    StartTime: TimestampSchema.openapi({
+      description:
+        ' The time range during which a metric limit is expected to be exceeded. This applies to proactive insights only. ',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: ' The time when the behavior in a proactive insight is expected to end. ',
+    }),
   })
   .openapi({
     required: ['StartTime'],
@@ -369,12 +70,12 @@ const CloudWatchMetricsDimensionValueSchema = z.string().openapi('CloudWatchMetr
 
 const CloudWatchMetricsDimensionSchema = z
   .object({
-    Name: CloudWatchMetricsDimensionNameSchema.and(
-      z.any().openapi({ description: ' The name of the CloudWatch dimension. ' }),
-    ).exactOptional(),
-    Value: CloudWatchMetricsDimensionValueSchema.and(
-      z.any().openapi({ description: ' The value of the CloudWatch dimension. ' }),
-    ).exactOptional(),
+    Name: CloudWatchMetricsDimensionNameSchema.exactOptional().openapi({
+      description: ' The name of the CloudWatch dimension. ',
+    }),
+    Value: CloudWatchMetricsDimensionValueSchema.exactOptional().openapi({
+      description: ' The value of the CloudWatch dimension. ',
+    }),
   })
   .openapi({
     description:
@@ -399,20 +100,12 @@ const MetricValueSchema = z.float64().openapi('MetricValue')
 
 const TimestampMetricValuePairSchema = z
   .object({
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A <code>Timestamp</code> that specifies the time the event occurred. ',
-        }),
-    ).exactOptional(),
-    MetricValue: MetricValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Value of the anomalous metric data point at respective Timestamp.',
-        }),
-    ).exactOptional(),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description: 'A <code>Timestamp</code> that specifies the time the event occurred. ',
+    }),
+    MetricValue: MetricValueSchema.exactOptional().openapi({
+      description: 'Value of the anomalous metric data point at respective Timestamp.',
+    }),
   })
   .openapi({
     description: 'A pair that contains metric values at the respective timestamp.',
@@ -430,21 +123,13 @@ const CloudWatchMetricDataStatusCodeSchema = z
 
 const CloudWatchMetricsDataSummarySchema = z
   .object({
-    TimestampMetricValuePairList: TimestampMetricValuePairListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'This is a list of Amazon CloudWatch metric values at given timestamp.',
-        }),
-    ).exactOptional(),
-    StatusCode: CloudWatchMetricDataStatusCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is an enum of the status showing whether the metric value pair list has partial or complete data, or if there was an error.',
-        }),
-    ).exactOptional(),
+    TimestampMetricValuePairList: TimestampMetricValuePairListSchema.exactOptional().openapi({
+      description: 'This is a list of Amazon CloudWatch metric values at given timestamp.',
+    }),
+    StatusCode: CloudWatchMetricDataStatusCodeSchema.exactOptional().openapi({
+      description:
+        'This is an enum of the status showing whether the metric value pair list has partial or complete data, or if there was an error.',
+    }),
   })
   .openapi({
     description:
@@ -455,47 +140,31 @@ const CloudWatchMetricsDataSummarySchema = z
 
 const CloudWatchMetricsDetailSchema = z
   .object({
-    MetricName: CloudWatchMetricsMetricNameSchema.and(
-      z.any().openapi({ description: ' The name of the CloudWatch metric. ' }),
-    ).exactOptional(),
-    Namespace: CloudWatchMetricsNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The namespace of the CloudWatch metric. A namespace is a container for CloudWatch metrics. ',
-        }),
-    ).exactOptional(),
-    Dimensions: CloudWatchMetricsDimensionsSchema.and(
-      z.any().openapi({ description: ' An array of CloudWatch dimensions associated with ' }),
-    ).exactOptional(),
-    Stat: CloudWatchMetricsStatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The type of statistic associated with the CloudWatch metric. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Statistic">Statistics</a> in the <i>Amazon CloudWatch User Guide</i>. ',
-        }),
-    ).exactOptional(),
-    Unit: CloudWatchMetricsUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The unit of measure used for the CloudWatch metric. For example, <code>Bytes</code>, <code>Seconds</code>, <code>Count</code>, and <code>Percent</code>. ',
-        }),
-    ).exactOptional(),
-    Period: CloudWatchMetricsPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The length of time associated with the CloudWatch metric in number of seconds. ',
-        }),
-    ).exactOptional(),
-    MetricDataSummary: CloudWatchMetricsDataSummarySchema.and(
-      z.any().openapi({ description: 'This object returns anomaly metric data.' }),
-    ).exactOptional(),
+    MetricName: CloudWatchMetricsMetricNameSchema.exactOptional().openapi({
+      description: ' The name of the CloudWatch metric. ',
+    }),
+    Namespace: CloudWatchMetricsNamespaceSchema.exactOptional().openapi({
+      description:
+        ' The namespace of the CloudWatch metric. A namespace is a container for CloudWatch metrics. ',
+    }),
+    Dimensions: CloudWatchMetricsDimensionsSchema.exactOptional().openapi({
+      description: ' An array of CloudWatch dimensions associated with ',
+    }),
+    Stat: CloudWatchMetricsStatSchema.exactOptional().openapi({
+      description:
+        ' The type of statistic associated with the CloudWatch metric. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Statistic">Statistics</a> in the <i>Amazon CloudWatch User Guide</i>. ',
+    }),
+    Unit: CloudWatchMetricsUnitSchema.exactOptional().openapi({
+      description:
+        ' The unit of measure used for the CloudWatch metric. For example, <code>Bytes</code>, <code>Seconds</code>, <code>Count</code>, and <code>Percent</code>. ',
+    }),
+    Period: CloudWatchMetricsPeriodSchema.exactOptional().openapi({
+      description:
+        ' The length of time associated with the CloudWatch metric in number of seconds. ',
+    }),
+    MetricDataSummary: CloudWatchMetricsDataSummarySchema.exactOptional().openapi({
+      description: 'This object returns anomaly metric data.',
+    }),
   })
   .openapi({ description: ' Information about an Amazon CloudWatch metric. ', required: [] })
   .openapi('CloudWatchMetricsDetail')
@@ -530,27 +199,17 @@ const PerformanceInsightsMetricLimitIntegerSchema = z
 
 const PerformanceInsightsMetricDimensionGroupSchema = z
   .object({
-    Group: PerformanceInsightsMetricGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the dimension group. Its valid values are:</p> <ul> <li> <p> <code>db</code> - The name of the database to which the client is connected (only Aurora PostgreSQL, Amazon RDS PostgreSQL, Aurora MySQL, Amazon RDS MySQL, and MariaDB)</p> </li> <li> <p> <code>db.application</code> - The name of the application that is connected to the database (only Aurora PostgreSQL and RDS PostgreSQL)</p> </li> <li> <p> <code>db.host</code> - The host name of the connected client (all engines)</p> </li> <li> <p> <code>db.session_type</code> - The type of the current session (only Aurora PostgreSQL and RDS PostgreSQL)</p> </li> <li> <p> <code>db.sql</code> - The SQL that is currently executing (all engines)</p> </li> <li> <p> <code>db.sql_tokenized</code> - The SQL digest (all engines)</p> </li> <li> <p> <code>db.wait_event</code> - The event for which the database backend is waiting (all engines)</p> </li> <li> <p> <code>db.wait_event_type</code> - The type of event for which the database backend is waiting (all engines)</p> </li> <li> <p> <code>db.user</code> - The user logged in to the database (all engines)</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Dimensions: PerformanceInsightsMetricDimensionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of specific dimensions from a dimension group. If this parameter is not present, then it signifies that all of the dimensions in the group were requested or are present in the response.</p> <p>Valid values for elements in the <code>Dimensions</code> array are:</p> <ul> <li> <p> <code>db.application.name</code> - The name of the application that is connected to the database (only Aurora PostgreSQL and RDS PostgreSQL)</p> </li> <li> <p> <code>db.host.id</code> - The host ID of the connected client (all engines)</p> </li> <li> <p> <code>db.host.name</code> - The host name of the connected client (all engines)</p> </li> <li> <p> <code>db.name</code> - The name of the database to which the client is connected (only Aurora PostgreSQL, Amazon RDS PostgreSQL, Aurora MySQL, Amazon RDS MySQL, and MariaDB)</p> </li> <li> <p> <code>db.session_type.name</code> - The type of the current session (only Aurora PostgreSQL and RDS PostgreSQL)</p> </li> <li> <p> <code>db.sql.id</code> - The SQL ID generated by Performance Insights (all engines)</p> </li> <li> <p> <code>db.sql.db_id</code> - The SQL ID generated by the database (all engines)</p> </li> <li> <p> <code>db.sql.statement</code> - The SQL text that is being executed (all engines)</p> </li> <li> <p> <code>db.sql.tokenized_id</code> </p> </li> <li> <p> <code>db.sql_tokenized.id</code> - The SQL digest ID generated by Performance Insights (all engines)</p> </li> <li> <p> <code>db.sql_tokenized.db_id</code> - SQL digest ID generated by the database (all engines)</p> </li> <li> <p> <code>db.sql_tokenized.statement</code> - The SQL digest text (all engines)</p> </li> <li> <p> <code>db.user.id</code> - The ID of the user logged in to the database (all engines)</p> </li> <li> <p> <code>db.user.name</code> - The name of the user logged in to the database (all engines)</p> </li> <li> <p> <code>db.wait_event.name</code> - The event for which the backend is waiting (all engines)</p> </li> <li> <p> <code>db.wait_event.type</code> - The type of event for which the backend is waiting (all engines)</p> </li> <li> <p> <code>db.wait_event_type.name</code> - The name of the event type for which the backend is waiting (all engines)</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Limit: PerformanceInsightsMetricLimitIntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of items to fetch for this dimension group.' }),
-    ).exactOptional(),
+    Group: PerformanceInsightsMetricGroupSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the dimension group. Its valid values are:</p> <ul> <li> <p> <code>db</code> - The name of the database to which the client is connected (only Aurora PostgreSQL, Amazon RDS PostgreSQL, Aurora MySQL, Amazon RDS MySQL, and MariaDB)</p> </li> <li> <p> <code>db.application</code> - The name of the application that is connected to the database (only Aurora PostgreSQL and RDS PostgreSQL)</p> </li> <li> <p> <code>db.host</code> - The host name of the connected client (all engines)</p> </li> <li> <p> <code>db.session_type</code> - The type of the current session (only Aurora PostgreSQL and RDS PostgreSQL)</p> </li> <li> <p> <code>db.sql</code> - The SQL that is currently executing (all engines)</p> </li> <li> <p> <code>db.sql_tokenized</code> - The SQL digest (all engines)</p> </li> <li> <p> <code>db.wait_event</code> - The event for which the database backend is waiting (all engines)</p> </li> <li> <p> <code>db.wait_event_type</code> - The type of event for which the database backend is waiting (all engines)</p> </li> <li> <p> <code>db.user</code> - The user logged in to the database (all engines)</p> </li> </ul>',
+    }),
+    Dimensions: PerformanceInsightsMetricDimensionsSchema.exactOptional().openapi({
+      description:
+        '<p>A list of specific dimensions from a dimension group. If this parameter is not present, then it signifies that all of the dimensions in the group were requested or are present in the response.</p> <p>Valid values for elements in the <code>Dimensions</code> array are:</p> <ul> <li> <p> <code>db.application.name</code> - The name of the application that is connected to the database (only Aurora PostgreSQL and RDS PostgreSQL)</p> </li> <li> <p> <code>db.host.id</code> - The host ID of the connected client (all engines)</p> </li> <li> <p> <code>db.host.name</code> - The host name of the connected client (all engines)</p> </li> <li> <p> <code>db.name</code> - The name of the database to which the client is connected (only Aurora PostgreSQL, Amazon RDS PostgreSQL, Aurora MySQL, Amazon RDS MySQL, and MariaDB)</p> </li> <li> <p> <code>db.session_type.name</code> - The type of the current session (only Aurora PostgreSQL and RDS PostgreSQL)</p> </li> <li> <p> <code>db.sql.id</code> - The SQL ID generated by Performance Insights (all engines)</p> </li> <li> <p> <code>db.sql.db_id</code> - The SQL ID generated by the database (all engines)</p> </li> <li> <p> <code>db.sql.statement</code> - The SQL text that is being executed (all engines)</p> </li> <li> <p> <code>db.sql.tokenized_id</code> </p> </li> <li> <p> <code>db.sql_tokenized.id</code> - The SQL digest ID generated by Performance Insights (all engines)</p> </li> <li> <p> <code>db.sql_tokenized.db_id</code> - SQL digest ID generated by the database (all engines)</p> </li> <li> <p> <code>db.sql_tokenized.statement</code> - The SQL digest text (all engines)</p> </li> <li> <p> <code>db.user.id</code> - The ID of the user logged in to the database (all engines)</p> </li> <li> <p> <code>db.user.name</code> - The name of the user logged in to the database (all engines)</p> </li> <li> <p> <code>db.wait_event.name</code> - The event for which the backend is waiting (all engines)</p> </li> <li> <p> <code>db.wait_event.type</code> - The type of event for which the backend is waiting (all engines)</p> </li> <li> <p> <code>db.wait_event_type.name</code> - The name of the event type for which the backend is waiting (all engines)</p> </li> </ul>',
+    }),
+    Limit: PerformanceInsightsMetricLimitIntegerSchema.exactOptional().openapi({
+      description: 'The maximum number of items to fetch for this dimension group.',
+    }),
   })
   .openapi({
     description:
@@ -569,30 +228,18 @@ const PerformanceInsightsMetricFilterMapSchema = z
 
 const PerformanceInsightsMetricQuerySchema = z
   .object({
-    Metric: PerformanceInsightsMetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the meteric used used when querying an Performance Insights <code>GetResourceMetrics</code> API for anomaly metrics.</p> <p>Valid values for <code>Metric</code> are:</p> <ul> <li> <p> <code>db.load.avg</code> - a scaled representation of the number of active sessions for the database engine.</p> </li> <li> <p> <code>db.sampledload.avg</code> - the raw number of active sessions for the database engine.</p> </li> </ul> <p>If the number of active sessions is less than an internal Performance Insights threshold, <code>db.load.avg</code> and <code>db.sampledload.avg</code> are the same value. If the number of active sessions is greater than the internal threshold, Performance Insights samples the active sessions, with <code>db.load.avg</code> showing the scaled values, <code>db.sampledload.avg</code> showing the raw values, and <code>db.sampledload.avg</code> less than <code>db.load.avg</code>. For most use cases, you can query <code>db.load.avg</code> only. </p>',
-        }),
-    ).exactOptional(),
-    GroupBy: PerformanceInsightsMetricDimensionGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The specification for how to aggregate the data points from a Performance Insights <code>GetResourceMetrics</code> API query. The Performance Insights query returns all of the dimensions within that group, unless you provide the names of specific dimensions within that group. You can also request that Performance Insights return a limited number of values for a dimension.',
-        }),
-    ).exactOptional(),
-    Filter: PerformanceInsightsMetricFilterMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more filters to apply to a Performance Insights <code>GetResourceMetrics</code> API query. Restrictions:</p> <ul> <li> <p>Any number of filters by the same dimension, as specified in the <code>GroupBy</code> parameter.</p> </li> <li> <p>A single filter for any other dimension in this dimension group.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Metric: PerformanceInsightsMetricNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the meteric used used when querying an Performance Insights <code>GetResourceMetrics</code> API for anomaly metrics.</p> <p>Valid values for <code>Metric</code> are:</p> <ul> <li> <p> <code>db.load.avg</code> - a scaled representation of the number of active sessions for the database engine.</p> </li> <li> <p> <code>db.sampledload.avg</code> - the raw number of active sessions for the database engine.</p> </li> </ul> <p>If the number of active sessions is less than an internal Performance Insights threshold, <code>db.load.avg</code> and <code>db.sampledload.avg</code> are the same value. If the number of active sessions is greater than the internal threshold, Performance Insights samples the active sessions, with <code>db.load.avg</code> showing the scaled values, <code>db.sampledload.avg</code> showing the raw values, and <code>db.sampledload.avg</code> less than <code>db.load.avg</code>. For most use cases, you can query <code>db.load.avg</code> only. </p>',
+    }),
+    GroupBy: PerformanceInsightsMetricDimensionGroupSchema.exactOptional().openapi({
+      description:
+        'The specification for how to aggregate the data points from a Performance Insights <code>GetResourceMetrics</code> API query. The Performance Insights query returns all of the dimensions within that group, unless you provide the names of specific dimensions within that group. You can also request that Performance Insights return a limited number of values for a dimension.',
+    }),
+    Filter: PerformanceInsightsMetricFilterMapSchema.exactOptional().openapi({
+      description:
+        '<p>One or more filters to apply to a Performance Insights <code>GetResourceMetrics</code> API query. Restrictions:</p> <ul> <li> <p>Any number of filters by the same dimension, as specified in the <code>GroupBy</code> parameter.</p> </li> <li> <p>A single filter for any other dimension in this dimension group.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -609,9 +256,9 @@ const PerformanceInsightsValueDoubleSchema = z.float64().openapi('PerformanceIns
 
 const PerformanceInsightsReferenceScalarSchema = z
   .object({
-    Value: PerformanceInsightsValueDoubleSchema.and(
-      z.any().openapi({ description: 'The reference value.' }),
-    ).exactOptional(),
+    Value: PerformanceInsightsValueDoubleSchema.exactOptional().openapi({
+      description: 'The reference value.',
+    }),
   })
   .openapi({
     description:
@@ -622,9 +269,9 @@ const PerformanceInsightsReferenceScalarSchema = z
 
 const PerformanceInsightsReferenceMetricSchema = z
   .object({
-    MetricQuery: PerformanceInsightsMetricQuerySchema.and(
-      z.any().openapi({ description: 'A query to be processed on the metric.' }),
-    ).exactOptional(),
+    MetricQuery: PerformanceInsightsMetricQuerySchema.exactOptional().openapi({
+      description: 'A query to be processed on the metric.',
+    }),
   })
   .openapi({
     description: 'Information about a reference metric used to evaluate Performance Insights.',
@@ -634,22 +281,14 @@ const PerformanceInsightsReferenceMetricSchema = z
 
 const PerformanceInsightsReferenceComparisonValuesSchema = z
   .object({
-    ReferenceScalar: PerformanceInsightsReferenceScalarSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A scalar value DevOps Guru for a metric that DevOps Guru compares to actual metric values. This reference value is used to determine if an actual metric value should be considered anomalous.',
-        }),
-    ).exactOptional(),
-    ReferenceMetric: PerformanceInsightsReferenceMetricSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A metric that DevOps Guru compares to actual metric values. This reference metric is used to determine if an actual metric should be considered anomalous.',
-        }),
-    ).exactOptional(),
+    ReferenceScalar: PerformanceInsightsReferenceScalarSchema.exactOptional().openapi({
+      description:
+        'A scalar value DevOps Guru for a metric that DevOps Guru compares to actual metric values. This reference value is used to determine if an actual metric value should be considered anomalous.',
+    }),
+    ReferenceMetric: PerformanceInsightsReferenceMetricSchema.exactOptional().openapi({
+      description:
+        'A metric that DevOps Guru compares to actual metric values. This reference metric is used to determine if an actual metric should be considered anomalous.',
+    }),
   })
   .openapi({
     description:
@@ -660,17 +299,13 @@ const PerformanceInsightsReferenceComparisonValuesSchema = z
 
 const PerformanceInsightsReferenceDataSchema = z
   .object({
-    Name: PerformanceInsightsReferenceNameSchema.and(
-      z.any().openapi({ description: 'The name of the reference data.' }),
-    ).exactOptional(),
-    ComparisonValues: PerformanceInsightsReferenceComparisonValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The specific reference values used to evaluate the Performance Insights. For more information, see <code> <a href="https://docs.aws.amazon.com/devops-guru/latest/APIReference/API_PerformanceInsightsReferenceComparisonValues.html">PerformanceInsightsReferenceComparisonValues</a> </code>. ',
-        }),
-    ).exactOptional(),
+    Name: PerformanceInsightsReferenceNameSchema.exactOptional().openapi({
+      description: 'The name of the reference data.',
+    }),
+    ComparisonValues: PerformanceInsightsReferenceComparisonValuesSchema.exactOptional().openapi({
+      description:
+        'The specific reference values used to evaluate the Performance Insights. For more information, see <code> <a href="https://docs.aws.amazon.com/devops-guru/latest/APIReference/API_PerformanceInsightsReferenceComparisonValues.html">PerformanceInsightsReferenceComparisonValues</a> </code>. ',
+    }),
   })
   .openapi({
     description:
@@ -687,12 +322,12 @@ const PerformanceInsightsStatTypeSchema = z.string().openapi('PerformanceInsight
 
 const PerformanceInsightsStatSchema = z
   .object({
-    Type: PerformanceInsightsStatTypeSchema.and(
-      z.any().openapi({ description: 'The statistic type.' }),
-    ).exactOptional(),
-    Value: PerformanceInsightsValueDoubleSchema.and(
-      z.any().openapi({ description: 'The value of the statistic.' }),
-    ).exactOptional(),
+    Type: PerformanceInsightsStatTypeSchema.exactOptional().openapi({
+      description: 'The statistic type.',
+    }),
+    Value: PerformanceInsightsValueDoubleSchema.exactOptional().openapi({
+      description: 'The value of the statistic.',
+    }),
   })
   .openapi({ description: 'A statistic in a Performance Insights collection.', required: [] })
   .openapi('PerformanceInsightsStat')
@@ -701,49 +336,38 @@ const PerformanceInsightsStatsSchema = z
   .array(PerformanceInsightsStatSchema)
   .openapi('PerformanceInsightsStats')
 
-const PerformanceInsightsMetricsDetailSchema = z
+type PerformanceInsightsMetricsDetailType = {
+  MetricDisplayName?: z.infer<typeof PerformanceInsightsMetricDisplayNameSchema> & unknown
+  Unit?: z.infer<typeof PerformanceInsightsMetricUnitSchema> & unknown
+  MetricQuery?: z.infer<typeof PerformanceInsightsMetricQuerySchema> & unknown
+  ReferenceData?: z.infer<typeof PerformanceInsightsReferenceDataListSchema> & unknown
+  StatsAtAnomaly?: z.infer<typeof PerformanceInsightsStatsSchema> & unknown
+  StatsAtBaseline?: z.infer<typeof PerformanceInsightsStatsSchema> & unknown
+}
+
+const PerformanceInsightsMetricsDetailSchema: z.ZodType<PerformanceInsightsMetricsDetailType> = z
   .object({
-    MetricDisplayName: PerformanceInsightsMetricDisplayNameSchema.and(
-      z.any().openapi({ description: 'The name used for a specific Performance Insights metric.' }),
-    ).exactOptional(),
-    Unit: PerformanceInsightsMetricUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unit of measure for a metric. For example, a session or a process.',
-        }),
-    ).exactOptional(),
-    MetricQuery: PerformanceInsightsMetricQuerySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A single query to be processed for the metric. For more information, see <code> <a href="https://docs.aws.amazon.com/devops-guru/latest/APIReference/API_PerformanceInsightsMetricQuery.html">PerformanceInsightsMetricQuery</a> </code>.',
-        }),
-    ).exactOptional(),
-    ReferenceData: PerformanceInsightsReferenceDataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' For more information, see <code> <a href="https://docs.aws.amazon.com/devops-guru/latest/APIReference/API_PerformanceInsightsReferenceData.html">PerformanceInsightsReferenceData</a> </code>. ',
-        }),
-    ).exactOptional(),
-    StatsAtAnomaly: PerformanceInsightsStatsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The metric statistics during the anomalous period detected by DevOps Guru;',
-        }),
-    ).exactOptional(),
-    StatsAtBaseline: PerformanceInsightsStatsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Typical metric statistics that are not considered anomalous. When DevOps Guru analyzes metrics, it compares them to <code>StatsAtBaseline</code> to help determine if they are anomalous.',
-        }),
-    ).exactOptional(),
+    MetricDisplayName: PerformanceInsightsMetricDisplayNameSchema.exactOptional().openapi({
+      description: 'The name used for a specific Performance Insights metric.',
+    }),
+    Unit: PerformanceInsightsMetricUnitSchema.exactOptional().openapi({
+      description: 'The unit of measure for a metric. For example, a session or a process.',
+    }),
+    MetricQuery: PerformanceInsightsMetricQuerySchema.exactOptional().openapi({
+      description:
+        'A single query to be processed for the metric. For more information, see <code> <a href="https://docs.aws.amazon.com/devops-guru/latest/APIReference/API_PerformanceInsightsMetricQuery.html">PerformanceInsightsMetricQuery</a> </code>.',
+    }),
+    ReferenceData: PerformanceInsightsReferenceDataListSchema.exactOptional().openapi({
+      description:
+        ' For more information, see <code> <a href="https://docs.aws.amazon.com/devops-guru/latest/APIReference/API_PerformanceInsightsReferenceData.html">PerformanceInsightsReferenceData</a> </code>. ',
+    }),
+    StatsAtAnomaly: PerformanceInsightsStatsSchema.exactOptional().openapi({
+      description: 'The metric statistics during the anomalous period detected by DevOps Guru;',
+    }),
+    StatsAtBaseline: PerformanceInsightsStatsSchema.exactOptional().openapi({
+      description:
+        'Typical metric statistics that are not considered anomalous. When DevOps Guru analyzes metrics, it compares them to <code>StatsAtBaseline</code> to help determine if they are anomalous.',
+    }),
   })
   .openapi({
     description:
@@ -752,28 +376,29 @@ const PerformanceInsightsMetricsDetailSchema = z
   })
   .openapi('PerformanceInsightsMetricsDetail')
 
-const PerformanceInsightsMetricsDetailsSchema = z
+type PerformanceInsightsMetricsDetailsType = z.infer<
+  typeof PerformanceInsightsMetricsDetailSchema
+>[]
+
+const PerformanceInsightsMetricsDetailsSchema: z.ZodType<PerformanceInsightsMetricsDetailsType> = z
   .array(PerformanceInsightsMetricsDetailSchema)
   .openapi('PerformanceInsightsMetricsDetails')
 
-const AnomalySourceDetailsSchema = z
+type AnomalySourceDetailsType = {
+  CloudWatchMetrics?: z.infer<typeof CloudWatchMetricsDetailsSchema> & unknown
+  PerformanceInsightsMetrics?: z.infer<typeof PerformanceInsightsMetricsDetailsSchema> & unknown
+}
+
+const AnomalySourceDetailsSchema: z.ZodType<AnomalySourceDetailsType> = z
   .object({
-    CloudWatchMetrics: CloudWatchMetricsDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>CloudWatchMetricsDetail</code> objects that contain information about analyzed CloudWatch metrics that show anomalous behavior. ',
-        }),
-    ).exactOptional(),
-    PerformanceInsightsMetrics: PerformanceInsightsMetricsDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>PerformanceInsightsMetricsDetail</code> objects that contain information about analyzed Performance Insights metrics that show anomalous behavior.',
-        }),
-    ).exactOptional(),
+    CloudWatchMetrics: CloudWatchMetricsDetailsSchema.exactOptional().openapi({
+      description:
+        'An array of <code>CloudWatchMetricsDetail</code> objects that contain information about analyzed CloudWatch metrics that show anomalous behavior. ',
+    }),
+    PerformanceInsightsMetrics: PerformanceInsightsMetricsDetailsSchema.exactOptional().openapi({
+      description:
+        'An array of <code>PerformanceInsightsMetricsDetail</code> objects that contain information about analyzed Performance Insights metrics that show anomalous behavior.',
+    }),
   })
   .openapi({
     description:
@@ -789,13 +414,20 @@ const InsightIdSchema = z
   .max(100)
   .openapi('InsightId')
 
+const StackNameSchema = z
+  .string()
+  .regex(/^[a-zA-Z*]+[a-zA-Z0-9-]*$/)
+  .min(1)
+  .max(128)
+  .openapi('StackName')
+
 const StackNamesSchema = z.array(StackNameSchema).openapi('StackNames')
 
 const CloudFormationCollectionSchema = z
   .object({
-    StackNames: StackNamesSchema.and(
-      z.any().openapi({ description: ' An array of CloudFormation stack names. ' }),
-    ).exactOptional(),
+    StackNames: StackNamesSchema.exactOptional().openapi({
+      description: ' An array of CloudFormation stack names. ',
+    }),
   })
   .openapi({
     description:
@@ -804,26 +436,32 @@ const CloudFormationCollectionSchema = z
   })
   .openapi('CloudFormationCollection')
 
+const AppBoundaryKeySchema = z
+  .string()
+  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*)$/u)
+  .min(1)
+  .max(128)
+  .openapi('AppBoundaryKey')
+
+const TagValueSchema = z
+  .string()
+  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*|\*)$/u)
+  .min(0)
+  .max(256)
+  .openapi('TagValue')
+
 const TagValuesSchema = z.array(TagValueSchema).openapi('TagValues')
 
 const TagCollectionSchema = z
   .object({
-    AppBoundaryKey: AppBoundaryKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An Amazon Web Services tag <i>key</i> that is used to identify the Amazon Web Services resources that DevOps Guru analyzes. All Amazon Web Services resources in your account and Region tagged with this <i>key</i> make up your DevOps Guru application and analysis boundary.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
-        }),
-    ),
-    TagValues: TagValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The values in an Amazon Web Services tag collection.</p> <p>The tag's <i>value</i> is an optional field used to associate a string with the tag <i>key</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). The <i>key</i> and <i>value</i> are the tag's <i>key</i> pair. Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive. You can specify a maximum of 256 characters for a tag value.</p>",
-        }),
-    ),
+    AppBoundaryKey: AppBoundaryKeySchema.openapi({
+      description:
+        '<p>An Amazon Web Services tag <i>key</i> that is used to identify the Amazon Web Services resources that DevOps Guru analyzes. All Amazon Web Services resources in your account and Region tagged with this <i>key</i> make up your DevOps Guru application and analysis boundary.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
+    }),
+    TagValues: TagValuesSchema.openapi({
+      description:
+        "<p>The values in an Amazon Web Services tag collection.</p> <p>The tag's <i>value</i> is an optional field used to associate a string with the tag <i>key</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). The <i>key</i> and <i>value</i> are the tag's <i>key</i> pair. Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive. You can specify a maximum of 256 characters for a tag value.</p>",
+    }),
   })
   .openapi({
     required: ['AppBoundaryKey', 'TagValues'],
@@ -836,22 +474,14 @@ const TagCollectionsSchema = z.array(TagCollectionSchema).openapi('TagCollection
 
 const ResourceCollectionSchema = z
   .object({
-    CloudFormation: CloudFormationCollectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An array of the names of Amazon Web Services CloudFormation stacks. The stacks define Amazon Web Services resources that DevOps Guru analyzes. You can specify up to 500 Amazon Web Services CloudFormation stacks. ',
-        }),
-    ).exactOptional(),
-    Tags: TagCollectionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Web Services tags that are used by resources in the resource collection.</p> <p>Tags help you identify and organize your Amazon Web Services resources. Many Amazon Web Services services support tagging, so you can assign the same tag to resources from different services to indicate that the resources are related. For example, you can assign the same tag to an Amazon DynamoDB table resource that you assign to an Lambda function. For more information about using tags, see the <a href="https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html">Tagging best practices</a> whitepaper. </p> <p>Each Amazon Web Services tag has two parts. </p> <ul> <li> <p>A tag <i>key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag <i>keys</i> are case-sensitive.</p> </li> <li> <p>An optional field known as a tag <i>value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive.</p> </li> </ul> <p>Together these are known as <i>key</i>-<i>value</i> pairs.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
-        }),
-    ).exactOptional(),
+    CloudFormation: CloudFormationCollectionSchema.exactOptional().openapi({
+      description:
+        ' An array of the names of Amazon Web Services CloudFormation stacks. The stacks define Amazon Web Services resources that DevOps Guru analyzes. You can specify up to 500 Amazon Web Services CloudFormation stacks. ',
+    }),
+    Tags: TagCollectionsSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Web Services tags that are used by resources in the resource collection.</p> <p>Tags help you identify and organize your Amazon Web Services resources. Many Amazon Web Services services support tagging, so you can assign the same tag to resources from different services to indicate that the resources are related. For example, you can assign the same tag to an Amazon DynamoDB table resource that you assign to an Lambda function. For more information about using tags, see the <a href="https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html">Tagging best practices</a> whitepaper. </p> <p>Each Amazon Web Services tag has two parts. </p> <ul> <li> <p>A tag <i>key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag <i>keys</i> are case-sensitive.</p> </li> <li> <p>An optional field known as a tag <i>value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive.</p> </li> </ul> <p>Together these are known as <i>key</i>-<i>value</i> pairs.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
+    }),
   })
   .openapi({
     description:
@@ -875,15 +505,15 @@ const ResourceTypeSchema = z
 
 const AnomalySourceMetadataSchema = z
   .object({
-    Source: AnomalySourceSchema.and(
-      z.any().openapi({ description: 'The source of the anomaly.' }),
-    ).exactOptional(),
-    SourceResourceName: ResourceNameSchema.and(
-      z.any().openapi({ description: "The name of the anomaly's resource." }),
-    ).exactOptional(),
-    SourceResourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: "The anomaly's resource type." }),
-    ).exactOptional(),
+    Source: AnomalySourceSchema.exactOptional().openapi({
+      description: 'The source of the anomaly.',
+    }),
+    SourceResourceName: ResourceNameSchema.exactOptional().openapi({
+      description: "The name of the anomaly's resource.",
+    }),
+    SourceResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: "The anomaly's resource type.",
+    }),
   })
   .openapi({
     description:
@@ -894,12 +524,12 @@ const AnomalySourceMetadataSchema = z
 
 const AnomalyResourceSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon Web Services resource.' }),
-    ).exactOptional(),
-    Type: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the Amazon Web Services resource.' }),
-    ).exactOptional(),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the Amazon Web Services resource.',
+    }),
+    Type: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of the Amazon Web Services resource.',
+    }),
   })
   .openapi({
     description:
@@ -912,74 +542,66 @@ const AnomalyResourcesSchema = z.array(AnomalyResourceSchema).openapi('AnomalyRe
 
 const AnomalyDescriptionSchema = z.string().openapi('AnomalyDescription')
 
-const ProactiveAnomalySchema = z
+type ProactiveAnomalyType = {
+  Id?: z.infer<typeof AnomalyIdSchema> & unknown
+  Severity?: z.infer<typeof AnomalySeveritySchema> & unknown
+  Status?: z.infer<typeof AnomalyStatusSchema> & unknown
+  UpdateTime?: z.infer<typeof TimestampSchema> & unknown
+  AnomalyTimeRange?: z.infer<typeof AnomalyTimeRangeSchema>
+  AnomalyReportedTimeRange?: z.infer<typeof AnomalyReportedTimeRangeSchema> & unknown
+  PredictionTimeRange?: z.infer<typeof PredictionTimeRangeSchema>
+  SourceDetails?: z.infer<typeof AnomalySourceDetailsSchema> & unknown
+  AssociatedInsightId?: z.infer<typeof InsightIdSchema> & unknown
+  ResourceCollection?: z.infer<typeof ResourceCollectionSchema>
+  Limit?: z.infer<typeof AnomalyLimitSchema> & unknown
+  SourceMetadata?: z.infer<typeof AnomalySourceMetadataSchema> & unknown
+  AnomalyResources?: z.infer<typeof AnomalyResourcesSchema> & unknown
+  Description?: z.infer<typeof AnomalyDescriptionSchema> & unknown
+}
+
+const ProactiveAnomalySchema: z.ZodType<ProactiveAnomalyType> = z
   .object({
-    Id: AnomalyIdSchema.and(
-      z.any().openapi({ description: ' The ID of a proactive anomaly. ' }),
-    ).exactOptional(),
-    Severity: AnomalySeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The severity of the anomaly. The severity of anomalies that generate an insight determine that insight\'s severity. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Status: AnomalyStatusSchema.and(
-      z.any().openapi({ description: ' The status of a proactive anomaly. ' }),
-    ).exactOptional(),
-    UpdateTime: TimestampSchema.and(
-      z.any().openapi({ description: " The time of the anomaly's most recent update. " }),
-    ).exactOptional(),
+    Id: AnomalyIdSchema.exactOptional().openapi({
+      description: ' The ID of a proactive anomaly. ',
+    }),
+    Severity: AnomalySeveritySchema.exactOptional().openapi({
+      description:
+        'The severity of the anomaly. The severity of anomalies that generate an insight determine that insight\'s severity. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
+    }),
+    Status: AnomalyStatusSchema.exactOptional().openapi({
+      description: ' The status of a proactive anomaly. ',
+    }),
+    UpdateTime: TimestampSchema.exactOptional().openapi({
+      description: " The time of the anomaly's most recent update. ",
+    }),
     AnomalyTimeRange: AnomalyTimeRangeSchema.exactOptional(),
-    AnomalyReportedTimeRange: AnomalyReportedTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An <code>AnomalyReportedTimeRange</code> object that specifies the time range between when the anomaly is opened and the time when it is closed. ',
-        }),
-    ).exactOptional(),
+    AnomalyReportedTimeRange: AnomalyReportedTimeRangeSchema.exactOptional().openapi({
+      description:
+        ' An <code>AnomalyReportedTimeRange</code> object that specifies the time range between when the anomaly is opened and the time when it is closed. ',
+    }),
     PredictionTimeRange: PredictionTimeRangeSchema.exactOptional(),
-    SourceDetails: AnomalySourceDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Details about the source of the analyzed operational data that triggered the anomaly. The one supported source is Amazon CloudWatch metrics. ',
-        }),
-    ).exactOptional(),
-    AssociatedInsightId: InsightIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ID of the insight that contains this anomaly. An insight is composed of related anomalies. ',
-        }),
-    ).exactOptional(),
+    SourceDetails: AnomalySourceDetailsSchema.exactOptional().openapi({
+      description:
+        ' Details about the source of the analyzed operational data that triggered the anomaly. The one supported source is Amazon CloudWatch metrics. ',
+    }),
+    AssociatedInsightId: InsightIdSchema.exactOptional().openapi({
+      description:
+        ' The ID of the insight that contains this anomaly. An insight is composed of related anomalies. ',
+    }),
     ResourceCollection: ResourceCollectionSchema.exactOptional(),
-    Limit: AnomalyLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A threshold that was exceeded by behavior in analyzed resources. Exceeding this threshold is related to the anomalous behavior that generated this anomaly. ',
-        }),
-    ).exactOptional(),
-    SourceMetadata: AnomalySourceMetadataSchema.and(
-      z.any().openapi({ description: 'The metadata for the anomaly.' }),
-    ).exactOptional(),
-    AnomalyResources: AnomalyResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a resource in which DevOps Guru detected anomalous behavior.',
-        }),
-    ).exactOptional(),
-    Description: AnomalyDescriptionSchema.and(
-      z.any().openapi({ description: ' A description of the proactive anomaly. ' }),
-    ).exactOptional(),
+    Limit: AnomalyLimitSchema.exactOptional().openapi({
+      description:
+        ' A threshold that was exceeded by behavior in analyzed resources. Exceeding this threshold is related to the anomalous behavior that generated this anomaly. ',
+    }),
+    SourceMetadata: AnomalySourceMetadataSchema.exactOptional().openapi({
+      description: 'The metadata for the anomaly.',
+    }),
+    AnomalyResources: AnomalyResourcesSchema.exactOptional().openapi({
+      description: 'Information about a resource in which DevOps Guru detected anomalous behavior.',
+    }),
+    Description: AnomalyDescriptionSchema.exactOptional().openapi({
+      description: ' A description of the proactive anomaly. ',
+    }),
   })
   .openapi({
     description:
@@ -992,78 +614,66 @@ const AnomalyTypeSchema = z.enum(['CAUSAL', 'CONTEXTUAL']).openapi('AnomalyType'
 
 const AnomalyNameSchema = z.string().openapi('AnomalyName')
 
-const ReactiveAnomalySchema = z
+type ReactiveAnomalyType = {
+  Id?: z.infer<typeof AnomalyIdSchema> & unknown
+  Severity?: z.infer<typeof AnomalySeveritySchema> & unknown
+  Status?: z.infer<typeof AnomalyStatusSchema> & unknown
+  AnomalyTimeRange?: z.infer<typeof AnomalyTimeRangeSchema>
+  AnomalyReportedTimeRange?: z.infer<typeof AnomalyReportedTimeRangeSchema> & unknown
+  SourceDetails?: z.infer<typeof AnomalySourceDetailsSchema> & unknown
+  AssociatedInsightId?: z.infer<typeof InsightIdSchema> & unknown
+  ResourceCollection?: z.infer<typeof ResourceCollectionSchema>
+  Type?: z.infer<typeof AnomalyTypeSchema> & unknown
+  Name?: z.infer<typeof AnomalyNameSchema> & unknown
+  Description?: z.infer<typeof AnomalyDescriptionSchema> & unknown
+  CausalAnomalyId?: z.infer<typeof AnomalyIdSchema> & unknown
+  AnomalyResources?: z.infer<typeof AnomalyResourcesSchema> & unknown
+}
+
+const ReactiveAnomalySchema: z.ZodType<ReactiveAnomalyType> = z
   .object({
-    Id: AnomalyIdSchema.and(
-      z.any().openapi({ description: 'The ID of the reactive anomaly. ' }),
-    ).exactOptional(),
-    Severity: AnomalySeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The severity of the anomaly. The severity of anomalies that generate an insight determine that insight\'s severity. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Status: AnomalyStatusSchema.and(
-      z.any().openapi({ description: ' The status of the anomaly. ' }),
-    ).exactOptional(),
+    Id: AnomalyIdSchema.exactOptional().openapi({
+      description: 'The ID of the reactive anomaly. ',
+    }),
+    Severity: AnomalySeveritySchema.exactOptional().openapi({
+      description:
+        'The severity of the anomaly. The severity of anomalies that generate an insight determine that insight\'s severity. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
+    }),
+    Status: AnomalyStatusSchema.exactOptional().openapi({
+      description: ' The status of the anomaly. ',
+    }),
     AnomalyTimeRange: AnomalyTimeRangeSchema.exactOptional(),
-    AnomalyReportedTimeRange: AnomalyReportedTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An <code>AnomalyReportedTimeRange</code> object that specifies the time range between when the anomaly is opened and the time when it is closed. ',
-        }),
-    ).exactOptional(),
-    SourceDetails: AnomalySourceDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Details about the source of the analyzed operational data that triggered the anomaly. The one supported source is Amazon CloudWatch metrics. ',
-        }),
-    ).exactOptional(),
-    AssociatedInsightId: InsightIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ID of the insight that contains this anomaly. An insight is composed of related anomalies. ',
-        }),
-    ).exactOptional(),
+    AnomalyReportedTimeRange: AnomalyReportedTimeRangeSchema.exactOptional().openapi({
+      description:
+        ' An <code>AnomalyReportedTimeRange</code> object that specifies the time range between when the anomaly is opened and the time when it is closed. ',
+    }),
+    SourceDetails: AnomalySourceDetailsSchema.exactOptional().openapi({
+      description:
+        ' Details about the source of the analyzed operational data that triggered the anomaly. The one supported source is Amazon CloudWatch metrics. ',
+    }),
+    AssociatedInsightId: InsightIdSchema.exactOptional().openapi({
+      description:
+        ' The ID of the insight that contains this anomaly. An insight is composed of related anomalies. ',
+    }),
     ResourceCollection: ResourceCollectionSchema.exactOptional(),
-    Type: AnomalyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of the reactive anomaly. It can be one of the following types.</p> <ul> <li> <p> <code>CAUSAL</code> - the anomaly can cause a new insight.</p> </li> <li> <p> <code>CONTEXTUAL</code> - the anomaly contains additional information about an insight or its causal anomaly.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Name: AnomalyNameSchema.and(
-      z.any().openapi({ description: 'The name of the reactive anomaly.' }),
-    ).exactOptional(),
-    Description: AnomalyDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the reactive anomaly.' }),
-    ).exactOptional(),
-    CausalAnomalyId: AnomalyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the causal anomaly that is associated with this reactive anomaly. The ID of a `CAUSAL` anomaly is always `NULL`.',
-        }),
-    ).exactOptional(),
-    AnomalyResources: AnomalyResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services resources in which anomalous behavior was detected by DevOps Guru.',
-        }),
-    ).exactOptional(),
+    Type: AnomalyTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of the reactive anomaly. It can be one of the following types.</p> <ul> <li> <p> <code>CAUSAL</code> - the anomaly can cause a new insight.</p> </li> <li> <p> <code>CONTEXTUAL</code> - the anomaly contains additional information about an insight or its causal anomaly.</p> </li> </ul>',
+    }),
+    Name: AnomalyNameSchema.exactOptional().openapi({
+      description: 'The name of the reactive anomaly.',
+    }),
+    Description: AnomalyDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the reactive anomaly.',
+    }),
+    CausalAnomalyId: AnomalyIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the causal anomaly that is associated with this reactive anomaly. The ID of a `CAUSAL` anomaly is always `NULL`.',
+    }),
+    AnomalyResources: AnomalyResourcesSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services resources in which anomalous behavior was detected by DevOps Guru.',
+    }),
   })
   .openapi({
     description:
@@ -1072,24 +682,546 @@ const ReactiveAnomalySchema = z
   })
   .openapi('ReactiveAnomaly')
 
-const DescribeAnomalyResponseSchema = z
+type DescribeAnomalyResponseType = {
+  ProactiveAnomaly?: z.infer<typeof ProactiveAnomalySchema> & unknown
+  ReactiveAnomaly?: z.infer<typeof ReactiveAnomalySchema> & unknown
+}
+
+type ProactiveAnomalySummaryType = {
+  Id?: z.infer<typeof AnomalyIdSchema> & unknown
+  Severity?: z.infer<typeof AnomalySeveritySchema> & unknown
+  Status?: z.infer<typeof AnomalyStatusSchema> & unknown
+  UpdateTime?: z.infer<typeof TimestampSchema> & unknown
+  AnomalyTimeRange?: z.infer<typeof AnomalyTimeRangeSchema>
+  AnomalyReportedTimeRange?: z.infer<typeof AnomalyReportedTimeRangeSchema> & unknown
+  PredictionTimeRange?: z.infer<typeof PredictionTimeRangeSchema>
+  SourceDetails?: z.infer<typeof AnomalySourceDetailsSchema> & unknown
+  AssociatedInsightId?: z.infer<typeof InsightIdSchema> & unknown
+  ResourceCollection?: z.infer<typeof ResourceCollectionSchema>
+  Limit?: z.infer<typeof AnomalyLimitSchema> & unknown
+  SourceMetadata?: z.infer<typeof AnomalySourceMetadataSchema> & unknown
+  AnomalyResources?: z.infer<typeof AnomalyResourcesSchema> & unknown
+  Description?: z.infer<typeof AnomalyDescriptionSchema> & unknown
+}
+
+const ProactiveAnomalySummarySchema: z.ZodType<ProactiveAnomalySummaryType> = z
   .object({
-    ProactiveAnomaly: ProactiveAnomalySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>ProactiveAnomaly</code> object that represents the requested anomaly. ',
-        }),
-    ).exactOptional(),
-    ReactiveAnomaly: ReactiveAnomalySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>ReactiveAnomaly</code> object that represents the requested anomaly. ',
-        }),
-    ).exactOptional(),
+    Id: AnomalyIdSchema.exactOptional().openapi({ description: 'The ID of the anomaly.' }),
+    Severity: AnomalySeveritySchema.exactOptional().openapi({
+      description:
+        'The severity of the anomaly. The severity of anomalies that generate an insight determine that insight\'s severity. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
+    }),
+    Status: AnomalyStatusSchema.exactOptional().openapi({
+      description: 'The status of the anomaly.',
+    }),
+    UpdateTime: TimestampSchema.exactOptional().openapi({
+      description: " The time of the anomaly's most recent update. ",
+    }),
+    AnomalyTimeRange: AnomalyTimeRangeSchema.exactOptional(),
+    AnomalyReportedTimeRange: AnomalyReportedTimeRangeSchema.exactOptional().openapi({
+      description:
+        ' An <code>AnomalyReportedTimeRange</code> object that specifies the time range between when the anomaly is opened and the time when it is closed. ',
+    }),
+    PredictionTimeRange: PredictionTimeRangeSchema.exactOptional(),
+    SourceDetails: AnomalySourceDetailsSchema.exactOptional().openapi({
+      description:
+        ' Details about the source of the analyzed operational data that triggered the anomaly. The one supported source is Amazon CloudWatch metrics. ',
+    }),
+    AssociatedInsightId: InsightIdSchema.exactOptional().openapi({
+      description:
+        ' The ID of the insight that contains this anomaly. An insight is composed of related anomalies. ',
+    }),
+    ResourceCollection: ResourceCollectionSchema.exactOptional(),
+    Limit: AnomalyLimitSchema.exactOptional().openapi({
+      description:
+        ' A threshold that was exceeded by behavior in analyzed resources. Exceeding this threshold is related to the anomalous behavior that generated this anomaly. ',
+    }),
+    SourceMetadata: AnomalySourceMetadataSchema.exactOptional().openapi({
+      description: 'The metadata of the source which detects proactive anomalies.',
+    }),
+    AnomalyResources: AnomalyResourcesSchema.exactOptional().openapi({
+      description: 'Information about a resource in which DevOps Guru detected anomalous behavior.',
+    }),
+    Description: AnomalyDescriptionSchema.exactOptional().openapi({
+      description: ' A description of the proactive anomaly. ',
+    }),
+  })
+  .openapi({
+    description:
+      'Details about a proactive anomaly. This object is returned by <code>DescribeAnomaly.</code> ',
+    required: [],
+  })
+  .openapi('ProactiveAnomalySummary')
+
+type ProactiveAnomaliesType = z.infer<typeof ProactiveAnomalySummarySchema>[]
+
+const ProactiveAnomaliesSchema: z.ZodType<ProactiveAnomaliesType> = z
+  .array(ProactiveAnomalySummarySchema)
+  .openapi('ProactiveAnomalies')
+
+type ReactiveAnomalySummaryType = {
+  Id?: z.infer<typeof AnomalyIdSchema> & unknown
+  Severity?: z.infer<typeof AnomalySeveritySchema> & unknown
+  Status?: z.infer<typeof AnomalyStatusSchema> & unknown
+  AnomalyTimeRange?: z.infer<typeof AnomalyTimeRangeSchema>
+  AnomalyReportedTimeRange?: z.infer<typeof AnomalyReportedTimeRangeSchema> & unknown
+  SourceDetails?: z.infer<typeof AnomalySourceDetailsSchema> & unknown
+  AssociatedInsightId?: z.infer<typeof InsightIdSchema> & unknown
+  ResourceCollection?: z.infer<typeof ResourceCollectionSchema>
+  Type?: z.infer<typeof AnomalyTypeSchema> & unknown
+  Name?: z.infer<typeof AnomalyNameSchema> & unknown
+  Description?: z.infer<typeof AnomalyDescriptionSchema> & unknown
+  CausalAnomalyId?: z.infer<typeof AnomalyIdSchema> & unknown
+  AnomalyResources?: z.infer<typeof AnomalyResourcesSchema> & unknown
+}
+
+const ReactiveAnomalySummarySchema: z.ZodType<ReactiveAnomalySummaryType> = z
+  .object({
+    Id: AnomalyIdSchema.exactOptional().openapi({
+      description: ' The ID of the reactive anomaly. ',
+    }),
+    Severity: AnomalySeveritySchema.exactOptional().openapi({
+      description:
+        'The severity of the anomaly. The severity of anomalies that generate an insight determine that insight\'s severity. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
+    }),
+    Status: AnomalyStatusSchema.exactOptional().openapi({
+      description: ' The status of the reactive anomaly. ',
+    }),
+    AnomalyTimeRange: AnomalyTimeRangeSchema.exactOptional(),
+    AnomalyReportedTimeRange: AnomalyReportedTimeRangeSchema.exactOptional().openapi({
+      description:
+        ' An <code>AnomalyReportedTimeRange</code> object that specifies the time range between when the anomaly is opened and the time when it is closed. ',
+    }),
+    SourceDetails: AnomalySourceDetailsSchema.exactOptional().openapi({
+      description:
+        ' Details about the source of the analyzed operational data that triggered the anomaly. The one supported source is Amazon CloudWatch metrics. ',
+    }),
+    AssociatedInsightId: InsightIdSchema.exactOptional().openapi({
+      description:
+        ' The ID of the insight that contains this anomaly. An insight is composed of related anomalies. ',
+    }),
+    ResourceCollection: ResourceCollectionSchema.exactOptional(),
+    Type: AnomalyTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of the reactive anomaly. It can be one of the following types.</p> <ul> <li> <p> <code>CAUSAL</code> - the anomaly can cause a new insight.</p> </li> <li> <p> <code>CONTEXTUAL</code> - the anomaly contains additional information about an insight or its causal anomaly.</p> </li> </ul>',
+    }),
+    Name: AnomalyNameSchema.exactOptional().openapi({
+      description: 'The name of the reactive anomaly.',
+    }),
+    Description: AnomalyDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the reactive anomaly.',
+    }),
+    CausalAnomalyId: AnomalyIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the causal anomaly that is associated with this reactive anomaly. The ID of a `CAUSAL` anomaly is always `NULL`.',
+    }),
+    AnomalyResources: AnomalyResourcesSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services resources in which anomalous behavior was detected by DevOps Guru.',
+    }),
+  })
+  .openapi({
+    description:
+      'Details about a reactive anomaly. This object is returned by <code>DescribeAnomaly.</code> ',
+    required: [],
+  })
+  .openapi('ReactiveAnomalySummary')
+
+type ReactiveAnomaliesType = z.infer<typeof ReactiveAnomalySummarySchema>[]
+
+const ReactiveAnomaliesSchema: z.ZodType<ReactiveAnomaliesType> = z
+  .array(ReactiveAnomalySummarySchema)
+  .openapi('ReactiveAnomalies')
+
+const UuidNextTokenSchema = z
+  .string()
+  .regex(/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/)
+  .length(36)
+  .openapi('UuidNextToken')
+
+type ListAnomaliesForInsightResponseType = {
+  ProactiveAnomalies?: z.infer<typeof ProactiveAnomaliesSchema> & unknown
+  ReactiveAnomalies?: z.infer<typeof ReactiveAnomaliesSchema> & unknown
+  NextToken?: z.infer<typeof UuidNextTokenSchema> & unknown
+}
+
+const RecommendationDescriptionSchema = z.string().openapi('RecommendationDescription')
+
+const RecommendationLinkSchema = z.string().openapi('RecommendationLink')
+
+const RecommendationNameSchema = z.string().openapi('RecommendationName')
+
+const RecommendationReasonSchema = z.string().openapi('RecommendationReason')
+
+const RecommendationRelatedEventNameSchema = z.string().openapi('RecommendationRelatedEventName')
+
+const RecommendationRelatedEventResourceNameSchema = z
+  .string()
+  .openapi('RecommendationRelatedEventResourceName')
+
+const RecommendationRelatedEventResourceTypeSchema = z
+  .string()
+  .openapi('RecommendationRelatedEventResourceType')
+
+const RecommendationRelatedEventResourceSchema = z
+  .object({
+    Name: RecommendationRelatedEventResourceNameSchema.exactOptional().openapi({
+      description:
+        ' The name of the resource that emitted the event. This corresponds to the <code>Name</code> field in an <code>EventResource</code> object. ',
+    }),
+    Type: RecommendationRelatedEventResourceTypeSchema.exactOptional().openapi({
+      description:
+        ' The type of the resource that emitted the event. This corresponds to the <code>Type</code> field in an <code>EventResource</code> object. ',
+    }),
+  })
+  .openapi({
+    description:
+      ' Information about an Amazon Web Services resource that emitted and event that is related to a recommendation in an insight. ',
+    required: [],
+  })
+  .openapi('RecommendationRelatedEventResource')
+
+const RecommendationRelatedEventResourcesSchema = z
+  .array(RecommendationRelatedEventResourceSchema)
+  .openapi('RecommendationRelatedEventResources')
+
+const RecommendationRelatedEventSchema = z
+  .object({
+    Name: RecommendationRelatedEventNameSchema.exactOptional().openapi({
+      description:
+        ' The name of the event. This corresponds to the <code>Name</code> field in an <code>Event</code> object. ',
+    }),
+    Resources: RecommendationRelatedEventResourcesSchema.exactOptional().openapi({
+      description:
+        ' A <code>ResourceCollection</code> object that contains arrays of the names of Amazon Web Services CloudFormation stacks. You can specify up to 500 Amazon Web Services CloudFormation stacks. ',
+    }),
+  })
+  .openapi({
+    description: ' Information about an event that is related to a recommendation. ',
+    required: [],
+  })
+  .openapi('RecommendationRelatedEvent')
+
+const RecommendationRelatedEventsSchema = z
+  .array(RecommendationRelatedEventSchema)
+  .openapi('RecommendationRelatedEvents')
+
+const RecommendationRelatedAnomalyResourceNameSchema = z
+  .string()
+  .openapi('RecommendationRelatedAnomalyResourceName')
+
+const RecommendationRelatedAnomalyResourceTypeSchema = z
+  .string()
+  .openapi('RecommendationRelatedAnomalyResourceType')
+
+const RecommendationRelatedAnomalyResourceSchema = z
+  .object({
+    Name: RecommendationRelatedAnomalyResourceNameSchema.exactOptional().openapi({
+      description: ' The name of the resource. ',
+    }),
+    Type: RecommendationRelatedAnomalyResourceTypeSchema.exactOptional().openapi({
+      description:
+        ' The type of the resource. Resource types take the same form that is used by Amazon Web Services CloudFormation resource type identifiers, <code>service-provider::service-name::data-type-name</code>. For example, <code>AWS::RDS::DBCluster</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services resource and property types reference</a> in the <i>Amazon Web Services CloudFormation User Guide</i>.',
+    }),
+  })
+  .openapi({
+    description: ' Information about a resource in which DevOps Guru detected anomalous behavior. ',
+    required: [],
+  })
+  .openapi('RecommendationRelatedAnomalyResource')
+
+const RecommendationRelatedAnomalyResourcesSchema = z
+  .array(RecommendationRelatedAnomalyResourceSchema)
+  .openapi('RecommendationRelatedAnomalyResources')
+
+const RecommendationRelatedCloudWatchMetricsSourceMetricNameSchema = z
+  .string()
+  .openapi('RecommendationRelatedCloudWatchMetricsSourceMetricName')
+
+const RecommendationRelatedCloudWatchMetricsSourceNamespaceSchema = z
+  .string()
+  .openapi('RecommendationRelatedCloudWatchMetricsSourceNamespace')
+
+const RecommendationRelatedCloudWatchMetricsSourceDetailSchema = z
+  .object({
+    MetricName:
+      RecommendationRelatedCloudWatchMetricsSourceMetricNameSchema.exactOptional().openapi({
+        description: 'The name of the CloudWatch metric.',
+      }),
+    Namespace: RecommendationRelatedCloudWatchMetricsSourceNamespaceSchema.exactOptional().openapi({
+      description:
+        'The namespace of the CloudWatch metric. A namespace is a container for CloudWatch metrics.',
+    }),
+  })
+  .openapi({
+    description:
+      ' Information about an Amazon CloudWatch metric that is analyzed by DevOps Guru. It is one of many analyzed metrics that are used to generate insights. ',
+    required: [],
+  })
+  .openapi('RecommendationRelatedCloudWatchMetricsSourceDetail')
+
+const RecommendationRelatedCloudWatchMetricsSourceDetailsSchema = z
+  .array(RecommendationRelatedCloudWatchMetricsSourceDetailSchema)
+  .openapi('RecommendationRelatedCloudWatchMetricsSourceDetails')
+
+const RecommendationRelatedAnomalySourceDetailSchema = z
+  .object({
+    CloudWatchMetrics:
+      RecommendationRelatedCloudWatchMetricsSourceDetailsSchema.exactOptional().openapi({
+        description:
+          ' An array of <code>CloudWatchMetricsDetail</code> objects that contains information about the analyzed metrics that displayed anomalous behavior. ',
+      }),
+  })
+  .openapi({
+    description:
+      ' Contains an array of <code>RecommendationRelatedCloudWatchMetricsSourceDetail</code> objects that contain the name and namespace of an Amazon CloudWatch metric. ',
+    required: [],
+  })
+  .openapi('RecommendationRelatedAnomalySourceDetail')
+
+const RelatedAnomalySourceDetailsSchema = z
+  .array(RecommendationRelatedAnomalySourceDetailSchema)
+  .openapi('RelatedAnomalySourceDetails')
+
+const RecommendationRelatedAnomalySchema = z
+  .object({
+    Resources: RecommendationRelatedAnomalyResourcesSchema.exactOptional().openapi({
+      description:
+        ' An array of objects that represent resources in which DevOps Guru detected anomalous behavior. Each object contains the name and type of the resource. ',
+    }),
+    SourceDetails: RelatedAnomalySourceDetailsSchema.exactOptional().openapi({
+      description:
+        ' Information about where the anomalous behavior related the recommendation was found. For example, details in Amazon CloudWatch metrics. ',
+    }),
+    AnomalyId: AnomalyIdSchema.exactOptional().openapi({
+      description: 'The ID of an anomaly that generated the insight with this recommendation.',
+    }),
+  })
+  .openapi({
+    description: ' Information about an anomaly that is related to a recommendation. ',
+    required: [],
+  })
+  .openapi('RecommendationRelatedAnomaly')
+
+const RecommendationRelatedAnomaliesSchema = z
+  .array(RecommendationRelatedAnomalySchema)
+  .openapi('RecommendationRelatedAnomalies')
+
+const RecommendationCategorySchema = z.string().openapi('RecommendationCategory')
+
+const RecommendationSchema = z
+  .object({
+    Description: RecommendationDescriptionSchema.exactOptional().openapi({
+      description: ' A description of the problem. ',
+    }),
+    Link: RecommendationLinkSchema.exactOptional().openapi({
+      description: ' A hyperlink to information to help you address the problem. ',
+    }),
+    Name: RecommendationNameSchema.exactOptional().openapi({
+      description: ' The name of the recommendation. ',
+    }),
+    Reason: RecommendationReasonSchema.exactOptional().openapi({
+      description: ' The reason DevOps Guru flagged the anomalous behavior as a problem. ',
+    }),
+    RelatedEvents: RecommendationRelatedEventsSchema.exactOptional().openapi({
+      description:
+        " Events that are related to the problem. Use these events to learn more about what's happening and to help address the issue. ",
+    }),
+    RelatedAnomalies: RecommendationRelatedAnomaliesSchema.exactOptional().openapi({
+      description:
+        " Anomalies that are related to the problem. Use these Anomalies to learn more about what's happening and to help address the issue. ",
+    }),
+    Category: RecommendationCategorySchema.exactOptional().openapi({
+      description: 'The category type of the recommendation.',
+    }),
+  })
+  .openapi({
+    description:
+      ' Recommendation information to help you remediate detected anomalous behavior that generated an insight. ',
+    required: [],
+  })
+  .openapi('Recommendation')
+
+type RecommendationsType = z.infer<typeof RecommendationSchema>[]
+
+const RecommendationsSchema: z.ZodType<RecommendationsType> = z
+  .array(RecommendationSchema)
+  .min(0)
+  .max(10)
+  .openapi('Recommendations')
+
+type ListRecommendationsResponseType = {
+  Recommendations?: z.infer<typeof RecommendationsSchema> & unknown
+  NextToken?: z.infer<typeof UuidNextTokenSchema> & unknown
+}
+
+const NotificationChannelIdSchema = z
+  .string()
+  .regex(/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/)
+  .length(36)
+  .openapi('NotificationChannelId')
+
+const AddNotificationChannelResponseSchema = z
+  .object({
+    Id: NotificationChannelIdSchema.openapi({
+      description: ' The ID of the added notification channel. ',
+    }),
+  })
+  .openapi({ required: ['Id'] })
+  .openapi('AddNotificationChannelResponse')
+
+const TopicArnSchema = z
+  .string()
+  .regex(/^arn:aws[a-z0-9-]*:sns:[a-z0-9-]+:\d{12}:[^:]+$/)
+  .min(36)
+  .max(1024)
+  .openapi('TopicArn')
+
+const SnsChannelConfigSchema = z
+  .object({
+    TopicArn: TopicArnSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Resource Name (ARN) of an Amazon Simple Notification Service topic. ',
+    }),
+  })
+  .openapi({
+    description:
+      '<p> Contains the Amazon Resource Name (ARN) of an Amazon Simple Notification Service topic. </p> <p>If you use an Amazon SNS topic in another account, you must attach a policy to it that grants DevOps Guru permission to it notifications. DevOps Guru adds the required policy on your behalf to send notifications using Amazon SNS in your account. DevOps Guru only supports standard SNS topics. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/sns-required-permissions.html">Permissions for cross account Amazon SNS topics</a>.</p> <p>If you use an Amazon SNS topic in another account, you must attach a policy to it that grants DevOps Guru permission to it notifications. DevOps Guru adds the required policy on your behalf to send notifications using Amazon SNS in your account. For more information, see Permissions for cross account Amazon SNS topics.</p> <p>If you use an Amazon SNS topic that is encrypted by an Amazon Web Services Key Management Service customer-managed key (CMK), then you must add permissions to the CMK. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/sns-kms-permissions.html">Permissions for Amazon Web Services KMS–encrypted Amazon SNS topics</a>.</p>',
+    required: [],
+  })
+  .openapi('SnsChannelConfig')
+
+const InsightSeveritySchema = z.enum(['LOW', 'MEDIUM', 'HIGH']).openapi('InsightSeverity')
+
+const InsightSeveritiesSchema = z
+  .array(InsightSeveritySchema)
+  .min(0)
+  .max(3)
+  .openapi('InsightSeverities')
+
+const NotificationMessageTypeSchema = z
+  .enum([
+    'NEW_INSIGHT',
+    'CLOSED_INSIGHT',
+    'NEW_ASSOCIATION',
+    'SEVERITY_UPGRADED',
+    'NEW_RECOMMENDATION',
+  ])
+  .openapi('NotificationMessageType')
+
+const NotificationMessageTypesSchema = z
+  .array(NotificationMessageTypeSchema)
+  .min(0)
+  .max(5)
+  .openapi('NotificationMessageTypes')
+
+const NotificationFilterConfigSchema = z
+  .object({
+    Severities: InsightSeveritiesSchema.exactOptional().openapi({
+      description:
+        ' The severity levels that you want to receive notifications for. For example, you can choose to receive notifications only for insights with <code>HIGH</code> and <code>MEDIUM</code> severity levels. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a>. ',
+    }),
+    MessageTypes: NotificationMessageTypesSchema.exactOptional().openapi({
+      description:
+        ' The events that you want to receive notifications for. For example, you can choose to receive notifications only when the severity level is upgraded or a new insight is created. ',
+    }),
+  })
+  .openapi({
+    description:
+      ' The filter configurations for the Amazon SNS notification topic you use with DevOps Guru. You can choose to specify which events or message types to receive notifications for. You can also choose to specify which severity levels to receive notifications for. ',
+    required: [],
+  })
+  .openapi('NotificationFilterConfig')
+
+const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
+
+const ConflictExceptionSchema = z.any().openapi('ConflictException')
+
+const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
+
+const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
+
+const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceededException')
+
+const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
+
+const ValidationExceptionSchema = z.any().openapi('ValidationException')
+
+const DeleteInsightResponseSchema = z.looseObject({}).openapi('DeleteInsightResponse')
+
+const NumOpenReactiveInsightsSchema = z.int().openapi('NumOpenReactiveInsights')
+
+const NumOpenProactiveInsightsSchema = z.int().openapi('NumOpenProactiveInsights')
+
+const NumMetricsAnalyzedSchema = z.int().openapi('NumMetricsAnalyzed')
+
+const ResourceHoursSchema = z.int().openapi('ResourceHours')
+
+const AnalyzedResourceCountSchema = z.int().openapi('AnalyzedResourceCount')
+
+const DescribeAccountHealthResponseSchema = z
+  .object({
+    OpenReactiveInsights: NumOpenReactiveInsightsSchema.openapi({
+      description:
+        ' An integer that specifies the number of open reactive insights in your Amazon Web Services account. ',
+    }),
+    OpenProactiveInsights: NumOpenProactiveInsightsSchema.openapi({
+      description:
+        ' An integer that specifies the number of open proactive insights in your Amazon Web Services account. ',
+    }),
+    MetricsAnalyzed: NumMetricsAnalyzedSchema.openapi({
+      description:
+        ' An integer that specifies the number of metrics that have been analyzed in your Amazon Web Services account. ',
+    }),
+    ResourceHours: ResourceHoursSchema.openapi({
+      description:
+        'The number of Amazon DevOps Guru resource analysis hours billed to the current Amazon Web Services account in the last hour. ',
+    }),
+    AnalyzedResourceCount: AnalyzedResourceCountSchema.exactOptional().openapi({
+      description:
+        ' Number of resources that DevOps Guru is monitoring in your Amazon Web Services account. ',
+    }),
+  })
+  .openapi({
+    required: ['OpenReactiveInsights', 'OpenProactiveInsights', 'MetricsAnalyzed', 'ResourceHours'],
+  })
+  .openapi('DescribeAccountHealthResponse')
+
+const NumReactiveInsightsSchema = z.int().openapi('NumReactiveInsights')
+
+const NumProactiveInsightsSchema = z.int().openapi('NumProactiveInsights')
+
+const MeanTimeToRecoverInMillisecondsSchema = z.int().openapi('MeanTimeToRecoverInMilliseconds')
+
+const DescribeAccountOverviewResponseSchema = z
+  .object({
+    ReactiveInsights: NumReactiveInsightsSchema.openapi({
+      description:
+        ' An integer that specifies the number of open reactive insights in your Amazon Web Services account that were created during the time range passed in. ',
+    }),
+    ProactiveInsights: NumProactiveInsightsSchema.openapi({
+      description:
+        ' An integer that specifies the number of open proactive insights in your Amazon Web Services account that were created during the time range passed in. ',
+    }),
+    MeanTimeToRecoverInMilliseconds: MeanTimeToRecoverInMillisecondsSchema.openapi({
+      description:
+        ' The Mean Time to Recover (MTTR) for all closed insights that were created during the time range passed in. ',
+    }),
+  })
+  .openapi({
+    required: ['ReactiveInsights', 'ProactiveInsights', 'MeanTimeToRecoverInMilliseconds'],
+  })
+  .openapi('DescribeAccountOverviewResponse')
+
+const DescribeAnomalyResponseSchema: z.ZodType<DescribeAnomalyResponseType> = z
+  .object({
+    ProactiveAnomaly: ProactiveAnomalySchema.exactOptional().openapi({
+      description:
+        ' A <code>ProactiveAnomaly</code> object that represents the requested anomaly. ',
+    }),
+    ReactiveAnomaly: ReactiveAnomalySchema.exactOptional().openapi({
+      description: ' A <code>ReactiveAnomaly</code> object that represents the requested anomaly. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAnomalyResponse')
@@ -1100,14 +1232,10 @@ const EventSourceOptInStatusSchema = z
 
 const AmazonCodeGuruProfilerIntegrationSchema = z
   .object({
-    Status: EventSourceOptInStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the CodeGuru Profiler integration. Specifies if DevOps Guru is enabled to consume recommendations that are generated from Amazon CodeGuru Profiler.',
-        }),
-    ).exactOptional(),
+    Status: EventSourceOptInStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the CodeGuru Profiler integration. Specifies if DevOps Guru is enabled to consume recommendations that are generated from Amazon CodeGuru Profiler.',
+    }),
   })
   .openapi({
     description:
@@ -1118,14 +1246,10 @@ const AmazonCodeGuruProfilerIntegrationSchema = z
 
 const EventSourcesConfigSchema = z
   .object({
-    AmazonCodeGuruProfiler: AmazonCodeGuruProfilerIntegrationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about whether DevOps Guru is configured to consume recommendations which are generated from AWS CodeGuru Profiler.',
-        }),
-    ).exactOptional(),
+    AmazonCodeGuruProfiler: AmazonCodeGuruProfilerIntegrationSchema.exactOptional().openapi({
+      description:
+        'Information about whether DevOps Guru is configured to consume recommendations which are generated from AWS CodeGuru Profiler.',
+    }),
   })
   .openapi({
     description:
@@ -1136,9 +1260,9 @@ const EventSourcesConfigSchema = z
 
 const DescribeEventSourcesConfigResponseSchema = z
   .object({
-    EventSources: EventSourcesConfigSchema.and(
-      z.any().openapi({ description: 'Lists the event sources in the configuration.' }),
-    ).exactOptional(),
+    EventSources: EventSourcesConfigSchema.exactOptional().openapi({
+      description: 'Lists the event sources in the configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEventSourcesConfigResponse')
@@ -1155,12 +1279,10 @@ const InsightFeedbackOptionSchema = z
 
 const InsightFeedbackSchema = z
   .object({
-    Id: InsightIdSchema.and(
-      z.any().openapi({ description: ' The insight feedback ID. ' }),
-    ).exactOptional(),
-    Feedback: InsightFeedbackOptionSchema.and(
-      z.any().openapi({ description: ' The feedback provided by the customer. ' }),
-    ).exactOptional(),
+    Id: InsightIdSchema.exactOptional().openapi({ description: ' The insight feedback ID. ' }),
+    Feedback: InsightFeedbackOptionSchema.exactOptional().openapi({
+      description: ' The feedback provided by the customer. ',
+    }),
   })
   .openapi({
     description: ' Information about insight feedback received from a customer. ',
@@ -1184,16 +1306,12 @@ const InsightStatusSchema = z.enum(['ONGOING', 'CLOSED']).openapi('InsightStatus
 
 const InsightTimeRangeSchema = z
   .object({
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The time when the behavior described in an insight started. ' }),
-    ),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The time when the behavior described in an insight ended. ' }),
-    ).exactOptional(),
+    StartTime: TimestampSchema.openapi({
+      description: ' The time when the behavior described in an insight started. ',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: ' The time when the behavior described in an insight ended. ',
+    }),
   })
   .openapi({
     required: ['StartTime'],
@@ -1208,37 +1326,29 @@ const InsightDescriptionSchema = z.string().openapi('InsightDescription')
 
 const ProactiveInsightSchema = z
   .object({
-    Id: InsightIdSchema.and(
-      z.any().openapi({ description: 'The ID of the proactive insight. ' }),
-    ).exactOptional(),
-    Name: InsightNameSchema.and(
-      z.any().openapi({ description: 'The name of the proactive insight. ' }),
-    ).exactOptional(),
-    Severity: InsightSeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The severity of the insight. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Status: InsightStatusSchema.and(
-      z.any().openapi({ description: 'The status of the proactive insight. ' }),
-    ).exactOptional(),
+    Id: InsightIdSchema.exactOptional().openapi({
+      description: 'The ID of the proactive insight. ',
+    }),
+    Name: InsightNameSchema.exactOptional().openapi({
+      description: 'The name of the proactive insight. ',
+    }),
+    Severity: InsightSeveritySchema.exactOptional().openapi({
+      description:
+        'The severity of the insight. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
+    }),
+    Status: InsightStatusSchema.exactOptional().openapi({
+      description: 'The status of the proactive insight. ',
+    }),
     InsightTimeRange: InsightTimeRangeSchema.exactOptional(),
     PredictionTimeRange: PredictionTimeRangeSchema.exactOptional(),
     ResourceCollection: ResourceCollectionSchema.exactOptional(),
-    SsmOpsItemId: SsmOpsItemIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ID of the Amazon Web Services System Manager OpsItem created for this insight. You must enable the creation of OpstItems insights before they are created for each insight. ',
-        }),
-    ).exactOptional(),
-    Description: InsightDescriptionSchema.and(
-      z.any().openapi({ description: 'Describes the proactive insight.' }),
-    ).exactOptional(),
+    SsmOpsItemId: SsmOpsItemIdSchema.exactOptional().openapi({
+      description:
+        ' The ID of the Amazon Web Services System Manager OpsItem created for this insight. You must enable the creation of OpstItems insights before they are created for each insight. ',
+    }),
+    Description: InsightDescriptionSchema.exactOptional().openapi({
+      description: 'Describes the proactive insight.',
+    }),
   })
   .openapi({
     description:
@@ -1249,36 +1359,26 @@ const ProactiveInsightSchema = z
 
 const ReactiveInsightSchema = z
   .object({
-    Id: InsightIdSchema.and(
-      z.any().openapi({ description: ' The ID of a reactive insight. ' }),
-    ).exactOptional(),
-    Name: InsightNameSchema.and(
-      z.any().openapi({ description: ' The name of a reactive insight. ' }),
-    ).exactOptional(),
-    Severity: InsightSeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The severity of the insight. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Status: InsightStatusSchema.and(
-      z.any().openapi({ description: ' The status of a reactive insight. ' }),
-    ).exactOptional(),
+    Id: InsightIdSchema.exactOptional().openapi({ description: ' The ID of a reactive insight. ' }),
+    Name: InsightNameSchema.exactOptional().openapi({
+      description: ' The name of a reactive insight. ',
+    }),
+    Severity: InsightSeveritySchema.exactOptional().openapi({
+      description:
+        'The severity of the insight. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
+    }),
+    Status: InsightStatusSchema.exactOptional().openapi({
+      description: ' The status of a reactive insight. ',
+    }),
     InsightTimeRange: InsightTimeRangeSchema.exactOptional(),
     ResourceCollection: ResourceCollectionSchema.exactOptional(),
-    SsmOpsItemId: SsmOpsItemIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ID of the Amazon Web Services System Manager OpsItem created for this insight. You must enable the creation of OpstItems insights before they are created for each insight. ',
-        }),
-    ).exactOptional(),
-    Description: InsightDescriptionSchema.and(
-      z.any().openapi({ description: 'Describes the reactive insight.' }),
-    ).exactOptional(),
+    SsmOpsItemId: SsmOpsItemIdSchema.exactOptional().openapi({
+      description:
+        ' The ID of the Amazon Web Services System Manager OpsItem created for this insight. You must enable the creation of OpstItems insights before they are created for each insight. ',
+    }),
+    Description: InsightDescriptionSchema.exactOptional().openapi({
+      description: 'Describes the reactive insight.',
+    }),
   })
   .openapi({
     description:
@@ -1289,60 +1389,35 @@ const ReactiveInsightSchema = z
 
 const DescribeInsightResponseSchema = z
   .object({
-    ProactiveInsight: ProactiveInsightSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>ProactiveInsight</code> object that represents the requested insight. ',
-        }),
-    ).exactOptional(),
-    ReactiveInsight: ReactiveInsightSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>ReactiveInsight</code> object that represents the requested insight. ',
-        }),
-    ).exactOptional(),
+    ProactiveInsight: ProactiveInsightSchema.exactOptional().openapi({
+      description:
+        ' A <code>ProactiveInsight</code> object that represents the requested insight. ',
+    }),
+    ReactiveInsight: ReactiveInsightSchema.exactOptional().openapi({
+      description: ' A <code>ReactiveInsight</code> object that represents the requested insight. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeInsightResponse')
 
 const DescribeOrganizationHealthResponseSchema = z
   .object({
-    OpenReactiveInsights: NumOpenReactiveInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer that specifies the number of open reactive insights in your Amazon Web Services account.',
-        }),
-    ),
-    OpenProactiveInsights: NumOpenProactiveInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer that specifies the number of open proactive insights in your Amazon Web Services account.',
-        }),
-    ),
-    MetricsAnalyzed: NumMetricsAnalyzedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer that specifies the number of metrics that have been analyzed in your organization.',
-        }),
-    ),
-    ResourceHours: ResourceHoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of Amazon DevOps Guru resource analysis hours billed to the current Amazon Web Services account in the last hour. ',
-        }),
-    ),
+    OpenReactiveInsights: NumOpenReactiveInsightsSchema.openapi({
+      description:
+        'An integer that specifies the number of open reactive insights in your Amazon Web Services account.',
+    }),
+    OpenProactiveInsights: NumOpenProactiveInsightsSchema.openapi({
+      description:
+        'An integer that specifies the number of open proactive insights in your Amazon Web Services account.',
+    }),
+    MetricsAnalyzed: NumMetricsAnalyzedSchema.openapi({
+      description:
+        'An integer that specifies the number of metrics that have been analyzed in your organization.',
+    }),
+    ResourceHours: ResourceHoursSchema.openapi({
+      description:
+        'The number of Amazon DevOps Guru resource analysis hours billed to the current Amazon Web Services account in the last hour. ',
+    }),
   })
   .openapi({
     required: ['OpenReactiveInsights', 'OpenProactiveInsights', 'MetricsAnalyzed', 'ResourceHours'],
@@ -1363,37 +1438,29 @@ const OrganizationalUnitIdSchema = z
 
 const DescribeOrganizationOverviewResponseSchema = z
   .object({
-    ReactiveInsights: NumReactiveInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer that specifies the number of open reactive insights in your Amazon Web Services account.',
-        }),
-    ),
-    ProactiveInsights: NumProactiveInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer that specifies the number of open proactive insights in your Amazon Web Services account.',
-        }),
-    ),
+    ReactiveInsights: NumReactiveInsightsSchema.openapi({
+      description:
+        'An integer that specifies the number of open reactive insights in your Amazon Web Services account.',
+    }),
+    ProactiveInsights: NumProactiveInsightsSchema.openapi({
+      description:
+        'An integer that specifies the number of open proactive insights in your Amazon Web Services account.',
+    }),
   })
   .openapi({ required: ['ReactiveInsights', 'ProactiveInsights'] })
   .openapi('DescribeOrganizationOverviewResponse')
 
 const InsightHealthSchema = z
   .object({
-    OpenProactiveInsights: NumOpenProactiveInsightsSchema.and(
-      z.any().openapi({ description: ' The number of open proactive insights. ' }),
-    ).exactOptional(),
-    OpenReactiveInsights: NumOpenReactiveInsightsSchema.and(
-      z.any().openapi({ description: ' The number of open reactive insights. ' }),
-    ).exactOptional(),
-    MeanTimeToRecoverInMilliseconds: MeanTimeToRecoverInMillisecondsSchema.and(
-      z.any().openapi({ description: ' The Meant Time to Recover (MTTR) for the insight. ' }),
-    ).exactOptional(),
+    OpenProactiveInsights: NumOpenProactiveInsightsSchema.exactOptional().openapi({
+      description: ' The number of open proactive insights. ',
+    }),
+    OpenReactiveInsights: NumOpenReactiveInsightsSchema.exactOptional().openapi({
+      description: ' The number of open reactive insights. ',
+    }),
+    MeanTimeToRecoverInMilliseconds: MeanTimeToRecoverInMillisecondsSchema.exactOptional().openapi({
+      description: ' The Meant Time to Recover (MTTR) for the insight. ',
+    }),
   })
   .openapi({
     description:
@@ -1404,25 +1471,17 @@ const InsightHealthSchema = z
 
 const CloudFormationHealthSchema = z
   .object({
-    StackName: StackNameSchema.and(
-      z.any().openapi({ description: ' The name of the CloudFormation stack. ' }),
-    ).exactOptional(),
-    Insight: InsightHealthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Information about the health of the Amazon Web Services resources in your account that are specified by an Amazon Web Services CloudFormation stack, including the number of open proactive, open reactive insights, and the Mean Time to Recover (MTTR) of closed insights. ',
-        }),
-    ).exactOptional(),
-    AnalyzedResourceCount: AnalyzedResourceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Number of resources that DevOps Guru is monitoring in your account that are specified by an Amazon Web Services CloudFormation stack. ',
-        }),
-    ).exactOptional(),
+    StackName: StackNameSchema.exactOptional().openapi({
+      description: ' The name of the CloudFormation stack. ',
+    }),
+    Insight: InsightHealthSchema.exactOptional().openapi({
+      description:
+        ' Information about the health of the Amazon Web Services resources in your account that are specified by an Amazon Web Services CloudFormation stack, including the number of open proactive, open reactive insights, and the Mean Time to Recover (MTTR) of closed insights. ',
+    }),
+    AnalyzedResourceCount: AnalyzedResourceCountSchema.exactOptional().openapi({
+      description:
+        ' Number of resources that DevOps Guru is monitoring in your account that are specified by an Amazon Web Services CloudFormation stack. ',
+    }),
   })
   .openapi({
     description:
@@ -1467,20 +1526,12 @@ const ServiceNameSchema = z
 
 const ServiceInsightHealthSchema = z
   .object({
-    OpenProactiveInsights: NumOpenProactiveInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of open proactive insights in the Amazon Web Services service',
-        }),
-    ).exactOptional(),
-    OpenReactiveInsights: NumOpenReactiveInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of open reactive insights in the Amazon Web Services service',
-        }),
-    ).exactOptional(),
+    OpenProactiveInsights: NumOpenProactiveInsightsSchema.exactOptional().openapi({
+      description: 'The number of open proactive insights in the Amazon Web Services service',
+    }),
+    OpenReactiveInsights: NumOpenReactiveInsightsSchema.exactOptional().openapi({
+      description: 'The number of open reactive insights in the Amazon Web Services service',
+    }),
   })
   .openapi({
     description:
@@ -1491,25 +1542,17 @@ const ServiceInsightHealthSchema = z
 
 const ServiceHealthSchema = z
   .object({
-    ServiceName: ServiceNameSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon Web Services service.' }),
-    ).exactOptional(),
-    Insight: ServiceInsightHealthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the health of an Amazon Web Services service. This is a <code>ServiceInsightHealth</code> that contains the number of open proactive and reactive insights for this service.',
-        }),
-    ).exactOptional(),
-    AnalyzedResourceCount: AnalyzedResourceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Number of resources that DevOps Guru is monitoring in an analyzed Amazon Web Services service. ',
-        }),
-    ).exactOptional(),
+    ServiceName: ServiceNameSchema.exactOptional().openapi({
+      description: 'The name of the Amazon Web Services service.',
+    }),
+    Insight: ServiceInsightHealthSchema.exactOptional().openapi({
+      description:
+        'Represents the health of an Amazon Web Services service. This is a <code>ServiceInsightHealth</code> that contains the number of open proactive and reactive insights for this service.',
+    }),
+    AnalyzedResourceCount: AnalyzedResourceCountSchema.exactOptional().openapi({
+      description:
+        ' Number of resources that DevOps Guru is monitoring in an analyzed Amazon Web Services service. ',
+    }),
   })
   .openapi({
     description: 'Represents the health of an Amazon Web Services service.',
@@ -1521,22 +1564,14 @@ const ServiceHealthsSchema = z.array(ServiceHealthSchema).openapi('ServiceHealth
 
 const AccountInsightHealthSchema = z
   .object({
-    OpenProactiveInsights: NumOpenProactiveInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer that specifies the number of open proactive insights in your Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    OpenReactiveInsights: NumOpenReactiveInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer that specifies the number of open reactive insights in your Amazon Web Services account.',
-        }),
-    ).exactOptional(),
+    OpenProactiveInsights: NumOpenProactiveInsightsSchema.exactOptional().openapi({
+      description:
+        'An integer that specifies the number of open proactive insights in your Amazon Web Services account.',
+    }),
+    OpenReactiveInsights: NumOpenReactiveInsightsSchema.exactOptional().openapi({
+      description:
+        'An integer that specifies the number of open reactive insights in your Amazon Web Services account.',
+    }),
   })
   .openapi({
     description:
@@ -1547,17 +1582,13 @@ const AccountInsightHealthSchema = z
 
 const AccountHealthSchema = z
   .object({
-    AccountId: AwsAccountIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Amazon Web Services account. ' }),
-    ).exactOptional(),
-    Insight: AccountInsightHealthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Information about the health of the Amazon Web Services resources in your account, including the number of open proactive, open reactive insights, and the Mean Time to Recover (MTTR) of closed insights. ',
-        }),
-    ).exactOptional(),
+    AccountId: AwsAccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account. ',
+    }),
+    Insight: AccountInsightHealthSchema.exactOptional().openapi({
+      description:
+        ' Information about the health of the Amazon Web Services resources in your account, including the number of open proactive, open reactive insights, and the Mean Time to Recover (MTTR) of closed insights. ',
+    }),
   })
   .openapi({
     description:
@@ -1568,46 +1599,24 @@ const AccountHealthSchema = z
 
 const AccountHealthsSchema = z.array(AccountHealthSchema).openapi('AccountHealths')
 
-const UuidNextTokenSchema = z
-  .string()
-  .regex(/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/)
-  .length(36)
-  .openapi('UuidNextToken')
-
 const TagHealthSchema = z
   .object({
-    AppBoundaryKey: AppBoundaryKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An Amazon Web Services tag <i>key</i> that is used to identify the Amazon Web Services resources that DevOps Guru analyzes. All Amazon Web Services resources in your account and Region tagged with this <i>key</i> make up your DevOps Guru application and analysis boundary.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
-        }),
-    ).exactOptional(),
-    TagValue: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The value in an Amazon Web Services tag.</p> <p>The tag's <i>value</i> is an optional field used to associate a string with the tag <i>key</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). The <i>key</i> and <i>value</i> are the tag's <i>key</i> pair. Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive. You can specify a maximum of 256 characters for a tag value.</p>",
-        }),
-    ).exactOptional(),
-    Insight: InsightHealthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the health of the Amazon Web Services resources in your account that are specified by an Amazon Web Services tag, including the number of open proactive, open reactive insights, and the Mean Time to Recover (MTTR) of closed insights. ',
-        }),
-    ).exactOptional(),
-    AnalyzedResourceCount: AnalyzedResourceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Number of resources that DevOps Guru is monitoring in your account that are specified by an Amazon Web Services tag. ',
-        }),
-    ).exactOptional(),
+    AppBoundaryKey: AppBoundaryKeySchema.exactOptional().openapi({
+      description:
+        '<p>An Amazon Web Services tag <i>key</i> that is used to identify the Amazon Web Services resources that DevOps Guru analyzes. All Amazon Web Services resources in your account and Region tagged with this <i>key</i> make up your DevOps Guru application and analysis boundary.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
+    }),
+    TagValue: TagValueSchema.exactOptional().openapi({
+      description:
+        "<p>The value in an Amazon Web Services tag.</p> <p>The tag's <i>value</i> is an optional field used to associate a string with the tag <i>key</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). The <i>key</i> and <i>value</i> are the tag's <i>key</i> pair. Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive. You can specify a maximum of 256 characters for a tag value.</p>",
+    }),
+    Insight: InsightHealthSchema.exactOptional().openapi({
+      description:
+        'Information about the health of the Amazon Web Services resources in your account that are specified by an Amazon Web Services tag, including the number of open proactive, open reactive insights, and the Mean Time to Recover (MTTR) of closed insights. ',
+    }),
+    AnalyzedResourceCount: AnalyzedResourceCountSchema.exactOptional().openapi({
+      description:
+        ' Number of resources that DevOps Guru is monitoring in your account that are specified by an Amazon Web Services tag. ',
+    }),
   })
   .openapi({
     description:
@@ -1620,79 +1629,47 @@ const TagHealthsSchema = z.array(TagHealthSchema).openapi('TagHealths')
 
 const DescribeOrganizationResourceCollectionHealthResponseSchema = z
   .object({
-    CloudFormation: CloudFormationHealthsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The returned <code>CloudFormationHealthOverview</code> object that contains an <code>InsightHealthOverview</code> object with the requested system health information.',
-        }),
-    ).exactOptional(),
-    Service: ServiceHealthsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>ServiceHealth</code> objects that describes the health of the Amazon Web Services services associated with the resources in the collection.',
-        }),
-    ).exactOptional(),
-    Account: AccountHealthsSchema.and(
-      z.any().openapi({ description: "The name of the organization's account." }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
-    Tags: TagHealthsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Tags help you identify and organize your Amazon Web Services resources. Many Amazon Web Services services support tagging, so you can assign the same tag to resources from different services to indicate that the resources are related. For example, you can assign the same tag to an Amazon DynamoDB table resource that you assign to an Lambda function. For more information about using tags, see the <a href="https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html">Tagging best practices</a> whitepaper. </p> <p>Each Amazon Web Services tag has two parts. </p> <ul> <li> <p>A tag <i>key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag <i>keys</i> are case-sensitive.</p> </li> <li> <p>An optional field known as a tag <i>value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive.</p> </li> </ul> <p>Together these are known as <i>key</i>-<i>value</i> pairs.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
-        }),
-    ).exactOptional(),
+    CloudFormation: CloudFormationHealthsSchema.exactOptional().openapi({
+      description:
+        'The returned <code>CloudFormationHealthOverview</code> object that contains an <code>InsightHealthOverview</code> object with the requested system health information.',
+    }),
+    Service: ServiceHealthsSchema.exactOptional().openapi({
+      description:
+        'An array of <code>ServiceHealth</code> objects that describes the health of the Amazon Web Services services associated with the resources in the collection.',
+    }),
+    Account: AccountHealthsSchema.exactOptional().openapi({
+      description: "The name of the organization's account.",
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
+    Tags: TagHealthsSchema.exactOptional().openapi({
+      description:
+        '<p>Tags help you identify and organize your Amazon Web Services resources. Many Amazon Web Services services support tagging, so you can assign the same tag to resources from different services to indicate that the resources are related. For example, you can assign the same tag to an Amazon DynamoDB table resource that you assign to an Lambda function. For more information about using tags, see the <a href="https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html">Tagging best practices</a> whitepaper. </p> <p>Each Amazon Web Services tag has two parts. </p> <ul> <li> <p>A tag <i>key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag <i>keys</i> are case-sensitive.</p> </li> <li> <p>An optional field known as a tag <i>value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive.</p> </li> </ul> <p>Together these are known as <i>key</i>-<i>value</i> pairs.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeOrganizationResourceCollectionHealthResponse')
 
 const DescribeResourceCollectionHealthResponseSchema = z
   .object({
-    CloudFormation: CloudFormationHealthsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The returned <code>CloudFormationHealthOverview</code> object that contains an <code>InsightHealthOverview</code> object with the requested system health information. ',
-        }),
-    ).exactOptional(),
-    Service: ServiceHealthsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>ServiceHealth</code> objects that describes the health of the Amazon Web Services services associated with the resources in the collection.',
-        }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
-    Tags: TagHealthsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Web Services tags that are used by resources in the resource collection.</p> <p>Tags help you identify and organize your Amazon Web Services resources. Many Amazon Web Services services support tagging, so you can assign the same tag to resources from different services to indicate that the resources are related. For example, you can assign the same tag to an Amazon DynamoDB table resource that you assign to an Lambda function. For more information about using tags, see the <a href="https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html">Tagging best practices</a> whitepaper. </p> <p>Each Amazon Web Services tag has two parts. </p> <ul> <li> <p>A tag <i>key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag <i>keys</i> are case-sensitive.</p> </li> <li> <p>An optional field known as a tag <i>value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive.</p> </li> </ul> <p>Together these are known as <i>key</i>-<i>value</i> pairs.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
-        }),
-    ).exactOptional(),
+    CloudFormation: CloudFormationHealthsSchema.exactOptional().openapi({
+      description:
+        ' The returned <code>CloudFormationHealthOverview</code> object that contains an <code>InsightHealthOverview</code> object with the requested system health information. ',
+    }),
+    Service: ServiceHealthsSchema.exactOptional().openapi({
+      description:
+        'An array of <code>ServiceHealth</code> objects that describes the health of the Amazon Web Services services associated with the resources in the collection.',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
+    Tags: TagHealthsSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Web Services tags that are used by resources in the resource collection.</p> <p>Tags help you identify and organize your Amazon Web Services resources. Many Amazon Web Services services support tagging, so you can assign the same tag to resources from different services to indicate that the resources are related. For example, you can assign the same tag to an Amazon DynamoDB table resource that you assign to an Lambda function. For more information about using tags, see the <a href="https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html">Tagging best practices</a> whitepaper. </p> <p>Each Amazon Web Services tag has two parts. </p> <ul> <li> <p>A tag <i>key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag <i>keys</i> are case-sensitive.</p> </li> <li> <p>An optional field known as a tag <i>value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive.</p> </li> </ul> <p>Together these are known as <i>key</i>-<i>value</i> pairs.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeResourceCollectionHealthResponse')
@@ -1707,14 +1684,10 @@ const OptInStatusSchema = z
 
 const OpsCenterIntegrationSchema = z
   .object({
-    OptInStatus: OptInStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies if DevOps Guru is enabled to create an Amazon Web Services Systems Manager OpsItem for each created insight. ',
-        }),
-    ).exactOptional(),
+    OptInStatus: OptInStatusSchema.exactOptional().openapi({
+      description:
+        ' Specifies if DevOps Guru is enabled to create an Amazon Web Services Systems Manager OpsItem for each created insight. ',
+    }),
   })
   .openapi({
     description:
@@ -1725,14 +1698,10 @@ const OpsCenterIntegrationSchema = z
 
 const LogsAnomalyDetectionIntegrationSchema = z
   .object({
-    OptInStatus: OptInStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies if DevOps Guru is configured to perform log anomaly detection on CloudWatch log groups.',
-        }),
-    ).exactOptional(),
+    OptInStatus: OptInStatusSchema.exactOptional().openapi({
+      description:
+        'Specifies if DevOps Guru is configured to perform log anomaly detection on CloudWatch log groups.',
+    }),
   })
   .openapi({
     description:
@@ -1743,22 +1712,14 @@ const LogsAnomalyDetectionIntegrationSchema = z
 
 const ServiceIntegrationConfigSchema = z
   .object({
-    OpsCenter: OpsCenterIntegrationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Information about whether DevOps Guru is configured to create an OpsItem in Amazon Web Services Systems Manager OpsCenter for each created insight. ',
-        }),
-    ).exactOptional(),
-    LogsAnomalyDetection: LogsAnomalyDetectionIntegrationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Information about whether DevOps Guru is configured to perform log anomaly detection on Amazon CloudWatch log groups. ',
-        }),
-    ).exactOptional(),
+    OpsCenter: OpsCenterIntegrationSchema.exactOptional().openapi({
+      description:
+        ' Information about whether DevOps Guru is configured to create an OpsItem in Amazon Web Services Systems Manager OpsCenter for each created insight. ',
+    }),
+    LogsAnomalyDetection: LogsAnomalyDetectionIntegrationSchema.exactOptional().openapi({
+      description:
+        ' Information about whether DevOps Guru is configured to perform log anomaly detection on Amazon CloudWatch log groups. ',
+    }),
   })
   .openapi({
     description:
@@ -1772,35 +1733,69 @@ const DescribeServiceIntegrationResponseSchema = z
   .openapi({ required: [] })
   .openapi('DescribeServiceIntegrationResponse')
 
-const CostEstimationResourceCollectionFilterSchema: z.ZodType<CostEstimationResourceCollectionFilterType> =
-  z
-    .lazy(() =>
-      z
-        .object({
-          CloudFormation: CloudFormationCostEstimationResourceCollectionFilterSchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  'An object that specifies the CloudFormation stack that defines the Amazon Web Services resources used to create a monthly estimate for DevOps Guru.',
-              }),
-          ).exactOptional(),
-          Tags: TagCostEstimationResourceCollectionFiltersSchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  '<p>The Amazon Web Services tags used to filter the resource collection that is used for a cost estimate.</p> <p>Tags help you identify and organize your Amazon Web Services resources. Many Amazon Web Services services support tagging, so you can assign the same tag to resources from different services to indicate that the resources are related. For example, you can assign the same tag to an Amazon DynamoDB table resource that you assign to an Lambda function. For more information about using tags, see the <a href="https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html">Tagging best practices</a> whitepaper. </p> <p>Each Amazon Web Services tag has two parts. </p> <ul> <li> <p>A tag <i>key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag <i>keys</i> are case-sensitive.</p> </li> <li> <p>An optional field known as a tag <i>value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive.</p> </li> </ul> <p>Together these are known as <i>key</i>-<i>value</i> pairs.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
-              }),
-          ).exactOptional(),
-        })
-        .openapi({
-          description:
-            'Information about a filter used to specify which Amazon Web Services resources are analyzed to create a monthly DevOps Guru cost estimate. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/cost-estimate.html">Estimate your Amazon DevOps Guru costs</a> and <a href="http://aws.amazon.com/devops-guru/pricing/">Amazon DevOps Guru pricing</a>. ',
-          required: [],
-        }),
-    )
-    .openapi('CostEstimationResourceCollectionFilter')
+const CostEstimationStackNamesSchema = z
+  .array(StackNameSchema)
+  .length(1)
+  .openapi('CostEstimationStackNames')
+
+const CloudFormationCostEstimationResourceCollectionFilterSchema = z
+  .object({
+    StackNames: CostEstimationStackNamesSchema.exactOptional().openapi({
+      description: 'An array of CloudFormation stack names. Its size is fixed at 1 item.',
+    }),
+  })
+  .openapi({
+    description:
+      'Information about an Amazon Web Services CloudFormation stack used to create a monthly cost estimate for DevOps Guru to analyze Amazon Web Services resources. The maximum number of stacks you can specify for a cost estimate is one. The estimate created is for the cost to analyze the Amazon Web Services resources defined by the stack. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacks.html">Stacks</a> in the <i>Amazon Web Services CloudFormation User Guide</i>.',
+    required: [],
+  })
+  .openapi('CloudFormationCostEstimationResourceCollectionFilter')
+
+const CostEstimationTagValuesSchema = z
+  .array(TagValueSchema)
+  .length(1)
+  .openapi('CostEstimationTagValues')
+
+const TagCostEstimationResourceCollectionFilterSchema = z
+  .object({
+    AppBoundaryKey: AppBoundaryKeySchema.openapi({
+      description:
+        '<p>An Amazon Web Services tag <i>key</i> that is used to identify the Amazon Web Services resources that DevOps Guru analyzes. All Amazon Web Services resources in your account and Region tagged with this <i>key</i> make up your DevOps Guru application and analysis boundary.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
+    }),
+    TagValues: CostEstimationTagValuesSchema.openapi({
+      description:
+        "<p>The values in an Amazon Web Services tag collection.</p> <p>The tag's <i>value</i> is an optional field used to associate a string with the tag <i>key</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). The <i>key</i> and <i>value</i> are the tag's <i>key</i> pair. Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive. You can specify a maximum of 256 characters for a tag value.</p>",
+    }),
+  })
+  .openapi({
+    required: ['AppBoundaryKey', 'TagValues'],
+    description:
+      'Information about a collection of Amazon Web Services resources that are identified by an Amazon Web Services tag. This collection of resources is used to create a monthly cost estimate for DevOps Guru to analyze Amazon Web Services resources. The maximum number of tags you can specify for a cost estimate is one. The estimate created is for the cost to analyze the Amazon Web Services resources defined by the tag. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacks.html">Stacks</a> in the <i>Amazon Web Services CloudFormation User Guide</i>.',
+  })
+  .openapi('TagCostEstimationResourceCollectionFilter')
+
+const TagCostEstimationResourceCollectionFiltersSchema = z
+  .array(TagCostEstimationResourceCollectionFilterSchema)
+  .openapi('TagCostEstimationResourceCollectionFilters')
+
+const CostEstimationResourceCollectionFilterSchema = z
+  .object({
+    CloudFormation:
+      CloudFormationCostEstimationResourceCollectionFilterSchema.exactOptional().openapi({
+        description:
+          'An object that specifies the CloudFormation stack that defines the Amazon Web Services resources used to create a monthly estimate for DevOps Guru.',
+      }),
+    Tags: TagCostEstimationResourceCollectionFiltersSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Web Services tags used to filter the resource collection that is used for a cost estimate.</p> <p>Tags help you identify and organize your Amazon Web Services resources. Many Amazon Web Services services support tagging, so you can assign the same tag to resources from different services to indicate that the resources are related. For example, you can assign the same tag to an Amazon DynamoDB table resource that you assign to an Lambda function. For more information about using tags, see the <a href="https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html">Tagging best practices</a> whitepaper. </p> <p>Each Amazon Web Services tag has two parts. </p> <ul> <li> <p>A tag <i>key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag <i>keys</i> are case-sensitive.</p> </li> <li> <p>An optional field known as a tag <i>value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive.</p> </li> </ul> <p>Together these are known as <i>key</i>-<i>value</i> pairs.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
+    }),
+  })
+  .openapi({
+    description:
+      'Information about a filter used to specify which Amazon Web Services resources are analyzed to create a monthly DevOps Guru cost estimate. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/cost-estimate.html">Estimate your Amazon DevOps Guru costs</a> and <a href="http://aws.amazon.com/devops-guru/pricing/">Amazon DevOps Guru pricing</a>. ',
+    required: [],
+  })
+  .openapi('CostEstimationResourceCollectionFilter')
 
 const CostEstimationStatusSchema = z.enum(['ONGOING', 'COMPLETED']).openapi('CostEstimationStatus')
 
@@ -1816,41 +1811,25 @@ const CostSchema = z.float64().openapi('Cost')
 
 const ServiceResourceCostSchema = z
   .object({
-    Type: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the Amazon Web Services resource.' }),
-    ).exactOptional(),
-    State: CostEstimationServiceResourceStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state of the resource. The resource is <code>ACTIVE</code> if it produces metrics, events, or logs within an hour, otherwise it is <code>INACTIVE</code>. You pay for the number of active Amazon Web Services resource hours analyzed for each resource. Inactive resources are not charged. ',
-        }),
-    ).exactOptional(),
-    Count: CostEstimationServiceResourceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of active resources analyzed for this service to create a monthly cost estimate.',
-        }),
-    ).exactOptional(),
-    UnitCost: CostSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The price per hour to analyze the resources in the service. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/cost-estimate.html">Estimate your Amazon DevOps Guru costs</a> and <a href="http://aws.amazon.com/devops-guru/pricing/">Amazon DevOps Guru pricing</a>.',
-        }),
-    ).exactOptional(),
-    Cost: CostSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total estimated monthly cost to analyze the active resources for this resource.',
-        }),
-    ).exactOptional(),
+    Type: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of the Amazon Web Services resource.',
+    }),
+    State: CostEstimationServiceResourceStateSchema.exactOptional().openapi({
+      description:
+        'The state of the resource. The resource is <code>ACTIVE</code> if it produces metrics, events, or logs within an hour, otherwise it is <code>INACTIVE</code>. You pay for the number of active Amazon Web Services resource hours analyzed for each resource. Inactive resources are not charged. ',
+    }),
+    Count: CostEstimationServiceResourceCountSchema.exactOptional().openapi({
+      description:
+        'The number of active resources analyzed for this service to create a monthly cost estimate.',
+    }),
+    UnitCost: CostSchema.exactOptional().openapi({
+      description:
+        'The price per hour to analyze the resources in the service. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/cost-estimate.html">Estimate your Amazon DevOps Guru costs</a> and <a href="http://aws.amazon.com/devops-guru/pricing/">Amazon DevOps Guru pricing</a>.',
+    }),
+    Cost: CostSchema.exactOptional().openapi({
+      description:
+        'The total estimated monthly cost to analyze the active resources for this resource.',
+    }),
   })
   .openapi({
     description:
@@ -1865,70 +1844,50 @@ const ServiceResourceCostsSchema = z
 
 const CostEstimationTimeRangeSchema = z
   .object({
-    StartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The start time of the cost estimation.' }),
-    ).exactOptional(),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The end time of the cost estimation.' }),
-    ).exactOptional(),
+    StartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The start time of the cost estimation.',
+    }),
+    EndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The end time of the cost estimation.',
+    }),
   })
   .openapi({ description: 'The time range of a cost estimation.', required: [] })
   .openapi('CostEstimationTimeRange')
 
 const GetCostEstimationResponseSchema = z
   .object({
-    ResourceCollection: CostEstimationResourceCollectionFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The collection of the Amazon Web Services resources used to create your monthly DevOps Guru cost estimate.',
-        }),
-    ).exactOptional(),
-    Status: CostEstimationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The status of creating this cost estimate. If it's still in progress, the status <code>ONGOING</code> is returned. If it is finished, the status <code>COMPLETED</code> is returned.",
-        }),
-    ).exactOptional(),
-    Costs: ServiceResourceCostsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>ResourceCost</code> objects that each contains details about the monthly cost estimate to analyze one of your Amazon Web Services resources.',
-        }),
-    ).exactOptional(),
-    TimeRange: CostEstimationTimeRangeSchema.and(
-      z.any().openapi({ description: 'The start and end time of the cost estimation.' }),
-    ).exactOptional(),
-    TotalCost: CostSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The estimated monthly cost to analyze the Amazon Web Services resources. This value is the sum of the estimated costs to analyze each resource in the <code>Costs</code> object in this response.',
-        }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    ResourceCollection: CostEstimationResourceCollectionFilterSchema.exactOptional().openapi({
+      description:
+        'The collection of the Amazon Web Services resources used to create your monthly DevOps Guru cost estimate.',
+    }),
+    Status: CostEstimationStatusSchema.exactOptional().openapi({
+      description:
+        "The status of creating this cost estimate. If it's still in progress, the status <code>ONGOING</code> is returned. If it is finished, the status <code>COMPLETED</code> is returned.",
+    }),
+    Costs: ServiceResourceCostsSchema.exactOptional().openapi({
+      description:
+        'An array of <code>ResourceCost</code> objects that each contains details about the monthly cost estimate to analyze one of your Amazon Web Services resources.',
+    }),
+    TimeRange: CostEstimationTimeRangeSchema.exactOptional().openapi({
+      description: 'The start and end time of the cost estimation.',
+    }),
+    TotalCost: CostSchema.exactOptional().openapi({
+      description:
+        'The estimated monthly cost to analyze the Amazon Web Services resources. This value is the sum of the estimated costs to analyze each resource in the <code>Costs</code> object in this response.',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCostEstimationResponse')
 
 const CloudFormationCollectionFilterSchema = z
   .object({
-    StackNames: StackNamesSchema.and(
-      z.any().openapi({ description: ' An array of CloudFormation stack names. ' }),
-    ).exactOptional(),
+    StackNames: StackNamesSchema.exactOptional().openapi({
+      description: ' An array of CloudFormation stack names. ',
+    }),
   })
   .openapi({
     description:
@@ -1939,22 +1898,14 @@ const CloudFormationCollectionFilterSchema = z
 
 const TagCollectionFilterSchema = z
   .object({
-    AppBoundaryKey: AppBoundaryKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An Amazon Web Services tag <i>key</i> that is used to identify the Amazon Web Services resources that DevOps Guru analyzes. All Amazon Web Services resources in your account and Region tagged with this <i>key</i> make up your DevOps Guru application and analysis boundary.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
-        }),
-    ),
-    TagValues: TagValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The values in an Amazon Web Services tag collection.</p> <p>The tag's <i>value</i> is an optional field used to associate a string with the tag <i>key</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). The <i>key</i> and <i>value</i> are the tag's <i>key</i> pair. Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive. You can specify a maximum of 256 characters for a tag value.</p>",
-        }),
-    ),
+    AppBoundaryKey: AppBoundaryKeySchema.openapi({
+      description:
+        '<p>An Amazon Web Services tag <i>key</i> that is used to identify the Amazon Web Services resources that DevOps Guru analyzes. All Amazon Web Services resources in your account and Region tagged with this <i>key</i> make up your DevOps Guru application and analysis boundary.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
+    }),
+    TagValues: TagValuesSchema.openapi({
+      description:
+        "<p>The values in an Amazon Web Services tag collection.</p> <p>The tag's <i>value</i> is an optional field used to associate a string with the tag <i>key</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). The <i>key</i> and <i>value</i> are the tag's <i>key</i> pair. Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive. You can specify a maximum of 256 characters for a tag value.</p>",
+    }),
   })
   .openapi({
     required: ['AppBoundaryKey', 'TagValues'],
@@ -1969,22 +1920,14 @@ const TagCollectionFiltersSchema = z
 
 const ResourceCollectionFilterSchema = z
   .object({
-    CloudFormation: CloudFormationCollectionFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Information about Amazon Web Services CloudFormation stacks. You can use up to 500 stacks to specify which Amazon Web Services resources in your account to analyze. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacks.html">Stacks</a> in the <i>Amazon Web Services CloudFormation User Guide</i>. ',
-        }),
-    ).exactOptional(),
-    Tags: TagCollectionFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Web Services tags used to filter the resources in the resource collection.</p> <p>Tags help you identify and organize your Amazon Web Services resources. Many Amazon Web Services services support tagging, so you can assign the same tag to resources from different services to indicate that the resources are related. For example, you can assign the same tag to an Amazon DynamoDB table resource that you assign to an Lambda function. For more information about using tags, see the <a href="https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html">Tagging best practices</a> whitepaper. </p> <p>Each Amazon Web Services tag has two parts. </p> <ul> <li> <p>A tag <i>key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag <i>keys</i> are case-sensitive.</p> </li> <li> <p>An optional field known as a tag <i>value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive.</p> </li> </ul> <p>Together these are known as <i>key</i>-<i>value</i> pairs.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
-        }),
-    ).exactOptional(),
+    CloudFormation: CloudFormationCollectionFilterSchema.exactOptional().openapi({
+      description:
+        ' Information about Amazon Web Services CloudFormation stacks. You can use up to 500 stacks to specify which Amazon Web Services resources in your account to analyze. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacks.html">Stacks</a> in the <i>Amazon Web Services CloudFormation User Guide</i>. ',
+    }),
+    Tags: TagCollectionFiltersSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Web Services tags used to filter the resources in the resource collection.</p> <p>Tags help you identify and organize your Amazon Web Services resources. Many Amazon Web Services services support tagging, so you can assign the same tag to resources from different services to indicate that the resources are related. For example, you can assign the same tag to an Amazon DynamoDB table resource that you assign to an Lambda function. For more information about using tags, see the <a href="https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html">Tagging best practices</a> whitepaper. </p> <p>Each Amazon Web Services tag has two parts. </p> <ul> <li> <p>A tag <i>key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag <i>keys</i> are case-sensitive.</p> </li> <li> <p>An optional field known as a tag <i>value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive.</p> </li> </ul> <p>Together these are known as <i>key</i>-<i>value</i> pairs.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
+    }),
   })
   .openapi({
     description:
@@ -1995,216 +1938,32 @@ const ResourceCollectionFilterSchema = z
 
 const GetResourceCollectionResponseSchema = z
   .object({
-    ResourceCollection: ResourceCollectionFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The requested list of Amazon Web Services resource collections. The two types of Amazon Web Services resource collections supported are Amazon Web Services CloudFormation stacks and Amazon Web Services resources that contain the same Amazon Web Services tag. DevOps Guru can be configured to analyze the Amazon Web Services resources that are defined in the stacks or that are tagged using the same tag <i>key</i>. You can specify up to 500 Amazon Web Services CloudFormation stacks. ',
-        }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    ResourceCollection: ResourceCollectionFilterSchema.exactOptional().openapi({
+      description:
+        ' The requested list of Amazon Web Services resource collections. The two types of Amazon Web Services resource collections supported are Amazon Web Services CloudFormation stacks and Amazon Web Services resources that contain the same Amazon Web Services tag. DevOps Guru can be configured to analyze the Amazon Web Services resources that are defined in the stacks or that are tagged using the same tag <i>key</i>. You can specify up to 500 Amazon Web Services CloudFormation stacks. ',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResourceCollectionResponse')
 
-const ProactiveAnomalySummarySchema = z
+const ListAnomaliesForInsightResponseSchema: z.ZodType<ListAnomaliesForInsightResponseType> = z
   .object({
-    Id: AnomalyIdSchema.and(
-      z.any().openapi({ description: 'The ID of the anomaly.' }),
-    ).exactOptional(),
-    Severity: AnomalySeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The severity of the anomaly. The severity of anomalies that generate an insight determine that insight\'s severity. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Status: AnomalyStatusSchema.and(
-      z.any().openapi({ description: 'The status of the anomaly.' }),
-    ).exactOptional(),
-    UpdateTime: TimestampSchema.and(
-      z.any().openapi({ description: " The time of the anomaly's most recent update. " }),
-    ).exactOptional(),
-    AnomalyTimeRange: AnomalyTimeRangeSchema.exactOptional(),
-    AnomalyReportedTimeRange: AnomalyReportedTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An <code>AnomalyReportedTimeRange</code> object that specifies the time range between when the anomaly is opened and the time when it is closed. ',
-        }),
-    ).exactOptional(),
-    PredictionTimeRange: PredictionTimeRangeSchema.exactOptional(),
-    SourceDetails: AnomalySourceDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Details about the source of the analyzed operational data that triggered the anomaly. The one supported source is Amazon CloudWatch metrics. ',
-        }),
-    ).exactOptional(),
-    AssociatedInsightId: InsightIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ID of the insight that contains this anomaly. An insight is composed of related anomalies. ',
-        }),
-    ).exactOptional(),
-    ResourceCollection: ResourceCollectionSchema.exactOptional(),
-    Limit: AnomalyLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A threshold that was exceeded by behavior in analyzed resources. Exceeding this threshold is related to the anomalous behavior that generated this anomaly. ',
-        }),
-    ).exactOptional(),
-    SourceMetadata: AnomalySourceMetadataSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The metadata of the source which detects proactive anomalies.' }),
-    ).exactOptional(),
-    AnomalyResources: AnomalyResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a resource in which DevOps Guru detected anomalous behavior.',
-        }),
-    ).exactOptional(),
-    Description: AnomalyDescriptionSchema.and(
-      z.any().openapi({ description: ' A description of the proactive anomaly. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Details about a proactive anomaly. This object is returned by <code>DescribeAnomaly.</code> ',
-    required: [],
-  })
-  .openapi('ProactiveAnomalySummary')
-
-const ProactiveAnomaliesSchema = z
-  .array(ProactiveAnomalySummarySchema)
-  .openapi('ProactiveAnomalies')
-
-const ReactiveAnomalySummarySchema = z
-  .object({
-    Id: AnomalyIdSchema.and(
-      z.any().openapi({ description: ' The ID of the reactive anomaly. ' }),
-    ).exactOptional(),
-    Severity: AnomalySeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The severity of the anomaly. The severity of anomalies that generate an insight determine that insight\'s severity. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Status: AnomalyStatusSchema.and(
-      z.any().openapi({ description: ' The status of the reactive anomaly. ' }),
-    ).exactOptional(),
-    AnomalyTimeRange: AnomalyTimeRangeSchema.exactOptional(),
-    AnomalyReportedTimeRange: AnomalyReportedTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An <code>AnomalyReportedTimeRange</code> object that specifies the time range between when the anomaly is opened and the time when it is closed. ',
-        }),
-    ).exactOptional(),
-    SourceDetails: AnomalySourceDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Details about the source of the analyzed operational data that triggered the anomaly. The one supported source is Amazon CloudWatch metrics. ',
-        }),
-    ).exactOptional(),
-    AssociatedInsightId: InsightIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ID of the insight that contains this anomaly. An insight is composed of related anomalies. ',
-        }),
-    ).exactOptional(),
-    ResourceCollection: ResourceCollectionSchema.exactOptional(),
-    Type: AnomalyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of the reactive anomaly. It can be one of the following types.</p> <ul> <li> <p> <code>CAUSAL</code> - the anomaly can cause a new insight.</p> </li> <li> <p> <code>CONTEXTUAL</code> - the anomaly contains additional information about an insight or its causal anomaly.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Name: AnomalyNameSchema.and(
-      z.any().openapi({ description: 'The name of the reactive anomaly.' }),
-    ).exactOptional(),
-    Description: AnomalyDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the reactive anomaly.' }),
-    ).exactOptional(),
-    CausalAnomalyId: AnomalyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the causal anomaly that is associated with this reactive anomaly. The ID of a `CAUSAL` anomaly is always `NULL`.',
-        }),
-    ).exactOptional(),
-    AnomalyResources: AnomalyResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services resources in which anomalous behavior was detected by DevOps Guru.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Details about a reactive anomaly. This object is returned by <code>DescribeAnomaly.</code> ',
-    required: [],
-  })
-  .openapi('ReactiveAnomalySummary')
-
-const ReactiveAnomaliesSchema = z.array(ReactiveAnomalySummarySchema).openapi('ReactiveAnomalies')
-
-const ListAnomaliesForInsightResponseSchema = z
-  .object({
-    ProactiveAnomalies: ProactiveAnomaliesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An array of <code>ProactiveAnomalySummary</code> objects that represent the requested anomalies ',
-        }),
-    ).exactOptional(),
-    ReactiveAnomalies: ReactiveAnomaliesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An array of <code>ReactiveAnomalySummary</code> objects that represent the requested anomalies ',
-        }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    ProactiveAnomalies: ProactiveAnomaliesSchema.exactOptional().openapi({
+      description:
+        ' An array of <code>ProactiveAnomalySummary</code> objects that represent the requested anomalies ',
+    }),
+    ReactiveAnomalies: ReactiveAnomaliesSchema.exactOptional().openapi({
+      description:
+        ' An array of <code>ReactiveAnomalySummary</code> objects that represent the requested anomalies ',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAnomaliesForInsightResponse')
@@ -2213,14 +1972,10 @@ const ServiceNamesSchema = z.array(ServiceNameSchema).openapi('ServiceNames')
 
 const ServiceCollectionSchema = z
   .object({
-    ServiceNames: ServiceNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of strings that each specifies the name of an Amazon Web Services service.',
-        }),
-    ).exactOptional(),
+    ServiceNames: ServiceNamesSchema.exactOptional().openapi({
+      description:
+        'An array of strings that each specifies the name of an Amazon Web Services service.',
+    }),
   })
   .openapi({
     description: 'A collection of the names of Amazon Web Services services.',
@@ -2257,47 +2012,29 @@ const NumberOfLogLinesOccurrencesSchema = z.int().openapi('NumberOfLogLinesOccur
 
 const LogAnomalyClassSchema = z
   .object({
-    LogStreamName: LogStreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the Amazon CloudWatch log stream that the anomalous log event belongs to. A log stream is a sequence of log events that share the same source. ',
-        }),
-    ).exactOptional(),
-    LogAnomalyType: LogAnomalyTypeSchema.and(
-      z.any().openapi({ description: ' The type of log anomaly that has been detected. ' }),
-    ).exactOptional(),
-    LogAnomalyToken: LogAnomalyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The token where the anomaly was detected. This may refer to an exception or another location, or it may be blank for log anomalies such as format anomalies. ',
-        }),
-    ).exactOptional(),
-    LogEventId: LogEventIdSchema.and(
-      z.any().openapi({ description: ' The ID of the log event. ' }),
-    ).exactOptional(),
-    Explanation: ExplanationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The explanation for why the log event is considered an anomaly. ',
-        }),
-    ).exactOptional(),
-    NumberOfLogLinesOccurrences: NumberOfLogLinesOccurrencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The number of log lines where this anomalous log event occurs. ',
-        }),
-    ).exactOptional(),
-    LogEventTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The time of the first occurrence of the anomalous log event. ' }),
-    ).exactOptional(),
+    LogStreamName: LogStreamNameSchema.exactOptional().openapi({
+      description:
+        ' The name of the Amazon CloudWatch log stream that the anomalous log event belongs to. A log stream is a sequence of log events that share the same source. ',
+    }),
+    LogAnomalyType: LogAnomalyTypeSchema.exactOptional().openapi({
+      description: ' The type of log anomaly that has been detected. ',
+    }),
+    LogAnomalyToken: LogAnomalyTokenSchema.exactOptional().openapi({
+      description:
+        ' The token where the anomaly was detected. This may refer to an exception or another location, or it may be blank for log anomalies such as format anomalies. ',
+    }),
+    LogEventId: LogEventIdSchema.exactOptional().openapi({
+      description: ' The ID of the log event. ',
+    }),
+    Explanation: ExplanationSchema.exactOptional().openapi({
+      description: ' The explanation for why the log event is considered an anomaly. ',
+    }),
+    NumberOfLogLinesOccurrences: NumberOfLogLinesOccurrencesSchema.exactOptional().openapi({
+      description: ' The number of log lines where this anomalous log event occurs. ',
+    }),
+    LogEventTimestamp: TimestampSchema.exactOptional().openapi({
+      description: ' The time of the first occurrence of the anomalous log event. ',
+    }),
   })
   .openapi({
     description: ' Information about an anomalous log event found within a log group. ',
@@ -2313,9 +2050,9 @@ const LogAnomalyClassesSchema = z
 
 const LogAnomalyShowcaseSchema = z
   .object({
-    LogAnomalyClasses: LogAnomalyClassesSchema.and(
-      z.any().openapi({ description: ' A list of anomalous log events that may be related. ' }),
-    ).exactOptional(),
+    LogAnomalyClasses: LogAnomalyClassesSchema.exactOptional().openapi({
+      description: ' A list of anomalous log events that may be related. ',
+    }),
   })
   .openapi({
     description: ' A cluster of similar anomalous log events found within a log group. ',
@@ -2331,35 +2068,23 @@ const LogAnomalyShowcasesSchema = z
 
 const AnomalousLogGroupSchema = z
   .object({
-    LogGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: ' The name of the CloudWatch log group. ' }),
-    ).exactOptional(),
-    ImpactStartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The time the anomalous log events began. The impact start time indicates the time of the first log anomaly event that occurs. ',
-        }),
-    ).exactOptional(),
-    ImpactEndTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The time the anomalous log events stopped. ' }),
-    ).exactOptional(),
-    NumberOfLogLinesScanned: NumberOfLogLinesScannedSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The number of log lines that were scanned for anomalous log events. ',
-        }),
-    ).exactOptional(),
-    LogAnomalyShowcases: LogAnomalyShowcasesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The log anomalies in the log group. Each log anomaly displayed represents a cluster of similar anomalous log events. ',
-        }),
-    ).exactOptional(),
+    LogGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description: ' The name of the CloudWatch log group. ',
+    }),
+    ImpactStartTime: TimestampSchema.exactOptional().openapi({
+      description:
+        ' The time the anomalous log events began. The impact start time indicates the time of the first log anomaly event that occurs. ',
+    }),
+    ImpactEndTime: TimestampSchema.exactOptional().openapi({
+      description: ' The time the anomalous log events stopped. ',
+    }),
+    NumberOfLogLinesScanned: NumberOfLogLinesScannedSchema.exactOptional().openapi({
+      description: ' The number of log lines that were scanned for anomalous log events. ',
+    }),
+    LogAnomalyShowcases: LogAnomalyShowcasesSchema.exactOptional().openapi({
+      description:
+        ' The log anomalies in the log group. Each log anomaly displayed represents a cluster of similar anomalous log events. ',
+    }),
   })
   .openapi({
     description:
@@ -2372,24 +2097,16 @@ const AnomalousLogGroupsSchema = z.array(AnomalousLogGroupSchema).openapi('Anoma
 
 const ListAnomalousLogGroupsResponseSchema = z
   .object({
-    InsightId: InsightIdSchema.and(
-      z.any().openapi({ description: ' The ID of the insight containing the log groups. ' }),
-    ),
-    AnomalousLogGroups: AnomalousLogGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The list of Amazon CloudWatch log groups that are related to an insight. ',
-        }),
-    ),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    InsightId: InsightIdSchema.openapi({
+      description: ' The ID of the insight containing the log groups. ',
+    }),
+    AnomalousLogGroups: AnomalousLogGroupsSchema.openapi({
+      description: ' The list of Amazon CloudWatch log groups that are related to an insight. ',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: ['InsightId', 'AnomalousLogGroups'] })
   .openapi('ListAnomalousLogGroupsResponse')
@@ -2436,19 +2153,15 @@ const EventResourceArnSchema = z
 
 const EventResourceSchema = z
   .object({
-    Type: EventResourceTypeSchema.and(
-      z.any().openapi({ description: ' The type of resource that emitted an event. ' }),
-    ).exactOptional(),
-    Name: EventResourceNameSchema.and(
-      z.any().openapi({ description: ' The name of the resource that emitted an event. ' }),
-    ).exactOptional(),
-    Arn: EventResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The Amazon Resource Name (ARN) of the resource that emitted an event. ',
-        }),
-    ).exactOptional(),
+    Type: EventResourceTypeSchema.exactOptional().openapi({
+      description: ' The type of resource that emitted an event. ',
+    }),
+    Name: EventResourceNameSchema.exactOptional().openapi({
+      description: ' The name of the resource that emitted an event. ',
+    }),
+    Arn: EventResourceArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) of the resource that emitted an event. ',
+    }),
   })
   .openapi({
     description:
@@ -2462,46 +2175,26 @@ const EventResourcesSchema = z.array(EventResourceSchema).openapi('EventResource
 const EventSchema = z
   .object({
     ResourceCollection: ResourceCollectionSchema.exactOptional(),
-    Id: EventIdSchema.and(
-      z.any().openapi({ description: ' The ID of the event. ' }),
-    ).exactOptional(),
-    Time: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A <code>Timestamp</code> that specifies the time the event occurred. ',
-        }),
-    ).exactOptional(),
-    EventSource: EventSourceSchema.and(
-      z.any().openapi({ description: ' The Amazon Web Services source that emitted the event. ' }),
-    ).exactOptional(),
-    Name: EventNameSchema.and(
-      z.any().openapi({ description: ' The name of the event. ' }),
-    ).exactOptional(),
-    DataSource: EventDataSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The source, <code>AWS_CLOUD_TRAIL</code> or <code>AWS_CODE_DEPLOY</code>, where DevOps Guru analysis found the event. ',
-        }),
-    ).exactOptional(),
-    EventClass: EventClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The class of the event. The class specifies what the event is related to, such as an infrastructure change, a deployment, or a schema change. ',
-        }),
-    ).exactOptional(),
-    Resources: EventResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An <code>EventResource</code> object that contains information about the resource that emitted the event. ',
-        }),
-    ).exactOptional(),
+    Id: EventIdSchema.exactOptional().openapi({ description: ' The ID of the event. ' }),
+    Time: TimestampSchema.exactOptional().openapi({
+      description: ' A <code>Timestamp</code> that specifies the time the event occurred. ',
+    }),
+    EventSource: EventSourceSchema.exactOptional().openapi({
+      description: ' The Amazon Web Services source that emitted the event. ',
+    }),
+    Name: EventNameSchema.exactOptional().openapi({ description: ' The name of the event. ' }),
+    DataSource: EventDataSourceSchema.exactOptional().openapi({
+      description:
+        ' The source, <code>AWS_CLOUD_TRAIL</code> or <code>AWS_CODE_DEPLOY</code>, where DevOps Guru analysis found the event. ',
+    }),
+    EventClass: EventClassSchema.exactOptional().openapi({
+      description:
+        ' The class of the event. The class specifies what the event is related to, such as an infrastructure change, a deployment, or a schema change. ',
+    }),
+    Resources: EventResourcesSchema.exactOptional().openapi({
+      description:
+        ' An <code>EventResource</code> object that contains information about the resource that emitted the event. ',
+    }),
   })
   .openapi({
     description:
@@ -2514,27 +2207,19 @@ const EventsSchema = z.array(EventSchema).openapi('Events')
 
 const ListEventsResponseSchema = z
   .object({
-    Events: EventsSchema.and(z.any().openapi({ description: ' A list of the requested events. ' })),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    Events: EventsSchema.openapi({ description: ' A list of the requested events. ' }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: ['Events'] })
   .openapi('ListEventsResponse')
 
 const EventTimeRangeSchema = z
   .object({
-    FromTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when the event started. ' }),
-    ),
-    ToTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The time when the event ended. ' }),
-    ),
+    FromTime: TimestampSchema.openapi({ description: ' The time when the event started. ' }),
+    ToTime: TimestampSchema.openapi({ description: ' The time when the event ended. ' }),
   })
   .openapi({
     required: ['FromTime', 'ToTime'],
@@ -2549,39 +2234,29 @@ const AssociatedResourceArnsSchema = z.array(ResourceArnSchema).openapi('Associa
 
 const ProactiveInsightSummarySchema = z
   .object({
-    Id: InsightIdSchema.and(
-      z.any().openapi({ description: 'The ID of the proactive insight. ' }),
-    ).exactOptional(),
-    Name: InsightNameSchema.and(
-      z.any().openapi({ description: 'The name of the proactive insight. ' }),
-    ).exactOptional(),
-    Severity: InsightSeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The severity of the insight. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Status: InsightStatusSchema.and(
-      z.any().openapi({ description: 'The status of the proactive insight. ' }),
-    ).exactOptional(),
+    Id: InsightIdSchema.exactOptional().openapi({
+      description: 'The ID of the proactive insight. ',
+    }),
+    Name: InsightNameSchema.exactOptional().openapi({
+      description: 'The name of the proactive insight. ',
+    }),
+    Severity: InsightSeveritySchema.exactOptional().openapi({
+      description:
+        'The severity of the insight. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
+    }),
+    Status: InsightStatusSchema.exactOptional().openapi({
+      description: 'The status of the proactive insight. ',
+    }),
     InsightTimeRange: InsightTimeRangeSchema.exactOptional(),
     PredictionTimeRange: PredictionTimeRangeSchema.exactOptional(),
     ResourceCollection: ResourceCollectionSchema.exactOptional(),
-    ServiceCollection: ServiceCollectionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A collection of the names of Amazon Web Services services.' }),
-    ).exactOptional(),
-    AssociatedResourceArns: AssociatedResourceArnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Names (ARNs) of the Amazon Web Services resources that generated this insight.',
-        }),
-    ).exactOptional(),
+    ServiceCollection: ServiceCollectionSchema.exactOptional().openapi({
+      description: 'A collection of the names of Amazon Web Services services.',
+    }),
+    AssociatedResourceArns: AssociatedResourceArnsSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Names (ARNs) of the Amazon Web Services resources that generated this insight.',
+    }),
   })
   .openapi({
     description:
@@ -2594,38 +2269,26 @@ const ProactiveInsightsSchema = z.array(ProactiveInsightSummarySchema).openapi('
 
 const ReactiveInsightSummarySchema = z
   .object({
-    Id: InsightIdSchema.and(
-      z.any().openapi({ description: ' The ID of a reactive summary. ' }),
-    ).exactOptional(),
-    Name: InsightNameSchema.and(
-      z.any().openapi({ description: ' The name of a reactive insight. ' }),
-    ).exactOptional(),
-    Severity: InsightSeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The severity of the insight. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Status: InsightStatusSchema.and(
-      z.any().openapi({ description: ' The status of a reactive insight. ' }),
-    ).exactOptional(),
+    Id: InsightIdSchema.exactOptional().openapi({ description: ' The ID of a reactive summary. ' }),
+    Name: InsightNameSchema.exactOptional().openapi({
+      description: ' The name of a reactive insight. ',
+    }),
+    Severity: InsightSeveritySchema.exactOptional().openapi({
+      description:
+        'The severity of the insight. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
+    }),
+    Status: InsightStatusSchema.exactOptional().openapi({
+      description: ' The status of a reactive insight. ',
+    }),
     InsightTimeRange: InsightTimeRangeSchema.exactOptional(),
     ResourceCollection: ResourceCollectionSchema.exactOptional(),
-    ServiceCollection: ServiceCollectionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A collection of the names of Amazon Web Services services.' }),
-    ).exactOptional(),
-    AssociatedResourceArns: AssociatedResourceArnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Names (ARNs) of the Amazon Web Services resources that generated this insight.',
-        }),
-    ).exactOptional(),
+    ServiceCollection: ServiceCollectionSchema.exactOptional().openapi({
+      description: 'A collection of the names of Amazon Web Services services.',
+    }),
+    AssociatedResourceArns: AssociatedResourceArnsSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Names (ARNs) of the Amazon Web Services resources that generated this insight.',
+    }),
   })
   .openapi({
     description:
@@ -2638,20 +2301,16 @@ const ReactiveInsightsSchema = z.array(ReactiveInsightSummarySchema).openapi('Re
 
 const ListInsightsResponseSchema = z
   .object({
-    ProactiveInsights: ProactiveInsightsSchema.and(
-      z.any().openapi({ description: ' The returned list of proactive insights. ' }),
-    ).exactOptional(),
-    ReactiveInsights: ReactiveInsightsSchema.and(
-      z.any().openapi({ description: ' The returned list of reactive insights. ' }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    ProactiveInsights: ProactiveInsightsSchema.exactOptional().openapi({
+      description: ' The returned list of proactive insights. ',
+    }),
+    ReactiveInsights: ReactiveInsightsSchema.exactOptional().openapi({
+      description: ' The returned list of reactive insights. ',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListInsightsResponse')
@@ -2660,14 +2319,10 @@ const InsightTypeSchema = z.enum(['REACTIVE', 'PROACTIVE']).openapi('InsightType
 
 const ListInsightsOngoingStatusFilterSchema = z
   .object({
-    Type: InsightTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Use to filter for either <code>REACTIVE</code> or <code>PROACTIVE</code> insights. ',
-        }),
-    ),
+    Type: InsightTypeSchema.openapi({
+      description:
+        ' Use to filter for either <code>REACTIVE</code> or <code>PROACTIVE</code> insights. ',
+    }),
   })
   .openapi({
     required: ['Type'],
@@ -2677,12 +2332,12 @@ const ListInsightsOngoingStatusFilterSchema = z
 
 const EndTimeRangeSchema = z
   .object({
-    FromTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The earliest end time in the time range. ' }),
-    ).exactOptional(),
-    ToTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The latest end time in the time range. ' }),
-    ).exactOptional(),
+    FromTime: TimestampSchema.exactOptional().openapi({
+      description: ' The earliest end time in the time range. ',
+    }),
+    ToTime: TimestampSchema.exactOptional().openapi({
+      description: ' The latest end time in the time range. ',
+    }),
   })
   .openapi({
     description:
@@ -2693,22 +2348,14 @@ const EndTimeRangeSchema = z
 
 const ListInsightsClosedStatusFilterSchema = z
   .object({
-    Type: InsightTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Use to filter for either <code>REACTIVE</code> or <code>PROACTIVE</code> insights. ',
-        }),
-    ),
-    EndTimeRange: EndTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A time range used to specify when the behavior of the filtered insights ended. ',
-        }),
-    ),
+    Type: InsightTypeSchema.openapi({
+      description:
+        ' Use to filter for either <code>REACTIVE</code> or <code>PROACTIVE</code> insights. ',
+    }),
+    EndTimeRange: EndTimeRangeSchema.openapi({
+      description:
+        ' A time range used to specify when the behavior of the filtered insights ended. ',
+    }),
   })
   .openapi({
     required: ['Type', 'EndTimeRange'],
@@ -2718,12 +2365,12 @@ const ListInsightsClosedStatusFilterSchema = z
 
 const StartTimeRangeSchema = z
   .object({
-    FromTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The start time of the time range. ' }),
-    ).exactOptional(),
-    ToTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The end time of the time range. ' }),
-    ).exactOptional(),
+    FromTime: TimestampSchema.exactOptional().openapi({
+      description: ' The start time of the time range. ',
+    }),
+    ToTime: TimestampSchema.exactOptional().openapi({
+      description: ' The end time of the time range. ',
+    }),
   })
   .openapi({
     description:
@@ -2734,22 +2381,14 @@ const StartTimeRangeSchema = z
 
 const ListInsightsAnyStatusFilterSchema = z
   .object({
-    Type: InsightTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Use to filter for either <code>REACTIVE</code> or <code>PROACTIVE</code> insights. ',
-        }),
-    ),
-    StartTimeRange: StartTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A time range used to specify when the behavior of the filtered insights started. ',
-        }),
-    ),
+    Type: InsightTypeSchema.openapi({
+      description:
+        ' Use to filter for either <code>REACTIVE</code> or <code>PROACTIVE</code> insights. ',
+    }),
+    StartTimeRange: StartTimeRangeSchema.openapi({
+      description:
+        ' A time range used to specify when the behavior of the filtered insights started. ',
+    }),
   })
   .openapi({
     required: ['Type', 'StartTimeRange'],
@@ -2770,20 +2409,18 @@ const ResourcePermissionSchema = z
 
 const MonitoredResourceIdentifierSchema = z
   .object({
-    MonitoredResourceName: MonitoredResourceNameSchema.and(
-      z.any().openapi({ description: ' The name of the resource being monitored. ' }),
-    ).exactOptional(),
-    Type: ResourceTypeSchema.and(
-      z.any().openapi({ description: ' The type of resource being monitored. ' }),
-    ).exactOptional(),
-    ResourcePermission: ResourcePermissionSchema.and(
-      z.any().openapi({ description: ' The permission status of a resource. ' }),
-    ).exactOptional(),
-    LastUpdated: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The time at which DevOps Guru last updated this resource. ' }),
-    ).exactOptional(),
+    MonitoredResourceName: MonitoredResourceNameSchema.exactOptional().openapi({
+      description: ' The name of the resource being monitored. ',
+    }),
+    Type: ResourceTypeSchema.exactOptional().openapi({
+      description: ' The type of resource being monitored. ',
+    }),
+    ResourcePermission: ResourcePermissionSchema.exactOptional().openapi({
+      description: ' The permission status of a resource. ',
+    }),
+    LastUpdated: TimestampSchema.exactOptional().openapi({
+      description: ' The time at which DevOps Guru last updated this resource. ',
+    }),
     ResourceCollection: ResourceCollectionSchema.exactOptional(),
   })
   .openapi({
@@ -2799,22 +2436,14 @@ const MonitoredResourceIdentifiersSchema = z
 
 const ListMonitoredResourcesResponseSchema = z
   .object({
-    MonitoredResourceIdentifiers: MonitoredResourceIdentifiersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Information about the resource that is being monitored, including the name of the resource, the type of resource, and whether or not permission is given to DevOps Guru to access that resource. ',
-        }),
-    ),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    MonitoredResourceIdentifiers: MonitoredResourceIdentifiersSchema.openapi({
+      description:
+        ' Information about the resource that is being monitored, including the name of the resource, the type of resource, and whether or not permission is given to DevOps Guru to access that resource. ',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: ['MonitoredResourceIdentifiers'] })
   .openapi('ListMonitoredResourcesResponse')
@@ -2855,22 +2484,14 @@ const ResourceTypeFiltersSchema = z.array(ResourceTypeFilterSchema).openapi('Res
 
 const NotificationChannelConfigSchema = z
   .object({
-    Sns: SnsChannelConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Information about a notification channel configured in DevOps Guru to send notifications when insights are created. </p> <p>If you use an Amazon SNS topic in another account, you must attach a policy to it that grants DevOps Guru permission to it notifications. DevOps Guru adds the required policy on your behalf to send notifications using Amazon SNS in your account. DevOps Guru only supports standard SNS topics. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/sns-required-permissions.html">Permissions for cross account Amazon SNS topics</a>.</p> <p>If you use an Amazon SNS topic in another account, you must attach a policy to it that grants DevOps Guru permission to it notifications. DevOps Guru adds the required policy on your behalf to send notifications using Amazon SNS in your account. For more information, see Permissions for cross account Amazon SNS topics.</p> <p>If you use an Amazon SNS topic that is encrypted by an Amazon Web Services Key Management Service customer-managed key (CMK), then you must add permissions to the CMK. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/sns-kms-permissions.html">Permissions for Amazon Web Services KMS–encrypted Amazon SNS topics</a>.</p>',
-        }),
-    ),
-    Filters: NotificationFilterConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The filter configurations for the Amazon SNS notification topic you use with DevOps Guru. If you do not provide filter configurations, the default configurations are to receive notifications for all message types of <code>High</code> or <code>Medium</code> severity. ',
-        }),
-    ).exactOptional(),
+    Sns: SnsChannelConfigSchema.openapi({
+      description:
+        '<p> Information about a notification channel configured in DevOps Guru to send notifications when insights are created. </p> <p>If you use an Amazon SNS topic in another account, you must attach a policy to it that grants DevOps Guru permission to it notifications. DevOps Guru adds the required policy on your behalf to send notifications using Amazon SNS in your account. DevOps Guru only supports standard SNS topics. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/sns-required-permissions.html">Permissions for cross account Amazon SNS topics</a>.</p> <p>If you use an Amazon SNS topic in another account, you must attach a policy to it that grants DevOps Guru permission to it notifications. DevOps Guru adds the required policy on your behalf to send notifications using Amazon SNS in your account. For more information, see Permissions for cross account Amazon SNS topics.</p> <p>If you use an Amazon SNS topic that is encrypted by an Amazon Web Services Key Management Service customer-managed key (CMK), then you must add permissions to the CMK. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/sns-kms-permissions.html">Permissions for Amazon Web Services KMS–encrypted Amazon SNS topics</a>.</p>',
+    }),
+    Filters: NotificationFilterConfigSchema.exactOptional().openapi({
+      description:
+        ' The filter configurations for the Amazon SNS notification topic you use with DevOps Guru. If you do not provide filter configurations, the default configurations are to receive notifications for all message types of <code>High</code> or <code>Medium</code> severity. ',
+    }),
   })
   .openapi({
     required: ['Sns'],
@@ -2881,17 +2502,13 @@ const NotificationChannelConfigSchema = z
 
 const NotificationChannelSchema = z
   .object({
-    Id: NotificationChannelIdSchema.and(
-      z.any().openapi({ description: ' The ID of a notification channel. ' }),
-    ).exactOptional(),
-    Config: NotificationChannelConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>NotificationChannelConfig</code> object that contains information about configured notification channels. ',
-        }),
-    ).exactOptional(),
+    Id: NotificationChannelIdSchema.exactOptional().openapi({
+      description: ' The ID of a notification channel. ',
+    }),
+    Config: NotificationChannelConfigSchema.exactOptional().openapi({
+      description:
+        ' A <code>NotificationChannelConfig</code> object that contains information about configured notification channels. ',
+    }),
   })
   .openapi({
     description:
@@ -2904,48 +2521,36 @@ const ChannelsSchema = z.array(NotificationChannelSchema).openapi('Channels')
 
 const ListNotificationChannelsResponseSchema = z
   .object({
-    Channels: ChannelsSchema.and(
-      z
-        .any()
-        .openapi({ description: ' An array that contains the requested notification channels. ' }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    Channels: ChannelsSchema.exactOptional().openapi({
+      description: ' An array that contains the requested notification channels. ',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListNotificationChannelsResponse')
 
 const ProactiveOrganizationInsightSummarySchema = z
   .object({
-    Id: InsightIdSchema.and(
-      z.any().openapi({ description: 'The ID of the insight summary.' }),
-    ).exactOptional(),
-    AccountId: AwsAccountIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Amazon Web Services account.' }),
-    ).exactOptional(),
-    OrganizationalUnitId: OrganizationalUnitIdSchema.and(
-      z.any().openapi({ description: 'The ID of the organizational unit.' }),
-    ).exactOptional(),
-    Name: InsightNameSchema.and(
-      z.any().openapi({ description: 'The name of the insight summary.' }),
-    ).exactOptional(),
-    Severity: InsightSeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An array of severity values used to search for insights. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Status: InsightStatusSchema.and(
-      z.any().openapi({ description: ' An array of status values used to search for insights. ' }),
-    ).exactOptional(),
+    Id: InsightIdSchema.exactOptional().openapi({ description: 'The ID of the insight summary.' }),
+    AccountId: AwsAccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account.',
+    }),
+    OrganizationalUnitId: OrganizationalUnitIdSchema.exactOptional().openapi({
+      description: 'The ID of the organizational unit.',
+    }),
+    Name: InsightNameSchema.exactOptional().openapi({
+      description: 'The name of the insight summary.',
+    }),
+    Severity: InsightSeveritySchema.exactOptional().openapi({
+      description:
+        ' An array of severity values used to search for insights. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
+    }),
+    Status: InsightStatusSchema.exactOptional().openapi({
+      description: ' An array of status values used to search for insights. ',
+    }),
     InsightTimeRange: InsightTimeRangeSchema.exactOptional(),
     PredictionTimeRange: PredictionTimeRangeSchema.exactOptional(),
     ResourceCollection: ResourceCollectionSchema.exactOptional(),
@@ -2964,29 +2569,23 @@ const ProactiveOrganizationInsightsSchema = z
 
 const ReactiveOrganizationInsightSummarySchema = z
   .object({
-    Id: InsightIdSchema.and(
-      z.any().openapi({ description: 'The ID of the insight summary.' }),
-    ).exactOptional(),
-    AccountId: AwsAccountIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Amazon Web Services account. ' }),
-    ).exactOptional(),
-    OrganizationalUnitId: OrganizationalUnitIdSchema.and(
-      z.any().openapi({ description: 'The ID of the organizational unit.' }),
-    ).exactOptional(),
-    Name: InsightNameSchema.and(
-      z.any().openapi({ description: 'The name of the insight summary.' }),
-    ).exactOptional(),
-    Severity: InsightSeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An array of severity values used to search for insights. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
-        }),
-    ).exactOptional(),
-    Status: InsightStatusSchema.and(
-      z.any().openapi({ description: ' An array of status values used to search for insights. ' }),
-    ).exactOptional(),
+    Id: InsightIdSchema.exactOptional().openapi({ description: 'The ID of the insight summary.' }),
+    AccountId: AwsAccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account. ',
+    }),
+    OrganizationalUnitId: OrganizationalUnitIdSchema.exactOptional().openapi({
+      description: 'The ID of the organizational unit.',
+    }),
+    Name: InsightNameSchema.exactOptional().openapi({
+      description: 'The name of the insight summary.',
+    }),
+    Severity: InsightSeveritySchema.exactOptional().openapi({
+      description:
+        ' An array of severity values used to search for insights. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/working-with-insights.html#understanding-insights-severities">Understanding insight severities</a> in the <i>Amazon DevOps Guru User Guide</i>.',
+    }),
+    Status: InsightStatusSchema.exactOptional().openapi({
+      description: ' An array of status values used to search for insights. ',
+    }),
     InsightTimeRange: InsightTimeRangeSchema.exactOptional(),
     ResourceCollection: ResourceCollectionSchema.exactOptional(),
     ServiceCollection: ServiceCollectionSchema.exactOptional(),
@@ -3004,328 +2603,53 @@ const ReactiveOrganizationInsightsSchema = z
 
 const ListOrganizationInsightsResponseSchema = z
   .object({
-    ProactiveInsights: ProactiveOrganizationInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer that specifies the number of open proactive insights in your Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    ReactiveInsights: ReactiveOrganizationInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer that specifies the number of open reactive insights in your Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    ProactiveInsights: ProactiveOrganizationInsightsSchema.exactOptional().openapi({
+      description:
+        'An integer that specifies the number of open proactive insights in your Amazon Web Services account.',
+    }),
+    ReactiveInsights: ReactiveOrganizationInsightsSchema.exactOptional().openapi({
+      description:
+        'An integer that specifies the number of open reactive insights in your Amazon Web Services account.',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListOrganizationInsightsResponse')
 
-const RecommendationDescriptionSchema = z.string().openapi('RecommendationDescription')
-
-const RecommendationLinkSchema = z.string().openapi('RecommendationLink')
-
-const RecommendationNameSchema = z.string().openapi('RecommendationName')
-
-const RecommendationReasonSchema = z.string().openapi('RecommendationReason')
-
-const RecommendationRelatedEventNameSchema = z.string().openapi('RecommendationRelatedEventName')
-
-const RecommendationRelatedEventResourceNameSchema = z
-  .string()
-  .openapi('RecommendationRelatedEventResourceName')
-
-const RecommendationRelatedEventResourceTypeSchema = z
-  .string()
-  .openapi('RecommendationRelatedEventResourceType')
-
-const RecommendationRelatedEventResourceSchema = z
+const ListRecommendationsResponseSchema: z.ZodType<ListRecommendationsResponseType> = z
   .object({
-    Name: RecommendationRelatedEventResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the resource that emitted the event. This corresponds to the <code>Name</code> field in an <code>EventResource</code> object. ',
-        }),
-    ).exactOptional(),
-    Type: RecommendationRelatedEventResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The type of the resource that emitted the event. This corresponds to the <code>Type</code> field in an <code>EventResource</code> object. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      ' Information about an Amazon Web Services resource that emitted and event that is related to a recommendation in an insight. ',
-    required: [],
-  })
-  .openapi('RecommendationRelatedEventResource')
-
-const RecommendationRelatedEventResourcesSchema = z
-  .array(RecommendationRelatedEventResourceSchema)
-  .openapi('RecommendationRelatedEventResources')
-
-const RecommendationRelatedEventSchema = z
-  .object({
-    Name: RecommendationRelatedEventNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the event. This corresponds to the <code>Name</code> field in an <code>Event</code> object. ',
-        }),
-    ).exactOptional(),
-    Resources: RecommendationRelatedEventResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>ResourceCollection</code> object that contains arrays of the names of Amazon Web Services CloudFormation stacks. You can specify up to 500 Amazon Web Services CloudFormation stacks. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: ' Information about an event that is related to a recommendation. ',
-    required: [],
-  })
-  .openapi('RecommendationRelatedEvent')
-
-const RecommendationRelatedEventsSchema = z
-  .array(RecommendationRelatedEventSchema)
-  .openapi('RecommendationRelatedEvents')
-
-const RecommendationRelatedAnomalyResourceNameSchema = z
-  .string()
-  .openapi('RecommendationRelatedAnomalyResourceName')
-
-const RecommendationRelatedAnomalyResourceTypeSchema = z
-  .string()
-  .openapi('RecommendationRelatedAnomalyResourceType')
-
-const RecommendationRelatedAnomalyResourceSchema = z
-  .object({
-    Name: RecommendationRelatedAnomalyResourceNameSchema.and(
-      z.any().openapi({ description: ' The name of the resource. ' }),
-    ).exactOptional(),
-    Type: RecommendationRelatedAnomalyResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The type of the resource. Resource types take the same form that is used by Amazon Web Services CloudFormation resource type identifiers, <code>service-provider::service-name::data-type-name</code>. For example, <code>AWS::RDS::DBCluster</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services resource and property types reference</a> in the <i>Amazon Web Services CloudFormation User Guide</i>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: ' Information about a resource in which DevOps Guru detected anomalous behavior. ',
-    required: [],
-  })
-  .openapi('RecommendationRelatedAnomalyResource')
-
-const RecommendationRelatedAnomalyResourcesSchema = z
-  .array(RecommendationRelatedAnomalyResourceSchema)
-  .openapi('RecommendationRelatedAnomalyResources')
-
-const RecommendationRelatedCloudWatchMetricsSourceMetricNameSchema = z
-  .string()
-  .openapi('RecommendationRelatedCloudWatchMetricsSourceMetricName')
-
-const RecommendationRelatedCloudWatchMetricsSourceNamespaceSchema = z
-  .string()
-  .openapi('RecommendationRelatedCloudWatchMetricsSourceNamespace')
-
-const RecommendationRelatedCloudWatchMetricsSourceDetailSchema = z
-  .object({
-    MetricName: RecommendationRelatedCloudWatchMetricsSourceMetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the CloudWatch metric.' }),
-    ).exactOptional(),
-    Namespace: RecommendationRelatedCloudWatchMetricsSourceNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The namespace of the CloudWatch metric. A namespace is a container for CloudWatch metrics.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      ' Information about an Amazon CloudWatch metric that is analyzed by DevOps Guru. It is one of many analyzed metrics that are used to generate insights. ',
-    required: [],
-  })
-  .openapi('RecommendationRelatedCloudWatchMetricsSourceDetail')
-
-const RecommendationRelatedCloudWatchMetricsSourceDetailsSchema = z
-  .array(RecommendationRelatedCloudWatchMetricsSourceDetailSchema)
-  .openapi('RecommendationRelatedCloudWatchMetricsSourceDetails')
-
-const RecommendationRelatedAnomalySourceDetailSchema = z
-  .object({
-    CloudWatchMetrics: RecommendationRelatedCloudWatchMetricsSourceDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An array of <code>CloudWatchMetricsDetail</code> objects that contains information about the analyzed metrics that displayed anomalous behavior. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      ' Contains an array of <code>RecommendationRelatedCloudWatchMetricsSourceDetail</code> objects that contain the name and namespace of an Amazon CloudWatch metric. ',
-    required: [],
-  })
-  .openapi('RecommendationRelatedAnomalySourceDetail')
-
-const RelatedAnomalySourceDetailsSchema = z
-  .array(RecommendationRelatedAnomalySourceDetailSchema)
-  .openapi('RelatedAnomalySourceDetails')
-
-const RecommendationRelatedAnomalySchema = z
-  .object({
-    Resources: RecommendationRelatedAnomalyResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An array of objects that represent resources in which DevOps Guru detected anomalous behavior. Each object contains the name and type of the resource. ',
-        }),
-    ).exactOptional(),
-    SourceDetails: RelatedAnomalySourceDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Information about where the anomalous behavior related the recommendation was found. For example, details in Amazon CloudWatch metrics. ',
-        }),
-    ).exactOptional(),
-    AnomalyId: AnomalyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of an anomaly that generated the insight with this recommendation.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: ' Information about an anomaly that is related to a recommendation. ',
-    required: [],
-  })
-  .openapi('RecommendationRelatedAnomaly')
-
-const RecommendationRelatedAnomaliesSchema = z
-  .array(RecommendationRelatedAnomalySchema)
-  .openapi('RecommendationRelatedAnomalies')
-
-const RecommendationCategorySchema = z.string().openapi('RecommendationCategory')
-
-const RecommendationSchema = z
-  .object({
-    Description: RecommendationDescriptionSchema.and(
-      z.any().openapi({ description: ' A description of the problem. ' }),
-    ).exactOptional(),
-    Link: RecommendationLinkSchema.and(
-      z
-        .any()
-        .openapi({ description: ' A hyperlink to information to help you address the problem. ' }),
-    ).exactOptional(),
-    Name: RecommendationNameSchema.and(
-      z.any().openapi({ description: ' The name of the recommendation. ' }),
-    ).exactOptional(),
-    Reason: RecommendationReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The reason DevOps Guru flagged the anomalous behavior as a problem. ',
-        }),
-    ).exactOptional(),
-    RelatedEvents: RecommendationRelatedEventsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Events that are related to the problem. Use these events to learn more about what's happening and to help address the issue. ",
-        }),
-    ).exactOptional(),
-    RelatedAnomalies: RecommendationRelatedAnomaliesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Anomalies that are related to the problem. Use these Anomalies to learn more about what's happening and to help address the issue. ",
-        }),
-    ).exactOptional(),
-    Category: RecommendationCategorySchema.and(
-      z.any().openapi({ description: 'The category type of the recommendation.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      ' Recommendation information to help you remediate detected anomalous behavior that generated an insight. ',
-    required: [],
-  })
-  .openapi('Recommendation')
-
-const RecommendationsSchema = z
-  .array(RecommendationSchema)
-  .min(0)
-  .max(10)
-  .openapi('Recommendations')
-
-const ListRecommendationsResponseSchema = z
-  .object({
-    Recommendations: RecommendationsSchema.and(
-      z.any().openapi({ description: ' An array of the requested recommendations. ' }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    Recommendations: RecommendationsSchema.exactOptional().openapi({
+      description: ' An array of the requested recommendations. ',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRecommendationsResponse')
 
-const PutFeedbackResponseSchema = z.object({}).openapi('PutFeedbackResponse')
+const PutFeedbackResponseSchema = z.looseObject({}).openapi('PutFeedbackResponse')
 
 const RemoveNotificationChannelResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('RemoveNotificationChannelResponse')
 
 const SearchInsightsResponseSchema = z
   .object({
-    ProactiveInsights: ProactiveInsightsSchema.and(
-      z.any().openapi({ description: ' The returned proactive insights. ' }),
-    ).exactOptional(),
-    ReactiveInsights: ReactiveInsightsSchema.and(
-      z.any().openapi({ description: ' The returned reactive insights. ' }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    ProactiveInsights: ProactiveInsightsSchema.exactOptional().openapi({
+      description: ' The returned proactive insights. ',
+    }),
+    ReactiveInsights: ReactiveInsightsSchema.exactOptional().openapi({
+      description: ' The returned reactive insights. ',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchInsightsResponse')
@@ -3334,56 +2658,40 @@ const InsightStatusesSchema = z.array(InsightStatusSchema).min(0).max(2).openapi
 
 const SearchOrganizationInsightsResponseSchema = z
   .object({
-    ProactiveInsights: ProactiveInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer that specifies the number of open proactive insights in your Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    ReactiveInsights: ReactiveInsightsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer that specifies the number of open reactive insights in your Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    ProactiveInsights: ProactiveInsightsSchema.exactOptional().openapi({
+      description:
+        'An integer that specifies the number of open proactive insights in your Amazon Web Services account.',
+    }),
+    ReactiveInsights: ReactiveInsightsSchema.exactOptional().openapi({
+      description:
+        'An integer that specifies the number of open reactive insights in your Amazon Web Services account.',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchOrganizationInsightsResponse')
 
-const StartCostEstimationResponseSchema = z.object({}).openapi('StartCostEstimationResponse')
+const StartCostEstimationResponseSchema = z.looseObject({}).openapi('StartCostEstimationResponse')
 
 const UpdateEventSourcesConfigResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateEventSourcesConfigResponse')
 
 const UpdateResourceCollectionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateResourceCollectionResponse')
 
 const UpdateStackNamesSchema = z.array(StackNameSchema).min(0).max(100).openapi('UpdateStackNames')
 
 const UpdateCloudFormationCollectionFilterSchema = z
   .object({
-    StackNames: UpdateStackNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An array of the names of the Amazon Web Services CloudFormation stacks to update. You can specify up to 500 Amazon Web Services CloudFormation stacks. ',
-        }),
-    ).exactOptional(),
+    StackNames: UpdateStackNamesSchema.exactOptional().openapi({
+      description:
+        ' An array of the names of the Amazon Web Services CloudFormation stacks to update. You can specify up to 500 Amazon Web Services CloudFormation stacks. ',
+    }),
   })
   .openapi({
     description:
@@ -3396,22 +2704,14 @@ const UpdateTagValuesSchema = z.array(TagValueSchema).min(0).max(100).openapi('U
 
 const UpdateTagCollectionFilterSchema = z
   .object({
-    AppBoundaryKey: AppBoundaryKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An Amazon Web Services tag <i>key</i> that is used to identify the Amazon Web Services resources that DevOps Guru analyzes. All Amazon Web Services resources in your account and Region tagged with this <i>key</i> make up your DevOps Guru application and analysis boundary.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
-        }),
-    ),
-    TagValues: UpdateTagValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The values in an Amazon Web Services tag collection.</p> <p>The tag's <i>value</i> is an optional field used to associate a string with the tag <i>key</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). The <i>key</i> and <i>value</i> are the tag's <i>key</i> pair. Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive. You can specify a maximum of 256 characters for a tag value.</p>",
-        }),
-    ),
+    AppBoundaryKey: AppBoundaryKeySchema.openapi({
+      description:
+        '<p>An Amazon Web Services tag <i>key</i> that is used to identify the Amazon Web Services resources that DevOps Guru analyzes. All Amazon Web Services resources in your account and Region tagged with this <i>key</i> make up your DevOps Guru application and analysis boundary.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
+    }),
+    TagValues: UpdateTagValuesSchema.openapi({
+      description:
+        "<p>The values in an Amazon Web Services tag collection.</p> <p>The tag's <i>value</i> is an optional field used to associate a string with the tag <i>key</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). The <i>key</i> and <i>value</i> are the tag's <i>key</i> pair. Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive. You can specify a maximum of 256 characters for a tag value.</p>",
+    }),
   })
   .openapi({
     required: ['AppBoundaryKey', 'TagValues'],
@@ -3425,19 +2725,15 @@ const UpdateTagCollectionFiltersSchema = z
   .openapi('UpdateTagCollectionFilters')
 
 const UpdateServiceIntegrationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateServiceIntegrationResponse')
 
 const OpsCenterIntegrationConfigSchema = z
   .object({
-    OptInStatus: OptInStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies if DevOps Guru is enabled to create an Amazon Web Services Systems Manager OpsItem for each created insight. ',
-        }),
-    ).exactOptional(),
+    OptInStatus: OptInStatusSchema.exactOptional().openapi({
+      description:
+        ' Specifies if DevOps Guru is enabled to create an Amazon Web Services Systems Manager OpsItem for each created insight. ',
+    }),
   })
   .openapi({
     description:
@@ -3448,14 +2744,10 @@ const OpsCenterIntegrationConfigSchema = z
 
 const LogsAnomalyDetectionIntegrationConfigSchema = z
   .object({
-    OptInStatus: OptInStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies if DevOps Guru is configured to perform log anomaly detection on CloudWatch log groups.',
-        }),
-    ).exactOptional(),
+    OptInStatus: OptInStatusSchema.exactOptional().openapi({
+      description:
+        'Specifies if DevOps Guru is configured to perform log anomaly detection on CloudWatch log groups.',
+    }),
   })
   .openapi({
     description:
@@ -3468,14 +2760,10 @@ const AccountIdListSchema = z.array(AwsAccountIdSchema).min(0).max(5).openapi('A
 
 const AddNotificationChannelRequestSchema = z
   .object({
-    Config: NotificationChannelConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>NotificationChannelConfig</code> object that specifies what type of notification channel to add. The one supported notification channel is Amazon Simple Notification Service (Amazon SNS). ',
-        }),
-    ),
+    Config: NotificationChannelConfigSchema.openapi({
+      description:
+        ' A <code>NotificationChannelConfig</code> object that specifies what type of notification channel to add. The one supported notification channel is Amazon Simple Notification Service (Amazon SNS). ',
+    }),
   })
   .openapi({ required: ['Config'], title: 'AddNotificationChannelRequest' })
   .openapi('AddNotificationChannelRequest')
@@ -3488,60 +2776,50 @@ const ClientTokenSchema = z
   .openapi('ClientToken')
 
 const DeleteInsightRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteInsightRequest' })
   .openapi('DeleteInsightRequest')
 
 const DescribeAccountHealthRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAccountHealthRequest' })
   .openapi('DescribeAccountHealthRequest')
 
 const DescribeAccountOverviewRequestSchema = z
   .object({
-    FromTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The start of the time range passed in. The start time granularity is at the day level. The floor of the start time is used. Returned information occurred after this day. ',
-        }),
-    ),
-    ToTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The end of the time range passed in. The start time granularity is at the day level. The floor of the start time is used. Returned information occurred before this day. If this is not specified, then the current day is used. ',
-        }),
-    ).exactOptional(),
+    FromTime: TimestampSchema.openapi({
+      description:
+        ' The start of the time range passed in. The start time granularity is at the day level. The floor of the start time is used. Returned information occurred after this day. ',
+    }),
+    ToTime: TimestampSchema.exactOptional().openapi({
+      description:
+        ' The end of the time range passed in. The start time granularity is at the day level. The floor of the start time is used. Returned information occurred before this day. If this is not specified, then the current day is used. ',
+    }),
   })
   .openapi({ required: ['FromTime'], title: 'DescribeAccountOverviewRequest' })
   .openapi('DescribeAccountOverviewRequest')
 
 const DescribeAnomalyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAnomalyRequest' })
   .openapi('DescribeAnomalyRequest')
 
 const DescribeEventSourcesConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeEventSourcesConfigRequest' })
   .openapi('DescribeEventSourcesConfigRequest')
 
 const DescribeFeedbackRequestSchema = z
   .object({
-    InsightId: InsightIdSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The ID of the insight for which the feedback was provided. ' }),
-    ).exactOptional(),
+    InsightId: InsightIdSchema.exactOptional().openapi({
+      description: ' The ID of the insight for which the feedback was provided. ',
+    }),
   })
   .openapi({ title: 'DescribeFeedbackRequest', required: [] })
   .openapi('DescribeFeedbackRequest')
 
 const DescribeInsightRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeInsightRequest' })
   .openapi('DescribeInsightRequest')
 
@@ -3553,40 +2831,32 @@ const OrganizationalUnitIdListSchema = z
 
 const DescribeOrganizationHealthRequestSchema = z
   .object({
-    AccountIds: AccountIdListSchema.and(
-      z.any().openapi({ description: 'The ID of the Amazon Web Services account.' }),
-    ).exactOptional(),
-    OrganizationalUnitIds: OrganizationalUnitIdListSchema.and(
-      z.any().openapi({ description: 'The ID of the organizational unit.' }),
-    ).exactOptional(),
+    AccountIds: AccountIdListSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account.',
+    }),
+    OrganizationalUnitIds: OrganizationalUnitIdListSchema.exactOptional().openapi({
+      description: 'The ID of the organizational unit.',
+    }),
   })
   .openapi({ title: 'DescribeOrganizationHealthRequest', required: [] })
   .openapi('DescribeOrganizationHealthRequest')
 
 const DescribeOrganizationOverviewRequestSchema = z
   .object({
-    FromTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The start of the time range passed in. The start time granularity is at the day level. The floor of the start time is used. Returned information occurred after this day. ',
-        }),
-    ),
-    ToTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The end of the time range passed in. The start time granularity is at the day level. The floor of the start time is used. Returned information occurred before this day. If this is not specified, then the current day is used. ',
-        }),
-    ).exactOptional(),
-    AccountIds: AccountIdListSchema.and(
-      z.any().openapi({ description: 'The ID of the Amazon Web Services account.' }),
-    ).exactOptional(),
-    OrganizationalUnitIds: OrganizationalUnitIdListSchema.and(
-      z.any().openapi({ description: 'The ID of the organizational unit.' }),
-    ).exactOptional(),
+    FromTime: TimestampSchema.openapi({
+      description:
+        ' The start of the time range passed in. The start time granularity is at the day level. The floor of the start time is used. Returned information occurred after this day. ',
+    }),
+    ToTime: TimestampSchema.exactOptional().openapi({
+      description:
+        ' The end of the time range passed in. The start time granularity is at the day level. The floor of the start time is used. Returned information occurred before this day. If this is not specified, then the current day is used. ',
+    }),
+    AccountIds: AccountIdListSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account.',
+    }),
+    OrganizationalUnitIds: OrganizationalUnitIdListSchema.exactOptional().openapi({
+      description: 'The ID of the organizational unit.',
+    }),
   })
   .openapi({ required: ['FromTime'], title: 'DescribeOrganizationOverviewRequest' })
   .openapi('DescribeOrganizationOverviewRequest')
@@ -3603,36 +2873,24 @@ const OrganizationResourceCollectionMaxResultsSchema = z
 
 const DescribeOrganizationResourceCollectionHealthRequestSchema = z
   .object({
-    OrganizationResourceCollectionType: OrganizationResourceCollectionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An Amazon Web Services resource collection type. This type specifies how analyzed Amazon Web Services resources are defined. The two types of Amazon Web Services resource collections supported are Amazon Web Services CloudFormation stacks and Amazon Web Services resources that contain the same Amazon Web Services tag. DevOps Guru can be configured to analyze the Amazon Web Services resources that are defined in the stacks or that are tagged using the same tag <i>key</i>. You can specify up to 500 Amazon Web Services CloudFormation stacks. ',
-        }),
-    ),
-    AccountIds: AccountIdListSchema.and(
-      z.any().openapi({ description: 'The ID of the Amazon Web Services account.' }),
-    ).exactOptional(),
-    OrganizationalUnitIds: OrganizationalUnitIdListSchema.and(
-      z.any().openapi({ description: 'The ID of the organizational unit.' }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
-    MaxResults: OrganizationResourceCollectionMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
-        }),
-    ).exactOptional(),
+    OrganizationResourceCollectionType: OrganizationResourceCollectionTypeSchema.openapi({
+      description:
+        ' An Amazon Web Services resource collection type. This type specifies how analyzed Amazon Web Services resources are defined. The two types of Amazon Web Services resource collections supported are Amazon Web Services CloudFormation stacks and Amazon Web Services resources that contain the same Amazon Web Services tag. DevOps Guru can be configured to analyze the Amazon Web Services resources that are defined in the stacks or that are tagged using the same tag <i>key</i>. You can specify up to 500 Amazon Web Services CloudFormation stacks. ',
+    }),
+    AccountIds: AccountIdListSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account.',
+    }),
+    OrganizationalUnitIds: OrganizationalUnitIdListSchema.exactOptional().openapi({
+      description: 'The ID of the organizational unit.',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
+    MaxResults: OrganizationResourceCollectionMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
+    }),
   })
   .openapi({
     required: ['OrganizationResourceCollectionType'],
@@ -3645,22 +2903,22 @@ const ResourceCollectionTypeSchema = z
   .openapi('ResourceCollectionType')
 
 const DescribeResourceCollectionHealthRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeResourceCollectionHealthRequest' })
   .openapi('DescribeResourceCollectionHealthRequest')
 
 const DescribeServiceIntegrationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeServiceIntegrationRequest' })
   .openapi('DescribeServiceIntegrationRequest')
 
 const GetCostEstimationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetCostEstimationRequest' })
   .openapi('GetCostEstimationRequest')
 
 const GetResourceCollectionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetResourceCollectionRequest' })
   .openapi('GetResourceCollectionRequest')
 
@@ -3680,40 +2938,24 @@ const ListAnomaliesForInsightMaxResultsSchema = z
 
 const ListAnomaliesForInsightRequestSchema = z
   .object({
-    StartTimeRange: StartTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A time range used to specify when the requested anomalies started. All returned anomalies started during this time range. ',
-        }),
-    ).exactOptional(),
-    MaxResults: ListAnomaliesForInsightMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
-        }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
-    AccountId: AwsAccountIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Amazon Web Services account. ' }),
-    ).exactOptional(),
-    Filters: ListAnomaliesForInsightFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Specifies one or more service names that are used to list anomalies. ',
-        }),
-    ).exactOptional(),
+    StartTimeRange: StartTimeRangeSchema.exactOptional().openapi({
+      description:
+        ' A time range used to specify when the requested anomalies started. All returned anomalies started during this time range. ',
+    }),
+    MaxResults: ListAnomaliesForInsightMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
+    AccountId: AwsAccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account. ',
+    }),
+    Filters: ListAnomaliesForInsightFiltersSchema.exactOptional().openapi({
+      description: ' Specifies one or more service names that are used to list anomalies. ',
+    }),
   })
   .openapi({ title: 'ListAnomaliesForInsightRequest', required: [] })
   .openapi('ListAnomaliesForInsightRequest')
@@ -3726,70 +2968,41 @@ const ListAnomalousLogGroupsMaxResultsSchema = z
 
 const ListAnomalousLogGroupsRequestSchema = z
   .object({
-    InsightId: InsightIdSchema.and(
-      z.any().openapi({ description: ' The ID of the insight containing the log groups. ' }),
-    ),
-    MaxResults: ListAnomalousLogGroupsMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
-        }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
+    InsightId: InsightIdSchema.openapi({
+      description: ' The ID of the insight containing the log groups. ',
+    }),
+    MaxResults: ListAnomalousLogGroupsMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
   })
   .openapi({ required: ['InsightId'], title: 'ListAnomalousLogGroupsRequest' })
   .openapi('ListAnomalousLogGroupsRequest')
 
 const ListEventsFiltersSchema = z
   .object({
-    InsightId: InsightIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An ID of an insight that is related to the events you want to filter for. ',
-        }),
-    ).exactOptional(),
-    EventTimeRange: EventTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A time range during which you want the filtered events to have occurred. ',
-        }),
-    ).exactOptional(),
-    EventClass: EventClassSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The class of the events you want to filter for, such as an infrastructure change, a deployment, or a schema change. ',
-        }),
-    ).exactOptional(),
-    EventSource: EventSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Web Services source that emitted the events you want to filter for. ',
-        }),
-    ).exactOptional(),
-    DataSource: EventDataSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The source, <code>AWS_CLOUD_TRAIL</code> or <code>AWS_CODE_DEPLOY</code>, of the events you want returned. ',
-        }),
-    ).exactOptional(),
+    InsightId: InsightIdSchema.exactOptional().openapi({
+      description: ' An ID of an insight that is related to the events you want to filter for. ',
+    }),
+    EventTimeRange: EventTimeRangeSchema.exactOptional().openapi({
+      description: ' A time range during which you want the filtered events to have occurred. ',
+    }),
+    EventClass: EventClassSchema.exactOptional().openapi({
+      description:
+        ' The class of the events you want to filter for, such as an infrastructure change, a deployment, or a schema change. ',
+    }),
+    EventSource: EventSourceSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Web Services source that emitted the events you want to filter for. ',
+    }),
+    DataSource: EventDataSourceSchema.exactOptional().openapi({
+      description:
+        ' The source, <code>AWS_CLOUD_TRAIL</code> or <code>AWS_CODE_DEPLOY</code>, of the events you want returned. ',
+    }),
     ResourceCollection: ResourceCollectionSchema.exactOptional(),
   })
   .openapi({
@@ -3803,33 +3016,21 @@ const ListEventsMaxResultsSchema = z.int().min(1).max(200).openapi('ListEventsMa
 
 const ListEventsRequestSchema = z
   .object({
-    Filters: ListEventsFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>ListEventsFilters</code> object used to specify which events to return. ',
-        }),
-    ),
-    MaxResults: ListEventsMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
-        }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
-    AccountId: AwsAccountIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Amazon Web Services account. ' }),
-    ).exactOptional(),
+    Filters: ListEventsFiltersSchema.openapi({
+      description:
+        ' A <code>ListEventsFilters</code> object used to specify which events to return. ',
+    }),
+    MaxResults: ListEventsMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
+    AccountId: AwsAccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account. ',
+    }),
   })
   .openapi({ required: ['Filters'], title: 'ListEventsRequest' })
   .openapi('ListEventsRequest')
@@ -3850,30 +3051,18 @@ const ListInsightsOrganizationalUnitIdListSchema = z
 
 const ListInsightsStatusFilterSchema = z
   .object({
-    Ongoing: ListInsightsOngoingStatusFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>ListInsightsAnyStatusFilter</code> that specifies ongoing insights that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
-        }),
-    ).exactOptional(),
-    Closed: ListInsightsClosedStatusFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>ListInsightsClosedStatusFilter</code> that specifies closed insights that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
-        }),
-    ).exactOptional(),
-    Any: ListInsightsAnyStatusFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>ListInsightsAnyStatusFilter</code> that specifies insights of any status that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
-        }),
-    ).exactOptional(),
+    Ongoing: ListInsightsOngoingStatusFilterSchema.exactOptional().openapi({
+      description:
+        ' A <code>ListInsightsAnyStatusFilter</code> that specifies ongoing insights that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
+    }),
+    Closed: ListInsightsClosedStatusFilterSchema.exactOptional().openapi({
+      description:
+        ' A <code>ListInsightsClosedStatusFilter</code> that specifies closed insights that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
+    }),
+    Any: ListInsightsAnyStatusFilterSchema.exactOptional().openapi({
+      description:
+        ' A <code>ListInsightsAnyStatusFilter</code> that specifies insights of any status that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
+    }),
   })
   .openapi({
     description:
@@ -3884,46 +3073,30 @@ const ListInsightsStatusFilterSchema = z
 
 const ListInsightsRequestSchema = z
   .object({
-    StatusFilter: ListInsightsStatusFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A filter used to filter the returned insights by their status. You can specify one status filter. ',
-        }),
-    ),
-    MaxResults: ListInsightsMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
-        }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
+    StatusFilter: ListInsightsStatusFilterSchema.openapi({
+      description:
+        ' A filter used to filter the returned insights by their status. You can specify one status filter. ',
+    }),
+    MaxResults: ListInsightsMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
   })
   .openapi({ required: ['StatusFilter'], title: 'ListInsightsRequest' })
   .openapi('ListInsightsRequest')
 
 const ListMonitoredResourcesFiltersSchema = z
   .object({
-    ResourcePermission: ResourcePermissionSchema.and(
-      z.any().openapi({ description: ' The permission status of a resource. ' }),
-    ),
-    ResourceTypeFilters: ResourceTypeFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The type of resource that you wish to retrieve, such as log groups. ',
-        }),
-    ),
+    ResourcePermission: ResourcePermissionSchema.openapi({
+      description: ' The permission status of a resource. ',
+    }),
+    ResourceTypeFilters: ResourceTypeFiltersSchema.openapi({
+      description: ' The type of resource that you wish to retrieve, such as log groups. ',
+    }),
   })
   .openapi({
     required: ['ResourcePermission', 'ResourceTypeFilters'],
@@ -3940,44 +3113,28 @@ const ListMonitoredResourcesMaxResultsSchema = z
 
 const ListMonitoredResourcesRequestSchema = z
   .object({
-    Filters: ListMonitoredResourcesFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Filters to determine which monitored resources you want to retrieve. You can filter by resource type or resource permission status. ',
-        }),
-    ).exactOptional(),
-    MaxResults: ListMonitoredResourcesMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
-        }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
+    Filters: ListMonitoredResourcesFiltersSchema.exactOptional().openapi({
+      description:
+        ' Filters to determine which monitored resources you want to retrieve. You can filter by resource type or resource permission status. ',
+    }),
+    MaxResults: ListMonitoredResourcesMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
   })
   .openapi({ title: 'ListMonitoredResourcesRequest', required: [] })
   .openapi('ListMonitoredResourcesRequest')
 
 const ListNotificationChannelsRequestSchema = z
   .object({
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
   })
   .openapi({ title: 'ListNotificationChannelsRequest', required: [] })
   .openapi('ListNotificationChannelsRequest')
@@ -3985,28 +3142,20 @@ const ListNotificationChannelsRequestSchema = z
 const ListOrganizationInsightsRequestSchema = z
   .object({
     StatusFilter: ListInsightsStatusFilterSchema,
-    MaxResults: ListInsightsMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
-        }),
-    ).exactOptional(),
-    AccountIds: ListInsightsAccountIdListSchema.and(
-      z.any().openapi({ description: 'The ID of the Amazon Web Services account. ' }),
-    ).exactOptional(),
-    OrganizationalUnitIds: ListInsightsOrganizationalUnitIdListSchema.and(
-      z.any().openapi({ description: 'The ID of the organizational unit.' }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
+    MaxResults: ListInsightsMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
+    }),
+    AccountIds: ListInsightsAccountIdListSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account. ',
+    }),
+    OrganizationalUnitIds: ListInsightsOrganizationalUnitIdListSchema.exactOptional().openapi({
+      description: 'The ID of the organizational unit.',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
   })
   .openapi({ required: ['StatusFilter'], title: 'ListOrganizationInsightsRequest' })
   .openapi('ListOrganizationInsightsRequest')
@@ -4029,27 +3178,17 @@ const LocaleSchema = z
 
 const ListRecommendationsRequestSchema = z
   .object({
-    InsightId: InsightIdSchema.and(
-      z.any().openapi({ description: ' The ID of the requested insight. ' }),
-    ),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
-    Locale: LocaleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A locale that specifies the language to use for recommendations.',
-        }),
-    ).exactOptional(),
-    AccountId: AwsAccountIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Amazon Web Services account. ' }),
-    ).exactOptional(),
+    InsightId: InsightIdSchema.openapi({ description: ' The ID of the requested insight. ' }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
+    Locale: LocaleSchema.exactOptional().openapi({
+      description: 'A locale that specifies the language to use for recommendations.',
+    }),
+    AccountId: AwsAccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account. ',
+    }),
   })
   .openapi({ required: ['InsightId'], title: 'ListRecommendationsRequest' })
   .openapi('ListRecommendationsRequest')
@@ -4060,20 +3199,15 @@ const PerformanceInsightsMetricFilterKeySchema = z
 
 const PutFeedbackRequestSchema = z
   .object({
-    InsightFeedback: InsightFeedbackSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The feedback from customers is about the recommendations in this insight. ',
-        }),
-    ).exactOptional(),
+    InsightFeedback: InsightFeedbackSchema.exactOptional().openapi({
+      description: ' The feedback from customers is about the recommendations in this insight. ',
+    }),
   })
   .openapi({ title: 'PutFeedbackRequest', required: [] })
   .openapi('PutFeedbackRequest')
 
 const RemoveNotificationChannelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RemoveNotificationChannelRequest' })
   .openapi('RemoveNotificationChannelRequest')
 
@@ -4084,20 +3218,16 @@ const SearchInsightsAccountIdListSchema = z
 
 const SearchInsightsFiltersSchema = z
   .object({
-    Severities: InsightSeveritiesSchema.and(
-      z
-        .any()
-        .openapi({ description: ' An array of severity values used to search for insights. ' }),
-    ).exactOptional(),
-    Statuses: InsightStatusesSchema.and(
-      z.any().openapi({ description: ' An array of status values used to search for insights. ' }),
-    ).exactOptional(),
+    Severities: InsightSeveritiesSchema.exactOptional().openapi({
+      description: ' An array of severity values used to search for insights. ',
+    }),
+    Statuses: InsightStatusesSchema.exactOptional().openapi({
+      description: ' An array of status values used to search for insights. ',
+    }),
     ResourceCollection: ResourceCollectionSchema.exactOptional(),
-    ServiceCollection: ServiceCollectionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A collection of the names of Amazon Web Services services.' }),
-    ).exactOptional(),
+    ServiceCollection: ServiceCollectionSchema.exactOptional().openapi({
+      description: 'A collection of the names of Amazon Web Services services.',
+    }),
   })
   .openapi({
     description:
@@ -4110,60 +3240,38 @@ const SearchInsightsMaxResultsSchema = z.int().min(1).max(100).openapi('SearchIn
 
 const SearchInsightsRequestSchema = z
   .object({
-    StartTimeRange: StartTimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The start of the time range passed in. Returned insights occurred after this time. ',
-        }),
-    ),
-    Filters: SearchInsightsFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>SearchInsightsFilters</code> object that is used to set the severity and status filters on your insight search. ',
-        }),
-    ).exactOptional(),
-    MaxResults: SearchInsightsMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
-        }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
-    Type: InsightTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The type of insights you are searching for (<code>REACTIVE</code> or <code>PROACTIVE</code>). ',
-        }),
-    ),
+    StartTimeRange: StartTimeRangeSchema.openapi({
+      description:
+        ' The start of the time range passed in. Returned insights occurred after this time. ',
+    }),
+    Filters: SearchInsightsFiltersSchema.exactOptional().openapi({
+      description:
+        ' A <code>SearchInsightsFilters</code> object that is used to set the severity and status filters on your insight search. ',
+    }),
+    MaxResults: SearchInsightsMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
+    Type: InsightTypeSchema.openapi({
+      description:
+        ' The type of insights you are searching for (<code>REACTIVE</code> or <code>PROACTIVE</code>). ',
+    }),
   })
   .openapi({ required: ['StartTimeRange', 'Type'], title: 'SearchInsightsRequest' })
   .openapi('SearchInsightsRequest')
 
 const SearchOrganizationInsightsFiltersSchema = z
   .object({
-    Severities: InsightSeveritiesSchema.and(
-      z
-        .any()
-        .openapi({ description: ' An array of severity values used to search for insights. ' }),
-    ).exactOptional(),
-    Statuses: InsightStatusesSchema.and(
-      z.any().openapi({ description: ' An array of status values used to search for insights. ' }),
-    ).exactOptional(),
+    Severities: InsightSeveritiesSchema.exactOptional().openapi({
+      description: ' An array of severity values used to search for insights. ',
+    }),
+    Statuses: InsightStatusesSchema.exactOptional().openapi({
+      description: ' An array of status values used to search for insights. ',
+    }),
     ResourceCollection: ResourceCollectionSchema.exactOptional(),
     ServiceCollection: ServiceCollectionSchema.exactOptional(),
   })
@@ -4182,42 +3290,26 @@ const SearchOrganizationInsightsMaxResultsSchema = z
 
 const SearchOrganizationInsightsRequestSchema = z
   .object({
-    AccountIds: SearchInsightsAccountIdListSchema.and(
-      z.any().openapi({ description: 'The ID of the Amazon Web Services account. ' }),
-    ),
+    AccountIds: SearchInsightsAccountIdListSchema.openapi({
+      description: 'The ID of the Amazon Web Services account. ',
+    }),
     StartTimeRange: StartTimeRangeSchema,
-    Filters: SearchOrganizationInsightsFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A <code>SearchOrganizationInsightsFilters</code> object that is used to set the severity and status filters on your insight search. ',
-        }),
-    ).exactOptional(),
-    MaxResults: SearchOrganizationInsightsMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
-        }),
-    ).exactOptional(),
-    NextToken: UuidNextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
-    Type: InsightTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The type of insights you are searching for (<code>REACTIVE</code> or <code>PROACTIVE</code>). ',
-        }),
-    ),
+    Filters: SearchOrganizationInsightsFiltersSchema.exactOptional().openapi({
+      description:
+        ' A <code>SearchOrganizationInsightsFilters</code> object that is used to set the severity and status filters on your insight search. ',
+    }),
+    MaxResults: SearchOrganizationInsightsMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.',
+    }),
+    NextToken: UuidNextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
+    Type: InsightTypeSchema.openapi({
+      description:
+        ' The type of insights you are searching for (<code>REACTIVE</code> or <code>PROACTIVE</code>). ',
+    }),
   })
   .openapi({
     required: ['AccountIds', 'StartTimeRange', 'Type'],
@@ -4227,35 +3319,23 @@ const SearchOrganizationInsightsRequestSchema = z
 
 const StartCostEstimationRequestSchema = z
   .object({
-    ResourceCollection: CostEstimationResourceCollectionFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The collection of Amazon Web Services resources used to create a monthly DevOps Guru cost estimate.',
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The idempotency token used to identify each cost estimate request.',
-        }),
-    ).exactOptional(),
+    ResourceCollection: CostEstimationResourceCollectionFilterSchema.openapi({
+      description:
+        'The collection of Amazon Web Services resources used to create a monthly DevOps Guru cost estimate.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'The idempotency token used to identify each cost estimate request.',
+    }),
   })
   .openapi({ required: ['ResourceCollection'], title: 'StartCostEstimationRequest' })
   .openapi('StartCostEstimationRequest')
 
 const UpdateEventSourcesConfigRequestSchema = z
   .object({
-    EventSources: EventSourcesConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration information about the integration of DevOps Guru as the Consumer via EventBridge with another AWS Service.',
-        }),
-    ).exactOptional(),
+    EventSources: EventSourcesConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration information about the integration of DevOps Guru as the Consumer via EventBridge with another AWS Service.',
+    }),
   })
   .openapi({ title: 'UpdateEventSourcesConfigRequest', required: [] })
   .openapi('UpdateEventSourcesConfigRequest')
@@ -4266,22 +3346,14 @@ const UpdateResourceCollectionActionSchema = z
 
 const UpdateResourceCollectionFilterSchema = z
   .object({
-    CloudFormation: UpdateCloudFormationCollectionFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A collection of Amazon Web Services CloudFormation stacks. You can specify up to 500 Amazon Web Services CloudFormation stacks. ',
-        }),
-    ).exactOptional(),
-    Tags: UpdateTagCollectionFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The updated Amazon Web Services tags used to filter the resources in the resource collection.</p> <p>Tags help you identify and organize your Amazon Web Services resources. Many Amazon Web Services services support tagging, so you can assign the same tag to resources from different services to indicate that the resources are related. For example, you can assign the same tag to an Amazon DynamoDB table resource that you assign to an Lambda function. For more information about using tags, see the <a href="https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html">Tagging best practices</a> whitepaper. </p> <p>Each Amazon Web Services tag has two parts. </p> <ul> <li> <p>A tag <i>key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag <i>keys</i> are case-sensitive.</p> </li> <li> <p>An optional field known as a tag <i>value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive.</p> </li> </ul> <p>Together these are known as <i>key</i>-<i>value</i> pairs.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
-        }),
-    ).exactOptional(),
+    CloudFormation: UpdateCloudFormationCollectionFilterSchema.exactOptional().openapi({
+      description:
+        ' A collection of Amazon Web Services CloudFormation stacks. You can specify up to 500 Amazon Web Services CloudFormation stacks. ',
+    }),
+    Tags: UpdateTagCollectionFiltersSchema.exactOptional().openapi({
+      description:
+        '<p>The updated Amazon Web Services tags used to filter the resources in the resource collection.</p> <p>Tags help you identify and organize your Amazon Web Services resources. Many Amazon Web Services services support tagging, so you can assign the same tag to resources from different services to indicate that the resources are related. For example, you can assign the same tag to an Amazon DynamoDB table resource that you assign to an Lambda function. For more information about using tags, see the <a href="https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html">Tagging best practices</a> whitepaper. </p> <p>Each Amazon Web Services tag has two parts. </p> <ul> <li> <p>A tag <i>key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag <i>keys</i> are case-sensitive.</p> </li> <li> <p>An optional field known as a tag <i>value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive.</p> </li> </ul> <p>Together these are known as <i>key</i>-<i>value</i> pairs.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
+    }),
   })
   .openapi({
     description:
@@ -4292,14 +3364,10 @@ const UpdateResourceCollectionFilterSchema = z
 
 const UpdateResourceCollectionRequestSchema = z
   .object({
-    Action: UpdateResourceCollectionActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies if the resource collection in the request is added or deleted to the resource collection. ',
-        }),
-    ),
+    Action: UpdateResourceCollectionActionSchema.openapi({
+      description:
+        ' Specifies if the resource collection in the request is added or deleted to the resource collection. ',
+    }),
     ResourceCollection: UpdateResourceCollectionFilterSchema,
   })
   .openapi({ required: ['Action', 'ResourceCollection'], title: 'UpdateResourceCollectionRequest' })
@@ -4308,14 +3376,10 @@ const UpdateResourceCollectionRequestSchema = z
 const UpdateServiceIntegrationConfigSchema = z
   .object({
     OpsCenter: OpsCenterIntegrationConfigSchema.exactOptional(),
-    LogsAnomalyDetection: LogsAnomalyDetectionIntegrationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Information about whether DevOps Guru is configured to perform log anomaly detection on Amazon CloudWatch log groups. ',
-        }),
-    ).exactOptional(),
+    LogsAnomalyDetection: LogsAnomalyDetectionIntegrationConfigSchema.exactOptional().openapi({
+      description:
+        ' Information about whether DevOps Guru is configured to perform log anomaly detection on Amazon CloudWatch log groups. ',
+    }),
   })
   .openapi({
     description:
@@ -4326,14 +3390,10 @@ const UpdateServiceIntegrationConfigSchema = z
 
 const UpdateServiceIntegrationRequestSchema = z
   .object({
-    ServiceIntegration: UpdateServiceIntegrationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' An <code>IntegratedServiceConfig</code> object used to specify the integrated service you want to update, and whether you want to update it to enabled or disabled. ',
-        }),
-    ),
+    ServiceIntegration: UpdateServiceIntegrationConfigSchema.openapi({
+      description:
+        ' An <code>IntegratedServiceConfig</code> object used to specify the integrated service you want to update, and whether you want to update it to enabled or disabled. ',
+    }),
   })
   .openapi({ required: ['ServiceIntegration'], title: 'UpdateServiceIntegrationRequest' })
   .openapi('UpdateServiceIntegrationRequest')
@@ -4433,22 +3493,14 @@ export const putChannelsRoute = createRoute({
             .object({
               Config: z
                 .object({
-                  Sns: SnsChannelConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p> Information about a notification channel configured in DevOps Guru to send notifications when insights are created. </p> <p>If you use an Amazon SNS topic in another account, you must attach a policy to it that grants DevOps Guru permission to it notifications. DevOps Guru adds the required policy on your behalf to send notifications using Amazon SNS in your account. DevOps Guru only supports standard SNS topics. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/sns-required-permissions.html">Permissions for cross account Amazon SNS topics</a>.</p> <p>If you use an Amazon SNS topic in another account, you must attach a policy to it that grants DevOps Guru permission to it notifications. DevOps Guru adds the required policy on your behalf to send notifications using Amazon SNS in your account. For more information, see Permissions for cross account Amazon SNS topics.</p> <p>If you use an Amazon SNS topic that is encrypted by an Amazon Web Services Key Management Service customer-managed key (CMK), then you must add permissions to the CMK. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/sns-kms-permissions.html">Permissions for Amazon Web Services KMS–encrypted Amazon SNS topics</a>.</p>',
-                      }),
-                  ).exactOptional(),
-                  Filters: NotificationFilterConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The filter configurations for the Amazon SNS notification topic you use with DevOps Guru. If you do not provide filter configurations, the default configurations are to receive notifications for all message types of <code>High</code> or <code>Medium</code> severity. ',
-                      }),
-                  ).exactOptional(),
+                  Sns: SnsChannelConfigSchema.exactOptional().openapi({
+                    description:
+                      '<p> Information about a notification channel configured in DevOps Guru to send notifications when insights are created. </p> <p>If you use an Amazon SNS topic in another account, you must attach a policy to it that grants DevOps Guru permission to it notifications. DevOps Guru adds the required policy on your behalf to send notifications using Amazon SNS in your account. DevOps Guru only supports standard SNS topics. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/sns-required-permissions.html">Permissions for cross account Amazon SNS topics</a>.</p> <p>If you use an Amazon SNS topic in another account, you must attach a policy to it that grants DevOps Guru permission to it notifications. DevOps Guru adds the required policy on your behalf to send notifications using Amazon SNS in your account. For more information, see Permissions for cross account Amazon SNS topics.</p> <p>If you use an Amazon SNS topic that is encrypted by an Amazon Web Services Key Management Service customer-managed key (CMK), then you must add permissions to the CMK. For more information, see <a href="https://docs.aws.amazon.com/devops-guru/latest/userguide/sns-kms-permissions.html">Permissions for Amazon Web Services KMS–encrypted Amazon SNS topics</a>.</p>',
+                  }),
+                  Filters: NotificationFilterConfigSchema.exactOptional().openapi({
+                    description:
+                      ' The filter configurations for the Amazon SNS notification topic you use with DevOps Guru. If you do not provide filter configurations, the default configurations are to receive notifications for all message types of <code>High</code> or <code>Medium</code> severity. ',
+                  }),
                 })
                 .openapi({
                   description:
@@ -4919,14 +3971,11 @@ export const putEventSourcesRoute = createRoute({
             .object({
               EventSources: z
                 .object({
-                  AmazonCodeGuruProfiler: AmazonCodeGuruProfilerIntegrationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Information about whether DevOps Guru is configured to consume recommendations which are generated from AWS CodeGuru Profiler.',
-                      }),
-                  ).exactOptional(),
+                  AmazonCodeGuruProfiler:
+                    AmazonCodeGuruProfilerIntegrationSchema.exactOptional().openapi({
+                      description:
+                        'Information about whether DevOps Guru is configured to consume recommendations which are generated from AWS CodeGuru Profiler.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5028,12 +4077,12 @@ export const putFeedbackRoute = createRoute({
             .object({
               InsightFeedback: z
                 .object({
-                  Id: InsightIdSchema.and(
-                    z.any().openapi({ description: ' The insight feedback ID. ' }),
-                  ).exactOptional(),
-                  Feedback: InsightFeedbackOptionSchema.and(
-                    z.any().openapi({ description: ' The feedback provided by the customer. ' }),
-                  ).exactOptional(),
+                  Id: InsightIdSchema.exactOptional().openapi({
+                    description: ' The insight feedback ID. ',
+                  }),
+                  Feedback: InsightFeedbackOptionSchema.exactOptional().openapi({
+                    description: ' The feedback provided by the customer. ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5535,14 +4584,11 @@ export const putServiceIntegrationsRoute = createRoute({
               ServiceIntegration: z
                 .object({
                   OpsCenter: OpsCenterIntegrationConfigSchema.exactOptional(),
-                  LogsAnomalyDetection: LogsAnomalyDetectionIntegrationConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' Information about whether DevOps Guru is configured to perform log anomaly detection on Amazon CloudWatch log groups. ',
-                      }),
-                  ).exactOptional(),
+                  LogsAnomalyDetection:
+                    LogsAnomalyDetectionIntegrationConfigSchema.exactOptional().openapi({
+                      description:
+                        ' Information about whether DevOps Guru is configured to perform log anomaly detection on Amazon CloudWatch log groups. ',
+                    }),
                 })
                 .openapi({
                   description:
@@ -5674,22 +4720,17 @@ export const putCostEstimationRoute = createRoute({
             .object({
               ResourceCollection: z
                 .object({
-                  CloudFormation: CloudFormationCostEstimationResourceCollectionFilterSchema.and(
-                    z
-                      .any()
-                      .openapi({
+                  CloudFormation:
+                    CloudFormationCostEstimationResourceCollectionFilterSchema.exactOptional().openapi(
+                      {
                         description:
                           'An object that specifies the CloudFormation stack that defines the Amazon Web Services resources used to create a monthly estimate for DevOps Guru.',
-                      }),
-                  ).exactOptional(),
-                  Tags: TagCostEstimationResourceCollectionFiltersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The Amazon Web Services tags used to filter the resource collection that is used for a cost estimate.</p> <p>Tags help you identify and organize your Amazon Web Services resources. Many Amazon Web Services services support tagging, so you can assign the same tag to resources from different services to indicate that the resources are related. For example, you can assign the same tag to an Amazon DynamoDB table resource that you assign to an Lambda function. For more information about using tags, see the <a href="https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html">Tagging best practices</a> whitepaper. </p> <p>Each Amazon Web Services tag has two parts. </p> <ul> <li> <p>A tag <i>key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag <i>keys</i> are case-sensitive.</p> </li> <li> <p>An optional field known as a tag <i>value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive.</p> </li> </ul> <p>Together these are known as <i>key</i>-<i>value</i> pairs.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
-                      }),
-                  ).exactOptional(),
+                      },
+                    ),
+                  Tags: TagCostEstimationResourceCollectionFiltersSchema.exactOptional().openapi({
+                    description:
+                      '<p>The Amazon Web Services tags used to filter the resource collection that is used for a cost estimate.</p> <p>Tags help you identify and organize your Amazon Web Services resources. Many Amazon Web Services services support tagging, so you can assign the same tag to resources from different services to indicate that the resources are related. For example, you can assign the same tag to an Amazon DynamoDB table resource that you assign to an Lambda function. For more information about using tags, see the <a href="https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html">Tagging best practices</a> whitepaper. </p> <p>Each Amazon Web Services tag has two parts. </p> <ul> <li> <p>A tag <i>key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag <i>keys</i> are case-sensitive.</p> </li> <li> <p>An optional field known as a tag <i>value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive.</p> </li> </ul> <p>Together these are known as <i>key</i>-<i>value</i> pairs.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
+                  }),
                 })
                 .openapi({
                   description:
@@ -5890,12 +4931,12 @@ export const postAnomaliesInsightInsightIdRoute = createRoute({
             .object({
               StartTimeRange: z
                 .object({
-                  FromTime: TimestampSchema.and(
-                    z.any().openapi({ description: ' The start time of the time range. ' }),
-                  ).exactOptional(),
-                  ToTime: TimestampSchema.and(
-                    z.any().openapi({ description: ' The end time of the time range. ' }),
-                  ).exactOptional(),
+                  FromTime: TimestampSchema.exactOptional().openapi({
+                    description: ' The start time of the time range. ',
+                  }),
+                  ToTime: TimestampSchema.exactOptional().openapi({
+                    description: ' The end time of the time range. ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6124,46 +5165,26 @@ export const postEventsRoute = createRoute({
             .object({
               Filters: z
                 .object({
-                  InsightId: InsightIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' An ID of an insight that is related to the events you want to filter for. ',
-                      }),
-                  ).exactOptional(),
-                  EventTimeRange: EventTimeRangeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' A time range during which you want the filtered events to have occurred. ',
-                      }),
-                  ).exactOptional(),
-                  EventClass: EventClassSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The class of the events you want to filter for, such as an infrastructure change, a deployment, or a schema change. ',
-                      }),
-                  ).exactOptional(),
-                  EventSource: EventSourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The Amazon Web Services source that emitted the events you want to filter for. ',
-                      }),
-                  ).exactOptional(),
-                  DataSource: EventDataSourceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The source, <code>AWS_CLOUD_TRAIL</code> or <code>AWS_CODE_DEPLOY</code>, of the events you want returned. ',
-                      }),
-                  ).exactOptional(),
+                  InsightId: InsightIdSchema.exactOptional().openapi({
+                    description:
+                      ' An ID of an insight that is related to the events you want to filter for. ',
+                  }),
+                  EventTimeRange: EventTimeRangeSchema.exactOptional().openapi({
+                    description:
+                      ' A time range during which you want the filtered events to have occurred. ',
+                  }),
+                  EventClass: EventClassSchema.exactOptional().openapi({
+                    description:
+                      ' The class of the events you want to filter for, such as an infrastructure change, a deployment, or a schema change. ',
+                  }),
+                  EventSource: EventSourceSchema.exactOptional().openapi({
+                    description:
+                      ' The Amazon Web Services source that emitted the events you want to filter for. ',
+                  }),
+                  DataSource: EventDataSourceSchema.exactOptional().openapi({
+                    description:
+                      ' The source, <code>AWS_CLOUD_TRAIL</code> or <code>AWS_CODE_DEPLOY</code>, of the events you want returned. ',
+                  }),
                   ResourceCollection: ResourceCollectionSchema.exactOptional(),
                 })
                 .openapi({
@@ -6279,30 +5300,18 @@ export const postInsightsRoute = createRoute({
             .object({
               StatusFilter: z
                 .object({
-                  Ongoing: ListInsightsOngoingStatusFilterSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' A <code>ListInsightsAnyStatusFilter</code> that specifies ongoing insights that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
-                      }),
-                  ).exactOptional(),
-                  Closed: ListInsightsClosedStatusFilterSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' A <code>ListInsightsClosedStatusFilter</code> that specifies closed insights that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
-                      }),
-                  ).exactOptional(),
-                  Any: ListInsightsAnyStatusFilterSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' A <code>ListInsightsAnyStatusFilter</code> that specifies insights of any status that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
-                      }),
-                  ).exactOptional(),
+                  Ongoing: ListInsightsOngoingStatusFilterSchema.exactOptional().openapi({
+                    description:
+                      ' A <code>ListInsightsAnyStatusFilter</code> that specifies ongoing insights that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
+                  }),
+                  Closed: ListInsightsClosedStatusFilterSchema.exactOptional().openapi({
+                    description:
+                      ' A <code>ListInsightsClosedStatusFilter</code> that specifies closed insights that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
+                  }),
+                  Any: ListInsightsAnyStatusFilterSchema.exactOptional().openapi({
+                    description:
+                      ' A <code>ListInsightsAnyStatusFilter</code> that specifies insights of any status that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
+                  }),
                 })
                 .openapi({
                   description:
@@ -6407,17 +5416,13 @@ export const postMonitoredResourcesRoute = createRoute({
             .object({
               Filters: z
                 .object({
-                  ResourcePermission: ResourcePermissionSchema.and(
-                    z.any().openapi({ description: ' The permission status of a resource. ' }),
-                  ).exactOptional(),
-                  ResourceTypeFilters: ResourceTypeFiltersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The type of resource that you wish to retrieve, such as log groups. ',
-                      }),
-                  ).exactOptional(),
+                  ResourcePermission: ResourcePermissionSchema.exactOptional().openapi({
+                    description: ' The permission status of a resource. ',
+                  }),
+                  ResourceTypeFilters: ResourceTypeFiltersSchema.exactOptional().openapi({
+                    description:
+                      ' The type of resource that you wish to retrieve, such as log groups. ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6522,30 +5527,18 @@ export const postOrganizationInsightsRoute = createRoute({
             .object({
               StatusFilter: z
                 .object({
-                  Ongoing: ListInsightsOngoingStatusFilterSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' A <code>ListInsightsAnyStatusFilter</code> that specifies ongoing insights that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
-                      }),
-                  ).exactOptional(),
-                  Closed: ListInsightsClosedStatusFilterSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' A <code>ListInsightsClosedStatusFilter</code> that specifies closed insights that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
-                      }),
-                  ).exactOptional(),
-                  Any: ListInsightsAnyStatusFilterSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' A <code>ListInsightsAnyStatusFilter</code> that specifies insights of any status that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
-                      }),
-                  ).exactOptional(),
+                  Ongoing: ListInsightsOngoingStatusFilterSchema.exactOptional().openapi({
+                    description:
+                      ' A <code>ListInsightsAnyStatusFilter</code> that specifies ongoing insights that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
+                  }),
+                  Closed: ListInsightsClosedStatusFilterSchema.exactOptional().openapi({
+                    description:
+                      ' A <code>ListInsightsClosedStatusFilter</code> that specifies closed insights that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
+                  }),
+                  Any: ListInsightsAnyStatusFilterSchema.exactOptional().openapi({
+                    description:
+                      ' A <code>ListInsightsAnyStatusFilter</code> that specifies insights of any status that are either <code>REACTIVE</code> or <code>PROACTIVE</code>. ',
+                  }),
                 })
                 .openapi({
                   description:
@@ -6840,12 +5833,12 @@ export const postInsightsSearchRoute = createRoute({
             .object({
               StartTimeRange: z
                 .object({
-                  FromTime: TimestampSchema.and(
-                    z.any().openapi({ description: ' The start time of the time range. ' }),
-                  ).exactOptional(),
-                  ToTime: TimestampSchema.and(
-                    z.any().openapi({ description: ' The end time of the time range. ' }),
-                  ).exactOptional(),
+                  FromTime: TimestampSchema.exactOptional().openapi({
+                    description: ' The start time of the time range. ',
+                  }),
+                  ToTime: TimestampSchema.exactOptional().openapi({
+                    description: ' The end time of the time range. ',
+                  }),
                 })
                 .openapi({
                   description:
@@ -6854,28 +5847,16 @@ export const postInsightsSearchRoute = createRoute({
                 }),
               Filters: z
                 .object({
-                  Severities: InsightSeveritiesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' An array of severity values used to search for insights. ',
-                      }),
-                  ).exactOptional(),
-                  Statuses: InsightStatusesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' An array of status values used to search for insights. ',
-                      }),
-                  ).exactOptional(),
+                  Severities: InsightSeveritiesSchema.exactOptional().openapi({
+                    description: ' An array of severity values used to search for insights. ',
+                  }),
+                  Statuses: InsightStatusesSchema.exactOptional().openapi({
+                    description: ' An array of status values used to search for insights. ',
+                  }),
                   ResourceCollection: ResourceCollectionSchema.exactOptional(),
-                  ServiceCollection: ServiceCollectionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'A collection of the names of Amazon Web Services services.',
-                      }),
-                  ).exactOptional(),
+                  ServiceCollection: ServiceCollectionSchema.exactOptional().openapi({
+                    description: 'A collection of the names of Amazon Web Services services.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6991,12 +5972,12 @@ export const postOrganizationInsightsSearchRoute = createRoute({
                 .openapi({ description: 'The ID of the Amazon Web Services account. ' }),
               StartTimeRange: z
                 .object({
-                  FromTime: TimestampSchema.and(
-                    z.any().openapi({ description: ' The start time of the time range. ' }),
-                  ).exactOptional(),
-                  ToTime: TimestampSchema.and(
-                    z.any().openapi({ description: ' The end time of the time range. ' }),
-                  ).exactOptional(),
+                  FromTime: TimestampSchema.exactOptional().openapi({
+                    description: ' The start time of the time range. ',
+                  }),
+                  ToTime: TimestampSchema.exactOptional().openapi({
+                    description: ' The end time of the time range. ',
+                  }),
                 })
                 .openapi({
                   description:
@@ -7005,20 +5986,12 @@ export const postOrganizationInsightsSearchRoute = createRoute({
                 }),
               Filters: z
                 .object({
-                  Severities: InsightSeveritiesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' An array of severity values used to search for insights. ',
-                      }),
-                  ).exactOptional(),
-                  Statuses: InsightStatusesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: ' An array of status values used to search for insights. ',
-                      }),
-                  ).exactOptional(),
+                  Severities: InsightSeveritiesSchema.exactOptional().openapi({
+                    description: ' An array of severity values used to search for insights. ',
+                  }),
+                  Statuses: InsightStatusesSchema.exactOptional().openapi({
+                    description: ' An array of status values used to search for insights. ',
+                  }),
                   ResourceCollection: ResourceCollectionSchema.exactOptional(),
                   ServiceCollection: ServiceCollectionSchema.exactOptional(),
                 })
@@ -7112,22 +6085,15 @@ export const putResourceCollectionsRoute = createRoute({
                 }),
               ResourceCollection: z
                 .object({
-                  CloudFormation: UpdateCloudFormationCollectionFilterSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' A collection of Amazon Web Services CloudFormation stacks. You can specify up to 500 Amazon Web Services CloudFormation stacks. ',
-                      }),
-                  ).exactOptional(),
-                  Tags: UpdateTagCollectionFiltersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The updated Amazon Web Services tags used to filter the resources in the resource collection.</p> <p>Tags help you identify and organize your Amazon Web Services resources. Many Amazon Web Services services support tagging, so you can assign the same tag to resources from different services to indicate that the resources are related. For example, you can assign the same tag to an Amazon DynamoDB table resource that you assign to an Lambda function. For more information about using tags, see the <a href="https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html">Tagging best practices</a> whitepaper. </p> <p>Each Amazon Web Services tag has two parts. </p> <ul> <li> <p>A tag <i>key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag <i>keys</i> are case-sensitive.</p> </li> <li> <p>An optional field known as a tag <i>value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive.</p> </li> </ul> <p>Together these are known as <i>key</i>-<i>value</i> pairs.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
-                      }),
-                  ).exactOptional(),
+                  CloudFormation:
+                    UpdateCloudFormationCollectionFilterSchema.exactOptional().openapi({
+                      description:
+                        ' A collection of Amazon Web Services CloudFormation stacks. You can specify up to 500 Amazon Web Services CloudFormation stacks. ',
+                    }),
+                  Tags: UpdateTagCollectionFiltersSchema.exactOptional().openapi({
+                    description:
+                      '<p>The updated Amazon Web Services tags used to filter the resources in the resource collection.</p> <p>Tags help you identify and organize your Amazon Web Services resources. Many Amazon Web Services services support tagging, so you can assign the same tag to resources from different services to indicate that the resources are related. For example, you can assign the same tag to an Amazon DynamoDB table resource that you assign to an Lambda function. For more information about using tags, see the <a href="https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html">Tagging best practices</a> whitepaper. </p> <p>Each Amazon Web Services tag has two parts. </p> <ul> <li> <p>A tag <i>key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag <i>keys</i> are case-sensitive.</p> </li> <li> <p>An optional field known as a tag <i>value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag <i>value</i> is the same as using an empty string. Like tag <i>keys</i>, tag <i>values</i> are case-sensitive.</p> </li> </ul> <p>Together these are known as <i>key</i>-<i>value</i> pairs.</p> <important> <p>The string used for a <i>key</i> in a tag that you use to define your resource coverage must begin with the prefix <code>Devops-guru-</code>. The tag <i>key</i> might be <code>DevOps-Guru-deployment-application</code> or <code>devops-guru-rds-application</code>. When you create a <i>key</i>, the case of characters in the <i>key</i> can be whatever you choose. After you create a <i>key</i>, it is case-sensitive. For example, DevOps Guru works with a <i>key</i> named <code>devops-guru-rds</code> and a <i>key</i> named <code>DevOps-Guru-RDS</code>, and these act as two different <i>keys</i>. Possible <i>key</i>/<i>value</i> pairs in your application might be <code>Devops-Guru-production-application/RDS</code> or <code>Devops-Guru-production-application/containers</code>.</p> </important>',
+                  }),
                 })
                 .openapi({
                   description:

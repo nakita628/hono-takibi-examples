@@ -1261,21 +1261,13 @@ const EventResponseSchema = z
         example: '2012-02-22T02:06:58.147Z',
         readOnly: true,
       }),
-    parent: AsanaNamedResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For added/removed events, the parent object that resource was added to or removed from. The parent will be `null` for other event types.',
-        }),
-    ).exactOptional(),
-    resource: AsanaNamedResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The resource which has triggered the event by being modified in some way.',
-        }),
-    ).exactOptional(),
+    parent: AsanaNamedResourceSchema.exactOptional().openapi({
+      description:
+        'For added/removed events, the parent object that resource was added to or removed from. The parent will be `null` for other event types.',
+    }),
+    resource: AsanaNamedResourceSchema.exactOptional().openapi({
+      description: 'The resource which has triggered the event by being modified in some way.',
+    }),
     type: z
       .string()
       .exactOptional()
@@ -1285,9 +1277,9 @@ const EventResponseSchema = z
         example: 'task',
         readOnly: true,
       }),
-    user: UserCompactSchema.and(
-      z.any().openapi({ description: 'The user who triggered the event.' }),
-    ).exactOptional(),
+    user: UserCompactSchema.exactOptional().openapi({
+      description: 'The user who triggered the event.',
+    }),
   })
   .openapi({
     description:
@@ -3484,13 +3476,10 @@ const StoryResponseSchema = StoryBaseSchema.and(
           example: 'approved',
           readOnly: true,
         }),
-      new_date_value: StoryResponseDatesSchema.and(
-        z
-          .any()
-          .openapi({ description: '*Conditional* The new value of a date custom field story.' }),
-      )
-        .exactOptional()
-        .openapi({ readOnly: true }),
+      new_date_value: StoryResponseDatesSchema.exactOptional().openapi({
+        description: '*Conditional* The new value of a date custom field story.',
+        readOnly: true,
+      }),
       new_dates: StoryResponseDatesSchema.exactOptional(),
       new_enum_value: EnumOptionSchema.exactOptional().openapi({
         description: '*Conditional*',
@@ -3555,13 +3544,10 @@ const StoryResponseSchema = StoryBaseSchema.and(
           example: 'pending',
           readOnly: true,
         }),
-      old_date_value: StoryResponseDatesSchema.and(
-        z
-          .any()
-          .openapi({ description: '*Conditional*. The old value of a date custom field story.' }),
-      )
-        .exactOptional()
-        .openapi({ readOnly: true }),
+      old_date_value: StoryResponseDatesSchema.exactOptional().openapi({
+        description: '*Conditional*. The old value of a date custom field story.',
+        readOnly: true,
+      }),
       old_dates: StoryResponseDatesSchema.exactOptional(),
       old_enum_value: EnumOptionSchema.exactOptional().openapi({
         description: '*Conditional*',
@@ -4208,16 +4194,12 @@ const TaskResponseSchema = TaskBaseSchema.and(
   z
     .object({
       assignee: UserCompactSchema.nullable().exactOptional(),
-      assignee_section: SectionCompactSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The *assignee section* is a subdivision of a project that groups tasks together in the assignee\'s "My Tasks" list. It can either be a header above a list of tasks in a list view or a column in a board view of "My Tasks."\nThe `assignee_section` property will be returned in the response only if the request was sent by the user who is the assignee of the task. Note that you can only write to `assignee_section` with the gid of an existing section visible in the user\'s "My Tasks" list.',
-          }),
-      )
-        .nullable()
-        .exactOptional(),
+      assignee_section: SectionCompactSchema.nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'The *assignee section* is a subdivision of a project that groups tasks together in the assignee\'s "My Tasks" list. It can either be a header above a list of tasks in a list view or a column in a board view of "My Tasks."\nThe `assignee_section` property will be returned in the response only if the request was sent by the user who is the assignee of the task. Note that you can only write to `assignee_section` with the gid of an existing section visible in the user\'s "My Tasks" list.',
+        }),
       custom_fields: z
         .array(CustomFieldResponseSchema)
         .exactOptional()
@@ -4614,14 +4596,10 @@ const WebhookRequestSchema = z
   .object({
     filters: z
       .array(
-        WebhookFilterSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A set of filters to specify a whitelist for what types of events will be delivered.',
-            }),
-        ).and(z.looseObject({})),
+        WebhookFilterSchema.and(z.looseObject({})).openapi({
+          description:
+            'A set of filters to specify a whitelist for what types of events will be delivered.',
+        }),
       )
       .exactOptional()
       .openapi({
@@ -4659,14 +4637,10 @@ const WebhookResponseSchema = WebhookCompactSchema.and(
         }),
       filters: z
         .array(
-          WebhookFilterSchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  'A set of filters to specify a whitelist for what types of events will be delivered.',
-              }),
-          ).and(z.looseObject({})),
+          WebhookFilterSchema.and(z.looseObject({})).openapi({
+            description:
+              'A set of filters to specify a whitelist for what types of events will be delivered.',
+          }),
         )
         .exactOptional()
         .openapi({
@@ -4708,14 +4682,10 @@ const WebhookUpdateRequestSchema = z
   .object({
     filters: z
       .array(
-        WebhookFilterSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A set of filters to specify a whitelist for what types of events will be delivered.',
-            }),
-        ).and(z.looseObject({})),
+        WebhookFilterSchema.and(z.looseObject({})).openapi({
+          description:
+            'A set of filters to specify a whitelist for what types of events will be delivered.',
+        }),
       )
       .exactOptional()
       .openapi({

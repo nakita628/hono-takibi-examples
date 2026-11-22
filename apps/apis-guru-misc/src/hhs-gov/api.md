@@ -6,7 +6,7 @@
 
 Base URLs:
 
-* <a href="https://api.apis.guru/api/v2">https://api.apis.guru/api/v2</a>
+* <a href="/api/v2">/api/v2</a>
 
 <a href="http://www.hhs.gov/web/socialmedia/policies/tos.html#ready">Terms of service</a>
 Email: <a href="mailto:syndicationadmin@hhs.gov">syndicationadmin@hhs.gov</a> 

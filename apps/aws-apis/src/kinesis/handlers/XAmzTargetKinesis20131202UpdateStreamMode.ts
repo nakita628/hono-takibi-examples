@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetKinesis20131202UpdateStreamModeHandler = app.openapi(
   postXAmzTargetKinesis20131202UpdateStreamModeRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

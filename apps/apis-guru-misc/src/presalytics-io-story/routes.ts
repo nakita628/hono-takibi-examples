@@ -648,7 +648,7 @@ export const getEnvironmentIndexRoute = createRoute({
   description: 'pass rendering metadata to the client-side scripts',
   operationId: 'get_environment',
   responses: {
-    200: { description: 'Success', content: { 'application/json': { schema: z.object({}) } } },
+    200: { description: 'Success', content: { 'application/json': { schema: z.looseObject({}) } } },
     400: BadrequestResponse,
     401: UnauthorizedResponse,
   },
@@ -1213,7 +1213,7 @@ export const postIdEventsRoute = createRoute({
   responses: {
     200: {
       description: 'A repsonse to the requested action',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     400: BadrequestResponse,
     401: UnauthorizedResponse,

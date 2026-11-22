@@ -1,36 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const CloudRunRewriteSchema = z
-  .object({
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. User-provided region where the Cloud Run service is hosted. Defaults to `us-central1` if not supplied.',
-      }),
-    serviceId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. User-defined ID of the Cloud Run service.' }),
-  })
-  .openapi({
-    description:
-      'A configured rewrite that directs requests to a Cloud Run service. If the Cloud Run service does not exist when setting or updating your Firebase Hosting configuration, then the request fails. Any errors from the Cloud Run service are passed to the end user (for example, if you delete a service, any requests directed to that service receive a `404` error).',
-    required: [],
-  })
-  .openapi('CloudRunRewrite')
-
-type RewriteType = {
-  dynamicLinks?: boolean
-  function?: string
-  functionRegion?: string
-  glob?: string
-  path?: string
-  regex?: string
-  run?: z.infer<typeof CloudRunRewriteSchema>
-}
-
 const ActingUserSchema = z
   .object({
     email: z
@@ -53,43 +22,6 @@ const ActingUserSchema = z
     required: [],
   })
   .openapi('ActingUser')
-
-const CertDnsChallengeSchema = z
-  .object({
-    domainName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The domain name upon which the DNS challenge must be satisfied.' }),
-    token: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The value that must be present as a TXT record on the domain name to satisfy the challenge.',
-      }),
-  })
-  .openapi({ description: 'Represents a DNS certificate challenge.', required: [] })
-  .openapi('CertDnsChallenge')
-
-const CertHttpChallengeSchema = z
-  .object({
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URL path on which to serve the specified token to satisfy the certificate challenge.',
-      }),
-    token: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The token to serve at the specified URL path to satisfy the certificate challenge.',
-      }),
-  })
-  .openapi({ description: 'Represents an HTTP certificate challenge.', required: [] })
-  .openapi('CertHttpChallenge')
 
 const HeaderSchema = z
   .object({
@@ -170,56 +102,74 @@ const RedirectSchema = z
   })
   .openapi('Redirect')
 
-const RewriteSchema: z.ZodType<RewriteType> = z
-  .lazy(() =>
-    z
-      .object({
-        dynamicLinks: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'The request will be forwarded to Firebase Dynamic Links.' }),
-        function: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The function to proxy requests to. Must match the exported function name exactly.',
-          }),
-        functionRegion: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Optional. Specify a Cloud region for rewritten Functions invocations. If not provided, defaults to us-central1.',
-          }),
-        glob: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The user-supplied [glob](https://firebase.google.com/docs/hosting/full-config#glob_pattern_matching) to match against the request URL path.',
-          }),
-        path: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The URL path to rewrite the request to.' }),
-        regex: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The user-supplied RE2 regular expression to match against the request URL path.',
-          }),
-        run: CloudRunRewriteSchema.exactOptional().openapi({
-          description: 'The request will be forwarded to Cloud Run.',
-        }),
-      })
+const CloudRunRewriteSchema = z
+  .object({
+    region: z
+      .string()
+      .exactOptional()
       .openapi({
         description:
-          'A [`Rewrite`](https://firebase.google.com/docs/hosting/full-config#rewrites) specifies a URL pattern that, if matched to the request URL path, triggers Hosting to respond as if the service were given the specified destination URL.',
-        required: [],
+          'Optional. User-provided region where the Cloud Run service is hosted. Defaults to `us-central1` if not supplied.',
       }),
-  )
+    serviceId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. User-defined ID of the Cloud Run service.' }),
+  })
+  .openapi({
+    description:
+      'A configured rewrite that directs requests to a Cloud Run service. If the Cloud Run service does not exist when setting or updating your Firebase Hosting configuration, then the request fails. Any errors from the Cloud Run service are passed to the end user (for example, if you delete a service, any requests directed to that service receive a `404` error).',
+    required: [],
+  })
+  .openapi('CloudRunRewrite')
+
+const RewriteSchema = z
+  .object({
+    dynamicLinks: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'The request will be forwarded to Firebase Dynamic Links.' }),
+    function: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The function to proxy requests to. Must match the exported function name exactly.',
+      }),
+    functionRegion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Specify a Cloud region for rewritten Functions invocations. If not provided, defaults to us-central1.',
+      }),
+    glob: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The user-supplied [glob](https://firebase.google.com/docs/hosting/full-config#glob_pattern_matching) to match against the request URL path.',
+      }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URL path to rewrite the request to.' }),
+    regex: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The user-supplied RE2 regular expression to match against the request URL path.',
+      }),
+    run: CloudRunRewriteSchema.exactOptional().openapi({
+      description: 'The request will be forwarded to Cloud Run.',
+    }),
+  })
+  .openapi({
+    description:
+      'A [`Rewrite`](https://firebase.google.com/docs/hosting/full-config#rewrites) specifies a URL pattern that, if matched to the request URL path, triggers Hosting to respond as if the service were given the specified destination URL.',
+    required: [],
+  })
   .openapi('Rewrite')
 
 const ServingConfigSchema = z
@@ -452,6 +402,53 @@ const ChannelSchema = z
   })
   .openapi('Channel')
 
+type ListChannelsResponseType = {
+  channels?: z.infer<typeof ChannelSchema>[]
+  nextPageToken?: string
+}
+
+type ListReleasesResponseType = {
+  nextPageToken?: string
+  releases?: z.infer<typeof ReleaseSchema>[]
+}
+
+const CertDnsChallengeSchema = z
+  .object({
+    domainName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The domain name upon which the DNS challenge must be satisfied.' }),
+    token: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The value that must be present as a TXT record on the domain name to satisfy the challenge.',
+      }),
+  })
+  .openapi({ description: 'Represents a DNS certificate challenge.', required: [] })
+  .openapi('CertDnsChallenge')
+
+const CertHttpChallengeSchema = z
+  .object({
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The URL path on which to serve the specified token to satisfy the certificate challenge.',
+      }),
+    token: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The token to serve at the specified URL path to satisfy the certificate challenge.',
+      }),
+  })
+  .openapi({ description: 'Represents an HTTP certificate challenge.', required: [] })
+  .openapi('CertHttpChallenge')
+
 const PathFilterSchema = z
   .object({
     regexes: z
@@ -607,14 +604,14 @@ const DomainSchema = z
   .openapi('Domain')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
   })
   .openapi('Empty')
 
-const ListChannelsResponseSchema = z
+const ListChannelsResponseSchema: z.ZodType<ListChannelsResponseType> = z
   .object({
     channels: z
       .array(ChannelSchema)
@@ -645,7 +642,7 @@ const ListDomainsResponseSchema = z
   .openapi({ description: 'The response to listing Domains.', required: [] })
   .openapi('ListDomainsResponse')
 
-const ListReleasesResponseSchema = z
+const ListReleasesResponseSchema: z.ZodType<ListReleasesResponseType> = z
   .object({
     nextPageToken: z
       .string()

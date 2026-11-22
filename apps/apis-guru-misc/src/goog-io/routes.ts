@@ -164,7 +164,7 @@ export const getV1ImagesQueryRoute = createRoute({
                     .openapi({ required: [] }),
                 )
                 .exactOptional(),
-              results: z.array(z.object({})).exactOptional(),
+              results: z.array(z.looseObject({})).exactOptional(),
               total: z.int().exactOptional(),
             })
             .openapi({ required: [] }),

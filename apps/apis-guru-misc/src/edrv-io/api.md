@@ -6,7 +6,7 @@ edrv.io API Documentation
 
 Base URLs:
 
-* <a href="https://api.apis.guru//api.edrv.io">https://api.apis.guru//api.edrv.io</a>
+* <a href="//api.edrv.io">//api.edrv.io</a>
 
 Email: <a href="mailto:hello@edrv.io">eDRV</a> 
 Web: <a href="https://edrv.io">eDRV</a> 

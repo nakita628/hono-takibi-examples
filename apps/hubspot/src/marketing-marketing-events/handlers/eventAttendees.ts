@@ -11,17 +11,22 @@ const app = new OpenAPIHono()
 export const eventAttendeesHandler = app
   .openapi(
     postMarketingMarketingEvents202609AttendanceExternalEventIdSubscriberStateCreateRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(
     postMarketingMarketingEvents202609AttendanceExternalEventIdSubscriberStateEmailCreateRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
-  .openapi(
-    postMarketingMarketingEvents202609ObjectIdAttendanceSubscriberStateCreateRoute,
-    (c) => {},
-  )
+  .openapi(postMarketingMarketingEvents202609ObjectIdAttendanceSubscriberStateCreateRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(
     postMarketingMarketingEvents202609ObjectIdAttendanceSubscriberStateEmailCreateRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )

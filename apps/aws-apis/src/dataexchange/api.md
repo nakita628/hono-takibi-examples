@@ -6832,12 +6832,12 @@ Details about the AWS Lake Formation resource (Table or Database) included in th
 "TABLE"
 ```
 
-<h2 id="tocS_String">String</h2>
+<h2 id="tocS_String2">String2</h2>
 <!-- backwards compatibility -->
-<a id="schemastring"></a>
-<a id="schema_String"></a>
-<a id="tocSstring"></a>
-<a id="tocsstring"></a>
+<a id="schemastring2"></a>
+<a id="schema_String2"></a>
+<a id="tocSstring2"></a>
+<a id="tocsstring2"></a>
 
 ```json
 "string"

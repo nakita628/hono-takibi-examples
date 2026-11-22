@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetAmazonAthenaGetCapacityReservationHandler = app.openapi(
   postXAmzTargetAmazonAthenaGetCapacityReservationRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

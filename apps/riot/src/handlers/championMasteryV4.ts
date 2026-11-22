@@ -14,7 +14,9 @@ export const championMasteryV4Handler = app
   })
   .openapi(
     getLolChampionMasteryV4ChampionMasteriesByPuuidEncryptedPUUIDByChampionChampionIdRoute,
-    (c) => {},
+    (c) => {
+      throw new Error('Not implemented')
+    },
   )
   .openapi(getLolChampionMasteryV4ChampionMasteriesByPuuidEncryptedPUUIDTopRoute, (c) => {
     throw new Error('Not implemented')

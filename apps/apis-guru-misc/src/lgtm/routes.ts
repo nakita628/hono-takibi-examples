@@ -1,5 +1,156 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const QueryPropertiesSchema = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The `@id` of the query.', example: 'js/incomplete-sanitization' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The `@name` of the query.',
+        example: 'Incomplete string escaping or encoding',
+      }),
+    severity: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The severity of the query.', example: 'warning' }),
+    tags: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'The `@tags` associated with the query.',
+        example: ['correctness', 'security', 'external/cwe/cwe-116'],
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('QueryProperties')
+
+const QuerySchema = z
+  .object({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The numeric identifier of the query.',
+        example: 10000,
+      }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [language code](https://lgtm.com/help/lgtm/analysis-faqs#which-languages-are-supported) of the query.',
+        example: 'javascript',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'The `@name` of the query.',
+        example: 'Incomplete string escaping or encoding',
+      }),
+    pack: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of the query pack that contains the query.',
+        example: 'com.lgtm/javascript-queries',
+      }),
+    properties: QueryPropertiesSchema.exactOptional(),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A page on LGTM to view the details of the query.',
+        example: 'https://lgtm.example.com/rules/1000774/',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Query')
+
+const CodereviewAlertsSchema = z
+  .object({
+    fixed: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The number of alerts fixed by the patch for this query.',
+        example: 1,
+      }),
+    new: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The number of alerts introduced by the patch for this query.',
+        example: 0,
+      }),
+    query: QuerySchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CodereviewAlerts')
+
+const CodereviewLanguagesSchema = z
+  .object({
+    alerts: z
+      .array(CodereviewAlertsSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of added and fixed alerts per query for this language.' }),
+    fixed: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The total number of alerts fixed by the patch for this language.',
+        example: 1,
+      }),
+    language: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The language analyzed.', example: 'javascript' }),
+    new: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The total number of alerts introduced by the patch for this language.',
+        example: 0,
+      }),
+    status: z
+      .enum(['pending', 'failure', 'success'])
+      .exactOptional()
+      .openapi({ description: 'The status for analysis of this language.', example: 'success' }),
+    'status-message': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The current state of analysis of this langauge. When available, a summary of analysis results.',
+        example: '1 fixed alert',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('CodereviewLanguages')
+
+type CodeReviewType = {
+  id?: string
+  languages?: z.infer<typeof CodereviewLanguagesSchema>[]
+  'results-url'?: string
+  status?: 'pending' | 'failure' | 'success'
+  'status-message'?: string
+}
+
 type HealthType = {
   description?: string
   details?: { [key: string]: HealthType }
@@ -182,150 +333,7 @@ const AnalysisSchema = z
   })
   .openapi('Analysis')
 
-const QueryPropertiesSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The `@id` of the query.', example: 'js/incomplete-sanitization' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The `@name` of the query.',
-        example: 'Incomplete string escaping or encoding',
-      }),
-    severity: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The severity of the query.', example: 'warning' }),
-    tags: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'The `@tags` associated with the query.',
-        example: ['correctness', 'security', 'external/cwe/cwe-116'],
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('QueryProperties')
-
-const QuerySchema = z
-  .object({
-    id: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'The numeric identifier of the query.',
-        example: 10000,
-      }),
-    language: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [language code](https://lgtm.com/help/lgtm/analysis-faqs#which-languages-are-supported) of the query.',
-        example: 'javascript',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description: 'The `@name` of the query.',
-        example: 'Incomplete string escaping or encoding',
-      }),
-    pack: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the query pack that contains the query.',
-        example: 'com.lgtm/javascript-queries',
-      }),
-    properties: QueryPropertiesSchema.exactOptional(),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A page on LGTM to view the details of the query.',
-        example: 'https://lgtm.example.com/rules/1000774/',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Query')
-
-const CodereviewAlertsSchema = z
-  .object({
-    fixed: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The number of alerts fixed by the patch for this query.',
-        example: 1,
-      }),
-    new: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The number of alerts introduced by the patch for this query.',
-        example: 0,
-      }),
-    query: QuerySchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CodereviewAlerts')
-
-const CodereviewLanguagesSchema = z
-  .object({
-    alerts: z
-      .array(CodereviewAlertsSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of added and fixed alerts per query for this language.' }),
-    fixed: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The total number of alerts fixed by the patch for this language.',
-        example: 1,
-      }),
-    language: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The language analyzed.', example: 'javascript' }),
-    new: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The total number of alerts introduced by the patch for this language.',
-        example: 0,
-      }),
-    status: z
-      .enum(['pending', 'failure', 'success'])
-      .exactOptional()
-      .openapi({ description: 'The status for analysis of this language.', example: 'success' }),
-    'status-message': z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The current state of analysis of this langauge. When available, a summary of analysis results.',
-        example: '1 fixed alert',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('CodereviewLanguages')
-
-const CodeReviewSchema = z
+const CodeReviewSchema: z.ZodType<CodeReviewType> = z
   .object({
     id: z
       .string()
@@ -379,109 +387,6 @@ const CodeReviewSchema = z
     required: [],
   })
   .openapi('CodeReview')
-
-const HealthSchema: z.ZodType<HealthType> = z
-  .lazy(() =>
-    z
-      .object({
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A description of the status of the service.' }),
-        details: z
-          .record(z.string(), HealthSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Details of the health of the service. This contains information about the status of the components on which the service depends.',
-          }),
-        status: z
-          .enum(['UNKNOWN', 'UP', 'DOWN'])
-          .exactOptional()
-          .openapi({ description: 'The status of the service.', example: 'UP' }),
-      })
-      .openapi({
-        example: { description: 'description', details: {}, status: 'UP' },
-        required: [],
-      }),
-  )
-  .openapi('Health')
-
-const MeasurementSchema = z
-  .object({
-    timestamp: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date and time when this metric was computed.' }),
-    value: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'The value of this metric at the timestamp reported.' }),
-  })
-  .openapi({
-    example: { timestamp: '2000-01-23T04:56:07.000+00:00', value: 0.8008281904610115 },
-    required: [],
-  })
-  .openapi('Measurement')
-
-const MetricSchema = z
-  .object({
-    measurements: z
-      .array(MeasurementSchema)
-      .exactOptional()
-      .openapi({
-        description: 'A time series of values taken by the metric at different timestamps.',
-      }),
-    'metric-id': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The identifier by which this metric is referenced in the API.' }),
-  })
-  .openapi({
-    example: {
-      measurements: [
-        { timestamp: '2000-01-23T04:56:07.000+00:00', value: 0.8008281904610115 },
-        { timestamp: '2000-01-23T04:56:07.000+00:00', value: 0.8008281904610115 },
-      ],
-      'metric-id': 'metric-id',
-    },
-    required: [],
-  })
-  .openapi('Metric')
-
-const MetricNameSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name by which the metric is listed in the user interface.' }),
-    'metric-id': z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The identifier by which this metric is referenced in the API.' }),
-  })
-  .openapi({ example: { description: 'description', 'metric-id': 'metric-id' }, required: [] })
-  .openapi('MetricName')
-
-const MetricsListSchema = z
-  .object({
-    data: z
-      .array(MetricNameSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The list of names and identifiers by which the metrics are referenced.',
-      }),
-  })
-  .openapi({
-    example: {
-      data: [
-        { description: 'description', 'metric-id': 'metric-id' },
-        { description: 'description', 'metric-id': 'metric-id' },
-      ],
-    },
-    required: [],
-  })
-  .openapi('MetricsList')
 
 const QueryjobStatsSchema = z
   .object({
@@ -594,7 +499,122 @@ const UploadSessionSchema = z
   })
   .openapi('UploadSession')
 
-const OperationSchema = z
+type OperationType = {
+  id?: bigint
+  status?: 'pending' | 'done'
+  'task-result'?:
+    | z.infer<typeof AnalysisSchema>
+    | z.infer<typeof CodeReviewSchema>
+    | z.infer<typeof QueryjobSchema>
+  'task-result-url'?: string
+  'task-type': 'analysis' | 'codereview' | 'queryjob'
+  uploads?: { [key: string]: z.infer<typeof UploadSessionSchema> }
+}
+
+const HealthSchema: z.ZodType<HealthType> = z
+  .lazy(() =>
+    z
+      .object({
+        description: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'A description of the status of the service.' }),
+        details: z
+          .record(z.string(), HealthSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'Details of the health of the service. This contains information about the status of the components on which the service depends.',
+          }),
+        status: z
+          .enum(['UNKNOWN', 'UP', 'DOWN'])
+          .exactOptional()
+          .openapi({ description: 'The status of the service.', example: 'UP' }),
+      })
+      .openapi({
+        example: { description: 'description', details: {}, status: 'UP' },
+        required: [],
+      }),
+  )
+  .openapi('Health')
+
+const MeasurementSchema = z
+  .object({
+    timestamp: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The date and time when this metric was computed.' }),
+    value: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'The value of this metric at the timestamp reported.' }),
+  })
+  .openapi({
+    example: { timestamp: '2000-01-23T04:56:07.000+00:00', value: 0.8008281904610115 },
+    required: [],
+  })
+  .openapi('Measurement')
+
+const MetricSchema = z
+  .object({
+    measurements: z
+      .array(MeasurementSchema)
+      .exactOptional()
+      .openapi({
+        description: 'A time series of values taken by the metric at different timestamps.',
+      }),
+    'metric-id': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identifier by which this metric is referenced in the API.' }),
+  })
+  .openapi({
+    example: {
+      measurements: [
+        { timestamp: '2000-01-23T04:56:07.000+00:00', value: 0.8008281904610115 },
+        { timestamp: '2000-01-23T04:56:07.000+00:00', value: 0.8008281904610115 },
+      ],
+      'metric-id': 'metric-id',
+    },
+    required: [],
+  })
+  .openapi('Metric')
+
+const MetricNameSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name by which the metric is listed in the user interface.' }),
+    'metric-id': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The identifier by which this metric is referenced in the API.' }),
+  })
+  .openapi({ example: { description: 'description', 'metric-id': 'metric-id' }, required: [] })
+  .openapi('MetricName')
+
+const MetricsListSchema = z
+  .object({
+    data: z
+      .array(MetricNameSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The list of names and identifiers by which the metrics are referenced.',
+      }),
+  })
+  .openapi({
+    example: {
+      data: [
+        { description: 'description', 'metric-id': 'metric-id' },
+        { description: 'description', 'metric-id': 'metric-id' },
+      ],
+    },
+    required: [],
+  })
+  .openapi('MetricsList')
+
+const OperationSchema: z.ZodType<OperationType> = z
   .object({
     id: z
       .preprocess(
@@ -1218,8 +1238,11 @@ export const getAnalysesAnalysisIdAlertsRoute = createRoute({
     200: {
       description: 'Success. Requested data returned.',
       content: {
-        'application/json': { schema: z.object({}).openapi({ deprecated: true }), examples: {} },
-        'application/sarif+json': { schema: z.object({}), examples: {} },
+        'application/json': {
+          schema: z.looseObject({}).openapi({ deprecated: true }),
+          examples: {},
+        },
+        'application/sarif+json': { schema: z.looseObject({}), examples: {} },
         'text/csv': { schema: z.string(), examples: {} },
       },
     },
@@ -1634,7 +1657,7 @@ export const getIssuesProjectIdAlertKeyRoute = createRoute({
   responses: {
     200: {
       description: 'Success. Requested data returned.',
-      content: { 'application/sarif+json': { schema: z.object({}), examples: {} } },
+      content: { 'application/sarif+json': { schema: z.looseObject({}), examples: {} } },
     },
   },
   security: [{ 'access-token': [] }],
@@ -1651,7 +1674,7 @@ export const getOpenapiRoute = createRoute({
   responses: {
     200: {
       description: 'Success. Requested data returned.',
-      content: { 'application/json': { schema: z.object({}), examples: {} } },
+      content: { 'application/json': { schema: z.looseObject({}), examples: {} } },
     },
   },
 })
@@ -2027,11 +2050,11 @@ export const getProjectsProjectIdSettingsAnalysisConfigurationRoute = createRout
   responses: {
     200: {
       description: 'Success. Requested data returned.',
-      content: { 'application/x-yaml': { schema: z.object({}) } },
+      content: { 'application/x-yaml': { schema: z.looseObject({}) } },
     },
     400: {
       description: 'Only YAML is supported.',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
   security: [{ 'access-token': [] }],
@@ -2082,7 +2105,7 @@ export const putProjectsProjectIdSettingsAnalysisConfigurationRoute = createRout
   responses: {
     200: {
       description: 'Success. The new effective project configuration is returned.',
-      content: { 'application/x-yaml': { schema: z.object({}) } },
+      content: { 'application/x-yaml': { schema: z.looseObject({}) } },
     },
   },
   security: [{ 'access-token': [] }],
@@ -2692,13 +2715,10 @@ export const getSnapshotsProjectIdLanguageRoute = createRoute({
       description:
         'Redirects to a URL for downloading the CodeQL database as indicated by the `Location:` header.',
       headers: z.object({
-        Location: {
-          style: 'simple',
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },

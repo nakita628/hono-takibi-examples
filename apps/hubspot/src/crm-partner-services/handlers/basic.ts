@@ -28,14 +28,12 @@ export const basicHandler = app
   .openapi(patchCrmObjects202609PartnerServicesPartnerServiceIdRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    getCrmObjects202609PartnerServicesPartnerServiceIdAssociationsToObjectTypeRoute,
-    (c) => {},
-  )
+  .openapi(getCrmObjects202609PartnerServicesPartnerServiceIdAssociationsToObjectTypeRoute, (c) => {
+    throw new Error('Not implemented')
+  })
   .openapi(putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute,
-    (c) => {},
-  )
+  .openapi(deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })

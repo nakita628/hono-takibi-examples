@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const notificationsHandler = app.openapi(
   postOcsV2PhpAppsAppApiApiV1NotificationRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

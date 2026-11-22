@@ -5,5 +5,7 @@ const app = new OpenAPIHono()
 
 export const XAmzTargetTranscribeUpdateCallAnalyticsCategoryHandler = app.openapi(
   postXAmzTargetTranscribeUpdateCallAnalyticsCategoryRoute,
-  (c) => {},
+  (c) => {
+    throw new Error('Not implemented')
+  },
 )

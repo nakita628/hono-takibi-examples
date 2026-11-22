@@ -14,7 +14,9 @@ import type {
 
 export const postSubscriptionsRouteHandler: RouteHandler<typeof postSubscriptionsRoute> = async (
   c,
-) => {}
+) => {
+  throw new Error('Not implemented')
+}
 
 export const postSubscriptionsCreateRouteHandler: RouteHandler<
   typeof postSubscriptionsCreateRoute

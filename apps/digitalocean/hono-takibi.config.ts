@@ -6,7 +6,9 @@ export default defineConfig({
   // single-file build DigitalOcean publishes from that repository.
   input: 'https://api-engineering.nyc3.digitaloceanspaces.com/spec-ci/DigitalOcean-public.v2.yaml',
   output: './src/routes.ts',
-  template: {},
+  // template: { routeHandler: true }: the default template exports each handler file under its tag or first
+  // path segment, and one here starts with a digit, which is not an identifier (nakita628/hono-takibi#506).
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

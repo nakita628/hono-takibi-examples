@@ -38436,6 +38436,7 @@ export const getAdRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -38664,6 +38665,7 @@ export const getAdRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -38909,6 +38911,7 @@ export const getAddRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -39137,6 +39140,7 @@ export const getAddRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -39404,6 +39408,7 @@ export const getAdoscRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -39632,6 +39637,7 @@ export const getAdoscRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -39696,6 +39702,7 @@ export const getAdoscRoute = createRoute({
           },
           'x-go-name': 'FastPeriod',
           'x-order': '62',
+          default: 12,
         }),
       slow_period: z
         .preprocess((val) => {
@@ -39726,6 +39733,7 @@ export const getAdoscRoute = createRoute({
           },
           'x-go-name': 'SlowPeriod',
           'x-order': '64',
+          default: 26,
         }),
       include_ohlc: z
         .stringbool()
@@ -39937,6 +39945,7 @@ export const getAdxRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -40165,6 +40174,7 @@ export const getAdxRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -40229,6 +40239,7 @@ export const getAdxRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 14,
         }),
       include_ohlc: z
         .stringbool()
@@ -40440,6 +40451,7 @@ export const getAdxrRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -40668,6 +40680,7 @@ export const getAdxrRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -40732,6 +40745,7 @@ export const getAdxrRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 14,
         }),
       include_ohlc: z
         .stringbool()
@@ -40976,6 +40990,7 @@ export const getAnalystRatingsLightRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '70',
+          default: 30,
         }),
       country: z
         .string()
@@ -41215,6 +41230,7 @@ export const getAnalystRatingsUsEquitiesRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '70',
+          default: 30,
         }),
     }),
   },
@@ -41498,6 +41514,7 @@ export const getApoRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -41726,6 +41743,7 @@ export const getApoRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -41801,6 +41819,7 @@ export const getApoRoute = createRoute({
           },
           'x-go-name': 'FastPeriod',
           'x-order': '62',
+          default: 12,
         }),
       slow_period: z
         .preprocess((val) => {
@@ -41831,6 +41850,7 @@ export const getApoRoute = createRoute({
           },
           'x-go-name': 'SlowPeriod',
           'x-order': '64',
+          default: 26,
         }),
       ma_type: MaTypeEnumSchema.openapi({
         param: {
@@ -42053,6 +42073,7 @@ export const getAroonRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -42281,6 +42302,7 @@ export const getAroonRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -42345,6 +42367,7 @@ export const getAroonRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 14,
         }),
       include_ohlc: z
         .stringbool()
@@ -42556,6 +42579,7 @@ export const getAroonoscRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -42784,6 +42808,7 @@ export const getAroonoscRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -42848,6 +42873,7 @@ export const getAroonoscRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 14,
         }),
       include_ohlc: z
         .stringbool()
@@ -43059,6 +43085,7 @@ export const getAtrRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -43287,6 +43314,7 @@ export const getAtrRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -43351,6 +43379,7 @@ export const getAtrRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 14,
         }),
       include_ohlc: z
         .stringbool()
@@ -43562,6 +43591,7 @@ export const getAvgRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -43790,6 +43820,7 @@ export const getAvgRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -43865,6 +43896,7 @@ export const getAvgRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -44076,6 +44108,7 @@ export const getAvgpriceRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -44304,6 +44337,7 @@ export const getAvgpriceRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -44635,6 +44669,7 @@ export const getBalanceSheetRoute = createRoute({
           },
           'x-go-name': 'OutputSize',
           'x-order': '100',
+          default: 6,
         }),
     }),
   },
@@ -44908,6 +44943,7 @@ export const getBalanceSheetConsolidatedRoute = createRoute({
           },
           'x-go-name': 'OutputSize',
           'x-order': '100',
+          default: 6,
         }),
     }),
   },
@@ -45150,6 +45186,7 @@ export const getBbandsRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -45378,6 +45415,7 @@ export const getBbandsRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -45453,6 +45491,7 @@ export const getBbandsRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '64',
+          default: 20,
         }),
       sd: z
         .preprocess(
@@ -45706,6 +45745,7 @@ export const getBetaRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -45934,6 +45974,7 @@ export const getBetaRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -46020,6 +46061,7 @@ export const getBetaRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '63',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -46211,6 +46253,7 @@ export const getBondsRoute = createRoute({
             required: false,
           },
           'x-go-name': 'Page',
+          default: 1,
         }),
       outputsize: z
         .preprocess((val) => {
@@ -46422,6 +46465,7 @@ export const getBopRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -46650,6 +46694,7 @@ export const getBopRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -46981,6 +47026,7 @@ export const getCashFlowRoute = createRoute({
           },
           'x-go-name': 'OutputSize',
           'x-order': '100',
+          default: 6,
         }),
     }),
   },
@@ -47256,6 +47302,7 @@ export const getCashFlowConsolidatedRoute = createRoute({
           },
           'x-go-name': 'OutputSize',
           'x-order': '100',
+          default: 6,
         }),
     }),
   },
@@ -47445,6 +47492,7 @@ export const getCciRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -47673,6 +47721,7 @@ export const getCciRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -47737,6 +47786,7 @@ export const getCciRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 20,
         }),
       include_ohlc: z
         .stringbool()
@@ -47948,6 +47998,7 @@ export const getCeilRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -48176,6 +48227,7 @@ export const getCeilRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -48432,6 +48484,7 @@ export const getCmoRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -48660,6 +48713,7 @@ export const getCmoRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -48735,6 +48789,7 @@ export const getCmoRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -48896,6 +48951,7 @@ export const getCommoditiesRoute = createRoute({
           },
           'x-go-name': 'Page',
           'x-order': '50',
+          default: 1,
         }),
       outputsize: z
         .preprocess((val) => {
@@ -49109,6 +49165,7 @@ export const getCoppockRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -49337,6 +49394,7 @@ export const getCoppockRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -49412,6 +49470,7 @@ export const getCoppockRoute = createRoute({
           },
           'x-go-name': 'WMAPeriod',
           'x-order': '64',
+          default: 10,
         }),
       long_roc_period: z
         .preprocess((val) => {
@@ -49442,6 +49501,7 @@ export const getCoppockRoute = createRoute({
           },
           'x-go-name': 'LongRocPeriod',
           'x-order': '61',
+          default: 14,
         }),
       short_roc_period: z
         .preprocess((val) => {
@@ -49472,6 +49532,7 @@ export const getCoppockRoute = createRoute({
           },
           'x-go-name': 'ShortRocPeriod',
           'x-order': '63',
+          default: 11,
         }),
       include_ohlc: z
         .stringbool()
@@ -49683,6 +49744,7 @@ export const getCorrelRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -49911,6 +49973,7 @@ export const getCorrelRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -49997,6 +50060,7 @@ export const getCorrelRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '64',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -50367,6 +50431,7 @@ export const getCrsiRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -50595,6 +50660,7 @@ export const getCrsiRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -50670,6 +50736,7 @@ export const getCrsiRoute = createRoute({
           },
           'x-go-name': 'RsiPeriod',
           'x-order': '62',
+          default: 3,
         }),
       up_down_length: z
         .preprocess((val) => {
@@ -50700,6 +50767,7 @@ export const getCrsiRoute = createRoute({
           },
           'x-go-name': 'UpDownLength',
           'x-order': '64',
+          default: 2,
         }),
       percent_rank_period: z
         .preprocess((val) => {
@@ -50730,6 +50798,7 @@ export const getCrsiRoute = createRoute({
           },
           'x-go-name': 'PercentRankPeriod',
           'x-order': '61',
+          default: 100,
         }),
       include_ohlc: z
         .stringbool()
@@ -50906,6 +50975,7 @@ export const getCryptocurrenciesRoute = createRoute({
             required: false,
           },
           'x-go-name': 'Page',
+          default: 1,
         }),
       outputsize: z
         .preprocess((val) => {
@@ -51170,6 +51240,7 @@ export const getCurrencyConversionRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '60',
+          default: 5,
         }),
       timezone: z
         .string()
@@ -51377,6 +51448,7 @@ export const getDemaRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -51605,6 +51677,7 @@ export const getDemaRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -51680,6 +51753,7 @@ export const getDemaRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -52090,6 +52164,7 @@ export const getDivRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -52318,6 +52393,7 @@ export const getDivRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -52897,6 +52973,7 @@ export const getDividendsCalendarRoute = createRoute({
           },
           'x-go-name': 'Outputsize',
           'x-order': '60',
+          default: 100,
         }),
       page: z
         .preprocess((val) => {
@@ -52926,6 +53003,7 @@ export const getDividendsCalendarRoute = createRoute({
           },
           'x-go-name': 'Page',
           'x-order': '70',
+          default: 1,
         }),
     }),
   },
@@ -53115,6 +53193,7 @@ export const getDpoRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -53343,6 +53422,7 @@ export const getDpoRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -53418,6 +53498,7 @@ export const getDpoRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       centered: z
         .stringbool()
@@ -53646,6 +53727,7 @@ export const getDxRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -53874,6 +53956,7 @@ export const getDxRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -53938,6 +54021,7 @@ export const getDxRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 14,
         }),
       include_ohlc: z
         .stringbool()
@@ -54422,6 +54506,7 @@ export const getEarningsRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '90',
+          default: 10,
         }),
       format: FormatEnumSchema.openapi({
         param: {
@@ -54516,6 +54601,7 @@ export const getEarningsRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '130',
+          default: 2,
         }),
     }),
   },
@@ -54709,6 +54795,7 @@ export const getEarningsCalendarRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '60',
+          default: 2,
         }),
     }),
   },
@@ -55187,6 +55274,7 @@ export const getEdgarFilingsArchiveRoute = createRoute({
           },
           'x-go-name': 'Page',
           'x-order': '100',
+          default: 1,
         }),
       page_size: z
         .preprocess((val) => {
@@ -55216,6 +55304,7 @@ export const getEdgarFilingsArchiveRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '110',
+          default: 10,
         }),
     }),
   },
@@ -55405,6 +55494,7 @@ export const getEmaRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -55633,6 +55723,7 @@ export const getEmaRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -55708,6 +55799,7 @@ export const getEmaRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -56005,6 +56097,7 @@ export const getEodRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '90',
+          default: 5,
         }),
     }),
   },
@@ -56647,6 +56740,7 @@ export const getEtfsRoute = createRoute({
             required: false,
           },
           'x-go-name': 'Page',
+          default: 1,
         }),
       outputsize: z
         .preprocess((val) => {
@@ -56965,6 +57059,7 @@ export const getEtfsListRoute = createRoute({
             required: false,
           },
           'x-go-name': 'Dp',
+          default: 5,
         }),
       page: z
         .preprocess((val) => {
@@ -56986,6 +57081,7 @@ export const getEtfsListRoute = createRoute({
             required: false,
           },
           'x-go-name': 'Page',
+          default: 1,
         }),
       outputsize: z
         .preprocess((val) => {
@@ -57007,6 +57103,7 @@ export const getEtfsListRoute = createRoute({
             required: false,
           },
           'x-go-name': 'OutputSize',
+          default: 50,
         }),
     }),
   },
@@ -57283,6 +57380,7 @@ export const getEtfsWorldRoute = createRoute({
           },
           'x-go-name': 'Dp',
           'x-order': '50',
+          default: 5,
         }),
     }),
   },
@@ -57477,6 +57575,7 @@ export const getEtfsWorldCompositionRoute = createRoute({
           },
           'x-go-name': 'Dp',
           'x-order': '50',
+          default: 5,
         }),
     }),
   },
@@ -57671,6 +57770,7 @@ export const getEtfsWorldPerformanceRoute = createRoute({
           },
           'x-go-name': 'Dp',
           'x-order': '50',
+          default: 5,
         }),
     }),
   },
@@ -57865,6 +57965,7 @@ export const getEtfsWorldRiskRoute = createRoute({
           },
           'x-go-name': 'Dp',
           'x-order': '50',
+          default: 5,
         }),
     }),
   },
@@ -58059,6 +58160,7 @@ export const getEtfsWorldSummaryRoute = createRoute({
           },
           'x-go-name': 'Dp',
           'x-order': '50',
+          default: 5,
         }),
     }),
   },
@@ -58200,6 +58302,7 @@ export const getExchangeRateRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '50',
+          default: 5,
         }),
       timezone: z
         .string()
@@ -58680,6 +58783,7 @@ export const getExpRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -58908,6 +59012,7 @@ export const getExpRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -59164,6 +59269,7 @@ export const getFloorRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -59392,6 +59498,7 @@ export const getFloorRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -59598,6 +59705,7 @@ export const getForexPairsRoute = createRoute({
             required: false,
           },
           'x-go-name': 'Page',
+          default: 1,
         }),
       outputsize: z
         .preprocess((val) => {
@@ -60051,6 +60159,7 @@ export const getFundsRoute = createRoute({
             required: false,
           },
           'x-go-name': 'Page',
+          default: 1,
         }),
       outputsize: z
         .preprocess((val) => {
@@ -60462,6 +60571,7 @@ export const getHeikinashicandlesRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -60690,6 +60800,7 @@ export const getHeikinashicandlesRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -60935,6 +61046,7 @@ export const getHlc3Route = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -61163,6 +61275,7 @@ export const getHlc3Route = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -61408,6 +61521,7 @@ export const getHtDcperiodRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -61636,6 +61750,7 @@ export const getHtDcperiodRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -61892,6 +62007,7 @@ export const getHtDcphaseRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -62120,6 +62236,7 @@ export const getHtDcphaseRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -62376,6 +62493,7 @@ export const getHtPhasorRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -62604,6 +62722,7 @@ export const getHtPhasorRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -62860,6 +62979,7 @@ export const getHtSineRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -63088,6 +63208,7 @@ export const getHtSineRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -63344,6 +63465,7 @@ export const getHtTrendlineRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -63572,6 +63694,7 @@ export const getHtTrendlineRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -63828,6 +63951,7 @@ export const getHtTrendmodeRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -64056,6 +64180,7 @@ export const getHtTrendmodeRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -64312,6 +64437,7 @@ export const getIchimokuRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -64540,6 +64666,7 @@ export const getIchimokuRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -64604,6 +64731,7 @@ export const getIchimokuRoute = createRoute({
           },
           'x-go-name': 'ConversionLinePeriod',
           'x-order': '61',
+          default: 9,
         }),
       base_line_period: z
         .preprocess((val) => {
@@ -64634,6 +64762,7 @@ export const getIchimokuRoute = createRoute({
           },
           'x-go-name': 'BaseLinePeriod',
           'x-order': '62',
+          default: 26,
         }),
       leading_span_b_period: z
         .preprocess((val) => {
@@ -64664,6 +64793,7 @@ export const getIchimokuRoute = createRoute({
           },
           'x-go-name': 'LeadingSpanBPeriod',
           'x-order': '63',
+          default: 52,
         }),
       lagging_span_period: z
         .preprocess((val) => {
@@ -64694,6 +64824,7 @@ export const getIchimokuRoute = createRoute({
           },
           'x-go-name': 'LaggingSpanPeriod',
           'x-order': '64',
+          default: 26,
         }),
       include_ahead_span_period: z
         .stringbool()
@@ -65014,6 +65145,7 @@ export const getIncomeStatementRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '100',
+          default: 6,
         }),
     }),
   },
@@ -65289,6 +65421,7 @@ export const getIncomeStatementConsolidatedRoute = createRoute({
           },
           'x-go-name': 'OutputSize',
           'x-order': '100',
+          default: 6,
         }),
     }),
   },
@@ -66101,6 +66234,7 @@ export const getKamaRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -66329,6 +66463,7 @@ export const getKamaRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -66404,6 +66539,7 @@ export const getKamaRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -66615,6 +66751,7 @@ export const getKeltnerRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -66843,6 +66980,7 @@ export const getKeltnerRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -66907,6 +67045,7 @@ export const getKeltnerRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '61',
+          default: 20,
         }),
       atr_time_period: z
         .preprocess((val) => {
@@ -66937,6 +67076,7 @@ export const getKeltnerRoute = createRoute({
           },
           'x-go-name': 'ATRTimePeriod',
           'x-order': '62',
+          default: 10,
         }),
       multiplier: z
         .preprocess((val) => {
@@ -66966,6 +67106,7 @@ export const getKeltnerRoute = createRoute({
           },
           'x-go-name': 'Multiplier',
           'x-order': '63',
+          default: 2,
         }),
       series_type: SeriesTypeEnumSchema.openapi({
         param: {
@@ -67398,6 +67539,7 @@ export const getKstRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -67626,6 +67768,7 @@ export const getKstRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -67689,6 +67832,7 @@ export const getKstRoute = createRoute({
           },
           'x-go-name': 'RocPeriod1',
           'x-order': '61',
+          default: 10,
         }),
       roc_period_2: z
         .preprocess((val) => {
@@ -67718,6 +67862,7 @@ export const getKstRoute = createRoute({
           },
           'x-go-name': 'RocPeriod2',
           'x-order': '61',
+          default: 15,
         }),
       roc_period_3: z
         .preprocess((val) => {
@@ -67747,6 +67892,7 @@ export const getKstRoute = createRoute({
           },
           'x-go-name': 'RocPeriod3',
           'x-order': '61',
+          default: 20,
         }),
       roc_period_4: z
         .preprocess((val) => {
@@ -67776,6 +67922,7 @@ export const getKstRoute = createRoute({
           },
           'x-go-name': 'RocPeriod4',
           'x-order': '61',
+          default: 30,
         }),
       sma_period_1: z
         .preprocess((val) => {
@@ -67805,6 +67952,7 @@ export const getKstRoute = createRoute({
           },
           'x-go-name': 'SmaPeriod1',
           'x-order': '62',
+          default: 10,
         }),
       sma_period_2: z
         .preprocess((val) => {
@@ -67834,6 +67982,7 @@ export const getKstRoute = createRoute({
           },
           'x-go-name': 'SmaPeriod2',
           'x-order': '62',
+          default: 10,
         }),
       sma_period_3: z
         .preprocess((val) => {
@@ -67863,6 +68012,7 @@ export const getKstRoute = createRoute({
           },
           'x-go-name': 'SmaPeriod3',
           'x-order': '62',
+          default: 10,
         }),
       sma_period_4: z
         .preprocess((val) => {
@@ -67892,6 +68042,7 @@ export const getKstRoute = createRoute({
           },
           'x-go-name': 'SmaPeriod4',
           'x-order': '62',
+          default: 15,
         }),
       signal_period: z
         .preprocess((val) => {
@@ -67921,6 +68072,7 @@ export const getKstRoute = createRoute({
           },
           'x-go-name': 'SignalPeriod',
           'x-order': '63',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -68120,6 +68272,7 @@ export const getLastChangeEndpointRoute = createRoute({
           },
           'x-go-name': 'Page',
           'x-order': '70',
+          default: 1,
         }),
       outputsize: z
         .preprocess((val) => {
@@ -68149,6 +68302,7 @@ export const getLastChangeEndpointRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
     }),
   },
@@ -68338,6 +68492,7 @@ export const getLinearregRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -68566,6 +68721,7 @@ export const getLinearregRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -68641,6 +68797,7 @@ export const getLinearregRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '63',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -68852,6 +69009,7 @@ export const getLinearregangleRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -69080,6 +69238,7 @@ export const getLinearregangleRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -69155,6 +69314,7 @@ export const getLinearregangleRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -69366,6 +69526,7 @@ export const getLinearreginterceptRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -69594,6 +69755,7 @@ export const getLinearreginterceptRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -69669,6 +69831,7 @@ export const getLinearreginterceptRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -69882,6 +70045,7 @@ export const getLinearregslopeRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -70110,6 +70274,7 @@ export const getLinearregslopeRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -70185,6 +70350,7 @@ export const getLinearregslopeRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -70396,6 +70562,7 @@ export const getLnRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -70624,6 +70791,7 @@ export const getLnRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -70880,6 +71048,7 @@ export const getLog10Route = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -71108,6 +71277,7 @@ export const getLog10Route = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -71482,6 +71652,7 @@ export const getMaRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -71710,6 +71881,7 @@ export const getMaRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -71785,6 +71957,7 @@ export const getMaRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '63',
+          default: 9,
         }),
       ma_type: MaTypeEnumSchema.openapi({
         param: {
@@ -72007,6 +72180,7 @@ export const getMacdRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -72235,6 +72409,7 @@ export const getMacdRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -72310,6 +72485,7 @@ export const getMacdRoute = createRoute({
           },
           'x-go-name': 'FastPeriod',
           'x-order': '62',
+          default: 12,
         }),
       slow_period: z
         .preprocess((val) => {
@@ -72340,6 +72516,7 @@ export const getMacdRoute = createRoute({
           },
           'x-go-name': 'SlowPeriod',
           'x-order': '63',
+          default: 26,
         }),
       signal_period: z
         .preprocess((val) => {
@@ -72369,6 +72546,7 @@ export const getMacdRoute = createRoute({
           },
           'x-go-name': 'SignalPeriod',
           'x-order': '64',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -72580,6 +72758,7 @@ export const getMacdSlopeRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -72808,6 +72987,7 @@ export const getMacdSlopeRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -72883,6 +73063,7 @@ export const getMacdSlopeRoute = createRoute({
           },
           'x-go-name': 'FastPeriod',
           'x-order': '62',
+          default: 12,
         }),
       slow_period: z
         .preprocess((val) => {
@@ -72913,6 +73094,7 @@ export const getMacdSlopeRoute = createRoute({
           },
           'x-go-name': 'SlowPeriod',
           'x-order': '63',
+          default: 26,
         }),
       signal_period: z
         .preprocess((val) => {
@@ -72942,6 +73124,7 @@ export const getMacdSlopeRoute = createRoute({
           },
           'x-go-name': 'SignalPeriod',
           'x-order': '64',
+          default: 9,
         }),
       time_period: z
         .preprocess((val) => {
@@ -72972,6 +73155,7 @@ export const getMacdSlopeRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '64',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -73183,6 +73367,7 @@ export const getMacdextRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -73411,6 +73596,7 @@ export const getMacdextRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -73486,6 +73672,7 @@ export const getMacdextRoute = createRoute({
           },
           'x-go-name': 'FastPeriod',
           'x-order': '62',
+          default: 12,
         }),
       fast_ma_type: MaTypeEnumSchema.openapi({
         param: {
@@ -73527,6 +73714,7 @@ export const getMacdextRoute = createRoute({
           },
           'x-go-name': 'SlowPeriod',
           'x-order': '63',
+          default: 26,
         }),
       slow_ma_type: MaTypeEnumSchema.openapi({
         param: {
@@ -73567,6 +73755,7 @@ export const getMacdextRoute = createRoute({
           },
           'x-go-name': 'SignalPeriod',
           'x-order': '64',
+          default: 9,
         }),
       signal_ma_type: MaTypeEnumSchema.openapi({
         param: {
@@ -73789,6 +73978,7 @@ export const getMamaRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -74017,6 +74207,7 @@ export const getMamaRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -74409,6 +74600,7 @@ export const getMarketCapRoute = createRoute({
           },
           'x-go-name': 'Page',
           'x-order': '90',
+          default: 1,
         }),
       outputsize: z
         .preprocess((val) => {
@@ -74438,6 +74630,7 @@ export const getMarketCapRoute = createRoute({
           },
           'x-go-name': 'OutputSize',
           'x-order': '100',
+          default: 10,
         }),
     }),
   },
@@ -74542,6 +74735,7 @@ export const getMarketMoversMarketRoute = createRoute({
           },
           'x-go-name': 'OutputSize',
           'x-order': '20',
+          default: 30,
         }),
       country: z
         .string()
@@ -74892,6 +75086,7 @@ export const getMaxRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -75120,6 +75315,7 @@ export const getMaxRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -75195,6 +75391,7 @@ export const getMaxRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -75406,6 +75603,7 @@ export const getMaxindexRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -75634,6 +75832,7 @@ export const getMaxindexRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -75709,6 +75908,7 @@ export const getMaxindexRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -75920,6 +76120,7 @@ export const getMcginleyDynamicRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -76148,6 +76349,7 @@ export const getMcginleyDynamicRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -76212,6 +76414,7 @@ export const getMcginleyDynamicRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 14,
         }),
       include_ohlc: z
         .stringbool()
@@ -76423,6 +76626,7 @@ export const getMedpriceRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -76651,6 +76855,7 @@ export const getMedpriceRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -76896,6 +77101,7 @@ export const getMfiRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -77124,6 +77330,7 @@ export const getMfiRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -77188,6 +77395,7 @@ export const getMfiRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 14,
         }),
       include_ohlc: z
         .stringbool()
@@ -77399,6 +77607,7 @@ export const getMidpointRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -77627,6 +77836,7 @@ export const getMidpointRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -77702,6 +77912,7 @@ export const getMidpointRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -77913,6 +78124,7 @@ export const getMidpriceRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -78141,6 +78353,7 @@ export const getMidpriceRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -78205,6 +78418,7 @@ export const getMidpriceRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -78416,6 +78630,7 @@ export const getMinRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -78644,6 +78859,7 @@ export const getMinRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -78719,6 +78935,7 @@ export const getMinRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -78930,6 +79147,7 @@ export const getMinindexRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -79158,6 +79376,7 @@ export const getMinindexRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -79233,6 +79452,7 @@ export const getMinindexRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -79444,6 +79664,7 @@ export const getMinmaxRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -79672,6 +79893,7 @@ export const getMinmaxRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -79747,6 +79969,7 @@ export const getMinmaxRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -79958,6 +80181,7 @@ export const getMinmaxindexRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -80186,6 +80410,7 @@ export const getMinmaxindexRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -80261,6 +80486,7 @@ export const getMinmaxindexRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -80472,6 +80698,7 @@ export const getMinusDiRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -80700,6 +80927,7 @@ export const getMinusDiRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -80764,6 +80992,7 @@ export const getMinusDiRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -80975,6 +81204,7 @@ export const getMinusDmRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -81203,6 +81433,7 @@ export const getMinusDmRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -81267,6 +81498,7 @@ export const getMinusDmRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -81478,6 +81710,7 @@ export const getMomRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -81706,6 +81939,7 @@ export const getMomRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -81781,6 +82015,7 @@ export const getMomRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -81925,6 +82160,7 @@ export const getMoneyMarketFundsListRoute = createRoute({
           },
           'x-go-name': 'Page',
           'x-order': '50',
+          default: 1,
         }),
       outputsize: z
         .preprocess((val) => {
@@ -81954,6 +82190,7 @@ export const getMoneyMarketFundsListRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '60',
+          default: 100,
         }),
     }),
   },
@@ -82105,6 +82342,7 @@ export const getMoneyMarketFundsWorldRoute = createRoute({
           },
           'x-go-name': 'Dp',
           'x-order': '40',
+          default: 5,
         }),
     }),
   },
@@ -82294,6 +82532,7 @@ export const getMultRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -82522,6 +82761,7 @@ export const getMultRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -82982,6 +83222,7 @@ export const getMutualFundsListRoute = createRoute({
           },
           'x-go-name': 'Dp',
           'x-order': '76',
+          default: 5,
         }),
       page: z
         .preprocess((val) => {
@@ -83011,6 +83252,7 @@ export const getMutualFundsListRoute = createRoute({
           },
           'x-go-name': 'Page',
           'x-order': '80',
+          default: 1,
         }),
       outputsize: z
         .preprocess((val) => {
@@ -83040,6 +83282,7 @@ export const getMutualFundsListRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '90',
+          default: 100,
         }),
     }),
   },
@@ -83316,6 +83559,7 @@ export const getMutualFundsWorldRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '50',
+          default: 5,
         }),
     }),
   },
@@ -83510,6 +83754,7 @@ export const getMutualFundsWorldCompositionRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '50',
+          default: 5,
         }),
     }),
   },
@@ -83704,6 +83949,7 @@ export const getMutualFundsWorldPerformanceRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '50',
+          default: 5,
         }),
     }),
   },
@@ -83898,6 +84144,7 @@ export const getMutualFundsWorldPurchaseInfoRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '50',
+          default: 5,
         }),
     }),
   },
@@ -84094,6 +84341,7 @@ export const getMutualFundsWorldRatingsRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '50',
+          default: 5,
         }),
     }),
   },
@@ -84288,6 +84536,7 @@ export const getMutualFundsWorldRiskRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '50',
+          default: 5,
         }),
     }),
   },
@@ -84482,6 +84731,7 @@ export const getMutualFundsWorldSummaryRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '50',
+          default: 5,
         }),
     }),
   },
@@ -84676,6 +84926,7 @@ export const getMutualFundsWorldSustainabilityRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '50',
+          default: 5,
         }),
     }),
   },
@@ -84867,6 +85118,7 @@ export const getNatrRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -85095,6 +85347,7 @@ export const getNatrRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -85159,6 +85412,7 @@ export const getNatrRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 14,
         }),
       include_ohlc: z
         .stringbool()
@@ -85370,6 +85624,7 @@ export const getObvRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -85598,6 +85853,7 @@ export const getObvRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -85854,6 +86110,7 @@ export const getPercentBRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -86082,6 +86339,7 @@ export const getPercentBRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -86157,6 +86415,7 @@ export const getPercentBRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       sd: z
         .preprocess(
@@ -86410,6 +86669,7 @@ export const getPivotPointsHlRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -86638,6 +86898,7 @@ export const getPivotPointsHlRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -86702,6 +86963,7 @@ export const getPivotPointsHlRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 10,
         }),
       include_ohlc: z
         .stringbool()
@@ -86913,6 +87175,7 @@ export const getPlusDiRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -87141,6 +87404,7 @@ export const getPlusDiRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -87205,6 +87469,7 @@ export const getPlusDiRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -87416,6 +87681,7 @@ export const getPlusDmRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -87644,6 +87910,7 @@ export const getPlusDmRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -87708,6 +87975,7 @@ export const getPlusDmRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -87919,6 +88187,7 @@ export const getPpoRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -88147,6 +88416,7 @@ export const getPpoRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -88222,6 +88492,7 @@ export const getPpoRoute = createRoute({
           },
           'x-go-name': 'FastPeriod',
           'x-order': '62',
+          default: 12,
         }),
       slow_period: z
         .preprocess((val) => {
@@ -88252,6 +88523,7 @@ export const getPpoRoute = createRoute({
           },
           'x-go-name': 'SlowPeriod',
           'x-order': '63',
+          default: 26,
         }),
       ma_type: MaTypeEnumSchema.openapi({
         param: {
@@ -88568,6 +88840,7 @@ export const getPressReleasesRoute = createRoute({
           },
           'x-go-name': 'Outputsize',
           'x-order': '110',
+          default: 2,
         }),
       page: z
         .preprocess((val) => {
@@ -88599,6 +88872,7 @@ export const getPressReleasesRoute = createRoute({
           },
           'x-go-name': 'Page',
           'x-order': '120',
+          default: 1,
         }),
     }),
   },
@@ -88885,6 +89159,7 @@ export const getPriceRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '110',
+          default: 5,
         }),
     }),
   },
@@ -89521,6 +89796,7 @@ export const getQuoteRoute = createRoute({
           },
           'x-go-name': 'AverageVolumeTimePeriod',
           'x-order': '70',
+          default: 9,
         }),
       type: TypeEnumSchema.openapi({
         param: {
@@ -89626,6 +89902,7 @@ export const getQuoteRoute = createRoute({
           },
           'x-go-name': 'RollingPeriod',
           'x-order': '140',
+          default: 24,
         }),
       dp: z
         .preprocess((val) => {
@@ -89656,6 +89933,7 @@ export const getQuoteRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '150',
+          default: 5,
         }),
       timezone: z
         .string()
@@ -90108,6 +90386,7 @@ export const getRevenueEstimateRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '60',
+          default: 5,
         }),
     }),
   },
@@ -90297,6 +90576,7 @@ export const getRocRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -90525,6 +90805,7 @@ export const getRocRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -90600,6 +90881,7 @@ export const getRocRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -90811,6 +91093,7 @@ export const getRocpRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -91039,6 +91322,7 @@ export const getRocpRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -91114,6 +91398,7 @@ export const getRocpRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -91325,6 +91610,7 @@ export const getRocrRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -91553,6 +91839,7 @@ export const getRocrRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -91628,6 +91915,7 @@ export const getRocrRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -91839,6 +92127,7 @@ export const getRocr100Route = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -92067,6 +92356,7 @@ export const getRocr100Route = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -92142,6 +92432,7 @@ export const getRocr100Route = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -92353,6 +92644,7 @@ export const getRsiRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -92581,6 +92873,7 @@ export const getRsiRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -92656,6 +92949,7 @@ export const getRsiRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 14,
         }),
       include_ohlc: z
         .stringbool()
@@ -92867,6 +93161,7 @@ export const getRvolRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -93095,6 +93390,7 @@ export const getRvolRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -93159,6 +93455,7 @@ export const getRvolRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 14,
         }),
       include_ohlc: z
         .stringbool()
@@ -93429,6 +93726,7 @@ export const getSarRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -93657,6 +93955,7 @@ export const getSarRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -93964,6 +94263,7 @@ export const getSarextRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -94192,6 +94492,7 @@ export const getSarextRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -94685,6 +94986,7 @@ export const getSmaRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -94913,6 +95215,7 @@ export const getSmaRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -94988,6 +95291,7 @@ export const getSmaRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -95491,6 +95795,7 @@ export const getSplitsCalendarRoute = createRoute({
           },
           'x-go-name': 'Outputsize',
           'x-order': '60',
+          default: 100,
         }),
       page: z
         .string()
@@ -95697,6 +96002,7 @@ export const getSqrtRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -95925,6 +96231,7 @@ export const getSqrtRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -96380,6 +96687,7 @@ export const getStddevRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -96608,6 +96916,7 @@ export const getStddevRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -96683,6 +96992,7 @@ export const getStddevRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '63',
+          default: 9,
         }),
       sd: z
         .preprocess(
@@ -96925,6 +97235,7 @@ export const getStochRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -97153,6 +97464,7 @@ export const getStochRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -97217,6 +97529,7 @@ export const getStochRoute = createRoute({
           },
           'x-go-name': 'FastKPeriod',
           'x-order': '61',
+          default: 14,
         }),
       slow_k_period: z
         .preprocess((val) => {
@@ -97247,6 +97560,7 @@ export const getStochRoute = createRoute({
           },
           'x-go-name': 'SlowKPeriod',
           'x-order': '61',
+          default: 1,
         }),
       slow_d_period: z
         .preprocess((val) => {
@@ -97277,6 +97591,7 @@ export const getStochRoute = createRoute({
           },
           'x-go-name': 'SlowDPeriod',
           'x-order': '62',
+          default: 3,
         }),
       slow_kma_type: MaTypeEnumSchema.openapi({
         param: {
@@ -97510,6 +97825,7 @@ export const getStochfRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -97738,6 +98054,7 @@ export const getStochfRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -97802,6 +98119,7 @@ export const getStochfRoute = createRoute({
           },
           'x-go-name': 'FastKPeriod',
           'x-order': '61',
+          default: 14,
         }),
       fast_d_period: z
         .preprocess((val) => {
@@ -97832,6 +98150,7 @@ export const getStochfRoute = createRoute({
           },
           'x-go-name': 'FastDPeriod',
           'x-order': '62',
+          default: 3,
         }),
       fast_dma_type: MaTypeEnumSchema.openapi({
         param: {
@@ -98054,6 +98373,7 @@ export const getStochrsiRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -98282,6 +98602,7 @@ export const getStochrsiRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -98357,6 +98678,7 @@ export const getStochrsiRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '64',
+          default: 14,
         }),
       stoch_length: z
         .preprocess((val) => {
@@ -98387,6 +98709,7 @@ export const getStochrsiRoute = createRoute({
           },
           'x-go-name': 'FastKPeriod',
           'x-order': '61',
+          default: 14,
         }),
       k_period: z
         .preprocess((val) => {
@@ -98417,6 +98740,7 @@ export const getStochrsiRoute = createRoute({
           },
           'x-go-name': 'SlowKPeriod',
           'x-order': '61',
+          default: 3,
         }),
       slow_kma_type: z
         .string()
@@ -98460,6 +98784,7 @@ export const getStochrsiRoute = createRoute({
           },
           'x-go-name': 'SlowDPeriod',
           'x-order': '62',
+          default: 3,
         }),
       slow_dma_type: z
         .string()
@@ -98753,6 +99078,7 @@ export const getStocksRoute = createRoute({
             required: false,
           },
           'x-go-name': 'Page',
+          default: 1,
         }),
       outputsize: z
         .preprocess((val) => {
@@ -98964,6 +99290,7 @@ export const getSubRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -99192,6 +99519,7 @@ export const getSubRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -99459,6 +99787,7 @@ export const getSumRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -99687,6 +100016,7 @@ export const getSumRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -99762,6 +100092,7 @@ export const getSumRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -99973,6 +100304,7 @@ export const getSupertrendRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -100201,6 +100533,7 @@ export const getSupertrendRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -100265,6 +100598,7 @@ export const getSupertrendRoute = createRoute({
           },
           'x-go-name': 'Period',
           'x-order': '61',
+          default: 10,
         }),
       multiplier: z
         .preprocess((val) => {
@@ -100294,6 +100628,7 @@ export const getSupertrendRoute = createRoute({
           },
           'x-go-name': 'Multiplier',
           'x-order': '62',
+          default: 3,
         }),
       include_ohlc: z
         .stringbool()
@@ -100505,6 +100840,7 @@ export const getSupertrendHeikinashicandlesRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -100733,6 +101069,7 @@ export const getSupertrendHeikinashicandlesRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -100797,6 +101134,7 @@ export const getSupertrendHeikinashicandlesRoute = createRoute({
           },
           'x-go-name': 'Period',
           'x-order': '61',
+          default: 10,
         }),
       multiplier: z
         .preprocess((val) => {
@@ -100826,6 +101164,7 @@ export const getSupertrendHeikinashicandlesRoute = createRoute({
           },
           'x-go-name': 'Multiplier',
           'x-order': '62',
+          default: 3,
         }),
       include_ohlc: z
         .stringbool()
@@ -100945,6 +101284,7 @@ export const getSymbolSearchRoute = createRoute({
           },
           'x-go-name': 'Outputsize',
           'x-order': '30',
+          default: 30,
         }),
       show_plan: z
         .stringbool()
@@ -101151,6 +101491,7 @@ export const getT3maRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -101379,6 +101720,7 @@ export const getT3maRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -101454,6 +101796,7 @@ export const getT3maRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       v_factor: z
         .preprocess(
@@ -101925,6 +102268,7 @@ export const getTemaRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -102153,6 +102497,7 @@ export const getTemaRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -102227,6 +102572,7 @@ export const getTemaRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -102438,6 +102784,7 @@ export const getTimeSeriesRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -102666,6 +103013,7 @@ export const getTimeSeriesRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -103010,6 +103358,7 @@ export const getTimeSeriesCrossRoute = createRoute({
             required: false,
           },
           'x-go-name': 'Dp',
+          default: 5,
         }),
       timezone: z
         .string()
@@ -103215,6 +103564,7 @@ export const getTrangeRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -103443,6 +103793,7 @@ export const getTrangeRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -103688,6 +104039,7 @@ export const getTrimaRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -103916,6 +104268,7 @@ export const getTrimaRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -103991,6 +104344,7 @@ export const getTrimaRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -104202,6 +104556,7 @@ export const getTsfRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -104430,6 +104785,7 @@ export const getTsfRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -104505,6 +104861,7 @@ export const getTsfRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -104716,6 +105073,7 @@ export const getTyppriceRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -104944,6 +105302,7 @@ export const getTyppriceRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -105189,6 +105548,7 @@ export const getUltoscRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -105417,6 +105777,7 @@ export const getUltoscRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -105481,6 +105842,7 @@ export const getUltoscRoute = createRoute({
           },
           'x-go-name': 'TimePeriod1',
           'x-order': '62',
+          default: 7,
         }),
       time_period_2: z
         .preprocess((val) => {
@@ -105511,6 +105873,7 @@ export const getUltoscRoute = createRoute({
           },
           'x-go-name': 'TimePeriod2',
           'x-order': '62',
+          default: 14,
         }),
       time_period_3: z
         .preprocess((val) => {
@@ -105541,6 +105904,7 @@ export const getUltoscRoute = createRoute({
           },
           'x-go-name': 'TimePeriod3',
           'x-order': '62',
+          default: 28,
         }),
       include_ohlc: z
         .stringbool()
@@ -105752,6 +106116,7 @@ export const getVarRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -105980,6 +106345,7 @@ export const getVarRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -106055,6 +106421,7 @@ export const getVarRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()
@@ -106266,6 +106633,7 @@ export const getVwapRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -106494,6 +106862,7 @@ export const getVwapRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -106558,6 +106927,7 @@ export const getVwapRoute = createRoute({
           },
           'x-go-name': 'SDTimePeriod',
           'x-order': '62',
+          default: 0,
         }),
       sd: z
         .preprocess(
@@ -106801,6 +107171,7 @@ export const getWclpriceRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -107029,6 +107400,7 @@ export const getWclpriceRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -107274,6 +107646,7 @@ export const getWillrRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -107502,6 +107875,7 @@ export const getWillrRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -107566,6 +107940,7 @@ export const getWillrRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 14,
         }),
       include_ohlc: z
         .stringbool()
@@ -107777,6 +108152,7 @@ export const getWmaRoute = createRoute({
           },
           'x-go-name': 'PageSize',
           'x-order': '80',
+          default: 30,
         }),
       exchange: z
         .string()
@@ -108005,6 +108381,7 @@ export const getWmaRoute = createRoute({
           },
           'x-go-name': 'DecimalPlaces',
           'x-order': '120',
+          default: -1,
         }),
       previous_close: z
         .stringbool()
@@ -108080,6 +108457,7 @@ export const getWmaRoute = createRoute({
           },
           'x-go-name': 'TimePeriod',
           'x-order': '62',
+          default: 9,
         }),
       include_ohlc: z
         .stringbool()

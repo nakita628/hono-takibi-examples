@@ -115,7 +115,7 @@ const BindingSchema = z
   .openapi('Binding')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -244,7 +244,7 @@ const ImportAptArtifactsErrorInfoSchema = z
   .openapi('ImportAptArtifactsErrorInfo')
 
 const ImportAptArtifactsMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The operation metadata for importing artifacts.' })
   .openapi('ImportAptArtifactsMetadata')
 
@@ -304,7 +304,7 @@ const ImportYumArtifactsErrorInfoSchema = z
   .openapi('ImportYumArtifactsErrorInfo')
 
 const ImportYumArtifactsMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The operation metadata for importing artifacts.' })
   .openapi('ImportYumArtifactsMetadata')
 
@@ -759,7 +759,7 @@ const OperationSchema = z
   .openapi('Operation')
 
 const OperationMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Metadata type for longrunning-operations, currently empty.' })
   .openapi('OperationMetadata')
 
@@ -863,12 +863,12 @@ const UploadAptArtifactMediaResponseSchema = z
   .openapi('UploadAptArtifactMediaResponse')
 
 const UploadAptArtifactMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The operation metadata for uploading artifacts.' })
   .openapi('UploadAptArtifactMetadata')
 
 const UploadAptArtifactRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request to upload an artifact.' })
   .openapi('UploadAptArtifactRequest')
 
@@ -896,12 +896,12 @@ const UploadYumArtifactMediaResponseSchema = z
   .openapi('UploadYumArtifactMediaResponse')
 
 const UploadYumArtifactMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The operation metadata for uploading artifacts.' })
   .openapi('UploadYumArtifactMetadata')
 
 const UploadYumArtifactRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request to upload an artifact.' })
   .openapi('UploadYumArtifactRequest')
 

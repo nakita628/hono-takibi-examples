@@ -474,7 +474,10 @@ export const getAgrAffectedGenomicModelsTaxonIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { '*/*': { schema: z.record(z.string(), z.object({})) } } },
+    200: {
+      description: 'OK',
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
+    },
     401: { description: 'Unauthorized' },
     403: { description: 'Forbidden' },
     404: { description: 'Not Found' },
@@ -503,7 +506,10 @@ export const getAgrAllelesTaxonIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { '*/*': { schema: z.record(z.string(), z.object({})) } } },
+    200: {
+      description: 'OK',
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
+    },
     401: { description: 'Unauthorized' },
     403: { description: 'Forbidden' },
     404: { description: 'Not Found' },
@@ -532,7 +538,10 @@ export const getAgrExpressionTaxonIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { '*/*': { schema: z.record(z.string(), z.object({})) } } },
+    200: {
+      description: 'OK',
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
+    },
     401: { description: 'Unauthorized' },
     403: { description: 'Forbidden' },
     404: { description: 'Not Found' },
@@ -561,7 +570,10 @@ export const getAgrPhenotypesTaxonIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { '*/*': { schema: z.record(z.string(), z.object({})) } } },
+    200: {
+      description: 'OK',
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
+    },
     401: { description: 'Unauthorized' },
     403: { description: 'Forbidden' },
     404: { description: 'Not Found' },
@@ -590,7 +602,10 @@ export const getAgrVariantsTaxonIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { '*/*': { schema: z.record(z.string(), z.object({})) } } },
+    200: {
+      description: 'OK',
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
+    },
     401: { description: 'Unauthorized' },
     403: { description: 'Forbidden' },
     404: { description: 'Not Found' },
@@ -619,7 +634,10 @@ export const getAgrTaxonIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: { '*/*': { schema: z.record(z.string(), z.object({})) } } },
+    200: {
+      description: 'OK',
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
+    },
     401: { description: 'Unauthorized' },
     403: { description: 'Forbidden' },
     404: { description: 'Not Found' },
@@ -1110,7 +1128,7 @@ export const postEnrichmentAnnotatedGenesRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { '*/*': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { '*/*': { schema: z.looseObject({}) } } },
     201: { description: 'Created' },
     401: { description: 'Unauthorized' },
     403: { description: 'Forbidden' },
@@ -1133,7 +1151,7 @@ export const postEnrichmentDataRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'OK', content: { '*/*': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { '*/*': { schema: z.looseObject({}) } } },
     201: { description: 'Created' },
     401: { description: 'Unauthorized' },
     403: { description: 'Forbidden' },
@@ -2479,7 +2497,7 @@ export const getLookupSpeciesTypeKeysRoute = createRoute({
   summary: 'Return a Map of species type keys available in RGD',
   operationId: 'getSpeciesTypesUsingGET',
   responses: {
-    200: { description: 'OK', content: { '*/*': { schema: z.object({}) } } },
+    200: { description: 'OK', content: { '*/*': { schema: z.looseObject({}) } } },
     401: { description: 'Unauthorized' },
     403: { description: 'Forbidden' },
     404: { description: 'Not Found' },
@@ -2857,7 +2875,10 @@ export const getPhenotypePhenominerChartSpeciesTypeKeyRefRgdIdTermStringRoute = 
     }),
   },
   responses: {
-    200: { description: 'OK', content: { '*/*': { schema: z.record(z.string(), z.object({})) } } },
+    200: {
+      description: 'OK',
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
+    },
     401: { description: 'Unauthorized' },
     403: { description: 'Forbidden' },
     404: { description: 'Not Found' },
@@ -2906,7 +2927,10 @@ export const getPhenotypePhenominerChartSpeciesTypeKeyTermStringRoute = createRo
     }),
   },
   responses: {
-    200: { description: 'OK', content: { '*/*': { schema: z.record(z.string(), z.object({})) } } },
+    200: {
+      description: 'OK',
+      content: { '*/*': { schema: z.record(z.string(), z.looseObject({})) } },
+    },
     401: { description: 'Unauthorized' },
     403: { description: 'Forbidden' },
     404: { description: 'Not Found' },

@@ -30,7 +30,6 @@ export const basicHandler = app
   .openapi(putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute, (c) => {
     throw new Error('Not implemented')
   })
-  .openapi(
-    deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute,
-    (c) => {},
-  )
+  .openapi(deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
